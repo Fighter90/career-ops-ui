@@ -9,6 +9,42 @@
 ---
 
 
+## [1.238.0] — 2026-09-27
+
+**父项目对齐 — career-ops `main` @ `993085ce`(`VERSION` 为 1.34.0,自 `de2224a9` 起共 182 个提交)。四个新来源、十项镜像的服务商修复、一个扫描器全局性的 SSRF 漏洞被堵上,以及扫描结果上一个免费的标题匹配度提示。**
+
+### 新增
+
+- **四个新来源 —— 94 → 98(93 EN + 5 RU),89 → 93 个 EN 适配器。**
+  - **Eploy**(`provider: eploy`)—— 在任意品牌化主机上读取租户的 `/live-jobs.xml` 站点地图(仅限 HTTPS;IP 字面量、`localhost`、`*.local`、`*.internal` 与单标签主机均被拒绝)。一个非站点地图的响应(登录页面)会抛出异常,而不是被当作零职位放行。详情页抓取是可选启用的(`eploy: { fetchDetails, detailLimit }`)。
+  - **HiringRoom**(`*.hiringroom.com`)—— 优先读取 JSON-LD 的 `/portal/jobs`,以旧版 `/jobs` 卡片作为回退;负载中 `http://` 形式的职位链接会被重建为 HTTPS。
+  - **PeopleSoft Candidate Gateway** —— 通过任意品牌化主机上的 `/psc/{site}/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL` 路径检测。它会自行跟随 PeopleSoft 自身的同源会话重定向(最多 10 跳,每一跳都重新钉定到租户源并对照私有地址检查),重放"加载更多"表单,并将其标记为部分抓取(`peoplesoftIncomplete`),而不是当作已完成上报。
+  - **PrevueAPS**(`*.prevueaps.ca`)—— 先从职位页面解析出站点 id,再读取 JSON API。
+- **`#/scan` 结果行新增标题匹配度提示。** 每条结果都携带一个粗粒度的**strong / related / weak** 匹配度标签,用于比较职位标题与 `config/profile.yml` 中的目标职位(`target_roles.primary` 加上各原型名称)。这只是一次免费的关键词估算:它从不过滤、重新排序或改变结果数量,提示文字也如此说明。计算发生在结果被提供时,因此修改档案会在下一次刷新中体现。已翻译为全部 17 个语言。对应父项目 #3261 的镜像。
+
+### 修复
+
+- **安全 —— DNS 重绑定防护在真实扫描中从未运行过。** `http-json.mjs` 只有在收到裸的全局 `fetch` 时才会检查解析出的地址,但两个扫描器都会注入 `makeTimeoutFetch()`,于是每一次扫描都跳过了这项检查。一个指向解析为 `10.x` 或 `127.0.0.1` 的主机名的来源就这样被直接抓取。这项防护现在被移到 `makeTimeoutFetch` 内部运行,并与扫描超时进行竞速,以免一个卡住的解析器让整个扫描挂起。发现于本次发布的评审过程中。
+- **安全 —— 内嵌了 IPv4 地址的 IPv6 地址此前未被识别为私有地址。** `http://[::ffff:127.0.0.1]/`(URL 解析器会将其改写为 `[::ffff:7f00:1]`)能够通过 `isValidJobUrl`。`::ffff:a.b.c.d` / `::a.b.c.d` 的点分形式与十六进制形式现在都会依据其内嵌地址来分类。对应父项目的 `_ip-guard.mjs`。
+- **Rippling 迁移到了 v2 板块 API**(`ats.rippling.com/api/v2/board/<slug>/jobs`),带有分页(默认 10 页,最多 50 页)、对职位链接的主机锁定,以及 slug 校验。粘贴一个 API URL 现在会得到真正的 slug,而不是 `api`。
+- **Recruitee** —— 多地点的职位会列出每一个地点(`A · B`),`(Sample)` 演示职位与无标题的行会被丢弃,只要两个 URL 中任意一个有效,该条职位就会被保留。
+- **Pinpoint** —— 丢弃作为种子数据的演示职位(重复的演示视频)。
+- **Telegram 频道** —— 含有多个 `|` 的首行不再被读作「标题 | 公司」,并能识别更多职位相关词。该分支自有的、支持西里尔字母的 `LOCATIONISH_RE` 未作改动(ADR-0002)。
+- **Workday** —— 首页出现 422/401/403 时只探测一次;Workday 的维护页面或故障重定向会将该职位板判定为已失效(严格模式下会被隔离)。CXS 与详情请求现在都拒绝跟随重定向。
+- **BambooHR** —— 被重定向的 `/careers/list` 会通过公开的内嵌 feed 进行判别:为空表示一个没有空缺的存活职位板,非空则表示职位板已失效。
+- **Heckler & Koch / Rheinmetall** —— 裸域名 `heckler-koch.com` / `rheinmetall.com` 会被改写为 `www.` 开头,以便不跟随重定向的传输层依然能够到达。**Ashby** 拒绝跟随重定向。**beesite** 使用可取消的 `delay()` 来控制翻页节奏。
+- **标题过滤器在两侧都会折叠重音符号**(EN 与 RU 两个扫描器),因此 `Développeur` 能被 `developpeur` 这一否定词捕获。
+- **冷却期的公司名匹配能理解非拉丁文名称与法人组织形式**(中日韩/韩语标记、土耳其语带点的 İ)。CJK 名称过去会被压缩为一个空键,永远无法匹配。
+- **`location_filter.strict: true`** 在设置了允许列表或屏蔽列表时,遇到空的所在地会执行失败关闭(fail closed)。
+- **Liveness** —— 为 Greenhouse 内嵌(`gh_jid`)、Arbeitsagentur 与 We Work Remotely 新增公开 API 检查;SmartRecruiters 现在依据职位的 `active` 标志来判定。
+- **PeopleSoft** —— 相对路径的"加载更多"表单动作现在相对于搜索页面本身解析,而不是相对于源的根路径。
+
+### 说明
+
+- 测试数 **3210 → 3481**。新增测试套件:`sources-eploy`、`sources-hiringroom`、`sources-peoplesoft`、`sources-prevueaps`、`title-fit`、`fetch-timeout-dns-guard`、`cooldown-company-match-unicode`、`liveness-api-more-rungs`、`ru-scanner-title-accent-fold`。
+- **未移植的部分**,附原因:所在地过滤器的 Unicode 单词边界(web-ui 的过滤器基于子字符串匹配,因此并不存在需要修复的边界——完整移植父项目的所在地过滤器留作未来工作);同标题职位申请去重(web-ui 仅按 URL 去重);聚合器转发警告、黑名单域名范围、未验证的零结果凭据以及 `scan-runs.tsv` 迁移(web-ui 完全没有这些界面);Workday 的分面拆分与截断标记(web-ui 对每个职位板只抓取一页);BambooHR 的 `enrichDate`(没有日期富化的钩子);父项目中横跨约 20 个服务商的 `_http.mjs` sleep 重构(web-ui 已经在使用共享的可取消 `delay`);updater、doctor、PDF、tracker/merge-tracker、`validate-profile`、`discover-new-companies`、`web/` 这个 Next.js 应用、GitHub 机器人——它们要么是纯 CLI,要么走中转。
+- 刻意与父项目保持不同的地方:Heckler & Koch / Rheinmetall 依旧只用 HTTPS(不做 `http→https` 升级);一次正常扫描中遇到失效的 Workday 职位板,依旧返回 `[]` 而不是让整个扫描失败。
+
 ## [1.237.1] — 2026-09-22
 
 **针对 v1.237.0 的一次外部 QA 复查补丁。** Jobstreet 的修复首次得到了外部确认：在 AU、NZ、HK 与 MY 主机上，旧的 `/id/job/<id>` 形式会返回一个干净的 404，而新的 `/job/<id>` 能到达一个真实的、受 Cloudflare 保护的路由；在 `id.jobstreet.com` 上情况正好相反。丢失的链接是真实存在的。发现了两处缺陷，都出在 v1.237.0 自身新增的内容里。

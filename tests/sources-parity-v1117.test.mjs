@@ -55,6 +55,31 @@ test('beesite: config is host-pinned to *.beesite.de; paged fetch parses + dedup
   assert.equal(total, 2);
 });
 
+// Parent #3530 routes every inter-page sleep through one shared helper; the
+// web-ui equivalent is http-json's abort-aware delay(). An aborted scan must
+// not wait out the 150 ms page pacing.
+test('beesite: inter-page pacing goes through the abort-aware delay()', async () => {
+  const mk = (n) => ({ MatchedObjectId: String(n), MatchedObjectDescriptor: { PositionTitle: `Job ${n}`, PositionURI: `https://jobs.mercedes-benz.com/j/${n}` } });
+  let call = 0;
+  const fetchImpl = async () => {
+    const base = call++ * 100;
+    return jsonResponse({ SearchResult: { SearchResultCountAll: 300, SearchResultItems: Array.from({ length: 100 }, (_, i) => mk(base + i)) } });
+  };
+  const pacing = [];
+  const realSetTimeout = globalThis.setTimeout;
+  globalThis.setTimeout = (fn, ms, ...rest) => { if (ms === 150) pacing.push(ms); return realSetTimeout(fn, ms, ...rest); };
+  try {
+    const ac = new AbortController();
+    ac.abort();
+    const jobs = await fetchBeesite('https://global-jobboard-api.app.beesite.de/', { fetchImpl, signal: ac.signal, company: { name: 'X' } });
+    assert.equal(jobs.length, 300);
+    assert.equal(call, 3);
+    assert.equal(pacing.length, 0, 'aborted signal → no page-delay timers armed');
+  } finally {
+    globalThis.setTimeout = realSetTimeout;
+  }
+});
+
 test('higheredjobs: feed is host-pinned; parse splits "Institution (City, ST)"', async () => {
   assert.equal(feedUrlFor(12), 'https://www.higheredjobs.com/rss/categoryFeed.cfm?catID=12');
   assert.throws(() => assertHejUrl('https://evil.example.com/rss'), /untrusted hostname/);

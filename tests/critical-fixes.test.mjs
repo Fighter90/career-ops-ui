@@ -161,6 +161,27 @@ test('PR-3: isPrivateOrLoopbackHost handles IPv6 + bracketed forms', () => {
   assert.equal(isPrivateOrLoopbackHost('2606:4700::1111'), false);  // public
 });
 
+// Parent providers/_ip-guard.mjs parity: IPv4-mapped / IPv4-compatible IPv6
+// literals, dotted and hex (the URL parser prints the hex form).
+test('isPrivateOrLoopbackHost blocks IPv4-mapped and IPv4-compatible IPv6 (dotted + hex)', () => {
+  for (const address of [
+    '::ffff:127.0.0.1', '::ffff:169.254.169.254',
+    '::ffff:7f00:1', '::ffff:a9fe:a9fe', '::7f00:1', '[::ffff:7f00:1]',
+    '::ffff:a00:1',   // 10.0.0.1
+  ]) {
+    assert.equal(isPrivateOrLoopbackHost(address), true, `${address} should be blocked`);
+  }
+  assert.equal(isPrivateOrLoopbackHost('::ffff:8.8.8.8'), false);
+  assert.equal(isPrivateOrLoopbackHost('::ffff:808:808'), false);   // 8.8.8.8 in hex
+});
+
+test('isValidJobUrl rejects a URL whose host is an IPv4-mapped loopback', async () => {
+  const { isValidJobUrl } = await import('../server/lib/security.mjs');
+  assert.equal(new URL('http://[::ffff:127.0.0.1]/').hostname, '[::ffff:7f00:1]');
+  assert.equal(isValidJobUrl('http://[::ffff:127.0.0.1]/jobs'), false);
+  assert.equal(isValidJobUrl('http://[::ffff:169.254.169.254]/latest'), false);
+});
+
 test('PR-3: isPrivateOrLoopbackHost flags localhost and *.localhost', () => {
   assert.equal(isPrivateOrLoopbackHost('localhost'), true);
   assert.equal(isPrivateOrLoopbackHost('foo.localhost'), true);

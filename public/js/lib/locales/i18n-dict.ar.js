@@ -958,6 +958,10 @@ window.__I18N_DICT_AR = {
   'twoPager.saveFailed': "تعذّر حفظ الصفحتين",
   'twoPager.privacyNote': "تُخزَّن في طبقة المستخدم للمشروع الأصلي (config/two-pager.yml) — لا تُرسَل إلى أي مكان سوى موجّهات LLM التي تشغّلها بنفسك.",
   'scan.fitTip': "الملاءمة لما تريده",
+  'scan.titleFit.strong': "ملاءمة قوية",
+  'scan.titleFit.related': "ملاءمة ذات صلة",
+  'scan.titleFit.weak': "ملاءمة ضعيفة",
+  'scan.titleFitTip': "تقدير مجاني على مستوى الكلمات المفتاحية: عنوان الوظيفة مقابل الأدوار المستهدفة في ملفك (config/profile.yml). ليس تقييمًا — لا يزال «التقييم» يمنح درجة الملاءمة الحقيقية A–F.",
   // ── مقابلة تجريبية 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "مقابلة تجريبية",
   'mock.title': "مقابلة تجريبية",

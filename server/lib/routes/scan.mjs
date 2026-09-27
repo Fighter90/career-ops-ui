@@ -5,6 +5,7 @@
  *   GET /api/stream/scan?source=ats|regional|both  — consolidated SSE entrypoint
  *   GET /api/scan/regional/config — current russian_portals: config
  *   GET /api/scan-results       — latest run snapshot from data/last-scan.json
+ *                                 (rows annotated with a title-fit band, see title-fit.mjs)
  *
  * F-018: v1.18.0 retires the legacy `/api/stream/scan-{en,ru}` aliases
  * (deprecated since v1.12.0, Sunset 2026-10-01 originally announced —
@@ -22,6 +23,7 @@ import { getLastWorkdayFallback } from '../sources/workday.mjs';
 import { SOURCES } from '../sources/registry.mjs';
 import { PATHS } from '../paths.mjs';
 import { detectRepostsFromFile, DEFAULT_WINDOW_DAYS } from '../detect-reposts.mjs';
+import { annotateSnapshotFit, loadProfileTargetRoles } from '../title-fit.mjs';
 
 /**
  * Open an SSE response with the standard headers used across this repo.
@@ -170,7 +172,11 @@ export function registerScanRoutes(app) {
     // Companies card can render 🔒 chips for CAPTCHA-gated tenants.
     // Only the snapshot, not history — the scanner resets it on each
     // successful Workday fetch.
-    const snapshot = loadLastScan();
+    // Free title-vs-profile fit band (parent #3260): annotation only — each
+    // row gains `fit: {band, score}` when config/profile.yml names target
+    // roles. Never filters, orders or changes a count; missing/invalid profile
+    // → rows served untouched (no chips).
+    const snapshot = annotateSnapshotFit(loadLastScan(), loadProfileTargetRoles());
     const q = String(req.query.q || '').trim();
     const region = String(req.query.region || '').trim().toLowerCase();
     const setName = String(req.query.set || 'filtered').trim().toLowerCase();

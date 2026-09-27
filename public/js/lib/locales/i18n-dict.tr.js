@@ -959,6 +959,10 @@ window.__I18N_DICT_TR = {
   'twoPager.saveFailed': "Two-pager kaydedilemedi",
   'twoPager.privacyNote': "Üst projenizin kullanıcı katmanında saklanır (config/two-pager.yml) — çalıştırdığınız LLM istemleri dışında hiçbir yere gönderilmez.",
   'scan.fitTip': "İstediğinize uygunluk",
+  'scan.titleFit.strong': "güçlü uyum",
+  'scan.titleFit.related': "ilgili uyum",
+  'scan.titleFit.weak': "zayıf uyum",
+  'scan.titleFitTip': "Ücretsiz anahtar kelime düzeyinde tahmin: ilan başlığı ile profilinizdeki hedef roller (config/profile.yml) karşılaştırılır. Bir değerlendirme değildir — gerçek A–F uyum puanını yine Değerlendir verir.",
   // ── Deneme mülakatı 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "Deneme mülakatı",
   'mock.title': "Deneme mülakatı",

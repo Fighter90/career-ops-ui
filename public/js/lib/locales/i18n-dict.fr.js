@@ -958,6 +958,10 @@ window.__I18N_DICT_FR = {
   'twoPager.saveFailed': "Impossible d'enregistrer le two-pager",
   'twoPager.privacyNote': "Stocké dans la couche utilisateur de votre projet parent (config/two-pager.yml) — jamais envoyé ailleurs qu'aux prompts LLM que vous exécutez.",
   'scan.fitTip': "Adéquation avec ce que vous voulez",
+  'scan.titleFit.strong': "adéquation forte",
+  'scan.titleFit.related': "adéquation partielle",
+  'scan.titleFit.weak': "adéquation faible",
+  'scan.titleFitTip': "Estimation gratuite par mots-clés : titre de l'offre comparé aux postes cibles de votre profil (config/profile.yml). Ce n'est pas une évaluation — Évaluer donne toujours la vraie note A–F.",
 
   // ── Entretien simulé 2.0 (Epic 15 / v1.90.0) ── // Mock interview 2.0 (Epic 15 / v1.90.0)
   'nav.mockInterview': "Entretien simulé",

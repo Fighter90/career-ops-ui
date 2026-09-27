@@ -959,6 +959,10 @@ window.__I18N_DICT_KO = {
   'twoPager.saveFailed': "투페이저를 저장할 수 없습니다",
   'twoPager.privacyNote': "상위 프로젝트의 사용자 계층(config/two-pager.yml)에 저장됩니다 — 당신이 실행하는 LLM 프롬프트 외에는 어디에도 전송되지 않습니다.",
   'scan.fitTip': "원하는 것과의 적합도",
+  'scan.titleFit.strong': "높은 적합",
+  'scan.titleFit.related': "관련 적합",
+  'scan.titleFit.weak': "낮은 적합",
+  'scan.titleFitTip': "무료 키워드 수준 추정: 공고 제목과 프로필의 목표 직무(config/profile.yml) 비교. 평가가 아닙니다 — 실제 A–F 적합도 점수는 평가에서 제공합니다.",
   // ── 모의 면접 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "모의 면접",
   'mock.title': "모의 면접",

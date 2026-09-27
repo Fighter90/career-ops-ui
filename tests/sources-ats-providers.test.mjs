@@ -44,11 +44,14 @@ test('bamboohr: parse drops rows without an id and builds the careers url', () =
 });
 
 test('bamboohr: fetch normalizes + adapter detects host', async () => {
+  let seenOpts;
   const jobs = await fetchBambooHR('https://acme.bamboohr.com/careers/list', {
-    fetchImpl: okJson({ result: [{ id: 1, jobOpeningName: 'SWE' }] }),
+    fetchImpl: async (url, opts) => { seenOpts = opts; return { ok: true, text: async () => JSON.stringify({ result: [{ id: 1, jobOpeningName: 'SWE' }] }) }; },
     company: { name: 'Acme' },
   });
   assert.equal(jobs[0].company, 'Acme');
+  // Never auto-follows: 'manual' surfaces the 3xx for classification (parent #4365).
+  assert.equal(seenOpts.redirect, 'manual');
   assert.ok(bamboohrAdapter.matches({ careers_url: 'https://acme.bamboohr.com/x' }));
   assert.equal(bamboohrAdapter.buildEndpoint({ careers_url: 'https://acme.bamboohr.com' }), 'https://acme.bamboohr.com/careers/list');
   assert.equal(bamboohrAdapter.matches({ careers_url: 'https://acme.example.com' }), false);
@@ -56,6 +59,86 @@ test('bamboohr: fetch normalizes + adapter detects host', async () => {
 
 test('bamboohr: SSRF guard rejects an off-domain host', () => {
   assert.throws(() => assertBambooHRUrl('https://evil.com/careers/list'), /untrusted hostname/);
+});
+
+// Parent #4365 parity — redirect classification on /careers/list.
+const redirectRes = (location, status = 302) => ({
+  ok: false, status, headers: new Headers({ location }), text: async () => '',
+});
+const embed2 = (body) => ({ ok: true, json: async () => body });
+
+test('bamboohr: an untrusted endpoint throws before any fetch', async () => {
+  let calls = 0;
+  await assert.rejects(
+    fetchBambooHR('https://evil.example/acme.bamboohr.com/careers/list', { fetchImpl: async () => { calls++; return embed2({}); } }),
+    /untrusted hostname/,
+  );
+  assert.equal(calls, 0);
+});
+
+test('bamboohr: a non-marketing redirect + empty embed-widget feed is a live, empty board → []', async () => {
+  let probeOpts;
+  const jobs = await fetchBambooHR('https://empty.bamboohr.com/careers/list', {
+    fetchImpl: async (url, opts) => {
+      if (url.includes('/careers/list')) return redirectRes('/settings/account/temporarily_suspended');
+      assert.equal(url, 'https://empty.bamboohr.com/jobs/embed2.php?version=1.0.0&format=json');
+      probeOpts = opts;
+      return embed2({ success: true, departments: [] });
+    },
+  });
+  assert.deepEqual(jobs, []);
+  assert.equal(probeOpts.redirect, 'error');
+});
+
+test('bamboohr: a redirect + populated embed-widget feed (suspended-account signature) → status 404', async () => {
+  await assert.rejects(
+    fetchBambooHR('https://dead.bamboohr.com/careers/list', {
+      fetchImpl: async (url) => (url.includes('/careers/list')
+        ? redirectRes('/settings/account/temporarily_suspended')
+        : embed2({ success: true, departments: [{ id: 1, label: 'Ops', positions: [{ id: 7 }] }] })),
+    }),
+    (err) => err.status === 404,
+  );
+});
+
+test('bamboohr: a redirect whose embed-widget probe also fails → status 404', async () => {
+  await assert.rejects(
+    fetchBambooHR('https://dead.bamboohr.com/careers/list', {
+      fetchImpl: async () => redirectRes('/login.php'),
+    }),
+    (err) => err.status === 404,
+  );
+});
+
+for (const [label, location] of [['bare host', 'https://www.bamboohr.com/'], ['no www', 'https://bamboohr.com']]) {
+  test(`bamboohr: a marketing-site bounce (${label}) is a 404 without the embed-widget probe`, async () => {
+    let probeCalled = false;
+    await assert.rejects(
+      fetchBambooHR('https://dead.bamboohr.com/careers/list', {
+        fetchImpl: async (url) => {
+          if (url.includes('/careers/list')) return redirectRes(location, 301);
+          probeCalled = true;
+          return embed2({ success: true, departments: [] });
+        },
+      }),
+      (err) => err.status === 404,
+    );
+    assert.equal(probeCalled, false);
+  });
+}
+
+test('bamboohr: a non-redirect failure passes through unmapped', async () => {
+  const transientErr = new Error('This operation was aborted');
+  await assert.rejects(
+    fetchBambooHR('https://slow.bamboohr.com/careers/list', { fetchImpl: async () => { throw transientErr; } }),
+    (err) => err === transientErr && err.status !== 404,
+  );
+  await assert.rejects(
+    fetchBambooHR('https://slow.bamboohr.com/careers/list', {
+      fetchImpl: async () => ({ ok: false, status: 503, headers: new Headers(), text: async () => '' }),
+    }),
+    (err) => err.status === 503,
+  );
 });
 
 // ──────────────────────────────── Breezy ────────────────────────────────

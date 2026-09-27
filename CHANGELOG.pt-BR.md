@@ -8,6 +8,42 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.238.0] — 2026-09-27
+
+**Paridade com o pai — career-ops `main` @ `993085ce` (VERSION 1.34.0, 182 commits desde `de2224a9`). Quatro fontes novas, dez correções de provedores espelhadas, uma brecha de SSRF em todo o scanner fechada, e uma dica gratuita de ajuste de título nos resultados do scan.**
+
+### Adicionado
+
+- **Quatro fontes novas — 94 → 98 (93 EN + 5 RU), 89 → 93 adapters EN.**
+  - **Eploy** (`provider: eploy`) — lê o sitemap `/live-jobs.xml` do tenant em qualquer host de marca (somente HTTPS; literais de IP, `localhost`, `*.local`, `*.internal` e hosts de rótulo único são recusados). Uma resposta que não é sitemap (uma página de login) lança erro em vez de passar como zero vagas. Páginas de detalhe são opt-in (`eploy: { fetchDetails, detailLimit }`).
+  - **HiringRoom** (`*.hiringroom.com`) — JSON-LD `/portal/jobs` primeiro, cards legados de `/jobs` como fallback; URLs de vaga em `http://` no payload são reconstruídas em HTTPS.
+  - **PeopleSoft Candidate Gateway** — detectado pelo caminho `/psc/{site}/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL` em qualquer host de marca. Ele mesmo segue os redirecionamentos de sessão de mesma origem do PeopleSoft (máximo de 10 saltos, cada salto reancorado à origem do tenant e verificado contra endereços privados), reproduz o formulário "carregar mais" e marca uma varredura parcial (`peoplesoftIncomplete`) em vez de reportá-la como completa.
+  - **PrevueAPS** (`*.prevueaps.ca`) — resolve o id do site a partir da página de vagas e então lê a API JSON.
+- **Dica de ajuste de título nas linhas de `#/scan`.** Cada resultado carrega um chip aproximado de ajuste **forte / relacionado / fraco** comparando o título da vaga com os cargos-alvo em `config/profile.yml` (`target_roles.primary` + nomes de arquétipo). É uma estimativa gratuita por palavra-chave: nunca filtra, reordena ou muda contagens, e o tooltip diz isso. Calculado ao servir os resultados, então uma edição do perfil aparece no próximo refresh. Traduzido ×17. Espelha o #3261 do pai.
+
+### Corrigido
+
+- **Segurança — a proteção contra DNS-rebinding nunca rodava em um scan real.** `http-json.mjs` só verificava os endereços resolvidos quando recebia o `fetch` global puro, mas ambos os scanners injetam `makeTimeoutFetch()`, então todo scan pulava a proteção. Uma fonte apontando para um hostname que resolvia para `10.x` ou `127.0.0.1` era buscada. A proteção agora roda dentro do próprio `makeTimeoutFetch`, correndo em paralelo contra o timeout do scan para que um resolver travado não consiga travar um scan. Encontrado na revisão desta versão.
+- **Segurança — endereços IPv6 que embutem um endereço IPv4 não eram tratados como privados.** `http://[::ffff:127.0.0.1]/` (que o parser de URL reescreve como `[::ffff:7f00:1]`) passava no `isValidJobUrl`. Tanto a forma pontilhada quanto a hexadecimal de `::ffff:a.b.c.d` / `::a.b.c.d` agora são classificadas pelo endereço embutido. Do `_ip-guard.mjs` do pai.
+- **Rippling migrou para a API v2 do board** (`ats.rippling.com/api/v2/board/<slug>/jobs`), com paginação (10 páginas por padrão, máximo 50), trava de host nos links de vaga e validação de slug. Uma URL de API colada agora resolve para seu slug real em vez de `api`.
+- **Recruitee** — ofertas multi-localização listam todos os locais (`A · B`), publicações demo `(Sample)` e linhas sem título são descartadas, e uma oferta é mantida quando qualquer uma das suas duas URLs é válida.
+- **Pinpoint** — publicações demo semeadas (o vídeo demo duplicado) são descartadas.
+- **Canais do Telegram** — uma primeira linha com vários `|` não é mais lida como `Título | Empresa`, e mais palavras de cargo são reconhecidas. O `LOCATIONISH_RE` com suporte a cirílico do fork permanece intocado (ADR-0002).
+- **Workday** — um 422/401/403 na primeira página é sondado uma vez; a página de manutenção ou o redirecionamento de outage do Workday marca o board como morto (colocado em quarentena no modo estrito). As requisições CXS e de detalhe agora recusam redirecionamentos.
+- **BambooHR** — um `/careers/list` redirecionado é triado pelo feed público de embed: vazio significa um board ativo sem vagas, qualquer outra coisa é um board morto.
+- **Heckler & Koch / Rheinmetall** — um `heckler-koch.com` / `rheinmetall.com` nu é reescrito para `www.` para que o transporte sem redirecionamento ainda o alcance. **Ashby** recusa redirecionamentos. **beesite** ritma páginas com o `delay()` cancelável.
+- **Filtros de título dobram acentos dos dois lados** (scanners EN e RU), então `Développeur` é pego por um negativo `developpeur`.
+- **A correspondência de empresa do cooldown entende nomes não latinos e formas corporativas** (marcadores CJK/coreanos, İ turco com ponto). Nomes CJK antes colapsavam para uma chave vazia e nunca davam match.
+- **`location_filter.strict: true`** falha fechado em uma localização vazia quando uma lista de permitidos ou bloqueados está configurada.
+- **Liveness** — novas verificações de API pública para embeds do Greenhouse (`gh_jid`), Arbeitsagentur e We Work Remotely; SmartRecruiters agora decide pela flag `active` da vaga.
+- **PeopleSoft** — uma ação de formulário relativa "carregar mais" é resolvida ao lado da página de busca, não na raiz da origem.
+
+### Notas
+
+- Testes **3210 → 3481**. Novas suítes: `sources-eploy`, `sources-hiringroom`, `sources-peoplesoft`, `sources-prevueaps`, `title-fit`, `fetch-timeout-dns-guard`, `cooldown-company-match-unicode`, `liveness-api-more-rungs`, `ru-scanner-title-accent-fold`.
+- **Não portado**, com motivos: bordas de palavra Unicode no filtro de localização (o filtro do web-ui é por substring, então não há borda a corrigir — um port completo e deliberado do filtro de localização do pai fica como trabalho futuro); dedup de requisição por mesmo título (web-ui dedupa só por URL); avisos de repostagem de agregadores, escopo de domínio em blacklist, recibos de zero-não-verificado e a migração do `scan-runs.tsv` (web-ui não tem nenhuma dessas superfícies); o split por facetas e as tags de truncamento do Workday (web-ui busca uma página por board); `enrichDate` do BambooHR (sem hook de enriquecimento de data); a refatoração do sleep do `_http.mjs` do pai em ~20 provedores (web-ui já usa um `delay` cancelável compartilhado); updater, doctor, PDF, tracker/merge-tracker, `validate-profile`, `discover-new-companies`, o app Next.js de `web/`, bots do GitHub — exclusivos de CLI ou repassados.
+- Mantido deliberadamente diferente do pai: Heckler & Koch / Rheinmetall permanecem somente HTTPS (sem upgrade `http→https`); um board morto do Workday em um scan normal ainda retorna `[]` em vez de falhar o scan.
+
 ## [1.237.1] — 2026-09-22
 
 **Patch de uma verificação de QA externa sobre a v1.237.0.** A correção do Jobstreet foi confirmada de fora pela primeira vez: nos hosts AU, NZ, HK e MY, a forma antiga `/id/job/<id>` retorna um 404 limpo e a nova `/job/<id>` alcança uma rota real protegida por Cloudflare; em `id.jobstreet.com` vale o inverso. Os links perdidos eram reais. Dois defeitos foram encontrados, ambos no que a própria v1.237.0 havia adicionado.

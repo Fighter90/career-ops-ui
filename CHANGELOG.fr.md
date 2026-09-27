@@ -10,6 +10,41 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.238.0] — 2026-09-27
+
+**Parité avec le parent — career-ops `main` @ `993085ce` (VERSION 1.34.0, 182 commits depuis `de2224a9`). Quatre nouvelles sources, dix correctifs de fournisseurs reflétés, une faille SSRF à l'échelle du scanner refermée, et un indice gratuit d'adéquation de titre sur les résultats de scan.**
+
+### Ajouté
+
+- **Quatre nouvelles sources — 94 → 98 (93 EN + 5 RU), 89 → 93 adaptateurs EN.**
+  - **Eploy** (`provider: eploy`) — lit le sitemap `/live-jobs.xml` du tenant sur n'importe quel hôte de marque (HTTPS uniquement ; les littéraux IP, `localhost`, `*.local`, `*.internal` et les hôtes à label unique sont refusés). Une réponse qui n'est pas un sitemap (une page de connexion) lève une erreur au lieu de passer pour zéro offre. Les pages de détail sont opt-in (`eploy: { fetchDetails, detailLimit }`).
+  - **HiringRoom** (`*.hiringroom.com`) — JSON-LD `/portal/jobs` en premier, cartes héritées de `/jobs` en repli ; les URLs d'offre en `http://` du payload sont reconstruites en HTTPS.
+  - **PeopleSoft Candidate Gateway** — détecté par le chemin `/psc/{site}/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL` sur n'importe quel hôte de marque. Il suit lui-même les redirections de session de même origine de PeopleSoft (10 sauts maximum, chaque saut réancré à l'origine du tenant et vérifié contre les adresses privées), rejoue le formulaire « charger plus » et marque un parcours partiel (`peoplesoftIncomplete`) plutôt que de le signaler comme complet.
+  - **PrevueAPS** (`*.prevueaps.ca`) — résout l'id du site depuis la page d'offres, puis lit l'API JSON.
+- **Indice d'adéquation de titre sur les lignes de `#/scan`.** Chaque résultat porte une puce d'adéquation approximative **forte / apparentée / faible** comparant le titre de l'offre aux rôles cibles dans `config/profile.yml` (`target_roles.primary` + noms d'archétype). C'est une estimation gratuite par mot-clé : elle ne filtre, ne réordonne ni ne change jamais les décomptes, et l'infobulle le précise. Calculé au moment où les résultats sont servis, donc une modification du profil apparaît au rafraîchissement suivant. Traduit ×17. Reflète le #3261 du parent.
+
+### Corrigé
+
+- **Sécurité — la garde contre le DNS-rebinding ne s'exécutait jamais lors d'un scan réel.** `http-json.mjs` ne vérifiait les adresses résolues que lorsqu'il recevait le `fetch` global nu, mais les deux scanners injectent `makeTimeoutFetch()`, si bien que tout scan contournait la garde. Une source pointant vers un nom d'hôte résolvant vers `10.x` ou `127.0.0.1` était bien récupérée. La garde s'exécute désormais à l'intérieur de `makeTimeoutFetch` lui-même, mise en course avec le timeout du scan pour qu'un résolveur bloqué ne puisse pas figer un scan. Trouvé lors de la revue de cette version.
+- **Sécurité — les adresses IPv6 intégrant une adresse IPv4 n'étaient pas traitées comme privées.** `http://[::ffff:127.0.0.1]/` (que le parseur d'URL réécrit en `[::ffff:7f00:1]`) passait `isValidJobUrl`. Les formes pointée et hexadécimale de `::ffff:a.b.c.d` / `::a.b.c.d` sont désormais toutes deux classées d'après l'adresse intégrée. Du `_ip-guard.mjs` du parent.
+- **Rippling est passé à l'API de board v2** (`ats.rippling.com/api/v2/board/<slug>/jobs`), avec pagination (10 pages par défaut, 50 maximum), un verrou d'hôte sur les liens d'offre et une validation du slug. Une URL d'API collée produit désormais son vrai slug au lieu de `api`.
+- **Recruitee** — les offres multi-localisation listent chaque lieu (`A · B`), les offres de démonstration `(Sample)` et les lignes sans titre sont écartées, et une offre est conservée dès que l'une de ses deux URLs est valide.
+- **Pinpoint** — les offres de démonstration préremplies (la vidéo de démo dupliquée) sont écartées.
+- **Canaux Telegram** — une première ligne comportant plusieurs `|` n'est plus lue comme `Titre | Entreprise`, et davantage de mots de fonction sont reconnus. Le `LOCATIONISH_RE` sensible au cyrillique du fork reste intact (ADR-0002).
+- **Workday** — un 422/401/403 sur la première page est sondé une fois ; la page de maintenance ou la redirection de panne de Workday marque le board comme mort (mis en quarantaine en mode strict). Les requêtes CXS et de détail refusent désormais les redirections.
+- **BambooHR** — un `/careers/list` redirigé est trié via le flux d'embed public : vide signifie un board actif sans offre, tout le reste est un board mort.
+- **Heckler & Koch / Rheinmetall** — un `heckler-koch.com` / `rheinmetall.com` nu est réécrit en `www.` pour que le transport sans redirection l'atteigne quand même. **Ashby** refuse les redirections. **beesite** cadence les pages avec le `delay()` annulable.
+- **Les filtres de titre replient les accents des deux côtés** (scanners EN et RU), si bien que `Développeur` est capté par un négatif `developpeur`.
+- **La correspondance d'entreprise du cooldown comprend les noms non latins et les formes juridiques** (marqueurs CJK/coréens, İ turc pointé). Les noms CJK s'effondraient auparavant en une clé vide et ne correspondaient jamais.
+- **`location_filter.strict: true`** échoue de manière fermée sur une localisation vide lorsqu'une liste d'autorisation ou de blocage est définie.
+- **Liveness** — nouvelles vérifications d'API publique pour les embeds Greenhouse (`gh_jid`), Arbeitsagentur et We Work Remotely ; SmartRecruiters décide désormais d'après le drapeau `active` de l'offre.
+- **PeopleSoft** — une action de formulaire relative « charger plus » se résout à côté de la page de recherche, pas à la racine de l'origine.
+
+### Notes
+
+- Tests **3210 → 3481**. Nouvelles suites : `sources-eploy`, `sources-hiringroom`, `sources-peoplesoft`, `sources-prevueaps`, `title-fit`, `fetch-timeout-dns-guard`, `cooldown-company-match-unicode`, `liveness-api-more-rungs`, `ru-scanner-title-accent-fold`.
+- **Non porté**, avec les raisons : bords de mots Unicode du filtre de localisation (le filtre de web-ui est fondé sur une sous-chaîne, donc il n'y a pas de bord à corriger — un portage complet et délibéré du filtre de localisation du parent reste un travail futur) ; déduplication de réquisition par titre identique (web-ui dédoublonne uniquement par URL) ; avertissements de republication d'agrégateurs, portée de domaines en liste noire, reçus de zéro-non-vérifié et migration de `scan-runs.tsv` (web-ui ne possède aucune de ces surfaces) ; le découpage par facettes et les étiquettes de troncature de Workday (web-ui récupère une page par board) ; `enrichDate` de BambooHR (pas de hook d'enrichissement de date) ; le refactoring du sleep de `_http.mjs` du parent sur ~20 fournisseurs (web-ui utilise déjà un `delay` annulable partagé) ; updater, doctor, PDF, tracker/merge-tracker, `validate-profile`, `discover-new-companies`, l'application Next.js de `web/`, les bots GitHub — réservés à la CLI ou relayés.
+- Volontairement gardé différent du parent : Heckler & Koch / Rheinmetall restent HTTPS uniquement (pas de mise à niveau `http→https`) ; un board Workday mort dans un scan normal renvoie toujours `[]` plutôt que de faire échouer le scan.
 
 ## [1.237.1] — 2026-09-22
 

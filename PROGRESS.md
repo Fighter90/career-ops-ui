@@ -8,26 +8,28 @@ Release history belongs in [CHANGELOG.md](CHANGELOG.md), decisions in
 [docs/adr/](docs/adr/), vocabulary in [CONTEXT.md](CONTEXT.md). Anything already
 recoverable from those does **not** belong here.
 
-_Last updated: 2026-09-22 · v1.237.1 shipped and deployed; parent pulled to `de2224a9` (28 upstream commits, docs-only — no web-ui port)_
+_Last updated: 2026-09-27 · v1.238.0 — parent parity @ `993085ce` (VERSION 1.34.0); code + docs done, release in flight_
 
 ---
 
 ## Current state
 
-**Shipped and live: v1.237.1** — a patch from an external QA pass on v1.237.0. Counts
-**94** sources (89 EN + 5 RU) / **89** adapters; tests **3210**. Verified on every
-surface: server + local `1.237.1` / parent `1.33.0`, web-ui 380/380 and parent 924/924
-sha256-identical, resumecraft.ru, cvstart.org (+`/ru/`, book link `ru`→`/ru/`),
-cvstart.ru, sergey-cv.com, chat-proxy, npm, release, wiki. 0 CodeQL / 0 Dependabot,
-0 open PRs.
+**v1.238.0 — parent parity with career-ops `main` @ `993085ce`** (182 commits since
+`de2224a9`). Counts **98** sources (93 EN + 5 RU) / **93** adapters; tests **3481**
+(3478 pass + 3 skipped), Playwright 116/116, e2e smoke + 23/23 comprehensive.
+Four new sources (eploy, hiringroom, peoplesoft, prevueaps), ten mirrored provider
+fixes, the title-fit chip, and one scanner-wide security fix found in this release's
+review: the DNS-rebinding guard in `http-json.mjs` never ran on a real scan (see
+Known issues for the shape).
 
-**Parent:** fork `origin/main` at `de2224a9`, behind `upstream/main` by 0. The
-2026-09-22 pull brought **28 upstream commits that were almost entirely README work**
-(README v2, a Sponsors section, the manifesto wall) — **no new provider and no change to
-any file web-ui mirrors**, so there was nothing to port and no web-ui release was cut.
-The pull did attack **all four** fork divergences at once; three were defended
-untouched, and the Hermes README badge was let go deliberately (see the erosion log in
-ADR-0002).
+**Parent:** fork `origin/main` at `993085ce`, behind `upstream/main` by **0** — it
+already contained upstream `2b9fe7ea`. All four ADR-0002 divergences verified intact
+(`p{L}`×4, `providers/telegram.mjs`, `hermes` in `clis.ts`, `vpFixtureEnv`×9).
+
+**Server deploy (resumecraft.ru) is NOT done from the cloud session:** its egress
+policy blocks `resumecraft.ru` and `api.timeweb.cloud`, and outbound SSH is closed. The
+deploy has to run from a machine with the deploy key, or through a CI workflow holding
+it as a secret.
 
 ## Next step
 
@@ -38,6 +40,16 @@ before any merge.**
 
 ## Known issues
 
+- **A guard keyed on function identity silently stops guarding when the transport is wrapped.**
+  `guardResolvedHost` ran only when `fetchImpl === globalThis.fetch`; the scanners inject
+  `makeTimeoutFetch()`, so from v1.235.0 on no real scan was DNS-checked while every unit
+  test (which passes the global fetch or a stub) looked fine. Fixed in v1.238.0 by running
+  the guard inside the wrapper. When adding a check to the transport, put it at the
+  chokepoint (`makeTimeoutFetch`), not behind an identity test.
+- **Chromium in the cloud sandbox does not trust the egress proxy's CA** → ~44 Playwright
+  failures at once on `ERR_CERT_AUTHORITY_INVALID` (an external font). Environment: import
+  `/root/.ccr/ca-bundle.crt` into `~/.pki/nssdb` with `certutil`. `npm i --no-save playwright@1.56`
+  matches the preinstalled chromium-1194.
 - **Playwright browsers are not pinned to the repo.** A Playwright bump changes the
   chromium build id and the browser suite then fails **116/116** on `hookFailed`, which
   reads like a catastrophic regression and is not one. Fix: `npx playwright install chromium`.

@@ -959,6 +959,10 @@ window.__I18N_DICT_DE = {
   'twoPager.saveFailed': "Der Two-Pager konnte nicht gespeichert werden",
   'twoPager.privacyNote': "Wird in der Benutzerschicht Ihres übergeordneten Projekts gespeichert (config/two-pager.yml) — wird nirgendwohin gesendet außer an die LLM-Prompts, die Sie ausführen.",
   'scan.fitTip': "Passung zu dem, was Sie wollen",
+  'scan.titleFit.strong': "starke Passung",
+  'scan.titleFit.related': "verwandte Passung",
+  'scan.titleFit.weak': "schwache Passung",
+  'scan.titleFitTip': "Kostenlose Schätzung auf Stichwortebene: Stellentitel vs. Zielrollen Ihres Profils (config/profile.yml). Keine Bewertung — die echte A–F-Passung liefert weiterhin „Bewerten“.",
   // ── Mock-Interview 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "Mock-Interview",
   'mock.title': "Mock-Interview",

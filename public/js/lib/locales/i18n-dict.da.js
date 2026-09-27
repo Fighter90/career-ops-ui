@@ -958,6 +958,10 @@ window.__I18N_DICT_DA = {
   'twoPager.saveFailed': "Kunne ikke gemme two-pageren",
   'twoPager.privacyNote': "Gemmes i det overordnede projekts brugerlag (config/two-pager.yml) — sendes aldrig nogen steder undtagen de LLM-prompts, du selv kører.",
   'scan.fitTip': "Match til det, du ønsker",
+  'scan.titleFit.strong': "stærkt match",
+  'scan.titleFit.related': "relateret match",
+  'scan.titleFit.weak': "svagt match",
+  'scan.titleFitTip': "Gratis estimat på nøgleordsniveau: opslagets titel mod din profils målroller (config/profile.yml). Ikke en evaluering — Evaluer giver stadig den rigtige A–F-score.",
   // ── Mock interview 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "Mock-interview",
   'mock.title': "Mock-interview",

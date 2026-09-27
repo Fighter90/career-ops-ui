@@ -114,6 +114,61 @@ export const meta = {
 // this for status reporting via /#/scan Active Companies card.
 // v1.17.0 — exposed via getLastWorkdayFallback() too so SSE consumers
 // (server/lib/routes/scan.mjs) don't have to rely on ESM live bindings.
+// ── Dead-board detection (parent #4467) ────────────────────────────
+// The CXS API's 422/401/403 bodies carry no marker of their own. Two signals
+// held upstream across repeat passes (1,200-tenant sample, 2026-09):
+//   - 422 + careers page bounces to community.workday.com/maintenance-page
+//     (612 of 614 raw 422s);
+//   - 401/403 + careers page redirects to *.myworkday.com/wday/drs/outage
+//     (a per-board signal: a retired board on a live tenant).
+// A clean careers page leaves the original status untouched.
+const WORKDAY_MAINTENANCE_MARKER = 'community.workday.com/maintenance-page';
+const WORKDAY_OUTAGE_REDIRECT_RE = /^https:\/\/[a-z0-9.-]+\.myworkday\.com\/wday\/drs\/outage(?:[/?]|$)/i;
+const CONFIRMED_DEAD_API_STATUSES = new Set([422, 401, 403]);
+
+/**
+ * The public careers page for a CXS endpoint:
+ *   https://<t>.wdN.myworkdayjobs.com/wday/cxs/<t>/<site>/jobs → https://<t>.wdN.myworkdayjobs.com/<site>
+ * Null when the URL is not a Workday CXS endpoint. Exported for tests.
+ * @param {string} apiUrl
+ */
+export function careersPageFromApi(apiUrl) {
+  try {
+    const u = new URL(apiUrl);
+    if (!u.hostname.toLowerCase().endsWith('.myworkdayjobs.com')) return null;
+    const site = (u.pathname.match(/^\/wday\/cxs\/[^/]+\/([^/]+)\//) || [])[1];
+    return site ? `${u.origin}/${site}` : null;
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * One careers-page fetch under redirect:'manual' (inspects Location, never
+ * follows it). Any failure proves nothing → false.
+ */
+async function confirmDeadViaCareersPage(apiUrl, { fetchImpl, signal }) {
+  const careersUrl = careersPageFromApi(apiUrl);
+  if (!careersUrl) return false;
+  try {
+    const res = await fetchImpl(careersUrl, {
+      method: 'GET',
+      signal,
+      redirect: 'manual',
+      headers: { 'User-Agent': BROWSER_LIKE_USER_AGENT, 'Accept-Language': 'en-US,en;q=0.9' },
+    });
+    if (res.status >= 300 && res.status < 400) {
+      return WORKDAY_OUTAGE_REDIRECT_RE.test(res.headers?.get?.('location') || '');
+    }
+    // The outage URL is boilerplate on every Workday page, so only the
+    // maintenance marker is checked on a body (2xx or error status alike).
+    const body = await res.text().catch(() => '');
+    return typeof body === 'string' && body.includes(WORKDAY_MAINTENANCE_MARKER);
+  } catch {
+    return false;
+  }
+}
+
 export let lastWorkdayFallback = null;
 
 export function getLastWorkdayFallback() {
@@ -151,6 +206,9 @@ export async function fetchWorkday(apiUrl, opts = {}) {
     res = await fetchImpl(apiUrl, {
       method: 'POST',
       signal,
+      // Never follow a 3xx: a server-side redirect could point the request at a
+      // private address after the host check already passed (parent #4080).
+      redirect: 'error',
       headers,
       body: JSON.stringify({
         appliedFacets: {},
@@ -168,10 +226,19 @@ export async function fetchWorkday(apiUrl, opts = {}) {
   }
   if (!res.ok) {
     // 4xx / 5xx — CAPTCHA / tenant gone / WAF / etc. Graceful fallback.
-    const reason = `HTTP ${res.status}`;
+    // A 422/401/403 alone is ambiguous (identical body for a dead board and a
+    // WAF blip), so spend one careers-page fetch on Workday's own dead-board
+    // signals before calling it dead (parent #4467).
+    const confirmedDead = CONFIRMED_DEAD_API_STATUSES.has(res.status)
+      && await confirmDeadViaCareersPage(apiUrl, { fetchImpl, signal });
+    const reason = confirmedDead
+      ? `HTTP ${res.status} — confirmed dead (Workday maintenance/outage page)`
+      : `HTTP ${res.status}`;
     if (strict) {
       const err = new Error(`Workday: ${reason} (${apiUrl})`);
-      err.status = res.status;
+      // Relabel a confirmed-dead board as a synthetic 404 so the scanner's
+      // 404/410 quarantine (scan-quarantine.mjs) picks it up.
+      err.status = confirmedDead ? 404 : res.status;
       err.fallback = true;
       throw err;
     }
@@ -224,7 +291,7 @@ async function resolvePlaceholders(jobs, raw, apiUrl, { fetchImpl, signal, heade
     spent += 1;
     let detail;
     try {
-      const res = await fetchImpl(`${cxsBase}${path}`, { method: 'GET', signal, headers: detailHeaders });
+      const res = await fetchImpl(`${cxsBase}${path}`, { method: 'GET', signal, redirect: 'error', headers: detailHeaders });
       if (!res.ok) continue;
       detail = await res.json();
     } catch {

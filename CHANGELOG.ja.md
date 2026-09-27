@@ -8,6 +8,42 @@
 
 ---
 
+## [1.238.0] — 2026-09-27
+
+**親パリティ — career-ops `main` @ `993085ce`(`VERSION` は 1.34.0、`de2224a9` から 182 コミット)。新規ソース 4 件、ミラーされたプロバイダー修正 10 件、スキャナー全体にわたる SSRF の穴を 1 件塞ぎ、スキャン結果に無料のタイトル適合ヒントを追加しました。**
+
+### 追加
+
+- **新しいソース 4 件 — 94 → 98(93 EN + 5 RU)、89 → 93 EN アダプター。**
+  - **Eploy**(`provider: eploy`)— ブランド化された任意のホスト上でテナントの `/live-jobs.xml` サイトマップを読みます(HTTPS のみ。IP リテラル、`localhost`、`*.local`、`*.internal`、単一ラベルのホストは拒否されます)。サイトマップ以外の応答(ログインページ)はゼロ件として通すのではなく throw します。詳細ページの取得はオプトインです(`eploy: { fetchDetails, detailLimit }`)。
+  - **HiringRoom**(`*.hiringroom.com`)— まず JSON-LD の `/portal/jobs` を読み、旧形式の `/jobs` カードをフォールバックとします。ペイロード内の `http://` の求人 URL は HTTPS に組み直します。
+  - **PeopleSoft Candidate Gateway** — ブランド化された任意のホスト上の `/psc/{site}/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL` パスで検出します。PeopleSoft 自身の同一オリジンセッションリダイレクトを自前で追跡し(最大 10 ホップ、各ホップをテナントのオリジンに再固定してプライベートアドレスと照合)、「さらに読み込む」フォームを再生し、完了として報告する代わりに部分的な走査であることを示します(`peoplesoftIncomplete`)。
+  - **PrevueAPS**(`*.prevueaps.ca`)— 求人ページからサイト ID を解決し、その後 JSON API を読みます。
+- **`#/scan` の行にタイトル適合ヒントを追加。** 各結果は、求人タイトルを `config/profile.yml` のターゲットロール(`target_roles.primary` とアーキタイプ名)と比較した、大まかな**strong / related / weak** の適合チップを持ちます。これは無料のキーワード推定であり、結果を絞り込んだり並べ替えたり件数を変えたりすることは一切なく、ツールチップもそう説明します。結果がサーブされる時点で計算されるため、プロフィールを編集すれば次回の更新に反映されます。17 ロケールに翻訳済み。親 #3261 のミラー。
+
+### 修正
+
+- **セキュリティ — DNS リバインディングガードが実際のスキャンでは一度も走っていませんでした。** `http-json.mjs` は素の全域 `fetch` を渡されたときにしか解決済みアドレスをチェックしていませんでしたが、両方のスキャナーは `makeTimeoutFetch()` を注入しているため、すべてのスキャンでこのチェックが飛ばされていました。`10.x` や `127.0.0.1` に解決されるホスト名を指したソースはそのまま取得されていました。ガードは今や `makeTimeoutFetch` 自身の内側で走り、スキャンのタイムアウトと競走させることで、停止したリゾルバーがスキャンをハングさせないようにしています。本リリースのレビューで発見。
+- **セキュリティ — IPv4 アドレスを埋め込んだ IPv6 アドレスがプライベートとして扱われていませんでした。** `http://[::ffff:127.0.0.1]/`(URL パーサーが `[::ffff:7f00:1]` へ書き換える)は `isValidJobUrl` を通過していました。`::ffff:a.b.c.d` / `::a.b.c.d` のドット形式と 16 進形式の両方が、今は埋め込まれたアドレスによって分類されます。親の `_ip-guard.mjs`。
+- **Rippling が v2 ボード API へ移行**(`ats.rippling.com/api/v2/board/<slug>/jobs`)。ページネーション(デフォルト 10 ページ、最大 50)、求人リンクへのホスト固定、slug 検証つきです。貼り付けられた API URL からは今や `api` ではなく実際の slug が得られます。
+- **Recruitee** — 複数拠点の求人はすべての場所を列挙し(`A · B`)、`(Sample)` のデモ求人とタイトルなしの行は落とし、2 つの URL のいずれかが有効であれば求人は残されます。
+- **Pinpoint** — 種としてのデモ求人(重複したデモ動画)を落とします。
+- **Telegram チャンネル** — `|` を複数含む先頭行はもはや `タイトル | 会社名` として読まれず、より多くの職種名を認識します。フォークのキリル文字対応 `LOCATIONISH_RE` には手を加えていません(ADR-0002)。
+- **Workday** — 1 ページ目の 422/401/403 は 1 回だけ試行し、Workday のメンテナンスページや障害リダイレクトはボードを死んでいると判定します(strict モードでは検疫)。CXS リクエストと詳細リクエストは今やリダイレクトを拒否します。
+- **BambooHR** — リダイレクトされた `/careers/list` は公開の埋め込みフィードで判定します。空なら求人のない稼働中ボード、それ以外は死んだボードです。
+- **Heckler & Koch / Rheinmetall** — 素の `heckler-koch.com` / `rheinmetall.com` は `www.` に書き換えられ、リダイレクトなしのトランスポートでも到達できるようになりました。**Ashby** はリダイレクトを拒否します。**beesite** はキャンセル可能な `delay()` でページ送りの間隔を取ります。
+- **タイトルフィルターが両側でアクセント記号を畳み込みます**(EN・RU 両スキャナー)。`Développeur` が `developpeur` という否定語に捕捉されるようになりました。
+- **クールダウンの会社名照合が非ラテン文字の社名と法人格表記を理解します**(CJK/韓国語のマーカー、トルコ語のドット付き İ)。CJK の社名は以前は空のキーに潰れて一致しませんでした。
+- **`location_filter.strict: true`** は許可リストまたはブロックリストが設定されている場合、所在地が空だとフェイルクローズします。
+- **Liveness** — Greenhouse の埋め込み(`gh_jid`)、Arbeitsagentur、We Work Remotely 向けの新しい公開 API チェック。SmartRecruiters は求人の `active` フラグで判定するようになりました。
+- **PeopleSoft** — 相対パスの「さらに読み込む」フォームアクションは、オリジンのルートではなく検索ページを基準に解決されます。
+
+### 備考
+
+- テスト **3210 → 3481**。新規スイート:`sources-eploy`、`sources-hiringroom`、`sources-peoplesoft`、`sources-prevueaps`、`title-fit`、`fetch-timeout-dns-guard`、`cooldown-company-match-unicode`、`liveness-api-more-rungs`、`ru-scanner-title-accent-fold`。
+- **移植しなかったもの**、理由つき:所在地フィルターの Unicode 単語境界(web-ui のフィルターは部分文字列ベースなので、直す境界そのものが存在しません——親の所在地フィルターを完全に移植する作業は将来の課題です)、同一タイトル求人の重複排除(web-ui は URL のみで重複排除します)、アグリゲーターの再投稿警告、ブラックリストドメインのスコープ、未検証ゼロ件のレシート、`scan-runs.tsv` の移行(web-ui にはこれらの面がいずれもありません)、Workday のファセット分割と切り詰めタグ(web-ui はボードごとに 1 ページだけ取得します)、BambooHR の `enrichDate`(日付エンリッチのフックがありません)、~20 個のプロバイダーにまたがる親の `_http.mjs` の sleep リファクタ(web-ui はすでに共有のキャンセル可能な `delay` を使っています)、updater、doctor、PDF、tracker/merge-tracker、`validate-profile`、`discover-new-companies`、`web/` の Next.js アプリ、GitHub ボット — CLI 専用またはリレー対象です。
+- 親と意図的に異なる点:Heckler & Koch / Rheinmetall は HTTPS のみのまま(`http→https` への昇格なし)。通常のスキャンで死んだ Workday ボードは、スキャンを失敗させるのではなく引き続き `[]` を返します。
+
 ## [1.237.1] — 2026-09-22
 
 **v1.237.0 に対する外部 QA パスからのパッチ。** Jobstreet の修正は今回初めて外部から確認されました:AU、NZ、HK、MY の各ホストでは、旧形式の `/id/job/<id>` がきれいな 404 を返し、新形式の `/job/<id>` は実際に Cloudflare で保護されたルートに到達します。`id.jobstreet.com` ではその逆が成り立ちます。失われていたリンクは実在するものでした。欠陥が 2 件見つかり、いずれも v1.237.0 自体が追加した部分にありました。

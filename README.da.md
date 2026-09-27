@@ -7,17 +7,19 @@
 
 _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-3210%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3481%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.237.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.237.1)
+[![release](https://img.shields.io/badge/release-v1.238.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.238.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Seneste udgivelse — v1.237.1** — **Patch fra et eksternt QA-gennemløb.** Jobstreet-rettelsen blev bekræftet udefra: `/id/job/<id>` returnerer en ren 404 på AU/NZ/HK/MY-værterne, og `/job/<id>` når en ægte beskyttet rute — de mistede links var ægte. To defekter i det, v1.237.0 tilføjede: **bog-linket** lokaliserede sin label, men ikke sit mål, så den russiske label førte til den engelske udgave — en `data-i18n-href`-applier sender nu `ru` til den russiske bog; og **SEEK migrerer værter** (`www.seek.com.au` → `au.seek.com`), så `au.seek.com` og `nz.seek.com` er nu på allowlisten, før API-stien begynder at redirecte ind i vores `redirect:'error'`-transport. Antal uændret på **94** kilder. **3210 test · 116 browser.**
+> **🆕 Seneste udgivelse — v1.238.0** — **Forældre-paritet med career-ops 1.34.0: fire nye kilder (Eploy, HiringRoom, PeopleSoft Candidate Gateway, PrevueAPS → 98), ti spejlede leverandørrettelser, og et scanner-bredt SSRF-hul lukket** — DNS-rebinding-vagten kørte aldrig på et rigtigt scan, fordi scannerne injicerer en timeout-wrapper i stedet for den bare `fetch`; den kører nu inde i denne wrapper. Rippling er flyttet til sit v2-board-API, Recruitee samler multi-lokations-tilbud og dropper demo-opslag, Workday og BambooHR skelner døde boards fra tomme, og `#/scan`-rækker bærer et gratis **strong / related / weak fit**-hint mod din profils målroller. **3481 test · 116 browser.**
+>
+> **Tidligere — v1.237.1** — **Patch fra et eksternt QA-gennemløb.** Jobstreet-rettelsen blev bekræftet udefra: `/id/job/<id>` returnerer en ren 404 på AU/NZ/HK/MY-værterne, og `/job/<id>` når en ægte beskyttet rute — de mistede links var ægte. To defekter i det, v1.237.0 tilføjede: **bog-linket** lokaliserede sin label, men ikke sit mål, så den russiske label førte til den engelske udgave — en `data-i18n-href`-applier sender nu `ru` til den russiske bog; og **SEEK migrerer værter** (`www.seek.com.au` → `au.seek.com`), så `au.seek.com` og `nz.seek.com` er nu på allowlisten, før API-stien begynder at redirecte ind i vores `redirect:'error'`-transport. Antal uændret på **94** kilder. **3210 test · 116 browser.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -682,7 +684,7 @@ genudlede, genbeslutte og genødelægge de samme ting.
 
 | Fil | Hvad det er | Læs den, når |
 |---|---|---|
-| **[`CONTEXT.md`](CONTEXT.md)** | Domæneordbog: ét godkendt navn pr. begreb, med de afviste varianter markeret *må ikke bruges*. | **Først.** Den afgør de forvirringer, dette repository rent faktisk betaler for — `source` vs. `adapter` (94 vs. 89, og hvorfor begge har ret), `mirror` vs. `relay`, `telegram` vs. `telegram-channel`. |
+| **[`CONTEXT.md`](CONTEXT.md)** | Domæneordbog: ét godkendt navn pr. begreb, med de afviste varianter markeret *må ikke bruges*. | **Først.** Den afgør de forvirringer, dette repository rent faktisk betaler for — `source` vs. `adapter` (98 vs. 93, og hvorfor begge har ret), `mirror` vs. `relay`, `telegram` vs. `telegram-channel`. |
 | **[`PROGRESS.md`](PROGRESS.md)** | Arbejdstilstand: hvad der er gjort, næste skridt, kendte problemer og **opgivne tilgange**. | Ved starten af enhver session. Git viser, hvad der er ændret; denne fil siger, hvor arbejdet står, og hvad der allerede er forsøgt og forkastet. |
 | **[`docs/adr/`](docs/adr/)** | Nummererede beslutningsprotokoller — kontekst, beslutning, konsekvenser, og hvad der ville få os til at genoverveje. | Før du ændrer noget, en protokol dækker. Det er protokollen, der bestemmer, ikke den aktuelle udgivelse. |
 | **[`CLAUDE.md`](CLAUDE.md)** | Et ét-skærms-indeks, der peger på de tre ovenfor. | Automatisk, af agenten. Bevidst *ikke* en videnbase — en lang en bliver skimmet og derefter ignoreret. |

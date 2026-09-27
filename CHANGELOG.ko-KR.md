@@ -8,6 +8,42 @@
 
 ---
 
+## [1.238.0] — 2026-09-27
+
+**상위 동등성 — career-ops `main` @ `993085ce`(VERSION 1.34.0, `de2224a9` 이후 182개 커밋). 새로운 소스 4개, 미러링된 프로바이더 수정 10건, 스캐너 전반의 SSRF 허점 하나를 막았고, 스캔 결과에 무료 타이틀 적합도 힌트를 추가했습니다.**
+
+### 추가
+
+- **새로운 소스 4개 — 94 → 98(93 EN + 5 RU), 89 → 93 EN 어댑터.**
+  - **Eploy**(`provider: eploy`) — 브랜드화된 임의의 호스트에서 테넌트의 `/live-jobs.xml` 사이트맵을 읽습니다(HTTPS 전용; IP 리터럴, `localhost`, `*.local`, `*.internal`, 단일 라벨 호스트는 거부됩니다). 사이트맵이 아닌 응답(로그인 페이지)은 0건으로 통과시키지 않고 예외를 던집니다. 상세 페이지 조회는 옵트인입니다(`eploy: { fetchDetails, detailLimit }`).
+  - **HiringRoom**(`*.hiringroom.com`) — 먼저 JSON-LD `/portal/jobs`를 읽고, 레거시 `/jobs` 카드를 폴백으로 사용합니다. 페이로드 안의 `http://` 공고 URL은 HTTPS로 재구성합니다.
+  - **PeopleSoft Candidate Gateway** — 브랜드화된 임의의 호스트에서 `/psc/{site}/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL` 경로로 감지합니다. PeopleSoft 자체의 동일 출처 세션 리다이렉트를 직접 따라가며(최대 10홉, 각 홉을 테넌트 오리진에 다시 고정하고 사설 주소와 대조), "더 보기" 폼을 재현하고, 완료로 보고하는 대신 부분 순회임을 표시합니다(`peoplesoftIncomplete`).
+  - **PrevueAPS**(`*.prevueaps.ca`) — 공고 페이지에서 사이트 ID를 알아낸 뒤 JSON API를 읽습니다.
+- **`#/scan` 행에 타이틀 적합도 힌트가 추가되었습니다.** 각 결과는 공고 제목을 `config/profile.yml`의 타깃 역할(`target_roles.primary`와 아키타입 이름)과 비교한 대략적인 **strong / related / weak** 적합도 칩을 가집니다. 이는 무료 키워드 추정치로, 결과를 걸러내거나 재정렬하거나 개수를 바꾸는 일은 전혀 없으며 툴팁도 이를 명시합니다. 결과가 서빙될 때 계산되므로 프로필을 편집하면 다음 새로고침에 반영됩니다. 17개 로케일로 번역됨. 상위 저장소 #3261의 미러.
+
+### 수정
+
+- **보안 — DNS 리바인딩 가드가 실제 스캔에서는 한 번도 실행되지 않았습니다.** `http-json.mjs`는 순수한 전역 `fetch`가 전달되었을 때만 해석된 주소를 확인했지만, 두 스캐너 모두 `makeTimeoutFetch()`를 주입하므로 모든 스캔에서 이 검사를 건너뛰고 있었습니다. `10.x`나 `127.0.0.1`로 해석되는 호스트명을 가리키는 소스도 그대로 가져와졌습니다. 이제 가드는 `makeTimeoutFetch` 자체 내부에서 실행되며, 정체된 리졸버가 스캔을 멈춰버리지 않도록 스캔 타임아웃과 경합합니다. 이번 릴리스 리뷰 중 발견.
+- **보안 — IPv4 주소를 내장한 IPv6 주소가 사설 주소로 취급되지 않았습니다.** `http://[::ffff:127.0.0.1]/`(URL 파서가 `[::ffff:7f00:1]`로 다시 씀)는 `isValidJobUrl`을 통과했습니다. `::ffff:a.b.c.d` / `::a.b.c.d`의 점 표기와 16진 표기 모두 이제 내장된 주소로 분류됩니다. 상위 저장소의 `_ip-guard.mjs`.
+- **Rippling이 v2 보드 API로 이동**(`ats.rippling.com/api/v2/board/<slug>/jobs`). 페이지네이션(기본 10페이지, 최대 50), 공고 링크에 대한 호스트 고정, slug 검증 포함. 붙여넣은 API URL에서 이제 `api`가 아니라 실제 slug가 나옵니다.
+- **Recruitee** — 다중 위치 공고는 모든 장소를 나열하고(`A · B`), `(Sample)` 데모 공고와 제목 없는 행은 제거되며, 두 URL 중 하나라도 유효하면 공고가 유지됩니다.
+- **Pinpoint** — 시드로 심어진 데모 공고(중복된 데모 영상)를 제거합니다.
+- **Telegram 채널** — `|`가 여러 개 있는 첫 줄을 더 이상 `제목 | 회사명`으로 읽지 않으며, 더 많은 직무 단어를 인식합니다. 포크의 키릴 문자 대응 `LOCATIONISH_RE`는 그대로입니다(ADR-0002).
+- **Workday** — 첫 페이지의 422/401/403은 한 번만 시도하며, Workday의 점검 페이지나 장애 리다이렉트는 보드를 죽은 것으로 판정합니다(strict 모드에서는 격리됨). CXS 및 상세 요청은 이제 리다이렉트를 거부합니다.
+- **BambooHR** — 리다이렉트된 `/careers/list`는 공개 임베드 피드로 재판정합니다. 비어 있으면 공고가 없는 살아 있는 보드, 그 외에는 죽은 보드입니다.
+- **Heckler & Koch / Rheinmetall** — 그냥 `heckler-koch.com` / `rheinmetall.com`은 `www.`로 재작성되어 리다이렉트 없는 전송 계층으로도 도달할 수 있습니다. **Ashby**는 리다이렉트를 거부합니다. **beesite**는 취소 가능한 `delay()`로 페이지 속도를 조절합니다.
+- **타이틀 필터가 양쪽에서 악센트를 폴딩합니다**(EN, RU 스캐너 모두). `Développeur`가 `developpeur` 부정어에 걸립니다.
+- **쿨다운 회사명 매칭이 비라틴 문자 이름과 법인 형태를 이해합니다**(CJK/한국어 마커, 터키어 점 있는 İ). CJK 이름은 예전에는 빈 키로 뭉개져 절대 매칭되지 않았습니다.
+- **`location_filter.strict: true`**는 허용 목록이나 차단 목록이 설정되어 있을 때 위치가 비어 있으면 폐쇄 실패(fail closed) 처리합니다.
+- **Liveness** — Greenhouse 임베드(`gh_jid`), Arbeitsagentur, We Work Remotely에 대한 새로운 공개 API 검사. SmartRecruiters는 이제 공고의 `active` 플래그로 판정합니다.
+- **PeopleSoft** — 상대 경로의 "더 보기" 폼 액션은 오리진 루트가 아니라 검색 페이지를 기준으로 해석됩니다.
+
+### 참고
+
+- 테스트 **3210 → 3481**. 새 스위트: `sources-eploy`, `sources-hiringroom`, `sources-peoplesoft`, `sources-prevueaps`, `title-fit`, `fetch-timeout-dns-guard`, `cooldown-company-match-unicode`, `liveness-api-more-rungs`, `ru-scanner-title-accent-fold`.
+- **이식하지 않은 것**과 그 이유: 위치 필터의 유니코드 단어 경계(web-ui의 필터는 부분 문자열 기반이라 고칠 경계 자체가 없습니다 — 상위 저장소의 위치 필터를 완전히 이식하는 작업은 향후 과제입니다); 동일 제목 공고 중복 제거(web-ui는 URL로만 중복 제거합니다); 애그리게이터 재게시 경고, 블랙리스트 도메인 범위, 미검증 0건 영수증, `scan-runs.tsv` 마이그레이션(web-ui에는 이런 표면이 전혀 없습니다); Workday 패싯 분할과 잘림 태그(web-ui는 보드당 한 페이지만 가져옵니다); BambooHR `enrichDate`(날짜 보강 훅이 없습니다); 약 20개 프로바이더에 걸친 상위 저장소의 `_http.mjs` sleep 리팩터(web-ui는 이미 공유되는 취소 가능한 `delay`를 사용합니다); updater, doctor, PDF, tracker/merge-tracker, `validate-profile`, `discover-new-companies`, `web/` Next.js 앱, GitHub 봇 — CLI 전용이거나 릴레이 대상입니다.
+- 상위 저장소와 의도적으로 다르게 유지한 것: Heckler & Koch / Rheinmetall은 계속 HTTPS 전용입니다(`http→https` 업그레이드 없음); 일반 스캔에서 죽은 Workday 보드는 스캔을 실패시키는 대신 여전히 `[]`를 반환합니다.
+
 ## [1.237.1] — 2026-09-22
 
 **v1.237.0에 대한 외부 QA 점검에서 나온 패치.** Jobstreet 수정 사항이 외부에서 처음으로 확인되었습니다: AU, NZ, HK, MY 호스트에서는 예전 형식 `/id/job/<id>`가 깔끔한 404를 반환하고 새 형식 `/job/<id>`가 실제 Cloudflare로 보호되는 경로에 도달합니다. `id.jobstreet.com`에서는 그 반대가 성립합니다. 잃어버린 링크는 실재했습니다. 결함 두 건이 발견되었으며, 둘 다 v1.237.0 자체가 추가한 부분에 있었습니다.

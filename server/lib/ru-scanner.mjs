@@ -31,7 +31,7 @@ import { sanitizeTsvField, normalizeScanUrl } from './scan-sanitize.mjs';
 import { normalizeUrl } from './url-key.mjs';
 import { makeTimeoutFetch } from './fetch-timeout.mjs';
 import { saveLastScan } from './en-scanner.mjs';
-import { buildLocationFilter, buildContentFilter, compileKeywordList } from './location-filter.mjs';
+import { buildLocationFilter, buildContentFilter, compileKeyword, compileKeywordList, foldAccents } from './location-filter.mjs';
 import { buildTierFilter } from './classify-tier.mjs';
 import { buildTrustValidator } from './trust-validator.mjs';
 
@@ -176,8 +176,9 @@ export function loadSeenUrls() {
 // v1.76.0 — compile the negative list once (word-boundary matching for short
 // ASCII acronyms, malformed-config guard). Cyrillic negatives have no 2-3 ASCII
 // form, so they fall through to substring matching unchanged.
-function passesNegative(title, negativeMatchers) {
-  const t = (title || '').toLowerCase();
+export function passesNegative(title, negativeMatchers) {
+  // Accent-folded on both sides, like the EN title filter (parent aa453bd8).
+  const t = foldAccents((title || '').toLowerCase());
   return !negativeMatchers.some((m) => m(t));
 }
 
@@ -244,7 +245,7 @@ export async function runRuScan(opts = {}) {
   const locOk = buildLocationFilter(cfg.locationFilter);
   const contentOk = buildContentFilter(cfg.contentFilter);
   const tierOk = buildTierFilter(cfg.skipTiers);
-  const negativeMatchers = compileKeywordList(cfg.negative);
+  const negativeMatchers = compileKeywordList(cfg.negative, (kw) => compileKeyword(foldAccents(kw)));
   const passesAll = (j) => passesNegative(j.title, negativeMatchers)
     && locOk(j.location)
     && tierOk(j.title)

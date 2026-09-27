@@ -6,7 +6,7 @@ they are relevant.
 
 | Read this | When |
 |---|---|
-| [CONTEXT.md](CONTEXT.md) | **first** — domain dictionary. One accepted name per concept. Settles `source` vs `adapter` (94 vs 89), `mirror` vs `relay`, `telegram` vs `telegram-channel`. |
+| [CONTEXT.md](CONTEXT.md) | **first** — domain dictionary. One accepted name per concept. Settles `source` vs `adapter` (98 vs 93), `mirror` vs `relay`, `telegram` vs `telegram-channel`. |
 | [PROGRESS.md](PROGRESS.md) | at session start — current state, next step, known issues, and **abandoned approaches** you should not retry. |
 | [docs/adr/](docs/adr/) | before changing anything the records cover — why a choice was made, and what would make us revisit it. |
 | [docs/sdd/CONVENTIONS.md](docs/sdd/CONVENTIONS.md) | while writing code — module system, routes, sanitizers, i18n, testing. |

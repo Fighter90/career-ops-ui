@@ -18,7 +18,8 @@ export const meta = {
 
 export async function fetchAshby(apiUrl, opts = {}) {
   const { fetchImpl = fetch, signal } = opts; // REVIEW-B3
-  const res = await fetchImpl(apiUrl, { signal, headers: { 'User-Agent': UA, Accept: 'application/json' } });
+  // redirect:'error' — never follow a 3xx off api.ashbyhq.com (SSRF; parent #4080).
+  const res = await fetchImpl(apiUrl, { signal, redirect: 'error', headers: { 'User-Agent': UA, Accept: 'application/json' } });
   if (!res.ok) {
     const err = new Error(`Ashby: HTTP ${res.status} (${apiUrl})`);
     err.status = res.status;

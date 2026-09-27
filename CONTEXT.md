@@ -16,28 +16,28 @@ A term agreed in conversation but not written here will be re-invented next sess
 exporting `meta = { value, label, region, configKey? }`. `server/lib/sources/registry.mjs`
 scans the folder at boot and imports every `*.mjs`, so dropping in a valid file
 registers it with no registry edit. Drives `GET /api/scan/sources` and the `#/scan`
-Source dropdown. **Count: 94 (89 `region: 'en'` + 5 `region: 'ru'`).**
+Source dropdown. **Count: 98 (93 `region: 'en'` + 5 `region: 'ru'`).**
 
 **adapter** — an entry in the **fetch-walk registry**: `server/lib/portals/adapters/<slug>.mjs`
 plus an explicit row in `server/lib/portals/registry.mjs::ALL_ADAPTERS`. Implements
 `matches(company)` and `buildEndpoint(company)` (**string or null, never an object**)
-and performs the HTTP fetch/parse walk over `tracked_companies:`. **Count: 89 — EN only.**
+and performs the HTTP fetch/parse walk over `tracked_companies:`. **Count: 93 — EN only.**
 
 **The counts differ on purpose and both are correct.** Exactly five sources have no
 adapter: `geekjob`, `getmatch`, `habr-career`, `hh.ru`, `trudvsem` — the RU five, which
 are dispatched by `RU_DISPATCH` in `server/lib/ru-scanner.mjs` instead of walking
 company boards. So:
 
-> **94 sources = 89 EN + 5 RU · 89 adapters = the EN sources only · every adapter has a source, five sources have no adapter.**
+> **98 sources = 93 EN + 5 RU · 93 adapters = the EN sources only · every adapter has a source, five sources have no adapter.**
 
 - **Do not use** "provider" for either of these when writing web-ui code — in this
   repo `provider` means an LLM provider (`server/lib/llm-dispatch.mjs`,
   `GET /api/status/providers`). The **parent** project calls its scrapers
   `providers/*.mjs`; when porting, a parent *provider* becomes a web-ui *source*
   **and**, for EN boards, also an *adapter*.
-- **Do not use** "94 adapters" — that number is sources. The public "N adapters"
+- **Do not use** "98 adapters" — that number is sources. The public "N adapters"
   phrasing in README badges and the wiki is the **sources** total kept for historical
-  continuity; inside the code, `ALL_ADAPTERS.length === 89`.
+  continuity; inside the code, `ALL_ADAPTERS.length === 93`.
 - **Do not use** "portal" and "board" interchangeably in new prose: a **job board**
   is the third-party site; a **portal entry** is our row in `tracked_companies:`.
 

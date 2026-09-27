@@ -102,6 +102,24 @@ test('hecklerkoch: list URL is host-pinned; defaults to the Stellenangebote list
   assert.equal(hkResolveListUrl({ careers_url: 'http://www.heckler-koch.com/de/Karriere' }), null); // https only
 });
 
+// Parent #4080 follow-up: the apex 301s to www; with redirect:'error' as the
+// transport default it has to be pinned, not followed.
+test('hecklerkoch: resolveListUrl pins the apex host to www, rejects non-http schemes', () => {
+  assert.equal(hkResolveListUrl({ api: 'https://heckler-koch.com/de/Karriere/Stellenangebote' }),
+    'https://www.heckler-koch.com/de/Karriere/Stellenangebote');
+  assert.equal(hkResolveListUrl({ careers_url: 'https://HECKLER-KOCH.com/en/Career' }),
+    'https://www.heckler-koch.com/de/Karriere/Stellenangebote');
+  assert.equal(hkResolveListUrl({ api: 'ftp://www.heckler-koch.com/de/Karriere/Stellenangebote' }), null);
+});
+
+test('rheinmetall: resolveListUrl pins the apex host to www, rejects non-http schemes', () => {
+  assert.equal(rhmResolveListUrl({ api: 'https://rheinmetall.com/en/career/vacancies' }),
+    'https://www.rheinmetall.com/en/career/vacancies');
+  assert.equal(rhmResolveListUrl({ careers_url: 'https://rheinmetall.com/de/career/vacancies/' }),
+    'https://www.rheinmetall.com/de/career/vacancies');
+  assert.equal(rhmResolveListUrl({ api: 'ftp://www.rheinmetall.com/en/career/vacancies' }), null);
+});
+
 test('hecklerkoch: parseListing anchors on jobposting/{hash} and decodes titles', () => {
   const rows = parseListing(hkHtml);
   assert.equal(rows.length, 2);

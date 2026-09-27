@@ -97,3 +97,11 @@ test('NO KEY IS NOT A KEY — non-http / placeholder / junk → ""', () => {
   assert.equal(normalizeUrl(undefined), '');
   assert.equal(normalizeUrl(42), '');
 });
+
+// Parent parity, career-ops @ c1fa0ab7 (#4072, url-key's own suite): the two
+// cases web-ui's suite did not yet pin.
+test('query order does not matter, and the key is idempotent', () => {
+  assert.equal(normalizeUrl('https://x.com/j?b=2&a=1'), normalizeUrl('https://x.com/j?a=1&b=2'));
+  const once = normalizeUrl('https://X.com/a/?utm_source=y');
+  assert.equal(once, normalizeUrl(once));
+});

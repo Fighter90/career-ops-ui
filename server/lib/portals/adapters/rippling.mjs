@@ -3,8 +3,8 @@
  *
  * Detects a Rippling tenant from a `careers_url` whose host is `ats.rippling.com`
  * (e.g. `https://ats.rippling.com/<slug>/jobs`), or from an explicit
- * `provider: rippling`. The board API endpoint is on a DIFFERENT host:
- *   https://api.rippling.com/platform/api/ats/v1/board/<slug>/jobs
+ * `provider: rippling`. The v2 board API is same-origin (parent #4353):
+ *   https://ats.rippling.com/api/v2/board/<slug>/jobs?page=0&pageSize=1000
  *
  * The fetch + normalization lives in server/lib/sources/rippling.mjs.
  */
