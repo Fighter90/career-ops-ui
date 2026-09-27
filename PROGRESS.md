@@ -39,8 +39,8 @@ Ubuntu 26.04). Done:
 1. the user generated a passphrase-less key `careerops-ci` locally (private half stays with them);
    its public half is registered in Timeweb (ssh-key id **789655**) and attached to server 8801467;
 2. `.github/workflows/deploy.yml` added — manual `workflow_dispatch`, `mode=recon` (read-only) or
-   `mode=deploy` (stash, checkout, `npm ci --omit=dev` only when a lockfile changed, restart,
-   `/api/health` version check, automatic rollback), then a public HTTPS check of resumecraft.ru;
+   `mode=deploy` (archive overlay with backup, `npm ci --omit=dev` only when a lockfile changed,
+   restart, `/api/health` version + parentVersion check, automatic rollback), then a public HTTPS check of resumecraft.ru;
 3. the user added `DEPLOY_SSH_KEY` / `DEPLOY_HOST` / `DEPLOY_USER`; recon over ssh works.
 
 Server layout (recon 2026-09-27): parent checkout `/opt/career-ops/src`, web-ui `/opt/career-ops/src/web-ui`,
@@ -48,13 +48,15 @@ both owned by `careerops`; `career-ops-ui.service` (viewer, 127.0.0.1:4317, Cadd
 `hermes-gateway.service` (Telegram bot), `claude-bridge.service` (127.0.0.1:8788, the viewer's
 `HERMES_BASE_URL`), `career-ops-scan`/`career-ops-eval` timers. Earlier deploys **copied files over stale
 checkouts** (web-ui HEAD v1.198.0 with 1.237.1 on disk; parent HEAD 2bb8969 with 1.33.0 on disk), so
-`git status` shows hundreds of modified files that are not hand edits. `mode=deploy` stashes that tree
-first and restores it byte for byte on any failure (verified in a local simulation: success, bad health,
-bad parent ref, bad ui ref).
+`git status` shows hundreds of modified files that are not hand edits. `mode=deploy` therefore does the
+same thing — extracts `git archive <ref>` over each tree, git state untouched — after a tar backup of every
+file it will overwrite plus the list of files it creates; any failure restores them (simulated locally:
+success, bad health, npm failure, bad parent ref, bad ui ref — each restores byte for byte). The parent
+fork's `origin/main` is `f4f55def` (993085ce + a test-harness-only CodeQL fix), which is what deploys.
 
 Remaining:
 - the user adds `DEPLOY_KNOWN_HOSTS` (the ed25519 line a recon run prints), then run `mode=deploy`
-  with parent `993085ce` + web-ui `v1.238.0`, and tick the resumecraft.ru line in
+  with parent `origin/main` + web-ui `v1.238.0`, and tick the resumecraft.ru line in
   `qa/QA-REGRESSION-PROMPT-v1.238.0.md` §5;
 - Actions logs of this public repo are public: keep recon output to versions and states (the first run
   printed the profile name and which provider keys are set; its logs were deleted);

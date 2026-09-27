@@ -6,10 +6,12 @@ name: Deploy (server)
 #   mode=recon   read-only: prints both git checkouts, versions, the state of
 #                the systemd services (web-ui, Hermes gateway), and /api/health.
 #                Changes nothing on the server. Run this first.
-#   mode=deploy  checks out `parent_ref` in the app dir and `ui_ref` in its
-#                web-ui/ subdir, installs production deps, restarts the
-#                service and verifies /api/health. The pre-deploy tree is
-#                stashed first, and any failure restores it byte for byte.
+#   mode=deploy  extracts `git archive parent_ref` over the app dir and
+#                `git archive ui_ref` over its web-ui/ subdir (the way this
+#                server has always been updated), installs production deps if
+#                a lockfile changed, restarts the service and verifies
+#                /api/health. Every overwritten file is backed up first, and any
+#                failure restores it and removes the files the deploy created.
 #
 # Secrets (Settings → Secrets and variables → Actions):
 #   DEPLOY_SSH_KEY      private half of the passphrase-less `careerops-ci` key
@@ -32,7 +34,7 @@ on:
         default: /opt/career-ops/src
       parent_ref:
         description: 'Parent career-ops ref to deploy (tag, branch or sha)'
-        default: '993085ce'
+        default: origin/main
       ui_ref:
         description: 'web-ui ref to deploy'
         default: v1.238.0
@@ -147,7 +149,8 @@ jobs:
           ui_ver=$(node -p "require('$APP_DIR/web-ui/package.json').version" 2>/dev/null)
           as_owner "$APP_DIR/web-ui" git -C "$APP_DIR/web-ui" fetch --tags --quiet origin
           echo "web-ui on disk vs v$ui_ver: $(as_owner "$APP_DIR/web-ui" git -C "$APP_DIR/web-ui" diff --name-only "v$ui_ver" | wc -l) files differ"
-          as_owner "$APP_DIR/web-ui" git -C "$APP_DIR/web-ui" diff --stat "v$ui_ver" | tail -25
+          echo "files on disk with lines not in v$ui_ver (hand edits?):"
+          as_owner "$APP_DIR/web-ui" git -C "$APP_DIR/web-ui" diff --numstat "v$ui_ver" | awk '$1>0' | head -40
           as_owner "$APP_DIR" git -C "$APP_DIR" fetch --quiet origin
           echo "parent origin/main: $(as_owner "$APP_DIR" git -C "$APP_DIR" log -1 --format='%h %s (%ci)' origin/main)"
           echo "parent VERSION at origin/main: $(as_owner "$APP_DIR" git -C "$APP_DIR" show origin/main:VERSION | head -1)"
@@ -158,7 +161,8 @@ jobs:
             [ "$n" -eq 0 ] && break
           done
           echo "parent on disk best matches $(as_owner "$APP_DIR" git -C "$APP_DIR" log -1 --format='%h %s (%ci)' "$best"): $bestn files differ"
-          as_owner "$APP_DIR" git -C "$APP_DIR" diff --stat "$best" | tail -25
+          echo "files on disk with lines not in that commit (hand edits?):"
+          as_owner "$APP_DIR" git -C "$APP_DIR" diff --numstat "$best" | awk '$1>0' | head -40
           for d in "$APP_DIR" "$APP_DIR/web-ui"; do
             echo "$d: node_modules $([ -d "$d/node_modules" ] && echo present || echo absent)"
           done
@@ -201,10 +205,36 @@ jobs:
           # trip safe.directory and leave root-owned files behind.
           as_owner() { local d=$1; shift; sudo -u "$(stat -c %U "$d")" -H -- "$@"; }
           g() { local d=$1; shift; as_owner "$d" git -C "$d" "$@"; }
-
-          systemctl cat "$SERVICE" >/dev/null || { echo "::error::no systemd unit $SERVICE"; exit 1; }
           lock_sum() { if [ -f "$1/package-lock.json" ]; then sha256sum "$1/package-lock.json" | cut -d' ' -f1; fi; }
-          declare -A prev_head prev_stash prev_lock
+          systemctl cat "$SERVICE" >/dev/null || { echo "::error::no systemd unit $SERVICE"; exit 1; }
+
+          # The server has always been updated by copying a release over the
+          # tree, never by moving HEAD, so do the same: extract `git archive REF`
+          # on top. Git state is untouched apart from fetch, untracked user data
+          # (cv.md, portals.yml, config/profile.yml, data/, reports/, .env) is not
+          # in either archive, and every file the archive would overwrite is
+          # backed up first, together with the list of files it creates.
+          g "$APP_DIR" fetch --tags --quiet origin
+          g "$UI_DIR" fetch --tags --quiet origin
+          g "$APP_DIR" rev-parse --verify --quiet "$PARENT_REF^{commit}" >/dev/null || { echo "::error::unknown parent ref $PARENT_REF"; exit 1; }
+          g "$UI_DIR" rev-parse --verify --quiet "$UI_REF^{commit}" >/dev/null || { echo "::error::unknown web-ui ref $UI_REF"; exit 1; }
+          [ -z "$(g "$APP_DIR" ls-tree -r --name-only "$PARENT_REF" -- web-ui)" ] || { echo "::error::parent ref tracks web-ui/; overlay would clobber the viewer"; exit 1; }
+
+          BK="${BACKUP_ROOT:-/opt/career-ops/backups}/deploy-$(date -u +%Y%m%dT%H%M%SZ)"
+          install -d -m 700 "$BK"
+          declare -A ref=( ["$APP_DIR"]="$PARENT_REF" ["$UI_DIR"]="$UI_REF" ) name=( ["$APP_DIR"]=parent ["$UI_DIR"]=web-ui ) prev_lock
+          for d in "$APP_DIR" "$UI_DIR"; do
+            n=${name[$d]}
+            prev_lock[$d]=$(lock_sum "$d")
+            g "$d" ls-tree -r --name-only "${ref[$d]}" > "$BK/$n.all"
+            : > "$BK/$n.existing"; : > "$BK/$n.created"
+            while IFS= read -r f; do
+              if [ -e "$d/$f" ] || [ -L "$d/$f" ]; then echo "$f" >> "$BK/$n.existing"; else echo "$f" >> "$BK/$n.created"; fi
+            done < "$BK/$n.all"
+            tar -C "$d" -czf "$BK/$n.tgz" -T "$BK/$n.existing"
+            echo "$n: backup of $(wc -l < "$BK/$n.existing") files, $(wc -l < "$BK/$n.created") new → $BK"
+          done
+          { echo "parent_prev=$(head -1 "$APP_DIR/VERSION")"; echo "ui_prev=$(node -p "require('$UI_DIR/package.json').version")"; } > "$BK/versions"
 
           install_deps() {
             for d in "$APP_DIR" "$UI_DIR"; do
@@ -212,7 +242,6 @@ jobs:
               if [ "$(lock_sum "$d")" = "${prev_lock[$d]}" ] && [ -d "$d/node_modules" ]; then
                 echo "$d: lockfile unchanged, keeping node_modules"; continue
               fi
-              [ "$d" = "$APP_DIR" ] && [ ! -d "$d/node_modules" ] && { echo "$d: no node_modules before, not installing"; continue; }
               as_owner "$d" bash -c 'cd "$1" && npm ci --omit=dev --no-audit --no-fund' _ "$d" || return 1
             done
           }
@@ -221,11 +250,12 @@ jobs:
               if body=$(curl -fsS --max-time 5 "http://127.0.0.1:$PORT/api/health" 2>/dev/null); then
                 echo "$body" | node -e '
                   let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{
-                    const h=JSON.parse(s), want=process.argv[1].replace(/^v/,"");
+                    const h=JSON.parse(s), want=process.argv[1].replace(/^v/,""), wantParent=process.argv[2];
                     console.log("ok="+h.ok+" version="+h.version+" parentVersion="+h.parentVersion);
                     if (!h.ok) process.exit(1);
                     if (/^\d+\.\d+\.\d+/.test(want) && h.version!==want) { console.error("version "+h.version+" != "+want); process.exit(1); }
-                  })' "$UI_REF" && return 0
+                    if (wantParent && h.parentVersion!==wantParent) { console.error("parentVersion "+h.parentVersion+" != "+wantParent); process.exit(1); }
+                  })' "$1" "${2:-}" && return 0
                 return 1
               fi
               sleep 2
@@ -236,55 +266,30 @@ jobs:
             # Best effort all the way through: one failing step must not skip the restart.
             trap - ERR
             set +e
-            echo "::error::deploy failed; restoring the pre-deploy tree"
+            echo "::error::deploy failed; restoring the pre-deploy files from $BK"
             for d in "$APP_DIR" "$UI_DIR"; do
-              [ -n "${prev_head[$d]:-}" ] || continue
-              g "$d" checkout -q -f "${prev_head[$d]}"
-              [ -n "${prev_stash[$d]:-}" ] && g "$d" stash apply --quiet "${prev_stash[$d]}"
+              n=${name[$d]}
+              (cd "$d" && xargs -r -d '\n' rm -f -- < "$BK/$n.created")
+              tar -C "$d" -xzpf "$BK/$n.tgz" --same-owner
             done
             install_deps || echo "::error::npm ci failed during rollback"
             systemctl restart "$SERVICE" || echo "::error::restart failed during rollback"
-            UI_REF=skip healthy || echo "::error::service still unhealthy after rollback"
+            healthy skip || echo "::error::service still unhealthy after rollback"
             exit 1
           }
 
-          # Earlier deploys copied release files over stale checkouts, so the
-          # tree differs from HEAD. Stash that exact state (tracked files only —
-          # cv.md, data/, config/ and .env are untracked and never touched) so a
-          # rollback restores it byte for byte.
-          stamp=$(date -u +%Y%m%dT%H%M%SZ)
-          for d in "$APP_DIR" "$UI_DIR"; do
-            g "$d" rev-parse --git-dir >/dev/null
-            prev_lock[$d]=$(lock_sum "$d")
-            head=$(g "$d" rev-parse HEAD)
-            stash=""
-            if [ -n "$(g "$d" status --porcelain --untracked-files=no)" ]; then
-              g "$d" stash push --quiet -m "pre-deploy $stamp" || rollback
-              stash=$(g "$d" rev-parse 'stash@{0}')
-              if [ -n "$(g "$d" status --porcelain --untracked-files=no)" ]; then
-                echo "::error::$d still has tracked changes after stash; not checking out over them"
-                prev_stash[$d]=$stash; prev_head[$d]=$head; rollback
-              fi
-            fi
-            # Registered only once saved: rollback never force-checks-out a tree
-            # whose changes are not in a stash.
-            prev_stash[$d]=$stash
-            prev_head[$d]=$head
-            echo "rollback point $d: HEAD ${prev_head[$d]} stash ${prev_stash[$d]:-none}"
-          done
-
-          # From here on, any failure restores the pre-deploy tree.
+          # From here on, any failure restores the pre-deploy files.
           set -E
           trap rollback ERR
-          g "$APP_DIR" fetch --tags --quiet origin
-          g "$UI_DIR" fetch --tags --quiet origin
-          g "$APP_DIR" checkout -q -f --detach "$PARENT_REF"
-          g "$UI_DIR" checkout -q -f --detach "$UI_REF"
-          echo "parent now $(g "$APP_DIR" log -1 --format='%h %s') VERSION=$(head -1 "$APP_DIR/VERSION" 2>/dev/null)"
-          echo "web-ui now $(g "$UI_DIR" describe --tags --always)"
+          for d in "$APP_DIR" "$UI_DIR"; do
+            g "$d" archive --format=tar "${ref[$d]}" | as_owner "$d" tar -x -C "$d"
+          done
+          want_parent=$(head -1 "$APP_DIR/VERSION" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
+          echo "parent now $(g "$APP_DIR" log -1 --format='%h %s' "$PARENT_REF") VERSION=$want_parent"
+          echo "web-ui now $UI_REF ($(node -p "require('$UI_DIR/package.json').version"))"
           install_deps
           systemctl restart "$SERVICE"
-          healthy
+          healthy "$UI_REF" "$want_parent"
           trap - ERR
           # hermes-agent is not part of this deploy; it only has to still be up
           # and able to reach the viewer's LLM bridge.
@@ -292,7 +297,7 @@ jobs:
             echo "$u: $(systemctl is-active "$u")"
             systemctl is-active --quiet "$u" || echo "::warning::$u is not active"
           done
-          echo "deploy OK"
+          echo "deploy OK — rollback material kept in $BK"
           REMOTE
 
       - name: Public check (HTTPS)
