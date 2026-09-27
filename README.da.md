@@ -7,7 +7,7 @@
 
 _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-3488%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3500%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
@@ -17,7 +17,7 @@ _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santi
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Seneste udgivelse — v1.238.2** — **Rettelse: ingen 502 mere under en scanning** — bag en reverse proxy lukkede serveren inaktive forbindelser efter 5 s, så under en tung scanning svarede proxyen 502 på nogle sideindlæsninger; nu lukker proxyen altid først. **3488 tests · 116 browser.**
+> **🆕 Seneste udgivelse — v1.238.3** — **Hurtigere sider, sikrere logs** — rapportlisten blev læst og parset igen ved hver sideindlæsning (sekunder på en lille server, 30-sekunders timeouts under en scanning); nu caches den. **3500 tests · 116 browser.**
 >
 > **Tidligere — v1.237.1** — **Patch fra et eksternt QA-gennemløb.** Jobstreet-rettelsen blev bekræftet udefra: `/id/job/<id>` returnerer en ren 404 på AU/NZ/HK/MY-værterne, og `/job/<id>` når en ægte beskyttet rute — de mistede links var ægte. To defekter i det, v1.237.0 tilføjede: **bog-linket** lokaliserede sin label, men ikke sit mål, så den russiske label førte til den engelske udgave — en `data-i18n-href`-applier sender nu `ru` til den russiske bog; og **SEEK migrerer værter** (`www.seek.com.au` → `au.seek.com`), så `au.seek.com` og `nz.seek.com` er nu på allowlisten, før API-stien begynder at redirecte ind i vores `redirect:'error'`-transport. Antal uændret på **94** kilder. **3210 test · 116 browser.**
 

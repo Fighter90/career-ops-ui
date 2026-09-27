@@ -9,7 +9,7 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-3488%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3500%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
@@ -19,7 +19,7 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.238.2** — **सुधार: स्कैन के दौरान अब 502 नहीं** — रिवर्स प्रॉक्सी के पीछे सर्वर खाली कनेक्शन 5 सेकंड में बंद कर देता था, इसलिए भारी स्कैन के दौरान प्रॉक्सी कुछ पेज लोड पर 502 लौटाता था; अब कनेक्शन हमेशा पहले प्रॉक्सी बंद करता है। **3488 टेस्ट · 116 ब्राउज़र।**
+> **🆕 नवीनतम रिलीज़ — v1.238.3** — **तेज़ पेज, सुरक्षित लॉग** — रिपोर्ट सूची हर पेज लोड पर दोबारा पढ़ी और पार्स की जाती थी (छोटे सर्वर पर कई सेकंड, स्कैन के दौरान 30 सेकंड के टाइमआउट); अब यह कैश होती है। **3500 टेस्ट · 116 ब्राउज़र।**
 >
 > **पिछला — v1.237.1** — **v1.237.0 पर एक बाहरी QA पास से पैच।** Jobstreet सुधार बाहर से पुष्टि किया गया: `/id/job/<id>`, AU/NZ/HK/MY होस्ट पर एक स्वच्छ 404 लौटाता है और `/job/<id>` एक असली, सुरक्षित रूट तक पहुँचता है — खोई हुई लिंकें असली थीं। v1.237.0 ने जो जोड़ा था उसमें दो दोष: **किताब का लिंक** ने अपना लेबल स्थानीयकृत किया पर अपना लक्ष्य नहीं, इसलिए रूसी लेबल अंग्रेज़ी संस्करण तक ले जाता था — एक `data-i18n-href` अप्लायर अब `ru` को रूसी किताब की ओर भेजता है; और **SEEK होस्ट बदल रहा है** (`www.seek.com.au` → `au.seek.com`), इसलिए हमारे `redirect:'error'` ट्रांसपोर्ट में API पथ के रीडायरेक्ट करना शुरू करने से पहले `au.seek.com` और `nz.seek.com` को allowlist में डाला गया। गिनती अपरिवर्तित: **94** स्रोत। **3210 परीक्षण · 116 ब्राउज़र।**
 

@@ -5,7 +5,8 @@
  * instead of crashing the server. Keeps the SPA usable when career-ops
  * is half-set-up (Health page surfaces the gaps).
  */
-import { readFileSync, writeFileSync, readdirSync, statSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, readdirSync, existsSync, openSync, fstatSync, closeSync } from 'node:fs';
+import { sep } from 'node:path';
 import yaml from 'js-yaml';
 import { PATHS, path as projPath } from './paths.mjs';
 import { parseApplications, parsePipeline, parseReportHeader } from './parsers.mjs';
@@ -26,24 +27,51 @@ export function safeReadPipeline() {
   }
 }
 
+// Parsed report headers, keyed by absolute path and invalidated on any change
+// of mtime or size. Parsing every report on every call cost ~3.7 s per
+// /api/reports or /api/dashboard on the production box (hundreds of reports),
+// blocking the event loop — during a scan, page loads timed out at 30 s.
+// Listing now costs one stat() per file once the cache is warm.
+const reportCache = new Map();
+export const __reportCache = { hits: 0, misses: 0, get size() { return reportCache.size; }, reset() { reportCache.clear(); this.hits = 0; this.misses = 0; } };
+
 export function safeListReports() {
   if (!existsSync(PATHS.reportsDir)) return [];
   const files = readdirSync(PATHS.reportsDir).filter((f) => f.endsWith('.md'));
-  return files
-    .map((f) => {
-      try {
-        const text = readFileSync(projPath('reports', f), 'utf8');
-        const stat = statSync(projPath('reports', f));
+  const seen = new Set();
+  const out = [];
+  for (const f of files) {
+    const file = projPath('reports', f);
+    let fd;
+    try {
+      // One descriptor for both the stat and the read, so the header cached
+      // for this mtime/size is the content that was actually read.
+      fd = openSync(file, 'r');
+      const stat = fstatSync(fd);
+      seen.add(file);
+      let hit = reportCache.get(file);
+      if (hit && hit.mtimeMs === stat.mtimeMs && hit.size === stat.size) {
+        __reportCache.hits++;
+      } else {
+        __reportCache.misses++;
+        const text = readFileSync(fd, 'utf8');
         // FIX-1 (v1.159.0): pass the file mtime so a report whose body has no
         // parseable date (common in non-EN reports) still gets a date anchor.
         const header = parseReportHeader(text, { mtime: stat.mtime });
-        return { slug: f.replace(/\.md$/, ''), file: f, mtime: stat.mtime, ...header };
-      } catch {
-        return null;
+        hit = { mtimeMs: stat.mtimeMs, size: stat.size, entry: { slug: f.replace(/\.md$/, ''), file: f, mtime: stat.mtime, ...header } };
+        reportCache.set(file, hit);
       }
-    })
-    .filter(Boolean)
-    .sort((a, b) => new Date(b.mtime) - new Date(a.mtime));
+      out.push({ ...hit.entry });
+    } catch {
+      // unreadable report: skip it, as before
+    } finally {
+      if (fd !== undefined) closeSync(fd);
+    }
+  }
+  // Forget deleted reports (only entries under the directory just listed).
+  const dir = projPath('reports') + sep;
+  for (const k of reportCache.keys()) if (k.startsWith(dir) && !seen.has(k)) reportCache.delete(k);
+  return out.sort((a, b) => new Date(b.mtime) - new Date(a.mtime));
 }
 
 /**

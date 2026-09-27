@@ -7,7 +7,7 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-3488%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3500%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
@@ -17,7 +17,7 @@ _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.238.2** — **修复:扫描期间不再出现 502** — 在反向代理之后,服务器 5 秒就关闭空闲连接,繁重扫描时代理会对部分页面加载返回 502;现在总是由代理先关闭连接。**3488 个测试 · 116 个浏览器测试。**
+> **🆕 最新版本 — v1.238.3** — **页面更快,日志更安全** — 报告列表在每次加载页面时都会被重新读取和解析(在小服务器上要几秒,扫描期间会出现 30 秒超时);现在已加入缓存。**3500 个测试 · 116 个浏览器测试。**
 >
 > **上一版本 — v1.237.1** — **针对外部 QA 复查的补丁。** Jobstreet 的修复已从外部得到确认：在 AU/NZ/HK/MY 主机上 `/id/job/<id>` 会返回一个干净的 404，而 `/job/<id>` 能到达一个真实的受保护路由——丢失的链接确实存在。v1.237.0 新增内容中的两处缺陷：**书籍链接**——文案被本地化了，目标却没有，于是俄语文案指向了英文版——`data-i18n-href` 应用器现在会把 `ru` 指向俄语版的书；以及 **SEEK 正在迁移主机**（`www.seek.com.au` → `au.seek.com`），因此在 API 路径开始向我们采用 `redirect:'error'` 的传输层发出重定向之前，`au.seek.com` 与 `nz.seek.com` 已被加入白名单。来源数量维持 **94** 个不变。**3210 项测试 · 浏览器 116 项。**
 

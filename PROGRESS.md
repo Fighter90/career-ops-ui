@@ -8,7 +8,7 @@ Release history belongs in [CHANGELOG.md](CHANGELOG.md), decisions in
 [docs/adr/](docs/adr/), vocabulary in [CONTEXT.md](CONTEXT.md). Anything already
 recoverable from those does **not** belong here.
 
-_Last updated: 2026-09-27 · v1.238.2 (proxy-safe keep-alive: no 502s while a scan runs) — v1.238.1 is deployed and released_
+_Last updated: 2026-09-27 · v1.238.3 (report-list cache, remote-QA host redaction) — v1.238.2 is deployed, released and published_
 
 ---
 
@@ -127,6 +127,10 @@ before any merge.**
 
 ## Abandoned approaches
 
+- **Relying on GitHub's secret mask for truncated text.** The mask matches the secret's exact value;
+  a remote-QA finding cut to 180 chars ended mid-host and printed part of the prod hostname into a
+  public log (2026-09-27). `scripts/remote-qa/redact.mjs` now removes the host before any truncation
+  and from the whole report; `tests/remote-qa-redact.test.mjs` guards both scripts.
 Recorded so they are not retried.
 
 - **Blanket token sweeps across docs (`s/3164/3201/g`, `s/1.236.0/1.237.0/g`).**

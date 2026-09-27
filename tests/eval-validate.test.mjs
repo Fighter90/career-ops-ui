@@ -60,3 +60,52 @@ test('COMPANY may be unknown, but ROLE/ARCHETYPE/LEGITIMACY may not', () => {
   assert.ok(!issues.includes('SCORE_SUMMARY COMPANY is required'));
   assert.ok(issues.includes('SCORE_SUMMARY ROLE is required'));
 });
+
+// v1.238.4 — a translated report translates the word "Block" (the prompt asks
+// for translated headings), and the live regression flagged 6–8 missing blocks
+// in 9 of 17 locales for well-formed reports.
+const SUMMARY = `
+---SCORE_SUMMARY---
+COMPANY: Acme
+ROLE: Engineer
+SCORE: 4.0
+ARCHETYPE: Platform
+LEGITIMACY: High Confidence
+---END_SUMMARY---
+`;
+const blocks = (fmt) => ['A', 'B', 'C', 'D', 'E', 'F', 'G'].map(fmt).join('\n...\n') + SUMMARY;
+
+test('translated block headings keep their letter and are recognised', () => {
+  const cases = {
+    es: (L) => `## Bloque ${L} — Sección`,
+    fr: (L) => `## Bloc ${L} : Section`,
+    pl: (L) => `### Blok ${L}. Sekcja`,
+    ja: (L) => `## ブロック${L} — 概要`,
+    'zh-CN': (L) => `## 区块 ${L}：概述`,
+    hi: (L) => `## ब्लॉक ${L} — सारांश`,
+    ar: (L) => `## القسم ${L} — ملخص`,
+    plain: (L) => `## ${L}) Section`,
+  };
+  for (const [name, fmt] of Object.entries(cases)) {
+    assert.deepEqual(validateEvaluationReport(blocks(fmt)), [], name);
+  }
+});
+
+test('Cyrillic look-alike letters (А В С Е) count as blocks; Cyrillic words do not', () => {
+  const cyr = { A: 'А', B: 'В', C: 'С', E: 'Е' };
+  assert.deepEqual(validateEvaluationReport(blocks((L) => `## Блок ${cyr[L] || L} — Раздел`)), []);
+  const issues = validateEvaluationReport('## Анализ\n## Вывод\n## Сводка\n## Если\n' + SUMMARY);
+  for (const L of ['A', 'B', 'C', 'E']) assert.ok(issues.includes(`missing Block ${L}`), L);
+});
+
+test('a letter inside a Latin word is not a block heading', () => {
+  const issues = validateEvaluationReport('## About the role\n## Benefits\n## Compensation\n## Details\n## Education\n## Fit\n## GDPR\n' + SUMMARY);
+  assert.equal(issues.filter((i) => i.startsWith('missing Block')).length, 7);
+});
+
+test('stripScoreSummary removes the machine block and keeps the report', async () => {
+  const { stripScoreSummary } = await import('../server/lib/eval-validate.mjs');
+  const out = stripScoreSummary('## Block A — Fit\ntext\n' + SUMMARY + '\n');
+  assert.equal(out, '## Block A — Fit\ntext');
+  assert.equal(stripScoreSummary('no block here\n'), 'no block here');
+});

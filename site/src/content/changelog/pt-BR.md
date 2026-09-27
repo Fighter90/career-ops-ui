@@ -8,6 +8,24 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.238.3] — 2026-09-27
+
+**As páginas continuam responsivas durante um scan, e os logs da QA remota não vazam mais o host de produção.**
+
+### Corrigido
+
+- **O painel e os relatórios levavam segundos para carregar e davam timeout durante um scan.** `/api/reports` e `/api/dashboard` liam e analisavam todos os relatórios a cada requisição — cerca de 3,7 s no servidor de produção, bloqueando qualquer outra requisição; com um scan rodando, os carregamentos batiam no timeout de 30 s. Os cabeçalhos analisados agora ficam em cache por arquivo e são renovados quando o arquivo muda, então listar custa uma verificação por relatório (500 relatórios: 430 ms → 3 ms localmente).
+- **Um achado da QA remota podia imprimir parte do host de produção num log público.** O GitHub só mascara um segredo quando ele aparece inteiro, e uma mensagem cortada em 180 caracteres terminava no meio do host. Achados e relatórios inteiros agora são censurados antes do corte.
+- **Toda avaliação por IA era marcada como malformada.** O prompt nunca pedia o bloco `---SCORE_SUMMARY---` que a verificação do relatório exige (os scripts de avaliação do projeto pai pedem), e um relatório traduzido traduzia a palavra "Block", então a verificação não encontrava as seções. Agora o prompt pede o resumo e a letra do bloco em cada título, a verificação aceita uma palavra traduzida antes da letra e o bloco de resumo é removido antes de o relatório ser exibido ou salvo.
+
+### Adicionado
+
+- Testes 3488 → 3500.
+
+### Notas
+
+- O scanner continua rodando **dentro** do processo do servidor; esta versão remove o outro grande bloqueio, mas **não** move o scan para um worker.
+
 ## [1.238.2] — 2026-09-27
 
 **Correção dos 502 que o servidor de produção ainda mostrava durante o scan horário.**

@@ -27,6 +27,7 @@ import { readdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
+import { makeRedactor } from './redact.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const require = createRequire(ROOT + '/package.json');
@@ -66,6 +67,14 @@ const WORDS = {
 };
 function languageOk(text, locale) {
   const t = String(text || '');
+  if (locale === 'ja') {
+    // Japanese technical prose is mostly kanji plus Latin terms; kana alone can
+    // fall under 30 %. Require some kana (not Chinese) and a CJK majority.
+    const letters = (t.match(/\p{L}/gu) || []).length || 1;
+    const kana = (t.match(/[\u3040-\u30FF]/g) || []).length;
+    const han = (t.match(/[\u4E00-\u9FFF]/g) || []).length;
+    return kana / letters > 0.05 && (kana + han) / letters > 0.3;
+  }
   if (SCRIPT[locale]) {
     const letters = (t.match(/\p{L}/gu) || []).length || 1;
     const own = (t.match(SCRIPT[locale]) || []).length;
@@ -84,7 +93,9 @@ function languageOk(text, locale) {
 const browser = await chromium.launch({ headless: true });
 const rows = [];
 const findings = [];
-const add = (locale, step, msg) => findings.push({ locale, step, msg: String(msg).slice(0, 160) });
+// Redact the prod host before truncating: a cut mid-host would dodge the secret mask.
+const redact = makeRedactor(BASE);
+const add = (locale, step, msg) => findings.push({ locale, step, msg: redact(msg).slice(0, 160) });
 let lastLlm = 0;
 async function pace() {
   const wait = lastLlm + 7000 - Date.now();
@@ -209,7 +220,9 @@ for (const locale of LOCALES) {
     else if (!e.body.mode || e.body.mode === 'manual') add(locale, 'evaluate', `no live provider (mode=${e.body.mode})`);
     else if (md.length < 800) add(locale, 'evaluate', `report only ${md.length} chars`);
     else {
-      if (!row.eval.shape) add(locale, 'evaluate', `A–G shape warnings: ${(e.body.warnings || []).length}`);
+      // The server's warnings are fixed strings ("missing Block C", "SCORE_SUMMARY ROLE is required"),
+      // never report text, so they can be printed as they are.
+      if (!row.eval.shape) add(locale, 'evaluate', `A–G shape: ${(e.body.warnings || []).map(String).join('; ')}`);
       if (!row.eval.lang) add(locale, 'evaluate', `report not in ${locale}`);
     }
     if (e.status === 200) {
@@ -236,5 +249,5 @@ const lines = [
   ...rows.map((r) => `| ${md(r.locale)} | ${md(cell(r.docs))} | ${md(cell(r.eval))} |`), '',
   findings.length ? '| locale | step | finding |\n|---|---|---|\n' + findings.map((f) => `| ${md(f.locale)} | ${md(f.step)} | ${md(f.msg)} |`).join('\n') : '**No findings.**',
 ];
-console.log(lines.join('\n'));
+console.log(redact(lines.join('\n')));
 process.exit(findings.length ? 1 : 0);

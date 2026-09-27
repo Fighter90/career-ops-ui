@@ -2,6 +2,24 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.238.3] — 2026-09-27
+
+**Tarama sırasında sayfalar yanıt vermeye devam ediyor ve uzak QA günlükleri artık üretim sunucusunun adresini sızdırmıyor.**
+
+### Düzeltildi
+
+- **Pano ve raporların yüklenmesi saniyeler sürüyor, tarama sırasında zaman aşımına uğruyordu.** `/api/reports` ve `/api/dashboard` her istekte tüm raporları okuyup ayrıştırıyordu — üretim sunucusunda yaklaşık 3,7 sn, bu sırada diğer tüm istekler bekliyordu; tarama sürerken sayfa yüklemeleri 30 saniyelik zaman aşımına takılıyordu. Ayrıştırılmış rapor başlıkları artık dosya başına önbelleğe alınıyor ve dosya değişince yenileniyor; böylece listeleme rapor başına tek bir dosya denetimine mal oluyor (500 rapor: yerelde 430 ms → 3 ms).
+- **Bir uzak QA bulgusu, üretim sunucusu adının bir kısmını herkese açık bir günlüğe yazabiliyordu.** GitHub bir sırrı yalnızca tam hâliyle göründüğünde maskeler; 180 karaktere kesilen bir hata mesajı adın ortasında bitiyordu. Bulgular ve raporların tamamı artık kesilmeden önce maskeleniyor.
+- **Her yapay zekâ değerlendirmesi hatalı biçimli olarak işaretleniyordu.** İstem, rapor denetiminin gerektirdiği `---SCORE_SUMMARY---` bloğunu hiç istemiyordu (üst projenin değerlendirme betikleri istiyor) ve çevrilmiş bir rapor "Block" kelimesini de çeviriyordu; bu yüzden denetim bölümleri bulamıyordu. İstem artık özeti ve her başlıkta blok harfini istiyor, denetim harften önceki çevrilmiş kelimeyi kabul ediyor ve özet bloğu, rapor sayfada gösterilmeden ya da kaydedilmeden önce kaldırılıyor.
+
+### Eklendi
+
+- Testler 3488 → 3500.
+
+### Notlar
+
+- Tarayıcı hâlâ sunucu sürecinin **içinde** çalışıyor; bu sürüm diğer büyük darboğazı kaldırıyor ama taramayı bir worker'a **taşımıyor**.
+
 ## [1.238.2] — 2026-09-27
 
 **Üretim sunucusunun saatlik tarama sırasında hâlâ verdiği 502'lerin düzeltmesi.**

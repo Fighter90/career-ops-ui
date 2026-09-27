@@ -364,6 +364,19 @@ ${scaffold('readFiles', lang)}
 Then output the full A-G evaluation per modes/oferta.md (Role Summary, CV Match, Risks, Compensation,
 Application Strategy, Verdict, Posting Legitimacy) and a 0-5 score.
 
+Start every block heading with its letter as modes/oferta.md does (\`## Block A — …\` to
+\`## Block G — …\`). If you translate the headings, keep the letter A–G in each one.
+
+At the very end, output this machine-readable summary block exactly as shown (keys in English):
+
+---SCORE_SUMMARY---
+COMPANY: <company name or "Unknown">
+ROLE: <role title>
+SCORE: <global score as decimal, e.g. 3.8>
+ARCHETYPE: <detected archetype>
+LEGITIMACY: <High Confidence | Proceed with Caution | Suspicious>
+---END_SUMMARY---
+
 JD:
 """
 ${jd}
