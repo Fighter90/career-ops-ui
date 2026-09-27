@@ -43,10 +43,16 @@ for (const viewport of [{ width: 1366, height: 900 }, { width: 390, height: 844 
       const where = `${loc.code} /${page}${viewport.width < 500 ? ' @390' : ''}`;
       const p = await ctx.newPage();
       const errs = [];
-      p.on('console', (m) => { if (m.type() === 'error' && !BENIGN_CONSOLE.test(m.text())) errs.push(m.text()); });
+      const third = [];
+      // "Failed to load resource" console lines carry no URL; the response
+      // listener below reports the same failures with one, so skip them here.
+      p.on('console', (m) => { if (m.type() === 'error' && !BENIGN_CONSOLE.test(m.text()) && !/^Failed to load resource/.test(m.text())) errs.push(m.text()); });
       p.on('pageerror', (e) => errs.push('exception: ' + e.message));
       p.on('response', (r) => {
-        if (r.url().startsWith(SITE) && r.status() >= 400) errs.push(`${r.status()} ${new URL(r.url()).pathname}`);
+        if (r.status() < 400) return;
+        const u = new URL(r.url());
+        if (u.origin === new URL(SITE).origin) errs.push(`${r.status()} ${u.pathname}`);
+        else third.push(`${r.status()} ${u.host}${u.pathname.slice(0, 60)}`);
       });
       visits++;
       try {
@@ -76,6 +82,7 @@ for (const viewport of [{ width: 1366, height: 900 }, { width: 390, height: 844 
         }
       } catch (e) { add(where, 'crash', e.message.split('\n')[0]); }
       for (const e of errs) add(where, 'console/network', e);
+      for (const e of third) add(where, 'third-party', e);
       await p.close();
     }
   }
@@ -107,4 +114,5 @@ if (findings.length) {
 }
 const out = lines.join('\n');
 console.log(out);
-process.exit(findings.length ? 1 : 0);
+// A third-party widget failing (e.g. a badge host rate-limiting CI) is reported, not fatal.
+process.exit(findings.some((f) => f.kind !== 'third-party') ? 1 : 0);

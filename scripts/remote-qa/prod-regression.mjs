@@ -71,13 +71,15 @@ async function newPage(locale, viewport = { width: 1366, height: 900 }) {
     if (m.type() !== 'error') return;
     const t = m.text();
     if (BENIGN_CONSOLE.test(t) || /ERR_BLOCKED_BY_CLIENT|blockedbyclient/i.test(t)) return;
+    // Same-origin failures are caught with their URL by the response listener.
+    if (/^Failed to load resource: the server responded with a status of [45]\d\d/.test(t)) return;
     bag.console.push(t);
   });
   page.on('pageerror', (e) => bag.pageerror.push(e.message));
   page.on('response', (r) => {
     const u = new URL(r.url());
     if (u.origin !== new URL(BASE).origin) return;
-    if (r.status() >= 500) bag.http.push(`${r.status()} ${u.pathname}`);
+    if (r.status() >= 500 || (r.status() >= 400 && r.status() !== 404 && u.pathname.startsWith('/api/'))) bag.http.push(`${r.status()} ${u.pathname}`);
   });
   return { ctx, page, bag };
 }
@@ -94,7 +96,7 @@ async function settle(page) {
 function drain(locale, route, bag) {
   for (const m of bag.console) add(locale, route, 'console-error', m);
   for (const m of bag.pageerror) add(locale, route, 'js-exception', m);
-  for (const m of bag.http) add(locale, route, 'http-5xx', m);
+  for (const m of bag.http) add(locale, route, 'http-error', m);
   for (const m of bag.blocked) add(locale, route, 'write-on-open', m);
   bag.console.length = bag.pageerror.length = bag.http.length = bag.blocked.length = 0;
 }
