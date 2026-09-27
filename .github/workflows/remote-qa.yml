@@ -54,7 +54,9 @@ jobs:
           BASIC_USER: ${{ secrets.AUTH_LOGIN }}
           BASIC_PASS: ${{ secrets.AUTH_PASSWORD }}
         run: |
-          [ -n "$BASIC_USER" ] || { echo "::error::secret AUTH_LOGIN is not set"; exit 1; }
+          [ -n "$BASIC_USER" ] && [ -n "$BASIC_PASS" ] || { echo "::error::secrets AUTH_LOGIN / AUTH_PASSWORD are not set"; exit 1; }
+          # The basic-auth secrets only ever go to the production host, over HTTPS.
+          [[ "$BASE_URL" =~ ^https://resumecraft\.ru(/|$) ]] || { echo "::error::prod_url must be https://resumecraft.ru — refusing to send credentials elsewhere"; exit 1; }
           set -o pipefail
           node scripts/remote-qa/prod-regression.mjs | tee -a "$GITHUB_STEP_SUMMARY"
 
@@ -74,7 +76,9 @@ jobs:
           BASIC_USER: ${{ secrets.AUTH_LOGIN }}
           BASIC_PASS: ${{ secrets.AUTH_PASSWORD }}
         run: |
-          [ -n "$BASIC_USER" ] || { echo "::error::secret AUTH_LOGIN is not set"; exit 1; }
+          [ -n "$BASIC_USER" ] && [ -n "$BASIC_PASS" ] || { echo "::error::secrets AUTH_LOGIN / AUTH_PASSWORD are not set"; exit 1; }
+          # The basic-auth secrets only ever go to the production host, over HTTPS.
+          [[ "$BASE_URL" =~ ^https://resumecraft\.ru(/|$) ]] || { echo "::error::prod_url must be https://resumecraft.ru — refusing to send credentials elsewhere"; exit 1; }
           set -o pipefail
           node scripts/remote-qa/prod-llm.mjs | tee -a "$GITHUB_STEP_SUMMARY"
 
