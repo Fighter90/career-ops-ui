@@ -48,8 +48,14 @@ extracts `git archive <ref>` over each tree after a tar backup of every file it 
 on any failure (simulated locally: success + 4 failure paths byte-exact).
 
 Still open:
-- delete `claude/zen-brahmagupta-m8zguo` in career-ops-ui, career-ops, career-ops-coworker; push the
-  wiki update (patch = the v1.238.0 wiki commit, re-derive from CHANGELOG if the scratchpad is gone);
+- delete `claude/zen-brahmagupta-m8zguo` in career-ops-ui, career-ops, career-ops-coworker (needs a
+  token with delete rights; the wiki update itself is already live — commit `41ac75d`);
+- career-ops code scanning: local CodeQL on fork `main` (JS/TS 1223 files, Go, Actions) = **0 results**;
+  the alerts on GitHub stay open only because no push workflow (CodeQL included) has run in the fork
+  since 2026-07-15 — the user re-enables Actions there and the next push closes them;
+- the full cycle (both repos → deploy → remote regression) is packaged as
+  [`.claude/skills/ship-cycle`](.claude/skills/ship-cycle/SKILL.md); remote regression is
+  `.github/workflows/remote-qa.yml` (secrets `AUTH_LOGIN` / `AUTH_PASSWORD`);
 - Actions logs of this public repo are public: keep recon/verify output to versions, states and status
   codes (the first recon printed the profile name and which provider keys are set; its logs were deleted);
 - Telegram end to end (a real message through the bot) is not exercised by `verify`; it checks the
