@@ -7,7 +7,8 @@ name: Deploy (server)
 #                the systemd services (web-ui, Hermes gateway), and /api/health.
 #                Changes nothing on the server. Run this first.
 #   mode=verify  read-only smoke of the running app on the server: every
-#                read-only JSON route, the SPA shell, 98 sources, the Hermes
+#                read-only JSON route, the SPA shell, served sources == the
+#                deployed registry, the Hermes
 #                bridge, and error lines in the unit journal since start.
 #                Also runs after every deploy.
 #   mode=deploy  extracts `git archive parent_ref` over the app dir and
@@ -308,12 +309,14 @@ jobs:
       - name: Verify (read-only smoke)
         if: inputs.mode != 'recon'
         env:
+          APP_DIR: ${{ inputs.app_dir }}
           PORT: ${{ inputs.port }}
           SERVICE: ${{ inputs.service }}
         run: |
           # Status codes and sizes only — bodies carry profile data and this log is public.
-          # shellcheck disable=SC2029  # PORT/SERVICE are meant to expand locally
-          ssh prod "PORT='$PORT' SERVICE='$SERVICE' bash -s" <<'REMOTE'
+          # The inputs were validated against [A-Za-z0-9._/@-] in "Configure ssh".
+          # shellcheck disable=SC2029  # APP_DIR/PORT/SERVICE are meant to expand locally
+          ssh prod "APP_DIR='$APP_DIR' PORT='$PORT' SERVICE='$SERVICE' bash -s" <<'REMOTE'
           set -uo pipefail
           base="http://127.0.0.1:$PORT"; fail=0
           probe() {
@@ -332,18 +335,23 @@ jobs:
             probe "$pth"
           done
           probe /api/definitely-not-a-route 404
-          n=$(curl -fsS --max-time 20 "$base/api/scan/sources" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const j=JSON.parse(s);console.log((Array.isArray(j)?j:j.sources||[]).length)})')
-          echo "sources: $n"; [ "$n" = 98 ] || { echo "::error::expected 98 sources, got $n"; fail=1; }
+          # The running process must serve the registry that is on disk — i.e. it
+          # actually loaded the deployed code. Both numbers come from the live
+          # registry; nothing is hard-coded.
+          served=$(curl -fsS --max-time 20 "$base/api/scan/sources" | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{console.log(JSON.parse(s).sources.length)}catch{console.log("unreadable")}})')
+          on_disk=$(cd "$APP_DIR/web-ui" && sudo -u "$(stat -c %U .)" -H -- node --input-type=module -e 'const { SOURCES } = await import(process.cwd() + "/server/lib/sources/registry.mjs"); console.log(SOURCES.length)' 2>/dev/null)
+          echo "sources served: $served · in the deployed registry: $on_disk"
+          [ -n "$on_disk" ] && [ "$served" = "$on_disk" ] || { echo "::error::served source count differs from the deployed registry"; fail=1; }
           echo "--- security headers from the app itself"
           curl -sI --max-time 10 "$base/" | grep -iE '^(content-security-policy|x-content-type-options|x-frame-options|referrer-policy):' | cut -c1-90
           echo "--- Hermes"
+          since=$(systemctl show -p ActiveEnterTimestamp --value "${SERVICE:-career-ops-ui}")
           for u in hermes-gateway claude-bridge "${SERVICE:-career-ops-ui}"; do
             printf '%-16s %s (restarts: %s, since %s)\n' "$u" "$(systemctl is-active "$u")" \
               "$(systemctl show -p NRestarts --value "$u")" "$(systemctl show -p ActiveEnterTimestamp --value "$u")"
             systemctl is-active --quiet "$u" || fail=1
           done
           printf 'bridge /v1/models: %s\n' "$(curl -s -o /dev/null -w '%{http_code}' --max-time 10 http://127.0.0.1:8788/v1/models)"
-          since=$(systemctl show -p ActiveEnterTimestamp --value "${SERVICE:-career-ops-ui}")
           errs=$(journalctl -u "${SERVICE:-career-ops-ui}" --since "$since" -p err --no-pager -q 2>/dev/null | wc -l)
           echo "journal error lines for ${SERVICE:-career-ops-ui} since start: $errs"
           [ "$errs" = 0 ] || echo "::warning::$errs error lines in the journal since start (not printed: may contain personal data)"
