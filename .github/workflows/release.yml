@@ -99,4 +99,11 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAG: ${{ steps.notes.outputs.tag }}
-        run: gh workflow run publish-package.yml --ref "$TAG" --repo "$GITHUB_REPOSITORY"
+        run: |
+          # The tag was created moments ago by the release step; give the API
+          # a few seconds to see it before giving up.
+          for i in 1 2 3; do
+            gh workflow run publish-package.yml --ref "$TAG" --repo "$GITHUB_REPOSITORY" && exit 0
+            sleep $((i * 5))
+          done
+          exit 1
