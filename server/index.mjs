@@ -58,6 +58,7 @@ import { registerStatsRoutes } from './lib/routes/stats.mjs';
 import { registerMarketRoutes } from './lib/routes/market.mjs';
 import { registerTrackerRoutes } from './lib/routes/tracker.mjs';
 import { registerCvSyncRoutes } from './lib/routes/cv-sync.mjs';
+import { listen } from './lib/http-timeouts.mjs';
 
 // Re-exports preserved for backward compatibility — earlier tests
 // (and any external consumers) imported these from server/index.mjs.
@@ -265,7 +266,7 @@ if (isMain) {
   const port = parseInt(process.env.PORT || '4317', 10);
   const host = process.env.HOST || '127.0.0.1';
   const app = createApp();
-  app.listen(port, host, () => {
+  listen(app, port, host, () => {
     console.log('');
     console.log('  🛫  career-ops web UI');
     console.log(`     http://${host}:${port}`);

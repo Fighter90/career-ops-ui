@@ -8,6 +8,24 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.238.2] — 2026-09-27
+
+**Correção dos 502 que o servidor de produção ainda mostrava durante o scan horário.**
+
+### Corrigido
+
+- **Páginas e arquivos retornavam 502 durante um scan.** O Node fecha uma conexão keep-alive ociosa após 5 s; o Caddy reutiliza conexões ociosas por até 2 minutos. Enquanto um scan dentro do processo mantinha o servidor ocupado, o Node fechava sockets nos quais o Caddy acabara de enviar uma requisição, e o Caddy respondia 502 *connection reset by peer* (62 vezes num scan, com o servidor saudável). Agora o servidor mantém conexões ociosas por 125 s — mais que o proxy —, então o proxy sempre fecha primeiro.
+
+### Adicionado
+
+- `deploy.yml` → `verify` mostra por que o proxy respondeu 502 (tipos de erro, endereços mascarados), os 502 por minuto desde o último reinício e o resultado do scan horário.
+- `release.yml` pode criar uma tag ausente quando iniciado manualmente, para publicar uma versão onde tags não podem ser enviadas.
+- Testes 3486 → 3488.
+
+### Notas
+
+- O scan continua rodando **dentro** do processo do servidor e pode ocupá-lo por segundos; movê-lo para um worker **não** faz parte deste patch.
+
 ## [1.238.1] — 2026-09-27
 
 **Correção de estabilidade após a primeira regressão ao vivo do servidor de produção: um scan por vez e correções do site.**

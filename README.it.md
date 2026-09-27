@@ -7,7 +7,7 @@
 
 _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-3486%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3488%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
@@ -17,7 +17,7 @@ _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santi
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Ultima release — v1.238.1** — **Patch di stabilità: una scansione alla volta** — due scansioni insieme (un clic più il timer orario) esaurivano la memoria del server, che si riavviava; ora la seconda riceve un chiaro messaggio «già in corso». cvstart.org non scorre più di lato sui telefoni e le pagine in hindi tornano nella sitemap. **3486 test · 116 browser.**
+> **🆕 Ultima release — v1.238.2** — **Correzione: niente più 502 durante una scansione** — dietro un reverse proxy il server chiudeva le connessioni inattive dopo 5 s, e durante una scansione pesante il proxy rispondeva 502 ad alcuni caricamenti di pagina; ora chiude sempre prima il proxy. **3488 test · 116 browser.**
 >
 > **Precedente — v1.237.1** — **Patch da una verifica QA esterna.** La correzione di Jobstreet è stata confermata dall'esterno: `/id/job/<id>` restituisce un 404 pulito sugli host AU/NZ/HK/MY e `/job/<id>` raggiunge una rotta reale protetta — i link persi erano reali. Due difetti in ciò che v1.237.0 aveva aggiunto: il **link al libro** localizzava l'etichetta ma non la destinazione, quindi l'etichetta russa portava all'edizione inglese — un applicatore `data-i18n-href` ora invia `ru` al libro russo; e **SEEK sta migrando gli host** (`www.seek.com.au` → `au.seek.com`), quindi `au.seek.com` e `nz.seek.com` sono in allowlist prima che il percorso dell'API inizi a reindirizzare nel nostro trasporto `redirect:'error'`. Conteggi invariati a **94** sorgenti. **3210 test · 116 browser.**
 
