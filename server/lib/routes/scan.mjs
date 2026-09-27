@@ -81,6 +81,20 @@ async function driveOne({ res, send, runner, label, query, final = true }) {
   }
 }
 
+// One scan at a time per process. Each /api/stream/scan request runs the full
+// scanner in-process; two at once (the hourly timer plus a click, or two tabs)
+// doubled memory and CPU, raced on last-scan.json, and on the production box
+// took the viewer down (Caddy 502s, one restart) during a remote regression.
+// A second request now gets an SSE `error` with code SCAN_BUSY instead.
+let activeScan = null; // { startedAt, source } while a scan runs
+
+/** Test hook: claim / release the slot without running a scan. */
+export const __scanSlot = {
+  get active() { return activeScan; },
+  claim(source = 'test') { activeScan = { startedAt: new Date().toISOString(), source }; },
+  release() { activeScan = null; },
+};
+
 export function registerScanRoutes(app) {
   // ─── F-018 LITE — consolidated entrypoint ───
   // GET /api/stream/scan?source=ats|regional|both[&dryRun=1][&company=Acme]
@@ -90,6 +104,16 @@ export function registerScanRoutes(app) {
   app.get('/api/stream/scan', async (req, res) => {
     const source = String(req.query.source || 'both').toLowerCase();
     const send = openSse(res);
+    if (activeScan) {
+      send('error', {
+        code: 'SCAN_BUSY',
+        message: `a scan is already running (started ${activeScan.startedAt}); wait for it to finish`,
+        startedAt: activeScan.startedAt,
+      });
+      return res.end();
+    }
+    activeScan = { startedAt: new Date().toISOString(), source };
+    try {
     if (source === 'ats') {
       await driveOne({ res, send, runner: runEnScan, label: 'en-scanner', query: req.query });
     } else if (source === 'regional') {
@@ -103,6 +127,9 @@ export function registerScanRoutes(app) {
       }
     } else {
       send('error', { message: `unknown source "${source}" (expected: ats | regional | both)` });
+    }
+    } finally {
+      activeScan = null;
     }
     if (!res.writableEnded) res.end();
   });
