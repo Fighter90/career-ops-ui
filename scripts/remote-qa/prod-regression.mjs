@@ -197,4 +197,4 @@ if (findings.length) {
 const out = lines.join('\n');
 console.log(out);
 if (process.env.GITHUB_STEP_SUMMARY) appendFileSync(process.env.GITHUB_STEP_SUMMARY, out + '\n');
-process.exit(findings.some((f) => f.kind !== 'h-overflow-390') ? 1 : 0);
+process.exit(findings.length ? 1 : 0);

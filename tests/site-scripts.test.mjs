@@ -46,7 +46,7 @@ function fixtureSite() {
 /** The sitemap i18n map in astro.config.mjs, in the real file's shape. */
 function astroConfig(codes) {
   const entries = codes.map((c) => `          '${c.toLowerCase()}': '${c}',`).join('\n');
-  return `export default {\n  integrations: [\n    sitemap({\n      i18n: {\n        defaultLocale: 'en',\n        locales: {\n${entries}\n        },\n      },\n    }),\n  ],\n};\n`;
+  return `import sitemap from '@astrojs/sitemap';\nexport default {\n  i18n: { locales: ['en'] },\n  integrations: [\n    sitemap({\n      i18n: {\n        defaultLocale: 'en',\n        locales: {\n${entries}\n        },\n      },\n    }),\n  ],\n};\n`;
 }
 
 function run(script) {

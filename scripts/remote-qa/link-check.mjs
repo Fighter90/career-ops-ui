@@ -74,6 +74,7 @@ if (!SKIP_EXTERNAL) {
         r.body?.cancel().catch(() => {});
       } catch (e) { status = e.cause?.code || e.name; }
       const files = [...external.get(u)].slice(0, 3).join(', ');
+      // 999 is LinkedIn's bot-wall status.
       if (status === 401 || status === 403 || status === 429 || status === 999) { unverified++; continue; }
       if (typeof status !== 'number' || status >= 400) add(files, 'external-link', `${status} ${u}`);
     }
