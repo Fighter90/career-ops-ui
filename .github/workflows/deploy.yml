@@ -186,10 +186,11 @@ jobs:
             printf '%s -> %s\n' "$u" "$(curl -s -o /dev/null -w '%{http_code}' --max-time 5 "$u")"
           done
           sec health
-          curl -fsS --max-time 10 "http://127.0.0.1:$PORT/api/health" | node -e '
+          if ! h=$(curl -fsS --max-time 10 "http://127.0.0.1:$PORT/api/health"); then echo "health: viewer not answering on :$PORT"; else echo "$h" | node -e '
             let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const h=JSON.parse(s);
               console.log("ok="+h.ok+" version="+h.version+" parentVersion="+h.parentVersion+" warnings="+h.warnings);
-              for (const c of h.checks||[]) if (c.required && !c.ok) console.log("REQUIRED FAIL: "+c.name);})'
+              for (const c of h.checks||[]) if (c.required && !c.ok) console.log("REQUIRED FAIL: "+c.name);})'; fi
+          true
           REMOTE
 
       - name: Deploy
