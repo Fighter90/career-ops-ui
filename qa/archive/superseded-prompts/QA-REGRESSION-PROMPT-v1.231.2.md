@@ -59,7 +59,7 @@ node --test tests/qa-report-fixes.test.mjs       # 73 pass (BUG-008-tb updated)
 
 v1.231.0 was a parity release against parent **1.32.0**, but
 `/opt/career-ops/src` still held 1.31.0 files, so `/api/health` reported
-`parentVersion: 1.31.0` on resumecraft.ru while local reported 1.32.0.
+`parentVersion: 1.31.0` on the prod server while local reported 1.32.0.
 
 **Fixed by rsync, not `git pull`.** The server's parent checkout has a stale git
 HEAD by design (1.30.0) with the newer files copied over it — a pull would try
@@ -67,7 +67,7 @@ to merge into 14 modified files. 95 runtime files were synced and
 `plugins-registry/theirstack.json` + `lib/context-budget.test.mjs` removed
 (retired and moved upstream respectively).
 
-**Check:** `/api/health` on resumecraft.ru reports `parentVersion: 1.32.0`,
+**Check:** `/api/health` on the prod server reports `parentVersion: 1.32.0`,
 twice in a row.
 
 **Trap:** the first rsync **aborted mid-transfer** on
@@ -116,5 +116,5 @@ browser, or read the served HTML and confirm it contains the `LOCALES` test.
 - [ ] `npm run test:ci` → 3009 / 0
 - [ ] top bar one row at 320 / 360 / 390 / 430 px, icons visible, labels hidden
 - [ ] top bar labels return above 900 px
-- [ ] resumecraft.ru `/api/health` → `parentVersion: 1.32.0`
+- [ ] prod `/api/health` → `parentVersion: 1.32.0`
 - [ ] the four cvstart.ru path forms in §3, in a real browser

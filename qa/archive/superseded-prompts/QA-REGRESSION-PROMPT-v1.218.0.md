@@ -31,4 +31,4 @@ node scripts/check-changelog-parity.mjs                    # 16 non-EN at v1.218
 
 ## §4 — Sign-off
 
-Suite **2758** green · monograms on all provider surfaces (Settings fields · Usage rows · dashboard chip · Settings "Active" · eval result) · three stale-label bugs fixed · slug pin-list ×17 · changelog parity ×17 at v1.218.0 · README banner+badges ×17 · CONVENTIONS/PROJECT-CONTEXT/CLAUDE refreshed · snapshot regenerated. Deploy: Pages (facts/version), local + resumecraft restart (client + i18n changed).
+Suite **2758** green · monograms on all provider surfaces (Settings fields · Usage rows · dashboard chip · Settings "Active" · eval result) · three stale-label bugs fixed · slug pin-list ×17 · changelog parity ×17 at v1.218.0 · README banner+badges ×17 · CONVENTIONS/PROJECT-CONTEXT/CLAUDE refreshed · snapshot regenerated. Deploy: Pages (facts/version), local + prod restart (client + i18n changed).

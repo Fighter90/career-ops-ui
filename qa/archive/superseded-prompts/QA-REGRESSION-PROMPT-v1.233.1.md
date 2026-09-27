@@ -84,4 +84,4 @@ rather than expanding the table.
 - [ ] `npm run test:e2e:browser` — 116 pass
 - [ ] `grep -ci "use the default"` > 0 in each of the 17 bundles
 - [ ] `grep -c "dev.hh.ru"` = 0 in each of the 17
-- [ ] `/api/health` on resumecraft.ru reports 1.233.1
+- [ ] `/api/health` on the prod server reports 1.233.1

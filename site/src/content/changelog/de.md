@@ -2,6 +2,28 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.238.1] — 2026-09-27
+
+**Stabilitäts-Patch nach der ersten Live-Regression des Produktionsservers: ein Scan zur Zeit und Website-Korrekturen.**
+
+### Behoben
+
+- **Zwei Scans gleichzeitig brachten den Server zum Absturz.** Jedes `GET /api/stream/scan` startete den vollständigen Scanner im Serverprozess ohne Schutz; ein über die UI gestarteter Scan überschnitt sich mit dem stündlichen Timer, und der Prozess starb an *JavaScript heap out of memory* (zweimal, dazwischen 502-Fehler). Jetzt läuft nur ein Scan zur Zeit: eine zweite Anfrage erhält ein SSE-`error` mit dem Code `SCAN_BUSY`, und nichts startet. Der Deploy-Workflow hebt außerdem das Speicherlimit des Servers an (`heap_mb`, Standard 448 MB).
+- **`/help` und `/changelog` auf cvstart.org scrollten auf Handys seitwärts** (ja/zh-`/changelog` auch am Desktop): langer Code und das Inhaltsverzeichnis brechen jetzt um.
+- **Hindi fehlte in den Sprachalternativen der Sitemap**; der i18n-Check der Website vergleicht die Sitemap jetzt mit dem Sprachregister.
+- **Hilfe §19 verlangte, einen Schlüssel zu „allen 8“ Sprachdateien hinzuzufügen** — es sind 17.
+
+### Hinzugefügt
+
+- **Remote-Regression** (`.github/workflows/remote-qa.yml`): jede Route × jede Sprache der ausgerollten App (nur lesend), jede Seite × Sprache × Handy/Desktop auf cvstart.org, jeder Link in den READMEs und im Wiki und auf Wunsch ein echter Scan plus Live-KI-Aufrufe in jeder Sprache.
+- **Server-Deploy-Workflow** (`.github/workflows/deploy.yml`): `recon`, `deploy` (mit bytegenauem Rollback) und `verify` (Smoke-Test und Stabilitätsbericht).
+- Tests 3481 → 3486.
+
+### Anmerkungen
+
+- Der Speicherverbrauch des Scanners selbst wird in dieser Version **nicht** gesenkt: der Schutz verhindert zwei gleichzeitige Scans, und das Drop-in hebt die Obergrenze an. Ein echter Scan über 98 Quellen lässt sich nur im Produktionsnetz profilieren.
+- Der stündliche Timer `career-ops-scan` wird **nicht** geändert; `recon` zeigt jetzt, welche Befehle er ausführt.
+
 ## [1.238.0] — 2026-09-27
 
 **Parent-Parität — career-ops `main` @ `993085ce` (VERSION 1.34.0, 182 Commits seit `de2224a9`). Vier neue Quellen, zehn gespiegelte Provider-Fixes, eine repo-weite SSRF-Lücke geschlossen und ein kostenloser Titel-Fit-Hinweis bei Scan-Ergebnissen.**
@@ -214,7 +236,7 @@ Zweifach abgesichert: `node:vm` über dem echten `withSpinner` und ein Klick in 
 
 ### Behoben
 - **Die mobile Kopfleiste ist wieder einzeilig, mit reinen Icon-Aktionen.** Die Aktionsbuttons wurden auf eine zweite Zeile über die volle Breite gezwungen: Ein Telefon zeigte `[☰ · Suche]` über `[🔔 🌙 Doctor Scan öffnen]` — zwei breite Pillen auf eigener Zeile. Jetzt sind es 36-px-Quadrate (🩺 / ⚡) neben Glocke und Themenumschalter, und bei 320 px passt alles in eine Zeile. Gemessen, nicht geschätzt: Die Dokumentbreite entspricht dem Viewport bei 320, 360, 390 und 430 px sowie im gesamten Band 560–760 px, wo die Buttons zuvor die Suchleiste überlappten. **Die Sprache beeinflusst das mobile Layout nicht mehr**, weil das Label verborgen und der Button ein festes Quadrat ist; oberhalb von 900 px kehren die Labels unverändert zurück.
-- **Der Server lief mit Elternprojekt 1.31.0, obwohl das Release gegen 1.32.0 gebaut wurde.** `/api/health` auf resumecraft.ru meldete `parentVersion: 1.31.0`. 95 Laufzeitdateien synchronisiert, zwei entfernt. Von Browser-QA auf der Live-Oberfläche gefunden.
+- **Der Server lief mit Elternprojekt 1.31.0, obwohl das Release gegen 1.32.0 gebaut wurde.** `/api/health` auf dem Produktionsserver meldete `parentVersion: 1.31.0`. 95 Laufzeitdateien synchronisiert, zwei entfernt. Von Browser-QA auf der Live-Oberfläche gefunden.
 - **`cvstart.ru` stellte jedem Pfad `/ru/` voran, ohne zu prüfen, was schon da war.** `/ru/help` wurde zu `/ru/ru/help`, `/en/help` zu `/ru/en/help`; beide 404. Das Erste bekommt man, wenn man eine URL von der Hauptseite kopiert; das Zweite sperrte englischsprachige Besucher vollständig von der englischen Fassung aus. Ein Pfad, der bereits eines der 16 Sprachpräfixe nennt, geht jetzt unverändert durch, `en` wird entfernt (Englisch liegt in der Wurzel), alles andere bekommt weiterhin `/ru/`.
 
 ### Geändert

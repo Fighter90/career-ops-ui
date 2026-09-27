@@ -8,6 +8,28 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.238.1] — 2026-09-27
+
+**Stabilitetsrettelse efter den første live-regression af produktionsserveren: én scanning ad gangen og rettelser på sitet.**
+
+### Rettet
+
+- **To scanninger på én gang fik serveren til at gå ned.** Hvert `GET /api/stream/scan` kørte hele scanneren i serverprocessen uden beskyttelse; en scanning startet fra UI'et overlappede timeren hver time, og processen døde med *JavaScript heap out of memory* (to gange, med 502-fejl imens). Nu kører én scanning ad gangen: en anden forespørgsel får en SSE-`error` med koden `SCAN_BUSY`, og intet starter. Deploy-workflowet hæver også serverens hukommelsesgrænse (`heap_mb`, standard 448 MB).
+- **`/help` og `/changelog` på cvstart.org scrollede sidelæns på telefoner** (og ja/zh `/changelog` også på desktop): lang kode og indholdsfortegnelsen ombrydes nu.
+- **Hindi manglede i sitemappets sprogalternativer**; sitets i18n-tjek sammenligner nu sitemappet med sprogregistret.
+- **Hjælp §19 bad om at tilføje en nøgle til „alle 8“ sprogfiler** — der er 17.
+
+### Tilføjet
+
+- **Fjern-regression** (`.github/workflows/remote-qa.yml`): hver rute × hvert sprog i den udrullede app (kun læsning), hver side × sprog × telefon/desktop på cvstart.org, hvert link i README'erne og wikien og, på forespørgsel, en rigtig scanning plus live AI-kald på hvert sprog.
+- **Server-deploy-workflow** (`.github/workflows/deploy.yml`): `recon`, `deploy` (med byte-præcis tilbagerulning) og `verify` (røgtest og stabilitetsrapport).
+- Tests 3481 → 3486.
+
+### Noter
+
+- Scannerens eget hukommelsesforbrug reduceres **ikke** i denne udgivelse: beskyttelsen forhindrer to scanninger på én gang, og drop-in'en hæver loftet. Profilering af en rigtig scanning af 98 kilder kræver produktionsnetværket.
+- Timeren `career-ops-scan` hver time ændres **ikke**; `recon` viser nu, hvilke kommandoer den kører.
+
 ## [1.238.0] — 2026-09-27
 
 **Forældre-paritet — career-ops `main` @ `993085ce` (VERSION 1.34.0, 182 commits siden `de2224a9`). Fire nye kilder, ti spejlede leverandørrettelser, et scanner-bredt SSRF-hul lukket, og et gratis titel-fit-hint på scanresultater.**
@@ -220,7 +242,7 @@ Låst to gange: `node:vm` over den ægte `withSpinner` og et klik i en rigtig br
 
 ### Rettet
 - **Den mobile topbjælke er igen én række, med handlinger som rene ikoner.** Handlingsknapperne blev tvunget ned på en anden række i fuld bredde: en telefon viste `[☰ · søg]` over `[🔔 🌙 Doctor Åbn Scan]` — to brede piller på deres egen linje. Nu er de 36 px kvadrater (🩺 / ⚡) ved siden af klokken og temaskifteren, og alt er på én række ved 320 px. Målt, ikke skønnet: dokumentbredden svarer til viewporten ved 320, 360, 390 og 430 px og i hele båndet 560–760 px, hvor knapperne før overlappede søgefeltet. **Sproget påvirker ikke længere det mobile layout**, fordi etiketten er skjult og knappen et fast kvadrat; over 900 px vender etiketterne uændret tilbage.
-- **Serveren kørte forældreprojekt 1.31.0, selv om udgivelsen var bygget mod 1.32.0.** `/api/health` på resumecraft.ru meldte `parentVersion: 1.31.0`. 95 kørselsfiler synkroniseret, to fjernet. Fundet af browser-QA på den live flade.
+- **Serveren kørte forældreprojekt 1.31.0, selv om udgivelsen var bygget mod 1.32.0.** `/api/health` på produktionsserveren meldte `parentVersion: 1.31.0`. 95 kørselsfiler synkroniseret, to fjernet. Fundet af browser-QA på den live flade.
 - **`cvstart.ru` satte `/ru/` foran enhver sti uden at se på, hvad der allerede stod der.** `/ru/help` blev til `/ru/ru/help` og `/en/help` til `/ru/en/help`; begge 404. Det første får man ved at kopiere en URL fra hovedsiden; det andet lukkede engelsktalende besøgende helt ude fra den engelske udgave. En sti, der allerede nævner et af de 16 sprogpræfikser, går nu uændret igennem, `en` fjernes (engelsk ligger i roden), og resten får stadig `/ru/`.
 
 ### Ændret

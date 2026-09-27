@@ -30,4 +30,4 @@ node scripts/check-changelog-parity.mjs                    # 16 non-EN at v1.219
 
 ## §4 — Sign-off
 
-Suite **2768** green · **83 sources** (registry + `/api/scan/sources` + FALLBACK + Sources.astro in lockstep; adapter-registry 78) · a16z #2547 covered · provider monograms on all surfaces incl. the onboarding banner · help §17 "83 adapters (78 EN + 5 RU)" ×17 · changelog parity ×17 at v1.219.0 · README banner+badges ×17 · CONVENTIONS/PROJECT-CONTEXT/CLAUDE refreshed. Deploy: Pages (site + help + facts), local + resumecraft restart.
+Suite **2768** green · **83 sources** (registry + `/api/scan/sources` + FALLBACK + Sources.astro in lockstep; adapter-registry 78) · a16z #2547 covered · provider monograms on all surfaces incl. the onboarding banner · help §17 "83 adapters (78 EN + 5 RU)" ×17 · changelog parity ×17 at v1.219.0 · README banner+badges ×17 · CONVENTIONS/PROJECT-CONTEXT/CLAUDE refreshed. Deploy: Pages (site + help + facts), local + prod restart.

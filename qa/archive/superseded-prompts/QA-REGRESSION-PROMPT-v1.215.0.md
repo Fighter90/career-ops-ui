@@ -37,4 +37,4 @@ node scripts/check-changelog-parity.mjs                    # 16 non-EN at v1.215
 
 ## §5 — Sign-off
 
-Suite **2742** green · help **32 H2 / 121 H3** ×17 · §32 present in all 17 · changelog parity ×17 at v1.215.0 · README banner+badges ×17 · CONVENTIONS/PROJECT-CONTEXT/CLAUDE refreshed · `docs/integrations/openworker.md` (mechanism spec) · site footer link + rebuild (facts + help mirrors) + wiki page/links. Coworker repo `Fighter90/career-ops-coworker` published (17-lang, verified installable). Deploy: Pages (site/ + help changed); resumecraft + local need no server change (docs-only) — restart optional to serve the new help.
+Suite **2742** green · help **32 H2 / 121 H3** ×17 · §32 present in all 17 · changelog parity ×17 at v1.215.0 · README banner+badges ×17 · CONVENTIONS/PROJECT-CONTEXT/CLAUDE refreshed · `docs/integrations/openworker.md` (mechanism spec) · site footer link + rebuild (facts + help mirrors) + wiki page/links. Coworker repo `Fighter90/career-ops-coworker` published (17-lang, verified installable). Deploy: Pages (site/ + help changed); prod + local need no server change (docs-only) — restart optional to serve the new help.

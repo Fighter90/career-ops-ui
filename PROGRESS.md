@@ -8,7 +8,7 @@ Release history belongs in [CHANGELOG.md](CHANGELOG.md), decisions in
 [docs/adr/](docs/adr/), vocabulary in [CONTEXT.md](CONTEXT.md). Anything already
 recoverable from those does **not** belong here.
 
-_Last updated: 2026-09-27 · v1.238.0 live on resumecraft.ru (parent fork `f4f55def`, VERSION 1.34.0)_
+_Last updated: 2026-09-27 · v1.238.1 (single-flight scan + heap drop-in) — deploy to the prod server pending the PR_
 
 ---
 
@@ -26,12 +26,17 @@ Known issues for the shape).
 already contained upstream `2b9fe7ea`. All four ADR-0002 divergences verified intact
 (`p{L}`×4, `providers/telegram.mjs`, `hermes` in `clis.ts`, `vpFixtureEnv`×9).
 
-**Server deploy (resumecraft.ru) is DONE (2026-09-27 19:46 UTC)** via `.github/workflows/deploy.yml`
-(`mode=deploy`, parent `f4f55def`, web-ui `v1.238.0`): `/api/health` ok, version 1.238.0, parentVersion
-1.34.0. `mode=verify` right after: 33 read-only routes 200, unknown route 404, served sources == deployed
-registry (98), app security headers present, `career-ops-ui` / `hermes-gateway` / `claude-bridge` active,
-bridge `/v1/models` 200, 0 error lines in the viewer journal. Rollback material:
-`/opt/career-ops/backups/deploy-20260927T194612Z` on the server.
+**v1.238.1 — stability patch from the first live regression.** The remote QA found the prod viewer
+dying with `FATAL ERROR: JavaScript heap out of memory` (21:03 and 21:16 UTC, core dump, systemd restart,
+208 Caddy 502s in 24 h): a UI-started scan overlapped the hourly `career-ops-scan` timer, and every
+`/api/stream/scan` ran the full scanner in-process with no guard on a 1 GB box (V8 default heap ~240 MB).
+Fix: single-flight scan (`SCAN_BUSY`), and `deploy.yml` sets a `NODE_OPTIONS=--max-old-space-size=448`
+drop-in. Measured locally: `/api/scan-results` +56 MB heap for 8 concurrent requests on prod-sized data,
+`reposts` +15 MB — not the cause alone.
+
+**Remote QA verdicts (2026-09-27, before the fix is deployed):** cvstart.org 170 visits / 85 links — no
+findings; README ×17 + wiki — no broken links; prod UI 17 × 30 routes — only the 502 / half-loaded pages
+caused by the crashes above; locally the same script finds nothing in ~4 min.
 
 ## Next step
 
@@ -53,7 +58,9 @@ Still open:
 - career-ops code scanning: local CodeQL on fork `main` (JS/TS 1223 files, Go, Actions) = **0 results**;
   the alerts on GitHub stay open only because no push workflow (CodeQL included) has run in the fork
   since 2026-07-15 — the user re-enables Actions there and the next push closes them;
-- remote regression is `.github/workflows/remote-qa.yml` (secrets `AUTH_LOGIN` / `AUTH_PASSWORD`);
+- remote regression is `.github/workflows/remote-qa.yml` (secrets `PROD_URL`, `AUTH_LOGIN` / `AUTH_PASSWORD`);
+  the production hostname is never written into the repo — workflows read it from `PROD_URL`, and
+  the report headers do not print it;
 - Actions logs of this public repo are public: keep recon/verify output to versions, states and status
   codes (the first recon printed the profile name and which provider keys are set; its logs were deleted);
 - Telegram end to end (a real message through the bot) is not exercised by `verify`; it checks the

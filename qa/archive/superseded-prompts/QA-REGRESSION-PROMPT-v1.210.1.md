@@ -33,4 +33,4 @@ node scripts/check-changelog-parity.mjs                    # 16 non-EN at v1.210
 
 ## §5 — Sign-off
 
-Suite **2644** green · entity-decode suite **6** (habr added) · CHANGELOG parity ×17 at v1.210.1 · README banner/badges ×17 · help §17 anchor pinned ×16 · CONVENTIONS baseline 2644. Deploy: resumecraft rsync of `server/lib/sources/habr.mjs` + `package.json`, **restart** (habr is loaded at boot). No site/ change → no Pages rebuild needed (facts version bumps via the wiki/badges only).
+Suite **2644** green · entity-decode suite **6** (habr added) · CHANGELOG parity ×17 at v1.210.1 · README banner/badges ×17 · help §17 anchor pinned ×16 · CONVENTIONS baseline 2644. Deploy: prod rsync of `server/lib/sources/habr.mjs` + `package.json`, **restart** (habr is loaded at boot). No site/ change → no Pages rebuild needed (facts version bumps via the wiki/badges only).

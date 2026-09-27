@@ -59,7 +59,7 @@ This defect existed because v1.227.3's own code comment claimed `title_filter` *
 
 ## §7 — Carried forward
 - **SURF-1 · cvstart.ru** — still `https_certificate.state: "new"` after a full API remove/re-add and 50 days stuck. Needs one manual remove/re-add in Settings → Pages, then left alone. **Never verify with local `curl`** (Kaspersky MITM); use `openssl s_client -verify_hostname` or a clean machine.
-- **resumecraft.ru** — Basic-auth gated; needs an unauthenticated `/api/health` + HSTS to be verifiable from a clean machine.
+- **prod server** — Basic-auth gated; needs an unauthenticated `/api/health` + HSTS to be verifiable from a clean machine.
 - **280 px** viewport overflow — documented, not gated.
 
 ## §8 — Sign-off

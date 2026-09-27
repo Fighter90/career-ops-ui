@@ -49,13 +49,13 @@ Three suites call `window.stop()` before asserting no console errors. Chromium r
 **The filter stays narrow** — refused connection, DNS failure, connection reset, any 5xx and every uncaught JS exception still fail the assertion, pinned by a new test.
 
 ## §5 — Manual pass
-1. Run a **full `source=both` scan on resumecraft** and let it finish. It must complete without `connection lost`; `journalctl -u career-ops-ui | grep "Reached heap limit"` must show no new entries.
+1. Run a **full `source=both` scan on prod** and let it finish. It must complete without `connection lost`; `journalctl -u career-ops-ui | grep "Reached heap limit"` must show no new entries.
 2. Compare the RU summary block against a pre-fix run: `Total found`, `Filtered by negative`, `Already-seen dedup`, `New offers added` must all read the same for the same inputs.
 3. `npm run test:e2e:browser` a few times — the locale sweep must not flake.
 
 ## §6 — Carried forward
 - **SURF-1 · cvstart.ru** — domain now **account-verified** (takeover window closed); certificate still `new` after a correct file-level reset. GitHub-side wait, or their support.
-- **resumecraft.ru** — Basic-auth gated; needs an unauthenticated `/api/health` + HSTS to be verifiable from a clean machine.
+- **prod server** — Basic-auth gated; needs an unauthenticated `/api/health` + HSTS to be verifiable from a clean machine.
 - **280 px** viewport overflow — documented, not gated.
 - **Worth considering:** the box has 956 MB RAM and Node caps at 490 MB. The scan now fits with room to spare, but a larger `portals.yml` will approach it again. Either raise the cap (`NODE_OPTIONS=--max-old-space-size=`) or keep an eye on peak heap as the query list grows.
 

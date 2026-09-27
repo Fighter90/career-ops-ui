@@ -44,8 +44,8 @@ No registry, scanner, route-contract, server, i18n-dict or help-bundle change. U
 
 ## §6 — Carried forward (not this release)
 - **SURF-1 · cvstart.ru** — GitHub Pages reports `https_certificate.state: "new"` and `https_enforced: false`; the domain is served GitHub's default `*.github.io` cert, whose SAN list has no `cvstart.ru`, so browsers reject it. DNS is correct (apex → 185.199.108–111.153). The `CNAME` file has been created/deleted three times, and each delete resets Let's Encrypt provisioning. Re-requested via the Pages API; provisioning is asynchronous. **Note for future runs:** a local `curl` here reports HTTP 200 because Kaspersky MITMs TLS and re-signs with its own CA — verify this surface with `openssl s_client` or an uninstrumented machine, never with local curl.
-- **resumecraft.ru** — Basic-auth gated (`WWW-Authenticate: Basic realm="restricted"`); it is only reachable from a browser with cached credentials, so the surface is still unverifiable from a clean machine. Needs an unauthenticated `/api/health` (or a separate health host) plus an HSTS header.
+- **prod server** — Basic-auth gated (`WWW-Authenticate: Basic realm="restricted"`); it is only reachable from a browser with cached credentials, so the surface is still unverifiable from a clean machine. Needs an unauthenticated `/api/health` (or a separate health host) plus an HSTS header.
 - **docs-assistant retrieval** is phrasing-sensitive: doc-shaped queries hit §17, conversational ones fall through to a refusal.
 
 ## §7 — Sign-off
-Unit **2846** · Playwright **99 → 101** · E2E 21/21 + 23/23 · parity ×17 at v1.227.2 · README banner+badges ×17 · CONVENTIONS/PROJECT-CONTEXT/CLAUDE refreshed · site mirrors ×17 rebuilt (facts 1.227.2). Deploy: Pages, local + resumecraft, wiki.
+Unit **2846** · Playwright **99 → 101** · E2E 21/21 + 23/23 · parity ×17 at v1.227.2 · README banner+badges ×17 · CONVENTIONS/PROJECT-CONTEXT/CLAUDE refreshed · site mirrors ×17 rebuilt (facts 1.227.2). Deploy: Pages, local + prod, wiki.

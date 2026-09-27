@@ -1,24 +1,29 @@
 name: Remote QA (prod, site, links)
 
 # Full regression of what is actually deployed, from a clean runner:
-#   prod   — resumecraft.ru behind HTTP basic auth: every route × every UI
+#   prod   — the deployed web-ui behind HTTP basic auth: every route × every UI
 #            locale, read-only (non-GET /api and SSE are aborted in the browser)
 #   site   — cvstart.org: every page × every locale × two viewports + links
 #   links  — every link in README ×17 and in the wiki
 # Reports go to the job summary: counts, routes and short error lines only —
 # never page text or screenshots, because this repo's Actions logs are public.
 #
-# Secrets: AUTH_LOGIN / AUTH_PASSWORD (basic auth for the prod site).
+# Secrets: PROD_URL (origin of the deployed web-ui, e.g. https://example.org),
+#          AUTH_LOGIN / AUTH_PASSWORD (basic auth for it).
 
 on:
   workflow_dispatch:
     inputs:
       prod_url:
-        description: 'Deployed web-ui'
-        default: https://resumecraft.ru
+        description: 'Deployed web-ui (empty = secret PROD_URL; must be under PROD_URL)'
+        default: ''
       site_url:
         description: 'Public site'
         default: https://cvstart.org
+      live:
+        description: 'Also run a real scan + live LLM calls (docs assistant, evaluate) in every locale — costs tokens'
+        type: boolean
+        default: false
   push:
     branches: ['claude/**']
     paths:
@@ -46,13 +51,51 @@ jobs:
       - run: npm ci --no-audit --no-fund && npm i --no-save --no-audit --no-fund playwright@1.56 && npx playwright install --with-deps chromium
       - name: Regression
         env:
-          BASE_URL: ${{ inputs.prod_url || 'https://resumecraft.ru' }}
+          BASE_URL: ${{ inputs.prod_url || secrets.PROD_URL }}
+          PROD_URL: ${{ secrets.PROD_URL }}
           BASIC_USER: ${{ secrets.AUTH_LOGIN }}
           BASIC_PASS: ${{ secrets.AUTH_PASSWORD }}
         run: |
-          [ -n "$BASIC_USER" ] || { echo "::error::secret AUTH_LOGIN is not set"; exit 1; }
+          if [ -z "$PROD_URL" ]; then
+            # push/schedule runs skip rather than go red on a missing secret; a manual run fails.
+            [ "$GITHUB_EVENT_NAME" = workflow_dispatch ] && { echo "::error::secret PROD_URL is not set"; exit 1; }
+            echo "::warning::secret PROD_URL is not set — prod regression skipped"; exit 0
+          fi
+          [ -n "$BASIC_USER" ] && [ -n "$BASIC_PASS" ] || { echo "::error::secrets AUTH_LOGIN / AUTH_PASSWORD are not set"; exit 1; }
+          # The basic-auth secrets only ever go to the production origin, over HTTPS.
+          p="${PROD_URL%/}"
+          [[ "$p" == https://* && ( "$BASE_URL" == "$p" || "$BASE_URL" == "$p/"* ) ]] || { echo "::error::prod_url must be the PROD_URL origin over https — refusing to send credentials elsewhere"; exit 1; }
           set -o pipefail
           node scripts/remote-qa/prod-regression.mjs | tee -a "$GITHUB_STEP_SUMMARY"
+
+  prod-live:
+    name: prod — live scan + LLM × all locales
+    if: github.event_name == 'workflow_dispatch' && inputs.live
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with: { node-version: 22 }
+      - run: npm ci --no-audit --no-fund && npm i --no-save --no-audit --no-fund playwright@1.56 && npx playwright install --with-deps chromium
+      - name: Scan + LLM
+        env:
+          BASE_URL: ${{ inputs.prod_url || secrets.PROD_URL }}
+          PROD_URL: ${{ secrets.PROD_URL }}
+          BASIC_USER: ${{ secrets.AUTH_LOGIN }}
+          BASIC_PASS: ${{ secrets.AUTH_PASSWORD }}
+        run: |
+          if [ -z "$PROD_URL" ]; then
+            # push/schedule runs skip rather than go red on a missing secret; a manual run fails.
+            [ "$GITHUB_EVENT_NAME" = workflow_dispatch ] && { echo "::error::secret PROD_URL is not set"; exit 1; }
+            echo "::warning::secret PROD_URL is not set — prod regression skipped"; exit 0
+          fi
+          [ -n "$BASIC_USER" ] && [ -n "$BASIC_PASS" ] || { echo "::error::secrets AUTH_LOGIN / AUTH_PASSWORD are not set"; exit 1; }
+          # The basic-auth secrets only ever go to the production origin, over HTTPS.
+          p="${PROD_URL%/}"
+          [[ "$p" == https://* && ( "$BASE_URL" == "$p" || "$BASE_URL" == "$p/"* ) ]] || { echo "::error::prod_url must be the PROD_URL origin over https — refusing to send credentials elsewhere"; exit 1; }
+          set -o pipefail
+          node scripts/remote-qa/prod-llm.mjs | tee -a "$GITHUB_STEP_SUMMARY"
 
   site:
     name: site — all pages × all locales

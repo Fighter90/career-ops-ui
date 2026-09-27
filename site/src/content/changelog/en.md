@@ -8,6 +8,28 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.238.1] — 2026-09-27
+
+**Stability patch from the first live regression of the production server: one scan at a time, and site fixes.**
+
+### Fixed
+
+- **Two scans at once crashed the server.** Every `GET /api/stream/scan` ran the full scanner inside the server process with no guard; a scan started from the UI overlapped the hourly timer and the process died with *JavaScript heap out of memory* (twice, with 502s meanwhile). Scans are now one at a time: a second request gets an SSE `error` with code `SCAN_BUSY` and nothing starts. The deploy workflow also raises the server's heap limit (`heap_mb`, default 448 MB).
+- **cvstart.org `/help` and `/changelog` scrolled sideways on phones** (and ja/zh `/changelog` on desktop) — long code and table-of-contents lines now wrap.
+- **Hindi was missing from the sitemap's language alternates**; the site's i18n check now compares the sitemap map with the locale registry.
+- **Help §19 told translators to add a key to "all 8" language files** — there are 17.
+
+### Added
+
+- **Remote regression** (`.github/workflows/remote-qa.yml`): every route × every language on the deployed app (read-only), every page × language × phone/desktop on cvstart.org, every link in the READMEs and the wiki, and — on request — one real scan plus live AI calls in every language.
+- **Server deploy workflow** (`.github/workflows/deploy.yml`): `recon`, `deploy` (with a byte-exact rollback) and `verify` (smoke test plus stability report).
+- Tests 3481 → 3486.
+
+### Notes
+
+- The scanner's own memory use is **not** reduced in this release: the guard stops two scans running at once and the heap drop-in raises the ceiling. Profiling a real 98-source scan needs the production network.
+- The hourly `career-ops-scan` timer is **not** changed; `recon` now shows which commands it runs.
+
 ## [1.238.0] — 2026-09-27
 
 **Parent parity — career-ops `main` @ `993085ce` (VERSION 1.34.0, 182 commits since `de2224a9`). Four new sources, ten mirrored provider fixes, a scanner-wide SSRF gap closed, and a free title-fit hint on scan results.**
@@ -229,7 +251,7 @@ Locked twice. `tests/with-spinner-preserves-children.test.mjs` runs the real `wi
 
 ### Fixed
 - **The mobile top bar is one row again, with icon-only actions.** The action buttons were forced onto a full-width second row, so a phone showed `[☰ · search]` above `[🔔 🌙 Диагностика Открыть Scan]` — two wide pills on a line of their own. Doctor and Open Scan are now 36 px squares (🩺 / ⚡) beside the bell and the theme toggle, and everything fits one row at 320 px. Measured, not eyeballed: document width equals viewport at 320, 360, 390 and 430 px, and across 560–760 px — the band where the buttons used to overlap the search pill. **Locale no longer affects the mobile layout at all**, because the label is hidden and the button is a fixed square; above 900 px the labels return unchanged. The accessible name comes from `aria-label`, since a `display:none` label is dropped from the name computation.
-- **The server ran parent 1.31.0 while the release was built against 1.32.0.** v1.231.0 was a parity release, but `/opt/career-ops/src` held 1.31.0 files, so `/api/health` on resumecraft.ru reported `parentVersion: 1.31.0`. 95 runtime files were synced and two removed (`plugins-registry/theirstack.json`, retired upstream; `lib/context-budget.test.mjs`, moved to `tests/`). Reported by browser QA against the live surface.
+- **The server ran parent 1.31.0 while the release was built against 1.32.0.** v1.231.0 was a parity release, but `/opt/career-ops/src` held 1.31.0 files, so `/api/health` on the production server reported `parentVersion: 1.31.0`. 95 runtime files were synced and two removed (`plugins-registry/theirstack.json`, retired upstream; `lib/context-budget.test.mjs`, moved to `tests/`). Reported by browser QA against the live surface.
 - **`cvstart.ru` prepended `/ru/` to every path, whatever was already there.** `cvstart.ru/ru/help` became `cvstart.org/ru/ru/help` and `cvstart.ru/en/help` became `cvstart.org/ru/en/help` — both 404. The first is what you get by copying a URL from the main site; the second locked English visitors out of the English site entirely, since any language prefix was overwritten. A path already naming one of the 16 locale prefixes now passes through, `en` is stripped (cvstart.org serves English at the root and has no `/en/`), and everything else still gets `/ru/`. The locale test is anchored, so `/enterprise/` is not mistaken for `en`.
 
 ### Changed

@@ -124,4 +124,4 @@ Doctor there too and confirm the label comes back intact, not doubled.
 - [ ] Manual pass at 320 px: two consecutive Doctor taps, and the search
       open/close cycle with text in the field
 - [ ] All five top-bar actions measure 36×44
-- [ ] `/api/health` on resumecraft.ru reports 1.231.3
+- [ ] `/api/health` on the prod server reports 1.231.3

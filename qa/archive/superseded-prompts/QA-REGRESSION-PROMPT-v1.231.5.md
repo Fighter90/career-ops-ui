@@ -66,5 +66,5 @@ version, so "deps only" is not the same as "risk free":
 - [ ] Playwright narrow-viewport — 4 pass
 - [ ] Site rebuilt: 86 pages, 17 mirrors
 - [ ] Manual: `#/config` saves, an upload works, the landing page renders
-- [ ] `/api/health` on resumecraft.ru reports 1.231.5
+- [ ] `/api/health` on the prod server reports 1.231.5
 - [ ] GitHub Dependabot alerts: 0 open

@@ -23,4 +23,4 @@ node scripts/check-changelog-parity.mjs                    # 16 non-EN at v1.217
 
 ## §3 — Sign-off
 
-Suite **2756** green · changelog parity ×17 at v1.217.1 · README banner+badges ×17 · CONVENTIONS/PROJECT-CONTEXT/CLAUDE refreshed. No app-code change → local + resumecraft need no restart (Pages picks up the new facts/version).
+Suite **2756** green · changelog parity ×17 at v1.217.1 · README banner+badges ×17 · CONVENTIONS/PROJECT-CONTEXT/CLAUDE refreshed. No app-code change → local + prod need no restart (Pages picks up the new facts/version).

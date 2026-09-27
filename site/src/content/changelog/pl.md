@@ -9,6 +9,28 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.238.1] — 2026-09-27
+
+**Poprawka stabilności po pierwszej regresji na żywo serwera produkcyjnego: jeden skan naraz i poprawki strony.**
+
+### Naprawiono
+
+- **Dwa skany naraz wywracały serwer.** Każde `GET /api/stream/scan` uruchamiało pełny skaner w procesie serwera bez żadnej ochrony; skan z UI nałożył się na cogodzinny timer i proces padł z *JavaScript heap out of memory* (dwa razy, w międzyczasie błędy 502). Teraz jeden skan naraz: drugie żądanie dostaje SSE `error` z kodem `SCAN_BUSY` i nic nie startuje. Workflow wdrożenia podnosi też limit pamięci serwera (`heap_mb`, domyślnie 448 MB).
+- **`/help` i `/changelog` na cvstart.org przewijały się w bok na telefonie** (a `/changelog` ja/zh także na desktopie): długi kod i spis treści teraz się zawijają.
+- **Brakowało hindi w alternatywach językowych sitemapy**; kontrola i18n strony porównuje teraz sitemapę z rejestrem języków.
+- **Pomoc §19 kazała dodać klucz do „wszystkich 8” plików językowych** — jest ich 17.
+
+### Dodano
+
+- **Zdalna regresja** (`.github/workflows/remote-qa.yml`): każda trasa × każdy język wdrożonej aplikacji (tylko odczyt), każda strona × język × telefon/desktop na cvstart.org, każdy link w README i wiki oraz, na żądanie, prawdziwy skan i wywołania AI na żywo w każdym języku.
+- **Workflow wdrożenia serwera** (`.github/workflows/deploy.yml`): `recon`, `deploy` (z dokładnym wycofaniem) i `verify` (test dymny i raport stabilności).
+- Testy 3481 → 3486.
+
+### Uwagi
+
+- Zużycie pamięci przez sam skaner **nie** zostało w tym wydaniu zmniejszone: ochrona nie pozwala na dwa skany naraz, a drop-in podnosi sufit. Profilowanie prawdziwego skanu 98 źródeł wymaga sieci produkcyjnej.
+- Cogodzinny timer `career-ops-scan` **nie** został zmieniony; `recon` pokazuje teraz, jakie polecenia uruchamia.
+
 ## [1.238.0] — 2026-09-27
 
 **Parytet z rodzicem — career-ops `main` @ `993085ce` (VERSION 1.34.0, 182 commity od `de2224a9`). Cztery nowe źródła, dziesięć zwierciadlanych poprawek dostawców, zamknięta luka SSRF w całym skanerze i darmowa podpowiedź dopasowania tytułu w wynikach skanu.**
@@ -221,7 +243,7 @@ Zablokowane dwukrotnie: `node:vm` na prawdziwym `withSpinner` i kliknięcie w pr
 
 ### Naprawiono
 - **Mobilny górny pasek znów mieści się w jednym wierszu, akcje tylko ikonami.** Przyciski akcji były wypychane do drugiego wiersza na całą szerokość: telefon pokazywał `[☰ · szukaj]` nad `[🔔 🌙 Doctor Otwórz Scan]` — dwie szerokie pigułki we własnym wierszu. Teraz to kwadraty 36 px (🩺 / ⚡) obok dzwonka i przełącznika motywu, a przy 320 px wszystko mieści się w jednym wierszu. Zmierzone, nie oszacowane na oko: szerokość dokumentu równa się widocznemu obszarowi przy 320, 360, 390 i 430 px oraz w całym paśmie 560–760 px, gdzie wcześniej przyciski nachodziły na pole wyszukiwania. **Język nie wpływa już na układ mobilny**, bo etykieta jest ukryta, a przycisk to stały kwadrat; powyżej 900 px etykiety wracają bez zmian.
-- **Serwer działał na projekcie nadrzędnym 1.31.0, choć wydanie zbudowano pod 1.32.0.** `/api/health` na resumecraft.ru zgłaszał `parentVersion: 1.31.0`. Zsynchronizowano 95 plików wykonawczych, dwa usunięto. Wykryte przez QA w przeglądarce na powierzchni produkcyjnej.
+- **Serwer działał na projekcie nadrzędnym 1.31.0, choć wydanie zbudowano pod 1.32.0.** `/api/health` na serwerze produkcyjnym zgłaszał `parentVersion: 1.31.0`. Zsynchronizowano 95 plików wykonawczych, dwa usunięto. Wykryte przez QA w przeglądarce na powierzchni produkcyjnej.
 - **`cvstart.ru` dodawał `/ru/` do każdej ścieżki, nie patrząc, co już tam było.** `/ru/help` stawało się `/ru/ru/help`, a `/en/help` — `/ru/en/help`; oba 404. Pierwsze to efekt skopiowania adresu z głównej witryny; drugie całkowicie odcinało anglojęzycznego odwiedzającego od wersji angielskiej. Teraz ścieżka nazywająca już jeden z 16 prefiksów przechodzi bez zmian, `en` jest usuwane (angielski jest w katalogu głównym), reszta nadal dostaje `/ru/`.
 
 ### Zmieniono

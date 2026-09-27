@@ -31,4 +31,4 @@ node --test tests/playwright-smoke.mjs       # 20/20
 
 ## §3 — Sign-off
 
-Unit suite **2618** green (unchanged — no unit tests added/removed) · CHANGELOG parity ×17 at v1.207.1 · README badge+banner ×17 · site builds clean (86 pages) · smoke 20/20 · **no server/SPA/app-behavior change**, no new dependency, no parent edits. Deploy: Pages rebuild refreshes cvstart.org with the overflow fix; resumecraft.ru re-synced (app byte-identical to 1.207.0, version footer → 1.207.1).
+Unit suite **2618** green (unchanged — no unit tests added/removed) · CHANGELOG parity ×17 at v1.207.1 · README badge+banner ×17 · site builds clean (86 pages) · smoke 20/20 · **no server/SPA/app-behavior change**, no new dependency, no parent edits. Deploy: Pages rebuild refreshes cvstart.org with the overflow fix; prod re-synced (app byte-identical to 1.207.0, version footer → 1.207.1).

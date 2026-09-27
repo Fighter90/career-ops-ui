@@ -1,7 +1,7 @@
 name: Deploy (server)
 
 # Manual deploy of the parent career-ops checkout + this web-ui to the
-# production box (Timeweb server 8801467, resumecraft.ru).
+# production box (Timeweb server 8801467).
 #
 #   mode=recon   read-only: prints both git checkouts, versions, the state of
 #                the systemd services (web-ui, Hermes gateway), and /api/health.
@@ -49,9 +49,12 @@ on:
       port:
         description: 'Port the app listens on at 127.0.0.1 (see recon)'
         default: '4317'
+      heap_mb:
+        description: 'V8 old-space limit for the viewer in MB (systemd drop-in); 0 = leave as is'
+        default: '448'
       public_url:
-        description: 'Public origin checked over HTTPS after the run'
-        default: https://resumecraft.ru
+        description: 'Public origin checked over HTTPS after the run (empty = secret PROD_URL)'
+        default: ''
 
 permissions:
   contents: read
@@ -179,6 +182,12 @@ jobs:
             printf '%-18s %s\n' "$u" "$(systemctl is-active "$u" 2>/dev/null)"
           done
           systemctl list-timers --all --no-pager 2>/dev/null | grep -E 'career|hermes' || true
+          sec hourly-scan
+          # Which commands the timer runs (secrets masked) — decides whether it scans in-process.
+          grep -nE "curl|node|/api/|scan" /opt/career-ops/hourly-scan.sh 2>/dev/null \
+            | sed -E 's/(token|key|pass(word)?|auth(orization)?|bearer|-u)[=: ]+[^ "]*/\1=…/Ig; s#https?://[^/@ ]+@#https://…@#g' | head -15
+          sec node-heap
+          systemctl show -p Environment --value career-ops-ui 2>/dev/null | tr ' ' '\n' | grep -E '^NODE_OPTIONS=' || echo "NODE_OPTIONS unset (V8 default heap)"
           sec listeners; ss -ltnp 2>/dev/null | awk 'NR>1{print $4, $6}' | grep -E 'node|python|hermes|caddy' || true
           sec hermes-link
           grep -hoE '^HERMES_BASE_URL=.*' "$APP_DIR/.env" 2>/dev/null || echo "HERMES_BASE_URL unset (default http://127.0.0.1:8642/v1)"
@@ -186,10 +195,11 @@ jobs:
             printf '%s -> %s\n' "$u" "$(curl -s -o /dev/null -w '%{http_code}' --max-time 5 "$u")"
           done
           sec health
-          curl -fsS --max-time 10 "http://127.0.0.1:$PORT/api/health" | node -e '
+          if ! h=$(curl -fsS --max-time 10 "http://127.0.0.1:$PORT/api/health"); then echo "health: viewer not answering on :$PORT"; else echo "$h" | node -e '
             let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const h=JSON.parse(s);
               console.log("ok="+h.ok+" version="+h.version+" parentVersion="+h.parentVersion+" warnings="+h.warnings);
-              for (const c of h.checks||[]) if (c.required && !c.ok) console.log("REQUIRED FAIL: "+c.name);})'
+              for (const c of h.checks||[]) if (c.required && !c.ok) console.log("REQUIRED FAIL: "+c.name);})'; fi
+          true
           REMOTE
 
       - name: Deploy
@@ -200,9 +210,11 @@ jobs:
           UI_REF: ${{ inputs.ui_ref }}
           SERVICE: ${{ inputs.service }}
           PORT: ${{ inputs.port }}
+          HEAP_MB: ${{ inputs.heap_mb }}
         run: |
+          [[ "$HEAP_MB" =~ ^[0-9]{1,5}$ ]] || { echo "::error::heap_mb must be a number"; exit 1; }
           # shellcheck disable=SC2029  # the inputs are meant to expand locally
-          ssh prod "APP_DIR='$APP_DIR' PARENT_REF='$PARENT_REF' UI_REF='$UI_REF' SERVICE='$SERVICE' PORT='$PORT' bash -s" <<'REMOTE'
+          ssh prod "APP_DIR='$APP_DIR' PARENT_REF='$PARENT_REF' UI_REF='$UI_REF' SERVICE='$SERVICE' PORT='$PORT' HEAP_MB='$HEAP_MB' bash -s" <<'REMOTE'
           set -euo pipefail
           UI_DIR="$APP_DIR/web-ui"
           SERVICE=${SERVICE:-career-ops-ui}
@@ -294,6 +306,19 @@ jobs:
           echo "parent now $(g "$APP_DIR" log -1 --format='%h %s' "$PARENT_REF") VERSION=$want_parent"
           echo "web-ui now $UI_REF ($(node -p "require('$UI_DIR/package.json').version"))"
           install_deps
+          # V8's default heap on this 1 GB box (~240 MB) was exhausted by in-process
+          # scans (FATAL "JavaScript heap out of memory", 2026-09-27, twice).
+          if [ "$HEAP_MB" != 0 ]; then
+            dropin="${SYSTEMD_DIR:-/etc/systemd/system}/$SERVICE.service.d/heap.conf"
+            want="[Service]
+          Environment=NODE_OPTIONS=--max-old-space-size=$HEAP_MB"
+            if [ "$(cat "$dropin" 2>/dev/null)" != "$want" ]; then
+              install -d "$(dirname "$dropin")"
+              printf '%s\n' "$want" > "$dropin"
+              systemctl daemon-reload
+              echo "heap drop-in set: --max-old-space-size=$HEAP_MB"
+            fi
+          fi
           systemctl restart "$SERVICE"
           healthy "$UI_REF" "$want_parent"
           trap - ERR
@@ -355,14 +380,26 @@ jobs:
           errs=$(journalctl -u "${SERVICE:-career-ops-ui}" --since "$since" -p err --no-pager -q 2>/dev/null | wc -l)
           echo "journal error lines for ${SERVICE:-career-ops-ui} since start: $errs"
           [ "$errs" = 0 ] || echo "::warning::$errs error lines in the journal since start (not printed: may contain personal data)"
+          echo "--- stability (last 24h): exits, OOM, memory, proxy errors — kinds only, no payloads"
+          journalctl -u "${SERVICE:-career-ops-ui}" --since "-24h" --no-pager -o short-iso 2>/dev/null \
+            | grep -E "Main process exited|Failed with result|Scheduled restart|Started |Stopped |FATAL ERROR|heap out of memory|RangeError|TypeError|ReferenceError|ERR_[A-Z_]+|uncaught|Unhandled" \
+            | sed -E 's/(Error: .{0,80}).*/\1…/' | tail -20
+          journalctl -k --since "-24h" --no-pager 2>/dev/null | grep -iE "out of memory|oom-kill|killed process" | sed -E 's/(task=|comm=)[^ ,]*/\1…/g' | tail -5 || true
+          free -m | head -2
+          systemctl show -p MemoryCurrent -p MemoryPeak -p MemoryMax --value "${SERVICE:-career-ops-ui}" 2>/dev/null | paste -sd' ' | sed 's/^/memory current|peak|max: /'
+          c502=$(journalctl -u caddy --since "-24h" --no-pager 2>/dev/null | grep -c '"status":502' || true)
+          echo "caddy 502 responses (24h): $c502"
+          journalctl -u caddy --since "-24h" --no-pager 2>/dev/null | grep -oE '"error":"[^"]{0,120}' | sed -E 's/[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+:[0-9]+/<addr>/g' | sort | uniq -c | sort -rn | head -5
           exit $fail
           REMOTE
 
       - name: Public check (HTTPS)
         env:
-          PUBLIC_URL: ${{ inputs.public_url }}
+          PUBLIC_URL: ${{ inputs.public_url || secrets.PROD_URL }}
         run: |
           set -euo pipefail
+          [ -n "$PUBLIC_URL" ] || { echo "::notice::no public_url and no PROD_URL secret — public check skipped"; exit 0; }
+          PUBLIC_URL="${PUBLIC_URL%/}"
           # The site sits behind HTTP basic auth, so 401 means "up and gated".
           for p in / /api/health; do
             code=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 15 "$PUBLIC_URL$p")

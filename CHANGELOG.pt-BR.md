@@ -8,6 +8,28 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.238.1] — 2026-09-27
+
+**Correção de estabilidade após a primeira regressão ao vivo do servidor de produção: um scan por vez e correções do site.**
+
+### Corrigido
+
+- **Dois scans ao mesmo tempo derrubavam o servidor.** Cada `GET /api/stream/scan` rodava o scanner completo dentro do processo, sem proteção; um scan iniciado pela UI coincidiu com o timer horário e o processo caiu com *JavaScript heap out of memory* (duas vezes, com erros 502 no meio). Agora é um scan por vez: uma segunda requisição recebe um `error` SSE com código `SCAN_BUSY` e nada começa. O workflow de deploy também aumenta o limite de memória do servidor (`heap_mb`, padrão 448 MB).
+- **`/help` e `/changelog` do cvstart.org rolavam para os lados no celular** (e `/changelog` em ja/zh no desktop): código longo e o índice agora quebram linha.
+- **O hindi faltava nas alternativas de idioma do sitemap**; a checagem i18n do site agora compara o sitemap com o registro de idiomas.
+- **A Ajuda §19 mandava adicionar a chave nos "8" arquivos de idioma** — são 17.
+
+### Adicionado
+
+- **Regressão remota** (`.github/workflows/remote-qa.yml`): cada rota × cada idioma do app implantado (somente leitura), cada página × idioma × celular/desktop do cvstart.org, cada link dos README e da wiki e, sob demanda, um scan real e chamadas de IA ao vivo em cada idioma.
+- **Workflow de deploy do servidor** (`.github/workflows/deploy.yml`): `recon`, `deploy` (com rollback exato) e `verify` (teste de fumaça e relatório de estabilidade).
+- Testes 3481 → 3486.
+
+### Notas
+
+- O uso de memória do próprio scanner **não** é reduzido nesta versão: a proteção impede dois scans ao mesmo tempo e o drop-in eleva o teto. Perfilar um scan real de 98 fontes exige a rede de produção.
+- O timer horário `career-ops-scan` **não** muda; o `recon` agora mostra quais comandos ele executa.
+
 ## [1.238.0] — 2026-09-27
 
 **Paridade com o pai — career-ops `main` @ `993085ce` (VERSION 1.34.0, 182 commits desde `de2224a9`). Quatro fontes novas, dez correções de provedores espelhadas, uma brecha de SSRF em todo o scanner fechada, e uma dica gratuita de ajuste de título nos resultados do scan.**
@@ -220,7 +242,7 @@ Travado duas vezes: `node:vm` sobre o `withSpinner` real e um clique em navegado
 
 ### Corrigido
 - **A barra superior mobile voltou a uma única linha, com ações só de ícone.** Os botões eram forçados para uma segunda linha de largura total, então o telefone mostrava `[☰ · busca]` acima de `[🔔 🌙 Doctor Abrir Scan]` — duas pílulas largas em linha própria. Agora são quadrados de 36 px (🩺 / ⚡) ao lado do sino e do alternador de tema, e tudo cabe em uma linha a 320 px. Medido, não estimado: a largura do documento é igual à viewport a 320, 360, 390 e 430 px, e em toda a faixa 560–760 px, onde antes os botões se sobrepunham à barra de busca. **O idioma não afeta mais o layout mobile**, pois o rótulo está oculto e o botão é um quadrado fixo; acima de 900 px os rótulos voltam inalterados.
-- **O servidor rodava o pai 1.31.0 embora a versão tenha sido compilada contra 1.32.0.** `/api/health` no resumecraft.ru informava `parentVersion: 1.31.0`. Foram sincronizados 95 arquivos de execução e dois removidos. Detectado por QA de navegador na superfície em produção.
+- **O servidor rodava o pai 1.31.0 embora a versão tenha sido compilada contra 1.32.0.** `/api/health` no servidor de produção informava `parentVersion: 1.31.0`. Foram sincronizados 95 arquivos de execução e dois removidos. Detectado por QA de navegador na superfície em produção.
 - **O `cvstart.ru` prefixava `/ru/` a qualquer caminho, sem olhar o que já havia.** `/ru/help` virava `/ru/ru/help` e `/en/help` virava `/ru/en/help`; ambos 404. O primeiro é o que se obtém copiando uma URL do site principal; o segundo trancava o visitante de língua inglesa fora da versão em inglês. Agora um caminho que já nomeie um dos 16 prefixos passa como está, `en` é removido (o inglês fica na raiz) e o resto continua recebendo `/ru/`.
 
 ### Alterado

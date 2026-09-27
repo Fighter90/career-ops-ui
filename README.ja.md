@@ -7,7 +7,7 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-3481%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3486%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
@@ -17,7 +17,7 @@ _非公式 UI — career-ops / santifer とは提携しておらず、承認も�
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.238.0** — **career-ops 1.34.0 との親パリティ:新しいソース 4 件(Eploy、HiringRoom、PeopleSoft Candidate Gateway、PrevueAPS → 98)、ミラーされたプロバイダー修正 10 件、スキャナー全体にわたる SSRF の穴を 1 件塞ぎました** — DNS リバインディングガードは、スキャナーが素の `fetch` の代わりにタイムアウトラッパーを注入するため実際のスキャンでは一度も走っていませんでしたが、いまはそのラッパーの内側で走ります。Rippling は v2 ボード API へ移行し、Recruitee は複数拠点の求人をまとめてデモ求人を落とし、Workday と BambooHR は死んだボードと空のボードを見分け、`#/scan` の行にはプロフィールのターゲットロールに対する無料の**strong / related / weak 適合**ヒントが付きます。**3481 件のテスト · ブラウザー 116 件。**
+> **🆕 最新リリース — v1.238.1** — **安定性パッチ:スキャンは同時に 1 つだけ** — 2 つのスキャンが同時に走る(クリックと毎時タイマー)とサーバーのメモリが尽きて再起動していました。2 つ目には「すでに実行中」という明確なメッセージが返るようになりました。cvstart.org はスマートフォンで横スクロールしなくなり、ヒンディー語ページがサイトマップに戻りました。**3486 テスト · ブラウザー 116。**
 >
 > **前バージョン — v1.237.1** — **外部 QA パスから生まれたパッチ。** Jobstreet の修正が外部から確認されました:AU/NZ/HK/MY の各ホストでは `/id/job/<id>` がきれいな 404 を返し、`/job/<id>` は実際に保護されたルートに到達します——失われていたリンクは実在するものでした。前バージョンが追加した部分に 2 件の欠陥:**書籍リンク**はラベルはローカライズされていましたがリンク先はそうではなく、ロシア語ラベルが英語版へ導いていました——いまは `data-i18n-href` アプライヤーが `ru` をロシア語版へ送ります。そして **SEEK がホストを移行中**(`www.seek.com.au` → `au.seek.com`)のため、API パスが `redirect:'error'` のトランスポートへリダイレクトを始める前に `au.seek.com` と `nz.seek.com` を許可リストに追加しました。件数は **94** ソースのまま変わりません。**3210 件 · ブラウザー 116 件。**
 

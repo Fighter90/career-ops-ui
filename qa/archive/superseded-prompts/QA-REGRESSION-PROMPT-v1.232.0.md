@@ -84,4 +84,4 @@ and UI descriptors are both 45 and a test asserts they stay equal.
 - [ ] `npm run test:ci` — 3018 pass, exit code captured directly
 - [ ] `npm run test:e2e:browser` — 105 pass
 - [ ] Manual: profile at 1280/1440, config save, OLLAMA_API_KEY field
-- [ ] `/api/health` on resumecraft.ru reports 1.232.0
+- [ ] `/api/health` on the prod server reports 1.232.0

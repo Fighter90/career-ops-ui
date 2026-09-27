@@ -2,7 +2,7 @@
 /**
  * prod-regression.mjs — read-only browser regression of a DEPLOYED web-ui.
  *
- *   BASE_URL=https://resumecraft.ru BASIC_USER=… BASIC_PASS=… node scripts/remote-qa/prod-regression.mjs
+ *   BASE_URL=https://<prod-host> BASIC_USER=… BASIC_PASS=… node scripts/remote-qa/prod-regression.mjs
  *
  * Every registered route × every UI locale, plus a handful of client-only
  * interactions (theme toggle, ⌘K palette, 404 route, narrow viewport).
@@ -90,7 +90,7 @@ async function settle(page) {
     const main = document.querySelector('#app, main, #view, #content') || document.body;
     return main && main.innerText.trim().length > 20;
   }, null, { timeout: 20000 }).catch(() => {});
-  await page.waitForLoadState('networkidle', { timeout: 15000 }).catch(() => {});
+  await page.waitForLoadState('networkidle', { timeout: 8000 }).catch(() => {});
 }
 
 function drain(locale, route, bag) {
@@ -103,10 +103,17 @@ function drain(locale, route, bag) {
 
 let visits = 0;
 const t0 = Date.now();
-for (const locale of LOCALES) {
+// Locales run in parallel (each in its own context) — 510 full page loads of a
+// data-heavy instance do not fit a CI job one at a time.
+const CONCURRENCY = Number(process.env.CONCURRENCY || 4);
+const queue = [...LOCALES];
+async function localeWorker() {
+  while (queue.length) await runLocale(queue.shift());
+}
+async function runLocale(locale) {
   const { ctx, page, bag } = await newPage(locale);
   const r0 = await page.goto(BASE + '/', { waitUntil: 'domcontentloaded' });
-  if (!r0 || r0.status() !== 200) { add(locale, '/', 'http', `shell returned ${r0 && r0.status()}`); await ctx.close(); continue; }
+  if (!r0 || r0.status() !== 200) { add(locale, '/', 'http', `shell returned ${r0 && r0.status()}`); await ctx.close(); return; }
   await settle(page); // let the landing view's own requests finish before leaving it
   for (const route of ROUTES) {
     visits++;
@@ -145,6 +152,7 @@ for (const locale of LOCALES) {
   }
   await ctx.close();
 }
+await Promise.all(Array.from({ length: Math.min(CONCURRENCY, LOCALES.length) }, localeWorker));
 
 // Client-only interactions (en): nothing here reaches the server except GETs.
 {
@@ -186,7 +194,7 @@ const md = (v) => String(v).replace(/\\/g, '\\\\').replace(/\|/g, '\\|').replace
 const byKind = {};
 for (const f of findings) byKind[f.kind] = (byKind[f.kind] || 0) + 1;
 const lines = [
-  `## Prod regression — ${new URL(BASE).host}`,
+  '## Prod regression',
   '',
   `${LOCALES.length} locales × ${ROUTES.length} routes = ${visits} page visits, plus interactions and a 390px sweep, in ${Math.round((Date.now() - t0) / 1000)}s.`,
   '',

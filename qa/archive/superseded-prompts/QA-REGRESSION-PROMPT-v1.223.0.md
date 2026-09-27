@@ -36,4 +36,4 @@ Run a live ⚡ eval on `#/evaluate` with any in-process provider key set (OpenRo
 
 ## §5 — Sign-off
 
-Suite **2783** green · successful live eval renders `badge-ok` · help §32 ×17 + README + openworker.md document the 3 install paths + one-command · Recruitee quoted-angle covered end-to-end · parity ×17 · README banner+badges ×17 · CONVENTIONS/PROJECT-CONTEXT/CLAUDE refreshed. Deploy: Pages (facts/version), local + resumecraft restart.
+Suite **2783** green · successful live eval renders `badge-ok` · help §32 ×17 + README + openworker.md document the 3 install paths + one-command · Recruitee quoted-angle covered end-to-end · parity ×17 · README banner+badges ×17 · CONVENTIONS/PROJECT-CONTEXT/CLAUDE refreshed. Deploy: Pages (facts/version), local + prod restart.

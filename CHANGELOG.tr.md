@@ -2,6 +2,28 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.238.1] — 2026-09-27
+
+**Üretim sunucusunun ilk canlı regresyonundan sonra kararlılık yaması: aynı anda tek tarama ve site düzeltmeleri.**
+
+### Düzeltildi
+
+- **Aynı anda iki tarama sunucuyu çökertiyordu.** Her `GET /api/stream/scan`, tam tarayıcıyı hiçbir koruma olmadan sunucu sürecinin içinde çalıştırıyordu; arayüzden başlatılan bir tarama saatlik zamanlayıcıyla çakıştı ve süreç *JavaScript heap out of memory* hatasıyla öldü (iki kez, arada 502 hataları). Artık aynı anda tek tarama çalışıyor: ikinci istek `SCAN_BUSY` kodlu bir SSE `error` alıyor ve hiçbir şey başlamıyor. Dağıtım iş akışı ayrıca sunucunun bellek sınırını yükseltiyor (`heap_mb`, varsayılan 448 MB).
+- **cvstart.org'da `/help` ve `/changelog` telefonda yana kayıyordu** (ja/zh `/changelog` masaüstünde de): uzun kod ve içindekiler artık satır kırıyor.
+- **Hintçe, site haritasının dil alternatiflerinde yoktu**; sitenin i18n denetimi artık site haritasını dil kaydıyla karşılaştırıyor.
+- **Yardım §19, anahtarın "8 dil dosyasının tümüne" eklenmesini söylüyordu** — 17 dosya var.
+
+### Eklendi
+
+- **Uzaktan regresyon** (`.github/workflows/remote-qa.yml`): dağıtılmış uygulamanın her rotası × her dili (salt okunur), cvstart.org'un her sayfası × dili × telefon/masaüstü, README'lerdeki ve wiki'deki her bağlantı ve istenirse her dilde gerçek bir tarama ile canlı yapay zekâ çağrıları.
+- **Sunucu dağıtım iş akışı** (`.github/workflows/deploy.yml`): `recon`, `deploy` (bayt düzeyinde geri alma ile) ve `verify` (duman testi ve kararlılık raporu).
+- Testler 3481 → 3486.
+
+### Notlar
+
+- Tarayıcının kendi bellek kullanımı bu sürümde **azaltılmadı**: koruma aynı anda iki taramayı engelliyor, drop-in ise tavanı yükseltiyor. 98 kaynaklı gerçek bir taramanın profili ancak üretim ağında çıkarılabilir.
+- Saatlik `career-ops-scan` zamanlayıcısı **değiştirilmedi**; `recon` artık hangi komutları çalıştırdığını gösteriyor.
+
 ## [1.238.0] — 2026-09-27
 
 **Üst proje eşleşmesi — career-ops `main` @ `993085ce` (VERSION 1.34.0, `de2224a9`'dan bu yana 182 commit). Dört yeni kaynak, on yansıtılmış sağlayıcı düzeltmesi, tarayıcı genelinde kapatılan bir SSRF açığı ve tarama sonuçlarında ücretsiz bir başlık-uygunluk ipucu.**
@@ -214,7 +236,7 @@ Bu, v1.231.2'de not edilen `applyI18n()` tuzağıyla aynı kusur sınıfı — a
 
 ### Düzeltildi
 - **Mobil üst çubuk yeniden tek satır, eylemler yalnızca simge.** Eylem düğmeleri tam genişlikte ikinci bir satıra zorlanıyordu: telefonda `[☰ · arama]` üstte, `[🔔 🌙 Doctor Scan'i aç]` altta — kendi satırında iki geniş hap. Artık zil ve tema düğmesinin yanında 36 px kare (🩺 / ⚡) ve 320 px'te her şey tek satıra sığıyor. Göz kararı değil, ölçüldü: belge genişliği 320, 360, 390 ve 430 px'te ve düğmelerin eskiden arama alanının üstüne bindiği 560–760 px bandının tamamında görüntü alanına eşit. **Dil artık mobil yerleşimi hiç etkilemiyor**, çünkü etiket gizli ve düğme sabit bir kare; 900 px üstünde etiketler değişmeden geri geliyor.
-- **Sunucu, sürüm 1.32.0'a göre derlenmiş olmasına rağmen üst proje 1.31.0 ile çalışıyordu.** resumecraft.ru üzerinde `/api/health` `parentVersion: 1.31.0` bildiriyordu. 95 çalışma dosyası eşitlendi, iki tanesi kaldırıldı. Canlı yüzeyde tarayıcı QA'sıyla bulundu.
+- **Sunucu, sürüm 1.32.0'a göre derlenmiş olmasına rağmen üst proje 1.31.0 ile çalışıyordu.** Üretim sunucusu üzerinde `/api/health` `parentVersion: 1.31.0` bildiriyordu. 95 çalışma dosyası eşitlendi, iki tanesi kaldırıldı. Canlı yüzeyde tarayıcı QA'sıyla bulundu.
 - **`cvstart.ru` her yolun başına `/ru/` ekliyordu, orada ne olduğuna bakmadan.** `/ru/help` `/ru/ru/help` oluyordu, `/en/help` ise `/ru/en/help`; ikisi de 404. Birincisi ana siteden bir adresi kopyalayınca oluşuyor; ikincisi İngilizce konuşan ziyaretçiyi İngilizce sürümden tamamen dışarıda bırakıyordu. Artık 16 dil önekinden birini zaten taşıyan yol olduğu gibi geçiyor, `en` kaldırılıyor (İngilizce kökte duruyor), gerisi yine `/ru/` alıyor.
 
 ### Değiştirildi

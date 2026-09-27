@@ -90,4 +90,4 @@ normal scan returns `[]`.
 
 - [ ] §0 gates green with the counts above
 - [ ] §2 steps 1–4 in a real browser
-- [x] `/api/health` on resumecraft.ru reports 1.238.0 and `parentVersion` 1.34.0 (deploy + verify runs, 2026-09-27)
+- [x] `/api/health` on the prod server reports 1.238.0 and `parentVersion` 1.34.0 (deploy + verify runs, 2026-09-27)

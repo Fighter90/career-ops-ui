@@ -32,4 +32,4 @@ node scripts/check-changelog-parity.mjs                    # 16 non-EN at v1.214
 
 ## §5 — Sign-off
 
-Suite **2738** green (2736 + 2) · `sources-ashby` 8→10 (cap + plain-`<…>`) · CHANGELOG parity ×17 at v1.214.1 · help **untouched** (82/77) · CONVENTIONS/PROJECT-CONTEXT/CLAUDE refreshed · site rebuild (changelog mirrors + facts version) + wiki (version + tests). Deploy: resumecraft rsync of `ashby.mjs` + `package.json`, restart. cvstart.org Pages rebuild.
+Suite **2738** green (2736 + 2) · `sources-ashby` 8→10 (cap + plain-`<…>`) · CHANGELOG parity ×17 at v1.214.1 · help **untouched** (82/77) · CONVENTIONS/PROJECT-CONTEXT/CLAUDE refreshed · site rebuild (changelog mirrors + facts version) + wiki (version + tests). Deploy: prod rsync of `ashby.mjs` + `package.json`, restart. cvstart.org Pages rebuild.

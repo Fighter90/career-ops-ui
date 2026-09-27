@@ -33,4 +33,4 @@ The universal cause was the classic flex/grid **`min-width: auto`** trap (an ite
 
 ## §3 — Sign-off
 
-Suite **2621** green · Playwright **21** (+1 phone-width guard) · CHANGELOG parity ×17 at v1.208.0 · README badge+banner ×17 · CSS ≤800 LOC each · CSS-only + 1 view class swap, no new dependency, no server/parent edits. Deploy: cvstart.org Pages refresh (version) + resumecraft.ru rsync of `public/css/*` + `public/js/views/help.js` (static — **no restart**).
+Suite **2621** green · Playwright **21** (+1 phone-width guard) · CHANGELOG parity ×17 at v1.208.0 · README badge+banner ×17 · CSS ≤800 LOC each · CSS-only + 1 view class swap, no new dependency, no server/parent edits. Deploy: cvstart.org Pages refresh (version) + prod rsync of `public/css/*` + `public/js/views/help.js` (static — **no restart**).

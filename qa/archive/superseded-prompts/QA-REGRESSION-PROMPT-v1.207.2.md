@@ -39,4 +39,4 @@ Applied to every route that already runs `cleanLlmMarkdown`: `career-plan`, `ori
 
 ## §4 — Sign-off
 
-Suite **2621** green (+3) · CHANGELOG parity ×17 at v1.207.2 · README badge+banner ×17 · one shared-helper fix, no new dependency, no parent edits. Server-code change → resumecraft.ru rsynced + restarted (footer → 1.207.2).
+Suite **2621** green (+3) · CHANGELOG parity ×17 at v1.207.2 · README badge+banner ×17 · one shared-helper fix, no new dependency, no parent edits. Server-code change → prod rsynced + restarted (footer → 1.207.2).

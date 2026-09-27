@@ -81,4 +81,4 @@ change, no help change (32 H2 / 122 H3 ×17).
 - [ ] `npm run test:ci` — 3013 pass, exit code captured directly
 - [ ] Playwright narrow-viewport — 4 pass
 - [ ] Manual: the button watched **during** a run at 320 px and at 1280 px
-- [ ] `/api/health` on resumecraft.ru reports 1.231.4
+- [ ] `/api/health` on the prod server reports 1.231.4

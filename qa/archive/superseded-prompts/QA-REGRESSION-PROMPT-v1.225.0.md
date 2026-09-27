@@ -31,4 +31,4 @@ node scripts/check-changelog-parity.mjs                    # 16 non-EN at v1.225
 
 ## §4 — Sign-off
 
-Suite **2784** green · banner renders on GitHub (README ×17 + help ×17), stripped cleanly in-app · help parity intact · parity ×17 at v1.225.0 · README banner+badges ×17 · CONVENTIONS/PROJECT-CONTEXT/CLAUDE refreshed. Deploy: Pages (facts/version), local + resumecraft restart.
+Suite **2784** green · banner renders on GitHub (README ×17 + help ×17), stripped cleanly in-app · help parity intact · parity ×17 at v1.225.0 · README banner+badges ×17 · CONVENTIONS/PROJECT-CONTEXT/CLAUDE refreshed. Deploy: Pages (facts/version), local + prod restart.

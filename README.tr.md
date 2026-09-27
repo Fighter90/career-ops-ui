@@ -7,7 +7,7 @@
 
 _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır._
 
-[![tests](https://img.shields.io/badge/tests-3481%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3486%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
@@ -17,7 +17,7 @@ _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve 
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Son sürüm — v1.238.0** — **career-ops 1.34.0 ile üst proje eşleşmesi: dört yeni kaynak (Eploy, HiringRoom, PeopleSoft Candidate Gateway, PrevueAPS → 98), on yansıtılmış sağlayıcı düzeltmesi ve tarayıcı genelinde bir SSRF açığı kapatıldı** — DNS-rebinding koruması gerçek bir taramada hiç çalışmadı, çünkü tarayıcılar çıplak `fetch` yerine bir zaman aşımı sarmalayıcısı enjekte ediyordu; artık bu sarmalayıcının içinde çalışıyor. Rippling v2 board API'sine taşındı, Recruitee çok konumlu teklifleri birleştiriyor ve demo ilanları düşürüyor, Workday ve BambooHR ölü panoları boş olanlardan ayırt ediyor, ve `#/scan` satırları profilinizin hedef rollerine karşı ücretsiz bir **strong / related / weak fit** ipucu taşıyor. **3481 test · 116 tarayıcı.**
+> **🆕 Son sürüm — v1.238.1** — **Kararlılık yaması: aynı anda tek tarama** — aynı anda iki tarama (bir tıklama artı saatlik zamanlayıcı) sunucunun belleğini tüketiyor ve sunucu yeniden başlıyordu; artık ikinci tarama net bir "zaten çalışıyor" mesajı alıyor. cvstart.org artık telefonda yana kaymıyor ve Hintçe sayfalar site haritasına geri döndü. **3486 test · 116 tarayıcı.**
 >
 > **Önceki — v1.237.1** — **Harici bir QA geçişinden yama.** Jobstreet düzeltmesi dışarıdan doğrulandı: `/id/job/<id>`, AU/NZ/HK/MY ana bilgisayarlarında temiz bir 404 döndürüyor ve `/job/<id>` gerçek, korumalı bir rotaya ulaşıyor — kaybolan bağlantılar gerçekti. v1.237.0'ın eklediği şeyde iki kusur: **kitap bağlantısı** etiketini yerelleştirdi ama hedefini değil, bu yüzden Rusça etiket İngilizce baskıya götürüyordu — bir `data-i18n-href` uygulayıcısı artık `ru`'yu Rusça kitaba gönderiyor; ve **SEEK ana bilgisayarlarını taşıyor** (`www.seek.com.au` → `au.seek.com`), bu yüzden API yolu bizim `redirect:'error'` taşıma katmanımıza yönlendirmeye başlamadan önce `au.seek.com` ve `nz.seek.com` izin listesine alındı. Sayılar **94** kaynakta değişmedi. **3210 test · 116 tarayıcı.**
 

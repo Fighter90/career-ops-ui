@@ -23,4 +23,4 @@ career-ops 1.30.0's community/CLI wave: the **Hired Wall**, `/calibrate`, clean-
 `#/scan` Source filter lists **ITviec** and **CareerViet**. `/api/scan/sources` returns 85 (80 EN + 5 RU). cvstart.org Job-sources shows both.
 
 ## §4 — Sign-off
-Suite **2818** green · 2 sources + adapters + tests · 5 gate surfaces regenerated · parity ×17 at v1.226.0 · README banner+badges ×17 · help §17 count 83→85 ×17 · CONVENTIONS/PROJECT-CONTEXT/CLAUDE refreshed · site rebuilt (facts.json 85). Deploy: Pages, local + resumecraft restart, wiki (85 sources · 80 adapters).
+Suite **2818** green · 2 sources + adapters + tests · 5 gate surfaces regenerated · parity ×17 at v1.226.0 · README banner+badges ×17 · help §17 count 83→85 ×17 · CONVENTIONS/PROJECT-CONTEXT/CLAUDE refreshed · site rebuilt (facts.json 85). Deploy: Pages, local + prod restart, wiki (85 sources · 80 adapters).
