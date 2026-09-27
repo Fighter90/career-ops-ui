@@ -73,6 +73,10 @@ before any merge.**
 
 ## Known issues
 
+- **The cloud sandbox's git proxy refuses tag pushes (and branch deletes).** Cut a release by
+  dispatching `release.yml` on `main` with `tag=v<version>`: when the tag does not exist it is
+  created at the dispatched commit, after the `package.json` version check. `deploy.yml` takes a
+  commit SHA as `ui_ref`, so a deploy never waits on the tag.
 - **A guard keyed on function identity silently stops guarding when the transport is wrapped.**
   `guardResolvedHost` ran only when `fetchImpl === globalThis.fetch`; the scanners inject
   `makeTimeoutFetch()`, so from v1.235.0 on no real scan was DNS-checked while every unit
