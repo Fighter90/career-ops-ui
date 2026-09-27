@@ -2062,7 +2062,7 @@ The interface ships in 17 languages (English, Español, Français, Português, �
 
 **Where the translations live.** Since v1.60.0 each language is its own file under `public/js/lib/locales/` — `i18n-dict.en.js`, `i18n-dict.es.js`, `i18n-dict.ru.js`, and so on — a simple list of `'key': 'text'` pairs. A shared `i18n-dict.aliases.js` lets keys that must always read identically (a sidebar label and its page title) point at one translation. `i18n-dict.js` merges them all at page load; you never edit it.
 
-**Fix or add a phrase.** Open the file for your language, find the key (e.g. `'nav.scan'`) and edit the text. To add a brand-new label, add the same key to **all 8** language files with the translated value, then reference it in the page via `t('your.key')`. Run `npm test` — it fails if any language is missing the key, so nothing ships half-translated.
+**Fix or add a phrase.** Open the file for your language, find the key (e.g. `'nav.scan'`) and edit the text. To add a brand-new label, add the same key to **all 17** language files with the translated value, then reference it in the page via `t('your.key')`. Run `npm test` — it fails if any language is missing the key, so nothing ships half-translated.
 
 **Add a whole new language.** Copy `i18n-dict.en.js` to `i18n-dict.<code>.js`, translate every value, then register the code in `i18n.js` (the language list + browser auto-detect), in the `i18n-dict.js` assembler, and add a `<script>` line in `index.html`. The full checklist — including the test snapshot and the help / README companion files — is in `docs/LOCALIZATION.md`.
 

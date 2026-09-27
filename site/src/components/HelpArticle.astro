@@ -48,14 +48,14 @@ const jsonLd = {
       <span aria-current="page">{t(locale, 'help.title')}</span>
     </nav>
 
-    <div class="grid gap-10 lg:grid-cols-[260px_minmax(0,1fr)]">
+    <div class="grid grid-cols-1 gap-10 lg:grid-cols-[260px_minmax(0,1fr)]">
       {/* Sticky TOC by H2 — <details> on mobile */}
-      <aside>
+      <aside class="min-w-0">
         <details class="rounded-[16px] border border-line bg-paper-alt p-4 lg:hidden" open={false}>
           <summary class="cursor-pointer font-bold">{t(locale, 'help.toc')}</summary>
           <ul class="mt-3 space-y-1.5">
             {toc.map((h) => (
-              <li><a href={`#${h.slug}`} class="text-sm text-ink-soft hover:text-ink hover:underline">{h.text}</a></li>
+              <li><a href={`#${h.slug}`} class="text-sm text-ink-soft [overflow-wrap:anywhere] hover:text-ink hover:underline">{h.text}</a></li>
             ))}
           </ul>
         </details>
@@ -69,7 +69,7 @@ const jsonLd = {
         </div>
       </aside>
 
-      <article>
+      <article class="min-w-0">
         <div class="mb-8 flex flex-wrap items-center justify-between gap-4">
           <h1 class="text-3xl font-extrabold tracking-tight md:text-4xl">{t(locale, 'help.title')}</h1>
           <a href={editUrl} rel="noopener" class="btn-ghost !px-4 !py-2 text-sm">

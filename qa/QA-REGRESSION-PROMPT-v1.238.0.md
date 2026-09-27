@@ -13,7 +13,7 @@ node --test tests/sources-hiringroom.test.mjs                # 24 pass
 node --test tests/sources-peoplesoft.test.mjs                # 68 pass
 node --test tests/sources-prevueaps.test.mjs                 # 22 pass
 node --test tests/fetch-timeout-dns-guard.test.mjs           # 4 pass — red on v1.237.1
-node --test tests/title-fit.test.mjs                         # 26 pass
+node --test tests/title-fit.test.mjs                         # 24 pass
 node --test tests/cooldown-company-match-unicode.test.mjs tests/liveness-api-more-rungs.test.mjs \
            tests/ru-scanner-title-accent-fold.test.mjs tests/sources-rippling.test.mjs \
            tests/sources-recruitee.test.mjs tests/sources-telegram-channel.test.mjs \
@@ -90,4 +90,4 @@ normal scan returns `[]`.
 
 - [ ] §0 gates green with the counts above
 - [ ] §2 steps 1–4 in a real browser
-- [ ] `/api/health` on resumecraft.ru reports 1.238.0 and `parentVersion` 1.34.0
+- [x] `/api/health` on resumecraft.ru reports 1.238.0 and `parentVersion` 1.34.0 (deploy + verify runs, 2026-09-27)

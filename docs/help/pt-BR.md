@@ -1977,7 +1977,7 @@ A interface é distribuída em 17 idiomas (English, Español, Français, Portugu
 
 **Onde ficam as traduções.** Desde a v1.60.0 cada idioma é um arquivo próprio em `public/js/lib/locales/` — `i18n-dict.en.js`, `i18n-dict.es.js`, `i18n-dict.ru.js`, etc. — uma lista simples de pares `'chave': 'texto'`. Um `i18n-dict.aliases.js` compartilhado faz com que chaves que devem ler igual (um rótulo do menu e o título da sua página) apontem para uma única tradução. `i18n-dict.js` monta tudo no carregamento; você nunca o edita.
 
-**Corrigir ou adicionar um texto.** Abra o arquivo do seu idioma, encontre a chave (ex.: `'nav.scan'`) e edite o texto. Para adicionar um rótulo novo, acrescente a mesma chave aos **8** arquivos de idioma com o valor traduzido e use-a na página via `t('sua.chave')`. Rode `npm test` — ele falha se algum idioma estiver sem a chave, então nada é publicado pela metade.
+**Corrigir ou adicionar um texto.** Abra o arquivo do seu idioma, encontre a chave (ex.: `'nav.scan'`) e edite o texto. Para adicionar um rótulo novo, acrescente a mesma chave aos **17** arquivos de idioma com o valor traduzido e use-a na página via `t('sua.chave')`. Rode `npm test` — ele falha se algum idioma estiver sem a chave, então nada é publicado pela metade.
 
 **Adicionar um idioma novo.** Copie `i18n-dict.en.js` para `i18n-dict.<código>.js`, traduza cada valor e registre o código em `i18n.js` (a lista de idiomas + autodetecção do navegador), no montador `i18n-dict.js`, e adicione uma linha `<script>` em `index.html`. O checklist completo — incluindo o snapshot de testes e os arquivos de ajuda / README — está em `docs/LOCALIZATION.md`.
 

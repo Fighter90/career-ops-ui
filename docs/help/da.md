@@ -2022,7 +2022,7 @@ Grænsefladen leveres på 17 sprog (English, Español, Français, Português, �
 
 **Hvor oversættelserne lever.** Siden v1.60.0 er hvert sprog sin egen fil under `public/js/lib/locales/` — `i18n-dict.en.js`, `i18n-dict.es.js`, `i18n-dict.ru.js` osv. — en simpel liste af `'key': 'text'`-par. En delt `i18n-dict.aliases.js` lader nøgler, der altid skal læse identisk (en sidebjælke-label og dens sidetitel), pege på én oversættelse. `i18n-dict.js` fletter dem alle ved sideindlæsning; du redigerer den aldrig.
 
-**Ret eller tilføj en frase.** Åbn filen for dit sprog, find nøglen (f.eks. `'nav.scan'`) og redigér teksten. For at tilføje en helt ny label, tilføj den samme nøgle til **alle 8** sprogfiler med den oversatte værdi, og referér den derefter i siden via `t('your.key')`. Kør `npm test` — den fejler, hvis et sprog mangler nøglen, så intet leveres halvt-oversat.
+**Ret eller tilføj en frase.** Åbn filen for dit sprog, find nøglen (f.eks. `'nav.scan'`) og redigér teksten. For at tilføje en helt ny label, tilføj den samme nøgle til **alle 17** sprogfiler med den oversatte værdi, og referér den derefter i siden via `t('your.key')`. Kør `npm test` — den fejler, hvis et sprog mangler nøglen, så intet leveres halvt-oversat.
 
 **Tilføj et helt nyt sprog.** Kopier `i18n-dict.en.js` til `i18n-dict.<code>.js`, oversæt hver værdi, og registrér derefter koden i `i18n.js` (sproglisten + browser-auto-detektering), i `i18n-dict.js`-assembleren, og tilføj en `<script>`-linje i `index.html`. Den fulde tjekliste — inklusive test-snapshottet og hjælpe- / README-ledsagerfilerne — er i `docs/LOCALIZATION.md`.
 
