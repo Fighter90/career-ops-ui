@@ -3,8 +3,8 @@ name: Deploy (server)
 # Manual deploy of the parent career-ops checkout + this web-ui to the
 # production box (Timeweb server 8801467, resumecraft.ru).
 #
-#   mode=recon   read-only: prints the layout of the app dir, its git state,
-#                the process manager / service, Hermes, and /api/health.
+#   mode=recon   read-only: prints both git checkouts, versions, the state of
+#                the systemd services (web-ui, Hermes gateway), and /api/health.
 #                Changes nothing on the server. Run this first.
 #   mode=deploy  checks out `parent_ref` in the app dir and `ui_ref` in its
 #                web-ui/ subdir, installs production deps, restarts the
@@ -29,8 +29,8 @@ on:
         options: [recon, deploy]
         default: recon
       app_dir:
-        description: 'Parent career-ops checkout on the server'
-        default: /opt/career-ops
+        description: 'Parent career-ops checkout on the server (web-ui is its web-ui/ subdir)'
+        default: /opt/career-ops/src
       parent_ref:
         description: 'Parent career-ops ref to deploy (tag, branch or sha)'
         default: '993085ce'
@@ -38,8 +38,8 @@ on:
         description: 'web-ui ref to deploy'
         default: v1.238.0
       service:
-        description: 'systemd unit or pm2 name; empty = auto-detect'
-        default: ''
+        description: 'systemd unit of the web-ui'
+        default: career-ops-ui
       port:
         description: 'Port the app listens on at 127.0.0.1 (see recon)'
         default: '4317'
@@ -118,37 +118,46 @@ jobs:
           APP_DIR: ${{ inputs.app_dir }}
           PORT: ${{ inputs.port }}
         run: |
+          # This repo is public, and so are its Actions logs: print versions,
+          # states and paths only, never file contents, profile data or env.
           # shellcheck disable=SC2029  # APP_DIR/PORT are meant to expand locally
           ssh prod "APP_DIR='$APP_DIR' PORT='$PORT' bash -s" <<'REMOTE'
           set -uo pipefail
           sec() { printf '\n===== %s =====\n' "$1"; }
-          sec host;     uname -a; . /etc/os-release && echo "$PRETTY_NAME"; uptime; df -h / | tail -1
-          sec node;     command -v node && node -v; command -v npm && npm -v; command -v pm2 && pm2 -v
-          sec app_dir;  ls -la "$APP_DIR" 2>&1 | head -40
+          as_owner() { local d=$1; shift; sudo -u "$(stat -c %U "$d")" -H -- "$@"; }
+          sec host;     . /etc/os-release && echo "$PRETTY_NAME"; uptime; df -h / | tail -1
+          sec node;     node -v; npm -v
           for d in "$APP_DIR" "$APP_DIR/web-ui"; do
             sec "git $d"
-            if [ -d "$d/.git" ] || [ -f "$d/.git" ]; then
-              git -C "$d" remote -v
-              git -C "$d" log -1 --format='%H %d %s (%ci)'
-              git -C "$d" describe --tags --always 2>/dev/null
-              echo "--- tracked changes:"; git -C "$d" status --porcelain --untracked-files=no
+            if [ -e "$d/.git" ]; then
+              echo "owner: $(stat -c %U "$d")"
+              as_owner "$d" git -C "$d" remote -v | sed -E 's#://[^@/]+@#://#'
+              as_owner "$d" git -C "$d" log -1 --format='%h %d %s (%ci)'
+              as_owner "$d" git -C "$d" describe --tags --always 2>/dev/null
+              echo "--- tracked changes:"; as_owner "$d" git -C "$d" status --porcelain --untracked-files=no
             else
               echo "not a git checkout"
             fi
           done
           sec versions
-          cat "$APP_DIR/VERSION" 2>/dev/null
-          node -p "require('$APP_DIR/web-ui/package.json').version" 2>/dev/null
-          sec systemd
-          systemctl list-units --type=service --all --no-pager 2>/dev/null | grep -iE 'career|hermes|resume|web-ui' || echo "no matching units"
-          for u in $(systemctl list-unit-files --type=service --no-legend 2>/dev/null | awk '{print $1}' | grep -iE 'career|hermes|resume'); do
-            sec "unit $u"; systemctl cat "$u" --no-pager 2>&1 | grep -vE '^Environment='
+          echo "parent VERSION: $(cat "$APP_DIR/VERSION" 2>/dev/null)"
+          echo "web-ui package: $(node -p "require('$APP_DIR/web-ui/package.json').version" 2>/dev/null)"
+          sec services
+          for u in career-ops-ui hermes-gateway claude-bridge career-ops-scan career-ops-eval; do
+            printf '%-18s %s\n' "$u" "$(systemctl is-active "$u" 2>/dev/null)"
           done
-          sec pm2; command -v pm2 >/dev/null && pm2 jlist 2>/dev/null | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{try{for(const p of JSON.parse(s))console.log(p.name,p.pm2_env.status,p.pm2_env.pm_cwd)}catch{console.log("pm2: no list")}})' || echo "pm2 not installed"
-          sec listeners; ss -ltnp 2>/dev/null | grep -E "node|python|hermes|nginx|caddy" || true
-          sec proxy;    for f in /etc/nginx/sites-enabled/* /etc/caddy/Caddyfile; do [ -e "$f" ] && { echo "--- $f"; grep -nE 'server_name|proxy_pass|reverse_proxy|resumecraft' "$f"; }; done
-          sec hermes;   command -v hermes && hermes --version 2>/dev/null; ls -d ~/.hermes 2>/dev/null
-          sec health;   curl -fsS --max-time 10 "http://127.0.0.1:$PORT/api/health" | head -c 2000; echo
+          systemctl list-timers --all --no-pager 2>/dev/null | grep -E 'career|hermes' || true
+          sec listeners; ss -ltnp 2>/dev/null | awk 'NR>1{print $4, $6}' | grep -E 'node|python|hermes|caddy' || true
+          sec hermes-link
+          grep -hoE '^HERMES_BASE_URL=.*' "$APP_DIR/.env" 2>/dev/null || echo "HERMES_BASE_URL unset (default http://127.0.0.1:8642/v1)"
+          for u in http://127.0.0.1:8642/v1/models http://127.0.0.1:8788/; do
+            printf '%s -> %s\n' "$u" "$(curl -s -o /dev/null -w '%{http_code}' --max-time 5 "$u")"
+          done
+          sec health
+          curl -fsS --max-time 10 "http://127.0.0.1:$PORT/api/health" | node -e '
+            let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const h=JSON.parse(s);
+              console.log("ok="+h.ok+" version="+h.version+" parentVersion="+h.parentVersion+" warnings="+h.warnings);
+              for (const c of h.checks||[]) if (c.required && !c.ok) console.log("REQUIRED FAIL: "+c.name);})'
           REMOTE
 
       - name: Deploy
@@ -164,53 +173,41 @@ jobs:
           ssh prod "APP_DIR='$APP_DIR' PARENT_REF='$PARENT_REF' UI_REF='$UI_REF' SERVICE='$SERVICE' PORT='$PORT' bash -s" <<'REMOTE'
           set -euo pipefail
           UI_DIR="$APP_DIR/web-ui"
+          SERVICE=${SERVICE:-career-ops-ui}
+          # The checkouts belong to the service user; running git as root would
+          # trip safe.directory and leave root-owned files behind.
+          as_owner() { local d=$1; shift; sudo -u "$(stat -c %U "$d")" -H -- "$@"; }
+          g() { local d=$1; shift; as_owner "$d" git -C "$d" "$@"; }
+
+          systemctl cat "$SERVICE" >/dev/null || { echo "::error::no systemd unit $SERVICE"; exit 1; }
           for d in "$APP_DIR" "$UI_DIR"; do
-            git -C "$d" rev-parse --git-dir >/dev/null
-            if [ -n "$(git -C "$d" status --porcelain --untracked-files=no)" ]; then
+            g "$d" rev-parse --git-dir >/dev/null
+            if [ -n "$(g "$d" status --porcelain --untracked-files=no)" ]; then
               echo "::error::$d has tracked local changes; refusing to deploy"
-              git -C "$d" status --short --untracked-files=no
+              g "$d" status --short --untracked-files=no
               exit 1
             fi
           done
 
-          # Resolve how the app runs before changing anything.
-          mgr=""
-          if [ -n "$SERVICE" ]; then
-            if systemctl cat "$SERVICE" >/dev/null 2>&1; then mgr=systemd
-            elif command -v pm2 >/dev/null && pm2 describe "$SERVICE" >/dev/null 2>&1; then mgr=pm2; fi
-          else
-            SERVICE=$(systemctl list-unit-files --type=service --no-legend 2>/dev/null | awk '{print $1}' | grep -iE 'career|resume|web-ui' | head -1 || true)
-            if [ -n "$SERVICE" ]; then mgr=systemd
-            elif command -v pm2 >/dev/null; then
-              SERVICE=$(pm2 jlist | node -e 'let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{const p=JSON.parse(s).find(p=>/career|web-ui/i.test(p.name+" "+p.pm2_env.pm_cwd));console.log(p?p.name:"")})')
-              [ -n "$SERVICE" ] && mgr=pm2
-            fi
-          fi
-          [ -n "$mgr" ] || { echo "::error::could not find the service; pass the 'service' input (see recon output)"; exit 1; }
-          echo "service: $SERVICE ($mgr)"
-
           # Branch name when on one (so a rollback reattaches it), else the sha.
-          prev_parent=$(git -C "$APP_DIR" symbolic-ref -q --short HEAD || git -C "$APP_DIR" rev-parse HEAD)
-          prev_ui=$(git -C "$UI_DIR" symbolic-ref -q --short HEAD || git -C "$UI_DIR" rev-parse HEAD)
+          prev_parent=$(g "$APP_DIR" symbolic-ref -q --short HEAD || g "$APP_DIR" rev-parse HEAD)
+          prev_ui=$(g "$UI_DIR" symbolic-ref -q --short HEAD || g "$UI_DIR" rev-parse HEAD)
           echo "rollback point: parent $prev_parent, web-ui $prev_ui"
 
-          restart() {
-            if [ "$mgr" = systemd ]; then systemctl restart "$SERVICE"; else pm2 restart "$SERVICE" --update-env; fi
-          }
           install_deps() {
             for d in "$APP_DIR" "$UI_DIR"; do
-              if [ -f "$d/package-lock.json" ]; then (cd "$d" && npm ci --omit=dev --no-audit --no-fund) || return 1; fi
+              if [ -f "$d/package-lock.json" ]; then as_owner "$d" bash -c 'cd "$1" && npm ci --omit=dev --no-audit --no-fund' _ "$d" || return 1; fi
             done
           }
           healthy() {
-            for i in $(seq 1 30); do
+            for _ in $(seq 1 30); do
               if body=$(curl -fsS --max-time 5 "http://127.0.0.1:$PORT/api/health" 2>/dev/null); then
-                echo "$body" | head -c 2000; echo
                 echo "$body" | node -e '
                   let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{
                     const h=JSON.parse(s), want=process.argv[1].replace(/^v/,"");
+                    console.log("ok="+h.ok+" version="+h.version+" parentVersion="+h.parentVersion);
+                    if (!h.ok) process.exit(1);
                     if (/^\d+\.\d+\.\d+/.test(want) && h.version!==want) { console.error("version "+h.version+" != "+want); process.exit(1); }
-                    console.log("version="+h.version+" parentVersion="+h.parentVersion);
                   })' "$UI_REF" && return 0
                 return 1
               fi
@@ -222,23 +219,30 @@ jobs:
             # Best effort all the way through: one failing step must not skip the restart.
             set +e
             echo "::error::deploy failed; rolling back to parent $prev_parent, web-ui $prev_ui"
-            git -C "$APP_DIR" checkout -q "$prev_parent"
-            git -C "$UI_DIR" checkout -q "$prev_ui"
+            g "$APP_DIR" checkout -q "$prev_parent"
+            g "$UI_DIR" checkout -q "$prev_ui"
             install_deps || echo "::error::npm ci failed during rollback"
-            restart || echo "::error::restart failed during rollback"
+            systemctl restart "$SERVICE" || echo "::error::restart failed during rollback"
             healthy || echo "::error::service still unhealthy after rollback"
             exit 1
           }
 
-          git -C "$APP_DIR" fetch --tags --quiet origin
-          git -C "$UI_DIR" fetch --tags --quiet origin
-          git -C "$APP_DIR" checkout -q --detach "$PARENT_REF"
-          git -C "$UI_DIR" checkout -q --detach "$UI_REF"
-          echo "parent now $(git -C "$APP_DIR" log -1 --format='%h %s') VERSION=$(cat "$APP_DIR/VERSION" 2>/dev/null)"
-          echo "web-ui now $(git -C "$UI_DIR" describe --tags --always)"
+          g "$APP_DIR" fetch --tags --quiet origin
+          g "$UI_DIR" fetch --tags --quiet origin
+          g "$APP_DIR" checkout -q --detach "$PARENT_REF"
+          g "$UI_DIR" checkout -q --detach "$UI_REF"
+          echo "parent now $(g "$APP_DIR" log -1 --format='%h %s') VERSION=$(cat "$APP_DIR/VERSION" 2>/dev/null)"
+          echo "web-ui now $(g "$UI_DIR" describe --tags --always)"
           install_deps || rollback
-          restart || rollback
+          systemctl restart "$SERVICE" || rollback
           healthy || rollback
+          # The Telegram bot talks to the viewer; restart it so it picks up the new build.
+          if systemctl is-enabled hermes-gateway >/dev/null 2>&1; then
+            systemctl restart hermes-gateway
+            sleep 5
+            echo "hermes-gateway: $(systemctl is-active hermes-gateway)"
+            systemctl is-active --quiet hermes-gateway || { echo "::error::hermes-gateway did not come back"; exit 1; }
+          fi
           echo "deploy OK"
           REMOTE
 
@@ -247,10 +251,14 @@ jobs:
           PUBLIC_URL: ${{ inputs.public_url }}
         run: |
           set -euo pipefail
-          curl -sS -o /dev/null -w 'GET /            %{http_code}\n' "$PUBLIC_URL/"
-          curl -fsS --max-time 15 "$PUBLIC_URL/api/health" | head -c 2000; echo
+          # The site sits behind HTTP basic auth, so 401 means "up and gated".
+          for p in / /api/health; do
+            code=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 15 "$PUBLIC_URL$p")
+            echo "GET $p -> $code"
+            case "$code" in 200|401) ;; *) echo "::error::unexpected $code for $p"; exit 1;; esac
+          done
           echo "--- security headers on /"
-          curl -sSI --max-time 15 "$PUBLIC_URL/" | grep -iE '^(content-security-policy|strict-transport-security|x-content-type-options|x-frame-options):' || echo "(none)"
+          curl -sSI --max-time 15 "$PUBLIC_URL/" | grep -iE '^(content-security-policy|strict-transport-security|x-content-type-options|x-frame-options|www-authenticate):' || echo "(none)"
 
       - name: Clean up key
         if: always()
