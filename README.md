@@ -9,7 +9,7 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-3481%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3486%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
@@ -19,7 +19,7 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Latest release — v1.238.0** — **Parent parity with career-ops 1.34.0: four new sources (Eploy, HiringRoom, PeopleSoft Candidate Gateway, PrevueAPS → 98), ten mirrored provider fixes, and a scanner-wide SSRF gap closed** — the DNS-rebinding guard never ran on a real scan because the scanners inject a timeout wrapper instead of the bare `fetch`; it now runs inside that wrapper. Rippling moved to its v2 board API, Recruitee joins multi-location offers and drops demo postings, Workday and BambooHR tell dead boards from empty ones, and `#/scan` rows carry a free **strong / related / weak fit** hint against your profile's target roles. **3481 tests · 116 browser.**
+> **🆕 Latest release — v1.238.1** — **Stability patch: one scan at a time** — two scans running at once (a click plus the hourly timer) ran the server out of memory and it restarted; a second scan now gets a clear "already running" message instead. cvstart.org no longer scrolls sideways on phones, and its Hindi pages are back in the sitemap. **3486 tests · 116 browser.**
 >
 > **Previous — v1.237.1** — **Patch from an external QA pass.** The Jobstreet fix was confirmed from outside: `/id/job/<id>` returns a clean 404 on the AU/NZ/HK/MY hosts and `/job/<id>` reaches a real guarded route — the lost links were real. Two defects in what v1.237.0 added: the **book link** localized its label but not its target, so the Russian label led to the English edition — a `data-i18n-href` applier now sends `ru` to the Russian book; and **SEEK is migrating hosts** (`www.seek.com.au` → `au.seek.com`), so `au.seek.com` and `nz.seek.com` are allowlisted before the API path starts redirecting into our `redirect:'error'` transport. Counts unchanged at **94** sources. **3210 tests · 116 browser.**
 

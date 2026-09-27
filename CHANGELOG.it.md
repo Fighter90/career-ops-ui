@@ -2,6 +2,28 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.238.1] — 2026-09-27
+
+**Patch di stabilità dopo la prima regressione dal vivo di resumecraft.ru: una scansione alla volta e correzioni del sito.**
+
+### Corretto
+
+- **Due scansioni insieme mandavano in crash il server.** Ogni `GET /api/stream/scan` eseguiva lo scanner completo nel processo del server senza protezione; una scansione avviata dalla UI si è sovrapposta al timer orario e il processo è morto con *JavaScript heap out of memory* (due volte, con errori 502 nel frattempo). Ora una scansione alla volta: una seconda richiesta riceve un `error` SSE con codice `SCAN_BUSY` e non parte nulla. Il workflow di deploy alza anche il limite di memoria del server (`heap_mb`, predefinito 448 MB).
+- **`/help` e `/changelog` di cvstart.org scorrevano di lato sui telefoni** (e `/changelog` ja/zh anche su desktop): il codice lungo e l'indice ora vanno a capo.
+- **Mancava l'hindi nelle alternative di lingua della sitemap**; il controllo i18n del sito ora confronta la sitemap con il registro delle lingue.
+- **La Guida §19 chiedeva di aggiungere una chiave a «tutti e 8» i file di lingua** — sono 17.
+
+### Aggiunto
+
+- **Regressione remota** (`.github/workflows/remote-qa.yml`): ogni percorso × ogni lingua dell'app distribuita (sola lettura), ogni pagina × lingua × telefono/desktop di cvstart.org, ogni link dei README e della wiki e, su richiesta, una scansione reale e chiamate IA dal vivo in ogni lingua.
+- **Workflow di deploy del server** (`.github/workflows/deploy.yml`): `recon`, `deploy` (con rollback esatto) e `verify` (smoke test e report di stabilità).
+- Test 3481 → 3486.
+
+### Note
+
+- Il consumo di memoria dello scanner in sé **non** viene ridotto in questa versione: la protezione impedisce due scansioni insieme e il drop-in alza il tetto. Profilare una vera scansione di 98 fonti richiede la rete di produzione.
+- Il timer orario `career-ops-scan` **non** viene modificato; `recon` ora mostra quali comandi esegue.
+
 ## [1.238.0] — 2026-09-27
 
 **Parità con il genitore — career-ops `main` @ `993085ce` (VERSION 1.34.0, 182 commit da `de2224a9`). Quattro nuove fonti, dieci correzioni di provider rispecchiate, una falla SSRF a livello di scanner chiusa, e un suggerimento gratuito di aderenza del titolo sui risultati di scan.**

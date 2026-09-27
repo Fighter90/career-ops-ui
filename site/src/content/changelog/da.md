@@ -8,6 +8,28 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.238.1] — 2026-09-27
+
+**Stabilitetsrettelse efter den første live-regression af resumecraft.ru: én scanning ad gangen og rettelser på sitet.**
+
+### Rettet
+
+- **To scanninger på én gang fik serveren til at gå ned.** Hvert `GET /api/stream/scan` kørte hele scanneren i serverprocessen uden beskyttelse; en scanning startet fra UI'et overlappede timeren hver time, og processen døde med *JavaScript heap out of memory* (to gange, med 502-fejl imens). Nu kører én scanning ad gangen: en anden forespørgsel får en SSE-`error` med koden `SCAN_BUSY`, og intet starter. Deploy-workflowet hæver også serverens hukommelsesgrænse (`heap_mb`, standard 448 MB).
+- **`/help` og `/changelog` på cvstart.org scrollede sidelæns på telefoner** (og ja/zh `/changelog` også på desktop): lang kode og indholdsfortegnelsen ombrydes nu.
+- **Hindi manglede i sitemappets sprogalternativer**; sitets i18n-tjek sammenligner nu sitemappet med sprogregistret.
+- **Hjælp §19 bad om at tilføje en nøgle til „alle 8“ sprogfiler** — der er 17.
+
+### Tilføjet
+
+- **Fjern-regression** (`.github/workflows/remote-qa.yml`): hver rute × hvert sprog i den udrullede app (kun læsning), hver side × sprog × telefon/desktop på cvstart.org, hvert link i README'erne og wikien og, på forespørgsel, en rigtig scanning plus live AI-kald på hvert sprog.
+- **Server-deploy-workflow** (`.github/workflows/deploy.yml`): `recon`, `deploy` (med byte-præcis tilbagerulning) og `verify` (røgtest og stabilitetsrapport).
+- Tests 3481 → 3486.
+
+### Noter
+
+- Scannerens eget hukommelsesforbrug reduceres **ikke** i denne udgivelse: beskyttelsen forhindrer to scanninger på én gang, og drop-in'en hæver loftet. Profilering af en rigtig scanning af 98 kilder kræver produktionsnetværket.
+- Timeren `career-ops-scan` hver time ændres **ikke**; `recon` viser nu, hvilke kommandoer den kører.
+
 ## [1.238.0] — 2026-09-27
 
 **Forældre-paritet — career-ops `main` @ `993085ce` (VERSION 1.34.0, 182 commits siden `de2224a9`). Fire nye kilder, ti spejlede leverandørrettelser, et scanner-bredt SSRF-hul lukket, og et gratis titel-fit-hint på scanresultater.**

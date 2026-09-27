@@ -9,7 +9,7 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-3481%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3486%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
@@ -19,7 +19,7 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.238.0** — **career-ops 1.34.0 के साथ पैरेंट परिटी: चार नए स्रोत (Eploy, HiringRoom, PeopleSoft Candidate Gateway, PrevueAPS → 98), दस मिरर की गई प्रोवाइडर फ़िक्सें, और स्कैनर-व्यापी SSRF खामी बंद की गई** — DNS-rebinding गार्ड किसी असली स्कैन पर कभी नहीं चला, क्योंकि स्कैनर बेयर `fetch` के बजाय एक टाइमआउट रैपर इंजेक्ट करते हैं; अब यह उस रैपर के भीतर चलता है। Rippling अपने v2 बोर्ड API पर स्थानांतरित हो गया, Recruitee मल्टी-लोकेशन ऑफ़र जोड़ता है और डेमो पोस्टिंग हटाता है, Workday और BambooHR मृत बोर्डों को ख़ाली बोर्डों से अलग पहचानते हैं, और `#/scan` पंक्तियाँ आपकी प्रोफ़ाइल की लक्ष्य भूमिकाओं के विरुद्ध एक मुफ़्त **strong / related / weak fit** संकेत रखती हैं। **3481 परीक्षण · 116 ब्राउज़र।**
+> **🆕 नवीनतम रिलीज़ — v1.238.1** — **स्थिरता पैच: एक समय में एक ही स्कैन** — एक साथ दो स्कैन (एक क्लिक और हर घंटे का टाइमर) सर्वर की मेमोरी ख़त्म कर देते थे और वह रीस्टार्ट हो जाता था; अब दूसरे स्कैन को साफ़ संदेश "पहले से चल रहा है" मिलता है। cvstart.org अब फ़ोन पर बगल में नहीं खिसकता, और हिंदी पेज साइटमैप में लौट आए हैं। **3486 टेस्ट · 116 ब्राउज़र।**
 >
 > **पिछला — v1.237.1** — **v1.237.0 पर एक बाहरी QA पास से पैच।** Jobstreet सुधार बाहर से पुष्टि किया गया: `/id/job/<id>`, AU/NZ/HK/MY होस्ट पर एक स्वच्छ 404 लौटाता है और `/job/<id>` एक असली, सुरक्षित रूट तक पहुँचता है — खोई हुई लिंकें असली थीं। v1.237.0 ने जो जोड़ा था उसमें दो दोष: **किताब का लिंक** ने अपना लेबल स्थानीयकृत किया पर अपना लक्ष्य नहीं, इसलिए रूसी लेबल अंग्रेज़ी संस्करण तक ले जाता था — एक `data-i18n-href` अप्लायर अब `ru` को रूसी किताब की ओर भेजता है; और **SEEK होस्ट बदल रहा है** (`www.seek.com.au` → `au.seek.com`), इसलिए हमारे `redirect:'error'` ट्रांसपोर्ट में API पथ के रीडायरेक्ट करना शुरू करने से पहले `au.seek.com` और `nz.seek.com` को allowlist में डाला गया। गिनती अपरिवर्तित: **94** स्रोत। **3210 परीक्षण · 116 ब्राउज़र।**
 

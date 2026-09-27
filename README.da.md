@@ -7,7 +7,7 @@
 
 _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-3481%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3486%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
@@ -17,7 +17,7 @@ _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santi
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Seneste udgivelse — v1.238.0** — **Forældre-paritet med career-ops 1.34.0: fire nye kilder (Eploy, HiringRoom, PeopleSoft Candidate Gateway, PrevueAPS → 98), ti spejlede leverandørrettelser, og et scanner-bredt SSRF-hul lukket** — DNS-rebinding-vagten kørte aldrig på et rigtigt scan, fordi scannerne injicerer en timeout-wrapper i stedet for den bare `fetch`; den kører nu inde i denne wrapper. Rippling er flyttet til sit v2-board-API, Recruitee samler multi-lokations-tilbud og dropper demo-opslag, Workday og BambooHR skelner døde boards fra tomme, og `#/scan`-rækker bærer et gratis **strong / related / weak fit**-hint mod din profils målroller. **3481 test · 116 browser.**
+> **🆕 Seneste udgivelse — v1.238.1** — **Stabilitetsrettelse: én scanning ad gangen** — to scanninger på én gang (et klik plus timeren hver time) opbrugte serverens hukommelse, så den genstartede; nu får den anden en tydelig „kører allerede“-besked. cvstart.org scroller ikke længere sidelæns på telefoner, og de hindi-sider er tilbage i sitemappet. **3486 tests · 116 browser.**
 >
 > **Tidligere — v1.237.1** — **Patch fra et eksternt QA-gennemløb.** Jobstreet-rettelsen blev bekræftet udefra: `/id/job/<id>` returnerer en ren 404 på AU/NZ/HK/MY-værterne, og `/job/<id>` når en ægte beskyttet rute — de mistede links var ægte. To defekter i det, v1.237.0 tilføjede: **bog-linket** lokaliserede sin label, men ikke sit mål, så den russiske label førte til den engelske udgave — en `data-i18n-href`-applier sender nu `ru` til den russiske bog; og **SEEK migrerer værter** (`www.seek.com.au` → `au.seek.com`), så `au.seek.com` og `nz.seek.com` er nu på allowlisten, før API-stien begynder at redirecte ind i vores `redirect:'error'`-transport. Antal uændret på **94** kilder. **3210 test · 116 browser.**
 

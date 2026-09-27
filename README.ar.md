@@ -7,7 +7,7 @@
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
-[![tests](https://img.shields.io/badge/tests-3481%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-3486%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#الاختبارات)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
@@ -17,7 +17,7 @@ _واجهة غير رسمية — لا علاقة لها بـ career-ops / santi
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 أحدث إصدار — v1.238.0** — **تكافؤٌ مع المشروع الأصل career-ops 1.34.0: أربعة مصادر جديدة (Eploy وHiringRoom وPeopleSoft Candidate Gateway وPrevueAPS ← 98)، وعشرة إصلاحات موفِّرين معكوسة، وإغلاق ثغرة SSRF على مستوى الماسح** — لم يكن حارس DNS-rebinding يعمل قطّ في مسحٍ حقيقيّ، لأنّ الماسحات تحقن مُغلِّف مهلةٍ زمنيّة بدلاً من `fetch` العاري؛ وهو يعمل الآن داخل ذلك المُغلِّف. وانتقلت Rippling إلى واجهة board v2 الخاصّة بها، وتجمع Recruitee عروض تعدُّد المواقع وتُسقط الإعلانات التجريبيّة، وتميّز Workday وBambooHR اللوحات الميّتة من الفارغة، وتحمل صفوف `#/scan` تلميح **قوي / ذو صلة / ضعيف** مجانيًّا مقابل الأدوار المستهدَفة في ملفّك الشخصيّ. **3481 اختبارًا · 116 في المتصفّح.**
+> **🆕 أحدث إصدار — v1.238.1** — **إصلاح للاستقرار: فحص واحد في كل مرة** — كان تشغيل فحصين معًا (نقرة إضافةً إلى المؤقت الساعي) يستنفد ذاكرة الخادم فيُعاد تشغيله؛ أصبح الفحص الثاني يتلقى الآن رسالة واضحة «قيد التشغيل بالفعل». لم يعد cvstart.org ينزلق جانبيًا على الهواتف، وعادت صفحات الهندية إلى خريطة الموقع. **3486 اختبارًا · 116 في المتصفح.**
 >
 > **السابق — v1.237.1** — **تصحيحٌ بعد جولة فحص جودة خارجيّة.** تأكَّد إصلاح Jobstreet من الخارج: يُعيد `/id/job/<id>` رمز 404 نظيفًا على مضيفات AU/NZ/HK/MY، ويصل `/job/<id>` إلى مسارٍ حقيقيٍّ محميّ — وكانت الروابط المفقودة حقيقيّةً. وعلّتان فيما أضافه v1.237.0: كانت مِسمَّاة **رابط الكتاب** مُترجَمةً دون وِجهته، فقادت المِسمَّاة الروسيّة إلى الطبعة الإنجليزيّة — ويُوجِّه مُطبِّق `data-i18n-href` الآن `ru` إلى الكتاب الروسيّ؛ و**تُهاجر SEEK مضيفاتها** (`www.seek.com.au` → `au.seek.com`)، فأُدرِج `au.seek.com` و`nz.seek.com` في قائمة السماح قبل أن يبدأ مسار الواجهة بإعادة التوجيه إلى نقلنا `redirect:'error'`. وتبقى الأعداد كما هي عند **94** مصدرًا. **3210 اختبارًا · 116 في المتصفّح.**
 

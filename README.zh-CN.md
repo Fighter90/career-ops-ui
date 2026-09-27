@@ -7,7 +7,7 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-3481%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3486%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
@@ -17,7 +17,7 @@ _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.238.0** — **与 career-ops 1.34.0 的父项目对齐:四个新来源(Eploy、HiringRoom、PeopleSoft Candidate Gateway、PrevueAPS → 98)、十项镜像的服务商修复,以及一个扫描器全局性的 SSRF 漏洞被堵上** —— DNS 重绑定防护此前在真实扫描中从未运行过,因为扫描器注入的是一个超时包装器而非裸的 `fetch`;现在它在该包装器内部运行。Rippling 迁移到了其 v2 板块 API,Recruitee 合并了多地点职位并丢弃了演示职位,Workday 与 BambooHR 能够分辨失效职位板与空职位板,`#/scan` 结果行也带有针对你档案目标职位的免费**strong / related / weak 匹配度**提示。**3481 项测试 · 浏览器 116 项。**
+> **🆕 最新版本 — v1.238.1** — **稳定性补丁:同一时间只运行一个扫描** — 两个扫描同时运行(一次点击加上每小时定时器)会耗尽服务器内存并导致重启;现在第二个扫描会收到清晰的"已在运行"提示。cvstart.org 在手机上不再横向滚动,印地语页面也回到了站点地图。**3486 个测试 · 116 个浏览器测试。**
 >
 > **上一版本 — v1.237.1** — **针对外部 QA 复查的补丁。** Jobstreet 的修复已从外部得到确认：在 AU/NZ/HK/MY 主机上 `/id/job/<id>` 会返回一个干净的 404，而 `/job/<id>` 能到达一个真实的受保护路由——丢失的链接确实存在。v1.237.0 新增内容中的两处缺陷：**书籍链接**——文案被本地化了，目标却没有，于是俄语文案指向了英文版——`data-i18n-href` 应用器现在会把 `ru` 指向俄语版的书；以及 **SEEK 正在迁移主机**（`www.seek.com.au` → `au.seek.com`），因此在 API 路径开始向我们采用 `redirect:'error'` 的传输层发出重定向之前，`au.seek.com` 与 `nz.seek.com` 已被加入白名单。来源数量维持 **94** 个不变。**3210 项测试 · 浏览器 116 项。**
 

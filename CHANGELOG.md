@@ -8,6 +8,28 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.238.1] — 2026-09-27
+
+**Stability patch from the first live regression of resumecraft.ru: one scan at a time, and site fixes.**
+
+### Fixed
+
+- **Two scans at once crashed the server.** Every `GET /api/stream/scan` ran the full scanner inside the server process with no guard; a scan started from the UI overlapped the hourly timer and the process died with *JavaScript heap out of memory* (twice, with 502s meanwhile). Scans are now one at a time: a second request gets an SSE `error` with code `SCAN_BUSY` and nothing starts. The deploy workflow also raises the server's heap limit (`heap_mb`, default 448 MB).
+- **cvstart.org `/help` and `/changelog` scrolled sideways on phones** (and ja/zh `/changelog` on desktop) — long code and table-of-contents lines now wrap.
+- **Hindi was missing from the sitemap's language alternates**; the site's i18n check now compares the sitemap map with the locale registry.
+- **Help §19 told translators to add a key to "all 8" language files** — there are 17.
+
+### Added
+
+- **Remote regression** (`.github/workflows/remote-qa.yml`): every route × every language on the deployed app (read-only), every page × language × phone/desktop on cvstart.org, every link in the READMEs and the wiki, and — on request — one real scan plus live AI calls in every language.
+- **Server deploy workflow** (`.github/workflows/deploy.yml`): `recon`, `deploy` (with a byte-exact rollback) and `verify` (smoke test plus stability report).
+- Tests 3481 → 3486.
+
+### Notes
+
+- The scanner's own memory use is **not** reduced in this release: the guard stops two scans running at once and the heap drop-in raises the ceiling. Profiling a real 98-source scan needs the production network.
+- The hourly `career-ops-scan` timer is **not** changed; `recon` now shows which commands it runs.
+
 ## [1.238.0] — 2026-09-27
 
 **Parent parity — career-ops `main` @ `993085ce` (VERSION 1.34.0, 182 commits since `de2224a9`). Four new sources, ten mirrored provider fixes, a scanner-wide SSRF gap closed, and a free title-fit hint on scan results.**

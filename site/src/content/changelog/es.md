@@ -10,6 +10,28 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 
 ---
 
+## [1.238.1] — 2026-09-27
+
+**Parche de estabilidad tras la primera regresión en vivo de resumecraft.ru: un escaneo a la vez y arreglos del sitio.**
+
+### Corregido
+
+- **Dos escaneos simultáneos tumbaban el servidor.** Cada `GET /api/stream/scan` ejecutaba el escáner completo dentro del proceso sin ninguna protección; un escaneo lanzado desde la UI coincidió con el temporizador horario y el proceso cayó con *JavaScript heap out of memory* (dos veces, con errores 502 mientras tanto). Ahora hay un solo escaneo a la vez: una segunda petición recibe un `error` SSE con código `SCAN_BUSY` y no arranca nada. El flujo de despliegue además sube el límite de memoria del servidor (`heap_mb`, 448 MB por defecto).
+- **`/help` y `/changelog` de cvstart.org se desplazaban de lado en móviles** (y `/changelog` en ja/zh en escritorio): el código largo y el índice ahora se ajustan.
+- **Faltaba el hindi en las alternativas de idioma del sitemap**; la comprobación i18n del sitio ahora compara el sitemap con el registro de idiomas.
+- **La Ayuda §19 pedía añadir una clave a «los 8» archivos de idioma**: son 17.
+
+### Añadido
+
+- **Regresión remota** (`.github/workflows/remote-qa.yml`): cada ruta × cada idioma de la app desplegada (solo lectura), cada página × idioma × móvil/escritorio de cvstart.org, cada enlace de los README y la wiki y, a petición, un escaneo real y llamadas de IA en vivo en cada idioma.
+- **Flujo de despliegue del servidor** (`.github/workflows/deploy.yml`): `recon`, `deploy` (con reversión exacta) y `verify` (prueba de humo e informe de estabilidad).
+- Tests 3481 → 3486.
+
+### Notas
+
+- El consumo de memoria del propio escáner **no** se reduce en esta versión: la protección impide dos escaneos a la vez y el drop-in sube el límite. Perfilar un escaneo real de 98 fuentes requiere la red de producción.
+- El temporizador horario `career-ops-scan` **no** cambia; `recon` ahora muestra qué comandos ejecuta.
+
 ## [1.238.0] — 2026-09-27
 
 **Paridad con el padre — career-ops `main` @ `993085ce` (VERSION 1.34.0, 182 commits desde `de2224a9`). Cuatro fuentes nuevas, diez correcciones de proveedores reflejadas, una brecha SSRF a nivel de todo el escáner cerrada, y una pista gratuita de ajuste de título en los resultados del escaneo.**

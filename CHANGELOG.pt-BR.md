@@ -8,6 +8,28 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.238.1] — 2026-09-27
+
+**Correção de estabilidade após a primeira regressão ao vivo do resumecraft.ru: um scan por vez e correções do site.**
+
+### Corrigido
+
+- **Dois scans ao mesmo tempo derrubavam o servidor.** Cada `GET /api/stream/scan` rodava o scanner completo dentro do processo, sem proteção; um scan iniciado pela UI coincidiu com o timer horário e o processo caiu com *JavaScript heap out of memory* (duas vezes, com erros 502 no meio). Agora é um scan por vez: uma segunda requisição recebe um `error` SSE com código `SCAN_BUSY` e nada começa. O workflow de deploy também aumenta o limite de memória do servidor (`heap_mb`, padrão 448 MB).
+- **`/help` e `/changelog` do cvstart.org rolavam para os lados no celular** (e `/changelog` em ja/zh no desktop): código longo e o índice agora quebram linha.
+- **O hindi faltava nas alternativas de idioma do sitemap**; a checagem i18n do site agora compara o sitemap com o registro de idiomas.
+- **A Ajuda §19 mandava adicionar a chave nos "8" arquivos de idioma** — são 17.
+
+### Adicionado
+
+- **Regressão remota** (`.github/workflows/remote-qa.yml`): cada rota × cada idioma do app implantado (somente leitura), cada página × idioma × celular/desktop do cvstart.org, cada link dos README e da wiki e, sob demanda, um scan real e chamadas de IA ao vivo em cada idioma.
+- **Workflow de deploy do servidor** (`.github/workflows/deploy.yml`): `recon`, `deploy` (com rollback exato) e `verify` (teste de fumaça e relatório de estabilidade).
+- Testes 3481 → 3486.
+
+### Notas
+
+- O uso de memória do próprio scanner **não** é reduzido nesta versão: a proteção impede dois scans ao mesmo tempo e o drop-in eleva o teto. Perfilar um scan real de 98 fontes exige a rede de produção.
+- O timer horário `career-ops-scan` **não** muda; o `recon` agora mostra quais comandos ele executa.
+
 ## [1.238.0] — 2026-09-27
 
 **Paridade com o pai — career-ops `main` @ `993085ce` (VERSION 1.34.0, 182 commits desde `de2224a9`). Quatro fontes novas, dez correções de provedores espelhadas, uma brecha de SSRF em todo o scanner fechada, e uma dica gratuita de ajuste de título nos resultados do scan.**

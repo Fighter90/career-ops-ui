@@ -10,6 +10,28 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.238.1] — 2026-09-27
+
+**Correctif de stabilité après la première régression en direct de resumecraft.ru : un scan à la fois et corrections du site.**
+
+### Corrigé
+
+- **Deux scans simultanés faisaient tomber le serveur.** Chaque `GET /api/stream/scan` lançait le scanner complet dans le processus serveur sans protection ; un scan lancé depuis l'UI a chevauché le minuteur horaire et le processus est mort sur *JavaScript heap out of memory* (deux fois, avec des 502 entre-temps). Un seul scan à la fois désormais : une seconde requête reçoit une `error` SSE de code `SCAN_BUSY` et rien ne démarre. Le workflow de déploiement relève aussi la limite mémoire du serveur (`heap_mb`, 448 Mo par défaut).
+- **`/help` et `/changelog` de cvstart.org défilaient de côté sur mobile** (et `/changelog` ja/zh sur ordinateur) : le code long et la table des matières passent désormais à la ligne.
+- **Le hindi manquait dans les alternatives de langue du sitemap** ; la vérification i18n du site compare maintenant le sitemap au registre des langues.
+- **L'Aide §19 demandait d'ajouter une clé à « tous les 9 » fichiers de langue** — il y en a 17.
+
+### Ajouté
+
+- **Régression distante** (`.github/workflows/remote-qa.yml`) : chaque route × chaque langue de l'app déployée (lecture seule), chaque page × langue × mobile/ordinateur de cvstart.org, chaque lien des README et du wiki et, sur demande, un vrai scan et des appels IA en direct dans chaque langue.
+- **Workflow de déploiement serveur** (`.github/workflows/deploy.yml`) : `recon`, `deploy` (retour arrière exact) et `verify` (test de fumée et rapport de stabilité).
+- Tests 3481 → 3486.
+
+### Notes
+
+- La consommation mémoire du scanner lui-même n'est **pas** réduite dans cette version : la protection empêche deux scans simultanés et le drop-in relève le plafond. Profiler un vrai scan de 98 sources exige le réseau de production.
+- Le minuteur horaire `career-ops-scan` n'est **pas** modifié ; `recon` montre désormais les commandes qu'il lance.
+
 ## [1.238.0] — 2026-09-27
 
 **Parité avec le parent — career-ops `main` @ `993085ce` (VERSION 1.34.0, 182 commits depuis `de2224a9`). Quatre nouvelles sources, dix correctifs de fournisseurs reflétés, une faille SSRF à l'échelle du scanner refermée, et un indice gratuit d'adéquation de titre sur les résultats de scan.**

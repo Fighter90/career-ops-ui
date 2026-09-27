@@ -7,7 +7,7 @@
 
 _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-3481%20passed-brightgreen)](#testes)
+[![tests](https://img.shields.io/badge/tests-3486%20passed-brightgreen)](#testes)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
@@ -17,7 +17,7 @@ _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versão — v1.238.0** — **Paridade com o pai career-ops 1.34.0: quatro fontes novas (Eploy, HiringRoom, PeopleSoft Candidate Gateway, PrevueAPS → 98), dez correções de provedores espelhadas, e uma brecha de SSRF em todo o scanner fechada** — a proteção contra DNS-rebinding nunca rodava em um scan real porque os scanners injetam um wrapper de timeout em vez do `fetch` puro; agora ela roda dentro desse wrapper. Rippling migrou para sua API de board v2, Recruitee incorpora ofertas multi-localização e descarta publicações demo, Workday e BambooHR distinguem boards mortos de vazios, e as linhas de `#/scan` carregam uma dica gratuita de ajuste **forte / relacionado / fraco** frente aos cargos-alvo do seu perfil. **3481 testes · 116 de navegador.**
+> **🆕 Última versão — v1.238.1** — **Correção de estabilidade: um scan por vez** — dois scans ao mesmo tempo (um clique mais o timer horário) esgotavam a memória do servidor, que reiniciava; agora o segundo recebe um aviso claro de "já em andamento". O cvstart.org não rola mais para os lados no celular e as páginas em hindi voltaram ao sitemap. **3486 testes · 116 de navegador.**
 >
 > **Anterior — v1.237.1** — **Patch de uma verificação de QA externa.** A correção do Jobstreet foi confirmada de fora: `/id/job/<id>` retorna um 404 limpo nos hosts AU/NZ/HK/MY e `/job/<id>` alcança uma rota real protegida — os links perdidos eram reais. Dois defeitos no que a versão anterior havia adicionado: o **link do livro** tinha o rótulo localizado, mas não o destino, então o rótulo em russo levava à edição em inglês — um aplicador `data-i18n-href` agora envia `ru` para o livro em russo; e **o SEEK está migrando de hosts** (`www.seek.com.au` → `au.seek.com`), então `au.seek.com` e `nz.seek.com` entram na allowlist antes que o caminho da API comece a redirecionar para dentro do nosso transporte `redirect:'error'`. Contagens inalteradas em **94** fontes. **3210 testes · 116 de navegador.**
 
