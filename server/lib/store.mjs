@@ -5,7 +5,7 @@
  * instead of crashing the server. Keeps the SPA usable when career-ops
  * is half-set-up (Health page surfaces the gaps).
  */
-import { readFileSync, writeFileSync, readdirSync, statSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, readdirSync, existsSync, openSync, fstatSync, closeSync } from 'node:fs';
 import { sep } from 'node:path';
 import yaml from 'js-yaml';
 import { PATHS, path as projPath } from './paths.mjs';
@@ -41,16 +41,20 @@ export function safeListReports() {
   const seen = new Set();
   const out = [];
   for (const f of files) {
+    const file = projPath('reports', f);
+    let fd;
     try {
-      const file = projPath('reports', f);
-      const stat = statSync(file);
+      // One descriptor for both the stat and the read, so the header cached
+      // for this mtime/size is the content that was actually read.
+      fd = openSync(file, 'r');
+      const stat = fstatSync(fd);
       seen.add(file);
       let hit = reportCache.get(file);
       if (hit && hit.mtimeMs === stat.mtimeMs && hit.size === stat.size) {
         __reportCache.hits++;
       } else {
         __reportCache.misses++;
-        const text = readFileSync(file, 'utf8');
+        const text = readFileSync(fd, 'utf8');
         // FIX-1 (v1.159.0): pass the file mtime so a report whose body has no
         // parseable date (common in non-EN reports) still gets a date anchor.
         const header = parseReportHeader(text, { mtime: stat.mtime });
@@ -60,6 +64,8 @@ export function safeListReports() {
       out.push({ ...hit.entry });
     } catch {
       // unreadable report: skip it, as before
+    } finally {
+      if (fd !== undefined) closeSync(fd);
     }
   }
   // Forget deleted reports (only entries under the directory just listed).
