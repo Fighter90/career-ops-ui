@@ -11,7 +11,7 @@ they are relevant.
 | [docs/adr/](docs/adr/) | before changing anything the records cover — why a choice was made, and what would make us revisit it. |
 | [docs/sdd/CONVENTIONS.md](docs/sdd/CONVENTIONS.md) | while writing code — module system, routes, sanitizers, i18n, testing. |
 | [AGENTS.md](AGENTS.md) | non-Claude CLIs — same rules, portable phrasing. |
-| [.claude/skills/](.claude/skills/) | `ship-cycle` (update + fix both repos → deploy → remote regression), `parent-sync` (parity releases), `contributor-pr`, `hermes-bridge`. Invoke the skill rather than improvising the pipeline. |
+| [.claude/skills/](.claude/skills/) | `parent-sync` (parity releases), `contributor-pr`, `hermes-bridge`. Invoke the skill rather than improvising the pipeline. |
 
 ## Non-negotiable
 

@@ -53,9 +53,7 @@ Still open:
 - career-ops code scanning: local CodeQL on fork `main` (JS/TS 1223 files, Go, Actions) = **0 results**;
   the alerts on GitHub stay open only because no push workflow (CodeQL included) has run in the fork
   since 2026-07-15 — the user re-enables Actions there and the next push closes them;
-- the full cycle (both repos → deploy → remote regression) is packaged as
-  [`.claude/skills/ship-cycle`](.claude/skills/ship-cycle/SKILL.md); remote regression is
-  `.github/workflows/remote-qa.yml` (secrets `AUTH_LOGIN` / `AUTH_PASSWORD`);
+- remote regression is `.github/workflows/remote-qa.yml` (secrets `AUTH_LOGIN` / `AUTH_PASSWORD`);
 - Actions logs of this public repo are public: keep recon/verify output to versions, states and status
   codes (the first recon printed the profile name and which provider keys are set; its logs were deleted);
 - Telegram end to end (a real message through the bot) is not exercised by `verify`; it checks the
