@@ -8,7 +8,7 @@ Release history belongs in [CHANGELOG.md](CHANGELOG.md), decisions in
 [docs/adr/](docs/adr/), vocabulary in [CONTEXT.md](CONTEXT.md). Anything already
 recoverable from those does **not** belong here.
 
-_Last updated: 2026-09-27 · v1.238.0 — parent parity @ `993085ce` (VERSION 1.34.0); code + docs done, release in flight_
+_Last updated: 2026-09-27 · v1.238.0 live on resumecraft.ru (parent fork `f4f55def`, VERSION 1.34.0)_
 
 ---
 
@@ -26,42 +26,34 @@ Known issues for the shape).
 already contained upstream `2b9fe7ea`. All four ADR-0002 divergences verified intact
 (`p{L}`×4, `providers/telegram.mjs`, `hermes` in `clis.ts`, `vpFixtureEnv`×9).
 
-**Server deploy (resumecraft.ru) is NOT done from the cloud session:** its egress
-policy blocks `resumecraft.ru` and `api.timeweb.cloud`, and outbound SSH is closed. The
-deploy has to run from a machine with the deploy key, or through a CI workflow holding
-it as a secret.
+**Server deploy (resumecraft.ru) is DONE (2026-09-27 19:46 UTC)** via `.github/workflows/deploy.yml`
+(`mode=deploy`, parent `f4f55def`, web-ui `v1.238.0`): `/api/health` ok, version 1.238.0, parentVersion
+1.34.0. `mode=verify` right after: 33 read-only routes 200, unknown route 404, served sources == deployed
+registry (98), app security headers present, `career-ops-ui` / `hermes-gateway` / `claude-bridge` active,
+bridge `/v1/models` 200, 0 error lines in the viewer journal. Rollback material:
+`/opt/career-ops/backups/deploy-20260927T194612Z` on the server.
 
 ## Next step
 
-**Server deploy via "path B" — in progress (2026-09-27).** v1.238.0 is merged, tagged, released,
-published and on cvstart.org, but NOT yet on resumecraft.ru (Timeweb server **8801467**,
-Ubuntu 26.04). Done:
-1. the user generated a passphrase-less key `careerops-ci` locally (private half stays with them);
-   its public half is registered in Timeweb (ssh-key id **789655**) and attached to server 8801467;
-2. `.github/workflows/deploy.yml` added — manual `workflow_dispatch`, `mode=recon` (read-only) or
-   `mode=deploy` (archive overlay with backup, `npm ci --omit=dev` only when a lockfile changed,
-   restart, `/api/health` version + parentVersion check, automatic rollback), then a public HTTPS check of resumecraft.ru;
-3. the user added `DEPLOY_SSH_KEY` / `DEPLOY_HOST` / `DEPLOY_USER`; recon over ssh works.
+**Deploying** — `Actions → Deploy (server) → Run workflow`: `recon` (read-only), `deploy`, `verify`
+(read-only smoke, also runs after every deploy). Secrets: `DEPLOY_SSH_KEY` (passphrase-less
+`careerops-ci`, Timeweb key id 789655), `DEPLOY_HOST`, `DEPLOY_USER`, `DEPLOY_KNOWN_HOSTS`.
 
-Server layout (recon 2026-09-27): parent checkout `/opt/career-ops/src`, web-ui `/opt/career-ops/src/web-ui`,
-both owned by `careerops`; `career-ops-ui.service` (viewer, 127.0.0.1:4317, Caddy + basic auth in front),
+Server layout: parent checkout `/opt/career-ops/src`, web-ui `/opt/career-ops/src/web-ui`, both owned by
+`careerops`; `career-ops-ui.service` (viewer, 127.0.0.1:4317, Caddy + basic auth in front),
 `hermes-gateway.service` (Telegram bot), `claude-bridge.service` (127.0.0.1:8788, the viewer's
-`HERMES_BASE_URL`), `career-ops-scan`/`career-ops-eval` timers. Earlier deploys **copied files over stale
-checkouts** (web-ui HEAD v1.198.0 with 1.237.1 on disk; parent HEAD 2bb8969 with 1.33.0 on disk), so
-`git status` shows hundreds of modified files that are not hand edits. `mode=deploy` therefore does the
-same thing — extracts `git archive <ref>` over each tree, git state untouched — after a tar backup of every
-file it will overwrite plus the list of files it creates; any failure restores them (simulated locally:
-success, bad health, npm failure, bad parent ref, bad ui ref — each restores byte for byte). The parent
-fork's `origin/main` is `f4f55def` (993085ce + a test-harness-only CodeQL fix), which is what deploys.
+`HERMES_BASE_URL`), `career-ops-scan`/`career-ops-eval` timers. Releases are copied over the trees (git
+HEADs are stale: web-ui v1.198.0, parent August), so `git status` there is meaningless; `mode=deploy`
+extracts `git archive <ref>` over each tree after a tar backup of every file it overwrites, and restores
+on any failure (simulated locally: success + 4 failure paths byte-exact).
 
-Remaining:
-- the user adds `DEPLOY_KNOWN_HOSTS` (the ed25519 line a recon run prints), then run `mode=deploy`
-  with parent `f4f55def` + web-ui `v1.238.0`, and tick the resumecraft.ru line in
-  `qa/QA-REGRESSION-PROMPT-v1.238.0.md` §5;
-- Actions logs of this public repo are public: keep recon output to versions and states (the first run
-  printed the profile name and which provider keys are set; its logs were deleted);
+Still open:
 - delete `claude/zen-brahmagupta-m8zguo` in career-ops-ui, career-ops, career-ops-coworker; push the
-  wiki update (patch = the v1.238.0 wiki commit, re-derive from CHANGELOG if the scratchpad is gone).
+  wiki update (patch = the v1.238.0 wiki commit, re-derive from CHANGELOG if the scratchpad is gone);
+- Actions logs of this public repo are public: keep recon/verify output to versions, states and status
+  codes (the first recon printed the profile name and which provider keys are set; its logs were deleted);
+- Telegram end to end (a real message through the bot) is not exercised by `verify`; it checks the
+  services and the bridge only.
 
 The next parity release starts at
 [`.claude/skills/parent-sync`](.claude/skills/parent-sync/SKILL.md) Phase 1 —
@@ -84,9 +76,9 @@ before any merge.**
   chromium build id and the browser suite then fails **116/116** on `hookFailed`, which
   reads like a catastrophic regression and is not one. Fix: `npx playwright install chromium`.
   Rule of thumb: a whole-suite failure is environment, a scattered failure is code.
-- **The deploy key has a passphrase.** A non-interactive session cannot load it, and
-  every `ssh` to the server then fails `Permission denied (publickey)`. The user must
-  run `ssh-add ~/.ssh/id_careerops_deploy` first.
+- **Only the CI key deploys now.** The old `id_careerops_deploy` key's passphrase is lost; deploys go
+  through the Actions workflow with the passphrase-less `careerops-ci` key. Adding it to a running server
+  through the Timeweb API (`POST /servers/{id}/ssh-keys`) worked without a reboot.
 - **A failed remote hash check reports the worst case.** The deploy verifier diffs
   local vs remote sha256 lists; if the ssh call fails, the remote list is *empty* and
   the diff reports every file as differing. Confirm the remote side actually answered
