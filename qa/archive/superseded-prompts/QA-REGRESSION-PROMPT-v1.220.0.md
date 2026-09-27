@@ -37,4 +37,4 @@ A posting listed under two categories appears once (deduped by URL). A bad slug 
 
 ## §4 — Sign-off
 
-Suite **2771** green · getonbrd 8 tests (default + override backward-compat, multi-category, cross-category URL dedup, validation/cap) · changelog parity ×17 at v1.220.0 · README banner+badges ×17 · CONVENTIONS/PROJECT-CONTEXT/CLAUDE refreshed. Deploy: Pages (facts/version), local + resumecraft restart (server change).
+Suite **2771** green · getonbrd 8 tests (default + override backward-compat, multi-category, cross-category URL dedup, validation/cap) · changelog parity ×17 at v1.220.0 · README banner+badges ×17 · CONVENTIONS/PROJECT-CONTEXT/CLAUDE refreshed. Deploy: Pages (facts/version), local + prod restart (server change).

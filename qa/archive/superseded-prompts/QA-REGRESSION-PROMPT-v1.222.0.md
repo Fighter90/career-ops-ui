@@ -62,4 +62,4 @@ Open `#/config` → **API keys** tab in several UI languages (⚙ language picke
 Suite **2779** green · 26 hints ×17 localized, English == field-specs fallback,
 ⚡ + URL tokens preserved · parity + snapshot + audit green · changelog parity ×17
 at v1.222.0 · README banner+badges ×17 · CONVENTIONS/PROJECT-CONTEXT/CLAUDE refreshed.
-Deploy: Pages (facts/version), local + resumecraft restart (static assets change).
+Deploy: Pages (facts/version), local + prod restart (static assets change).

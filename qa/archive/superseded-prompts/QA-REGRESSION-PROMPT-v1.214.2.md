@@ -35,4 +35,4 @@ node scripts/check-changelog-parity.mjs                    # 16 non-EN at v1.214
 
 ## §5 — Sign-off
 
-Suite **2742** green (2738 + 4) · `html-to-text` 7→11 · greenhouse/recruitee still green through the reordered pipeline · CHANGELOG parity ×17 at v1.214.2 · help **untouched** (82/77) · CONVENTIONS/PROJECT-CONTEXT/CLAUDE refreshed · site rebuild (changelog mirrors + facts version) + wiki (version + tests). Deploy: resumecraft rsync of `html-to-text.mjs` + `package.json`, restart. cvstart.org Pages rebuild.
+Suite **2742** green (2738 + 4) · `html-to-text` 7→11 · greenhouse/recruitee still green through the reordered pipeline · CHANGELOG parity ×17 at v1.214.2 · help **untouched** (82/77) · CONVENTIONS/PROJECT-CONTEXT/CLAUDE refreshed · site rebuild (changelog mirrors + facts version) + wiki (version + tests). Deploy: prod rsync of `html-to-text.mjs` + `package.json`, restart. cvstart.org Pages rebuild.

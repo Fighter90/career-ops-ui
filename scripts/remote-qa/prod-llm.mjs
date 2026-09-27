@@ -2,7 +2,7 @@
 /**
  * prod-llm.mjs — live LLM regression of a DEPLOYED web-ui, in every UI locale.
  *
- *   BASE_URL=https://resumecraft.ru BASIC_USER=… BASIC_PASS=… node scripts/remote-qa/prod-llm.mjs
+ *   BASE_URL=https://<prod-host> BASIC_USER=… BASIC_PASS=… node scripts/remote-qa/prod-llm.mjs
  *
  * First one real scan via #/scan (SCAN=0 skips it). Then, per locale, driven
  * through the UI exactly as a user would:
@@ -229,7 +229,7 @@ await browser.close();
 const md = (v) => String(v).replace(/\\/g, '\\\\').replace(/\|/g, '\\|').replace(/[\r\n]+/g, ' ');
 const cell = (x) => (x ? `${x.status} · ${x.mode || '-'} · ${Math.round(x.ms / 1000)}s · ${x.len} ch · ${x.lang ? 'lang ✓' : 'lang ✗'}${'shape' in x ? (x.shape ? ' · A–G ✓' : ' · A–G ✗') : ''}` : '—');
 const lines = [
-  `## Live LLM regression — ${new URL(BASE).host}`, '',
+  '## Live LLM regression', '',
   scan ? `**Scan (#/scan, all sources):** ${scan.secs}s · ${scan.phases.join(' · ') || 'no phase finished'}${scan.failed.length ? ' · failed: ' + scan.failed.join(',') : ''} · stderr lines ${scan.errLines} · result rows ${scan.before} → ${scan.after}` : '_Scan skipped (SCAN=0)._', '',
   `${rows.length} locales × (docs assistant + evaluate, driven through the UI).`, '',
   '| locale | docs assistant | evaluate (save=false) |', '|---|---|---|',

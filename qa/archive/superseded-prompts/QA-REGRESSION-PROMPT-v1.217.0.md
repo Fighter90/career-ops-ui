@@ -35,4 +35,4 @@ node scripts/check-changelog-parity.mjs                    # 16 non-EN at v1.217
 
 ## §5 — Sign-off
 
-Suite **2755** green · provider roster **18** (status/health/pricing/field-specs/provider-status/provider-logo in lockstep) · help **32 H2 / 121 H3** ×17 · changelog parity ×17 at v1.217.0 · README banner+badges ×17 · CONVENTIONS/PROJECT-CONTEXT/CLAUDE refreshed · i18n snapshot regenerated. Deploy: Pages (help/facts changed), local + resumecraft restart.
+Suite **2755** green · provider roster **18** (status/health/pricing/field-specs/provider-status/provider-logo in lockstep) · help **32 H2 / 121 H3** ×17 · changelog parity ×17 at v1.217.0 · README banner+badges ×17 · CONVENTIONS/PROJECT-CONTEXT/CLAUDE refreshed · i18n snapshot regenerated. Deploy: Pages (help/facts changed), local + prod restart.

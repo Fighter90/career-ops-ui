@@ -12,7 +12,7 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ## [1.238.1] — 2026-09-27
 
-**Correctif de stabilité après la première régression en direct de resumecraft.ru : un scan à la fois et corrections du site.**
+**Correctif de stabilité après la première régression en direct du serveur de production : un scan à la fois et corrections du site.**
 
 ### Corrigé
 
@@ -242,7 +242,7 @@ Verrouillé deux fois : `node:vm` sur le vrai `withSpinner`, et un clic dans un 
 
 ### Corrigé
 - **La barre supérieure mobile tient de nouveau sur une ligne, actions en icônes seules.** Les boutons étaient forcés sur une deuxième ligne pleine largeur : un téléphone affichait `[☰ · recherche]` au-dessus de `[🔔 🌙 Doctor Ouvrir Scan]` — deux pastilles larges sur leur propre ligne. Ce sont maintenant des carrés de 36 px (🩺 / ⚡) à côté de la cloche et du sélecteur de thème, et tout tient sur une ligne à 320 px. Mesuré, pas estimé à l’œil : la largeur du document égale la fenêtre à 320, 360, 390 et 430 px, et sur toute la bande 560–760 px, là où les boutons chevauchaient auparavant la barre de recherche. **La langue n’influence plus la mise en page mobile**, car le libellé est masqué et le bouton est un carré fixe ; au-dessus de 900 px les libellés reviennent inchangés.
-- **Le serveur exécutait le parent 1.31.0 alors que la version était compilée pour 1.32.0.** `/api/health` sur resumecraft.ru renvoyait `parentVersion: 1.31.0`. 95 fichiers d’exécution synchronisés, deux supprimés. Détecté par une QA navigateur sur la surface en production.
+- **Le serveur exécutait le parent 1.31.0 alors que la version était compilée pour 1.32.0.** `/api/health` sur le serveur de production renvoyait `parentVersion: 1.31.0`. 95 fichiers d’exécution synchronisés, deux supprimés. Détecté par une QA navigateur sur la surface en production.
 - **`cvstart.ru` préfixait `/ru/` à tout chemin, sans regarder ce qui s’y trouvait déjà.** `/ru/help` devenait `/ru/ru/help` et `/en/help` devenait `/ru/en/help` ; les deux en 404. Le premier est ce qu’on obtient en copiant une URL du site principal ; le second interdisait purement et simplement au visiteur anglophone d’atteindre la version anglaise. Désormais un chemin nommant déjà l’un des 16 préfixes passe tel quel, `en` est retiré (l’anglais est à la racine), et le reste reçoit toujours `/ru/`.
 
 ### Modifié

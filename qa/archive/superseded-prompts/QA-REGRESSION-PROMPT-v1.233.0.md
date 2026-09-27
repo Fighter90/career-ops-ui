@@ -99,4 +99,4 @@ With `HOST` absent from `.env`:
 - [ ] `npm run test:ci` — 3018 pass, exit code captured directly
 - [ ] `npm run test:e2e:browser` — 116 pass
 - [ ] Manual §4, especially steps 1 and 2 together
-- [ ] `/api/health` on resumecraft.ru reports 1.233.0
+- [ ] `/api/health` on the prod server reports 1.233.0

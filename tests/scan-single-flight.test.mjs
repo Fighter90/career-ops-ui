@@ -1,6 +1,6 @@
 /**
  * One scan at a time: a second GET /api/stream/scan while one is running gets
- * an SSE `error` with code SCAN_BUSY and no scanner run. On resumecraft.ru the
+ * an SSE `error` with code SCAN_BUSY and no scanner run. On the prod server the
  * hourly timer and a UI-started scan overlapped, the viewer ran two full
  * in-process scans at once, and Caddy served 502s until it restarted.
  */

@@ -1,7 +1,7 @@
 name: Deploy (server)
 
 # Manual deploy of the parent career-ops checkout + this web-ui to the
-# production box (Timeweb server 8801467, resumecraft.ru).
+# production box (Timeweb server 8801467).
 #
 #   mode=recon   read-only: prints both git checkouts, versions, the state of
 #                the systemd services (web-ui, Hermes gateway), and /api/health.
@@ -53,8 +53,8 @@ on:
         description: 'V8 old-space limit for the viewer in MB (systemd drop-in); 0 = leave as is'
         default: '448'
       public_url:
-        description: 'Public origin checked over HTTPS after the run'
-        default: https://resumecraft.ru
+        description: 'Public origin checked over HTTPS after the run (empty = secret PROD_URL)'
+        default: ''
 
 permissions:
   contents: read
@@ -395,9 +395,11 @@ jobs:
 
       - name: Public check (HTTPS)
         env:
-          PUBLIC_URL: ${{ inputs.public_url }}
+          PUBLIC_URL: ${{ inputs.public_url || secrets.PROD_URL }}
         run: |
           set -euo pipefail
+          [ -n "$PUBLIC_URL" ] || { echo "::notice::no public_url and no PROD_URL secret — public check skipped"; exit 0; }
+          PUBLIC_URL="${PUBLIC_URL%/}"
           # The site sits behind HTTP basic auth, so 401 means "up and gated".
           for p in / /api/health; do
             code=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 15 "$PUBLIC_URL$p")

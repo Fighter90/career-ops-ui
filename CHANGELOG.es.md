@@ -12,7 +12,7 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 
 ## [1.238.1] — 2026-09-27
 
-**Parche de estabilidad tras la primera regresión en vivo de resumecraft.ru: un escaneo a la vez y arreglos del sitio.**
+**Parche de estabilidad tras la primera regresión en vivo del servidor de producción: un escaneo a la vez y arreglos del sitio.**
 
 ### Corregido
 
@@ -244,7 +244,7 @@ Asegurado por partida doble: `node:vm` sobre el `withSpinner` real y un clic en 
 
 ### Corregido
 - **La barra superior móvil vuelve a una sola fila, con acciones solo de icono.** Los botones de acción se forzaban a una segunda fila a todo el ancho, así que un teléfono mostraba `[☰ · búsqueda]` sobre `[🔔 🌙 Doctor Abrir Scan]` — dos píldoras anchas en una línea propia. Ahora son cuadrados de 36 px (🩺 / ⚡) junto a la campana y el conmutador de tema, y todo cabe en una fila a 320 px. Medido, no estimado a ojo: el ancho del documento iguala al viewport a 320, 360, 390 y 430 px, y en toda la banda 560–760 px, donde antes los botones se superponían a la barra de búsqueda. **El idioma ya no afecta a la disposición móvil**, porque la etiqueta está oculta y el botón es un cuadrado fijo; por encima de 900 px las etiquetas vuelven sin cambios. El nombre accesible viene de `aria-label`, ya que una etiqueta con `display:none` queda fuera del cálculo del nombre.
-- **El servidor ejecutaba el padre 1.31.0 aunque la versión se compiló contra 1.32.0.** `/opt/career-ops/src` tenía archivos de 1.31.0, así que `/api/health` en resumecraft.ru informaba `parentVersion: 1.31.0`. Se sincronizaron 95 archivos de ejecución y se eliminaron dos. Detectado por QA de navegador contra la superficie en producción.
+- **El servidor ejecutaba el padre 1.31.0 aunque la versión se compiló contra 1.32.0.** `/opt/career-ops/src` tenía archivos de 1.31.0, así que `/api/health` en el servidor de producción informaba `parentVersion: 1.31.0`. Se sincronizaron 95 archivos de ejecución y se eliminaron dos. Detectado por QA de navegador contra la superficie en producción.
 - **`cvstart.ru` anteponía `/ru/` a cualquier ruta, sin mirar lo que ya había.** `cvstart.ru/ru/help` pasaba a `cvstart.org/ru/ru/help` y `cvstart.ru/en/help` a `cvstart.org/ru/en/help`; ambos 404. Lo primero es lo que se obtiene al copiar una URL del sitio principal; lo segundo dejaba al visitante angloparlante sin acceso alguno a la versión en inglés. Ahora una ruta que ya nombre uno de los 16 prefijos de idioma pasa tal cual, `en` se elimina (cvstart.org sirve el inglés en la raíz y no tiene `/en/`) y el resto sigue recibiendo `/ru/`. La comprobación está anclada, así que `/enterprise/` no se confunde con `en`.
 
 ### Cambiado

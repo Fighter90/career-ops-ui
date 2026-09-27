@@ -25,4 +25,4 @@ node scripts/check-changelog-parity.mjs     # 16 non-EN at v1.225.1
 - cvstart.org `#providers`: unchanged, already correct.
 
 ## §4 — Sign-off
-Suite **2784** green · SVG valid XML · PNG renders 18 tiles · README/help/wiki banners fixed ×17 · parity ×17 at v1.225.1 · CONVENTIONS/PROJECT-CONTEXT/CLAUDE refreshed. Deploy: Pages, local + resumecraft restart.
+Suite **2784** green · SVG valid XML · PNG renders 18 tiles · README/help/wiki banners fixed ×17 · parity ×17 at v1.225.1 · CONVENTIONS/PROJECT-CONTEXT/CLAUDE refreshed. Deploy: Pages, local + prod restart.

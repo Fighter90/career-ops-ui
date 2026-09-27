@@ -32,4 +32,4 @@ A normal scan is unchanged (public boards resolve to public IPs). A source point
 
 ## §4 — Sign-off
 
-Suite **2775** green · guard blocks loopback/metadata/RFC1918 on the real fetch path, skips injected mocks, and reuses the existing `isPrivateOrLoopbackHost` ranges · no CSP/route change · LLM loopback providers unaffected · changelog parity ×17 at v1.221.0 · README banner+badges ×17 · CONVENTIONS/PROJECT-CONTEXT/CLAUDE refreshed. Closes the last queued plan item. Deploy: Pages (facts/version), local + resumecraft restart (server change).
+Suite **2775** green · guard blocks loopback/metadata/RFC1918 on the real fetch path, skips injected mocks, and reuses the existing `isPrivateOrLoopbackHost` ranges · no CSP/route change · LLM loopback providers unaffected · changelog parity ×17 at v1.221.0 · README banner+badges ×17 · CONVENTIONS/PROJECT-CONTEXT/CLAUDE refreshed. Closes the last queued plan item. Deploy: Pages (facts/version), local + prod restart (server change).

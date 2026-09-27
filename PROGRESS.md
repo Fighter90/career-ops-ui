@@ -8,7 +8,7 @@ Release history belongs in [CHANGELOG.md](CHANGELOG.md), decisions in
 [docs/adr/](docs/adr/), vocabulary in [CONTEXT.md](CONTEXT.md). Anything already
 recoverable from those does **not** belong here.
 
-_Last updated: 2026-09-27 · v1.238.1 (single-flight scan + heap drop-in) — deploy to resumecraft.ru pending the PR_
+_Last updated: 2026-09-27 · v1.238.1 (single-flight scan + heap drop-in) — deploy to the prod server pending the PR_
 
 ---
 
@@ -58,7 +58,9 @@ Still open:
 - career-ops code scanning: local CodeQL on fork `main` (JS/TS 1223 files, Go, Actions) = **0 results**;
   the alerts on GitHub stay open only because no push workflow (CodeQL included) has run in the fork
   since 2026-07-15 — the user re-enables Actions there and the next push closes them;
-- remote regression is `.github/workflows/remote-qa.yml` (secrets `AUTH_LOGIN` / `AUTH_PASSWORD`);
+- remote regression is `.github/workflows/remote-qa.yml` (secrets `PROD_URL`, `AUTH_LOGIN` / `AUTH_PASSWORD`);
+  the production hostname is never written into the repo — workflows read it from `PROD_URL`, and
+  the report headers do not print it;
 - Actions logs of this public repo are public: keep recon/verify output to versions, states and status
   codes (the first recon printed the profile name and which provider keys are set; its logs were deleted);
 - Telegram end to end (a real message through the bot) is not exercised by `verify`; it checks the

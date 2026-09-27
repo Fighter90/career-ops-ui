@@ -24,4 +24,4 @@ The v1.208.0 guard (horizontal page overflow) and the v1.208.1 guard (vertical t
 
 ## §3 — Sign-off
 
-Suite **2621** green · Playwright **22** (new topbar-overlap guard, RU) · CHANGELOG parity ×17 at v1.208.2 · CSS-only + one test, no new dependency, no server/parent edits. Verified clean across **39** combinations (13 widths × ru/en/de) — no overlap, no vertical spill, no horizontal page scroll. Deploy: resumecraft.ru rsync of `public/css/app.css` (static — **no restart**) + cvstart.org Pages version refresh.
+Suite **2621** green · Playwright **22** (new topbar-overlap guard, RU) · CHANGELOG parity ×17 at v1.208.2 · CSS-only + one test, no new dependency, no server/parent edits. Verified clean across **39** combinations (13 widths × ru/en/de) — no overlap, no vertical spill, no horizontal page scroll. Deploy: prod rsync of `public/css/app.css` (static — **no restart**) + cvstart.org Pages version refresh.

@@ -76,4 +76,4 @@ With a `.env` holding a handful of keys and every `*_MODEL` unset:
 - [ ] `npm run test:ci` — 3018 pass, exit code captured directly
 - [ ] `npm run test:e2e:browser` — 111 pass
 - [ ] Manual: one-field Save writes one key; untouched Save writes none
-- [ ] `/api/health` on resumecraft.ru reports 1.232.1
+- [ ] `/api/health` on the prod server reports 1.232.1

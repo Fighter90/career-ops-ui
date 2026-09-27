@@ -81,4 +81,4 @@ rewrite would break.
 - [ ] `npm run test:ci` — 3021 pass, exit code captured directly
 - [ ] `npm run test:e2e:browser` — 116 pass
 - [ ] GitHub code-scanning: **0 open alerts**
-- [ ] `/api/health` on resumecraft.ru reports 1.233.2
+- [ ] `/api/health` on the prod server reports 1.233.2

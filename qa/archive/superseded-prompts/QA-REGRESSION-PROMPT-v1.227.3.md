@@ -50,7 +50,7 @@ No registry, scanner-source, route-contract, server, i18n-dict or help-bundle ch
 
 ## §6 — Carried forward
 - **SURF-1 · cvstart.ru** — still `https_certificate.state: "new"` after a full API remove/re-add cycle and 50 days stuck; served GitHub's default `*.github.io` cert, `verify error:num=62 hostname mismatch`. DNS is correct. Needs the domain removed and re-added **once** in repo Settings → Pages, then left alone. **Never verify this with local `curl`** — Kaspersky MITMs TLS on the dev machine and re-signs with its own CA, so curl reports a false 200; use `openssl s_client -verify_hostname` or a clean machine.
-- **resumecraft.ru** — Basic-auth gated; unverifiable from a clean machine. Needs an unauthenticated `/api/health` and an HSTS header.
+- **prod server** — Basic-auth gated; unverifiable from a clean machine. Needs an unauthenticated `/api/health` and an HSTS header.
 - **280 px** viewport overflow (v1.227.2 §3) — documented, not gated.
 
 ## §7 — Sign-off

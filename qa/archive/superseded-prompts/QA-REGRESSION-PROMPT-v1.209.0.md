@@ -27,4 +27,4 @@ Each bundle is now **31 H2 / 119 H3** (was 118). Two count assertions bumped 118
 
 ## §4 — Sign-off
 
-Suite **2625** green · CHANGELOG/README parity ×17 at v1.209.0 · docs-only, no code or behaviour change, no new dependency, no server/parent edits. Deploy: resumecraft.ru rsync of `docs/help/*.md` (help served live — **no restart**) + cvstart.org Pages version refresh.
+Suite **2625** green · CHANGELOG/README parity ×17 at v1.209.0 · docs-only, no code or behaviour change, no new dependency, no server/parent edits. Deploy: prod rsync of `docs/help/*.md` (help served live — **no restart**) + cvstart.org Pages version refresh.

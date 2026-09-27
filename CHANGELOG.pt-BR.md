@@ -10,7 +10,7 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ## [1.238.1] — 2026-09-27
 
-**Correção de estabilidade após a primeira regressão ao vivo do resumecraft.ru: um scan por vez e correções do site.**
+**Correção de estabilidade após a primeira regressão ao vivo do servidor de produção: um scan por vez e correções do site.**
 
 ### Corrigido
 
@@ -242,7 +242,7 @@ Travado duas vezes: `node:vm` sobre o `withSpinner` real e um clique em navegado
 
 ### Corrigido
 - **A barra superior mobile voltou a uma única linha, com ações só de ícone.** Os botões eram forçados para uma segunda linha de largura total, então o telefone mostrava `[☰ · busca]` acima de `[🔔 🌙 Doctor Abrir Scan]` — duas pílulas largas em linha própria. Agora são quadrados de 36 px (🩺 / ⚡) ao lado do sino e do alternador de tema, e tudo cabe em uma linha a 320 px. Medido, não estimado: a largura do documento é igual à viewport a 320, 360, 390 e 430 px, e em toda a faixa 560–760 px, onde antes os botões se sobrepunham à barra de busca. **O idioma não afeta mais o layout mobile**, pois o rótulo está oculto e o botão é um quadrado fixo; acima de 900 px os rótulos voltam inalterados.
-- **O servidor rodava o pai 1.31.0 embora a versão tenha sido compilada contra 1.32.0.** `/api/health` no resumecraft.ru informava `parentVersion: 1.31.0`. Foram sincronizados 95 arquivos de execução e dois removidos. Detectado por QA de navegador na superfície em produção.
+- **O servidor rodava o pai 1.31.0 embora a versão tenha sido compilada contra 1.32.0.** `/api/health` no servidor de produção informava `parentVersion: 1.31.0`. Foram sincronizados 95 arquivos de execução e dois removidos. Detectado por QA de navegador na superfície em produção.
 - **O `cvstart.ru` prefixava `/ru/` a qualquer caminho, sem olhar o que já havia.** `/ru/help` virava `/ru/ru/help` e `/en/help` virava `/ru/en/help`; ambos 404. O primeiro é o que se obtém copiando uma URL do site principal; o segundo trancava o visitante de língua inglesa fora da versão em inglês. Agora um caminho que já nomeie um dos 16 prefixos passa como está, `en` é removido (o inglês fica na raiz) e o resto continua recebendo `/ru/`.
 
 ### Alterado

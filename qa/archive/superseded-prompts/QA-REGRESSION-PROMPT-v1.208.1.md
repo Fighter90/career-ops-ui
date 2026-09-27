@@ -24,4 +24,4 @@ The v1.208.0 responsive guard only checked **horizontal** overflow (`rect.right`
 
 ## §3 — Sign-off
 
-Suite **2621** green · Playwright **21** (guard now covers vertical top-bar spill) · CHANGELOG parity ×17 at v1.208.1 · CSS-only + one test, no new dependency, no server/parent edits. Deploy: resumecraft.ru rsync of `public/css/app.css` (static — **no restart**) + cvstart.org Pages version refresh.
+Suite **2621** green · Playwright **21** (guard now covers vertical top-bar spill) · CHANGELOG parity ×17 at v1.208.1 · CSS-only + one test, no new dependency, no server/parent edits. Deploy: prod rsync of `public/css/app.css` (static — **no restart**) + cvstart.org Pages version refresh.

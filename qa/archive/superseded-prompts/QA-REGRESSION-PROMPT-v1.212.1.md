@@ -44,4 +44,4 @@ mv node_modules/js-yaml.HIDDEN node_modules/js-yaml
 
 ## §5 — Sign-off
 
-Suite **2687** green (2685 + 2 site-sources gates) · `site-sources` 4→6 · `sources-jobbankca` 24 (async resolveProfileKeywords) · dep-isolation proof: registry enumerates **81** with js-yaml hidden · CHANGELOG parity ×17 at v1.212.1 · help **untouched** (source count unchanged 81/76) · CONVENTIONS/PROJECT-CONTEXT/CLAUDE.md refreshed · site rebuilt (facts.sources **81**, assertion passes) · wiki version + tests bumped. Deploy: Pages rebuild (site/ + registry changed) → cvstart.org back to 81; resumecraft + local rsync of `jobbankca.mjs` + restart.
+Suite **2687** green (2685 + 2 site-sources gates) · `site-sources` 4→6 · `sources-jobbankca` 24 (async resolveProfileKeywords) · dep-isolation proof: registry enumerates **81** with js-yaml hidden · CHANGELOG parity ×17 at v1.212.1 · help **untouched** (source count unchanged 81/76) · CONVENTIONS/PROJECT-CONTEXT/CLAUDE.md refreshed · site rebuilt (facts.sources **81**, assertion passes) · wiki version + tests bumped. Deploy: Pages rebuild (site/ + registry changed) → cvstart.org back to 81; prod + local rsync of `jobbankca.mjs` + restart.

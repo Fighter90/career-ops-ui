@@ -2,7 +2,7 @@
 /**
  * prod-regression.mjs — read-only browser regression of a DEPLOYED web-ui.
  *
- *   BASE_URL=https://resumecraft.ru BASIC_USER=… BASIC_PASS=… node scripts/remote-qa/prod-regression.mjs
+ *   BASE_URL=https://<prod-host> BASIC_USER=… BASIC_PASS=… node scripts/remote-qa/prod-regression.mjs
  *
  * Every registered route × every UI locale, plus a handful of client-only
  * interactions (theme toggle, ⌘K palette, 404 route, narrow viewport).
@@ -194,7 +194,7 @@ const md = (v) => String(v).replace(/\\/g, '\\\\').replace(/\|/g, '\\|').replace
 const byKind = {};
 for (const f of findings) byKind[f.kind] = (byKind[f.kind] || 0) + 1;
 const lines = [
-  `## Prod regression — ${new URL(BASE).host}`,
+  '## Prod regression',
   '',
   `${LOCALES.length} locales × ${ROUTES.length} routes = ${visits} page visits, plus interactions and a 390px sweep, in ${Math.round((Date.now() - t0) / 1000)}s.`,
   '',

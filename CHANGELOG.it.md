@@ -4,7 +4,7 @@
 
 ## [1.238.1] — 2026-09-27
 
-**Patch di stabilità dopo la prima regressione dal vivo di resumecraft.ru: una scansione alla volta e correzioni del sito.**
+**Patch di stabilità dopo la prima regressione dal vivo del server di produzione: una scansione alla volta e correzioni del sito.**
 
 ### Corretto
 
@@ -236,7 +236,7 @@ Bloccato due volte: `node:vm` sul vero `withSpinner` e un clic in un browser rea
 
 ### Corretto
 - **La barra superiore mobile torna su una sola riga, azioni a sole icone.** I pulsanti venivano forzati su una seconda riga a tutta larghezza: un telefono mostrava `[☰ · ricerca]` sopra `[🔔 🌙 Doctor Apri Scan]` — due pillole larghe su una riga propria. Ora sono quadrati da 36 px (🩺 / ⚡) accanto alla campanella e all’interruttore del tema, e tutto sta su una riga a 320 px. Misurato, non stimato a occhio: la larghezza del documento eguaglia il viewport a 320, 360, 390 e 430 px e su tutta la fascia 560–760 px, dove prima i pulsanti si sovrapponevano alla barra di ricerca. **La lingua non incide più sul layout mobile**, perché l’etichetta è nascosta e il pulsante è un quadrato fisso; sopra i 900 px le etichette tornano invariate.
-- **Il server eseguiva il padre 1.31.0 benché la versione fosse costruita su 1.32.0.** `/api/health` su resumecraft.ru riportava `parentVersion: 1.31.0`. Sincronizzati 95 file di runtime, due rimossi. Rilevato da QA da browser sulla superficie in produzione.
+- **Il server eseguiva il padre 1.31.0 benché la versione fosse costruita su 1.32.0.** `/api/health` sul server di produzione riportava `parentVersion: 1.31.0`. Sincronizzati 95 file di runtime, due rimossi. Rilevato da QA da browser sulla superficie in produzione.
 - **`cvstart.ru` anteponeva `/ru/` a qualsiasi percorso, senza guardare cosa ci fosse già.** `/ru/help` diventava `/ru/ru/help` e `/en/help` diventava `/ru/en/help`; entrambi 404. Il primo è ciò che si ottiene copiando un URL dal sito principale; il secondo escludeva del tutto il visitatore anglofono dalla versione inglese. Ora un percorso che nomina già uno dei 16 prefissi passa così com’è, `en` viene rimosso (l’inglese sta nella radice) e il resto riceve ancora `/ru/`.
 
 ### Modificato

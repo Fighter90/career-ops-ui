@@ -4,7 +4,7 @@
 
 ## [1.238.1] — 2026-09-27
 
-**Stabilitäts-Patch nach der ersten Live-Regression von resumecraft.ru: ein Scan zur Zeit und Website-Korrekturen.**
+**Stabilitäts-Patch nach der ersten Live-Regression des Produktionsservers: ein Scan zur Zeit und Website-Korrekturen.**
 
 ### Behoben
 
@@ -236,7 +236,7 @@ Zweifach abgesichert: `node:vm` über dem echten `withSpinner` und ein Klick in 
 
 ### Behoben
 - **Die mobile Kopfleiste ist wieder einzeilig, mit reinen Icon-Aktionen.** Die Aktionsbuttons wurden auf eine zweite Zeile über die volle Breite gezwungen: Ein Telefon zeigte `[☰ · Suche]` über `[🔔 🌙 Doctor Scan öffnen]` — zwei breite Pillen auf eigener Zeile. Jetzt sind es 36-px-Quadrate (🩺 / ⚡) neben Glocke und Themenumschalter, und bei 320 px passt alles in eine Zeile. Gemessen, nicht geschätzt: Die Dokumentbreite entspricht dem Viewport bei 320, 360, 390 und 430 px sowie im gesamten Band 560–760 px, wo die Buttons zuvor die Suchleiste überlappten. **Die Sprache beeinflusst das mobile Layout nicht mehr**, weil das Label verborgen und der Button ein festes Quadrat ist; oberhalb von 900 px kehren die Labels unverändert zurück.
-- **Der Server lief mit Elternprojekt 1.31.0, obwohl das Release gegen 1.32.0 gebaut wurde.** `/api/health` auf resumecraft.ru meldete `parentVersion: 1.31.0`. 95 Laufzeitdateien synchronisiert, zwei entfernt. Von Browser-QA auf der Live-Oberfläche gefunden.
+- **Der Server lief mit Elternprojekt 1.31.0, obwohl das Release gegen 1.32.0 gebaut wurde.** `/api/health` auf dem Produktionsserver meldete `parentVersion: 1.31.0`. 95 Laufzeitdateien synchronisiert, zwei entfernt. Von Browser-QA auf der Live-Oberfläche gefunden.
 - **`cvstart.ru` stellte jedem Pfad `/ru/` voran, ohne zu prüfen, was schon da war.** `/ru/help` wurde zu `/ru/ru/help`, `/en/help` zu `/ru/en/help`; beide 404. Das Erste bekommt man, wenn man eine URL von der Hauptseite kopiert; das Zweite sperrte englischsprachige Besucher vollständig von der englischen Fassung aus. Ein Pfad, der bereits eines der 16 Sprachpräfixe nennt, geht jetzt unverändert durch, `en` wird entfernt (Englisch liegt in der Wurzel), alles andere bekommt weiterhin `/ru/`.
 
 ### Geändert

@@ -34,4 +34,4 @@ Open `#/config` → **API keys**: the Anthropic / Gemini / OpenAI / Qwen / OpenR
 
 ## §5 — Sign-off
 
-Suite **2784** green · real logos render for 11 providers, monogram for 7, CSP-safe path verified at runtime (`svg>rect>g>path` vs `svg>rect>text`) · parity ×17 · README banner+badges ×17 · CONVENTIONS/PROJECT-CONTEXT/CLAUDE refreshed. Deploy: Pages (facts/version), local + resumecraft restart.
+Suite **2784** green · real logos render for 11 providers, monogram for 7, CSP-safe path verified at runtime (`svg>rect>g>path` vs `svg>rect>text`) · parity ×17 · README banner+badges ×17 · CONVENTIONS/PROJECT-CONTEXT/CLAUDE refreshed. Deploy: Pages (facts/version), local + prod restart.

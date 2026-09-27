@@ -1,6 +1,6 @@
 # QA regression — v1.238.1
 
-Stability patch found by the first live regression of resumecraft.ru. **Counts:**
+Stability patch found by the first live regression of the prod server. **Counts:**
 98 sources (93 EN + 5 RU) / 93 adapters — unchanged. **Tests 3481 → 3486.**
 
 ## §0 — Gates
@@ -30,6 +30,9 @@ npm run test:e2e && npm run test:e2e:full              # smoke + 23/23
 5. **Remote QA** (`remote-qa.yml`): prod × 17 locales (read-only), cvstart.org × 17 ×
    2 viewports, README ×17 + wiki links; `live: true` adds one scan + live LLM
    (docs assistant, evaluate with `save:false`) in every locale.
+   The prod origin comes from the `PROD_URL` secret (no hostname in the repo); a
+   `prod_url` input outside that origin, or not https, is refused before any credential
+   is sent.
 
 ## §2 — Manual pass
 
@@ -45,7 +48,7 @@ npm run test:e2e && npm run test:e2e:full              # smoke + 23/23
   not replaces, the multi-phase contract.
 - The remote QA never writes: only GETs, `/api/docs-assistant/ask` and
   `/api/evaluate` with `save:false` leave the browser; basic-auth secrets go only to
-  `https://resumecraft.ru`.
+  the `PROD_URL` origin.
 
 ## §5 — Sign-off
 
