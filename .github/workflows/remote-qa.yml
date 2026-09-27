@@ -19,6 +19,10 @@ on:
       site_url:
         description: 'Public site'
         default: https://cvstart.org
+      live:
+        description: 'Also run a real scan + live LLM calls (docs assistant, evaluate) in every locale — costs tokens'
+        type: boolean
+        default: false
   push:
     branches: ['claude/**']
     paths:
@@ -53,6 +57,26 @@ jobs:
           [ -n "$BASIC_USER" ] || { echo "::error::secret AUTH_LOGIN is not set"; exit 1; }
           set -o pipefail
           node scripts/remote-qa/prod-regression.mjs | tee -a "$GITHUB_STEP_SUMMARY"
+
+  prod-live:
+    name: prod — live scan + LLM × all locales
+    if: github.event_name == 'workflow_dispatch' && inputs.live
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with: { node-version: 22 }
+      - run: npm ci --no-audit --no-fund && npm i --no-save --no-audit --no-fund playwright@1.56 && npx playwright install --with-deps chromium
+      - name: Scan + LLM
+        env:
+          BASE_URL: ${{ inputs.prod_url || 'https://resumecraft.ru' }}
+          BASIC_USER: ${{ secrets.AUTH_LOGIN }}
+          BASIC_PASS: ${{ secrets.AUTH_PASSWORD }}
+        run: |
+          [ -n "$BASIC_USER" ] || { echo "::error::secret AUTH_LOGIN is not set"; exit 1; }
+          set -o pipefail
+          node scripts/remote-qa/prod-llm.mjs | tee -a "$GITHUB_STEP_SUMMARY"
 
   site:
     name: site — all pages × all locales
