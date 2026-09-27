@@ -3,16 +3,19 @@
 Findings of the live regression on v1.238.2: no 502s any more, but during a scan
 the first page load of a locale timed out at 30 s, and `/api/dashboard` /
 `/api/reports` took ~3.7 s even when idle. Separately, one remote-QA finding
-printed part of the prod hostname into a public log. **Counts:** 98 sources
-(93 EN + 5 RU) / 93 adapters — unchanged. **Tests 3488 → 3495.**
+printed part of the prod hostname into a public log, and every live evaluation
+came back with A–G shape warnings in all 17 locales. **Counts:** 98 sources
+(93 EN + 5 RU) / 93 adapters — unchanged. **Tests 3488 → 3500.**
 
 ## §0 — Gates
 
 ```bash
 node --test tests/reports-list-cache.test.mjs          # 3 pass — cache hits, change/add/delete
 node --test tests/remote-qa-redact.test.mjs            # 4 pass — fails on the old add()
+node --test tests/eval-validate.test.mjs               # 10 pass — translated headings, Cyrillic look-alikes
+node --test tests/evaluate-score-summary.test.mjs      # 1 pass — fails on the old prompt/validator
 node --test tests/http-keepalive.test.mjs              # still 2 pass
-npm run test:ci                                        # 3495 (3492 + 3 skipped), exit 0
+npm run test:ci                                        # 3500 (3497 + 3 skipped), exit 0
 npm run test:e2e:browser                               # 116 pass
 npm run test:e2e && npm run test:e2e:full              # smoke + 23/23
 node evals/workflow/run.mjs                            # 0 fail
@@ -28,11 +31,20 @@ node evals/workflow/run.mjs                            # 0 fail
    the prod host (with or without scheme/port, any case) inside `add()` before
    slicing, and redact the whole printed report.
 
+3. **Evaluation shape.** `buildEvaluationPrompt` asks for the `---SCORE_SUMMARY---`
+   block (as the parent's eval scripts do) and for the letter A–G in every block
+   heading; `validateEvaluationReport` accepts a translated word before the letter
+   (`Bloque A`, `ブロックA`, `Блок А`) but not a letter inside a word (`## About`);
+   `/api/evaluate` and auto-pipeline strip the summary block before the report is
+   shown or saved (auto-pipeline reads score/legitimacy first).
+
 ## §2 — Manual pass
 
 1. On prod, `verify`: `/api/dashboard` and `/api/reports` answer in well under a
    second (the probe timestamps are ~4 s apart on v1.238.2).
 2. Write a new report (evaluate with save) → it appears in `#/reports` at once.
+3. Evaluate in es / ja / ru: no "report may be malformed" warning, and no
+   `SCORE_SUMMARY` lines in the rendered report.
 
 ## §3 — Invariants
 

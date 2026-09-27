@@ -7,7 +7,7 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-3495%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3500%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
@@ -17,7 +17,7 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.238.3** — **더 빠른 페이지, 더 안전한 로그** — 보고서 목록을 페이지를 열 때마다 다시 읽고 다시 파싱했습니다(작은 서버에서 수 초, 스캔 중에는 30초 타임아웃). 이제 캐시됩니다. **테스트 3495개 · 브라우저 116개.**
+> **🆕 최신 릴리스 — v1.238.3** — **더 빠른 페이지, 더 안전한 로그** — 보고서 목록을 페이지를 열 때마다 다시 읽고 다시 파싱했습니다(작은 서버에서 수 초, 스캔 중에는 30초 타임아웃). 이제 캐시됩니다. **테스트 3500개 · 브라우저 116개.**
 >
 > **이전 버전 — v1.237.1** — **외부 QA 점검에서 나온 패치.** Jobstreet 수정 사항이 외부에서 확인되었습니다: AU/NZ/HK/MY 호스트에서 `/id/job/<id>`는 깔끔한 404를 반환하고 `/job/<id>`는 실제로 보호되는 경로에 도달합니다 — 잃어버린 링크는 실재했습니다. 이전 버전이 추가한 부분에서 결함 두 건: **책 링크**는 레이블은 현지화되었지만 대상은 그렇지 않아, 러시아어 레이블이 영어판으로 이어지고 있었습니다 — 이제 `data-i18n-href` 적용기가 `ru`를 러시아어판으로 보냅니다. 그리고 **SEEK가 호스트를 이전 중**(`www.seek.com.au` → `au.seek.com`)이라, API 경로가 우리의 `redirect:'error'` 전송 계층으로 리다이렉트를 시작하기 전에 `au.seek.com`과 `nz.seek.com`을 허용목록에 추가했습니다. 개수는 **94**개 소스로 변함없습니다. **3210개 · 브라우저 116개.**
 

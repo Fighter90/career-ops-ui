@@ -38,6 +38,7 @@ import { runOpenAI, runQwen, hasOpenAIKey, hasQwenKey } from '../openai.mjs';
 import { runNodeScript } from '../runner.mjs';
 import { bundleProjectContext, buildEvaluationPrompt } from '../prompts.mjs';
 import { stripDangerousMarkdown } from '../security.mjs';
+import { stripScoreSummary } from '../eval-validate.mjs';
 import { parseApplications, today } from '../parsers.mjs';
 import { logActivity } from '../activity-log.mjs';
 import { safeGet } from '../safe-fetch.mjs';
@@ -309,7 +310,9 @@ export function registerAutoPipelineRoutes(app) {
     const slug = buildSlug(guess.company || 'unknown', guess.role || 'role');
     const reportPath = `reports/${slug}.md`;
     try {
-      const sanitized = stripDangerousMarkdown(markdown);
+      // Score and legitimacy were read above, with the summary block present;
+      // the saved report drops that machine block, as the parent's scripts do.
+      const sanitized = stripDangerousMarkdown(stripScoreSummary(markdown));
       mkdirSync(PATHS.reportsDir, { recursive: true });
       const file = projPath('reports', `${slug}.md`);
       if (existsSync(file)) {

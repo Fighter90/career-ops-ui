@@ -10,10 +10,11 @@
 
 - **Dashboard e report impiegavano secondi a caricare e andavano in timeout durante una scansione.** `/api/reports` e `/api/dashboard` leggevano e analizzavano tutti i report a ogni richiesta — circa 3,7 s sul server di produzione, bloccando ogni altra richiesta; con una scansione in corso, i caricamenti arrivavano al timeout di 30 s. Ora le intestazioni analizzate sono in cache per file e si aggiornano quando il file cambia, quindi elencare costa un controllo per report (500 report: 430 ms → 3 ms in locale).
 - **Un rilievo della QA remota poteva stampare parte dell'host di produzione in un log pubblico.** GitHub oscura un segreto solo quando compare per intero, e un messaggio tagliato a 180 caratteri finiva a metà dell'host. Ora rilievi e report interi vengono oscurati prima del taglio.
+- **Ogni valutazione con l'IA veniva segnalata come malformata.** Il prompt non chiedeva mai il blocco `---SCORE_SUMMARY---` richiesto dal controllo del report (gli script di valutazione del progetto padre lo chiedono), e un report tradotto traduceva anche la parola "Block", così il controllo non trovava le sezioni. Ora il prompt chiede il riepilogo e la lettera del blocco in ogni titolo, il controllo accetta una parola tradotta prima della lettera e il blocco di riepilogo viene rimosso prima che il report venga mostrato o salvato.
 
 ### Aggiunto
 
-- Test 3488 → 3495.
+- Test 3488 → 3500.
 
 ### Note
 

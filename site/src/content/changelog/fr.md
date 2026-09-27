@@ -18,10 +18,11 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 
 - **Le tableau de bord et les rapports mettaient des secondes à charger, et expiraient pendant un scan.** `/api/reports` et `/api/dashboard` lisaient et analysaient tous les rapports à chaque requête — environ 3,7 s sur le serveur de production, en bloquant toute autre requête ; pendant un scan, les chargements atteignaient le délai de 30 s. Les en-têtes analysés sont désormais mis en cache par fichier et rafraîchis quand le fichier change : lister coûte une vérification par rapport (500 rapports : 430 ms → 3 ms en local).
 - **Un constat de la QA distante pouvait afficher une partie de l'hôte de production dans un journal public.** GitHub ne masque un secret que lorsqu'il apparaît en entier, et un message coupé à 180 caractères s'arrêtait au milieu de l'hôte. Les constats et les rapports entiers sont désormais caviardés avant d'être coupés.
+- **Toutes les évaluations par IA étaient signalées comme mal formées.** Le prompt ne demandait jamais le bloc `---SCORE_SUMMARY---` qu'exige la vérification du rapport (les scripts d'évaluation du projet parent le demandent), et un rapport traduit traduisait le mot « Block », si bien que la vérification ne trouvait pas ses sections. Le prompt demande désormais le résumé et la lettre du bloc dans chaque titre, la vérification accepte un mot traduit avant la lettre, et le bloc de résumé est retiré avant l'affichage ou l'enregistrement du rapport.
 
 ### Ajouté
 
-- Tests 3488 → 3495.
+- Tests 3488 → 3500.
 
 ### Notes
 

@@ -17,10 +17,11 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 - **Pulpit i raporty ładowały się sekundami, a podczas skanu kończyły się timeoutem.** `/api/reports` i `/api/dashboard` przy każdym żądaniu czytały i parsowały wszystkie raporty — około 3,7 s na serwerze produkcyjnym, blokując każde inne żądanie; w trakcie skanu ładowanie stron trafiało na 30-sekundowy timeout. Sparsowane nagłówki są teraz przechowywane w pamięci podręcznej dla każdego pliku i odświeżane przy jego zmianie, więc lista kosztuje jedno sprawdzenie pliku na raport (500 raportów: lokalnie 430 ms → 3 ms).
 - **Wynik zdalnego QA mógł wypisać część hosta produkcyjnego do publicznego logu.** GitHub maskuje sekret tylko wtedy, gdy pojawia się w całości, a komunikat przycięty do 180 znaków kończył się w połowie nazwy hosta. Wyniki i całe raporty są teraz cenzurowane przed przycięciem.
+- **Każda ocena AI była oznaczana jako błędna.** Prompt nigdy nie prosił o blok `---SCORE_SUMMARY---`, którego wymaga kontrola raportu (skrypty oceny projektu nadrzędnego o niego proszą), a przetłumaczony raport tłumaczył też słowo "Block", więc kontrola nie znajdowała sekcji. Teraz prompt prosi o podsumowanie i literę bloku w każdym nagłówku, kontrola akceptuje przetłumaczone słowo przed literą, a blok podsumowania jest usuwany, zanim raport trafi na stronę lub zostanie zapisany.
 
 ### Dodano
 
-- Testy 3488 → 3495.
+- Testy 3488 → 3500.
 
 ### Uwagi
 

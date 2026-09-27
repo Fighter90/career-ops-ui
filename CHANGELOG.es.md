@@ -18,10 +18,11 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 
 - **El panel y los informes tardaban segundos en cargar y agotaban el tiempo durante un escaneo.** `/api/reports` y `/api/dashboard` leían y analizaban todos los informes en cada petición: unos 3,7 s en el servidor de producción, bloqueando cualquier otra petición; con un escaneo en marcha, las cargas llegaban al límite de 30 s. Ahora las cabeceras analizadas se guardan en caché por archivo y se renuevan cuando el archivo cambia, así que listar cuesta una comprobación por informe (500 informes: 430 ms → 3 ms en local).
 - **Un hallazgo de la QA remota podía imprimir parte del host de producción en un registro público.** GitHub solo oculta un secreto cuando aparece completo, y un mensaje cortado a 180 caracteres terminaba a mitad del host. Ahora los hallazgos y los informes completos se censuran antes de cortarse.
+- **Todas las evaluaciones con IA se marcaban como mal formadas.** El prompt nunca pedía el bloque `---SCORE_SUMMARY---` que exige la comprobación del informe (los scripts de evaluación del proyecto padre sí lo piden), y un informe traducido traducía la palabra "Block", así que la comprobación no encontraba sus secciones. Ahora el prompt pide el resumen y la letra del bloque en cada encabezado, la comprobación acepta una palabra traducida antes de la letra y el bloque de resumen se elimina antes de mostrar o guardar el informe.
 
 ### Añadido
 
-- Tests 3488 → 3495.
+- Tests 3488 → 3500.
 
 ### Notas
 

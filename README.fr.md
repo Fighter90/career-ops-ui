@@ -7,7 +7,7 @@
 
 _Interface non officielle — sans affiliation ni approbation de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-3495%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3500%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
@@ -17,7 +17,7 @@ _Interface non officielle — sans affiliation ni approbation de career-ops / sa
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Dernière version — v1.238.3** — **Pages plus rapides, journaux plus sûrs** — la liste des rapports était relue et réanalysée à chaque chargement de page (plusieurs secondes sur un petit serveur, délais de 30 s pendant un scan) ; elle est désormais mise en cache. **3495 tests · 116 navigateur.**
+> **🆕 Dernière version — v1.238.3** — **Pages plus rapides, journaux plus sûrs** — la liste des rapports était relue et réanalysée à chaque chargement de page (plusieurs secondes sur un petit serveur, délais de 30 s pendant un scan) ; elle est désormais mise en cache. **3500 tests · 116 navigateur.**
 >
 > **Précédente — v1.237.1** — **Correctif issu d'une revue QA externe.** Le correctif Jobstreet a été confirmé de l'extérieur : `/id/job/<id>` renvoie un 404 propre sur les hôtes AU/NZ/HK/MY et `/job/<id>` atteint une véritable route protégée — les liens perdus étaient bien réels. Deux défauts dans ce que v1.237.0 avait ajouté : le **lien vers le livre** avait un libellé traduit mais pas sa cible, si bien que le libellé russe menait à l'édition anglaise — un applicateur `data-i18n-href` envoie désormais `ru` vers le livre russe ; et **SEEK migre ses hôtes** (`www.seek.com.au` → `au.seek.com`), si bien que `au.seek.com` et `nz.seek.com` sont mis en liste blanche avant que le chemin de l'API ne commence à rediriger dans notre transport `redirect:'error'`. Décomptes inchangés à **94** sources. **3210 tests · 116 navigateur.**
 

@@ -10,10 +10,11 @@
 
 - **Dashboard und Berichte brauchten Sekunden zum Laden und liefen während eines Scans in Timeouts.** `/api/reports` und `/api/dashboard` lasen und parsten bei jeder Anfrage alle Berichte — rund 3,7 s auf dem Produktionsserver, während alle anderen Anfragen warten mussten; lief ein Scan, erreichten Seitenaufrufe das 30-Sekunden-Timeout. Geparste Berichtsköpfe werden jetzt pro Datei zwischengespeichert und bei jeder Dateiänderung erneuert, sodass eine Liste nur eine Dateiprüfung pro Bericht kostet (500 Berichte: lokal 430 ms → 3 ms).
 - **Ein Remote-QA-Befund konnte einen Teil des Produktionshosts in ein öffentliches Log schreiben.** GitHub maskiert ein Secret nur, wenn es vollständig erscheint, und eine auf 180 Zeichen gekürzte Fehlermeldung endete mitten im Hostnamen. Befunde und ganze Berichte werden jetzt vor dem Kürzen geschwärzt.
+- **Jede KI-Bewertung wurde als fehlerhaft markiert.** Der Prompt verlangte nie den `---SCORE_SUMMARY---`-Block, den die Berichtsprüfung voraussetzt (die Bewertungsskripte des Elternprojekts verlangen ihn), und ein übersetzter Bericht übersetzte auch das Wort "Block", sodass die Prüfung seine Abschnitte nicht fand. Der Prompt verlangt jetzt die Zusammenfassung und den Blockbuchstaben in jeder Überschrift, die Prüfung akzeptiert ein übersetztes Wort vor dem Buchstaben, und der Zusammenfassungsblock wird entfernt, bevor der Bericht angezeigt oder gespeichert wird.
 
 ### Hinzugefügt
 
-- Tests 3488 → 3495.
+- Tests 3488 → 3500.
 
 ### Anmerkungen
 

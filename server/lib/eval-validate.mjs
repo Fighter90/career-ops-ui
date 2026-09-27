@@ -21,15 +21,15 @@ export function validateEvaluationReport(text) {
   const issues = [];
   if (typeof text !== 'string' || text.trim() === '') return ['empty evaluation report'];
 
-  const requiredBlocks = [
-    ['A', /(?:^|\n)#{1,3}\s*(?:A[).:-]?|Block A\b)/im],
-    ['B', /(?:^|\n)#{1,3}\s*(?:B[).:-]?|Block B\b)/im],
-    ['C', /(?:^|\n)#{1,3}\s*(?:C[).:-]?|Block C\b)/im],
-    ['D', /(?:^|\n)#{1,3}\s*(?:D[).:-]?|Block D\b)/im],
-    ['E', /(?:^|\n)#{1,3}\s*(?:E[).:-]?|Block E\b)/im],
-    ['F', /(?:^|\n)#{1,3}\s*(?:F[).:-]?|Block F\b)/im],
-    ['G', /(?:^|\n)#{1,3}\s*(?:G[).:-]?|Block G\b)/im],
-  ];
+  // A block heading carries its letter, optionally after a word: `## A)`,
+  // `## Block A — …`, or — in a translated report — `## Bloque A`,
+  // `## ブロックA`, `## Блок А` (Cyrillic look-alikes accepted for A/B/C/E).
+  // The letter must not sit inside a Latin word (`## About` is not Block A).
+  const LOOKALIKE = { A: 'АA', B: 'ВB', C: 'СC', E: 'ЕE' };
+  const requiredBlocks = ['A', 'B', 'C', 'D', 'E', 'F', 'G'].map((L) => [
+    L,
+    new RegExp(`^#{1,3}[ \\t]*[^\\n]{0,24}?(?<![A-Za-z\\u0400-\\u04FF])[${LOOKALIKE[L] || L}](?![A-Za-z\\u0400-\\u04FF])`, 'mu'),
+  ]);
   for (const [label, pattern] of requiredBlocks) {
     if (!pattern.test(text)) issues.push(`missing Block ${label}`);
   }
@@ -55,4 +55,13 @@ export function validateEvaluationReport(text) {
   }
 
   return issues;
+}
+
+/**
+ * Remove the machine-readable ---SCORE_SUMMARY--- … ---END_SUMMARY--- block
+ * the prompt asks for, as the parent's eval scripts do before writing a
+ * report: it exists for validation, not for the reader.
+ */
+export function stripScoreSummary(text) {
+  return String(text ?? '').replace(/\n*---SCORE_SUMMARY---[\s\S]*?---END_SUMMARY---\n*/, '\n').trimEnd();
 }

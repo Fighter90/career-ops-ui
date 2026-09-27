@@ -16,10 +16,11 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 - **Dashboard og rapporter tog sekunder at indlæse og fik timeout under en scanning.** `/api/reports` og `/api/dashboard` læste og parsede alle rapporter ved hver forespørgsel — omkring 3,7 s på produktionsserveren, mens alle andre forespørgsler ventede; under en scanning ramte sideindlæsninger 30-sekunders timeoutet. Parsede rapporthoveder caches nu pr. fil og fornyes, når filen ændres, så en liste koster ét filtjek pr. rapport (500 rapporter: 430 ms → 3 ms lokalt).
 - **Et fund fra fjern-QA kunne skrive en del af produktionsværtens navn i en offentlig log.** GitHub maskerer kun en hemmelighed, når hele værdien optræder, og en fejlmeddelelse afkortet til 180 tegn endte midt i værtsnavnet. Fund og hele rapporter redigeres nu, før de afkortes.
+- **Hver AI-vurdering blev markeret som fejlformateret.** Prompten bad aldrig om `---SCORE_SUMMARY---`-blokken, som rapporttjekket kræver (forældreprojektets vurderingsscripts beder om den), og en oversat rapport oversatte også ordet "Block", så tjekket ikke fandt afsnittene. Prompten beder nu om resuméet og blokbogstavet i hver overskrift, tjekket accepterer et oversat ord foran bogstavet, og resuméblokken fjernes, før rapporten vises eller gemmes.
 
 ### Tilføjet
 
-- Tests 3488 → 3495.
+- Tests 3488 → 3500.
 
 ### Noter
 

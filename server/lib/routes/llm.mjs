@@ -22,7 +22,7 @@ import { slugify, today } from '../parsers.mjs';
 import { runNodeScript } from '../runner.mjs';
 import { runAnthropic, hasAnthropicKey, hasGeminiKey } from '../anthropic.mjs';
 import { runGemini } from '../gemini.mjs';
-import { validateEvaluationReport } from '../eval-validate.mjs';
+import { validateEvaluationReport, stripScoreSummary } from '../eval-validate.mjs';
 import { runOpenAI, runQwen, runOpenRouter, runGitHubModels, runHermes, hasOpenAIKey, hasQwenKey, hasOpenRouterKey, hasGitHubModelsKey, hasHermesKey } from '../openai.mjs';
 // v1.216.0 — 9 more OpenAI-compatible providers. Kept as a SECOND import from the
 // same module so the v1.55.0 line above stays byte-stable for provider-selector.test.mjs.
@@ -202,7 +202,7 @@ export function registerLlmRoutes(app) {
       // warning so the user knows the report may be truncated/off-format.
       const warnings = validateEvaluationReport(r.markdown);
       recordUsage('anthropic', r.usage);
-      return res.json({ mode: 'anthropic', prompt: promptText, markdown: r.markdown, usage: r.usage, saved, ...(warnings.length ? { warnings } : {}) });
+      return res.json({ mode: 'anthropic', prompt: promptText, markdown: stripScoreSummary(r.markdown), usage: r.usage, saved, ...(warnings.length ? { warnings } : {}) });
     }
 
     if (_provGate().wantGemini && hasGeminiKey()) {
@@ -232,7 +232,7 @@ export function registerLlmRoutes(app) {
       // v1.75.0 (#819) — same shape guard for the OpenAI/Qwen/OpenRouter/GitHub tail.
       const warnings = validateEvaluationReport(r.markdown);
       recordUsage(tp.mode, r.usage);
-      return res.json({ mode: tp.mode, prompt: promptText, markdown: r.markdown, usage: r.usage, saved, ...(warnings.length ? { warnings } : {}) });
+      return res.json({ mode: tp.mode, prompt: promptText, markdown: stripScoreSummary(r.markdown), usage: r.usage, saved, ...(warnings.length ? { warnings } : {}) });
     }
 
     return res.json({

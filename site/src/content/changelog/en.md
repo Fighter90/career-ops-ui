@@ -16,10 +16,11 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 - **The dashboard and reports took seconds to load, and timed out during a scan.** `/api/reports` and `/api/dashboard` read and parsed every report on every request — about 3.7 s on the production server, blocking every other request; with a scan running, page loads hit 30-second timeouts. Parsed report headers are now cached per file and refreshed when the file changes, so a listing costs one file check per report (500 reports: 430 ms → 3 ms locally).
 - **A remote QA finding could print part of the production hostname into a public log.** GitHub masks a secret only where its full value appears, and an error message cut to 180 characters ended mid-host. Findings and whole reports are now redacted before they are cut.
+- **Every AI evaluation was flagged as malformed.** The prompt never asked for the `---SCORE_SUMMARY---` block the report check requires (the parent's evaluation scripts do), and a translated report translated the word "Block", so the check missed its sections. The prompt now asks for the summary and for the block letter in every heading, the check accepts a translated word before the letter, and the summary block is removed before the report reaches the page or is saved.
 
 ### Added
 
-- Tests 3488 → 3495.
+- Tests 3488 → 3500.
 
 ### Notes
 
