@@ -24,7 +24,9 @@ after(() => server.close());
 test('makeTimeoutFetch() on the real fetch refuses a host that resolves to loopback', async () => {
   await assert.rejects(
     makeTimeoutFetch()(`http://localhost:${port}/`),
-    (err) => err.code === 'ECAREEROPS_BLOCKED_ADDRESS' && err.address === '127.0.0.1',
+    // `localhost` may resolve to 127.0.0.1 or ::1 depending on the host's
+    // resolver order (GitHub runners list ::1 first) — both are loopback.
+    (err) => err.code === 'ECAREEROPS_BLOCKED_ADDRESS' && ['127.0.0.1', '::1'].includes(err.address),
   );
 });
 
