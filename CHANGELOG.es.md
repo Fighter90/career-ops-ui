@@ -10,6 +10,23 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 
 ---
 
+## [1.238.3] — 2026-09-27
+
+**Las páginas siguen respondiendo durante un escaneo y los registros de QA remota ya no filtran el host de producción.**
+
+### Corregido
+
+- **El panel y los informes tardaban segundos en cargar y agotaban el tiempo durante un escaneo.** `/api/reports` y `/api/dashboard` leían y analizaban todos los informes en cada petición: unos 3,7 s en el servidor de producción, bloqueando cualquier otra petición; con un escaneo en marcha, las cargas llegaban al límite de 30 s. Ahora las cabeceras analizadas se guardan en caché por archivo y se renuevan cuando el archivo cambia, así que listar cuesta una comprobación por informe (500 informes: 430 ms → 3 ms en local).
+- **Un hallazgo de la QA remota podía imprimir parte del host de producción en un registro público.** GitHub solo oculta un secreto cuando aparece completo, y un mensaje cortado a 180 caracteres terminaba a mitad del host. Ahora los hallazgos y los informes completos se censuran antes de cortarse.
+
+### Añadido
+
+- Tests 3488 → 3495.
+
+### Notas
+
+- El escáner sigue ejecutándose **dentro** del proceso del servidor; esta versión elimina el otro gran bloqueo, pero **no** mueve el escaneo a un worker.
+
 ## [1.238.2] — 2026-09-27
 
 **Corrección de los 502 que el servidor de producción aún mostraba durante el escaneo horario.**

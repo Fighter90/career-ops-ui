@@ -8,7 +8,7 @@ Release history belongs in [CHANGELOG.md](CHANGELOG.md), decisions in
 [docs/adr/](docs/adr/), vocabulary in [CONTEXT.md](CONTEXT.md). Anything already
 recoverable from those does **not** belong here.
 
-_Last updated: 2026-09-27 · v1.238.2 (proxy-safe keep-alive: no 502s while a scan runs) — v1.238.1 is deployed and released_
+_Last updated: 2026-09-27 · v1.238.3 (report-list cache, remote-QA host redaction) — v1.238.2 is deployed, released and published_
 
 ---
 

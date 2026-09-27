@@ -10,6 +10,23 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 
 ---
 
+## [1.238.3] — 2026-09-27
+
+**Les pages restent réactives pendant un scan, et les journaux de QA distante ne divulguent plus l'hôte de production.**
+
+### Corrigé
+
+- **Le tableau de bord et les rapports mettaient des secondes à charger, et expiraient pendant un scan.** `/api/reports` et `/api/dashboard` lisaient et analysaient tous les rapports à chaque requête — environ 3,7 s sur le serveur de production, en bloquant toute autre requête ; pendant un scan, les chargements atteignaient le délai de 30 s. Les en-têtes analysés sont désormais mis en cache par fichier et rafraîchis quand le fichier change : lister coûte une vérification par rapport (500 rapports : 430 ms → 3 ms en local).
+- **Un constat de la QA distante pouvait afficher une partie de l'hôte de production dans un journal public.** GitHub ne masque un secret que lorsqu'il apparaît en entier, et un message coupé à 180 caractères s'arrêtait au milieu de l'hôte. Les constats et les rapports entiers sont désormais caviardés avant d'être coupés.
+
+### Ajouté
+
+- Tests 3488 → 3495.
+
+### Notes
+
+- Le scanner tourne toujours **dans** le processus serveur ; cette version supprime l'autre gros blocage mais ne déplace **pas** le scan dans un worker.
+
 ## [1.238.2] — 2026-09-27
 
 **Correctif des 502 que le serveur de production affichait encore pendant le scan horaire.**

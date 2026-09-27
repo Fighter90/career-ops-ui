@@ -8,6 +8,23 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.238.3] — 2026-09-27
+
+**Pages stay responsive while a scan runs, and remote QA logs no longer leak the production host.**
+
+### Fixed
+
+- **The dashboard and reports took seconds to load, and timed out during a scan.** `/api/reports` and `/api/dashboard` read and parsed every report on every request — about 3.7 s on the production server, blocking every other request; with a scan running, page loads hit 30-second timeouts. Parsed report headers are now cached per file and refreshed when the file changes, so a listing costs one file check per report (500 reports: 430 ms → 3 ms locally).
+- **A remote QA finding could print part of the production hostname into a public log.** GitHub masks a secret only where its full value appears, and an error message cut to 180 characters ended mid-host. Findings and whole reports are now redacted before they are cut.
+
+### Added
+
+- Tests 3488 → 3495.
+
+### Notes
+
+- The scanner still runs **inside** the server process; this release removes the other big blocker but does **not** move the scan to a worker.
+
 ## [1.238.2] — 2026-09-27
 
 **Fix for the 502s the production server still showed while the hourly scan ran.**

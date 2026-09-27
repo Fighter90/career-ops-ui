@@ -7,7 +7,7 @@
 
 _Неофіційний інтерфейс — не пов'язаний із career-ops / santifer і не схвалений ними._
 
-[![tests](https://img.shields.io/badge/tests-3488%20passed-brightgreen)](#тести)
+[![tests](https://img.shields.io/badge/tests-3495%20passed-brightgreen)](#тести)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#тести)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
@@ -17,7 +17,7 @@ _Неофіційний інтерфейс — не пов'язаний із car
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Останній реліз — v1.238.2** — **Виправлення: більше жодних 502 під час сканування** — за зворотним проксі сервер закривав неактивні з'єднання через 5 с, і під час важкого сканування проксі відповідав 502 на частину завантажень сторінок; тепер з'єднання завжди першим закриває проксі. **3488 тестів · 116 браузерних.**
+> **🆕 Останній реліз — v1.238.3** — **Швидші сторінки, безпечніші логи** — список звітів перечитувався й заново розбирався під час кожного завантаження сторінки (секунди на слабкому сервері, 30-секундні таймаути під час сканування); тепер він кешується. **3495 тестів · 116 браузерних.**
 >
 > **Попередній реліз — v1.237.1** — **Патч після зовнішнього проходу QA.** Виправлення Jobstreet підтверджено ззовні: `/id/job/<id>` повертає чисту 404 на хостах AU/NZ/HK/MY, а `/job/<id>` веде на справжній захищений маршрут — втрачені посилання були справжніми. Дві вади в тому, що додало v1.237.0: **посилання на книгу** мало локалізовану мітку, але не ціль, тож російська мітка вела на англійське видання — аплаєр `data-i18n-href` тепер спрямовує `ru` на російську книгу; а **SEEK мігрує хости** (`www.seek.com.au` → `au.seek.com`), тож `au.seek.com` і `nz.seek.com` додано в allowlist, перш ніж шлях API почне редиректити в наш транспорт `redirect:'error'`. Кількість не змінилася — **94** джерела. **3210 тестів · 116 браузерних.**
 

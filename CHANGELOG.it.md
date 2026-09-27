@@ -2,6 +2,23 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.238.3] — 2026-09-27
+
+**Le pagine restano reattive durante una scansione e i log della QA remota non rivelano più l'host di produzione.**
+
+### Corretto
+
+- **Dashboard e report impiegavano secondi a caricare e andavano in timeout durante una scansione.** `/api/reports` e `/api/dashboard` leggevano e analizzavano tutti i report a ogni richiesta — circa 3,7 s sul server di produzione, bloccando ogni altra richiesta; con una scansione in corso, i caricamenti arrivavano al timeout di 30 s. Ora le intestazioni analizzate sono in cache per file e si aggiornano quando il file cambia, quindi elencare costa un controllo per report (500 report: 430 ms → 3 ms in locale).
+- **Un rilievo della QA remota poteva stampare parte dell'host di produzione in un log pubblico.** GitHub oscura un segreto solo quando compare per intero, e un messaggio tagliato a 180 caratteri finiva a metà dell'host. Ora rilievi e report interi vengono oscurati prima del taglio.
+
+### Aggiunto
+
+- Test 3488 → 3495.
+
+### Note
+
+- Lo scanner gira ancora **dentro** il processo del server; questa release rimuove l'altro grande blocco ma **non** sposta la scansione in un worker.
+
 ## [1.238.2] — 2026-09-27
 
 **Correzione dei 502 che il server di produzione mostrava ancora durante la scansione oraria.**

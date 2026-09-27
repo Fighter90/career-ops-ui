@@ -7,7 +7,7 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-3488%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3495%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
@@ -17,7 +17,7 @@ _非公式 UI — career-ops / santifer とは提携しておらず、承認も�
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.238.2** — **修正: スキャン中の 502 を解消** — リバースプロキシの背後でサーバーがアイドル接続を 5 秒で閉じていたため、重いスキャン中は一部のページ読み込みにプロキシが 502 を返していました。今は必ずプロキシ側が先に閉じます。**テスト 3488 件 · ブラウザ 116 件。**
+> **🆕 最新リリース — v1.238.3** — **ページが速く、ログが安全に** — レポート一覧はページを読み込むたびに読み直し・再解析されていました(小さなサーバーでは数秒、スキャン中は 30 秒のタイムアウト)。今はキャッシュされます。**テスト 3495 件 · ブラウザ 116 件。**
 >
 > **前バージョン — v1.237.1** — **外部 QA パスから生まれたパッチ。** Jobstreet の修正が外部から確認されました:AU/NZ/HK/MY の各ホストでは `/id/job/<id>` がきれいな 404 を返し、`/job/<id>` は実際に保護されたルートに到達します——失われていたリンクは実在するものでした。前バージョンが追加した部分に 2 件の欠陥:**書籍リンク**はラベルはローカライズされていましたがリンク先はそうではなく、ロシア語ラベルが英語版へ導いていました——いまは `data-i18n-href` アプライヤーが `ru` をロシア語版へ送ります。そして **SEEK がホストを移行中**(`www.seek.com.au` → `au.seek.com`)のため、API パスが `redirect:'error'` のトランスポートへリダイレクトを始める前に `au.seek.com` と `nz.seek.com` を許可リストに追加しました。件数は **94** ソースのまま変わりません。**3210 件 · ブラウザー 116 件。**
 

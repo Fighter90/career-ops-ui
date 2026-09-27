@@ -2,6 +2,23 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.238.3] — 2026-09-27
+
+**Seiten bleiben während eines Scans reaktionsfähig, und Remote-QA-Logs verraten den Produktionshost nicht mehr.**
+
+### Behoben
+
+- **Dashboard und Berichte brauchten Sekunden zum Laden und liefen während eines Scans in Timeouts.** `/api/reports` und `/api/dashboard` lasen und parsten bei jeder Anfrage alle Berichte — rund 3,7 s auf dem Produktionsserver, während alle anderen Anfragen warten mussten; lief ein Scan, erreichten Seitenaufrufe das 30-Sekunden-Timeout. Geparste Berichtsköpfe werden jetzt pro Datei zwischengespeichert und bei jeder Dateiänderung erneuert, sodass eine Liste nur eine Dateiprüfung pro Bericht kostet (500 Berichte: lokal 430 ms → 3 ms).
+- **Ein Remote-QA-Befund konnte einen Teil des Produktionshosts in ein öffentliches Log schreiben.** GitHub maskiert ein Secret nur, wenn es vollständig erscheint, und eine auf 180 Zeichen gekürzte Fehlermeldung endete mitten im Hostnamen. Befunde und ganze Berichte werden jetzt vor dem Kürzen geschwärzt.
+
+### Hinzugefügt
+
+- Tests 3488 → 3495.
+
+### Anmerkungen
+
+- Der Scanner läuft weiterhin **im** Serverprozess; dieses Release beseitigt den anderen großen Blocker, verlagert den Scan aber **nicht** in einen Worker.
+
 ## [1.238.2] — 2026-09-27
 
 **Fix für die 502, die der Produktionsserver während des stündlichen Scans noch zeigte.**
