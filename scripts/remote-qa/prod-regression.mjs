@@ -28,6 +28,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const require = createRequire(ROOT + '/package.json');
 const { chromium } = require('playwright');
 const { BENIGN_CONSOLE } = await import(ROOT + '/tests/helpers/console-noise.mjs');
+const { makeRedactor } = await import(ROOT + '/scripts/remote-qa/redact.mjs');
 
 const BASE = (process.env.BASE_URL || '').replace(/\/+$/, '');
 if (!BASE) { console.error('BASE_URL is required'); process.exit(2); }
@@ -49,7 +50,9 @@ const LOCALES = require('node:fs').readdirSync(resolve(ROOT, 'public/js/lib/loca
 const KEYS = [...readFileSync(resolve(ROOT, 'public/js/lib/locales/i18n-dict.en.js'), 'utf8').matchAll(/^\s*'([a-zA-Z0-9_-]+(?:\.[a-zA-Z0-9_-]+)+)':/gm)].map((m) => m[1]);
 
 const findings = [];
-const add = (locale, route, kind, msg = '') => findings.push({ locale, route, kind, msg: String(msg).replace(/\?[^\s]*/g, '?…').slice(0, 180) });
+// Redact the prod host before truncating: a cut mid-host would dodge the secret mask.
+const redact = makeRedactor(BASE);
+const add = (locale, route, kind, msg = '') => findings.push({ locale, route, kind, msg: redact(msg).replace(/\?[^\s]*/g, '?…').slice(0, 180) });
 
 const browser = await chromium.launch({ headless: true });
 
@@ -207,5 +210,5 @@ if (findings.length) {
   if (findings.length > 300) lines.push(`| … | … | … | ${findings.length - 300} more |`);
 }
 const out = lines.join('\n');
-console.log(out);
+console.log(redact(out));
 process.exit(findings.length ? 1 : 0);

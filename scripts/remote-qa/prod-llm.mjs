@@ -27,6 +27,7 @@ import { readdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
+import { makeRedactor } from './redact.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const require = createRequire(ROOT + '/package.json');
@@ -84,7 +85,9 @@ function languageOk(text, locale) {
 const browser = await chromium.launch({ headless: true });
 const rows = [];
 const findings = [];
-const add = (locale, step, msg) => findings.push({ locale, step, msg: String(msg).slice(0, 160) });
+// Redact the prod host before truncating: a cut mid-host would dodge the secret mask.
+const redact = makeRedactor(BASE);
+const add = (locale, step, msg) => findings.push({ locale, step, msg: redact(msg).slice(0, 160) });
 let lastLlm = 0;
 async function pace() {
   const wait = lastLlm + 7000 - Date.now();
@@ -236,5 +239,5 @@ const lines = [
   ...rows.map((r) => `| ${md(r.locale)} | ${md(cell(r.docs))} | ${md(cell(r.eval))} |`), '',
   findings.length ? '| locale | step | finding |\n|---|---|---|\n' + findings.map((f) => `| ${md(f.locale)} | ${md(f.step)} | ${md(f.msg)} |`).join('\n') : '**No findings.**',
 ];
-console.log(lines.join('\n'));
+console.log(redact(lines.join('\n')));
 process.exit(findings.length ? 1 : 0);
