@@ -345,3 +345,11 @@ test('RIPPLING_API_HOST and API_BASE constants: v2 same-origin board (parent #43
   assert.equal(RIPPLING_API_HOST, 'ats.rippling.com');
   assert.equal(API_BASE, 'https://ats.rippling.com/api/v2/board');
 });
+
+test('v1.238.0 review: a pasted v2 API URL resolves its real slug, and unsafe segments are refused', async () => {
+  const { ripplingSlugFromCareersUrl } = await import('../server/lib/sources/rippling.mjs');
+  assert.equal(ripplingSlugFromCareersUrl('https://ats.rippling.com/api/v2/board/acme-jobs/jobs?page=0'), 'acme-jobs');
+  assert.equal(ripplingSlugFromCareersUrl('https://ats.rippling.com/api/other'), null);
+  assert.equal(ripplingSlugFromCareersUrl('https://ats.rippling.com/-bad/jobs'), null);
+  assert.equal(ripplingSlugFromCareersUrl('https://ats.rippling.com/acme/jobs'), 'acme');
+});

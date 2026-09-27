@@ -597,7 +597,9 @@ export async function fetchAdditionalResults(state, session) {
   let actionUrl = config.searchUrl; // no action captured — fall back, don't fail
   if (state.formAction) {
     try {
-      actionUrl = new URL(state.formAction, config.origin).href;
+      // Relative to the page that served the form, not the origin: a bare
+      // `HRS_HRAM_FL…GBL?…` action lives beside the search page.
+      actionUrl = new URL(state.formAction, config.searchUrl).href;
     } catch { /* keep searchUrl */ }
   }
   assertPeoplesoftUrl(actionUrl, config);

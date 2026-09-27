@@ -67,10 +67,15 @@ export function withTimeout(upstream, ms = DEFAULT_SCAN_TIMEOUT_MS) {
  * @param {number} [ms]
  * @returns {typeof fetch}
  */
-import { withPinnedEncoding } from './http-json.mjs';
+import { withPinnedEncoding, guardResolvedHost } from './http-json.mjs';
 
 export function makeTimeoutFetch(baseFetch = fetch, ms = DEFAULT_SCAN_TIMEOUT_MS) {
   return async function timeoutFetch(url, opts = {}) {
+    // DNS-rebinding guard. http-json's helpers only run it when handed the
+    // real global fetch — and the scanners never hand them that, they hand
+    // them THIS wrapper — so without the check here the guard never ran on a
+    // real scan. It still no-ops for an injected test transport.
+    await guardResolvedHost(baseFetch, String(url));
     const { signal, clear } = withTimeout(opts.signal, ms);
     try {
       // The pin belongs HERE, not only in the http-json helpers: 25 of the 92

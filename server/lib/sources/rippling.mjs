@@ -45,6 +45,9 @@ export const meta = { value: 'rippling', label: 'Rippling', region: 'en' };
  * @param {string} raw
  * @returns {string|null}
  */
+// Parent parity: an unsafe or empty first segment never becomes a slug.
+const SLUG_RE = /^[A-Za-z0-9](?:[A-Za-z0-9-]*[A-Za-z0-9])?$/;
+
 export function ripplingSlugFromCareersUrl(raw) {
   if (!raw) return null;
   let u;
@@ -55,8 +58,11 @@ export function ripplingSlugFromCareersUrl(raw) {
   }
   if (u.protocol !== 'https:') return null;
   if (!RIPPLING_CAREERS_HOST_RE.test(u.hostname)) return null;
-  const segment = u.pathname.split('/').filter(Boolean)[0] || '';
-  return segment || null;
+  const parts = u.pathname.split('/').filter(Boolean);
+  // The v2 board API shares this host, so a pasted API URL
+  // (`/api/v2/board/<slug>/jobs`) must yield <slug>, not `api`.
+  const segment = (parts[0] === 'api' ? (parts[1] === 'v2' && parts[2] === 'board' ? parts[3] : '') : parts[0]) || '';
+  return SLUG_RE.test(segment) ? segment : null;
 }
 
 /**

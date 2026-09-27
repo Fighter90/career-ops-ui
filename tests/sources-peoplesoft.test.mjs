@@ -522,6 +522,14 @@ test('fetchAdditionalResults: no captured action falls back to the search URL', 
   assert.equal(f.calls[0].url, CONFIG.searchUrl);
 });
 
+test('fetchAdditionalResults: a relative form action resolves beside the search page, not at the origin root', async () => {
+  const f = fakeFetch(() => res(EMPTY_FIXTURE));
+  const session = createSession(CONFIG, { fetchImpl: f, lookup: PUBLIC_DNS, retryDelayMs: 0 });
+  await fetchAdditionalResults({ formAction: 'HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=X', formFields: {} }, session);
+  assert.equal(f.calls[0].url, new URL('HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=X', CONFIG.searchUrl).href);
+  assert.notEqual(new URL(f.calls[0].url).pathname, '/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL');
+});
+
 // ── fetchPeoplesoft — end to end ────────────────────────────────────────────
 
 test('fetch: GET then POST, cross-page dedup, stops at the reported total, job shape', async () => {

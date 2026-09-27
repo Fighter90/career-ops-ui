@@ -1,0 +1,44 @@
+/**
+ * v1.238.0 — the DNS-rebinding guard must run on the transport the scanners
+ * actually inject. http-json's guard only fires when handed the real global
+ * `fetch`; both scanners hand sources `makeTimeoutFetch()` instead, so before
+ * this the guard never ran on a real scan and a source could be pointed at a
+ * host that resolves to a private address (found in the v1.238.0 review:
+ * eploy accepts any branded host).
+ */
+import { test, before, after } from 'node:test';
+import assert from 'node:assert/strict';
+import http from 'node:http';
+import { makeTimeoutFetch } from '../server/lib/fetch-timeout.mjs';
+import { fetchText } from '../server/lib/http-json.mjs';
+
+let server;
+let port;
+before(async () => {
+  server = http.createServer((_req, res) => { res.end('internal'); });
+  await new Promise((r) => server.listen(0, '127.0.0.1', r));
+  port = server.address().port;
+});
+after(() => server.close());
+
+test('makeTimeoutFetch() on the real fetch refuses a host that resolves to loopback', async () => {
+  await assert.rejects(
+    makeTimeoutFetch()(`http://localhost:${port}/`),
+    (err) => err.code === 'ECAREEROPS_BLOCKED_ADDRESS' && err.address === '127.0.0.1',
+  );
+});
+
+test('fetchText through the scanner transport is refused too — the path every source takes', async () => {
+  await assert.rejects(
+    fetchText(makeTimeoutFetch(), `http://localhost:${port}/`),
+    (err) => err.code === 'ECAREEROPS_BLOCKED_ADDRESS',
+  );
+});
+
+test('an injected test transport is left alone (no DNS, stub hosts keep working)', async () => {
+  let called = 0;
+  const stub = async () => { called += 1; return new Response('ok'); };
+  const res = await makeTimeoutFetch(stub)('https://stub.invalid/x');
+  assert.equal(await res.text(), 'ok');
+  assert.equal(called, 1);
+});

@@ -37,7 +37,7 @@ import { isPrivateOrLoopbackHost } from './security.mjs';
  * @param {typeof fetch} fetchImpl
  * @param {string} url
  */
-async function guardResolvedHost(fetchImpl, url) {
+export async function guardResolvedHost(fetchImpl, url) {
   if (fetchImpl !== globalThis.fetch) return;
   let hostname;
   try { hostname = new URL(url).hostname; } catch { return; }
