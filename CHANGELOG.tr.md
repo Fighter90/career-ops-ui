@@ -2,6 +2,42 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.238.0] — 2026-09-27
+
+**Üst proje eşleşmesi — career-ops `main` @ `993085ce` (VERSION 1.34.0, `de2224a9`'dan bu yana 182 commit). Dört yeni kaynak, on yansıtılmış sağlayıcı düzeltmesi, tarayıcı genelinde kapatılan bir SSRF açığı ve tarama sonuçlarında ücretsiz bir başlık-uygunluk ipucu.**
+
+### Eklendi
+
+- **Dört yeni kaynak — 94 → 98 (93 EN + 5 RU), 89 → 93 EN bağdaştırıcı.**
+  - **Eploy** (`provider: eploy`) — herhangi bir markalı ana bilgisayarda kiracının `/live-jobs.xml` site haritasını okur (yalnızca HTTPS; IP değişmezleri, `localhost`, `*.local`, `*.internal` ve tek etiketli ana bilgisayarlar reddedilir). Site haritası olmayan bir yanıt (bir giriş sayfası) sıfır iş ilanı olarak geçmek yerine hata fırlatır. Ayrıntı sayfaları isteğe bağlıdır (`eploy: { fetchDetails, detailLimit }`).
+  - **HiringRoom** (`*.hiringroom.com`) — önce JSON-LD `/portal/jobs`, yedek olarak eski `/jobs` kartları; yükteki `http://` ilan URL'leri HTTPS'e yeniden kurulur.
+  - **PeopleSoft Candidate Gateway** — herhangi bir markalı ana bilgisayarda `/psc/{site}/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL` yoluyla tespit edilir. PeopleSoft'un aynı kökenli oturum yönlendirmelerini kendisi takip eder (en fazla 10 sıçrama, her sıçrama kiracı köküne yeniden sabitlenir ve özel adreslere karşı kontrol edilir), "daha fazla yükle" formunu yeniden oynatır ve bunu tam olarak bildirmek yerine kısmi bir taramayı (`peoplesoftIncomplete`) işaretler.
+  - **PrevueAPS** (`*.prevueaps.ca`) — site kimliğini iş ilanları sayfasından çözer, ardından JSON API'sini okur.
+- **`#/scan` satırlarında başlık-uygunluk ipucu.** Her sonuç, ilan başlığını `config/profile.yml` içindeki hedef rollerle (`target_roles.primary` + arketip adları) karşılaştıran kaba bir **strong / related / weak fit** rozeti taşır. Bu ücretsiz bir anahtar kelime tahminidir: asla filtrelemez, yeniden sıralamaz veya sayıları değiştirmez, ve araç ipucu bunu belirtir. Sonuçlar sunulduğunda hesaplanır, böylece bir profil düzenlemesi bir sonraki yenilemede görünür. ×17 çevrildi. Üst projenin #3261 numaralı değişikliğini yansıtır.
+
+### Düzeltildi
+
+- **Güvenlik — DNS-rebinding koruması gerçek bir taramada hiç çalışmadı.** `http-json.mjs`, yalnızca çıplak global `fetch` kendisine verildiğinde çözülen adresleri kontrol ediyordu, ama her iki tarayıcı da `makeTimeoutFetch()` enjekte ediyor, bu yüzden her tarama bunu atlıyordu. `10.x` veya `127.0.0.1`'e çözülen bir ana bilgisayar adına işaret eden bir kaynak getiriliyordu. Koruma artık `makeTimeoutFetch`'in kendi içinde çalışıyor ve tarama zaman aşımına karşı yarıştırılıyor, böylece takılı kalan bir çözümleyici bir taramayı asamaz.  Bu sürümün incelemesinde bulundu.
+- **Güvenlik — bir IPv4 adresini gömen IPv6 adresleri özel olarak işlenmiyordu.** `http://[::ffff:127.0.0.1]/` (URL ayrıştırıcının `[::ffff:7f00:1]` olarak yeniden yazdığı) `isValidJobUrl`'den geçiyordu. `::ffff:a.b.c.d` / `::a.b.c.d`'nin hem noktalı hem de onaltılık biçimleri artık gömülü adrese göre sınıflandırılıyor. Üst projenin `_ip-guard.mjs` dosyası.
+- **Rippling v2 board API'sine taşındı** (`ats.rippling.com/api/v2/board/<slug>/jobs`), sayfalama (varsayılan 10 sayfa, en fazla 50), iş bağlantılarında bir ana bilgisayar kilidi ve slug doğrulaması ile birlikte. Yapıştırılan bir API URL'si artık `api` yerine gerçek slug'ını veriyor.
+- **Recruitee** — çok konumlu teklifler artık her yeri listeler (`A · B`), `(Sample)` demo ilanları ve başlıksız satırlar düşürülür, ve iki URL'sinden biri geçerliyse bir teklif korunur.
+- **Pinpoint** — ekilmiş demo ilanları (ikiye katlanmış demo videosu) düşürülür.
+- **Telegram kanalları** — birden çok `|` içeren bir ilk satır artık `Title | Company` olarak okunmuyor, ve daha fazla rol sözcüğü tanınıyor. Fork'un Kiril-farkında `LOCATIONISH_RE` deseni dokunulmadan kalıyor (ADR-0002).
+- **Workday** — ilk sayfa 422/401/403 bir kez sorgulanır; Workday'in bakım sayfası veya kesinti yönlendirmesi panoyu ölü olarak işaretler (katı modda karantinaya alınır). CXS ve ayrıntı istekleri artık yönlendirmeleri reddediyor.
+- **BambooHR** — yönlendirilmiş bir `/careers/list`, herkese açık gömme beslemesi üzerinden değerlendirilir: boşsa açık pozisyonu olmayan canlı bir pano demektir, başka bir şeyse ölü bir panodur.
+- **Heckler & Koch / Rheinmetall** — çıplak bir `heckler-koch.com` / `rheinmetall.com`, yönlendirmesiz taşıma katmanının yine de ulaşabilmesi için `www.` olarak yeniden yazılır. **Ashby** yönlendirmeleri reddeder. **beesite**, iptal edilebilir `delay()` ile sayfaları hızlandırır.
+- **Başlık filtreleri her iki tarafta da aksanları katlar** (EN ve RU tarayıcıları), böylece `Développeur`, bir `developpeur` olumsuzuyla yakalanır.
+- **Cooldown şirket eşleştirmesi Latin olmayan adları ve şirket biçimlerini anlıyor** (CJK/Korece işaretleri, Türkçe noktalı İ). CJK adları eskiden boş bir anahtara düşüyor ve hiç eşleşmiyordu.
+- **`location_filter.strict: true`**, bir izin veya engelleme listesi ayarlandığında boş bir konumda kapalı şekilde başarısız olur.
+- **Liveness** — Greenhouse gömmeleri (`gh_jid`), Arbeitsagentur ve We Work Remotely için yeni genel API kontrolleri; SmartRecruiters artık ilanın `active` bayrağına göre karar veriyor.
+- **PeopleSoft** — göreli bir "daha fazla yükle" form eylemi, kök dizinde değil arama sayfasının yanında çözülür.
+
+### Notlar
+
+- Testler **3210 → 3481**. Yeni test paketleri: `sources-eploy`, `sources-hiringroom`, `sources-peoplesoft`, `sources-prevueaps`, `title-fit`, `fetch-timeout-dns-guard`, `cooldown-company-match-unicode`, `liveness-api-more-rungs`, `ru-scanner-title-accent-fold`.
+- **Taşınmadı**, gerekçeleriyle: location-filter Unicode kelime sınırları (web-ui'nin filtresi alt dize tabanlı, bu yüzden düzeltilecek bir sınır yok — üst projenin location filter'ının bilinçli tam bir portu gelecekteki bir iştir); aynı başlıklı requisition tekilleştirmesi (web-ui yalnızca URL'ye göre tekilleştiriyor); toplayıcı yeniden gönderim uyarıları, kara liste alan adı kapsamı, doğrulanmamış-sıfır makbuzlar ve `scan-runs.tsv` geçişi (web-ui'de bu yüzeylerin hiçbiri yok); Workday facet-split ve kırpma etiketleri (web-ui her pano için bir sayfa getiriyor); BambooHR `enrichDate` (tarih zenginleştirme kancası yok); üst projenin ~20 sağlayıcı genelindeki `_http.mjs` sleep yeniden düzenlemesi (web-ui zaten paylaşılan iptal edilebilir bir `delay` kullanıyor); updater, doctor, PDF, tracker/merge-tracker, `validate-profile`, `discover-new-companies`, `web/` Next.js uygulaması, GitHub botları — yalnızca CLI'ya özgü veya aktarılmış.
+- Üst projeden bilinçli olarak farklı tutulan: Heckler & Koch / Rheinmetall yalnızca HTTPS kalıyor (`http→https` yükseltmesi yok); normal bir taramada ölü bir Workday panosu, taramayı başarısız kılmak yerine hâlâ `[]` döndürüyor.
+
 ## [1.237.1] — 2026-09-22
 
 **v1.237.0 üzerinde harici bir QA geçişinden yama.** Jobstreet düzeltmesi ilk kez dışarıdan doğrulandı: AU, NZ, HK ve MY ana bilgisayarlarında eski `/id/job/<id>` biçimi temiz bir 404 döndürüyor ve yeni `/job/<id>` gerçek, Cloudflare korumalı bir rotaya ulaşıyor; `id.jobstreet.com` üzerinde ise tersi geçerli. Kaybolan bağlantılar gerçekti. v1.237.0'ın kendisinin eklediği şeyde iki kusur bulundu.

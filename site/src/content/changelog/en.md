@@ -8,6 +8,42 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.238.0] — 2026-09-27
+
+**Parent parity — career-ops `main` @ `993085ce` (VERSION 1.34.0, 182 commits since `de2224a9`). Four new sources, ten mirrored provider fixes, a scanner-wide SSRF gap closed, and a free title-fit hint on scan results.**
+
+### Added
+
+- **Four new sources — 94 → 98 (93 EN + 5 RU), 89 → 93 EN adapters.**
+  - **Eploy** (`provider: eploy`) — reads the tenant's `/live-jobs.xml` sitemap on any branded host (HTTPS only; IP literals, `localhost`, `*.local`, `*.internal` and single-label hosts refused). A non-sitemap response (a login page) throws instead of passing as zero jobs. Detail pages are opt-in (`eploy: { fetchDetails, detailLimit }`).
+  - **HiringRoom** (`*.hiringroom.com`) — JSON-LD `/portal/jobs` first, legacy `/jobs` cards as fallback; `http://` posting URLs in the payload are rebuilt on HTTPS.
+  - **PeopleSoft Candidate Gateway** — detected by the `/psc/{site}/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL` path on any branded host. It follows PeopleSoft's same-origin session redirects itself (max 10 hops, every hop re-pinned to the tenant origin and checked against private addresses), replays the "load more" form, and marks a partial walk (`peoplesoftIncomplete`) rather than reporting it as complete.
+  - **PrevueAPS** (`*.prevueaps.ca`) — resolves the site id from the jobs page, then reads the JSON API.
+- **Title-fit hint on `#/scan` rows.** Each result carries a coarse **strong / related / weak fit** chip comparing the posting title with the target roles in `config/profile.yml` (`target_roles.primary` + archetype names). It is a free keyword estimate: it never filters, reorders or changes counts, and the tooltip says so. Computed when results are served, so a profile edit shows on the next refresh. Translated ×17. Mirrors parent #3261.
+
+### Fixed
+
+- **Security — the DNS-rebinding guard never ran on a real scan.** `http-json.mjs` only checked resolved addresses when handed the bare global `fetch`, but both scanners inject `makeTimeoutFetch()`, so every scan skipped it. A source pointed at a hostname resolving to `10.x` or `127.0.0.1` was fetched. The guard now runs inside `makeTimeoutFetch` itself, raced against the scan timeout so a stalled resolver cannot hang a scan. Found in the review of this release.
+- **Security — IPv6 addresses embedding an IPv4 address were not treated as private.** `http://[::ffff:127.0.0.1]/` (which the URL parser rewrites to `[::ffff:7f00:1]`) passed `isValidJobUrl`. Both the dotted and hex forms of `::ffff:a.b.c.d` / `::a.b.c.d` are now classified by the embedded address. Parent `_ip-guard.mjs`.
+- **Rippling moved to the v2 board API** (`ats.rippling.com/api/v2/board/<slug>/jobs`), with pagination (default 10 pages, max 50), a host lock on job links, and slug validation. A pasted API URL now yields its real slug instead of `api`.
+- **Recruitee** — multi-location offers list every place (`A · B`), `(Sample)` demo postings and title-less rows are dropped, and an offer is kept when either of its two URLs is valid.
+- **Pinpoint** — seeded demo postings (the doubled demo video) are dropped.
+- **Telegram channels** — a first line with several `|` is no longer read as `Title | Company`, and more role words are recognised. The fork's Cyrillic-aware `LOCATIONISH_RE` is untouched (ADR-0002).
+- **Workday** — a first-page 422/401/403 is probed once; Workday's maintenance page or outage redirect marks the board dead (quarantined in strict mode). The CXS and detail requests now refuse redirects.
+- **BambooHR** — a redirected `/careers/list` is triaged through the public embed feed: empty means a live board with no openings, anything else is a dead board.
+- **Heckler & Koch / Rheinmetall** — a bare `heckler-koch.com` / `rheinmetall.com` is rewritten to `www.` so the no-redirect transport still reaches it. **Ashby** refuses redirects. **beesite** paces pages with the cancellable `delay()`.
+- **Title filters fold accents on both sides** (EN and RU scanners), so `Développeur` is caught by a `developpeur` negative.
+- **Cooldown company matching understands non-Latin names and corporate forms** (CJK/Korean markers, Turkish dotted İ). CJK names used to collapse to an empty key and never match.
+- **`location_filter.strict: true`** fails closed on an empty location when an allow or block list is set.
+- **Liveness** — new public-API checks for Greenhouse embeds (`gh_jid`), Arbeitsagentur and We Work Remotely; SmartRecruiters now decides by the posting's `active` flag.
+- **PeopleSoft** — a relative "load more" form action resolves beside the search page, not at the origin root.
+
+### Notes
+
+- Tests **3210 → 3481**. New suites: `sources-eploy`, `sources-hiringroom`, `sources-peoplesoft`, `sources-prevueaps`, `title-fit`, `fetch-timeout-dns-guard`, `cooldown-company-match-unicode`, `liveness-api-more-rungs`, `ru-scanner-title-accent-fold`.
+- **Not ported**, with reasons: location-filter Unicode word edges (web-ui's filter is substring-based, so there is no edge to fix — a deliberate full port of the parent's location filter is future work); same-title requisition dedup (web-ui dedups by URL only); aggregator repost warnings, blacklist domain scope, unverified-zero receipts and `scan-runs.tsv` migration (web-ui has none of those surfaces); Workday facet-split and truncation tags (web-ui fetches one page per board); BambooHR `enrichDate` (no date-enrichment hook); the parent's `_http.mjs` sleep refactor across ~20 providers (web-ui already uses a shared cancellable `delay`); updater, doctor, PDF, tracker/merge-tracker, `validate-profile`, `discover-new-companies`, `web/` Next.js app, GitHub bots — CLI-only or relayed.
+- Kept deliberately different from the parent: Heckler & Koch / Rheinmetall stay HTTPS-only (no `http→https` upgrade); a dead Workday board in a normal scan still returns `[]` rather than failing the scan.
+
 ## [1.237.1] — 2026-09-22
 
 **Patch from an external QA pass on v1.237.0.** The Jobstreet fix was confirmed from outside for the first time: on the AU, NZ, HK and MY hosts the old `/id/job/<id>` form returns a clean 404 and the new `/job/<id>` reaches a real Cloudflare-guarded route; on `id.jobstreet.com` the reverse holds. The lost links were real. Two defects were found, both in what v1.237.0 itself added.

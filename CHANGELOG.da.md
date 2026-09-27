@@ -8,6 +8,42 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.238.0] — 2026-09-27
+
+**Forældre-paritet — career-ops `main` @ `993085ce` (VERSION 1.34.0, 182 commits siden `de2224a9`). Fire nye kilder, ti spejlede leverandørrettelser, et scanner-bredt SSRF-hul lukket, og et gratis titel-fit-hint på scanresultater.**
+
+### Tilføjet
+
+- **Fire nye kilder — 94 → 98 (93 EN + 5 RU), 89 → 93 EN-adaptere.**
+  - **Eploy** (`provider: eploy`) — læser lejerens `/live-jobs.xml`-sitemap på enhver brandet host (kun HTTPS; IP-literaler, `localhost`, `*.local`, `*.internal` og enkeltdels-hosts afvises). Et ikke-sitemap-svar (en login-side) kaster fejl i stedet for at gå igennem som nul job. Detaljesider er opt-in (`eploy: { fetchDetails, detailLimit }`).
+  - **HiringRoom** (`*.hiringroom.com`) — JSON-LD `/portal/jobs` først, med de gamle `/jobs`-kort som fallback; `http://`-opslags-URL'er i payloaden ombygges til HTTPS.
+  - **PeopleSoft Candidate Gateway** — genkendes på stien `/psc/{site}/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL` på enhver brandet host. Den følger selv PeopleSofts same-origin-sessionsredirects (maks. 10 hop, hvert hop re-pinnet til lejerens origin og tjekket mod private adresser), afspiller "load more"-formularen igen, og markerer en delvis gennemgang (`peoplesoftIncomplete`) frem for at rapportere den som fuldstændig.
+  - **PrevueAPS** (`*.prevueaps.ca`) — finder site-id'et fra jobsiden og læser derefter JSON-API'et.
+- **Titel-fit-hint på `#/scan`-rækker.** Hvert resultat bærer en grov **strong / related / weak fit**-chip, der sammenligner opslagets titel med målrollerne i `config/profile.yml` (`target_roles.primary` + arketypenavne). Det er et gratis nøgleords-estimat: det filtrerer, omsorterer eller ændrer aldrig antal, og tooltippet siger det. Beregnes, når resultater serveres, så en profilrettelse ses ved næste opdatering. Oversat ×17. Spejler forælderens #3261.
+
+### Rettet
+
+- **Sikkerhed — DNS-rebinding-vagten kørte aldrig på et rigtigt scan.** `http-json.mjs` tjekkede kun de opløste adresser, når den fik den bare globale `fetch`, men begge scannere injicerer `makeTimeoutFetch()`, så hvert scan sprang det over. En kilde, der pegede på et hostnavn, der opløstes til `10.x` eller `127.0.0.1`, blev hentet. Vagten kører nu inde i selve `makeTimeoutFetch`, kapløbet mod scan-timeouten, så en gået-i-stå resolver ikke kan hænge et scan. Fundet i gennemgangen af denne udgivelse.
+- **Sikkerhed — IPv6-adresser, der indlejrer en IPv4-adresse, blev ikke behandlet som private.** `http://[::ffff:127.0.0.1]/` (som URL-parseren omskriver til `[::ffff:7f00:1]`) slap igennem `isValidJobUrl`. Både den prikkede og den hexadecimale form af `::ffff:a.b.c.d` / `::a.b.c.d` klassificeres nu ud fra den indlejrede adresse. Forælderens `_ip-guard.mjs`.
+- **Rippling flyttet til v2-board-API'et** (`ats.rippling.com/api/v2/board/<slug>/jobs`), med paginering (standard 10 sider, maks. 50), en host-lås på joblinks, og slug-validering. En indsat API-URL giver nu sin rigtige slug i stedet for `api`.
+- **Recruitee** — multi-lokations-tilbud lister nu hvert sted (`A · B`), `(Sample)`-demo-opslag og titelløse rækker droppes, og et tilbud beholdes, hvis en af dets to URL'er er gyldig.
+- **Pinpoint** — udsåede demo-opslag (den fordoblede demo-video) droppes.
+- **Telegram-kanaler** — en første linje med flere `|` læses ikke længere som `Title | Company`, og flere rolleord genkendes. Forkens Cyrillic-bevidste `LOCATIONISH_RE` er urørt (ADR-0002).
+- **Workday** — en første-sides 422/401/403 sonderes én gang; Workdays vedligeholdelsesside eller outage-redirect markerer boardet dødt (karantæne i streng tilstand). CXS- og detalje-forespørgslerne nægter nu redirects.
+- **BambooHR** — en omdirigeret `/careers/list` triageres via det offentlige embed-feed: tomt betyder et levende board uden opslag, alt andet er et dødt board.
+- **Heckler & Koch / Rheinmetall** — et bart `heckler-koch.com` / `rheinmetall.com` omskrives til `www.`, så no-redirect-transporten stadig når frem. **Ashby** nægter redirects. **beesite** pacer sider med den annullerbare `delay()`.
+- **Titelfiltre folder accenter på begge sider** (EN- og RU-scannerne), så `Développeur` fanges af en `developpeur`-negativ.
+- **Cooldown-firmamatch forstår ikke-latinske navne og selskabsformer** (CJK/koreanske markører, tyrkisk prikket İ). CJK-navne kollapsede før til en tom nøgle og matchede aldrig.
+- **`location_filter.strict: true`** fejler lukket ved en tom lokation, når en tillad- eller blokliste er sat.
+- **Liveness** — nye public-API-tjek for Greenhouse-embeds (`gh_jid`), Arbeitsagentur og We Work Remotely; SmartRecruiters afgør nu ud fra opslagets `active`-flag.
+- **PeopleSoft** — en relativ "load more"-formularhandling opløses ved siden af søgesiden, ikke ved origin-roden.
+
+### Noter
+
+- Test **3210 → 3481**. Nye suiter: `sources-eploy`, `sources-hiringroom`, `sources-peoplesoft`, `sources-prevueaps`, `title-fit`, `fetch-timeout-dns-guard`, `cooldown-company-match-unicode`, `liveness-api-more-rungs`, `ru-scanner-title-accent-fold`.
+- **Ikke porteret**, med begrundelser: location-filter Unicode-ordgrænser (web-ui's filter er substring-baseret, så der er ingen grænse at rette — en bevidst fuld portering af forælderens location-filter er fremtidigt arbejde); samme-titel-requisition-dedup (web-ui dedupliserer kun på URL); aggregator-repost-advarsler, blacklist-domæneomfang, uverificerede-nul-kvitteringer og `scan-runs.tsv`-migrering (web-ui har ingen af disse flader); Workday facet-split og trunkeringstags (web-ui henter én side pr. board); BambooHR `enrichDate` (intet dato-berigelses-hook); forælderens `_http.mjs` sleep-refaktorering på tværs af ~20 udbydere (web-ui bruger allerede en delt annullerbar `delay`); updater, doctor, PDF, tracker/merge-tracker, `validate-profile`, `discover-new-companies`, `web/` Next.js-appen, GitHub-bots — kun CLI eller relæet.
+- Bevidst holdt anderledes end forælderen: Heckler & Koch / Rheinmetall forbliver kun-HTTPS (ingen `http→https`-opgradering); et dødt Workday-board i et normalt scan returnerer stadig `[]` frem for at fejle scanet.
+
 ## [1.237.1] — 2026-09-22
 
 **Patch fra et eksternt QA-gennemløb af v1.237.0.** Jobstreet-rettelsen blev bekræftet udefra for første gang: på AU-, NZ-, HK- og MY-værterne returnerer den gamle `/id/job/<id>`-form en ren 404, og den nye `/job/<id>` når en ægte Cloudflare-beskyttet rute; på `id.jobstreet.com` gælder det modsatte. De mistede links var ægte. Der blev fundet to defekter, begge i det, v1.237.0 selv tilføjede.

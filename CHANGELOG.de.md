@@ -2,6 +2,42 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.238.0] — 2026-09-27
+
+**Parent-Parität — career-ops `main` @ `993085ce` (VERSION 1.34.0, 182 Commits seit `de2224a9`). Vier neue Quellen, zehn gespiegelte Provider-Fixes, eine repo-weite SSRF-Lücke geschlossen und ein kostenloser Titel-Fit-Hinweis bei Scan-Ergebnissen.**
+
+### Hinzugefügt
+
+- **Vier neue Quellen — 94 → 98 (93 EN + 5 RU), 89 → 93 EN-Adapter.**
+  - **Eploy** (`provider: eploy`) — liest die `/live-jobs.xml`-Sitemap des Mandanten auf jedem gebrandeten Host (nur HTTPS; IP-Literale, `localhost`, `*.local`, `*.internal` und einteilige Hosts werden abgelehnt). Eine Nicht-Sitemap-Antwort (eine Login-Seite) wirft einen Fehler, statt als null Jobs durchzugehen. Detailseiten sind Opt-in (`eploy: { fetchDetails, detailLimit }`).
+  - **HiringRoom** (`*.hiringroom.com`) — zuerst JSON-LD `/portal/jobs`, als Fallback die alten `/jobs`-Karten; `http://`-Posting-URLs im Payload werden auf HTTPS umgebaut.
+  - **PeopleSoft Candidate Gateway** — erkannt am Pfad `/psc/{site}/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL` auf jedem gebrandeten Host. Er folgt PeopleSofts Same-Origin-Session-Redirects selbst (max. 10 Hops, jeder Hop erneut auf den Mandanten-Origin gepinnt und gegen private Adressen geprüft), spielt das „load more"-Formular erneut ab und markiert einen partiellen Durchlauf (`peoplesoftIncomplete`), statt ihn als vollständig zu melden.
+  - **PrevueAPS** (`*.prevueaps.ca`) — löst die Site-ID von der Jobs-Seite auf und liest dann die JSON-API.
+- **Titel-Fit-Hinweis bei `#/scan`-Zeilen.** Jedes Ergebnis trägt einen groben **strong / related / weak fit**-Chip, der den Posting-Titel mit den Zielrollen aus `config/profile.yml` vergleicht (`target_roles.primary` + Archetyp-Namen). Es ist eine kostenlose Keyword-Schätzung: Sie filtert, sortiert oder verändert Anzahlen niemals — der Tooltip sagt das auch. Wird berechnet, wenn die Ergebnisse ausgeliefert werden, sodass eine Profiländerung erst beim nächsten Refresh sichtbar wird. ×17 übersetzt. Spiegelt Parent #3261.
+
+### Behoben
+
+- **Sicherheit — der DNS-Rebinding-Schutz lief bei einem echten Scan nie.** `http-json.mjs` prüfte aufgelöste Adressen nur, wenn ihm der nackte globale `fetch` übergeben wurde, aber beide Scanner injizieren `makeTimeoutFetch()`, sodass jeder Scan die Prüfung übersprang. Eine Quelle, die auf einen Hostnamen zeigte, der zu `10.x` oder `127.0.0.1` auflöst, wurde abgerufen. Der Schutz läuft jetzt innerhalb von `makeTimeoutFetch` selbst, im Wettlauf mit dem Scan-Timeout, damit ein hängender Resolver einen Scan nicht blockieren kann. Gefunden im Review dieses Releases.
+- **Sicherheit — IPv6-Adressen, die eine IPv4-Adresse einbetten, wurden nicht als privat erkannt.** `http://[::ffff:127.0.0.1]/` (das der URL-Parser zu `[::ffff:7f00:1]` umschreibt) bestand `isValidJobUrl`. Sowohl die gepunktete als auch die hexadezimale Form von `::ffff:a.b.c.d` / `::a.b.c.d` werden jetzt anhand der eingebetteten Adresse klassifiziert. Parent `_ip-guard.mjs`.
+- **Rippling wechselt zur v2-Board-API** (`ats.rippling.com/api/v2/board/<slug>/jobs`), mit Paginierung (Standard 10 Seiten, max. 50), einer Host-Sperre auf Job-Links und Slug-Validierung. Eine eingefügte API-URL liefert jetzt den echten Slug statt `api`.
+- **Recruitee** — Angebote mit mehreren Standorten listen jeden Ort auf (`A · B`), `(Sample)`-Demo-Postings und titellose Zeilen werden verworfen, und ein Angebot wird behalten, wenn eine seiner beiden URLs gültig ist.
+- **Pinpoint** — gesäte Demo-Postings (das doppelte Demo-Video) werden verworfen.
+- **Telegram-Kanäle** — eine erste Zeile mit mehreren `|` wird nicht mehr als `Titel | Firma` gelesen, und mehr Rollenwörter werden erkannt. Der kyrillisch-bewusste `LOCATIONISH_RE` des Forks bleibt unangetastet (ADR-0002).
+- **Workday** — ein 422/401/403 auf der ersten Seite wird einmal geprüft; Workdays Wartungsseite oder Ausfall-Redirect markiert das Board als tot (im Strict-Modus unter Quarantäne). Die CXS- und Detail-Anfragen verweigern jetzt Redirects.
+- **BambooHR** — ein umgeleitetes `/careers/list` wird über den öffentlichen Embed-Feed triagiert: leer bedeutet ein lebendes Board ohne offene Stellen, alles andere ein totes Board.
+- **Heckler & Koch / Rheinmetall** — ein nacktes `heckler-koch.com` / `rheinmetall.com` wird auf `www.` umgeschrieben, damit der redirect-freie Transport es trotzdem erreicht. **Ashby** verweigert Redirects. **beesite** taktet Seiten mit dem abbrechbaren `delay()`.
+- **Titelfilter falten Akzente auf beiden Seiten** (EN- und RU-Scanner), sodass `Développeur` von einem Negativ-Match `developpeur` erfasst wird.
+- **Der Cooldown-Firmenabgleich versteht nicht-lateinische Namen und Unternehmensformen** (CJK-/koreanische Marker, türkisches punktiertes İ). CJK-Namen kollabierten früher zu einem leeren Key und trafen nie.
+- **`location_filter.strict: true`** schlägt bei einem leeren Standort geschlossen fehl, wenn eine Allow- oder Block-Liste gesetzt ist.
+- **Liveness** — neue Public-API-Checks für Greenhouse-Embeds (`gh_jid`), Arbeitsagentur und We Work Remotely; SmartRecruiters entscheidet jetzt anhand des `active`-Flags des Postings.
+- **PeopleSoft** — eine relative „load more"-Formularaktion wird jetzt relativ zur Suchseite aufgelöst, nicht zur Origin-Wurzel.
+
+### Anmerkungen
+
+- Tests **3210 → 3481**. Neue Suiten: `sources-eploy`, `sources-hiringroom`, `sources-peoplesoft`, `sources-prevueaps`, `title-fit`, `fetch-timeout-dns-guard`, `cooldown-company-match-unicode`, `liveness-api-more-rungs`, `ru-scanner-title-accent-fold`.
+- **Nicht portiert**, mit Begründung: Unicode-Wortgrenzen im Location-Filter (web-uis Filter ist substring-basiert, es gibt also keine Grenze zu reparieren — ein bewusster vollständiger Port des Parent-Location-Filters ist zukünftige Arbeit); Dedup gleichnamiger Requisitions (web-ui dedupliziert nur nach URL); Aggregator-Repost-Warnungen, Blacklist-Domain-Scope, unverifizierte-Null-Belege und `scan-runs.tsv`-Migration (web-ui hat keine dieser Oberflächen); Workday-Facet-Split und Truncation-Tags (web-ui holt eine Seite pro Board); BambooHR `enrichDate` (kein Date-Enrichment-Hook); das Sleep-Refactoring von Parents `_http.mjs` über ~20 Provider (web-ui nutzt bereits ein gemeinsames abbrechbares `delay`); Updater, Doctor, PDF, Tracker/Merge-Tracker, `validate-profile`, `discover-new-companies`, die `web/`-Next.js-App, GitHub-Bots — nur CLI oder weitergeleitet.
+- Bewusst anders als beim Parent gehalten: Heckler & Koch / Rheinmetall bleiben HTTPS-only (kein `http→https`-Upgrade); ein totes Workday-Board liefert in einem normalen Scan weiterhin `[]`, statt den Scan fehlschlagen zu lassen.
+
 ## [1.237.1] — 2026-09-22
 
 **Patch aus einem externen QA-Durchlauf zu v1.237.0.** Der Jobstreet-Fix wurde erstmals von außen bestätigt: Auf den AU-, NZ-, HK- und MY-Hosts liefert die alte Form `/id/job/<id>` einen sauberen 404, und die neue Form `/job/<id>` erreicht eine echte, Cloudflare-geschützte Route; auf `id.jobstreet.com` gilt das Umgekehrte. Die verlorenen Links waren real. Es wurden zwei Fehler gefunden, beide in dem, was v1.237.0 selbst hinzugefügt hatte.

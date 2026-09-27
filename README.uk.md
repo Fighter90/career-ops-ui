@@ -7,17 +7,19 @@
 
 _Неофіційний інтерфейс — не пов'язаний із career-ops / santifer і не схвалений ними._
 
-[![tests](https://img.shields.io/badge/tests-3210%20passed-brightgreen)](#тести)
+[![tests](https://img.shields.io/badge/tests-3481%20passed-brightgreen)](#тести)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#тести)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.237.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.237.1)
+[![release](https://img.shields.io/badge/release-v1.238.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.238.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Останній реліз — v1.237.1** — **Патч після зовнішнього проходу QA.** Виправлення Jobstreet підтверджено ззовні: `/id/job/<id>` повертає чисту 404 на хостах AU/NZ/HK/MY, а `/job/<id>` веде на справжній захищений маршрут — втрачені посилання були справжніми. Дві вади в тому, що додало v1.237.0: **посилання на книгу** мало локалізовану мітку, але не ціль, тож російська мітка вела на англійське видання — аплаєр `data-i18n-href` тепер спрямовує `ru` на російську книгу; а **SEEK мігрує хости** (`www.seek.com.au` → `au.seek.com`), тож `au.seek.com` і `nz.seek.com` додано в allowlist, перш ніж шлях API почне редиректити в наш транспорт `redirect:'error'`. Кількість не змінилася — **94** джерела. **3210 тестів · 116 браузерних.**
+> **🆕 Останній реліз — v1.238.0** — **Паритет з career-ops 1.34.0: чотири нові джерела (Eploy, HiringRoom, PeopleSoft Candidate Gateway, PrevueAPS → 98), десять дзеркальних виправлень провайдерів і закрита загальносканерна прогалина SSRF** — захист від DNS rebinding ніколи не спрацьовував під час реального сканування, бо сканери інжектують обгортку з тайм-аутом замість голого `fetch`; тепер він працює всередині цієї обгортки. Rippling перейшов на своє API дошки v2, Recruitee об'єднує пропозиції з кількома локаціями та відкидає демо-вакансії, Workday і BambooHR відрізняють мертві дошки від порожніх, а рядки `#/scan` несуть безкоштовну підказку **strong / related / weak fit** щодо цільових ролей вашого профілю. **3481 тестів · 116 браузерних.**
+>
+> **Попередній реліз — v1.237.1** — **Патч після зовнішнього проходу QA.** Виправлення Jobstreet підтверджено ззовні: `/id/job/<id>` повертає чисту 404 на хостах AU/NZ/HK/MY, а `/job/<id>` веде на справжній захищений маршрут — втрачені посилання були справжніми. Дві вади в тому, що додало v1.237.0: **посилання на книгу** мало локалізовану мітку, але не ціль, тож російська мітка вела на англійське видання — аплаєр `data-i18n-href` тепер спрямовує `ru` на російську книгу; а **SEEK мігрує хости** (`www.seek.com.au` → `au.seek.com`), тож `au.seek.com` і `nz.seek.com` додано в allowlist, перш ніж шлях API почне редиректити в наш транспорт `redirect:'error'`. Кількість не змінилася — **94** джерела. **3210 тестів · 116 браузерних.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -185,7 +187,7 @@ npm run test:coverage       # те саме + покриття V8
 
 | Файл | Що це | Коли його читати |
 |---|---|---|
-| **[`CONTEXT.md`](CONTEXT.md)** | Предметний словник: одна прийнята назва на поняття, з відхиленими варіантами, позначеними як *не використовувати*. | **Спершу.** Він знімає плутанину, за яку це репозиторій справді розплачується — `source` проти `adapter` (94 проти 89, і чому обидва мають рацію), `mirror` проти `relay`, `telegram` проти `telegram-channel`. |
+| **[`CONTEXT.md`](CONTEXT.md)** | Предметний словник: одна прийнята назва на поняття, з відхиленими варіантами, позначеними як *не використовувати*. | **Спершу.** Він знімає плутанину, за яку це репозиторій справді розплачується — `source` проти `adapter` (98 проти 93, і чому обидва мають рацію), `mirror` проти `relay`, `telegram` проти `telegram-channel`. |
 | **[`PROGRESS.md`](PROGRESS.md)** | Робочий стан: що зроблено, наступний крок, відомі проблеми та **відкинуті підходи**. | На початку будь-якої сесії. Git показує, що змінилося; цей файл каже, на якому етапі перебуває робота і що вже було випробувано й відхилено. |
 | **[`docs/adr/`](docs/adr/)** | Пронумеровані записи рішень — контекст, рішення, наслідки та що змусило б нас переглянути його. | Перед тим як змінювати щось, охоплене записом. Рішення ухвалює запис, а не поточний реліз. |
 | **[`CLAUDE.md`](CLAUDE.md)** | Індекс на один екран, що вказує на три файли вище. | Автоматично, агентом. Свідомо *не* база знань — довгий файл переглядають побіжно, а потім ігнорують. |
