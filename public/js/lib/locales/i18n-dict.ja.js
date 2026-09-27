@@ -959,6 +959,10 @@ window.__I18N_DICT_JA = {
   'twoPager.saveFailed': "ツーページャーを保存できませんでした",
   'twoPager.privacyNote': "親プロジェクトのユーザーレイヤー（config/two-pager.yml）に保存されます — あなたが実行する LLM プロンプト以外にはどこにも送信されません。",
   'scan.fitTip': "あなたが求めるものとの適合度",
+  'scan.titleFit.strong': "高い適合",
+  'scan.titleFit.related': "関連あり",
+  'scan.titleFit.weak': "低い適合",
+  'scan.titleFitTip': "無料のキーワードレベルの推定：求人タイトルとプロフィールの目標職種（config/profile.yml）の比較です。評価ではありません — 実際の A–F 適合スコアは「評価」で得られます。",
   // ── 模擬面接 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "模擬面接",
   'mock.title': "模擬面接",

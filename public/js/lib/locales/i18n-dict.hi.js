@@ -1041,6 +1041,10 @@ window.__I18N_DICT_HI = {
   'twoPager.saveFailed': "टू-पेजर सेव नहीं हो सका",
   'twoPager.privacyNote': "आपके पैरेंट प्रोजेक्ट की यूज़र लेयर में संग्रहीत (config/two-pager.yml) — आपके द्वारा चलाए गए LLM प्रॉम्प्ट के अलावा कहीं नहीं भेजा जाता।",
   'scan.fitTip': "आप जो चाहते हैं उससे मेल",
+  'scan.titleFit.strong': "मज़बूत मेल",
+  'scan.titleFit.related': "संबंधित मेल",
+  'scan.titleFit.weak': "कमज़ोर मेल",
+  'scan.titleFitTip': "मुफ़्त कीवर्ड-स्तर का अनुमान: पोस्टिंग का शीर्षक बनाम आपकी प्रोफ़ाइल की लक्षित भूमिकाएँ (config/profile.yml)। यह मूल्यांकन नहीं है — असली A–F फ़िट स्कोर अब भी Evaluate देता है।",
 
   // ── Mock interview 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "मॉक इंटरव्यू",

@@ -22,6 +22,12 @@ export function normalizeTextKey(value, separator = '') {
   return String(value ?? '')
     .normalize('NFKC')
     .toLowerCase()
+    // Drop the combining dot that lowercasing a Turkish dotted capital leaves
+    // behind: 'İ'.toLowerCase() is 'i' + U+0307, so "İstanbul" and "Istanbul"
+    // keyed apart (parent 462d2765 / 5df43e71). NO NFD here — that is the
+    // safety property: NFKC keeps ż, ė, ġ precomposed so their dots survive,
+    // while i + U+0307 has no precomposed form and stays exposed.
+    .replace(/\u0307/gu, '')
     .replace(/[^\p{L}\p{M}\p{N}]+/gu, separator)
     .trim();
 }

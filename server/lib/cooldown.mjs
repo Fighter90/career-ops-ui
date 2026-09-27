@@ -23,6 +23,7 @@
  */
 import { readFileSync, existsSync } from 'node:fs';
 import yaml from 'js-yaml';
+import { normalizeTextKey } from './text-key.mjs';
 
 /** Add `days` to an ISO date string (UTC), returning an ISO date string. */
 export function addDays(dateStr, days) {
@@ -31,27 +32,92 @@ export function addDays(dateStr, days) {
   return date.toISOString().slice(0, 10);
 }
 
+// CJK/Korean corporate-form markers (parent parity, career-ops @ 5d1a6380 /
+// 48715f41, #2570). 株式会社 is usually written UNSPACED, as a prefix
+// (株式会社メルカリ) or a suffix (メルカリ株式会社), so no word-boundary rule
+// can reach it — 社 is a letter. Longer forms first (股份有限公司 before
+// 有限公司) so a strip cannot leave a dangling 股份 behind.
+const CORPORATE_FORMS = [
+  '株式会社', '合同会社', '有限会社',   // Japanese
+  '合名会社', '合資会社', '一般社団法人',
+  '股份有限公司',                       // Chinese (longer forms first)
+  '有限责任公司', '有限責任公司',       // no 有限公司 suffix: 责任 sits between
+  '有限公司',
+  '주식회사', '유한회사',               // Korean
+];
+
 /**
- * Normalized company match: exact match on alphanumerics-only,
- * else a word-boundary match on the space-normalized forms. So "Acme Inc"
- * matches "Acme, Inc." and "Acme" matches "Acme Corp".
+ * Split a normalizeTextKey'd string into [forms, remainder]: the corporate-form
+ * markers found at its leading and trailing edges (in that order, joined by
+ * '|'), or null when there are none. BOTH edges are inspected so a name with a
+ * form at each end cannot slip one past the different-form check.
+ * @param {string} key
+ * @returns {[string|null, string]}
+ */
+function stripCorporateForm(key) {
+  const forms = [];
+  let rest = key;
+  const prefix = CORPORATE_FORMS.find((form) => rest.startsWith(form));
+  if (prefix) {
+    forms.push(prefix);
+    rest = rest.slice(prefix.length);
+  }
+  const suffix = CORPORATE_FORMS.find((form) => rest.endsWith(form));
+  if (suffix) {
+    forms.push(suffix);
+    rest = rest.slice(0, -suffix.length);
+  }
+  return [forms.length ? forms.join('|') : null, rest];
+}
+
+/**
+ * Strip a pair of keys, or return null — a verdict that the pair is NOT the
+ * same company. DIFFERENT explicit forms (a KK and a GK sharing a trade name)
+ * are two legal entities; and a side that is ONLY a marker carries no trade
+ * name to compare. Otherwise strip, falling back to the raw key when the strip
+ * empties it. Splits, never merges.
+ * @param {string} rawA
+ * @param {string} rawB
+ * @returns {[string, string] | null}
+ */
+function stripFormPair(rawA, rawB) {
+  const [formsA, restA] = stripCorporateForm(rawA);
+  const [formsB, restB] = stripCorporateForm(rawB);
+  if (formsA && formsB && formsA !== formsB) return null;
+  if (Boolean(formsA && !restA) !== Boolean(formsB && !restB)) return null;
+  return [restA || rawA, restB || rawB];
+}
+
+/**
+ * Normalized company match (parent scan.mjs companyMatch): exact match on the
+ * spaceless Unicode key, else a bounded containment match on the spaced key.
+ * So "Acme Inc" matches "Acme, Inc.", "Acme" matches "Acme Corp", and
+ * 株式会社メルカリ matches メルカリ.
+ *
+ * Unicode-aware (parent #2569): the old `[^a-z0-9]` strip erased non-Latin
+ * names outright — 株式会社アカネ and 合同会社ゾロ both keyed to ''. The empty
+ * guard means "no usable signal" never reads as "identical". The containment
+ * anchors are lookarounds over the same letter/mark/digit class the key keeps,
+ * not `\b` (ASCII-only: "Nestlé Deutschland" vs "Nestlé" would stop matching).
+ * @param {unknown} jobCompany
+ * @param {unknown} windowCompany
  */
 export function companyMatch(jobCompany, windowCompany) {
-  const cleanNoSpaces = (str) => String(str || '').toLowerCase().replace(/[^a-z0-9]/g, '');
-  const c1NoSpaces = cleanNoSpaces(jobCompany);
-  const c2NoSpaces = cleanNoSpaces(windowCompany);
-  if (!c1NoSpaces || !c2NoSpaces) return false;
-  if (c1NoSpaces === c2NoSpaces) return true;
+  const noSpaces = stripFormPair(normalizeTextKey(jobCompany), normalizeTextKey(windowCompany));
+  if (!noSpaces) return false;
+  const [c1NoSpaces, c2NoSpaces] = noSpaces;
+  if (c1NoSpaces && c1NoSpaces === c2NoSpaces) return true;
 
-  const cleanWithSpaces = (str) => String(str || '').toLowerCase().replace(/[^a-z0-9\s]/g, ' ').replace(/\s+/g, ' ').trim();
-  const c1WithSpaces = cleanWithSpaces(jobCompany);
-  const c2WithSpaces = cleanWithSpaces(windowCompany);
+  const withSpaces = stripFormPair(normalizeTextKey(jobCompany, ' '), normalizeTextKey(windowCompany, ' '));
+  if (!withSpaces) return false;
+  const [c1WithSpaces, c2WithSpaces] = withSpaces;
   if (!c1WithSpaces || !c2WithSpaces) return false;
 
-  const esc = (s) => s.replace(/[-/\\^$*+?.()|[\]{}]/g, '\\$&');
-  const regex1 = new RegExp('\\b' + esc(c2WithSpaces) + '\\b');
-  const regex2 = new RegExp('\\b' + esc(c1WithSpaces) + '\\b');
-  return regex1.test(c1WithSpaces) || regex2.test(c2WithSpaces);
+  const bounded = (name) => new RegExp(
+    `(?<![\\p{L}\\p{M}\\p{N}])${name.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?![\\p{L}\\p{M}\\p{N}])`,
+    'u',
+  );
+  return bounded(c2WithSpaces).test(c1WithSpaces) || bounded(c1WithSpaces).test(c2WithSpaces);
 }
 
 /**

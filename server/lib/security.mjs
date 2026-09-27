@@ -53,6 +53,19 @@ export function isPrivateOrLoopbackHost(host) {
     return false;
   }
   if (h.includes(':')) {
+    // IPv4-mapped (::ffff:a.b.c.d) and IPv4-compatible (::a.b.c.d) addresses
+    // reach the embedded IPv4 host, so classify them by that host. Parent
+    // providers/_ip-guard.mjs does the same (#4079 follow-up).
+    const dotted = /^::(?:ffff:)?(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})$/.exec(h);
+    if (dotted) return isPrivateOrLoopbackHost(dotted[1]);
+    // The same two forms written in hex, which is how the URL parser prints
+    // them: `new URL('http://[::ffff:127.0.0.1]/').hostname` is `[::ffff:7f00:1]`.
+    const hexEmbedded = /^::(?:ffff:)?([0-9a-f]{1,4}):([0-9a-f]{1,4})$/.exec(h);
+    if (hexEmbedded) {
+      const high = Number.parseInt(hexEmbedded[1], 16);
+      const low = Number.parseInt(hexEmbedded[2], 16);
+      return isPrivateOrLoopbackHost(`${high >> 8}.${high & 0xff}.${low >> 8}.${low & 0xff}`);
+    }
     if (h === '::1' || h === '::') return true;
     if (/^fc[0-9a-f]{2}:/.test(h) || /^fd[0-9a-f]{2}:/.test(h)) return true;
     if (/^fe[89ab][0-9a-f]:/.test(h)) return true;

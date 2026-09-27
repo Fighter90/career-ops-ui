@@ -142,6 +142,10 @@ import { feishuJobsAdapter } from './adapters/feishu-jobs.mjs';
 import { garenaAdapter } from './adapters/garena.mjs';
 import { telegramChannelAdapter } from './adapters/telegram-channel.mjs';
 import { mokahrAdapter } from './adapters/mokahr.mjs';
+import { eployAdapter } from './adapters/eploy.mjs';
+import { hiringroomAdapter } from './adapters/hiringroom.mjs';
+import { peoplesoftAdapter } from './adapters/peoplesoft.mjs';
+import { prevueapsAdapter } from './adapters/prevueaps.mjs';
 
 export const ALL_ADAPTERS = [
   builtinAdapter,
@@ -267,6 +271,14 @@ export const ALL_ADAPTERS = [
   careervietAdapter,
   pythonorgAdapter,
   generalistWorldAdapter,
+  // v1.238.0 — parent parity: eploy (explicit `provider:` only — branded hosts),
+  // hiringroom (*.hiringroom.com), peoplesoft (Candidate Gateway path on a
+  // branded host), prevueaps (*.prevueaps.ca). Distinct match rules, so
+  // appending is safe.
+  eployAdapter,
+  hiringroomAdapter,
+  peoplesoftAdapter,
+  prevueapsAdapter,
 ];
 
 /**

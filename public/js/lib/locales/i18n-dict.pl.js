@@ -958,6 +958,10 @@ window.__I18N_DICT_PL = {
   'twoPager.saveFailed': "Nie udało się zapisać dokumentu na dwie strony",
   'twoPager.privacyNote': "Przechowywane w warstwie użytkownika Twojego projektu nadrzędnego (config/two-pager.yml) — nigdzie nie wysyłane poza promptami LLM, które uruchamiasz.",
   'scan.fitTip': "Dopasowanie do Twoich oczekiwań",
+  'scan.titleFit.strong': "mocne dopasowanie",
+  'scan.titleFit.related': "częściowe dopasowanie",
+  'scan.titleFit.weak': "słabe dopasowanie",
+  'scan.titleFitTip': "Darmowa ocena na poziomie słów kluczowych: tytuł oferty vs docelowe role z profilu (config/profile.yml). To nie jest ewaluacja — prawdziwą ocenę A–F nadal daje Oceń.",
   // ── Próbna rozmowa kwalifikacyjna 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "Próbna rozmowa",
   'mock.title': "Próbna rozmowa",

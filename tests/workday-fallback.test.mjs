@@ -99,3 +99,87 @@ test('sends browser-like headers derived from the CXS URL', async () => {
   assert.equal(seen.Origin, 'https://example.wd5.myworkdayjobs.com');
   assert.equal(seen.Referer, 'https://example.wd5.myworkdayjobs.com/External/');
 });
+
+// Parent parity (#4080): the CXS POST never follows a redirect.
+test('CXS POST passes redirect:error', async () => {
+  let seen = null;
+  const stubFetch = async (_url, opts) => {
+    seen = opts;
+    return { ok: true, status: 200, json: async () => ({ jobPostings: [] }) };
+  };
+  await fetchWorkday(ENDPOINT, { fetchImpl: stubFetch });
+  assert.equal(seen.redirect, 'error');
+});
+
+// Parent parity (#4467): dead-board detection via Workday's own
+// maintenance/outage signals on the careers page.
+const CAREERS = 'https://example.wd5.myworkdayjobs.com/External';
+const MAINTENANCE_BODY = '<script>window.location.href = "https://community.workday.com/maintenance-page";</script>';
+function deadStub(apiStatus, careers) {
+  const calls = [];
+  const fetchImpl = async (url, opts) => {
+    calls.push({ url, opts });
+    if (url === ENDPOINT) return { ok: false, status: apiStatus, headers: new Headers(), text: async () => '{"errorCode":"HTTP_422"}' };
+    assert.equal(url, CAREERS);
+    return careers;
+  };
+  return { fetchImpl, calls };
+}
+
+test('careersPageFromApi derives the public careers page from the CXS URL', async () => {
+  const { careersPageFromApi } = await import('../server/lib/sources/workday.mjs');
+  assert.equal(careersPageFromApi(ENDPOINT), CAREERS);
+  assert.equal(careersPageFromApi('https://evil.com/wday/cxs/x/Ext/jobs'), null);
+  assert.equal(careersPageFromApi('not a url'), null);
+});
+
+test('dead board: 422 + maintenance-page body (non-2xx) → strict throws a synthetic 404; probe uses redirect:manual', async () => {
+  const { fetchImpl, calls } = deadStub(422, { ok: false, status: 500, headers: new Headers(), text: async () => MAINTENANCE_BODY });
+  await assert.rejects(
+    fetchWorkday(ENDPOINT, { fetchImpl, strict: true, resolveMultiLocation: false }),
+    (err) => err.status === 404 && /confirmed dead/.test(err.message),
+  );
+  assert.equal(calls[1].opts.redirect, 'manual');
+});
+
+test('dead board: 422 + maintenance marker on a 200 careers body → synthetic 404', async () => {
+  const { fetchImpl } = deadStub(422, { ok: true, status: 200, headers: new Headers(), text: async () => MAINTENANCE_BODY });
+  await assert.rejects(fetchWorkday(ENDPOINT, { fetchImpl, strict: true }), (err) => err.status === 404);
+});
+
+test('dead board: 403 + redirect to the myworkday outage page → synthetic 404', async () => {
+  const { fetchImpl } = deadStub(403, {
+    ok: false, status: 302,
+    headers: new Headers({ location: 'https://wd5.myworkday.com/wday/drs/outage?t=example&s=External' }),
+    text: async () => '',
+  });
+  await assert.rejects(fetchWorkday(ENDPOINT, { fetchImpl, strict: true }), (err) => err.status === 404);
+});
+
+test('dead board: 401 + redirect elsewhere (tenant rename) keeps the original 401', async () => {
+  const { fetchImpl } = deadStub(401, {
+    ok: false, status: 302,
+    headers: new Headers({ location: 'https://example.wd5.myworkdayjobs.com/NewSiteName' }),
+    text: async () => '',
+  });
+  await assert.rejects(fetchWorkday(ENDPOINT, { fetchImpl, strict: true }), (err) => err.status === 401);
+});
+
+test('dead board: 422 + clean careers page keeps the original 422', async () => {
+  const { fetchImpl } = deadStub(422, { ok: true, status: 200, headers: new Headers(), text: async () => '<div id="root">careers</div>' });
+  await assert.rejects(fetchWorkday(ENDPOINT, { fetchImpl, strict: true }), (err) => err.status === 422);
+});
+
+test('dead board: a 500 (not a confirmable status) never probes the careers page', async () => {
+  const { fetchImpl, calls } = deadStub(500, { ok: true, status: 200, headers: new Headers(), text: async () => MAINTENANCE_BODY });
+  await assert.rejects(fetchWorkday(ENDPOINT, { fetchImpl, strict: true }), (err) => err.status === 500);
+  assert.equal(calls.length, 1);
+});
+
+test('dead board (non-strict): graceful [] with a "confirmed dead" fallback reason', async () => {
+  const { fetchImpl } = deadStub(422, { ok: true, status: 200, headers: new Headers(), text: async () => MAINTENANCE_BODY });
+  const jobs = await fetchWorkday(ENDPOINT, { fetchImpl });
+  assert.deepEqual(jobs, []);
+  const { lastWorkdayFallback } = await import('../server/lib/sources/workday.mjs');
+  assert.match(lastWorkdayFallback.reason, /HTTP 422 — confirmed dead/);
+});

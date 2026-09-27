@@ -76,6 +76,10 @@ export function resolveListUrl(company) {
   }
   if (u.protocol !== 'https:') return null;
   if (!HECKLERKOCH_HOST_RE.test(u.hostname)) return null;
+  // The apex 301s to www (same registrable domain). Pin it here so the
+  // transport's redirect:'error' never refuses a URL detect() accepts
+  // (parent #4080 follow-up).
+  if (u.hostname.toLowerCase() === 'heckler-koch.com') u.hostname = 'www.heckler-koch.com';
   // A Stellenangebote path passes through; anything else on the host defaults.
   if (/Stellenangebote/i.test(u.pathname)) return `${u.origin}${u.pathname}`;
   return `${u.origin}/de/Karriere/Stellenangebote`;

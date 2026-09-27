@@ -16,13 +16,16 @@
  * for anything ambiguous (unknown ATS, redirect, 429/5xx, network/timeout) we
  * return `null` (→ caller reports uncertain).
  *
- * Two endpoint shapes:
- *   - Per-job (Greenhouse, Lever, Workday, SmartRecruiters): the URL maps to a
- *     single-job endpoint, so a 200 is itself proof the posting is live.
- *   - Org-level (Ashby): the URL maps to the org's whole job board. A 200 only
- *     proves the board exists, so the provider's `interpret` step parses the
- *     board and confirms THIS posting is still listed before returning
- *     active/expired.
+ * Endpoint shapes:
+ *   - Per-job (Greenhouse, Lever, Workday): the URL maps to a single-job
+ *     endpoint, so a 200 is itself proof the posting is live. A company page
+ *     carrying only `gh_jid` resolves its board through Greenhouse's embed
+ *     redirect first, then asks the same per-job endpoint.
+ *   - Per-job with a body verdict (SmartRecruiters, Arbeitsagentur): a 200 can
+ *     describe a closed posting, so `interpret` reads the body.
+ *   - Org-level / feed (Ashby, We Work Remotely): the URL maps to the whole
+ *     board or feed. A 200 only proves it exists, so `interpret` confirms THIS
+ *     posting is still listed (WWR's feed is bounded: absence stays unknown).
  *
  * SSRF-safe by construction, TWO ways:
  *   1. The request URL is built from a FIXED, hard-coded API host plus path
@@ -37,6 +40,7 @@
  */
 
 import { safeGet } from './safe-fetch.mjs';
+import { parseWwrFeed } from './sources/weworkremotely.mjs';
 
 const TIMEOUT_MS = 8_000;
 // A polite, honest UA. `safeGet` supplies its own default; we set one explicitly
@@ -76,7 +80,41 @@ function isSafeValue(v) {
 //   `api404Authoritative` — defaults to true (a 404/410 means gone). Set to
 //                  false when the provider's public API can 404 a posting that
 //                  is still genuinely live elsewhere (see the `lever` entry).
+//   `accept` / `headers` — override the Accept header / add fixed headers.
+//   `rawBody`    — `interpret` receives the response TEXT instead of parsed
+//                  JSON (RSS feeds).
+//   `followEmbed` — two-step lookup: map the FIRST response (after safeGet's
+//                  redirect-revalidated chain) to a per-job API URL, or null.
+//
+// Parent parity, career-ops @ 4bc53fce (#4444): greenhouse-embedded,
+// SmartRecruiters active flag, Arbeitsagentur and We Work Remotely rungs.
 const ATS_PROVIDERS = [
+  {
+    id: 'greenhouse-embedded',
+    // Company careers pages can expose only gh_jid, with no Greenhouse board.
+    // The embed redirect supplies the board; a second per-job API request is
+    // still required because even closed jobs can have an embed redirect.
+    match(u) {
+      if (/(^|\.)greenhouse\.io$/.test(u.hostname)) return null;
+      const id = u.searchParams.get('gh_jid');
+      return id && /^\d+$/.test(id) ? { id } : null;
+    },
+    api: ({ id }) => `https://boards.greenhouse.io/embed/job_app?token=${id}`,
+    // web-ui adaptation: the parent fetches with `redirect: 'manual'` and reads
+    // the Location header. safeGet instead follows the chain itself (each hop
+    // isValidJobUrl-revalidated), so the redirect target is `res.finalUrl`. No
+    // redirect at all → finalUrl is the embed URL, which carries no `for` → null.
+    followEmbed(res, { id }) {
+      let target;
+      try { target = new URL(res.finalUrl); } catch { return null; }
+      if (target.protocol !== 'https:' || !/(^|\.)greenhouse\.io$/.test(target.hostname)) return null;
+      const board = target.searchParams.get('for');
+      // The board is one URL path segment. isSafeValue also accepts Workday's
+      // multi-segment paths, so reject a decoded slash here explicitly.
+      if (!isSafeValue(board) || board.includes('/') || target.searchParams.get('token') !== id) return null;
+      return `https://boards-api.greenhouse.io/v1/boards/${board}/jobs/${id}`;
+    },
+  },
   {
     id: 'greenhouse',
     // boards.greenhouse.io/{board}/jobs/{id} · job-boards[.eu].greenhouse.io/{board}/jobs/{id}
@@ -153,16 +191,59 @@ const ATS_PROVIDERS = [
   {
     id: 'smartrecruiters',
     // jobs.smartrecruiters.com/{company}/{id}[-{title-slug}]. The public posting
-    // id is the leading numeric run of the second path segment (the trailing
-    // title slug is cosmetic — SmartRecruiters resolves the page by id alone).
-    // The per-company postings API is genuinely per-job: a live posting returns
-    // 200, a removed one 404 (see server/lib/sources/smartrecruiters.mjs, #2047).
+    // id is the leading alphanumeric run of the second path segment (the
+    // trailing title slug is cosmetic — SmartRecruiters resolves the page by id
+    // alone). The API answers 200 for a CLOSED posting too, so liveness is read
+    // from its `active` flag, never from status 200 alone (parent 4bc53fce).
     match(u) {
       if (u.hostname !== 'jobs.smartrecruiters.com') return null;
-      const m = u.pathname.match(/^\/([^/]+)\/(\d+)(?:-[^/]*)?\/?$/);
+      const m = u.pathname.match(/^\/([^/]+)\/([A-Za-z0-9]+)(?:-[^/]*)?\/?$/);
       return m ? { company: m[1], id: m[2] } : null;
     },
     api: ({ company, id }) => `https://api.smartrecruiters.com/v1/companies/${company}/postings/${id}`,
+    api404Authoritative: false, // the API also uses 400 for unknown IDs
+    interpret(posting, { id }) {
+      if (String(posting?.id) !== id || typeof posting.active !== 'boolean') return null;
+      return posting.active
+        ? { result: 'active', code: 'smartrecruiters_api_active', reason: 'SmartRecruiters marks the posting active' }
+        : { result: 'expired', code: 'smartrecruiters_api_inactive', reason: 'SmartRecruiters marks the posting inactive' };
+    },
+  },
+  {
+    id: 'arbeitsagentur',
+    match(u) {
+      if (u.hostname !== 'www.arbeitsagentur.de') return null;
+      const m = u.pathname.match(/^\/jobsuche\/jobdetail\/([^/]+)\/?$/);
+      return m ? { refnr: m[1] } : null;
+    },
+    api: ({ refnr }) => `https://rest.arbeitsagentur.de/jobboerse/jobsuche-service/pc/v4/jobdetails/${Buffer.from(refnr).toString('base64url')}`,
+    headers: { 'X-API-Key': 'jobboerse-jobsuche' },
+    api404Authoritative: false, // no expired real-job control; absence stays unknown
+    interpret(posting, { refnr }) {
+      return posting?.referenznummer === refnr && posting?.stellenangebotsTitel
+        ? { result: 'active', code: 'arbeitsagentur_api_active', reason: 'Arbeitsagentur returns the matching job detail' }
+        : null;
+    },
+  },
+  {
+    id: 'weworkremotely',
+    match(u) {
+      if (u.hostname !== 'weworkremotely.com' || !/^\/remote-jobs\/[^/]+\/?$/.test(u.pathname)) return null;
+      return { slug: u.pathname.split('/')[2] };
+    },
+    api: () => 'https://weworkremotely.com/remote-jobs.rss',
+    accept: 'application/rss+xml',
+    rawBody: true,
+    api404Authoritative: false,
+    interpret(feed, { slug }) {
+      if (typeof feed !== 'string' || !/<rss\b/i.test(feed)) return null;
+      const listed = parseWwrFeed(feed).some((job) => {
+        try { return new URL(job.url).pathname.replace(/\/$/, '') === `/remote-jobs/${slug}`; } catch { return false; }
+      });
+      return listed
+        ? { result: 'active', code: 'weworkremotely_feed_listed', reason: 'Posting is listed in the current RSS feed' }
+        : null; // feed is bounded; absence cannot prove expiry
+    },
   },
 ];
 
@@ -216,6 +297,10 @@ export function resolveAtsApi(rawUrl) {
       apiUrl: provider.api(parts),
       parts,
       timeoutMs: provider.timeoutMs,
+      accept: provider.accept,
+      headers: provider.headers,
+      rawBody: provider.rawBody === true,
+      followEmbed: provider.followEmbed,
       interpret: provider.interpret,
       api404Authoritative: provider.api404Authoritative !== false,
     };
@@ -245,17 +330,27 @@ export async function checkLivenessViaApi(url, deps = {}) {
   const get = deps.safeGet || _get;
   const resolved = resolveAtsApi(url);
   if (!resolved) return null;
-  const { ats, apiUrl, parts, interpret, timeoutMs, api404Authoritative } = resolved;
+  const { ats, parts, interpret, timeoutMs, accept, headers, rawBody, followEmbed, api404Authoritative } = resolved;
+  let { apiUrl } = resolved;
   const withProvider = (r) => (r ? { ...r, provider: ats } : r);
+  const fetchOpts = (acceptHeader, extra) => ({
+    timeoutMs: timeoutMs || TIMEOUT_MS,
+    maxBytes: MAX_JSON_BYTES,
+    userAgent: LIVENESS_UA,
+    headers: { Accept: acceptHeader || 'application/json', ...(extra || {}) },
+  });
 
   let res;
   try {
-    res = await get(apiUrl, {
-      timeoutMs: timeoutMs || TIMEOUT_MS,
-      maxBytes: MAX_JSON_BYTES,
-      userAgent: LIVENESS_UA,
-      headers: { Accept: 'application/json' },
-    });
+    res = await get(apiUrl, fetchOpts(accept, headers));
+    if (res && followEmbed) {
+      // Two-step (greenhouse-embedded): the first response only names the
+      // board; the per-job API on the fixed host decides.
+      const jobApiUrl = followEmbed(res, parts);
+      if (!jobApiUrl) return null;
+      apiUrl = jobApiUrl;
+      res = await get(apiUrl, fetchOpts('application/json'));
+    }
   } catch {
     return null; // network / timeout / SSRF-block / unsafe redirect → inconclusive
   }
@@ -279,9 +374,10 @@ export async function checkLivenessViaApi(url, deps = {}) {
     return withProvider({ result: 'expired', code: `${ats}_api_gone`, reason: `ATS API ${res.status} — posting removed` });
   }
   if (res.status === 200) {
-    // Org-level APIs (Ashby) inspect the body to confirm THIS posting; per-job
-    // APIs (Greenhouse, Lever, Workday, SmartRecruiters) treat a 200 as proof.
+    // Providers with `interpret` read the body to confirm THIS posting; plain
+    // per-job APIs (Greenhouse, Lever, Workday) treat a 200 as proof.
     if (interpret) {
+      if (rawBody) return withProvider(interpret(res.text || '', parts));
       let json;
       try {
         json = JSON.parse(res.text || '');

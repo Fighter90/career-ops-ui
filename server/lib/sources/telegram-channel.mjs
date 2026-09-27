@@ -66,7 +66,13 @@ const LOCATIONISH_RE = /(?<![\p{L}\p{N}])(remote|удал[её]нк\p{L}*|hybrid
 const DATE_LIKE_RE = /\b(19|20)\d{2}\b|\b(jan|feb|mar|apr|may|jun|jul|aug|sep|oct|nov|dec)\w*\b/i;
 const ZERO_WIDTH_RE = /[\u200B-\u200D\uFEFF]/g;
 const HASHTAG_LINE_RE = /^#\S+(?:\s+#\S+)*$/u;
-const ROLE_WORD_RE = /(?<![\p{L}\p{N}])(senior|middle|junior|lead|principal|staff|head|chief|intern|trainee|engineer|developer|manager|analyst|designer|architect|specialist|consultant|director|recruiter|scientist|инженер|разработчик|менеджер|специалист|аналитик|директор|архитектор|рекрутер|стажер|стажёр)(?![\p{L}\p{N}])/iu;
+// Role vocabulary extended in parent #3928 (product owner, qa, tester, devops,
+// sre, тестировщик, тимлид, владелец, руководитель, маркетолог, программист) —
+// replayed upstream against the saved 809-post corpus with no attribution lost.
+const ROLE_WORD_RE = /(?<![\p{L}\p{N}])(senior|middle|junior|lead|principal|staff|head|chief|intern|trainee|engineer|developer|manager|analyst|designer|architect|specialist|consultant|director|recruiter|scientist|product\s+owner|qa|tester|devops|sre|инженер|разработчик|менеджер|специалист|аналитик|директор|архитектор|рекрутер|стажер|стажёр|тестировщик|тимлид|владелец|руководитель|маркетолог|программист)(?![\p{L}\p{N}])/iu;
+// The same vocabulary anchored to a WHOLE string — rejects a bare role word
+// ("Senior") without rejecting an employer that merely contains one ("Senior Labs").
+const BARE_ROLE_WORD_RE = new RegExp(`^${ROLE_WORD_RE.source}$`, ROLE_WORD_RE.flags);
 
 /** First non-empty line of a post, cut at a word boundary under TITLE_CAP. */
 function headline(lines) {
@@ -115,7 +121,17 @@ export function employerName(lines) {
   const first = lines[0] || '';
   const second = lines[1] || '';
   if ((m = first.match(/^.{3,140}?\s+@\s+(.{2,60})$/))) return plausibleEmployer(m[1], true);
-  if ((m = first.match(/^.{3,140}?\s+\|\s+([^|]{2,60})$/))) return plausibleEmployer(m[1], true);
+  // "Title | Company" assumes exactly one `|`. A template packing several
+  // pipe-delimited tags into the title (`Title | 5 year(s) | Senior | IC`) would
+  // make `[^|]` land on the LAST tag, which passes plausibleEmployer() as a
+  // short capitalised word — every post on such a channel got company "IC" /
+  // "Senior" (parent #4479). Reject that shape outright rather than guess, and
+  // refuse a bare seniority/role word even in the single-pipe case. On
+  // rejection the remaining shapes below still get their turn.
+  if (!/\|.*\|/.test(first) && (m = first.match(/^.{3,140}?\s+\|\s+([^|]{2,60})$/))) {
+    const pipeEmployer = plausibleEmployer(m[1], true);
+    if (pipeEmployer && !BARE_ROLE_WORD_RE.test(pipeEmployer)) return pipeEmployer;
+  }
   if ((m = second.match(/^(?:в|at)\s+([^—–,(]{2,60}?)\s*(?:[—–]|$)/u))) return plausibleEmployer(m[1], true);
   if (HASHTAG_LINE_RE.test(first) && second) {
     const fromHashtagTemplate = plausibleEmployer(second, false);
@@ -264,8 +280,17 @@ export function postToJob(post, channel) {
   // rest of this policy exists to prevent — so the post is dropped.
   let title = post.title;
   if (HASHTAG_LINE_RE.test(post.lines[0] || '')) {
+    // The matched employer can be a labelled field (`Компания: Контур`) or a
+    // second-line `в/at Employer —` phrase, not only the bare name, and its case
+    // can differ from the match — so a line is skipped when it IS the employer
+    // (case-insensitive) or when employerName's metadata rules, run on that line
+    // alone as a second line, resolve to it (parent #3928). An empty first line
+    // keeps `Title @ Employer` / `Title | Employer` candidates as real titles.
+    const companyLower = company.toLowerCase();
     const isLinkLine = (l) => post.hrefs.includes(l) || /^https?:\/\//i.test(l);
-    const better = post.lines.slice(1).find((l) => l !== company && !HASHTAG_LINE_RE.test(l) && !isLinkLine(l));
+    const better = post.lines.slice(1).find((l) => l.toLowerCase() !== companyLower
+      && employerName(['', l]).toLowerCase() !== companyLower
+      && !HASHTAG_LINE_RE.test(l) && !isLinkLine(l));
     if (!better) return null;
     title = headline([better]);
   }

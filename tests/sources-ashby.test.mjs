@@ -87,3 +87,32 @@ test('ashby: plain-text `<…>` in the description survives (not tag-stripped)',
   const jobs = await fetchAshby('https://api.ashbyhq.com/posting-api/job-board/foo', { fetchImpl: okJson(data) });
   assert.equal(jobs[0].description, 'C++ templates <T> and salary < 100k');
 });
+
+// Parent parity (#4080): the posting-api fetch never follows a redirect.
+test('ashby: fetch passes redirect:error', async () => {
+  let seen;
+  await fetchAshby('https://api.ashbyhq.com/posting-api/job-board/foo', {
+    fetchImpl: async (_u, opts) => { seen = opts; return { ok: true, json: async () => ({ jobs: [] }) }; },
+  });
+  assert.equal(seen.redirect, 'error');
+});
+
+// Parent #4331 read min/max from compensationTiers[].components[] because the
+// real payload carries no flat min/max. web-ui renders Ashby's own summary
+// string instead, so the real (nested) shape already yields a salary — pinned
+// here with the parent's fixture shape.
+test('ashby: the real nested compensation payload renders the tier summary as salary', async () => {
+  const data = { jobs: [{
+    id: 'c1', title: 'Engineer', jobUrl: 'https://jobs.ashbyhq.com/foo/c1',
+    compensation: {
+      compensationTierSummary: '$128K – $180K • Offers Equity',
+      scrapeableCompensationSalarySummary: '$128K - $180K',
+      compensationTiers: [{ components: [
+        { compensationType: 'Salary', interval: '1 YEAR', minValue: 128000, maxValue: 180000, currencyCode: 'USD', summary: '$128K – $180K' },
+        { compensationType: 'EquityPercentage', interval: 'NONE', minValue: null, maxValue: null, summary: 'Offers Equity' },
+      ] }],
+    },
+  }] };
+  const jobs = await fetchAshby('https://api.ashbyhq.com/posting-api/job-board/foo', { fetchImpl: okJson(data) });
+  assert.equal(jobs[0].salary, '$128K – $180K • Offers Equity');
+});

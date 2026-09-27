@@ -959,6 +959,10 @@ window.__I18N_DICT_ZH_CN = {
   'twoPager.saveFailed': "无法保存两页简介",
   'twoPager.privacyNote': "存储在你父项目的用户层（config/two-pager.yml）中 — 除了你运行的 LLM 提示词外，不会发送到任何地方。",
   'scan.fitTip': "与你所想的匹配度",
+  'scan.titleFit.strong': "高度匹配",
+  'scan.titleFit.related': "部分匹配",
+  'scan.titleFit.weak': "低匹配",
+  'scan.titleFitTip': "免费的关键词级估算：职位标题与你个人资料中的目标职位（config/profile.yml）对比。这不是评估——真正的 A–F 匹配分仍由“评估”给出。",
   // ── 模拟面试 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "模拟面试",
   'mock.title': "模拟面试",

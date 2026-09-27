@@ -959,6 +959,10 @@ window.__I18N_DICT_ZH_TW = {
   'twoPager.saveFailed': "無法儲存兩頁簡介",
   'twoPager.privacyNote': "儲存在你父專案的使用者層（config/two-pager.yml）中 — 除了你執行的 LLM 提示詞外，不會傳送到任何地方。",
   'scan.fitTip': "與你所想的契合度",
+  'scan.titleFit.strong': "高度契合",
+  'scan.titleFit.related': "部分契合",
+  'scan.titleFit.weak': "低契合",
+  'scan.titleFitTip': "免費的關鍵字層級估算：職缺標題與你個人檔案中的目標職位（config/profile.yml）比較。這不是評估——真正的 A–F 契合分數仍由「評估」提供。",
   // ── 模擬面試 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "模擬面試",
   'mock.title': "模擬面試",

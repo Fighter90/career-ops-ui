@@ -959,6 +959,10 @@ window.__I18N_DICT_IT = {
   'twoPager.saveFailed': "Impossibile salvare il two-pager",
   'twoPager.privacyNote': "Salvato nel livello utente del tuo progetto principale (config/two-pager.yml) — non viene inviato da nessuna parte tranne che ai prompt LLM che esegui.",
   'scan.fitTip': "Corrispondenza a ciò che vuoi",
+  'scan.titleFit.strong': "corrispondenza forte",
+  'scan.titleFit.related': "corrispondenza affine",
+  'scan.titleFit.weak': "corrispondenza debole",
+  'scan.titleFitTip': "Stima gratuita a livello di parole chiave: titolo dell'annuncio rispetto ai ruoli obiettivo del tuo profilo (config/profile.yml). Non è una valutazione — Valuta fornisce ancora il vero punteggio A–F.",
   // ── Mock interview 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "Colloquio simulato",
   'mock.title': "Colloquio simulato",

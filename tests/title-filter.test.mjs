@@ -156,3 +156,29 @@ test('unprefixed keywords keep their existing matching rules', () => {
   assert.equal(plain('International Product Manager'), false,
     'a BARE intern still matches as a substring — that is the default word: exists to opt out of');
 });
+
+// ── Parent parity, career-ops @ aa453bd8 (#4458): fold diacritics on BOTH sides ──
+test('an accented keyword matches an unaccented title', () => {
+  assert.equal(buildTitleFilter({ positive: ['Producción'] })('TECNICO CONTROL DE PRODUCCION'), true);
+});
+
+test('an unaccented keyword matches an accented title', () => {
+  assert.equal(buildTitleFilter({ positive: ['Produccion'] })('Jefe de Producción'), true);
+});
+
+test('an accented negative still vetoes an unaccented title', () => {
+  const f = buildTitleFilter({ positive: ['Analista'], negative: ['Bioquímic'] });
+  assert.equal(f('ANALISTA BIOQUIMICO DE PLANTA'), false);
+});
+
+test('plain matching and negatives are unchanged by accent folding', () => {
+  const f = buildTitleFilter({ positive: ['Calidad'], negative: ['Software'] });
+  assert.equal(f('Analista de Calidad'), true);
+  assert.equal(f('Software Quality Analyst'), false);
+});
+
+test('short-acronym word-boundary matching is unchanged by accent folding', () => {
+  const f = buildTitleFilter({ positive: ['it'] });
+  assert.equal(f('IT Communications Network Engineer'), true);
+  assert.equal(f('Digital Transformation Lead'), false);
+});

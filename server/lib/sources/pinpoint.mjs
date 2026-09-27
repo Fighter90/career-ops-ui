@@ -55,13 +55,27 @@ function tenantSlug(hostname) {
   return slug ? slug.charAt(0).toUpperCase() + slug.slice(1) : '';
 }
 
+// Certain abandoned trial Pinpoint tenants answer 200 with canned demo postings
+// ("Head of DEI - UK"/"- Belfast") instead of 404ing (parent #4190). Every one
+// embeds the same malformed, doubled YouTube URL for Pinpoint's onboarding video
+// — byte-identical across tenants and not something a real employer's
+// description reproduces — so that artifact (not the title) is the signal.
+const PINPOINT_DEMO_VIDEO_MARKER = 'youtube.com/embed/https://www.youtube.com/embed/pFxm6fszrpw';
+
+function isPinpointDemoPosting(j) {
+  const description = typeof j?.description === 'string' ? j.description : '';
+  return description.includes(PINPOINT_DEMO_VIDEO_MARKER);
+}
+
 /**
  * Parse a Pinpoint /postings.json response. Exported for unit tests.
  *
  * Pinpoint returns:
  *   { data: [{ title, url, path, location: { name, city, province, ... }, ... }] }
  *
- * Rows missing a usable title or a valid `https:` URL are dropped.
+ * Rows missing a usable title or a valid `https:` URL are dropped, as are rows
+ * carrying Pinpoint's seeded demo-video fingerprint (isPinpointDemoPosting), so a
+ * demo-only tenant resolves as empty rather than as a live board.
  *
  * @param {any} json
  * @param {string} companyName  fallback; derived from tenant slug if empty
@@ -74,6 +88,8 @@ export function parsePinpointResponse(json, companyName, host = '') {
   const REMOTE_RE = /remote|anywhere|distributed|home\s*office/i;
   return postings
     .map((j) => {
+      if (isPinpointDemoPosting(j)) return null;
+
       const title = typeof j?.title === 'string' ? j.title.trim() : '';
       if (!title) return null;
 

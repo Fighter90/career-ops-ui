@@ -13,7 +13,8 @@
  *
  * Semantics (verbatim from parent scan.mjs):
  *   - No `location_filter` key            → everything passes.
- *   - Empty/missing location on a job     → pass (don't penalize missing data).
+ *   - Empty/missing location on a job     → pass (don't penalize missing data),
+ *                                            unless `strict: true` (see below).
  *   - `block` match                       → reject (takes precedence over allow).
  *   - `allow` empty                       → pass (already cleared block).
  *   - `allow` non-empty                   → must match ≥ 1 keyword.
@@ -170,16 +171,30 @@ export function compileContentKeyword(kw) {
 }
 
 /**
+ * Fold diacritics so a keyword and a title compare equal regardless of accents
+ * (parent parity, career-ops @ aa453bd8, #4458). Spanish/Portuguese boards
+ * routinely publish titles in UPPERCASE WITHOUT accents ("TECNICO CONTROL DE
+ * PRODUCCION") while portals.yml is written with them ("Producción"); with
+ * toLowerCase() alone they never match and the posting is silently filtered.
+ * BOTH sides are folded, so the comparison stays symmetric. NFD + combining-mark
+ * strip only — spaces, ".NET", "L&D" survive, unlike an [a-z0-9]-only fold.
+ * @param {unknown} s
+ */
+export function foldAccents(s) {
+  return String(s ?? '').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+}
+
+/**
  * Build a title predicate from `portals.yml::title_filter`. A job passes when it
  * matches at least one positive keyword (or there are none) AND no negative one.
  * @param {{positive?: unknown, negative?: unknown}|null|undefined} titleFilter
  * @returns {(title: string) => boolean} predicate — true = keep the job
  */
 export function buildTitleFilter(titleFilter) {
-  const positive = compileKeywordList(titleFilter?.positive, compilePositiveKeyword);
-  const negative = compileKeywordList(titleFilter?.negative);
+  const positive = compileKeywordList(titleFilter?.positive, (kw) => compilePositiveKeyword(foldAccents(kw)));
+  const negative = compileKeywordList(titleFilter?.negative, (kw) => compileKeyword(foldAccents(kw)));
   return (title) => {
-    const lower = (title || '').toLowerCase();
+    const lower = foldAccents((title || '').toLowerCase());
     const hasPositive = positive.length === 0 || positive.some((m) => m(lower));
     const hasNegative = negative.some((m) => m(lower));
     return hasPositive && !hasNegative;
@@ -187,7 +202,14 @@ export function buildTitleFilter(titleFilter) {
 }
 
 /**
- * @param {{allow?: string[], block?: string[]}|null|undefined} locationFilter
+ * `strict: true` (opt-in, parent parity career-ops @ 98e62de4, #3276): when a
+ * restricting tier (`allow` / `block`) is configured, a posting with no
+ * location is REJECTED instead of passed. A location-restricted sweep over a
+ * source that never returns a location otherwise silently inverts the filter
+ * — the "only these places" allow list is never consulted. `strict: true`
+ * alone restricts nothing and stays inert. (The parent also counts
+ * `block_hard`; web-ui does not implement that tier.)
+ * @param {{allow?: string[], block?: string[], strict?: boolean}|null|undefined} locationFilter
  * @returns {(location: string) => boolean} predicate — true = keep the job
  */
 export function buildLocationFilter(locationFilter) {
@@ -196,9 +218,11 @@ export function buildLocationFilter(locationFilter) {
     .map((k) => String(k).toLowerCase());
   const block = (Array.isArray(locationFilter.block) ? locationFilter.block : [])
     .map((k) => String(k).toLowerCase());
+  const strict = locationFilter.strict === true && (allow.length > 0 || block.length > 0);
 
   return (location) => {
-    if (!location) return true;
+    // Nothing to judge on → pass (don't penalize missing data), unless strict.
+    if (!location) return !strict;
     const lower = String(location).toLowerCase();
     if (block.length > 0 && block.some((k) => lower.includes(k))) return false;
     if (allow.length === 0) return true;

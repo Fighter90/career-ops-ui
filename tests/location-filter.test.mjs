@@ -71,3 +71,30 @@ test('exact parity worked-example from parent portals.example.yml', () => {
   assert.equal(f('Toronto, Canada'), false); // not blocked, but not in allow
   assert.equal(f(''), true);                  // missing → pass
 });
+
+// ── Parent parity, career-ops @ 98e62de4 (#3276): opt-in `strict` ──
+// web-ui's filter takes the location only (no URL hint, no block_hard tier),
+// so the parent's cases are ported against that signature.
+test('location_filter.strict fails closed on empty locations without changing the default', () => {
+  const lenient = buildLocationFilter({ allow: ['puerto rico', 'san juan'] });
+  const strict = buildLocationFilter({ allow: ['puerto rico', 'san juan'], strict: true });
+  assert.equal(lenient(''), true, 'default: empty-location posting still passes');
+  assert.equal(strict(''), false, 'strict: empty-location posting is rejected');
+  assert.equal(strict(undefined), false);
+  assert.equal(strict(null), false);
+  assert.equal(strict('San Juan, PR'), true, 'strict preserves matching locations');
+  assert.equal(strict('Boston, MA'), false, 'strict still rejects real out-of-region locations');
+});
+
+test('strict:true with no restricting tier is inert; block-only strict fails closed', () => {
+  const strictNoTiers = buildLocationFilter({ strict: true });
+  const strictBlockOnly = buildLocationFilter({ block: ['india'], strict: true });
+  assert.equal(strictNoTiers(''), true);
+  assert.equal(strictNoTiers('Anywhere'), true);
+  assert.equal(strictBlockOnly(''), false, 'block-only strict cannot confirm an empty location is safe');
+  assert.equal(strictBlockOnly('Berlin, Germany'), true);
+});
+
+test('strict must be literally true — a truthy string does not opt in', () => {
+  assert.equal(buildLocationFilter({ allow: ['remote'], strict: 'yes' })(''), true);
+});

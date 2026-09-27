@@ -66,6 +66,22 @@ test('a level on ONE side alone is a loose rewrite — unless the vocabulary als
   );
 });
 
+// Parent parity, career-ops @ b2abe2a5 (#4060): the one-sided-level siblings
+// stay distinct in BOTH orders, and the two neighbouring pairs stay matched.
+test('one-sided level siblings are symmetric (#4060)', () => {
+  const a = 'Front Desk Assistant (Summer Housing)';
+  const b = 'Administrative Assistant II (Housing Front Desk)';
+  assert.equal(roleFuzzyMatch(a, b), false);
+  assert.equal(roleFuzzyMatch(b, a), false);
+  for (const [x, y] of [
+    ['Administrative Assistant', 'Administrative Assistant II'],
+    ['Backend Analytics Engineer, Platform II', 'Analytics Engineer, Platform Payments'],
+  ]) {
+    assert.equal(roleFuzzyMatch(x, y), true, `${x} ~ ${y}`);
+    assert.equal(roleFuzzyMatch(y, x), true, `${y} ~ ${x}`);
+  }
+});
+
 test('the level rules never override an exact title match', () => {
   assert.equal(roleFuzzyMatch('Registered Nurse II', 'registered nurse ii'), true);
   assert.equal(roleFuzzyMatch('Data Engineer', 'Data Engineer'), true);

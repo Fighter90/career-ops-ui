@@ -241,3 +241,77 @@ test('telegram-channel rejects a Cyrillic location, not just an ASCII one', () =
   // location list, not the alphabet.
   assert.equal(employerName(['Senior Engineer | Контур']), 'Контур');
 });
+
+// ── parent parity: multi-pipe tag (#4479/#4455) + hashtag template (#3928) ──
+
+test('telegram-channel refuses a multi-pipe metadata tag as the employer (#4455)', () => {
+  // Measured live upstream on @revacancy: every post came back as "IC"/"Senior".
+  assert.equal(employerName(['🟥 Ten Square Games - Mid/ Senior UI/UX Designer | 3 year(s) | Senior | IC', '▫️ Ten Square Games | Gaming']), '');
+  assert.equal(employerName(['🟥 Senior Backend Developer | 5 year(s) | Senior | IC', '▫️ Financial technology']), '');
+});
+
+test('telegram-channel refuses a bare role word after a single pipe, but not an employer containing one', () => {
+  assert.equal(employerName(['Some Role Title | Senior']), '');
+  assert.equal(employerName(['Engineer | Senior Labs']), 'Senior Labs');
+  assert.equal(employerName(['Game Designer | Nexters', 'text']), 'Nexters', 'ordinary single-pipe shape untouched');
+});
+
+test('telegram-channel still reads the second-line shape when the pipe shape is rejected', () => {
+  assert.equal(employerName(['Backend | 3 years | Senior', 'в Авито — Москва']), 'Авито');
+});
+
+test('telegram-channel hashtag template accepts real employer names (#3928)', () => {
+  assert.equal(employerName(['#middle #офис', 'ПАО Сбербанк', 'Java-разработчик']), 'ПАО Сбербанк');
+  assert.equal(employerName(['#senior #удаленка', 'Лаборатория Касперского', 'Инженер по безопасности']), 'Лаборатория Касперского');
+  assert.equal(employerName(['#middle', 'Product Hunt', 'Backend Engineer']), 'Product Hunt');
+});
+
+test('telegram-channel hashtag template refuses every extended role token (#3928)', () => {
+  assert.equal(employerName(['#job #python', 'Product Owner', 'Senior Python Developer']), '');
+  assert.equal(employerName(['#senior #удаленка', 'QA Engineer']), '');
+  assert.equal(employerName(['#middle #гибрид', 'Тестировщик']), '');
+  assert.equal(employerName(['#lead', 'Руководитель отдела']), '');
+  for (const token of ['Product Owner', 'QA', 'Tester', 'DevOps', 'SRE', 'Тестировщик', 'Тимлид', 'Владелец продукта', 'Руководитель', 'Маркетолог', 'Программист']) {
+    assert.equal(employerName(['#middle #удаленка', token, 'Описание']), '', `accepted role token ${token}`);
+  }
+});
+
+test('telegram-channel drops a hashtag-first post whose employer line is a role', () => {
+  const p = parseChannelPage(post(30, '#middle #удаленка<br>Product Owner<br>Senior Python Developer<br><a href="https://acme.test/vacancy/go">apply</a>'), 'chan').posts[0];
+  assert.equal(postToJob(p, 'chan'), null);
+});
+
+test('telegram-channel hashtag title skips the recognised employer metadata line (#3928)', () => {
+  const apply = 'https://example.com/jobs/12345';
+  const cases = [
+    ['RU company field', '<b>🏢 Компания:</b> Контур', 'Контур', 'MLOps-инженер'],
+    ['EN company field', 'Company: Picnic', 'Picnic', 'Backend Developer'],
+    ['RU second-line employer', 'в Kaspi — fintech-экосистема.', 'Kaspi', 'Backend Developer'],
+    ['EN second-line employer', 'at Picnic — grocery delivery.', 'Picnic', 'Backend Developer'],
+    ['mixed-case EN employer metadata', 'Company: Picnic<br>at PICNIC — Backend Developer', 'Picnic', 'Platform Engineer'],
+    ['mixed-case RU employer metadata', 'Компания: Контур<br>в КОНТУР — разработка сервисов.', 'Контур', 'MLOps-инженер'],
+    ['mixed-case bare employer', 'Company: Picnic<br>PICNIC', 'Picnic', 'Platform Engineer'],
+  ];
+  for (const [label, employerHtml, company, role] of cases) {
+    const p = parseChannelPage(post(31, `#middle #удаленка<br>${employerHtml}<br>${role}<br><a href="${apply}">${apply}</a>`, { time: '2026-09-04T10:00:00+00:00' }), 'chan').posts[0];
+    const job = postToJob(p, 'chan');
+    assert.equal(job?.title, role, `${label}: title`);
+    assert.equal(job.company, company, `${label}: company`);
+    assert.equal(job.url, apply, `${label}: url`);
+    assert.match(job.description, /Source: https:\/\/t\.me\/chan\/31$/, `${label}: source`);
+
+    const noTitle = parseChannelPage(post(32, `#middle #удаленка<br>${employerHtml}<br>#remote<br><a href="${apply}">${apply}</a>`), 'chan').posts[0];
+    assert.equal(postToJob(noTitle, 'chan'), null, `${label}: no title → dropped`);
+  }
+});
+
+test('telegram-channel hashtag metadata skipping preserves real role headlines', () => {
+  const apply = 'https://example.com/jobs/12345';
+  for (const role of ['Backend Developer @ Picnic', 'Backend Developer @ PICNIC', 'Backend Developer | Picnic', 'at-scale Backend Developer', 'внутренний IT-аналитик']) {
+    const p = parseChannelPage(post(33, `#middle #remote<br>Company: Picnic<br>${role}<br><a href="${apply}">${apply}</a>`), 'chan').posts[0];
+    const job = postToJob(p, 'chan');
+    assert.equal(job?.title, role);
+    assert.equal(job.company, 'Picnic');
+    assert.equal(job.url, apply);
+  }
+});

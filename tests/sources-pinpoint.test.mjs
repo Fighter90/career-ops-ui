@@ -143,3 +143,35 @@ test('adapter: buildEndpoint returns /postings.json on the tenant origin', () =>
   );
   assert.equal(pinpointAdapter.buildEndpoint({ careers_url: 'https://acme.com' }), null);
 });
+
+// ── Demo-tenant filtering (parent #4190) ──
+const DEMO_DESCRIPTION = '<div><!--block-->We are seeking a passionate and strategic Head of DEI...'
+  + '<figure data-trix-attachment="{&quot;content&quot;:&quot;<div data-plyr-provider=\\&quot;youtube\\&quot; '
+  + 'data-plyr-embed-id=\\&quot;https://www.youtube.com/embed/https://www.youtube.com/embed/pFxm6fszrpw\\&quot;'
+  + '><iframe src=\\&quot;https://www.youtube.com/embed/https://www.youtube.com/embed/pFxm6fszrpw\\&quot;>'
+  + '</iframe></div>&quot;}"></figure></div>';
+
+test('parsePinpointResponse: drops a posting carrying the shared demo-video fingerprint (#4190)', () => {
+  const json = { data: [{
+    title: 'Head of DEI - UK',
+    url: 'https://exampleco.pinpointhq.com/postings/abc',
+    description: DEMO_DESCRIPTION,
+    location: { name: 'Remote' },
+  }] };
+  assert.equal(parsePinpointResponse(json, 'ExampleCo').length, 0);
+});
+
+test('parsePinpointResponse: keeps a real posting embedding an unrelated YouTube video', () => {
+  const json = { data: [{
+    title: 'Senior Backend Engineer',
+    url: 'https://acme.pinpointhq.com/postings/xyz',
+    description: '<div>Join our team! <iframe src="https://www.youtube.com/embed/dQw4w9WgXcQ"></iframe></div>',
+    location: { name: 'Remote' },
+  }] };
+  assert.equal(parsePinpointResponse(json, 'Acme').length, 1);
+});
+
+test('parsePinpointResponse: a posting with no description field is kept (no false-positive drop)', () => {
+  const json = { data: [{ title: 'Role With No Description', url: 'https://acme.pinpointhq.com/postings/1' }] };
+  assert.equal(parsePinpointResponse(json, 'Acme').length, 1);
+});

@@ -25,7 +25,7 @@
  *
  * Used by the beesite adapter (server/lib/portals/adapters/beesite.mjs).
  */
-import { fetchJson } from '../http-json.mjs';
+import { fetchJson, delay } from '../http-json.mjs';
 // Titles arrive HTML-escaped, so the tag-strip below is not enough on its own:
 // an undecoded "R&amp;D Engineer" fails a user's own title_filter positive "r&d"
 // and is silently dropped, and a negative like "sales & marketing" never vetoes
@@ -152,14 +152,15 @@ export async function fetchBeesite(endpoint, opts = {}) {
   const cfg = resolveConfig({ ...company, api: company.api || endpoint, careers_url: company.careers_url || endpoint });
   if (!cfg) throw new Error(`beesite: cannot resolve search host for ${company.name || endpoint}`);
   const name = (company && typeof company.name === 'string' && company.name.trim()) ? company.name.trim() : 'beesite';
-  const wait = (ms) => new Promise((r) => setTimeout(r, ms));
   const maxPages = resolveMaxPages(company);
   const jobs = [];
   const seen = new Set();
   let total = null;
 
   for (let page = 0; page < maxPages; page++) {
-    if (page > 0) await wait(PAGE_DELAY_MS);
+    // Shared abort-aware pacing (parent #3530 routes every inter-page sleep
+    // through one helper) — a cancelled scan no longer waits out the delay.
+    if (page > 0) await delay(PAGE_DELAY_MS, signal);
     const json = await fetchJson(fetchImpl, buildSearchUrl(cfg, page * PAGE_SIZE + 1), {
       signal,
       redirect: 'error',

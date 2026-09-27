@@ -1037,6 +1037,10 @@ window.__I18N_DICT_EN = {
   'twoPager.saveFailed': "Could not save the two-pager",
   'twoPager.privacyNote': "Stored in your parent project’s user layer (config/two-pager.yml) — never sent anywhere except the LLM prompts you run.",
   'scan.fitTip': "Fit to what you want",
+  'scan.titleFit.strong': "strong fit",
+  'scan.titleFit.related': "related fit",
+  'scan.titleFit.weak': "weak fit",
+  'scan.titleFitTip': "Free keyword-level estimate: posting title vs your profile's target roles (config/profile.yml). Not an evaluation — Evaluate still gives the real A–F fit score.",
 
   // ── Mock interview 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "Mock interview",

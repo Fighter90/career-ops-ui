@@ -75,6 +75,10 @@ export function resolveListUrl(company) {
     const u = new URL(raw);
     if (u.protocol !== 'https:') return null;
     if (!RHEINMETALL_HOST_RE.test(u.hostname)) return null;
+    // The apex 301s to www (same registrable domain). Pin it here so the
+    // transport's redirect:'error' never refuses a URL detect() accepts
+    // (parent #4080 follow-up).
+    if (u.hostname.toLowerCase() === 'rheinmetall.com') u.hostname = 'www.rheinmetall.com';
     if (/\/career\/vacancies\/?$/.test(u.pathname)) return `${u.origin}${u.pathname.replace(/\/$/, '')}`;
     return `${u.origin}/en/career/vacancies`;
   } catch {

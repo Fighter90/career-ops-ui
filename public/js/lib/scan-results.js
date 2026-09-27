@@ -1,3 +1,4 @@
+// TODO: split by concern (435 LOC — file-size contract 400–800 band).
 /* window.ScanResults — the #/scan results-rendering subsystem, extracted from
  * public/js/views/scan.js (v1.132.0) to pay down the 800-LOC file-size-contract
  * debt. `create(ctx)` returns { render, getRows } closing over a context object
@@ -39,6 +40,7 @@ window.ScanResults = (function () {
     { value: 'dassault',              label: 'Dassault Systèmes' },
     { value: 'deutschebahn',          label: 'Deutsche Bahn' },
     { value: 'eightfold',             label: 'Eightfold' },
+    { value: 'eploy',                 label: 'Eploy' },
     { value: 'feishu-jobs',           label: 'Feishu Jobs' },
     { value: 'flowxtra',              label: 'Flowxtra' },
     { value: 'garena',                label: 'Garena' },
@@ -53,6 +55,7 @@ window.ScanResults = (function () {
     { value: 'hecklerkoch',           label: 'Heckler & Koch' },
     { value: 'higheredjobs',          label: 'HigherEdJobs' },
     { value: 'himalayas',             label: 'Himalayas' },
+    { value: 'hiringroom',            label: 'HiringRoom' },
     { value: 'ibm',                   label: 'IBM' },
     { value: 'icims',                 label: 'iCIMS' },
     { value: 'itviec',                label: 'ITviec' },
@@ -74,9 +77,11 @@ window.ScanResults = (function () {
     { value: 'nodesk',                label: 'NoDesk' },
     { value: 'nofluffjobs',           label: 'NoFluffJobs' },
     { value: 'oraclecloud',           label: 'Oracle Cloud (ORC)' },
+    { value: 'peoplesoft',            label: 'PeopleSoft Candidate Gateway' },
     { value: 'personio',              label: 'Personio' },
     { value: 'phenom',                label: 'Phenom' },
     { value: 'pinpoint',              label: 'Pinpoint' },
+    { value: 'prevueaps',             label: 'PrevueAPS' },
     { value: 'pythonorg',             label: 'Python.org Jobs' },
     { value: 'radancy',               label: 'Radancy' },
     { value: 'recruitee',             label: 'Recruitee' },
@@ -302,12 +307,28 @@ window.ScanResults = (function () {
           }, '◎ ' + fit.score);
         }
       }
+      // Parent #3260 parity — free title-vs-profile band stamped server-side
+      // (server/lib/title-fit.mjs) as r.fit = {band, score}. Annotation only:
+      // it never filters, orders or counts. Renders the band WORD only (never
+      // the score) so it can't be mistaken for an evaluation grade; strong is
+      // highlighted, related/weak stay muted.
+      const band = r.fit && r.fit.band;
+      const titleFitChip = (band === 'strong' || band === 'related' || band === 'weak') ? c('span', {
+        className: 'badge' + (band === 'strong' ? ' badge-ok' : ''),
+        title: t('scan.titleFitTip', "Free keyword-level estimate: posting title vs your profile's target roles (config/profile.yml). Not an evaluation — Evaluate still gives the real A–F fit score."),
+        style: band === 'strong'
+          ? { marginRight: '6px', fontSize: '11px' }
+          : { marginRight: '6px', fontSize: '11px', fontWeight: '500', color: 'var(--foggy)' },
+      }, band === 'strong' ? t('scan.titleFit.strong', 'strong fit')
+        : band === 'related' ? t('scan.titleFit.related', 'related fit')
+        : t('scan.titleFit.weak', 'weak fit')) : null;
       const titleCell = c('td', null, [
         r._boosted ? c('span', {
           className: 'badge badge-info',
           title: t('scan.boostedBy', 'Boosted by') + ': ' + (r._boostedBy || '?'),
           style: { marginRight: '6px', fontSize: '11px' },
         }, '⬆ ' + t('scan.boosted', 'boosted')) : null,
+        titleFitChip,
         fitBadge,
         trustBadge,
         c('a', { href: r.url, target: '_blank', rel: 'noopener', style: { color: 'var(--rausch)' } }, r.title),

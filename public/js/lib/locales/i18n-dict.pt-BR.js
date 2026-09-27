@@ -958,6 +958,10 @@ window.__I18N_DICT_PT_BR = {
   'twoPager.saveFailed': "Não foi possível salvar o two-pager",
   'twoPager.privacyNote': "Armazenado na camada de usuário do seu projeto pai (config/two-pager.yml) — nunca enviado a lugar nenhum, exceto aos prompts de LLM que você executar.",
   'scan.fitTip': "Encaixe com o que você quer",
+  'scan.titleFit.strong': "encaixe forte",
+  'scan.titleFit.related': "encaixe relacionado",
+  'scan.titleFit.weak': "encaixe fraco",
+  'scan.titleFitTip': "Estimativa gratuita por palavras-chave: título da vaga vs. cargos-alvo do seu perfil (config/profile.yml). Não é uma avaliação — Avaliar ainda dá a nota real A–F.",
 
   // ── Entrevista simulada 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "Entrevista simulada",
