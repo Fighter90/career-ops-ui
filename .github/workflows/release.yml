@@ -28,12 +28,26 @@ jobs:
       - uses: actions/checkout@v5
         with:
           fetch-depth: 0
-          # On a tag push github.ref_name IS the tag; on
-          # workflow_dispatch it is the branch (main), so fall back to
-          # the explicit `tag` input. Without this, manual dispatch
-          # checked out main's tree and the CHANGELOG slice / version
-          # verify ran against the wrong version.
-          ref: ${{ github.event.inputs.tag || github.ref_name }}
+          # Checks out the triggering ref: the tag on a tag push, the
+          # dispatched branch (main) on workflow_dispatch. The next step
+          # switches to the tag when it already exists.
+
+      # A dispatch may name a tag that does not exist yet (tags cannot
+      # always be pushed from where the release is cut). Then the tree
+      # stays at the dispatched commit, the version check below guards
+      # it, and the release step creates the tag at that commit.
+      - name: Use the tag's tree when the tag exists
+        if: github.event_name == 'workflow_dispatch'
+        env:
+          TAG: ${{ github.event.inputs.tag }}
+        run: |
+          [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]] || { echo "::error::tag must look like v1.2.3"; exit 1; }
+          if git rev-parse --verify --quiet "refs/tags/$TAG^{commit}" >/dev/null; then
+            git checkout --quiet "$TAG"
+            echo "releasing existing tag $TAG"
+          else
+            echo "tag $TAG does not exist yet — it will be created at $GITHUB_SHA"
+          fi
 
       - name: Extract release notes from CHANGELOG.md
         id: notes
@@ -67,6 +81,8 @@ jobs:
         with:
           name: ${{ steps.notes.outputs.tag }}
           tag_name: ${{ steps.notes.outputs.tag }}
+          # Used only when the tag does not exist yet (dispatch, see above).
+          target_commitish: ${{ github.sha }}
           body_path: .release-notes.md
           draft: false
           prerelease: ${{ contains(steps.notes.outputs.tag, '-') }}
