@@ -19,6 +19,7 @@ on:
 
 permissions:
   contents: write
+  actions: write   # dispatch publish-package.yml (see the last step)
 
 jobs:
   release:
@@ -88,3 +89,14 @@ jobs:
           prerelease: ${{ contains(steps.notes.outputs.tag, '-') }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      # A release created with GITHUB_TOKEN does not fire `release: published`
+      # for other workflows, so publish-package.yml never ran for v1.238.1 /
+      # v1.238.2. workflow_dispatch is the one event GITHUB_TOKEN may trigger.
+      # Publishing is idempotent, so a second run from a UI-created release
+      # is a green no-op.
+      - name: Publish the npm package for this tag
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAG: ${{ steps.notes.outputs.tag }}
+        run: gh workflow run publish-package.yml --ref "$TAG" --repo "$GITHUB_REPOSITORY"
