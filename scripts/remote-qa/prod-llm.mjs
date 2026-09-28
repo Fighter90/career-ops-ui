@@ -28,6 +28,7 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
 import { makeRedactor } from './redact.mjs';
+import { languageOk, describe } from './lang-check.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const require = createRequire(ROOT + '/package.json');
@@ -49,45 +50,7 @@ engineers. Requirements: 5+ years in SRE/platform roles, strong Go or Python,
 Kubernetes in production, infrastructure as code, on-call experience. Nice to have:
 service mesh, cost optimisation, PostgreSQL operations. Salary 90–120k EUR.`;
 
-// ── language check ────────────────────────────────────────────────────────────
-const SCRIPT = {
-  ar: /[\u0600-\u06FF]/g, hi: /[\u0900-\u097F]/g, ja: /[\u3040-\u30FF]/g, ko: /[\uAC00-\uD7AF]/g,
-  'zh-CN': /[\u4E00-\u9FFF]/g, 'zh-TW': /[\u4E00-\u9FFF]/g, ru: /[\u0400-\u04FF]/g, uk: /[\u0400-\u04FF]/g,
-};
-const WORDS = {
-  en: ['the', 'and', 'with', 'for', 'you', 'your', 'this', 'that', 'are', 'is'],
-  es: ['el', 'la', 'de', 'que', 'y', 'con', 'para', 'los', 'las', 'una'],
-  fr: ['le', 'la', 'les', 'de', 'des', 'et', 'pour', 'avec', 'une', 'est'],
-  'pt-BR': ['de', 'que', 'com', 'para', 'uma', 'não', 'os', 'as', 'do', 'da'],
-  pl: ['i', 'w', 'na', 'się', 'nie', 'z', 'do', 'jest', 'to', 'dla'],
-  de: ['der', 'die', 'das', 'und', 'mit', 'für', 'ist', 'nicht', 'ein', 'eine'],
-  it: ['il', 'la', 'di', 'che', 'e', 'per', 'con', 'una', 'non', 'del'],
-  tr: ['ve', 'bir', 'bu', 'için', 'ile', 'olarak', 'daha', 'de', 'da', 'değil'],
-  da: ['og', 'at', 'det', 'en', 'til', 'med', 'for', 'er', 'ikke', 'af'],
-};
-function languageOk(text, locale) {
-  const t = String(text || '');
-  if (locale === 'ja') {
-    // Japanese technical prose is mostly kanji plus Latin terms; kana alone can
-    // fall under 30 %. Require some kana (not Chinese) and a CJK majority.
-    const letters = (t.match(/\p{L}/gu) || []).length || 1;
-    const kana = (t.match(/[\u3040-\u30FF]/g) || []).length;
-    const han = (t.match(/[\u4E00-\u9FFF]/g) || []).length;
-    return kana / letters > 0.05 && (kana + han) / letters > 0.3;
-  }
-  if (SCRIPT[locale]) {
-    const letters = (t.match(/\p{L}/gu) || []).length || 1;
-    const own = (t.match(SCRIPT[locale]) || []).length;
-    if (locale === 'uk' && !/[іїєґ]/i.test(t)) return false; // Ukrainian, not Russian
-    if (locale === 'ru' && /[іїєґ]/i.test(t) && !/[ыэъё]/i.test(t)) return false;
-    return own / letters > 0.3; // tech terms (Kubernetes, AWS) stay Latin
-  }
-  const words = t.toLowerCase().match(/\p{L}+/gu) || [];
-  const hits = (list) => words.filter((w) => list.includes(w)).length;
-  const mine = hits(WORDS[locale] || WORDS.en);
-  if (locale === 'en') return mine >= 5;
-  return mine >= 5 && mine >= hits(WORDS.en);
-}
+// Language check lives in lang-check.mjs (tested in tests/remote-qa-lang-check.test.mjs).
 
 // ── run ───────────────────────────────────────────────────────────────────────
 const browser = await chromium.launch({ headless: true });
@@ -200,7 +163,7 @@ for (const locale of LOCALES) {
     if (d.status !== 200) add(locale, 'docs', `HTTP ${d.status} ${d.body.error || ''}`);
     else if (!d.body.mode || d.body.mode === 'manual') add(locale, 'docs', `no live provider (mode=${d.body.mode})`);
     else if (answer.length < 80) add(locale, 'docs', `answer only ${answer.length} chars`);
-    else if (!row.docs.lang) add(locale, 'docs', `answer not in ${locale}`);
+    else if (!row.docs.lang) add(locale, 'docs', `answer not in ${locale} (${describe(answer, locale)})`);
     if (d.status === 200) {
       const rendered = await page.locator('.chat-log .md').last().innerText({ timeout: 10000 }).catch(() => '');
       if (!rendered.trim()) add(locale, 'docs', 'answer not rendered in the chat log');
@@ -223,7 +186,7 @@ for (const locale of LOCALES) {
       // The server's warnings are fixed strings ("missing Block C", "SCORE_SUMMARY ROLE is required"),
       // never report text, so they can be printed as they are.
       if (!row.eval.shape) add(locale, 'evaluate', `A–G shape: ${(e.body.warnings || []).map(String).join('; ')}`);
-      if (!row.eval.lang) add(locale, 'evaluate', `report not in ${locale}`);
+      if (!row.eval.lang) add(locale, 'evaluate', `report not in ${locale} (${describe(md, locale)})`);
     }
     if (e.status === 200) {
       const shown = await page.locator('#eval-out').innerText({ timeout: 15000 }).catch(() => '');

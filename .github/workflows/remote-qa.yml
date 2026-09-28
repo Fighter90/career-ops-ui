@@ -24,6 +24,13 @@ on:
         description: 'Also run a real scan + live LLM calls (docs assistant, evaluate) in every locale — costs tokens'
         type: boolean
         default: false
+      locales:
+        description: 'Only these UI locales, comma-separated (e.g. hi,ja); empty = all'
+        default: ''
+      scan:
+        description: 'With live: run the real scan first (off = LLM checks only)'
+        type: boolean
+        default: true
   push:
     branches: ['claude/**']
     paths:
@@ -55,7 +62,10 @@ jobs:
           PROD_URL: ${{ secrets.PROD_URL }}
           BASIC_USER: ${{ secrets.AUTH_LOGIN }}
           BASIC_PASS: ${{ secrets.AUTH_PASSWORD }}
+          LOCALES: ${{ inputs.locales }}
+          SCAN: ${{ inputs.scan == false && '0' || '1' }}
         run: |
+          [[ "$LOCALES" =~ ^[A-Za-z,-]*$ ]] || { echo "::error::locales must look like hi,ja,pt-BR"; exit 1; }
           if [ -z "$PROD_URL" ]; then
             # push/schedule runs skip rather than go red on a missing secret; a manual run fails.
             [ "$GITHUB_EVENT_NAME" = workflow_dispatch ] && { echo "::error::secret PROD_URL is not set"; exit 1; }
@@ -84,7 +94,10 @@ jobs:
           PROD_URL: ${{ secrets.PROD_URL }}
           BASIC_USER: ${{ secrets.AUTH_LOGIN }}
           BASIC_PASS: ${{ secrets.AUTH_PASSWORD }}
+          LOCALES: ${{ inputs.locales }}
+          SCAN: ${{ inputs.scan == false && '0' || '1' }}
         run: |
+          [[ "$LOCALES" =~ ^[A-Za-z,-]*$ ]] || { echo "::error::locales must look like hi,ja,pt-BR"; exit 1; }
           if [ -z "$PROD_URL" ]; then
             # push/schedule runs skip rather than go red on a missing secret; a manual run fails.
             [ "$GITHUB_EVENT_NAME" = workflow_dispatch ] && { echo "::error::secret PROD_URL is not set"; exit 1; }
