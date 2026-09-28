@@ -63,8 +63,14 @@ export function languageOk(text, locale) {
   return mine >= 5 && mine >= hits(WORDS.en);
 }
 
-/** Percentages only — safe for a public log. */
+/** Numbers only — safe for a public log. */
 export function describe(text, locale) {
+  const script = SCRIPT[locale] || ['ja', 'zh-CN', 'zh-TW'].includes(locale);
+  if (!script) {
+    const words = prose(text).toLowerCase().match(/\p{L}+/gu) || [];
+    const hits = (list) => words.filter((w) => list.includes(w)).length;
+    return `${locale} stop words ${hits(WORDS[locale] || WORDS.en)}, en ${hits(WORDS.en)}`;
+  }
   const s = scriptShare(text, locale);
   return `${locale} script ${Math.round(s.own * 100)}%${'kana' in s ? `, kana ${Math.round(s.kana * 100)}%` : ''}`;
 }

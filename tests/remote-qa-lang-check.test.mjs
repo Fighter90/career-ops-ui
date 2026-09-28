@@ -46,3 +46,12 @@ test('Russian is not Ukrainian; Latin-word locales still use stop words', () => 
   assert.equal(languageOk('Der Kandidat ist für die Rolle geeignet und das ist nicht schlecht. '.repeat(5), 'de'), true);
   assert.equal(prose('a `code` b ```x``` c https://x.y/z d').replace(/\s+/g, ' ').trim(), 'a b c d');
 });
+
+test('Arabic and Korean are measured in words; Latin locales report stop-word counts', () => {
+  const ar = 'هذا الدور مناسب للمرشح والخبرة تتوافق مع المتطلبات Kubernetes AWS. '.repeat(10);
+  const ko = '이 역할은 후보자에게 적합하며 경험이 요구 사항과 일치합니다 Kubernetes AWS. '.repeat(10);
+  assert.equal(languageOk(ar, 'ar'), true, describe(ar, 'ar'));
+  assert.equal(languageOk(ko, 'ko'), true, describe(ko, 'ko'));
+  assert.equal(languageOk('The role fits well. '.repeat(20), 'ko'), false);
+  assert.match(describe('Der Kandidat ist gut und die Rolle passt. The end.', 'de'), /^de stop words \d+, en \d+$/);
+});
