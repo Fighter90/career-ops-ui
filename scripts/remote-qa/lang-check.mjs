@@ -1,6 +1,6 @@
 /**
  * "Is this answer written in the locale's language?" — a heuristic for the
- * live remote QA. It never prints the text; `describe()` gives percentages.
+ * live remote QA. It never prints the text; `describe()` gives numbers only.
  *
  * Code, inline code and URLs are dropped first: they are English by nature
  * and a single stack of them outweighed a paragraph of Hindi when letters
