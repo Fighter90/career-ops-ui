@@ -136,24 +136,35 @@ test('Playwright smoke: dashboard renders + footer version present', { skip: SKI
 
 test('Playwright smoke: navigate dashboard → scan → pipeline → cv', { skip: SKIP }, async () => {
   const page = await context.newPage();
+  // `#content` exists from the first paint with a "Loading…" placeholder, so
+  // waiting for the selector alone read the CV view mid-render on a slow CI
+  // runner (main b38fd51). Wait until the view has replaced the placeholder.
+  const rendered = () => page.waitForFunction(() => {
+    const el = document.querySelector('#content');
+    return el && !(el.children.length === 1 && el.firstElementChild.classList.contains('loading'));
+  }, null, { timeout: 15000 });
   await page.goto(baseUrl + '/#/dashboard');
   await page.waitForSelector('#content');
+  await rendered();
 
   // Scan page (works even with no portals — the page renders empty state)
   await page.goto(baseUrl + '/#/scan');
   await page.waitForSelector('#content');
+  await rendered();
   const scanHtml = await page.locator('#content').innerHTML();
   assert.ok(scanHtml.length > 0, 'scan view empty');
 
   // Pipeline page
   await page.goto(baseUrl + '/#/pipeline');
   await page.waitForSelector('#content');
+  await rendered();
   const pipelineHtml = await page.locator('#content').innerHTML();
   assert.ok(pipelineHtml.length > 0, 'pipeline view empty');
 
   // CV page
   await page.goto(baseUrl + '/#/cv');
   await page.waitForSelector('#content');
+  await rendered();
   const cvHtml = await page.locator('#content').innerHTML();
   assert.match(cvHtml, /Real Person|cv|markdown|preview/i,
     'CV view did not render — got: ' + cvHtml.slice(0, 200));
