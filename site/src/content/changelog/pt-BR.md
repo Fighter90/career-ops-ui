@@ -8,6 +8,20 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.239.1] — 2026-09-29
+
+**Patch da regressão ao vivo da v1.239.0.**
+
+### Corrigido
+
+- **Avaliações em japonês e ucraniano voltavam quase todas em inglês.** A instrução de idioma ficava no topo do prompt, antes de dezenas de kilobytes de arquivos do projeto e da vaga em inglês. Agora o prompt repete o idioma na última linha.
+- **A verificação ao vivo marcava uma varredura como falha quando o servidor já executava outra** (a varredura horária, repetida logo após o deploy). O servidor recusar uma segunda varredura é o correto; a verificação agora espera e tenta de novo, por até 30 minutos.
+- Testes 3774 → 3775.
+
+### Notas
+
+- A varredura única do servidor **não** foi relaxada: uma segunda varredura continua recusada com `SCAN_BUSY`. Só a verificação mudou.
+
 ## [1.239.0] — 2026-09-29
 
 **Paridade com o career-ops @ b39931e: cinco novas fontes e três correções espelhadas.**

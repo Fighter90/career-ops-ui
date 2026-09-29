@@ -381,7 +381,19 @@ JD:
 """
 ${jd}
 """
-`;
+${buildLanguageReminder(lang)}`;
+}
+
+/**
+ * Closing restatement of the output language. The directive at the top of
+ * an evaluation is followed by the English mode files, CV and JD — tens of
+ * kilobytes — and the live regression (v1.239.0) caught ja and uk reports
+ * that drifted back into English. Repeating the language as the prompt's
+ * last line keeps it the most recent instruction. Empty for English.
+ */
+export function buildLanguageReminder(lang) {
+  if (!lang || lang === 'en' || !LOCALE_NAMES[lang]) return '';
+  return `\nWrite the whole report in ${LOCALE_NAMES[lang]} (locale: ${lang}) — every heading, sentence, bullet and table cell. The files and the JD above are in English; that does not change the output language. Only company and product names, code, and the SCORE_SUMMARY keys stay as they are.\n`;
 }
 
 export function buildDeepPrompt(company, role, lang, opts = {}) {

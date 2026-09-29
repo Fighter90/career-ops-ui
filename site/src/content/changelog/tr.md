@@ -2,6 +2,20 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.239.1] — 2026-09-29
+
+**v1.239.0 canlı regresyonundan çıkan yama.**
+
+### Düzeltildi
+
+- **Japonca ve Ukraynaca değerlendirmeler neredeyse tamamen İngilizce geliyordu.** Dil talimatı istemin başındaydı; ardından onlarca kilobaytlık İngilizce proje dosyası ve iş ilanı geliyordu. İstem artık dili son satırında yeniden belirtiyor.
+- **Sunucu zaten bir tarama yürütürken canlı denetim taramayı başarısız sayıyordu** (dağıtımdan hemen sonra yeniden denenen saatlik tarama). Sunucunun ikinci taramayı reddetmesi doğru davranıştır; denetim artık 30 dakikaya kadar bekleyip yeniden deniyor.
+- Testler 3774 → 3775.
+
+### Notlar
+
+- Sunucunun tek tarama sınırı gevşetil**medi**: ikinci tarama hâlâ `SCAN_BUSY` ile reddediliyor. Yalnızca denetim değişti.
+
 ## [1.239.0] — 2026-09-29
 
 **career-ops @ b39931e ile eşitlik: beş yeni kaynak ve taşınan üç düzeltme.**

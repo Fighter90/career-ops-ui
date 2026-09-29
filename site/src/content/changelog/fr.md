@@ -10,6 +10,20 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 
 ---
 
+## [1.239.1] — 2026-09-29
+
+**Correctif issu de la régression en direct de la v1.239.0.**
+
+### Corrigé
+
+- **Les évaluations en japonais et en ukrainien revenaient presque entièrement en anglais.** La consigne de langue se trouvait en tête du prompt, avant des dizaines de kilo-octets de fichiers du projet et d'offre en anglais. Le prompt répète désormais la langue en dernière ligne.
+- **La vérification en direct signalait un scan en échec quand le serveur en exécutait déjà un** (le scan horaire, relancé juste après le déploiement). Que le serveur refuse un second scan est correct ; la vérification attend maintenant et réessaie, jusqu'à 30 minutes.
+- Tests 3774 → 3775.
+
+### Notes
+
+- Le scan unique côté serveur n'est **pas** assoupli : un second scan reste refusé avec `SCAN_BUSY`. Seule la vérification a changé.
+
 ## [1.239.0] — 2026-09-29
 
 **Parité avec career-ops @ b39931e : cinq nouvelles sources et trois correctifs répliqués.**

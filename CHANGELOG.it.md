@@ -2,6 +2,20 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.239.1] — 2026-09-29
+
+**Patch dalla regressione dal vivo della v1.239.0.**
+
+### Corretto
+
+- **Le valutazioni in giapponese e ucraino arrivavano quasi tutte in inglese.** L'istruzione sulla lingua era in cima al prompt, prima di decine di kilobyte di file di progetto e annuncio in inglese. Ora il prompt ripete la lingua nell'ultima riga.
+- **Il controllo dal vivo segnalava una scansione fallita quando il server ne stava già eseguendo un'altra** (la scansione oraria, ripetuta subito dopo il deploy). Che il server rifiuti una seconda scansione è corretto; il controllo ora attende e riprova, fino a 30 minuti.
+- Test 3774 → 3775.
+
+### Note
+
+- La scansione singola del server **non** viene allentata: una seconda scansione è ancora rifiutata con `SCAN_BUSY`. È cambiato solo il controllo.
+
 ## [1.239.0] — 2026-09-29
 
 **Parità con career-ops @ b39931e: cinque nuove fonti e tre correzioni replicate.**

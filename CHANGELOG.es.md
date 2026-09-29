@@ -10,6 +10,20 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 
 ---
 
+## [1.239.1] — 2026-09-29
+
+**Parche tras la regresión en vivo de la v1.239.0.**
+
+### Corregido
+
+- **Las evaluaciones en japonés y ucraniano salían casi todas en inglés.** La instrucción de idioma estaba al principio del prompt, antes de decenas de kilobytes de archivos del proyecto y de la oferta en inglés. Ahora el prompt repite el idioma en su última línea.
+- **La comprobación en vivo marcaba como fallido un escaneo cuando el servidor ya estaba ejecutando otro** (el escaneo horario, reintentado justo después del despliegue). Que el servidor rechace un segundo escaneo es correcto; la comprobación ahora espera y reintenta, hasta 30 minutos.
+- Tests 3774 → 3775.
+
+### Notas
+
+- El escaneo único del servidor **no** se relaja: un segundo escaneo sigue rechazándose con `SCAN_BUSY`. Solo cambió la comprobación.
+
 ## [1.239.0] — 2026-09-29
 
 **Paridad con career-ops @ b39931e: cinco fuentes nuevas y tres correcciones replicadas.**

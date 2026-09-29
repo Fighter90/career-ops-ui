@@ -7,17 +7,17 @@
 
 _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-3774%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3775%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.239.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.239.0)
+[![release](https://img.shields.io/badge/release-v1.239.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.239.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versión — v1.239.0** — **Paridad con el proyecto padre: 5 nuevas bolsas de empleo** — AppliTrack, NEOGOV, Red Rover y SchoolSpring para empleo escolar y del sector público, y OCC Mundial, la mayor bolsa de empleo de México; ya se escanean los tableros embebidos de Greenhouse y los tableros `myworkdaysite` de Workday. **103 fuentes · 3774 tests · 116 de navegador.**
+> **🆕 Última versión — v1.239.1** — **Parche:** las evaluaciones con IA se mantienen en el idioma de la interfaz (los informes en japonés y ucraniano derivaban al inglés); la comprobación en vivo espera a que termine un escaneo ya en curso. **103 fuentes · 3775 tests · 116 de navegador.**
 >
 > **Anterior — v1.237.1** — **Parche de una revisión de QA externa.** La corrección de Jobstreet se confirmó desde fuera: `/id/job/<id>` devuelve un 404 limpio en los hosts AU/NZ/HK/MY y `/job/<id>` alcanza una ruta real protegida — los enlaces perdidos eran reales. Dos defectos en lo que había añadido la versión anterior: el **enlace al libro** tenía la etiqueta localizada pero no el destino, así que la etiqueta en ruso llevaba a la edición en inglés — un aplicador `data-i18n-href` ahora envía `ru` al libro en ruso; y **SEEK está migrando de hosts** (`www.seek.com.au` → `au.seek.com`), así que `au.seek.com` y `nz.seek.com` se añaden a la lista blanca antes de que la ruta de la API empiece a redirigir hacia nuestro transporte `redirect:'error'`. Recuentos sin cambios en **94** fuentes. **3210 pruebas · 116 de navegador.**
 

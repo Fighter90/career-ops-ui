@@ -215,6 +215,19 @@ test('PR-2: buildEvaluationPrompt embeds the locale directive', () => {
   assert.ok(!/Respond in/.test(en));
 });
 
+test('v1.239.1: buildEvaluationPrompt restates the output language after the JD', () => {
+  for (const [lang, name] of [['ja', 'Japanese'], ['uk', 'Ukrainian'], ['ru', 'Russian']]) {
+    const p = buildEvaluationPrompt('Senior Platform Engineer. Kubernetes, Go.', lang);
+    const jdEnd = p.lastIndexOf('"""');
+    const tail = p.slice(jdEnd);
+    assert.match(tail, new RegExp(`Write the whole report in ${name} \\(locale: ${lang}\\)`), lang);
+  }
+  // English gets no reminder, and the prompt still ends with the JD.
+  const en = buildEvaluationPrompt('A senior engineer JD…', 'en');
+  assert.ok(!/Write the whole report in/.test(en));
+  assert.ok(en.trimEnd().endsWith('"""'));
+});
+
 test('PR-2: buildDeepPrompt embeds the locale directive', () => {
   const p = buildDeepPrompt('Anthropic', 'Backend', 'ja');
   assert.match(p, /Respond in Japanese/);
