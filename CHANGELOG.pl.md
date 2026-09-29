@@ -9,6 +9,26 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.239.0] — 2026-09-29
+
+**Parytet z career-ops @ b39931e: pięć nowych źródeł i trzy przeniesione poprawki.**
+
+### Dodano
+
+- **Pięć nowych źródeł (98 → 103; adaptery anglojęzyczne 93 → 98):** AppliTrack (`applitrack.com/<okręg>`), NEOGOV (SchoolJobs / GovernmentJobs), Red Rover (`jobs.redroverk12.com/org/<id>`) i SchoolSpring (`<okręg>.schoolspring.com`) dla rekrutacji w szkołach i sektorze publicznym oraz OCC Mundial, największy serwis z ofertami pracy w Meksyku (jawne `provider: occ` z zapytaniami wyszukiwania). Każde jest przypięte do swojego hosta, działa tylko przez HTTPS i odrzuca przekierowania.
+- Testy 3500 → 3774.
+
+### Naprawiono
+
+- **Osadzone tablice Greenhouse** (`job-boards.greenhouse.io/embed/job_board?for=<tablica>`) wskazywały tablicę o nazwie „embed” i kończyły się błędem; teraz tablica pochodzi z `?for=`, i tylko na prawdziwym hoście Greenhouse.
+- **Tablice Workday na `myworkdaysite.com`** (`/recruiting/<tenant>/<site>`) nie były rozpoznawane; teraz są skanowane, a linki do ofert prowadzą na ten sam host.
+- **Nazwa raportu z nawiasami** (`042-acme-(berlin)-….md`) była w trackerze ucinana na pierwszym `)`; teraz cała nazwa zostaje zachowana.
+
+### Uwagi
+
+- Zmiany projektu nadrzędnego dotyczące tylko CLI **nie** są przenoszone — szablony PDF i CV, scaffolder, uruchamianie wsadowe, import career-profile, pokrycie słów kluczowych ATS, tłumaczenia trybów rozmowy, host CLI `pi`: web-ui ich nie uruchamia.
+- Otwarcie takiego raportu z trackera nadal wymaga, by trasa raportów akceptowała nawiasy w nazwie pliku; ta trasa **nie** zmienia się w tym wydaniu.
+
 ## [1.238.3] — 2026-09-27
 
 **Strony odpowiadają także podczas skanu, a logi zdalnego QA nie ujawniają już hosta produkcyjnego.**

@@ -2,6 +2,26 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.239.0] — 2026-09-29
+
+**career-ops @ b39931e ile eşitlik: beş yeni kaynak ve taşınan üç düzeltme.**
+
+### Eklendi
+
+- **Beş yeni kaynak (98 → 103; İngilizce bağdaştırıcılar 93 → 98):** okul ve kamu sektörü alımları için AppliTrack (`applitrack.com/<bölge>`), NEOGOV (SchoolJobs / GovernmentJobs), Red Rover (`jobs.redroverk12.com/org/<id>`) ve SchoolSpring (`<bölge>.schoolspring.com`), ayrıca Meksika'nın en büyük iş ilanı sitesi OCC Mundial (arama sorgularıyla açık `provider: occ`). Her biri kendi ana makinesine sabitlenmiştir, yalnızca HTTPS kullanır ve yönlendirmeleri reddeder.
+- Testler 3500 → 3774.
+
+### Düzeltildi
+
+- **Gömülü Greenhouse panoları** (`job-boards.greenhouse.io/embed/job_board?for=<pano>`) "embed" adlı bir panoya gidip başarısız oluyordu; pano artık `?for=` değerinden alınıyor, yalnızca gerçek bir Greenhouse ana makinesinde.
+- **`myworkdaysite.com` üzerindeki Workday panoları** (`/recruiting/<tenant>/<site>`) tanınmıyordu; artık taranıyor ve ilan bağlantıları aynı ana makineye gidiyor.
+- **Parantez içeren bir rapor dosya adı** (`042-acme-(berlin)-….md`) izleyicide ilk `)` karakterinde kesiliyordu; artık adın tamamı korunuyor.
+
+### Notlar
+
+- Üst projenin yalnızca CLI'ye ait değişiklikleri **taşınmadı** — PDF ve CV şablonları, scaffolder, toplu çalıştırıcı, career-profile içe aktarma, ATS anahtar kelime kapsamı, mülakat modu çevirileri, `pi` CLI ana makinesi: web-ui bunları çalıştırmaz.
+- Böyle bir raporu izleyiciden açmak için rapor rotasının dosya adındaki parantezleri kabul etmesi gerekiyor; bu rota bu sürümde **değiştirilmedi**.
+
 ## [1.238.3] — 2026-09-27
 
 **Tarama sırasında sayfalar yanıt vermeye devam ediyor ve uzak QA günlükleri artık üretim sunucusunun adresini sızdırmıyor.**

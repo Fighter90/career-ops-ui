@@ -146,6 +146,11 @@ import { eployAdapter } from './adapters/eploy.mjs';
 import { hiringroomAdapter } from './adapters/hiringroom.mjs';
 import { peoplesoftAdapter } from './adapters/peoplesoft.mjs';
 import { prevueapsAdapter } from './adapters/prevueaps.mjs';
+import { applitrackAdapter } from './adapters/applitrack.mjs';
+import { neogovAdapter } from './adapters/neogov.mjs';
+import { occAdapter } from './adapters/occ.mjs';
+import { redroverAdapter } from './adapters/redrover.mjs';
+import { schoolspringAdapter } from './adapters/schoolspring.mjs';
 
 export const ALL_ADAPTERS = [
   builtinAdapter,
@@ -279,6 +284,15 @@ export const ALL_ADAPTERS = [
   hiringroomAdapter,
   peoplesoftAdapter,
   prevueapsAdapter,
+  // v1.239.0 — parent parity: K-12 / public-sector boards applitrack
+  // (applitrack.com/<slug>), neogov (schooljobs.com / governmentjobs.com),
+  // redrover (jobs.redroverk12.com/org/<id>), schoolspring (<district>.schoolspring.com),
+  // plus occ (OCC Mundial — explicit `provider:` only). Distinct hosts, so appending is safe.
+  applitrackAdapter,
+  neogovAdapter,
+  occAdapter,
+  redroverAdapter,
+  schoolspringAdapter,
 ];
 
 /**

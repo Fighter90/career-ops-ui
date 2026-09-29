@@ -9,6 +9,26 @@
 ---
 
 
+## [1.239.0] — 2026-09-29
+
+**与 career-ops @ b39931e 同步:五个新来源和三项移植的修复。**
+
+### 新增
+
+- **五个新来源(98 → 103;英文适配器 93 → 98):** 面向学校和公共部门招聘的 AppliTrack(`applitrack.com/<学区>`)、NEOGOV(SchoolJobs / GovernmentJobs)、Red Rover(`jobs.redroverk12.com/org/<id>`)和 SchoolSpring(`<学区>.schoolspring.com`),以及墨西哥最大的招聘网站 OCC Mundial(带搜索关键词的显式 `provider: occ`)。每个来源都固定在自己的主机上,只用 HTTPS,并拒绝重定向。
+- 测试 3500 → 3774。
+
+### 修复
+
+- **Greenhouse 嵌入式职位板**(`job-boards.greenhouse.io/embed/job_board?for=<职位板>`)会指向名为 "embed" 的职位板并失败;现在职位板取自 `?for=`,且仅在真正的 Greenhouse 主机上生效。
+- **`myworkdaysite.com` 上的 Workday 职位板**(`/recruiting/<tenant>/<site>`)无法识别;现在可以扫描,职位链接也指向同一主机。
+- **带括号的报告文件名**(`042-acme-(berlin)-….md`)在跟踪器中会在第一个 `)` 处被截断;现在会保留完整名称。
+
+### 说明
+
+- 仅限 CLI 的上游改动**未**移植 — PDF 和 CV 模板、scaffolder、批处理运行器、career-profile 导入、ATS 关键词覆盖、面试模式翻译、CLI 主机 `pi`:web-ui 不运行它们。
+- 要从跟踪器打开这类报告,报告路由还需要接受文件名中的括号;本版本**未**修改该路由。
+
 ## [1.238.3] — 2026-09-27
 
 **扫描期间页面依然可以响应,远程 QA 日志也不再泄露生产主机。**

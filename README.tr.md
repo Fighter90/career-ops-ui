@@ -7,17 +7,17 @@
 
 _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır._
 
-[![tests](https://img.shields.io/badge/tests-3500%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3774%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.238.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.238.0)
+[![release](https://img.shields.io/badge/release-v1.239.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.239.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Son sürüm — v1.238.3** — **Daha hızlı sayfalar, daha güvenli günlükler** — rapor listesi her sayfa yüklemesinde yeniden okunup ayrıştırılıyordu (küçük bir sunucuda saniyeler, tarama sırasında 30 saniyelik zaman aşımları); artık önbelleğe alınıyor. **3500 test · 116 tarayıcı.**
+> **🆕 Son sürüm — v1.239.0** — **Üst proje ile eşitlik: 5 yeni iş ilanı sitesi** — okul ve kamu sektörü ilanları için AppliTrack, NEOGOV, Red Rover ve SchoolSpring, ayrıca Meksika'nın en büyük iş ilanı sitesi OCC Mundial; gömülü Greenhouse panoları ve Workday `myworkdaysite` panoları artık taranıyor. **103 kaynak · 3774 test · 116 tarayıcı.**
 >
 > **Önceki — v1.237.1** — **Harici bir QA geçişinden yama.** Jobstreet düzeltmesi dışarıdan doğrulandı: `/id/job/<id>`, AU/NZ/HK/MY ana bilgisayarlarında temiz bir 404 döndürüyor ve `/job/<id>` gerçek, korumalı bir rotaya ulaşıyor — kaybolan bağlantılar gerçekti. v1.237.0'ın eklediği şeyde iki kusur: **kitap bağlantısı** etiketini yerelleştirdi ama hedefini değil, bu yüzden Rusça etiket İngilizce baskıya götürüyordu — bir `data-i18n-href` uygulayıcısı artık `ru`'yu Rusça kitaba gönderiyor; ve **SEEK ana bilgisayarlarını taşıyor** (`www.seek.com.au` → `au.seek.com`), bu yüzden API yolu bizim `redirect:'error'` taşıma katmanımıza yönlendirmeye başlamadan önce `au.seek.com` ve `nz.seek.com` izin listesine alındı. Sayılar **94** kaynakta değişmedi. **3210 test · 116 tarayıcı.**
 
@@ -685,7 +685,7 @@ edebilmesidir.
 
 | Dosya | Ne olduğu | Ne zaman okunur |
 |---|---|---|
-| **[`CONTEXT.md`](CONTEXT.md)** | Alan sözlüğü: her kavram için kabul edilmiş tek bir ad, reddedilen varyantlar *kullanma* olarak işaretlenmiş. | **Önce bu.** Bu deponun gerçekten bedelini ödediği karışıklıkları çözer — `source` ile `adapter` (98'e karşı 93, ve ikisinin de neden doğru olduğu), `mirror` ile `relay`, `telegram` ile `telegram-channel`. |
+| **[`CONTEXT.md`](CONTEXT.md)** | Alan sözlüğü: her kavram için kabul edilmiş tek bir ad, reddedilen varyantlar *kullanma* olarak işaretlenmiş. | **Önce bu.** Bu deponun gerçekten bedelini ödediği karışıklıkları çözer — `source` ile `adapter` (103'e karşı 98, ve ikisinin de neden doğru olduğu), `mirror` ile `relay`, `telegram` ile `telegram-channel`. |
 | **[`PROGRESS.md`](PROGRESS.md)** | Çalışma durumu: ne tamamlandı, sıradaki adım, bilinen sorunlar ve **terk edilmiş yaklaşımlar**. | Her oturumun başında. Git neyin değiştiğini gösterir; bu dosya işin nerede durduğunu ve daha önce nelerin denenip reddedildiğini söyler. |
 | **[`docs/adr/`](docs/adr/)** | Numaralandırılmış karar kayıtları — bağlam, karar, sonuçlar ve bizi yeniden gözden geçirmeye ne iter. | Bir kaydın kapsadığı herhangi bir şeyi değiştirmeden önce. Karar veren kayıttır, mevcut sürüm değil. |
 | **[`CLAUDE.md`](CLAUDE.md)** | Yukarıdaki üç dosyaya işaret eden tek ekranlık bir dizin. | Otomatik olarak, ajan tarafından. Bilinçli biçimde bir bilgi tabanı *değildir* — uzun olanı göz gezdirilir ve sonra göz ardı edilir. |

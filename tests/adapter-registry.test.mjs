@@ -99,25 +99,26 @@ test('registry: Workday defaults site=External when careers_url omits site', () 
 
 test('registry: ALL_ADAPTERS has the expected entries', async () => {
   const { ALL_ADAPTERS } = await import('../server/lib/portals/registry.mjs');
-  assert.equal(ALL_ADAPTERS.length, 93);
+  assert.equal(ALL_ADAPTERS.length, 98);
   const ids = ALL_ADAPTERS.map((a) => a.id).sort();
   assert.deepEqual(ids, [
-    '4dayweek', 'a16z-speedrun-talent', 'agenticjobs', 'alibaba', 'amazon', 'arbeitnow',
-    'arbeitsagentur', 'ashby', 'avature', 'bamboohr', 'beesite', 'breezy',
-    'builtin', 'careerviet', 'collage', 'comeet', 'consider', 'cryptocurrencyjobs',
-    'csod', 'dassault', 'deutschebahn', 'eightfold', 'eploy', 'feishu-jobs',
-    'flowxtra', 'garena', 'gem', 'generalist-world', 'getonbrd', 'getro',
-    'glints', 'greenhouse', 'hackernews', 'hecklerkoch', 'higheredjobs', 'himalayas',
-    'hiringroom', 'ibm', 'icims', 'itviec', 'jibeapply', 'jobbankca',
-    'jobicy', 'jobspresso', 'jobstreet', 'jobvite', 'join', 'joinup',
-    'justjoin', 'landingjobs', 'larajobs', 'lever', 'manfred', 'meituan',
-    'mokahr', 'mycareersfuture', 'nodesk', 'nofluffjobs', 'oraclecloud', 'peoplesoft',
-    'personio', 'phenom', 'pinpoint', 'prevueaps', 'pythonorg', 'radancy',
-    'recruitee', 'remoteok', 'remotive', 'remotli', 'rheinmetall', 'rippling',
-    'rss', 'senjob', 'smartrecruiters', 'softgarden', 'solidjobs', 'successfactors',
-    'teamtailor', 'telegram', 'telegram-channel', 'tencent', 'thehub', 'themuse',
-    'tkms', 'torre', 'vdab', 'weworkremotely', 'workable', 'workday',
-    'workingnomads', 'wttj', 'yourator',
+    '4dayweek', 'a16z-speedrun-talent', 'agenticjobs', 'alibaba', 'amazon', 'applitrack',
+    'arbeitnow', 'arbeitsagentur', 'ashby', 'avature', 'bamboohr', 'beesite',
+    'breezy', 'builtin', 'careerviet', 'collage', 'comeet', 'consider',
+    'cryptocurrencyjobs', 'csod', 'dassault', 'deutschebahn', 'eightfold', 'eploy',
+    'feishu-jobs', 'flowxtra', 'garena', 'gem', 'generalist-world', 'getonbrd',
+    'getro', 'glints', 'greenhouse', 'hackernews', 'hecklerkoch', 'higheredjobs',
+    'himalayas', 'hiringroom', 'ibm', 'icims', 'itviec', 'jibeapply',
+    'jobbankca', 'jobicy', 'jobspresso', 'jobstreet', 'jobvite', 'join',
+    'joinup', 'justjoin', 'landingjobs', 'larajobs', 'lever', 'manfred',
+    'meituan', 'mokahr', 'mycareersfuture', 'neogov', 'nodesk', 'nofluffjobs',
+    'occ', 'oraclecloud', 'peoplesoft', 'personio', 'phenom', 'pinpoint',
+    'prevueaps', 'pythonorg', 'radancy', 'recruitee', 'redrover', 'remoteok',
+    'remotive', 'remotli', 'rheinmetall', 'rippling', 'rss', 'schoolspring',
+    'senjob', 'smartrecruiters', 'softgarden', 'solidjobs', 'successfactors', 'teamtailor',
+    'telegram', 'telegram-channel', 'tencent', 'thehub', 'themuse', 'tkms',
+    'torre', 'vdab', 'weworkremotely', 'workable', 'workday', 'workingnomads',
+    'wttj', 'yourator',
   ]);
 });
 

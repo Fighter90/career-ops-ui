@@ -8,6 +8,26 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.239.0] — 2026-09-29
+
+**Parent parity with career-ops @ b39931e: five new sources and three mirrored fixes.**
+
+### Added
+
+- **Five new sources (98 → 103; English adapters 93 → 98):** AppliTrack (`applitrack.com/<district>`), NEOGOV (SchoolJobs / GovernmentJobs), Red Rover (`jobs.redroverk12.com/org/<id>`) and SchoolSpring (`<district>.schoolspring.com`) for school and public-sector hiring, plus OCC Mundial, Mexico's largest job board (explicit `provider: occ` with search queries). Each is pinned to its host, HTTPS-only and refuses redirects.
+- Tests 3500 → 3774.
+
+### Fixed
+
+- **Greenhouse embed boards** (`job-boards.greenhouse.io/embed/job_board?for=<board>`) resolved to a board named "embed" and failed; the board now comes from `?for=`, and only on a real Greenhouse host.
+- **Workday boards on `myworkdaysite.com`** (`/recruiting/<tenant>/<site>`) were not recognised; they now scan, with posting links on the same host.
+- **A report file name with parentheses** (`042-acme-(berlin)-….md`) was cut at the first `)` in the tracker; the whole name is kept now.
+
+### Notes
+
+- CLI-only parent changes are **not** ported — PDF and CV templates, the scaffolder, the batch runner, the career-profile import, ATS keyword coverage, interview-mode translations, the `pi` CLI host: web-ui does not run them.
+- Opening such a report from the tracker still needs the report route to accept parentheses in a file name; that route is **not** changed in this release.
+
 ## [1.238.3] — 2026-09-27
 
 **Pages stay responsive while a scan runs, and remote QA logs no longer leak the production host.**

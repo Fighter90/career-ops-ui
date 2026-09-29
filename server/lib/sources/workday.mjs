@@ -4,6 +4,8 @@
  * Workday hosts each customer at `<tenant>.wd<N>.myworkdayjobs.com`
  * (N is usually 1, 5, or 12). The unauthenticated jobs feed lives at
  *   POST https://<tenant>.wd<N>.myworkdayjobs.com/wday/cxs/<tenant>/<site>/jobs
+ * or, for a myworkdaysite.com tenant (tenant in the path),
+ *   POST https://<instance>.myworkdaysite.com/wday/cxs/<tenant>/<site>/jobs
  * with body `{ appliedFacets: {}, limit, offset, searchText: "" }`.
  *
  * Marked beta because:
@@ -126,21 +128,53 @@ const WORKDAY_MAINTENANCE_MARKER = 'community.workday.com/maintenance-page';
 const WORKDAY_OUTAGE_REDIRECT_RE = /^https:\/\/[a-z0-9.-]+\.myworkday\.com\/wday\/drs\/outage(?:[/?]|$)/i;
 const CONFIRMED_DEAD_API_STATUSES = new Set([422, 401, 403]);
 
+// A myworkdaysite.com host (`<instance>.myworkdaysite.com`) — same Workday
+// product as myworkdayjobs, but the tenant lives in the PATH and the public
+// board is /recruiting/<tenant>/<site>. Exact suffix on the parsed hostname.
+function isMyWorkdaySiteHost(hostname) {
+  return /^[\w-]+\.myworkdaysite\.com$/.test(String(hostname).toLowerCase());
+}
+
 /**
  * The public careers page for a CXS endpoint:
  *   https://<t>.wdN.myworkdayjobs.com/wday/cxs/<t>/<site>/jobs → https://<t>.wdN.myworkdayjobs.com/<site>
+ *   https://<i>.myworkdaysite.com/wday/cxs/<t>/<site>/jobs     → https://<i>.myworkdaysite.com/recruiting/<t>/<site>
  * Null when the URL is not a Workday CXS endpoint. Exported for tests.
  * @param {string} apiUrl
  */
 export function careersPageFromApi(apiUrl) {
   try {
     const u = new URL(apiUrl);
-    if (!u.hostname.toLowerCase().endsWith('.myworkdayjobs.com')) return null;
+    const host = u.hostname.toLowerCase();
+    if (isMyWorkdaySiteHost(host)) {
+      if (u.protocol !== 'https:') return null;
+      const m = u.pathname.match(/^\/wday\/cxs\/([^/]+)\/([^/]+)\//);
+      return m ? `${u.origin}/recruiting/${m[1]}/${m[2]}` : null;
+    }
+    if (!host.endsWith('.myworkdayjobs.com')) return null;
     const site = (u.pathname.match(/^\/wday\/cxs\/[^/]+\/([^/]+)\//) || [])[1];
     return site ? `${u.origin}/${site}` : null;
   } catch {
     return null;
   }
+}
+
+/**
+ * Base that a posting's `externalPath` (/job/<city>/<title>_<reqId>) is
+ * appended to. myworkdayjobs serves postings at the origin; myworkdaysite
+ * only under /recruiting/<tenant>/<site> (parent 3e028d9 jobBase).
+ * Exported for tests.
+ * @param {string} apiUrl
+ */
+export function jobBaseFromApi(apiUrl) {
+  try {
+    const u = new URL(apiUrl);
+    if (isMyWorkdaySiteHost(u.hostname)) {
+      const board = careersPageFromApi(apiUrl);
+      if (board) return board;
+    }
+  } catch { /* fall through to the legacy strip */ }
+  return String(apiUrl).replace(/\/wday\/cxs\/.+$/, '');
 }
 
 /**
@@ -197,7 +231,9 @@ export async function fetchWorkday(apiUrl, opts = {}) {
     const u = new URL(apiUrl);
     const site = (u.pathname.match(/^\/wday\/cxs\/[^/]+\/([^/]+)\//) || [])[1];
     headers.Origin = u.origin;
-    headers.Referer = site ? `${u.origin}/${site}/` : `${u.origin}/`;
+    // myworkdaysite's board lives at /recruiting/<tenant>/<site>, not /<site>.
+    const board = isMyWorkdaySiteHost(u.hostname) ? careersPageFromApi(apiUrl) : null;
+    headers.Referer = board ? `${board}/` : (site ? `${u.origin}/${site}/` : `${u.origin}/`);
   } catch {
     /* malformed apiUrl → fetch below will surface the real error */
   }
@@ -256,7 +292,7 @@ export async function fetchWorkday(apiUrl, opts = {}) {
     return [];
   }
   // The Workday CXS response wraps job rows under `jobPostings`.
-  const base = apiUrl.replace(/\/wday\/cxs\/.+$/, '');
+  const base = jobBaseFromApi(apiUrl);
   const jobs = (data.jobPostings || []).map((j) => normalize(j, base));
   if (resolveMultiLocation) {
     await resolvePlaceholders(jobs, data.jobPostings || [], apiUrl, { fetchImpl, signal, headers });

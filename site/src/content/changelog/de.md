@@ -2,6 +2,26 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.239.0] — 2026-09-29
+
+**Parität mit career-ops @ b39931e: fünf neue Quellen und drei übernommene Fixes.**
+
+### Hinzugefügt
+
+- **Fünf neue Quellen (98 → 103; englische Adapter 93 → 98):** AppliTrack (`applitrack.com/<Bezirk>`), NEOGOV (SchoolJobs / GovernmentJobs), Red Rover (`jobs.redroverk12.com/org/<id>`) und SchoolSpring (`<Bezirk>.schoolspring.com`) für Stellen an Schulen und im öffentlichen Dienst, dazu OCC Mundial, Mexikos größte Jobbörse (explizites `provider: occ` mit Suchbegriffen). Jede ist an ihren Host gebunden, nur HTTPS und lehnt Weiterleitungen ab.
+- Tests 3500 → 3774.
+
+### Behoben
+
+- **Eingebettete Greenhouse-Boards** (`job-boards.greenhouse.io/embed/job_board?for=<Board>`) zeigten auf ein Board namens „embed“ und schlugen fehl; das Board kommt jetzt aus `?for=`, und nur auf einem echten Greenhouse-Host.
+- **Workday-Boards auf `myworkdaysite.com`** (`/recruiting/<Tenant>/<Site>`) wurden nicht erkannt; sie werden jetzt gescannt, mit Stellenlinks auf demselben Host.
+- **Ein Berichtsname mit Klammern** (`042-acme-(berlin)-….md`) wurde im Tracker an der ersten `)` abgeschnitten; der ganze Name bleibt jetzt erhalten.
+
+### Anmerkungen
+
+- Änderungen des Elternprojekts, die nur die CLI betreffen, werden **nicht** übernommen — PDF- und CV-Vorlagen, der Scaffolder, der Batch-Runner, der career-profile-Import, die ATS-Schlüsselwortabdeckung, die Übersetzungen der Interview-Modi, der CLI-Host `pi`: web-ui führt sie nicht aus.
+- Einen solchen Bericht aus dem Tracker zu öffnen, erfordert noch, dass die Berichtsroute Klammern im Dateinamen akzeptiert; diese Route wird in diesem Release **nicht** geändert.
+
 ## [1.238.3] — 2026-09-27
 
 **Seiten bleiben während eines Scans reaktionsfähig, und Remote-QA-Logs verraten den Produktionshost nicht mehr.**

@@ -8,6 +8,26 @@
 
 ---
 
+## [1.239.0] — 2026-09-29
+
+**career-ops @ b39931e와 동기화: 새 소스 5개와 이식한 수정 3개.**
+
+### 추가
+
+- **새 소스 5개(98 → 103, 영문 어댑터 93 → 98):** 학교·공공 부문 채용을 위한 AppliTrack(`applitrack.com/<학군>`), NEOGOV(SchoolJobs / GovernmentJobs), Red Rover(`jobs.redroverk12.com/org/<id>`), SchoolSpring(`<학군>.schoolspring.com`), 그리고 멕시코 최대 채용 사이트 OCC Mundial(검색어가 있는 명시적 `provider: occ`). 모두 호스트가 고정되고 HTTPS만 쓰며 리디렉션을 거부합니다.
+- 테스트 3500 → 3774.
+
+### 수정
+
+- **Greenhouse 임베드 보드**(`job-boards.greenhouse.io/embed/job_board?for=<보드>`)가 "embed"라는 이름의 보드를 가리켜 실패했습니다. 이제 보드를 `?for=`에서 가져오며, 실제 Greenhouse 호스트에서만 그렇게 합니다.
+- **`myworkdaysite.com`의 Workday 보드**(`/recruiting/<tenant>/<site>`)가 인식되지 않았습니다. 이제 스캔되며 공고 링크도 같은 호스트를 가리킵니다.
+- **괄호가 들어간 보고서 파일 이름**(`042-acme-(berlin)-….md`)이 트래커에서 첫 `)`에서 잘렸습니다. 이제 이름 전체가 유지됩니다.
+
+### 참고
+
+- CLI 전용인 상위 프로젝트 변경은 이식하지 **않았습니다** — PDF·CV 템플릿, scaffolder, 배치 실행기, career-profile 가져오기, ATS 키워드 커버리지, 면접 모드 번역, CLI 호스트 `pi`. web-ui는 이것들을 실행하지 않습니다.
+- 트래커에서 그런 보고서를 열려면 보고서 경로가 파일 이름의 괄호를 받아들여야 합니다. 이 릴리스에서는 그 경로를 바꾸지 **않았습니다**.
+
 ## [1.238.3] — 2026-09-27
 
 **스캔 중에도 페이지가 응답하고, 원격 QA 로그가 더 이상 프로덕션 호스트를 노출하지 않습니다.**

@@ -7,17 +7,17 @@
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
-[![tests](https://img.shields.io/badge/tests-3500%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-3774%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#الاختبارات)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.238.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.238.0)
+[![release](https://img.shields.io/badge/release-v1.239.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.239.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 أحدث إصدار — v1.238.3** — **صفحات أسرع وسجلات أكثر أمانًا** — كانت قائمة التقارير تُقرأ وتُحلَّل من جديد عند كل تحميل للصفحة (ثوانٍ على خادم صغير، ومهلات 30 ثانية أثناء الفحص)؛ أصبحت الآن مخزنة مؤقتًا. **3500 اختبارًا · 116 للمتصفح.**
+> **🆕 أحدث إصدار — v1.239.0** — **تكافؤ مع المشروع الأب: 5 مواقع وظائف جديدة** — AppliTrack وNEOGOV وRed Rover وSchoolSpring لوظائف المدارس والقطاع العام، إضافةً إلى OCC Mundial أكبر موقع وظائف في المكسيك؛ وصارت لوحات Greenhouse المضمَّنة ولوحات Workday على `myworkdaysite` تُفحص الآن. **103 مصادر · 3774 اختبارًا · 116 للمتصفح.**
 >
 > **السابق — v1.237.1** — **تصحيحٌ بعد جولة فحص جودة خارجيّة.** تأكَّد إصلاح Jobstreet من الخارج: يُعيد `/id/job/<id>` رمز 404 نظيفًا على مضيفات AU/NZ/HK/MY، ويصل `/job/<id>` إلى مسارٍ حقيقيٍّ محميّ — وكانت الروابط المفقودة حقيقيّةً. وعلّتان فيما أضافه v1.237.0: كانت مِسمَّاة **رابط الكتاب** مُترجَمةً دون وِجهته، فقادت المِسمَّاة الروسيّة إلى الطبعة الإنجليزيّة — ويُوجِّه مُطبِّق `data-i18n-href` الآن `ru` إلى الكتاب الروسيّ؛ و**تُهاجر SEEK مضيفاتها** (`www.seek.com.au` → `au.seek.com`)، فأُدرِج `au.seek.com` و`nz.seek.com` في قائمة السماح قبل أن يبدأ مسار الواجهة بإعادة التوجيه إلى نقلنا `redirect:'error'`. وتبقى الأعداد كما هي عند **94** مصدرًا. **3210 اختبارًا · 116 في المتصفّح.**
 
@@ -213,7 +213,7 @@ npm run test:coverage       # مثل npm test + تغطية V8
 
 | الملف | ما هو | متى تقرؤه |
 |---|---|---|
-| **[`CONTEXT.md`](CONTEXT.md)** | قاموس النطاق: اسمٌ واحد مقبول لكل مفهوم، مع تعليم البدائل المرفوضة بـ*لا تُستخدم*. | **أولاً.** فهو يحسم الالتباسات التي يدفع ثمنها هذا المستودع فعلياً — `source` مقابل `adapter` (98 مقابل 93، ولماذا كلاهما صحيح)، و`mirror` مقابل `relay`، و`telegram` مقابل `telegram-channel`. |
+| **[`CONTEXT.md`](CONTEXT.md)** | قاموس النطاق: اسمٌ واحد مقبول لكل مفهوم، مع تعليم البدائل المرفوضة بـ*لا تُستخدم*. | **أولاً.** فهو يحسم الالتباسات التي يدفع ثمنها هذا المستودع فعلياً — `source` مقابل `adapter` (103 مقابل 98، ولماذا كلاهما صحيح)، و`mirror` مقابل `relay`، و`telegram` مقابل `telegram-channel`. |
 | **[`PROGRESS.md`](PROGRESS.md)** | حالة العمل: ما أُنجز، والخطوة التالية، والمشكلات المعروفة، و**المقاربات المهجورة**. | في بداية أي جلسة. يُظهر Git ما تغيّر؛ أما هذا الملف فيقول أين وصل العمل وما جُرِّب بالفعل ورُفض. |
 | **[`docs/adr/`](docs/adr/)** | سجلّات قرارات مرقّمة — السياق، والقرار، والعواقب، وما الذي قد يدفعنا لإعادة النظر. | قبل تغيير أي شيء يغطّيه سجلّ. السجلّ هو من يقرّر، لا الإصدار الحالي. |
 | **[`CLAUDE.md`](CLAUDE.md)** | فهرس بشاشة واحدة يشير إلى الملفات الثلاثة أعلاه. | تلقائياً، بواسطة الوكيل. وهو عمداً *ليس* قاعدة معرفة — فالملف الطويل يُتصفَّح سريعاً ثم يُهمَل. |

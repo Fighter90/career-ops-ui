@@ -153,8 +153,11 @@ export function parseApplications(text) {
 
     // Extract report path
     if (obj.report) {
-      const m = obj.report.match(/\(([^)]+)\)/);
-      obj.reportPath = m ? m[1] : null;
+      // One nested level of parentheses is allowed inside the link target, so
+      // `[042](reports/042-acme-(berlin)-2024-01-15.md)` keeps its full path
+      // instead of truncating at the first `)` (parent 5f7819f, bug 4).
+      const m = obj.report.match(/\(([^()]*(?:\([^()]*\)[^()]*)*)\)/);
+      obj.reportPath = m && m[1] ? m[1] : null;
     }
 
     obj.pdfReady = obj.pdf?.includes('✅') || false;
