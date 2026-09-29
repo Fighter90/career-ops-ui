@@ -108,16 +108,30 @@ if (process.env.SCAN !== '0') {
     await btn.waitFor({ timeout: 20000 });
     const before = await page.locator('#scan-results table tbody tr').count().catch(() => 0);
     const t0 = Date.now();
-    await btn.click();
-    await page.waitForFunction(() => document.querySelector('.scan-run-btn')?.getAttribute('aria-busy') === 'true', null, { timeout: 30000 });
-    await page.waitForFunction(() => document.querySelector('.scan-run-btn')?.getAttribute('aria-busy') === 'false', null, { timeout: 40 * 60_000, polling: 2000 });
-    await page.waitForTimeout(3000);
-    const text = await page.locator('#scan-console').innerText();
+    // The server runs one scan at a time and answers SCAN_BUSY while another
+    // (the hourly timer, or its retry right after a deploy) is in flight.
+    // That refusal is correct behaviour, not a failed scan: wait and retry.
+    let text = '';
+    let busyWaits = 0;
+    for (;;) {
+      await btn.click();
+      await page.waitForFunction(() => document.querySelector('.scan-run-btn')?.getAttribute('aria-busy') === 'true', null, { timeout: 30000 }).catch(() => {});
+      await page.waitForFunction(() => document.querySelector('.scan-run-btn')?.getAttribute('aria-busy') === 'false', null, { timeout: 40 * 60_000, polling: 2000 });
+      await page.waitForTimeout(3000);
+      text = await page.locator('#scan-console').innerText();
+      if (!/a scan is already running/.test(text) || busyWaits >= 30) break;
+      busyWaits += 1;
+      await page.waitForTimeout(60_000);
+      await page.goto('about:blank');
+      await page.goto(`${BASE}/#/scan`, { waitUntil: 'domcontentloaded' });
+      await btn.waitFor({ timeout: 20000 });
+    }
+    if (busyWaits) console.error(`scan: server busy with another scan, waited ${busyWaits} min`);
     const phases = [...text.matchAll(/✓ (ATS|Regional) done · NEW=(\d+)/g)].map((m) => `${m[1]} NEW=${m[2]}`);
     const failed = [...text.matchAll(/✗ (\w+) error/g)].map((m) => m[1]);
     const errLines = await page.locator('#scan-console span.err').count();
     const after = await page.locator('#scan-results table tbody tr').count().catch(() => 0);
-    scan = { secs: Math.round((Date.now() - t0) / 1000), phases, failed, errLines, before, after };
+    scan = { secs: Math.round((Date.now() - t0) / 1000), phases, failed, errLines, before, after, busyWaits };
     if (!phases.some((p) => p.startsWith('ATS'))) add('en', 'scan', 'ATS phase did not report done');
     if (!phases.some((p) => p.startsWith('Regional'))) add('en', 'scan', 'Regional phase did not report done');
     for (const f of failed) add('en', 'scan', `${f} phase ended in error`);
@@ -206,7 +220,7 @@ const md = (v) => String(v).replace(/\\/g, '\\\\').replace(/\|/g, '\\|').replace
 const cell = (x) => (x ? `${x.status} · ${x.mode || '-'} · ${Math.round(x.ms / 1000)}s · ${x.len} ch · ${x.lang ? 'lang ✓' : 'lang ✗'}${'shape' in x ? (x.shape ? ' · A–G ✓' : ' · A–G ✗') : ''}` : '—');
 const lines = [
   '## Live LLM regression', '',
-  scan ? `**Scan (#/scan, all sources):** ${scan.secs}s · ${scan.phases.join(' · ') || 'no phase finished'}${scan.failed.length ? ' · failed: ' + scan.failed.join(',') : ''} · stderr lines ${scan.errLines} · result rows ${scan.before} → ${scan.after}` : '_Scan skipped (SCAN=0)._', '',
+  scan ? `**Scan (#/scan, all sources):** ${scan.secs}s${scan.busyWaits ? ` (waited ${scan.busyWaits} min for a scan already running)` : ''} · ${scan.phases.join(' · ') || 'no phase finished'}${scan.failed.length ? ' · failed: ' + scan.failed.join(',') : ''} · stderr lines ${scan.errLines} · result rows ${scan.before} → ${scan.after}` : '_Scan skipped (SCAN=0)._', '',
   `${rows.length} locales × (docs assistant + evaluate, driven through the UI).`, '',
   '| locale | docs assistant | evaluate (save=false) |', '|---|---|---|',
   ...rows.map((r) => `| ${md(r.locale)} | ${md(cell(r.docs))} | ${md(cell(r.eval))} |`), '',

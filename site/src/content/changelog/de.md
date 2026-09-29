@@ -2,6 +2,20 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.239.1] — 2026-09-29
+
+**Patch aus der Live-Regression von v1.239.0.**
+
+### Behoben
+
+- **Japanische und ukrainische Bewertungen kamen fast vollständig auf Englisch.** Die Sprachanweisung stand am Anfang des Prompts, vor Dutzenden Kilobyte englischer Projektdateien und Stellenbeschreibung. Der Prompt wiederholt die Sprache jetzt in seiner letzten Zeile.
+- **Der Live-Check meldete einen fehlgeschlagenen Scan, wenn der Server bereits einen ausführte** (den stündlichen Scan, direkt nach dem Deploy wiederholt). Dass der Server einen zweiten Scan ablehnt, ist korrekt; der Check wartet jetzt und versucht es erneut, bis zu 30 Minuten.
+- Tests 3774 → 3775.
+
+### Anmerkungen
+
+- Die Einzelscan-Sperre des Servers wird **nicht** gelockert: Ein zweiter Scan wird weiterhin mit `SCAN_BUSY` abgelehnt. Geändert hat sich nur der Check.
+
 ## [1.239.0] — 2026-09-29
 
 **Parität mit career-ops @ b39931e: fünf neue Quellen und drei übernommene Fixes.**

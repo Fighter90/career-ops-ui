@@ -9,6 +9,20 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.239.1] — 2026-09-29
+
+**Poprawka po regresji na żywo wersji v1.239.0.**
+
+### Naprawiono
+
+- **Oceny po japońsku i ukraińsku wracały prawie w całości po angielsku.** Polecenie języka stało na początku promptu, przed dziesiątkami kilobajtów angielskich plików projektu i ogłoszenia. Teraz prompt powtarza język w ostatnim wierszu.
+- **Test na żywo zgłaszał nieudane skanowanie, gdy serwer już wykonywał inne** (skanowanie cogodzinne, ponowione tuż po wdrożeniu). Odmowa drugiego skanowania przez serwer jest poprawna; test teraz czeka i ponawia próbę, do 30 minut.
+- Testy 3774 → 3775.
+
+### Uwagi
+
+- Ograniczenie serwera do jednego skanowania naraz **nie** zostało złagodzone: drugie skanowanie nadal jest odrzucane z `SCAN_BUSY`. Zmienił się tylko test.
+
 ## [1.239.0] — 2026-09-29
 
 **Parytet z career-ops @ b39931e: pięć nowych źródeł i trzy przeniesione poprawki.**

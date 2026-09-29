@@ -8,6 +8,20 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.239.1] — 2026-09-29
+
+**Patch from the v1.239.0 live regression.**
+
+### Fixed
+
+- **Japanese and Ukrainian evaluations came back mostly in English.** The language instruction sat at the top of the prompt, before tens of kilobytes of English project files and the job description. The prompt now restates the language as its last line.
+- **The live check reported a failed scan when the server was already running one** (the hourly scan, retried right after the deploy). The server refusing a second scan is correct; the check now waits and retries, up to 30 minutes.
+- Tests 3774 → 3775.
+
+### Notes
+
+- The server's single-flight scan is **not** relaxed: a second scan is still refused with `SCAN_BUSY`. Only the check changed.
+
 ## [1.239.0] — 2026-09-29
 
 **Parent parity with career-ops @ b39931e: five new sources and three mirrored fixes.**

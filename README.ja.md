@@ -7,17 +7,17 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-3774%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3775%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.239.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.239.0)
+[![release](https://img.shields.io/badge/release-v1.239.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.239.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.239.0** — **親プロジェクトとの同期: 求人サイトを 5 つ追加** — 学校・公共部門向けの AppliTrack、NEOGOV、Red Rover、SchoolSpring と、メキシコ最大の求人サイト OCC Mundial。Greenhouse の埋め込みボードと Workday の `myworkdaysite` ボードもスキャンできるようになりました。**ソース 103 件 · テスト 3774 件 · ブラウザ 116 件。**
+> **🆕 最新リリース — v1.239.1** — **パッチ:** AI 評価がインターフェースの言語のまま出力されるようになりました (日本語とウクライナ語のレポートが英語に戻っていました)。ライブチェックは実行中のスキャンの終了を待ちます。**ソース 103 件 · テスト 3775 件 · ブラウザ 116 件。**
 >
 > **前バージョン — v1.237.1** — **外部 QA パスから生まれたパッチ。** Jobstreet の修正が外部から確認されました:AU/NZ/HK/MY の各ホストでは `/id/job/<id>` がきれいな 404 を返し、`/job/<id>` は実際に保護されたルートに到達します——失われていたリンクは実在するものでした。前バージョンが追加した部分に 2 件の欠陥:**書籍リンク**はラベルはローカライズされていましたがリンク先はそうではなく、ロシア語ラベルが英語版へ導いていました——いまは `data-i18n-href` アプライヤーが `ru` をロシア語版へ送ります。そして **SEEK がホストを移行中**(`www.seek.com.au` → `au.seek.com`)のため、API パスが `redirect:'error'` のトランスポートへリダイレクトを始める前に `au.seek.com` と `nz.seek.com` を許可リストに追加しました。件数は **94** ソースのまま変わりません。**3210 件 · ブラウザー 116 件。**
 

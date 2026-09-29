@@ -8,6 +8,20 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.239.1] — 2026-09-29
+
+**Patch fra live-regressionen af v1.239.0.**
+
+### Rettet
+
+- **Japanske og ukrainske vurderinger kom næsten helt på engelsk.** Sproginstruksen stod øverst i prompten, før snesevis af kilobyte engelske projektfiler og jobopslag. Prompten gentager nu sproget i sin sidste linje.
+- **Live-tjekket meldte en fejlet scanning, når serveren allerede kørte en** (den timelige scanning, gentaget lige efter deployet). At serveren afviser en anden scanning er korrekt; tjekket venter nu og prøver igen, i op til 30 minutter.
+- Tests 3774 → 3775.
+
+### Noter
+
+- Serverens grænse på én scanning ad gangen er **ikke** lempet: en anden scanning afvises stadig med `SCAN_BUSY`. Kun tjekket er ændret.
+
 ## [1.239.0] — 2026-09-29
 
 **Paritet med career-ops @ b39931e: fem nye kilder og tre overførte rettelser.**
