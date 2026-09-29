@@ -8,6 +8,20 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.239.4] — 2026-09-29
+
+**Patch from the v1.239.3 live regression.**
+
+### Fixed
+
+- **Korean and Traditional Chinese evaluations reported a missing score summary.** Those reports run to 10–11 thousand characters, and the summary comes last, so it fell past the 8192 output-token limit. Evaluations (and the auto-pipeline) now allow 16384 tokens, and when a provider still cuts an answer off, the first warning says so instead of listing missing blocks.
+- **The live check read a short German answer as not German** (3 German stop words, no English ones). A list-shaped answer can hold few stop words; with no English ones at all, three are now enough.
+- Tests 3778 → 3782.
+
+### Notes
+
+- The deep-research and mode routes keep their 8192-token limit: their answers are **not** long enough to reach it in the live runs.
+
 ## [1.239.3] — 2026-09-29
 
 **Patch from the v1.239.2 live regression.**

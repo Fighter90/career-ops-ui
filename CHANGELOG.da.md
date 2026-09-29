@@ -8,6 +8,20 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.239.4] — 2026-09-29
+
+**Patch fra live-regressionen af v1.239.3.**
+
+### Rettet
+
+- **Koreanske og traditionelt kinesiske vurderinger meldte et manglende scoreresumé.** De rapporter fylder 10–11 tusind tegn, og resuméet kommer sidst, så det faldt uden for grænsen på 8192 output-tokens. Vurderinger (og auto-pipelinen) tillader nu 16384 tokens, og hvis en udbyder alligevel afskærer et svar, siger den første advarsel det i stedet for at opremse manglende blokke.
+- **Live-tjekket læste et kort tysk svar som ikke-tysk** (3 tyske stopord, ingen engelske). Et listeformet svar kan have få; uden nogen engelske er tre nu nok.
+- Tests 3778 → 3782.
+
+### Noter
+
+- Ruterne til dybdegående research og tilstande beholder grænsen på 8192 tokens: deres svar når den **ikke** i live-kørslerne.
+
 ## [1.239.3] — 2026-09-29
 
 **Patch fra live-regressionen af v1.239.2.**

@@ -10,6 +10,20 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 
 ---
 
+## [1.239.4] — 2026-09-29
+
+**Correctif issu de la régression en direct de la v1.239.3.**
+
+### Corrigé
+
+- **Les évaluations en coréen et en chinois traditionnel signalaient un résumé de score manquant.** Ces rapports font 10 à 11 000 caractères et le résumé arrive en dernier : il tombait au-delà de la limite de 8192 jetons de sortie. Les évaluations (et le pipeline automatique) autorisent désormais 16384 jetons, et si un fournisseur coupe encore une réponse, le premier avertissement le dit au lieu de lister des blocs manquants.
+- **La vérification en direct prenait une courte réponse en allemand pour non allemande** (3 mots vides allemands, aucun anglais). Une réponse en liste peut en contenir peu ; sans aucun mot anglais, trois suffisent désormais.
+- Tests 3778 → 3782.
+
+### Notes
+
+- Les routes de recherche approfondie et de modes gardent leur limite de 8192 jetons : leurs réponses ne l'atteignent **pas** dans les exécutions en direct.
+
 ## [1.239.3] — 2026-09-29
 
 **Correctif issu de la régression en direct de la v1.239.2.**

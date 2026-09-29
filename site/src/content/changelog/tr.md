@@ -2,6 +2,20 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.239.4] — 2026-09-29
+
+**v1.239.3 canlı regresyonundan çıkan yama.**
+
+### Düzeltildi
+
+- **Korece ve Geleneksel Çince değerlendirmeler puan özetinin eksik olduğunu bildiriyordu.** Bu raporlar 10–11 bin karaktere ulaşıyor ve özet en sonda geldiği için 8192 çıktı token sınırının ötesine düşüyordu. Değerlendirmeler (ve otomatik hat) artık 16384 tokene izin veriyor; bir sağlayıcı yanıtı yine de keserse ilk uyarı eksik blokları sıralamak yerine bunu söylüyor.
+- **Canlı denetim kısa bir Almanca yanıtı Almanca değil sayıyordu** (3 Almanca durak sözcük, hiç İngilizce yok). Liste biçimli bir yanıtta az olabilir; hiç İngilizce yoksa artık üçü yeterli.
+- Testler 3778 → 3782.
+
+### Notlar
+
+- Derin araştırma ve mod rotaları 8192 token sınırını koruyor: canlı çalıştırmalarda yanıtları bu sınıra **ulaşmıyor**.
+
 ## [1.239.3] — 2026-09-29
 
 **v1.239.2 canlı regresyonundan çıkan yama.**

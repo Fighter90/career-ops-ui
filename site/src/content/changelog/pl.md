@@ -9,6 +9,20 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.239.4] — 2026-09-29
+
+**Poprawka po regresji na żywo wersji v1.239.3.**
+
+### Naprawiono
+
+- **Oceny po koreańsku i po chińsku tradycyjnym zgłaszały brak podsumowania oceny.** Te raporty mają 10–11 tysięcy znaków, a podsumowanie jest na końcu, więc wypadało poza limit 8192 tokenów wyjściowych. Oceny (i automatyczny pipeline) pozwalają teraz na 16384 tokeny, a gdy dostawca mimo to utnie odpowiedź, pierwsze ostrzeżenie mówi o tym zamiast wyliczać brakujące bloki.
+- **Test na żywo uznał krótką niemiecką odpowiedź za nieniemiecką** (3 niemieckie słowa funkcyjne, żadnego angielskiego). Odpowiedź w formie listy może ich mieć mało; bez żadnych angielskich wystarczą teraz trzy.
+- Testy 3778 → 3782.
+
+### Uwagi
+
+- Trasy pogłębionego researchu i trybów zachowują limit 8192 tokenów: ich odpowiedzi w przebiegach na żywo **nie** osiągają go.
+
 ## [1.239.3] — 2026-09-29
 
 **Poprawka po regresji na żywo wersji v1.239.2.**

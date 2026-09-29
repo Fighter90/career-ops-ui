@@ -60,7 +60,10 @@ export function languageOk(text, locale) {
   const hits = (list) => words.filter((w) => list.includes(w)).length;
   const mine = hits(WORDS[locale] || WORDS.en);
   if (locale === 'en') return mine >= 5;
-  return mine >= 5 && mine >= hits(WORDS.en);
+  const en = hits(WORDS.en);
+  // A short, list-shaped answer can hold few stop words; with no English ones
+  // at all, three of the locale's are enough (de docs answer, v1.239.3 run).
+  return (mine >= 5 && mine >= en) || (mine >= 3 && en === 0);
 }
 
 /** Numbers only — safe for a public log. */

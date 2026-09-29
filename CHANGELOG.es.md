@@ -10,6 +10,20 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 
 ---
 
+## [1.239.4] — 2026-09-29
+
+**Parche tras la regresión en vivo de la v1.239.3.**
+
+### Corregido
+
+- **Las evaluaciones en coreano y chino tradicional indicaban que faltaba el resumen de puntuación.** Esos informes llegan a 10–11 mil caracteres y el resumen va al final, así que quedaba más allá del límite de 8192 tokens de salida. Las evaluaciones (y el pipeline automático) admiten ahora 16384 tokens y, si un proveedor aun así corta la respuesta, el primer aviso lo dice en lugar de listar bloques ausentes.
+- **La comprobación en vivo tomaba una respuesta corta en alemán como no alemana** (3 palabras vacías alemanas, ninguna inglesa). Una respuesta en forma de lista puede tener pocas; sin ninguna inglesa, ahora bastan tres.
+- Tests 3778 → 3782.
+
+### Notas
+
+- Las rutas de investigación profunda y de modos mantienen su límite de 8192 tokens: sus respuestas **no** llegan a él en las ejecuciones en vivo.
+
 ## [1.239.3] — 2026-09-29
 
 **Parche tras la regresión en vivo de la v1.239.2.**

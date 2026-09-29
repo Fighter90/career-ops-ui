@@ -9,17 +9,17 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-3778%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3782%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.239.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.239.3)
+[![release](https://img.shields.io/badge/release-v1.239.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.239.4)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Latest release — v1.239.3** — **Patch:** Arabic AI evaluations pass the report check — the block letter written in Arabic (أ ب ج د هـ و ز) now counts as A–G. **103 sources · 3778 tests · 116 browser.**
+> **🆕 Latest release — v1.239.4** — **Patch:** long AI evaluations are no longer cut off before the score summary (Korean and Chinese reports hit the 8192-token limit); a cut-off answer is now named as such. **103 sources · 3782 tests · 116 browser.**
 >
 > **Previous — v1.237.1** — **Patch from an external QA pass.** The Jobstreet fix was confirmed from outside: `/id/job/<id>` returns a clean 404 on the AU/NZ/HK/MY hosts and `/job/<id>` reaches a real guarded route — the lost links were real. Two defects in what v1.237.0 added: the **book link** localized its label but not its target, so the Russian label led to the English edition — a `data-i18n-href` applier now sends `ru` to the Russian book; and **SEEK is migrating hosts** (`www.seek.com.au` → `au.seek.com`), so `au.seek.com` and `nz.seek.com` are allowlisted before the API path starts redirecting into our `redirect:'error'` transport. Counts unchanged at **94** sources. **3210 tests · 116 browser.**
 

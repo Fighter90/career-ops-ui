@@ -16,7 +16,7 @@ import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 
-let createApp, stub, lastPrompt = '';
+let createApp, stub, lastPrompt = '', lastMaxTokens = 0;
 const REPLY = ['A', 'B', 'C', 'D', 'E', 'F', 'G'].map((L) => `## Bloque ${L} — Sección\ntexto`).join('\n\n')
   + '\n\n---SCORE_SUMMARY---\nCOMPANY: Acme\nROLE: Ingeniera\nSCORE: 4.1\nARCHETYPE: Platform\nLEGITIMACY: High Confidence\n---END_SUMMARY---\n';
 
@@ -25,7 +25,7 @@ before(async () => {
     let body = '';
     req.on('data', (c) => { body += c; });
     req.on('end', () => {
-      try { lastPrompt = JSON.parse(body).messages.map((m) => m.content).join('\n'); } catch { lastPrompt = ''; }
+      try { const b = JSON.parse(body); lastPrompt = b.messages.map((m) => m.content).join('\n'); lastMaxTokens = b.max_tokens; } catch { lastPrompt = ''; }
       res.setHeader('content-type', 'application/json');
       res.end(JSON.stringify({ choices: [{ message: { content: REPLY } }], usage: { prompt_tokens: 1, completion_tokens: 1 } }));
     });
@@ -68,6 +68,8 @@ test('a translated, well-formed evaluation has no warnings and no machine block'
     assert.match(body.markdown, /## Bloque G — Sección/);
     assert.match(lastPrompt, /---SCORE_SUMMARY---[\s\S]*LEGITIMACY:[\s\S]*---END_SUMMARY---/);
     assert.match(lastPrompt, /keep the letter A–G/);
+    // v1.239.4 — a CJK report plus SCORE_SUMMARY outgrew 8192 output tokens.
+    assert.equal(lastMaxTokens, 16384);
   } finally {
     server.closeAllConnections?.();
     await new Promise((r) => server.close(r));
