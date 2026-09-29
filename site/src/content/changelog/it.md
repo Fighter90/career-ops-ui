@@ -2,6 +2,19 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.239.2] — 2026-09-29
+
+**Patch dalla regressione dal vivo della v1.239.1.**
+
+### Corretto
+
+- **Una valutazione in arabo traduceva le lettere di blocco e una in giapponese ometteva il riepilogo del punteggio.** La v1.239.1 ripeteva solo la lingua nell'ultima riga del prompt. Ora quella riga dice anche che la lettera latina A–G di ogni titolo e il blocco `---SCORE_SUMMARY---` (marcatori e chiavi in inglese) non si traducono, e chiede la scrittura propria della lingua.
+- Test 3775 → 3776.
+
+### Note
+
+- Il controllo del report **non** viene allentato per accettare lettere o marcatori tradotti: è il prompt a mantenere stabile il formato.
+
 ## [1.239.1] — 2026-09-29
 
 **Patch dalla regressione dal vivo della v1.239.0.**

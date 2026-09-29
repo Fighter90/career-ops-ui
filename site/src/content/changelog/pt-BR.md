@@ -8,6 +8,19 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.239.2] — 2026-09-29
+
+**Patch da regressão ao vivo da v1.239.1.**
+
+### Corrigido
+
+- **Uma avaliação em árabe traduziu as letras de bloco e uma em japonês omitiu o resumo de pontuação.** A v1.239.1 repetia só o idioma na última linha do prompt. Essa linha agora diz também que a letra latina A–G de cada título e o bloco `---SCORE_SUMMARY---` (marcadores e chaves em inglês) não são traduzidos, e pede a escrita própria do idioma.
+- Testes 3775 → 3776.
+
+### Notas
+
+- A verificação do relatório **não** foi afrouxada para aceitar letras ou marcadores traduzidos: é o prompt que mantém o formato estável.
+
 ## [1.239.1] — 2026-09-29
 
 **Patch da regressão ao vivo da v1.239.0.**

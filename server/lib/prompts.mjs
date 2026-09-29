@@ -393,7 +393,11 @@ ${buildLanguageReminder(lang)}`;
  */
 export function buildLanguageReminder(lang) {
   if (!lang || lang === 'en' || !LOCALE_NAMES[lang]) return '';
-  return `\nWrite the whole report in ${LOCALE_NAMES[lang]} (locale: ${lang}) — every heading, sentence, bullet and table cell. The files and the JD above are in English; that does not change the output language. Only company and product names, code, and the SCORE_SUMMARY keys stay as they are.\n`;
+  const name = LOCALE_NAMES[lang];
+  return `\nWrite the whole report in ${name} (locale: ${lang}) — every sentence, bullet and table cell, in ${name}'s own script. The files and the JD above are in English; that does not change the output language. Company, product and technology names may stay as they are.\n`
+    + 'Two parts of the format are machine-read and must NOT be translated: '
+    + 'every block heading keeps its Latin capital letter A–G (for example `## <translated word> A — <translated title>`), '
+    + 'and the report ends with the ---SCORE_SUMMARY--- … ---END_SUMMARY--- block, markers and keys in English, exactly as shown above.\n';
 }
 
 export function buildDeepPrompt(company, role, lang, opts = {}) {

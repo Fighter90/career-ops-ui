@@ -2,6 +2,19 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.239.2] — 2026-09-29
+
+**Patch aus der Live-Regression von v1.239.1.**
+
+### Behoben
+
+- **Eine arabische Bewertung übersetzte ihre Blockbuchstaben, eine japanische ließ die Bewertungszusammenfassung weg.** v1.239.1 wiederholte in der letzten Prompt-Zeile nur die Sprache. Diese Zeile sagt jetzt auch, dass der lateinische Buchstabe A–G jeder Überschrift und der `---SCORE_SUMMARY---`-Block (Marker und Schlüssel auf Englisch) nicht übersetzt werden, und verlangt die eigene Schrift der Sprache.
+- Tests 3775 → 3776.
+
+### Anmerkungen
+
+- Die Berichtsprüfung wird **nicht** gelockert, um übersetzte Buchstaben oder Marker anzunehmen: Das Format hält der Prompt stabil.
+
 ## [1.239.1] — 2026-09-29
 
 **Patch aus der Live-Regression von v1.239.0.**

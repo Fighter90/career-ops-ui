@@ -8,7 +8,7 @@ Release history belongs in [CHANGELOG.md](CHANGELOG.md), decisions in
 [docs/adr/](docs/adr/), vocabulary in [CONTEXT.md](CONTEXT.md). Anything already
 recoverable from those does **not** belong here.
 
-_Last updated: 2026-09-29 · v1.239.1 (evaluation language restated after the JD; live QA waits out SCAN_BUSY) — v1.239.0 is deployed, released and published_
+_Last updated: 2026-09-29 · v1.239.2 (closing reminder protects A–G letters + SCORE_SUMMARY; multer 2.4.0) — v1.239.1 is deployed, released and published_
 
 ---
 
