@@ -1,0 +1,687 @@
+From 755b7110da61c56d9602c7dc255c24f01932c39b Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Tue, 29 Sep 2026 12:00:30 +0000
+Subject: [PATCH] =?UTF-8?q?docs(wiki):=20v1.239.0=20=E2=80=94=20103=20sour?=
+ =?UTF-8?q?ces=20(AppliTrack,=20NEOGOV,=20OCC=20Mundial,=20Red=20Rover,=20?=
+ =?UTF-8?q?SchoolSpring),=203774=20tests?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ Agentic-Practices.md                              |  4 ++--
+ Architecture.md                                   |  2 +-
+ Features.md                                       |  2 +-
+ Home-(Dansk).md                                   |  6 +++---
+ Home-(Deutsch).md                                 |  6 +++---
+ "Home-(Espa\303\261ol).md"                        |  6 +++---
+ "Home-(Fran\303\247ais).md"                       |  6 +++---
+ Home-(Italiano).md                                |  6 +++---
+ Home-(Polski).md                                  |  6 +++---
+ "Home-(Portugu\303\252s-Brasil).md"               |  6 +++---
+ "Home-(T\303\274rk\303\247e).md"                  |  6 +++---
+ ...3\321\201\321\201\320\272\320\270\320\271).md" |  6 +++---
+ ...7\320\275\321\201\321\214\320\272\320\260).md" |  6 +++---
+ ...4\330\271\330\261\330\250\331\212\330\251).md" |  6 +++---
+ ...4\250\340\245\215\340\244\246\340\245\200).md" |  6 +++---
+ "Home-(\346\227\245\346\234\254\350\252\236).md"  |  6 +++---
+ ...6\200\344\275\223\344\270\255\346\226\207).md" |  6 +++---
+ ...1\201\351\253\224\344\270\255\346\226\207).md" |  6 +++---
+ "Home-(\355\225\234\352\265\255\354\226\264).md"  |  6 +++---
+ Home.md                                           |  6 +++---
+ Release-Process.md                                |  2 +-
+ Scanner-Providers.md                              | 15 ++++++++++-----
+ Testing-and-QA.md                                 |  2 +-
+ 23 files changed, 67 insertions(+), 62 deletions(-)
+
+diff --git a/Agentic-Practices.md b/Agentic-Practices.md
+index 9bb6724..0fe913a 100644
+--- a/Agentic-Practices.md
++++ b/Agentic-Practices.md
+@@ -18,9 +18,9 @@ pattern lives in this repo, so it can be checked.
+ | **Isolated parallel work** | Release fan-outs run one agent per locale and one per ported provider, each restricted to an explicit file list and forbidden the shared files; the orchestrator does shared wiring in one pass afterwards. |
+ | **Writer / reviewer** | Three reviewer agents in [`.claude/agents/`](https://github.com/Fighter90/career-ops-ui/tree/main/.claude/agents) — `spa-view-reviewer`, `test-isolation-reviewer`, `web-ui-route-reviewer` — plus an AI review workflow in CI. |
+ | **TDD with an agent** | Every ported fix is required to show a **failing run first**. The v1.237.1 Oracle Cloud port opened with `399 !== 453` — the truncation the fix removes. |
+-| **Feedback loop the agent can run** | `npm run test:ci` (3481), `npm run test:e2e:browser` (116), `check-changelog-parity`, five registry count gates, and behavioural markers executed against the **deployed** server. |
++| **Feedback loop the agent can run** | `npm run test:ci` (3774), `npm run test:e2e:browser` (116), `check-changelog-parity`, five registry count gates, and behavioural markers executed against the **deployed** server. |
+ | **Project memory** | [`CLAUDE.md`](https://github.com/Fighter90/career-ops-ui/blob/main/CLAUDE.md) as a short index (deliberately not a knowledge base — see *Bloated memory* below), `AGENTS.md` for non-Claude CLIs, `.claude/PROJECT-CONTEXT.md` for the per-release record. |
+-| **Domain dictionary** | [`CONTEXT.md`](https://github.com/Fighter90/career-ops-ui/blob/main/CONTEXT.md) — one accepted name per concept, variants marked *do not use*. It exists because of a real, recurring confusion: **98 sources vs 93 adapters** (the five RU sources have no adapter), and `telegram` vs `telegram-channel`, which upstream mistook for duplicates and deleted one. |
++| **Domain dictionary** | [`CONTEXT.md`](https://github.com/Fighter90/career-ops-ui/blob/main/CONTEXT.md) — one accepted name per concept, variants marked *do not use*. It exists because of a real, recurring confusion: **103 sources vs 98 adapters** (the five RU sources have no adapter), and `telegram` vs `telegram-channel`, which upstream mistook for duplicates and deleted one. |
+ | **ADRs** | [`docs/adr/`](https://github.com/Fighter90/career-ops-ui/tree/main/docs/adr) — keep both telegram sources · defend fork divergences · mirror vs relay · liveness hard/soft tiers. |
+ | **Progress log** | [`PROGRESS.md`](https://github.com/Fighter90/career-ops-ui/blob/main/PROGRESS.md) — current state, next step, known issues and, most usefully, **abandoned approaches** so a fresh session does not retry them. |
+ | **Workflow evals** | [`evals/workflow/`](https://github.com/Fighter90/career-ops-ui/tree/main/evals/workflow) — a fixed task set with graders, separating **outcome** from **trajectory**. Each grader corresponds to a mistake that shipped once, and each has been **adversarially tested** by injecting that mistake and confirming the grader goes red — which is how one of them was caught passing on a defect it was meant to catch. Trajectory graders report `SKIP`, never a silent pass. |
+diff --git a/Architecture.md b/Architecture.md
+index b0126bf..c0e6d57 100644
+--- a/Architecture.md
++++ b/Architecture.md
+@@ -75,7 +75,7 @@ Styling is hand-written CSS with docs-style tokens in `public/css/app.css`, them
+ Adding an EN job board touches **two** registries — this is deliberate:
+ 
+ 1. **`server/lib/sources/<slug>.mjs`** — the **source meta registry**. Exports `export const meta = { value, label, region, configKey? }`. `server/lib/sources/registry.mjs` `readdirSync`-scans the folder at boot and dynamically `import()`s every `*.mjs`, collecting each `meta` block (P-14, v1.69.0). This drives `GET /api/scan/sources` and the `#/scan` source dropdown. **98 files** = 93 EN + 5 RU.
+-2. **`server/lib/portals/adapters/<slug>.mjs`** + **`server/lib/portals/registry.mjs`** (`ALL_ADAPTERS`) — the **fetch-walk registry**. **93 EN adapters** that actually perform the HTTP fetch/parse walk. `ALL_ADAPTERS.length === 93` is asserted by `tests/adapter-registry.test.mjs` with the exact sorted id list.
++2. **`server/lib/portals/adapters/<slug>.mjs`** + **`server/lib/portals/registry.mjs`** (`ALL_ADAPTERS`) — the **fetch-walk registry**. **98 EN adapters** that actually perform the HTTP fetch/parse walk. `ALL_ADAPTERS.length === 98` is asserted by `tests/adapter-registry.test.mjs` with the exact sorted id list.
+ 
+ RU sources additionally need a `RU_DISPATCH` row in `ru-scanner.mjs`. See [[Scanner Providers|Scanner-Providers]] for the full walkthrough.
+ 
+diff --git a/Features.md b/Features.md
+index 17cbd07..8013a17 100644
+--- a/Features.md
++++ b/Features.md
+@@ -8,7 +8,7 @@ Every view in the SPA (`public/js/views/*.js`), what it does, and the API routes
+ Command center: application counts, status histogram, average score, recent applications/pipeline URLs, last report, quick-action tiles. Backed by `GET /api/dashboard` and `GET /api/health`.
+ 
+ ### `#/scan` — Portal scanner
+-Zero-token, in-process scanning of 98 sources (93 EN + 5 RU). Source dropdown built dynamically from `GET /api/scan/sources`; results stream over `GET /api/stream/scan?source=ats|regional|both` (SSE, multi-phase `done` events); results table from `GET /api/scan-results`; RU config via `GET /api/scan/regional/config`. Supports `dryRun=1` and per-company narrowing. A `◎` fit badge marks postings matching your two-pager. **v1.129.1:** a **Seniority** filter facet (lead/staff/senior/mid/junior/intern, auto-populated from results like the Country facet, via `job-facets.js`), a Seniority badge column, and a zero-token **Age** freshness column (`today`/`Nd`).
++Zero-token, in-process scanning of 103 sources (98 EN + 5 RU). Source dropdown built dynamically from `GET /api/scan/sources`; results stream over `GET /api/stream/scan?source=ats|regional|both` (SSE, multi-phase `done` events); results table from `GET /api/scan-results`; RU config via `GET /api/scan/regional/config`. Supports `dryRun=1` and per-company narrowing. A `◎` fit badge marks postings matching your two-pager. **v1.129.1:** a **Seniority** filter facet (lead/staff/senior/mid/junior/intern, auto-populated from results like the Country facet, via `job-facets.js`), a Seniority badge column, and a zero-token **Age** freshness column (`today`/`Nd`).
+ 
+ ### `#/pipeline` — URL inbox
+ Pending JD URLs from `data/pipeline.md` with a split-pane preview. `GET/POST/DELETE /api/pipeline` (URL gated by `isValidJobUrl`, file-locked) + the SSRF-safe `GET /api/pipeline/preview?url=`. The server-side auto-pipeline (evaluate → report → tracker) streams via the `auto-pipeline` module's SSE endpoint.
+diff --git a/Home-(Dansk).md b/Home-(Dansk).md
+index 51df628..bd9ee8e 100644
+--- a/Home-(Dansk).md
++++ b/Home-(Dansk).md
+@@ -4,7 +4,7 @@
+ 
+ **En ren webgrænseflade i dokumentationsstil til AI-jobsøgningspipelinen [career-ops](https://github.com/Fighter90/career-ops).** Søg, evaluér, undersøg i dybden, ansøg og følg hvert jobopslag fra én enkelt browserfane.
+ 
+-> Aktuel udgivelse: **v1.238.0** · Node ≥ 18 · Express 4 + vanilla-JS SPA · 98 scanner-adaptere · 37 rutemoduler · 17 sprog i grænsefladen · 3481 enhedstests.
++> Aktuel udgivelse: **v1.239.0** · Node ≥ 18 · Express 4 + vanilla-JS SPA · 103 scanner-adaptere · 37 rutemoduler · 17 sprog i grænsefladen · 3774 enhedstests.
+ >
+ > _Uofficiel UI — ikke tilknyttet eller godkendt af career-ops / santifer._
+ 
+@@ -16,7 +16,7 @@ CLI'en ejer fortsat slash-kommandoer og formularudfyldning; SPA'en giver et visu
+ 
+ ## Nøglefunktioner
+ 
+-- **Portalscanning uden tokens** — 98 selvregistrerende adaptere (93 EN + 5 RU, herunder det nordiske The Hub) kalder offentlige jobboard-API'er direkte, uden LLM-omkostninger.
++- **Portalscanning uden tokens** — 103 selvregistrerende adaptere (98 EN + 5 RU, herunder det nordiske The Hub) kalder offentlige jobboard-API'er direkte, uden LLM-omkostninger.
+ - **Jobevaluering og rapporter** — seksdimensionel 0.0–5.0-rubrik, dybdegående virksomhedsresearch, CV-generering i PDF/DOCX.
+ - **Ansøgningstracker** — komplet tragt med den kanoniske `Hired`-status og et «job i hus»-banner.
+ - **CV Studio** — omskrivning i din egen stemme, CV + følgebrev tilpasset opslaget, CV-diagnostik, maskering af persondata direkte i browseren.
+@@ -35,7 +35,7 @@ CLI'en ejer fortsat slash-kommandoer og formularudfyldning; SPA'en giver et visu
+ | [Architecture](Architecture) | Express-orkestrator + 37 rutemoduler, SPA'en, de to scanner-registre, datastrømme. |
+ | [Features](Features) | Hver `#/`-visning og de API-ruter, der understøtter den. |
+ | [API-Reference](API-Reference) | REST + SSE-fladen grupperet efter modul. |
+-| [Scanner-Providers](Scanner-Providers) | De 93 EN-adaptere + 5 RU-kilder, og hvordan man tilføjer en ny. |
++| [Scanner-Providers](Scanner-Providers) | De 98 EN-adaptere + 5 RU-kilder, og hvordan man tilføjer en ny. |
+ | [Security](Security) | CSP, SSRF-beskyttelse, XSS-grænser, hastighedsbegrænsning. |
+ | [Testing-and-QA](Testing-and-QA) | Testpyramide, CI-gates, QA-metodik. |
+ | [Localization](Localization) | 16 sprog, ordbogsfiler, RTL, hjælpe-paritet. |
+diff --git a/Home-(Deutsch).md b/Home-(Deutsch).md
+index 2811147..7b7d62d 100644
+--- a/Home-(Deutsch).md
++++ b/Home-(Deutsch).md
+@@ -4,7 +4,7 @@
+ 
+ **Eine klare Weboberfläche im Dokumentationsstil für die KI-Jobsuche-Pipeline [career-ops](https://github.com/Fighter90/career-ops).** Suchen, bewerten, tiefgehend recherchieren, bewerben und jede Stelle verfolgen — alles in einem einzigen Browser-Tab.
+ 
+-> Aktuelles Release: **v1.238.0** · Node ≥ 18 · Express 4 + Vanilla-JS-SPA · 98 Scanner-Adapter · 37 Routenmodule · 17 UI-Sprachen · 3481 Unit-Tests.
++> Aktuelles Release: **v1.239.0** · Node ≥ 18 · Express 4 + Vanilla-JS-SPA · 103 Scanner-Adapter · 37 Routenmodule · 17 UI-Sprachen · 3774 Unit-Tests.
+ >
+ > _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden und nicht von ihnen unterstützt._
+ 
+@@ -16,7 +16,7 @@ Die CLI bleibt für Slash-Befehle und das Ausfüllen von Formularen zuständig;
+ 
+ ## Kernfunktionen
+ 
+-- **Portal-Scan ohne Tokens** — 98 selbstregistrierende Adapter (93 EN + 5 RU, darunter Arbeitsagentur, Deutsche Bahn, Personio, softgarden) rufen öffentliche Jobboard-APIs direkt auf, ohne LLM-Kosten.
++- **Portal-Scan ohne Tokens** — 103 selbstregistrierende Adapter (98 EN + 5 RU, darunter Arbeitsagentur, Deutsche Bahn, Personio, softgarden) rufen öffentliche Jobboard-APIs direkt auf, ohne LLM-Kosten.
+ - **Stellenbewertung & Berichte** — sechsdimensionale 0.0–5.0-Rubrik, tiefgehende Unternehmensrecherche, Lebenslauf-Generierung als PDF/DOCX.
+ - **Bewerbungs-Tracker** — vollständiger Funnel mit dem kanonischen Status `Hired` und einem „Job gelandet"-Banner.
+ - **CV Studio** — Umschreiben in Ihrer eigenen Stimme, auf die Stelle zugeschnittener Lebenslauf + Anschreiben, Lebenslauf-Diagnose, PII-Maskierung direkt im Browser.
+@@ -35,7 +35,7 @@ Die CLI bleibt für Slash-Befehle und das Ausfüllen von Formularen zuständig;
+ | [Architecture](Architecture) | Express-Orchestrator + 37 Routenmodule, die SPA, die zwei Scanner-Registries, Datenflüsse. |
+ | [Features](Features) | Jede `#/`-Ansicht und die dahinterliegenden API-Routen. |
+ | [API-Reference](API-Reference) | Die REST + SSE-Oberfläche, gruppiert nach Modul. |
+-| [Scanner-Providers](Scanner-Providers) | Die 93 EN-Adapter + 5 RU-Quellen und wie man einen neuen hinzufügt. |
++| [Scanner-Providers](Scanner-Providers) | Die 98 EN-Adapter + 5 RU-Quellen und wie man einen neuen hinzufügt. |
+ | [Security](Security) | CSP, SSRF-Schutz, XSS-Grenzen, Ratenbegrenzung. |
+ | [Testing-and-QA](Testing-and-QA) | Testpyramide, CI-Gates, QA-Methodik. |
+ | [Localization](Localization) | 17 Sprachen, Wörterbuchdateien, RTL, Hilfe-Parität. |
+diff --git "a/Home-(Espa\303\261ol).md" "b/Home-(Espa\303\261ol).md"
+index f9afd98..2ff0464 100644
+--- "a/Home-(Espa\303\261ol).md"
++++ "b/Home-(Espa\303\261ol).md"
+@@ -4,7 +4,7 @@
+ 
+ **Una interfaz web limpia, al estilo de documentación, para el pipeline de búsqueda de empleo con IA [career-ops](https://github.com/Fighter90/career-ops).** Busca, evalúa, investiga a fondo, aplica y haz seguimiento de cada oferta desde una sola pestaña del navegador.
+ 
+-> Versión actual: **v1.238.0** · Node ≥ 18 · Express 4 + SPA en JavaScript vanilla · 98 adaptadores de escaneo · 37 módulos de rutas · 17 idiomas de interfaz · 3481 tests unitarios.
++> Versión actual: **v1.239.0** · Node ≥ 18 · Express 4 + SPA en JavaScript vanilla · 103 adaptadores de escaneo · 37 módulos de rutas · 17 idiomas de interfaz · 3774 tests unitarios.
+ >
+ > _Interfaz no oficial — sin afiliación ni respaldo de career-ops / santifer._
+ 
+@@ -16,7 +16,7 @@ La CLI sigue siendo dueña de los comandos slash y el rellenado de formularios;
+ 
+ ## Capacidades clave
+ 
+-- **Escaneo de portales sin tokens** — 98 adaptadores auto-registrados (93 EN + 5 RU) consultan APIs públicas de bolsas de trabajo directamente, sin coste de LLM.
++- **Escaneo de portales sin tokens** — 103 adaptadores auto-registrados (98 EN + 5 RU) consultan APIs públicas de bolsas de trabajo directamente, sin coste de LLM.
+ - **Evaluación de ofertas e informes** — rúbrica de 6 dimensiones (0.0–5.0), investigación profunda de empresas, CVs en PDF/DOCX.
+ - **Tracker de candidaturas** — embudo completo con el estado canónico `Hired` y banner de empleo conseguido.
+ - **CV Studio** — reescritura con tu voz, CV + carta adaptados a la oferta, diagnóstico de currículum, enmascarado de PII en el navegador.
+@@ -35,7 +35,7 @@ La CLI sigue siendo dueña de los comandos slash y el rellenado de formularios;
+ | [Architecture](Architecture) | Orquestador Express + 37 módulos de rutas, la SPA, los dos registros de escáner, flujos de datos. |
+ | [Features](Features) | Cada vista `#/` y las rutas API que la respaldan. |
+ | [API-Reference](API-Reference) | La superficie REST + SSE agrupada por módulo. |
+-| [Scanner-Providers](Scanner-Providers) | Los 93 adaptadores EN + 5 fuentes RU, cómo añadir uno. |
++| [Scanner-Providers](Scanner-Providers) | Los 98 adaptadores EN + 5 fuentes RU, cómo añadir uno. |
+ | [Security](Security) | CSP, guardia SSRF, fronteras XSS, limitación de tasa. |
+ | [Testing-and-QA](Testing-and-QA) | Pirámide de tests, puertas de CI, metodología QA. |
+ | [Localization](Localization) | 17 idiomas, diccionarios, RTL, paridad de la ayuda. |
+diff --git "a/Home-(Fran\303\247ais).md" "b/Home-(Fran\303\247ais).md"
+index 899fbf2..1761f26 100644
+--- "a/Home-(Fran\303\247ais).md"
++++ "b/Home-(Fran\303\247ais).md"
+@@ -4,7 +4,7 @@
+ 
+ **Une interface web épurée, façon documentation, pour le pipeline de recherche d'emploi IA [career-ops](https://github.com/Fighter90/career-ops).** Recherchez, évaluez, approfondissez, candidatez et suivez chaque offre depuis un seul onglet de navigateur.
+ 
+-> Version actuelle : **v1.238.0** · Node ≥ 18 · Express 4 + SPA en JavaScript vanilla · 98 adaptateurs de scan · 37 modules de routes · 17 langues d'interface · 3481 tests unitaires.
++> Version actuelle : **v1.239.0** · Node ≥ 18 · Express 4 + SPA en JavaScript vanilla · 103 adaptateurs de scan · 37 modules de routes · 17 langues d'interface · 3774 tests unitaires.
+ >
+ > _Interface non officielle — sans affiliation ni approbation de career-ops / santifer._
+ 
+@@ -16,7 +16,7 @@ La CLI reste maîtresse des commandes slash et du remplissage de formulaires ; l
+ 
+ ## Capacités clés
+ 
+-- **Scan de portails sans tokens** — 98 adaptateurs auto-enregistrés (93 EN + 5 RU) interrogent directement les API publiques des job boards, sans coût LLM.
++- **Scan de portails sans tokens** — 103 adaptateurs auto-enregistrés (98 EN + 5 RU) interrogent directement les API publiques des job boards, sans coût LLM.
+ - **Évaluation d'offres et rapports** — grille à 6 dimensions (0.0–5.0), recherche approfondie d'entreprises, CV en PDF/DOCX.
+ - **Suivi des candidatures** — entonnoir complet avec le statut canonique `Hired` et une bannière « emploi décroché ».
+ - **CV Studio** — réécriture dans votre voix, CV + lettre de motivation adaptés à l'offre, diagnostic de CV, masquage des données personnelles dans le navigateur.
+@@ -35,7 +35,7 @@ La CLI reste maîtresse des commandes slash et du remplissage de formulaires ; l
+ | [Architecture](Architecture) | Orchestrateur Express + 37 modules de routes, la SPA, les deux registres du scanner, flux de données. |
+ | [Features](Features) | Chaque vue `#/` et les routes API qui la soutiennent. |
+ | [API-Reference](API-Reference) | La surface REST + SSE groupée par module. |
+-| [Scanner-Providers](Scanner-Providers) | Les 93 adaptateurs EN + 5 sources RU, comment en ajouter un. |
++| [Scanner-Providers](Scanner-Providers) | Les 98 adaptateurs EN + 5 sources RU, comment en ajouter un. |
+ | [Security](Security) | CSP, garde SSRF, frontières XSS, limitation de débit. |
+ | [Testing-and-QA](Testing-and-QA) | Pyramide de tests, portes CI, méthodologie QA. |
+ | [Localization](Localization) | 16 langues, dictionnaires, RTL, parité de l'aide. |
+diff --git a/Home-(Italiano).md b/Home-(Italiano).md
+index c7de5f2..69dc6cc 100644
+--- a/Home-(Italiano).md
++++ b/Home-(Italiano).md
+@@ -4,7 +4,7 @@
+ 
+ **Un'interfaccia web pulita, in stile documentazione, per la pipeline di ricerca lavoro con IA [career-ops](https://github.com/Fighter90/career-ops).** Cerca, valuta, approfondisci, candidati e tieni traccia di ogni offerta da un'unica scheda del browser.
+ 
+-> Versione attuale: **v1.238.0** · Node ≥ 18 · Express 4 + SPA in JavaScript vanilla · 98 adattatori di scansione · 37 moduli di route · 17 lingue dell'interfaccia · 3481 test unitari.
++> Versione attuale: **v1.239.0** · Node ≥ 18 · Express 4 + SPA in JavaScript vanilla · 103 adattatori di scansione · 37 moduli di route · 17 lingue dell'interfaccia · 3774 test unitari.
+ >
+ > _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santifer._
+ 
+@@ -16,7 +16,7 @@ La CLI resta responsabile dei comandi slash e della compilazione dei moduli; la
+ 
+ ## Capacità principali
+ 
+-- **Scansione dei portali a zero token** — 98 adattatori auto-registrati (93 EN + 5 RU) interrogano direttamente le API pubbliche delle job board, senza costi LLM.
++- **Scansione dei portali a zero token** — 103 adattatori auto-registrati (98 EN + 5 RU) interrogano direttamente le API pubbliche delle job board, senza costi LLM.
+ - **Valutazione delle offerte e report** — rubrica a 6 dimensioni (0.0–5.0), ricerca approfondita sulle aziende, CV in PDF/DOCX.
+ - **Tracker delle candidature** — funnel completo con lo stato canonico `Hired` e il banner «lavoro ottenuto».
+ - **CV Studio** — riscrittura con la tua voce, CV + lettera di presentazione su misura per l'annuncio, diagnostica del CV, mascheramento dei dati personali nel browser.
+@@ -35,7 +35,7 @@ La CLI resta responsabile dei comandi slash e della compilazione dei moduli; la
+ | [Architecture](Architecture) | Orchestratore Express + 37 moduli di route, la SPA, i due registri dello scanner, i flussi di dati. |
+ | [Features](Features) | Ogni vista `#/` e le route API che la supportano. |
+ | [API-Reference](API-Reference) | La superficie REST + SSE raggruppata per modulo. |
+-| [Scanner-Providers](Scanner-Providers) | I 93 adattatori EN + 5 fonti RU, come aggiungerne uno. |
++| [Scanner-Providers](Scanner-Providers) | I 98 adattatori EN + 5 fonti RU, come aggiungerne uno. |
+ | [Security](Security) | CSP, protezione SSRF, confini XSS, rate limiting. |
+ | [Testing-and-QA](Testing-and-QA) | Piramide dei test, gate CI, metodologia QA. |
+ | [Localization](Localization) | 16 lingue, file dizionario, RTL, parità della guida. |
+diff --git a/Home-(Polski).md b/Home-(Polski).md
+index 9d3864e..3b38af0 100644
+--- a/Home-(Polski).md
++++ b/Home-(Polski).md
+@@ -4,7 +4,7 @@
+ 
+ **Przejrzysty interfejs webowy w stylu dokumentacji dla pipeline'u poszukiwania pracy z AI [career-ops](https://github.com/Fighter90/career-ops).** Wyszukuj, oceniaj, badaj dogłębnie, aplikuj i śledź każdą ofertę z jednej karty przeglądarki.
+ 
+-> Aktualne wydanie: **v1.238.0** · Node ≥ 18 · Express 4 + SPA w czystym JS · 98 adapterów skanera · 37 modułów tras · 17 języków interfejsu · 3481 testów jednostkowych.
++> Aktualne wydanie: **v1.239.0** · Node ≥ 18 · Express 4 + SPA w czystym JS · 103 adapterów skanera · 37 modułów tras · 17 języków interfejsu · 3774 testów jednostkowych.
+ >
+ > _Nieoficjalny interfejs — bez powiązań i bez rekomendacji career-ops / santifer._
+ 
+@@ -16,7 +16,7 @@ CLI nadal odpowiada za komendy slash i wypełnianie formularzy; SPA daje wizualn
+ 
+ ## Kluczowe możliwości
+ 
+-- **Skanowanie portali bez tokenów** — 98 samorejestrujących się adapterów (93 EN + 5 RU, w tym polskie boardy JustJoin.it, NoFluffJobs, SolidJobs) odpytuje publiczne API job boardów bezpośrednio, bez kosztów LLM.
++- **Skanowanie portali bez tokenów** — 103 samorejestrujących się adapterów (98 EN + 5 RU, w tym polskie boardy JustJoin.it, NoFluffJobs, SolidJobs) odpytuje publiczne API job boardów bezpośrednio, bez kosztów LLM.
+ - **Ocena ofert i raporty** — sześciowymiarowa rubryka 0.0–5.0, dogłębny research firm, generowanie CV w PDF/DOCX.
+ - **Tracker aplikacji** — pełny lejek z kanonicznym statusem `Hired` i banerem „praca zdobyta".
+ - **CV Studio** — przepisywanie w Twoim stylu, CV + list motywacyjny dopasowane do oferty, diagnostyka CV, maskowanie danych osobowych w przeglądarce.
+@@ -35,7 +35,7 @@ CLI nadal odpowiada za komendy slash i wypełnianie formularzy; SPA daje wizualn
+ | [Architecture](Architecture) | Orkiestrator Express + 37 modułów tras, SPA, dwa rejestry skanera, przepływy danych. |
+ | [Features](Features) | Każdy widok `#/` i wspierające go trasy API. |
+ | [API-Reference](API-Reference) | Powierzchnia REST + SSE pogrupowana modułami. |
+-| [Scanner-Providers](Scanner-Providers) | 93 adaptery EN + 5 źródeł RU, jak dodać nowy. |
++| [Scanner-Providers](Scanner-Providers) | 98 adapterów EN + 5 źródeł RU, jak dodać nowy. |
+ | [Security](Security) | CSP, ochrona SSRF, granice XSS, limitowanie żądań. |
+ | [Testing-and-QA](Testing-and-QA) | Piramida testów, bramki CI, metodologia QA. |
+ | [Localization](Localization) | 16 języków, słowniki, RTL, parytet pomocy. |
+diff --git "a/Home-(Portugu\303\252s-Brasil).md" "b/Home-(Portugu\303\252s-Brasil).md"
+index 100cda5..cb9192f 100644
+--- "a/Home-(Portugu\303\252s-Brasil).md"
++++ "b/Home-(Portugu\303\252s-Brasil).md"
+@@ -4,7 +4,7 @@
+ 
+ **Uma interface web limpa, em estilo de documentação, para o pipeline de busca de emprego com IA [career-ops](https://github.com/Fighter90/career-ops).** Pesquise, avalie, investigue a fundo, candidate-se e acompanhe cada vaga em uma única aba do navegador.
+ 
+-> Versão atual: **v1.238.0** · Node ≥ 18 · Express 4 + SPA em JavaScript vanilla · 98 adaptadores de varredura · 37 módulos de rotas · 17 idiomas de interface · 3481 testes unitários.
++> Versão atual: **v1.239.0** · Node ≥ 18 · Express 4 + SPA em JavaScript vanilla · 103 adaptadores de varredura · 37 módulos de rotas · 17 idiomas de interface · 3774 testes unitários.
+ >
+ > _Interface não oficial — sem afiliação ou endosso de career-ops / santifer._
+ 
+@@ -16,7 +16,7 @@ A CLI continua dona dos comandos slash e do preenchimento de formulários; a SPA
+ 
+ ## Principais recursos
+ 
+-- **Varredura de portais sem tokens** — 98 adaptadores auto-registrados (93 EN + 5 RU) consultam APIs públicas de vagas diretamente, com custo zero de LLM.
++- **Varredura de portais sem tokens** — 103 adaptadores auto-registrados (98 EN + 5 RU) consultam APIs públicas de vagas diretamente, com custo zero de LLM.
+ - **Avaliação de vagas e relatórios** — rubrica de 6 dimensões (0.0–5.0), pesquisa profunda de empresas, currículos em PDF/DOCX.
+ - **Tracker de candidaturas** — funil completo com o status canônico `Hired` e banner de emprego conquistado.
+ - **CV Studio** — reescrita com a sua voz, CV + carta adaptados à vaga, diagnóstico de currículo, mascaramento de PII no navegador.
+@@ -35,7 +35,7 @@ A CLI continua dona dos comandos slash e do preenchimento de formulários; a SPA
+ | [Architecture](Architecture) | Orquestrador Express + 37 módulos de rotas, a SPA, os dois registros do scanner, fluxos de dados. |
+ | [Features](Features) | Cada visão `#/` e as rotas de API por trás dela. |
+ | [API-Reference](API-Reference) | A superfície REST + SSE agrupada por módulo. |
+-| [Scanner-Providers](Scanner-Providers) | Os 93 adaptadores EN + 5 fontes RU, como adicionar um novo. |
++| [Scanner-Providers](Scanner-Providers) | Os 98 adaptadores EN + 5 fontes RU, como adicionar um novo. |
+ | [Security](Security) | CSP, proteção SSRF, fronteiras XSS, limitação de taxa. |
+ | [Testing-and-QA](Testing-and-QA) | Pirâmide de testes, portões de CI, metodologia de QA. |
+ | [Localization](Localization) | 17 idiomas, dicionários, RTL, paridade da ajuda. |
+diff --git "a/Home-(T\303\274rk\303\247e).md" "b/Home-(T\303\274rk\303\247e).md"
+index fcb3a50..4e55fba 100644
+--- "a/Home-(T\303\274rk\303\247e).md"
++++ "b/Home-(T\303\274rk\303\247e).md"
+@@ -4,7 +4,7 @@
+ 
+ **Yapay zekâ destekli iş arama hattı [career-ops](https://github.com/Fighter90/career-ops) için temiz, dokümantasyon tarzında bir web arayüzü.** Tek bir tarayıcı sekmesinden her ilanı arayın, değerlendirin, derinlemesine araştırın, başvurun ve takip edin.
+ 
+-> Güncel sürüm: **v1.238.0** · Node ≥ 18 · Express 4 + saf JS SPA · 98 tarayıcı adaptörü · 37 rota modülü · 17 arayüz dili · 3481 birim testi.
++> Güncel sürüm: **v1.239.0** · Node ≥ 18 · Express 4 + saf JS SPA · 103 tarayıcı adaptörü · 37 rota modülü · 17 arayüz dili · 3774 birim testi.
+ >
+ > _Resmî olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır._
+ 
+@@ -16,7 +16,7 @@ Slash komut modları ve form doldurma CLI'da kalır; SPA aynı verilerin üzerin
+ 
+ ## Temel yetenekler
+ 
+-- **Sıfır token ile portal taraması** — kendi kendine kaydolan 98 adaptör (93 EN + 5 RU) herkese açık iş ilanı API'lerini doğrudan çağırır; LLM maliyeti yoktur.
++- **Sıfır token ile portal taraması** — kendi kendine kaydolan 103 adaptör (98 EN + 5 RU) herkese açık iş ilanı API'lerini doğrudan çağırır; LLM maliyeti yoktur.
+ - **İlan değerlendirme ve raporlar** — beş boyut ve bütünsel bir genel puan içeren 0.0–5.0 değerlendirme ölçütü, derinlemesine şirket araştırması, PDF/DOCX özgeçmiş üretimi.
+ - **Başvuru takipçisi** — kurallı `Hired` durumu ve «işi kaptın» afişiyle eksiksiz huni.
+ - **CV Studio** — kendi sesinizle yeniden yazım, ilana özel CV + ön yazı, özgeçmiş tanılama, tarayıcı içinde kişisel veri maskeleme.
+@@ -35,7 +35,7 @@ Slash komut modları ve form doldurma CLI'da kalır; SPA aynı verilerin üzerin
+ | [Architecture](Architecture) | Express orkestratörü + 37 rota modülü, SPA, iki tarayıcı kayıt defteri, veri akışları. |
+ | [Features](Features) | Her `#/` görünümü ve onu destekleyen API rotaları. |
+ | [API-Reference](API-Reference) | Modüle göre gruplanmış REST + SSE yüzeyi. |
+-| [Scanner-Providers](Scanner-Providers) | 93 EN adaptörü + 5 RU kaynağı, yeni adaptör ekleme. |
++| [Scanner-Providers](Scanner-Providers) | 98 EN adaptörü + 5 RU kaynağı, yeni adaptör ekleme. |
+ | [Security](Security) | CSP, SSRF koruması, XSS sınırları, hız sınırlama. |
+ | [Testing-and-QA](Testing-and-QA) | Test piramidi, CI kapıları, QA metodolojisi. |
+ | [Localization](Localization) | 17 dil, sözlük dosyaları, RTL, yardım eşitliği. |
+diff --git "a/Home-(\320\240\321\203\321\201\321\201\320\272\320\270\320\271).md" "b/Home-(\320\240\321\203\321\201\321\201\320\272\320\270\320\271).md"
+index 608e7c7..bf0ef3d 100644
+--- "a/Home-(\320\240\321\203\321\201\321\201\320\272\320\270\320\271).md"
++++ "b/Home-(\320\240\321\203\321\201\321\201\320\272\320\270\320\271).md"
+@@ -4,7 +4,7 @@
+ 
+ **Чистый веб-интерфейс в документационном стиле для AI-пайплайна поиска работы [career-ops](https://github.com/Fighter90/career-ops).** Ищите, оценивайте, исследуйте, откликайтесь и отслеживайте каждую вакансию в одной вкладке браузера.
+ 
+-> Текущий релиз: **v1.238.0** · Node ≥ 18 · Express 4 + SPA на ванильном JS · 98 адаптеров сканера · 37 модуль маршрутов · 17 локалей интерфейса · 3481 юнит-тест.
++> Текущий релиз: **v1.239.0** · Node ≥ 18 · Express 4 + SPA на ванильном JS · 103 адаптеров сканера · 37 модуль маршрутов · 17 локалей интерфейса · 3774 юнит-тест.
+ >
+ > _Неофициальный UI — не аффилирован с career-ops / santifer и не одобрен ими._
+ 
+@@ -16,7 +16,7 @@ CLI по-прежнему отвечает за slash-команды и запо
+ 
+ ## Ключевые возможности
+ 
+-- **Сканирование порталов без токенов** — 98 самозарегистрированных адаптеров (93 EN + 5 RU, включая hh.ru, Habr Career, Trudvsem, GetMatch, GeekJob) обращаются к публичным API джоб-бордов напрямую, без затрат на LLM.
++- **Сканирование порталов без токенов** — 103 самозарегистрированных адаптеров (98 EN + 5 RU, включая hh.ru, Habr Career, Trudvsem, GetMatch, GeekJob) обращаются к публичным API джоб-бордов напрямую, без затрат на LLM.
+ - **Оценка вакансий и отчёты** — рубрика 0.0–5.0 по пяти измерениям плюс целостная общая оценка, глубокое исследование компаний, генерация резюме в PDF/DOCX.
+ - **Трекер откликов** — полная воронка с каноническим статусом `Hired` и баннером «работа найдена».
+ - **CV Studio** — переписывание в вашем голосе, CV + сопроводительное письмо под конкретную вакансию, диагностика резюме, маскирование PII прямо в браузере.
+@@ -35,7 +35,7 @@ CLI по-прежнему отвечает за slash-команды и запо
+ | [Architecture](Architecture) | Оркестратор Express + 37 модуль маршрутов, SPA, два реестра сканера, потоки данных. |
+ | [Features](Features) | Каждое представление `#/` и стоящие за ним API-маршруты. |
+ | [API-Reference](API-Reference) | Поверхность REST + SSE, сгруппированная по модулям. |
+-| [Scanner-Providers](Scanner-Providers) | 93 EN-адаптера + 5 RU-источников, как добавить новый. |
++| [Scanner-Providers](Scanner-Providers) | 98 EN-адаптеров + 5 RU-источников, как добавить новый. |
+ | [Security](Security) | CSP, SSRF-защита, границы XSS, ограничение частоты запросов. |
+ | [Testing-and-QA](Testing-and-QA) | Пирамида тестов, CI-гейты, методология QA. |
+ | [Localization](Localization) | 16 локалей, словари, RTL, паритет справки. |
+diff --git "a/Home-(\320\243\320\272\321\200\320\260\321\227\320\275\321\201\321\214\320\272\320\260).md" "b/Home-(\320\243\320\272\321\200\320\260\321\227\320\275\321\201\321\214\320\272\320\260).md"
+index 52aa66b..cb5e352 100644
+--- "a/Home-(\320\243\320\272\321\200\320\260\321\227\320\275\321\201\321\214\320\272\320\260).md"
++++ "b/Home-(\320\243\320\272\321\200\320\260\321\227\320\275\321\201\321\214\320\272\320\260).md"
+@@ -4,7 +4,7 @@
+ 
+ **Чистий веб-інтерфейс у документаційному стилі для AI-конвеєра пошуку роботи [career-ops](https://github.com/Fighter90/career-ops).** Шукайте, оцінюйте, досліджуйте, відгукуйтесь і відстежуйте кожну вакансію в одній вкладці браузера.
+ 
+-> Поточний реліз: **v1.238.0** · Node ≥ 18 · Express 4 + SPA на ванільному JS · 98 адаптерів сканера · 37 модуль маршрутів · 17 мов інтерфейсу · 3481 юніт-тест.
++> Поточний реліз: **v1.239.0** · Node ≥ 18 · Express 4 + SPA на ванільному JS · 103 адаптерів сканера · 37 модуль маршрутів · 17 мов інтерфейсу · 3774 юніт-тест.
+ >
+ > _Неофіційний UI — не афілійований із career-ops / santifer і не схвалений ними._
+ 
+@@ -16,7 +16,7 @@ CLI, як і раніше, відповідає за slash-команди та 
+ 
+ ## Ключові можливості
+ 
+-- **Сканування порталів без токенів** — 98 самозареєстрованих адаптерів (93 EN + 5 RU) звертаються до публічних API джоб-бордів напряму, без витрат на LLM.
++- **Сканування порталів без токенів** — 103 самозареєстрованих адаптерів (98 EN + 5 RU) звертаються до публічних API джоб-бордів напряму, без витрат на LLM.
+ - **Оцінювання вакансій і звіти** — рубрика 0.0–5.0 за шістьма вимірами, глибоке дослідження компаній, генерація резюме в PDF/DOCX.
+ - **Трекер відгуків** — повна воронка з канонічним статусом `Hired` і банером «роботу знайдено».
+ - **CV Studio** — переписування вашим голосом, CV + супровідний лист під конкретну вакансію, діагностика резюме, маскування персональних даних просто в браузері.
+@@ -35,7 +35,7 @@ CLI, як і раніше, відповідає за slash-команди та 
+ | [Architecture](Architecture) | Оркестратор Express + 37 модуль маршрутів, SPA, два реєстри сканера, потоки даних. |
+ | [Features](Features) | Кожне подання `#/` і API-маршрути за ним. |
+ | [API-Reference](API-Reference) | Поверхня REST + SSE, згрупована за модулями. |
+-| [Scanner-Providers](Scanner-Providers) | 93 EN-адаптери + 5 RU-джерел, як додати новий. |
++| [Scanner-Providers](Scanner-Providers) | 98 EN-адаптерів + 5 RU-джерел, як додати новий. |
+ | [Security](Security) | CSP, захист SSRF, межі XSS, обмеження частоти запитів. |
+ | [Testing-and-QA](Testing-and-QA) | Піраміда тестів, CI-гейти, методологія QA. |
+ | [Localization](Localization) | 16 локалей, словники, RTL, паритет довідки. |
+diff --git "a/Home-(\330\247\331\204\330\271\330\261\330\250\331\212\330\251).md" "b/Home-(\330\247\331\204\330\271\330\261\330\250\331\212\330\251).md"
+index 5aa4f78..23f9893 100644
+--- "a/Home-(\330\247\331\204\330\271\330\261\330\250\331\212\330\251).md"
++++ "b/Home-(\330\247\331\204\330\271\330\261\330\250\331\212\330\251).md"
+@@ -4,7 +4,7 @@
+ 
+ **واجهة ويب نظيفة بأسلوب التوثيق لخط أنابيب البحث عن عمل بالذكاء الاصطناعي [career-ops](https://github.com/Fighter90/career-ops).** ابحث، وقيِّم، وتعمّق في البحث، وقدِّم، وتتبَّع كل عرض عمل من علامة تبويب متصفح واحدة.
+ 
+-> الإصدار الحالي: **v1.238.0** · Node ≥ 18 · Express 4 + تطبيق صفحة واحدة بجافاسكريبت خام · 98 محوِّل مسح · 37 وحدة مسارات · 17 لغة للواجهة · 3481 اختبار وحدة.
++> الإصدار الحالي: **v1.239.0** · Node ≥ 18 · Express 4 + تطبيق صفحة واحدة بجافاسكريبت خام · 103 محوِّل مسح · 37 وحدة مسارات · 17 لغة للواجهة · 3774 اختبار وحدة.
+ >
+ > _واجهة غير رسمية — غير تابعة لـ career-ops / santifer وغير معتمدة منهما._
+ 
+@@ -16,7 +16,7 @@
+ 
+ ## القدرات الرئيسية
+ 
+-- **مسح بوابات الوظائف دون توكنات** — 98 محوِّلًا ذاتي التسجيل (93 دوليًا + 5 روسية) يستدعي واجهات برمجة تطبيقات لوحات الوظائف العامة مباشرة، دون أي تكلفة LLM.
++- **مسح بوابات الوظائف دون توكنات** — 103 محوِّلًا ذاتي التسجيل (98 دوليًا + 5 روسية) يستدعي واجهات برمجة تطبيقات لوحات الوظائف العامة مباشرة، دون أي تكلفة LLM.
+ - **تقييم العروض والتقارير** — معيار من ست أبعاد بمقياس 0.0–5.0، بحث معمّق عن الشركات، توليد السيرة الذاتية بصيغة PDF/DOCX.
+ - **متتبِّع الطلبات** — قمع كامل مع الحالة القانونية `Hired` ولافتة «حصلت على الوظيفة».
+ - **CV Studio** — إعادة صياغة بصوتك، سيرة ذاتية + خطاب تقديم مخصصان للوظيفة، تشخيص السيرة الذاتية، إخفاء البيانات الشخصية داخل المتصفح.
+@@ -35,7 +35,7 @@
+ | [Architecture](Architecture) | منسِّق Express + 37 وحدة مسارات، التطبيق، سِجلّا الماسح، تدفقات البيانات. |
+ | [Features](Features) | كل عرض `#/` ومسارات API التي تدعمه. |
+ | [API-Reference](API-Reference) | سطح REST + SSE مجمّعًا حسب الوحدة. |
+-| [Scanner-Providers](Scanner-Providers) | المحوِّلات الدولية الـ77 + المصادر الروسية الـ5، وكيفية إضافة محوِّل جديد. |
++| [Scanner-Providers](Scanner-Providers) | المحوِّلات الدولية الـ98 + المصادر الروسية الـ5، وكيفية إضافة محوِّل جديد. |
+ | [Security](Security) | CSP، حماية SSRF، حدود XSS، تحديد المعدل. |
+ | [Testing-and-QA](Testing-and-QA) | هرم الاختبارات، بوابات CI، منهجية ضمان الجودة. |
+ | [Localization](Localization) | 16 لغة، ملفات القواميس، الكتابة من اليمين لليسار، تكافؤ المساعدة. |
+diff --git "a/Home-(\340\244\271\340\244\277\340\244\250\340\245\215\340\244\246\340\245\200).md" "b/Home-(\340\244\271\340\244\277\340\244\250\340\245\215\340\244\246\340\245\200).md"
+index ca93f76..cd305cc 100644
+--- "a/Home-(\340\244\271\340\244\277\340\244\250\340\245\215\340\244\246\340\245\200).md"
++++ "b/Home-(\340\244\271\340\244\277\340\244\250\340\245\215\340\244\246\340\245\200).md"
+@@ -4,7 +4,7 @@
+ 
+ **[career-ops](https://github.com/Fighter90/career-ops) AI जॉब-सर्च पाइपलाइन के लिए एक स्वच्छ, डॉक्स-शैली वाला वेब इंटरफ़ेस।** एक ही ब्राउज़र टैब से हर ऑफर को खोजें, मूल्यांकन करें, गहराई से जानें, आवेदन करें और ट्रैक करें।
+ 
+-> वर्तमान रिलीज़: **v1.238.0** · Node ≥ 18 · Express 4 + वैनिला-JS SPA · 98 स्कैनर एडेप्टर · 37 रूट मॉड्यूल · 17 UI भाषाएं · 3481 यूनिट टेस्ट।
++> वर्तमान रिलीज़: **v1.239.0** · Node ≥ 18 · Express 4 + वैनिला-JS SPA · 103 स्कैनर एडेप्टर · 37 रूट मॉड्यूल · 17 UI भाषाएं · 3774 यूनिट टेस्ट।
+ >
+ > _अनौपचारिक UI — career-ops / santifer से संबद्ध नहीं और न ही उनके द्वारा अनुमोदित।_
+ 
+@@ -16,7 +16,7 @@ CLI slash-कमांड मोड और फ़ॉर्म-फ़िलिं
+ 
+ ## प्रमुख क्षमताएं
+ 
+-- **ज़ीरो-टोकन पोर्टल स्कैनिंग** — 98 स्व-पंजीकृत एडेप्टर (93 EN + 5 RU) सार्वजनिक जॉब-बोर्ड API को सीधे, बिना LLM लागत के कॉल करते हैं।
++- **ज़ीरो-टोकन पोर्टल स्कैनिंग** — 103 स्व-पंजीकृत एडेप्टर (98 EN + 5 RU) सार्वजनिक जॉब-बोर्ड API को सीधे, बिना LLM लागत के कॉल करते हैं।
+ - **ऑफर मूल्यांकन और रिपोर्ट** — छह-आयामी 0.0–5.0 रूब्रिक मूल्यांकन, गहन कंपनी अनुसंधान, और जनरेट किए गए PDF/DOCX रिज़्यूमे।
+ - **आवेदन ट्रैकर** — कैननिकल `Hired` स्टेटस और "जॉब लैंडेड" बैनर के साथ पूरा पाइपलाइन फ़नल।
+ - **CV Studio** — आपकी अपनी आवाज़ में पुनर्लेखन, JD के अनुरूप CV + कवर लेटर, रिज़्यूमे डायग्नोस्टिक्स, ब्राउज़र में ही PII मास्किंग।
+@@ -35,7 +35,7 @@ CLI slash-कमांड मोड और फ़ॉर्म-फ़िलिं
+ | [Architecture](Architecture) | Express ऑर्केस्ट्रेटर + 37 रूट मॉड्यूल, SPA, दोनों स्कैनर रजिस्ट्रियां, डेटा फ़्लो। |
+ | [Features](Features) | हर `#/` व्यू और उसके पीछे के API रूट। |
+ | [API-Reference](API-Reference) | मॉड्यूल के अनुसार समूहित REST + SSE सतह। |
+-| [Scanner-Providers](Scanner-Providers) | 93 EN एडेप्टर + 5 RU स्रोत, नया कैसे जोड़ें। |
++| [Scanner-Providers](Scanner-Providers) | 98 EN एडेप्टर + 5 RU स्रोत, नया कैसे जोड़ें। |
+ | [Security](Security) | CSP, SSRF सुरक्षा, XSS सीमाएं, रेट लिमिटिंग। |
+ | [Testing-and-QA](Testing-and-QA) | टेस्ट पिरामिड, CI गेट्स, QA मेथोडोलॉजी। |
+ | [Localization](Localization) | 17 भाषाएं, डिक्शनरी फ़ाइलें, RTL, हेल्प पैरिटी। |
+diff --git "a/Home-(\346\227\245\346\234\254\350\252\236).md" "b/Home-(\346\227\245\346\234\254\350\252\236).md"
+index 774bf56..931387c 100644
+--- "a/Home-(\346\227\245\346\234\254\350\252\236).md"
++++ "b/Home-(\346\227\245\346\234\254\350\252\236).md"
+@@ -4,7 +4,7 @@
+ 
+ **AI 求職パイプライン [career-ops](https://github.com/Fighter90/career-ops) のためのクリーンなドキュメントスタイル Web インターフェース。** 1つのブラウザタブで、求人の検索・評価・深掘り調査・応募・追跡をすべて行えます。
+ 
+-> 最新リリース: **v1.238.0** · Node ≥ 18 · Express 4 + バニラ JS SPA · スキャナーアダプター 98 個 · ルートモジュール 37 個 · UI ロケール 17 言語 · ユニットテスト 3481 件。
++> 最新リリース: **v1.239.0** · Node ≥ 18 · Express 4 + バニラ JS SPA · スキャナーアダプター 103 個 · ルートモジュール 37 個 · UI ロケール 17 言語 · ユニットテスト 3774 件。
+ >
+ > _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
+ 
+@@ -16,7 +16,7 @@
+ 
+ ## 主な機能
+ 
+-- **トークンゼロのポータルスキャン** — 自己登録型アダプター 98 個（EN 93 + RU 5）が公開求人ボード API を直接呼び出し、LLM コストはかかりません。
++- **トークンゼロのポータルスキャン** — 自己登録型アダプター 103 個（EN 98 + RU 5）が公開求人ボード API を直接呼び出し、LLM コストはかかりません。
+ - **求人評価とレポート** — 6 次元 0.0–5.0 ルーブリック評価、企業の深掘りリサーチ、PDF/DOCX 履歴書生成。
+ - **応募トラッカー** — 正式な `Hired` ステータスと内定バナーを備えたフルファネル。
+ - **CV Studio** — 自分の声に合わせたリライト、JD に合わせた CV + カバーレター、履歴書診断、ブラウザ内 PII マスキング。
+@@ -35,7 +35,7 @@
+ | [Architecture](Architecture) | Express オーケストレーター + 37 ルートモジュール、SPA、2 つのスキャナーレジストリ、データフロー。 |
+ | [Features](Features) | すべての `#/` ビューとそれを支える API ルート。 |
+ | [API-Reference](API-Reference) | モジュール別にまとめた REST + SSE サーフェス。 |
+-| [Scanner-Providers](Scanner-Providers) | EN アダプター 93 個 + RU ソース 5 個、追加方法。 |
++| [Scanner-Providers](Scanner-Providers) | EN アダプター 98 個 + RU ソース 5 個、追加方法。 |
+ | [Security](Security) | CSP、SSRF ガード、XSS 境界、レート制限。 |
+ | [Testing-and-QA](Testing-and-QA) | テストピラミッド、CI ゲート、QA 方法論。 |
+ | [Localization](Localization) | 16 ロケール、辞書ファイル、RTL、ヘルプのパリティ。 |
+diff --git "a/Home-(\347\256\200\344\275\223\344\270\255\346\226\207).md" "b/Home-(\347\256\200\344\275\223\344\270\255\346\226\207).md"
+index 05379fb..53e6008 100644
+--- "a/Home-(\347\256\200\344\275\223\344\270\255\346\226\207).md"
++++ "b/Home-(\347\256\200\344\275\223\344\270\255\346\226\207).md"
+@@ -4,7 +4,7 @@
+ 
+ **为 AI 求职流水线 [career-ops](https://github.com/Fighter90/career-ops) 打造的简洁文档风格 Web 界面。** 在一个浏览器标签页中完成搜索、评估、深度调研、投递和追踪每一个职位。
+ 
+-> 当前版本：**v1.238.0** · Node ≥ 18 · Express 4 + 原生 JS SPA · 98 个扫描适配器 · 37 个路由模块 · 17 种界面语言 · 3481 个单元测试。
++> 当前版本：**v1.239.0** · Node ≥ 18 · Express 4 + 原生 JS SPA · 103 个扫描适配器 · 37 个路由模块 · 17 种界面语言 · 3774 个单元测试。
+ >
+ > _非官方界面 — 与 career-ops / santifer 无隶属或背书关系。_
+ 
+@@ -16,7 +16,7 @@ CLI 继续负责斜杠命令模式和表单填写；SPA 则在同一份数据之
+ 
+ ## 核心能力
+ 
+-- **零 Token 门户扫描** — 98 个自注册适配器（93 个国际 + 5 个俄区）直接调用公开招聘 API，无任何 LLM 成本。
++- **零 Token 门户扫描** — 103 个自注册适配器（98 个国际 + 5 个俄区）直接调用公开招聘 API，无任何 LLM 成本。
+ - **职位评估与报告** — 五维加整体综合评分 0.0–5.0 评分标准、公司深度调研、PDF/DOCX 简历生成。
+ - **投递追踪器** — 完整漏斗，包含正式的 `Hired` 状态与「拿到工作」横幅。
+ - **CV Studio** — 保持个人语气的改写、针对 JD 定制的简历 + 求职信、简历诊断、浏览器内 PII 脱敏。
+@@ -35,7 +35,7 @@ CLI 继续负责斜杠命令模式和表单填写；SPA 则在同一份数据之
+ | [Architecture](Architecture) | Express 编排器 + 37 个路由模块、SPA、双扫描注册表、数据流。 |
+ | [Features](Features) | 每个 `#/` 视图及其背后的 API 路由。 |
+ | [API-Reference](API-Reference) | 按模块分组的 REST + SSE 接口。 |
+-| [Scanner-Providers](Scanner-Providers) | 93 个国际适配器 + 5 个俄区来源，及新增方法。 |
++| [Scanner-Providers](Scanner-Providers) | 98 个国际适配器 + 5 个俄区来源，及新增方法。 |
+ | [Security](Security) | CSP、SSRF 防护、XSS 边界、限流。 |
+ | [Testing-and-QA](Testing-and-QA) | 测试金字塔、CI 门禁、QA 方法论。 |
+ | [Localization](Localization) | 16 种语言、词典文件、RTL、帮助一致性。 |
+diff --git "a/Home-(\347\271\201\351\253\224\344\270\255\346\226\207).md" "b/Home-(\347\271\201\351\253\224\344\270\255\346\226\207).md"
+index dc679c6..c788396 100644
+--- "a/Home-(\347\271\201\351\253\224\344\270\255\346\226\207).md"
++++ "b/Home-(\347\271\201\351\253\224\344\270\255\346\226\207).md"
+@@ -4,7 +4,7 @@
+ 
+ **為 AI 求職管線 [career-ops](https://github.com/Fighter90/career-ops) 打造的簡潔文件風格 Web 介面。** 在單一瀏覽器分頁中完成搜尋、評估、深入研究、投遞與追蹤每一個職缺。
+ 
+-> 目前版本：**v1.238.0** · Node ≥ 18 · Express 4 + 原生 JS SPA · 98 個掃描配接器 · 37 個路由模組 · 17 種介面語言 · 3481 個單元測試。
++> 目前版本：**v1.239.0** · Node ≥ 18 · Express 4 + 原生 JS SPA · 103 個掃描配接器 · 37 個路由模組 · 17 種介面語言 · 3774 個單元測試。
+ >
+ > _非官方介面 — 與 career-ops / santifer 無隸屬或背書關係。_
+ 
+@@ -16,7 +16,7 @@ CLI 繼續負責斜線指令模式與表單填寫；SPA 則在同一份資料之
+ 
+ ## 核心能力
+ 
+-- **零 Token 入口網站掃描** — 98 個自動註冊的配接器（93 個國際 + 5 個俄區）直接呼叫公開職缺 API，不產生任何 LLM 成本。
++- **零 Token 入口網站掃描** — 103 個自動註冊的配接器（98 個國際 + 5 個俄區）直接呼叫公開職缺 API，不產生任何 LLM 成本。
+ - **職缺評估與報告** — 六維 0.0–5.0 評分準則、公司深入研究、PDF/DOCX 履歷產生。
+ - **投遞追蹤器** — 完整漏斗，包含正式的 `Hired` 狀態與「找到工作」橫幅。
+ - **CV Studio** — 保留個人語氣的改寫、針對 JD 客製的履歷 + 求職信、履歷診斷、瀏覽器內 PII 遮罩。
+@@ -35,7 +35,7 @@ CLI 繼續負責斜線指令模式與表單填寫；SPA 則在同一份資料之
+ | [Architecture](Architecture) | Express 協調器 + 37 個路由模組、SPA、雙掃描註冊表、資料流。 |
+ | [Features](Features) | 每個 `#/` 檢視及其背後的 API 路由。 |
+ | [API-Reference](API-Reference) | 依模組分組的 REST + SSE 介面。 |
+-| [Scanner-Providers](Scanner-Providers) | 93 個國際配接器 + 5 個俄區來源，以及新增方式。 |
++| [Scanner-Providers](Scanner-Providers) | 98 個國際配接器 + 5 個俄區來源，以及新增方式。 |
+ | [Security](Security) | CSP、SSRF 防護、XSS 邊界、速率限制。 |
+ | [Testing-and-QA](Testing-and-QA) | 測試金字塔、CI 關卡、QA 方法論。 |
+ | [Localization](Localization) | 16 種語言、字典檔、RTL、說明一致性。 |
+diff --git "a/Home-(\355\225\234\352\265\255\354\226\264).md" "b/Home-(\355\225\234\352\265\255\354\226\264).md"
+index b510dfc..c9014cf 100644
+--- "a/Home-(\355\225\234\352\265\255\354\226\264).md"
++++ "b/Home-(\355\225\234\352\265\255\354\226\264).md"
+@@ -4,7 +4,7 @@
+ 
+ **AI 구직 파이프라인 [career-ops](https://github.com/Fighter90/career-ops)를 위한 깔끔한 문서 스타일 웹 인터페이스.** 하나의 브라우저 탭에서 모든 공고를 검색하고, 평가하고, 심층 조사하고, 지원하고, 추적하세요.
+ 
+-> 현재 릴리스: **v1.238.0** · Node ≥ 18 · Express 4 + 바닐라 JS SPA · 스캐너 어댑터 98개 · 라우트 모듈 37개 · UI 로케일 17개 · 단위 테스트 3481개.
++> 현재 릴리스: **v1.239.0** · Node ≥ 18 · Express 4 + 바닐라 JS SPA · 스캐너 어댑터 103개 · 라우트 모듈 37개 · UI 로케일 17개 · 단위 테스트 3774개.
+ >
+ > _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
+ 
+@@ -16,7 +16,7 @@
+ 
+ ## 주요 기능
+ 
+-- **토큰 제로 포털 스캔** — 자동 등록되는 어댑터 98개(EN 93 + RU 5)가 공개 채용 보드 API를 직접 호출하며 LLM 비용이 들지 않습니다.
++- **토큰 제로 포털 스캔** — 자동 등록되는 어댑터 103개(EN 98 + RU 5)가 공개 채용 보드 API를 직접 호출하며 LLM 비용이 들지 않습니다.
+ - **공고 평가 및 리포트** — 6개 차원 0.0–5.0 루브릭 평가, 기업 심층 리서치, PDF/DOCX 이력서 생성.
+ - **지원 트래커** — 정식 `Hired` 상태와 취업 축하 배너를 포함한 전체 퍼널.
+ - **CV Studio** — 목소리 매칭 리라이트, JD 맞춤 CV + 커버레터, 이력서 진단, 브라우저 내 PII 마스킹.
+@@ -35,7 +35,7 @@
+ | [Architecture](Architecture) | Express 오케스트레이터 + 라우트 모듈 37개, SPA, 두 개의 스캐너 레지스트리, 데이터 흐름. |
+ | [Features](Features) | 모든 `#/` 뷰와 이를 지원하는 API 라우트. |
+ | [API-Reference](API-Reference) | 모듈별로 정리한 REST + SSE 표면. |
+-| [Scanner-Providers](Scanner-Providers) | EN 어댑터 93개 + RU 소스 5개, 새 어댑터 추가 방법. |
++| [Scanner-Providers](Scanner-Providers) | EN 어댑터 98개 + RU 소스 5개, 새 어댑터 추가 방법. |
+ | [Security](Security) | CSP, SSRF 가드, XSS 경계, 레이트 리밋. |
+ | [Testing-and-QA](Testing-and-QA) | 테스트 피라미드, CI 게이트, QA 방법론. |
+ | [Localization](Localization) | 로케일 16개, 사전 파일, RTL, 도움말 패리티. |
+diff --git a/Home.md b/Home.md
+index 45c0fed..1047f0b 100644
+--- a/Home.md
++++ b/Home.md
+@@ -4,7 +4,7 @@
+ 
+ **A clean, docs-style web interface for the [career-ops](https://github.com/Fighter90/career-ops) AI job-search pipeline.** Search, evaluate, deep-dive, apply, and track every offer from a single browser tab — instead of bouncing between an AI coding CLI, terminals, and markdown files.
+ 
+-> Current release: **v1.238.0** · Node ≥ 18 · Express 4 + vanilla-JS SPA · 98 scanner adapters · 37 route modules · 17 UI locales · 3481 unit tests.
++> Current release: **v1.239.0** · Node ≥ 18 · Express 4 + vanilla-JS SPA · 103 scanner adapters · 37 route modules · 17 UI locales · 3774 unit tests.
+ >
+ > _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
+ 
+@@ -20,7 +20,7 @@ The CLI keeps owning slash-command modes and form-fill (via Playwright MCP); the
+ 
+ ## Key capabilities
+ 
+-- **Zero-token portal scanning** — 98 self-registering adapters (93 EN-region ATS/boards + 5 RU sources) hit public job-board APIs directly, in-process, at zero LLM cost. The full list with links lives on the landing: https://cvstart.org/#sources (registry-synced at build).
++- **Zero-token portal scanning** — 103 self-registering adapters (98 EN-region ATS/boards + 5 RU sources) hit public job-board APIs directly, in-process, at zero LLM cost. The full list with links lives on the landing: https://cvstart.org/#sources (registry-synced at build).
+ - **Offer evaluation & reports** — 0.0–5.0 rubric of five dimensions plus a holistic global score evaluations, deep company research, and generated PDF/DOCX résumés.
+ - **Application tracker** — full pipeline funnel with the canonical `Hired` status and a job-landed banner.
+ - **CV Studio** — voice-match humanize, JD-tailored CV + cover letter, résumé diagnostics, in-browser PII masking, add-to-CV from a URL.
+@@ -37,7 +37,7 @@ The CLI keeps owning slash-command modes and form-fill (via Playwright MCP); the
+ | **[[Architecture]]** | The Express orchestrator + `server/lib` + 37 route modules, the SPA, the two scanner registries, the parent read-only contract, data flows. |
+ | **[[Features]]** | Every `#/` view and the API routes behind it. |
+ | **[[API Reference\|API-Reference]]** | The REST + SSE surface grouped by route module, read vs write, fail-soft contracts. |
+-| **[[Scanner Providers\|Scanner-Providers]]** | All 93 EN adapters + 5 RU sources, how to add one, the two-registry rule, SSRF host-pinning. |
++| **[[Scanner Providers\|Scanner-Providers]]** | All 98 EN adapters + 5 RU sources, how to add one, the two-registry rule, SSRF host-pinning. |
+ | **[[Security]]** | CSP, SSRF guard, XSS boundaries, rate limiting, secrets hygiene, CodeQL posture. |
+ | **[[Cloud Deployment\|Cloud-Deployment]]** | Run the whole stack (career-ops + career-ops-ui + engine) on a cloud server: the three parts, provision, engine choice, and the security invariants that must survive the move off loopback. |
+ | **[[Testing and QA\|Testing-and-QA]]** | The test pyramid, CI gates, CI-isolation rules, QA methodology. |
+diff --git a/Release-Process.md b/Release-Process.md
+index a7f67fb..0cf9466 100644
+--- a/Release-Process.md
++++ b/Release-Process.md
+@@ -30,7 +30,7 @@ Every release ships all of the following:
+ 3. **README ×17** — release banner, badges (tests count), and breadcrumb updated in all 17 READMEs.
+ 4. **Help ×17** — every help-guide section touched by the release updated in all 17 `docs/help/<lang>.md` bundles; H2/H3 count gates bumped if sections were added.
+ 5. **i18n keys ×17** — new UI strings in all 17 locale dicts + regenerated snapshot.
+-6. **Tests** — new coverage for the change; all four suite baselines (unit / Playwright / smoke E2E / comprehensive E2E) kept ≥ the previous floor (unit: 3481 at v1.238.0).
++6. **Tests** — new coverage for the change; all four suite baselines (unit / Playwright / smoke E2E / comprehensive E2E) kept ≥ the previous floor (unit: 3774 at v1.239.0).
+ 7. **QA prompt** — a new `qa/QA-REGRESSION-PROMPT-v<version>.md` delta driver (see [[Testing and QA|Testing-and-QA]]).
+ 8. **Docs/SDD** — `docs/architecture/*` updated in the same PR when routes/flows changed.
+ 9. **Playwright live verify** against the running server.
+diff --git a/Scanner-Providers.md b/Scanner-Providers.md
+index d640356..5a234a9 100644
+--- a/Scanner-Providers.md
++++ b/Scanner-Providers.md
+@@ -1,6 +1,6 @@
+ # Scanner Providers
+ 
+-As of **v1.238.0** the scanner ships **98 sources — 93 EN-region adapters + 5 RU**.
++As of **v1.239.0** the scanner ships **103 sources — 98 EN-region adapters + 5 RU**.
+ 
+ > **Keyword prefixes (v1.227.5).** `title_filter` / `content_filter` entries default to case-insensitive **substring** matching, so a bare negative `intern` also rejects "International Product Manager". Two opt-in prefixes narrow one entry without changing that default: **`word:intern`** matches the whole word only, and **`stem:agent`** must start a word and may continue (separating "Agentforce" from "Reagents"). Boundaries are Unicode-aware, so they behave the same in accented and Cyrillic titles. A bare `word:` / `stem:` is treated as a typo and matches nothing — as a negative, an empty pattern would veto an entire scan. web-ui ignored both prefixes until v1.227.5, matching them as literal text. All scanning is **in-process and zero-token**: adapters hit public job-board APIs/feeds directly over HTTPS; no LLM is involved and no external script is spawned.
+ 
+@@ -9,24 +9,24 @@ As of **v1.238.0** the scanner ships **98 sources — 93 EN-region adapters + 5
+ Adding an EN board touches **two** registries:
+ 
+ 1. **Source meta registry** — `server/lib/sources/<slug>.mjs` with an `export const meta = { value, label, region, configKey? }` block. `server/lib/sources/registry.mjs` `readdirSync`-scans the folder at boot and dynamically `import()`s every `*.mjs` (P-14, v1.69.0), so dropping a valid file auto-registers it (malformed `meta` → skipped with one `console.warn`). This drives `GET /api/scan/sources` and the `#/scan` dropdown.
+-2. **Fetch-walk registry** — `server/lib/portals/adapters/<slug>.mjs` plus its entry in `server/lib/portals/registry.mjs::ALL_ADAPTERS` (asserted `=== 93` with the exact sorted id list by `tests/adapter-registry.test.mjs`). Adapters implement `matches()`/`buildEndpoint()` (string-or-null contract) and the fetch/parse walk over `tracked_companies:` in `portals.yml`.
++2. **Fetch-walk registry** — `server/lib/portals/adapters/<slug>.mjs` plus its entry in `server/lib/portals/registry.mjs::ALL_ADAPTERS` (asserted `=== 98` with the exact sorted id list by `tests/adapter-registry.test.mjs`). Adapters implement `matches()`/`buildEndpoint()` (string-or-null contract) and the fetch/parse walk over `tracked_companies:` in `portals.yml`.
+ 
+ RU sources additionally need a `RU_DISPATCH` row in `server/lib/ru-scanner.mjs`, keyed by the meta's `configKey`.
+ 
+-## EN adapters (93)
++## EN adapters (98)
+ 
+ Kind: **board-wide** = one global feed searched by keyword · **per-tenant** = per-company slug/board (driven by `tracked_companies:`) · **single-company** = one fixed employer's careers backend.
+ 
+ | id (`value`) | Label | Kind | Notes |
+ |---|---|---|---|
+ | `generalist-world` | Generalist World | board-wide | generalist/ops roles; fails loud on markup change |
+-| `greenhouse` | Greenhouse | per-tenant | `boards-api.greenhouse.io/v1/boards/<slug>/jobs` | Office lists are sorted before they reach the posting's `location`: Greenhouse does not promise `offices[]` order between responses, so an unsorted join let a re-ordered board make an unchanged posting read as new — v1.230.0
++| `greenhouse` | Greenhouse | per-tenant | `boards-api.greenhouse.io/v1/boards/<slug>/jobs` | Office lists are sorted before they reach the posting's `location`: Greenhouse does not promise `offices[]` order between responses, so an unsorted join let a re-ordered board make an unchanged posting read as new — v1.230.0 **v1.239.0:** embed boards (`/embed/job_board?for=<board>`) read the board from `?for=` on Greenhouse hosts only. |
+ | `ashby` | Ashby | per-tenant | `api.ashbyhq.com/posting-api/job-board/<slug>` |
+ | `lever` | Lever | per-tenant | `api.lever.co/v0/postings/<slug>`; **v1.118.0:** detects EU boards `jobs.eu.lever.co` → `api.eu.lever.co` |
+ | `pythonorg` | Python.org Jobs | board-wide | Python roles; employer attribution required |
+ | `workable` | Workable | per-tenant | |
+ | `smartrecruiters` | SmartRecruiters | per-tenant | |
+-| `workday` | Workday | per-tenant | Reports `workdayFallback` in scan results; **v1.119.0:** browser-like headers (UA/accept-language/origin/referer derived from the CXS URL) clear Cloudflare-gated tenants |
++| `workday` | Workday | per-tenant | Reports `workdayFallback` in scan results; **v1.119.0:** browser-like headers (UA/accept-language/origin/referer derived from the CXS URL) clear Cloudflare-gated tenants; **v1.239.0:** `wd*.myworkdaysite.com/recruiting/<tenant>/<site>` boards |
+ | `recruitee` | Recruitee | per-tenant | |
+ | `teamtailor` | Teamtailor | per-tenant | Feed-based |
+ | `personio` | Personio | per-tenant | An explicit `personio: <slug>` pins the tenant to `<slug>.jobs.personio.de`, for boards embedded as an iframe on a company domain where `careers_url` points nowhere useful. Anchored slug allowlist, still gated by the host regex; normalised through `new URL()` because web-ui's host check is case-sensitive — v1.237.0 |
+@@ -109,6 +109,11 @@ Kind: **board-wide** = one global feed searched by keyword · **per-tenant** = p
+ | `hiringroom` | HiringRoom | per-tenant | `*.hiringroom.com`. JSON-LD `/portal/jobs` first, legacy `/jobs` cards as fallback; `http://` posting URLs in the payload are rebuilt on HTTPS — v1.238.0 |
+ | `peoplesoft` | PeopleSoft Candidate Gateway | per-tenant | Detected by the `/psc/{site}/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL` path on any branded host. Follows PeopleSoft's same-origin session redirects itself (max 10 hops, every hop re-pinned to the tenant origin and checked against private addresses), replays the "load more" form (a relative action resolves beside the search page), and marks a partial walk `peoplesoftIncomplete` rather than reporting it as complete — v1.238.0 |
+ | `prevueaps` | PrevueAPS | per-tenant | `*.prevueaps.ca`. Resolves the site id from the jobs page, then reads the JSON API — v1.238.0 |
++| `applitrack` | AppliTrack | per-tenant | Frontline AppliTrack K-12 boards, `www.applitrack.com/<district>/onlineapp/` — v1.239.0 |
++| `neogov` | NEOGOV (SchoolJobs / GovernmentJobs) | per-tenant | `schooljobs.com/careers/<agency>` and `governmentjobs.com/careers/<agency>` — v1.239.0 |
++| `occ` | OCC Mundial | board-wide | Mexico's largest job board. Explicit `provider: occ` with search queries only — v1.239.0 |
++| `redrover` | Red Rover | per-tenant | K-12 staffing, `jobs.redroverk12.com/org/<id>`; remote postings labelled `Remote` — v1.239.0 |
++| `schoolspring` | SchoolSpring | per-tenant | `<district>.schoolspring.com` — v1.239.0 |
+ | `higheredjobs` | HigherEdJobs | board-wide | RSS category feeds — v1.117.0 |
+ | `hackernews` | Hacker News (Who is hiring) | board-wide | Monthly thread |
+ | `rss` | RSS | generic | Point it at any job RSS/Atom feed — the escape hatch when a board has no adapter |
+diff --git a/Testing-and-QA.md b/Testing-and-QA.md
+index eea2b15..34e0c79 100644
+--- a/Testing-and-QA.md
++++ b/Testing-and-QA.md
+@@ -4,7 +4,7 @@
+ 
+ | Layer | Count | Command | What it covers |
+ |---|---|---|---|
+-| Unit / integration | **3481** | `npm test` (`node --test tests/*.test.mjs tests/acceptance/*.test.mjs`) | In-process `createApp()` hit with `fetch` on an ephemeral port; registry invariants; sanitizers; provider parity suites (stubbed transport, no network) |
++| Unit / integration | **3774** | `npm test` (`node --test tests/*.test.mjs tests/acceptance/*.test.mjs`) | In-process `createApp()` hit with `fetch` on an ephemeral port; registry invariants; sanitizers; provider parity suites (stubbed transport, no network) |
+ | Playwright browser | 116 | `npm run test:e2e:browser` | Narrow-viewport (320px overflow, v1.227.5), smoke, full-cycle, forms, locale sweep, theme toggle, persistent widgets (docs FAB + usage HUD) |
+ | Smoke E2E | 21 | `npm run test:e2e` (`tests/e2e.mjs`) | Real server in a child process, every route walked |
+ | Comprehensive E2E | 23 | `npm run test:e2e:full` (`tests/e2e-comprehensive.mjs`) | Long full-surface pass — catches SPA regressions unit tests can't |
+-- 
+2.43.0
+
