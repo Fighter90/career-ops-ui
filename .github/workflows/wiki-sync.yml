@@ -1,0 +1,46 @@
+name: Wiki (apply patch)
+
+# The wiki is a separate git repository that cannot be pushed from every
+# place a release is cut. A wiki change is committed here as a `git
+# format-patch` file under docs/wiki-patches/, reviewed like any other diff,
+# and this workflow applies it to the wiki with the repository token.
+on:
+  workflow_dispatch:
+    inputs:
+      patch:
+        description: 'Patch file under docs/wiki-patches/ (e.g. v1.239.0.patch)'
+        required: true
+
+permissions:
+  contents: write   # the wiki is pushed with the repository token
+
+concurrency:
+  group: wiki-sync
+  cancel-in-progress: false
+
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - name: Apply and push
+        env:
+          PATCH: ${{ inputs.patch }}
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: |
+          set -euo pipefail
+          [[ "$PATCH" =~ ^[A-Za-z0-9._-]+\.patch$ ]] || { echo "::error::patch must be a file name like v1.239.0.patch"; exit 1; }
+          file="$GITHUB_WORKSPACE/docs/wiki-patches/$PATCH"
+          [ -f "$file" ] || { echo "::error::docs/wiki-patches/$PATCH not found"; exit 1; }
+          git clone --quiet "https://x-access-token:${GH_TOKEN}@github.com/${REPO}.wiki.git" "$RUNNER_TEMP/wiki"
+          cd "$RUNNER_TEMP/wiki"
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          subject=$(sed -n 's/^Subject: \(\[PATCH[^]]*\] \)\{0,1\}//p' "$file" | head -1)
+          if git log --format=%s | grep -qxF -- "$subject"; then
+            echo "already applied: $subject"; exit 0
+          fi
+          git am --3way "$file"
+          git push --quiet origin HEAD
+          echo "applied: $subject"
