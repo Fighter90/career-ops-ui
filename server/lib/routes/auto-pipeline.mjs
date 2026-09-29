@@ -274,7 +274,8 @@ export function registerAutoPipelineRoutes(app) {
         const runFn = evalMode === 'openai' ? runOpenAI
           : evalMode === 'qwen' ? runQwen
             : runAnthropic;
-        const r = await runFn(full, { maxTokens: 8192, timeoutMs: EVAL_TIMEOUT_MS });
+        // 16384, as /api/evaluate: a CJK A–G report plus SCORE_SUMMARY outgrew 8192.
+        const r = await runFn(full, { maxTokens: 16384, timeoutMs: EVAL_TIMEOUT_MS });
         if (r.error) {
           step(2, 'failed', r.error);
           return fail(2, r.error);

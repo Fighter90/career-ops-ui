@@ -2,6 +2,20 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.239.4] — 2026-09-29
+
+**Patch dalla regressione dal vivo della v1.239.3.**
+
+### Corretto
+
+- **Le valutazioni in coreano e cinese tradizionale segnalavano la mancanza del riepilogo del punteggio.** Quei report arrivano a 10–11 mila caratteri e il riepilogo viene per ultimo, quindi finiva oltre il limite di 8192 token di output. Le valutazioni (e la pipeline automatica) ora consentono 16384 token e, se un fornitore taglia comunque la risposta, il primo avviso lo dice invece di elencare i blocchi mancanti.
+- **Il controllo dal vivo considerava non tedesca una breve risposta in tedesco** (3 parole vuote tedesche, nessuna inglese). Una risposta a elenco può contenerne poche; senza alcuna parola inglese, ora ne bastano tre.
+- Test 3778 → 3782.
+
+### Note
+
+- Le route di ricerca approfondita e delle modalità mantengono il limite di 8192 token: le loro risposte **non** lo raggiungono nelle esecuzioni dal vivo.
+
 ## [1.239.3] — 2026-09-29
 
 **Patch dalla regressione dal vivo della v1.239.2.**

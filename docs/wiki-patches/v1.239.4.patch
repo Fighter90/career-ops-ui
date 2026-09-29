@@ -1,0 +1,295 @@
+From 8438b726ae9a19dfe96e278e231d17dbb2daa4b1 Mon Sep 17 00:00:00 2001
+From: Claude <noreply@anthropic.com>
+Date: Tue, 29 Sep 2026 17:00:00 +0000
+Subject: [PATCH] =?UTF-8?q?docs(wiki):=20v1.239.4=20=E2=80=94=203782=20tes?=
+ =?UTF-8?q?ts?=
+MIME-Version: 1.0
+Content-Type: text/plain; charset=UTF-8
+Content-Transfer-Encoding: 8bit
+
+---
+ Agentic-Practices.md                                            | 2 +-
+ Home-(Dansk).md                                                 | 2 +-
+ Home-(Deutsch).md                                               | 2 +-
+ "Home-(Espa\303\261ol).md"                                      | 2 +-
+ "Home-(Fran\303\247ais).md"                                     | 2 +-
+ Home-(Italiano).md                                              | 2 +-
+ Home-(Polski).md                                                | 2 +-
+ "Home-(Portugu\303\252s-Brasil).md"                             | 2 +-
+ "Home-(T\303\274rk\303\247e).md"                                | 2 +-
+ ...320\240\321\203\321\201\321\201\320\272\320\270\320\271).md" | 2 +-
+ ...320\260\321\227\320\275\321\201\321\214\320\272\320\260).md" | 2 +-
+ ...330\247\331\204\330\271\330\261\330\250\331\212\330\251).md" | 2 +-
+ ...244\277\340\244\250\340\245\215\340\244\246\340\245\200).md" | 2 +-
+ "Home-(\346\227\245\346\234\254\350\252\236).md"                | 2 +-
+ "Home-(\347\256\200\344\275\223\344\270\255\346\226\207).md"    | 2 +-
+ "Home-(\347\271\201\351\253\224\344\270\255\346\226\207).md"    | 2 +-
+ "Home-(\355\225\234\352\265\255\354\226\264).md"                | 2 +-
+ Home.md                                                         | 2 +-
+ Release-Process.md                                              | 2 +-
+ Testing-and-QA.md                                               | 2 +-
+ 20 files changed, 20 insertions(+), 20 deletions(-)
+
+diff --git a/Agentic-Practices.md b/Agentic-Practices.md
+index 126fdd6..0b5390d 100644
+--- a/Agentic-Practices.md
++++ b/Agentic-Practices.md
+@@ -18,7 +18,7 @@ pattern lives in this repo, so it can be checked.
+ | **Isolated parallel work** | Release fan-outs run one agent per locale and one per ported provider, each restricted to an explicit file list and forbidden the shared files; the orchestrator does shared wiring in one pass afterwards. |
+ | **Writer / reviewer** | Three reviewer agents in [`.claude/agents/`](https://github.com/Fighter90/career-ops-ui/tree/main/.claude/agents) — `spa-view-reviewer`, `test-isolation-reviewer`, `web-ui-route-reviewer` — plus an AI review workflow in CI. |
+ | **TDD with an agent** | Every ported fix is required to show a **failing run first**. The v1.237.1 Oracle Cloud port opened with `399 !== 453` — the truncation the fix removes. |
+-| **Feedback loop the agent can run** | `npm run test:ci` (3778), `npm run test:e2e:browser` (116), `check-changelog-parity`, five registry count gates, and behavioural markers executed against the **deployed** server. |
++| **Feedback loop the agent can run** | `npm run test:ci` (3782), `npm run test:e2e:browser` (116), `check-changelog-parity`, five registry count gates, and behavioural markers executed against the **deployed** server. |
+ | **Project memory** | [`CLAUDE.md`](https://github.com/Fighter90/career-ops-ui/blob/main/CLAUDE.md) as a short index (deliberately not a knowledge base — see *Bloated memory* below), `AGENTS.md` for non-Claude CLIs, `.claude/PROJECT-CONTEXT.md` for the per-release record. |
+ | **Domain dictionary** | [`CONTEXT.md`](https://github.com/Fighter90/career-ops-ui/blob/main/CONTEXT.md) — one accepted name per concept, variants marked *do not use*. It exists because of a real, recurring confusion: **103 sources vs 98 adapters** (the five RU sources have no adapter), and `telegram` vs `telegram-channel`, which upstream mistook for duplicates and deleted one. |
+ | **ADRs** | [`docs/adr/`](https://github.com/Fighter90/career-ops-ui/tree/main/docs/adr) — keep both telegram sources · defend fork divergences · mirror vs relay · liveness hard/soft tiers. |
+diff --git a/Home-(Dansk).md b/Home-(Dansk).md
+index a449892..4eb3325 100644
+--- a/Home-(Dansk).md
++++ b/Home-(Dansk).md
+@@ -4,7 +4,7 @@
+ 
+ **En ren webgrænseflade i dokumentationsstil til AI-jobsøgningspipelinen [career-ops](https://github.com/Fighter90/career-ops).** Søg, evaluér, undersøg i dybden, ansøg og følg hvert jobopslag fra én enkelt browserfane.
+ 
+-> Aktuel udgivelse: **v1.239.3** · Node ≥ 18 · Express 4 + vanilla-JS SPA · 103 scanner-adaptere · 37 rutemoduler · 17 sprog i grænsefladen · 3778 enhedstests.
++> Aktuel udgivelse: **v1.239.4** · Node ≥ 18 · Express 4 + vanilla-JS SPA · 103 scanner-adaptere · 37 rutemoduler · 17 sprog i grænsefladen · 3782 enhedstests.
+ >
+ > _Uofficiel UI — ikke tilknyttet eller godkendt af career-ops / santifer._
+ 
+diff --git a/Home-(Deutsch).md b/Home-(Deutsch).md
+index 8c9b752..cbb2ef7 100644
+--- a/Home-(Deutsch).md
++++ b/Home-(Deutsch).md
+@@ -4,7 +4,7 @@
+ 
+ **Eine klare Weboberfläche im Dokumentationsstil für die KI-Jobsuche-Pipeline [career-ops](https://github.com/Fighter90/career-ops).** Suchen, bewerten, tiefgehend recherchieren, bewerben und jede Stelle verfolgen — alles in einem einzigen Browser-Tab.
+ 
+-> Aktuelles Release: **v1.239.3** · Node ≥ 18 · Express 4 + Vanilla-JS-SPA · 103 Scanner-Adapter · 37 Routenmodule · 17 UI-Sprachen · 3778 Unit-Tests.
++> Aktuelles Release: **v1.239.4** · Node ≥ 18 · Express 4 + Vanilla-JS-SPA · 103 Scanner-Adapter · 37 Routenmodule · 17 UI-Sprachen · 3782 Unit-Tests.
+ >
+ > _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden und nicht von ihnen unterstützt._
+ 
+diff --git "a/Home-(Espa\303\261ol).md" "b/Home-(Espa\303\261ol).md"
+index 124fc2e..20dd679 100644
+--- "a/Home-(Espa\303\261ol).md"
++++ "b/Home-(Espa\303\261ol).md"
+@@ -4,7 +4,7 @@
+ 
+ **Una interfaz web limpia, al estilo de documentación, para el pipeline de búsqueda de empleo con IA [career-ops](https://github.com/Fighter90/career-ops).** Busca, evalúa, investiga a fondo, aplica y haz seguimiento de cada oferta desde una sola pestaña del navegador.
+ 
+-> Versión actual: **v1.239.3** · Node ≥ 18 · Express 4 + SPA en JavaScript vanilla · 103 adaptadores de escaneo · 37 módulos de rutas · 17 idiomas de interfaz · 3778 tests unitarios.
++> Versión actual: **v1.239.4** · Node ≥ 18 · Express 4 + SPA en JavaScript vanilla · 103 adaptadores de escaneo · 37 módulos de rutas · 17 idiomas de interfaz · 3782 tests unitarios.
+ >
+ > _Interfaz no oficial — sin afiliación ni respaldo de career-ops / santifer._
+ 
+diff --git "a/Home-(Fran\303\247ais).md" "b/Home-(Fran\303\247ais).md"
+index 14bf27b..5bc6456 100644
+--- "a/Home-(Fran\303\247ais).md"
++++ "b/Home-(Fran\303\247ais).md"
+@@ -4,7 +4,7 @@
+ 
+ **Une interface web épurée, façon documentation, pour le pipeline de recherche d'emploi IA [career-ops](https://github.com/Fighter90/career-ops).** Recherchez, évaluez, approfondissez, candidatez et suivez chaque offre depuis un seul onglet de navigateur.
+ 
+-> Version actuelle : **v1.239.3** · Node ≥ 18 · Express 4 + SPA en JavaScript vanilla · 103 adaptateurs de scan · 37 modules de routes · 17 langues d'interface · 3778 tests unitaires.
++> Version actuelle : **v1.239.4** · Node ≥ 18 · Express 4 + SPA en JavaScript vanilla · 103 adaptateurs de scan · 37 modules de routes · 17 langues d'interface · 3782 tests unitaires.
+ >
+ > _Interface non officielle — sans affiliation ni approbation de career-ops / santifer._
+ 
+diff --git a/Home-(Italiano).md b/Home-(Italiano).md
+index 5a39587..2f65984 100644
+--- a/Home-(Italiano).md
++++ b/Home-(Italiano).md
+@@ -4,7 +4,7 @@
+ 
+ **Un'interfaccia web pulita, in stile documentazione, per la pipeline di ricerca lavoro con IA [career-ops](https://github.com/Fighter90/career-ops).** Cerca, valuta, approfondisci, candidati e tieni traccia di ogni offerta da un'unica scheda del browser.
+ 
+-> Versione attuale: **v1.239.3** · Node ≥ 18 · Express 4 + SPA in JavaScript vanilla · 103 adattatori di scansione · 37 moduli di route · 17 lingue dell'interfaccia · 3778 test unitari.
++> Versione attuale: **v1.239.4** · Node ≥ 18 · Express 4 + SPA in JavaScript vanilla · 103 adattatori di scansione · 37 moduli di route · 17 lingue dell'interfaccia · 3782 test unitari.
+ >
+ > _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santifer._
+ 
+diff --git a/Home-(Polski).md b/Home-(Polski).md
+index 9131b15..665f5e6 100644
+--- a/Home-(Polski).md
++++ b/Home-(Polski).md
+@@ -4,7 +4,7 @@
+ 
+ **Przejrzysty interfejs webowy w stylu dokumentacji dla pipeline'u poszukiwania pracy z AI [career-ops](https://github.com/Fighter90/career-ops).** Wyszukuj, oceniaj, badaj dogłębnie, aplikuj i śledź każdą ofertę z jednej karty przeglądarki.
+ 
+-> Aktualne wydanie: **v1.239.3** · Node ≥ 18 · Express 4 + SPA w czystym JS · 103 adapterów skanera · 37 modułów tras · 17 języków interfejsu · 3778 testów jednostkowych.
++> Aktualne wydanie: **v1.239.4** · Node ≥ 18 · Express 4 + SPA w czystym JS · 103 adapterów skanera · 37 modułów tras · 17 języków interfejsu · 3782 testów jednostkowych.
+ >
+ > _Nieoficjalny interfejs — bez powiązań i bez rekomendacji career-ops / santifer._
+ 
+diff --git "a/Home-(Portugu\303\252s-Brasil).md" "b/Home-(Portugu\303\252s-Brasil).md"
+index c09d4d3..1bbf12b 100644
+--- "a/Home-(Portugu\303\252s-Brasil).md"
++++ "b/Home-(Portugu\303\252s-Brasil).md"
+@@ -4,7 +4,7 @@
+ 
+ **Uma interface web limpa, em estilo de documentação, para o pipeline de busca de emprego com IA [career-ops](https://github.com/Fighter90/career-ops).** Pesquise, avalie, investigue a fundo, candidate-se e acompanhe cada vaga em uma única aba do navegador.
+ 
+-> Versão atual: **v1.239.3** · Node ≥ 18 · Express 4 + SPA em JavaScript vanilla · 103 adaptadores de varredura · 37 módulos de rotas · 17 idiomas de interface · 3778 testes unitários.
++> Versão atual: **v1.239.4** · Node ≥ 18 · Express 4 + SPA em JavaScript vanilla · 103 adaptadores de varredura · 37 módulos de rotas · 17 idiomas de interface · 3782 testes unitários.
+ >
+ > _Interface não oficial — sem afiliação ou endosso de career-ops / santifer._
+ 
+diff --git "a/Home-(T\303\274rk\303\247e).md" "b/Home-(T\303\274rk\303\247e).md"
+index 597148f..c65d404 100644
+--- "a/Home-(T\303\274rk\303\247e).md"
++++ "b/Home-(T\303\274rk\303\247e).md"
+@@ -4,7 +4,7 @@
+ 
+ **Yapay zekâ destekli iş arama hattı [career-ops](https://github.com/Fighter90/career-ops) için temiz, dokümantasyon tarzında bir web arayüzü.** Tek bir tarayıcı sekmesinden her ilanı arayın, değerlendirin, derinlemesine araştırın, başvurun ve takip edin.
+ 
+-> Güncel sürüm: **v1.239.3** · Node ≥ 18 · Express 4 + saf JS SPA · 103 tarayıcı adaptörü · 37 rota modülü · 17 arayüz dili · 3778 birim testi.
++> Güncel sürüm: **v1.239.4** · Node ≥ 18 · Express 4 + saf JS SPA · 103 tarayıcı adaptörü · 37 rota modülü · 17 arayüz dili · 3782 birim testi.
+ >
+ > _Resmî olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır._
+ 
+diff --git "a/Home-(\320\240\321\203\321\201\321\201\320\272\320\270\320\271).md" "b/Home-(\320\240\321\203\321\201\321\201\320\272\320\270\320\271).md"
+index 835416f..0c1a6e0 100644
+--- "a/Home-(\320\240\321\203\321\201\321\201\320\272\320\270\320\271).md"
++++ "b/Home-(\320\240\321\203\321\201\321\201\320\272\320\270\320\271).md"
+@@ -4,7 +4,7 @@
+ 
+ **Чистый веб-интерфейс в документационном стиле для AI-пайплайна поиска работы [career-ops](https://github.com/Fighter90/career-ops).** Ищите, оценивайте, исследуйте, откликайтесь и отслеживайте каждую вакансию в одной вкладке браузера.
+ 
+-> Текущий релиз: **v1.239.3** · Node ≥ 18 · Express 4 + SPA на ванильном JS · 103 адаптеров сканера · 37 модуль маршрутов · 17 локалей интерфейса · 3778 юнит-тест.
++> Текущий релиз: **v1.239.4** · Node ≥ 18 · Express 4 + SPA на ванильном JS · 103 адаптеров сканера · 37 модуль маршрутов · 17 локалей интерфейса · 3782 юнит-тест.
+ >
+ > _Неофициальный UI — не аффилирован с career-ops / santifer и не одобрен ими._
+ 
+diff --git "a/Home-(\320\243\320\272\321\200\320\260\321\227\320\275\321\201\321\214\320\272\320\260).md" "b/Home-(\320\243\320\272\321\200\320\260\321\227\320\275\321\201\321\214\320\272\320\260).md"
+index 380222c..88be593 100644
+--- "a/Home-(\320\243\320\272\321\200\320\260\321\227\320\275\321\201\321\214\320\272\320\260).md"
++++ "b/Home-(\320\243\320\272\321\200\320\260\321\227\320\275\321\201\321\214\320\272\320\260).md"
+@@ -4,7 +4,7 @@
+ 
+ **Чистий веб-інтерфейс у документаційному стилі для AI-конвеєра пошуку роботи [career-ops](https://github.com/Fighter90/career-ops).** Шукайте, оцінюйте, досліджуйте, відгукуйтесь і відстежуйте кожну вакансію в одній вкладці браузера.
+ 
+-> Поточний реліз: **v1.239.3** · Node ≥ 18 · Express 4 + SPA на ванільному JS · 103 адаптерів сканера · 37 модуль маршрутів · 17 мов інтерфейсу · 3778 юніт-тест.
++> Поточний реліз: **v1.239.4** · Node ≥ 18 · Express 4 + SPA на ванільному JS · 103 адаптерів сканера · 37 модуль маршрутів · 17 мов інтерфейсу · 3782 юніт-тест.
+ >
+ > _Неофіційний UI — не афілійований із career-ops / santifer і не схвалений ними._
+ 
+diff --git "a/Home-(\330\247\331\204\330\271\330\261\330\250\331\212\330\251).md" "b/Home-(\330\247\331\204\330\271\330\261\330\250\331\212\330\251).md"
+index fe003fa..10c0e87 100644
+--- "a/Home-(\330\247\331\204\330\271\330\261\330\250\331\212\330\251).md"
++++ "b/Home-(\330\247\331\204\330\271\330\261\330\250\331\212\330\251).md"
+@@ -4,7 +4,7 @@
+ 
+ **واجهة ويب نظيفة بأسلوب التوثيق لخط أنابيب البحث عن عمل بالذكاء الاصطناعي [career-ops](https://github.com/Fighter90/career-ops).** ابحث، وقيِّم، وتعمّق في البحث، وقدِّم، وتتبَّع كل عرض عمل من علامة تبويب متصفح واحدة.
+ 
+-> الإصدار الحالي: **v1.239.3** · Node ≥ 18 · Express 4 + تطبيق صفحة واحدة بجافاسكريبت خام · 103 محوِّل مسح · 37 وحدة مسارات · 17 لغة للواجهة · 3778 اختبار وحدة.
++> الإصدار الحالي: **v1.239.4** · Node ≥ 18 · Express 4 + تطبيق صفحة واحدة بجافاسكريبت خام · 103 محوِّل مسح · 37 وحدة مسارات · 17 لغة للواجهة · 3782 اختبار وحدة.
+ >
+ > _واجهة غير رسمية — غير تابعة لـ career-ops / santifer وغير معتمدة منهما._
+ 
+diff --git "a/Home-(\340\244\271\340\244\277\340\244\250\340\245\215\340\244\246\340\245\200).md" "b/Home-(\340\244\271\340\244\277\340\244\250\340\245\215\340\244\246\340\245\200).md"
+index 4fe6291..51486d4 100644
+--- "a/Home-(\340\244\271\340\244\277\340\244\250\340\245\215\340\244\246\340\245\200).md"
++++ "b/Home-(\340\244\271\340\244\277\340\244\250\340\245\215\340\244\246\340\245\200).md"
+@@ -4,7 +4,7 @@
+ 
+ **[career-ops](https://github.com/Fighter90/career-ops) AI जॉब-सर्च पाइपलाइन के लिए एक स्वच्छ, डॉक्स-शैली वाला वेब इंटरफ़ेस।** एक ही ब्राउज़र टैब से हर ऑफर को खोजें, मूल्यांकन करें, गहराई से जानें, आवेदन करें और ट्रैक करें।
+ 
+-> वर्तमान रिलीज़: **v1.239.3** · Node ≥ 18 · Express 4 + वैनिला-JS SPA · 103 स्कैनर एडेप्टर · 37 रूट मॉड्यूल · 17 UI भाषाएं · 3778 यूनिट टेस्ट।
++> वर्तमान रिलीज़: **v1.239.4** · Node ≥ 18 · Express 4 + वैनिला-JS SPA · 103 स्कैनर एडेप्टर · 37 रूट मॉड्यूल · 17 UI भाषाएं · 3782 यूनिट टेस्ट।
+ >
+ > _अनौपचारिक UI — career-ops / santifer से संबद्ध नहीं और न ही उनके द्वारा अनुमोदित।_
+ 
+diff --git "a/Home-(\346\227\245\346\234\254\350\252\236).md" "b/Home-(\346\227\245\346\234\254\350\252\236).md"
+index 356a2fb..92156aa 100644
+--- "a/Home-(\346\227\245\346\234\254\350\252\236).md"
++++ "b/Home-(\346\227\245\346\234\254\350\252\236).md"
+@@ -4,7 +4,7 @@
+ 
+ **AI 求職パイプライン [career-ops](https://github.com/Fighter90/career-ops) のためのクリーンなドキュメントスタイル Web インターフェース。** 1つのブラウザタブで、求人の検索・評価・深掘り調査・応募・追跡をすべて行えます。
+ 
+-> 最新リリース: **v1.239.3** · Node ≥ 18 · Express 4 + バニラ JS SPA · スキャナーアダプター 103 個 · ルートモジュール 37 個 · UI ロケール 17 言語 · ユニットテスト 3778 件。
++> 最新リリース: **v1.239.4** · Node ≥ 18 · Express 4 + バニラ JS SPA · スキャナーアダプター 103 個 · ルートモジュール 37 個 · UI ロケール 17 言語 · ユニットテスト 3782 件。
+ >
+ > _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
+ 
+diff --git "a/Home-(\347\256\200\344\275\223\344\270\255\346\226\207).md" "b/Home-(\347\256\200\344\275\223\344\270\255\346\226\207).md"
+index 8d28632..3fe5407 100644
+--- "a/Home-(\347\256\200\344\275\223\344\270\255\346\226\207).md"
++++ "b/Home-(\347\256\200\344\275\223\344\270\255\346\226\207).md"
+@@ -4,7 +4,7 @@
+ 
+ **为 AI 求职流水线 [career-ops](https://github.com/Fighter90/career-ops) 打造的简洁文档风格 Web 界面。** 在一个浏览器标签页中完成搜索、评估、深度调研、投递和追踪每一个职位。
+ 
+-> 当前版本：**v1.239.3** · Node ≥ 18 · Express 4 + 原生 JS SPA · 103 个扫描适配器 · 37 个路由模块 · 17 种界面语言 · 3778 个单元测试。
++> 当前版本：**v1.239.4** · Node ≥ 18 · Express 4 + 原生 JS SPA · 103 个扫描适配器 · 37 个路由模块 · 17 种界面语言 · 3782 个单元测试。
+ >
+ > _非官方界面 — 与 career-ops / santifer 无隶属或背书关系。_
+ 
+diff --git "a/Home-(\347\271\201\351\253\224\344\270\255\346\226\207).md" "b/Home-(\347\271\201\351\253\224\344\270\255\346\226\207).md"
+index 901b6a4..f3c2266 100644
+--- "a/Home-(\347\271\201\351\253\224\344\270\255\346\226\207).md"
++++ "b/Home-(\347\271\201\351\253\224\344\270\255\346\226\207).md"
+@@ -4,7 +4,7 @@
+ 
+ **為 AI 求職管線 [career-ops](https://github.com/Fighter90/career-ops) 打造的簡潔文件風格 Web 介面。** 在單一瀏覽器分頁中完成搜尋、評估、深入研究、投遞與追蹤每一個職缺。
+ 
+-> 目前版本：**v1.239.3** · Node ≥ 18 · Express 4 + 原生 JS SPA · 103 個掃描配接器 · 37 個路由模組 · 17 種介面語言 · 3778 個單元測試。
++> 目前版本：**v1.239.4** · Node ≥ 18 · Express 4 + 原生 JS SPA · 103 個掃描配接器 · 37 個路由模組 · 17 種介面語言 · 3782 個單元測試。
+ >
+ > _非官方介面 — 與 career-ops / santifer 無隸屬或背書關係。_
+ 
+diff --git "a/Home-(\355\225\234\352\265\255\354\226\264).md" "b/Home-(\355\225\234\352\265\255\354\226\264).md"
+index 0574d9a..b1f3d35 100644
+--- "a/Home-(\355\225\234\352\265\255\354\226\264).md"
++++ "b/Home-(\355\225\234\352\265\255\354\226\264).md"
+@@ -4,7 +4,7 @@
+ 
+ **AI 구직 파이프라인 [career-ops](https://github.com/Fighter90/career-ops)를 위한 깔끔한 문서 스타일 웹 인터페이스.** 하나의 브라우저 탭에서 모든 공고를 검색하고, 평가하고, 심층 조사하고, 지원하고, 추적하세요.
+ 
+-> 현재 릴리스: **v1.239.3** · Node ≥ 18 · Express 4 + 바닐라 JS SPA · 스캐너 어댑터 103개 · 라우트 모듈 37개 · UI 로케일 17개 · 단위 테스트 3778개.
++> 현재 릴리스: **v1.239.4** · Node ≥ 18 · Express 4 + 바닐라 JS SPA · 스캐너 어댑터 103개 · 라우트 모듈 37개 · UI 로케일 17개 · 단위 테스트 3782개.
+ >
+ > _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
+ 
+diff --git a/Home.md b/Home.md
+index 3479843..8271ac2 100644
+--- a/Home.md
++++ b/Home.md
+@@ -4,7 +4,7 @@
+ 
+ **A clean, docs-style web interface for the [career-ops](https://github.com/Fighter90/career-ops) AI job-search pipeline.** Search, evaluate, deep-dive, apply, and track every offer from a single browser tab — instead of bouncing between an AI coding CLI, terminals, and markdown files.
+ 
+-> Current release: **v1.239.3** · Node ≥ 18 · Express 4 + vanilla-JS SPA · 103 scanner adapters · 37 route modules · 17 UI locales · 3778 unit tests.
++> Current release: **v1.239.4** · Node ≥ 18 · Express 4 + vanilla-JS SPA · 103 scanner adapters · 37 route modules · 17 UI locales · 3782 unit tests.
+ >
+ > _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
+ 
+diff --git a/Release-Process.md b/Release-Process.md
+index d6e065d..83427df 100644
+--- a/Release-Process.md
++++ b/Release-Process.md
+@@ -30,7 +30,7 @@ Every release ships all of the following:
+ 3. **README ×17** — release banner, badges (tests count), and breadcrumb updated in all 17 READMEs.
+ 4. **Help ×17** — every help-guide section touched by the release updated in all 17 `docs/help/<lang>.md` bundles; H2/H3 count gates bumped if sections were added.
+ 5. **i18n keys ×17** — new UI strings in all 17 locale dicts + regenerated snapshot.
+-6. **Tests** — new coverage for the change; all four suite baselines (unit / Playwright / smoke E2E / comprehensive E2E) kept ≥ the previous floor (unit: 3778 at v1.239.3).
++6. **Tests** — new coverage for the change; all four suite baselines (unit / Playwright / smoke E2E / comprehensive E2E) kept ≥ the previous floor (unit: 3782 at v1.239.4).
+ 7. **QA prompt** — a new `qa/QA-REGRESSION-PROMPT-v<version>.md` delta driver (see [[Testing and QA|Testing-and-QA]]).
+ 8. **Docs/SDD** — `docs/architecture/*` updated in the same PR when routes/flows changed.
+ 9. **Playwright live verify** against the running server.
+diff --git a/Testing-and-QA.md b/Testing-and-QA.md
+index 7156074..cedcb21 100644
+--- a/Testing-and-QA.md
++++ b/Testing-and-QA.md
+@@ -4,7 +4,7 @@
+ 
+ | Layer | Count | Command | What it covers |
+ |---|---|---|---|
+-| Unit / integration | **3778** | `npm test` (`node --test tests/*.test.mjs tests/acceptance/*.test.mjs`) | In-process `createApp()` hit with `fetch` on an ephemeral port; registry invariants; sanitizers; provider parity suites (stubbed transport, no network) |
++| Unit / integration | **3782** | `npm test` (`node --test tests/*.test.mjs tests/acceptance/*.test.mjs`) | In-process `createApp()` hit with `fetch` on an ephemeral port; registry invariants; sanitizers; provider parity suites (stubbed transport, no network) |
+ | Playwright browser | 116 | `npm run test:e2e:browser` | Narrow-viewport (320px overflow, v1.227.5), smoke, full-cycle, forms, locale sweep, theme toggle, persistent widgets (docs FAB + usage HUD) |
+ | Smoke E2E | 21 | `npm run test:e2e` (`tests/e2e.mjs`) | Real server in a child process, every route walked |
+ | Comprehensive E2E | 23 | `npm run test:e2e:full` (`tests/e2e-comprehensive.mjs`) | Long full-surface pass — catches SPA regressions unit tests can't |
+-- 
+2.43.0
+

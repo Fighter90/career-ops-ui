@@ -7,17 +7,17 @@
 
 _Неофициальный интерфейс — не аффилирован с career-ops / santifer и не одобрен ими._
 
-[![tests](https://img.shields.io/badge/tests-3778%20passed-brightgreen)](#тесты)
+[![tests](https://img.shields.io/badge/tests-3782%20passed-brightgreen)](#тесты)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.239.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.239.3)
+[![release](https://img.shields.io/badge/release-v1.239.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.239.4)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Последний релиз — v1.239.3** — **Патч:** арабские оценки ИИ проходят проверку отчёта — буква блока, написанная по-арабски (أ ب ج د هـ و ز), теперь засчитывается как A–G. **103 источника · 3778 тестов · 116 браузерных.**
+> **🆕 Последний релиз — v1.239.4** — **Патч:** длинные оценки ИИ больше не обрываются до итогового блока (корейские и китайские отчёты упирались в лимит 8192 токена); обрезанный ответ теперь так и называется. **103 источника · 3782 теста · 116 браузерных.**
 >
 > **Предыдущий релиз — v1.237.1** — **Патч по итогам внешней QA-проверки.** Исправление Jobstreet подтверждено извне: `/id/job/<id>` отдаёт чистый 404 на хостах AU/NZ/HK/MY, а `/job/<id>` доходит до настоящего защищённого маршрута — потерянные ссылки были реальными. Два дефекта в том, что добавил v1.237.0: **ссылка на книгу** — подпись была переведена, а цель нет, поэтому русская подпись вела на английское издание — применитель `data-i18n-href` теперь отправляет `ru` на русскую книгу; и **SEEK переезжает на новые хосты** (`www.seek.com.au` → `au.seek.com`), поэтому `au.seek.com` и `nz.seek.com` добавлены в allowlist до того, как путь API начнёт редиректить в наш транспорт с `redirect:'error'`. Число источников не изменилось — **94** источника. **3210 тестов · 116 браузерных.**
 

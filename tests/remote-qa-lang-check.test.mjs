@@ -62,3 +62,11 @@ test('headingSkeleton masks every word but keeps a lone A–G letter and the mar
   assert.equal(s, '3 headings, 1 bold lines: "## ʷ A — ʷ ʷ" "## w B — w" "## ʷ) ʷ"');
   assert.doesNotMatch(s, /Acme|secret|Resumen|الكتلة/);
 });
+
+test('a short list-shaped answer with three locale stop words and no English ones passes', () => {
+  // v1.239.3 live run: a German docs answer scored "de stop words 3, en 0".
+  const de = '- Öffne die Seite Scan\n- Wähle eine Quelle\n- Klicke auf Scannen und warte das Ergebnis ab\n';
+  assert.equal(languageOk(de, 'de'), true);
+  // Three German stop words drowned by English still fail.
+  assert.equal(languageOk(de + 'the and with for you your this that are is'.repeat(2), 'de'), false);
+});

@@ -78,7 +78,8 @@ export async function runOpenAICompatible(prompt, opts = {}) {
       ? content.filter((b) => b && (b.type === 'text' || b.text))
         .map((b) => b.text || '').join('\n')
       : String(content || ''));
-    return { markdown, usage: json.usage || null, error: null };
+    // finish_reason `length` = cut off at max_tokens (see anthropic.mjs).
+    return { markdown, usage: json.usage || null, error: null, truncated: choice.finish_reason === 'length' };
   } catch (e) {
     return { markdown: '', usage: null, error: e.name === 'AbortError' ? 'timeout' : e.message };
   } finally {

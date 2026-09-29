@@ -23,6 +23,18 @@ import { runNodeScript } from '../runner.mjs';
 import { runAnthropic, hasAnthropicKey, hasGeminiKey } from '../anthropic.mjs';
 import { runGemini } from '../gemini.mjs';
 import { validateEvaluationReport, stripScoreSummary } from '../eval-validate.mjs';
+
+// An A–G report plus the SCORE_SUMMARY block runs past 8192 output tokens in
+// CJK locales (ko / zh-TW / ja, 10–13k characters): the summary at the end was
+// cut off and read as "missing SCORE_SUMMARY" (live regression, v1.239.3).
+export const EVAL_MAX_TOKENS = 16384;
+
+/** Shape warnings for an evaluation, with a cut-off answer named as such. */
+export function evaluationWarnings(r) {
+  const warnings = validateEvaluationReport(r.markdown);
+  if (r.truncated) warnings.unshift('report cut off at the output-token limit');
+  return warnings;
+}
 import { runOpenAI, runQwen, runOpenRouter, runGitHubModels, runHermes, hasOpenAIKey, hasQwenKey, hasOpenRouterKey, hasGitHubModelsKey, hasHermesKey } from '../openai.mjs';
 // v1.216.0 — 9 more OpenAI-compatible providers. Kept as a SECOND import from the
 // same module so the v1.55.0 line above stays byte-stable for provider-selector.test.mjs.
@@ -196,11 +208,11 @@ export function registerLlmRoutes(app) {
           details: [`assembled prompt is ${fullPrompt.length} bytes; soft cap is ${PROMPT_SIZE_SOFT_CAP}. Truncate the JD or shrink your CV.`],
         });
       }
-      const r = await runAnthropic(fullPrompt, { maxTokens: 8192 });
+      const r = await runAnthropic(fullPrompt, { maxTokens: EVAL_MAX_TOKENS });
       if (r.error) return res.status(502).json({ mode: 'anthropic', prompt: promptText, error: r.error, saved });
       // v1.75.0 (#819) — flag malformed A–G / SCORE_SUMMARY shape as a non-fatal
       // warning so the user knows the report may be truncated/off-format.
-      const warnings = validateEvaluationReport(r.markdown);
+      const warnings = evaluationWarnings(r);
       recordUsage('anthropic', r.usage);
       return res.json({ mode: 'anthropic', prompt: promptText, markdown: stripScoreSummary(r.markdown), usage: r.usage, saved, ...(warnings.length ? { warnings } : {}) });
     }
@@ -227,10 +239,10 @@ export function registerLlmRoutes(app) {
           details: [`assembled prompt is ${fullPrompt.length} bytes; soft cap is ${PROMPT_SIZE_SOFT_CAP}. Truncate the JD or shrink your CV.`],
         });
       }
-      const r = await tp.run(fullPrompt, { maxTokens: 8192 });
+      const r = await tp.run(fullPrompt, { maxTokens: EVAL_MAX_TOKENS });
       if (r.error) return res.status(502).json({ mode: tp.mode, prompt: promptText, error: r.error, saved });
       // v1.75.0 (#819) — same shape guard for the OpenAI/Qwen/OpenRouter/GitHub tail.
-      const warnings = validateEvaluationReport(r.markdown);
+      const warnings = evaluationWarnings(r);
       recordUsage(tp.mode, r.usage);
       return res.json({ mode: tp.mode, prompt: promptText, markdown: stripScoreSummary(r.markdown), usage: r.usage, saved, ...(warnings.length ? { warnings } : {}) });
     }

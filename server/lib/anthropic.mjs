@@ -66,7 +66,9 @@ export async function runAnthropic(prompt, opts = {}) {
       .filter((b) => b.type === 'text')
       .map((b) => b.text)
       .join('\n'));
-    return { markdown, usage: json.usage || null, error: null };
+    // `max_tokens` means the answer was cut off; callers that validate a
+    // format (evaluate) report it instead of a vague shape warning.
+    return { markdown, usage: json.usage || null, error: null, truncated: json.stop_reason === 'max_tokens' };
   } catch (e) {
     return { markdown: '', usage: null, error: e.name === 'AbortError' ? 'timeout' : e.message };
   } finally {

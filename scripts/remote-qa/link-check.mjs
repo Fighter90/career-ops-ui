@@ -16,12 +16,19 @@ import { fileURLToPath } from 'node:url';
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const WIKI = process.env.WIKI_DIR || '';
 const SKIP_EXTERNAL = process.env.SKIP_EXTERNAL === '1';
+// The READMEs link the release of the version being shipped before
+// release.yml creates it (the tag is cut after the merge), so on a release
+// branch that one URL is a 404 by construction. It is reported as pending,
+// not broken; any other release tag still has to exist.
+const VERSION = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')).version;
+const PENDING_RELEASE = `https://github.com/Fighter90/career-ops-ui/releases/tag/v${VERSION}`;
 
 const sources = readdirSync(ROOT).filter((f) => /^README(\.[A-Za-z-]+)?\.md$/.test(f)).map((f) => ({ file: f, abs: join(ROOT, f), kind: 'repo' }));
 if (WIKI) for (const f of readdirSync(WIKI).filter((f) => f.endsWith('.md'))) sources.push({ file: 'wiki/' + f, abs: join(WIKI, f), kind: 'wiki' });
 const wikiPages = WIKI ? new Set(readdirSync(WIKI).filter((f) => f.endsWith('.md')).map((f) => f.replace(/\.md$/, '').toLowerCase())) : new Set();
 
 const findings = [];
+let pendingRelease = false;
 const external = new Map();
 const add = (file, kind, msg) => findings.push({ file, kind, msg: String(msg).slice(0, 200) });
 
@@ -76,6 +83,7 @@ if (!SKIP_EXTERNAL) {
       const files = [...external.get(u)].slice(0, 3).join(', ');
       // 999 is LinkedIn's bot-wall status.
       if (status === 401 || status === 403 || status === 429 || status === 999) { unverified++; continue; }
+      if (status === 404 && u === PENDING_RELEASE) { pendingRelease = true; continue; }
       if (typeof status !== 'number' || status >= 400) add(files, 'external-link', `${status} ${u}`);
     }
   }
@@ -88,7 +96,7 @@ const byKind = {};
 for (const f of findings) byKind[f.kind] = (byKind[f.kind] || 0) + 1;
 const lines = [
   '## Link check — READMEs + wiki', '',
-  `${sources.length} files (${sources.filter((s) => s.kind === 'wiki').length} wiki pages), ${external.size} distinct external links${SKIP_EXTERNAL ? ' (not fetched)' : `, ${unverified} behind a bot wall (401/403/429, not counted as broken)`}.`, '',
+  `${sources.length} files (${sources.filter((s) => s.kind === 'wiki').length} wiki pages), ${external.size} distinct external links${SKIP_EXTERNAL ? ' (not fetched)' : `, ${unverified} behind a bot wall (401/403/429, not counted as broken)`}.${pendingRelease ? ` The release page for v${VERSION} does not exist yet (cut after the merge) — pending, not broken.` : ''}`, '',
   findings.length ? '| kind | count |\n|---|---|\n' + Object.entries(byKind).map(([k, n]) => `| ${k} | ${n} |`).join('\n') : '**No broken links.**', '',
 ];
 if (findings.length) {

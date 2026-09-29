@@ -2,6 +2,20 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.239.4] — 2026-09-29
+
+**Patch aus der Live-Regression von v1.239.3.**
+
+### Behoben
+
+- **Koreanische und traditionell-chinesische Bewertungen meldeten eine fehlende Bewertungszusammenfassung.** Diese Berichte umfassen 10–11 Tausend Zeichen, und die Zusammenfassung steht am Ende, also lag sie jenseits der Grenze von 8192 Ausgabe-Tokens. Bewertungen (und die Auto-Pipeline) erlauben jetzt 16384 Tokens, und wenn ein Anbieter eine Antwort trotzdem abschneidet, sagt das die erste Warnung, statt fehlende Blöcke aufzuzählen.
+- **Der Live-Check hielt eine kurze deutsche Antwort für nicht deutsch** (3 deutsche Stoppwörter, keine englischen). Eine listenförmige Antwort kann wenige enthalten; ganz ohne englische genügen jetzt drei.
+- Tests 3778 → 3782.
+
+### Anmerkungen
+
+- Die Routen für Tiefenrecherche und Modi behalten ihre Grenze von 8192 Tokens: Ihre Antworten erreichen sie in den Live-Läufen **nicht**.
+
 ## [1.239.3] — 2026-09-29
 
 **Patch aus der Live-Regression von v1.239.2.**
