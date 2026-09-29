@@ -228,6 +228,19 @@ test('v1.239.1: buildEvaluationPrompt restates the output language after the JD'
   assert.ok(en.trimEnd().endsWith('"""'));
 });
 
+test('v1.239.2: the closing language reminder protects the machine-read format', () => {
+  // The v1.239.1 live run: an Arabic report translated the block letters and a
+  // Japanese one dropped the SCORE_SUMMARY block once the last line spoke only
+  // of language. The reminder now names both invariants after the JD.
+  for (const lang of ['ar', 'ja', 'hi']) {
+    const p = buildEvaluationPrompt('Senior Platform Engineer. Kubernetes, Go.', lang);
+    const tail = p.slice(p.lastIndexOf('"""'));
+    assert.match(tail, /Latin capital letter A–G/, lang);
+    assert.match(tail, /---SCORE_SUMMARY--- … ---END_SUMMARY---/, lang);
+    assert.match(tail, /must NOT be translated/, lang);
+  }
+});
+
 test('PR-2: buildDeepPrompt embeds the locale directive', () => {
   const p = buildDeepPrompt('Anthropic', 'Backend', 'ja');
   assert.match(p, /Respond in Japanese/);
