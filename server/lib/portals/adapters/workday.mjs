@@ -10,6 +10,10 @@
  *   →  tenant=<tenant>, wdN=wd5, site=External
  *   →  endpoint:  https://<tenant>.wd5.myworkdayjobs.com/wday/cxs/<tenant>/External/jobs
  *
+ * A myworkdaysite.com tenant (same product, tenant in the PATH, not the host):
+ *   https://<instance>.myworkdaysite.com/recruiting/<tenant>/<site>
+ *   →  endpoint:  https://<instance>.myworkdaysite.com/wday/cxs/<tenant>/<site>/jobs
+ *
  * If the customer's site lives behind a CAPTCHA or non-standard path,
  * the adapter throws — we recommend falling back to `/career-ops scan`
  * (drives a real browser via Playwright).
@@ -21,13 +25,24 @@ import { fetchWorkday } from '../../sources/workday.mjs';
 // site is derived from the path STRUCTURALLY in buildEndpoint (see below), not
 // by a fixed two-segment regex, so single-segment site URLs parse correctly.
 const HOST_PATTERN = /https?:\/\/([^./]+)\.(wd\d+)\.myworkdayjobs\.com(\/[^?#]*)?/i;
+// myworkdaysite tenant path: /recruiting/<tenant>/<site>[/…]. Applied to the
+// PARSED pathname only, after the hostname has been checked exactly.
+const SITE_PATH = /^\/recruiting\/([\w-]+)\/([^/?#]+)/;
 // A Workday locale prefix looks like `en-US`, `fr-FR`, `zh-CN`, etc.
 const LOCALE = /^[a-z]{2}-[a-z]{2}$/i;
 
+// Workday's two public host families. A hostname is accepted only when it IS
+// the apex or ends with `.<apex>` — checked on the PARSED hostname, never by
+// substring — so `myworkdaysite.com.evil.com` and `evil.com/?x=myworkdaysite.com`
+// are rejected exactly like their myworkdayjobs look-alikes.
+function isHostUnder(host, apex) {
+  return host === apex || host.endsWith(`.${apex}`);
+}
+
 // True only when `api` is a real Workday API endpoint. The hostname is PARSED
-// and checked (exact `myworkdayjobs.com` or a `.myworkdayjobs.com` subdomain) —
-// not substring-matched — so `https://evil.com/?x=myworkdayjobs.com` and
-// `https://myworkdayjobs.com.evil.com/…` are rejected, and buildEndpoint never
+// and checked (exact `myworkdayjobs.com` / `myworkdaysite.com` or a subdomain
+// of either) — not substring-matched — so `https://evil.com/?x=myworkdayjobs.com`
+// and `https://myworkdayjobs.com.evil.com/…` are rejected, and buildEndpoint never
 // hands such a URL back as a fetchable endpoint (#443). Empty / unparseable → false.
 function isWorkdayApi(api) {
   if (typeof api !== 'string' || !api) return false;
@@ -38,8 +53,31 @@ function isWorkdayApi(api) {
     if (u.protocol !== 'https:' && u.protocol !== 'http:') return false;
     if (u.username || u.password) return false;
     const host = u.hostname.toLowerCase();
-    return host === 'myworkdayjobs.com' || host.endsWith('.myworkdayjobs.com');
+    if (isHostUnder(host, 'myworkdayjobs.com')) return true;
+    // myworkdaysite is new surface with no http legacy: HTTPS only.
+    return u.protocol === 'https:' && isHostUnder(host, 'myworkdaysite.com');
   } catch { return false; }
+}
+
+/**
+ * CXS endpoint for a myworkdaysite.com careers_url, or null.
+ *   https://<instance>.myworkdaysite.com/recruiting/<tenant>/<site>
+ *   → https://<instance>.myworkdaysite.com/wday/cxs/<tenant>/<site>/jobs
+ * HTTPS only, no credentials, exact `.myworkdaysite.com` suffix on the parsed
+ * hostname with a single-label instance (parent 3e028d9 SITE_RE).
+ * @param {string} careersUrl
+ */
+export function myworkdaysiteEndpoint(careersUrl) {
+  if (typeof careersUrl !== 'string' || !careersUrl) return null;
+  let u;
+  try { u = new URL(careersUrl); } catch { return null; }
+  if (u.protocol !== 'https:' || u.username || u.password || u.port) return null;
+  const host = u.hostname.toLowerCase();
+  if (!/^[\w-]+\.myworkdaysite\.com$/.test(host)) return null;
+  const m = u.pathname.match(SITE_PATH);
+  if (!m) return null;
+  const [, tenant, site] = m;
+  return `https://${host}/wday/cxs/${tenant}/${site}/jobs`;
 }
 
 export const workdayAdapter = {
@@ -47,10 +85,13 @@ export const workdayAdapter = {
   label: 'Workday',
   matches(company) {
     if (isWorkdayApi(company.api)) return true;
+    if (myworkdaysiteEndpoint(company.careers_url)) return true;
     return HOST_PATTERN.test(company.careers_url || '');
   },
   buildEndpoint(company) {
     if (isWorkdayApi(company.api)) return company.api;
+    const site = myworkdaysiteEndpoint(company.careers_url);
+    if (site) return site;
     const m = (company.careers_url || '').match(HOST_PATTERN);
     if (!m) return null;
     // HOST_PATTERN is case-insensitive (hostnames are), but Workday's CXS path
