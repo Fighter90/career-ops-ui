@@ -9,6 +9,20 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.239.3] — 2026-09-29
+
+**Poprawka po regresji na żywo wersji v1.239.2.**
+
+### Naprawiono
+
+- **Oceny po arabsku nadal nie przechodziły kontroli A–G** po tym, jak v1.239.2 naprawiła japoński i hindi. Zamaskowany szkielet nagłówków (bez tekstu raportu w logu) pokazał przyczynę: raport arabski zapisuje literę bloku po arabsku, w kolejności abdżad, niezależnie od promptu. Kontrola akceptuje teraz أ ب ج د هـ و ز jako A–G, gdy litera stoi osobno na początku nagłówka, tak jak już akceptowała cyrylickie sobowtóry; te same litery wewnątrz arabskiego słowa się nie liczą.
+- Test na żywo wypisuje ten zamaskowany szkielet, gdy kontrola A–G zawodzi, aby następny przypadek dało się zdiagnozować z logu.
+- Testy 3776 → 3778.
+
+### Uwagi
+
+- Notatka do v1.239.2 mówiła, że kontrola **nie** zostanie złagodzona; dla arabskiego została, bo trzy przebiegi na żywo pokazały, że sam prompt nie utrzymuje łacińskiej litery.
+
 ## [1.239.2] — 2026-09-29
 
 **Poprawka po regresji na żywo wersji v1.239.1.**

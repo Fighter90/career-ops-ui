@@ -98,6 +98,17 @@ test('Cyrillic look-alike letters (А В С Е) count as blocks; Cyrillic words 
   for (const L of ['A', 'B', 'C', 'E']) assert.ok(issues.includes(`missing Block ${L}`), L);
 });
 
+test('v1.239.3: Arabic abjad block letters (أ ب ج د هـ و ز) count as blocks; Arabic words do not', () => {
+  // Live regression (three runs): the Arabic report writes "## الكتلة أ — …"
+  // whatever the prompt says; the masked heading skeleton showed no Latin letter.
+  const abjad = { A: 'أ', B: 'ب', C: 'ج', D: 'د', E: 'هـ', F: 'و', G: 'ز' };
+  assert.deepEqual(validateEvaluationReport(blocks((L) => `## الكتلة ${abjad[L]} — القسم`)), []);
+  assert.deepEqual(validateEvaluationReport(blocks((L) => `## ${abjad[L]}) القسم`)), []);
+  // The same letters inside Arabic words are not block letters.
+  const issues = validateEvaluationReport('## ملخص الدور\n## تحليل السيرة\n## المخاطر\n## التعويض\n## الاستراتيجية\n## الحكم\n## الشرعية\n' + SUMMARY);
+  assert.equal(issues.filter((i) => i.startsWith('missing Block')).length, 7);
+});
+
 test('a letter inside a Latin word is not a block heading', () => {
   const issues = validateEvaluationReport('## About the role\n## Benefits\n## Compensation\n## Details\n## Education\n## Fit\n## GDPR\n' + SUMMARY);
   assert.equal(issues.filter((i) => i.startsWith('missing Block')).length, 7);

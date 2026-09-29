@@ -2,6 +2,20 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.239.3] — 2026-09-29
+
+**v1.239.2 canlı regresyonundan çıkan yama.**
+
+### Düzeltildi
+
+- **v1.239.2 Japonca ve Hintçeyi düzelttikten sonra da Arapça değerlendirmeler A–G denetiminden geçemiyordu.** Maskelenmiş bir başlık iskeleti (günlükte rapor metni yok) nedenini gösterdi: Arapça rapor, istem ne derse desin blok harfini ebced sırasıyla Arapça yazıyor. Denetim artık أ ب ج د هـ و ز harflerini, bir başlığın başında tek başına durduklarında A–G olarak kabul ediyor; Kiril benzerlerini zaten kabul ettiği gibi. Arapça bir sözcüğün içindeki aynı harfler sayılmıyor.
+- Canlı denetim, A–G denetimi başarısız olduğunda bu maskelenmiş iskeleti yazdırıyor; böylece sonraki durum günlükten teşhis edilebiliyor.
+- Testler 3776 → 3778.
+
+### Notlar
+
+- v1.239.2 notu denetimin gevşetil**meyeceğini** söylüyordu; Arapça için artık gevşetildi, çünkü üç canlı çalıştırma yalnızca istemin Latin harfini tutamadığını gösterdi.
+
 ## [1.239.2] — 2026-09-29
 
 **v1.239.1 canlı regresyonundan çıkan yama.**

@@ -28,7 +28,7 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
 import { makeRedactor } from './redact.mjs';
-import { languageOk, describe } from './lang-check.mjs';
+import { languageOk, describe, headingSkeleton } from './lang-check.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const require = createRequire(ROOT + '/package.json');
@@ -200,6 +200,7 @@ for (const locale of LOCALES) {
       // The server's warnings are fixed strings ("missing Block C", "SCORE_SUMMARY ROLE is required"),
       // never report text, so they can be printed as they are.
       if (!row.eval.shape) add(locale, 'evaluate', `A–G shape: ${(e.body.warnings || []).map(String).join('; ')}`);
+      if (!row.eval.shape) console.error(`${locale} evaluate heading skeleton — ${headingSkeleton(md)}`);
       if (!row.eval.lang) add(locale, 'evaluate', `report not in ${locale} (${describe(md, locale)})`);
     }
     if (e.status === 200) {

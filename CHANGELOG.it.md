@@ -2,6 +2,20 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.239.3] — 2026-09-29
+
+**Patch dalla regressione dal vivo della v1.239.2.**
+
+### Corretto
+
+- **Le valutazioni in arabo fallivano ancora il controllo A–G** dopo che la v1.239.2 aveva corretto giapponese e hindi. Uno scheletro mascherato dei titoli (nessun testo del report nel log) ha mostrato il motivo: il report arabo scrive la lettera di blocco in arabo, in ordine abjad, qualunque cosa chieda il prompt. Il controllo ora accetta أ ب ج د هـ و ز come A–G quando la lettera è isolata all'inizio di un titolo, come già accettava i sosia cirillici; le stesse lettere dentro una parola araba non contano.
+- Il controllo dal vivo stampa questo scheletro mascherato quando il controllo A–G fallisce, così il prossimo caso si diagnostica dal log.
+- Test 3776 → 3778.
+
+### Note
+
+- La nota della v1.239.2 diceva che il controllo **non** sarebbe stato allentato; per l'arabo ora lo è, perché tre esecuzioni dal vivo hanno mostrato che il solo prompt non mantiene la lettera latina.
+
 ## [1.239.2] — 2026-09-29
 
 **Patch dalla regressione dal vivo della v1.239.1.**

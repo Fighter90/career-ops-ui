@@ -7,17 +7,17 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-3776%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3778%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.239.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.239.2)
+[![release](https://img.shields.io/badge/release-v1.239.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.239.3)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.239.2** — **补丁:** 翻译后的 AI 评估保留机器可读格式 — 块字母 A–G 和评分摘要不再被翻译(阿拉伯语和日语报告未通过检查)。**103 个来源 · 3776 个测试 · 116 个浏览器测试。**
+> **🆕 最新版本 — v1.239.3** — **补丁:** 阿拉伯语 AI 评估可通过报告检查 — 用阿拉伯字母书写的块字母(أ ب ج د هـ و ز)现在计为 A–G。**103 个来源 · 3778 个测试 · 116 个浏览器测试。**
 >
 > **上一版本 — v1.237.1** — **针对外部 QA 复查的补丁。** Jobstreet 的修复已从外部得到确认：在 AU/NZ/HK/MY 主机上 `/id/job/<id>` 会返回一个干净的 404，而 `/job/<id>` 能到达一个真实的受保护路由——丢失的链接确实存在。v1.237.0 新增内容中的两处缺陷：**书籍链接**——文案被本地化了，目标却没有，于是俄语文案指向了英文版——`data-i18n-href` 应用器现在会把 `ru` 指向俄语版的书；以及 **SEEK 正在迁移主机**（`www.seek.com.au` → `au.seek.com`），因此在 API 路径开始向我们采用 `redirect:'error'` 的传输层发出重定向之前，`au.seek.com` 与 `nz.seek.com` 已被加入白名单。来源数量维持 **94** 个不变。**3210 项测试 · 浏览器 116 项。**
 
