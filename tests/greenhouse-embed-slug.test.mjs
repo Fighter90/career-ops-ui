@@ -58,3 +58,10 @@ test('regular job-boards URLs are unchanged', () => {
   assert.equal(greenhouseAdapter.buildEndpoint({ api: 'https://boards-api.greenhouse.io/v1/boards/x/jobs' }),
     'https://boards-api.greenhouse.io/v1/boards/x/jobs');
 });
+
+test('?for=. and ?for=.. are refused — they would normalise the boards-api path', () => {
+  for (const tok of ['.', '..', '.stripe']) {
+    const url = `https://job-boards.greenhouse.io/embed/job_board?for=${tok}`;
+    assert.equal(greenhouseAdapter.buildEndpoint({ careers_url: url }), null, tok);
+  }
+});

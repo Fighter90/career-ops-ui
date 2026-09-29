@@ -200,7 +200,7 @@ export function parseRedRoverResponse(json, orgId, company = DEFAULT_COMPANY) {
       company: label,
       url: `${REDROVER_ORIGIN}/org/${orgId}/opening/${id}`,
       salary: '',
-      location: isRemote ? `${where} (Remote)` : where,
+      location: isRemote ? (where ? `${where} (Remote)` : 'Remote') : where,
       isRemote,
       workplaceType: isRemote ? 'Remote' : '',
       relocates: false,

@@ -32,7 +32,8 @@ const EMBED_HOSTS = new Set([
 
 // A board token is a plain identifier; anything else would be spliced into the
 // boards-api path, so it is refused rather than encoded.
-const SLUG_RE = /^[\w.-]+$/;
+// First character alphanumeric: `.` / `..` would normalise the API path (`/v1/boards/../jobs` → `/v1/jobs`).
+const SLUG_RE = /^\w[\w.-]*$/;
 
 function parseCareersUrl(raw) {
   try { return new URL(raw); } catch { /* maybe scheme-less */ }
