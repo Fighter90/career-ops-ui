@@ -10,6 +10,26 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 
 ---
 
+## [1.239.0] — 2026-09-29
+
+**Paridad con career-ops @ b39931e: cinco fuentes nuevas y tres correcciones replicadas.**
+
+### Añadido
+
+- **Cinco fuentes nuevas (98 → 103; adaptadores en inglés 93 → 98):** AppliTrack (`applitrack.com/<distrito>`), NEOGOV (SchoolJobs / GovernmentJobs), Red Rover (`jobs.redroverk12.com/org/<id>`) y SchoolSpring (`<distrito>.schoolspring.com`) para empleo escolar y del sector público, y OCC Mundial, la mayor bolsa de empleo de México (`provider: occ` explícito con consultas de búsqueda). Cada una está fijada a su host, solo usa HTTPS y rechaza redirecciones.
+- Tests 3500 → 3774.
+
+### Corregido
+
+- **Los tableros embebidos de Greenhouse** (`job-boards.greenhouse.io/embed/job_board?for=<tablero>`) apuntaban a un tablero llamado "embed" y fallaban; ahora el tablero sale de `?for=`, y solo en un host real de Greenhouse.
+- **Los tableros de Workday en `myworkdaysite.com`** (`/recruiting/<tenant>/<sitio>`) no se reconocían; ahora se escanean, con los enlaces de las ofertas en el mismo host.
+- **Un nombre de informe con paréntesis** (`042-acme-(berlin)-….md`) se cortaba en el primer `)` en el tracker; ahora se conserva completo.
+
+### Notas
+
+- Los cambios del padre que solo afectan a la CLI **no** se portan — plantillas de PDF y CV, el scaffolder, el ejecutor por lotes, la importación de career-profile, la cobertura de palabras clave ATS, las traducciones de los modos de entrevista y el host CLI `pi`: web-ui no los ejecuta.
+- Abrir ese informe desde el tracker aún requiere que la ruta de informes acepte paréntesis en el nombre del archivo; esa ruta **no** cambia en esta versión.
+
 ## [1.238.3] — 2026-09-27
 
 **Las páginas siguen respondiendo durante un escaneo y los registros de QA remota ya no filtran el host de producción.**

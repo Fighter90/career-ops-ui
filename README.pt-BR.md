@@ -7,17 +7,17 @@
 
 _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-3500%20passed-brightgreen)](#testes)
+[![tests](https://img.shields.io/badge/tests-3774%20passed-brightgreen)](#testes)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.238.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.238.0)
+[![release](https://img.shields.io/badge/release-v1.239.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.239.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versão — v1.238.3** — **Páginas mais rápidas, logs mais seguros** — a lista de relatórios era relida e reanalisada a cada carregamento de página (segundos num servidor pequeno, timeouts de 30 s durante um scan); agora fica em cache. **3500 testes · 116 de navegador.**
+> **🆕 Última versão — v1.239.0** — **Paridade com o projeto pai: 5 novos sites de vagas** — AppliTrack, NEOGOV, Red Rover e SchoolSpring para vagas em escolas e no setor público, e o OCC Mundial, o maior site de vagas do México; quadros embutidos do Greenhouse e quadros `myworkdaysite` do Workday agora são escaneados. **103 fontes · 3774 testes · 116 de navegador.**
 >
 > **Anterior — v1.237.1** — **Patch de uma verificação de QA externa.** A correção do Jobstreet foi confirmada de fora: `/id/job/<id>` retorna um 404 limpo nos hosts AU/NZ/HK/MY e `/job/<id>` alcança uma rota real protegida — os links perdidos eram reais. Dois defeitos no que a versão anterior havia adicionado: o **link do livro** tinha o rótulo localizado, mas não o destino, então o rótulo em russo levava à edição em inglês — um aplicador `data-i18n-href` agora envia `ru` para o livro em russo; e **o SEEK está migrando de hosts** (`www.seek.com.au` → `au.seek.com`), então `au.seek.com` e `nz.seek.com` entram na allowlist antes que o caminho da API comece a redirecionar para dentro do nosso transporte `redirect:'error'`. Contagens inalteradas em **94** fontes. **3210 testes · 116 de navegador.**
 
@@ -651,7 +651,7 @@ A maior parte deste projeto é escrita com agentes de codificação. Essa é uma
 
 | Arquivo | O que é | Leia quando |
 |---|---|---|
-| **[`CONTEXT.md`](CONTEXT.md)** | Dicionário de domínio: um nome aceito por conceito, com as variantes rejeitadas marcadas como *não usar*. | **Primeiro.** Resolve as confusões que este repositório realmente paga — `source` vs `adapter` (98 vs 93, e por que ambos estão certos), `mirror` vs `relay`, `telegram` vs `telegram-channel`. |
+| **[`CONTEXT.md`](CONTEXT.md)** | Dicionário de domínio: um nome aceito por conceito, com as variantes rejeitadas marcadas como *não usar*. | **Primeiro.** Resolve as confusões que este repositório realmente paga — `source` vs `adapter` (103 vs 98, e por que ambos estão certos), `mirror` vs `relay`, `telegram` vs `telegram-channel`. |
 | **[`PROGRESS.md`](PROGRESS.md)** | Estado de trabalho: o que está pronto, o próximo passo, problemas conhecidos e **abordagens abandonadas**. | No início de qualquer sessão. O Git mostra o que mudou; isto diz em que ponto o trabalho está e o que já foi tentado e rejeitado. |
 | **[`docs/adr/`](docs/adr/)** | Registros de decisão numerados — contexto, decisão, consequências, e o que nos faria reconsiderar. | Antes de mudar qualquer coisa que um registro cubra. Quem decide é o registro, não a release atual. |
 | **[`CLAUDE.md`](CLAUDE.md)** | Um índice de uma única tela apontando para os três acima. | Automaticamente, pelo agente. Deliberadamente *não* é uma base de conhecimento — uma longa é folheada por cima e depois ignorada. |

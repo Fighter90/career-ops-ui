@@ -7,17 +7,17 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-3500%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3774%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.238.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.238.0)
+[![release](https://img.shields.io/badge/release-v1.239.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.239.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.238.3** — **더 빠른 페이지, 더 안전한 로그** — 보고서 목록을 페이지를 열 때마다 다시 읽고 다시 파싱했습니다(작은 서버에서 수 초, 스캔 중에는 30초 타임아웃). 이제 캐시됩니다. **테스트 3500개 · 브라우저 116개.**
+> **🆕 최신 릴리스 — v1.239.0** — **상위 프로젝트와 동기화: 채용 사이트 5개 추가** — 학교·공공 부문용 AppliTrack, NEOGOV, Red Rover, SchoolSpring과 멕시코 최대 채용 사이트 OCC Mundial. Greenhouse 임베드 보드와 Workday `myworkdaysite` 보드도 이제 스캔됩니다. **소스 103개 · 테스트 3774개 · 브라우저 116개.**
 >
 > **이전 버전 — v1.237.1** — **외부 QA 점검에서 나온 패치.** Jobstreet 수정 사항이 외부에서 확인되었습니다: AU/NZ/HK/MY 호스트에서 `/id/job/<id>`는 깔끔한 404를 반환하고 `/job/<id>`는 실제로 보호되는 경로에 도달합니다 — 잃어버린 링크는 실재했습니다. 이전 버전이 추가한 부분에서 결함 두 건: **책 링크**는 레이블은 현지화되었지만 대상은 그렇지 않아, 러시아어 레이블이 영어판으로 이어지고 있었습니다 — 이제 `data-i18n-href` 적용기가 `ru`를 러시아어판으로 보냅니다. 그리고 **SEEK가 호스트를 이전 중**(`www.seek.com.au` → `au.seek.com`)이라, API 경로가 우리의 `redirect:'error'` 전송 계층으로 리다이렉트를 시작하기 전에 `au.seek.com`과 `nz.seek.com`을 허용목록에 추가했습니다. 개수는 **94**개 소스로 변함없습니다. **3210개 · 브라우저 116개.**
 
@@ -651,7 +651,7 @@ UI는 **17개 언어**를 제공합니다 — `en`, `es`, `pt-BR`, `ko`, `ja`, `
 
 | 파일 | 무엇인가 | 언제 읽는가 |
 |---|---|---|
-| **[`CONTEXT.md`](CONTEXT.md)** | 도메인 사전: 개념당 하나의 승인된 이름과、*사용 금지*로 표시된 기각 변형어。 | **가장 먼저。** 이 저장소가 실제로 대가를 치르는 혼동을 정리합니다 — `source` 대 `adapter`(98 대 93、그리고 왜 둘 다 옳은지)、`mirror` 대 `relay`、`telegram` 대 `telegram-channel`。 |
+| **[`CONTEXT.md`](CONTEXT.md)** | 도메인 사전: 개념당 하나의 승인된 이름과、*사용 금지*로 표시된 기각 변형어。 | **가장 먼저。** 이 저장소가 실제로 대가를 치르는 혼동을 정리합니다 — `source` 대 `adapter`(103 대 98、그리고 왜 둘 다 옳은지)、`mirror` 대 `relay`、`telegram` 대 `telegram-channel`。 |
 | **[`PROGRESS.md`](PROGRESS.md)** | 작업 상태: 무엇이 끝났는지、다음 단계、알려진 이슈、그리고 **포기한 접근법**。 | 모든 세션을 시작할 때。Git은 무엇이 바뀌었는지 보여주지만、이 문서는 작업이 어느 지점에 있고 무엇을 이미 시도했다가 기각했는지 말해줍니다。 |
 | **[`docs/adr/`](docs/adr/)** | 번호가 매겨진 의사결정 기록 — 맥락、결정、결과、그리고 무엇이 재검토를 촉발할지。 | 어떤 기록이 다루는 내용을 바꾸기 전에。현재 릴리스가 아니라 그 기록이 결정합니다。 |
 | **[`CLAUDE.md`](CLAUDE.md)** | 위 세 가지를 가리키는 한 화면짜리 색인。 | 자동으로、에이전트에 의해。의도적으로 지식 베이스가 *아닙니다* — 길어지면 훑어보고 넘어가다가 결국 무시되기 때문입니다。 |

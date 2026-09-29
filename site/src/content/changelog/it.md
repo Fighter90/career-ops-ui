@@ -2,6 +2,26 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.239.0] — 2026-09-29
+
+**Parità con career-ops @ b39931e: cinque nuove fonti e tre correzioni replicate.**
+
+### Aggiunto
+
+- **Cinque nuove fonti (98 → 103; adattatori in inglese 93 → 98):** AppliTrack (`applitrack.com/<distretto>`), NEOGOV (SchoolJobs / GovernmentJobs), Red Rover (`jobs.redroverk12.com/org/<id>`) e SchoolSpring (`<distretto>.schoolspring.com`) per le assunzioni nelle scuole e nel settore pubblico, più OCC Mundial, il più grande sito di lavoro del Messico (`provider: occ` esplicito con query di ricerca). Ognuna è vincolata al proprio host, solo HTTPS, e rifiuta i reindirizzamenti.
+- Test 3500 → 3774.
+
+### Corretto
+
+- **Le bacheche Greenhouse incorporate** (`job-boards.greenhouse.io/embed/job_board?for=<bacheca>`) puntavano a una bacheca chiamata "embed" e fallivano; ora la bacheca viene da `?for=`, e solo su un vero host Greenhouse.
+- **Le bacheche Workday su `myworkdaysite.com`** (`/recruiting/<tenant>/<sito>`) non venivano riconosciute; ora vengono scansionate, con i link degli annunci sullo stesso host.
+- **Un nome di report con parentesi** (`042-acme-(berlin)-….md`) veniva tagliato alla prima `)` nel tracker; ora il nome resta intero.
+
+### Note
+
+- Le modifiche del padre solo per la CLI **non** vengono portate — modelli PDF e CV, lo scaffolder, l'esecutore batch, l'importazione di career-profile, la copertura delle parole chiave ATS, le traduzioni delle modalità colloquio, l'host CLI `pi`: web-ui non li esegue.
+- Aprire un report del genere dal tracker richiede ancora che la route dei report accetti le parentesi nel nome del file; quella route **non** cambia in questa release.
+
 ## [1.238.3] — 2026-09-27
 
 **Le pagine restano reattive durante una scansione e i log della QA remota non rivelano più l'host di produzione.**

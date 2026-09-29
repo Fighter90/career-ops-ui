@@ -8,6 +8,26 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.239.0] — 2026-09-29
+
+**Paritet med career-ops @ b39931e: fem nye kilder og tre overførte rettelser.**
+
+### Tilføjet
+
+- **Fem nye kilder (98 → 103; engelske adaptere 93 → 98):** AppliTrack (`applitrack.com/<distrikt>`), NEOGOV (SchoolJobs / GovernmentJobs), Red Rover (`jobs.redroverk12.com/org/<id>`) og SchoolSpring (`<distrikt>.schoolspring.com`) til ansættelser på skoler og i den offentlige sektor, plus OCC Mundial, Mexicos største jobside (eksplicit `provider: occ` med søgeord). Hver er låst til sin vært, kun HTTPS, og afviser omdirigeringer.
+- Tests 3500 → 3774.
+
+### Rettet
+
+- **Indlejrede Greenhouse-tavler** (`job-boards.greenhouse.io/embed/job_board?for=<tavle>`) pegede på en tavle ved navn "embed" og fejlede; tavlen hentes nu fra `?for=`, og kun på en ægte Greenhouse-vært.
+- **Workday-tavler på `myworkdaysite.com`** (`/recruiting/<tenant>/<site>`) blev ikke genkendt; de scannes nu, med stillingslinks på samme vært.
+- **Et rapportnavn med parenteser** (`042-acme-(berlin)-….md`) blev i trackeren skåret af ved første `)`; hele navnet bevares nu.
+
+### Noter
+
+- Forældreprojektets ændringer, der kun gælder CLI'en, er **ikke** overført — PDF- og CV-skabeloner, scaffolderen, batch-kørslen, career-profile-importen, ATS-nøgleordsdækning, oversættelser af interviewtilstande, CLI-værten `pi`: web-ui kører dem ikke.
+- At åbne sådan en rapport fra trackeren kræver stadig, at rapportruten accepterer parenteser i et filnavn; den rute ændres **ikke** i denne udgivelse.
+
 ## [1.238.3] — 2026-09-27
 
 **Siderne svarer også under en scanning, og logs fra fjern-QA lækker ikke længere produktionsværten.**

@@ -7,17 +7,17 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-3500%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3774%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.238.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.238.0)
+[![release](https://img.shields.io/badge/release-v1.239.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.239.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.238.3** — **頁面更快,日誌更安全** — 報告清單在每次載入頁面時都會重新讀取與解析(在小伺服器上要幾秒,掃描期間會出現 30 秒逾時);現在已加入快取。**3500 個測試 · 116 個瀏覽器測試。**
+> **🆕 最新版本 — v1.239.0** — **與上游專案同步:新增 5 個求職網站** — 針對學校與公部門的 AppliTrack、NEOGOV、Red Rover、SchoolSpring,以及墨西哥最大的求職網站 OCC Mundial;Greenhouse 嵌入式職缺板與 Workday `myworkdaysite` 職缺板現在也能掃描。**103 個來源 · 3774 個測試 · 116 個瀏覽器測試。**
 >
 > **前一版本 — v1.237.1** — **針對外部 QA 複查的修補。** Jobstreet 的修復已從外部獲得證實：在 AU/NZ/HK/MY 主機上 `/id/job/<id>` 會回傳一個乾淨的 404，而 `/job/<id>` 能到達一個真實的受保護路由——遺失的連結確實存在。v1.237.0 新增內容中的兩項缺陷：**書籍連結**——文案在地化了，目標網址卻沒有，於是俄語文案指向了英文版——`data-i18n-href` 套用器現在會把 `ru` 導向俄語版的書；以及 **SEEK 正在遷移主機**（`www.seek.com.au` → `au.seek.com`），因此在 API 路徑開始對我們採用 `redirect:'error'` 的傳輸層發出重新導向之前，`au.seek.com` 與 `nz.seek.com` 已被加入允許清單。來源數量維持 **94** 個不變。**3210 項測試 · 瀏覽器 116 項。**
 
@@ -653,7 +653,7 @@ career-ops **常開** 時最佳 —— 在你睡覺時掃描,可從任何瀏覽�
 
 | 檔案 | 是什麼 | 何時讀 |
 |---|---|---|
-| **[`CONTEXT.md`](CONTEXT.md)** | 領域詞典：每個概念對應一個被採納的名稱，被否決的變體標為*不要使用*。 | **第一個讀。** 它解決了這個儲存庫真正付出代價的那些混淆——`source` 與 `adapter`（98 對 93，以及為什麼兩者都對）、`mirror` 與 `relay`、`telegram` 與 `telegram-channel`。 |
+| **[`CONTEXT.md`](CONTEXT.md)** | 領域詞典：每個概念對應一個被採納的名稱，被否決的變體標為*不要使用*。 | **第一個讀。** 它解決了這個儲存庫真正付出代價的那些混淆——`source` 與 `adapter`（103 對 98，以及為什麼兩者都對）、`mirror` 與 `relay`、`telegram` 與 `telegram-channel`。 |
 | **[`PROGRESS.md`](PROGRESS.md)** | 工作狀態：已完成的、下一步、已知問題，以及**被放棄的方案**。 | 每次工作階段開始時。Git 顯示改動了什麼；這份檔案說明工作現在處於什麼階段，以及哪些方案已經試過又被否決。 |
 | **[`docs/adr/`](docs/adr/)** | 編號的決策紀錄——背景、決策、後果，以及什麼情況會讓人重新考慮它。 | 在修改某條紀錄所涉及的內容之前。做主的是紀錄，不是目前這個發布版本。 |
 | **[`CLAUDE.md`](CLAUDE.md)** | 一螢幕之內的索引，指向上面三份檔案。 | 由代理自動讀取。它刻意*不是*知識庫——太長的檔案只會被草草翻過然後被忽略。 |

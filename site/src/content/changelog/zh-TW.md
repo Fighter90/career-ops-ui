@@ -8,6 +8,26 @@
 
 ---
 
+## [1.239.0] — 2026-09-29
+
+**與 career-ops @ b39931e 同步:五個新來源與三項移植的修正。**
+
+### 新增
+
+- **五個新來源(98 → 103;英文轉接器 93 → 98):** 針對學校與公部門招募的 AppliTrack(`applitrack.com/<學區>`)、NEOGOV(SchoolJobs / GovernmentJobs)、Red Rover(`jobs.redroverk12.com/org/<id>`)與 SchoolSpring(`<學區>.schoolspring.com`),以及墨西哥最大的求職網站 OCC Mundial(帶搜尋關鍵字的明確 `provider: occ`)。每個來源都固定在自己的主機,只用 HTTPS,並拒絕重新導向。
+- 測試 3500 → 3774。
+
+### 修復
+
+- **Greenhouse 嵌入式職缺板**(`job-boards.greenhouse.io/embed/job_board?for=<職缺板>`)會指向名為 "embed" 的職缺板而失敗;現在職缺板取自 `?for=`,且只在真正的 Greenhouse 主機上生效。
+- **`myworkdaysite.com` 上的 Workday 職缺板**(`/recruiting/<tenant>/<site>`)無法辨識;現在可以掃描,職缺連結也指向同一主機。
+- **含括號的報告檔名**(`042-acme-(berlin)-….md`)在追蹤表中會在第一個 `)` 被截斷;現在會保留完整名稱。
+
+### 說明
+
+- 僅限 CLI 的上游變更**未**移植 — PDF 與 CV 範本、scaffolder、批次執行器、career-profile 匯入、ATS 關鍵字涵蓋、面試模式翻譯、CLI 主機 `pi`:web-ui 不會執行它們。
+- 要從追蹤表開啟這類報告,報告路由還需要接受檔名中的括號;本版本**未**修改該路由。
+
 ## [1.238.3] — 2026-09-27
 
 **掃描期間頁面仍能回應,遠端 QA 日誌也不再洩漏正式環境主機。**

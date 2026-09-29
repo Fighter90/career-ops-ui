@@ -8,6 +8,26 @@
 
 ---
 
+## [1.239.0] — 2026-09-29
+
+**career-ops @ b39931e との同期: 新しいソース 5 件と、移植した修正 3 件。**
+
+### 追加
+
+- **新しいソース 5 件(98 → 103、英語アダプター 93 → 98):** 学校・公共部門の採用向けに AppliTrack(`applitrack.com/<学区>`)、NEOGOV(SchoolJobs / GovernmentJobs)、Red Rover(`jobs.redroverk12.com/org/<id>`)、SchoolSpring(`<学区>.schoolspring.com`)、さらにメキシコ最大の求人サイト OCC Mundial(検索クエリ付きの明示的な `provider: occ`)。いずれもホストを固定し、HTTPS のみで、リダイレクトを拒否します。
+- テスト 3500 → 3774。
+
+### 修正
+
+- **Greenhouse の埋め込みボード**(`job-boards.greenhouse.io/embed/job_board?for=<ボード>`)は "embed" という名前のボードを指して失敗していました。現在は `?for=` からボードを取得し、本物の Greenhouse ホストでのみ有効です。
+- **`myworkdaysite.com` 上の Workday ボード**(`/recruiting/<tenant>/<site>`)は認識されていませんでした。現在はスキャンされ、求人リンクも同じホストを指します。
+- **括弧を含むレポートファイル名**(`042-acme-(berlin)-….md`)はトラッカーで最初の `)` で切れていました。現在は名前全体が保持されます。
+
+### 備考
+
+- CLI 専用の親の変更は移植して**いません** — PDF と CV のテンプレート、scaffolder、バッチ実行、career-profile のインポート、ATS キーワードのカバレッジ、面接モードの翻訳、CLI ホスト `pi`。web-ui はこれらを実行しません。
+- トラッカーからそのようなレポートを開くには、レポートのルートがファイル名の括弧を受け付ける必要があります。このリリースではそのルートを変更して**いません**。
+
 ## [1.238.3] — 2026-09-27
 
 **スキャン中もページが応答し、リモート QA のログから本番ホストが漏れなくなりました。**

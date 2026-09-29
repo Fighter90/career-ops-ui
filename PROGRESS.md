@@ -8,11 +8,23 @@ Release history belongs in [CHANGELOG.md](CHANGELOG.md), decisions in
 [docs/adr/](docs/adr/), vocabulary in [CONTEXT.md](CONTEXT.md). Anything already
 recoverable from those does **not** belong here.
 
-_Last updated: 2026-09-27 · v1.238.3 (report-list cache, remote-QA host redaction) — v1.238.2 is deployed, released and published_
+_Last updated: 2026-09-29 · v1.239.0 (parent parity @ b39931e) — being released and deployed_
 
 ---
 
 ## Current state
+
+**v1.239.0 — parent parity with Fighter90/career-ops @ `b39931e`.** Counts **103** sources
+(98 EN + 5 RU) / **98** adapters; tests **3774** (3771 pass + 3 skipped). Five new sources
+(applitrack, neogov, occ, redrover, schoolspring) and three mirrored fixes (greenhouse embed
+`?for=` slug, workday myworkdaysite, report links with parentheses). Fork CodeQL on `b39931e`:
+js 0 / actions 0 / go 0; ADR-0002 divergences intact.
+
+Known follow-ups (not in this release):
+- the reports route's `sanitizePathName` still strips parentheses, so a report whose name holds
+  them links correctly but cannot be opened by name;
+- other `.myworkdayjobs.com` checks (liveness-api, tracker/apply views, job facets, trust
+  validator) do not yet recognise `myworkdaysite.com`.
 
 **v1.238.0 — parent parity with career-ops `main` @ `993085ce`** (182 commits since
 `de2224a9`). Counts **98** sources (93 EN + 5 RU) / **93** adapters; tests **3481**

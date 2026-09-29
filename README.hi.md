@@ -9,17 +9,17 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-3500%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3774%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.238.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.238.0)
+[![release](https://img.shields.io/badge/release-v1.239.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.239.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.238.3** — **तेज़ पेज, सुरक्षित लॉग** — रिपोर्ट सूची हर पेज लोड पर दोबारा पढ़ी और पार्स की जाती थी (छोटे सर्वर पर कई सेकंड, स्कैन के दौरान 30 सेकंड के टाइमआउट); अब यह कैश होती है। **3500 टेस्ट · 116 ब्राउज़र।**
+> **🆕 नवीनतम रिलीज़ — v1.239.0** — **मूल प्रोजेक्ट से बराबरी: 5 नई नौकरी साइटें** — स्कूल और सरकारी क्षेत्र की नौकरियों के लिए AppliTrack, NEOGOV, Red Rover और SchoolSpring, साथ ही मैक्सिको की सबसे बड़ी नौकरी साइट OCC Mundial; Greenhouse के एम्बेडेड बोर्ड और Workday `myworkdaysite` बोर्ड अब स्कैन होते हैं। **103 स्रोत · 3774 टेस्ट · 116 ब्राउज़र।**
 >
 > **पिछला — v1.237.1** — **v1.237.0 पर एक बाहरी QA पास से पैच।** Jobstreet सुधार बाहर से पुष्टि किया गया: `/id/job/<id>`, AU/NZ/HK/MY होस्ट पर एक स्वच्छ 404 लौटाता है और `/job/<id>` एक असली, सुरक्षित रूट तक पहुँचता है — खोई हुई लिंकें असली थीं। v1.237.0 ने जो जोड़ा था उसमें दो दोष: **किताब का लिंक** ने अपना लेबल स्थानीयकृत किया पर अपना लक्ष्य नहीं, इसलिए रूसी लेबल अंग्रेज़ी संस्करण तक ले जाता था — एक `data-i18n-href` अप्लायर अब `ru` को रूसी किताब की ओर भेजता है; और **SEEK होस्ट बदल रहा है** (`www.seek.com.au` → `au.seek.com`), इसलिए हमारे `redirect:'error'` ट्रांसपोर्ट में API पथ के रीडायरेक्ट करना शुरू करने से पहले `au.seek.com` और `nz.seek.com` को allowlist में डाला गया। गिनती अपरिवर्तित: **94** स्रोत। **3210 परीक्षण · 116 ब्राउज़र।**
 
@@ -687,7 +687,7 @@ career-ops **हमेशा चालू** रहने पर सर्वो�
 
 | फ़ाइल | यह क्या है | इसे कब पढ़ें |
 |---|---|---|
-| **[`CONTEXT.md`](CONTEXT.md)** | डोमेन शब्दकोश: हर संकल्पना के लिए एक स्वीकृत नाम, और अस्वीकृत विकल्प *उपयोग न करें* के रूप में चिह्नित। | **सबसे पहले।** यह उन उलझनों को सुलझाती है जिनकी क़ीमत यह रिपॉज़िटरी वाक़ई चुकाती है — `source` बनाम `adapter` (98 बनाम 93, और दोनों सही क्यों हैं), `mirror` बनाम `relay`, `telegram` बनाम `telegram-channel`। |
+| **[`CONTEXT.md`](CONTEXT.md)** | डोमेन शब्दकोश: हर संकल्पना के लिए एक स्वीकृत नाम, और अस्वीकृत विकल्प *उपयोग न करें* के रूप में चिह्नित। | **सबसे पहले।** यह उन उलझनों को सुलझाती है जिनकी क़ीमत यह रिपॉज़िटरी वाक़ई चुकाती है — `source` बनाम `adapter` (103 बनाम 98, और दोनों सही क्यों हैं), `mirror` बनाम `relay`, `telegram` बनाम `telegram-channel`। |
 | **[`PROGRESS.md`](PROGRESS.md)** | कार्य की स्थिति: क्या पूरा हो चुका है, अगला कदम क्या है, ज्ञात समस्याएँ, और **छोड़ दिए गए तरीक़े**। | किसी भी सेशन की शुरुआत में। Git दिखाता है कि क्या बदला; यह बताती है कि काम कहाँ खड़ा है और पहले क्या आज़माया जा चुका है और अस्वीकार किया जा चुका है। |
 | **[`docs/adr/`](docs/adr/)** | क्रमांकित निर्णय-अभिलेख — संदर्भ, निर्णय, परिणाम, और वह क्या होगा जो हमें इसे फिर से सोचने पर मजबूर करेगा। | किसी अभिलेख से जुड़ी किसी भी चीज़ को बदलने से पहले। निर्णय अभिलेख करता है, मौजूदा रिलीज़ नहीं। |
 | **[`CLAUDE.md`](CLAUDE.md)** | एक-स्क्रीन इंडेक्स जो ऊपर दी गई तीनों फ़ाइलों की ओर इशारा करता है। | अपने आप, एजेंट द्वारा। जानबूझकर एक ज्ञान-आधार *नहीं* — लंबी फ़ाइल को सरसरी तौर पर देखा जाता है और फिर नज़रअंदाज़ कर दिया जाता है। |

@@ -7,17 +7,17 @@
 
 _Interface non officielle — sans affiliation ni approbation de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-3500%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3774%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.238.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.238.0)
+[![release](https://img.shields.io/badge/release-v1.239.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.239.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Dernière version — v1.238.3** — **Pages plus rapides, journaux plus sûrs** — la liste des rapports était relue et réanalysée à chaque chargement de page (plusieurs secondes sur un petit serveur, délais de 30 s pendant un scan) ; elle est désormais mise en cache. **3500 tests · 116 navigateur.**
+> **🆕 Dernière version — v1.239.0** — **Parité avec le projet parent : 5 nouveaux sites d'emploi** — AppliTrack, NEOGOV, Red Rover et SchoolSpring pour l'emploi scolaire et public, plus OCC Mundial, le premier site d'emploi du Mexique ; les tableaux Greenhouse intégrés et les tableaux Workday `myworkdaysite` sont désormais scannés. **103 sources · 3774 tests · 116 navigateur.**
 >
 > **Précédente — v1.237.1** — **Correctif issu d'une revue QA externe.** Le correctif Jobstreet a été confirmé de l'extérieur : `/id/job/<id>` renvoie un 404 propre sur les hôtes AU/NZ/HK/MY et `/job/<id>` atteint une véritable route protégée — les liens perdus étaient bien réels. Deux défauts dans ce que v1.237.0 avait ajouté : le **lien vers le livre** avait un libellé traduit mais pas sa cible, si bien que le libellé russe menait à l'édition anglaise — un applicateur `data-i18n-href` envoie désormais `ru` vers le livre russe ; et **SEEK migre ses hôtes** (`www.seek.com.au` → `au.seek.com`), si bien que `au.seek.com` et `nz.seek.com` sont mis en liste blanche avant que le chemin de l'API ne commence à rediriger dans notre transport `redirect:'error'`. Décomptes inchangés à **94** sources. **3210 tests · 116 navigateur.**
 
@@ -645,7 +645,7 @@ La majeure partie de ce projet est écrite avec des agents de codage. C'est une 
 
 | Fichier | Ce que c'est | À lire quand |
 |---|---|---|
-| **[`CONTEXT.md`](CONTEXT.md)** | Dictionnaire du domaine : un nom retenu par concept, les variantes rejetées marquées *à ne pas utiliser*. | **En premier.** Il tranche les confusions que ce dépôt paie réellement — `source` contre `adapter` (98 contre 93, et pourquoi les deux ont raison), `mirror` contre `relay`, `telegram` contre `telegram-channel`. |
+| **[`CONTEXT.md`](CONTEXT.md)** | Dictionnaire du domaine : un nom retenu par concept, les variantes rejetées marquées *à ne pas utiliser*. | **En premier.** Il tranche les confusions que ce dépôt paie réellement — `source` contre `adapter` (103 contre 98, et pourquoi les deux ont raison), `mirror` contre `relay`, `telegram` contre `telegram-channel`. |
 | **[`PROGRESS.md`](PROGRESS.md)** | État des travaux : ce qui est fait, la prochaine étape, les problèmes connus, et les **approches abandonnées**. | Au début de chaque session. Git montre ce qui a changé ; ce fichier dit où en est le travail et ce qui a déjà été essayé puis rejeté. |
 | **[`docs/adr/`](docs/adr/)** | Des fiches de décision numérotées — contexte, décision, conséquences, et ce qui ferait revenir dessus. | Avant de modifier quoi que ce soit qu'une fiche couvre. C'est la fiche qui décide, pas la release en cours. |
 | **[`CLAUDE.md`](CLAUDE.md)** | Un index tenant sur un écran, pointant vers les trois fichiers ci-dessus. | Automatiquement, par l'agent. Délibérément *pas* une base de connaissances — une longue se parcourt en diagonale, puis s'ignore. |

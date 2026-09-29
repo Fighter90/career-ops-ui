@@ -7,17 +7,17 @@
 
 _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-3500%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3774%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.238.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.238.0)
+[![release](https://img.shields.io/badge/release-v1.239.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.239.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Ultima release — v1.238.3** — **Pagine più veloci, log più sicuri** — l'elenco dei report veniva riletto e rianalizzato a ogni caricamento di pagina (secondi su un server piccolo, timeout di 30 s durante una scansione); ora è in cache. **3500 test · 116 browser.**
+> **🆕 Ultima release — v1.239.0** — **Parità con il progetto padre: 5 nuovi siti di lavoro** — AppliTrack, NEOGOV, Red Rover e SchoolSpring per il lavoro nelle scuole e nel settore pubblico, più OCC Mundial, il più grande sito di lavoro del Messico; ora si scansionano anche le bacheche Greenhouse incorporate e le bacheche Workday `myworkdaysite`. **103 fonti · 3774 test · 116 browser.**
 >
 > **Precedente — v1.237.1** — **Patch da una verifica QA esterna.** La correzione di Jobstreet è stata confermata dall'esterno: `/id/job/<id>` restituisce un 404 pulito sugli host AU/NZ/HK/MY e `/job/<id>` raggiunge una rotta reale protetta — i link persi erano reali. Due difetti in ciò che v1.237.0 aveva aggiunto: il **link al libro** localizzava l'etichetta ma non la destinazione, quindi l'etichetta russa portava all'edizione inglese — un applicatore `data-i18n-href` ora invia `ru` al libro russo; e **SEEK sta migrando gli host** (`www.seek.com.au` → `au.seek.com`), quindi `au.seek.com` e `nz.seek.com` sono in allowlist prima che il percorso dell'API inizi a reindirizzare nel nostro trasporto `redirect:'error'`. Conteggi invariati a **94** sorgenti. **3210 test · 116 browser.**
 
@@ -684,7 +684,7 @@ invece di ri-derivare, ri-decidere e ri-rompere di nuovo le stesse cose.
 
 | File | Cos'è | Quando leggerlo |
 |---|---|---|
-| **[`CONTEXT.md`](CONTEXT.md)** | Dizionario di dominio: un nome accettato per ogni concetto, con le varianti respinte contrassegnate come *da non usare*. | **Per primo.** Risolve le confusioni che questo repo paga davvero — `source` vs `adapter` (98 vs 93, e perché sono entrambi corretti), `mirror` vs `relay`, `telegram` vs `telegram-channel`. |
+| **[`CONTEXT.md`](CONTEXT.md)** | Dizionario di dominio: un nome accettato per ogni concetto, con le varianti respinte contrassegnate come *da non usare*. | **Per primo.** Risolve le confusioni che questo repo paga davvero — `source` vs `adapter` (103 vs 98, e perché sono entrambi corretti), `mirror` vs `relay`, `telegram` vs `telegram-channel`. |
 | **[`PROGRESS.md`](PROGRESS.md)** | Stato di lavoro: cosa è fatto, il prossimo passo, i problemi noti e gli **approcci abbandonati**. | All'inizio di ogni sessione. Git mostra cosa è cambiato; questo dice a che punto è il lavoro e cosa è già stato provato e respinto. |
 | **[`docs/adr/`](docs/adr/)** | Verbali di decisione numerati — contesto, decisione, conseguenze e cosa ci farebbe tornare a riconsiderarla. | Prima di cambiare qualcosa che un verbale copre. Decide il verbale, non la release attuale. |
 | **[`CLAUDE.md`](CLAUDE.md)** | Un indice di una sola schermata che rimanda ai tre file sopra. | Automaticamente, dall'agente. Deliberatamente *non* una base di conoscenza — una lunga viene scorsa in fretta e poi ignorata. |
