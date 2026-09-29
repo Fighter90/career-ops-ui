@@ -74,3 +74,18 @@ export function describe(text, locale) {
   const s = scriptShare(text, locale);
   return `${locale} script ${Math.round(s.own * 100)}%${'kana' in s ? `, kana ${Math.round(s.kana * 100)}%` : ''}`;
 }
+
+/**
+ * The shape of a report's headings with every word masked — safe for a public
+ * log, and enough to see why the A–G check missed (a translated letter, the
+ * letter after the 24th character, bold lines instead of `##`). A lone Latin
+ * capital A–G is kept; any other Latin word becomes `w`, any other word `ʷ`.
+ */
+export function headingSkeleton(text, max = 10) {
+  const lines = String(text || '').split('\n');
+  const heads = lines.filter((l) => /^#{1,6}\s/.test(l)).slice(0, max).map((l) => l
+    .replace(/[\p{L}\p{M}]+/gu, (w) => (/^[A-G]$/.test(w) ? w : /^[A-Za-z]+$/.test(w) ? 'w' : 'ʷ'))
+    .slice(0, 48));
+  const bold = lines.filter((l) => /^\*\*/.test(l.trim())).length;
+  return `${heads.length} headings, ${bold} bold lines: ${heads.map((h) => JSON.stringify(h)).join(' ')}`;
+}

@@ -7,7 +7,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { languageOk, describe, prose } from '../scripts/remote-qa/lang-check.mjs';
+import { languageOk, describe, prose, headingSkeleton } from '../scripts/remote-qa/lang-check.mjs';
 
 const HI = 'यह भूमिका प्लेटफ़ॉर्म टीम के लिए है और उम्मीदवार का अनुभव इसके अनुरूप है। ';
 const EN_TERMS = 'Kubernetes Terraform PostgreSQL AWS GCP Go gRPC Kafka ';
@@ -54,4 +54,11 @@ test('Arabic and Korean are measured in words; Latin locales report stop-word co
   assert.equal(languageOk(ko, 'ko'), true, describe(ko, 'ko'));
   assert.equal(languageOk('The role fits well. '.repeat(20), 'ko'), false);
   assert.match(describe('Der Kandidat ist gut und die Rolle passt. The end.', 'de'), /^de stop words \d+, en \d+$/);
+});
+
+test('headingSkeleton masks every word but keeps a lone A–G letter and the markup', () => {
+  const report = '## الكتلة A — ملخص الدور\ntext Acme Corp secret\n## Bloque B — Resumen\n**Veredicto**\n## أ) ملخص\n';
+  const s = headingSkeleton(report);
+  assert.equal(s, '3 headings, 1 bold lines: "## ʷ A — ʷ ʷ" "## w B — w" "## ʷ) ʷ"');
+  assert.doesNotMatch(s, /Acme|secret|Resumen|الكتلة/);
 });
