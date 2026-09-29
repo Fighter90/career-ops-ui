@@ -8,6 +8,19 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.239.2] — 2026-09-29
+
+**Patch fra live-regressionen af v1.239.1.**
+
+### Rettet
+
+- **En arabisk vurdering oversatte sine blokbogstaver, og en japansk udelod scoreresuméet.** v1.239.1 gentog kun sproget i promptens sidste linje. Linjen siger nu også, at det latinske bogstav A–G i hver overskrift og `---SCORE_SUMMARY---`-blokken (markører og nøgler på engelsk) ikke må oversættes, og beder om sprogets egen skrift.
+- Tests 3775 → 3776.
+
+### Noter
+
+- Rapporttjekket er **ikke** lempet til at godtage oversatte bogstaver eller markører: prompten holder formatet stabilt.
+
 ## [1.239.1] — 2026-09-29
 
 **Patch fra live-regressionen af v1.239.0.**

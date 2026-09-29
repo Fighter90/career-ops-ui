@@ -2,6 +2,19 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.239.2] — 2026-09-29
+
+**v1.239.1 canlı regresyonundan çıkan yama.**
+
+### Düzeltildi
+
+- **Arapça bir değerlendirme blok harflerini çevirdi, Japonca bir değerlendirme puan özetini atladı.** v1.239.1 istemin son satırında yalnızca dili yineliyordu. Bu satır artık her başlıktaki Latin A–G harfinin ve `---SCORE_SUMMARY---` bloğunun (işaretler ve anahtarlar İngilizce) çevrilmemesi gerektiğini de söylüyor ve dilin kendi yazısını istiyor.
+- Testler 3775 → 3776.
+
+### Notlar
+
+- Rapor denetimi çevrilmiş harfleri veya işaretleri kabul edecek şekilde gevşetil**medi**: biçimi istem kararlı tutuyor.
+
 ## [1.239.1] — 2026-09-29
 
 **v1.239.0 canlı regresyonundan çıkan yama.**

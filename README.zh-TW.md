@@ -7,17 +7,17 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-3775%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3776%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.239.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.239.1)
+[![release](https://img.shields.io/badge/release-v1.239.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.239.2)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.239.1** — **修補:** AI 評估維持介面語言輸出(日文與烏克蘭文報告會滑回英文);線上檢查會等待正在執行的掃描結束。**103 個來源 · 3775 個測試 · 116 個瀏覽器測試。**
+> **🆕 最新版本 — v1.239.2** — **修補:** 翻譯後的 AI 評估保留機器可讀格式 — 區塊字母 A–G 與評分摘要不再被翻譯(阿拉伯文與日文報告未通過檢查)。**103 個來源 · 3776 個測試 · 116 個瀏覽器測試。**
 >
 > **前一版本 — v1.237.1** — **針對外部 QA 複查的修補。** Jobstreet 的修復已從外部獲得證實：在 AU/NZ/HK/MY 主機上 `/id/job/<id>` 會回傳一個乾淨的 404，而 `/job/<id>` 能到達一個真實的受保護路由——遺失的連結確實存在。v1.237.0 新增內容中的兩項缺陷：**書籍連結**——文案在地化了，目標網址卻沒有，於是俄語文案指向了英文版——`data-i18n-href` 套用器現在會把 `ru` 導向俄語版的書；以及 **SEEK 正在遷移主機**（`www.seek.com.au` → `au.seek.com`），因此在 API 路徑開始對我們採用 `redirect:'error'` 的傳輸層發出重新導向之前，`au.seek.com` 與 `nz.seek.com` 已被加入允許清單。來源數量維持 **94** 個不變。**3210 項測試 · 瀏覽器 116 項。**
 

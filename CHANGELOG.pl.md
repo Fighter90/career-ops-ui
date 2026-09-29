@@ -9,6 +9,19 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.239.2] — 2026-09-29
+
+**Poprawka po regresji na żywo wersji v1.239.1.**
+
+### Naprawiono
+
+- **Ocena po arabsku przetłumaczyła litery bloków, a po japońsku pominęła podsumowanie oceny.** Wersja v1.239.1 powtarzała w ostatnim wierszu promptu tylko język. Teraz ten wiersz mówi też, że łacińska litera A–G w każdym nagłówku i blok `---SCORE_SUMMARY---` (znaczniki i klucze po angielsku) nie są tłumaczone, oraz prosi o własne pismo języka.
+- Testy 3775 → 3776.
+
+### Uwagi
+
+- Kontrola raportu **nie** została złagodzona, by przyjmować przetłumaczone litery lub znaczniki: stabilność formatu zapewnia prompt.
+
 ## [1.239.1] — 2026-09-29
 
 **Poprawka po regresji na żywo wersji v1.239.0.**

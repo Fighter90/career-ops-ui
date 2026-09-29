@@ -8,6 +8,19 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.239.2] — 2026-09-29
+
+**Patch from the v1.239.1 live regression.**
+
+### Fixed
+
+- **An Arabic evaluation translated its block letters and a Japanese one dropped the score summary.** v1.239.1 restated only the language as the prompt's last line. That line now also says the Latin letter A–G in each heading and the `---SCORE_SUMMARY---` block (markers and keys in English) must not be translated, and asks for the language's own script.
+- Tests 3775 → 3776.
+
+### Notes
+
+- The report check is **not** loosened to accept translated letters or markers: the prompt keeps the format stable instead.
+
 ## [1.239.1] — 2026-09-29
 
 **Patch from the v1.239.0 live regression.**
