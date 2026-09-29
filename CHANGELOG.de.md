@@ -2,6 +2,20 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.239.3] — 2026-09-29
+
+**Patch aus der Live-Regression von v1.239.2.**
+
+### Behoben
+
+- **Arabische Bewertungen fielen weiterhin durch die A–G-Prüfung**, nachdem v1.239.2 Japanisch und Hindi behoben hatte. Ein maskiertes Überschriften-Gerüst (kein Berichtstext im Log) zeigte den Grund: Der arabische Bericht schreibt den Blockbuchstaben auf Arabisch, in Abdschad-Reihenfolge, was immer der Prompt verlangt. Die Prüfung akzeptiert jetzt أ ب ج د هـ و ز als A–G, wenn der Buchstabe allein am Anfang einer Überschrift steht, wie sie schon kyrillische Doppelgänger akzeptiert; dieselben Buchstaben in einem arabischen Wort zählen nicht.
+- Der Live-Check gibt dieses maskierte Gerüst aus, wenn die A–G-Prüfung scheitert, damit sich der nächste Fall aus dem Log diagnostizieren lässt.
+- Tests 3776 → 3778.
+
+### Anmerkungen
+
+- Die Notiz zu v1.239.2 sagte, die Prüfung werde **nicht** gelockert; für Arabisch ist sie es jetzt, weil drei Live-Läufe zeigten, dass der Prompt allein den lateinischen Buchstaben nicht hält.
+
 ## [1.239.2] — 2026-09-29
 
 **Patch aus der Live-Regression von v1.239.1.**

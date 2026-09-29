@@ -8,6 +8,20 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.239.3] — 2026-09-29
+
+**Patch from the v1.239.2 live regression.**
+
+### Fixed
+
+- **Arabic evaluations still failed the A–G check** after v1.239.2 fixed Japanese and Hindi. A masked heading outline (no report text in the log) showed why: the Arabic report writes the block letter in Arabic, in abjad order, whatever the prompt asks. The check now accepts أ ب ج د هـ و ز as A–G when it stands alone near the start of a heading, as it already accepted Cyrillic look-alikes; the same letters inside an Arabic word do not count.
+- The live check prints that masked heading outline when an A–G check fails, so the next case can be diagnosed from the log.
+- Tests 3776 → 3778.
+
+### Notes
+
+- The v1.239.2 note said the check would **not** be loosened; for Arabic it now is, because three live runs showed the prompt alone does not hold the Latin letter.
+
 ## [1.239.2] — 2026-09-29
 
 **Patch from the v1.239.1 live regression.**

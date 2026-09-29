@@ -7,17 +7,17 @@
 
 _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-3776%20passed-brightgreen)](#testes)
+[![tests](https://img.shields.io/badge/tests-3778%20passed-brightgreen)](#testes)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.239.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.239.2)
+[![release](https://img.shields.io/badge/release-v1.239.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.239.3)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versão — v1.239.2** — **Patch:** avaliações por IA traduzidas mantêm o formato lido por máquina — as letras de bloco A–G e o resumo de pontuação não são mais traduzidos (relatórios em árabe e japonês falhavam na verificação). **103 fontes · 3776 testes · 116 de navegador.**
+> **🆕 Última versão — v1.239.3** — **Patch:** avaliações por IA em árabe passam na verificação do relatório — a letra de bloco escrita em árabe (أ ب ج د هـ و ز) agora conta como A–G. **103 fontes · 3778 testes · 116 de navegador.**
 >
 > **Anterior — v1.237.1** — **Patch de uma verificação de QA externa.** A correção do Jobstreet foi confirmada de fora: `/id/job/<id>` retorna um 404 limpo nos hosts AU/NZ/HK/MY e `/job/<id>` alcança uma rota real protegida — os links perdidos eram reais. Dois defeitos no que a versão anterior havia adicionado: o **link do livro** tinha o rótulo localizado, mas não o destino, então o rótulo em russo levava à edição em inglês — um aplicador `data-i18n-href` agora envia `ru` para o livro em russo; e **o SEEK está migrando de hosts** (`www.seek.com.au` → `au.seek.com`), então `au.seek.com` e `nz.seek.com` entram na allowlist antes que o caminho da API comece a redirecionar para dentro do nosso transporte `redirect:'error'`. Contagens inalteradas em **94** fontes. **3210 testes · 116 de navegador.**
 

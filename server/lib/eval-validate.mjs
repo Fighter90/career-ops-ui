@@ -26,12 +26,17 @@ export function validateEvaluationReport(text) {
   // `## ブロックA`, `## Блок А` (Cyrillic look-alikes accepted for A/B/C/E).
   // The letter must not sit inside a Latin word (`## About` is not Block A).
   const LOOKALIKE = { A: 'АA', B: 'ВB', C: 'СC', E: 'ЕE' };
+  // An Arabic report writes the block letter in abjad order (أ ب ج د هـ و ز)
+  // however the prompt asks — three live runs in a row (v1.239.x). Accepted
+  // only as a standalone word, so a letter inside an Arabic word never counts.
+  const ABJAD = { A: 'أ|ا|إ|آ', B: 'ب', C: 'ج', D: 'د', E: 'هـ|ه', F: 'و', G: 'ز' };
   const requiredBlocks = ['A', 'B', 'C', 'D', 'E', 'F', 'G'].map((L) => [
     L,
     new RegExp(`^#{1,3}[ \\t]*[^\\n]{0,24}?(?<![A-Za-z\\u0400-\\u04FF])[${LOOKALIKE[L] || L}](?![A-Za-z\\u0400-\\u04FF])`, 'mu'),
+    new RegExp(`^#{1,3}[ \\t]*[^\\n]{0,24}?(?<![\\p{L}\\p{M}])(?:${ABJAD[L]})(?![\\p{L}\\p{M}])`, 'mu'),
   ]);
-  for (const [label, pattern] of requiredBlocks) {
-    if (!pattern.test(text)) issues.push(`missing Block ${label}`);
+  for (const [label, latin, abjad] of requiredBlocks) {
+    if (!latin.test(text) && !abjad.test(text)) issues.push(`missing Block ${label}`);
   }
 
   const summary = text.match(/---SCORE_SUMMARY---\s*([\s\S]*?)---END_SUMMARY---/);

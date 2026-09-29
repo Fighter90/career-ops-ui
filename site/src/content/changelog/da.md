@@ -8,6 +8,20 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.239.3] — 2026-09-29
+
+**Patch fra live-regressionen af v1.239.2.**
+
+### Rettet
+
+- **Arabiske vurderinger dumpede stadig A–G-tjekket**, efter at v1.239.2 havde rettet japansk og hindi. Et maskeret overskriftsskelet (ingen rapporttekst i loggen) viste hvorfor: den arabiske rapport skriver blokbogstavet på arabisk i abjad-rækkefølge, uanset hvad prompten beder om. Tjekket godtager nu أ ب ج د هـ و ز som A–G, når bogstavet står alene nær starten af en overskrift, ligesom det allerede godtog kyrilliske dobbeltgængere; de samme bogstaver inde i et arabisk ord tæller ikke.
+- Live-tjekket udskriver dette maskerede skelet, når A–G-tjekket fejler, så det næste tilfælde kan diagnosticeres fra loggen.
+- Tests 3776 → 3778.
+
+### Noter
+
+- Noten til v1.239.2 sagde, at tjekket **ikke** ville blive lempet; for arabisk er det nu, fordi tre live-kørsler viste, at prompten alene ikke holder det latinske bogstav.
+
 ## [1.239.2] — 2026-09-29
 
 **Patch fra live-regressionen af v1.239.1.**

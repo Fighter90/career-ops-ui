@@ -7,17 +7,17 @@
 
 _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-3776%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-3778%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.239.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.239.2)
+[![release](https://img.shields.io/badge/release-v1.239.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.239.3)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Seneste udgivelse — v1.239.2** — **Patch:** oversatte AI-vurderinger bevarer deres maskinlæste format — blokbogstaverne A–G og scoreresuméet oversættes ikke længere (arabiske og japanske rapporter dumpede tjekket). **103 kilder · 3776 tests · 116 browser.**
+> **🆕 Seneste udgivelse — v1.239.3** — **Patch:** arabiske AI-vurderinger består rapporttjekket — blokbogstavet skrevet på arabisk (أ ب ج د هـ و ز) tæller nu som A–G. **103 kilder · 3778 tests · 116 browser.**
 >
 > **Tidligere — v1.237.1** — **Patch fra et eksternt QA-gennemløb.** Jobstreet-rettelsen blev bekræftet udefra: `/id/job/<id>` returnerer en ren 404 på AU/NZ/HK/MY-værterne, og `/job/<id>` når en ægte beskyttet rute — de mistede links var ægte. To defekter i det, v1.237.0 tilføjede: **bog-linket** lokaliserede sin label, men ikke sit mål, så den russiske label førte til den engelske udgave — en `data-i18n-href`-applier sender nu `ru` til den russiske bog; og **SEEK migrerer værter** (`www.seek.com.au` → `au.seek.com`), så `au.seek.com` og `nz.seek.com` er nu på allowlisten, før API-stien begynder at redirecte ind i vores `redirect:'error'`-transport. Antal uændret på **94** kilder. **3210 test · 116 browser.**
 

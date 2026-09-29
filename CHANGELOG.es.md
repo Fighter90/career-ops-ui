@@ -10,6 +10,20 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 
 ---
 
+## [1.239.3] — 2026-09-29
+
+**Parche tras la regresión en vivo de la v1.239.2.**
+
+### Corregido
+
+- **Las evaluaciones en árabe seguían fallando la comprobación A–G** después de que la v1.239.2 arreglara japonés e hindi. Un esquema enmascarado de los encabezados (sin texto del informe en el log) mostró la causa: el informe árabe escribe la letra de bloque en árabe, en orden abjad, diga lo que diga el prompt. La comprobación acepta ahora أ ب ج د هـ و ز como A–G cuando aparecen solas al inicio de un encabezado, igual que ya aceptaba los dobles cirílicos; las mismas letras dentro de una palabra árabe no cuentan.
+- La comprobación en vivo imprime ese esquema enmascarado cuando falla la comprobación A–G, para diagnosticar el siguiente caso desde el log.
+- Tests 3776 → 3778.
+
+### Notas
+
+- La nota de la v1.239.2 decía que la comprobación **no** se relajaría; para el árabe ahora sí, porque tres ejecuciones en vivo mostraron que el prompt por sí solo no mantiene la letra latina.
+
 ## [1.239.2] — 2026-09-29
 
 **Parche tras la regresión en vivo de la v1.239.1.**

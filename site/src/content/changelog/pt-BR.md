@@ -8,6 +8,20 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.239.3] — 2026-09-29
+
+**Patch da regressão ao vivo da v1.239.2.**
+
+### Corrigido
+
+- **Avaliações em árabe ainda falhavam na verificação A–G** depois que a v1.239.2 corrigiu japonês e hindi. Um esqueleto mascarado dos títulos (sem texto do relatório no log) mostrou o motivo: o relatório árabe escreve a letra de bloco em árabe, na ordem abjad, seja o que for que o prompt peça. A verificação agora aceita أ ب ج د هـ و ز como A–G quando a letra aparece sozinha no início de um título, como já aceitava os sósias cirílicos; as mesmas letras dentro de uma palavra árabe não contam.
+- A verificação ao vivo imprime esse esqueleto mascarado quando a verificação A–G falha, para diagnosticar o próximo caso pelo log.
+- Testes 3776 → 3778.
+
+### Notas
+
+- A nota da v1.239.2 dizia que a verificação **não** seria afrouxada; para o árabe agora é, porque três execuções ao vivo mostraram que só o prompt não segura a letra latina.
+
 ## [1.239.2] — 2026-09-29
 
 **Patch da regressão ao vivo da v1.239.1.**
