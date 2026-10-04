@@ -165,9 +165,29 @@ export function parseApplications(text) {
   });
 }
 
+// Upstream career-ops writes pipeline.md as `## Pending` / `## Processed`
+// sections of `- [ ] url | company | title | …` rows (scan.mjs
+// PIPELINE_SKELETON / appendToPipeline), with Spanish section names on older
+// installs. A file in that shape has no code fence.
+const PENDING_HEADINGS = ['## Pending', '## Pendientes'];
+const PROCESSED_HEADINGS = ['## Processed', '## Procesadas'];
+const UNCHECKED_ROW = /^-\s+\[ \]\s+/;
+
+function isChecklistPipeline(text) {
+  if (!text || text.includes('```')) return false;
+  return /^-\s+\[[ xX]\]\s+/m.test(text)
+    || [...PENDING_HEADINGS, ...PROCESSED_HEADINGS].some((h) => new RegExp(`^${h}\\s*$`, 'm').test(text));
+}
+
+/** The URL of one pipeline line (fenced or `- [ ]` row); '' when it has none. */
+function lineUrl(line) {
+  return line.trim().replace(UNCHECKED_ROW, '').split(/\s+\|\s+/)[0].trim();
+}
+
 /**
  * Parse pipeline.md → list of pending URLs.
- * URLs live inside the first ```code-fence``` block, one per line.
+ * URLs live inside the first ```code-fence``` block, one per line — or, in the
+ * parent's checklist format, in the unchecked `- [ ] url | …` rows.
  */
 export function parsePipeline(text) {
   if (!text) return [];
@@ -177,8 +197,27 @@ export function parsePipeline(text) {
     .split('\n')
     // v1.84.0 (#1017) — a line may carry an optional `| <compensation>` column;
     // the URL is the first ` | `-delimited token. Bare URLs are unaffected.
-    .map((l) => l.trim().split(/\s+\|\s+/)[0].trim())
+    // Checked `- [x]` rows keep their prefix and so fall out of the filter.
+    .map(lineUrl)
     .filter((l) => l && (l.startsWith('http') || l.startsWith('local:')));
+}
+
+/** Insert one `- [ ]` row at the end of the checklist's Pending section. */
+function addChecklistRow(text, row) {
+  const pending = PENDING_HEADINGS.find((h) => new RegExp(`^${h}\\s*$`, 'm').test(text));
+  if (pending) {
+    const start = text.search(new RegExp(`^${pending}\\s*$`, 'm')) + pending.length;
+    const next = text.indexOf('\n## ', start);
+    const end = next === -1 ? text.length : next;
+    const section = text.slice(start, end).replace(/\s+$/, '');
+    const rest = text.slice(end).replace(/^\n+/, '');
+    return text.slice(0, start) + section + '\n' + row + '\n' + (rest ? '\n' + rest : '');
+  }
+  // No Pending section — create one before Processed (or at the end).
+  const processed = text.search(new RegExp(`^(${PROCESSED_HEADINGS.join('|')})\\s*$`, 'm'));
+  const at = processed === -1 ? text.length : processed;
+  const head = text.slice(0, at).replace(/\s+$/, '');
+  return (head ? head + '\n\n' : '') + '## Pending\n\n' + row + '\n\n' + text.slice(at);
 }
 
 /**
@@ -241,6 +280,17 @@ export function addPipelineUrl(text, url, opts = {}) {
   })) return text;
 
   const comp = sanitizePipelineComp(opts.comp);
+  if (isChecklistPipeline(text)) {
+    // Dedup against processed `- [x]` rows too, so an evaluated posting is not
+    // queued (and paid for) a second time.
+    const known = text.split('\n')
+      .filter((l) => /^-\s+\[[ xX]\]\s+/.test(l.trim()))
+      .map((l) => l.trim().replace(/^-\s+\[[ xX]\]\s+/, '').split(/\s+\|\s+/)[0].trim());
+    if (known.some((u) => (normalizeUrl(u) || u) === incomingKey)) return text;
+    // The parent reads checklist columns positionally (url | company | title |
+    // location | comp), so compensation rides as a labeled `note:` segment.
+    return addChecklistRow(text, `- [ ] ${trimmed}${comp ? ` | note: comp ${comp}` : ''}`);
+  }
   const newLine = comp ? `${trimmed} | ${comp}` : trimmed;
   const fenceContent = [...existingLines, newLine].join('\n');
   if (text && text.includes('```')) {
@@ -258,6 +308,12 @@ export function addPipelineUrl(text, url, opts = {}) {
  * Remove a URL from pipeline.md.
  */
 export function removePipelineUrl(text, url) {
+  if (isChecklistPipeline(text)) {
+    return text
+      .split('\n')
+      .filter((l) => !(UNCHECKED_ROW.test(l.trim()) && lineUrl(l) === url))
+      .join('\n');
+  }
   const remaining = parsePipeline(text).filter((u) => u !== url);
   const fenceContent = remaining.join('\n');
   if (text.includes('```')) {
