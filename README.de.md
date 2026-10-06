@@ -7,19 +7,19 @@
 
 _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von diesen unterstützt._
 
-[![tests](https://img.shields.io/badge/tests-4056%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-4404%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
-[![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
+[![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.240.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.240.0)
+[![release](https://img.shields.io/badge/release-v1.241.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.241.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Neueste Version — v1.240.0** — **Parent-Parität mit career-ops 1.35.0: sechs neue Quellen (ADP Workforce Now, Gupy, JazzHR, Startup Jobs, Taleo, UKG Pro → 109), in acht bestehende Provider gespiegelte Fixes und das Checklisten-Format `pipeline.md` des Elternprojekts** — beigesteuert von **@bullitt186**: Die UI las eine solche Pipeline als 0 offen und hängte neue URLs dort an, wo das Elternprojekt nie nachsieht; jetzt liest und schreibt sie `- [ ]`-Zeilen. Ashby, Breezy und Recruitee übernehmen das Land in den Standort, sodass ein Filter keine Remote-Stellen mit primärem UK-Standort mehr verwirft, und eine als HTTP 200 ausgelieferte Challenge-Seite schlägt laut fehl, statt als leeres Board zu gelten. **4056 Tests.**
+> **🆕 Neueste Version — v1.241.0** — **Härtung nach einem Code-Review mit 28 Agenten und eine Stellenkarte von @bullitt186.** Eine fehlerhafte Anfrage kann den Server nicht mehr stoppen, ein abgebrochener Scan löscht die letzten Ergebnisse nicht mehr, Bewertungen sehen jetzt die gesamte Methodendatei statt der ersten 16 KB, der Server weist DNS-Rebinding-Hosts und Cross-Site-Schreibzugriffe ab, und Redirects werden erneut auf private Ziele geprüft. `#/map` zeigt Ihre Stellen auf OpenStreetMap. **4404 Tests · 118 Browser.**
 >
-> **Vorherige Version — v1.239.4** — **Patch:** Lange KI-Bewertungen werden nicht mehr vor der Bewertungszusammenfassung abgeschnitten (koreanische und chinesische Berichte stießen an die Grenze von 8192 Tokens); eine abgeschnittene Antwort wird jetzt als solche benannt. **103 Quellen · 3782 Tests · 116 Browser.**
+> **Vorherige Version — v1.240.0** — **Parent-Parität mit career-ops 1.35.0: sechs neue Quellen (ADP Workforce Now, Gupy, JazzHR, Startup Jobs, Taleo, UKG Pro → 109), in acht bestehende Provider gespiegelte Fixes und das Checklisten-Format `pipeline.md` des Elternprojekts** — beigesteuert von **@bullitt186**: Die UI las eine solche Pipeline als 0 offen und hängte neue URLs dort an, wo das Elternprojekt nie nachsieht; jetzt liest und schreibt sie `- [ ]`-Zeilen. Ashby, Breezy und Recruitee übernehmen das Land in den Standort, sodass ein Filter keine Remote-Stellen mit primärem UK-Standort mehr verwirft, und eine als HTTP 200 ausgelieferte Challenge-Seite schlägt laut fehl, statt als leeres Board zu gelten. **4056 Tests.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

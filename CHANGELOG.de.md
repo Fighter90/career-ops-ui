@@ -2,6 +2,37 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.241.0] — 2026-10-07
+
+**Härtungs-Release nach einem Code-Review mit 28 Agenten (~190 verifizierte Befunde): Die Klassen Sicherheit, Prozessabsturz und Datenverlust sind geschlossen, dazu eine Stellenkarte, beigesteuert von @bullitt186.**
+
+### Hinzugefügt
+
+- **Stellenkarte (`#/map`)** — Stellen aus der Pipeline, dem letzten Scan und dem Tracker auf einer OpenStreetMap-Karte, geokodiert über Nominatim mit identifizierendem User-Agent, einer Warteschlange mit 1 Anfrage/s, Back-off und einem Cache auf der Festplatte. Leaflet wird von diesem Server ausgeliefert (kein CDN); die CSP erhält lediglich die Tile-Origin in `img-src`. Beigesteuert von **@bullitt186** (#381).
+- **Request-Guard** — Der Server weist einen `Host` ab, den er nicht bedient (DNS-Rebinding), sowie Cross-Site-Schreibzugriffe und GETs mit Nebenwirkungen (`/api/stream/*`, `/api/run/*`, `/api/geocode`). Ein Reverse-Proxy, der einen öffentlichen Namen weiterleitet, trägt ihn in `ALLOWED_HOSTS` ein; der Deploy-Workflow schreibt dieses systemd-Drop-in aus der öffentlichen URL.
+- **Coverage-Gate** — `npm run test:coverage:gate` (`scripts/coverage-report.mjs`) gibt die Zeilen-/Branch-Abdeckung pro Datei aus und schlägt unterhalb einer nachziehenden Baseline fehl.
+
+### Behoben
+
+- **Eine fehlerhafte Anfrage stoppt den Server nicht mehr.** Express 4 ignorierte abgelehnte asynchrone Handler, sodass ein Feld mit falschem Typ in `/api/deep`, `/api/auto-pipeline`, `/api/career-plan`, `/api/tracker` oder ein NUL-Byte in `/api/stats` den Prozess beendete; jetzt sind das JSON-400-Antworten, und jede andere Ablehnung wird zu einer 500.
+- **Ein abgebrochener oder fehlgeschlagener Scan löscht die letzten Ergebnisse nicht mehr.** `last-scan.json` bleibt erhalten, wenn ein Scan gestoppt wird oder jede Quelle fehlschlug, und ein Scan einer einzelnen Firma führt zusammen, statt zu ersetzen. Ein falsch konfigurierter Eintrag in `portals.yml` bricht nicht mehr den ganzen Scan ab.
+- **Bewertungen sehen die gesamte Methode.** Modus-Dateien wurden bei 16 KB abgeschnitten, sodass `oferta.md` (92 KB) die Blöcke C–G verlor; die Grenzen pro Datei liegen jetzt bei 128 KB für Modi und 64 KB für den Lebenslauf, und ein Abschneiden wird gemeldet. Leere oder abgeschnittene Antworten schlagen fehl, statt einen leeren Bericht zu schreiben.
+- **SSRF:** Redirect-Hops werden erneut auf private Ziele geprüft, jede DNS-Antwort wird geprüft, die Scan-Frist umfasst den Body, `*_BASE_URL`-Schlüssel gehen nur an den Host des Anbieters (Hermes/Ollama: Loopback oder LAN), pandoc läuft mit `--sandbox`.
+- **Event-Loop-Blockaden:** zwei quadratische Regexe (HTML-Entfernung, Markdown-Bereinigung) durch lineare Scanner ersetzt.
+- **Datenverlust:** Das Löschen einer Pipeline-Zeile behielt die Vergütung der anderen Zeilen; `$&` in einer URL beschädigte `pipeline.md`; Speichern von Mock-Interview, Networking und Deep-Research überschrieb frühere Dateien; der Interview-Verlauf behielt die ersten 40 Züge statt der letzten.
+- **LLM-Schicht:** Auto-Pipeline und Deep-Research beachten `LLM_PROVIDER` und jeden Provider über den gemeinsamen Dispatch, erfassen die Nutzung und melden Abschneiden; Gemini-evaluate/-test speichern keinen Bericht mehr; OpenAI verwendet `max_completion_tokens`, und ein reines Codex-`OPENAI_MODEL` wird als `gpt-5` gesendet; die Stellenbeschreibung wird als nicht vertrauenswürdige Daten eingegrenzt.
+- **Bericht-, Deep- und Inline-PDFs** übergeben `--skip-fact-check` (der Lebenslauf-Faktencheck blockierte jeden Bericht mit Zahlen); das Seitenformat des Profils wird nicht mehr überschrieben.
+- **Scanner:** Die Quarantäne wird nach URL geführt (behebt, dass eine URL erneut versucht wird), Deduplizierung innerhalb eines Laufs nach kanonischer URL, leere Listeneinträge passen nicht mehr auf alles, atomare Schreibvorgänge, `skipped_*`-Verlaufszeilen gelten nicht als „gesehen“.
+- **Prozesssteuerung:** Die SIGKILL-Eskalation griff nie; Batch-Läufe beenden bei Verbindungsabbruch ihre gesamte Prozessgruppe.
+- **CI und Release:** CI führt jetzt die Gates für Changelog-Parität, Workflows und i18n aus; Workflow-Berechtigungen nach dem Least-Privilege-Prinzip; Produktionsgeheimnisse nur unter der Umgebung `production`; das npm-Paket liefert jetzt `docs/help/` mit.
+- **Tests:** Kein Test berührt mehr das Netzwerk oder das echte Elternprojekt (ein explizites `CAREER_OPS_ROOT` wird immer beachtet); kopierte Algorithmen durch den Produktionscode ersetzt.
+
+### Anmerkungen
+
+- Tests **4056 → 4404**, Browser **118**. Server-Coverage-Baseline: Zeilen 96,7 %, Branch 86,3 % (`scripts/coverage-baseline.json`).
+- Spezifikationen liegen jetzt in einem Ordner, `docs/sdd/specs/`; der Programmplan ist `docs/sdd/PLAN.md`, die Matrix Invariante→Gate `docs/sdd/TRACEABILITY.md`.
+- **Hinweis für Betreiber:** Hinter einem Reverse-Proxy `ALLOWED_HOSTS=<öffentlicher Host>` setzen; eine Ollama-/Hermes-Basis-URL auf einem öffentlichen Host wird jetzt abgelehnt.
+
 ## [1.240.0] — 2026-10-06
 
 **Parent-Parität — career-ops `main` @ `62905981` (VERSION 1.35.0, 177 Upstream-Commits seit `b39931e`). Sechs neue Quellen (103 → 109; 104 EN + 5 RU), in acht bestehende Provider gespiegelte Fixes und das Checklisten-Pipeline-Format, beigesteuert von @bullitt186.**

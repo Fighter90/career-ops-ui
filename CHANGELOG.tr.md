@@ -2,6 +2,37 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.241.0] — 2026-10-07
+
+**28 ajanlı bir kod incelemesinden (~190 doğrulanmış bulgu) sertleştirme sürümü: güvenlik, süreç çökmesi ve veri kaybı sınıfları kapatıldı; ayrıca @bullitt186 katkısı olan bir iş haritası.**
+
+### Eklendi
+
+- **İş haritası (`#/map`)** — pipeline'daki, son taramadaki ve takipçideki ilanlar bir OpenStreetMap haritasında; Nominatim üzerinden coğrafi kodlama, tanımlayıcı bir User-Agent, saniyede 1 istek kuyruğu, geri çekilme ve diskte önbellek ile. Leaflet bu sunucudan sunulur (CDN yok); CSP yalnızca `img-src` içine kutucuk kaynağını ekler. **@bullitt186** katkısı (#381).
+- **İstek koruması** — sunucu, sunmadığı bir `Host` değerini (DNS rebinding), siteler arası yazmaları ve yan etkili GET'leri (`/api/stream/*`, `/api/run/*`, `/api/geocode`) reddeder. Genel bir adı ileten bir ters proxy bunu `ALLOWED_HOSTS` içine yazar; dağıtım iş akışı bu systemd drop-in'ini genel URL'den yazar.
+- **Kapsam kapısı** — `npm run test:coverage:gate` (`scripts/coverage-report.mjs`) dosya başına satır/dal kapsamını yazdırır ve yükselen bir taban çizginin altında başarısız olur.
+
+### Düzeltildi
+
+- **Hatalı biçimli bir istek artık sunucuyu durdurmuyor.** Express 4 reddedilen asenkron işleyicileri yok sayıyordu; bu yüzden `/api/deep`, `/api/auto-pipeline`, `/api/career-plan`, `/api/tracker` içindeki yanlış türde bir alan ya da `/api/stats` içindeki bir NUL baytı süreci sonlandırıyordu; artık JSON 400 dönüyor ve diğer her ret 500'e dönüşüyor.
+- **İptal edilen ya da başarısız olan bir tarama artık son sonuçları silmiyor.** Bir tarama durdurulduğunda ya da her kaynak başarısız olduğunda `last-scan.json` korunur ve tek şirketlik bir tarama değiştirmek yerine birleştirir. Yanlış yapılandırılmış tek bir `portals.yml` girdisi artık taramanın tamamını iptal etmiyor.
+- **Değerlendirmeler yöntemin tamamını görüyor.** Mod dosyaları 16 KB'ta kesiliyordu; bu yüzden `oferta.md` (92 KB) C–G bloklarını kaybediyordu; dosya başına üst sınırlar artık modlar için 128 KB, CV için 64 KB ve kesinti raporlanıyor. Boş ya da kesik yanıtlar boş bir rapor yazmak yerine başarısız olur.
+- **SSRF:** yönlendirme adımları özel hedefler için yeniden denetlenir, her DNS yanıtı denetlenir, tarama zaman aşımı gövdeyi de kapsar, `*_BASE_URL` anahtarları yalnızca satıcının ana bilgisayarına gider (Hermes/Ollama: loopback ya da LAN), pandoc `--sandbox` ile çalışır.
+- **Olay döngüsü takılmaları:** iki ikinci dereceden regex (HTML ayıklama, markdown temizleme) doğrusal tarayıcılarla değiştirildi.
+- **Veri kaybı:** bir pipeline satırını silmek diğer satırların ücretini koruyordu; bir URL içindeki `$&` `pipeline.md` dosyasını bozuyordu; mülakat provası, networking ve derin araştırma kayıtları önceki dosyaların üzerine yazıyordu; mülakat geçmişi son 40 tur yerine ilk 40 turu tutuyordu.
+- **LLM katmanı:** otomatik pipeline ve derin araştırma `LLM_PROVIDER` değerine ve ortak dağıtım üzerinden her sağlayıcıya uyar, kullanımı kaydeder ve kesintiyi bildirir; Gemini evaluate/test artık rapor kaydetmez; OpenAI `max_completion_tokens` kullanır ve yalnızca Codex'e ait bir `OPENAI_MODEL` `gpt-5` olarak gönderilir; iş ilanı güvenilmeyen veri olarak çitlenir.
+- **Rapor, derin ve satır içi PDF'ler** `--skip-fact-check` geçirir (CV olgu denetimi sayı içeren her raporu engelliyordu); profilin sayfa biçimi artık geçersiz kılınmıyor.
+- **Tarayıcılar:** karantina URL'ye göre anahtarlanır (bir URL'yi düzeltmek yeniden denemeyi sağlar), çalıştırma içi tekilleştirme kanonik URL'ye göre yapılır, boş liste girdileri artık her şeyle eşleşmiyor, yazmalar atomiktir, `skipped_*` geçmiş satırları "görüldü" sayılmaz.
+- **Süreç denetimi:** SIGKILL'e yükseltme hiç çalışmıyordu; toplu çalıştırmalar bağlantı kesildiğinde tüm süreç gruplarını sonlandırır.
+- **CI ve sürüm:** CI artık changelog-parity, workflow ve i18n kapılarını çalıştırıyor; en az ayrıcalıklı workflow izinleri; üretim sırları yalnızca `production` ortamında; npm paketi artık `docs/help/` dizinini içeriyor.
+- **Testler:** hiçbir test artık ağa ya da gerçek üst projeye dokunmuyor (açık bir `CAREER_OPS_ROOT` her zaman dikkate alınır); kopyalanmış algoritmalar üretim koduyla değiştirildi.
+
+### Notlar
+
+- Testler **4056 → 4404**, tarayıcı **118**. Sunucu kapsam taban çizgisi: satır %96,7, dal %86,3 (`scripts/coverage-baseline.json`).
+- Belirtimler artık tek bir klasörde, `docs/sdd/specs/`; program planı `docs/sdd/PLAN.md`, değişmez→kapı matrisi `docs/sdd/TRACEABILITY.md`.
+- **Operatör notu:** bir ters proxy arkasında `ALLOWED_HOSTS=<genel ana bilgisayar>` ayarlayın; genel bir ana bilgisayardaki Ollama/Hermes taban URL'si artık reddediliyor.
+
 ## [1.240.0] — 2026-10-06
 
 **Üst proje eşleşmesi — career-ops `main` @ `62905981` (VERSION 1.35.0, `b39931e`'den bu yana 177 üst proje commit'i). Altı yeni kaynak — 103 → 109 (104 EN + 5 RU) —, mevcut sekiz sağlayıcıya yansıtılan düzeltmeler ve **@bullitt186** katkısı olan checklist pipeline biçimi.**

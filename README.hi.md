@@ -9,19 +9,19 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-4056%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-4404%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
-[![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
+[![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.240.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.240.0)
+[![release](https://img.shields.io/badge/release-v1.241.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.241.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.240.0** — **career-ops 1.35.0 से बराबरी: छह नए स्रोत (ADP Workforce Now, Gupy, JazzHR, Startup Jobs, Taleo, UKG Pro → 109), आठ मौजूदा प्रदाताओं में दोहराए गए सुधार, और मूल प्रोजेक्ट का चेकलिस्ट `pipeline.md` फ़ॉर्मैट** — **@bullitt186** का योगदान: UI ऐसी पाइपलाइन को 0 लंबित पढ़ता था और नए URL वहाँ जोड़ता था जहाँ मूल प्रोजेक्ट कभी नहीं देखता; अब वह `- [ ]` पंक्तियाँ पढ़ता और लिखता है। Ashby, Breezy और Recruitee देश को स्थान में जोड़ते हैं, ताकि फ़िल्टर यूके-प्राथमिक रिमोट भूमिकाओं को न छोड़े, और HTTP 200 के रूप में दिया गया चैलेंज पेज ख़ाली बोर्ड की तरह पढ़े जाने के बजाय साफ़ तौर पर विफल होता है। **4056 टेस्ट।**
+> **🆕 नवीनतम रिलीज़ — v1.241.0** — **28-एजेंट कोड रिव्यू से हार्डनिंग, और @bullitt186 का जॉब मैप।** ग़लत रूप का रिक्वेस्ट अब सर्वर को नहीं रोक सकता, रद्द किया गया स्कैन अब पिछले नतीजे नहीं मिटाता, मूल्यांकन अब पहले 16 KB के बजाय पूरी मेथड फ़ाइल देखते हैं, सर्वर DNS-रीबाइंडिंग होस्ट और क्रॉस-साइट राइट को अस्वीकार करता है, और रीडायरेक्ट निजी लक्ष्यों के लिए दोबारा जाँचे जाते हैं। `#/map` आपकी पोस्टिंग को OpenStreetMap पर दिखाता है। **4404 टेस्ट · 118 ब्राउज़र।**
 >
-> **पिछला — v1.239.4** — **पैच:** लंबे AI मूल्यांकन अब स्कोर सारांश से पहले नहीं कटते (कोरियाई और चीनी रिपोर्ट 8192 टोकन की सीमा पर पहुँच रही थीं); कटा हुआ उत्तर अब ऐसा ही बताया जाता है। **103 स्रोत · 3782 टेस्ट · 116 ब्राउज़र।**
+> **पिछला — v1.240.0** — **career-ops 1.35.0 से बराबरी: छह नए स्रोत (ADP Workforce Now, Gupy, JazzHR, Startup Jobs, Taleo, UKG Pro → 109), आठ मौजूदा प्रदाताओं में दोहराए गए सुधार, और मूल प्रोजेक्ट का चेकलिस्ट `pipeline.md` फ़ॉर्मैट** — **@bullitt186** का योगदान: UI ऐसी पाइपलाइन को 0 लंबित पढ़ता था और नए URL वहाँ जोड़ता था जहाँ मूल प्रोजेक्ट कभी नहीं देखता; अब वह `- [ ]` पंक्तियाँ पढ़ता और लिखता है। Ashby, Breezy और Recruitee देश को स्थान में जोड़ते हैं, ताकि फ़िल्टर यूके-प्राथमिक रिमोट भूमिकाओं को न छोड़े, और HTTP 200 के रूप में दिया गया चैलेंज पेज ख़ाली बोर्ड की तरह पढ़े जाने के बजाय साफ़ तौर पर विफल होता है। **4056 टेस्ट।**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

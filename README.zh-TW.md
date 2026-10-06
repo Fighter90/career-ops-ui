@@ -7,19 +7,19 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-4056%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-4404%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
-[![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
+[![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.240.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.240.0)
+[![release](https://img.shields.io/badge/release-v1.241.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.241.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.240.0** — **與 career-ops 1.35.0 的父專案對齊：六項新來源（ADP Workforce Now、Gupy、JazzHR、Startup Jobs、Taleo、UKG Pro → 109）、鏡射進八個既有服務商的修復，以及父專案的檢查清單式 `pipeline.md` 格式** —— 由 **@bullitt186** 貢獻：UI 過去會把這樣的 pipeline 讀成 0 筆待處理，並把新網址追加在父專案從不看的地方；現在它讀寫的是 `- [ ]` 列。Ashby、Breezy 與 Recruitee 會把國家併入所在地，因此篩選器不再丟掉以英國為主要所在地的遠端職缺；以 HTTP 200 回應的挑戰頁面也會明確失敗，而不是被當成空的職缺板。**4056 個測試。**
+> **🆕 最新版本 — v1.241.0** — **來自 28 個代理程式程式碼審查的強化，以及職缺地圖** —— 由 **@bullitt186** 貢獻：格式錯誤的請求不再能讓伺服器停止，被中止的掃描不再清空上一次的結果，評估現在會看到完整的方法檔案，而不是只有前 16 KB，伺服器會拒絕 DNS 重新綁定的主機與跨站寫入，重新導向也會重新檢查是否指向私有目標。`#/map` 會把你的職缺顯示在 OpenStreetMap 上。**4404 個測試 · 118 個瀏覽器測試。**
 >
-> **前一版本 — v1.239.4** — **修補:** 較長的 AI 評估不再在評分摘要之前被截斷(韓文與中文報告觸及 8192 token 上限);被截斷的回答現在會被明確標示。**103 個來源 · 3782 個測試 · 116 個瀏覽器測試。**
+> **前一版本 — v1.240.0** — **與 career-ops 1.35.0 的父專案對齊：六項新來源（ADP Workforce Now、Gupy、JazzHR、Startup Jobs、Taleo、UKG Pro → 109）、鏡射進八個既有服務商的修復，以及父專案的檢查清單式 `pipeline.md` 格式** —— 由 **@bullitt186** 貢獻：UI 過去會把這樣的 pipeline 讀成 0 筆待處理，並把新網址追加在父專案從不看的地方；現在它讀寫的是 `- [ ]` 列。Ashby、Breezy 與 Recruitee 會把國家併入所在地，因此篩選器不再丟掉以英國為主要所在地的遠端職缺；以 HTTP 200 回應的挑戰頁面也會明確失敗，而不是被當成空的職缺板。**4056 個測試。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

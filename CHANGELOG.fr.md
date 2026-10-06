@@ -10,6 +10,37 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.241.0] — 2026-10-07
+
+**Version de durcissement issue d'une revue de code par 28 agents (~190 constats vérifiés) : les classes sécurité, plantage du processus et perte de données sont closes, plus une carte des offres contribuée par @bullitt186.**
+
+### Ajouté
+
+- **Carte des offres (`#/map`)** — les offres du pipeline, du dernier scan et du suivi sur une carte OpenStreetMap, géocodées via Nominatim avec un User-Agent identifiant, une file à 1 requête/s, un back-off et un cache sur disque. Leaflet est servi par ce serveur (pas de CDN) ; la CSP gagne seulement l'origine des tuiles dans `img-src`. Contribué par **@bullitt186** (#381).
+- **Garde des requêtes** — le serveur refuse un `Host` qu'il ne sert pas (DNS rebinding) ainsi que les écritures inter-sites et les GET à effet de bord (`/api/stream/*`, `/api/run/*`, `/api/geocode`). Un reverse proxy qui transmet un nom public le déclare dans `ALLOWED_HOSTS` ; le workflow de déploiement écrit ce drop-in systemd à partir de l'URL publique.
+- **Seuil de couverture** — `npm run test:coverage:gate` (`scripts/coverage-report.mjs`) affiche la couverture de lignes/branches par fichier et échoue sous une base de référence qui ne fait que monter.
+
+### Corrigé
+
+- **Une requête malformée n'arrête plus le serveur.** Express 4 ignorait les gestionnaires asynchrones rejetés, si bien qu'un champ de mauvais type dans `/api/deep`, `/api/auto-pipeline`, `/api/career-plan`, `/api/tracker` ou un octet NUL dans `/api/stats` terminait le processus ; ce sont désormais des 400 JSON, et tout autre rejet devient un 500.
+- **Un scan interrompu ou en échec n'efface plus les derniers résultats.** `last-scan.json` est conservé lorsqu'un scan est arrêté ou que toutes les sources ont échoué, et un scan d'une seule entreprise fusionne au lieu de remplacer. Une entrée mal configurée de `portals.yml` n'interrompt plus tout le scan.
+- **Les évaluations voient toute la méthode.** Les fichiers de mode étaient coupés à 16 Ko, de sorte que `oferta.md` (92 Ko) perdait les blocs C–G ; les plafonds par fichier sont désormais de 128 Ko pour les modes et de 64 Ko pour le CV, et une coupure est signalée. Les réponses vides ou tronquées échouent au lieu d'écrire un rapport vide.
+- **SSRF :** les sauts de redirection sont revérifiés contre les cibles privées, chaque réponse DNS est vérifiée, l'échéance du scan couvre le corps, les clés `*_BASE_URL` ne vont qu'à l'hôte du fournisseur (Hermes/Ollama : loopback ou LAN), pandoc s'exécute avec `--sandbox`.
+- **Blocages de la boucle d'événements :** deux regex quadratiques (suppression du HTML, assainissement du markdown) remplacées par des analyseurs linéaires.
+- **Perte de données :** supprimer une ligne du pipeline conservait la rémunération des autres lignes ; `$&` dans une URL corrompait `pipeline.md` ; les sauvegardes de simulation d'entretien, de réseautage et de recherche approfondie écrasaient les fichiers précédents ; l'historique d'entretien gardait les 40 premiers tours au lieu des derniers.
+- **Couche LLM :** l'auto-pipeline et la recherche approfondie respectent `LLM_PROVIDER` et tous les fournisseurs via le dispatch partagé, enregistrent l'usage et signalent la troncature ; l'évaluation/le test Gemini n'enregistrent plus de rapport ; OpenAI utilise `max_completion_tokens`, et un `OPENAI_MODEL` propre à Codex est envoyé comme `gpt-5` ; la description de poste est encadrée comme donnée non fiable.
+- **Les PDF de rapport, de recherche approfondie et en ligne** passent `--skip-fact-check` (la vérification des faits du CV bloquait tout rapport contenant des chiffres) ; le format de page du profil n'est plus écrasé.
+- **Scanners :** la quarantaine est indexée par URL (corriger une URL la refait essayer), la déduplication au sein d'une exécution par URL canonique, les entrées de liste vides ne correspondent plus à tout, écritures atomiques, les lignes d'historique `skipped_*` ne sont pas « vues ».
+- **Contrôle des processus :** l'escalade vers SIGKILL ne se déclenchait jamais ; les exécutions par lots tuent tout leur groupe de processus à la déconnexion.
+- **CI et publication :** la CI exécute désormais les contrôles de parité du changelog, des workflows et de l'i18n ; permissions de workflow au moindre privilège ; secrets de production uniquement sous l'environnement `production` ; le paquet npm embarque désormais `docs/help/`.
+- **Tests :** plus aucun test ne touche le réseau ni le vrai projet parent (un `CAREER_OPS_ROOT` explicite est toujours respecté) ; les algorithmes copiés sont remplacés par le code de production.
+
+### Notes
+
+- Tests **4056 → 4404**, navigateur **118**. Base de référence de couverture serveur : lignes 96,7 %, branches 86,3 % (`scripts/coverage-baseline.json`).
+- Les spécifications vivent désormais dans un seul dossier, `docs/sdd/specs/` ; le plan du programme est `docs/sdd/PLAN.md`, la matrice invariant→contrôle `docs/sdd/TRACEABILITY.md`.
+- **Note pour l'opérateur :** derrière un reverse proxy, définissez `ALLOWED_HOSTS=<hôte public>` ; une URL de base Ollama/Hermes sur un hôte public est désormais refusée.
+
 ## [1.240.0] — 2026-10-06
 
 **Parité avec le parent — career-ops `main` @ `62905981` (VERSION 1.35.0, 177 commits amont depuis `b39931e`). Six nouvelles sources — 103 → 109 (104 EN + 5 RU) —, des correctifs répliqués dans huit fournisseurs existants, et le format de pipeline en liste de contrôle, contribué par @bullitt186.**

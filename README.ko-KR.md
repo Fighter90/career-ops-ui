@@ -7,19 +7,19 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-4056%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-4404%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
-[![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
+[![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.240.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.240.0)
+[![release](https://img.shields.io/badge/release-v1.241.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.241.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.240.0** — **career-ops 1.35.0과의 상위 프로젝트 패리티: 새 소스 6개(ADP Workforce Now, Gupy, JazzHR, Startup Jobs, Taleo, UKG Pro → 109), 기존 제공자 8개에 반영한 수정, 그리고 상위의 체크리스트 `pipeline.md` 형식** — **@bullitt186**의 기여입니다: UI는 이런 파이프라인을 대기 0건으로 읽었고 상위가 절대 보지 않는 곳에 새 URL을 덧붙였는데, 이제 `- [ ]` 행을 읽고 씁니다. Ashby, Breezy, Recruitee는 국가를 위치에 병합해 필터가 영국 기본 원격 직무를 더 이상 걸러내지 않으며, HTTP 200으로 응답한 챌린지 페이지는 빈 보드로 읽히지 않고 명확하게 실패합니다. **테스트 4056개.**
+> **🆕 최신 릴리스 — v1.241.0** — **28개 에이전트 코드 리뷰에 따른 보안 강화, 그리고 채용 지도 —** **@bullitt186**의 기여입니다. 잘못된 요청이 더 이상 서버를 멈추지 않고, 중단된 스캔이 마지막 결과를 지우지 않으며, 평가가 처음 16 KB가 아니라 방법 파일 전체를 보고, 서버가 DNS 리바인딩 호스트와 교차 사이트 쓰기를 거부하며, 리디렉션에서 사설 대상을 다시 검사합니다. `#/map`은 공고를 OpenStreetMap에 표시합니다. **테스트 4404개 · 브라우저 118개.**
 >
-> **이전 버전 — v1.239.4** — **패치:** 긴 AI 평가가 더 이상 점수 요약 전에 잘리지 않습니다(한국어·중국어 보고서가 8192 토큰 한도에 걸렸습니다). 잘린 답변은 이제 잘렸다고 표시됩니다. **소스 103개 · 테스트 3782개 · 브라우저 116개.**
+> **이전 버전 — v1.240.0** — **career-ops 1.35.0과의 상위 프로젝트 패리티: 새 소스 6개(ADP Workforce Now, Gupy, JazzHR, Startup Jobs, Taleo, UKG Pro → 109), 기존 제공자 8개에 반영한 수정, 그리고 상위의 체크리스트 `pipeline.md` 형식** — **@bullitt186**의 기여입니다: UI는 이런 파이프라인을 대기 0건으로 읽었고 상위가 절대 보지 않는 곳에 새 URL을 덧붙였는데, 이제 `- [ ]` 행을 읽고 씁니다. Ashby, Breezy, Recruitee는 국가를 위치에 병합해 필터가 영국 기본 원격 직무를 더 이상 걸러내지 않으며, HTTP 200으로 응답한 챌린지 페이지는 빈 보드로 읽히지 않고 명확하게 실패합니다. **테스트 4056개.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

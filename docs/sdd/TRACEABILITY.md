@@ -19,7 +19,7 @@ Gate commands run from the repo root on Node ≥ 22: `node --test <file>` for on
 | **R-09** | Release surfaces move together: CHANGELOG ×17, README ×17, site mirrors, QA prompt, baselines | `CHANGELOG*.md`, `README*.md`, `site/src/content/changelog/*`, `qa/` | `scripts/check-changelog-parity.mjs`, `node evals/workflow/run.mjs` |
 | **R-10** | Fork divergences from upstream are defended on every merge (ADR-0002) | `providers/telegram-channel.mjs`, `providers/telegram.mjs`, `web/src/lib/clis.ts`, `test-all.mjs` (parent repo) | the post-merge snapshot diff + greps in `docs/adr/0002-defend-fork-divergences.md` |
 | **R-11** | `pipeline.md` is read and written in **both** formats (fenced URLs and the parent's `## Pending` / `## Processed` checklist) without data loss | `server/lib/parsers.mjs` (`parsePipeline`, `addPipelineUrl`, `removePipelineUrl`) | `tests/parsers-pipeline-checklist.test.mjs`, `tests/pipeline-*.test.mjs` |
-| **R-12** | An aborted, failed or single-company scan never replaces the saved snapshot with an emptier one | `server/lib/en-scanner.mjs`, `server/lib/ru-scanner.mjs` (`saveLastScan`) | `tests/scan-snapshot-safety.test.mjs` *(added with the review fixes)* |
+| **R-12** | An aborted, failed or single-company scan never replaces the saved snapshot with an emptier one | `server/lib/en-scanner.mjs`, `server/lib/ru-scanner.mjs` (`saveLastScan`) | `tests/scan-snapshot-safety.test.mjs` |
 
 ## Maintenance rules
 

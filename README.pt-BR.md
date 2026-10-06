@@ -7,19 +7,19 @@
 
 _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-4056%20passed-brightgreen)](#testes)
+[![tests](https://img.shields.io/badge/tests-4404%20passed-brightgreen)](#testes)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
-[![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#testes)
+[![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.240.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.240.0)
+[![release](https://img.shields.io/badge/release-v1.241.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.241.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versão — v1.240.0** — **Paridade com o career-ops 1.35.0: seis novas fontes (ADP Workforce Now, Gupy, JazzHR, Startup Jobs, Taleo, UKG Pro → 109), correções espelhadas em oito provedores existentes e o formato checklist do `pipeline.md` do pai** — contribuição de **@bullitt186**: a UI lia esse pipeline como 0 pendentes e anexava novas URLs onde o pai nunca olha; agora ela lê e grava linhas `- [ ]`. Ashby, Breezy e Recruitee incorporam o país à localização, para que um filtro deixe de descartar vagas remotas com o Reino Unido como país principal, e uma página de desafio servida como HTTP 200 falha de forma explícita em vez de ser lida como um quadro vazio. **4056 testes.**
+> **🆕 Última versão — v1.241.0** — **Endurecimento a partir de uma revisão de código com 28 agentes e um mapa de vagas de **@bullitt186**.** Uma requisição malformada não pode mais derrubar o servidor, uma varredura abortada não apaga mais os últimos resultados, as avaliações agora veem o arquivo de método inteiro em vez dos primeiros 16 KB, o servidor recusa hosts de DNS rebinding e gravações cross-site, e os redirecionamentos são reverificados quanto a destinos privados. O `#/map` mostra suas vagas no OpenStreetMap. **4404 testes · 118 de navegador.**
 >
-> **Anterior — v1.239.4** — **Patch:** avaliações por IA longas não são mais cortadas antes do resumo de pontuação (relatórios em coreano e chinês batiam no limite de 8192 tokens); uma resposta cortada agora é identificada como tal. **103 fontes · 3782 testes · 116 de navegador.**
+> **Anterior — v1.240.0** — **Paridade com o career-ops 1.35.0: seis novas fontes (ADP Workforce Now, Gupy, JazzHR, Startup Jobs, Taleo, UKG Pro → 109), correções espelhadas em oito provedores existentes e o formato checklist do `pipeline.md` do pai** — contribuição de **@bullitt186**: a UI lia esse pipeline como 0 pendentes e anexava novas URLs onde o pai nunca olha; agora ela lê e grava linhas `- [ ]`. Ashby, Breezy e Recruitee incorporam o país à localização, para que um filtro deixe de descartar vagas remotas com o Reino Unido como país principal, e uma página de desafio servida como HTTP 200 falha de forma explícita em vez de ser lida como um quadro vazio. **4056 testes.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
