@@ -2,6 +2,13 @@
 
 > Read `CLAUDE.md` for the full project-level instructions, hard rules, conventions, and SDD pipeline. Everything in `CLAUDE.md` applies equally to Codex, Cursor, Aider, OpenAI's CLI, or any other agent driving this repo. This file exists so non-Claude CLIs find a canonical entry point.
 
+## OpenCode and other agents — start here
+
+`opencode.json` loads the working set automatically. The operating manual for any agent is
+**`docs/sdd/HANDOFF.md`** (rules, gates, the full ship train including the resumecraft.ru deploy);
+open work is in `docs/sdd/BACKLOG.md`, the order in `docs/sdd/PLAN.md`. OpenCode agents:
+`.opencode/agent/{fixer,locale-docs,release}.md`; commands: `/continue`, `/ship X.Y.Z`, `/parent-sync`.
+
 ## Quick orientation
 
 - This is `career-ops-ui` v1.86.x — an Express + vanilla-JS SPA that puts a polished web interface on top of [`Fighter90/career-ops`](https://github.com/Fighter90/career-ops).

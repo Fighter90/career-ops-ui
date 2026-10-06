@@ -1,0 +1,13 @@
+{
+  "$schema": "https://opencode.ai/config.json",
+  "instructions": [
+    "AGENTS.md",
+    "CONTEXT.md",
+    "PROGRESS.md",
+    "docs/sdd/HANDOFF.md",
+    "docs/sdd/PLAN.md",
+    "docs/sdd/BACKLOG.md",
+    "docs/sdd/TRACEABILITY.md",
+    "docs/sdd/CONVENTIONS.md"
+  ]
+}

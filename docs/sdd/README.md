@@ -8,6 +8,8 @@ tied to executable gates in `TRACEABILITY.md`.
 |---|---|---|
 | [`SDD-GUIDE.md`](SDD-GUIDE.md) | The pipeline every non-trivial change goes through: discuss → spec → plan → execute → verify → review. | Starting any change that touches more than one file. |
 | [`CONVENTIONS.md`](CONVENTIONS.md) | Module system, routes, sanitizers, i18n, testing, versioning — and the **current test baseline** per release. | While writing code. |
+| [`HANDOFF.md`](HANDOFF.md) | Operating manual for any coding agent: rules, gates, the full ship train (incl. resumecraft.ru deploy). | Starting a session. |
+| [`BACKLOG.md`](BACKLOG.md) | Every open fix by release, with file:line and the fix. | Picking work. |
 | [`PLAN.md`](PLAN.md) | The program of work: one release per concern, the agent groups and the findings each owns, status. | Before starting any task, to see where it belongs. |
 | [`TRACEABILITY.md`](TRACEABILITY.md) | Requirement → code → test matrix for the invariants this project must never lose (parent read-only, SSRF envelope, source registry contract, counts, i18n parity). | Before changing an invariant; after adding a source, route or locale. |
 | [`specs/`](specs/) | **The only specifications folder.** Every feature/release spec, dated `YYYY-MM-DD-<slug>.md` (older `V<x.y.z>-BACKLOG.md` and feature specs from Jul–Sep 2026 included). Format: [`specs/_TEMPLATE.md`](specs/_TEMPLATE.md). | Opening, reviewing or auditing a change. |
