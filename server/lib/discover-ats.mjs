@@ -88,7 +88,9 @@ export const KNOWN_CAREERS_HOSTS = new Set(VENDORS.map((v) => v.host));
  * @returns {string[]}
  */
 export function deriveSlugs(name) {
-  const base = String(name || '').toLowerCase().trim();
+  // Fold Latin accents first (NFD + drop combining marks): "Nestlé" must give
+  // "nestle", not "nestl".
+  const base = String(name || '').normalize('NFD').replace(/[\u0300-\u036f]/g, '').toLowerCase().trim();
   const hyphen = base.replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
   const concat = base.replace(/[^a-z0-9]+/g, '');
   const out = [];
@@ -178,20 +180,33 @@ export function renderPortalEntry(match) {
  */
 export function insertIntoTrackedCompanies(fileText, snippets) {
   if (!snippets.length) return fileText;
-  const block = snippets.join('');
 
-  const header = fileText.match(/^tracked_companies:[ \t]*$/m);
+  // An empty flow sequence (`tracked_companies: []`, optional comment) becomes
+  // a block header — otherwise a SECOND `tracked_companies:` key was appended
+  // and the file no longer parsed.
+  fileText = fileText.replace(/^tracked_companies:[ \t]*\[[ \t]*\][ \t]*(#.*)?$/m,
+    (_m, comment) => `tracked_companies:${comment ? `  ${comment}` : ''}`);
+
+  // A trailing comment on the header line is still the header.
+  const header = fileText.match(/^tracked_companies:[ \t]*(?:#.*)?$/m);
   if (!header) {
     const sep = fileText.endsWith('\n') ? '\n' : '\n\n';
-    return `${fileText}${sep}tracked_companies:${block}`;
+    return `${fileText}${sep}tracked_companies:${snippets.join('')}`;
   }
 
   const headerEnd = header.index + header[0].length; // index of the newline after the header
   const rest = fileText.slice(headerEnd);
   // Block end = the next top-level key (a line starting with a non-space,
-  // non-# char and containing a colon). Comments + indented lines stay in-block.
-  const boundary = rest.match(/\n[^\s#][^\n]*:/);
+  // non-#, non-`-` char and containing a colon). Comments, indented lines and
+  // column-0 list items (`- name: …` is valid YAML too) stay in-block.
+  const boundary = rest.match(/\n[^\s#-][^\n]*:/);
   const insertAt = boundary ? headerEnd + boundary.index : fileText.length;
+  // Match the existing items' indentation (renderPortalEntry emits two spaces);
+  // a column-0 list mixed with indented items would not parse.
+  const itemIndent = (rest.slice(0, boundary ? boundary.index : rest.length).match(/\n([ \t]*)-[ \t]/) || [, '  '])[1];
+  const block = itemIndent === '  '
+    ? snippets.join('')
+    : snippets.join('').replace(/\n  /g, '\n' + itemIndent);
 
   let before = fileText.slice(0, insertAt);
   const after = fileText.slice(insertAt);

@@ -44,7 +44,13 @@ const STEM_PREFIX = 'stem:';
 
 // Unicode-aware word character: \b is ASCII-only and would treat an accented
 // letter as a boundary, matching mid-word in non-English titles.
-const WORD_CHAR = String.raw`[\p{L}\p{M}\p{N}_]`;
+//
+// Han, Hiragana, Katakana and Hangul are letters to \p{L}, but those scripts
+// glue a Latin acronym straight onto the next word ("AI全栈工程师", "AIエンジニア",
+// "AI엔지니어"), so a CJK character next to a keyword is a word EDGE, not a
+// continuation (parent title-keywords.mjs parity): `ai` must match them exactly
+// as it matches "AI Engineer".
+const WORD_CHAR = String.raw`(?:(?![\p{Script=Han}\p{Script=Hiragana}\p{Script=Katakana}\p{Script=Hangul}])[\p{L}\p{M}\p{N}_])`;
 const anchoredPattern = (body) => new RegExp(`(?<!${WORD_CHAR})${body}(?!${WORD_CHAR})`, 'u');
 // Same left boundary, no right one: the keyword must start a word, and the
 // word may continue past it.
@@ -130,6 +136,21 @@ export function compilePositiveKeyword(kw) {
 }
 
 /**
+ * Normalise a config keyword list: keep string entries only, trimmed, minus the
+ * blank ones. A non-array (a bare string, null, a map) yields []. One blank
+ * entry is not harmless — "" is a substring of everything, so it would match
+ * (block, boost, cooldown) every single row.
+ * @param {unknown} arr
+ * @returns {string[]}
+ */
+export function cleanStringList(arr) {
+  return (Array.isArray(arr) ? arr : [])
+    .filter((k) => typeof k === 'string')
+    .map((k) => k.trim())
+    .filter((k) => k.length > 0);
+}
+
+/**
  * Compile a raw keyword list (tolerating malformed entries) into an array of
  * matcher functions. Exposed so the RU scanner can compile its negative list
  * once while keeping the lowercased array for collision warnings.
@@ -143,11 +164,7 @@ export function compileKeywordList(arr, compiler = compileKeyword) {
   // v1.79.0 — trim BEFORE the length check:
   // a whitespace-only keyword ("  ") otherwise survives length>0 and compiles
   // into a substring matcher that matches almost everything.
-  return (Array.isArray(arr) ? arr : [])
-    .filter((k) => typeof k === 'string')
-    .map((k) => k.trim().toLowerCase())
-    .filter((k) => k.length > 0)
-    .map(compiler);
+  return cleanStringList(arr).map((k) => k.toLowerCase()).map(compiler);
 }
 
 /**
@@ -214,15 +231,16 @@ export function buildTitleFilter(titleFilter) {
  */
 export function buildLocationFilter(locationFilter) {
   if (!locationFilter || typeof locationFilter !== 'object') return () => true;
-  const allow = (Array.isArray(locationFilter.allow) ? locationFilter.allow : [])
-    .map((k) => String(k).toLowerCase());
-  const block = (Array.isArray(locationFilter.block) ? locationFilter.block : [])
-    .map((k) => String(k).toLowerCase());
+  // Blank / non-string entries are dropped: `block: [""]` is a substring of every
+  // location and used to reject the whole scan; a null became the text "null".
+  const allow = cleanStringList(locationFilter.allow).map((k) => k.toLowerCase());
+  const block = cleanStringList(locationFilter.block).map((k) => k.toLowerCase());
   const strict = locationFilter.strict === true && (allow.length > 0 || block.length > 0);
 
   return (location) => {
     // Nothing to judge on → pass (don't penalize missing data), unless strict.
-    if (!location) return !strict;
+    // Whitespace-only is "nothing" too.
+    if (!location || !String(location).trim()) return !strict;
     const lower = String(location).toLowerCase();
     if (block.length > 0 && block.some((k) => lower.includes(k))) return false;
     if (allow.length === 0) return true;

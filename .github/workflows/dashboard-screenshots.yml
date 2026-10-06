@@ -68,6 +68,8 @@ jobs:
   diff-screenshots:
     name: regenerate + advisory diff vs committed PNGs
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 12
     steps:
       - uses: actions/checkout@v5

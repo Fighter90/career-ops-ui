@@ -1,3 +1,4 @@
+// TODO: split by concern (JD fetch/guess helpers vs the SSE orchestrator) — 400–800 LOC band.
 /**
  * v1.16.0 — POST /api/auto-pipeline (G-007 follow-up).
  *
@@ -6,14 +7,15 @@
  *
  *   1. validate URL              → isValidJobUrl (SSRF gate)
  *   2. fetch JD                  → SSRF-safe proxy with DNS-rebind guard
- *   3. evaluate against CV       → runAnthropic / runNodeScript('gemini-eval')
+ *   3. evaluate against CV       → llm-dispatch cascade (or a pinned
+ *                                  anthropic / gemini-eval.mjs --no-save)
  *   4. save report               → writes parent reports/<slug>.md
  *   5. append tracker row        → writes parent data/applications.md
  *
  * SSE events:
  *   start  → { steps: 5, url }
  *   step   → { i, key, label, status: 'running'|'done'|'failed', detail? }
- *   done   → { slug, score, legitimacy, reportPath, trackerNum, company, role }
+ *   done   → { slug, score, legitimacy, reportPath, trackerNum, company, role, evalMode, warnings? }
  *   error  → { step, message }
  *
  * Compared to the client-side orchestrator (v1.15 PR-C), this:
@@ -29,14 +31,16 @@
  * into this SSE would double the time budget; users can trigger PDF
  * from #/reports/<slug> after auto-pipeline completes.
  */
-import { writeFileSync, readFileSync, mkdirSync, existsSync } from 'node:fs';
+import { writeFileSync, readFileSync, mkdirSync, existsSync, unlinkSync } from 'node:fs';
 
 import { PATHS, path as projPath } from '../paths.mjs';
 import { isValidJobUrl, sanitizeJobDescription } from '../security.mjs';
-import { runAnthropic, hasAnthropicKey, hasGeminiKey } from '../anthropic.mjs';
-import { runOpenAI, runQwen, hasOpenAIKey, hasQwenKey } from '../openai.mjs';
+import { runAnthropic, hasAnthropicKey } from '../anthropic.mjs';
 import { runNodeScript } from '../runner.mjs';
-import { bundleProjectContext, buildEvaluationPrompt } from '../prompts.mjs';
+import { bundleProjectContext, buildEvaluationPrompt, resolveLocale } from '../prompts.mjs';
+import { runActiveProvider } from '../llm-dispatch.mjs';
+import { recordUsage } from '../llm-usage.mjs';
+import { evaluationWarnings, EVAL_MAX_TOKENS } from './llm.mjs';
 import { stripDangerousMarkdown } from '../security.mjs';
 import { stripScoreSummary } from '../eval-validate.mjs';
 import { parseApplications, today } from '../parsers.mjs';
@@ -169,11 +173,19 @@ function buildSlug(company, role) {
 
 export function registerAutoPipelineRoutes(app) {
   app.post('/api/auto-pipeline', llmRateLimit, async (req, res) => {
-    const url = (req.body && req.body.url || '').toString();
-    const lang = (req.body && req.body.lang) || 'en';
+    const body = (req.body && typeof req.body === 'object') ? req.body : {};
+    // R-03 — type the body BEFORE the SSE stream opens, so a malformed field
+    // is a plain JSON 400 (it used to throw in .toString() / the prompt builder).
+    for (const k of ['url', 'lang', 'locale', 'mode', 'evalMode']) {
+      if (body[k] != null && typeof body[k] !== 'string') {
+        return res.status(400).json({ error: `${k} must be a string` });
+      }
+    }
+    const url = body.url || '';
+    const lang = resolveLocale(req);
     // v1.25.0 (G-014) — accept `mode: 'manual'` (mirrors /api/evaluate
     // contract from v1.10.2) as well as the legacy `evalMode` override.
-    const requestedMode = (req.body && (req.body.mode || req.body.evalMode)) || null;
+    const requestedMode = body.mode || body.evalMode || null;
     const lockEvalMode = (requestedMode === 'anthropic' || requestedMode === 'gemini' || requestedMode === 'manual')
       ? requestedMode
       : null;
@@ -251,49 +263,73 @@ export function registerAutoPipelineRoutes(app) {
     step(2, 'running', 'LLM call (30–90 s)…');
     let markdown = '';
     let evalMode = lockEvalMode;
+    const warnings = [];
     try {
       const promptText = buildEvaluationPrompt(jdText, lang);
 
-      if (!evalMode) {
-        // v1.55.0 — "works via OR": first key set wins, Anthropic →
-        // Gemini → OpenAI → Qwen (matches env-config providerOrder).
-        if (hasAnthropicKey()) evalMode = 'anthropic';
-        else if (hasGeminiKey()) evalMode = 'gemini';
-        else if (hasOpenAIKey()) evalMode = 'openai';
-        else if (hasQwenKey()) evalMode = 'qwen';
-        else evalMode = 'manual';
-      }
-
-      if (evalMode === 'anthropic' || evalMode === 'openai' || evalMode === 'qwen') {
-        const ctx = bundleProjectContext({ modeSlugs: ['_shared', 'oferta'] });
-        const full = ctx + promptText;
-        if (full.length > PROMPT_SIZE_SOFT_CAP) {
-          step(2, 'failed', `prompt ${full.length} > ${PROMPT_SIZE_SOFT_CAP} cap`);
-          return fail(2, 'prompt too large');
-        }
-        const runFn = evalMode === 'openai' ? runOpenAI
-          : evalMode === 'qwen' ? runQwen
-            : runAnthropic;
-        // 16384, as /api/evaluate: a CJK A–G report plus SCORE_SUMMARY outgrew 8192.
-        const r = await runFn(full, { maxTokens: 16384, timeoutMs: EVAL_TIMEOUT_MS });
-        if (r.error) {
-          step(2, 'failed', r.error);
-          return fail(2, r.error);
-        }
-        markdown = r.markdown || '';
-      } else if (evalMode === 'gemini') {
+      if (evalMode === 'gemini') {
+        // Explicit `mode: 'gemini'` keeps the oferta-tuned gemini-eval.mjs.
+        // --no-save: this route writes the report + tracker row itself; the
+        // script would add a second report, row and merge. Temp file removed.
         const tmp = projPath('output', `auto-pipeline-${Date.now()}.txt`);
         mkdirSync(PATHS.outputDir, { recursive: true });
         writeFileSync(tmp, jdText);
-        const r = await runNodeScript('gemini-eval.mjs', ['--file', tmp], { timeoutMs: EVAL_TIMEOUT_MS });
+        let r;
+        try {
+          r = await runNodeScript('gemini-eval.mjs', ['--file', tmp, '--no-save'], { timeoutMs: EVAL_TIMEOUT_MS });
+        } finally {
+          try { unlinkSync(tmp); } catch { /* already gone */ }
+        }
         if (r.code !== 0) {
           step(2, 'failed', `gemini-eval exit ${r.code}`);
           return fail(2, `gemini-eval exit ${r.code}`);
         }
         markdown = r.stdout || '';
       } else {
-        step(2, 'failed', 'no LLM key set; manual mode incompatible with auto-pipeline');
-        return fail(2, 'no LLM key');
+        const ctx = bundleProjectContext({ modeSlugs: ['_shared', 'oferta'], warnings });
+        const full = ctx + promptText;
+        if (full.length > PROMPT_SIZE_SOFT_CAP) {
+          step(2, 'failed', `prompt ${full.length} > ${PROMPT_SIZE_SOFT_CAP} cap`);
+          return fail(2, 'prompt too large');
+        }
+        // 16384, as /api/evaluate: a CJK A–G report plus SCORE_SUMMARY outgrew 8192.
+        const runOpts = { maxTokens: EVAL_MAX_TOKENS, timeoutMs: EVAL_TIMEOUT_MS };
+        let r;
+        if (evalMode === 'anthropic') {
+          // Explicit `mode: 'anthropic'` pins the provider.
+          if (!hasAnthropicKey()) {
+            step(2, 'failed', 'ANTHROPIC_API_KEY not set');
+            return fail(2, 'no LLM key');
+          }
+          r = await runAnthropic(full, runOpts);
+          if (!r.error) recordUsage('anthropic', r.usage);
+          r = { ...r, mode: 'anthropic' };
+        } else {
+          // The shared cascade: honours LLM_PROVIDER, covers every provider,
+          // records usage (llm-dispatch.mjs).
+          r = await runActiveProvider(full, runOpts);
+          if (r.mode === 'manual') {
+            step(2, 'failed', 'no LLM key set; manual mode incompatible with auto-pipeline');
+            return fail(2, 'no LLM key');
+          }
+        }
+        evalMode = r.mode;
+        if (r.error) {
+          step(2, 'failed', r.error);
+          return fail(2, r.error);
+        }
+        // A cut-off report would be filed as complete (score missing, tracker
+        // row pointing at half a report) — stop instead.
+        if (r.truncated) {
+          step(2, 'failed', 'report cut off at the output-token limit');
+          return fail(2, 'report cut off at the output-token limit');
+        }
+        markdown = r.markdown || '';
+        warnings.push(...evaluationWarnings(r));
+      }
+      if (!markdown.trim()) {
+        step(2, 'failed', 'empty evaluation');
+        return fail(2, 'the model returned an empty evaluation');
       }
       const score = extractScore(markdown);
       step(2, 'done', score != null ? `${evalMode} · score ${score}/5` : evalMode);
@@ -308,8 +344,8 @@ export function registerAutoPipelineRoutes(app) {
 
     // Step 4 — save report
     step(3, 'running');
-    const slug = buildSlug(guess.company || 'unknown', guess.role || 'role');
-    const reportPath = `reports/${slug}.md`;
+    let slug = buildSlug(guess.company || 'unknown', guess.role || 'role');
+    let reportPath = `reports/${slug}.md`;
     try {
       // Score and legitimacy were read above, with the summary block present;
       // the saved report drops that machine block, as the parent's scripts do.
@@ -317,14 +353,17 @@ export function registerAutoPipelineRoutes(app) {
       mkdirSync(PATHS.reportsDir, { recursive: true });
       const file = projPath('reports', `${slug}.md`);
       if (existsSync(file)) {
-        // Don't clobber existing — append epoch suffix.
+        // Don't clobber existing — append epoch suffix. The tracker row and
+        // the `done` event must point at the file actually written.
         const altSlug = `${slug}-${Date.now()}`;
         writeFileSync(projPath('reports', `${altSlug}.md`), sanitized);
-        logActivity({ type: 'auto-pipeline.report.saved', target: `reports/${altSlug}.md`, dedupedFrom: slug });
-        step(3, 'done', altSlug);
+        logActivity({ action: 'auto-pipeline.report.saved', target: `reports/${altSlug}.md`, detail: `deduped from ${slug}` });
+        slug = altSlug;
+        reportPath = `reports/${slug}.md`;
+        step(3, 'done', slug);
       } else {
         writeFileSync(file, sanitized);
-        logActivity({ type: 'auto-pipeline.report.saved', target: reportPath });
+        logActivity({ action: 'auto-pipeline.report.saved', target: reportPath });
         step(3, 'done', slug);
       }
     } catch (e) {
@@ -376,7 +415,7 @@ export function registerAutoPipelineRoutes(app) {
           }
           mkdirSync(projPath('data'), { recursive: true });
           writeFileSync(PATHS.applications, updated);
-          logActivity({ type: 'auto-pipeline.tracker.added', num: nextNum, company: safeCompany });
+          logActivity({ action: 'auto-pipeline.tracker.added', target: safeCompany, detail: `#${nextNum}` });
           step(4, 'done', `#${nextNum}`);
           return nextNum;
         });
@@ -392,6 +431,7 @@ export function registerAutoPipelineRoutes(app) {
         trackerNum,
         company: guess.company, role: guess.role,
         evalMode,
+        ...(warnings.length ? { warnings } : {}),
       });
       res.end();
     }

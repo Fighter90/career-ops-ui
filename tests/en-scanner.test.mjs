@@ -166,16 +166,21 @@ test('runEnScan: dry-run end-to-end across multiple sources, applies title filte
 });
 
 test('runEnScan: continues when one company returns 500', async () => {
+  // The fixture has two API companies: GH-Co (greenhouse) and Ash-Co
+  // (ashby). Fail the Ashby one with a real 500 and keep Greenhouse OK —
+  // the scan must record exactly one error and still surface GH-Co's job.
   const fakeFetch = async (url) => {
-    if (url.includes('cockroach')) return new Response('boom', { status: 500 });
+    if (url.includes('ashbyhq')) return new Response('boom', { status: 500 });
     return new Response(JSON.stringify({
-      jobs: [{ id: 99, title: 'Senior Backend Engineer', company_name: 'OK-Co', absolute_url: 'https://ok.example/99', location: { name: 'Remote' }, offices: [], first_published: '2026-01-03' }],
+      jobs: [{ id: 99, title: 'Senior Backend Engineer', company_name: 'GH-Co', absolute_url: 'https://ok.example/99', location: { name: 'Remote' }, offices: [], first_published: '2026-01-03' }],
     }), { status: 200, headers: { 'content-type': 'application/json' } });
   };
   const result = await runEnScan({ writeFiles: false, fetchImpl: fakeFetch, onLog: () => {} });
-  assert.ok(result.errors.some((e) => /500|cockroach|CockroachDB/i.test(e)) || result.errors.length === 0,
-    'should not blow up; error count ' + result.errors.length);
-  assert.ok(result.counts.fresh >= 0);
+  assert.equal(result.errors.length, 1, 'exactly the Ashby company fails: ' + JSON.stringify(result.errors));
+  assert.match(result.errors[0], /^Ash-Co: /);
+  assert.match(result.errors[0], /500/);
+  assert.equal(result.counts.fresh, 1, 'the Greenhouse job survives the sibling failure');
+  assert.equal(result.fresh[0].url, 'https://ok.example/99');
 });
 
 // ───────────────────────── progress (v1.63.2) ─────────────────────────

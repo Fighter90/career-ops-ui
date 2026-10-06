@@ -22,8 +22,9 @@
     "server/",
     "public/",
     "scripts/",
-    "README*.md",
-    "CHANGELOG*.md",
+    "docs/help/",
+    "README.md",
+    "CHANGELOG.md",
     "LICENSE"
   ],
   "keywords": [
@@ -52,6 +53,7 @@
     "dev": "node --watch server/index.mjs",
     "test": "node --test tests/*.test.mjs tests/acceptance/*.test.mjs",
     "test:coverage": "node --test --experimental-test-coverage tests/*.test.mjs tests/acceptance/*.test.mjs",
+    "test:coverage:gate": "node scripts/coverage-report.mjs",
     "test:e2e": "node tests/e2e.mjs",
     "test:e2e:full": "node tests/e2e-comprehensive.mjs",
     "test:e2e:browser": "node --test tests/playwright-smoke.mjs tests/playwright-full-cycle.mjs tests/playwright-forms.mjs tests/playwright-locale-sweep.mjs tests/playwright-theme-toggle-i18n.mjs tests/playwright-widgets.mjs tests/playwright-scan-filters.mjs tests/playwright-narrow-viewport.mjs tests/playwright-card-overflow.mjs tests/playwright-config-save-scope.mjs tests/playwright-map.mjs",

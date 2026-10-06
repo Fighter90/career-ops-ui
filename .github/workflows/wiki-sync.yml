@@ -12,7 +12,7 @@ on:
         required: true
 
 permissions:
-  contents: write   # the wiki is pushed with the repository token
+  contents: read   # raised on the job below
 
 concurrency:
   group: wiki-sync
@@ -21,6 +21,8 @@ concurrency:
 jobs:
   apply:
     runs-on: ubuntu-latest
+    permissions:
+      contents: write   # the wiki is pushed with the repository token
     steps:
       - uses: actions/checkout@v5
       - name: Apply and push
@@ -37,8 +39,14 @@ jobs:
           cd "$RUNNER_TEMP/wiki"
           git config user.name 'github-actions[bot]'
           git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-          subject=$(sed -n 's/^Subject: \(\[PATCH[^]]*\] \)\{0,1\}//p' "$file" | head -1)
-          if git log --format=%s | grep -qxF -- "$subject"; then
+          # format-patch MIME-encodes (=?UTF-8?q?…?=) and folds any non-ASCII or
+          # long Subject, so the raw header never equals the commit subject.
+          # `git mailinfo` decodes, unfolds and strips the [PATCH] prefix exactly
+          # as `git am` will when it records the commit.
+          subject=$(git mailinfo /dev/null /dev/null < "$file" | sed -n 's/^Subject: //p' | head -1)
+          # Not `grep -q`: it exits on the first hit, git log dies of SIGPIPE and
+          # pipefail turns the match into a miss.
+          if [ -n "$subject" ] && git log --format=%s | grep -xF -- "$subject" >/dev/null; then
             echo "already applied: $subject"; exit 0
           fi
           git am --3way "$file"

@@ -42,11 +42,15 @@ export async function guardResolvedHost(fetchImpl, url) {
   let hostname;
   try { hostname = new URL(url).hostname; } catch { return; }
   if (!hostname) return;
-  let address;
+  let answers;
   try {
-    ({ address } = await dns.lookup(hostname, { verbatim: true }));
+    answers = await dns.lookup(hostname, { all: true, verbatim: true });
   } catch { return; }
-  if (isPrivateOrLoopbackHost(address)) {
+  // Every answer, not just the first: the connection may use any of them, so a
+  // record set that mixes a public and a private address is refused.
+  const list = Array.isArray(answers) ? answers : [answers];
+  const address = list.map((a) => a && a.address).find((a) => isPrivateOrLoopbackHost(a));
+  if (address) {
     const err = new Error(`Refusing to fetch ${hostname}: resolves to non-public address ${address}`);
     err.code = 'ECAREEROPS_BLOCKED_ADDRESS';
     err.hostname = hostname;

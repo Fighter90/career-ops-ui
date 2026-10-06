@@ -47,10 +47,12 @@ data/pipeline.md
 data/follow-ups.md
 data/scan-history.tsv
 data/activity.jsonl
-output/
-reports/
-jds/
-interview-prep/
+# Anchored with a leading slash: unanchored, `reports/` also swallowed
+# qa/reports/ (this repo's own QA write-ups).
+/output/
+/reports/
+/jds/
+/interview-prep/
 
 # ── GSD / SDD scratch (per-developer, not part of the public contract) ──
 .planning/
@@ -136,3 +138,6 @@ skills-lock.json
 site/node_modules/
 site/dist/
 site/.astro/
+
+# QA run outputs (were ignored by the old unanchored reports/ rule; keep them local)
+qa/reports/

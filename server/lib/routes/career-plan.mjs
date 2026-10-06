@@ -39,7 +39,10 @@ export function normalizePlan(body) {
 
 /** Whitelist the horizon in months (default 12). Exported for tests. */
 export function normalizeHorizon(v) {
-  const s = String(v == null ? '' : v).trim();
+  // string | number only: String() on an arbitrary JSON object can throw
+  // ({ toString: 1 }) and an array would coerce (['6'] → '6').
+  if (typeof v !== 'string' && typeof v !== 'number') return '12';
+  const s = String(v).trim();
   return HORIZONS.includes(s) ? s : '12';
 }
 
@@ -101,10 +104,18 @@ export function registerCareerPlanRoutes(app) {
 
   app.post('/api/career-plan/generate', llmRateLimit, async (req, res) => {
     const body = (req.body && typeof req.body === 'object') ? req.body : {};
+    // R-03 — a wrongly typed field is a 400, not a silently defaulted plan.
+    if (body.horizon != null && typeof body.horizon !== 'string' && typeof body.horizon !== 'number') {
+      return res.status(400).json({ error: 'horizon must be 6, 12 or 24' });
+    }
+    if (body.focus != null && typeof body.focus !== 'string') {
+      return res.status(400).json({ error: 'focus must be a string' });
+    }
     const horizon = normalizeHorizon(body.horizon);
     const focus = (typeof body.focus === 'string' ? body.focus : '').replace(/[\r\n]+/g, ' ').trim().slice(0, MAX_FOCUS);
     const lang = resolveLocale(req);
-    const ctx = bundleProjectContext({});
+    const ctxWarnings = [];
+    const ctx = bundleProjectContext({ warnings: ctxWarnings });
     if (!ctx) {
       return res.status(400).json({ error: 'no candidate materials yet — add your CV / profile first, so the plan is about you' });
     }
@@ -125,6 +136,8 @@ export function registerCareerPlanRoutes(app) {
     }
     if (r.mode === 'manual') return res.json({ mode: 'manual', prompt, message: 'No provider available — copy this prompt into any LLM.' });
     if (r.error) return res.status(502).json({ mode: r.mode, prompt, error: r.error });
-    return res.json({ mode: r.mode, prompt, markdown: cleanLlmMarkdown(r.markdown), usage: r.usage });
+    // Truncated context files and a cut-off answer are named, not hidden.
+    const warnings = [...ctxWarnings, ...(r.truncated ? ['plan cut off at the output-token limit'] : [])];
+    return res.json({ mode: r.mode, prompt, markdown: cleanLlmMarkdown(r.markdown), usage: r.usage, ...(warnings.length ? { warnings } : {}) });
   });
 }

@@ -26,7 +26,6 @@ import { slugify, today } from '../parsers.mjs';
 import { sanitizeJobDescription, sanitizePathName } from '../security.mjs';
 import { bundleProjectContext, resolveLocale } from '../prompts.mjs';
 import { cleanLlmMarkdown } from '../llm-output.mjs';
-import { withFileLock } from '../file-lock.mjs';
 import { llmRateLimit } from '../rate-limit.mjs';
 import { runActiveProvider, providerAvailable } from '../llm-dispatch.mjs';
 import { runNodeScript } from '../runner.mjs';
@@ -55,17 +54,40 @@ function resolveSessionFile(name) {
   return (file === dir || file.startsWith(dir + sep)) ? file : null;
 }
 
+/**
+ * Write `doc` to `<base>.md`, or `<base>-2.md`, `<base>-3.md`… — the first name
+ * that does not exist yet (create-exclusive, so concurrent saves can't clobber
+ * each other). Returns the name written, or null when every suffix is taken.
+ * `resolve` is the directory-containment guard. Shared with networking.mjs.
+ */
+export function writeExclusive(base, doc, resolveFile, maxTries = 100) {
+  for (let i = 1; i <= maxTries; i += 1) {
+    const name = i === 1 ? `${base}.md` : `${base}-${i}.md`;
+    const file = resolveFile(name);
+    if (!file) return null;
+    try {
+      writeFileSync(file, doc, { flag: 'wx' });
+      return name;
+    } catch (e) {
+      if (e && e.code !== 'EEXIST') throw e;
+    }
+  }
+  return null;
+}
+
 /** Coerce arbitrary request history to a bounded [{ speaker, text }] list. */
 export function normalizeHistory(raw) {
   if (!Array.isArray(raw)) return [];
+  // Keep the LAST turns: the prompt must see the answer being graded, not the
+  // opening of a long session (slice(0, N) dropped the newest turns).
   return raw
     .filter((t) => t && typeof t === 'object')
-    .slice(0, MAX_TURNS)
     .map((t) => ({
       speaker: t.speaker === 'candidate' ? 'candidate' : 'interviewer',
       text: clip(t.text, MAX_TEXT).trim(),
     }))
-    .filter((t) => t.text);
+    .filter((t) => t.text)
+    .slice(-MAX_TURNS);
 }
 
 /**
@@ -175,24 +197,24 @@ export function registerInterviewRoutes(app) {
     // Defense-in-depth: slugify already strips path chars, but route the final
     // filename through sanitizePathName too and re-assert the mock-*.md shape
     // so the write target can never escape interview-prep/ (path-injection).
-    const name = sanitizePathName(`mock-${slug}-${today()}.md`);
-    const file = name && name.startsWith('mock-') && name.endsWith('.md') ? resolveSessionFile(name) : null;
-    if (!file) {
+    const base = sanitizePathName(`mock-${slug}-${today()}`);
+    if (!base.startsWith('mock-') || !resolveSessionFile(`${base}.md`)) {
       return res.status(400).json({ error: 'could not derive a safe session name' });
     }
     const doc = [
       `# Mock interview — ${role || 'role'}${company ? ` @ ${company}` : ''}`,
       '', `_Saved ${today()}_`, '', transcript.trim(), '',
     ].join('\n');
+    // A second save of the same role/company on the same day used to overwrite
+    // the first; create-exclusive ('wx') with a -2, -3… suffix instead.
     try {
-      await withFileLock(file, async () => {
-        mkdirSync(PATHS.interviewPrepDir, { recursive: true });
-        writeFileSync(file, doc);
-      });
+      mkdirSync(PATHS.interviewPrepDir, { recursive: true });
+      const name = writeExclusive(base, doc, resolveSessionFile);
+      if (!name) return res.status(409).json({ error: 'too many sessions with this name today' });
+      return res.json({ ok: true, name });
     } catch {
       return res.status(500).json({ error: 'failed to save session' });
     }
-    return res.json({ ok: true, name });
   });
 
   app.get('/api/mock-interview/sessions', (_req, res) => {

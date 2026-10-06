@@ -86,12 +86,27 @@ test('withFileLock: thrown error releases the lock for next caller', async () =>
   assert.equal(secondRan, true);
 });
 
-test('withFileLock: nested same-path call from inside fn deadlocks (documented)', async () => {
-  // Documenting the constraint: don't recurse into the same path lock
-  // from inside its own critical section. We don't test for deadlock
-  // (would hang the suite); we just call out the invariant. Future
-  // callers must not nest.
-  assert.ok(true, 'documented: nested withFileLock on same path is undefined behaviour');
+test('withFileLock: nested same-path call from inside fn blocks until the outer section ends', async () => {
+  // The invariant callers must respect: never recurse into the same path
+  // lock from inside its own critical section. Prove WHY without hanging
+  // the suite: the inner call cannot start while the outer one holds the
+  // lock (it would deadlock if the outer awaited it), and it runs only
+  // once the outer section has returned and released.
+  const p = '/virtual/nested-lock-' + Date.now();
+  let inner;
+  const order = [];
+  const seenInside = await withFileLock(p, async () => {
+    inner = withFileLock(p, async () => { order.push('inner'); });
+    const state = await Promise.race([
+      inner.then(() => 'ran'),
+      new Promise((r) => setTimeout(() => r('blocked'), 50)),
+    ]);
+    order.push('outer-end');
+    return state;
+  });
+  assert.equal(seenInside, 'blocked', 'the nested same-path call must wait for the outer section');
+  await inner;
+  assert.deepEqual(order, ['outer-end', 'inner'], 'inner runs only after the outer section releases');
 });
 
 // ─── Integration: 20 concurrent POST /api/tracker land all rows ───

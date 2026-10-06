@@ -9,7 +9,11 @@ name: Remote QA (prod, site, links)
 # never page text or screenshots, because this repo's Actions logs are public.
 #
 # Secrets: PROD_URL (origin of the deployed web-ui, e.g. https://example.org),
-#          AUTH_LOGIN / AUTH_PASSWORD (basic auth for it).
+#          AUTH_LOGIN / AUTH_PASSWORD (basic auth for it) — stored on the
+#          `production` environment, so only jobs that declare it can read them
+#          and the environment's protection rules apply. A push to claude/**
+#          (an agent branch) runs only the site and link jobs: it never sees a
+#          production secret.
 
 on:
   workflow_dispatch:
@@ -49,7 +53,11 @@ concurrency:
 jobs:
   prod:
     name: prod — all routes × all locales
+    if: github.event_name != 'push'
     runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
     timeout-minutes: 45
     steps:
       - uses: actions/checkout@v5
@@ -67,7 +75,7 @@ jobs:
         run: |
           [[ "$LOCALES" =~ ^[A-Za-z,-]*$ ]] || { echo "::error::locales must look like hi,ja,pt-BR"; exit 1; }
           if [ -z "$PROD_URL" ]; then
-            # push/schedule runs skip rather than go red on a missing secret; a manual run fails.
+            # scheduled runs skip rather than go red on a missing secret; a manual run fails.
             [ "$GITHUB_EVENT_NAME" = workflow_dispatch ] && { echo "::error::secret PROD_URL is not set"; exit 1; }
             echo "::warning::secret PROD_URL is not set — prod regression skipped"; exit 0
           fi
@@ -82,6 +90,9 @@ jobs:
     name: prod — live scan + LLM × all locales
     if: github.event_name == 'workflow_dispatch' && inputs.live
     runs-on: ubuntu-latest
+    environment: production
+    permissions:
+      contents: read
     timeout-minutes: 120
     steps:
       - uses: actions/checkout@v5
@@ -99,7 +110,7 @@ jobs:
         run: |
           [[ "$LOCALES" =~ ^[A-Za-z,-]*$ ]] || { echo "::error::locales must look like hi,ja,pt-BR"; exit 1; }
           if [ -z "$PROD_URL" ]; then
-            # push/schedule runs skip rather than go red on a missing secret; a manual run fails.
+            # scheduled runs skip rather than go red on a missing secret; a manual run fails.
             [ "$GITHUB_EVENT_NAME" = workflow_dispatch ] && { echo "::error::secret PROD_URL is not set"; exit 1; }
             echo "::warning::secret PROD_URL is not set — prod regression skipped"; exit 0
           fi
@@ -113,6 +124,8 @@ jobs:
   site:
     name: site — all pages × all locales
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 30
     steps:
       - uses: actions/checkout@v5
@@ -129,12 +142,16 @@ jobs:
   links:
     name: links — README ×17 + wiki
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     timeout-minutes: 15
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
         with: { node-version: 22 }
-      - run: git clone --depth 1 "https://github.com/${{ github.repository }}.wiki.git" "$RUNNER_TEMP/wiki"
+      - env:
+          REPO: ${{ github.repository }}
+        run: git clone --depth 1 "https://github.com/$REPO.wiki.git" "$RUNNER_TEMP/wiki"
       - name: Link check
         env:
           WIKI_DIR: ${{ runner.temp }}/wiki

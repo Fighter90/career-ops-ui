@@ -22,7 +22,12 @@ const MAX_LINES = 50_000; // read cap — plenty of history without unbounded me
 export function normalizeUsage(u) {
   if (!u || typeof u !== 'object') return { in: 0, out: 0 };
   const inp = u.input_tokens ?? u.prompt_tokens ?? u.promptTokenCount ?? 0;
-  const out = u.output_tokens ?? u.completion_tokens ?? u.candidatesTokenCount ?? 0;
+  // Gemini reports thinking separately (thoughtsTokenCount) from the visible
+  // answer (candidatesTokenCount); both are billed as output.
+  const gemOut = (u.candidatesTokenCount != null || u.thoughtsTokenCount != null)
+    ? (Number(u.candidatesTokenCount) || 0) + (Number(u.thoughtsTokenCount) || 0)
+    : undefined;
+  const out = u.output_tokens ?? u.completion_tokens ?? gemOut ?? 0;
   return { in: Number(inp) || 0, out: Number(out) || 0 };
 }
 

@@ -23,12 +23,12 @@
  * Output: locale, provider, timings, lengths, verdicts. Never answer text —
  * evaluations quote the CV and this log is public.
  */
-import { readdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
 import { makeRedactor } from './redact.mjs';
 import { languageOk, describe, headingSkeleton } from './lang-check.mjs';
+import { discoverLocales, requireNonEmpty, httpCredentialsFor } from './targets.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const require = createRequire(ROOT + '/package.json');
@@ -36,11 +36,12 @@ const { chromium } = require('playwright');
 
 const BASE = (process.env.BASE_URL || '').replace(/\/+$/, '');
 if (!BASE) { console.error('BASE_URL is required'); process.exit(2); }
-const httpCredentials = process.env.BASIC_USER ? { username: process.env.BASIC_USER, password: process.env.BASIC_PASS || '' } : undefined;
+// Pinned to the BASE origin — never offered to another host that answers 401.
+const httpCredentials = httpCredentialsFor(BASE, process.env.BASIC_USER, process.env.BASIC_PASS);
 const ONLY = (process.env.LOCALES || '').split(',').filter(Boolean);
-const LOCALES = readdirSync(resolve(ROOT, 'public/js/lib/locales'))
-  .map((f) => f.match(/^i18n-dict\.([A-Za-z-]+)\.js$/)?.[1]).filter((l) => l && l !== 'aliases')
-  .filter((l) => !ONLY.length || ONLY.includes(l)).sort();
+let LOCALES;
+try { LOCALES = requireNonEmpty('locales', discoverLocales(ROOT, ONLY)); }
+catch (e) { console.error(e.message + (ONLY.length ? ` (LOCALES=${ONLY.join(',')})` : '')); process.exit(2); }
 
 const SAMPLE_JD = `Senior Platform Engineer — Example Corp (remote, EU)
 We are looking for a Senior Platform Engineer to own our Kubernetes-based internal

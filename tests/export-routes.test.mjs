@@ -5,22 +5,25 @@
  * a report) into a downloadable .docx built by the dependency-free docx writer.
  * CI-isolated: createApp() in-process, no parent project, no network.
  */
-import { test, before } from 'node:test';
+import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync } from 'node:fs';
+import { mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 let app;
 before(async () => {
-  process.env.CAREER_OPS_ROOT = mkdtempSync(join(tmpdir(), 'export-test-'));
+  const root = mkdtempSync(join(tmpdir(), 'export-test-'));
+  writeFileSync(join(root, 'cv.md'), '# CV\n');
+  process.env.CAREER_OPS_ROOT = root;
   ({ createApp } = await import('../server/index.mjs'));
   app = createApp();
 });
+after(() => { delete process.env.CAREER_OPS_ROOT; });
 let createApp;
 
 async function listen(fn) {
-  const server = app.listen(0);
+  const server = app.listen(0, '127.0.0.1');
   await new Promise((r) => server.once('listening', r));
   try { return await fn(`http://127.0.0.1:${server.address().port}`); }
   finally { server.close(); }

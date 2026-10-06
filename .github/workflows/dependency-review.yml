@@ -20,6 +20,9 @@ jobs:
   dependency-review:
     name: Review dependency changes
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write   # post the dependency-diff summary comment
     steps:
       - name: Checkout
         uses: actions/checkout@v5

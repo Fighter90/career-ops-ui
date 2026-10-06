@@ -12,7 +12,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { legacyDictText } from './helpers/i18n-vm.mjs';
+import { legacyDictText, I18N_LANGS } from './helpers/i18n-vm.mjs';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
@@ -22,7 +22,7 @@ const __d = dirname(fileURLToPath(import.meta.url));
 const DASH = readFileSync(resolve(__d, '..', 'public', 'js', 'views', 'dashboard.js'), 'utf8');
 const CSS = loadAppCss();
 const DICT = legacyDictText();
-const LOCALES = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr'];
+const LOCALES = I18N_LANGS; // every shipped UI locale, from the live list
 
 test('a .dash-hero block exists and is built near the top', () => {
   assert.match(DASH, /className: 'dash-hero'/, 'dashboard must render a .dash-hero block');
@@ -54,7 +54,7 @@ test('status buckets demoted to compact chips', () => {
   assert.match(CSS, /\.dash-hero\s*\{/, '.dash-hero style must exist');
 });
 
-test('dash.lastEval + dash.heroNoEval present in all 8 locales', () => {
+test('dash.lastEval + dash.heroNoEval present in every locale', () => {
   for (const key of ['dash.lastEval', 'dash.heroNoEval']) {
     const line = DICT.split('\n').find((l) => l.includes(`'${key}'`));
     assert.ok(line, `i18n key ${key} missing`);

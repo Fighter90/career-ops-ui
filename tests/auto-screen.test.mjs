@@ -11,11 +11,11 @@
  *      stepper sets aria-current on the running step.
  *   4. index.html wires the script + a sidebar nav entry.
  *   5. The dashboard ✨ button now routes to #/auto (single flow).
- *   6. Every new i18n key resolves in all 8 locales.
+ *   6. Every new i18n key resolves in every locale.
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { loadAssembledDict } from './helpers/i18n-vm.mjs';
+import { loadAssembledDict, I18N_LANGS } from './helpers/i18n-vm.mjs';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
@@ -62,9 +62,9 @@ test('dashboard ✨ button routes to #/auto (single coherent flow)', () => {
   assert.match(DASH, /Router\.go\(\s*['"]\/auto['"]\s*\)/);
 });
 
-test('every new WS5 i18n key resolves in all 8 locales', () => {
+test('every new WS5 i18n key resolves in every locale', () => {
   const D = loadAssembledDict();
-  const LOCALES = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr'];
+  const LOCALES = I18N_LANGS; // every shipped UI locale, from the live list
   const KEYS = [
     'nav.auto', 'auto.subtitle', 'auto.urlLabel', 'auto.urlRequired',
     'auto.step.report', 'auto.stepWord', 'auto.doneTitle', 'auto.viewReport',

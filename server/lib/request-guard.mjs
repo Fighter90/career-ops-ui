@@ -80,7 +80,11 @@ export function isCrossSite(req, policy) {
   const site = String(req.headers['sec-fetch-site'] || '').toLowerCase();
   if (site === 'cross-site') return true;
   const origin = req.headers.origin;
-  if (origin === undefined || origin === '') return false;
+  // `same-site` is NOT same-origin: any other port on this host (another local
+  // dev server, a tool's web UI) is same-site with 127.0.0.1:<port>. Such a
+  // request with no Origin to compare — an `<img src=…/api/run/x>` — is refused;
+  // the SPA's own requests are `same-origin`.
+  if (origin === undefined || origin === '') return site === 'same-site';
   if (origin === 'null') return true;
   let originHost;
   try { originHost = new URL(origin).host.toLowerCase(); } catch { return true; }

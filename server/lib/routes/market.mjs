@@ -77,7 +77,8 @@ export function registerMarketRoutes(app) {
     const region = normalizeRegion(body.region);
     const currency = normalizeCurrency(body.currency);
     const lang = resolveLocale(req);
-    const ctx = bundleProjectContext({});
+    const ctxWarnings = [];
+    const ctx = bundleProjectContext({ warnings: ctxWarnings });
     if (!ctx) {
       return res.status(400).json({ error: 'no candidate materials yet — add your CV / profile first, so the report knows your target roles' });
     }
@@ -98,6 +99,8 @@ export function registerMarketRoutes(app) {
     }
     if (r.mode === 'manual') return res.json({ mode: 'manual', prompt, message: 'No provider available — copy this prompt into any LLM.' });
     if (r.error) return res.status(502).json({ mode: r.mode, prompt, error: r.error });
-    return res.json({ mode: r.mode, prompt, markdown: cleanLlmMarkdown(r.markdown), usage: r.usage });
+    // Truncated context files and a cut-off answer are named, not hidden.
+    const warnings = [...ctxWarnings, ...(r.truncated ? ['report cut off at the output-token limit'] : [])];
+    return res.json({ mode: r.mode, prompt, markdown: cleanLlmMarkdown(r.markdown), usage: r.usage, ...(warnings.length ? { warnings } : {}) });
   });
 }

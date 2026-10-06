@@ -29,23 +29,21 @@ const require = createRequire(ROOT + '/package.json');
 const { chromium } = require('playwright');
 const { BENIGN_CONSOLE } = await import(ROOT + '/tests/helpers/console-noise.mjs');
 const { makeRedactor } = await import(ROOT + '/scripts/remote-qa/redact.mjs');
+const { discoverRoutes, discoverLocales, requireNonEmpty, httpCredentialsFor } = await import(ROOT + '/scripts/remote-qa/targets.mjs');
 
 const BASE = (process.env.BASE_URL || '').replace(/\/+$/, '');
 if (!BASE) { console.error('BASE_URL is required'); process.exit(2); }
-const httpCredentials = process.env.BASIC_USER
-  ? { username: process.env.BASIC_USER, password: process.env.BASIC_PASS || '' }
-  : undefined;
+// Pinned to the BASE origin — never offered to another host that answers 401.
+const httpCredentials = httpCredentialsFor(BASE, process.env.BASIC_USER, process.env.BASIC_PASS);
 const ONLY = (process.env.LOCALES || '').split(',').filter(Boolean);
 
-// Routes and locales come from the code, not from a hand-kept list.
-const routeSrc = ['public/js/views', 'public/js'].flatMap((d) => {
-  try { return require('node:fs').readdirSync(resolve(ROOT, d), { recursive: true }).filter((f) => f.endsWith('.js')).map((f) => resolve(ROOT, d, f)); } catch { return []; }
-});
-const ROUTES = [...new Set(routeSrc.flatMap((f) => [...readFileSync(f, 'utf8').matchAll(/register\('([a-z0-9_-]+)'/g)].map((m) => m[1])))]
-  .filter((r) => r !== '__not_found__').sort();
-const LOCALES = require('node:fs').readdirSync(resolve(ROOT, 'public/js/lib/locales'))
-  .map((f) => f.match(/^i18n-dict\.([A-Za-z-]+)\.js$/)?.[1]).filter((l) => l && l !== 'aliases')
-  .filter((l) => !ONLY.length || ONLY.includes(l)).sort();
+// Routes and locales come from the code, not from a hand-kept list — the
+// config-driven mode routes included. An empty list is an error, not a pass.
+let ROUTES, LOCALES;
+try {
+  ROUTES = requireNonEmpty('routes', discoverRoutes(ROOT));
+  LOCALES = requireNonEmpty('locales', discoverLocales(ROOT, ONLY));
+} catch (e) { console.error(e.message + (ONLY.length ? ` (LOCALES=${ONLY.join(',')})` : '')); process.exit(2); }
 // Dotted i18n keys: if one shows up verbatim on screen, a translation is missing.
 const KEYS = [...readFileSync(resolve(ROOT, 'public/js/lib/locales/i18n-dict.en.js'), 'utf8').matchAll(/^\s*'([a-zA-Z0-9_-]+(?:\.[a-zA-Z0-9_-]+)+)':/gm)].map((m) => m[1]);
 

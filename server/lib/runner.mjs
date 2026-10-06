@@ -57,8 +57,12 @@ export function runNodeScript(scriptName, args = [], opts = {}) {
     let stderr = '';
     let timedOut = false;
     let killWatchdog = null;
-    child.stdout.on('data', (d) => (stdout += d.toString()));
-    child.stderr.on('data', (d) => (stderr += d.toString()));
+    // setEncoding keeps a multibyte character that straddles two chunks intact
+    // (a per-chunk toString() turned it into U+FFFD).
+    child.stdout.setEncoding('utf8');
+    child.stderr.setEncoding('utf8');
+    child.stdout.on('data', (d) => (stdout += d));
+    child.stderr.on('data', (d) => (stderr += d));
 
     const timer = opts.timeoutMs
       ? setTimeout(() => {
@@ -118,20 +122,33 @@ export function streamNodeScript(res, scriptName, args = [], opts = {}) {
     return;
   }
 
+  // Lines are emitted whole: a chunk boundary can fall mid-line (and mid
+  // character — hence setEncoding), so the unterminated tail of each chunk is
+  // carried into the next and flushed on exit.
+  const carry = { stdout: '', stderr: '' };
   const handleChunk = (stream, chunk) => {
-    const text = chunk.toString();
-    for (const line of text.split('\n')) {
+    const lines = (carry[stream] + chunk).split('\n');
+    carry[stream] = lines.pop();
+    for (const line of lines) {
       if (line.length === 0) continue;
       send('log', { stream, line });
     }
   };
+  const flush = () => {
+    for (const stream of ['stdout', 'stderr']) {
+      if (carry[stream]) send('log', { stream, line: carry[stream] });
+      carry[stream] = '';
+    }
+  };
 
+  child.stdout.setEncoding('utf8');
+  child.stderr.setEncoding('utf8');
   child.stdout.on('data', (d) => handleChunk('stdout', d));
   child.stderr.on('data', (d) => handleChunk('stderr', d));
 
   let killWatchdog = null;
   const cleanup = () => {
-    if (child.exitCode !== null) return;
+    if (child.exitCode !== null || child.signalCode !== null) return;
     killWatchdog = killWithEscalation(child);
   };
   res.on('close', cleanup);
@@ -140,7 +157,7 @@ export function streamNodeScript(res, scriptName, args = [], opts = {}) {
   const maxRuntimeMs = Number.isFinite(opts.maxRuntimeMs) ? opts.maxRuntimeMs : STREAM_DEFAULT_MAX_MS;
   const runtimeTimer = maxRuntimeMs > 0
     ? setTimeout(() => {
-        if (child.exitCode === null) {
+        if (child.exitCode === null && child.signalCode === null) {
           send('error', { message: `maximum runtime exceeded (${maxRuntimeMs}ms)` });
           killWatchdog = killWithEscalation(child);
         }
@@ -150,6 +167,7 @@ export function streamNodeScript(res, scriptName, args = [], opts = {}) {
   child.on('close', (code) => {
     if (runtimeTimer) clearTimeout(runtimeTimer);
     if (killWatchdog) clearTimeout(killWatchdog);
+    flush();
     send('done', { code });
     res.end();
   });

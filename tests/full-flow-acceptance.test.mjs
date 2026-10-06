@@ -27,6 +27,7 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
+import { I18N_LANGS } from './helpers/i18n-vm.mjs';
 
 let server;
 let baseUrl;
@@ -90,7 +91,7 @@ after(() => {
 });
 
 const FLOW_LOCALES = ['en', 'ru', 'ja'];
-const ALL_LOCALES = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr'];
+const ALL_LOCALES = I18N_LANGS; // every shipped UI locale, from the live list
 
 async function runFullFunnel(iteration) {
   // Step 1 — health green

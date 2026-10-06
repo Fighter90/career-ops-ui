@@ -60,7 +60,7 @@ test('OpenRouter fallback chain includes the google-prefixed default', () => {
     `OPENROUTER_FALLBACK_MODELS must include google/${serverDefault}`);
 });
 
-test('config.geminiModelHint names the server default in all 17 locales', () => {
+test('config.geminiModelHint names the server default in every locale', () => {
   for (const lang of I18N_LANGS) {
     const src = localeSource(lang);
     const hit = src.match(/'config\.geminiModelHint':\s*(?:"([^"]*)"|'([^']*)')/);
@@ -71,9 +71,9 @@ test('config.geminiModelHint names the server default in all 17 locales', () => 
   }
 });
 
-test('help guide names the server default and carries no stale gemini ids (x17)', () => {
+test('help guide names the server default and carries no stale gemini ids (every bundle)', () => {
   const files = readdirSync(resolve(ROOT, 'docs/help')).filter((f) => f.endsWith('.md'));
-  assert.equal(files.length, 17, 'expected 17 help bundles');
+  assert.equal(files.length, I18N_LANGS.length, 'one help bundle per UI locale');
   for (const f of files) {
     const text = read(`docs/help/${f}`);
     assert.ok(text.includes(`\`${serverDefault}\``),

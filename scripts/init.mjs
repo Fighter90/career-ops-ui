@@ -20,6 +20,7 @@
  *   career-ops-ui init --openai-key … --provider auto
  */
 import { createInterface } from 'node:readline';
+import { chmodSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { resolve } from 'node:path';
 
@@ -44,6 +45,17 @@ export function buildUpdates(o) {
   if (o.anthropic) u.ANTHROPIC_API_KEY = o.anthropic.trim();
   if (o.gemini) u.GEMINI_API_KEY = o.gemini.trim();
   if (o.openai) u.OPENAI_API_KEY = o.openai.trim();
+  return u;
+}
+
+/**
+ * What one `init` run writes. LLM_PROVIDER only when a provider was chosen
+ * (flag or wizard): `init --gemini-key … --yes` adds a key, it must not
+ * silently reset an existing provider choice to `auto`.
+ */
+export function updatesForRun(o) {
+  const u = buildUpdates(o);
+  if (!o.provider) delete u.LLM_PROVIDER;
   return u;
 }
 
@@ -146,11 +158,14 @@ async function main() {
     } finally { rl.close(); }
   }
 
-  const updates = buildUpdates(opts);
+  const updates = updatesForRun(opts);
   updateEnvFile(PATHS.envFile, updates);
+  // The file holds API keys: owner read/write only. Best effort (Windows,
+  // foreign-owned file) — the write itself already succeeded.
+  try { chmodSync(PATHS.envFile, 0o600); } catch { /* not fatal */ }
   const keysWritten = Object.keys(updates).filter((k) => k !== 'LLM_PROVIDER' && updates[k]);
   console.log(`\n✓ wrote ${PATHS.envFile}`);
-  console.log(`  LLM_PROVIDER=${updates.LLM_PROVIDER}` +
+  console.log(`  LLM_PROVIDER=${updates.LLM_PROVIDER || '(unchanged)'}` +
     (keysWritten.length ? ` · keys: ${keysWritten.join(', ')}` : ' · (no keys set yet)'));
   console.log('\nNext:  career-ops-ui doctor   # verify   →   career-ops-ui run');
 }

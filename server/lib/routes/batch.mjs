@@ -20,6 +20,25 @@ import { llmRateLimit } from '../rate-limit.mjs';
 
 const TSV_MAX_BYTES = 1024 * 1024; // 1 MB — generous for ~10k JD URLs.
 
+// Stopping a run. batch-runner.sh fans out worker processes, so signalling
+// bash alone orphaned them (still evaluating, still billing). The runner gets
+// its own process group and the whole group is signalled: SIGTERM, then
+// SIGKILL after `killGraceMs` (a trapped or busy worker ignores SIGTERM).
+// `maxRuntimeMs` caps a run nobody is watching. Mutable for tests.
+export const BATCH_LIMITS = {
+  maxRuntimeMs: 4 * 60 * 60 * 1000,
+  killGraceMs: 5_000,
+};
+const GROUP_KILL = process.platform !== 'win32';
+
+/** Signal the runner's whole process group (POSIX), else the child itself. */
+function signalRun(child, signal) {
+  if (GROUP_KILL && child.pid) {
+    try { process.kill(-child.pid, signal); return; } catch { /* group already gone */ }
+  }
+  try { child.kill(signal); } catch { /* already exited */ }
+}
+
 function parseTsv(text) {
   if (!text) return [];
   const rows = [];
@@ -91,7 +110,10 @@ export function registerBatchRoutes(app) {
       Connection: 'keep-alive',
       'X-Accel-Buffering': 'no',
     });
+    // A vanished client must not turn a late write into an error.
+    res.on('error', () => { /* client gone */ });
     const send = (event, data) => {
+      if (res.writableEnded || res.destroyed) return;
       res.write(`event: ${event}\ndata: ${JSON.stringify(data)}\n\n`);
     };
     if (!existsSync(PATHS.batchRunner)) {
@@ -140,28 +162,42 @@ export function registerBatchRoutes(app) {
     const child = spawn('bash', ['--noprofile', '--norc', PATHS.batchRunner, ...args], {
       cwd: PATHS.root,
       env: { ...process.env },
+      // Own process group (setsid), so the workers can be signalled with it.
+      detached: GROUP_KILL,
     });
     const handleChunk = (stream, chunk) => {
       for (const line of chunk.toString().split('\n')) {
         if (!line) continue;
-        res.write(`event: log\ndata: ${JSON.stringify({ stream, line })}\n\n`);
+        send('log', { stream, line });
       }
     };
     child.stdout.on('data', (d) => handleChunk('stdout', d));
     child.stderr.on('data', (d) => handleChunk('stderr', d));
 
-    let killed = false;
+    let stopping = false;
+    let graceTimer = null;
+    const stop = () => {
+      if (stopping) return;
+      stopping = true;
+      signalRun(child, 'SIGTERM');
+      // Escalate even if bash itself already exited: its workers may not have.
+      graceTimer = setTimeout(() => signalRun(child, 'SIGKILL'), BATCH_LIMITS.killGraceMs);
+      graceTimer.unref();
+    };
+    const runtimeTimer = setTimeout(() => {
+      send('error', { message: `batch run stopped: over the ${Math.round(BATCH_LIMITS.maxRuntimeMs / 1000)} s limit` });
+      stop();
+    }, BATCH_LIMITS.maxRuntimeMs);
     res.on('close', () => {
-      if (child.exitCode === null && !killed) {
-        killed = true;
-        try { child.kill('SIGTERM'); } catch {}
-      }
+      if (child.exitCode === null && child.signalCode === null) stop();
     });
     child.on('close', (code) => {
+      clearTimeout(runtimeTimer);
       send('done', { code, additions: listAdditions().length });
       res.end();
     });
     child.on('error', (err) => {
+      clearTimeout(runtimeTimer);
       send('error', { message: err.message });
       res.end();
     });

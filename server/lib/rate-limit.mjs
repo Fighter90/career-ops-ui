@@ -23,7 +23,48 @@ import { isPubliclyExposed } from './security.mjs';
 const DEFAULT_LIMIT = 10;
 const DEFAULT_WINDOW_MS = 60_000;
 
-const BUCKETS = new Map(); // ip → { count, resetAt }
+const BUCKETS = new Map(); // client key → { count, resetAt }
+
+// Hard ceiling on tracked clients. Expired buckets are swept at most once a
+// second (or once a window, if shorter); if a flood of distinct addresses still overfills the map, the oldest
+// entries (Map keeps insertion order) are dropped first.
+export const MAX_BUCKETS = 10_000;
+const SWEEP_EVERY_MS = 1_000;
+let nextSweepAt = 0;
+
+/**
+ * Bucket key for a client address. IPv6 is keyed by its /64 — a single host is
+ * routinely handed a whole /64, so per-address keys let it rotate the low bits
+ * into an endless supply of fresh buckets. IPv4 (and IPv4-mapped IPv6) is keyed
+ * per address. Anything unparseable is used verbatim.
+ * @param {string} ip
+ */
+export function clientKey(ip) {
+  const raw = String(ip || '').trim().toLowerCase().replace(/%.*$/, '');
+  if (!raw) return 'unknown';
+  const mapped = /^::ffff:(\d{1,3}(?:\.\d{1,3}){3})$/.exec(raw);
+  if (mapped) return mapped[1];
+  if (!raw.includes(':')) return raw;
+  const halves = raw.split('::');
+  if (halves.length > 2) return raw;
+  const head = halves[0] ? halves[0].split(':') : [];
+  const tail = halves.length === 2 && halves[1] ? halves[1].split(':') : [];
+  const fill = halves.length === 2 ? Math.max(0, 8 - head.length - tail.length) : 0;
+  const groups = [...head, ...Array(fill).fill('0'), ...tail];
+  if (groups.length < 4 || groups.some((g) => !/^[0-9a-f]{1,4}$/.test(g) && !g.includes('.'))) return raw;
+  return groups.slice(0, 4).map((g) => g.replace(/^0+(?=.)/, '')).join(':') + '::/64';
+}
+
+function sweep(now, windowMs) {
+  if (now >= nextSweepAt) {
+    nextSweepAt = now + Math.min(SWEEP_EVERY_MS, windowMs);
+    for (const [key, bucket] of BUCKETS) if (bucket.resetAt < now) BUCKETS.delete(key);
+  }
+  for (const key of BUCKETS.keys()) {
+    if (BUCKETS.size < MAX_BUCKETS) break;
+    BUCKETS.delete(key);
+  }
+}
 
 function limitConfig() {
   // Per-instance config from env. Caller can override via
@@ -50,11 +91,13 @@ function limitConfig() {
 export function llmRateLimit(req, res, next) {
   if (!isPubliclyExposed()) return next();
   const { limit, windowMs } = limitConfig();
-  const ip = req.ip || req.socket?.remoteAddress || 'unknown';
+  const key = clientKey(req.ip || req.socket?.remoteAddress);
   const now = Date.now();
-  const bucket = BUCKETS.get(ip);
+  const bucket = BUCKETS.get(key);
   if (!bucket || bucket.resetAt < now) {
-    BUCKETS.set(ip, { count: 1, resetAt: now + windowMs });
+    if (bucket) BUCKETS.delete(key); // re-insert at the end: eviction order = age
+    else sweep(now, windowMs);
+    BUCKETS.set(key, { count: 1, resetAt: now + windowMs });
     return next();
   }
   if (bucket.count >= limit) {
@@ -74,9 +117,14 @@ export function llmRateLimit(req, res, next) {
 
 /**
  * Test-only — reset buckets between cases. Production callers never
- * invoke this; the eviction happens organically when each bucket's
- * `resetAt` passes Date.now().
+ * invoke this; expired buckets are swept by sweep() as requests arrive.
  */
 export function _resetBuckets() {
   BUCKETS.clear();
+  nextSweepAt = 0;
+}
+
+/** Test-only — how many client buckets are tracked. */
+export function _bucketCount() {
+  return BUCKETS.size;
 }

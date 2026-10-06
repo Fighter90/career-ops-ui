@@ -74,7 +74,9 @@ export async function runGemini(prompt, opts = {}) {
       const reason = cand.finishReason || json?.promptFeedback?.blockReason;
       return { markdown: '', usage: json.usageMetadata || null, error: `Gemini returned no text${reason ? ` (${reason})` : ''}` };
     }
-    return { markdown, usage: json.usageMetadata || null, error: null };
+    // MAX_TOKENS with text = a cut-off answer (same contract as the
+    // Anthropic `max_tokens` / OpenAI `length` flags).
+    return { markdown, usage: json.usageMetadata || null, error: null, truncated: cand.finishReason === 'MAX_TOKENS' };
   } catch (e) {
     return { markdown: '', usage: null, error: e.name === 'AbortError' ? 'timeout' : e.message };
   } finally {

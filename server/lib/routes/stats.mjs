@@ -25,6 +25,15 @@ import { parseJsonStdout, isEmptyTrackerError, sanitizeDetail } from '../parent-
 
 const num = (v, d = 0) => (Number.isFinite(v) ? v : d);
 
+/** True if `s` carries a C0 control char or DEL — spawn throws on NUL. */
+function hasControlChar(s) {
+  for (let i = 0; i < s.length; i += 1) {
+    const code = s.charCodeAt(i);
+    if (code < 0x20 || code === 0x7f) return true;
+  }
+  return false;
+}
+
 /** Reduce a client-sent aggregate to a compact, size-bounded, sanitized row. */
 export function toCompactSnapshot(body) {
   const b = (body && typeof body === 'object') ? body : {};
@@ -203,6 +212,10 @@ export function registerStatsRoutes(app) {
   // is a runNodeScript array arg — never shell-interpolated, length-capped.
   app.get('/api/stats/company-history', llmRateLimit, async (req, res) => {
     const script = 'company-history.mjs';
+    if (typeof req.query.company === 'string' && hasControlChar(req.query.company)) {
+      res.status(400).json({ error: 'invalid company' });
+      return;
+    }
     if (!existsSync(resolve(PROJECT_ROOT, script))) {
       res.json({ available: false, reason: 'script-not-found' });
       return;

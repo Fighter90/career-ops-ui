@@ -12,6 +12,7 @@
  * The proxy has to be the side that closes an idle connection, so the
  * server's idle timeout must outlast the proxy's.
  */
+import { recordBindHost } from './security.mjs';
 
 /** Longer than Caddy's 2-minute idle-connection default. */
 export const KEEP_ALIVE_MS = 125_000;
@@ -24,7 +25,12 @@ export function applyProxyTimeouts(server, keepAliveMs = KEEP_ALIVE_MS) {
   return server;
 }
 
-/** `app.listen` with the proxy-safe timeouts; the server boot uses this. */
+/**
+ * `app.listen` with the proxy-safe timeouts; the server boot uses this. The
+ * bind host is recorded for isPubliclyExposed(), which must follow the socket,
+ * not a later edit of process.env.HOST.
+ */
 export function listen(app, port, host, onReady) {
+  recordBindHost(host);
   return applyProxyTimeouts(app.listen(port, host, onReady));
 }

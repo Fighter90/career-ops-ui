@@ -10,13 +10,13 @@
  *
  * Reads the same portals.yml as scan.mjs.
  */
-import { readFileSync, existsSync, writeFileSync, appendFileSync, mkdirSync } from 'node:fs';
+import { readFileSync, existsSync, writeFileSync, appendFileSync, mkdirSync, renameSync } from 'node:fs';
 import yaml from 'js-yaml';
 import { PATHS } from './paths.mjs';
 import { addPipelineUrl } from './parsers.mjs';
 import { sanitizeTsvField, normalizeScanUrl } from './scan-sanitize.mjs';
 import { normalizeUrl } from './url-key.mjs';
-import { buildLocationFilter, buildContentFilter, buildTitleFilter } from './location-filter.mjs';
+import { buildLocationFilter, buildContentFilter, buildTitleFilter, cleanStringList } from './location-filter.mjs';
 import { buildTrustValidator } from './trust-validator.mjs';
 import { buildTierFilter } from './classify-tier.mjs';
 import { loadQuarantine, isQuarantined, quarantineAdd, pruneQuarantine, saveQuarantine, isPermanentFailure, RETRY_AFTER_DAYS } from './scan-quarantine.mjs';
@@ -90,28 +90,51 @@ export function expandTelegramChannels(block) {
   return out;
 }
 
-export function detectApi(company) {
-  const m = resolveAdapter(company);
+export function detectApi(company, onError) {
+  const m = resolveAdapter(company, onError);
   if (!m) return null;
   return { type: m.adapter.id, url: m.endpoint };
 }
 
-// v1.13.0 — FETCHERS table sourced from the registry. Any new adapter
-// added to ALL_ADAPTERS automatically becomes callable here.
-const FETCHERS = Object.fromEntries(ALL_ADAPTERS.map((a) => [a.id, a.fetch]));
+// v1.13.0 — fetchers sourced from the registry. Any new adapter added to
+// ALL_ADAPTERS automatically becomes callable here. Looked up per scan (not
+// snapshotted at import) so the fetcher always belongs to the adapter that
+// detectApi just resolved.
+const fetcherFor = (id) => ALL_ADAPTERS.find((a) => a.id === id)?.fetch;
 
 function loadPortals() {
   if (!existsSync(PATHS.portals)) return {};
   return yaml.load(readFileSync(PATHS.portals, 'utf8')) || {};
 }
 
-function loadSeenUrls() {
+// Parent-format scan-history rows (`url  first_seen  portal  title  company
+// status …`) whose status only RECORDS that a posting was cut by the location
+// or age filter. They are observations, not "seen": the parent never lets them
+// pin a URL, so a posting that later passes (a widened allow list, a re-dated
+// listing) must still come through here too.
+const OBSERVATIONAL_HISTORY_STATUSES = new Set(['skipped_location', 'skipped_age']);
+
+function isObservationalHistoryRow(line) {
+  const cells = line.split('\t');
+  return /^https?:\/\//i.test(cells[0] || '')
+    && OBSERVATIONAL_HISTORY_STATUSES.has(String(cells[5] || '').trim());
+}
+
+/**
+ * Every URL already known — scan-history.tsv, pipeline.md, applications.md —
+ * normalised with url-key so tracking-parameter variants collapse. Shared by
+ * the EN and RU scanners.
+ * @returns {Set<string>}
+ */
+export function loadSeenUrls() {
   const seen = new Set();
   for (const p of [PATHS.scanHistory, PATHS.pipeline, PATHS.applications]) {
-    try {
-      const text = readFileSync(p, 'utf8');
-      for (const m of text.matchAll(/https?:\/\/\S+/g)) seen.add(normalizeUrl(m[0]) || m[0]);
-    } catch {}
+    let text = '';
+    try { text = readFileSync(p, 'utf8'); } catch { continue; }
+    for (const line of text.split('\n')) {
+      if (p === PATHS.scanHistory && isObservationalHistoryRow(line)) continue;
+      for (const m of line.matchAll(/https?:\/\/\S+/g)) seen.add(normalizeUrl(m[0]) || m[0]);
+    }
   }
   return seen;
 }
@@ -162,7 +185,8 @@ export async function runEnScan(opts = {}) {
   // title contains a boost keyword (case-insensitive); SPA renders a
   // "⬆ boosted" badge on those rows so the user can see WHY they're
   // ranked higher.
-  const boosts = (tf.seniority_boost || []).map((s) => String(s).toLowerCase());
+  // Blank / non-string entries dropped: "" is a substring of every title.
+  const boosts = cleanStringList(tf.seniority_boost).map((s) => s.toLowerCase());
   // v1.76.0 — optional trust validation. Off unless
   // `trust_filter:` is present and not disabled. Annotates each job with
   // _trustScore/_trustLevel/_trustFlags so the #/scan table can badge low-trust
@@ -177,13 +201,35 @@ export async function runEnScan(opts = {}) {
   // the actual employers. Expanding them here keeps ONE scan path: the entries
   // become ordinary adapter-selected companies the moment they are read, so
   // quarantine, filters, dedup and the per-source cap all apply unchanged.
+  if (!Array.isArray(companies)) companies = [];
   companies = companies.concat(expandTelegramChannels(portals.telegram_channels));
-  companies = companies.filter((c) => c.enabled !== false);
+  companies = companies.filter((c) => c && typeof c === 'object' && c.enabled !== false);
   if (companyName) {
-    companies = companies.filter((c) => c.name?.toLowerCase().includes(companyName.toLowerCase()));
+    companies = companies.filter((c) => String(c.name ?? '').toLowerCase().includes(companyName.toLowerCase()));
   }
 
-  const withApiAll = companies.map((c) => ({ ...c, _api: detectApi(c) })).filter((c) => c._api);
+  const errors = [];
+  const log = (s, line) => onLog(s, line);
+  // Detection runs per company, inside its own catch: an adapter that throws on
+  // one misconfigured entry is that entry's error, not the end of the scan.
+  const withApiAll = [];
+  let detectFailures = 0;
+  for (const c of companies) {
+    let failed = false;
+    const recordError = (msg) => {
+      failed = true;
+      errors.push(`${c.name}: ${msg}`);
+      log('stderr', `  ✗ ${String(c.name ?? '').padEnd(28)} ${msg}`);
+    };
+    let api = null;
+    try {
+      api = detectApi(c, (adapter, e) => recordError(`${adapter.id}: ${e?.message || e}`));
+    } catch (e) {
+      recordError(e?.message || String(e));
+    }
+    if (api) withApiAll.push({ ...c, _api: api });
+    else if (failed) detectFailures += 1;
+  }
   const skipped = companies.length - withApiAll.length;
 
   // v1.80.0 — source quarantine. Skip sources that returned a permanent 404/410
@@ -191,41 +237,55 @@ export async function runEnScan(opts = {}) {
   // off with `scan_quarantine: false` in portals.yml.
   const quarantineOn = portals.scan_quarantine !== false;
   const quarantine = quarantineOn ? loadQuarantine() : { entries: {} };
-  const withApi = quarantineOn ? withApiAll.filter((c) => !isQuarantined(quarantine, c.name)) : withApiAll;
-  const quarantinedCount = withApiAll.length - withApi.length;
+  const now = Date.now();
+  // Name AND endpoint: a fixed careers_url resolves to a new url and is retried.
+  const withApi = quarantineOn ? withApiAll.filter((c) => !isQuarantined(quarantine, c.name, now, c._api.url)) : withApiAll;
+  const quarantinedNames = withApiAll.filter((c) => !withApi.includes(c)).map((c) => c.name);
+  const quarantinedCount = quarantinedNames.length;
   let quarantineChanged = false;
 
-  const log = (s, line) => onLog(s, line);
   log('stdout', '━'.repeat(60));
   log('stdout', `EN Portal Scan — ${new Date().toISOString().slice(0, 10)}`);
   log('stdout', '━'.repeat(60));
   log('stdout', `Enabled companies:    ${companies.length}`);
   log('stdout', `With API:             ${withApi.length}`);
   log('stdout', `Without API (skipped):${skipped}`);
-  if (quarantinedCount) log('stdout', `Quarantined (skipped):${quarantinedCount} (dead 404/410 — auto-retried after ${RETRY_AFTER_DAYS} days)`);
+  if (quarantinedCount) {
+    log('stdout', `Quarantined (skipped):${quarantinedCount} (dead 404/410 — auto-retried after ${RETRY_AFTER_DAYS} days)`);
+    log('stdout', `  ${quarantinedNames.join(', ')}`);
+  }
   log('stdout', `Already seen:         ${seen.size} URLs`);
   log('stdout', '');
 
-  const errors = [];
   let progressDone = 0;            // v1.63.2 — determinate % progress
+  let fetchFailures = 0;           // sources whose fetch threw (snapshot guard)
   const fetchedPerCo = await pMap(withApi, async (c) => {
     if (signal?.aborted) return [];
-    const fetcher = FETCHERS[c._api.type];
+    const fetcher = fetcherFor(c._api.type);
+    const label = String(c.name ?? '').padEnd(28);
     try {
       // v1.75.0 — thread the resolved company entry through so config-driven
       // sources (ibm / arbeitsagentur / glints / jobstreet) can read their
       // `<provider>:` block. URL-detected ATS fetchers ignore the extra opt.
       const items = await fetcher(c._api.url, { fetchImpl, signal, company: c });
-      // v1.80.0 — apply the per-source cap (0 = unlimited).
-      const capped = maxPerSource > 0 ? items.slice(0, maxPerSource) : items;
       // Stamp company name on each (Greenhouse fills its own; Ashby/Lever do not)
-      const withCo = capped.map((i) => ({ ...i, company: i.company || c.name }));
-      const note = capped.length < items.length ? ` (capped from ${items.length})` : '';
-      log('stdout', `  ✓ ${c.name.padEnd(28)} ${c._api.type.padEnd(10)} ${capped.length} jobs${note}`);
+      const withCo = items.map((i) => ({ ...i, company: i.company || c.name }));
+      log('stdout', `  ✓ ${label} ${c._api.type.padEnd(10)} ${items.length} jobs`);
+      // A source that stopped early tags its result array; say so instead of
+      // presenting a partial board as the whole one.
+      if (items.ultiproTruncated) {
+        log('stderr', `  ⚠ ${c.name}: result list truncated at the page cap — some postings were not read`);
+      }
+      const ps = items.peoplesoftIncomplete;
+      if (ps) {
+        const of = ps.reportedTotal != null ? ` of ${ps.reportedTotal}` : '';
+        log('stderr', `  ⚠ ${c.name}: listing incomplete (${ps.reason || 'stopped early'}; ${ps.collected ?? withCo.length}${of} read)`);
+      }
       return withCo;
     } catch (e) {
+      fetchFailures += 1;
       errors.push(`${c.name}: ${e.message}`);
-      log('stderr', `  ✗ ${c.name.padEnd(28)} ${c._api.type.padEnd(10)} ${e.message}`);
+      log('stderr', `  ✗ ${label} ${c._api.type.padEnd(10)} ${e.message}`);
       // v1.80.0 — a permanent 404/410 quarantines the source so future scans
       // skip it (until the retry window lapses).
       if (quarantineOn && isPermanentFailure(e)) {
@@ -243,7 +303,8 @@ export async function runEnScan(opts = {}) {
     saveQuarantine(pruneQuarantine(quarantine));
   }
 
-  const allRaw = fetchedPerCo.flat();
+  const perCo = fetchedPerCo.map((list) => (Array.isArray(list) ? list : []));
+  const allRaw = perCo.flat();
   // v1.33.0 (WS4) — optional portals.yml location_filter. No key → pass-all.
   const locOk = buildLocationFilter(portals.location_filter);
   // v1.75.0 (#974) — optional content_filter on a posting's description/snippet.
@@ -257,11 +318,35 @@ export async function runEnScan(opts = {}) {
   // seniority_boost keyword. The boost stamp is INFORMATIONAL — it
   // doesn't filter; the SPA uses it to surface a badge so users see why
   // a row is ranked higher.
-  const filtered = allRaw
-    .filter((j) => titleOk(j.title)
-      && locOk(j.location)
-      && tierOk(j.title)
-      && contentOk(j.description ?? j.snippet))
+  const passes = (j) => titleOk(j.title)
+    && locOk(j.location)
+    && tierOk(j.title)
+    && contentOk(j.description ?? j.snippet);
+  // v1.80.0 — per-source cap (0 = unlimited), applied AFTER the filters so a
+  // source contributes up to N MATCHING jobs; capping the raw list first let
+  // irrelevant rows eat the quota.
+  let cappedAway = 0;
+  const matched = perCo.flatMap((list) => {
+    const kept = list.filter(passes);
+    if (maxPerSource > 0 && kept.length > maxPerSource) {
+      cappedAway += kept.length - maxPerSource;
+      return kept.slice(0, maxPerSource);
+    }
+    return kept;
+  });
+  const removedTitle = allRaw.length - matched.length - cappedAway;
+  // Within-run dedup on the normalised URL: the same posting reached twice
+  // (two queries, a tracking-parameter variant) is ONE row — otherwise it was
+  // appended to pipeline/history twice and read as a repost later.
+  const runKeys = new Set();
+  const unique = matched.filter((j) => {
+    const key = normalizeUrl(j.url) || j.url;
+    if (runKeys.has(key)) return false;
+    runKeys.add(key);
+    return true;
+  });
+  const runDup = matched.length - unique.length;
+  const filtered = unique
     .map((j) => {
       let out = j;
       if (boosts.length && j.title) {
@@ -275,7 +360,6 @@ export async function runEnScan(opts = {}) {
       }
       return out;
     });
-  const removedTitle = allRaw.length - filtered.length;
   // v1.84.0 — re-apply cooldown. Drop roles
   // at companies you applied to recently, so the scan stays focused on NEW
   // openings. Config: config/profile.yml::re_apply_windows. Off when unset.
@@ -290,6 +374,8 @@ export async function runEnScan(opts = {}) {
   log('stdout', '━'.repeat(60));
   log('stdout', `Total found:           ${allRaw.length}`);
   log('stdout', `Filtered by title:     ${removedTitle} removed`);
+  if (cappedAway) log('stdout', `Per-source cap:        ${cappedAway} removed (max ${maxPerSource} per source)`);
+  if (runDup) log('stdout', `Duplicate in run:      ${runDup} skipped`);
   if (cooldownSkipped) log('stdout', `Cooldown skipped:      ${cooldownSkipped} (re-applied roles, re_apply_windows)`);
   log('stdout', `Already-seen dedup:    ${dup} skipped`);
   log('stdout', `New offers added:      ${fresh.length}`);
@@ -303,13 +389,25 @@ export async function runEnScan(opts = {}) {
     }
     // Save BOTH fresh (new) and filtered (all matching positives, even dups)
     // so the UI can show a richer list to browse.
-    saveLastScan({
-      kind: 'en',
-      when: new Date().toISOString(),
-      fresh,
-      filtered: afterCooldown, // v1.76.0 — full matched set, no cap; #/scan paginates client-side (v1.84.0: post-cooldown)
-      errors,
+    // R-12 — never replace the snapshot with an emptier one: an aborted scan or
+    // one where every source failed keeps the previous snapshot, and a
+    // single-company scan merges into it instead of replacing it.
+    const keepReason = snapshotKeepReason({
+      aborted: signal?.aborted,
+      attempted: withApi.length + detectFailures,
+      failed: fetchFailures + detectFailures,
     });
+    if (keepReason) {
+      log('stderr', `last-scan snapshot kept (${keepReason})`);
+    } else {
+      saveLastScan({
+        kind: 'en',
+        when: new Date().toISOString(),
+        fresh,
+        filtered: afterCooldown, // v1.76.0 — full matched set, no cap; #/scan paginates client-side (v1.84.0: post-cooldown)
+        errors,
+      }, companyName ? { mergeCompanies: withApi.map((c) => c.name) } : {});
+    }
   }
 
   if (errors.length) {
@@ -319,7 +417,7 @@ export async function runEnScan(opts = {}) {
   }
 
   return {
-    counts: { raw: allRaw.length, removedTitle, cooldownSkipped, dup, fresh: fresh.length, skipped },
+    counts: { raw: allRaw.length, removedTitle, cooldownSkipped, dup, fresh: fresh.length, skipped, runDup, capped: cappedAway },
     fresh,
     errors,
   };
@@ -351,20 +449,70 @@ function appendToHistory(jobs) {
 
 const LAST_SCAN_PATH = PATHS.applications.replace(/applications\.md$/, 'last-scan.json');
 
-export function saveLastScan(payload) {
-  let prev = { en: null, ru: null };
+/**
+ * R-12 — why a finished scan must NOT overwrite the saved snapshot, or null
+ * when it may. Shared by both scanners.
+ * @param {{ aborted?: boolean, attempted: number, failed: number }} run
+ * @returns {string|null}
+ */
+export function snapshotKeepReason({ aborted, attempted, failed }) {
+  if (aborted) return 'scan aborted';
+  if (attempted > 0 && failed >= attempted) return 'every source failed';
+  return null;
+}
+
+/** The snapshot file, or the empty shape when it is missing, corrupt or not an object (`null`). */
+function readLastScanFile() {
   try {
-    prev = JSON.parse(readFileSync(LAST_SCAN_PATH, 'utf8'));
+    const raw = JSON.parse(readFileSync(LAST_SCAN_PATH, 'utf8'));
+    if (raw && typeof raw === 'object' && !Array.isArray(raw)) return raw;
   } catch {}
-  prev[payload.kind] = payload;
+  return { en: null, ru: null };
+}
+
+/**
+ * Fold a partial (single-company) scan into the previous snapshot: rows of the
+ * scanned companies are replaced wholesale — a role the company closed must
+ * drop out — and every other company's rows are kept.
+ * @param {any} old previous snapshot for this kind
+ * @param {any} payload this run's snapshot
+ * @param {string[]} companies names of the companies this run scanned
+ */
+function mergeSnapshot(old, payload, companies) {
+  const lc = (v) => String(v ?? '').toLowerCase();
+  const key = (j) => normalizeUrl(j.url) || j.url;
+  const newRows = [...(payload.fresh || []), ...(payload.filtered || [])];
+  // A source may stamp its own spelling of the employer (Greenhouse
+  // company_name), so this run's row companies count as "scanned" too.
+  const scanned = new Set([...companies, ...newRows.map((j) => j && j.company)].map(lc).filter(Boolean));
+  const newKeys = new Set(newRows.map(key));
+  const keep = (rows) => (Array.isArray(rows) ? rows : [])
+    .filter((j) => j && typeof j === 'object' && !newKeys.has(key(j)) && !scanned.has(lc(j.company)));
+  return {
+    ...payload,
+    fresh: [...keep(old.fresh), ...(payload.fresh || [])],
+    filtered: [...keep(old.filtered), ...(payload.filtered || [])],
+  };
+}
+
+/**
+ * Persist one scanner's snapshot into data/last-scan.json (tmp + rename, so a
+ * crash mid-write can't truncate the file the #/scan page reads).
+ * @param {{ kind: 'en'|'ru', fresh: any[], filtered: any[] } & Record<string, any>} payload
+ * @param {{ mergeCompanies?: string[] }} [opts] merge instead of replace
+ */
+export function saveLastScan(payload, opts = {}) {
+  const prev = readLastScanFile();
+  const old = prev[payload.kind];
+  prev[payload.kind] = Array.isArray(opts.mergeCompanies) && old && typeof old === 'object'
+    ? mergeSnapshot(old, payload, opts.mergeCompanies)
+    : payload;
   mkdirSync(LAST_SCAN_PATH.replace(/\/[^/]+$/, ''), { recursive: true });
-  writeFileSync(LAST_SCAN_PATH, JSON.stringify(prev, null, 2));
+  const tmp = `${LAST_SCAN_PATH}.${process.pid}.tmp`;
+  writeFileSync(tmp, JSON.stringify(prev, null, 2));
+  renameSync(tmp, LAST_SCAN_PATH);
 }
 
 export function loadLastScan() {
-  try {
-    return JSON.parse(readFileSync(LAST_SCAN_PATH, 'utf8'));
-  } catch {
-    return { en: null, ru: null };
-  }
+  return readLastScanFile();
 }

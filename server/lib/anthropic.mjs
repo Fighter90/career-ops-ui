@@ -68,7 +68,14 @@ export async function runAnthropic(prompt, opts = {}) {
       .join('\n'));
     // `max_tokens` means the answer was cut off; callers that validate a
     // format (evaluate) report it instead of a vague shape warning.
-    return { markdown, usage: json.usage || null, error: null, truncated: json.stop_reason === 'max_tokens' };
+    const truncated = json.stop_reason === 'max_tokens';
+    if (!markdown) {
+      // A 200 with no text (refusal, tool_use only, cut off before any text)
+      // is a failure: callers would otherwise save an empty report.
+      const reason = json.stop_reason ? ` (${json.stop_reason})` : '';
+      return { markdown: '', usage: json.usage || null, error: `Anthropic returned no text${reason}`, truncated };
+    }
+    return { markdown, usage: json.usage || null, error: null, truncated };
   } catch (e) {
     return { markdown: '', usage: null, error: e.name === 'AbortError' ? 'timeout' : e.message };
   } finally {

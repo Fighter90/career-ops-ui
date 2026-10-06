@@ -10,6 +10,10 @@ on:
   pull_request:
     branches: [main]
 
+# Least privilege: every job only reads the repository.
+permissions:
+  contents: read
+
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
@@ -18,6 +22,8 @@ jobs:
   unit:
     name: Unit + integration (node ${{ matrix.node }})
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     strategy:
       matrix:
         node: ['18', '20', '22']
@@ -29,19 +35,25 @@ jobs:
           node-version: ${{ matrix.node }}
           cache: npm
       - run: npm ci --no-audit --no-fund
-      - name: Run unit + integration tests
-        run: npm test
+      # test:ci = npm test + the .also( leftover gate + CHANGELOG parity +
+      # the i18n hygiene audit (see package.json) — the same gate a release
+      # is held to, so none of those can drift red behind a green CI.
+      - name: Run unit + integration tests and release gates (npm run test:ci)
+        run: npm run test:ci
+      # Repository-state workflow evals (ADR rules that shipped broken once).
+      - name: Workflow evals (repo state)
+        run: node evals/workflow/run.mjs
       - name: Verify i18n coverage (every key × 16 locales)
         # I18N-SPLIT (v1.60.0): load the per-locale tables + alias map + the
         # assembler (i18n-dict.js) into the vm BEFORE i18n.js, exactly like
         # the browser, so __I18N_DICT is populated and this gate is real.
         run: node -e "const {readFileSync}=require('node:fs');const {createContext,runInContext}=require('node:vm');const langs=['en','es','pt-BR','ko','ja','ru','zh-CN','zh-TW','fr','pl','uk','da','ar','de','it','tr'];const ctx=createContext({window:{},localStorage:{getItem:()=>null,setItem:()=>{}},document:{documentElement:{lang:'en'},addEventListener:()=>{}},navigator:{language:'en'}});for(const l of langs)runInContext(readFileSync('public/js/lib/locales/i18n-dict.'+l+'.js','utf8'),ctx);runInContext(readFileSync('public/js/lib/locales/i18n-dict.aliases.js','utf8'),ctx);runInContext(readFileSync('public/js/lib/i18n-dict.js','utf8'),ctx);let s=readFileSync('public/js/lib/i18n.js','utf8').replace(/return\s*\{\s*t,\s*setLang,\s*getLang,\s*getLangs,\s*onChange\s*\};/,'return { t,setLang,getLang,getLangs,onChange,_DICT:DICT };');runInContext(s,ctx);const D=ctx.window.I18n._DICT;let miss=0;for(const k of Object.keys(D)){if(D[k]['@alias']){if(!D[D[k]['@alias']]){console.error('bad-alias',k,'->',D[k]['@alias']);miss++}continue}for(const l of langs)if(!D[k][l]){console.error('miss',k,l);miss++}}console.log('keys',Object.keys(D).length,'×',langs.length,'· missing/bad',miss);if(Object.keys(D).length<600){console.error('dict too small — split load broken');process.exit(1)}process.exit(miss?1:0)"
-      - name: i18n hygiene audit (I18N-CL4 — personal-data / parity / empty / bare-date)
-        run: npm run audit:i18n
 
   e2e:
     name: Playwright e2e
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     needs: unit
     steps:
       - uses: actions/checkout@v5
@@ -77,6 +89,8 @@ jobs:
   code-quality:
     name: Code quality (syntax · coverage · audit)
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v5
@@ -117,6 +131,10 @@ jobs:
             if (b+0 < 80)  { printf "::error::branch coverage %s%% below 80%% floor\n", b; exit 1 }
             printf "coverage OK — line %s%% / branch %s%%\n", l, b
           }'
+      # Per-file ratchet for server/ and public/ (scripts/coverage-baseline.json):
+      # parses the run saved above instead of running the suite a second time.
+      - name: Coverage ratchet (per file, server/ + public/)
+        run: npm run test:coverage:gate -- --from /tmp/cov.txt
       # Advisory: surface known-vulnerable production deps (never blocks —
       # the project keeps deps minimal: express, js-yaml, multer).
       - name: npm audit (advisory)

@@ -30,8 +30,8 @@ import { addPipelineUrl } from './parsers.mjs';
 import { sanitizeTsvField, normalizeScanUrl } from './scan-sanitize.mjs';
 import { normalizeUrl } from './url-key.mjs';
 import { makeTimeoutFetch } from './fetch-timeout.mjs';
-import { saveLastScan } from './en-scanner.mjs';
-import { buildLocationFilter, buildContentFilter, compileKeyword, compileKeywordList, foldAccents } from './location-filter.mjs';
+import { saveLastScan, snapshotKeepReason, loadSeenUrls as loadSeenUrlsShared } from './en-scanner.mjs';
+import { buildLocationFilter, buildContentFilter, compileKeyword, compileKeywordList, foldAccents, cleanStringList } from './location-filter.mjs';
 import { buildTierFilter } from './classify-tier.mjs';
 import { buildTrustValidator } from './trust-validator.mjs';
 
@@ -73,21 +73,41 @@ const DEFAULT_NEGATIVE = [
   'frontend',
 ];
 
+/**
+ * A config list that falls back to `defaults` only when the key is ABSENT.
+ * A bare string is one entry (YAML `queries: Senior Go` — iterating the string
+ * scanned one query per character); blank / non-string entries are dropped
+ * (a null in `title_filter.negative` used to throw on toLowerCase).
+ * @param {unknown} value
+ * @param {string[]} defaults
+ */
+function configList(value, defaults) {
+  if (value == null) return defaults;
+  if (typeof value === 'string') return cleanStringList([value]);
+  return cleanStringList(value);
+}
+
 export function loadConfig() {
   let portals = {};
   if (existsSync(PATHS.portals)) {
+    // A malformed portals.yml is an error, as it is for the EN scanner — not a
+    // silent fallback to the built-in defaults (which scanned queries the user
+    // never configured and hid the typo).
     try {
       portals = yaml.load(readFileSync(PATHS.portals, 'utf8')) || {};
-    } catch {}
+    } catch (e) {
+      throw new Error(`portals.yml: ${e.message}`);
+    }
   }
-  const ru = portals.russian_portals || {};
-  const titleFilter = portals.title_filter || {};
+  if (typeof portals !== 'object' || Array.isArray(portals)) portals = {};
+  const ru = (portals.russian_portals && typeof portals.russian_portals === 'object') ? portals.russian_portals : {};
+  const titleFilter = (portals.title_filter && typeof portals.title_filter === 'object') ? portals.title_filter : {};
 
-  const queries = ru.queries || DEFAULT_QUERIES;
-  const negative = (titleFilter.negative || DEFAULT_NEGATIVE).map((s) => s.toLowerCase());
+  const queries = configList(ru.queries, DEFAULT_QUERIES);
+  const negative = configList(titleFilter.negative, DEFAULT_NEGATIVE).map((s) => s.toLowerCase());
   // v1.12.0 — surface seniority_boost on the regional scanner too.
   // Lowercased once here for cheap per-row matching downstream.
-  const boosts = (titleFilter.seniority_boost || []).map((s) => String(s).toLowerCase());
+  const boosts = cleanStringList(titleFilter.seniority_boost).map((s) => s.toLowerCase());
   // FIX-H3 — surface the most common config mistake: a query keyword
   // also appears in the negative list, so every result is filtered out.
   // Caller can ignore `warnings` if it doesn't care.
@@ -100,7 +120,7 @@ export function loadConfig() {
     // v1.29.0 — default now pulls every RU source from the registry
     // (hh, habr, trudvsem, getmatch, geekjob). User's portals.yml
     // takes precedence if it explicitly lists `sources: [...]`.
-    sources: ru.sources || [...RU_CONFIG_KEYS],
+    sources: configList(ru.sources, [...RU_CONFIG_KEYS]),
     area: ru.area ?? 113, // Russia
     perPage: ru.per_page ?? 50,
     onlyRemote: ru.only_remote ?? false,
@@ -153,24 +173,9 @@ function collisionWarnings(queries, negative) {
  * data/pipeline.md AND data/applications.md) so we never re-add a known one.
  */
 export function loadSeenUrls() {
-  const seen = new Set();
-  const tryRead = (p) => {
-    try {
-      return readFileSync(p, 'utf8');
-    } catch {
-      return '';
-    }
-  };
-  // scan-history.tsv: columns include the URL — match http(s)
-  const scanHist = tryRead(PATHS.scanHistory);
-  for (const m of scanHist.matchAll(/https?:\/\/\S+/g)) seen.add(normalizeUrl(m[0]) || m[0]);
-  // pipeline.md
-  const pipeline = tryRead(PATHS.pipeline);
-  for (const m of pipeline.matchAll(/https?:\/\/\S+/g)) seen.add(normalizeUrl(m[0]) || m[0]);
-  // applications.md (already-tracked offers)
-  const apps = tryRead(PATHS.applications);
-  for (const m of apps.matchAll(/https?:\/\/\S+/g)) seen.add(normalizeUrl(m[0]) || m[0]);
-  return seen;
+  // One implementation for both scanners (en-scanner.mjs): normalised URLs, and
+  // parent skipped_location / skipped_age history rows don't count as seen.
+  return loadSeenUrlsShared();
 }
 
 // v1.76.0 — compile the negative list once (word-boundary matching for short
@@ -238,6 +243,8 @@ export async function runRuScan(opts = {}) {
   const errors = [];
   // Track repeated source-level failures (e.g., 10x hh.ru 403) — show once.
   const sourceFailures = {};
+  // Per-call tally for the R-12 snapshot guard (every call failed → keep).
+  const calls = { attempted: 0, failed: 0 };
   let hhDisabled = false;
 
   // Compiled once, then applied per query. Previously this ran after the loop,
@@ -258,16 +265,19 @@ export async function runRuScan(opts = {}) {
       break;
     }
     log('stdout', `▸ "${q}"`);
-    const results = await runQuery(q, cfg, fetchImpl, errors, sourceFailures, hhDisabled, log, signal);
+    const results = await runQuery(q, cfg, fetchImpl, errors, sourceFailures, hhDisabled, log, signal, calls);
     log('stdout', `  → ${results.length} hits`);
     onProgress(++qDone, cfg.queries.length);
     for (const job of results) {
-      allUrls.add(job.url);
+      // Keyed on the canonical (url-key) form, like the seen-set: a tracking-
+      // parameter variant of one posting is the same posting, not a second row.
+      const key = normalizeUrl(job.url) || job.url;
+      allUrls.add(key);
       // Last-wins per URL, exactly as the old end-of-run dedup did: a later
       // duplicate that fails the filters must REMOVE an earlier one that passed,
       // or this would keep a row the previous implementation dropped.
-      if (passesAll(job)) uniq.set(job.url, job);
-      else uniq.delete(job.url);
+      if (passesAll(job)) uniq.set(key, job);
+      else uniq.delete(key);
     }
     // First hh.ru 403/451 → disable for rest of run + log once. hh.ru is
     // scraped from its public website now; a 403 means an anti-bot challenge
@@ -322,13 +332,20 @@ export async function runRuScan(opts = {}) {
       appendToHistory(fresh);
       log('stdout', `→ Appended ${fresh.length} URLs to data/pipeline.md`);
     }
-    saveLastScan({
-      kind: 'ru',
-      when: new Date().toISOString(),
-      fresh,
-      filtered, // v1.76.0 — full matched set, no cap; #/scan paginates client-side
-      errors,
-    });
+    // R-12 — an aborted run, or one where every source call failed, keeps the
+    // previous snapshot instead of replacing it with an emptier one.
+    const keepReason = snapshotKeepReason({ aborted: signal?.aborted, ...calls });
+    if (keepReason) {
+      log('stderr', `last-scan snapshot kept (${keepReason})`);
+    } else {
+      saveLastScan({
+        kind: 'ru',
+        when: new Date().toISOString(),
+        fresh,
+        filtered, // v1.76.0 — full matched set, no cap; #/scan paginates client-side
+        errors,
+      });
+    }
   }
 
   // One concise summary line per failed source (instead of N repeats)
@@ -347,7 +364,7 @@ export async function runRuScan(opts = {}) {
   };
 }
 
-async function runQuery(query, cfg, fetchImpl, errors, sourceFailures, hhDisabled, log, signal) {
+async function runQuery(query, cfg, fetchImpl, errors, sourceFailures, hhDisabled, log, signal, calls = { attempted: 0, failed: 0 }) {
   const out = [];
   // v1.29.0 — single loop over the dispatch table. Adding a new source =
   // adding an entry to RU_DISPATCH above. The scanner doesn't need to
@@ -361,6 +378,7 @@ async function runQuery(query, cfg, fetchImpl, errors, sourceFailures, hhDisable
       continue;
     }
     if (key === 'hh' && hhDisabled) continue;
+    calls.attempted += 1;
     try {
       const items = await entry.search(query, {
         // Common opts every adapter accepts (extras like area/perPage are
@@ -374,6 +392,7 @@ async function runQuery(query, cfg, fetchImpl, errors, sourceFailures, hhDisable
       out.push(...items);
       log('stdout', `    ${entry.label.padEnd(8)} ${items.length}`);
     } catch (e) {
+      calls.failed += 1;
       const failKey = key;
       const firstFailure = !sourceFailures[failKey];
       sourceFailures[failKey] = sourceFailures[failKey] || {

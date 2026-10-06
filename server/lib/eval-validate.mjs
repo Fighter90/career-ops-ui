@@ -44,15 +44,17 @@ export function validateEvaluationReport(text) {
     issues.push('missing SCORE_SUMMARY block');
   } else {
     const summaryBlock = summary[1];
+    // [ \t]*, not \s*: \s crosses newlines, so an EMPTY `ROLE:` line would
+    // capture the next line ("SCORE: 4.1") as its value and pass.
     for (const key of ['COMPANY', 'ROLE', 'ARCHETYPE', 'LEGITIMACY']) {
-      const field = summaryBlock.match(new RegExp(`^\\s*${key}:\\s*(.+)$`, 'mi'));
+      const field = summaryBlock.match(new RegExp(`^[ \\t]*${key}:[ \\t]*(.+)$`, 'mi'));
       const value = field?.[1]?.trim() ?? '';
       // COMPANY may legitimately be "unknown"; the others may not.
       if (!value || (key !== 'COMPANY' && value.toLowerCase() === 'unknown')) {
         issues.push(`SCORE_SUMMARY ${key} is required`);
       }
     }
-    const score = summaryBlock.match(/^\s*SCORE:\s*([0-9]+(?:\.[0-9]+)?)/mi);
+    const score = summaryBlock.match(/^[ \t]*SCORE:[ \t]*([0-9]+(?:\.[0-9]+)?)/mi);
     const scoreValue = score ? Number(score[1]) : NaN;
     if (!Number.isFinite(scoreValue) || scoreValue < 0 || scoreValue > 5) {
       issues.push('SCORE_SUMMARY score must be a number between 0 and 5');

@@ -42,7 +42,9 @@ export function logActivity(event) {
   try {
     const line = JSON.stringify({
       ts: new Date().toISOString(),
-      action: String(event.action || 'unknown'),
+      // Some routes pass `type` (auto-pipeline, content, reports); without the
+      // fallback those events were all recorded as 'unknown'.
+      action: String(event.action || event.type || 'unknown'),
       target: event.target ? clip(event.target) : null,
       ok: typeof event.ok === 'boolean' ? event.ok : null,
       detail: event.detail !== undefined ? clip(event.detail) : null,
@@ -83,17 +85,17 @@ export function readActivity({ limit = 200, actionPrefix } = {}) {
     return [];
   }
   const cap = Math.min(MAX_LINES_RETURNED, Math.max(1, limit));
-  const slice = lines.slice(-cap * 2); // overshoot — JSON.parse failures get filtered below
+  // Walk newest → oldest and stop once `cap` events MATCH. Slicing a fixed
+  // window first (the old 2×limit overshoot) and filtering afterwards dropped
+  // an older matching event sitting behind a burst of other actions.
   const out = [];
-  for (const raw of slice) {
+  for (let i = lines.length - 1; i >= 0 && out.length < cap; i -= 1) {
     let evt;
-    try { evt = JSON.parse(raw); } catch { continue; }
-    if (actionPrefix && !evt.action?.startsWith(actionPrefix)) continue;
+    try { evt = JSON.parse(lines[i]); } catch { continue; }
+    if (actionPrefix && !evt?.action?.startsWith?.(actionPrefix)) continue;
     out.push(evt);
   }
-  // Newest first
-  out.reverse();
-  return out.slice(0, cap);
+  return out;
 }
 
 /**

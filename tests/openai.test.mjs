@@ -312,10 +312,13 @@ test('4xx / 5xx / malformed → error, no markdown', async () => {
 test('clamps max_tokens into [256, 16384]; timeout → "timeout"', async () => {
   let body;
   const cap = async (_u, o) => { body = JSON.parse(o.body); return okChat('ok'); };
+  // api.openai.com names the limit max_completion_tokens (v1.241.0).
   await runOpenAI('hi', { apiKey: 'sk', fetchImpl: cap, maxTokens: 1 });
-  assert.equal(body.max_tokens, 256);
+  assert.equal(body.max_completion_tokens, 256);
   await runOpenAI('hi', { apiKey: 'sk', fetchImpl: cap, maxTokens: 1e6 });
-  assert.equal(body.max_tokens, 16384);
+  assert.equal(body.max_completion_tokens, 16384);
+  await runQwen('hi', { apiKey: 'sk', fetchImpl: cap, maxTokens: 1 });
+  assert.equal(body.max_tokens, 256);
   const hang = (_u, o) => new Promise((_, rej) =>
     o.signal.addEventListener('abort', () =>
       rej(Object.assign(new Error('aborted'), { name: 'AbortError' }))));
@@ -493,4 +496,16 @@ test('run<Provider> wrappers post to the expected endpoint with their default mo
     assert.equal(sentModel, c.model, `default model for ${c.url}`);
     assert.equal(sentAuth, 'Bearer provider-canary-000001');
   }
+});
+
+test('runOpenAI: a Responses-only *-codex model (shared with the parent Codex CLI) is sent as gpt-5 to Chat Completions', async () => {
+  const seen = [];
+  const fakeFetch = async (_url, init) => {
+    seen.push(JSON.parse(init.body).model);
+    return okChat('ok');
+  };
+  const r = await runOpenAI('hi', { apiKey: 'sk', model: 'gpt-5-codex', fetchImpl: fakeFetch });
+  assert.equal(r.error, null);
+  await runOpenAI('hi', { apiKey: 'sk', model: 'gpt-5-mini', fetchImpl: fakeFetch });
+  assert.deepEqual(seen, ['gpt-5', 'gpt-5-mini']);
 });

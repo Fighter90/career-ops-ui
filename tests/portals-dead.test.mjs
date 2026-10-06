@@ -32,10 +32,11 @@ test('parent portals.yml exists (skipped on standalone web-ui CI)', { skip: !exi
   assert.ok(existsSync(PORTALS), `expected ${PORTALS}`);
 });
 
-test('FIX-C3: known-dead slugs drift warning (never blocks release)', () => {
+test('FIX-C3: known-dead slugs drift warning (never blocks release)', (t) => {
   if (!existsSync(PORTALS)) {
     // Parent isn't checked out alongside web-ui (e.g. standalone CI of
-    // career-ops-ui). Skip rather than fail spuriously.
+    // career-ops-ui). Report a skip — not a silent pass.
+    t.skip('parent templates/portals.example.yml not present');
     return;
   }
   // v1.12.0 — was assertion, now a warning. Rationale: the parent's
@@ -47,6 +48,11 @@ test('FIX-C3: known-dead slugs drift warning (never blocks release)', () => {
   // upstream to disable. Either way: not a release blocker.
   const portals = yaml.load(readFileSync(PORTALS, 'utf8')) || {};
   const tracked = portals.tracked_companies || portals.companies || [];
+  // The one thing this test DOES assert: the template still has the shape
+  // the drift check reads. A renamed key would otherwise turn the whole
+  // check into a silent no-op.
+  assert.ok(Array.isArray(tracked) && tracked.length > 0,
+    'portals.example.yml must list tracked_companies for the drift check to mean anything');
   const drifted = [];
   for (const name of KNOWN_DEAD) {
     const c = tracked.find((x) => x.name === name);
@@ -54,14 +60,15 @@ test('FIX-C3: known-dead slugs drift warning (never blocks release)', () => {
     if (c.enabled === true) drifted.push(name);
   }
   if (drifted.length) {
+    t.diagnostic(`known-dead slugs re-enabled upstream: ${drifted.join(', ')}`);
     // eslint-disable-next-line no-console
     console.warn(
       `[portals-dead drift] parent template re-enabled known-dead slugs: ${drifted.join(', ')}. ` +
       `Verify URLs manually and either remove from KNOWN_DEAD or open a PR upstream.`,
     );
   }
-  // Always passes — the warning is the signal; release decisions stay manual.
-  assert.ok(true);
+  // No assertion on `drifted` — the warning is the signal; release
+  // decisions stay manual.
 });
 
 test('FIX-C3: portals-health-check.mjs script exists and is executable', () => {

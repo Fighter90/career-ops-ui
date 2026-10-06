@@ -74,10 +74,10 @@ export function registerReportsRoutes(app) {
     mkdirSync(PATHS.reportsDir, { recursive: true });
     writeFileSync(file, sanitized);
     logActivity({
-      type: 'reports.save',
+      action: 'reports.save',
       target: `reports/${slug}.md`,
-      bytes: Buffer.byteLength(sanitized),
-      overwrite: !!overwrite,
+      ok: true,
+      detail: `${Buffer.byteLength(sanitized)} bytes${overwrite ? ' · overwrite' : ''}`,
     });
     res.json({
       ok: true,

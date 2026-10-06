@@ -16,6 +16,9 @@ import { safeGet } from '../safe-fetch.mjs';
 const MAX_BYTES = 200 * 1024;     // a favicon is tiny; cap hard
 const TIMEOUT_MS = 6000;
 const TTL_MS = 24 * 60 * 60 * 1000;
+// A miss is often transient (timeout, DNS blip, a 5xx) — cache it briefly so a
+// list of rows doesn't hammer one host, but don't hide the logo for a day.
+const NEG_TTL_MS = 10 * 60 * 1000;
 const CACHE_CAP = 512;            // domains; simple LRU-ish eviction
 
 // domain → { buf, contentType, ts } (hit) | { miss: true, ts } (negative)
@@ -24,7 +27,7 @@ const cache = new Map();
 function cacheGet(domain) {
   const e = cache.get(domain);
   if (!e) return null;
-  if (Date.now() - e.ts > TTL_MS) { cache.delete(domain); return null; }
+  if (Date.now() - e.ts > (e.miss ? NEG_TTL_MS : TTL_MS)) { cache.delete(domain); return null; }
   // Refresh LRU recency.
   cache.delete(domain); cache.set(domain, e);
   return e;
@@ -64,10 +67,14 @@ export async function fetchFavicon(domain, deps = {}) {
   const ac = new AbortController();
   const timer = setTimeout(() => ac.abort(), TIMEOUT_MS);
   try {
+    // Ask for one byte past the cap: safeGet cuts an oversized body to exactly
+    // `maxBytes`, so a buffer longer than MAX_BYTES means "truncated" even when
+    // the transport reports no `truncated` flag. A cut-off image is not served.
     const r = await get(`https://${domain}/favicon.ico`, {
-      binary: true, maxBytes: MAX_BYTES, signal: ac.signal,
+      binary: true, maxBytes: MAX_BYTES + 1, signal: ac.signal,
       headers: { Accept: 'image/*,*/*;q=0.8' },
     });
+    if (r && (r.truncated === true || (r.buffer && r.buffer.length > MAX_BYTES))) return null;
     if (r && r.status === 200 && r.buffer && r.buffer.length && looksLikeImage(r.buffer, r.contentType)) {
       return { buf: r.buffer, contentType: /^image\//i.test(r.contentType || '') ? r.contentType : 'image/x-icon' };
     }
@@ -108,3 +115,8 @@ export function registerLogoRoutes(app) {
 
 // Exposed for tests (reset between cases).
 export function _clearLogoCache() { cache.clear(); }
+// Test seam: age a cached entry by `ms` (exercises the TTLs without waiting).
+export function _ageLogoCache(domain, ms) {
+  const e = cache.get(domain);
+  if (e) e.ts -= ms;
+}

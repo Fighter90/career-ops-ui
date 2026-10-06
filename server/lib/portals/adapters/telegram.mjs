@@ -38,7 +38,13 @@ export const telegramAdapter = {
         if (u.protocol === 'https:' && TELEGRAM_HOST_RE.test(u.hostname)) return override;
       } catch { /* fall through to the derived endpoint */ }
     }
-    return buildChannelUrl(company);
+    // `string | null` contract: no usable handle is "no endpoint", never a
+    // throw that aborts the whole scan.
+    try {
+      return buildChannelUrl(company);
+    } catch {
+      return null;
+    }
   },
   fetch: fetchTelegram,
 };

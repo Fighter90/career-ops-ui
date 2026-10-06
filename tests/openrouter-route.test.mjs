@@ -12,8 +12,17 @@ import { resolve } from 'node:path';
 
 let server, baseUrl, projectRoot, __resetModelsCache;
 const savedRoot = process.env.CAREER_OPS_ROOT;
+const trueFetch = globalThis.fetch;
 
 before(async () => {
+  // CI isolation: OpenRouter is unreachable for EVERY test — the default stub
+  // makes the upstream catalogue call fail (offline), so the route serves the
+  // curated fallback. Tests below swap in their own upstream via
+  // withStubbedUpstream; localhost requests pass through to the real fetch.
+  globalThis.fetch = async (u, o) => {
+    if (String(u).startsWith('https://openrouter.ai/')) throw new Error('offline (test stub)');
+    return trueFetch(u, o);
+  };
   projectRoot = mkdtempSync(resolve(tmpdir(), 'or-route-'));
   mkdirSync(resolve(projectRoot, 'data'), { recursive: true });
   mkdirSync(resolve(projectRoot, 'modes'), { recursive: true });
@@ -35,6 +44,7 @@ before(async () => {
 });
 
 after(() => {
+  globalThis.fetch = trueFetch;
   server?.close();
   if (savedRoot === undefined) delete process.env.CAREER_OPS_ROOT;
   else process.env.CAREER_OPS_ROOT = savedRoot;

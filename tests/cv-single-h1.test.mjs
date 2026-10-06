@@ -7,14 +7,16 @@
  * help/reports/deep/evaluate which manage headings their own way).
  *
  * cv.js is browser-only → wiring asserted statically (router.test.mjs
- * style); the shift transform is re-derived from the source and
- * exercised as a pure function so the WCAG behaviour is locked.
+ * style); the shift transform itself is sliced out of cv.js and run in a
+ * `vm` context (with `UI.md` stubbed to identity) so the test exercises
+ * the production expression, not a hand-maintained copy.
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
+import vm from 'node:vm';
 
 const __d = dirname(fileURLToPath(import.meta.url));
 const CV = readFileSync(resolve(__d, '..', 'public', 'js', 'views', 'cv.js'), 'utf8');
@@ -52,18 +54,25 @@ test('page-title <h1> is still the single top-level heading source', () => {
   assert.equal((CV.match(/c\('h1'/g) || []).length, 1, 'cv.js builds exactly one <h1>');
 });
 
-test('cvMd transform (re-derived) maps every heading level down by one', () => {
-  // Re-implement the exact transform from cv.js and prove the contract:
-  // a CV body `# Alex Doe` becomes <h2>, never a second <h1>.
-  const cvMd = (html) => html
-    .replace(/<h6\b([^>]*)>/g, '<div role="heading" aria-level="7"$1>')
-    .replace(/<\/h6>/g, '</div>')
-    .replace(/<h5\b/g, '<h6').replace(/<\/h5>/g, '</h6>')
-    .replace(/<h4\b/g, '<h5').replace(/<\/h4>/g, '</h5>')
-    .replace(/<h3\b/g, '<h4').replace(/<\/h3>/g, '</h4>')
-    .replace(/<h2\b/g, '<h3').replace(/<\/h2>/g, '</h3>')
-    .replace(/<h1\b/g, '<h2').replace(/<\/h1>/g, '</h2>');
-  const out = cvMd('<h1>Alex Doe</h1><h2>Summary</h2><h6>Foot</h6>');
+// Slice `const cvMd = (src) => UI.md(src || '')…;` out of cv.js and
+// evaluate it with UI.md = identity, so the replace chain under test is
+// byte-for-byte the shipped one.
+function loadCvMd() {
+  const start = CV.indexOf('const cvMd = (src) =>');
+  assert.ok(start >= 0, 'cv.js must define cvMd');
+  const end = CV.indexOf(';\n', start);
+  assert.ok(end > start, 'cvMd definition must end with a semicolon');
+  const ctx = vm.createContext({ UI: { md: (src) => src } });
+  return vm.runInContext(`${CV.slice(start, end + 1)}\ncvMd;`, ctx);
+}
+
+test('cvMd transform (production source) maps every heading level down by one', () => {
+  // A CV body `# Alex Doe` becomes <h2>, never a second <h1>.
+  const cvMd = loadCvMd();
+  const out = cvMd('<h1>Alex Doe</h1><h2>Summary</h2><h3>A</h3><h4>B</h4><h5>C</h5><h6 id="f">Foot</h6>');
   assert.ok(!/<h1[ >]/.test(out), 'no <h1> may remain in CV preview output');
-  assert.equal(out, '<h2>Alex Doe</h2><h3>Summary</h3><div role="heading" aria-level="7">Foot</div>');
+  assert.equal(out,
+    '<h2>Alex Doe</h2><h3>Summary</h3><h4>A</h4><h5>B</h5><h6>C</h6>'
+    + '<div role="heading" aria-level="7" id="f">Foot</div>');
+  assert.equal(cvMd(undefined), '', 'empty source renders as empty string');
 });

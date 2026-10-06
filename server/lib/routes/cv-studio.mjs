@@ -21,6 +21,9 @@ import { resolveLocale, bundleProjectContext } from '../prompts.mjs';
 import { cleanLlmMarkdown } from '../llm-output.mjs';
 import { llmRateLimit } from '../rate-limit.mjs';
 import { runActiveProvider, providerAvailable } from '../llm-dispatch.mjs';
+
+/** A cut-off answer is still shown, but named as such (llm-dispatch `truncated`). */
+const cutOff = (r) => (r.truncated ? { warnings: ['answer cut off at the output-token limit'] } : {});
 import { runNodeScript } from '../runner.mjs';
 import { parseJsonStdout, sanitizeDetail } from '../parent-relay.mjs';
 import { isValidJobUrl } from '../security.mjs';
@@ -203,7 +206,7 @@ export function registerCvStudioRoutes(app) {
     }
     if (r.mode === 'manual') return res.json({ mode: 'manual', prompt, message: 'No provider available — copy this prompt into any LLM.' });
     if (r.error) return res.status(502).json({ mode: r.mode, prompt, error: r.error });
-    return res.json({ mode: r.mode, prompt, markdown: cleanLlmMarkdown(r.markdown), usage: r.usage });
+    return res.json({ mode: r.mode, prompt, markdown: cleanLlmMarkdown(r.markdown), usage: r.usage, ...cutOff(r) });
   });
 
   // Tailor the CV + write a cover letter for a specific JD, gated by the generic
@@ -237,7 +240,7 @@ export function registerCvStudioRoutes(app) {
     }
     if (r.mode === 'manual') return res.json({ mode: 'manual', prompt, message: 'No provider available — copy this prompt into any LLM.' });
     if (r.error) return res.status(502).json({ mode: r.mode, prompt, error: r.error });
-    return res.json({ mode: r.mode, prompt, markdown: cleanLlmMarkdown(r.markdown), usage: r.usage });
+    return res.json({ mode: r.mode, prompt, markdown: cleanLlmMarkdown(r.markdown), usage: r.usage, ...cutOff(r) });
   });
 
   // v1.117.0 (modes/add.md, generalized) — "Add to CV".
@@ -271,7 +274,8 @@ export function registerCvStudioRoutes(app) {
         // outright. The [<>] sweep below is what makes the bounded 8-pass loop
         // safe: even if the cap trips, no angle bracket — hence no partial
         // tag — can survive it (CodeQL incomplete-multi-character-sanitization).
-        let text = String(r.body || '')
+        // safeGet returns { status, text, finalUrl } — the body is `text`.
+        let text = String(r.text || '')
           .replace(/<script\b[\s\S]*?<\/script[^>]*>/gi, ' ')
           .replace(/<style\b[\s\S]*?<\/style[^>]*>/gi, ' ');
         let prev;
@@ -329,7 +333,7 @@ export function registerCvStudioRoutes(app) {
     }
     if (r.mode === 'manual') return res.json({ mode: 'manual', prompt, message: 'No provider available — copy this prompt into any LLM.' });
     if (r.error) return res.status(502).json({ mode: r.mode, prompt, error: r.error });
-    return res.json({ mode: r.mode, markdown: cleanLlmMarkdown(r.markdown), usage: r.usage });
+    return res.json({ mode: r.mode, markdown: cleanLlmMarkdown(r.markdown), usage: r.usage, ...cutOff(r) });
   });
 
   // POST /api/cv-studio/verify-facts — a zero-token truthfulness gate. Writes the

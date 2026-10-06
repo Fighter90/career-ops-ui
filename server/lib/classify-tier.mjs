@@ -49,11 +49,19 @@ export function classifyTier(title) {
     { pattern: /\bjunior\b/i, tier: 'entry', weight: 2 },
     { pattern: /(?<=[\s-])(i)\b/i, tier: 'entry', weight: 2 },
     { pattern: /\b(l1|l2)\b/i, tier: 'entry', weight: 2 },
+    // Non-English junior words. \b is ASCII-only (it fails next to ú / Cyrillic),
+    // so these use Unicode letter lookarounds; CJK has no word gaps, so plain substring.
+    { pattern: /(?<![\p{L}\p{N}])(júnior|младш(?:ий|ая)|молодш(?:ий|а)|młodszy|młodsza|einsteiger(?:in)?|berufseinsteiger(?:in)?)(?![\p{L}\p{N}])/iu, tier: 'entry', weight: 2 },
+    { pattern: /(ジュニア|初级|初級|주니어|신입)/u, tier: 'entry', weight: 2 },
 
     { pattern: /\binternship\b/i, tier: 'intern', weight: 1 },
     { pattern: /\bintern\b/i, tier: 'intern', weight: 1 },
     { pattern: /\btrainee\b/i, tier: 'intern', weight: 1 },
     { pattern: /\bco-op\b/i, tier: 'intern', weight: 1 },
+    // Non-English intern words (de/pt/es/fr/it/nl/pl/tr/ru/uk), Unicode-bounded.
+    // `stage` alone is left out: in English it is "early-stage".
+    { pattern: /(?<![\p{L}\p{N}])(praktikant(?:in)?|praktikum|werkstudent(?:in)?|estagi[áa]ri[oa]|est[áa]gio|becari[oa]|pasante|practicante|stagiaire|stagista|tirocinante|stagiair|stażysta|stażystka|praktykant(?:ka)?|stajyer|стаж[её]р(?:ка)?|стажист(?:ка)?|стажировка|практикант(?:ка)?)(?![\p{L}\p{N}])/iu, tier: 'intern', weight: 1 },
+    { pattern: /(インターン|实习|實習|인턴)/u, tier: 'intern', weight: 1 },
     {
       pattern: {
         test: (t) => /\bgraduate\b/i.test(t) && /\b(program|scheme)\b/i.test(t),

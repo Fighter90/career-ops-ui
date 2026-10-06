@@ -39,8 +39,14 @@ export const collageAdapter = {
     if (company.provider === 'collage') return true;
     return isCollageHost(company.api) || isCollageHost(company.careers_url);
   },
+  // `string | null` contract: an entry the source guard refuses is "no
+  // endpoint" (the scan skips it), never a throw that aborts every company.
   buildEndpoint(company) {
-    return buildCollageUrl(company);
+    try {
+      return buildCollageUrl(company);
+    } catch {
+      return null;
+    }
   },
   fetch: fetchCollage,
 };

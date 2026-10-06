@@ -80,33 +80,35 @@ export function providerAvailable() {
 /**
  * Run `fullPrompt` through the active provider cascade.
  *
+ * @param {{ sizeCap?: number, maxTokens?: number, timeoutMs?: number }} [opts]
+ *   `maxTokens` / `timeoutMs` are forwarded to the provider runner.
  * @returns one of:
- *   { mode, markdown, usage }              — success
+ *   { mode, markdown, usage, truncated }   — success (`truncated`: the answer
+ *                                            was cut off at the token limit)
  *   { mode, error }                        — the chosen provider errored
  *   { mode: 'manual' }                     — no provider available (caller
  *                                            returns the copy-paste prompt)
  *   { mode: 'too-large', size, cap }       — prompt exceeds the soft cap
  */
-export async function runActiveProvider(fullPrompt, { sizeCap = PROMPT_SIZE_SOFT_CAP } = {}) {
+export async function runActiveProvider(fullPrompt, { sizeCap = PROMPT_SIZE_SOFT_CAP, maxTokens, timeoutMs } = {}) {
   if (typeof fullPrompt !== 'string' || !fullPrompt) return { mode: 'manual' };
   if (fullPrompt.length > sizeCap) return { mode: 'too-large', size: fullPrompt.length, cap: sizeCap };
 
+  const runOpts = {};
+  if (maxTokens) runOpts.maxTokens = maxTokens;
+  if (timeoutMs) runOpts.timeoutMs = timeoutMs;
   const g = gate();
-  if (g.wantAnthropic && hasAnthropicKey()) {
-    const r = await runAnthropic(fullPrompt);
-    if (!r.error) recordUsage('anthropic', r.usage);
-    return r.error ? { mode: 'anthropic', error: r.error } : { mode: 'anthropic', markdown: r.markdown, usage: r.usage };
+  let mode = null;
+  let run = null;
+  if (g.wantAnthropic && hasAnthropicKey()) { mode = 'anthropic'; run = runAnthropic; }
+  else if (g.wantGemini && hasGeminiKey()) { mode = 'gemini'; run = runGemini; }
+  else {
+    const tp = tailProvider(g);
+    if (tp) { mode = tp.mode; run = tp.run; }
   }
-  if (g.wantGemini && hasGeminiKey()) {
-    const r = await runGemini(fullPrompt);
-    if (!r.error) recordUsage('gemini', r.usage);
-    return r.error ? { mode: 'gemini', error: r.error } : { mode: 'gemini', markdown: r.markdown, usage: r.usage };
-  }
-  const tp = tailProvider(g);
-  if (tp) {
-    const r = await tp.run(fullPrompt);
-    if (!r.error) recordUsage(tp.mode, r.usage);
-    return r.error ? { mode: tp.mode, error: r.error } : { mode: tp.mode, markdown: r.markdown, usage: r.usage };
-  }
-  return { mode: 'manual' };
+  if (!run) return { mode: 'manual' };
+  const r = await run(fullPrompt, runOpts);
+  if (r.error) return { mode, error: r.error };
+  recordUsage(mode, r.usage);
+  return { mode, markdown: r.markdown, usage: r.usage, truncated: !!r.truncated };
 }

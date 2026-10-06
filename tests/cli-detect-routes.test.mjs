@@ -14,7 +14,9 @@ let findOnPath; let detectClis;
 let fakeDir;
 
 before(async () => {
-  process.env.CAREER_OPS_ROOT = mkdtempSync(join(tmpdir(), 'cli-detect-root-'));
+  const root = mkdtempSync(join(tmpdir(), 'cli-detect-root-'));
+  writeFileSync(join(root, 'cv.md'), '# CV\n');
+  process.env.CAREER_OPS_ROOT = root;
   fakeDir = mkdtempSync(join(tmpdir(), 'cli-detect-path-'));
   // A stub "gemini" that is executable but is NEVER run by the detector.
   const stub = join(fakeDir, 'gemini');
@@ -41,10 +43,15 @@ test('detectClis reports the fake gemini as installed with its path, others not'
   const claude = tools.find((t) => t.id === 'claude');
   assert.equal(claude.installed, false);
   assert.equal(claude.path, null);
-  // The known allowlist is fixed (11 agent CLIs: 10 first-class incl. Cursor
-  // (v1.127.0/parent #2115) and Hermes (v1.173.0) + Gemini). See
-  // server/lib/routes/cli-detect.mjs.
-  assert.equal(tools.length, 11);
+  // The roster comes from the live allowlist in cli-detect.mjs (an empty
+  // PATH reports every known CLI as not installed) — no literal count to
+  // drift when a CLI is added. Ids are unique; the stub PATH changes only
+  // `installed`, never the roster.
+  const roster = detectClis('').map((t) => t.id);
+  assert.ok(roster.length > 0);
+  assert.equal(new Set(roster).size, roster.length, 'roster ids are unique');
+  assert.deepEqual(tools.map((t) => t.id), roster);
+  assert.ok(detectClis('').every((t) => t.installed === false && t.path === null));
   // v1.173.0 — Hermes is probed (parent SUPPORTED_CLIS.md parity).
   assert.ok(tools.some((t) => t.id === 'hermes'), 'hermes must be in the roster');
 });
@@ -53,7 +60,9 @@ test('GET /api/cli-detect returns the tools list + platform', async () => {
   const r = await fetch(`${baseUrl}/api/cli-detect`);
   assert.equal(r.status, 200);
   const j = await r.json();
-  assert.ok(Array.isArray(j.tools) && j.tools.length === 11);
+  assert.ok(Array.isArray(j.tools));
+  assert.deepEqual(j.tools.map((t) => t.id), detectClis('').map((t) => t.id),
+    'endpoint lists exactly the live roster');
   assert.ok(j.tools.every((t) => typeof t.id === 'string' && typeof t.installed === 'boolean'));
   assert.equal(typeof j.platform, 'string');
 });

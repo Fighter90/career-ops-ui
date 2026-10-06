@@ -34,6 +34,9 @@ before(async () => {
   writeFileSync(resolve(projectRoot, 'modes', 'oferta.md'), 'oferta\n');
   writeFileSync(resolve(projectRoot, 'interview-prep', 'wheely-senior-backend.md'), '# Wheely\n\nBig file\n');
   writeFileSync(resolve(projectRoot, 'interview-prep', 'stripe-general.md'), '# Stripe\n\nNotes\n');
+  // v1.241.0 — the deep page lists/deletes only its own deep-*.md briefs.
+  writeFileSync(resolve(projectRoot, 'interview-prep', 'deep-wheely-senior-backend.md'), '# Wheely deep\n');
+  writeFileSync(resolve(projectRoot, 'interview-prep', 'deep-stripe-general.md'), '# Stripe deep\n');
   process.env.CAREER_OPS_ROOT = projectRoot;
   delete process.env.GEMINI_API_KEY;
   const { createApp } = await import('../server/index.mjs');
@@ -68,13 +71,15 @@ async function post(path, body) {
   return { status: res.status, body: await res.json() };
 }
 
-test('GET /api/interview-prep lists saved .md files newest-first', async () => {
+test('GET /api/interview-prep lists the saved deep-*.md briefs only', async () => {
   const r = await get('/api/interview-prep');
   assert.equal(r.status, 200);
   assert.equal(r.body.files.length, 2);
   const names = r.body.files.map((f) => f.name);
-  assert.ok(names.includes('wheely-senior-backend.md'));
-  assert.ok(names.includes('stripe-general.md'));
+  assert.ok(names.includes('deep-wheely-senior-backend.md'));
+  assert.ok(names.includes('deep-stripe-general.md'));
+  // The parent's own interview-prep reports are not the deep page's.
+  assert.ok(!names.includes('stripe-general.md'));
 });
 
 test('GET /api/interview-prep/:name returns markdown body', async () => {
@@ -90,12 +95,18 @@ test('GET /api/interview-prep/:name strips path traversal', async () => {
 });
 
 test('DELETE /api/interview-prep/:name removes the file', async () => {
-  const target = 'tobe-deleted-' + Date.now() + '.md';
+  const target = 'deep-tobe-deleted-' + Date.now() + '.md';
   writeFileSync(resolve(projectRoot, 'interview-prep', target), '# tmp\n');
   const r = await del('/api/interview-prep/' + target);
   assert.equal(r.status, 200);
   assert.equal(r.body.deleted, target);
   assert.ok(!existsSync(resolve(projectRoot, 'interview-prep', target)));
+});
+
+test('DELETE /api/interview-prep/:name refuses a non-deep file', async () => {
+  const r = await del('/api/interview-prep/stripe-general.md');
+  assert.equal(r.status, 400);
+  assert.ok(existsSync(resolve(projectRoot, 'interview-prep', 'stripe-general.md')));
 });
 
 test('POST /api/deep without run:true returns manual prompt unchanged', async () => {

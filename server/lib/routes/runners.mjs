@@ -15,10 +15,45 @@
  *   GET /api/output/pdfs         → list { name, size, mtime }[]
  *   GET /api/output/pdfs/:name   → download (attachment); `?inline=1` → inline preview (D-5)
  */
-import { existsSync, readdirSync, statSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { existsSync, readdirSync, statSync, readFileSync, writeFileSync, mkdirSync, unlink } from 'node:fs';
+import { randomBytes } from 'node:crypto';
 import { PATHS, path as projPath } from '../paths.mjs';
 import { runNodeScript, streamNodeScript } from '../runner.mjs';
 import { sanitizePathName } from '../security.mjs';
+import { sanitizeDetail } from '../parent-relay.mjs';
+
+/** True if `s` carries a C0 control char or DEL — spawn throws on NUL. */
+function hasControlChar(s) {
+  for (let i = 0; i < s.length; i += 1) {
+    const code = s.charCodeAt(i);
+    if (code < 0x20 || code === 0x7f) return true;
+  }
+  return false;
+}
+
+/**
+ * Spawn generate-pdf.mjs for an HTML file already rendered under output/.
+ * `--format` is passed only when the client asked for one, so the profile's
+ * page_format stays the default. Non-CV documents (reports, deep research,
+ * ad-hoc markdown) skip the parent's CV fact check — it compares numbers
+ * against cv.md and would block any report quoting a salary or a date. The
+ * temp input HTML is removed once the stream closes (done or disconnect).
+ */
+function streamGeneratePdf(res, { slug, html, format, skipFactCheck }) {
+  mkdirSync(PATHS.outputDir, { recursive: true });
+  const ts = new Date().toISOString().replace(/[^\dT]/g, '').slice(0, 15);
+  const rand = randomBytes(3).toString('hex');
+  // Unique per request: two same-second requests must not share an input.
+  const inputPath = projPath('output', `${slug}-input-${ts}-${rand}.html`);
+  let outputPath = projPath('output', `${slug}-${ts}.pdf`);
+  if (existsSync(outputPath)) outputPath = projPath('output', `${slug}-${ts}-${rand}.pdf`);
+  writeFileSync(inputPath, html);
+  res.on('close', () => unlink(inputPath, () => {}));
+  const args = [inputPath, outputPath];
+  if (format === 'letter' || format === 'a4') args.push(`--format=${format}`);
+  if (skipFactCheck) args.push('--skip-fact-check');
+  streamNodeScript(res, 'generate-pdf.mjs', args);
+}
 
 /**
  * Minimal markdown → HTML for PDF rendering. Mirrors what the SPA's
@@ -96,7 +131,8 @@ export function registerRunnerRoutes(app) {
   for (const def of BUFFERED) {
     app.post(def.route, async (_req, res) => {
       const result = await runNodeScript(def.script, [], { timeoutMs: 60_000 });
-      res.json(result);
+      // stderr of a crashed script carries absolute-path stack frames.
+      res.json({ ...result, stderr: result.stderr ? sanitizeDetail(result.stderr) : '' });
     });
   }
 
@@ -107,7 +143,11 @@ export function registerRunnerRoutes(app) {
   app.get('/api/stream/scan-parent', (req, res) => {
     const args = [];
     if (req.query.dryRun === '1') args.push('--dry-run');
-    if (req.query.company) args.push('--company', String(req.query.company));
+    if (req.query.company) {
+      const company = String(req.query.company);
+      if (hasControlChar(company)) return res.status(400).json({ error: 'invalid company' });
+      args.push('--company', company);
+    }
     streamNodeScript(res, 'scan.mjs', args);
   });
 
@@ -134,18 +174,13 @@ export function registerRunnerRoutes(app) {
       res.write(`event: done\ndata: ${JSON.stringify({ code: 2 })}\n\n`);
       return res.end();
     }
-    mkdirSync(PATHS.outputDir, { recursive: true });
     const md = readFileSync(PATHS.cv, 'utf8');
     // Use the H1 (first non-empty heading) as the rendered <title>; fall
     // back to "CV" so the PDF metadata is always populated.
     const firstHeading = (md.match(/^#\s+(.+)$/m) || [, 'CV'])[1].trim();
     const html = cvMarkdownToHtml(md, firstHeading);
-    const ts = new Date().toISOString().replace(/[^\dT]/g, '').slice(0, 15);
-    const inputPath = projPath('output', `cv-input-${ts}.html`);
-    const outputPath = projPath('output', `cv-${ts}.pdf`);
-    writeFileSync(inputPath, html);
-    const format = (req.query.format === 'letter') ? 'letter' : 'a4';
-    streamNodeScript(res, 'generate-pdf.mjs', [inputPath, outputPath, `--format=${format}`]);
+    // The CV keeps the parent's fact check — it is exactly what it guards.
+    streamGeneratePdf(res, { slug: 'cv', html, format: req.query.format, skipFactCheck: false });
   });
 
   // ─── List + download generated PDFs (output/*.pdf) ───
@@ -193,17 +228,16 @@ export function registerRunnerRoutes(app) {
       res.write(`event: done\ndata: ${JSON.stringify({ code: 2 })}\n\n`);
       return res.end();
     }
-    mkdirSync(PATHS.outputDir, { recursive: true });
-    const ts = new Date().toISOString().replace(/[^\dT]/g, '').slice(0, 15);
     // Sanitize slug for filename use: only word chars + hyphen. Cap the length
     // FIRST so the trailing-dash trim regex can't backtrack on a huge all-dash
     // input (polynomial ReDoS on an uncapped slug).
     const safeSlug = String(slug || 'doc').slice(0, 200).replace(/[^\w-]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'doc';
-    const inputPath = projPath('output', `${safeSlug}-input-${ts}.html`);
-    const outputPath = projPath('output', `${safeSlug}-${ts}.pdf`);
-    writeFileSync(inputPath, cvMarkdownToHtml(markdown, title || safeSlug));
-    const fmt = (format === 'letter') ? 'letter' : 'a4';
-    streamNodeScript(res, 'generate-pdf.mjs', [inputPath, outputPath, `--format=${fmt}`]);
+    streamGeneratePdf(res, {
+      slug: safeSlug,
+      html: cvMarkdownToHtml(markdown, title || safeSlug),
+      format,
+      skipFactCheck: true,
+    });
   }
 
   // GET /api/stream/pdf/report?slug=<slug> — renders reports/<slug>.md

@@ -28,14 +28,24 @@ import { resolve } from 'node:path';
 
 // ── Deterministic checks (pure — exported for tests) ────────────────
 
+// Global flags: every match on a line is examined (see secretHits).
 const SECRET_PATTERNS = [
-  /\bsk-ant-[A-Za-z0-9_-]{20,}/,        // Anthropic
-  /\bsk-[A-Za-z0-9]{20,}\b/,            // OpenAI-style
-  /\bAIza[0-9A-Za-z_-]{30,}/,           // Google / Gemini
-  /-----BEGIN (?:RSA |EC |OPENSSH )?PRIVATE KEY-----/,
-  /\bghp_[A-Za-z0-9]{30,}/,             // GitHub PAT
-  /\bxox[baprs]-[A-Za-z0-9-]{10,}/,     // Slack
+  /\bsk-ant-[A-Za-z0-9_-]{20,}/g,                          // Anthropic
+  /\bsk-(?:proj|or-v1|svcacct|admin)-[A-Za-z0-9_-]{20,}/g, // OpenAI project/service, OpenRouter
+  /\bsk-[A-Za-z0-9]{20,}\b/g,                             // OpenAI legacy
+  /\bxai-[A-Za-z0-9]{20,}/g,                               // xAI
+  /\bgsk_[A-Za-z0-9]{20,}/g,                               // Groq
+  /\bgithub_pat_[A-Za-z0-9_]{22,}/g,                       // GitHub fine-grained PAT
+  /\bgh[pousr]_[A-Za-z0-9]{30,}/g,                         // GitHub classic / OAuth / app tokens
+  /\bAIza[0-9A-Za-z_-]{30,}/g,                             // Google / Gemini
+  /-----BEGIN (?:RSA |EC |DSA |OPENSSH |ENCRYPTED )?PRIVATE KEY-----/g,
+  /\bxox[baprs]-[A-Za-z0-9-]{10,}/g,                       // Slack
 ];
+
+// A match that is itself a placeholder (`sk-or-v1-xxxxxxxx…`, `YOUR_KEY_HERE`,
+// `xai-EXAMPLE…`). Judged on the TOKEN, never the whole line: a real key on a
+// line that also says "example" or carries a `<tag>` is still a real key.
+const PLACEHOLDER_TOKEN = /YOUR_|_HERE|example|placeholder|dummy|redacted|x{8,}|\*{4,}|\.{3}|…/i;
 
 /** Files that must never be committed. */
 export function blockedPaths(stagedFiles) {
@@ -63,15 +73,24 @@ export function secretScanExempt(path) {
   );
 }
 
-/** High-confidence secret strings in the added lines of a diff. */
+/**
+ * High-confidence secret strings in the added lines of a diff. Returns one
+ * entry per offending line, with the token itself masked so the blocker
+ * message never prints the secret it caught.
+ */
 export function secretHits(diffText) {
   const hits = [];
   for (const line of String(diffText).split('\n')) {
     if (!line.startsWith('+') || line.startsWith('+++')) continue;
     const body = line.slice(1);
-    // `.env.example` placeholders use YOUR_..._HERE — never flag those.
-    if (/YOUR_[A-Z0-9_]+_HERE|<[A-Za-z-]+>|example|placeholder/i.test(body)) continue;
-    for (const re of SECRET_PATTERNS) if (re.test(body)) { hits.push(body.trim().slice(0, 80)); break; }
+    let found = '';
+    for (const re of SECRET_PATTERNS) {
+      for (const m of body.matchAll(re)) {
+        if (!PLACEHOLDER_TOKEN.test(m[0])) { found = m[0]; break; }
+      }
+      if (found) break;
+    }
+    if (found) hits.push(body.replace(found, found.slice(0, 7) + '…').trim().slice(0, 80));
   }
   return hits;
 }
@@ -117,6 +136,18 @@ export function deterministicFloor({ stagedFiles, secretDiffText, readFile }) {
 
 // ── CLI main (thin git/AI plumbing) ─────────────────────────────────
 
+/**
+ * `git diff --cached` listing of the files to check. R is included: a
+ * renamed file with an edit is new content too. -z keeps paths raw
+ * (no C-quoting of spaces / non-ASCII), so they can be read back.
+ */
+export const STAGED_LIST_ARGS = ['diff', '--cached', '--name-only', '--diff-filter=ACMR', '-z'];
+
+/** Split NUL-separated `git … -z` output into paths. */
+export function parseStagedList(out) {
+  return String(out).split('\0').filter(Boolean);
+}
+
 function git(args) {
   return execFileSync('git', args, { encoding: 'utf8', maxBuffer: 32 * 1024 * 1024 });
 }
@@ -156,8 +187,7 @@ function runAiLayer(diffText) {
 function main() {
   let stagedFiles = [];
   try {
-    stagedFiles = git(['diff', '--cached', '--name-only', '--diff-filter=ACM'])
-      .split('\n').map((s) => s.trim()).filter(Boolean);
+    stagedFiles = parseStagedList(git(STAGED_LIST_ARGS));
   } catch {
     console.log('ai-precommit-review: not a git repo / no staged changes — skipping');
     process.exit(0);

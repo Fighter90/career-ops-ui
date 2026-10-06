@@ -7,7 +7,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { legacyDictText } from './helpers/i18n-vm.mjs';
+import { loadAssembledDict, I18N_LANGS } from './helpers/i18n-vm.mjs';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
@@ -16,7 +16,6 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const R = (...p) => resolve(__dirname, '..', ...p);
 const AUTO = readFileSync(R('public', 'js', 'views', 'auto.js'), 'utf8');
 const EVAL = readFileSync(R('public', 'js', 'views', 'evaluate.js'), 'utf8');
-const DICT = legacyDictText();
 
 test('#13 auto: run button shows a busy state, restored in finally', () => {
   assert.match(AUTO, /runBtn\.classList\.add\('is-loading'\)/);
@@ -50,14 +49,17 @@ test('#20 evaluate: Evaluate button is spinner-wrapped (no double-submit)', () =
     'old plain onClick: run must be gone');
 });
 
-test('i18n: 3 new auto keys present with all 8 locales (+{n} preserved)', () => {
+test('i18n: 3 new auto keys present in every locale (+{n} preserved)', () => {
+  // Per shipped locale against the assembled dictionary — not a hand-kept
+  // 8-locale list or a `>= 8` placeholder count that 9 new locales outgrew.
+  const D = loadAssembledDict();
   for (const k of ['auto.running', 'auto.httpFail', 'auto.copyFail']) {
-    const line = DICT.split('\n').find((l) => l.includes(`'${k}'`));
-    assert.ok(line, `missing i18n key ${k}`);
-    for (const loc of ['en', 'es', "'pt-BR'", 'ko', 'ja', 'ru', "'zh-CN'", "'zh-TW'"]) {
-      assert.ok(line.includes(loc + ':'), `${k} missing locale ${loc}`);
+    assert.ok(D[k], `missing i18n key ${k}`);
+    for (const lang of I18N_LANGS) {
+      assert.ok(typeof D[k][lang] === 'string' && D[k][lang].length > 0, `${k} missing locale ${lang}`);
     }
   }
-  const httpLine = DICT.split('\n').find((l) => l.includes("'auto.httpFail'"));
-  assert.ok((httpLine.match(/\{n\}/g) || []).length >= 8, 'auto.httpFail must keep {n} in every locale');
+  for (const lang of I18N_LANGS) {
+    assert.ok(D['auto.httpFail'][lang].includes('{n}'), `auto.httpFail must keep {n} in ${lang}`);
+  }
 });
