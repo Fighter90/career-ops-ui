@@ -18,13 +18,16 @@ const STREAM_DEFAULT_MAX_MS = 30 * 60 * 1000; // 30 minutes
  * SIGTERM the child, then SIGKILL after KILL_GRACE_MS if it hasn't exited.
  * Returns the watchdog timer so callers can clear it on natural exit.
  */
-function killWithEscalation(child) {
+function killWithEscalation(child, graceMs = KILL_GRACE_MS) {
   try { child.kill('SIGTERM'); } catch {}
   return setTimeout(() => {
-    if (child.exitCode === null && !child.killed) {
+    // `child.killed` flips to true the moment SIGTERM is *delivered*, not when the
+    // child exits — testing it here made this escalation dead code, so a script
+    // that traps SIGTERM (Playwright installs a handler) hung the request forever.
+    if (child.exitCode === null && child.signalCode === null) {
       try { child.kill('SIGKILL'); } catch {}
     }
-  }, KILL_GRACE_MS);
+  }, graceMs);
 }
 
 /**
@@ -37,10 +40,19 @@ function killWithEscalation(child) {
  */
 export function runNodeScript(scriptName, args = [], opts = {}) {
   return new Promise((resolve) => {
-    const child = spawn(process.execPath, [scriptName, ...args], {
-      cwd: PROJECT_ROOT,
-      env: { ...process.env, ...(opts.env || {}) },
-    });
+    let child;
+    try {
+      child = spawn(process.execPath, [scriptName, ...args], {
+        cwd: PROJECT_ROOT,
+        env: { ...process.env, ...(opts.env || {}) },
+      });
+    } catch (err) {
+      // spawn throws synchronously for an arg it cannot pass (a NUL byte, an
+      // invalid type). Inside a Promise executor that rejected the promise, and
+      // from an async Express 4 handler an unhandled rejection exits the server.
+      resolve({ code: -1, stdout: '', stderr: String(err?.message || err) });
+      return;
+    }
     let stdout = '';
     let stderr = '';
     let timedOut = false;
@@ -51,7 +63,7 @@ export function runNodeScript(scriptName, args = [], opts = {}) {
     const timer = opts.timeoutMs
       ? setTimeout(() => {
           timedOut = true;
-          killWatchdog = killWithEscalation(child);
+          killWatchdog = killWithEscalation(child, opts.killGraceMs);
         }, opts.timeoutMs)
       : null;
 
@@ -92,10 +104,19 @@ export function streamNodeScript(res, scriptName, args = [], opts = {}) {
 
   send('start', { script: scriptName, args });
 
-  const child = spawn(process.execPath, [scriptName, ...args], {
-    cwd: PROJECT_ROOT,
-    env: { ...process.env },
-  });
+  let child;
+  try {
+    child = spawn(process.execPath, [scriptName, ...args], {
+      cwd: PROJECT_ROOT,
+      env: { ...process.env },
+    });
+  } catch (err) {
+    // See runNodeScript: a spawn that throws synchronously must end the stream,
+    // not escape the handler as an unhandled rejection.
+    send('error', { message: String(err?.message || err) });
+    res.end();
+    return;
+  }
 
   const handleChunk = (stream, chunk) => {
     const text = chunk.toString();

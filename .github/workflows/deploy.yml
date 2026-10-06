@@ -55,6 +55,9 @@ on:
       public_url:
         description: 'Public origin checked over HTTPS after the run (empty = secret PROD_URL)'
         default: ''
+      allowed_hosts:
+        description: 'Public host name(s) the reverse proxy forwards, comma separated (ALLOWED_HOSTS). Empty = the host of public_url / secret PROD_URL. The app refuses any other DNS name in the Host header.'
+        default: ''
 
 permissions:
   contents: read
@@ -211,10 +214,23 @@ jobs:
           SERVICE: ${{ inputs.service }}
           PORT: ${{ inputs.port }}
           HEAP_MB: ${{ inputs.heap_mb }}
+          ALLOWED_HOSTS_IN: ${{ inputs.allowed_hosts }}
+          PUBLIC_URL_IN: ${{ inputs.public_url || secrets.PROD_URL }}
         run: |
           [[ "$HEAP_MB" =~ ^[0-9]{1,5}$ ]] || { echo "::error::heap_mb must be a number"; exit 1; }
+          # Host allowlist for the app's request guard (server/lib/request-guard.mjs).
+          # The proxy forwards the public name in the Host header; without it listed
+          # the app answers 421 to every real visitor. Derived from the public URL
+          # unless given explicitly; validated to a plain host list before it goes
+          # anywhere near a systemd unit.
+          ALLOWED_HOSTS="$ALLOWED_HOSTS_IN"
+          if [ -z "$ALLOWED_HOSTS" ] && [ -n "$PUBLIC_URL_IN" ]; then
+            ALLOWED_HOSTS=$(printf '%s' "$PUBLIC_URL_IN" | sed -E 's#^[A-Za-z][A-Za-z0-9+.-]*://##; s#[/:?#].*$##')
+          fi
+          [[ -z "$ALLOWED_HOSTS" || "$ALLOWED_HOSTS" =~ ^[A-Za-z0-9.,*-]+$ ]] || { echo "::error::allowed_hosts must be host names separated by commas"; exit 1; }
+          [ -n "$ALLOWED_HOSTS" ] || echo "::warning::no allowed_hosts and no public_url/PROD_URL — the app will refuse every non-loopback Host name"
           # shellcheck disable=SC2029  # the inputs are meant to expand locally
-          ssh prod "APP_DIR='$APP_DIR' PARENT_REF='$PARENT_REF' UI_REF='$UI_REF' SERVICE='$SERVICE' PORT='$PORT' HEAP_MB='$HEAP_MB' bash -s" <<'REMOTE'
+          ssh prod "APP_DIR='$APP_DIR' PARENT_REF='$PARENT_REF' UI_REF='$UI_REF' SERVICE='$SERVICE' PORT='$PORT' HEAP_MB='$HEAP_MB' ALLOWED_HOSTS='$ALLOWED_HOSTS' bash -s" <<'REMOTE'
           set -euo pipefail
           UI_DIR="$APP_DIR/web-ui"
           SERVICE=${SERVICE:-career-ops-ui}
@@ -317,6 +333,18 @@ jobs:
               printf '%s\n' "$want" > "$dropin"
               systemctl daemon-reload
               echo "heap drop-in set: --max-old-space-size=$HEAP_MB"
+            fi
+          fi
+          # Request guard: which Host names the app accepts besides loopback and IP literals.
+          if [ -n "${ALLOWED_HOSTS:-}" ]; then
+            dropin="${SYSTEMD_DIR:-/etc/systemd/system}/$SERVICE.service.d/hosts.conf"
+            want="[Service]
+          Environment=ALLOWED_HOSTS=$ALLOWED_HOSTS"
+            if [ "$(cat "$dropin" 2>/dev/null)" != "$want" ]; then
+              install -d "$(dirname "$dropin")"
+              printf '%s\n' "$want" > "$dropin"
+              systemctl daemon-reload
+              echo "hosts drop-in set: ALLOWED_HOSTS=$ALLOWED_HOSTS"
             fi
           fi
           systemctl restart "$SERVICE"

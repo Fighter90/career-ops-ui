@@ -14,15 +14,20 @@ export const PUBLIC_DIR = resolve(WEB_UI_ROOT, 'public');
  *   2. ../  (when this repo is dropped in as career-ops/web-ui)
  *   3. cwd  (when launched from inside career-ops itself)
  *
- * The first option that contains a recognizable career-ops file (cv.md or
- * portals.yml) wins. If none match, default to ../ and let the user notice
- * via the Health page.
+ * An explicit CAREER_OPS_ROOT always wins. Otherwise the first of the other two
+ * options that contains a recognizable career-ops file (cv.md or portals.yml)
+ * wins; if none match, default to ../ and let the user notice via the Health page.
  */
 function resolveProjectRoot() {
-  const candidates = [];
+  // An explicit CAREER_OPS_ROOT is an instruction, not a hint: honouring it only
+  // when the directory already holds cv.md/portals.yml made an empty temp root
+  // (every CI-isolated test, and any fresh install) silently fall back to the
+  // REAL project at ../ on a developer machine. Tests then read real data and
+  // the real parent .env; CI, which has no parent beside it, hid the leak.
   if (process.env.CAREER_OPS_ROOT) {
-    candidates.push(resolve(process.cwd(), process.env.CAREER_OPS_ROOT));
+    return resolve(process.cwd(), process.env.CAREER_OPS_ROOT);
   }
+  const candidates = [];
   candidates.push(resolve(WEB_UI_ROOT, '..'));     // career-ops/web-ui case
   candidates.push(process.cwd());                  // launched from inside career-ops
 
