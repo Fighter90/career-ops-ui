@@ -36,9 +36,27 @@ export async function fetchAshby(apiUrl, opts = {}) {
 // Canada-only and is wrongly removed by the location_filter. Fold in each
 // secondary's region label, locality, and country (deduped, joined with " · ")
 // so the filter can match e.g. "Europe", "Berlin", "Germany".
+function containsWholeWord(text, word) {
+  const escaped = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return new RegExp(`(?<![\\p{L}\\p{N}])${escaped}(?![\\p{L}\\p{N}])`, 'iu').test(text);
+}
+
 function formatLocation(j) {
   const parts = [];
   if (typeof j.location === 'string' && j.location.trim()) parts.push(j.location.trim());
+  // Parent parity (v1.239.0): fold the PRIMARY address block too. `location` is
+  // often a subdivision ("England") while location_filter matches on the country
+  // ("United Kingdom") that only addressCountry carries; the country is skipped
+  // when `location` already names it ("London, United Kingdom").
+  const primaryPa = j.address && j.address.postalAddress;
+  if (primaryPa) {
+    for (const k of ['addressLocality', 'addressCountry']) {
+      const v = typeof primaryPa[k] === 'string' ? primaryPa[k].trim() : '';
+      if (!v) continue;
+      if (k === 'addressCountry' && parts.some((p) => containsWholeWord(p, v))) continue;
+      parts.push(v);
+    }
+  }
   if (Array.isArray(j.secondaryLocations)) {
     for (const s of j.secondaryLocations) {
       if (!s || typeof s !== 'object') continue;

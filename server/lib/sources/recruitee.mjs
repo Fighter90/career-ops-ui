@@ -89,7 +89,15 @@ function assembleLocation(j) {
   const city = j.city || '';
   const country = j.country || '';
   const remote = j.remote ? 'Remote' : '';
-  return j.location || [city, country, remote].filter(Boolean).join(', ');
+  // Parent parity (v1.239.0): the flat `location` gets the same country fold
+  // every locations[] entry gets above.
+  if (typeof j.location === 'string' && j.location.trim()) {
+    const loc = j.location.trim();
+    return typeof country === 'string' && country.trim() && !containsWholeWord(loc, country.trim())
+      ? `${loc}, ${country.trim()}`
+      : loc;
+  }
+  return [city, country, remote].filter(Boolean).join(', ');
 }
 
 /**

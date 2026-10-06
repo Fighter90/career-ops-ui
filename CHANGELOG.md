@@ -8,6 +8,38 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.240.0] — 2026-10-06
+
+**Parent parity — career-ops `main` @ `62905981` (VERSION 1.35.0, 177 upstream commits since `b39931e`). Six new sources — 103 → 109 (104 EN + 5 RU) — fixes mirrored into eight existing providers, and the checklist pipeline format, contributed by @bullitt186.**
+
+### Added
+
+- **Six new sources — 103 → 109 (104 EN + 5 RU), 98 → 104 EN adapters.**
+  - **ADP Workforce Now** (`workforcenow.adp.com` with `cid` + `ccId`) — `$skip` pagination by rows actually returned; a response with neither `jobRequisitions` nor `meta` throws instead of reading as an empty board; opt-in detail enrichment (`adpWorkforcenow.fetchDetails`, default 25, cap 100).
+  - **Gupy** (`employability-portal.gupy.io`) — board-wide keyword sweep, newest-first with an early stop on `since_days`; `workplaceType` is read as the singular pt-BR string so hybrid postings are not lost; confidential career pages are dropped.
+  - **JazzHR** (`*.applytojob.com`) — card parser with a bare-anchor fallback so a partial redesign still yields postings; posting links with zero parsed cards throw, a truly empty board returns `[]`.
+  - **Startup Jobs** (`startup.jobs/feeds/jobs`) — RSS, one request; a malformed, HTML or truncated body throws instead of returning `[]` (the parent's post-merge review fix, `08fe5d06`); CDATA and comments are masked before item matching.
+  - **Taleo** (`<tenant>.taleo.net`, `tre.taleo.net` refused) — shell GET then `searchjobs` POST; a shell with no portal id throws as a private board; columns matched by heading.
+  - **UKG Pro / UltiPro** (`recruiting[N].ultipro.{com,ca}`) — `Top=50` + `Skip`, `totalCount` never trusted as a stop condition, page cap 100 (clamped at 1500), opt-in detail pages parsed with a string-aware brace walk.
+
+### Fixed
+
+- **Pipeline in the parent's checklist format** — upstream career-ops writes `data/pipeline.md` as `## Pending` / `## Processed` sections of `- [ ] url | …` rows, which the UI read as **0 pending** and wrote to by appending a fence at the end of the file, where the parent never looks. `parsePipeline`, `addPipelineUrl` and `removePipelineUrl` now read and write that shape (dedup against processed rows too; compensation as a labeled `note: comp …` segment); the fenced format is unchanged. Contributed by **@bullitt186** (#380).
+- **Country folded into location** — Ashby (primary `address.postalAddress`), Breezy (`country.name`) and Recruitee (flat `location`) append the country unless the name already carries it as a whole word, so a UK-primary, US-secondary remote role is no longer dropped by a location filter.
+- **MokaHR** — the `hire-r1.mokahr.com` regional host is accepted (allowlist is exactly `app.mokahr.com` + `hire-r1.mokahr.com`), API POST and job links use the board's own host, and an in-band `success:false` now throws instead of reading as an empty board.
+- **Avature** — `article--jobs` cards parse (title from the header anchor, location from the `icon-address` span).
+- **SAP SuccessFactors** — a `/go/<Category>/<id>[/<offset>]/` saved-search URL resolves to the tenant root; it used to hit `…/tile-search-results/`, which answers 200 with zero tiles.
+- **Deutsche Bahn** — db.jobs blanks any results page that holds a posting it cannot render; the walk now sorts by `pubExternalDate_tdt` with 1000 per page (5 pages max), stops on the raw hit-anchor count, and throws on a missing results header or unparsed posting links instead of returning a short board.
+- **HigherEdJobs** — an Incapsula challenge answered with HTTP 200 used to parse as zero items and read as an empty board; it now throws.
+- **A test read the real parent project on a developer machine** — `tests/reports-list-cache.test.mjs` set `CAREER_OPS_ROOT` to a temp directory with no `cv.md`/`portals.yml`, which `paths.mjs` ignores, so locally it counted the parent's reports (6 instead of 3) while CI, with no parent beside it, passed.
+
+### Notes
+
+- Tests **3782 → 4056**. New suites: `sources-adp-workforcenow`, `sources-gupy`, `sources-jazzhr`, `sources-startup-jobs`, `sources-taleo`, `sources-ultipro`, `sources-location-country-fold`, `sources-deutschebahn-blanked-page`, `sources-higheredjobs-challenge-page`, plus `parsers-pipeline-checklist` from #380.
+- **Parent:** the fork was brought to upstream `main` (144 → 0 commits behind) with the four ADR-0002 divergences verified intact; upstream's revert of the Cyrillic `LOCATIONISH_RE` did not come through.
+- **Already shipped in v1.239.0, not repeated:** AppliTrack, NEOGOV, Red Rover, SchoolSpring, OCC Mundial, Greenhouse embed boards, Workday `myworkdaysite.com`.
+- **Not ported**, with reasons: trusted-proxy egress (`CAREER_OPS_TRUST_PROXY_EGRESS`, `_http.mjs` / `_ip-guard.mjs` / `_dns-cache.mjs`) — web-ui scans through its own `http-json.mjs` transport; the `scan-history.tsv` column registry and language-aware requisition dedup — web-ui reads positions 1–12, which did not move, and dedups by URL; SmartRecruiters `requisitionId` / `language` — no consumer in web-ui's job shape; **Gem** `isoCountry` → country name — needs the parent's 249-entry alpha-3 table, deferred; CLI-only changes (modes, updater, doctor, PDF/ATS payload, tracker scripts, Go dashboard, Singapore mode).
+
 ## [1.239.4] — 2026-09-29
 
 **Patch from the v1.239.3 live regression.**

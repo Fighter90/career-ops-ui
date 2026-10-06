@@ -2,6 +2,37 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.240.0] — 2026-10-06
+
+**Parent-Parität — career-ops `main` @ `62905981` (VERSION 1.35.0, 177 Upstream-Commits seit `b39931e`). Sechs neue Quellen (103 → 109; 104 EN + 5 RU), in acht bestehende Provider gespiegelte Fixes und das Checklisten-Pipeline-Format, beigesteuert von @bullitt186.**
+
+### Hinzugefügt
+
+- **Sechs neue Quellen — 103 → 109 (104 EN + 5 RU), 98 → 104 EN-Adapter.**
+  - **ADP Workforce Now** (`workforcenow.adp.com` mit `cid` + `ccId`) — `$skip`-Paginierung nach tatsächlich gelieferten Zeilen; eine Antwort ohne `jobRequisitions` und ohne `meta` wirft einen Fehler, statt als leeres Board durchzugehen; Detailanreicherung als Opt-in (`adpWorkforcenow.fetchDetails`, Standard 25, Obergrenze 100).
+  - **Gupy** (`employability-portal.gupy.io`) — boardweiter Stichwort-Durchlauf, neueste zuerst mit vorzeitigem Abbruch bei `since_days`; `workplaceType` wird als der singuläre pt-BR-String gelesen, sodass Hybrid-Stellen nicht verloren gehen; vertrauliche Karriereseiten werden verworfen.
+  - **JazzHR** (`*.applytojob.com`) — Karten-Parser mit Fallback auf nackte Anker, sodass ein teilweises Redesign trotzdem Stellen liefert; Stellenlinks ohne eine einzige geparste Karte werfen einen Fehler, ein wirklich leeres Board liefert `[]`.
+  - **Startup Jobs** (`startup.jobs/feeds/jobs`) — RSS, eine Anfrage; ein fehlerhafter, HTML- oder abgeschnittener Body wirft einen Fehler, statt `[]` zu liefern (der Review-Fix des Elternprojekts nach dem Merge, `08fe5d06`); CDATA und Kommentare werden vor dem Item-Abgleich maskiert.
+  - **Taleo** (`<tenant>.taleo.net`, `tre.taleo.net` wird abgelehnt) — Shell-GET, dann `searchjobs`-POST; eine Shell ohne Portal-ID wirft einen Fehler als privates Board; Spalten werden anhand der Überschrift zugeordnet.
+  - **UKG Pro / UltiPro** (`recruiting[N].ultipro.{com,ca}`) — `Top=50` + `Skip`, `totalCount` wird nie als Abbruchbedingung herangezogen, Seitenobergrenze 100 (bei 1500 gekappt), Detailseiten als Opt-in, geparst mit einem stringbewussten Klammer-Durchlauf.
+
+### Behoben
+
+- **Pipeline im Checklisten-Format des Elternprojekts** — das Upstream-career-ops schreibt `data/pipeline.md` als Abschnitte `## Pending` / `## Processed` mit Zeilen `- [ ] url | …`; die UI las das als **0 offen** und schrieb neue URLs, indem sie am Dateiende einen Fence anhängte, wo das Elternprojekt nie nachsieht. `parsePipeline`, `addPipelineUrl` und `removePipelineUrl` lesen und schreiben jetzt diese Form (Dedup auch gegen verarbeitete Zeilen; Vergütung als beschriftetes Segment `note: comp …`); das Fence-Format bleibt unverändert. Beigesteuert von **@bullitt186** (#380).
+- **Land in den Standort übernommen** — Ashby (primär `address.postalAddress`), Breezy (`country.name`) und Recruitee (flaches `location`) hängen das Land an, sofern der Name es nicht schon als ganzes Wort enthält, sodass eine Remote-Stelle mit primärem UK- und sekundärem US-Standort nicht mehr von einem Standortfilter verworfen wird.
+- **MokaHR** — der regionale Host `hire-r1.mokahr.com` wird akzeptiert (die Allowlist besteht genau aus `app.mokahr.com` + `hire-r1.mokahr.com`), API-POST und Stellenlinks verwenden den eigenen Host des Boards, und ein Inband-`success:false` wirft jetzt einen Fehler, statt als leeres Board zu gelten.
+- **Avature** — `article--jobs`-Karten werden geparst (Titel aus dem Header-Anker, Standort aus dem `icon-address`-Span).
+- **SAP SuccessFactors** — eine gespeicherte Such-URL `/go/<Category>/<id>[/<offset>]/` wird zur Mandanten-Wurzel aufgelöst; sie traf früher `…/tile-search-results/`, das mit 200 und null Kacheln antwortet.
+- **Deutsche Bahn** — db.jobs leert jede Ergebnisseite, die eine nicht darstellbare Stelle enthält; der Durchlauf sortiert jetzt nach `pubExternalDate_tdt` mit 1000 pro Seite (höchstens 5 Seiten), bricht anhand der rohen Zahl der Treffer-Anker ab und wirft einen Fehler bei fehlendem Ergebniskopf oder ungeparsten Stellenlinks, statt ein zu kurzes Board zu liefern.
+- **HigherEdJobs** — eine mit HTTP 200 beantwortete Incapsula-Challenge wurde als null Einträge geparst und als leeres Board gelesen; jetzt wirft sie einen Fehler.
+- **Ein Test las auf einem Entwicklerrechner das echte Elternprojekt** — `tests/reports-list-cache.test.mjs` setzte `CAREER_OPS_ROOT` auf ein temporäres Verzeichnis ohne `cv.md`/`portals.yml`, was `paths.mjs` ignoriert; lokal zählte er deshalb die Berichte des Elternprojekts (6 statt 3), während CI ohne Elternprojekt daneben grün durchlief.
+
+### Anmerkungen
+
+- Tests **3782 → 4056**. Neue Suiten: `sources-adp-workforcenow`, `sources-gupy`, `sources-jazzhr`, `sources-startup-jobs`, `sources-taleo`, `sources-ultipro`, `sources-location-country-fold`, `sources-deutschebahn-blanked-page`, `sources-higheredjobs-challenge-page`, dazu `parsers-pipeline-checklist` aus #380.
+- **Elternprojekt:** Der Fork wurde auf Upstream-`main` gebracht (144 → 0 Commits dahinter); die vier ADR-0002-Abweichungen sind als unversehrt verifiziert; Upstreams Revert des kyrillischen `LOCATIONISH_RE` wurde **nicht** übernommen.
+- **Bereits in v1.239.0 ausgeliefert, nicht wiederholt:** AppliTrack, NEOGOV, Red Rover, SchoolSpring, OCC Mundial, eingebettete Greenhouse-Boards, Workday `myworkdaysite.com`.
+
 ## [1.239.4] — 2026-09-29
 
 **Patch aus der Live-Regression von v1.239.3.**

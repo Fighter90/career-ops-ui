@@ -7,19 +7,19 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-3782%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-4056%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.239.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.239.4)
+[![release](https://img.shields.io/badge/release-v1.240.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.240.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.239.4** — **补丁:** 较长的 AI 评估不再在评分摘要之前被截断(韩语和中文报告触及 8192 token 上限);被截断的回答现在会被明确标出。**103 个来源 · 3782 个测试 · 116 个浏览器测试。**
+> **🆕 最新版本 — v1.240.0** — **与 career-ops 1.35.0 的父项目对齐：六个新来源（ADP Workforce Now、Gupy、JazzHR、Startup Jobs、Taleo、UKG Pro → 109）、八个现有服务商的镜像修复，以及父项目的清单式 `pipeline.md` 格式** —— 由 **@bullitt186** 贡献：UI 过去把这样的 Pipeline 读成 0 条待处理，并把新 URL 追加到父项目从不查看的位置；现在它会读写 `- [ ]` 行。Ashby、Breezy 和 Recruitee 把国家并入地点，使过滤器不再丢弃以英国为主的远程职位；以 HTTP 200 返回的质询页面现在会明确报错，而不是被读作空职位板。**4056 个测试。**
 >
-> **上一版本 — v1.237.1** — **针对外部 QA 复查的补丁。** Jobstreet 的修复已从外部得到确认：在 AU/NZ/HK/MY 主机上 `/id/job/<id>` 会返回一个干净的 404，而 `/job/<id>` 能到达一个真实的受保护路由——丢失的链接确实存在。v1.237.0 新增内容中的两处缺陷：**书籍链接**——文案被本地化了，目标却没有，于是俄语文案指向了英文版——`data-i18n-href` 应用器现在会把 `ru` 指向俄语版的书；以及 **SEEK 正在迁移主机**（`www.seek.com.au` → `au.seek.com`），因此在 API 路径开始向我们采用 `redirect:'error'` 的传输层发出重定向之前，`au.seek.com` 与 `nz.seek.com` 已被加入白名单。来源数量维持 **94** 个不变。**3210 项测试 · 浏览器 116 项。**
+> **上一版本 — v1.239.4** — **补丁:** 较长的 AI 评估不再在评分摘要之前被截断(韩语和中文报告触及 8192 token 上限);被截断的回答现在会被明确标出。**103 个来源 · 3782 个测试 · 116 个浏览器测试。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -650,7 +650,7 @@ career-ops **常开** 时最佳 —— 在你睡觉时扫描,可从任何浏览�
 
 | 文件 | 是什么 | 何时读 |
 |---|---|---|
-| **[`CONTEXT.md`](CONTEXT.md)** | 领域词典：每个概念对应一个被采纳的名称，被否决的变体标为*不要使用*。 | **第一个读。** 它解决了这个仓库真正付出代价的那些混淆——`source` 与 `adapter`（103 对 98，以及为什么两者都对）、`mirror` 与 `relay`、`telegram` 与 `telegram-channel`。 |
+| **[`CONTEXT.md`](CONTEXT.md)** | 领域词典：每个概念对应一个被采纳的名称，被否决的变体标为*不要使用*。 | **第一个读。** 它解决了这个仓库真正付出代价的那些混淆——`source` 与 `adapter`（109 对 104，以及为什么两者都对）、`mirror` 与 `relay`、`telegram` 与 `telegram-channel`。 |
 | **[`PROGRESS.md`](PROGRESS.md)** | 工作状态：已完成的、下一步、已知问题，以及**被放弃的方案**。 | 每次会话开始时。Git 显示改动了什么；这份文件说明工作现在处于什么阶段，以及哪些方案已经试过又被否决。 |
 | **[`docs/adr/`](docs/adr/)** | 编号的决策记录——背景、决策、后果，以及什么情况会让人重新考虑它。 | 在修改某条记录所涉及的内容之前。做主的是记录，不是当前这个发布版本。 |
 | **[`CLAUDE.md`](CLAUDE.md)** | 一屏之内的索引，指向上面三份文件。 | 由智能体自动读取。它刻意*不是*知识库——太长的文件只会被草草翻过然后被无视。 |
@@ -772,6 +772,7 @@ MIT。详见 [LICENSE](LICENSE)。
   <a href="https://github.com/Alien10140" title="Alien10140"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/4649783%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="Alien10140"/></a>
   <a href="https://github.com/vignyl" title="vignyl"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/26774609%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="vignyl"/></a>
   <a href="https://github.com/bracketouverte" title="bracketouverte"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/5484265%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="bracketouverte"/></a>
+  <a href="https://github.com/bullitt186" title="bullitt186"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/24450990%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="bullitt186"/></a>
 </p>
 
 **[全部贡献者 →](https://github.com/Fighter90/career-ops-ui/graphs/contributors)**

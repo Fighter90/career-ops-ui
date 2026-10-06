@@ -7,19 +7,19 @@
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
-[![tests](https://img.shields.io/badge/tests-3782%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-4056%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#الاختبارات)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.239.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.239.4)
+[![release](https://img.shields.io/badge/release-v1.240.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.240.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 أحدث إصدار — v1.239.4** — **تصحيح:** لم تعد تقييمات الذكاء الاصطناعي الطويلة تُقطع قبل ملخص الدرجة (كانت التقارير الكورية والصينية تبلغ حد 8192 رمزًا)؛ وصارت الإجابة المقطوعة تُسمّى كذلك. **103 مصادر · 3782 اختبارًا · 116 للمتصفح.**
+> **🆕 أحدث إصدار — v1.240.0** — **تكافؤ مع المشروع الأب career-ops 1.35.0: ستة مصادر جديدة (ADP Workforce Now وGupy وJazzHR وStartup Jobs وTaleo وUKG Pro، ليبلغ العدد 109)، وإصلاحات منقولة إلى ثمانية مزوّدين قائمين، وصيغة قائمة المهام لملف `pipeline.md` في المشروع الأب** — بمساهمة **@bullitt186**: كانت الواجهة تقرأ مثل هذا الخط على أنه 0 معلّقة وتُلحق الروابط الجديدة حيث لا ينظر المشروع الأب أبدًا؛ وصارت الآن تقرأ صفوف `- [ ]` وتكتبها. وتدمج Ashby وBreezy وRecruitee البلد في الموقع فلا يُسقط المرشّح وظائف المملكة المتحدة عن بُعد، وصفحة تحدٍّ تُقدَّم برمز HTTP 200 تُلقي الآن خطأً صريحًا بدل أن تُقرأ لوحةً فارغة. **4056 اختبارًا.**
 >
-> **السابق — v1.237.1** — **تصحيحٌ بعد جولة فحص جودة خارجيّة.** تأكَّد إصلاح Jobstreet من الخارج: يُعيد `/id/job/<id>` رمز 404 نظيفًا على مضيفات AU/NZ/HK/MY، ويصل `/job/<id>` إلى مسارٍ حقيقيٍّ محميّ — وكانت الروابط المفقودة حقيقيّةً. وعلّتان فيما أضافه v1.237.0: كانت مِسمَّاة **رابط الكتاب** مُترجَمةً دون وِجهته، فقادت المِسمَّاة الروسيّة إلى الطبعة الإنجليزيّة — ويُوجِّه مُطبِّق `data-i18n-href` الآن `ru` إلى الكتاب الروسيّ؛ و**تُهاجر SEEK مضيفاتها** (`www.seek.com.au` → `au.seek.com`)، فأُدرِج `au.seek.com` و`nz.seek.com` في قائمة السماح قبل أن يبدأ مسار الواجهة بإعادة التوجيه إلى نقلنا `redirect:'error'`. وتبقى الأعداد كما هي عند **94** مصدرًا. **3210 اختبارًا · 116 في المتصفّح.**
+> **السابق — v1.239.4** — **تصحيح:** لم تعد تقييمات الذكاء الاصطناعي الطويلة تُقطع قبل ملخص الدرجة (كانت التقارير الكورية والصينية تبلغ حد 8192 رمزًا)؛ وصارت الإجابة المقطوعة تُسمّى كذلك. **103 مصادر · 3782 اختبارًا · 116 للمتصفح.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -213,7 +213,7 @@ npm run test:coverage       # مثل npm test + تغطية V8
 
 | الملف | ما هو | متى تقرؤه |
 |---|---|---|
-| **[`CONTEXT.md`](CONTEXT.md)** | قاموس النطاق: اسمٌ واحد مقبول لكل مفهوم، مع تعليم البدائل المرفوضة بـ*لا تُستخدم*. | **أولاً.** فهو يحسم الالتباسات التي يدفع ثمنها هذا المستودع فعلياً — `source` مقابل `adapter` (103 مقابل 98، ولماذا كلاهما صحيح)، و`mirror` مقابل `relay`، و`telegram` مقابل `telegram-channel`. |
+| **[`CONTEXT.md`](CONTEXT.md)** | قاموس النطاق: اسمٌ واحد مقبول لكل مفهوم، مع تعليم البدائل المرفوضة بـ*لا تُستخدم*. | **أولاً.** فهو يحسم الالتباسات التي يدفع ثمنها هذا المستودع فعلياً — `source` مقابل `adapter` (109 مقابل 104، ولماذا كلاهما صحيح)، و`mirror` مقابل `relay`، و`telegram` مقابل `telegram-channel`. |
 | **[`PROGRESS.md`](PROGRESS.md)** | حالة العمل: ما أُنجز، والخطوة التالية، والمشكلات المعروفة، و**المقاربات المهجورة**. | في بداية أي جلسة. يُظهر Git ما تغيّر؛ أما هذا الملف فيقول أين وصل العمل وما جُرِّب بالفعل ورُفض. |
 | **[`docs/adr/`](docs/adr/)** | سجلّات قرارات مرقّمة — السياق، والقرار، والعواقب، وما الذي قد يدفعنا لإعادة النظر. | قبل تغيير أي شيء يغطّيه سجلّ. السجلّ هو من يقرّر، لا الإصدار الحالي. |
 | **[`CLAUDE.md`](CLAUDE.md)** | فهرس بشاشة واحدة يشير إلى الملفات الثلاثة أعلاه. | تلقائياً، بواسطة الوكيل. وهو عمداً *ليس* قاعدة معرفة — فالملف الطويل يُتصفَّح سريعاً ثم يُهمَل. |
@@ -265,6 +265,7 @@ MIT. التفاصيل: [LICENSE](LICENSE).
   <a href="https://github.com/Alien10140" title="Alien10140"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/4649783%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="Alien10140"/></a>
   <a href="https://github.com/vignyl" title="vignyl"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/26774609%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="vignyl"/></a>
   <a href="https://github.com/bracketouverte" title="bracketouverte"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/5484265%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="bracketouverte"/></a>
+  <a href="https://github.com/bullitt186" title="bullitt186"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/24450990%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="bullitt186"/></a>
 </p>
 
 **[كل المساهمين ←](https://github.com/Fighter90/career-ops-ui/graphs/contributors)**

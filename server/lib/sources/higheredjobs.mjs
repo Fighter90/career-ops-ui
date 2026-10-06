@@ -127,6 +127,19 @@ export function parseHigherEdJobsFeed(xml, defaultCompany = 'HigherEdJobs') {
   return jobs;
 }
 
+// The RSS endpoint sits behind an Incapsula bot wall on some networks, and the
+// wall answers 200 with a small HTML challenge page. Parsed as a feed that is
+// zero <item>s, so the board read as "0 jobs" with no hint nothing was fetched.
+// A feed with no items is still a valid, empty board; only a body that is not a
+// feed at all is an error. Solving the challenge is out of scope.
+function assertRssFeed(text) {
+  if (typeof text === 'string' && /<(?:rss|channel)\b/i.test(text)) return;
+  if (typeof text === 'string' && /<html\b/i.test(text)) {
+    throw new Error('higheredjobs: RSS endpoint answered a challenge page, not a feed');
+  }
+  throw new Error('higheredjobs: RSS endpoint answered no feed');
+}
+
 /**
  * Fetch + parse the feed. `feedUrl` comes from the adapter's buildEndpoint
  * (fixed public feed, catID-parameterized); host-pinned before the request.
@@ -135,6 +148,7 @@ export async function fetchHigherEdJobs(feedUrl, opts = {}) {
   const { fetchImpl = fetch, signal, company = {} } = opts;
   assertHejUrl(feedUrl);
   const xml = await fetchText(fetchImpl, feedUrl, { signal, redirect: 'error', headers: { accept: 'application/rss+xml, application/xml, text/xml' } });
+  assertRssFeed(xml);
   const fallback = (company && typeof company.name === 'string' && company.name.trim()) ? company.name.trim() : 'HigherEdJobs';
   return parseHigherEdJobsFeed(xml, fallback);
 }

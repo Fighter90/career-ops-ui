@@ -2,6 +2,38 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.240.0] — 2026-10-06
+
+**Üst proje eşleşmesi — career-ops `main` @ `62905981` (VERSION 1.35.0, `b39931e`'den bu yana 177 üst proje commit'i). Altı yeni kaynak — 103 → 109 (104 EN + 5 RU) —, mevcut sekiz sağlayıcıya yansıtılan düzeltmeler ve **@bullitt186** katkısı olan checklist pipeline biçimi.**
+
+### Eklendi
+
+- **Altı yeni kaynak — 103 → 109 (104 EN + 5 RU), 98 → 104 EN bağdaştırıcı.**
+  - **ADP Workforce Now** (`cid` + `ccId` ile `workforcenow.adp.com`) — gerçekten dönen satır sayısına göre `$skip` sayfalaması; ne `jobRequisitions` ne de `meta` içeren bir yanıt boş pano gibi okunmak yerine hata fırlatır; isteğe bağlı ayrıntı zenginleştirme (`adpWorkforcenow.fetchDetails`, varsayılan 25, üst sınır 100).
+  - **Gupy** (`employability-portal.gupy.io`) — panoyu kapsayan anahtar kelime taraması, en yeni önce ve `since_days` üzerinde erken durma; `workplaceType` tekil pt-BR dizesi olarak okunur, böylece hibrit ilanlar kaybolmaz; gizli kariyer sayfaları dışarıda bırakılır.
+  - **JazzHR** (`*.applytojob.com`) — kısmi bir yeniden tasarım yine de ilan verebilsin diye çıplak bağlantı yedekli kart ayrıştırıcı; hiç kart ayrıştırılamayan ilan bağlantıları hata fırlatır, gerçekten boş bir pano `[]` döndürür.
+  - **Startup Jobs** (`startup.jobs/feeds/jobs`) — RSS, tek istek; hatalı biçimli, HTML ya da kesik bir gövde `[]` döndürmek yerine hata fırlatır (üst projenin birleştirme sonrası inceleme düzeltmesi, `08fe5d06`); öğe eşlemesinden önce CDATA ve yorumlar maskelenir.
+  - **Taleo** (`<tenant>.taleo.net`, `tre.taleo.net` reddedilir) — kabuk GET'i, ardından `searchjobs` POST'u; portal kimliği olmayan bir kabuk özel pano olarak hata fırlatır; sütunlar başlığa göre eşlenir.
+  - **UKG Pro / UltiPro** (`recruiting[N].ultipro.{com,ca}`) — `Top=50` + `Skip`, `totalCount` asla durma koşulu olarak güvenilmez, sayfa üst sınırı 100 (1500'e sabitlenir), isteğe bağlı ayrıntı sayfaları dizeyi tanıyan bir süslü parantez taramasıyla ayrıştırılır.
+
+### Düzeltildi
+
+- **Üst projenin checklist biçiminde pipeline** — üst career-ops `data/pipeline.md` dosyasını `- [ ] url | …` satırlarından oluşan `## Pending` / `## Processed` bölümleri olarak yazar; UI bunu **0 bekleyen** olarak okuyordu ve yazarken dosyanın sonuna, üst projenin hiç bakmadığı yere bir kod bloğu ekliyordu. `parsePipeline`, `addPipelineUrl` ve `removePipelineUrl` artık bu biçimi okuyor ve yazıyor (işlenmiş satırlara karşı da tekilleştirme; ücret bilgisi etiketli bir `note: comp …` parçası olarak); kod bloğu içeren biçim değişmedi. **@bullitt186** katkısı (#380).
+- **Ülke konuma katıldı** — Ashby (birincil `address.postalAddress`), Breezy (`country.name`) ve Recruitee (düz `location`), ad ülkeyi zaten tam sözcük olarak taşımıyorsa ülkeyi ekler; böylece Birleşik Krallık birincil, ABD ikincil bir uzaktan rol artık konum filtresi tarafından dışarıda bırakılmaz.
+- **MokaHR** — `hire-r1.mokahr.com` bölgesel ana bilgisayarı kabul edilir (izin listesi tam olarak `app.mokahr.com` + `hire-r1.mokahr.com`), API POST'u ve ilan bağlantıları panonun kendi ana bilgisayarını kullanır ve bant içi `success:false` artık boş pano gibi okunmak yerine hata fırlatır.
+- **Avature** — `article--jobs` kartları ayrıştırılır (başlık üstbilgi bağlantısından, konum `icon-address` span'inden).
+- **SAP SuccessFactors** — `/go/<Category>/<id>[/<offset>]/` biçimli kayıtlı arama URL'si kiracı köküne çözülür; eskiden sıfır kutucukla 200 yanıtı veren `…/tile-search-results/` adresine gidiyordu.
+- **Deutsche Bahn** — db.jobs, işleyemediği bir ilan içeren her sonuç sayfasını boşaltıyor; tarama artık `pubExternalDate_tdt` ile sıralıyor, sayfa başına 1000 (en fazla 5 sayfa) alıyor, ham isabet bağlantısı sayısında duruyor ve eksik sonuç başlığında ya da ayrıştırılamayan ilan bağlantılarında kısa bir pano döndürmek yerine hata fırlatıyor.
+- **HigherEdJobs** — HTTP 200 ile yanıtlanan bir Incapsula doğrulama sayfası sıfır öğe olarak ayrıştırılıp boş pano gibi okunuyordu; artık hata fırlatıyor.
+- **Bir test, geliştirici makinesinde gerçek üst projeyi okuyordu** — `tests/reports-list-cache.test.mjs`, `CAREER_OPS_ROOT` değerini `cv.md`/`portals.yml` içermeyen geçici bir dizine ayarlıyordu; `paths.mjs` bunu yok sayar, bu yüzden yerelde üst projenin raporlarını sayıyordu (3 yerine 6), yanında üst proje olmayan CI ise geçiyordu.
+
+### Notlar
+
+- Testler **3782 → 4056**. Yeni paketler: `sources-adp-workforcenow`, `sources-gupy`, `sources-jazzhr`, `sources-startup-jobs`, `sources-taleo`, `sources-ultipro`, `sources-location-country-fold`, `sources-deutschebahn-blanked-page`, `sources-higheredjobs-challenge-page`, ayrıca #380'den `parsers-pipeline-checklist`.
+- **Üst proje:** fork, upstream `main`'e getirildi (144 → 0 commit geride) ve dört ADR-0002 sapmasının sağlam kaldığı doğrulandı; üst projenin Kiril `LOCATIONISH_RE` geri alması buraya gelmedi.
+- **v1.239.0'da zaten yayımlandı, tekrarlanmadı:** AppliTrack, NEOGOV, Red Rover, SchoolSpring, OCC Mundial, Greenhouse gömülü panoları, Workday `myworkdaysite.com`.
+- **Taşınmadı**, gerekçeleriyle: güvenilir vekil çıkışı (`CAREER_OPS_TRUST_PROXY_EGRESS`, `_http.mjs` / `_ip-guard.mjs` / `_dns-cache.mjs`) — web-ui taramaları kendi `http-json.mjs` taşıma katmanı üzerinden yapar; `scan-history.tsv` sütun kaydı ve dil duyarlı requisition tekilleştirmesi — web-ui 1–12. konumları okur, bunlar kaymadı ve URL'ye göre tekilleştirir; SmartRecruiters `requisitionId` / `language` — web-ui'nin ilan şeklinde tüketicisi yok; **Gem** `isoCountry` → ülke adı — üst projenin 249 girişlik alpha-3 tablosunu gerektirir, ertelendi; yalnızca CLI'ye ait değişiklikler (modlar, güncelleyici, doctor, PDF/ATS yükü, takip betikleri, Go panosu, Singapur modu).
+
 ## [1.239.4] — 2026-09-29
 
 **v1.239.3 canlı regresyonundan çıkan yama.**

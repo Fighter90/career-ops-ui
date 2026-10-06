@@ -9,19 +9,19 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-3782%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-4056%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.239.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.239.4)
+[![release](https://img.shields.io/badge/release-v1.240.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.240.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Latest release — v1.239.4** — **Patch:** long AI evaluations are no longer cut off before the score summary (Korean and Chinese reports hit the 8192-token limit); a cut-off answer is now named as such. **103 sources · 3782 tests · 116 browser.**
+> **🆕 Latest release — v1.240.0** — **Parent parity with career-ops 1.35.0: six new sources (ADP Workforce Now, Gupy, JazzHR, Startup Jobs, Taleo, UKG Pro → 109), fixes mirrored into eight existing providers, and the parent's checklist `pipeline.md` format** — contributed by **@bullitt186**: the UI read such a pipeline as 0 pending and appended new URLs where the parent never looks; it now reads and writes `- [ ]` rows. Ashby, Breezy and Recruitee fold the country into the location so a filter stops dropping UK-primary remote roles, and a challenge page served as HTTP 200 fails loudly instead of reading as an empty board. **4056 tests.**
 >
-> **Previous — v1.237.1** — **Patch from an external QA pass.** The Jobstreet fix was confirmed from outside: `/id/job/<id>` returns a clean 404 on the AU/NZ/HK/MY hosts and `/job/<id>` reaches a real guarded route — the lost links were real. Two defects in what v1.237.0 added: the **book link** localized its label but not its target, so the Russian label led to the English edition — a `data-i18n-href` applier now sends `ru` to the Russian book; and **SEEK is migrating hosts** (`www.seek.com.au` → `au.seek.com`), so `au.seek.com` and `nz.seek.com` are allowlisted before the API path starts redirecting into our `redirect:'error'` transport. Counts unchanged at **94** sources. **3210 tests · 116 browser.**
+> **Previous — v1.239.4** — **Patch:** long AI evaluations are no longer cut off before the score summary (Korean and Chinese reports hit the 8192-token limit); a cut-off answer is now named as such. **103 sources · 3782 tests · 116 browser.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -706,7 +706,7 @@ re-deriving, re-deciding and re-breaking the same things.
 
 | File | What it is | Read it when |
 |---|---|---|
-| **[`CONTEXT.md`](CONTEXT.md)** | Domain dictionary: one accepted name per concept, with the rejected variants marked *do not use*. | **First.** It settles the confusions this repo actually pays for — `source` vs `adapter` (103 vs 98, and why both are right), `mirror` vs `relay`, `telegram` vs `telegram-channel`. |
+| **[`CONTEXT.md`](CONTEXT.md)** | Domain dictionary: one accepted name per concept, with the rejected variants marked *do not use*. | **First.** It settles the confusions this repo actually pays for — `source` vs `adapter` (109 vs 104, and why both are right), `mirror` vs `relay`, `telegram` vs `telegram-channel`. |
 | **[`PROGRESS.md`](PROGRESS.md)** | Working state: what is done, the next step, known issues, and **abandoned approaches**. | At the start of any session. Git shows what changed; this says where the work stands and what was already tried and rejected. |
 | **[`docs/adr/`](docs/adr/)** | Numbered decision records — context, decision, consequences, and what would make us revisit. | Before changing anything a record covers. The record decides, not the current release. |
 | **[`CLAUDE.md`](CLAUDE.md)** | A one-screen index pointing at the three above. | Automatically, by the agent. Deliberately *not* a knowledge base — a long one gets skimmed and then ignored. |
@@ -865,6 +865,7 @@ Thanks to everyone who helps build career-ops-ui. The project is maintained by [
   <a href="https://github.com/Alien10140" title="Alien10140"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/4649783%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="Alien10140"/></a>
   <a href="https://github.com/vignyl" title="vignyl"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/26774609%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="vignyl"/></a>
   <a href="https://github.com/bracketouverte" title="bracketouverte"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/5484265%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="bracketouverte"/></a>
+  <a href="https://github.com/bullitt186" title="bullitt186"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/24450990%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="bullitt186"/></a>
 </p>
 
 **[All contributors →](https://github.com/Fighter90/career-ops-ui/graphs/contributors)**

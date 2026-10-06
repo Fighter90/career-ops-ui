@@ -35,6 +35,18 @@ export function assertBreezyUrl(url) {
   return url;
 }
 
+function containsWholeWord(text, word) {
+  const escaped = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return new RegExp(`(?<![\\p{L}\\p{N}])${escaped}(?![\\p{L}\\p{N}])`, 'iu').test(text);
+}
+
+// Parent parity (v1.239.0): `location.name` is often just "Seattle, WA" while
+// `country.name` carries the country; fold it in so location_filter sees it.
+function withCountry(name, country) {
+  const c = typeof country === 'string' ? country.trim() : '';
+  return c && !containsWholeWord(name, c) ? `${name}, ${c}` : name;
+}
+
 /**
  * Parse a Breezy `<tenant>.breezy.hr/json` response. Exported for unit tests.
  *
@@ -65,7 +77,9 @@ export function parseBreezyResponse(json, companyName) {
     const loc = j.location || {};
     const remote = loc.is_remote ? 'Remote' : '';
     const assembled = [loc.city, loc.state, loc.country?.name].filter(Boolean).join(', ');
-    const base = (typeof loc.name === 'string' && loc.name.trim()) ? loc.name.trim() : assembled;
+    const base = (typeof loc.name === 'string' && loc.name.trim())
+      ? withCountry(loc.name.trim(), loc.country?.name)
+      : assembled;
     const location = remote && !/remote/i.test(base)
       ? [base, remote].filter(Boolean).join(', ')
       : base;

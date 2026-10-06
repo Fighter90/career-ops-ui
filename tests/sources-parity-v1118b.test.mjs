@@ -87,12 +87,10 @@ test('deutschebahn: parseHits tolerates a malformed numeric entity (no RangeErro
   assert.equal(rows[0].title, 'Bad&#xD800;Entity'); // surrogate degrades to literal
 });
 
-test('deutschebahn: fetch paginates via pageNum and stops on the first empty page', async () => {
-  const pages = [
-    '<html>' + dbHit('1', 'A', 'Berlin') + dbHit('2', 'B', 'Kiel') + '</html>',
-    '<html>' + dbHit('3', 'C', 'Bonn') + '</html>',
-    '<html></html>',
-  ];
+const dbFull = (ids) => '<html>' + Array.from({ length: 1000 }, (_, i) => dbHit(ids[i % ids.length], `Job ${ids[i % ids.length]}`, 'Berlin')).join('') + '</html>';
+
+test('deutschebahn: fetch paginates via pageNum over full pages and stops on the first empty page', async () => {
+  const pages = [dbFull(['1', '2']), dbFull(['3']), '<html></html>'];
   let calls = 0;
   const seenUrls = [];
   const fetchImpl = async (url) => { seenUrls.push(url); return textResponse(pages[calls++] ?? '<html></html>'); };
@@ -106,8 +104,15 @@ test('deutschebahn: fetch paginates via pageNum and stops on the first empty pag
 
 test('deutschebahn: fetch honors max_pages', async () => {
   let calls = 0;
-  const fetchImpl = async () => { calls++; return textResponse('<html>' + dbHit(String(700100 + calls), `Job ${calls}`, 'Berlin') + '</html>'); };
-  const jobs = await fetchDeutschebahn('https://db.jobs/service/search/de-de/5441588', { fetchImpl, company: { name: 'DB', max_pages: 3 } });
+  const fetchImpl = async () => { calls++; return textResponse(dbFull([String(700100 + calls)])); };
+  const origWarn = console.warn;
+  console.warn = () => {};
+  let jobs;
+  try {
+    jobs = await fetchDeutschebahn('https://db.jobs/service/search/de-de/5441588', { fetchImpl, company: { name: 'DB', max_pages: 3 } });
+  } finally {
+    console.warn = origWarn;
+  }
   assert.equal(calls, 3);
   assert.equal(jobs.length, 3);
 });

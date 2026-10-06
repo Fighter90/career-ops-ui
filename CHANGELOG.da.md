@@ -8,6 +8,38 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.240.0] — 2026-10-06
+
+**Forælder-paritet — career-ops `main` @ `62905981` (VERSION 1.35.0, 177 upstream-commits siden `b39931e`). Seks nye kilder — 103 → 109 (104 EN + 5 RU) — rettelser spejlet i otte eksisterende udbydere og checkliste-pipelineformatet, bidraget af @bullitt186.**
+
+### Tilføjet
+
+- **Seks nye kilder — 103 → 109 (104 EN + 5 RU), 98 → 104 EN-adaptere.**
+  - **ADP Workforce Now** (`workforcenow.adp.com` med `cid` + `ccId`) — `$skip`-paginering efter antallet af rækker, der faktisk blev returneret; et svar uden både `jobRequisitions` og `meta` kaster en fejl i stedet for at blive læst som en tom tavle; tilvalgt detaljeberigelse (`adpWorkforcenow.fetchDetails`, standard 25, loft 100).
+  - **Gupy** (`employability-portal.gupy.io`) — søgeordsgennemgang på tværs af hele tavlen, nyeste først med tidligt stop på `since_days`; `workplaceType` læses som den entals pt-BR-streng, så hybridopslag ikke går tabt; fortrolige karrieresider droppes.
+  - **JazzHR** (`*.applytojob.com`) — kortparser med en reserve på bare ankre, så et delvist redesign stadig giver opslag; opslagslinks uden et eneste parset kort kaster en fejl, mens en reelt tom tavle returnerer `[]`.
+  - **Startup Jobs** (`startup.jobs/feeds/jobs`) — RSS, én forespørgsel; en misdannet, HTML- eller afkortet body kaster en fejl i stedet for at returnere `[]` (forælderens rettelse fra gennemgangen efter sammenfletningen, `08fe5d06`); CDATA og kommentarer maskeres, før items matches.
+  - **Taleo** (`<tenant>.taleo.net`, `tre.taleo.net` afvises) — shell-GET og derefter `searchjobs`-POST; en shell uden portal-id kaster en fejl som en privat tavle; kolonner matches efter overskrift.
+  - **UKG Pro / UltiPro** (`recruiting[N].ultipro.{com,ca}`) — `Top=50` + `Skip`, `totalCount` bruges aldrig som stopbetingelse, sideloft 100 (begrænset til 1500), tilvalgte detaljesider parses med en strengbevidst gennemgang af klammer.
+
+### Rettet
+
+- **Pipeline i forælderens checklisteformat** — upstream career-ops skriver `data/pipeline.md` som sektionerne `## Pending` / `## Processed` med rækker af formen `- [ ] url | …`, som UI'en læste som **0 afventende** og skrev til ved at tilføje en fence for enden af filen, hvor forælderen aldrig kigger. `parsePipeline`, `addPipelineUrl` og `removePipelineUrl` læser og skriver nu den form (deduplikering også mod behandlede rækker; kompensation som et mærket `note: comp …`-segment); det fencede format er uændret. Bidraget af **@bullitt186** (#380).
+- **Land foldet ind i lokation** — Ashby (primær `address.postalAddress`), Breezy (`country.name`) og Recruitee (flad `location`) tilføjer landet, medmindre navnet allerede indeholder det som et helt ord, så en fjernstilling med Storbritannien som primær og USA som sekundær ikke længere droppes af et lokationsfilter.
+- **MokaHR** — regionsværten `hire-r1.mokahr.com` accepteres (allowlisten er præcis `app.mokahr.com` + `hire-r1.mokahr.com`), API-POST og jobbets links bruger tavlens egen vært, og en `success:false` i selve svaret kaster nu en fejl i stedet for at blive læst som en tom tavle.
+- **Avature** — `article--jobs`-kort parses (titel fra overskriftsankeret, lokation fra `icon-address`-span'en).
+- **SAP SuccessFactors** — en gemt søge-URL af formen `/go/<Category>/<id>[/<offset>]/` opløses til tenantens rod; den ramte tidligere `…/tile-search-results/`, som svarer 200 uden en eneste flise.
+- **Deutsche Bahn** — db.jobs blanker enhver resultatside, der indeholder et opslag, den ikke kan rendere; gennemgangen sorterer nu efter `pubExternalDate_tdt` med 1000 pr. side (højst 5 sider), stopper på det rå antal hit-ankre og kaster en fejl ved manglende resultatoverskrift eller uparsede opslagslinks i stedet for at returnere en for kort tavle.
+- **HigherEdJobs** — en Incapsula-udfordringsside besvaret med HTTP 200 blev tidligere parset som nul items og læst som en tom tavle; nu kaster den en fejl.
+- **En test læste det rigtige forældreprojekt på en udviklermaskine** — `tests/reports-list-cache.test.mjs` satte `CAREER_OPS_ROOT` til en midlertidig mappe uden `cv.md`/`portals.yml`, som `paths.mjs` ignorerer, så lokalt talte den forælderens rapporter (6 i stedet for 3), mens CI, uden forælder ved siden af, bestod.
+
+### Noter
+
+- Tests **3782 → 4056**. Nye suiter: `sources-adp-workforcenow`, `sources-gupy`, `sources-jazzhr`, `sources-startup-jobs`, `sources-taleo`, `sources-ultipro`, `sources-location-country-fold`, `sources-deutschebahn-blanked-page`, `sources-higheredjobs-challenge-page`, samt `parsers-pipeline-checklist` fra #380.
+- **Forælder:** forket blev bragt op til upstream `main` (144 → 0 commits bagud), og de fire ADR-0002-afvigelser blev verificeret intakte; upstreams tilbagerulning af det kyrilliske `LOCATIONISH_RE` kom ikke med.
+- **Allerede udgivet i v1.239.0, ikke gentaget:** AppliTrack, NEOGOV, Red Rover, SchoolSpring, OCC Mundial, indlejrede Greenhouse-tavler, Workday `myworkdaysite.com`.
+- **Ikke porteret**, med begrundelser: trusted-proxy-egress (`CAREER_OPS_TRUST_PROXY_EGRESS`, `_http.mjs` / `_ip-guard.mjs` / `_dns-cache.mjs`) — web-ui scanner gennem sit eget transportlag `http-json.mjs`; registret over kolonnerne i `scan-history.tsv` og sprogbevidst requisitions-deduplikering — web-ui læser position 1–12, som ikke flyttede sig, og deduplikerer på URL; SmartRecruiters `requisitionId` / `language` — ingen forbruger i web-ui's jobform; **Gem** `isoCountry` → landenavn — kræver forælderens alfa-3-tabel med 249 poster, udskudt; ændringer kun for CLI'en (tilstande, opdaterer, doctor, PDF/ATS-payload, tracker-scripts, Go-dashboard, Singapore-tilstand).
+
 ## [1.239.4] — 2026-09-29
 
 **Patch fra live-regressionen af v1.239.3.**

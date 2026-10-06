@@ -7,19 +7,19 @@
 
 _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır._
 
-[![tests](https://img.shields.io/badge/tests-3782%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-4056%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.239.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.239.4)
+[![release](https://img.shields.io/badge/release-v1.240.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.240.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Son sürüm — v1.239.4** — **Yama:** uzun yapay zekâ değerlendirmeleri artık puan özetinden önce kesilmiyor (Korece ve Çince raporlar 8192 token sınırına takılıyordu); kesilen bir yanıt artık öyle adlandırılıyor. **103 kaynak · 3782 test · 116 tarayıcı.**
+> **🆕 Son sürüm — v1.240.0** — **career-ops 1.35.0 ile üst proje eşitliği: altı yeni kaynak (ADP Workforce Now, Gupy, JazzHR, Startup Jobs, Taleo, UKG Pro → 109), mevcut sekiz sağlayıcıya yansıtılan düzeltmeler ve üst projenin checklist `pipeline.md` biçimi** — **@bullitt186** katkısıyla: UI böyle bir pipeline'ı 0 bekleyen olarak okuyor ve yeni URL'leri üst projenin hiç bakmadığı yere ekliyordu; artık `- [ ]` satırlarını okuyor ve yazıyor. Ashby, Breezy ve Recruitee ülkeyi konuma kattığı için bir filtre artık Birleşik Krallık birincil uzaktan rolleri düşürmüyor ve HTTP 200 olarak sunulan bir doğrulama sayfası boş pano gibi okunmak yerine açıkça hata veriyor. **4056 test.**
 >
-> **Önceki — v1.237.1** — **Harici bir QA geçişinden yama.** Jobstreet düzeltmesi dışarıdan doğrulandı: `/id/job/<id>`, AU/NZ/HK/MY ana bilgisayarlarında temiz bir 404 döndürüyor ve `/job/<id>` gerçek, korumalı bir rotaya ulaşıyor — kaybolan bağlantılar gerçekti. v1.237.0'ın eklediği şeyde iki kusur: **kitap bağlantısı** etiketini yerelleştirdi ama hedefini değil, bu yüzden Rusça etiket İngilizce baskıya götürüyordu — bir `data-i18n-href` uygulayıcısı artık `ru`'yu Rusça kitaba gönderiyor; ve **SEEK ana bilgisayarlarını taşıyor** (`www.seek.com.au` → `au.seek.com`), bu yüzden API yolu bizim `redirect:'error'` taşıma katmanımıza yönlendirmeye başlamadan önce `au.seek.com` ve `nz.seek.com` izin listesine alındı. Sayılar **94** kaynakta değişmedi. **3210 test · 116 tarayıcı.**
+> **Önceki — v1.239.4** — **Yama:** uzun yapay zekâ değerlendirmeleri artık puan özetinden önce kesilmiyor (Korece ve Çince raporlar 8192 token sınırına takılıyordu); kesilen bir yanıt artık öyle adlandırılıyor. **103 kaynak · 3782 test · 116 tarayıcı.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -685,7 +685,7 @@ edebilmesidir.
 
 | Dosya | Ne olduğu | Ne zaman okunur |
 |---|---|---|
-| **[`CONTEXT.md`](CONTEXT.md)** | Alan sözlüğü: her kavram için kabul edilmiş tek bir ad, reddedilen varyantlar *kullanma* olarak işaretlenmiş. | **Önce bu.** Bu deponun gerçekten bedelini ödediği karışıklıkları çözer — `source` ile `adapter` (103'e karşı 98, ve ikisinin de neden doğru olduğu), `mirror` ile `relay`, `telegram` ile `telegram-channel`. |
+| **[`CONTEXT.md`](CONTEXT.md)** | Alan sözlüğü: her kavram için kabul edilmiş tek bir ad, reddedilen varyantlar *kullanma* olarak işaretlenmiş. | **Önce bu.** Bu deponun gerçekten bedelini ödediği karışıklıkları çözer — `source` ile `adapter` (109'e karşı 104, ve ikisinin de neden doğru olduğu), `mirror` ile `relay`, `telegram` ile `telegram-channel`. |
 | **[`PROGRESS.md`](PROGRESS.md)** | Çalışma durumu: ne tamamlandı, sıradaki adım, bilinen sorunlar ve **terk edilmiş yaklaşımlar**. | Her oturumun başında. Git neyin değiştiğini gösterir; bu dosya işin nerede durduğunu ve daha önce nelerin denenip reddedildiğini söyler. |
 | **[`docs/adr/`](docs/adr/)** | Numaralandırılmış karar kayıtları — bağlam, karar, sonuçlar ve bizi yeniden gözden geçirmeye ne iter. | Bir kaydın kapsadığı herhangi bir şeyi değiştirmeden önce. Karar veren kayıttır, mevcut sürüm değil. |
 | **[`CLAUDE.md`](CLAUDE.md)** | Yukarıdaki üç dosyaya işaret eden tek ekranlık bir dizin. | Otomatik olarak, ajan tarafından. Bilinçli biçimde bir bilgi tabanı *değildir* — uzun olanı göz gezdirilir ve sonra göz ardı edilir. |
@@ -845,6 +845,7 @@ career-ops-ui'yi inşa etmeye yardım eden herkese teşekkürler. Proje [Fighter
   <a href="https://github.com/Alien10140" title="Alien10140"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/4649783%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="Alien10140"/></a>
   <a href="https://github.com/vignyl" title="vignyl"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/26774609%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="vignyl"/></a>
   <a href="https://github.com/bracketouverte" title="bracketouverte"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/5484265%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="bracketouverte"/></a>
+  <a href="https://github.com/bullitt186" title="bullitt186"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/24450990%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="bullitt186"/></a>
 </p>
 
 **[Tüm katkıda bulunanlar →](https://github.com/Fighter90/career-ops-ui/graphs/contributors)**

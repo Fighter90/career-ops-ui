@@ -8,6 +8,38 @@
 
 ---
 
+## [1.240.0] — 2026-10-06
+
+**상위 프로젝트 패리티 — career-ops `main` @ `62905981`(VERSION 1.35.0, `b39931e` 이후 상위 커밋 177개). 새 소스 6개 — 103 → 109(영문 104 + 러시아어 5) — 기존 제공자 8개에 반영한 수정, 그리고 @bullitt186이 기여한 체크리스트 파이프라인 형식.**
+
+### 추가
+
+- **새 소스 6개 — 103 → 109(영문 104 + 러시아어 5), 영문 어댑터 98 → 104.**
+  - **ADP Workforce Now**(`cid` + `ccId`가 있는 `workforcenow.adp.com`) — 실제로 반환된 행 수 기준의 `$skip` 페이지네이션. `jobRequisitions`도 `meta`도 없는 응답은 빈 보드로 읽히지 않고 예외를 던집니다. 선택형 상세 보강(`adpWorkforcenow.fetchDetails`, 기본 25, 상한 100).
+  - **Gupy**(`employability-portal.gupy.io`) — 보드 전체 키워드 스윕, 최신순이며 `since_days`에서 조기 중단. `workplaceType`을 단수형 pt-BR 문자열로 읽어 하이브리드 공고가 누락되지 않습니다. 비공개 채용 페이지는 제외됩니다.
+  - **JazzHR**(`*.applytojob.com`) — 일부만 개편되어도 공고가 나오도록 맨 앵커 폴백을 갖춘 카드 파서. 공고 링크는 있는데 파싱된 카드가 0이면 예외를 던지고, 정말로 빈 보드는 `[]`를 반환합니다.
+  - **Startup Jobs**(`startup.jobs/feeds/jobs`) — RSS, 요청 1회. 형식이 잘못되었거나 HTML이거나 잘린 본문은 `[]`를 반환하지 않고 예외를 던집니다(상위 프로젝트의 병합 후 리뷰 수정, `08fe5d06`). 항목 매칭 전에 CDATA와 주석을 마스킹합니다.
+  - **Taleo**(`<tenant>.taleo.net`, `tre.taleo.net`은 거부) — 셸 페이지 GET 후 `searchjobs` POST. 포털 id가 없는 셸은 비공개 보드로 보고 예외를 던집니다. 열은 머리글로 매칭합니다.
+  - **UKG Pro / UltiPro**(`recruiting[N].ultipro.{com,ca}`) — `Top=50` + `Skip`. `totalCount`는 중단 조건으로 절대 신뢰하지 않으며, 페이지 상한은 100(최대 1500으로 제한), 선택형 상세 페이지는 문자열을 인식하는 중괄호 탐색으로 파싱합니다.
+
+### 수정
+
+- **상위 프로젝트의 체크리스트 형식 파이프라인** — 상위 career-ops는 `data/pipeline.md`를 `- [ ] url | …` 행으로 이루어진 `## Pending` / `## Processed` 섹션으로 쓰는데, UI는 이를 **대기 0건**으로 읽었고, 상위가 절대 보지 않는 파일 끝에 펜스를 덧붙이는 방식으로 썼습니다. `parsePipeline`, `addPipelineUrl`, `removePipelineUrl`이 이제 그 형태를 읽고 씁니다(처리 완료 행과도 중복 제거, 급여는 라벨이 붙은 `note: comp …` 세그먼트로). 펜스 형식은 그대로입니다. **@bullitt186** 기여(#380).
+- **국가를 위치에 병합** — Ashby(기본 `address.postalAddress`), Breezy(`country.name`), Recruitee(평면 `location`)는 이름에 국가가 이미 온전한 단어로 들어 있지 않으면 국가를 덧붙이므로, 영국 기본·미국 보조인 원격 직무가 더 이상 위치 필터에 걸러지지 않습니다.
+- **MokaHR** — `hire-r1.mokahr.com` 지역 호스트를 허용합니다(허용목록은 정확히 `app.mokahr.com` + `hire-r1.mokahr.com`). API POST와 공고 링크는 보드 자체의 호스트를 쓰며, 응답 본문 안의 `success:false`는 이제 빈 보드로 읽히지 않고 예외를 던집니다.
+- **Avature** — `article--jobs` 카드가 파싱됩니다(제목은 헤더 앵커에서, 위치는 `icon-address` span에서).
+- **SAP SuccessFactors** — `/go/<Category>/<id>[/<offset>]/` 저장된 검색 URL이 테넌트 루트로 해석됩니다. 이전에는 `…/tile-search-results/`로 갔는데, 이 주소는 200을 반환하지만 타일이 0개입니다.
+- **Deutsche Bahn** — db.jobs는 렌더링할 수 없는 공고가 하나라도 있는 결과 페이지를 통째로 비웁니다. 이제 순회는 `pubExternalDate_tdt`로 정렬하고 페이지당 1000건(최대 5페이지)을 가져오며, 원시 히트 앵커 개수에서 멈추고, 결과 헤더가 없거나 공고 링크가 파싱되지 않으면 짧은 보드를 반환하는 대신 예외를 던집니다.
+- **HigherEdJobs** — HTTP 200으로 응답한 Incapsula 챌린지가 항목 0개로 파싱되어 빈 보드로 읽혔습니다. 이제 예외를 던집니다.
+- **테스트 하나가 개발자 머신에서 실제 상위 프로젝트를 읽었습니다** — `tests/reports-list-cache.test.mjs`는 `cv.md`/`portals.yml`이 없는 임시 디렉터리를 `CAREER_OPS_ROOT`로 지정했는데 `paths.mjs`가 이를 무시하므로, 로컬에서는 상위의 보고서를 세었고(3개가 아니라 6개) 옆에 상위가 없는 CI에서는 통과했습니다.
+
+### 참고
+
+- 테스트 **3782 → 4056**. 새 스위트: `sources-adp-workforcenow`, `sources-gupy`, `sources-jazzhr`, `sources-startup-jobs`, `sources-taleo`, `sources-ultipro`, `sources-location-country-fold`, `sources-deutschebahn-blanked-page`, `sources-higheredjobs-challenge-page`, 그리고 #380의 `parsers-pipeline-checklist`.
+- **상위 프로젝트:** 포크가 상위 `main`까지 따라잡았고(144 → 0 커밋 뒤처짐) ADR-0002의 분기점 네 가지가 온전함을 확인했습니다. 상위의 키릴 문자 `LOCATIONISH_RE` 되돌리기는 반영되지 않았습니다.
+- **v1.239.0에서 이미 출시되어 반복하지 않음:** AppliTrack, NEOGOV, Red Rover, SchoolSpring, OCC Mundial, Greenhouse 임베드 보드, Workday `myworkdaysite.com`.
+- **이식하지 않음**, 이유와 함께: 신뢰 프록시 이그레스(`CAREER_OPS_TRUST_PROXY_EGRESS`, `_http.mjs` / `_ip-guard.mjs` / `_dns-cache.mjs`) — web-ui는 자체 `http-json.mjs` 전송 계층으로 스캔합니다; `scan-history.tsv` 열 레지스트리와 언어 인식 채용 요청 중복 제거 — web-ui는 1–12번 위치를 읽는데 그 위치는 바뀌지 않았고, URL로 중복 제거합니다; SmartRecruiters `requisitionId` / `language` — web-ui의 직무 데이터 형태에는 소비자가 없습니다; **Gem** `isoCountry` → 국가 이름 — 상위의 249개 항목 alpha-3 표가 필요해 보류; CLI 전용 변경(모드, 업데이터, doctor, PDF/ATS 페이로드, 트래커 스크립트, Go 대시보드, 싱가포르 모드).
+
 ## [1.239.4] — 2026-09-29
 
 **v1.239.3 라이브 회귀 테스트에 따른 패치.**

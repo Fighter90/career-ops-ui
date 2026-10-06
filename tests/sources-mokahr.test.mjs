@@ -39,6 +39,7 @@ test('meta is registry-shaped', () => {
 test('a tenant URL yields org, site id and the base for job links', () => {
   assert.deepEqual(parseTenantUrl('https://app.mokahr.com/social-recruitment/acme/12345'), {
     orgId: 'acme', siteId: 12345, baseUrl: 'https://app.mokahr.com/social-recruitment/acme/12345',
+    apiUrl: 'https://app.mokahr.com/api/outer/ats-apply/website/jobs/v2',
   });
   assert.ok(parseTenantUrl('https://app.mokahr.com/campus-recruitment/acme/1'));
   assert.ok(parseTenantUrl('https://app.mokahr.com/apply/acme/1'));
@@ -96,7 +97,7 @@ test('rows without a title or an id are skipped', () => {
 });
 
 test('an unusable careers_url fails loudly at endpoint time', () => {
-  assert.throws(() => buildMokaHrUrl({ careers_url: 'https://evil.test' }), /app\.mokahr\.com tenant URL/);
+  assert.throws(() => buildMokaHrUrl({ careers_url: 'https://evil.test' }), /allowed HTTPS tenant URL on app\.mokahr\.com or hire-r1\.mokahr\.com/);
   assert.equal(buildMokaHrUrl({ careers_url: 'https://app.mokahr.com/apply/acme/7' }),
     'https://app.mokahr.com/api/outer/ats-apply/website/jobs/v2');
 });
@@ -123,4 +124,31 @@ test('adapter matches the provider and a valid tenant URL only', () => {
   assert.equal(mokahrAdapter.matches({ provider: 'mokahr' }), true);
   assert.equal(mokahrAdapter.matches({ careers_url: 'https://app.mokahr.com/apply/acme/1' }), true);
   assert.equal(mokahrAdapter.matches({ careers_url: 'https://app.mokahr.com.evil.test/apply/a/1' }), false);
+});
+
+test('hire-r1 is allowed, but no other mokahr.com subdomain', () => {
+  assert.ok(parseTenantUrl('https://hire-r1.mokahr.com/social-recruitment/example-pay/100008889'));
+  assert.equal(parseTenantUrl('https://hire-r1-ats.mokahr.com/social-recruitment/example-pay/100008889'), null);
+  assert.equal(parseTenantUrl('https://hire-r2.mokahr.com/social-recruitment/example-pay/100008889'), null);
+});
+
+test('the API call and job links use the careers_url host; plaintext data is accepted', async () => {
+  const R1 = 'https://hire-r1.mokahr.com/social-recruitment/example-pay/100008889';
+  assert.equal(buildMokaHrUrl({ careers_url: R1 }), 'https://hire-r1.mokahr.com/api/outer/ats-apply/website/jobs/v2');
+  const urls = [];
+  const plain = (body) => async (url) => {
+    urls.push(url);
+    return { ok: true, status: 200, headers: new Map([['content-type', 'application/json']]), json: async () => body };
+  };
+  const rows = await fetchMokaHr('', {
+    fetchImpl: plain({ code: 0, success: true, data: { jobs: [JOB] } }),
+    company: { name: 'Example Pay', careers_url: R1 },
+  });
+  assert.equal(urls[0], 'https://hire-r1.mokahr.com/api/outer/ats-apply/website/jobs/v2');
+  assert.equal(rows.length, 1);
+  assert.equal(rows[0].url, `${R1}#/job/9`);
+  await assert.rejects(
+    fetchMokaHr('', { fetchImpl: plain({ code: 102, success: false, msg: 'bad', data: {} }), company: { careers_url: R1 } }),
+    /API error: bad/,
+  );
 });

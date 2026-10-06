@@ -8,6 +8,37 @@
 
 ---
 
+## [1.240.0] — 2026-10-06
+
+**親プロジェクトとの同期 — career-ops `main` @ `62905981`(VERSION 1.35.0、`b39931e` 以降の上流コミット 177 件)。新しいソース 6 件 — 103 → 109(英語 104 + ロシア語 5)— と、既存プロバイダー 8 件へ反映した修正、そして @bullitt186 が提供したチェックリスト形式のパイプライン。**
+
+### 追加
+
+- **新しいソース 6 件 — 103 → 109(英語 104 + ロシア語 5)、英語アダプター 98 → 104。**
+  - **ADP Workforce Now**(`workforcenow.adp.com`、`cid` + `ccId` 付き)— 実際に返された行数による `$skip` ページネーション。`jobRequisitions` も `meta` もないレスポンスは、空のボードとして読まれず例外を投げます。オプトインの詳細取得(`adpWorkforcenow.fetchDetails`、既定 25、上限 100)。
+  - **Gupy**(`employability-portal.gupy.io`)— ポータル全体のキーワード走査。新しい順で、`since_days` で早期に打ち切ります。`workplaceType` は単数形の pt-BR 文字列として読むため、ハイブリッド求人が失われません。非公開のキャリアページは除外されます。
+  - **JazzHR**(`*.applytojob.com`)— カードパーサーに素のアンカーへのフォールバックを備え、デザインが部分的に変わっても求人を取得できます。求人リンクがあるのにカードが 1 件も解析できなければ例外を投げ、本当に空のボードは `[]` を返します。
+  - **Startup Jobs**(`startup.jobs/feeds/jobs`)— RSS、リクエスト 1 回。不正な本文、HTML、途切れた本文は `[]` を返さず例外を投げます(親のマージ後レビューの修正、`08fe5d06`)。アイテム照合の前に CDATA とコメントをマスクします。
+  - **Taleo**(`<tenant>.taleo.net`、`tre.taleo.net` は拒否)— シェルの GET のあと `searchjobs` の POST。ポータル ID のないシェルは非公開ボードとして例外を投げます。列は見出しで照合します。
+  - **UKG Pro / UltiPro**(`recruiting[N].ultipro.{com,ca}`)— `Top=50` + `Skip`。`totalCount` は停止条件として信用せず、ページ上限は 100(1500 で切り詰め)。オプトインの詳細ページは、文字列を認識する波括弧ウォークで解析します。
+
+### 修正
+
+- **親のチェックリスト形式のパイプライン** — 上流の career-ops は `data/pipeline.md` を `- [ ] url | …` 行からなる `## Pending` / `## Processed` セクションとして書き出しますが、UI はこれを**保留 0 件**と読み、親が決して見ないファイル末尾にフェンスを追記して書き込んでいました。`parsePipeline`、`addPipelineUrl`、`removePipelineUrl` はこの形を読み書きするようになりました(処理済みの行に対する重複排除も行い、報酬はラベル付きの `note: comp …` セグメントとして記録)。フェンス形式は変わりません。**@bullitt186** による提供(#380)。
+- **国を所在地に折り込む** — Ashby(主所在地の `address.postalAddress`)、Breezy(`country.name`)、Recruitee(フラットな `location`)は、名前がその国をすでに単語全体として含んでいない限り国を付け足すため、英国が主、米国が副のリモート求人が所在地フィルターで除外されることはなくなりました。
+- **MokaHR** — リージョンホスト `hire-r1.mokahr.com` を受け付けるようになりました(許可リストは `app.mokahr.com` + `hire-r1.mokahr.com` のみ)。API の POST と求人リンクはボード自身のホストを使い、帯域内の `success:false` は空のボードとして読まれず例外を投げます。
+- **Avature** — `article--jobs` カードを解析します(タイトルはヘッダーのアンカーから、所在地は `icon-address` の span から)。
+- **SAP SuccessFactors** — `/go/<Category>/<id>[/<offset>]/` の保存済み検索 URL がテナントルートに解決されます。以前は `…/tile-search-results/` に当たり、タイルが 0 件のまま 200 を返していました。
+- **Deutsche Bahn** — db.jobs は、描画できない求人を含む結果ページをすべて空白にします。走査は `pubExternalDate_tdt` で並べ替えて 1 ページ 1000 件(最大 5 ページ)とし、生のヒットアンカー数で停止し、結果ヘッダーの欠落や未解析の求人リンクがあれば、短いボードを返さず例外を投げます。
+- **HigherEdJobs** — HTTP 200 で返される Incapsula のチャレンジは、以前はアイテム 0 件と解析されて空のボードと読まれていました。現在は例外を投げます。
+- **テストが開発者のマシンで実際の親プロジェクトを読んでいました** — `tests/reports-list-cache.test.mjs` は `CAREER_OPS_ROOT` を `cv.md` / `portals.yml` のない一時ディレクトリに設定していましたが、`paths.mjs` はそれを無視するため、ローカルでは親のレポートを数えてしまい(3 件ではなく 6 件)、隣に親のない CI は通っていました。
+
+### 備考
+
+- テスト **3782 → 4056**。新しいスイート: `sources-adp-workforcenow`、`sources-gupy`、`sources-jazzhr`、`sources-startup-jobs`、`sources-taleo`、`sources-ultipro`、`sources-location-country-fold`、`sources-deutschebahn-blanked-page`、`sources-higheredjobs-challenge-page`、さらに #380 の `parsers-pipeline-checklist`。
+- **親:** フォークは上流 `main` に追いつきました(144 → 0 コミット遅れ)。ADR-0002 の 4 件の相違点が損なわれていないことを確認済みで、キリル文字の `LOCATIONISH_RE` に対する上流のリバートは取り込まれていません。
+- **v1.239.0 で出荷済みのため繰り返しません:** AppliTrack、NEOGOV、Red Rover、SchoolSpring、OCC Mundial、Greenhouse の埋め込みボード、Workday `myworkdaysite.com`。
+
 ## [1.239.4] — 2026-09-29
 
 **v1.239.3 のライブ回帰テストを受けたパッチ。**

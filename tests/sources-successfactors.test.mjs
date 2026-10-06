@@ -200,3 +200,21 @@ test('resolveTenantBase: multi-brand RMK path preserved; endpoint segments never
   assert.equal(resolveTenantBase({ careers_url: 'http://careers.nemetschek.com/Bluebeam/' }), null);
   assert.equal(resolveTenantBase({}), null);
 });
+
+test('resolveTenantBase: a /go/<Category>/<id>/ saved-search page resolves to the tenant root', () => {
+  const root = 'https://jobs.canadalife.com';
+  for (const url of [
+    `${root}/go/All-Jobs/9170201/`,
+    `${root}/go/All-Jobs/9170201/?locale=en_US`,
+    `${root}/go/All-Jobs/9170201/25/`,
+    `${root}/go/All-Jobs/9170201`,
+  ]) {
+    assert.equal(resolveTenantBase({ careers_url: url }), root, url);
+  }
+  // A brand segment in FRONT of /go/ survives.
+  assert.equal(resolveTenantBase({ careers_url: 'https://careers.nemetschek.com/Bluebeam/go/Sales/123/' }),
+    'https://careers.nemetschek.com/Bluebeam');
+  // Not a category page (no numeric id): left alone.
+  assert.equal(resolveTenantBase({ careers_url: 'https://careers.example.com/go/' }), 'https://careers.example.com/go');
+  assert.equal(resolveTenantBase({ careers_url: 'https://careers.example.com/Brand/go/jobs/' }), 'https://careers.example.com/Brand/go/jobs');
+});

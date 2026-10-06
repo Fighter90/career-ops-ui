@@ -7,19 +7,19 @@
 
 _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-3782%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-4056%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.239.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.239.4)
+[![release](https://img.shields.io/badge/release-v1.240.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.240.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Ultima release — v1.239.4** — **Patch:** le valutazioni con l'IA lunghe non vengono più tagliate prima del riepilogo del punteggio (i report in coreano e cinese raggiungevano il limite di 8192 token); una risposta tagliata ora viene indicata come tale. **103 fonti · 3782 test · 116 browser.**
+> **🆕 Ultima release — v1.240.0** — **Parità con il genitore career-ops 1.35.0: sei nuove fonti (ADP Workforce Now, Gupy, JazzHR, Startup Jobs, Taleo, UKG Pro → 109), correzioni rispecchiate in otto provider esistenti e il formato checklist di `pipeline.md` del genitore** — contributo di **@bullitt186**: la UI leggeva una pipeline di questo tipo come 0 in sospeso e aggiungeva i nuovi URL dove il genitore non guarda mai; ora legge e scrive righe `- [ ]`. Ashby, Breezy e Recruitee integrano il paese nella località, così un filtro smette di scartare i ruoli remoti con sede principale nel Regno Unito, e una pagina di verifica servita con HTTP 200 fallisce in modo esplicito invece di passare per un board vuoto. **4056 test.**
 >
-> **Precedente — v1.237.1** — **Patch da una verifica QA esterna.** La correzione di Jobstreet è stata confermata dall'esterno: `/id/job/<id>` restituisce un 404 pulito sugli host AU/NZ/HK/MY e `/job/<id>` raggiunge una rotta reale protetta — i link persi erano reali. Due difetti in ciò che v1.237.0 aveva aggiunto: il **link al libro** localizzava l'etichetta ma non la destinazione, quindi l'etichetta russa portava all'edizione inglese — un applicatore `data-i18n-href` ora invia `ru` al libro russo; e **SEEK sta migrando gli host** (`www.seek.com.au` → `au.seek.com`), quindi `au.seek.com` e `nz.seek.com` sono in allowlist prima che il percorso dell'API inizi a reindirizzare nel nostro trasporto `redirect:'error'`. Conteggi invariati a **94** sorgenti. **3210 test · 116 browser.**
+> **Precedente — v1.239.4** — **Patch:** le valutazioni con l'IA lunghe non vengono più tagliate prima del riepilogo del punteggio (i report in coreano e cinese raggiungevano il limite di 8192 token); una risposta tagliata ora viene indicata come tale. **103 fonti · 3782 test · 116 browser.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -684,7 +684,7 @@ invece di ri-derivare, ri-decidere e ri-rompere di nuovo le stesse cose.
 
 | File | Cos'è | Quando leggerlo |
 |---|---|---|
-| **[`CONTEXT.md`](CONTEXT.md)** | Dizionario di dominio: un nome accettato per ogni concetto, con le varianti respinte contrassegnate come *da non usare*. | **Per primo.** Risolve le confusioni che questo repo paga davvero — `source` vs `adapter` (103 vs 98, e perché sono entrambi corretti), `mirror` vs `relay`, `telegram` vs `telegram-channel`. |
+| **[`CONTEXT.md`](CONTEXT.md)** | Dizionario di dominio: un nome accettato per ogni concetto, con le varianti respinte contrassegnate come *da non usare*. | **Per primo.** Risolve le confusioni che questo repo paga davvero — `source` vs `adapter` (109 vs 104, e perché sono entrambi corretti), `mirror` vs `relay`, `telegram` vs `telegram-channel`. |
 | **[`PROGRESS.md`](PROGRESS.md)** | Stato di lavoro: cosa è fatto, il prossimo passo, i problemi noti e gli **approcci abbandonati**. | All'inizio di ogni sessione. Git mostra cosa è cambiato; questo dice a che punto è il lavoro e cosa è già stato provato e respinto. |
 | **[`docs/adr/`](docs/adr/)** | Verbali di decisione numerati — contesto, decisione, conseguenze e cosa ci farebbe tornare a riconsiderarla. | Prima di cambiare qualcosa che un verbale copre. Decide il verbale, non la release attuale. |
 | **[`CLAUDE.md`](CLAUDE.md)** | Un indice di una sola schermata che rimanda ai tre file sopra. | Automaticamente, dall'agente. Deliberatamente *non* una base di conoscenza — una lunga viene scorsa in fretta e poi ignorata. |
@@ -842,6 +842,7 @@ Grazie a tutti coloro che aiutano a costruire career-ops-ui. Il progetto è mant
   <a href="https://github.com/Alien10140" title="Alien10140"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/4649783%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="Alien10140"/></a>
   <a href="https://github.com/vignyl" title="vignyl"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/26774609%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="vignyl"/></a>
   <a href="https://github.com/bracketouverte" title="bracketouverte"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/5484265%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="bracketouverte"/></a>
+  <a href="https://github.com/bullitt186" title="bullitt186"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/24450990%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="bullitt186"/></a>
 </p>
 
 **[Tutti i contributori →](https://github.com/Fighter90/career-ops-ui/graphs/contributors)**

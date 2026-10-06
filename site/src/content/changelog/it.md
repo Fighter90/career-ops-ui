@@ -2,6 +2,38 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.240.0] — 2026-10-06
+
+**Parità con il genitore — career-ops `main` @ `62905981` (VERSION 1.35.0, 177 commit upstream da `b39931e`). Sei nuove fonti — 103 → 109 (104 EN + 5 RU) —, correzioni rispecchiate in otto provider esistenti e il formato checklist della pipeline, contributo di @bullitt186.**
+
+### Aggiunto
+
+- **Sei nuove fonti — 103 → 109 (104 EN + 5 RU), 98 → 104 adattatori EN.**
+  - **ADP Workforce Now** (`workforcenow.adp.com` con `cid` + `ccId`) — paginazione `$skip` in base alle righe effettivamente restituite; una risposta senza né `jobRequisitions` né `meta` genera un errore invece di passare per un board vuoto; arricchimento dei dettagli opt-in (`adpWorkforcenow.fetchDetails`, default 25, massimo 100).
+  - **Gupy** (`employability-portal.gupy.io`) — scansione per parole chiave sull'intero board, dalla più recente con arresto anticipato su `since_days`; `workplaceType` viene letto come la stringa singolare in pt-BR, così le offerte ibride non si perdono; le pagine carriera riservate vengono scartate.
+  - **JazzHR** (`*.applytojob.com`) — parser delle card con ripiego su ancore nude, così un restyling parziale produce comunque offerte; link di annunci con zero card analizzate generano un errore, un board davvero vuoto restituisce `[]`.
+  - **Startup Jobs** (`startup.jobs/feeds/jobs`) — RSS, una sola richiesta; un corpo malformato, HTML o troncato genera un errore invece di restituire `[]` (la correzione del genitore dopo la revisione post-merge, `08fe5d06`); CDATA e commenti vengono mascherati prima dell'associazione delle voci.
+  - **Taleo** (`<tenant>.taleo.net`, `tre.taleo.net` rifiutato) — GET della shell, poi POST `searchjobs`; una shell senza id del portale genera un errore come board privato; colonne riconosciute dall'intestazione.
+  - **UKG Pro / UltiPro** (`recruiting[N].ultipro.{com,ca}`) — `Top=50` + `Skip`, `totalCount` mai considerato come condizione di arresto, tetto di 100 pagine (limitato a 1500), pagine di dettaglio opt-in analizzate con una scansione delle parentesi graffe attenta alle stringhe.
+
+### Corretto
+
+- **Pipeline nel formato checklist del genitore** — il career-ops upstream scrive `data/pipeline.md` come sezioni `## Pending` / `## Processed` di righe `- [ ] url | …`, che la UI leggeva come **0 in sospeso** e a cui scriveva aggiungendo un blocco di codice delimitato in fondo al file, dove il genitore non guarda mai. `parsePipeline`, `addPipelineUrl` e `removePipelineUrl` ora leggono e scrivono quella forma (deduplica anche rispetto alle righe già elaborate; compenso come segmento etichettato `note: comp …`); il formato a blocco delimitato è invariato. Contributo di **@bullitt186** (#380).
+- **Paese integrato nella località** — Ashby (principale `address.postalAddress`), Breezy (`country.name`) e Recruitee (`location` piatto) aggiungono il paese a meno che il nome non lo contenga già come parola intera, così un ruolo remoto con sede principale nel Regno Unito e secondaria negli Stati Uniti non viene più scartato da un filtro di località.
+- **MokaHR** — l'host regionale `hire-r1.mokahr.com` è accettato (la lista di consentiti è esattamente `app.mokahr.com` + `hire-r1.mokahr.com`), il POST all'API e i link delle offerte usano l'host proprio del board, e un `success:false` in-band ora genera un errore invece di passare per un board vuoto.
+- **Avature** — le card `article--jobs` vengono analizzate (titolo dall'ancora dell'intestazione, località dallo span `icon-address`).
+- **SAP SuccessFactors** — un URL di ricerca salvata `/go/<Category>/<id>[/<offset>]/` viene risolto alla radice del tenant; prima raggiungeva `…/tile-search-results/`, che risponde 200 con zero tile.
+- **Deutsche Bahn** — db.jobs svuota qualsiasi pagina di risultati che contiene un'offerta che non sa rendere; la scansione ora ordina per `pubExternalDate_tdt` con 1000 per pagina (massimo 5 pagine), si ferma sul conteggio grezzo delle ancore dei risultati e genera un errore se manca l'intestazione dei risultati o ci sono link di offerte non analizzati, invece di restituire un board troncato.
+- **HigherEdJobs** — una pagina di verifica Incapsula servita con HTTP 200 veniva analizzata come zero voci e passava per un board vuoto; ora genera un errore.
+- **Un test leggeva il vero progetto genitore su una macchina di sviluppo** — `tests/reports-list-cache.test.mjs` impostava `CAREER_OPS_ROOT` su una cartella temporanea senza `cv.md`/`portals.yml`, che `paths.mjs` ignora, quindi in locale contava i report del genitore (6 invece di 3) mentre la CI, senza il genitore accanto, passava.
+
+### Note
+
+- Test **3782 → 4056**. Nuove suite: `sources-adp-workforcenow`, `sources-gupy`, `sources-jazzhr`, `sources-startup-jobs`, `sources-taleo`, `sources-ultipro`, `sources-location-country-fold`, `sources-deutschebahn-blanked-page`, `sources-higheredjobs-challenge-page`, più `parsers-pipeline-checklist` dalla #380.
+- **Genitore:** il fork è stato portato all'`main` upstream (144 → 0 commit indietro) con le quattro divergenze dell'ADR-0002 verificate intatte; il ripristino upstream del `LOCATIONISH_RE` cirillico non è arrivato.
+- **Già rilasciati nella v1.239.0, non ripetuti:** AppliTrack, NEOGOV, Red Rover, SchoolSpring, OCC Mundial, board embed di Greenhouse, Workday `myworkdaysite.com`.
+- **Non portato**, con le relative motivazioni: egress con proxy fidato (`CAREER_OPS_TRUST_PROXY_EGRESS`, `_http.mjs` / `_ip-guard.mjs` / `_dns-cache.mjs`) — web-ui scansiona tramite il proprio trasporto `http-json.mjs`; il registro delle colonne di `scan-history.tsv` e la deduplica delle richieste sensibile alla lingua — web-ui legge le posizioni 1–12, che non si sono spostate, e deduplica per URL; SmartRecruiters `requisitionId` / `language` — nessun consumatore nella forma delle offerte di web-ui; **Gem** `isoCountry` → nome del paese — richiede la tabella alpha-3 da 249 voci del genitore, rimandato; modifiche solo CLI (modalità, updater, doctor, payload PDF/ATS, script del tracker, dashboard Go, modalità Singapore).
+
 ## [1.239.4] — 2026-09-29
 
 **Patch dalla regressione dal vivo della v1.239.3.**

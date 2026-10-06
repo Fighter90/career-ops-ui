@@ -83,7 +83,12 @@ export function resolveTenantBase(company) {
     return null;
   }
   if (u.protocol !== 'https:' || !u.hostname) return null;
+  // A saved-search category page, /go/<Category>/<numericId>[/<offset>]/, is not a
+  // brand prefix: in front of /tile-search-results/ it answers 200 with zero
+  // tiles (a healthy-looking empty board). Strip it; a brand segment in FRONT of
+  // /go/ survives (/Bluebeam/go/X/123/ -> /Bluebeam).
   const path = u.pathname
+    .replace(/\/go\/[^/]+\/\d+(?:\/\d+)?\/?$/i, '')
     .replace(/\/(?:search|tile-search-results)\/?$/i, '')
     .replace(/\/+$/, '');
   return u.origin + path;

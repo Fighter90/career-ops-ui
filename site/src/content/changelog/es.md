@@ -10,6 +10,37 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 
 ---
 
+## [1.240.0] — 2026-10-06
+
+**Paridad con el padre — career-ops `main` @ `62905981` (VERSION 1.35.0, 177 commits de upstream desde `b39931e`). Seis fuentes nuevas — 103 → 109 (104 EN + 5 RU) —, correcciones reflejadas en ocho proveedores existentes y el formato de lista de verificación del pipeline, aportado por @bullitt186.**
+
+### Añadido
+
+- **Seis fuentes nuevas — 103 → 109 (104 EN + 5 RU), 98 → 104 adaptadores EN.**
+  - **ADP Workforce Now** (`workforcenow.adp.com` con `cid` + `ccId`) — paginación `$skip` según las filas realmente devueltas; una respuesta sin `jobRequisitions` ni `meta` lanza un error en lugar de leerse como un tablero vacío; enriquecimiento de detalle opcional (`adpWorkforcenow.fetchDetails`, 25 por defecto, tope de 100).
+  - **Gupy** (`employability-portal.gupy.io`) — barrido por palabra clave en todo el tablero, de la más reciente a la más antigua, con parada anticipada según `since_days`; `workplaceType` se lee como la cadena singular en pt-BR para no perder las ofertas híbridas; las páginas de empleo confidenciales se descartan.
+  - **JazzHR** (`*.applytojob.com`) — parser de tarjetas con respaldo de ancla desnuda, de modo que un rediseño parcial siga produciendo ofertas; unos enlaces de oferta sin ninguna tarjeta analizada lanzan un error, y un tablero realmente vacío devuelve `[]`.
+  - **Startup Jobs** (`startup.jobs/feeds/jobs`) — RSS, una sola petición; un cuerpo malformado, HTML o truncado lanza un error en lugar de devolver `[]` (la corrección de revisión posterior a la fusión del padre, `08fe5d06`); CDATA y comentarios se enmascaran antes de buscar los items.
+  - **Taleo** (`<tenant>.taleo.net`, se rechaza `tre.taleo.net`) — GET de la página shell y luego POST a `searchjobs`; una página shell sin id de portal lanza un error como tablero privado; las columnas se emparejan por encabezado.
+  - **UKG Pro / UltiPro** (`recruiting[N].ultipro.{com,ca}`) — `Top=50` + `Skip`, `totalCount` nunca se toma como condición de parada, tope de 100 páginas (acotado a 1500), páginas de detalle opcionales analizadas con un recorrido de llaves consciente de las cadenas.
+
+### Corregido
+
+- **Pipeline en el formato de lista de verificación del padre** — el career-ops upstream escribe `data/pipeline.md` como secciones `## Pending` / `## Processed` con filas `- [ ] url | …`, que la UI leía como **0 pendientes** y en las que escribía añadiendo un bloque de código delimitado al final del archivo, donde el padre nunca mira. `parsePipeline`, `addPipelineUrl` y `removePipelineUrl` ahora leen y escriben esa forma (deduplicación también contra las filas procesadas; compensación como segmento etiquetado `note: comp …`); el formato con bloque delimitado no cambia. Aportado por **@bullitt186** (#380).
+- **País incorporado a la ubicación** — Ashby (`address.postalAddress` principal), Breezy (`country.name`) y Recruitee (`location` plana) añaden el país salvo que el nombre ya lo contenga como palabra completa, de modo que un rol remoto con sede principal en el Reino Unido y secundaria en EE. UU. ya no se descarta por un filtro de ubicación.
+- **MokaHR** — se acepta el host regional `hire-r1.mokahr.com` (la lista blanca es exactamente `app.mokahr.com` + `hire-r1.mokahr.com`), el POST a la API y los enlaces de oferta usan el host propio del tablero, y un `success:false` dentro de la respuesta ahora lanza un error en lugar de leerse como un tablero vacío.
+- **Avature** — se analizan las tarjetas `article--jobs` (el título sale del ancla de la cabecera, la ubicación del `span` `icon-address`).
+- **SAP SuccessFactors** — una URL de búsqueda guardada `/go/<Category>/<id>[/<offset>]/` se resuelve a la raíz del tenant; antes llegaba a `…/tile-search-results/`, que responde 200 con cero tarjetas.
+- **Deutsche Bahn** — db.jobs deja en blanco cualquier página de resultados que contenga una oferta que no sabe renderizar; el recorrido ahora ordena por `pubExternalDate_tdt` con 1000 por página (5 páginas como máximo), se detiene según el recuento bruto de anclas de resultado y lanza un error ante un encabezado de resultados ausente o enlaces de oferta sin analizar, en lugar de devolver un tablero incompleto.
+- **HigherEdJobs** — un desafío de Incapsula respondido con HTTP 200 se analizaba como cero items y se leía como un tablero vacío; ahora lanza un error.
+- **Un test leía el proyecto padre real en la máquina de un desarrollador** — `tests/reports-list-cache.test.mjs` fijaba `CAREER_OPS_ROOT` a un directorio temporal sin `cv.md`/`portals.yml`, que `paths.mjs` ignora, así que en local contaba los informes del padre (6 en lugar de 3) mientras que CI, sin ningún padre al lado, pasaba.
+
+### Notas
+
+- Tests **3782 → 4056**. Suites nuevas: `sources-adp-workforcenow`, `sources-gupy`, `sources-jazzhr`, `sources-startup-jobs`, `sources-taleo`, `sources-ultipro`, `sources-location-country-fold`, `sources-deutschebahn-blanked-page`, `sources-higheredjobs-challenge-page`, más `parsers-pipeline-checklist` del #380.
+- **Padre:** el fork se llevó a `main` de upstream (144 → 0 commits por detrás) con las cuatro divergencias del ADR-0002 verificadas intactas; la reversión upstream del `LOCATIONISH_RE` cirílico no llegó.
+- **Ya publicado en la v1.239.0, no se repite:** AppliTrack, NEOGOV, Red Rover, SchoolSpring, OCC Mundial, los tableros embebidos de Greenhouse, Workday `myworkdaysite.com`.
+
 ## [1.239.4] — 2026-09-29
 
 **Parche tras la regresión en vivo de la v1.239.3.**

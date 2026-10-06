@@ -8,11 +8,20 @@ Release history belongs in [CHANGELOG.md](CHANGELOG.md), decisions in
 [docs/adr/](docs/adr/), vocabulary in [CONTEXT.md](CONTEXT.md). Anything already
 recoverable from those does **not** belong here.
 
-_Last updated: 2026-09-29 · v1.239.4 (evaluate output limit 16384 + cut-off warning; live language check for short lists) — v1.239.3 is deployed, released and published_
+_Last updated: 2026-10-06 · v1.240.0 — parent parity @ `62905981` (VERSION 1.35.0), checklist pipeline (#380); code + docs done, release in flight_
 
 ---
 
 ## Current state
+
+**v1.240.0 — parent parity with career-ops `main` @ `62905981`.** Counts **109** sources
+(104 EN + 5 RU) / **104** adapters; tests **4056**, Playwright 116/116. Six new sources
+(adp-workforcenow, gupy, jazzhr, startup-jobs, taleo, ultipro), fixes in eight providers, and
+@bullitt186's checklist-format `pipeline.md` support (#380). Parent fork behind upstream by **0**.
+Deferred: Gem `isoCountry` (alpha-3 table), SmartRecruiters `requisitionId`/`language`, trusted-proxy egress.
+**Queued by the user:** `#/scan` redesign (title cell crams company/boost/fit chip/score on one line),
+Tamil locale (parent has `README.ta.md`; web-ui has 17 locales), and acting on the full code review.
+
 
 **v1.239.0 — parent parity with Fighter90/career-ops @ `b39931e`.** Counts **103** sources
 (98 EN + 5 RU) / **98** adapters; tests **3774** (3771 pass + 3 skipped). Five new sources
@@ -85,6 +94,14 @@ The next parity release starts at
 before any merge.**
 
 ## Known issues
+
+- **Two sessions can ship the same version.** On 2026-10-06 a local session built v1.239.0 from a
+  stale `main` while another had already released v1.239.0–1.239.4 (#373–#379). The collision was
+  only visible in the PR's conflicts. **First action of any release: `git fetch origin && git log
+  origin/main -5`** — and never start from a local `main` you have not just reset to `origin/main`.
+- **A test that sets `CAREER_OPS_ROOT` to a temp dir needs `cv.md` or `portals.yml` in it.**
+  `paths.mjs` ignores the variable otherwise and falls back to `../` — the real parent on a
+  developer machine (CI has none, so only local runs showed it).
 
 - **The scan runs inside the viewer process and blocks its event loop for seconds.** v1.238.1 made it
   single-flight and raised the heap; v1.238.2 stopped the resulting keep-alive resets (502s). Pages
