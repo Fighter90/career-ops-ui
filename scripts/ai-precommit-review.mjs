@@ -83,14 +83,18 @@ export function secretHits(diffText) {
   for (const line of String(diffText).split('\n')) {
     if (!line.startsWith('+') || line.startsWith('+++')) continue;
     const body = line.slice(1);
-    let found = '';
+    const found = new Set();
     for (const re of SECRET_PATTERNS) {
       for (const m of body.matchAll(re)) {
-        if (!PLACEHOLDER_TOKEN.test(m[0])) { found = m[0]; break; }
+        if (!PLACEHOLDER_TOKEN.test(m[0])) found.add(m[0]);
       }
-      if (found) break;
     }
-    if (found) hits.push(body.replace(found, found.slice(0, 7) + '…').trim().slice(0, 80));
+    if (!found.size) continue;
+    // Mask EVERY real token on the line — the blocker message is printed, and a
+    // second key next to the first must not leak in clear text.
+    let masked = body;
+    for (const tok of found) masked = masked.split(tok).join(tok.slice(0, 7) + '…');
+    hits.push(masked.trim().slice(0, 80));
   }
   return hits;
 }

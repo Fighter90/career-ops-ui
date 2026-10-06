@@ -142,3 +142,11 @@ test('CLI: nothing staged → exits 0 quietly', () => {
   const { dir, run } = repo();
   try { assert.equal(run().status, 0); } finally { rmSync(dir, { recursive: true, force: true }); }
 });
+
+test('every real token on one line is masked in the blocker message', async () => {
+  const { secretHits } = await import('../scripts/ai-precommit-review.mjs');
+  const a = 'sk-ant-' + 'A'.repeat(40), b = 'ghp_' + 'B'.repeat(36);
+  const hits = secretHits(`+x = "${a}"; y = "${b}"\n`);
+  assert.equal(hits.length, 1);
+  assert.ok(!hits[0].includes('A'.repeat(20)) && !hits[0].includes('B'.repeat(20)), hits[0]);
+});
