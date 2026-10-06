@@ -42,7 +42,7 @@ const NOT_A_PLACE = /^(remote|anywhere|worldwide|global|distributed|home ?office
 
 let cacheFile = resolve(WEB_UI_ROOT, '.cache', 'geocode.json');
 
-let cache = null;            // key → { lat, lon, rank? } (lat/lon null = known miss)
+let cache = null;            // Map<key, { lat, lon, rank? }> (lat/lon null = known miss)
 let queue = Promise.resolve();
 let lastCall = 0;
 let blockedUntil = 0;
@@ -67,14 +67,17 @@ export function normalizeLocation(q) {
 
 function loadCache() {
   if (cache) return cache;
-  try { cache = JSON.parse(readFileSync(cacheFile, 'utf8')); } catch { cache = {}; }
+  try {
+    const stored = JSON.parse(readFileSync(cacheFile, 'utf8'));
+    cache = new Map(stored && typeof stored === 'object' && !Array.isArray(stored) ? Object.entries(stored) : []);
+  } catch { cache = new Map(); }
   return cache;
 }
 
 function saveCache() {
   try {
     mkdirSync(dirname(cacheFile), { recursive: true });
-    writeFileSync(cacheFile, JSON.stringify(cache));
+    writeFileSync(cacheFile, JSON.stringify(Object.fromEntries(cache)));
   } catch { /* read-only install → memory cache only */ }
 }
 
@@ -150,12 +153,12 @@ function km(a, b) {
 /** Cached, queued lookup: `compute` runs at most once per key. */
 function cached(key, compute) {
   const c = loadCache();
-  if (c[key]) return Promise.resolve(c[key]);
+  if (c.has(key)) return Promise.resolve(c.get(key));
   const run = queue.then(async () => {
-    if (c[key]) return c[key];            // filled while we were queued
-    c[key] = await compute();
+    if (c.has(key)) return c.get(key);     // filled while we were queued
+    c.set(key, await compute());
     saveCache();
-    return c[key];
+    return c.get(key);
   });
   // A failed lookup (network/429) is NOT cached and must not stall the queue.
   queue = run.catch(() => {});
@@ -171,9 +174,9 @@ export async function geocode(q, deps = {}, company = '') {
   // Entries from before the precision check carry no rank, and early rejects
   // carry no address type (city-states) — look those up again, but keep the
   // old answer if Nominatim is unavailable (rate limit) rather than losing it.
-  const old = c[key];
+  const old = c.get(key);
   const stale = old && ((old.lat != null && old.rank == null) || (old.lat == null && old.rank != null && old.at == null));
-  if (stale) delete c[key];
+  if (stale) c.delete(key);
   let place;
   try {
     place = await cached(key, async () => {
@@ -185,7 +188,7 @@ export async function geocode(q, deps = {}, company = '') {
     });
   } catch (err) {
     if (!stale) throw err;
-    c[key] = old;
+    c.set(key, old);
     place = old;
   }
   if (place.lat == null) return { ...MISS, exact: false };
@@ -204,7 +207,8 @@ export async function geocode(q, deps = {}, company = '') {
 
 /** Test hook: reset state, seed the cache, redirect the cache file. */
 export function _resetGeocode(seed = null, file = cacheFile) {
-  cache = seed; cacheFile = file; queue = Promise.resolve(); lastCall = 0; blockedUntil = 0;
+  cache = seed instanceof Map ? new Map(seed) : seed && typeof seed === 'object' ? new Map(Object.entries(seed)) : null;
+  cacheFile = file; queue = Promise.resolve(); lastCall = 0; blockedUntil = 0;
 }
 
 export function registerGeocodeRoutes(app) {

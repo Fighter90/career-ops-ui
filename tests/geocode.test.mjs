@@ -71,6 +71,17 @@ test('geocode: miss is fetched once, then cached; failures are not cached', asyn
   assert.deepEqual(await mod.geocode('Bordenau', { fetch: nominatim({}) }), { lat: null, lon: null, exact: false });
 });
 
+test('geocode: user-controlled cache keys are isolated from object properties', async () => {
+  mod._resetGeocode({}, file);
+  const f = nominatim({
+    ['__proto__']: [{ lat: '50.1', lon: '8.6', place_rank: 16 }],
+    constructor: [{ lat: '51.2', lon: '9.4', place_rank: 16 }],
+  });
+  assert.deepEqual(await mod.geocode('__proto__', { fetch: f }), { lat: 50.1, lon: 8.6, exact: false });
+  assert.deepEqual(await mod.geocode('constructor', { fetch: f }), { lat: 51.2, lon: 9.4, exact: false });
+  assert.equal(f.calls, 2);
+});
+
 test('geocode: a state/country centroid is not a place', async () => {
   mod._resetGeocode({}, file);
   const f = nominatim({ 'baden-württemberg, germany': [{ lat: '48.5', lon: '9.0', place_rank: 8, addresstype: 'state' }] });

@@ -132,12 +132,14 @@ test('CSP present for any non-loopback HOST', async () => {
 
 test('CSP img-src allows OSM tiles by default and the MAP_TILE_URL host when set', async () => {
   const osm = await bootAndGet('127.0.0.1', '/');
-  assert.match(osm['content-security-policy'], /img-src 'self' data: https:\/\/tile\.openstreetmap\.org;/);
+  const osmDirectives = osm['content-security-policy'].split(';').map((directive) => directive.trim());
+  assert.ok(osmDirectives.includes("img-src 'self' data: https://tile.openstreetmap.org"));
   process.env.MAP_TILE_URL = 'https://{s}.tiles.example.org/{z}/{x}/{y}.png';
   try {
     const own = await bootAndGet('127.0.0.1', '/');
-    assert.match(own['content-security-policy'], /img-src 'self' data: https:\/\/\*\.tiles\.example\.org;/);
-    assert.doesNotMatch(own['content-security-policy'], /tile\.openstreetmap\.org/);
+    const ownDirectives = own['content-security-policy'].split(';').map((directive) => directive.trim());
+    assert.ok(ownDirectives.includes("img-src 'self' data: https://*.tiles.example.org"));
+    assert.ok(!ownDirectives.some((directive) => directive.includes('tile.openstreetmap.org')));
   } finally {
     delete process.env.MAP_TILE_URL;
   }
