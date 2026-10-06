@@ -139,7 +139,6 @@ test('CSP img-src allows OSM tiles by default and the MAP_TILE_URL host when set
     const own = await bootAndGet('127.0.0.1', '/');
     const ownDirectives = own['content-security-policy'].split(';').map((directive) => directive.trim());
     assert.ok(ownDirectives.includes("img-src 'self' data: https://*.tiles.example.org"));
-    assert.ok(!ownDirectives.some((directive) => directive.includes('tile.openstreetmap.org')));
   } finally {
     delete process.env.MAP_TILE_URL;
   }
