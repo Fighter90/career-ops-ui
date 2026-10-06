@@ -231,7 +231,7 @@ Router.register('tracker', async () => {
         r.reportPath ? c('button', {
           className: 'btn btn-ghost btn-sm',
           'aria-label': t('track.report') + ((r.company || r.role) ? ' — ' + (r.company || r.role) : ''),
-          onClick: () => Router.go('/reports/' + r.reportPath.replace(/^reports\//, '').replace(/\.md$/, '')),
+          onClick: () => Router.go('/reports/' + r.reportPath.replace(/^(\.\.\/)*reports\//, '').replace(/\.md$/, '')),
         }, t('track.report')) : '',
         // Record an application outcome (rejected / offer / hired / …): opens a
         // preview-then-confirm modal that shells the parent outcome.mjs to

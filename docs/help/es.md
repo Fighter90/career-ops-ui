@@ -2266,3 +2266,21 @@ curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/
 ```
 
 Luego añade el coworker en el panel **Install a coworker** de OpenWorker — por **GitHub URL** (`https://github.com/Fighter90/career-ops-coworker`), por **.zip** (desde [Releases](https://github.com/Fighter90/career-ops-coworker/releases)) o **importando** `career-ops.md`. Abre una sesión **Job-Search Coworker**, elige tu carpeta `career-ops` y pide algo real — *"escanea mis portales y dame los 5 mejores encajes de la semana"* o *"abre el panel."* Los conectores (Gmail, Google Calendar, GitHub) y la guía completa están en la [guía de ayuda](https://github.com/Fighter90/career-ops-coworker/tree/main/help) del repo. Verificado como instalable contra el loader de OpenWorker y su instalador de repo.
+
+## 33. Mapa de empleos (`#/map`)
+
+El mapa muestra los resultados del escaneo, el pipeline pendiente y tu seguimiento sobre un mapa de OpenStreetMap. Un **punto relleno** es una puntuación de evaluación (seguimiento); un **anillo** es una pista de afinidad del título para una oferta aún no evaluada (pipeline, escaneo). Un **número** agrupa ofertas cercanas; acerca el zoom para separarlas. 📍 marca la dirección del empleador encontrada en OpenStreetMap; si no, el punto queda en el centro de la localidad. El selector de capas muestra u oculta escaneo, pipeline y seguimiento.
+
+### Datos y privacidad
+
+El mapa es la única vista que contacta servicios externos, y solo mientras está abierto: el navegador carga las teselas desde el servidor de teselas y el servidor envía **la ubicación y el nombre de la empresa** de cada oferta (nunca tu CV ni tu perfil) al geocodificador Nominatim. Las respuestas se guardan en caché en `web-ui/.cache/geocode.json`, así que cada lugar se consulta una sola vez. Para mantener estas peticiones en tu propia infraestructura, apunta las variables de abajo a servidores autoalojados.
+
+### Configuración
+
+| Variable | Por defecto | Uso |
+|---|---|---|
+| `NOMINATIM_URL` | `https://nominatim.openstreetmap.org` | URL base del geocodificador (Nominatim autoalojado) |
+| `NOMINATIM_EMAIL` | — | Dirección de contacto enviada al Nominatim público, como pide su política de uso |
+| `NOMINATIM_GAP_MS` | `1100` | Intervalo mínimo entre consultas al host público (súbelo si varias instancias comparten una IP) |
+| `MAP_TILE_URL` | `https://tile.openstreetmap.org/{z}/{x}/{y}.png` | Plantilla de teselas de Leaflet; su host se añade al `img-src` de la CSP |
+| `MAP_TILE_ATTRIBUTION` | OpenStreetMap | Atribución mostrada para teselas propias |

@@ -202,6 +202,31 @@ export function parsePipeline(text) {
     .filter((l) => l && (l.startsWith('http') || l.startsWith('local:')));
 }
 
+/**
+ * Pending pipeline rows with their metadata, for the #/map view. A checklist
+ * row is `- [ ] url | company | title | location | note…`; a fenced bare-URL
+ * line (whose 2nd column is compensation, not company) yields the URL only.
+ * `href` is a clickable link: the URL itself, or for `local:` entries the
+ * first http(s) URL in the trailing cells (e.g. `note: linkedin https://…`).
+ */
+export function parsePipelineRows(text) {
+  if (!text) return [];
+  const fenceMatch = text.match(/```([\s\S]*?)```/);
+  const block = fenceMatch ? fenceMatch[1] : text;
+  const rows = [];
+  for (const raw of block.split('\n')) {
+    const line = raw.trim();
+    const checklist = UNCHECKED_ROW.test(line);
+    const cells = line.replace(UNCHECKED_ROW, '').split(/\s+\|\s+/).map((s) => s.trim());
+    const url = cells[0];
+    if (!url || !(url.startsWith('http') || url.startsWith('local:'))) continue;
+    const [, company = '', title = '', location = '', ...rest] = checklist ? cells : [url];
+    const href = url.startsWith('http') ? url : ((rest.join(' ').match(/https?:\/\/\S+/) || [])[0] || null);
+    rows.push({ url, company, title, location, href });
+  }
+  return rows;
+}
+
 /** Insert one `- [ ]` row at the end of the checklist's Pending section. */
 function addChecklistRow(text, row) {
   const pending = PENDING_HEADINGS.find((h) => new RegExp(`^${h}\\s*$`, 'm').test(text));

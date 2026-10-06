@@ -778,3 +778,14 @@ a:focus-visible, .chip:focus-visible { box-shadow: 0 0 0 4px rgba(255, 56, 92, .
    order at equal specificity. */
 .btn.is-loading .btn-ico { display: none; }
 .btn.is-loading::before { content: "⏳"; line-height: 1; }
+
+/* #/map — Leaflet job map (views/map.js). */
+.job-map { height: calc(100vh - 300px); min-height: 360px; border-radius: 12px; border: 1px solid var(--slate); isolation: isolate; }
+.job-map .leaflet-tooltip { min-width: 200px; max-width: 280px; white-space: normal; line-height: 1.35; }
+.job-cluster { box-sizing: border-box; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: var(--c); color: #fff; border: 2px solid #fff; font: 700 12px/1 Inter, sans-serif; box-shadow: 0 1px 4px rgba(0,0,0,.35); cursor: pointer; }
+.job-cluster.ring { background: #fff; color: var(--c); border: 3px solid var(--c); }
+.job-map-legend { background: var(--paper); color: var(--hof); padding: 6px 8px; border-radius: 8px; font-size: 11px; line-height: 1.6; box-shadow: 0 1px 4px rgba(0,0,0,.25); max-width: 260px; }
+.job-map-swatch { display: inline-flex; align-items: center; justify-content: center; width: 12px; height: 12px; margin-right: 6px; vertical-align: -2px; border-radius: 50%; box-sizing: border-box; font-size: 8px; font-weight: 700; }
+.job-map-swatch.dot { background: #008a05; border: 1.5px solid #fff; box-shadow: 0 0 0 1px #008a05; }
+.job-map-swatch.ring { background: #fff; border: 2.5px solid #2b6cb0; }
+.job-map-swatch.count { background: #e0a100; color: #fff; width: 14px; height: 14px; }

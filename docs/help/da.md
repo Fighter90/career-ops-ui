@@ -2312,3 +2312,21 @@ curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/
 ```
 
 Tilføj derefter coworkeren i OpenWorkers **Install a coworker**-panel — via **GitHub URL** (`https://github.com/Fighter90/career-ops-coworker`), via **.zip** (fra [Releases](https://github.com/Fighter90/career-ops-coworker/releases)) eller ved at **importere** `career-ops.md`. Åbn en **Job-Search Coworker**-session, vælg din `career-ops`-mappe, og bed om noget konkret — *"scan mine boards og giv mig ugens top 5 match"* eller *"åbn dashboardet."* Connectors (Gmail, Google Calendar, GitHub) og den fulde guide er i repoets [hjælpeguide](https://github.com/Fighter90/career-ops-coworker/tree/main/help). Verificeret installerbar mod OpenWorkers loader og dens repo-installer.
+
+## 33. Jobkort (`#/map`)
+
+Kortet viser scanresultater, den ventende pipeline og din tracker på et OpenStreetMap-kort. En **udfyldt prik** er en evalueringsscore (tracker); en **ring** er et hint om titelmatch for et opslag, du endnu ikke har evalueret (pipeline, scan). Et **tal** samler nærliggende opslag; zoom ind for at sprede dem. 📍 markerer en arbejdsgiveradresse fundet i OpenStreetMap, ellers sidder prikken i stedets centrum. Lagvælgeren slår scan, pipeline og tracker til og fra.
+
+### Data og privatliv
+
+Kortet er den eneste visning, der kontakter eksterne tjenester, og kun mens det er åbent: browseren henter kortfliser fra tile-serveren, og serveren sender hvert opslags **sted og firmanavn** (aldrig dit CV eller din profil) til geokoderen Nominatim. Svar caches i `web-ui/.cache/geocode.json`, så hvert sted slås kun op én gang. Vil du holde forespørgslerne på din egen infrastruktur, så peg variablerne nedenfor på selvhostede servere.
+
+### Konfiguration
+
+| Variabel | Standard | Formål |
+|---|---|---|
+| `NOMINATIM_URL` | `https://nominatim.openstreetmap.org` | Geokoderens basis-URL (selvhostet Nominatim) |
+| `NOMINATIM_EMAIL` | — | Kontaktadresse sendt til den offentlige Nominatim, som dens brugspolitik beder om |
+| `NOMINATIM_GAP_MS` | `1100` | Mindste pause mellem opslag på den offentlige vært (hæv den, når flere instanser deler én IP) |
+| `MAP_TILE_URL` | `https://tile.openstreetmap.org/{z}/{x}/{y}.png` | Leaflet-fliseskabelon; dens vært føjes til CSP'ens `img-src` |
+| `MAP_TILE_ATTRIBUTION` | OpenStreetMap | Kildeangivelse vist for egne fliser |

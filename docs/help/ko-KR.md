@@ -2202,3 +2202,21 @@ curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/
 ```
 
 그런 다음 OpenWorker의 **Install a coworker** 패널에서 coworker를 추가하세요 — **GitHub URL**(`https://github.com/Fighter90/career-ops-coworker`), **.zip**([Releases](https://github.com/Fighter90/career-ops-coworker/releases)에서), 또는 `career-ops.md` **가져오기**. **Job-Search Coworker** 세션을 열고 `career-ops` 폴더를 선택한 뒤 실제 요청을 하세요 — *"내 보드를 스캔해서 이번 주 상위 5개 적합 공고를 줘"* 또는 *"대시보드 열어줘."* 커넥터(Gmail, Google Calendar, GitHub)와 전체 가이드는 저장소의 [도움말 가이드](https://github.com/Fighter90/career-ops-coworker/tree/main/help)에 있습니다. OpenWorker의 로더와 저장소 설치기로 설치 가능이 검증되었습니다.
+
+## 33. 채용 지도 (`#/map`)
+
+지도는 스캔 결과, 대기 중인 파이프라인, 트래커를 OpenStreetMap 지도에 표시합니다. **채워진 점**은 평가 점수(트래커)이고, **링**은 아직 평가하지 않은 공고의 직함 적합도 힌트(파이프라인, 스캔)입니다. **숫자**는 가까운 공고를 묶은 것이며 확대하면 펼쳐집니다. 📍는 OpenStreetMap에서 찾은 고용주 주소이며, 없으면 점은 지역 중심에 놓입니다. 레이어 스위치로 스캔·파이프라인·트래커를 켜고 끌 수 있습니다.
+
+### 데이터와 개인정보
+
+외부 서비스와 통신하는 화면은 지도뿐이며, 지도를 열어 둔 동안에만 통신합니다. 브라우저는 타일 서버에서 지도 타일을 불러오고, 서버는 각 공고의 **위치와 회사명**(CV나 프로필은 절대 포함하지 않음)을 지오코더 Nominatim에 보냅니다. 응답은 `web-ui/.cache/geocode.json`에 캐시되므로 각 장소는 한 번만 조회됩니다. 이 요청을 자체 인프라 안에 두려면 아래 변수를 자체 호스팅 서버로 지정하세요.
+
+### 설정
+
+| 변수 | 기본값 | 용도 |
+|---|---|---|
+| `NOMINATIM_URL` | `https://nominatim.openstreetmap.org` | 지오코더 기본 URL(자체 호스팅 Nominatim) |
+| `NOMINATIM_EMAIL` | — | 이용 정책에 따라 공개 Nominatim에 보내는 연락처 주소 |
+| `NOMINATIM_GAP_MS` | `1100` | 공개 호스트 조회 간 최소 간격(여러 인스턴스가 하나의 IP를 공유하면 늘리세요) |
+| `MAP_TILE_URL` | `https://tile.openstreetmap.org/{z}/{x}/{y}.png` | Leaflet 타일 템플릿. 호스트가 CSP `img-src`에 추가됩니다 |
+| `MAP_TILE_ATTRIBUTION` | OpenStreetMap | 사용자 지정 타일에 표시할 저작자 표시 |

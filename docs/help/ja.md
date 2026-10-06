@@ -2230,3 +2230,21 @@ curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/
 ```
 
 その後、OpenWorker の **Install a coworker** パネルで coworker を追加します — **GitHub URL**(`https://github.com/Fighter90/career-ops-coworker`)、**.zip**([Releases](https://github.com/Fighter90/career-ops-coworker/releases) から)、または `career-ops.md` の**インポート**。**Job-Search Coworker** セッションを開き、`career-ops` フォルダーを選び、実際に依頼します — *「ボードをスキャンして今週の上位5件の適合を出して」*、または *「ダッシュボードを開いて」*。コネクター（Gmail、Google Calendar、GitHub）と完全ガイドはリポジトリの[ヘルプガイド](https://github.com/Fighter90/career-ops-coworker/tree/main/help)にあります。OpenWorker のローダーとリポジトリインストーラーに対してインストール可能と検証済みです。
+
+## 33. 求人マップ (`#/map`)
+
+マップは、スキャン結果・未処理のパイプライン・トラッカーを OpenStreetMap 上に表示します。**塗りつぶしの点**は評価スコア（トラッカー）、**リング**は未評価の求人に対するタイトル適合度の目安（パイプライン、スキャン）です。**数字**は近くの求人をまとめたもので、拡大すると分かれます。📍 は OpenStreetMap で見つかった企業の住所で、なければ点は地域の中心に置かれます。レイヤー切り替えでスキャン・パイプライン・トラッカーの表示を切り替えられます。
+
+### データとプライバシー
+
+外部サービスと通信するのはマップだけで、それも開いている間だけです。ブラウザーはタイルサーバーから地図タイルを読み込み、サーバーは各求人の**勤務地と企業名**（CV やプロフィールは一切含みません）をジオコーダー Nominatim に送ります。結果は `web-ui/.cache/geocode.json` にキャッシュされるため、各地点の検索は一度だけです。これらのリクエストを自分のインフラ内に留めるには、下の変数をセルフホストのサーバーに向けてください。
+
+### 設定
+
+| 変数 | 既定値 | 用途 |
+|---|---|---|
+| `NOMINATIM_URL` | `https://nominatim.openstreetmap.org` | ジオコーダーのベース URL（セルフホストの Nominatim） |
+| `NOMINATIM_EMAIL` | — | 利用規約の求めに従い、公開 Nominatim に送る連絡先アドレス |
+| `NOMINATIM_GAP_MS` | `1100` | 公開ホストへの問い合わせの最小間隔（複数インスタンスが 1 つの IP を共有する場合は増やす） |
+| `MAP_TILE_URL` | `https://tile.openstreetmap.org/{z}/{x}/{y}.png` | Leaflet のタイルテンプレート。ホストは CSP の `img-src` に追加されます |
+| `MAP_TILE_ATTRIBUTION` | OpenStreetMap | 独自タイルに表示する帰属表示 |

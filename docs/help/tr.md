@@ -2405,3 +2405,21 @@ curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/
 ```
 
 Ardından coworker'ı OpenWorker'ın **Install a coworker** panelinden ekleyin — **GitHub URL** (`https://github.com/Fighter90/career-ops-coworker`), **.zip** ([Releases](https://github.com/Fighter90/career-ops-coworker/releases)'ten) veya `career-ops.md`'yi **içe aktararak**. Bir **Job-Search Coworker** oturumu açın, `career-ops` klasörünüzü seçin ve gerçek bir şey isteyin — *"panolarımı tara ve bu haftanın en iyi 5 eşleşmesini ver"* ya da *"panoyu aç."* Bağlayıcılar (Gmail, Google Calendar, GitHub) ve tam kılavuz deponun [yardım kılavuzunda](https://github.com/Fighter90/career-ops-coworker/tree/main/help). OpenWorker'ın yükleyicisine ve depo yükleyicisine karşı kurulabilirliği doğrulandı.
+
+## 33. İş haritası (`#/map`)
+
+Harita; tarama sonuçlarını, bekleyen pipeline'ı ve tracker'ınızı bir OpenStreetMap haritasında gösterir. **Dolu nokta** bir değerlendirme puanıdır (tracker); **halka**, henüz değerlendirilmemiş bir ilan için başlık uyumu ipucudur (pipeline, tarama). **Sayı** yakın ilanları gruplar; ayırmak için yakınlaştırın. 📍 OpenStreetMap'te bulunan işveren adresini gösterir, aksi halde nokta yerleşimin merkezindedir. Katman seçici tarama, pipeline ve tracker'ı açıp kapatır.
+
+### Veri ve gizlilik
+
+Harita, dış hizmetlerle konuşan tek görünümdür ve yalnızca açıkken: tarayıcı harita karolarını karo sunucusundan yükler, sunucu ise her ilanın **konumunu ve şirket adını** (asla CV'nizi veya profilinizi değil) Nominatim coğrafi kodlayıcısına gönderir. Yanıtlar `web-ui/.cache/geocode.json` içinde önbelleğe alınır; her yer yalnızca bir kez sorgulanır. Bu istekleri kendi altyapınızda tutmak için aşağıdaki değişkenleri kendi barındırdığınız sunuculara yönlendirin.
+
+### Yapılandırma
+
+| Değişken | Varsayılan | Amaç |
+|---|---|---|
+| `NOMINATIM_URL` | `https://nominatim.openstreetmap.org` | Coğrafi kodlayıcı temel URL'si (kendi barındırılan Nominatim) |
+| `NOMINATIM_EMAIL` | — | Kullanım politikasının istediği gibi genel Nominatim'e gönderilen iletişim adresi |
+| `NOMINATIM_GAP_MS` | `1100` | Genel sunucuda sorgular arası en kısa süre (birden çok örnek aynı IP'yi paylaşıyorsa artırın) |
+| `MAP_TILE_URL` | `https://tile.openstreetmap.org/{z}/{x}/{y}.png` | Leaflet karo şablonu; sunucusu CSP `img-src` listesine eklenir |
+| `MAP_TILE_ATTRIBUTION` | OpenStreetMap | Özel karolar için gösterilen atıf |

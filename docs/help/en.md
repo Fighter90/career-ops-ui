@@ -2359,3 +2359,21 @@ curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/
 ```
 
 Then add the coworker in OpenWorker's **Install a coworker** panel — by **GitHub URL** (`https://github.com/Fighter90/career-ops-coworker`), by **.zip** (from [Releases](https://github.com/Fighter90/career-ops-coworker/releases)), or by **importing** `career-ops.md`. Open a **Job-Search Coworker** session, pick your `career-ops` folder, and ask *"scan my boards and give me the top 5 fits this week"* or *"open the dashboard."* Connectors (Gmail, Google Calendar, GitHub) and the full guide are in the coworker repo's [help guide](https://github.com/Fighter90/career-ops-coworker/tree/main/help). Verified installable against OpenWorker's own loader and its repo installer.
+
+## 33. Job map (`#/map`)
+
+The map shows scan results, the pending pipeline and your tracker on an OpenStreetMap map. A **filled dot** is an evaluation score (tracker); a **ring** is a title-fit hint for a posting you have not evaluated yet (pipeline, scan). A **number** groups nearby postings; zoom in to spread them. 📍 marks an employer address found in OpenStreetMap, otherwise the dot sits at the place's centre. The layer switch toggles scan, pipeline and tracker.
+
+### Data and privacy
+
+The map is the only view that talks to outside services, and only while you have it open: the browser loads map tiles from the tile server, and the server sends each posting's **location and company name** (never your CV or profile) to the Nominatim geocoder. Answers are cached in `web-ui/.cache/geocode.json`, so each place is looked up once. To keep these requests on your own infrastructure, point the variables below at self-hosted servers.
+
+### Configuration
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `NOMINATIM_URL` | `https://nominatim.openstreetmap.org` | Geocoder base URL (self-hosted Nominatim) |
+| `NOMINATIM_EMAIL` | — | Contact address sent to the public Nominatim, as its usage policy asks |
+| `NOMINATIM_GAP_MS` | `1100` | Minimum gap between lookups on the public host (raise it when several instances share one IP) |
+| `MAP_TILE_URL` | `https://tile.openstreetmap.org/{z}/{x}/{y}.png` | Leaflet tile template; its host is added to the CSP `img-src` |
+| `MAP_TILE_ATTRIBUTION` | OpenStreetMap | Attribution shown for custom tiles |
