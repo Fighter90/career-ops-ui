@@ -38,6 +38,7 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 - Tests **4056 → 4404**, browser **118**. Server coverage baseline: line 96.7 %, branch 86.3 % (`scripts/coverage-baseline.json`).
 - Specifications now live in one folder, `docs/sdd/specs/`; the program plan is `docs/sdd/PLAN.md`, the invariant→gate matrix `docs/sdd/TRACEABILITY.md`.
 - **Operator note:** behind a reverse proxy set `ALLOWED_HOSTS=<public host>`; an Ollama/Hermes base URL on a public host is now refused.
+- **Not in this release**, deliberately (see `docs/sdd/PLAN.md`): the sources-correctness pass (justjoin and nofluffjobs are dead upstream-side, ~40 sources still read a malformed 200 as an empty board) → v1.242.0; client, CSS and a11y review findings → v1.243.0; the `#/scan` redesign → v1.244.0; the Tamil locale → v1.245.0.
 
 ## [1.240.0] — 2026-10-06
 

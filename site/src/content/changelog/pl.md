@@ -9,6 +9,37 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.241.0] — 2026-10-07
+
+**Wydanie wzmacniające po przeglądzie kodu przez 28 agentów (~190 zweryfikowanych ustaleń): zamknięto klasy problemów dotyczące bezpieczeństwa, awarii procesu i utraty danych, a do tego mapa ofert pracy wniesiona przez @bullitt186.**
+
+### Dodano
+
+- **Mapa ofert (`#/map`)** — oferty z pipeline, ostatniego skanu i trackera na mapie OpenStreetMap, geokodowane przez Nominatim z identyfikującym nagłówkiem User-Agent, kolejką 1 żądanie/s, wycofywaniem się przy błędach i pamięcią podręczną na dysku. Leaflet jest serwowany z tego serwera (bez CDN); CSP zyskuje wyłącznie źródło kafelków w `img-src`. Wniósł **@bullitt186** (#381).
+- **Strażnik żądań** — serwer odrzuca `Host`, którego nie obsługuje (DNS rebinding), oraz zapisy z innych witryn i żądania GET z efektami ubocznymi (`/api/stream/*`, `/api/run/*`, `/api/geocode`). Odwrotny proxy przekazujący publiczną nazwę wpisuje ją do `ALLOWED_HOSTS`; workflow wdrożeniowy zapisuje ten drop-in systemd na podstawie publicznego adresu URL.
+- **Bramka pokrycia** — `npm run test:coverage:gate` (`scripts/coverage-report.mjs`) wypisuje pokrycie linii/gałęzi dla każdego pliku i kończy się błędem poniżej rosnącego poziomu bazowego.
+
+### Naprawiono
+
+- **Zniekształcone żądanie nie zatrzymuje już serwera.** Express 4 ignorował odrzucone asynchroniczne handlery, więc pole błędnego typu w `/api/deep`, `/api/auto-pipeline`, `/api/career-plan`, `/api/tracker` lub bajt NUL w `/api/stats` kończyły proces; teraz są to odpowiedzi JSON 400, a każde inne odrzucenie staje się 500.
+- **Przerwany lub nieudany skan nie kasuje już ostatnich wyników.** `last-scan.json` jest zachowywany, gdy skan zatrzymano lub wszystkie źródła zawiodły, a skan pojedynczej firmy scala wyniki zamiast je zastępować. Jeden źle skonfigurowany wpis w `portals.yml` nie przerywa już całego skanu.
+- **Oceny widzą całą metodę.** Pliki trybów były ucinane na 16 KB, więc `oferta.md` (92 KB) tracił bloki C–G; limity na plik wynoszą teraz 128 KB dla trybów i 64 KB dla CV, a ucięcie jest zgłaszane. Puste lub ucięte odpowiedzi kończą się błędem zamiast zapisu pustego raportu.
+- **SSRF:** kolejne przekierowania są ponownie sprawdzane pod kątem prywatnych celów, sprawdzana jest każda odpowiedź DNS, termin skanu obejmuje treść odpowiedzi, klucze `*_BASE_URL` trafiają tylko do hosta dostawcy (Hermes/Ollama: loopback lub LAN), pandoc działa z `--sandbox`.
+- **Zawieszenia pętli zdarzeń:** dwa kwadratowe wyrażenia regularne (usuwanie HTML, sanityzacja markdown) zastąpiono liniowymi skanerami.
+- **Utrata danych:** usunięcie wiersza pipeline zachowywało wynagrodzenie innych wierszy; `$&` w adresie URL psuło `pipeline.md`; zapisy mock-interview, networkingu i deep-research nadpisywały wcześniejsze pliki; historia rozmowy kwalifikacyjnej zachowywała pierwsze 40 tur zamiast ostatnich.
+- **Warstwa LLM:** auto-pipeline i deep research respektują `LLM_PROVIDER` i każdego dostawcę przez wspólny dispatch, rejestrują zużycie i zgłaszają ucięcie; Gemini evaluate/test nie zapisuje już raportu; OpenAI używa `max_completion_tokens`, a `OPENAI_MODEL` tylko dla Codex jest wysyłany jako `gpt-5`; opis stanowiska jest ujęty jako niezaufane dane.
+- **Raporty, deep i PDF inline** przekazują `--skip-fact-check` (weryfikacja faktów CV blokowała każdy raport z liczbami); format strony z profilu nie jest już nadpisywany.
+- **Skanery:** kwarantanna jest kluczowana adresem URL (naprawa adresu pozwala go ponowić), deduplikacja w obrębie przebiegu po kanonicznym adresie URL, puste wpisy list nie dopasowują już wszystkiego, zapisy atomowe, wiersze historii `skipped_*` nie są „widziane".
+- **Kontrola procesów:** eskalacja SIGKILL nigdy się nie uruchamiała; przebiegi wsadowe zabijają całą grupę procesów po rozłączeniu.
+- **CI i wydanie:** CI uruchamia teraz bramki zgodności changelogu, workflow i i18n; uprawnienia workflow o najmniejszych przywilejach; sekrety produkcyjne tylko w środowisku `production`; pakiet npm zawiera teraz `docs/help/`.
+- **Testy:** żaden test nie dotyka już sieci ani prawdziwego projektu nadrzędnego (jawny `CAREER_OPS_ROOT` jest zawsze respektowany); skopiowane algorytmy zastąpiono kodem produkcyjnym.
+
+### Uwagi
+
+- Testy **4056 → 4404**, przeglądarkowe **118**. Poziom bazowy pokrycia serwera: linie 96,7 %, gałęzie 86,3 % (`scripts/coverage-baseline.json`).
+- Specyfikacje mieszczą się teraz w jednym folderze, `docs/sdd/specs/`; plan programu to `docs/sdd/PLAN.md`, a macierz niezmiennik→bramka to `docs/sdd/TRACEABILITY.md`.
+- **Uwaga dla operatora:** za odwrotnym proxy ustaw `ALLOWED_HOSTS=<publiczny host>`; bazowy adres URL Ollama/Hermes na hoście publicznym jest teraz odrzucany.
+
 ## [1.240.0] — 2026-10-06
 
 **Parytet z projektem nadrzędnym — career-ops `main` @ `62905981` (VERSION 1.35.0, 177 commitów upstream od `b39931e`). Sześć nowych źródeł — 103 → 109 (104 EN + 5 RU) — poprawki przeniesione do ośmiu istniejących dostawców oraz format pipeline w postaci listy kontrolnej, wniesiony przez @bullitt186.**
