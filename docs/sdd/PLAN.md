@@ -23,7 +23,7 @@ views ×3, client libs ×2, tests ×3, scripts/CI, security sweep, i18n, CSS/a11
 
 Coverage (**≥ 90 % line and branch** on `server/` and `public/`, measured; baseline 97.4 % line /
 86.0 % branch) is not a release of its own: each of releases 2–5 raises it on the files it
-touches, `scripts/coverage-report.mjs` gates it, and release 6 publishes the final table.
+touches, `scripts/coverage-report.mjs` (created by agent T in step 1.2) gates it, and release 6 publishes the final table.
 Spec: `specs/2026-10-06-test-coverage-90.md`.
 
 ## Execution checklist (agent mode) — the order work actually happens in
@@ -42,7 +42,7 @@ to resumecraft.ru → `deploy.yml mode=verify` → local restart. Nothing is "do
 | | 1.2 Fix-and-cover agents **A** infra · **B** routes-llm · **C** routes-data · **D** scanners · **CI** workflows/packaging · **T** test isolation + create `scripts/coverage-report.mjs` (each owns its files only) | 6 agents in parallel | each group's findings closed with a red→green test; its files ≥ 90 % branch |
 | | 1.3 Integrate: one suite run, locale keys added in one pass, review of the combined diff | orchestrator + 1 reviewer | suite + browser green |
 | | 1.4 Ship train v1.241.0 (deploy writes the `ALLOWED_HOSTS` drop-in) | orchestrator + locale agents | prod verify passes, public check 401 (gated), not 421 |
-| **2** | 2.1 `lib/sources/_shape.mjs` helper | 1 agent | helper + tests merged first |
+| **2** | 2.1 `server/lib/sources/_shape.mjs` helper | 1 agent | helper + tests merged first |
 | | 2.2 Source-family agents (≈6, alphabetical families) + adapters host-pin agent | 7 agents | justjoin/nofluffjobs live again; every source throws on a malformed 200 |
 | | 2.3 Ship train v1.242.0 | orchestrator + locale agents | prod verify passes |
 | **3** | 3.1 Client agents: libs · views ×3 · CSS/a11y · i18n | 6 agents | findings closed, Playwright green |
