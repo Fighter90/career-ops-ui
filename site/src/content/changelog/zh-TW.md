@@ -4061,7 +4061,7 @@ curl -sS -o /dev/null -w '%{http_code}\n' http://127.0.0.1:4317/api/scan-ru/conf
 
 ## [1.21.0] — 2026-05-14
 
-**安全性 + 並行性 + 無障礙拋光,來自兩次獨立的程式碼審查。** [`docs/specs/V1.20.1-BACKLOG.md`](https://github.com/Fighter90/career-ops-ui/blob/main/docs/specs/V1.20.1-BACKLOG.md) 中的七項發現於一次發布中交付:一個 blocker(DNS-rebind TOCTOU)、六個 high-severity 缺陷(路徑遍歷淨化散落、LAN 部署的速率限制缺口、並行寫入競爭條件、i18n 覆蓋率破口、懸空的 aria-describedby、標籤關聯缺失)。34 個新測試;基準從 427 → 461 個單元測試 + 32/32 Playwright。每項修復都搭配命名迴歸測試。
+**安全性 + 並行性 + 無障礙拋光,來自兩次獨立的程式碼審查。** [`docs/sdd/specs/V1.20.1-BACKLOG.md`](https://github.com/Fighter90/career-ops-ui/blob/main/docs/sdd/specs/V1.20.1-BACKLOG.md) 中的七項發現於一次發布中交付:一個 blocker(DNS-rebind TOCTOU)、六個 high-severity 缺陷(路徑遍歷淨化散落、LAN 部署的速率限制缺口、並行寫入競爭條件、i18n 覆蓋率破口、懸空的 aria-describedby、標籤關聯缺失)。34 個新測試;基準從 427 → 461 個單元測試 + 32/32 Playwright。每項修復都搭配命名迴歸測試。
 
 ### 🛡️ 安全性
 

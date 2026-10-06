@@ -5505,7 +5505,7 @@ None. Every fix is additive or preserves existing endpoint contracts.
 
 ## [1.21.0] — 2026-05-14
 
-**Security + concurrency + a11y polish from two independent code-review passes.** Seven findings from [`docs/specs/V1.20.1-BACKLOG.md`](https://github.com/Fighter90/career-ops-ui/blob/main/docs/specs/V1.20.1-BACKLOG.md) shipped in one release: one blocker (DNS-rebind TOCTOU), six high-severity bugs (path-traversal sanitization spread, rate-limit gap on LAN deploy, concurrent-write race, i18n coverage hole, dangling aria-describedby, missing label associations). 34 new tests; baseline rose from 427 → 461 unit + 32/32 Playwright. Every fix lands behind a named regression test.
+**Security + concurrency + a11y polish from two independent code-review passes.** Seven findings from [`docs/sdd/specs/V1.20.1-BACKLOG.md`](https://github.com/Fighter90/career-ops-ui/blob/main/docs/sdd/specs/V1.20.1-BACKLOG.md) shipped in one release: one blocker (DNS-rebind TOCTOU), six high-severity bugs (path-traversal sanitization spread, rate-limit gap on LAN deploy, concurrent-write race, i18n coverage hole, dangling aria-describedby, missing label associations). 34 new tests; baseline rose from 427 → 461 unit + 32/32 Playwright. Every fix lands behind a named regression test.
 
 ### 🛡️ Security
 

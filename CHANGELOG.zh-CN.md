@@ -4067,7 +4067,7 @@ curl -sS -o /dev/null -w '%{http_code}\n' http://127.0.0.1:4317/api/scan-ru/conf
 
 ## [1.21.0] — 2026-05-14
 
-**两次独立代码评审带来的安全 + 并发 + 无障碍打磨。** [`docs/specs/V1.20.1-BACKLOG.md`](docs/specs/V1.20.1-BACKLOG.md) 中的 7 个发现一次性发布:1 个阻塞项(DNS-rebind TOCTOU)、6 个高严重度缺陷(路径遍历净化分散、LAN 部署的流控空缺、并发写入竞态、i18n 覆盖漏洞、悬空的 aria-describedby、缺失的 label 关联)。新增 34 个测试;基线从 427 → 461 单元 + 32/32 Playwright。每项修复都附带一条命名的回归测试。
+**两次独立代码评审带来的安全 + 并发 + 无障碍打磨。** [`docs/sdd/specs/V1.20.1-BACKLOG.md`](docs/sdd/specs/V1.20.1-BACKLOG.md) 中的 7 个发现一次性发布:1 个阻塞项(DNS-rebind TOCTOU)、6 个高严重度缺陷(路径遍历净化分散、LAN 部署的流控空缺、并发写入竞态、i18n 覆盖漏洞、悬空的 aria-describedby、缺失的 label 关联)。新增 34 个测试;基线从 427 → 461 单元 + 32/32 Playwright。每项修复都附带一条命名的回归测试。
 
 ### 🛡️ 安全
 

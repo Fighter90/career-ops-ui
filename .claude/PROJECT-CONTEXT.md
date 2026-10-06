@@ -134,7 +134,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  ├─ reviews/REVIEW-*.md                      # per-release code reviews
-│  ├─ specs/V1.20.1-BACKLOG.md                 # last sprint backlog (closed)
+│  ├─ sdd/specs/                               # THE specifications folder (SPEC per release/feature)
 │  ├─ help/{en,es,pt-BR,ko-KR,ja,ru,zh-CN,zh-TW}.md   # 16-section help bundles
 │  └─ adr/                                     # architecture decision records
 ├─ .claude/
@@ -171,7 +171,7 @@ career-ops-ui/
 
 ```
 1. gsd-explore           → research what exists / what's needed
-2. gsd-plan-phase        → docs/specs/V<X.Y.Z>-BACKLOG.md or .planning/ artifact
+2. gsd-plan-phase        → docs/sdd/specs/V<X.Y.Z>-BACKLOG.md or .planning/ artifact
 3. gsd-execute-phase     → small atomic commits with passing tests
 4. gsd-verify-work       → goal-backward check against the spec
 5. gsd-code-review       → produce docs/reviews/REVIEW-*.md

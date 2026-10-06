@@ -4066,7 +4066,7 @@ Nenhuma. Toda correção é aditiva ou preserva contratos de endpoint existentes
 
 ## [1.21.0] — 2026-05-14
 
-**Polish de segurança + concorrência + a11y a partir de dois passes independentes de code review.** Sete achados de [`docs/specs/V1.20.1-BACKLOG.md`](docs/specs/V1.20.1-BACKLOG.md) entregues em um único release: um bloqueador (TOCTOU de DNS-rebind), seis bugs de alta severidade (sanitização de path-traversal espalhada, lacuna de rate-limit em deploy LAN, condição de corrida em escritas concorrentes, buraco de cobertura i18n, aria-describedby pendurado, associações de label ausentes). 34 testes novos; a baseline subiu de 427 → 461 unit + 32/32 Playwright. Cada correção pousa atrás de um teste de regressão nomeado.
+**Polish de segurança + concorrência + a11y a partir de dois passes independentes de code review.** Sete achados de [`docs/sdd/specs/V1.20.1-BACKLOG.md`](docs/sdd/specs/V1.20.1-BACKLOG.md) entregues em um único release: um bloqueador (TOCTOU de DNS-rebind), seis bugs de alta severidade (sanitização de path-traversal espalhada, lacuna de rate-limit em deploy LAN, condição de corrida em escritas concorrentes, buraco de cobertura i18n, aria-describedby pendurado, associações de label ausentes). 34 testes novos; a baseline subiu de 427 → 461 unit + 32/32 Playwright. Cada correção pousa atrás de um teste de regressão nomeado.
 
 ### 🛡️ Segurança
 

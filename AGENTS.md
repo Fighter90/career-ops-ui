@@ -36,7 +36,7 @@ This project uses the GSD pipeline (Claude-Code-native skills). Non-Claude CLIs 
 discuss → spec → plan → execute → verify → review
 ```
 
-See `docs/sdd/SDD-GUIDE.md` for the full workflow + which artifacts to produce at each step. Codex / Gemini / Aider users: write the artifacts as plain Markdown under `.planning/phases/P-NN-<slug>/` and run them through whatever review loop your CLI supports.
+See `docs/sdd/SDD-GUIDE.md` for the full workflow + which artifacts to produce at each step. Specifications live in **one** folder, `docs/sdd/specs/` (template `_TEMPLATE.md`); the program plan is `docs/sdd/PLAN.md` and the invariant→gate matrix `docs/sdd/TRACEABILITY.md`. Codex / Gemini / Aider users: write the artifacts as plain Markdown under `.planning/phases/P-NN-<slug>/` and run them through whatever review loop your CLI supports.
 
 ## Quick reference
 

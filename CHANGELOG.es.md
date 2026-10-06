@@ -4074,7 +4074,7 @@ Ninguno. Cada *fix* es aditivo o preserva los contratos de los *endpoints* exist
 
 ## [1.21.0] — 2026-05-14
 
-**Pulido de seguridad + concurrencia + accesibilidad procedente de dos pases independientes de revisión de código.** Siete hallazgos del documento [`docs/specs/V1.20.1-BACKLOG.md`](docs/specs/V1.20.1-BACKLOG.md) se entregan en una sola versión: un bloqueante (TOCTOU de DNS-rebind), seis errores de severidad alta (dispersión del saneamiento de *path traversal*, hueco de *rate-limit* en despliegues LAN, condición de carrera de escritura, agujero de cobertura i18n, `aria-describedby` huérfano, asociaciones de etiqueta ausentes). 34 pruebas nuevas; la línea base sube de 427 → 461 *unit* + 32/32 Playwright. Cada *fix* aterriza tras una prueba de regresión con nombre.
+**Pulido de seguridad + concurrencia + accesibilidad procedente de dos pases independientes de revisión de código.** Siete hallazgos del documento [`docs/sdd/specs/V1.20.1-BACKLOG.md`](docs/sdd/specs/V1.20.1-BACKLOG.md) se entregan en una sola versión: un bloqueante (TOCTOU de DNS-rebind), seis errores de severidad alta (dispersión del saneamiento de *path traversal*, hueco de *rate-limit* en despliegues LAN, condición de carrera de escritura, agujero de cobertura i18n, `aria-describedby` huérfano, asociaciones de etiqueta ausentes). 34 pruebas nuevas; la línea base sube de 427 → 461 *unit* + 32/32 Playwright. Cada *fix* aterriza tras una prueba de regresión con nombre.
 
 ### 🛡️ Seguridad
 

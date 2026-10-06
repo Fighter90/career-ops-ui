@@ -4069,7 +4069,7 @@ curl -sS -o /dev/null -w '%{http_code}\n' http://127.0.0.1:4317/api/scan-ru/conf
 
 ## [1.21.0] — 2026-05-14
 
-**2 つの独立したコードレビューパスから得たセキュリティ + 同時実行性 + a11y のポリッシュ。** [`docs/specs/V1.20.1-BACKLOG.md`](https://github.com/Fighter90/career-ops-ui/blob/main/docs/specs/V1.20.1-BACKLOG.md) の 7 件の指摘を 1 リリースでシップ: ブロッカー 1 件 (DNS リバインド TOCTOU)、高重大度バグ 6 件 (path-traversal サニタイズの分散、LAN デプロイにおけるレート制限の欠落、書き込みの競合状態、i18n カバレッジの穴、宙ぶらりんな aria-describedby、label 関連付けの欠落)。新規テスト 34 件;ベースラインは 427 → 461 unit + 32/32 Playwright に上昇。全ての修正には名前付きの回帰テストが伴います。
+**2 つの独立したコードレビューパスから得たセキュリティ + 同時実行性 + a11y のポリッシュ。** [`docs/sdd/specs/V1.20.1-BACKLOG.md`](https://github.com/Fighter90/career-ops-ui/blob/main/docs/sdd/specs/V1.20.1-BACKLOG.md) の 7 件の指摘を 1 リリースでシップ: ブロッカー 1 件 (DNS リバインド TOCTOU)、高重大度バグ 6 件 (path-traversal サニタイズの分散、LAN デプロイにおけるレート制限の欠落、書き込みの競合状態、i18n カバレッジの穴、宙ぶらりんな aria-describedby、label 関連付けの欠落)。新規テスト 34 件;ベースラインは 427 → 461 unit + 32/32 Playwright に上昇。全ての修正には名前付きの回帰テストが伴います。
 
 ### 🛡️ セキュリティ
 

@@ -4069,7 +4069,7 @@ curl -sS -o /dev/null -w '%{http_code}\n' http://127.0.0.1:4317/api/scan-ru/conf
 
 ## [1.21.0] — 2026-05-14
 
-**두 번의 독립적 코드 리뷰 패스에서 도출된 보안 + 동시성 + 접근성 폴리시.** [`docs/specs/V1.20.1-BACKLOG.md`](docs/specs/V1.20.1-BACKLOG.md) 의 7개 결과를 한 릴리스에 출하했습니다: 블로커 1건 (DNS-rebind TOCTOU), 고위험 버그 6건 (경로 탐색 정화 (sanitization) 분산, LAN 배포에서의 레이트 리밋 공백, 동시 쓰기 경쟁 상태 (race condition), i18n 커버리지 누락, 매달린 aria-describedby, 누락된 label 연결). 신규 테스트 34개; 기준선이 427 → 461 유닛 + 32/32 Playwright 로 상승했습니다. 모든 수정은 명명된 회귀 테스트 뒤에 배치됩니다.
+**두 번의 독립적 코드 리뷰 패스에서 도출된 보안 + 동시성 + 접근성 폴리시.** [`docs/sdd/specs/V1.20.1-BACKLOG.md`](docs/sdd/specs/V1.20.1-BACKLOG.md) 의 7개 결과를 한 릴리스에 출하했습니다: 블로커 1건 (DNS-rebind TOCTOU), 고위험 버그 6건 (경로 탐색 정화 (sanitization) 분산, LAN 배포에서의 레이트 리밋 공백, 동시 쓰기 경쟁 상태 (race condition), i18n 커버리지 누락, 매달린 aria-describedby, 누락된 label 연결). 신규 테스트 34개; 기준선이 427 → 461 유닛 + 32/32 Playwright 로 상승했습니다. 모든 수정은 명명된 회귀 테스트 뒤에 배치됩니다.
 
 ### 🛡️ 보안
 
