@@ -2351,3 +2351,21 @@ curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/
 ```
 
 Poi aggiungi il coworker nel pannello **Install a coworker** di OpenWorker — tramite **GitHub URL** (`https://github.com/Fighter90/career-ops-coworker`), tramite **.zip** (dalle [Releases](https://github.com/Fighter90/career-ops-coworker/releases)) o **importando** `career-ops.md`. Apri una sessione **Job-Search Coworker**, scegli la tua cartella `career-ops` e chiedi qualcosa di reale — *"scansiona le mie board e dammi i 5 migliori match della settimana"* o *"apri la dashboard."* I connettori (Gmail, Google Calendar, GitHub) e la guida completa sono nella [guida](https://github.com/Fighter90/career-ops-coworker/tree/main/help) del repo. Installabilità verificata contro il loader di OpenWorker e il suo installer di repo.
+
+## 33. Mappa delle offerte (`#/map`)
+
+La mappa mostra i risultati della scansione, la pipeline in attesa e il tuo tracker su una mappa OpenStreetMap. Un **punto pieno** è un punteggio di valutazione (tracker); un **anello** è un indizio di affinità del titolo per un'offerta non ancora valutata (pipeline, scansione). Un **numero** raggruppa offerte vicine; ingrandisci per separarle. 📍 indica l'indirizzo del datore di lavoro trovato in OpenStreetMap, altrimenti il punto è al centro della località. Il selettore dei livelli mostra o nasconde scansione, pipeline e tracker.
+
+### Dati e privacy
+
+La mappa è l'unica vista che contatta servizi esterni, e solo mentre è aperta: il browser carica le tessere dal tile server e il server invia **luogo e nome dell'azienda** di ogni offerta (mai il tuo CV o il profilo) al geocoder Nominatim. Le risposte sono memorizzate in `web-ui/.cache/geocode.json`, quindi ogni luogo viene cercato una sola volta. Per tenere queste richieste sulla tua infrastruttura, punta le variabili qui sotto a server self-hosted.
+
+### Configurazione
+
+| Variabile | Predefinito | Scopo |
+|---|---|---|
+| `NOMINATIM_URL` | `https://nominatim.openstreetmap.org` | URL base del geocoder (Nominatim self-hosted) |
+| `NOMINATIM_EMAIL` | — | Indirizzo di contatto inviato al Nominatim pubblico, come richiede la sua policy d'uso |
+| `NOMINATIM_GAP_MS` | `1100` | Intervallo minimo tra le ricerche sull'host pubblico (aumentalo se più istanze condividono un IP) |
+| `MAP_TILE_URL` | `https://tile.openstreetmap.org/{z}/{x}/{y}.png` | Modello di tessere Leaflet; il suo host viene aggiunto a `img-src` della CSP |
+| `MAP_TILE_ATTRIBUTION` | OpenStreetMap | Attribuzione mostrata per tessere personalizzate |

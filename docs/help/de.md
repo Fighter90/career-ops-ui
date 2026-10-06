@@ -2465,3 +2465,21 @@ curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/
 ```
 
 Füge den Coworker dann in OpenWorkers **Install a coworker**-Panel hinzu — per **GitHub URL** (`https://github.com/Fighter90/career-ops-coworker`), per **.zip** (aus den [Releases](https://github.com/Fighter90/career-ops-coworker/releases)) oder durch **Importieren** von `career-ops.md`. Öffne eine **Job-Search Coworker**-Sitzung, wähle deinen `career-ops`-Ordner und bitte um etwas Konkretes — *„scanne meine Boards und gib mir die Top 5 Treffer dieser Woche"* oder *„öffne das Dashboard."* Connectors (Gmail, Google Calendar, GitHub) und die vollständige Anleitung stehen im [Hilfe-Guide](https://github.com/Fighter90/career-ops-coworker/tree/main/help) des Repos. Installierbarkeit gegen OpenWorkers Loader und Repo-Installer verifiziert.
+
+## 33. Stellenkarte (`#/map`)
+
+Die Karte zeigt Scan-Ergebnisse, die offene Pipeline und deinen Tracker auf einer OpenStreetMap-Karte. Ein **gefüllter Punkt** ist eine Bewertung (Tracker), ein **Ring** ein Titel-Fit-Hinweis für eine noch nicht bewertete Stelle (Pipeline, Scan). Eine **Zahl** fasst nahe Stellen zusammen; hineinzoomen verteilt sie. 📍 markiert eine in OpenStreetMap gefundene Firmenadresse, sonst sitzt der Punkt im Ortszentrum. Der Ebenen-Schalter blendet Scan, Pipeline und Tracker ein und aus.
+
+### Daten und Datenschutz
+
+Die Karte ist die einzige Ansicht, die externe Dienste anspricht, und nur solange sie geöffnet ist: Der Browser lädt Kartenkacheln vom Tile-Server, und der Server schickt **Ort und Firmenname** jeder Stelle (nie deinen Lebenslauf oder dein Profil) an den Geocoder Nominatim. Antworten werden in `web-ui/.cache/geocode.json` gecacht, jeder Ort wird also nur einmal abgefragt. Wer diese Anfragen in der eigenen Infrastruktur halten will, richtet die Variablen unten auf selbst gehostete Server.
+
+### Konfiguration
+
+| Variable | Standard | Zweck |
+|---|---|---|
+| `NOMINATIM_URL` | `https://nominatim.openstreetmap.org` | Basis-URL des Geocoders (selbst gehostetes Nominatim) |
+| `NOMINATIM_EMAIL` | — | Kontaktadresse für das öffentliche Nominatim, wie dessen Nutzungsrichtlinie verlangt |
+| `NOMINATIM_GAP_MS` | `1100` | Mindestabstand zwischen Abfragen beim öffentlichen Host (erhöhen, wenn mehrere Instanzen eine IP teilen) |
+| `MAP_TILE_URL` | `https://tile.openstreetmap.org/{z}/{x}/{y}.png` | Leaflet-Kachelvorlage; ihr Host wird in die CSP `img-src` aufgenommen |
+| `MAP_TILE_ATTRIBUTION` | OpenStreetMap | Quellenangabe für eigene Kacheln |

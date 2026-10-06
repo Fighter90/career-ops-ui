@@ -15,7 +15,7 @@
 import express from 'express';
 import { fileURLToPath } from 'node:url';
 import { resolve } from 'node:path';
-import { PATHS, PROJECT_ROOT, PUBLIC_DIR } from './lib/paths.mjs';
+import { PATHS, PROJECT_ROOT, PUBLIC_DIR, WEB_UI_ROOT } from './lib/paths.mjs';
 import { activityMiddleware } from './lib/activity-log.mjs';
 import { loadEnvFile } from './lib/dotenv.mjs';
 import { isValidJobUrl, sanitizeJobDescription, stripDangerousMarkdown } from './lib/security.mjs';
@@ -58,6 +58,8 @@ import { registerStatsRoutes } from './lib/routes/stats.mjs';
 import { registerMarketRoutes } from './lib/routes/market.mjs';
 import { registerTrackerRoutes } from './lib/routes/tracker.mjs';
 import { registerCvSyncRoutes } from './lib/routes/cv-sync.mjs';
+import { registerGeocodeRoutes } from './lib/routes/geocode.mjs';
+import { registerMapRoutes, tileConfig } from './lib/routes/map.mjs';
 import { listen } from './lib/http-timeouts.mjs';
 
 // Re-exports preserved for backward compatibility — earlier tests
@@ -95,7 +97,8 @@ export function createApp() {
     "script-src 'self'",
     "style-src 'self' https://fonts.googleapis.com 'unsafe-inline'",
     "font-src 'self' https://fonts.gstatic.com",
-    "img-src 'self' data:",
+    // Raster tiles for the #/map view: OpenStreetMap, or MAP_TILE_URL's host.
+    `img-src 'self' data: ${tileConfig().origin}`,
     "connect-src 'self'",
     "object-src 'none'",
     "base-uri 'self'",
@@ -123,6 +126,8 @@ export function createApp() {
   // no content hashing, so the robust fix is to make the HTML +
   // code/style assets always-revalidate. Other static assets (fonts,
   // images, favicon) keep express.static's default caching.
+  // Leaflet for #/map, served from node_modules so script-src stays 'self'.
+  app.use('/vendor/leaflet', express.static(resolve(WEB_UI_ROOT, 'node_modules', 'leaflet', 'dist')));
   app.use(express.static(PUBLIC_DIR, {
     setHeaders: (res, filePath) => {
       if (/\.(?:js|mjs|css|html)$/i.test(filePath)) {
@@ -195,6 +200,8 @@ export function createApp() {
   registerOutcomeRoutes(app);         // POST /api/outcome (dryRun preview + explicit write) — record an application outcome via outcome.mjs (archives artifacts + syncs tracker)
   registerFundedRoutes(app);          // v1.133.0 — GET /api/company-funded (funded-company discovery relay; read-only, --dry-run)
   registerLivenessRoutes(app);        // GET /api/liveness?url= (ATS "still live?" check; zero-token/zero-browser, SSRF-safe)
+  registerGeocodeRoutes(app);         // GET /api/geocode?q= (Nominatim, rate-limited + cached) for #/map
+  registerMapRoutes(app);             // GET /api/map/jobs (pipeline + tracker rows with resolved locations) for #/map
   // ───────────────────────────── Catch-all → SPA ─────────────────────────────
 
   // NEW-F1 (v1.59.5) — the previous `app.get('/api/*', …)` was GET-only,

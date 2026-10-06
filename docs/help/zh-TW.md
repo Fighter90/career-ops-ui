@@ -2102,3 +2102,21 @@ curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/
 ```
 
 然後在 OpenWorker 的 **Install a coworker** 面板中新增 coworker —— 透過 **GitHub URL**(`https://github.com/Fighter90/career-ops-coworker`)、**.zip**(來自 [Releases](https://github.com/Fighter90/career-ops-coworker/releases))或**匯入** `career-ops.md`。開啟 **Job-Search Coworker** 工作階段，選擇你的 `career-ops` 資料夾，然後提出真實需求 —— *「掃描我的看板，給我本週前 5 個匹配」* 或 *「開啟儀表板。」* 連接器(Gmail、Google Calendar、GitHub)與完整指南在儲存庫的[說明指南](https://github.com/Fighter90/career-ops-coworker/tree/main/help)中。已針對 OpenWorker 的載入器與儲存庫安裝器驗證可安裝。
+
+## 33. 職缺地圖 (`#/map`)
+
+地圖在 OpenStreetMap 上顯示掃描結果、待處理的 pipeline 與你的追蹤紀錄。**實心點**是評估分數（追蹤）；**圓環**是尚未評估職缺的職稱相符提示（pipeline、掃描）。**數字**代表合併的鄰近職缺，放大即可分開。📍 表示在 OpenStreetMap 找到的雇主地址，否則圓點位於地點中心。圖層開關可顯示或隱藏掃描、pipeline 與追蹤。
+
+### 資料與隱私
+
+地圖是唯一會連線外部服務的頁面，而且只在開啟時連線：瀏覽器從圖磚伺服器載入地圖圖磚，伺服器把每個職缺的**地點與公司名稱**（絕不包含你的履歷或個人檔案）傳給地理編碼服務 Nominatim。結果快取於 `web-ui/.cache/geocode.json`，每個地點只查詢一次。若要讓這些請求留在自己的基礎設施內，請將下列變數指向自架伺服器。
+
+### 設定
+
+| 變數 | 預設值 | 用途 |
+|---|---|---|
+| `NOMINATIM_URL` | `https://nominatim.openstreetmap.org` | 地理編碼服務的基礎 URL（自架 Nominatim） |
+| `NOMINATIM_EMAIL` | — | 依公共 Nominatim 使用政策要求傳送的聯絡信箱 |
+| `NOMINATIM_GAP_MS` | `1100` | 對公共主機兩次查詢的最小間隔（多個執行個體共用一個 IP 時調高） |
+| `MAP_TILE_URL` | `https://tile.openstreetmap.org/{z}/{x}/{y}.png` | Leaflet 圖磚範本；其主機會加入 CSP 的 `img-src` |
+| `MAP_TILE_ATTRIBUTION` | OpenStreetMap | 自訂圖磚顯示的出處標示 |

@@ -22,6 +22,7 @@
     <link rel="stylesheet" href="/css/app.css" />
     <link rel="stylesheet" href="/css/components.css" />
     <link rel="stylesheet" href="/css/overlays.css" />
+    <link rel="stylesheet" href="/vendor/leaflet/leaflet.css" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
     <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32.png" />
     <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16.png" />
@@ -52,6 +53,9 @@
         </a>
         <a class="nav-item" href="#/pipeline" data-route="pipeline">
           <span class="nav-ico">▤</span> <span data-i18n="nav.pipeline">Pipeline</span>
+        </a>
+        <a class="nav-item" href="#/map" data-route="map">
+          <span class="nav-ico">⌖</span> <span data-i18n="nav.map">Map</span>
         </a>
         <a class="nav-item" href="#/auto" data-route="auto">
           <span class="nav-ico">✨</span> <span data-i18n="nav.auto">Auto-pipeline</span>
@@ -354,6 +358,8 @@
     <script src="/js/views/scan.js"></script>
     <script src="/js/views/portals.js"></script>
     <script src="/js/views/pipeline.js"></script>
+    <script src="/vendor/leaflet/leaflet.js"></script>
+    <script src="/js/views/map.js"></script>
     <script src="/js/views/auto.js"></script>
     <script src="/js/views/evaluate.js"></script>
     <script src="/js/views/batch.js"></script>

@@ -2257,3 +2257,21 @@ curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/
 ```
 
 Następnie dodaj coworkera w panelu **Install a coworker** w OpenWorker — przez **GitHub URL** (`https://github.com/Fighter90/career-ops-coworker`), przez **.zip** (z [Releases](https://github.com/Fighter90/career-ops-coworker/releases)) lub **importując** `career-ops.md`. Otwórz sesję **Job-Search Coworker**, wybierz folder `career-ops` i poproś o coś konkretnego — *„przeskanuj moje tablice i daj 5 najlepszych dopasowań w tym tygodniu”* lub *„otwórz pulpit.”* Konektory (Gmail, Google Calendar, GitHub) i pełny przewodnik są w [przewodniku pomocy](https://github.com/Fighter90/career-ops-coworker/tree/main/help) repozytorium. Zweryfikowano instalowalność wobec loadera OpenWorker i jego instalatora repo.
+
+## 33. Mapa ofert (`#/map`)
+
+Mapa pokazuje wyniki skanowania, oczekujący pipeline i twój tracker na mapie OpenStreetMap. **Wypełniona kropka** to ocena (tracker); **pierścień** to wskazówka dopasowania tytułu dla oferty jeszcze nieocenionej (pipeline, skan). **Liczba** grupuje pobliskie oferty; przybliż, aby je rozdzielić. 📍 oznacza adres pracodawcy znaleziony w OpenStreetMap, w przeciwnym razie kropka leży w centrum miejscowości. Przełącznik warstw pokazuje lub ukrywa skan, pipeline i tracker.
+
+### Dane i prywatność
+
+Mapa to jedyny widok, który łączy się z usługami zewnętrznymi, i tylko gdy jest otwarty: przeglądarka pobiera kafelki z serwera kafelków, a serwer wysyła **lokalizację i nazwę firmy** każdej oferty (nigdy CV ani profilu) do geokodera Nominatim. Odpowiedzi są buforowane w `web-ui/.cache/geocode.json`, więc każde miejsce jest wyszukiwane tylko raz. Aby zatrzymać te zapytania we własnej infrastrukturze, skieruj poniższe zmienne na serwery hostowane samodzielnie.
+
+### Konfiguracja
+
+| Zmienna | Domyślnie | Cel |
+|---|---|---|
+| `NOMINATIM_URL` | `https://nominatim.openstreetmap.org` | Bazowy URL geokodera (własny Nominatim) |
+| `NOMINATIM_EMAIL` | — | Adres kontaktowy wysyłany do publicznego Nominatim, zgodnie z jego zasadami użycia |
+| `NOMINATIM_GAP_MS` | `1100` | Minimalny odstęp między zapytaniami do publicznego hosta (zwiększ, gdy kilka instancji dzieli jeden IP) |
+| `MAP_TILE_URL` | `https://tile.openstreetmap.org/{z}/{x}/{y}.png` | Szablon kafelków Leaflet; jego host trafia do `img-src` w CSP |
+| `MAP_TILE_ATTRIBUTION` | OpenStreetMap | Atrybucja wyświetlana dla własnych kafelków |

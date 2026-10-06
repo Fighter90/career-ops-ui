@@ -2362,3 +2362,21 @@ curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/
 ```
 
 Ajoutez ensuite le coworker dans le panneau **Install a coworker** d'OpenWorker — par **GitHub URL** (`https://github.com/Fighter90/career-ops-coworker`), par **.zip** (depuis les [Releases](https://github.com/Fighter90/career-ops-coworker/releases)) ou en **important** `career-ops.md`. Ouvrez une session **Job-Search Coworker**, choisissez votre dossier `career-ops` et demandez quelque chose de concret — *« scanne mes tableaux et donne-moi les 5 meilleures correspondances de la semaine »* ou *« ouvre le tableau de bord. »* Les connecteurs (Gmail, Google Calendar, GitHub) et le guide complet sont dans le [guide d'aide](https://github.com/Fighter90/career-ops-coworker/tree/main/help) du dépôt. Vérifié installable face au loader d'OpenWorker et à son installateur de dépôt.
+
+## 33. Carte des offres (`#/map`)
+
+La carte affiche les résultats de scan, le pipeline en attente et votre suivi sur une carte OpenStreetMap. Un **point plein** est une note d'évaluation (suivi) ; un **anneau** est un indice d'adéquation du titre pour une offre pas encore évaluée (pipeline, scan). Un **nombre** regroupe des offres proches ; zoomez pour les séparer. 📍 signale l'adresse de l'employeur trouvée dans OpenStreetMap, sinon le point est au centre de la localité. Le sélecteur de calques affiche ou masque scan, pipeline et suivi.
+
+### Données et confidentialité
+
+La carte est la seule vue qui contacte des services externes, et seulement lorsqu'elle est ouverte : le navigateur charge les tuiles depuis le serveur de tuiles, et le serveur envoie **le lieu et le nom de l'entreprise** de chaque offre (jamais votre CV ni votre profil) au géocodeur Nominatim. Les réponses sont mises en cache dans `web-ui/.cache/geocode.json` ; chaque lieu n'est recherché qu'une fois. Pour garder ces requêtes sur votre propre infrastructure, faites pointer les variables ci-dessous vers des serveurs auto-hébergés.
+
+### Configuration
+
+| Variable | Défaut | Rôle |
+|---|---|---|
+| `NOMINATIM_URL` | `https://nominatim.openstreetmap.org` | URL de base du géocodeur (Nominatim auto-hébergé) |
+| `NOMINATIM_EMAIL` | — | Adresse de contact envoyée au Nominatim public, comme le demande sa politique d'utilisation |
+| `NOMINATIM_GAP_MS` | `1100` | Intervalle minimal entre deux requêtes vers l'hôte public (à augmenter si plusieurs instances partagent une IP) |
+| `MAP_TILE_URL` | `https://tile.openstreetmap.org/{z}/{x}/{y}.png` | Modèle de tuiles Leaflet ; son hôte est ajouté au `img-src` de la CSP |
+| `MAP_TILE_ATTRIBUTION` | OpenStreetMap | Attribution affichée pour des tuiles personnalisées |

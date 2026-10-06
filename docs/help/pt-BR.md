@@ -2275,3 +2275,21 @@ curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/
 ```
 
 Depois adicione o coworker no painel **Install a coworker** do OpenWorker — por **GitHub URL** (`https://github.com/Fighter90/career-ops-coworker`), por **.zip** (das [Releases](https://github.com/Fighter90/career-ops-coworker/releases)) ou **importando** `career-ops.md`. Abra uma sessão **Job-Search Coworker**, escolha sua pasta `career-ops` e peça algo real — *"escaneie meus portais e me dê os 5 melhores encaixes da semana"* ou *"abra o painel."* Os conectores (Gmail, Google Calendar, GitHub) e o guia completo estão no [guia de ajuda](https://github.com/Fighter90/career-ops-coworker/tree/main/help) do repo. Verificado como instalável contra o loader do OpenWorker e seu instalador de repo.
+
+## 33. Mapa de vagas (`#/map`)
+
+O mapa mostra os resultados do scan, o pipeline pendente e o seu tracker em um mapa do OpenStreetMap. Um **ponto preenchido** é uma nota de avaliação (tracker); um **anel** é uma dica de aderência do título para uma vaga ainda não avaliada (pipeline, scan). Um **número** agrupa vagas próximas; aproxime o zoom para separá-las. 📍 marca o endereço do empregador encontrado no OpenStreetMap; caso contrário, o ponto fica no centro da localidade. O seletor de camadas mostra ou oculta scan, pipeline e tracker.
+
+### Dados e privacidade
+
+O mapa é a única tela que fala com serviços externos, e só enquanto está aberto: o navegador carrega os tiles do servidor de tiles e o servidor envia **o local e o nome da empresa** de cada vaga (nunca seu CV ou perfil) ao geocodificador Nominatim. As respostas ficam em cache em `web-ui/.cache/geocode.json`, então cada lugar é consultado uma única vez. Para manter essas requisições na sua própria infraestrutura, aponte as variáveis abaixo para servidores auto-hospedados.
+
+### Configuração
+
+| Variável | Padrão | Finalidade |
+|---|---|---|
+| `NOMINATIM_URL` | `https://nominatim.openstreetmap.org` | URL base do geocodificador (Nominatim auto-hospedado) |
+| `NOMINATIM_EMAIL` | — | Endereço de contato enviado ao Nominatim público, como pede sua política de uso |
+| `NOMINATIM_GAP_MS` | `1100` | Intervalo mínimo entre consultas ao host público (aumente se várias instâncias compartilham um IP) |
+| `MAP_TILE_URL` | `https://tile.openstreetmap.org/{z}/{x}/{y}.png` | Modelo de tiles do Leaflet; o host é adicionado ao `img-src` da CSP |
+| `MAP_TILE_ATTRIBUTION` | OpenStreetMap | Atribuição exibida para tiles próprios |
