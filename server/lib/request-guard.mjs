@@ -30,7 +30,9 @@ const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS']);
 // Express matches routes case-insensitively, so `/API/RUN/dedup` reaches the same
 // handler as `/api/run/dedup` — this test must be case-insensitive too, and it
 // looks at the path only (a `?x=/api/run` query must neither trip nor hide it).
-const ACTING_GET = /^\/api\/(?:stream|run)(?:\/|$)/i;
+// /api/geocode is a GET with an outbound side effect (Nominatim calls under the
+// user's IP, a growing cache) — a cross-site <img> must not drive it.
+const ACTING_GET = /^\/api\/(?:stream|run|geocode)(?:\/|$|\?)/i;
 
 /** Lower-cased hostname of a `Host` value or URL host, without port or brackets. */
 export function hostnameOf(hostHeader) {

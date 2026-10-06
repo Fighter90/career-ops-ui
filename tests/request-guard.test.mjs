@@ -108,7 +108,7 @@ test('side-effecting GETs (/api/stream/*, /api/run/*) refuse Sec-Fetch-Site: cro
 });
 
 test('the acting-GET match is case-insensitive like Express routing, and ignores the query string', async () => {
-  for (const path of ['/API/STREAM/scan-parent', '/api/Stream/scan-parent', '/Api/Run/doctor']) {
+  for (const path of ['/API/STREAM/scan-parent', '/api/Stream/scan-parent', '/Api/Run/doctor', '/api/geocode?q=Berlin']) {
     assert.equal((await call({ path, headers: { 'sec-fetch-site': 'cross-site' } })).status, 403, path);
   }
   // a query that merely mentions the path does not turn a read into an acting request
