@@ -7,7 +7,7 @@
  * Preserves existing comments and ordering; only the keys we touch are
  * rewritten, everything else passes through unchanged.
  */
-import { readFileSync, writeFileSync, existsSync, chmodSync } from 'node:fs';
+import { readFileSync, existsSync, chmodSync, openSync, fchmodSync, writeSync, closeSync } from 'node:fs';
 import { parseEnvLine } from './dotenv.mjs';
 import { isPrivateOrLoopbackHost } from './security.mjs';
 
@@ -504,8 +504,15 @@ export function updateEnvFile(path, updates) {
   while (newLines.length && newLines[newLines.length - 1] === '') newLines.pop();
   // The file holds API keys: owner-only. `mode` applies when the file is
   // created; chmod tightens an existing 0644 .env on the next Save.
-  writeFileSync(path, newLines.join('\n') + '\n', { mode: 0o600 });
-  try { chmodSync(path, 0o600); } catch { /* e.g. a filesystem without POSIX modes */ }
+  // One descriptor for mode + content: chmod-by-path after the write was a
+  // check-then-act race (the path could be swapped between the two calls).
+  const fd = openSync(path, 'w', 0o600);
+  try {
+    try { fchmodSync(fd, 0o600); } catch { /* e.g. a filesystem without POSIX modes */ }
+    writeSync(fd, newLines.join('\n') + '\n');
+  } finally {
+    closeSync(fd);
+  }
   return Array.from(written);
 }
 

@@ -38,7 +38,7 @@ test('parsePipeline reads the pending rows of a checklist pipeline', () => {
 });
 
 test('parsePipeline ignores processed ([x]) rows and prose', () => {
-  assert.ok(!parsePipeline(CHECKLIST).includes('https://done.example.com/jobs/9'));
+  assert.equal(parsePipeline(CHECKLIST).some((u) => u === 'https://done.example.com/jobs/9'), false);
 });
 
 test('addPipelineUrl appends a checklist row at the end of ## Pending, not a fence', () => {
