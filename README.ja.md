@@ -7,19 +7,19 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-3782%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-4056%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.239.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.239.4)
+[![release](https://img.shields.io/badge/release-v1.240.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.240.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.239.4** — **パッチ:** 長い AI 評価がスコアサマリーの手前で途切れなくなりました (韓国語と中国語のレポートが 8192 トークンの上限に達していました)。途切れた回答はそのように明示されます。**ソース 103 件 · テスト 3782 件 · ブラウザ 116 件。**
+> **🆕 最新リリース — v1.240.0** — **career-ops 1.35.0 との親パリティ:新しいソース 6 件(ADP Workforce Now、Gupy、JazzHR、Startup Jobs、Taleo、UKG Pro → 109)、既存プロバイダー 8 件へ反映した修正、そして親のチェックリスト形式 `pipeline.md`** — **@bullitt186** による提供です。UI はそのようなパイプラインを保留 0 件と読み、新しい URL を親が決して見ない場所に追記していましたが、現在は `- [ ]` 行を読み書きします。Ashby、Breezy、Recruitee は国を所在地に含めるため、フィルターが英国主のリモート求人を落とさなくなり、HTTP 200 で返されるチャレンジページは、空のボードと読まれず明示的に失敗します。**テスト 4056 件。**
 >
-> **前バージョン — v1.237.1** — **外部 QA パスから生まれたパッチ。** Jobstreet の修正が外部から確認されました:AU/NZ/HK/MY の各ホストでは `/id/job/<id>` がきれいな 404 を返し、`/job/<id>` は実際に保護されたルートに到達します——失われていたリンクは実在するものでした。前バージョンが追加した部分に 2 件の欠陥:**書籍リンク**はラベルはローカライズされていましたがリンク先はそうではなく、ロシア語ラベルが英語版へ導いていました——いまは `data-i18n-href` アプライヤーが `ru` をロシア語版へ送ります。そして **SEEK がホストを移行中**(`www.seek.com.au` → `au.seek.com`)のため、API パスが `redirect:'error'` のトランスポートへリダイレクトを始める前に `au.seek.com` と `nz.seek.com` を許可リストに追加しました。件数は **94** ソースのまま変わりません。**3210 件 · ブラウザー 116 件。**
+> **前バージョン — v1.239.4** — **パッチ:** 長い AI 評価がスコアサマリーの手前で途切れなくなりました (韓国語と中国語のレポートが 8192 トークンの上限に達していました)。途切れた回答はそのように明示されます。**ソース 103 件 · テスト 3782 件 · ブラウザ 116 件。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -653,7 +653,7 @@ UI は **17 言語** を提供します — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru
 
 | ファイル | 何か | いつ読むか |
 |---|---|---|
-| **[`CONTEXT.md`](CONTEXT.md)** | ドメイン辞書:概念ごとに採用された名称一つと、*使用しない*と明記された却下済みの表記ゆれ。 | **最初に。** このリポジトリが実際に代償を払っている混乱を解消します——`source` と `adapter`(103 対 98、そしてなぜ両方とも正しいのか)、`mirror` と `relay`、`telegram` と `telegram-channel`。 |
+| **[`CONTEXT.md`](CONTEXT.md)** | ドメイン辞書:概念ごとに採用された名称一つと、*使用しない*と明記された却下済みの表記ゆれ。 | **最初に。** このリポジトリが実際に代償を払っている混乱を解消します——`source` と `adapter`(109 対 104、そしてなぜ両方とも正しいのか)、`mirror` と `relay`、`telegram` と `telegram-channel`。 |
 | **[`PROGRESS.md`](PROGRESS.md)** | 作業状態:何が完了しているか、次の一手、既知の課題、そして**放棄したアプローチ**。 | どのセッションを始めるときも。Git は何が変わったかを示しますが、これは作業がどこまで進み、何がすでに試されて却下されたかを語ります。 |
 | **[`docs/adr/`](docs/adr/)** | 番号付きの意思決定記録——背景、決定、帰結、そして何が再検討のきっかけになるか。 | ある記録が扱う対象を変更する前に。決めるのは記録であって、現行リリースではありません。 |
 | **[`CLAUDE.md`](CLAUDE.md)** | 上記三つを指し示す、一画面に収まる索引。 | 自動的に、エージェントによって。あえて知識ベースには*しない*——長くなると流し読みされ、やがて無視されるからです。 |
@@ -776,6 +776,7 @@ career-ops-ui の構築に協力してくださっているすべての方に感
   <a href="https://github.com/Alien10140" title="Alien10140"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/4649783%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="Alien10140"/></a>
   <a href="https://github.com/vignyl" title="vignyl"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/26774609%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="vignyl"/></a>
   <a href="https://github.com/bracketouverte" title="bracketouverte"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/5484265%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="bracketouverte"/></a>
+  <a href="https://github.com/bullitt186" title="bullitt186"><img src="https://wsrv.nl/?url=avatars.githubusercontent.com/u/24450990%3Fv%3D4&w=160&h=160&fit=cover&mask=circle&output=png" width="80" height="80" alt="bullitt186"/></a>
 </p>
 
 **[すべてのコントリビューター →](https://github.com/Fighter90/career-ops-ui/graphs/contributors)**

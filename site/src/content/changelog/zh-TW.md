@@ -8,6 +8,37 @@
 
 ---
 
+## [1.240.0] — 2026-10-06
+
+**父專案對齊 —— career-ops `main` @ `62905981`（`VERSION` 為 1.35.0，自 `b39931e` 以來共 177 個上游提交）。六項新來源（103 → 109，104 EN + 5 RU）、鏡射進八個既有服務商的修復，以及由 @bullitt186 貢獻的檢查清單式 pipeline 格式。**
+
+### 新增
+
+- **六項新來源 —— 103 → 109（104 EN + 5 RU），98 → 104 個 EN 轉接器。**
+  - **ADP Workforce Now**（`workforcenow.adp.com`，帶 `cid` + `ccId`）—— `$skip` 分頁依實際回傳的列數推進；若回應既沒有 `jobRequisitions` 也沒有 `meta`，會拋出例外，而不是被當成空的職缺板；明細頁擷取為選擇性加入（`adpWorkforcenow.fetchDetails`，預設 25，上限 100）。
+  - **Gupy**（`employability-portal.gupy.io`）—— 全站關鍵字掃描，最新優先，並依 `since_days` 提前停止；`workplaceType` 以單數的 pt-BR 字串讀取，因此混合辦公職缺不會遺失；保密的職涯頁面會被捨棄。
+  - **JazzHR**（`*.applytojob.com`）—— 卡片解析器帶有純錨點連結的後備方案，因此頁面部分改版後仍能產出職缺；頁面上有職缺連結卻解析出零張卡片時會拋出例外，真正空的職缺板則回傳 `[]`。
+  - **Startup Jobs**（`startup.jobs/feeds/jobs`）—— RSS，單次請求；格式錯誤、HTML 或被截斷的回應本文會拋出例外，而不是回傳 `[]`（父專案合併後審查的修復，`08fe5d06`）；在比對項目之前會先遮蔽 CDATA 與註解。
+  - **Taleo**（`<tenant>.taleo.net`，`tre.taleo.net` 會被拒絕）—— 先對外殼頁面發出 GET，再對 `searchjobs` 發出 POST；外殼頁面沒有入口 id 時，會視為私有職缺板而拋出例外；欄位依表頭比對。
+  - **UKG Pro / UltiPro**（`recruiting[N].ultipro.{com,ca}`）—— `Top=50` + `Skip`，絕不採信 `totalCount` 作為停止條件，頁數上限 100（限制在 1500 以內），選擇性加入的明細頁以能辨識字串的大括號走訪法解析。
+
+### 修復
+
+- **以父專案的檢查清單格式讀寫 pipeline** —— 上游 career-ops 會把 `data/pipeline.md` 寫成 `## Pending` / `## Processed` 區段，內含 `- [ ] url | …` 列；UI 過去把它讀成 **0 筆待處理**，寫入時還會在檔案末端追加一個圍欄區塊，而父專案從不看那裡。`parsePipeline`、`addPipelineUrl` 與 `removePipelineUrl` 現在讀寫的都是這種格式（也會對已處理的列去重；薪資以帶標籤的 `note: comp …` 片段表示）；圍欄式格式維持不變。由 **@bullitt186** 貢獻（#380）。
+- **國家併入所在地** —— Ashby（主要的 `address.postalAddress`）、Breezy（`country.name`）與 Recruitee（扁平的 `location`）會附加國家，除非名稱中已將該國家作為完整單字包含，因此主要所在地為英國、次要為美國的遠端職缺，不會再被所在地篩選器丟掉。
+- **MokaHR** —— 接受 `hire-r1.mokahr.com` 區域主機（允許清單恰好是 `app.mokahr.com` + `hire-r1.mokahr.com`），API POST 與職缺連結使用該職缺板自己的主機，回應本文中的 `success:false` 現在會拋出例外，而不是被當成空的職缺板。
+- **Avature** —— 可解析 `article--jobs` 卡片（標題取自標頭錨點，所在地取自 `icon-address` span）。
+- **SAP SuccessFactors** —— `/go/<Category>/<id>[/<offset>]/` 形式的已儲存搜尋網址現在會解析到租戶根路徑；先前它會請求 `…/tile-search-results/`，該路徑回應 200 卻沒有任何磚塊。
+- **Deutsche Bahn** —— db.jobs 會把含有它無法呈現之職缺的任何結果頁整頁清空；現在的走訪改以 `pubExternalDate_tdt` 排序，每頁 1000 筆（最多 5 頁），以原始命中錨點數作為停止依據，而且遇到缺少結果標頭或未能解析的職缺連結時會拋出例外，而不是回傳一個偏短的職缺板。
+- **HigherEdJobs** —— 以 HTTP 200 回應的 Incapsula 挑戰頁面，過去會被解析成零筆項目並被當成空的職缺板；現在會拋出例外。
+- **有一項測試在開發者機器上讀到了真正的父專案** —— `tests/reports-list-cache.test.mjs` 把 `CAREER_OPS_ROOT` 設為沒有 `cv.md`/`portals.yml` 的暫存目錄，而 `paths.mjs` 會忽略這種目錄，因此在本機上它統計到的是父專案的報告（6 份，而不是 3 份），而旁邊沒有父專案的 CI 則通過。
+
+### 說明
+
+- 測試數 **3782 → 4056**。新增測試套件：`sources-adp-workforcenow`、`sources-gupy`、`sources-jazzhr`、`sources-startup-jobs`、`sources-taleo`、`sources-ultipro`、`sources-location-country-fold`、`sources-deutschebahn-blanked-page`、`sources-higheredjobs-challenge-page`，另有來自 #380 的 `parsers-pipeline-checklist`。
+- **父專案：** 本分支已追上上游 `main`（落後 144 → 0 個提交），四項 ADR-0002 的分歧均確認完好；上游對西里爾字母 `LOCATIONISH_RE` 的還原**沒有**帶進來。
+- **已在 v1.239.0 發布，不再重複：** AppliTrack、NEOGOV、Red Rover、SchoolSpring、OCC Mundial、Greenhouse 嵌入式職缺板、Workday `myworkdaysite.com`。
+
 ## [1.239.4] — 2026-09-29
 
 **針對 v1.239.3 線上回歸測試的修補。**

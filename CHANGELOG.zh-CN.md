@@ -9,6 +9,37 @@
 ---
 
 
+## [1.240.0] — 2026-10-06
+
+**父项目对齐 — career-ops `main` @ `62905981`（`VERSION` 为 1.35.0，自 `b39931e` 起共 177 个上游提交）。六个新来源 — 103 → 109（104 EN + 5 RU）— 八个现有服务商的镜像修复，以及由 @bullitt186 贡献的清单式 Pipeline 格式。**
+
+### 新增
+
+- **六个新来源 — 103 → 109（104 EN + 5 RU），EN 适配器 98 → 104。**
+  - **ADP Workforce Now**（`workforcenow.adp.com`，带 `cid` + `ccId`）—— `$skip` 分页按实际返回的行数推进；响应中既没有 `jobRequisitions` 也没有 `meta` 时会抛出异常，而不是被当作空职位板；可选启用的详情补全（`adpWorkforcenow.fetchDetails`，默认 25，上限 100）。
+  - **Gupy**（`employability-portal.gupy.io`）—— 全职位板关键词扫描，按最新优先，并在 `since_days` 处提前停止；`workplaceType` 按单数形式的 pt-BR 字符串读取，因此混合办公职位不会丢失；保密的招聘页面会被丢弃。
+  - **JazzHR**（`*.applytojob.com`）—— 卡片解析器，带裸锚点回退，因此部分改版后仍能解析出职位；有职位链接却解析出零张卡片时会抛出异常，真正空的职位板则返回 `[]`。
+  - **Startup Jobs**（`startup.jobs/feeds/jobs`）—— RSS，一次请求；格式错误、HTML 或被截断的响应体会抛出异常，而不是返回 `[]`（父项目合并后的评审修复，`08fe5d06`）；在匹配条目之前，CDATA 与注释会被遮蔽。
+  - **Taleo**（`<tenant>.taleo.net`，`tre.taleo.net` 被拒绝）—— 先对外壳页面发 GET，再发 `searchjobs` POST；外壳页面中没有 portal id 时按私有职位板抛出异常；各列按表头匹配。
+  - **UKG Pro / UltiPro**（`recruiting[N].ultipro.{com,ca}`）—— `Top=50` + `Skip`，绝不信任 `totalCount` 作为停止条件，页数上限 100（钳制在 1500），可选启用的详情页用感知字符串的花括号遍历来解析。
+
+### 修复
+
+- **Pipeline 采用父项目的清单格式** —— 上游 career-ops 把 `data/pipeline.md` 写成 `## Pending` / `## Processed` 两个小节，行形如 `- [ ] url | …`；UI 把它读成 **0 条待处理**，写入时又把一个代码围栏追加到文件末尾，而父项目从不看那里。`parsePipeline`、`addPipelineUrl` 与 `removePipelineUrl` 现在读写这种形态（也会对已处理行去重；薪资以带标签的 `note: comp …` 段表示）；围栏格式保持不变。由 **@bullitt186** 贡献（#380）。
+- **国家并入地点** —— Ashby（主要的 `address.postalAddress`）、Breezy（`country.name`）和 Recruitee（扁平的 `location`）会追加国家，除非名称中已把它作为完整单词包含；因此一个以英国为主、美国为辅的远程职位不再被地点过滤器丢弃。
+- **MokaHR** —— 接受 `hire-r1.mokahr.com` 区域主机（白名单恰好是 `app.mokahr.com` + `hire-r1.mokahr.com`），API POST 与职位链接使用职位板自己的主机，带内的 `success:false` 现在会抛出异常，而不是被当作空职位板。
+- **Avature** —— 可解析 `article--jobs` 卡片（标题取自头部锚点，地点取自 `icon-address` span）。
+- **SAP SuccessFactors** —— `/go/<Category>/<id>[/<offset>]/` 形式的已保存搜索 URL 会解析到租户根；此前它会请求 `…/tile-search-results/`，该地址返回 200 却没有任何图块。
+- **Deutsche Bahn** —— db.jobs 会把含有自己无法渲染的职位的任何结果页清空；现在遍历改为按 `pubExternalDate_tdt` 排序，每页 1000 条（最多 5 页），按原始命中锚点数停止，并在缺少结果标题或职位链接未能解析时抛出异常，而不是返回一个偏短的职位板。
+- **HigherEdJobs** —— 以 HTTP 200 返回的 Incapsula 质询页面过去会被解析为零条目并读作空职位板；现在会抛出异常。
+- **一个测试在开发者机器上读取了真实的父项目** —— `tests/reports-list-cache.test.mjs` 把 `CAREER_OPS_ROOT` 设为一个没有 `cv.md`/`portals.yml` 的临时目录，而 `paths.mjs` 会忽略这样的目录，因此在本地它统计的是父项目的报告（6 份而不是 3 份），而旁边没有父项目的 CI 却能通过。
+
+### 说明
+
+- 测试 **3782 → 4056**。新增测试套件：`sources-adp-workforcenow`、`sources-gupy`、`sources-jazzhr`、`sources-startup-jobs`、`sources-taleo`、`sources-ultipro`、`sources-location-country-fold`、`sources-deutschebahn-blanked-page`、`sources-higheredjobs-challenge-page`，以及来自 #380 的 `parsers-pipeline-checklist`。
+- **父项目：** fork 已同步到上游 `main`（落后 144 → 0 个提交），四项 ADR-0002 分歧经核实完好无损；上游对西里尔字母 `LOCATIONISH_RE` 的回退没有被带过来。
+- **已在 v1.239.0 发布，不再重复：** AppliTrack、NEOGOV、Red Rover、SchoolSpring、OCC Mundial、Greenhouse 内嵌职位板、Workday `myworkdaysite.com`。
+
 ## [1.239.4] — 2026-09-29
 
 **针对 v1.239.3 在线回归测试的补丁。**

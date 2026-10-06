@@ -151,6 +151,12 @@ import { neogovAdapter } from './adapters/neogov.mjs';
 import { occAdapter } from './adapters/occ.mjs';
 import { redroverAdapter } from './adapters/redrover.mjs';
 import { schoolspringAdapter } from './adapters/schoolspring.mjs';
+import { adpWorkforcenowAdapter } from './adapters/adp-workforcenow.mjs';
+import { gupyAdapter } from './adapters/gupy.mjs';
+import { jazzhrAdapter } from './adapters/jazzhr.mjs';
+import { startupJobsAdapter } from './adapters/startup-jobs.mjs';
+import { taleoAdapter } from './adapters/taleo.mjs';
+import { ultiproAdapter } from './adapters/ultipro.mjs';
 
 export const ALL_ADAPTERS = [
   builtinAdapter,
@@ -293,6 +299,14 @@ export const ALL_ADAPTERS = [
   occAdapter,
   redroverAdapter,
   schoolspringAdapter,
+  // v1.240.0 — parent parity: adp-workforcenow, gupy, jazzhr, startup-jobs, taleo,
+  // ultipro. Each matches an explicit `provider:` or its own pinned host.
+  adpWorkforcenowAdapter,
+  gupyAdapter,
+  jazzhrAdapter,
+  startupJobsAdapter,
+  taleoAdapter,
+  ultiproAdapter,
 ];
 
 /**

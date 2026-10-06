@@ -10,6 +10,38 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 
 ---
 
+## [1.240.0] — 2026-10-06
+
+**Parité avec le parent — career-ops `main` @ `62905981` (VERSION 1.35.0, 177 commits amont depuis `b39931e`). Six nouvelles sources — 103 → 109 (104 EN + 5 RU) —, des correctifs répliqués dans huit fournisseurs existants, et le format de pipeline en liste de contrôle, contribué par @bullitt186.**
+
+### Ajouté
+
+- **Six nouvelles sources — 103 → 109 (104 EN + 5 RU), adaptateurs anglophones 98 → 104.**
+  - **ADP Workforce Now** (`workforcenow.adp.com` avec `cid` + `ccId`) — pagination `$skip` d'après le nombre de lignes réellement renvoyées ; une réponse sans `jobRequisitions` ni `meta` lève une erreur au lieu de passer pour un tableau vide ; enrichissement du détail sur option (`adpWorkforcenow.fetchDetails`, 25 par défaut, plafond 100).
+  - **Gupy** (`employability-portal.gupy.io`) — balayage par mot-clé sur tout le tableau, du plus récent au plus ancien avec arrêt anticipé sur `since_days` ; `workplaceType` est lu comme la chaîne pt-BR au singulier pour ne pas perdre les offres hybrides ; les pages carrière confidentielles sont écartées.
+  - **JazzHR** (`*.applytojob.com`) — analyseur de cartes avec repli sur l'ancre nue, de sorte qu'une refonte partielle fournit encore des offres ; des liens d'offres sans aucune carte analysée lèvent une erreur, un tableau réellement vide renvoie `[]`.
+  - **Startup Jobs** (`startup.jobs/feeds/jobs`) — RSS, une seule requête ; un corps mal formé, HTML ou tronqué lève une erreur au lieu de renvoyer `[]` (le correctif de revue post-fusion du parent, `08fe5d06`) ; les CDATA et les commentaires sont masqués avant la recherche des éléments.
+  - **Taleo** (`<tenant>.taleo.net`, `tre.taleo.net` refusé) — GET de la coquille de page puis POST `searchjobs` ; une coquille sans identifiant de portail lève une erreur comme tableau privé ; colonnes repérées par leur intitulé.
+  - **UKG Pro / UltiPro** (`recruiting[N].ultipro.{com,ca}`) — `Top=50` + `Skip`, `totalCount` jamais pris comme condition d'arrêt, plafond de 100 pages (borné à 1500), pages de détail sur option analysées par un parcours d'accolades sensible aux chaînes.
+
+### Corrigé
+
+- **Pipeline au format liste de contrôle du parent** — career-ops en amont écrit `data/pipeline.md` en sections `## Pending` / `## Processed` de lignes `- [ ] url | …`, que l'interface lisait comme **0 en attente** et dans lequel elle écrivait en ajoutant un bloc de code délimité à la fin du fichier, là où le parent ne regarde jamais. `parsePipeline`, `addPipelineUrl` et `removePipelineUrl` lisent et écrivent désormais ce format (dédoublonnage aussi contre les lignes traitées ; rémunération sous forme de segment étiqueté `note: comp …`) ; le format à bloc de code délimité est inchangé. Contribué par **@bullitt186** (#380).
+- **Pays intégré à la localisation** — Ashby (`address.postalAddress` principal), Breezy (`country.name`) et Recruitee (`location` à plat) ajoutent le pays sauf si le nom le porte déjà comme mot entier, de sorte qu'un poste à distance principalement britannique, secondairement américain, n'est plus écarté par un filtre de localisation.
+- **MokaHR** — l'hôte régional `hire-r1.mokahr.com` est accepté (la liste blanche est exactement `app.mokahr.com` + `hire-r1.mokahr.com`), le POST d'API et les liens d'offres utilisent l'hôte propre du tableau, et un `success:false` dans la réponse lève désormais une erreur au lieu de passer pour un tableau vide.
+- **Avature** — les cartes `article--jobs` sont analysées (titre depuis l'ancre d'en-tête, lieu depuis le span `icon-address`).
+- **SAP SuccessFactors** — une URL de recherche enregistrée `/go/<Category>/<id>[/<offset>]/` se résout vers la racine du locataire ; elle atteignait auparavant `…/tile-search-results/`, qui répond 200 avec zéro tuile.
+- **Deutsche Bahn** — db.jobs vide toute page de résultats contenant une offre qu'il ne sait pas afficher ; le parcours trie désormais par `pubExternalDate_tdt` avec 1000 par page (5 pages au plus), s'arrête sur le nombre brut d'ancres de résultat, et lève une erreur si l'en-tête des résultats manque ou si des liens d'offres ne sont pas analysés, au lieu de renvoyer un tableau trop court.
+- **HigherEdJobs** — un défi Incapsula répondu en HTTP 200 s'analysait en zéro élément et passait pour un tableau vide ; il lève désormais une erreur.
+- **Un test lisait le vrai projet parent sur une machine de développeur** — `tests/reports-list-cache.test.mjs` fixait `CAREER_OPS_ROOT` sur un répertoire temporaire sans `cv.md`/`portals.yml`, ce que `paths.mjs` ignore ; en local il comptait donc les rapports du parent (6 au lieu de 3), tandis que la CI, sans parent à côté, passait.
+
+### Notes
+
+- Tests **3782 → 4056**. Nouvelles suites : `sources-adp-workforcenow`, `sources-gupy`, `sources-jazzhr`, `sources-startup-jobs`, `sources-taleo`, `sources-ultipro`, `sources-location-country-fold`, `sources-deutschebahn-blanked-page`, `sources-higheredjobs-challenge-page`, ainsi que `parsers-pipeline-checklist` issue de #380.
+- **Parent :** le fork a été ramené sur le `main` amont (144 → 0 commits de retard) avec les quatre divergences de l'ADR-0002 vérifiées intactes ; l'annulation en amont du `LOCATIONISH_RE` cyrillique n'est pas passée.
+- **Déjà livré en v1.239.0, non répété :** AppliTrack, NEOGOV, Red Rover, SchoolSpring, OCC Mundial, tableaux Greenhouse intégrés, Workday `myworkdaysite.com`.
+- **Non porté**, avec les raisons : sortie par proxy de confiance (`CAREER_OPS_TRUST_PROXY_EGRESS`, `_http.mjs` / `_ip-guard.mjs` / `_dns-cache.mjs`) — web-ui scanne par son propre transport `http-json.mjs` ; le registre de colonnes de `scan-history.tsv` et le dédoublonnage des requisitions sensible à la langue — web-ui lit les positions 1–12, qui n'ont pas bougé, et dédoublonne par URL ; `requisitionId` / `language` de SmartRecruiters — aucun consommateur dans la forme d'offre de web-ui ; **Gem** `isoCountry` → nom de pays — exige la table alpha-3 de 249 entrées du parent, reportée ; changements propres à la CLI (modes, outil de mise à jour, doctor, charge utile PDF/ATS, scripts du tracker, tableau de bord Go, mode Singapour).
+
 ## [1.239.4] — 2026-09-29
 
 **Correctif issu de la régression en direct de la v1.239.3.**

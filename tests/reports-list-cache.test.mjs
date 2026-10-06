@@ -21,6 +21,10 @@ before(async () => {
   for (const n of ['a', 'b', 'c']) writeFileSync(resolve(dir, 'reports', `${n}.md`), report('4.1'));
   // A sibling directory sharing the prefix must not be touched by eviction.
   mkdirSync(resolve(dir, 'reports-old'), { recursive: true });
+  // paths.mjs honors CAREER_OPS_ROOT only if the directory holds cv.md or
+  // portals.yml; without one it falls back to ../, i.e. the REAL parent project
+  // on a developer machine (CI has none, which is why only local runs failed).
+  writeFileSync(resolve(dir, 'cv.md'), '# cv\n');
   process.env.CAREER_OPS_ROOT = dir;
   ({ safeListReports, __reportCache } = await import('../server/lib/store.mjs'));
 });

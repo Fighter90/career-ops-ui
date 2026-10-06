@@ -9,6 +9,37 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.240.0] — 2026-10-06
+
+**Parytet z projektem nadrzędnym — career-ops `main` @ `62905981` (VERSION 1.35.0, 177 commitów upstream od `b39931e`). Sześć nowych źródeł — 103 → 109 (104 EN + 5 RU) — poprawki przeniesione do ośmiu istniejących dostawców oraz format pipeline w postaci listy kontrolnej, wniesiony przez @bullitt186.**
+
+### Dodano
+
+- **Sześć nowych źródeł — 103 → 109 (104 EN + 5 RU), adaptery EN 98 → 104.**
+  - **ADP Workforce Now** (`workforcenow.adp.com` z `cid` + `ccId`) — paginacja `$skip` według faktycznie zwróconej liczby wierszy; odpowiedź bez `jobRequisitions` i bez `meta` zgłasza błąd zamiast być odczytana jako pusta tablica; opcjonalne uzupełnianie szczegółów (`adpWorkforcenow.fetchDetails`, domyślnie 25, limit 100).
+  - **Gupy** (`employability-portal.gupy.io`) — przeszukiwanie całej tablicy po słowach kluczowych, od najnowszych, z wczesnym zatrzymaniem przy `since_days`; `workplaceType` jest odczytywane jako pojedynczy ciąg pt-BR, więc oferty hybrydowe nie giną; poufne strony kariery są odrzucane.
+  - **JazzHR** (`*.applytojob.com`) — parser kart z awaryjnym wariantem samej kotwicy, dzięki czemu częściowy redesign nadal daje oferty; linki do ofert przy zerze sparsowanych kart zgłaszają błąd, a naprawdę pusta tablica zwraca `[]`.
+  - **Startup Jobs** (`startup.jobs/feeds/jobs`) — RSS, jedno żądanie; zniekształcona, HTML-owa lub ucięta odpowiedź zgłasza błąd zamiast zwracać `[]` (poprawka z przeglądu po scaleniu w projekcie nadrzędnym, `08fe5d06`); CDATA i komentarze są maskowane przed dopasowaniem elementów `item`.
+  - **Taleo** (`<tenant>.taleo.net`, `tre.taleo.net` odrzucany) — GET powłoki, potem POST `searchjobs`; powłoka bez identyfikatora portalu zgłasza błąd jako prywatna tablica; kolumny są dopasowywane po nagłówku.
+  - **UKG Pro / UltiPro** (`recruiting[N].ultipro.{com,ca}`) — `Top=50` + `Skip`, `totalCount` nigdy nie jest warunkiem zatrzymania, limit stron 100 (ograniczany do 1500), opcjonalne strony szczegółów parsowane przejściem po nawiasach klamrowych uwzględniającym ciągi znaków.
+
+### Naprawiono
+
+- **Pipeline w formacie listy kontrolnej projektu nadrzędnego** — upstream career-ops zapisuje `data/pipeline.md` jako sekcje `## Pending` / `## Processed` z wierszami `- [ ] url | …`, które UI odczytywało jako **0 oczekujących**, a zapisywało, dopisując blok kodu na końcu pliku, gdzie projekt nadrzędny nigdy nie zagląda. `parsePipeline`, `addPipelineUrl` i `removePipelineUrl` odczytują i zapisują teraz ten kształt (deduplikacja także względem przetworzonych wierszy; wynagrodzenie jako oznaczony segment `note: comp …`); format z blokiem kodu bez zmian. Wniósł **@bullitt186** (#380).
+- **Kraj dołączany do lokalizacji** — Ashby (główny `address.postalAddress`), Breezy (`country.name`) i Recruitee (płaskie `location`) dopisują kraj, chyba że nazwa już zawiera go jako całe słowo, więc zdalna oferta z głównym adresem w UK i dodatkowym w USA nie jest już odrzucana przez filtr lokalizacji.
+- **MokaHR** — host regionalny `hire-r1.mokahr.com` jest akceptowany (biała lista to dokładnie `app.mokahr.com` + `hire-r1.mokahr.com`), POST do API i linki do ofert używają własnego hosta tablicy, a zwrócone w treści `success:false` zgłasza teraz błąd zamiast być odczytane jako pusta tablica.
+- **Avature** — karty `article--jobs` są parsowane (tytuł z kotwicy w nagłówku, lokalizacja z elementu span `icon-address`).
+- **SAP SuccessFactors** — adres zapisanego wyszukiwania `/go/<Category>/<id>[/<offset>]/` rozwiązuje się teraz do katalogu głównego najemcy; wcześniej trafiał na `…/tile-search-results/`, które odpowiada 200 z zerem kafelków.
+- **Deutsche Bahn** — db.jobs wyświetla pustą stronę wyników, gdy zawiera ona ofertę, której nie potrafi wyrenderować; przeszukiwanie sortuje teraz według `pubExternalDate_tdt` po 1000 na stronę (maks. 5 stron), zatrzymuje się według surowej liczby kotwic trafień i zgłasza błąd przy braku nagłówka wyników lub niesparsowanych linkach do ofert, zamiast zwracać okrojoną tablicę.
+- **HigherEdJobs** — strona wyzwania Incapsula zwrócona z HTTP 200 była parsowana jako zero elementów i odczytywana jako pusta tablica; teraz zgłasza błąd.
+- **Test czytał prawdziwy projekt nadrzędny na maszynie programisty** — `tests/reports-list-cache.test.mjs` ustawiał `CAREER_OPS_ROOT` na katalog tymczasowy bez `cv.md`/`portals.yml`, który `paths.mjs` ignoruje, więc lokalnie liczył raporty projektu nadrzędnego (6 zamiast 3), a CI, bez projektu nadrzędnego obok, przechodziło.
+
+### Uwagi
+
+- Testy **3782 → 4056**. Nowe zestawy: `sources-adp-workforcenow`, `sources-gupy`, `sources-jazzhr`, `sources-startup-jobs`, `sources-taleo`, `sources-ultipro`, `sources-location-country-fold`, `sources-deutschebahn-blanked-page`, `sources-higheredjobs-challenge-page`, a także `parsers-pipeline-checklist` z #380.
+- **Projekt nadrzędny:** fork doprowadzono do poziomu upstream `main` (144 → 0 commitów zaległości), a cztery rozbieżności z ADR-0002 potwierdzono jako nienaruszone; cofnięcie przez upstream cyrylickiego `LOCATIONISH_RE` nie zostało przeniesione.
+- **Już wydane w v1.239.0, nie powtarzane:** AppliTrack, NEOGOV, Red Rover, SchoolSpring, OCC Mundial, osadzone tablice Greenhouse, Workday `myworkdaysite.com`.
+
 ## [1.239.4] — 2026-09-29
 
 **Poprawka po regresji na żywo wersji v1.239.3.**

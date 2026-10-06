@@ -155,3 +155,27 @@ test('fetchAvature: rejects an off-host endpoint before any fetch', async () => 
   await assert.rejects(() => fetchAvature('https://evil.com/careers', { fetchImpl }), /untrusted hostname/);
   assert.equal(calls, 0);
 });
+
+test('parseAvature: an "article--jobs" card yields the h3 title (not "View more") and the icon-address location', () => {
+  const card = `
+    <article class="article article--jobs js_collapsible">
+      <div class="article__header"><div class="article__header__text">
+        <h3 class="article__header__text__title article__header__text__title--8">
+          <a href="https://careers.avature.net/en_US/main/JobDetail/Argentina-Cloud-Engineer-Argentina/7739">
+            Cloud Engineer
+          </a>
+        </h3>
+      </div></div>
+      <div class="article__footer"><div class="article__footer__info">
+        <p><span class="icon icon-tag" aria-hidden="true"></span> Cloud Services</p>
+        <p><span class="icon icon-address" aria-hidden="true"></span> Argentina</p>
+      </div><div class="article__footer__actions">
+        <a class="link" href="https://careers.avature.net/en_US/main/JobDetail/Argentina-Cloud-Engineer-Argentina/7739">View more</a>
+      </div></div>
+    </article>`;
+  const jobs = parseAvature(card, { origin: 'https://careers.avature.net', fallbackCompany: 'Avature' });
+  assert.equal(jobs.length, 1);
+  assert.equal(jobs[0].id, 'avature-7739');
+  assert.equal(jobs[0].title, 'Cloud Engineer');
+  assert.equal(jobs[0].location, 'Argentina');
+});

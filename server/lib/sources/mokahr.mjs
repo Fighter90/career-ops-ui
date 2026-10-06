@@ -32,8 +32,12 @@ export const meta = {
   region: 'en',
 };
 
-const API = 'https://app.mokahr.com/api/outer/ats-apply/website/jobs/v2';
-const DETAIL_HOST = 'app.mokahr.com';
+const API_PATH = '/api/outer/ats-apply/website/jobs/v2';
+// Explicit allowlist, not a `*.mokahr.com` wildcard: hire-r1-ats.mokahr.com is a
+// static CDN (403 on the API). hire-r1 is Moka's international deployment: same
+// API path and body, plaintext `data`. A tenant is unknown to the other host, so
+// the API call must go to the careers_url's own host (parent 993085ce..HEAD).
+const ALLOWED_HOSTS = new Set(['app.mokahr.com', 'hire-r1.mokahr.com']);
 const AES_IV = Buffer.from('de7c21ed8d6f50fe', 'utf8');
 const MAX_LIMIT = 50;              // hard server-side ceiling
 const DEFAULT_KEYWORDS = [''];     // empty keyword = whole board, no topical bias
@@ -53,7 +57,7 @@ const ROBOTS_EXCLUDED_PATHS = new Set([
 /**
  * Parse a tenant careers URL into `{ orgId, siteId, baseUrl }`, or null when it
  * is not an allowed MokaHR tenant. HTTPS-only and the host pinned to
- * `app.mokahr.com` exactly — the siteId reaches a request body, so a loose
+ * an explicit allowlist (`app.mokahr.com`, `hire-r1.mokahr.com`) — the siteId reaches a request body, so a loose
  * check here would be the SSRF hole.
  * @param {unknown} url
  */
@@ -64,14 +68,14 @@ export function parseTenantUrl(url) {
   } catch {
     return null;
   }
-  if (u.protocol !== 'https:' || u.hostname !== DETAIL_HOST) return null;
+  if (u.protocol !== 'https:' || !ALLOWED_HOSTS.has(u.hostname)) return null;
   const m = TENANT_PATH_RE.exec(u.pathname);
   if (!m) return null;
   const siteId = Number(m[2]);
   if (!Number.isSafeInteger(siteId) || siteId <= 0) return null;
   const pathname = u.pathname.replace(/\/$/, '');
   if (ROBOTS_EXCLUDED_PATHS.has(pathname)) return null;
-  return { orgId: m[1], siteId, baseUrl: `${u.origin}${pathname}` };
+  return { orgId: m[1], siteId, baseUrl: `${u.origin}${pathname}`, apiUrl: `${u.origin}${API_PATH}` };
 }
 
 /**
@@ -94,6 +98,17 @@ export function decryptMokaHrEnvelope(envelope) {
   const decipher = createDecipheriv('aes-128-cbc', key, AES_IV);
   const plain = Buffer.concat([decipher.update(ciphertext), decipher.final()]);
   return JSON.parse(plain.toString('utf8'));
+}
+
+/**
+ * Plaintext body: hire-r1 sends `data` as a JSON object already; app.mokahr.com
+ * sends a ciphertext string to decrypt.
+ * @param {any} envelope
+ */
+export function unwrapMokaHrResponse(envelope) {
+  const data = envelope?.data;
+  if (data && typeof data === 'object' && !Array.isArray(data)) return envelope;
+  return decryptMokaHrEnvelope(envelope);
 }
 
 /**
@@ -155,9 +170,9 @@ export function parseMokaHrJobs(decrypted, companyName, tenantBaseUrl) {
 export function buildMokaHrUrl(company = {}) {
   const tenant = parseTenantUrl(company?.careers_url ?? company?.api);
   if (!tenant) {
-    throw new Error('mokahr: careers_url must be an allowed HTTPS app.mokahr.com tenant URL with a positive site ID');
+    throw new Error(`mokahr: careers_url must be an allowed HTTPS tenant URL on ${[...ALLOWED_HOSTS].join(' or ')} with a positive site ID`);
   }
-  return API;
+  return tenant.apiUrl;
 }
 
 const sleep = (ms, signal) => new Promise((resolve) => {
@@ -174,7 +189,7 @@ export async function fetchMokaHr(_url, opts = {}) {
   const { fetchImpl = fetch, signal, company = {} } = opts;
   const tenant = parseTenantUrl(company?.careers_url ?? company?.api);
   if (!tenant) {
-    throw new Error('mokahr: careers_url must be an allowed HTTPS app.mokahr.com tenant URL with a positive site ID');
+    throw new Error(`mokahr: careers_url must be an allowed HTTPS tenant URL on ${[...ALLOWED_HOSTS].join(' or ')} with a positive site ID`);
   }
 
   const keywords = Array.isArray(company?.keywords) && company.keywords.length
@@ -197,7 +212,7 @@ export async function fetchMokaHr(_url, opts = {}) {
       const offset = (page - 1) * MAX_LIMIT;
       let envelope;
       try {
-        envelope = await fetchJson(fetchImpl, API, {
+        envelope = await fetchJson(fetchImpl, tenant.apiUrl, {
           method: 'POST',
           signal,
           headers: {
@@ -224,7 +239,11 @@ export async function fetchMokaHr(_url, opts = {}) {
         return [...seen.values()];
       }
 
-      const decrypted = decryptMokaHrEnvelope(envelope);
+      const decrypted = unwrapMokaHrResponse(envelope);
+      // An in-band failure (hire-r1 sends plaintext errors) must not read as an empty board.
+      if (decrypted?.success === false) {
+        throw new Error(`mokahr: API error: ${decrypted.msg || decrypted.code || 'success=false'}`);
+      }
       succeededOnce = true;
       const jobs = parseMokaHrJobs(decrypted, companyName, tenant.baseUrl);
       if (jobs.length === 0) break;
