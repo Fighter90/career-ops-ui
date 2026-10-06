@@ -29,7 +29,7 @@ Spec: `specs/2026-10-06-test-coverage-90.md`.
 ## Execution checklist (agent mode) — the order work actually happens in
 
 Every release runs the same **ship train**: `test:ci` + browser suite + `evals/workflow` + i18n audit +
-changelog parity → docs ×17 (one agent per locale) → QA prompt → PR → CI green → squash-merge →
+changelog parity → docs ×17 (English by the orchestrator, one agent per other locale) → QA prompt → PR → CI green → squash-merge →
 tag → Release workflow → `publish-package.yml` → Pages deploy → wiki → **`deploy.yml mode=deploy`**
 to resumecraft.ru → `deploy.yml mode=verify` → local restart. Nothing is "done" before verify passes.
 
@@ -37,16 +37,16 @@ to resumecraft.ru → `deploy.yml mode=verify` → local restart. Nothing is "do
 |---|---|---|---|
 | **0** | 0.1 Open PR for `feat/v1.240.0-parent-parity`, CI green, merge | orchestrator | merged to `main` |
 | | 0.2 Review external PR **#381** (job map: OSM tiles + Nominatim) — CSP, privacy, SSRF, tests, i18n ×17 | review agent + local suite | approve-or-request-changes recorded on the PR |
-| | 0.3 Ship train v1.240.0 | orchestrator + 16 locale agents (docs already done) | prod `/api/health` = 1.240.0 |
+| | 0.3 Ship train v1.240.0 | orchestrator (locale docs already done) | prod `/api/health` = 1.240.0 |
 | **1** | 1.1 Rebase `fix/v1.241.0-review-hardening` on `main` | orchestrator | clean rebase, suite green |
-| | 1.2 Fix-and-cover agents **A** infra · **B** routes-llm · **C** routes-data · **D** scanners · **CI** workflows/packaging · **T** test isolation (each owns its files only) | 6 agents in parallel | each group's findings closed with a red→green test; its files ≥ 90 % branch |
+| | 1.2 Fix-and-cover agents **A** infra · **B** routes-llm · **C** routes-data · **D** scanners · **CI** workflows/packaging · **T** test isolation + create `scripts/coverage-report.mjs` (each owns its files only) | 6 agents in parallel | each group's findings closed with a red→green test; its files ≥ 90 % branch |
 | | 1.3 Integrate: one suite run, locale keys added in one pass, review of the combined diff | orchestrator + 1 reviewer | suite + browser green |
 | | 1.4 Ship train v1.241.0 (deploy writes the `ALLOWED_HOSTS` drop-in) | orchestrator + locale agents | prod verify passes, public check 401 (gated), not 421 |
 | **2** | 2.1 `lib/sources/_shape.mjs` helper | 1 agent | helper + tests merged first |
 | | 2.2 Source-family agents (≈6, alphabetical families) + adapters host-pin agent | 7 agents | justjoin/nofluffjobs live again; every source throws on a malformed 200 |
-| | 2.3 Ship train v1.242.0 | | |
+| | 2.3 Ship train v1.242.0 | orchestrator + locale agents | prod verify passes |
 | **3** | 3.1 Client agents: libs · views ×3 · CSS/a11y · i18n | 6 agents | findings closed, Playwright green |
-| | 3.2 Ship train v1.243.0 | | |
+| | 3.2 Ship train v1.243.0 | orchestrator + locale agents | prod verify passes |
 | **4** | `#/scan` redesign per spec — design pass, layout tests red, implementation, 17 locales | 2–3 agents | spec acceptance criteria |
 | **5** | Tamil locale (`ta`) | 1 agent + locale fan-out | 18 locales green |
 | **6** | Upstream features backlog | per feature | per spec |
@@ -74,7 +74,7 @@ later-page failure keeps partials; pagination stops on the **raw** page length; 
 https on the pinned host; host pins replace `includes('vendor')` in adapters (lever, greenhouse,
 ashby, smartrecruiters, workable, ibm, arbeitsagentur, workingnomads, remoteok, remotive, rss);
 `himalayas`/`jobicy` cursor pagination; `mycareersfuture` 12-field shape; `workday` pagination +
-strict. A shared helper `lib/sources/_shape.mjs` (`requireArray`, `requireContainer`) is added
+strict. A shared helper `server/lib/sources/_shape.mjs` (`requireArray`, `requireContainer`) is added
 **first**, by one agent, before the per-family agents start (the registry skips `_` files).
 
 ## Release 4 — client (v1.243.0)
