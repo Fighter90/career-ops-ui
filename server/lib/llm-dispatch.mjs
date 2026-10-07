@@ -25,7 +25,7 @@ import { providerOrder, AUTO_ORDER } from './env-config.mjs';
 import { recordUsage } from './llm-usage.mjs';
 
 // Mirror llm.mjs BF-3 soft cap: 200 KB ≈ ~50K tokens.
-export const PROMPT_SIZE_SOFT_CAP = 200 * 1024;
+export const PROMPT_SIZE_SOFT_CAP = 256 * 1024;
 
 // v1.157.0 — a forced provider whose key isn't set falls back to the auto order
 // among the configured keys (mirrors env-config.mjs::selectActiveProvider +

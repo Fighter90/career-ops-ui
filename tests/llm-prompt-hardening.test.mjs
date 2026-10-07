@@ -30,6 +30,8 @@ before(async () => {
   writeFileSync(resolve(ROOT, 'modes', '_shared.md'), '# Shared\n' + 's'.repeat(26 * 1024) + '\nSHARED-TAIL\n');
   writeFileSync(resolve(ROOT, 'cv.md'), '# CV\n' + 'c'.repeat(18 * 1024) + '\nCV-TAIL\n');
   writeFileSync(resolve(ROOT, 'modes', 'huge.md'), 'h'.repeat(200 * 1024));
+  // Prod bundle on 2026-10-07 was ~150 KB: a 144 KB total cut the tail of oferta.md.
+  writeFileSync(resolve(ROOT, 'modes', 'extra.md'), '# Extra\n' + 'e'.repeat(30 * 1024) + '\nEXTRA-TAIL\n');
   writeFileSync(resolve(ROOT, 'config', 'profile.yml'), 'candidate:\n  full_name: T\n');
   process.env.CAREER_OPS_ROOT = ROOT;
   P = await import('../server/lib/prompts.mjs');
@@ -129,6 +131,19 @@ test('bundleProjectContext keeps a 92 KB oferta, 26 KB _shared and an 18 KB CV w
   assert.match(ctx, /SHARED-TAIL/);
   assert.match(ctx, /CV-TAIL/);
   assert.deepEqual(warnings, []);
+});
+
+test('bundleProjectContext keeps a ~170 KB evaluation bundle whole (prod 2026-10-07)', () => {
+  const warnings = [];
+  const ctx = P.bundleProjectContext({ modeSlugs: ['_shared', 'extra', 'oferta'], warnings });
+  assert.deepEqual(warnings, []);
+  assert.match(ctx, /OFERTA-TAIL-BLOCK-G/);
+  assert.match(ctx, /EXTRA-TAIL/);
+});
+
+test('the context budget plus a 50 KB JD fits the routes\' prompt soft cap', async () => {
+  const { PROMPT_SIZE_SOFT_CAP } = await import('../server/lib/llm-dispatch.mjs');
+  assert.ok(P.CONTEXT_CAPS.total + 50 * 1024 + 8 * 1024 <= PROMPT_SIZE_SOFT_CAP);
 });
 
 test('bundleProjectContext truncates over-cap files and reports it', () => {

@@ -182,7 +182,7 @@ const SMOKE_JD = 'Smoke test: Senior Backend Engineer with PHP and Go responsibi
 // per input token and the bundleProjectContext output + huge JD could
 // stack up. 200 KB ≈ ~50K tokens, comfortably below any current ceiling
 // while flagging clearly when something is off.
-const PROMPT_SIZE_SOFT_CAP = 200 * 1024;
+const PROMPT_SIZE_SOFT_CAP = 256 * 1024;
 
 export function registerLlmRoutes(app) {
   // ─── /api/evaluate ──────────────────────────────────────────────────
