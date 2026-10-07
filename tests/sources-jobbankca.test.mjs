@@ -352,3 +352,70 @@ test('fetchJobBankCa throws when every keyword request fails (total outage)', as
     /all 2 keyword request\(s\) failed/,
   );
 });
+
+// ---------------------------------------------------------------------------
+// v1.242.0 — raw-page-length pagination stop, transient retry, feed marker
+// ---------------------------------------------------------------------------
+
+test('fetchJobBankCa paginates on the RAW entry count, not the post-filter count', async () => {
+  // Page 1: 100 raw entries, 99 of them valid (one has no title and is
+  // dropped by the parser). The post-filter count (99) is below PAGE_SIZE, so
+  // the old stop burned it as "end of results" and page 2 was never fetched.
+  const dropped = atomEntry({ title: '' , href: 'https://www.jobbank.gc.ca/jobsearch/jobposting/55555555' });
+  const page1 = atomFeed([...Array.from({ length: 99 }, (_, i) => atomEntry({ href: `https://www.jobbank.gc.ca/jobsearch/jobposting/${3000 + i}` })), dropped]);
+  const page2 = atomFeed([atomEntry({ href: 'https://www.jobbank.gc.ca/jobsearch/jobposting/77777777' })]);
+  const impl = fakeSearch({ python: [page1, page2] });
+  const jobs = await fetchJobBankCa(FEED_URL, { fetchImpl: impl, delayMs: 0, company: { jobbankca: { keywords: ['python'] } } });
+  assert.equal(jobs.length, 100); // 99 + 1: page 2 WAS fetched
+  assert.deepEqual(impl.calls.map((c) => new URL(c.url).searchParams.get('page')), ['1', '2']);
+});
+
+test('fetchJobBankCa retries a transient 503 and succeeds', async () => {
+  let attempts = 0;
+  const impl = async () => {
+    attempts += 1;
+    return attempts === 1 ? errStatus(503) : okText(atomFeed([atomEntry()]));
+  };
+  const jobs = await fetchJobBankCa(FEED_URL, {
+    fetchImpl: impl, delayMs: 0, retryDelayMs: 0,
+    company: { name: 'JB', jobbankca: { keywords: ['python'] } },
+  });
+  assert.equal(attempts, 2); // one retry, then success
+  assert.equal(jobs.length, 1);
+});
+
+test('fetchJobBankCa does not retry a permanent 4xx', async () => {
+  let attempts = 0;
+  const impl = async () => { attempts += 1; return errStatus(404); };
+  await assert.rejects(
+    () => fetchJobBankCa(FEED_URL, {
+      fetchImpl: impl, delayMs: 0, retryDelayMs: 0,
+      company: { name: 'JB', jobbankca: { keywords: ['solo'] } },
+    }),
+    /all 1 keyword request/,
+  );
+  assert.equal(attempts, 1); // no retry on a permanent failure
+});
+
+test('fetchJobBankCa treats a 200 HTML challenge page as a keyword failure, not an empty board', async () => {
+  const challenge = '<html><head><title>Attention Required</title></head><body>Cloudflare</body></html>';
+  await assert.rejects(
+    () => fetchJobBankCa(FEED_URL, {
+      fetchImpl: async () => okText(challenge),
+      delayMs: 0,
+      company: { name: 'JB', jobbankca: { keywords: ['solo'] } },
+    }),
+    /challenge page/,
+  );
+});
+
+test('fetchJobBankCa treats a 200 non-feed body as a keyword failure (no silent zero)', async () => {
+  await assert.rejects(
+    () => fetchJobBankCa(FEED_URL, {
+      fetchImpl: async () => okText('Maintenance — come back later'),
+      delayMs: 0,
+      company: { name: 'JB', jobbankca: { keywords: ['solo'] } },
+    }),
+    /answered no (Atom )?feed/,
+  );
+});

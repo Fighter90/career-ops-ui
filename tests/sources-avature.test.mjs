@@ -156,6 +156,52 @@ test('fetchAvature: rejects an off-host endpoint before any fetch', async () => 
   assert.equal(calls, 0);
 });
 
+// ── v1.242.0 phase-2: RAW-page-length pagination + later-page partials ──────
+
+test('countAvatureArticles counts RAW result articles (pre-filter)', async () => {
+  // Dynamic import: this export is new in v1.242.0 (a static named import of a
+  // missing export fails the whole module at link time).
+  const { countAvatureArticles } = await import('../server/lib/sources/avature.mjs');
+  const html = pageHtml([articleBlock(), articleBlock({ title: '' }), '<article class="other"></article>']);
+  assert.equal(countAvatureArticles(html), 2);
+});
+
+test('fetchAvature: pagination stops on the RAW article count — one dropped card does not end the walk', async () => {
+  // Page 0: 6 articles, one unparseable (no title) → 5 parsed rows but RAW 6,
+  // a full page. The FILTERED-vs-PAGE_SIZE test used to end the walk here.
+  const full = pageHtml([
+    ...Array.from({ length: 5 }, (_, i) => articleBlock({ href: `/careers/JobDetail/Role-${i}/${100 + i}`, title: `Role ${i}` })),
+    articleBlock({ title: '' }), // dropped by the parser, still a raw article
+  ]);
+  const last = pageHtml([articleBlock({ href: '/careers/JobDetail/Last-A/200', title: 'Last A' })]);
+  let calls = 0;
+  const fetchImpl = (url, opts) => {
+    calls += 1;
+    assert.equal(opts.redirect, 'error');
+    return htmlFetch({ 0: full, 6: last })(url, opts);
+  };
+  const jobs = await fetchAvature(ENDPOINT, { fetchImpl, company: { name: 'Acme' } });
+  assert.equal(calls, 2, 'a dropped card on a full page must not stop pagination');
+  assert.equal(jobs.length, 6); // 5 + 1
+});
+
+test('fetchAvature: a later-page failure keeps the collected jobs (partials, logged)', async () => {
+  const full = pageHtml(Array.from({ length: 6 }, (_, i) => articleBlock({ href: `/careers/JobDetail/K-${i}/${300 + i}`, title: `K ${i}` })));
+  let calls = 0;
+  const fetchImpl = async () => {
+    calls += 1;
+    if (calls === 1) return { ok: true, status: 200, text: async () => full };
+    return { ok: false, status: 503, text: async () => '' };
+  };
+  const jobs = await fetchAvature(ENDPOINT, { fetchImpl, company: { name: 'Acme' } });
+  assert.equal(jobs.length, 6, "a page-2 blip must not discard page 1's jobs");
+});
+
+test('fetchAvature: a wrong-shape (fetch/parse) failure on page 1 still throws', async () => {
+  const fetchImpl = async () => ({ ok: false, status: 503, text: async () => '' });
+  await assert.rejects(() => fetchAvature(ENDPOINT, { fetchImpl }), /503/);
+});
+
 test('parseAvature: an "article--jobs" card yields the h3 title (not "View more") and the icon-address location', () => {
   const card = `
     <article class="article article--jobs js_collapsible">

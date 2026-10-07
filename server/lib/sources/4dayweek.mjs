@@ -119,46 +119,62 @@ function normalize(j) {
 
 /**
  * Fetch + normalize the 4 Day Week public feed, paginating up to maxPages.
+ * The page cap resolves from opts.maxPages, then the entry's own `max_pages`
+ * (the scanner threads the company entry through opts.company — previously
+ * dead config), then the default. Page URLs are built with URL() so a feedUrl
+ * that already carries a query string doesn't grow a second `?`. A page-1
+ * failure (HTTP or shape) throws; a later-page failure keeps the collected
+ * partials and logs.
  *
  * @param {string} feedUrl
- * @param {{ fetchImpl?: Function, signal?: AbortSignal, maxPages?: number }} [opts]
+ * @param {{ fetchImpl?: Function, signal?: AbortSignal, maxPages?: number,
+ *           company?: object }} [opts]
  * @returns {Promise<object[]>}
  */
 export async function fetch4DayWeek(feedUrl = FEED_BASE, opts = {}) {
-  const { fetchImpl = fetch, signal, maxPages: rawMax = DEFAULT_MAX_PAGES } = opts;
+  const { fetchImpl = fetch, signal, maxPages: rawMax, company = {} } = opts;
 
   // Clamp maxPages to [1, MAX_PAGES_CAP]
-  const maxPages = Math.min(Math.max(1, Math.floor(rawMax)), MAX_PAGES_CAP);
+  const cap = rawMax !== undefined ? rawMax : (company && company.max_pages);
+  const maxPages = Math.min(Math.max(1, Math.floor(Number(cap) || DEFAULT_MAX_PAGES)), MAX_PAGES_CAP);
 
   assert4DayWeekUrl(feedUrl);
 
   const out = [];
 
   for (let page = 1; page <= maxPages; page++) {
-    const pageUrl = `${feedUrl}?page=${page}`;
-    const res = await fetchImpl(pageUrl, {
-      signal,
-      redirect: 'error',
-      headers: { 'User-Agent': UA, Accept: 'application/json' },
-    });
+    const pageUrl = new URL(feedUrl);
+    pageUrl.searchParams.set('page', String(page));
+    const url = pageUrl.toString();
 
-    if (!res.ok) {
-      // First-page failure is fatal; later pages just stop the loop
-      if (page === 1) {
-        const err = new Error(`4dayweek: HTTP ${res.status} (${pageUrl})`);
+    let json;
+    try {
+      const res = await fetchImpl(url, {
+        signal,
+        redirect: 'error',
+        headers: { 'User-Agent': UA, Accept: 'application/json' },
+      });
+      if (!res.ok) {
+        const err = new Error(`4dayweek: HTTP ${res.status} (${url})`);
         err.status = res.status;
         throw err;
       }
+      json = await res.json();
+    } catch (err) {
+      // Phase-2: page-1 failure is fatal; a later-page failure (HTTP or
+      // unparseable JSON) keeps the partials and logs.
+      if (page === 1) throw err;
+      console.error(`  ⚠ 4dayweek: page ${page} failed (${err.message}) — keeping the ${out.length} jobs collected so far`);
       break;
     }
 
-    const json = await res.json();
     if (!json || !Array.isArray(json.jobs)) {
       if (page === 1) {
         throw new Error(
           `4dayweek: unexpected API response on page ${page} — expected { jobs: [...] }, got keys: [${json ? Object.keys(json).join(', ') : 'null'}]`,
         );
       }
+      console.error(`  ⚠ 4dayweek: page ${page} returned an unexpected shape — keeping the ${out.length} jobs collected so far`);
       break;
     }
 

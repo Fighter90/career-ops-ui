@@ -9,11 +9,21 @@
  * object (skipped). All postings are remote, so `isRemote` is always true and
  * the en-scanner's title_filter / location_filter gate the rows afterwards.
  *
+ * Phase-2 URL pinning (v1.242.0 sources-6): the feed URL is server-fetched, so
+ * it must be https on a real host (an explicit `api:`/`remoteok:` mirror stays
+ * allowed — same model as phenom's branded tenants). Every job `url` is
+ * display-only but flows into scan history and generated documents, so it is
+ * pinned to https on the exact remoteok.com host; anything else is dropped.
+ *
  * Used by the remoteok adapter (server/lib/portals/adapters/remoteok.mjs).
  */
 const UA = 'career-ops-web-ui/1.0';
 
 export const FEED_URL = 'https://remoteok.com/api';
+
+// Anchored: `remoteok.com` itself or any subdomain — never a lookalike
+// (`remoteok.com.evil.com`) or a substring (`evilremoteok.com`).
+export const REMOTEOK_HOST_RE = /(?:^|\.)remoteok\.com$/i;
 
 // v1.69.0 (P-14) — self-describing adapter metadata; see ashby.mjs.
 export const meta = {
@@ -21,6 +31,36 @@ export const meta = {
   label: 'RemoteOK',
   region: 'en',
 };
+
+/**
+ * Guard on the feed URL (the one server-fetched request): HTTPS + a real
+ * hostname. The mirror override stays usable; the job-url pin below carries
+ * the exact-host rule.
+ * @param {string} url
+ */
+export function assertRemoteOkUrl(url) {
+  let parsed;
+  try {
+    parsed = new URL(url);
+  } catch {
+    throw new Error(`remoteok: invalid URL: ${url}`);
+  }
+  if (parsed.protocol !== 'https:') throw new Error(`remoteok: URL must use HTTPS: ${url}`);
+  if (!parsed.hostname) throw new Error(`remoteok: URL has no hostname: ${url}`);
+  return url;
+}
+
+/** https: + the exact pinned board host — the only accepted job URL shape. */
+function isTrustedJobUrl(value) {
+  if (typeof value !== 'string') return false;
+  let parsed;
+  try {
+    parsed = new URL(value.trim());
+  } catch {
+    return false;
+  }
+  return parsed.protocol === 'https:' && REMOTEOK_HOST_RE.test(parsed.hostname);
+}
 
 /** tiny stable hash (djb2) → base36, for postings with no native id. */
 function djb2(str) {
@@ -36,6 +76,7 @@ function djb2(str) {
  */
 export async function fetchRemoteOk(feedUrl = FEED_URL, opts = {}) {
   const { fetchImpl = fetch, signal } = opts;
+  assertRemoteOkUrl(feedUrl);
   // redirect:'error' closes the SSRF-via-redirect vector.
   const res = await fetchImpl(feedUrl, {
     signal,
@@ -54,7 +95,7 @@ export async function fetchRemoteOk(feedUrl = FEED_URL, opts = {}) {
   return data
     .filter((j) => j && typeof j === 'object'
       && typeof j.position === 'string' && j.position.trim() !== ''
-      && typeof j.url === 'string' && /^https?:\/\//i.test(j.url.trim()))
+      && isTrustedJobUrl(j.url))
     .map((j) => normalize(j));
 }
 

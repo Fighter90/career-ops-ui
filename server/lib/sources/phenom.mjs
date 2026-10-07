@@ -36,6 +36,7 @@ import { fetchJson, delay } from '../http-json.mjs';
 // undecoded "R&amp;D" can't fail a user's title_filter and drop the posting.
 import { decodeEntities } from '../html-entities.mjs';
 import { safeEncodeURIComponent } from './_safe-url.mjs';
+import { requireContainer, requireArray } from './_shape.mjs';
 
 // Hosts detect() may auto-claim. Branded tenants (careers.allianz.com, …) are
 // NOT auto-claimed — they carry an explicit `provider: phenom` in portals.yml.
@@ -49,7 +50,7 @@ export const meta = {
 
 const PAGE_SIZE = 100; // max the widget serves per page
 const MAX_PAGES = 40; // safety cap on request count (40*100 = 4000 postings)
-const MAX_JOBS = 1000; // cap total postings pulled per site
+const MAX_JOBS = 1000; // cap total postings pulled per site (hitting it logs a truncation warning)
 const PAGE_DELAY_MS = 150; // polite pacing between page requests
 
 const REMOTE_RE = /remote|anywhere|distributed|home\s*office/i;
@@ -137,9 +138,13 @@ export function jobLocation(job) {
  * @param {string} [companyName]
  */
 export function parseRefineSearch(json, cfg, companyName = '') {
-  const rs = json?.refineSearch;
+  // Phase-2: a 200 that stopped speaking the documented refineSearch envelope
+  // (see the module header) is a drifted API or a challenge — it THROWS here
+  // instead of reading as an empty board. fetchPhenom routes the throw through
+  // its page loop: page 1 rethrows, later pages keep the partials.
+  const rs = requireContainer(json, 'Phenom refineSearch', 'refineSearch.data.jobs').refineSearch;
   const total = typeof rs?.totalHits === 'number' ? rs.totalHits : null;
-  const list = Array.isArray(rs?.data?.jobs) ? rs.data.jobs : [];
+  const list = requireArray(rs.data.jobs, 'Phenom refineSearch.data.jobs');
   const jobs = [];
   for (const job of list) {
     if (!job || typeof job !== 'object') continue;
@@ -204,9 +209,9 @@ export async function fetchPhenom(endpoint, opts = {}) {
 
   for (let page = 0; page < maxPages; page++) {
     if (page > 0) await delay(PAGE_DELAY_MS, signal);
-    let json;
+    let parsed;
     try {
-      json = await fetchJson(fetchImpl, cfg.widgetsApi, {
+      const json = await fetchJson(fetchImpl, cfg.widgetsApi, {
         method: 'POST',
         signal,
         redirect: 'error',
@@ -235,12 +240,17 @@ export async function fetchPhenom(endpoint, opts = {}) {
           locationData: {},
         }),
       });
+      // The shape check lives INSIDE the try so a wrong-shape 200 is treated
+      // exactly like a transport failure: page 1 (succeededOnce still false)
+      // rethrows below; a later page keeps the partials.
+      parsed = parseRefineSearch(json, cfg, name);
     } catch (err) {
       if (!succeededOnce) throw err;
-      break; // keep jobs collected so far — a transient mid-scan failure shouldn't discard earlier pages
+      console.warn(`  ⚠ phenom: ${name} — page ${page + 1} failed after ${jobs.length} postings; keeping partials (${err.message})`);
+      break;
     }
     succeededOnce = true;
-    const { total: pageTotal, jobs: rows } = parseRefineSearch(json, cfg, name);
+    const { total: pageTotal, jobs: rows } = parsed;
     if (total === null) total = pageTotal;
     if (rows.length === 0) break;
 
@@ -255,6 +265,12 @@ export async function fetchPhenom(endpoint, opts = {}) {
     if (fresh === 0) break; // server ignored `from` (or we've looped)
     if (jobs.length >= MAX_JOBS) break;
     if (total !== null && (page + 1) * PAGE_SIZE >= total) break;
+  }
+  // Never truncate silently on our own cap: when MAX_JOBS ended the walk while
+  // the board reports more postings, say so (a complete board that happens to
+  // sit exactly at the cap stays quiet).
+  if (jobs.length >= MAX_JOBS && (total === null || total > jobs.length)) {
+    console.error(`⚠️  phenom: ${name} truncated at ${jobs.length} postings (MAX_JOBS=${MAX_JOBS} reached) — the board has more`);
   }
   return jobs;
 }

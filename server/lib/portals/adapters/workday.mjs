@@ -20,11 +20,12 @@
  */
 import { fetchWorkday } from '../../sources/workday.mjs';
 
-// Matches any Workday careers host — <tenant>.wd<N>.myworkdayjobs.com — and
-// captures the tenant, the wdN cell, and the raw path (up to a ? or #). The
-// site is derived from the path STRUCTURALLY in buildEndpoint (see below), not
-// by a fixed two-segment regex, so single-segment site URLs parse correctly.
-const HOST_PATTERN = /https?:\/\/([^./]+)\.(wd\d+)\.myworkdayjobs\.com(\/[^?#]*)?/i;
+// Matches a Workday careers HOST — <tenant>.wd<N>.myworkdayjobs.com — checked
+// on the PARSED URL's hostname (never a regex over the raw string, which also
+// found the host inside another site's query or path). The site is derived
+// from the pathname STRUCTURALLY in buildEndpoint (see below), not by a fixed
+// two-segment regex, so single-segment site URLs parse correctly.
+const WDJOBS_HOST_RE = /^([\w-]+)\.(wd\d+)\.myworkdayjobs\.com$/;
 // myworkdaysite tenant path: /recruiting/<tenant>/<site>[/…]. Applied to the
 // PARSED pathname only, after the hostname has been checked exactly.
 const SITE_PATH = /^\/recruiting\/([\w-]+)\/([^/?#]+)/;
@@ -80,25 +81,43 @@ export function myworkdaysiteEndpoint(careersUrl) {
   return `https://${host}/wday/cxs/${tenant}/${site}/jobs`;
 }
 
+/**
+ * Parsed {tenant, wdN, path} for a myworkdayjobs.com careers_url, or null.
+ * http(s) accepted (myworkdayjobs has an http legacy); no embedded credentials.
+ * @param {string} careersUrl
+ */
+function myworkdayjobsBoard(careersUrl) {
+  if (typeof careersUrl !== 'string' || !careersUrl) return null;
+  let u;
+  try { u = new URL(careersUrl.trim()); } catch { return null; }
+  if (u.protocol !== 'https:' && u.protocol !== 'http:') return null;
+  if (u.username || u.password) return null;
+  const m = WDJOBS_HOST_RE.exec(u.hostname.toLowerCase());
+  if (!m) return null;
+  return { tenant: m[1], wdN: m[2], path: u.pathname };
+}
+
 export const workdayAdapter = {
   id: 'workday',
   label: 'Workday',
   matches(company) {
-    if (isWorkdayApi(company.api)) return true;
-    if (myworkdaysiteEndpoint(company.careers_url)) return true;
-    return HOST_PATTERN.test(company.careers_url || '');
+    if (!company || typeof company !== 'object') return false;
+    return isWorkdayApi(company.api)
+      || myworkdaysiteEndpoint(company.careers_url) !== null
+      || myworkdayjobsBoard(company.careers_url) !== null;
   },
   buildEndpoint(company) {
+    if (!company || typeof company !== 'object') return null;
     if (isWorkdayApi(company.api)) return company.api;
     const site = myworkdaysiteEndpoint(company.careers_url);
     if (site) return site;
-    const m = (company.careers_url || '').match(HOST_PATTERN);
-    if (!m) return null;
-    // HOST_PATTERN is case-insensitive (hostnames are), but Workday's CXS path
-    // segments are case-sensitive — canonicalise the tenant/cell to lowercase.
-    const tenant = m[1].toLowerCase();
-    const wdN = m[2].toLowerCase();
-    const pathPart = m[3] || '';
+    const board = myworkdayjobsBoard(company.careers_url);
+    if (!board) return null;
+    // Workday's CXS path segments are case-sensitive — canonicalise the
+    // tenant/cell to lowercase.
+    const tenant = board.tenant;
+    const wdN = board.wdN;
+    const pathPart = board.path;
     // The path is /<locale>?/<site>[/job/…], /<site>, or just /. Take the FIRST
     // non-empty, non-locale path segment as the site — so a single-segment URL
     // (/Search) uses that segment (fixes #255) AND a deep posting link

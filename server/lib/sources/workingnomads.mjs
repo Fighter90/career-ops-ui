@@ -12,12 +12,38 @@
 const UA = 'career-ops-web-ui/1.0';
 
 export const FEED_URL = 'https://www.workingnomads.com/api/exposed_jobs/';
+// Exact-host pin (v1.242.0 Phase 2). This source fetches with a raw
+// `fetchImpl`, so the shared fetchJson DNS guard never runs — the host assert
+// here is the only SSRF barrier for an `api:`/`workingnomads:` override.
+const WORKINGNOMADS_HOST = 'www.workingnomads.com';
 
 export const meta = {
   value: 'workingnomads',
   label: 'Working Nomads',
   region: 'en',
 };
+
+/**
+ * Assert that `url` is HTTPS on the pinned Working Nomads host. Throws on
+ * failure. Exported for the adapter's buildEndpoint.
+ * @param {string} url
+ * @returns {string} the validated url
+ */
+export function assertWorkingNomadsUrl(url) {
+  let parsed;
+  try {
+    parsed = new URL(url);
+  } catch {
+    throw new Error(`workingnomads: invalid URL: ${url}`);
+  }
+  if (parsed.protocol !== 'https:') {
+    throw new Error(`workingnomads: URL must use HTTPS: ${url}`);
+  }
+  if (parsed.hostname !== WORKINGNOMADS_HOST) {
+    throw new Error(`workingnomads: untrusted hostname "${parsed.hostname}" — must be ${WORKINGNOMADS_HOST}`);
+  }
+  return url;
+}
 
 /** tiny stable hash (djb2) → base36, for postings with no native id. */
 function djb2(str) {
@@ -27,12 +53,31 @@ function djb2(str) {
 }
 
 /**
+ * Any date the feed hands us → YYYY-MM-DD UTC. A bare YYYY-MM-DD passes
+ * through untouched (no timezone shift); a naive datetime is treated as UTC
+ * for determinism, same convention as tkms.mjs. Unparseable → ''.
+ * @param {unknown} value
+ * @returns {string}
+ */
+function toIsoDateUtc(value) {
+  if (typeof value !== 'string' || !value.trim()) return '';
+  let s = value.trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+  if (/^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}/.test(s) && !/(?:Z|[+-]\d{2}:?\d{2})$/.test(s)) {
+    s = s.replace(' ', 'T') + 'Z';
+  }
+  const ms = Date.parse(s);
+  return Number.isNaN(ms) ? '' : new Date(ms).toISOString().slice(0, 10);
+}
+
+/**
  * Fetch + normalize the Working Nomads public feed.
  * @param {string} feedUrl
  * @param {{ fetchImpl?: Function, signal?: AbortSignal }} [opts]
  */
 export async function fetchWorkingNomads(feedUrl = FEED_URL, opts = {}) {
   const { fetchImpl = fetch, signal } = opts;
+  assertWorkingNomadsUrl(feedUrl);
   const res = await fetchImpl(feedUrl, {
     signal,
     redirect: 'error',
@@ -50,7 +95,8 @@ export async function fetchWorkingNomads(feedUrl = FEED_URL, opts = {}) {
   return data
     .filter((j) => j && typeof j === 'object'
       && typeof j.title === 'string' && j.title.trim() !== ''
-      && typeof j.url === 'string' && /^https?:\/\//i.test(j.url.trim()))
+      // https:-only job URLs (Phase-2 contract); http: and junk are dropped.
+      && typeof j.url === 'string' && /^https:\/\//i.test(j.url.trim()))
     .map((j) => normalize(j));
 }
 
@@ -66,7 +112,7 @@ function normalize(j) {
     isRemote: true,
     workplaceType: 'Remote',
     relocates: false,
-    date: typeof j.pub_date === 'string' ? j.pub_date : '',
+    date: toIsoDateUtc(j.pub_date),
     snippet: '',
     source: 'workingnomads',
   };

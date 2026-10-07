@@ -443,14 +443,20 @@ test('parsePythonOrgFeed: unwraps a CDATA title', () => {
   assert.equal(job.company, 'CDATA Corp');
 });
 
-test('parsePythonOrgFeed: empty / non-string / itemless input yields [] without throwing', () => {
-  assert.deepEqual(parsePythonOrgFeed(''), []);
-  assert.deepEqual(parsePythonOrgFeed(null), []);
-  assert.deepEqual(parsePythonOrgFeed(undefined), []);
-  assert.deepEqual(parsePythonOrgFeed(42), []);
-  assert.deepEqual(parsePythonOrgFeed({}), []);
+test('parsePythonOrgFeed: a well-formed feed with no items yields []', () => {
   assert.deepEqual(parsePythonOrgFeed('<rss><channel></channel></rss>'), []);
-  assert.deepEqual(parsePythonOrgFeed('<html>not a feed at all'), []);
+});
+
+test('parsePythonOrgFeed: a wrong-shape body THROWS (Phase-2, never silent [])', () => {
+  // A 200 that is not an RSS document (a maintenance HTML page, a drifted
+  // body) is not an empty board — it throws so the scan records the failure.
+  for (const bad of ['', null, undefined, 42, {}, '<html>not a feed at all', '<items></items>']) {
+    assert.throws(() => parsePythonOrgFeed(bad), (err) => {
+      assert.ok(err instanceof TypeError);
+      assert.match(err.message, /pythonorg/);
+      return true;
+    }, `expected a throw for ${JSON.stringify(bad)}`);
+  }
 });
 
 // ---------------------------------------------------------------------------

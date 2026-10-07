@@ -28,6 +28,7 @@
  */
 import { fetchJson, fetchText } from '../http-json.mjs';
 import { safeEncodeURIComponent } from './_safe-url.mjs';
+import { requireContainer, requireArray } from './_shape.mjs';
 
 // Host-pinned endpoints (SSRF guard: every request is asserted against
 // TRUSTED_HOST over HTTPS before it goes out — see assertVdabUrl).
@@ -59,7 +60,11 @@ const DETAIL_BATCH = 5;
 const MAX_PAGES_PER_KEYWORD = 50;
 
 // Remote detection for job-shape parity with arbeitsagentur (EN + Dutch terms).
-const REMOTE_RE = /(remote|thuiswerk|telewerk|op afstand|home[-\s]?office|full[-\s]?remote|fully remote|100\s*%)/i;
+// Deliberately NO bare "100%": in VDAB postings that is the contract omvang
+// ("Verpleegkundige (100%)" = full-time), not a remote marker — a bare
+// percentage marked ordinary on-site roles remote (v1.242.0 Phase 2). A real
+// remote term ("100% thuiswerk") still matches via thuiswerk/telewerk/remote.
+const REMOTE_RE = /(remote|thuiswerk|telewerk|op\s+afstand|home[-\s]?office)/i;
 
 export const meta = {
   value: 'vdab',
@@ -271,9 +276,15 @@ export async function fetchVdab(apiUrl = API_URL, opts = {}) {
     const out = [];
     for (let pagina = 0; pagina < pageLimit; pagina++) {
       const json = await postSearch(buildSearchBody(trefwoord, { days, size, pagina }));
-      const page = Array.isArray(json && json.resultaten) ? json.resultaten : [];
+      // The documented envelope is REQUIRED (v1.242.0 Phase 2): a 200 without
+      // `resultaten` is the API stopping its shape, not an empty page. The
+      // throw lands in the per-keyword catch below, so one malformed keyword
+      // cannot silently zero out the board — and it no longer counts as a
+      // succeeded keyword for the total-outage check.
+      requireContainer(json, 'VDAB', 'resultaten');
+      const page = requireArray(json.resultaten, 'VDAB resultaten');
       out.push(...page);
-      if (page.length < size) break; // short page → done
+      if (page.length < size) break; // short RAW page → done
     }
     return out;
   };

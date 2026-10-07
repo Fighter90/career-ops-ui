@@ -94,6 +94,25 @@ function toEpochMs(value) {
 }
 
 /**
+ * `<date>` values arrive as M/D/YYYY with NO timezone. Date.parse reads that
+ * as LOCAL midnight, so on any non-UTC server the resulting ISO date shifts a
+ * day (6/2/2025 on a UTC+3 host → 2025-06-01). The feed's documented format is
+ * parsed as UTC midnight instead; any other format keeps the Date.parse path.
+ * @param {string} value
+ */
+function parseJobviteDate(value) {
+  const m = /^(\d{1,2})\/(\d{1,2})\/(\d{4})$/.exec(String(value ?? '').trim());
+  if (m) {
+    const mo = Number(m[1]);
+    const day = Number(m[2]);
+    const year = Number(m[3]);
+    if (mo < 1 || mo > 12 || day < 1 || day > 31) return undefined;
+    return Date.UTC(year, mo - 1, day);
+  }
+  return toEpochMs(value);
+}
+
+/**
  * The companyEId from explicit config, without touching the network. Reads
  * `company_eid:` first, then the `c=` param of an `api:` URL (host-pinned).
  * Returns null when the entry only carries a vanity slug.
@@ -289,7 +308,7 @@ export function parseJobviteXml(xml, companyName) {
     const location = decodeEntities(tagText(block, 'location'));
     const snippet = decodeEntities(tagText(block, 'category'));
     const rawId = tagText(block, 'id');
-    const postedAt = toEpochMs(tagText(block, 'date'));
+    const postedAt = parseJobviteDate(tagText(block, 'date'));
     const isRemote = /\bremote\b/i.test(`${location} ${title}`);
 
     out.push({
@@ -308,6 +327,21 @@ export function parseJobviteXml(xml, companyName) {
     });
   }
   return out;
+}
+
+// The feed sits behind bot protection on some networks, and the wall answers
+// 200 with a small HTML challenge page. Parsed as a feed that is zero <job>s,
+// so the board read as "0 jobs" with no hint nothing was fetched. An empty
+// `<result/>` is still a valid, empty board; only a body that is not a Jobvite
+// feed at all is an error. (Same discipline as higheredjobs.mjs's
+// assertRssFeed.) The legitimate empty board (a 302 to NoJobs.htm) is handled
+// before this check via isEmptyBoardRedirect.
+function assertJobviteFeed(xml) {
+  if (typeof xml === 'string' && /<result\b/i.test(xml)) return;
+  if (typeof xml === 'string' && /<html\b/i.test(xml)) {
+    throw new Error('jobvite: feed endpoint answered a challenge page, not a Jobvite feed');
+  }
+  throw new Error('jobvite: feed endpoint answered no Jobvite feed');
 }
 
 /**
@@ -361,6 +395,7 @@ export async function fetchJobvite(endpoint, opts = {}) {
       signal, redirect: 'manual',
       headers: { 'User-Agent': UA, Accept: 'application/xml, text/xml, */*' },
     });
+    assertJobviteFeed(xml); // a 200 challenge page must not read as 0 jobs
     return parseJobviteXml(xml, companyName);
   } catch (err) {
     if (isEmptyBoardRedirect(err, feedUrl)) return []; // 0 jobs, not a failure

@@ -11,7 +11,6 @@
  * Marked beta because:
  *   - The endpoint per-customer (site path varies)
  *   - Some customers gate the feed behind a CAPTCHA on /wday/cxs/...
- *   - Pagination requires a POST loop; we only fetch the first page.
  *
  * v1.16.0 — graceful CAPTCHA / 4xx fallback. Instead of throwing
  * (which used to break the whole scan), the wrapper returns an
@@ -25,13 +24,28 @@
  * Both → returns []. Caller can inspect `lastWorkdayFallback` for
  * audit / activity-log purposes.
  *
+ * v1.242.0 (Phase 2) — three corrections to the above:
+ *   - A real 404/410 THROWS with its status (strict or not): it is a removed
+ *     board, not a CAPTCHA blip, and the scanner's 404 quarantine must see it.
+ *     403/429/5xx keep the graceful fallback.
+ *   - The documented `{ jobPostings }` envelope is REQUIRED: a 200 whose body
+ *     is null or jobs-less throws (labelled) instead of reading as [].
+ *   - The offset loop paginates past the first 100 postings (stop on a short
+ *     RAW page, bounded by MAX_PAGES); a later-page failure keeps partials.
+ *
  * Help bundle suggestion (career-ops.org/docs/.../set-up-playwright):
  * for a CAPTCHA-gated Workday board, fall back to the AI scan
  * (`/career-ops scan`) which drives a real browser via Playwright.
  */
 import { BROWSER_LIKE_USER_AGENT } from '../http-json.mjs';
+import { requireContainer, requireArray } from './_shape.mjs';
 
 const PAGE_LIMIT = 100;
+
+// Pagination safety bound (v1.242.0 Phase 2): the offset loop stops on a short
+// RAW page, and this cap is the runaway guard — 20 pages × 100 = 2,000
+// postings per board, far above any real tenant's inventory.
+export const MAX_PAGES = 20;
 
 // Workday's LIST endpoint answers a posting attached to more than one location
 // with a COUNT where every other posting carries a place: `"53 Locations"`. It
@@ -237,65 +251,114 @@ export async function fetchWorkday(apiUrl, opts = {}) {
   } catch {
     /* malformed apiUrl → fetch below will surface the real error */
   }
-  let res;
-  try {
-    res = await fetchImpl(apiUrl, {
-      method: 'POST',
-      signal,
-      // Never follow a 3xx: a server-side redirect could point the request at a
-      // private address after the host check already passed (parent #4080).
-      redirect: 'error',
-      headers,
-      body: JSON.stringify({
-        appliedFacets: {},
-        limit: PAGE_LIMIT,
-        offset: 0,
-        searchText: '',
-      }),
-    });
-  } catch (e) {
-    // Network-level error (DNS, connect, timeout). Treat as fallback
-    // unless caller opted into strict mode.
-    if (strict) throw e;
-    setFallback(apiUrl, `network: ${e.message}`);
-    return [];
-  }
-  if (!res.ok) {
-    // 4xx / 5xx — CAPTCHA / tenant gone / WAF / etc. Graceful fallback.
-    // A 422/401/403 alone is ambiguous (identical body for a dead board and a
-    // WAF blip), so spend one careers-page fetch on Workday's own dead-board
-    // signals before calling it dead (parent #4467).
-    const confirmedDead = CONFIRMED_DEAD_API_STATUSES.has(res.status)
-      && await confirmDeadViaCareersPage(apiUrl, { fetchImpl, signal });
-    const reason = confirmedDead
-      ? `HTTP ${res.status} — confirmed dead (Workday maintenance/outage page)`
-      : `HTTP ${res.status}`;
-    if (strict) {
-      const err = new Error(`Workday: ${reason} (${apiUrl})`);
-      // Relabel a confirmed-dead board as a synthetic 404 so the scanner's
-      // 404/410 quarantine (scan-quarantine.mjs) picks it up.
-      err.status = confirmedDead ? 404 : res.status;
-      err.fallback = true;
-      throw err;
-    }
-    setFallback(apiUrl, reason);
-    return [];
-  }
-  // Some CAPTCHA gates serve HTML with 200; detect by trying to parse
-  // as JSON and bailing softly on parse error.
-  let data;
-  try {
-    data = await res.json();
-  } catch (e) {
-    if (strict) throw e;
-    setFallback(apiUrl, 'non-JSON response (likely CAPTCHA HTML)');
-    return [];
-  }
-  // The Workday CXS response wraps job rows under `jobPostings`.
   const base = jobBaseFromApi(apiUrl);
-  const jobs = (data.jobPostings || []).map((j) => normalize(j, base));
-  if (resolveMultiLocation) {
-    await resolvePlaceholders(jobs, data.jobPostings || [], apiUrl, { fetchImpl, signal, headers });
+  const detailState = { spent: 0 };
+  const jobs = [];
+
+  // v1.242.0 (Phase 2) — offset pagination. Tenants above PAGE_LIMIT postings
+  // used to be silently truncated to the first 100. The loop walks offsets
+  // until a short RAW page (the tenant is done), bounded by MAX_PAGES. Page 1
+  // failures keep the documented v1.16 fallback semantics; a failure on a
+  // LATER page keeps the pages already collected and logs.
+  for (let page = 0; page < MAX_PAGES; page++) {
+    const offset = page * PAGE_LIMIT;
+    let res;
+    try {
+      res = await fetchImpl(apiUrl, {
+        method: 'POST',
+        signal,
+        // Never follow a 3xx: a server-side redirect could point the request at a
+        // private address after the host check already passed (parent #4080).
+        redirect: 'error',
+        headers,
+        body: JSON.stringify({
+          appliedFacets: {},
+          limit: PAGE_LIMIT,
+          offset,
+          searchText: '',
+        }),
+      });
+    } catch (e) {
+      // Network-level error (DNS, connect, timeout). Treat as fallback
+      // unless caller opted into strict mode.
+      if (page === 0) {
+        if (strict) throw e;
+        setFallback(apiUrl, `network: ${e.message}`);
+        return [];
+      }
+      console.error(`  ⚠ workday: page at offset ${offset} failed (${e.message}) — keeping the ${jobs.length} postings collected so far`);
+      break;
+    }
+    if (!res.ok) {
+      // A real 404/410 is permanent (board removed / tenant retired), not a
+      // CAPTCHA blip: throw with the status intact so the scanner's 404/410
+      // quarantine treats the board as dead. The old graceful [] made
+      // quarantine unreachable — a dead board read as healthy-but-empty.
+      if (res.status === 404 || res.status === 410) {
+        const err = new Error(`Workday: HTTP ${res.status} (${apiUrl})`);
+        err.status = res.status;
+        throw err;
+      }
+      // 4xx / 5xx — CAPTCHA / tenant gone / WAF / etc. Graceful fallback.
+      // A 422/401/403 alone is ambiguous (identical body for a dead board and a
+      // WAF blip), so spend one careers-page fetch on Workday's own dead-board
+      // signals before calling it dead (parent #4467).
+      const confirmedDead = CONFIRMED_DEAD_API_STATUSES.has(res.status) && page === 0
+        && await confirmDeadViaCareersPage(apiUrl, { fetchImpl, signal });
+      const reason = confirmedDead
+        ? `HTTP ${res.status} — confirmed dead (Workday maintenance/outage page)`
+        : `HTTP ${res.status}`;
+      if (page === 0) {
+        if (strict) {
+          const err = new Error(`Workday: ${reason} (${apiUrl})`);
+          // Relabel a confirmed-dead board as a synthetic 404 so the scanner's
+          // 404/410 quarantine (scan-quarantine.mjs) picks it up.
+          err.status = confirmedDead ? 404 : res.status;
+          err.fallback = true;
+          throw err;
+        }
+        setFallback(apiUrl, reason);
+        return [];
+      }
+      console.error(`  ⚠ workday: page at offset ${offset} returned HTTP ${res.status} — keeping the ${jobs.length} postings collected so far`);
+      break;
+    }
+    // Some CAPTCHA gates serve HTML with 200; detect by trying to parse
+    // as JSON and bailing softly on parse error.
+    let data;
+    try {
+      data = await res.json();
+    } catch (e) {
+      if (page === 0) {
+        if (strict) throw e;
+        setFallback(apiUrl, 'non-JSON response (likely CAPTCHA HTML)');
+        return [];
+      }
+      console.error(`  ⚠ workday: page at offset ${offset} was not JSON — keeping the ${jobs.length} postings collected so far`);
+      break;
+    }
+    // The Workday CXS response wraps job rows under `jobPostings` — the
+    // documented envelope is REQUIRED (Phase 2): a 200 whose body is null or
+    // jobs-less is a masked/dead board, so it throws on page 1 (strict or
+    // not) instead of silently reading as []. On a LATER page the failure is
+    // fail-soft: keep the pages already collected.
+    let rows;
+    try {
+      requireContainer(data, 'Workday', 'jobPostings');
+      rows = requireArray(data.jobPostings, 'Workday jobPostings');
+    } catch (e) {
+      if (page === 0) throw e;
+      console.error(`  ⚠ workday: page at offset ${offset} lost its shape (${e.message}) — keeping the ${jobs.length} postings collected so far`);
+      break;
+    }
+    const pageJobs = rows.map((j) => normalize(j, base));
+    if (resolveMultiLocation) {
+      await resolvePlaceholders(pageJobs, rows, apiUrl, { fetchImpl, signal, headers, state: detailState });
+    }
+    jobs.push(...pageJobs);
+    // Stop on a short RAW page — the tenant ran out of postings. Never on the
+    // filtered/normalized count.
+    if (rows.length < PAGE_LIMIT) break;
   }
   return jobs;
 }
@@ -313,18 +376,19 @@ export async function fetchWorkday(apiUrl, opts = {}) {
  * @param {object[]} raw  The matching list rows (for `externalPath`).
  * @param {string} apiUrl The CXS jobs endpoint.
  */
-async function resolvePlaceholders(jobs, raw, apiUrl, { fetchImpl, signal, headers }) {
+async function resolvePlaceholders(jobs, raw, apiUrl, { fetchImpl, signal, headers, state = { spent: 0 } }) {
   // `…/wday/cxs/<tenant>/<site>/jobs` → `…/wday/cxs/<tenant>/<site>`
   const cxsBase = apiUrl.replace(/\/jobs\/?$/, '');
   const detailHeaders = { ...headers, Accept: 'application/json' };
   delete detailHeaders['Content-Type'];
-  let spent = 0;
+  // `state.spent` is shared across pagination pages, so the board-wide cap
+  // holds no matter how many pages the offset loop walks.
   for (let i = 0; i < jobs.length; i++) {
-    if (spent >= MAX_DETAIL_REQUESTS) break;
+    if (state.spent >= MAX_DETAIL_REQUESTS) break;
     if (!isMultiLocationPlaceholder(jobs[i].location)) continue;
     const path = raw[i] && raw[i].externalPath;
     if (typeof path !== 'string' || !path) continue;
-    spent += 1;
+    state.spent += 1;
     let detail;
     try {
       const res = await fetchImpl(`${cxsBase}${path}`, { method: 'GET', signal, redirect: 'error', headers: detailHeaders });
@@ -360,8 +424,24 @@ function normalize(j, base) {
     isRemote,
     workplaceType: isRemote ? 'Remote' : (hybrid ? 'Hybrid' : 'Onsite'),
     relocates: /\b(visa|relocation|sponsorship)\b/i.test(j.title || ''),
-    date: j.postedOn || '',
+    // `postedOn` is relative prose ("Posted 3 Days Ago") that cannot be dated
+    // honestly — emit '' rather than an unparseable string (the freshness
+    // contract is YYYY-MM-DD-or-empty). The detail enrichment overwrites this
+    // with jobPostingInfo.startDate when a detail GET was already paid.
+    date: toIsoDate(j.postedOn),
     snippet: '',
     source: 'workday',
   };
+}
+
+/**
+ * YYYY-MM-DD-or-'': a bare date passes through; relative prose and anything
+ * else that cannot be dated without guessing emits ''.
+ * @param {unknown} value
+ * @returns {string}
+ */
+function toIsoDate(value) {
+  if (typeof value !== 'string') return '';
+  const s = value.trim();
+  return /^\d{4}-\d{2}-\d{2}$/.test(s) ? s : '';
 }

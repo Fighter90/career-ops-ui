@@ -182,13 +182,21 @@ function extractLang(url) {
   return url.searchParams.get('lang') || 'en';
 }
 
-/** @param {unknown} html @returns {string[]} */
+/**
+ * Column headings, read ONLY from the jobs table's thead (`<table id="jobs">`).
+ * A shell without one returns [] — the positional fallback in parseColumns
+ * then applies. The old behavior scanned the WHOLE page for <th>/<label>
+ * when the table was missing, so nav/footer chrome (and French-localized
+ * shells with no jobs table at all) produced heading lists that matched no
+ * known pattern, disabled the positional fallback, and dropped every row
+ * (rawCount > 0, 0 parsed).
+ * @param {unknown} html @returns {string[]} */
 export function extractHeadings(html) {
   if (typeof html !== 'string') return [];
   const jobsTable = html.match(/<table\b[^>]*id=["']jobs["'][^>]*>[\s\S]*?<thead\b[^>]*>([\s\S]*?)<\/thead>/i);
-  const source = jobsTable ? jobsTable[1] : html;
+  if (!jobsTable) return [];
   const labels = [];
-  for (const m of source.matchAll(/<(?:th|label)[^>]*>([\s\S]*?)<\/(?:th|label)>/gi)) {
+  for (const m of jobsTable[1].matchAll(/<(?:th|label)[^>]*>([\s\S]*?)<\/(?:th|label)>/gi)) {
     const value = htmlToText(m[1]);
     if (value && !/^(?:icons?|actions?)$/i.test(value)) labels.push(value);
   }
@@ -204,10 +212,14 @@ export function parseColumns(row, headings) {
   const columns = Array.isArray(row?.column) ? row.column : [];
   const values = columns.map(textValue);
   const labels = Array.isArray(headings) ? headings : [];
-  const positional = labels.length === 0;
-  const titleMatch = fieldIndex(labels, [/requisition\s*title/i, /job\s*title/i, /^title$/i]);
-  const locationMatch = fieldIndex(labels, [/location/i, /city/i]);
-  const postedMatch = fieldIndex(labels, [/posting\s*date/i, /date\s*posted/i, /posted/i]);
+  const titleMatch = fieldIndex(labels, [/requisition\s*title/i, /job\s*title/i, /^title$/i, /titre/i]);
+  const locationMatch = fieldIndex(labels, [/location/i, /city/i, /lieu/i, /emplacement/i]);
+  const postedMatch = fieldIndex(labels, [/posting\s*date/i, /date\s*posted/i, /posted/i, /affichage/i, /publication/i]);
+  // Positional fallback (0/1/2) applies when there are NO labels — or when
+  // the labels exist but NONE of them match any known pattern. Unrecognized
+  // headings must never disable the fallback: that is how a localized shell
+  // dropped every row of an otherwise healthy board.
+  const positional = labels.length === 0 || (titleMatch < 0 && locationMatch < 0 && postedMatch < 0);
   const titleIndex = titleMatch >= 0 ? titleMatch : (positional ? 0 : -1);
   const locationIndex = locationMatch >= 0 ? locationMatch : (positional ? 1 : -1);
   const postedIndex = postedMatch >= 0 ? postedMatch : (positional ? 2 : -1);
@@ -217,9 +229,40 @@ export function parseColumns(row, headings) {
   return { title: title || '', location: typeof location === 'string' ? location : '', posted: posted || '' };
 }
 
-function toEpochMs(value) {
-  if (!value) return undefined;
-  const n = Date.parse(value);
+const MONTHS = { jan: 0, feb: 1, mar: 2, apr: 3, may: 4, jun: 5, jul: 6, aug: 7, sep: 8, oct: 9, nov: 10, dec: 11 };
+
+/**
+ * Posting date → epoch ms, treating DATE-ONLY values as UTC midnight.
+ * `Date.parse` reads "7/15/2026" as LOCAL midnight, so `toISOString()`
+ * sliced a day off in UTC+ timezones (an off-by-one posting date in the
+ * tracker). The numeric and month-name forms below are parsed with
+ * Date.UTC instead; full timestamps fall through to Date.parse unchanged.
+ * Exported for unit tests.
+ * @param {any} value
+ * @returns {number|undefined}
+ */
+export function toPostedEpochMs(value) {
+  if (value == null || value === '') return undefined;
+  const s = String(value).trim();
+  let m = s.match(/^(\d{4})-(\d{1,2})-(\d{1,2})/); // ISO date (the common form)
+  if (m) return Date.UTC(Number(m[1]), Number(m[2]) - 1, Number(m[3]));
+  m = s.match(/^(\d{1,2})\/(\d{1,2})\/(\d{4})$/); // M/D/Y (US) — or D/M/Y when day > 12
+  if (m) {
+    let month = Number(m[1]);
+    let day = Number(m[2]);
+    if (month > 12) {
+      if (day > 12) return undefined; // neither reading yields a valid month
+      [month, day] = [day, month]; // 15/07/2026 is unambiguously D/M/Y
+    }
+    return Date.UTC(Number(m[3]), month - 1, day);
+  }
+  m = s.match(/^(\d{1,2})\.(\d{1,2})\.(\d{4})$/); // D.M.Y (dot locale)
+  if (m) return Date.UTC(Number(m[3]), Number(m[2]) - 1, Number(m[1]));
+  m = s.match(/^([a-z]{3})[a-z]*\.?\s+(\d{1,2}),?\s+(\d{4})$/i); // Jul 15, 2026
+  if (m && m[1].toLowerCase() in MONTHS) return Date.UTC(Number(m[3]), MONTHS[m[1].toLowerCase()], Number(m[2]));
+  m = s.match(/^(\d{1,2})\s+([a-z]{3})[a-z]*\.?\s+(\d{4})$/i); // 15 Jul 2026
+  if (m && m[2].toLowerCase() in MONTHS) return Date.UTC(Number(m[3]), MONTHS[m[2].toLowerCase()], Number(m[1]));
+  const n = Date.parse(s); // full timestamps (legacy fallback)
   return Number.isNaN(n) ? undefined : n;
 }
 
@@ -257,7 +300,7 @@ export function parseTaleoResponse(json, board, headings, company = '') {
     const detail = new URL(`https://${host}/careersection/${safeEncode(board.section)}/jobdetail.ftl`);
     detail.searchParams.set('job', id);
     detail.searchParams.set('lang', lang);
-    const postedAt = toEpochMs(parsed.posted);
+    const postedAt = toPostedEpochMs(parsed.posted);
     const location = parsed.location;
     const isRemote = /\bremote\b/i.test(location);
     out.push({

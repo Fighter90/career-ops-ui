@@ -90,9 +90,21 @@ function splitTitle(rawTitle, defaultCompany) {
   return { company: defaultCompany, title: text };
 }
 
+// REAL FEED FIELDS (verified against jobspresso.co/?feed=job_feed, 2026-10-07):
+// WP Job Manager emits namespaced CDATA elements under the
+// `xmlns:job_listing="https://jobspresso.co"` namespace:
+//   <job_listing:location><![CDATA[Various US States]]></job_listing:location>
+//   <job_listing:company><![CDATA[Hopper]]></job_listing:company>
+// There is no `job_listing_location` (underscore) element and no <category>
+// element in the current feed — the category read is kept only as a fallback
+// for a possible WP theme that still emits one.
 function extractLocation(item) {
-  // Try WP Job Manager's job_listing_location first, then generic category
-  return tagText(item, 'job_listing_location') || tagText(item, 'category') || 'Remote';
+  return tagText(item, 'job_listing:location') || tagText(item, 'category') || 'Remote';
+}
+
+/** The structured company tag, when the item carries one. */
+function extractCompany(item) {
+  return tagText(item, 'job_listing:company');
 }
 
 /**
@@ -115,7 +127,12 @@ export function parseJobspressoFeed(xml, fallbackCompany = 'Jobspresso') {
     if (!url) continue;
     const rawTitle = tagText(item, 'title');
     if (!rawTitle) continue;
-    const { company: co, title } = splitTitle(rawTitle, company);
+    // The structured <job_listing:company> tag wins; the legacy "Company: Role"
+    // title split only runs when the item carries no company tag.
+    const tagged = extractCompany(item);
+    const { company: co, title } = tagged
+      ? { company: tagged, title: rawTitle }
+      : splitTitle(rawTitle, company);
     const location = extractLocation(item);
     jobs.push({
       id: `jobspresso-${djb2(url)}`,
@@ -135,6 +152,20 @@ export function parseJobspressoFeed(xml, fallbackCompany = 'Jobspresso') {
   return jobs;
 }
 
+// The endpoint sits behind bot protection on some networks, and the wall
+// answers 200 with a small HTML challenge page. Parsed as a feed that is zero
+// <item>s, so the board read as "0 jobs" with no hint nothing was fetched. A
+// feed with no items is still a valid, empty board; only a body that is not a
+// feed at all is an error. Solving the challenge is out of scope.
+// (Same discipline as higheredjobs.mjs's assertRssFeed.)
+function assertJobspressoFeed(text) {
+  if (typeof text === 'string' && /<(?:rss|channel)\b/i.test(text)) return;
+  if (typeof text === 'string' && /<html\b/i.test(text)) {
+    throw new Error('jobspresso: feed endpoint answered a challenge page, not a feed');
+  }
+  throw new Error('jobspresso: feed endpoint answered no feed');
+}
+
 /**
  * Fetch + normalize the Jobspresso RSS feed.
  * @param {string} feedUrl
@@ -151,6 +182,7 @@ export async function fetchJobspresso(feedUrl = FEED_URL, opts = {}) {
       Accept: 'application/rss+xml, application/xml, text/xml',
     },
   });
+  assertJobspressoFeed(xml);
   const fallback = (company && typeof company.name === 'string' && company.name.trim())
     ? company.name.trim()
     : 'Jobspresso';

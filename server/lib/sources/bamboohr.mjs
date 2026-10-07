@@ -30,6 +30,7 @@
  */
 import { fetchJson, fetchText } from '../http-json.mjs';
 import { safeEncodeURIComponent } from './_safe-url.mjs';
+import { requireContainer, requireArray } from './_shape.mjs';
 
 export const BAMBOOHR_HOST_RE = /^[a-z0-9][a-z0-9-]*\.bamboohr\.com$/;
 const REMOTE_RE = /remote|anywhere|home\s*office/i;
@@ -64,15 +65,19 @@ export function assertBambooHRUrl(url) {
  * Parse a BambooHR `/careers/list` response. Exported for unit tests.
  *
  * BambooHR returns `{ result: [{ id, jobOpeningName,
- *   location: { city?, state? }, isRemote? }] }`. Rows without a non-empty `id`
- * are dropped (id is the URL/dedup key; a blank id collapses distinct postings).
+ *   location: { city?, state? }, isRemote? }] }`. A 200 that no longer speaks
+ * that envelope is a shape change and THROWS (phase-2: never a silent
+ * healthy-but-empty board; a live-but-empty board is `{result: []}`). Rows
+ * without a non-empty `id` are dropped (id is the URL/dedup key; a blank id
+ * collapses distinct postings).
  *
  * @param {any} json
  * @param {string} companyName
  * @param {string} origin  e.g. "https://acme.bamboohr.com"
  */
 export function parseBambooHRResponse(json, companyName, origin) {
-  const rows = json && Array.isArray(json.result) ? json.result : [];
+  requireContainer(json, 'BambooHR careers list', 'result');
+  const rows = requireArray(json.result, 'BambooHR careers list rows');
   return rows
     .filter((j) => j && j.jobOpeningName && String(j.id ?? '').trim().length > 0)
     .map((j) => {

@@ -18,6 +18,7 @@
  * after the first live run. The `parseGetMatchCards` function is
  * exported so it can be tuned independently with new fixtures.
  */
+import { decodeEntities } from '../html-entities.mjs';
 
 const GETMATCH_BASE = 'https://getmatch.ru';
 const UA =
@@ -57,12 +58,23 @@ export async function searchGetMatch(query, opts = {}) {
   return onlyRemote ? out.filter((j) => j.isRemote) : out;
 }
 
+/** Decode entities + collapse whitespace on a captured text run (see geekjob.mjs). */
+function decodeText(s) {
+  return decodeEntities(s || '').replace(/\s+/g, ' ').trim();
+}
+
 /**
  * Parse vacancy-cards from a GetMatch HTML page.
  * Pure function — exported for testing with fixture HTML.
  *
  * Looks for two patterns: anchored vacancy links and embedded JSON
  * (some versions of the site inline a JSON payload for hydration).
+ *
+ * Each card's block is SLICED BY INDEX from the anchor's end to the next
+ * vacancy anchor (v1.242.0). The previous single regex capped that block at
+ * {0,2000} chars with a lookahead for the next anchor, so a card followed by
+ * more markup than the cap — always true for the TAIL card of a long page —
+ * was dropped silently; a slice has no cap to outgrow.
  */
 export function parseGetMatchCards(html) {
   if (!html) return [];
@@ -71,23 +83,29 @@ export function parseGetMatchCards(html) {
   // Pattern 1: anchor-style cards.
   //   <a href="/vacancies/<slug>" class="...">Title</a>
   //   <... class="...vacancy-card...">...company / salary / remote chips
-  // We pair each <a href="/vacancies/..."> with the surrounding card.
-  const cardRe = /<a[^>]+href="(\/vacancies\/[^"]+)"[^>]*>\s*([^<][^<]{1,180}?)\s*<\/a>([\s\S]{0,2000}?)(?=<a[^>]+href="\/vacancies\/|$)/g;
+  const anchors = [];
+  const anchorRe = /<a[^>]+href="(\/vacancies\/[^"]+)"[^>]*>\s*([^<][^<]{1,180}?)\s*<\/a>/g;
   let m;
-  while ((m = cardRe.exec(html)) !== null) {
-    const [_, href, title, block] = m;
-    if (!title || title.length < 4) continue;
+  while ((m = anchorRe.exec(html)) !== null) {
+    anchors.push({ href: m[1], title: m[2], start: m.index, end: m.index + m[0].length });
+  }
+
+  for (let i = 0; i < anchors.length; i += 1) {
+    const { href, title } = anchors[i];
+    const block = html.slice(anchors[i].end, i + 1 < anchors.length ? anchors[i + 1].start : undefined);
+    const decodedTitle = decodeText(title);
+    if (!decodedTitle || decodedTitle.length < 4) continue;
     // Skip nav anchors that re-use /vacancies/<slug-style> URLs.
-    if (/^(все\s+вакансии|all\s+jobs)$/i.test(title.trim())) continue;
-    const company = (block.match(/company[^>]*>\s*([^<]{2,100}?)\s*</i) || [])[1];
+    if (/^(все\s+вакансии|all\s+jobs)$/i.test(decodedTitle)) continue;
+    const companyRaw = (block.match(/company[^>]*>\s*([^<]{2,100}?)\s*</i) || [])[1];
     const salary = (block.match(/(\d[\d\s,]*\s*[—–-]\s*\d[\d\s,]*\s*(?:₽|\$|€|руб|RUB))/i) || [])[1];
     const isRemote = /(удал[её]н|remote)/i.test(block);
     const hasReloc = /(релок|relocation|reloc)/i.test(block);
 
     out.push({
       id: `getmatch-${href.replace(/^\/vacancies\//, '').replace(/\/$/, '')}`,
-      title: title.trim(),
-      company: company?.trim() || '',
+      title: decodedTitle,
+      company: decodeText(companyRaw),
       url: GETMATCH_BASE + href,
       salary: (salary || '').replace(/\s+/g, ' ').trim(),
       location: isRemote ? 'Remote' : 'Russia',

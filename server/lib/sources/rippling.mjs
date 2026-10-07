@@ -101,7 +101,9 @@ function toIsoDate(value) {
   return Number.isNaN(ms) ? '' : new Date(ms).toISOString().slice(0, 10);
 }
 
-const REMOTE_RE = /remote|anywhere|distributed|home\s*office/i;
+// Explicit remote-work markers only. "Distributed" is NOT one — it flags
+// "Distributed Systems Engineer", a role with no remote signal at all.
+const REMOTE_RE = /remote|anywhere|home\s*office/i;
 
 /**
  * Normalize one raw v2 board item into the 12-field web-ui job shape.
@@ -220,15 +222,21 @@ export async function fetchRippling(endpoint, opts = {}) {
     const url = buildRipplingEndpoint(slug, page);
     assertRipplingApiUrl(url);
 
-    let json;
+    // Parse lives INSIDE the try: a wrong-shape 200 (parseRipplingPage
+    // throws) is a page failure like any other. On page 0 it throws (dead
+    // board reads as failure); on a later page the partials already
+    // collected survive — a shape blip on page N must not discard page 1.
+    let pageJobs;
+    let rawCount;
     try {
-      json = await fetchJsonWithRetry(fetchImpl, url, {
+      const json = await fetchJsonWithRetry(fetchImpl, url, {
         signal,
         redirect: 'error',
         headers: { 'User-Agent': UA, Accept: 'application/json' },
         retries: RETRIES,
         ...(opts.retryDelayMs !== undefined ? { retryDelayMs: opts.retryDelayMs } : {}),
       });
+      ({ jobs: pageJobs, rawCount } = parseRipplingPage(json, companyName));
     } catch (err) {
       if (page === 0) throw err;
       console.error(`  ⚠ rippling: ${companyName} truncated at page ${page + 1} of ${pagesToFetch} (${jobs.length} jobs): ${err.message}`);
@@ -236,7 +244,6 @@ export async function fetchRippling(endpoint, opts = {}) {
       break;
     }
 
-    const { jobs: pageJobs, rawCount } = parseRipplingPage(json, companyName);
     jobs.push(...pageJobs);
     // Natural end — break WITHOUT incrementing, so a short page that is also
     // the last allowed page is not misreported as a cap stop below.

@@ -88,9 +88,25 @@ test('parsePinpointResponse: derives company from tenant slug when companyName i
   assert.equal(jobs[0].company, 'Globex');
 });
 
-test('parsePinpointResponse: non-array data → empty result', () => {
-  assert.deepEqual(parsePinpointResponse({}, 'X', 'x.pinpointhq.com'), []);
-  assert.deepEqual(parsePinpointResponse({ data: null }, 'X', 'x.pinpointhq.com'), []);
+test('parsePinpointResponse: a wrong-shape body THROWS (Phase-2, never silent [])', () => {
+  // A 200 that stopped speaking { data: [...] } is a drifted envelope or a
+  // challenge, not an empty board — it must throw so the scan records a
+  // failure instead of "live but empty" (meituan/tencent contract).
+  for (const bad of [{}, { data: null }, { data: {} }, null, 'nope', []]) {
+    assert.throws(() => parsePinpointResponse(bad, 'X', 'x.pinpointhq.com'), (err) => {
+      assert.ok(err instanceof TypeError);
+      assert.match(err.message, /Pinpoint/);
+      return true;
+    }, `expected a throw for ${JSON.stringify(bad)}`);
+  }
+});
+
+test('fetchPinpoint: a 200 with the wrong shape throws through the fetch', async () => {
+  const fetchImpl = async () => ({ ok: true, status: 200, json: async () => ({ unexpected: true }) });
+  await assert.rejects(
+    () => fetchPinpoint('https://acme.pinpointhq.com/postings.json', { fetchImpl }),
+    /Pinpoint/,
+  );
 });
 
 test('fetchPinpoint: normalizes via fake fetchImpl + stamps company', async () => {

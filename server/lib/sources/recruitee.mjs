@@ -12,6 +12,7 @@
  */
 import { fetchJson } from '../http-json.mjs';
 import { htmlToText } from '../html-to-text.mjs';
+import { requireObject, requireArray } from './_shape.mjs';
 
 export const RECRUITEE_HOST_RE = /^[a-z0-9][a-z0-9-]*\.recruitee\.com$/;
 
@@ -112,7 +113,10 @@ function assembleLocation(j) {
  * @param {string} companyName
  */
 export function parseRecruiteeResponse(json, companyName) {
-  const offers = json && Array.isArray(json.offers) ? json.offers : [];
+  // Phase-2: a 200 that stopped speaking { offers: [...] } is a drifted API or
+  // a challenge, not an empty board — THROW (the API is a single request, so
+  // this is always "page 1").
+  const offers = requireArray(requireObject(json, 'Recruitee offers').offers, 'Recruitee offers');
   const out = [];
   for (const j of offers) {
     if (!j || typeof j !== 'object') continue;

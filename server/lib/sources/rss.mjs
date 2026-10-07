@@ -51,19 +51,24 @@ function extractField(itemXml, tag) {
 }
 
 /**
- * Extract the first <link> that is NOT inside a CDATA or another tag.
- * RSS <link> elements often sit between adjacent tags without attributes:
- *   <link>https://…</link>
- * or are self-closed Atom-style; we handle both.
+ * Extract the job URL from an item's <link>. Handles the three shapes feeds
+ * actually ship — a plain <link>text</link>, a CDATA-wrapped one, and an
+ * Atom-style <link href="…"> — then decodes entities and pins the scheme to
+ * https (a job URL that is not https is dropped to '', never emitted).
  */
 function extractLink(itemXml) {
-  // Try plain <link>…</link> first
-  const plain = itemXml.match(/<link[^>]*>([^<]+)<\/link>/i);
-  if (plain) return plain[1].trim();
-  // Try <link … href="…" …/> (Atom mixed into RSS)
-  const atom = itemXml.match(/<link[^>]+href="([^"]+)"/i);
-  if (atom) return atom[1].trim();
-  return '';
+  const tag = itemXml.match(/<link\b([^>]*)>([\s\S]*?)<\/link>/i);
+  const candidates = [];
+  if (tag) {
+    candidates.push(unwrap(tag[2]).trim());
+    const href = (tag[1].match(/\shref="([^"]+)"/i) || [])[1];
+    if (href) candidates.push(unwrap(href).trim());
+  } else {
+    // Atom-style self-closing link (no </link> to match).
+    const selfClosed = itemXml.match(/<link\b[^>]*\shref="([^"]+)"/i);
+    if (selfClosed) candidates.push(unwrap(selfClosed[1]).trim());
+  }
+  return candidates.find((c) => /^https:\/\//i.test(c)) || '';
 }
 
 // ── remote-work / relocation signals ────────────────────────────────
@@ -96,6 +101,7 @@ export async function fetchRss(feedUrl, opts = {}) {
 
   const res = await fetchImpl(feedUrl, {
     signal,
+    redirect: 'error',
     headers: { 'User-Agent': UA, Accept: 'application/rss+xml, application/xml, text/xml, */*' },
   });
 
@@ -121,8 +127,16 @@ export async function fetchRss(feedUrl, opts = {}) {
 /**
  * Parse an RSS XML string into job objects.
  * Exported for testing without a live HTTP call.
+ *
+ * Shape contract (Phase 2): the body must carry the documented container —
+ * an <rss> or <channel> root. A 200 that is not an RSS document (a
+ * challenge page, an HTML error template) THROWS instead of parsing as an
+ * empty board; a real feed with zero items still parses to [].
  */
 export function parseRss(xml, feedHostname = '') {
+  if (typeof xml !== 'string' || !/<(?:rss|channel)[\s>]/i.test(xml)) {
+    throw new TypeError('RSS: response is not an RSS feed (no <rss>/<channel> document found)');
+  }
   const jobs = [];
   const itemRe = /<item[\s>]([\s\S]*?)<\/item>/gi;
   let m;

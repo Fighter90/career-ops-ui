@@ -189,8 +189,13 @@ export function parseNeogovPage(html, companyName, origin) {
   if (!items.length) {
     // "No jobs at this time." / "No jobs found." (and every page past the
     // last) render this container instead of a list.
-    if (html.includes('jobs-not-found-container') || html.includes('search-results-listing-container')) return [];
-    throw new Error('neogov: response is not a NEOGOV job list (no list items, listing container or not-found container)');
+    if (html.includes('jobs-not-found-container')) return [];
+    // An EMPTY listing container (no <li>s at all) is also a real empty page —
+    // but only an actual empty <ul>: a page that merely mentions the class
+    // (an SPA shell, a challenge page, inline JS) used to slip past this
+    // guard and read as an empty board forever. (v1.242.0)
+    if (/<ul\b[^>]*class="[^"]*search-results-listing-container[^"]*"[^>]*>\s*<\/ul>/i.test(html)) return [];
+    throw new Error('neogov: response is not a NEOGOV job list (no list items, empty listing container or not-found container)');
   }
   const jobs = [];
   for (const item of items) {
@@ -226,6 +231,11 @@ export function parseNeogovPage(html, companyName, origin) {
       snippet: '',
       source: 'neogov',
     });
+  }
+  if (jobs.length === 0) {
+    // The page HAS list items but every link failed validation — the markup
+    // changed. Returning [] would report a live board as empty forever.
+    throw new Error(`neogov: ${items.length} list items on the page but no parseable job links (list markup changed?)`);
   }
   return jobs;
 }

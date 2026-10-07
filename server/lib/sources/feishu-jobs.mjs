@@ -188,11 +188,30 @@ export async function fetchFeishuJobs(url, opts = {}) {
       }
 
       const pageRows = Array.isArray(json?.data?.job_post_list) ? json.data.job_post_list : [];
+      if (!Array.isArray(json?.data?.job_post_list)) {
+        // Page 1 must speak the documented shape: a 200 without a
+        // job_post_list array is a changed API and throws instead of reading
+        // as an empty board (v1.242.0 Phase-2 rule). A later page losing the
+        // shape keeps the partials already collected.
+        if (seen.size === 0) {
+          throw new Error('feishu-jobs: 200 response has no data.job_post_list array (envelope change or challenge page)');
+        }
+        console.error(`  ⚠ feishu-jobs: keyword "${keyword}" page ${page} lost the job_post_list shape — keeping the ${seen.size} jobs collected so far`);
+        break;
+      }
       const { jobs, total } = parseFeishuJobsResponse(json, companyName, origin);
       if (pageRows.length === 0) break;
+      if (seen.size === 0 && jobs.length === 0) {
+        // Raw rows arrived but none produced a title + id — envelope drift,
+        // not an empty board.
+        throw new Error(`feishu-jobs: ${pageRows.length} job_post row(s) returned but none parsed (title/id missing)`);
+      }
       for (const job of jobs) if (!seen.has(job.url)) seen.set(job.url, job);
 
-      if (Math.min(offset + PAGE_SIZE, total) >= total) break;
+      // A missing/zero `count` must not end pagination after page 1 — only
+      // trust it when the server actually reported one; otherwise the raw page
+      // length decides.
+      if (total > 0 && Math.min(offset + PAGE_SIZE, total) >= total) break;
     }
   }
 

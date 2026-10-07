@@ -156,6 +156,54 @@ test('fetch4DayWeek: throws on first-page HTTP error', async () => {
   );
 });
 
+// ── v1.242.0 phase-2: entry max_pages, query-safe page URLs, later-page partials ──
+
+test('fetch4DayWeek: the entry max_pages (opts.company.max_pages) is honored, not just opts.maxPages', async () => {
+  // The scanner threads the company entry through opts.company; previously
+  // only opts.maxPages was read, so an entry's max_pages was dead config and
+  // the walk defaulted to 3 pages.
+  let calls = 0;
+  const fetchImpl = async () => {
+    calls += 1;
+    return { ok: true, json: async () => ({ jobs: PAGE1_JOBS, has_more: true, page: 1 }) };
+  };
+  const jobs = await fetch4DayWeek(FEED_BASE, { fetchImpl, company: { max_pages: 1 } });
+  assert.equal(calls, 1);
+  assert.equal(jobs.length, 1);
+});
+
+test('fetch4DayWeek: ?page=N is appended with URL() — a base that already has a query still works', async () => {
+  const urls = [];
+  const fetchImpl = async (url) => {
+    urls.push(String(url));
+    return { ok: true, json: async () => ({ jobs: [], has_more: false }) };
+  };
+  await fetch4DayWeek('https://4dayweek.io/api/jobs?mirror=1', { fetchImpl });
+  assert.deepEqual(urls, ['https://4dayweek.io/api/jobs?mirror=1&page=1'],
+    `string-concat produced a broken URL: ${urls[0]}`);
+});
+
+test('fetch4DayWeek: a later page with unparseable JSON keeps the collected jobs (partials, logged)', async () => {
+  let call = 0;
+  const fetchImpl = async () => {
+    call += 1;
+    if (call === 1) return { ok: true, json: async () => ({ jobs: PAGE1_JOBS, has_more: true, page: 1 }) };
+    // a 200 whose body is not JSON — previously res.json() threw out of the
+    // loop and discarded everything already collected
+    return { ok: true, json: async () => { throw new SyntaxError('Unexpected token < in JSON'); } };
+  };
+  const jobs = await fetch4DayWeek(FEED_BASE, { fetchImpl, maxPages: 5 });
+  assert.equal(jobs.length, 1, "a page-2 JSON failure must not discard page 1's jobs");
+});
+
+test('fetch4DayWeek: an unexpected-shape page 1 still throws (no silent empty board)', async () => {
+  const fetchImpl = async () => ({ ok: true, json: async () => ({ listings: [] }) }); // "jobs" renamed
+  await assert.rejects(
+    () => fetch4DayWeek(FEED_BASE, { fetchImpl }),
+    /unexpected API response on page 1/,
+  );
+});
+
 // ---------------------------------------------------------------------------
 // SSRF guard
 // ---------------------------------------------------------------------------

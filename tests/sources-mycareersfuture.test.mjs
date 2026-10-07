@@ -238,7 +238,14 @@ test('fetchMyCareersFuture queries each keyword, dedups by id, strips the id, PO
     company: { name: 'MCF', mycareersfuture: { keywords: ['python', 'data'] } },
   });
   assert.equal(jobs.length, 1); // deduped across keywords by id
-  assert.equal('id' in jobs[0], false); // dedup id stripped from the returned shape
+  // v1.242.0 — the source returns the same 12-field job shape as every other
+  // source (the dedup jobPostId becomes the `mycareersfuture-` id prefix).
+  assert.equal(jobs[0].id, 'mycareersfuture-SHARED');
+  assert.equal(jobs[0].source, 'mycareersfuture');
+  for (const f of ['id', 'title', 'company', 'url', 'salary', 'location',
+    'isRemote', 'workplaceType', 'relocates', 'date', 'snippet', 'source']) {
+    assert.ok(Object.prototype.hasOwnProperty.call(jobs[0], f), `missing field: ${f}`);
+  }
   const kws = impl.calls.map((c) => c.body.search);
   assert.deepEqual([...new Set(kws)].sort(), ['data', 'python']);
   assert.equal(impl.calls[0].method, 'POST');

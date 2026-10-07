@@ -26,6 +26,7 @@
  * Used by the csod adapter (server/lib/portals/adapters/csod.mjs).
  */
 import { fetchJson, fetchResponse, delay } from '../http-json.mjs';
+import { requireContainer } from './_shape.mjs';
 // Titles arrive HTML-escaped; decode before the tag-strip so an undecoded
 // "R&amp;D" can't fail a user's title_filter and drop the posting silently.
 import { decodeEntities } from '../html-entities.mjs';
@@ -237,6 +238,7 @@ export async function fetchCsod(endpoint, opts = {}) {
   const jobs = [];
   const seen = new Set();
   let total = null;
+  let succeededOnce = false;
 
   for (let page = 1; page <= maxPages; page++) {
     if (page > 1) await delay(PAGE_DELAY_MS, signal);
@@ -269,8 +271,28 @@ export async function fetchCsod(endpoint, opts = {}) {
         customFieldRadios: [],
       }),
     });
+    // Page 1 must speak the documented shape: a 200 without
+    // data.requisitions is a changed API / challenge page and throws instead
+    // of reading as an empty site (v1.242.0 Phase-2 rule). A later page losing
+    // the shape keeps the partials.
+    if (!succeededOnce) {
+      requireContainer(json, 'Cornerstone', 'data.requisitions');
+    } else if (!Array.isArray(json?.data?.requisitions)) {
+      break;
+    }
+    succeededOnce = true;
+
+    // Raw page length BEFORE any id/title filtering — the short-page stop is
+    // judged on what the server actually sent, not on the post-filter count
+    // (a full raw page whose rows mostly fail normalization is not a last page).
+    const rawLen = Array.isArray(json.data.requisitions) ? json.data.requisitions.length : 0;
     const { total: pageTotal, jobs: rows } = parseRequisitions(json, cfg, name);
     if (total === null) total = pageTotal;
+    if (page === 1 && rawLen > 0 && rows.length === 0) {
+      // Raw requisitions arrived but none parsed (id/title missing) — envelope
+      // drift, not an empty site.
+      throw new Error(`csod: ${rawLen} requisition(s) returned but none parsed (id/title missing)`);
+    }
     if (rows.length === 0) break;
 
     let fresh = 0;
@@ -285,7 +307,7 @@ export async function fetchCsod(endpoint, opts = {}) {
     if (fresh === 0) break;
     if (jobs.length >= MAX_JOBS) break;
     if (total !== null && page * PAGE_SIZE >= total) break;
-    if (rows.length < PAGE_SIZE) break; // short page = last page
+    if (rawLen < PAGE_SIZE) break; // short RAW page = last page
   }
   return jobs;
 }

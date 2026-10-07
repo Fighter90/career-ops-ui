@@ -9,8 +9,39 @@
  * board passed that filter blind.
  */
 import { htmlToText } from '../html-to-text.mjs';
+import { requireArray, requireContainer } from './_shape.mjs';
 
 const UA = 'career-ops-web-ui/1.0';
+
+// Ported from parent career-ops providers/greenhouse.mjs — the boards-api host
+// allowlist. The scanner always hands this source an adapter-built URL, so the
+// assert is defence-in-depth: a future adapter regression (or a hand-edited
+// portals.yml `api:`) can never point the scan — and its User-Agent — at an
+// arbitrary host. EXACT hostnames, parsed: a substring or suffix match would
+// accept boards-api.greenhouse.io.evil.test.
+const ALLOWED_GREENHOUSE_HOSTS = new Set([
+  'boards-api.greenhouse.io',
+  'boards.greenhouse.io',
+  'job-boards.greenhouse.io',
+  'job-boards.eu.greenhouse.io',
+]);
+
+/** https + exact Greenhouse host, or throws. Exported for tests. @param {string} url */
+export function assertGreenhouseUrl(url) {
+  let parsed;
+  try {
+    parsed = new URL(url);
+  } catch {
+    throw new Error(`greenhouse: invalid URL: ${url}`);
+  }
+  if (parsed.protocol !== 'https:') throw new Error(`greenhouse: URL must use HTTPS: ${url}`);
+  if (!ALLOWED_GREENHOUSE_HOSTS.has(parsed.hostname)) {
+    throw new Error(
+      `greenhouse: untrusted hostname "${parsed.hostname}" — must be one of: ${[...ALLOWED_GREENHOUSE_HOSTS].join(', ')}`,
+    );
+  }
+  return url;
+}
 
 // v1.69.0 (P-14) — self-describing adapter metadata; see ashby.mjs for the rationale.
 export const meta = {
@@ -91,16 +122,30 @@ export function withContent(apiUrl) {
   }
 }
 
+/** A job whose absolute_url is not https has no safe dedup/apply key — dropped. */
+function hasHttpsJobUrl(j) {
+  if (!j || typeof j.absolute_url !== 'string') return false;
+  try {
+    return new URL(j.absolute_url).protocol === 'https:';
+  } catch {
+    return false;
+  }
+}
+
 export async function fetchGreenhouse(apiUrl, opts = {}) {
   const { fetchImpl = fetch, signal } = opts; // REVIEW-B3
-  const res = await fetchImpl(withContent(apiUrl), { signal, headers: { 'User-Agent': UA, Accept: 'application/json' } });
+  assertGreenhouseUrl(apiUrl);
+  const res = await fetchImpl(withContent(apiUrl), { signal, redirect: 'error', headers: { 'User-Agent': UA, Accept: 'application/json' } });
   if (!res.ok) {
     const err = new Error(`Greenhouse: HTTP ${res.status} (${apiUrl})`);
     err.status = res.status;
     throw err;
   }
   const data = await res.json();
-  const jobs = (data.jobs || []).filter((j) => j.absolute_url || j.id != null);
+  // Phase-2: a 200 without the jobs container is a broken/changed board, not
+  // an empty one — say so instead of reading it as [] and "succeeding".
+  requireContainer(data, 'Greenhouse board', 'jobs');
+  const jobs = requireArray(data.jobs, 'Greenhouse jobs').filter(hasHttpsJobUrl);
 
   // Only pay for /offices when this board actually hides its cities there.
   let officeMap = null;
@@ -110,7 +155,7 @@ export async function fetchGreenhouse(apiUrl, opts = {}) {
     // host, so the enrichment request stays pinned to the boards-api host.
     if (officesUrl) {
       try {
-        const or = await fetchImpl(officesUrl, { signal, headers: { 'User-Agent': UA, Accept: 'application/json' } });
+        const or = await fetchImpl(officesUrl, { signal, redirect: 'error', headers: { 'User-Agent': UA, Accept: 'application/json' } });
         if (or.ok) officeMap = buildOfficeMap(await or.json());
       } catch {
         // Best-effort: a scan must never fail because the secondary lookup did.

@@ -16,6 +16,7 @@
  */
 
 import { safeEncodeURIComponent } from './_safe-url.mjs';
+import { requireContainer, requireArray } from './_shape.mjs';
 
 const TRUDVSEM_API = 'https://opendata.trudvsem.ru/api/v1/vacancies';
 const UA =
@@ -57,22 +58,34 @@ export async function searchTrudvsem(query, opts = {}) {
       offset: String(page),
     });
 
-    const res = await fetchImpl(`${TRUDVSEM_API}?${params}`, {
-      signal,
-      headers: { 'User-Agent': UA, Accept: 'application/json' },
-    });
-
-    if (!res.ok) {
-      if (page === 0) {
+    // The fetch AND the shape parse share the fail-soft boundary (v1.242.0
+    // Phase 2): a first-page failure throws; a later-page failure keeps the
+    // pages already collected and logs.
+    let data = null;
+    let list;
+    try {
+      const res = await fetchImpl(`${TRUDVSEM_API}?${params}`, {
+        signal,
+        // Never follow a server-side redirect (SSRF guard).
+        redirect: 'error',
+        headers: { 'User-Agent': UA, Accept: 'application/json' },
+      });
+      if (!res.ok) {
         const err = new Error(`Trudvsem: HTTP ${res.status}`);
         err.status = res.status;
         throw err;
       }
+      data = await res.json();
+      // The documented envelope is REQUIRED: a 200 without
+      // results.vacancies is the API stopping its shape, not an empty page.
+      requireContainer(data, 'Trudvsem', 'results.vacancies');
+      list = requireArray(data.results.vacancies, 'Trudvsem vacancies');
+    } catch (err) {
+      if (page === 0) throw err;
+      console.error(`  ⚠ trudvsem: page ${page} failed (${err.message}) — keeping the ${out.length} jobs collected so far`);
       break;
     }
 
-    const data = await res.json();
-    const list = data?.results?.vacancies || [];
     let added = 0;
     for (const job of list.map(normalizeTrudvsem).filter(Boolean)) {
       const key = job.url || job.id;
@@ -90,29 +103,54 @@ export async function searchTrudvsem(query, opts = {}) {
   return onlyRemote ? out.filter((j) => j.isRemote) : out;
 }
 
+/** Any creation-date the API hands us → YYYY-MM-DD UTC ('' when unparseable). */
+function toIsoDate(value) {
+  if (typeof value !== 'string' || !value.trim()) return '';
+  let s = value.trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+  // A naive stamp ("2026-05-10T08:00:00" / "2026-05-10 08:00:00") is treated
+  // as UTC for determinism — same convention as tkms.mjs.
+  if (/^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}/.test(s) && !/(?:Z|[+-]\d{2}:?\d{2})$/.test(s)) {
+    s = s.replace(' ', 'T') + 'Z';
+  }
+  const ms = Date.parse(s);
+  return Number.isNaN(ms) ? '' : new Date(ms).toISOString().slice(0, 10);
+}
+
 /** Normalize one Trudvsem record into the common job shape. */
 export function normalizeTrudvsem(rec) {
   if (!rec) return null;
   const v = rec.vacancy || rec; // API wraps each entry in `{ vacancy: {...} }`.
   if (!v) return null;
 
-  const id = v.id || '';
+  const id = v.id != null ? String(v.id) : '';
   const title = v['job-name'] || v.jobName || '';
   if (!title) return null;
+  // v1.242.0 Phase 2: an id-less row used to synthesize a title-derived id and
+  // a URL that collided with every other id-less row of the same title in the
+  // caller's dedup — silently swallowing rows. Skip id-less rows outright.
+  if (!id) return null;
 
   const company = v?.company?.name || v.companyName || '';
-  const url = v.vac_url || v.url || '';
   const region = v?.region?.name || '';
   const schedule = (v.schedule || '').toString();
   const workplaces = (v['work-places'] || '').toString();
   const isRemote = /удал[её]н|remote/i.test(schedule + ' ' + workplaces + ' ' + title);
-  const date = v['creation-date'] || v.creationDate || '';
+  const date = toIsoDate(v['creation-date'] || v.creationDate);
 
   // A lone surrogate in id throws URIError out of encodeURIComponent and
-  // aborts the caller's .map() over the page. Without a vac_url to fall back
-  // on, drop just this one.
+  // aborts the caller's .map() over the page. The row only dies when there is
+  // no usable https URL for it (no https vac_url AND no encodable id to build
+  // one from) — a surrogate id with a real vac_url keeps its row (v1.242.0).
   const encodedId = safeEncodeURIComponent(id);
-  if (!url && encodedId === null) return null;
+
+  // Job URLs are https:-only (Phase-2 contract): a https vac_url/url from the
+  // API is kept; otherwise the canonical built URL, which needs an encodable id.
+  const rawUrl = [v.vac_url, v.url]
+    .filter((x) => typeof x === 'string' && /^https:\/\//i.test(x.trim()))
+    .map((x) => x.trim())[0] || '';
+  const url = rawUrl || (encodedId === null ? '' : `https://trudvsem.ru/vacancy/${encodedId}`);
+  if (!url) return null;
 
   const salMin = v.salary_min ?? v.salaryMin;
   const salMax = v.salary_max ?? v.salaryMax;
@@ -124,10 +162,10 @@ export function normalizeTrudvsem(rec) {
   ].filter(Boolean).join(' ');
 
   return {
-    id: id ? `trudvsem-${id}` : `trudvsem-${title.slice(0, 20).replace(/\s+/g, '_')}`,
+    id: `trudvsem-${id}`,
     title: String(title).trim(),
     company: String(company).trim(),
-    url: url || `https://trudvsem.ru/vacancy/${encodedId}`,
+    url,
     salary,
     location: region || 'Russia',
     isRemote,

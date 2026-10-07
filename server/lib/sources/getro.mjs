@@ -40,6 +40,7 @@
  */
 import { fetchJson } from '../http-json.mjs';
 import { safeGet } from '../safe-fetch.mjs';
+import { withTimeout } from '../fetch-timeout.mjs';
 
 export const API_BASE = 'https://api.getro.com/api/v2/collections';
 const TRUSTED_HOST = 'api.getro.com';
@@ -50,6 +51,10 @@ const DEFAULT_MAX_PAGES = 40;    // safety cap: 40 x 20 = 800 newest jobs/board
 // 10k sequential API calls against a third party.
 const HARD_MAX_PAGES = 200;      // 200 x 20 = 4000 newest jobs/board
 const DEFAULT_MAX_AGE_DAYS = 90; // pagination bound only; the global filter does the real cut
+// ECMA-262 max representable Date (±8.64e15 ms). Beyond it toISOString()
+// throws RangeError — one garbage created_at must drop one row's date, not
+// abort the whole board.
+const MAX_EPOCH_MS = 8_640_000_000_000_000;
 
 export const meta = {
   value: 'getro',
@@ -69,12 +74,15 @@ export function toEpochMs(value) {
   if (value == null || value === '') return null;
   if (typeof value === 'number') {
     if (!Number.isFinite(value) || value <= 0) return null;
-    // Values below 1e12 are Unix seconds; at or above, already ms.
-    return value < 1_000_000_000_000 ? value * 1000 : value;
+    // Values below 1e12 are Unix seconds; at or above, already ms. An epoch
+    // past the max date must return null (row keeps its date empty) rather
+    // than survive into new Date(ms).toISOString() and RangeError the board.
+    const ms = value < 1_000_000_000_000 ? value * 1000 : value;
+    return ms <= MAX_EPOCH_MS ? ms : null;
   }
   if (typeof value !== 'string') return null;
   const ms = Date.parse(value);
-  return Number.isNaN(ms) || ms <= 0 ? null : ms;
+  return Number.isNaN(ms) || ms <= 0 || ms > MAX_EPOCH_MS ? null : ms;
 }
 
 /**
@@ -151,9 +159,10 @@ const CAREERS_FETCH_TIMEOUT_MS = 15_000;
  * embedded `network.id` is used — so a board can be tracked by URL alone. Any
  * failure (non-https url, non-200, blocked/absent __NEXT_DATA__, network error)
  * resolves to null; the caller turns null into a helpful, actionable error.
- * Exported for tests; `opts.safeGetImpl` is injectable (defaults to safeGet).
+ * Exported for tests; `opts.safeGetImpl` is injectable (defaults to safeGet),
+ * `opts.timeoutMs` overrides the 15s deadline (test hook).
  * @param {any} entry
- * @param {{ safeGetImpl?: Function, signal?: AbortSignal }} [opts]
+ * @param {{ safeGetImpl?: Function, signal?: AbortSignal, timeoutMs?: number }} [opts]
  * @returns {Promise<string|null>}
  */
 export async function resolveCollectionId(entry, opts = {}) {
@@ -164,16 +173,28 @@ export async function resolveCollectionId(entry, opts = {}) {
   if (!careersUrl) return null;
 
   const get = opts.safeGetImpl || safeGet;
+  // safeGet ignores `timeoutMs` whenever a `signal` is present — and the
+  // scanner always passes one — so the 15s bound below was DEAD and a stalled
+  // careers_url held the worker until the scanner's own (much longer) signal
+  // fired, or forever. Combine the caller's signal with a hard deadline
+  // instead: withTimeout always returns a set signal, so the deadline always
+  // applies, and an upstream abort still cancels immediately.
+  const timeoutMs = Number.isFinite(opts.timeoutMs) && opts.timeoutMs > 0
+    ? opts.timeoutMs
+    : CAREERS_FETCH_TIMEOUT_MS;
+  const deadline = withTimeout(opts.signal, timeoutMs);
   let res;
   try {
     res = await get(careersUrl, {
-      signal: opts.signal,
-      timeoutMs: CAREERS_FETCH_TIMEOUT_MS,
+      signal: deadline.signal,
+      timeoutMs,
       maxBytes: CAREERS_HTML_MAX_BYTES,
       headers: { accept: 'text/html' },
     });
   } catch {
     return null; // fail-soft: unreachable/blocked board → caller decides it's fatal
+  } finally {
+    deadline.clear();
   }
   if (!res || res.status !== 200 || typeof res.text !== 'string') return null;
   return extractCollectionId(res.text);
@@ -295,8 +316,19 @@ export function getroLocation(job) {
  */
 export function normalizeGetroJob(job, fallbackCompany = '', createdMs) {
   if (!job || typeof job !== 'object') return null;
-  const url = typeof job.url === 'string' ? job.url.trim() : '';
-  if (!url) return null;
+  const rawUrl = typeof job.url === 'string' ? job.url.trim() : '';
+  if (!rawUrl) return null;
+  // The url is the dedup key and the only apply target — anything that does
+  // not parse as an https URL (http downgrade, javascript:, junk) is never a
+  // posting. Drop the row rather than ship the scheme unchecked.
+  let parsed;
+  try {
+    parsed = new URL(rawUrl);
+  } catch {
+    return null;
+  }
+  if (parsed.protocol !== 'https:') return null;
+  const url = parsed.href;
 
   const title = typeof job.title === 'string' ? job.title.trim() : '';
   const ms = createdMs === undefined ? toEpochMs(job.created_at) : createdMs;
@@ -323,7 +355,9 @@ export function normalizeGetroJob(job, fallbackCompany = '', createdMs) {
     isRemote,
     workplaceType,
     relocates: false,
-    date: ms != null ? new Date(ms).toISOString() : '',
+    // Guarded again here (not only in toEpochMs) because createdMs can arrive
+    // pre-computed from the caller — an out-of-range value stays ''.
+    date: ms != null && ms <= MAX_EPOCH_MS ? new Date(ms).toISOString() : '',
     snippet: '',
     source: 'getro',
   };

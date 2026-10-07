@@ -17,10 +17,18 @@ export const himalayasAdapter = {
   id: 'himalayas',
   label: 'Himalayas',
   matches(company) {
-    return company.provider === 'himalayas';
+    return !!company && typeof company === 'object' && company.provider === 'himalayas';
   },
+  // `string | null` contract: a non-string api falls back to the canonical
+  // feed; garbage input never throws.
   buildEndpoint(company) {
-    return company.himalayas || company.api || FEED_URL;
+    const api = company && typeof company === 'object' && typeof company.api === 'string'
+      ? company.api
+      : '';
+    const override = company && typeof company === 'object' && typeof company.himalayas === 'string'
+      ? company.himalayas
+      : '';
+    return override || api || FEED_URL;
   },
   fetch: fetchHimalayas,
 };

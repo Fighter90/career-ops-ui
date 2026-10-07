@@ -156,7 +156,13 @@ export async function fetchHackerNews(_url, opts = {}) {
   }
   const searchJson = await searchRes.json();
   const threadId = findHiringThreadId(searchJson);
-  if (!threadId) return [];
+  if (!threadId) {
+    // The parent career-ops source throws here: a search that names no
+    // "Who is hiring?" thread means the API changed or the account vanished.
+    // Returning [] made the source look healthy-but-empty and the scan
+    // "succeed" with zero postings.
+    throw new Error('hackernews: no "Ask HN: Who is hiring?" thread found in search hits');
+  }
 
   // Step 2 — fetch the thread item.
   const itemUrl = `${ITEMS_BASE}${threadId}`;
@@ -170,7 +176,12 @@ export async function fetchHackerNews(_url, opts = {}) {
     throw new Error(`hackernews: items HTTP ${itemRes.status} for thread ${threadId}`);
   }
   const item = await itemRes.json();
-  const children = Array.isArray(item?.children) ? item.children : [];
+  if (!item || !Array.isArray(item.children)) {
+    // Same contract: an item without its children array is a broken thread
+    // payload, not a thread with zero comments.
+    throw new Error(`hackernews: thread item ${threadId} carries no children array`);
+  }
+  const children = item.children;
 
   const jobs = [];
   for (const child of children) {

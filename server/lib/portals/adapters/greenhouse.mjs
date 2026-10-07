@@ -14,9 +14,14 @@
 import { fetchGreenhouse } from '../../sources/greenhouse.mjs';
 
 // Hosts whose FIRST path segment is the board slug (`/<slug>[/jobs/<id>]`).
+// boards[.eu].greenhouse.io are the legacy board hosts (parent
+// LEGACY_BOARD_HOSTS, #4195) — they still 301 to job-boards[.eu] with the
+// same slug, so the slug is read straight off them.
 const PATH_SLUG_HOSTS = new Set([
   'job-boards.greenhouse.io',
   'job-boards.eu.greenhouse.io',
+  'boards.greenhouse.io',
+  'boards.eu.greenhouse.io',
 ]);
 
 // Hosts on which a `?for=<slug>` query names a Greenhouse board (embed boards).
@@ -34,6 +39,26 @@ const EMBED_HOSTS = new Set([
 // boards-api path, so it is refused rather than encoded.
 // First character alphanumeric: `.` / `..` would normalise the API path (`/v1/boards/../jobs` → `/v1/jobs`).
 const SLUG_RE = /^\w[\w.-]*$/;
+
+// An explicit `api:` is honoured only for a real Greenhouse host — checked on
+// the PARSED URL, never `includes('greenhouse')`, which any query param
+// (a jobicy/himalayas mirror list, say) satisfies. Same set the parent's
+// assertGreenhouseUrl pins.
+const ALLOWED_API_HOSTS = new Set([
+  'boards-api.greenhouse.io',
+  'boards.greenhouse.io',
+  'boards.eu.greenhouse.io',
+  'job-boards.greenhouse.io',
+  'job-boards.eu.greenhouse.io',
+]);
+
+function isGreenhouseApi(api) {
+  if (typeof api !== 'string' || !api) return false;
+  try {
+    const u = new URL(api.trim());
+    return u.protocol === 'https:' && ALLOWED_API_HOSTS.has(u.hostname.toLowerCase());
+  } catch { return false; }
+}
 
 function parseCareersUrl(raw) {
   try { return new URL(raw); } catch { /* maybe scheme-less */ }
@@ -77,11 +102,12 @@ export const greenhouseAdapter = {
   id: 'greenhouse',
   label: 'Greenhouse',
   matches(company) {
-    if (company.api && company.api.includes('greenhouse')) return true;
-    return greenhouseSlugFromUrl(company.careers_url) !== null;
+    if (!company || typeof company !== 'object') return false;
+    return isGreenhouseApi(company.api) || greenhouseSlugFromUrl(company.careers_url) !== null;
   },
   buildEndpoint(company) {
-    if (company.api && company.api.includes('greenhouse')) return company.api;
+    if (!company || typeof company !== 'object') return null;
+    if (isGreenhouseApi(company.api)) return company.api;
     const slug = greenhouseSlugFromUrl(company.careers_url);
     if (!slug) return null;
     return `https://boards-api.greenhouse.io/v1/boards/${slug}/jobs`;

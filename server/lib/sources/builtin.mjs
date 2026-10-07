@@ -382,6 +382,15 @@ export function parseListPage(html, now = Date.now()) {
       continue; // a malformed item must never abort the whole page
     }
     if (!title || !url) continue;
+    // The url is a display link + dedup key only (never fetched), but a
+    // javascript:/data:/http: scheme has no business in the pipeline — drop
+    // the row rather than carry it through.
+    try {
+      const parsed = new URL(url);
+      if (parsed.protocol !== 'https:' || !parsed.hostname) continue;
+    } catch {
+      continue;
+    }
     const job = { title, url, company: '', location: '', description };
     const enrich = cards.get(jobIdFromUrl(url));
     if (enrich) {
@@ -506,6 +515,11 @@ export async function fetchBuiltin(_url, opts = {}) {
 
   for (const base of bases) {
     const sep = base.includes('?') ? '&' : '?';
+    // Loop detection ("server ignored the page number") is judged PER QUERY:
+    // a page repeating rows this query already surfaced is a loop, but rows
+    // already seen from a DIFFERENT query/page must not end this query's
+    // pagination — they are deduped from the output, not treated as progress.
+    const seenInBase = new Set();
     for (let page = 1; page <= pages; page++) {
       const url = assertHost(`https://${host}${base}${sep}page=${page}`);
       let html;
@@ -516,6 +530,11 @@ export async function fetchBuiltin(_url, opts = {}) {
           redirect: 'error',
         });
       } catch (e) {
+        // A page-1 failure with NOTHING collected is a dead board, not an
+        // empty one — rethrow so portal-health records a real failure
+        // (v1.242.0 Phase-2 rule). A later failure (or one after rows are in
+        // hand) keeps the partials.
+        if (out.length === 0 && page === 1) throw e;
         console.error(`⚠️  builtin: ${label} ${url} failed — ${e.message}`);
         break;
       }
@@ -526,9 +545,13 @@ export async function fetchBuiltin(_url, opts = {}) {
       guardCards += cards.size;
       for (const c of cards.values()) if (c.location) guardLocated++;
 
-      let added = 0;
+      let freshForBase = 0; // rows new to THIS query's pagination (loop signal)
+      let added = 0;        // rows new to the whole run (emitted)
       for (const j of jobs) {
-        if (seen.has(j.url)) continue; // a job can surface across queries/pages
+        if (seenInBase.has(j.url)) continue;
+        seenInBase.add(j.url);
+        freshForBase++;
+        if (seen.has(j.url)) continue; // another query already surfaced it — no duplicate output
         seen.add(j.url);
         added++;
         out.push({
@@ -547,7 +570,7 @@ export async function fetchBuiltin(_url, opts = {}) {
           source: 'builtin',
         });
       }
-      if (jobs.length === 0 || added === 0) break;
+      if (jobs.length === 0 || freshForBase === 0) break;
     }
   }
 

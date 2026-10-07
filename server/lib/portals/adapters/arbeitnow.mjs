@@ -17,10 +17,18 @@ export const arbeitnowAdapter = {
   id: 'arbeitnow',
   label: 'Arbeitnow',
   matches(company) {
-    return company.provider === 'arbeitnow';
+    return !!company && typeof company === 'object' && company.provider === 'arbeitnow';
   },
+  // `string | null` contract: a non-string api falls back to the canonical
+  // feed; garbage input never throws.
   buildEndpoint(company) {
-    return company.arbeitnow || company.api || FEED_URL;
+    const api = company && typeof company === 'object' && typeof company.api === 'string'
+      ? company.api
+      : '';
+    const override = company && typeof company === 'object' && typeof company.arbeitnow === 'string'
+      ? company.arbeitnow
+      : '';
+    return override || api || FEED_URL;
   },
   fetch: fetchArbeitnow,
 };

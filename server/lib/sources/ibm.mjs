@@ -30,6 +30,29 @@ export const meta = {
   region: 'en',
 };
 
+/**
+ * Pin the endpoint to an IBM-owned host over HTTPS. The default endpoint is
+ * www-api.ibm.com; an `api:` override may select another IBM property (a
+ * regional mirror), but any other hostname is refused BEFORE any network I/O
+ * — the override previously accepted `https://evil.com/...` verbatim.
+ * @param {string} url
+ * @returns {string} the validated url
+ */
+export function assertIbmApiUrl(url) {
+  let parsed;
+  try {
+    parsed = new URL(url);
+  } catch {
+    throw new Error(`ibm: invalid API URL: ${url}`);
+  }
+  if (parsed.protocol !== 'https:') throw new Error(`ibm: API URL must use HTTPS: ${url}`);
+  const host = parsed.hostname.toLowerCase();
+  if (host !== 'ibm.com' && !host.endsWith('.ibm.com')) {
+    throw new Error(`ibm: untrusted hostname "${parsed.hostname}" — must be an ibm.com host`);
+  }
+  return url;
+}
+
 /** tiny stable hash (djb2) → base36. */
 function djb2(str) {
   let h = 5381;
@@ -71,7 +94,10 @@ export function parseIbmResponse(json) {
   for (const h of hits) {
     const s = (h && h._source) || {};
     if (typeof s.title !== 'string' || s.title.trim() === '') continue;
-    if (typeof s.url !== 'string' || !/^https?:\/\//i.test(s.url.trim())) continue;
+    // Job URLs are fetched later by the pipeline: only https: survives, so an
+    // insecure or scheme-abusing `url` (`http:`, `javascript:`) drops the row
+    // instead of flowing into the scanner.
+    if (typeof s.url !== 'string' || !/^https:\/\//i.test(s.url.trim())) continue;
     const loc = typeof s.field_keyword_19 === 'string' ? s.field_keyword_19.trim() : '';
     const mode = typeof s.field_keyword_17 === 'string' ? s.field_keyword_17.trim() : '';
     const isRemote = REMOTE_RE.test(mode) || REMOTE_RE.test(loc);
@@ -101,6 +127,7 @@ export function parseIbmResponse(json) {
  */
 export async function fetchIbm(apiUrl = API_URL, opts = {}) {
   const { fetchImpl = fetch, signal, company = {} } = opts;
+  assertIbmApiUrl(apiUrl);
   const postFilter = buildPostFilter(company.ibm || {});
   const out = [];
   for (let from = 0; from < MAX_RECORDS; from += PAGE_SIZE) {

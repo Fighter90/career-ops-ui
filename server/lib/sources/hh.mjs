@@ -17,6 +17,7 @@
  * The page is server-rendered — we parse vacancy cards with regex
  * (intentionally not pulling in cheerio/JSDOM to keep deps minimal).
  */
+import { decodeEntities } from '../html-entities.mjs';
 
 const HH_SITE = 'https://hh.ru/search/vacancy';
 
@@ -137,17 +138,18 @@ export async function searchHH(query, opts = {}) {
 // Zero-width / directional marks + BOM that hh.ru sprinkles into markup.
 const ZWSP = /[​-‏⁠﻿]/g;
 
-// Single-pass HTML-entity decode. Deliberately does NOT decode &lt; / &gt;
-// and the final pass strips any literal angle bracket, so tag-stripping can
-// never be undone into a live `<script>` (no double-unescaping, no HTML
-// element injection — these results are also rendered as text nodes, never
-// innerHTML, but we keep the source clean regardless).
-const ENTITY = { '&nbsp;': ' ', '&amp;': '&', '&quot;': '"', '&#x27;': "'", '&#39;': "'", '&laquo;': '«', '&raquo;': '»', '&mdash;': '—', '&ndash;': '–' };
-
+// Tag-stripping with entity decoding. v1.242.0: the 8-form local ENTITY map
+// is replaced by the shared single-pass decoder (html-entities.mjs), so
+// numeric refs and the full named table decode — a European/RU title like
+// `D&eacute;veloppeur` or `&#8212;` no longer ships as literal entities into
+// scan history and the tracker. Decoding CANNOT resurrect the stripped tags
+// into live markup: the strip runs AGAIN after the decode (`&lt;script&gt;`
+// arrives as `<script>` and is stripped as a tag), and the final bracket
+// pass keeps the no-`<>` output guarantee. One decode pass only — `&amp;lt;`
+// stays single-decoded (`&lt;`), exactly as before.
 function stripTags(s) {
-  return s
+  return decodeEntities(s.replace(/<[^>]*>/g, ' '))
     .replace(/<[^>]*>/g, ' ')
-    .replace(/&(?:nbsp|amp|quot|#x27|#39|laquo|raquo|mdash|ndash);/g, (m) => ENTITY[m] || ' ')
     .replace(ZWSP, '')
     .replace(/[<>]/g, '')
     .replace(/\s+/g, ' ')

@@ -122,6 +122,13 @@ export function parseLarajobsFeed(xml, defaultCompany = 'LaraJobs') {
   return jobs;
 }
 
+// A 200 that is not the feed (a Cloudflare challenge, an HTML error page, an
+// empty body) has no <item>s and used to read as an empty board forever.
+// Phase-2 rule: fetch throws instead, unless the body carries the RSS
+// skeleton. The pure parser stays tolerant — sources-parity-v1118c pins
+// parseLarajobsFeed('', null, and bare-item XML as non-throwing).
+const FEED_SKELETON_RE = /<(?:rss|channel)\b/i;
+
 /**
  * Fetch + normalize the LaraJobs feed.
  * @param {string} feedUrl
@@ -135,6 +142,9 @@ export async function fetchLarajobs(feedUrl = FEED_URL, opts = {}) {
     redirect: 'error',
     headers: { accept: 'application/rss+xml, application/xml, text/xml' },
   });
+  if (!FEED_SKELETON_RE.test(String(xml))) {
+    throw new Error(`larajobs: response is not an RSS feed (no <rss>/<channel>): "${String(xml).trim().slice(0, 60)}"`);
+  }
   const fallback = (company && typeof company.name === 'string' && company.name.trim()) ? company.name.trim() : 'LaraJobs';
   return parseLarajobsFeed(xml, fallback);
 }

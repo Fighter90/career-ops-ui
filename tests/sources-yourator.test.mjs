@@ -162,11 +162,17 @@ test('parseYouratorPage: surfaces jobs + the hasMore end-of-board flag', () => {
   assert.equal(hasMore, true);
 });
 
-test('parseYouratorPage: tolerates a malformed payload (empty jobs, hasMore false)', () => {
-  assert.deepEqual(parseYouratorPage(null), { jobs: [], hasMore: false });
-  assert.deepEqual(parseYouratorPage({}), { jobs: [], hasMore: false });
-  assert.deepEqual(parseYouratorPage({ payload: {} }), { jobs: [], hasMore: false });
-  assert.deepEqual(parseYouratorPage({ payload: { jobs: 'nope', hasMore: true } }), { jobs: [], hasMore: false });
+test('parseYouratorPage: throws a labelled error on a malformed payload (v1.242.0 Phase 2)', () => {
+  for (const bad of [null, {}, { payload: {} }, { payload: { jobs: 'nope' } }, { payload: { jobs: null } }]) {
+    assert.throws(() => parseYouratorPage(bad), (err) => {
+      assert.match(err.message, /Yourator/);
+      return true;
+    }, `expected a throw for ${JSON.stringify(bad)}`);
+  }
+  // A valid payload still parses.
+  const ok = parseYouratorPage({ payload: { jobs: [makeJob()], hasMore: true } });
+  assert.equal(ok.jobs.length, 1);
+  assert.equal(ok.hasMore, true);
 });
 
 // ---------------------------------------------------------------------------
@@ -215,6 +221,61 @@ test('fetchYourator: first-page failure throws; a mid-run blip keeps collected j
   };
   const jobs = await fetchYourator(FEED_URL, { fetchImpl: blippy });
   assert.equal(jobs.length, 2);
+});
+
+test('fetchYourator: a malformed page-1 payload throws (masked-board contract)', async () => {
+  await assert.rejects(
+    () => fetchYourator(FEED_URL, { fetchImpl: async () => ({ ok: true, json: async () => ({ error: 'challenge' }) }) }),
+    /Yourator/,
+  );
+});
+
+test('fetchYourator: a malformed later page keeps the collected jobs and logs', async () => {
+  const page1 = makePage([makeJob({ id: 1 })], true);
+  let call = 0;
+  const fetchImpl = async () => {
+    call++;
+    return call === 1
+      ? { ok: true, json: async () => page1 }
+      : { ok: true, json: async () => ({ broken: true }) };
+  };
+  const errs = [];
+  const orig = console.error;
+  console.error = (...a) => errs.push(a.join(' '));
+  let jobs;
+  try {
+    jobs = await fetchYourator(FEED_URL, { fetchImpl });
+  } finally {
+    console.error = orig;
+  }
+  assert.equal(jobs.length, 1);
+  assert.match(errs.join(' '), /yourator/);
+});
+
+test('fetchYourator: hitting the page cap while hasMore stays true logs the truncation', async () => {
+  const fullPage = makePage([makeJob({ id: 1 })], true);
+  const fetchImpl = async () => ({ ok: true, json: async () => fullPage });
+  const errs = [];
+  const orig = console.error;
+  console.error = (...a) => errs.push(a.join(' '));
+  try {
+    await fetchYourator(FEED_URL, { fetchImpl, company: { max_pages: 2 } });
+  } finally {
+    console.error = orig;
+  }
+  assert.match(errs.join(' '), /truncat/i);
+});
+
+test('fetchYourator: a clean end (hasMore false) logs no truncation', async () => {
+  const errs = [];
+  const orig = console.error;
+  console.error = (...a) => errs.push(a.join(' '));
+  try {
+    await fetchYourator(FEED_URL, { fetchImpl: fakeFetch([makePage([makeJob()], false)]) });
+  } finally {
+    console.error = orig;
+  }
+  assert.equal(errs.join(' '), '');
 });
 
 test('fetchYourator: refuses an off-host endpoint before fetching', async () => {

@@ -43,6 +43,7 @@
  */
 import { fetchJson, delay } from '../http-json.mjs';
 import { safeEncodeURIComponent } from './_safe-url.mjs';
+import { requireArray, requireContainer } from './_shape.mjs';
 
 export const DEFAULT_API = 'https://id.jobstreet.com/api/jobsearch/v5/search';
 // The v5 search path is fixed. An `api:` override selects the MARKET (its
@@ -52,6 +53,11 @@ const V5_SEARCH_PATH = '/api/jobsearch/v5/search';
 const DEFAULT_SITE_KEY = 'ID-Main';
 const DEFAULT_PAGE_SIZE = 30;
 const DEFAULT_MAX_PAGES = 3;
+/** Hard bounds on a configured pageSize/maxPages — a negative or fractional
+ *  `pageSize: -30` used to flow straight into the query (empty results) and a
+ *  negative `maxPages: -3` silently disabled the walk entirely. */
+const PAGE_SIZE_CAP = 50;
+const MAX_PAGES_CAP = 20;
 const REMOTE_RE = /remote|work from home|wfh|anywhere/i;
 
 const ALLOWED_JOBSTREET_HOSTS = new Set([
@@ -238,6 +244,12 @@ function buildSearchUrl(apiUrl, params) {
   return url.href;
 }
 
+/** Positive-integer config value with a hard cap; anything else → the default. */
+function clampConfigInt(value, fallback, cap) {
+  if (Number.isInteger(value) && value > 0) return Math.min(value, cap);
+  return fallback;
+}
+
 /**
  * Fetch + normalize Jobstreet/SEEK postings.
  * @param {string} apiUrl base search endpoint (from buildEndpoint)
@@ -252,8 +264,8 @@ export async function fetchJobstreet(apiUrl = DEFAULT_API, opts = {}) {
   const siteKey = cfg.siteKey || DEFAULT_SITE_KEY;
   const keywords = cfg.searchKeywords || '';
   const searchLocation = cfg.searchLocation || '';
-  const pageSize = Number(cfg.pageSize) || DEFAULT_PAGE_SIZE;
-  const maxPages = Number(cfg.maxPages) || DEFAULT_MAX_PAGES;
+  const pageSize = clampConfigInt(cfg.pageSize, DEFAULT_PAGE_SIZE, PAGE_SIZE_CAP);
+  const maxPages = clampConfigInt(cfg.maxPages, DEFAULT_MAX_PAGES, MAX_PAGES_CAP);
   const fallbackCompany = company.name || '';
   const appendWorkType = cfg.appendWorkType === true;
 
@@ -262,23 +274,24 @@ export async function fetchJobstreet(apiUrl = DEFAULT_API, opts = {}) {
   for (let page = 1; page <= maxPages; page++) {
     const searchUrl = buildSearchUrl(apiUrl, { siteKey, keywords, location: searchLocation, pageSize, page });
 
-    let json;
+    let data;
     try {
-      json = await fetchJson(fetchImpl, searchUrl, { signal });
+      const json = await fetchJson(fetchImpl, searchUrl, { signal });
+      // A 200 without the documented `data` array is a broken board, not an
+      // empty one: page 1 must throw; a later page keeps the partials.
+      data = requireArray(requireContainer(json, 'Jobstreet search', 'data').data, 'Jobstreet results');
     } catch (err) {
       if (page === 1) throw err;
+      console.warn(`jobstreet: page ${page} failed — ${err.message} (keeping ${allJobs.length} jobs fetched so far)`);
       break; // later-page failure is non-fatal
     }
-
-    const data = Array.isArray(json?.data) ? json.data : [];
-    if (data.length === 0) break;
 
     for (const item of data) {
       const job = parseJobstreetItem(item, baseUrl, fallbackCompany, { appendWorkType });
       if (job) allJobs.push(job);
     }
 
-    if (data.length < pageSize) break;
+    if (data.length < pageSize) break; // raw page length — end of the results
     await delay(200, signal); // rate-limit courtesy; abort-aware
   }
 

@@ -194,8 +194,84 @@ test('fetchLandingjobs: non-array response throws', async () => {
   });
   await assert.rejects(
     () => fetchLandingjobs(FEED_URL, { fetchImpl }),
-    /expected a JSON array/,
+    /Landing\.jobs jobs: expected an array/,
   );
+});
+
+// ---------------------------------------------------------------------------
+// v1.242.0 — offset pagination (the un-parameterized GET served only the
+// first 50) + the Phase-2 failure contract
+// ---------------------------------------------------------------------------
+
+const fullPage = () => Array.from({ length: 50 }, (_, i) => ({
+  id: 5000 + i,
+  title: `Role ${i}`,
+  url: `https://landing.jobs/at/acme/role-${i}`,
+}));
+
+/** URL-recording fake: `handler(pageNumber, url)` returns the JSON body. */
+function pagedFetch(handler) {
+  const calls = [];
+  const impl = async (url) => {
+    calls.push(url);
+    const page = handler(calls.length, url);
+    if (page instanceof Error) throw page;
+    return { ok: true, json: async () => page };
+  };
+  impl.calls = calls;
+  return impl;
+}
+
+test('fetchLandingjobs: loops ?limit=50&offset=N until a short page', async () => {
+  const fetchImpl = pagedFetch((n) => (n === 1 ? fullPage() : [
+    { id: 9999, title: 'Tail Role', url: 'https://landing.jobs/at/globex/tail' },
+  ]));
+  const jobs = await fetchLandingjobs(FEED_URL, { fetchImpl });
+
+  assert.equal(fetchImpl.calls.length, 2);
+  const first = new URL(fetchImpl.calls[0]);
+  assert.equal(first.searchParams.get('limit'), '50');
+  assert.equal(first.searchParams.get('offset'), '0');
+  const second = new URL(fetchImpl.calls[1]);
+  assert.equal(second.searchParams.get('offset'), '50');
+  assert.equal(jobs.length, 51); // 50 + 1
+});
+
+test('fetchLandingjobs: a short first page still costs exactly one request', async () => {
+  const fetchImpl = pagedFetch(() => FAKE_FEED);
+  const jobs = await fetchLandingjobs(FEED_URL, { fetchImpl });
+  assert.equal(fetchImpl.calls.length, 1);
+  assert.equal(jobs.length, 2);
+});
+
+test('fetchLandingjobs: a tenant that ignores offset stops on the first no-fresh page', async () => {
+  const fetchImpl = pagedFetch(() => fullPage());
+  const jobs = await fetchLandingjobs(FEED_URL, { fetchImpl });
+  assert.equal(fetchImpl.calls.length, 2);
+  assert.equal(jobs.length, 50); // second page re-served the same rows
+});
+
+test('fetchLandingjobs: the page cap bounds a full-page board (25 × 50)', async () => {
+  let n = 0;
+  const fetchImpl = pagedFetch(() => {
+    n += 1;
+    return fullPage().map((j) => ({ ...j, id: j.id + n * 1000, url: `https://landing.jobs/at/acme/role-${n}-${j.id}` }));
+  });
+  const jobs = await fetchLandingjobs(FEED_URL, { fetchImpl });
+  assert.equal(fetchImpl.calls.length, 25);
+  assert.equal(jobs.length, 25 * 50);
+});
+
+test('fetchLandingjobs: first-page failure throws; mid-walk failure keeps collected jobs', async () => {
+  await assert.rejects(
+    () => fetchLandingjobs(FEED_URL, { fetchImpl: async () => ({ ok: false, status: 503 }) }),
+    /HTTP 503/,
+  );
+
+  const flaky = pagedFetch((n) => (n === 1 ? fullPage() : new Error('boom 429')));
+  const jobs = await fetchLandingjobs(FEED_URL, { fetchImpl: flaky });
+  assert.equal(jobs.length, 50);
+  assert.equal(jobs[0].title, 'Role 0');
 });
 
 // ---------------------------------------------------------------------------

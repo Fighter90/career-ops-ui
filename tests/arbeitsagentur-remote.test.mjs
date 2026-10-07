@@ -16,7 +16,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { fetchArbeitsagentur, parseArbeitsagenturConfig } from '../server/lib/sources/arbeitsagentur.mjs';
+import { fetchArbeitsagentur, parseArbeitsagenturConfig, normalizeJob } from '../server/lib/sources/arbeitsagentur.mjs';
 
 /** One posting in the v6 search shape. */
 const v6 = (referenznummer, stellenangebotsTitel, ort = 'Berlin', extra = {}) => ({
@@ -199,4 +199,86 @@ test('partial page failure: Pass A jobs survive when the remote pass (Pass B) fa
   });
   assert.equal(jobs.length, 1);
   assert.ok(jobs[0].id.includes('L'), 'primary (Pass A) result preserved');
+});
+
+// ── v1.242.0 phase-2: REMOTE_RE tightening + apiUrl pin + shape canary ──────
+
+test('REMOTE_RE tightened: on-site titles with 100% / bundesweit / deutschlandweit are NOT remote', () => {
+  // A bare "100 %" is FULL-TIME in German titles (a "100% Stelle" is an on-site
+  // full-time role), and bundesweit/deutschlandweit appear in on-site
+  // nationwide field-sales titles. All four read as Remote under the old
+  // REMOTE_RE and were wrongly exempted from the commute location_filter.
+  for (const title of [
+    'Elektroniker (m/w/d) 100%',
+    'Vertriebsmitarbeiter bundesweit',
+    'Pflegefachkraft deutschlandweit',
+    'LKW-Fahrer 100 %',
+  ]) {
+    const job = normalizeJob({ referenznummer: 'R', stellenangebotsTitel: title, firma: 'X' });
+    assert.equal(job.isRemote, false, `"${title}" must not read as remote`);
+    assert.equal(job.workplaceType, 'Onsite');
+  }
+  // Explicit home-office / remote markers still tag remote — including the
+  // percentage-qualified forms ("100% Homeoffice", "100% Remote").
+  for (const title of [
+    'ML Engineer (Remote)',
+    'Remote Data Scientist',
+    'Entwickler 100% Homeoffice',
+    'Senior Engineer — Home-Office',
+    'home office möglich',
+    'Ortsunabhängige Softwareentwicklerin',
+    'ML Engineer — 100% Remote',
+  ]) {
+    const job = normalizeJob({ referenznummer: 'R', stellenangebotsTitel: title, firma: 'X' });
+    assert.equal(job.isRemote, true, `"${title}" must read as remote`);
+    assert.equal(job.workplaceType, 'Remote');
+  }
+});
+
+test('assertArbeitsagenturUrl pins https + rest.arbeitsagentur.de (the X-API-Key must never be sent elsewhere)', async () => {
+  // Dynamic import: this export is new in v1.242.0 (a static named import of a
+  // missing export fails the whole module at link time).
+  const { assertArbeitsagenturUrl, API_URL } = await import('../server/lib/sources/arbeitsagentur.mjs');
+  assert.equal(assertArbeitsagenturUrl(API_URL), API_URL);
+  assert.throws(() => assertArbeitsagenturUrl('http://rest.arbeitsagentur.de/jobboerse/jobsuche-service/pc/v6/jobs'), /HTTPS/);
+  assert.throws(() => assertArbeitsagenturUrl('https://evil.example/jobs'), /untrusted hostname/);
+  assert.throws(() => assertArbeitsagenturUrl('https://rest.arbeitsagentur.de.evil.com/jobs'), /untrusted hostname/);
+  assert.throws(() => assertArbeitsagenturUrl('not a url'), /invalid URL/);
+});
+
+test('fetchArbeitsagentur rejects an off-host apiUrl before any fetch (API-key exfiltration guard)', async () => {
+  let calls = 0;
+  await assert.rejects(
+    () => fetchArbeitsagentur('https://evil.example/jobsuche-service/pc/v6/jobs', {
+      fetchImpl: async () => { calls += 1; return okJson(page()); },
+      company: { name: 'A', arbeitsagentur: { keywords: ['ML'] } },
+    }),
+    /arbeitsagentur/i,
+  );
+  assert.equal(calls, 0, 'the X-API-Key must never reach a non-arbeitsagentur host');
+});
+
+test('a 200 with the wrong shape throws instead of reading as an empty keyword', async () => {
+  // The v6 search answering 200 without `ergebnisliste` is a shape change, not
+  // a keyword with zero hits — previously it read as [] and, alone, as an
+  // empty-but-alive board.
+  await assert.rejects(
+    () => fetchArbeitsagentur(undefined, {
+      fetchImpl: async () => okJson({ foo: 1 }),
+      company: { name: 'A', arbeitsagentur: { keywords: ['ML'] } },
+    }),
+    /ergebnisliste|arbeitsagentur/i,
+  );
+});
+
+test('a wrong-shape answer on one keyword keeps the other keyword’s jobs (partial success)', async () => {
+  const jobs = await fetchArbeitsagentur(undefined, {
+    fetchImpl: async (url) => {
+      if (new URL(url).searchParams.get('was') === 'BAD') return okJson({ nope: true });
+      return okJson(page(v6('G', 'ML Engineer', 'Berlin')));
+    },
+    company: { name: 'A', arbeitsagentur: { keywords: ['OK', 'BAD'] } },
+  });
+  assert.equal(jobs.length, 1);
+  assert.ok(jobs[0].id.includes('G'));
 });

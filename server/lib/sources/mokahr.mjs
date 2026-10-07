@@ -211,6 +211,7 @@ export async function fetchMokaHr(_url, opts = {}) {
 
       const offset = (page - 1) * MAX_LIMIT;
       let envelope;
+      let decrypted;
       try {
         envelope = await fetchJson(fetchImpl, tenant.apiUrl, {
           method: 'POST',
@@ -230,6 +231,19 @@ export async function fetchMokaHr(_url, opts = {}) {
           }),
           redirect: 'error',
         });
+        // hire-r1 answers HTTP 200 with plaintext in-band errors
+        // ({ code: 102, success: false, msg }) that carry no data/necromancer.
+        // Read success BEFORE unwrapping, inside this try: unwrapping first
+        // lost the API's own error text AND threw outside the walk's catch,
+        // discarding every page already collected. (v1.242.0)
+        if (envelope && typeof envelope === 'object' && envelope.success === false) {
+          throw new Error(`mokahr: API error: ${envelope.msg || envelope.code || 'success=false'}`);
+        }
+        decrypted = unwrapMokaHrResponse(envelope);
+        // The same in-band failure can also arrive inside the decrypted payload.
+        if (decrypted?.success === false) {
+          throw new Error(`mokahr: API error: ${decrypted.msg || decrypted.code || 'success=false'}`);
+        }
       } catch (err) {
         // Nothing collected yet means the tenant or endpoint is wrong — surface
         // it. After a success, a later failure is a partial result worth
@@ -239,16 +253,16 @@ export async function fetchMokaHr(_url, opts = {}) {
         return [...seen.values()];
       }
 
-      const decrypted = unwrapMokaHrResponse(envelope);
-      // An in-band failure (hire-r1 sends plaintext errors) must not read as an empty board.
-      if (decrypted?.success === false) {
-        throw new Error(`mokahr: API error: ${decrypted.msg || decrypted.code || 'success=false'}`);
-      }
       succeededOnce = true;
       const jobs = parseMokaHrJobs(decrypted, companyName, tenant.baseUrl);
-      if (jobs.length === 0) break;
       for (const job of jobs) if (!seen.has(job.url)) seen.set(job.url, job);
-      if (jobs.length < MAX_LIMIT) break;
+      // Stop on the RAW page length: rows without a title/id are dropped by
+      // the normalizer, so a full 50-row page that normalizes to 1 job is
+      // still a full page. (The normalized count regressed the parent's
+      // rawJobs.length < MAX_LIMIT fix and cut every full-but-dirty page.)
+      const rawJobs = decrypted?.data?.jobs;
+      const rawLen = Array.isArray(rawJobs) ? rawJobs.length : 0;
+      if (rawLen === 0 || rawLen < MAX_LIMIT) break;
     }
   }
 

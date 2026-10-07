@@ -29,6 +29,7 @@ import { fetchJson, delay } from '../http-json.mjs';
 // "R&amp;D" can't fail a user's title_filter and drop the posting silently.
 import { decodeEntities } from '../html-entities.mjs';
 import { safeEncodeURIComponent } from './_safe-url.mjs';
+import { requireContainer, requireArray } from './_shape.mjs';
 
 export const meta = {
   value: 'tkms',
@@ -122,9 +123,13 @@ function toIsoDate(ms) {
  * @param {any} json @param {{ origin: string, locale: string, company?: string }} cfg
  */
 export function parseQuery(json, cfg) {
-  const total = typeof (json && json.totalHits) === 'number' ? json.totalHits : null;
-  const nextPage = typeof (json && json.nextPage) === 'number' ? json.nextPage : null;
-  const list = Array.isArray(json && json.jobs) ? json.jobs : [];
+  // The documented envelope is REQUIRED (v1.242.0 Phase 2): a 200 without a
+  // `jobs` array is the platform stopping its shape, not an empty board — it
+  // throws so the quarantine layer sees the failure.
+  requireContainer(json, 'TKMS', 'jobs');
+  const total = typeof json.totalHits === 'number' ? json.totalHits : null;
+  const nextPage = typeof json.nextPage === 'number' ? json.nextPage : null;
+  const list = requireArray(json.jobs, 'TKMS jobs');
   const company = (cfg && typeof cfg.company === 'string' && cfg.company.trim()) ? cfg.company.trim() : 'TKMS';
   const rows = [];
   for (const item of list) {
@@ -179,18 +184,30 @@ export async function fetchTkms(endpoint, opts = {}) {
   const maxPages = resolveMaxPages(company);
   const jobs = [];
   const seen = new Set();
+  let truncated = false;
+  let truncatedBy;
 
   for (let page = 0; page < maxPages; page++) {
     if (page > 0) await delay(PAGE_DELAY_MS, signal);
-    const json = await fetchJson(fetchImpl, cfg.queryApi, {
-      method: 'POST',
-      signal,
-      redirect: 'error',
-      headers: { 'content-type': 'application/json', accept: 'application/json' },
-      body: JSON.stringify({ searchQuery: '', filter: {}, subclient: cfg.subclient, locale: cfg.locale, page }),
-    });
-    const { nextPage, rows } = parseQuery(json, { origin: cfg.origin, locale: cfg.locale, company: name });
-    if (rows.length === 0) break;
+    // The fetch AND the shape parse share the fail-soft boundary: a page-1
+    // failure throws; a later-page failure keeps the postings already pulled.
+    let parsed;
+    try {
+      const json = await fetchJson(fetchImpl, cfg.queryApi, {
+        method: 'POST',
+        signal,
+        redirect: 'error',
+        headers: { 'content-type': 'application/json', accept: 'application/json' },
+        body: JSON.stringify({ searchQuery: '', filter: {}, subclient: cfg.subclient, locale: cfg.locale, page }),
+      });
+      parsed = parseQuery(json, { origin: cfg.origin, locale: cfg.locale, company: name });
+    } catch (err) {
+      if (page === 0) throw err;
+      console.error(`  ⚠ tkms: page ${page} failed (${err.message}) — keeping the ${jobs.length} postings collected so far`);
+      return jobs;
+    }
+    const { nextPage, rows } = parsed;
+    if (rows.length === 0) { truncated = false; break; }
 
     let fresh = 0;
     for (const row of rows) {
@@ -200,9 +217,18 @@ export async function fetchTkms(endpoint, opts = {}) {
       jobs.push(row);
       if (jobs.length >= MAX_JOBS) break;
     }
-    if (fresh === 0) break; // server looped / ignored page
-    if (jobs.length >= MAX_JOBS) break;
-    if (nextPage === null) break; // last page
+    if (fresh === 0) { truncated = false; break; } // server looped / ignored page
+    if (jobs.length >= MAX_JOBS) {
+      truncated = true;
+      truncatedBy = `posting cap (${MAX_JOBS})`;
+      break;
+    }
+    if (nextPage === null) { truncated = false; break; } // last page
+    truncated = true;
+    truncatedBy = `page cap (${maxPages})`;
+  }
+  if (truncated) {
+    console.error(`  ⚠ tkms: ${truncatedBy} hit while the platform still reported more pages — results are truncated`);
   }
   return jobs;
 }

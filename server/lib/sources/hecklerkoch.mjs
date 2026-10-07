@@ -89,10 +89,19 @@ export function resolveListUrl(company) {
  * Parse the SSR listing into raw {id, title, url} records. Anchors on the
  * karriere.heckler-koch.com/jobposting/{hash} link (the stable id + URL), then
  * reads the sibling <h3> title inside the same anchor. Exported for tests.
+ *
+ * Phase-2 contract: a NON-STRING body is a broken fetch (a stub, a destroyed
+ * stream) — it throws instead of reading as an empty board. A real page with
+ * no jobposting anchors is a legitimate empty board and still returns [].
  * @param {string} html
  */
 export function parseListing(html) {
-  if (typeof html !== 'string') return [];
+  if (typeof html !== 'string') {
+    throw new TypeError('hecklerkoch: listing body is not a string — malformed response, not an empty board');
+  }
+  if (!html.trim()) {
+    throw new TypeError('hecklerkoch: listing body is empty — malformed 200 (challenge page or truncation), not an empty board');
+  }
   const out = [];
   const seen = new Set();
   const re = /<a\b[^>]*href="(https:\/\/karriere\.heckler-koch\.com\/jobposting\/([a-z0-9]+))"[\s\S]*?<\/a>/gi;

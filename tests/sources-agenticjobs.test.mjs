@@ -21,6 +21,7 @@ import {
   meta,
 } from '../server/lib/sources/agenticjobs.mjs';
 import { agenticjobsAdapter } from '../server/lib/portals/adapters/agenticjobs.mjs';
+import { DESCRIPTION_CAP } from '../server/lib/html-to-text.mjs';
 
 // --- fake fetch serving canned per-page JSON (fetchJson expects res.ok + res.json())
 const mkRec = (n) => ({ title: `Engineer ${n}`, companyName: `Company ${n}`, slug: `engineer-${n}`, location: 'Remote' });
@@ -157,6 +158,11 @@ test('normalizeAgenticJob: empty salary/date/snippet when the record carries non
   assert.equal(job.snippet, '');
 });
 
+test('normalizeAgenticJob: the description snippet is capped at DESCRIPTION_CAP', () => {
+  const job = normalizeAgenticJob({ title: 'X', companyName: 'Y', slug: 'x-y', description: 'z'.repeat(9000) });
+  assert.equal(job.snippet.length, DESCRIPTION_CAP, 'uncapped snippets bloat scan payloads (sibling sources cap too)');
+});
+
 test('parseAgenticJobs: maps a page, dedups repeated urls, honors cap, tolerates non-array', () => {
   const json = { data: [mkRec(1), mkRec(2), mkRec(1)], meta: { total: 3, page: 1, per_page: 50 } };
   const jobs = parseAgenticJobs(json);
@@ -201,14 +207,32 @@ test('fetchAgenticJobs: dedups a job repeated across two different pages', async
   assert.equal(new Set(jobs.map((j) => j.url)).size, 3);
 });
 
-test('fetchAgenticJobs: throws on a malformed mid-pagination page (no silent truncation)', async () => {
+// Phase-2 (v1.242.0): page-1 shape failures throw; a LATER-page failure keeps
+// the collected partials and logs instead of discarding them.
+test('fetchAgenticJobs: a malformed later page keeps the collected partials (logged, no truncation)', async () => {
   const { fetchImpl } = mkFetch([
     { data: [mkRec(1), mkRec(2)], meta: { total: 99, page: 1, per_page: 2 } },
     { meta: { total: 99, page: 2, per_page: 2 } }, // "data" missing entirely
   ]);
+  const jobs = await fetchAgenticJobs(FEED_URL, { fetchImpl, ...NO_DELAY });
+  assert.equal(jobs.length, 2, "a page-2 shape change must not discard page 1's jobs");
+});
+
+test('fetchAgenticJobs: a later-page HTTP failure keeps the collected partials', async () => {
+  const fetchImpl = async (url) => {
+    const page = Number(new URL(url).searchParams.get('page'));
+    if (page === 1) return { ok: true, json: async () => ({ data: [mkRec(1), mkRec(2)], meta: { total: 9, page: 1, per_page: 2 } }) };
+    return { ok: false, status: 503, json: async () => ({}) };
+  };
+  const jobs = await fetchAgenticJobs(FEED_URL, { fetchImpl, ...NO_DELAY });
+  assert.equal(jobs.length, 2);
+});
+
+test('fetchAgenticJobs: a malformed page 1 still throws (no silent empty board)', async () => {
+  const { fetchImpl } = mkFetch([{ meta: { total: 0, page: 1, per_page: 50 } }]); // "data" missing on page 1
   await assert.rejects(
     () => fetchAgenticJobs(FEED_URL, { fetchImpl, ...NO_DELAY }),
-    /unexpected API response shape on page 2/,
+    /unexpected API response shape on page 1/,
   );
 });
 

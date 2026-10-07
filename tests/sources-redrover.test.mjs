@@ -173,15 +173,29 @@ test('parser joins only the location parts present and falls back to a default c
 });
 
 for (const [label, empty] of [
+  ['results: []', wrap([])],
+]) {
+  test(`parser: ${label} → []`, () => {
+    assert.deepEqual(parseRedRoverResponse(empty, '1', 'X'), []);
+  });
+}
+
+// Phase-2 (v1.242.0 sources-6): a 200 with the wrong shape THROWS — the
+// documented envelope is data.jobSeekerSiteUnauthenticated.jobPostingSearch
+// with an array results; anything else is a drifted API, not an empty board.
+for (const [label, bad] of [
   ['null', null],
   ['{}', {}],
   ['{data: null}', { data: null }],
   ['a string', 'nope'],
   ['no results', wrap(undefined)],
-  ['results: []', wrap([])],
 ]) {
-  test(`parser: ${label} → []`, () => {
-    assert.deepEqual(parseRedRoverResponse(empty, '1', 'X'), []);
+  test(`parser: ${label} → throws (Phase-2, never silent [])`, () => {
+    assert.throws(() => parseRedRoverResponse(bad, '1', 'X'), (err) => {
+      assert.ok(err instanceof TypeError);
+      assert.match(err.message, /Red Rover/);
+      return true;
+    }, `expected a throw for ${label}`);
   });
 }
 

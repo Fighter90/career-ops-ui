@@ -186,13 +186,31 @@ export async function fetchGetonbrd(feedUrl = FEED_BASE, opts = {}) {
   // A posting can appear under several categories; first sighting wins so the
   // scanner never sees the same URL twice from one entry.
   const seen = new Set();
+  // Fail-soft per category (v1.242.0): any first-page failure used to throw,
+  // so one stale category slug (a 404) — or a page-2 blip — quarantined the
+  // whole ENTRY for 14d even though its sibling categories stood. Policy:
+  // with SEVERAL categories declared, a broken category is skipped (first-page
+  // failure OR malformed 200) and a later-page failure keeps the partials
+  // already collected; when the feed IS the board (no category config, or a
+  // single declared category) there is no sibling to fall back to and the
+  // dead-board contract holds — a first-page failure throws.
+  const soft = explicitCategories && bases.length > 1;
   for (const base of bases) {
     assertGetonbrdUrl(base);
     for (let page = 1; page <= maxPages; page += 1) {
       const url = `${base}?per_page=${PER_PAGE}&expand[]=company&page=${page}`;
-      const json = await fetchJson(fetchImpl, url, { signal, redirect: 'error' });
+      let json;
+      try {
+        json = await fetchJson(fetchImpl, url, { signal, redirect: 'error' });
+      } catch (err) {
+        if (page === 1 && !soft) throw err;
+        break; // dead category / later-page blip: keep what was collected
+      }
       if (!json || !Array.isArray(json.data)) {
-        throw new Error(`getonbrd: unexpected API response on page ${page} — expected { data: [...] }`);
+        if (page === 1 && !soft) {
+          throw new Error(`getonbrd: unexpected API response on page ${page} — expected { data: [...] }`);
+        }
+        break; // same skip-the-category policy for a malformed 200
       }
       for (const j of json.data) {
         const normalized = normalizeGetonbrdJob(j, fallbackCompany);

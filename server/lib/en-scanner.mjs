@@ -259,6 +259,10 @@ export async function runEnScan(opts = {}) {
 
   let progressDone = 0;            // v1.63.2 — determinate % progress
   let fetchFailures = 0;           // sources whose fetch threw (snapshot guard)
+  // Sources whose fetcher flagged its result array (ultiproTruncated) — the
+  // flag lives on the array and is lost by the map/slice below, so it is
+  // collected here to flow into the scan result and the snapshot.
+  const truncatedSources = [];
   const fetchedPerCo = await pMap(withApi, async (c) => {
     if (signal?.aborted) return [];
     const fetcher = fetcherFor(c._api.type);
@@ -272,8 +276,11 @@ export async function runEnScan(opts = {}) {
       const withCo = items.map((i) => ({ ...i, company: i.company || c.name }));
       log('stdout', `  ✓ ${label} ${c._api.type.padEnd(10)} ${items.length} jobs`);
       // A source that stopped early tags its result array; say so instead of
-      // presenting a partial board as the whole one.
+      // presenting a partial board as the whole one. The flag itself is lost
+      // by the withCo map below, so the company name is collected for the
+      // scan result (`truncatedSources`).
       if (items.ultiproTruncated) {
+        truncatedSources.push(String(c.name ?? c._api.url));
         log('stderr', `  ⚠ ${c.name}: result list truncated at the page cap — some postings were not read`);
       }
       const ps = items.peoplesoftIncomplete;
@@ -406,6 +413,7 @@ export async function runEnScan(opts = {}) {
         fresh,
         filtered: afterCooldown, // v1.76.0 — full matched set, no cap; #/scan paginates client-side (v1.84.0: post-cooldown)
         errors,
+        truncatedSources, // v1.242.0 — sources whose board hit the page cap
       }, companyName ? { mergeCompanies: withApi.map((c) => c.name) } : {});
     }
   }
@@ -420,6 +428,7 @@ export async function runEnScan(opts = {}) {
     counts: { raw: allRaw.length, removedTitle, cooldownSkipped, dup, fresh: fresh.length, skipped, runDup, capped: cappedAway },
     fresh,
     errors,
+    truncatedSources,
   };
 }
 

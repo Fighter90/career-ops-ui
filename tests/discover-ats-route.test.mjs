@@ -25,7 +25,7 @@ title_filter:
   positive: [engineer]
 `;
 
-const GH_JOBS = JSON.stringify({ jobs: [{ id: 1, title: 'Engineer', location: { name: 'London' } }] });
+const GH_JOBS = JSON.stringify({ jobs: [{ id: 1, title: 'Engineer', location: { name: 'London' }, absolute_url: 'https://job-boards.greenhouse.io/adyen/1' }] });
 
 before(async () => {
   root = mkdtempSync(resolve(tmpdir(), 'discover-ats-'));

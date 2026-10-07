@@ -14,6 +14,7 @@
  * Used by the amazon adapter (server/lib/portals/adapters/amazon.mjs).
  */
 import { fetchJson } from '../http-json.mjs';
+import { requireContainer, requireArray } from './_shape.mjs';
 
 export const ORIGIN = 'https://www.amazon.jobs';
 export const FEED_BASE = `${ORIGIN}/en/search.json`;
@@ -55,8 +56,12 @@ function toIsoDate(raw) {
   if (!raw || typeof raw !== 'string') return '';
   const parsed = Date.parse(raw.replace(/\s+/g, ' ').trim());
   if (Number.isNaN(parsed)) return '';
+  // Date.parse reads "July 3, 2026" in the process's LOCAL zone, so east of
+  // UTC toISOString() shifted the calendar day back by one (off-by-one, #56).
+  // Re-stamp the local Y/M/D the string named at UTC midnight (Date.UTC) — the
+  // emitted YYYY-MM-DD is then the printed date in every timezone.
   const d = new Date(parsed);
-  return Number.isNaN(d.getTime()) ? '' : d.toISOString().slice(0, 10);
+  return new Date(Date.UTC(d.getFullYear(), d.getMonth(), d.getDate())).toISOString().slice(0, 10);
 }
 
 /** Resolve a job_path (relative or absolute) to an absolute https amazon.jobs URL, or '' if bad. */
@@ -141,8 +146,20 @@ export async function fetchAmazon(feedBase = FEED_BASE, opts = {}) {
     const url = new URL(base.href);
     url.searchParams.set('result_limit', String(PAGE_SIZE));
     url.searchParams.set('offset', String(page * PAGE_SIZE));
-    const json = await fetchJson(fetchImpl, url.href, { signal, redirect: 'error' });
-    const postings = Array.isArray(json && json.jobs) ? json.jobs : [];
+    // Phase-2: a 200 without the documented {jobs:[...]} envelope is a shape
+    // change — loud on page 1; a later-page failure (HTTP or shape) keeps the
+    // partials and logs instead of discarding what was already collected.
+    let json;
+    try {
+      json = await fetchJson(fetchImpl, url.href, { signal, redirect: 'error' });
+      requireContainer(json, 'Amazon search', 'jobs');
+      requireArray(json.jobs, 'Amazon search jobs');
+    } catch (err) {
+      if (page === 0) throw err;
+      console.error(`  ⚠ amazon: page ${page + 1} failed (${err.message}) — keeping the ${out.length} jobs collected so far`);
+      break;
+    }
+    const postings = json.jobs;
     if (postings.length === 0) break;
 
     let fresh = 0;

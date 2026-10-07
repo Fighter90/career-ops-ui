@@ -27,12 +27,17 @@ export const gupyAdapter = {
   id: 'gupy',
   label: 'Gupy',
   matches(company) {
-    if (!company) return false;
+    if (!company || typeof company !== 'object') return false;
     if (company.provider === 'gupy') return true;
     return isGupyPlatformUrl(company.careers_url) || isGupyPlatformUrl(company.api);
   },
+  // `string | null` contract: a non-string api falls back to the canonical
+  // endpoint; garbage input never throws.
   buildEndpoint(company) {
-    return (company && company.api) || API_BASE;
+    const api = company && typeof company === 'object' && typeof company.api === 'string'
+      ? company.api
+      : '';
+    return api || API_BASE;
   },
   fetch: fetchGupy,
 };

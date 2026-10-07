@@ -17,7 +17,9 @@ import { decodeEntities } from '../html-entities.mjs';
 const decodeXmlEntities = decodeEntities;
 
 export const TEAMTAILOR_HOST_RE = /^[a-z0-9][a-z0-9-]*\.teamtailor\.com$/;
-const REMOTE_RE = /remote|anywhere|distributed|home\s*office/i;
+// Explicit remote-work markers only. "Distributed" is NOT one — it flags
+// "Distributed Systems Engineer", a role with no remote signal at all.
+const REMOTE_RE = /remote|anywhere|home\s*office/i;
 
 export const meta = {
   value: 'teamtailor',
@@ -75,11 +77,22 @@ function cleanUrl(value) {
  * for unit tests. The `<link>` is the dedup key; items without a usable https
  * URL or a title are dropped.
  *
+ * Shape contract (Phase 2): the body must carry the documented container — an
+ * <rss> or <channel> root. A 200 that is not an RSS document (a challenge
+ * page, an HTML error template) THROWS instead of parsing as an empty board;
+ * a real feed with zero items still parses to [].
+ *
+ * No fabrication: a remote-sounding TITLE sets isRemote, but never invents a
+ * location — `location` is only ever what the feed's teamtailor:location
+ * actually says.
+ *
  * @param {string} xml raw RSS body
  * @param {string} companyName fallback company name
  */
 export function parseTeamtailorFeed(xml, companyName = '') {
-  if (typeof xml !== 'string') return [];
+  if (typeof xml !== 'string' || !/<(?:rss|channel)[\s>]/i.test(xml)) {
+    throw new TypeError('teamtailor: response is not an RSS feed (no <rss>/<channel> document found)');
+  }
   const jobs = [];
   const blocks = xml.match(/<item\b[^>]*>[\s\S]*?<\/item>/gi) || [];
   for (const item of blocks) {
@@ -89,7 +102,7 @@ export function parseTeamtailorFeed(xml, companyName = '') {
     if (!title) continue;
     const loc = tagText(item, 'teamtailor:location');
     const dept = tagText(item, 'teamtailor:department') || tagText(item, 'category');
-    const location = loc || (REMOTE_RE.test(title) ? 'Remote' : '');
+    const location = loc || '';
     const isRemote = REMOTE_RE.test(location) || REMOTE_RE.test(title);
     jobs.push({
       id: `teamtailor-${url}`,

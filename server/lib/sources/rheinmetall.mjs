@@ -37,6 +37,12 @@ const MAX_PAGES = 150; // safety cap (~1350 postings at 10/page); tune via compa
 const MAX_JOBS = 1500; // cap total postings pulled
 const PAGE_DELAY_MS = 150; // polite pacing — full walks are >100 sequential requests
 
+// The documented envelope of the SSR list (v1.242.0 Phase 2): the vacancy
+// cards render inside this container on every list page — even an empty one.
+// A page-1 200 WITHOUT it is a challenge/interstitial or a markup change,
+// never an empty board. Exported for tests.
+export const RHEINMETALL_LIST_ENVELOPE_RE = /class="gap-4 md:gap-6 flex flex-col"/;
+
 export const meta = {
   value: 'rheinmetall',
   label: 'Rheinmetall',
@@ -139,8 +145,12 @@ function resolveMaxPages(company) {
 
 /**
  * Fetch + normalize the Rheinmetall SSR vacancy list (paginated via ?page=N,
- * 1-based). Stops on an empty page, on a page bringing no fresh ids (the
- * server clamps past-the-end pages to the last page), or at MAX_JOBS.
+ * 1-based). A page-1 failure (transport OR a 200 without the documented list
+ * container) THROWS — the board is unreachable/defended, not empty. A
+ * transient mid-scan failure keeps the jobs collected so far and logs; it
+ * never discards earlier pages. Stops on an empty page, on a page bringing no
+ * fresh ids (the server clamps past-the-end pages to the last page), or at
+ * MAX_JOBS.
  * @param {string} endpoint list URL (host-pinned to rheinmetall.com)
  * @param {{ fetchImpl?: Function, signal?: AbortSignal, company?: object }} [opts]
  */
@@ -157,13 +167,27 @@ export async function fetchRheinmetall(endpoint = DEFAULT_LIST_URL, opts = {}) {
 
   for (let page = 1; page <= maxPages; page += 1) {
     if (page > 1) await delay(PAGE_DELAY_MS, signal);
-    const html = await fetchText(fetchImpl, `${endpoint}?page=${page}`, {
-      signal,
-      redirect: 'error',
-      headers: { accept: 'text/html' },
-    });
+    let html;
+    try {
+      html = await fetchText(fetchImpl, `${endpoint}?page=${page}`, {
+        signal,
+        redirect: 'error',
+        headers: { accept: 'text/html' },
+      });
+    } catch (err) {
+      if (page === 1) throw err; // page 1 failing means the board is unreachable, not empty
+      console.warn(`  ⚠ rheinmetall: ${fallbackCompany} — page ${page} failed after ${jobs.length} postings; keeping partials (${err.message})`);
+      break;
+    }
     const rows = parseVacancies(html, origin);
     if (rows.length === 0) {
+      if (page === 1 && !RHEINMETALL_LIST_ENVELOPE_RE.test(html)) {
+        // Phase-2: a page-1 200 with zero cards is only "empty" when the page
+        // still carries the documented list container (it renders even when
+        // the board has no postings). Without it this is a Cloudflare
+        // challenge or an unknown interstitial — never an empty board.
+        throw new Error(`rheinmetall: page 1 of ${endpoint} has no vacancy-list container — challenge/interstitial or markup change, not an empty board`);
+      }
       if (page === 1) console.warn(`rheinmetall: page 1 returned no vacancy cards for ${fallbackCompany} — markup may have changed`);
       break; // past the last page
     }

@@ -38,6 +38,7 @@
  * whose only purpose is to fall through to that feed, does not apply here.)
  */
 import { fetchJsonWithRetry, BROWSER_LIKE_USER_AGENT } from '../http-json.mjs';
+import { requireObject, requireArray } from './_shape.mjs';
 
 // Browser-like request headers. apply.workable.com sits behind Cloudflare, which
 // can block a generic UA outright; the shared BROWSER_LIKE_USER_AGENT keeps every
@@ -188,17 +189,20 @@ export async function fetchWorkable(apiUrl, opts = {}) {
 
 /**
  * Parse the widget API payload into the scanner's job shape. Exported for unit
- * tests. Keeps only titled, on-domain, deduped jobs — off-domain or non-HTTPS
- * permalinks are dropped rather than emitted.
+ * tests. The documented envelope is REQUIRED (v1.242.0 Phase 2): a 200 whose
+ * body is null or jobs-less is a masked board, not an empty one, so it throws
+ * instead of silently returning []. Keeps only titled, on-domain, deduped jobs
+ * — off-domain or non-HTTPS permalinks are dropped rather than emitted.
  *
  * @param {any} payload — parsed JSON body of the widget endpoint
  * @returns {Array<object>}
  */
 export function parseWorkableWidget(payload) {
-  if (!payload || !Array.isArray(payload.jobs)) return [];
+  const body = requireObject(payload, 'Workable widget');
+  const rows = requireArray(body.jobs, 'Workable widget jobs');
   const jobs = [];
   const seen = new Set();
-  for (const raw of payload.jobs) {
+  for (const raw of rows) {
     const title = typeof raw?.title === 'string' ? raw.title.trim() : '';
     if (!title) continue;
 
@@ -211,6 +215,24 @@ export function parseWorkableWidget(payload) {
     jobs.push(normalize(raw, url));
   }
   return jobs;
+}
+
+/**
+ * Any date the widget API hands us → YYYY-MM-DD UTC (v1.242.0 Phase 2
+ * freshness contract). A bare YYYY-MM-DD passes through untouched; a naive
+ * datetime is treated as UTC for determinism, same convention as tkms.mjs.
+ * @param {unknown} value
+ * @returns {string}
+ */
+function toIsoDateUtc(value) {
+  if (typeof value !== 'string' || !value.trim()) return '';
+  let s = value.trim();
+  if (/^\d{4}-\d{2}-\d{2}$/.test(s)) return s;
+  if (/^\d{4}-\d{2}-\d{2}[T ]\d{2}:\d{2}/.test(s) && !/(?:Z|[+-]\d{2}:?\d{2})$/.test(s)) {
+    s = s.replace(' ', 'T') + 'Z';
+  }
+  const ms = Date.parse(s);
+  return Number.isNaN(ms) ? '' : new Date(ms).toISOString().slice(0, 10);
 }
 
 function normalize(j, url) {
@@ -236,7 +258,7 @@ function normalize(j, url) {
     isRemote: !!remote,
     workplaceType: remote ? 'Remote' : (hybrid ? 'Hybrid' : 'Onsite'),
     relocates: /\b(visa|relocation|sponsorship)\b/i.test((j.description || '') + ' ' + (j.title || '')),
-    date: j.published_on || j.created_at || '',
+    date: toIsoDateUtc(j.published_on || j.created_at),
     snippet: '',
     source: 'workable',
   };

@@ -142,14 +142,17 @@ export function parseHits(xml, fallbackCompany = 'Dassault Systèmes') {
     const url = decodeEntities((meta.get('content_cta_1_url') || '').trim());
     if (!title || !url) continue;
 
-    // Safety net: only accept postings hosted on 3ds.com. The refined query
-    // already guarantees this, but a broadened index must never leak through.
-    let host;
+    // Safety net: only accept postings hosted on 3ds.com over HTTPS. The
+    // refined query already guarantees this, but a broadened index must never
+    // leak through — and a javascript:/http: scheme is never a posting link.
+    let parsed;
     try {
-      host = new URL(url).host.toLowerCase();
+      parsed = new URL(url);
     } catch {
       continue;
     }
+    if (parsed.protocol !== 'https:') continue;
+    const host = parsed.host.toLowerCase();
     if (host !== '3ds.com' && !host.endsWith('.3ds.com')) continue;
 
     const { city, country } = parseCategories(meta.get('content_categories') || '');
@@ -197,6 +200,15 @@ export async function fetchDassault(feedBase = FEED_BASE, opts = {}) {
       headers: { accept: 'application/xml, text/xml, */*' },
     });
     const parsed = parseHits(xml, fallbackCompany);
+    if (page === 0 && parsed.length === 0) {
+      // One fetch per page and page 1 is the board itself: a 200 with no
+      // usable postings is an envelope change / challenge page and must throw,
+      // not read as "live but empty" (v1.242.0 Phase-2 rule).
+      const rawHits = typeof xml === 'string' ? (xml.match(/<Hit\b/g) || []).length : 0;
+      throw new Error(rawHits > 0
+        ? `dassault: ${rawHits} hit(s) returned but none parsed into a posting (title/https-3ds-url missing)`
+        : 'dassault: no <Hit> entries in the search response (envelope change or challenge page)');
+    }
     if (parsed.length === 0) break; // past the last page
 
     let fresh = 0;

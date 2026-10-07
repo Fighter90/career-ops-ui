@@ -223,3 +223,26 @@ test('fetchIcims: host guard rejects a non-https / non-icims endpoint before any
   await assert.rejects(() => fetchIcims('https://example.com/jobs/search', { fetchImpl }), /host must be \*\.icims\.com/);
   assert.equal(called, false); // guard fires before any fetch
 });
+
+// ── v1.242.0: a 200 that is not an iCIMS portal page must throw, not read as
+// an empty board (bot-wall challenges and dead tenants answer 200 HTML). ──
+
+test('fetchIcims: a 200 challenge page throws instead of reading as an empty board', async () => {
+  const challenge = '<html><head><title>Access denied</title></head><body>Checking your browser…</body></html>';
+  const fetchImpl = async () => ({ ok: true, status: 200, text: async () => challenge });
+  await assert.rejects(() => fetchIcims(ENDPOINT, { fetchImpl, company: { name: 'acme' } }), /not an iCIMS portal page/);
+});
+
+test('fetchIcims: a dead-tenant "gone" page (200 HTML, no iCIMS_ shell) throws', async () => {
+  const gone = '<html><head><title>gone: careers-acme.icims.com : dc409</title></head>'
+    + '<body class="error404 logged-in admin-bar no-customize-support icims lang-us">…</body></html>';
+  const fetchImpl = async () => ({ ok: true, status: 200, text: async () => gone });
+  await assert.rejects(() => fetchIcims(ENDPOINT, { fetchImpl, company: { name: 'acme' } }), /not an iCIMS portal page/);
+});
+
+test('fetchIcims: an empty listing page still carries the iCIMS shell and reads as an empty board', async () => {
+  const empty = '<div class="iCIMS_MainWrapper iCIMS_ListingsPage"><ul class="iCIMS_JobsTable"></ul></div>';
+  const fetchImpl = async () => ({ ok: true, status: 200, text: async () => empty });
+  const jobs = await fetchIcims(ENDPOINT, { fetchImpl, company: { name: 'acme' } });
+  assert.deepEqual(jobs, []);
+});

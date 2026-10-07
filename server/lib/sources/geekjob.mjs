@@ -13,6 +13,7 @@
  * NOTE: parser regexes are baseline-best-effort; HTML may need a tweak
  * after the first live run.
  */
+import { decodeEntities } from '../html-entities.mjs';
 
 const GEEKJOB_BASE = 'https://geekjob.ru';
 const UA =
@@ -52,6 +53,16 @@ export async function searchGeekJob(query, opts = {}) {
 }
 
 /**
+ * Decode entities + collapse whitespace on a captured text run. Titles and
+ * companies arrive HTML-encoded (`&amp;`, `&#8212;`, `&laquo;`) and flow on
+ * into scan history and the tracker — the shared single-pass decoder keeps
+ * that from shipping literal entities.
+ */
+function decodeText(s) {
+  return decodeEntities(s || '').replace(/\s+/g, ' ').trim();
+}
+
+/**
  * Parse vacancy-cards from a GeekJob HTML page.
  * Pure function — exported for testing with fixture HTML.
  *
@@ -60,29 +71,39 @@ export async function searchGeekJob(query, opts = {}) {
  * `<div class="company">Company</div>`, `<div class="info"...>` for salary
  * + location/remote chips. We match both `article` and `div`-wrapped
  * variants so a minor template rotation doesn't break the parser.
+ *
+ * Each card's block is SLICED BY INDEX from the anchor's end to the next
+ * vacancy anchor (v1.242.0). The previous single regex capped that block at
+ * {0,2000} chars with a lookahead for the next anchor, so a card followed by
+ * more markup than the cap — always true for the TAIL card of a long page —
+ * was dropped silently; a slice has no cap to outgrow.
  */
 export function parseGeekJobCards(html) {
   if (!html) return [];
   const out = [];
 
-  // Pattern: <a href="/vacancy/<id>">Title</a> + nearby content.
-  const cardRe = /<a[^>]+href="(\/vacancy\/[^"]+)"[^>]*>\s*([^<][^<]{1,180}?)\s*<\/a>([\s\S]{0,2000}?)(?=<a[^>]+href="\/vacancy\/|$)/g;
+  // Pattern: <a href="/vacancy/<id>">Title</a> + everything up to the next one.
+  const anchors = [];
+  const anchorRe = /<a[^>]+href="(\/vacancy\/[^"]+)"[^>]*>\s*([^<][^<]{1,180}?)\s*<\/a>/g;
   let m;
-  while ((m = cardRe.exec(html)) !== null) {
-    const [_, href, title, block] = m;
-    if (!title || title.length < 4) continue;
-    const company = (
-      block.match(/class="?(?:company|employer)"?[^>]*>\s*([^<]{2,100}?)\s*</i) ||
-      []
-    )[1];
+  while ((m = anchorRe.exec(html)) !== null) {
+    anchors.push({ href: m[1], title: m[2], start: m.index, end: m.index + m[0].length });
+  }
+
+  for (let i = 0; i < anchors.length; i += 1) {
+    const { href, title } = anchors[i];
+    const block = html.slice(anchors[i].end, i + 1 < anchors.length ? anchors[i + 1].start : undefined);
+    const decodedTitle = decodeText(title);
+    if (!decodedTitle || decodedTitle.length < 4) continue;
+    const companyRaw = (block.match(/class="?(?:company|employer)"?[^>]*>\s*([^<]{2,100}?)\s*</i) || [])[1];
     const salary = (block.match(/(\d[\d\s,]*\s*[—–-]\s*\d[\d\s,]*\s*(?:₽|\$|€|руб|RUB))/i) || [])[1];
     const isRemote = /(удал[её]н|remote)/i.test(block);
     const hasReloc = /(релок|relocation)/i.test(block);
 
     out.push({
       id: `geekjob-${href.replace(/^\/vacancy\//, '').replace(/\/$/, '')}`,
-      title: title.trim(),
-      company: company?.trim() || '',
+      title: decodedTitle,
+      company: decodeText(companyRaw),
       url: GEEKJOB_BASE + href,
       salary: (salary || '').replace(/\s+/g, ' ').trim(),
       location: isRemote ? 'Remote' : 'Russia',

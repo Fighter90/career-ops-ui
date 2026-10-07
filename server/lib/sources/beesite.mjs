@@ -26,6 +26,7 @@
  * Used by the beesite adapter (server/lib/portals/adapters/beesite.mjs).
  */
 import { fetchJson, delay } from '../http-json.mjs';
+import { requireContainer, requireArray } from './_shape.mjs';
 // Titles arrive HTML-escaped, so the tag-strip below is not enough on its own:
 // an undecoded "R&amp;D Engineer" fails a user's own title_filter positive "r&d"
 // and is silently dropped, and a negative like "sales & marketing" never vetoes
@@ -97,13 +98,19 @@ function toIsoDate(raw) {
 }
 
 /**
- * Map one search response into { total, jobs } (rich job shape). Exported for
- * unit tests.
+ * Map one search response into { total, jobs, raw } (rich job shape). `raw` is
+ * the RAW SearchResultItems length — pagination must stop on it, not on the
+ * post-filter `jobs` count (one unparseable card on a full page must not end
+ * the walk). Exported for unit tests.
  */
 export function parseSearchResult(json, companyName) {
-  const sr = json && json.SearchResult;
-  const total = typeof (sr && sr.SearchResultCountAll) === 'number' ? sr.SearchResultCountAll : null;
-  const items = Array.isArray(sr && sr.SearchResultItems) ? sr.SearchResultItems : [];
+  // Phase-2: a 200 without the documented SearchResult container (an HTML
+  // challenge page, an API retirement) is a shape change — throw instead of
+  // reading as a healthy-but-empty board.
+  requireContainer(json, 'beesite search', 'SearchResult');
+  const sr = json.SearchResult;
+  const total = typeof sr.SearchResultCountAll === 'number' ? sr.SearchResultCountAll : null;
+  const items = requireArray(sr.SearchResultItems, 'beesite search items');
   const jobs = [];
   for (const item of items) {
     const d = item && item.MatchedObjectDescriptor;
@@ -133,7 +140,7 @@ export function parseSearchResult(json, companyName) {
       source: 'beesite',
     });
   }
-  return { total, jobs };
+  return { total, jobs, raw: items.length };
 }
 
 function resolveMaxPages(company) {
@@ -145,7 +152,10 @@ function resolveMaxPages(company) {
 /**
  * Fetch + parse a tenant's postings with a bounded newest-first
  * walk. `endpoint` is the tenant /search API from the adapter's buildEndpoint;
- * pagination stops on an empty page, a no-fresh-rows page, MAX_JOBS, or total.
+ * pagination stops on an empty page, a no-fresh-rows page, a RAW-short page,
+ * MAX_JOBS, or total. A page-1 failure throws (a challenge page must not read
+ * as an empty board); a later-page failure keeps the collected partials and
+ * logs.
  */
 export async function fetchBeesite(endpoint, opts = {}) {
   const { fetchImpl = fetch, signal, company = {} } = opts;
@@ -161,12 +171,21 @@ export async function fetchBeesite(endpoint, opts = {}) {
     // Shared abort-aware pacing (parent #3530 routes every inter-page sleep
     // through one helper) — a cancelled scan no longer waits out the delay.
     if (page > 0) await delay(PAGE_DELAY_MS, signal);
-    const json = await fetchJson(fetchImpl, buildSearchUrl(cfg, page * PAGE_SIZE + 1), {
-      signal,
-      redirect: 'error',
-      headers: { accept: 'application/json' },
-    });
-    const { total: pageTotal, jobs: rows } = parseSearchResult(json, name);
+    let pageTotal;
+    let rows;
+    let raw;
+    try {
+      const json = await fetchJson(fetchImpl, buildSearchUrl(cfg, page * PAGE_SIZE + 1), {
+        signal,
+        redirect: 'error',
+        headers: { accept: 'application/json' },
+      });
+      ({ total: pageTotal, jobs: rows, raw } = parseSearchResult(json, name));
+    } catch (err) {
+      if (page === 0) throw err;
+      console.error(`  ⚠ beesite: page ${page + 1} failed (${err.message}) — keeping the ${jobs.length} jobs collected so far`);
+      break;
+    }
     if (total === null) total = pageTotal;
     if (rows.length === 0) break; // past the last page
 
@@ -180,6 +199,7 @@ export async function fetchBeesite(endpoint, opts = {}) {
     }
     if (fresh === 0) break; // server ignored FirstItem (or we've looped)
     if (jobs.length >= MAX_JOBS) break;
+    if (raw < PAGE_SIZE) break; // RAW page length — dropped rows don't end the walk
     if (total !== null && (page + 1) * PAGE_SIZE >= total) break;
   }
   return jobs;

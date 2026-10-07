@@ -129,3 +129,91 @@ test('searchTrudvsem paginates by offset and stops once meta.total is covered', 
   assert.equal(out.length, 3, 'collects across both offset pages');
   assert.ok(calls <= 2, 'stops once (page+1)*limit >= total');
 });
+
+// ---------------------------------------------------------------------------
+// v1.242.0 Phase 2 — shape guard, partials, redirect:'error', id-less rows
+// ---------------------------------------------------------------------------
+
+test('searchTrudvsem throws on a malformed first page (shape guard)', async () => {
+  for (const body of [{ status: 200 }, { status: 200, results: null }, { status: 200, results: { vacancies: 'nope' } }]) {
+    const fetchImpl = mkFetch(body);
+    await assert.rejects(
+      () => searchTrudvsem('q', { fetchImpl }),
+      (err) => {
+        assert.match(err.message, /Trudvsem/);
+        return true;
+      },
+      `expected a throw for ${JSON.stringify(body)}`,
+    );
+  }
+});
+
+test('searchTrudvsem keeps partials when a later page fails', async () => {
+  let call = 0;
+  const rec = (id) => ({ vacancy: { id, 'job-name': `Dev ${id}`, vac_url: `https://trudvsem.ru/vacancy/${id}` } });
+  const fetchImpl = async () => {
+    call++;
+    if (call === 1) {
+      return new Response(JSON.stringify({ status: 200, meta: { total: 99 }, results: { vacancies: [rec('1')] } }), { status: 200, headers: { 'content-type': 'application/json' } });
+    }
+    // A 200 with a non-JSON body (WAF page) → res.json() rejects.
+    return new Response('<html>nope</html>', { status: 200, headers: { 'content-type': 'text/html' } });
+  };
+  const errs = [];
+  const orig = console.error;
+  console.error = (...a) => errs.push(a.join(' '));
+  let out;
+  try {
+    out = await searchTrudvsem('q', { fetchImpl });
+  } finally {
+    console.error = orig;
+  }
+  assert.equal(out.length, 1, 'page 1 survives a page-2 failure');
+  assert.match(errs.join(' '), /trudvsem/);
+});
+
+test('searchTrudvsem sends redirect:error (SSRF guard)', async () => {
+  let seen;
+  const fetchImpl = async (url, opts) => {
+    seen = opts;
+    return new Response(JSON.stringify({ status: 200, results: { vacancies: [] } }), { status: 200 });
+  };
+  await searchTrudvsem('q', { fetchImpl });
+  assert.equal(seen.redirect, 'error');
+});
+
+test('normalizeTrudvsem drops id-less rows instead of synthesizing colliding ids/urls', () => {
+  // Two id-less rows with the same title used to share one URL and one dedup
+  // key, silently swallowing the second row. Now both are skipped.
+  assert.equal(normalizeTrudvsem({ vacancy: { 'job-name': 'No Id Here', company: { name: 'X' } } }), null);
+  assert.equal(normalizeTrudvsem({ 'job-name': 'Top-level form, no id' }), null);
+});
+
+test('normalizeTrudvsem keeps a surrogate-id row that carries a usable https vac_url', () => {
+  const LONE = '\uD800';
+  // The surrogate id cannot be encoded → no built URL — but the row itself is
+  // usable via its own https vac_url, so it survives with that URL.
+  const kept = normalizeTrudvsem({ vacancy: { id: `${LONE}bad`, 'job-name': 'Has URL', vac_url: 'https://trudvsem.ru/vacancy/card/9' } });
+  assert.ok(kept, 'a surrogate id with a real vac_url is not dropped');
+  assert.equal(kept.url, 'https://trudvsem.ru/vacancy/card/9');
+  // Without a vac_url there is no usable URL → the row is dropped.
+  assert.equal(normalizeTrudvsem({ vacancy: { id: `${LONE}bad`, 'job-name': 'Bad' } }), null);
+});
+
+test('normalizeTrudvsem normalizes creation-date to YYYY-MM-DD UTC', () => {
+  const bare = normalizeTrudvsem({ vacancy: { id: '9', 'job-name': 'Dev', 'creation-date': '2026-05-10' } });
+  assert.equal(bare.date, '2026-05-10');
+  const stamped = normalizeTrudvsem({ vacancy: { id: '10', 'job-name': 'Dev', 'creation-date': '2026-05-10T23:30:00' } });
+  assert.equal(stamped.date, '2026-05-10', 'a naive stamp is treated as UTC');
+  const junk = normalizeTrudvsem({ vacancy: { id: '11', 'job-name': 'Dev', 'creation-date': 'garbage' } });
+  assert.equal(junk.date, '');
+});
+
+test('normalizeTrudvsem builds the canonical URL when vac_url is missing or non-https', () => {
+  const built = normalizeTrudvsem({ vacancy: { id: '77', 'job-name': 'Dev' } });
+  assert.equal(built.url, 'https://trudvsem.ru/vacancy/77');
+  const insecure = normalizeTrudvsem({ vacancy: { id: '78', 'job-name': 'Dev', vac_url: 'http://trudvsem.ru/vacancy/78' } });
+  assert.equal(insecure.url, 'https://trudvsem.ru/vacancy/78', 'an http: vac_url falls back to the built https URL');
+  const kept = normalizeTrudvsem({ vacancy: { id: '79', 'job-name': 'Dev', vac_url: 'https://trudvsem.ru/vacancy/79' } });
+  assert.equal(kept.url, 'https://trudvsem.ru/vacancy/79');
+});

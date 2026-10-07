@@ -227,7 +227,15 @@ export function parseLocation(rawDesc) {
  * @returns {object[]}
  */
 export function parsePythonOrgFeed(xml) {
-  if (typeof xml !== 'string') return [];
+  // Phase-2: a body that is not an RSS document (a maintenance HTML page, a
+  // drifted or empty 200) is a wrong shape, not an empty board — THROW. The
+  // feed is a single request, so this is always "page 1".
+  if (typeof xml !== 'string') {
+    throw new TypeError(`pythonorg: expected an RSS document string, got ${xml === null ? 'null' : typeof xml}`);
+  }
+  if (!/<rss\b/i.test(xml)) {
+    throw new TypeError(`pythonorg: expected an <rss> document, got "${xml.slice(0, 60).replace(/\s+/g, ' ').trim() || 'an empty body'}"`);
+  }
   const jobs = [];
   const blocks = xml.match(/<item\b[^>]*>[\s\S]*?<\/item>/gi) || [];
 

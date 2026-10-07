@@ -40,7 +40,13 @@
  *
  * Used by the jobbankca adapter (server/lib/portals/adapters/jobbankca.mjs).
  */
-import { fetchText, BROWSER_LIKE_USER_AGENT, delay } from '../http-json.mjs';
+import {
+  fetchText,
+  BROWSER_LIKE_USER_AGENT,
+  delay,
+  computeRetryDelayMs,
+  REDIRECT_REFUSAL_CAUSE_MESSAGE,
+} from '../http-json.mjs';
 import { decodeEntities } from '../html-entities.mjs';
 import { PATHS } from '../paths.mjs';
 import { existsSync, readFileSync } from 'node:fs';
@@ -67,6 +73,11 @@ const DEFAULT_MAX_PAGES = 5;
 const MAX_PAGES_CAP = 20;
 /** robots.txt: `Crawl-delay: 5`. Applied between every request, including the first. */
 const INTER_REQUEST_DELAY_MS = 5000;
+// 1 attempt + 2 retries on a transient failure (429, 5xx, no-status network
+// error). Same budget jazzhr.mjs uses.
+const RETRIES = 2;
+const RETRY_DELAY_MS = 500;
+const RETRY_MAX_DELAY_MS = 4000;
 
 // Job Bank is bilingual (English/French); flag remote from either language.
 const REMOTE_RE = /\b(remote|telework|t[eé]l[eé]travail|work[-\s]?from[-\s]?home|home[-\s]?based)\b/i;
@@ -172,6 +183,55 @@ function toIsoDate(value) {
   if (typeof value !== 'string' || !value.trim()) return '';
   const ms = Date.parse(value);
   return Number.isNaN(ms) ? '' : new Date(ms).toISOString().slice(0, 10);
+}
+
+// The endpoint sits behind bot protection on some networks, and the wall
+// answers 200 with a small HTML challenge page. Parsed as a feed that is zero
+// <entry>s, so the board read as "0 jobs" with no hint nothing was fetched. A
+// feed with no entries is still a valid, empty board; only a body that is not
+// an Atom feed at all is an error. (Same discipline as higheredjobs.mjs.)
+function assertAtomFeed(xml) {
+  if (typeof xml === 'string' && /<feed\b/i.test(xml)) return;
+  if (typeof xml === 'string' && /<html\b/i.test(xml)) {
+    throw new Error('jobbankca: feed endpoint answered a challenge page, not an Atom feed');
+  }
+  throw new Error('jobbankca: feed endpoint answered no Atom feed');
+}
+
+/** RAW `<entry>` count of one page — pagination stops on this, never on the
+ *  post-filter count (the parser drops entries for bad urls/titles; that is
+ *  our own filtering, not the feed running out). */
+function countAtomEntries(xml) {
+  return (String(xml ?? '').match(/<entry\b/gi) || []).length;
+}
+
+/**
+ * `fetchText` with 1 attempt + 2 retries on transient failures only (429, 5xx,
+ * status-less network error). Permanent 4xx and refused redirects rethrow.
+ * Same shape as jazzhr.mjs's helper.
+ * @param {Function} fetchImpl
+ * @param {string} url
+ * @param {{ signal?: AbortSignal, retryDelayMs: number, headers: Record<string, string> }} o
+ */
+async function fetchTextWithRetry(fetchImpl, url, { signal, retryDelayMs, headers }) {
+  let lastErr;
+  for (let attempt = 0; attempt <= RETRIES; attempt += 1) {
+    try {
+      return await fetchText(fetchImpl, url, { signal, redirect: 'error', headers });
+    } catch (err) {
+      lastErr = err;
+      const status = err && typeof err.status === 'number' ? err.status : undefined;
+      const redirectRefusal = status === undefined
+        && err instanceof TypeError
+        && err?.cause?.message === REDIRECT_REFUSAL_CAUSE_MESSAGE;
+      const transient = !redirectRefusal && (status === undefined || status === 429 || status >= 500);
+      if (!transient || attempt === RETRIES || signal?.aborted) throw err;
+      await delay(computeRetryDelayMs({
+        attempt, baseDelayMs: retryDelayMs, maxDelayMs: RETRY_MAX_DELAY_MS, retryAfter: err?.retryAfter,
+      }), signal);
+    }
+  }
+  throw lastErr;
 }
 
 // Resolve an Atom element's inner text: unwrap CDATA, else decode entities.
@@ -314,7 +374,8 @@ export function parseAtomFeed(xml) {
  * Fetch + normalize Job Bank postings across the configured keywords.
  * @param {string} feedUrl base feed endpoint (from buildEndpoint)
  * @param {{ fetchImpl?: Function, signal?: AbortSignal, company?: object,
- *           maxPages?: number, delayMs?: number, profileKeywords?: string[] }} [opts]
+ *           maxPages?: number, delayMs?: number, retryDelayMs?: number,
+ *           profileKeywords?: string[] }} [opts]
  */
 export async function fetchJobBankCa(feedUrl = FEED_URL, opts = {}) {
   const { fetchImpl = fetch, signal, company = {} } = opts;
@@ -341,6 +402,7 @@ export async function fetchJobBankCa(feedUrl = FEED_URL, opts = {}) {
   );
 
   const delayMs = Number.isFinite(opts.delayMs) ? opts.delayMs : INTER_REQUEST_DELAY_MS;
+  const retryDelayMs = Number.isFinite(opts.retryDelayMs) ? opts.retryDelayMs : RETRY_DELAY_MS;
 
   const byUrl = new Map();
   const errors = [];
@@ -354,11 +416,14 @@ export async function fetchJobBankCa(feedUrl = FEED_URL, opts = {}) {
       const url = assertJobBankUrl(buildFeedUrl(keyword, page));
       let xml;
       try {
-        xml = await fetchText(fetchImpl, url, {
+        xml = await fetchTextWithRetry(fetchImpl, url, {
           signal,
-          redirect: 'error',
+          retryDelayMs,
           headers: { 'User-Agent': BROWSER_LIKE_USER_AGENT, accept: 'application/atom+xml, application/xml, text/xml' },
         });
+        // A 200 that is not an Atom feed (bot-wall challenge, maintenance
+        // page) is a keyword failure, not an empty board.
+        assertAtomFeed(xml);
       } catch (err) {
         // Only a page-1 failure means the keyword's request failed outright; a
         // later page failing just ends this keyword's pagination early.
@@ -369,11 +434,12 @@ export async function fetchJobBankCa(feedUrl = FEED_URL, opts = {}) {
         break;
       }
 
+      const rawEntries = countAtomEntries(xml); // RAW page length, pre-filter
       const parsed = parseAtomFeed(xml);
       for (const job of parsed) {
         if (!byUrl.has(job.url)) byUrl.set(job.url, job);
       }
-      if (parsed.length < PAGE_SIZE) break; // short page — end of this keyword's results
+      if (rawEntries < PAGE_SIZE) break; // short page — end of this keyword's results
     }
     if (!keywordFailed) succeeded++;
   }

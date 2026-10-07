@@ -13,10 +13,15 @@ export const jobstreetAdapter = {
   id: 'jobstreet',
   label: 'Jobstreet / SEEK',
   matches(company) {
-    return company.provider === 'jobstreet';
+    return !!company && typeof company === 'object' && company.provider === 'jobstreet';
   },
+  // `string | null` contract: a non-string api falls back to the canonical
+  // endpoint; garbage input never throws.
   buildEndpoint(company) {
-    return company.api || DEFAULT_API;
+    const api = company && typeof company === 'object' && typeof company.api === 'string'
+      ? company.api
+      : '';
+    return api || DEFAULT_API;
   },
   fetch: fetchJobstreet,
 };

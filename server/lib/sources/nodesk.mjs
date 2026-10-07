@@ -125,6 +125,12 @@ export function parseNodeskFeed(xml, defaultCompany = 'NoDesk') {
   return jobs;
 }
 
+// A 200 that is not the feed (a Cloudflare challenge, an HTML error page, an
+// empty body) has no <item>s and used to read as an empty board forever.
+// Phase-2 rule: fetch throws instead, unless the body carries the RSS
+// skeleton. The pure parser stays tolerant (bare-item XML is unit-tested).
+const FEED_SKELETON_RE = /<(?:rss|channel)\b/i;
+
 /**
  * Fetch + normalize the NoDesk feed.
  * @param {string} feedUrl
@@ -134,6 +140,9 @@ export async function fetchNodesk(feedUrl = FEED_URL, opts = {}) {
   const { fetchImpl = fetch, signal, company = {} } = opts;
   assertNodeskUrl(feedUrl);
   const xml = await fetchText(fetchImpl, feedUrl, { signal, redirect: 'error', headers: { accept: 'application/rss+xml, application/xml, text/xml' } });
+  if (!FEED_SKELETON_RE.test(String(xml))) {
+    throw new Error(`nodesk: response is not an RSS feed (no <rss>/<channel>): "${String(xml).trim().slice(0, 60)}"`);
+  }
   const fallback = (company && typeof company.name === 'string' && company.name.trim()) ? company.name.trim() : 'NoDesk';
   return parseNodeskFeed(xml, fallback);
 }

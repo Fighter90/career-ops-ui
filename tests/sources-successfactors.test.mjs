@@ -201,6 +201,65 @@ test('resolveTenantBase: multi-brand RMK path preserved; endpoint segments never
   assert.equal(resolveTenantBase({}), null);
 });
 
+// ── Phase 2 (v1.242.0): exact-host pin + challenge-page shape guard ──
+
+test('assertSuccessfactorsUrl: with an expected tenant host, the endpoint host must match EXACTLY', () => {
+  assert.equal(assertSuccessfactorsUrl(ENDPOINT, 'jobs.zf.com'), ENDPOINT);
+  assert.throws(
+    () => assertSuccessfactorsUrl('https://evil.test/tile-search-results/', 'jobs.zf.com'),
+    /tenant host/,
+  );
+  assert.throws(
+    () => assertSuccessfactorsUrl('https://jobs.zf.com.evil.test/tile-search-results/', 'jobs.zf.com'),
+    /tenant host/,
+  );
+});
+
+test('fetchSuccessfactors: endpoint host is pinned to the tenant host from the entry', async () => {
+  let calls = 0;
+  const fetchImpl = async () => {
+    calls += 1;
+    return { ok: true, status: 200, text: async () => (calls === 1 ? HTML : '') };
+  };
+  // Same host as the entry → passes the guard and parses.
+  const ok = await fetchSuccessfactors(ENDPOINT, {
+    fetchImpl,
+    company: { name: 'ZF', careers_url: 'https://jobs.zf.com/careers' },
+  });
+  assert.equal(ok.length, 2);
+  // A same-scheme endpoint on ANOTHER host must be refused before any I/O.
+  await assert.rejects(
+    () => fetchSuccessfactors('https://jobs.schaeffler.com/tile-search-results/', {
+      fetchImpl,
+      company: { name: 'ZF', careers_url: 'https://jobs.zf.com/careers' },
+    }),
+    /tenant host/,
+  );
+  assert.ok(calls <= 2, 'the mismatched call must never reach the network');
+});
+
+test('fetchSuccessfactors: a challenge-page 200 (no job tiles) THROWS instead of reading as an empty board', async () => {
+  const fetchImpl = async () => ({
+    ok: true, status: 200,
+    text: async () => '<!DOCTYPE html><html><head><title>Just a moment...</title></head><body>cf-challenge</body></html>',
+  });
+  await assert.rejects(
+    () => fetchSuccessfactors(ENDPOINT, { fetchImpl, company: { name: 'ZF' } }),
+    /job tiles/,
+  );
+});
+
+test('fetchSuccessfactors: a later empty page (no tiles after ≥1 good page) still ends pagination quietly', async () => {
+  let calls = 0;
+  const fetchImpl = async () => {
+    calls += 1;
+    return { ok: true, status: 200, text: async () => (calls === 1 ? HTML : '') };
+  };
+  const jobs = await fetchSuccessfactors(ENDPOINT, { fetchImpl, company: { name: 'ZF' } });
+  assert.equal(calls, 2);
+  assert.equal(jobs.length, 2);
+});
+
 test('resolveTenantBase: a /go/<Category>/<id>/ saved-search page resolves to the tenant root', () => {
   const root = 'https://jobs.canadalife.com';
   for (const url of [

@@ -37,7 +37,13 @@
  *
  * Ported from the parent career-ops providers/itviec.mjs.
  */
-import { fetchText, delay, BROWSER_LIKE_USER_AGENT } from '../http-json.mjs';
+import {
+  fetchText,
+  delay,
+  computeRetryDelayMs,
+  REDIRECT_REFUSAL_CAUSE_MESSAGE,
+  BROWSER_LIKE_USER_AGENT,
+} from '../http-json.mjs';
 import { decodeEntities } from '../html-entities.mjs';
 
 export const LIST_URL = 'https://itviec.com/it-jobs';
@@ -55,6 +61,12 @@ const MAX_PAGES_CAP = 50;
  * on the second run's later pages, so this is measured politeness, not a guess.
  */
 const INTER_PAGE_DELAY_MS = 750;
+
+// 1 attempt + 2 retries on a transient failure (429 — observed live, 5xx,
+// no-status network error). Same budget jazzhr.mjs uses.
+const RETRIES = 2;
+const RETRY_DELAY_MS = 500;
+const RETRY_MAX_DELAY_MS = 4000;
 
 export const meta = {
   value: 'itviec',
@@ -272,23 +284,61 @@ function resolveMaxPages(company) {
 }
 
 /**
+ * `fetchText` with 1 attempt + 2 retries on transient failures only (429 —
+ * observed live on back-to-back sweeps, 5xx, status-less network error).
+ * Permanent 4xx and refused redirects rethrow. Same shape as jazzhr.mjs's
+ * helper.
+ * @param {Function} fetchImpl
+ * @param {string} url
+ * @param {{ signal?: AbortSignal, retryDelayMs: number }} o
+ */
+async function fetchTextWithRetry(fetchImpl, url, { signal, retryDelayMs }) {
+  let lastErr;
+  for (let attempt = 0; attempt <= RETRIES; attempt += 1) {
+    try {
+      return await fetchText(fetchImpl, url, {
+        signal,
+        redirect: 'error',
+        headers: { 'User-Agent': BROWSER_LIKE_USER_AGENT },
+      });
+    } catch (err) {
+      lastErr = err;
+      const status = err && typeof err.status === 'number' ? err.status : undefined;
+      const redirectRefusal = status === undefined
+        && err instanceof TypeError
+        && err?.cause?.message === REDIRECT_REFUSAL_CAUSE_MESSAGE;
+      const transient = !redirectRefusal && (status === undefined || status === 429 || status >= 500);
+      if (!transient || attempt === RETRIES || signal?.aborted) throw err;
+      await delay(computeRetryDelayMs({
+        attempt, baseDelayMs: retryDelayMs, maxDelayMs: RETRY_MAX_DELAY_MS, retryAfter: err?.retryAfter,
+      }), signal);
+    }
+  }
+  throw lastErr;
+}
+
+/**
  * Fetch + normalize the ITviec listing (paginated via ?page=N, 1-based; the
  * URL for every page — including page 1 — is rebuilt from `opts.company` so a
  * configured `searchKeywords`/`searchLocation` narrows every page the same
- * way). Stops when a page parses to nothing (end of board), when a page
- * brings no fresh posting, or at the page cap. Page 1 parsing to nothing is a
- * HARD failure — `assertParsedSomething` turns a silent-zero markup break into
- * a thrown error rather than an empty board.
+ * way). Transient failures are retried. Page 1 failure is a HARD failure — a
+ * broken board must throw (`assertParsedSomething` turns a silent-zero markup
+ * break into a thrown error) and quarantine. A later-page failure keeps the
+ * pages already fetched and logs; a 404 on a later page is an out-of-range
+ * ?page=, i.e. the normal end of the board — NOT an outage that would
+ * quarantine the entry for 14 days.
  *
  * @param {string} endpoint page-1 list URL (host-pinned to itviec.com; only
  *   validated here, since every page is rebuilt from `opts.company`)
- * @param {{ fetchImpl?: Function, signal?: AbortSignal, company?: object }} [opts]
+ * @param {{ fetchImpl?: Function, signal?: AbortSignal, company?: object,
+ *           retryDelayMs?: number }} [opts]
  */
 export async function fetchItviec(endpoint = LIST_URL, opts = {}) {
   const { fetchImpl = fetch, signal, company = {} } = opts;
   assertItviecUrl(endpoint);
 
   const maxPages = resolveMaxPages(company);
+  const retryDelayMs = Number.isFinite(opts.retryDelayMs) ? opts.retryDelayMs : RETRY_DELAY_MS;
   /** @type {any[]} */
   const jobs = [];
   const seen = new Set();
@@ -297,11 +347,17 @@ export async function fetchItviec(endpoint = LIST_URL, opts = {}) {
     if (page > 1) await delay(INTER_PAGE_DELAY_MS, signal);
 
     const url = assertItviecUrl(buildListUrl(company, page));
-    const html = await fetchText(fetchImpl, url, {
-      signal,
-      redirect: 'error',
-      headers: { 'User-Agent': BROWSER_LIKE_USER_AGENT },
-    });
+    let html;
+    try {
+      html = await fetchTextWithRetry(fetchImpl, url, { signal, retryDelayMs });
+    } catch (err) {
+      if (page === 1) throw err;
+      // An out-of-range ?page= answering 404 is the end of the board, not a
+      // failure — keep the partials and stop quietly.
+      if (err && err.status === 404) break;
+      console.warn(`itviec: page ${page} failed — ${err.message} (keeping ${jobs.length} jobs fetched so far)`);
+      break;
+    }
 
     const rows = parseListingPage(html);
     if (rows.length === 0) {
