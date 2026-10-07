@@ -25,10 +25,7 @@ const mkHit = (overrides = {}) => ({
   },
 });
 
-const makeTransport = (hits, { full = false } = {}) => async () => ({
-  ok: true,
-  json: async () => ({ hits: { hits, total: hits.length } }),
-});
+// ── assertIbmApiUrl + fetchIbm ──────────────────────────────────────────────
 
 // ---------------------------------------------------------------------------
 // parseIbmResponse
