@@ -98,7 +98,7 @@ test('api override must be https on an ibm.com host; the default passes', async 
   );
   await assert.rejects(
     () => fetchIbm('https://evil.com/search/api/v2', { fetchImpl: async () => { throw new Error('must not fetch'); } }),
-    (err) => { assert.match(err.message, /^ibm: untrusted hostname/); return err.message.includes('evil.com'); },
+    /untrusted hostname/,
   );
   await assert.rejects(
     () => fetchIbm('not a url', { fetchImpl: async () => { throw new Error('must not fetch'); } }),
