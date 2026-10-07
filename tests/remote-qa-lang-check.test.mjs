@@ -70,3 +70,29 @@ test('a short list-shaped answer with three locale stop words and no English one
   // Three German stop words drowned by English still fail.
   assert.equal(languageOk(de + 'the and with for you your this that are is'.repeat(2), 'de'), false);
 });
+
+// 2026-10-07 prod QA: a real Hindi evaluation scored 30 % — it cites the
+// English JD / CV word for word. Quotes are evidence, not the report's prose.
+test('word-for-word quotes from the English CV/JD do not count against the locale', () => {
+  const quote = '"Designed and operated multi-region Kubernetes platform for high-traffic production services"';
+  const text = `${HI}${quote}\n`.repeat(12);
+  assert.equal(languageOk(text, 'hi'), true, describe(text, 'hi'));
+  const ja = 'この候補者はプラットフォームの役割に適合しています。'
+    + '「Built and operated the deployment pipeline for all backend services across regions」\n';
+  assert.equal(languageOk(ja.repeat(10), 'ja'), true, describe(ja.repeat(10), 'ja'));
+});
+
+test('an English report stays English even when it is full of quotes', () => {
+  const en = 'The candidate "fits the role" and the CV says "led the platform team". '.repeat(20);
+  assert.equal(languageOk(en, 'hi'), false);
+  assert.equal(languageOk(en, 'en'), true);
+});
+
+test('a stray quote (inches) or a one-word quote does not hide prose', () => {
+  const t = `a 27" monitor ${HI} and the "role" and more ${HI} until another " appears`;
+  assert.match(prose(t), /भूमिका/);
+  assert.match(prose(t), /"role"/);
+  assert.doesNotMatch(prose('x “one two three” y'), /one two three/);
+  assert.doesNotMatch(prose('x „eins zwei drei“ y'), /eins/);
+  assert.doesNotMatch(prose('x «un deux trois» y'), /deux/);
+});
