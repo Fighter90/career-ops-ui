@@ -7,17 +7,17 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-4419%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-4812%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.242.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.242.0)
+[![release](https://img.shields.io/badge/release-v1.242.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.242.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.242.0** — **掃描器的資料層重新值得信賴。** 失效的來源恢復運作（justjoin 與 nofluffjobs 重新讀取完整目錄；himalayas 與 jobicy 會走過最新 20 筆之後的內容），格式錯誤或挑戰頁的回應現在會在第 1 頁就**拋出例外**，而不是被讀成「0 筆職缺」（`server/lib/sources/_shape.mjs`），子字串式的廠商檢查也改為解析後的精確主機釘選 —— `clever.com` 不再能冒充 lever，惡意的職缺板 URL 也不再能把掃描重新導向。單一個設定錯誤的 portals 項目不再能中止整個掃描。
+> **🆕 最新版本 — v1.242.1** — **掃描器的資料層重新值得信賴。** 失效的來源恢復運作（justjoin 與 nofluffjobs 重新讀取完整目錄；himalayas 與 jobicy 會走過最新 20 筆之後的內容），格式錯誤或挑戰頁的回應現在會在第 1 頁就**拋出例外**，而不是被讀成「0 筆職缺」（`server/lib/sources/_shape.mjs`），子字串式的廠商檢查也改為解析後的精確主機釘選 —— `clever.com` 不再能冒充 lever，惡意的職缺板 URL 也不再能把掃描重新導向。單一個設定錯誤的 portals 項目不再能中止整個掃描。
 >
 > **前一版本 — v1.241.1** — 即時評估在全部語言中端到端可用；職位地圖可放置超長多地點職缺；部署會等待執行中的整點掃描完成。
 

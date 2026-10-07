@@ -10,6 +10,12 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 
 ---
 
+## [1.242.1] — 2026-10-08
+
+### Corregido
+
+- **El archivo de la release vuelve a ir sin enlaces simbólicos de `node_modules`.** El tag git de v1.242.0 llevaba un symlink `node_modules` en la raíz y `site/node_modules` (un `git add -A` general los coló sin superar los patrones de ignore con barra final), lo que rompió la extracción tar del despliegue en el servidor — el despliegue hizo rollback con seguridad y producción siguió en 1.241.1. Ambos enlaces están fuera del repositorio y los patrones ignore ampliados; el tarball de npm nunca se vio afectado (npm excluye `node_modules` al empaquetar).
+
 ## [1.242.0] — 2026-10-07
 
 **La capa de datos del escáner vuelve a ser de fiar: las fuentes muertas están vivas, una respuesta malformada ya no puede hacerse pasar por un tablero vacío y una URL de tablero hostil ya no puede redirigir un escaneo.**

@@ -8,7 +8,7 @@ Release history belongs in [CHANGELOG.md](CHANGELOG.md), decisions in
 [docs/adr/](docs/adr/), vocabulary in [CONTEXT.md](CONTEXT.md). Anything already
 recoverable from those does **not** belong here.
 
-_Last updated: 2026-10-07 · v1.242.0 sources correctness in release train (PR + deploy pending); regression of both stands ran against v1.241.1_
+_Last updated: 2026-10-08 · v1.242.1 packaging patch in release train (v1.242.0 deploy rolled back — node_modules symlinks in the tag; prod healthy on 1.241.1)_
 
 ---
 

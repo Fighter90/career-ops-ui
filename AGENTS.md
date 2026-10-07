@@ -4,10 +4,13 @@
 
 ## OpenCode and other agents — start here
 
-`opencode.json` loads the working set automatically. The operating manual for any agent is
+`opencode.json` loads the working set automatically (AGENTS/CONTEXT/PROGRESS + Claude's
+`.claude/PROJECT-CONTEXT.md` + the five `docs/sdd/` manuals). The operating manual for any agent is
 **`docs/sdd/HANDOFF.md`** (rules, gates, the full ship train including the resumecraft.ru deploy);
 open work is in `docs/sdd/BACKLOG.md`, the order in `docs/sdd/PLAN.md`. OpenCode agents:
-`.opencode/agent/{fixer,locale-docs,release}.md`; commands: `/continue`, `/ship X.Y.Z`, `/parent-sync`.
+`.opencode/agent/{fixer,locale-docs,release}.md` + the three reviewers mirrored from
+`.claude/agents/` (`spa-view-reviewer`, `test-isolation-reviewer`, `web-ui-route-reviewer`);
+commands: `/continue`, `/ship X.Y.Z`, `/parent-sync`, `/sdd-status`, `/codebase-tour`.
 
 ## Quick orientation
 

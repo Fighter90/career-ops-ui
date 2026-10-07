@@ -8,6 +8,17 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.242.1] — 2026-10-08
+
+### Fixed
+
+- **The release archive ships no `node_modules` symlinks again.** The v1.242.0 git tag carried a root `node_modules` symlink and `site/node_modules` (a blanket `git add -A` slipped them past the trailing-slash ignore patterns), which failed the server deploy's tar extraction — the deploy rolled back safely and production stayed on 1.241.1. Both symlinks are untracked and the ignore patterns widened; the npm tarball was never affected (npm excludes `node_modules` when packing).
+
+### Notes
+
+- App code is identical to v1.242.0 — packaging only. The sources-correctness content ships to production with this deploy (v1.242.0 never reached production; its server deploy rolled back on the tar failure).
+- Deliberately not done: re-tagging v1.242.0 (npm already published 1.242.0; the registry tarball is clean — npm excludes `node_modules` when packing).
+
 ## [1.242.0] — 2026-10-07
 
 **The scanner's data layer is trustworthy again: dead sources are alive, a malformed answer can no longer masquerade as an empty board, and a hostile board URL can no longer redirect a scan.**

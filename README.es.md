@@ -7,17 +7,17 @@
 
 _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-4419%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-4812%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.242.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.242.0)
+[![release](https://img.shields.io/badge/release-v1.242.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.242.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versión — v1.242.0** — **La capa de datos del escáner vuelve a ser de fiar.** Las fuentes muertas están vivas (justjoin y nofluffjobs vuelven a leer sus catálogos completos; himalayas y jobicy recorren más allá de las 20 más recientes), una respuesta malformada o de desafío ahora **lanza un error** en la página 1 en lugar de leerse como «0 ofertas» (`server/lib/sources/_shape.mjs`), y las comprobaciones de proveedor por subcadena se convirtieron en pines de host exacto analizados — `clever.com` ya no puede hacerse pasar por lever, y una URL de tablero hostil ya no puede redirigir un escaneo. Una entrada de portals mal configurada ya no puede abortar todo un escaneo.
+> **🆕 Última versión — v1.242.1** — **La capa de datos del escáner vuelve a ser de fiar.** Las fuentes muertas están vivas (justjoin y nofluffjobs vuelven a leer sus catálogos completos; himalayas y jobicy recorren más allá de las 20 más recientes), una respuesta malformada o de desafío ahora **lanza un error** en la página 1 en lugar de leerse como «0 ofertas» (`server/lib/sources/_shape.mjs`), y las comprobaciones de proveedor por subcadena se convirtieron en pines de host exacto analizados — `clever.com` ya no puede hacerse pasar por lever, y una URL de tablero hostil ya no puede redirigir un escaneo. Una entrada de portals mal configurada ya no puede abortar todo un escaneo.
 >
 > **Anterior — v1.241.1** — **Las evaluaciones en vivo funcionan de principio a fin en todos los idiomas, el mapa de ofertas sitúa las ofertas largas con varias ubicaciones y un despliegue espera a un escaneo horario en curso.**
 

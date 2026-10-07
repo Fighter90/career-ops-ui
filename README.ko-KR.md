@@ -7,17 +7,17 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-4419%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-4812%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.242.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.242.0)
+[![release](https://img.shields.io/badge/release-v1.242.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.242.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.242.0** — **스캐너의 데이터 레이어가 다시 신뢰할 수 있게 되었습니다.** 죽었던 소스가 살아났고(justjoin과 nofluffjobs가 다시 전체 카탈로그를 읽고, himalayas와 jobicy는 최신 20건을 넘어 탐색합니다), 형식이 잘못된 답변이나 챌린지 응답은 이제 "공고 0건"으로 읽히는 대신 첫 페이지에서 **예외를 던지며**(`server/lib/sources/_shape.mjs`), 부분 문자열 벤더 검사는 파싱된 정확 호스트 핀으로 바뀌었습니다 — `clever.com`이 더 이상 lever를 사칭할 수 없고, 적대적인 보드 URL이 더 이상 스캔을 리디렉션할 수 없습니다. 잘못 설정된 portals 항목 하나가 더 이상 전체 스캔을 중단시키지 않습니다.
+> **🆕 최신 릴리스 — v1.242.1** — **스캐너의 데이터 레이어가 다시 신뢰할 수 있게 되었습니다.** 죽었던 소스가 살아났고(justjoin과 nofluffjobs가 다시 전체 카탈로그를 읽고, himalayas와 jobicy는 최신 20건을 넘어 탐색합니다), 형식이 잘못된 답변이나 챌린지 응답은 이제 "공고 0건"으로 읽히는 대신 첫 페이지에서 **예외를 던지며**(`server/lib/sources/_shape.mjs`), 부분 문자열 벤더 검사는 파싱된 정확 호스트 핀으로 바뀌었습니다 — `clever.com`이 더 이상 lever를 사칭할 수 없고, 적대적인 보드 URL이 더 이상 스캔을 리디렉션할 수 없습니다. 잘못 설정된 portals 항목 하나가 더 이상 전체 스캔을 중단시키지 않습니다.
 >
 > **이전 버전 — v1.241.1** — 라이브 평가가 모든 로케일에서 엔드투엔드로 작동하고, 채용 지도가 긴 다중 위치 공고를 배치하며, 배포는 실행 중인 시간별 스캔을 기다립니다.
 

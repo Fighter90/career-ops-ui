@@ -9,6 +9,17 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.242.1] — 2026-10-08
+
+### Naprawiono
+
+- **Archiwum wydania znowu nie zawiera symlinków `node_modules`.** Tag git v1.242.0 niósł symlink `node_modules` w katalogu głównym oraz `site/node_modules` (powszechny `git add -A` przemył je obok wzorców ignore ze zakończonym ukośnikiem), przez co tar-rozpakowanie wdrożenia serwerowego padło — wdrożenie bezpiecznie się wycofało, a produkcja pozostała na 1.241.1. Oba symlinki zdjęto z trackingu i poszerzono wzorce ignore; tarball npm nigdy nie był dotknięty (npm wyklucza `node_modules` przy pakowaniu).
+
+### Uwagi
+
+- Kod aplikacji jest identyczny z v1.242.0 — tylko pakowanie. Treść poprawek źródeł trafia na produkcję z tym wdrożeniem (v1.242.0 nigdy nie dotarło na produkcję: wdrożenie serwerowe wycofało się po błędzie tar).
+- Świadomie nie zrobione: ponowne tagowanie v1.242.0 (npm opublikował już 1.242.0; tarball w rejestrze jest czysty — npm wyklucza `node_modules` przy pakowaniu).
+
 ## [1.242.0] — 2026-10-07
 
 **Warstwa danych skanera jest znowu godna zaufania: martwe źródła znów żyją, zniekształcona odpowiedź nie może już podszywać się pod pusty board, a wrogi adres URL boarda nie może już przekierować skanu.**

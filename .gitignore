@@ -1,5 +1,5 @@
 # ── Dependencies & build artifacts ────────────────────────────────────
-node_modules/
+node_modules
 dist/
 build/
 
@@ -135,7 +135,7 @@ Icon?
 skills-lock.json
 
 # landing site (site/ builds in CI only)
-site/node_modules/
+site/node_modules
 site/dist/
 site/.astro/
 
