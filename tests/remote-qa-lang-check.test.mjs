@@ -87,3 +87,12 @@ test('an English report stays English even when it is full of quotes', () => {
   assert.equal(languageOk(en, 'hi'), false);
   assert.equal(languageOk(en, 'en'), true);
 });
+
+test('a stray quote (inches) or a one-word quote does not hide prose', () => {
+  const t = `a 27" monitor ${HI} and the "role" and more ${HI} until another " appears`;
+  assert.match(prose(t), /भूमिका/);
+  assert.match(prose(t), /"role"/);
+  assert.doesNotMatch(prose('x “one two three” y'), /one two three/);
+  assert.doesNotMatch(prose('x „eins zwei drei“ y'), /eins/);
+  assert.doesNotMatch(prose('x «un deux trois» y'), /deux/);
+});

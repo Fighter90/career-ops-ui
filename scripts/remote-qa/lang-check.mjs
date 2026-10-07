@@ -23,6 +23,8 @@ const WORDS = {
   da: ['og', 'at', 'det', 'en', 'til', 'med', 'for', 'er', 'ikke', 'af'],
 };
 
+const QUOTED = /(?<![\p{L}\p{N}])"(?=\S)([^"\n]{1,300})(?<=\S)"(?![\p{L}\p{N}])|“([^“”\n]{1,300})”|«([^«»\n]{1,300})»|„([^„“”\n]{1,300})[“”]|「([^「」\n]{1,300})」|『([^『』\n]{1,300})』/gu;
+
 export function prose(text) {
   return String(text || '')
     .replace(/```[\s\S]*?```/g, ' ')
@@ -30,8 +32,9 @@ export function prose(text) {
     .replace(/\bhttps?:\/\/\S+/g, ' ')
     // Word-for-word quotes from the English CV / JD stay English by design
     // (an evaluation cites requirements); they say nothing about the prose.
-    .replace(/["“«„]([^"”»“\n]{1,400})["”»“]/g, ' ')
-    .replace(/[「『]([^」』\n]{1,400})[」』]/g, ' ');
+    // Only matched pairs, and only a quote that reads like a cited phrase
+    // (3+ words or 12+ CJK chars) — a stray " (inches) must not eat prose.
+    .replace(QUOTED, (m, ...g) => (g.slice(0, 6).find((x) => x !== undefined) || '').trim().split(/\s+/).length >= 3 || /[\u3000-\u9fff]{12}/.test(m) ? ' ' : m);
 }
 
 /** Share of words (or CJK characters) in the locale's own script, 0..1. */
