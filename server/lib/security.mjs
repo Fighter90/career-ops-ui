@@ -237,6 +237,11 @@ export function stripDangerousMarkdown(text) {
   // multi-character delimiter can be reconstructed downstream), which closes
   // the incomplete-multi-character-sanitization class at the trust boundary.
   s = s.replace(/<(?=\s*\/?\s*(?:script|iframe|object|embed|style|form|svg)\b)/gi, '&lt;');
+  // Same belt for event-handler attributes: the strip loop is capped at 8
+  // passes, so nesting deeper than that could leave an `on…=` behind. Rename
+  // what survives to an inert `data-blocked-on…=`; the replacement cannot
+  // re-form `<whitespace>on…=`, so one pass is complete.
+  s = s.replace(/(\s)on([a-z]+\s*=)/gi, '$1data-blocked-on$2');
   return s;
 }
 
