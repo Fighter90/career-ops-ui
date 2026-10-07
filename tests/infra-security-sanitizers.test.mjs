@@ -78,3 +78,12 @@ test('trailing-dot FQDNs are treated as the host they name', () => {
   assert.equal(sec.isValidJobUrl('http://localhost./x'), false);
   assert.equal(sec.isValidJobUrl('https://jobs.example.com./x'), true);
 });
+
+test('stripDangerousMarkdown leaves no live on…= handler even past the 8-pass strip cap', async () => {
+  const { stripDangerousMarkdown } = await import('../server/lib/security.mjs');
+  let attr = 'onclick="x"';
+  for (let i = 0; i < 12; i++) attr = attr.replace('on', 'on' + 'on' + 'click="y" on'); // deep nesting
+  const out = stripDangerousMarkdown(`<a ${attr}>link</a> <img src=x onerror=alert(1)>`);
+  assert.equal(/\son[a-z]+\s*=/i.test(out), false, out.slice(0, 200));
+  assert.ok(out.includes('link'), 'text is kept');
+});
