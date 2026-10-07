@@ -2470,6 +2470,19 @@ Füge den Coworker dann in OpenWorkers **Install a coworker**-Panel hinzu — pe
 
 Die Karte zeigt Scan-Ergebnisse, die offene Pipeline und deinen Tracker auf einer OpenStreetMap-Karte. Ein **gefüllter Punkt** ist eine Bewertung (Tracker), ein **Ring** ein Titel-Fit-Hinweis für eine noch nicht bewertete Stelle (Pipeline, Scan). Eine **Zahl** fasst nahe Stellen zusammen; hineinzoomen verteilt sie. 📍 markiert eine in OpenStreetMap gefundene Firmenadresse, sonst sitzt der Punkt im Ortszentrum. Der Ebenen-Schalter blendet Scan, Pipeline und Tracker ein und aus.
 
+### So benutzt du die Karte
+
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/job-map-de.png" alt="Stellenkarte: Scan-Ergebnisse, Pipeline und Tracker-Stellen auf einer OpenStreetMap-Karte" width="760"></p>
+
+1. **Starte zuerst einen Scan** (`#/scan`) — die Karte zeigt, was der letzte Scan, die Pipeline und der Tracker enthalten; ein leeres Projekt zeigt eine leere Karte.
+2. **Öffne `#/map`.** Die Zeile unter dem Titel zählt den Fortschritt: *Orte gefunden: N/M* füllt sich, während Orte nachgeschlagen werden (bereits zwischengespeicherte erscheinen sofort), und *Ohne Ort* zählt Stellen, die keinen Ort nennen (nur Remote, „Anywhere").
+3. **Lies die Farben.** Gefüllt = deine Bewertung (grün gut · gelb ok · blau mittel · rot schwach). Ring = Titel-Fit vor der Bewertung (gleiche Farben, grau = kein Fit-Hinweis).
+4. **Zoome auf eine Zahl**, um eine Gruppe aufzulösen; auf Straßenebene fächern sich Stellen am selben Ort auf, sodass sich jede einzeln anklicken lässt.
+5. **Klicke auf einen Punkt**, um die Stelle zu öffnen — bei einem Tracker-Eintrag den Bewertungsbericht.
+6. **Wechsle die Ebenen** (oben rechts), um zum Beispiel nur den Tracker mit frischen Scan-Ergebnissen zu vergleichen.
+
+Eine Stelle mit mehreren Orten („Berlin Office · Berlin · Germany · Bosnia · …", „Berlin; Munich", „Remote U.S. · Toronto") wird an ihrem **ersten echten Ort** platziert; „Remote …"-Abschnitte, „(HQ)" und ein angehängtes „Office" werden übersprungen. Die Karte zeigt den Bereich, in dem die meisten Stellen liegen, damit ein paar weit entfernte den Ausschnitt nicht schrumpfen lassen — zoome heraus, um sie zu sehen.
+
 ### Daten und Datenschutz
 
 Die Karte ist die einzige Ansicht, die externe Dienste anspricht, und nur solange sie geöffnet ist: Der Browser lädt Kartenkacheln vom Tile-Server, und der Server schickt **Ort und Firmenname** jeder Stelle (nie deinen Lebenslauf oder dein Profil) an den Geocoder Nominatim. Antworten werden in `web-ui/.cache/geocode.json` gecacht, jeder Ort wird also nur einmal abgefragt. Wer diese Anfragen in der eigenen Infrastruktur halten will, richtet die Variablen unten auf selbst gehostete Server.

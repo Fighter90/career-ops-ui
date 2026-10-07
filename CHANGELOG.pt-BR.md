@@ -8,6 +8,29 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.241.1] — 2026-10-07
+
+**As avaliações ao vivo funcionam de ponta a ponta em todos os idiomas, o mapa de vagas posiciona vagas longas com vários locais e um deploy não derruba mais uma varredura em andamento.**
+
+### Corrigido
+
+- **As avaliações veem o método inteiro.** O orçamento de contexto (144 KB) ainda cortava o final de `modes/oferta.md` depois que o CV e o perfil eram incluídos, então toda avaliação ao vivo perdia seus últimos blocos. O orçamento agora é de 192 KB e o limite flexível do prompt de 256 KB, definidos uma só vez em `llm-dispatch.mjs`.
+- **Relatórios no idioma escolhido.** A instrução de idioma agora abre o prompt além de fechá-lo, e palavras comuns (role, team, design…) são escritas no idioma do relatório; só nomes, tecnologias e citações literais continuam em inglês. Corrige relatórios em híndi e japonês que saíam quase todos em inglês.
+- **Avaliações lentas não terminam mais em HTTP 502.** O timeout da avaliação é de 300 s (antes era o padrão do provedor, 180 s).
+- **Letras de bloco em híndi.** Um relatório que escreve as letras A–G em devanágari (`## ए)`, `## बी)` … `## जी)`) é reconhecido, e `SCORE:` aceita dígitos locais (`३.८`, `٣٫٨`, `３．８`) e vírgula decimal.
+- **Mapa de vagas: locais longos.** Uma célula como "Berlin Office · Berlin · Germany · Bosnia · …" (mais de 300 caracteres) era recusada com HTTP 400 e a vaga ficava sem marcador. Agora é usado o primeiro lugar real (`·`, `;`, `|`, ` / `, quebras de linha; segmentos "Remote …", "(HQ)" e "Office" são ignorados); só uma consulta com mais de 2000 caracteres é recusada.
+- **Deploy x varredura horária.** O deploy pausa os timers de varredura e de avaliação automática, espera uma em andamento terminar (até 15 min), reinicia e sempre retoma os timers — inclusive no rollback.
+
+### Adicionado
+
+- **Mapa de vagas em [cvstart.org](https://cvstart.org/#job-map)** nos 17 idiomas, e nos READMEs em inglês e russo.
+- **Capturas do mapa em todos os idiomas**: uma por idioma (`scripts/capture-map-screenshots.mjs`), nos 17 README, no cvstart.org e numa nova subseção da ajuda, “Como usar o mapa” (§33, ×17).
+
+### Notas
+
+- Testes **4404 → 4419**, de navegador **118**. QA remoto (todas as rotas, site, links e LLM ao vivo × 17 idiomas) verde em produção.
+- Fora desta versão: avaliações em streaming; o limite de 300 s continua rígido (um modelo local lento ainda pode atingi-lo) e a ponte do Hermes mantém a chamada sem streaming.
+
 ## [1.241.0] — 2026-10-07
 
 **Versão de endurecimento a partir de uma revisão de código com 28 agentes (~190 achados verificados): as classes de segurança, queda de processo e perda de dados foram fechadas, além de um mapa de vagas contribuído por @bullitt186.**

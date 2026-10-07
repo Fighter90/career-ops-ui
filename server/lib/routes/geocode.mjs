@@ -37,6 +37,8 @@ const GAP_MS = PUBLIC_NOMINATIM
 // After a 429/503 stop asking entirely for a while instead of retrying each second.
 const BACKOFF_MS = 10 * 60 * 1000;
 const MAX_LEN = 200;
+// Longest raw `q` the route accepts; normalizeLocation keeps its first place.
+export const MAX_QUERY = 2000;
 // Locations that are not a place — answered without a request.
 const NOT_A_PLACE = /^(remote|anywhere|worldwide|global|distributed|home ?office|wfh|n\/?a|tbd|-|—)$/i;
 
@@ -51,16 +53,22 @@ let blockedUntil = 0;
 export function normalizeLocation(q) {
   if (typeof q !== 'string') return null;
   // "Berlin, Germany (Remote)" → "berlin, germany"; "Remote - Berlin" → "berlin"
-  let s = q.replace(/\((?:remote|hybrid|on-?site)[^)]*\)/gi, '')
-    .replace(/^\s*(?:remote|hybrid|on-?site)\s*[-–—:|/]\s*/i, '')
-    .replace(/\s+/g, ' ').trim().toLowerCase();
-  if (!s || s.length > MAX_LEN || NOT_A_PLACE.test(s)) return null;
-  // Multi-location postings ("Berlin; Munich", "Berlin | London"): map the first.
-  s = s.split(/\s*[;|]\s*|\s+or\s+/)[0].trim();
+  const cleaned = q.replace(/\((?:remote|hybrid|on-?site|hq|headquarters)[^)]*\)/gi, '')
+    .replace(/^\s*(?:remote|hybrid|on-?site)\s*[-–—:|/]\s*/i, '');
+  // Multi-location postings ("Berlin; Munich", "Berlin | London", "Berlin / Munich",
+  // one per line, "Berlin Office · Berlin · Germany · Bosnia · …"): map the first
+  // real place. Split BEFORE the length check — a 300-character country list still
+  // names its city first (2026-10-07: four such postings had no marker).
+  const first = cleaned.split(/\s*[;|·•\n]\s*|\s+\/\s+|\s+or\s+/i)
+    .map((p) => p.replace(/\s+/g, ' ').trim().toLowerCase())
+    .find((p) => p && !NOT_A_PLACE.test(p) && !/^remote\b/.test(p)); // "Remote U.S." is not a place
+  let s = first || '';
+  if (!s || s.length > MAX_LEN) return null;      // one 200+ char "place" is not a place
   // Work-mode segments ("Berlin, Remote", "Remote, Remote") are not places —
   // Nominatim happily resolves "berlin, remote" to Ontario.
   s = s.split(/\s*,\s*/).filter((p) => p && !NOT_A_PLACE.test(p) && !/^(hybrid|on-?site)$/.test(p)).join(', ');
   s = s.replace(/^greater (.+?) area$/, '$1');   // LinkedIn metro labels
+  s = s.replace(/\s+(?:office|hq|headquarters)$/, ''); // "Berlin Office" → "berlin"
   if (/^posted:/.test(s)) return null;           // scraper noise in the location cell
   return s || null;
 }
@@ -213,9 +221,11 @@ export function _resetGeocode(seed = null, file = cacheFile) {
 
 export function registerGeocodeRoutes(app) {
   app.get('/api/geocode', async (req, res) => {
+    // A long multi-location cell is trimmed to its first place, not refused;
+    // only an absurd query (not a posting's location) is a 400.
     const q = String(req.query.q || '');
-    const company = String(req.query.company || '');
-    if (q.length > MAX_LEN || company.length > MAX_LEN) return res.status(400).json({ error: 'q too long' });
+    const company = String(req.query.company || '').slice(0, MAX_LEN);
+    if (q.length > MAX_QUERY) return res.status(400).json({ error: 'q too long' });
     try {
       res.json(await geocode(q, {}, company));
     } catch {

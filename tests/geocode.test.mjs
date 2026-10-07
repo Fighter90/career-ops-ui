@@ -133,3 +133,29 @@ test('geocode: a stale entry survives when the refresh fails', async () => {
   assert.deepEqual(await mod.geocode('Stuttgart', { fetch: limited }), { lat: 48.78, lon: 9.18, exact: false });
   assert.deepEqual(await mod.geocode('Stuttgart', { fetch: limited }), { lat: 48.78, lon: 9.18, exact: false });
 });
+
+test('v1.241.1: a long multi-location cell maps its first place (no 400)', async () => {
+  const long = 'Berlin Office · Berlin · Germany · Bosnia · Romania · Norway · Estonia · Latvia · Slovenia · Italy · '
+    + 'Netherlands · Hungary · Portugal · France · Poland · Serbia · Austria · Finland · Albania · Spain · Greece';
+  assert.ok(long.length > 200);
+  assert.equal(mod.normalizeLocation(long), 'berlin');
+  for (const [raw, want] of [['Berlin\nMunich', 'berlin'], ['Berlin / Munich', 'berlin'], ['Remote; Berlin', 'berlin'],
+    ['Remote U.S. · Toronto', 'toronto'], ['New York, NY (HQ) · USA', 'new york, ny'], ['London Office', 'london'],
+    ['n/a', null], ['Remote (US)', null]]) {
+    assert.equal(mod.normalizeLocation(raw), want, JSON.stringify(raw));
+  }
+
+  const { default: express } = await import('express');
+  mod._resetGeocode({ berlin: { lat: 52.52, lon: 13.4, rank: 16 } }, file);
+  const app = express();
+  mod.registerGeocodeRoutes(app);
+  const srv = app.listen(0);
+  try {
+    const base = `http://127.0.0.1:${srv.address().port}/api/geocode`;
+    const ok = await fetch(`${base}?q=${encodeURIComponent(long)}&company=${encodeURIComponent('X'.repeat(300))}`);
+    assert.equal(ok.status, 200);
+    assert.deepEqual(await ok.json(), { lat: 52.52, lon: 13.4, exact: false });
+    const tooLong = await fetch(`${base}?q=${'a'.repeat(mod.MAX_QUERY + 1)}`);
+    assert.equal(tooLong.status, 400);
+  } finally { srv.close(); }
+});

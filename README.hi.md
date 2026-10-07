@@ -9,19 +9,19 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-4404%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-4419%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.241.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.241.0)
+[![release](https://img.shields.io/badge/release-v1.241.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.241.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.241.0** — **28-एजेंट कोड रिव्यू से हार्डनिंग, और @bullitt186 का जॉब मैप।** ग़लत रूप का रिक्वेस्ट अब सर्वर को नहीं रोक सकता, रद्द किया गया स्कैन अब पिछले नतीजे नहीं मिटाता, मूल्यांकन अब पहले 16 KB के बजाय पूरी मेथड फ़ाइल देखते हैं, सर्वर DNS-रीबाइंडिंग होस्ट और क्रॉस-साइट राइट को अस्वीकार करता है, और रीडायरेक्ट निजी लक्ष्यों के लिए दोबारा जाँचे जाते हैं। `#/map` आपकी पोस्टिंग को OpenStreetMap पर दिखाता है। **4404 टेस्ट · 118 ब्राउज़र।**
+> **🆕 नवीनतम रिलीज़ — v1.241.1** — **लाइव मूल्यांकन अब हर भाषा में शुरू से अंत तक काम करते हैं।** मूल्यांकन फिर से पूरी `oferta.md` देखते हैं (कॉन्टेक्स्ट बजट 192 KB), रिपोर्ट चुनी हुई भाषा में रहती हैं (निर्देश अब प्रॉम्प्ट की शुरुआत में आता है; केवल नाम, तकनीकें और उद्धरण अंग्रेज़ी में रहते हैं), धीमे मूल्यांकन को 502 पर ख़त्म होने के बजाय 300 s मिलते हैं, और देवनागरी ब्लॉक अक्षरों या स्थानीय अंकों वाले स्कोर की हिन्दी रिपोर्ट मान्य होती हैं। जॉब मैप कई स्थानों वाली लंबी पोस्टिंग ("Berlin Office · Berlin · Germany · …") को अस्वीकार करने के बजाय चिह्नित करता है, डिप्लॉय चल रहे प्रति-घंटा स्कैन की प्रतीक्षा करता है, और जॉब मैप अब [cvstart.org](https://cvstart.org/#job-map) पर है। प्रोडक्शन पर रिमोट QA × 17 लोकेल हरा।
 >
-> **पिछला — v1.240.0** — **career-ops 1.35.0 से बराबरी: छह नए स्रोत (ADP Workforce Now, Gupy, JazzHR, Startup Jobs, Taleo, UKG Pro → 109), आठ मौजूदा प्रदाताओं में दोहराए गए सुधार, और मूल प्रोजेक्ट का चेकलिस्ट `pipeline.md` फ़ॉर्मैट** — **@bullitt186** का योगदान: UI ऐसी पाइपलाइन को 0 लंबित पढ़ता था और नए URL वहाँ जोड़ता था जहाँ मूल प्रोजेक्ट कभी नहीं देखता; अब वह `- [ ]` पंक्तियाँ पढ़ता और लिखता है। Ashby, Breezy और Recruitee देश को स्थान में जोड़ते हैं, ताकि फ़िल्टर यूके-प्राथमिक रिमोट भूमिकाओं को न छोड़े, और HTTP 200 के रूप में दिया गया चैलेंज पेज ख़ाली बोर्ड की तरह पढ़े जाने के बजाय साफ़ तौर पर विफल होता है। **4056 टेस्ट।**
+> **पिछला — v1.241.0** — **28-एजेंट कोड रिव्यू से हार्डनिंग, और @bullitt186 का जॉब मैप।** ग़लत रूप का रिक्वेस्ट अब सर्वर को नहीं रोक सकता, रद्द किया गया स्कैन अब पिछले नतीजे नहीं मिटाता, मूल्यांकन अब पहले 16 KB के बजाय पूरी मेथड फ़ाइल देखते हैं, सर्वर DNS-रीबाइंडिंग होस्ट और क्रॉस-साइट राइट को अस्वीकार करता है, और रीडायरेक्ट निजी लक्ष्यों के लिए दोबारा जाँचे जाते हैं। `#/map` आपकी पोस्टिंग को OpenStreetMap पर दिखाता है। **4404 टेस्ट · 118 ब्राउज़र।**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -32,6 +32,12 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 [![career-ops-ui — Command Center](./images/dashboard-hi.png)](https://youtu.be/LcVPUg9IsDk?si=mrx3oOmOpSAwabOz)
 
 **[▶ पूर्वावलोकन देखें](https://youtu.be/LcVPUg9IsDk?si=mrx3oOmOpSAwabOz)**
+
+### 🗺️ नया: हर पोस्टिंग मानचित्र पर
+
+स्कैन परिणाम, पाइपलाइन और ट्रैकर एक विश्व मानचित्र (`#/map`) पर — देखें कि ऑफ़र कहाँ जमा हैं और किन शहरों में बसना सार्थक है। भरा हुआ मार्कर आपका मूल्यांकन स्कोर है, रिंग मूल्यांकन से पहले शीर्षक-मेल है; पोस्टिंग ज्ञात होने पर कंपनी के पते पर, अन्यथा शहर के केंद्र पर लगाई जाती हैं (मुफ़्त OpenStreetMap जियोकोडिंग, कोई कुंजी नहीं)।
+
+![career-ops-ui — नौकरी मानचित्र](./images/job-map-hi.png)
 
 ## career-ops के बारे में
 

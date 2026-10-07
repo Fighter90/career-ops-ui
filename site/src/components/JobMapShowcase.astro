@@ -1,16 +1,18 @@
 ---
 import { Picture } from 'astro:assets';
 import { t, type Locale } from '../i18n/locales';
-import mapEn from '../assets/screenshots/job-map-en.png';
-import mapRu from '../assets/screenshots/job-map-ru.png';
+import type { ImageMetadata } from 'astro';
 
 interface Props {
   locale: Locale;
 }
 const { locale } = Astro.props;
-// Synced from images/job-map-*.png by scripts/sync-assets.mjs. Two captures: the Russian UI (zoomed on Central Russia) and the English
-// one (world view). Every other locale gets the English one.
-const shot = locale.file === 'ru' ? mapRu : mapEn;
+// Synced from images/job-map-<locale>.png by scripts/sync-assets.mjs (same file
+// keys as the dashboard shots, e.g. ko-KR). en and ru are hand-made captures,
+// the rest come from scripts/capture-map-screenshots.mjs; a missing one falls
+// back to the English shot.
+const shots = import.meta.glob<{ default: ImageMetadata }>('../assets/screenshots/job-map-*.png', { eager: true });
+const shot = (shots[`../assets/screenshots/job-map-${locale.file}.png`] ?? shots['../assets/screenshots/job-map-en.png']).default;
 const captions = [1, 2, 3].map((i) => ({
   title: t(locale, `map.c${i}.title`),
   desc: t(locale, `map.c${i}.desc`),

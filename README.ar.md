@@ -7,19 +7,19 @@
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
-[![tests](https://img.shields.io/badge/tests-4404%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-4419%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#الاختبارات)
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.241.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.241.0)
+[![release](https://img.shields.io/badge/release-v1.241.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.241.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 أحدث إصدار — v1.241.0** — **تقوية أمنية بعد مراجعة شيفرة أجراها 28 وكيلًا، وخريطة للوظائف بمساهمة **@bullitt186**.** لم يعد الطلب المشوّه قادرًا على إيقاف الخادم، ولم يعد المسح المُجهَض يمحو آخر النتائج، وصارت التقييمات ترى ملف الأسلوب كاملًا بدل أول 16 كيلوبايت، ويرفض الخادم مضيفي DNS-rebinding والكتابات عبر المواقع، وتُفحص إعادات التوجيه من جديد بحثًا عن وجهات خاصة. وتعرض `#/map` وظائفك على OpenStreetMap. **4404 اختبارات · 118 للمتصفح.**
+> **🆕 أحدث إصدار — v1.241.1** — **التقييمات الحية تعمل من البداية إلى النهاية في كل لغة.** صارت التقييمات ترى `oferta.md` كاملًا من جديد (ميزانية السياق 192 كيلوبايت)، وتبقى التقارير باللغة المختارة (تفتتح التعليمة الموجّه الآن؛ ولا يبقى بالإنجليزية سوى الأسماء والتقنيات والاقتباسات)، وتحصل التقييمات البطيئة على 300 ثانية بدل أن تنتهي برمز 502، وتُعتمد تقارير الهندية ذات حروف الكتل الديفاناغارية أو الدرجات بالأرقام المحلية. وتضع خريطة الوظائف الإعلانات الطويلة متعددة المواقع («Berlin Office · Berlin · Germany · …») بدل رفضها، وينتظر النشر المسح الجاري كل ساعة، وصارت خريطة الوظائف على [cvstart.org](https://cvstart.org/#job-map). اجتاز فحص الجودة عن بُعد × 17 لغة على الإنتاج.
 >
-> **السابق — v1.240.0** — **تكافؤ مع المشروع الأب career-ops 1.35.0: ستة مصادر جديدة (ADP Workforce Now وGupy وJazzHR وStartup Jobs وTaleo وUKG Pro، ليبلغ العدد 109)، وإصلاحات منقولة إلى ثمانية مزوّدين قائمين، وصيغة قائمة المهام لملف `pipeline.md` في المشروع الأب** — بمساهمة **@bullitt186**: كانت الواجهة تقرأ مثل هذا الخط على أنه 0 معلّقة وتُلحق الروابط الجديدة حيث لا ينظر المشروع الأب أبدًا؛ وصارت الآن تقرأ صفوف `- [ ]` وتكتبها. وتدمج Ashby وBreezy وRecruitee البلد في الموقع فلا يُسقط المرشّح وظائف المملكة المتحدة عن بُعد، وصفحة تحدٍّ تُقدَّم برمز HTTP 200 تُلقي الآن خطأً صريحًا بدل أن تُقرأ لوحةً فارغة. **4056 اختبارًا.**
+> **السابق — v1.241.0** — **تقوية أمنية بعد مراجعة شيفرة أجراها 28 وكيلًا، وخريطة للوظائف بمساهمة **@bullitt186**.** لم يعد الطلب المشوّه قادرًا على إيقاف الخادم، ولم يعد المسح المُجهَض يمحو آخر النتائج، وصارت التقييمات ترى ملف الأسلوب كاملًا بدل أول 16 كيلوبايت، ويرفض الخادم مضيفي DNS-rebinding والكتابات عبر المواقع، وتُفحص إعادات التوجيه من جديد بحثًا عن وجهات خاصة. وتعرض `#/map` وظائفك على OpenStreetMap. **4404 اختبارات · 118 للمتصفح.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -29,6 +29,16 @@ _واجهة غير رسمية — لا علاقة لها بـ career-ops / santi
 [![career-ops-ui](./images/dashboard-ar.png)](https://youtu.be/LcVPUg9IsDk?si=mrx3oOmOpSAwabOz)
 
 **[▶ مشاهدة المعاينة](https://youtu.be/LcVPUg9IsDk?si=mrx3oOmOpSAwabOz)**
+
+<div dir="rtl">
+
+### 🗺️ جديد: كل إعلان على خريطة
+
+نتائج الفحص وخط المعالجة والمتتبّع على خريطة عالمية واحدة (`#/map`) — لترى أين تتجمّع العروض وأي المدن تستحق الانتقال إليها. العلامة المملوءة هي درجة تقييمك، والحلقة ملاءمة المسمّى قبل التقييم؛ وتُثبَّت الإعلانات على عنوان الشركة إن عُرف، وإلا فعلى مركز المدينة (ترميز جغرافي مجاني عبر OpenStreetMap، بلا مفاتيح).
+
+![career-ops-ui — خريطة الوظائف](./images/job-map-ar.png)
+
+</div>
 
 <div dir="rtl">
 

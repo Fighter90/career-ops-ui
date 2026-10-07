@@ -2410,6 +2410,19 @@ Ardından coworker'ı OpenWorker'ın **Install a coworker** panelinden ekleyin �
 
 Harita; tarama sonuçlarını, bekleyen pipeline'ı ve tracker'ınızı bir OpenStreetMap haritasında gösterir. **Dolu nokta** bir değerlendirme puanıdır (tracker); **halka**, henüz değerlendirilmemiş bir ilan için başlık uyumu ipucudur (pipeline, tarama). **Sayı** yakın ilanları gruplar; ayırmak için yakınlaştırın. 📍 OpenStreetMap'te bulunan işveren adresini gösterir, aksi halde nokta yerleşimin merkezindedir. Katman seçici tarama, pipeline ve tracker'ı açıp kapatır.
 
+### Haritayı nasıl kullanmalı
+
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/job-map-tr.png" alt="İş haritası: tarama sonuçları, pipeline ve takip ilanları OpenStreetMap haritasında" width="760"></p>
+
+1. **Önce bir tarama çalıştırın** (`#/scan`) — harita son taramanın, pipeline'ın ve takibin içerdiklerini çizer; boş bir projede harita da boş olur.
+2. **`#/map` sayfasını açın.** Başlığın altındaki satır ilerlemeyi sayar: yerler bulundukça *Bulunan yerler: N/M* dolar (önbellekteki yerler hemen görünür); *Konumsuz* ise hiçbir yer belirtmeyen ilanları sayar (yalnızca uzaktan, "Anywhere").
+3. **Renkleri okuyun.** Dolu = değerlendirme puanınız (yeşil iyi · sarı orta-iyi · mavi orta · kırmızı zayıf). Halka = değerlendirmeden önceki başlık uyumu (aynı renkler, gri = uyum işareti yok).
+4. **Bir sayının üzerine yakınlaştırın**, grup ayrılsın; sokak düzeyinde aynı noktadaki ilanlar yelpaze gibi açılır, böylece her birine tıklanabilir.
+5. **Bir noktaya tıklayın**; ilan açılır, takip kaydı için ise değerlendirme raporu açılır.
+6. **Katmanları değiştirin** (sağ üst), örneğin yalnızca takibi taze tarama sonuçlarıyla karşılaştırmak için.
+
+Birden fazla yer sayan bir ilan ("Berlin Office · Berlin · Germany · Bosnia · …", "Berlin; Munich", "Remote U.S. · Toronto") **ilk gerçek yerine** yerleştirilir; "Remote …" bölümleri, "(HQ)" ve sondaki "Office" atlanır. Harita ilanların çoğunun bulunduğu yeri çerçeveler, bu yüzden uzaktaki birkaç ilan görünümü küçültmez — onları görmek için uzaklaştırın.
+
 ### Veri ve gizlilik
 
 Harita, dış hizmetlerle konuşan tek görünümdür ve yalnızca açıkken: tarayıcı harita karolarını karo sunucusundan yükler, sunucu ise her ilanın **konumunu ve şirket adını** (asla CV'nizi veya profilinizi değil) Nominatim coğrafi kodlayıcısına gönderir. Yanıtlar `web-ui/.cache/geocode.json` içinde önbelleğe alınır; her yer yalnızca bir kez sorgulanır. Bu istekleri kendi altyapınızda tutmak için aşağıdaki değişkenleri kendi barındırdığınız sunuculara yönlendirin.

@@ -8,6 +8,29 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.241.1] — 2026-10-07
+
+**Live-vurderinger virker fra ende til anden i alle sprog, jobkortet placerer lange opslag med flere lokationer, og en udrulning dræber ikke længere en kørende scanning.**
+
+### Rettet
+
+- **Vurderinger ser hele metoden.** Kontekstbudgettet (144 KB) skar stadig enden af `modes/oferta.md` af, når CV og profil var indlejret, så hver live-vurdering missede sine sidste blokke. Budgettet er nu 192 KB og promptens bløde loft 256 KB, defineret ét sted i `llm-dispatch.mjs`.
+- **Rapporter på det valgte sprog.** Sprogvejledningen åbner nu prompten og lukker den også, og almindelige ord (rolle, team, design…) skrives på rapportens sprog; kun navne, teknologier og ordrette citater forbliver engelske. Retter hindi- og japanske rapporter, der mest var på engelsk.
+- **Langsomme vurderinger ender ikke længere i HTTP 502.** Vurderingens timeout er 300 s (tidligere udbyderens standard på 180 s).
+- **Hindi-blokbogstaver.** En rapport, der staver bogstaverne A–G med devanagari (`## ए)`, `## बी)` … `## जी)`), genkendes, og `SCORE:` accepterer lokale cifre (`३.८`, `٣٫٨`, `３．８`) og decimalkomma.
+- **Jobkort: lange lokationer.** En celle som "Berlin Office · Berlin · Germany · Bosnia · …" (over 300 tegn) blev afvist med HTTP 400, og opslaget fik ingen markør. Nu bruges det første rigtige sted (`·`, `;`, `|`, ` / `, linjeskift; "Remote …"-segmenter, "(HQ)" og "Office" springes over); kun en forespørgsel over 2000 tegn afvises.
+- **Udrulning mod den timelige scanning.** Udrulningen holder scannings- og autovurderingstimerne tilbage, venter på, at en kørende færdiggør (op til 15 min), genstarter og genoptager altid timerne — også ved rollback.
+
+### Tilføjet
+
+- **Jobkort på [cvstart.org](https://cvstart.org/#job-map)** på alle 17 sprog samt i de engelske og russiske README-filer.
+- **Skærmbilleder af kortet på alle sprog** — ét pr. sprog (`scripts/capture-map-screenshots.mjs`), i alle 17 README-filer, på cvstart.org og i et nyt hjælpeafsnit, “Sådan bruger du kortet” (§33, ×17).
+
+### Noter
+
+- Tests **4404 → 4419**, browser **118**. Fjern-QA (alle ruter, websted, links og live LLM × 17 sprog) grøn i produktion.
+- Ikke med i denne udgivelse: streamede evalueringer — tidsgrænsen på 300 s er stadig en hård grænse (en langsom lokal model kan stadig ramme den), og Hermes-broen kalder fortsat uden streaming.
+
 ## [1.241.0] — 2026-10-07
 
 **Hærdningsudgivelse efter en kodegennemgang med 28 agenter (~190 verificerede fund): sikkerheds-, procesnedbruds- og datatabsklasserne er lukket, plus et jobkort bidraget af @bullitt186.**

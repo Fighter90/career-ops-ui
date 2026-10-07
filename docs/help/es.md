@@ -2271,6 +2271,19 @@ Luego añade el coworker en el panel **Install a coworker** de OpenWorker — po
 
 El mapa muestra los resultados del escaneo, el pipeline pendiente y tu seguimiento sobre un mapa de OpenStreetMap. Un **punto relleno** es una puntuación de evaluación (seguimiento); un **anillo** es una pista de afinidad del título para una oferta aún no evaluada (pipeline, escaneo). Un **número** agrupa ofertas cercanas; acerca el zoom para separarlas. 📍 marca la dirección del empleador encontrada en OpenStreetMap; si no, el punto queda en el centro de la localidad. El selector de capas muestra u oculta escaneo, pipeline y seguimiento.
 
+### Cómo usar el mapa
+
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/job-map-es.png" alt="Mapa de empleos: resultados del escaneo, pipeline y ofertas del seguimiento sobre un mapa de OpenStreetMap" width="760"></p>
+
+1. **Haz primero un escaneo** (`#/scan`): el mapa dibuja lo que contienen el último escaneo, el pipeline y el seguimiento; un proyecto vacío muestra un mapa vacío.
+2. **Abre `#/map`.** La línea bajo el título cuenta el progreso: *Lugares localizados: N/M* va creciendo a medida que se buscan los lugares (los que están en caché aparecen al instante), y *Sin ubicación* cuenta las ofertas que no nombran ningún lugar (solo remoto, "Anywhere").
+3. **Lee los colores.** Relleno = tu puntuación de evaluación (verde buena · amarillo aceptable · azul media · rojo baja). Anillo = afinidad del título antes de evaluar (mismos colores, gris = sin señal de afinidad).
+4. **Acerca el zoom** sobre un número para separar un grupo; a nivel de calle, las ofertas situadas en el mismo punto se abren en abanico para poder pulsar cada una.
+5. **Pulsa un punto** para abrir la oferta, o el informe de evaluación si es una entrada del seguimiento.
+6. **Cambia de capa** (arriba a la derecha) para comparar, por ejemplo, solo el seguimiento con los resultados recientes del escaneo.
+
+Una oferta que enumera varios lugares ("Berlin Office · Berlin · Germany · Bosnia · …", "Berlin; Munich", "Remote U.S. · Toronto") se sitúa en su **primer lugar real**; se omiten los segmentos "Remote …", "(HQ)" y un "Office" final. El mapa encuadra donde está la mayoría de las ofertas, de modo que unas pocas muy lejanas no reducen la vista: aleja el zoom para verlas.
+
 ### Datos y privacidad
 
 El mapa es la única vista que contacta servicios externos, y solo mientras está abierto: el navegador carga las teselas desde el servidor de teselas y el servidor envía **la ubicación y el nombre de la empresa** de cada oferta (nunca tu CV ni tu perfil) al geocodificador Nominatim. Las respuestas se guardan en caché en `web-ui/.cache/geocode.json`, así que cada lugar se consulta una sola vez. Para mantener estas peticiones en tu propia infraestructura, apunta las variables de abajo a servidores autoalojados.

@@ -2,6 +2,29 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.241.1] — 2026-10-07
+
+**Live-Bewertungen funktionieren in jeder Sprache durchgängig, die Stellenkarte platziert lange Stellen mit mehreren Standorten, und ein Deploy beendet keinen laufenden Scan mehr.**
+
+### Behoben
+
+- **Bewertungen sehen die gesamte Methode.** Das Kontextbudget (144 KB) schnitt das Ende von `modes/oferta.md` weiterhin ab, sobald Lebenslauf und Profil eingebettet waren, sodass jeder Live-Bewertung die letzten Blöcke fehlten. Das Budget beträgt jetzt 192 KB und die weiche Prompt-Grenze 256 KB, einmalig in `llm-dispatch.mjs` definiert.
+- **Berichte in der gewählten Sprache.** Die Sprachanweisung steht jetzt sowohl am Anfang als auch am Ende des Prompts, und gewöhnliche Wörter (Rolle, Team, Design …) werden in der Sprache des Berichts geschrieben; nur Namen, Technologien und wörtliche Zitate bleiben englisch. Behebt Hindi- und Japanisch-Berichte, die überwiegend englisch waren.
+- **Langsame Bewertungen enden nicht mehr mit HTTP 502.** Das Bewertungs-Timeout beträgt 300 s (zuvor der Provider-Standard von 180 s).
+- **Hindi-Blockbuchstaben.** Ein Bericht, der die Buchstaben A–G in Devanagari schreibt (`## ए)`, `## बी)` … `## जी)`), wird erkannt, und `SCORE:` akzeptiert lokale Ziffern (`३.८`, `٣٫٨`, `３．８`) sowie ein Dezimalkomma.
+- **Stellenkarte: lange Standorte.** Eine Zelle wie „Berlin Office · Berlin · Germany · Bosnia · …“ (über 300 Zeichen) wurde mit HTTP 400 abgewiesen, und die Stelle erhielt keinen Marker. Jetzt wird der erste echte Ort verwendet (`·`, `;`, `|`, ` / `, Zeilenumbrüche; Segmente „Remote …“, „(HQ)“ und „Office“ werden übersprungen); abgewiesen wird nur noch eine Anfrage über 2000 Zeichen.
+- **Deploy und stündlicher Scan.** Der Deploy hält die Timer für Scan und Auto-Bewertung an, wartet auf einen laufenden Lauf (bis zu 15 Min.), startet neu und nimmt die Timer immer wieder auf — auch beim Rollback.
+
+### Hinzugefügt
+
+- **Stellenkarte auf [cvstart.org](https://cvstart.org/#job-map)** in allen 17 Sprachen sowie in den englischen und russischen READMEs.
+- **Kartenscreenshots in jeder Sprache** — einer pro Sprache (`scripts/capture-map-screenshots.mjs`), in allen 17 READMEs, auf cvstart.org und in einem neuen Hilfe-Abschnitt „So nutzen Sie die Karte“ (§33, ×17).
+
+### Anmerkungen
+
+- Tests **4404 → 4419**, Browser **118**. Remote-QA (alle Routen, Website, Links und Live-LLM × 17 Sprachen) in Produktion grün.
+- Nicht in diesem Release: Streaming-Bewertungen — das 300-s-Timeout bleibt eine harte Grenze (ein langsames lokales Modell kann es weiterhin erreichen), und die Hermes-Bridge ruft weiterhin ohne Streaming auf.
+
 ## [1.241.0] — 2026-10-07
 
 **Härtungs-Release nach einem Code-Review mit 28 Agenten (~190 verifizierte Befunde): Die Klassen Sicherheit, Prozessabsturz und Datenverlust sind geschlossen, dazu eine Stellenkarte, beigesteuert von @bullitt186.**

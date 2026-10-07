@@ -2091,6 +2091,19 @@ curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-coworker/main/
 
 地图在 OpenStreetMap 上显示扫描结果、待处理的 pipeline 和你的追踪记录。**实心点**是评估分数（追踪）；**圆环**是尚未评估职位的标题匹配提示（pipeline、扫描）。**数字**表示合并的邻近职位，放大即可分开。📍 表示在 OpenStreetMap 中找到的雇主地址，否则圆点位于地点中心。图层开关可显示或隐藏扫描、pipeline 和追踪。
 
+### 如何使用地图
+
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/job-map-zh-CN.png" alt="职位地图：扫描结果、pipeline 和追踪中的职位显示在 OpenStreetMap 地图上" width="760"></p>
+
+1. **先运行一次扫描**（`#/scan`）：地图显示最近一次扫描、pipeline 和追踪记录中的内容；空项目显示空地图。
+2. **打开 `#/map`。** 标题下方一行显示进度：*已定位地点：N/M* 会随着地点被查询而增加（已缓存的地点立即显示），*无地点* 统计未写明地点的职位（仅远程、“Anywhere”）。
+3. **看颜色。** 实心点 = 你的评估分数（绿色良好 · 黄色一般 · 蓝色中等 · 红色较弱）。圆环 = 评估前的标题匹配度（颜色相同，灰色 = 没有匹配信号）。
+4. **放大**数字即可拆分分组；放大到街道级别时，同一地点的职位会散开，每个都可以点击。
+5. **点击圆点**打开职位，追踪记录则打开评估报告。
+6. **切换图层**（右上角），例如只比较追踪记录和新的扫描结果。
+
+列出多个地点的职位（“Berlin Office · Berlin · Germany · Bosnia · …”、“Berlin; Munich”、“Remote U.S. · Toronto”）会定位在**第一个真实地点**；“Remote …”片段、“(HQ)”以及末尾的“Office”会被跳过。地图以大多数职位所在的位置为视野，因此少数远处的职位不会缩小视图，缩小地图即可看到它们。
+
 ### 数据与隐私
 
 地图是唯一会访问外部服务的页面，而且只在打开时访问：浏览器从瓦片服务器加载地图瓦片，服务器把每个职位的**地点和公司名称**（绝不包括你的简历或档案）发送给地理编码服务 Nominatim。结果缓存在 `web-ui/.cache/geocode.json`，每个地点只查询一次。若要让这些请求留在自己的基础设施内，请把下面的变量指向自托管服务器。

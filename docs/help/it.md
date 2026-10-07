@@ -2356,6 +2356,19 @@ Poi aggiungi il coworker nel pannello **Install a coworker** di OpenWorker — t
 
 La mappa mostra i risultati della scansione, la pipeline in attesa e il tuo tracker su una mappa OpenStreetMap. Un **punto pieno** è un punteggio di valutazione (tracker); un **anello** è un indizio di affinità del titolo per un'offerta non ancora valutata (pipeline, scansione). Un **numero** raggruppa offerte vicine; ingrandisci per separarle. 📍 indica l'indirizzo del datore di lavoro trovato in OpenStreetMap, altrimenti il punto è al centro della località. Il selettore dei livelli mostra o nasconde scansione, pipeline e tracker.
 
+### Come usare la mappa
+
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/job-map-it.png" alt="Mappa delle offerte: risultati della scansione, pipeline e offerte del tracker su una mappa OpenStreetMap" width="760"></p>
+
+1. **Esegui prima una scansione** (`#/scan`): la mappa mostra ciò che contengono l'ultima scansione, la pipeline e il tracker; un progetto vuoto mostra una mappa vuota.
+2. **Apri `#/map`.** La riga sotto il titolo indica l'avanzamento: *Luoghi trovati: N/M* cresce man mano che i luoghi vengono cercati (quelli in cache compaiono subito), e *Senza luogo* conta le offerte che non indicano alcun luogo (solo remoto, "Anywhere").
+3. **Leggi i colori.** Pieno = il tuo punteggio di valutazione (verde buono · giallo discreto · blu medio · rosso debole). Anello = affinità del titolo prima della valutazione (stessi colori, grigio = nessun indizio di affinità).
+4. **Ingrandisci** su un numero per dividere un gruppo; a livello di strada le offerte nello stesso punto si aprono a ventaglio, così ciascuna si può cliccare.
+5. **Clicca un punto** per aprire l'offerta, oppure il report di valutazione per una voce del tracker.
+6. **Cambia livello** (in alto a destra) per confrontare, ad esempio, solo il tracker con i risultati freschi della scansione.
+
+Un'offerta che elenca più luoghi ("Berlin Office · Berlin · Germany · Bosnia · …", "Berlin; Munich", "Remote U.S. · Toronto") viene posizionata nel suo **primo luogo reale**; i segmenti "Remote …", "(HQ)" e un "Office" finale vengono ignorati. La mappa inquadra l'area in cui si trova la maggior parte delle offerte, quindi poche offerte lontane non rimpiccioliscono la vista: riduci lo zoom per vederle.
+
 ### Dati e privacy
 
 La mappa è l'unica vista che contatta servizi esterni, e solo mentre è aperta: il browser carica le tessere dal tile server e il server invia **luogo e nome dell'azienda** di ogni offerta (mai il tuo CV o il profilo) al geocoder Nominatim. Le risposte sono memorizzate in `web-ui/.cache/geocode.json`, quindi ogni luogo viene cercato una sola volta. Per tenere queste richieste sulla tua infrastruttura, punta le variabili qui sotto a server self-hosted.
