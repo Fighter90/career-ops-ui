@@ -241,7 +241,7 @@ export function stripDangerousMarkdown(text) {
   // passes, so nesting deeper than that could leave an `on…=` behind. Rename
   // what survives to an inert `data-blocked=`; the replacement cannot
   // re-form `<whitespace>on…=`, so one pass is complete.
-  s = s.replace(/(\s)on[a-z]+(\s*=)/gi, '$1data-blocked$2');
+  s = s.replace(/([\s/"'])on[a-z]+(\s*=)/gi, '$1data-blocked$2');
   return s;
 }
 
@@ -266,7 +266,7 @@ function stripDangerousOnce(s) {
   // multi-character sanitization), while `data-blocked=` (the event name
   // dropped too) is inert and cannot re-form a handler, so one pass is complete.
   return s
-    .replace(/(\s)on[a-z]+(\s*=)/gi, '$1data-blocked$2')
+    .replace(/([\s/"'])on[a-z]+(\s*=)/gi, '$1data-blocked$2')
     .replace(/javascript\s*:/gi, '')
     .replace(/vbscript\s*:/gi, '')
     .replace(/data\s*:\s*text\/html/gi, '');

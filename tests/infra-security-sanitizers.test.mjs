@@ -87,3 +87,18 @@ test('stripDangerousMarkdown leaves no live on…= handler even past the 8-pass 
   assert.equal(/\son[a-z]+\s*=/i.test(out), false, out.slice(0, 200));
   assert.ok(out.includes('link'), 'text is kept');
 });
+
+test('event handlers after `/` or a closing quote (HTML attribute separators) are neutralized too', async () => {
+  const { stripDangerousMarkdown } = await import('../server/lib/security.mjs');
+  for (const payload of [
+    '<img/onerror=alert(1) src=x>',
+    '<img src="x"onerror=alert(1)>',
+    "<img src='x'onerror=alert(1)>",
+    '<a href=#/onclick=alert(1)>x</a>',
+    '<svg/onload=alert(1)>',
+    '<img src=x onerror =alert(1)>',
+  ]) {
+    const out = stripDangerousMarkdown(payload);
+    assert.equal(/(?:^|[\s/"'])on[a-z]+\s*=/i.test(out), false, `${payload} -> ${out}`);
+  }
+});
