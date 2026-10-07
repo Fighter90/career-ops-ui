@@ -68,6 +68,32 @@ npm run test:coverage:gate      # coverage ratchet (scripts/coverage-baseline.js
     Testing-and-QA / Release-Process counts; push.
 12. Delete the release branch locally and remotely; update `PROGRESS.md`.
 
+## Post-release standing rules (user-mandated 2026-10-07 — never skip, never trim)
+
+Every release — patch included — also carries ALL of the following. If any step is missed,
+the release is not done:
+
+1. **Full regression on BOTH stands**: local `127.0.0.1:4317` AND prod (resumecraft.ru).
+   All views, all 17 locales, LLM providers live (`gh workflow run remote-qa.yml -f live=true`),
+   scanner (`-f scan=true`), plus an adversarial browser pass (Playwright; creds via env,
+   never committed). Findings become Linear issues (Russian) in the carrer-ops-ui workspace
+   immediately — then they are executed in order until done.
+2. **A QA regression prompt per release**: `qa/QA-REGRESSION-PROMPT-vX.Y.Z.md`, with the
+   real counts; the previous prompt moves to `qa/archive/`.
+3. **CHANGELOG ×17**: EN entry first, then all 16 locale files (one agent per locale,
+   English is the source of truth, exactly one `## [X.Y.Z]` per file) — changelog parity
+   and the `locale-fanout-integrity` grader must be green.
+4. **A spec per phase/release in `docs/sdd/specs/`** (`_TEMPLATE.md`): goal, scope, out of
+   scope, acceptance criteria, Verification filled with REAL output before the PR merges.
+5. **Wiki refresh in the same release**: Home ×17 banners + test floor, Scanner-Providers,
+   Testing-and-QA / Release-Process counts, Roadmap page mirror of Linear.
+6. **Site freshness**: `cd site && npm run build` only after all 17 changelogs are final;
+   `grep -L 'X.Y.Z' site/src/content/changelog/*.md` must print nothing (sync-assets keeps
+   them in the build).
+7. **Linear statuses move with the work**: In Progress when an agent starts, In Review when
+   the PR is up, Done only when the release is deployed and verified — with a comment
+   carrying the evidence (counts, run links).
+
 ## Parent sync
 
 Use `.claude/skills/parent-sync/SKILL.md` (it is plain Markdown — any agent can follow it): divergence
