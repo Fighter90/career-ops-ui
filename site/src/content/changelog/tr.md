@@ -2,6 +2,28 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.242.0] — 2026-10-07
+
+**Tarayıcının veri katmanı yeniden güvenilir: ölü kaynaklar canlandı, hatalı biçimli bir yanıt artık boş pano kılığına giremiyor ve kötü niyetli bir pano URL'si artık bir taramayı yönlendiremiyor.**
+
+### Düzeltildi
+
+- **Ölü kaynaklar yeniden canlı.** justjoin (API zarfı `{data, meta.next.cursor}` biçimine değişti) yeni maaş alanlarıyla birlikte tam kataloğunu bir imleç turuyla okuyor; nofluffjobs `salaryCurrency` olmadan 400 dönüyor — üst projenin zorunlu kıldığı sorgu gönderiliyor ve sonuçlar sayfalanıyor (`pageTo`). himalayas ve jobicy 100 binin üzerindeki ilandan yalnızca en yeni ~20 tanesini görüyordu — ikisi de artık tam kataloglarını geziyor (sayfa üst sınırlı offset / imleç sayfalaması).
+- **Yanlış biçimli bir 200 yanıtı 1. sayfada hata fırlatıyor.** ~40 kaynak, hatalı biçimli ya da challenge yanıtlarını "0 ilan" olarak okuyor ve tarama sessizce "başarılı" oluyordu. Yeni `server/lib/sources/_shape.mjs` korumaları (`requireArray` / `requireContainer` / `requireObject`) bu hatayı her kaynak ailesinde görünür kılıyor; sonraki bir sayfada gelen hata, o ana kadar toplanmış sayfaları korur; sayfalama filtrelenmiş sayıya değil ham sayfa uzunluğuna göre durur.
+- **SSRF: alt dize temelli satıcı denetimleri, ayrıştırılmış tam ana bilgisayar sabitlemeleriyle değiştirildi.** lever (`clever.com` içinde `lever.co` geçiyor), greenhouse (5 ana bilgisayar + eski `boards[.eu].greenhouse.io` yol-slug ana bilgisayarları), ashby, smartrecruiters, workable, gem REST, ibm, arbeitsagentur, hecklerkoch (yalnızca www), workingnomads (`http://169.254.169.254` DNS korumasını aşarak erişilebilir durumdaydı), remoteok, remotive, rss, successfactors. Her yerde `redirect:'error'`; iş URL'leri sabitlenmiş ana bilgisayar üzerinde `https:` olmak zorunda (`javascript:` / `data:` / ana bilgisayar dışı olanlar atılır).
+- **Yanlış yapılandırılmış tek bir portals girdisi artık taramanın tamamını iptal edemiyor.** `resolveAdapter` bağdaştırıcı fırlatmalarını yakalar, `detectApi` şirket başına sarmalanır, hata fırlatan bağdaştırıcılar `null` döndürür; comeet fetch hataları günlüklere ya da karantina kayıtlarına ulaşmadan önce `?token=` değerini maskeler.
+- **Sayfalama ve güncellik.** workday, 100 ilanı aşan kiracıları geziyor (offset sayfaları, `MAX_PAGES`); telegram EN YENİ gönderileri tutuyor ve sessizce en eskileri tutmak yerine `?before=` ile sayfalıyor; tencent `Count` eksikken gezmeye devam ediyor; taleo Fransızca başlık tablolarını ayrıştırıyor; avature ham sayfa uzunluğunda duruyor; UTC tarih damgaları (amazon'un UTC'nin doğusundaki bir günlük kayması, torre, workingnomads, trudvsem); HTML varlıkları çözülüyor (geekjob, getmatch, hh); mycareersfuture 12 alanlı tam iş biçimini üretiyor.
+- **Uzak algılama sıkılaştırıldı.** arbeitsagentur, vdab, rippling, teamtailor: sözleşme yüzdesi ("Verpleegkundige (100%)", `bundesweit`) ve "distributed" sözcüğü ("Distributed Systems Engineer") artık ofis tabanlı rolleri Remote olarak etiketlemiyor.
+
+### Eklendi
+
+- `tests/adapters-pin-coverage.test.mjs`, ana bilgisayar sabitlemelerinin getirdiği dal kapsamını tamamlıyor.
+
+### Notlar
+
+- Testler **4419 → 4812**, tarayıcı **118**. Kapsam ortalaması **98.15 % satır / 89.36 % dal** (kapı alt sınırı 96 / 86).
+- Bu sürümde yok: aynı inceleme turunun istemci tarafı bulguları (Phase 3 — görünümler, kütüphaneler, CSS/a11y, i18n); `sources/habr.mjs` hâlâ kendine ait bir test dosyasından yoksun (ratchet muafiyeti).
+
 ## [1.241.1] — 2026-10-07
 
 **Canlı değerlendirmeler her dilde uçtan uca çalışıyor, iş haritası birden çok konumlu uzun ilanları yerleştiriyor ve bir dağıtım artık çalışan bir taramayı öldürmüyor.**

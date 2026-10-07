@@ -8,6 +8,50 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.242.0] — 2026-10-07
+
+**A camada de dados da varredura volta a ser confiável: fontes mortas voltam à vida, uma resposta malformada não pode mais se passar por um board vazio e uma URL de board hostil não pode mais redirecionar uma varredura.**
+
+### Corrigido
+
+- **Fontes mortas voltam à vida.** justjoin (o envelope da API mudou para `{data, meta.next.cursor}`) lê o catálogo completo por um cursor walk com os novos campos de salário; nofluffjobs responde 400 sem `salaryCurrency` — a query exigida pelo pai é enviada e os resultados paginam (`pageTo`). himalayas e jobicy viam só as ~20 vagas mais recentes de mais de 100 mil — ambos agora percorrem os catálogos completos (paginação por offset / cursor com limites de página).
+- **Um 200 com forma errada lança erro na página 1.** ~40 fontes liam respostas malformadas ou de challenge como "0 vagas" e a varredura "concluía" em silêncio. Novas guardas em `server/lib/sources/_shape.mjs` (`requireArray` / `requireContainer` / `requireObject`) tornam a falha barulhenta em todas as famílias; uma falha numa página posterior mantém as páginas já coletadas; a paginação para pelo comprimento bruto da página, não pela contagem filtrada.
+- **SSRF: checagens de fornecedor por substring substituídas por pins de host exato obtidos por parse.** lever (`clever.com` contém `lever.co`), greenhouse (5 hosts + os hosts legados de path-slug `boards[.eu].greenhouse.io`), ashby, smartrecruiters, workable, gem REST, ibm, arbeitsagentur, hecklerkoch (só www), workingnomads (`http://169.254.169.254` era alcançável apesar da guarda de DNS), remoteok, remotive, rss, successfactors. `redirect:'error'` em todo lugar; URLs de vaga precisam ser `https:` no host fixado (`javascript:` / `data:` / fora do host são descartadas).
+- **Uma entrada mal configurada do portals não aborta mais a varredura inteira.** `resolveAdapter` captura os throws dos adaptadores, `detectApi` é envelopado por empresa, adaptadores que lançam erro devolvem `null`; erros de fetch do comeet editam `?token=` antes de chegarem a logs ou a registros de quarentena.
+- **Paginação e frescor.** workday percorre tenants além das 100 primeiras vagas (páginas por offset, `MAX_PAGES`); telegram mantém os posts MAIS RECENTES e pagina `?before=` em vez de ficar silenciosamente com os mais antigos; tencent continua quando `Count` está ausente; taleo interpreta tabelas de cabeçalho em francês; avature para pelo comprimento bruto da página; carimbos de data em UTC (amazon com off-by-one a leste do UTC, torre, workingnomads, trudvsem); entidades HTML decodificadas (geekjob, getmatch, hh); mycareersfuture emite o formato completo de 12 campos da vaga.
+- **Detecção de Remote mais rígida.** arbeitsagentur, vdab, rippling, teamtailor: porcentagem de contrato ("Verpleegkundige (100%)", `bundesweit`) e a palavra "distributed" ("Distributed Systems Engineer") não marcam mais vagas presenciais como Remote.
+
+### Adicionado
+
+- `tests/adapters-pin-coverage.test.mjs` completa a cobertura de branches dos pins de host que os pins introduziram.
+
+### Notas
+
+- Testes **4419 → 4812** unitários, de navegador **118**. Média de cobertura **98.15 % linhas / 89.36 % branches** (piso do gate 96 / 86).
+- Fora desta versão: os achados do cliente da mesma rodada de revisão (Fase 3 — views, libs, CSS/a11y, i18n); `sources/habr.mjs` continua sem um arquivo de teste dedicado (isenção do ratchet).
+
+## [1.242.0] — 2026-10-07
+
+**A camada de dados do scanner volta a ser confiável: fontes mortas voltaram à vida, uma resposta malformada não pode mais se passar por um board vazio e uma URL de board hostil não pode mais redirecionar um scan.**
+
+### Corrigido
+
+- **Fontes mortas voltaram à vida.** justjoin (o envelope da API mudou para `{data, meta.next.cursor}`) lê o catálogo completo através de um cursor walk com os novos campos de salário; nofluffjobs respondia 400 sem `salaryCurrency` — a query obrigatória do pai é enviada e os resultados paginam (`pageTo`). himalayas e jobicy viam apenas os ~20 anúncios mais recentes de mais de 100 mil — ambos agora percorrem seus catálogos completos (paginação por offset / cursor com limites de páginas).
+- **Um 200 com formato errado lança erro na página 1.** ~40 fontes liam respostas malformadas ou de challenge como "0 vagas" e o scan "tinha sucesso" em silêncio. Novos guards em `server/lib/sources/_shape.mjs` (`requireArray` / `requireContainer` / `requireObject`) tornam a falha ruidosa em todas as famílias; uma falha em página posterior mantém as páginas já coletadas; a paginação para pelo comprimento bruto da página, não pela contagem filtrada.
+- **SSRF: verificações de fornecedor por substring viraram pins de host exatos analisados.** lever (`clever.com` contém `lever.co`), greenhouse (5 hosts + os hosts de path-slug legados `boards[.eu].greenhouse.io`), ashby, smartrecruiters, workable, gem REST, ibm, arbeitsagentur, hecklerkoch (somente www), workingnomads (`http://169.254.169.254` era alcançável passando pelo DNS guard), remoteok, remotive, rss, successfactors. `redirect:'error'` em todos; URLs de vagas devem ser `https:` no host fixado (`javascript:` / `data:` / fora do host são descartadas).
+- **Uma entrada malconfigurada de portals não pode mais abortar um scan inteiro.** `resolveAdapter` captura exceções dos adaptadores, `detectApi` é embrulhado por empresa, adaptadores que lançam retornam `null`; erros de fetch do comeet editam `?token=` antes de chegarem a logs ou registros de quarentena.
+- **Paginação e frescor.** workday percorre tenants com mais de 100 anúncios (páginas por offset, `MAX_PAGES`); telegram mantém os postes MAIS RECENTES e pagina `?before=` em vez de guardar silenciosamente os mais antigos; tencent continua quando `Count` falta; taleo parseia tabelas de cabeçalhos em francês; avature para pelo comprimento bruto da página; datas em UTC (off-by-one de amazon a leste do UTC, torre, workingnomads, trudvsem); entidades HTML decodificadas (geekjob, getmatch, hh); mycareersfuture emite o formato completo de 12 campos.
+- **Detecção de remote apertada.** arbeitsagentur, vdab, rippling, teamtailor: percentual de contrato ("Verpleegkundige (100%)", `bundesweit`) e a palavra "distributed" ("Distributed Systems Engineer") não marcam mais vagas presenciais como Remote.
+
+### Adicionado
+
+- `tests/adapters-pin-coverage.test.mjs` completa a cobertura de branches dos pins de host introduzidos.
+
+### Notas
+
+- Testes **4419 → 4812** unit, browser **118**. Cobertura média **98.15 % linha / 89.36 % branch** (piso do gate 96 / 86).
+- Fora desta release: as descobertas de client da mesma rodada de revisão (Fase 3 — views, libs, CSS/a11y, i18n); `sources/habr.mjs` ainda não tem arquivo de testes dedicado (isenção do ratchet).
+
 ## [1.241.1] — 2026-10-07
 
 **As avaliações ao vivo funcionam de ponta a ponta em todos os idiomas, o mapa de vagas posiciona vagas longas com vários locais e um deploy não derruba mais uma varredura em andamento.**

@@ -8,6 +8,28 @@
 
 ---
 
+## [1.242.0] — 2026-10-07
+
+**掃描器的資料層重新值得信賴：失效的來源恢復運作，格式錯誤的回應不再能冒充空的職缺板，惡意的職缺板 URL 也不再能把掃描重新導向。**
+
+### 修復
+
+- **失效的來源恢復運作。** justjoin（API 回應的外層結構改為 `{data, meta.next.cursor}`）透過游標走訪讀取完整目錄，並帶入新的薪資欄位；nofluffjobs 在沒有 `salaryCurrency` 時會回應 400——因此現在會送出父專案要求的必帶查詢參數，並讓結果分頁（`pageTo`）。himalayas 與 jobicy 過去在 10 萬多筆職缺中只能看到最新的約 20 筆——兩者現在都會走訪完整目錄（offset / 游標分頁，並設有頁數上限）。
+- **結構錯誤的 200 回應會在第 1 頁就拋出例外。** 約 40 個來源過去把格式錯誤或挑戰頁的回應讀成「0 筆職缺」，掃描也悄悄地「成功」了。新的 `server/lib/sources/_shape.mjs` 防護（`requireArray` / `requireContainer` / `requireObject`）讓每個來源家族的失敗都大聲顯現；後續頁面失敗時，已收集的頁面會保留；分頁以原始頁面長度作為停止依據，而不是篩選後的數量。
+- **SSRF：子字串式的廠商檢查改為解析後的精確主機釘選。** lever（`clever.com` 內含 `lever.co`）、greenhouse（5 個主機 + 舊版 `boards[.eu].greenhouse.io` 路徑別名主機）、ashby、smartrecruiters、workable、gem REST、ibm、arbeitsagentur、hecklerkoch（僅 www）、workingnomads（`http://169.254.169.254` 過去能穿過 DNS 防護被存取）、remoteok、remotive、rss、successfactors。全面使用 `redirect:'error'`；職缺 URL 必須是釘選主機上的 `https:`（`javascript:` / `data:` / 非釘選主機的連結一律丟棄）。
+- **單一個設定錯誤的 portals 項目不再能中止整個掃描。** `resolveAdapter` 會接住轉接器拋出的例外，`detectApi` 逐公司包裝，拋例外的轉接器回傳 `null`；comeet 的擷取錯誤在進入日誌或隔離區記錄之前，會先遮蔽 `?token=`。
+- **分頁與新鮮度。** workday 對超過 100 筆職缺的租戶會持續走訪（offset 分頁，`MAX_PAGES`）；telegram 保留最新的貼文並以 `?before=` 分頁，而不是悄悄保留最舊的；tencent 在缺少 `Count` 時也會繼續走訪；taleo 能解析法文表頭的表格；avature 以原始頁面長度停止；UTC 日期戳記（amazon 在 UTC 以東的差一天錯誤、torre、workingnomads、trudvsem）；HTML 實體會被解碼（geekjob、getmatch、hh）；mycareersfuture 產出完整的 12 欄位職缺結構。
+- **遠端判定收緊。** arbeitsagentur、vdab、rippling、teamtailor：合約百分比（「Verpleegkundige (100%)」、`bundesweit`）與「distributed」一詞（「Distributed Systems Engineer」）不再把現場職缺標記為遠端。
+
+### 新增
+
+- `tests/adapters-pin-coverage.test.mjs` 補齊這些主機釘選所引入的分支覆蓋率。
+
+### 說明
+
+- 測試數 **4419 → 4812**，瀏覽器測試 **118**。覆蓋率平均 **行 98.15 % / 分支 89.36 %**（閘門下限 96 / 86）。
+- 本版本未包含：同一輪審查中的用戶端發現（Phase 3 —— views、libs、CSS/a11y、i18n）；`sources/habr.mjs` 仍缺少專屬的測試檔（棘輪豁免）。
+
 ## [1.241.1] — 2026-10-07
 
 **即時評估在每個語系都能端到端運作，職缺地圖能標示含多個地點的長篇職缺，而且部署不再中斷正在執行的掃描。**

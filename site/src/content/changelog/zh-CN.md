@@ -9,6 +9,28 @@
 ---
 
 
+## [1.242.0] — 2026-10-07
+
+**扫描器的数据层重新值得信赖：失效的来源恢复了生机，格式错误的响应不再被当作空看板，恶意的看板 URL 也无法再重定向扫描。**
+
+### 修复
+
+- **失效的来源恢复了生机。** justjoin(API 信封变为 `{data, meta.next.cursor}`)通过游标遍历读取完整目录并适配新的薪资字段；nofluffjobs 会因缺少 `salaryCurrency` 返回 400——现在发送父项目要求的查询并对结果分页(`pageTo`)。himalayas 和 jobicy 之前只能看到 10 万+ 职位中最新的约 20 条——现在两者都会遍历完整目录(偏移/游标分页，带页数上限)。
+- **格式错误的 200 会在第 1 页抛出异常。** 约 40 个来源曾把格式错误或质询响应读成“0 个职位”，扫描“默默成功”。新的 `server/lib/sources/_shape.mjs` 守卫(`requireArray` / `requireContainer` / `requireObject`)让失败在每个家族中都响亮可见；后续页失败会保留已收集的页；分页按原始页长停止，而不是过滤后的数量。
+- **SSRF：子串式厂商检查换成了精确主机的解析钉。** lever(`clever.com` 包含 `lever.co`)、greenhouse(5 个主机 + 遗留的 `boards[.eu].greenhouse.io` 路径 slug 主机)、ashby、smartrecruiters、workable、gem REST、ibm、arbeitsagentur、hecklerkoch(仅 www)、workingnomads(`http://169.254.169.254` 曾可绕过 DNS 守卫到达)、remoteok、remotive、rss、successfactors。全部加 `redirect:'error'`；职位 URL 必须是固定主机上的 `https:`(`javascript:` / `data:` / 异主机一律丢弃)。
+- **一条配置错误的 portals 条目再也不能中断整个扫描。** `resolveAdapter` 捕获适配器抛出的异常，`detectApi` 按公司包裹，会抛异常的适配器返回 `null`；comeet 的 fetch 错误在进入日志或隔离记录前会隐去 `?token=`。
+- **分页与新鲜度。** workday 遍历超过 100 个职位的租户(offset 页、`MAX_PAGES`)；telegram 保留最新的帖子并按 `?before=` 分页(而不是悄悄保留最旧的)；tencent 在缺少 `Count` 时继续遍历；taleo 解析法语表头；avature 按原始页长停止；UTC 日期戳(amazon 在 UTC 以东的差一天、torre、workingnomads、trudvsem)；HTML 实体解码(geekjob、getmatch、hh)；mycareersfuture 输出完整的 12 字段职位结构。
+- **远程判定收紧。** arbeitsagentur、vdab、rippling、teamtailor：合同百分比("Verpleegkundige (100%)"、`bundesweit`)和 "distributed" 一词("Distributed Systems Engineer")不再把现场职位标记为远程。
+
+### 新增
+
+- `tests/adapters-pin-coverage.test.mjs` 补全了这些主机钉引入的分支覆盖。
+
+### 备注
+
+- 测试 **4419 → 4812** 单元、**118** 浏览器。覆盖率均值 **98.15 % 行 / 89.36 % 分支**(门槛 96 / 86)。
+- 本版本不包含：同一评审轮次中的客户端发现(第 3 阶段——views、libs、CSS/a11y、i18n)；`sources/habr.mjs` 仍缺少专属测试文件(ratchet 豁免)。
+
 ## [1.241.1] — 2026-10-07
 
 **实时评估在每种语言下都能端到端正常运行，职位地图能定位带有多个地点的长职位，部署也不再中断正在运行的扫描。**

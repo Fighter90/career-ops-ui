@@ -2,6 +2,28 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.242.0] — 2026-10-07
+
+**Die Datenschicht des Scanners ist wieder vertrauenswürdig: Tote Quellen leben wieder, eine fehlerhafte Antwort kann sich nicht mehr als leeres Board ausgeben, und eine feindliche Board-URL kann einen Scan nicht mehr umleiten.**
+
+### Behoben
+
+- **Tote Quellen leben wieder.** justjoin (der API-Envelope wurde auf `{data, meta.next.cursor}` geändert) liest seinen gesamten Katalog über einen Cursor-Durchlauf mit den neuen Gehaltsfeldern; nofluffjobs antwortet ohne `salaryCurrency` mit 400 — die vom Elternprojekt geforderte Abfrage wird gesendet und die Ergebnisse paginiert (`pageTo`). himalayas und jobicy sahen von über 100.000 Stellen nur die neuesten ~20 — beide durchlaufen jetzt ihre vollständigen Kataloge (Offset-/Cursor-Paginierung mit Seitenlimits).
+- **Ein 200 mit falscher Struktur wirft auf Seite 1 eine Ausnahme.** ~40 Quellen lasen fehlerhafte oder Challenge-Antworten als „0 Stellen“, und der Scan „gelang“ stillschweigend. Neue Guards in `server/lib/sources/_shape.mjs` (`requireArray` / `requireContainer` / `requireObject`) machen den Fehler in jeder Familie laut; ein Fehler auf einer späteren Seite behält die bereits gesammelten Seiten; die Paginierung stoppt an der rohen Seitenlänge, nicht an der gefilterten Anzahl.
+- **SSRF: Substring-Anbieterprüfungen durch geparste exakte Host-Pins ersetzt.** lever (`clever.com` enthält `lever.co`), greenhouse (5 Hosts + die Legacy-`boards[.eu].greenhouse.io`-Pfad-Slug-Hosts), ashby, smartrecruiters, workable, gem REST, ibm, arbeitsagentur, hecklerkoch (nur www), workingnomads (`http://169.254.169.254` war trotz DNS-Guard erreichbar), remoteok, remotive, rss, successfactors. Überall `redirect:'error'`; Stellen-URLs müssen `https:` auf dem gepinnten Host sein (`javascript:` / `data:` / Off-Host wird verworfen).
+- **Ein falsch konfigurierter Portals-Eintrag kann keinen ganzen Scan mehr abbrechen.** `resolveAdapter` fängt Adapter-Fehler ab, `detectApi` wird pro Firma gekapselt, werfende Adapter geben `null` zurück; Fetch-Fehler von comeet schwärzen `?token=`, bevor sie in Logs oder Quarantäne-Einträgen landen.
+- **Paginierung und Aktualität.** workday durchläuft Tenants über 100 Stellen hinaus (Offset-Seiten, `MAX_PAGES`); telegram behält die NEUESTEN Beiträge und paginiert `?before=`, statt stillschweigend die ältesten zu behalten; tencent läuft weiter, wenn `Count` fehlt; taleo parst Tabellen mit französischen Spaltenüberschriften; avature stoppt an der rohen Seitenlänge; UTC-Datumsstempel (amazon Off-by-one östlich von UTC, torre, workingnomads, trudvsem); HTML-Entities dekodiert (geekjob, getmatch, hh); mycareersfuture liefert die vollständige Stellenstruktur mit 12 Feldern.
+- **Remote-Erkennung verschärft.** arbeitsagentur, vdab, rippling, teamtailor: Vertragsprozentsatz („Verpleegkundige (100%)“, `bundesweit`) und das Wort „distributed“ („Distributed Systems Engineer“) markieren Vor-Ort-Rollen nicht mehr als Remote.
+
+### Hinzugefügt
+
+- `tests/adapters-pin-coverage.test.mjs` vervollständigt die Host-Pin-Branch-Abdeckung, die die Pins eingeführt haben.
+
+### Anmerkungen
+
+- Unit-Tests **4419 → 4812**, Browser **118**. Coverage-Mittelwert **98.15 % Zeilen / 89.36 % Branch** (Gate-Untergrenze 96 / 86).
+- Nicht in diesem Release: die Client-Befunde aus derselben Review-Runde (Phase 3 — Views, Libs, CSS/a11y, i18n); `sources/habr.mjs` hat weiterhin keine eigene Testdatei (Ratchet-Ausnahme).
+
 ## [1.241.1] — 2026-10-07
 
 **Live-Bewertungen funktionieren in jeder Sprache durchgängig, die Stellenkarte platziert lange Stellen mit mehreren Standorten, und ein Deploy beendet keinen laufenden Scan mehr.**
