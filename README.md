@@ -33,6 +33,12 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 **[▶ Watch the preview](https://youtu.be/LcVPUg9IsDk?si=mrx3oOmOpSAwabOz)**
 
+### 🗺️ New: every posting on a map
+
+Scan results, the pipeline and the tracker on one world map (`#/map`) — see where the offers cluster and which cities are worth relocating to. A filled marker is your evaluation score, a ring is title fit before evaluation; postings are pinned to the company address when known, otherwise to the city centre (free OpenStreetMap geocoding, no keys).
+
+![career-ops-ui — Job map](./images/job-map-en.png)
+
 ## About career-ops
 
 [career-ops](https://career-ops.org) is an open-source job-search system that runs as slash commands inside any AI coding CLI (Claude Code, Cursor, Codex, OpenCode, Antigravity CLI, Grok Build CLI, Qwen Code, Kimi, GitHub Copilot CLI, Gemini CLI (legacy) — other Claude-compatible CLIs work too via the same slash-command surface). Model-agnostic. It evaluates each posting against your CV with a 0.0–5.0 rubric of five dimensions plus a holistic global score, generates tailored PDF résumés, and tracks every application locally — no cloud accounts, no telemetry, no auto-submit.
