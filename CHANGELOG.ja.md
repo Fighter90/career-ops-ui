@@ -8,6 +8,28 @@
 
 ---
 
+## [1.242.0] — 2026-10-07
+
+**スキャナーのデータ層が再び信頼できるものになりました。死んでいたソースが復活し、不正な応答はもう「0件のボード」として読まれず、敵対的なボードURLもスキャンをリダイレクトできません。**
+
+### 修正
+
+- **死んでいたソースが復活。** justjoin(APIエンベロープが `{data, meta.next.cursor}` に変更)はカーソルwalkでカタログ全体を読み、新しい給与フィールドに対応。nofluffjobs は `salaryCurrency` なしで 400 を返すようになっていました — 親の必須クエリを送り、結果をページング(`pageTo`)します。himalayas と jobicy は10万件超のうち最新约20件しか見ていませんでした — 両方ともカタログ全体を走査します(オフセット/カーソルページネーション、ページ上限付き)。
+- **形状の正しくない200はページ1で例外を投げます。** 約40ソースが不正な応答やチャレンジ回答を「0件」と読み、スキャンが静かに「成功」していました。新しい `server/lib/sources/_shape.mjs` ガード(`requireArray` / `requireContainer` / `requireObject`)が全ファミリーで失敗を可視化します。後続ページの失敗は収集済みページを保持し、ページネーションはフィルタ後ではなく生のページ長で停止します。
+- **SSRF: 部分一致のベンダー判定を解析済みの正確なホストピンに置き換え。** lever(`clever.com` は `lever.co` を含む)、greenhouse(5ホスト + レガシー `boards[.eu].greenhouse.io` パススラッグホスト)、ashby、smartrecruiters、workable、gem REST、ibm、arbeitsagentur、hecklerkoch(wwwのみ)、workingnomads(DNSガードを通過して `http://169.254.169.254` に到達可能でした)、remoteok、remotive、rss、successfactors。全体に `redirect:'error'`; 求人URLはピン留めされたホスト上の `https:` のみ(`javascript:` / `data:` / 異ホストは除外)。
+- **設定ミスの portals エントリー1つでスキャン全体が中断されることはもうありません。** `resolveAdapter` はアダプタの例外を捕捉し、`detectApi` は企業ごとにラップされ、投げるアダプタは `null` を返します。comeet のフェッチエラーはログや隔離レコードに届く前に `?token=` を編集します。
+- **ページネーションと鮮度。** workday は100件超のテナントを走査(オフセットページ、`MAX_PAGES`); telegram は最新の投稿を保持し `?before=` でページング(黙って最古を保持するのではなく); tencent は `Count` 欠落でも走査を続行; taleo はフランス語の見出しテーブルを解析; avature は生ページ長で停止; UTC日付スタンプ(UTC以東の amazon の off-by-one、torre、workingnomads、trudvsem); HTMLエンティティのデコード(geekjob、getmatch、hh); mycareersfuture は完全な12フィールド形式を出力。
+- **リモート判定をタイト化。** arbeitsagentur、vdab、rippling、teamtailor: 契約パーセント("Verpleegkundige (100%)"、`bundesweit`)と "distributed"("Distributed Systems Engineer")はオンサイトを Remote とタグしなくなりました。
+
+### 追加
+
+- `tests/adapters-pin-coverage.test.mjs` がピンが導入したホストピン分岐のカバレッジを完成させます。
+
+### 備考
+
+- テスト **4419 → 4812**、ブラウザ **118**。カバレッジ平均 **98.15 % 行 / 89.36 % 分岐**(ゲート下限 96 / 86)。
+- このリリースには含まれない: 同じレビューラウンドのクライアント側の発見(フェーズ3 — views、libs、CSS/a11y、i18n); `sources/habr.mjs` にはまだ専用テストファイルがない(ratchet免除)。
+
 ## [1.241.1] — 2026-10-07
 
 **ライブ評価がすべてのロケールで最後まで動作し、求人マップは複数の所在地を並べた長い求人も配置し、デプロイが実行中のスキャンを止めることもなくなりました。**

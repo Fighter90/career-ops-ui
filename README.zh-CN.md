@@ -12,14 +12,14 @@ _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.241.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.241.1)
+[![release](https://img.shields.io/badge/release-v1.242.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.242.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.241.1** — **实时评估在每种语言下都能端到端正常运行。** 评估重新能看到完整的 `oferta.md`（上下文预算 192 KB），报告保持所选语言（指令现在位于提示词开头；只有名称、技术名词和引用保留英文），缓慢的评估拥有 300 秒而不是以 502 结束，带有天城文区块字母或本地数字评分的印地语报告也能通过校验。职位地图现在能定位带有多个地点的长职位（“Berlin Office · Berlin · Germany · …”）而不是拒绝它们，部署会等待正在运行的每小时扫描结束，职位地图也已登陆 [cvstart.org](https://cvstart.org/#job-map)。远程 QA × 17 种语言在生产环境全部通过。
+> **🆕 最新版本 — v1.242.0** — **扫描器的数据层重新值得信赖：失效的来源恢复了生机，格式错误的响应不再被当作空看板，恶意的看板 URL 也无法再重定向扫描。**
 >
-> **上一版本 — v1.241.0** — **基于 28 个智能体代码审查的加固，以及由 @bullitt186 贡献的职位地图。** 格式错误的请求不再能使服务器停止，被中止的扫描不再清空上一次的结果，评估现在能看到完整的方法文件而不只是前 16 KB，服务器会拒绝 DNS 重绑定主机和跨站写入，重定向会重新检查是否指向私有目标。`#/map` 在 OpenStreetMap 上显示你的职位。**4404 个测试 · 118 个浏览器测试。**
+> **上一版本 — v1.241.1** — **实时评估在每种语言下都能端到端正常运行；职位地图可放置超长多地点职位；部署会等待正在运行的整点扫描完成。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

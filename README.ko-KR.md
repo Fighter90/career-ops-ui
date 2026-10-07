@@ -12,14 +12,14 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.241.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.241.1)
+[![release](https://img.shields.io/badge/release-v1.242.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.242.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.241.1** — **라이브 평가가 모든 로케일에서 끝까지 작동합니다.** 평가가 다시 `oferta.md` 전체를 보고(컨텍스트 예산 192 KB), 보고서가 선택한 언어로 작성되며(지시문이 이제 프롬프트를 시작하고, 이름, 기술 용어, 인용만 영어로 남습니다), 느린 평가는 502로 끝나는 대신 300초를 받고, 데바나가리 블록 문자나 현지 숫자 점수를 쓰는 힌디어 보고서도 검증을 통과합니다. 채용 지도는 여러 지역이 나열된 긴 공고("Berlin Office · Berlin · Germany · …")를 거부하지 않고 표시하며, 배포는 실행 중인 매시간 스캔을 기다리고, 채용 지도는 이제 [cvstart.org](https://cvstart.org/#job-map)에도 있습니다. 17개 로케일 원격 QA가 프로덕션에서 통과했습니다.
+> **🆕 최신 릴리스 — v1.242.0** — **스캐너의 데이터 레이어가 다시 신뢰할 수 있게 되었습니다.** 죽었던 소스가 살아났고(justjoin과 nofluffjobs가 다시 전체 카탈로그를 읽고, himalayas와 jobicy는 최신 20건을 넘어 탐색합니다), 형식이 잘못된 답변이나 챌린지 응답은 이제 "공고 0건"으로 읽히는 대신 첫 페이지에서 **예외를 던지며**(`server/lib/sources/_shape.mjs`), 부분 문자열 벤더 검사는 파싱된 정확 호스트 핀으로 바뀌었습니다 — `clever.com`이 더 이상 lever를 사칭할 수 없고, 적대적인 보드 URL이 더 이상 스캔을 리디렉션할 수 없습니다. 잘못 설정된 portals 항목 하나가 더 이상 전체 스캔을 중단시키지 않습니다.
 >
-> **이전 버전 — v1.241.0** — **28개 에이전트 코드 리뷰에 따른 보안 강화, 그리고 채용 지도 —** **@bullitt186**의 기여입니다. 잘못된 요청이 더 이상 서버를 멈추지 않고, 중단된 스캔이 마지막 결과를 지우지 않으며, 평가가 처음 16 KB가 아니라 방법 파일 전체를 보고, 서버가 DNS 리바인딩 호스트와 교차 사이트 쓰기를 거부하며, 리디렉션에서 사설 대상을 다시 검사합니다. `#/map`은 공고를 OpenStreetMap에 표시합니다. **테스트 4404개 · 브라우저 118개.**
+> **이전 버전 — v1.241.1** — 라이브 평가가 모든 로케일에서 엔드투엔드로 작동하고, 채용 지도가 긴 다중 위치 공고를 배치하며, 배포는 실행 중인 시간별 스캔을 기다립니다.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
