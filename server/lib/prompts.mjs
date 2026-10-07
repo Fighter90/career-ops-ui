@@ -220,8 +220,10 @@ export const CONTEXT_CAPS = Object.freeze({
   cv: 64 * 1024,
   mode: 128 * 1024,
   other: 32 * 1024,
-  // Leaves room for a 50 KB JD + the prompt under the routes' 200 KB soft cap.
-  total: 144 * 1024,
+  // The whole method must fit: modes/oferta.md (~92 KB) + _shared.md (~27 KB) +
+  // CV + profile. 144 KB cut the end of oferta.md in every live evaluation
+  // (2026-10-07 prod QA). 192 KB + a 50 KB JD stays under the 256 KB soft cap.
+  total: 192 * 1024,
 });
 
 export function bundleProjectContext(opts = {}) {

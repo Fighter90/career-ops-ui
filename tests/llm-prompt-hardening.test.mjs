@@ -13,7 +13,7 @@
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync, readdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 
@@ -30,6 +30,8 @@ before(async () => {
   writeFileSync(resolve(ROOT, 'modes', '_shared.md'), '# Shared\n' + 's'.repeat(26 * 1024) + '\nSHARED-TAIL\n');
   writeFileSync(resolve(ROOT, 'cv.md'), '# CV\n' + 'c'.repeat(18 * 1024) + '\nCV-TAIL\n');
   writeFileSync(resolve(ROOT, 'modes', 'huge.md'), 'h'.repeat(200 * 1024));
+  // Prod bundle on 2026-10-07 was ~150 KB: a 144 KB total cut the tail of oferta.md.
+  writeFileSync(resolve(ROOT, 'modes', 'extra.md'), '# Extra\n' + 'e'.repeat(30 * 1024) + '\nEXTRA-TAIL\n');
   writeFileSync(resolve(ROOT, 'config', 'profile.yml'), 'candidate:\n  full_name: T\n');
   process.env.CAREER_OPS_ROOT = ROOT;
   P = await import('../server/lib/prompts.mjs');
@@ -131,6 +133,19 @@ test('bundleProjectContext keeps a 92 KB oferta, 26 KB _shared and an 18 KB CV w
   assert.deepEqual(warnings, []);
 });
 
+test('bundleProjectContext keeps a ~170 KB evaluation bundle whole (prod 2026-10-07)', () => {
+  const warnings = [];
+  const ctx = P.bundleProjectContext({ modeSlugs: ['_shared', 'extra', 'oferta'], warnings });
+  assert.deepEqual(warnings, []);
+  assert.match(ctx, /OFERTA-TAIL-BLOCK-G/);
+  assert.match(ctx, /EXTRA-TAIL/);
+});
+
+test('the context budget plus a 50 KB JD fits the routes\' prompt soft cap', async () => {
+  const { PROMPT_SIZE_SOFT_CAP } = await import('../server/lib/llm-dispatch.mjs');
+  assert.ok(P.CONTEXT_CAPS.total + 50 * 1024 + 8 * 1024 <= PROMPT_SIZE_SOFT_CAP);
+});
+
 test('bundleProjectContext truncates over-cap files and reports it', () => {
   const warnings = [];
   const ctx = P.bundleProjectContext({ modeSlugs: ['huge'], warnings });
@@ -191,4 +206,11 @@ test('classifyTier: no false positives from the new words', () => {
   assert.equal(classifyTier('Senior Backend Engineer'), 'senior');
   assert.equal(classifyTier('Internal Tools Engineer'), 'mid');
   assert.equal(classifyTier('Старший разработчик'), 'mid');
+});
+
+test('PROMPT_SIZE_SOFT_CAP is defined once (llm-dispatch) and imported by the routes', () => {
+    const dir = new URL('../server/lib/', import.meta.url);
+  const files = ['llm-dispatch.mjs', ...readdirSync(new URL('routes/', dir)).map((f) => `routes/${f}`)];
+  const defs = files.filter((f) => /PROMPT_SIZE_SOFT_CAP\s*=/.test(readFileSync(new URL(f, dir), 'utf8')));
+  assert.deepEqual(defs, ['llm-dispatch.mjs']);
 });
