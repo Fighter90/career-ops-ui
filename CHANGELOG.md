@@ -8,6 +8,28 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.242.0] — 2026-10-07
+
+**The scanner's data layer is trustworthy again: dead sources are alive, a malformed answer can no longer masquerade as an empty board, and a hostile board URL can no longer redirect a scan.**
+
+### Fixed
+
+- **Dead sources live again.** justjoin (the API envelope changed to `{data, meta.next.cursor}`) reads its full catalog through a cursor walk with the new salary fields; nofluffjobs answers 400 without `salaryCurrency` — the parent's required query is sent and results paginate (`pageTo`). himalayas and jobicy saw only the newest ~20 postings of 100k+ — both now walk their full catalogs (offset / cursor pagination with page caps).
+- **A 200 with the wrong shape throws on page 1.** ~40 sources read malformed or challenge answers as "0 postings" and the scan "succeeded" silently. New `server/lib/sources/_shape.mjs` guards (`requireArray` / `requireContainer` / `requireObject`) make the failure loud across every family; a later-page failure keeps the pages already collected; pagination stops on the raw page length, not the filtered count.
+- **SSRF: substring vendor checks replaced with parsed exact-host pins.** lever (`clever.com` contains `lever.co`), greenhouse (5 hosts + the legacy `boards[.eu].greenhouse.io` path-slug hosts), ashby, smartrecruiters, workable, gem REST, ibm, arbeitsagentur, hecklerkoch (www only), workingnomads (`http://169.254.169.254` was reachable past the DNS guard), remoteok, remotive, rss, successfactors. `redirect:'error'` everywhere; job URLs must be `https:` on the pinned host (`javascript:` / `data:` / off-host dropped).
+- **One misconfigured portals entry can no longer abort a whole scan.** `resolveAdapter` catches adapter throws, `detectApi` is wrapped per company, throwing adapters return `null`; comeet fetch errors redact `?token=` before they reach logs or quarantine records.
+- **Pagination and freshness.** workday walks tenants past 100 postings (offset pages, `MAX_PAGES`); telegram keeps the NEWEST posts and paginates `?before=` instead of quietly keeping the oldest; tencent walks on when `Count` is missing; taleo parses French heading tables; avature stops on raw page length; UTC date stamps (amazon off-by-one east of UTC, torre, workingnomads, trudvsem); HTML entities decoded (geekjob, getmatch, hh); mycareersfuture emits the full 12-field job shape.
+- **Remote detection tightened.** arbeitsagentur, vdab, rippling, teamtailor: contract-percentage ("Verpleegkundige (100%)", `bundesweit`) and the word "distributed" ("Distributed Systems Engineer") no longer tag on-site roles Remote.
+
+### Added
+
+- `tests/adapters-pin-coverage.test.mjs` completes the host-pin branch coverage the pins introduced.
+
+### Notes
+
+- Tests **4419 → 4812** unit, browser **118**. Coverage mean **98.15 % line / 89.36 % branch** (gate floor 96 / 86).
+- Not in this release: the client findings from the same review round (Phase 3 — views, libs, CSS/a11y, i18n); `sources/habr.mjs` still lacks a dedicated test file (ratchet exemption).
+
 ## [1.241.1] — 2026-10-07
 
 **Live evaluations work end to end in every locale, the job map places long multi-location postings, and a deploy no longer kills a running scan.**
