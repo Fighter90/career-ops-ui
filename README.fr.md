@@ -7,17 +7,17 @@
 
 _Interface non officielle — sans affiliation ni approbation de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-4419%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-4812%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.242.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.242.0)
+[![release](https://img.shields.io/badge/release-v1.242.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.242.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Dernière version — v1.242.0** — **La couche de données du scanner redevient fiable.** Les sources mortes sont de nouveau vivantes (justjoin et nofluffjobs relisent leurs catalogues complets ; himalayas et jobicy dépassent désormais les 20 dernières offres), une réponse malformée ou un défi anti-bot **échoue** désormais dès la page 1 au lieu d'être lue comme « 0 offre » (`server/lib/sources/_shape.mjs`), et les vérifications de fournisseur par sous-chaîne sont devenues des épingles d'hôte exactes analysées — `clever.com` ne peut plus se faire passer pour lever, et une URL de board hostile ne peut plus rediriger un scan. Une seule entrée de portals mal configurée ne peut plus interrompre tout un scan.
+> **🆕 Dernière version — v1.242.1** — **La couche de données du scanner redevient fiable.** Les sources mortes sont de nouveau vivantes (justjoin et nofluffjobs relisent leurs catalogues complets ; himalayas et jobicy dépassent désormais les 20 dernières offres), une réponse malformée ou un défi anti-bot **échoue** désormais dès la page 1 au lieu d'être lue comme « 0 offre » (`server/lib/sources/_shape.mjs`), et les vérifications de fournisseur par sous-chaîne sont devenues des épingles d'hôte exactes analysées — `clever.com` ne peut plus se faire passer pour lever, et une URL de board hostile ne peut plus rediriger un scan. Une seule entrée de portals mal configurée ne peut plus interrompre tout un scan.
 >
 > **Précédente — v1.241.1** — Les évaluations live fonctionnent de bout en bout dans toutes les langues ; la carte des offres place les annonces multi-lieux longues ; un déploiement attend la fin du scan horaire.
 

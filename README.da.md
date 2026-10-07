@@ -7,17 +7,17 @@
 
 _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-4419%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-4812%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.242.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.242.0)
+[![release](https://img.shields.io/badge/release-v1.242.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.242.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Seneste udgivelse — v1.242.0** — **Scannerens datalag er igen til at stole på.** Døde kilder lever igen (justjoin og nofluffjobs læser deres fulde kataloger igen; himalayas og jobicy kommer forbi de 20 nyeste), et misdannet svar eller udfordringssvar **kaster nu en fejl** på side 1 i stedet for at blive læst som "0 opslag" (`server/lib/sources/_shape.mjs`), og delstrengskontroller af leverandører blev til parsnede fastlåsninger af den nøjagtige vært — `clever.com` kan ikke længere udgive sig for at være lever, og et fjendtligt tavle-URL kan ikke længere omdirigere en scanning. Én fejlkonfigureret portals-post kan ikke længere afbryde en hel scanning.
+> **🆕 Seneste udgivelse — v1.242.1** — **Scannerens datalag er igen til at stole på.** Døde kilder lever igen (justjoin og nofluffjobs læser deres fulde kataloger igen; himalayas og jobicy kommer forbi de 20 nyeste), et misdannet svar eller udfordringssvar **kaster nu en fejl** på side 1 i stedet for at blive læst som "0 opslag" (`server/lib/sources/_shape.mjs`), og delstrengskontroller af leverandører blev til parsnede fastlåsninger af den nøjagtige vært — `clever.com` kan ikke længere udgive sig for at være lever, og et fjendtligt tavle-URL kan ikke længere omdirigere en scanning. Én fejlkonfigureret portals-post kan ikke længere afbryde en hel scanning.
 >
 > **Tidligere — v1.241.1** — Live-evalueringer virker end-to-end på alle sprog; jobkortet placerer lange opslag med flere lokationer; en deploy venter på en kørende timescan.
 

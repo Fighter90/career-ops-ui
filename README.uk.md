@@ -7,17 +7,17 @@
 
 _Неофіційний інтерфейс — не пов'язаний із career-ops / santifer і не схвалений ними._
 
-[![tests](https://img.shields.io/badge/tests-4419%20passed-brightgreen)](#тести)
+[![tests](https://img.shields.io/badge/tests-4812%20passed-brightgreen)](#тести)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#тести)
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.242.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.242.0)
+[![release](https://img.shields.io/badge/release-v1.242.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.242.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Останній реліз — v1.242.0** — **Шар даних сканера знову гідний довіри.** Мертві джерела оживли (justjoin і nofluffjobs знову читають повні каталоги; himalayas і jobicy проходять далі 20 найновіших), некоректна або challenge-відповідь тепер **кидає помилку** на сторінці 1, а не читається як «0 вакансій» (`server/lib/sources/_shape.mjs`), а перевірки вендорів за підрядком стали розібраними точними прив'язками хостів — `clever.com` більше не може видавати себе за lever, і ворожий URL дошки більше не може перенаправити сканування. Один неправильно налаштований запис у portals більше не перериває все сканування.
+> **🆕 Останній реліз — v1.242.1** — **Шар даних сканера знову гідний довіри.** Мертві джерела оживли (justjoin і nofluffjobs знову читають повні каталоги; himalayas і jobicy проходять далі 20 найновіших), некоректна або challenge-відповідь тепер **кидає помилку** на сторінці 1, а не читається як «0 вакансій» (`server/lib/sources/_shape.mjs`), а перевірки вендорів за підрядком стали розібраними точними прив'язками хостів — `clever.com` більше не може видавати себе за lever, і ворожий URL дошки більше не може перенаправити сканування. Один неправильно налаштований запис у portals більше не перериває все сканування.
 >
 > **Попередній реліз — v1.241.1** — Живі оцінки працюють end-to-end усіма мовами; карта вакансій розміщує довгі багатолокаційні оголошення; розгортання чекає на поточний погодинний скан.
 

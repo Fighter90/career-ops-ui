@@ -2,6 +2,12 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.242.1] — 2026-10-08
+
+### Düzeltildi
+
+- **Sürüm arşivi artık `node_modules` sembolik bağlantıları içermiyor.** v1.242.0 git etiketi kökte bir `node_modules` sembolik bağlantısı ve `site/node_modules` taşıyordu (genel kapsamlı bir `git add -A` bunları sondaki eğik çizgili ignore desenlerinin önünden geçirdi), bu da sunucu dağıtımının tar açmasını bozdu — dağıtım güvenle geri alındı ve üretim 1.241.1'de kaldı. Her iki sembolik bağlantı izlemeden çıkarıldı ve ignore desenleri genişletildi; npm tarball'ı hiç etkilenmedi (paketlerken npm `node_modules` hariç tutar).
+
 ## [1.242.0] — 2026-10-07
 
 **Tarayıcının veri katmanı yeniden güvenilir: ölü kaynaklar canlandı, hatalı biçimli bir yanıt artık boş pano kılığına giremiyor ve kötü niyetli bir pano URL'si artık bir taramayı yönlendiremiyor.**

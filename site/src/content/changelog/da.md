@@ -8,6 +8,12 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.242.1] — 2026-10-08
+
+### Rettet
+
+- **Udgivelsesarkivet indeholder igen ingen `node_modules`-symlinks.** Git-tagget v1.242.0 bar et `node_modules`-symlink i roden og `site/node_modules` (en blanket `git add -A` sneg dem forbi ignore-mønstrene med afsluttende skråstreg), hvilket fik server-udrulningens tar-udpakning til at fejle — udrulningen rullede sikkert tilbage, og produktionen forblev på 1.241.1. Begge symlinks er fjernet fra tracking og ignore-mønstrene udvidet; npm-tarballen blev aldrig berørt (npm udelukker `node_modules` ved pakning).
+
 ## [1.242.0] — 2026-10-07
 
 **Scannerens datalag er igen til at stole på: døde kilder lever igen, et misdannet svar kan ikke længere udgive sig for at være en tom tavle, og et fjendtligt tavle-URL kan ikke længere omdirigere en scanning.**

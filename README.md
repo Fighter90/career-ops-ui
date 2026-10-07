@@ -9,17 +9,17 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-4419%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-4812%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.242.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.242.0)
+[![release](https://img.shields.io/badge/release-v1.242.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.242.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Latest release — v1.242.0** — **The scanner's data layer is trustworthy again.** Dead sources are alive (justjoin and nofluffjobs read their full catalogs again; himalayas and jobicy walk past the newest 20), a malformed or challenge answer now **throws** on page 1 instead of reading as "0 postings" (`server/lib/sources/_shape.mjs`), and substring vendor checks became parsed exact-host pins — `clever.com` can no longer claim lever, and a hostile board URL can no longer redirect a scan. One misconfigured portals entry can no longer abort a whole scan.
+> **🆕 Latest release — v1.242.1** — **The scanner's data layer is trustworthy again.** Dead sources are alive (justjoin and nofluffjobs read their full catalogs again; himalayas and jobicy walk past the newest 20), a malformed or challenge answer now **throws** on page 1 instead of reading as "0 postings" (`server/lib/sources/_shape.mjs`), and substring vendor checks became parsed exact-host pins — `clever.com` can no longer claim lever, and a hostile board URL can no longer redirect a scan. One misconfigured portals entry can no longer abort a whole scan.
 >
 > **Previous — v1.241.1** — **Hardening from a 28-agent code review, and a job map by @bullitt186.** A malformed request can no longer stop the server, an aborted scan no longer wipes the last results, evaluations now see the whole method file instead of the first 16 KB, the server refuses DNS-rebinding hosts and cross-site writes, and redirects are re-checked for private targets. `#/map` shows your postings on OpenStreetMap. **4404 tests · 118 browser.**
 > **Previous — v1.241.0** — **Hardening from a 28-agent code review, and a job map by @bullitt186.** A malformed request can no longer stop the server, an aborted scan no longer wipes the last results, evaluations now see the whole method file instead of the first 16 KB, the server refuses DNS-rebinding hosts and cross-site writes, and redirects are re-checked for private targets. `#/map` shows your postings on OpenStreetMap. **4404 tests · 118 browser.**
