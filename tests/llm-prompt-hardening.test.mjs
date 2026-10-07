@@ -214,3 +214,23 @@ test('PROMPT_SIZE_SOFT_CAP is defined once (llm-dispatch) and imported by the ro
   const defs = files.filter((f) => /PROMPT_SIZE_SOFT_CAP\s*=/.test(readFileSync(new URL(f, dir), 'utf8')));
   assert.deepEqual(defs, ['llm-dispatch.mjs']);
 });
+
+test('bundleProjectContext states the output language BEFORE the inlined files (prod QA hi/ja drift)', () => {
+  const ctx = P.bundleProjectContext({ modeSlugs: ['_shared', 'oferta'], lang: 'hi' });
+  assert.ok(ctx.startsWith('# Output language'), ctx.slice(0, 80));
+  assert.ok(ctx.indexOf('(locale: hi)') < ctx.indexOf('<project_context>'));
+  assert.ok(P.bundleProjectContext({ modeSlugs: ['oferta'] }).startsWith('<project_context>'));
+  assert.ok(P.bundleProjectContext({ modeSlugs: ['oferta'], lang: 'en' }).startsWith('<project_context>'));
+});
+
+test('evaluation routes pass the language to the context and a 300 s timeout to the provider', () => {
+  const llm = readFileSync(new URL('../server/lib/routes/llm.mjs', import.meta.url), 'utf8');
+  const ap = readFileSync(new URL('../server/lib/routes/auto-pipeline.mjs', import.meta.url), 'utf8');
+  for (const src of [llm, ap]) {
+    const calls = src.match(/bundleProjectContext\(\{ modeSlugs: \['_shared', 'oferta'\][^)]*\)/g) || [];
+    assert.ok(calls.length >= 1);
+    for (const c of calls) assert.match(c, /\blang\b/, c);
+    assert.match(src, /EVAL_TIMEOUT_MS = 300_000/);
+  }
+  assert.equal((llm.match(/maxTokens: EVAL_MAX_TOKENS, timeoutMs: EVAL_TIMEOUT_MS/g) || []).length, 2);
+});

@@ -289,7 +289,11 @@ export function bundleProjectContext(opts = {}) {
       'time-sensitive claims as estimates. The server persists the output.',
     );
   }
-  return [
+  // The inlined files are ~150 KB of English. A language line only AFTER
+  // them lost to that mass (2026-10-07 prod QA: hi/ja reports ~20 % own
+  // script), so the output language is stated once before them as well.
+  const lead = opts.lang ? buildLocaleDirective(opts.lang) : '';
+  return lead + [
     ...head,
     '',
     blocks.join('\n\n'),

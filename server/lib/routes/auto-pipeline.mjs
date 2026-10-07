@@ -51,7 +51,7 @@ import { llmRateLimit } from '../rate-limit.mjs';
 
 const FETCH_TIMEOUT_MS = 30_000;
 const FETCH_MAX_BODY_BYTES = 64 * 1024;
-const EVAL_TIMEOUT_MS = 180_000;       // 3 min — Anthropic can take 60-90s
+const EVAL_TIMEOUT_MS = 300_000;       // 5 min — a full A–G report took up to 136 s on prod
 const STEPS = [
   { key: 'validate', label: 'Validating URL' },
   { key: 'fetch',    label: 'Fetching job description' },
@@ -285,7 +285,7 @@ export function registerAutoPipelineRoutes(app) {
         }
         markdown = r.stdout || '';
       } else {
-        const ctx = bundleProjectContext({ modeSlugs: ['_shared', 'oferta'], warnings });
+        const ctx = bundleProjectContext({ modeSlugs: ['_shared', 'oferta'], lang, warnings });
         const full = ctx + promptText;
         if (full.length > PROMPT_SIZE_SOFT_CAP) {
           step(2, 'failed', `prompt ${full.length} > ${PROMPT_SIZE_SOFT_CAP} cap`);
