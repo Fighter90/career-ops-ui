@@ -147,10 +147,47 @@ test('workable: a large account is scanned fully (no cap, single request)', asyn
 });
 
 // ── parseWorkableWidget robustness ─────────────────────────────────────
-test('workable: parseWorkableWidget tolerates null / jobs-less payloads', () => {
-  assert.deepEqual(parseWorkableWidget(null), []);
-  assert.deepEqual(parseWorkableWidget({}), []);
-  assert.deepEqual(parseWorkableWidget({ jobs: 'nope' }), []);
+// v1.242.0 Phase 2: the documented widget envelope is REQUIRED — a malformed
+// 200 throws instead of silently reading as an empty board.
+test('workable: parseWorkableWidget throws a labelled error on a malformed payload', () => {
+  for (const bad of [null, undefined, {}, { jobs: 'nope' }, { jobs: null }, []]) {
+    assert.throws(
+      () => parseWorkableWidget(bad),
+      (err) => {
+        assert.match(err.message, /Workable/);
+        return true;
+      },
+      `expected a throw for ${JSON.stringify(bad)}`,
+    );
+  }
+});
+
+test('workable: parseWorkableWidget still parses a valid payload', () => {
+  const jobs = parseWorkableWidget({
+    name: 'Optimile',
+    jobs: [{ title: 'Dev', shortcode: 'S1', shortlink: 'https://apply.workable.com/j/S1' }],
+  });
+  assert.equal(jobs.length, 1);
+});
+
+test('workable: fetchWorkable surfaces a malformed 200 as a throw (dead-board contract)', async () => {
+  await assert.rejects(
+    () => fetchWorkable(ADAPTER_V3_URL, { fetchImpl: okJson({ name: 'X' }), retryDelayMs: 0 }),
+    /Workable/,
+  );
+});
+
+test('workable: normalizes a published_on datetime to YYYY-MM-DD UTC', () => {
+  const jobs = parseWorkableWidget({
+    name: 'X',
+    jobs: [{
+      title: 'T',
+      shortcode: 'S9',
+      shortlink: 'https://apply.workable.com/j/S9',
+      published_on: '2026-04-01T23:30:00Z',
+    }],
+  });
+  assert.equal(jobs[0].date, '2026-04-01');
 });
 
 // ── slug resolution across URL shapes ──────────────────────────────────

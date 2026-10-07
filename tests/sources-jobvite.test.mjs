@@ -238,6 +238,56 @@ test('parseJobviteXml: empty <result/> and empty string → [] (empty-feed handl
   assert.deepEqual(parseJobviteXml(null, 'X'), []);
 });
 
+// ---------------------------------------------------------------------------
+// v1.242.0 — M/D/YYYY parsed as UTC (Date.parse reads it in the server's TZ,
+// shifting the ISO date a day for every non-UTC host), and the feed marker
+// ---------------------------------------------------------------------------
+
+test('parseJobviteXml: M/D/YYYY dates normalize to UTC midnight, TZ-independent', () => {
+  const xml = `<?xml version="1.0"?><result><job>
+    <id>201</id><title>Date Role</title>
+    <date>6/2/2025</date>
+    <detail-url><![CDATA[https://jobs.jobvite.com/acme/job/date]]></detail-url>
+  </job></result>`;
+  const [job] = parseJobviteXml(xml, 'Acme');
+  // 6/2/2025 is June 2 — Date.parse would read it as LOCAL midnight, which on
+  // a UTC+ server lands on June 1 UTC and shifts every posting a day.
+  assert.equal(job.date, new Date(Date.UTC(2025, 5, 2)).toISOString());
+});
+
+test('parseJobviteXml: ISO dates and junk dates still parse via their own paths', () => {
+  const iso = `<?xml version="1.0"?><result><job>
+    <id>202</id><title>ISO Role</title>
+    <date>2025-06-02T12:00:00Z</date>
+    <detail-url><![CDATA[https://jobs.jobvite.com/acme/job/iso]]></detail-url>
+  </job></result>`;
+  const [job] = parseJobviteXml(iso, 'Acme');
+  assert.equal(job.date, '2025-06-02T12:00:00.000Z'); // full ISO preserved
+});
+
+test('fetchJobvite: a 200 HTML challenge page on the feed throws instead of reading as an empty board', async () => {
+  const challenge = '<html><head><title>Access denied</title></head><body>Checking your browser…</body></html>';
+  const fetchImpl = async () => ({ ok: true, status: 200, text: async () => challenge });
+  await assert.rejects(
+    () => fetchJobvite(FEED, { fetchImpl, company: { name: 'Acme', company_eid: EID } }),
+    /challenge page/,
+  );
+});
+
+test('fetchJobvite: a 200 non-feed body throws (no silent zero)', async () => {
+  const fetchImpl = async () => ({ ok: true, status: 200, text: async () => 'Not Found' });
+  await assert.rejects(
+    () => fetchJobvite(FEED, { fetchImpl, company: { name: 'Acme', company_eid: EID } }),
+    /answered no Jobvite feed/,
+  );
+});
+
+test('fetchJobvite: a 200 empty <result/> feed still reads as a legitimate empty board', async () => {
+  const fetchImpl = async () => ({ ok: true, status: 200, text: async () => '<result></result>' });
+  const jobs = await fetchJobvite(FEED, { fetchImpl, company: { name: 'Acme', company_eid: EID } });
+  assert.deepEqual(jobs, []);
+});
+
 test('parseJobviteXml: unterminated final <job> block is ignored, not looped', () => {
   const xml = '<result><job><id>1</id><title>A</title><detail-url>https://jobs.jobvite.com/x/1</detail-url></job>'
     + '<job><id>2</id><title>Truncated</title>';

@@ -22,13 +22,17 @@
  * Used by the tencent adapter (server/lib/portals/adapters/tencent.mjs).
  */
 import { fetchJson, delay } from '../http-json.mjs';
+import { requireArray, requireContainer } from './_shape.mjs';
 
 const API_HOST = 'careers.tencent.com';
 const API_PATH = '/tencentcareer/api/post/Query';
 export const DEFAULT_API = `https://${API_HOST}${API_PATH}`;
 const PAGE_SIZE = 100;
 const DEFAULT_KEYWORDS = ['']; // empty keyword = the whole board, no topical bias
-const DEFAULT_MAX_PAGES = 20;
+export const DEFAULT_MAX_PAGES = 20;
+// Hard ceiling on an explicit max_pages override: an unclamped 100_000 would
+// turn one misconfigured entry into an unbounded request walk.
+export const MAX_PAGES_CAP = 100;
 // Every request after the first pays it — across pages and keyword switches
 // (same idiom as avature/workday).
 const INTER_PAGE_DELAY_MS = 250;
@@ -78,14 +82,24 @@ function buildUrl(keyword, pageIndex) {
 /**
  * Parse one page of the careers.tencent.com Query API payload into web-ui
  * Jobs. Exported for unit tests.
+ *
+ * Shape contract (Phase 2): the body must carry the documented
+ * `Data.Posts[]` envelope. A 200 without it THROWS — a Posts key gone or
+ * retyped must never read as an empty board (that is how an envelope change
+ * ships for months as "0 jobs"). An explicit empty `Posts: []` is a healthy
+ * empty board. A missing/non-numeric `Data.Count` reads as an UNKNOWN total
+ * (Infinity), not 0 — with 0 the paginator stopped after page 1 and silently
+ * truncated full boards.
+ *
  * @param {any} json
  * @param {string} companyName
  * @returns {{ jobs: object[], total: number }}
  */
 export function parseTencentResponse(json, companyName) {
-  const posts = json?.Data?.Posts;
-  const total = Number(json?.Data?.Count) || 0;
-  if (!Array.isArray(posts)) return { jobs: [], total };
+  requireContainer(json, 'Tencent Query', 'Data.Posts');
+  const posts = requireArray(json.Data.Posts, 'Tencent Data.Posts');
+  const rawCount = Number(json.Data?.Count);
+  const total = Number.isFinite(rawCount) ? rawCount : Infinity;
 
   const jobs = [];
   for (const p of posts) {
@@ -131,7 +145,14 @@ export async function fetchTencent(apiUrl = DEFAULT_API, opts = {}) {
   const keywords = Array.isArray(company.keywords) && company.keywords.length
     ? company.keywords
     : DEFAULT_KEYWORDS;
-  const maxPages = Number(company.max_pages) > 0 ? Number(company.max_pages) : DEFAULT_MAX_PAGES;
+  // max_pages is clamped: a sub-1 value (0.5 — the bug class here) used to
+  // drive the `page <= maxPages` loop to ZERO requests, reading as a healthy
+  // empty board. Anything below 1 or non-numeric falls back to the default;
+  // an override above MAX_PAGES_CAP is bounded.
+  const rawMaxPages = Number(company.max_pages);
+  const maxPages = Number.isFinite(rawMaxPages) && rawMaxPages >= 1
+    ? Math.min(Math.floor(rawMaxPages), MAX_PAGES_CAP)
+    : DEFAULT_MAX_PAGES;
   const companyName = company.name || '腾讯';
 
   /** @type {Map<string, object>} */
@@ -164,6 +185,10 @@ export async function fetchTencent(apiUrl = DEFAULT_API, opts = {}) {
         if (!seen.has(job.url)) seen.set(job.url, job);
       }
 
+      // Stop on an empty page, or once the reported total is reached. A
+      // missing Count reads as an unknown total (Infinity) — never 0, which
+      // used to stop the walk after page 1 — and a short page is still not
+      // an end signal on its own.
       if (page * PAGE_SIZE >= total) break;
     }
   }

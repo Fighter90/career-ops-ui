@@ -27,11 +27,16 @@
  */
 import { fetchJson } from '../http-json.mjs';
 import { decodeEntities } from '../html-entities.mjs';
+import { requireArray } from './_shape.mjs';
 
 const API_HOST = 'jobs.gem.com';
 export const GEM_API_URL = `https://${API_HOST}/api/public/graphql/batch`;
 const SNIPPET_CAP = 1000; // keep scan payloads sane — Gem JDs carry full-text HTML
 const REMOTE_RE = /remote|anywhere|distributed|home\s*office/i;
+// ECMA-262 max representable Date (±8.64e15 ms). Beyond it toISOString()
+// throws RangeError — one garbage timestamp must drop one row, not abort
+// the whole board.
+const MAX_EPOCH_MS = 8_640_000_000_000_000;
 
 export const meta = {
   value: 'gem',
@@ -130,11 +135,13 @@ export function resolveBoardId(rawUrl) {
 }
 
 // firstPublishedTsSec is unix SECONDS (unlike most providers' ms epochs).
-// NaN-safe → ISO date `YYYY-MM-DD`, or '' when absent/unparseable.
+// NaN-safe → ISO date `YYYY-MM-DD`, or '' when absent/unparseable/out of
+// range — n * 1000 past the max date throws RangeError out of toISOString()
+// and would abort the whole board for one garbage row.
 function toIsoDateFromSeconds(value) {
   if (value == null) return '';
   const n = Number(value);
-  if (!Number.isFinite(n) || n <= 0) return '';
+  if (!Number.isFinite(n) || n <= 0 || n * 1000 > MAX_EPOCH_MS) return '';
   return new Date(n * 1000).toISOString().slice(0, 10);
 }
 
@@ -331,7 +338,10 @@ export function parseGemRestResponse(json, companyName) {
       isRemote,
       workplaceType: isRemote ? 'Remote' : '',
       relocates: false,
-      date: Number.isFinite(ms) && ms > 0 ? new Date(ms).toISOString() : '',
+      // isFinite + > 0 + ≤ max: Date.parse is engine-defined for non-ISO
+      // strings, so a finite-but-absurd value must stay '' rather than
+      // RangeError out of toISOString.
+      date: Number.isFinite(ms) && ms > 0 && ms <= MAX_EPOCH_MS ? new Date(ms).toISOString() : '',
       snippet: description.slice(0, 400),
       description,
       source: 'gem',
@@ -375,8 +385,14 @@ export async function fetchGem(endpoint, opts = {}) {
   if (Array.isArray(listResult?.errors) && listResult.errors.length > 0) {
     throw new Error(`gem: JobBoardList failed: ${listResult.errors[0]?.message || 'unknown GraphQL error'}`);
   }
-  const postings = listResult?.data?.oatsExternalJobPostings?.jobPostings;
-  if (!Array.isArray(postings)) return [];
+  // Phase-2: a 200 without the jobPostings container is a broken/changed
+  // GraphQL envelope, not an empty board — reading it as [] shipped dead
+  // boards as "0 postings". The page-0 shape violation is loud so the
+  // quarantine layer records a broken board instead of a healthy-empty one.
+  const postings = requireArray(
+    listResult?.data?.oatsExternalJobPostings?.jobPostings,
+    'gem: JobBoardList data.oatsExternalJobPostings.jobPostings',
+  );
 
   const validPostings = postings.filter((p) => p && p.extId && p.title);
 

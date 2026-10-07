@@ -34,13 +34,18 @@ export const jobbankcaAdapter = {
   id: 'jobbankca',
   label: 'Job Bank (Canada)',
   matches(company) {
+    if (!company || typeof company !== 'object') return false;
     if (company.provider === 'jobbankca') return true;
     return isJobBankHost(company);
   },
   buildEndpoint(company) {
     // Fixed national feed; `api:` may override for a mirror/test, still
-    // host-pinned by the source's assertJobBankUrl.
-    return company.api || FEED_URL;
+    // host-pinned by the source's assertJobBankUrl. `string | null` contract:
+    // a non-string api falls back to the feed; garbage input never throws.
+    const api = company && typeof company === 'object' && typeof company.api === 'string'
+      ? company.api
+      : '';
+    return api || FEED_URL;
   },
   fetch: fetchJobBankCa,
 };

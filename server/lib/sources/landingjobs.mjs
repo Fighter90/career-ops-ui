@@ -1,9 +1,15 @@
 /**
  * Landing.jobs source — board-wide tech/Europe-focused aggregator feed.
- *   GET https://landing.jobs/api/v1/jobs  → JSON array of postings
+ *   GET https://landing.jobs/api/v1/jobs?limit=50&offset=N → JSON array
  *
  * Implements the
  * web-ui source contract.
+ *
+ * v1.242.0: the fetch was a single un-parameterized GET, which the API caps
+ * at the first 50 postings. The walk now pages `?limit=50&offset=N` until a
+ * short page, a page that adds no fresh URL, or the page cap. A first-page
+ * failure throws (dead board); a mid-walk failure keeps what's already
+ * collected.
  *
  * NOTE: the v1 feed carries no company-name field — the employer slug only
  * appears in the posting URL path (`https://landing.jobs/at/<slug>/<job>`),
@@ -12,11 +18,15 @@
  *
  * Used by the landingjobs adapter (server/lib/portals/adapters/landingjobs.mjs).
  */
+import { requireArray } from './_shape.mjs';
+
 const UA = 'career-ops-web-ui/1.0';
 
 export const FEED_URL = 'https://landing.jobs/api/v1/jobs';
 
 const TRUSTED_HOST = 'landing.jobs';
+const PAGE_SIZE = 50;  // the API's hard page size
+const MAX_PAGES = 25;  // safety cap (1250 postings), same ceiling as oraclecloud
 
 export const meta = {
   value: 'landingjobs',
@@ -145,28 +155,66 @@ function normalize(j) {
 }
 
 /**
- * Fetch + normalize the Landing.jobs public feed.
+ * The feed URL for one page, with the paging params pinned (the bare GET is
+ * capped at the first 50 postings server-side).
+ * @param {string} feedUrl
+ * @param {number} offset
+ */
+export function buildFeedPageUrl(feedUrl, offset = 0) {
+  const parsed = new URL(assertLandingjobsUrl(feedUrl));
+  parsed.searchParams.set('limit', String(PAGE_SIZE));
+  parsed.searchParams.set('offset', String(offset));
+  return parsed.href;
+}
+
+/**
+ * Fetch + normalize the Landing.jobs public feed, walking ?offset= until a
+ * short page, a page that adds no fresh URL, or MAX_PAGES.
  * @param {string} feedUrl
  * @param {{ fetchImpl?: Function, signal?: AbortSignal }} [opts]
  */
 export async function fetchLandingjobs(feedUrl = FEED_URL, opts = {}) {
   const { fetchImpl = fetch, signal } = opts;
   assertLandingjobsUrl(feedUrl);
-  const res = await fetchImpl(feedUrl, {
-    signal,
-    redirect: 'error',
-    headers: { 'User-Agent': UA, Accept: 'application/json' },
-  });
-  if (!res.ok) {
-    const err = new Error(`landingjobs: HTTP ${res.status} (${feedUrl})`);
-    err.status = res.status;
-    throw err;
+
+  /** @type {Set<string>} */
+  const seen = new Set();
+  const jobs = [];
+  for (let page = 0; page < MAX_PAGES; page += 1) {
+    const url = buildFeedPageUrl(feedUrl, page * PAGE_SIZE);
+    let rows;
+    try {
+      const res = await fetchImpl(url, {
+        signal,
+        redirect: 'error',
+        headers: { 'User-Agent': UA, Accept: 'application/json' },
+      });
+      if (!res.ok) {
+        const err = new Error(`landingjobs: HTTP ${res.status} (${url})`);
+        err.status = res.status;
+        throw err;
+      }
+      rows = requireArray(await res.json(), 'Landing.jobs jobs');
+    } catch (err) {
+      // Nothing collected yet means the endpoint is wrong — surface it. After
+      // a success, a later failure is a partial result worth keeping.
+      if (page === 0) throw err;
+      console.error(`  ⚠ landingjobs: page ${page + 1} failed (${err.message}) — keeping the ${jobs.length} jobs collected so far`);
+      return jobs;
+    }
+
+    let fresh = 0;
+    for (const j of rows) {
+      const job = normalize(j);
+      if (job && !seen.has(job.url)) {
+        seen.add(job.url);
+        jobs.push(job);
+        fresh += 1;
+      }
+    }
+    // Stop on the RAW page length; a page that adds no fresh URL (the API
+    // ignoring offset) is the end too.
+    if (rows.length < PAGE_SIZE || fresh === 0) break;
   }
-  const json = await res.json();
-  if (!Array.isArray(json)) {
-    throw new Error(
-      `landingjobs: unexpected API response — expected a JSON array, got ${json === null ? 'null' : typeof json}`,
-    );
-  }
-  return json.map((j) => normalize(j)).filter(Boolean);
+  return jobs;
 }

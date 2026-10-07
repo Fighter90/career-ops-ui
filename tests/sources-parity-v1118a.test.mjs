@@ -271,17 +271,24 @@ test('radancy: fetch pages ?p=N, stops on empty / all-seen pages, preserves part
   const pages = [html, '<html>' + card('111', 'C', 'Kiel, Germany') + '</html>', '<html></html>'];
   let calls = 0;
   const seenUrls = [];
-  const fetchImpl = async (url) => { seenUrls.push(url); return textResponse(pages[calls++] ?? '<html></html>'); };
+  // The fragment transport runs by DEFAULT now; the mock refuses /results (its
+  // HTML body fails res.json()) so this test exercises the ?p=N HTML walk.
+  const fetchImpl = async (url) => {
+    seenUrls.push(url);
+    if (String(url).includes('/results')) return textResponse('<html>fragment probe — json() throws</html>');
+    return textResponse(pages[calls++] ?? '<html></html>');
+  };
   const endpoint = 'https://careers.munichre.com/en/search-jobs';
   const jobs = await fetchRadancy(endpoint, { fetchImpl, company: { name: 'Munich Re' } });
   assert.equal(jobs.length, 3);
   assert.equal(calls, 3); // stops on the first empty page
-  assert.ok(seenUrls[0].endsWith('?p=1'));
-  assert.ok(seenUrls[1].endsWith('?p=2'));
+  assert.ok(seenUrls.find((u) => u.endsWith('?p=1')));
+  assert.ok(seenUrls.find((u) => u.endsWith('?p=2')));
 
   // Mid-scan failure preserves jobs already collected.
   let partialCalls = 0;
-  const partialImpl = async () => {
+  const partialImpl = async (url) => {
+    if (String(url).includes('/results')) return textResponse('<html>fragment probe — json() throws</html>');
     partialCalls++;
     if (partialCalls === 1) return textResponse(html);
     throw new Error('network blip on page 2');
@@ -294,7 +301,10 @@ test('radancy: fetch pages ?p=N, stops on empty / all-seen pages, preserves part
   // without appending duplicates — NOT just a literally empty page.
   const dupPages = [html, '<html>' + card('1', 'A', 'Bingen, Germany') + '</html>', '<html>' + card('999', 'Never reached', 'X') + '</html>'];
   let dupCalls = 0;
-  const dupImpl = async () => textResponse(dupPages[dupCalls++] ?? '<html></html>');
+  const dupImpl = async (url) => {
+    if (String(url).includes('/results')) return textResponse('<html>fragment probe — json() throws</html>');
+    return textResponse(dupPages[dupCalls++] ?? '<html></html>');
+  };
   const dupJobs = await fetchRadancy(endpoint, { fetchImpl: dupImpl, company: { name: 'Munich Re' } });
   assert.equal(dupJobs.length, 2);
   assert.equal(dupCalls, 2);

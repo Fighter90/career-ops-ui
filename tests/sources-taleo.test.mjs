@@ -343,3 +343,80 @@ test('fetch: probe/list errors propagate with a status', async () => {
     (err) => err.status === 500,
   );
 });
+
+// ── Phase 2 (v1.242.0): heading extraction, French columns, date TZ ──
+
+const JOBS_TABLE_SHELL = (thead) =>
+  `<html><body><nav><label>Language</label><label>Actions</label></nav>` +
+  `<table id="jobs"><thead><tr>${thead}</tr></thead></table>` +
+  `<footer><label>Newsletter</label></footer></body></html>`;
+
+test('extractHeadings: labels are read ONLY from the jobs table, never from the page chrome', () => {
+  const headings = extractHeadings(
+    JOBS_TABLE_SHELL('<th>Requisition Title</th><th>Location</th><th>Posting Date</th>'),
+  );
+  assert.deepEqual(headings, ['Requisition Title', 'Location', 'Posting Date']);
+  // Chrome labels (nav/footer) must not leak into the column map.
+  assert.ok(!headings.includes('Language'));
+  assert.ok(!headings.includes('Newsletter'));
+});
+
+test('extractHeadings: no jobs table → [] (positional fallback), never a scan of the whole shell', () => {
+  assert.deepEqual(extractHeadings('<html><nav><label>Sign in</label></nav><div>jobs</div></html>'), []);
+  assert.deepEqual(extractHeadings(SHELL), [], 'the bare fixture has no id="jobs" table');
+  assert.deepEqual(extractHeadings(null), []);
+});
+
+test('French column headings map to title/location/posted', () => {
+  const headings = ['Titre du poste', 'Emplacement', "Date d'affichage"];
+  const jobs = parseTaleoResponse(
+    { requisitionList: [{ jobId: 'fr1', column: ['Ingénieur', 'Paris', '15/07/2026'] }] },
+    BOARD, headings, 'X',
+  );
+  assert.equal(jobs.length, 1);
+  assert.equal(jobs[0].title, 'Ingénieur');
+  assert.equal(jobs[0].location, 'Paris');
+  assert.equal(jobs[0].date, '2026-07-15');
+});
+
+test('unrecognized headings still fall back to positional columns — rows are not dropped', () => {
+  const jobs = parseTaleoResponse(
+    { requisitionList: [{ jobId: 'z1', column: ['Mystery Title', 'Mystery City', '2026-07-15'] }] },
+    BOARD, ['Foo', 'Bar', 'Baz'], 'X',
+  );
+  assert.equal(jobs.length, 1);
+  assert.equal(jobs[0].title, 'Mystery Title');
+  assert.equal(jobs[0].location, 'Mystery City');
+});
+
+test('fetch: a French shell without a jobs table parses every row (rawCount > 0 ⇒ rows survive)', async () => {
+  const frenchShell = '<form action="/careersection/rest/jobboard/searchjobs?portal=8100120144">' +
+    '<label>Langue</label><div>postes</div></form>';
+  const t = transport({
+    shell: () => frenchShell,
+    list: (p) => (p === 1
+      ? { requisitionList: [
+          { jobId: 'a', column: ['Ingénieur logiciel', 'Montréal', '2026-09-01'] },
+          { jobId: 'b', column: ['Analyste', 'Québec', '2026-09-02'] },
+        ], pagingData: { totalCount: 2 } }
+      : { requisitionList: [], pagingData: { totalCount: 2 } }),
+  });
+  const jobs = await run({ name: 'FR' }, t);
+  assert.equal(jobs.length, 2, 'no heading match must not silently drop the whole page');
+  assert.equal(jobs[0].title, 'Ingénieur logiciel');
+  assert.equal(jobs[1].location, 'Québec');
+});
+
+test('posting dates are UTC date-only: no off-by-one from the process timezone', () => {
+  const mk = (posted) => parseTaleoResponse(
+    { requisitionList: [{ jobId: 'd1', column: ['T', 'Toronto', posted] }] },
+    BOARD, [], 'X',
+  )[0].date;
+  assert.equal(mk('7/15/2026'), '2026-07-15', 'US M/D/Y must not shift a day in UTC+ timezones');
+  assert.equal(mk('2026-07-15'), '2026-07-15', 'ISO date passes through unchanged');
+  assert.equal(mk('Jul 15, 2026'), '2026-07-15', 'month-name form');
+  assert.equal(mk('15 Jul 2026'), '2026-07-15', 'day-first month-name form');
+  assert.equal(mk('not-a-date'), '');
+  // A full timestamp still parses (legacy behavior), via the Date.parse fallback.
+  assert.equal(mk('2026-07-15T00:00:00Z'), '2026-07-15');
+});

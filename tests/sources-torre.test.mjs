@@ -123,7 +123,8 @@ test('normalizeTorreOpportunity: web-ui shape, remote, country join, org fallbac
   assert.equal(remote.salary, '');
   assert.equal(remote.snippet, '');
   assert.equal(remote.source, 'torre');
-  assert.equal(remote.date, new Date(Date.parse('2026-08-06T17:48:17.000Z')).toISOString());
+  // v1.242.0 Phase 2 — dates are YYYY-MM-DD UTC (was: a full ISO timestamp).
+  assert.equal(remote.date, '2026-08-06');
 
   // Non-remote row: joined locations, isRemote false, first unnamed org skipped.
   const onsite = normalizeTorreOpportunity({

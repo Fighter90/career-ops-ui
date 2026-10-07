@@ -21,6 +21,8 @@ import {
   parseResults,
   parseModernResults,
   parseLegacyResults,
+  resolveListUrl,
+  assertRadancyUrl,
   buildFragmentUrl,
   readFragmentTotals,
   fetchRadancy,
@@ -187,12 +189,130 @@ test('radancy fetch prefers the JSON fragment transport and stamps company', asy
 });
 
 test('radancy fetch works with no fetchJson capability (HTML transport)', async () => {
+  // The fragment transport is attempted by DEFAULT now; the mock refuses the
+  // /results route (its HTML body fails res.json()) so the walk uses ?p=N.
   let calls = 0;
   const jobs = await fetchRadancy('https://careers.munichre.com/en/search-jobs', {
-    fetchImpl: async () => textResponse(calls++ === 0 ? MODERN_HTML : '<html></html>'),
+    fetchImpl: async (url) => (String(url).includes('/results')
+      ? textResponse('<html>fragment probe — json() throws</html>')
+      : textResponse(calls++ === 0 ? MODERN_HTML : '<html></html>')),
     company: { name: 'Munich Re' },
   });
   assert.equal(jobs.length, 2);
+});
+
+// ── Phase-2 (v1.242.0 sources-6): fragment transport by default, envelope ────
+
+test('radancy: the JSON fragment transport runs by DEFAULT (no opts.fetchJson needed)', async () => {
+  // In prod no caller passes fetchJson, so the preferred transport was dead
+  // code. Without the capability the default must still try /results first.
+  let page = 0;
+  const htmlCalls = [];
+  const jobs = await muteErrors(() => fetchRadancy('https://careers.unitedhealthgroup.com/en/search-jobs', {
+    fetchImpl: async (url) => (String(url).includes('/results')
+      ? { ok: true, status: 200, json: async () => (page++ === 0 ? { results: LEGACY_UHG, hasJobs: true } : { results: '', hasJobs: true }) }
+      : (htmlCalls.push(String(url)), { ok: false, status: 403, text: async () => '', headers: { get: () => null } })),
+    company: { name: 'Optum' },
+  }));
+  assert.ok(page >= 1, 'the /results fragment endpoint was requested');
+  assert.equal(jobs.length, 2);
+  assert.deepEqual(htmlCalls, [], 'a working fragment transport never touches ?p=N');
+});
+
+test('radancy: a page-1 HTML 200 with zero cards and no search-results container THROWS', async () => {
+  // A Cloudflare challenge parses to zero rows on both markups; without the
+  // documented envelope (the search-results section, present even on an empty
+  // board) a page-1 200 must throw instead of reading as an empty board.
+  const challenge = '<html><head><title>Attention Required</title></head><body>cf-error-details</body></html>';
+  await assert.rejects(
+    () => fetchRadancy('https://careers.munichre.com/en/search-jobs', {
+      fetchImpl: async () => textResponse(challenge),
+      company: { name: 'Munich Re' },
+    }),
+    /search-results container/,
+  );
+});
+
+test('radancy: page-1 zero cards WITH the search-results container is a legitimately empty board', async () => {
+  const empty = '<html><section id="search-results" data-total-results="0" data-total-pages="1"></section></html>';
+  const jobs = await fetchRadancy('https://careers.munichre.com/en/search-jobs', {
+    fetchImpl: async () => textResponse(empty),
+    company: { name: 'Munich Re' },
+  });
+  assert.deepEqual(jobs, []);
+});
+
+test('radancy: a mid-scan HTML failure keeps the partials and logs', async () => {
+  const warnings = [];
+  const real = console.warn;
+  console.warn = (m) => warnings.push(String(m));
+  let htmlCalls = 0;
+  let jobs;
+  try {
+    jobs = await fetchRadancy('https://careers.munichre.com/en/search-jobs', {
+      fetchImpl: async (url) => {
+        if (String(url).includes('/results')) return textResponse('<html>fragment probe — json() throws</html>');
+        if (++htmlCalls === 1) return textResponse(MODERN_HTML);
+        throw new Error('HTTP 503 (?p=2)');
+      },
+      company: { name: 'Munich Re' },
+    });
+  } finally {
+    console.warn = real;
+  }
+  assert.equal(jobs.length, 2, 'page-2 failure keeps page-1 rows');
+  assert.match(warnings.join(' '), /radancy/);
+  assert.match(warnings.join(' '), /keeping partials|partial/i);
+});
+
+test('radancy: every resolveListUrl output passes assertRadancyUrl (no lang / en-us)', () => {
+  // resolveListUrl keeps a lang-less search-jobs path as-is and derives one
+  // only when absent — so the endpoint shape guard must accept BOTH, or every
+  // scan of such a tenant fails at the guard.
+  const entries = [
+    'https://careers.munichre.com/search-jobs',        // no lang segment
+    'https://careers.munichre.com/en/search-jobs',     // 2-letter lang
+    'https://careers.munichre.com/en-us/search-jobs',  // regional lang
+    'https://careers.munichre.com/de/some-page',       // → /de/search-jobs
+    'https://careers.munichre.com/en-us/careers',      // → en-us preserved
+  ];
+  for (const entry of entries) {
+    const endpoint = resolveListUrl({ api: entry });
+    assert.ok(endpoint, `resolveListUrl(${entry})`);
+    assert.doesNotThrow(() => assertRadancyUrl(endpoint), `assertRadancyUrl(${endpoint})`);
+  }
+  // The regional lang survives resolution instead of collapsing to /en/.
+  assert.equal(resolveListUrl({ api: 'https://careers.munichre.com/en-us/careers' }), 'https://careers.munichre.com/en-us/search-jobs');
+  // The guard still refuses anything that is not a search-jobs list URL.
+  assert.throws(() => assertRadancyUrl('https://careers.munichre.com/en/other'), /search-jobs/);
+  assert.throws(() => assertRadancyUrl('https://careers.munichre.com/en-us/jobs/listing'), /search-jobs/);
+  assert.throws(() => assertRadancyUrl('not-a-url'), /invalid URL/);
+});
+
+test('radancy: job URLs are pinned to https on the tenant origin (both parsers)', () => {
+  // href is page-controlled content: a javascript:/data:/scheme-relative/
+  // plain-http href must never become the job URL, and an absolute one must
+  // not leave the tenant origin the endpoint was pinned to.
+  const wrap = (href) =>
+    `<li class="search-results-list__item"><a class="search-results-list__job-link" href="${href}" data-job-id="1">T</a></li>`;
+  const legacyWrap = (href) => `<li><a href="${href}" data-job-id="1"><h2>T</h2></a></li>`;
+  const origin = 'https://careers.munichre.com';
+  for (const parser of [parseModernResults, parseLegacyResults]) {
+    for (const href of [
+      'javascript:alert(1)//job/x',
+      'data:text/html,<a>',
+      '//evil.com/job/city/1-slug/3/1',
+      'http://careers.munichre.com/job/city/1-slug/3/1',
+      'https://evil.com/job/city/1-slug/3/1',
+      'https://[', // unparseable even relative to the origin → dropped, never thrown
+    ]) {
+      const html = /Modern/.test(parser.name) ? wrap(href) : legacyWrap(href);
+      assert.equal(parser(html, origin, 'X').length, 0, `${parser.name} dropped nothing for ${href}`);
+    }
+  }
+  // A same-origin relative href still resolves.
+  assert.equal(parseModernResults(wrap('/en/job/city/1-slug/3/1'), origin, 'X').length, 1);
+  assert.equal(parseLegacyResults(legacyWrap('/en/job/city/1-slug/3/1'), origin, 'X').length, 1);
 });
 
 test('radancy fetch falls back to ?p=N when the fragment endpoint throws', async () => {

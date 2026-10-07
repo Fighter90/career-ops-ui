@@ -12,133 +12,33 @@ Fix-and-cover agents A/B/C/D/CI/T; see CHANGELOG 1.241.0.
 
 ## v1.242.0 — sources correctness (Phase 2)
 
-Cross-cutting rule for every source: a 200 with the wrong shape **throws** on page 1; a later
-page failure keeps partials and logs; pagination stops on the **raw** page length; job URLs
-must be `https:` on the pinned host; adapters parse `api` and match an exact host (never
-`includes('vendor')`); `region` is `en`/`ru`. First create `server/lib/sources/_shape.mjs`
-(`requireArray`, `requireContainer`) — the registry skips `_` files.
+**SHIPPED in v1.242.0** — every item that sat under this header when the phase started is closed;
+the per-family sections were removed under the same rule that deletes an item in the commit of its
+fix (one fix agent per file family: sources-1…sources-8, adapters-1/2; the `_shape.mjs` helper
+landed first). What the phase delivered:
 
-Also from Phase 1 hand-offs: `sources/mokahr.mjs` and `sources/feishu-jobs.mjs` must stop reading
-`careers_url ?? api` directly; raise branch coverage of `habr.mjs`, `hh.mjs` (ratchet exemptions).
+- `server/lib/sources/_shape.mjs` (`requireArray` / `requireContainer` / `requireObject`) —
+  a 200 with the wrong shape **throws** on page 1 across ~40 sources; later-page failures keep
+  partials; pagination stops on the **raw** page length; job URLs are https on the pinned host.
+- Dead sources live again: **justjoin** (new envelope + cursor walk), **nofluffjobs**
+  (salaryCurrency params + pageTo loop). **himalayas**/**jobicy** walk their full catalogs
+  (offset/cursor pagination instead of the newest ~20).
+- SSRF: exact-host pins replace `includes('vendor')` in adapters (lever, greenhouse ×5 hosts +
+  legacy PATH_SLUG_HOSTS, ashby, smartrecruiters, workable, gem REST, ibm, arbeitsagentur,
+  hecklerkoch www-only, workingnomads, remoteok, remotive, rss, successfactors); `redirect:'error'`;
+  `resolveAdapter` + per-company `detectApi` wrapped — one bad portals entry can no longer abort
+  a whole scan; `?token=` redacted in comeet errors.
+- Data quality: taleo French headings, telegram keeps the NEWEST posts (paginates `?before=`),
+  tencent Count-unknown walk + clamps, workday offset pagination (MAX_PAGES 20), mycareersfuture
+  12-field shape, arbeitsagentur/vdab/rippling/teamtailor REMOTE_RE tightening (contract-% and
+  'distributed' no longer mean remote), UTC date stamps, HTML-entity decoding (geekjob/getmatch/hh).
+- Not reproducible / verified already fine: peoplesoft `peoplesoftIncomplete` (consumed at
+  en-scanner:279), mokahr/telegram `buildEndpoint` throws (v1.241.0), en-scanner detectApi wrap
+  (v1.241.0), `thehub.mjs` (conformed).
 
-## sources-6 (phenom..remoteok etc.)
-- [M] sources/phenom.mjs:242: succeededOnce before shape check; malformed first page -> []. 
-- [M] rheinmetall.mjs:160 page loop no try/catch -> one 503 loses all earlier pages.
-- [M] rheinmetall.mjs:166 & radancy.mjs:457: page-1 200 with zero cards only warns, returns [] (Cloudflare challenge).
-- [M] pinpoint.mjs:85, recruitee.mjs:115, personio.mjs:88-94, pythonorg.mjs:229, redrover.mjs:173: wrong-shape body -> [] instead of throw.
-- [M] radancy.mjs:365: JSON fragment transport dead in prod (only when opts.fetchJson passed; callers don't). Default fetchJsonImpl.
-- [M] radancy.mjs:53,82 vs 99-103: resolveListUrl yields endpoints assertRadancyUrl rejects (no lang segment / en-us) -> every scan fails. Widen regex.
-- [L] radancy.mjs:161-225 job url no scheme/origin check (javascript:, data:, //evil).
-- [L] peoplesoft.mjs:788 peoplesoftIncomplete has no consumer.
-- [L] phenom.mjs:50 MAX_JOBS silent truncation.
-- [L] remoteok.mjs/remotive.mjs: feed URL no https/host assert; http: urls accepted.
-
-## sources-8 (thehub..yourator)
-- [M] workingnomads.mjs:34 + adapters/workingnomads.mjs:23: no https/host assert -> SSRF to http://169.254.169.254 (bypasses fetchJson DNS guard).
-- [M] workday.mjs:217-300: strict default false -> every failure [] ; 404 quarantine unreachable; lastWorkdayFallback never read; null body TypeError.
-- [M] workday.mjs:249: only offset 0 limit 100 -> tenants >100 postings truncated silently.
-- [M] workable.mjs:198, yourator.mjs:195, tkms.mjs:125, vdab.mjs:274 (counts succeeded++ on missing resultaten), weworkremotely.mjs:95, trudvsem.mjs:75: malformed 200 -> [].
-- [M] taleo.mjs:186-218,422: extractHeadings fallback to all <th>/<label> -> zero rows after 100 POSTs silently. Throw when requisitionList non-empty and 0 rows parse.
-- [M] vdab.mjs:62,186 REMOTE_RE bare '100%' marks 'Verpleegkundige (100%)' remote.
-- [L] themuse.mjs:124, trudvsem.mjs:60: later-page reject/JSON error discards earlier pages.
-- [L] trudvsem.mjs:60: no redirect:'error'; id-less vacancy -> shared url.
-- [L] torre/workingnomads/workday date not YYYY-MM-DD -> freshness blank.
-- [L] taleo/yourator/tkms cap hit no log; ultiproTruncated flag lost in en-scanner slice/map.
-
-## sources-1 (4dayweek..arbeitsagentur etc: alibaba amazon ashby avature bamboohr beesite applitrack)
-- [M] alibaba:118 amazon:145 bamboohr:75 beesite:104 ashby:29 arbeitsagentur:187 applitrack:197(blank body skips canary): wrong-shape 200 -> []. alibaba total=0 if totalCount renamed.
-- [M] avature.mjs:241 last-page test uses FILTERED rows vs PAGE_SIZE -> drop of one card stops walk. Use raw article count.
-- [M] arbeitsagentur.mjs:47 REMOTE_RE has 100\s*% and bundesweit/deutschlandweit -> on-site titles remote.
-- [M] adapters/ashby.mjs:16 host pinned only by api.includes('ashbyhq'); source has no URL assert; jobUrl not validated (javascript:). greenhouse adapter :80,84 same includes pattern. Fix: exact-host https assert; drop non-https jobUrl.
-- [L] arbeitsagentur apiUrl never validated (X-API-Key to any host).
-- [L] 4dayweek.mjs:128-155: max_pages only from opts.maxPages (entry.max_pages dead); `${feedUrl}?page=N` concat breaks with query; later-page json unguarded.
-- [L] agenticjobs/amazon/beesite/avature: later-page error discards collected jobs.
-- [L] amazon.mjs:56 date off-by-one east of UTC (Date.parse local + toISOString). Use Date.UTC.
-- [L] agenticjobs.mjs:208 snippet uncapped.
-
-## sources-7 (rss rippling rss/smartrecruiters softgarden successfactors teamtailor telegram tencent)
-- [M] smartrecruiters.mjs:24 + adapter includes('smartrecruiters.com') & rss.mjs:94: no https/host pin/redirect:'error'/DNS guard (raw fetchImpl). successfactors claims host-pinned but only checks https+hostname.
-- [M] rss/teamtailor/softgarden/successfactors/smartrecruiters/tencent: malformed 200 -> [].
-- [M] taleo extractHeadings: French headings / no jobs table -> all rows dropped (rawCount>0, 0 parsed). Fallback to positions or throw; restrict label scan to jobs table.
-- [M] rippling.mjs:239 parse outside try -> page N>0 malformed discards collected.
-- [M] tencent.mjs:86,134,167: Posts non-array -> []; missing Count stops after p1; max_pages unclamped (0.5 -> zero requests).
-- [M] telegram.mjs:261 posts.slice(0,cap) keeps OLDEST posts; no pagination.
-- [L] rss.mjs extractLink: CDATA link -> ''; no entity decode; scheme not validated (href).
-- [L] taleo.mjs:273 date TZ off-by-one.
-- [L] rippling/teamtailor/solidjobs REMOTE_RE 'distributed' marks 'Distributed Systems Engineer' remote; teamtailor invents location Remote.
-- [L] telegram.mjs:214 location passed through companyName() splits on comma/dash.
-
-## sources-4 (higheredjobs himalayas hiringroom icims itviec jazzhr jobbankca jobicy jobspresso jobstreet jobvite join jibeapply ibm)
-- [H] himalayas.mjs:16 one page only (limit clamped to 20) -> sees newest ~20 of 118k; jobicy.mjs same (hasMore ignored). Fix: loop cursor with page cap.
-- [M] jobspresso.mjs:93: reads nonexistent job_listing_location; ignores <job_listing:company>/<job_listing:location>; fixture invented.
-- [M] jobstreet.mjs:273 & jibeapply.mjs:67,106: wrong-shape 200 -> []; jibeapply later page {jobs:{}} TypeError outside try.
-- [M] jobvite/jobspresso/jobbankca/icims (+hiringroom,jazzhr): HTML challenge 200 -> []. Need container marker checks.
-- [M] jobbankca.mjs:372 pagination stops on post-filter count; no retry.
-- [M] itviec.mjs:300 no retry; later-page error discards pages; 404 on out-of-range page would quarantine board 14 days.
-- [L] jobicy/himalayas salary fields renamed (salaryMin/Max/Currency/Period; minSalary/maxSalary/currency) -> salary always ''.
-- [L] ibm.mjs:102 apiUrl override no https/host pin; job urls accept http.
-- [L] jobvite.mjs:292 M/D/YYYY parsed local TZ.
-- [L] jobstreet.mjs:255 maxPages/pageSize unclamped (negative -> empty).
-
-## sources-5 (justjoin landingjobs lever mokahr mycareersfuture nodesk nofluffjobs oraclecloud larajobs ...)
-- [H] justjoin.mjs:63 expects bare array; live API returns {data, meta:{next:{cursor,itemsCount}}} -> throws every scan; only 10 of 10000; salary fields employmentTypes[].from/to/currency (fixture stale snake_case). Port parent's paginated walk.
-- [H] nofluffjobs.mjs:146 live API answers 400 'Required parameter salaryCurrency' -> source dead. Parent sends ?sort=newest&withSalaryMatch=true&pageTo=N&pageSize=20&salaryCurrency=PLN&salaryPeriod=month&region=pl&language=pl-PL; add pageTo loop (totalPages); drop rows without slug (filter p.title && (p.url||p.id) never rejects).
-- [M] lever.mjs:16 + adapter:18: no host pin/https/redirect:'error'; adapter accepts any api containing 'lever.co' -> blind SSRF via 302. Add assertLeverUrl (api.lever.co / api.eu.lever.co), redirect:'error'. (lever also puts categories.commitment in workplaceType.)
-- [M] mokahr.mjs:249 pagination stops on normalized count not raw page length (regressed parent fix rawJobs.length<MAX_LIMIT).
-- [M] mokahr.mjs:242 unwrap + success===false outside try -> mid-walk in-band error discards collected; hire-r1 error text lost ({code:102,success:false,msg}). Check success===false before unwrap; same catch.
-- [M] oraclecloud.mjs:331 page0 TotalJobsCount>0 but no requisitionList -> []; offset ignored re-serves until cap. Throw on page 0; stop when page adds no fresh urls.
-- [M] nodesk.mjs:100 larajobs.mjs:95 (neogov.mjs:192): non-feed 200 -> []; neogov search-results-listing-container escape defeats guard. Throw unless <rss/<channel; neogov throw when page1 has items but 0 jobs.
-- [M] mycareersfuture.mjs:284 returns {title,url,company,location,postedAt} without id/source/date/isRemote/workplaceType -> Source column blank, source filter drops all, empty ids. Map to 12-field shape.
-- [L] landingjobs.mjs:155 only first 50 (limit capped); loop limit=50&offset.
-- [L] oraclecloud.mjs:237 ExternalURL scheme unchecked (javascript:/http:). Require https + host.
-
-## sources-2 (breezy collage comeet consider cryptocurrencyjobs csod dassault eightfold feishu-jobs flowxtra builtin ...)
-- [H] collage.mjs:168 buildCollageUrl/assertCollageApiUrl:60 + feishu-jobs.mjs:121 buildFeishuUrl THROW from adapter buildEndpoint; resolveAdapter no try/catch; detectApi inside companies.map (en-scanner:186) outside per-company catch -> one misconfigured entry aborts whole EN scan (violates buildEndpoint string|null contract). Fix: adapters catch -> null, and wrap detectApi per company.
-- [M] flowxtra.mjs:164: page-1 failure/malformed -> [] via catch{break}; never reads opts.company (max_pages ignored; capped 3 pages). Throw on page 1; read company.max_pages/name; tests assert soft behaviour (update).
-- [M] unrecognised 2xx -> [] in breezy:62 comeet:80 consider:276 eightfold:287 csod:166 feishu-jobs:190 dassault:135,200 cryptocurrencyjobs:132,193 (exact host cryptocurrencyjobs.co, www. drops all). Throw on first page unless container present; throw when raw rows exist but zero normalise.
-- [M] builtin.mjs:518: every fetchText failure incl. page1 caught -> [] ; drift guard needs >=5 rows. Rethrow when out empty on page 1.
-- [L] csod.mjs:288 last-page uses post-filter count (raw requisitions length).
-- [L] consider.mjs:199 dassault:149 deutschebahn:121 builtin:378 job URL scheme unchecked (javascript:, http:).
-- [L] feishu-jobs.mjs:73,195 missing count -> stops after page 1.
-- [L] builtin.mjs:550 added===0 judged vs global cross-query seen set.
-- [L] comeet.mjs:125 ?token= leaked via fetchJson error message -> SSE log, last-scan errors, quarantine json. Redact.
-- [L] consider.mjs:69 handshake GET bypasses guardResolvedHost; resolveOrigin accepts port/*.localhost; empty-title rows not dropped.
-
-## sources-3 (garena geekjob gem generalist-world getmatch getonbrd getro glints greenhouse gupy habr hackernews hecklerkoch hh)
-- [M] greenhouse.mjs:96,113 + adapter:80,84: no https/host pin/redirect:'error'; adapter accepts api containing 'greenhouse'. Port parent's assertGreenhouseUrl allowlist; adapter exact host.
-- [M] geekjob.mjs:69 getmatch.mjs:75: card regex needs lookahead within {0,2000} chars else card dropped (tail card / big cards). Slice by index to next anchor.
-- [M] hackernews.mjs:159: missing thread / item w/o children -> []. Throw (parent does).
-- [M] gem.mjs:379 getro.mjs:398 greenhouse:103 hecklerkoch parseListing: malformed 200 -> []; tests/sources-gem.test.mjs:170 pins []. Throw on page 0 unless container.
-- [M] getro.mjs:169 timeoutMs dead when signal passed (safeGet) -> stalled careers_url hangs worker. Use withTimeout(opts.signal,15000).
-- [M] glints.mjs:161 maxPages/pageSize unclamped.
-- [L] getonbrd.mjs:189 no fail-soft per category/page (bad category 404 quarantines entry 14d); getro no retry/pacing.
-- [L] geekjob/getmatch/hh: HTML entities in title/company not decoded -> decodeEntities.
-- [L] glints:117 getro:298 greenhouse:103 job URL scheme unchecked.
-- [L] gem.mjs:134 getro.mjs:73,326 out-of-range timestamp RangeError aborts whole board.
-
-## adapters-1
-- [M] registry.mjs:316 resolveAdapter doesn't catch matches()/buildEndpoint() throws; collage/feishu-jobs adapters throw -> one bad entry aborts EN scan (same as sources-2 [H]). Wrap + adapters return null.
-- [M] adapters/greenhouse.mjs:17 legacy boards.greenhouse.io/<slug> & boards.eu.greenhouse.io no longer claimed (missing from PATH_SLUG_HOSTS; parent LEGACY_BOARD_HOSTS #4195 not ported).
-- [M] adapters/greenhouse.mjs:80,84 & ashby.mjs:17,21 claim any api containing 'greenhouse'/'ashbyhq' (greenhouse 7th wins before jobicy/himalayas whose api contains 'greenhouse' as a query) ; non-string api throws. Parse api: https + exact host.
-- [M] adapters/gem.mjs:19: REST mode unreachable via adapter (boardId requires jobs.gem.com); matches() identical branches.
-- [M] adapters/generalist-world.mjs:50 buildEndpoint falls back to careers_url -> homepage -> parser throws; drop careers_url fallback.
-- [L] ibm.mjs / arbeitsagentur.mjs adapters return company.api unpinned.
-- [L] hecklerkoch.mjs:35 accepts any *.heckler-koch.com subdomain (karriere.* 404) -> force www.
-- [L] jibeapply.mjs:9 header example resolves to null.
-- minor: buildEndpoint returns non-string for non-string api in 4dayweek arbeitnow arbeitsagentur flowxtra glints gupy higheredjobs himalayas ibm jobbankca jobicy jobspresso jobstreet.
-
-## adapters-2
-- [H] adapters/mokahr.mjs:27, telegram.mjs:33, telegram-channel.mjs:26: buildEndpoint THROWS (bad handle etc.) -> aborts whole EN scan (en-scanner:186 map(detectApi)); POST /api/portals/track can persist such provider entry. Return null; wrap per entry.
-- [M] adapters/mokahr.mjs:22: matches accepts mokahr url in careers_url OR api but source reads careers_url ?? api -> set non-mokahr careers_url hides valid api -> throws.
-- [M] lever.mjs:18,22 workable.mjs:19,24 smartrecruiters.mjs:16,20: api.includes('lever.co'/'workable.com'/'smartrecruiters.com') substring (clever.com contains lever.co); off-host claimed; non-string throws; default redirect. Parse hostname allowlist.
-- [M] smartrecruiters.mjs: careers-page api pin returned as endpoint (fetches HTML); oneclick-ui/company/<Name> slug broken.
-- [M] mycareersfuture (see sources-5): no id/source.
-- [L] mycareersfuture adapter host test looser than source assert; api unpinned.
-- [L] solidjobs.mjs:19 docblock says provider match but ignores provider.
-- [L] rippling.mjs:21 provider+company.rippling pin dead (matches true, buildEndpoint null).
-- [L] workday.mjs:27,86 / workable:13,21 / lever:12 / smartrecruiters:10 unanchored careers_url regexes claim look-alikes (workable www/jobs as account).
-
----
+Still open from this phase:
+- [L] dedicated tests for `sources/habr.mjs` (hh got `tests/sources-hh.test.mjs`; habr has none) —
+  both remain ratchet exemptions until then.
 
 ## v1.243.0 — client, CSS/a11y, i18n (Phase 3)
 

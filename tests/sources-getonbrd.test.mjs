@@ -122,3 +122,73 @@ test('fetchGetonbrd: with no category config, honors the single override feedUrl
   await fetchGetonbrd(FEED_BASE, { fetchImpl, company: {} });
   assert.ok(seen[0].startsWith('https://www.getonbrd.com/api/v0/categories/programming/jobs'), 'default single feed');
 });
+
+// ── v1.242.0 Phase-2 fail-soft per category/page ─────────────────────────────
+//
+// Any first-page failure used to throw, so one stale category slug (404) —
+// or a page-2 blip — quarantined the whole ENTRY for 14d even though its
+// sibling categories were fine. Policy now: with several categories declared
+// a broken category is skipped and a later-page failure keeps the partials;
+// when the feed IS the board (no category config, or a single declared
+// category) the dead-board contract holds and a first-page failure throws.
+
+test('fetchGetonbrd: one dead category (404) is skipped; the sibling categories still scan', async () => {
+  const byCat = {
+    programming: [resource({ title: 'A' }, 'https://www.getonbrd.com/jobs/a')],
+    'operations-management': [resource({ title: 'B' }, 'https://www.getonbrd.com/jobs/b')],
+  };
+  const fetchImpl = async (url) => {
+    const cat = (url.match(/categories\/([^/]+)\/jobs/) || [])[1];
+    if (cat === 'dead-category') return { ok: false, status: 404 };
+    return { ok: true, status: 200, json: async () => ({ data: byCat[cat] || [] }) };
+  };
+  const jobs = await fetchGetonbrd(FEED_BASE, {
+    fetchImpl,
+    company: { categories: ['programming', 'dead-category', 'operations-management'] },
+  });
+  assert.deepEqual(jobs.map((j) => j.title).sort(), ['A', 'B'], 'the 404 category must not quarantine the entry');
+});
+
+test('fetchGetonbrd: a malformed 200 in a multi-category entry skips just that category', async () => {
+  const fetchImpl = async (url) => {
+    const cat = (url.match(/categories\/([^/]+)\/jobs/) || [])[1];
+    if (cat === 'broken') return { ok: true, status: 200, json: async () => ({ oops: true }) };
+    return {
+      ok: true,
+      status: 200,
+      json: async () => ({ data: [resource({ title: 'Good' }, 'https://www.getonbrd.com/jobs/good')] }),
+    };
+  };
+  const jobs = await fetchGetonbrd(FEED_BASE, {
+    fetchImpl,
+    company: { categories: ['broken', 'programming'] },
+  });
+  assert.equal(jobs.length, 1);
+  assert.equal(jobs[0].title, 'Good');
+});
+
+test('fetchGetonbrd: a later-page failure keeps the partials already collected', async () => {
+  const page1 = Array.from({ length: 100 }, (_, i) => resource({ title: `R${i}` }, `https://www.getonbrd.com/jobs/p1-${i}`));
+  const fetchImpl = async (url) => {
+    const page = Number((url.match(/[?&]page=(\d+)/) || [])[1] || 1);
+    if (page === 1) return { ok: true, status: 200, json: async () => ({ data: page1 }) };
+    return { ok: false, status: 500 };
+  };
+  const jobs = await fetchGetonbrd(FEED_BASE, { fetchImpl });
+  assert.equal(jobs.length, 100, 'a page-2 500 must not discard page 1');
+});
+
+test('fetchGetonbrd: single-feed path keeps the dead-board contract — a first-page failure throws', async () => {
+  const fetchImpl = async () => ({ ok: false, status: 404 });
+  await assert.rejects(() => fetchGetonbrd(FEED_BASE, { fetchImpl }), /HTTP 404/);
+  // a single declared category IS the board — no sibling to fall back to
+  await assert.rejects(
+    () => fetchGetonbrd(FEED_BASE, { fetchImpl, company: { category: 'programming' } }),
+    /HTTP 404/,
+  );
+  // and a malformed first page there is still loud
+  await assert.rejects(
+    () => fetchGetonbrd(FEED_BASE, { fetchImpl: async () => ({ ok: true, status: 200, json: async () => ({ oops: 1 }) }) }),
+    /unexpected API response/,
+  );
+});

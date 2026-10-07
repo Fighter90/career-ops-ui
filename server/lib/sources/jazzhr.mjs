@@ -283,10 +283,28 @@ async function fetchTextWithRetry(fetchImpl, url, { signal, sleep, retryDelayMs 
 }
 
 /**
+ * The documented container check: every real ApplyToJob board page — including
+ * an EMPTY board, which still carries the bare `/apply/` "back to listings"
+ * nav link — references `/apply/` somewhere. Measured live 2026-10-07: the bot
+ * wall and the "Inactive Career Page" answer are ~84 KB of 200 HTML with NO
+ * `/apply/` link at all, which parsed to zero postings and read as an empty
+ * board.
+ *
+ * @param {unknown} html
+ * @param {string} boardHref the requested board URL, for the error text
+ */
+export function assertJazzBoardPage(html, boardHref) {
+  if (typeof html === 'string' && /\/apply\//.test(html)) return;
+  throw new Error(`jazzhr: ${boardHref} is not an ApplyToJob board page (bot-wall challenge or inactive board)`);
+}
+
+/**
  * Fetch + normalize one JazzHR tenant. The board URL is rebuilt from the
- * endpoint's hostname (host-pinned, HTTPS-only) before any I/O; the board
- * request failing propagates, detail failures are swallowed per posting. A
- * positive-integer `maxPages` (bounded probe) skips detail requests.
+ * endpoint's hostname (host-pinned, HTTPS-only) before any I/O, and the
+ * response must carry the documented `/apply/` container
+ * (assertJazzBoardPage). The board request failing propagates; detail
+ * failures are swallowed per posting. A positive-integer `maxPages` (bounded
+ * probe) skips detail requests.
  *
  * @param {string} endpoint board URL from the adapter's buildEndpoint
  * @param {{ fetchImpl?: Function, signal?: AbortSignal, company?: any, maxPages?: number,
@@ -307,6 +325,7 @@ export async function fetchJazzHR(endpoint, opts = {}) {
   const io = { signal, sleep, retryDelayMs };
 
   const html = await fetchTextWithRetry(fetchImpl, board, io);
+  assertJazzBoardPage(html, board);
   const rows = parseJazzHRList(html, board, typeof company?.name === 'string' ? company.name : '');
   const jobs = rows.map((row) => toJob(row, host));
 

@@ -151,7 +151,7 @@ test('fetchJobicy: throws on unexpected API shape', async () => {
   const fetchImpl = async () => ({ ok: true, json: async () => ({ results: [] }) });
   await assert.rejects(
     () => fetchJobicy(FEED_URL, { fetchImpl }),
-    /unexpected API response/,
+    /expected a container/,
   );
 });
 
@@ -206,6 +206,109 @@ test('assertJobicyUrl: rejects untrusted hostname', () => {
     () => assertJobicyUrl('https://evil.com/jobicy-mirror'),
     /untrusted hostname/,
   );
+});
+
+// ---------------------------------------------------------------------------
+// v1.242.0 — cursor pagination (hasMore/nextCursor were read as one page),
+// new salary field names (salaryMin/Max/Currency), shape guards, partials
+// ---------------------------------------------------------------------------
+
+const mkJobicy = (i, overrides = {}) => ({
+  id: i,
+  jobTitle: `Role ${i}`,
+  companyName: `Co ${i}`,
+  url: `https://jobicy.com/jobs/${i}-role`,
+  jobGeo: 'Worldwide',
+  pubDate: 'Wed, 25 Jun 2026 00:00:00 +0000',
+  ...overrides,
+});
+
+/**
+ * fetchImpl serving cursor pages. `pageFor(pageIndex, callNumber)` returns
+ * `{ jobs, hasMore, nextCursor }`. Page 0 is the request without a cursor.
+ */
+function cursorFake(pageFor) {
+  const calls = [];
+  const impl = async (url) => {
+    calls.push(url);
+    const cursor = new URL(url).searchParams.get('cursor');
+    const page = cursor === null ? 0 : Number(cursor);
+    const { jobs, hasMore, nextCursor } = pageFor(page, calls.length);
+    return { ok: true, json: async () => ({ jobs, hasMore, nextCursor }) };
+  };
+  impl.calls = calls;
+  return impl;
+}
+
+test('fetchJobicy: walks the cursor until hasMore=false, carrying count+cursor params', async () => {
+  const impl = cursorFake((page) => (page < 2
+    ? { jobs: [mkJobicy(page * 10), mkJobicy(page * 10 + 1)], hasMore: true, nextCursor: String(page + 1) }
+    : { jobs: [], hasMore: false, nextCursor: null }));
+  const jobs = await fetchJobicy(FEED_URL, { fetchImpl: impl });
+
+  assert.equal(jobs.length, 4);
+  assert.equal(impl.calls.length, 3);
+  const u1 = new URL(impl.calls[0]);
+  assert.equal(u1.searchParams.get('count'), '50');
+  assert.equal(u1.searchParams.get('cursor'), null);
+  const u2 = new URL(impl.calls[1]);
+  assert.equal(u2.searchParams.get('cursor'), '1'); // the opaque nextCursor, round-tripped
+  assert.equal(u2.searchParams.get('count'), '50');
+});
+
+test('fetchJobicy: page cap bounds the walk when hasMore never ends', async () => {
+  let impl = cursorFake((page) => ({ jobs: [mkJobicy(1000 + page)], hasMore: true, nextCursor: String(page + 1) }));
+  let jobs = await fetchJobicy(FEED_URL, { fetchImpl: impl, maxPages: 4 });
+  assert.equal(impl.calls.length, 4);
+  assert.equal(jobs.length, 4);
+
+  impl = cursorFake((page) => ({ jobs: [mkJobicy(2000 + page)], hasMore: true, nextCursor: String(page + 1) }));
+  await fetchJobicy(FEED_URL, { fetchImpl: impl, company: { max_pages: 2 } });
+  assert.equal(impl.calls.length, 2);
+});
+
+test('fetchJobicy: rows repeated across pages dedup by URL', async () => {
+  const dup = mkJobicy(7);
+  const impl = cursorFake((page) => (page === 0
+    ? { jobs: [mkJobicy(1), dup], hasMore: true, nextCursor: '1' }
+    : { jobs: [dup, mkJobicy(2)], hasMore: false, nextCursor: null }));
+  const jobs = await fetchJobicy(FEED_URL, { fetchImpl: impl });
+  assert.equal(jobs.length, 3);
+});
+
+test('fetchJobicy: a later-page failure keeps the pages already fetched', async () => {
+  const impl = cursorFake((page) => {
+    if (page === 0) return { jobs: [mkJobicy(1), mkJobicy(2)], hasMore: true, nextCursor: '1' };
+    throw new Error('boom 500');
+  });
+  const jobs = await fetchJobicy(FEED_URL, { fetchImpl: impl });
+  assert.equal(jobs.length, 2); // partials kept
+  assert.equal(impl.calls.length, 2); // walk ended, not aborted
+});
+
+test('fetchJobicy: throws on a 200 without the jobs container', async () => {
+  const fetchImpl = async () => ({ ok: true, json: async () => ({ results: [] }) });
+  await assert.rejects(() => fetchJobicy(FEED_URL, { fetchImpl }), /expected a container/);
+});
+
+test('fetchJobicy: salary builds from salaryMin/salaryMax/salaryCurrency', async () => {
+  const payload = {
+    jobs: [
+      mkJobicy(1, { salaryMin: 114297, salaryMax: 235319, salaryCurrency: 'USD', salaryPeriod: 'yearly' }),
+      mkJobicy(2, { salaryMin: 60, salaryMax: null, salaryCurrency: 'EUR' }),
+      mkJobicy(3, { salaryMin: null, salaryMax: 90, salaryCurrency: 'GBP' }),
+      mkJobicy(4, { salaryMin: 0, salaryMax: 0, salaryCurrency: 'USD' }),
+      // legacy annual* field names still read as a fallback
+      mkJobicy(5, { salaryMin: null, salaryMax: null, salaryCurrency: null, annualSalaryMin: 80000 }),
+    ],
+  };
+  const fetchImpl = async () => ({ ok: true, json: async () => payload });
+  const jobs = await fetchJobicy(FEED_URL, { fetchImpl });
+  assert.equal(jobs[0].salary, '$114,297–$235,319');
+  assert.equal(jobs[1].salary, 'EUR 60+');
+  assert.equal(jobs[2].salary, '≤ GBP 90');
+  assert.equal(jobs[3].salary, '');
+  assert.equal(jobs[4].salary, '$80,000+'); // legacy annualSalaryMin
 });
 
 test('adapter: matches only on provider=jobicy', () => {

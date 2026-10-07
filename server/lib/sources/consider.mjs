@@ -37,7 +37,8 @@
  * Used by the consider adapter (server/lib/portals/adapters/consider.mjs).
  */
 import { createHash } from 'node:crypto';
-import { fetchJson, BROWSER_LIKE_USER_AGENT } from '../http-json.mjs';
+import { fetchJson, guardResolvedHost, BROWSER_LIKE_USER_AGENT } from '../http-json.mjs';
+import { requireArray, requireContainer } from './_shape.mjs';
 
 // Budget for the anonymous GET that seeds the session cookie and csrfToken.
 // Shorter than the POST budget so a slow board page can't eat the full timeout.
@@ -64,6 +65,10 @@ async function acquireCsrfHandshake(origin, fetchImpl, signal) {
     else signal.addEventListener('abort', onAbort, { once: true });
   }
   try {
+    // Same DNS-rebinding defence the JSON/text helpers run: on the REAL
+    // network path the origin's hostname is resolved and refused if it points
+    // at a private/loopback address (a no-op for an injected test transport).
+    await guardResolvedHost(fetchImpl, `${origin}/jobs`);
     // redirect:'error' blocks every redirect — a redirect to a private/metadata
     // IP would otherwise slip past the resolveOrigin() host pin.
     const res = await fetchImpl(`${origin}/jobs`, {
@@ -137,12 +142,14 @@ export function resolveOrigin(entry) {
     return null;
   }
   if (parsed.protocol !== 'https:') return null;
+  if (parsed.port !== '') return null; // an explicit port is never a public board origin
   let host = parsed.hostname.toLowerCase();
   if (host.endsWith('.')) host = host.slice(0, -1); // strip FQDN trailing dot
   if (host.startsWith('[') || host.includes(':')) return null;        // IPv6 literal
   if (/^\d{1,3}(\.\d{1,3}){3}$/.test(host)) return null;              // IPv4 literal (incl. metadata/private)
   if (host === 'localhost' || host === 'localhost.localdomain') return null;
-  if (host.endsWith('.local') || host.endsWith('.internal')) return null;
+  if (host.endsWith('.localhost') || host.endsWith('.local')) return null;
+  if (host.endsWith('.internal')) return null;
   if (!host.includes('.')) return null;                              // single-label / non-public
   return parsed.origin;
 }
@@ -196,10 +203,19 @@ export function normalizeConsiderJob(job, { origin, company } = {}) {
   if (!rawUrl) return null;
   let url;
   try {
-    url = new URL(rawUrl, origin).toString();
+    const parsed = new URL(rawUrl, origin);
+    // The url is the dedup key and a display link only — never fetched — but a
+    // javascript:/data:/http: scheme has no business in the pipeline, so the
+    // row is dropped rather than carried through.
+    if (parsed.protocol !== 'https:') return null;
+    url = parsed.toString();
   } catch {
     return null;
   }
+
+  // A blank title reads as an untitled row in the scan table; drop it.
+  const title = typeof job.title === 'string' ? job.title.trim() : '';
+  if (!title) return null;
 
   const remoteFlag = job.remote;
   const isRemote = remoteFlag === true;
@@ -209,7 +225,7 @@ export function normalizeConsiderJob(job, { origin, company } = {}) {
 
   return {
     id: `consider-${hashUrl(url)}`,
-    title: typeof job.title === 'string' ? job.title : (job.title || ''),
+    title,
     company: job.companyName || (company && company.name) || '',
     url,
     salary: '',
@@ -273,7 +289,9 @@ export async function fetchConsider(_endpoint, opts = {}) {
     }),
   });
 
-  const jobs = Array.isArray(json && json.jobs) ? json.jobs : [];
+  // The documented container is `jobs`. A 200 without it is a changed API or a
+  // challenge page and must throw, not read as an empty board (v1.242.0).
+  const jobs = requireArray(requireContainer(json, 'Consider board', 'jobs').jobs, 'Consider jobs');
   const out = [];
   const seen = new Set();
   for (const j of jobs) {
@@ -282,6 +300,11 @@ export async function fetchConsider(_endpoint, opts = {}) {
       seen.add(normalized.url);
       out.push(normalized);
     }
+  }
+  if (jobs.length > 0 && out.length === 0) {
+    // Raw rows arrived but none produced a usable https url — envelope drift,
+    // not an empty board.
+    throw new Error(`consider: ${jobs.length} job(s) returned but none parsed (title/https-url missing)`);
   }
   return out;
 }

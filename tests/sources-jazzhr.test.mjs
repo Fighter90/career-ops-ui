@@ -346,6 +346,18 @@ test('broken markup on a 200 makes the fetch throw instead of reporting zero job
   );
 });
 
+test('a 200 HTML challenge page on the board throws instead of reading as an empty board', async () => {
+  // Measured live 2026-10-07: an Inactive Career Page / bot-wall answer is
+  // 84 KB of 200 HTML carrying NO /apply/ link at all.
+  const challenge = '<html xmlns="http://www.w3.org/1999/xhtml"><head><title>JazzHR - Inactive Career Page</title></head>'
+    + '<body><div class="jobs-list"></div></body></html>';
+  const { impl } = router(() => res(challenge));
+  await assert.rejects(
+    fetchJazzHR(BOARD, { fetchImpl: impl, company: { name: 'X' }, ...noSleep }),
+    /not an ApplyToJob board page/,
+  );
+});
+
 test('SSRF guard rejects untrusted endpoints before any I/O', async () => {
   let io = 0;
   const impl = async () => { io += 1; return res(LIST); };

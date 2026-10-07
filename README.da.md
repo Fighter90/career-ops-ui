@@ -12,14 +12,14 @@ _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.241.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.241.1)
+[![release](https://img.shields.io/badge/release-v1.242.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.242.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Seneste udgivelse — v1.241.1** — **Live-vurderinger virker fra ende til anden i alle sprog.** Vurderinger ser igen hele `oferta.md` (kontekstbudget 192 KB), rapporter forbliver på det valgte sprog (instruktionen åbner nu prompten; kun navne, teknologier og citater forbliver engelske), langsomme vurderinger får 300 s i stedet for at ende i 502, og hindi-rapporter med devanagari-blokbogstaver eller scorer med lokale cifre validerer. Jobkortet placerer lange opslag med flere lokationer ("Berlin Office · Berlin · Germany · …") i stedet for at afvise dem, en udrulning venter på en kørende timelig scanning, og jobkortet er nu på [cvstart.org](https://cvstart.org/#job-map). Fjern-QA × 17 sprog grøn i produktion.
+> **🆕 Seneste udgivelse — v1.242.0** — **Scannerens datalag er igen til at stole på.** Døde kilder lever igen (justjoin og nofluffjobs læser deres fulde kataloger igen; himalayas og jobicy kommer forbi de 20 nyeste), et misdannet svar eller udfordringssvar **kaster nu en fejl** på side 1 i stedet for at blive læst som "0 opslag" (`server/lib/sources/_shape.mjs`), og delstrengskontroller af leverandører blev til parsnede fastlåsninger af den nøjagtige vært — `clever.com` kan ikke længere udgive sig for at være lever, og et fjendtligt tavle-URL kan ikke længere omdirigere en scanning. Én fejlkonfigureret portals-post kan ikke længere afbryde en hel scanning.
 >
-> **Tidligere — v1.241.0** — **Hærdning efter en kodegennemgang med 28 agenter og et jobkort af @bullitt186.** En misdannet forespørgsel kan ikke længere stoppe serveren, en afbrudt scanning sletter ikke længere de seneste resultater, vurderinger ser nu hele metodefilen i stedet for kun de første 16 KB, serveren afviser DNS-rebinding-værter og skrivninger på tværs af websteder, og redirects kontrolleres igen for private mål. `#/map` viser dine opslag på OpenStreetMap. **4404 tests · 118 browser.**
+> **Tidligere — v1.241.1** — Live-evalueringer virker end-to-end på alle sprog; jobkortet placerer lange opslag med flere lokationer; en deploy venter på en kørende timescan.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

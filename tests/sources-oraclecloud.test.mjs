@@ -334,6 +334,71 @@ test('fetchOraclecloud: first-request failure throws; mid-run blip keeps collect
 });
 
 // ---------------------------------------------------------------------------
+// v1.242.0 — page-0 dead-board guard + the offset-ignored walk
+// ---------------------------------------------------------------------------
+
+test('fetchOraclecloud: page 0 with TotalJobsCount>0 but NO requisitionList throws (expand lost)', async () => {
+  // The response speaks ORC's envelope but ships no list — the expand= clause
+  // was dropped (or a WAF interstitial parsed as JSON). Reading it as an empty
+  // board reported a 5000-job tenant as healthy-but-empty forever.
+  const fetchImpl = fakeFetch({ items: [{ TotalJobsCount: 5000 }] });
+  await assert.rejects(
+    () => fetchOraclecloud(CAREERS, { fetchImpl }),
+    /page 0 reported TotalJobsCount=5000 but no requisitionList/,
+  );
+});
+
+test('fetchOraclecloud: page 0 with neither a total nor a list throws (wrong shape)', async () => {
+  for (const body of [{}, { items: [] }, { items: [{}] }]) {
+    await assert.rejects(
+      () => fetchOraclecloud(CAREERS, { fetchImpl: fakeFetch(body) }),
+      /page 0 .*response shape changed/,
+    );
+  }
+});
+
+test('fetchOraclecloud: a genuinely empty board (TotalJobsCount=0) still reads as []', async () => {
+  const fetchImpl = fakeFetch({ items: [{ TotalJobsCount: 0, requisitionList: [] }] });
+  const jobs = await fetchOraclecloud(CAREERS, { fetchImpl });
+  assert.deepEqual(jobs, []);
+});
+
+test('fetchOraclecloud: a tenant that ignores offset re-serving page 1 stops after 2 calls', async () => {
+  // Every page is "full" with the same rows and the total is stale — only the
+  // no-fresh-urls stop condition can end this walk.
+  const repeat = makePage(
+    Array.from({ length: 3 }, (_, i) => makeReq({ Id: `same-${i}`, Title: `R${i}` })),
+    9999,
+    true,
+  );
+  const fetchImpl = fakeFetch(repeat);
+  const jobs = await fetchOraclecloud(CAREERS, { fetchImpl });
+  assert.equal(fetchImpl.calls.length, 2);
+  assert.equal(jobs.length, 3);
+});
+
+test('parseOraclecloud: ExternalURL must be https on the tenant host', () => {
+  const page = makePage([
+    // javascript://host/… parses WITH the trusted hostname — the old
+    // hostname-only check emitted it as a job link.
+    makeReq({ Id: '1', ExternalURL: 'javascript://jpmc.fa.oraclecloud.com/alert(1)' }),
+    makeReq({ Id: '2', ExternalURL: 'http://jpmc.fa.oraclecloud.com/insecure' }),
+    makeReq({ Id: '3', ExternalURL: 'https://jpmc.fa.oraclecloud.com/ok' }),
+    makeReq({ Id: '4' }),
+  ]);
+  const { jobs } = parseOraclecloud(page, SITE, 'X');
+  assert.equal(jobs.length, 4);
+  for (const j of jobs) {
+    const u = new URL(j.url);
+    assert.equal(u.protocol, 'https:');
+    assert.equal(u.hostname, 'jpmc.fa.oraclecloud.com');
+  }
+  assert.ok(jobs[0].url.endsWith('/job/1')); // scheme rejected → built URL
+  assert.ok(jobs[1].url.endsWith('/job/2'));
+  assert.equal(jobs[2].url, 'https://jpmc.fa.oraclecloud.com/ok'); // https same-host kept
+});
+
+// ---------------------------------------------------------------------------
 // Adapter contract
 // ---------------------------------------------------------------------------
 

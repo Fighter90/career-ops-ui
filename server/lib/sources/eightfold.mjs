@@ -287,9 +287,31 @@ export async function fetchEightfold(endpoint, opts = {}) {
     const positions = Array.isArray(json?.positions)
       ? json.positions
       : (Array.isArray(json?.jobs) ? json.jobs : []);
+    if (!Array.isArray(json?.positions) && !Array.isArray(json?.jobs)) {
+      // Page 1 must speak the documented shape: a 200 without a positions
+      // array is a changed API and throws instead of reading as an empty
+      // board (v1.242.0 Phase-2 rule). A later page losing the shape keeps
+      // the partials already collected.
+      if (page === 0) {
+        const keys = json && typeof json === 'object' && !Array.isArray(json)
+          ? Object.keys(json).slice(0, 8).join(', ')
+          : String(json);
+        throw new Error(`eightfold: 200 response has no positions array (got: ${keys})`);
+      }
+      break;
+    }
+    let parsed = 0;
     for (const p of positions) {
       const job = normalizeEightfoldJob(p, tenant, companyName);
-      if (job && !seen.has(job.url)) seen.set(job.url, job);
+      if (job) {
+        parsed += 1;
+        if (!seen.has(job.url)) seen.set(job.url, job);
+      }
+    }
+    if (positions.length > 0 && parsed === 0 && seen.size === 0) {
+      // Raw positions arrived but none produced a title + usable url —
+      // envelope drift, not an empty board.
+      throw new Error(`eightfold: ${positions.length} position(s) returned but none parsed (title/url missing)`);
     }
     if (total === null && typeof json?.count === 'number' && Number.isFinite(json.count)) {
       total = json.count;

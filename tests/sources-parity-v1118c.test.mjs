@@ -126,7 +126,9 @@ test('hecklerkoch: parseListing anchors on jobposting/{hash} and decodes titles'
   assert.equal(rows[0].title, 'Maschineneinrichter (m/w/d) - Fräsen'); // &#228; decoded
   assert.equal(rows[0].url, 'https://karriere.heckler-koch.com/jobposting/d1be4446a082dd289578456f38fb82473beedb350');
   assert.equal(parseListing('<html>no jobs</html>').length, 0);
-  assert.equal(parseListing(undefined).length, 0);
+  // v1.242.0 Phase-2: a non-string body is a broken fetch — it throws instead
+  // of reading as an empty board (full contract in sources-hecklerkoch.test.mjs).
+  assert.throws(() => parseListing(undefined), /not a string/);
   // A malformed numeric entity (lone surrogate half) degrades to literal text,
   // never throws RangeError and aborts the whole parse.
   const badRows = parseListing('<html>' + hkCard('badhash0000000000000000000000000000000000', 'Bad&#xD800;Entity') + '</html>');

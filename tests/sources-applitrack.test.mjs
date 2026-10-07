@@ -217,9 +217,12 @@ test('parser also accepts unescaped quotes', () => {
   assert.equal(plain.length, 3);
 });
 
+// Phase-2 (v1.242.0): a blank 200 skips the `function applyFor` canary and used
+// to read as an empty board. An empty board is a REAL script with zero postings
+// (the PRELUDE test below); a blank/non-script body is not this endpoint — throw.
 for (const empty of ['', '   \n', null, undefined]) {
-  test(`parser ${JSON.stringify(empty)} → []`, () => {
-    assert.deepEqual(parseApplitrackOutput(empty, 'X', BASE), []);
+  test(`parser ${JSON.stringify(empty)} → throws (blank body must not skip the canary)`, () => {
+    assert.throws(() => parseApplitrackOutput(empty, 'X', BASE), /not an AppliTrack/i);
   });
 }
 

@@ -72,7 +72,8 @@ test('fetchGreenhouse: normalizes location + isRemote', async () => {
 
 test('fetchGreenhouse: throws on non-200', async () => {
   const fakeFetch = async () => new Response('nf', { status: 404 });
-  await assert.rejects(() => fetchGreenhouse('https://x', { fetchImpl: fakeFetch }), /404/);
+  // Endpoint pinned to boards-api.greenhouse.io (v1.242.0 phase-2 host guard).
+  await assert.rejects(() => fetchGreenhouse('https://boards-api.greenhouse.io/v1/boards/x/jobs', { fetchImpl: fakeFetch }), /404/);
 });
 
 // ───────────────────────── Ashby ─────────────────────────
@@ -86,7 +87,8 @@ test('fetchAshby: extracts isRemote + secondary locations', async () => {
       compensation: { compensationTierSummary: '$160k - $200k' },
     }],
   }), { status: 200, headers: { 'content-type': 'application/json' } });
-  const items = await fetchAshby('https://x', { fetchImpl: fakeFetch });
+  // Endpoint pinned to api.ashbyhq.com (v1.242.0 phase-2 assertAshbyUrl).
+  const items = await fetchAshby('https://api.ashbyhq.com/posting-api/job-board/test', { fetchImpl: fakeFetch });
   assert.equal(items.length, 1);
   const j = items[0];
   assert.equal(j.isRemote, true);
@@ -102,7 +104,8 @@ test('fetchLever: handles array root', async () => {
   const fakeFetch = async () => new Response(JSON.stringify([
     { id: 'l1', text: 'Senior Go', categories: { location: 'Remote', team: 'Platform' }, hostedUrl: 'https://x.co/l1' },
   ]), { status: 200, headers: { 'content-type': 'application/json' } });
-  const items = await fetchLever('https://x', { fetchImpl: fakeFetch });
+  // Endpoint pinned to api.lever.co (v1.242.0 phase-2 host guard).
+  const items = await fetchLever('https://api.lever.co/v0/postings/x?mode=json', { fetchImpl: fakeFetch });
   assert.equal(items.length, 1);
   assert.equal(items[0].title, 'Senior Go');
   assert.equal(items[0].isRemote, true);

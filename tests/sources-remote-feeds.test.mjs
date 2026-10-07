@@ -88,6 +88,52 @@ test('fetchWorkingNomads: normalizes array feed, drops empty-title rows', async 
   assert.match(jobs[0].id, /^workingnomads-/);
 });
 
+// ─────────────────────── Phase-2: URL pinning (sources-6) ───────────────────
+// The feed URL had no https/host assert and job urls accepted any http(s)
+// string. Now the feed must be https on a real host, and job urls are pinned
+// to https on the board's own host — anything else is dropped (or throws for
+// the feed URL, which is the one server-fetched request).
+
+const jsonResponse2 = (data) => async () => ({ ok: true, json: async () => data });
+
+test('fetchRemoteOk: the feed URL must be https (SSRF floor)', async () => {
+  await assert.rejects(() => fetchRemoteOk('http://remoteok.com/api', { fetchImpl: jsonResponse2([]) }), /must use HTTPS/);
+  await assert.rejects(() => fetchRemoteOk('not-a-url', { fetchImpl: jsonResponse2([]) }), /invalid URL/);
+});
+
+test('fetchRemoteOk: job urls are pinned to https on remoteok.com — everything else is dropped', async () => {
+  const feed = [
+    { legal: 'meta' },
+    { id: 1, position: 'Good', url: 'https://remoteok.com/l/1' },                    // kept
+    { id: 2, position: 'Http', url: 'http://remoteok.com/l/2' },                     // dropped
+    { id: 3, position: 'Lookalike', url: 'https://remoteok.com.evil.com/l/3' },      // dropped
+    { id: 4, position: 'Off-host', url: 'https://evil.com/l/4' },                    // dropped
+    { id: 5, position: 'Scheme', url: 'javascript:fetch("/x")' },                    // dropped
+    { id: 6, position: 'Junk', url: '::' },                                          // dropped
+  ];
+  const jobs = await fetchRemoteOk(undefined, { fetchImpl: jsonResponse2(feed) });
+  assert.deepEqual(jobs.map((j) => j.url), ['https://remoteok.com/l/1']);
+});
+
+test('fetchRemotive: the feed URL must be https (SSRF floor)', async () => {
+  await assert.rejects(() => fetchRemotive('http://remotive.com/api/remote-jobs', { fetchImpl: jsonResponse2({ jobs: [] }) }), /must use HTTPS/);
+  await assert.rejects(() => fetchRemotive('not-a-url', { fetchImpl: jsonResponse2({ jobs: [] }) }), /invalid URL/);
+});
+
+test('fetchRemotive: job urls are pinned to https on remotive.com — everything else is dropped', async () => {
+  const feed = {
+    jobs: [
+      { id: 1, title: 'Good', url: 'https://remotive.com/j/1' },                      // kept
+      { id: 2, title: 'Http', url: 'http://remotive.com/j/2' },                       // dropped
+      { id: 3, title: 'Lookalike', url: 'https://remotive.com.evil.com/j/3' },        // dropped
+      { id: 4, title: 'Off-host', url: 'https://evil.com/j/4' },                      // dropped
+      { id: 5, title: 'Scheme', url: 'javascript:fetch("/x")' },                      // dropped
+    ],
+  };
+  const jobs = await fetchRemotive(undefined, { fetchImpl: jsonResponse2(feed) });
+  assert.deepEqual(jobs.map((j) => j.url), ['https://remotive.com/j/1']);
+});
+
 // ─────────────────────────── adapter contracts ──────────────────────
 test('adapters: match only on explicit provider field, never careers_url', () => {
   for (const [adapter, slug] of [

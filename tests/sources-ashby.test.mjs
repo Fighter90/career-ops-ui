@@ -116,3 +116,51 @@ test('ashby: the real nested compensation payload renders the tier summary as sa
   const jobs = await fetchAshby('https://api.ashbyhq.com/posting-api/job-board/foo', { fetchImpl: okJson(data) });
   assert.equal(jobs[0].salary, '$128K – $180K • Offers Equity');
 });
+
+// ── v1.242.0 phase-2: URL pinning, shape canary, jobUrl validation ──────────
+
+test('ashby: assertAshbyUrl pins https + exactly api.ashbyhq.com', async () => {
+  // Dynamic import: this export is new in v1.242.0 (a static named import of a
+  // missing export fails the whole module at link time).
+  const { assertAshbyUrl } = await import('../server/lib/sources/ashby.mjs');
+  const good = 'https://api.ashbyhq.com/posting-api/job-board/foo?includeCompensation=true';
+  assert.equal(assertAshbyUrl(good), good);
+  assert.throws(() => assertAshbyUrl('http://api.ashbyhq.com/posting-api/job-board/foo'), /HTTPS/);
+  assert.throws(() => assertAshbyUrl('https://evil.com/posting-api/job-board/foo'), /untrusted hostname/);
+  // a look-alike host (suffix match) is refused — exact host only
+  assert.throws(() => assertAshbyUrl('https://api.ashbyhq.com.evil.com/x'), /untrusted hostname/);
+  assert.throws(() => assertAshbyUrl('not a url'), /invalid URL/);
+});
+
+test('ashby: fetchAshby rejects an off-host endpoint before any fetch (SSRF)', async () => {
+  let calls = 0;
+  const fetchImpl = async () => { calls += 1; return { ok: true, json: async () => ({ jobs: [] }) }; };
+  await assert.rejects(
+    () => fetchAshby('https://evil.com/posting-api/job-board/foo', { fetchImpl }),
+    /untrusted hostname/,
+  );
+  assert.equal(calls, 0, 'the guard must fire before any request is made');
+});
+
+test('ashby: a wrong-shape 200 throws instead of reading as an empty board', async () => {
+  // `{jobs:[...]}` renamed/absent (an HTML challenge served as 200 JSON, an API
+  // retirement) previously read as `(data.jobs || [])` → [] → board looks
+  // healthy-but-empty.
+  const fetchImpl = okJson({ postings: [] });
+  await assert.rejects(
+    () => fetchAshby('https://api.ashbyhq.com/posting-api/job-board/foo', { fetchImpl }),
+    /Ashby/,
+  );
+});
+
+test('ashby: non-https jobUrls are dropped (javascript:/http:/relative), https kept', async () => {
+  const data = { jobs: [
+    { id: 'ok', title: 'Good', jobUrl: 'https://jobs.ashbyhq.com/foo/ok' },
+    { id: 'js', title: 'Scripty', jobUrl: 'javascript:alert(1)' },
+    { id: 'http', title: 'Plain', applyUrl: 'http://jobs.ashbyhq.com/foo/http' },
+    { id: 'rel', title: 'Relative', jobUrl: '/foo/rel' },
+    { id: 'none', title: 'No url at all' },
+  ] };
+  const jobs = await fetchAshby('https://api.ashbyhq.com/posting-api/job-board/foo', { fetchImpl: okJson(data) });
+  assert.deepEqual(jobs.map((j) => j.url), ['https://jobs.ashbyhq.com/foo/ok']);
+});

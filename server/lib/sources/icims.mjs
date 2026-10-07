@@ -162,10 +162,28 @@ export function parseIcimsSearchPage(html, origin, companyName = '') {
 }
 
 /**
+ * Container-marker check for a search page. The iCIMS portal product always
+ * renders its `iCIMS_`-prefixed shell (wrapper, table, cards) — including on a
+ * search page with zero results. Bot-wall challenges and dead-tenant "gone"
+ * pages answer 200 HTML with no `iCIMS_` anywhere, and parsed as zero cards
+ * they used to read as a healthy empty board. Only checked on page 1: a later
+ * page degrading fail-soft is the loop's own break condition.
+ *
+ * @param {string} html
+ * @param {string} url the page URL, for the error text
+ */
+export function assertIcimsPortalPage(html, url) {
+  if (typeof html === 'string' && html.includes('iCIMS_')) return;
+  throw new Error(`icims: ${url} is not an iCIMS portal page (bot-wall challenge or dead tenant?)`);
+}
+
+/**
  * Fetch + normalize an iCIMS tenant's job list (paginated by `pr`). Fail-soft:
  * stops on the first empty page, on a page that repeats the previous page's
  * first URL (some tenants re-serve the last page for an out-of-range `pr`),
- * when no fresh ids appear, and at the page/job caps.
+ * when no fresh ids appear, and at the page/job caps. Page 1 must carry the
+ * documented iCIMS container (assertIcimsPortalPage) — a 200 challenge page
+ * throws instead of reading as an empty board.
  *
  * @param {string} endpoint tenant search URL (host-pinned, from buildEndpoint)
  * @param {{ fetchImpl?: Function, signal?: AbortSignal, company?: object }} [opts]
@@ -184,6 +202,7 @@ export async function fetchIcims(endpoint, opts = {}) {
     const pageUrl = new URL(base.href);
     pageUrl.searchParams.set('pr', String(page));
     const html = await fetchText(fetchImpl, pageUrl.href, { signal, redirect: 'error', headers: HEADERS });
+    if (page === 0) assertIcimsPortalPage(html, pageUrl.href);
     const pageJobs = parseIcimsSearchPage(html, origin, fallbackCompany);
     if (pageJobs.length === 0) break; // past the last page
     // A repeated first URL means the tenant re-served the previous page for an

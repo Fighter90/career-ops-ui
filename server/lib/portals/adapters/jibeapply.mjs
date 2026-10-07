@@ -10,7 +10,7 @@
  *   tracked_companies:
  *     - name: Global Payments
  *       provider: jibeapply
- *       careers_url: https://jobs.globalpayments.com/en/jobs/
+ *       api: https://jobs.globalpayments.com/api/jobs   # branded tenant: explicit api REQUIRED
  *       enabled: true
  */
 import { fetchJibeapply, toApiUrl } from '../../sources/jibeapply.mjs';

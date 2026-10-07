@@ -24,9 +24,9 @@ function stubByHost(map) {
     return { status: e.status ?? 200, text: e.text ?? '', finalUrl: e.finalUrl ?? url };
   };
 }
-const GH_JOBS = JSON.stringify({ jobs: [{ id: 1, title: 'Engineer', location: { name: 'London' } }] });
-const ASHBY_JOBS = JSON.stringify({ jobs: [{ id: 'a1', title: 'Engineer' }] });
-const LEVER_JOBS = JSON.stringify([{ id: 'l1', text: 'Engineer', categories: { location: 'Remote' } }]);
+const GH_JOBS = JSON.stringify({ jobs: [{ id: 1, title: 'Engineer', location: { name: 'London' }, absolute_url: 'https://job-boards.greenhouse.io/adyen/1' }] });
+const ASHBY_JOBS = JSON.stringify({ jobs: [{ id: 'a1', title: 'Engineer', jobUrl: 'https://jobs.ashbyhq.com/adyen/a1' }] });
+const LEVER_JOBS = JSON.stringify([{ id: 'l1', host: 'adyen', text: 'Engineer', categories: { location: 'Remote' } }]);
 
 // ── slug generation ─────────────────────────────────────────────────────
 test('deriveSlugs: hyphenated + concatenated forms, deduped', () => {

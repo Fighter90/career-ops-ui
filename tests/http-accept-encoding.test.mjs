@@ -156,7 +156,7 @@ test('a real source that calls fetchImpl directly sends the pinned encoding', as
     return { ok: true, status: 200, headers: { get: () => null }, json: async () => ({ jobs: [] }), text: async () => '{"jobs":[]}' };
   };
   try {
-    await fetchGreenhouse({ name: 'Acme', greenhouse: { board: 'acme' } }, { fetchImpl: makeTimeoutFetch(base) });
+    await fetchGreenhouse('https://boards-api.greenhouse.io/v1/boards/acme/jobs', { fetchImpl: makeTimeoutFetch(base) });
   } catch { /* the source's own shape handling is not what this asserts */ }
   assert.ok(seen.length > 0, 'the source made no request');
   for (const init of seen) {

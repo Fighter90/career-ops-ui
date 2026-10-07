@@ -187,11 +187,28 @@ test('fetchHackerNews: remote detection sets isRemote and workplaceType', async 
   assert.equal(widgetco.workplaceType, 'Remote');
 });
 
-test('fetchHackerNews: returns [] when no hiring thread found', async () => {
+test('fetchHackerNews: a search with no hiring thread THROWS (broken API, not an empty board)', async () => {
+  // The parent career-ops source throws here: a search naming no "Who is
+  // hiring?" thread means the API changed or the account vanished — reading
+  // that as [] made the source look healthy-but-empty and scan "succeed"
+  // with zero postings.
   const emptySearch = { hits: [] };
   const fetchImpl = async () => ({ ok: true, json: async () => emptySearch });
-  const jobs = await fetchHackerNews('https://hn.algolia.com', { fetchImpl });
-  assert.deepEqual(jobs, []);
+  await assert.rejects(
+    () => fetchHackerNews('https://hn.algolia.com', { fetchImpl }),
+    /no "Ask HN: Who is hiring\?" thread/,
+  );
+});
+
+test('fetchHackerNews: an item without a children array THROWS', async () => {
+  for (const item of [null, {}, { id: 42000001, children: null }, { id: 42000001, children: 'nope' }]) {
+    const fetchImpl = makeFetchImpl(SEARCH_JSON, item);
+    await assert.rejects(
+      () => fetchHackerNews('https://hn.algolia.com', { fetchImpl }),
+      /children/,
+      `item=${JSON.stringify(item)} must not read as an empty board`,
+    );
+  }
 });
 
 test('fetchHackerNews: throws on non-ok search response', async () => {
@@ -200,12 +217,6 @@ test('fetchHackerNews: throws on non-ok search response', async () => {
     () => fetchHackerNews('https://hn.algolia.com', { fetchImpl }),
     /429/,
   );
-});
-
-test('fetchHackerNews: handles children:null gracefully (returns [])', async () => {
-  const fetchImpl = makeFetchImpl(SEARCH_JSON, { id: 42000001, children: null });
-  const jobs = await fetchHackerNews('https://hn.algolia.com', { fetchImpl });
-  assert.deepEqual(jobs, []);
 });
 
 // --- SEARCH_URL lookup strategy (parent #3aa5e15) ---

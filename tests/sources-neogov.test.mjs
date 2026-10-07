@@ -221,6 +221,30 @@ test('parser "No jobs" page and an empty listing container → [] (empty board /
   assert.deepEqual(parseNeogovPage('<ul class="search-results-listing-container"></ul>', 'X', ORIGIN), []);
 });
 
+test('parser throws when the page has list items but no parseable job links (v1.242.0)', () => {
+  // Every link on the page fails validation — the old code returned [] and the
+  // board read as healthy-but-empty forever.
+  const damaged = '<ul class="search-results-listing-container">'
+    + '<li class="list-item"><a class="item-details-link" href="https://evil.example/careers/exampleco/jobs/1/x">Off-site</a></li>'
+    + '<li class="list-item"><span>no link at all</span></li>'
+    + '</ul>';
+  assert.throws(() => parseNeogovPage(damaged, 'X', ORIGIN), /2 list items .*no parseable job links/);
+});
+
+test('parser no longer treats a mere mention of the listing-container class as an empty board', () => {
+  // The substring escape defeated the not-a-list guard: any page containing
+  // 'search-results-listing-container' anywhere read as []. Only an actual
+  // EMPTY listing container is an empty board now.
+  assert.throws(
+    () => parseNeogovPage('<div class="search-results-listing-container is-loading">Loading…</div>', 'X', ORIGIN),
+    /not a NEOGOV job list/,
+  );
+  assert.throws(
+    () => parseNeogovPage('<script>init("search-results-listing-container")</script>', 'X', ORIGIN),
+    /not a NEOGOV job list/,
+  );
+});
+
 test('parser throws a descriptive error on a page that is not the job list', () => {
   assert.throws(
     () => parseNeogovPage('<html><body>Please sign in</body></html>', 'X', ORIGIN),

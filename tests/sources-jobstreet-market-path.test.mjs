@@ -225,3 +225,79 @@ test('fetchJobstreet: without the flag the title is untouched, and Indonesia sti
   assert.equal(jobs[0].title, 'Facility Engineer');
   assert.equal(jobs[0].url, 'https://id.jobstreet.com/id/job/92996157');
 });
+
+// ---------------------------------------------------------------------------
+// v1.242.0 — wrong-shape guards + clamped pagination config
+// ---------------------------------------------------------------------------
+
+test('fetchJobstreet: a wrong-shape 200 on page 1 throws instead of reading as an empty board', async () => {
+  for (const body of [{ jobs: [] }, { totalCount: 5 }, 'unexpected string']) {
+    const fetchImpl = async () => ({ ok: true, status: 200, json: async () => body });
+    await assert.rejects(
+      () => fetchJobstreet('https://id.jobstreet.com/api/jobsearch/v5/search', { fetchImpl, company: { name: 'X' } }),
+      /Jobstreet/,
+    );
+  }
+});
+
+test('fetchJobstreet: a later-page shape failure keeps page 1, logs, and stops the walk', async () => {
+  let calls = 0;
+  const fetchImpl = async () => {
+    calls += 1;
+    const good = { data: [{ id: '111', title: 'Role A' }, { id: '222', title: 'Role B' }], totalCount: 9 };
+    const bad = { data: { exploded: true }, totalCount: 9 }; // data is an object, not an array
+    return { ok: true, status: 200, json: async () => (calls === 1 ? good : bad) };
+  };
+  const warns = [];
+  const origWarn = console.warn;
+  console.warn = (...a) => warns.push(a.join(' '));
+  let jobs;
+  try {
+    jobs = await fetchJobstreet('https://id.jobstreet.com/api/jobsearch/v5/search', {
+      fetchImpl,
+      company: { name: 'X', jobstreet: { maxPages: 3, pageSize: 2 } },
+    });
+  } finally {
+    console.warn = origWarn;
+  }
+  assert.equal(jobs.length, 2); // partials kept
+  assert.equal(calls, 2); // walk stopped after the bad page
+  // The shape failure must be LOUD, not a silent "board ended here".
+  assert.ok(warns.some((w) => /jobstreet/.test(w) && /page 2/.test(w)), `expected a logged warning, got: ${warns.join(' | ')}`);
+});
+
+test('fetchJobstreet: negative / fractional maxPages and pageSize fall back to safe defaults', async () => {
+  const fetchImpl = fakeFetch(() => ({
+    data: [{ id: '333', title: 'Role C' }],
+    totalCount: 1,
+  }));
+  const jobs = await fetchJobstreet('https://id.jobstreet.com/api/jobsearch/v5/search', {
+    fetchImpl,
+    company: { name: 'X', jobstreet: { pageSize: -30, maxPages: -3 } },
+  });
+  assert.equal(jobs.length, 1); // the walk ran with the defaults, not zero pages
+  const u = new URL(fetchImpl.calls[0].url);
+  assert.equal(u.searchParams.get('pageSize'), '30'); // DEFAULT_PAGE_SIZE
+  assert.equal(u.searchParams.get('page'), '1');
+});
+
+test('fetchJobstreet: maxPages is clamped to a hard cap', async () => {
+  let calls = 0;
+  const fullPage = {
+    data: Array.from({ length: 30 }, (_, i) => ({ id: String(9000 + i), title: `R${i}` })),
+    totalCount: 999999,
+  };
+  // A sentinel past the cap makes an UNCLAMPED walk fail fast (it would
+  // otherwise run maxPages × 200 ms of pacing before the assertion).
+  const fetchImpl = async () => {
+    calls += 1;
+    if (calls > 20) throw new Error('CAP_SENTINEL: walked past the cap');
+    return { ok: true, status: 200, json: async () => fullPage };
+  };
+  const jobs = await fetchJobstreet('https://id.jobstreet.com/api/jobsearch/v5/search', {
+    fetchImpl,
+    company: { name: 'X', jobstreet: { maxPages: 999, pageSize: 30 } },
+  });
+  assert.equal(calls, 20); // MAX_PAGES_CAP
+  assert.equal(jobs.length, 600);
+});

@@ -8,6 +8,28 @@
 
 ---
 
+## [1.242.0] — 2026-10-07
+
+**스캐너의 데이터 레이어가 다시 신뢰할 수 있게 되었습니다: 죽었던 소스가 살아났고, 형식이 잘못된 답변이 더 이상 빈 보드로 위장할 수 없으며, 적대적인 보드 URL이 더 이상 스캔을 리디렉션할 수 없습니다.**
+
+### 수정
+
+- **죽었던 소스가 다시 살아났습니다.** justjoin(API 엔벨로프가 `{data, meta.next.cursor}`로 변경)은 새 연봉 필드와 함께 커서 순회로 전체 카탈로그를 읽습니다. nofluffjobs는 `salaryCurrency` 없이 400으로 답합니다 — 상위 프로젝트의 필수 쿼리를 보내고 결과를 페이지네이션합니다(`pageTo`). himalayas와 jobicy는 10만 건 이상 중 최신 약 20건만 봤습니다 — 이제 둘 다 전체 카탈로그를 순회합니다(페이지 상한이 있는 오프셋 / 커서 페이지네이션).
+- **잘못된 형태의 200은 첫 페이지에서 예외를 던집니다.** 약 40개 소스가 형식이 잘못된 답변이나 챌린지 응답을 "공고 0건"으로 읽어 스캔이 조용히 "성공"했습니다. 새 `server/lib/sources/_shape.mjs` 가드(`requireArray` / `requireContainer` / `requireObject`)가 모든 패밀리에서 실패를 크게 알립니다. 이후 페이지에서 실패하면 이미 수집한 페이지를 유지하며, 페이지네이션은 필터링된 개수가 아니라 원본 페이지 길이 기준으로 중단합니다.
+- **SSRF: 부분 문자열 벤더 검사를 파싱된 정확 호스트 핀으로 교체.** lever(`clever.com`은 `lever.co`를 포함), greenhouse(호스트 5개 + 레거시 `boards[.eu].greenhouse.io` 경로 슬러그 호스트), ashby, smartrecruiters, workable, gem REST, ibm, arbeitsagentur, hecklerkoch(www만), workingnomads(`http://169.254.169.254`가 DNS 가드를 넘어 도달 가능했음), remoteok, remotive, rss, successfactors. 모든 곳에서 `redirect:'error'`; 공고 URL은 핀으로 고정된 호스트의 `https:`여야 합니다(`javascript:` / `data:` / 호스트 외부는 폐기).
+- **잘못 설정된 portals 항목 하나가 더 이상 전체 스캔을 중단시키지 않습니다.** `resolveAdapter`가 어댑터 예외를 잡고, `detectApi`는 회사별로 래핑되며, 예외를 던지는 어댑터는 `null`을 반환합니다. comeet 가져오기 오류는 로그나 격리 기록에 닿기 전에 `?token=`을 가립니다.
+- **페이지네이션과 최신성.** workday는 100건을 넘는 테넌트를 순회합니다(오프셋 페이지, `MAX_PAGES`). telegram은 가장 오래된 글을 조용히 남기는 대신 가장 최신 글을 유지하고 `?before=`로 페이지네이션합니다. tencent는 `Count`가 없어도 계속 순회합니다. taleo는 프랑스어 머리글 표를 파싱합니다. avature는 원본 페이지 길이 기준으로 중단합니다. UTC 날짜 스탬프(UTC보다 동쪽에서 amazon 하루 오차, torre, workingnomads, trudvsem). HTML 엔티티 디코딩(geekjob, getmatch, hh). mycareersfuture는 12개 필드 전체의 공고 형태를 출력합니다.
+- **원격 감지 강화.** arbeitsagentur, vdab, rippling, teamtailor: 계약 비율("Verpleegkundige (100%)", `bundesweit`)과 "distributed"라는 단어("Distributed Systems Engineer")는 더 이상 현장 역할에 Remote 태그를 붙이지 않습니다.
+
+### 추가
+
+- `tests/adapters-pin-coverage.test.mjs`가 핀이 도입한 호스트 핀 분기 커버리지를 완성합니다.
+
+### 참고
+
+- 테스트 **4419 → 4812** 단위, 브라우저 **118**. 커버리지 평균 **라인 98.15 % / 분기 89.36 %**(게이트 하한 96 / 86).
+- 이번 릴리스에서 제외: 같은 리뷰 라운드의 클라이언트 지적들(Phase 3 — views, libs, CSS/a11y, i18n). `sources/habr.mjs`는 여전히 전용 테스트 파일이 없습니다(래칫 면제).
+
 ## [1.241.1] — 2026-10-07
 
 **라이브 평가가 모든 로케일에서 끝까지 작동하고, 채용 지도가 여러 지역이 나열된 긴 공고도 표시하며, 배포가 더 이상 실행 중인 스캔을 끊지 않습니다.**

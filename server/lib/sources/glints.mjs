@@ -26,6 +26,14 @@ const DEFAULT_COUNTRY = 'ID';
 const DEFAULT_PAGE_SIZE = 30;
 const DEFAULT_MAX_PAGES = 3;
 const REMOTE_RE = /remote|anywhere|work from home|wfh/i;
+// Config clamps (v1.242.0): a negative pageSize/maxPages used to flow into
+// the GraphQL variables / page loop unchecked (limit: -30, zero iterations →
+// an empty board), and an absurd maxPages turned one entry into an unbounded
+// request loop against a third party.
+const PAGE_SIZE_CAP = 100;
+const MAX_PAGES_CAP = 20;
+// ECMA-262 max representable Date — toISOString() RangeErrors past it.
+const MAX_EPOCH_MS = 8_640_000_000_000_000;
 
 const ALLOWED_GLINTS_HOSTS = new Set(['glints.com', 'www.glints.com', 'glints.id']);
 
@@ -80,7 +88,9 @@ export function assertGlintsUrl(url) {
 function toEpochMs(value) {
   if (!value) return undefined;
   const parsed = Date.parse(value);
-  return Number.isNaN(parsed) ? undefined : parsed;
+  // NaN (Invalid Date) and out-of-range values both stay undefined — the
+  // date field empties instead of toISOString() throwing RangeError.
+  return Number.isNaN(parsed) || parsed <= 0 || parsed > MAX_EPOCH_MS ? undefined : parsed;
 }
 
 function deriveBaseUrl(apiUrl) {
@@ -116,6 +126,9 @@ export function parseGlintsItem(item, baseUrl, fallbackCompany) {
 
   try {
     const parsed = new URL(url);
+    // https required (v1.242.0): url is the dedup key and the apply target —
+    // the host allowlist alone let an `http://glints.com/...` row through.
+    if (parsed.protocol !== 'https:') return null;
     const allowed = ALLOWED_GLINTS_HOSTS.has(parsed.hostname) || parsed.hostname.endsWith('.glints.com');
     if (!allowed) return null;
     url = parsed.href;
@@ -158,8 +171,17 @@ export async function fetchGlints(apiUrl = DEFAULT_API, opts = {}) {
   const query = cfg.graphqlQuery || DEFAULT_GRAPHQL_QUERY;
   const keywords = cfg.searchKeywords || '';
   const country = cfg.countryCode || DEFAULT_COUNTRY;
-  const pageSize = Number(cfg.pageSize) || DEFAULT_PAGE_SIZE;
-  const maxPages = Number(cfg.maxPages) || DEFAULT_MAX_PAGES;
+  // Positive-integer configs are honored (capped); anything else — negative,
+  // fractional, garbage — reads as the default. Mirrors getro's
+  // getro_max_pages handling.
+  const rawPageSize = Number(cfg.pageSize);
+  const pageSize = Number.isInteger(rawPageSize) && rawPageSize > 0
+    ? Math.min(rawPageSize, PAGE_SIZE_CAP)
+    : DEFAULT_PAGE_SIZE;
+  const rawMaxPages = Number(cfg.maxPages);
+  const maxPages = Number.isInteger(rawMaxPages) && rawMaxPages > 0
+    ? Math.min(rawMaxPages, MAX_PAGES_CAP)
+    : DEFAULT_MAX_PAGES;
   const fallbackCompany = company.name || '';
 
   const allJobs = [];

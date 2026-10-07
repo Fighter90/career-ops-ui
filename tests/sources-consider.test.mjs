@@ -293,7 +293,36 @@ test('fetchConsider: throws when consider_board is missing', async () => {
   );
 });
 
-test('fetchConsider: tolerates a malformed/empty payload → []', async () => {
-  const empty = await fetchConsider(null, { fetchImpl: async () => ({ ok: true, status: 200, json: async () => ({}) }), company: OK_ENTRY });
-  assert.deepEqual(empty, []);
+test('fetchConsider: a 200 without a jobs array THROWS (wrong shape ≠ empty board)', async () => {
+  await assert.rejects(
+    () => fetchConsider(null, { fetchImpl: async () => ({ ok: true, status: 200, json: async () => ({}) }), company: OK_ENTRY }),
+    /Consider/,
+  );
+});
+
+test('fetchConsider: raw jobs that ALL fail normalization throw (was: silently [])', async () => {
+  const fetchImpl = cannedJobs([{ nope: 1 }, { title: 'No URL' }]);
+  await assert.rejects(() => fetchConsider(null, { fetchImpl, company: OK_ENTRY }), /none parsed/);
+});
+
+test('fetchConsider: rows with an empty/blank title are dropped, not emitted title-less', async () => {
+  const fetchImpl = cannedJobs([
+    { title: '', url: 'https://acme.com/1', companyName: 'Acme' },
+    { title: '   ', url: 'https://acme.com/2', companyName: 'Acme' },
+    { title: 'Keeper', url: 'https://acme.com/3', companyName: 'Acme' },
+  ]);
+  const jobs = await fetchConsider(null, { fetchImpl, company: OK_ENTRY });
+  assert.deepEqual(jobs.map((j) => j.title), ['Keeper']);
+});
+
+test('normalizeConsiderJob: job URLs must be https (javascript:/http: dropped)', () => {
+  assert.equal(normalizeConsiderJob({ title: 'X', url: 'javascript:alert(1)', companyName: 'A' }, { origin: 'https://jobs.founderful.com' }), null);
+  assert.equal(normalizeConsiderJob({ title: 'X', url: 'http://acme.com/1', companyName: 'A' }, { origin: 'https://jobs.founderful.com' }), null);
+  assert.equal(normalizeConsiderJob({ title: 'X', url: 'https://acme.com/2', companyName: 'A' }, { origin: 'https://jobs.founderful.com' }).url, 'https://acme.com/2');
+});
+
+test('resolveOrigin: rejects an explicit port and *.localhost (SSRF hardening)', () => {
+  assert.equal(resolveOrigin({ careers_url: 'https://jobs.founderful.com:8443/jobs' }), null);
+  assert.equal(resolveOrigin({ careers_url: 'https://evil.localhost/jobs' }), null);
+  assert.equal(resolveOrigin({ careers_url: 'https://jobs.founderful.com/jobs' }), 'https://jobs.founderful.com');
 });

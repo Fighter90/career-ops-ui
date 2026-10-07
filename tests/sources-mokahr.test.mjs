@@ -152,3 +152,53 @@ test('the API call and job links use the careers_url host; plaintext data is acc
     /API error: bad/,
   );
 });
+
+// ---------------------------------------------------------------------------
+// v1.242.0 — pagination stops on the RAW page length; in-band errors are read
+// BEFORE unwrapping and share the walk's try, so a mid-walk {code, success:
+// false, msg} keeps the pages already collected and its error text survives.
+// ---------------------------------------------------------------------------
+
+test('pagination stops on the RAW page length, not the normalized count', async () => {
+  // Page 1: 50 raw rows (a FULL page) of which 49 lack a title → 1 job. The
+  // normalized count read that as a short page and cut the walk after it.
+  const fullButDirty = [
+    ...Array.from({ length: 49 }, (_, i) => ({ id: i })), // no title → dropped
+    JOB,
+  ];
+  const pages = [
+    seal({ data: { jobs: fullButDirty } }),
+    seal({ data: { jobs: [{ ...JOB, id: 20, title: '第二页' }, { ...JOB, id: 21 }, { ...JOB, id: 22 }] } }),
+  ];
+  let call = 0;
+  const fake = async () => ({ ok: true, status: 200, headers: new Map(), json: async () => pages[call++] ?? pages[1] });
+  const rows = await fetchMokaHr('', {
+    fetchImpl: fake,
+    company: { name: 'Acme', careers_url: 'https://app.mokahr.com/social-recruitment/acme/12345' },
+  });
+  assert.equal(call, 2, 'a full-but-dirty page must be walked past');
+  assert.equal(rows.length, 4); // 1 + 3
+});
+
+test('hire-r1 plaintext in-band errors keep their msg and share the walk catch', async () => {
+  const R1 = 'https://hire-r1.mokahr.com/social-recruitment/example-pay/100008889';
+  const errorBody = { code: 102, success: false, msg: 'tenant paused hiring' }; // no data/necromancer
+
+  // First page: the error IS the result — throw with the real text, not the
+  // generic missing-data/necromancer unwrap failure.
+  await assert.rejects(
+    fetchMokaHr('', { fetchImpl: async () => ({ ok: true, status: 200, headers: new Map(), json: async () => errorBody }), company: { careers_url: R1 } }),
+    /API error: tenant paused hiring/,
+  );
+
+  // Mid-walk: a FULL page 1, then page 2 answers the error → page-1 jobs kept.
+  let call = 0;
+  const fullPage = [...Array.from({ length: 49 }, (_, i) => ({ id: `filler-${i}`, title: `F${i}` })), JOB];
+  const pages = [seal({ data: { jobs: fullPage } }), errorBody];
+  const kept = await fetchMokaHr('', {
+    fetchImpl: async () => ({ ok: true, status: 200, headers: new Map(), json: async () => pages[call++] ?? errorBody }),
+    company: { name: 'Example Pay', careers_url: R1 },
+  });
+  assert.equal(call, 2);
+  assert.equal(kept.length, 50);
+});

@@ -18,6 +18,7 @@
  */
 import { fetchJson } from '../http-json.mjs';
 import { safeEncodeURIComponent } from './_safe-url.mjs';
+import { requireArray, requireContainer } from './_shape.mjs';
 
 export const meta = {
   value: 'jibeapply',
@@ -57,6 +58,8 @@ function validateExplicitApi(apiUrl) {
 /**
  * Map a /api/jobs response into the rich job shape. Exported for unit tests.
  * Job URLs are made absolute against the entry's careers_url (or api) origin.
+ * A 200 whose `jobs` container is missing or not an array THROWS — a broken
+ * board must not read as an empty one.
  */
 export function parseJibeapplyResponse(json, company = {}) {
   let origin = '';
@@ -64,7 +67,7 @@ export function parseJibeapplyResponse(json, company = {}) {
   if (!origin) {
     try { origin = new URL(company.api || '').origin; } catch { /* ignore */ }
   }
-  const items = Array.isArray(json && json.jobs) ? json.jobs : [];
+  const items = requireArray(json && json.jobs, 'JibeApply jobs');
   const jobs = [];
   for (const item of items) {
     if (item == null) continue;
@@ -103,12 +106,15 @@ export async function fetchJibeapply(endpoint, opts = {}) {
   const apiUrl = validateExplicitApi(endpoint);
   if (!apiUrl) throw new Error(`jibeapply: invalid API URL for ${company.name || endpoint}`);
 
-  const first = await fetchJson(fetchImpl, apiUrl, { signal, redirect: 'error' });
-  const total = (first && first.totalCount) || 0;
+  // Page 1: a 200 without the jobs container is a broken board, not an empty
+  // one — throw instead of reading `[]` as a healthy quiet tenant.
+  const first = requireContainer(await fetchJson(fetchImpl, apiUrl, { signal, redirect: 'error' }), 'JibeApply', 'jobs');
+  const firstJobs = requireArray(first.jobs, 'JibeApply jobs');
+  const total = first.totalCount || 0;
   // Actual returned length beats the reported `count` — some tenants set
   // `count` to the TOTAL rather than the per-page size.
-  const pageSize = (first && Array.isArray(first.jobs) && first.jobs.length) || (first && first.count) || DEFAULT_PAGE_SIZE;
-  const allJobs = [...((first && first.jobs) || [])];
+  const pageSize = firstJobs.length || first.count || DEFAULT_PAGE_SIZE;
+  const allJobs = [...firstJobs];
 
   if (total > pageSize && pageSize > 0) {
     const maxPages = resolveMaxPages(company);
@@ -116,14 +122,15 @@ export async function fetchJibeapply(endpoint, opts = {}) {
     for (let page = 2; page <= pages; page++) {
       const u2 = new URL(apiUrl);
       u2.searchParams.set('page', String(page));
-      let json;
       try {
-        json = await fetchJson(fetchImpl, u2.toString(), { signal, redirect: 'error' });
+        const json = await fetchJson(fetchImpl, u2.toString(), { signal, redirect: 'error' });
+        // Shape-validate INSIDE the try: a later page answering {jobs:{}} used
+        // to TypeError on the spread outside the catch and discard the walk.
+        allJobs.push(...requireArray(requireContainer(json, 'JibeApply', 'jobs').jobs, 'JibeApply jobs'));
       } catch (err) {
         console.warn(`jibeapply: ${company.name || 'tenant'} page ${page} fetch failed — ${err.message} (keeping ${allJobs.length} jobs fetched so far)`);
         break;
       }
-      allJobs.push(...((json && json.jobs) || []));
     }
     if (Math.ceil(total / pageSize) > maxPages) {
       // The cap is a safety net; surface a real overflow so missing postings

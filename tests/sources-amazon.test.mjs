@@ -153,3 +153,46 @@ test('fetchAmazon: rejects an off-host feed base before any fetch', async () => 
   await assert.rejects(() => fetchAmazon('https://evil.com/search.json', { fetchImpl }), /untrusted hostname/);
   assert.equal(calls, 0);
 });
+
+// Phase-2 (v1.242.0): a 200 without the documented {jobs:[...]} envelope is a
+// shape change — loud on page 1; a later-page failure keeps the partials.
+test('fetchAmazon: a wrong-shape 200 on page 1 throws (no silent empty board)', async () => {
+  let calls = 0;
+  const fetchImpl = async () => { calls += 1; return { ok: true, status: 200, json: async () => ({ postings: [] }) }; };
+  await assert.rejects(() => fetchAmazon(FEED_BASE, { fetchImpl }), /Amazon search/);
+  assert.equal(calls, 1);
+});
+
+test('fetchAmazon: a later-page HTTP failure keeps the collected jobs (partials, logged)', async () => {
+  const page1 = Array.from({ length: 100 }, (_, i) => posting({ title: `Keep ${i}`, job_path: `/en/jobs/keep-${i}` }));
+  let calls = 0;
+  const fetchImpl = async () => {
+    calls += 1;
+    if (calls === 1) return { ok: true, status: 200, json: async () => ({ jobs: page1 }) };
+    return { ok: false, status: 503, json: async () => ({}) };
+  };
+  const jobs = await fetchAmazon(FEED_BASE, { fetchImpl });
+  assert.equal(jobs.length, 100, 'a page-2 blip must not discard page 1');
+});
+
+test('fetchAmazon: a wrong-shape later page keeps partials instead of discarding', async () => {
+  const page1 = Array.from({ length: 100 }, (_, i) => posting({ title: `WS ${i}`, job_path: `/en/jobs/ws-${i}` }));
+  let calls = 0;
+  const fetchImpl = async () => {
+    calls += 1;
+    return calls === 1
+      ? { ok: true, status: 200, json: async () => ({ jobs: page1 }) }
+      : { ok: true, status: 200, json: async () => ({ error: 'challenge page' }) }; // "jobs" gone
+  };
+  const jobs = await fetchAmazon(FEED_BASE, { fetchImpl });
+  assert.equal(jobs.length, 100);
+});
+
+// Off-by-one east of UTC: Date.parse reads "July 3, 2026" in the runner's local
+// zone and toISOString() then shifted the calendar day back. Run with
+// TZ=Asia/Shanghai to see the old code fail this.
+test('normalizeAmazonJob: posted_date reads the printed calendar day (Date.UTC, no TZ shift)', () => {
+  assert.equal(normalizeAmazonJob(posting({ posted_date: 'July  3, 2026' })).date, '2026-07-03');
+  assert.equal(normalizeAmazonJob(posting({ posted_date: 'January 31, 2026' })).date, '2026-01-31');
+  assert.equal(normalizeAmazonJob(posting({ posted_date: 'December 31, 2026' })).date, '2026-12-31');
+});

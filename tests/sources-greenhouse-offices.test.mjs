@@ -15,6 +15,7 @@ import {
   buildOfficeMap,
   contentToText,
   withContent,
+  assertGreenhouseUrl,
 } from '../server/lib/sources/greenhouse.mjs';
 
 test('withContent: appends content=true, preserving any existing query', () => {
@@ -130,4 +131,75 @@ test('fetchGreenhouse: /offices failure is fail-soft (keeps work-model location)
   const out = await fetchGreenhouse('https://boards-api.greenhouse.io/v1/boards/acme/jobs', { fetchImpl });
   assert.equal(out.length, 1);
   assert.equal(out[0].location, 'Hybrid'); // unchanged, no throw
+});
+
+// ── v1.242.0 Phase-2 correctness ─────────────────────────────────────────────
+
+test('assertGreenhouseUrl: parent allowlist — https + exact Greenhouse hosts only', () => {
+  for (const host of [
+    'boards-api.greenhouse.io',
+    'boards.greenhouse.io',
+    'job-boards.greenhouse.io',
+    'job-boards.eu.greenhouse.io',
+  ]) {
+    const url = `https://${host}/v1/boards/acme/jobs`;
+    assert.equal(assertGreenhouseUrl(url), url);
+  }
+  assert.throws(() => assertGreenhouseUrl('https://evil.com/v1/boards/acme/jobs'), /untrusted hostname/);
+  // a suffix spoof is not the host
+  assert.throws(
+    () => assertGreenhouseUrl('https://boards-api.greenhouse.io.evil.test/v1/boards/acme/jobs'),
+    /untrusted hostname/,
+  );
+  assert.throws(() => assertGreenhouseUrl('http://boards-api.greenhouse.io/v1/boards/acme/jobs'), /must use HTTPS/);
+  assert.throws(() => assertGreenhouseUrl('not-a-url'), /invalid URL/);
+});
+
+test('fetchGreenhouse: rejects an off-host endpoint before any request (SSRF pin)', async () => {
+  let calls = 0;
+  await assert.rejects(
+    () => fetchGreenhouse('https://evil.example/v1/boards/acme/jobs', {
+      fetchImpl: async () => { calls += 1; return okRes({ jobs: [] }); },
+    }),
+    /untrusted hostname/,
+  );
+  assert.equal(calls, 0, 'no request may leave for a non-Greenhouse host');
+});
+
+test('fetchGreenhouse: every request carries redirect:"error"', async () => {
+  const inits = [];
+  const fetchImpl = async (url, init) => {
+    inits.push(init);
+    return url.endsWith('/offices')
+      ? okRes({ offices: [{ name: 'Berlin', departments: [{ jobs: [{ id: 1 }] }] }] })
+      : okRes({ jobs: [{ id: 1, title: 'Eng', absolute_url: 'https://x/1', location: { name: 'Hybrid' } }] });
+  };
+  await fetchGreenhouse('https://boards-api.greenhouse.io/v1/boards/acme/jobs', { fetchImpl });
+  assert.equal(inits.length, 2, '/jobs + /offices both sent');
+  assert.ok(inits.every((i) => i.redirect === 'error'), 'a 3xx must never be followed');
+});
+
+test('fetchGreenhouse: a malformed 200 without the jobs container THROWS (not [])', async () => {
+  for (const body of [null, {}, { oops: 1 }, { jobs: 'not-an-array' }]) {
+    await assert.rejects(
+      () => fetchGreenhouse('https://boards-api.greenhouse.io/v1/boards/acme/jobs', {
+        fetchImpl: async () => okRes(body),
+      }),
+      /Greenhouse/,
+      `body=${JSON.stringify(body)} must not read as an empty board`,
+    );
+  }
+});
+
+test('fetchGreenhouse: drops rows whose absolute_url is not https (scheme unchecked before)', async () => {
+  const fetchImpl = async () => okRes({
+    jobs: [
+      { id: 1, title: 'Good', absolute_url: 'https://boards.greenhouse.io/acme/jobs/1', location: { name: 'Berlin' } },
+      { id: 2, title: 'Http', absolute_url: 'http://boards.greenhouse.io/acme/jobs/2', location: { name: 'Berlin' } },
+      { id: 3, title: 'Js', absolute_url: 'javascript:alert(1)', location: { name: 'Berlin' } },
+      { id: 4, title: 'NoUrl', location: { name: 'Berlin' } },
+    ],
+  });
+  const out = await fetchGreenhouse('https://boards-api.greenhouse.io/v1/boards/acme/jobs', { fetchImpl });
+  assert.deepEqual(out.map((j) => j.id), ['gh-1'], 'a non-https absolute_url has no safe dedup key — row dropped');
 });

@@ -180,10 +180,10 @@ export function parseApplitrackDate(value) {
  * `JobID: <n>`; its fields follow as `<span class="label">Name:</span> …
  * <span class="normal">Value</span>`.
  *
- * - Empty/blank body → [] (nothing to parse).
- * - A body with no `function applyFor` — the script prelude every real
- *   response carries — is not this endpoint, so it throws rather than reading
- *   as an empty board forever.
+ * - A blank body and a body without the `function applyFor` script prelude are
+ *   BOTH "not this endpoint" and throw (phase-2: a blank 200 must not skip the
+ *   canary and read as an empty board forever — an empty board is a REAL
+ *   script with zero postings).
  * - A block with no JobID or no title is skipped; a repeated JobID keeps the
  *   first.
  *
@@ -194,8 +194,7 @@ export function parseApplitrackDate(value) {
  * @param {string} [defaultLocation]
  */
 export function parseApplitrackOutput(body, companyName, base, defaultLocation = '') {
-  if (typeof body !== 'string' || !body.trim()) return [];
-  if (!body.includes('function applyFor')) {
+  if (typeof body !== 'string' || !body.includes('function applyFor')) {
     throw new Error('applitrack: response is not an AppliTrack Output.asp script (no applyFor prelude)');
   }
   const html = body.replace(/\\'/g, "'").replace(/\\"/g, '"');

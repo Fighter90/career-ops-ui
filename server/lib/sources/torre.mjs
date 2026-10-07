@@ -184,7 +184,9 @@ export function normalizeTorreOpportunity(o, fallbackCompany) {
   let date = '';
   if (typeof o.created === 'string' && o.created.trim()) {
     const ms = Date.parse(o.created);
-    if (Number.isFinite(ms)) date = new Date(ms).toISOString();
+    // v1.242.0 Phase 2 — the freshness contract is YYYY-MM-DD UTC (was a full
+    // ISO timestamp, which left the freshness columns blank downstream).
+    if (Number.isFinite(ms)) date = new Date(ms).toISOString().slice(0, 10);
   }
 
   return {

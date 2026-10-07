@@ -96,12 +96,22 @@ test('parseAlibabaResponse: falls back to modifyTime and formats open-ended expe
   assert.match(jobs[0].snippet, /经验: 10年以上/);
 });
 
-test('parseAlibabaResponse: tolerates a malformed payload', () => {
-  assert.deepEqual(parseAlibabaResponse(null, 'x'), { jobs: [], total: 0 });
-  assert.deepEqual(
-    parseAlibabaResponse({ success: true, content: { totalCount: 0, datas: null } }, 'x'),
-    { jobs: [], total: 0 },
+test('parseAlibabaResponse: a wrong-shape 200 throws instead of reading as an empty board', () => {
+  // Phase-2 (v1.242.0): a 200 that no longer speaks the documented
+  // {content: {datas, totalCount}} envelope is a shape change — loud failure,
+  // never "0 jobs". A renamed totalCount would truncate the walk to page 1 via
+  // total=0, so both documented paths are required.
+  assert.throws(() => parseAlibabaResponse(null, 'x'), /Alibaba search response/);
+  assert.throws(
+    () => parseAlibabaResponse({ success: true, content: { totalCount: 0, datas: null } }, 'x'),
+    /Alibaba search response/,
   );
+  assert.throws(
+    () => parseAlibabaResponse({ success: true, content: { datas: [] } }, 'x'), // totalCount renamed away
+    /Alibaba search response/,
+  );
+  // An empty page in the DOCUMENTED envelope is still a legitimate empty board.
+  assert.deepEqual(parseAlibabaResponse(makePage([], 0), 'x'), { jobs: [], total: 0 });
 });
 
 test('parseAlibabaResponse: caps the snippet length', () => {

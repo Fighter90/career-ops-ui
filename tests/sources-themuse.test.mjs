@@ -190,6 +190,58 @@ test('fetchTheMuse: throws on unexpected API shape on first page', async () => {
   );
 });
 
+// v1.242.0 Phase 2 — a later-page failure keeps the earlier pages.
+test('fetchTheMuse: a later-page JSON failure keeps earlier pages and logs', async () => {
+  let call = 0;
+  const fetchImpl = async () => {
+    call++;
+    if (call === 1) return { ok: true, json: async () => ({ results: [makeJob({ id: 1 })], page_count: 3 }) };
+    return { ok: true, json: async () => { throw new Error('Unexpected token <'); } };
+  };
+  const errs = [];
+  const orig = console.error;
+  console.error = (...a) => errs.push(a.join(' '));
+  let results;
+  try {
+    results = await fetchTheMuse(FEED_BASE, { fetchImpl, maxPages: 5 });
+  } finally {
+    console.error = orig;
+  }
+  assert.equal(results.length, 1);
+  assert.match(errs.join(' '), /themuse/i);
+});
+
+test('fetchTheMuse: a later-page wrong shape keeps earlier pages', async () => {
+  let call = 0;
+  const fetchImpl = async () => {
+    call++;
+    if (call === 1) return { ok: true, json: async () => ({ results: [makeJob({ id: 1 })], page_count: 3 }) };
+    return { ok: true, json: async () => ({ broken: true }) };
+  };
+  const errs = [];
+  const orig = console.error;
+  console.error = (...a) => errs.push(a.join(' '));
+  let results;
+  try {
+    results = await fetchTheMuse(FEED_BASE, { fetchImpl, maxPages: 5 });
+  } finally {
+    console.error = orig;
+  }
+  assert.equal(results.length, 1);
+  assert.match(errs.join(' '), /themuse/i);
+});
+
+test('fetchTheMuse: a raw empty page stops pagination', async () => {
+  let calls = 0;
+  const fetchImpl = async () => {
+    calls++;
+    return { ok: true, json: async () => ({ results: calls === 1 ? [makeJob({ id: 1 })] : [], page_count: 5 }) };
+  };
+  const results = await fetchTheMuse(FEED_BASE, { fetchImpl, maxPages: 5 });
+  assert.equal(calls, 2, 'stops on the raw empty page instead of walking page_count');
+  assert.equal(results.length, 1);
+});
+
 // ---------------------------------------------------------------------------
 // SSRF guard — assertTheMuseUrl
 // ---------------------------------------------------------------------------

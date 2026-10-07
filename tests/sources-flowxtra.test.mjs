@@ -176,20 +176,57 @@ test('fetchFlowxtra: honors maxPages cap (stops even when next_page_url present)
   assert.equal(requested[0].url, 'https://app.flowxtra.com/api/central/jobs?status=Live&per_page=100&page=1');
 });
 
-test('fetchFlowxtra: malformed page fails soft (stops, returns prior pages, no throw)', async () => {
+test('fetchFlowxtra: a later-page malformed response keeps the earlier partials (no throw)', async () => {
   const pages = {
     1: { success: true, data: { data: Array.from({ length: 100 }, (_, i) => mkRow(i)), next_page_url: 'https://app.flowxtra.com/api/central/jobs?page=2' } },
-    2: { wrong: true }, // malformed → stop gracefully
+    2: { wrong: true }, // malformed → stop gracefully, keep page 1
   };
   const requested = [];
   const jobs = await fetchFlowxtra(JOBS_ENDPOINT, { fetchImpl: pagedFetchImpl(pages, requested) });
   assert.equal(jobs.length, 100);
 });
 
-test('fetchFlowxtra: per-page fetch error fails soft (no throw)', async () => {
+test('fetchFlowxtra: a malformed page-1 200 THROWS (wrong shape ≠ empty board)', async () => {
+  const pages = { 1: { wrong: true } };
+  const requested = [];
+  await assert.rejects(
+    () => fetchFlowxtra(JOBS_ENDPOINT, { fetchImpl: pagedFetchImpl(pages, requested) }),
+    /Flowxtra/,
+  );
+  assert.equal(requested.length, 1);
+});
+
+test('fetchFlowxtra: a page-1 fetch error THROWS (dead board ≠ empty board)', async () => {
   const fetchImpl = async () => ({ ok: false, status: 503 });
+  await assert.rejects(() => fetchFlowxtra(JOBS_ENDPOINT, { fetchImpl }), /503/);
+});
+
+test('fetchFlowxtra: a later-page fetch error keeps the earlier partials', async () => {
+  let call = 0;
+  const fetchImpl = async () => {
+    call += 1;
+    if (call === 1) {
+      return { ok: true, status: 200, json: async () => ({ success: true, data: { data: Array.from({ length: 100 }, (_, i) => mkRow(i)), next_page_url: 'https://app.flowxtra.com/api/central/jobs?page=2' } }) };
+    }
+    return { ok: false, status: 503 };
+  };
   const jobs = await fetchFlowxtra(JOBS_ENDPOINT, { fetchImpl });
-  assert.deepEqual(jobs, []);
+  assert.equal(jobs.length, 100);
+});
+
+test('fetchFlowxtra: reads company.max_pages from the portals entry (the scanner passes opts.company)', async () => {
+  const pages = {
+    1: { success: true, data: { data: Array.from({ length: 100 }, (_, i) => mkRow(i)), next_page_url: 'https://app.flowxtra.com/api/central/jobs?page=2' } },
+  };
+  const requested = [];
+  await fetchFlowxtra(JOBS_ENDPOINT, { fetchImpl: pagedFetchImpl(pages, requested), company: { max_pages: 1 } });
+  assert.equal(requested.length, 1, 'max_pages: 1 must stop after page 1 even with next_page_url');
+});
+
+test('fetchFlowxtra: falls back to company.name for the company field', async () => {
+  const pages = { 1: { success: true, data: { data: [{ title: 'T', urlJobApplay: 'https://flowxtra.com/apply/N1', name_company: '' }], next_page_url: null } } };
+  const jobs = await fetchFlowxtra(JOBS_ENDPOINT, { fetchImpl: pagedFetchImpl(pages, []), company: { name: 'Acme (flowxtra)' } });
+  assert.equal(jobs[0].company, 'Acme (flowxtra)');
 });
 
 // ---------------------------------------------------------------------------

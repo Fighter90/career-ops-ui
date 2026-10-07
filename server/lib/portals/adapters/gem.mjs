@@ -6,30 +6,49 @@
  * `jobs.gem.com` (with a board id in the first path segment,
  * `https://jobs.gem.com/<boardId>`), or from an explicit `provider: gem` (which
  * still needs a resolvable `careers_url`/`api:` — there is no shared canonical
- * feed without a board id).
+ * feed without a board id). An entry that instead pins Gem's documented REST
+ * surface — `https://api.gem.com/job_board/v0/<board>/job_posts` in `api:` —
+ * is claimed too and its URL handed to the fetcher verbatim (the source's
+ * opt-in REST mode).
  *
- * Unlike the other per-tenant ATS adapters the origin is a single fixed host,
- * so the board id is threaded to the fetcher via the endpoint's `?board=`
- * query param. buildEndpoint returns null for anything it can't resolve to a
- * board id, so an off-host value never reaches the fetch slot. The HTTP fetch +
+ * Both shapes are validated on the PARSED URL, so buildEndpoint returns null
+ * for anything it can't resolve and an off-host value never reaches the fetch
+ * slot. An unusable `api:` never hides a usable `careers_url`. The HTTP fetch +
  * normalization live in server/lib/sources/gem.mjs.
  */
-import { fetchGem, resolveBoardId, GEM_API_URL } from '../../sources/gem.mjs';
+import {
+  fetchGem,
+  resolveBoardId,
+  resolveGemRestUrl,
+  GEM_API_URL,
+} from '../../sources/gem.mjs';
 
+/** Board id for a jobs.gem.com URL: explicit `api:` first, then careers_url. */
 function boardId(company) {
   if (!company) return null;
-  return resolveBoardId(String(company.api || company.careers_url || '').trim());
+  for (const raw of [company.api, company.careers_url]) {
+    if (typeof raw !== 'string') continue;
+    const id = resolveBoardId(raw.trim());
+    if (id) return id;
+  }
+  return null;
+}
+
+/** The opt-in REST URL the entry pinned in `api:`, or null. */
+function restUrl(company) {
+  if (!company || typeof company !== 'object') return null;
+  return resolveGemRestUrl(company);
 }
 
 export const gemAdapter = {
   id: 'gem',
   label: 'Gem',
   matches(company) {
-    if (!company) return false;
-    if (company.provider === 'gem') return boardId(company) !== null;
-    return boardId(company) !== null;
+    return restUrl(company) !== null || boardId(company) !== null;
   },
   buildEndpoint(company) {
+    const rest = restUrl(company);
+    if (rest) return rest.href;
     const id = boardId(company);
     return id ? `${GEM_API_URL}?board=${id}` : null;
   },

@@ -12,14 +12,14 @@ _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.241.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.241.1)
+[![release](https://img.shields.io/badge/release-v1.242.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.242.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.241.1** — **即時評估在每個語系都能端到端運作。** 評估重新能看到完整的 `oferta.md`（上下文預算 192 KB），報告維持所選語言（語言指示現在放在提示詞開頭；只有名稱、技術與引文保留英文），緩慢的評估有 300 秒可用，而不是以 502 結束，以天城文區塊字母或本地數字分數撰寫的印地語報告也能通過驗證。職缺地圖現在能標示含多個地點的長篇職缺（「Berlin Office · Berlin · Germany · …」），而不是拒絕它們，部署會等待正在執行的每小時掃描，職缺地圖也已上線 [cvstart.org](https://cvstart.org/#job-map)。遠端 QA × 17 個語系在正式環境全數通過。
+> **🆕 最新版本 — v1.242.0** — **掃描器的資料層重新值得信賴。** 失效的來源恢復運作（justjoin 與 nofluffjobs 重新讀取完整目錄；himalayas 與 jobicy 會走過最新 20 筆之後的內容），格式錯誤或挑戰頁的回應現在會在第 1 頁就**拋出例外**，而不是被讀成「0 筆職缺」（`server/lib/sources/_shape.mjs`），子字串式的廠商檢查也改為解析後的精確主機釘選 —— `clever.com` 不再能冒充 lever，惡意的職缺板 URL 也不再能把掃描重新導向。單一個設定錯誤的 portals 項目不再能中止整個掃描。
 >
-> **前一版本 — v1.241.0** — **來自 28 個代理程式程式碼審查的強化，以及職缺地圖** —— 由 **@bullitt186** 貢獻：格式錯誤的請求不再能讓伺服器停止，被中止的掃描不再清空上一次的結果，評估現在會看到完整的方法檔案，而不是只有前 16 KB，伺服器會拒絕 DNS 重新綁定的主機與跨站寫入，重新導向也會重新檢查是否指向私有目標。`#/map` 會把你的職缺顯示在 OpenStreetMap 上。**4404 個測試 · 118 個瀏覽器測試。**
+> **前一版本 — v1.241.1** — 即時評估在全部語言中端到端可用；職位地圖可放置超長多地點職缺；部署會等待執行中的整點掃描完成。
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

@@ -61,9 +61,22 @@ function makeFetchImpl(postings = SAMPLE_POSTINGS, ok = true) {
     return {
       ok,
       status: ok ? 200 : 500,
-      json: async () => ({ postings }),
+      json: async () => ({ postings, totalPages: 1 }),
     };
   };
+}
+
+/** URL-recording fake: `handler(pageTo)` returns the page body for that page. */
+function pagedFetch(handler) {
+  const calls = [];
+  const impl = async (url, init) => {
+    calls.push({ url, init });
+    const page = handler(calls.length);
+    if (page instanceof Error) throw page;
+    return { ok: true, json: async () => page };
+  };
+  impl.calls = calls;
+  return impl;
 }
 
 // ---------------------------------------------------------------------------
@@ -146,8 +159,92 @@ test('fetchNoFluffJobs: throws on unexpected API shape (no postings array)', asy
   };
   await assert.rejects(
     () => fetchNoFluffJobs(API_URL, { fetchImpl: weirdFetch }),
-    /unexpected API response/,
+    /NoFluffJobs postings: expected an array/,
   );
+});
+
+// ---------------------------------------------------------------------------
+// v1.242.0 — the live API 400s without the query params the parent sends
+// ('Required parameter salaryCurrency'), pages via pageTo/totalPages, and rows
+// without a slug must be dropped (the old post-normalize filter never
+// rejected them: the `nofluffjobs-` id prefix is always truthy).
+// ---------------------------------------------------------------------------
+
+test('fetchNoFluffJobs: sends the required query params (salaryCurrency et al.)', async () => {
+  const fetchImpl = pagedFetch(() => ({ postings: SAMPLE_POSTINGS, totalPages: 1 }));
+  await fetchNoFluffJobs(API_URL, { fetchImpl });
+  const q = new URL(fetchImpl.calls[0].url).searchParams;
+  assert.equal(q.get('sort'), 'newest');
+  assert.equal(q.get('withSalaryMatch'), 'true');
+  assert.equal(q.get('pageTo'), '1');
+  assert.equal(q.get('pageSize'), '20');
+  assert.equal(q.get('salaryCurrency'), 'PLN');
+  assert.equal(q.get('salaryPeriod'), 'month');
+  assert.equal(q.get('region'), 'pl');
+  assert.equal(q.get('language'), 'pl-PL');
+  assert.equal(new URL(fetchImpl.calls[0].url).pathname, '/api/search/posting');
+});
+
+test('fetchNoFluffJobs: loops pageTo until totalPages is reached', async () => {
+  const fetchImpl = pagedFetch((n) => ({
+    postings: n === 1
+      ? Array.from({ length: 20 }, (_, i) => ({ id: `p1-${i}`, url: `page1-${i}`, title: `P1 ${i}`, name: 'Acme' }))
+      : Array.from({ length: 10 }, (_, i) => ({ id: `p2-${i}`, url: `page2-${i}`, title: `P2 ${i}`, name: 'Globex' })),
+    totalPages: 2,
+  }));
+  const jobs = await fetchNoFluffJobs(API_URL, { fetchImpl });
+  assert.equal(fetchImpl.calls.length, 2);
+  assert.equal(new URL(fetchImpl.calls[1].url).searchParams.get('pageTo'), '2');
+  assert.equal(jobs.length, 30);
+});
+
+test('fetchNoFluffJobs: stops on an empty page even when totalPages is missing', async () => {
+  const fetchImpl = pagedFetch((n) => (n === 1
+    ? { postings: [{ id: 'x', url: 'x', title: 'X', name: 'X' }] }
+    : { postings: [] }));
+  const jobs = await fetchNoFluffJobs(API_URL, { fetchImpl });
+  assert.equal(fetchImpl.calls.length, 2);
+  assert.equal(jobs.length, 1);
+});
+
+test('fetchNoFluffJobs: page cap (5 × 20) bounds a board with no totalPages', async () => {
+  const fetchImpl = pagedFetch((n) => ({
+    postings: Array.from({ length: 20 }, (_, i) => ({ id: `p${n}-${i}`, url: `u${n}-${i}`, title: `T ${n}-${i}`, name: 'Acme' })),
+  }));
+  const jobs = await fetchNoFluffJobs(API_URL, { fetchImpl });
+  assert.equal(fetchImpl.calls.length, 5);
+  assert.equal(jobs.length, 100);
+});
+
+test('fetchNoFluffJobs: drops rows without a slug (url AND id missing)', async () => {
+  // The old filter ran on the NORMALIZED row, whose id always carries the
+  // truthy `nofluffjobs-` prefix — so a slug-less row passed with url: ''.
+  const fetchImpl = pagedFetch(() => ({
+    postings: [
+      { title: 'Ghost Row', name: 'Ghost Co' }, // no url, no id → dropped
+      { id: 'real-one', url: 'real-one', title: 'Real', name: 'Acme' },
+    ],
+    totalPages: 1,
+  }));
+  const jobs = await fetchNoFluffJobs(API_URL, { fetchImpl });
+  assert.equal(jobs.length, 1);
+  assert.equal(jobs[0].url, `${JOB_BASE}real-one`);
+  assert.ok(jobs.every((j) => j.url.length > 0));
+});
+
+test('fetchNoFluffJobs: first-page failure throws; mid-walk failure keeps collected jobs', async () => {
+  await assert.rejects(
+    () => fetchNoFluffJobs(API_URL, { fetchImpl: async () => ({ ok: false, status: 400 }) }),
+    /HTTP 400/,
+  );
+
+  const flaky = pagedFetch((n) => {
+    if (n === 1) return { postings: [{ id: 'k', url: 'keep', title: 'Keep', name: 'A' }], totalPages: 3 };
+    return new Error('boom 503');
+  });
+  const jobs = await fetchNoFluffJobs(API_URL, { fetchImpl: flaky });
+  assert.equal(jobs.length, 1);
+  assert.equal(jobs[0].title, 'Keep');
 });
 
 // ---------------------------------------------------------------------------

@@ -45,6 +45,7 @@
  * `date` is emitted empty rather than guessed.
  */
 import { fetchJson, delay } from '../http-json.mjs';
+import { requireContainer, requireArray } from './_shape.mjs';
 
 const SITE_ORIGIN = 'https://www.yourator.co';
 export const FEED_URL = `${SITE_ORIGIN}/api/v4/jobs`;
@@ -185,17 +186,19 @@ export function normalizeYouratorJob(j, fallbackCompany) {
 }
 
 /**
- * Parse one page of the /api/v4/jobs payload into web-ui Jobs. Tolerant of a
- * malformed payload: a missing/non-array `payload.jobs` yields no jobs and
- * `hasMore: false`, which stops the walk. Exported for unit tests.
+ * Parse one page of the /api/v4/jobs payload into web-ui Jobs. The documented
+ * envelope is REQUIRED (v1.242.0 Phase 2): a payload without
+ * `payload.jobs: [...]` is the API stopping its shape, so it throws instead of
+ * reading as an empty final page (which would silently truncate the walk).
+ * Exported for unit tests.
  * @param {any} json
  * @param {string} [fallbackCompany]
  * @returns {{ jobs: object[], hasMore: boolean }}
  */
 export function parseYouratorPage(json, fallbackCompany) {
-  const jobsRaw = json?.payload?.jobs;
-  if (!Array.isArray(jobsRaw)) return { jobs: [], hasMore: false };
-  const hasMore = json?.payload?.hasMore === true;
+  requireContainer(json, 'Yourator', 'payload.jobs');
+  const jobsRaw = requireArray(json.payload.jobs, 'Yourator payload.jobs');
+  const hasMore = json.payload.hasMore === true;
   const jobs = [];
   for (const j of jobsRaw) {
     const normalized = normalizeYouratorJob(j, fallbackCompany);
@@ -218,6 +221,8 @@ function resolveMaxPages(company) {
  *
  * Fail-soft: a first-page failure throws (a dead board reads as a failure); a
  * mid-run blip keeps the jobs collected so far (same idiom as meituan/tencent).
+ * Hitting the page cap while the board still reports hasMore logs the
+ * truncation (v1.242.0 Phase 2) instead of ending silently.
  *
  * @param {string} apiUrl API endpoint (from buildEndpoint)
  * @param {{ fetchImpl?: Function, signal?: AbortSignal, company?: object }} [opts]
@@ -230,15 +235,20 @@ export async function fetchYourator(apiUrl = FEED_URL, opts = {}) {
   const fallbackCompany = company.name;
   const out = [];
   let succeededOnce = false;
+  let truncated = false;
 
   for (let page = 1; page <= maxPages; page++) {
     const url = `${apiUrl}?page=${page}`;
     // redirect:'error' prevents SSRF via server-side redirects.
     assertYouratorUrl(url);
 
-    let json;
+    // The fetch AND the shape parse share the fail-soft boundary: a page-1
+    // failure (network or malformed 200) throws; a later-page failure keeps
+    // the jobs collected so far.
+    let parsed;
     try {
-      json = await fetchJson(fetchImpl, url, { redirect: 'error', signal });
+      const json = await fetchJson(fetchImpl, url, { redirect: 'error', signal });
+      parsed = parseYouratorPage(json, fallbackCompany);
     } catch (err) {
       if (!succeededOnce) throw err;
       console.error(`  ⚠ yourator: page ${page} failed (${err.message}) — keeping the ${out.length} jobs collected so far`);
@@ -246,16 +256,22 @@ export async function fetchYourator(apiUrl = FEED_URL, opts = {}) {
     }
     succeededOnce = true;
 
-    const { jobs, hasMore } = parseYouratorPage(json, fallbackCompany);
-    out.push(...jobs);
+    out.push(...parsed.jobs);
 
     // `hasMore` is the API's own end-of-board signal and the only stop
     // condition. A short-page heuristic is deliberately NOT used — maxPages
     // already bounds a runaway walk, and a single short intermediate page would
     // silently truncate the board.
-    if (hasMore !== true) break;
+    if (parsed.hasMore !== true) {
+      truncated = false;
+      break;
+    }
+    truncated = true;
     if (page < maxPages) await delay(PAGE_DELAY_MS, signal);
   }
 
+  if (truncated) {
+    console.error(`  ⚠ yourator: page cap (${maxPages}) hit while the board still reported hasMore — results are truncated`);
+  }
   return out;
 }

@@ -121,23 +121,31 @@ export async function fetchTheMuse(feedUrl = FEED_BASE, opts = {}) {
     const pageUrl = new URL(base.toString());
     pageUrl.searchParams.set('page', String(page));
 
-    const res = await fetchImpl(pageUrl.toString(), {
-      signal,
-      redirect: 'error',
-      headers: { 'User-Agent': UA, Accept: 'application/json' },
-    });
-
-    if (!res.ok) {
-      if (page === 0) {
-        const err = new Error(`The Muse: HTTP ${res.status} (${pageUrl})`);
-        err.status = res.status;
-        throw err;
+    // v1.242.0 (Phase 2): the transport AND the JSON parse share the fail-soft
+    // boundary — a page-1 failure throws, a later-page failure keeps the pages
+    // already collected (they used to be discarded with the whole fetch).
+    let json;
+    try {
+      const res = await fetchImpl(pageUrl.toString(), {
+        signal,
+        redirect: 'error',
+        headers: { 'User-Agent': UA, Accept: 'application/json' },
+      });
+      if (!res.ok) {
+        if (page === 0) {
+          const err = new Error(`The Muse: HTTP ${res.status} (${pageUrl})`);
+          err.status = res.status;
+          throw err;
+        }
+        // Non-fatal on subsequent pages — keep partials, stop pagination
+        break;
       }
-      // Non-fatal on subsequent pages — stop pagination
+      json = await res.json();
+    } catch (err) {
+      if (page === 0) throw err;
+      console.error(`  ⚠ themuse: page ${page} failed (${err.message}) — keeping the ${allResults.length} postings collected so far`);
       break;
     }
-
-    const json = await res.json();
 
     if (!json || !Array.isArray(json.results)) {
       if (page === 0) {
@@ -145,6 +153,7 @@ export async function fetchTheMuse(feedUrl = FEED_BASE, opts = {}) {
           `The Muse: unexpected API response — expected { results: [...] }, got keys: [${json ? Object.keys(json).join(', ') : 'null'}]`,
         );
       }
+      console.error(`  ⚠ themuse: page ${page} lost its shape — keeping the ${allResults.length} postings collected so far`);
       break;
     }
 
@@ -154,6 +163,10 @@ export async function fetchTheMuse(feedUrl = FEED_BASE, opts = {}) {
     }
 
     allResults.push(...json.results);
+
+    // Stop on a raw empty page — page_count can over-report after the board
+    // shrank; walking on would only burn requests.
+    if (json.results.length === 0) break;
   }
 
   return allResults.map(normalize).filter(Boolean);

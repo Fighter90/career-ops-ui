@@ -12,14 +12,14 @@ _Неофициальный интерфейс — не аффилирован �
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.241.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.241.1)
+[![release](https://img.shields.io/badge/release-v1.242.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.242.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Последний релиз — v1.241.1** — **Живые оценки работают от начала до конца на любой локали.** Оценки снова видят весь `oferta.md` (бюджет контекста 192 КБ), отчёты остаются на выбранном языке (инструкция теперь открывает промпт; на английском остаются только имена, технологии и цитаты), медленные оценки получают 300 с вместо ошибки 502, а отчёты на хинди с буквами блоков на деванагари или оценками местными цифрами проходят валидацию. Карта вакансий размещает длинные объявления с несколькими локациями («Berlin Office · Berlin · Germany · …») вместо отказа, деплой дожидается идущего ежечасного скана, а карта вакансий теперь есть на [cvstart.org](https://cvstart.org/#job-map). Удалённый QA × 17 локалей зелёный на продакшене.
+> **🆕 Последний релиз — v1.242.0** — **Слой данных сканера снова заслуживает доверия.** Мёртвые источники ожили (justjoin и nofluffjobs снова читают свои полные каталоги; himalayas и jobicy проходят дальше 20 новейших), искажённый или challenge-ответ теперь **выбрасывает ошибку** уже на странице 1, вместо того чтобы читаться как «0 вакансий» (`server/lib/sources/_shape.mjs`), а проверки вендоров по подстроке превратились в разобранные точные закрепления хостов — `clever.com` больше не может выдавать себя за lever, и враждебный URL доски больше не может перенаправить скан. Одна неверно настроенная запись portals больше не обрывает весь скан.
 >
-> **Предыдущий релиз — v1.241.0** — **Ужесточение по итогам код-ревью 28 агентами и карта вакансий от @bullitt186.** Некорректный запрос больше не может остановить сервер, прерванный скан не стирает последние результаты, оценки теперь видят файл метода целиком, а не первые 16 КБ, сервер отклоняет хосты DNS-rebinding и кросс-сайтовые записи, а редиректы повторно проверяются на приватные цели. `#/map` показывает ваши вакансии на OpenStreetMap. **4404 теста · 118 браузерных.**
+> **Предыдущий релиз — v1.241.1** — **Живые оценки работают end-to-end на всех языках; карта вакансий размещает длинные многолокационные объявления; деплой дожидается идущего часового скана.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

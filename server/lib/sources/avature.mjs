@@ -82,6 +82,26 @@ function parseLocation(block) {
   return m ? clean(m[1]) : '';
 }
 
+// Tenants vary the result class: Synopsys uses `article--result`, Siemens
+// appends a position index (`article--result 1`). Accept any suffix.
+// careers.avature.net renders `article--jobs` cards instead (parent, 2026-09-28).
+const ARTICLE_RE_SOURCE = '<article class="article article--(?:result|jobs)\\b[^"]*"[\\s\\S]*?<\\/article>';
+
+/**
+ * Count the RAW result articles on a page (pre-filter). Pagination must stop
+ * on this RAW length, not on the post-filter row count: a single dropped card
+ * (missing title / bad link) on a full page would otherwise end the walk one
+ * page early. Exported for tests.
+ * @param {string} html
+ */
+export function countAvatureArticles(html) {
+  if (typeof html !== 'string') return 0;
+  const re = new RegExp(ARTICLE_RE_SOURCE, 'g'); // fresh lastIndex per call
+  let n = 0;
+  while (re.exec(html) !== null) n += 1;
+  return n;
+}
+
 /**
  * Parse an Avature SearchJobs list page into web-ui job objects. Exported for
  * tests. Rows without a title or a JobDetail URL are dropped; a JobDetail
@@ -104,11 +124,7 @@ export function parseAvature(html, ctx = /** @type {any} */ ({})) {
   } catch { /* origin unusable → all absolute urls treated as off-host */ }
 
   const out = [];
-  // Tenants vary the result class: Synopsys uses `article--result`, Siemens
-  // appends a position index (`article--result 1`). Accept any suffix.
-  // careers.avature.net renders `article--jobs` cards instead (parent, 2026-09-28).
-  const re = /<article class="article article--(?:result|jobs)\b[^"]*"[\s\S]*?<\/article>/g;
-  let a;
+  const re = new RegExp(ARTICLE_RE_SOURCE, 'g');  let a;
   while ((a = re.exec(html)) !== null) {
     const block = a[0];
     // JobDetail path may or may not sit under /careers/ (branded tenants vary),
@@ -207,7 +223,8 @@ function resolveMaxPages(company) {
 /**
  * Fetch + normalize an Avature tenant's SearchJobs list (paginated by jobOffset
  * in steps of 6). Stops on an empty page, a page that adds no fresh rows (offset
- * ignored / looped), a short page, or the page cap.
+ * ignored / looped), a RAW-short page, or the page cap. A page-1 failure
+ * throws; a later-page failure keeps the collected partials and logs.
  *
  * @param {string} endpoint host-pinned Avature URL (from buildEndpoint)
  * @param {{ fetchImpl?: Function, signal?: AbortSignal, company?: object }} [opts]
@@ -222,12 +239,21 @@ export async function fetchAvature(endpoint, opts = {}) {
   const out = [];
   const seen = new Set();
   for (let page = 0; page < maxPages; page += 1) {
-    const html = await fetchText(fetchImpl, pageUrl(searchUrl, facets, page * PAGE_SIZE), {
-      signal,
-      redirect: 'error',
-      headers: { accept: 'text/html' },
-    });
-    const rows = parseAvature(html, { origin, fallbackCompany });
+    let rows;
+    let raw;
+    try {
+      const html = await fetchText(fetchImpl, pageUrl(searchUrl, facets, page * PAGE_SIZE), {
+        signal,
+        redirect: 'error',
+        headers: { accept: 'text/html' },
+      });
+      rows = parseAvature(html, { origin, fallbackCompany });
+      raw = countAvatureArticles(html);
+    } catch (err) {
+      if (page === 0) throw err;
+      console.error(`  ⚠ avature: page ${page + 1} failed (${err.message}) — keeping the ${out.length} jobs collected so far`);
+      break;
+    }
     if (rows.length === 0) break;
 
     let fresh = 0;
@@ -238,7 +264,9 @@ export async function fetchAvature(endpoint, opts = {}) {
       out.push(row);
     }
     if (fresh === 0) break; // offset ignored / looped
-    if (rows.length < PAGE_SIZE) break; // last page
+    // RAW page length — one unparseable card on a full page must not end the
+    // walk (the old FILTERED-vs-PAGE_SIZE test stopped it a page early).
+    if (raw < PAGE_SIZE) break; // last page
   }
   return out;
 }

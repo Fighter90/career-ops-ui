@@ -13,6 +13,7 @@
  * Used by the pinpoint adapter (server/lib/portals/adapters/pinpoint.mjs).
  */
 import { fetchJson } from '../http-json.mjs';
+import { requireObject, requireArray } from './_shape.mjs';
 
 /** @type {string} */
 const UA = 'career-ops-ui/1 (job-scanner; +https://github.com/Fighter90/career-ops)';
@@ -82,8 +83,10 @@ function isPinpointDemoPosting(j) {
  * @param {string} [host]       tenant hostname e.g. "acme.pinpointhq.com"
  */
 export function parsePinpointResponse(json, companyName, host = '') {
-  const postings = json?.data;
-  if (!Array.isArray(postings)) return [];
+  // Phase-2: a 200 that stopped speaking { data: [...] } is a drifted envelope
+  // or a challenge, not an empty board — THROW (the feed is a single request,
+  // so this is always "page 1").
+  const postings = requireArray(requireObject(json, 'Pinpoint postings').data, 'Pinpoint postings');
   const company = companyName || tenantSlug(host) || 'Pinpoint';
   const REMOTE_RE = /remote|anywhere|distributed|home\s*office/i;
   return postings

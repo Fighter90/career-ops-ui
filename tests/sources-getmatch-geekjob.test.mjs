@@ -129,3 +129,72 @@ test('searchGeekJob onlyRemote drops non-remote entries', async () => {
   const out = await searchGeekJob('q', { fetchImpl, onlyRemote: true });
   assert.ok(out.every((j) => j.isRemote));
 });
+
+// ── v1.242.0 Phase-2 correctness ─────────────────────────────────────────────
+//
+// The old single card regex capped the per-card block at {0,2000} chars with a
+// lookahead for the next anchor, so a card followed by more markup than the
+// cap — always true for the TAIL card of a long page — was dropped silently.
+// The parser now slices each card's block by index to the next anchor.
+
+const BIG_FILLER = '<div class="desc">' + 'x'.repeat(2500) + '</div>';
+
+test('parseGetMatchCards: tail card + card followed by a >2000-char block are kept', () => {
+  const html = `
+    <a href="/vacancies/first" class="vacancy-card">First Role Here</a>
+    <div class="company">First Co</div>
+    ${BIG_FILLER}
+    <a href="/vacancies/tail" class="vacancy-card">Tail Role Here</a>
+    <div class="company">Tail Co</div>
+    <div class="chips">удалённо</div>
+    ${BIG_FILLER}
+  `;
+  const out = parseGetMatchCards(html);
+  const first = out.find((j) => j.title.includes('First Role'));
+  const tail = out.find((j) => j.title.includes('Tail Role'));
+  assert.ok(first, 'a card whose next anchor sits beyond 2000 chars was dropped by the cap');
+  assert.equal(first.company, 'First Co');
+  assert.ok(tail, 'the tail card was dropped — its block runs past the cap to end-of-page');
+  assert.equal(tail.company, 'Tail Co');
+  assert.equal(tail.isRemote, true);
+});
+
+test('parseGetMatchCards decodes HTML entities in title and company', () => {
+  const html = `
+    <a href="/vacancies/qa-1">Ingeniero &amp; QA &#8212; Senior</a>
+    <div class="company">S&Aacute;B Coding</div>
+  `;
+  const [j] = parseGetMatchCards(html);
+  assert.equal(j.title, 'Ingeniero & QA — Senior');
+  assert.equal(j.company, 'SÁB Coding');
+});
+
+test('parseGeekJobCards: tail card + card followed by a >2000-char block are kept', () => {
+  const html = `
+    <a href="/vacancy/111">First Role Here</a>
+    <div class="company">First Co</div>
+    ${BIG_FILLER}
+    <a href="/vacancy/222">Tail Role Here</a>
+    <div class="company">Tail Co</div>
+    <div class="info">удалённо</div>
+    ${BIG_FILLER}
+  `;
+  const out = parseGeekJobCards(html);
+  const first = out.find((j) => j.title.includes('First Role'));
+  const tail = out.find((j) => j.title.includes('Tail Role'));
+  assert.ok(first, 'a card whose next anchor sits beyond 2000 chars was dropped by the cap');
+  assert.equal(first.company, 'First Co');
+  assert.ok(tail, 'the tail card was dropped — its block runs past the cap to end-of-page');
+  assert.equal(tail.company, 'Tail Co');
+  assert.equal(tail.isRemote, true);
+});
+
+test('parseGeekJobCards decodes HTML entities in title and company', () => {
+  const html = `
+    <a href="/vacancy/333">Инженер &amp; QA &#8212; Senior</a>
+    <div class="employer">S&amp;P Coding</div>
+  `;
+  const [j] = parseGeekJobCards(html);
+  assert.equal(j.title, 'Инженер & QA — Senior');
+  assert.equal(j.company, 'S&P Coding');
+});

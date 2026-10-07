@@ -260,11 +260,23 @@ export function parseHiringRoomJobs(html, origin, company = DEFAULT_COMPANY) {
   return jobs;
 }
 
+// Every real HiringRoom microsite — including an EMPTY board — references the
+// HiringRoom product somewhere: tenant-host links, the /jobs/get_vacancy/
+// permalinks, or embedded JSON-LD. A bot wall answers 200 with a small HTML
+// challenge page that carries none of those, and parsed as zero vacancies it
+// used to read as a healthy empty board.
+function assertHiringRoomPage(html, url) {
+  if (typeof html === 'string'
+      && /hiringroom\.com|\/jobs\/get_vacancy\/|application\/ld\+json/i.test(html)) return;
+  throw new Error(`hiringroom: ${url} is not a HiringRoom microsite (bot-wall challenge or dead tenant?)`);
+}
+
 /**
  * Fetch + normalize one HiringRoom tenant microsite — a single GET.
  *
  * The endpoint is host-checked BEFORE the request, so an off-host URL never
- * reaches the network. `fetchImpl` is always the injected one.
+ * reaches the network; the response must carry the HiringRoom container
+ * (assertHiringRoomPage). `fetchImpl` is always the injected one.
  *
  * @param {string} endpoint from buildEndpoint (the entry's careers_url / api)
  * @param {{ fetchImpl?: Function, signal?: AbortSignal, company?: any }} [opts]
@@ -278,6 +290,7 @@ export async function fetchHiringRoom(endpoint, opts = {}) {
     redirect: 'error',
     headers: { 'User-Agent': BROWSER_LIKE_USER_AGENT, Accept: 'text/html' },
   });
+  assertHiringRoomPage(html, parsed.href);
   const name = company && typeof company.name === 'string' ? company.name : '';
   return parseHiringRoomJobs(html, parsed.origin, name);
 }

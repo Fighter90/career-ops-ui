@@ -15,16 +15,22 @@ export const ripplingAdapter = {
   label: 'Rippling',
 
   matches(company) {
-    const raw = String(company.api || company.careers_url || '').trim();
+    if (!company || typeof company !== 'object') return false;
+    const raw = typeof company.api === 'string' ? company.api.trim()
+      : typeof company.careers_url === 'string' ? company.careers_url.trim() : '';
     if (company.provider === 'rippling') {
-      // explicit provider — still require a parseable slug if a URL is present
-      return !raw || !!ripplingSlugFromCareersUrl(raw) || !!company.rippling;
+      // explicit provider — still require a parseable slug if a URL is present.
+      // (A `rippling:` config block alone is NOT a pin: the source never reads
+      // one, so claiming here would yield matches=true, endpoint=null.)
+      return !raw || !!ripplingSlugFromCareersUrl(raw);
     }
     return !!ripplingSlugFromCareersUrl(raw);
   },
 
   buildEndpoint(company) {
-    const raw = String(company.api || company.careers_url || '').trim();
+    if (!company || typeof company !== 'object') return null;
+    const raw = typeof company.api === 'string' && company.api ? company.api.trim()
+      : typeof company.careers_url === 'string' ? company.careers_url.trim() : '';
     const slug = ripplingSlugFromCareersUrl(raw);
     return slug ? buildRipplingEndpoint(slug) : null;
   },

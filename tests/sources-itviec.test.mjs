@@ -320,6 +320,63 @@ test('fetchItviec: a broken page 1 (cards present, unparsable) throws instead of
   await assert.rejects(() => fetchItviec(LIST_URL, { fetchImpl, signal }), /markup changed/);
 });
 
+// ---------------------------------------------------------------------------
+// v1.242.0 — transient retry, later-page partials, out-of-range 404 = done
+// ---------------------------------------------------------------------------
+
+test('fetchItviec: retries a transient 503 on page 1 and succeeds', async () => {
+  let attempts = 0;
+  const fetchImpl = async (url, init) => {
+    attempts += 1;
+    if (attempts === 1) return { ok: false, status: 503, headers: { get: () => null }, text: async () => '' };
+    return textResponse(PAGE);
+  };
+  const jobs = await fetchItviec(LIST_URL, {
+    fetchImpl, retryDelayMs: 0, company: { max_pages: 1 },
+  });
+  assert.equal(attempts, 2); // one retry, then success
+  assert.equal(jobs.length, 2);
+});
+
+test('fetchItviec: a later-page failure keeps the pages already fetched', async () => {
+  const fetchImpl = async (url) => {
+    if (url === LIST_URL) return textResponse(PAGE);
+    throw new Error('boom 503');
+  };
+  const warns = [];
+  const origWarn = console.warn;
+  console.warn = (...a) => warns.push(a.join(' '));
+  let jobs;
+  try {
+    jobs = await fetchItviec(LIST_URL, { fetchImpl, retryDelayMs: 0, company: { max_pages: 3 } });
+  } finally {
+    console.warn = origWarn;
+  }
+  assert.equal(jobs.length, 2); // page 1 partials kept
+  assert.ok(warns.some((w) => /itviec/.test(w) && /page 2/.test(w)), `expected a logged warning, got: ${warns.join(' | ')}`);
+});
+
+test('fetchItviec: a 404 on a later page is the end of the board, not a failure', async () => {
+  // An out-of-range ?page= answering 404 must not read as a broken board —
+  // the scanner would quarantine the entry for 14 days over a normal end.
+  const fetchImpl = async (url) => {
+    if (url === LIST_URL) return textResponse(PAGE);
+    const page = Number(new URL(url).searchParams.get('page') || 1);
+    if (page === 2) return { ok: false, status: 404, headers: { get: () => null }, text: async () => '' };
+    throw new Error('walked past the 404');
+  };
+  const jobs = await fetchItviec(LIST_URL, { fetchImpl, retryDelayMs: 0, company: { max_pages: 5 } });
+  assert.equal(jobs.length, 2); // partials kept, no throw
+});
+
+test('fetchItviec: a 404 on page 1 still throws (a dead board must quarantine)', async () => {
+  const fetchImpl = async () => ({ ok: false, status: 404, headers: { get: () => null }, text: async () => '' });
+  await assert.rejects(
+    () => fetchItviec(LIST_URL, { fetchImpl, retryDelayMs: 0 }),
+    (err) => err.status === 404,
+  );
+});
+
 test('fetchItviec: rejects a foreign host and a non-HTTPS endpoint (SSRF pin)', async () => {
   const fetchImpl = async () => textResponse(PAGE);
   await assert.rejects(() => fetchItviec('https://evil.example.com/jobs', { fetchImpl }), /untrusted hostname/);

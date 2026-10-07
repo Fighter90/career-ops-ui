@@ -228,13 +228,16 @@ export function parseOraclecloud(json, site, companyName) {
       : (req.RequisitionNumber != null ? String(req.RequisitionNumber) : '');
     const builtUrl = id ? buildJobUrl(site, id) : '';
 
-    // Prefer ExternalURL, but host-pin it: an absolute URL landing off the
-    // tenant host is dropped in favour of the built job URL.
+    // Prefer ExternalURL, but host-pin it: only an https URL landing on the
+    // tenant host is accepted — an off-host value, an http: downgrade, or a
+    // `javascript://tenant.host/…` payload (which parses WITH the trusted
+    // hostname) falls back to the built job URL (anti-injection).
     let url = builtUrl;
     const externalUrl = typeof req.ExternalURL === 'string' ? req.ExternalURL.trim() : '';
     if (externalUrl) {
       try {
-        if (new URL(externalUrl).hostname === site.host) url = externalUrl;
+        const external = new URL(externalUrl);
+        if (external.protocol === 'https:' && external.hostname === site.host) url = externalUrl;
       } catch { /* malformed ExternalURL → keep builtUrl */ }
     }
     if (!url) continue; // dedup key — drop rows we can't link to
@@ -313,22 +316,40 @@ export async function fetchOraclecloud(endpoint, opts = {}) {
     }
 
     const { jobs, total: pageTotal, listLen } = parseOraclecloud(json, site, companyName);
+    let fresh = 0;
     for (const job of jobs) {
-      if (!seen.has(job.url)) seen.set(job.url, job);
+      if (!seen.has(job.url)) {
+        seen.set(job.url, job);
+        fresh += 1;
+      }
     }
     if (total === null && pageTotal !== null) total = pageTotal;
 
+    // Dead-board guard: a page-0 response that reports a nonzero board (or no
+    // count at all) but ships NO requisitionList is not an empty board — it is
+    // a shape break (the expand= clause dropped, a WAF interstitial parsed as
+    // JSON) that would read as a healthy-but-empty tenant forever. A board
+    // with TotalJobsCount=0 and no list is genuinely empty and stays [].
+    if (page === 0 && listLen === 0 && (total === null || total > 0)) {
+      throw new Error(total === null
+        ? `oraclecloud: page 0 carried no TotalJobsCount and no requisitionList — response shape changed (${apiUrl})`
+        : `oraclecloud: page 0 reported TotalJobsCount=${total} but no requisitionList — response shape changed (expand lost?) (${apiUrl})`);
+    }
+
     // Stop conditions — hasMore is NOT consulted (see module header).
     //
-    // An empty page is always the end. A SHORT page is not: ORC serves fewer
-    // rows than the limit mid-list (American Express reports TotalJobsCount
-    // 454 and serves 200, 199, 54 — one row is filtered server-side), and
-    // treating that 199 as the end dropped the last 54 postings, 12% of the
-    // board. Matching the wider convention: "the API may return fewer results
-    // than the number requested … even if not at the end of the collection"
-    // (Google AIP-158). So a short page only ends the walk when the tenant
-    // reports no total to check it against.
-    if (listLen === 0) break;
+    // A page that adds no fresh URL is the end: an empty page, or a tenant
+    // that ignores `offset` and re-serves the first page forever (counting
+    // served rows instead would loop to the cap re-collecting nothing). A
+    // SHORT page is not by itself: ORC serves fewer rows than the limit
+    // mid-list (American Express reports TotalJobsCount 454 and serves 200,
+    // 199, 54 — one row is filtered server-side), and treating that 199 as
+    // the end dropped the last 54 postings, 12% of the board. Matching the
+    // wider convention: "the API may return fewer results than the number
+    // requested … even if not at the end of the collection" (Google AIP-158).
+    // So a short page only ends the walk when the tenant reports no total to
+    // check it against.
+    if (fresh === 0) break;
     if (total !== null) {
       if (offset + PAGE_SIZE >= total) break;
     } else if (listLen < PAGE_SIZE) break;

@@ -3,8 +3,10 @@
  *   GET https://api.ashbyhq.com/posting-api/job-board/<slug>?includeCompensation=true
  */
 import { DESCRIPTION_CAP } from '../html-to-text.mjs';
+import { requireContainer, requireArray } from './_shape.mjs';
 
 const UA = 'career-ops-web-ui/1.0';
+const API_HOST = 'api.ashbyhq.com';
 
 // v1.69.0 (P-14) — self-describing adapter metadata. The registry
 // auto-discovers every `*.mjs` in this folder and collects each
@@ -16,8 +18,46 @@ export const meta = {
   region: 'en',
 };
 
+/**
+ * Defence-in-depth endpoint check: HTTPS on exactly api.ashbyhq.com. The
+ * adapter builds the URL from a slug, so this only ever rejects a caller that
+ * hand-built a bad one — but it must reject it BEFORE any request is made
+ * (phase-2: the source, not just the adapter, owns the pin).
+ * @param {string} url
+ * @returns {string}
+ */
+export function assertAshbyUrl(url) {
+  let parsed;
+  try {
+    parsed = new URL(url);
+  } catch {
+    throw new Error(`ashby: invalid URL: ${url}`);
+  }
+  if (parsed.protocol !== 'https:') throw new Error(`ashby: URL must use HTTPS: ${url}`);
+  if (parsed.hostname !== API_HOST) {
+    throw new Error(`ashby: untrusted hostname "${parsed.hostname}" — must be ${API_HOST}`);
+  }
+  return url;
+}
+
+/** The https job/apply URL for a posting, or '' when unusable (never a
+ *  javascript:/data:/http: link — the URL is the dedup key). */
+function resolveJobUrl(j) {
+  const raw = (typeof j.jobUrl === 'string' && j.jobUrl.trim())
+    || (typeof j.applyUrl === 'string' && j.applyUrl.trim())
+    || '';
+  try {
+    const parsed = new URL(raw);
+    if (parsed.protocol !== 'https:') return '';
+    return parsed.href;
+  } catch {
+    return '';
+  }
+}
+
 export async function fetchAshby(apiUrl, opts = {}) {
   const { fetchImpl = fetch, signal } = opts; // REVIEW-B3
+  assertAshbyUrl(apiUrl);
   // redirect:'error' — never follow a 3xx off api.ashbyhq.com (SSRF; parent #4080).
   const res = await fetchImpl(apiUrl, { signal, redirect: 'error', headers: { 'User-Agent': UA, Accept: 'application/json' } });
   if (!res.ok) {
@@ -26,7 +66,15 @@ export async function fetchAshby(apiUrl, opts = {}) {
     throw err;
   }
   const data = await res.json();
-  return (data.jobs || []).map((j) => normalize(j));
+  // Phase-2: a 200 without the documented {jobs:[...]} envelope is a shape
+  // change (challenge page, API retirement) — throw instead of the old
+  // `(data.jobs || [])` that read it as a healthy-but-empty board. Rows whose
+  // jobUrl/applyUrl is not a usable https URL are dropped (the URL is the
+  // dedup key — a javascript:/data:/relative href is never a job link).
+  requireContainer(data, 'Ashby posting-api', 'jobs');
+  return requireArray(data.jobs, 'Ashby jobs')
+    .map((j) => normalize(j))
+    .filter((j) => j.url);
 }
 
 // v1.75.0 — build the full location from primary +
@@ -108,7 +156,7 @@ function normalize(j) {
     id: `ashby-${j.id}`,
     title: j.title || '',
     company: '',
-    url: j.jobUrl || j.applyUrl || '',
+    url: resolveJobUrl(j),
     salary,
     location: formatLocation(j),
     isRemote,

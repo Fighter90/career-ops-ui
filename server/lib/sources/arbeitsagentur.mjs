@@ -40,17 +40,48 @@
  */
 import { fetchJson } from '../http-json.mjs';
 import { safeEncodeURIComponent } from './_safe-url.mjs';
+import { requireContainer, requireArray } from './_shape.mjs';
 
 export const API_URL = 'https://rest.arbeitsagentur.de/jobboerse/jobsuche-service/pc/v6/jobs';
+const API_HOST = 'rest.arbeitsagentur.de';
 const API_KEY = 'jobboerse-jobsuche'; // public client key the arbeitsagentur.de UI uses
 const DETAIL_BASE = 'https://www.arbeitsagentur.de/jobsuche/jobdetail/';
-const REMOTE_RE = /(remote|homeoffice|home[-\s]?office|ortsunabh|deutschlandweit|bundesweit|100\s*%|full[-\s]?remote|fully remote)/i;
+// Explicit work-from-home markers only. A bare "100 %" is FULL-TIME in German
+// titles (a "100% Stelle" is an on-site full-time role), and
+// "bundesweit"/"deutschlandweit" appear in on-site nationwide field-sales
+// titles — neither claims home office, so neither may tag a posting Remote
+// (the Deutschlandweit (Homeoffice) marker would smuggle it past the commute
+// location_filter). "100% Remote" / "100% Homeoffice" still match — the
+// remote/home-office word carries the claim.
+const REMOTE_RE = /(\bremote\b|\bhome[-\s]?office|\bortsunabh)/i;
 
 export const meta = {
   value: 'arbeitsagentur',
   label: 'Arbeitsagentur',
   region: 'en',
 };
+
+/**
+ * Defence-in-depth endpoint check: HTTPS on exactly rest.arbeitsagentur.de.
+ * Every search request carries the (public) X-API-Key — it must never be sent
+ * to any other host, so the endpoint is pinned here regardless of what the
+ * adapter built.
+ * @param {string} url
+ * @returns {string}
+ */
+export function assertArbeitsagenturUrl(url) {
+  let parsed;
+  try {
+    parsed = new URL(url);
+  } catch {
+    throw new Error(`arbeitsagentur: invalid URL: ${url}`);
+  }
+  if (parsed.protocol !== 'https:') throw new Error(`arbeitsagentur: URL must use HTTPS: ${url}`);
+  if (parsed.hostname !== API_HOST) {
+    throw new Error(`arbeitsagentur: untrusted hostname "${parsed.hostname}" — must be ${API_HOST}`);
+  }
+  return url;
+}
 
 /** Clamp a runtime integer into [min, max], falling back to `def` for NaN. */
 function intInRange(val, def, min, max) {
@@ -165,6 +196,7 @@ export function normalizeJob(job) {
  */
 export async function fetchArbeitsagentur(apiUrl = API_URL, opts = {}) {
   const { fetchImpl = fetch, signal, company = {} } = opts;
+  assertArbeitsagenturUrl(apiUrl);
   const { keywords, wo, umkreis, days, size, remoteNationwide, remoteMatch, remoteMaxPages } = parseArbeitsagenturConfig(company);
   if (!keywords.length) {
     throw new Error(`arbeitsagentur: entry "${company.name || '(unnamed)'}" has no arbeitsagentur.keywords[]`);
@@ -184,7 +216,11 @@ export async function fetchArbeitsagentur(apiUrl = API_URL, opts = {}) {
       headers: { 'X-API-Key': API_KEY, accept: 'application/json' },
       signal,
     });
-    return Array.isArray(json && json.ergebnisliste) ? json.ergebnisliste : [];
+    // Phase-2: a 200 without the documented `ergebnisliste` array is a shape
+    // change, not a keyword with zero hits (a zero-hit keyword is
+    // `"ergebnisliste": []`) — throw so a dead API never reads as an empty board.
+    requireContainer(json, 'Arbeitsagentur search', 'ergebnisliste');
+    return requireArray(json.ergebnisliste, 'Arbeitsagentur ergebnisliste');
   };
 
   const byRef = new Map();

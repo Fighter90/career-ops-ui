@@ -7,11 +7,19 @@
  * en-scanner's title_filter can gate on the configured titles — the feed's
  * own ?search= is a narrow substring match that misses e.g. "ML Engineer".
  *
+ * Phase-2 URL pinning (v1.242.0 sources-6): the feed URL must be https on a
+ * real host (an explicit `api:`/`remotive:` mirror stays allowed — same model
+ * as phenom's branded tenants), and every job `url` is pinned to https on the
+ * exact remotive.com host; anything else is dropped.
+ *
  * Used by the remotive adapter (server/lib/portals/adapters/remotive.mjs).
  */
 const UA = 'career-ops-web-ui/1.0';
 
 export const FEED_URL = 'https://remotive.com/api/remote-jobs';
+
+// Anchored: `remotive.com` itself or any subdomain — never a lookalike.
+export const REMOTIVE_HOST_RE = /(?:^|\.)remotive\.com$/i;
 
 export const meta = {
   value: 'remotive',
@@ -20,12 +28,43 @@ export const meta = {
 };
 
 /**
+ * Guard on the feed URL (the one server-fetched request): HTTPS + a real
+ * hostname. The mirror override stays usable; the job-url pin below carries
+ * the exact-host rule.
+ * @param {string} url
+ */
+export function assertRemotiveUrl(url) {
+  let parsed;
+  try {
+    parsed = new URL(url);
+  } catch {
+    throw new Error(`remotive: invalid URL: ${url}`);
+  }
+  if (parsed.protocol !== 'https:') throw new Error(`remotive: URL must use HTTPS: ${url}`);
+  if (!parsed.hostname) throw new Error(`remotive: URL has no hostname: ${url}`);
+  return url;
+}
+
+/** https: + the exact pinned board host — the only accepted job URL shape. */
+function isTrustedJobUrl(value) {
+  if (typeof value !== 'string') return false;
+  let parsed;
+  try {
+    parsed = new URL(value.trim());
+  } catch {
+    return false;
+  }
+  return parsed.protocol === 'https:' && REMOTIVE_HOST_RE.test(parsed.hostname);
+}
+
+/**
  * Fetch + normalize the Remotive public feed.
  * @param {string} feedUrl
  * @param {{ fetchImpl?: Function, signal?: AbortSignal }} [opts]
  */
 export async function fetchRemotive(feedUrl = FEED_URL, opts = {}) {
   const { fetchImpl = fetch, signal } = opts;
+  assertRemotiveUrl(feedUrl);
   const res = await fetchImpl(feedUrl, {
     signal,
     redirect: 'error',
@@ -43,7 +82,7 @@ export async function fetchRemotive(feedUrl = FEED_URL, opts = {}) {
   return json.jobs
     .filter((j) => j && typeof j === 'object'
       && typeof j.title === 'string' && j.title.trim() !== ''
-      && typeof j.url === 'string' && /^https?:\/\//i.test(j.url.trim()))
+      && isTrustedJobUrl(j.url))
     .map((j) => normalize(j));
 }
 

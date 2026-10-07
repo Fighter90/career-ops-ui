@@ -191,6 +191,50 @@ test('resolveCollectionId: fail-soft null on non-https / non-200 / bad html / fe
   assert.equal(await resolveCollectionId({ name: 'x' }, {}), null);
 });
 
+// v1.242.0 — safeGet ignores `timeoutMs` whenever a `signal` is present, and
+// the scanner always passes one: the 15s bound was DEAD, so a stalled
+// careers_url held the worker until the scanner's own (much longer) signal
+// fired — or forever. resolveCollectionId now combines the caller's signal
+// with a hard deadline (withTimeout). `opts.timeoutMs` is an injectable
+// override so this is testable in milliseconds.
+test('resolveCollectionId: a stalled careers page fails soft AT the deadline (timeout is live even with a signal)', async () => {
+  const stalled = (signal) => new Promise((_, reject) => {
+    const bail = setTimeout(() => reject(new Error('test bailout: no deadline fired')), 1200);
+    signal?.addEventListener('abort', () => {
+      clearTimeout(bail);
+      reject(signal?.reason ?? new Error('aborted'));
+    }, { once: true });
+    if (signal?.aborted) {
+      clearTimeout(bail);
+      reject(signal.reason ?? new Error('aborted'));
+    }
+  });
+  const t0 = Date.now();
+  const id = await resolveCollectionId(
+    { careers_url: 'https://jobs.b2venture.vc' },
+    { timeoutMs: 40, safeGetImpl: (_url, opts) => stalled(opts.signal) },
+  );
+  assert.equal(id, null, 'a stalled page resolves to null, never a hang');
+  assert.ok(Date.now() - t0 < 1000, `bounded by the 40ms deadline (took ${Date.now() - t0}ms)`);
+});
+
+test('resolveCollectionId: an already-aborted upstream signal fails immediately', async () => {
+  const ac = new AbortController();
+  ac.abort();
+  const id = await resolveCollectionId(
+    { careers_url: 'https://jobs.b2venture.vc' },
+    {
+      signal: ac.signal,
+      timeoutMs: 5000,
+      safeGetImpl: (_url, opts) => new Promise((_, reject) => {
+        opts.signal.addEventListener('abort', () => reject(opts.signal.reason ?? new Error('aborted')), { once: true });
+        if (opts.signal.aborted) reject(opts.signal.reason ?? new Error('aborted'));
+      }),
+    },
+  );
+  assert.equal(id, null, 'the caller signal must still cancel the board-page GET');
+});
+
 // ---------------------------------------------------------------------------
 // assertGetroUrl — SSRF guard
 // ---------------------------------------------------------------------------
@@ -216,6 +260,36 @@ test('toEpochMs: Unix seconds → ms, ISO string → ms, non-positive/junk → n
   assert.equal(toEpochMs(null), null);
   assert.equal(toEpochMs(''), null);
   assert.equal(toEpochMs('not-a-date'), null);
+});
+
+// v1.242.0 — an epoch beyond new Date()'s range made new Date(ms).toISOString()
+// throw RangeError from inside the row loop, aborting the WHOLE board for one
+// garbage row. Out-of-range values now drop just that row's date (null).
+test('toEpochMs: absurd epochs (past the ECMAScript max date) → null, not a downstream RangeError', () => {
+  assert.equal(toEpochMs(1e300), null, '1e300 must not survive into new Date().toISOString()');
+  assert.equal(toEpochMs(8_640_000_000_000_001), null); // one past the ECMA-262 max (±8.64e15 ms)
+  assert.equal(toEpochMs(8_640_000_000_000_000), 8_640_000_000_000_000, 'the boundary itself is representable');
+});
+
+test('normalizeGetroJob: a job url that is not https is dropped (scheme unchecked before)', () => {
+  assert.equal(normalizeGetroJob({ title: 'x', url: 'http://jobs.b2venture.vc/1' }), null, 'http is a downgrade, not a posting');
+  assert.equal(normalizeGetroJob({ title: 'x', url: 'javascript:alert(1)' }), null);
+  assert.equal(normalizeGetroJob({ title: 'x', url: 'not a url' }), null);
+  assert.equal(normalizeGetroJob({ title: 'x', url: '   ' }), null);
+  const n = normalizeGetroJob(job(1));
+  assert.equal(n.url, 'https://jobs.b2venture.vc/1', 'https rows keep their url');
+});
+
+test('fetchGetro: a row with an absurd created_at is kept with date "" — one bad row, not a dead board', async () => {
+  const jobs = await fetchGetro(null, {
+    fetchImpl: async () => ok({
+      results: { count: 2, jobs: [job('a', { created_at: 1e300 }), job('b')] },
+    }),
+    company: { name: 'b2v', getro_collection: 4283, getro_max_age_days: 30 },
+  });
+  assert.equal(jobs.length, 2, 'the RangeError used to abort the whole board here');
+  assert.equal(jobs.find((j) => j.url.endsWith('/a')).date, '');
+  assert.ok(jobs.find((j) => j.url.endsWith('/b')).date !== undefined);
 });
 
 // ---------------------------------------------------------------------------

@@ -24,7 +24,7 @@ test('parseTeamtailorFeed: title/link, teamtailor:location + department, CDATA, 
   assert.equal(jobs[0].source, 'teamtailor');
   assert.equal(jobs[1].title, 'Remote Designer'); // CDATA
   assert.equal(jobs[1].isRemote, true);           // "Remote" in title
-  assert.equal(jobs[1].location, 'Remote');
+  assert.equal(jobs[1].location, '', 'a remote title must not fabricate a location (v1.242.0)');
   assert.equal(jobs[1].snippet, 'Design');        // category fallback
 });
 

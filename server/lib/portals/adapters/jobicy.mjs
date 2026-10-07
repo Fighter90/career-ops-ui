@@ -17,10 +17,18 @@ export const jobicyAdapter = {
   id: 'jobicy',
   label: 'Jobicy',
   matches(company) {
-    return company.provider === 'jobicy';
+    return !!company && typeof company === 'object' && company.provider === 'jobicy';
   },
+  // `string | null` contract: a non-string api falls back to the canonical
+  // feed; garbage input never throws.
   buildEndpoint(company) {
-    return company.jobicy || company.api || FEED_URL;
+    const api = company && typeof company === 'object' && typeof company.api === 'string'
+      ? company.api
+      : '';
+    const override = company && typeof company === 'object' && typeof company.jobicy === 'string'
+      ? company.jobicy
+      : '';
+    return override || api || FEED_URL;
   },
   fetch: fetchJobicy,
 };

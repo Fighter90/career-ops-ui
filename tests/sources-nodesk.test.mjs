@@ -61,6 +61,29 @@ test('fetchNodesk: threads company.name as the fallback company', async () => {
   assert.equal(jobs[0].company, 'Threaded Co');
 });
 
+// ---------------------------------------------------------------------------
+// v1.242.0 — a 200 that is not the feed throws instead of reading as empty
+// ---------------------------------------------------------------------------
+
+test('fetchNodesk: a non-feed 200 (challenge/error page) throws, never reads as an empty board', async () => {
+  await assert.rejects(
+    () => fetchNodesk(FEED_URL, {
+      fetchImpl: async () => ({ ok: true, text: async () => '<!DOCTYPE html><html><body>Just a moment…</body></html>' }),
+    }),
+    /nodesk: response is not an RSS feed/,
+  );
+  await assert.rejects(
+    () => fetchNodesk(FEED_URL, { fetchImpl: async () => ({ ok: true, text: async () => '' }) }),
+    /not an RSS feed/,
+  );
+});
+
+test('fetchNodesk: parse stays tolerant — a feed with zero items is an empty board', async () => {
+  const fetchImpl = async () => ({ ok: true, text: async () => '<?xml version="1.0"?><rss><channel><title>NoDesk</title></channel></rss>' });
+  const jobs = await fetchNodesk(FEED_URL, { fetchImpl });
+  assert.deepEqual(jobs, []);
+});
+
 test('assertNodeskUrl: pins host to nodesk.co over HTTPS', () => {
   assert.equal(assertNodeskUrl(FEED_URL), FEED_URL);
   assert.throws(() => assertNodeskUrl('https://evil.com/remote-jobs/index.xml'), /untrusted hostname/);

@@ -170,6 +170,15 @@ test('fetchTelegram normalizes a page through an injected fetch', async () => {
     ['https://t.me/rabotaphp/1', 'https://t.me/rabotaphp/2']);
 });
 
+test('a labelled location survives whole — companyName() must not cut it at a comma or dash', () => {
+  const html = page('c', post('c', 9, '2026-08-01T00:00:00+00:00',
+    'Backend разработчик\nЛокация: Санкт-Петербург, офис у метро\nКомпания: Ромашка'));
+  const [job] = parseChannelPage(html, 'c');
+  assert.equal(job.company, 'Ромашка', 'company keeps the name-only split');
+  assert.equal(job.location, 'Санкт-Петербург, офис у метро',
+    'the location is NOT run through companyName()');
+});
+
 test('a page with no parseable posts throws instead of reporting "no vacancies"', async () => {
   // t.me answers a private or missing channel with a redirect/landing page.
   // Returning [] there would read as "nothing new today" and hide a typo in
@@ -180,13 +189,69 @@ test('a page with no parseable posts throws instead of reporting "no vacancies"'
   );
 });
 
-test('max_posts caps the result and is itself bounded', async () => {
+test('max_posts keeps the NEWEST posts — the /s/ page renders oldest-first', async () => {
   const many = page('c', ...Array.from({ length: 40 }, (_, i) =>
     post('c', i + 1, '2026-08-01T00:00:00+00:00', `Роль номер ${i + 1}`)));
   const capped = await fetchTelegram('https://t.me/s/c', { fetchImpl: okText(many), company: { max_posts: 5 } });
   assert.equal(capped.length, 5);
+  assert.deepEqual(
+    capped.map((j) => j.url),
+    ['https://t.me/c/36', 'https://t.me/c/37', 'https://t.me/c/38', 'https://t.me/c/39', 'https://t.me/c/40'],
+    'the oldest posts must not be what survives the cap',
+  );
   const huge = await fetchTelegram('https://t.me/s/c', { fetchImpl: okText(many), company: { max_posts: 99999 } });
   assert.equal(huge.length, 40, 'the ceiling clamps, it does not invent rows');
+});
+
+// ── Phase 2 (v1.242.0): ?before= pagination to fill the cap ──────────
+
+test('fetchTelegram paginates with ?before=<oldest> until the cap is filled', async () => {
+  // Real /s/ shape: ~20 posts per page, ascending; ?before=<oldest seen> pages back.
+  const ids = (lo, hi) => page('c', ...Array.from({ length: hi - lo + 1 }, (_, i) =>
+    post('c', lo + i, '2026-08-01T00:00:00+00:00', `Роль ${lo + i}`)));
+  const pages = { [undefined]: ids(21, 40), 21: ids(1, 20) };
+  const calls = [];
+  const fetchImpl = async (url) => {
+    calls.push(url);
+    const before = (url.match(/[?&]before=(\d+)/) || [])[1];
+    return { ok: true, status: 200, text: async () => pages[before] ?? '' };
+  };
+  const jobs = await fetchTelegram('https://t.me/s/c', { fetchImpl, company: { max_posts: 30 } });
+  assert.equal(calls.length, 2, 'a second page (?before=21) must be fetched');
+  assert.match(calls[1], /[?&]before=21$/);
+  assert.deepEqual(jobs.map((j) => j.url),
+    Array.from({ length: 30 }, (_, i) => `https://t.me/c/${i + 11}`),
+    'the NEWEST 30 posts (ids 11–40), chronological within the window');
+});
+
+test('pagination stops quietly when an older page adds nothing new', async () => {
+  // The ?before= page repeats the same posts: nothing new → stop, no loop.
+  const first = page('c', ...Array.from({ length: 20 }, (_, i) =>
+    post('c', i + 21, '2026-08-01T00:00:00+00:00', `Роль ${i + 21}`)));
+  const calls = [];
+  const fetchImpl = async (url) => {
+    calls.push(url);
+    return { ok: true, status: 200, text: async () => first };
+  };
+  const jobs = await fetchTelegram('https://t.me/s/c', { fetchImpl, company: { max_posts: 100 } });
+  assert.equal(calls.length, 2, 'one probe of the older page, then stop');
+  assert.equal(jobs.length, 20);
+});
+
+test('a later-page failure keeps the first page (partials), never discards', async () => {
+  // ids start at 2 so the oldest (2) is > 1 — the walk must actually attempt
+  // the ?before=2 page, hit the transport failure there, and keep the 20.
+  const first = page('c', ...Array.from({ length: 20 }, (_, i) =>
+    post('c', i + 2, '2026-08-01T00:00:00+00:00', `Роль ${i + 2}`)));
+  let n = 0;
+  const fetchImpl = async () => {
+    n += 1;
+    if (n === 1) return { ok: true, status: 200, text: async () => first };
+    throw new Error('page-2 blip');
+  };
+  const jobs = await fetchTelegram('https://t.me/s/c', { fetchImpl, company: { max_posts: 100 } });
+  assert.equal(n, 2);
+  assert.equal(jobs.length, 20);
 });
 
 test('adapter matches only on an explicit provider and host-pins any override', () => {

@@ -36,6 +36,7 @@
 import { randomUUID } from 'node:crypto';
 import { fetchJson, delay } from '../http-json.mjs';
 import { safeEncodeURIComponent } from './_safe-url.mjs';
+import { requireContainer, requireArray } from './_shape.mjs';
 
 const API_HOST = 'talent.alibaba.com';
 export const DEFAULT_API = `https://${API_HOST}/position/search`;
@@ -113,9 +114,14 @@ function buildBody(key, pageIndex) {
  * @returns {{ jobs: object[], total: number }}
  */
 export function parseAlibabaResponse(json, companyName) {
-  const list = json?.content?.datas;
-  const total = Number(json?.content?.totalCount) || 0;
-  if (!Array.isArray(list)) return { jobs: [], total };
+  // Phase-2: a 200 that no longer speaks the documented envelope
+  // ({content: {datas, totalCount}}) THROWS instead of reading as an empty
+  // board. A renamed totalCount would silently truncate the walk to page 1
+  // via total=0, so both documented paths are required.
+  requireContainer(json, 'Alibaba search response', 'content.datas');
+  requireContainer(json, 'Alibaba search response', 'content.totalCount');
+  const list = requireArray(json.content.datas, 'Alibaba position list');
+  const total = Number(json.content.totalCount) || 0;
 
   const jobs = [];
   for (const p of list) {
@@ -185,6 +191,7 @@ export async function fetchAlibaba(apiUrl = DEFAULT_API, opts = {}) {
       else await delay(INTER_PAGE_DELAY_MS, signal);
 
       let json;
+      let parsed;
       try {
         json = await fetchJson(fetchImpl, apiUrl, {
           method: 'POST',
@@ -201,17 +208,20 @@ export async function fetchAlibaba(apiUrl = DEFAULT_API, opts = {}) {
         if (json?.success === false) {
           throw new Error(`API error: ${json.errorMsg || json.errorCode || 'success=false'}`);
         }
+        parsed = parseAlibabaResponse(json, companyName);
       } catch (err) {
         // A dead board should still read as a failure, but a mid-run blip must
         // not discard what's already collected (same idiom as
         // workday/jobstreet/glints). Track successes directly — a keyword can
-        // legitimately match 0 jobs, so seen.size is not the signal.
+        // legitimately match 0 jobs, so seen.size is not the signal. The parse
+        // sits inside the try so a later-page shape change also keeps partials
+        // (phase-2: a page-1 shape failure still throws via succeededOnce=false).
         if (!succeededOnce) throw err;
         console.error(`  ⚠ alibaba: keyword "${keyword}" page ${page} failed (${err.message}) — keeping the ${seen.size} jobs collected so far`);
         return [...seen.values()];
       }
       succeededOnce = true;
-      const { jobs, total } = parseAlibabaResponse(json, companyName);
+      const { jobs, total } = parsed;
       if (jobs.length === 0) break;
 
       for (const job of jobs) {

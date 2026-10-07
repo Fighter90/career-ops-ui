@@ -140,6 +140,18 @@ test('normalizeJob flags remote from title/location', () => {
   assert.equal(remote.workplaceType, 'Remote');
 });
 
+test('normalizeJob: a bare contract percentage is NOT a remote marker (v1.242.0)', () => {
+  // "(100%)" is the contract omvang (full-time), not remote work.
+  const onsite = normalizeJob({ id: { id: 5 }, vacaturefunctie: { naam: 'Verpleegkundige (100%)' } });
+  assert.equal(onsite.isRemote, false);
+  assert.equal(onsite.workplaceType, 'Onsite');
+  const onsiteLoc = normalizeJob({ id: { id: 7 }, vacaturefunctie: { naam: 'Verpleegkundige', }, tewerkstellingsLocatieRegioOfAdres: 'Gent (100%) - België' });
+  assert.equal(onsiteLoc.isRemote, false);
+  // A real remote term still wins even next to a percentage.
+  const remote = normalizeJob({ id: { id: 6 }, vacaturefunctie: { naam: 'Support Engineer 100% thuiswerk' } });
+  assert.equal(remote.isRemote, true);
+});
+
 test('normalizeJob returns null without an id or title', () => {
   assert.equal(normalizeJob({ vacaturefunctie: { naam: 'No id' } }), null);
   assert.equal(normalizeJob({ id: { id: 1 }, vacaturefunctie: { naam: '' } }), null);
@@ -233,16 +245,31 @@ test('fetchVdab caps pagination at opts.maxPages during a bounded probe', async 
 });
 
 // ---------------------------------------------------------------------------
-// malformed fail-soft
+// malformed shape (v1.242.0 Phase 2: a 200 without `resultaten` is the API
+// stopping its shape — it must not read as a succeeded-but-empty keyword)
 // ---------------------------------------------------------------------------
 
-test('fetchVdab treats a missing/null/non-array resultaten as an empty page, not a throw', async () => {
-  const missing = await fetchVdab(API_URL, { fetchImpl: async () => okJson({}), company: { vdab: { keywords: ['python'] } } });
-  assert.deepEqual(missing, []);
-  const nul = await fetchVdab(API_URL, { fetchImpl: async () => okJson({ resultaten: null }), company: { vdab: { keywords: ['python'] } } });
-  assert.deepEqual(nul, []);
-  const str = await fetchVdab(API_URL, { fetchImpl: async () => okJson({ resultaten: 'oops' }), company: { vdab: { keywords: ['python'] } } });
-  assert.deepEqual(str, []);
+test('fetchVdab throws when a keyword answers 200 without resultaten (all-keyword failure)', async () => {
+  for (const body of [{}, { resultaten: null }, { resultaten: 'oops' }]) {
+    await assert.rejects(
+      () => fetchVdab(API_URL, { fetchImpl: async () => okJson(body), company: { vdab: { keywords: ['python'] } } }),
+      (err) => {
+        assert.match(err.message, /VDAB|keyword/);
+        return true;
+      },
+      `expected a throw for ${JSON.stringify(body)}`,
+    );
+  }
+});
+
+test('fetchVdab keeps partials when one keyword is malformed and another answers', async () => {
+  const impl = async (url, opts) => {
+    const trefwoord = JSON.parse(opts.body).criteria.trefwoord;
+    if (trefwoord === 'bad') return okJson({ oops: true });
+    return okJson({ resultaten: [rawJob(1, 'A')] });
+  };
+  const jobs = await fetchVdab(API_URL, { fetchImpl: impl, company: { vdab: { keywords: ['bad', 'ok'] } } });
+  assert.equal(jobs.length, 1, 'the healthy keyword still contributes');
 });
 
 // ---------------------------------------------------------------------------

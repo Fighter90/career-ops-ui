@@ -22,6 +22,18 @@ they are relevant.
 - **Counts come from the live registry**, never hand-edited into the gate tests.
 - **Every release ships a QA prompt** (`qa/QA-REGRESSION-PROMPT-v<version>.md`),
   patches included.
+- **Every release runs the full regression on BOTH stands** — local `127.0.0.1:4317`
+  and prod (resumecraft.ru): all views, ×17 locales, live LLM (`remote-qa -f live=true`)
+  and scanner (`-f scan=true`). Findings go to Linear (Russian) immediately and are
+  executed until done.
+- **Every release updates: CHANGELOG ×17 (EN + 16 locales, parity green), the wiki
+  (Home ×17 banners + counts + Roadmap), the site build (cvstart.org), `PROGRESS.md`,
+  and a spec in `docs/sdd/specs/` with real verification output.** Linear statuses move
+  with the work (In Progress → In Review → Done on deployed-and-verified). Full list:
+  `docs/sdd/HANDOFF.md` → *Post-release standing rules*.
+- **Every PR is merged into `main` once CI is green** — squash-merge, branch deleted,
+  work continues from fresh `main`. No PR lingers open; a later finding is a new
+  commit/PR on top of main, never a stranded branch.
 - **Verify before claiming done.** A passing unit suite is not an end-to-end check —
   see the premature-success note in [PROGRESS.md](PROGRESS.md).
 

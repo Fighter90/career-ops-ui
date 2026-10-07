@@ -12,14 +12,14 @@ _非公式 UI — career-ops / santifer とは提携しておらず、承認も�
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.241.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.241.1)
+[![release](https://img.shields.io/badge/release-v1.242.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.242.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.241.1** — **ライブ評価がすべてのロケールで最後まで動作します。** 評価は再び `oferta.md` 全体を参照し(コンテキスト予算 192 KB)、レポートは選択した言語を保ち(指示がプロンプトの冒頭に置かれ、英語のまま残るのは名前、技術名、引用だけ)、遅い評価は 502 で終わらず 300 秒を確保し、デーヴァナーガリーのブロック文字や各地域の数字によるスコアを使うヒンディー語のレポートも検証を通ります。求人マップは複数の所在地を並べた長い求人(「Berlin Office · Berlin · Germany · …」)を拒否せず配置し、デプロイは実行中の毎時スキャンを待ち、求人マップは [cvstart.org](https://cvstart.org/#job-map) にも載りました。17 ロケールのリモート QA は本番で green です。
+> **🆕 最新リリース — v1.242.0** — **スキャナーのデータ層が再び信頼できるものになりました。死んでいたソースが復活し、不正な応答はもう「0件のボード」として読まれず、敵対的なボードURLもスキャンをリダイレクトできません。**
 >
-> **前バージョン — v1.241.0** — **28 エージェントによるコードレビューに基づく堅牢化と、@bullitt186 による求人マップ。** 不正なリクエストでサーバーが停止することはなくなり、中断されたスキャンが直前の結果を消すこともなくなり、評価は先頭 16 KB ではなくメソッドファイル全体を参照し、サーバーは DNS リバインディングのホストとクロスサイトの書き込みを拒否し、リダイレクトはプライベートな宛先について再確認されます。`#/map` は求人を OpenStreetMap 上に表示します。**テスト 4404 件 · ブラウザ 118 件。**
+> **前バージョン — v1.241.1** — **ライブ評価がすべてのロケールで最後まで動作し、求人マップは長い複数所在地の求人を配置し、デプロイは実行中の毎時スキャンを待ちます。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

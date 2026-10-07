@@ -39,7 +39,7 @@
  * Used by the radancy adapter (server/lib/portals/adapters/radancy.mjs).
  */
 import { randomUUID } from 'node:crypto';
-import { fetchText, delay } from '../http-json.mjs';
+import { fetchJson, fetchText, delay } from '../http-json.mjs';
 import { decodeEntities } from '../html-entities.mjs';
 
 export const meta = {
@@ -49,8 +49,12 @@ export const meta = {
 };
 
 // Endpoint path shape the fetcher accepts (defence in depth — radancy has no
-// pinnable vendor host, so we pin the URL SHAPE instead).
-export const RADANCY_LIST_RE = /\/[a-z]{2}\/search-jobs$/i;
+// pinnable vendor host, so we pin the URL SHAPE instead). resolveListUrl()
+// hands back a list URL with NO language segment (`/search-jobs`), a regional
+// one (`/en-us/search-jobs`) or a derived `/{lang}/search-jobs` — so the shape
+// is "ends in /search-jobs". The resolver and this guard MUST stay consistent,
+// or every scan of such a tenant dies at the guard (v1.242.0 sources-6).
+export const RADANCY_LIST_RE = /\/search-jobs\/?$/i;
 
 const MAX_PAGES = 200; // safety cap (~15/page ⇒ up to ~3000 postings)
 const DEFAULT_MAX_JOBS = 2000; // default cap on total postings pulled
@@ -62,8 +66,34 @@ const FRAGMENT_RECORDS_PER_PAGE = 100;
 
 const REMOTE_RE = /remote|anywhere|distributed|home\s*office/i;
 
+// The documented TalentBrew envelope (v1.242.0 Phase 2): the search-results
+// section renders on every results page — even when the board is empty. A
+// page-1 200 whose document lacks it is a Cloudflare challenge / interstitial
+// or a markup change, never an empty board. Exported for tests.
+export const RADANCY_RESULTS_ENVELOPE_RE = /id=["']search-results["']/i;
+
 function clean(s) {
   return decodeEntities(s.replace(/<[^>]*>/g, ' ')).replace(/\s+/g, ' ').trim();
+}
+
+/**
+ * Resolve one page-controlled href to the job URL, or null. The href is page
+ * content, not a trusted field: it must become an https: URL ON THE TENANT
+ * ORIGIN the endpoint was pinned to — a `javascript:`/`data:` href, a
+ * scheme-relative `//evil.com/…`, an `http:` one or an absolute link to
+ * another host can never become the job URL (Phase-2, sources-6).
+ * @param {string} href @param {string} origin
+ */
+function resolveJobUrl(href, origin) {
+  let resolved;
+  let base;
+  try {
+    resolved = new URL(href, origin);
+    base = new URL(origin);
+  } catch {
+    return null;
+  }
+  return resolved.protocol === 'https:' && resolved.origin === base.origin ? resolved.href : null;
 }
 
 /**
@@ -80,8 +110,10 @@ export function resolveListUrl(company) {
   }
   if (u.protocol !== 'https:') return null; // https only (web-ui hardening)
   if (/\/search-jobs\/?$/.test(u.pathname)) return `${u.origin}${u.pathname.replace(/\/$/, '')}`;
-  const lang = (u.pathname.match(/^\/([a-z]{2})(\/|$)/) || [])[1] || 'en';
-  return `${u.origin}/${lang}/search-jobs`;
+  // Accept regional locales (`/en-us/careers` → `/en-us/search-jobs`) — a bare
+  // 2-letter capture would drop the region and land on the wrong locale board.
+  const lang = (u.pathname.match(/^\/([a-z]{2}(?:-[a-z]{2})?)(?:\/|$)/i) || [])[1] || 'en';
+  return `${u.origin}/${lang.toLowerCase()}/search-jobs`;
 }
 
 /**
@@ -165,12 +197,8 @@ export function parseModernResults(html, origin, companyName = '') {
     if (seen.has(id)) continue;
     const title = clean(link[2]);
     if (!title) continue;
-    let url;
-    try {
-      url = new URL(href, origin).href;
-    } catch {
-      continue;
-    }
+    const url = resolveJobUrl(href, origin);
+    if (!url) continue;
     const locM = block.match(/__job-info--location[\s\S]*?<span>([\s\S]*?)<\/span>/);
     const location = locM ? clean(locM[1]) : '';
     seen.add(id);
@@ -219,12 +247,8 @@ export function parseLegacyResults(html, origin, companyName = '') {
     const title = clean(headM ? headM[1] : inner.replace(/<span[\s\S]*?<\/span>/gi, ' '));
     if (!title) continue;
 
-    let url;
-    try {
-      url = new URL(href, origin).href;
-    } catch {
-      continue;
-    }
+    const url = resolveJobUrl(href, origin);
+    if (!url) continue;
     const locM = inner.match(/class="[^"]*job-location[^"]*"[^>]*>([\s\S]*?)<\/span>/i);
     const location = locM ? clean(locM[1]) : '';
     seen.add(id);
@@ -316,16 +340,17 @@ function resolveMaxJobs(company) {
  *
  * Preferred transport: the JSON results fragment (buildFragmentUrl) — on the
  * legacy-markup tenants the plain ?p=N HTML page carries a multi-megabyte facet
- * blob per page, so the fragment is dramatically cheaper. It is attempted only
- * when the caller supplies a `fetchJson` capability; any failure — non-JSON, no
- * results, endpoint absent —
- * falls through to the ?p=N walk below, so tenants without the fragment endpoint
- * (and callers that pass no fetchJson) are unaffected.
+ * blob per page, so the fragment is dramatically cheaper. It is attempted BY
+ * DEFAULT (v1.242.0 sources-6); `opts.fetchJson` still overrides the transport
+ * for tests. Any failure — non-JSON, no results, endpoint absent —
+ * falls through to the ?p=N walk below, so tenants without the fragment
+ * endpoint are unaffected.
  *
  * Fallback transport: walk ?p=N (1-based) until an empty page, a no-fresh-ids
- * page (server clamped ?p= to the last page, or looped), or maxJobs. A transient
- * mid-scan failure keeps the jobs collected so far — it never discards earlier
- * pages.
+ * page (server clamped ?p= to the last page, or looped), or maxJobs. A page-1
+ * 200 that cannot speak the search-results envelope THROWS (a challenge is
+ * not an empty board); a transient mid-scan failure keeps the jobs collected
+ * so far — it never discards earlier pages.
  * @param {string} endpoint search-jobs list URL (from buildEndpoint)
  * @param {{ fetchImpl?: Function, fetchJson?: Function, signal?: AbortSignal, company?: object }} [opts]
  */
@@ -362,7 +387,13 @@ export async function fetchRadancy(endpoint, opts = {}) {
   let succeededOnce = false;
 
   // ── Preferred transport: the JSON results fragment ─────────────────────────
-  const fetchJsonImpl = typeof opts.fetchJson === 'function' ? opts.fetchJson : null;
+  // The fragment transport is the DEFAULT (v1.242.0 sources-6): no production
+  // caller passes fetchJson, so gating it on the option kept the preferred,
+  // dramatically cheaper transport dead in prod. Any failure — non-JSON, HTTP
+  // error, endpoint absent — still falls through to the ?p=N walk below.
+  const fetchJsonImpl = typeof opts.fetchJson === 'function'
+    ? opts.fetchJson
+    : (url, init) => fetchJson(fetchImpl, url, init);
   if (fetchJsonImpl) {
     const fragHeaders = { accept: 'application/json', 'x-requested-with': 'XMLHttpRequest' };
     try {
@@ -449,8 +480,18 @@ export async function fetchRadancy(endpoint, opts = {}) {
         headers: { accept: 'text/html' },
       });
       rows = parseResults(html, origin, name);
+      // Phase-2: a page-1 200 with zero cards is only "empty" when the page
+      // still carries the documented search-results envelope (it renders even
+      // on an empty board). Without it this is a Cloudflare challenge or a
+      // markup change — never an empty board — so it must throw. Only when
+      // nothing on either transport has resolved yet: a well-formed fragment
+      // response is already authoritative about the board being empty.
+      if (page === 1 && rows.length === 0 && !succeededOnce && !RADANCY_RESULTS_ENVELOPE_RE.test(html)) {
+        throw new TypeError(`radancy: page 1 of ${endpoint} has no search-results container — challenge/interstitial or markup change, not an empty board`);
+      }
     } catch (err) {
       if (!succeededOnce) throw err;
+      console.warn(`  ⚠ radancy: ${name} — page ${page} failed after ${jobs.length} postings; keeping partials (${err.message})`);
       break; // keep jobs collected so far — a transient mid-scan failure shouldn't discard earlier pages
     }
     succeededOnce = true;

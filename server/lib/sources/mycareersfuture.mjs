@@ -208,10 +208,12 @@ export function normalizeJob(r) {
 
 /**
  * Fetch + normalize MyCareersFuture postings across the configured keywords.
+ * Returns the same 12-field job shape every other source emits (the dedup
+ * jobPostId becomes the `mycareersfuture-<id>` row id) — without it the
+ * #/scan Source column is blank and the source filter drops every row.
  * @param {string} endpoint base search endpoint (from buildEndpoint)
  * @param {{ fetchImpl?: Function, signal?: AbortSignal, company?: object,
  *           maxPages?: number, profileKeywords?: string[] }} [opts]
- * @returns {Promise<Array<{title: string, url: string, company: string, location: string, postedAt?: number}>>}
  */
 export async function fetchMyCareersFuture(endpoint = API_URL, opts = {}) {
   const { fetchImpl = fetch, signal, company = {} } = opts;
@@ -281,5 +283,25 @@ export async function fetchMyCareersFuture(endpoint = API_URL, opts = {}) {
     throw new Error(`mycareersfuture: all ${keywords.length} keyword request(s) failed — ${errors[0]}`);
   }
 
-  return [...byId.values()].map(({ id, ...job }) => job);
+  // v1.242.0 — the 12-field shape every other source emits. The dedup key
+  // becomes the row id (`mycareersfuture-<jobPostId>`), postedAt becomes
+  // `date`, and isRemote/workplaceType derive from the location string (an
+  // empty location passes location_filter, so nothing is guessed here).
+  return [...byId.values()].map((r) => {
+    const isRemote = /remote/i.test(r.location);
+    return {
+      id: `mycareersfuture-${r.id}`,
+      title: r.title,
+      company: r.company,
+      url: r.url,
+      salary: '',
+      location: r.location,
+      isRemote,
+      workplaceType: isRemote ? 'Remote' : '',
+      relocates: false,
+      date: Number.isFinite(r.postedAt) ? new Date(r.postedAt).toISOString() : '',
+      snippet: '',
+      source: 'mycareersfuture',
+    };
+  });
 }

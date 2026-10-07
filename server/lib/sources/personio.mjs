@@ -85,13 +85,22 @@ function toIso(value) {
  * @param {string} host validated tenant host, e.g. `acme.jobs.personio.de`
  */
 export function parsePersonioXml(xml, companyName, host) {
-  if (typeof xml !== 'string') return [];
+  if (typeof xml !== 'string') {
+    throw new TypeError(`personio: expected an XML feed string, got ${String(xml)}`);
+  }
   const jobs = [];
   // Strip <jobDescriptions> subtrees first: free-text HTML can carry a literal
   // "</position>" that would truncate the non-greedy block match, and nested
   // <name> tags that would race the position's own <name>.
   const stripped = xml.replace(/<jobDescriptions\b[^>]*>[\s\S]*?<\/jobDescriptions>/gi, '');
   const blocks = stripped.match(/<position\b[^>]*>[\s\S]*?<\/position>/g) || [];
+  // Phase-2: a 200 with zero <position> blocks is only "empty" when the body
+  // still speaks the documented <workzag-jobs> envelope. Anything else (the
+  // tenant's HTML careers page, a drifted body) served on /xml is a wrong
+  // shape, not an empty board — THROW (single request = page 1).
+  if (blocks.length === 0 && !/<workzag-jobs\b/i.test(xml)) {
+    throw new TypeError(`personio: expected a <workzag-jobs> XML feed, got ${xml.slice(0, 60).replace(/\s+/g, ' ').trim() || 'an empty body'}`);
+  }
   for (const block of blocks) {
     const title = tagText(block, 'name');
     if (!title) continue;

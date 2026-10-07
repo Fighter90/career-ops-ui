@@ -167,17 +167,50 @@ test('fetchGem: 2 POSTs to the batch endpoint, redirect:error, single JobBoardLi
   assert.equal(j.snippet, 'Build & ship AI tools. Own the roadmap');
 });
 
-test('fetchGem: malformed list responses → [] with no detail call attempted', async () => {
-  const emptyCases = [null, {}, [], [{}], [{ data: null }], [{ data: { oatsExternalJobPostings: null } }]];
-  for (const body of emptyCases) {
+test('fetchGem: malformed list 200s THROW — a wrong-shaped board must not read as empty', async () => {
+  // Phase-2: each of these bodies lacks the data.oatsExternalJobPostings.
+  // jobPostings container. Pre-v1.242.0 every one of them returned [] with a
+  // "successful" scan; now the page-0 shape violation is loud so the
+  // quarantine layer records a broken board instead of an empty one.
+  const malformed = [null, {}, [], [{}], [{ data: null }], [{ data: { oatsExternalJobPostings: null } }]];
+  for (const body of malformed) {
     let requests = 0;
-    const out = await fetchGem(`${GEM_API_URL}?board=retool`, {
-      fetchImpl: async () => { requests += 1; return ok(body); },
-      company: { name: 'Retool' },
-    });
-    assert.deepEqual(out, [], `body=${JSON.stringify(body)} → []`);
-    assert.equal(requests, 1, 'no detail call when the list yields no valid postings');
+    await assert.rejects(
+      () => fetchGem(`${GEM_API_URL}?board=retool`, {
+        fetchImpl: async () => { requests += 1; return ok(body); },
+        company: { name: 'Retool' },
+      }),
+      /JobBoardList/,
+      `body=${JSON.stringify(body)} must throw`,
+    );
+    assert.equal(requests, 1, 'no detail call when the list itself is malformed');
   }
+});
+
+test('fetchGem: a legitimately empty board → [] with no detail call', async () => {
+  let requests = 0;
+  const out = await fetchGem(`${GEM_API_URL}?board=retool`, {
+    fetchImpl: async () => {
+      requests += 1;
+      return ok([{ data: { oatsExternalJobPostings: { jobPostings: [] } } }]);
+    },
+    company: { name: 'Retool' },
+  });
+  assert.deepEqual(out, []);
+  assert.equal(requests, 1, 'an empty postings array is a real shape — no detail batch');
+});
+
+test('fetchGem: an out-of-range firstPublishedTsSec degrades to date "" instead of RangeError-ing the board', async () => {
+  const jobs = await fetchGem(`${GEM_API_URL}?board=retool`, {
+    fetchImpl: makeFetchImpl([], {
+      detail: [{
+        data: { oatsExternalJobPosting: { extId: '1001', firstPublishedTsSec: 1e300, descriptionHtml: '<p>x</p>' } },
+      }],
+    }),
+    company: { name: 'Retool' },
+  });
+  assert.equal(jobs.length, 1, 'one absurd timestamp must not abort the board');
+  assert.equal(jobs[0].date, '');
 });
 
 test('fetchGem: GraphQL errors on the list result throw', async () => {

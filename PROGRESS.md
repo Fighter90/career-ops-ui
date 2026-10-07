@@ -8,18 +8,18 @@ Release history belongs in [CHANGELOG.md](CHANGELOG.md), decisions in
 [docs/adr/](docs/adr/), vocabulary in [CONTEXT.md](CONTEXT.md). Anything already
 recoverable from those does **not** belong here.
 
-_Last updated: 2026-10-07 · v1.241.0 shipped (resumecraft.ru, npm, cvstart.org); next: Phase 2 (v1.242.0 sources)_
+_Last updated: 2026-10-07 · v1.242.0 sources correctness in release train (PR + deploy pending); regression of both stands ran against v1.241.1_
 
 ---
 
 ## Current state
 
-**v1.241.0 — SHIPPED 2026-10-07** (tag `v1.241.0` @ `c6de9cca`, npm published, cvstart.org deployed, resumecraft.ru deployed with `ALLOWED_HOSTS=resumecraft.ru`, public check 401). **Hardening from the 2026-10-06 code review** (28 read-only review agents, ~190 verified
+**v1.242.0 — IN RELEASE TRAIN 2026-10-07** (sources correctness: 9 parallel fix agents over the source families, ~600 new tests, all gates green; Linear CAR-6…CAR-16). Before it: **v1.241.0/1.241.1 — SHIPPED 2026-10-07** (tag `v1.241.0` @ `c6de9cca`, npm published, cvstart.org deployed, resumecraft.ru deployed with `ALLOWED_HOSTS=resumecraft.ru`, public check 401). **Hardening from the 2026-10-06 code review** (28 read-only review agents, ~190 verified
 findings, fixed by 6 fix-and-cover agents A/B/C/D/CI/T). Tests **4404**, browser **118**, server coverage
 baseline line 96.7 % / branch 86.3 % (`scripts/coverage-baseline.json`, ratchet). Ships the job map (#381).
 v1.240.0 (parent parity @ `62905981`, 109 sources) is released and deployed.
 
-Remaining plan (`docs/sdd/PLAN.md`): v1.242.0 sources correctness, v1.243.0 client fixes,
+Remaining plan (`docs/sdd/PLAN.md`): v1.243.0 client fixes,
 v1.244.0 `#/scan` redesign, v1.245.0 Tamil locale, v1.246.0 upstream features, plus the
 newest parent/upstream delta (research in progress). All web-ui branches are merged into
 `main` and deleted after each release (maintainer's rule, 2026-10-07).

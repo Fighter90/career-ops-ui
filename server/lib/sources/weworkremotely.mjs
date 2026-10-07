@@ -88,11 +88,21 @@ function splitTitle(rawTitle, defaultCompany) {
  * for unit tests. The `<link>` is the dedup key; items without a usable
  * https weworkremotely.com URL are dropped.
  *
+ * Shape guard (v1.242.0 Phase 2): the body must BE an RSS document — a 200
+ * that is not RSS (Cloudflare/WAF challenge HTML, a JSON error page) throws
+ * instead of parsing as an empty board. A well-formed feed with zero `<item>`
+ * blocks is a legitimate empty board.
+ *
  * @param {string} xml raw RSS body
  * @param {string} [defaultCompany] fallback company for unsplittable titles
  */
 export function parseWwrFeed(xml, defaultCompany = 'We Work Remotely') {
-  if (typeof xml !== 'string') return [];
+  if (typeof xml !== 'string' || !/<rss[\s>]/i.test(xml)) {
+    const got = typeof xml === 'string'
+      ? `a non-RSS body starting "${xml.trim().slice(0, 60)}"`
+      : typeof xml;
+    throw new Error(`weworkremotely: expected an RSS feed, got ${got}`);
+  }
   const fallback = (typeof defaultCompany === 'string' && defaultCompany.trim()) ? defaultCompany.trim() : 'We Work Remotely';
   const jobs = [];
   const blocks = xml.match(/<item\b[^>]*>[\s\S]*?<\/item>/gi) || [];

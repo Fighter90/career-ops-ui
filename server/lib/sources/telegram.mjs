@@ -43,6 +43,10 @@ export const meta = {
 const TELEGRAM_HOST_RE = /^t\.me$/i;
 const DEFAULT_MAX_POSTS = 100;
 const HARD_MAX_POSTS = 300;
+// The /s/ preview serves ~20 posts per page; 16 pages covers the 300-post
+// hard ceiling with room to spare. Pagination is bounded by this, never by
+// trust in the channel.
+const MAX_S_PAGES = 16;
 
 /** A channel handle: what Telegram itself allows, nothing more. */
 const CHANNEL_RE = /^[A-Za-z][A-Za-z0-9_]{3,31}$/;
@@ -211,7 +215,10 @@ export function parseChannelPage(html, channel) {
     const timeMatch = win.match(/<time[^>]+datetime="([^"]+)"/);
     const posted = timeMatch ? Date.parse(timeMatch[1]) : NaN;
     const company = companyName(text.match(COMPANY_RE)?.[1] || '');
-    const location = companyName(text.match(LOCATION_RE)?.[1] || '');
+    // The location stays WHOLE: it is a place, not a name. companyName()
+    // cuts at the comma/dash that starts a description — right for
+    // "Company — что она делает", wrong for "Санкт-Петербург, офис у метро".
+    const location = (text.match(LOCATION_RE)?.[1] || '').trim();
     const isRemote = REMOTE_RE.test(text);
     const salary = (text.match(SALARY_RE)?.[0] || '').trim();
 
@@ -238,7 +245,26 @@ export function parseChannelPage(html, channel) {
 }
 
 /**
+ * Numeric post id from a parsed job (`telegram-<chan>-<id>`). Channel handles
+ * carry no dash (CHANNEL_RE), so the id is everything after the last one.
+ * @param {object} job
+ */
+function postIdOf(job) {
+  return Number(job.id.slice(job.id.lastIndexOf('-') + 1));
+}
+
+/**
  * Fetch + normalize one public Telegram channel.
+ *
+ * The /s/ preview serves ~20 posts per page, oldest-first, and accepts
+ * `?before=<post id>` to page further back. The cap must keep the NEWEST
+ * posts — `posts.slice(0, cap)` kept the OLDEST of the window (the page
+ * renders ascending), so a 5-post cap reported the channel's stalest
+ * vacancies and never its fresh ones. So: page back with ?before= until the
+ * cap is filled (or a page adds nothing new, or MAX_S_PAGES), then return
+ * the newest `cap` posts in chronological order. A later-page failure keeps
+ * the first page (partials), and a page-0 fetch failure propagates.
+ *
  * @param {string} url `https://t.me/s/<channel>` (from buildEndpoint)
  * @param {{ fetchImpl?: Function, signal?: AbortSignal, company?: object }} [opts]
  */
@@ -248,19 +274,47 @@ export async function fetchTelegram(url, opts = {}) {
   assertTelegramUrl(target);
   const handle = normalizeChannel(target.split('/s/')[1] || company.channel || '');
 
-  const html = await fetchText(fetchImpl, target, { signal });
-  const posts = parseChannelPage(html, handle);
-
-  // A public channel always renders posts. Zero means the handle is wrong, the
-  // channel is private, or t.me redirected — all worth surfacing, because a
-  // silent empty result reads as "no vacancies today" and hides a typo forever.
-  if (posts.length === 0) {
-    throw new Error(`telegram: no posts parsed from ${target} — channel may be private, empty or misspelled`);
-  }
-
   const cap = Math.min(
     HARD_MAX_POSTS,
     Math.max(1, Number(company.max_posts) || DEFAULT_MAX_POSTS),
   );
-  return posts.slice(0, cap);
+
+  /** @type {Map<number, object>} numeric post id → parsed job */
+  const byId = new Map();
+  let pageUrl = target;
+  for (let page = 0; page < MAX_S_PAGES && byId.size < cap; page += 1) {
+    let posts;
+    try {
+      const html = await fetchText(fetchImpl, pageUrl, { signal });
+      posts = parseChannelPage(html, handle);
+    } catch (err) {
+      if (page === 0) throw err; // page-0 failure: the board is dead, be loud
+      console.error(`  ⚠ telegram: ${handle} truncated at page ${page + 1} (${byId.size} posts): ${err.message}`);
+      break; // later-page failure keeps the partials
+    }
+
+    // A public channel always renders posts. Zero on the FIRST page means
+    // the handle is wrong, the channel is private, or t.me redirected —
+    // all worth surfacing, because a silent empty result reads as "no
+    // vacancies today" and hides a typo forever.
+    if (page === 0 && posts.length === 0) {
+      throw new Error(`telegram: no posts parsed from ${target} — channel may be private, empty or misspelled`);
+    }
+
+    const before = byId.size;
+    for (const p of posts) {
+      const idNum = postIdOf(p);
+      if (Number.isFinite(idNum)) byId.set(idNum, p);
+    }
+    // Nothing new (or unparseable ids): an older page would repeat too.
+    if (byId.size === before || byId.size === 0) break;
+
+    const oldest = Math.min(...byId.keys());
+    if (oldest <= 1) break; // ?before=<1> has nothing left to give
+    pageUrl = `${target}?before=${oldest}`;
+  }
+
+  // The NEWEST `cap` posts (highest ids), chronological within the window.
+  const newest = [...byId.keys()].sort((a, b) => b - a).slice(0, cap).sort((a, b) => a - b);
+  return newest.map((id) => byId.get(id));
 }

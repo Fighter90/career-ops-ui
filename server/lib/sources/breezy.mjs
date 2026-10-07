@@ -11,6 +11,7 @@
  * Used by the breezy adapter (server/lib/portals/adapters/breezy.mjs).
  */
 import { fetchJson } from '../http-json.mjs';
+import { requireArray } from './_shape.mjs';
 
 export const BREEZY_HOST_RE = /^[a-z0-9][a-z0-9-]*\.breezy\.hr$/;
 
@@ -59,7 +60,10 @@ function withCountry(name, country) {
  * @param {string} companyName
  */
 export function parseBreezyResponse(json, companyName) {
-  const rows = Array.isArray(json) ? json : [];
+  // The documented container is a top-level array. Anything else is a changed
+  // API or a challenge page and must throw, not read as an empty board
+  // (v1.242.0 Phase-2 rule).
+  const rows = requireArray(json, 'Breezy positions');
   const out = [];
   for (const j of rows) {
     if (!j || !j.name) continue;
@@ -103,6 +107,12 @@ export function parseBreezyResponse(json, companyName) {
     if (!Number.isNaN(ts)) job.date = new Date(ts).toISOString();
 
     out.push(job);
+  }
+  if (rows.length > 0 && out.length === 0) {
+    // Raw rows arrived but none produced a usable title + https url — that is
+    // an envelope/field drift, not an empty board. Fail loudly instead of
+    // reporting "live but empty".
+    throw new Error(`breezy: ${rows.length} position(s) returned but none parsed (name/https-url missing)`);
   }
   return out;
 }

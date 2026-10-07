@@ -40,13 +40,16 @@ export const meta = {
 };
 
 /**
- * Defence-in-depth host guard on the endpoint built by the adapter. The RMK
+ * Defence-in-depth guard on the endpoint built by the adapter. The RMK
  * origin is per-tenant, so the endpoint is host-pinned to whatever the adapter
- * derived from the entry's `api:`/careers_url; this only enforces HTTPS + a
- * real host (the adapter is the one that pins the specific tenant host).
+ * derived from the entry's `api:`/careers_url: `expectedHost` (the tenant
+ * hostname, from the company entry) must match the endpoint host EXACTLY —
+ * a same-scheme lookalike (`jobs.zf.com.evil.test`) must not pass. When no
+ * tenant host is derivable the check degrades to HTTPS + a real host.
  * @param {string} url
+ * @param {string|null} [expectedHost] tenant hostname pinned by the adapter
  */
-export function assertSuccessfactorsUrl(url) {
+export function assertSuccessfactorsUrl(url, expectedHost = null) {
   let parsed;
   try {
     parsed = new URL(url);
@@ -55,6 +58,11 @@ export function assertSuccessfactorsUrl(url) {
   }
   if (parsed.protocol !== 'https:') throw new Error(`successfactors: URL must use HTTPS: ${url}`);
   if (!parsed.hostname) throw new Error(`successfactors: URL has no hostname: ${url}`);
+  if (expectedHost && parsed.hostname.toLowerCase() !== String(expectedHost).toLowerCase()) {
+    throw new Error(
+      `successfactors: endpoint host "${parsed.hostname}" does not match the tenant host "${expectedHost}": ${url}`,
+    );
+  }
   return url;
 }
 
@@ -233,7 +241,12 @@ export function parseSuccessfactors(html, { jobBase, fallbackCompany = '' } = {}
  */
 export async function fetchSuccessfactors(endpoint, opts = {}) {
   const { fetchImpl = fetch, signal, company = {} } = opts;
-  assertSuccessfactorsUrl(endpoint);
+  // Exact-host pin: the endpoint must live on the same host the entry's
+  // `api:`/careers_url names (the adapter derives both from the entry, so a
+  // mismatch means a miswire — refuse before any I/O). Without a tenant URL
+  // on the entry the check degrades to HTTPS + real host.
+  const tenantBase = resolveTenantBase(company);
+  assertSuccessfactorsUrl(endpoint, tenantBase ? new URL(tenantBase).hostname : null);
   const base = new URL(endpoint);
   const jobBase = base.origin;
   const fallbackCompany = (company && typeof company.name === 'string') ? company.name : '';
@@ -262,6 +275,15 @@ export async function fetchSuccessfactors(endpoint, opts = {}) {
       break;
     }
     succeededOnce = true;
+    // Shape contract (Phase 2), first page only: the documented container of
+    // an RMK fragment is its `<li class="job-tile …">` blocks. A 200 with
+    // NONE of them is a Cloudflare challenge page or a template change —
+    // that must THROW (loud), never read as a healthy-but-empty board.
+    // A later page legitimately ends the walk with zero tiles, so the guard
+    // is startrow-0-only.
+    if (page === 0 && !html.includes('job-tile')) {
+      throw new Error(`successfactors: fragment carries no job tiles — challenge page or template change? (${pageUrl.href})`);
+    }
     const tiles = parseSuccessfactors(html, { jobBase, fallbackCompany });
     if (tiles.length === 0) break;
 

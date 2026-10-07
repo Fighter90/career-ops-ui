@@ -48,8 +48,13 @@ export const generalistWorldAdapter = {
   },
 
   buildEndpoint(company) {
+    // Only an explicit override (`generalist-world:` / `api:`) may pick the
+    // page — a careers_url is how this board is DETECTED, but it can be any
+    // page on the domain (the homepage among them), which the parser then
+    // fails loud on. The canonical list URL is the endpoint for every
+    // non-overridden entry.
     const override = company && typeof company === 'object'
-      ? company['generalist-world'] || company.generalistWorld || company.api || company.careers_url
+      ? company['generalist-world'] || company.generalistWorld || company.api
       : null;
     if (typeof override === 'string' && override) {
       try {

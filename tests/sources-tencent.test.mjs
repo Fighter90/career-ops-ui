@@ -11,6 +11,8 @@ import {
   parseCnDate,
   assertTencentUrl,
   DEFAULT_API,
+  DEFAULT_MAX_PAGES,
+  MAX_PAGES_CAP,
 } from '../server/lib/sources/tencent.mjs';
 import { tencentAdapter } from '../server/lib/portals/adapters/tencent.mjs';
 
@@ -87,15 +89,31 @@ test('parseTencentResponse: builds the URL from PostId when PostURL is absent', 
   assert.equal(jobs[0].url, 'https://careers.tencent.com/jobdesc.html?postId=1001');
 });
 
-test('parseTencentResponse: drops posts without title or any URL; tolerates malformed payloads', () => {
+test('parseTencentResponse: drops posts without title or any URL; a wrong-shape envelope THROWS (Phase 2)', () => {
   const page = makePage([
     makePost({ RecruitPostName: '' }),
     makePost({ PostURL: '', PostId: null }),
     makePost(),
   ]);
   assert.equal(parseTencentResponse(page, 'x').jobs.length, 1);
-  assert.deepEqual(parseTencentResponse(null, 'x'), { jobs: [], total: 0 });
-  assert.deepEqual(parseTencentResponse({ Data: {} }, 'x'), { jobs: [], total: 0 });
+  // A 200 without the documented Data.Posts[] envelope must never read as an
+  // empty board — that is how a template change ships for months as "0 jobs".
+  for (const bad of [null, {}, { Data: {} }, { Data: { Posts: 'nope' } }, { data: { Posts: [] } }, []]) {
+    assert.throws(() => parseTencentResponse(bad, 'x'), /Tencent|Posts|Data/, JSON.stringify(bad));
+  }
+  // An explicit empty Posts[] is a healthy empty board.
+  assert.deepEqual(parseTencentResponse({ Data: { Posts: [], Count: 0 } }, 'x'), { jobs: [], total: 0 });
+});
+
+test('parseTencentResponse: a missing/blank Count reads as an UNKNOWN total, not 0', () => {
+  // total=Infinity is the sentinel: the paginator must not stop after page 1
+  // just because the server omitted Count — only a short/empty page ends it.
+  const { total } = parseTencentResponse({ Data: { Posts: [makePost()] } }, 'x');
+  assert.equal(total, Infinity);
+  const { total: t2 } = parseTencentResponse({ Data: { Posts: [makePost()], Count: 'nonsense' } }, 'x');
+  assert.equal(t2, Infinity);
+  const { total: t3 } = parseTencentResponse(makePage([makePost()], 4321), 'x');
+  assert.equal(t3, 4321);
 });
 
 // ---------------------------------------------------------------------------
@@ -171,6 +189,53 @@ test('fetchTencent: honors max_pages from the company entry', async () => {
   const fetchImpl = fakeFetch([fullPage]);
   await fetchTencent(DEFAULT_API, { fetchImpl, company: { max_pages: 2 } });
   assert.equal(fetchImpl.calls.length, 2);
+});
+
+// ── Phase 2 (v1.242.0): max_pages clamping + unknown-total pagination ──
+
+test('max_pages below 1 (0.5, 0, garbage) must never mean "zero requests"', async () => {
+  // Count far beyond any page walk: the ONLY stop is max_pages itself, so the
+  // request count directly exposes the resolved cap.
+  const fullPage = makePage(
+    Array.from({ length: 100 }, (_, i) => makePost({ PostId: `c-${i}`, PostURL: '' })),
+    100_000_000,
+  );
+  for (const bad of [0.5, 0, -3, 'nonsense', null]) {
+    const fetchImpl = fakeFetch([fullPage]);
+    await fetchTencent(DEFAULT_API, { fetchImpl, company: { max_pages: bad } });
+    assert.ok(
+      fetchImpl.calls.length >= DEFAULT_MAX_PAGES,
+      `max_pages=${JSON.stringify(bad)} must fall back to the default, got ${fetchImpl.calls.length} requests`,
+    );
+  }
+});
+
+test('max_pages is bounded above by MAX_PAGES_CAP', async () => {
+  const fullPage = makePage(
+    Array.from({ length: 100 }, (_, i) => makePost({ PostId: `cap-${i}`, PostURL: '' })),
+    10 ** 9,
+  );
+  const fetchImpl = fakeFetch([fullPage]);
+  await fetchTencent(DEFAULT_API, { fetchImpl, company: { max_pages: 100_000 } });
+  assert.equal(fetchImpl.calls.length, MAX_PAGES_CAP);
+});
+
+test('a missing Count keeps paginating until a short page (not stopping after page 1)', async () => {
+  // Page 1 carries NO Count (unknown total → keep walking); page 2 reports
+  // the real total, which ends the walk after 2 requests.
+  const p1 = { Data: { Posts: Array.from({ length: 100 }, (_, i) => makePost({ PostId: `k1-${i}`, PostURL: '' })) } };
+  const p2 = makePage(Array.from({ length: 40 }, (_, i) => makePost({ PostId: `k2-${i}`, PostURL: '' })), 140);
+  const fetchImpl = fakeFetch([p1, p2]);
+  const jobs = await fetchTencent(DEFAULT_API, { fetchImpl });
+  assert.equal(fetchImpl.calls.length, 2, 'page 2 must be requested even without a Count');
+  assert.equal(jobs.length, 140);
+});
+
+test('a missing Count with always-full pages runs to max_pages (bounded)', async () => {
+  const fullPage = { Data: { Posts: Array.from({ length: 100 }, (_, i) => makePost({ PostId: `u-${i}`, PostURL: '' })) } };
+  const fetchImpl = fakeFetch([fullPage]);
+  await fetchTencent(DEFAULT_API, { fetchImpl, company: { max_pages: 3 } });
+  assert.equal(fetchImpl.calls.length, 3);
 });
 
 // ---------------------------------------------------------------------------

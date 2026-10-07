@@ -9,10 +9,34 @@
  * pages (3000 jobs) — the in-process scanner timeline would lose
  * value past that and the title_filter culls hard anyway.
  */
+import { requireArray, requireObject } from './_shape.mjs';
 const UA = 'career-ops-web-ui/1.0';
 const PAGE_SIZE = 100;
 const MAX_PAGES = 30;        // 3000 jobs hard ceiling
 const MAX_TOTAL_JOBS = MAX_PAGES * PAGE_SIZE;
+
+// The only host this source may talk to (SSRF guard, same idiom as tencent).
+export const SMARTRECRUITERS_API_HOST = 'api.smartrecruiters.com';
+
+/**
+ * Defence-in-depth guard on the endpoint built by the adapter: HTTPS only,
+ * host pinned exactly to api.smartrecruiters.com. A lookalike
+ * (`api.smartrecruiters.com.evil.test`) must not pass.
+ * @param {string} url
+ */
+export function assertSmartRecruitersUrl(url) {
+  let parsed;
+  try {
+    parsed = new URL(url);
+  } catch {
+    throw new Error(`smartrecruiters: invalid URL: ${url}`);
+  }
+  if (parsed.protocol !== 'https:') throw new Error(`smartrecruiters: URL must use HTTPS: ${url}`);
+  if (parsed.hostname !== SMARTRECRUITERS_API_HOST) {
+    throw new Error(`smartrecruiters: untrusted hostname "${parsed.hostname}" — must be ${SMARTRECRUITERS_API_HOST}`);
+  }
+  return url;
+}
 
 // v1.69.0 (P-14) — self-describing adapter metadata; see ashby.mjs for the rationale.
 export const meta = {
@@ -25,6 +49,7 @@ export async function fetchSmartRecruiters(apiUrl, opts = {}) {
   const { fetchImpl = fetch, signal } = opts;
   // Strip any caller-supplied ?limit= / ?offset= so we own the cursor.
   const base = apiUrl.replace(/[?&](limit|offset)=[^&]*/g, '').replace(/\?$/, '');
+  assertSmartRecruitersUrl(base);
   const sep = base.includes('?') ? '&' : '?';
 
   const all = [];
@@ -34,19 +59,39 @@ export async function fetchSmartRecruiters(apiUrl, opts = {}) {
 
   while (page < MAX_PAGES) {
     const url = `${base}${sep}limit=${PAGE_SIZE}&offset=${offset}`;
-    const res = await fetchImpl(url, {
-      signal,
-      headers: { 'User-Agent': UA, Accept: 'application/json' },
-    });
-    if (!res.ok) {
-      const err = new Error(`SmartRecruiters: HTTP ${res.status} (${url})`);
-      err.status = res.status;
-      throw err;
+    let content;
+    let envelopeTotal;
+    try {
+      const res = await fetchImpl(url, {
+        signal,
+        redirect: 'error',
+        headers: { 'User-Agent': UA, Accept: 'application/json' },
+      });
+      if (!res.ok) {
+        const err = new Error(`SmartRecruiters: HTTP ${res.status} (${url})`);
+        err.status = res.status;
+        throw err;
+      }
+      // Shape contract (Phase 2): a 200 without the documented
+      // { content: [...] } envelope THROWS — it must never read as an
+      // empty board (that is how an envelope change ships for months as
+      // "0 postings").
+      const data = requireObject(await res.json(), 'SmartRecruiters postings');
+      content = requireArray(data.content, 'SmartRecruiters postings content');
+      if (typeof data.totalFound === 'number') envelopeTotal = data.totalFound;
+    } catch (err) {
+      // Dead-board contract (successfactors/rippling idiom): a page-1
+      // failure — transport, HTTP, or wrong shape — THROWS so scan /
+      // portal-health record a real failure. A later-page failure keeps
+      // the partials already collected; a transient page-N blip must not
+      // discard them.
+      if (page === 0) throw err;
+      console.error(`  ⚠ smartrecruiters: truncated at offset ${offset} (${all.length} jobs): ${err.message}`);
+      break;
     }
-    const data = await res.json();
-    const batch = (data.content || []).map((j) => normalize(j));
+    const batch = content.map((j) => normalize(j));
     all.push(...batch);
-    if (totalFound == null && typeof data.totalFound === 'number') totalFound = data.totalFound;
+    if (totalFound == null && envelopeTotal != null) totalFound = envelopeTotal;
     // Stop conditions:
     //   - empty page (no more results)
     //   - reached totalFound (full set fetched)

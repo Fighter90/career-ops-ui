@@ -319,3 +319,31 @@ test('fetch: a non-2xx throws with .status (scanner logs it per company / quaran
     (err) => err.status === 404,
   );
 });
+
+test('fetch: a 200 HTML challenge page throws instead of reading as an empty board', async () => {
+  // A bot-wall answer references nothing HiringRoom-shaped: no tenant host, no
+  // /jobs/get_vacancy/ links, no JSON-LD.
+  const challenge = '<html><head><title>Access denied</title></head><body>Checking your browser…</body></html>';
+  const { impl } = htmlFetch(challenge);
+  await assert.rejects(
+    fetchHiringRoom('https://acme.hiringroom.com/jobs', { fetchImpl: impl, company: { name: 'Acme' } }),
+    /not a HiringRoom microsite/,
+  );
+});
+
+test('fetch: a 200 non-HTML garbage body throws too', async () => {
+  const { impl } = htmlFetch('Maintenance — come back later');
+  await assert.rejects(
+    fetchHiringRoom('https://acme.hiringroom.com/jobs', { fetchImpl: impl, company: { name: 'Acme' } }),
+    /not a HiringRoom microsite/,
+  );
+});
+
+test('fetch: an empty legacy board (shell only, zero vacancies) stays a legitimate []', async () => {
+  // The shell still references the tenant host + apply paths — no false alarm.
+  const emptyBoard = '<html><body><h1>¡Oportunidades de Empleo en Acme!</h1>'
+    + '<a href="https://acme.hiringroom.com/jobs/get_vacancy_placeholder">Apply</a></body></html>';
+  const { impl } = htmlFetch(emptyBoard);
+  const jobs = await fetchHiringRoom('https://acme.hiringroom.com/jobs', { fetchImpl: impl, company: { name: 'Acme' } });
+  assert.deepEqual(jobs, []);
+});

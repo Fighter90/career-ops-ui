@@ -8,6 +8,28 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.242.0] — 2026-10-07
+
+**Scannerens datalag er igen til at stole på: døde kilder lever igen, et misdannet svar kan ikke længere udgive sig for at være en tom tavle, og et fjendtligt tavle-URL kan ikke længere omdirigere en scanning.**
+
+### Rettet
+
+- **Døde kilder lever igen.** justjoin (API-konvolutten ændrede sig til `{data, meta.next.cursor}`) læser sit fulde katalog via en cursor-gennemgang med de nye lønfelter; nofluffjobs svarer 400 uden `salaryCurrency` — forælderens påkrævede forespørgsel sendes, og resultaterne pagineres (`pageTo`). himalayas og jobicy så kun de ca. 20 nyeste opslag ud af over 100.000 — begge gennemgår nu deres fulde kataloger (offset-/cursor-paginering med sideløfter).
+- **En 200 med den forkerte form kaster en fejl på side 1.** Ca. 40 kilder læste misdannede svar eller udfordringssvar som "0 opslag", og scanningen "lykkedes" dermed lydløst. Nye vagter i `server/lib/sources/_shape.mjs` (`requireArray` / `requireContainer` / `requireObject`) gør fejlen højlydt på tværs af alle familier; en fejl på en senere side bevarer de allerede indsamlede sider; pagineringen stopper på den rå sidelængde, ikke det filtrerede antal.
+- **SSRF: delstrengskontroller af leverandører erstattet med parsnede fastlåsninger af den nøjagtige vært.** lever (`clever.com` indeholder `lever.co`), greenhouse (5 værter + de ældre `boards[.eu].greenhouse.io` path-slug-værter), ashby, smartrecruiters, workable, gem REST, ibm, arbeitsagentur, hecklerkoch (kun www), workingnomads (`http://169.254.169.254` var nået forbi DNS-vagten), remoteok, remotive, rss, successfactors. `redirect:'error'` overalt; job-URL'er skal være `https:` på den fastlåste vært (`javascript:` / `data:` / værtsfremmede droppes).
+- **Én fejlkonfigureret portals-post kan ikke længere afbryde en hel scanning.** `resolveAdapter` opfanger adapter-undtagelser, `detectApi` pakkes ind pr. firma, kastende adaptere returnerer `null`; comeet-hentefejl redigerer `?token=`, før de når logs eller karantæneposter.
+- **Paginering og ferskhed.** workday gennemgår tenants ud over 100 opslag (offset-sider, `MAX_PAGES`); telegram beholder de NYESTE indlæg og paginerer `?before=` i stedet for lydløst at beholde de ældste; tencent fortsætter, når `Count` mangler; taleo parser franske overskriftstabeller; avature stopper på den rå sidelængde; UTC-datostempler (amazon off-by-one øst for UTC, torre, workingnomads, trudvsem); HTML-entiteter afkodet (geekjob, getmatch, hh); mycareersfuture udsender den fulde jobform med 12 felter.
+- **Fjern-detektion strammet op.** arbeitsagentur, vdab, rippling, teamtailor: kontraktsprocenten ("Verpleegkundige (100%)", `bundesweit`) og ordet "distributed" ("Distributed Systems Engineer") markerer ikke længere on-site-roller som Remote.
+
+### Tilføjet
+
+- `tests/adapters-pin-coverage.test.mjs` fuldender den værts-fastlåsnings-grendækning, som fastlåsningerne indførte.
+
+### Noter
+
+- Tests **4419 → 4812**, browser **118**. Gennemsnitlig dækning **98.15 % linje / 89.36 % gren** (gategrænse 96 / 86).
+- Ikke med i denne udgivelse: klientfundene fra samme gennemgangsrunde (fase 3 — views, libs, CSS/a11y, i18n); `sources/habr.mjs` mangler stadig en dedikeret testfil (ratchet-fritagelse).
+
 ## [1.241.1] — 2026-10-07
 
 **Live-vurderinger virker fra ende til anden i alle sprog, jobkortet placerer lange opslag med flere lokationer, og en udrulning dræber ikke længere en kørende scanning.**

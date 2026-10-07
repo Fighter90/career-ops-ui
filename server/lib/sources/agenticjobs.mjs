@@ -33,6 +33,7 @@
  */
 import { fetchJson, delay } from '../http-json.mjs';
 import { decodeEntities } from '../html-entities.mjs';
+import { DESCRIPTION_CAP } from '../html-to-text.mjs';
 
 const SITE_ORIGIN = 'https://agentic-engineering-jobs.com';
 const API_BASE = `${SITE_ORIGIN}/api/v1`;
@@ -205,7 +206,10 @@ export function normalizeAgenticJob(j) {
     workplaceType: isRemote ? 'Remote' : '',
     relocates: false,
     date,
-    snippet: stripHtml(j.description),
+    // Tag-stripped, entity-decoded, and capped at the shared DESCRIPTION_CAP —
+    // the sibling sources apply the same ceiling, and an uncapped HTML
+    // description bloats scan payloads.
+    snippet: stripHtml(j.description).slice(0, DESCRIPTION_CAP),
     source: 'agenticjobs',
   };
 }
@@ -248,8 +252,9 @@ function pageUrl(base, page) {
 /**
  * Fetch + normalize the Agentic Jobs listing from the REST API. Pages through
  * `{base}?page=N` (1-based), dedups across pages, and hard-fails on zero jobs
- * (response-shape-change canary). A malformed page (missing/non-array `data`)
- * after real jobs were already collected throws rather than silently truncating.
+ * (response-shape-change canary). Phase-2: a malformed page 1 (missing/non-array
+ * `data`, HTTP failure) throws; a LATER-page failure keeps the partials already
+ * collected and logs instead of discarding them.
  * @param {string} feedUrl base jobs endpoint (adapter default: FEED_URL)
  * @param {{ fetchImpl?: Function, signal?: AbortSignal, company?: object,
  *           pageDelayMs?: number }} [opts]
@@ -265,18 +270,26 @@ export async function fetchAgenticJobs(feedUrl = FEED_URL, opts = {}) {
   for (let page = 1; page <= MAX_PAGES; page++) {
     if (page > 1) await delay(pageDelayMs, signal);
     const url = assertAgenticUrl(pageUrl(feedUrl, page));
-    const json = await fetchJson(fetchImpl, url, {
-      signal,
-      redirect: 'error',
-      headers: { accept: 'application/json' },
-    });
-    // A missing/non-array `data` is a response-shape change, not a legitimate
-    // empty page (the API returns `data: []` for that) — fail loudly instead of
-    // silently truncating whatever pages were already collected.
-    if (!json || !Array.isArray(json.data)) {
-      throw new Error(
-        `agenticjobs: unexpected API response shape on page ${page} — "data" is missing or not an array`,
-      );
+    let json;
+    try {
+      json = await fetchJson(fetchImpl, url, {
+        signal,
+        redirect: 'error',
+        headers: { accept: 'application/json' },
+      });
+      // A missing/non-array `data` is a response-shape change, not a legitimate
+      // empty page (the API returns `data: []` for that).
+      if (!json || !Array.isArray(json.data)) {
+        throw new Error(
+          `agenticjobs: unexpected API response shape on page ${page} — "data" is missing or not an array`,
+        );
+      }
+    } catch (err) {
+      // Phase-2: page-1 failure is fatal; a later-page failure keeps the
+      // partials instead of silently truncating them away with the throw.
+      if (page === 1) throw err;
+      console.error(`  ⚠ agenticjobs: page ${page} failed (${err.message}) — keeping the ${jobs.length} jobs collected so far`);
+      break;
     }
     const records = json.data;
     if (total === null) total = typeof json.meta?.total === 'number' ? json.meta.total : null;

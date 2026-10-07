@@ -13,7 +13,11 @@ import {
 import { jobspressoAdapter } from '../server/lib/portals/adapters/jobspresso.mjs';
 
 // Two good items, one linkless (dropped), one bad-host (dropped).
-const RSS = `<?xml version="1.0"?><rss version="2.0"><channel>
+// The two good items mirror the REAL feed (fetched 2026-10-07): WP Job Manager
+// emits namespaced `<job_listing:location>` / `<job_listing:company>` CDATA
+// elements — there is no `job_listing_location` (underscore) and no `<category>`
+// element — and titles carry no "Company: Role" prefix when the company tag exists.
+const RSS = `<?xml version="1.0"?><rss version="2.0" xmlns:job_listing="https://jobspresso.co"><channel>
   <item>
     <title>Acme Corp: Senior Frontend Engineer</title>
     <link>https://jobspresso.co/jobs/acme-frontend</link>
@@ -21,9 +25,10 @@ const RSS = `<?xml version="1.0"?><rss version="2.0"><channel>
     <pubDate>Mon, 23 Jun 2026 10:00:00 +0000</pubDate>
   </item>
   <item>
-    <title><![CDATA[Globex: Backend Developer]]></title>
+    <title>Backend Developer</title>
     <link>https://jobspresso.co/listings/globex-be</link>
-    <job_listing_location>Worldwide</job_listing_location>
+    <job_listing:location><![CDATA[Worldwide]]></job_listing:location>
+    <job_listing:company><![CDATA[Globex]]></job_listing:company>
   </item>
   <item>
     <title>No Link Dropped</title>
@@ -53,10 +58,36 @@ test('parseJobspressoFeed: Company:Role split, CDATA, location, drops bad/linkle
   assert.ok(first.id.startsWith('jobspresso-'));
   assert.equal(first.url, 'https://jobspresso.co/jobs/acme-frontend');
 
-  // Second item — CDATA + job_listing_location preferred over category
+  // Second item — the REAL feed: namespaced job_listing tags. The company
+  // comes from <job_listing:company> and the title is used as-is.
   assert.equal(second.company, 'Globex');
   assert.equal(second.title, 'Backend Developer');
   assert.equal(second.location, 'Worldwide');
+});
+
+test('parseJobspressoFeed: job_listing:company wins over the title colon-split', () => {
+  const xml = `<rss><channel>
+    <item>
+      <title>Initech: Support Engineer</title>
+      <link>https://jobspresso.co/jobs/initech-support</link>
+      <job_listing:company><![CDATA[Initech LLC]]></job_listing:company>
+      <job_listing:location><![CDATA[Austin, TX]]></job_listing:location>
+    </item>
+  </channel></rss>`;
+  const [job] = parseJobspressoFeed(xml);
+  assert.equal(job.company, 'Initech LLC'); // the structured tag, not the title prefix
+  assert.equal(job.title, 'Initech: Support Engineer'); // title untouched
+  assert.equal(job.location, 'Austin, TX');
+});
+
+test('parseJobspressoFeed: location falls back to category, then Remote', () => {
+  const xml = `<rss><channel>
+    <item>
+      <title>Tagless Role</title>
+      <link>https://jobspresso.co/jobs/tagless</link>
+    </item>
+  </channel></rss>`;
+  assert.equal(parseJobspressoFeed(xml)[0].location, 'Remote');
 });
 
 test('parseJobspressoFeed: unsplittable title uses fallback company', () => {
@@ -120,6 +151,17 @@ test('fetchJobspresso: normalizes via fake fetchImpl', async () => {
   const jobs = await fetchJobspresso(FEED_URL, { fetchImpl });
   assert.equal(jobs.length, 2);
   assert.ok(jobs.every((j) => j.isRemote && j.source === 'jobspresso'));
+});
+
+test('fetchJobspresso: a 200 HTML challenge page throws instead of reading as an empty board', async () => {
+  const challenge = '<html><head><title>Access denied</title></head><body>Checking your browser…</body></html>';
+  const fetchImpl = async () => ({ ok: true, status: 200, text: async () => challenge });
+  await assert.rejects(() => fetchJobspresso(FEED_URL, { fetchImpl }), /challenge page/);
+});
+
+test('fetchJobspresso: a 200 non-feed body throws (no silent zero)', async () => {
+  const fetchImpl = async () => ({ ok: true, status: 200, text: async () => 'Not Found' });
+  await assert.rejects(() => fetchJobspresso(FEED_URL, { fetchImpl }), /answered no feed/);
 });
 
 test('assertJobspressoUrl: pins host to jobspresso.co', () => {

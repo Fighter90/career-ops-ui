@@ -190,5 +190,22 @@ export async function fetchCryptocurrencyJobs(feedUrl = FEED_URL, opts = {}) {
     redirect: 'error',
     headers: { accept: 'application/rss+xml, application/xml, text/xml' },
   });
-  return parseCryptocurrencyJobsRss(xml, maxResults);
+
+  // One fetch, so the Phase-2 rule applies at full strength: a 200 that is not
+  // this feed's document must THROW, not read as an empty board.
+  if (typeof xml !== 'string' || !xml.trim()) {
+    throw new Error('cryptocurrencyjobs: empty feed body (challenge page or board outage)');
+  }
+  const hasItems = /<item[\s>]/i.test(xml);
+  if (!hasItems && !/<rss[\s>]|<channel[\s>]|<\?xml/i.test(xml)) {
+    throw new Error('cryptocurrencyjobs: response is not an RSS document (no <rss>/<channel>/<item>)');
+  }
+
+  const jobs = parseCryptocurrencyJobsRss(xml, maxResults);
+  if (hasItems && jobs.length === 0) {
+    // Items arrived but every one failed normalization (title/https-url
+    // missing) — envelope drift, not an empty board.
+    throw new Error('cryptocurrencyjobs: feed carries <item> entries but none parsed into a posting');
+  }
+  return jobs;
 }

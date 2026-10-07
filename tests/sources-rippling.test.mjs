@@ -297,6 +297,42 @@ test('fetchRippling: a page-0 failure throws (dead board reads as failure)', asy
   await assert.rejects(() => fetchRippling(BIG_EP, { fetchImpl, ...FAST }));
 });
 
+// ── Phase 2 (v1.242.0): parse-inside-try + remote heuristic ──────────
+
+test('fetchRippling: a later page with a WRONG-SHAPE 200 keeps the collected partials', async () => {
+  // parseRipplingPage throws on a non-{items[]} envelope; that throw happens
+  // AFTER the fetch succeeded, so it must be treated like any other later-page
+  // failure — keep the partials, warn, stop — never discard them.
+  let n = 0;
+  const fetchImpl = async () => {
+    n += 1;
+    if (n === 1) return { ok: true, status: 200, json: async () => pageOf(0, 1000) };
+    return { ok: true, status: 200, json: async () => ({ error: 'tenant changed its envelope' }) };
+  };
+  const { result, errors } = await captureErrors(() => fetchRippling(BIG_EP, { fetchImpl, ...FAST }));
+  assert.equal(n, 2);
+  assert.equal(result.length, 1000, 'page-1 partials must survive a page-2 shape failure');
+  assert.ok(errors.some((e) => /truncated at page 2/.test(e)), JSON.stringify(errors));
+});
+
+test('fetchRippling: a page-0 WRONG-SHAPE 200 throws (dead board reads as failure)', async () => {
+  const fetchImpl = jsonFetch({ error: 'challenge' });
+  await assert.rejects(() => fetchRippling(VALID_API_URL, { fetchImpl }), /unexpected response/);
+});
+
+test('"Distributed" in a title is not a remote-work signal', () => {
+  const jobs = parseRipplingPage({ items: [
+    { id: 'dse', name: 'Distributed Systems Engineer', url: 'https://ats.rippling.com/acme/jobs/dse', locations: [] },
+    { id: 'rem', name: 'Remote Backend Engineer', url: 'https://ats.rippling.com/acme/jobs/rem', locations: [] },
+    { id: 'wfh', name: 'Support Agent (home office)', url: 'https://ats.rippling.com/acme/jobs/wfh', locations: [] },
+  ] }, 'Acme');
+  const byTitle = Object.fromEntries(jobs.jobs.map((j) => [j.title, j]));
+  assert.equal(byTitle['Distributed Systems Engineer'].isRemote, false);
+  assert.equal(byTitle['Distributed Systems Engineer'].workplaceType, 'Onsite');
+  assert.equal(byTitle['Remote Backend Engineer'].isRemote, true);
+  assert.equal(byTitle['Support Agent (home office)'].isRemote, true);
+});
+
 // ---------------------------------------------------------------------------
 // Adapter
 // ---------------------------------------------------------------------------

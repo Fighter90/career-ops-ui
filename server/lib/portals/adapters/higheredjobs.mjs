@@ -19,10 +19,19 @@ export const higheredjobsAdapter = {
   id: 'higheredjobs',
   label: 'HigherEdJobs',
   matches(company) {
-    return company.provider === 'higheredjobs';
+    return !!company && typeof company === 'object' && company.provider === 'higheredjobs';
   },
+  // `string | null` contract: a non-string api falls back to the category
+  // feed; garbage input never throws.
   buildEndpoint(company) {
-    return company.higheredjobs || company.api || feedUrlFor(company.cat_id);
+    const api = company && typeof company === 'object' && typeof company.api === 'string'
+      ? company.api
+      : '';
+    const override = company && typeof company === 'object' && typeof company.higheredjobs === 'string'
+      ? company.higheredjobs
+      : '';
+    const catId = company && typeof company === 'object' ? company.cat_id : undefined;
+    return override || api || feedUrlFor(catId);
   },
   fetch: fetchHigherEdJobs,
 };

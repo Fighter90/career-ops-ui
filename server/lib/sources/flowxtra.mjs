@@ -17,6 +17,7 @@
  * Used by the flowxtra adapter (server/lib/portals/adapters/flowxtra.mjs).
  */
 import { fetchJson, BROWSER_LIKE_USER_AGENT } from '../http-json.mjs';
+import { requireArray, requireContainer } from './_shape.mjs';
 
 const TRUSTED_ENDPOINT_HOST = 'app.flowxtra.com';
 const TRUSTED_APPLY_HOST = 'flowxtra.com';
@@ -154,16 +155,26 @@ export function parseFlowxtra(json, opts = {}) {
 
 /**
  * Fetch + normalize the Flowxtra board-wide feed across paginated pages.
- * Host-pinned to app.flowxtra.com; per-page fail-soft (a bad/malformed page
- * stops pagination gracefully instead of throwing the whole scan).
+ * Host-pinned to app.flowxtra.com. The board is ONE request on page 1, so a
+ * page-1 failure (transport error or a 200 with the wrong shape) THROWS — a
+ * dead board must not read as "live but empty" (v1.242.0 Phase-2 rule). A
+ * later-page failure keeps the pages already collected.
+ *
+ * The scanner passes the portals.yml entry as `opts.company`: its `max_pages`
+ * lifts the default page cap and its `name` attributes rows whose
+ * `name_company` is blank.
  *
  * @param {string} [baseUrl] the endpoint base (host-pinned)
  * @param {{ fetchImpl?: Function, signal?: AbortSignal, maxPages?: number,
- *           maxResults?: number, fallbackCompany?: string }} [opts]
+ *           maxResults?: number, fallbackCompany?: string, company?: object }} [opts]
  */
 export async function fetchFlowxtra(baseUrl = JOBS_ENDPOINT, opts = {}) {
-  const { fetchImpl = fetch, signal, maxPages, maxResults, fallbackCompany } = opts;
-  const pages = resolveMaxPages(maxPages);
+  const { fetchImpl = fetch, signal, maxPages, maxResults } = opts;
+  const company = (opts.company && typeof opts.company === 'object') ? opts.company : {};
+  // An explicit opt still wins over the entry's `max_pages` (probe cap).
+  const pages = resolveMaxPages(maxPages ?? company.max_pages);
+  const entryName = typeof company.name === 'string' && company.name.trim() ? company.name.trim() : '';
+  const fallbackCompany = opts.fallbackCompany ?? entryName;
   const out = [];
 
   for (let page = 1; page <= pages; page++) {
@@ -177,20 +188,31 @@ export async function fetchFlowxtra(baseUrl = JOBS_ENDPOINT, opts = {}) {
         redirect: 'error',
         headers: { 'User-Agent': BROWSER_LIKE_USER_AGENT, Accept: 'application/json' },
       });
-    } catch {
-      // per-page fail-soft: a bad page stops pagination, never throws the scan.
+    } catch (err) {
+      // Page 1 failing means the board or the endpoint is wrong and that must
+      // surface. A later page failing after rows are in hand is a partial
+      // result worth keeping.
+      if (page === 1) throw err;
+      console.error(`  ⚠ flowxtra: page ${page} failed (${err.message}) — keeping the ${out.length} jobs collected so far`);
       break;
     }
 
+    if (page === 1) {
+      // A 200 with the wrong shape THROWS on page 1 instead of silently
+      // reading as an empty board (Phase-2 cross-cutting rule).
+      requireContainer(json, 'Flowxtra', 'data.data');
+      requireArray(json.data.data, 'Flowxtra data.data');
+    }
+
     const rows = json && json.data && json.data.data;
-    if (!Array.isArray(rows)) break; // malformed page → stop gracefully
+    if (!Array.isArray(rows)) break; // later page lost the shape → keep partials
 
     const remaining =
       Number.isInteger(maxResults) && maxResults > 0 ? maxResults - out.length : undefined;
     out.push(...parseFlowxtra(json, { fallbackCompany, maxResults: remaining }));
 
     if (Number.isInteger(maxResults) && maxResults > 0 && out.length >= maxResults) break;
-    if (!json.data.next_page_url || rows.length < PER_PAGE) break; // last page reached
+    if (!json.data.next_page_url || rows.length < PER_PAGE) break; // last page reached (raw page length)
   }
 
   return out;

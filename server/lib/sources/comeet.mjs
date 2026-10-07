@@ -12,6 +12,7 @@
  * Used by the comeet adapter (server/lib/portals/adapters/comeet.mjs).
  */
 import { fetchJson } from '../http-json.mjs';
+import { requireArray } from './_shape.mjs';
 
 export const COMEET_API_HOST = 'www.comeet.co';
 const REMOTE_RE = /remote|anywhere|home\s*office/i;
@@ -77,8 +78,10 @@ function toIso(value) {
  * @param {string} companyName
  */
 export function parseComeetResponse(json, companyName) {
-  const positions = Array.isArray(json) ? json : [];
-  return positions
+  // The documented container is a top-level array; anything else is drift and
+  // must throw, not read as an empty board (v1.242.0 Phase-2 rule).
+  const positions = requireArray(json, 'Comeet positions');
+  const jobs = positions
     .map((row) => {
       const j = (row && typeof row === 'object') ? row : {};
       let url = '';
@@ -112,6 +115,12 @@ export function parseComeetResponse(json, companyName) {
       };
     })
     .filter((job) => job.title && job.url);
+  if (positions.length > 0 && jobs.length === 0) {
+    // Raw rows arrived but none produced a usable title + https url — envelope
+    // drift must fail loudly, not read as "live but empty".
+    throw new Error(`comeet: ${positions.length} position(s) returned but none parsed (name/https-url missing)`);
+  }
+  return jobs;
 }
 
 /**
@@ -122,9 +131,22 @@ export function parseComeetResponse(json, companyName) {
 export async function fetchComeet(apiUrl, opts = {}) {
   const { fetchImpl = fetch, signal, company = {} } = opts;
   assertComeetUrl(apiUrl);
-  const json = await fetchJson(fetchImpl, apiUrl, {
-    signal,
-    headers: { accept: 'application/json' },
-  });
+  let json;
+  try {
+    json = await fetchJson(fetchImpl, apiUrl, {
+      signal,
+      headers: { accept: 'application/json' },
+    });
+  } catch (err) {
+    // fetchJson's error text embeds the full URL (`HTTP 500 (…?token=…)`),
+    // which flows into the SSE log, last-scan errors and quarantine json.
+    // Redact the per-tenant token before it goes anywhere; mutating .message
+    // keeps .status (and any other fields) intact for the caller.
+    if (err instanceof Error) {
+      err.message = redactToken(err.message);
+      throw err;
+    }
+    throw new Error(redactToken(String(err)));
+  }
   return parseComeetResponse(json, company.name || '');
 }

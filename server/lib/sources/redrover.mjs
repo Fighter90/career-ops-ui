@@ -42,6 +42,7 @@
  * try/catch turns it into one logged error for that district.
  */
 import { fetchJsonWithRetry, BROWSER_LIKE_USER_AGENT } from '../http-json.mjs';
+import { requireObject, requireContainer, requireArray } from './_shape.mjs';
 
 export const meta = {
   value: 'redrover',
@@ -157,7 +158,10 @@ function isoDate(v) {
  * Parse the GetJobPostings GraphQL response into web-ui job rows. Exported for
  * tests.
  *
- * - `null` / `{}` / `data: null` / no `results` → [] (alive, nothing there).
+ * - A wrong-shape body (non-object, missing `data.jobSeekerSiteUnauthenticated`,
+ *   missing/non-array `results`) → THROWS (Phase-2: a 200 that stopped speaking
+ *   the documented envelope is a drifted API, not an empty board).
+ * - `results: []` → [] (alive, nothing there).
  * - A GraphQL `errors` array, or `jobSeekerSiteUnauthenticated` present without
  *   a `jobPostingSearch` object → throws.
  * - `hasMoreData: true` → throws (no way to fetch the rest; see header).
@@ -170,19 +174,18 @@ function isoDate(v) {
  * @returns {object[]}
  */
 export function parseRedRoverResponse(json, orgId, company = DEFAULT_COMPANY) {
-  if (json == null || typeof json !== 'object') return [];
+  requireObject(json, 'Red Rover GetJobPostings');
   if (Array.isArray(json.errors) && json.errors.length) {
     throw new Error(`redrover: API error: ${json.errors[0]?.message || 'unknown GraphQL error'}`);
   }
-  const site = json.data?.jobSeekerSiteUnauthenticated;
-  if (site == null) return [];
+  requireContainer(json, 'Red Rover GetJobPostings', 'data.jobSeekerSiteUnauthenticated');
+  const site = json.data.jobSeekerSiteUnauthenticated;
   const search = site.jobPostingSearch;
   if (search == null || typeof search !== 'object') {
     throw new Error(`redrover: unexpected response shape (jobSeekerSiteUnauthenticated keys: ${Object.keys(site).join(', ') || 'none'})`);
   }
   if (search.hasMoreData) throw new Error('redrover: more postings than one response holds; paging is not supported');
-  const rows = search.results;
-  if (!Array.isArray(rows)) return [];
+  const rows = requireArray(search.results, 'Red Rover jobPostingSearch.results');
 
   const label = typeof company === 'string' && company.trim() ? company.trim() : DEFAULT_COMPANY;
   const jobs = [];

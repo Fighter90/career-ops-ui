@@ -28,6 +28,12 @@ export const meta = {
 
 const MAX_JOBS = 1000;
 
+// A real widget page always carries at least one of these: the Wicket jobs
+// container, its stylesheet hook, or the posting blocks themselves. A 200
+// without any of them is a challenge page or a foreign template (Phase 2:
+// loud failure, never a silent "0 jobs").
+const WIDGET_MARKER_RE = /matchElement|jobSearchCss|jobsContainer/;
+
 function clean(s) {
   return decodeEntities(s.replace(/<[^>]*>/g, ' ')).replace(/\s+/g, ' ').trim();
 }
@@ -124,12 +130,17 @@ export function parseWidget(html, widgetUrl, companyName = 'softgarden') {
   return out;
 }
 
-/** Fetch + parse the tenant widget (single request — the page lists everything). */
+/** Fetch + parse the tenant widget (single request — the page lists everything).
+ *  A 200 that is not the jobs widget (challenge page, foreign template)
+ *  THROWS; a real widget page with zero postings is a healthy empty board. */
 export async function fetchSoftgarden(widgetUrl, opts = {}) {
   const { fetchImpl = fetch, signal, company = {} } = opts;
   const resolved = resolveWidgetUrl({ ...company, api: company.api || widgetUrl, careers_url: company.careers_url || widgetUrl });
   if (!resolved) throw new Error(`softgarden: cannot resolve widget URL for ${company.name || widgetUrl}`);
   const html = await fetchText(fetchImpl, resolved, { signal, redirect: 'error', headers: { accept: 'text/html' } });
+  if (!WIDGET_MARKER_RE.test(html)) {
+    throw new Error(`softgarden: response is not a jobs widget page (challenge page or template change?) — ${resolved}`);
+  }
   const name = (company && typeof company.name === 'string' && company.name.trim()) ? company.name.trim() : 'softgarden';
   return parseWidget(html, resolved, name);
 }
