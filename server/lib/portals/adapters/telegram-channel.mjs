@@ -23,8 +23,14 @@ export const telegramChannelAdapter = {
   matches(company) {
     return !!company && typeof company === 'object' && company.provider === 'telegram-channel';
   },
+  // `string | null` contract: a refused handle is "no endpoint", never a
+  // throw that aborts the whole scan.
   buildEndpoint(company) {
-    return buildTelegramChannelUrl(company);
+    try {
+      return buildTelegramChannelUrl(company);
+    } catch {
+      return null;
+    }
   },
   fetch: fetchTelegramChannel,
 };

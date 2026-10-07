@@ -15,7 +15,7 @@
  * key set in the `.env` after boot is honoured without a
  * restart, and DETECTION (has*Key) matches the key the request SENDS.
  */
-import { effectiveEnv, isUsableKey } from './env-config.mjs';
+import { effectiveEnv, isUsableKey, checkBaseUrl } from './env-config.mjs';
 import { PATHS } from './paths.mjs';
 import { cleanLlmMarkdown } from './llm-output.mjs';
 
@@ -31,6 +31,11 @@ const OPENROUTER_URL = 'https://openrouter.ai/api/v1/chat/completions';
 export const OPENROUTER_MODELS_URL = 'https://openrouter.ai/api/v1/models';
 
 const envKey = (k) => effectiveEnv(k, PATHS.envFile);
+
+/** True for OpenAI's own API host (the one that wants max_completion_tokens). */
+function isOpenAIHost(url) {
+  try { return new URL(String(url)).hostname === 'api.openai.com'; } catch { return false; }
+}
 
 /**
  * @returns {{ markdown: string, usage: object|null, error: string|null }}
@@ -60,7 +65,10 @@ export async function runOpenAICompatible(prompt, opts = {}) {
       },
       body: JSON.stringify({
         model,
-        max_tokens: maxTokens,
+        // OpenAI itself deprecated `max_tokens`; gpt-5 / o-series reject it with
+        // a 400. The compatible third parties document `max_tokens`, so only
+        // api.openai.com gets the new name.
+        [isOpenAIHost(url) ? 'max_completion_tokens' : 'max_tokens']: maxTokens,
         messages: [{ role: 'user', content: prompt }],
       }),
     });
@@ -79,7 +87,14 @@ export async function runOpenAICompatible(prompt, opts = {}) {
         .map((b) => b.text || '').join('\n')
       : String(content || ''));
     // finish_reason `length` = cut off at max_tokens (see anthropic.mjs).
-    return { markdown, usage: json.usage || null, error: null, truncated: choice.finish_reason === 'length' };
+    const truncated = choice.finish_reason === 'length';
+    if (!markdown) {
+      // A 200 with no text (content filter, reasoning spent the whole budget)
+      // is a failure, not an empty artifact.
+      const reason = choice.finish_reason ? ` (${choice.finish_reason})` : '';
+      return { markdown: '', usage: json.usage || null, error: `${label} returned no text${reason}`, truncated };
+    }
+    return { markdown, usage: json.usage || null, error: null, truncated };
   } catch (e) {
     return { markdown: '', usage: null, error: e.name === 'AbortError' ? 'timeout' : e.message };
   } finally {
@@ -92,10 +107,24 @@ export async function runOpenAI(prompt, opts = {}) {
   return runOpenAICompatible(prompt, {
     url: OPENAI_URL,
     apiKey: opts.apiKey || envKey('OPENAI_API_KEY'),
-    model: opts.model || envKey('OPENAI_MODEL') || 'gpt-5-codex',
+    // gpt-5-codex (the Codex CLI default) is Responses-API-only; this client
+    // speaks Chat Completions, so the fallback is a chat-capable model.
     label: 'OpenAI',
     ...opts,
+    model: chatCompletionsModel(opts.model || envKey('OPENAI_MODEL')),
   });
+}
+
+/**
+ * OPENAI_MODEL is shared with the parent's Codex CLI, whose default
+ * `gpt-5-codex` is a Responses-API-only model. This client speaks Chat
+ * Completions, so a `*-codex` model is sent as its chat-capable base — the
+ * setting keeps working for the CLI and stops 4xx-ing every web-ui call.
+ */
+function chatCompletionsModel(model) {
+  const m = String(model || '').trim();
+  if (!m) return 'gpt-5';
+  return /-codex(?:-|$)/i.test(m) ? 'gpt-5' : m;
 }
 
 /** Run a prompt via Qwen (DashScope OpenAI-compatible mode). */
@@ -201,12 +230,9 @@ export function hermesChatUrl(base) {
 
 /** Run a prompt via a local Hermes API Server (OpenAI-compatible). */
 export async function runHermes(prompt, opts = {}) {
-  return runOpenAICompatible(prompt, {
-    url: opts.url || hermesChatUrl(envKey('HERMES_BASE_URL')),
+  return runConfigured(prompt, opts, 'HERMES_BASE_URL', 'Hermes', hermesChatUrl, {
     apiKey: opts.apiKey || envKey('HERMES_API_KEY'),
     model: opts.model || envKey('HERMES_MODEL') || 'hermes-agent',
-    label: 'Hermes',
-    ...opts,
   });
 }
 
@@ -240,6 +266,30 @@ export function compatChatUrl(base, fallback) {
   return `${b}/chat/completions`;
 }
 
+/**
+ * The chat URL for a provider whose base is user-configurable, or an error when
+ * the configured base fails its host policy (env-config.mjs BASE_URL_POLICIES).
+ * validateConfig already refuses such a value at /api/config; this is the
+ * runtime check for a hand-edited .env, so the key is never sent there.
+ * @returns {{ url: string } | { error: string }}
+ */
+function configuredChatUrl(envName, label, toUrl) {
+  const base = envKey(envName);
+  const problem = checkBaseUrl(envName, base);
+  if (problem) return { error: `${label}: ${envName} ${problem}` };
+  return { url: toUrl(base) };
+}
+
+/** Run through runOpenAICompatible unless the configured base URL is refused. */
+function runConfigured(prompt, opts, envName, label, toUrl, rest) {
+  if (!opts.url) {
+    const r = configuredChatUrl(envName, label, toUrl);
+    if (r.error) return Promise.resolve({ markdown: '', usage: null, error: r.error });
+    opts = { ...opts, url: r.url };
+  }
+  return runOpenAICompatible(prompt, { label, ...rest, ...opts });
+}
+
 const DEEPSEEK_URL = 'https://api.deepseek.com/v1/chat/completions';
 const ZAI_BASE_DEFAULT = 'https://api.z.ai/api/paas/v4';       // GLM (Z.ai); CN: https://open.bigmodel.cn/api/paas/v4
 const MOONSHOT_BASE_DEFAULT = 'https://api.moonshot.ai/v1';    // Kimi (Moonshot); CN: https://api.moonshot.cn/v1
@@ -263,22 +313,18 @@ export function hasDeepSeekKey() { return isUsableKey(envKey('DEEPSEEK_API_KEY')
 
 /** GLM (Z.ai) — OpenAI-compatible; base override for the CN endpoint. */
 export async function runZai(prompt, opts = {}) {
-  return runOpenAICompatible(prompt, {
-    url: opts.url || compatChatUrl(envKey('ZAI_BASE_URL'), ZAI_BASE_DEFAULT),
+  return runConfigured(prompt, opts, 'ZAI_BASE_URL', 'GLM (Z.ai)', (b) => compatChatUrl(b, ZAI_BASE_DEFAULT), {
     apiKey: opts.apiKey || envKey('ZAI_API_KEY'),
     model: opts.model || envKey('ZAI_MODEL') || 'glm-4.6',
-    label: 'GLM (Z.ai)', ...opts,
   });
 }
 export function hasZaiKey() { return isUsableKey(envKey('ZAI_API_KEY')); }
 
 /** Kimi (Moonshot) — OpenAI-compatible; base override for the CN endpoint. */
 export async function runKimi(prompt, opts = {}) {
-  return runOpenAICompatible(prompt, {
-    url: opts.url || compatChatUrl(envKey('MOONSHOT_BASE_URL'), MOONSHOT_BASE_DEFAULT),
+  return runConfigured(prompt, opts, 'MOONSHOT_BASE_URL', 'Kimi (Moonshot)', (b) => compatChatUrl(b, MOONSHOT_BASE_DEFAULT), {
     apiKey: opts.apiKey || envKey('MOONSHOT_API_KEY'),
     model: opts.model || envKey('MOONSHOT_MODEL') || 'kimi-k2-0711-preview',
-    label: 'Kimi (Moonshot)', ...opts,
   });
 }
 export function hasKimiKey() { return isUsableKey(envKey('MOONSHOT_API_KEY')); }
@@ -343,11 +389,9 @@ export function hasFireworksKey() { return isUsableKey(envKey('FIREWORKS_API_KEY
  *  "available" when OLLAMA_BASE_URL is set, so the auto-cascade never blindly
  *  dials localhost:11434 on a box without Ollama. */
 export async function runOllama(prompt, opts = {}) {
-  return runOpenAICompatible(prompt, {
-    url: opts.url || compatChatUrl(envKey('OLLAMA_BASE_URL'), OLLAMA_BASE_DEFAULT),
+  return runConfigured(prompt, opts, 'OLLAMA_BASE_URL', 'Ollama', (b) => compatChatUrl(b, OLLAMA_BASE_DEFAULT), {
     apiKey: opts.apiKey || envKey('OLLAMA_API_KEY') || 'ollama',
     model: opts.model || envKey('OLLAMA_MODEL') || 'llama3.2',
-    label: 'Ollama', ...opts,
   });
 }
 export function hasOllamaKey() { return isUsableKey(envKey('OLLAMA_BASE_URL'), 3); }
@@ -362,22 +406,18 @@ const ARK_CN_BASE_DEFAULT = 'https://ark.cn-beijing.volces.com/api/v3';     // V
 
 /** BytePlus Ark — OpenAI-compatible; ARK_BASE_URL switches region. */
 export async function runArk(prompt, opts = {}) {
-  return runOpenAICompatible(prompt, {
-    url: opts.url || compatChatUrl(envKey('ARK_BASE_URL'), ARK_BASE_DEFAULT),
+  return runConfigured(prompt, opts, 'ARK_BASE_URL', 'BytePlus Ark', (b) => compatChatUrl(b, ARK_BASE_DEFAULT), {
     apiKey: opts.apiKey || envKey('ARK_API_KEY'),
     model: opts.model || envKey('ARK_MODEL') || 'doubao-pro-32k',
-    label: 'BytePlus Ark', ...opts,
   });
 }
 export function hasArkKey() { return isUsableKey(envKey('ARK_API_KEY')); }
 
 /** Volcengine Ark (China) — OpenAI-compatible; ARK_CN_BASE_URL overrides. */
 export async function runArkCn(prompt, opts = {}) {
-  return runOpenAICompatible(prompt, {
-    url: opts.url || compatChatUrl(envKey('ARK_CN_BASE_URL'), ARK_CN_BASE_DEFAULT),
+  return runConfigured(prompt, opts, 'ARK_CN_BASE_URL', 'Volcengine Ark', (b) => compatChatUrl(b, ARK_CN_BASE_DEFAULT), {
     apiKey: opts.apiKey || envKey('ARK_CN_API_KEY'),
     model: opts.model || envKey('ARK_CN_MODEL') || 'doubao-pro-32k',
-    label: 'Volcengine Ark', ...opts,
   });
 }
 export function hasArkCnKey() { return isUsableKey(envKey('ARK_CN_API_KEY')); }

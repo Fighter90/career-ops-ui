@@ -9,14 +9,30 @@
  * jd-sanitize, security-headers).
  */
 
+/** Host the server bound at listen() — null until then. */
+let boundHost = null;
+
+/**
+ * Record the host `listen()` actually bound (http-timeouts.mjs calls this). An
+ * empty/undefined bind host means every interface. `null` forgets it (tests).
+ * @param {string|null|undefined} host
+ */
+export function recordBindHost(host) {
+  boundHost = host === null ? null : (String(host ?? '').trim() || '0.0.0.0');
+}
+
 /**
  * True when HOST binds beyond loopback — i.e. listening on 0.0.0.0 or any
  * non-127.0.0.1/::1 interface. Used to gate Content-Security-Policy so
  * stricter limits only kick in when the UI is reachable from the network.
  */
 export function isPubliclyExposed() {
-  const host = (process.env.HOST || '127.0.0.1').trim();
-  if (!host) return false;
+  // The address the server actually bound wins over the live env: POST
+  // /api/config rewrites process.env.HOST, and reading that would let a
+  // request flip the exposed-only guards (LLM rate limit, health redaction)
+  // off while the socket is still listening on 0.0.0.0. The env is only the
+  // fallback before listen() — and in tests that never bind.
+  const host = String(boundHost ?? process.env.HOST ?? '127.0.0.1').trim() || '127.0.0.1';
   if (host === '127.0.0.1' || host === '::1' || host === 'localhost') return false;
   return true;
 }
@@ -38,6 +54,9 @@ export function isPrivateOrLoopbackHost(host) {
   if (!host || typeof host !== 'string') return false;
   let h = host.toLowerCase().trim();
   if (h.startsWith('[') && h.endsWith(']')) h = h.slice(1, -1);
+  // A fully-qualified name may end in a dot: `localhost.` (which the URL parser
+  // keeps as-is) names the same host as `localhost`.
+  h = h.replace(/\.+$/, '');
   if (h === 'localhost' || h.endsWith('.localhost')) return true;
   if (/^\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3}$/.test(h)) {
     const parts = h.split('.').map(Number);
@@ -173,9 +192,10 @@ export function sanitizeJobDescription(input) {
   if (typeof input !== 'string') return '';
   let s = input
     .replace(/\x1B\[[0-9;]*m/g, '')         // ANSI color escapes
-    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, '') // control chars (keep \t \n \r)
-    .replace(/<script\b[\s\S]*?<\/script\s*>/gi, '');
-  s = s.trim();
+    .replace(/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/g, ''); // control chars (keep \t \n \r)
+  // Script spans (`<script …>…</script >`) go through the linear scanner — the
+  // equivalent lazy regex was quadratic on a run of unclosed `<script`.
+  s = stripPairedTag(s, 'script', true).trim();
   if (s.length > 50_000) s = s.slice(0, 50_000);
   return s;
 }
@@ -222,23 +242,84 @@ export function stripDangerousMarkdown(text) {
 
 /** One strip pass over the known dangerous tags/attributes/schemes. */
 function stripDangerousOnce(s) {
+  // Tag removal is done by scanning, not by `<script\b[\s\S]*?<\/script[^>]*>`
+  // style regexes: a backtracking engine retries that lazy span from EVERY
+  // opener, so a run of unclosed `<script ` was quadratic (160 KB = 27 s of
+  // blocked event loop through /api/cv/import). Same matches, linear time.
+  s = stripPairedTag(s, 'script');
+  s = stripPairedTag(s, 'iframe');
+  s = stripPairedTag(s, 'object');
+  s = stripOpeners(s, /<embed\b/gi);
+  s = stripPairedTag(s, 'style');
+  s = stripPairedTag(s, 'form');
+  s = stripPairedTag(s, 'svg');
+  // Unclosed / dangling opener of an executable/embedding tag (no closing tag
+  // in the input) — strip the opener so a later consumer can't complete it.
+  s = stripOpeners(s, /<(?:script|iframe|object|style|form|svg)\b/gi);
   return s
-    .replace(/<script\b[\s\S]*?<\/script[^>]*>/gi, '')
-    .replace(/<iframe\b[\s\S]*?<\/iframe[^>]*>/gi, '')
-    .replace(/<object\b[\s\S]*?<\/object[^>]*>/gi, '')
-    .replace(/<embed\b[^>]*\/?>/gi, '')
-    .replace(/<style\b[\s\S]*?<\/style[^>]*>/gi, '')
-    .replace(/<form\b[\s\S]*?<\/form[^>]*>/gi, '')
-    .replace(/<svg\b[\s\S]*?<\/svg[^>]*>/gi, '')
-    // Unclosed / dangling opener of an executable/embedding tag (no closing tag
-    // in the input) — strip the opener so a later consumer can't complete it.
-    .replace(/<(?:script|iframe|object|style|form|svg)\b[^>]*>/gi, '')
     .replace(/\son[a-z]+\s*=\s*"[^"]*"/gi, '')
     .replace(/\son[a-z]+\s*=\s*'[^']*'/gi, '')
     .replace(/\son[a-z]+\s*=\s*[^\s>]+/gi, '')
     .replace(/javascript\s*:/gi, '')
     .replace(/vbscript\s*:/gi, '')
     .replace(/data\s*:\s*text\/html/gi, '');
+}
+
+/**
+ * Remove every `<tag …>…</tag …>` span — what the lazy regex
+ * `<tag\b[\s\S]*?<\/tag[^>]*>` removes (with `strictClose`, the closer is
+ * `</tag\s*>` instead) — in linear time. Each opener pairs with the FIRST
+ * closer after it; when an opener has no closer, no later opener can have one
+ * either, so the scan stops and leaves the rest to the dangling-opener pass.
+ * @param {string} s
+ * @param {string} tag  lower-case tag name (a literal, never user input)
+ * @param {boolean} [strictClose]
+ */
+function stripPairedTag(s, tag, strictClose = false) {
+  const open = new RegExp(`<${tag}\\b`, 'gi');
+  const close = new RegExp(`<\\/${tag}`, 'gi');
+  let out = '';
+  let pos = 0;
+  for (;;) {
+    open.lastIndex = pos;
+    const o = open.exec(s);
+    if (!o) break;
+    const end = closerEnd(s, close, o.index + o[0].length, strictClose);
+    if (end === -1) break;
+    out += s.slice(pos, o.index);
+    pos = end;
+  }
+  return pos === 0 ? s : out + s.slice(pos);
+}
+
+/** Index just past the first acceptable closer at or after `from`, or -1. */
+function closerEnd(s, close, from, strict) {
+  close.lastIndex = from;
+  for (let c = close.exec(s); c; c = close.exec(s)) {
+    let i = c.index + c[0].length;
+    if (!strict) {
+      const gt = s.indexOf('>', i);
+      return gt === -1 ? -1 : gt + 1;
+    }
+    while (i < s.length && /\s/.test(s[i])) i += 1;
+    if (s[i] === '>') return i + 1;
+  }
+  return -1;
+}
+
+/** Remove each `opener … >` (what `<opener[^>]*>` removes), in linear time. */
+function stripOpeners(s, opener) {
+  let out = '';
+  let pos = 0;
+  opener.lastIndex = 0;
+  for (let m = opener.exec(s); m; m = opener.exec(s)) {
+    const gt = s.indexOf('>', m.index + m[0].length);
+    if (gt === -1) break; // no `>` after this opener — none after any later one either
+    out += s.slice(pos, m.index);
+    pos = gt + 1;
+    opener.lastIndex = pos;
+  }
+  return pos === 0 ? s : out + s.slice(pos);
 }
 
 /**

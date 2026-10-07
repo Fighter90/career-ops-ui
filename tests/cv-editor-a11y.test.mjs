@@ -16,7 +16,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { legacyDictText } from './helpers/i18n-vm.mjs';
+import { legacyDictText, I18N_LANGS } from './helpers/i18n-vm.mjs';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
@@ -25,7 +25,7 @@ const __d = dirname(fileURLToPath(import.meta.url));
 const CV = readFileSync(resolve(__d, '..', 'public', 'js', 'views', 'cv.js'), 'utf8');
 const DICT = legacyDictText();
 
-const LOCALES = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr'];
+const LOCALES = I18N_LANGS; // every shipped UI locale, from the live list
 
 test('#cv-editor textarea carries an aria-label via cv.editorAria', () => {
   const block = CV.match(/const ta = c\('textarea', \{[\s\S]*?\}, data\.markdown[^)]*\);/);
@@ -38,7 +38,7 @@ test('#cv-editor textarea carries an aria-label via cv.editorAria', () => {
   assert.ok(fb && fb[1].trim().length > 0, 'cv.editorAria fallback must be non-empty');
 });
 
-test('cv.editorAria present + non-empty in all 8 locales', () => {
+test('cv.editorAria present + non-empty in every locale', () => {
   const line = DICT.split('\n').find((l) => l.includes("'cv.editorAria'"));
   assert.ok(line, 'i18n key cv.editorAria missing from i18n-dict.js');
   for (const loc of LOCALES) {

@@ -103,8 +103,26 @@ export function splitSections(md) {
   return sections.flatMap((sec) => (sec.body.length > MAX_SECTION ? splitAtSubheadings(sec) : [sec]));
 }
 
-function tokenize(s) {
-  return String(s || '').toLowerCase().match(/[\p{L}\p{N}]{3,}/gu) || [];
+// Scripts written without spaces between words (or with short words): a whole
+// unspaced CJK question would otherwise be ONE token that matches no section.
+// Their runs are indexed as overlapping character bigrams instead. `ー` (the
+// katakana long-vowel mark) is Script=Common but belongs inside the run.
+const CJK = '\\p{Script=Han}\\p{Script=Hiragana}\\p{Script=Katakana}\\p{Script=Hangul}\\u30fc';
+const RUN_RE = new RegExp(`[${CJK}]+|[^${CJK}]+`, 'gu');
+const CJK_RUN_RE = new RegExp(`^[${CJK}]+$`, 'u');
+
+export function tokenize(s) {
+  const out = [];
+  for (const word of String(s || '').toLowerCase().match(/[\p{L}\p{N}\u30fc]+/gu) || []) {
+    for (const run of word.match(RUN_RE) || []) {
+      if (CJK_RUN_RE.test(run)) {
+        for (let i = 0; i + 2 <= run.length; i += 1) out.push(run.slice(i, i + 2));
+      } else if (run.length >= 3) {
+        out.push(run);
+      }
+    }
+  }
+  return out;
 }
 
 /** Score each section against the question; return the top-N by keyword overlap. */

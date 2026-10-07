@@ -52,8 +52,11 @@ export function parseMarkdownTable(text) {
     // literal pipe inside a cell as `\|`; without this, a company name
     // like "Acme | Co" would explode into two cells and corrupt the
     // table parse. Restore the literal `|` after splitting.
-    const cells = splitUnescaped(line, '|')
-      .slice(1, -1)
+    // A row may omit the trailing `|` (GFM allows it) — then the last split
+    // part IS the last cell, not the empty tail after the closing pipe.
+    const parts = splitUnescaped(line, '|');
+    const closed = line.length > 1 && line.endsWith('|') && !line.endsWith('\\|');
+    const cells = (closed ? parts.slice(1, -1) : parts.slice(1))
       .map((c) => c.replace(/\\\|/g, '|').trim());
 
     if (!inTable) {
@@ -147,8 +150,9 @@ export function parseApplications(text) {
 
     // Extract score number
     if (obj.score) {
-      const m = obj.score.match(/([\d.]+)/);
-      obj.scoreNum = m ? parseFloat(m[1]) : null;
+      // `4,5/5` (comma decimal, de/fr/ru trackers) is 4.5, not 4.
+      const m = obj.score.match(/(\d+(?:[.,]\d+)?)/);
+      obj.scoreNum = m ? parseFloat(m[1].replace(',', '.')) : null;
     }
 
     // Extract report path
@@ -285,7 +289,8 @@ export function addPipelineUrl(text, url, opts = {}) {
   const validate = typeof opts.validate === 'function' ? opts.validate : defaultUrlGate;
   if (!validate(trimmed)) return text; // refuse to write an invalid URL
 
-  // Keep existing FULL lines (preserve any trailing `| comp` already written).
+  // URL lines (with any trailing `| comp`) — used for dedup only; the write
+  // below appends to the raw text so nothing else in the file is rebuilt.
   const fenceMatch = text && text.match(/```([\s\S]*?)```/);
   const existingLines = (fenceMatch ? fenceMatch[1] : (text || ''))
     .split('\n')
@@ -317,14 +322,22 @@ export function addPipelineUrl(text, url, opts = {}) {
     return addChecklistRow(text, `- [ ] ${trimmed}${comp ? ` | note: comp ${comp}` : ''}`);
   }
   const newLine = comp ? `${trimmed} | ${comp}` : trimmed;
-  const fenceContent = [...existingLines, newLine].join('\n');
-  if (text && text.includes('```')) {
-    return text.replace(/```[\s\S]*?```/, '```\n' + fenceContent + '\n```');
+  if (fenceMatch) {
+    // Append inside the existing fence, keeping every raw line (comments,
+    // blank lines, a language tag). A replacer FUNCTION: a replacement string
+    // would expand `$&` / `$'` / `$$` inside a URL and corrupt the file.
+    const inner = fenceMatch[1].replace(/\s+$/, '');
+    return text.replace(/```[\s\S]*?```/, () => '```' + inner + '\n' + newLine + '\n```');
+  }
+  if (existingLines.length) {
+    // Bare-URL file (no fence): append a bare line rather than duplicating
+    // every existing URL into a new fence.
+    return text.replace(/\s*$/, '\n') + newLine + '\n';
   }
   return (
     (text || '# Pipeline — Pending URLs\n\nDrop job URLs (one per line) here.\n\n') +
     '```\n' +
-    fenceContent +
+    newLine +
     '\n```\n'
   );
 }
@@ -333,18 +346,29 @@ export function addPipelineUrl(text, url, opts = {}) {
  * Remove a URL from pipeline.md.
  */
 export function removePipelineUrl(text, url) {
+  // Only a URL token can name a pipeline row — never drop a comment line.
+  if (!text || typeof url !== 'string' || !(url.startsWith('http') || url.startsWith('local:'))) return text;
   if (isChecklistPipeline(text)) {
     return text
       .split('\n')
       .filter((l) => !(UNCHECKED_ROW.test(l.trim()) && lineUrl(l) === url))
       .join('\n');
   }
-  const remaining = parsePipeline(text).filter((u) => u !== url);
-  const fenceContent = remaining.join('\n');
-  if (text.includes('```')) {
-    return text.replace(/```[\s\S]*?```/, '```\n' + fenceContent + '\n```');
+  // Drop only the matching raw lines — other rows keep their `| comp` column
+  // and any non-URL line survives. Returns `text` unchanged when nothing
+  // matched, so callers can detect a no-op with `updated === text`.
+  const dropMatching = (block) => block
+    .split('\n')
+    .filter((l) => lineUrl(l) !== url)
+    .join('\n');
+  const fenceMatch = text.match(/```([\s\S]*?)```/);
+  if (fenceMatch) {
+    const inner = dropMatching(fenceMatch[1]);
+    if (inner === fenceMatch[1]) return text;
+    return text.replace(/```[\s\S]*?```/, () => '```' + inner + '```');
   }
-  return text;
+  const updated = dropMatching(text);
+  return updated === text ? text : updated;
 }
 
 /**
@@ -376,7 +400,14 @@ export const REPORT_LABELS = {
   hi: { score: ['स्कोर'], legitimacy: ['वैधता'] },
 };
 
-// Flattened, de-duplicated label word lists (English first as universal).
+// Label words that are also everyday words in another language (French
+// `Note` = score, but `**Note:**` is an English/German annotation). They are
+// tried LAST and only accepted when the value carries a score number, so a
+// German `**Note:** remote unclear` can't beat `**Bewertung:** 4/5`.
+const AMBIGUOUS_LABELS = new Set(['note']);
+
+// Flattened, de-duplicated label word lists (English first as universal;
+// ambiguous words moved to the end).
 const LABEL_WORDS = { score: [], legitimacy: [] };
 for (const kind of ['score', 'legitimacy']) {
   const seen = new Set();
@@ -385,6 +416,12 @@ for (const kind of ['score', 'legitimacy']) {
       if (!seen.has(w)) { seen.add(w); LABEL_WORDS[kind].push(w); }
     }
   }
+  LABEL_WORDS[kind].sort((a, b) => Number(AMBIGUOUS_LABELS.has(a.toLowerCase())) - Number(AMBIGUOUS_LABELS.has(b.toLowerCase())));
+}
+
+/** An ambiguous label only counts when its value parses as a score. */
+function acceptLabelValue(word, value) {
+  return !AMBIGUOUS_LABELS.has(word.toLowerCase()) || scoreStringToNum(value) != null;
 }
 
 const escapeReMeta = (s) => String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
@@ -419,7 +456,9 @@ function machineSummaryBlock(text) {
 
 // Grab a `key: value` (or `key - value`) line, case-insensitive.
 function yamlValue(src, key) {
-  const m = src.match(new RegExp('^\\s*' + key + '\\s*[:\\-]\\s*(.+)$', 'im'));
+  // `[ \t]*`, not `\s*`: with the `m` flag `\s*` crosses newlines, so an
+  // empty `score:` would capture the NEXT line as its value.
+  const m = src.match(new RegExp('^[ \\t]*' + key + '[ \\t]*[:\\-][ \\t]*(.+)$', 'im'));
   return m ? m[1].trim() : '';
 }
 
@@ -436,9 +475,9 @@ const stripEmphasis = (s) => (s == null ? '' : String(s).replace(/\*+/g, '').tri
 // headings use `#`, never `**`. The colon must sit next to the label.
 function boldLabelValue(text, words) {
   for (const w of words) {
-    const re = new RegExp('\\*\\*\\s*' + escapeReMeta(w) + '\\s*\\*{0,2}\\s*[:：]\\s*\\*{0,2}\\s*(.+)', 'i');
+    const re = new RegExp('\\*\\*[ \\t]*' + escapeReMeta(w) + '[ \\t]*\\*{0,2}[ \\t]*[:：][ \\t]*\\*{0,2}[ \\t]*(.+)', 'i');
     const m = text.match(re);
-    if (m) return stripEmphasis(m[1]);
+    if (m && acceptLabelValue(w, m[1])) return stripEmphasis(m[1]);
   }
   return '';
 }
@@ -483,9 +522,9 @@ function proseLabelValue(text, kind) {
   for (const line of String(text).split('\n')) {
     if (/^\s*#/.test(line)) continue;
     for (const w of LABEL_WORDS[kind]) {
-      const re = new RegExp('^\\s*\\*{0,2}\\s*' + escapeReMeta(w) + '\\s*\\*{0,2}\\s*[:：]\\s*(.+)', 'i');
+      const re = new RegExp('^[ \\t]*\\*{0,2}[ \\t]*' + escapeReMeta(w) + '[ \\t]*\\*{0,2}[ \\t]*[:：][ \\t]*(.+)', 'i');
       const m = line.match(re);
-      if (m) return stripEmphasis(m[1]);
+      if (m && acceptLabelValue(w, m[1])) return stripEmphasis(m[1]);
     }
   }
   return '';
@@ -530,13 +569,14 @@ export function parseReportHeader(text, opts = {}) {
   if (titleMatch) out.title = titleMatch[1].trim();
 
   // (1) English bold labels — primary; preserves EN reports exactly.
+  // `[ \t]*` keeps an empty label from capturing the next line.
   const enFields = {
-    date: /\*\*Date:\*\*\s*(.+)/,
-    archetype: /\*\*Archetype:\*\*\s*(.+)/,
-    score: /\*\*Score:\*\*\s*(.+)/,
-    url: /\*\*URL:\*\*\s*(.+)/,
-    legitimacy: /\*\*Legitimacy:\*\*\s*(.+)/,
-    pdf: /\*\*PDF:\*\*\s*(.+)/,
+    date: /\*\*Date:\*\*[ \t]*(.+)/,
+    archetype: /\*\*Archetype:\*\*[ \t]*(.+)/,
+    score: /\*\*Score:\*\*[ \t]*(.+)/,
+    url: /\*\*URL:\*\*[ \t]*(.+)/,
+    legitimacy: /\*\*Legitimacy:\*\*[ \t]*(.+)/,
+    pdf: /\*\*PDF:\*\*[ \t]*(.+)/,
   };
   for (const [k, re] of Object.entries(enFields)) {
     const m = text.match(re);
@@ -588,16 +628,37 @@ export function parseReportHeader(text, opts = {}) {
   return out;
 }
 
+/** FNV-1a 32-bit → 8 hex chars. Pure, dependency-free, stable across runs. */
+function shortHash(s) {
+  let h = 0x811c9dc5;
+  for (let i = 0; i < s.length; i++) {
+    h ^= s.charCodeAt(i);
+    h = Math.imul(h, 0x01000193);
+  }
+  return (h >>> 0).toString(16).padStart(8, '0');
+}
+
 /**
- * Slug a string for filename use.
+ * Slug a string for filename use. Output stays ASCII `[a-z0-9-]` (every
+ * route's sanitizePathName accepts it). Latin accents fold (`Nürnberg` →
+ * `nurnberg`); letters/digits that cannot fold (Cyrillic, CJK, …) would be
+ * lost, so an 8-hex hash of the input is appended instead — `Яндекс` and
+ * `Сбербанк` get distinct, stable slugs rather than colliding on ''.
  */
 export function slugify(s) {
-  return (s || '')
+  const src = String(s || '').normalize('NFC');
+  const folded = src.normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+  const base = folded
     .toLowerCase()
     .replace(/[^\w\s-]/g, '')
     .replace(/\s+/g, '-')
     .replace(/-+/g, '-')
     .replace(/^-|-$/g, '');
+  if (!/[^\x00-\x7f]/.test(folded) || !/[\p{L}\p{N}]/u.test(folded.replace(/[\x00-\x7f]/g, ''))) {
+    return base;
+  }
+  const h = shortHash(src.toLowerCase());
+  return base ? `${base}-${h}` : h;
 }
 
 /**

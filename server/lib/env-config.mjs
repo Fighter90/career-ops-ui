@@ -7,7 +7,9 @@
  * Preserves existing comments and ordering; only the keys we touch are
  * rewritten, everything else passes through unchanged.
  */
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, openSync, fchmodSync, writeSync, closeSync } from 'node:fs';
+import { parseEnvLine } from './dotenv.mjs';
+import { isPrivateOrLoopbackHost } from './security.mjs';
 
 /**
  * Keys we expose via /api/config. Order matters — it's how they appear
@@ -187,25 +189,15 @@ export const SECRET_KEYS = new Set([
 ]);
 
 /**
- * Parse an .env file body into a plain object. Preserves the raw text
- * via a `__raw` field so updates can rewrite in place without breaking
- * comments or ordering.
+ * Parse an .env file body into a plain object, line by line with the
+ * dotenv-compatible rules in parseEnvLine (comments, `export`, quotes).
  */
 export function parseEnv(text) {
   const out = {};
   if (!text) return out;
   for (const raw of text.split(/\r?\n/)) {
-    const line = raw.replace(/^\s+|\s+$/g, '');
-    if (!line || line.startsWith('#')) continue;
-    const eq = line.indexOf('=');
-    if (eq <= 0) continue;
-    const key = line.slice(0, eq).trim();
-    let value = line.slice(eq + 1).trim();
-    if ((value.startsWith('"') && value.endsWith('"')) ||
-        (value.startsWith("'") && value.endsWith("'"))) {
-      value = value.slice(1, -1);
-    }
-    if (key) out[key] = value;
+    const entry = parseEnvLine(raw);
+    if (entry) out[entry.key] = entry.value;
   }
   return out;
 }
@@ -270,6 +262,66 @@ export function isUsableKey(raw, minLen = 20) {
   if (/^<.*>$/.test(v)) return false;                    // <your-key-here> angle form
   if (/^(.)\1+$/.test(v)) return false;                  // a single repeated char
   return true;
+}
+
+/**
+ * Where each user-settable `*_BASE_URL` may point. These URLs receive the
+ * provider's API key as a Bearer token, and POST /api/config writes them — so
+ * an arbitrary value would let anyone who can reach the config form (or edit
+ * .env) redirect the key to their own server.
+ *   vendor — https, and the host is one of the vendor's registrable domains
+ *            (or a subdomain); the region split (intl vs CN) stays possible.
+ *   local  — a self-hosted gateway (Hermes, Ollama): loopback, a private /
+ *            CGNAT address, or a LAN-style name (single label, .local, .lan,
+ *            .internal, .home.arpa). Link-local (169.254/16, fe80::/10, which
+ *            includes cloud metadata) is refused.
+ */
+export const BASE_URL_POLICIES = {
+  ZAI_BASE_URL: { vendor: ['z.ai', 'bigmodel.cn'] },
+  MOONSHOT_BASE_URL: { vendor: ['moonshot.ai', 'moonshot.cn'] },
+  ARK_BASE_URL: { vendor: ['bytepluses.com', 'volces.com'] },
+  ARK_CN_BASE_URL: { vendor: ['volces.com', 'bytepluses.com'] },
+  HERMES_BASE_URL: { local: true },
+  OLLAMA_BASE_URL: { local: true },
+};
+
+const LAN_SUFFIXES = ['.local', '.lan', '.internal', '.home.arpa', '.localhost'];
+
+function isLocalGatewayHost(hostname) {
+  const h = hostname.replace(/^\[|\]$/g, '');
+  if (/^169\.254\./.test(h) || /^fe[89ab][0-9a-f]:/i.test(h)) return false;
+  if (isPrivateOrLoopbackHost(h)) return true;
+  if (/^[\d.]+$/.test(h) || h.includes(':')) return false; // a public IP literal
+  return !h.includes('.') || LAN_SUFFIXES.some((s) => h.endsWith(s));
+}
+
+/**
+ * Why `value` is not an acceptable `key` base URL — or null when it is (or when
+ * the key has no policy, or the value is empty = "use the default").
+ * @param {string} key
+ * @param {unknown} value
+ * @returns {string|null}
+ */
+export function checkBaseUrl(key, value) {
+  const policy = BASE_URL_POLICIES[key];
+  const raw = typeof value === 'string' ? value.trim() : '';
+  if (!policy || !raw) return null;
+  let u;
+  try { u = new URL(raw); } catch { return 'not a valid URL'; }
+  if (u.username || u.password) return 'must not contain credentials';
+  const host = u.hostname.toLowerCase().replace(/\.+$/, '');
+  if (policy.vendor) {
+    if (u.protocol !== 'https:') return 'must use https://';
+    if (!policy.vendor.some((d) => host === d || host.endsWith('.' + d))) {
+      return `host ${host} is not an official endpoint (allowed: ${policy.vendor.map((d) => '*.' + d).join(', ')})`;
+    }
+    return null;
+  }
+  if (u.protocol !== 'http:' && u.protocol !== 'https:') return 'must use http:// or https://';
+  if (!isLocalGatewayHost(host)) {
+    return `host ${host} is not local — a self-hosted gateway must be on this machine or your private network`;
+  }
+  return null;
 }
 
 /**
@@ -345,6 +397,13 @@ export function validateConfig(body, current = {}) {
     // Internal newlines are still rejected — that's a real .env
     // injection guard (a value spanning lines could smuggle a second
     // KEY=value pair). Leading/trailing newlines were already trimmed.
+    if (!isEnvRepresentable(v)) {
+      errors.push(`${k}: cannot be saved — the value contains all three quote characters (" ' \`), which a .env file cannot represent. Remove one kind of quote.`);
+    }
+    const baseUrlProblem = checkBaseUrl(k, v);
+    if (baseUrlProblem) {
+      errors.push(`${k}: ${baseUrlProblem} — ${showVal(k, v)}. This URL receives the provider API key, so it is restricted.`);
+    }
     if (/[\r\n]/.test(v)) {
       errors.push(`${k}: must not contain newlines — the value spans more than one line. Re-paste it as a single line (a stray line break is the usual cause).`);
     }
@@ -407,19 +466,20 @@ export function updateEnvFile(path, updates) {
 
   const newLines = [];
   for (const line of lines) {
-    const m = line.match(/^([A-Za-z_][A-Za-z0-9_]*)\s*=/);
+    const m = line.match(/^(\s*export\s+)?([A-Za-z_][A-Za-z0-9_]*)\s*=/);
     if (!m) {
       newLines.push(line);
       continue;
     }
-    const key = m[1];
+    const exportPrefix = m[1] ? 'export ' : '';
+    const key = m[2];
     if (toDelete.has(key)) {
       // Drop the line entirely.
       continue;
     }
     if (Object.prototype.hasOwnProperty.call(updates, key)) {
       const v = updates[key];
-      newLines.push(`${key}=${quoteIfNeeded(String(v))}`);
+      newLines.push(`${exportPrefix}${key}=${quoteIfNeeded(String(v))}`);
       written.add(key);
     } else {
       newLines.push(line);
@@ -442,13 +502,39 @@ export function updateEnvFile(path, updates) {
 
   // Trim trailing blank lines but keep one final newline.
   while (newLines.length && newLines[newLines.length - 1] === '') newLines.pop();
-  writeFileSync(path, newLines.join('\n') + '\n');
+  // The file holds API keys: owner-only. `mode` applies when the file is
+  // created; chmod tightens an existing 0644 .env on the next Save.
+  // One descriptor for mode + content: chmod-by-path after the write was a
+  // check-then-act race (the path could be swapped between the two calls).
+  const fd = openSync(path, 'w', 0o600);
+  try {
+    try { fchmodSync(fd, 0o600); } catch { /* e.g. a filesystem without POSIX modes */ }
+    writeSync(fd, newLines.join('\n') + '\n');
+  } finally {
+    closeSync(fd);
+  }
   return Array.from(written);
 }
 
+/**
+ * Quote a value so the parent's dotenv (and parseEnvLine) read it back
+ * unchanged. dotenv has no escape for a quote inside quotes (`"a\"b"` reads as
+ * `a\"b`) and expands `\n` inside double quotes, so instead of escaping we pick
+ * a quote character the value does not contain: double, then single, then
+ * backtick. A value holding all three cannot be represented — validateConfig
+ * refuses it before it gets here.
+ */
 function quoteIfNeeded(v) {
-  // Quote when the value has whitespace OR characters that confuse
-  // shell-style env parsers.
-  if (/[\s"'`$]/.test(v)) return '"' + v.replace(/"/g, '\\"') + '"';
-  return v;
+  // Quote when the value has whitespace, a comment marker, a quote, `$` or a
+  // backslash — anything a dotenv-style reader would not take literally.
+  if (!/[\s"'`$#\\]/.test(v)) return v;
+  if (!v.includes('"') && !v.includes('\\')) return `"${v}"`;
+  if (!v.includes("'")) return `'${v}'`;
+  if (!v.includes('`')) return `\`${v}\``;
+  throw new Error('value contains all three quote characters and cannot be written to .env');
+}
+
+/** True when quoteIfNeeded can represent `v` (see above). */
+export function isEnvRepresentable(v) {
+  return !(v.includes('"') && v.includes("'") && v.includes('`'));
 }

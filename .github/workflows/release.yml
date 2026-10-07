@@ -18,13 +18,15 @@ on:
         required: true
 
 permissions:
-  contents: write
-  actions: write   # dispatch publish-package.yml (see the last step)
+  contents: read   # raised per job below
 
 jobs:
   release:
     name: Publish ${{ github.ref_name }}
     runs-on: ubuntu-latest
+    permissions:
+      contents: write   # create the release (and its tag on a dispatch)
+      actions: write    # dispatch publish-package.yml (see the last step)
     steps:
       - uses: actions/checkout@v5
         with:
@@ -52,28 +54,40 @@ jobs:
 
       - name: Extract release notes from CHANGELOG.md
         id: notes
+        env:
+          # `inputs.tag` is set only on workflow_dispatch, else the pushed tag.
+          # (The old `${GITHUB_REF_NAME:-…}` shell form never used the input —
+          # GITHUB_REF_NAME is "main", not empty, on dispatch.) Passed as an env
+          # VALUE, never spliced into the script, so a crafted tag name is data.
+          TAG: ${{ github.event.inputs.tag || github.ref_name }}
         run: |
-          # Resolved by the Actions expression engine, not the shell:
-          # `inputs.tag` is set only on workflow_dispatch, else use the
-          # pushed tag. (The old `${GITHUB_REF_NAME:-…}` shell form
-          # never used the input — GITHUB_REF_NAME is "main", not empty,
-          # on dispatch — so manual releases were impossible.)
-          tag="${{ github.event.inputs.tag || github.ref_name }}"
-          version="${tag#v}"
-          # Slice between "## [VERSION]" and the next "## ["
-          awk -v v="$version" '
-            $0 ~ "^## \\["v"\\]" {flag=1; print; next}
+          set -euo pipefail
+          # Validated on BOTH paths: a pushed tag only has to match the `v*.*.*`
+          # glob, which also admits names this script must not trust.
+          [[ "$TAG" =~ ^v[0-9]+\.[0-9]+\.[0-9]+(-[0-9A-Za-z.-]+)?$ ]] || { echo "::error::tag must look like v1.2.3"; exit 1; }
+          version="${TAG#v}"
+          # Slice between "## [VERSION]" and the next "## [" — literal prefix
+          # match, so the dots in the version are not regex wildcards.
+          awk -v hdr="## [$version]" '
+            index($0, hdr) == 1 {flag=1; print; next}
             flag && /^## \[/ {exit}
             flag {print}
           ' CHANGELOG.md > .release-notes.md
-          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+          # A release with an empty body means the CHANGELOG entry is missing
+          # or misnamed — fail instead of publishing a blank release.
+          if ! grep -q '[^[:space:]]' <(tail -n +2 .release-notes.md); then
+            echo "::error::no CHANGELOG.md entry body for [$version]"; exit 1
+          fi
+          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "version=$version" >> "$GITHUB_OUTPUT"
 
       - name: Verify package.json version matches tag
+        env:
+          VERSION: ${{ steps.notes.outputs.version }}
         run: |
           pkg=$(node -p "require('./package.json').version")
-          if [ "$pkg" != "${{ steps.notes.outputs.version }}" ]; then
-            echo "package.json says $pkg, tag says ${{ steps.notes.outputs.version }}"
+          if [ "$pkg" != "$VERSION" ]; then
+            echo "package.json says $pkg, tag says $VERSION"
             exit 1
           fi
 

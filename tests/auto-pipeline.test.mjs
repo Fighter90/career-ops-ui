@@ -15,10 +15,13 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
+import { promises as dns } from 'node:dns';
 
 let server;
 let baseUrl;
 let dir;
+let restoreTransport = null;
+const origLookup = dns.lookup;
 
 before(async () => {
   dir = mkdtempSync(resolve(tmpdir(), 'auto-pipeline-'));
@@ -34,11 +37,14 @@ before(async () => {
   writeFileSync(resolve(dir, 'modes', 'oferta.md'), '# Oferta mode\n');
   writeFileSync(resolve(dir, 'modes', '_shared.md'), '# Shared\n');
   process.env.CAREER_OPS_ROOT = dir;
-  // Clear any inherited API keys so we hit the "no LLM key" branch
-  // for the gate test below.
-  delete process.env.ANTHROPIC_API_KEY;
-  delete process.env.GEMINI_API_KEY;
+  // Clear EVERY inherited provider key so we hit the "no LLM key" branch
+  // for the gate test below — a developer shell with OPENAI_API_KEY /
+  // QWEN_API_KEY set would otherwise turn that test into a paid LLM call.
+  for (const k of Object.keys(process.env)) {
+    if (/_API_KEY$|^OLLAMA_BASE_URL$/.test(k)) delete process.env[k];
+  }
   const { createApp } = await import('../server/index.mjs');
+  ({ _setTransport } = await import('../server/lib/safe-fetch.mjs'));
   const app = createApp();
   await new Promise((r) => {
     server = app.listen(0, '127.0.0.1', () => {
@@ -49,9 +55,13 @@ before(async () => {
 });
 
 after(() => {
+  dns.lookup = origLookup;
+  if (restoreTransport) restoreTransport();
   delete process.env.CAREER_OPS_ROOT;
   return new Promise((r) => server.close(r));
 });
+
+let _setTransport;
 
 /**
  * POST /api/auto-pipeline with body, drain SSE stream, return all
@@ -119,14 +129,33 @@ test('SSE: loopback URL rejected by SSRF gate', async () => {
 });
 
 test('SSE: valid URL but no LLM key → reaches step 3 then errors', async () => {
-  // Valid URL passes step 1; fetch may pass step 2 or fail; we just
-  // assert that we got past step 1 (validate.done) and then errored.
-  // Use a domain that returns minimal HTML so fetch succeeds.
-  const { events } = await callAutoPipeline({ url: 'https://example.com/job-123' });
-  const validateDone = events.find((e) => e.event === 'step' && e.data.i === 0 && e.data.status === 'done');
-  assert.ok(validateDone, 'validate step should complete');
-  const err = events.find((e) => e.event === 'error');
-  assert.ok(err, 'should emit an error event without LLM key');
+  // No live network: pin DNS to a public documentation address and serve
+  // the JD from a stubbed safe-fetch transport. Validate + fetch must
+  // succeed, then the evaluate step must fail with "no LLM key".
+  const fetched = [];
+  dns.lookup = async () => ({ address: '93.184.216.34', family: 4 });
+  restoreTransport = _setTransport(async (url) => {
+    fetched.push(url.href);
+    return {
+      status: 200,
+      headers: { 'content-type': 'text/html' },
+      body: Buffer.from('<h1>Senior Backend Engineer at Example</h1><p>'
+        + 'We build distributed systems in Go and Postgres. '.repeat(4) + '</p>'),
+    };
+  });
+  try {
+    const { events } = await callAutoPipeline({ url: 'https://jobs.example.com/job-123' });
+    assert.deepEqual(fetched, ['https://jobs.example.com/job-123'], 'JD fetched once via the stub');
+    const doneSteps = events.filter((e) => e.event === 'step' && e.data.status === 'done').map((e) => e.data.i);
+    assert.deepEqual(doneSteps, [0, 1], 'validate and fetch complete, nothing after');
+    const err = events.find((e) => e.event === 'error');
+    assert.ok(err, 'should emit an error event without LLM key');
+    assert.equal(err.data.step, 'evaluate');
+    assert.equal(err.data.message, 'no LLM key');
+  } finally {
+    dns.lookup = origLookup;
+    restoreTransport(); restoreTransport = null;
+  }
 });
 
 test('SSE: response headers are SSE-compatible', async () => {

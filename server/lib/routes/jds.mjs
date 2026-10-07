@@ -15,7 +15,7 @@ import { readFileSync, writeFileSync, readdirSync, statSync, existsSync, mkdirSy
 import { resolve } from 'node:path';
 import { PATHS, path as projPath, PROJECT_ROOT } from '../paths.mjs';
 import { slugify, today } from '../parsers.mjs';
-import { sanitizePathName } from '../security.mjs';
+import { sanitizePathName, sanitizeJobDescription } from '../security.mjs';
 import { llmRateLimit } from '../rate-limit.mjs';
 import { runNodeScript } from '../runner.mjs';
 import { parseJsonStdout, sanitizeDetail } from '../parent-relay.mjs';
@@ -32,6 +32,8 @@ const REUSE_RUN_TIMEOUT_MS = 15_000;
 // rather than merely the highest raw overlap (a level-mismatch scores high but
 // still says regenerate).
 const REUSE_RANK = { reuse: 3, 'reuse-with-edits': 2, regenerate: 1 };
+// sanitizeJobDescription's own cap; a longer paste is rejected, not truncated.
+const MAX_JD_CHARS = 50_000;
 
 export function registerJdsRoutes(app) {
   app.get('/api/jds', (_req, res) => {
@@ -67,8 +69,17 @@ export function registerJdsRoutes(app) {
   });
 
   app.post('/api/jds', (req, res) => {
-    const { text, slug } = req.body || {};
-    if (!text) return res.status(400).json({ error: 'text required' });
+    const { text, slug, overwrite } = req.body || {};
+    // Same JD ingress rules as /api/evaluate: a string, sanitized (control
+    // bytes / <script> removed), length-capped — and an over-cap paste is a
+    // 413, not a silent truncation.
+    if (typeof text !== 'string' || !text.trim()) return res.status(400).json({ error: 'text required' });
+    if (text.length > MAX_JD_CHARS) {
+      return res.status(413).json({ error: `jd too large (max ${MAX_JD_CHARS} characters)` });
+    }
+    if (slug != null && typeof slug !== 'string') return res.status(400).json({ error: 'slug must be a string' });
+    const clean = sanitizeJobDescription(text);
+    if (!clean) return res.status(400).json({ error: 'text required' });
     let warning = null;
     let safeSlug = null;
     if (slug) {
@@ -84,7 +95,16 @@ export function registerJdsRoutes(app) {
     }
     const name = (safeSlug || `jd-${today()}-${Date.now()}`) + '.txt';
     mkdirSync(PATHS.jdsDir, { recursive: true });
-    writeFileSync(projPath('jds', name), text);
+    // Never replace a saved JD silently: an existing name is a 409 unless the
+    // caller opts in with { overwrite: true } (same contract as reports).
+    try {
+      writeFileSync(projPath('jds', name), clean, { flag: overwrite === true ? 'w' : 'wx' });
+    } catch (e) {
+      if (e && e.code === 'EEXIST') {
+        return res.status(409).json({ error: 'jd already exists; pass overwrite:true to replace', name });
+      }
+      return res.status(500).json({ error: 'failed to save jd' });
+    }
     res.json({ ok: true, name, ...(warning ? { warning } : {}) });
   });
 

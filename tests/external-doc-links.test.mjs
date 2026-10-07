@@ -32,7 +32,9 @@ function read(...parts) { return readFileSync(resolve(ROOT, ...parts), 'utf8'); 
 
 test('UX-D-H: every career-ops.org/docs occurrence in views/*.js is inside an <a> create or an attribute (not bare child text)', () => {
   const viewsDir = resolve(ROOT, 'public', 'js', 'views');
-  const files = readdirSync(viewsDir).filter((f) => f.endsWith('.js'));
+  // Recursive: the split views under views/scan/* and views/config/* count.
+  const files = readdirSync(viewsDir, { recursive: true }).filter((f) => f.endsWith('.js'));
+  assert.ok(files.some((f) => /[/\\]/.test(f)), 'scan must reach view subdirectories');
   const failures = [];
   for (const f of files) {
     const src = read('public', 'js', 'views', f);

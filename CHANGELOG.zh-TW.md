@@ -8,6 +8,37 @@
 
 ---
 
+## [1.241.0] — 2026-10-07
+
+**來自 28 個代理程式程式碼審查（約 190 項已驗證的發現）的強化版本：安全性、程序當機與資料遺失這幾類問題均已封堵，另有由 @bullitt186 貢獻的職缺地圖。**
+
+### 新增
+
+- **職缺地圖（`#/map`）** —— 把來自 pipeline、最近一次掃描與追蹤表的職缺顯示在 OpenStreetMap 地圖上，透過 Nominatim 進行地理編碼，附帶可識別身分的 User-Agent、每秒 1 次請求的佇列、退避機制與磁碟快取。Leaflet 由本伺服器提供（不使用 CDN）；CSP 只在 `img-src` 中新增圖磚來源。由 **@bullitt186** 貢獻（#381）。
+- **請求防護** —— 伺服器會拒絕它未提供服務的 `Host`（DNS 重新綁定），並拒絕跨站寫入與帶有副作用的 GET（`/api/stream/*`、`/api/run/*`、`/api/geocode`）。轉送公開網域名稱的反向代理需把它列入 `ALLOWED_HOSTS`；部署工作流程會依公開網址寫入該 systemd drop-in。
+- **覆蓋率閘門** —— `npm run test:coverage:gate`（`scripts/coverage-report.mjs`）會印出每個檔案的行／分支覆蓋率，並在低於逐步上調的基準線時失敗。
+
+### 修復
+
+- **格式錯誤的請求不再讓伺服器停止。** Express 4 會忽略被拒絕的非同步處理常式，因此 `/api/deep`、`/api/auto-pipeline`、`/api/career-plan`、`/api/tracker` 中型別錯誤的欄位，或 `/api/stats` 中的 NUL 位元組，都會讓程序結束；現在這些情況會回傳 JSON 400，其他任何被拒絕的情況則變成 500。
+- **被中止或失敗的掃描不再清空上一次的結果。** 掃描被停止或所有來源都失敗時，會保留 `last-scan.json`，而單一公司的掃描會合併而不是取代。一個設定錯誤的 `portals.yml` 項目不再讓整個掃描中止。
+- **評估能看到完整的方法。** 模式檔案過去在 16 KB 處被截斷，因此 `oferta.md`（92 KB）遺失了 C–G 區塊；現在每個檔案的上限為：模式 128 KB、履歷 64 KB，且截斷會被回報。空白或被截斷的回答會失敗，而不是寫出空的報告。
+- **SSRF：** 重新導向的每一跳都會重新檢查是否指向私有目標，每一筆 DNS 回應都會被檢查，掃描期限涵蓋回應本文，`*_BASE_URL` 金鑰只會送往該廠商的主機（Hermes/Ollama：迴路位址或區域網路），pandoc 以 `--sandbox` 執行。
+- **事件迴圈停滯：** 兩個二次方複雜度的正規表示式（HTML 剝除、markdown 淨化）已改為線性掃描器。
+- **資料遺失：** 刪除 pipeline 的一列時，其他列的薪資資訊被保留下來；URL 中的 `$&` 會損毀 `pipeline.md`；模擬面試、人脈經營與深度研究的儲存會覆蓋先前的檔案；面試歷史保留的是前 40 輪，而不是最後 40 輪。
+- **LLM 層：** auto-pipeline 與深度研究現在會遵循 `LLM_PROVIDER`，並透過共用的分派機制支援所有服務商，記錄用量並回報截斷；Gemini 的 evaluate/test 不再儲存報告；OpenAI 使用 `max_completion_tokens`，僅限 Codex 的 `OPENAI_MODEL` 會以 `gpt-5` 送出；職缺描述會被圍起來視為不受信任的資料。
+- **報告、深度與內嵌 PDF** 會傳入 `--skip-fact-check`（履歷事實查核會擋下任何含有數字的報告）；個人檔案的頁面格式不再被覆寫。
+- **掃描器：** 隔離區改以 URL 為鍵（修正了 URL 的重試），單次執行內的去重改以正規化 URL 為準，空白的清單項目不再比對到所有內容，寫入為原子操作，`skipped_*` 歷史列不再算作「已見過」。
+- **程序控制：** SIGKILL 的升級機制過去從未觸發；批次執行在中斷連線時會終止其整個程序群組。
+- **CI 與發布：** CI 現在會執行 changelog 一致性、工作流程與 i18n 閘門；工作流程權限採最小權限原則；正式環境的機密只存在於 `production` 環境之下；npm 套件現在會附帶 `docs/help/`。
+- **測試：** 現在沒有任何測試會碰到網路或真正的父專案（明確指定的 `CAREER_OPS_ROOT` 一律會被採用）；複製來的演算法已換成正式環境的程式碼。
+
+### 說明
+
+- 測試數 **4056 → 4404**，瀏覽器測試 **118**。伺服器覆蓋率基準線：行 96.7 %，分支 86.3 %（`scripts/coverage-baseline.json`）。
+- 規格現在集中放在同一個資料夾 `docs/sdd/specs/`；計畫書為 `docs/sdd/PLAN.md`，不變式→閘門對照表為 `docs/sdd/TRACEABILITY.md`。
+- **維運注意事項：** 在反向代理後方請設定 `ALLOWED_HOSTS=<公開主機>`；位於公開主機上的 Ollama/Hermes 基底 URL 現在會被拒絕。
+
 ## [1.240.0] — 2026-10-06
 
 **父專案對齊 —— career-ops `main` @ `62905981`（`VERSION` 為 1.35.0，自 `b39931e` 以來共 177 個上游提交）。六項新來源（103 → 109，104 EN + 5 RU）、鏡射進八個既有服務商的修復，以及由 @bullitt186 貢獻的檢查清單式 pipeline 格式。**
@@ -4061,7 +4092,7 @@ curl -sS -o /dev/null -w '%{http_code}\n' http://127.0.0.1:4317/api/scan-ru/conf
 
 ## [1.21.0] — 2026-05-14
 
-**安全性 + 並行性 + 無障礙拋光,來自兩次獨立的程式碼審查。** [`docs/specs/V1.20.1-BACKLOG.md`](docs/specs/V1.20.1-BACKLOG.md) 中的七項發現於一次發布中交付:一個 blocker(DNS-rebind TOCTOU)、六個 high-severity 缺陷(路徑遍歷淨化散落、LAN 部署的速率限制缺口、並行寫入競爭條件、i18n 覆蓋率破口、懸空的 aria-describedby、標籤關聯缺失)。34 個新測試;基準從 427 → 461 個單元測試 + 32/32 Playwright。每項修復都搭配命名迴歸測試。
+**安全性 + 並行性 + 無障礙拋光,來自兩次獨立的程式碼審查。** [`docs/sdd/specs/V1.20.1-BACKLOG.md`](docs/sdd/specs/V1.20.1-BACKLOG.md) 中的七項發現於一次發布中交付:一個 blocker(DNS-rebind TOCTOU)、六個 high-severity 缺陷(路徑遍歷淨化散落、LAN 部署的速率限制缺口、並行寫入競爭條件、i18n 覆蓋率破口、懸空的 aria-describedby、標籤關聯缺失)。34 個新測試;基準從 427 → 461 個單元測試 + 32/32 Playwright。每項修復都搭配命名迴歸測試。
 
 ### 🛡️ 安全性
 

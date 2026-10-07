@@ -9,6 +9,37 @@
 ---
 
 
+## [1.241.0] — 2026-10-07
+
+**一次由 28 个智能体完成的代码审查（约 190 项已核实的发现）带来的加固版本：安全、进程崩溃和数据丢失三类问题均已关闭，并新增由 @bullitt186 贡献的职位地图。**
+
+### 新增
+
+- **职位地图（`#/map`）** — 把来自 Pipeline、最近一次扫描和跟踪表的职位显示在 OpenStreetMap 地图上，通过 Nominatim 地理编码，带有可识别的 User-Agent、每秒 1 次请求的队列、退避机制和磁盘缓存。Leaflet 由本服务器提供（不使用 CDN）；CSP 仅在 `img-src` 中增加了瓦片来源。由 **@bullitt186** 贡献（#381）。
+- **请求防护** — 服务器会拒绝它未提供服务的 `Host`（DNS 重绑定），以及跨站写入和带副作用的 GET（`/api/stream/*`、`/api/run/*`、`/api/geocode`）。转发公开域名的反向代理需把该域名列入 `ALLOWED_HOSTS`；部署工作流会根据公开 URL 写入这个 systemd drop-in。
+- **覆盖率门禁** — `npm run test:coverage:gate`（`scripts/coverage-report.mjs`）输出每个文件的行/分支覆盖率，低于逐步上调的基线时失败。
+
+### 修复
+
+- **格式错误的请求不再使服务器停止。** Express 4 会忽略被拒绝的异步处理器，因此 `/api/deep`、`/api/auto-pipeline`、`/api/career-plan`、`/api/tracker` 中类型错误的字段，或 `/api/stats` 中的 NUL 字节会使进程退出；现在它们返回 JSON 400，其他任何拒绝都会变成 500。
+- **被中止或失败的扫描不再清空上一次的结果。** 扫描被停止或所有来源都失败时会保留 `last-scan.json`，单个公司的扫描改为合并而不是替换。`portals.yml` 中一个配置错误的条目不再使整个扫描中止。
+- **评估能看到完整的方法。** 模式文件曾在 16 KB 处被截断，因此 `oferta.md`（92 KB）丢失了 C–G 块；现在每个文件的上限为：模式 128 KB、简历 64 KB，并且会报告截断。空答案或被截断的答案会失败，而不是写入空报告。
+- **SSRF：** 重定向跳转会重新检查是否指向私有目标，每条 DNS 应答都会被检查，扫描截止时间覆盖响应体，`*_BASE_URL` 键只会发往供应商自己的主机（Hermes/Ollama：回环地址或局域网），pandoc 以 `--sandbox` 运行。
+- **事件循环停顿：** 两个二次复杂度的正则（HTML 剥离、markdown 清理）已替换为线性扫描器。
+- **数据丢失：** 删除一条 Pipeline 行会保留其他行的薪酬；URL 中的 `$&` 会破坏 `pipeline.md`；模拟面试、人脉拓展和深度调研的保存会覆盖之前的文件；面试历史保留的是最早的 40 轮，而不是最近的 40 轮。
+- **LLM 层：** 自动 Pipeline 和深度调研会遵循 `LLM_PROVIDER` 以及通过共享分发的每个服务商，记录用量并报告截断；Gemini 的评估/测试不再保存报告；OpenAI 使用 `max_completion_tokens`，仅限 Codex 的 `OPENAI_MODEL` 会以 `gpt-5` 发送；职位描述被作为不可信数据围起来。
+- **报告、深度和内联 PDF** 传入 `--skip-fact-check`（简历事实核查曾拦下任何含数字的报告）；不再覆盖个人资料中的页面格式。
+- **扫描器：** 隔离以 URL 为键（修复了 URL 的重试），单次运行内按规范 URL 去重，空白的列表条目不再匹配所有内容，原子写入，`skipped_*` 历史行不再算作“已见过”。
+- **进程控制：** SIGKILL 升级从未触发；批处理运行在断开连接时会终止其整个进程组。
+- **CI 与发布：** CI 现在运行更新日志一致性、工作流和 i18n 门禁；工作流权限遵循最小权限；生产密钥只在 `production` 环境下可用；npm 包现在包含 `docs/help/`。
+- **测试：** 不再有测试访问网络或真实的父项目（始终遵从显式设置的 `CAREER_OPS_ROOT`）；复制的算法已替换为生产代码。
+
+### 说明
+
+- 测试 **4056 → 4404**，浏览器测试 **118**。服务端覆盖率基线：行 96.7 %，分支 86.3 %（`scripts/coverage-baseline.json`）。
+- 规格说明现在集中在一个文件夹 `docs/sdd/specs/`；计划为 `docs/sdd/PLAN.md`，不变量→门禁矩阵为 `docs/sdd/TRACEABILITY.md`。
+- **运维提示：** 在反向代理之后请设置 `ALLOWED_HOSTS=<公开主机>`；指向公开主机的 Ollama/Hermes 基础 URL 现在会被拒绝。
+
 ## [1.240.0] — 2026-10-06
 
 **父项目对齐 — career-ops `main` @ `62905981`（`VERSION` 为 1.35.0，自 `b39931e` 起共 177 个上游提交）。六个新来源 — 103 → 109（104 EN + 5 RU）— 八个现有服务商的镜像修复，以及由 @bullitt186 贡献的清单式 Pipeline 格式。**
@@ -4067,7 +4098,7 @@ curl -sS -o /dev/null -w '%{http_code}\n' http://127.0.0.1:4317/api/scan-ru/conf
 
 ## [1.21.0] — 2026-05-14
 
-**两次独立代码评审带来的安全 + 并发 + 无障碍打磨。** [`docs/specs/V1.20.1-BACKLOG.md`](docs/specs/V1.20.1-BACKLOG.md) 中的 7 个发现一次性发布:1 个阻塞项(DNS-rebind TOCTOU)、6 个高严重度缺陷(路径遍历净化分散、LAN 部署的流控空缺、并发写入竞态、i18n 覆盖漏洞、悬空的 aria-describedby、缺失的 label 关联)。新增 34 个测试;基线从 427 → 461 单元 + 32/32 Playwright。每项修复都附带一条命名的回归测试。
+**两次独立代码评审带来的安全 + 并发 + 无障碍打磨。** [`docs/sdd/specs/V1.20.1-BACKLOG.md`](docs/sdd/specs/V1.20.1-BACKLOG.md) 中的 7 个发现一次性发布:1 个阻塞项(DNS-rebind TOCTOU)、6 个高严重度缺陷(路径遍历净化分散、LAN 部署的流控空缺、并发写入竞态、i18n 覆盖漏洞、悬空的 aria-describedby、缺失的 label 关联)。新增 34 个测试;基线从 427 → 461 单元 + 32/32 Playwright。每项修复都附带一条命名的回归测试。
 
 ### 🛡️ 安全
 

@@ -109,17 +109,20 @@ test('init buildUpdates: no keys → only LLM_PROVIDER (auto)', () => {
   assert.deepEqual(buildUpdates({ provider: '' }), { LLM_PROVIDER: 'auto' });
 });
 
-test('llm.mjs keeps the 6 Anthropic/Gemini gates + the v1.55.0 OpenAI/Qwen tail', () => {
+test('llm.mjs keeps the 4 Anthropic/Gemini gates + the v1.55.0 OpenAI/Qwen tail; /api/deep uses the shared dispatch', () => {
   const src = require_src();
   const ag = (src.match(/_provGate\(\)\.want(Anthropic|Gemini) && has(Anthropic|Gemini)Key\(\)/g) || []);
-  assert.equal(ag.length, 6, `expected 6 Anthropic/Gemini gated sites, got ${ag.length}`);
+  // v1.241.0 — /api/deep moved onto runActiveProvider (usage + truncation
+  // warnings), so its two inline gates are gone; evaluate + mode keep theirs.
+  assert.equal(ag.length, 4, `expected 4 Anthropic/Gemini gated sites (evaluate + mode), got ${ag.length}`);
+  assert.match(src, /await runActiveProvider\(/, '/api/deep must go through llm-dispatch');
   // v1.55.0 — the OR tail: _tailProvider() consulted at the 3 eval
   // sites (evaluate / deep / mode) after Anthropic+Gemini.
   assert.match(src, /function _tailProvider\(\)/, '_tailProvider helper missing');
   assert.match(src, /wantOpenAI: o\.includes\('openai'\), wantQwen: o\.includes\('qwen'\)/,
     '_provGate must expose wantOpenAI/wantQwen');
-  assert.equal((src.match(/_tailProvider\(\)/g) || []).length >= 4, true,
-    'tail provider must be wired at all 3 eval sites (+ its definition)');
+  assert.equal((src.match(/_tailProvider\(\)/g) || []).length >= 3, true,
+    'tail provider must be wired at the evaluate + mode sites (+ its definition)');
   assert.match(src, /import \{ runOpenAI, runQwen, runOpenRouter, runGitHubModels, runHermes, hasOpenAIKey, hasQwenKey, hasOpenRouterKey, hasGitHubModelsKey, hasHermesKey \} from '\.\.\/openai\.mjs'/);
   // v1.57.0 — OpenRouter in the auto tail; v1.151.0 — Hermes is now the last entry.
   assert.match(src, /g\.wantOpenRouter && hasOpenRouterKey\(\)/,

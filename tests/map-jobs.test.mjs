@@ -1,12 +1,14 @@
 import { test, before } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync } from 'node:fs';
+import { mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 let parsePipelineRows, buildLocationIndex, notesPlace;
 before(async () => {
-  process.env.CAREER_OPS_ROOT = mkdtempSync(join(tmpdir(), 'map-jobs-'));
+  const root = mkdtempSync(join(tmpdir(), 'map-jobs-'));
+  writeFileSync(join(root, 'cv.md'), '# CV\n');
+  process.env.CAREER_OPS_ROOT = root;
   ({ parsePipelineRows } = await import('../server/lib/parsers.mjs'));
   ({ buildLocationIndex, notesPlace } = await import('../server/lib/routes/map.mjs'));
 });

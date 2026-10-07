@@ -22,16 +22,19 @@
  *   - the `done` payload has `mode: 'manual'` and a non-empty `prompt`
  *   - no LLM key is consumed (we don't set ANTHROPIC_API_KEY)
  */
-import test from 'node:test';
+import test, { before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 
+// One fixture root + one server for the whole file: paths.mjs is an ESM
+// singleton, so a second mkdtemp root per test would never be read anyway
+// (the module cache pins PATHS to whichever root the first import saw).
 let server;
 let baseUrl;
 
-test('POST /api/auto-pipeline mode:manual returns prompt without LLM call', async (t) => {
+before(async () => {
   const dir = mkdtempSync(resolve(tmpdir(), 'auto-manual-'));
   mkdirSync(resolve(dir, 'config'), { recursive: true });
   mkdirSync(resolve(dir, 'data'), { recursive: true });
@@ -42,12 +45,12 @@ test('POST /api/auto-pipeline mode:manual returns prompt without LLM call', asyn
   writeFileSync(resolve(dir, 'data', 'applications.md'), '');
   writeFileSync(resolve(dir, 'modes', 'oferta.md'), '# Oferta\n');
   process.env.CAREER_OPS_ROOT = dir;
-  // CRITICAL: do NOT set ANTHROPIC_API_KEY / GEMINI_API_KEY. The test
-  // proves the short-circuit fires regardless of key presence; in the
-  // wild a CI run with the key set used to hang here.
-  delete process.env.ANTHROPIC_API_KEY;
-  delete process.env.GEMINI_API_KEY;
-
+  // CRITICAL: start with NO provider key. The short-circuit must fire
+  // regardless of key presence; in the wild a CI run with the key set
+  // used to hang here. The key-set case below adds one explicitly.
+  for (const k of Object.keys(process.env)) {
+    if (/_API_KEY$|^OLLAMA_BASE_URL$/.test(k)) delete process.env[k];
+  }
   const { createApp } = await import('../server/index.mjs');
   const app = createApp();
   await new Promise((r) => {
@@ -56,11 +59,15 @@ test('POST /api/auto-pipeline mode:manual returns prompt without LLM call', asyn
       r();
     });
   });
-  t.after(() => {
-    delete process.env.CAREER_OPS_ROOT;
-    return new Promise((r) => server.close(r));
-  });
+});
 
+after(() => {
+  delete process.env.CAREER_OPS_ROOT;
+  delete process.env.ANTHROPIC_API_KEY;
+  return new Promise((r) => server.close(r));
+});
+
+test('POST /api/auto-pipeline mode:manual returns prompt without LLM call', async () => {
   const t0 = Date.now();
   const r = await fetch(baseUrl + '/api/auto-pipeline', {
     method: 'POST',
@@ -101,84 +108,37 @@ test('POST /api/auto-pipeline mode:manual returns prompt without LLM call', asyn
   assert.match(payload.prompt, /CV|career|оценк|valida|évaluation|評価/i);
 });
 
-test('POST /api/auto-pipeline mode:manual works even with ANTHROPIC_API_KEY set', async (t) => {
+test('POST /api/auto-pipeline mode:manual works even with ANTHROPIC_API_KEY set', async () => {
   // Reproducer for the original G-014 symptom: key set + mode:manual
   // would still kick off a live call. Now the short-circuit fires
-  // before evalMode resolution.
-  const dir = mkdtempSync(resolve(tmpdir(), 'auto-manual-key-'));
-  mkdirSync(resolve(dir, 'config'), { recursive: true });
-  mkdirSync(resolve(dir, 'data'), { recursive: true });
-  mkdirSync(resolve(dir, 'modes'), { recursive: true });
-  writeFileSync(resolve(dir, 'cv.md'), '# CV\n');
-  writeFileSync(resolve(dir, 'config', 'profile.yml'), 'candidate:\n  full_name: Test\n');
-  writeFileSync(resolve(dir, 'portals.yml'), 'tracked_companies: []\n');
-  writeFileSync(resolve(dir, 'data', 'applications.md'), '');
-  writeFileSync(resolve(dir, 'modes', 'oferta.md'), '# Oferta\n');
-  process.env.CAREER_OPS_ROOT = dir;
+  // before evalMode resolution. The key is read live (process.env ∨ .env)
+  // per request, so setting it here is enough.
   process.env.ANTHROPIC_API_KEY = 'sk-ant-test-fake-do-not-call';
-
-  const { createApp } = await import('../server/index.mjs');
-  const app = createApp();
-  let srv;
-  let bu;
-  await new Promise((r) => {
-    srv = app.listen(0, '127.0.0.1', () => {
-      bu = `http://127.0.0.1:${srv.address().port}`;
-      r();
+  try {
+    const t0 = Date.now();
+    const r = await fetch(baseUrl + '/api/auto-pipeline', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        url: 'https://job-boards.greenhouse.io/anthropic/jobs/x',
+        mode: 'manual',
+      }),
     });
-  });
-  t.after(() => {
-    delete process.env.CAREER_OPS_ROOT;
+    const text = await r.text();
+    const elapsed = Date.now() - t0;
+    assert.ok(elapsed < 2000, `key-set manual mode hung ${elapsed}ms — regression`);
+    assert.equal(r.status, 200);
+    assert.match(text, /"mode":"manual"/);
+    assert.match(text, /^event: done\b/m);
+  } finally {
     delete process.env.ANTHROPIC_API_KEY;
-    return new Promise((r) => srv.close(r));
-  });
-
-  const t0 = Date.now();
-  const r = await fetch(bu + '/api/auto-pipeline', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      url: 'https://job-boards.greenhouse.io/anthropic/jobs/x',
-      mode: 'manual',
-    }),
-  });
-  const text = await r.text();
-  const elapsed = Date.now() - t0;
-  assert.ok(elapsed < 2000, `key-set manual mode hung ${elapsed}ms — regression`);
-  assert.equal(r.status, 200);
-  assert.match(text, /"mode":"manual"/);
+  }
 });
 
-test('POST /api/auto-pipeline back-compat: legacy evalMode:manual also short-circuits', async (t) => {
+test('POST /api/auto-pipeline back-compat: legacy evalMode:manual also short-circuits', async () => {
   // Pre-v1.25 callers passed `evalMode: 'manual'`. The handler keeps
   // honouring it so we don't break in-flight clients.
-  const dir = mkdtempSync(resolve(tmpdir(), 'auto-evalmode-'));
-  mkdirSync(resolve(dir, 'config'), { recursive: true });
-  mkdirSync(resolve(dir, 'data'), { recursive: true });
-  mkdirSync(resolve(dir, 'modes'), { recursive: true });
-  writeFileSync(resolve(dir, 'cv.md'), '# CV\n');
-  writeFileSync(resolve(dir, 'config', 'profile.yml'), 'candidate:\n  full_name: Test\n');
-  writeFileSync(resolve(dir, 'portals.yml'), 'tracked_companies: []\n');
-  writeFileSync(resolve(dir, 'data', 'applications.md'), '');
-  writeFileSync(resolve(dir, 'modes', 'oferta.md'), '# Oferta\n');
-  process.env.CAREER_OPS_ROOT = dir;
-
-  const { createApp } = await import('../server/index.mjs');
-  const app = createApp();
-  let srv;
-  let bu;
-  await new Promise((r) => {
-    srv = app.listen(0, '127.0.0.1', () => {
-      bu = `http://127.0.0.1:${srv.address().port}`;
-      r();
-    });
-  });
-  t.after(() => {
-    delete process.env.CAREER_OPS_ROOT;
-    return new Promise((r) => srv.close(r));
-  });
-
-  const r = await fetch(bu + '/api/auto-pipeline', {
+  const r = await fetch(baseUrl + '/api/auto-pipeline', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
@@ -189,4 +149,5 @@ test('POST /api/auto-pipeline back-compat: legacy evalMode:manual also short-cir
   const text = await r.text();
   assert.equal(r.status, 200);
   assert.match(text, /"mode":"manual"/);
+  assert.match(text, /^event: done\b/m);
 });

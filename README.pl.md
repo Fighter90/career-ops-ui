@@ -7,19 +7,19 @@
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
-[![tests](https://img.shields.io/badge/tests-4056%20passed-brightgreen)](#testy)
+[![tests](https://img.shields.io/badge/tests-4404%20passed-brightgreen)](#testy)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#testy)
-[![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#testy)
+[![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.240.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.240.0)
+[![release](https://img.shields.io/badge/release-v1.241.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.241.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Najnowsze wydanie — v1.240.0** — **Parytet z projektem nadrzędnym career-ops 1.35.0: sześć nowych źródeł (ADP Workforce Now, Gupy, JazzHR, Startup Jobs, Taleo, UKG Pro → 109), poprawki przeniesione do ośmiu istniejących dostawców oraz format `pipeline.md` projektu nadrzędnego w postaci listy kontrolnej** — wniósł **@bullitt186**: UI odczytywało taki pipeline jako 0 oczekujących i dopisywało nowe adresy URL tam, gdzie projekt nadrzędny nigdy nie zagląda; teraz odczytuje i zapisuje wiersze `- [ ]`. Ashby, Breezy i Recruitee dołączają kraj do lokalizacji, więc filtr przestaje odrzucać zdalne oferty z głównym adresem w UK, a strona wyzwania zwrócona jako HTTP 200 zawodzi głośno zamiast być odczytana jako pusta tablica. **4056 testów.**
+> **🆕 Najnowsze wydanie — v1.241.0** — **Wzmocnienie po przeglądzie kodu przez 28 agentów oraz mapa ofert od **@bullitt186**.** Zniekształcone żądanie nie może już zatrzymać serwera, przerwany skan nie kasuje ostatnich wyników, oceny widzą teraz cały plik metody zamiast pierwszych 16 KB, serwer odrzuca hosty DNS-rebinding i zapisy z innych witryn, a przekierowania są ponownie sprawdzane pod kątem prywatnych celów. `#/map` pokazuje Twoje oferty na OpenStreetMap. **4404 testy · 118 przeglądarkowych.**
 >
-> **Poprzednie wydanie — v1.239.4** — **Poprawka:** długie oceny AI nie są już ucinane przed podsumowaniem oceny (raporty po koreańsku i chińsku trafiały w limit 8192 tokenów); ucięta odpowiedź jest teraz tak nazywana. **103 źródła · 3782 testy · 116 przeglądarkowych.**
+> **Poprzednie wydanie — v1.240.0** — **Parytet z projektem nadrzędnym career-ops 1.35.0: sześć nowych źródeł (ADP Workforce Now, Gupy, JazzHR, Startup Jobs, Taleo, UKG Pro → 109), poprawki przeniesione do ośmiu istniejących dostawców oraz format `pipeline.md` projektu nadrzędnego w postaci listy kontrolnej** — wniósł **@bullitt186**: UI odczytywało taki pipeline jako 0 oczekujących i dopisywało nowe adresy URL tam, gdzie projekt nadrzędny nigdy nie zagląda; teraz odczytuje i zapisuje wiersze `- [ ]`. Ashby, Breezy i Recruitee dołączają kraj do lokalizacji, więc filtr przestaje odrzucać zdalne oferty z głównym adresem w UK, a strona wyzwania zwrócona jako HTTP 200 zawodzi głośno zamiast być odczytana jako pusta tablica. **4056 testów.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

@@ -10,6 +10,7 @@ they are relevant.
 | [PROGRESS.md](PROGRESS.md) | at session start — current state, next step, known issues, and **abandoned approaches** you should not retry. |
 | [docs/adr/](docs/adr/) | before changing anything the records cover — why a choice was made, and what would make us revisit it. |
 | [docs/sdd/CONVENTIONS.md](docs/sdd/CONVENTIONS.md) | while writing code — module system, routes, sanitizers, i18n, testing. |
+| [docs/sdd/](docs/sdd/) — `PLAN.md`, `TRACEABILITY.md`, `specs/` | before starting work — the program plan, the invariant→gate matrix, and **the only specifications folder** (`docs/sdd/specs/`; there is no `docs/specs/`). |
 | [AGENTS.md](AGENTS.md) | non-Claude CLIs — same rules, portable phrasing. |
 | [.claude/skills/](.claude/skills/) | `parent-sync` (parity releases), `contributor-pr`, `hermes-bridge`. Invoke the skill rather than improvising the pipeline. |
 

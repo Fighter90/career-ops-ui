@@ -18,13 +18,16 @@ const STREAM_DEFAULT_MAX_MS = 30 * 60 * 1000; // 30 minutes
  * SIGTERM the child, then SIGKILL after KILL_GRACE_MS if it hasn't exited.
  * Returns the watchdog timer so callers can clear it on natural exit.
  */
-function killWithEscalation(child) {
+function killWithEscalation(child, graceMs = KILL_GRACE_MS) {
   try { child.kill('SIGTERM'); } catch {}
   return setTimeout(() => {
-    if (child.exitCode === null && !child.killed) {
+    // `child.killed` flips to true the moment SIGTERM is *delivered*, not when the
+    // child exits — testing it here made this escalation dead code, so a script
+    // that traps SIGTERM (Playwright installs a handler) hung the request forever.
+    if (child.exitCode === null && child.signalCode === null) {
       try { child.kill('SIGKILL'); } catch {}
     }
-  }, KILL_GRACE_MS);
+  }, graceMs);
 }
 
 /**
@@ -37,21 +40,34 @@ function killWithEscalation(child) {
  */
 export function runNodeScript(scriptName, args = [], opts = {}) {
   return new Promise((resolve) => {
-    const child = spawn(process.execPath, [scriptName, ...args], {
-      cwd: PROJECT_ROOT,
-      env: { ...process.env, ...(opts.env || {}) },
-    });
+    let child;
+    try {
+      child = spawn(process.execPath, [scriptName, ...args], {
+        cwd: PROJECT_ROOT,
+        env: { ...process.env, ...(opts.env || {}) },
+      });
+    } catch (err) {
+      // spawn throws synchronously for an arg it cannot pass (a NUL byte, an
+      // invalid type). Inside a Promise executor that rejected the promise, and
+      // from an async Express 4 handler an unhandled rejection exits the server.
+      resolve({ code: -1, stdout: '', stderr: String(err?.message || err) });
+      return;
+    }
     let stdout = '';
     let stderr = '';
     let timedOut = false;
     let killWatchdog = null;
-    child.stdout.on('data', (d) => (stdout += d.toString()));
-    child.stderr.on('data', (d) => (stderr += d.toString()));
+    // setEncoding keeps a multibyte character that straddles two chunks intact
+    // (a per-chunk toString() turned it into U+FFFD).
+    child.stdout.setEncoding('utf8');
+    child.stderr.setEncoding('utf8');
+    child.stdout.on('data', (d) => (stdout += d));
+    child.stderr.on('data', (d) => (stderr += d));
 
     const timer = opts.timeoutMs
       ? setTimeout(() => {
           timedOut = true;
-          killWatchdog = killWithEscalation(child);
+          killWatchdog = killWithEscalation(child, opts.killGraceMs);
         }, opts.timeoutMs)
       : null;
 
@@ -92,25 +108,47 @@ export function streamNodeScript(res, scriptName, args = [], opts = {}) {
 
   send('start', { script: scriptName, args });
 
-  const child = spawn(process.execPath, [scriptName, ...args], {
-    cwd: PROJECT_ROOT,
-    env: { ...process.env },
-  });
+  let child;
+  try {
+    child = spawn(process.execPath, [scriptName, ...args], {
+      cwd: PROJECT_ROOT,
+      env: { ...process.env },
+    });
+  } catch (err) {
+    // See runNodeScript: a spawn that throws synchronously must end the stream,
+    // not escape the handler as an unhandled rejection.
+    send('error', { message: String(err?.message || err) });
+    res.end();
+    return;
+  }
 
+  // Lines are emitted whole: a chunk boundary can fall mid-line (and mid
+  // character — hence setEncoding), so the unterminated tail of each chunk is
+  // carried into the next and flushed on exit.
+  const carry = { stdout: '', stderr: '' };
   const handleChunk = (stream, chunk) => {
-    const text = chunk.toString();
-    for (const line of text.split('\n')) {
+    const lines = (carry[stream] + chunk).split('\n');
+    carry[stream] = lines.pop();
+    for (const line of lines) {
       if (line.length === 0) continue;
       send('log', { stream, line });
     }
   };
+  const flush = () => {
+    for (const stream of ['stdout', 'stderr']) {
+      if (carry[stream]) send('log', { stream, line: carry[stream] });
+      carry[stream] = '';
+    }
+  };
 
+  child.stdout.setEncoding('utf8');
+  child.stderr.setEncoding('utf8');
   child.stdout.on('data', (d) => handleChunk('stdout', d));
   child.stderr.on('data', (d) => handleChunk('stderr', d));
 
   let killWatchdog = null;
   const cleanup = () => {
-    if (child.exitCode !== null) return;
+    if (child.exitCode !== null || child.signalCode !== null) return;
     killWatchdog = killWithEscalation(child);
   };
   res.on('close', cleanup);
@@ -119,7 +157,7 @@ export function streamNodeScript(res, scriptName, args = [], opts = {}) {
   const maxRuntimeMs = Number.isFinite(opts.maxRuntimeMs) ? opts.maxRuntimeMs : STREAM_DEFAULT_MAX_MS;
   const runtimeTimer = maxRuntimeMs > 0
     ? setTimeout(() => {
-        if (child.exitCode === null) {
+        if (child.exitCode === null && child.signalCode === null) {
           send('error', { message: `maximum runtime exceeded (${maxRuntimeMs}ms)` });
           killWatchdog = killWithEscalation(child);
         }
@@ -129,6 +167,7 @@ export function streamNodeScript(res, scriptName, args = [], opts = {}) {
   child.on('close', (code) => {
     if (runtimeTimer) clearTimeout(runtimeTimer);
     if (killWatchdog) clearTimeout(killWatchdog);
+    flush();
     send('done', { code });
     res.end();
   });

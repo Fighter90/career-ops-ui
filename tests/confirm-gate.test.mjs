@@ -6,7 +6,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { legacyDictText } from './helpers/i18n-vm.mjs';
+import { legacyDictText, loadAssembledDict, I18N_LANGS } from './helpers/i18n-vm.mjs';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
@@ -82,8 +82,12 @@ test('i18n: all 8 confirm-dialog keys present with the {op} placeholder intact',
   ]) {
     assert.ok(DICT.includes(`'${k}'`), `missing i18n key ${k}`);
   }
-  // {op} must survive translation (runtime-substituted).
-  const line = DICT.split('\n').find((l) => l.includes("'track.fixConfirmBody'"));
-  assert.ok(line && (line.match(/\{op\}/g) || []).length >= 8,
-    'track.fixConfirmBody must keep {op} in every locale');
+  // {op} must survive translation (runtime-substituted) — checked per
+  // shipped locale against the assembled dictionary, not a count floor.
+  const D = loadAssembledDict();
+  for (const lang of I18N_LANGS) {
+    const v = D['track.fixConfirmBody'] && D['track.fixConfirmBody'][lang];
+    assert.ok(typeof v === 'string' && v.includes('{op}'),
+      `track.fixConfirmBody must keep {op} in ${lang}: ${v}`);
+  }
 });

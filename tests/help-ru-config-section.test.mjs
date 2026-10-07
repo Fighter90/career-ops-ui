@@ -17,13 +17,17 @@
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
-const LOCALES = ['en', 'es', 'pt-BR', 'ko-KR', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'ar'];
+// Every help bundle on disk — a hand-kept list silently skipped the
+// locales added after it was written (da, de, it, tr, hi).
+const LOCALES = readdirSync(resolve(ROOT, 'docs', 'help'))
+  .filter((f) => f.endsWith('.md')).map((f) => f.slice(0, -3)).sort();
+assert.ok(LOCALES.includes('en') && LOCALES.includes('ru'), 'docs/help bundles not found');
 
 function readHelp(lang) {
   return readFileSync(resolve(ROOT, 'docs', 'help', `${lang}.md`), 'utf8');

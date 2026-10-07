@@ -8,6 +8,37 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.241.0] — 2026-10-07
+
+**Hærdningsudgivelse efter en kodegennemgang med 28 agenter (~190 verificerede fund): sikkerheds-, procesnedbruds- og datatabsklasserne er lukket, plus et jobkort bidraget af @bullitt186.**
+
+### Tilføjet
+
+- **Jobkort (`#/map`)** — opslag fra pipelinen, den seneste scanning og trackeren på et OpenStreetMap-kort, geokodet via Nominatim med en identificerende User-Agent, en kø på 1 forespørgsel/s, back-off og en cache på disk. Leaflet serveres fra denne server (intet CDN); CSP'en får kun tile-oprindelsen tilføjet i `img-src`. Bidraget af **@bullitt186** (#381).
+- **Forespørgselsvagt** — serveren afviser en `Host`, den ikke serverer (DNS-rebinding), samt skrivninger på tværs af websteder og GET-forespørgsler med sideeffekter (`/api/stream/*`, `/api/run/*`, `/api/geocode`). En reverse proxy, der videresender et offentligt navn, opfører det i `ALLOWED_HOSTS`; udrulningsworkflowet skriver den systemd-drop-in ud fra den offentlige URL.
+- **Dækningsport** — `npm run test:coverage:gate` (`scripts/coverage-report.mjs`) udskriver linje-/grendækning pr. fil og fejler under en stigende baseline.
+
+### Rettet
+
+- **En misdannet forespørgsel stopper ikke længere serveren.** Express 4 ignorerede afviste asynkrone handlere, så et felt af forkert type i `/api/deep`, `/api/auto-pipeline`, `/api/career-plan`, `/api/tracker` eller en NUL-byte i `/api/stats` afsluttede processen; de er nu JSON-400'ere, og enhver anden afvisning bliver til en 500.
+- **En afbrudt eller mislykket scanning sletter ikke længere de seneste resultater.** `last-scan.json` bevares, når en scanning stoppes, eller alle kilder fejlede, og en scanning af ét enkelt firma fletter i stedet for at erstatte. Én fejlkonfigureret `portals.yml`-post afbryder ikke længere hele scanningen.
+- **Vurderinger ser hele metoden.** Mode-filer blev afskåret ved 16 KB, så `oferta.md` (92 KB) mistede blokkene C–G; lofterne pr. fil er nu 128 KB for modes og 64 KB for CV'et, og en afskæring rapporteres. Tomme eller afskårne svar fejler i stedet for at skrive en tom rapport.
+- **SSRF:** redirect-hop kontrolleres igen for private mål, hvert DNS-svar kontrolleres, scanningsfristen dækker body'en, `*_BASE_URL`-nøgler går kun til leverandørens vært (Hermes/Ollama: loopback eller LAN), pandoc køres med `--sandbox`.
+- **Event-loop-stop:** to kvadratiske regulære udtryk (HTML-fjernelse, markdown-sanering) erstattet med lineære scannere.
+- **Datatab:** sletning af en pipeline-række beholdt de andre rækkers kompensation; `$&` i en URL ødelagde `pipeline.md`; gem af mock-interview, networking og deep research overskrev tidligere filer; interviewhistorikken beholdt de første 40 ture i stedet for de sidste.
+- **LLM-laget:** auto-pipeline og deep research respekterer `LLM_PROVIDER` og alle udbydere via den fælles dispatch, registrerer forbrug og rapporterer afskæring; Gemini evaluate/test gemmer ikke længere en rapport; OpenAI bruger `max_completion_tokens`, og en `OPENAI_MODEL` kun til Codex sendes som `gpt-5`; jobbeskrivelsen indrammes som upålidelige data.
+- **Rapport-, deep- og inline-PDF'er** sender `--skip-fact-check` (CV-faktatjekket blokerede enhver rapport med tal); profilens sideformat tilsidesættes ikke længere.
+- **Scannere:** karantæne er nøglet på URL (så rettelse af en URL giver nyt forsøg), deduplikering inden for en kørsel på kanonisk URL, tomme listeposter matcher ikke længere alt, atomiske skrivninger, `skipped_*`-historikrækker er ikke "set".
+- **Proceskontrol:** SIGKILL-eskaleringen udløstes aldrig; batchkørsler dræber hele deres procesgruppe ved afbrydelse af forbindelsen.
+- **CI og udgivelse:** CI kører nu gates for changelog-paritet, workflows og i18n; workflowtilladelser efter mindste privilegium; produktionshemmeligheder kun under `production`-miljøet; npm-pakken leveres nu med `docs/help/`.
+- **Tests:** ingen test rører længere netværket eller det rigtige forælderprojekt (en eksplicit `CAREER_OPS_ROOT` respekteres altid); kopierede algoritmer erstattet af produktionskoden.
+
+### Noter
+
+- Tests **4056 → 4404**, browser **118**. Baseline for serverdækning: linje 96,7 %, gren 86,3 % (`scripts/coverage-baseline.json`).
+- Specifikationer ligger nu i én mappe, `docs/sdd/specs/`; programplanen er `docs/sdd/PLAN.md`, matrixen invariant→gate er `docs/sdd/TRACEABILITY.md`.
+- **Note til operatører:** bag en reverse proxy sættes `ALLOWED_HOSTS=<offentlig vært>`; en Ollama/Hermes-base-URL på en offentlig vært afvises nu.
+
 ## [1.240.0] — 2026-10-06
 
 **Forælder-paritet — career-ops `main` @ `62905981` (VERSION 1.35.0, 177 upstream-commits siden `b39931e`). Seks nye kilder — 103 → 109 (104 EN + 5 RU) — rettelser spejlet i otte eksisterende udbydere og checkliste-pipelineformatet, bidraget af @bullitt186.**
@@ -5364,7 +5395,7 @@ None. Every fix is additive or preserves existing endpoint contracts.
 
 ## [1.21.0] — 2026-05-14
 
-**Security + concurrency + a11y polish from two independent code-review passes.** Seven findings from [`docs/specs/V1.20.1-BACKLOG.md`](docs/specs/V1.20.1-BACKLOG.md) shipped in one release: one blocker (DNS-rebind TOCTOU), six high-severity bugs (path-traversal sanitization spread, rate-limit gap on LAN deploy, concurrent-write race, i18n coverage hole, dangling aria-describedby, missing label associations). 34 new tests; baseline rose from 427 → 461 unit + 32/32 Playwright. Every fix lands behind a named regression test.
+**Security + concurrency + a11y polish from two independent code-review passes.** Seven findings from [`docs/sdd/specs/V1.20.1-BACKLOG.md`](docs/sdd/specs/V1.20.1-BACKLOG.md) shipped in one release: one blocker (DNS-rebind TOCTOU), six high-severity bugs (path-traversal sanitization spread, rate-limit gap on LAN deploy, concurrent-write race, i18n coverage hole, dangling aria-describedby, missing label associations). 34 new tests; baseline rose from 427 → 461 unit + 32/32 Playwright. Every fix lands behind a named regression test.
 
 ### 🛡️ Security
 

@@ -10,11 +10,14 @@
  *
  * Self-healing: a quarantined entry is retried after RETRY_AFTER_DAYS (a slug
  * can come back), so this never permanently hides a board. Keyed by the
- * tracked-companies `name` (stable across runs).
+ * tracked-companies `name` (stable across runs) AND the endpoint that failed:
+ * an entry only holds while the company still resolves to the same URL, so
+ * fixing a dead careers_url retries it on the very next scan instead of
+ * leaving it skipped for the rest of the window.
  *
  * File shape: `{ entries: { "<name>": { url, status, since } } }`.
  */
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, renameSync } from 'node:fs';
 import { PATHS } from './paths.mjs';
 
 export const QUARANTINE_PATH = PATHS.applications.replace(/applications\.md$/, 'scan-quarantine.json');
@@ -34,10 +37,19 @@ export function loadQuarantine() {
   }
 }
 
-/** True when `key` is quarantined AND still inside the retry window. */
-export function isQuarantined(q, key, now = Date.now()) {
+/**
+ * True when `key` is quarantined AND still inside the retry window. When `url`
+ * is given, the entry only applies while it recorded that same endpoint — a
+ * changed url means the config was fixed, so the source is tried again.
+ * @param {any} q
+ * @param {string} key
+ * @param {number} [now]
+ * @param {string} [url]
+ */
+export function isQuarantined(q, key, now = Date.now(), url) {
   const e = q && q.entries && q.entries[key];
-  if (!e) return false;
+  if (!e || typeof e !== 'object') return false;
+  if (url && e.url && e.url !== url) return false;
   const since = Date.parse(e.since);
   if (Number.isNaN(since)) return false;
   return (now - since) < RETRY_AFTER_DAYS * DAY_MS;
@@ -65,7 +77,10 @@ export function pruneQuarantine(q, now = Date.now()) {
 
 export function saveQuarantine(q) {
   mkdirSync(QUARANTINE_PATH.replace(/\/[^/]+$/, ''), { recursive: true });
-  writeFileSync(QUARANTINE_PATH, JSON.stringify(q, null, 2) + '\n');
+  // tmp + rename: a crash mid-write must not leave a truncated file behind.
+  const tmp = `${QUARANTINE_PATH}.${process.pid}.tmp`;
+  writeFileSync(tmp, JSON.stringify(q, null, 2) + '\n');
+  renameSync(tmp, QUARANTINE_PATH);
 }
 
 /** A fetch error that warrants quarantine: a permanent HTTP 404 / 410. */

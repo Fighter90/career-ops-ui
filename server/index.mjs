@@ -14,7 +14,7 @@
  */
 import express from 'express';
 import { fileURLToPath } from 'node:url';
-import { resolve } from 'node:path';
+import { resolve, dirname } from 'node:path';
 import { PATHS, PROJECT_ROOT, PUBLIC_DIR, WEB_UI_ROOT } from './lib/paths.mjs';
 import { activityMiddleware } from './lib/activity-log.mjs';
 import { loadEnvFile } from './lib/dotenv.mjs';
@@ -61,6 +61,15 @@ import { registerCvSyncRoutes } from './lib/routes/cv-sync.mjs';
 import { registerGeocodeRoutes } from './lib/routes/geocode.mjs';
 import { registerMapRoutes, tileConfig } from './lib/routes/map.mjs';
 import { listen } from './lib/http-timeouts.mjs';
+import { requestGuard } from './lib/request-guard.mjs';
+import { installAsyncRouteSafety } from './lib/async-safety.mjs';
+import { createRequire } from 'node:module';
+
+// A missing Leaflet must only break the map view, never the server boot.
+const LEAFLET_DIST = (() => {
+  try { return dirname(createRequire(import.meta.url).resolve('leaflet/dist/leaflet.js')); }
+  catch { return resolve(WEB_UI_ROOT, 'node_modules', 'leaflet', 'dist'); }
+})();
 
 // Re-exports preserved for backward compatibility — earlier tests
 // (and any external consumers) imported these from server/index.mjs.
@@ -73,8 +82,14 @@ loadEnvFile(PATHS.envFile);
 
 export function createApp() {
   ensureRussianPortalsDefaults();
+  // Express 4 ignores a rejected promise from an async handler; without this a
+  // malformed body in any of them exits the whole process (see async-safety.mjs).
+  installAsyncRouteSafety();
   const app = express();
   app.disable('x-powered-by'); // don't advertise the framework (issue #29 / v1.69.5 API hygiene)
+  // First middleware: Host allowlist (DNS rebinding) + same-origin check (CSRF)
+  // — the loopback bind is the only access control this server has (request-guard.mjs).
+  app.use(requestGuard({ bindHost: process.env.HOST, allowedHosts: process.env.ALLOWED_HOSTS }));
   app.use(express.json({ limit: '5mb' }));
   app.use(express.text({ limit: '5mb', type: ['text/plain', 'text/markdown'] }));
 
@@ -127,7 +142,10 @@ export function createApp() {
   // code/style assets always-revalidate. Other static assets (fonts,
   // images, favicon) keep express.static's default caching.
   // Leaflet for #/map, served from node_modules so script-src stays 'self'.
-  app.use('/vendor/leaflet', express.static(resolve(WEB_UI_ROOT, 'node_modules', 'leaflet', 'dist')));
+  // Resolve Leaflet through Node's resolver, not a fixed path: in an `npm i` /
+  // `npx` install npm hoists it into the parent node_modules, where the old
+  // WEB_UI_ROOT/node_modules path 404'd and the map failed silently.
+  app.use('/vendor/leaflet', express.static(LEAFLET_DIST));
   app.use(express.static(PUBLIC_DIR, {
     setHeaders: (res, filePath) => {
       if (/\.(?:js|mjs|css|html)$/i.test(filePath)) {

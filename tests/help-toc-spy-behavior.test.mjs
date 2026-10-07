@@ -8,14 +8,17 @@
  * position changes, the link whose H2 sits at-or-above 30 % of viewport
  * height carries the `.toc-current` class — exactly one at any time.
  *
- * No jsdom dependency: we extract the algorithm shape from help.js and
- * mirror it against minimal `heading.getBoundingClientRect()` stubs +
- * a fake link `.classList`. Any future PR that breaks the contract
- * fails this test before any browser/Playwright run is needed.
+ * No jsdom dependency: we slice the REAL `applyCurrent` +
+ * `computeActiveAndApply` source out of help.js and evaluate it in a
+ * `vm` context against minimal `heading.getBoundingClientRect()` stubs +
+ * a fake link `.classList`. There is no hand-copied algorithm to drift:
+ * any future PR that breaks the contract in help.js fails this test
+ * before any browser/Playwright run is needed.
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
+import vm from 'node:vm';
 
 /**
  * Minimal fake of the DOM surface help.js touches. Each heading carries
@@ -50,28 +53,31 @@ function fakeLink(href) {
 
 const fakeWindow = { scrollY: 0, innerHeight: 800 };
 
-/**
- * Faithful copy of help.js `computeActiveAndApply` — kept in lockstep
- * via the static guard test in qa-report-fixes.test.mjs. Any future
- * change to the algorithm here MUST also land in help.js, and vice
- * versa. The static guard asserts both pieces share the same
- * `triggerY = scrollY + innerHeight * 0.3` rule and the linear scan
- * with early break on first miss.
- */
+// The production scroll-spy lives inside help.js's render closure, so it
+// cannot be imported. Slice it from `function applyCurrent` up to (not
+// including) `function onSpyScroll` — that span holds applyCurrent, the
+// `spyScheduled` flag and computeActiveAndApply — and run it in a vm
+// context whose free variables (`headings`, `linkByTarget`, `window`) are
+// the fakes below.
+const HELP_SRC = readFileSync(new URL('../public/js/views/help.js', import.meta.url), 'utf8');
+const SPY_START = HELP_SRC.indexOf('function applyCurrent(id)');
+const SPY_END = HELP_SRC.indexOf('function onSpyScroll()');
+const SPY_SRC = HELP_SRC.slice(SPY_START, SPY_END);
+
 function computeActiveAndApply(headings, linkByTarget) {
-  if (!headings.length || !linkByTarget.size) return null;
-  const triggerY = fakeWindow.scrollY + fakeWindow.innerHeight * 0.3;
-  let chosen = headings[0];
-  for (const h of headings) {
-    const absTop = h.getBoundingClientRect().top + fakeWindow.scrollY;
-    if (absTop <= triggerY) chosen = h;
-    else break;
-  }
-  for (const l of linkByTarget.values()) l.classList.remove('toc-current');
-  const target = linkByTarget.get(chosen.id);
-  if (target) target.classList.add('toc-current');
-  return chosen.id;
+  const ctx = vm.createContext({ headings, linkByTarget, window: fakeWindow });
+  vm.runInContext(`${SPY_SRC}\ncomputeActiveAndApply();`, ctx);
+  const active = [...linkByTarget.entries()]
+    .filter(([, l]) => l.classList.contains('toc-current'))
+    .map(([id]) => id);
+  return active.length ? active[0] : null;
 }
+
+test('UX-A5-r4 extraction: help.js still exposes the scroll-spy span this test evaluates', () => {
+  assert.ok(SPY_START >= 0, 'help.js must define function applyCurrent(id)');
+  assert.ok(SPY_END > SPY_START, 'help.js must define function onSpyScroll() after applyCurrent');
+  assert.match(SPY_SRC, /function computeActiveAndApply\(\)/);
+});
 
 function makeFixture(n = 18, stride = 800) {
   // n headings, stride px apart starting at y=200.

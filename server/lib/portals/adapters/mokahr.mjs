@@ -16,6 +16,19 @@
  */
 import { fetchMokaHr, buildMokaHrUrl, parseTenantUrl } from '../../sources/mokahr.mjs';
 
+/**
+ * The entry with `careers_url` set to the first of careers_url / api that is a
+ * valid tenant URL. matches() accepts the tenant URL in either field, but the
+ * source reads `careers_url ?? api`, so an unrelated careers_url (the company
+ * homepage) used to hide a valid api and throw.
+ * @param {any} company
+ */
+function withTenantUrl(company) {
+  if (!company || typeof company !== 'object') return company;
+  if (parseTenantUrl(company.careers_url) || !parseTenantUrl(company.api)) return company;
+  return { ...company, careers_url: company.api };
+}
+
 export const mokahrAdapter = {
   id: 'mokahr',
   label: 'MokaHR',
@@ -24,8 +37,18 @@ export const mokahrAdapter = {
     if (company.provider === 'mokahr') return true;
     return !!parseTenantUrl(company.careers_url) || !!parseTenantUrl(company.api);
   },
+  // `string | null` contract: a refused entry is "no endpoint", never a throw
+  // that aborts the whole scan.
   buildEndpoint(company) {
-    return buildMokaHrUrl(company);
+    try {
+      return buildMokaHrUrl(withTenantUrl(company));
+    } catch {
+      return null;
+    }
   },
-  fetch: fetchMokaHr,
+  // The source reads `careers_url ?? api`, so hand it the entry with the URL
+  // that actually parses — matches() accepts either.
+  fetch(url, opts = {}) {
+    return fetchMokaHr(url, { ...opts, company: withTenantUrl(opts.company) });
+  },
 };

@@ -35,6 +35,9 @@ before(async () => {
     '# Q3 Anthropic report\n\nBody content for testing.\n');
   writeFileSync(resolve(dir, 'interview-prep', 'anthropic-swe.md'),
     '# Anthropic SWE\n\nDeep research body.\n');
+  // A slow fake renderer keeps the stream (and its temp input HTML, removed on
+  // close) alive while a test reads the start frame and the HTML.
+  writeFileSync(resolve(dir, 'generate-pdf.mjs'), 'setTimeout(() => {}, 10000);\n');
   process.env.CAREER_OPS_ROOT = dir;
   const { createApp } = await import('../server/index.mjs');
   const app = createApp();
@@ -87,13 +90,14 @@ async function readUntilStart(path, opts = {}) {
   return start;
 }
 
-test('F-015: /api/stream/pdf/report?slug=<slug> spawns generate-pdf.mjs with 3 positional args', async () => {
+test('F-015: /api/stream/pdf/report?slug=<slug> spawns generate-pdf.mjs with positional args + --skip-fact-check', async () => {
   const s = await readUntilStart('/api/stream/pdf/report?slug=q3-anthropic');
   assert.equal(s.script, 'generate-pdf.mjs');
-  assert.equal(s.args.length, 3);
-  assert.match(s.args[0], /\/output\/report-q3-anthropic-input-[\dT]+\.html$/);
+  // No --format unless requested (profile page_format stays the default);
+  // a report is not the CV, so the parent's CV fact check is skipped.
+  assert.deepEqual(s.args.slice(2), ['--skip-fact-check']);
+  assert.match(s.args[0], /\/output\/report-q3-anthropic-input-[\dT]+-[0-9a-f]{6}\.html$/);
   assert.match(s.args[1], /\/output\/report-q3-anthropic-[\dT]+\.pdf$/);
-  assert.equal(s.args[2], '--format=a4');
   assert.ok(existsSync(s.args[0]), 'input HTML must exist on disk');
   const html = readFileSync(s.args[0], 'utf8');
   assert.match(html, /Q3 Anthropic report/);
@@ -107,7 +111,7 @@ test('F-015: /api/stream/pdf/report?slug=<missing> returns 404 JSON', async () =
 test('F-015: /api/stream/pdf/deep?name=<name> spawns generate-pdf.mjs', async () => {
   const s = await readUntilStart('/api/stream/pdf/deep?name=anthropic-swe.md');
   assert.equal(s.script, 'generate-pdf.mjs');
-  assert.match(s.args[0], /\/output\/deep-anthropic-swe-input-[\dT]+\.html$/);
+  assert.match(s.args[0], /\/output\/deep-anthropic-swe-input-[\dT]+-[0-9a-f]{6}\.html$/);
 });
 
 test('F-015: /api/stream/pdf/inline POST with markdown body spawns generate-pdf.mjs', async () => {
@@ -122,7 +126,7 @@ test('F-015: /api/stream/pdf/inline POST with markdown body spawns generate-pdf.
     body,
   });
   assert.equal(s.script, 'generate-pdf.mjs');
-  assert.match(s.args[0], /\/output\/inline-test-input-[\dT]+\.html$/);
+  assert.match(s.args[0], /\/output\/inline-test-input-[\dT]+-[0-9a-f]{6}\.html$/);
   const html = readFileSync(s.args[0], 'utf8');
   assert.match(html, /Inline doc/);
 });

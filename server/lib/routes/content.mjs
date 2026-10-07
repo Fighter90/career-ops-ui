@@ -287,7 +287,7 @@ export function registerContentRoutes(app) {
       if (badPath) {
         return res.status(400).json({ error: `unknown profile field path: ${badPath}` });
       }
-      const badArrayPath = Object.keys(incomingArrays).find((k) => !(k in PROFILE_ARRAY_SPECS));
+      const badArrayPath = Object.keys(incomingArrays).find((k) => !Object.hasOwn(PROFILE_ARRAY_SPECS, k));
       if (badArrayPath) {
         return res.status(400).json({ error: `unknown profile array path: ${badArrayPath}` });
       }
@@ -504,7 +504,7 @@ export function registerContentRoutes(app) {
       // Replace ONLY provided sections; every other section + the
       // preamble + ordering survive untouched (merge-not-replace).
       const merged = sections.map((s) =>
-        (s.heading in incoming)
+        Object.hasOwn(incoming, s.heading)
           ? { heading: s.heading, headingLine: s.headingLine, body: String(incoming[s.heading] ?? '') }
           : s);
       const rebuilt = joinProfileSections(preamble, merged);
@@ -515,7 +515,7 @@ export function registerContentRoutes(app) {
       const d = dirname(PATHS.modesProfile);
       if (!existsSync(d)) mkdirSync(d, { recursive: true });
       writeFileSync(PATHS.modesProfile, cleaned);
-      logActivity({ type: 'modes_profile.save', target: 'modes/_profile.md', bytes: Buffer.byteLength(cleaned) });
+      logActivity({ action: 'modes_profile.save', target: 'modes/_profile.md', ok: true, detail: `sections · ${Buffer.byteLength(cleaned)} bytes` });
       return res.json({ ok: true, mode: 'sections', sanitized: cleaned !== rebuilt, bytes: Buffer.byteLength(cleaned) });
     }
 
@@ -531,9 +531,10 @@ export function registerContentRoutes(app) {
     if (!existsSync(dir)) mkdirSync(dir, { recursive: true });
     writeFileSync(PATHS.modesProfile, sanitized);
     logActivity({
-      type: 'modes_profile.save',
+      action: 'modes_profile.save',
       target: 'modes/_profile.md',
-      bytes: Buffer.byteLength(sanitized),
+      ok: true,
+      detail: `${Buffer.byteLength(sanitized)} bytes`,
     });
     res.json({
       ok: true,

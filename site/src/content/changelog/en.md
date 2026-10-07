@@ -8,6 +8,38 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.241.0] — 2026-10-07
+
+**Hardening release from a 28-agent code review (~190 verified findings): the security, process-crash and data-loss classes are closed, plus a job map contributed by @bullitt186.**
+
+### Added
+
+- **Job map (`#/map`)** — postings from the pipeline, the last scan and the tracker on an OpenStreetMap map, geocoded through Nominatim with an identifying User-Agent, a 1 req/s queue, back-off and an on-disk cache. Leaflet is served from this server (no CDN); the CSP only gains the tile origin in `img-src`. Contributed by **@bullitt186** (#381).
+- **Request guard** — the server refuses a `Host` it does not serve (DNS rebinding) and cross-site writes and side-effecting GETs (`/api/stream/*`, `/api/run/*`, `/api/geocode`). A reverse proxy that forwards a public name lists it in `ALLOWED_HOSTS`; the deploy workflow writes that systemd drop-in from the public URL.
+- **Coverage gate** — `npm run test:coverage:gate` (`scripts/coverage-report.mjs`) prints per-file line/branch coverage and fails below a ratcheting baseline.
+
+### Fixed
+
+- **A malformed request no longer stops the server.** Express 4 ignored rejected async handlers, so a wrong-typed field in `/api/deep`, `/api/auto-pipeline`, `/api/career-plan`, `/api/tracker` or a NUL byte in `/api/stats` exited the process; they are now JSON 400s, and any other rejection becomes a 500.
+- **An aborted or failed scan no longer wipes the last results.** `last-scan.json` is kept when a scan is stopped or every source failed, and a single-company scan merges instead of replacing. One misconfigured `portals.yml` entry no longer aborts the whole scan.
+- **Evaluations see the whole method.** Mode files were cut at 16 KB, so `oferta.md` (92 KB) lost blocks C–G; per-file caps are now 128 KB for modes and 64 KB for the CV, and a cut is reported. Empty or cut-off answers fail instead of writing an empty report.
+- **SSRF:** redirect hops are re-checked for private targets, every DNS answer is checked, the scan deadline covers the body, `*_BASE_URL` keys only go to the vendor's host (Hermes/Ollama: loopback or LAN), pandoc runs with `--sandbox`.
+- **Event-loop stalls:** two quadratic regexes (HTML stripping, markdown sanitising) replaced with linear scanners.
+- **Data loss:** deleting a pipeline row kept the other rows' compensation; `$&` in a URL corrupted `pipeline.md`; mock-interview, networking and deep-research saves overwrote earlier files; interview history kept the first 40 turns instead of the last.
+- **LLM layer:** auto-pipeline and deep research honour `LLM_PROVIDER` and every provider through the shared dispatch, record usage and report truncation; Gemini evaluate/test no longer save a report; OpenAI uses `max_completion_tokens`, and a Codex-only `OPENAI_MODEL` is sent as `gpt-5`; the job description is fenced as untrusted data.
+- **Report, deep and inline PDFs** pass `--skip-fact-check` (the CV fact check blocked any report with numbers); the profile's page format is no longer overridden.
+- **Scanners:** quarantine is keyed by URL (fixing a URL retries it), within-run dedup by canonical URL, blank list entries no longer match everything, atomic writes, `skipped_*` history rows are not "seen".
+- **Process control:** the SIGKILL escalation never fired; batch runs kill their whole process group on disconnect.
+- **CI and release:** CI now runs the changelog-parity, workflow and i18n gates; least-privilege workflow permissions; production secrets only under the `production` environment; the npm package now ships `docs/help/`.
+- **Tests:** no test touches the network or the real parent project any more (an explicit `CAREER_OPS_ROOT` is always honoured); copied algorithms replaced by the production code.
+
+### Notes
+
+- Tests **4056 → 4404**, browser **118**. Server coverage baseline: line 96.7 %, branch 86.3 % (`scripts/coverage-baseline.json`).
+- Specifications now live in one folder, `docs/sdd/specs/`; the program plan is `docs/sdd/PLAN.md`, the invariant→gate matrix `docs/sdd/TRACEABILITY.md`.
+- **Operator note:** behind a reverse proxy set `ALLOWED_HOSTS=<public host>`; an Ollama/Hermes base URL on a public host is now refused.
+- **Not in this release**, deliberately (see `docs/sdd/PLAN.md`): the sources-correctness pass (justjoin and nofluffjobs are dead upstream-side, ~40 sources still read a malformed 200 as an empty board) → v1.242.0; client, CSS and a11y review findings → v1.243.0; the `#/scan` redesign → v1.244.0; the Tamil locale → v1.245.0.
+
 ## [1.240.0] — 2026-10-06
 
 **Parent parity — career-ops `main` @ `62905981` (VERSION 1.35.0, 177 upstream commits since `b39931e`). Six new sources — 103 → 109 (104 EN + 5 RU) — fixes mirrored into eight existing providers, and the checklist pipeline format, contributed by @bullitt186.**
@@ -5505,7 +5537,7 @@ None. Every fix is additive or preserves existing endpoint contracts.
 
 ## [1.21.0] — 2026-05-14
 
-**Security + concurrency + a11y polish from two independent code-review passes.** Seven findings from [`docs/specs/V1.20.1-BACKLOG.md`](https://github.com/Fighter90/career-ops-ui/blob/main/docs/specs/V1.20.1-BACKLOG.md) shipped in one release: one blocker (DNS-rebind TOCTOU), six high-severity bugs (path-traversal sanitization spread, rate-limit gap on LAN deploy, concurrent-write race, i18n coverage hole, dangling aria-describedby, missing label associations). 34 new tests; baseline rose from 427 → 461 unit + 32/32 Playwright. Every fix lands behind a named regression test.
+**Security + concurrency + a11y polish from two independent code-review passes.** Seven findings from [`docs/sdd/specs/V1.20.1-BACKLOG.md`](https://github.com/Fighter90/career-ops-ui/blob/main/docs/sdd/specs/V1.20.1-BACKLOG.md) shipped in one release: one blocker (DNS-rebind TOCTOU), six high-severity bugs (path-traversal sanitization spread, rate-limit gap on LAN deploy, concurrent-write race, i18n coverage hole, dangling aria-describedby, missing label associations). 34 new tests; baseline rose from 427 → 461 unit + 32/32 Playwright. Every fix lands behind a named regression test.
 
 ### 🛡️ Security
 

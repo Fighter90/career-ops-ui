@@ -1,6 +1,6 @@
 # Workflow evals — a stable task set for judging changes to skills, prompts and tools.
 #
-# These do NOT test the product (that is `npm test`, 3201 cases). They test whether an
+# These do NOT test the product (that is `npm test`). They test whether an
 # AGENT, given our skills and instructions, still does the right thing. Without a fixed
 # task set you cannot tell an improvement from luck, or a regression from noise.
 #
@@ -38,7 +38,10 @@
     A fix-only release must not move source/adapter counts, and must not hand-edit
     the count gates.
   outcome:
-    - registry_counts: { sources: 94, en: 89, ru: 5, adapters: 89 }
+    # Relations, not literals: the numbers move with every parity release and
+    # come from the live registry (CLAUDE.md). A fix release keeps them EQUAL
+    # to the base ref's; the runner checks the self-consistency half.
+    - registry_counts: { sources: "en + ru", adapters: "en", ru: 5, unchanged_from: "base ref" }
     - files_unchanged: ["tests/adapter-registry.test.mjs", "tests/scan-sources-endpoint.test.mjs"]
   trajectory:
     - must_run: ["npm run test:ci"]

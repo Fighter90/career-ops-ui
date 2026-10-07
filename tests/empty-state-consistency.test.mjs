@@ -63,7 +63,8 @@ test('no view/lib re-declares the .empty class properties inline', () => {
   // removed. A genuine layout override (width / border) is allowed and absent here.
   const REDUNDANT = [/\btextAlign\s*:/, /['"]text-align['"]\s*:/, /color:\s*'var\(--foggy\)'/, /padding:\s*'40px'/];
   for (const dir of SRC_DIRS) {
-    for (const f of readdirSync(dir).filter((n) => n.endsWith('.js'))) {
+    // Recursive: views/scan/* and views/config/* build `.empty` elements too.
+    for (const f of readdirSync(dir, { recursive: true }).filter((n) => n.endsWith('.js'))) {
       const src = readFileSync(resolve(dir, f), 'utf8');
       const re = /className:\s*['"]empty['"]/g;
       let m;

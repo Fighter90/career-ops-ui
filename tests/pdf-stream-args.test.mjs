@@ -10,8 +10,8 @@
  *      to a temp input.html (under output/) and an output.pdf.
  *   2. The input.html exists on disk after `start` and contains the
  *      rendered cv.md.
- *   3. The route inserts the format flag (`--format=a4` by default,
- *      `--format=letter` when `?format=letter`).
+ *   3. The route passes the format flag only when asked (`?format=letter`);
+ *      by default the profile's page_format decides (v1.241.0).
  *   4. The route reports a friendly error when cv.md is missing.
  *
  * We don't run the actual script (would require chromium). We parse
@@ -40,6 +40,9 @@ before(async () => {
   writeFileSync(resolve(dir, 'data', 'applications.md'), '');
   writeFileSync(resolve(dir, 'data', 'pipeline.md'), '# pipeline\n');
   writeFileSync(resolve(dir, 'modes', 'oferta.md'), 'oferta\n');
+  // A slow fake renderer keeps the stream (and its temp input HTML, removed on
+  // close) alive while a test reads the start frame and the HTML.
+  writeFileSync(resolve(dir, 'generate-pdf.mjs'), 'setTimeout(() => {}, 10000);\n');
   process.env.CAREER_OPS_ROOT = dir;
 
   const { createApp } = await import('../server/index.mjs');
@@ -102,17 +105,16 @@ async function readUntilStart(path) {
   return startPayload;
 }
 
-test('PDF stream: start event carries positional <input.html> <output.pdf> --format=a4', async () => {
+test('PDF stream: start event carries positional <input.html> <output.pdf> and no default --format', async () => {
   const start = await readUntilStart('/api/stream/pdf');
   assert.ok(start, 'expected a start event');
   assert.ok(!start._error, `unexpected error frame: ${JSON.stringify(start._error)}`);
   assert.equal(start.script, 'generate-pdf.mjs');
   assert.ok(Array.isArray(start.args), 'args must be an array');
-  assert.equal(start.args.length, 3);
-  const [input, output, format] = start.args;
-  assert.match(input,  /\/output\/cv-input-[\dT]+\.html$/);
+  assert.equal(start.args.length, 2);
+  const [input, output] = start.args;
+  assert.match(input,  /\/output\/cv-input-[\dT]+-[0-9a-f]{6}\.html$/);
   assert.match(output, /\/output\/cv-[\dT]+\.pdf$/);
-  assert.equal(format, '--format=a4');
   // Input HTML is on disk and contains the cv.md content.
   assert.ok(existsSync(input), `expected ${input} to exist`);
   const html = readFileSync(input, 'utf8');

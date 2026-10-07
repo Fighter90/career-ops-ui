@@ -182,7 +182,12 @@ const ATS_PROVIDERS = [
         /^([\w-]+)\.(wd[\w-]*)\.myworkdayjobs\.com\/(?:[a-z]{2}-[A-Z]{2}\/)?([^/?#]+)\/job\/(.+?)\/?$/
       );
       if (!m) return null;
-      const [, tenant, shard, site, jobPath] = m;
+      const [, tenant, shard, site, rawPath] = m;
+      // The apply flow lives UNDER the posting (`…/job/<path>/apply`,
+      // `…/apply/autofillWithResume`); the CXS API knows the posting path only,
+      // so the suffix made it 404 — read as an authoritative "expired".
+      const jobPath = rawPath.replace(/(?:^|\/)apply(?:\/.*)?$/i, '');
+      if (!jobPath) return null;
       return { tenant, shard, site, jobPath };
     },
     api: ({ tenant, shard, site, jobPath }) =>

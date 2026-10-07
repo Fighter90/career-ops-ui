@@ -1,3 +1,4 @@
+// TODO: split by concern (evaluate vs deep/interview-prep vs mode runner) — 400–800 LOC band.
 /**
  * LLM-bound routes: evaluate, deep research, generic modes, apply-helper,
  * and interview-prep archive.
@@ -18,7 +19,8 @@
  */
 import { readFileSync, writeFileSync, readdirSync, statSync, existsSync, mkdirSync, unlinkSync } from 'node:fs';
 import { PATHS, path as projPath } from '../paths.mjs';
-import { slugify, today } from '../parsers.mjs';
+import { today } from '../parsers.mjs';
+import { runActiveProvider } from '../llm-dispatch.mjs';
 import { runNodeScript } from '../runner.mjs';
 import { runAnthropic, hasAnthropicKey, hasGeminiKey } from '../anthropic.mjs';
 import { runGemini } from '../gemini.mjs';
@@ -53,7 +55,29 @@ import {
   buildModePrompt,
   buildApplyChecklist,
   resolveLocale,
+  deepReportStem,
 } from '../prompts.mjs';
+
+/** Remove a temp file; a missing file or a race is not an error. */
+function unlinkQuiet(file) {
+  try { unlinkSync(file); } catch { /* already gone */ }
+}
+
+// Deep-research briefs live in interview-prep/ next to the parent's own
+// reports (story-bank.md, <company>-<role>.md written by `apply`), so the web
+// UI lists and deletes only its own deep-<slug>.md files. Unicode letters are
+// allowed: deepReportStem keeps Яндекс as яндекс.
+const DEEP_NAME_RE = /^deep-[\p{L}\p{N}][\p{L}\p{N}-]{0,200}\.md$/u;
+export function isDeepReportName(name) {
+  return typeof name === 'string' && DEEP_NAME_RE.test(name);
+}
+
+/** A deep brief name that does not overwrite an existing file (`-2`, `-3`, …). */
+function freeDeepName(stem) {
+  let name = `${stem}.md`;
+  for (let n = 2; existsSync(projPath('interview-prep', name)); n++) name = `${stem}-${n}.md`;
+  return name;
+}
 
 // v1.39.0 (WS8.2) — honor LLM_PROVIDER. auto → the full order; claude →
 // Anthropic only; gemini → Gemini only; etc.
@@ -197,7 +221,8 @@ export function registerLlmRoutes(app) {
     // evaluations). REVIEW-A1 inlining: bundle cv + profile + _shared +
     // oferta so the model has the files the prompt references.
     if (_provGate().wantAnthropic && hasAnthropicKey()) {
-      const ctx = bundleProjectContext({ modeSlugs: ['_shared', 'oferta'] });
+      const ctxWarnings = [];
+      const ctx = bundleProjectContext({ modeSlugs: ['_shared', 'oferta'], warnings: ctxWarnings });
       const fullPrompt = ctx + promptText;
       // BF-3 — bail fast when the assembled prompt would exceed the
       // soft cap. Otherwise we'd burn a multi-second roundtrip + tokens
@@ -212,7 +237,7 @@ export function registerLlmRoutes(app) {
       if (r.error) return res.status(502).json({ mode: 'anthropic', prompt: promptText, error: r.error, saved });
       // v1.75.0 (#819) — flag malformed A–G / SCORE_SUMMARY shape as a non-fatal
       // warning so the user knows the report may be truncated/off-format.
-      const warnings = evaluationWarnings(r);
+      const warnings = [...ctxWarnings, ...evaluationWarnings(r)];
       recordUsage('anthropic', r.usage);
       return res.json({ mode: 'anthropic', prompt: promptText, markdown: stripScoreSummary(r.markdown), usage: r.usage, saved, ...(warnings.length ? { warnings } : {}) });
     }
@@ -220,18 +245,26 @@ export function registerLlmRoutes(app) {
     if (_provGate().wantGemini && hasGeminiKey()) {
       // Use the existing gemini-eval.mjs pipe interface — it reads the
       // CV from disk itself (it's a standalone Node script), so no
-      // bundleProjectContext needed here.
+      // bundleProjectContext needed here. --no-save: the script otherwise
+      // writes its own report, tracker row and merge — side effects the user
+      // asked for only with `save`. The temp JD file is always removed.
       const tmpFile = projPath('output', `web-jd-${Date.now()}.txt`);
       mkdirSync(PATHS.outputDir, { recursive: true });
       writeFileSync(tmpFile, jd);
-      const result = await runNodeScript('gemini-eval.mjs', ['--file', tmpFile], { timeoutMs: 120_000 });
-      return res.json({ mode: 'gemini', saved, ...result });
+      try {
+        const args = ['--file', tmpFile, ...(save ? [] : ['--no-save'])];
+        const result = await runNodeScript('gemini-eval.mjs', args, { timeoutMs: 120_000 });
+        return res.json({ mode: 'gemini', saved, ...result });
+      } finally {
+        unlinkQuiet(tmpFile);
+      }
     }
 
     // v1.55.0 — OpenAI / Qwen tail (same inlined context as Anthropic).
     const tp = _tailProvider();
     if (tp) {
-      const ctx = bundleProjectContext({ modeSlugs: ['_shared', 'oferta'] });
+      const ctxWarnings = [];
+      const ctx = bundleProjectContext({ modeSlugs: ['_shared', 'oferta'], warnings: ctxWarnings });
       const fullPrompt = ctx + promptText;
       if (fullPrompt.length > PROMPT_SIZE_SOFT_CAP) {
         return res.status(413).json({
@@ -242,7 +275,7 @@ export function registerLlmRoutes(app) {
       const r = await tp.run(fullPrompt, { maxTokens: EVAL_MAX_TOKENS });
       if (r.error) return res.status(502).json({ mode: tp.mode, prompt: promptText, error: r.error, saved });
       // v1.75.0 (#819) — same shape guard for the OpenAI/Qwen/OpenRouter/GitHub tail.
-      const warnings = evaluationWarnings(r);
+      const warnings = [...ctxWarnings, ...evaluationWarnings(r)];
       recordUsage(tp.mode, r.usage);
       return res.json({ mode: tp.mode, prompt: promptText, markdown: stripScoreSummary(r.markdown), usage: r.usage, saved, ...(warnings.length ? { warnings } : {}) });
     }
@@ -266,12 +299,15 @@ export function registerLlmRoutes(app) {
     mkdirSync(PATHS.outputDir, { recursive: true });
     writeFileSync(tmp, SMOKE_JD);
     try {
-      const result = await runNodeScript('gemini-eval.mjs', ['--file', tmp], { timeoutMs: 30_000 });
+      // A smoke test must not file a report + tracker row for the fixture JD.
+      const result = await runNodeScript('gemini-eval.mjs', ['--file', tmp, '--no-save'], { timeoutMs: 30_000 });
       const sample = (result.stdout || '').slice(0, 200);
       const ok = result.code === 0 && sample.length > 0;
       res.json({ ok, code: result.code, sampleLength: (result.stdout || '').length, sample });
     } catch (e) {
       res.status(500).json({ ok: false, error: e.message });
+    } finally {
+      unlinkQuiet(tmp);
     }
   });
 
@@ -295,7 +331,10 @@ export function registerLlmRoutes(app) {
   // ─── /api/deep ──────────────────────────────────────────────────────
   app.post('/api/deep', llmRateLimit, async (req, res) => {
     const { company, role, run } = req.body || {};
-    if (!company) return res.status(400).json({ error: 'company required' });
+    // Typed before use: a non-string company/role used to throw inside the
+    // prompt builder (R-03 — a malformed body is a 4xx, never a 500).
+    if (typeof company !== 'string' || !company.trim()) return res.status(400).json({ error: 'company required' });
+    if (role != null && typeof role !== 'string') return res.status(400).json({ error: 'role must be a string' });
     const lang = resolveLocale(req);
     // Manual copy keeps Claude Code tool names (WebFetch/WebSearch). Live run
     // must not — Gemini otherwise returns MALFORMED_FUNCTION_CALL (no tools).
@@ -305,69 +344,34 @@ export function registerLlmRoutes(app) {
     // When run:true AND a key is configured, execute server-side and
     // return the rendered Markdown so the user sees real research output
     // without leaving the browser. Persist every successful run into
-    // interview-prep/ for future browsing.
+    // interview-prep/deep-<slug>.md for future browsing.
     if (run) {
-      let result = null;
-      let mode = null;
       const prompt = livePrompt;
-      if (_provGate().wantAnthropic && hasAnthropicKey()) {
-        mode = 'anthropic';
-        // REVIEW-A1 — Anthropic has no filesystem; inline cv/profile/mode
-        // content so "Read these files first" actually has files to read.
-        const ctx = bundleProjectContext({ modeSlugs: ['_shared', 'deep'], headless: true });
-        const fullPrompt = ctx + prompt;
-        if (fullPrompt.length > PROMPT_SIZE_SOFT_CAP) {
-          return res.status(413).json({
-            error: 'prompt too large',
-            details: [`assembled prompt is ${fullPrompt.length} bytes; soft cap is ${PROMPT_SIZE_SOFT_CAP}.`],
-          });
-        }
-        const r = await runAnthropic(fullPrompt, { maxTokens: 8192 });
-        if (r.error) return res.status(502).json({ mode, prompt, error: r.error });
-        result = { markdown: r.markdown, code: 0 };
-      } else if (_provGate().wantGemini && hasGeminiKey()) {
-        // v1.73.0 — generic Gemini client with the real deep-research prompt
-        // (cv.md + profile.yml + modes/deep.md inlined), NOT oferta-only
-        // gemini-eval.mjs. runGemini already pipes through cleanLlmMarkdown.
-        mode = 'gemini';
-        const ctx = bundleProjectContext({ modeSlugs: ['_shared', 'deep'], headless: true });
-        const fullPrompt = ctx + prompt;
-        if (fullPrompt.length > PROMPT_SIZE_SOFT_CAP) {
-          return res.status(413).json({
-            error: 'prompt too large',
-            details: [`assembled prompt is ${fullPrompt.length} bytes; soft cap is ${PROMPT_SIZE_SOFT_CAP}.`],
-          });
-        }
-        const r = await runGemini(fullPrompt, { maxTokens: 8192 });
-        if (r.error) return res.status(502).json({ mode, prompt, error: r.error });
-        result = { markdown: r.markdown, code: 0 };
-      } else {
-        // v1.55.0 — OpenAI / Qwen tail (in-process, inline context).
-        const tp = _tailProvider();
-        if (tp) {
-          mode = tp.mode;
-          const ctx = bundleProjectContext({ modeSlugs: ['_shared', 'deep'], headless: true });
-          const fullPrompt = ctx + prompt;
-          if (fullPrompt.length > PROMPT_SIZE_SOFT_CAP) {
-            return res.status(413).json({
-              error: 'prompt too large',
-              details: [`assembled prompt is ${fullPrompt.length} bytes; soft cap is ${PROMPT_SIZE_SOFT_CAP}.`],
-            });
-          }
-          const r = await tp.run(fullPrompt, { maxTokens: 8192 });
-          if (r.error) return res.status(502).json({ mode, prompt, error: r.error });
-          result = { markdown: r.markdown, code: 0 };
-        }
+      // REVIEW-A1 — the API providers have no filesystem; inline cv/profile/mode
+      // content so "Read these files first" actually has files to read. The
+      // shared cascade (llm-dispatch) honours LLM_PROVIDER, covers every
+      // provider and records usage.
+      const ctxWarnings = [];
+      const ctx = bundleProjectContext({ modeSlugs: ['_shared', 'deep'], headless: true, warnings: ctxWarnings });
+      const r = await runActiveProvider(ctx + prompt, { maxTokens: 8192, sizeCap: PROMPT_SIZE_SOFT_CAP });
+      if (r.mode === 'too-large') {
+        return res.status(413).json({
+          error: 'prompt too large',
+          details: [`assembled prompt is ${r.size} bytes; soft cap is ${r.cap}.`],
+        });
       }
-      if (result) {
+      if (r.mode !== 'manual') {
+        if (r.error) return res.status(502).json({ mode: r.mode, prompt, error: r.error });
+        // A brief cut off at the token limit is still saved (it is useful),
+        // but the user is told it is incomplete.
+        const warnings = [...ctxWarnings, ...(r.truncated ? ['brief cut off at the output-token limit'] : [])];
         let saved = null;
-        if (result.markdown) {
-          const slug = `${slugify(company)}-${role ? slugify(role) : 'general'}.md`;
+        if (r.markdown) {
           mkdirSync(PATHS.interviewPrepDir, { recursive: true });
-          writeFileSync(projPath('interview-prep', slug), result.markdown);
-          saved = slug;
+          saved = freeDeepName(deepReportStem(company, role));
+          writeFileSync(projPath('interview-prep', saved), r.markdown);
         }
-        return res.json({ mode, prompt, markdown: result.markdown, saved, code: result.code });
+        return res.json({ mode: r.mode, prompt, markdown: r.markdown, saved, code: 0, ...(warnings.length ? { warnings } : {}) });
       }
     }
 
@@ -384,7 +388,7 @@ export function registerLlmRoutes(app) {
   app.get('/api/interview-prep', (_req, res) => {
     if (!existsSync(PATHS.interviewPrepDir)) return res.json({ files: [] });
     const files = readdirSync(PATHS.interviewPrepDir)
-      .filter((f) => f.endsWith('.md'))
+      .filter(isDeepReportName)
       .map((f) => {
         const stat = statSync(projPath('interview-prep', f));
         return { name: f, size: stat.size, mtime: stat.mtime };
@@ -394,7 +398,9 @@ export function registerLlmRoutes(app) {
   });
 
   app.get('/api/interview-prep/:name', (req, res) => {
-    const safe = sanitizePathName(req.params.name);
+    // A deep brief may carry Unicode letters; any other name is read through
+    // the ASCII sanitizer (legacy briefs saved before the deep- namespace).
+    const safe = isDeepReportName(req.params.name) ? req.params.name : sanitizePathName(req.params.name);
     if (!safe || !safe.endsWith('.md')) return res.status(400).json({ error: 'invalid name' });
     const file = projPath('interview-prep', safe);
     if (!existsSync(file)) return res.status(404).json({ error: 'not found' });
@@ -405,8 +411,10 @@ export function registerLlmRoutes(app) {
   });
 
   app.delete('/api/interview-prep/:name', (req, res) => {
-    const safe = sanitizePathName(req.params.name);
-    if (!safe || !safe.endsWith('.md')) return res.status(400).json({ error: 'invalid name' });
+    // Only the web UI's own deep-*.md briefs: the parent's interview-prep
+    // reports and story-bank.md are not this page's to delete.
+    const safe = req.params.name;
+    if (!isDeepReportName(safe)) return res.status(400).json({ error: 'invalid name' });
     const file = projPath('interview-prep', safe);
     if (!existsSync(file)) return res.status(404).json({ error: 'not found' });
     unlinkSync(file);

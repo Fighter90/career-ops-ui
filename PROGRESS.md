@@ -8,56 +8,21 @@ Release history belongs in [CHANGELOG.md](CHANGELOG.md), decisions in
 [docs/adr/](docs/adr/), vocabulary in [CONTEXT.md](CONTEXT.md). Anything already
 recoverable from those does **not** belong here.
 
-_Last updated: 2026-10-06 · v1.240.0 — parent parity @ `62905981` (VERSION 1.35.0), checklist pipeline (#380); code + docs done, release in flight_
+_Last updated: 2026-10-07 · v1.241.0 — review hardening + job map (#381); release in flight_
 
 ---
 
 ## Current state
 
-**v1.240.0 — parent parity with career-ops `main` @ `62905981`.** Counts **109** sources
-(104 EN + 5 RU) / **104** adapters; tests **4056**, Playwright 116/116. Six new sources
-(adp-workforcenow, gupy, jazzhr, startup-jobs, taleo, ultipro), fixes in eight providers, and
-@bullitt186's checklist-format `pipeline.md` support (#380). Parent fork behind upstream by **0**.
-Deferred: Gem `isoCountry` (alpha-3 table), SmartRecruiters `requisitionId`/`language`, trusted-proxy egress.
-**Queued by the user:** `#/scan` redesign (title cell crams company/boost/fit chip/score on one line),
-Tamil locale (parent has `README.ta.md`; web-ui has 17 locales), and acting on the full code review.
+**v1.241.0 — hardening from the 2026-10-06 code review** (28 read-only review agents, ~190 verified
+findings, fixed by 6 fix-and-cover agents A/B/C/D/CI/T). Tests **4404**, browser **118**, server coverage
+baseline line 96.7 % / branch 86.3 % (`scripts/coverage-baseline.json`, ratchet). Ships the job map (#381).
+v1.240.0 (parent parity @ `62905981`, 109 sources) is released and deployed.
 
-
-**v1.239.0 — parent parity with Fighter90/career-ops @ `b39931e`.** Counts **103** sources
-(98 EN + 5 RU) / **98** adapters; tests **3774** (3771 pass + 3 skipped). Five new sources
-(applitrack, neogov, occ, redrover, schoolspring) and three mirrored fixes (greenhouse embed
-`?for=` slug, workday myworkdaysite, report links with parentheses). Fork CodeQL on `b39931e`:
-js 0 / actions 0 / go 0; ADR-0002 divergences intact.
-
-Known follow-ups (not in this release):
-- the reports route's `sanitizePathName` still strips parentheses, so a report whose name holds
-  them links correctly but cannot be opened by name;
-- other `.myworkdayjobs.com` checks (liveness-api, tracker/apply views, job facets, trust
-  validator) do not yet recognise `myworkdaysite.com`.
-
-**v1.238.0 — parent parity with career-ops `main` @ `993085ce`** (182 commits since
-`de2224a9`). Counts **98** sources (93 EN + 5 RU) / **93** adapters; tests **3481**
-(3478 pass + 3 skipped), Playwright 116/116, e2e smoke + 23/23 comprehensive.
-Four new sources (eploy, hiringroom, peoplesoft, prevueaps), ten mirrored provider
-fixes, the title-fit chip, and one scanner-wide security fix found in this release's
-review: the DNS-rebinding guard in `http-json.mjs` never ran on a real scan (see
-Known issues for the shape).
-
-**Parent:** fork `origin/main` at `993085ce`, behind `upstream/main` by **0** — it
-already contained upstream `2b9fe7ea`. All four ADR-0002 divergences verified intact
-(`p{L}`×4, `providers/telegram.mjs`, `hermes` in `clis.ts`, `vpFixtureEnv`×9).
-
-**v1.238.1 — stability patch from the first live regression.** The remote QA found the prod viewer
-dying with `FATAL ERROR: JavaScript heap out of memory` (21:03 and 21:16 UTC, core dump, systemd restart,
-208 Caddy 502s in 24 h): a UI-started scan overlapped the hourly `career-ops-scan` timer, and every
-`/api/stream/scan` ran the full scanner in-process with no guard on a 1 GB box (V8 default heap ~240 MB).
-Fix: single-flight scan (`SCAN_BUSY`), and `deploy.yml` sets a `NODE_OPTIONS=--max-old-space-size=448`
-drop-in. Measured locally: `/api/scan-results` +56 MB heap for 8 concurrent requests on prod-sized data,
-`reposts` +15 MB — not the cause alone.
-
-**Remote QA verdicts (2026-09-27, before the fix is deployed):** cvstart.org 170 visits / 85 links — no
-findings; README ×17 + wiki — no broken links; prod UI 17 × 30 routes — only the 502 / half-loaded pages
-caused by the crashes above; locally the same script finds nothing in ~4 min.
+Remaining plan (`docs/sdd/PLAN.md`): v1.242.0 sources correctness, v1.243.0 client fixes,
+v1.244.0 `#/scan` redesign, v1.245.0 Tamil locale, v1.246.0 upstream features, plus the
+newest parent/upstream delta (research in progress). All web-ui branches are merged into
+`main` and deleted after each release (maintainer's rule, 2026-10-07).
 
 ## Next step
 

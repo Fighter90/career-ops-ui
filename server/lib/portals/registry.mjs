@@ -312,12 +312,23 @@ export const ALL_ADAPTERS = [
 /**
  * Find the adapter that handles a given company entry. Returns
  * `{ adapter, endpoint }` or `null` when no adapter matches.
+ *
+ * An adapter whose matches()/buildEndpoint() THROWS (a misconfigured entry the
+ * source-level guard refuses) counts as no match: the loop moves on to the next
+ * adapter, and `onError(adapter, error)` lets the caller record it against that
+ * one company. Without the catch a single bad entry aborted the whole scan.
+ * A non-string endpoint is no endpoint, per the `string | null` contract.
+ * @param {object} company
+ * @param {(adapter: object, error: Error) => void} [onError]
  */
-export function resolveAdapter(company) {
+export function resolveAdapter(company, onError) {
   for (const a of ALL_ADAPTERS) {
-    if (a.matches(company)) {
+    try {
+      if (!a.matches(company)) continue;
       const endpoint = a.buildEndpoint(company);
-      if (endpoint) return { adapter: a, endpoint };
+      if (typeof endpoint === 'string' && endpoint) return { adapter: a, endpoint };
+    } catch (e) {
+      if (typeof onError === 'function') onError(a, e);
     }
   }
   return null;

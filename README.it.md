@@ -7,19 +7,19 @@
 
 _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-4056%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-4404%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
-[![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
+[![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.240.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.240.0)
+[![release](https://img.shields.io/badge/release-v1.241.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.241.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Ultima release — v1.240.0** — **Parità con il genitore career-ops 1.35.0: sei nuove fonti (ADP Workforce Now, Gupy, JazzHR, Startup Jobs, Taleo, UKG Pro → 109), correzioni rispecchiate in otto provider esistenti e il formato checklist di `pipeline.md` del genitore** — contributo di **@bullitt186**: la UI leggeva una pipeline di questo tipo come 0 in sospeso e aggiungeva i nuovi URL dove il genitore non guarda mai; ora legge e scrive righe `- [ ]`. Ashby, Breezy e Recruitee integrano il paese nella località, così un filtro smette di scartare i ruoli remoti con sede principale nel Regno Unito, e una pagina di verifica servita con HTTP 200 fallisce in modo esplicito invece di passare per un board vuoto. **4056 test.**
+> **🆕 Ultima release — v1.241.0** — **Consolidamento da una revisione del codice con 28 agenti e una mappa delle offerte di @bullitt186.** Una richiesta malformata non può più fermare il server, una scansione interrotta non cancella più gli ultimi risultati, le valutazioni ora vedono l'intero file del metodo invece dei primi 16 KB, il server rifiuta gli host da DNS rebinding e le scritture cross-site, e i reindirizzamenti vengono ricontrollati per destinazioni private. `#/map` mostra le tue offerte su OpenStreetMap. **4404 test · 118 browser.**
 >
-> **Precedente — v1.239.4** — **Patch:** le valutazioni con l'IA lunghe non vengono più tagliate prima del riepilogo del punteggio (i report in coreano e cinese raggiungevano il limite di 8192 token); una risposta tagliata ora viene indicata come tale. **103 fonti · 3782 test · 116 browser.**
+> **Precedente — v1.240.0** — **Parità con il genitore career-ops 1.35.0: sei nuove fonti (ADP Workforce Now, Gupy, JazzHR, Startup Jobs, Taleo, UKG Pro → 109), correzioni rispecchiate in otto provider esistenti e il formato checklist di `pipeline.md` del genitore** — contributo di **@bullitt186**: la UI leggeva una pipeline di questo tipo come 0 in sospeso e aggiungeva i nuovi URL dove il genitore non guarda mai; ora legge e scrive righe `- [ ]`. Ashby, Breezy e Recruitee integrano il paese nella località, così un filtro smette di scartare i ruoli remoti con sede principale nel Regno Unito, e una pagina di verifica servita con HTTP 200 fallisce in modo esplicito invece di passare per un board vuoto. **4056 test.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

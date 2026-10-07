@@ -4,7 +4,9 @@
  *
  * Pipeline per file extension:
  *   .md / .markdown / .txt           → keep as-is (decode UTF-8)
- *   .html / .htm / .docx / .doc / .odt / .rtf → pandoc → markdown
+ *   .html / .htm / .docx / .odt / .rtf → pandoc --sandbox → markdown
+ *   (.doc — the legacy binary Word format — is NOT accepted: pandoc has no
+ *   reader for it, so it could only ever fail; the hint says to save as .docx)
  *   .pdf                             → pdftotext -layout → wrap as markdown
  *
  * Each external converter is invoked with the upload buffered to a
@@ -21,7 +23,7 @@ import { mkdtempSync, rmSync, writeFileSync, readFileSync, existsSync } from 'no
 import { tmpdir } from 'node:os';
 import { join, extname } from 'node:path';
 
-const PANDOC_FORMATS = new Set(['html', 'htm', 'docx', 'doc', 'odt', 'rtf']);
+const PANDOC_FORMATS = new Set(['html', 'htm', 'docx', 'odt', 'rtf']);
 const PASSTHROUGH_FORMATS = new Set(['md', 'markdown', 'txt']);
 const SUPPORTED = new Set([...PANDOC_FORMATS, ...PASSTHROUGH_FORMATS, 'pdf']);
 
@@ -35,8 +37,10 @@ export function describeSupportedFormats() {
 
 function runCmd(cmd, args, { input, timeoutMs = 30_000 } = {}) {
   return new Promise((resolve) => {
-    let stdout = '';
-    let stderr = '';
+    // Collect raw bytes and decode once at the end: decoding each chunk on its
+    // own turned a multibyte character split across two chunks into U+FFFD.
+    const out = [];
+    const err = [];
     let timedOut = false;
     let child;
     try {
@@ -44,19 +48,20 @@ function runCmd(cmd, args, { input, timeoutMs = 30_000 } = {}) {
     } catch (e) {
       return resolve({ code: -1, stdout: '', stderr: e.message, missing: e.code === 'ENOENT' });
     }
+    const text = (chunks) => Buffer.concat(chunks).toString('utf8');
     const timer = setTimeout(() => {
       timedOut = true;
       try { child.kill('SIGKILL'); } catch {}
     }, timeoutMs);
-    child.stdout.on('data', (b) => { stdout += b.toString('utf8'); });
-    child.stderr.on('data', (b) => { stderr += b.toString('utf8'); });
+    child.stdout.on('data', (b) => { out.push(b); });
+    child.stderr.on('data', (b) => { err.push(b); });
     child.on('error', (e) => {
       clearTimeout(timer);
-      resolve({ code: -1, stdout, stderr: e.message, missing: e.code === 'ENOENT' });
+      resolve({ code: -1, stdout: text(out), stderr: e.message, missing: e.code === 'ENOENT' });
     });
     child.on('close', (code) => {
       clearTimeout(timer);
-      resolve({ code, stdout, stderr, timedOut });
+      resolve({ code, stdout: text(out), stderr: text(err), timedOut });
     });
     if (input) {
       child.stdin.end(input);
@@ -64,6 +69,22 @@ function runCmd(cmd, args, { input, timeoutMs = 30_000 } = {}) {
       child.stdin.end();
     }
   });
+}
+
+/**
+ * A converter that exits 0 but extracts nothing — a scanned PDF with no text
+ * layer, an empty document. Reporting ok:true here dropped a blank CV into the
+ * editor as if the import had worked.
+ */
+function noText(ext, converter) {
+  return {
+    ok: false,
+    sourceFormat: ext,
+    error: `no text could be extracted (${converter})`,
+    hint: ext === 'pdf'
+      ? 'The PDF has no text layer (a scan or an image). Export it from the original document, or run OCR first.'
+      : 'The document appears to be empty.',
+  };
 }
 
 /**
@@ -111,11 +132,12 @@ export async function importDocumentToMarkdown(buffer, filename) {
 
   const ext = classifyExtension(filename);
   if (!SUPPORTED.has(ext)) {
+    const supported = `Supported: ${describeSupportedFormats().map((e) => '.' + e).join(', ')}`;
     return {
       ok: false,
       sourceFormat: ext,
       error: `unsupported format ".${ext}"`,
-      hint: `Supported: ${describeSupportedFormats().map((e) => '.' + e).join(', ')}`,
+      hint: ext === 'doc' ? `Save the file as .docx and upload that. ${supported}` : supported,
     };
   }
 
@@ -158,6 +180,7 @@ export async function importDocumentToMarkdown(buffer, filename) {
       // Wrap the extracted text — preserve line breaks but collapse
       // runs of 3+ blank lines so the editor doesn't drown in whitespace.
       const md = r.stdout.replace(/\n{3,}/g, '\n\n').trim() + '\n';
+      if (!md.trim()) return noText(ext, 'pdftotext');
       return {
         ok: true,
         markdown: md,
@@ -170,12 +193,16 @@ export async function importDocumentToMarkdown(buffer, filename) {
     // Pandoc branch — covers docx, doc, odt, rtf, html.
     const inFile = join(tmp, 'in.' + ext);
     writeFileSync(inFile, buffer);
-    const r = await runCmd('pandoc', [
-      '-f', ext === 'htm' ? 'html' : ext,
-      '-t', 'gfm-raw_html',
-      '--wrap=preserve',
-      inFile,
-    ]);
+    // --sandbox: pandoc's readers (HTML in particular) otherwise fetch
+    // `<iframe src>` / remote images themselves — a server-side request to any
+    // URL in the upload, past every SSRF guard we have. The flag exists since
+    // pandoc 2.15; an older pandoc rejects it, and is retried without it —
+    // those versions also predate the fetching iframe reader.
+    const baseArgs = ['-f', ext === 'htm' ? 'html' : ext, '-t', 'gfm-raw_html', '--wrap=preserve'];
+    let r = await runCmd('pandoc', ['--sandbox', ...baseArgs, inFile]);
+    if (r.code !== 0 && !r.missing && /unknown option.*--sandbox/i.test(r.stderr)) {
+      r = await runCmd('pandoc', [...baseArgs, inFile]);
+    }
     if (r.missing) {
       return {
         ok: false,
@@ -193,6 +220,7 @@ export async function importDocumentToMarkdown(buffer, filename) {
       };
     }
     const md = r.stdout.trim() + '\n';
+    if (!md.trim()) return noText(ext, 'pandoc');
     return {
       ok: true,
       markdown: md,

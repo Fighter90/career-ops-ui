@@ -35,6 +35,9 @@ jobs:
   publish:
     name: npm publish → npm.pkg.github.com
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
     steps:
       - uses: actions/checkout@v5
 
@@ -82,7 +85,10 @@ jobs:
           # registry), not a failure, so don't red-alarm the run.
           out=$(npm publish 2>&1) && { echo "$out"; exit 0; }
           echo "$out"
-          if echo "$out" | grep -qiE 'EPUBLISHCONFLICT|cannot publish over|409|already exists|previously published'; then
+          # Only npm's own error lines decide: a bare '409' anywhere in the log
+          # (a test name, a tarball size, a file listing) is not a conflict.
+          if printf '%s\n' "$out" | grep -E '^npm (error|ERR!)' \
+               | grep -iE 'EPUBLISHCONFLICT|E409|cannot publish over|409 Conflict|already exists|previously published' >/dev/null; then
             echo "::notice::${name}@${ver} was published by a concurrent run (E409) — treating as success."
             exit 0
           fi

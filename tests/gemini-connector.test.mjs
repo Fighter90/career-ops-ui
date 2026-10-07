@@ -3,11 +3,24 @@
  * (server/lib/gemini.mjs). The provider-matrix test exercises the happy path
  * through the route; this hits every other branch (no key, API error, empty /
  * blocked completion, timeout) via the `fetchImpl` + `apiKey` injection points,
- * with no network and no env mutation.
+ * with no network. gemini.mjs reads the effective env (process.env ∨ the
+ * root `.env`) through paths.mjs, so it is imported only after
+ * CAREER_OPS_ROOT points at a throwaway root — never the real parent .env.
  */
-import { test } from 'node:test';
+import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { runGemini, hasGeminiKey } from '../server/lib/gemini.mjs';
+import { mkdtempSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+
+let runGemini; let hasGeminiKey;
+before(async () => {
+  const root = mkdtempSync(join(tmpdir(), 'gemini-conn-'));
+  writeFileSync(join(root, 'cv.md'), '# CV\n');
+  process.env.CAREER_OPS_ROOT = root;
+  ({ runGemini, hasGeminiKey } = await import('../server/lib/gemini.mjs'));
+});
+after(() => { delete process.env.CAREER_OPS_ROOT; });
 
 const KEY = 'AIzaFakeGeminiKey0123456789abcdefghij';
 const okBody = (text) => ({

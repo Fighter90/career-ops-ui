@@ -7,19 +7,19 @@
 
 _Interface non officielle — sans affiliation ni approbation de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-4056%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-4404%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
-[![playwright](https://img.shields.io/badge/playwright-101%2F101-brightgreen)](#tests)
+[![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.240.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.240.0)
+[![release](https://img.shields.io/badge/release-v1.241.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.241.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Dernière version — v1.240.0** — **Parité avec le parent career-ops 1.35.0 : six nouvelles sources (ADP Workforce Now, Gupy, JazzHR, Startup Jobs, Taleo, UKG Pro → 109), correctifs répliqués dans huit fournisseurs existants, et le format `pipeline.md` en liste de contrôle du parent** — contribué par **@bullitt186** : l'interface lisait un tel pipeline comme 0 en attente et ajoutait les nouvelles URL là où le parent ne regarde jamais ; elle lit et écrit désormais des lignes `- [ ]`. Ashby, Breezy et Recruitee intègrent le pays à la localisation, de sorte qu'un filtre cesse d'écarter les postes à distance principalement britanniques, et une page de défi servie en HTTP 200 échoue explicitement au lieu de passer pour un tableau vide. **4056 tests.**
+> **🆕 Dernière version — v1.241.0** — **Durcissement issu d'une revue de code par 28 agents, et une carte des offres par **@bullitt186**.** Une requête malformée ne peut plus arrêter le serveur, un scan interrompu n'efface plus les derniers résultats, les évaluations voient désormais tout le fichier de méthode au lieu des seuls 16 premiers Ko, le serveur refuse les hôtes de DNS rebinding et les écritures inter-sites, et les redirections sont revérifiées contre les cibles privées. `#/map` affiche vos offres sur OpenStreetMap. **4404 tests · 118 navigateur.**
 >
-> **Précédente — v1.239.4** — **Correctif :** les longues évaluations par IA ne sont plus coupées avant le résumé de score (les rapports en coréen et en chinois atteignaient la limite de 8192 jetons) ; une réponse coupée est désormais signalée comme telle. **103 sources · 3782 tests · 116 navigateur.**
+> **Précédente — v1.240.0** — **Parité avec le parent career-ops 1.35.0 : six nouvelles sources (ADP Workforce Now, Gupy, JazzHR, Startup Jobs, Taleo, UKG Pro → 109), correctifs répliqués dans huit fournisseurs existants, et le format `pipeline.md` en liste de contrôle du parent** — contribué par **@bullitt186** : l'interface lisait un tel pipeline comme 0 en attente et ajoutait les nouvelles URL là où le parent ne regarde jamais ; elle lit et écrit désormais des lignes `- [ ]`. Ashby, Breezy et Recruitee intègrent le pays à la localisation, de sorte qu'un filtre cesse d'écarter les postes à distance principalement britanniques, et une page de défi servie en HTTP 200 échoue explicitement au lieu de passer pour un tableau vide. **4056 tests.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

@@ -48,24 +48,26 @@ function openSse(res) {
  * `/api/stream/scan?source=` route uses this once for ats / regional,
  * twice for both. (v1.18.0 retired the legacy scan-{en,ru} aliases.)
  */
-async function driveOne({ res, send, runner, label, query, final = true }) {
+async function driveOne({ send, runner, label, query, signal, final = true }) {
+  // One AbortController per REQUEST (owned by the route): a per-phase
+  // controller attached its close listener after `close` had already fired
+  // for phase 2, so a disconnect during phase 1 never aborted phase 2.
+  if (signal.aborted) return { ok: false, aborted: true };
   send('start', {
     script: label,
     writeFiles: query.dryRun !== '1',
     companyName: query.company ? String(query.company) : undefined,
   });
-  const ctrl = new AbortController();
-  let aborted = false;
-  res.on('close', () => { aborted = true; ctrl.abort(); });
+  const isAborted = () => signal.aborted;
   try {
     const result = await runner({
       writeFiles: query.dryRun !== '1',
       companyName: query.company ? String(query.company) : undefined,
       // v1.80.0 — optional per-source cap (EN scanner; ru-scanner ignores it).
       maxPerSource: query.maxPerSource ? Number(query.maxPerSource) : 0,
-      signal: ctrl.signal,
-      onLog: (stream, line) => { if (!aborted) send('log', { stream, line }); },
-      onProgress: (done, total) => { if (!aborted) send('progress', { done, total }); },
+      signal,
+      onLog: (stream, line) => { if (!isAborted()) send('log', { stream, line }); },
+      onProgress: (done, total) => { if (!isAborted()) send('progress', { done, total }); },
     });
     // v1.29.2 — `final` lets the consumer know whether MORE phases follow.
     // The SSE client in public/js/api.js auto-closes the EventSource on
@@ -73,13 +75,17 @@ async function driveOne({ res, send, runner, label, query, final = true }) {
     // the FIRST `done` of `source=both`, terminating the stream before the
     // regional phase could fire — that's the user-reported bug ("ATS
     // scanned but no Russian sites").
-    if (!aborted) send('done', { code: 0, counts: result.counts, errors: result.errors.length, final });
+    if (isAborted()) return { ok: false, aborted: true };
+    send('done', { code: 0, counts: result.counts, errors: result.errors.length, final });
     return { ok: true, result };
   } catch (err) {
-    if (!aborted) send('error', { message: err && err.message });
+    if (!isAborted()) send('error', { message: err && err.message });
     return { ok: false };
   }
 }
+
+/** Test hook: the scanner functions the route drives (swap in stubs). */
+export const __scanRunners = { en: runEnScan, ru: runRuScan };
 
 // One scan at a time per process. Each /api/stream/scan request runs the full
 // scanner in-process; two at once (the hourly timer plus a click, or two tabs)
@@ -113,17 +119,22 @@ export function registerScanRoutes(app) {
       return res.end();
     }
     activeScan = { startedAt: new Date().toISOString(), source };
+    const ctrl = new AbortController();
+    res.on('close', () => ctrl.abort());
+    const signal = ctrl.signal;
     try {
     if (source === 'ats') {
-      await driveOne({ res, send, runner: runEnScan, label: 'en-scanner', query: req.query });
+      await driveOne({ send, runner: __scanRunners.en, label: 'en-scanner', query: req.query, signal });
     } else if (source === 'regional') {
-      await driveOne({ res, send, runner: runRuScan, label: 'ru-scanner', query: req.query });
+      await driveOne({ send, runner: __scanRunners.ru, label: 'ru-scanner', query: req.query, signal });
     } else if (source === 'both' || source === '') {
       // v1.29.2 — first phase's `done` carries `final: false` so the SSE
       // client keeps the EventSource open for the regional phase.
-      const a = await driveOne({ res, send, runner: runEnScan, label: 'en-scanner', query: req.query, final: false });
-      if (a.ok && !res.writableEnded) {
-        await driveOne({ res, send, runner: runRuScan, label: 'ru-scanner', query: req.query, final: true });
+      const a = await driveOne({ send, runner: __scanRunners.en, label: 'en-scanner', query: req.query, signal, final: false });
+      // Stop / disconnect during the ATS phase must not start the regional
+      // one (it would write files and hold the slot -> SCAN_BUSY).
+      if (a.ok && !signal.aborted && !res.destroyed && !res.writableEnded) {
+        await driveOne({ send, runner: __scanRunners.ru, label: 'ru-scanner', query: req.query, signal, final: true });
       }
     } else {
       send('error', { message: `unknown source "${source}" (expected: ats | regional | both)` });

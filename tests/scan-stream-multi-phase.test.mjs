@@ -32,6 +32,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 
 let server;
 let baseUrl;
+const offlineCalls = [];
 
 before(async () => {
   const dir = mkdtempSync(resolve(tmpdir(), 'scan-multiphase-'));
@@ -50,6 +51,16 @@ before(async () => {
   writeFileSync(resolve(dir, 'modes', 'oferta.md'), 'x\n');
   process.env.CAREER_OPS_ROOT = dir;
   const { createApp } = await import('../server/index.mjs');
+  // CI isolation: the regional phase queries hh / habr. Drive the REAL
+  // scanners (the banner + phase contract is what is under test) but with an
+  // offline fetchImpl, so no request leaves the machine — each source just
+  // records a failure and the phase still completes with `done`.
+  const { __scanRunners } = await import('../server/lib/routes/scan.mjs');
+  const offlineFetch = async (u) => { offlineCalls.push(String(u)); throw new Error('offline (test stub)'); };
+  const realEn = __scanRunners.en;
+  const realRu = __scanRunners.ru;
+  __scanRunners.en = (opts) => realEn({ ...opts, fetchImpl: offlineFetch });
+  __scanRunners.ru = (opts) => realRu({ ...opts, fetchImpl: offlineFetch });
   const app = createApp();
   await new Promise((r) => {
     server = app.listen(0, '127.0.0.1', () => {
@@ -290,4 +301,9 @@ test('bug forensics: simulating a pre-v1.29.2 client that closes on first `done`
   // (If the server kept writing into a closed stream, we'd get an
   // unhandled exception that node:test would surface as a failure.)
   await new Promise((r) => setTimeout(r, 100));
+});
+
+test('CI isolation: the regional phase went through the offline stub (no live hh/habr)', () => {
+  assert.ok(offlineCalls.length > 0, 'the stub must have intercepted the regional source calls');
+  assert.ok(offlineCalls.every((u) => typeof u === 'string'));
 });

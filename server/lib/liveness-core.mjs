@@ -200,6 +200,12 @@ export function classifyLiveness({ status = 0, requestedUrl = '', finalUrl = '',
   if (status >= 500) {
     return { result: 'uncertain', code: 'server_error', reason: `HTTP ${status} (transient server error)` };
   }
+  // Every other non-2xx (0 = no response, 401, 408, 451, …) says nothing about
+  // the posting: the page was never read, so its short error body must not fall
+  // through to the content heuristics below and read as `expired`.
+  if (!(status >= 200 && status < 300)) {
+    return { result: 'uncertain', code: 'http_status', reason: status ? `HTTP ${status}` : 'no HTTP response' };
+  }
 
   const expiredUrl = firstMatch(EXPIRED_URL_PATTERNS, finalUrl);
   if (expiredUrl) {

@@ -11,12 +11,18 @@
  * web-ui scan-history.tsv columns (written by en-scanner.mjs / ru-scanner.mjs):
  *   date \t source \t id \t company \t title \t url
  * (No status column — web-ui only ever writes fresh "added" rows.)
+ * A file shared with the parent CLI also carries ITS rows, URL first:
+ *   url \t first_seen \t portal \t title \t company \t status …
+ * Those are read too (by their leading URL cell); a parent row whose status is
+ * not `added` (skipped_location, skipped_expired, …) never surfaced to the
+ * user, so it is not an appearance.
  *
  * Pure logic + a thin file reader; consumed by GET /api/scan/reposts.
  */
 import { readFileSync, existsSync } from 'node:fs';
 import { roleFuzzyMatch, roleTokens, BASELINE_TOKENS } from './role-matcher.mjs';
 import { normalizeTextKey } from './text-key.mjs';
+import { normalizeUrl } from './url-key.mjs';
 
 export const DEFAULT_WINDOW_DAYS = 90;
 
@@ -45,8 +51,17 @@ export function parseScanHistory(content) {
   for (const line of content.split('\n')) {
     if (!line.trim()) continue;
     const cols = line.split('\t');
-    if (cols.length < 6) continue;
-    const [dateStr, source = '', , company = '', title = '', url = ''] = cols;
+    if (cols.length < 5) continue;
+    let dateStr, source, company, title, url;
+    if (/^https?:\/\//i.test(cols[0].trim())) {
+      // Parent format — url, first_seen, portal, title, company, status.
+      const status = String(cols[5] ?? '').trim();
+      if (status && status !== 'added') continue;
+      [url, dateStr, source = '', title = '', company = ''] = cols;
+    } else {
+      if (cols.length < 6) continue;
+      [dateStr, source = '', , company = '', title = '', url = ''] = cols;
+    }
     const date = parseDate(dateStr);
     const u = String(url || '').trim();
     if (!date || !/^https?:\/\//i.test(u)) continue;
@@ -99,7 +114,9 @@ export function detectReposts(rows, windowDays = DEFAULT_WINDOW_DAYS) {
 }
 
 // Cluster rows in a single company group: group by title (exact or fuzzy),
-// then a sliding window over dates finds sub-clusters within windowDays.
+// then a window over dates cuts sub-clusters spanning at most windowDays. The
+// sub-clusters are DISJOINT: a row that closed one cluster does not seed the
+// next with its predecessors, or the same sightings were reported twice.
 function detectRepostsInGroup(rows, windowDays) {
   const titleGroups = groupRowsByTitle(rows);
 
@@ -118,8 +135,7 @@ function detectRepostsInGroup(rows, windowDays) {
           const built = buildRepostCluster(cluster, windowDays);
           if (built) results.push(built);
         }
-        cluster = cluster.filter((c) => daysBetween(c.date, row.date) <= windowDays);
-        cluster.push(row);
+        cluster = [row];
       }
     }
     if (cluster.length >= 2) {
@@ -267,11 +283,13 @@ export function groupRowsByTitle(rows) {
 
 // A cluster becomes a repost only when ≥2 DISTINCT urls remain (same url = a
 // dedup hit, not a repost) and the first→last span is within windowDays. Rows
-// sharing a url collapse to their earliest sighting.
+// sharing a url collapse to their earliest sighting. "Same url" is the url-key
+// form, so a utm_/tracking variant of one posting is not a repost of it.
 function buildRepostCluster(clusterRows, windowDays) {
   const byUrl = new Map();
   for (const row of clusterRows) {
-    if (!byUrl.has(row.url) || row.date < byUrl.get(row.url).date) byUrl.set(row.url, row);
+    const key = normalizeUrl(row.url) || row.url;
+    if (!byUrl.has(key) || row.date < byUrl.get(key).date) byUrl.set(key, row);
   }
   const deduped = [...byUrl.values()];
   if (deduped.length < 2) return null;

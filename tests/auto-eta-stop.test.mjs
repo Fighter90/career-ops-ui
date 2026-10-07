@@ -13,7 +13,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { legacyDictText } from './helpers/i18n-vm.mjs';
+import { legacyDictText, I18N_LANGS } from './helpers/i18n-vm.mjs';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
@@ -28,7 +28,7 @@ const AUTO = readFileSync(resolve(__d, '..', 'public', 'js', 'views', 'auto.js')
 const SCAN = loadScanSrc();
 const DICT = legacyDictText();
 const CSS = loadAppCss();
-const LOCALES = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr'];
+const LOCALES = I18N_LANGS; // every shipped UI locale, from the live list
 
 test('#/auto renders an ETA hint via auto.eta next to Run', () => {
   assert.match(AUTO, /t\('auto\.eta'/, 'auto.js must render t(auto.eta)');
@@ -40,7 +40,7 @@ test('#/auto renders an ETA hint via auto.eta next to Run', () => {
     'the ETA hint must sit next to runBtn in the action row');
 });
 
-test('auto.eta present in all 8 locales', () => {
+test('auto.eta present in every locale', () => {
   const line = DICT.split('\n').find((l) => l.includes("'auto.eta'"));
   assert.ok(line, 'i18n key auto.eta missing');
   for (const loc of LOCALES) {

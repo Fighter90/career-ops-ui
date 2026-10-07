@@ -110,7 +110,7 @@ If the gsd-* skills and the user's instruction conflict, the user wins. If `~/.c
 
 When a phase completes and its outputs are valuable beyond execution (e.g. a long-form architecture decision), promote them:
 
-- `SPEC.md` → `docs/specs/<topic>.md`
+- `SPEC.md` → `docs/sdd/specs/<topic>.md`
 - Architecture decision → `docs/adr/NNNN-<title>.md`
 - New data contract → update `docs/architecture/DATA-FLOWS.md`
 

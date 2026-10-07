@@ -24,6 +24,7 @@
 import { readFileSync, existsSync } from 'node:fs';
 import yaml from 'js-yaml';
 import { normalizeTextKey } from './text-key.mjs';
+import { cleanStringList } from './location-filter.mjs';
 
 /** Add `days` to an ISO date string (UTC), returning an ISO date string. */
 export function addDays(dateStr, days) {
@@ -178,7 +179,10 @@ export function buildCooldownFilter(windows, today) {
       if (today >= cooldownUntil) continue; // cooldown elapsed
 
       if (Array.isArray(window.applied_to)) {
-        const hit = window.applied_to.some((role) => jobTitleLower.includes(String(role).toLowerCase()));
+        // Blank entries dropped: `applied_to: [""]` is a substring of every
+        // title and used to put the whole company on cooldown.
+        const hit = cleanStringList(window.applied_to)
+          .some((role) => jobTitleLower.includes(role.toLowerCase()));
         if (hit) return { skip: true, reason: `cooldown:${windowCompany}:${cooldownUntil}`, cooldownUntil };
       }
       if (window.cross_role_bucket) {

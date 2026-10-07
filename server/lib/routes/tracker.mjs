@@ -83,8 +83,15 @@ export function registerTrackerRoutes(app) {
 
   app.post('/api/tracker', async (req, res) => {
     const { company, role, score, status, url, reportSlug, notes, date } = req.body || {};
-    if (!company || !role) {
+    // Type-check before any string method: a non-string company/role used to
+    // throw (.toLowerCase) inside the file lock -> unhandled rejection.
+    if (typeof company !== 'string' || typeof role !== 'string' || !company.trim() || !role.trim()) {
       return res.status(400).json({ error: 'company and role are required' });
+    }
+    const optional = { status, url, reportSlug, notes, date };
+    const badField = Object.keys(optional).find((k) => optional[k] != null && typeof optional[k] !== 'string');
+    if (badField || (score != null && typeof score !== 'string' && typeof score !== 'number')) {
+      return res.status(400).json({ error: `invalid field: ${badField || 'score'}` });
     }
     // BF-1 — escape pipes + collapse newlines in every cell value, not
     // just notes. A pipe in company / role would break the markdown
@@ -108,10 +115,15 @@ export function registerTrackerRoutes(app) {
     const result = await withFileLock(PATHS.applications, async () => {
       let content = '';
       try { content = readFileSync(PATHS.applications, 'utf8'); } catch { content = ''; }
-      // Dedup: skip if same company + role already present (case-insensitive).
+      // Dedup: skip if same company + role already present. Compare the
+      // stored cell and the incoming value through the same normalisation
+      // (trim, collapsed whitespace, case-insensitive) so 'Acme ' or 'Acme
+      // \nInc' matches the row this handler would have written for them.
       const existing = parseApplications(content);
-      const dup = existing.find((r) => (r.company || '').toLowerCase() === company.toLowerCase()
-        && (r.role || '').toLowerCase() === role.toLowerCase());
+      const norm = (s) => String(s || '').replace(/\s+/g, ' ').trim().toLowerCase();
+      const wantCompany = norm(company);
+      const wantRole = norm(role);
+      const dup = existing.find((r) => norm(r.company) === wantCompany && norm(r.role) === wantRole);
       if (dup) {
         return { ok: true, deduped: true, existingNum: dup.num };
       }

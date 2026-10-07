@@ -20,18 +20,37 @@
  * retrieval corpus never see it. These tests pin BOTH halves of that contract:
  * the bundles keep the banner on disk, and no consumer ever serves it.
  */
-import { test } from 'node:test';
+import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
-import { resolve, dirname } from 'node:path';
+import { readFileSync, readdirSync, mkdtempSync, writeFileSync } from 'node:fs';
+import { resolve, dirname, join } from 'node:path';
+import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { stripGithubOnlyBlocks } from '../server/lib/help-markdown.mjs';
-import { createApp } from '../server/index.mjs';
+import { I18N_LANGS } from './helpers/i18n-vm.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
-const HELP_LOCALES = ['en', 'es', 'pt-BR', 'ko-KR', 'ja', 'ru', 'zh-CN', 'zh-TW',
-  'fr', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi'];
+// Derived from the bundles on disk (help uses `ko-KR.md` where the UI
+// locale is `ko`), cross-checked against the live UI locale list.
+const HELP_LOCALES = readdirSync(resolve(ROOT, 'docs', 'help'))
+  .filter((f) => f.endsWith('.md')).map((f) => f.slice(0, -3)).sort();
+
+// createApp() pulls in paths.mjs, so it is imported only after
+// CAREER_OPS_ROOT points at a throwaway root (never the real parent .env).
+let createApp;
+before(async () => {
+  const root = mkdtempSync(join(tmpdir(), 'help-banner-'));
+  writeFileSync(join(root, 'cv.md'), '# CV\n');
+  process.env.CAREER_OPS_ROOT = root;
+  ({ createApp } = await import('../server/index.mjs'));
+});
+after(() => { delete process.env.CAREER_OPS_ROOT; });
+
+test('one help bundle per UI locale', () => {
+  assert.equal(HELP_LOCALES.length, I18N_LANGS.length,
+    `docs/help has ${HELP_LOCALES.join(',')} vs UI locales ${I18N_LANGS.join(',')}`);
+});
 
 const bundle = (lang) => readFileSync(resolve(ROOT, 'docs', 'help', `${lang}.md`), 'utf8');
 
@@ -92,7 +111,7 @@ test('both help consumers route their reads through the stripper', () => {
  */
 test('the help route cannot be walked out of docs/help', async () => {
   const app = createApp();
-  const server = app.listen(0);
+  const server = app.listen(0, '127.0.0.1');
   await new Promise((r) => server.once('listening', r));
   const base = `http://127.0.0.1:${server.address().port}`;
   try {

@@ -222,10 +222,11 @@ test('v1.239.1: buildEvaluationPrompt restates the output language after the JD'
     const tail = p.slice(jdEnd);
     assert.match(tail, new RegExp(`Write the whole report in ${name} \\(locale: ${lang}\\)`), lang);
   }
-  // English gets no reminder, and the prompt still ends with the JD.
+  // English gets no language reminder; since v1.241.0 the JD is followed only
+  // by the untrusted-data format reminder.
   const en = buildEvaluationPrompt('A senior engineer JD…', 'en');
   assert.ok(!/Write the whole report in/.test(en));
-  assert.ok(en.trimEnd().endsWith('"""'));
+  assert.match(en.slice(en.lastIndexOf('"""')), /^"""\nReminder: the text above is the job description to evaluate/);
 });
 
 test('v1.239.2: the closing language reminder protects the machine-read format', () => {
@@ -424,30 +425,29 @@ test('PR-6: DELETE /api/pipeline?url=... still works (legacy contract)', async (
 
 // ───────────────────────── PR-3: DNS-rebind defense (mocked DNS) ─────────────────────────
 
-test('PR-3: /api/pipeline/preview blocks when DNS resolves to a private address (rebind defense)', { timeout: 15_000 }, async () => {
-  // Real-world rebind exploit pattern: use a public hostname that the
-  // public DNS resolver resolves to 127.0.0.1. The free service nip.io
-  // does exactly that — `127.0.0.1.nip.io` always resolves to 127.0.0.1.
-  // isValidJobUrl can't reject it on string-shape because the hostname
-  // looks like a normal subdomain. The DNS-rebind guard in the preview
-  // proxy is what should catch it.
-  //
-  // Skips when the test sandbox has no internet (CI fallback). We don't
-  // fail open on lookup error in production, but in the test env we
-  // can't tell "no DNS" apart from "DNS reports private IP" without
-  // a real query, so the skip keeps the suite portable.
-  let dnsWorks = false;
+test('PR-3: /api/pipeline/preview blocks when DNS resolves to a private address (rebind defense)', async () => {
+  // Real-world rebind exploit pattern: a public-looking hostname whose
+  // DNS answer is 127.0.0.1 (nip.io-style). isValidJobUrl can't reject
+  // it on string shape; the DNS-rebind guard in safe-fetch must. DNS is
+  // stubbed (no real resolver, no network) and the transport throws if
+  // it is ever reached — the request must die at the lookup check.
+  // The module namespace is frozen; `promises` on node:dns is the same
+  // mutable object safe-fetch calls `.lookup` on.
+  const { promises: dns } = await import('node:dns');
+  const { _setTransport } = await import('../server/lib/safe-fetch.mjs');
+  const origLookup = dns.lookup;
+  const looked = [];
+  dns.lookup = async (host) => { looked.push(host); return { address: '127.0.0.1', family: 4 }; };
+  const restore = _setTransport(async () => { throw new Error('LEAKED: transport reached for a private address'); });
   try {
-    const dns = await import('node:dns/promises');
-    const r = await dns.lookup('127.0.0.1.nip.io', { verbatim: true });
-    dnsWorks = r && r.address === '127.0.0.1';
-  } catch { dnsWorks = false; }
-  if (!dnsWorks) {
-    // No internet or nip.io changed behavior — treat as skipped.
-    return;
+    const r = await fetch(baseUrl + '/api/pipeline/preview?url=' + encodeURIComponent('https://rebind.example.com/jobs/abc'));
+    const data = await r.json();
+    assert.deepEqual(looked, ['rebind.example.com'], 'the guard resolved the hostname exactly once');
+    assert.equal(data.status, 0);
+    assert.match(data.text, /private address/i);
+    assert.doesNotMatch(data.text, /LEAKED/);
+  } finally {
+    dns.lookup = origLookup;
+    restore();
   }
-  const r = await fetch(baseUrl + '/api/pipeline/preview?url=' + encodeURIComponent('https://127.0.0.1.nip.io/jobs/abc'));
-  const data = await r.json();
-  assert.equal(data.status, 0);
-  assert.match(data.text, /private address|blocked/i);
 });

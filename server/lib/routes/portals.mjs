@@ -35,9 +35,11 @@ function loadTracked() {
   } catch {
     return null;
   }
-  const tracked = doc.tracked_companies || doc.companies || [];
+  const tracked = (doc && typeof doc === 'object') ? (doc.tracked_companies || doc.companies || []) : [];
   if (!Array.isArray(tracked)) return [];
-  return tracked.slice(0, MAX_COMPANIES).map((c) => ({
+  // A bare `-` (null) or a scalar list entry has no fields — skip it rather
+  // than throw on `c.name` inside the async handler.
+  return tracked.filter((c) => c && typeof c === 'object').slice(0, MAX_COMPANIES).map((c) => ({
     name: typeof c.name === 'string' ? c.name : '',
     careers_url: typeof c.careers_url === 'string' ? c.careers_url : (typeof c.api === 'string' ? c.api : ''),
     provider: typeof c.provider === 'string' ? c.provider : '',

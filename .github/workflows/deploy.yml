@@ -55,6 +55,9 @@ on:
       public_url:
         description: 'Public origin checked over HTTPS after the run (empty = secret PROD_URL)'
         default: ''
+      allowed_hosts:
+        description: 'Public host name(s) the reverse proxy forwards, comma separated (ALLOWED_HOSTS). Empty = the host of public_url / secret PROD_URL. The app refuses any other DNS name in the Host header.'
+        default: ''
 
 permissions:
   contents: read
@@ -68,6 +71,8 @@ jobs:
     name: ${{ inputs.mode }} ${{ inputs.app_dir }}
     runs-on: ubuntu-latest
     timeout-minutes: 20
+    permissions:
+      contents: read
     environment: production
     steps:
       - name: Configure ssh
@@ -183,14 +188,23 @@ jobs:
           done
           systemctl list-timers --all --no-pager 2>/dev/null | grep -E 'career|hermes' || true
           sec hourly-scan
-          # Which commands the timer runs (secrets masked) — decides whether it scans in-process.
-          grep -nE "curl|node|/api/|scan" /opt/career-ops/hourly-scan.sh 2>/dev/null \
-            | sed -E 's/(token|key|pass(word)?|auth(orization)?|bearer|-u)[=: ]+[^ "]*/\1=…/Ig; s#https?://[^/@ ]+@#https://…@#g' | head -15
+          # What the timer runs — decides whether it scans in-process. Counts and
+          # yes/no only: printing the lines, even masked, leaked the token after
+          # "Authorization: Bearer", and this log is public.
+          hs=/opt/career-ops/hourly-scan.sh
+          if [ -f "$hs" ]; then
+            yn() { grep -qiE "$1" "$hs" && echo yes || echo no; }
+            echo "lines: $(wc -l < "$hs") · curl calls: $(grep -c 'curl' "$hs") · node calls: $(grep -cE '(^|[^[:alnum:]_])node ' "$hs")"
+            echo "calls /api/scan: $(yn '/api/scan') · calls /api/ (any): $(yn '/api/') · runs a scan script: $(yn 'scan\.mjs')"
+            echo "carries credentials: $(yn 'authorization|bearer|token|pass(word)?|[[:space:]]-u[[:space:]]|://[^/ ]+@')"
+          else
+            echo "not present"
+          fi
           sec node-heap
           systemctl show -p Environment --value career-ops-ui 2>/dev/null | tr ' ' '\n' | grep -E '^NODE_OPTIONS=' || echo "NODE_OPTIONS unset (V8 default heap)"
           sec listeners; ss -ltnp 2>/dev/null | awk 'NR>1{print $4, $6}' | grep -E 'node|python|hermes|caddy' || true
           sec hermes-link
-          grep -hoE '^HERMES_BASE_URL=.*' "$APP_DIR/.env" 2>/dev/null || echo "HERMES_BASE_URL unset (default http://127.0.0.1:8642/v1)"
+          grep -hoE '^HERMES_BASE_URL=.*' "$APP_DIR/.env" 2>/dev/null | sed -E 's#://[^/@]+@#://…@#; s#[?].*$#?…#' || echo "HERMES_BASE_URL unset (default http://127.0.0.1:8642/v1)"
           for u in http://127.0.0.1:8642/v1/models http://127.0.0.1:8788/; do
             printf '%s -> %s\n' "$u" "$(curl -s -o /dev/null -w '%{http_code}' --max-time 5 "$u")"
           done
@@ -211,10 +225,23 @@ jobs:
           SERVICE: ${{ inputs.service }}
           PORT: ${{ inputs.port }}
           HEAP_MB: ${{ inputs.heap_mb }}
+          ALLOWED_HOSTS_IN: ${{ inputs.allowed_hosts }}
+          PUBLIC_URL_IN: ${{ inputs.public_url || secrets.PROD_URL }}
         run: |
           [[ "$HEAP_MB" =~ ^[0-9]{1,5}$ ]] || { echo "::error::heap_mb must be a number"; exit 1; }
+          # Host allowlist for the app's request guard (server/lib/request-guard.mjs).
+          # The proxy forwards the public name in the Host header; without it listed
+          # the app answers 421 to every real visitor. Derived from the public URL
+          # unless given explicitly; validated to a plain host list before it goes
+          # anywhere near a systemd unit.
+          ALLOWED_HOSTS="$ALLOWED_HOSTS_IN"
+          if [ -z "$ALLOWED_HOSTS" ] && [ -n "$PUBLIC_URL_IN" ]; then
+            ALLOWED_HOSTS=$(printf '%s' "$PUBLIC_URL_IN" | sed -E 's#^[A-Za-z][A-Za-z0-9+.-]*://##; s#[/:?#].*$##')
+          fi
+          [[ -z "$ALLOWED_HOSTS" || "$ALLOWED_HOSTS" =~ ^[A-Za-z0-9.,*-]+$ ]] || { echo "::error::allowed_hosts must be host names separated by commas"; exit 1; }
+          [ -n "$ALLOWED_HOSTS" ] || echo "::warning::no allowed_hosts and no public_url/PROD_URL — the app will refuse every non-loopback Host name"
           # shellcheck disable=SC2029  # the inputs are meant to expand locally
-          ssh prod "APP_DIR='$APP_DIR' PARENT_REF='$PARENT_REF' UI_REF='$UI_REF' SERVICE='$SERVICE' PORT='$PORT' HEAP_MB='$HEAP_MB' bash -s" <<'REMOTE'
+          ssh prod "APP_DIR='$APP_DIR' PARENT_REF='$PARENT_REF' UI_REF='$UI_REF' SERVICE='$SERVICE' PORT='$PORT' HEAP_MB='$HEAP_MB' ALLOWED_HOSTS='$ALLOWED_HOSTS' bash -s" <<'REMOTE'
           set -euo pipefail
           UI_DIR="$APP_DIR/web-ui"
           SERVICE=${SERVICE:-career-ops-ui}
@@ -239,27 +266,60 @@ jobs:
 
           BK="${BACKUP_ROOT:-/opt/career-ops/backups}/deploy-$(date -u +%Y%m%dT%H%M%SZ)"
           install -d -m 700 "$BK"
-          declare -A ref=( ["$APP_DIR"]="$PARENT_REF" ["$UI_DIR"]="$UI_REF" ) name=( ["$APP_DIR"]=parent ["$UI_DIR"]=web-ui ) prev_lock
+          parent_prev=$(head -1 "$APP_DIR/VERSION" 2>/dev/null | grep -oE '[0-9]+\.[0-9]+\.[0-9]+' || true)
+          ui_prev=$(node -p "require('$UI_DIR/package.json').version" 2>/dev/null || true)
+          { echo "parent_prev=$parent_prev"; echo "ui_prev=$ui_prev"; } > "$BK/versions"
+          declare -A ref=( ["$APP_DIR"]="$PARENT_REF" ["$UI_DIR"]="$UI_REF" ) name=( ["$APP_DIR"]=parent ["$UI_DIR"]=web-ui ) prev_lock reinstalled
+          declare -A prev_ref=( ["$APP_DIR"]="${parent_prev:+v$parent_prev}" ["$UI_DIR"]="${ui_prev:+v$ui_prev}" )
+          # Files the release on disk tracks but the new ref deleted. An overlay
+          # never removes them on its own (a source deleted upstream kept loading
+          # from disk). --no-renames: a rename's old path must count as deleted.
+          # Raw paths (core.quotePath=false) so they can be fed back to rm/tar.
+          deleted_since() {
+            local d=$1 old=$2 new=$3 f
+            g "$d" -c core.quotePath=false diff --name-only --no-renames --diff-filter=D "$old" "$new" -- | while IFS= read -r f; do
+              case "$f" in web-ui/*) if [ "$d" = "$APP_DIR" ]; then continue; fi;; esac
+              if [ -e "$d/$f" ] || [ -L "$d/$f" ]; then printf '%s\n' "$f"; fi
+            done
+          }
           for d in "$APP_DIR" "$UI_DIR"; do
             n=${name[$d]}
             prev_lock[$d]=$(lock_sum "$d")
             g "$d" ls-tree -r --name-only "${ref[$d]}" > "$BK/$n.all"
-            : > "$BK/$n.existing"; : > "$BK/$n.created"
+            : > "$BK/$n.existing"; : > "$BK/$n.created"; : > "$BK/$n.deleted"
             while IFS= read -r f; do
               if [ -e "$d/$f" ] || [ -L "$d/$f" ]; then echo "$f" >> "$BK/$n.existing"; else echo "$f" >> "$BK/$n.created"; fi
             done < "$BK/$n.all"
+            old=${prev_ref[$d]}
+            if [ -n "$old" ] && g "$d" rev-parse --verify --quiet "$old^{commit}" >/dev/null; then
+              deleted_since "$d" "$old" "${ref[$d]}" > "$BK/$n.deleted"
+            else
+              echo "::warning::$n: release on disk (${old:-unknown}) has no tag here — files deleted upstream are left in place"
+            fi
+            # Deleted files go into the same backup, so a rollback restores them.
+            cat "$BK/$n.deleted" >> "$BK/$n.existing"
             tar -C "$d" -czf "$BK/$n.tgz" -T "$BK/$n.existing"
-            echo "$n: backup of $(wc -l < "$BK/$n.existing") files, $(wc -l < "$BK/$n.created") new → $BK"
+            echo "$n: backup of $(wc -l < "$BK/$n.existing") files, $(wc -l < "$BK/$n.created") new, $(wc -l < "$BK/$n.deleted") to delete → $BK"
           done
-          { echo "parent_prev=$(head -1 "$APP_DIR/VERSION")"; echo "ui_prev=$(node -p "require('$UI_DIR/package.json').version")"; } > "$BK/versions"
 
+          # deploy:   reinstall where the lockfile changed (or node_modules is gone).
+          # rollback: reinstall exactly where the deploy reinstalled. The restored
+          #           lockfile always equals prev_lock, so the deploy-mode test
+          #           would keep the NEW release's node_modules under old code.
           install_deps() {
+            local mode=${1:-deploy}
             for d in "$APP_DIR" "$UI_DIR"; do
               [ -f "$d/package-lock.json" ] || continue
-              if [ "$(lock_sum "$d")" = "${prev_lock[$d]}" ] && [ -d "$d/node_modules" ]; then
-                echo "$d: lockfile unchanged, keeping node_modules"; continue
+              if [ "$mode" = rollback ]; then
+                [ -n "${reinstalled[$d]:-}" ] || continue
+              else
+                if [ "$(lock_sum "$d")" = "${prev_lock[$d]}" ] && [ -d "$d/node_modules" ]; then
+                  echo "$d: lockfile unchanged, keeping node_modules"; continue
+                fi
+                [ "$d" = "$APP_DIR" ] && [ ! -d "$d/node_modules" ] && { echo "$d: had no node_modules, not installing"; continue; }
+                # Marked before npm ci: a failed install leaves node_modules half-replaced.
+                reinstalled[$d]=1
               fi
-              [ "$d" = "$APP_DIR" ] && [ ! -d "$d/node_modules" ] && { echo "$d: had no node_modules, not installing"; continue; }
               as_owner "$d" bash -c 'cd "$1" && npm ci --omit=dev --no-audit --no-fund' _ "$d" || return 1
             done
           }
@@ -290,7 +350,7 @@ jobs:
               (cd "$d" && xargs -r -d '\n' rm -f -- < "$BK/$n.created")
               tar -C "$d" -xzpf "$BK/$n.tgz" --same-owner
             done
-            install_deps || echo "::error::npm ci failed during rollback"
+            install_deps rollback || echo "::error::npm ci failed during rollback"
             systemctl restart "$SERVICE" || echo "::error::restart failed during rollback"
             healthy skip || echo "::error::service still unhealthy after rollback"
             exit 1
@@ -301,6 +361,11 @@ jobs:
           trap rollback ERR
           for d in "$APP_DIR" "$UI_DIR"; do
             g "$d" archive --format=tar "${ref[$d]}" | as_owner "$d" tar -x -C "$d"
+            n=${name[$d]}
+            if [ -s "$BK/$n.deleted" ]; then
+              (cd "$d" && xargs -r -d '\n' rm -f -- < "$BK/$n.deleted")
+              echo "$n: removed $(wc -l < "$BK/$n.deleted") files deleted upstream (backed up in $BK/$n.tgz)"
+            fi
           done
           want_parent=$(head -1 "$APP_DIR/VERSION" | grep -oE '[0-9]+\.[0-9]+\.[0-9]+')
           echo "parent now $(g "$APP_DIR" log -1 --format='%h %s' "$PARENT_REF") VERSION=$want_parent"
@@ -317,6 +382,18 @@ jobs:
               printf '%s\n' "$want" > "$dropin"
               systemctl daemon-reload
               echo "heap drop-in set: --max-old-space-size=$HEAP_MB"
+            fi
+          fi
+          # Request guard: which Host names the app accepts besides loopback and IP literals.
+          if [ -n "${ALLOWED_HOSTS:-}" ]; then
+            dropin="${SYSTEMD_DIR:-/etc/systemd/system}/$SERVICE.service.d/hosts.conf"
+            want="[Service]
+          Environment=ALLOWED_HOSTS=$ALLOWED_HOSTS"
+            if [ "$(cat "$dropin" 2>/dev/null)" != "$want" ]; then
+              install -d "$(dirname "$dropin")"
+              printf '%s\n' "$want" > "$dropin"
+              systemctl daemon-reload
+              echo "hosts drop-in set: ALLOWED_HOSTS=$ALLOWED_HOSTS"
             fi
           fi
           systemctl restart "$SERVICE"

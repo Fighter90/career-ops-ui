@@ -18,14 +18,14 @@
  * Only write is the user's own `networking/*.md` on Save. Live runs use the
  * shared provider cascade; no key → copy-paste prompt (honest fallback).
  */
-import { existsSync, readFileSync, writeFileSync, mkdirSync, readdirSync, statSync, unlinkSync } from 'node:fs';
+import { existsSync, readFileSync, mkdirSync, readdirSync, statSync, unlinkSync } from 'node:fs';
 import { resolve, sep } from 'node:path';
 import { PATHS, path as projPath } from '../paths.mjs';
 import { slugify, today } from '../parsers.mjs';
 import { sanitizeJobDescription, sanitizePathName } from '../security.mjs';
 import { bundleProjectContext, resolveLocale } from '../prompts.mjs';
 import { cleanLlmMarkdown } from '../llm-output.mjs';
-import { withFileLock } from '../file-lock.mjs';
+import { writeExclusive } from './interview.mjs';
 import { llmRateLimit } from '../rate-limit.mjs';
 import { runActiveProvider, providerAvailable } from '../llm-dispatch.mjs';
 
@@ -115,22 +115,23 @@ export function registerNetworkingRoutes(app) {
     if (!company) return res.status(400).json({ error: 'a company is required' });
     if (!plan.trim()) return res.status(400).json({ error: 'a plan is required' });
     const slug = slugify([company, role].filter(Boolean).join('-')) || 'plan';
-    const name = sanitizePathName(`net-${slug}-${today()}.md`);
-    const file = name && name.startsWith('net-') && name.endsWith('.md') ? resolvePlanFile(name) : null;
-    if (!file) return res.status(400).json({ error: 'could not derive a safe plan name' });
+    const base = sanitizePathName(`net-${slug}-${today()}`);
+    if (!base.startsWith('net-') || !resolvePlanFile(`${base}.md`)) {
+      return res.status(400).json({ error: 'could not derive a safe plan name' });
+    }
     const doc = [
       `# Networking plan — ${company}${role ? ` · ${role}` : ''}`,
       '', `_Saved ${today()}_`, '', plan.trim(), '',
     ].join('\n');
+    // Same-day re-save gets a -2, -3… suffix instead of silently overwriting.
     try {
-      await withFileLock(file, async () => {
-        mkdirSync(PATHS.networkingDir, { recursive: true });
-        writeFileSync(file, doc);
-      });
+      mkdirSync(PATHS.networkingDir, { recursive: true });
+      const name = writeExclusive(base, doc, resolvePlanFile);
+      if (!name) return res.status(409).json({ error: 'too many plans with this name today' });
+      return res.json({ ok: true, name });
     } catch {
       return res.status(500).json({ error: 'failed to save plan' });
     }
-    return res.json({ ok: true, name });
   });
 
   app.get('/api/networking/plans', (_req, res) => {

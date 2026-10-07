@@ -8,6 +8,37 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.241.0] — 2026-10-07
+
+**Versão de endurecimento a partir de uma revisão de código com 28 agentes (~190 achados verificados): as classes de segurança, queda de processo e perda de dados foram fechadas, além de um mapa de vagas contribuído por @bullitt186.**
+
+### Adicionado
+
+- **Mapa de vagas (`#/map`)** — vagas do pipeline, da última varredura e do tracker em um mapa do OpenStreetMap, geocodificadas via Nominatim com um User-Agent identificável, uma fila de 1 req/s, back-off e cache em disco. O Leaflet é servido por este servidor (sem CDN); a CSP só ganha a origem dos tiles em `img-src`. Contribuição de **@bullitt186** (#381).
+- **Guarda de requisições** — o servidor recusa um `Host` que não atende (DNS rebinding) e gravações cross-site e GETs com efeito colateral (`/api/stream/*`, `/api/run/*`, `/api/geocode`). Um proxy reverso que encaminha um nome público o lista em `ALLOWED_HOSTS`; o workflow de deploy grava esse drop-in do systemd a partir da URL pública.
+- **Gate de cobertura** — `npm run test:coverage:gate` (`scripts/coverage-report.mjs`) imprime a cobertura de linhas/branches por arquivo e falha abaixo de uma linha de base crescente.
+
+### Corrigido
+
+- **Uma requisição malformada não derruba mais o servidor.** O Express 4 ignorava handlers assíncronos rejeitados, então um campo de tipo errado em `/api/deep`, `/api/auto-pipeline`, `/api/career-plan`, `/api/tracker` ou um byte NUL em `/api/stats` encerrava o processo; agora são respostas JSON 400, e qualquer outra rejeição vira um 500.
+- **Uma varredura abortada ou com falha não apaga mais os últimos resultados.** O `last-scan.json` é mantido quando uma varredura é interrompida ou todas as fontes falharam, e uma varredura de uma única empresa faz merge em vez de substituir. Uma entrada mal configurada no `portals.yml` não aborta mais a varredura inteira.
+- **As avaliações veem o método inteiro.** Os arquivos de modo eram cortados em 16 KB, então o `oferta.md` (92 KB) perdia os blocos C–G; os limites por arquivo agora são de 128 KB para modos e 64 KB para o CV, e um corte é informado. Respostas vazias ou cortadas falham em vez de gravar um relatório vazio.
+- **SSRF:** os saltos de redirecionamento são reverificados quanto a destinos privados, toda resposta de DNS é verificada, o prazo da varredura cobre o corpo, as chaves `*_BASE_URL` só vão ao host do fornecedor (Hermes/Ollama: loopback ou LAN), o pandoc roda com `--sandbox`.
+- **Travamentos do event loop:** duas regex quadráticas (remoção de HTML, sanitização de markdown) substituídas por scanners lineares.
+- **Perda de dados:** excluir uma linha do pipeline mantinha a compensação das outras linhas; `$&` em uma URL corrompia o `pipeline.md`; os salvamentos de mock-interview, networking e deep-research sobrescreviam arquivos anteriores; o histórico de entrevistas mantinha os primeiros 40 turnos em vez dos últimos.
+- **Camada de LLM:** auto-pipeline e deep research respeitam `LLM_PROVIDER` e todos os provedores pelo despacho compartilhado, registram o uso e informam o truncamento; evaluate/test do Gemini não salvam mais um relatório; a OpenAI usa `max_completion_tokens`, e um `OPENAI_MODEL` exclusivo do Codex é enviado como `gpt-5`; a descrição da vaga é isolada como dado não confiável.
+- **PDFs de relatório, deep e inline** passam `--skip-fact-check` (a verificação de fatos do CV bloqueava qualquer relatório com números); o formato de página do perfil não é mais sobrescrito.
+- **Scanners:** a quarentena é indexada por URL (corrigir uma URL a tenta de novo), a deduplicação dentro da execução usa a URL canônica, entradas em branco nas listas não casam mais com tudo, gravações atômicas, linhas de histórico `skipped_*` não são "vistas".
+- **Controle de processos:** o escalonamento para SIGKILL nunca disparava; execuções em lote matam todo o grupo de processos ao desconectar.
+- **CI e release:** o CI agora executa os gates de paridade do changelog, de workflow e de i18n; permissões de workflow de privilégio mínimo; segredos de produção apenas no ambiente `production`; o pacote npm agora inclui `docs/help/`.
+- **Testes:** nenhum teste toca mais a rede nem o projeto pai real (um `CAREER_OPS_ROOT` explícito é sempre respeitado); algoritmos copiados substituídos pelo código de produção.
+
+### Notas
+
+- Testes **4056 → 4404**, navegador **118**. Linha de base de cobertura do servidor: linhas 96,7 %, branches 86,3 % (`scripts/coverage-baseline.json`).
+- As especificações agora ficam em uma única pasta, `docs/sdd/specs/`; o plano do programa é `docs/sdd/PLAN.md`, a matriz invariante→gate é `docs/sdd/TRACEABILITY.md`.
+- **Nota para operadores:** atrás de um proxy reverso, defina `ALLOWED_HOSTS=<host público>`; uma URL base de Ollama/Hermes em um host público agora é recusada.
+
 ## [1.240.0] — 2026-10-06
 
 **Paridade com o pai — career-ops `main` @ `62905981` (VERSION 1.35.0, 177 commits upstream desde `b39931e`). Seis novas fontes — 103 → 109 (104 EN + 5 RU) —, correções espelhadas em oito provedores existentes e o formato checklist do pipeline, contribuição de @bullitt186.**
@@ -4066,7 +4097,7 @@ Nenhuma. Toda correção é aditiva ou preserva contratos de endpoint existentes
 
 ## [1.21.0] — 2026-05-14
 
-**Polish de segurança + concorrência + a11y a partir de dois passes independentes de code review.** Sete achados de [`docs/specs/V1.20.1-BACKLOG.md`](https://github.com/Fighter90/career-ops-ui/blob/main/docs/specs/V1.20.1-BACKLOG.md) entregues em um único release: um bloqueador (TOCTOU de DNS-rebind), seis bugs de alta severidade (sanitização de path-traversal espalhada, lacuna de rate-limit em deploy LAN, condição de corrida em escritas concorrentes, buraco de cobertura i18n, aria-describedby pendurado, associações de label ausentes). 34 testes novos; a baseline subiu de 427 → 461 unit + 32/32 Playwright. Cada correção pousa atrás de um teste de regressão nomeado.
+**Polish de segurança + concorrência + a11y a partir de dois passes independentes de code review.** Sete achados de [`docs/sdd/specs/V1.20.1-BACKLOG.md`](https://github.com/Fighter90/career-ops-ui/blob/main/docs/sdd/specs/V1.20.1-BACKLOG.md) entregues em um único release: um bloqueador (TOCTOU de DNS-rebind), seis bugs de alta severidade (sanitização de path-traversal espalhada, lacuna de rate-limit em deploy LAN, condição de corrida em escritas concorrentes, buraco de cobertura i18n, aria-describedby pendurado, associações de label ausentes). 34 testes novos; a baseline subiu de 427 → 461 unit + 32/32 Playwright. Cada correção pousa atrás de um teste de regressão nomeado.
 
 ### 🛡️ Segurança
 

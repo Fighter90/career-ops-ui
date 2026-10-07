@@ -60,13 +60,9 @@ on:
   pull_request:
     branches: [main]
 
+# Workflow default is read-only; each job raises only what it posts with.
 permissions:
-  contents: write         # checkout + diff AND create commit comments
-                          # (POST /repos/:o/:r/commits/:sha/comments is
-                          # a write op under the Contents permission —
-                          # contents:read is NOT enough; caught by the
-                          # pre-commit AI reviewer).
-  pull-requests: write    # post the advisory review comment on PRs
+  contents: read
 
 concurrency:
   # One review per pushed commit SHA; never cancel — each main commit
@@ -122,6 +118,9 @@ jobs:
     name: OpenRouter review (push → main)
     if: github.event_name == 'push'
     runs-on: ubuntu-latest
+    permissions:
+      contents: write   # POST /repos/:o/:r/commits/:sha/comments is a write
+                        # op under the Contents permission — read is NOT enough
     steps:
       - name: Check out (full history for the diff)
         uses: actions/checkout@v5
@@ -130,10 +129,11 @@ jobs:
 
       - name: Compute reviewable diff
         id: diff
+        env:
+          BEFORE: ${{ github.event.before }}
+          SHA: ${{ github.sha }}
         run: |
           set -euo pipefail
-          BEFORE="${{ github.event.before }}"
-          SHA="${{ github.sha }}"
           # First push to a new branch / force-push / unknown base →
           # fall back to the commit's first parent (or empty tree).
           if [ -z "$BEFORE" ] || [ "$BEFORE" = "0000000000000000000000000000000000000000" ] \
@@ -217,6 +217,9 @@ jobs:
     name: OpenRouter review (pull request)
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write   # post the advisory review comment on the PR
     steps:
       - name: Check out PR head (full history for the diff)
         uses: actions/checkout@v5

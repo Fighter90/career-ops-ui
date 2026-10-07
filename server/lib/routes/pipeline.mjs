@@ -48,11 +48,14 @@ export function registerPipelineRoutes(app) {
       } catch {
         content = '';
       }
-      const before = parsePipeline(content);
-      const deduped = before.includes(url);
       const updated = addPipelineUrl(content, url);
-      mkdirSync(projPath('data'), { recursive: true });
-      writeFileSync(PATHS.pipeline, updated);
+      // addPipelineUrl dedups on the canonical URL and against processed
+      // rows, so "nothing written" is the only honest dedup signal.
+      const deduped = updated === content;
+      if (!deduped) {
+        mkdirSync(projPath('data'), { recursive: true });
+        writeFileSync(PATHS.pipeline, updated);
+      }
       return { ok: true, deduped, urls: parsePipeline(updated) };
     });
     res.json(result);
@@ -125,12 +128,16 @@ export function registerPipelineRoutes(app) {
       } catch {
         return { _status: 404, body: { error: 'pipeline not found' } };
       }
-      const before = parsePipeline(content);
-      if (!before.includes(url)) {
+      // removePipelineUrl drops only the matching lines and returns the text
+      // untouched when nothing matched — answer 404 then instead of a fake
+      // { removed: 1 } (a bare-URL file used to be left as is).
+      const updated = removePipelineUrl(content, url);
+      if (updated === content) {
         return { _status: 404, body: { error: 'url not found in pipeline', url } };
       }
-      writeFileSync(PATHS.pipeline, removePipelineUrl(content, url));
-      return { _status: 200, body: { ok: true, removed: 1, url } };
+      const removed = parsePipeline(content).length - parsePipeline(updated).length;
+      writeFileSync(PATHS.pipeline, updated);
+      return { _status: 200, body: { ok: true, removed, url } };
     });
     res.status(outcome._status).json(outcome.body);
   });

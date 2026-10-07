@@ -7,7 +7,7 @@ import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { resolve } from 'node:path';
-import { mkdtempSync } from 'node:fs';
+import { mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
@@ -15,8 +15,14 @@ let server; let baseUrl;
 let splitSections; let topSections; let buildAskPrompt; let resolveHelpFile;
 
 before(async () => {
-  for (const k of ['ANTHROPIC_API_KEY', 'GEMINI_API_KEY', 'GOOGLE_API_KEY', 'OPENAI_API_KEY', 'QWEN_API_KEY', 'OPENROUTER_API_KEY', 'GITHUB_MODELS_TOKEN', 'LLM_PROVIDER']) delete process.env[k];
-  process.env.CAREER_OPS_ROOT = mkdtempSync(join(tmpdir(), 'docs-asst-'));
+  // Scrub EVERY provider credential (any *_API_KEY, Ollama URL, provider
+  // pin) — a hand-kept list silently goes stale as providers are added.
+  for (const k of Object.keys(process.env)) {
+    if (/_API_KEY$|^OLLAMA_BASE_URL$|^LLM_PROVIDER$/.test(k)) delete process.env[k];
+  }
+  const root = mkdtempSync(join(tmpdir(), 'docs-asst-'));
+  writeFileSync(join(root, 'cv.md'), '# CV\n');
+  process.env.CAREER_OPS_ROOT = root;
   ({ splitSections, topSections, buildAskPrompt, resolveHelpFile } = await import('../server/lib/routes/docs-assistant.mjs'));
   const { createApp } = await import('../server/index.mjs');
   const app = createApp();
@@ -105,14 +111,27 @@ test('buildAskPrompt grounds on the excerpts and forbids invention', () => {
   assert.match(p, /QUESTION: how do I scan\?/);
 });
 
-test('POST /ask with no key → manual prompt grounded in real help sections', async () => {
+test('POST /ask without run → manual prompt grounded in real help sections', async () => {
   const r = await post('/api/docs-assistant/ask', { question: 'How do I scan job portals?' });
   assert.equal(r.status, 200);
   const j = await r.json();
   assert.equal(j.mode, 'manual');
   assert.ok(Array.isArray(j.sections) && j.sections.length > 0);  // retrieval found real sections
   assert.match(j.prompt, /help-guide/i);
+  assert.match(j.message, /No API key set/, 'no provider configured → the no-key hint');
   assert.equal(j.answer, undefined);                              // nothing answered/invented with no key
+});
+
+test('POST /ask with run:true and no key → provider cascade falls back to manual', async () => {
+  // run:true skips the "preview only" short-circuit, so this is the path
+  // that actually exercises "no provider key" (runActiveProvider → manual).
+  const r = await post('/api/docs-assistant/ask', { question: 'How do I scan job portals?', run: true });
+  assert.equal(r.status, 200);
+  const j = await r.json();
+  assert.equal(j.mode, 'manual');
+  assert.match(j.message, /No provider available/);
+  assert.match(j.prompt, /help-guide/i);
+  assert.equal(j.answer, undefined);
 });
 
 test('POST /ask rejects an empty question', async () => {
