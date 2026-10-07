@@ -93,6 +93,10 @@ the release is not done:
 7. **Linear statuses move with the work**: In Progress when an agent starts, In Review when
    the PR is up, Done only when the release is deployed and verified — with a comment
    carrying the evidence (counts, run links).
+8. **Every PR is merged into `main`** as soon as its CI is green — no PR lingers open, no
+   work lives only on a branch across sessions. Squash-merge (`--delete-branch`), continue
+   from a fresh `git checkout main && git pull`; if a later finding appears, it is a new
+   commit/PR on top of main, never a stranded branch.
 
 ## Parent sync
 

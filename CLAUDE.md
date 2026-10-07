@@ -31,6 +31,9 @@ they are relevant.
   and a spec in `docs/sdd/specs/` with real verification output.** Linear statuses move
   with the work (In Progress → In Review → Done on deployed-and-verified). Full list:
   `docs/sdd/HANDOFF.md` → *Post-release standing rules*.
+- **Every PR is merged into `main` once CI is green** — squash-merge, branch deleted,
+  work continues from fresh `main`. No PR lingers open; a later finding is a new
+  commit/PR on top of main, never a stranded branch.
 - **Verify before claiming done.** A passing unit suite is not an end-to-end check —
   see the premature-success note in [PROGRESS.md](PROGRESS.md).
 
