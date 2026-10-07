@@ -112,3 +112,19 @@ test('wiki-sync decodes the patch subject; publish 409 only from npm error lines
   assert.match(pub, /grep -E '\^npm \(error\|ERR!\)'/);
   assert.doesNotMatch(pub, /\|409\|/);
 });
+
+test('v1.241.1: deploy waits for a running scan/eval before restarting, and always resumes the timers', () => {
+  const src = readFileSync(join(WF, 'deploy.yml'), 'utf8');
+  const hold = src.indexOf('hold_timers\n');
+  const restart = src.indexOf('systemctl restart "$SERVICE"\n          healthy "$UI_REF"');
+  const resume = src.indexOf('resume_timers\n          trap - ERR');
+  assert.ok(hold > 0 && restart > hold && resume > restart, 'hold → restart → healthy → resume');
+  const rollback = src.slice(src.indexOf('rollback() {'), src.indexOf('rollback() {') + 400);
+  assert.match(rollback, /resume_timers/, 'a failed deploy still restarts the timers');
+  // A running oneshot is "activating" — `is-active` would say it is not running.
+  assert.match(src, /ActiveState --value "\$u"/);
+  assert.match(src, /activating\|deactivating\)/);
+  const wait = Number(src.match(/SCAN_WAIT_S:-(\d+)/)[1]);
+  const jobMin = Number(src.match(/timeout-minutes: (\d+)/)[1]);
+  assert.ok(wait / 60 + 15 <= jobMin, `scan wait ${wait}s leaves room in the ${jobMin}-min job`);
+});

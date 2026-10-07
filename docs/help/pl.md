@@ -2262,6 +2262,19 @@ Następnie dodaj coworkera w panelu **Install a coworker** w OpenWorker — prze
 
 Mapa pokazuje wyniki skanowania, oczekujący pipeline i twój tracker na mapie OpenStreetMap. **Wypełniona kropka** to ocena (tracker); **pierścień** to wskazówka dopasowania tytułu dla oferty jeszcze nieocenionej (pipeline, skan). **Liczba** grupuje pobliskie oferty; przybliż, aby je rozdzielić. 📍 oznacza adres pracodawcy znaleziony w OpenStreetMap, w przeciwnym razie kropka leży w centrum miejscowości. Przełącznik warstw pokazuje lub ukrywa skan, pipeline i tracker.
 
+### Jak korzystać z mapy
+
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/job-map-pl.png" alt="Mapa ofert: wyniki skanowania, pipeline i oferty z trackera na mapie OpenStreetMap" width="760"></p>
+
+1. **Najpierw uruchom skan** (`#/scan`) — mapa rysuje to, co zawierają ostatni skan, pipeline i tracker; pusty projekt pokazuje pustą mapę.
+2. **Otwórz `#/map`.** Wiersz pod tytułem pokazuje postęp: *Znalezione miejsca: N/M* rośnie w miarę wyszukiwania miejsc (miejsca z bufora pojawiają się od razu), a *Bez lokalizacji* liczy oferty bez podanego miejsca (tylko zdalne, „Anywhere”).
+3. **Czytaj kolory.** Wypełnienie = twoja ocena (zielony dobry · żółty w porządku · niebieski średni · czerwony słaby). Pierścień = dopasowanie tytułu przed oceną (te same kolory, szary = brak sygnału dopasowania).
+4. **Przybliż** liczbę, aby rozdzielić grupę; na poziomie ulicy oferty z tego samego miejsca rozchodzą się wachlarzem, więc każdą można kliknąć.
+5. **Kliknij kropkę**, aby otworzyć ofertę lub raport z oceny wpisu z trackera.
+6. **Przełączaj warstwy** (prawy górny róg), aby porównać na przykład sam tracker ze świeżymi wynikami skanowania.
+
+Oferta z kilkoma miejscami („Berlin Office · Berlin · Germany · Bosnia · …”, „Berlin; Munich”, „Remote U.S. · Toronto”) trafia w **pierwsze prawdziwe miejsce**; segmenty „Remote …”, „(HQ)” i końcowe „Office” są pomijane. Mapa obejmuje obszar, na którym leży większość ofert, więc kilka odległych nie zmniejsza widoku — oddal, aby je zobaczyć.
+
 ### Dane i prywatność
 
 Mapa to jedyny widok, który łączy się z usługami zewnętrznymi, i tylko gdy jest otwarty: przeglądarka pobiera kafelki z serwera kafelków, a serwer wysyła **lokalizację i nazwę firmy** każdej oferty (nigdy CV ani profilu) do geokodera Nominatim. Odpowiedzi są buforowane w `web-ui/.cache/geocode.json`, więc każde miejsce jest wyszukiwane tylko raz. Aby zatrzymać te zapytania we własnej infrastrukturze, skieruj poniższe zmienne na serwery hostowane samodzielnie.

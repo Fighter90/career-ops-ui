@@ -2364,6 +2364,19 @@ Then add the coworker in OpenWorker's **Install a coworker** panel — by **GitH
 
 The map shows scan results, the pending pipeline and your tracker on an OpenStreetMap map. A **filled dot** is an evaluation score (tracker); a **ring** is a title-fit hint for a posting you have not evaluated yet (pipeline, scan). A **number** groups nearby postings; zoom in to spread them. 📍 marks an employer address found in OpenStreetMap, otherwise the dot sits at the place's centre. The layer switch toggles scan, pipeline and tracker.
 
+### How to use the map
+
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/job-map-en.png" alt="Job map: scan results, pipeline and tracker postings on an OpenStreetMap map" width="760"></p>
+
+1. **Run a scan first** (`#/scan`) — the map draws what the last scan, the pipeline and the tracker hold; an empty project shows an empty map.
+2. **Open `#/map`.** The line under the title counts progress: *Places located: N/M* fills up as places are looked up (cached places appear at once), and *Without a location* counts postings that name no place (remote-only, "Anywhere").
+3. **Read the colours.** Filled = your evaluation score (green good · yellow ok · blue medium · red weak). Ring = title fit before evaluation (same colours, grey = no fit signal).
+4. **Zoom in** on a number to split a group; at street level postings on the same spot fan out so each can be clicked.
+5. **Click a dot** to open the posting, or the evaluation report for a tracker entry.
+6. **Switch layers** (top right) to compare, for example, only the tracker against fresh scan results.
+
+A posting that lists several places ("Berlin Office · Berlin · Germany · Bosnia · …", "Berlin; Munich", "Remote U.S. · Toronto") is placed at its **first real place**; "Remote …" segments, "(HQ)" and a trailing "Office" are skipped. The map frames where most postings are, so a few far-away ones do not shrink the view — zoom out to see them.
+
 ### Data and privacy
 
 The map is the only view that talks to outside services, and only while you have it open: the browser loads map tiles from the tile server, and the server sends each posting's **location and company name** (never your CV or profile) to the Nominatim geocoder. Answers are cached in `web-ui/.cache/geocode.json`, so each place is looked up once. To keep these requests on your own infrastructure, point the variables below at self-hosted servers.

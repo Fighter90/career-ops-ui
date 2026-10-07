@@ -36,6 +36,9 @@
     try { const x = new URL(u); return (x.host + x.pathname).replace(/\/+$/, '').toLowerCase(); }
     catch { return ''; }
   };
+  // The server keeps the first place of a multi-location cell and refuses only
+  // a query over its MAX_QUERY (2000) — cap the raw cell to that, nothing more.
+  const geoQuery = (loc) => String(loc).slice(0, 2000);
   const openUrl = (u) => (/^https?:\/\//i.test(u || '') ? () => window.open(u, '_blank', 'noopener') : null);
 
   /** Pipeline/scan row → fit band (two-pager FitScore wins over the title band). */
@@ -288,7 +291,7 @@
           let pos = null;
           for (const loc of group[0].places) {
             try {
-              pos = await API.get('/api/geocode?q=' + encodeURIComponent(loc) + '&company=' + encodeURIComponent(company));
+              pos = await API.get('/api/geocode?q=' + encodeURIComponent(geoQuery(loc)) + '&company=' + encodeURIComponent(company.slice(0, 200)));
             } catch { pos = null; }
             if (pos && pos.lat != null) break;
           }

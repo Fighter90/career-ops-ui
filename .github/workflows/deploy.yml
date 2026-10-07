@@ -70,7 +70,8 @@ jobs:
   deploy:
     name: ${{ inputs.mode }} ${{ inputs.app_dir }}
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    # 40: a deploy may wait up to 15 min for a running hourly scan (hold_timers).
+    timeout-minutes: 40
     permissions:
       contents: read
     environment: production
@@ -340,10 +341,47 @@ jobs:
             done
             return 1
           }
+          HELD_TIMERS=()
+          hold_timers() {
+            local u t s waited=0
+            for u in career-ops-scan career-ops-eval; do
+              t="$u.timer"
+              if systemctl is-active --quiet "$t" 2>/dev/null; then
+                systemctl stop "$t" && HELD_TIMERS+=("$t")
+              fi
+            done
+            [ ${#HELD_TIMERS[@]} -gt 0 ] && echo "timers held: ${HELD_TIMERS[*]}"
+            # A running oneshot is "activating" (is-active says no) — read ActiveState.
+            while :; do
+              s=""
+              for u in career-ops-scan.service career-ops-eval.service; do
+                case "$(systemctl show -p ActiveState --value "$u" 2>/dev/null)" in
+                  activating|deactivating) s="$s $u" ;;
+                esac
+              done
+              [ -z "$s" ] && break
+              if [ "$waited" -ge "${SCAN_WAIT_S:-900}" ]; then
+                echo "::warning::still running after ${waited}s:$s — restarting anyway"
+                break
+              fi
+              [ "$waited" -eq 0 ] && echo "waiting for:$s"
+              sleep 10; waited=$((waited + 10))
+            done
+            [ "$waited" -gt 0 ] && echo "waited ${waited}s for the scan/eval run to finish"
+            return 0
+          }
+          resume_timers() {
+            local t
+            for t in "${HELD_TIMERS[@]}"; do
+              systemctl start "$t" || echo "::warning::could not restart $t"
+            done
+            HELD_TIMERS=()
+          }
           rollback() {
             # Best effort all the way through: one failing step must not skip the restart.
             trap - ERR
             set +e
+            resume_timers
             echo "::error::deploy failed; restoring the pre-deploy files from $BK"
             for d in "$APP_DIR" "$UI_DIR"; do
               n=${name[$d]}
@@ -396,8 +434,14 @@ jobs:
               echo "hosts drop-in set: ALLOWED_HOSTS=$ALLOWED_HOSTS"
             fi
           fi
+          # The hourly scan runs inside the service: a restart mid-scan killed it
+          # (2026-10-07 06:04, "service restarted mid-scan"). Hold the scan/eval
+          # timers, let a running one finish (up to SCAN_WAIT_S, default 900 s — a scan
+          # takes ~13 min), then restart.
+          hold_timers
           systemctl restart "$SERVICE"
           healthy "$UI_REF" "$want_parent"
+          resume_timers
           trap - ERR
           # hermes-agent is not part of this deploy; it only has to still be up
           # and able to reach the viewer's LLM bridge.

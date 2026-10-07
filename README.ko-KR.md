@@ -7,19 +7,19 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-4404%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-4419%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.241.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.241.0)
+[![release](https://img.shields.io/badge/release-v1.241.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.241.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.241.0** — **28개 에이전트 코드 리뷰에 따른 보안 강화, 그리고 채용 지도 —** **@bullitt186**의 기여입니다. 잘못된 요청이 더 이상 서버를 멈추지 않고, 중단된 스캔이 마지막 결과를 지우지 않으며, 평가가 처음 16 KB가 아니라 방법 파일 전체를 보고, 서버가 DNS 리바인딩 호스트와 교차 사이트 쓰기를 거부하며, 리디렉션에서 사설 대상을 다시 검사합니다. `#/map`은 공고를 OpenStreetMap에 표시합니다. **테스트 4404개 · 브라우저 118개.**
+> **🆕 최신 릴리스 — v1.241.1** — **라이브 평가가 모든 로케일에서 끝까지 작동합니다.** 평가가 다시 `oferta.md` 전체를 보고(컨텍스트 예산 192 KB), 보고서가 선택한 언어로 작성되며(지시문이 이제 프롬프트를 시작하고, 이름, 기술 용어, 인용만 영어로 남습니다), 느린 평가는 502로 끝나는 대신 300초를 받고, 데바나가리 블록 문자나 현지 숫자 점수를 쓰는 힌디어 보고서도 검증을 통과합니다. 채용 지도는 여러 지역이 나열된 긴 공고("Berlin Office · Berlin · Germany · …")를 거부하지 않고 표시하며, 배포는 실행 중인 매시간 스캔을 기다리고, 채용 지도는 이제 [cvstart.org](https://cvstart.org/#job-map)에도 있습니다. 17개 로케일 원격 QA가 프로덕션에서 통과했습니다.
 >
-> **이전 버전 — v1.240.0** — **career-ops 1.35.0과의 상위 프로젝트 패리티: 새 소스 6개(ADP Workforce Now, Gupy, JazzHR, Startup Jobs, Taleo, UKG Pro → 109), 기존 제공자 8개에 반영한 수정, 그리고 상위의 체크리스트 `pipeline.md` 형식** — **@bullitt186**의 기여입니다: UI는 이런 파이프라인을 대기 0건으로 읽었고 상위가 절대 보지 않는 곳에 새 URL을 덧붙였는데, 이제 `- [ ]` 행을 읽고 씁니다. Ashby, Breezy, Recruitee는 국가를 위치에 병합해 필터가 영국 기본 원격 직무를 더 이상 걸러내지 않으며, HTTP 200으로 응답한 챌린지 페이지는 빈 보드로 읽히지 않고 명확하게 실패합니다. **테스트 4056개.**
+> **이전 버전 — v1.241.0** — **28개 에이전트 코드 리뷰에 따른 보안 강화, 그리고 채용 지도 —** **@bullitt186**의 기여입니다. 잘못된 요청이 더 이상 서버를 멈추지 않고, 중단된 스캔이 마지막 결과를 지우지 않으며, 평가가 처음 16 KB가 아니라 방법 파일 전체를 보고, 서버가 DNS 리바인딩 호스트와 교차 사이트 쓰기를 거부하며, 리디렉션에서 사설 대상을 다시 검사합니다. `#/map`은 공고를 OpenStreetMap에 표시합니다. **테스트 4404개 · 브라우저 118개.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -30,6 +30,12 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 [![career-ops-ui — 커맨드 센터](./images/dashboard-ko-KR.png)](https://youtu.be/LcVPUg9IsDk?si=mrx3oOmOpSAwabOz)
 
 **[▶ 미리보기 보기](https://youtu.be/LcVPUg9IsDk?si=mrx3oOmOpSAwabOz)**
+
+### 🗺️ 신규: 모든 공고를 지도에서
+
+스캔 결과, 파이프라인, 트래커를 하나의 세계 지도(`#/map`)에 표시합니다. 공고가 어디에 몰려 있는지, 어느 도시로 이주할 만한지 한눈에 볼 수 있습니다. 채워진 마커는 평가 점수, 링은 평가 전 직함 적합도입니다. 공고는 회사 주소를 알면 그 위치에, 모르면 도시 중심에 표시됩니다(OpenStreetMap 무료 지오코딩, 키 불필요).
+
+![career-ops-ui — 채용 지도](./images/job-map-ko-KR.png)
 
 ## career-ops 소개
 

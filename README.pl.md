@@ -7,19 +7,19 @@
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
-[![tests](https://img.shields.io/badge/tests-4404%20passed-brightgreen)](#testy)
+[![tests](https://img.shields.io/badge/tests-4419%20passed-brightgreen)](#testy)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#testy)
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.241.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.241.0)
+[![release](https://img.shields.io/badge/release-v1.241.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.241.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Najnowsze wydanie — v1.241.0** — **Wzmocnienie po przeglądzie kodu przez 28 agentów oraz mapa ofert od **@bullitt186**.** Zniekształcone żądanie nie może już zatrzymać serwera, przerwany skan nie kasuje ostatnich wyników, oceny widzą teraz cały plik metody zamiast pierwszych 16 KB, serwer odrzuca hosty DNS-rebinding i zapisy z innych witryn, a przekierowania są ponownie sprawdzane pod kątem prywatnych celów. `#/map` pokazuje Twoje oferty na OpenStreetMap. **4404 testy · 118 przeglądarkowych.**
+> **🆕 Najnowsze wydanie — v1.241.1** — **Oceny na żywo działają od początku do końca w każdej wersji językowej.** Oceny znów widzą cały `oferta.md` (budżet kontekstu 192 KB), raporty pozostają w wybranym języku (instrukcja teraz otwiera prompt; po angielsku zostają tylko nazwy, technologie i cytaty), wolne oceny dostają 300 s zamiast kończyć się błędem 502, a raporty po hindi z literami bloków w dewanagari lub wynikami zapisanymi lokalnymi cyframi przechodzą walidację. Mapa ofert umieszcza długie oferty z wieloma lokalizacjami („Berlin Office · Berlin · Germany · …”) zamiast je odrzucać, wdrożenie czeka na trwający cogodzinny skan, a mapa ofert jest teraz na [cvstart.org](https://cvstart.org/#job-map). Zdalne QA × 17 wersji językowych zielone na produkcji.
 >
-> **Poprzednie wydanie — v1.240.0** — **Parytet z projektem nadrzędnym career-ops 1.35.0: sześć nowych źródeł (ADP Workforce Now, Gupy, JazzHR, Startup Jobs, Taleo, UKG Pro → 109), poprawki przeniesione do ośmiu istniejących dostawców oraz format `pipeline.md` projektu nadrzędnego w postaci listy kontrolnej** — wniósł **@bullitt186**: UI odczytywało taki pipeline jako 0 oczekujących i dopisywało nowe adresy URL tam, gdzie projekt nadrzędny nigdy nie zagląda; teraz odczytuje i zapisuje wiersze `- [ ]`. Ashby, Breezy i Recruitee dołączają kraj do lokalizacji, więc filtr przestaje odrzucać zdalne oferty z głównym adresem w UK, a strona wyzwania zwrócona jako HTTP 200 zawodzi głośno zamiast być odczytana jako pusta tablica. **4056 testów.**
+> **Poprzednie wydanie — v1.241.0** — **Wzmocnienie po przeglądzie kodu przez 28 agentów oraz mapa ofert od **@bullitt186**.** Zniekształcone żądanie nie może już zatrzymać serwera, przerwany skan nie kasuje ostatnich wyników, oceny widzą teraz cały plik metody zamiast pierwszych 16 KB, serwer odrzuca hosty DNS-rebinding i zapisy z innych witryn, a przekierowania są ponownie sprawdzane pod kątem prywatnych celów. `#/map` pokazuje Twoje oferty na OpenStreetMap. **4404 testy · 118 przeglądarkowych.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -29,6 +29,12 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 [![career-ops-ui](./images/dashboard-pl.png)](https://youtu.be/LcVPUg9IsDk?si=mrx3oOmOpSAwabOz)
 
 **[▶ Zobacz zapowiedź](https://youtu.be/LcVPUg9IsDk?si=mrx3oOmOpSAwabOz)**
+
+### 🗺️ Nowość: każda oferta na mapie
+
+Wyniki skanowania, pipeline i tracker na jednej mapie świata (`#/map`) — zobacz, gdzie skupiają się oferty i do których miast warto się przeprowadzić. Wypełniony znacznik to twoja ocena, pierścień to dopasowanie tytułu przed oceną; oferty są przypinane do adresu firmy, gdy jest znany, a w przeciwnym razie do centrum miasta (bezpłatne geokodowanie OpenStreetMap, bez kluczy).
+
+![career-ops-ui — Mapa ofert](./images/job-map-pl.png)
 
 ## O projekcie career-ops
 

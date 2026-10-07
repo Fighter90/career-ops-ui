@@ -10,6 +10,29 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 
 ---
 
+## [1.241.1] — 2026-10-07
+
+**Las evaluaciones en vivo funcionan de principio a fin en todos los idiomas, el mapa de ofertas sitúa las ofertas largas con varias ubicaciones y un despliegue ya no mata un escaneo en curso.**
+
+### Corregido
+
+- **Las evaluaciones ven el método completo.** El presupuesto de contexto (144 KB) seguía cortando el final de `modes/oferta.md` una vez insertados el CV y el perfil, de modo que toda evaluación en vivo perdía sus últimos bloques. El presupuesto es ahora de 192 KB y el límite flexible del prompt de 256 KB, definidos una sola vez en `llm-dispatch.mjs`.
+- **Informes en el idioma elegido.** La instrucción de idioma ahora abre el prompt además de cerrarlo, y las palabras corrientes (rol, equipo, diseño…) se escriben en el idioma del informe; solo los nombres, las tecnologías y las citas literales siguen en inglés. Corrige los informes en hindi y japonés que salían casi enteros en inglés.
+- **Las evaluaciones lentas ya no acaban en HTTP 502.** El plazo de la evaluación es de 300 s (antes el del proveedor por defecto, 180 s).
+- **Letras de bloque en hindi.** Se reconoce un informe que escribe las letras A–G en devanagari (`## ए)`, `## बी)` … `## जी)`), y `SCORE:` acepta dígitos locales (`३.८`, `٣٫٨`, `３．８`) y coma decimal.
+- **Mapa de ofertas: ubicaciones largas.** Una celda como «Berlin Office · Berlin · Germany · Bosnia · …» (más de 300 caracteres) se rechazaba con HTTP 400 y la oferta se quedaba sin marcador. Ahora se usa el primer lugar real (`·`, `;`, `|`, ` / `, saltos de línea; se omiten los segmentos «Remote …», «(HQ)» y «Office»); solo se rechaza una consulta de más de 2000 caracteres.
+- **Despliegue frente al escaneo horario.** El despliegue retiene los temporizadores de escaneo y de autoevaluación, espera a que termine el que esté en curso (hasta 15 min), reinicia y siempre reanuda los temporizadores, también en el rollback.
+
+### Añadido
+
+- **Mapa de ofertas en [cvstart.org](https://cvstart.org/#job-map)** en los 17 idiomas, y en los README en inglés y ruso.
+- **Capturas del mapa en todos los idiomas**: una por idioma (`scripts/capture-map-screenshots.mjs`), en los 17 README, en cvstart.org y en un nuevo apartado de la ayuda, «Cómo usar el mapa» (§33, ×17).
+
+### Notas
+
+- Tests **4404 → 4419**, de navegador **118**. QA remoto (todas las rutas, el sitio, los enlaces y LLM en vivo × 17 idiomas) en verde en producción.
+- No incluido en esta versión: evaluaciones en streaming; el límite de 300 s sigue siendo estricto (un modelo local lento aún puede alcanzarlo) y el puente de Hermes mantiene su llamada sin streaming.
+
 ## [1.241.0] — 2026-10-07
 
 **Versión de endurecimiento a partir de una revisión de código con 28 agentes (~190 hallazgos verificados): se cierran las clases de seguridad, caída del proceso y pérdida de datos, además de un mapa de ofertas aportado por @bullitt186.**

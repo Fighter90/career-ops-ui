@@ -9,6 +9,29 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.241.1] — 2026-10-07
+
+**Oceny na żywo działają od początku do końca w każdej wersji językowej, mapa ofert umieszcza długie oferty z wieloma lokalizacjami, a wdrożenie nie przerywa już trwającego skanu.**
+
+### Naprawiono
+
+- **Oceny widzą całą metodę.** Budżet kontekstu (144 KB) nadal ucinał koniec `modes/oferta.md` po wstawieniu CV i profilu, więc każda ocena na żywo pomijała swoje ostatnie bloki. Budżet wynosi teraz 192 KB, a miękki limit promptu 256 KB, zdefiniowane w jednym miejscu w `llm-dispatch.mjs`.
+- **Raporty w wybranym języku.** Instrukcja językowa teraz otwiera prompt, a nie tylko go zamyka, a zwykłe słowa (rola, zespół, design…) są pisane w języku raportu; po angielsku zostają tylko nazwy, technologie i dosłowne cytaty. Naprawia raporty po hindi i japońsku, które były w większości po angielsku.
+- **Wolne oceny nie kończą się już błędem HTTP 502.** Limit czasu oceny wynosi 300 s (wcześniej domyślne 180 s dostawcy).
+- **Litery bloków w hindi.** Raport, który zapisuje litery A–G w dewanagari (`## ए)`, `## बी)` … `## जी)`), jest rozpoznawany, a `SCORE:` akceptuje lokalne cyfry (`३.८`, `٣٫٨`, `３．８`) i przecinek dziesiętny.
+- **Mapa ofert: długie lokalizacje.** Komórka w rodzaju „Berlin Office · Berlin · Germany · Bosnia · …” (ponad 300 znaków) była odrzucana z HTTP 400, a oferta nie miała znacznika. Teraz używane jest pierwsze prawdziwe miejsce (`·`, `;`, `|`, ` / `, podziały wierszy; segmenty „Remote …”, „(HQ)” i „Office” są pomijane); odrzucane jest tylko zapytanie dłuższe niż 2000 znaków.
+- **Wdrożenie a cogodzinny skan.** Wdrożenie wstrzymuje timery skanu i automatycznej oceny, czeka na zakończenie trwającego (do 15 min), restartuje i zawsze wznawia timery — również przy wycofaniu.
+
+### Dodano
+
+- **Mapa ofert na [cvstart.org](https://cvstart.org/#job-map)** we wszystkich 17 językach oraz w angielskim i rosyjskim README.
+- **Zrzuty mapy we wszystkich językach** — po jednym na język (`scripts/capture-map-screenshots.mjs`), we wszystkich 17 plikach README, na cvstart.org i w nowym podrozdziale pomocy „Jak korzystać z mapy” (§33, ×17).
+
+### Uwagi
+
+- Testy **4404 → 4419**, przeglądarkowe **118**. Zdalne QA (wszystkie trasy, strona, linki i LLM na żywo × 17 wersji językowych) zielone na produkcji.
+- Poza tym wydaniem: ocenianie w trybie strumieniowym — limit 300 s pozostaje sztywny (wolny model lokalny wciąż może go osiągnąć), a most Hermes nadal działa bez strumieniowania.
+
 ## [1.241.0] — 2026-10-07
 
 **Wydanie wzmacniające po przeglądzie kodu przez 28 agentów (~190 zweryfikowanych ustaleń): zamknięto klasy problemów dotyczące bezpieczeństwa, awarii procesu i utraty danych, a do tego mapa ofert pracy wniesiona przez @bullitt186.**

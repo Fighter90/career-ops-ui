@@ -7,19 +7,19 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-4404%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-4419%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.241.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.241.0)
+[![release](https://img.shields.io/badge/release-v1.241.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.241.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.241.0** — **基于 28 个智能体代码审查的加固，以及由 @bullitt186 贡献的职位地图。** 格式错误的请求不再能使服务器停止，被中止的扫描不再清空上一次的结果，评估现在能看到完整的方法文件而不只是前 16 KB，服务器会拒绝 DNS 重绑定主机和跨站写入，重定向会重新检查是否指向私有目标。`#/map` 在 OpenStreetMap 上显示你的职位。**4404 个测试 · 118 个浏览器测试。**
+> **🆕 最新版本 — v1.241.1** — **实时评估在每种语言下都能端到端正常运行。** 评估重新能看到完整的 `oferta.md`（上下文预算 192 KB），报告保持所选语言（指令现在位于提示词开头；只有名称、技术名词和引用保留英文），缓慢的评估拥有 300 秒而不是以 502 结束，带有天城文区块字母或本地数字评分的印地语报告也能通过校验。职位地图现在能定位带有多个地点的长职位（“Berlin Office · Berlin · Germany · …”）而不是拒绝它们，部署会等待正在运行的每小时扫描结束，职位地图也已登陆 [cvstart.org](https://cvstart.org/#job-map)。远程 QA × 17 种语言在生产环境全部通过。
 >
-> **上一版本 — v1.240.0** — **与 career-ops 1.35.0 的父项目对齐：六个新来源（ADP Workforce Now、Gupy、JazzHR、Startup Jobs、Taleo、UKG Pro → 109）、八个现有服务商的镜像修复，以及父项目的清单式 `pipeline.md` 格式** —— 由 **@bullitt186** 贡献：UI 过去把这样的 Pipeline 读成 0 条待处理，并把新 URL 追加到父项目从不查看的位置；现在它会读写 `- [ ]` 行。Ashby、Breezy 和 Recruitee 把国家并入地点，使过滤器不再丢弃以英国为主的远程职位；以 HTTP 200 返回的质询页面现在会明确报错，而不是被读作空职位板。**4056 个测试。**
+> **上一版本 — v1.241.0** — **基于 28 个智能体代码审查的加固，以及由 @bullitt186 贡献的职位地图。** 格式错误的请求不再能使服务器停止，被中止的扫描不再清空上一次的结果，评估现在能看到完整的方法文件而不只是前 16 KB，服务器会拒绝 DNS 重绑定主机和跨站写入，重定向会重新检查是否指向私有目标。`#/map` 在 OpenStreetMap 上显示你的职位。**4404 个测试 · 118 个浏览器测试。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -30,6 +30,12 @@ _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。
 [![career-ops-ui — 指挥中心](./images/dashboard-zh-CN.png)](https://youtu.be/LcVPUg9IsDk?si=mrx3oOmOpSAwabOz)
 
 **[▶ 观看预览](https://youtu.be/LcVPUg9IsDk?si=mrx3oOmOpSAwabOz)**
+
+### 🗺️ 新功能：每个职位都在地图上
+
+扫描结果、pipeline 和追踪记录汇集在一张世界地图（`#/map`）上，看看职位集中在哪里，哪些城市值得搬去。实心标记是你的评估分数，圆环是评估前的标题匹配度；已知公司地址时职位标在公司地址上，否则标在城市中心（免费的 OpenStreetMap 地理编码，无需密钥）。
+
+![career-ops-ui — 职位地图](./images/job-map-zh-CN.png)
 
 ## 关于 career-ops
 

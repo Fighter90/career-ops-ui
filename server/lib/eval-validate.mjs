@@ -30,13 +30,16 @@ export function validateEvaluationReport(text) {
   // however the prompt asks — three live runs in a row (v1.239.x). Accepted
   // only as a standalone word, so a letter inside an Arabic word never counts.
   const ABJAD = { A: 'أ|ا|إ|آ', B: 'ب', C: 'ج', D: 'د', E: 'هـ|ه', F: 'و', G: 'ز' };
+  // A Hindi report spells the letter out in Devanagari: `## ए)`, `## बी)` …
+  // `## जी)` (local deepseek run, 2026-10-07). Same standalone-word rule.
+  const DEVANAGARI = { A: 'ए', B: 'बी', C: 'सी', D: 'डी', E: 'ई', F: 'एफ़|एफ', G: 'जी' };
   const requiredBlocks = ['A', 'B', 'C', 'D', 'E', 'F', 'G'].map((L) => [
     L,
     new RegExp(`^#{1,3}[ \\t]*[^\\n]{0,24}?(?<![A-Za-z\\u0400-\\u04FF])[${LOOKALIKE[L] || L}](?![A-Za-z\\u0400-\\u04FF])`, 'mu'),
-    new RegExp(`^#{1,3}[ \\t]*[^\\n]{0,24}?(?<![\\p{L}\\p{M}])(?:${ABJAD[L]})(?![\\p{L}\\p{M}])`, 'mu'),
+    new RegExp(`^#{1,3}[ \\t]*[^\\n]{0,24}?(?<![\\p{L}\\p{M}])(?:${ABJAD[L]}|${DEVANAGARI[L]})(?![\\p{L}\\p{M}])`, 'mu'),
   ]);
-  for (const [label, latin, abjad] of requiredBlocks) {
-    if (!latin.test(text) && !abjad.test(text)) issues.push(`missing Block ${label}`);
+  for (const [label, latin, spelled] of requiredBlocks) {
+    if (!latin.test(text) && !spelled.test(text)) issues.push(`missing Block ${label}`);
   }
 
   const summary = text.match(/---SCORE_SUMMARY---\s*([\s\S]*?)---END_SUMMARY---/);
@@ -54,7 +57,8 @@ export function validateEvaluationReport(text) {
         issues.push(`SCORE_SUMMARY ${key} is required`);
       }
     }
-    const score = summaryBlock.match(/^[ \t]*SCORE:[ \t]*([0-9]+(?:\.[0-9]+)?)/mi);
+    const scoreLine = summaryBlock.match(/^[ \t]*SCORE:[ \t]*(.*)$/mi);
+    const score = scoreLine && asciiNumber(scoreLine[1]).match(/^[*_ \t]*([0-9]+(?:\.[0-9]+)?)/);
     const scoreValue = score ? Number(score[1]) : NaN;
     if (!Number.isFinite(scoreValue) || scoreValue < 0 || scoreValue > 5) {
       issues.push('SCORE_SUMMARY score must be a number between 0 and 5');
@@ -62,6 +66,20 @@ export function validateEvaluationReport(text) {
   }
 
   return issues;
+}
+
+/**
+ * Localized digits → ASCII, and a decimal comma / Arabic decimal separator →
+ * `.`, so `SCORE: ३.८`, `٣٫٨`, `３．８` and `3,8` read as 3.8. Digit blocks are
+ * contiguous 0–9 runs; each entry is the code point of its zero.
+ */
+const DIGIT_ZEROS = [0x0660, 0x06F0, 0x0966, 0x09E6, 0x0A66, 0x0AE6, 0x0B66, 0x0BE6, 0x0C66, 0x0CE6, 0x0D66, 0x0E50, 0xFF10];
+export function asciiNumber(s) {
+  return String(s ?? '').replace(/[\u0660-\u0669\u06F0-\u06F9\u0966-\u096F\u09E6-\u09EF\u0A66-\u0A6F\u0AE6-\u0AEF\u0B66-\u0B6F\u0BE6-\u0BEF\u0C66-\u0C6F\u0CE6-\u0CEF\u0D66-\u0D6F\u0E50-\u0E59\uFF10-\uFF19]/g, (c) => {
+    const cp = c.codePointAt(0);
+    const zero = DIGIT_ZEROS.find((z) => cp >= z && cp <= z + 9);
+    return String(cp - zero);
+  }).replace(/(\d)[,\u066B\uFF0E](\d)/g, '$1.$2');
 }
 
 /**

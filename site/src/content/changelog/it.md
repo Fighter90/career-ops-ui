@@ -2,6 +2,29 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.241.1] — 2026-10-07
+
+**Le valutazioni dal vivo funzionano end to end in ogni lingua, la mappa delle offerte posiziona gli annunci lunghi con più sedi e un deploy non interrompe più una scansione in corso.**
+
+### Corretto
+
+- **Le valutazioni vedono tutto il metodo.** Il budget di contesto (144 KB) tagliava ancora la fine di `modes/oferta.md` una volta inseriti CV e profilo, quindi ogni valutazione dal vivo perdeva gli ultimi blocchi. Il budget ora è 192 KB e il limite morbido del prompt 256 KB, definiti una sola volta in `llm-dispatch.mjs`.
+- **Report nella lingua scelta.** L'istruzione sulla lingua ora apre il prompt oltre a chiuderlo, e le parole comuni (ruolo, team, design…) sono scritte nella lingua del report; restano in inglese solo nomi, tecnologie e citazioni testuali. Risolve i report in hindi e giapponese che erano in gran parte in inglese.
+- **Le valutazioni lente non finiscono più in HTTP 502.** Il timeout della valutazione è 300 s (prima era quello predefinito del provider, 180 s).
+- **Lettere dei blocchi in hindi.** Un report che scrive le lettere A–G in devanagari (`## ए)`, `## बी)` … `## जी)`) viene riconosciuto, e `SCORE:` accetta cifre locali (`३.८`, `٣٫٨`, `３．８`) e la virgola decimale.
+- **Mappa delle offerte: sedi lunghe.** Una cella come "Berlin Office · Berlin · Germany · Bosnia · …" (oltre 300 caratteri) veniva rifiutata con HTTP 400 e l'annuncio restava senza marcatore. Ora si usa il primo luogo reale (`·`, `;`, `|`, ` / `, a capo; i segmenti "Remote …", "(HQ)" e "Office" vengono saltati); solo una query oltre i 2000 caratteri viene rifiutata.
+- **Deploy e scansione oraria.** Il deploy sospende i timer di scansione e di valutazione automatica, attende la fine di una scansione in corso (fino a 15 min), riavvia e riattiva sempre i timer — anche in caso di rollback.
+
+### Aggiunto
+
+- **Mappa delle offerte su [cvstart.org](https://cvstart.org/#job-map)** in tutte le 17 lingue, e nei README in inglese e russo.
+- **Screenshot della mappa in tutte le lingue**: uno per lingua (`scripts/capture-map-screenshots.mjs`), in tutti i 17 README, su cvstart.org e in una nuova sottosezione della guida, «Come usare la mappa» (§33, ×17).
+
+### Note
+
+- Test **4404 → 4419**, browser **118**. QA remota (tutte le route, sito, link e LLM dal vivo × 17 lingue) verde in produzione.
+- Non incluso in questa versione: valutazioni in streaming; il timeout di 300 s resta un limite rigido (un modello locale lento può ancora raggiungerlo) e il ponte Hermes mantiene la chiamata senza streaming.
+
 ## [1.241.0] — 2026-10-07
 
 **Release di consolidamento nata da una revisione del codice con 28 agenti (~190 problemi verificati): chiuse le classi sicurezza, crash del processo e perdita di dati, più una mappa delle offerte contribuita da @bullitt186.**

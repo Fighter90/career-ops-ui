@@ -7,19 +7,19 @@
 
 _Неофициальный интерфейс — не аффилирован с career-ops / santifer и не одобрен ими._
 
-[![tests](https://img.shields.io/badge/tests-4404%20passed-brightgreen)](#тесты)
+[![tests](https://img.shields.io/badge/tests-4419%20passed-brightgreen)](#тесты)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.241.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.241.0)
+[![release](https://img.shields.io/badge/release-v1.241.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.241.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Последний релиз — v1.241.0** — **Ужесточение по итогам код-ревью 28 агентами и карта вакансий от @bullitt186.** Некорректный запрос больше не может остановить сервер, прерванный скан не стирает последние результаты, оценки теперь видят файл метода целиком, а не первые 16 КБ, сервер отклоняет хосты DNS-rebinding и кросс-сайтовые записи, а редиректы повторно проверяются на приватные цели. `#/map` показывает ваши вакансии на OpenStreetMap. **4404 теста · 118 браузерных.**
+> **🆕 Последний релиз — v1.241.1** — **Живые оценки работают от начала до конца на любой локали.** Оценки снова видят весь `oferta.md` (бюджет контекста 192 КБ), отчёты остаются на выбранном языке (инструкция теперь открывает промпт; на английском остаются только имена, технологии и цитаты), медленные оценки получают 300 с вместо ошибки 502, а отчёты на хинди с буквами блоков на деванагари или оценками местными цифрами проходят валидацию. Карта вакансий размещает длинные объявления с несколькими локациями («Berlin Office · Berlin · Germany · …») вместо отказа, деплой дожидается идущего ежечасного скана, а карта вакансий теперь есть на [cvstart.org](https://cvstart.org/#job-map). Удалённый QA × 17 локалей зелёный на продакшене.
 >
-> **Предыдущий релиз — v1.240.0** — **Паритет с родителем career-ops 1.35.0: шесть новых источников (ADP Workforce Now, Gupy, JazzHR, Startup Jobs, Taleo, UKG Pro → 109), исправления, зеркально перенесённые в восемь существующих провайдеров, и формат чек-листа `pipeline.md` родителя** — вклад **@bullitt186**: UI читал такой пайплайн как 0 в ожидании и дописывал новые URL туда, куда родитель никогда не смотрит; теперь он читает и пишет строки `- [ ]`. Ashby, Breezy и Recruitee добавляют страну к локации, чтобы фильтр перестал отбрасывать удалённые роли с основной локацией в Великобритании, а проверочная страница, отданная с HTTP 200, теперь громко падает, а не читается как пустая доска. **4056 тестов.**
+> **Предыдущий релиз — v1.241.0** — **Ужесточение по итогам код-ревью 28 агентами и карта вакансий от @bullitt186.** Некорректный запрос больше не может остановить сервер, прерванный скан не стирает последние результаты, оценки теперь видят файл метода целиком, а не первые 16 КБ, сервер отклоняет хосты DNS-rebinding и кросс-сайтовые записи, а редиректы повторно проверяются на приватные цели. `#/map` показывает ваши вакансии на OpenStreetMap. **4404 теста · 118 браузерных.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

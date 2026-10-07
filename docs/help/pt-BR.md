@@ -2280,6 +2280,19 @@ Depois adicione o coworker no painel **Install a coworker** do OpenWorker — po
 
 O mapa mostra os resultados do scan, o pipeline pendente e o seu tracker em um mapa do OpenStreetMap. Um **ponto preenchido** é uma nota de avaliação (tracker); um **anel** é uma dica de aderência do título para uma vaga ainda não avaliada (pipeline, scan). Um **número** agrupa vagas próximas; aproxime o zoom para separá-las. 📍 marca o endereço do empregador encontrado no OpenStreetMap; caso contrário, o ponto fica no centro da localidade. O seletor de camadas mostra ou oculta scan, pipeline e tracker.
 
+### Como usar o mapa
+
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/job-map-pt-BR.png" alt="Mapa de vagas: resultados do scan, pipeline e vagas do tracker em um mapa do OpenStreetMap" width="760"></p>
+
+1. **Execute um scan primeiro** (`#/scan`) — o mapa desenha o que o último scan, o pipeline e o tracker contêm; um projeto vazio mostra um mapa vazio.
+2. **Abra `#/map`.** A linha sob o título conta o progresso: *Locais encontrados: N/M* aumenta conforme os lugares são consultados (os que estão em cache aparecem na hora), e *Sem localização* conta as vagas que não citam nenhum lugar (somente remoto, "Anywhere").
+3. **Entenda as cores.** Preenchido = sua nota de avaliação (verde bom · amarelo razoável · azul médio · vermelho fraco). Anel = aderência do título antes da avaliação (mesmas cores, cinza = sem sinal de aderência).
+4. **Aproxime o zoom** sobre um número para separar o grupo; no nível da rua, vagas no mesmo ponto se abrem em leque para que cada uma possa ser clicada.
+5. **Clique em um ponto** para abrir a vaga, ou o relatório de avaliação no caso de uma entrada do tracker.
+6. **Alterne as camadas** (canto superior direito) para comparar, por exemplo, só o tracker com os resultados novos do scan.
+
+Uma vaga que lista vários lugares ("Berlin Office · Berlin · Germany · Bosnia · …", "Berlin; Munich", "Remote U.S. · Toronto") é posicionada no **primeiro lugar real**; os trechos "Remote …", "(HQ)" e um "Office" no final são ignorados. O mapa enquadra onde está a maioria das vagas, então algumas muito distantes não reduzem a visão — afaste o zoom para vê-las.
+
 ### Dados e privacidade
 
 O mapa é a única tela que fala com serviços externos, e só enquanto está aberto: o navegador carrega os tiles do servidor de tiles e o servidor envia **o local e o nome da empresa** de cada vaga (nunca seu CV ou perfil) ao geocodificador Nominatim. As respostas ficam em cache em `web-ui/.cache/geocode.json`, então cada lugar é consultado uma única vez. Para manter essas requisições na sua própria infraestrutura, aponte as variáveis abaixo para servidores auto-hospedados.

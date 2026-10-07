@@ -4,7 +4,7 @@
  *
  * Copies from the repo root (single source of truth) into site/src + site/public:
  *   images/dashboard-<locale>.png  -> src/assets/screenshots/
- *   images/job-map-<en|ru>.png     -> src/assets/screenshots/
+ *   images/job-map-<locale>.png    -> src/assets/screenshots/
  *   public/favicon-16.png, favicon-32.png, favicon.ico,
  *   public/apple-touch-icon.png    -> public/ (site favicons) + src/assets/logo/
  *   docs/help/<locale>.md          -> src/content/help/ (relative links rewritten
@@ -33,7 +33,7 @@ function fail(msg) {
 const shotsSrc = join(ROOT, 'images');
 const shotsDst = join(SITE, 'src', 'assets', 'screenshots');
 mkdirSync(shotsDst, { recursive: true });
-// dashboard-<locale>.png (README + showcase) and job-map-<en|ru>.png (job-map section).
+// dashboard-<locale>.png (README + showcase) and job-map-<locale>.png (job-map section).
 const shots = readdirSync(shotsSrc).filter((f) => /^(?:dashboard|job-map)-.+\.png$/.test(f));
 if (shots.length === 0) fail(`no dashboard-*.png found in ${shotsSrc}`);
 for (const f of shots) cpSync(join(shotsSrc, f), join(shotsDst, f));

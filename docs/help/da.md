@@ -2317,6 +2317,19 @@ Tilføj derefter coworkeren i OpenWorkers **Install a coworker**-panel — via *
 
 Kortet viser scanresultater, den ventende pipeline og din tracker på et OpenStreetMap-kort. En **udfyldt prik** er en evalueringsscore (tracker); en **ring** er et hint om titelmatch for et opslag, du endnu ikke har evalueret (pipeline, scan). Et **tal** samler nærliggende opslag; zoom ind for at sprede dem. 📍 markerer en arbejdsgiveradresse fundet i OpenStreetMap, ellers sidder prikken i stedets centrum. Lagvælgeren slår scan, pipeline og tracker til og fra.
 
+### Sådan bruger du kortet
+
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/job-map-da.png" alt="Jobkort: scanresultater, pipeline og trackerens opslag på et OpenStreetMap-kort" width="760"></p>
+
+1. **Kør først en scanning** (`#/scan`) — kortet tegner det, som den seneste scanning, pipelinen og trackeren indeholder; et tomt projekt giver et tomt kort.
+2. **Åbn `#/map`.** Linjen under titlen viser fremdriften: *Steder fundet: N/M* vokser, efterhånden som stederne slås op (cachede steder vises med det samme), og *Uden sted* tæller opslag, der ikke nævner noget sted (kun remote, "Anywhere").
+3. **Læs farverne.** Udfyldt = din evalueringsscore (grøn god · gul okay · blå middel · rød svag). Ring = titelmatch før evaluering (samme farver, grå = intet match-signal).
+4. **Zoom ind** på et tal for at dele en gruppe; på gadeniveau spredes opslag på samme sted, så hvert kan klikkes.
+5. **Klik på en prik** for at åbne opslaget, eller evalueringsrapporten for en tracker-post.
+6. **Skift lag** (øverst til højre) for fx kun at sammenligne trackeren med friske scanresultater.
+
+Et opslag med flere steder ("Berlin Office · Berlin · Germany · Bosnia · …", "Berlin; Munich", "Remote U.S. · Toronto") placeres på sit **første egentlige sted**; "Remote …"-led, "(HQ)" og et afsluttende "Office" springes over. Kortet viser det område, hvor de fleste opslag ligger, så et par fjerntliggende ikke krymper udsnittet — zoom ud for at se dem.
+
 ### Data og privatliv
 
 Kortet er den eneste visning, der kontakter eksterne tjenester, og kun mens det er åbent: browseren henter kortfliser fra tile-serveren, og serveren sender hvert opslags **sted og firmanavn** (aldrig dit CV eller din profil) til geokoderen Nominatim. Svar caches i `web-ui/.cache/geocode.json`, så hvert sted slås kun op én gang. Vil du holde forespørgslerne på din egen infrastruktur, så peg variablerne nedenfor på selvhostede servere.

@@ -8,6 +8,29 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.241.1] — 2026-10-07
+
+**Live evaluations work end to end in every locale, the job map places long multi-location postings, and a deploy no longer kills a running scan.**
+
+### Fixed
+
+- **Evaluations see the whole method.** The context budget (144 KB) still cut the end of `modes/oferta.md` once the CV and profile were inlined, so every live evaluation missed its last blocks. The budget is now 192 KB and the prompt soft cap 256 KB, defined once in `llm-dispatch.mjs`.
+- **Reports in the chosen language.** The language instruction now opens the prompt as well as closing it, and ordinary words (role, team, design…) are written in the report's language; only names, technologies and word-for-word quotes stay English. Fixes Hindi and Japanese reports that were mostly English.
+- **Slow evaluations no longer end in HTTP 502.** The evaluation timeout is 300 s (was the provider default, 180 s).
+- **Hindi block letters.** A report that spells the A–G letters in Devanagari (`## ए)`, `## बी)` … `## जी)`) is recognised, and `SCORE:` accepts local digits (`३.८`, `٣٫٨`, `３．８`) and a decimal comma.
+- **Job map: long locations.** A cell like "Berlin Office · Berlin · Germany · Bosnia · …" (300+ characters) was refused with HTTP 400 and the posting had no marker. The first real place is used now (`·`, `;`, `|`, ` / `, line breaks; "Remote …" segments, "(HQ)" and "Office" are skipped); only a query over 2000 characters is refused.
+- **Deploy vs. the hourly scan.** The deploy holds the scan and auto-evaluation timers, waits for a running one to finish (up to 15 min), restarts, and always resumes the timers — rollback included.
+
+### Added
+
+- **Job map on [cvstart.org](https://cvstart.org/#job-map)** in all 17 languages, and in the English and Russian READMEs.
+- **Job map screenshots in every language** — one per locale (`scripts/capture-map-screenshots.mjs`), in all 17 READMEs, on cvstart.org and in a new help subsection, “How to use the map” (§33, ×17).
+
+### Notes
+
+- Tests **4404 → 4419**, browser **118**. Remote QA (all routes, site, links and live LLM × 17 locales) green on production.
+- Not in this release: streaming evaluations — the 300 s timeout stays a hard limit (a slow local model can still hit it), and the Hermes bridge keeps its non-streaming call.
+
 ## [1.241.0] — 2026-10-07
 
 **Hardening release from a 28-agent code review (~190 verified findings): the security, process-crash and data-loss classes are closed, plus a job map contributed by @bullitt186.**

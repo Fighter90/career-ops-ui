@@ -2367,6 +2367,19 @@ Ajoutez ensuite le coworker dans le panneau **Install a coworker** d'OpenWorker 
 
 La carte affiche les résultats de scan, le pipeline en attente et votre suivi sur une carte OpenStreetMap. Un **point plein** est une note d'évaluation (suivi) ; un **anneau** est un indice d'adéquation du titre pour une offre pas encore évaluée (pipeline, scan). Un **nombre** regroupe des offres proches ; zoomez pour les séparer. 📍 signale l'adresse de l'employeur trouvée dans OpenStreetMap, sinon le point est au centre de la localité. Le sélecteur de calques affiche ou masque scan, pipeline et suivi.
 
+### Comment utiliser la carte
+
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/job-map-fr.png" alt="Carte des offres : résultats de scan, pipeline et offres du suivi sur une carte OpenStreetMap" width="760"></p>
+
+1. **Lancez d'abord un scan** (`#/scan`) : la carte affiche ce que contiennent le dernier scan, le pipeline et le suivi ; un projet vide donne une carte vide.
+2. **Ouvrez `#/map`.** La ligne sous le titre indique l'avancement : *Lieux localisés : N/M* augmente au fil des recherches (les lieux déjà en cache apparaissent aussitôt), et *Sans lieu* compte les offres qui ne mentionnent aucun lieu (télétravail uniquement, « Anywhere »).
+3. **Lisez les couleurs.** Point plein = votre note d'évaluation (vert bon · jaune correct · bleu moyen · rouge faible). Anneau = adéquation du titre avant évaluation (mêmes couleurs, gris = aucun indice d'adéquation).
+4. **Zoomez** sur un nombre pour séparer un groupe ; au niveau de la rue, les offres situées au même endroit s'étalent pour que chacune soit cliquable.
+5. **Cliquez sur un point** pour ouvrir l'offre, ou le rapport d'évaluation pour une entrée du suivi.
+6. **Changez de calque** (en haut à droite) pour comparer, par exemple, uniquement le suivi avec les résultats de scan récents.
+
+Une offre qui indique plusieurs lieux (« Berlin Office · Berlin · Germany · Bosnia · … », « Berlin; Munich », « Remote U.S. · Toronto ») est placée à son **premier lieu réel** ; les segments « Remote … », « (HQ) » et un « Office » final sont ignorés. La carte cadre la zone où se trouvent la plupart des offres, de sorte que quelques offres très éloignées ne réduisent pas la vue : dézoomez pour les voir.
+
 ### Données et confidentialité
 
 La carte est la seule vue qui contacte des services externes, et seulement lorsqu'elle est ouverte : le navigateur charge les tuiles depuis le serveur de tuiles, et le serveur envoie **le lieu et le nom de l'entreprise** de chaque offre (jamais votre CV ni votre profil) au géocodeur Nominatim. Les réponses sont mises en cache dans `web-ui/.cache/geocode.json` ; chaque lieu n'est recherché qu'une fois. Pour garder ces requêtes sur votre propre infrastructure, faites pointer les variables ci-dessous vers des serveurs auto-hébergés.

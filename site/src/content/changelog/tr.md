@@ -2,6 +2,29 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.241.1] — 2026-10-07
+
+**Canlı değerlendirmeler her dilde uçtan uca çalışıyor, iş haritası birden çok konumlu uzun ilanları yerleştiriyor ve bir dağıtım artık çalışan bir taramayı öldürmüyor.**
+
+### Düzeltildi
+
+- **Değerlendirmeler yöntemin tamamını görüyor.** Bağlam bütçesi (144 KB), CV ve profil satır içine alındıktan sonra hâlâ `modes/oferta.md` dosyasının sonunu kesiyordu; bu yüzden her canlı değerlendirme son bloklarını kaçırıyordu. Bütçe artık 192 KB, istem yumuşak üst sınırı 256 KB ve ikisi de `llm-dispatch.mjs` içinde tek yerde tanımlı.
+- **Raporlar seçilen dilde.** Dil yönergesi artık istemi hem açıyor hem kapatıyor; sıradan sözcükler (rol, ekip, tasarım…) raporun diliyle yazılıyor; yalnızca adlar, teknolojiler ve kelimesi kelimesine alıntılar İngilizce kalıyor. Çoğunlukla İngilizce olan Hintçe ve Japonca raporları düzeltir.
+- **Yavaş değerlendirmeler artık HTTP 502 ile bitmiyor.** Değerlendirme zaman aşımı 300 sn (önceden sağlayıcı varsayılanı olan 180 sn idi).
+- **Hintçe blok harfleri.** A–G harflerini Devanagari ile yazan bir rapor (`## ए)`, `## बी)` … `## जी)`) tanınır; `SCORE:` yerel rakamları (`३.८`, `٣٫٨`, `３．８`) ve ondalık virgülü kabul eder.
+- **İş haritası: uzun konumlar.** "Berlin Office · Berlin · Germany · Bosnia · …" gibi bir hücre (300+ karakter) HTTP 400 ile reddediliyor ve ilanın işareti olmuyordu. Artık ilk gerçek yer kullanılıyor (`·`, `;`, `|`, ` / `, satır sonları; "Remote …" parçaları, "(HQ)" ve "Office" atlanır); yalnızca 2000 karakteri aşan sorgu reddedilir.
+- **Dağıtım ve saatlik tarama.** Dağıtım, tarama ve otomatik değerlendirme zamanlayıcılarını durdurur, çalışan birinin bitmesini bekler (en fazla 15 dk), yeniden başlatır ve zamanlayıcıları her zaman yeniden devreye alır; geri alma dahil.
+
+### Eklendi
+
+- **[cvstart.org](https://cvstart.org/#job-map) üzerinde iş haritası** 17 dilin tamamında, ayrıca İngilizce ve Rusça README'lerde.
+- **Her dilde harita ekran görüntüleri** — dil başına bir tane (`scripts/capture-map-screenshots.mjs`), 17 README'nin tamamında, cvstart.org'da ve yeni bir yardım alt bölümünde: “Haritayı kullanma” (§33, ×17).
+
+### Notlar
+
+- Testler **4404 → 4419**, tarayıcı **118**. Uzak QA (tüm rotalar, site, bağlantılar ve 17 dilde canlı LLM) üretimde yeşil.
+- Bu sürümde yok: akışlı değerlendirmeler — 300 sn zaman aşımı kesin sınır olarak kalıyor (yavaş bir yerel model yine de ona takılabilir) ve Hermes köprüsü akışsız çağrısını sürdürüyor.
+
 ## [1.241.0] — 2026-10-07
 
 **28 ajanlı bir kod incelemesinden (~190 doğrulanmış bulgu) sertleştirme sürümü: güvenlik, süreç çökmesi ve veri kaybı sınıfları kapatıldı; ayrıca @bullitt186 katkısı olan bir iş haritası.**

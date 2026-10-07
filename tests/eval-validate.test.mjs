@@ -120,3 +120,27 @@ test('stripScoreSummary removes the machine block and keeps the report', async (
   assert.equal(out, '## Block A — Fit\ntext');
   assert.equal(stripScoreSummary('no block here\n'), 'no block here');
 });
+
+test('v1.241.1: Devanagari-spelled block letters (ए बी सी डी ई एफ जी) count as blocks; Hindi words do not', () => {
+  // Local deepseek hi run, 2026-10-07: "## ए) …", "## बी) CV …" — no Latin letter.
+  const deva = { A: 'ए', B: 'बी', C: 'सी', D: 'डी', E: 'ई', F: 'एफ', G: 'जी' };
+  assert.deepEqual(validateEvaluationReport(blocks((L) => `## ${deva[L]}) भूमिका`)), []);
+  assert.deepEqual(validateEvaluationReport(blocks((L) => `## ब्लॉक ${deva[L]} — भूमिका`)), []);
+  assert.deepEqual(validateEvaluationReport(blocks((L) => (L === 'F' ? '## एफ़) भूमिका' : `## ${deva[L]}) भूमिका`))), []);
+  // Inside a word the same syllables are not block letters (बीमा, सीवी, जीवन).
+  const issues = validateEvaluationReport('## बीमा\n## सीवी विश्लेषण\n## जीवन\n## एक सारांश\n' + SUMMARY);
+  assert.equal(issues.filter((i) => i.startsWith('missing Block')).length, 7);
+});
+
+test('v1.241.1: SCORE in local digits or with a decimal comma is a number', async () => {
+  const { asciiNumber } = await import('../server/lib/eval-validate.mjs');
+  const withScore = (v) => blocks((L) => `## Block ${L} — x`).replace(/SCORE:.*$/m, `SCORE: ${v}`);
+  for (const v of ['३.८', '٣٫٨', '۳.۸', '３．８', '3,8', '**3.8**', '3.8/5', '3.8 / 5']) {
+    assert.deepEqual(validateEvaluationReport(withScore(v)), [], v);
+  }
+  for (const v of ['७.२', 'high', '', '-1']) {
+    assert.ok(validateEvaluationReport(withScore(v)).some((i) => i.startsWith('SCORE_SUMMARY score')), v);
+  }
+  assert.equal(asciiNumber('४,५ / ५'), '4.5 / 5');
+  assert.equal(asciiNumber('Berlin, 3'), 'Berlin, 3', 'a comma between words stays');
+});
