@@ -16,9 +16,9 @@ const { greenhouseAdapter, greenhouseSlugFromUrl } = await import('../server/lib
 
 // ── arbeitsagentur / ibm: the api: override accepts ONLY https on the exact host ──
 
-for (const [name, adapter, host, canonical] of [
-  ['arbeitsagentur', arbeitsagenturAdapter, 'rest.arbeitsagentur.de', null],
-  ['ibm', ibmAdapter, 'www-api.ibm.com', null],
+for (const [name, adapter, host] of [
+  ['arbeitsagentur', arbeitsagenturAdapter, 'rest.arbeitsagentur.de'],
+  ['ibm', ibmAdapter, 'www-api.ibm.com'],
 ]) {
   test(`${name}: api override honored on https + exact host`, () => {
     const url = `https://${host}/x`;

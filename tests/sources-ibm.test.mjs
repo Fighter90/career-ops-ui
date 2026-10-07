@@ -25,7 +25,7 @@ const mkHit = (overrides = {}) => ({
   },
 });
 
-const fakeOk = (hits, { full = false } = {}) => async () => ({
+const makeTransport = (hits, { full = false } = {}) => async () => ({
   ok: true,
   json: async () => ({ hits: { hits, total: hits.length } }),
 });
@@ -101,7 +101,7 @@ test('api override must be https on an ibm.com host; the default passes', async 
   );
   await assert.rejects(
     () => fetchIbm('https://evil.com/search/api/v2', { fetchImpl: async () => { throw new Error('must not fetch'); } }),
-    /ibm\.com/,
+    (err) => { assert.match(err.message, /^ibm: untrusted hostname/); return err.message.includes('evil.com'); },
   );
   await assert.rejects(
     () => fetchIbm('not a url', { fetchImpl: async () => { throw new Error('must not fetch'); } }),

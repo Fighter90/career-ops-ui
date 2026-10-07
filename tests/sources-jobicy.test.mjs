@@ -263,7 +263,7 @@ test('fetchJobicy: page cap bounds the walk when hasMore never ends', async () =
   assert.equal(jobs.length, 4);
 
   impl = cursorFake((page) => ({ jobs: [mkJobicy(2000 + page)], hasMore: true, nextCursor: String(page + 1) }));
-  jobs = await fetchJobicy(FEED_URL, { fetchImpl: impl, company: { max_pages: 2 } });
+  await fetchJobicy(FEED_URL, { fetchImpl: impl, company: { max_pages: 2 } });
   assert.equal(impl.calls.length, 2);
 });
 

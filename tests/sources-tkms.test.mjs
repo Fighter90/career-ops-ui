@@ -80,7 +80,7 @@ test('fetchTkms: POSTs the query API with page/subclient and normalizes rows', a
   const fetchImpl = async (url, opts = {}) => {
     capture.url = url;
     capture.opts = opts;
-    const body = JSON.parse(opts.body);
+    JSON.parse(opts.body); // assert the request carries a JSON body
     call++;
     return {
       ok: true,

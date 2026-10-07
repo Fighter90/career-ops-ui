@@ -122,7 +122,7 @@ test('pagination stops at the page cap when every page comes back full', async (
 });
 
 test('a later-page HTTP failure keeps the collected pages and logs', async () => {
-  const { impl, posts } = pagedTransport([
+  const { impl } = pagedTransport([
     Array.from({ length: 100 }, (_, i) => row(i)),
     { __status: 503 },
   ]);
