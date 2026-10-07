@@ -8,6 +8,11 @@
 
 - **Sürüm arşivi artık `node_modules` sembolik bağlantıları içermiyor.** v1.242.0 git etiketi kökte bir `node_modules` sembolik bağlantısı ve `site/node_modules` taşıyordu (genel kapsamlı bir `git add -A` bunları sondaki eğik çizgili ignore desenlerinin önünden geçirdi), bu da sunucu dağıtımının tar açmasını bozdu — dağıtım güvenle geri alındı ve üretim 1.241.1'de kaldı. Her iki sembolik bağlantı izlemeden çıkarıldı ve ignore desenleri genişletildi; npm tarball'ı hiç etkilenmedi (paketlerken npm `node_modules` hariç tutar).
 
+### Notlar
+
+- Uygulama kodu v1.242.0 ile aynı — yalnızca paketleme. Kaynak doğruluğu içeriği bu dağıtımla üretime gidiyor (v1.242.0 üretime hiç ulaşmadı: sunucu dağıtımı tar hatası sonrası geri alındı).
+- Bilinçli olarak yapılmadı: v1.242.0'ı yeniden etiketlemek (npm 1.242.0'ı zaten yayımladı; kayıt defteri tarball'ı temiz — paketlerken npm `node_modules` hariç tutar).
+
 ## [1.242.0] — 2026-10-07
 
 **Tarayıcının veri katmanı yeniden güvenilir: ölü kaynaklar canlandı, hatalı biçimli bir yanıt artık boş pano kılığına giremiyor ve kötü niyetli bir pano URL'si artık bir taramayı yönlendiremiyor.**

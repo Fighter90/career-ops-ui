@@ -8,6 +8,11 @@
 
 - **L'archivio di release non contiene più i symlink `node_modules`.** Il tag git v1.242.0 portava un symlink `node_modules` nella radice e `site/node_modules` (un `git add -A` generico li ha fatti passare oltre i pattern di ignore con barra finale), facendo fallire l'estrazione tar del deploy sul server — il deploy è tornato indietro in sicurezza e la produzione è rimasta su 1.241.1. Entrambi i symlink sono fuori dal tracciamento e i pattern di ignore ampliati; il tarball npm non è mai stato interessato (npm esclude `node_modules` al packing).
 
+### Note
+
+- Il codice dell'app è identico a v1.242.0 — solo packaging. I contenuti sulla correttezza delle fonti vanno in produzione con questo deploy (v1.242.0 non è mai arrivato in produzione: il deploy server è tornato indietro dopo il fallimento tar).
+- Deliberatamente non fatto: ri-taggare v1.242.0 (npm ha già pubblicato 1.242.0; il tarball del registro è pulito — npm esclude `node_modules` al packing).
+
 ## [1.242.0] — 2026-10-07
 
 **Lo strato dati dello scanner è di nuovo affidabile: le fonti morte tornano vive, una risposta malformata non può più fingersi un board vuoto e un URL ostile di un board non può più reindirizzare una scansione.**

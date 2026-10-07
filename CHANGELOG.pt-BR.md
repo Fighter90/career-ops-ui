@@ -14,6 +14,11 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 - **O arquivo da release novamente não traz symlinks de `node_modules`.** A tag git v1.242.0 carregava um symlink `node_modules` na raiz e `site/node_modules` (um `git add -A` generalizado os escapou dos padrões de ignore com barra final), o que quebrou a extração tar do deploy no servidor — o deploy fez rollback com segurança e a produção permaneceu em 1.241.1. Ambos os symlinks saíram do rastreamento e os padrões de ignore foram ampliados; o tarball do npm nunca foi afetado (o npm exclui `node_modules` ao empacotar).
 
+### Notas
+
+- O código da aplicação é idêntico ao v1.242.0 — apenas empacotamento. O conteúdo de correção das fontes chega à produção com este deploy (v1.242.0 nunca chegou à produção; seu deploy no servidor reverteu pela falha de tar).
+- Deliberadamente não feito: re-etiquetar v1.242.0 (o npm já publicou 1.242.0; o tarball do registro está limpo — o npm exclui `node_modules` ao empacotar).
+
 ## [1.242.0] — 2026-10-07
 
 **A camada de dados da varredura volta a ser confiável: fontes mortas voltam à vida, uma resposta malformada não pode mais se passar por um board vazio e uma URL de board hostil não pode mais redirecionar uma varredura.**

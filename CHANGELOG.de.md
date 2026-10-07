@@ -8,6 +8,11 @@
 
 - **Das Release-Archiv enthält erneut keine `node_modules`-Symlinks.** Der Git-Tag v1.242.0 trug einen `node_modules`-Symlink im Root und `site/node_modules` (ein pauschales `git add -A` schlüpfte an den Ignore-Mustern mit abschließendem Schrägstrich vorbei), wodurch die tar-Entpackung des Server-Deploys scheiterte — der Deploy rollte sicher zurück, die Produktion blieb auf 1.241.1. Beide Symlinks sind aus der Verfolgung entfernt, die Ignore-Muster verbreitert; das npm-Tarball war nie betroffen (npm schließt `node_modules` beim Packen aus).
 
+### Anmerkungen
+
+- Der App-Code ist identisch mit v1.242.0 — nur Verpackung. Die Sources-Correctness-Inhalte kommen mit diesem Deploy in die Produktion (v1.242.0 erreichte die Produktion nie; sein Server-Deploy rollte nach dem tar-Fehler zurück).
+- Bewusst nicht getan: v1.242.0 neu taggen (npm hat 1.242.0 bereits veröffentlicht; das Registry-Tarball ist sauber — npm schließt `node_modules` beim Packen aus).
+
 ## [1.242.0] — 2026-10-07
 
 **Die Datenschicht des Scanners ist wieder vertrauenswürdig: Tote Quellen leben wieder, eine fehlerhafte Antwort kann sich nicht mehr als leeres Board ausgeben, und eine feindliche Board-URL kann einen Scan nicht mehr umleiten.**
