@@ -8,13 +8,13 @@ Release history belongs in [CHANGELOG.md](CHANGELOG.md), decisions in
 [docs/adr/](docs/adr/), vocabulary in [CONTEXT.md](CONTEXT.md). Anything already
 recoverable from those does **not** belong here.
 
-_Last updated: 2026-10-07 · v1.241.0 — review hardening + job map (#381); release in flight_
+_Last updated: 2026-10-07 · v1.241.0 shipped (resumecraft.ru, npm, cvstart.org); next: Phase 2 (v1.242.0 sources)_
 
 ---
 
 ## Current state
 
-**v1.241.0 — hardening from the 2026-10-06 code review** (28 read-only review agents, ~190 verified
+**v1.241.0 — SHIPPED 2026-10-07** (tag `v1.241.0` @ `c6de9cca`, npm published, cvstart.org deployed, resumecraft.ru deployed with `ALLOWED_HOSTS=resumecraft.ru`, public check 401). **Hardening from the 2026-10-06 code review** (28 read-only review agents, ~190 verified
 findings, fixed by 6 fix-and-cover agents A/B/C/D/CI/T). Tests **4404**, browser **118**, server coverage
 baseline line 96.7 % / branch 86.3 % (`scripts/coverage-baseline.json`, ratchet). Ships the job map (#381).
 v1.240.0 (parent parity @ `62905981`, 109 sources) is released and deployed.
@@ -25,6 +25,9 @@ newest parent/upstream delta (research in progress). All web-ui branches are mer
 `main` and deleted after each release (maintainer's rule, 2026-10-07).
 
 ## Next step
+
+Phase 2 — v1.242.0 sources correctness: start with `docs/sdd/BACKLOG.md` → *v1.242.0*. Any agent: read `docs/sdd/HANDOFF.md` first (OpenCode: `/continue`). Code-scanning: all open alerts on `main` are fixed or dismissed with a written reason (2026-10-07); Dependabot: 0 open.
+
 
 **Deploying** — `Actions → Deploy (server) → Run workflow`: `recon` (read-only), `deploy`, `verify`
 (read-only smoke, also runs after every deploy). Secrets: `DEPLOY_SSH_KEY` (passphrase-less
