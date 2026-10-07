@@ -13,7 +13,7 @@
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync, readdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 
@@ -206,4 +206,11 @@ test('classifyTier: no false positives from the new words', () => {
   assert.equal(classifyTier('Senior Backend Engineer'), 'senior');
   assert.equal(classifyTier('Internal Tools Engineer'), 'mid');
   assert.equal(classifyTier('Старший разработчик'), 'mid');
+});
+
+test('PROMPT_SIZE_SOFT_CAP is defined once (llm-dispatch) and imported by the routes', () => {
+    const dir = new URL('../server/lib/', import.meta.url);
+  const files = ['llm-dispatch.mjs', ...readdirSync(new URL('routes/', dir)).map((f) => `routes/${f}`)];
+  const defs = files.filter((f) => /PROMPT_SIZE_SOFT_CAP\s*=/.test(readFileSync(new URL(f, dir), 'utf8')));
+  assert.deepEqual(defs, ['llm-dispatch.mjs']);
 });

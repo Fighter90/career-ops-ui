@@ -20,7 +20,7 @@
 import { readFileSync, writeFileSync, readdirSync, statSync, existsSync, mkdirSync, unlinkSync } from 'node:fs';
 import { PATHS, path as projPath } from '../paths.mjs';
 import { today } from '../parsers.mjs';
-import { runActiveProvider } from '../llm-dispatch.mjs';
+import { runActiveProvider, PROMPT_SIZE_SOFT_CAP } from '../llm-dispatch.mjs';
 import { runNodeScript } from '../runner.mjs';
 import { runAnthropic, hasAnthropicKey, hasGeminiKey } from '../anthropic.mjs';
 import { runGemini } from '../gemini.mjs';
@@ -180,9 +180,9 @@ const SMOKE_JD = 'Smoke test: Senior Backend Engineer with PHP and Go responsibi
 // BF-3 — soft cap on combined prompt size before we hit the LLM. Even
 // the largest Anthropic models (1M-token context for Sonnet 4.6) charge
 // per input token and the bundleProjectContext output + huge JD could
-// stack up. 200 KB ≈ ~50K tokens, comfortably below any current ceiling
+// stack up. 256 KB ≈ ~65K tokens, comfortably below any current ceiling
 // while flagging clearly when something is off.
-const PROMPT_SIZE_SOFT_CAP = 256 * 1024;
+// One value for every route — defined in llm-dispatch.mjs.
 
 export function registerLlmRoutes(app) {
   // ─── /api/evaluate ──────────────────────────────────────────────────

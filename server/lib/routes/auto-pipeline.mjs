@@ -38,7 +38,7 @@ import { isValidJobUrl, sanitizeJobDescription } from '../security.mjs';
 import { runAnthropic, hasAnthropicKey } from '../anthropic.mjs';
 import { runNodeScript } from '../runner.mjs';
 import { bundleProjectContext, buildEvaluationPrompt, resolveLocale } from '../prompts.mjs';
-import { runActiveProvider } from '../llm-dispatch.mjs';
+import { runActiveProvider, PROMPT_SIZE_SOFT_CAP } from '../llm-dispatch.mjs';
 import { recordUsage } from '../llm-usage.mjs';
 import { evaluationWarnings, EVAL_MAX_TOKENS } from './llm.mjs';
 import { stripDangerousMarkdown } from '../security.mjs';
@@ -52,7 +52,6 @@ import { llmRateLimit } from '../rate-limit.mjs';
 const FETCH_TIMEOUT_MS = 30_000;
 const FETCH_MAX_BODY_BYTES = 64 * 1024;
 const EVAL_TIMEOUT_MS = 180_000;       // 3 min — Anthropic can take 60-90s
-const PROMPT_SIZE_SOFT_CAP = 256 * 1024;
 const STEPS = [
   { key: 'validate', label: 'Validating URL' },
   { key: 'fetch',    label: 'Fetching job description' },
