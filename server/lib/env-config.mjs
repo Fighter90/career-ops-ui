@@ -7,7 +7,7 @@
  * Preserves existing comments and ordering; only the keys we touch are
  * rewritten, everything else passes through unchanged.
  */
-import { readFileSync, existsSync, chmodSync, openSync, fchmodSync, writeSync, closeSync } from 'node:fs';
+import { readFileSync, existsSync, openSync, fchmodSync, writeSync, closeSync } from 'node:fs';
 import { parseEnvLine } from './dotenv.mjs';
 import { isPrivateOrLoopbackHost } from './security.mjs';
 
