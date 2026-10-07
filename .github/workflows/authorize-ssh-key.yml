@@ -47,10 +47,13 @@ jobs:
           install -d -m 700 ~/.ssh
           printf '%s\n' "$DEPLOY_SSH_KEY" > ~/.ssh/deploy_key; chmod 600 ~/.ssh/deploy_key
           printf '%s\n' "$DEPLOY_KNOWN_HOSTS" > ~/.ssh/known_hosts
-          printf '%s\n' "$KEY" | ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o BatchMode=yes \
-            -o StrictHostKeyChecking=yes "$DEPLOY_USER@$DEPLOY_HOST" 'bash -s' <<'REMOTE'
+          # The script arrives on stdin (heredoc), so the key travels as an
+          # argument — base64, whose alphabet is safe on a shell command line.
+          key_b64=$(printf '%s' "$KEY" | base64 -w0)
+          ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o BatchMode=yes \
+            -o StrictHostKeyChecking=yes "$DEPLOY_USER@$DEPLOY_HOST" "bash -s -- $key_b64" <<'REMOTE'
           set -euo pipefail
-          read -r key
+          key=$(printf '%s' "$1" | base64 -d)
           add() {
             local home=$1 owner=$2
             install -d -m 700 -o "$owner" -g "$owner" "$home/.ssh"
