@@ -27,7 +27,11 @@ export function prose(text) {
   return String(text || '')
     .replace(/```[\s\S]*?```/g, ' ')
     .replace(/`[^`\n]*`/g, ' ')
-    .replace(/\bhttps?:\/\/\S+/g, ' ');
+    .replace(/\bhttps?:\/\/\S+/g, ' ')
+    // Word-for-word quotes from the English CV / JD stay English by design
+    // (an evaluation cites requirements); they say nothing about the prose.
+    .replace(/["“«„]([^"”»“\n]{1,400})["”»“]/g, ' ')
+    .replace(/[「『]([^」』\n]{1,400})[」』]/g, ' ');
 }
 
 /** Share of words (or CJK characters) in the locale's own script, 0..1. */

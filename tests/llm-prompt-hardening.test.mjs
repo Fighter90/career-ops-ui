@@ -234,3 +234,10 @@ test('evaluation routes pass the language to the context and a 300 s timeout to 
   }
   assert.equal((llm.match(/maxTokens: EVAL_MAX_TOKENS, timeoutMs: EVAL_TIMEOUT_MS/g) || []).length, 2);
 });
+
+test('the language reminder keeps quotes and names in English but nothing else (hi code-switching)', () => {
+  const r = P.buildLanguageReminder('hi');
+  assert.match(r, /quoted word for word from the CV or the JD/);
+  assert.match(r, /ordinary words such as role, team/);
+  assert.equal(P.buildLanguageReminder('en'), '');
+});

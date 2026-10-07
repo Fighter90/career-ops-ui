@@ -476,7 +476,7 @@ export function deepReportStem(company, role) {
 export function buildLanguageReminder(lang) {
   if (!lang || lang === 'en' || !localeName(lang)) return '';
   const name = localeName(lang);
-  return `\nWrite the whole report in ${name} (locale: ${lang}) — every sentence, bullet and table cell, in ${name}'s own script. The files and the JD above are in English; that does not change the output language. Company, product and technology names may stay as they are.\n`
+  return `\nWrite the whole report in ${name} (locale: ${lang}) — every sentence, bullet and table cell, in ${name}'s own script. The files and the JD above are in English; that does not change the output language. Company, product and technology names may stay as they are, and so may text quoted word for word from the CV or the JD (keep it in quotation marks). Everything else — including ordinary words such as role, team, design, production, critical — is written in ${name}, not left in English.\n`
     + 'Two parts of the format are machine-read and must NOT be translated: '
     + 'every block heading keeps its Latin capital letter A–G (for example `## <translated word> A — <translated title>`), '
     + 'and the report ends with the ---SCORE_SUMMARY--- … ---END_SUMMARY--- block, markers and keys in English, exactly as shown above.\n';
