@@ -30,6 +30,9 @@ import { validateEvaluationReport, stripScoreSummary } from '../eval-validate.mj
 // CJK locales (ko / zh-TW / ja, 10–13k characters): the summary at the end was
 // cut off and read as "missing SCORE_SUMMARY" (live regression, v1.239.3).
 export const EVAL_MAX_TOKENS = 16384;
+// A full A–G report with a ~190 KB context took 88–136 s on prod and one
+// locale passed 180 s (the provider default) — 2026-10-07 QA.
+export const EVAL_TIMEOUT_MS = 300_000;
 
 /** Shape warnings for an evaluation, with a cut-off answer named as such. */
 export function evaluationWarnings(r) {
@@ -222,7 +225,7 @@ export function registerLlmRoutes(app) {
     // oferta so the model has the files the prompt references.
     if (_provGate().wantAnthropic && hasAnthropicKey()) {
       const ctxWarnings = [];
-      const ctx = bundleProjectContext({ modeSlugs: ['_shared', 'oferta'], warnings: ctxWarnings });
+      const ctx = bundleProjectContext({ modeSlugs: ['_shared', 'oferta'], lang, warnings: ctxWarnings });
       const fullPrompt = ctx + promptText;
       // BF-3 — bail fast when the assembled prompt would exceed the
       // soft cap. Otherwise we'd burn a multi-second roundtrip + tokens
@@ -233,7 +236,7 @@ export function registerLlmRoutes(app) {
           details: [`assembled prompt is ${fullPrompt.length} bytes; soft cap is ${PROMPT_SIZE_SOFT_CAP}. Truncate the JD or shrink your CV.`],
         });
       }
-      const r = await runAnthropic(fullPrompt, { maxTokens: EVAL_MAX_TOKENS });
+      const r = await runAnthropic(fullPrompt, { maxTokens: EVAL_MAX_TOKENS, timeoutMs: EVAL_TIMEOUT_MS });
       if (r.error) return res.status(502).json({ mode: 'anthropic', prompt: promptText, error: r.error, saved });
       // v1.75.0 (#819) — flag malformed A–G / SCORE_SUMMARY shape as a non-fatal
       // warning so the user knows the report may be truncated/off-format.
@@ -264,7 +267,7 @@ export function registerLlmRoutes(app) {
     const tp = _tailProvider();
     if (tp) {
       const ctxWarnings = [];
-      const ctx = bundleProjectContext({ modeSlugs: ['_shared', 'oferta'], warnings: ctxWarnings });
+      const ctx = bundleProjectContext({ modeSlugs: ['_shared', 'oferta'], lang, warnings: ctxWarnings });
       const fullPrompt = ctx + promptText;
       if (fullPrompt.length > PROMPT_SIZE_SOFT_CAP) {
         return res.status(413).json({
@@ -272,7 +275,7 @@ export function registerLlmRoutes(app) {
           details: [`assembled prompt is ${fullPrompt.length} bytes; soft cap is ${PROMPT_SIZE_SOFT_CAP}. Truncate the JD or shrink your CV.`],
         });
       }
-      const r = await tp.run(fullPrompt, { maxTokens: EVAL_MAX_TOKENS });
+      const r = await tp.run(fullPrompt, { maxTokens: EVAL_MAX_TOKENS, timeoutMs: EVAL_TIMEOUT_MS });
       if (r.error) return res.status(502).json({ mode: tp.mode, prompt: promptText, error: r.error, saved });
       // v1.75.0 (#819) — same shape guard for the OpenAI/Qwen/OpenRouter/GitHub tail.
       const warnings = [...ctxWarnings, ...evaluationWarnings(r)];

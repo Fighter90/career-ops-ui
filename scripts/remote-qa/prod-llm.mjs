@@ -72,7 +72,7 @@ async function llmStep(page, locale, step, path, trigger) {
     await pace();
     const t0 = Date.now();
     const [resp] = await Promise.all([
-      page.waitForResponse((r) => new URL(r.url()).pathname === path && r.request().method() === 'POST', { timeout: 300_000 }),
+      page.waitForResponse((r) => new URL(r.url()).pathname === path && r.request().method() === 'POST', { timeout: 360_000 }), // > the server's 300 s evaluation timeout
       trigger(),
     ]);
     const ms = Date.now() - t0;
