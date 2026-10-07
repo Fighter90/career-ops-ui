@@ -1,0 +1,52 @@
+---
+import { Picture } from 'astro:assets';
+import { t, type Locale } from '../i18n/locales';
+import mapEn from '../assets/screenshots/job-map-en.png';
+import mapRu from '../assets/screenshots/job-map-ru.png';
+
+interface Props {
+  locale: Locale;
+}
+const { locale } = Astro.props;
+// Synced from images/job-map-*.png by scripts/sync-assets.mjs. Two captures: the Russian UI (zoomed on Central Russia) and the English
+// one (world view). Every other locale gets the English one.
+const shot = locale.file === 'ru' ? mapRu : mapEn;
+const captions = [1, 2, 3].map((i) => ({
+  title: t(locale, `map.c${i}.title`),
+  desc: t(locale, `map.c${i}.desc`),
+}));
+---
+
+<section id="job-map" class="section">
+  <div class="container-site">
+    <div class="reveal mb-10 max-w-2xl">
+      <span class="mb-3 inline-block rounded-full bg-[color:var(--color-rausch-deep)] px-3 py-1 text-xs font-bold uppercase tracking-wide text-white">{t(locale, 'map.badge')}</span>
+      <h2 class="mb-3 text-3xl font-bold tracking-tight md:text-4xl">{t(locale, 'map.h2')}</h2>
+      <p class="text-lg text-ink-soft">{t(locale, 'map.sub')}</p>
+    </div>
+
+    <div class="reveal overflow-hidden rounded-[24px] border border-line shadow-[var(--shadow-hover)]">
+      <Picture
+        src={shot}
+        alt={t(locale, 'map.alt')}
+        formats={['avif', 'webp']}
+        widths={[640, 960, 1440]}
+        sizes="(max-width: 1200px) 94vw, 1160px"
+        loading="lazy"
+        class="block h-auto w-full"
+      />
+    </div>
+
+    <ul class="mt-8 grid gap-6 sm:grid-cols-3">
+      {captions.map((c, i) => (
+        <li class="reveal flex gap-3">
+          <span class="font-mono text-sm font-bold text-[color:var(--color-rausch-deep)]">0{i + 1}</span>
+          <div>
+            <h3 class="mb-1 font-bold">{c.title}</h3>
+            <p class="text-[0.92rem] leading-6 text-ink-soft">{c.desc}</p>
+          </div>
+        </li>
+      ))}
+    </ul>
+  </div>
+</section>
