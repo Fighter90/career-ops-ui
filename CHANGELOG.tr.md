@@ -27,7 +27,7 @@
 
 ### Düzeltildi
 
-- **Deployable release cut as v1.243.2.** The v1.243.1 tag was re-pointed after publishing, and the server's `git fetch --tags` correctly refuses to clobber an existing tag — so v1.243.1 was never deployable. This tag carries the identical tree (the tracker outcome-modal window-listener fix on top of v1.243.0) plus this version bump. Nothing else changed; the published npm 1.243.1 tarball already contained the fix.
+- **Dağıtılabilir sürüm v1.243.2 olarak kesildi.** v1.243.1 git etiketi yayınlandıktan sonra yeniden işaretlendi ve sunucunun `git fetch --tags` komutu mevcut bir etiketi geçersiz kılmayı doğru şekilde reddediyor — bu yüzden v1.243.1 hiçbir zaman dağıtılabilir değildi. Bu etiket özdeş ağacı (v1.243.0 tabanlı modal window-dinleyici düzeltmesi) ve bu sürüm yükseltmesini taşıyor. Başka hiçbir şey değişmedi; yayınlanan npm 1.243.1 tarball'ı düzeltmeyi çoktan içeriyordu.
 ### Notlar
 
 - Uygulama kodu v1.243.1 ile aynı — yalnızca dağıtılabilir etiket yenidir (sunucunun `git fetch --tags` komutu yeniden işaretlenen v1.243.1'i reddetti).
