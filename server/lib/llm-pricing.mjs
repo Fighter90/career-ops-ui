@@ -13,6 +13,10 @@
  */
 export const PRICES = {
   //            input $/1M   output $/1M   (representative model)
+  // #4703 added claude-sonnet-5-5 / claude-opus-5-5 upstream (batch tier
+  // routing) with no published list prices; no web-ui row exists per model —
+  // cost for them stays UNKNOWN until prices land, and the Sonnet-class
+  // estimate below keeps covering the provider's traffic as before.
   anthropic:  { in: 3.00,    out: 15.00 }, // Claude Sonnet-class
   gemini:     { in: 0.30,    out: 2.50 },  // Gemini Flash/Pro-class
   openai:     { in: 2.50,    out: 10.00 }, // GPT-4o-class
