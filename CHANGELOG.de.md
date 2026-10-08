@@ -27,7 +27,7 @@
 
 ### Behoben
 
-- **Deployable release cut as v1.243.2.** The v1.243.1 tag was re-pointed after publishing, and the server's `git fetch --tags` correctly refuses to clobber an existing tag — so v1.243.1 was never deployable. This tag carries the identical tree (the tracker outcome-modal window-listener fix on top of v1.243.0) plus this version bump. Nothing else changed; the published npm 1.243.1 tarball already contained the fix.
+- **Deploybare Version als v1.243.2 geschnitten.** Der Git-Tag v1.243.1 wurde nach der Veröffentlichung umgepunktet, und das `git fetch --tags` des Servers verweigert korrekt das Überschreiben eines vorhandenen Tags — deshalb war v1.243.1 nie deploybar. Dieses Tag trägt den identischen Baum (der Window-Listener-Fix des Modals auf Basis von v1.243.0) plus diese Versionsanhebung. Sonst hat sich nichts geändert; das npm-1.243.1-Tarball enthielt den Fix bereits.
 ### Anmerkungen
 
 - Der App-Code ist identisch mit v1.243.1 — nur das deploybare Tag ist neu (das `git fetch --tags` des Servers hat die umgepunktete v1.243.1 abgelehnt).

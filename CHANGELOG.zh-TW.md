@@ -33,7 +33,7 @@
 
 ### 修復
 
-- **Deployable release cut as v1.243.2.** The v1.243.1 tag was re-pointed after publishing, and the server's `git fetch --tags` correctly refuses to clobber an existing tag — so v1.243.1 was never deployable. This tag carries the identical tree (the tracker outcome-modal window-listener fix on top of v1.243.0) plus this version bump. Nothing else changed; the published npm 1.243.1 tarball already contained the fix.
+- **可部署版本切為 v1.243.2。** v1.243.1 的 git 標籤在發佈後被重新指向，伺服器的 `git fetch --tags` 正確拒絕覆蓋已有標籤——因此 v1.243.1 從未能部署。此標籤攜帶完全相同的程式碼樹（基於 v1.243.0 的彈窗 window-監聽修復）加此次版本號提升。沒有其他變更；已發佈的 npm 1.243.1 壓縮檔已包含該修復。
 ### 說明
 
 - 應用程式碼與 v1.243.1 完全相同——只是部署用的標籤是新的（伺服器的 `git fetch --tags` 拒絕了重新指向的 v1.243.1）。

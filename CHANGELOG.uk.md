@@ -34,7 +34,7 @@
 
 ### Виправлено
 
-- **Deployable release cut as v1.243.2.** The v1.243.1 tag was re-pointed after publishing, and the server's `git fetch --tags` correctly refuses to clobber an existing tag — so v1.243.1 was never deployable. This tag carries the identical tree (the tracker outcome-modal window-listener fix on top of v1.243.0) plus this version bump. Nothing else changed; the published npm 1.243.1 tarball already contained the fix.
+- **Деплоїбельний реліз вирізано як v1.243.2.** Тег v1.243.1 було перевказано після публікації, а серверний `git fetch --tags` коректно відмовляється затирати наявний тег — тому v1.243.1 виявився недеплоїбельним. Цей тег несе те саме дерево (фікc window-лістенера модалки на базі v1.243.0) плюс це підвищення версії. Більше нічого не змінилося; опублікований npm 1.243.1 тарбол уже містив фікс.
 ### Примітки
 
 - Код застосунку ідентичний v1.243.1 — новим є лише тег для розгортання (`git fetch --tags` на сервері відмовив перевказаній v1.243.1).

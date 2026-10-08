@@ -35,7 +35,7 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 
 ### Corregido
 
-- **Deployable release cut as v1.243.2.** The v1.243.1 tag was re-pointed after publishing, and the server's `git fetch --tags` correctly refuses to clobber an existing tag — so v1.243.1 was never deployable. This tag carries the identical tree (the tracker outcome-modal window-listener fix on top of v1.243.0) plus this version bump. Nothing else changed; the published npm 1.243.1 tarball already contained the fix.
+- **Versión desplegable cortada como v1.243.2.** El tag git v1.243.1 fue re-apuntado después de publicarse, y el `git fetch --tags` del servidor rechaza correctamente sobrescribir un tag existente — así que v1.243.1 nunca fue desplegable. Este tag lleva el árbol idéntico (el fix del listener window del modal en v1.243.0) más este incremento de versión. Nada más cambió; el tarball de npm 1.243.1 ya contenía el fix.
 ### Notas
 
 - El código de la aplicación es idéntico a v1.243.1 — solo la etiqueta desplegable es nueva (el `git fetch --tags` del servidor rechazó la v1.243.1 re-apuntada).

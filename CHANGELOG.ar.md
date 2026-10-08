@@ -33,7 +33,7 @@
 
 ### تم الإصلاح
 
-- **Deployable release cut as v1.243.2.** The v1.243.1 tag was re-pointed after publishing, and the server's `git fetch --tags` correctly refuses to clobber an existing tag — so v1.243.1 was never deployable. This tag carries the identical tree (the tracker outcome-modal window-listener fix on top of v1.243.0) plus this version bump. Nothing else changed; the published npm 1.243.1 tarball already contained the fix.
+- **نسخة النشر القابلة للنشر قُطعت كـ v1.243.2.** وسم git الخاص بـ v1.243.1 أعيد توجيهه بعد النشر، و`git fetch --tags` على الخادم يرفض بشكل صحيح الكتابة فوق وسم موجود — لذلك لم يكن v1.243.1 قابلاً للنشر إطلاقًا. هذا الوسم يحمل الشجرة المطابقة (إصلاح window-ليسنر النافذة على أساس v1.243.0) بالإضافة إلى هذه الزيادة في الإصدار. لم يتغير أي شيء آخر؛ حزمة npm 1.243.1 احتوت الإصلاح بالفعل.
 ### ملاحظات
 
 - كود التطبيق مطابق لـ v1.243.1 — الجديد هو وسم النشر فقط (رفض `git fetch --tags` على الخادم الوسم v1.243.1 المُعاد توجيهه).

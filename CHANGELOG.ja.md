@@ -33,7 +33,7 @@
 
 ### 修正
 
-- **Deployable release cut as v1.243.2.** The v1.243.1 tag was re-pointed after publishing, and the server's `git fetch --tags` correctly refuses to clobber an existing tag — so v1.243.1 was never deployable. This tag carries the identical tree (the tracker outcome-modal window-listener fix on top of v1.243.0) plus this version bump. Nothing else changed; the published npm 1.243.1 tarball already contained the fix.
+- **デプロイ可能なリリースを v1.243.2 として切り出し。** v1.243.1 の git タグは公開後に打ち直され、サーバーの `git fetch --tags` は既存タグの上書きを正しく拒否します — そのため v1.243.1 は一度もデプロイ可能ではありませんでした。このタグは同一のツリー(v1.243.0 ベースのモーダル window-リスナー修正)とこのバージョンアップを含みます。他に変更はありません。公開済みの npm 1.243.1 ターボールにはすでに修正が含まれていました。
 ### 備考
 
 - アプリのコードは v1.243.1 と同一 — 新しいデプロイ可能タグだけが追加(サーバーの `git fetch --tags` が打ち直された v1.243.1 を拒否しました)。

@@ -27,7 +27,7 @@
 
 ### ठीक किया गया
 
-- **Deployable release cut as v1.243.2.** The v1.243.1 tag was re-pointed after publishing, and the server's `git fetch --tags` correctly refuses to clobber an existing tag — so v1.243.1 was never deployable. This tag carries the identical tree (the tracker outcome-modal window-listener fix on top of v1.243.0) plus this version bump. Nothing else changed; the published npm 1.243.1 tarball already contained the fix.
+- **डिप्लॉयएबल रिलीज़ v1.243.2 के रूप में कटा।** v1.243.1 का git टैग प्रकाशन के बाद फिर से पॉइंट किया गया, और सर्वर का `git fetch --tags` मौजूदा टैग को अधिलेखित करने से सही ढंग से इनकार करता है — इसलिए v1.243.1 कभी डिप्लॉयएबल नहीं था। यह टैग समान ट्री (v1.243.0 आधारित मोडल window-लिसनर फ़िक्स) और यह वर्ज़न बढ़ोतरी लाता है। कोई और बदलाव नहीं; प्रकाशित npm 1.243.1 टारबॉल में फ़िक्स पहले से था।
 ### टिप्पणियाँ
 
 - ऐप कोड v1.243.1 के समान है — केवल डिप्लॉय योग्य टैग नया है (सर्वर के `git fetch --tags` ने फिर से पॉइंट की गई v1.243.1 को अस्वीकार किया)।
