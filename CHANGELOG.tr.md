@@ -2,6 +2,30 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.243.0] — 2026-10-08
+
+**Tarayıcı katmanı işinizi güvende tutuyor ve dilinizi konuşuyor: kaydedilmemiş düzenleme kaybı yok, sessiz başarısızlık yok, yerelleştirilmiş bir arayüzde sessiz İngilizce yok, her yerde AA kontrastı.**
+
+### Düzeltildi
+
+- **Kaydedilmemiş düzenlemeler yeniden çizimlerde kaybolmuyor.** CV düzenleyici kirli bir tampon tutuyor ve her çizimde onu geri yüklüyor — İptal, bir dil değişimi ya da CV Studio'ya geçiş artık düzenlemeleri atmak yerine soruyor; kariyer planı da ürettiği metni aynı şekilde koruyor. Config/CV Studio/career-plan/memory/two-pager içindeki yükleme hataları, dosyayı boşluklarla sessizce üzerine yazmak yerine bir hata gösteriyor ve Kaydet'i devre dışı bırakıyor.
+- **"Sonuç kaydet" penceresi artık gezinmeden hayatta kalmıyor.** `#/tracker` üzerinde açıp başka bir görünüme tıklamak, tüm sayfayı bloke eden bir pencere bırakıyordu (v1.242.1 two-stand regresyonunda yakalandı) — artık rota değişiminde kapanıyor; tarama görünümündeki kardeşleri de gezinmede SSE akışlarını durduruyor ve dinleyicilerini ayırıyor.
+- **Maaş ve anahtar kelime ayrıştırma her yazı sistemini okuyor.** Anahtar kelime çipleri Unicode sözcük sınırları kullanıyor (Kiril, `c++`, `.net` doğru filtreleniyor, sıfır satıra düşürmüyor); ortak tek bir maaş ayrıştırıcısı `$182.9K - $240K`, `от 100 000 руб`, `100 тыс. руб.`, `50 000 Kč` (önceden 50M USD okunuyordu) ve aralık semantiğini (`$100-150K`) düzeltiyor; zorunlu "Germany or Netherlands" artık hem eşleşmiş hem ihlal edilmiş sayılmıyor.
+- **Akışlar tam olarak bir kez sonuçlanıyor.** Kopan bir SSE bağlantısı hatayı iki kez iletiyor ve Generate düğmesini sonsuza dek devre dışı bırakabiliyordu; her son durum (done/error/close/throw, öldürülmüş bir alt süreç dahil) tek yoldan sonuçlanıyor ve düğmeyi yeniden etkinleştiriyor. Otomatik pipeline, son arabelleklenmiş karesini bırakmak yerine boşaltıyor.
+- **Küçük yollarda gizlilik ve doğruluk.** Hata raporu gövdesi artık değerlendirilen iş URL'sini ya da rapor slug'larını taşımıyor; CV gizliliği çıplak `linkedin.com/in/…` bağlantılarını ve tamamı büyük harf olan adları maskeliyor, AB tarihlerini bozmayı da bırakıyor; ülke çözümlemesi en uzun eşleşmeyi alıyor ve iki ülke adı geçtiğinde tahmin etmeyi reddediyor ("Cambridge, MA" artık Birleşik Krallık'a eşlenmiyor); dosya adıyla indirilenler Kiril adlarını koruyor.
+- **Router ve a11y.** Atlama bağlantısı artık `ontent` içine 404 etmiyor; etkin gezinti öğesi `aria-current="page"` taşıyor; tek `<main>`/tek `<nav>`; Escape mobil çekmeceyi kapatıyor (kapalıyken artık gerçekten sekme sırasının dışında); `scroll-padding-top`, yapışkan çubukların ötesinde odağı görünür tutuyor; yapışkan banner artık üst çubuğu örtmüyor.
+- **Kontrast her iki temada da AA** — koyu temadaki toast'lar beyaz-üstüne-beyazdı (1.10:1): toast'lar, düğmeler, banner'lar ve `--rausch` üzerindeki bağlantılar artık tema-değişmez belirteçler üzerinden çözülüyor; bunu hesaplanan WCAG sözleşme testleri (≥ 4.5:1) koruyor.
+- **Bu turdan geri kalan her şey**: evaluate kesilme uyarısını çiziyor; memory/config/two-pager başarısız bir yüklemin üzerine Kaydet'i reddediyor; scan SSE'sini yetim bırakmayı bırakıyor; tarama sonuçları API destekli panoları, sürüklenmiş bir regex yerine sunucu kayıt defterinden sınıflandırıyor; takipçinin "Proceed with Caution"u bir uyarı, kırmızı rozet değil; istatistikler yerelleştirilmiş durumları hesaba katıyor; çubuk grafikler RTL'de doğru okunuyor; docs FAB telefonlarda içeriği örtmüyor; `GET /app.js` dizin kabuğu yerine 404 dönüyor; `GET /api/runners` eylemlerini listeliyor.
+
+### Eklendi
+
+- **Danca otomatik algılamaya katılıyor** — bir `da-DK` tarayıcı artık Danca arayüzü alıyor (sözlük tamdı, algılama onu kaçırıyordu); `zh-Hant*` Geleneksel Çinceye eşleniyor. `cv-diagnostics` — özgeçmiş kontrol listesi — tamamen yerelleştirildi (28 `diag.*` anahtarı × 17). 26 alan-şartnamesi etiketi eklendi; 31 ölü anahtar kaldırıldı; sağlayıcı listeleri artık Hermes'in "otomatik sıralamada en sonda" olduğunu iddia etmiyor; docs-fab/menu aria etiketleri yerelleştirildi.
+
+### Notlar
+
+- Testler **4812 → 5036** birim, tarayıcı **118 + yeni gezinti/kontrast sözleşmeleri**. Kapsam ortalaması **98.15 % satır / 89.34 % dal** (alt sınır 96/86).
+- Bu sürümde yok: `#/scan` yeniden tasarımı (Phase 4 — v1.244.0, şartname taslağı hazır); kendine ait bir `export.docxFailed` sözlük anahtarı (hata, `common.error`'ı yeniden kullanıyor); `5 lakhs INR` hâlâ 5 olarak ayrıştırılıyor (önceden var olan).
+
 ## [1.242.1] — 2026-10-08
 
 ### Düzeltildi

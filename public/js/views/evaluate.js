@@ -83,6 +83,12 @@ Router.register('evaluate', async () => {
       // live eval was painted red. renderResult only runs on a 200 (failures throw
       // to the catch), so paint bad only when a subprocess actually exits non-zero.
       const failed = typeof r.code === 'number' && r.code !== 0;
+      // CAR-21 (v1.243.0) — the server names problems in `warnings`
+      // (evaluationWarnings — since v1.239.4 the FIRST entry names a report
+      // cut off at the output-token limit). Dropping it painted a truncated
+      // evaluation as if it were whole. Render the banner above the body;
+      // the strings are server data, so no new copy is introduced.
+      const warnings = Array.isArray(r.warnings) ? r.warnings : [];
       const cls = failed ? 'badge-bad' : 'badge-ok';
       // v1.218.0 — name whichever of the 18 providers actually ran (was a stale
       // anthropic-or-else-Gemini guess) + its brand monogram.
@@ -114,6 +120,11 @@ Router.register('evaluate', async () => {
             }),
           }, '📄 ' + t('common.generatePdf', 'Generate PDF')),
         ]),
+        warnings.length ? c('div', {
+          className: 'badge badge-warn',
+          role: 'status',
+          style: { display: 'block', marginBottom: '12px', whiteSpace: 'normal', lineHeight: '1.5', textAlign: 'left' },
+        }, warnings.map((w) => c('div', { style: { margin: '2px 0' } }, '⚠ ' + w))) : null,
         (r.markdown || r.stdout) && c('div', { className: 'md', html: UI.md(r.markdown || r.stdout) }),
         r.stderr && c('details', null, [
           c('summary', null, 'stderr'),

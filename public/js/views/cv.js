@@ -1,4 +1,23 @@
 /* global Router, API, UI, I18n */
+// CAR-20 (v1.243.0) — module-level dirty state, shared by every render
+// of this route (a classic script executes once, so these bindings
+// outlive individual Router.render() calls):
+//   - cvDirtyBuffer  the latest unsaved editor content, or null when the
+//     editor matches the server copy. Written on every input; cleared on
+//     Save / baseline reset / a confirmed leave. Restored into the
+//     editor on the next render, so the guard's Cancel (hash rewind →
+//     re-render) and the language switch (Router.render(), no
+//     hashchange) no longer throw the user's edits away.
+//   - cvRouteHash    the current route hash with any ?query stripped —
+//     the leave-guard compares it EXACTLY — a prefix check would also
+//     swallow the studio route ('#/cv-studio' shares the first segment).
+//   - cvGuardDetach  detaches the active view instance's
+//     beforeunload/hashchange guard listeners; the next render drops the
+//     previous instance's guards before registering its own, so a stale
+//     textarea can never prompt on tab close.
+let cvDirtyBuffer = null;
+const cvRouteHash = () => (window.location.hash || '').split('?')[0];
+let cvGuardDetach = null;
 Router.register('cv', async () => {
   const c = UI.el;
   const t = (k, f) => I18n.t(k, f);
@@ -18,6 +37,14 @@ Router.register('cv', async () => {
     .replace(/<h2\b/g, '<h3').replace(/<\/h2>/g, '</h3>')
     .replace(/<h1\b/g, '<h2').replace(/<\/h1>/g, '</h2>');
   const data = await API.get('/api/cv');
+  // CAR-20 (v1.243.0) — restore an unsaved-edit buffer across re-renders
+  // (guard-Cancel rewind, language switch). The server copy stays the
+  // dirty baseline, so a restored buffer still reads as dirty until Save
+  // lands. If the server already caught up, drop the buffer.
+  const serverMarkdown = data.markdown || '';
+  if (cvDirtyBuffer != null && cvDirtyBuffer === serverMarkdown) cvDirtyBuffer = null;
+  const hasBuffer = typeof cvDirtyBuffer === 'string' && cvDirtyBuffer !== serverMarkdown;
+  if (hasBuffer) data.markdown = cvDirtyBuffer;
   // v1.47.0 (WS2 #16) gave the editor an accessible name via
   // aria-labelledby → the "Markdown" section heading. v1.55.2
   // (F-V55-H / UX-5) upgrades that terse "Markdown" name to a
@@ -137,11 +164,15 @@ Router.register('cv', async () => {
       UI.toast(t('cv.uploadConverting', 'Converting…') + ` ${file.name} (${sizeKb} KB)`);
       try {
         const buf = await file.arrayBuffer();
+        // CAR-20 (v1.243.0) — a header value outside ISO-8859-1
+        // ('Резюме.pdf') makes fetch throw TypeError before a byte leaves
+        // the browser. Percent-encode; the server only reads the
+        // extension hint, which encodeURIComponent preserves verbatim.
         const res = await fetch('/api/cv/import', {
           method: 'POST',
           headers: {
             'Content-Type': 'application/octet-stream',
-            'X-Filename': file.name,
+            'X-Filename': encodeURIComponent(file.name),
           },
           body: buf,
         });
@@ -201,10 +232,17 @@ Router.register('cv', async () => {
           // button label (BUG-008 invariant: modal title == localized
           // button label) instead of the hardcoded English 'sync-check'.
           UI.toast(t('cv.syncCheckRunning', 'Running cv-sync-check.mjs…'));
-          const r = await UI.withSpinner(e.currentTarget, () => API.post('/api/run/sync-check'));
-          UI.modal(t('cv.syncCheck', 'sync-check'),
-            UI.el('pre', { className: 'console' },
-              (r.stdout || '') + (r.stderr ? '\n' + r.stderr : '')));
+          // CAR-20 (v1.243.0) — a failed POST used to reject unhandled
+          // (withSpinner re-throws); the button restored but the user
+          // never learned why nothing opened. Surface the error.
+          try {
+            const r = await UI.withSpinner(e.currentTarget, () => API.post('/api/run/sync-check'));
+            UI.modal(t('cv.syncCheck', 'sync-check'),
+              UI.el('pre', { className: 'console' },
+                (r.stdout || '') + (r.stderr ? '\n' + r.stderr : '')));
+          } catch (err) {
+            UI.toast((err && err.message) || t('common.error', 'Error'), 'error');
+          }
         }}, t('cv.syncCheck', 'sync-check')),
         c('button', {
           className: 'btn btn-ghost',
@@ -213,12 +251,14 @@ Router.register('cv', async () => {
         }, '📄 ' + t('cv.generatePdf', 'Generate PDF')),
         (() => {
           // U-15 (v1.58.33) — dirty-state indicator on the CV Save
-          // button. Initial baseline is captured after the first
-          // /api/cv read into the textarea (mark via `cv:baseline`
-          // event below). Every `input` on the textarea toggles a
-          // `.btn-dirty` class + localized tooltip; a successful Save
-          // resets the baseline so subsequent edits re-arm dirty.
-          let initial = ta.value;
+          // button. The baseline (`initial`) is the SERVER copy the
+          // textarea was hydrated from — CAR-20: when a dirty buffer was
+          // restored, the textarea is seeded from the buffer while
+          // `initial` deliberately stays the server markdown, so the
+          // restored edits still read as dirty until Save lands. Every
+          // `input` toggles the `.btn-dirty` class + localized tooltip
+          // and keeps the module-level cvDirtyBuffer in sync; a
+          // successful Save resets the baseline so edits re-arm dirty.
           const saveBtn = c('button', {
             className: 'btn btn-primary',
             onClick: async (e) => {
@@ -226,29 +266,32 @@ Router.register('cv', async () => {
                 UI.toast('CV is empty', 'error');
                 return;
               }
-              await UI.withSpinner(e.currentTarget, () => API.put('/api/cv', { markdown: ta.value }));
-              UI.toast(t('cv.saved', 'Saved'), 'success');
-              initial = ta.value;
-              saveBtn.classList.remove('btn-dirty');
-              saveBtn.title = '';
+              // CAR-20 (v1.243.0) — a failed PUT used to reject unhandled
+              // (withSpinner re-throws) with no toast; the dirty indicator
+              // even stayed armed while the user believed it saved.
+              try {
+                await UI.withSpinner(e.currentTarget, () => API.put('/api/cv', { markdown: ta.value }));
+                UI.toast(t('cv.saved', 'Saved'), 'success');
+                initial = ta.value;
+                cvDirtyBuffer = null;
+                saveBtn.classList.remove('btn-dirty');
+                saveBtn.title = '';
+              } catch (err) {
+                UI.toast((err && err.message) || t('common.error', 'Error'), 'error');
+              }
             },
           }, '💾 ' + t('common.save'));
-          // UX-A10 (v1.58.58) — guard the user from losing CV edits.
-          // Pre-fix, leaving #/cv with unsaved changes (browser tab close,
-          // bookmark click, sidebar navigation, hash change) silently
-          // dropped the buffer. We now register two listeners scoped to
-          // the route lifetime:
-          //   - `beforeunload`  → browser shows its generic confirm
-          //     dialog (no custom string per modern browser policy).
-          //   - `hashchange`    → SPA-internal nav prompts via confirm()
-          //     and reverts the hash if the user cancels.
-          // `cvDirty` lives in the IIFE closure; cleanup self-detaches
-          // when the hash leaves `#/cv` so the listeners don't stack
-          // (M-1 discipline, same pattern as the dashboard provider
-          // chip lifecycle in v1.58.55).
+          let initial = ta.value;
           let cvDirty = false;
+          if (hasBuffer) {
+            initial = serverMarkdown;
+            cvDirty = true;
+            saveBtn.classList.add('btn-dirty');
+            saveBtn.title = t('cv.unsaved', 'Unsaved changes — click Save to persist.');
+          }
           ta.addEventListener('input', () => {
             cvDirty = ta.value !== initial;
+            cvDirtyBuffer = cvDirty ? ta.value : null;
             saveBtn.classList.toggle('btn-dirty', cvDirty);
             saveBtn.title = cvDirty ? t('cv.unsaved', 'Unsaved changes — click Save to persist.') : '';
           });
@@ -256,7 +299,7 @@ Router.register('cv', async () => {
           // the textarea so we can re-baseline once the actual CV body
           // arrives (the initial render runs before the API call returns).
           ta.addEventListener('cv:baseline', () => {
-            initial = ta.value; cvDirty = false;
+            initial = ta.value; cvDirty = false; cvDirtyBuffer = null;
             saveBtn.classList.remove('btn-dirty'); saveBtn.title = '';
           });
           // UX-A10 (v1.58.58 + patch): probe the live diff at the moment
@@ -270,7 +313,11 @@ Router.register('cv', async () => {
             if (isDirty()) { e.preventDefault(); e.returnValue = ''; }
           };
           const onHashChange = () => {
-            const leaving = !location.hash.startsWith('#/cv');
+            // CAR-20 (v1.243.0) — exact-hash compare. The old prefix
+            // check also matched the studio route ('#/cv-studio' begins
+            // with the same two segments), so leaving to it skipped the
+            // confirm AND leaked these listeners forever.
+            const leaving = cvRouteHash() !== '#/cv';
             if (!leaving) return;
             if (isDirty()) {
               const ok = window.confirm(t('cv.unsavedConfirm',
@@ -278,22 +325,38 @@ Router.register('cv', async () => {
               if (!ok) {
                 // The hash already changed by the time hashchange fires
                 // — rewind to #/cv to keep the user on the page.
-                // (preventDefault is a no-op on hashchange.)
+                // (preventDefault is a no-op on hashchange.) CAR-20: the
+                // rewind re-renders this route and the module-level
+                // cvDirtyBuffer restores the edits, so declining the
+                // prompt no longer means losing them to the refetch.
+                // Detach first: the re-rendered view registers its own
+                // guard pair.
+                detachGuard();
                 location.hash = '#/cv';
                 return;
               }
-              // User confirmed leaving. Reset baseline so isDirty()
-              // returns false and the listeners detach cleanly.
+              // User confirmed leaving. Drop the buffer and reset the
+              // baseline so isDirty() returns false and the listeners
+              // detach cleanly.
+              cvDirtyBuffer = null;
               initial = ta.value;
             }
+            detachGuard();
+          };
+          const detachGuard = () => {
             window.removeEventListener('beforeunload', onBeforeUnload);
             window.removeEventListener('hashchange', onHashChange);
+            if (cvGuardDetach === detachGuard) cvGuardDetach = null;
           };
+          // CAR-20 — single-instance lifecycle: the previous view
+          // instance's guards are dropped before this render registers
+          // its own (language switch Router.render() never fires
+          // hashchange, so the old pair would otherwise keep prompting
+          // against a detached textarea forever).
+          if (cvGuardDetach) cvGuardDetach();
+          cvGuardDetach = detachGuard;
           window.addEventListener('beforeunload', onBeforeUnload);
           window.addEventListener('hashchange', onHashChange);
-          // Keep `cvDirty` writable so the U-15 test's regex match
-          // continues to find it (compatibility with existing assertion).
-          void cvDirty;
           return saveBtn;
         })(),
       ]),

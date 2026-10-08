@@ -64,15 +64,22 @@
       parentVersion = h.parentVersion || '';
       var checks = Array.isArray(h.checks) ? h.checks : [];
       checks.forEach(function (c) {
-        var st = String((c && (c.status || c.state)) || '').toUpperCase();
-        if (st === 'OK' || st === 'PASS') okChecks++;
-        else if (st === 'FAIL' || st === 'ERROR') failChecks.push(String((c && (c.id || c.name || c.label)) || 'check'));
+        if (!c) return;
+        // /api/health checks are {name, required, ok, value} — the old
+        // c.status || c.state read always missed, so okChecks stayed 0 and
+        // failing checks were never reported.
+        var name = String(c.name || c.id || c.label || 'check');
+        if (c.ok === true) okChecks++;
+        else if (c.ok === false) failChecks.push(name);
       });
     } catch (_e) { /* best-effort — a report with no shape is still useful */ }
     return {
       version: version,
       parentVersion: parentVersion,
-      route: scrub(location.hash || '#/'),
+      // Privacy invariant: the route must never carry the job URL query
+      // (#/evaluate?url=…) or a report slug (a company name). Reduce it to
+      // the bare view name — enough to reproduce a UI bug, nothing personal.
+      route: scrub((location.hash || '#/').split('?')[0].split('/').slice(0, 2).join('/')),
       ua: navigator.userAgent,
       viewport: window.innerWidth + '×' + window.innerHeight,
       okChecks: okChecks,
@@ -115,12 +122,21 @@
   }
 
   function issueUrl(d, description) {
-    var params = new URLSearchParams({
-      title: issueTitle(d, description),
-      body: issueBody(d, description),
-      labels: 'bug',
-    });
-    return 'https://github.com/' + REPO + '/issues/new?' + params.toString();
+    var base = 'https://github.com/' + REPO + '/issues/new?';
+    var title = issueTitle(d, description);
+    var body = issueBody(d, description);
+    var qs = function () {
+      return new URLSearchParams({ title: title, body: body, labels: 'bug' }).toString();
+    };
+    var url = base + qs();
+    // GitHub issue URLs die past ~16KB: percent-encoding can inflate the
+    // 6000-char body severalfold, so the cap must be applied to the ENCODED
+    // url, not to the raw markdown before it.
+    while (url.length > 16000 && body.length > 0) {
+      body = body.slice(0, Math.max(0, body.length - 1024));
+      url = base + qs();
+    }
+    return url;
   }
 
   /** Search existing issues by fingerprint — deflect duplicates at write time. */
@@ -162,7 +178,15 @@
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(preview.value).then(function () { UI.toast(doneMsg, 'success'); },
           function () { UI.toast(t('bug.copyFailed', 'Could not copy'), 'error'); });
-      } else { preview.select(); UI.toast(doneMsg, 'success'); }
+      } else {
+        // No async clipboard API (plain-http LAN deployments, older browsers):
+        // select + execCommand('copy'). Honesty rule — a FAILED copy must
+        // never toast success.
+        preview.select();
+        var copied = false;
+        try { copied = !!(document.execCommand && document.execCommand('copy')); } catch (_e) { copied = false; }
+        UI.toast(copied ? doneMsg : t('bug.copyFailed', 'Could not copy'), copied ? 'success' : 'error');
+      }
     });
     refresh();
 

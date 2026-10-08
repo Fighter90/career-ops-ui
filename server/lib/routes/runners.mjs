@@ -128,6 +128,22 @@ const BUFFERED = [
 ];
 
 export function registerRunnerRoutes(app) {
+  // CAR-40 — bare GET /api/runners is a small self-description: the
+  // buffered action index, derived from the BUFFERED registry above so
+  // the two can never drift. Without it the bare path fell through to
+  // the catch-all `app.all('/api/*')` and answered the misleading
+  // {"error":"unknown api"} even though the surface exists and serves
+  // real sub-paths.
+  app.get('/api/runners', (_req, res) => {
+    res.json({
+      actions: BUFFERED.map((def) => ({
+        name: def.route.replace('/api/run/', ''),
+        method: 'POST',
+        route: def.route,
+      })),
+    });
+  });
+
   for (const def of BUFFERED) {
     app.post(def.route, async (_req, res) => {
       const result = await runNodeScript(def.script, [], { timeoutMs: 60_000 });

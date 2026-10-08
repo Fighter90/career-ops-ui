@@ -97,12 +97,44 @@ Router.register('reports', async (params) => {
       tbody,
     ]));
 
+  // L-FOCUS (v1.243.0) — identical copy of tracker.js's withFocusPreserved:
+  // render() replaces the focused row / .pg-btn and focus fell to <body>.
+  // Kept file-local (lib/ is shared and outside this change's file set);
+  // tracker.js, reports.js and stats.js each carry the same copy.
+  function withFocusPreserved(container, mutate) {
+    let marker = null;
+    try {
+      const doc = container.ownerDocument || document;
+      const active = doc.activeElement;
+      if (active && active !== container && container.contains(active)) {
+        marker = active.tagName + '|' + active.className + '|' + (active.textContent || '');
+      }
+    } catch { marker = null; }
+    mutate();
+    if (!marker) return;
+    const sel = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+    let candidates = [];
+    try { candidates = Array.from(container.querySelectorAll(sel)); } catch { return; }
+    for (const el of candidates) {
+      if (el.tagName + '|' + el.className + '|' + (el.textContent || '') === marker) {
+        try { el.focus(); } catch { /* detached node */ }
+        return;
+      }
+    }
+  }
+
   function render() {
     const page = pager.slice(reports);
-    tbody.innerHTML = '';
-    pgWrap.innerHTML = '';
-    page.forEach((rep) => tbody.appendChild(makeRow(rep)));
-    pgWrap.appendChild(pager.controls(page.length, reports.length));
+    // L-FOCUS — restore focus across the rebuild (paginator page change was
+    // a keyboard dead-end: the clicked .pg-btn was destroyed mid-click).
+    withFocusPreserved(tbody, () => {
+      tbody.innerHTML = '';
+      page.forEach((rep) => tbody.appendChild(makeRow(rep)));
+    });
+    withFocusPreserved(pgWrap, () => {
+      pgWrap.innerHTML = '';
+      pgWrap.appendChild(pager.controls(page.length, reports.length));
+    });
   }
   render();
 

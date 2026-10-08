@@ -24,15 +24,26 @@ window.Router = (function () {
   }
 
   function current() {
-    const hash = window.location.hash.slice(2) || 'dashboard';
-    // v1.28.1 — strip `?query` before route lookup.
+    // Only '#/…' hashes are SPA routes. Bare in-page anchors (the skip
+    // link's '#content' target) and the empty hash are NOT routes: routing
+    // them through `hash.slice(2)` used to slice INTO the token and
+    // manufacture a phantom route ('#content' → 'ontent' → 404). Route
+    // them to the default view instead.
+    const raw = window.location.hash;
+    const hash = raw.startsWith('#/') ? raw.slice(2) : '';
+    // v1.28.1 — strip `?query` before route lookup (and before the default).
     // Pre-v1.28.1 `Router.go('/evaluate?url=…')` produced a hash whose
     // first split('/') segment was the whole "evaluate?url=…" literal,
     // which never matched a registered route → __not_found__ (404).
     // The view itself parses `window.location.hash.split('?')[1]` via
     // URLSearchParams (see evaluate.js, config.js), so we only need to
     // drop the query portion from the NAME lookup, not from the hash.
+    // Stripping BEFORE the `'' → dashboard` default also stops `#/?x=1`
+    // from 404ing on the empty route name.
     const beforeQuery = hash.split('?')[0];
+    if (!beforeQuery) {
+      return { name: 'dashboard', rawName: 'dashboard', params: [] };
+    }
     const [rawName, ...rest] = beforeQuery.split('/');
     const name = ALIASES[rawName] || rawName;
     return { name, rawName, params: rest };
@@ -91,6 +102,13 @@ window.Router = (function () {
   let renderEpoch = 0;
 
   async function render() {
+    // A bare in-page anchor (e.g. the skip link's '#content') is not an SPA
+    // route: the browser scrolls natively and NO re-render must happen —
+    // re-rendering would wipe the view the user is reading (and, pre-fix,
+    // current() routed it to a phantom 'ontent' 404). Only '#/…' hashes
+    // (and the initial empty hash, i.e. boot) drive a render.
+    const h = window.location.hash;
+    if (h && !h.startsWith('#/')) return;
     const myEpoch = ++renderEpoch;
     const { name, rawName, params } = current();
 
@@ -99,7 +117,11 @@ window.Router = (function () {
       // resolved route — so #/profile lights up the Profile nav item
       // even though it routes to `settings` internally.
       const r = a.dataset.route;
-      a.classList.toggle('active', r === name || r === rawName);
+      const active = r === name || r === rawName;
+      a.classList.toggle('active', active);
+      // CAR-23 (v1.243.0) — expose the active item to assistive tech.
+      if (active) a.setAttribute('aria-current', 'page');
+      else a.removeAttribute('aria-current');
     });
 
     const content = document.getElementById('content');

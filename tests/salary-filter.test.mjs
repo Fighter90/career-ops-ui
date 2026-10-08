@@ -56,6 +56,32 @@ test('parseSalaryRange: K suffix "$120K – $150K" → ×1000', () => {
   assert.deepEqual(Skills.parseSalaryRange('$120K – $150K'), { min: 120000, max: 150000 });
 });
 
+// v1.243.0 — decimals, cents and currency words used to be mangled by the
+// digits-only tokenizer ("$182.9K" folded into 1829000, "$85,000.00" ×100,
+// "kr" read as a K-suffix). The shared parser (window.Skills.parseAmounts)
+// fixes all three.
+
+test('parseSalaryRange: decimal K "$182.9K - $240K" → 182900..240000', () => {
+  assert.deepEqual(Skills.parseSalaryRange('$182.9K - $240K'), { min: 182900, max: 240000 });
+});
+
+test('parseSalaryRange: cents "$85,000.00" → 85000 (not ×100)', () => {
+  assert.deepEqual(Skills.parseSalaryRange('$85,000.00'), { min: 85000, max: 85000 });
+});
+
+test('parseSalaryRange: Swedish krona "100 000 kr" → 100000 (not ×1000)', () => {
+  assert.deepEqual(Skills.parseSalaryRange('100 000 kr'), { min: 100000, max: 100000 });
+  assert.deepEqual(Skills.parseSalaryRange('450 000 kr/mån'), { min: 450000, max: 450000 });
+});
+
+test('parseSalaryRange: million suffix "€1.5M – €2M"', () => {
+  assert.deepEqual(Skills.parseSalaryRange('€1.5M – €2M'), { min: 1500000, max: 2000000 });
+});
+
+test('parseSalaryRange: de-DE grouping "80.000 - 100.000 €"', () => {
+  assert.deepEqual(Skills.parseSalaryRange('80.000 - 100.000 €'), { min: 80000, max: 100000 });
+});
+
 test('parseSalaryRange: empty / unparseable → null', () => {
   assert.equal(Skills.parseSalaryRange(''), null);
   assert.equal(Skills.parseSalaryRange(null), null);

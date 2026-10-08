@@ -25,10 +25,18 @@ Router.register('two-pager', async () => {
   root.appendChild(c('p', { className: 'page-subtitle' },
     t('twoPager.subtitle', 'What YOU actually want from your next role. Feeds every evaluation and powers a fit-to-what-you-want score on each posting.')));
 
-  // Load the saved two-pager (empty-safe).
-  let data;
+  // Load the saved two-pager (empty-safe). v1.243.0 (views-3) — a FAILED load
+  // used to fall into the same `{ …empty }` shape as "no two-pager yet": the
+  // blank form was indistinguishable from a first run, and clicking Save
+  // silently overwrote config/two-pager.yml with all-empty fields. Remember
+  // the failure: surface it (existing common.error key + the server's own
+  // message) and hold Save disabled until the user actually edits a field —
+  // a deliberate edit makes the on-screen content intentional, so saving is
+  // then allowed.
+  let data = null;
+  let loadErr = null;
   try { ({ twoPager: data } = await API.get('/api/two-pager')); }
-  catch { data = null; }
+  catch (e) { loadErr = e; }
   data = data || { who_i_am: '', loves: [], must_haves: [], hates: [], deal_breakers: [], non_negotiables: [], target_environment: '' };
 
   // ── free-text blocks ──
@@ -77,11 +85,34 @@ Router.register('two-pager', async () => {
   const draftBtn = c('button', { className: 'btn btn-ghost', type: 'button' }, t('twoPager.aiFill', '✨ AI fill assistant'));
   const previewBtn = c('button', { className: 'btn btn-ghost', type: 'button' }, t('twoPager.preview', '👁 Preview & export'));
   const saveBtn = c('button', { className: 'btn btn-primary', type: 'button' }, t('twoPager.save', 'Save two-pager'));
+  // v1.243.0 (views-3) — failed-load guard: Save stays disabled until a
+  // deliberate edit. The tooltip carries the server's own error message
+  // (no new UI copy); the first 'input' anywhere in the form re-enables it.
+  if (loadErr) {
+    saveBtn.disabled = true;
+    saveBtn.title = (loadErr && loadErr.message) || t('twoPager.saveFailed', 'Could not save the two-pager');
+  }
   // P4-ETA (v1.170.0) — honest duration hint next to the ✨ AI-fill generation.
   const draftEta = c('span', { className: 'eta-hint', title: t('common.etaTitle', 'Typical generation time') },
     '⏱ ' + t('common.eta', '~{n}s').replace('{n}', '20'));
   const actions = c('div', { style: { display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center', margin: '4px 0 8px' } }, [saveBtn, draftBtn, draftEta, previewBtn]);
+  if (loadErr) {
+    // role=alert banner above the actions: the failed GET must be visible,
+    // not look like "no two-pager yet". Existing keys only — 'common.error'
+    // plus the server's message (dynamic server text, not new UI copy).
+    root.appendChild(c('div', {
+      role: 'alert',
+      className: 'card',
+      style: { padding: '10px 14px', margin: '0 0 12px', borderColor: 'var(--danger, #d9534f)' },
+    }, [
+      c('strong', null, t('common.error', 'Error')),
+      c('span', { style: { marginLeft: '8px', color: 'var(--foggy)' } },
+        String((loadErr && loadErr.message) || '')),
+    ]));
+  }
   root.appendChild(actions);
+  // First deliberate edit re-enables Save (input events bubble to root).
+  if (loadErr) root.addEventListener('input', () => { saveBtn.disabled = false; });
   root.appendChild(c('p', { style: { color: 'var(--foggy)', fontSize: '12px', margin: '0 0 24px' } },
     t('twoPager.privacyNote', 'Stored in your parent project’s user layer (config/two-pager.yml) — never sent anywhere except the LLM prompts you run.')));
 
@@ -163,6 +194,9 @@ Router.register('two-pager', async () => {
       const res = await API.post('/api/two-pager/draft', { run: true, lang: (I18n.getLang && I18n.getLang()) || 'en' });
       if (res && res.fields) {
         applyFields(res.fields);
+        // v1.243.0 (views-3) — an AI fill is also a deliberate edit: re-enable
+        // Save even after a failed initial load (it fills on-screen content).
+        if (loadErr) saveBtn.disabled = false;
         UI.toast(t('twoPager.aiFilled', 'Fields drafted from your CV — review, then Save'), 'success');
       } else if (res && res.prompt) {
         showManualPrompt(res.prompt);

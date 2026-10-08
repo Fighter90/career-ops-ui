@@ -68,12 +68,26 @@ Router.register('activity', async () => {
     truncNote.style.display = allEvents.length >= CAP ? '' : 'none';
   }
 
+  // CAR-20 (v1.243.0) — request token: rapid filter clicks (or a filter
+  // click racing the Refresh button) used to let a SLOW older response
+  // resolve last and clobber the table with the wrong slice. Each load
+  // claims a token; only the newest may touch the DOM. Failures are
+  // caught here so neither the filter click nor UI.withSpinner can end
+  // in an unhandled rejection.
+  let loadToken = 0;
   async function load() {
+    const myToken = ++loadToken;
     const params = activeFilter ? `?type=${encodeURIComponent(activeFilter)}&limit=500` : '?limit=500';
-    const data = await API.get('/api/activity' + params);
-    allEvents = data.events || [];
-    pager.reset();
-    render();
+    try {
+      const data = await API.get('/api/activity' + params);
+      if (myToken !== loadToken) return; // a newer load owns the table
+      allEvents = data.events || [];
+      pager.reset();
+      render();
+    } catch (err) {
+      if (myToken !== loadToken) return;
+      UI.toast((err && err.message) || t('common.error', 'Error'), 'error');
+    }
   }
 
   const filterRow = c('div', { className: 'flex gap-3', style: { flexWrap: 'wrap' } },
@@ -81,11 +95,13 @@ Router.register('activity', async () => {
       c('button', {
         className: 'btn btn-ghost btn-sm' + (f.key === activeFilter ? ' active' : ''),
         'data-filter': f.key,
-        onClick: (e) => {
+        onClick: async (e) => {
           activeFilter = f.key;
           filterRow.querySelectorAll('button').forEach((b) =>
             b.classList.toggle('active', b.dataset.filter === f.key));
-          load();
+          // CAR-20 (v1.243.0) — the reload is now awaited (load() has its
+          // own try/catch + stale-response token).
+          await load();
         },
       }, f.label)
     )

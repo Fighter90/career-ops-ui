@@ -7,19 +7,19 @@
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
-[![tests](https://img.shields.io/badge/tests-4812%20passed-brightgreen)](#testy)
+[![tests](https://img.shields.io/badge/tests-5036%20passed-brightgreen)](#testy)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#testy)
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.242.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.242.1)
+[![release](https://img.shields.io/badge/release-v1.243.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.243.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Najnowsze wydanie — v1.242.1** — **Warstwa danych skanera jest znowu godna zaufania.** Martwe źródła żyją (justjoin i nofluffjobs znów czytają pełne katalogi; himalayas i jobicy schodzą głębiej niż 20 najnowszych), zniekształcona odpowiedź lub odpowiedź typu challenge **rzuca błąd** już na stronie 1 zamiast być odczytywana jako „0 ogłoszeń” (`server/lib/sources/_shape.mjs`), a sprawdzanie dostawców po podciągu zastąpiono sparsowanymi pinami dokładnego hosta — `clever.com` nie może już podawać się za lever, a wrogi adres URL boarda nie może już przekierować skanu. Jeden źle skonfigurowany wpis w portals nie przerywa już całego skanu.
+> **🆕 Najnowsze wydanie — v1.243.0** — **Warstwa przeglądarkowa chroni twoją pracę i mówi twoim językiem: żadnych utrat niezapisanych edycji, żadnych cichych awarii, żadnego cichego angielskiego w przetłumaczonym interfejsie, kontrast AA wszędzie.**
 >
-> **Poprzednie wydanie — v1.241.1** — Oceny na żywo działają od początku do końca w każdej wersji językowej, mapa ofert umieszcza długie ogłoszenia z wieloma lokalizacjami, a wdrożenie czeka na trwający cogodzinny skan.
+> **Poprzednie wydanie — v1.242.1** — Wydanie czysto pakunkowe: kod aplikacji identyczny z v1.242.0; poprawki warstwy danych skanera z tej wersji (martwe źródła znów żyją, zniekształcona odpowiedź rzuca błąd już na stronie 1, sparsowane piny dokładnego hosta) trafiły na produkcję dopiero z tym wdrożeniem.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

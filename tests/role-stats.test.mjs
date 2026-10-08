@@ -13,8 +13,11 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const w = {};
-// countries.js first (role-stats delegates country detection to it), then role-stats.
+// Load order mirrors index.html: countries.js (role-stats delegates country
+// detection to it), then skills.js (v1.243.0 — the shared amount tokenizer
+// window.Skills.parseAmounts lives there), then role-stats.
 new Function('window', readFileSync(resolve(ROOT, 'public/js/lib/countries.js'), 'utf8'))(w); // eslint-disable-line no-new-func
+new Function('window', readFileSync(resolve(ROOT, 'public/js/lib/skills.js'), 'utf8'))(w); // eslint-disable-line no-new-func
 new Function('window', readFileSync(resolve(ROOT, 'public/js/lib/role-stats.js'), 'utf8'))(w); // eslint-disable-line no-new-func
 const RS = w.RoleStats;
 const C = w.Countries;
@@ -62,6 +65,50 @@ test('parseSalaryUSD: conservative — junk / non-pay numbers → null', () => {
   assert.equal(RS.parseSalaryUSD(''), null);
   assert.equal(RS.parseSalaryUSD(null), null);
   assert.equal(RS.parseSalaryUSD(undefined), null);
+});
+
+// v1.243.0 — currency signals used ASCII \b boundaries, which never match
+// against Cyrillic/ł/č (a Cyrillic char is a non-\w char, so \b руб could
+// not align). 'от 100 000 руб' fell through to the default-USD read
+// (~90× off), '50 000 Kč' read its K as a k-suffix (×1000), and zł/грн
+// salaries were dropped from the sample entirely.
+
+test('parseSalaryUSD: Cyrillic currency words (руб / грн) now detected', () => {
+  const rub = RS.parseSalaryUSD('от 100 000 руб');
+  assert.equal(rub.currency, 'RUB');
+  assert.equal(rub.minUsd, Math.round(100000 * RS.FX_TO_USD.RUB));
+  assert.equal(rub.maxUsd, Math.round(100000 * RS.FX_TO_USD.RUB));
+  const uah = RS.parseSalaryUSD('100 000 грн');
+  assert.equal(uah.currency, 'UAH');
+  assert.equal(uah.minUsd, Math.round(100000 * RS.FX_TO_USD.UAH));
+});
+
+test('parseSalaryUSD: "100 тыс. руб." is RUB (was USD — ~90× off)', () => {
+  const s = RS.parseSalaryUSD('100 тыс. руб.');
+  assert.equal(s.currency, 'RUB');
+  assert.equal(s.minUsd, Math.round(100000 * RS.FX_TO_USD.RUB));
+});
+
+test('parseSalaryUSD: "50 000 Kč" is CZK (was ×1000 → 50M USD)', () => {
+  const s = RS.parseSalaryUSD('50 000 Kč');
+  assert.equal(s.currency, 'CZK');
+  assert.equal(s.minUsd, Math.round(50000 * RS.FX_TO_USD.CZK));
+});
+
+test('parseSalaryUSD: zł / kr words resolve (were dropped or mis-scaled)', () => {
+  const pln = RS.parseSalaryUSD('15 000 zł');
+  assert.equal(pln.currency, 'PLN');
+  assert.equal(pln.minUsd, Math.round(15000 * RS.FX_TO_USD.PLN));
+  const kr = RS.parseSalaryUSD('450 000 kr');
+  assert.equal(kr.currency, 'NOK');
+  assert.equal(kr.minUsd, Math.round(450000 * RS.FX_TO_USD.NOK));
+});
+
+test('parseSalaryUSD: the K-suffix boundary rejects Kč/kr tails', () => {
+  // "k" followed by a letter is a currency word, not a multiplier — the
+  // amount itself must come through un-scaled even without a currency hit
+  // on another token.
+  assert.equal(RS.parseSalaryUSD('50 000 Kč').minUsd, Math.round(50000 * RS.FX_TO_USD.CZK));
 });
 
 test('matchRole: majority-token fuzzy match, else null', () => {

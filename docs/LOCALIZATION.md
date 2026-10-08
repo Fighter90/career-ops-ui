@@ -2,7 +2,7 @@
 
 How translation works in **career-ops-ui**, and how to add or edit a language. The SPA ships **17 locales** — `en`, `es`, `fr`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi` (Hindi added v1.122.0) — and every user-facing string flows through the i18n layer. **Arabic (`ar`) is right-to-left** (I18N-EXPAND, v1.70.0): `i18n.js` sets `<html dir="rtl">` for RTL locales and `app.css` carries a scoped `[dir="rtl"]` block. The in-app language picker is a flag-prefixed `<select>` (`renderLangSwitcher` in `public/js/app.js`).
 
-> **Help guide (v1.71.1; de/it/tr in v1.85.0).** The long-form help bundle (`docs/help/<locale>.md`) is fully translated in all **17 locales** — `pl`/`uk`/`ar` bundles were added in v1.71.1 and `de`/`it`/`tr` in v1.85.0, each holding the gated 29 H2 / 105 H3 structure (§20 "Statistics by target roles" added in v1.86.0).
+> **Help guide (v1.71.1; de/it/tr in v1.85.0).** The long-form help bundle (`docs/help/<locale>.md`) is fully translated in all **17 locales** — `pl`/`uk`/`ar` bundles were added in v1.71.1 and `de`/`it`/`tr` in v1.85.0, each holding the gated **33 H2 / 125 H3** structure (the H2 count is asserted by `tests/help-ui.test.mjs` + `tests/canonical-docs-coverage.test.mjs`; Hermes is §30, the cloud stack §31).
 
 > Server diagnostics stay **English by policy** (consistency across logs). Only client-owned UI strings are localized. Don't add per-locale text to server error bodies.
 
@@ -59,7 +59,16 @@ The fallback is a dev convenience — a key missing from the dictionary fails CI
    ```
    Keys are single-quoted; values are normal strings. Keep the same key in every file — **parity is gated**.
 2. **Use it** in markup (`data-i18n="scan.newButton"`) or JS (`t('scan.newButton')`).
-3. **Run the gates** (see below). `tests/i18n-coverage.test.mjs` fails if any locale is missing the key; `tests/i18n-locale-files.test.mjs` fails on key-set drift between locales.
+3. **Regenerate the snapshot** — adding or removing a key changes the assembled dict, so `tests/fixtures/i18n-dict.snapshot.json` must be re-captured or `tests/i18n-locale-files.test.mjs` fails:
+   ```bash
+   node --input-type=module -e '
+   import { loadAssembledDict } from "./tests/helpers/i18n-vm.mjs";
+   import { writeFileSync } from "node:fs";
+   writeFileSync("tests/fixtures/i18n-dict.snapshot.json",
+     JSON.stringify(loadAssembledDict(), null, 2) + "\n");
+   '
+   ```
+4. **Run the gates** (see below). `tests/i18n-coverage.test.mjs` fails if any locale is missing the key; `tests/i18n-locale-files.test.mjs` fails on key-set drift between locales; `tests/i18n-dead-keys.test.mjs` fails if the key is never referenced anywhere in the repo (don't add speculative keys).
 
 > Editing an existing string? Just change the value in the relevant locale file(s). If you change `en`, re-check the `data-i18n` fallback in the markup so they don't disagree.
 
@@ -95,7 +104,7 @@ Adding, say, French (`fr`) touches a fixed set of files. Work through them in or
    };
    ```
    Tip: copy `i18n-dict.en.js`, rename the global to `__I18N_DICT_FR`, translate every value.
-2. **Register the language** in [`public/js/lib/i18n.js`](../public/js/lib/i18n.js): add `{ code: 'fr', label: 'Français' }` to `LANGS`, and a `if (browser.startsWith('fr')) return 'fr';` line in `detect()`.
+2. **Register the language** in [`public/js/lib/i18n.js`](../public/js/lib/i18n.js): add `{ code: 'fr', label: 'Français', flag: '🇫🇷' }` to `LANGS` — the `flag` regional-indicator emoji is what the language `<select>` renders — and a `if (browser.startsWith('fr')) return 'fr';` line in `detect()` (region variants resolve by prefix, e.g. `fr-CA`). For a right-to-left language also add its code to `RTL_LANGS` in the same file so `<html dir="rtl">` is set (see `tests/i18n-detect.test.mjs`, which pins the whole detect() mapping).
 3. **Wire the assembler** in [`public/js/lib/i18n-dict.js`](../public/js/lib/i18n-dict.js): add `'fr'` to its `LANGS` array and `fr: window.__I18N_DICT_FR` to `TABLES`.
 4. **Load it** in [`public/index.html`](../public/index.html): add `<script src="/js/lib/locales/i18n-dict.fr.js"></script>` **before** `i18n-dict.aliases.js`.
 5. **Update tooling/tests** that enumerate locales: `tools/i18n-audit.mjs` (`LOCALES`), `tests/helpers/i18n-vm.mjs` (`I18N_LANGS`), `scripts/check-changelog-parity.mjs` (`LOCALES`), and the `ci.yml` inline check's `langs` array.
@@ -108,7 +117,7 @@ Adding, say, French (`fr`) touches a fixed set of files. Work through them in or
      JSON.stringify(loadAssembledDict(), null, 2) + "\n");
    '
    ```
-7. **Companion content** (for a fully-supported locale): `docs/help/fr.md` (help bundle, must keep the 29 H2 / 105 H3 parity), `CHANGELOG.fr.md`, `README.fr.md`.
+7. **Companion content** (for a fully-supported locale): `docs/help/fr.md` (help bundle, must keep the 33-H2 / 125-H3 parity), `CHANGELOG.fr.md`, `README.fr.md`.
 8. **Run all gates** and fix any parity failures.
 
 ---
@@ -131,8 +140,16 @@ node scripts/check-changelog-parity.mjs   # all CHANGELOG.<locale>.md at the sam
 | `tests/i18n-alias.test.mjs` | alias targets exist, no chains, `t(alias) === t(canonical)` in every locale |
 | `tools/i18n-audit.mjs` | no personal data, no empty values, no bare-calendar-date placeholders, no broken aliases |
 | `tests/playwright-locale-sweep.mjs` | every page renders + localizes in every locale, zero console errors |
-| `tests/i18n-no-latin-leaks.test.mjs` | no Latin-only `*.title` on the non-Latin locales (ru/ko/ja/zh-CN/zh-TW/uk/ar) |
+| `tests/i18n-no-latin-leaks.test.mjs` | no Latin-only `*.title` on the non-Latin locales (ru/ko/ja/zh-CN/zh-TW/uk/ar/hi) |
 | `tests/i18n-no-personal-data.test.mjs` | no maintainer PII across any locale file |
+| `tests/i18n-dead-keys.test.mjs` | zero dictionary keys that no code references (removal guard against translator busywork) |
+| `tests/i18n-detect.test.mjs` | the full `detect()` browser-language → locale mapping (da, zh-Hant/zh-HK/zh-MO → zh-TW, …) |
+| `tests/i18n-field-specs-keys.test.mjs` | every `labelKey`/`hintKey` in `views/config/field-specs.js` exists in the dict |
+| `tests/i18n-provider-facts.test.mjs` | provider hints stay factually true (no "Hermes last in the auto order"; lists stay open-ended) |
+| `tests/i18n-untranslated.test.mjs` | the registered (locale, key) pairs carry real translations, not the en string |
+| `tests/i18n-rtl-arrows.test.mjs` | ar arrow strings point ← (RTL), never → |
+| `tests/i18n-pipe-hint.test.mjs` | `pipe.hint` keeps both sentences in every locale |
+| `tests/i18n-cv-diagnostics-i18n.test.mjs` | cv-diagnostics speaks the active locale (`diag.*`); en values byte-match the legacy strings |
 
 > Node tests load the dictionary through `tests/helpers/i18n-vm.mjs` (`loadAssembledDict`, `loadI18n`, `legacyDictText`, `allLocaleSource`) — it replays the browser load order in a `node:vm`. When comparing an assembled-in-vm dict to the JSON snapshot, round-trip through `JSON.parse(JSON.stringify(...))` first (vm objects have a foreign prototype, so `deepStrictEqual` otherwise reports a false mismatch).
 

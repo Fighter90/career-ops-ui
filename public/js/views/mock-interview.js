@@ -54,6 +54,12 @@ Router.register('mock-interview', async () => {
   // history = [{ speaker, text }]; mirrors the server contract.
   const history = [];
   let session = { role: '', company: '', jd: '' };
+  // CAR-21 (v1.243.0) — stale-turn guard. Restarting / starting a new
+  // interview while a turn was in flight let the OLD response land in the
+  // NEW session's thread and history. Every requestTurn tags itself with
+  // the epoch; a response from an older epoch is dropped wholesale (no
+  // bubble, no history push, no button re-enable).
+  let sessionEpoch = 0;
 
   function bubble(speaker, markdown) {
     const mine = speaker === 'candidate';
@@ -72,11 +78,13 @@ Router.register('mock-interview', async () => {
   }
 
   async function requestTurn() {
+    const epoch = sessionEpoch;
     sendBtn.disabled = true; startBtn.disabled = true;
     const pending = c('div', { className: 'loading', style: { alignSelf: 'flex-start', color: 'var(--foggy)' } }, t('mock.thinking', 'Interviewer is thinking…'));
     thread.appendChild(pending);
     try {
       const res = await API.post('/api/mock-interview/turn', { role: session.role, company: session.company, jd: session.jd, history, run: true, lang: (I18n.getLang && I18n.getLang()) || 'en' });
+      if (epoch !== sessionEpoch) return; // stale turn — a newer session superseded it
       pending.remove();
       if (res.markdown) {
         history.push({ speaker: 'interviewer', text: res.markdown });
@@ -86,11 +94,14 @@ Router.register('mock-interview', async () => {
         showManualPrompt(res.prompt);
       }
     } catch (err) {
+      if (epoch !== sessionEpoch) return;
       pending.remove();
       UI.toast((err && err.message) || t('mock.turnFailed', 'Could not get the next turn'), 'error');
     } finally {
-      sendBtn.disabled = false; startBtn.disabled = false;
-      thread.scrollIntoView({ block: 'end' });
+      if (epoch === sessionEpoch) {
+        sendBtn.disabled = false; startBtn.disabled = false;
+        thread.scrollIntoView({ block: 'end' });
+      }
     }
   }
 
@@ -108,6 +119,7 @@ Router.register('mock-interview', async () => {
     const jd = jdInput.value.trim();
     if (!role && !jd) { UI.toast(t('mock.needRole', 'Enter a role or paste a job description first'), 'error'); return; }
     session = { role, company: companyInput.value.trim(), jd };
+    sessionEpoch++; // invalidate any turn still in flight from the previous session
     history.length = 0;
     thread.textContent = '';
     setup.style.display = 'none';
@@ -125,6 +137,7 @@ Router.register('mock-interview', async () => {
   });
 
   restartBtn.addEventListener('click', () => {
+    sessionEpoch++; // a turn in flight belongs to the abandoned session — drop its response
     convo.style.display = 'none';
     setup.style.display = 'grid';
     startBtn.disabled = false;

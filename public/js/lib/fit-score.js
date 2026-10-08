@@ -38,6 +38,38 @@
     return job.isRemote === true ? 'remote' : null;
   }
 
+  // ── salary parsing (shared by salaryFloor + jobSalaryNum, v1.243.0) ──
+  // One number token: digits with '.', ',' or space-grouped thousands
+  // ("150 000", "100,000", "5.000", "12.5") and an optional k/к suffix.
+  const SAL_NUM_SRC = '(\\d[\\d.,\\s]*\\d|\\d)';
+  const SAL_TOKEN_RE = new RegExp(SAL_NUM_SRC + '\\s*(k|к)?');
+  const SAL_RANGE_RE = new RegExp(
+    SAL_NUM_SRC + '\\s*(k|к)?\\s*[-–—]\\s*[$€£]?\\s*' + SAL_NUM_SRC + '\\s*(k|к)?',
+  );
+  function tokenToNum(raw, k) {
+    const t = String(raw)
+      .replace(/\s+/g, '')
+      .replace(/(\d)[.,](?=\d{3}(\D|$))/g, '$1') // thousands separators
+      .replace(',', '.');                        // a leftover comma = decimal
+    let n = parseFloat(t);
+    if (!isFinite(n)) return null;
+    if (k) n *= 1000;
+    return n;
+  }
+  // Best-effort salary magnitude from a string. A RANGE ("$100-150K") is
+  // judged by its TOP: comparing a floor against the bottom of a range
+  // mislabels every stretch posting as under-paying. (v1.243.0, CAR-18)
+  function salaryMagnitude(s) {
+    const r = s.match(SAL_RANGE_RE);
+    if (r) {
+      const top = tokenToNum(r[3], r[4] || r[2]); // '100-150K' scales both
+      if (top != null) return top;
+    }
+    const m = s.match(SAL_TOKEN_RE);
+    if (!m) return null;
+    return tokenToNum(m[1], m[2]);
+  }
+
   // A salary floor mentioned in a preference line ("at least $120k", "min 100000").
   function salaryFloor(text) {
     const s = norm(text);
@@ -45,11 +77,8 @@
     // A sub-annual rate ("500 EUR/day", "80/hr") is not an annual salary floor —
     // don't let the k-shorthand multiply promote it into a bogus 500k deal-breaker.
     if (/\/\s*(day|hr|hour|wk|week|mo|month)\b|\bper\s+(day|hour|week|month)\b|\b(daily|hourly|weekly|monthly)\b/.test(s)) return null;
-    const m = s.match(/(\d[\d.,]*)\s*(k|к)?/);
-    if (!m) return null;
-    let n = parseFloat(m[1].replace(/[.,](?=\d{3}\b)/g, '').replace(',', '.'));
-    if (!isFinite(n)) return null;
-    if (m[2]) n *= 1000;
+    const n = salaryMagnitude(s);
+    if (n == null) return null;
     return n >= 1000 ? n : (n > 0 && n < 1000 ? n * 1000 : null); // "120" → 120k
   }
 
@@ -57,12 +86,7 @@
   function jobSalaryNum(job) {
     const s = norm(job && job.salary);
     if (!s || !/\d/.test(s)) return null;
-    const m = s.match(/(\d[\d.,]*)\s*(k|к)?/);
-    if (!m) return null;
-    let n = parseFloat(m[1].replace(/[.,](?=\d{3}\b)/g, '').replace(',', '.'));
-    if (!isFinite(n)) return null;
-    if (m[2]) n *= 1000;
-    return n;
+    return salaryMagnitude(s);
   }
 
   /**
@@ -96,10 +120,15 @@
       const cname = norm(country.name);
       for (const p of positives) { if (workTypeOf(p) == null && hasWord(norm(p), cname)) { fired++; matched.push({ label: p }); break; } }
       for (const n of negatives) { if (hasWord(norm(n), cname)) { fired++; violated.push({ label: n }); break; } }
-      // a must-have country the job is NOT in → soft violation
+      // a must-have country the job is NOT in → soft violation. OR-listed
+      // countries ("Germany or Netherlands") are satisfied when the job's
+      // country is ONE of the named ones — the same line used to count as
+      // matched AND violated, netting a perfect fit negative. (v1.243.0)
       for (const p of list(tp.must_haves)) {
-        const pc = C.COUNTRIES && C.COUNTRIES.find((x) => hasWord(norm(p), norm(x.name)) && x.code !== country.code);
-        if (pc) { fired++; violated.push({ label: p }); break; }
+        const named = (C.COUNTRIES || []).filter((x) => hasWord(norm(p), norm(x.name)));
+        if (!named.length) continue;
+        if (named.some((x) => x.code === country.code)) continue;
+        fired++; violated.push({ label: p }); break;
       }
     }
 

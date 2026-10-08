@@ -7,19 +7,19 @@
 
 _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-4812%20passed-brightgreen)](#testes)
+[![tests](https://img.shields.io/badge/tests-5036%20passed-brightgreen)](#testes)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.242.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.242.1)
+[![release](https://img.shields.io/badge/release-v1.243.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.243.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versão — v1.242.1** — **A camada de dados do scanner volta a ser confiável: fontes mortas voltaram à vida, uma resposta malformada não pode mais se passar por um board vazio e uma URL de board hostil não pode mais redirecionar um scan.**
+> **🆕 Última versão — v1.243.0** — **A camada do navegador protege seu trabalho e fala o seu idioma: nenhuma edição não salva se perde, nenhuma falha passa em silêncio, nenhum inglês silencioso numa UI traduzida, contraste AA em todo lugar.**
 >
-> **Anterior — v1.241.1** — **As avaliações ao vivo funcionam de ponta a ponta em todos os idiomas; o mapa de vagas posiciona anúncios longos com múltiplos locais, e um deploy espera o scan horário em andamento.**
+> **Anterior — v1.242.1** — **Apenas empacotamento: o arquivo da release voltou a não trazer symlinks de `node_modules` — eles quebravam a extração tar do deploy no servidor — e o código do app é idêntico ao v1.242.0.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

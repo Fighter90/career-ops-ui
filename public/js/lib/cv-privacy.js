@@ -18,6 +18,10 @@
   // guard in the callback rejects plain year/version runs (2019, v2.0).
   const PHONE_RE = /(?:\+?\d{1,3}[\s.-]?)?(?:\(\d{1,4}\)[\s.-]?)?\d{2,4}(?:[\s.-]?\d{2,4}){1,4}/g;
   const URL_RE = /\b((?:https?:\/\/|www\.)[^\s)]+)\b/gi;
+  // Bare profile URLs (no scheme, no www.) — the most common CV link form.
+  // Restricted to known profile hosts so ordinary prose ("since 2021",
+  // "Node.js") can never match. (v1.243.0, CAR-18)
+  const BARE_PROFILE_URL_RE = /\b(?:[a-z0-9-]+\.)*(?:linkedin\.com|github\.com|gitlab\.com|medium\.com|stackoverflow\.com|behance\.net|dribbble\.com|x\.com|twitter\.com|t\.me)\/[^\s)"']+/gi;
   const HANDLE_RE = /(?:^|\s)(@[A-Za-z0-9_]{2,})/g;
   // Street address: "123 Main St", optionally with apt — a light heuristic.
   // The suffix must sit at a real address boundary (comma, ZIP, or end of
@@ -25,9 +29,12 @@
   // mistaken for an address.
   const ADDRESS_RE = /\b\d{1,5}\s+([A-Z][a-z]+\.?\s){1,4}(street|st|avenue|ave|road|rd|boulevard|blvd|lane|ln|drive|dr|court|ct|way|square|sq)\b\.?(?=\s*(?:,|\d{4,5}\b|$))/gim;
   // Date-like runs that PHONE_RE's ≥7-digit guard would otherwise redact:
-  // a "2018-2022" / "2018 2022" year range, or an ISO "2026-07-04" date.
+  // a "2018-2022" / "2018 2022" year range, or an ISO "2026-07-04" date —
+  // plus, since v1.243.0, EU dotted/dashed dates ("12.03.2021", "12-03-21",
+  // dotted-ISO "2021.03.12") whose 8 digits previously became a phone block.
   const YEAR_RANGE_RE = /^(?:19|20)\d{2}\s*[-.\s]\s*(?:19|20)\d{2}$/;
   const ISO_DATE_RE = /^\d{4}-\d{2}-\d{2}$/;
+  const EU_DATE_RE = /^(?:\d{1,2}[.-]\d{1,2}[.-]\d{2,4}|\d{4}[.-]\d{1,2}[.-]\d{1,2})$/;
 
   const REDACT = '████';
 
@@ -42,6 +49,20 @@
 
   function escapeRe(s) { return s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'); }
 
+  // Case-INSENSITIVE pattern for the candidate's name: CVs spell the name in
+  // ALL CAPS / all lowercase regardless of the canonical form passed in.
+  // Built per character so every casing pair (Latin, diacritics, Cyrillic)
+  // matches — [Mm], [Üü], [Аа]… (v1.243.0, CAR-18).
+  function namePattern(name) {
+    return name.split('').map((ch) => {
+      const lower = ch.toLowerCase();
+      const upper = ch.toUpperCase();
+      return lower !== upper
+        ? `[${escapeRe(upper)}${escapeRe(lower)}]`
+        : escapeRe(ch);
+    }).join('');
+  }
+
   function mask(markdown, opts) {
     let out = typeof markdown === 'string' ? markdown : '';
     const o = Object.assign({ email: true, phone: true, links: true, address: true, name: false }, opts || {});
@@ -51,20 +72,24 @@
     if (o.address) out = out.replace(ADDRESS_RE, () => { counts.address++; return REDACT; });
     if (o.links) {
       out = out.replace(URL_RE, () => { counts.links++; return REDACT; });
+      // v1.243.0 — after the schemeful pass, catch the bare-host form
+      // (linkedin.com/in/jane-doe) the URL_RE scheme/www. prefix missed.
+      out = out.replace(BARE_PROFILE_URL_RE, () => { counts.links++; return REDACT; });
       out = out.replace(HANDLE_RE, (m, h) => { counts.links++; return m.replace(h, REDACT); });
     }
     // Phone last so it doesn't eat digits inside URLs/emails already redacted.
     if (o.phone) out = out.replace(PHONE_RE, (m) => {
       // Skip short numeric runs (years, versions) — require ≥7 digits total.
       if ((m.replace(/\D/g, '').length) < 7) return m;
-      // Skip date-like runs (year ranges, ISO dates) common in CV timelines.
+      // Skip date-like runs (year ranges, ISO dates, EU dotted dates)
+      // common in CV timelines.
       const t = m.trim();
-      if (YEAR_RANGE_RE.test(t) || ISO_DATE_RE.test(t)) return m;
+      if (YEAR_RANGE_RE.test(t) || ISO_DATE_RE.test(t) || EU_DATE_RE.test(t)) return m;
       counts.phone++; return REDACT;
     });
     if (o.name && typeof o.name === 'string' && o.name.trim()) {
       const init = initials(o.name);
-      const re = new RegExp(escapeRe(o.name.trim()), 'g');
+      const re = new RegExp(namePattern(o.name.trim()), 'g');
       out = out.replace(re, () => { counts.name++; return init; });
     }
 

@@ -9,19 +9,19 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-4812%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-5036%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.242.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.242.1)
+[![release](https://img.shields.io/badge/release-v1.243.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.243.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.242.1** — **स्कैनर की डेटा-परत फिर भरोसेमंद है।** मृत स्रोत फिर जीवित हैं (justjoin और nofluffjobs फिर अपने पूरे कैटलॉग पढ़ते हैं; himalayas और jobicy नवीनतम 20 के पार चलते हैं), विकृत या चैलेंज उत्तर अब "0 पोस्टिंग" की तरह पढ़े जाने के बजाय पहले ही पेज पर **त्रुटि फेंकता** है (`server/lib/sources/_shape.mjs`), और सबस्ट्रिंग विक्रेता-जाँचें पार्स किए गए exact-host पिन बन गईं — अब `clever.com` lever का भेस नहीं पहन सकता, और दुर्भावनापूर्ण बोर्ड URL स्कैन को रीडायरेक्ट नहीं करा सकता। portals की एक ग़लत कॉन्फ़िगर प्रविष्टि अब पूरे स्कैन को नहीं रोक सकती।
+> **🆕 नवीनतम रिलीज़ — v1.243.0** — **ब्राउज़र-परत आपका काम सुरक्षित रखती है और आपकी भाषा बोलती है।** बिना सेव किए गए बदलाव री-रेंडर से बच जाते हैं (CV एडिटर dirty बफ़र रखता है; Cancel या भाषा बदलने पर छोड़ने के बजाय पूछता है), "Record outcome" मोडल नेविगेशन पर बंद हो जाता है, वेतन/कीवर्ड पार्सिंग हर लिपि पढ़ती है (`$182.9K - $240K`, `от 100 000 руб`, `50 000 Kč`), SSE स्ट्रीम ठीक एक बार settle होती हैं, डेनिश अब ऑटो-पहचान में शामिल है, और दोनों थीम में कंट्रास्ट अब AA (≥ 4.5:1) है।
 >
-> **पिछला — v1.241.1** — लाइव इवैल्यूएशन हर भाषा में एंड-टू-एंड काम करते हैं; जॉब मैप लंबे मल्टी-लोकेशन पोस्टिंग दिखाता है; डिप्लॉय चल रहे घंटेशुदा स्कैन का इंतज़ार करता है।
+> **पिछला — v1.242.1** — केवल पैकेजिंग: ऐप कोड v1.242.0 के समान; सोर्सेस-करेक्टनेस सामग्री इसी डिप्लॉय से प्रोडक्शन जाती है (tar विफलता पर डिप्लॉय सुरक्षित रूप से रोलबैक हो गया था)।
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

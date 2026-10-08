@@ -10,6 +10,30 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.243.0] — 2026-10-08
+
+**La couche navigateur protège votre travail et parle votre langue : aucune perte de modifications non enregistrées, aucun échec silencieux, pas d'anglais silencieux dans une interface traduite, contraste AA partout.**
+
+### Corrigé
+
+- **Les modifications non enregistrées survivent aux re-rendus.** L'éditeur de CV conserve un tampon de modifications non enregistrées et le restaure à chaque rendu — Annuler, un changement de langue ou la navigation vers CV Studio invite désormais au lieu d'abandonner ; le plan de carrière conserve son texte généré de la même façon. Les échecs de chargement dans Config/CV Studio/career-plan/memory/two-pager affichent une erreur et désactivent Enregistrer au lieu d'écraser silencieusement le fichier avec des blancs.
+- **La modale « Consigner le résultat » ne survit plus à la navigation.** L'ouvrir sur `#/tracker` puis cliquer une autre vue la laissait bloquer toute la page (constaté dans la régression two-stand de la v1.242.1) — elle se ferme désormais au changement de route ; ses sœurs des vues de scan arrêtent elles aussi leurs flux SSE et détachent leurs écouteurs à la navigation.
+- **L'analyse des salaires et des mots-clés lit toutes les écritures.** Les chips de mots-clés utilisent des frontières de mots Unicode (cyrillique, `c++`, `.net` filtrent correctement au lieu de tout réduire à zéro ligne) ; un parseur de salaire partagé corrige `$182.9K - $240K`, `от 100 000 руб`, `100 тыс. руб.`, `50 000 Kč` (auparavant 50 M USD) et la sémantique des fourchettes (`$100-150K`) ; un must-have « Allemagne ou Pays-Bas » ne compte plus à la fois comme satisfait et comme violé.
+- **Les flux se terminent exactement une fois.** Une connexion SSE perdue livrait l'erreur deux fois et pouvait laisser Générer désactivé pour toujours ; chaque état terminal (done/error/close/throw, y compris un processus enfant tué) se résout par un seul chemin et réactive le bouton. L'auto-pipeline pousse sa dernière image tamponnée au lieu de la jeter.
+- **Confidentialité et exactitude dans les petits chemins.** Le corps du rapport de bug ne transporte plus l'URL de l'offre évaluée ni les slugs de rapports ; la confidentialité du CV masque les liens nus `linkedin.com/in/…`, les noms TOUT EN MAJUSCULES, et cesse d'abîmer les dates UE ; la résolution de pays garde la correspondance la plus longue et refuse de deviner quand deux pays sont nommés (« Cambridge, MA » ne finit plus → UK) ; les téléchargements conservent les noms de fichiers en cyrillique.
+- **Routeur et a11y.** Le lien d'évitement ne fait plus 404 vers `ontent` ; l'élément de nav actif porte `aria-current="page"` ; un `<main>`/un `<nav>` ; Échap ferme le tiroir mobile (désormais réellement hors de l'ordre de tabulation quand il est fermé) ; `scroll-padding-top` garde le focus visible au-delà des barres collantes ; la bannière collante ne masque plus la barre supérieure.
+- **Le contraste est AA dans les deux thèmes** — les toasts sombres étaient blanc sur blanc (1.10:1) : toasts, boutons, bannières et liens sur `--rausch` passent désormais par des jetons invariants au thème, gardés par des tests de contrat WCAG calculés (≥ 4.5:1).
+- **Tout le reste de la série** : evaluate affiche l'avertissement de troncature ; memory/config/two-pager refusent d'enregistrer sur un chargement échoué ; scan cesse d'abandonner son SSE ; les résultats de scan classent les boards adossés à une API à partir du registre du serveur au lieu d'une regex dérivée ; le « Proceed with Caution » du tracker est un avertissement, pas un badge rouge ; stats agrège les statuts localisés ; les graphiques en barres se lisent correctement en RTL ; la FAB des docs ne couvre plus le contenu sur téléphone ; `GET /app.js` répond 404 au lieu de la coquille d'index ; `GET /api/runners` liste ses actions.
+
+### Ajouté
+
+- **Le danois rejoint l'auto-détection** — un navigateur `da-DK` obtient désormais l'interface danoise (le dictionnaire était complet, c'est la détection qui le ratait) ; `zh-Hant*` correspond au chinois traditionnel. `cv-diagnostics` — la liste de contrôle du CV — est entièrement localisée (28 clés `diag.*` × 17). 26 libellés de field-spec ajoutés ; 31 clés mortes supprimées ; les listes de fournisseurs ne prétendent plus qu'Hermes est « dernier dans l'ordre auto » ; les aria-labels de la FAB et du menu des docs sont localisés.
+
+### Notes
+
+- Tests **4812 → 5036** unitaires, navigateur **118 + nouveaux contrats navigation/contraste**, couverture moyenne **98.15 % lignes / 89.34 % branches** (plancher 96/86).
+- Hors de cette version : la refonte de `#/scan` (phase 4 — v1.244.0, spec rédigée) ; une clé de dictionnaire dédiée `export.docxFailed` (l'échec réutilise `common.error`) ; `5 lakhs INR` s'analyse toujours comme 5 (préexistant).
+
 ## [1.242.1] — 2026-10-08
 
 ### Corrigé

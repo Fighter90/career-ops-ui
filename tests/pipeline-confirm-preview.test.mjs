@@ -41,8 +41,10 @@ test('#22: previewPane is a labelled polite live region', () => {
 
 test('#22: fetch failure is a distinct role=alert block, not preview body', () => {
   assert.match(PIPE, /let previewError = ''/);
-  // catch sets previewError, NOT previewBody-with-parens
-  assert.match(PIPE, /catch \(e\) \{\s*previewError = e\.message \|\| 'fetch failed';/);
+  // catch sets previewError, NOT previewBody-with-parens. (CAR-21
+  // v1.243.0: the catch may carry the latest-wins token guard before the
+  // assignment — a superseded response must not write preview state.)
+  assert.match(PIPE, /catch \(e\) \{\s*(?:if \(token === selectToken\) )?previewError = e\.message \|\| 'fetch failed';/);
   assert.ok(!/previewBody = '\(' \+ \(e\.message/.test(PIPE),
     'old disguised-as-body error string must be gone');
   assert.match(PIPE, /if \(previewError\) \{[\s\S]{0,200}role:\s*'alert'/);

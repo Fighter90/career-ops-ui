@@ -8,11 +8,40 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.243.0] — 2026-10-08
+
+**Browser-laget beskytter dit arbejde og taler dit sprog: ingen redigeringer går tabt uden advarsel, ingen stille fejl, ingen engelsk-rester i et oversat interface, AA-kontrast overalt.**
+
+### Rettet
+
+- **Ugemte redigeringer overlever re-renders.** CV-editoren holder en dirty-buffer og gendanner den ved hver render — Annuller, et sprogskift eller navigation til CV Studio spørger nu i stedet for at kassere; karriereplanen bevarer sin genererede tekst på samme måde. Indlæsningsfejl i Config/CV Studio/career-plan/memory/two-pager viser en fejl og deaktiverer Gem i stedet for stille at overskrive filen med blanks.
+- **"Registrér udfald"-modalen overlever ikke længere navigation.** At åbne den på `#/tracker` og klikke på en anden view lod den blokere hele siden (fundet i v1.242.1-to-miljø-regressionen) — den lukker nu ved ruteskift; dens scan-søskne stopper også deres SSE-strømme og frigør lyttere ved navigation.
+- **Løn- og nøgleords-parsing læser alle skrifter.** Nøgleordschips bruger Unicode-ordgrænser (kyrillisk, `c++`, `.net` filtrerer korrekt i stedet for til nul rækker); en delt løn-parser retter `$182.9K - $240K`, `от 100 000 руб`, `100 тыс. руб.`, `50 000 Kč` (var 50M USD) og range-semantikken (`$100-150K`); obligatorisk "Germany or Netherlands" tæller ikke længere som både opfyldt OG overtrådt.
+- **Streams sætter sig præcis én gang.** En tabt SSE-forbindelse leverede fejlen to gange og kunne efterlade Generér deaktiveret for altid; hver terminaltilstand (done/error/luk/throw, inklusive et dræbt child) sætter én vej og genaktiverer knappen. Auto-pipeline flusher sin sidste bufferede frame i stedet for at kassere den.
+- **Privatliv og korrekthed i de små veje.** Bug-rapportens krop bærer ikke længere det evaluerede job-URL eller rapport-slugs; CV-privatliv maskerer bare `linkedin.com/in/…`-links, ALLE-CAPS-navne og ødelægger ikke længere EU-datoer; lande-opløsning tager det længste match og nægter at gætte når to lande nævnes ("Cambridge, MA" ikke længere → UK); filnavne bevarer kyrilliske navne.
+- **Router og a11y.** Skip-linket 404'er ikke længere til `ontent`; det aktive nav-element bærer `aria-current="page"`; én `<main>`/én `<nav>`; Escape lukker mobil-draweren (som nu virkelig er ude af tab-rækkefølgen når lukket); `scroll-padding-top` holder fokus synligt bag sticky-bjælker; den sticky banner dækker ikke længere topbaren.
+- **Kontrasten er AA i begge temaer** — mørke tema-toasts var hvid-på-hvid (1.10:1): toasts, knapper, bannere og links på `--rausch` opløses nu gennem temainvariante tokens, bevogtet af beregnede WCAG-kontrakt-tests (≥ 4.5:1).
+- **Alt andet fra runden**: evaluate viser afskæringsadvarslen; memory/two-pager nægter at Gemme over en fejlet indlæsning; scan ophører ikke længere med at forældreløse sin SSE; scan-resultater klassificerer API-bagte boards fra serverens registry i stedet for en uddateret regex; trackerens "Proceed with Caution" er en advarsel, ikke et rødt badge; statistik folder lokaliserede statusser; søjlediagrammer læses korrekt i RTL; docs-FAB dækker ikke længere indhold på telefoner; `GET /app.js` svarer 404 i stedet for index-shellen; `GET /api/runners` lister sine handlinger.
+
+### Tilføjet
+
+- **Dansk kommer med i automatisk detektion** — en `da-DK`-browser får nu det danske interface (ordbogen var komplet, detektionen manglede den); `zh-Hant*` mappes til traditionelt kinesisk. `cv-diagnostics` — CV-tjeklisten — er fuldt lokaliseret (28 `diag.*`-nøgler × 17). 26 field-spec-labels tilføjet; 31 døde nøgler fjernet; leverandør-lister påstår ikke længere at Hermes er "sidst i auto-rækkefølgen"; docs-fab/menu-aria-labels er lokaliseret.
+
+### Noter
+
+- Tests **4812 → 5036** unit, browser **118 + nye navigations/kontrast-kontrakter**, dækning **98.15 % linjer / 89.34 % grene** (gulv 96/86).
+- Ikke i denne udgivelse: `#/scan`-redesignet (Fase 4 — v1.244.0, spec i udkast); en dedikeret `export.docxFailed`-nøgle (fejlen genbruger `common.error`); `5 lakhs INR` parser stadig som 5 (pre-existing).
+
 ## [1.242.1] — 2026-10-08
 
 ### Rettet
 
 - **Udgivelsesarkivet indeholder igen ingen `node_modules`-symlinks.** Git-tagget v1.242.0 bar et `node_modules`-symlink i roden og `site/node_modules` (en blanket `git add -A` sneg dem forbi ignore-mønstrene med afsluttende skråstreg), hvilket fik server-udrulningens tar-udpakning til at fejle — udrulningen rullede sikkert tilbage, og produktionen forblev på 1.241.1. Begge symlinks er fjernet fra tracking og ignore-mønstrene udvidet; npm-tarballen blev aldrig berørt (npm udelukker `node_modules` ved pakning).
+
+### Noter
+
+- App-koden er identisk med v1.242.0 — kun pakning. Kildekorrigeringsindholdet ruller til produktion med denne udrulning (v1.242.0 nåede aldrig produktion: server-udrulningen rullede tilbage efter tar-fejlen).
+- Bevidst ikke gjort: om-tagning af v1.242.0 (npm har allerede udgivet 1.242.0; registry-tarballen er ren — npm udelukker `node_modules` ved pakning).
 
 ## [1.242.0] — 2026-10-07
 

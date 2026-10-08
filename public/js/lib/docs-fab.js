@@ -127,11 +127,14 @@
     greet();
     if (input && input.focus) setTimeout(function () { input.focus(); }, 30);
   }
-  function close() {
+  function close(refocus) {
     if (!panel) return;
     panel.hidden = true;
     launcher.setAttribute('aria-expanded', 'false');
-    if (launcher && launcher.focus) launcher.focus();
+    // v1.243.0 (CAR-18) — only an EXPLICIT dismissal (Escape, the ✕ button)
+    // returns focus to the launcher. Passive closes (outside click, the
+    // route-change auto-close) must not steal focus.
+    if (refocus && launcher && launcher.focus) launcher.focus();
   }
   function toggle() { isOpen() ? close() : open(); }
 
@@ -161,7 +164,8 @@
       'data-i18n-aria-label': 'fab.close', 'aria-label': t('fab.close', 'Close'),
     });
     closeBtn.innerHTML = CLOSE_SVG;
-    closeBtn.addEventListener('click', close);
+    // ✕ is an explicit dismissal → focus returns to the launcher.
+    closeBtn.addEventListener('click', function () { close(true); });
 
     var avatar = el('span', { className: 'docs-fab__avatar', 'aria-hidden': 'true' });
     avatar.innerHTML = ROBOT_SVG;
@@ -205,7 +209,7 @@
     document.body.appendChild(launcher);
 
     // Escape closes; a click outside the panel + launcher closes.
-    document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape' && isOpen()) close(); });
+    document.addEventListener('keydown', function (ev) { if (ev.key === 'Escape' && isOpen()) close(true); });
     document.addEventListener('click', function (ev) {
       if (!isOpen()) return;
       if (panel.contains(ev.target) || launcher.contains(ev.target)) return;

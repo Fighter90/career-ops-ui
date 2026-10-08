@@ -27,15 +27,25 @@
 
   let current = null; // { pop, btn }
 
-  function close() {
+  // v1.243.0 (CAR-18) — passive window-driven closes (scroll, resize). These
+  // MUST be their own wrappers: `addEventListener('scroll', close)` would
+  // hand the event object to close() as a truthy `refocus`.
+  function onWinClose() { close(); }
+
+  function close(refocus) {
     if (!current) return;
     const { pop, btn } = current;
     document.removeEventListener('click', onDocClick, true);
     document.removeEventListener('keydown', onKey, true);
-    window.removeEventListener('resize', close);
-    window.removeEventListener('scroll', close, true);
+    window.removeEventListener('resize', onWinClose);
+    window.removeEventListener('scroll', onWinClose, true);
     if (pop && pop.parentNode) pop.parentNode.removeChild(pop);
-    if (btn) { btn.setAttribute('aria-expanded', 'false'); try { btn.focus(); } catch { /* detached */ } }
+    if (btn) btn.setAttribute('aria-expanded', 'false');
+    // v1.243.0 (CAR-18) — only an EXPLICIT dismissal (Escape, or the user
+    // toggling the same button) returns focus. Passive closes (outside
+    // click, window scroll, resize) must not yank focus back to the
+    // affordance mid-read.
+    if (btn && refocus) { try { btn.focus(); } catch { /* detached */ } }
     current = null;
   }
 
@@ -44,7 +54,7 @@
     if (current.pop.contains(e.target) || current.btn.contains(e.target)) return;
     close();
   }
-  function onKey(e) { if (e.key === 'Escape') { e.stopPropagation(); close(); } }
+  function onKey(e) { if (e.key === 'Escape') { e.stopPropagation(); close(true); } }
 
   /** Place the popover under the icon, clamped to the viewport; RTL-mirrored. */
   function position(pop, btn) {
@@ -82,8 +92,8 @@
       if (!current) return;
       document.addEventListener('click', onDocClick, true);
       document.addEventListener('keydown', onKey, true);
-      window.addEventListener('resize', close);
-      window.addEventListener('scroll', close, true);
+      window.addEventListener('resize', onWinClose);
+      window.addEventListener('scroll', onWinClose, true);
     }, 0);
   }
 
@@ -106,7 +116,8 @@
     btn.addEventListener('click', (e) => {
       e.preventDefault();
       e.stopPropagation();
-      if (current && current.btn === btn) { close(); return; }
+      // Toggling the same `?` button is an explicit dismissal → refocus.
+      if (current && current.btn === btn) { close(true); return; }
       open(btn, key);
     });
     return btn;

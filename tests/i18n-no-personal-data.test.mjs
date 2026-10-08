@@ -3,7 +3,7 @@
  * maintainer's personal data. The audit that triggered this test found
  * `training.coursePh` = "AWS Solutions Architect Associate" (the
  * maintainer's own certification target) shipped into the public OSS
- * dictionary across all 8 locales.
+ * dictionary across all 17 locales.
  *
  * This is a pure source-text guard: it greps the raw dictionary source
  * for forbidden patterns. Anything that matches fails the build before

@@ -527,5 +527,11 @@ I18n.onChange(() => {
   if (backdrop) backdrop.addEventListener('click', closeSidebar);
   document.querySelectorAll('.sidebar a').forEach((a) =>
     a.addEventListener('click', closeSidebar));
+  // CAR-23 (v1.243.0) — Escape closes the open mobile drawer (the CSS
+  // visibility:hidden fix took it out of the tab order; Escape completes
+  // the keyboard exit).
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape' && document.body.classList.contains('sidebar-open')) closeSidebar();
+  });
   window.addEventListener('hashchange', closeSidebar);
 })();

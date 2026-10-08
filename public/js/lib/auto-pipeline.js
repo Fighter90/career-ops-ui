@@ -150,52 +150,61 @@
         const dec = new TextDecoder();
         let buf = '';
         let terminal = false;
+        // One SSE frame (block between blank lines) → state update. Extracted
+        // so the end-of-stream flush below can process the final frame too.
+        const handleFrame = (p) => {
+          const evMatch = p.match(/^event:\s*([\w-]+)/m);
+          // v1.22.0 (L-4) — per SSE spec, an event may carry multiple
+          // `data:` lines; the consumer concatenates them with "\n".
+          // Today the server sends single-line JSON, so the old
+          // single-match worked — but it would silently drop the
+          // 2nd+ line of any multi-line payload. Join all `data:`
+          // lines for the event block before parsing.
+          const dataLines = [];
+          for (const line of p.split('\n')) {
+            const m = line.match(/^data:\s?(.*)$/);
+            if (m) dataLines.push(m[1]);
+          }
+          if (!evMatch || dataLines.length === 0) return;
+          const dataRaw = dataLines.join('\n');
+          let data; try { data = JSON.parse(dataRaw); } catch { data = {}; }
+          switch (evMatch[1]) {
+            case 'start':
+              // already rendered the empty timeline; nothing to do.
+              break;
+            case 'step':
+              setStep(data.i, data.status, data.detail || '');
+              break;
+            case 'done':
+              state.score = data.score;
+              state.legitimacy = data.legitimacy || '';
+              state.company = data.company || '';
+              state.role = data.role || '';
+              state.slug = data.slug || '';
+              state.reportPath = data.reportPath || '';
+              state.trackerNum = data.trackerNum || '';
+              terminal = true;
+              renderResult();
+              break;
+            case 'error':
+              terminal = true;
+              renderError(data.step, data.message);
+              break;
+          }
+        };
         while (!terminal) {
           const { value, done } = await reader.read();
           if (done) break;
           buf += dec.decode(value, { stream: true });
           const parts = buf.split('\n\n'); buf = parts.pop();
-          for (const p of parts) {
-            const evMatch = p.match(/^event:\s*([\w-]+)/m);
-            // v1.22.0 (L-4) — per SSE spec, an event may carry multiple
-            // `data:` lines; the consumer concatenates them with "\n".
-            // Today the server sends single-line JSON, so the old
-            // single-match worked — but it would silently drop the
-            // 2nd+ line of any multi-line payload. Join all `data:`
-            // lines for the event block before parsing.
-            const dataLines = [];
-            for (const line of p.split('\n')) {
-              const m = line.match(/^data:\s?(.*)$/);
-              if (m) dataLines.push(m[1]);
-            }
-            if (!evMatch || dataLines.length === 0) continue;
-            const dataRaw = dataLines.join('\n');
-            let data; try { data = JSON.parse(dataRaw); } catch { data = {}; }
-            switch (evMatch[1]) {
-              case 'start':
-                // already rendered the empty timeline; nothing to do.
-                break;
-              case 'step':
-                setStep(data.i, data.status, data.detail || '');
-                break;
-              case 'done':
-                state.score = data.score;
-                state.legitimacy = data.legitimacy || '';
-                state.company = data.company || '';
-                state.role = data.role || '';
-                state.slug = data.slug || '';
-                state.reportPath = data.reportPath || '';
-                state.trackerNum = data.trackerNum || '';
-                terminal = true;
-                renderResult();
-                break;
-              case 'error':
-                terminal = true;
-                renderError(data.step, data.message);
-                break;
-            }
-          }
+          for (const p of parts) handleFrame(p);
         }
+        // Stream end: flush the decoder and the trailing buffer. A server
+        // that writes the terminal frame without a trailing blank line (or
+        // whose last chunk is split mid-JSON) used to leave that frame
+        // unprocessed — the modal rendered NOTHING (no result, no error).
+        buf += dec.decode();
+        if (buf.trim()) handleFrame(buf);
       } catch (e) {
         renderError('network', e.message || 'network error');
       } finally {

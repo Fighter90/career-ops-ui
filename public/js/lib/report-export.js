@@ -18,8 +18,16 @@
  * same-origin via the existing inline-PDF SSE runner.
  */
 window.ReportExport = (function () {
+  // v1.243.0 — keep Unicode letters: a non-Latin title ("Отчёт по рынку",
+  // "Καθημερινή αναφορά") collapsed to nothing under [^a-z0-9] and EVERY
+  // download was called report.md. The download attribute is UTF-8 in
+  // every evergreen browser, so the readable name is safe to keep.
   function slugify(s) {
-    return String(s || 'report').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').slice(0, 60) || 'report';
+    return String(s || 'report').toLowerCase()
+      .replace(/[^\p{L}\p{N}]+/gu, '-')
+      .replace(/^-+|-+$/g, '')
+      .slice(0, 60)
+      .replace(/-+$/g, '') || 'report';
   }
 
   function downloadMarkdown(filename, md) {
@@ -57,7 +65,13 @@ window.ReportExport = (function () {
       document.body.appendChild(a); a.click(); a.remove();
       setTimeout(() => URL.revokeObjectURL(url), 1000);
     } catch (e) {
-      if (UI && UI.toast) UI.toast('DOCX export failed', 'error');
+      // v1.243.0 — route the failure through an existing dict key instead of
+      // a hard-coded English sentence (wrong in the other 16 locales). The
+      // DOCX button was just clicked, so the generic key stays clear; the
+      // dicts still lack a dedicated export.docxFailed key (reported, not
+      // added here).
+      const tr = (k, f) => (window.I18n && I18n.t) ? I18n.t(k, f) : f;
+      if (UI && UI.toast) UI.toast(tr('common.error', 'Error'), 'error');
     } finally {
       if (button) button.disabled = wasDisabled || false;
     }
@@ -70,12 +84,21 @@ window.ReportExport = (function () {
     }
     // Fallback: hidden textarea + execCommand (older / insecure contexts).
     return new Promise((resolve, reject) => {
+      let ta = null;
       try {
-        const ta = document.createElement('textarea');
+        ta = document.createElement('textarea');
         ta.value = s; ta.setAttribute('readonly', ''); ta.style.position = 'absolute'; ta.style.left = '-9999px';
         document.body.appendChild(ta); ta.select();
-        document.execCommand('copy'); ta.remove(); resolve();
-      } catch (e) { reject(e); }
+        // execCommand reports whether the copy actually happened — a silent
+        // false used to resolve "Copied" with an empty clipboard (v1.243.0).
+        const ok = document.execCommand('copy');
+        ta.remove();
+        if (ok) resolve();
+        else reject(new Error('execCommand copy rejected'));
+      } catch (e) {
+        if (ta && ta.remove) ta.remove();
+        reject(e);
+      }
     });
   }
 

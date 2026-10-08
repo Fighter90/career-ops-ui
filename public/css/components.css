@@ -114,8 +114,9 @@
   transition: color var(--transition), border-color var(--transition);
 }
 .tracker-tab:hover { color: var(--hof); }
+/* CAR-23 v1.243.0 — TEXT from AA-tuned --rausch-text (raw --rausch on --paper: 3.52/2.94); underline stays decorative. */
 .tracker-tab.is-active {
-  color: var(--rausch);
+  color: var(--rausch-text);
   border-bottom-color: var(--rausch);
 }
 .tracker-tab-n {
@@ -123,7 +124,7 @@
   font-weight: 500;
   font-variant-numeric: tabular-nums;
 }
-.tracker-tab.is-active .tracker-tab-n { color: var(--rausch); }
+.tracker-tab.is-active .tracker-tab-n { color: var(--rausch-text); }
 
 /* v1.58.21 (U-1) — removed `.cv-breadcrumb` (was v1.56.0 UX-9 chip).
    #/cv now uses the standard `.page-title` + `.page-subtitle` pair
@@ -530,7 +531,7 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
 .md code { background: var(--beach); padding: 2px 6px; border-radius: 6px; font-size: var(--font-size-md); }
 .md pre { background: #111; color: #c5e6c5; padding: var(--space-4); border-radius: var(--radius); overflow-x: auto; }
 .md pre code { background: transparent; color: inherit; padding: 0; }
-.md a { color: var(--rausch); }
+.md a { color: var(--rausch-text); } /* CAR-23: AA on --paper in both themes (raw --rausch was 3.52/2.94) */
 .md blockquote { border-left: 3px solid var(--rausch); padding-left: var(--space-4); color: var(--foggy); margin: var(--space-3) 0; }
 
 /* ───────────────────────── language switcher ───────────────────────── */
@@ -606,18 +607,18 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
 .chip.clear {
   background: transparent;
   border-color: transparent;
-  color: var(--rausch);
+  color: var(--rausch-text); /* CAR-23: AA text variant (raw --rausch was 3.52/2.94) */
   font-weight: 600;
 }
 .chip.clear:hover { background: rgba(255,56,92,.08); }
 
 /* ───────────────────────── connection banner ───────────────────────── */
+/* CAR-23 v1.243.0 — was sticky top:0/z:50, painting OVER the sticky topbar (z:5)
+   once scrolled (search/Doctor unclickable). Now a plain in-flow block — ONE sticky
+   layer remains. Fill = --rausch-dark/--paper pair (--rausch+white: 3.52/2.94). */
 .conn-banner {
-  position: sticky;
-  top: 0;
-  z-index: var(--z-banner);
-  background: var(--rausch);
-  color: white;
+  background: var(--rausch-dark);
+  color: var(--paper);
   padding: 12px 24px;
   display: flex;
   align-items: center;
@@ -627,19 +628,17 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
   font-weight: 500;
 }
 .conn-banner[hidden] { display: none; }
-.conn-banner .btn-dark { background: rgba(0,0,0,.4); border: none; }
+/* The translucent-black chip keeps literal WHITE text in both themes: over the banner
+   fill its blend is ≥7.9:1, while the inherited --paper would go near-black in dark. */
+.conn-banner .btn-dark { background: rgba(0,0,0,.4); border: none; color: #fff; }
 .conn-banner .btn-dark:hover { background: rgba(0,0,0,.6); }
 
-/* v1.55.3 (UX-2) — 4-provider OR onboarding. .onboarding-warn is the
-   loud cold-start banner (0 keys); .onboarding-ok is a quiet
-   provider chip (≥1 key). */
+/* v1.55.3 (UX-2) — 4-provider OR onboarding: .onboarding-warn = loud cold-start banner
+   (0 keys); .onboarding-ok = quiet provider chip (≥1). CAR-23 — in-flow, --rausch-dark/--paper pair. */
 #onboarding-banner[hidden] { display: none; }
 #onboarding-banner.onboarding-warn {
-  position: sticky;
-  top: 0;
-  z-index: calc(var(--z-banner) - 1);
-  background: var(--rausch);
-  color: #fff;
+  background: var(--rausch-dark);
+  color: var(--paper);
   padding: 10px 24px;
   display: flex;
   align-items: center;
@@ -647,7 +646,7 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
   font-size: 14px;
   font-weight: 500;
 }
-#onboarding-banner.onboarding-warn .btn-dark { background: rgba(0,0,0,.4); border: none; }
+#onboarding-banner.onboarding-warn .btn-dark { background: rgba(0,0,0,.4); border: none; color: #fff; }
 #onboarding-banner.onboarding-warn .btn-dark:hover { background: rgba(0,0,0,.6); }
 #onboarding-banner.onboarding-ok {
   padding: 6px 24px;
@@ -709,12 +708,13 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
   transition: border-color .12s ease, background .12s ease;
 }
 [dir="rtl"] .help-hint { margin: 0 3px 0 0; }
+/* CAR-23 — the filled "?" chip needs the AA pair too (white on --rausch: 3.52/2.94). */
 .help-hint:hover,
-.help-hint[aria-expanded="true"] { color: #fff; }
+.help-hint[aria-expanded="true"] { color: var(--paper); }
 .help-hint:hover::before,
 .help-hint[aria-expanded="true"]::before {
-  background: var(--rausch);
-  border-color: var(--rausch);
+  background: var(--rausch-dark);
+  border-color: var(--rausch-dark);
 }
 .help-hint:focus-visible {
   outline: 2px solid var(--rausch);

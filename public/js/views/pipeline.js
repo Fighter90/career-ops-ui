@@ -110,11 +110,17 @@ Router.register('pipeline', async () => {
               t('pipe.confirmDelTitle', 'Remove from pipeline?'),
               t('pipe.confirmDel'),
               { danger: true, confirmLabel: t('common.delete', 'Delete'), cancelLabel: t('common.cancel', 'Cancel') }))) return;
-            await UI.withSpinner(e.currentTarget,
-              () => API.del('/api/pipeline?url=' + encodeURIComponent(activeUrl)));
-            UI.toast(t('pipe.deleted'));
-            activeUrl = null;
-            await refresh();
+            // CAR-21 (v1.243.0) — an async click handler without a catch
+            // failed silently (unhandled rejection, no toast). Surface it.
+            try {
+              await UI.withSpinner(e.currentTarget,
+                () => API.del('/api/pipeline?url=' + encodeURIComponent(activeUrl)));
+              UI.toast(t('pipe.deleted'));
+              activeUrl = null;
+              await refresh();
+            } catch (err) {
+              UI.toast((err && err.message) || t('common.error', 'Error'), 'error');
+            }
           },
         }, '✕ ' + t('common.delete', 'Delete')),
       ]),
@@ -143,20 +149,38 @@ Router.register('pipeline', async () => {
     }, previewBody));
   }
 
+  // CAR-21 (v1.243.0) — latest-wins. Clicking row B while row A's preview
+  // was still loading let A's LATE response overwrite B's pane (previewBody
+  // is shared state). Each selection claims a token; only the newest may
+  // write preview state or render.
+  let selectToken = 0;
   async function selectUrl(url) {
+    const token = ++selectToken;
     activeUrl = url;
     previewBody = '';
     previewError = '';
     previewLoading = true;
+    // Repaint the rows FIRST so the active highlight follows the click
+    // (rows bake isActive in at paint time), then the preview pane.
+    if (vVirtual) paintWindow(); else renderList();
+    // renderList rebuilt the row the user just activated — restore focus
+    // to it so keyboard users don't fall off the list (mouse clicks are
+    // unaffected in practice: focus lands on the activated row).
+    const again = Array.from(list.querySelectorAll('[data-url]'))
+      .find((n) => n.getAttribute('data-url') === url);
+    if (again) again.focus();
     renderPreview();
     try {
       const r = await API.get('/api/pipeline/preview?url=' + encodeURIComponent(url));
+      if (token !== selectToken) return; // a newer selection superseded us
       previewBody = (r.text || '').slice(0, 4000);
     } catch (e) {
-      previewError = e.message || 'fetch failed';
+      if (token === selectToken) previewError = e.message || 'fetch failed';
     } finally {
-      previewLoading = false;
-      renderPreview();
+      if (token === selectToken) {
+        previewLoading = false;
+        renderPreview();
+      }
     }
   }
 
@@ -165,6 +189,20 @@ Router.register('pipeline', async () => {
     return c('div', {
       className: 'flex-between pipeline-row',
       'data-url': url,
+      // CAR-21 (v1.243.0) — the row used to be mouse-only: cursor:pointer +
+      // an onClick buried on the inner content div, no role, no tabindex,
+      // no key handler, so a keyboard user could not preview a URL at all.
+      // The row is now a real button: Enter/Space activates it, and
+      // aria-pressed announces the selected state.
+      role: 'button',
+      tabindex: '0',
+      'aria-pressed': isActive ? 'true' : 'false',
+      onClick: () => selectUrl(url),
+      onKeyDown: (e) => {
+        if (e.key !== 'Enter' && e.key !== ' ') return;
+        e.preventDefault();
+        selectUrl(url);
+      },
       style: {
         padding: '10px 14px',
         border: '1px solid ' + (isActive ? 'var(--hof)' : 'var(--slate)'),
@@ -173,10 +211,7 @@ Router.register('pipeline', async () => {
         cursor: 'pointer',
       },
     }, [
-      c('div', {
-        style: { flex: 1, minWidth: 0 },
-        onClick: () => selectUrl(url),
-      }, [
+      c('div', { style: { flex: 1, minWidth: 0 } }, [
         c('div', { style: { fontWeight: 600, fontSize: '14px' } }, shortHost(url)),
         // Keep an <a> with href so existing tests + accessibility tools
         // can locate the row by URL. stopPropagation prevents the row's
@@ -214,11 +249,17 @@ Router.register('pipeline', async () => {
               t('pipe.confirmDelTitle', 'Remove from pipeline?'),
               t('pipe.confirmDel'),
               { danger: true, confirmLabel: t('common.delete', 'Delete'), cancelLabel: t('common.cancel', 'Cancel') }))) return;
-            await UI.withSpinner(e.currentTarget,
-              () => API.del('/api/pipeline?url=' + encodeURIComponent(url)));
-            UI.toast(t('pipe.deleted'));
-            if (activeUrl === url) { activeUrl = null; previewBody = ''; previewError = ''; }
-            await refresh();
+            // CAR-21 (v1.243.0) — wrapped: a failed delete / refresh used to
+            // reject unhandled (silent failure).
+            try {
+              await UI.withSpinner(e.currentTarget,
+                () => API.del('/api/pipeline?url=' + encodeURIComponent(url)));
+              UI.toast(t('pipe.deleted'));
+              if (activeUrl === url) { activeUrl = null; previewBody = ''; previewError = ''; }
+              await refresh();
+            } catch (err) {
+              UI.toast((err && err.message) || t('common.error', 'Error'), 'error');
+            }
           },
         }, '✕'),
       ]),
@@ -306,10 +347,18 @@ Router.register('pipeline', async () => {
   }
 
   async function refresh() {
-    const fresh = await API.get('/api/pipeline');
+    // CAR-21 (v1.243.0) — pipeline + tracker rows are re-read together so
+    // the overview strip stays truthful after add/delete (it used to be
+    // built once at mount and never refreshed).
+    const [fresh, tr] = await Promise.all([
+      API.get('/api/pipeline'),
+      API.get('/api/tracker').catch(() => ({})),
+    ]);
     allUrls = fresh.urls || [];
+    trackerRows = (tr && tr.rows) || [];
     renderList();
     renderPreview();
+    paintOverview();
   }
 
   filterInput.addEventListener('input', (e) => {
@@ -317,29 +366,47 @@ Router.register('pipeline', async () => {
     renderList();
   });
 
-  // ── initial paint ──
-  allUrls = (await API.get('/api/pipeline')).urls || [];
-  renderList();
-  renderPreview();
-
-  // Pipeline overview strip — inbox count + a breakdown of the tracker by the
-  // stages that matter, each linking to #/tracker. Read-only; degrades to just
-  // the inbox count if the tracker can't be read.
+  // ── Pipeline overview strip — inbox count + a breakdown of the tracker by
+  // the canonical stages, each chip linking to #/tracker. CAR-21 (v1.243.0):
+  // the stage chips used to be a hard-coded English list built once at mount;
+  // now the labels come from GET /api/tracker/stages (the same source the
+  // tracker board uses) via window.TrackerStages, and paintOverview() runs on
+  // every refresh(). Read-only; degrades to the inbox/tracked chips when the
+  // tracker or the stages endpoint can't be read.
   let trackerRows = [];
-  try { trackerRows = (await API.get('/api/tracker')).rows || []; } catch { trackerRows = []; }
-  const statusCount = {};
-  for (const r of trackerRows) { const s = (r && r.status) || ''; if (s) statusCount[s] = (statusCount[s] || 0) + 1; }
+  let STAGES = [];
+  let ALIASES = {};
+  const overview = c('div', { className: 'card mb-3', style: { display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center' } });
   function ovChip(n, label, route) {
     const base = { style: { display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '4px 10px', borderRadius: '12px', background: 'var(--panel-2, #eef1f6)', fontSize: '13px', textDecoration: 'none', color: 'inherit' } };
     const kids = [c('strong', { style: { fontVariantNumeric: 'tabular-nums' } }, String(n)), c('span', { style: { color: 'var(--foggy)' } }, label)];
     return route ? c('a', { href: '#' + route, ...base }, kids) : c('span', base, kids);
   }
-  const overview = c('div', { className: 'card mb-3', style: { display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center' } }, [
-    c('strong', { style: { marginRight: '2px' } }, t('pipe.title', 'Pipeline') + ':'),
-    ovChip(allUrls.length, t('pipe.ovInbox', 'in inbox'), '/pipeline'),
-    ovChip(trackerRows.length, t('pipe.ovTracked', 'tracked'), '/tracker'),
-    ...['Applied', 'Responded', 'Interview', 'Offer'].filter((s) => statusCount[s]).map((s) => ovChip(statusCount[s], s, '/tracker')),
+  function paintOverview() {
+    const TS = window.TrackerStages;
+    const counts = (TS && STAGES.length) ? TS.stageCounts(trackerRows, STAGES, ALIASES) : {};
+    overview.replaceChildren(
+      c('strong', { style: { marginRight: '2px' } }, t('pipe.title', 'Pipeline') + ':'),
+      ovChip(allUrls.length, t('pipe.ovInbox', 'in inbox'), '/pipeline'),
+      ovChip(trackerRows.length, t('pipe.ovTracked', 'tracked'), '/tracker'),
+      // Server-driven labels; only stages that actually have rows (same
+      // non-zero rule as before, minus the hard-coded whitelist).
+      ...STAGES.filter((s) => counts[s] > 0).map((s) => ovChip(counts[s], s, '/tracker')),
+    );
+  }
+
+  // ── initial paint ──
+  allUrls = (await API.get('/api/pipeline')).urls || [];
+  renderList();
+  renderPreview();
+  const [tr0, sd0] = await Promise.all([
+    API.get('/api/tracker').catch(() => ({})),
+    API.get('/api/tracker/stages').catch(() => ({})),
   ]);
+  trackerRows = (tr0 && tr0.rows) || [];
+  STAGES = (sd0 && Array.isArray(sd0.stages)) ? sd0.stages : [];
+  ALIASES = (sd0 && sd0.aliases) || {};
+  paintOverview();
 
   return c('div', null, [
     c('header', { className: 'page-header' }, [

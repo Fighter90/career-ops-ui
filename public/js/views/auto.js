@@ -266,7 +266,11 @@ Router.register('auto', async () => {
     resultEl,
   ]);
 
-  // Deep-linked with ?url=… and a key present → auto-start once.
-  if (params.get('url') && params.get('go') === '1') setTimeout(run, 0);
+  // CAR-20 (v1.243.0) — deep links (`#/auto?url=…&go=1`) used to
+  // AUTO-START the pipeline from the query string: a paid LLM run
+  // (report + tracker write) with zero explicit consent, reachable by a
+  // single mis-click on any crafted link. The URL stays pre-filled; the
+  // visible Run button is now the only way to start. (docs/help/*/auto
+  // described the auto-start — flagged for the docs hand-off.)
   return root;
 });

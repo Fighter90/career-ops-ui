@@ -32,7 +32,11 @@ Router.register('profile', async () => {
       archetypes:   target.archetypes || [],
     };
   }());
-  const archetypes = summary.archetypes || (profile.target_roles?.archetypes) || [];
+  // v1.243.0 (views-3) — pickArchetypes (below): `summary.archetypes` is []
+  // (truthy) whenever the server summary omits archetypes, so the old
+  // `summary.archetypes || profile.target_roles?.archetypes` fallback never
+  // ran and the section rendered empty despite a populated profile.
+  const archetypes = pickArchetypes(summary, profile);
 
   function info(k, v) {
     return c('div', { className: 'card' }, [
@@ -118,3 +122,17 @@ Router.register('profile', async () => {
     ]),
   ]);
 });
+
+// v1.243.0 (views-3) — the summary→profile archetypes fallback, kept top-level
+// so the unit test can run it in isolation (the view mounts on
+// Router.register at import). Falls through on an EMPTY summary list too —
+// [] is truthy, which is exactly why the `||` chain never fell through. An
+// empty canonical list stays empty (nothing is invented).
+function pickArchetypes(summary, profile) {
+  const fromSummary = (summary && Array.isArray(summary.archetypes)) ? summary.archetypes : null;
+  if (fromSummary && fromSummary.length) return fromSummary;
+  const tr = profile && profile.target_roles;
+  const fromProfile = (tr && Array.isArray(tr.archetypes)) ? tr.archetypes : null;
+  if (fromProfile && fromProfile.length) return fromProfile;
+  return fromSummary || [];
+}
