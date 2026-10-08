@@ -2,6 +2,12 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.243.1] — 2026-10-08
+
+### Corretto
+
+- **La modale «Registra esito» ora si chiude davvero alla navigazione.** La guardia v1.243.0 ascoltava `hashchange` su `document`, dove quell'evento non scatta mai — la correzione è arrivata morta e la modale continuava a bloccare la vista successiva (trovata dal vivo in produzione nel round di regressione v1.243.1). La guardia ascolta su `window`; il test dispatcha anche lì ed è stato verificato rosso contro il codice rotto.
+
 ## [1.243.0] — 2026-10-08
 
 **Lo strato del browser tiene al sicuro il tuo lavoro e parla la tua lingua: nessuna perdita di modifiche non salvate, nessun fallimento silenzioso, nessun inglese silenzioso in un'interfaccia tradotta, contrasto AA ovunque.**

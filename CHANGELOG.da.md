@@ -8,6 +8,12 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.243.1] — 2026-10-08
+
+### Rettet
+
+- **„Registrér udfald“-modalen lukker sig nu faktisk ved navigation.** v1.243.0-vogteren lyttede efter `hashchange` på `document`, hvor begivenheden aldrig udløses — fixet ankom dødt, og modalen blokerede stadig den næste visning (fanget live i produktionen af v1.243.1-regressionsrunden). Vogteren lytter på `window`; testen dispatcher også der og er verificeret rød mod den ødelagte kode.
+
 ## [1.243.0] — 2026-10-08
 
 **Browser-laget beskytter dit arbejde og taler dit sprog: ingen redigeringer går tabt uden advarsel, ingen stille fejl, ingen engelsk-rester i et oversat interface, AA-kontrast overalt.**

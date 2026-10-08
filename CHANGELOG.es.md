@@ -10,6 +10,12 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 
 ---
 
+## [1.243.1] — 2026-10-08
+
+### Corregido
+
+- **El modal «Registrar resultado» ya se cierra de verdad al navegar.** El guardia de v1.243.0 escuchaba `hashchange` en `document`, donde ese evento nunca se dispara — el arreglo llegó muerto y el modal seguía bloqueando la vista siguiente (detectado en producción por la ronda de regresión v1.243.1). El guardia escucha en `window`; la prueba también despacha allí y se verificó roja contra el código roto.
+
 ## [1.243.0] — 2026-10-08
 
 **La capa del navegador protege tu trabajo y habla tu idioma: ninguna edición se pierde sin avisar, ningún fallo en silencio, ningún inglés residual en una interfaz traducida, contraste AA en todas partes.**

@@ -8,7 +8,7 @@ Release history belongs in [CHANGELOG.md](CHANGELOG.md), decisions in
 [docs/adr/](docs/adr/), vocabulary in [CONTEXT.md](CONTEXT.md). Anything already
 recoverable from those does **not** belong here.
 
-_Last updated: 2026-10-08 · **v1.243.0 client fixes in release train** (8 agents, +224 tests); v1.242.1 SHIPPED (resumecraft.ru deployed+verified, Playwright 15/15, full regression green; live-LLM × 7 locales blocked by upstream credit exhaustion — Linear CAR-44, 11/17 passed live before the credits ran out)_
+_Last updated: 2026-10-08 · **v1.243.1 SHIPPED** (hotfix: the v1.243.0 modal nav-guard listened at document — dead code, caught live on prod); v1.243.0 SHIPPED (client fixes, 8 agents, +224 tests) (resumecraft.ru deployed+verified, Playwright 15/15, full regression green; live-LLM × 7 locales blocked by upstream credit exhaustion — Linear CAR-44, 11/17 passed live before the credits ran out)_
 
 ---
 

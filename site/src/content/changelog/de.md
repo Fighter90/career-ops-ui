@@ -2,6 +2,12 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.243.1] — 2026-10-08
+
+### Behoben
+
+- **Der „Ergebnis erfassen“-Modal schließt jetzt wirklich beim Navigieren.** Der v1.243.0-Guard lauschte auf `hashchange` an `document`, wo das Ereignis nie feuert — der Fix kam tot an und das Modal blockierte weiter die nächste Ansicht (live in der Produktion von der v1.243.1-Regressionsrunde gefunden). Der Guard lauscht an `window`; der Test dispatcht ebenfalls dorthin und wurde gegen den defekten Code rot geprüft.
+
 ## [1.243.0] — 2026-10-08
 
 **Die Browser-Schicht bewahrt deine Arbeit und spricht deine Sprache: keine verlorenen ungespeicherten Änderungen, keine stillen Fehler, kein stilles Englisch in einer übersetzten Oberfläche, AA-Kontrast überall.**

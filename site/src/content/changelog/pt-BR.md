@@ -8,6 +8,12 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.243.1] — 2026-10-08
+
+### Corrigido
+
+- **O modal «Registrar resultado» agora realmente fecha ao navegar.** A guarda do v1.243.0 ouvia `hashchange` em `document`, onde o evento nunca dispara — a correção chegou morta e o modal continuava bloqueando a próxima vista (detectado em produção pela rodada de regressão v1.243.1). A guarda escuta em `window`; o teste também despacha lá e foi verificado vermelho contra o código quebrado.
+
 ## [1.243.0] — 2026-10-08
 
 **A camada do navegador protege seu trabalho e fala o seu idioma: nenhuma edição não salva se perde, nenhuma falha passa em silêncio, nenhum inglês silencioso numa UI traduzida, contraste AA em todo lugar.**

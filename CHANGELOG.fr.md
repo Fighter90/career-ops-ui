@@ -10,6 +10,12 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.243.1] — 2026-10-08
+
+### Corrigé
+
+- **La modale « Consigner le résultat » se ferme maintenant vraiment à la navigation.** Le garde v1.243.0 écoutait `hashchange` sur `document`, où cet événement ne se déclenche jamais — le correctif est arrivé mort et la modale bloquait toujours la vue suivante (attrapé en production par le tour de régression v1.243.1). Le garde écoute sur `window` ; le test y dispatche aussi et a été vérifié rouge contre le code cassé.
+
 ## [1.243.0] — 2026-10-08
 
 **La couche navigateur protège votre travail et parle votre langue : aucune perte de modifications non enregistrées, aucun échec silencieux, pas d'anglais silencieux dans une interface traduite, contraste AA partout.**

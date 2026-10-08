@@ -9,6 +9,12 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.243.1] — 2026-10-08
+
+### Naprawiono
+
+- **Modal „Zapisz wynik” faktycznie zamyka się teraz przy nawigacji.** Strażnik z v1.243.0 nasłuchiwał `hashchange` na `document`, gdzie to zdarzenie nigdy nie odpala — poprawka dotarła martwa i modal nadal blokował następny widok (złapane na żywo w produkcji w rundzie regresji v1.243.1). Strażnik nasłuchuje na `window`; test też tam dispatchuje i został sprawdzony na czerwono wobec zepsutego kodu.
+
 ## [1.243.0] — 2026-10-08
 
 **Warstwa przeglądarkowa chroni twoją pracę i mówi twoim językiem: żadnych utrat niezapisanych edycji, żadnych cichych awarii, żadnego cichego angielskiego w przetłumaczonym interfejsie, kontrast AA wszędzie.**

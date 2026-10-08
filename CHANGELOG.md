@@ -8,6 +8,12 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.243.1] — 2026-10-08
+
+### Fixed
+
+- **The «Record outcome» modal actually closes on navigation now.** The v1.243.0 guard listened for `hashchange` on `document`, where that event never fires — the fix shipped dead and the modal still blocked the next view (caught live on production by the v1.243.1 regression round). The guard listens at `window`; the test now dispatches there too and was verified red against the broken code.
+
 ## [1.243.0] — 2026-10-08
 
 **The browser layer keeps your work safe and speaks your language: no unsaved-edit losses, no silent failures, no silent English in a translated UI, AA contrast everywhere.**

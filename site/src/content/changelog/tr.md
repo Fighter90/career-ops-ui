@@ -2,6 +2,12 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.243.1] — 2026-10-08
+
+### Düzeltildi
+
+- **«Sonucu kaydet» kalıcısı artık gezinmede gerçekten kapanıyor.** v1.243.0 bekçisi `hashchange`'i `document` üzerinde dinliyordu; bu olay orada hiç ateşlenmez — düzeltme ölü geldi ve kalıcı bir sonraki görünümü engellemeye devam etti (v1.243.1 gerileme turunda canlı üretimde yakalandı). Bekçi artık `window` üzerinde dinliyor; test de oraya dispatch ediyor ve bozuk koda karşı kırmızı doğrulandı.
+
 ## [1.243.0] — 2026-10-08
 
 **Tarayıcı katmanı işinizi güvende tutuyor ve dilinizi konuşuyor: kaydedilmemiş düzenleme kaybı yok, sessiz başarısızlık yok, yerelleştirilmiş bir arayüzde sessiz İngilizce yok, her yerde AA kontrastı.**
