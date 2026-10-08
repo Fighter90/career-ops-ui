@@ -33,11 +33,12 @@ Router.register('two-pager', async () => {
   // message) and hold Save disabled until the user actually edits a field —
   // a deliberate edit makes the on-screen content intentional, so saving is
   // then allowed.
-  let data = null;
-  let loadErr = null;
-  try { ({ twoPager: data } = await API.get('/api/two-pager')); }
-  catch (e) { loadErr = e; }
-  data = data || { who_i_am: '', loves: [], must_haves: [], hates: [], deal_breakers: [], non_negotiables: [], target_environment: '' };
+  // (Discriminated result object — CodeQL js/trivial-conditional clean.)
+  const load = await API.get('/api/two-pager')
+    .then(({ twoPager }) => ({ twoPager }))
+    .catch((e) => ({ error: e }));
+  const loadErr = load.error || null;
+  let data = load.twoPager || { who_i_am: '', loves: [], must_haves: [], hates: [], deal_breakers: [], non_negotiables: [], target_environment: '' };
 
   // ── free-text blocks ──
   const whoField = textareaField('twoPager.whoLabel', 'Who I am',

@@ -18,14 +18,16 @@ Router.register('cv-studio', async () => {
   root.appendChild(c('p', { className: 'page-subtitle' },
     t('cvs.subtitle', 'Diagnose your CV, mask it for safe sharing, and rewrite stiff lines in your own voice — grounded only in what you actually wrote.')));
 
-  let cvMarkdown = '';
+  // (Discriminated result object — CodeQL js/trivial-conditional clean.)
+  const cvLoad = await API.get('/api/cv')
+    .then(({ markdown }) => ({ markdown }))
+    .catch((e) => ({ error: e }));
+  const cvLoadError = cvLoad.error || null;
+  let cvMarkdown = cvLoad.markdown || '';
   // CAR-20 (v1.243.0) — a failed GET /api/cv used to be swallowed into
   // cvMarkdown = '', so the page showed the "No CV yet" empty state and
   // sent the user off to (re)write a CV that actually exists. Surface
   // the error instead of masquerading as an empty workspace.
-  let cvLoadError = null;
-  try { ({ markdown: cvMarkdown } = await API.get('/api/cv')); }
-  catch (e) { cvLoadError = e; cvMarkdown = ''; }
   cvMarkdown = cvMarkdown || '';
 
   if (cvLoadError) {
@@ -244,10 +246,12 @@ Router.register('cv-studio', async () => {
   // CAR-20 (v1.243.0) — a failed GET /api/jds used to read as "No saved
   // job descriptions yet"; the user believed their archive was empty.
   // Keep the empty list, but surface the error in place of that copy.
-  let jdListError = null;
-  try { ({ jds: jdList } = await API.get('/api/jds')); }
-  catch (e) { jdListError = e; jdList = []; }
-  jdList = Array.isArray(jdList) ? jdList : [];
+  // (Discriminated result object — CodeQL js/trivial-conditional clean.)
+  const jdLoad = await API.get('/api/jds')
+    .then(({ jds }) => ({ jds }))
+    .catch((e) => ({ error: e }));
+  const jdListError = jdLoad.error || null;
+  jdList = Array.isArray(jdLoad.jds) ? jdLoad.jds : [];
   for (const jd of jdList) gapSel.appendChild(c('option', { value: jd.name }, jd.name));
 
   // "Reuse a past CV?" hint — a muted, zero-token line telling you whether a

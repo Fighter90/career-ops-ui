@@ -11,7 +11,7 @@
  *   - the GET (EventSource) kinds' error-frame + closing done frame (and
  *     the reconnect onerror) produce ONE error path, not two.
  */
-import { test, before, after } from 'node:test';
+import { test, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';

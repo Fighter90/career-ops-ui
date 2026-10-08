@@ -195,7 +195,7 @@ test('toggling a chip restores keyboard focus to the same chip (was: dropped to 
   env.document.activeElement = chip;
   chip.click();
   const focused = env.document.activeElement;
-  assert.ok(focused && focused !== null, 'something is focused');
+  assert.ok(focused, 'something is focused');
   assert.equal(focused.getAttribute && focused.getAttribute('data-chip'), 'разработчик',
     'focus restored to the same chip after the rebuild');
 });
