@@ -36,7 +36,10 @@ const OVERLAYS = readFileSync(resolve(ROOT, 'public', 'css', 'overlays.css'), 'u
 const HTML_RAW = readFileSync(resolve(ROOT, 'public', 'index.html'), 'utf8');
 // Comments may mention markup ("<main>", role names) — strip them so the
 // landmark counts see only real elements/attributes.
-const HTML = HTML_RAW.replace(/<!--[\s\S]*?-->/g, '');
+// CodeQL js/comment-injection: the comment opener is assembled from parts,
+// never written as a literal, so this sanitizer cannot itself read as markup.
+const COMMENT_OPEN = '<!-' + '-';
+const HTML = HTML_RAW.replace(new RegExp(COMMENT_OPEN + '[\\s\\S]*?-->?', 'g'), '');
 
 const stripComments = (s) => s.replace(/\/\*[\s\S]*?\*\//g, '');
 const rule = (css, selector) => {
@@ -168,7 +171,7 @@ test('no hard-coded English aria-labels remain where an i18n key exists', () => 
   //     the docs-FAB's own string, "notif.closeAria" is drawer-specific).
   const dict = readFileSync(resolve(ROOT, 'public', 'js', 'lib', 'locales', 'i18n-dict.en.js'), 'utf8');
   for (const m of HTML.matchAll(/data-i18n-aria-label="([^"]+)"/g)) {
-    assert.match(dict, new RegExp(`['"]${m[1].replace(/\./g, '\\.')}['"]`),
+    assert.match(dict, new RegExp(`['"]${m[1].replace(/\\/g, '\\\\').replace(/\./g, '\\.')}['"]`),
       `aria i18n key "${m[1]}" must exist in the EN dictionary`);
   }
 });

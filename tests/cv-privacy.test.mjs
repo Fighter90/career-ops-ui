@@ -29,23 +29,23 @@ const mask = (md, opts) => w.CvPrivacy.mask(md, opts);
 
 test('bare linkedin.com/in/… is masked like its https:// form', () => {
   const r = mask('Find me at linkedin.com/in/jane-doe for more.', {});
-  assert.ok(!/linkedin\.com\/in\/jane-doe/.test(r.markdown), `bare profile link leaked: ${r.markdown}`);
+  assert.ok(!r.markdown.includes('linkedin.com/in/jane-doe'), `bare profile link leaked: ${r.markdown}`);
   assert.ok(r.counts.links >= 1);
 });
 
 test('bare github/gitlab/x.com profile paths are masked; ordinary prose is not', () => {
   const r = mask('Code: github.com/janedoe · gitlab.com/janedoe · x.com/janedoe · Portfolio under construction since 2021', {});
-  assert.ok(!/github\.com\/janedoe/.test(r.markdown));
-  assert.ok(!/gitlab\.com\/janedoe/.test(r.markdown));
-  assert.ok(!/x\.com\/janedoe/.test(r.markdown));
+  assert.ok(!r.markdown.includes('github.com/janedoe'));
+  assert.ok(!r.markdown.includes('gitlab.com/janedoe'));
+  assert.ok(!r.markdown.includes('x.com/janedoe'));
   // "under construction since 2021" must survive — only known profile hosts
   assert.match(r.markdown, /under construction since 2021/);
 });
 
 test('the schemeful forms still mask (regression guard)', () => {
   const r = mask('https://www.linkedin.com/in/jane-doe and www.github.com/janedoe', {});
-  assert.ok(!/linkedin\.com\/in\/jane-doe/.test(r.markdown));
-  assert.ok(!/github\.com\/janedoe/.test(r.markdown));
+  assert.ok(!r.markdown.includes('linkedin.com/in/jane-doe'));
+  assert.ok(!r.markdown.includes('github.com/janedoe'));
 });
 
 // ── 2. ALL-CAPS names ────────────────────────────────────────────────────
