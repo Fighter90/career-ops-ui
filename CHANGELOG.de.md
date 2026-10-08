@@ -4,11 +4,16 @@
 
 ## [1.244.1] — 2026-10-08
 
-### Fixed
+### Behoben
 
 - **Scan icons announce real values.** The boost/fit/score icons' accessible names leaked the raw dict templates ("Fit: {band}", "Boosted by {by}") — `{band}`/`{by}`/`{score}` are now substituted (band word, booster keyword, numeric score). [HIGH a11y, caught live in the v1.244.0 regression round]
 - **Title pipes split correctly.** A 4-segment title like «C++ | Rust | Go Developer | Onsite» no longer lifts "Go Developer" out as a "country" — the split demands the segment resolves to a real country (conservative `Countries.detectCountry`).
 - **Meta dates render for every row.** `daysSince` accepted date-only ISO, but the API serves full timestamps for ~83% of dated rows — those rows showed no date segment.
+
+### Anmerkungen
+
+- Alles andere in #/scan ist identisch mit v1.244.0 — nur die drei Korrekturen oben haben sich geändert.
+- Bewusst nicht getan: Filterzustand im URL-Hash, Tastatur-Zeilennavigation und das Parsen von `5 lakhs INR` (bestehende Nachzügler).
 
 ## [1.244.0] — 2026-10-08
 

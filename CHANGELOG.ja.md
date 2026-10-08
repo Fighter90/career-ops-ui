@@ -10,11 +10,16 @@
 
 ## [1.244.1] — 2026-10-08
 
-### Fixed
+### 修正
 
 - **Scan icons announce real values.** The boost/fit/score icons' accessible names leaked the raw dict templates ("Fit: {band}", "Boosted by {by}") — `{band}`/`{by}`/`{score}` are now substituted (band word, booster keyword, numeric score). [HIGH a11y, caught live in the v1.244.0 regression round]
 - **Title pipes split correctly.** A 4-segment title like «C++ | Rust | Go Developer | Onsite» no longer lifts "Go Developer" out as a "country" — the split demands the segment resolves to a real country (conservative `Countries.detectCountry`).
 - **Meta dates render for every row.** `daysSince` accepted date-only ISO, but the API serves full timestamps for ~83% of dated rows — those rows showed no date segment.
+
+### 備考
+
+- #/scan のその他の部分は v1.244.0 と同一です — 変更されたのは上記の3つの修正のみです。
+- 意図的に未実施: URL ハッシュのフィルタ状態、キーボードでの行ナビゲーション、`5 lakhs INR` の解析(既存のフォローアップ)。
 
 ## [1.244.0] — 2026-10-08
 

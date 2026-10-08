@@ -16,6 +16,11 @@
 - **Title pipes split correctly.** A 4-segment title like «C++ | Rust | Go Developer | Onsite» no longer lifts "Go Developer" out as a "country" — the split demands the segment resolves to a real country (conservative `Countries.detectCountry`).
 - **Meta dates render for every row.** `daysSince` accepted date-only ISO, but the API serves full timestamps for ~83% of dated rows — those rows showed no date segment.
 
+### Notes
+
+- Everything else in #/scan is identical to v1.244.0 — only the three regression fixes above changed.
+- Deliberately not done: URL-hash filter state, keyboard row navigation and `5 lakhs INR` parsing (all pre-existing follow-ups).
+
 ## [1.244.0] — 2026-10-08
 
 **스캔 결과가 벽이 아니라 목록처럼 읽힙니다: 한 공고 = 두 줄, 신호는 아이콘, 700행 스캔은 37,000px 페이지 대신 페이지가 있는 표입니다.**

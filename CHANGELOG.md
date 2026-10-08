@@ -16,6 +16,11 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 - **Title pipes split correctly.** A 4-segment title like «C++ | Rust | Go Developer | Onsite» no longer lifts "Go Developer" out as a "country" — the split demands the segment resolves to a real country (conservative `Countries.detectCountry`).
 - **Meta dates render for every row.** `daysSince` accepted date-only ISO, but the API serves full timestamps for ~83% of dated rows — those rows showed no date segment.
 
+### Notes
+
+- Everything else in #/scan is identical to v1.244.0 — only the three regression fixes above changed.
+- Deliberately not done: URL-hash filter state, keyboard row navigation and `5 lakhs INR` parsing (all pre-existing follow-ups).
+
 ## [1.244.0] — 2026-10-08
 
 **The scan results read like a list, not a wall: one posting = two lines, the signals are icons, and a 700-row scan is a paginated table instead of a 37,000-px page.**
