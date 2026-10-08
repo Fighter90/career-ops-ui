@@ -1,13 +1,17 @@
-// TODO: split by concern (435 LOC — file-size contract 400–800 band).
+// v1.244.0 — the #/scan results row was redesigned in place (row anatomy,
+// icons-with-names, title hygiene, meta line — spec
+// docs/sdd/specs/2026-10-06-scan-page-redesign.md §Implementation contract);
+// ~470 LOC, inside the 400–800 file-size-contract band.
 /* window.ScanResults — the #/scan results-rendering subsystem, extracted from
  * public/js/views/scan.js (v1.132.0) to pay down the 800-LOC file-size-contract
  * debt. `create(ctx)` returns { render, getRows } closing over a context object
  * the view supplies (filter elements, active facet Sets, pager, twoPagerData,
- * and a lastResults getter). NO logic change — the functions were moved verbatim
- * and their closure vars mechanically rewired to `ctx.*`. FALLBACK_SOURCES is the
- * offline mirror of the source registry (drift-gated by
- * tests/scan-fallback-sources.test.mjs). The whole subsystem is regression-guarded
- * in-browser by tests/playwright-scan-filters.mjs.
+ * and a lastResults getter). FALLBACK_SOURCES is the offline mirror of the
+ * source registry (drift-gated by tests/scan-fallback-sources.test.mjs).
+ * splitTitleCountry is the pure title-hygiene helper (unit-tested in
+ * tests/scan-title-split.test.mjs). The whole subsystem is regression-guarded
+ * in-browser by tests/playwright-scan-filters.mjs and the layout contract in
+ * tests/scan-redesign-layout.test.mjs.
  */
 window.ScanResults = (function () {
   // NOT i18n keys, and deliberately so: every label here is the job board's own
@@ -128,6 +132,38 @@ window.ScanResults = (function () {
     { value: 'hh.ru',                 label: 'hh.ru' },
     { value: 'trudvsem',              label: 'Trudvsem' },
   ];
+
+  // v1.244.0 (spec Scope 2) — title hygiene. Scanners concatenate a trailing
+  // "| Country | Remote" onto posting titles (the Grafana complaint row);
+  // the redesigned row shows the role on line 1 and folds country/work-type
+  // into the meta line. Unicode-aware (Cyrillic locales included): splits AT
+  // MOST ONE trailing "| <country> | <work-type>" pair, and only when the
+  // tail reads as a BARE work-type marker (Remote / Гибрид / Удалённо / Офис
+  // / Onsite…) optionally followed by a parenthetical. "Office Manager",
+  // "Remote Work Policy Lead", a single trailing pipe ("C++ | Rust
+  // Developer") and non-place middle segments ("| 2nd line support |") never
+  // split. Pure — unit-tested in tests/scan-title-split.test.mjs.
+  const WORK_TAIL_RE = /^\s*(?:remote|hybrid|onsite|on-site|удал[её]нн\p{L}*|гибрид\p{L}*|офис\p{L}*|дистанц\p{L}*)\s*(?:\(|$)/iu;
+  function splitTitleCountry(title) {
+    const raw = String(title == null ? '' : title).replace(/\s+/g, ' ').trim();
+    const last = raw.lastIndexOf('|');
+    if (last === -1) return { title: raw, country: '' };
+    const tail = raw.slice(last + 1).trim();
+    const head = raw.slice(0, last).trim();
+    if (!head || !tail || !WORK_TAIL_RE.test(tail)) return { title: raw, country: '' };
+    const prev = head.lastIndexOf('|');
+    // "Role | Remote" — no country pair to lift; leave the title whole.
+    if (prev === -1) return { title: raw, country: '' };
+    const country = head.slice(prev + 1).trim();
+    const clean = head.slice(0, prev).trim();
+    // The middle segment must read as a place/name — starts with a letter
+    // (any script) and keeps letter/punctuation shape. Digits, pipes or
+    // role fragments ("2nd line support") mean this was never a country.
+    if (!clean || !country || !/^\p{L}[\p{L}\s.,'’()–-]*$/u.test(country)) {
+      return { title: raw, country: '' };
+    }
+    return { title: clean, country };
+  }
 
   function create(ctx) {
     const c = window.UI.el;
@@ -308,78 +344,122 @@ window.ScanResults = (function () {
     const sorted = ctx.pager.slice(sortedAll);
     const tbody = c('tbody', null, sorted.map((r) => {
       const wt = r.workplaceType || (r.isRemote ? 'Remote' : 'Onsite');
-      const wtClass = /remote/i.test(wt) ? 'badge-ok' : /hybrid/i.test(wt) ? 'badge-info' : '';
-      // Title cell shows a "⬆ boosted" pill before the link when the
-      // server-side scanner matched a `seniority_boost` keyword on the
-      // title. Title attribute reveals WHICH keyword matched, so the
-      // user can trace it back to portals.yml.
-      // v1.76.0 — trust badge. Only shown when
-      // trust_filter is enabled AND the posting is below "high" trust. The badge
-      // is language-neutral (⚠ + score/100); the tooltip lists the flag codes,
-      // so it renders identically across all 12 locales with no i18n keys.
-      const trustBadge = (r._trustLevel && r._trustLevel !== 'high') ? c('span', {
-        className: 'badge ' + (r._trustLevel === 'low' ? 'badge-bad' : 'badge-warn'),
-        title: t('scan.trustTip', 'Trust') + ' ' + (r._trustScore != null ? r._trustScore + '/100' : '?')
-          + (r._trustFlags && r._trustFlags.length ? ' · ' + r._trustFlags.join(', ') : ''),
-        style: { marginRight: '6px', fontSize: '11px' },
-      }, '⚠ ' + (r._trustScore != null ? r._trustScore : '')) : null;
-      // v1.89.0 — fit-to-what-you-want badge. Only shown when the two-pager
-      // yields a matchable signal (FitScore returns null otherwise — never a
-      // fabricated number). Colour tiers: ≥66 ok, ≥40 info, else bad. Tooltip
-      // lists what matched / what a deal-breaker violated.
-      let fitBadge = null;
+      // v1.244.0 — signal-icon rail (spec AC2 / §Implementation contract):
+      // boost, title-fit, fit-score, trust and reloc render as compact
+      // role="img" icons in a left rail of the posting cell, each with a
+      // localized accessible name (the scan.*Icon keys) and a title tooltip
+      // carrying the concrete values (which keyword boosted, which band,
+      // what matched / was violated). Replaces the v1.238-and-earlier word
+      // badges that concatenated into one sprawling line.
+      const signals = [];
+      if (r._boosted) {
+        // Boosted rows: title reveals WHICH keyword matched, so the user
+        // can trace it back to portals.yml (tooltip unchanged from v1.132).
+        signals.push(c('span', {
+          className: 'scan-icon scan-icon--boost', role: 'img',
+          'aria-label': t('scan.boostIcon', 'Boosted'),
+          title: t('scan.boostedBy', 'Boosted by') + ': ' + (r._boostedBy || '?'),
+        }, '⬆'));
+      }
+      // Parent #3260 parity — serve-time title-fit band, stamped server-side
+      // (server/lib/title-fit.mjs) as r.fit = {band, score}. Annotation only:
+      // it never filters, orders or counts. The band WORD moves into the
+      // tooltip (with the explainer); the icon glyph carries the band shape.
+      const band = r.fit && r.fit.band;
+      if (band === 'strong' || band === 'related' || band === 'weak') {
+        const bandWord = band === 'strong' ? t('scan.titleFit.strong', 'strong fit')
+          : band === 'related' ? t('scan.titleFit.related', 'related fit')
+          : t('scan.titleFit.weak', 'weak fit');
+        signals.push(c('span', {
+          className: 'scan-icon scan-icon--fit scan-icon--' + band, role: 'img',
+          'aria-label': t('scan.fitIcon', 'Fit'),
+          title: bandWord + ' · ' + t('scan.titleFitTip', "Free keyword-level estimate: posting title vs your profile's target roles (config/profile.yml). Not an evaluation — Evaluate still gives the real A–F fit score."),
+        }, band === 'strong' ? '◆' : band === 'related' ? '◇' : '○'));
+      }
+      // v1.89.0 — fit-to-what-you-want score badge → icon. Only shown when
+      // the two-pager yields a matchable signal (FitScore returns null
+      // otherwise — never a fabricated number). The score stays ON the icon
+      // (◎ NN); the tooltip lists what matched / what a deal-breaker violated.
       if (ctx.twoPagerData && window.FitScore) {
         const fit = window.FitScore.scoreJob(r, ctx.twoPagerData, window.Countries);
         if (fit && fit.score != null) {
-          const cls = fit.score >= 66 ? 'badge-ok' : fit.score >= 40 ? 'badge-info' : 'badge-bad';
           const tip = [
             fit.matched.length ? '✓ ' + fit.matched.map((x) => x.label).join(', ') : '',
             fit.violated.length ? '✗ ' + fit.violated.map((x) => x.label).join(', ') : '',
           ].filter(Boolean).join(' · ');
-          fitBadge = c('span', {
-            className: 'badge ' + cls,
+          signals.push(c('span', {
+            className: 'scan-icon scan-icon--score', role: 'img',
+            'aria-label': t('scan.scoreIcon', 'Fit score'),
             title: t('scan.fitTip', 'Fit to what you want') + (tip ? ' · ' + tip : ''),
-            style: { marginRight: '6px', fontSize: '11px' },
-          }, '◎ ' + fit.score);
+          }, '◎ ' + fit.score));
         }
       }
-      // Parent #3260 parity — free title-vs-profile band stamped server-side
-      // (server/lib/title-fit.mjs) as r.fit = {band, score}. Annotation only:
-      // it never filters, orders or counts. Renders the band WORD only (never
-      // the score) so it can't be mistaken for an evaluation grade; strong is
-      // highlighted, related/weak stay muted.
-      const band = r.fit && r.fit.band;
-      const titleFitChip = (band === 'strong' || band === 'related' || band === 'weak') ? c('span', {
-        className: 'badge' + (band === 'strong' ? ' badge-ok' : ''),
-        title: t('scan.titleFitTip', "Free keyword-level estimate: posting title vs your profile's target roles (config/profile.yml). Not an evaluation — Evaluate still gives the real A–F fit score."),
-        style: band === 'strong'
-          ? { marginRight: '6px', fontSize: '11px' }
-          : { marginRight: '6px', fontSize: '11px', fontWeight: '500', color: 'var(--foggy)' },
-      }, band === 'strong' ? t('scan.titleFit.strong', 'strong fit')
-        : band === 'related' ? t('scan.titleFit.related', 'related fit')
-        : t('scan.titleFit.weak', 'weak fit')) : null;
+      // v1.76.0 — trust icon. Only when trust_filter is enabled AND the
+      // posting is below "high" trust; the tooltip lists the flag codes.
+      if (r._trustLevel && r._trustLevel !== 'high') {
+        const trustTip = t('scan.trustTip', 'Trust') + ' ' + (r._trustScore != null ? r._trustScore + '/100' : '?')
+          + (r._trustFlags && r._trustFlags.length ? ' · ' + r._trustFlags.join(', ') : '');
+        signals.push(c('span', {
+          className: 'scan-icon scan-icon--trust', role: 'img',
+          'aria-label': trustTip, title: trustTip,
+        }, '⚠'));
+      }
+      // Relocation marker → icon (the reloc column folded into the rail).
+      if (r.relocates) {
+        signals.push(c('span', {
+          className: 'scan-icon scan-icon--reloc', role: 'img',
+          'aria-label': t('scan.col.reloc', 'Reloc'),
+          title: t('scan.relocBadge', 'reloc'),
+        }, '✈'));
+      }
+      // Scope 2 — title hygiene: a trailing "| Country | Remote-ish" segment
+      // is split off; line 1 shows the role only. title= keeps the FULL
+      // original text (the truncation + split tooltip).
+      const split = splitTitleCountry(r.title);
+      const fullTitle = r.title || split.title;
       // v1.243.0 — only a real http(s) URL becomes a link target: a crafted
       // `javascript:` / `data:` url (or a missing one) used to be written
       // straight into href. Unlinkable rows render the title as plain text.
       const safeUrl = /^https?:\/\//i.test(r.url || '') ? r.url : null;
-      const titleLink = safeUrl
-        ? c('a', { href: safeUrl, target: '_blank', rel: 'noopener', style: { color: 'var(--rausch)' } }, r.title)
-        : r.title;
-      const titleCell = c('td', null, [
-        r._boosted ? c('span', {
-          className: 'badge badge-info',
-          title: t('scan.boostedBy', 'Boosted by') + ': ' + (r._boostedBy || '?'),
-          style: { marginRight: '6px', fontSize: '11px' },
-        }, '⬆ ' + t('scan.boosted', 'boosted')) : null,
-        titleFitChip,
-        fitBadge,
-        trustBadge,
-        titleLink,
+      const titleEl = safeUrl
+        ? c('a', { className: 'scan-posting-title', href: safeUrl, target: '_blank', rel: 'noopener', title: fullTitle }, split.title)
+        : c('span', { className: 'scan-posting-title', title: fullTitle }, split.title);
+      // Meta line 2 — company · location · source · date · work-type (the
+      // company/location/type/source/age columns folded into one bounded
+      // line; the aux detail that stays a column is seniority + salary). One
+      // text node keeps the row inside the DOM node budget; the whole string
+      // is the truncation tooltip and the container announces itself with
+      // t('scan.postedMeta'). A row with a parseable date shows the fresh
+      // "Nd"/today form; the full ISO date was already the freshCell title
+      // and now rides in the same tooltip via the raw parts when present.
+      const days = window.JobFacets ? window.JobFacets.daysSince(r.date) : null;
+      const freshText = days == null ? '' : (days <= 0 ? t('scan.freshToday', 'today') : days + t('scan.dSuffix', 'd'));
+      const metaText = [
+        r.company || '—',
+        r.location || split.country,
+        r.source,
+        freshText,
+        wt,
+      ].filter(Boolean).join(' · ');
+      // Optional company logo (favicon of the company's own domain) — off by
+      // default; window.CompanyLogo.badge returns null when disabled.
+      const logo = window.CompanyLogo ? window.CompanyLogo.badge(r.url, r.company) : null;
+      const metaEl = c('div', {
+        className: 'scan-posting-meta',
+        'aria-label': t('scan.postedMeta', 'Posting details'),
+        title: metaText,
+      }, logo ? [logo, metaText] : metaText);
+      // THE bounded column (spec §Implementation contract): signal rail +
+      // exactly two one-line text blocks (title / meta), CSS-ellipsized.
+      const postingCell = c('td', { className: 'scan-cell-posting' }, [
+        signals.length ? c('span', { className: 'scan-posting-signals' }, signals) : null,
+        titleEl,
+        metaEl,
       ]);
       // v1.80.0 — ⭐ favorite toggle (localStorage, by URL). Re-renders so the
       // "favorites only" filter reflects the change immediately.
       const starred = window.ScanPrefs.isFavorite(r.url);
-      const starCell = c('td', { style: { width: '28px', textAlign: 'center' } },
+      const starCell = c('td', { className: 'scan-cell-star' },
         c('button', {
           type: 'button',
           className: 'btn-star' + (starred ? ' on' : ''),
@@ -389,44 +469,28 @@ window.ScanResults = (function () {
           onClick: () => { window.ScanPrefs.toggleFavorite(r.url); render(); },
           style: { background: 'transparent', border: 'none', cursor: 'pointer', fontSize: '15px', lineHeight: '1', color: starred ? 'var(--rausch)' : 'var(--foggy)' },
         }, starred ? '★' : '☆'));
-      // Optional company logo (favicon of the company's own domain) — off by
-      // default; window.CompanyLogo.badge returns null when disabled.
-      const logo = window.CompanyLogo ? window.CompanyLogo.badge(r.url, r.company) : null;
-      const companyCell = logo
-        ? c('td', { style: { minWidth: '160px' } },
-            c('span', { style: { display: 'inline-flex', alignItems: 'center', gap: '8px' } }, [logo, c('span', null, r.company || '—')]))
-        : c('td', { style: { minWidth: '160px' } }, r.company || '—');
-      // v1.129.0 — zero-token seniority bucket + freshness ("Nd" / today) from
-      // job-facets.js. Both are best-effort: a title with no seniority word or
-      // a job with no listed date renders an empty cell.
+      // v1.129.0 — zero-token seniority bucket stays a desktop-only column
+      // (hidden ≤900px; the meta line carries the story on a phone).
       const sen = senOf(r);
-      const senCell = c('td', null, sen
+      const senCell = c('td', { className: 'scan-cell-aux' }, sen
         ? c('span', { className: 'badge', style: { fontSize: '11px' } }, senLabel(sen))
         : '');
-      const days = window.JobFacets ? window.JobFacets.daysSince(r.date) : null;
-      const freshText = days == null ? '' : (days <= 0 ? t('scan.freshToday', 'today') : days + t('scan.dSuffix', 'd'));
-      const freshCell = c('td', {
-        style: { fontSize: '13px', color: 'var(--foggy)', whiteSpace: 'nowrap' },
-        title: r.date || '',
-      }, freshText);
-      return c('tr', null, [
+      const salaryCell = c('td', { className: 'scan-cell-aux', style: { fontSize: '13px', color: 'var(--foggy)' } }, r.salary || '');
+      return c('tr', { className: 'scan-row' + (r._boosted ? ' row-boosted' : '') }, [
         starCell,
-        companyCell,
-        titleCell,
+        postingCell,
         senCell,
-        c('td', { style: { fontSize: '13px', color: 'var(--foggy)' } }, r.location || '—'),
-        c('td', null, c('span', { className: 'badge ' + wtClass }, wt)),
-        c('td', null, r.relocates ? c('span', { className: 'badge badge-info' }, t('scan.relocBadge', 'reloc')) : ''),
-        c('td', { style: { fontSize: '13px', color: 'var(--foggy)' } }, r.salary || ''),
-        freshCell,
-        c('td', null, c('span', { className: 'tag' }, r.source)),
+        salaryCell,
       ]);
     }));
     ctx.resultsEl.appendChild(c('div', { className: 'table-wrap' },
-      c('table', { className: 'tbl' }, [
-        c('thead', null, c('tr', null,
-          ['★', t('scan.col.company'), t('scan.col.role'), t('scan.col.seniority', 'Seniority'), t('scan.col.loc'), t('scan.col.type'), t('scan.col.reloc', 'Reloc'), t('scan.col.salary'), t('scan.col.age', 'Age'), t('scan.col.source')].map((h) => c('th', null, h))
-        )),
+      c('table', { className: 'tbl scan-tbl' }, [
+        c('thead', null, c('tr', null, [
+          c('th', { className: 'scan-col-star' }, '★'),
+          c('th', null, t('scan.col.role')),
+          c('th', { className: 'scan-col-aux scan-col-sen' }, t('scan.col.seniority', 'Seniority')),
+          c('th', { className: 'scan-col-aux scan-col-salary' }, t('scan.col.salary')),
+        ])),
         tbody,
       ])
     ));
@@ -486,5 +550,5 @@ window.ScanResults = (function () {
     return { render: render, getRows: getRows };
   }
 
-  return { FALLBACK_SOURCES: FALLBACK_SOURCES, create: create };
+  return { FALLBACK_SOURCES: FALLBACK_SOURCES, create: create, splitTitleCountry: splitTitleCountry };
 })();

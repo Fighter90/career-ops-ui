@@ -32,9 +32,12 @@ test('scan.js renders a seniority badge column + a freshness (daysSince) column'
   assert.match(src, /window\.JobFacets\.daysSince\(r\.date\)/);
   assert.match(src, /t\('scan\.freshToday', 'today'\)/);
   assert.match(src, /days \+ t\('scan\.dSuffix', 'd'\)/);
-  // both new headers present in the table head
+  // both headers stay in the table head…
   assert.match(src, /t\('scan\.col\.seniority', 'Seniority'\)/);
-  assert.match(src, /t\('scan\.col\.age', 'Age'\)/);
+  // …except Age: v1.244.0 folded freshness into the posting meta line
+  // (company · location · source · date · work-type) — daysSince still
+  // builds it, the dedicated column is gone.
+  assert.doesNotMatch(src, /scan\.col\.age/, 'the Age column was folded into the posting meta line');
 });
 
 test('the 12 new scan facet keys exist in all 17 locale dicts', () => {

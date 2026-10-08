@@ -580,10 +580,7 @@ window.__I18N_DICT_JA = {
   'scan.chip.clear': "クリア",
   'scan.col.company': "会社",
   'scan.col.role': "役割",
-  'scan.col.loc': "場所",
-  'scan.col.type': "タイプ",
   'scan.col.salary': "給与",
-  'scan.col.source': "ソース",
   'scan.col.reloc': "移転",
   'scan.trustTip': "信頼",
   'scan.activeCo': "アクティブな会社",
@@ -982,6 +979,11 @@ window.__I18N_DICT_JA = {
   'scan.titleFit.related': "関連あり",
   'scan.titleFit.weak': "低い適合",
   'scan.titleFitTip': "無料のキーワードレベルの推定：求人タイトルとプロフィールの目標職種（config/profile.yml）の比較です。評価ではありません — 実際の A–F 適合スコアは「評価」で得られます。",
+  // ── Scan redesign (v1.244.0, R-08) — accessible names for the row icons ──
+  'scan.fitIcon': "適合：{band}",
+  'scan.boostIcon': "{by}によるブースト",
+  'scan.scoreIcon': "適合スコア {score}／100",
+  'scan.postedMeta': "求人詳細",
   // ── 模擬面接 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "模擬面接",
   'mock.title': "模擬面接",

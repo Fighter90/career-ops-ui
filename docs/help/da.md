@@ -241,7 +241,10 @@ Career (russiske boards, hvis aktiveret).
 **Trin 10 — Når scanningen er færdig, gennemgå resultaterne.** Klik på en
 virksomhedstag for at filtrere; klik på ↗-ikonet for at åbne virksomhedens
 karriereside i en ny fane. Hver ledig stilling, der overlevede
-titelfilteret, er sat i kø i Pipeline.
+titelfilteret, er sat i kø i Pipeline. Hver resultatrække holder
+opslaget til to kompakte linjer — titlen øverst og en detaljelinje
+med små ikoner nedenunder (title-fit, senioritets-boost,
+match-score, kilde og dato) — og lange resultatlister pagineres.
 
 ### D. Vurdér tilbuddene (~30 sekunder per JD)
 

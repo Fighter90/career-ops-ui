@@ -10,6 +10,27 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 
 ---
 
+## [1.244.0] — 2026-10-08
+
+**Los resultados del escaneo se leen como una lista, no como un muro: una vacante = dos líneas, las señales son iconos, y un escaneo de 700 filas es una tabla paginada en vez de una página de 37,000 px.**
+
+### Corregido
+
+- **Anatomía de la fila.** Cada vacante se muestra como una fila acotada de dos líneas: línea 1 el título, línea 2 `company · location · source · date · work-type`. El badge de boost, la banda de encaje del título y la puntuación se convirtieron en iconos con nombres accesibles localizados y tooltips (los lectores de pantalla leen «Соответствие: сильное» / "Fit: strong", no un muro de palabras); los badges de confianza y reubicación se plegaron en el mismo raíl. Seniority y salario quedan como columnas auxiliares solo de escritorio.
+- **Higiene del título.** Un segmento final `| Germany | Remote` se separa del título hacia la línea de metadatos — consciente de Unicode, solo cuando el final es un marcador real de modalidad y el segmento medio tiene forma de lugar (las barras legítimas como "C++ | Rust | Go Developer" nunca se dividen).
+- **Fin del desbordamiento horizontal.** Layout de tabla fijo, `min-width: 0`, título/metadatos de una línea con elipses y el texto completo en el tooltip: cero desbordamiento de página y cero scroll interno de tabla a 1440 px y 390 px (la página antigua desbordaba 675 px en móvil).
+- **Paginación.** Los resultados se muestran a 50 por página (25/50/100/200 seleccionables) — un escaneo de 700 filas mide ahora ~4,600 px en vez de ~37,000 px, y el DOM contiene ~1,000 nodos en lugar de 5,500+.
+
+### Añadido
+
+- **Pruebas de contrato de layout**: la fila de dos líneas, los nombres accesibles de los iconos (en + ru), el presupuesto de nodos de paginación y el guardia de conteo/orden de title-fit corren en la suite del navegador — el rediseño no puede regresar en silencio.
+
+### Notas
+
+- Tests **5036 → 5045** unit, la suite del navegador ganó los contratos de layout, cobertura media **98.14 % líneas / 89.34 % ramas** (suelo 96/86).
+- Lo que el escáner encuentra, las fórmulas de puntuación y `last-scan.json` no se tocan — title-fit sigue siendo una anotación.
+- No está en esta release: estado de filtros en el hash de URL y navegación de filas por teclado (siguiente); el parseo de `5 lakhs INR` (preexistente).
+
 ## [1.243.2] — 2026-10-08
 
 ### Corregido

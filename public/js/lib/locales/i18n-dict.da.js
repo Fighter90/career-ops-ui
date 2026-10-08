@@ -579,10 +579,7 @@ window.__I18N_DICT_DA = {
   'scan.chip.clear': "ryd",
   'scan.col.company': "Virksomhed",
   'scan.col.role': "Rolle",
-  'scan.col.loc': "Placering",
-  'scan.col.type': "Type",
   'scan.col.salary': "Løn",
-  'scan.col.source': "Kilde",
   'scan.col.reloc': "Reloc.",
   'scan.trustTip': "Tillid",
   'scan.activeCo': "Aktive virksomheder",
@@ -981,6 +978,11 @@ window.__I18N_DICT_DA = {
   'scan.titleFit.related': "relateret match",
   'scan.titleFit.weak': "svagt match",
   'scan.titleFitTip': "Gratis estimat på nøgleordsniveau: opslagets titel mod din profils målroller (config/profile.yml). Ikke en evaluering — Evaluer giver stadig den rigtige A–F-score.",
+  // ── Scan redesign (v1.244.0, R-08) — accessible names for the row icons ──
+  'scan.fitIcon': "Match: {band}",
+  'scan.boostIcon': "Fremhævet af {by}",
+  'scan.scoreIcon': "Matchscore {score} ud af 100",
+  'scan.postedMeta': "Joboplysninger",
   // ── Mock interview 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "Mock-interview",
   'mock.title': "Mock-interview",

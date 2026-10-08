@@ -8,6 +8,27 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.244.0] — 2026-10-08
+
+**Scan-resultaterne læses som en liste, ikke en væg: ét opslag = to linjer, signalerne er ikoner, og en scanning på 700 rækker er en pagineret tabel i stedet for en side på 37,000 px.**
+
+### Rettet
+
+- **Række-anatomi.** Hvert opslag renderes som en afgrænset to-linjers række: linje 1 titlen, linje 2 `company · location · source · date · work-type`. Boost-badge, title-fit-båndet og fit-scoren blev til ikoner med lokaliserede tilgængelige navne og tooltips (skærmlæsere læser «Соответствие: сильное» / "Fit: strong", ikke en væg af ord); tillids- og relokations-badges foldede sig ind i samme skinne. Senioritet og løn forbliver som hjælpekolonner, der kun vises på desktop.
+- **Titel-hygiejne.** Et afsluttende `| Germany | Remote`-segment skæres ud af titlen og ind i meta-linjen — Unicode-bevidst, kun når halen er en ægte work-type-markør, og midtersegmentet er stedsformet (legitime pipes som "C++ | Rust | Go Developer" splittes aldrig).
+- **Ikke mere vandret udbredelse.** Fast tabel-layout, `min-width: 0`, titel/meta på én linje afkortet med ellipse med den fulde tekst i tooltippen: nul sideoverflow og nul intern tabel-scroll ved 1440 px og 390 px (den gamle side overflowede med 675 px ved telefonbredde).
+- **Paginering.** Resultaterne renderes 50 per side (25/50/100/200 kan vælges) — en scanning på 700 rækker er nu ~4,600 px høj i stedet for ~37,000 px, og DOM'en holder ~1,000 noder i stedet for 5,500+.
+
+### Tilføjet
+
+- Layout-kontrakt-tests: den to-linjers række, ikonernes tilgængelige navne (en + ru), pagineringens node-budget og title-fit-antal-/rækkefølge-vogteren kører i browser-suitten — redesignet kan ikke stille regressere.
+
+### Noter
+
+- Tests **5036 → 5045** unit (browser-suitten fik layout-kontrakterne), gennemsnitlig dækning **98.14 % linjer / 89.34 % grene** (gulv 96/86).
+- Det, scanneren finder, scoreformlerne og `last-scan.json`, er urørte — title-fit forbliver en annotering.
+- Ikke i denne udgivelse: URL-hash-filtertilstand og tastaturstyret rækkenavigation (opfølgning); `5 lakhs INR`-parsing (pre-existing).
+
 ## [1.243.2] — 2026-10-08
 
 ### Rettet

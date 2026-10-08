@@ -24,8 +24,15 @@ import { createRequire } from 'node:module';
 
 const require = createRequire(import.meta.url);
 function resolvePlaywright() {
+  // CAREER_OPS_PLAYWRIGHT_PATH — same escape hatch the other Playwright
+  // suites use (git worktrees have no ../node_modules to fall back to).
+  const candidates = [];
+  if (process.env.CAREER_OPS_PLAYWRIGHT_PATH) candidates.push(process.env.CAREER_OPS_PLAYWRIGHT_PATH);
   for (const id of ['playwright', resolve(process.cwd(), '..', 'node_modules', 'playwright'), resolve(process.cwd(), 'node_modules', 'playwright')]) {
-    try { return require(id); } catch {}
+    candidates.push(id);
+  }
+  for (const id of candidates) {
+    try { return require(id); } catch { /* next */ }
   }
   return null;
 }

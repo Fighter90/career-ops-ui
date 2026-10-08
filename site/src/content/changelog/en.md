@@ -8,6 +8,27 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.244.0] — 2026-10-08
+
+**The scan results read like a list, not a wall: one posting = two lines, the signals are icons, and a 700-row scan is a paginated table instead of a 37,000-px page.**
+
+### Fixed
+
+- **Row anatomy.** Every posting renders as a bounded two-line row: line 1 the title, line 2 `company · location · source · date · work-type`. The boost badge, the title-fit band and the fit score became icons with localized accessible names and tooltips (screen readers read «Соответствие: сильное» / "Fit: strong", not a wall of words); trust and relocation badges folded into the same rail. Seniority and salary stay as desktop-only auxiliary columns.
+- **Title hygiene.** A trailing `| Germany | Remote` segment is split out of the title into the meta line — Unicode-aware, only when the tail is a real work-type marker and the middle segment is place-shaped (legit pipes like "C++ | Rust | Go Developer" never split).
+- **No more horizontal sprawl.** Fixed table layout, `min-width: 0`, ellipsized one-line title/meta with the full text in the tooltip: zero page overflow and zero internal table scroll at 1440 px and 390 px (the old page overflowed by 675 px at phone width).
+- **Pagination.** Results render 50 per page (25/50/100/200 selectable) — a 700-row scan is now ~4,600 px tall instead of ~37,000 px, and the DOM holds ~1,000 nodes instead of 5,500+.
+
+### Added
+
+- Layout contract tests: the two-line row, the icon accessible names (en + ru), the pagination node budget and the title-fit count/order guard run in the browser suite — the redesign cannot silently regress.
+
+### Notes
+
+- Tests **5036 → 5045** unit (browser suite gained the layout contracts), coverage mean **98.14 % line / 89.34 % branch** (floor 96/86).
+- What the scanner finds, the scoring formulas and `last-scan.json` are untouched — title-fit stays an annotation.
+- Not in this release: URL-hash filter state and keyboard row navigation (follow-up); `5 lakhs INR` parsing (pre-existing).
+
 ## [1.243.2] — 2026-10-08
 
 ### Fixed

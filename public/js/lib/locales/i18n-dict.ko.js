@@ -580,10 +580,7 @@ window.__I18N_DICT_KO = {
   'scan.chip.clear': "지우기",
   'scan.col.company': "회사",
   'scan.col.role': "직무",
-  'scan.col.loc': "위치",
-  'scan.col.type': "유형",
   'scan.col.salary': "급여",
-  'scan.col.source': "소스",
   'scan.col.reloc': "이전",
   'scan.trustTip': "신뢰",
   'scan.activeCo': "활성 회사",
@@ -982,6 +979,11 @@ window.__I18N_DICT_KO = {
   'scan.titleFit.related': "관련 적합",
   'scan.titleFit.weak': "낮은 적합",
   'scan.titleFitTip': "무료 키워드 수준 추정: 공고 제목과 프로필의 목표 직무(config/profile.yml) 비교. 평가가 아닙니다 — 실제 A–F 적합도 점수는 평가에서 제공합니다.",
+  // ── Scan redesign (v1.244.0, R-08) — accessible names for the row icons ──
+  'scan.fitIcon': "적합: {band}",
+  'scan.boostIcon': "{by}에 의해 부스트됨",
+  'scan.scoreIcon': "적합도 점수 100점 만점에 {score}점",
+  'scan.postedMeta': "공고 정보",
   // ── 모의 면접 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "모의 면접",
   'mock.title': "모의 면접",

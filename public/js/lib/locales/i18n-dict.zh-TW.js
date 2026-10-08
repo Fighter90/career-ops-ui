@@ -580,10 +580,7 @@ window.__I18N_DICT_ZH_TW = {
   'scan.chip.clear': "清除",
   'scan.col.company': "公司",
   'scan.col.role': "職位",
-  'scan.col.loc': "地點",
-  'scan.col.type': "類型",
   'scan.col.salary': "薪資",
-  'scan.col.source': "來源",
   'scan.col.reloc': "搬遷",
   'scan.trustTip': "信任",
   'scan.activeCo': "活動公司",
@@ -982,6 +979,11 @@ window.__I18N_DICT_ZH_TW = {
   'scan.titleFit.related': "部分契合",
   'scan.titleFit.weak': "低契合",
   'scan.titleFitTip': "免費的關鍵字層級估算：職缺標題與你個人檔案中的目標職位（config/profile.yml）比較。這不是評估——真正的 A–F 契合分數仍由「評估」提供。",
+  // ── Scan redesign (v1.244.0, R-08) — accessible names for the row icons ──
+  'scan.fitIcon': "契合度：{band}",
+  'scan.boostIcon': "由 {by} 提升",
+  'scan.scoreIcon': "契合度得分 {score}/100",
+  'scan.postedMeta': "職缺詳情",
   // ── 模擬面試 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "模擬面試",
   'mock.title': "模擬面試",

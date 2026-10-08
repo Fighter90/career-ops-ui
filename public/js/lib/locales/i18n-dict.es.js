@@ -580,10 +580,7 @@ window.__I18N_DICT_ES = {
   'scan.chip.clear': "limpiar",
   'scan.col.company': "Empresa",
   'scan.col.role': "Rol",
-  'scan.col.loc': "Ubicación",
-  'scan.col.type': "Tipo",
   'scan.col.salary': "Salario",
-  'scan.col.source': "Fuente",
   'scan.col.reloc': "Reubic.",
   'scan.trustTip': "Confianza",
   'scan.activeCo': "Empresas activas",
@@ -981,6 +978,11 @@ window.__I18N_DICT_ES = {
   'scan.titleFit.related': "encaje relacionado",
   'scan.titleFit.weak': "encaje débil",
   'scan.titleFitTip': "Estimación gratuita por palabras clave: título de la oferta frente a los puestos objetivo de tu perfil (config/profile.yml). No es una evaluación: Evaluar sigue dando la puntuación real A–F.",
+  // ── Scan redesign (v1.244.0, R-08) — accessible names for the row icons ──
+  'scan.fitIcon': "Encaje: {band}",
+  'scan.boostIcon': "Boost por {by}",
+  'scan.scoreIcon': "Puntuación de encaje {score} de 100",
+  'scan.postedMeta': "Detalles de la vacante",
 
   // ── Entrevista simulada 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "Entrevista simulada",

@@ -7,19 +7,19 @@
 
 _Неофіційний інтерфейс — не пов'язаний із career-ops / santifer і не схвалений ними._
 
-[![tests](https://img.shields.io/badge/tests-5036%20passed-brightgreen)](#тести)
+[![tests](https://img.shields.io/badge/tests-5045%20passed-brightgreen)](#тести)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#тести)
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.243.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.243.2)
+[![release](https://img.shields.io/badge/release-v1.244.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.244.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Останній реліз — v1.243.0** — **Шар браузера береже вашу роботу і говорить вашою мовою: без втрат незбережених редагувань, без мовчазних збоїв, без тихої англійської в перекладеному інтерфейсі, контраст AA всюди.**
+> **🆕 Останній реліз — v1.244.0** — **Результати скану читаються списком, а не стіною: одна вакансія = два рядки, сигнали — іконки, а скан на 700 рядків — це таблиця з посторінковим розбиттям замість сторінки на 37,000 px.** Буст, смуга відповідності та бал — іконки з локалізованими accessible-назвами; хвостовий `| Germany | Remote` переїжджає з назви в мета-рядок; таблиця перестала переповнюватися на ширині телефону (675 px внутрішнього скролу → 0) і розбита на сторінки по 50 рядків.
 >
-> **Попередній реліз — v1.242.1** — Лише пакування: релізний архів більше не містить симлінків `node_modules`, тож серверне розгортання більше не відкочується; код застосунку ідентичний v1.242.0.
+> **Попередній реліз — v1.243.2** — Повторний зріз v1.243.1 під свіжим розгортабельним тегом (серверний `git fetch --tags` відмовив перевказаній v1.243.1); несе фікс window-слухача модалки «Записати підсумок» трекера.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

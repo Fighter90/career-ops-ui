@@ -2,6 +2,27 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.244.0] — 2026-10-08
+
+**Die Scan-Ergebnisse lesen sich wie eine Liste, nicht wie eine Wand: eine Stelle = zwei Zeilen, die Signale sind Icons, und ein 700-Zeilen-Scan ist eine paginierte Tabelle statt einer 37,000-px-Seite.**
+
+### Behoben
+
+- **Zeilenanatomie.** Jede Stelle rendert als begrenzte Zwei-Zeilen-Zeile: Zeile 1 der Titel, Zeile 2 `company · location · source · date · work-type`. Das Boost-Badge, das Titel-Fit-Band und der Fit-Score wurden zu Icons mit lokalisierten zugänglichen Namen und Tooltips (Screenreader lesen „Passung: stark“ / „Fit: strong“, keine Wortwand); die Trust- und Umzugs-Badges wanderten in dieselbe Leiste. Seniorität und Gehalt bleiben zusätzliche Spalten, nur auf dem Desktop sichtbar.
+- **Titelhygiene.** Ein abschließendes `| Germany | Remote`-Segment wird aus dem Titel in die Meta-Zeile ausgespalten — Unicode-bewusst, und nur wenn der Schwanz ein echtes Arbeitsform-Kennzeichen ist und das mittlere Segment nach einem Ort aussieht (legitime Pipes wie „C++ | Rust | Go Developer“ werden nie geteilt).
+- **Kein horizontales Ausufern mehr.** Festes Tabellen-Layout, `min-width: 0`, einzeiliger Titel/Meta mit Auslassungspunkten und dem vollen Text im Tooltip: kein Seitenüberlauf und kein internes Tabellen-Scrollen bei 1440 px und 390 px (die alte Seite lief bei Telefonbreite um 675 px über).
+- **Paginierung.** Ergebnisse rendern 50 pro Seite (25/50/100/200 wählbar) — ein 700-Zeilen-Scan ist jetzt ~4,600 px hoch statt ~37,000 px, und das DOM hält ~1,000 Knoten statt 5,500+.
+
+### Hinzugefügt
+
+- Layout-Contract-Tests: Die Zwei-Zeilen-Zeile, die zugänglichen Icon-Namen (en + ru), das Paginierungs-Knotenbudget und der Titel-Fit-Zähl- und Reihenfolge-Guard laufen in der Browser-Suite — das Redesign kann nicht mehr stillschweigend regressieren.
+
+### Anmerkungen
+
+- Tests **5036 → 5045** Unit (die Browser-Suite bekam die Layout-Contracts), Coverage-Mittelwert **98.14 % Zeilen / 89.34 % Branch** (Untergrenze 96/86).
+- Was der Scanner findet, die Scoring-Formeln und `last-scan.json` sind unberührt — der Titel-Fit bleibt eine Anmerkung.
+- Nicht in diesem Release: URL-Hash-Filterzustand und Tastatur-Zeilennavigation (Follow-up); `5 lakhs INR` parst weiterhin als 5 (vorbestehend).
+
 ## [1.243.2] — 2026-10-08
 
 ### Behoben

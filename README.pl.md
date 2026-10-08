@@ -7,19 +7,19 @@
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
-[![tests](https://img.shields.io/badge/tests-5036%20passed-brightgreen)](#testy)
+[![tests](https://img.shields.io/badge/tests-5045%20passed-brightgreen)](#testy)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#testy)
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.243.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.243.2)
+[![release](https://img.shields.io/badge/release-v1.244.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.244.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Najnowsze wydanie — v1.243.0** — **Warstwa przeglądarkowa chroni twoją pracę i mówi twoim językiem: żadnych utrat niezapisanych edycji, żadnych cichych awarii, żadnego cichego angielskiego w przetłumaczonym interfejsie, kontrast AA wszędzie.**
+> **🆕 Najnowsze wydanie — v1.244.0** — **Wyniki skanu czytają się jak lista, a nie jak ściana: jedna oferta = dwa wiersze, sygnały to ikony, a skan 700 ofert to stronicowana tabela zamiast strony o wysokości 37,000 px.** Promowanie, pas dopasowania i wynik to ikony ze zlokalizowanymi nazwami dostępnymi; końcowy segment `| Germany | Remote` przenosi się z tytułu do linii metadanych; tabela przestała przepełniać stronę przy szerokości telefonu (675 px wewnętrznego przewijania → 0) i stronicuje po 50 wierszy.
 >
-> **Poprzednie wydanie — v1.242.1** — Wydanie czysto pakunkowe: kod aplikacji identyczny z v1.242.0; poprawki warstwy danych skanera z tej wersji (martwe źródła znów żyją, zniekształcona odpowiedź rzuca błąd już na stronie 1, sparsowane piny dokładnego hosta) trafiły na produkcję dopiero z tym wdrożeniem.
+> **Poprzednie wydanie — v1.243.2** — Wydanie czysto pakunkowe: to samo drzewo co v1.243.1 (poprawka modalu wyniku w trackerze — nasłuch na `window`), wycięte pod świeżym, wdrażalnym tagiem, bo `git fetch --tags` na serwerze odrzucił przepiętą v1.243.1.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

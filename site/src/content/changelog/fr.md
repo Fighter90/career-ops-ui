@@ -10,6 +10,27 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 
 ---
 
+## [1.244.0] — 2026-10-08
+
+**Les résultats du scan se lisent comme une liste, pas un mur : une offre = deux lignes, les signaux sont des icônes, et un scan de 700 lignes devient un tableau paginé au lieu d'une page de 37,000 px.**
+
+### Corrigé
+
+- **Anatomie des lignes.** Chaque offre s'affiche sous la forme d'une rangée bornée de deux lignes : ligne 1 le titre, ligne 2 `company · location · source · date · work-type`. Le badge de boost, la bande d'adéquation du titre et le score d'adéquation sont devenus des icônes avec des noms accessibles localisés et des infobulles (les lecteurs d'écran lisent «Соответствие: сильное» / "Fit: strong", pas un mur de mots) ; les badges de confiance et de relocalisation se replient dans le même rail. L'ancienneté et le salaire restent des colonnes auxiliaires réservées au bureau.
+- **Hygiène des titres.** Un segment final `| Germany | Remote` est séparé du titre et déplacé dans la ligne meta — en tenant compte d'Unicode, uniquement quand la fin est un vrai marqueur de type de travail et que le segment du milieu a une forme de lieu (les pipes légitimes comme « C++ | Rust | Go Developer » ne sont jamais scindées).
+- **Fini l'étalement horizontal.** Mise en page de tableau fixe, `min-width: 0`, titre/meta sur une ligne avec ellipse et le texte complet dans l'infobulle : zéro débordement de page et zéro défilement interne du tableau à 1440 px et 390 px (l'ancienne page débordait de 675 px en largeur téléphone).
+- **Pagination.** Les résultats s'affichent 50 par page (25/50/100/200 au choix) — un scan de 700 lignes fait désormais ~4,600 px de haut au lieu de ~37,000 px, et le DOM contient ~1,000 nœuds au lieu de 5,500+.
+
+### Ajouté
+
+- Tests de contrat de mise en page : la rangée à deux lignes, les noms accessibles des icônes (en + ru), le budget de nœuds de la pagination et le garde de nombre/ordre de l'adéquation du titre tournent dans la suite navigateur — la refonte ne peut plus régresser silencieusement.
+
+### Notes
+
+- Tests **5036 → 5045** unitaires (la suite navigateur a gagné les contrats de mise en page), couverture moyenne **98.14 % lignes / 89.34 % branches** (plancher 96/86).
+- Ce que le scanner trouve, les formules de scoring et `last-scan.json` sont intacts — l'adéquation du titre reste une annotation.
+- Hors de cette version : l'état de filtre par hash d'URL et la navigation clavier entre lignes (follow-up) ; l'analyse de `5 lakhs INR` (préexistant).
+
 ## [1.243.2] — 2026-10-08
 
 ### Corrigé

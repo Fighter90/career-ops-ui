@@ -9,6 +9,27 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.244.0] — 2026-10-08
+
+**Wyniki skanu czytają się jak lista, a nie jak ściana: jedna oferta = dwa wiersze, sygnały to ikony, a skan 700 ofert to stronicowana tabela zamiast strony o wysokości 37,000 px.**
+
+### Naprawiono
+
+- **Anatomia wiersza.** Każda oferta renderuje się jako ograniczony dwuwierszowy wiersz: linia 1 to tytuł, linia 2 to `company · location · source · date · work-type`. Odznaka promowania, pas dopasowania tytułu i wynik dopasowania stały się ikonami ze zlokalizowanymi nazwami dostępnymi i podpowiedziami (czytniki ekranu odczytują «Соответствие: сильное» / „Fit: strong", a nie ścianę słów); odznaki zaufania i relokacji złożyły się do tej samej szyny. Seniority i wynagrodzenie pozostają kolumnami pomocniczymi widocznymi tylko na desktopie.
+- **Higiena tytułów.** Końcowy segment `| Germany | Remote` jest wydzielany z tytułu do linii metadanych — z uwzględnieniem Unicode, tylko gdy ogon jest prawdziwym znacznikiem trybu pracy, a środkowy segment ma kształt miejsca (uzasadnione piony jak „C++ | Rust | Go Developer" nigdy się nie dzielą).
+- **Koniec z rozlewaniem się w poziomie.** Stały układ tabeli, `min-width: 0`, tytuł i metadane skracane wielokropkiem do jednej linii z pełnym tekstem w podpowiedzi: zero przepełnienia strony i zero wewnętrznego przewijania tabeli przy 1440 px i 390 px (stara strona przepełniała się o 675 px przy szerokości telefonu).
+- **Stronicowanie.** Wyniki renderują się po 50 na stronę (do wyboru 25/50/100/200) — skan 700 ofert ma teraz ~4,600 px wysokości zamiast ~37,000 px, a DOM trzyma ~1,000 węzłów zamiast 5,500+.
+
+### Dodano
+
+- Testy kontraktów układu: dwuwierszowy wiersz, dostępne nazwy ikon (en + ru), budżet węzłów stronicowania i straż liczby/kolejności dopasowania tytułu działają w zestawie przeglądarkowym — przeprojektowanie nie może po cichu się zregresować.
+
+### Uwagi
+
+- Testy **5036 → 5045** unit (zestaw przeglądarkowy zyskał kontrakty układu), średnie pokrycie **98.14 % linii / 89.34 % gałęzi** (podłoga 96/86).
+- To, co znajduje skaner, wzory punktacji i `last-scan.json` pozostają nietknięte — dopasowanie tytułu nadal jest tylko adnotacją.
+- Poza tym wydaniem: stan filtrów w hashu URL i nawigacja po wierszach klawiaturą (follow-up); parsowanie `5 lakhs INR` (istniejące wcześniej).
+
 ## [1.243.2] — 2026-10-08
 
 ### Naprawiono

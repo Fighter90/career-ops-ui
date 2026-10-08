@@ -580,10 +580,7 @@ window.__I18N_DICT_FR = {
   'scan.chip.clear': "effacer",
   'scan.col.company': "Entreprise",
   'scan.col.role': "Rôle",
-  'scan.col.loc': "Localisation",
-  'scan.col.type': "Type de poste",
   'scan.col.salary': "Salaire",
-  'scan.col.source': "Origine",
   'scan.col.reloc': "Réinst.",
   'scan.trustTip': "Confiance",
   'scan.activeCo': "Entreprises actives",
@@ -981,6 +978,11 @@ window.__I18N_DICT_FR = {
   'scan.titleFit.related': "adéquation partielle",
   'scan.titleFit.weak': "adéquation faible",
   'scan.titleFitTip': "Estimation gratuite par mots-clés : titre de l'offre comparé aux postes cibles de votre profil (config/profile.yml). Ce n'est pas une évaluation — Évaluer donne toujours la vraie note A–F.",
+  // ── Scan redesign (v1.244.0, R-08) — accessible names for the row icons ──
+  'scan.fitIcon': "Adéquation : {band}",
+  'scan.boostIcon': "Augmenté par {by}",
+  'scan.scoreIcon': "Score d'adéquation {score} sur 100",
+  'scan.postedMeta': "Détails du poste",
 
   // ── Entretien simulé 2.0 (Epic 15 / v1.90.0) ── // Mock interview 2.0 (Epic 15 / v1.90.0)
   'nav.mockInterview': "Entretien simulé",

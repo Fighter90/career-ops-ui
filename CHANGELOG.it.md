@@ -2,6 +2,27 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.244.0] — 2026-10-08
+
+**I risultati della scansione si leggono come un elenco, non come un muro: un annuncio = due righe, i segnali sono icone e una scansione da 700 righe è una tabella impaginata invece di una pagina da 37,000 px.**
+
+### Corretto
+
+- **Anatomia della riga.** Ogni annuncio viene reso come una riga delimitata a due linee: linea 1 il titolo, linea 2 `company · location · source · date · work-type`. Il badge di potenziamento, la fascia di title-fit e il punteggio di corrispondenza sono diventati icone con nomi accessibili localizzati e tooltip (i lettori di schermo leggono «Соответствие: сильное» / "Fit: strong", non un muro di parole); i badge di affidabilità e di trasferta si sono fusi nella stessa barra. Seniority e stipendio restano colonne ausiliarie solo desktop.
+- **Igiene del titolo.** Un segmento finale `| Germany | Remote` viene separato dal titolo e portato nella riga meta — consapevole di Unicode, e solo quando la coda è un vero marcatore di tipo di lavoro e il segmento centrale ha la forma di un luogo (le barre legittime come "C++ | Rust | Go Developer" non vengono mai separate).
+- **Niente più allargamento orizzontale.** Layout di tabella fisso, `min-width: 0`, titolo e meta ellissizzati su una riga con il testo completo nel tooltip: zero overflow della pagina e zero scorrimento interno della tabella a 1440 px e 390 px (la vecchia pagina traboccava di 675 px alla larghezza del telefono).
+- **Impaginazione.** I risultati vengono resi 50 per pagina (25/50/100/200 selezionabili) — una scansione da 700 righe ora è alta ~4,600 px invece di ~37,000 px, e il DOM contiene ~1,000 nodi invece di 5,500+.
+
+### Aggiunto
+
+- Test contrattuali di layout: la riga a due linee, i nomi accessibili delle icone (en + ru), il budget di nodi dell'impaginazione e la guardia su conteggio/ordine del title-fit girano nella suite browser — il redesign non può regredire in silenzio.
+
+### Note
+
+- Test **5036 → 5045** unitari (la suite browser ha guadagnato i contratti di layout), media di copertura **98.14 % righe / 89.34 % rami** (soglia 96/86).
+- Ciò che lo scanner trova, le formule di punteggio e `last-scan.json` restano intatti — il title-fit resta un'annotazione.
+- Non incluso in questa versione: lo stato dei filtri nell'URL-hash e la navigazione da tastiera tra le righe (follow-up); l'analisi di `5 lakhs INR` (preesistente).
+
 ## [1.243.2] — 2026-10-08
 
 ### Corretto

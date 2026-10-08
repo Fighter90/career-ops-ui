@@ -579,10 +579,7 @@ window.__I18N_DICT_UK = {
   'scan.chip.clear': "скинути",
   'scan.col.company': "Компанія",
   'scan.col.role': "Роль",
-  'scan.col.loc': "Локація",
-  'scan.col.type': "Тип",
   'scan.col.salary': "Зарплата",
-  'scan.col.source': "Джерело",
   'scan.col.reloc': "Релок.",
   'scan.trustTip': "Довіра",
   'scan.activeCo': "Активні компанії",
@@ -981,6 +978,11 @@ window.__I18N_DICT_UK = {
   'scan.titleFit.related': "частковий збіг",
   'scan.titleFit.weak': "слабкий збіг",
   'scan.titleFitTip': "Безкоштовна оцінка за ключовими словами: назва вакансії проти цільових ролей із профілю (config/profile.yml). Це не оцінювання — справжній бал A–F дає «Оцінити».",
+  // ── Scan redesign (v1.244.0, R-08) — accessible names for the row icons ──
+  'scan.fitIcon': "Відповідність: {band}",
+  'scan.boostIcon': "Буст від {by}",
+  'scan.scoreIcon': "Оцінка відповідності {score} зі 100",
+  'scan.postedMeta': "Деталі вакансії",
   // ── Пробна співбесіда 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "Пробна співбесіда",
   'mock.title': "Пробна співбесіда",

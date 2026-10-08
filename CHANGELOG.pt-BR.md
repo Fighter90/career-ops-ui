@@ -8,6 +8,27 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.244.0] — 2026-10-08
+
+**Os resultados do scan se leem como uma lista, não como um muro: uma vaga = duas linhas, os sinais viram ícones, e um scan de 700 linhas é uma tabela paginada em vez de uma página de 37,000 px.**
+
+### Corrigido
+
+- **Anatomia da linha.** Toda vaga é renderizada como uma linha delimitada de duas linhas: linha 1 o título, linha 2 `company · location · source · date · work-type`. O badge de boost, a faixa de title-fit e a pontuação de fit viraram ícones com nomes acessíveis localizados e tooltips (leitores de tela leem «Соответствие: сильное» / "Fit: strong", não um muro de palavras); os badges de confiança e de realocação se recolheram no mesmo trilho. Senioridade e salário continuam como colunas auxiliares apenas no desktop.
+- **Higiene do título.** Um segmento final `| Germany | Remote` é separado do título para a linha de metadados — consciente de Unicode, apenas quando a cauda é um marcador real de work-type e o segmento do meio tem forma de lugar (pipes legítimos como "C++ | Rust | Go Developer" nunca são separados).
+- **Fim do espalhamento horizontal.** Layout de tabela fixo, `min-width: 0`, título/meta de uma linha com ellipsis e o texto completo no tooltip: zero overflow da página e zero scroll interno da tabela em 1440 px e 390 px (a página antiga estourava 675 px na largura de celular).
+- **Paginação.** Os resultados são renderizados 50 por página (25/50/100/200 selecionável) — um scan de 700 linhas agora tem ~4,600 px de altura em vez de ~37,000 px, e o DOM mantém ~1,000 nós em vez de 5,500+.
+
+### Adicionado
+
+- Testes de contrato de layout: a linha de duas linhas, os nomes acessíveis dos ícones (en + ru), o orçamento de nós da paginação e a guarda de contagem/ordem do title-fit rodam na suíte de navegador — o redesign não pode regredir em silêncio.
+
+### Notas
+
+- Testes **5036 → 5045** unitários (a suíte de navegador ganhou os contratos de layout), média de cobertura **98.14 % linhas / 89.34 % branches** (piso 96/86).
+- O que o scanner encontra, as fórmulas de pontuação e o `last-scan.json` ficam intocados — o title-fit continua sendo apenas uma anotação.
+- Fora desta versão: o estado de filtros via hash de URL e a navegação de linhas por teclado (follow-up); a interpretação de `5 lakhs INR` (pré-existente).
+
 ## [1.243.2] — 2026-10-08
 
 ### Corrigido

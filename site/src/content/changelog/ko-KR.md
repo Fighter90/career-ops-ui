@@ -8,15 +8,37 @@
 
 ---
 
+## [1.244.0] — 2026-10-08
+
+**스캔 결과가 벽이 아니라 목록처럼 읽힙니다: 한 공고 = 두 줄, 신호는 아이콘, 700행 스캔은 37,000px 페이지 대신 페이지가 있는 표입니다.**
+
+### 수정
+
+- **행 구조.** 각 공고는 두 줄의 경계가 있는 행으로 렌더링됩니다: 1행은 제목, 2행은 `company · location · source · date · work-type`. 부스트 배지, 제목 적합도 밴드, 적합도 점수가 지역화된 접근 가능한 이름과 툴팁이 있는 아이콘이 되었습니다(스크린 리더는 단어의 벽이 아니라 «Соответствие: сильное» / "Fit: strong"을 읽습니다); 신뢰 및 재배치 배지도 같은 레일에 접혔습니다. 시니어리티와 급여는 데스크톱 전용 보조 열로 남습니다.
+- **제목 위생.** 뒤에 붙는 `| Germany | Remote` 세그먼트는 제목에서 메타 줄로 분리됩니다 — 유니코드 인식, 꼬리가 실제 근무 형태 마커이고 중간 세그먼트가 지역 형태일 때만 (「C++ | Rust | Go Developer」 같은 정당한 파이프는 절대 분리되지 않습니다).
+- **가로 번창 종료.** 고정 테이블 레이아웃, `min-width: 0`, 툴팁에 전체 텍스트가 있는 말줄임표 한 줄 제목/메타: 1440px와 390px에서 페이지 오버플로 0, 내부 테이블 스크롤 0 (이전 페이지는 모바일에서 675px 넘쳤습니다).
+- **페이지네이션.** 결과는 페이지당 50개로 렌더링됩니다(25/50/100/200 선택 가능) — 700행 스캔은 이제 ~37,000px 대신 ~4,600px이고 DOM은 5,500+ 대신 ~1,000 노드를 유지합니다.
+
+### 추가
+
+- **레이아웃 계약 테스트**: 두 줄 행, 아이콘의 접근 가능한 이름(en + ru), 페이지네이션 노드 예산, title-fit 카운트/순서 가드가 브라우저 스위트에서 실행됩니다 — 리디자인이 조용히 회귀할 수 없습니다.
+
+### 참고
+
+- 테스트 **5036 → 5045** 유닛, 브라우저 스위트에 레이아웃 계약 추가, 평균 커버리지 **98.14 % 라인 / 89.34 % 브랜치**(하한 96/86).
+- 스캐너가 찾는 것, 점수 공식, `last-scan.json`은 건드리지 않습니다 — title-fit은 어노테이션으로 남습니다.
+- 이 릴리스에 없음: URL 해시 필터 상태와 키보드 행 탐색(다음), `5 lakhs INR` 파싱(기존).
+
 ## [1.243.2] — 2026-10-08
 
-### Fixed
+### 수정
 
-- **Deployable release cut as v1.243.2.** The v1.243.1 tag was re-pointed after publishing, and the server's `git fetch --tags` correctly refuses to clobber an existing tag — so v1.243.1 was never deployable. This tag carries the identical tree (the tracker outcome-modal window-listener fix on top of v1.243.0) plus this version bump. Nothing else changed; the published npm 1.243.1 tarball already contained the fix.
-### Notes
+- **배포 가능한 릴리스가 v1.243.2로 잘렸습니다.** v1.243.1 태그는 게시 후 재지정되었고, 서버의 `git fetch --tags`는 기존 태그를 덮어쓰기를 올바르게 거부합니다 — 그래서 v1.243.1은 배포 가능하지 않았습니다. 이 태그는 동일한 트리(v1.243.0 기반의 트래커 결과-모달 window-리스너 수정)와 이 버전 상승을 담습니다. 다른 변경은 없습니다. 게시된 npm 1.243.1 타르볼에는 이미 수정이 포함되어 있습니다.
 
-- App code is identical to v1.243.1 — only the deployable tag is fresh (the server's `git fetch --tags` refused the re-pointed v1.243.1).
-- Deliberately not done: force-updating the server-side tag (published tags are never moved).
+### 참고
+
+- 앱 코드는 v1.243.1과 동일합니다 — 새로운 배포 가능 태그만 추가되었습니다(서버의 `git fetch --tags`가 재지정된 v1.243.1을 거부했습니다).
+- 의도적으로 하지 않음: 게시된 태그를 강제로 이동(서버 측 태그 강제 갱신 안 함).
 
 ## [1.243.1] — 2026-10-08
 

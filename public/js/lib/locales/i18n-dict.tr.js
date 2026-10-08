@@ -580,10 +580,7 @@ window.__I18N_DICT_TR = {
   'scan.chip.clear': "temizle",
   'scan.col.company': "Şirket",
   'scan.col.role': "Rol",
-  'scan.col.loc': "Konum",
-  'scan.col.type': "Tür",
   'scan.col.salary': "Maaş",
-  'scan.col.source': "Kaynak",
   'scan.col.reloc': "Taşınma",
   'scan.trustTip': "Güven",
   'scan.activeCo': "Aktif şirketler",
@@ -982,6 +979,11 @@ window.__I18N_DICT_TR = {
   'scan.titleFit.related': "ilgili uyum",
   'scan.titleFit.weak': "zayıf uyum",
   'scan.titleFitTip': "Ücretsiz anahtar kelime düzeyinde tahmin: ilan başlığı ile profilinizdeki hedef roller (config/profile.yml) karşılaştırılır. Bir değerlendirme değildir — gerçek A–F uyum puanını yine Değerlendir verir.",
+  // ── Scan redesign (v1.244.0, R-08) — accessible names for the row icons ──
+  'scan.fitIcon': "Uyum: {band}",
+  'scan.boostIcon': "{by} ile artırıldı",
+  'scan.scoreIcon': "Eşleşme puanı 100 üzerinden {score}",
+  'scan.postedMeta': "İlan ayrıntıları",
   // ── Deneme mülakatı 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "Deneme mülakatı",
   'mock.title': "Deneme mülakatı",
