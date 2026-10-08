@@ -76,10 +76,14 @@
     return null;
   }
 
-  /** Whole days between an ISO date (YYYY-MM-DD) and `now` (ms, default now); null if unparseable. */
+  /** Whole days between an ISO date (YYYY-MM-DD, or a full ISO timestamp —
+   *  the API serves both shapes) and `now` (ms, default now); null if
+   *  unparseable. */
   function daysSince(iso, now) {
-    if (!iso || typeof iso !== 'string' || !/^\d{4}-\d{2}-\d{2}$/.test(iso)) return null;
-    var t = Date.parse(iso + 'T00:00:00Z');
+    if (!iso || typeof iso !== 'string') return null;
+    var dayOnly = /^\d{4}-\d{2}-\d{2}$/.test(iso);
+    if (!dayOnly && !/^\d{4}-\d{2}-\d{2}T/.test(iso)) return null;
+    var t = Date.parse(dayOnly ? iso + 'T00:00:00Z' : iso);
     if (Number.isNaN(t)) return null;
     var ref = typeof now === 'number' ? now : Date.now();
     return Math.floor((ref - t) / 86400000);

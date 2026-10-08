@@ -144,7 +144,7 @@ window.ScanResults = (function () {
   // Developer") and non-place middle segments ("| 2nd line support |") never
   // split. Pure — unit-tested in tests/scan-title-split.test.mjs.
   const WORK_TAIL_RE = /^\s*(?:remote|hybrid|onsite|on-site|удал[её]нн\p{L}*|гибрид\p{L}*|офис\p{L}*|дистанц\p{L}*)\s*(?:\(|$)/iu;
-  function splitTitleCountry(title) {
+  function splitTitleCountry(title, isPlace) {
     const raw = String(title == null ? '' : title).replace(/\s+/g, ' ').trim();
     const last = raw.lastIndexOf('|');
     if (last === -1) return { title: raw, country: '' };
@@ -160,6 +160,13 @@ window.ScanResults = (function () {
     // (any script) and keeps letter/punctuation shape. Digits, pipes or
     // role fragments ("2nd line support") mean this was never a country.
     if (!clean || !country || !/^\p{L}[\p{L}\s.,'’()–-]*$/u.test(country)) {
+      return { title: raw, country: '' };
+    }
+    // v1.244.1 — shape alone is not enough: "Go Developer | Onsite" is
+    // place-shaped but is a ROLE fragment. When the caller can say what a
+    // country is (the window.Countries resolver at render time), demand it
+    // agrees before lifting the segment out of the title.
+    if (typeof isPlace === 'function' && !isPlace(country)) {
       return { title: raw, country: '' };
     }
     return { title: clean, country };
@@ -357,7 +364,7 @@ window.ScanResults = (function () {
         // can trace it back to portals.yml (tooltip unchanged from v1.132).
         signals.push(c('span', {
           className: 'scan-icon scan-icon--boost', role: 'img',
-          'aria-label': t('scan.boostIcon', 'Boosted'),
+          'aria-label': t('scan.boostIcon', 'Boosted').replace('{by}', r._boostedBy || '?'),
           title: t('scan.boostedBy', 'Boosted by') + ': ' + (r._boostedBy || '?'),
         }, '⬆'));
       }
@@ -372,7 +379,7 @@ window.ScanResults = (function () {
           : t('scan.titleFit.weak', 'weak fit');
         signals.push(c('span', {
           className: 'scan-icon scan-icon--fit scan-icon--' + band, role: 'img',
-          'aria-label': t('scan.fitIcon', 'Fit'),
+          'aria-label': t('scan.fitIcon', 'Fit').replace('{band}', bandWord),
           title: bandWord + ' · ' + t('scan.titleFitTip', "Free keyword-level estimate: posting title vs your profile's target roles (config/profile.yml). Not an evaluation — Evaluate still gives the real A–F fit score."),
         }, band === 'strong' ? '◆' : band === 'related' ? '◇' : '○'));
       }
@@ -389,7 +396,7 @@ window.ScanResults = (function () {
           ].filter(Boolean).join(' · ');
           signals.push(c('span', {
             className: 'scan-icon scan-icon--score', role: 'img',
-            'aria-label': t('scan.scoreIcon', 'Fit score'),
+            'aria-label': t('scan.scoreIcon', 'Fit score').replace('{score}', String(fit.score)),
             title: t('scan.fitTip', 'Fit to what you want') + (tip ? ' · ' + tip : ''),
           }, '◎ ' + fit.score));
         }
@@ -415,7 +422,12 @@ window.ScanResults = (function () {
       // Scope 2 — title hygiene: a trailing "| Country | Remote-ish" segment
       // is split off; line 1 shows the role only. title= keeps the FULL
       // original text (the truncation + split tooltip).
-      const split = splitTitleCountry(r.title);
+      // Countries.detectCountry is intentionally conservative ("never
+      // guesses") — exactly the contract this split needs: a segment it
+      // cannot confidently map to a country stays in the title.
+      const isPlace = (name) => !!(window.Countries && window.Countries.detectCountry
+        && window.Countries.detectCountry(name));
+      const split = splitTitleCountry(r.title, isPlace);
       const fullTitle = r.title || split.title;
       // v1.243.0 — only a real http(s) URL becomes a link target: a crafted
       // `javascript:` / `data:` url (or a missing one) used to be written
