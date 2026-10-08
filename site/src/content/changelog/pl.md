@@ -9,6 +9,14 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.244.1] — 2026-10-08
+
+### Fixed
+
+- **Scan icons announce real values.** The boost/fit/score icons' accessible names leaked the raw dict templates ("Fit: {band}", "Boosted by {by}") — `{band}`/`{by}`/`{score}` are now substituted (band word, booster keyword, numeric score). [HIGH a11y, caught live in the v1.244.0 regression round]
+- **Title pipes split correctly.** A 4-segment title like «C++ | Rust | Go Developer | Onsite» no longer lifts "Go Developer" out as a "country" — the split demands the segment resolves to a real country (conservative `Countries.detectCountry`).
+- **Meta dates render for every row.** `daysSince` accepted date-only ISO, but the API serves full timestamps for ~83% of dated rows — those rows showed no date segment.
+
 ## [1.244.0] — 2026-10-08
 
 **Wyniki skanu czytają się jak lista, a nie jak ściana: jedna oferta = dwa wiersze, sygnały to ikony, a skan 700 ofert to stronicowana tabela zamiast strony o wysokości 37,000 px.**
@@ -34,7 +42,7 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 
 ### Naprawiono
 
-- **Deployable release cut as v1.243.2.** The v1.243.1 tag was re-pointed after publishing, and the server's `git fetch --tags` correctly refuses to clobber an existing tag — so v1.243.1 was never deployable. This tag carries the identical tree (the tracker outcome-modal window-listener fix on top of v1.243.0) plus this version bump. Nothing else changed; the published npm 1.243.1 tarball already contained the fix.
+- **Wersja wdrożeniowa wycięta jako v1.243.2.** Tag git v1.243.1 został przepięty po publikacji, a `git fetch --tags` na serwerze poprawnie odmawia nadpisania istniejącego tagu — więc v1.243.1 nigdy nie było wdrożeniowe. Ten tag niesie identyczne drzewo (poprawkę window-listenera modala na bazie v1.243.0) plus to podniesienie wersji. Nic więcej się nie zmieniło; opublikowany tarball npm 1.243.1 już zawierał poprawkę.
 ### Uwagi
 
 - Kod aplikacji jest identyczny z v1.243.1 — nowa jest tylko tag wdrożeniowy (`git fetch --tags` na serwerze odrzucił przepiętą v1.243.1).

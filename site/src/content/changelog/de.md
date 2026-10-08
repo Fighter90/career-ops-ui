@@ -2,6 +2,14 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.244.1] — 2026-10-08
+
+### Fixed
+
+- **Scan icons announce real values.** The boost/fit/score icons' accessible names leaked the raw dict templates ("Fit: {band}", "Boosted by {by}") — `{band}`/`{by}`/`{score}` are now substituted (band word, booster keyword, numeric score). [HIGH a11y, caught live in the v1.244.0 regression round]
+- **Title pipes split correctly.** A 4-segment title like «C++ | Rust | Go Developer | Onsite» no longer lifts "Go Developer" out as a "country" — the split demands the segment resolves to a real country (conservative `Countries.detectCountry`).
+- **Meta dates render for every row.** `daysSince` accepted date-only ISO, but the API serves full timestamps for ~83% of dated rows — those rows showed no date segment.
+
 ## [1.244.0] — 2026-10-08
 
 **Die Scan-Ergebnisse lesen sich wie eine Liste, nicht wie eine Wand: eine Stelle = zwei Zeilen, die Signale sind Icons, und ein 700-Zeilen-Scan ist eine paginierte Tabelle statt einer 37,000-px-Seite.**
@@ -27,7 +35,7 @@
 
 ### Behoben
 
-- **Deployable release cut as v1.243.2.** The v1.243.1 tag was re-pointed after publishing, and the server's `git fetch --tags` correctly refuses to clobber an existing tag — so v1.243.1 was never deployable. This tag carries the identical tree (the tracker outcome-modal window-listener fix on top of v1.243.0) plus this version bump. Nothing else changed; the published npm 1.243.1 tarball already contained the fix.
+- **Deploybare Version als v1.243.2 geschnitten.** Der Git-Tag v1.243.1 wurde nach der Veröffentlichung umgepunktet, und das `git fetch --tags` des Servers verweigert korrekt das Überschreiben eines vorhandenen Tags — deshalb war v1.243.1 nie deploybar. Dieses Tag trägt den identischen Baum (der Window-Listener-Fix des Modals auf Basis von v1.243.0) plus diese Versionsanhebung. Sonst hat sich nichts geändert; das npm-1.243.1-Tarball enthielt den Fix bereits.
 ### Anmerkungen
 
 - Der App-Code ist identisch mit v1.243.1 — nur das deploybare Tag ist neu (das `git fetch --tags` des Servers hat die umgepunktete v1.243.1 abgelehnt).

@@ -8,6 +8,14 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.244.1] — 2026-10-08
+
+### Fixed
+
+- **Scan icons announce real values.** The boost/fit/score icons' accessible names leaked the raw dict templates ("Fit: {band}", "Boosted by {by}") — `{band}`/`{by}`/`{score}` are now substituted (band word, booster keyword, numeric score). [HIGH a11y, caught live in the v1.244.0 regression round]
+- **Title pipes split correctly.** A 4-segment title like «C++ | Rust | Go Developer | Onsite» no longer lifts "Go Developer" out as a "country" — the split demands the segment resolves to a real country (conservative `Countries.detectCountry`).
+- **Meta dates render for every row.** `daysSince` accepted date-only ISO, but the API serves full timestamps for ~83% of dated rows — those rows showed no date segment.
+
 ## [1.244.0] — 2026-10-08
 
 **Scan-resultaterne læses som en liste, ikke en væg: ét opslag = to linjer, signalerne er ikoner, og en scanning på 700 rækker er en pagineret tabel i stedet for en side på 37,000 px.**
@@ -33,7 +41,7 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ### Rettet
 
-- **Deployable release cut as v1.243.2.** The v1.243.1 tag was re-pointed after publishing, and the server's `git fetch --tags` correctly refuses to clobber an existing tag — so v1.243.1 was never deployable. This tag carries the identical tree (the tracker outcome-modal window-listener fix on top of v1.243.0) plus this version bump. Nothing else changed; the published npm 1.243.1 tarball already contained the fix.
+- **Udrulningsbar version skåret som v1.243.2.** Git-tagget v1.243.1 blev flyttet efter udgivelsen, og serverens `git fetch --tags` nægter korrekt at overskrive et eksisterende tag — så v1.243.1 var aldrig udrulningsbar. Dette tag bærer det identiske træ (window-listener-fixet til modalen på basis af v1.243.0) plus denne versionsforøgelse. Intet andet ændrede sig; npm-1.243.1-tarball'en containede allerede fixet.
 ### Noter
 
 - App-koden er identisk med v1.243.1 — kun den deploybare tag er ny (serverens `git fetch --tags` afviste den ompointed v1.243.1).

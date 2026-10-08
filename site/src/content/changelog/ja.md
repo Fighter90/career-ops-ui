@@ -8,6 +8,14 @@
 
 ---
 
+## [1.244.1] — 2026-10-08
+
+### Fixed
+
+- **Scan icons announce real values.** The boost/fit/score icons' accessible names leaked the raw dict templates ("Fit: {band}", "Boosted by {by}") — `{band}`/`{by}`/`{score}` are now substituted (band word, booster keyword, numeric score). [HIGH a11y, caught live in the v1.244.0 regression round]
+- **Title pipes split correctly.** A 4-segment title like «C++ | Rust | Go Developer | Onsite» no longer lifts "Go Developer" out as a "country" — the split demands the segment resolves to a real country (conservative `Countries.detectCountry`).
+- **Meta dates render for every row.** `daysSince` accepted date-only ISO, but the API serves full timestamps for ~83% of dated rows — those rows showed no date segment.
+
 ## [1.244.0] — 2026-10-08
 
 **スキャン結果が壁ではなくリストのように読めます: 1 求人 = 2 行、シグナルはアイコン、700 行のスキャンは 37,000 px のページの代わりにページ分割されたテーブルに。**
@@ -33,7 +41,7 @@
 
 ### 修正
 
-- **Deployable release cut as v1.243.2.** The v1.243.1 tag was re-pointed after publishing, and the server's `git fetch --tags` correctly refuses to clobber an existing tag — so v1.243.1 was never deployable. This tag carries the identical tree (the tracker outcome-modal window-listener fix on top of v1.243.0) plus this version bump. Nothing else changed; the published npm 1.243.1 tarball already contained the fix.
+- **デプロイ可能なリリースを v1.243.2 として切り出し。** v1.243.1 の git タグは公開後に打ち直され、サーバーの `git fetch --tags` は既存タグの上書きを正しく拒否します — そのため v1.243.1 は一度もデプロイ可能ではありませんでした。このタグは同一のツリー(v1.243.0 ベースのモーダル window-リスナー修正)とこのバージョンアップを含みます。他に変更はありません。公開済みの npm 1.243.1 ターボールにはすでに修正が含まれていました。
 ### 備考
 
 - アプリのコードは v1.243.1 と同一 — 新しいデプロイ可能タグだけが追加(サーバーの `git fetch --tags` が打ち直された v1.243.1 を拒否しました)。

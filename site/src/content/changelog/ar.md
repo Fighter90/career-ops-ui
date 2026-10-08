@@ -8,6 +8,14 @@
 
 ---
 
+## [1.244.1] — 2026-10-08
+
+### Fixed
+
+- **Scan icons announce real values.** The boost/fit/score icons' accessible names leaked the raw dict templates ("Fit: {band}", "Boosted by {by}") — `{band}`/`{by}`/`{score}` are now substituted (band word, booster keyword, numeric score). [HIGH a11y, caught live in the v1.244.0 regression round]
+- **Title pipes split correctly.** A 4-segment title like «C++ | Rust | Go Developer | Onsite» no longer lifts "Go Developer" out as a "country" — the split demands the segment resolves to a real country (conservative `Countries.detectCountry`).
+- **Meta dates render for every row.** `daysSince` accepted date-only ISO, but the API serves full timestamps for ~83% of dated rows — those rows showed no date segment.
+
 ## [1.244.0] — 2026-10-08
 
 **نتائج المسح تُقرأ كقائمة لا كجدار: كل وظيفة = سطران، والإشارات أيقونات، والمسح من 700 صف جدول مُصفّح بدل صفحة بعرض 37,000 بكسل.**
@@ -33,7 +41,7 @@
 
 ### تم الإصلاح
 
-- **Deployable release cut as v1.243.2.** The v1.243.1 tag was re-pointed after publishing, and the server's `git fetch --tags` correctly refuses to clobber an existing tag — so v1.243.1 was never deployable. This tag carries the identical tree (the tracker outcome-modal window-listener fix on top of v1.243.0) plus this version bump. Nothing else changed; the published npm 1.243.1 tarball already contained the fix.
+- **نسخة النشر القابلة للنشر قُطعت كـ v1.243.2.** وسم git الخاص بـ v1.243.1 أعيد توجيهه بعد النشر، و`git fetch --tags` على الخادم يرفض بشكل صحيح الكتابة فوق وسم موجود — لذلك لم يكن v1.243.1 قابلاً للنشر إطلاقًا. هذا الوسم يحمل الشجرة المطابقة (إصلاح window-ليسنر النافذة على أساس v1.243.0) بالإضافة إلى هذه الزيادة في الإصدار. لم يتغير أي شيء آخر؛ حزمة npm 1.243.1 احتوت الإصلاح بالفعل.
 ### ملاحظات
 
 - كود التطبيق مطابق لـ v1.243.1 — الجديد هو وسم النشر فقط (رفض `git fetch --tags` على الخادم الوسم v1.243.1 المُعاد توجيهه).
