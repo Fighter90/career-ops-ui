@@ -4,7 +4,9 @@
  * #content subtree the router replaces, so after opening it any nav click
  * left it mounted over the new view intercepting every pointer event.
  *
- * The fix arms a document-level hashchange guard owned by the modal
+ * The fix arms a WINDOW-level hashchange guard owned by the modal — the
+ * event fires at window; a document-level listener never receives it (this
+ * exact bug shipped in v1.243.0 and was caught live on production).
  * (tracker.js `armTrackerModalNavGuard`), detached via UI.modal's onClose.
  * The guard is a top-level function in a browser-only view → run the REAL
  * source in a vm context against fakes (help-toc-spy-behavior pattern):
@@ -56,7 +58,7 @@ function fakeDocument() {
 }
 
 function makeCtx(doc, routerCurrent, ui) {
-  const ctx = vm.createContext({ document: doc, Router: { current: routerCurrent }, UI: ui });
+  const ctx = vm.createContext({ window: doc, Router: { current: routerCurrent }, UI: ui });
   vm.runInContext(sliceFn(TRACKER, 'function armTrackerModalNavGuard'), ctx);
   return ctx;
 }

@@ -598,7 +598,10 @@ function withFocusPreserved(container, mutate) {
 // the app-chrome #modal node, NOT of the #content subtree the router replaces
 // on navigation: after opening it, ANY nav click left the modal mounted over
 // the new view, intercepting every pointer event (only × / Esc still worked).
-// Arm a document-level hashchange guard owned by THIS modal instance:
+// Arm a window-level hashchange guard owned by THIS modal instance (the
+// event fires at window — a document-level listener never receives it,
+// which is exactly how the first attempt shipped dead (v1.243.0 regression,
+// caught live on prod):
 // navigating away from #/tracker closes it. UI.modal's onClose (fired on every
 // dismissal path — × / Esc / backdrop / programmatic close) removes the
 // guard, so a modal a later view opens is never closed by a stale listener.
@@ -609,8 +612,8 @@ function armTrackerModalNavGuard() {
     if (cur && cur.name === 'tracker') return; // same-view re-render (params/query), not a real navigation
     UI.closeModal();
   };
-  const detach = () => document.removeEventListener('hashchange', onHashChange);
-  document.addEventListener('hashchange', onHashChange);
+  const detach = () => window.removeEventListener('hashchange', onHashChange);
+  window.addEventListener('hashchange', onHashChange);
   return detach;
 }
 
