@@ -10,6 +10,19 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.244.1] — 2026-10-08
+
+### Corrigé
+
+- **Scan icons announce real values.** The boost/fit/score icons' accessible names leaked the raw dict templates ("Fit: {band}", "Boosted by {by}") — `{band}`/`{by}`/`{score}` are now substituted (band word, booster keyword, numeric score). [HIGH a11y, caught live in the v1.244.0 regression round]
+- **Title pipes split correctly.** A 4-segment title like «C++ | Rust | Go Developer | Onsite» no longer lifts "Go Developer" out as a "country" — the split demands the segment resolves to a real country (conservative `Countries.detectCountry`).
+- **Meta dates render for every row.** `daysSince` accepted date-only ISO, but the API serves full timestamps for ~83% of dated rows — those rows showed no date segment.
+
+### Notes
+
+- Tout le reste de #/scan est identique à v1.243.2... v1.244.0 — seules les trois corrections ci-dessus ont changé.
+- Délibérément non fait : état des filtres dans le hash de l'URL, navigation clavier des lignes et l'analyse de `5 lakhs INR` (suivis existants).
+
 ## [1.244.0] — 2026-10-08
 
 **Les résultats du scan se lisent comme une liste, pas un mur : une offre = deux lignes, les signaux sont des icônes, et un scan de 700 lignes devient un tableau paginé au lieu d'une page de 37,000 px.**

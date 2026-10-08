@@ -10,6 +10,14 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 
 ---
 
+## [1.244.1] — 2026-10-08
+
+### Fixed
+
+- **Scan icons announce real values.** The boost/fit/score icons' accessible names leaked the raw dict templates ("Fit: {band}", "Boosted by {by}") — `{band}`/`{by}`/`{score}` are now substituted (band word, booster keyword, numeric score). [HIGH a11y, caught live in the v1.244.0 regression round]
+- **Title pipes split correctly.** A 4-segment title like «C++ | Rust | Go Developer | Onsite» no longer lifts "Go Developer" out as a "country" — the split demands the segment resolves to a real country (conservative `Countries.detectCountry`).
+- **Meta dates render for every row.** `daysSince` accepted date-only ISO, but the API serves full timestamps for ~83% of dated rows — those rows showed no date segment.
+
 ## [1.244.0] — 2026-10-08
 
 **Les résultats du scan se lisent comme une liste, pas un mur : une offre = deux lignes, les signaux sont des icônes, et un scan de 700 lignes devient un tableau paginé au lieu d'une page de 37,000 px.**
@@ -35,7 +43,7 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 
 ### Corrigé
 
-- **Deployable release cut as v1.243.2.** The v1.243.1 tag was re-pointed after publishing, and the server's `git fetch --tags` correctly refuses to clobber an existing tag — so v1.243.1 was never deployable. This tag carries the identical tree (the tracker outcome-modal window-listener fix on top of v1.243.0) plus this version bump. Nothing else changed; the published npm 1.243.1 tarball already contained the fix.
+- **Version déployable découpée en v1.243.2.** Le tag git v1.243.1 a été réorienté après publication, et le `git fetch --tags` du serveur refuse à juste titre d'écraser un tag existant — v1.243.1 n'a donc jamais été déployable. Ce tag porte l'arbre identique (le correctif de listener window de la modale sur v1.243.0) plus cette montée de version. Rien d'autre n'a changé ; le tarball npm 1.243.1 contenait déjà le correctif.
 ### Notes
 
 - Le code de l'application est identique à v1.243.1 — seul le tag déployable est nouveau (le `git fetch --tags` du serveur a refusé la v1.243.1 réorientée).

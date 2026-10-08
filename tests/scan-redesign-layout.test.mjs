@@ -205,14 +205,27 @@ test('AC2: boost/fit/score are icons with accessible names (en)', { skip: SKIP }
       assert.ok(count > 0,
         `no "${SEL.icons[name]}" elements rendered — boost/fit/score must be icons per the contract`);
     }
-    for (const [name, aria, key, mapped] of [
-      ['boost', m.boostAria, SEL.keys.boostIcon, m.tBoost],
-      ['fit', m.fitAria, SEL.keys.fitIcon, m.tFit],
-      ['score', m.scoreAria, SEL.keys.scoreIcon, m.tScore],
+    // The dict templates carry {band}/{by}/{score} placeholders and the view
+    // interpolates them: the accessible name must be the SUBSTITUTED text —
+    // no brace tokens reach assistive tech, the key must not fall back to
+    // itself, and the name must be strictly longer than the template's
+    // leading prefix (the placeholder was replaced with a real value, not
+    // stripped). No fixture-value coupling: the contract is about
+    // substitution, not about specific booster/band/score literals.
+    const key_of = { boost: SEL.keys.boostIcon, fit: SEL.keys.fitIcon, score: SEL.keys.scoreIcon };
+    for (const [name, aria, mapped] of [
+      ['boost', m.boostAria, m.tBoost],
+      ['fit', m.fitAria, m.tFit],
+      ['score', m.scoreAria, m.tScore],
     ]) {
       assert.ok(aria, `the ${name} icon has no aria-label`);
-      assert.equal(aria, mapped, `the ${name} icon aria-label must be I18n.t('${key}')`);
-      assert.notEqual(mapped, key, `i18n key '${key}' is unmapped (t() returned the key itself)`);
+      assert.notEqual(mapped, key_of[name], `i18n key for ${name} is unmapped (t() returned the key itself)`);
+      const prefix = mapped.split('{')[0].trim();
+      assert.ok(prefix.length > 0,
+        `the ${name} dict template should start with a word before its placeholder (got "${mapped}")`);
+      assert.ok(!aria.includes('{'), `the ${name} icon aria-label leaks a placeholder: "${aria}"`);
+      assert.ok(aria.startsWith(prefix), `the ${name} icon aria-label must start with the dict prefix "${prefix}" — got "${aria}"`);
+      assert.ok(aria.length > prefix.length, `the ${name} icon aria-label carries no interpolated value: "${aria}"`);
     }
   } finally {
     await context.close();
@@ -227,12 +240,21 @@ test('AC2: icon accessible names are localized in ru', { skip: SKIP }, async () 
   const { context, page } = await openScan({ lang: 'ru' });
   try {
     const m = await measureAC2(page);
-    assert.equal(m.boostAria, dict[SEL.keys.boostIcon].ru,
-      `boost icon aria-label must be the ru value of '${SEL.keys.boostIcon}'`);
-    assert.equal(m.fitAria, dict[SEL.keys.fitIcon].ru,
-      `fit icon aria-label must be the ru value of '${SEL.keys.fitIcon}'`);
-    assert.equal(m.scoreAria, dict[SEL.keys.scoreIcon].ru,
-      `score icon aria-label must be the ru value of '${SEL.keys.scoreIcon}'`);
+    // Same substituted-name contract as the EN case: no brace tokens, the name
+    // starts with the ru template's leading prefix (asserted non-empty so the
+    // check cannot pass vacuously) and carries the interpolated value.
+    const prefix = (k) => dict[k].ru.split('{')[0].trim();
+    for (const [name, aria, key] of [
+      ['boost', m.boostAria, SEL.keys.boostIcon],
+      ['fit', m.fitAria, SEL.keys.fitIcon],
+      ['score', m.scoreAria, SEL.keys.scoreIcon],
+    ]) {
+      const pfx = prefix(key);
+      assert.ok(pfx.length > 0, `the ru template '${key}' starts with a placeholder — assert the contract against a worded template`);
+      assert.ok(!aria.includes('{'), `the ${name} icon aria-label leaks a placeholder: "${aria}"`);
+      assert.ok(aria.startsWith(pfx), `the ${name} icon aria-label must start with the ru prefix "${pfx}" — got "${aria}"`);
+      assert.ok(aria.length > pfx.length, `the ${name} icon aria-label carries no interpolated value: "${aria}"`);
+    }
   } finally {
     await context.close();
   }

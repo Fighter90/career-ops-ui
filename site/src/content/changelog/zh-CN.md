@@ -9,6 +9,14 @@
 ---
 
 
+## [1.244.1] — 2026-10-08
+
+### Fixed
+
+- **Scan icons announce real values.** The boost/fit/score icons' accessible names leaked the raw dict templates ("Fit: {band}", "Boosted by {by}") — `{band}`/`{by}`/`{score}` are now substituted (band word, booster keyword, numeric score). [HIGH a11y, caught live in the v1.244.0 regression round]
+- **Title pipes split correctly.** A 4-segment title like «C++ | Rust | Go Developer | Onsite» no longer lifts "Go Developer" out as a "country" — the split demands the segment resolves to a real country (conservative `Countries.detectCountry`).
+- **Meta dates render for every row.** `daysSince` accepted date-only ISO, but the API serves full timestamps for ~83% of dated rows — those rows showed no date segment.
+
 ## [1.244.0] — 2026-10-08
 
 **扫描结果读起来像一份列表，而不是一堵墙：一个职位 = 两行，信号变成图标，700 行的扫描是一张分页表格，而不是一页 37,000 px 的长页。**
@@ -34,7 +42,7 @@
 
 ### 修复
 
-- **Deployable release cut as v1.243.2.** The v1.243.1 tag was re-pointed after publishing, and the server's `git fetch --tags` correctly refuses to clobber an existing tag — so v1.243.1 was never deployable. This tag carries the identical tree (the tracker outcome-modal window-listener fix on top of v1.243.0) plus this version bump. Nothing else changed; the published npm 1.243.1 tarball already contained the fix.
+- **可部署版本切为 v1.243.2。** v1.243.1 的 git 标签在发布后被重新指向，服务器的 `git fetch --tags` 正确拒绝覆盖已有标签——因此 v1.243.1 从未能部署。此标签携带完全相同的代码树（基于 v1.243.0 的弹窗 window-监听修复）加此次版本号提升。没有其他改动；已发布的 npm 1.243.1 压缩包已包含该修复。
 ### 备注
 
 - 应用代码与 v1.243.1 完全相同——只是部署用的标签是新的（服务器的 `git fetch --tags` 拒绝了重新指向的 v1.243.1）。

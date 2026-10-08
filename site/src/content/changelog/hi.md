@@ -2,6 +2,14 @@
 
 > यह परिवर्तन-सूची v1.122.0 से शुरू होती है — वह संस्करण जिसमें हिन्दी स्थानीयकरण जोड़ा गया। पिछले संस्करणों के लिए [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md) देखें।
 
+## [1.244.1] — 2026-10-08
+
+### Fixed
+
+- **Scan icons announce real values.** The boost/fit/score icons' accessible names leaked the raw dict templates ("Fit: {band}", "Boosted by {by}") — `{band}`/`{by}`/`{score}` are now substituted (band word, booster keyword, numeric score). [HIGH a11y, caught live in the v1.244.0 regression round]
+- **Title pipes split correctly.** A 4-segment title like «C++ | Rust | Go Developer | Onsite» no longer lifts "Go Developer" out as a "country" — the split demands the segment resolves to a real country (conservative `Countries.detectCountry`).
+- **Meta dates render for every row.** `daysSince` accepted date-only ISO, but the API serves full timestamps for ~83% of dated rows — those rows showed no date segment.
+
 ## [1.244.0] — 2026-10-08
 
 **स्कैन परिणाम अब दीवार नहीं, सूची जैसे पढ़ते हैं: एक पोस्टिंग = दो पंक्तियाँ, सिग्नल आइकन हैं, और 700-पंक्ति का स्कैन 37,000-px पेज की जगह एक पेजिनेटेड तालिका है।**
@@ -27,7 +35,7 @@
 
 ### ठीक किया गया
 
-- **Deployable release cut as v1.243.2.** The v1.243.1 tag was re-pointed after publishing, and the server's `git fetch --tags` correctly refuses to clobber an existing tag — so v1.243.1 was never deployable. This tag carries the identical tree (the tracker outcome-modal window-listener fix on top of v1.243.0) plus this version bump. Nothing else changed; the published npm 1.243.1 tarball already contained the fix.
+- **डिप्लॉयएबल रिलीज़ v1.243.2 के रूप में कटा।** v1.243.1 का git टैग प्रकाशन के बाद फिर से पॉइंट किया गया, और सर्वर का `git fetch --tags` मौजूदा टैग को अधिलेखित करने से सही ढंग से इनकार करता है — इसलिए v1.243.1 कभी डिप्लॉयएबल नहीं था। यह टैग समान ट्री (v1.243.0 आधारित मोडल window-लिसनर फ़िक्स) और यह वर्ज़न बढ़ोतरी लाता है। कोई और बदलाव नहीं; प्रकाशित npm 1.243.1 टारबॉल में फ़िक्स पहले से था।
 ### टिप्पणियाँ
 
 - ऐप कोड v1.243.1 के समान है — केवल डिप्लॉय योग्य टैग नया है (सर्वर के `git fetch --tags` ने फिर से पॉइंट की गई v1.243.1 को अस्वीकार किया)।

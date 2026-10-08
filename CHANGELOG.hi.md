@@ -2,6 +2,19 @@
 
 > यह परिवर्तन-सूची v1.122.0 से शुरू होती है — वह संस्करण जिसमें हिन्दी स्थानीयकरण जोड़ा गया। पिछले संस्करणों के लिए [🇬🇧 CHANGELOG.md](CHANGELOG.md) देखें।
 
+## [1.244.1] — 2026-10-08
+
+### ठीक किया गया
+
+- **Scan icons announce real values.** The boost/fit/score icons' accessible names leaked the raw dict templates ("Fit: {band}", "Boosted by {by}") — `{band}`/`{by}`/`{score}` are now substituted (band word, booster keyword, numeric score). [HIGH a11y, caught live in the v1.244.0 regression round]
+- **Title pipes split correctly.** A 4-segment title like «C++ | Rust | Go Developer | Onsite» no longer lifts "Go Developer" out as a "country" — the split demands the segment resolves to a real country (conservative `Countries.detectCountry`).
+- **Meta dates render for every row.** `daysSince` accepted date-only ISO, but the API serves full timestamps for ~83% of dated rows — those rows showed no date segment.
+
+### टिप्पणियाँ
+
+- #/scan का बाकी सब v1.244.0 के समान है — केवल ऊपर के तीन सुधार बदले गए हैं।
+- जानबूझकर नहीं किया: URL-hash फ़िल्टर स्थिति, कीबोर्ड पंक्ति नेविगेशन और `5 lakhs INR` पार्सिंग (मौजूदा फ़ॉलो-अप)।
+
 ## [1.244.0] — 2026-10-08
 
 **स्कैन परिणाम अब दीवार नहीं, सूची जैसे पढ़ते हैं: एक पोस्टिंग = दो पंक्तियाँ, सिग्नल आइकन हैं, और 700-पंक्ति का स्कैन 37,000-px पेज की जगह एक पेजिनेटेड तालिका है।**
