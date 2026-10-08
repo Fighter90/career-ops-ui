@@ -237,7 +237,10 @@ Career (rosyjskie portale, jeśli włączone).
 **Krok 10 — Po zakończeniu skanowania przejrzyj wyniki.** Kliknij dowolny
 tag firmy, aby filtrować; kliknij ikonę ↗, aby otworzyć stronę z ofertami
 firmy w nowej zakładce. Każda oferta, która przeszła filtr tytułu, jest kolejkowana
-w Pipeline.
+w Pipeline. Każdy wiersz wyników mieści ofertę w dwóch zwięzłych liniach —
+tytuł na górze, a pod nim linia szczegółów z małymi ikonami (dopasowanie
+tytułu, promowanie za seniority, wynik dopasowania, źródło i data) —
+a długie listy wyników są stronicowane.
 
 ### D. Ocenianie ofert (~30 sekund na JD)
 

@@ -256,7 +256,11 @@ Career (sites russes si activés).
 **Étape 10 — Quand le scan se termine, examinez les résultats.** Cliquez
 sur un tag d'entreprise pour filtrer ; cliquez sur l'icône ↗ pour ouvrir la
 page carrières de l'entreprise dans un nouvel onglet. Chaque offre qui a
-survécu au filtre de titre est mise en file dans le Pipeline.
+survécu au filtre de titre est mise en file dans le Pipeline. Chaque ligne
+de résultat tient l'offre sur deux lignes compactes — le titre en haut,
+une ligne de détails en petites icônes en dessous (adéquation du titre,
+boost d'ancienneté, score de correspondance, source et date) — et les
+longues listes de résultats sont paginées.
 
 ### D. Score the offers (~30 secondes par offre)
 

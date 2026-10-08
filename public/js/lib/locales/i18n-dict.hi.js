@@ -582,10 +582,7 @@ window.__I18N_DICT_HI = {
   'scan.chip.clear': "साफ़ करें",
   'scan.col.company': "कंपनी",
   'scan.col.role': "भूमिका",
-  'scan.col.loc': "स्थान",
-  'scan.col.type': "प्रकार",
   'scan.col.salary': "वेतन",
-  'scan.col.source': "स्रोत",
   'scan.col.reloc': "स्थानां.",
   'scan.trustTip': "विश्वास",
   'scan.activeCo': "सक्रिय कंपनियाँ",
@@ -1064,6 +1061,11 @@ window.__I18N_DICT_HI = {
   'scan.titleFit.related': "संबंधित मेल",
   'scan.titleFit.weak': "कमज़ोर मेल",
   'scan.titleFitTip': "मुफ़्त कीवर्ड-स्तर का अनुमान: पोस्टिंग का शीर्षक बनाम आपकी प्रोफ़ाइल की लक्षित भूमिकाएँ (config/profile.yml)। यह मूल्यांकन नहीं है — असली A–F फ़िट स्कोर अब भी Evaluate देता है।",
+  // ── Scan redesign (v1.244.0, R-08) — accessible names for the row icons ──
+  'scan.fitIcon': "मेल: {band}",
+  'scan.boostIcon': "{by} द्वारा बूस्ट किया गया",
+  'scan.scoreIcon': "मेल स्कोर 100 में से {score}",
+  'scan.postedMeta': "रिक्ति विवरण",
 
   // ── Mock interview 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "मॉक इंटरव्यू",

@@ -2,6 +2,27 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.244.0] — 2026-10-08
+
+**Tarama sonuçları bir duvar gibi değil, liste gibi okunuyor: bir ilan = iki satır, sinyaller simge biçiminde ve 700 satırlık bir tarama, ~37,000 px'lik bir sayfa yerine sayfalı bir tablo.**
+
+### Düzeltildi
+
+- **Satır anatomisi.** Her ilan, sınırlanmış iki satırlık bir kayıt satırı olarak çiziliyor: 1. satır başlık, 2. satır `company · location · source · date · work-type`. Artırma rozeti, başlık-uyum bandı ve uyum puanı, yerelleştirilmiş erişilebilir adları ve araç ipuçları olan simgelere dönüştü (ekran okuyucular bir sözcük duvarı değil, «Соответствие: сильное» / "Fit: strong" okuyor); güven ve taşınma rozetleri aynı şeride katlandı. Kıdem ve maaş, yalnızca masaüstünde görünen yardımcı sütunlar olarak kalıyor.
+- **Başlık hijyeni.** Sondaki `| Germany | Remote` segmenti başlıktan ayrılıp meta satırına taşınıyor — Unicode duyarlı: yalnızca kuyruk gerçek bir çalışma türü işareti ve orta segment bir yer adı biçiminde olduğunda ("C++ | Rust | Go Developer" gibi meşru dikey çizgiler asla bölünmez).
+- **Yatay yayılma bitti.** Sabit tablo düzeni, `min-width: 0`, tam metni araç ipucunda taşıyan üç noktayla kısaltılmış tek satırlık başlık/meta: 1440 px'te de 390 px'te de sıfır sayfa taşması ve sıfır iç tablo kaydırması (eski sayfa telefon genişliğinde 675 px'lik bir taşma yapıyordu).
+- **Sayfalama.** Sonuçlar sayfa başına 50 olarak çiziliyor (25/50/100/200 seçilebilir) — 700 satırlık bir tarama artık ~37,000 px yerine ~4,600 px yüksekliğinde ve DOM, 5,500+ yerine ~1,000 düğüm tutuyor.
+
+### Eklendi
+
+- Yerleşim sözleşmesi testleri: iki satırlık kayıt satırı, simgelerin erişilebilir adları (en + ru), sayfalama düğüm bütçesi ve başlık-uyum sayı/sıra koruması tarayıcı paketinde çalışıyor — yeniden tasarım sessizce gerileyemez.
+
+### Notlar
+
+- Testler **5036 → 5045** birim (tarayıcı paketi yerleşim sözleşmelerini kazandı), kapsam ortalaması **98.14 % satır / 89.34 % dal** (alt sınır 96/86).
+- Tarayıcının buldukları, puanlama formülleri ve `last-scan.json` dokunulmadan kalıyor — başlık-uyumu bir ek açıklama olmaya devam ediyor.
+- Bu sürümde yok: URL-hash filtre durumu ve klavyeyle satır gezinmesi (takip); `5 lakhs INR` ayrıştırması (önceden var olan).
+
 ## [1.243.2] — 2026-10-08
 
 ### Düzeltildi

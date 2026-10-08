@@ -253,7 +253,10 @@ Career (russische Boards, falls aktiviert) durchläuft.
 Klicken Sie auf ein Unternehmens-Tag, um zu filtern; klicken Sie auf das
 ↗-Symbol, um die Karriereseite des Unternehmens in einem neuen Tab zu
 öffnen. Jede Stelle, die den Titelfilter überlebt hat, wird in die
-Pipeline eingereiht.
+Pipeline eingereiht. Jede Ergebniszeile hält die Stelle auf zwei
+kompakten Zeilen — oben der Titel, darunter eine Detailzeile mit kleinen
+Icons (Titel-Fit, Senioritäts-Boost, Passungs-Score, Quelle und Datum) —
+und lange Ergebnislisten werden paginiert.
 
 ### D. Angebote bewerten (~30 Sekunden pro JD)
 

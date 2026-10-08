@@ -248,7 +248,7 @@ Career (boards rusos, si están habilitados).
 en cualquier tag de empresa para filtrar; haz clic en el icono ↗ para
 abrir la página de carreras de la empresa en una pestaña nueva. Cada
 vacante que sobrevivió al filtro de título queda encolada en el
-Pipeline.
+Pipeline. Cada fila de resultados se mantiene en dos líneas compactas — el título arriba y una línea de detalles con iconos (encaje del título, boost, puntuación, fuente y fecha) — y las listas largas se paginan.
 
 ### D. Puntuar las ofertas (~30 segundos por JD)
 

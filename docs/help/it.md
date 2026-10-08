@@ -246,7 +246,11 @@ Career (board russi se abilitati).
 **Passo 10 — Quando la scansione termina, rivedi i risultati.** Fai clic su qualsiasi
 tag azienda per filtrare; fai clic sull'icona ↗ per aprire la pagina
 carriere dell'azienda in una nuova scheda. Ogni offerta di lavoro che ha superato
-il filtro sul titolo è messa in coda nel Pipeline.
+il filtro sul titolo è messa in coda nel Pipeline. Ogni riga di risultato
+mantiene l'annuncio su due righe compatte — il titolo in alto, sotto una riga
+di dettaglio di piccole icone (corrispondenza del titolo, potenziamento per
+seniority, punteggio di corrispondenza, fonte e data) — e gli elenchi di
+risultati lunghi sono impaginati.
 
 ### D. Valuta le offerte (~30 secondi per JD)
 

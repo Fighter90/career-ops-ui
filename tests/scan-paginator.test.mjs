@@ -32,14 +32,21 @@ function readSrc(...rel) {
 
 // ───────────────── static-source canaries ─────────────────
 
-test('scan.js wires UI.paginate with PAGE_SIZE=200', () => {
+test('scan.js wires UI.paginate with the contract default page size 50', () => {
+  // v1.244.0 — the scan-redesign contract (docs/sdd/specs/
+  // 2026-10-06-scan-page-redesign.md, AC3) replaces the v1.30 constant 200:
+  // the default page is 50 and the size is user-selectable via
+  // #scan-page-size through the createResizablePager facade (a size change
+  // swaps the inner UI.paginate; the pager object stays stable for SR).
   const src = loadScanSrc();
-  assert.match(src, /const\s+PAGE_SIZE\s*=\s*200/,
-    'scan.js must declare PAGE_SIZE=200 (preserves prior visual density)');
-  assert.match(src, /UI\.paginate\s*\(\s*\{\s*pageSize\s*:\s*PAGE_SIZE/,
-    'scan.js must construct paginator with the PAGE_SIZE constant');
-  assert.match(src, /onChange\s*:\s*\(\s*\)\s*=>\s*SR\.render\s*\(\s*\)/,
-    'paginator must re-render results on page change');
+  assert.match(src, /const\s+PAGE_SIZE\s*=\s*50/,
+    'scan.js must declare PAGE_SIZE=50 (v1.244.0 scan-redesign contract default)');
+  assert.match(src, /function\s+createResizablePager\s*\(/,
+    'scan.js must define the resizable-pager facade');
+  assert.match(src, /createResizablePager\s*\(\s*PAGE_SIZE\s*,\s*\(\s*\)\s*=>\s*SR\.render\s*\(\s*\)\s*\)/,
+    'scan.js must construct the pager through the facade with the SR.render onChange');
+  assert.match(src, /id:\s*'scan-page-size'/,
+    'the #scan-page-size control must exist (AC3: selectable page size)');
 });
 
 test('scan.js resets paginator to page 1 when filters apply', () => {

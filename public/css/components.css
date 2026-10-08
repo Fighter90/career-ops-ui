@@ -15,11 +15,7 @@
 }
 .card:hover { box-shadow: var(--shadow-md); }
 
-.card-row {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-  gap: var(--space-4);
-}
+.card-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-4); }
 /* PROFILE-1 — `anywhere`, not `break-word`: only `anywhere` counts toward
    min-content, which is what bursts the track. tests/playwright-card-overflow.mjs. */
 .card-value { font-size: 17px; font-weight: 600; margin-top: 6px; overflow-wrap: anywhere; }
@@ -29,43 +25,18 @@
    focal recent-activity hint sits under them; status buckets are
    demoted to quiet chips so they don't compete for attention. */
 .dash-hero {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  padding: 20px 24px;
-  margin-bottom: var(--space-4);
-  border: 1px solid var(--border, rgba(0,0,0,.08));
-  border-radius: 14px;
+  display: flex; flex-direction: column; gap: 12px; padding: 20px 24px; margin-bottom: var(--space-4);
+  border: 1px solid var(--border, rgba(0,0,0,.08)); border-radius: 14px;
   background: linear-gradient(135deg, rgba(255,56,92,.06) 0%, rgba(255,56,92,.02) 100%);
 }
 .dash-hero-cta { display: flex; gap: 12px; flex-wrap: wrap; }
-.btn-hero {
-  font-size: 16px;
-  font-weight: 700;
-  padding: 14px 22px;
-  border-radius: 12px;
-}
-.dash-hero-focal {
-  font-size: 14px;
-  color: var(--hof);
-  text-decoration: none;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  flex-wrap: wrap;
-}
+.btn-hero { font-size: 16px; font-weight: 700; padding: 14px 22px; border-radius: 12px; }
+.dash-hero-focal { font-size: 14px; color: var(--hof); text-decoration: none; display: inline-flex; align-items: center; gap: 6px; flex-wrap: wrap; }
 .dash-hero-focal:hover { text-decoration: underline; }
 .dash-hero-focal--empty { color: var(--foggy); }
 .dash-hero-focal-label { font-weight: 600; }
 .dash-hero-focal-title { color: var(--foggy); }
-.dash-chip {
-  display: inline-block;
-  padding: 3px 10px;
-  font-size: var(--font-size-sm);
-  border-radius: 999px;
-  background: var(--bg-subtle, rgba(0,0,0,.04));
-  color: var(--foggy);
-}
+.dash-chip { display: inline-block; padding: 3px 10px; font-size: var(--font-size-sm); border-radius: 999px; background: var(--bg-subtle, rgba(0,0,0,.04)); color: var(--foggy); }
 
 /* v1.55.6 — UX-4: #/scan "Advanced filters" disclosure. Quiet,
    discoverable summary; body indents under it when expanded. */
@@ -95,22 +66,11 @@
   margin-bottom: 12px;
 }
 .tracker-tab {
-  appearance: none;
-  border: none;
-  background: none;
-  color: var(--foggy);
-  font: inherit;
-  font-size: var(--font-size-md);
-  font-weight: 600;
+  appearance: none; border: none; background: none; color: var(--foggy);
+  font: inherit; font-size: var(--font-size-md); font-weight: 600;
   /* WCAG 2.5.5 — ≥ 44 px hit area, matching the .tab-btn treatment. */
-  min-height: 44px;
-  padding: 9px 12px;
-  margin-bottom: -1px;
-  border-bottom: 2px solid transparent;
-  display: inline-flex;
-  align-items: center;
-  gap: 6px;
-  cursor: pointer;
+  min-height: 44px; padding: 9px 12px; margin-bottom: -1px;
+  border-bottom: 2px solid transparent; display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
   transition: color var(--transition), border-color var(--transition);
 }
 .tracker-tab:hover { color: var(--hof); }
@@ -138,24 +98,9 @@
 }
 .cost-hint[hidden] { display: none; }
 
-.metric-card {
-  display: flex;
-  flex-direction: column;
-  gap: var(--space-2);
-}
-.metric-label {
-  color: var(--foggy);
-  font-size: var(--font-size-md);
-  text-transform: uppercase;
-  letter-spacing: 0.4px;
-  font-weight: 600;
-}
-.metric-value {
-  font-size: 38px;
-  font-weight: 700;
-  letter-spacing: -1px;
-  color: var(--hof);
-}
+.metric-card { display: flex; flex-direction: column; gap: var(--space-2); }
+.metric-label { color: var(--foggy); font-size: var(--font-size-md); text-transform: uppercase; letter-spacing: 0.4px; font-weight: 600; }
+.metric-value { font-size: 38px; font-weight: 700; letter-spacing: -1px; color: var(--hof); }
 .metric-sub { color: var(--foggy); font-size: var(--font-size-md); }
 
 /* ───────────────────────── grids ───────────────────────── */
@@ -300,16 +245,7 @@
 }
 
 /* ───────────────────────── badges ───────────────────────── */
-.badge {
-  display: inline-flex;
-  align-items: center;
-  padding: 4px 10px;
-  border-radius: var(--radius-pill);
-  font-size: var(--font-size-sm);
-  font-weight: 600;
-  background: var(--beach);
-  color: var(--hof);
-}
+.badge { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: var(--radius-pill); font-size: var(--font-size-sm); font-weight: 600; background: var(--beach); color: var(--hof); }
 .badge-ok { background: rgba(0,138,5,.12); color: var(--kazan-text); }
 .badge-warn { background: rgba(255,180,0,.18); color: var(--darjeeling-text); }
 .badge-bad { background: rgba(255,56,92,.13); color: var(--rausch-text); }
@@ -617,15 +553,9 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
    once scrolled (search/Doctor unclickable). Now a plain in-flow block — ONE sticky
    layer remains. Fill = --rausch-dark/--paper pair (--rausch+white: 3.52/2.94). */
 .conn-banner {
-  background: var(--rausch-dark);
-  color: var(--paper);
-  padding: 12px 24px;
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: 16px;
-  font-size: 14px;
-  font-weight: 500;
+  background: var(--rausch-dark); color: var(--paper);
+  padding: 12px 24px; display: flex; align-items: center; justify-content: space-between;
+  gap: 16px; font-size: 14px; font-weight: 500;
 }
 .conn-banner[hidden] { display: none; }
 /* The translucent-black chip keeps literal WHITE text in both themes: over the banner
@@ -796,4 +726,53 @@ header.topbar .topbar-actions .search-toggle { display: none; }
   header.topbar.search-open .topbar-actions > :not(.search-toggle) { display: none; }
   header.topbar.search-open .search-ico-open { display: none; }
   header.topbar.search-open .search-ico-close { display: inline; }
+}
+
+/* ───────────────────── #/scan results rows (v1.244.0) ─────────────────────
+ * One posting = one scannable row (spec 2026-10-06-scan-page-redesign):
+ * tr.scan-row → the ⭐ cell + THE bounded td.scan-cell-posting, which is a
+ * 2-column grid — a signal-icon rail (boost / title-fit / fit-score / trust
+ * / reloc, each role="img" with a localized accessible name + tooltip) left
+ * of exactly two one-line text blocks: .scan-posting-title (line 1) and
+ * .scan-posting-meta (company · location · source · date · work-type, line
+ * 2). table-layout:fixed + minmax(0,1fr) keep the posting column bounded at
+ * every viewport: lines ellipsize and the full text rides in title=
+ * attributes. Seniority/salary stay as desktop aux columns and hide below
+ * 900px — the meta line carries their story on a phone. */
+table.scan-tbl { table-layout: fixed; }
+table.scan-tbl th, table.scan-tbl td { padding: 10px 12px; }
+table.scan-tbl .scan-col-star { width: 40px; padding: 10px 4px; text-align: center; }
+table.scan-tbl .scan-col-sen { width: 108px; }
+table.scan-tbl .scan-col-salary { width: 120px; }
+.scan-cell-star { text-align: center; }
+.scan-cell-posting {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  column-gap: 8px;
+  align-items: center;
+  min-width: 0;
+}
+.scan-posting-signals { grid-row: 1 / span 2; display: flex; align-items: center; gap: 3px; }
+.scan-icon {
+  display: inline-flex; align-items: center; justify-content: center;
+  min-width: 20px; height: 20px; font-size: 12px; line-height: 1;
+  color: var(--foggy); cursor: help; font-variant-numeric: tabular-nums;
+}
+.scan-icon--boost { color: var(--babu-text, var(--babu)); }
+.scan-icon--fit.scan-icon--strong { color: var(--kazan-text, var(--kazan)); }
+.scan-icon--trust { color: var(--darjeeling-text, var(--darjeeling)); }
+.scan-icon--score { font-size: 11px; letter-spacing: -0.5px; }
+.scan-posting-title, .scan-posting-meta {
+  grid-column: 2; min-width: 0; white-space: nowrap;
+  overflow: hidden; text-overflow: ellipsis;
+}
+.scan-posting-title { font-weight: 600; color: var(--rausch-text, var(--rausch)); text-decoration: none; }
+a.scan-posting-title:hover, a.scan-posting-title:focus-visible { text-decoration: underline; }
+.scan-posting-meta { grid-row: 2; font-size: 12.5px; color: var(--foggy); }
+/* Rows-per-page control (AC3): a quiet right-aligned bar above the table,
+ * outside the re-rendered #scan-results subtree. */
+.scan-pagebar { display: flex; justify-content: flex-end; align-items: center; gap: 8px; margin-bottom: 8px; }
+.scan-pagebar .select { width: auto; min-height: 32px; padding: 4px 8px; }
+@media (max-width: 900px) {
+  #scan-results .scan-col-aux, #scan-results .scan-cell-aux { display: none; }
 }

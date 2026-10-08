@@ -579,10 +579,7 @@ window.__I18N_DICT_AR = {
   'scan.chip.clear': "مسح",
   'scan.col.company': "الشركة",
   'scan.col.role': "الدور",
-  'scan.col.loc': "الموقع",
-  'scan.col.type': "النوع",
   'scan.col.salary': "الراتب",
-  'scan.col.source': "المصدر",
   'scan.col.reloc': "انتقال",
   'scan.trustTip': "الثقة",
   'scan.activeCo': "الشركات النشطة",
@@ -981,6 +978,11 @@ window.__I18N_DICT_AR = {
   'scan.titleFit.related': "ملاءمة ذات صلة",
   'scan.titleFit.weak': "ملاءمة ضعيفة",
   'scan.titleFitTip': "تقدير مجاني على مستوى الكلمات المفتاحية: عنوان الوظيفة مقابل الأدوار المستهدفة في ملفك (config/profile.yml). ليس تقييمًا — لا يزال «التقييم» يمنح درجة الملاءمة الحقيقية A–F.",
+  // ── Scan redesign (v1.244.0, R-08) — accessible names for the row icons ──
+  'scan.fitIcon': "الملاءمة: {band}",
+  'scan.boostIcon': "معزّز بواسطة {by}",
+  'scan.scoreIcon': "درجة الملاءمة {score} من 100",
+  'scan.postedMeta': "تفاصيل الوظيفة",
   // ── مقابلة تجريبية 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "مقابلة تجريبية",
   'mock.title': "مقابلة تجريبية",

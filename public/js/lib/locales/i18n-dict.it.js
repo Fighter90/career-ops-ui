@@ -580,10 +580,7 @@ window.__I18N_DICT_IT = {
   'scan.chip.clear': "azzera",
   'scan.col.company': "Azienda",
   'scan.col.role': "Ruolo",
-  'scan.col.loc': "Località",
-  'scan.col.type': "Tipo",
   'scan.col.salary': "Stipendio",
-  'scan.col.source': "Fonte",
   'scan.col.reloc': "Trasf.",
   'scan.trustTip': "Affidabilità",
   'scan.activeCo': "Aziende attive",
@@ -982,6 +979,11 @@ window.__I18N_DICT_IT = {
   'scan.titleFit.related': "corrispondenza affine",
   'scan.titleFit.weak': "corrispondenza debole",
   'scan.titleFitTip': "Stima gratuita a livello di parole chiave: titolo dell'annuncio rispetto ai ruoli obiettivo del tuo profilo (config/profile.yml). Non è una valutazione — Valuta fornisce ancora il vero punteggio A–F.",
+  // ── Scan redesign (v1.244.0, R-08) — accessible names for the row icons ──
+  'scan.fitIcon': "Corrispondenza: {band}",
+  'scan.boostIcon': "Potenziato da {by}",
+  'scan.scoreIcon': "Punteggio di corrispondenza {score} su 100",
+  'scan.postedMeta': "Dettagli dell'offerta",
   // ── Mock interview 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "Colloquio simulato",
   'mock.title': "Colloquio simulato",

@@ -7,19 +7,19 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-5036%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-5045%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.243.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.243.2)
+[![release](https://img.shields.io/badge/release-v1.244.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.244.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.243.0** — **瀏覽器層守護你的工作成果，也說你的語言：未儲存的編輯不再遺失、失敗不再無聲無息、翻譯後的介面裡不再悄悄出現英文、對比處處達到 AA 等級。**
+> **🆕 最新版本 — v1.244.0** — **掃描結果讀起來像一份清單，而不是一面牆：一個職缺＝兩行，訊號化為圖示，700 筆的掃描變成分頁表格，而不是 37,000 px 的長頁面。**
 >
-> **前一版本 — v1.242.1** — 打包修復版本：發佈歸檔不再攜帶 `node_modules` 符號連結（它們曾使伺服器部署的 tar 解包失敗），應用程式碼與 v1.242.0 完全相同。
+> **前一版本 — v1.243.2** — 打包版本：v1.243.1 以全新的可部署標籤重新切割（原標籤發佈後被重新指向，伺服器無法部署），應用程式碼完全相同。
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

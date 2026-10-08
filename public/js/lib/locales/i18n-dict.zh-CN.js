@@ -580,10 +580,7 @@ window.__I18N_DICT_ZH_CN = {
   'scan.chip.clear': "清除",
   'scan.col.company': "公司",
   'scan.col.role': "职位",
-  'scan.col.loc': "位置",
-  'scan.col.type': "类型",
   'scan.col.salary': "薪资",
-  'scan.col.source': "来源",
   'scan.col.reloc': "搬迁",
   'scan.trustTip': "信任",
   'scan.activeCo': "活动公司",
@@ -982,6 +979,11 @@ window.__I18N_DICT_ZH_CN = {
   'scan.titleFit.related': "部分匹配",
   'scan.titleFit.weak': "低匹配",
   'scan.titleFitTip': "免费的关键词级估算：职位标题与你个人资料中的目标职位（config/profile.yml）对比。这不是评估——真正的 A–F 匹配分仍由“评估”给出。",
+  // ── Scan redesign (v1.244.0, R-08) — accessible names for the row icons ──
+  'scan.fitIcon': "匹配度：{band}",
+  'scan.boostIcon': "由 {by} 提升",
+  'scan.scoreIcon': "匹配度得分 {score}/100",
+  'scan.postedMeta': "职位详情",
   // ── 模拟面试 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "模拟面试",
   'mock.title': "模拟面试",

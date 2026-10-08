@@ -247,6 +247,10 @@ Career (etkinleştirilmişse Rusça kartlar) üzerinde ilerlerken canlı bir SSE
 için herhangi bir şirket etiketine tıklayın; şirketin kariyer
 sayfasını yeni bir sekmede açmak için ↗ simgesine tıklayın.
 Başlık filtresini geçen her açık pozisyon Pipeline'a kuyruklanır.
+Her sonuç satırı ilanı iki kompakt satırda tutar — üstte başlık,
+altında küçük simgelerden oluşan bir ayrıntı satırı (başlık uyumu,
+kıdem artırması, eşleşme puanı, kaynak ve tarih) — ve uzun
+sonuç listeleri sayfalanır.
 
 ### D. Teklifleri puanlama (iş tanımı başına ~30 saniye)
 

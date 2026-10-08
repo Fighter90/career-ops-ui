@@ -580,11 +580,8 @@ window.__I18N_DICT_EN = {
   'scan.chip.clear': "clear",
   'scan.col.company': "Company",
   'scan.col.role': "Role",
-  'scan.col.loc': "Location",
-  'scan.col.type': "Type",
   'scan.col.reloc': "Reloc",
   'scan.col.salary': "Salary",
-  'scan.col.source': "Source",
   'scan.trustTip': "Trust",
   'scan.activeCo': "Active companies",
   'scan.activeCo.help': "Active: companies currently surfacing results. Total: configured in portals.yml.",
@@ -1060,6 +1057,11 @@ window.__I18N_DICT_EN = {
   'scan.titleFit.related': "related fit",
   'scan.titleFit.weak': "weak fit",
   'scan.titleFitTip': "Free keyword-level estimate: posting title vs your profile's target roles (config/profile.yml). Not an evaluation — Evaluate still gives the real A–F fit score.",
+  // ── Scan redesign (v1.244.0, R-08) — accessible names for the row icons ──
+  'scan.fitIcon': "Fit: {band}",
+  'scan.boostIcon': "Boosted by {by}",
+  'scan.scoreIcon': "Match score {score} out of 100",
+  'scan.postedMeta': "Posting details",
 
   // ── Mock interview 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "Mock interview",

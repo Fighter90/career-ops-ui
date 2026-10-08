@@ -580,10 +580,7 @@ window.__I18N_DICT_RU = {
   'scan.chip.clear': "сбросить",
   'scan.col.company': "Компания",
   'scan.col.role': "Роль",
-  'scan.col.loc': "Локация",
-  'scan.col.type': "Тип",
   'scan.col.salary': "Зарплата",
-  'scan.col.source': "Источник",
   'scan.col.reloc': "Релок.",
   'scan.trustTip': "Доверие",
   'scan.activeCo': "Активные компании",
@@ -982,6 +979,11 @@ window.__I18N_DICT_RU = {
   'scan.titleFit.related': "частичное совпадение",
   'scan.titleFit.weak': "слабое совпадение",
   'scan.titleFitTip': "Бесплатная оценка по ключевым словам: название вакансии против целевых ролей из профиля (config/profile.yml). Это не оценка вакансии — настоящий балл A–F даёт «Оценить».",
+  // ── Scan redesign (v1.244.0, R-08) — accessible names for the row icons ──
+  'scan.fitIcon': "Соответствие: {band}",
+  'scan.boostIcon': "Продвинуто: {by}",
+  'scan.scoreIcon': "Оценка соответствия {score} из 100",
+  'scan.postedMeta': "Детали вакансии",
   // ── Пробное собеседование 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "Пробное собеседование",
   'mock.title': "Пробное собеседование",

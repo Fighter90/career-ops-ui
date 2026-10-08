@@ -579,10 +579,7 @@ window.__I18N_DICT_PL = {
   'scan.chip.clear': "wyczyść",
   'scan.col.company': "Firma",
   'scan.col.role': "Stanowisko",
-  'scan.col.loc': "Lokalizacja",
-  'scan.col.type': "Typ",
   'scan.col.salary': "Wynagrodzenie",
-  'scan.col.source': "Źródło",
   'scan.col.reloc': "Reloc.",
   'scan.trustTip': "Zaufanie",
   'scan.activeCo': "Aktywne firmy",
@@ -981,6 +978,11 @@ window.__I18N_DICT_PL = {
   'scan.titleFit.related': "częściowe dopasowanie",
   'scan.titleFit.weak': "słabe dopasowanie",
   'scan.titleFitTip': "Darmowa ocena na poziomie słów kluczowych: tytuł oferty vs docelowe role z profilu (config/profile.yml). To nie jest ewaluacja — prawdziwą ocenę A–F nadal daje Oceń.",
+  // ── Scan redesign (v1.244.0, R-08) — accessible names for the row icons ──
+  'scan.fitIcon': "Dopasowanie: {band}",
+  'scan.boostIcon': "Promowany przez {by}",
+  'scan.scoreIcon': "Wynik dopasowania {score} na 100",
+  'scan.postedMeta': "Szczegóły oferty",
   // ── Próbna rozmowa kwalifikacyjna 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "Próbna rozmowa",
   'mock.title': "Próbna rozmowa",

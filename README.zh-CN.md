@@ -7,19 +7,19 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-5036%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-5045%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.243.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.243.2)
+[![release](https://img.shields.io/badge/release-v1.244.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.244.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.243.0** — **浏览器层守护你的工作，并说你的语言：未保存的编辑不再丢失，失败不再悄无声息，翻译后的界面不再悄悄冒出英文，对比度处处达到 AA。**
+> **🆕 最新版本 — v1.244.0** — **扫描结果读起来像一份列表，而不是一堵墙：一个职位 = 两行，信号变成图标，700 行的扫描是一张分页表格，而不是一页 37,000 px 的长页。**
 >
-> **上一版本 — v1.242.1** — **纯打包修复：重新移除曾导致服务器部署 tar 解包失败的 `node_modules` 符号链接；应用代码与 v1.242.0 完全相同。**
+> **上一版本 — v1.243.2** — **可部署版本重新打包：v1.243.1 标签发布后被重新指向，服务器的 `git fetch --tags` 拒绝覆盖已存在的标签，v1.243.1 因此从未可部署；本标签携带完全相同的代码树，仅更新版本号。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

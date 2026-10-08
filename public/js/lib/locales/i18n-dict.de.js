@@ -580,10 +580,7 @@ window.__I18N_DICT_DE = {
   'scan.chip.clear': "leeren",
   'scan.col.company': "Unternehmen",
   'scan.col.role': "Rolle",
-  'scan.col.loc': "Ort",
-  'scan.col.type': "Typ",
   'scan.col.salary': "Gehalt",
-  'scan.col.source': "Quelle",
   'scan.col.reloc': "Umzug",
   'scan.trustTip': "Vertrauen",
   'scan.activeCo': "Aktive Unternehmen",
@@ -982,6 +979,11 @@ window.__I18N_DICT_DE = {
   'scan.titleFit.related': "verwandte Passung",
   'scan.titleFit.weak': "schwache Passung",
   'scan.titleFitTip': "Kostenlose Schätzung auf Stichwortebene: Stellentitel vs. Zielrollen Ihres Profils (config/profile.yml). Keine Bewertung — die echte A–F-Passung liefert weiterhin „Bewerten“.",
+  // ── Scan redesign (v1.244.0, R-08) — accessible names for the row icons ──
+  'scan.fitIcon': "Passung: {band}",
+  'scan.boostIcon': "Hervorgehoben durch {by}",
+  'scan.scoreIcon': "Passung {score} von 100",
+  'scan.postedMeta': "Details zur Stelle",
   // ── Mock-Interview 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "Mock-Interview",
   'mock.title': "Mock-Interview",

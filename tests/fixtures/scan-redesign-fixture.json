@@ -1,0 +1,75 @@
+{
+  "$comment": [
+    "Fixture corpus for tests/scan-redesign-layout.test.mjs — the v1.244.0 #/scan",
+    "redesign (docs/sdd/specs/2026-10-06-scan-page-redesign.md). Shape mirrors the",
+    "real data/last-scan.json rows (en-scanner.mjs / ru-scanner.mjs): the fields",
+    "the SPA's render path actually reads. tests/helpers/scan-redesign-fixture.mjs",
+    "assembles these rows + pagerFiller into the {en,ru}.{fresh,filtered} snapshot",
+    "and seeds a throw-away CAREER_OPS_ROOT with it.",
+    "",
+    "Rows reproduce the maintainer's complaint (2026-10-06):",
+    "  «Grafana Labs ⬆ буст  сильное совпадение  ◎ 65  Senior Backend Engineer -",
+    "   Databases - Analytics | Germany | Remote» — company + boost badge +",
+    "   title-fit chip + fit-score badge + a title carrying | Country | Remote,",
+    "   all concatenated into one line.",
+    "  - The ◎ 65 fit score comes out exactly when paired with the helper's",
+    "    config/two-pager.yml (loves: remote work / databases / analytics):",
+    "    FitScore = 50 + 1 matched − 0 violated = 65.",
+    "  - The «сильное совпадение» band comes from the helper's profile.yml",
+    "    target_roles (\"Senior Backend Engineer\" → 2/2 tokens = 1.0 ≥ 0.6 → strong),",
+    "    stamped serve-time by server/lib/title-fit.mjs.",
+    "  - _boosted comes from the row itself (seniority_boost match)."
+  ],
+  "grafana": {
+    "company": "Grafana Labs",
+    "title": "Senior Backend Engineer - Databases - Analytics | Germany | Remote",
+    "location": "Germany",
+    "source": "greenhouse",
+    "isRemote": true,
+    "workplaceType": "Remote",
+    "relocates": false,
+    "date": "2026-10-06",
+    "salary": "",
+    "url": "https://jobs.grafana.com/c/anonymous/jobs/700001/",
+    "_boosted": true,
+    "_boostedBy": "Senior"
+  },
+  "longTitle": {
+    "company": "Mega Corp International",
+    "title": "Senior Backend Engineer - Databases - Analytics - Distributed Systems - Platform Infrastructure - Observability Tooling - Site Reliability - Developer Experience - Data Pipelines | Germany | Remote (EU time zones; occasional travel to the Berlin headquarters for quarterly planning)",
+    "location": "Germany",
+    "source": "workday",
+    "isRemote": true,
+    "workplaceType": "Remote",
+    "relocates": false,
+    "date": "2026-10-05",
+    "salary": "",
+    "url": "https://example.com/j/700002/"
+  },
+  "en": [
+    { "company": "Acme", "title": "Senior Frontend Engineer", "location": "Berlin, Germany", "source": "lever", "isRemote": false, "workplaceType": "Hybrid", "relocates": false, "date": "2026-10-07", "salary": "85000 EUR", "url": "https://example.com/j/700003/" },
+    { "company": "Globex", "title": "Staff Platform Engineer", "location": "Remote", "source": "remoteok", "isRemote": true, "workplaceType": "Remote", "relocates": false, "date": "2026-10-04", "salary": "", "url": "https://example.com/j/700004/" },
+    { "company": "Initech", "title": "Data Engineer", "location": "London, UK", "source": "ashby", "isRemote": false, "workplaceType": "Onsite", "relocates": false, "date": "2026-09-28", "salary": "", "url": "https://example.com/j/700005/" },
+    { "company": "Umbrella", "title": "Engineering Manager - Platform Infrastructure", "location": "Amsterdam, Netherlands", "source": "workday", "isRemote": false, "workplaceType": "Hybrid", "relocates": false, "date": "2026-09-20", "salary": "", "url": "https://example.com/j/700006/" }
+  ],
+  "ru": [
+    { "company": "Авито", "title": "Старший инженер данных (Data Platform) | Москва | Гибрид", "location": "Москва, Россия", "source": "hh.ru", "isRemote": false, "workplaceType": "Гибрид", "relocates": false, "date": "2026-10-07", "salary": "", "url": "https://hh.ru/vacancy/90000001" },
+    { "company": "Яндекс", "title": "Бэкенд-разработчик (Go) | Санкт-Петербург | Удалённо", "location": "Санкт-Петербург, Россия", "source": "habr-career", "isRemote": true, "workplaceType": "Удалённо", "relocates": false, "date": "2026-10-05", "salary": "", "url": "https://hh.ru/vacancy/90000002" },
+    { "company": "Ozon", "title": "Продуктовый аналитик | Казань | Офис", "location": "Казань, Россия", "source": "trudvsem", "isRemote": false, "workplaceType": "Офис", "relocates": false, "date": "2026-10-01", "salary": "", "url": "https://hh.ru/vacancy/90000003" },
+    { "company": "Сбер", "title": "Ведущий инженер DevOps | Москва | Гибрид", "location": "Москва, Россия", "source": "hh.ru", "isRemote": false, "workplaceType": "Гибрид", "relocates": false, "date": "2026-09-26", "salary": "", "url": "https://hh.ru/vacancy/90000004" }
+  ],
+  "pagerFiller": {
+    "$comment": "Expanded deterministically by the helper so the committed file stays reviewable; hand rows + filler must total the corpus size the AC3 budget is stated against (700).",
+    "count": 690,
+    "companies": ["Filler Industries", "Omega Corp", "Nexus Labs", "Vertex Group", "Quanta Systems"],
+    "titles": [
+      "Senior Backend Engineer", "Frontend Engineer", "Data Analyst",
+      "Site Reliability Engineer", "Product Manager", "QA Automation Engineer",
+      "DevOps Engineer", "Machine Learning Engineer", "Engineering Manager",
+      "Full Stack Developer"
+    ],
+    "sources": ["greenhouse", "lever", "ashby", "workday", "smartrecruiters"],
+    "locations": ["Remote", "Berlin, Germany", "Warsaw, Poland", "Amsterdam, Netherlands", "Madrid, Spain"],
+    "dateFloor": "2026-08-24"
+  }
+}

@@ -9,19 +9,19 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-5036%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-5045%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.243.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.243.2)
+[![release](https://img.shields.io/badge/release-v1.244.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.244.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Latest release — v1.243.0** — **The browser layer keeps your work safe and speaks your language: no unsaved-edit losses, no silent failures, no silent English in a translated UI, AA contrast everywhere.** Unsaved CV/career-plan edits survive re-renders and prompts before leaving; the "Record outcome" modal closes on navigation instead of blocking the page; salary and keyword parsing reads Cyrillic and ranges correctly; streams settle exactly once; the CV checklist is localized ×17; Danish auto-detection; dark-theme contrast is AA (was white-on-white); and the SPA answers 404 for missing assets instead of the index shell.
+> **🆕 Latest release — v1.244.0** — **The scan results read like a list, not a wall: one posting = two lines, the signals are icons, and a 700-row scan is a paginated table instead of a 37,000-px page.** Boost, fit band and score are icons with localized accessible names; a trailing `| Germany | Remote` moves out of the title into the meta line; the table stopped overflowing at phone width (675 px of internal scroll → 0) and paginates at 50 rows.
 >
-> **Previous — v1.242.1** — **Packaging: the release archive ships no `node_modules` symlinks again.** v1.242.0's server deploy rolled back on the tar failure; production received the sources-correctness content with v1.242.1.
+> **Previous — v1.243.2** — **Re-cut of v1.243.1 under a fresh, deployable tag** (the server's `git fetch --tags` refused the re-pointed v1.243.1). Carries the tracker outcome-modal window-listener fix.
 > **Previous — v1.241.0** — **Hardening from a 28-agent code review, and a job map by @bullitt186.** A malformed request can no longer stop the server, an aborted scan no longer wipes the last results, evaluations now see the whole method file instead of the first 16 KB, the server refuses DNS-rebinding hosts and cross-site writes, and redirects are re-checked for private targets. `#/map` shows your postings on OpenStreetMap. **4404 tests · 118 browser.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>

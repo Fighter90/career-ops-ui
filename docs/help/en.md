@@ -241,7 +241,10 @@ Career (Russian boards if enabled).
 **Step 10 — When the scan finishes, review results.** Click any
 company tag to filter; click the ↗ icon to open the company's
 careers page in a new tab. Every vacancy that survived the
-title-filter is queued in the Pipeline.
+title-filter is queued in the Pipeline. Each result row keeps the
+posting to two compact lines — title on top, a details line of
+small icons underneath (title fit, seniority boost, match score,
+source and date) — and long result lists are paginated.
 
 ### D. Score the offers (~30 seconds per JD)
 

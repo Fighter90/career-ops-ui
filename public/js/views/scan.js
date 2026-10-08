@@ -56,6 +56,23 @@ window.addEventListener('hashchange', () => {
   detachScanRefreshListeners();
 });
 
+// v1.244.0 — UI.paginate pins pageSize at creation, but the #/scan page-size
+// control (the scan-redesign contract's #scan-page-size) must change it at
+// runtime. Swap the inner paginator behind a stable facade (a size change
+// starts a fresh page 0); SR and the filter state machine keep holding ONE
+// pager object, so no other file learns about the swap.
+function createResizablePager(initialSize, onChange) {
+  let inner = UI.paginate({ pageSize: initialSize, onChange });
+  return {
+    get page() { return inner.page; },
+    get pageSize() { return inner.pageSize; },
+    reset() { inner.reset(); },
+    slice(arr) { return inner.slice(arr); },
+    controls(visibleCount, totalCount) { return inner.controls(visibleCount, totalCount); },
+    setPageSize(n) { inner = UI.paginate({ pageSize: n, onChange }); },
+  };
+}
+
 // v1.243.0 (views-3) — adapter-aware API classification. The old inline
 // 3-host regex (jobs.ashbyhq.com | jobs.lever.co | job-boards.greenhouse.io)
 // had drifted from the server adapter registry: eu.greenhouse / eu.lever
@@ -335,10 +352,28 @@ Router.register('scan', async () => {
   // v1.30.0 — replaces the hardcoded 200-row truncation. UI.paginate
   // auto-clamps the page when filters narrow the list (so the user
   // can't end up on an empty trailing page), and re-renders via
-  // onChange when paginator buttons are clicked. PAGE_SIZE picked to
-  // match the prior 200-row visual density per page.
-  const PAGE_SIZE = 200;
-  const pager = UI.paginate({ pageSize: PAGE_SIZE, onChange: () => SR.render() });
+  // onChange when paginator buttons are clicked.
+  // v1.244.0 — the page size is user-selectable (#scan-page-size, default
+  // 50 per the scan-redesign contract) through createResizablePager above.
+  const PAGE_SIZE = 50;
+  const pager = createResizablePager(PAGE_SIZE, () => SR.render());
+  // v1.244.0 — rows-per-page control (AC3). Plain-number options (the
+  // contract recommends 50/100/200/500; 25 added as the tight end). The
+  // accessible name reuses the existing scan.results key — no new
+  // user-visible strings in this change (the four scan.*Icon/postedMeta
+  // keys are the i18n scope). Lives OUTSIDE resultsEl (a re-render rebuilds
+  // that subtree) in the .scan-pagebar right above the table.
+  const PAGE_SIZES = [25, 50, 100, 200];
+  const pageSizeSelect = c('select', {
+    className: 'select', id: 'scan-page-size',
+    'aria-label': t('scan.results', 'Vacancies found'),
+  }, PAGE_SIZES.map((n) => c('option', { value: String(n) }, String(n))));
+  pageSizeSelect.value = String(PAGE_SIZE);
+  pageSizeSelect.addEventListener('change', () => {
+    const n = parseInt(pageSizeSelect.value, 10);
+    if (Number.isFinite(n) && n > 0) { pager.setPageSize(n); SR.render(); }
+  });
+  const scanPagebar = c('div', { className: 'scan-pagebar' }, [pageSizeSelect]);
   // v1.132.0 — the results-rendering subsystem was extracted to
   // public/js/lib/scan-results.js (file-size-contract split). It closes over
   // this context; lastResults is passed as a getter because refreshResults()
@@ -547,6 +582,9 @@ Router.register('scan', async () => {
       ]),
       c('p', { className: 'field-hint scan-filters__hint' }, t('scan.filtersHint',
         'Fill any boxes and press Apply. Salary from/to keeps only jobs whose pay overlaps your range — jobs with no listed salary are hidden once you set a salary. Amounts are compared as plain numbers (currency is ignored).')),
+      // v1.244.0 — rows-per-page for the results pager (AC3); sits just
+      // above the table, outside the re-rendered #scan-results subtree.
+      scanPagebar,
       resultsEl,
     ]),
 

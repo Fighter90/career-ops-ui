@@ -252,7 +252,11 @@ Workable / SmartRecruiters / Workday (boards em inglês) e hh.ru / Habr Career /
 **Passo 10 — Quando o scan terminar, revise os resultados.** Clique
 em qualquer tag de empresa para filtrar; clique no ícone ↗ para abrir
 a página de carreiras da empresa em uma nova aba. Cada vaga que
-sobreviveu ao filtro de título fica enfileirada no Pipeline.
+sobreviveu ao filtro de título fica enfileirada no Pipeline. Cada
+linha de resultado mantém a vaga em duas linhas compactas — o título
+em cima e, embaixo, uma linha de detalhes com ícones pequenos (encaixe
+do título, boost de nível, pontuação de match, fonte e data) — e
+listas longas de resultados são paginadas.
 
 ### D. Pontuar as ofertas (~30 segundos por JD)
 
