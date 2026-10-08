@@ -37,7 +37,7 @@
  * set CAREER_OPS_PLAYWRIGHT_PATH to the parent node_modules/playwright.
  * SCAN_REDESIGN_CAPTURE=1 additionally writes the AFTER screenshots +
  * metrics to /tmp/scan-redesign/after/ (the before state lives in
- * /tmp/scan-redesign/before/, captured pre-redesign).
+ * the mkdtemp root printed by the before-capture run).
  *
  * CI-isolated: throw-away CAREER_OPS_ROOT via mkdtempSync — never real data.
  *
@@ -300,11 +300,12 @@ test('AC5 (guard): serve-time title-fit annotation preserves counts and row orde
 // Documents the redesigned layout: 3 widths × light/dark × en/ru →
 // /tmp/scan-redesign/after/, plus metrics on the CONTRACT selectors (posting
 // cell / node budget) so they can be diffed against the pre-redesign baseline
-// in /tmp/scan-redesign/before/metrics.json.
-test('AFTER capture: 12 screenshots + redesign metrics → /tmp/scan-redesign/after', { skip: SKIP || !CAPTURE || undefined }, async () => {
+// (the before-capture run prints its own mkdtemp root — diff after vs before).
+test('AFTER capture: 12 screenshots + redesign metrics (mkdtemp root, path printed)', { skip: SKIP || !CAPTURE || undefined }, async () => {
   const { mkdirSync, writeFileSync } = await import('node:fs');
-  const outDir = '/tmp/scan-redesign/after';
+  const outDir = resolve(mkdtempSync(resolve(tmpdir(), 'scan-redesign-after-')), 'after');
   mkdirSync(outDir, { recursive: true });
+  console.log(`after-captures + metrics → ${outDir}`);
   const metrics = { generatedAt: new Date().toISOString(), baseUrl, widths: {} };
 
   for (const width of [1440, 1024, 390]) {
