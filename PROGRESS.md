@@ -8,7 +8,7 @@ Release history belongs in [CHANGELOG.md](CHANGELOG.md), decisions in
 [docs/adr/](docs/adr/), vocabulary in [CONTEXT.md](CONTEXT.md). Anything already
 recoverable from those does **not** belong here.
 
-_Last updated: 2026-10-08 · v1.242.1 packaging patch in release train (v1.242.0 deploy rolled back — node_modules symlinks in the tag; prod healthy on 1.241.1)_
+_Last updated: 2026-10-08 · **v1.242.1 SHIPPED** (resumecraft.ru deployed+verified, Playwright 15/15, full regression green; live-LLM × 7 locales blocked by upstream credit exhaustion — Linear CAR-44, 11/17 passed live before the credits ran out)_
 
 ---
 
