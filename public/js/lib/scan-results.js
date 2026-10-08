@@ -144,6 +144,17 @@ window.ScanResults = (function () {
   // Developer") and non-place middle segments ("| 2nd line support |") never
   // split. Pure — unit-tested in tests/scan-title-split.test.mjs.
   const WORK_TAIL_RE = /^\s*(?:remote|hybrid|onsite|on-site|удал[её]нн\p{L}*|гибрид\p{L}*|офис\p{L}*|дистанц\p{L}*)\s*(?:\(|$)/iu;
+  // v1.244.2 — boards append a benefits blurb after the money range
+  // ("$224K – $263K • Offers Equity • … 401(k) …"). The visible cell keeps
+  // only the leading money chunk (up to the first •/· separator). Pure +
+  // exported for tests.
+  function salaryHead(salary) {
+    const raw = String(salary == null ? '' : salary);
+    if (!raw) return '';
+    const head = raw.split(/[•·]/)[0].trim();
+    return head || raw.trim();
+  }
+
   function splitTitleCountry(title, isPlace) {
     const raw = String(title == null ? '' : title).replace(/\s+/g, ' ').trim();
     const last = raw.lastIndexOf('|');
@@ -505,8 +516,10 @@ window.ScanResults = (function () {
         : '');
       // v1.244.2 — some boards put the whole benefits blurb in the salary
       // field; an unclamped cell stretched rows to ~10 lines (caught live on
-      // production). One ellipsized line + the full text as the tooltip.
-      const salaryText = String(r.salary || '');
+      // production). The visible cell keeps only the leading money chunk (up
+      // to the first •/· separator); the full string stays in the tooltip.
+      const salaryFull = String(r.salary || '');
+      const salaryText = salaryHead(salaryFull) || '—';
       const salaryCell = c('td', { className: 'scan-cell-aux' },
         c('span', {
           className: 'scan-salary-text',
@@ -590,5 +603,5 @@ window.ScanResults = (function () {
     return { render: render, getRows: getRows };
   }
 
-  return { FALLBACK_SOURCES: FALLBACK_SOURCES, create: create, splitTitleCountry: splitTitleCountry };
+  return { FALLBACK_SOURCES: FALLBACK_SOURCES, create: create, splitTitleCountry: splitTitleCountry, salaryHead: salaryHead };
 })();
