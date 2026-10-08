@@ -37,7 +37,7 @@
  * browser never disagree about what the dropdown offers.
  */
 export const CURATED_DOMAINS = Object.freeze({
-  ANTHROPIC_MODEL: Object.freeze(["claude-sonnet-4-6", "claude-opus-4-7", "claude-haiku-4-5", "claude-3-7-sonnet-latest", "claude-3-5-haiku-latest"]),
+  ANTHROPIC_MODEL: Object.freeze(["claude-sonnet-4-6", "claude-opus-4-7", "claude-sonnet-5-5", "claude-opus-5-5", "claude-haiku-4-5", "claude-3-7-sonnet-latest", "claude-3-5-haiku-latest"]),
   GEMINI_MODEL: Object.freeze(["gemini-3.6-flash", "gemini-3.5-flash", "gemini-3.1-flash-lite", "gemini-3-flash-preview", "gemini-2.5-pro"]),
   OPENAI_MODEL: Object.freeze(["gpt-5-codex", "gpt-5", "gpt-5-mini", "gpt-4.1", "o4-mini", "o3"]),
   QWEN_MODEL: Object.freeze(["qwen-max", "qwen-plus", "qwen-turbo", "qwen2.5-72b-instruct", "qwen2.5-coder-32b-instruct"]),

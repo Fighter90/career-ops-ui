@@ -151,16 +151,23 @@ Follow `docs/LOCALIZATION.md` → *add a brand-new locale*; parent has `README.t
 
 Parent fork `origin/main` = `08db03d8`, VERSION 1.35.0, 0 behind upstream — no new providers since
 `62905981`. Port now (each S unless noted):
-1. Liveness: a posting that says how it will close is still open — parent `c0264e7c` (#4771) **with**
-   the open #4810 line-break guard → `server/lib/liveness-core.mjs` + tests.
+1. ~~Liveness: a posting that says how it will close is still open — parent `c0264e7c` (#4771) **with**
+   the open #4810 line-break guard → `server/lib/liveness-core.mjs` + tests.~~ **Shipped** — see
+   `docs/sdd/specs/2026-10-08-upstream-ports-v1.246.0.md`.
 2. Inline tracker status edit (M) — relay `set-status.mjs --row N <state> --json` (+ `--dry-run`),
    new `POST /api/tracker/status`, select per row in `tracker.js`, i18n ×17; brings #4524 (JD archived
    on → Interview). Needs the route reviewer.
-3. Anthropic model ids `claude-sonnet-5-5` / `claude-opus-5-5` (#4703) → `config-field-domains.mjs:40`,
-   `anthropic.mjs` default, `llm-pricing.mjs`.
+3. ~~Anthropic model ids `claude-sonnet-5-5` / `claude-opus-5-5` (#4703) → `config-field-domains.mjs:40`,
+   `anthropic.mjs` default, `llm-pricing.mjs`.~~ **Partially shipped**: `llm-pricing.mjs` carries the
+   upstream-id note (no parent pricing exists — cost stays unknown). REMAINDER is a hand-off (needs a
+   file outside this phase's ownership): `config-field-domains.mjs` `ANTHROPIC_MODEL` and the browser
+   mirror `public/js/views/config/field-specs.js` `ANTHROPIC_MODELS` must gain the two ids in ONE
+   change, same order — `tests/config-select-domains.test.mjs` drift-gates them deepEqual; optionally
+   `server/lib/anthropic.mjs` default + field-specs `defaultValue`/`hintFallback` (i18n keys unchanged).
 4. `fix-report-links.mjs` runner (#4751) with a dry-run preview → `routes/runners.mjs` + a button.
-5. Gem `isoCountry` → country name (#4774): copy parent `providers/_country.mjs` (76 lines) to
-   `server/lib/sources/_country.mjs`.
+5. ~~Gem `isoCountry` → country name (#4774): copy parent `providers/_country.mjs` (76 lines) to
+   `server/lib/sources/_country.mjs`.~~ **Shipped** — `server/lib/sources/_country.mjs` verbatim +
+   `sources/gem.mjs` wiring, see the same spec.
 Later: evidence-confidence chip (#4452), `language.modes_dir` markets incl. `sg`/`id`/`nl` (#3793/#4687),
 saved contacts (#4692/#4363, privacy review), batch cost confirm (#4746, needs batch usage logging).
 Port when merged upstream: workable multi-country (#4806), smartrecruiters slug links (#4770),

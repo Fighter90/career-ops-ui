@@ -28,6 +28,7 @@
 import { fetchJson } from '../http-json.mjs';
 import { decodeEntities } from '../html-entities.mjs';
 import { requireArray } from './_shape.mjs';
+import { countryNameFromIso } from './_country.mjs';
 
 const API_HOST = 'jobs.gem.com';
 export const GEM_API_URL = `https://${API_HOST}/api/public/graphql/batch`;
@@ -168,10 +169,31 @@ export function buildJobDescriptionText(posting) {
   return compensation ? [text, `Compensation: ${compensation}`].filter(Boolean).join('\n\n') : text;
 }
 
-/** "San Francisco" + isRemote → "San Francisco · Remote". @param {any} loc */
+/**
+ * Whole-word, case-insensitive containment (same check as the parent's ashby,
+ * breezy and recruitee providers' containsWholeWord).
+ * @param {string} text
+ * @param {string} word
+ */
+function containsWholeWord(text, word) {
+  const escaped = word.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return new RegExp(`(?<![\\p{L}\\p{N}])${escaped}(?![\\p{L}\\p{N}])`, 'iu').test(text);
+}
+
+/**
+ * Location name plus the country behind `isoCountry` when the name doesn't
+ * already say it (parent #4774). Gem sends the country only as an ISO code
+ * ("DE", "USA", "GBR"), which location_filter can't match, so "London" or
+ * "Remote, US" never showed the country a location_filter names. Unknown codes
+ * add nothing.
+ * @param {any} loc
+ */
 function formatLocation(loc) {
   const parts = [];
-  if (typeof loc?.name === 'string' && loc.name.trim()) parts.push(loc.name.trim());
+  let place = typeof loc?.name === 'string' ? loc.name.trim() : '';
+  const country = countryNameFromIso(loc?.isoCountry);
+  if (country && !containsWholeWord(place, country)) place = place ? `${place}, ${country}` : country;
+  if (place) parts.push(place);
   if (loc?.isRemote) parts.push('Remote');
   return parts.join(' · ');
 }

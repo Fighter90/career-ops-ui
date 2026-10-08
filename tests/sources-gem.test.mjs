@@ -401,3 +401,88 @@ test('gem fetch takes the REST path only when the entry pinned it', async () => 
   assert.equal(jobs[0].source, 'gem');
   assert.deepEqual(seen, ['https://api.gem.com/job_board/v0/acme/job_posts'], 'the GraphQL endpoint is never touched');
 });
+
+// ── isoCountry → country name (parent #4774, providers/_country.mjs port) ───
+//
+// Gem's board list carries each location's country only as `isoCountry`
+// (alpha-2 "DE" and alpha-3 "DEU" both occur), and formatLocation() ignored
+// it — a posting named "London" or "Remote, US" never showed the country name
+// location_filter matches on. Names come from CLDR via Node's ICU and can
+// shift between Node versions, so expectations are computed through the shared
+// helper (server/lib/sources/_country.mjs) rather than pinning spellings.
+
+const { countryName, countryNameFromIso } = await import('../server/lib/sources/_country.mjs');
+
+test('_country: alpha-2 resolves case-insensitively; alpha-3 and junk stay empty on countryName()', () => {
+  assert.ok(countryName('GB'), 'GB resolves');
+  assert.equal(countryName('gb'), countryName('GB'), 'case-insensitive');
+  assert.equal(countryName('GBR'), '', 'countryName() is alpha-2 only');
+  assert.equal(countryName('XX'), '');
+  assert.equal(countryName(42), '');
+});
+
+test('_country: countryNameFromIso maps alpha-3 through the ISO table to the same name as its alpha-2', () => {
+  const pairs = [['USA', 'US'], ['GBR', 'GB'], ['DEU', 'DE'], ['NAM', 'NA'], ['CZE', 'CZ']];
+  for (const [a3, a2] of pairs) {
+    assert.ok(countryName(a2), `${a2} resolves`);
+    assert.equal(countryNameFromIso(a3), countryName(a2), `${a3} → ${a2}'s name`);
+  }
+  // alpha-2 passes through (trimmed, upper-cased); unassigned/invalid → ''
+  assert.equal(countryNameFromIso(' gb '), countryName('GB'));
+  assert.equal(countryNameFromIso('XXX'), '');
+  assert.equal(countryNameFromIso('US1'), '');
+  assert.equal(countryNameFromIso(null), '');
+  assert.equal(countryNameFromIso(''), '');
+});
+
+test('parseGemPostings: isoCountry folds into the location name unless it already names the country', () => {
+  const [j] = parseGemPostings([{
+    extId: '2001',
+    title: 'Platform Engineer',
+    locations: [
+      { name: 'Berlin', isoCountry: 'DE', isRemote: false },
+      { name: 'London', isoCountry: 'GBR', isRemote: false },
+      { name: 'Remote, US', isoCountry: 'USA', isRemote: true },
+      { name: `München, ${countryNameFromIso('DEU')}`, isoCountry: 'DEU', isRemote: false },
+      { name: 'Somewhere', isoCountry: 'XXX', isRemote: false },
+    ],
+  }], { boardId: 'retool', companyName: 'Retool' });
+  const de = countryNameFromIso('DE');
+  const gb = countryNameFromIso('GBR');
+  const us = countryNameFromIso('USA');
+  assert.ok(de && gb && us, 'the helper resolved all three names');
+  assert.equal(
+    j.location,
+    [
+      `Berlin, ${de}`, // alpha-2 isoCountry ('DE') also resolves
+      `London, ${gb}`,
+      `Remote, US, ${us} · Remote`, // country folded into the name, Remote flag kept
+      `München, ${countryNameFromIso('DEU')}`, // name already says it — no duplicate
+      'Somewhere', // unknown code adds nothing
+    ].join(' · '),
+    `location = ${JSON.stringify(j.location)}`,
+  );
+});
+
+test('fetchGem: isoCountry folding flows through the GraphQL fetch end-to-end', async () => {
+  const jobs = await fetchGem(`${GEM_API_URL}?board=retool`, {
+    fetchImpl: async (url, opts) => {
+      const op = JSON.parse(opts.body)[0].operationName;
+      return ok(op === 'JobBoardList' ? [{
+        data: {
+          oatsExternalJobPostings: {
+            jobPostings: [{
+              extId: '2001',
+              title: 'Platform Engineer',
+              locations: [{ name: 'London', isoCountry: 'GBR', isRemote: false }],
+            }],
+          },
+        },
+      }] : []);
+    },
+    company: { name: 'Retool' },
+  });
+  assert.equal(jobs[0].location, `London, ${countryNameFromIso('GBR')}`,
+    `location = ${JSON.stringify(jobs[0]?.location)}`);
+});
+
