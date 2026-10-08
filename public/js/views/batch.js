@@ -45,12 +45,23 @@ Router.register('batch', async () => {
   });
   textarea.value = state.raw || '';
 
+  // CAR-20 (v1.243.0) — the row count sat in a one-shot inline span fed
+  // from the INITIAL state, so it went stale the moment the user saved a
+  // new TSV (or a run/merge refreshed `state`). Dedicated renderer, fed
+  // by every state refresh below.
+  const rowsCountEl = c('span', { style: { color: 'var(--foggy)', fontSize: '13px', alignSelf: 'center' } }, '');
+  function renderRowsCount() {
+    rowsCountEl.textContent = ((state && state.rows) || []).length + ' ' + t('batch.rows', 'rows');
+  }
+  renderRowsCount();
+
   async function saveTsv(btn) {
     try {
       const r = await UI.withSpinner(btn, () =>
         API.put('/api/batch', { raw: textarea.value }));
       UI.toast(t('batch.saved', 'Saved') + ` · ${r.rows} ${t('batch.rows', 'rows')}`, 'success');
       state = await API.get('/api/batch');
+      renderRowsCount();
     } catch (e) {
       UI.toast((e && e.message) || 'save failed', 'error');
     }
@@ -116,7 +127,20 @@ Router.register('batch', async () => {
 
   const consoleEl = c('pre', { className: 'console', style: { maxHeight: '480px', overflow: 'auto' } });
 
+  // CAR-20 (v1.243.0) — runRunner had no in-flight guard and never kept
+  // the EventSource handle: a second click (or a rerun mid-stream)
+  // started a SECOND concurrent batch-runner over the same TSV, with
+  // interleaved consoles and doubled tracker merges. Single-flight flag,
+  // tracked stream, disabled Run button, one finish path.
+  let batchRunning = false;
+  let batchStream = null;
+  const runBtn = c('button', {
+    className: 'btn btn-primary',
+    onClick: () => runRunner(),
+  }, '▶ ' + t('batch.runBtn', 'Run batch'));
+
   function runRunner() {
+    if (batchRunning) return;
     const params = new URLSearchParams();
     if (dryRun.checked) params.set('dryRun', '1');
     if (parallelSel.value && parallelSel.value !== '1') params.set('parallel', parallelSel.value);
@@ -125,22 +149,32 @@ Router.register('batch', async () => {
     if (retry.checked && maxRetriesIn.value.trim()) params.set('maxRetries', maxRetriesIn.value.trim());
     if (modelIn.value.trim()) params.set('model', modelIn.value.trim());
     if (startFromIn.value.trim()) params.set('startFrom', startFromIn.value.trim());
+    batchRunning = true;
+    runBtn.disabled = true;
     consoleEl.textContent = '';
     UI.toast(t('batch.running', 'Running batch evaluator…'));
-    API.stream('/api/stream/batch?' + params.toString(), async (event, data) => {
+    const finishRunner = () => {
+      batchRunning = false;
+      batchStream = null;
+      runBtn.disabled = false;
+    };
+    batchStream = API.stream('/api/stream/batch?' + params.toString(), async (event, data) => {
       if (event === 'log' && data.line) {
         consoleEl.appendChild(c('span',
           { className: data.stream === 'stderr' ? 'err' : '' }, data.line + '\n'));
         consoleEl.scrollTop = consoleEl.scrollHeight;
       } else if (event === 'done') {
+        finishRunner();
         consoleEl.appendChild(c('span', { className: '' },
           `\n✓ done (exit ${data.code}) · additions: ${data.additions ?? 0}\n`));
         UI.toast(t('batch.done', 'Batch done') + ` · ${data.additions ?? 0} ` + t('batch.additions', 'additions'),
           data.code === 0 ? 'success' : 'error');
         // Refresh additions list
-        state = await API.get('/api/batch');
+        try { state = await API.get('/api/batch'); } catch { /* keep the last good state */ }
         renderAdditions();
+        renderRowsCount();
       } else if (event === 'error') {
+        finishRunner();
         consoleEl.appendChild(c('span', { className: 'err' }, '\n✗ ' + ((data && data.message) || 'error') + '\n'));
         UI.toast((data && data.message) || 'error', 'error');
       }
@@ -154,6 +188,7 @@ Router.register('batch', async () => {
         r.code === 0 ? 'success' : 'error');
       state = await API.get('/api/batch');
       renderAdditions();
+      renderRowsCount();
     } catch (e) {
       UI.toast((e && e.message) || 'merge failed', 'error');
     }
@@ -223,8 +258,7 @@ Router.register('batch', async () => {
           className: 'btn btn-primary',
           onClick: (e) => saveTsv(e.currentTarget),
         }, '💾 ' + t('common.save', 'Save')),
-        c('span', { style: { color: 'var(--foggy)', fontSize: '13px', alignSelf: 'center' } },
-          (state.rows || []).length + ' ' + t('batch.rows', 'rows')),
+        rowsCountEl,
       ]),
     ]),
     // Run controls
@@ -260,8 +294,7 @@ Router.register('batch', async () => {
           c('label', { htmlFor: 'batch-start-from' }, t('batch.startFromLbl', 'Start from #')),
           startFromIn,
         ]),
-        c('button', { className: 'btn btn-primary', onClick: runRunner },
-          '▶ ' + t('batch.runBtn', 'Run batch')),
+        runBtn,
       ]),
     ]),
     consoleEl,

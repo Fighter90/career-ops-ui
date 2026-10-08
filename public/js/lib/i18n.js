@@ -1,6 +1,6 @@
 /* global window, localStorage */
 /**
- * Tiny i18n module. 8 languages, key-based translations, persisted in
+ * Tiny i18n module. 17 languages, key-based translations, persisted in
  * localStorage. Falls back to English (and to the key itself) when missing.
  *
  * Usage in views:
@@ -65,7 +65,11 @@ window.I18n = (function () {
   function detect() {
     const browser = (navigator.language || 'en').toLowerCase();
     if (browser.startsWith('pt')) return 'pt-BR';
-    if (browser.startsWith('zh-tw') || browser.startsWith('zh-hk')) return 'zh-TW';
+    // Traditional Chinese: explicit zh-TW plus the Hant-script and HK/MO
+    // region tags (Safari reports zh-Hant-TW; zh-MO users read Traditional).
+    // Everything else zh* → Simplified.
+    if (browser.startsWith('zh-tw') || browser.startsWith('zh-hk')
+      || browser.startsWith('zh-hant') || browser.startsWith('zh-mo')) return 'zh-TW';
     if (browser.startsWith('zh')) return 'zh-CN';
     if (browser.startsWith('ko')) return 'ko';
     if (browser.startsWith('ja')) return 'ja';
@@ -74,6 +78,7 @@ window.I18n = (function () {
     if (browser.startsWith('fr')) return 'fr';
     if (browser.startsWith('pl')) return 'pl';
     if (browser.startsWith('uk')) return 'uk';
+    if (browser.startsWith('da')) return 'da';
     if (browser.startsWith('ar')) return 'ar';
     if (browser.startsWith('de')) return 'de';
     if (browser.startsWith('it')) return 'it';

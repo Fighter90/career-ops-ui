@@ -49,16 +49,15 @@ market / cv-studio pages; drop `.doc` from `public/js/views/cv.js` accept list a
 `content.mjs` and `networking.mjs` branch coverage (37 % / 61 %).
 
 ## client-libs-1
-- [H] public/js/router.js:27 current() hash.slice(2) assumes '#/': skip link '#content' routes to 404 'ontent'; '#/?x=1' 404. Fix: ignore non-'#/' hash / strip query before default.
-- [M] public/js/lib/auto-pipeline.js:153-198: stream closing without done/error renders nothing; final buf frame dropped. Same in lib/pdf-generate.js streamPostSse (button disabled forever).
-- [M] public/js/api.js:187-209 API.stream calls onEvent('error') twice on dropped EventSource (native error w/o data, then onerror); cv.js data.message on undefined throws.
-- [M] lib/bug-report.js:95,109: route includes job URL (#/evaluate?url=...) & report slugs (privacy invariant); slice(0,6000) before encoding -> 16KB URL; collect() reads c.status||c.state but health checks are {name,required,ok,value} -> counts always 0; copy fallback toasts success without copying.
+(Closed in feat/v1.243.0-client-fixes — router anchor/hash, auto-pipeline SSE flush, API.stream
+error contract, bug-report privacy/health/copy, countries matching, cv-privacy masking,
+fit-score salary/OR, hint dismissal focus, providerCostHint leak — red→green tests in
+tests/router-anchor-hash, auto-pipeline-stream-flush, api-stream-error-contract,
+bug-report-privacy, cv-privacy, hint-dismiss-focus + extended countries/fit-score suites.)
+- [M] lib/pdf-generate.js streamPostSse: same stream-close bug as the (fixed) auto-pipeline drain —
+  SSE failure leaves the Generate button disabled forever (client-libs-2 owner; the shared
+  API.stream it calls now delivers exactly one well-formed {message} error).
 - [M] lib/cv-diagnostics.js:46 word count ASCII-only -> non-Latin CV = 'empty'.
-- [M] lib/countries.js: first alias wins: 'Sydney, New South Wales, Australia'->UK (wales), 'Latin America'->US, 'Albuquerque, New Mexico'->Mexico, 'Cambridge, MA'->UK, 'Santiago de Compostela'->Chile. Fix: longest-phrase / last comma segment; drop bare america/wales/cambridge/santiago.
-- [M] lib/cv-privacy.js: bare linkedin.com/in/.. not masked; ALL-CAPS names; EU dates 12.03.2021 mangled.
-- [M] lib/fit-score.js: jobSalaryNum '$100-150K'->100, '5,000 EUR/month'->5000; must-have country 'Germany or Netherlands' w/ Berlin both matched+violated.
-- [L] lib/help-hint.js:38,85 & docs-fab.js:134: every dismissal focuses button (scroll/outside click steals focus). 
-- [L] api.js:784 UI.providerCostHint adds 2 document listeners per call never removed (leak).
 
 ## cv/studio other
 

@@ -7,6 +7,12 @@
  * no LLM, no network, no fabrication. It measures signals a recruiter/ATS
  * cares about (quantified impact, weak verbs, buzzwords, length, sections,
  * contact info) and explains each so the user can act, never rewriting silently.
+ *
+ * CAR-37 — every check label + message flows through the ACTIVE locale via
+ * window.I18n.t (`diag.*` keys; the inline English strings are the fallbacks
+ * and byte-match the en dict). The returned shape is unchanged:
+ * { score, words, bullets, checks: [{ id, label, status, detail }] } — when
+ * window.I18n is absent (tests, bare embedding) everything stays English.
  */
 (function () {
   const WEAK_VERBS = [
@@ -26,6 +32,18 @@
   };
   const EMAIL_RE = /\b[\w.+-]+@[\w-]+\.[\w.-]+\b/;
   const PHONE_RE = /(?:\+?\d[\s().-]?){7,}/;
+
+  // Active-locale lookup, resolved per call (the user can switch languages
+  // without a reload). Same guard pattern as docs-fab.js / bug-report.js.
+  function t(key, fallback) {
+    return (typeof window !== 'undefined' && window.I18n && window.I18n.t)
+      ? window.I18n.t(key, fallback)
+      : fallback;
+  }
+  // {name} placeholder fill, mirroring the dict convention (track.hist*).
+  function fill(template, vars) {
+    return template.replace(/\{(\w+)\}/g, (m, name) => (name in vars ? String(vars[name]) : m));
+  }
 
   function bulletLines(md) {
     return md.split('\n').map((l) => l.trim()).filter((l) => /^([-*+]|\d+\.)\s+/.test(l));
@@ -47,54 +65,75 @@
     const bullets = bulletLines(md);
     const checks = [];
     const add = (id, label, status, detail) => checks.push({ id, label, status, detail });
+    const sectionName = (k) => t(`diag.section.${k}`, k);
 
     // Empty / near-empty CV: the "pass-by-absence" checks (no weak verbs, no
     // buzzwords) would otherwise inflate the score for a blank document. Return
     // a single honest failure instead.
     if (words < 20) {
-      add('length', 'Length', 'fail', words === 0 ? 'The CV is empty.' : `Only ${words} words — there's almost nothing to evaluate yet.`);
+      add('length', t('diag.length.label', 'Length'), 'fail',
+        words === 0
+          ? t('diag.length.empty', 'The CV is empty.')
+          : fill(t('diag.length.tooFew', "Only {n} words — there's almost nothing to evaluate yet."), { n: words }));
       return { score: 0, words, bullets: bullets.length, checks };
     }
 
     // 1. Length (word count). The `words < 20` guard above already returned,
     // so here words >= 20 — no empty-document branch is reachable.
-    if (words < 200) add('length', 'Length', 'warn', `Only ${words} words — most one-page CVs run 300–600. Consider adding detail.`);
-    else if (words > 1100) add('length', 'Length', 'warn', `${words} words is long (≈2+ pages). Tighten to the most relevant.`);
-    else add('length', 'Length', 'pass', `${words} words — a healthy one-to-two-page range.`);
+    if (words < 200) add('length', t('diag.length.label', 'Length'), 'warn',
+      fill(t('diag.length.short', 'Only {n} words — most one-page CVs run 300–600. Consider adding detail.'), { n: words }));
+    else if (words > 1100) add('length', t('diag.length.label', 'Length'), 'warn',
+      fill(t('diag.length.long', '{n} words is long (≈2+ pages). Tighten to the most relevant.'), { n: words }));
+    else add('length', t('diag.length.label', 'Length'), 'pass',
+      fill(t('diag.length.ok', '{n} words — a healthy one-to-two-page range.'), { n: words }));
 
     // 2. Quantified impact — share of bullets containing a number/metric.
     if (bullets.length) {
       const quantified = bullets.filter(hasNumber).length;
       const pct = Math.round((quantified / bullets.length) * 100);
-      if (pct >= 50) add('quantified', 'Quantified impact', 'pass', `${pct}% of bullets include a number or metric.`);
-      else if (pct >= 25) add('quantified', 'Quantified impact', 'warn', `Only ${pct}% of bullets are quantified. Add concrete numbers (%, $, time saved).`);
-      else add('quantified', 'Quantified impact', 'fail', `Just ${pct}% of bullets have a metric. Recruiters skim for numbers — add them.`);
+      if (pct >= 50) add('quantified', t('diag.quantified.label', 'Quantified impact'), 'pass',
+        fill(t('diag.quantified.ok', '{pct}% of bullets include a number or metric.'), { pct }));
+      else if (pct >= 25) add('quantified', t('diag.quantified.label', 'Quantified impact'), 'warn',
+        fill(t('diag.quantified.warn', 'Only {pct}% of bullets are quantified. Add concrete numbers (%, $, time saved).'), { pct }));
+      else add('quantified', t('diag.quantified.label', 'Quantified impact'), 'fail',
+        fill(t('diag.quantified.fail', 'Just {pct}% of bullets have a metric. Recruiters skim for numbers — add them.'), { pct }));
     } else {
-      add('quantified', 'Quantified impact', 'warn', 'No bullet points detected — use bullets with metrics for experience.');
+      add('quantified', t('diag.quantified.label', 'Quantified impact'), 'warn',
+        t('diag.quantified.noBullets', 'No bullet points detected — use bullets with metrics for experience.'));
     }
 
     // 3. Weak verbs / passive framing.
     const weak = countMatches(md, WEAK_VERBS);
-    if (!weak.length) add('weakVerbs', 'Strong action verbs', 'pass', 'No weak "responsible for / helped" phrasing found.');
-    else add('weakVerbs', 'Strong action verbs', weak.length > 2 ? 'fail' : 'warn',
-      `${weak.length} weak phrase(s) (e.g. "${weak[0]}"). Lead bullets with strong verbs (built, shipped, cut, grew).`);
+    if (!weak.length) add('weakVerbs', t('diag.weakVerbs.label', 'Strong action verbs'), 'pass',
+      t('diag.weakVerbs.ok', 'No weak "responsible for / helped" phrasing found.'));
+    else add('weakVerbs', t('diag.weakVerbs.label', 'Strong action verbs'), weak.length > 2 ? 'fail' : 'warn',
+      fill(t('diag.weakVerbs.found', '{n} weak phrase(s) (e.g. "{eg}"). Lead bullets with strong verbs (built, shipped, cut, grew).'),
+        { n: weak.length, eg: weak[0] }));
 
     // 4. Buzzwords / clichés.
     const buzz = countMatches(md, BUZZWORDS);
-    if (!buzz.length) add('buzzwords', 'Buzzwords', 'pass', 'No empty clichés detected.');
-    else add('buzzwords', 'Buzzwords', buzz.length > 2 ? 'warn' : 'pass',
-      `${buzz.length} cliché(s) (e.g. "${buzz[0]}"). Replace with specifics.`);
+    if (!buzz.length) add('buzzwords', t('diag.buzzwords.label', 'Buzzwords'), 'pass',
+      t('diag.buzzwords.ok', 'No empty clichés detected.'));
+    else add('buzzwords', t('diag.buzzwords.label', 'Buzzwords'), buzz.length > 2 ? 'warn' : 'pass',
+      fill(t('diag.buzzwords.found', '{n} cliché(s) (e.g. "{eg}"). Replace with specifics.'),
+        { n: buzz.length, eg: buzz[0] }));
 
     // 5. Sections present.
     const missing = Object.keys(SECTION_HINTS).filter((k) => !SECTION_HINTS[k].test(md));
-    if (!missing.length) add('sections', 'Core sections', 'pass', 'Summary, Experience, Education, and Skills are all present.');
-    else add('sections', 'Core sections', missing.length > 1 ? 'warn' : 'pass', `Missing/undetected: ${missing.join(', ')}.`);
+    if (!missing.length) add('sections', t('diag.sections.label', 'Core sections'), 'pass',
+      t('diag.sections.ok', 'Summary, Experience, Education, and Skills are all present.'));
+    else add('sections', t('diag.sections.label', 'Core sections'), missing.length > 1 ? 'warn' : 'pass',
+      fill(t('diag.sections.missing', 'Missing/undetected: {list}.'), { list: missing.map(sectionName).join(', ') }));
 
     // 6. Contact info.
     const hasEmail = EMAIL_RE.test(md);
     const hasPhone = PHONE_RE.test(md);
-    if (hasEmail) add('contact', 'Contact info', 'pass', hasPhone ? 'Email and phone found.' : 'Email found (phone optional).');
-    else add('contact', 'Contact info', 'warn', 'No email detected — make sure recruiters can reach you.');
+    if (hasEmail) add('contact', t('diag.contact.label', 'Contact info'), 'pass',
+      hasPhone
+        ? t('diag.contact.both', 'Email and phone found.')
+        : t('diag.contact.emailOnly', 'Email found (phone optional).'));
+    else add('contact', t('diag.contact.label', 'Contact info'), 'warn',
+      t('diag.contact.noEmail', 'No email detected — make sure recruiters can reach you.'));
 
     // Score: pass=full weight, warn=half, fail=zero; normalized to 0–100.
     const weight = { pass: 1, warn: 0.5, fail: 0 };

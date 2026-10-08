@@ -79,6 +79,23 @@
     return [r * Math.cos(a), r * Math.sin(a)];
   }
 
+  // CAR-41 (v1.243.0) — pure per-layer header stats, top-level so the unit
+  // test can run it in isolation. Over the ACTIVE layers' points only:
+  //   located — geocoded (lat set),
+  //   noLoc   — structurally without a location (no candidate place) or
+  //             attempted and unresolvable (geoDone),
+  //   pending — still queued (total − located − noLoc).
+  // One denominator for all three numbers; the old label mixed a geocode
+  // group total with an all-history no-location count and never followed
+  // the layer toggles.
+  function mapLayerStats(points, isActiveLayer) {
+    const vis = (Array.isArray(points) ? points : []).filter((p) => p && isActiveLayer(p.layer));
+    const located = vis.filter((p) => p.lat != null).length;
+    const noLoc = vis.filter((p) => p.lat == null
+      && (!(Array.isArray(p.places) && p.places.length) || p.geoDone)).length;
+    return { located, total: vis.length, noLoc };
+  }
+
   Router.register('map', async () => {
     const c = UI.el;
     const t = (k, f) => I18n.t(k, f);
@@ -254,19 +271,26 @@
 
       // One geocode per distinct place+employer, progressively.
       const byKey = new Map();
-      let noLoc = 0;
       for (const p of points) {
         p.places = [...new Set(p.places.map((x) => String(x || '').trim()).filter(Boolean))];
-        if (!p.places.length) { noLoc++; continue; }
+        if (!p.places.length) continue;
         const k = JSON.stringify([p.places, p.company || '']);
         if (!byKey.has(k)) byKey.set(k, []);
         byKey.get(k).push(p);
       }
       let done = 0;
       const update = () => {
-        status.textContent = t('map.progress', 'Places located') + ': ' + done + '/' + byKey.size
-          + ' · ' + t('map.noLocation', 'Without a location') + ': ' + noLoc;
+        // CAR-41 (v1.243.0) — consistent per-layer denominators (see
+        // mapLayerStats above): located / total / without-a-location are all
+        // counts over the SAME active-layer point set.
+        const s = mapLayerStats(points, (layer) => map.hasLayer(toggles[layer]));
+        status.textContent = t('map.progress', 'Places located') + ': ' + s.located + '/' + s.total
+          + ' · ' + t('map.noLocation', 'Without a location') + ': ' + s.noLoc;
       };
+      // CAR-41 — the header stats follow the layer toggles, so the located
+      // counter is bound to what is actually shown (registered after `update`
+      // exists; Leaflet handlers fire later, but the binding is eager).
+      map.on('overlayadd overlayremove', update);
       // Frame where most postings are (10th–90th percentile box), so a few
       // far-away outliers don't zoom the whole region into one blob.
       const fit = () => {
@@ -296,7 +320,7 @@
             if (pos && pos.lat != null) break;
           }
           done++;
-          if (!pos || pos.lat == null) noLoc += group.length;
+          if (!pos || pos.lat == null) group.forEach((p) => { p.geoDone = true; });
           else group.forEach((p) => { p.lat = pos.lat; p.lon = pos.lon; p.exact = !!pos.exact; });
           // Redraw in batches — cheap, but not per lookup; frame the map once early.
           if (done === 1) fit();

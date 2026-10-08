@@ -410,8 +410,15 @@
         try { d = await API.get('/api/followup'); } catch { d = null; }
         body.innerHTML = '';
         if (!d || d.available !== true) {
-          body.appendChild(c('p', { style: { color: 'var(--foggy)', margin: '0' } },
-            t('fu.unavailable', 'Cadence data is not available — the parent career-ops scripts were not found next to this app.')));
+          // CAR-21 (v1.243.0) — reason-aware: not-found stays muted;
+          // timeout / script-error surface with the server's detail.
+          const reason = (d && d.reason) || '';
+          const notFound = !reason || reason === 'script-not-found';
+          body.appendChild(c('p', {
+            style: { color: notFound ? 'var(--foggy)' : 'var(--danger, #d9534f)', margin: '0' },
+          }, notFound
+            ? t('fu.unavailable', 'Cadence data is not available — the parent career-ops scripts were not found next to this app.')
+            : t('common.error', 'Error') + ': ' + (d.detail || reason)));
           seedBtn.disabled = true;
           return;
         }

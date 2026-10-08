@@ -36,7 +36,7 @@ test('i18n: at least one key parsed (sanity)', () => {
   assert.ok(Object.keys(DICT).length > 50, `parsed ${Object.keys(DICT).length} keys`);
 });
 
-test('i18n: every key covers all 8 languages', () => {
+test('i18n: every key covers all 17 languages', () => {
   // REVIEW-C6 — group by locale so the developer sees, in one glance,
   // which locale needs which keys. The previous flat list mixed locales
   // together which was hard to skim when many keys were missing.
@@ -67,7 +67,7 @@ test('i18n: every key covers all 8 languages', () => {
     }
     console.error(lines.join('\n'));
   }
-  assert.equal(totalMissing, 0, `${totalMissing} translations missing across the 8 locales`);
+  assert.equal(totalMissing, 0, `${totalMissing} translations missing across the 17 locales`);
 });
 
 test('i18n: notFound.* keys present (FIX-C7)', () => {

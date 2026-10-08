@@ -94,6 +94,20 @@ Router.register('deep', async () => {
     }
   }
 
+  // CAR-20 (v1.243.0) — the download name used to have every non-word
+  // byte replaced with an underscore, which smashed every non-ASCII
+  // title ('Резюме — роль' → '______—_____'). Unicode is legal in a
+  // download attribute and in OS filenames; only characters genuinely
+  // unsafe across filesystems are neutralised (kept unicode, per the
+  // ReportExport download precedent).
+  function safeName(name, fallback) {
+    const cleaned = String(name || '')
+      .replace(/[\\/:*?"<>|\u0000-\u001f]/g, ' ')
+      .replace(/\s+/g, ' ')
+      .trim();
+    return cleaned || fallback;
+  }
+
   function showResult(title, markdown, opts = {}) {
     out.innerHTML = '';
     const card = c('div', { className: 'card' });
@@ -113,9 +127,13 @@ Router.register('deep', async () => {
         }, '×'),
         c('button', {
           className: 'btn btn-ghost btn-sm',
-          onClick: () => {
-            navigator.clipboard.writeText(markdown);
-            UI.toast(t('eval.copied', 'Copied'), 'success');
+          // CAR-20 (v1.243.0) — writeText is async and can reject
+          // (permission denied, non-secure context); the fire-and-forget
+          // call still toasted "Copied" on failure. Await it and fall
+          // back to the manual-copy hint (existing auto.copyFail key).
+          onClick: async () => {
+            try { await navigator.clipboard.writeText(markdown); UI.toast(t('eval.copied', 'Copied'), 'success'); }
+            catch { UI.toast(t('auto.copyFail', 'Copy failed — select the text and copy manually.'), 'error'); }
           },
         }, '📋 ' + t('eval.copy', 'Copy')),
         c('button', {
@@ -124,7 +142,7 @@ Router.register('deep', async () => {
             const blob = new Blob([markdown], { type: 'text/markdown' });
             const a = document.createElement('a');
             a.href = URL.createObjectURL(blob);
-            a.download = (opts.saved || (title || 'deep') + '.md').replace(/[^\w.-]/g, '_');
+            a.download = opts.saved ? safeName(opts.saved, 'deep.md') : safeName(title, 'deep') + '.md';
             a.click();
             URL.revokeObjectURL(a.href);
           },
@@ -151,22 +169,39 @@ Router.register('deep', async () => {
         }, '📄 ' + t('common.generatePdf', 'Generate PDF')),
       ]),
     ]);
-    // UX-A1 (v1.58.54) — defensive structure check: the canonical
-    // Deep-research brief promised in career-ops.org/docs has 6 H2
-    // sections (Company snapshot / Engineering culture / Recent news
-    // / Glassdoor / Interview process / Negotiation leverage). The
-    // root prompt-layer fix lives in the parent project (C-1, blocked)
-    // — until it lands, when the saved brief is meta-narration with
-    // fewer than 3 of these sections we surface a non-blocking warning
-    // explaining what the brief should look like, with a link to the
-    // canonical reference. Defensive only — never rewrites the brief.
-    function looksLikeStructuredBrief(md) {
-      const expected = ['Company snapshot', 'Engineering culture', 'Recent news',
-                        'Glassdoor', 'Interview process', 'Negotiation leverage'];
-      const found = expected.filter((h) => new RegExp('^##\\s+' + h, 'mi').test(md));
-      return found.length >= 3;
-    }
-    const briefWarning = !looksLikeStructuredBrief(markdown || '')
+  // UX-A1 (v1.58.54) — defensive structure check: the canonical
+  // Deep-research brief promised in career-ops.org/docs has 6 H2
+  // sections (Company snapshot / Engineering culture / Recent news
+  // / Glassdoor / Interview process / Negotiation leverage). The
+  // root prompt-layer fix lives in the parent project (C-1, blocked)
+  // — until it lands, when the saved brief is meta-narration with
+  // fewer than 3 of these sections we surface a non-blocking warning
+  // explaining what the brief should look like, with a link to the
+  // canonical reference. Defensive only — never rewrites the brief.
+  // CAR-20 (v1.243.0) — the matcher was an exact `^## <English name>`
+  // regex, so it false-positived on numbered headings (`## 1. Company
+  // snapshot`) and on localized briefs (the parent generates the
+  // sections in the UI language). A heading now counts when its
+  // enumeration prefix is stripped and the name matches; and a brief
+  // that carries a real section skeleton (≥3 `##` headings) is
+  // structured regardless of its language — the warning targets
+  // meta-narration, which has no `##` skeleton at all.
+  function looksLikeStructuredBrief(md) {
+    const src = String(md || '');
+    const headings = src.split(/\r?\n/)
+      .filter((l) => /^##\s+\S/.test(l))
+      .map((l) => l.replace(/^##\s+/, '').trim());
+    const norm = (s) => s.toLowerCase()
+      .replace(/^\d+\s*[.)\-:–—]?\s*/, '')
+      .replace(/[*_`]/g, '')
+      .trim();
+    const expected = ['Company snapshot', 'Engineering culture', 'Recent news',
+                      'Glassdoor', 'Interview process', 'Negotiation leverage'];
+    const found = headings.filter((h) => expected.includes(norm(h))).length;
+    return found >= 3 || headings.length >= 3;
+  }
+
+  const briefWarning = !looksLikeStructuredBrief(markdown || '')
       ? c('div', { className: 'brief-warning', role: 'status' }, [
           c('strong', null, t('deep.briefUnstructured.title',
             "This brief doesn't match the canonical 6-section structure")),
@@ -190,9 +225,10 @@ Router.register('deep', async () => {
       c('p', { style: { color: 'var(--foggy)' } }, message || ''),
       c('pre', { className: 'console' }, prompt),
       c('div', { className: 'flex gap-3 mt-3' }, [
-        c('button', { className: 'btn btn-primary', onClick: () => {
-          navigator.clipboard.writeText(prompt);
-          UI.toast(t('eval.copied', 'Copied'), 'success');
+        // CAR-20 (v1.243.0) — writeText awaited with a real failure path.
+        c('button', { className: 'btn btn-primary', onClick: async () => {
+          try { await navigator.clipboard.writeText(prompt); UI.toast(t('eval.copied', 'Copied'), 'success'); }
+          catch { UI.toast(t('auto.copyFail', 'Copy failed — select the text and copy manually.'), 'error'); }
         }}, '📋 ' + t('eval.copy', 'Copy prompt')),
         // Re-submits the same form with run:true so users who hit
         // "Generate prompt" first can still get the LLM result inline
@@ -229,7 +265,12 @@ Router.register('deep', async () => {
         showResult(`${company.value.trim()}${role.value.trim() ? ' — ' + role.value.trim() : ''}`, r.markdown, { saved: r.saved });
         loadArchive();
       } else {
-        showPrompt(r.prompt, t('deep.geminiNoOutput', 'Gemini returned no output. Showing the prompt — paste it into Claude Code instead.'));
+        // CAR-20 (v1.243.0) — the old message hard-named Gemini while the
+        // active provider can be any of the seven; prefer the server's
+        // own (provider-neutral) message when it supplies one. (A
+        // provider-neutral dict key to replace deep.geminiNoOutput is
+        // still worth a follow-up — reported to the parent session.)
+        showPrompt(r.prompt, r.message || t('deep.geminiNoOutput', 'Gemini returned no output. Showing the prompt — paste it into Claude Code instead.'));
       }
     } catch (e) {
       out.innerHTML = '';

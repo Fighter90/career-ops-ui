@@ -15,7 +15,8 @@
      bottom gap there — harmless. */
   bottom: calc(var(--space-5) + 60px + var(--space-3));
   background: var(--hof);
-  color: white;
+  /* CAR-23 — `white` on dark's near-white --hof was 1.10:1; --paper flips with the theme. */
+  color: var(--paper);
   padding: 14px 20px;
   border-radius: var(--radius);
   box-shadow: var(--shadow-lg);
@@ -31,7 +32,8 @@
   overflow-y: auto;
   animation: slide-in 200ms ease-out;
 }
-.toast.error { background: var(--rausch); }
+/* CAR-23 — variant fills AA with the inherited --paper text in BOTH themes. */
+.toast.error { background: var(--rausch-dark); }
 .toast.success { background: var(--kazan); }
 /* U-4 (v1.58.24) — collapsible technical detail inside the toast. The
    human sentence stays at the top; the "(METHOD /path · HTTP NNN)"
@@ -43,7 +45,8 @@
 .toast .toast-detail > summary::marker { content: ''; }
 .toast .toast-detail > summary::after { content: ' ▾'; opacity: .7; }
 .toast .toast-detail[open] > summary::after { content: ' ▴'; }
-.toast .toast-detail > code { display: block; margin-top: 4px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: var(--font-size-xs); background: rgba(0,0,0,.15); padding: 4px 6px; border-radius: 4px; }
+/* CAR-23 — theme-neutral paper chip: the old black blend fell below AA on the bright fills in dark. */
+.toast .toast-detail > code { display: block; margin-top: 4px; font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: var(--font-size-xs); background: var(--paper); color: var(--hof); padding: 4px 6px; border-radius: 4px; }
 
 /* U-8 (v1.58.28) — collapsible <details> wrapper around the generated
    prompt on the 7 mode pages. Default closed so the page chrome and
@@ -91,7 +94,7 @@
 .hero-banner__msg { margin: 0; font-size: 14px; flex: 1; }
 
 .help-toc a.toc-current {
-  color: var(--rausch, #ff385c);
+  color: var(--rausch-text); /* CAR-23: AA text variant */
   font-weight: 600;
   border-left: 3px solid var(--rausch, #ff385c);
   padding-left: 8px;
@@ -121,8 +124,9 @@
 .notif-badge {
   position: absolute;
   top: -4px; right: -4px;
-  background: var(--rausch, #ff385c);
-  color: #fff;
+  /* CAR-23 — same white-on-rausch defect class: --rausch-dark/--paper pair (4.57/4.95). */
+  background: var(--rausch-dark, #ff385c);
+  color: var(--paper);
   min-width: 16px; height: 16px;
   border-radius: 8px;
   font-size: 10px; font-weight: 700;
@@ -318,7 +322,7 @@
   display: block;
   font-size: var(--font-size-sm);
   font-weight: 600;
-  color: var(--rausch);
+  color: var(--rausch-text); /* CAR-23: AA text variant on --paper */
   margin-bottom: 4px;
 }
 .scan-progress {
@@ -408,11 +412,13 @@
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
 }
 
+/* v1.243.0 — the ≤768 block no longer re-declares off-canvas .sidebar/.main: app.css's
+   ≤900 block already applies (769-900 showed the pinned sidebar OVER the content).
+   CAR-43 — the shell gains a FAB tail (60px + 24px offset) so the last row never
+   scrolls under the fixed docs launcher on phones. */
 @media (max-width: 768px) {
-  .sidebar { transform: translateX(-100%); transition: transform var(--transition); }
-  .main { margin-left: 0; }
   .topbar { padding: 0 var(--space-4); }
-  .content { padding: var(--space-5) var(--space-4); }
+  .content { padding: var(--space-5) var(--space-4); padding-bottom: calc(var(--space-4) + 84px); }
   .page-title { font-size: 24px; }
 }
 
@@ -485,8 +491,8 @@
   margin-left: 0;
   margin-right: var(--sidebar-w);
 }
-/* Sidebar-toggle floats top-left in RTL. */
-[dir="rtl"] .sidebar-toggle { left: auto; right: 8px; }
+
+/* CAR-23 v1.243.0 — the old `[dir="rtl"] .sidebar-toggle` / `.notif-drawer__close` rules are GONE (flex children, never positioned). */
 
 /* Notifications drawer slides in from / docks to the left. */
 [dir="rtl"] .notif-drawer {
@@ -504,11 +510,14 @@
 [dir="rtl"] .notif-item--error   { border-right-color: var(--rausch, #ff385c); }
 [dir="rtl"] .notif-item--success { border-right-color: var(--kazan, #00a699); }
 [dir="rtl"] .notif-badge { right: auto; left: -4px; }
-[dir="rtl"] .notif-drawer__close { right: auto; left: 8px; }
 
 /* Markdown content: tables, blockquotes, and prose align to the right. */
-[dir="rtl"] .md th,
-[dir="rtl"] .md td { text-align: right; }
+[dir="rtl"] .md th, [dir="rtl"] .md td { text-align: right; }
+/* CAR-23 v1.243.0 — data tables mirror too (`.tbl` hardcoded left), the toc rail
+   flips to the right edge, and the score glyph margin mirrors. */
+[dir="rtl"] table.tbl th, [dir="rtl"] table.tbl td { text-align: right; }
+[dir="rtl"] .help-toc a.toc-current { border-left: 0; border-right: 3px solid var(--rausch, #ff385c); padding-left: 0; padding-right: 8px; margin-left: 0; margin-right: -11px; }
+[dir="rtl"] .score-high::before, [dir="rtl"] .score-mid::before, [dir="rtl"] .score-low::before { margin-right: 0; margin-left: 6px; }
 [dir="rtl"] .md blockquote {
   border-left: 0;
   border-right: 3px solid var(--rausch);
@@ -521,15 +530,12 @@
 [dir="rtl"] .health-check-row > :last-child { margin-left: 0; margin-right: auto; }
 [dir="rtl"] .scan-error-banner .btn { margin-left: 0; margin-right: var(--space-3); }
 
-/* Off-canvas sidebar slides from the right on mobile. */
-@media (max-width: 768px) {
+/* Off-canvas sidebar slides from the right on mobile. CAR-23 v1.243.0 — breakpoint aligned
+   with the LTR mobile layout (900, not 768): 769-900 showed the sidebar ON TOP of content. */
+@media (max-width: 900px) {
   [dir="rtl"] .sidebar { transform: translateX(100%); }
   [dir="rtl"] body.sidebar-open .sidebar { transform: translateX(0); }
   [dir="rtl"] .main { margin-left: 0 !important; margin-right: 0 !important; }
-}
-@media (max-width: 600px) {
-  [dir="rtl"] .sidebar { transform: translateX(100%); }
-  [dir="rtl"] .main { margin-right: 0; }
 }
 
 /* ──────────────────────────────────────────────────────────────────────────
@@ -566,7 +572,9 @@
 }
 
 .docs-fab {
-  position: fixed; right: 24px; bottom: 24px; z-index: var(--z-fab);
+  /* CAR-23 — the fixed launcher was z:1150, ABOVE the aria-modal dialog (z:200): with
+     a modal open it stayed visible and took focus over the dialog. Capped below it. */
+  position: fixed; right: 24px; bottom: 24px; z-index: calc(var(--z-modal) - 1);
   width: 60px; height: 60px; border: none; border-radius: 50%;
   background: var(--fab-grad); color: #fff; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
@@ -578,7 +586,7 @@
 .docs-fab:focus-visible { outline: 3px solid var(--fab-accent); outline-offset: 3px; }
 
 .docs-fab__panel {
-  position: fixed; right: 24px; bottom: 96px; z-index: var(--z-fab);
+  position: fixed; right: 24px; bottom: 96px; z-index: calc(var(--z-modal) - 1); /* below the dialog, same cap as the launcher */
   width: 380px; max-width: calc(100% - 40px);
   height: 560px; max-height: calc(100vh - 130px);
   display: flex; flex-direction: column;

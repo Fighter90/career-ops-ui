@@ -5,6 +5,19 @@
  * when a locale file is missing. Builds a sticky table of contents
  * from <h2> headings synchronously (no setTimeout race).
  */
+
+// CAR-42 (v1.243.0) — the single parser for the help-view deep link, kept
+// top-level so the unit test can run it in isolation (the view mounts on
+// Router.register at import). '#/help?h=help-h-3' → 'help-h-3'; a plain
+// '#/help' (or a hash from another view) → null. Router.current() stays
+// compatible because it splits the route name off BEFORE the '?'
+// ('#/help?h=x'.split('?')[0] === 'help').
+function helpSectionIdFromHash(hash) {
+  const q = String(hash || '').split('?')[1] || '';
+  const id = new URLSearchParams(q).get('h');
+  return id ? decodeURIComponent(id) : null;
+}
+
 Router.register('help', async () => {
   const c = UI.el;
   const t = (k, f) => I18n.t(k, f);
@@ -62,6 +75,18 @@ Router.register('help', async () => {
         e.preventDefault();
         const target = document.getElementById(h.id);
         if (!target) return;
+        // CAR-42 (v1.243.0) — TOC clicks scrolled but pushed no history
+        // entry, so Back left the help page entirely instead of returning
+        // to the previous section. history.pushState — NOT a hash
+        // assignment, which would fire hashchange, make the router tear
+        // the view down and scroll back to the top mid-read — records the
+        // jump silently.
+        // The `?h=` query keeps Router.current() parsing the route name
+        // cleanly ('#/help?h=x'.split('?')[0] === 'help'); on Back/Forward
+        // the re-rendered view re-reads it and scrolls to the recorded
+        // section (deepLinkScroll below). helpSectionIdFromHash (top-level)
+        // is the single parser, unit-tested in isolation.
+        try { history.pushState(null, '', '#/help?h=' + encodeURIComponent(h.id)); } catch { /* jsdom */ }
         target.scrollIntoView({ behavior: 'smooth', block: 'start' });
         // WS2 #27 — move keyboard/SR focus to the section, not just the
         // viewport. Headings aren't focusable by default → tabindex=-1.
@@ -248,6 +273,26 @@ Router.register('help', async () => {
   };
   window.addEventListener('hashchange', cleanup);
 
+  // CAR-42 (v1.243.0) — deep-link + Back/Forward support: '#/help?h=<id>'
+  // scrolls to that section once the router has mounted the article (the
+  // headings are detached nodes until then, hence the double rAF — the same
+  // mount-ordering pattern the scroll-spy uses). Best-effort: an unknown id
+  // just stays at the top.
+  const deepLinkTarget = (() => {
+    const id = helpSectionIdFromHash(location.hash);
+    return id ? document.getElementById(id) : null;
+  })();
+  if (deepLinkTarget) {
+    requestAnimationFrame(() => requestAnimationFrame(() => {
+      deepLinkTarget.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      deepLinkTarget.setAttribute('tabindex', '-1');
+      deepLinkTarget.focus({ preventScroll: true });
+    }));
+  }
+
+  // CAR-42 — TopNav clicks on '#/help' (no ?h=) render the page top — the
+  // parser returns null and nothing scrolls; the previous deep link stays in
+  // the history stack where Back left it.
   return c('div', null, [
     c('header', { className: 'page-header' }, [
       c('div', null, [

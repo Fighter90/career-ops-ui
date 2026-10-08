@@ -10,6 +10,13 @@
  * The plan is forward-looking guidance grounded in the user's materials — it
  * never fabricates facts about their history.
  */
+// CAR-20 (v1.243.0) — the generated/edited plan used to vanish on any
+// in-place re-render (language switch → Router.render(); the guard
+// flows have no hashchange on this route): the view refetched and
+// rebuilt the editor from disk, losing the user's edits. The unsaved
+// buffer lives at module scope (same discipline as cv.js's
+// cvDirtyBuffer) and is restored into the editor on the next render.
+let planBuffer = null;
 Router.register('career-plan', async () => {
   const c = UI.el;
   const t = (k, f) => I18n.t(k, f);
@@ -19,10 +26,25 @@ Router.register('career-plan', async () => {
   root.appendChild(c('p', { className: 'page-subtitle' },
     t('plan.subtitle', 'A concrete development plan built from your own CV and profile — goals, a month-by-month roadmap, skills, and pitfalls. Generate it, edit it, save it, export it.')));
 
-  // Load any saved plan (empty-safe).
+  // Load any saved plan. CAR-20 (v1.243.0) — a failed GET used to be
+  // swallowed into `saved = ''`, i.e. an empty editor with Save armed:
+  // one click overwrote config/career-plan.md with blanks. The failure
+  // is surfaced, and Save stays gated until content actually loads.
+  let planLoaded = false;
+  let planLoadError = null;
   let saved = '';
-  try { ({ markdown: saved } = await API.get('/api/career-plan')); } catch { saved = ''; }
-  saved = saved || '';
+  try {
+    ({ markdown: saved } = await API.get('/api/career-plan'));
+    saved = saved || '';
+    planLoaded = true;
+  } catch (e) {
+    planLoadError = (e && e.message) || String(e);
+  }
+  if (!planLoaded) {
+    root.appendChild(c('div', { className: 'empty' }, [
+      c('p', { style: { color: 'var(--danger, #d9534f)' } }, planLoadError),
+    ]));
+  }
 
   // ── controls ──
   const horizon = c('select', { className: 'lang-select', 'aria-label': t('plan.horizon', 'Horizon') }, [
@@ -48,9 +70,20 @@ Router.register('career-plan', async () => {
   // ── editable plan + actions ──
   const editor = c('textarea', { className: 'input', rows: '22', 'data-i18n-placeholder': 'plan.editorPh', style: { width: '100%', fontFamily: 'inherit' } });
   editor.placeholder = t('plan.editorPh', 'Your plan will appear here. Generate one, or write your own — then Save.');
-  editor.value = saved;
+  // CAR-20 — re-seed from the module buffer when one exists (restores
+  // the user's unsaved plan across re-renders).
+  editor.value = planBuffer != null ? planBuffer : saved;
+  editor.addEventListener('input', () => {
+    planBuffer = editor.value === saved ? null : editor.value;
+  });
 
-  const saveBtn = c('button', { className: 'btn btn-primary', type: 'button' }, t('plan.save', 'Save plan'));
+  // CAR-20 — Save is armed only once the plan actually loaded (or an
+  // unsaved buffer exists from a previous render — that content is
+  // known-good user text, not a failed read).
+  const saveBtn = c('button', {
+    className: 'btn btn-primary', type: 'button',
+    disabled: !planLoaded && planBuffer == null,
+  }, t('plan.save', 'Save plan'));
   const previewBtn = c('button', { className: 'btn btn-ghost', type: 'button' }, t('plan.preview', 'Preview'));
   const preview = c('div');
 
@@ -74,6 +107,9 @@ Router.register('career-plan', async () => {
       const res = await API.post('/api/career-plan/generate', { run: true, horizon: horizon.value, focus: focus.value, lang: (I18n.getLang && I18n.getLang()) || 'en' });
       if (res && res.markdown) {
         editor.value = res.markdown;
+        // CAR-20 — a generated plan is unsaved: track it in the module
+        // buffer so a re-render (language switch) keeps it.
+        planBuffer = res.markdown;
         // Show the plan as READABLE formatted text immediately (no raw tags) —
         // the textarea below stays available for editing. Preview toggles it.
         preview.textContent = '';
@@ -96,9 +132,17 @@ Router.register('career-plan', async () => {
   });
 
   saveBtn.addEventListener('click', async () => {
+    // CAR-20 (v1.243.0) — never save over the file with content we could
+    // not verify (a failed read must not become a blank overwrite).
+    if (!planLoaded) {
+      UI.toast(planLoadError || t('common.error', 'Error'), 'error');
+      return;
+    }
     saveBtn.disabled = true;
     try {
       await API.put('/api/career-plan', { markdown: editor.value });
+      saved = editor.value; // the new baseline
+      planBuffer = null;
       UI.toast(t('plan.saved', 'Career plan saved'), 'success');
     } catch (err) {
       UI.toast((err && err.message) || t('plan.saveFailed', 'Could not save the plan'), 'error');

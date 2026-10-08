@@ -21,8 +21,8 @@
   // code = ISO-3166 alpha-2 (lowercased). flag = regional-indicator emoji.
   // aliases = lowercased names/abbreviations that may appear in a location.
   const COUNTRIES = [
-    { code: 'us', name: 'United States', flag: '🇺🇸', aliases: ['united states', 'usa', 'u.s.a', 'u.s.', 'america', 'estados unidos'] },
-    { code: 'gb', name: 'United Kingdom', flag: '🇬🇧', aliases: ['united kingdom', 'uk', 'u.k.', 'great britain', 'britain', 'england', 'scotland', 'wales', 'northern ireland'] },
+    { code: 'us', name: 'United States', flag: '🇺🇸', aliases: ['united states', 'united states of america', 'usa', 'u.s.a', 'u.s.', 'estados unidos'] },
+    { code: 'gb', name: 'United Kingdom', flag: '🇬🇧', aliases: ['united kingdom', 'uk', 'u.k.', 'great britain', 'britain', 'england', 'scotland', 'northern ireland'] },
     { code: 'de', name: 'Germany', flag: '🇩🇪', aliases: ['germany', 'deutschland', 'alemania', 'allemagne'] },
     { code: 'fr', name: 'France', flag: '🇫🇷', aliases: ['france', 'frankreich'] },
     { code: 'es', name: 'Spain', flag: '🇪🇸', aliases: ['spain', 'españa', 'espana', 'espagne'] },
@@ -84,7 +84,10 @@
     'austin': 'us', 'boston': 'us', 'chicago': 'us', 'denver': 'us', 'atlanta': 'us',
     'mountain view': 'us', 'palo alto': 'us', 'san jose': 'us', 'washington': 'us', 'miami': 'us',
     // UK
-    london: 'gb', manchester: 'gb', edinburgh: 'gb', cambridge: 'gb', bristol: 'gb', glasgow: 'gb',
+    london: 'gb', manchester: 'gb', edinburgh: 'gb', bristol: 'gb', glasgow: 'gb',
+    // ('cambridge' deliberately absent — Cambridge MA vs Cambridge UK is not
+    // resolvable from a location string; the row stays under "All countries"
+    // and an explicit 'United Kingdom'/'UK' segment still resolves.)
     // DE
     berlin: 'de', munich: 'de', münchen: 'de', hamburg: 'de', frankfurt: 'de', cologne: 'de', köln: 'de', stuttgart: 'de',
     // FR
@@ -104,7 +107,10 @@
     // Americas
     toronto: 'ca', vancouver: 'ca', montreal: 'ca', montréal: 'ca',
     'mexico city': 'mx', 'são paulo': 'br', 'sao paulo': 'br', 'rio de janeiro': 'br',
-    'buenos aires': 'ar', santiago: 'cl', bogotá: 'co', bogota: 'co',
+    'buenos aires': 'ar', bogotá: 'co', bogota: 'co',
+    // ('santiago' deliberately absent — Santiago de Chile vs Santiago de
+    // Compostela (ES) is not resolvable from a location string; an explicit
+    // 'Chile' segment still resolves.)
     // APAC / MENA / Africa
     sydney: 'au', melbourne: 'au', auckland: 'nz', bangalore: 'in', bengaluru: 'in', mumbai: 'in',
     delhi: 'in', hyderabad: 'in', pune: 'in', tokyo: 'jp', osaka: 'jp', seoul: 'kr',
@@ -131,6 +137,14 @@
     return new RegExp(`(^|[^\\p{L}])${esc}([^\\p{L}]|$)`, 'u').test(haystack);
   }
 
+  // Sub-national geography that CONTAINS a country-name substring but is NOT
+  // a country mention ("New Mexico" ⊃ "Mexico", "New South Wales" ⊃ "Wales",
+  // "Latin America" ⊃ "America"). Stripped before alias/city matching so the
+  // longest-phrase pass can't misfire on it. (v1.243.0, CAR-18)
+  const NOT_COUNTRY = [
+    'new mexico', 'new south wales', 'latin america', 'santiago de compostela',
+  ];
+
   /**
    * Best-effort country for a free-text location. Returns {code,name,flag} or null.
    * @param {string} location
@@ -139,16 +153,41 @@
     if (typeof location !== 'string') return null;
     const s = location.toLowerCase().trim();
     if (!s) return null;
+    const guarded = NOT_COUNTRY.reduce((acc, p) => acc.split(p).join(' '), s);
 
-    // 1) explicit country name/alias anywhere in the string
-    for (const c of COUNTRIES) {
-      for (const a of c.aliases) {
-        if (aliasHit(s, a)) return { code: c.code, name: c.name, flag: c.flag };
+    // 1) A comma segment that IS a country name/alias is the strongest
+    //    signal ('San Francisco, CA, USA' → usa, 'Berlin, Germany' → de).
+    for (const seg of s.split(',')) {
+      const segTrim = seg.trim();
+      if (!segTrim) continue;
+      for (const c of COUNTRIES) {
+        if (c.aliases.includes(segTrim)) return { code: c.code, name: c.name, flag: c.flag };
       }
     }
-    // 2) a known city token
+    // 2) Longest matching country phrase anywhere in the string — longest
+    //    wins so a whole country name ('…, Australia') beats a fragment it
+    //    happens to contain ('New South Wales'). Previously the FIRST alias
+    //    in array order won, which let 'wales'/'america'/'mexico' impersonate
+    //    a country from inside sub-national geography. When two or more
+    //    DISTINCT countries are mentioned the string is ambiguous prose
+    //    ("relocation to Netherlands ok") → conservative null (the module
+    //    never guesses; the row stays under "All countries").
+    const bestByCountry = new Map();
+    for (const c of COUNTRIES) {
+      for (const a of c.aliases) {
+        if (!aliasHit(guarded, a)) continue;
+        const prev = bestByCountry.get(c.code);
+        if (!prev || a.length > prev.alias.length) bestByCountry.set(c.code, { c, alias: a });
+      }
+    }
+    if (bestByCountry.size === 1) {
+      const only = [...bestByCountry.values()][0].c;
+      return { code: only.code, name: only.name, flag: only.flag };
+    }
+    if (bestByCountry.size > 1) return null;
+    // 3) a known city token
     for (const city of Object.keys(CITIES)) {
-      if (aliasHit(s, city)) {
+      if (aliasHit(guarded, city)) {
         const c = BY_CODE[CITIES[city]];
         if (c) return { code: c.code, name: c.name, flag: c.flag };
       }

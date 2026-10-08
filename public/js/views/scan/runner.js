@@ -7,7 +7,7 @@
  * (de-indent only) so behaviour is byte-for-byte identical; loaded via <script src>
  * BEFORE views/scan.js.
  *
- * Factory: `window.createScanRunner(ctx)` → { runScanAll, stopScan }.
+ * Factory: `window.createScanRunner(ctx)` → { runScanAll, stopScan, teardown }.
  *   ctx = { consoleEl, statusRegion, errBanner,
  *           scanProgress, scanProgressBar, scanProgressLabel, scanProgressWrap,
  *           scanBtn, stopBtn, dryRun, companySelect, maxPerSource,
@@ -19,6 +19,9 @@
  *     Both files are classic <script> tags, so those top-level bindings live in
  *     the shared global lexical environment — the runner references them directly,
  *     exactly as the pre-split single file did.
+ *   - `teardown()` (v1.243.0, views-3) is the navigate-away hook: scan.js
+ *     stashes the runner at module scope and its hashchange handler closes an
+ *     in-flight EventSource so the stream cannot outlive its view.
  */
 (function () {
   window.createScanRunner = function (ctx) {
@@ -82,6 +85,23 @@
       __cancelActiveScanPoll();
       appendMeta(consoleEl, '\n■ ' + t('scan.stopped', 'stopped') + '\n');
       announce(t('scan.statusStopped', 'Scan stopped'));
+      setScanRunning(false);
+    }
+
+    // v1.243.0 (views-3) — the navigate-away hook, owned at scan.js module
+    // scope (the hashchange handler calls it via __activeScanRunner). Closing
+    // the EventSource used to happen only through Stop: navigating away
+    // mid-scan orphaned the stream (it kept streaming into detached nodes,
+    // the server kept running, and the next #/scan visit hit SCAN_BUSY with
+    // no visible way to stop the orphan). teardown() is the silent variant:
+    // close the stream + poll, end run-state — no console line, no toast,
+    // the user has already left the page. The server-side scan itself
+    // continues; that is the honest contract (a closed SSE connection does
+    // not kill the child process) and the results still land in the shared
+    // last-scan snapshot the next visit reads.
+    function teardown() {
+      if (activeES) { try { activeES.close(); } catch { /* already closed */ } activeES = null; }
+      __cancelActiveScanPoll();
       setScanRunning(false);
     }
 
@@ -271,6 +291,8 @@
       el.scrollTop = el.scrollHeight;
     }
 
-    return { runScanAll, stopScan };
+    // v1.243.0 (views-3) — teardown() exported for the route-change cleanup;
+    // stopScan stays the user-visible control.
+    return { runScanAll, stopScan, teardown };
   };
 })();

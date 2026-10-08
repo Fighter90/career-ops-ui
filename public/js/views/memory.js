@@ -18,8 +18,23 @@ Router.register('memory', async () => {
   root.appendChild(c('p', { className: 'page-subtitle' },
     t('mem.subtitle', 'A short note the assistant keeps in mind on every task — your preferences and how you like to work. It never becomes a source of new facts about you.')));
 
+  // CAR-21 (v1.243.0) — LOAD FIRST, fail closed. A failed GET used to be
+  // swallowed into `markdown = ''`: the view then rendered an EMPTY editor
+  // with Save armed, and one click overwrote the saved note with ''. On a
+  // load failure we surface the error (role=alert) and return WITHOUT
+  // mounting the editor — Save cannot overwrite what never loaded (same
+  // fail-closed shape #/config uses). An empty note is a legitimate
+  // successful load (first run), so the gate is the promise outcome, not
+  // the string.
   let markdown = '';
-  try { ({ markdown } = await API.get('/api/memory')); } catch { markdown = ''; }
+  try {
+    ({ markdown } = await API.get('/api/memory'));
+  } catch (err) {
+    root.appendChild(c('div', {
+      className: 'empty', role: 'alert', style: { border: 'none' },
+    }, (err && err.message) || t('common.error', 'Error')));
+    return root;
+  }
 
   // aria-label mirrors the localized placeholder (placeholder alone is not
   // a reliable accessible name once the field has content) — no new keys.

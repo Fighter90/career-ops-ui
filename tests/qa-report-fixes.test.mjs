@@ -279,10 +279,10 @@ test('UX-A7 (v1.58.57): cost-line auto-refreshes when LLM_PROVIDER changes (prov
 
   const api = read('public', 'js', 'api.js');
   assert.match(api,
-    /document\.addEventListener\('providers-changed', refreshCostLine\)/,
+    /document\.addEventListener\('providers-changed',\s*refreshCostLine\b/,
     'UI.providerCostHint must subscribe refreshCostLine to providers-changed');
   assert.match(api,
-    /document\.addEventListener\('visibilitychange', onVisibility\)/,
+    /document\.addEventListener\('visibilitychange',\s*onVisibility\b/,
     'UI.providerCostHint must also refresh on tab refocus (cross-tab provider switch)');
 
   // All 4 advisor views call UI.providerCostHint(t).
@@ -627,7 +627,10 @@ test('UX-D-I (v1.58.41): cost-hint re-fetches on visibility-change + on `provide
     'providerCostHint must extract a named refreshCostLine() function');
   assert.match(api, /document\.addEventListener\('visibilitychange',[^)]+\)/,
     'cost-hint must subscribe to visibilitychange');
-  assert.match(api, /document\.addEventListener\('providers-changed',\s*refreshCostLine\)/,
+  // v1.243.0 — the subscription now carries an AbortSignal (the hint removes
+  // its own document listeners once the node is detached), so the assertion
+  // no longer pins a literal closing paren after `refreshCostLine`.
+  assert.match(api, /document\.addEventListener\('providers-changed',\s*refreshCostLine\b/,
     "cost-hint must subscribe to the 'providers-changed' CustomEvent");
 
   // Config save path must broadcast the event so in-page cost lines refresh.
@@ -1181,7 +1184,10 @@ test('v1.58.16: btn-primary/btn-danger hover no longer flickers (gradient stays,
   assert.match(css, /\.btn-danger:hover\s*\{[^}]*filter:\s*brightness\(/,
     "'.btn-danger:hover' must dim via filter: brightness()");
   // And `filter` must be in `.btn`'s transition list so the dim animates.
-  assert.match(css, /\.btn\s*\{\s*transition:[^}]*filter\s+var\(--transition\)/m,
+  // (v1.243.0: the standalone duplicate `.btn { transition: … }` re-declaration
+  // was folded into the base `.btn` rule to hold the 800-LOC file contract —
+  // the cascaded value is unchanged, so the assertion now reads the block.)
+  assert.match(css, /\.btn\s*\{[^}]*transition:[^}]*filter\s+var\(--transition\)/m,
     '.btn transition must include `filter var(--transition)` so hover dim animates');
 });
 

@@ -21,7 +21,20 @@ Router.register('dashboard', async () => {
   // UX-A15 (v1.58.63) — optional `primary` flag adds a stronger visual
   // weight (larger icon + bolder label) to the most-used tile (Pipeline)
   // so the user's eye lands on the highest-frequency action first.
+  // CAR-20 (v1.243.0) — the sub-labels were supposed to carry live
+  // counts ("3 pending URLs"), but the count only ever lived in the
+  // FALLBACK string, which the dict translation overrides — so no
+  // locale ever showed one. The counts now come from the dashboard
+  // payload itself, keyed by tile route, and are appended to whatever
+  // the dict provides.
+  const QA_COUNTS = {
+    '/pipeline': data.counts.pipeline,
+    '/tracker': data.counts.applications,
+    '/reports': data.counts.reports,
+  };
   function qa(icon, labelKey, labelFallback, subKey, subFallback, route, primary) {
+    const count = QA_COUNTS[route];
+    const sub = t(subKey, subFallback) + (count != null ? ' · ' + count : '');
     return c('button', {
       className: 'qa-tile' + (primary ? ' qa-tile--primary' : ''),
       onClick: () => Router.go(route),
@@ -30,7 +43,7 @@ Router.register('dashboard', async () => {
       c('span', { className: 'qa-icon' }, icon),
       c('span', { className: 'qa-body' }, [
         c('span', { className: 'qa-label' }, t(labelKey, labelFallback)),
-        c('span', { className: 'qa-sub' }, t(subKey, subFallback)),
+        c('span', { className: 'qa-sub' }, sub),
       ]),
     ]);
   }
@@ -95,8 +108,8 @@ Router.register('dashboard', async () => {
     document.addEventListener('visibilitychange', onVisibility);
     document.addEventListener('providers-changed', refresh);
     // M-1 discipline (v1.58.36) — scope listeners to the route lifetime.
-    // Without this, every Router.go('/dashboard') stacks another pair of
-    // listeners on `document` and they fire forever. The cleanup
+    // Without this, every re-visit of the dashboard hash stacks another
+    // pair of listeners on `document` and they fire forever. The cleanup
     // self-detaches the first time the hash leaves `#/dashboard`.
     const cleanup = () => {
       if (!location.hash.startsWith('#/dashboard')) {
@@ -192,7 +205,11 @@ Router.register('dashboard', async () => {
                 const fresh = await API.get('/api/dashboard');
                 // Re-execute the route handler so the view rebuilds
                 // with the new counts; cheap (one fetch already done).
-                Router.go('/dashboard');
+                // CAR-20 (v1.243.0) — the old Router.go to our own hash
+                // was a no-op: same hash → no hashchange → no re-render,
+                // so the counters never moved. The router's render()
+                // re-runs the handler regardless.
+                Router.render();
                 return fresh;
               });
               UI.dismissToast();
@@ -360,10 +377,18 @@ function pipelineCard(urls) {
   if (!urls.length) {
     return c('div', { className: 'empty' }, t('pipe.empty'));
   }
+  // CAR-20 (v1.243.0) — pipeline.md rows may be `local:jds/<file>`
+  // references (parsePipeline deliberately passes them through). They
+  // rendered as <a href="local:…"> — a scheme the browser can't
+  // navigate, i.e. a dead link that looked clickable. Only genuine
+  // http(s) URLs become anchors; everything else is a plain tag.
+  const isHttp = (u) => /^https?:\/\//i.test(u);
   return c('div', { className: 'card' },
     c('div', { className: 'flex', style: { flexDirection: 'column', alignItems: 'stretch', gap: '8px' } },
       urls.map((u) =>
-        c('a', { href: u, target: '_blank', rel: 'noopener', className: 'tag', style: { padding: '8px 12px', fontSize: '13px', wordBreak: 'break-all' } }, u)
+        isHttp(u)
+          ? c('a', { href: u, target: '_blank', rel: 'noopener', className: 'tag', style: { padding: '8px 12px', fontSize: '13px', wordBreak: 'break-all' } }, u)
+          : c('span', { className: 'tag', style: { padding: '8px 12px', fontSize: '13px', wordBreak: 'break-all', cursor: 'default' } }, u)
       )
     )
   );

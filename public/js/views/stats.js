@@ -64,6 +64,13 @@ Router.register('stats', async () => {
     svg.setAttribute('width', '100%');
     svg.setAttribute('viewBox', `0 0 ${labelW + barW + 80} ${rows.length * rowH + 8}`);
     svg.setAttribute('role', 'img');
+    // v1.243.0 (views-3) — RTL pages set dir="rtl" on <html>; SVG <text>
+    // inherits CSS `direction`, which mirrored the bar labels and value
+    // captions into unreadable ordering (labels hugged the wrong edge,
+    // values overlapped the bars). Charts are LTR compositions — pin the
+    // inherited property at the svg root so every <text> child reads LTR
+    // in any document direction.
+    svg.style.direction = 'ltr';
     rows.forEach((r, i) => {
       const y = i * rowH + 4;
       const w = Math.max(2, Math.round((r.value / max) * barW));
@@ -248,8 +255,19 @@ Router.register('stats', async () => {
 
   // ── tab 2: my pipeline analytics ───────────────────────────────────────────
   async function renderPipeline() {
-    let rows = [];
-    try { ({ rows } = await API.get('/api/tracker')); } catch { rows = []; }
+    // v1.243.0 (views-3) — the funnel + conversion blocks compare CANONICAL
+    // stages, so fetch the server's alias map alongside the rows and fold
+    // every raw status through TrackerStages.foldStatus first (the same
+    // helper the #/tracker board uses): '**Applied**' and 'aplicado' now
+    // land in 'Applied' instead of splitting off into dead buckets.
+    const [trackerRes, stagesRes] = await Promise.all([
+      API.get('/api/tracker').catch(() => ({})),
+      API.get('/api/tracker/stages').catch(() => ({})),
+    ]);
+    let rows = Array.isArray(trackerRes && trackerRes.rows) ? trackerRes.rows : [];
+    const aliases = (stagesRes && stagesRes.aliases) || {};
+    const TS = window.TrackerStages;
+    const fold = (s) => (TS ? TS.foldStatus(s, aliases) : (s || ''));
     rows = Array.isArray(rows) ? rows : [];
     if (!rows.length) {
       return emptyState(t('stats.pipeEmpty', 'No applications yet — evaluate a few roles and save them to your tracker.'),
@@ -279,10 +297,10 @@ Router.register('stats', async () => {
     });
     wrap.appendChild(section(t('stats.pipeScores', 'Score distribution'), barChart(buckets)));
 
-    // Status funnel (canonical order).
+    // Status funnel (canonical order). v1.243.0 (views-3) — statuses are
+    // FOLDED through the server alias map before counting (stageCountsFolded).
     const order = ['Evaluated', 'Applied', 'Responded', 'Interview', 'Offer', 'Hired', 'Rejected', 'Discarded', 'SKIP'];
-    const counts = {};
-    rows.forEach((r) => { const s = (r.status || 'Evaluated').trim(); counts[s] = (counts[s] || 0) + 1; });
+    const counts = stageCountsFolded(rows, fold);
     const funnel = order.filter((s) => counts[s]).map((s) => ({ label: s, value: counts[s] }));
     Object.keys(counts).filter((s) => !order.includes(s)).forEach((s) => funnel.push({ label: s, value: counts[s] }));
     wrap.appendChild(section(t('stats.pipeStatus', 'Status funnel'), barChart(funnel)));
@@ -308,7 +326,9 @@ Router.register('stats', async () => {
     // Conversion rates — how far applications progress down the funnel.
     // v1.118.0 — 'Hired' (offer accepted) counts as having advanced through
     // every earlier funnel stage, mirroring the canonical funnel order.
-    const advanced = (...statuses) => rows.filter((r) => statuses.includes((r.status || '').trim())).length;
+    // v1.243.0 (views-3) — the comparisons run on FOLDED statuses
+    // (rowsReachedStage), so aliased rows no longer shrink the denominators.
+    const advanced = (...statuses) => rowsReachedStage(rows, fold, statuses);
     const applied = advanced('Applied', 'Responded', 'Interview', 'Offer', 'Hired');
     const responded = advanced('Responded', 'Interview', 'Offer', 'Hired');
     const interviewed = advanced('Interview', 'Offer', 'Hired');
@@ -453,8 +473,13 @@ Router.register('stats', async () => {
     }
 
     function draw() {
-      charts.textContent = '';
-      charts.appendChild(customChart());
+      // L-FOCUS (v1.243.0) — draw() re-attaches the metric/dimension <select>s
+      // (clearing `charts` detaches them, which drops focus to <body>);
+      // restore it once the same nodes are back in the tree.
+      withFocusPreserved(charts, () => {
+        charts.textContent = '';
+        charts.appendChild(customChart());
+      });
       const role = roleSel.value; const country = countrySel.value;
       const money = moneyFmt(curState);
 
@@ -930,3 +955,51 @@ Router.register('stats', async () => {
   await activate('market');
   return root;
 });
+
+// v1.243.0 (views-3) — pure helpers for the "My pipeline" tab, kept top-level
+// so the unit test can run them in isolation (the view itself mounts on
+// Router.register at import). `fold` is injected so the tab passes its
+// server-alias-aware folder and tests can pass an identity fold.
+
+// { <status>: n } counting every row under its FOLDED status. A row with no
+// status counts as 'Evaluated' (the tab's pre-existing convention).
+function stageCountsFolded(rows, fold) {
+  const counts = {};
+  for (const r of (Array.isArray(rows) ? rows : [])) {
+    const s = fold(r && r.status) || 'Evaluated';
+    counts[s] = (counts[s] || 0) + 1;
+  }
+  return counts;
+}
+
+// How many rows currently sit at any of `stages` — the funnel denominators.
+function rowsReachedStage(rows, fold, stages) {
+  const set = new Set(Array.isArray(stages) ? stages : [stages]);
+  return (Array.isArray(rows) ? rows : []).filter((r) => set.has(fold(r && r.status))).length;
+}
+
+// L-FOCUS (v1.243.0) — identical copy of tracker.js's withFocusPreserved:
+// a rebuild that replaces the node a keyboard user is on drops focus to
+// <body>. Kept file-local (lib/ is shared and outside this change's file
+// set); tracker.js, reports.js and stats.js each carry the same copy.
+function withFocusPreserved(container, mutate) {
+  let marker = null;
+  try {
+    const doc = container.ownerDocument || document;
+    const active = doc.activeElement;
+    if (active && active !== container && container.contains(active)) {
+      marker = active.tagName + '|' + active.className + '|' + (active.textContent || '');
+    }
+  } catch { marker = null; }
+  mutate();
+  if (!marker) return;
+  const sel = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+  let candidates = [];
+  try { candidates = Array.from(container.querySelectorAll(sel)); } catch { return; }
+  for (const el of candidates) {
+    if (el.tagName + '|' + el.className + '|' + (el.textContent || '') === marker) {
+      try { el.focus(); } catch { /* detached node */ }
+      return;
+    }
+  }
+}

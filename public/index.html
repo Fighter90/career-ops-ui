@@ -33,7 +33,11 @@
          lets keyboard users jump past the persistent sidebar to the
          content. Visually hidden via .skip-link until it receives focus. -->
     <a href="#content" class="skip-link" data-i18n="a11y.skipToContent">Skip to main content</a>
-    <aside class="sidebar" id="sidebar" role="navigation" aria-label="Main navigation">
+    <!-- v1.243.0 (CAR-23) — the <aside> no longer carries role="navigation" +
+         the hard-coded English "Main navigation" label: the inner <nav>
+         below is THE single navigation landmark (two nav landmarks and an
+         untranslated name were both wrong; the landmark needs no label). -->
+    <aside class="sidebar" id="sidebar">
       <!-- v1.78.1 — the brand logo links to the dashboard (home). A native
            hash <a> is CSP-safe and keyboard-accessible; aria-label gives it a
            clear name so it doesn't just read "career-ops-ui". -->
@@ -199,8 +203,11 @@
            app.js from /api/status/providers: red banner when 0 keys,
            subtle active-provider chip when ≥1. Hidden until resolved. -->
       <div id="onboarding-banner" hidden role="status" aria-live="polite"></div>
-      <header class="topbar" role="banner">
-        <button class="sidebar-toggle" id="sidebar-toggle" aria-label="Toggle menu" aria-controls="sidebar" aria-expanded="false" type="button">☰</button>
+      <!-- v1.243.0 (CAR-23) — no role="banner": a banner landmark nested
+           inside <main> is invalid landmark structure; this is an app bar,
+           not a page banner. -->
+      <header class="topbar">
+        <button class="sidebar-toggle" id="sidebar-toggle" data-i18n-aria-label="nav.toggleMenu" aria-label="Toggle menu" aria-controls="sidebar" aria-expanded="false" type="button">☰</button>
         <div class="searchbar" role="search">
           <label for="global-search" class="visually-hidden" data-i18n="top.search.label">Search companies, roles, or URLs</label>
           <input
@@ -260,7 +267,12 @@
       </header>
       <div class="sidebar-backdrop" id="sidebar-backdrop" aria-hidden="true"></div>
 
-      <section class="content" id="content" role="main" aria-live="polite" tabindex="-1">
+      <!-- v1.243.0 (CAR-23) — no role="main" (the <main class="main"> element
+           is the single main landmark) and no aria-live="polite": the polite
+           region re-announced the ENTIRE view on every route render; route
+           changes already announce via router.js's managed-focus heading.
+           tabindex="-1" stays as the managed-focus/skip-link target. -->
+      <section class="content" id="content" tabindex="-1">
         <div class="loading" data-i18n="common.loading">Loading…</div>
       </section>
     </main>
@@ -296,7 +308,11 @@
       <div class="modal-card">
         <header class="modal-header">
           <h3 id="modal-title"></h3>
-          <button class="modal-close" data-close type="button" aria-label="Close dialog">×</button>
+          <!-- CAR-23 (v1.243.0): "Close dialog" stays an English fallback — NO existing
+               i18n key fits ("fab.close" is the docs-FAB's, "notif.closeAria" is
+               drawer-specific) and new strings are out of scope here. HAND-OFF: add a
+               common.close key (×17 locales) + data-i18n-aria-label="common.close". -->
+          <button class="modal-close" data-close type="button" data-i18n-aria-label="common.closeDialog" aria-label="Close dialog">×</button>
         </header>
         <div class="modal-body" id="modal-body"></div>
       </div>

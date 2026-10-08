@@ -167,6 +167,19 @@ window.API = (function () {
     return data;
   }
 
+  // v1.243.0 (CAR-18) — every 'error' event carries a well-formed payload:
+  // an object with a non-empty string `message`. Consumers (views/cv.js,
+  // views/batch.js) may read data.message without guarding against
+  // undefined; extra fields on a server error frame are preserved.
+  function toErrorPayload(data) {
+    if (typeof data === 'string' && data.trim()) return { message: data };
+    if (data && typeof data === 'object') {
+      if (typeof data.message === 'string' && data.message) return data;
+      return { ...data, message: 'connection lost' };
+    }
+    return { message: 'connection lost' };
+  }
+
   return {
     get: (p) => call('GET', p),
     post: (p, b) => call('POST', p, b),
@@ -184,13 +197,27 @@ window.API = (function () {
     // SSE wrapper
     stream(path, onEvent) {
       const es = new EventSource(path);
-      ['start', 'log', 'done', 'error'].forEach((ev) => {
+      // v1.243.0 (CAR-18) — exactly ONE 'error' delivery per stream, and the
+      // payload is ALWAYS a well-formed object with a string `message`.
+      // Pre-fix a dropped connection fired the named-'error' listener first
+      // (a transport failure is not an SSE frame, so e.data was undefined
+      // and consumers reading data.message — cv.js — threw on it) and THEN
+      // es.onerror delivered a second error. errorDelivered + the data==null
+      // guard below collapse both paths into a single delivery.
+      let errorDelivered = false;
+      const deliverError = (data) => {
+        if (errorDelivered) return;
+        errorDelivered = true;
+        onEvent('error', toErrorPayload(data));
+        es.close();
+      };
+      ['start', 'log', 'done'].forEach((ev) => {
         es.addEventListener(ev, (e) => {
           let data;
           try { data = JSON.parse(e.data); } catch { data = e.data; }
           onEvent(ev, data);
-          // v1.29.2 — close on `error` always; close on `done` UNLESS the
-          // server explicitly set `final: false`. The multi-phase
+          // v1.29.2 — close on `done` UNLESS the server explicitly set
+          // `final: false`. The multi-phase
           // `/api/stream/scan?source=both` endpoint emits one `done` per
           // phase (EN, then RU); the intermediate `done` carries
           // `final: false` so the EventSource stays open for the RU phase.
@@ -199,14 +226,19 @@ window.API = (function () {
           // before. Closing early was the v1.28-and-earlier bug that
           // silently dropped the regional scan phase ("ATS scanned but
           // no Russian sites").
-          if (ev === 'error') { es.close(); return; }
           if (ev === 'done' && (!data || data.final !== false)) es.close();
         });
       });
-      es.onerror = () => {
-        onEvent('error', { message: 'connection lost' });
-        es.close();
-      };
+      // A server-sent `event: error` FRAME carries data; the native
+      // transport-failure error event does not (e.data == null). The latter
+      // is handled solely by es.onerror so it is never delivered twice.
+      es.addEventListener('error', (e) => {
+        if (e.data == null) return;
+        let data;
+        try { data = JSON.parse(e.data); } catch { data = e.data; }
+        deliverError(data);
+      });
+      es.onerror = () => deliverError({ message: 'connection lost' });
       return es;
     },
   };
@@ -783,8 +815,19 @@ window.UI = (function () {
     }
     refreshCostLine();
     const onVisibility = () => { if (!document.hidden) refreshCostLine(); };
-    document.addEventListener('visibilitychange', onVisibility);
-    document.addEventListener('providers-changed', refreshCostLine);
+    // v1.243.0 (CAR-18) — these two document listeners used to live forever:
+    // one leaked pair per mounted view (deep.js / auto.js / evaluate.js /
+    // mode-page.js mount a fresh hint on every visit). The returned node has
+    // no destroy hook and the call sites are view-owned, so the helper cleans
+    // up after itself: once a DOM mutation leaves the node disconnected, the
+    // observer aborts the controller, which removes both listeners in one go.
+    const ac = new AbortController();
+    document.addEventListener('visibilitychange', onVisibility, { signal: ac.signal });
+    document.addEventListener('providers-changed', refreshCostLine, { signal: ac.signal });
+    const lifecycle = new MutationObserver(() => {
+      if (!node.isConnected) { lifecycle.disconnect(); ac.abort(); }
+    });
+    lifecycle.observe(document.body, { childList: true, subtree: true });
     return node;
   }
 

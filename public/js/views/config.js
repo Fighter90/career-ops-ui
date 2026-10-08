@@ -381,6 +381,13 @@ Router.register('config', async () => {
 
   // Field-form save → merge path.
   async function saveProfile(btn) {
+    // CAR-20 (v1.243.0) — a failed GET /api/profile left pfInputs empty
+    // while Save stayed armed: one click merged empty strings over every
+    // modelled field of config/profile.yml. Refuse until it loaded.
+    if (!profileLoaded) {
+      UI.toast(t('common.error', 'Error'), 'error');
+      return;
+    }
     const fieldsPayload = {};
     for (const [path, el] of Object.entries(pfInputs)) fieldsPayload[path] = el.value;
     const fullName = (fieldsPayload['candidate.full_name'] || '').trim();
@@ -524,6 +531,18 @@ Router.register('config', async () => {
     apiSummary.replaceChildren(activeLabel, countLabel);
   }
   document.addEventListener('providers-changed', refreshApiSummary);
+  // CAR-20 (v1.243.0) — every #/config visit used to stack one more
+  // providers-changed listener on `document`, never removed (each Save
+  // added another via the dispatch + the next visit added another
+  // subscriber). Scope it to the route lifetime — the same M-1
+  // discipline as the dashboard provider chip.
+  const providersCleanup = () => {
+    if (!(window.location.hash || '').startsWith('#/config')) {
+      document.removeEventListener('providers-changed', refreshApiSummary);
+      window.removeEventListener('hashchange', providersCleanup);
+    }
+  };
+  window.addEventListener('hashchange', providersCleanup);
   refreshApiSummary();
   const apiPanel = c('div', { className: 'card' }, [
     apiSummary,
@@ -591,6 +610,9 @@ Router.register('config', async () => {
   });
   let modesLoaded = false;
   let modesScaffolded = false;
+  // CAR-20 (v1.243.0) — the load failure message, kept for the save-path
+  // guards (Save stays armed only after a successful load).
+  let modesLoadError = null;
   // v1.54.3 (USER-REQ) — structured field-form (not raw markdown).
   // `_profile.md` has a documented schema (career-ops.org §Step-5):
   // Target Roles / Adaptive Framing / Comp Targets are bullet lists,
@@ -620,12 +642,29 @@ Router.register('config', async () => {
       buildSectionEditors(data || { sections: [], preamble: '' });
       modesScaffolded = !!(data && data.scaffolded);
       modesLoaded = true;
+      modesLoadError = null;
+      // CAR-20 (v1.243.0) — the Save buttons ship disabled; only a
+      // successful load may arm them.
+      modesSaveBtn.disabled = false;
+      modesRawSaveBtn.disabled = false;
       if (modesScaffolded) {
         UI.toast(t('config.modesScaffolded',
           'Scaffolded from _profile.template.md — review then Save'), 'info');
       }
     } catch (e) {
-      modesTextarea.value = '# error: ' + (e.message || e);
+      // CAR-20 (v1.243.0) — the old catch wrote `# error: …` INTO the
+      // textarea, i.e. into a control wired to a whole-file save; one
+      // confirm click on "Save raw markdown" replaced the user's real
+      // _profile.md with that error line. Surface the failure out of
+      // band, keep the editor empty, and leave Save disabled.
+      modesLoaded = false;
+      modesLoadError = (e && e.message) || String(e);
+      modesTextarea.value = '';
+      modesSectionHost.innerHTML = '';
+      modesSectionHost.appendChild(c('p', {
+        style: { color: 'var(--danger, #d9534f)', fontSize: '13px', margin: '0' },
+      }, modesLoadError));
+      UI.toast(modesLoadError, 'error');
     }
   }
 
@@ -637,6 +676,12 @@ Router.register('config', async () => {
   //     REPLACES the parent file → confirm-gate it (WS2 #4), exactly
   //     like the raw editor.
   async function saveModes(btn) {
+    // CAR-20 (v1.243.0) — a failed load used to leave the form/textarea
+    // empty but Save armed; one click merged blanks over modes/_profile.md.
+    if (!modesLoaded) {
+      UI.toast(modesLoadError || t('common.error', 'Error'), 'error');
+      return;
+    }
     const payload = modesForm ? modesForm.collect() : null;
     if (!payload) {
       UI.toast(t('config.modesNoSections', 'No ## sections found — use the raw editor below.'), 'error');
@@ -670,6 +715,12 @@ Router.register('config', async () => {
 
   // Raw-markdown escape hatch (add/remove sections, preamble edits).
   async function saveModesRaw(btn) {
+    // CAR-20 (v1.243.0) — same gate as the section-form save: this
+    // REPLACES the whole file, so it must refuse until content loaded.
+    if (!modesLoaded) {
+      UI.toast(modesLoadError || t('common.error', 'Error'), 'error');
+      return;
+    }
     if (!modesTextarea.value.trim()) {
       UI.toast(t('config.modesEmpty', 'modes/_profile.md is empty'), 'error');
       return;
@@ -695,6 +746,20 @@ Router.register('config', async () => {
     }
   }
 
+  // CAR-20 (v1.243.0) — both Modes save paths ship DISABLED: they only
+  // arm (see loadModesTab) after the tab's content actually loaded, so a
+  // failed GET can never be saved over the real _profile.md.
+  const modesSaveBtn = c('button', {
+    className: 'btn btn-primary',
+    disabled: true,
+    onClick: (e) => saveModes(e.currentTarget),
+  }, '💾 ' + t('common.save', 'Save'));
+  const modesRawSaveBtn = c('button', {
+    className: 'btn btn-ghost',
+    disabled: true,
+    onClick: (e) => saveModesRaw(e.currentTarget),
+  }, '💾 ' + t('config.modesRawSave', 'Save raw markdown'));
+
   const modesPanel = c('div', { className: 'card' }, [
     c('p', { style: { color: 'var(--foggy)', fontSize: '13px', margin: '0 0 12px' } },
       t('config.modesHint',
@@ -704,10 +769,7 @@ Router.register('config', async () => {
         'Each section is a structured field below — list sections take one line per item, prose sections are free text. Saving merges by section: your preamble and any sections you do not touch are preserved.')),
     modesSectionHost,
     c('div', { className: 'flex gap-3 mt-3' }, [
-      c('button', {
-        className: 'btn btn-primary',
-        onClick: (e) => saveModes(e.currentTarget),
-      }, '💾 ' + t('common.save', 'Save')),
+      modesSaveBtn,
       c('a', { href: 'https://career-ops.org/docs/introduction/what-is-career-ops',
               target: '_blank', rel: 'noopener', className: 'btn btn-ghost' },
         t('config.modesDocsLink', 'Canonical docs ↗')),
@@ -720,10 +782,7 @@ Router.register('config', async () => {
           'Full-file editor. Use to add or remove ## sections or edit the preamble. Replaces the whole file on save.')),
       modesTextarea,
       c('div', { className: 'flex gap-3 mt-3' }, [
-        c('button', {
-          className: 'btn btn-ghost',
-          onClick: (e) => saveModesRaw(e.currentTarget),
-        }, '💾 ' + t('config.modesRawSave', 'Save raw markdown')),
+        modesRawSaveBtn,
       ]),
     ]),
   ]);

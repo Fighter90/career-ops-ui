@@ -82,6 +82,53 @@ test('rowInCountry: empty code passes all; code matches detected country', () =>
   assert.equal(C.rowInCountry({ location: 'Remote' }, 'de'), false);
 });
 
+// ── v1.243.0 (CAR-18): sub-national geography must not impersonate a country ──
+
+test('detectCountry: "Sydney, New South Wales, Australia" is Australia, not the UK', () => {
+  // the bare 'wales' alias used to win because first-alias-wins
+  assert.equal(C.detectCountry('Sydney, New South Wales, Australia').code, 'au');
+});
+
+test('detectCountry: "Latin America" is a region, not the US', () => {
+  assert.equal(C.detectCountry('Latin America'), null);
+});
+
+test('detectCountry: "Albuquerque, New Mexico" is the US state, not Mexico', () => {
+  assert.equal(C.detectCountry('Albuquerque, New Mexico'), null);
+  // the real country still matches
+  assert.equal(C.detectCountry('Remote — Mexico').code, 'mx');
+  assert.equal(C.detectCountry('Mexico City').code, 'mx');
+});
+
+test('detectCountry: ambiguous same-named cities resolve conservatively', () => {
+  // 'Cambridge, MA' is not Cambridge, UK → null (conservative; the row still
+  // shows under "All countries"). The unambiguous forms keep working.
+  assert.equal(C.detectCountry('Cambridge, MA'), null);
+  assert.equal(C.detectCountry('Cambridge, United Kingdom').code, 'gb');
+  assert.equal(C.detectCountry('Cambridge, UK').code, 'gb');
+  assert.equal(C.detectCountry('Santiago de Compostela'), null);
+  assert.equal(C.detectCountry('Santiago, Chile').code, 'cl');
+});
+
+test('detectCountry: longest matching country phrase wins over fragments', () => {
+  assert.equal(C.detectCountry('United States of America').code, 'us');
+  assert.equal(C.detectCountry('Software Engineer — Munich Germany').code, 'de');
+  // two distinct countries mentioned = ambiguous prose → conservative null
+  assert.equal(C.detectCountry('Job in Germany (relocation to Netherlands ok)'), null);
+});
+
+test('detectCountry: existing detections unchanged (regression guard)', () => {
+  assert.equal(C.detectCountry('Berlin, Germany').code, 'de');
+  assert.equal(C.detectCountry('San Francisco, CA, USA').code, 'us');
+  assert.equal(C.detectCountry('New York, NY, USA').code, 'us');
+  assert.equal(C.detectCountry('London, United Kingdom').code, 'gb');
+  assert.equal(C.detectCountry('Москва, Россия').code, 'ru');
+  assert.equal(C.detectCountry('Remote (Deutschland)').code, 'de');
+  assert.equal(C.detectCountry('Hangzhou').code, 'cn');
+  assert.equal(C.detectCountry('Minsk, Belarus'), null);
+  assert.equal(C.detectCountry('Remote'), null);
+});
+
 test('Danish (da) i18n keys exist for the country filter', () => {
   const da = {};
   // eslint-disable-next-line no-new-func

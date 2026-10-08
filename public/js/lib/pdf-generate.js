@@ -105,40 +105,76 @@ window.PdfGenerate = (function () {
     const console_ = c('pre', { className: 'console', style: { maxHeight: '320px', overflow: 'auto' } }, '');
     UI.modal(t('cv.pdfTitle', 'Generate PDF'), console_);
 
+    // Single terminal state (v1.243.0): whichever of done/error/silent
+    // stream end arrives first settles the run — exactly one toast and the
+    // Generate button re-enabled. Before, an `error` frame followed by the
+    // server's closing `done` (the empty-markdown / missing-cv.md branches
+    // send BOTH), or EventSource's reconnect onerror on the GET kinds,
+    // fired two error toasts — and a stream that died without a terminal
+    // frame left the button disabled forever.
+    let settled = false;
+    const finish = () => {
+      if (settled) return;
+      settled = true;
+      if (btn) { btn.classList.remove('is-loading'); btn.disabled = false; }
+    };
+    const fail = (message, consoleLine) => {
+      if (settled) return;
+      lines.push(consoleLine || ('✗ ' + message));
+      console_.textContent = lines.join('\n');
+      console_.scrollTop = console_.scrollHeight;
+      UI.toast(message || 'error', 'error');
+      finish();
+    };
+
     const onEvent = async (event, data) => {
       if (event === 'log' && data && data.line) {
         lines.push(data.line);
         console_.textContent = lines.join('\n');
         console_.scrollTop = console_.scrollHeight;
       } else if (event === 'done') {
-        const code = (data && data.code) ?? 0;
-        lines.push(`✓ done (exit ${code})`);
-        console_.textContent = lines.join('\n');
+        // `code: null` means the runner was killed by a signal (timeout
+        // kill, OOM) — a FAILURE, not a success: the old `?? 0` treated it
+        // as exit 0 and toasted "PDF generated" over a broken run.
+        const code = (data && typeof data.code === 'number') ? data.code : null;
         if (code === 0) {
+          if (settled) return;
+          settled = true;
+          lines.push('✓ done (exit 0)');
+          console_.textContent = lines.join('\n');
+          if (btn) { btn.classList.remove('is-loading'); btn.disabled = false; }
           UI.toast(t('cv.pdfDone', 'PDF generated'), 'success');
           const after = await latestPdfName();
           if (after && after !== before) triggerDownload(after);
         } else {
-          UI.toast(t('common.error', 'PDF generation failed'), 'error');
+          // Reuse the shared generic key + the technical detail (no new
+          // UI string): "Error — exit 2" / "Error — signal".
+          const detail = code === null ? 'signal' : 'exit ' + code;
+          fail(t('common.error', 'Error') + ' — ' + detail, '✗ done (' + detail + ')');
         }
-        if (btn) { btn.classList.remove('is-loading'); btn.disabled = false; }
       } else if (event === 'error') {
-        const hint = /ERR_MODULE_NOT_FOUND|playwright/i.test((data && data.message) || '')
+        const message = (data && data.message) || 'error';
+        const hint = /ERR_MODULE_NOT_FOUND|playwright/i.test(message)
           ? '\n\n' + t('cv.pdfNeedsPlaywright',
             'Playwright is missing. Run in the parent project:\n  cd "$CAREER_OPS_ROOT" && npm install && npx playwright install chromium')
           : '';
-        lines.push('✗ ' + ((data && data.message) || 'error') + hint);
-        console_.textContent = lines.join('\n');
-        UI.toast(((data && data.message) || 'error'), 'error');
-        if (btn) { btn.classList.remove('is-loading'); btn.disabled = false; }
+        fail(message + hint, '✗ ' + message + hint);
       }
     };
 
     const ep = buildEndpoint(opts);
-    if (ep.method === 'GET') {
-      return API.stream(ep.url, onEvent);
+    try {
+      if (ep.method === 'GET') {
+        API.stream(ep.url, onEvent);
+      } else {
+        await streamPostSse(ep.url, ep.body, onEvent);
+        // Stream ended without a terminal done/error frame (server crash,
+        // proxy cut): that is a failure too — never leave Generate disabled.
+        fail('connection lost');
+      }
+    } catch (e) {
+      fail((e && e.message) || 'connection lost');
     }
-    return streamPostSse(ep.url, ep.body, onEvent);
   }
 
   return { run, latestPdfName };

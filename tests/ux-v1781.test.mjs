@@ -31,7 +31,10 @@ test('scan: the poll handles + cancel helper are DECLARED at module scope (not j
   assert.match(SCAN, /let __activeScanPollHandle\s*=/, '__activeScanPollHandle must be declared');
   assert.match(SCAN, /let __activeScanDoneTimeout\s*=/, '__activeScanDoneTimeout must be declared');
   assert.match(SCAN, /function __cancelActiveScanPoll\(\)/, '__cancelActiveScanPoll must be declared');
-  assert.match(SCAN, /addEventListener\('hashchange', __cancelActiveScanPoll\)/, 'poll must be cancelled on route change');
+  // v1.243.0 (views-3) — the hashchange cleanup is one combined handler
+  // (poll cancel + runner SSE teardown + scan:refresh listener detach);
+  // the poll cancel must remain its first act.
+  assert.match(SCAN, /addEventListener\('hashchange', \(\) => \{\s*__cancelActiveScanPoll\(\);/, 'poll must be cancelled on route change');
 });
 
 test('scan: runScanAll sets up live polling + a delayed final refresh', () => {

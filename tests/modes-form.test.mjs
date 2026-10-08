@@ -146,7 +146,44 @@ test('source: collect() is tagged sections-vs-markdown with data-safety', () => 
   assert.match(MF, /sameMembership && existingHeadings\.size > 0/);
   // rebuild preserves preamble + canonical order + custom verbatim
   assert.match(MF, /const pre = preamble \|\| DEFAULT_PREAMBLE;/);
-  assert.match(MF, /rendered\.map\(\(r\) =>\s*`## \$\{r\.heading\}\\n\$\{r\.body\}`\)/);
+  assert.match(MF, /rendered\.map\(\(r\) =>\s*`## \$\{r\.heading\}\$\{normaliseBody\(r\.body\)\}`\)/);
+  assert.match(MF, /function normaliseBody\(body\)/,
+    'bodies are normalised to a single leading \\n and a trailing blank line');
   // non-canonical sections collected verbatim (no reshaping)
   assert.match(MF, /nonCanonCollectors\.push\(\(\) => \(\{ heading: s\.heading, body: ta\.value \}\)\)/);
+});
+
+// ── v1.243.0 — the REAL module, not a mirror ─────────────────────────
+// The source IIFE only touches UI/I18n inside build(), so loading it
+// under a bare window object exposes the pure helpers via the _exports.
+
+const w = {};
+new Function('window', MF)(w); // eslint-disable-line no-new-func
+const RealMF = w.ModesForm;
+
+test('real module: nested bullets are NOT a pure list (no silent flattening)', () => {
+  // parseListItems() would flatten "  - b" to the top level and a save
+  // would lose the nesting — such a body must fall back to the verbatim
+  // textarea (data-safety invariant 1).
+  assert.equal(RealMF._isPureList('- a\n  - b'), false);
+  assert.equal(RealMF._isPureList('- a\n\t- b'), false);
+  assert.equal(RealMF._isPureList('  - only a nested bullet'), false);
+  // flat lists and empty bodies unchanged
+  assert.equal(RealMF._isPureList('- a\n- b\n'), true);
+  assert.equal(RealMF._isPureList(''), true);
+  assert.equal(RealMF._isPureList('\n- \n\n'), true);
+  assert.equal(RealMF._isPureList('\n\nprose\n\n'), false);
+});
+
+test('real module: normaliseBody gives every rebuilt body clean separators', () => {
+  // verbatim textarea bodies arrive with arbitrary edge whitespace; the
+  // rebuild writes "## H" + body, so without normalisation the heading
+  // glued to the first body line and the next heading glued to the last.
+  assert.equal(RealMF._normaliseBody('verbatim first line'), '\nverbatim first line\n\n');
+  assert.equal(RealMF._normaliseBody('already\n- listed\n\n'), '\nalready\n- listed\n\n');
+  assert.equal(RealMF._normaliseBody(''), '\n\n');
+  assert.equal(RealMF._normaliseBody(null), '\n\n');
+  // canonical serialiser output is a fixed point (round-trip stable)
+  assert.equal(RealMF._normaliseBody(RealMF._serialiseList(['a', 'b'])), '\n- a\n- b\n\n');
+  assert.equal(RealMF._normaliseBody(RealMF._serialiseProse('story')), '\nstory\n\n');
 });

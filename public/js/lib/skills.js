@@ -126,11 +126,15 @@ window.Skills = (function () {
 
   /**
    * Whether row's title contains the dynamic keyword (case-insensitive
-   * whole-word match).
+   * whole-token match). The guards are Unicode letter/number lookarounds,
+   * NOT \b: \b is ASCII-only, so a Cyrillic chip ("разработчик") or a
+   * punctuation-led tech ("c++", ".net") had no boundary to align and
+   * filtered every row to zero (v1.243.0).
    */
   function rowHasKeyword(row, keyword) {
     if (!keyword) return true;
-    const re = new RegExp('\\b' + keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\b', 'i');
+    const esc = String(keyword).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    const re = new RegExp('(?<![\\p{L}\\p{N}])' + esc + '(?![\\p{L}\\p{N}])', 'iu');
     return re.test(row.title || '');
   }
 
@@ -179,25 +183,70 @@ window.Skills = (function () {
   // FX conversion (no rates available offline). In practice the user scans
   // RU sources in ₽ and most ATS rows carry no salary at all, so the raw
   // numeric compare is useful despite the caveat.
-  function parseSalaryRange(str) {
-    if (!str || typeof str !== 'string') return null;
-    // Normalise the space zoo (NBSP, narrow NBSP, thin space) to ASCII space.
-    const s = str.replace(/[   ]/g, ' ');
-    const nums = [];
-    // A number token: a digit run that may carry space/comma/dot thousand
-    // separators, optionally followed by a K/к (×1000) suffix.
-    const re = /(\d[\d.,  ]*\d|\d)\s*([kKкК])?/g;
-    let m;
-    while ((m = re.exec(s))) {
-      const digits = m[1].replace(/[^\d]/g, '');
-      if (!digits) continue;
-      let n = Number(digits);
-      if (!Number.isFinite(n)) continue;
-      if (m[2]) n *= 1000;
-      nums.push(n);
+
+  // ───────────── shared salary-amount parser (v1.243.0) ─────────────
+  // ONE tokenizer shared with role-stats.js (window.Skills.parseAmounts;
+  // index.html loads skills.js first). Both sides used to run their own
+  // regex and disagreed: "$182.9K" folded the decimal into the digits
+  // (1829000), "$85,000.00" read the cents as ×100, and the currency
+  // words "kr"/"Kč" read as a K-suffix (×1000).
+  //
+  // Number-token grammar: digit groups joined by single space/comma/dot
+  // separators, an optional multiplier (тысяч/тыс/k/к → ×1000, млн/m →
+  // ×1e6), and a trailing letter/number lookaround so "kr"/"Kč"/"km" can
+  // never be read as multipliers.
+  const AMOUNT_RE = /(\d+(?:[.,\s]\d+)*)(?:\s*(тысяч\.?|тыс\.?|млн\.?|[kmк]))?(?![\p{L}\p{N}])/giu;
+
+  // "85,000.00" → 85000; "182.9" → 182.9; "1.234.567,89" → 1234567.89;
+  // "100 000" → 100000; "1.234.567" → 1234567. Heuristic: a trailing group
+  // that is NOT exactly three digits makes the last separator the decimal
+  // point (a space never is — "100 000" always groups); otherwise every
+  // separator is a thousands grouping.
+  function parseNumberToken(raw) {
+    const parts = raw.split(/([.,\s])/);
+    if (parts.length === 1) return Number(raw);
+    const seps = parts.filter((_, i) => i % 2 === 1);
+    const lastSep = seps[seps.length - 1];
+    const lastGroup = parts[parts.length - 1];
+    const decimalSep = (lastGroup.length !== 3 && lastSep !== ' ') ? lastSep : null;
+    let n = '';
+    for (let i = 0; i < parts.length; i += 2) {
+      n += parts[i];
+      if (i + 1 < parts.length && parts[i + 1] === decimalSep) n += '.';
     }
+    return Number(n);
+  }
+
+  function applyAmountMultiplier(n, suffix) {
+    if (!suffix) return n;
+    const s = suffix.toLowerCase().replace(/\.$/, '');
+    if (s === 'k' || s === 'к' || s === 'тыс' || s === 'тысяч') return n * 1e3;
+    if (s === 'm' || s === 'млн') return n * 1e6;
+    return n;
+  }
+
+  /**
+   * All monetary amounts in a free-text salary string, ascending.
+   * @returns {number[]}
+   */
+  function parseAmounts(str) {
+    if (typeof str !== 'string') return [];
+    // Normalise the space zoo (NBSP, narrow NBSP, thin space) to ASCII space.
+    const s = str.replace(/[\u00A0\u202F\u2009\u2007]/g, ' ');
+    const out = [];
+    let m;
+    AMOUNT_RE.lastIndex = 0;
+    while ((m = AMOUNT_RE.exec(s))) {
+      const n = applyAmountMultiplier(parseNumberToken(m[1]), m[2]);
+      if (Number.isFinite(n) && n > 0) out.push(n);
+    }
+    return out.sort((a, b) => a - b);
+  }
+
+  function parseSalaryRange(str) {
+    const nums = parseAmounts(str);
     if (!nums.length) return null;
-    return { min: Math.min(...nums), max: Math.max(...nums) };
+    return { min: nums[0], max: nums[nums.length - 1] };
   }
 
   // Does a row's salary overlap the [min, max] filter window? Unset bounds
@@ -221,7 +270,7 @@ window.Skills = (function () {
   return {
     detectTech, detectLevel, computeFacets, rowMatches,
     extractDynamicKeywords, rowHasKeyword,
-    parseSalaryRange, salaryInRange,
+    parseAmounts, parseSalaryRange, salaryInRange,
     TECH_GROUPS, LEVEL_GROUPS,
   };
 })();

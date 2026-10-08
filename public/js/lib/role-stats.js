@@ -28,15 +28,26 @@
 
   // Currency signals → ISO code. Symbol OR word/code, longest-first so
   // "US$" and "C$" resolve before a bare "$".
+  // v1.243.0 — the non-ASCII words use Unicode letter/number lookarounds,
+  // NOT \b: \b is ASCII-only, so "руб", "грн", "zł" and "Kč" could never
+  // match — 'от 100 000 руб' fell through to the default-USD read (~90×
+  // off), '50 000 Kč' had no currency and its K was read as a k-suffix
+  // (×1000 → 50M USD), and zł/грн salaries were dropped from the sample.
+  // Currency SYMBOLS stay bare on purpose: a trailing lookaround would
+  // reject "€90,000" (symbol directly followed by a digit).
   const CURRENCY_SIGNALS = [
     [/\bkr\.?\b|\bnok\b/i, 'NOK'], [/\bsek\b/i, 'SEK'], [/\bdkk\b/i, 'DKK'],
     [/€|\beur\b|\beuros?\b/i, 'EUR'], [/£|\bgbp\b|\bquid\b/i, 'GBP'],
-    [/₽|\brub\b|\bруб/i, 'RUB'], [/₴|\buah\b|\bгрн/i, 'UAH'],
-    [/\bpln\b|\bzł\b|\bzl\b/i, 'PLN'], [/\bczk\b|\bkč\b/i, 'CZK'],
+    [/₽|\brub\b|(?<![\p{L}\p{N}])руб(?![\p{L}\p{N}])/iu, 'RUB'],
+    [/₴|\buah\b|(?<![\p{L}\p{N}])грн(?![\p{L}\p{N}])/iu, 'UAH'],
+    [/\bpln\b|(?<![\p{L}\p{N}])zł(?![\p{L}\p{N}])|\bzl\b/iu, 'PLN'],
+    [/\bczk\b|(?<![\p{L}\p{N}])kč(?![\p{L}\p{N}])/iu, 'CZK'],
     // ¥/￥ is shared by JPY and CNY (a ~20× FX gap), so a BARE yen sign is
     // deliberately NOT mapped — only explicit words/scripts resolve these two,
     // and an unresolvable ¥ salary is dropped from the sample rather than guessed.
-    [/\btry\b|\btl\b|₺/i, 'TRY'], [/\bjpy\b|円|\byen\b/i, 'JPY'], [/\bcny\b|\brmb\b|\byuan\b|元/i, 'CNY'],
+    [/\btry\b|\btl\b|₺/i, 'TRY'],
+    [/\bjpy\b|(?<![\p{L}\p{N}])円(?![\p{L}\p{N}])|\byen\b/iu, 'JPY'],
+    [/\bcny\b|\brmb\b|\byuan\b|(?<![\p{L}\p{N}])元(?![\p{L}\p{N}])/iu, 'CNY'],
     [/₹|\binr\b/i, 'INR'], [/\bbrl\b|\br\$/i, 'BRL'], [/\bchf\b/i, 'CHF'],
     [/\bcad\b|\bc\$/i, 'CAD'], [/\baud\b|\ba\$/i, 'AUD'], [/\bnzd\b/i, 'NZD'],
     [/\bsgd\b|\bs\$/i, 'SGD'], [/\baed\b|\bdhs?\b/i, 'AED'], [/₪|\bils\b/i, 'ILS'],
@@ -50,25 +61,14 @@
 
   // Pull numeric amounts, honoring a trailing k/к/тыс (×1000) and grouping
   // separators. Returns an ascending array of plain numbers.
+  // v1.243.0 — this is now the ONE shared tokenizer,
+  // window.Skills.parseAmounts (skills.js loads first in index.html):
+  // decimals ("$182.9K"), cents ("$85,000.00"), space/comma/dot thousands
+  // and K/M suffixes parse identically for the #/scan salary filter and
+  // these USD stats. The old local regex folded "85,000.00" into 8.5M and
+  // let the "K" of "Kč"/"kr" read as a k-suffix ("50 000 Kč" → 50M).
   function extractAmounts(s) {
-    const out = [];
-    const re = /(\d[\d.,\s]*\d|\d)\s*(k|к|тыс)?/gi;
-    let m;
-    while ((m = re.exec(s)) !== null) {
-      let raw = m[1].replace(/\s/g, '');
-      // Treat commas/dots as thousands separators when they group 3 digits;
-      // otherwise a lone dot is a decimal point.
-      if (/[.,]\d{3}(\D|$)/.test(raw + ' ') || /\d[.,]\d{3}$/.test(raw)) {
-        raw = raw.replace(/[.,]/g, '');
-      } else {
-        raw = raw.replace(/,/g, '.');
-      }
-      let n = parseFloat(raw);
-      if (!isFinite(n)) continue;
-      if (m[2]) n *= 1000;
-      if (n > 0) out.push(n);
-    }
-    return out.sort((a, b) => a - b);
+    return (window.Skills && window.Skills.parseAmounts) ? window.Skills.parseAmounts(s).slice() : [];
   }
 
   /**
@@ -81,7 +81,10 @@
   function parseSalaryUSD(str) {
     if (typeof str !== 'string' || !str.trim()) return null;
     const s = str.trim();
-    const hasK = /\d\s*(k|к|тыс)/i.test(s);
+    // v1.243.0 — the k-suffix probe carries the same letter/number
+    // guard as the shared tokenizer, so the "K" of "Kč" (and the "k" of
+    // "kr") no longer counts as a multiplier.
+    const hasK = /\d\s*(?:тысяч|тыс|[kк])(?![\p{L}\p{N}])/iu.test(s);
     const currency = detectCurrency(s);
     if (!currency && !hasK) return null;
     const cur = currency || 'USD';

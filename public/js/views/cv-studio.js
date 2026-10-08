@@ -19,8 +19,23 @@ Router.register('cv-studio', async () => {
     t('cvs.subtitle', 'Diagnose your CV, mask it for safe sharing, and rewrite stiff lines in your own voice — grounded only in what you actually wrote.')));
 
   let cvMarkdown = '';
-  try { ({ markdown: cvMarkdown } = await API.get('/api/cv')); } catch { cvMarkdown = ''; }
+  // CAR-20 (v1.243.0) — a failed GET /api/cv used to be swallowed into
+  // cvMarkdown = '', so the page showed the "No CV yet" empty state and
+  // sent the user off to (re)write a CV that actually exists. Surface
+  // the error instead of masquerading as an empty workspace.
+  let cvLoadError = null;
+  try { ({ markdown: cvMarkdown } = await API.get('/api/cv')); }
+  catch (e) { cvLoadError = e; cvMarkdown = ''; }
   cvMarkdown = cvMarkdown || '';
+
+  if (cvLoadError) {
+    root.appendChild(c('div', { className: 'empty' }, [
+      c('p', { style: { color: 'var(--danger, #d9534f)', margin: '0 0 12px' } },
+        (cvLoadError && cvLoadError.message) || String(cvLoadError)),
+      c('a', { className: 'btn', href: '#/cv' }, t('cvs.goCv', 'Open CV')),
+    ]));
+    return root;
+  }
 
   if (!cvMarkdown.trim()) {
     root.appendChild(c('div', { className: 'empty' }, [
@@ -226,7 +241,12 @@ Router.register('cv-studio', async () => {
   const gapBtn = c('button', { className: 'btn btn-primary', type: 'button' }, t('cvs.gapAnalyze', 'Analyze skill gap'));
   const gapOut = c('div', { style: { marginTop: '12px' } });
   let jdList = [];
-  try { ({ jds: jdList } = await API.get('/api/jds')); } catch { jdList = []; }
+  // CAR-20 (v1.243.0) — a failed GET /api/jds used to read as "No saved
+  // job descriptions yet"; the user believed their archive was empty.
+  // Keep the empty list, but surface the error in place of that copy.
+  let jdListError = null;
+  try { ({ jds: jdList } = await API.get('/api/jds')); }
+  catch (e) { jdListError = e; jdList = []; }
   jdList = Array.isArray(jdList) ? jdList : [];
   for (const jd of jdList) gapSel.appendChild(c('option', { value: jd.name }, jd.name));
 
@@ -304,8 +324,11 @@ Router.register('cv-studio', async () => {
         c('label', { style: { fontSize: '12px', color: 'var(--foggy)' } }, t('cvs.gapPick', 'Job description')),
         gapSel, gapBtn,
       ])
-      : c('p', { style: { color: 'var(--foggy)' } },
-        t('cvs.gapNoJds', 'No saved job descriptions yet. Save one from a scan result or the tailor above, then come back.')),
+      : (jdListError
+          ? c('p', { style: { color: 'var(--danger, #d9534f)' } },
+              (jdListError && jdListError.message) || String(jdListError))
+          : c('p', { style: { color: 'var(--foggy)' } },
+            t('cvs.gapNoJds', 'No saved job descriptions yet. Save one from a scan result or the tailor above, then come back.'))),
     reuseHint,
     gapOut,
   ]));

@@ -73,6 +73,9 @@
   --rausch: #ff385c;          /* signature coral accent — for fills/borders, NOT text */
   --rausch-dark: #e31c5f;
   --rausch-text: #b80f42;     /* AA-passing variant for text on light (v1.19.0) */
+  /* CAR-23 v1.243.0 — theme-INVARIANT fill for white-text buttons (the theme-aware
+     stops go pink in dark: white 1.9-3.5:1); #e31c5f keeps #fff ≥4.57:1 in BOTH themes. */
+  --rausch-fill: #e31c5f;
   --babu: #00a699;            /* teal accent — for fills/borders, NOT text */
   --babu-text: #00665e;       /* AA-passing variant for text on light (v1.19.0) */
   --arches: #fc642d;           /* warm orange */
@@ -89,6 +92,8 @@
   --shadow-sm: 0 1px 2px rgba(0, 0, 0, .08);
   --shadow-md: 0 6px 16px rgba(0, 0, 0, .12);
   --shadow-lg: 0 8px 28px rgba(0, 0, 0, .18);
+  /* CAR-23 v1.243.0 — qa-tile referenced these aliases undefined (shadow/ring lost). */
+  --shadow-1: var(--shadow-sm); --shadow-2: var(--shadow-md);
   --radius-sm: 8px;
   --radius: 12px;
   --radius-lg: 16px;
@@ -229,6 +234,8 @@
 
 * { box-sizing: border-box; }
 
+/* CAR-23 v1.243.0 — WCAG 2.4.11: focus/anchor scrolling lands BELOW the sticky topbar. */
+html { scroll-padding-top: calc(var(--topbar-h) + 16px); }
 html, body {
   margin: 0;
   padding: 0;
@@ -316,24 +323,23 @@ body.sidebar-open .sidebar-backdrop { display: block; }
 @media (max-width: 900px) {
   .sidebar {
     transform: translateX(-100%);
-    transition: transform .25s ease;
+    transition: transform .25s ease, visibility .25s ease;
     box-shadow: 0 0 24px rgba(0,0,0,.18);
+    /* CAR-23 v1.243.0 — transform alone left ~40 invisible tab stops; visibility fixes it. */
+    visibility: hidden;
   }
   body.sidebar-open .sidebar {
     transform: translateX(0);
+    visibility: visible;
   }
   .sidebar-toggle { display: inline-flex; align-items: center; justify-content: center; }
   .main { margin-left: 0 !important; padding-left: 12px; padding-right: 12px; }
-  /* ONE row: [☰ · search · 🔔 🌙 🩺 ⚡], actions icon-only (labels hidden below).
-     v1.208.2 forced them onto a second row because at ~565-640px with long RU
-     labels `space-between` distributed NEGATIVE free space as overlap — the bell
-     sat on the search pill. That cannot recur: every action is a fixed 36px
-     square (`flex: 0 0 auto`) and the searchbar is the only flexible item and
-     may shrink to nothing, so no negative space exists to distribute.
-
-     SPECIFICITY, not a typo: the desktop `.topbar` / `.topbar-actions` rules
-     sit LOWER in this file, so at equal specificity they win — the gaps here
-     silently stayed 24px and 12px, which is what overflowed 320px. */
+  /* ONE row: [☰ · search · 🔔 🌙 🩺 ⚡], actions icon-only. v1.208.2: at ~565-640px
+     long RU labels made `space-between` distribute NEGATIVE space (bell on the pill).
+     Cannot recur: every action is a fixed 36px square (`flex: 0 0 auto`), the searchbar
+     is the only flexible item and may shrink to nothing. SPECIFICITY, not a typo: the
+     desktop `.topbar`/`.topbar-actions` rules sit LOWER, so these equal-specificity
+     gaps (8px/6px) must stay here or they silently revert to 24px/12px and overflow 320px. */
   header.topbar {
     gap: 8px;
     flex-wrap: nowrap;
@@ -550,14 +556,13 @@ body.sidebar-open .sidebar-backdrop { display: block; }
   font-size: 14px;
   line-height: 1.2;
   border: 1px solid transparent;
-  transition: background var(--transition), border-color var(--transition), transform var(--transition);
+  /* v1.58.16 — `filter` rides the SAME transition as background/border/transform:
+     filled buttons dim on hover via filter because a gradient↔solid swap can't interpolate. */
+  transition: background var(--transition), border-color var(--transition), transform var(--transition), filter var(--transition);
   white-space: nowrap;
-  /* v1.26.1 (WCAG-2.5.5) — restore the 44 px floor the line-431 comment
-   * still references. The declaration was lost somewhere between v1.18 and
-   * v1.26; live measurement at v1.26.0 showed header buttons rendering at
-   * 39-41 px tall (Doctor, Quick scan, Open Pipeline, 🌐 Scan now, ✨
-   * Auto-pipeline a URL). flex-shrink: 0 prevents parent rows from
-   * squashing the button below its min-height under flex layout. */
+  /* v1.26.1 (WCAG-2.5.5) — restore the 44px floor the line-431 comment references
+   * (lost between v1.18 and v1.26; header buttons measured 39-41px). flex-shrink: 0
+   * keeps parent rows from squashing the button below its min-height. */
   min-height: 44px;
   box-sizing: border-box;
   flex-shrink: 0;
@@ -566,20 +571,13 @@ body.sidebar-open .sidebar-backdrop { display: block; }
 .btn:disabled { opacity: .5; cursor: not-allowed; }
 .btn.is-loading { opacity: .7; cursor: wait; pointer-events: none; }
 
+/* CAR-23 v1.243.0 — gradient from the theme-INVARIANT --rausch-fill: the theme-aware
+   stops go bright pink in dark, where white text fell to 1.9-3.5:1; the deep end is
+   color-mix'd toward black so #fff stays ≥ 4.57:1 on EVERY stop in both themes. */
 .btn-primary {
-  background: linear-gradient(135deg, var(--rausch) 0%, var(--rausch-dark) 100%);
+  background: linear-gradient(135deg, var(--rausch-fill) 0%, color-mix(in srgb, var(--rausch-fill) 82%, #000) 100%);
   color: white;
 }
-/* v1.58.16 — hover-flicker fix. The default background is a linear
-   gradient; pre-fix the :hover replaced it with a solid colour
-   (var(--rausch-dark)). CSS cannot smoothly interpolate a gradient
-   ↔ solid swap, so the 180 ms transition snaps and the gradient
-   briefly resolves to its terminal stop (lighter top-left) — the
-   user perceives a white/pink flicker on every hover edge. Keep the
-   same gradient and darken via `filter` instead; `filter` interpolates
-   cleanly in every browser. transition was already on `.btn`; we add
-   `filter` to it so the dim/un-dim animates symmetrically. */
-.btn { transition: background var(--transition), border-color var(--transition), transform var(--transition), filter var(--transition); }
 .btn-primary:hover { filter: brightness(0.92); }
 
 .btn-ghost {
@@ -591,14 +589,16 @@ body.sidebar-open .sidebar-backdrop { display: block; }
 
 .btn-dark {
   background: var(--hof);
-  color: white;
+  /* CAR-23 — `white` on dark's near-white --hof was 1.10:1; --paper flips with the theme (≈16:1 both ways). */
+  color: var(--paper);
 }
-.btn-dark:hover { background: #000; }
+.btn-dark:hover { filter: brightness(0.92); }
 
 /* v1.55.4 — UX-6: destructive/stop action. Filled, high-contrast so
    the Stop button is unmistakable during a multi-minute scan. */
 .btn-danger {
-  background: linear-gradient(135deg, var(--rausch) 0%, var(--rausch-dark) 100%);
+  /* Same --rausch-fill gradient as .btn-primary (CAR-23, ≥4.57:1 with #fff); border is decorative. */
+  background: linear-gradient(135deg, var(--rausch-fill) 0%, color-mix(in srgb, var(--rausch-fill) 82%, #000) 100%);
   color: #fff;
   border: 1px solid var(--rausch-dark);
   font-weight: 600;

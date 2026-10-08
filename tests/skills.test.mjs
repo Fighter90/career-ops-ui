@@ -118,3 +118,67 @@ test('rowMatches: multiple values within one category (OR)', () => {
   // Either PHP or Go would match → true
   assert.equal(Skills.rowMatches(r, new Set(['PHP', 'Go']), new Set()), true);
 });
+
+// ───────────────────────── rowHasKeyword ─────────────────────────
+// v1.243.0 — the whole-token guards must be Unicode letter/number
+// lookarounds, NOT \b: \b is ASCII-only, so a Cyrillic chip
+// ("разработчик") or a punctuation-led tech ("c++", ".net") had no
+// boundary to match and filtered every row to zero.
+
+test('rowHasKeyword: empty keyword matches everything', () => {
+  assert.equal(Skills.rowHasKeyword({ title: 'Anything' }, ''), true);
+  assert.equal(Skills.rowHasKeyword({ title: 'Anything' }, null), true);
+});
+
+test('rowHasKeyword: Cyrillic keyword matches a Cyrillic title', () => {
+  assert.equal(Skills.rowHasKeyword({ title: 'Старший разработчик (Python/Go)' }, 'разработчик'), true);
+  assert.equal(Skills.rowHasKeyword({ title: 'Старший разработчик (Python/Go)' }, 'python'), true);
+  assert.equal(Skills.rowHasKeyword({ title: 'Senior Developer' }, 'разработчик'), false);
+});
+
+test('rowHasKeyword: punctuation-led tech keywords (c++ / .net / c#)', () => {
+  assert.equal(Skills.rowHasKeyword({ title: 'C++ Developer' }, 'c++'), true);
+  assert.equal(Skills.rowHasKeyword({ title: 'Senior .NET Engineer' }, '.net'), true);
+  assert.equal(Skills.rowHasKeyword({ title: 'C#/.NET Backend' }, 'c#'), true);
+});
+
+test('rowHasKeyword: whole-token semantics preserved for Latin keywords', () => {
+  assert.equal(Skills.rowHasKeyword({ title: 'Golang Backend' }, 'go'), false, "'go' must not match inside 'Golang'");
+  assert.equal(Skills.rowHasKeyword({ title: 'Go Backend' }, 'go'), true);
+  assert.equal(Skills.rowHasKeyword({ title: 'Node.js Engineer' }, 'node'), true, "'node' matches before the '.'");
+});
+
+// ───────────────────────── parseAmounts (shared parser) ─────────────────────────
+// v1.243.0 — ONE amount tokenizer shared with role-stats.js
+// (window.Skills.parseAmounts): decimals, cents, thousands separators by
+// 3-digit-grouping heuristics, K/M suffixes, and currency words ("kr",
+// "Kč") that must NOT read as a K-suffix.
+
+test('parseAmounts: decimals, cents and grouping heuristics', () => {
+  assert.deepEqual(Skills.parseAmounts('$182.9K'), [182900]);
+  assert.deepEqual(Skills.parseAmounts('$85,000.00'), [85000]);
+  assert.deepEqual(Skills.parseAmounts('1.234.567,89 €'), [1234567.89]);
+  assert.deepEqual(Skills.parseAmounts('100 000'), [100000]);
+  assert.deepEqual(Skills.parseAmounts('1,000,000'), [1000000]);
+  assert.deepEqual(Skills.parseAmounts('5.5'), [5.5]);
+});
+
+test('parseAmounts: K/M and Cyrillic тыс/млн multipliers', () => {
+  assert.deepEqual(Skills.parseAmounts('$120k'), [120000]);
+  assert.deepEqual(Skills.parseAmounts('1.5M'), [1500000]);
+  assert.deepEqual(Skills.parseAmounts('100 тыс.'), [100000]);
+  assert.deepEqual(Skills.parseAmounts('2 млн'), [2000000]);
+});
+
+test('parseAmounts: currency words are not multipliers', () => {
+  assert.deepEqual(Skills.parseAmounts('100 000 kr'), [100000], "'kr' must not ×1000");
+  assert.deepEqual(Skills.parseAmounts('50 000 Kč'), [50000], "'Kč' must not ×1000");
+  assert.deepEqual(Skills.parseAmounts('10 km'), [10], "'km' must not ×1000");
+});
+
+test('parseAmounts: junk / non-string input → []', () => {
+  assert.deepEqual(Skills.parseAmounts(''), []);
+  assert.deepEqual(Skills.parseAmounts(null), []);
+  assert.deepEqual(Skills.parseAmounts(undefined), []);
+  assert.deepEqual(Skills.parseAmounts('Competitive'), []);
+});

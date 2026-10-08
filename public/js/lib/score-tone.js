@@ -33,10 +33,13 @@
       return 'bad';
     }
     // No score at all (null / undefined / blank) is a not-yet-evaluated row —
-    // neutral, never red. A real low grade ("D"/"F") still reads 'bad'.
+    // neutral, never red. Placeholder sentinels ("—", "N/A", "TBD") are not
+    // grades either — they stay neutral instead of falling through to
+    // first-char 'bad' (v1.243.0). A real letter grade ("D"/"F") still
+    // reads 'bad'.
     const s = (typeof score === 'string' ? score.trim() : '');
-    if (!s) return 'muted';
-    const g = s.toUpperCase()[0];
+    if (!s || !/^[A-F][+-]?$/i.test(s)) return 'muted';
+    const g = s[0].toUpperCase();
     if (g === 'A') return 'good';
     if (g === 'B') return 'warn';
     if (g === 'C') return 'muted';

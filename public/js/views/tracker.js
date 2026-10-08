@@ -128,23 +128,31 @@ Router.register('tracker', async () => {
     renderTabs(); // whole-history counts; reflects the active stage tab
     const all = sorted(filtered());
     const page = pager.slice(all);
-    tbody.innerHTML = '';
-    pgWrap.innerHTML = '';
-    if (all.length === 0) {
-      // WS2 #26 — distinguish first-run (no data at all) from a filter that
-      // excluded everything; the former gets an actionable CTA.
-      const emptyCell = rows.length === 0
-        ? c('td', { colspan: 9, style: { textAlign: 'center', padding: '40px', color: 'var(--foggy)' } }, [
-            c('strong', null, t('track.emptyTitle', 'No applications yet')),
-            c('p', { style: { margin: '8px 0 0' } }, t('track.emptyBody', 'Run the pipeline or evaluate a JD to populate this tracker.')),
-            c('a', { href: '#/pipeline', className: 'btn btn-primary btn-sm', style: { marginTop: '12px' } }, t('track.emptyCta', 'Open pipeline')),
-          ])
-        : c('td', { colspan: 9, style: { textAlign: 'center', padding: '40px', color: 'var(--foggy)' } }, t('track.noMatch'));
-      tbody.appendChild(c('tr', null, emptyCell));
-      return;
-    }
-    for (const r of page) tbody.appendChild(row(r));
-    pgWrap.appendChild(pager.controls(page.length, all.length));
+    // L-FOCUS (v1.243.0) — this rebuild replaces the nodes a keyboard user is
+    // on (a row's Report/Outcome button, a .pg-btn), dropping focus to <body>.
+    // Restore it (see withFocusPreserved below).
+    withFocusPreserved(tbody, () => {
+      tbody.innerHTML = '';
+      if (all.length === 0) {
+        // WS2 #26 — distinguish first-run (no data at all) from a filter that
+        // excluded everything; the former gets an actionable CTA.
+        const emptyCell = rows.length === 0
+          ? c('td', { colspan: 9, style: { textAlign: 'center', padding: '40px', color: 'var(--foggy)' } }, [
+              c('strong', null, t('track.emptyTitle', 'No applications yet')),
+              c('p', { style: { margin: '8px 0 0' } }, t('track.emptyBody', 'Run the pipeline or evaluate a JD to populate this tracker.')),
+              c('a', { href: '#/pipeline', className: 'btn btn-primary btn-sm', style: { marginTop: '12px' } }, t('track.emptyCta', 'Open pipeline')),
+            ])
+          : c('td', { colspan: 9, style: { textAlign: 'center', padding: '40px', color: 'var(--foggy)' } }, t('track.noMatch'));
+        tbody.appendChild(c('tr', null, emptyCell));
+        return;
+      }
+      for (const r of page) tbody.appendChild(row(r));
+    });
+    withFocusPreserved(pgWrap, () => {
+      pgWrap.innerHTML = '';
+      if (all.length === 0) return;
+      pgWrap.appendChild(pager.controls(page.length, all.length));
+    });
   }
 
   // WS2 #11 — a sortable column header: a button inside the th so it's
@@ -545,12 +553,65 @@ function statusClass(s) {
 // G-006 (v1.15.0) — tint Legitimacy badges the same way /#/reports does.
 // High / verified / strong → ok. Medium / caution / partial → warn.
 // Low / suspicious / posting may be fake → bad.
+// v1.243.0 (views-3) — the warn tier is checked BEFORE the bad tier: the
+// server's actual verdict string is "Proceed with Caution", and the bad
+// branch's `s.includes('proceed')` used to match it first, tinting a
+// caution verdict with the bad badge (proceed-before-caution ordering bug).
 function legitimacyClass(s) {
   s = (s || '').toLowerCase();
   if (s.includes('high') || s.includes('verified') || s.includes('strong')) return 'badge-ok';
-  if (s.includes('low') || s.includes('suspicious') || s.includes('fake') || s.includes('proceed')) return 'badge-bad';
   if (s.includes('medium') || s.includes('caution') || s.includes('partial')) return 'badge-warn';
+  if (s.includes('low') || s.includes('suspicious') || s.includes('fake') || s.includes('proceed')) return 'badge-bad';
   return 'badge-info';
+}
+
+// L-FOCUS (v1.243.0) — a rebuild that replaces the node a keyboard user is on
+// (a paginator button, a row button, a <select>) drops focus to <body>.
+// Snapshot the focused element among the container's focusable descendants,
+// let `mutate()` rebuild, then restore focus to the matching node (matched by
+// tag + class + text, i.e. the same control). No-op when focus is outside the
+// container. Kept file-local: lib/ is shared and outside this change's file
+// set; tracker.js, reports.js and stats.js each carry this same copy.
+function withFocusPreserved(container, mutate) {
+  let marker = null;
+  try {
+    const doc = container.ownerDocument || document;
+    const active = doc.activeElement;
+    if (active && active !== container && container.contains(active)) {
+      marker = active.tagName + '|' + active.className + '|' + (active.textContent || '');
+    }
+  } catch { marker = null; }
+  mutate();
+  if (!marker) return;
+  const sel = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
+  let candidates = [];
+  try { candidates = Array.from(container.querySelectorAll(sel)); } catch { return; }
+  for (const el of candidates) {
+    if (el.tagName + '|' + el.className + '|' + (el.textContent || '') === marker) {
+      try { el.focus(); } catch { /* detached node */ }
+      return;
+    }
+  }
+}
+
+// CAR-36 (v1.243.0 regression run) — the "Record outcome" modal is a child of
+// the app-chrome #modal node, NOT of the #content subtree the router replaces
+// on navigation: after opening it, ANY nav click left the modal mounted over
+// the new view, intercepting every pointer event (only × / Esc still worked).
+// Arm a document-level hashchange guard owned by THIS modal instance:
+// navigating away from #/tracker closes it. UI.modal's onClose (fired on every
+// dismissal path — × / Esc / backdrop / programmatic close) removes the
+// guard, so a modal a later view opens is never closed by a stale listener.
+function armTrackerModalNavGuard() {
+  const onHashChange = () => {
+    let cur = null;
+    try { cur = Router.current(); } catch { cur = null; }
+    if (cur && cur.name === 'tracker') return; // same-view re-render (params/query), not a real navigation
+    UI.closeModal();
+  };
+  const detach = () => document.removeEventListener('hashchange', onHashChange);
+  document.addEventListener('hashchange', onHashChange);
+  return detach;
 }
 
 // --- Record-outcome modal (#/tracker) --------------------------------------
@@ -628,5 +689,9 @@ function openOutcomeModal(r, c, t) {
     select, note, result,
     c('div', { style: { display: 'flex', gap: '8px' } }, [previewBtn, recordBtn]),
   ]);
-  UI.modal(t('track.outcome.record', 'Record outcome'), body);
+  // CAR-36 — the guard's detach doubles as UI.modal's onClose: every
+  // dismissal path (× / Esc / backdrop / record-success close / nav-away
+  // close) removes the hashchange listener exactly once.
+  const detachNavGuard = armTrackerModalNavGuard();
+  UI.modal(t('track.outcome.record', 'Record outcome'), body, detachNavGuard);
 }

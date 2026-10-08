@@ -88,14 +88,20 @@
   }
 
   const BULLET_RE = /^[ \t]*[-*+][ \t]+(.*)$/;
+  // A nested bullet (an indented "- b" under "- a") must NOT enter the flat
+  // list editor: parseListItems() would flatten the level away and a save
+  // would silently lose the structure (v1.243.0). Such a body falls back to
+  // the labelled verbatim textarea (data-safety invariant 1).
+  const NESTED_BULLET_RE = /^[ \t]+[-*+][ \t]+/;
 
-  // A body is a "pure list" iff every non-blank line is a bullet line.
-  // Empty bodies count as a pure (empty) list.
+  // A body is a "pure list" iff every non-blank line is a top-level bullet
+  // line. Empty bodies count as a pure (empty) list.
   function isPureList(body) {
     const lines = String(body || '').split('\n');
     let sawBullet = false;
     for (const ln of lines) {
       if (ln.trim() === '') continue;
+      if (NESTED_BULLET_RE.test(ln)) return false;
       if (!ln.match(BULLET_RE)) return false;
       sawBullet = true;
     }
@@ -119,6 +125,16 @@
   function serialiseProse(value) {
     const v = String(value || '').replace(/^\n+|\n+$/g, '');
     return v ? `\n\n${v}\n\n` : '\n\n';
+  }
+
+  // A rebuilt body must carry its own separators: collect() writes
+  // "## H" + body, so a body not starting with a newline glues its first
+  // line onto the heading, and one not ending with a blank line glues the
+  // NEXT heading onto the last body line (v1.243.0). Canonical
+  // serialisers already emit this shape; verbatim textareas may not.
+  function normaliseBody(body) {
+    const b = String(body || '').replace(/^\n+/, '').replace(/\s+$/, '');
+    return b ? '\n' + b + '\n\n' : '\n\n';
   }
 
   function tLabel(spec) { return I18n.t(spec.labelKey, spec.key); }
@@ -271,7 +287,7 @@
       // Full-file rebuild: preamble + canonical (in order) + extras.
       const pre = preamble || DEFAULT_PREAMBLE;
       const md = pre + rendered.map((r) =>
-        `## ${r.heading}\n${r.body}`).join('');
+        `## ${r.heading}${normaliseBody(r.body)}`).join('');
       return { mode: 'markdown', markdown: md };
     }
 
@@ -288,6 +304,7 @@
     _serialiseList: serialiseList,
     _proseDisplay: proseDisplay,
     _serialiseProse: serialiseProse,
+    _normaliseBody: normaliseBody,
     _defaultPreamble: DEFAULT_PREAMBLE,
   };
 })();

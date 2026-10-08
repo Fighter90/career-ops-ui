@@ -62,3 +62,24 @@ test('scoreClass: maps tone → tracker CSS class (4 tiers)', () => {
   assert.equal(ScoreTone.scoreClass(3.2), 'score-muted');
   assert.equal(ScoreTone.scoreClass(2.0), 'score-low');
 });
+
+// v1.243.0 — placeholder sentinels ("—", "N/A", "TBD") are not grades: the
+// first-char fallback read "—" as bad (nothing ≥ A) and coloured an
+// unevaluated row red. The grade fallback now requires an actual A–F
+// letter grade; anything else stays neutral.
+
+test('scoreTone: placeholder sentinels stay neutral (muted), never red', () => {
+  for (const sentinel of ['—', '–', 'N/A', 'TBD', 'Pending', 'n/a']) {
+    assert.equal(ScoreTone.scoreTone(sentinel), 'muted', sentinel);
+    assert.equal(ScoreTone.scoreClass(sentinel), 'score-muted', sentinel);
+  }
+});
+
+test('scoreTone: real letter grades still take the grade fallback', () => {
+  assert.equal(ScoreTone.scoreTone('A'), 'good');
+  assert.equal(ScoreTone.scoreTone('a-'), 'good');
+  assert.equal(ScoreTone.scoreTone('B+'), 'warn');
+  assert.equal(ScoreTone.scoreTone('C'), 'muted');
+  assert.equal(ScoreTone.scoreTone('D'), 'bad');
+  assert.equal(ScoreTone.scoreTone('F'), 'bad');
+});

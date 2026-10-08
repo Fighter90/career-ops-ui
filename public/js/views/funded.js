@@ -51,8 +51,18 @@ Router.register('funded', async () => {
       const res = await API.get('/api/company-funded');
       out.textContent = '';
       if (!res || res.available === false) {
-        out.appendChild(c('p', { style: { color: 'var(--foggy)' } },
-          t('funded.unavailable', 'Discovery is unavailable here — the parent career-ops company-funded script was not found.')));
+        // CAR-21 (v1.243.0) — reason-aware: 'script-not-found' keeps the
+        // honest "the parent script isn't installed here" note, while
+        // 'timeout' / 'script-error' are a different failure and surface
+        // as an error with the server's sanitized `detail` (stderr
+        // excerpt). No new copy: the existing Error key + server data.
+        const reason = (res && res.reason) || '';
+        const notFound = !reason || reason === 'script-not-found';
+        out.appendChild(c('p', {
+          style: { color: notFound ? 'var(--foggy)' : 'var(--danger, #d9534f)' },
+        }, notFound
+          ? t('funded.unavailable', 'Discovery is unavailable here — the parent career-ops company-funded script was not found.')
+          : t('common.error', 'Error') + ': ' + (res.detail || reason)));
         return;
       }
       // The parent company-funded.mjs emits the ranked list under `companies`

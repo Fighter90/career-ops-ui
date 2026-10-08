@@ -49,6 +49,10 @@ Router.register('docs-assistant', async () => {
   }
 
   async function send() {
+    // CAR-21 (v1.243.0) — re-entry guard: a second Enter (or a chip click)
+    // while a question was already in flight queued a duplicate request
+    // and interleaved the bubbles. askBtn.disabled is the in-flight flag.
+    if (askBtn.disabled) return;
     const question = input.value.trim();
     if (question.length < 3) { UI.toast(t('docs.needQ', 'Type a question first'), 'error'); return; }
     input.value = '';
@@ -86,7 +90,11 @@ Router.register('docs-assistant', async () => {
   }
 
   askBtn.addEventListener('click', send);
-  input.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); send(); } });
+  input.addEventListener('keydown', (e) => {
+    // CAR-21 (v1.243.0) — IME composition Enter is text input, not a send.
+    if (e.isComposing || e.keyCode === 229) return;
+    if (e.key === 'Enter') { e.preventDefault(); send(); }
+  });
 
   return root;
 });

@@ -143,17 +143,29 @@ Router.register('apply', async () => {
     return c('div', null, [list, actions]);
   }
 
+  // CAR-20 (v1.243.0) — run() used to be re-entrant (double-click → two
+  // POSTs racing into the same output div) and re-read url/jd AFTER the
+  // await, so a user who edited the fields mid-flight got a checklist
+  // slugged/rendered from a DIFFERENT URL than the request used. Capture
+  // the inputs before awaiting and disable the button for the duration.
+  const runBtn = c('button', { className: 'btn btn-primary', onClick: () => run() }, t('apply.run'));
+  let running = false;
   async function run() {
-    if (!url.value.trim()) return UI.toast(t('apply.enterUrl'), 'error');
+    if (running) return;
+    const urlVal = url.value.trim();
+    const jdVal = jd.value.trim();
+    if (!urlVal) return UI.toast(t('apply.enterUrl'), 'error');
+    running = true;
+    runBtn.disabled = true;
     out.innerHTML = `<div class="loading">…</div>`;
     try {
-      const r = await API.post('/api/apply-helper', { url: url.value.trim(), jd: jd.value.trim() });
+      const r = await API.post('/api/apply-helper', { url: urlVal, jd: jdVal });
       // UX-D-D (v1.58.46) — substitute {company}-{role} placeholders
       // before parsing so item 5 reads as `interview-prep/anthropic-senior-backend-engineer.md`
       // instead of the literal `{company}-{role}.md`.
-      const substituted = substitutePlaceholders(r.checklist, url.value.trim(), jd.value.trim());
+      const substituted = substitutePlaceholders(r.checklist, urlVal, jdVal);
       const items = parseChecklist(substituted);
-      const slug = slugForUrl(url.value.trim());
+      const slug = slugForUrl(urlVal);
       out.innerHTML = '';
       const card = c('div', { className: 'card' }, [c('p', null, r.message)]);
       if (items.length) {
@@ -167,6 +179,9 @@ Router.register('apply', async () => {
     } catch (e) {
       out.innerHTML = '';
       out.appendChild(c('div', { className: 'empty' }, (e && e.message) || 'apply failed'));
+    } finally {
+      running = false;
+      runBtn.disabled = false;
     }
   }
 
@@ -203,7 +218,7 @@ Router.register('apply', async () => {
     c('div', { className: 'card' }, [
       c('div', { className: 'field' }, [c('label', { htmlFor: 'apply-url' }, t('apply.urlLbl')), url]),
       c('div', { className: 'field' }, [c('label', { htmlFor: 'apply-jd' }, t('apply.jdLbl')), jd]),
-      c('button', { className: 'btn btn-primary', onClick: run }, t('apply.run')),
+      runBtn,
     ]),
     c('div', { className: 'mt-5' }, out),
   ]);

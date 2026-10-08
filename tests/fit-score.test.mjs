@@ -69,6 +69,57 @@ test('country: must-have match vs must-have-elsewhere violation', () => {
     'substring "German" must not match country Germany');
 });
 
+// ── v1.243.0 (CAR-18): OR-listed must-have countries + salary parsing ──
+
+test('OR-listed must-have country: a job in ANY named country matches once, never violates', () => {
+  const tp = { must_haves: ['Germany or Netherlands'] };
+  const berlin = FS.scoreJob({ title: 'Eng', location: 'Berlin, Germany' }, tp, C);
+  assert.ok(berlin.matched.some((x) => x.label === 'Germany or Netherlands'),
+    'the pref counts as matched');
+  assert.deepEqual(berlin.violated, [],
+    'the same line must not ALSO count as a must-have-elsewhere violation');
+  assert.ok(berlin.score > 50, 'a perfect fit must not be net-negative');
+
+  const amsterdam = FS.scoreJob({ title: 'Eng', location: 'Amsterdam, Netherlands' }, tp, C);
+  assert.ok(amsterdam.matched.some((x) => x.label === 'Germany or Netherlands'));
+  assert.deepEqual(amsterdam.violated, []);
+
+  // a job in NEITHER named country still violates
+  const paris = FS.scoreJob({ title: 'Eng', location: 'Paris, France' }, tp, C);
+  assert.ok(paris.violated.some((x) => x.label === 'Germany or Netherlands'));
+});
+
+test('jobSalaryNum: a salary range is judged by its TOP, not its bottom', () => {
+  const job = { title: 'Eng', location: 'X', salary: '$100-150K' };
+  const tp = { must_haves: ['at least $120k'] };
+  const r = FS.scoreJob(job, tp, C);
+  assert.ok(r.matched.some((x) => x.label === 'at least $120k'),
+    '150k top ≥ 120k floor → matched (pre-fix jobSalaryNum read 100)');
+  assert.deepEqual(r.violated, []);
+
+  const r2 = FS.scoreJob({ title: 'Eng', salary: '$150,000 - $200,000' },
+    { must_haves: ['min 160000'] }, C);
+  assert.ok(r2.matched.length === 1, 'top of an explicit range (200k) clears a 160k floor');
+});
+
+test('jobSalaryNum: space-grouped thousands parse as full amounts', () => {
+  const r = FS.scoreJob({ title: 'Eng', salary: '150 000 RUB net' },
+    { must_haves: ['at least 140000'] }, C);
+  assert.ok(r.matched.length === 1, '150 000 must parse as 150000 (pre-fix: 150)');
+});
+
+test('salaryFloor and jobSalaryNum keep comma/decimal handling (regression guard)', () => {
+  assert.equal(FS._internals.salaryFloor('at least $120k'), 120000);
+  assert.equal(FS._internals.salaryFloor('min 100000'), 100000);
+  assert.equal(FS._internals.salaryFloor('nice team'), null);
+  assert.equal(FS._internals.salaryFloor('at least 500 EUR/day'), null);
+  assert.equal(FS._internals.salaryFloor('min $80/hr'), null);
+  assert.equal(FS._internals.salaryFloor('minimum 6000 monthly'), null);
+  // comma thousands + decimals
+  const r = FS.scoreJob({ title: 'Eng', salary: '5,000 EUR/month' }, { loves: ['anything'] }, C);
+  assert.equal(r.score, null, 'sub-annual 5,000/month is not promoted to an annual floor');
+});
+
 test('salary floor: meets vs below', () => {
   const above = FS.scoreJob({ title: 'X', location: 'Remote', salary: '$150k' }, { must_haves: ['at least $120k'] }, C);
   assert.ok(above.matched.some((x) => x.label === 'at least $120k'));

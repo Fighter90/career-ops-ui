@@ -18,12 +18,82 @@ function __cancelActiveScanPoll() {
     __activeScanDoneTimeout = null;
   }
 }
+
+// v1.243.0 (views-3) — the Active-companies counter label and the
+// Workday-fallback chip subscribed to the body-level 'scan:refresh' event on
+// EVERY #/scan visit and were never removed: N visits = N handlers per
+// refresh tick, each re-fetching /api/scan-results. Track this visit's
+// subscriptions in module scope and detach them all on route change (the
+// router always begins a new view from a clean slate).
+const __scanRefreshListeners = new Set();
+function addScanRefreshListener(fn) {
+  document.body.addEventListener('scan:refresh', fn);
+  __scanRefreshListeners.add(fn);
+}
+function detachScanRefreshListeners() {
+  for (const fn of __scanRefreshListeners) document.body.removeEventListener('scan:refresh', fn);
+  __scanRefreshListeners.clear();
+}
+
+// v1.243.0 (views-3) — the scan-execution engine (scan/runner.js) of the
+// CURRENT #/scan view. Its EventSource was orphaned on navigate-away: the
+// SSE stream stayed open (the server keeps scanning; the next Scan click hit
+// SCAN_BUSY) while the view kept streaming into detached nodes. The
+// hashchange handler below closes it silently.
+let __activeScanRunner = null;
+function __teardownActiveScanRunner() {
+  const r = __activeScanRunner;
+  __activeScanRunner = null;
+  if (r && typeof r.teardown === 'function') {
+    try { r.teardown(); } catch { /* detached DOM is fine to touch */ }
+  }
+}
+
 // Cancel on every route change — the renderer always begins from a clean slate.
-window.addEventListener('hashchange', __cancelActiveScanPoll);
+window.addEventListener('hashchange', () => {
+  __cancelActiveScanPoll();
+  __teardownActiveScanRunner();
+  detachScanRefreshListeners();
+});
+
+// v1.243.0 (views-3) — adapter-aware API classification. The old inline
+// 3-host regex (jobs.ashbyhq.com | jobs.lever.co | job-boards.greenhouse.io)
+// had drifted from the server adapter registry: eu.greenhouse / eu.lever
+// boards and Workday / SmartRecruiters / Workable companies were labelled
+// "Web-search only" and the Active-companies denominator shrank. Classify
+// against the REGISTRY the view already fetches (GET /api/scan/sources →
+// adapter ids, with the drift-gated FALLBACK_SOURCES until it lands): an
+// explicit `api:` field, an explicit `provider:` matching an adapter id, or
+// a careers_url host naming one (myworkdayjobs.com → 'workday'). Deliberately
+// NOT a hardcoded host list — an adapter registered server-side flows through
+// by its id, so the client cannot drift the way the regex did.
+function hostOf(url) {
+  const raw = String(url || '').trim();
+  if (!raw) return '';
+  try {
+    return new URL(/^\w+:\/\//.test(raw) ? raw : 'https://' + raw).hostname.toLowerCase();
+  } catch { return ''; }
+}
+function isApiBackedCompany(co, adapterIds) {
+  if (!co || typeof co !== 'object') return false;
+  if (co.api) return true; // explicit boards-api endpoint — the scanner honours it
+  const ids = adapterIds instanceof Set ? adapterIds : new Set(adapterIds || []);
+  if (co.provider && ids.has(co.provider)) return true; // explicit provider pin
+  const h = hostOf(co.careers_url || co.careersUrl);
+  if (!h) return false;
+  // ≥4 chars: 3-char ids ('hh', 'rss', 'gem', 'ibm') would false-hit as
+  // substrings of unrelated hosts; those adapters are provider-pinned
+  // (matched above) or regional, never URL-detected.
+  for (const id of ids) {
+    if (id.length >= 4 && h.includes(id)) return true;
+  }
+  return false;
+}
 
 Router.register('scan', async () => {
-  // Clean up any stale poll from a previous /scan visit.
+  // Clean up any stale poll/listeners from a previous /scan visit.
   __cancelActiveScanPoll();
+  detachScanRefreshListeners();
   const c = UI.el;
   const t = (k, f) => I18n.t(k, f);
   let portalsData = null;
@@ -40,11 +110,13 @@ Router.register('scan', async () => {
   catch { twoPagerData = null; }
 
   const p = portalsData?.portals || {};
-  const companies = (p.tracked_companies || p.companies || []).filter((c) => c.enabled !== false);
-  const apiCompanies = companies.filter((co) =>
-    co.api ||
-    /jobs\.ashbyhq\.com|jobs\.lever\.co|job-boards\.greenhouse\.io/.test(co.careers_url || '')
-  );
+  const companies = (p.tracked_companies || p.companies || []).filter((co) => co.enabled !== false);
+  // v1.243.0 (views-3) — registry-driven classification (see isApiBackedCompany
+  // above). Starts from the build-time fallback mirror; the live
+  // GET /api/scan/sources fetch below re-classifies if the server registry
+  // carries adapter ids this build's fallback lacks.
+  const adapterIdSet = new Set((window.ScanResults.FALLBACK_SOURCES || []).map((s) => s.value));
+  let apiCompanies = companies.filter((co) => isApiBackedCompany(co, adapterIdSet));
 
   // v1.46.0 (WS2 #5) — the SSE log is an aria-live log region so SR
   // users hear each scanned line; tabindex makes it keyboard-scrollable.
@@ -139,10 +211,24 @@ Router.register('scan', async () => {
   // Best-effort live refresh from the registry. Network failure → keep
   // the fallback list. Race vs. user interaction is fine — appending
   // to a <select> after first paint doesn't reset the user's choice.
+  // v1.243.0 (views-3) — when the live registry carries adapter ids this
+  // build's fallback lacked, re-classify the companies with it: the
+  // dropdown, the Direct-API / Web-search groups and the Active-companies
+  // denominator then follow the server registry, not a build snapshot.
   (async () => {
     try {
       const r = await API.get('/api/scan/sources');
-      if (r && Array.isArray(r.sources) && r.sources.length) paintSourceOptions(r.sources);
+      if (r && Array.isArray(r.sources) && r.sources.length) {
+        paintSourceOptions(r.sources);
+        let changed = false;
+        for (const s of r.sources) {
+          if (s && s.value && !adapterIdSet.has(s.value)) { adapterIdSet.add(s.value); changed = true; }
+        }
+        if (changed) {
+          apiCompanies = companies.filter((co) => isApiBackedCompany(co, adapterIdSet));
+          paintCompanyOptions();
+        }
+      }
     } catch {}
   })();
   // v1.78.0 — geography filter. A country <select> (with flag emoji) populated
@@ -174,10 +260,18 @@ Router.register('scan', async () => {
   // v1.80.0 — ⭐ favorites-only toggle (localStorage-backed, by job URL).
   const favOnly = c('input', { type: 'checkbox', id: 'fav-only' });
 
-  const companySelect = c('select', { className: 'select', id: 'company-select' }, [
-    c('option', { value: '' }, t('scan.allCompanies')),
-    ...apiCompanies.map((co) => c('option', { value: co.name }, co.name)),
-  ]);
+  // v1.243.0 (views-3) — the company dropdown is painted through
+  // paintCompanyOptions() (not inline children) so the live-registry
+  // re-classification below can rebuild it, preserving the user's choice.
+  const companySelect = c('select', { className: 'select', id: 'company-select' });
+  function paintCompanyOptions() {
+    const chosen = companySelect.value;
+    companySelect.textContent = '';
+    companySelect.appendChild(c('option', { value: '' }, t('scan.allCompanies')));
+    for (const co of apiCompanies) companySelect.appendChild(c('option', { value: co.name }, co.name));
+    companySelect.value = chosen || ''; // a stale choice is a harmless no-op
+  }
+  paintCompanyOptions();
   // v1.80.0 — optional per-source cap (0/empty = unlimited, the default).
   const maxPerSource = c('input', {
     type: 'number', inputmode: 'numeric', min: '0', step: '10',
@@ -216,11 +310,22 @@ Router.register('scan', async () => {
   const activeLevel = new Set();
   const activeDynamic = new Set();
 
+  // v1.243.0 (views-3) — latest-wins: the 2.5s live poll and the done/error
+  // refreshes overlap, and a slow response landing AFTER a newer one used to
+  // overwrite its fresher rows; worse, a failed GET wiped the table to
+  // {en:null,ru:null}. Sequence every call; a stale or failed response leaves
+  // the last good table (and the last good labels) untouched.
+  let refreshSeq = 0;
   async function refreshResults() {
+    const mySeq = ++refreshSeq;
     try {
-      lastResults = await API.get('/api/scan-results');
+      const next = await API.get('/api/scan-results');
+      if (mySeq !== refreshSeq) return; // a newer refresh owns the table now
+      lastResults = next;
     } catch {
-      lastResults = { en: null, ru: null };
+      if (mySeq !== refreshSeq) return;
+      // Network blip — keep the previous table instead of wiping it.
+      return;
     }
     SR.render();
     // F-011: notify the Active-Companies counter (and any other listener)
@@ -255,6 +360,9 @@ Router.register('scan', async () => {
     scanBtn, stopBtn, dryRun, companySelect, maxPerSource,
     t, c, refreshResults, resetResultsCache,
   });
+  // v1.243.0 (views-3) — stash the runner at module scope so the hashchange
+  // teardown can close an in-flight EventSource when the user navigates away.
+  __activeScanRunner = runner;
 
   // v1.68.0 — filters are now Apply-driven (was live-on-input). The user asked
   // for an explicit "Apply" so the salary range visibly re-filters the results.
@@ -590,8 +698,10 @@ Router.register('scan', async () => {
       // and SR.render() is itself called from refreshResults() right
       // after the new /api/scan-results comes back. Re-stamp the label
       // every time the SSE done event fires by listening to a custom
-      // event the page dispatches on body.
-      document.body.addEventListener('scan:refresh', setLabel);
+      // event the page dispatches on body. v1.243.0 (views-3) — routed
+      // through the tracked helper so the listener is detached on route
+      // change (it used to accumulate one handler per #/scan visit).
+      addScanRefreshListener(setLabel);
 
       filterIn.addEventListener('input', (e) => {
         query = e.target.value;
@@ -627,7 +737,9 @@ Router.register('scan', async () => {
           wdFallback.style.display = '';
         }).catch(() => { /* network blip — chip stays hidden */ });
       }
-      document.body.addEventListener('scan:refresh', refreshWorkdayChip);
+      // v1.243.0 (views-3) — tracked subscription (detached on route change);
+      // see addScanRefreshListener above.
+      addScanRefreshListener(refreshWorkdayChip);
       // Initial check on page load so users who navigate to /#/scan after
       // a prior session's blocked Workday see the chip immediately.
       refreshWorkdayChip();

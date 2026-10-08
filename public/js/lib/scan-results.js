@@ -169,14 +169,28 @@ window.ScanResults = (function () {
     return [...enRows, ...ruRows];
   }
   function render() {
+    // v1.243.0 — every re-render (facet-chip toggle, favorite star, filter
+    // apply) wipes and rebuilds this whole subtree. Carry across what the
+    // user was looking at: the Advanced-disclosure open state and the
+    // focused chip (buildChipRow tags its chips with data-chip), so a
+    // toggle doesn't collapse the panel or drop keyboard focus.
+    const prevDetails = ctx.resultsEl.querySelector('details.scan-advanced');
+    const prevOpen = prevDetails ? prevDetails.open : false;
+    const active = document.activeElement;
+    const prevFocusChip = (active && typeof active.getAttribute === 'function' &&
+      active.classList && active.classList.contains('chip') &&
+      ctx.resultsEl.contains(active)) ? active.getAttribute('data-chip') : null;
     ctx.resultsEl.innerHTML = '';
     const allRows = getRows();
     // v1.78.0 — refresh the country dropdown from the (scope-filtered) corpus so
     // it lists exactly the countries present, each with a count.
     paintCountryOptions(allRows);
     paintSeniorityOptions(allRows);
-    const enWhen = ctx.getLastResults().en?.when ? new Date(ctx.getLastResults().en.when).toLocaleString('ru') : null;
-    const ruWhen = ctx.getLastResults().ru?.when ? new Date(ctx.getLastResults().ru.when).toLocaleString('ru') : null;
+    const lang = (window.I18n && I18n.getLang()) || 'en';
+    // v1.243.0 — format with the ACTIVE locale; a hard-coded 'ru' read
+    // wrong (or plain wrong-script) for the other 16 locales.
+    const enWhen = ctx.getLastResults().en?.when ? new Date(ctx.getLastResults().en.when).toLocaleString(lang) : null;
+    const ruWhen = ctx.getLastResults().ru?.when ? new Date(ctx.getLastResults().ru.when).toLocaleString(lang) : null;
 
     // Header summary — labels neutralized to "ATS / Regional" so the
     // adapter geography isn't baked into the UI (F-010).
@@ -200,15 +214,18 @@ window.ScanResults = (function () {
     const facets = window.Skills.computeFacets(allRows);
     // Filter dynamic keywords by script — non-Russian UI shouldn't show
     // Cyrillic-only tokens like "разработчик" leaking from Habr data.
-    const lang = (window.I18n && I18n.getLang()) || 'en';
-    const script = lang === 'ru' ? 'all' : 'latin';
+    // v1.243.0 — 'uk' is a Cyrillic locale too; gating on lang === 'ru'
+    // alone hid the Cyrillic keyword chips from Ukrainian users.
+    const script = (lang === 'ru' || lang === 'uk') ? 'all' : 'latin';
     const dynKeywords = window.Skills.extractDynamicKeywords(allRows, { limit: 20, script });
     const dynCounts = Object.fromEntries(dynKeywords);
     // v1.55.6 — UX-4: the stack / level / dynamic facet chips are a
     // secondary refinement — collapse them behind the same "Advanced
     // filters" disclosure so a fresh result set leads with the table,
     // not a wall of chips. The body keeps the original flex-column.
-    const chipsContainer = c('details', { className: 'mb-3 scan-advanced' });
+    // v1.243.0 — the previous disclosure's open state is restored, so a
+    // chip toggle inside it doesn't collapse it.
+    const chipsContainer = c('details', { className: 'mb-3 scan-advanced', open: prevOpen ? '' : null });
     chipsContainer.appendChild(c('summary', null, t('scan.advancedFilters', 'Advanced filters')));
     const chipsBody = c('div', { style: { display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '8px' } });
     if (Object.keys(facets.tech).length) chipsBody.appendChild(buildChipRow(t('scan.chip.stack'), facets.tech, ctx.activeTech));
@@ -218,6 +235,14 @@ window.ScanResults = (function () {
     if (chipsBody.childNodes.length) {
       chipsContainer.appendChild(chipsBody);
       ctx.resultsEl.appendChild(chipsContainer);
+      // The rebuild replaced the node the user was interacting with — put
+      // the focus back on the same chip (a keyboard toggle used to drop
+      // focus to <body> mid-navigation).
+      if (prevFocusChip) {
+        const chip = [...chipsContainer.querySelectorAll('.chip')]
+          .find((n) => n.getAttribute('data-chip') === prevFocusChip);
+        if (chip) chip.focus();
+      }
     }
 
     // ── Now apply ALL filters (text/remote/source + chips) ──
@@ -333,6 +358,13 @@ window.ScanResults = (function () {
       }, band === 'strong' ? t('scan.titleFit.strong', 'strong fit')
         : band === 'related' ? t('scan.titleFit.related', 'related fit')
         : t('scan.titleFit.weak', 'weak fit')) : null;
+      // v1.243.0 — only a real http(s) URL becomes a link target: a crafted
+      // `javascript:` / `data:` url (or a missing one) used to be written
+      // straight into href. Unlinkable rows render the title as plain text.
+      const safeUrl = /^https?:\/\//i.test(r.url || '') ? r.url : null;
+      const titleLink = safeUrl
+        ? c('a', { href: safeUrl, target: '_blank', rel: 'noopener', style: { color: 'var(--rausch)' } }, r.title)
+        : r.title;
       const titleCell = c('td', null, [
         r._boosted ? c('span', {
           className: 'badge badge-info',
@@ -342,7 +374,7 @@ window.ScanResults = (function () {
         titleFitChip,
         fitBadge,
         trustBadge,
-        c('a', { href: r.url, target: '_blank', rel: 'noopener', style: { color: 'var(--rausch)' } }, r.title),
+        titleLink,
       ]);
       // v1.80.0 — ⭐ favorite toggle (localStorage, by URL). Re-renders so the
       // "favorites only" filter reflects the change immediately.
@@ -420,6 +452,10 @@ window.ScanResults = (function () {
       const toggle = () => {
         if (activeSet.has(name)) activeSet.delete(name);
         else activeSet.add(name);
+        // v1.243.0 — a facet change resets the pager like every other
+        // filter (applyFilters()); toggling on a deep page used to land
+        // on a clamped mid-list page.
+        ctx.pager.reset();
         render();
       };
       const chip = c('span', {
@@ -427,13 +463,16 @@ window.ScanResults = (function () {
         role: 'button',
         tabindex: '0',
         'aria-pressed': String(isOn),
+        // Stable identity across re-renders — render() restores keyboard
+        // focus to the chip the user just toggled via this attribute.
+        'data-chip': name,
         onClick: toggle,
         onKeydown: (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); toggle(); } },
       }, [name, c('span', { className: 'chip-count' }, String(count))]);
       row.appendChild(chip);
     }
     if (activeSet.size) {
-      const clearAll = () => { activeSet.clear(); render(); };
+      const clearAll = () => { activeSet.clear(); ctx.pager.reset(); render(); };
       row.appendChild(c('span', {
         className: 'chip clear',
         role: 'button',

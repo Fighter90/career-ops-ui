@@ -236,7 +236,20 @@ export function createApp() {
   // top of createApp() for the new placement. The late-placed copy
   // here was never reached on un-encoded `..` because Express had
   // already rewritten the URL to a non-`/api` path by then.
-  app.get('*', (_req, res) => {
+  // CAR-39 — the SPA fallback answers only NAVIGATION requests for
+  // extension-less paths. Previously EVERY unmatched GET — including
+  // mistyped/stale asset URLs like /app.js or /style.css that
+  // express.static did not find — fell through to here and returned
+  // 200 + the HTML shell, so a browser silently parsed HTML as JS/CSS.
+  // Now a last path segment that carries a file extension (a missing
+  // static file; existing assets never reach this handler) or a client
+  // that does not accept HTML (not a navigation) gets a plain 404.
+  app.get('*', (req, res) => {
+    const lastSegment = req.path.split('/').pop() || '';
+    const looksLikeFile = /\.[a-z0-9]+$/i.test(lastSegment);
+    if (looksLikeFile || !req.accepts('html')) {
+      return res.status(404).type('text').send('Not Found');
+    }
     // W-001 — the SPA shell must always revalidate (it references the
     // un-hashed code assets); sendFile bypasses the static setHeaders.
     res.setHeader('Cache-Control', 'no-store');

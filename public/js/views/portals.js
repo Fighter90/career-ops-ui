@@ -82,7 +82,12 @@ Router.register('portals', async () => {
     const isOn = company.enabled !== false;
     const toggleBtn = c('button', {
       className: 'btn btn-ghost btn-sm', type: 'button',
-      'aria-label': isOn ? t('portals.disable', 'Disable') : t('portals.enable', 'Enable'),
+      // CAR-21 (v1.243.0) — every row used to announce the bare same
+      // "Disable"/"Enable": with 45 tracked portals a screen-reader user
+      // heard 45 identical buttons. Name the portal too (same
+      // disambiguation the pipeline row actions got in F-V54-B).
+      'aria-label': (isOn ? t('portals.disable', 'Disable') : t('portals.enable', 'Enable'))
+        + ': ' + (company.name || company.careers_url),
     }, isOn ? t('portals.disable', 'Disable') : t('portals.enable', 'Enable'));
     if (!canToggle) toggleBtn.disabled = true;
     else toggleBtn.addEventListener('click', async () => {
@@ -198,6 +203,11 @@ Router.register('portals', async () => {
   }
 
   async function runDiscover() {
+    // CAR-21 (v1.243.0) — the button disables itself while a discovery is in
+    // flight, but pressing Enter again called runDiscover() directly and
+    // bypassed that guard (double POST + result clobber). Guard here too —
+    // this also covers double-clicks on the chips-adjacent UI.
+    if (discBtn.disabled) return;
     const company = discInput.value.trim();
     if (!company) { UI.toast(t('portals.discoverEmptyInput', 'Enter a company name first'), 'error'); return; }
     discBtn.disabled = true;
@@ -214,7 +224,12 @@ Router.register('portals', async () => {
     }
   }
   discBtn.addEventListener('click', runDiscover);
-  discInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); runDiscover(); } });
+  discInput.addEventListener('keydown', (e) => {
+    // CAR-21 (v1.243.0) — an IME composition Enter (confirming CJK
+    // candidates) is text input, not a submit.
+    if (e.isComposing || e.keyCode === 229) return;
+    if (e.key === 'Enter') { e.preventDefault(); runDiscover(); }
+  });
 
   checkBtn.addEventListener('click', async () => {
     checkBtn.disabled = true;

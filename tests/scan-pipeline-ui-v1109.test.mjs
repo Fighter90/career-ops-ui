@@ -30,7 +30,15 @@ test('pipeline.js renders an overview strip (inbox + tracked + key statuses)', (
   assert.match(src, /const overview = /);
   assert.match(src, /ovChip\(allUrls\.length, t\('pipe\.ovInbox'/);
   assert.match(src, /ovChip\(trackerRows\.length, t\('pipe\.ovTracked'/);
-  assert.match(src, /\['Applied', 'Responded', 'Interview', 'Offer'\]/);
+  // CAR-21 (v1.243.0) — the hard-coded English stage list is replaced by the
+  // server's canonical stages (GET /api/tracker/stages) folded through
+  // window.TrackerStages, and paintOverview() runs on every refresh() so the
+  // strip stays truthful after add/delete.
+  assert.match(src, /api\/tracker\/stages/);
+  assert.match(src, /window\.TrackerStages/);
+  assert.doesNotMatch(src, /\['Applied', 'Responded', 'Interview', 'Offer'\]/,
+    'the hard-coded stage whitelist must stay gone');
+  assert.match(src, /paintOverview\(\)/);
   // degrades gracefully if the tracker can't be read
-  assert.match(src, /catch \{ trackerRows = \[\]; \}/);
+  assert.match(src, /API\.get\('\/api\/tracker'\)\.catch/);
 });
