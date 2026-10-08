@@ -11,9 +11,13 @@
 
 ## [1.243.2] — 2026-10-08
 
-### Fixed
+### 修复
 
 - **Deployable release cut as v1.243.2.** The v1.243.1 tag was re-pointed after publishing, and the server's `git fetch --tags` correctly refuses to clobber an existing tag — so v1.243.1 was never deployable. This tag carries the identical tree (the tracker outcome-modal window-listener fix on top of v1.243.0) plus this version bump. Nothing else changed; the published npm 1.243.1 tarball already contained the fix.
+### 备注
+
+- 应用代码与 v1.243.1 完全相同——只是部署用的标签是新的（服务器的 `git fetch --tags` 拒绝了重新指向的 v1.243.1）。
+- 刻意不做：强制更新服务器端标签（已发布的标签永不移动）。
 
 ## [1.243.1] — 2026-10-08
 
