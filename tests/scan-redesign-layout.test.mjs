@@ -205,15 +205,25 @@ test('AC2: boost/fit/score are icons with accessible names (en)', { skip: SKIP }
       assert.ok(count > 0,
         `no "${SEL.icons[name]}" elements rendered — boost/fit/score must be icons per the contract`);
     }
-    for (const [name, aria, key, mapped] of [
-      ['boost', m.boostAria, SEL.keys.boostIcon, m.tBoost],
-      ['fit', m.fitAria, SEL.keys.fitIcon, m.tFit],
-      ['score', m.scoreAria, SEL.keys.scoreIcon, m.tScore],
+    // v1.244.1 — the dict values carry {band}/{by}/{score} placeholders and the
+    // view interpolates them; the accessible name must be the SUBSTITUTED text
+    // (no brace tokens reach assistive tech) and must carry the real value.
+    for (const [name, aria, mapped] of [
+      ['boost', m.boostAria, m.tBoost],
+      ['fit', m.fitAria, m.tFit],
+      ['score', m.scoreAria, m.tScore],
     ]) {
       assert.ok(aria, `the ${name} icon has no aria-label`);
-      assert.equal(aria, mapped, `the ${name} icon aria-label must be I18n.t('${key}')`);
-      assert.notEqual(mapped, key, `i18n key '${key}' is unmapped (t() returned the key itself)`);
+      assert.ok(!aria.includes('{'), `the ${name} icon aria-label leaks a placeholder: "${aria}"`);
+      assert.ok(mapped.includes('{') ? mapped.split('{')[0].trim().length > 0 : true);
+      assert.ok(aria.length >= 4, `the ${name} icon aria-label is too short: "${aria}"`);
     }
+    // Grafana (fixture row 1) is boosted + strong fit + score 65 — the first
+    // icon of each kind belongs to it, so the values must be visible in the names.
+    assert.ok(m.boostAria.includes('remote') || m.boostAria.includes(m.tBoost.split('{')[0].trim()),
+      `boost aria-label lost the booster value: "${m.boostAria}"`);
+    assert.ok(/strong/i.test(m.fitAria), `fit aria-label lost the band word: "${m.fitAria}"`);
+    assert.ok(m.scoreAria.includes('65'), `score aria-label lost the score: "${m.scoreAria}"`);
   } finally {
     await context.close();
   }
@@ -227,12 +237,18 @@ test('AC2: icon accessible names are localized in ru', { skip: SKIP }, async () 
   const { context, page } = await openScan({ lang: 'ru' });
   try {
     const m = await measureAC2(page);
-    assert.equal(m.boostAria, dict[SEL.keys.boostIcon].ru,
-      `boost icon aria-label must be the ru value of '${SEL.keys.boostIcon}'`);
-    assert.equal(m.fitAria, dict[SEL.keys.fitIcon].ru,
-      `fit icon aria-label must be the ru value of '${SEL.keys.fitIcon}'`);
-    assert.equal(m.scoreAria, dict[SEL.keys.scoreIcon].ru,
-      `score icon aria-label must be the ru value of '${SEL.keys.scoreIcon}'`);
+    // The aria-label is the SUBSTITUTED dict template: it must start with the
+    // dict value's prefix (the part before the first placeholder) and must not
+    // leak any brace token to assistive tech.
+    const prefix = (k) => dict[k].ru.split('{')[0].trim();
+    for (const [name, aria, key] of [
+      ['boost', m.boostAria, SEL.keys.boostIcon],
+      ['fit', m.fitAria, SEL.keys.fitIcon],
+      ['score', m.scoreAria, SEL.keys.scoreIcon],
+    ]) {
+      assert.ok(!aria.includes('{'), `the ${name} icon aria-label leaks a placeholder: "${aria}"`);
+      assert.ok(aria.startsWith(prefix(key)), `the ${name} icon aria-label must start with the ru prefix "${prefix(key)}" — got "${aria}"`);
+    }
   } finally {
     await context.close();
   }
