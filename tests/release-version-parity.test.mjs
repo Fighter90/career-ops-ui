@@ -43,6 +43,6 @@ test('package.json version matches the newest entry in every locale changelog', 
 
 test('README.md release badge matches package.json version', () => {
   const s = readFileSync(join(ROOT, 'README.md'), 'utf8');
-  assert.match(s, new RegExp(`release-v${version.replace(/\./g, '\\.')}-blue`),
+  assert.match(s, new RegExp(`release-v${version.replace(/\\/g, '\\\\').replace(/\./g, '\\.')}-blue`),
     'the README release badge must name the current version');
 });
