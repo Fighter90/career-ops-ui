@@ -68,8 +68,8 @@ test('settings wiring: the view picks archetypes through the helper, not the `||
 
 test('two-pager: a failed load disables Save until a deliberate edit', () => {
   // The failure is captured (not swallowed into the empty shape)…
-  assert.match(TWO_PAGER, /let loadErr = null;/);
-  assert.match(TWO_PAGER, /catch \(e\) \{ loadErr = e; \}/);
+  assert.match(TWO_PAGER, /const loadErr = load\.error \|\| null;/);
+  assert.match(TWO_PAGER, /\.catch\(\(e\) => \(\{ error: e \}\)\);/);
   // …Save is disabled up front, with the server's message as its tooltip…
   assert.match(TWO_PAGER, /if \(loadErr\) \{\s*\n\s*saveBtn\.disabled = true;\s*\n\s*saveBtn\.title = \(loadErr && loadErr\.message\)/);
   // …the failure is VISIBLE (role=alert banner), not looking like "no data"…
@@ -83,6 +83,8 @@ test('two-pager: a failed load disables Save until a deliberate edit', () => {
 });
 
 test('two-pager: a successful load never arms the guard', () => {
-  // The try/catch keeps the two-path shape: `loadErr` stays null on success.
-  assert.match(TWO_PAGER, /try \{ \(\{ twoPager: data \} = await API\.get\('\/api\/two-pager'\)\); \}\s*\n\s*catch \(e\) \{ loadErr = e; \}/);
+  // The discriminated result keeps the two-path shape: `load.error` is
+  // undefined on success, so `loadErr` stays null.
+  assert.match(TWO_PAGER, /\.then\(\(\{ twoPager \}\) => \(\{ twoPager \}\)\)/);
+  assert.match(TWO_PAGER, /let data = load\.twoPager \|\| \{/);
 });
