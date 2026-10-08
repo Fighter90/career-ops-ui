@@ -161,7 +161,7 @@ jobs:
           # Only .git refs change (fetch); the working tree is not touched.
           sec drift
           ui_ver=$(node -p "require('$APP_DIR/web-ui/package.json').version" 2>/dev/null)
-          as_owner "$APP_DIR/web-ui" git -C "$APP_DIR/web-ui" fetch --tags --quiet origin
+          as_owner "$APP_DIR/web-ui" git -C "$APP_DIR/web-ui" fetch --tags --force --quiet origin
           echo "web-ui on disk vs v$ui_ver: $(as_owner "$APP_DIR/web-ui" git -C "$APP_DIR/web-ui" diff --name-only "v$ui_ver" | wc -l) files differ"
           echo "files on disk with lines not in v$ui_ver (hand edits?):"
           as_owner "$APP_DIR/web-ui" git -C "$APP_DIR/web-ui" diff --numstat "v$ui_ver" | awk '$1>0' | head -40
@@ -259,8 +259,12 @@ jobs:
           # (cv.md, portals.yml, config/profile.yml, data/, reports/, .env) is not
           # in either archive, and every file the archive would overwrite is
           # backed up first, together with the list of files it creates.
-          g "$APP_DIR" fetch --tags --quiet origin
-          g "$UI_DIR" fetch --tags --quiet origin
+          # --force: a re-pointed tag (v1.243.1 was re-cut after its first
+          # publish) must remain deployable — a plain --tags fetch refuses to
+          # clobber the stale server-side tag and every later deploy dies at
+          # ref-verify. origin is the source of truth; only .git refs change.
+          g "$APP_DIR" fetch --tags --force --quiet origin
+          g "$UI_DIR" fetch --tags --force --quiet origin
           g "$APP_DIR" rev-parse --verify --quiet "$PARENT_REF^{commit}" >/dev/null || { echo "::error::unknown parent ref $PARENT_REF"; exit 1; }
           g "$UI_DIR" rev-parse --verify --quiet "$UI_REF^{commit}" >/dev/null || { echo "::error::unknown web-ui ref $UI_REF"; exit 1; }
           [ -z "$(g "$APP_DIR" ls-tree -r --name-only "$PARENT_REF" -- web-ui)" ] || { echo "::error::parent ref tracks web-ui/; overlay would clobber the viewer"; exit 1; }
