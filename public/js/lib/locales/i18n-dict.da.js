@@ -982,6 +982,8 @@ window.__I18N_DICT_DA = {
   'scan.fitIcon': "Match: {band}",
   'scan.boostIcon': "Fremhævet af {by}",
   'scan.scoreIcon': "Matchscore {score} ud af 100",
+  'scan.scoreNone': "Matchscore: ingen — two-pager-sammenligningen fandt ingen matchende nøgleord",
+  'scan.scoreNoneTip': "Ingen matchende nøgleord fra din two-pager, så der er ingen matchscore",
   'scan.postedMeta': "Joboplysninger",
   // ── Mock interview 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "Mock-interview",

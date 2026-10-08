@@ -142,6 +142,14 @@ async function measureAC1(page) {
       wrapOverflow: wrap ? wrap.scrollWidth - wrap.clientWidth : -1,
       postingCount: postings.length,
       overflowingPostings: postings.filter((p) => p.scrollWidth > p.clientWidth + 1).length,
+      // Measure the CONTENT element (span inside the td), never the td: table
+      // cells stretch vertically to their row's height, so a td's own box says
+      // nothing about whether the aux text wrapped.
+      tallestAuxPx: Math.max(0, ...[...document.querySelectorAll('td.scan-cell-aux > *')]
+        .map((n) => n.getBoundingClientRect().height)),
+      tallestAuxCells: [...document.querySelectorAll('td.scan-cell-aux > *')]
+        .map((n) => ({ h: n.getBoundingClientRect().height, text: (n.textContent || '').trim().slice(0, 40) }))
+        .sort((a, b) => b.h - a.h).slice(0, 3),
       multiLinePostings: postings
         .filter((p) => {
           const title = p.querySelector(sel.postingTitle);
@@ -173,6 +181,11 @@ test('AC1: posting column ≤ 2 lines, zero overflow at 1440 px and 390 px', { s
       assert.deepEqual(m.multiLinePostings, [],
         `${width}px: posting cells exceed the two-line budget (title line 1 + meta line 2): ` +
         JSON.stringify(m.multiLinePostings));
+      // v1.244.2 — a board-side benefits blurb in the salary field must not
+      // stretch rows: every aux cell stays on one rendered line (~< 30 px).
+      assert.ok(m.tallestAuxPx < 30,
+        `${width}px: an aux (seniority/salary) cell wraps its text (${m.tallestAuxPx}px content height) — clamp aux cells to one line. ` +
+        `Tallest cells: ${JSON.stringify(m.tallestAuxCells)}`);
     } finally {
       await context.close();
     }

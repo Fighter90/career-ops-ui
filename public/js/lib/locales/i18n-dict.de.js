@@ -983,6 +983,8 @@ window.__I18N_DICT_DE = {
   'scan.fitIcon': "Passung: {band}",
   'scan.boostIcon': "Hervorgehoben durch {by}",
   'scan.scoreIcon': "Passung {score} von 100",
+  'scan.scoreNone': "Passung: keine — der Two-Pager-Vergleich fand keine Treffer",
+  'scan.scoreNoneTip': "Keine passenden Keywords zu Ihrem Two-Pager, daher keine Passungspunktzahl",
   'scan.postedMeta': "Details zur Stelle",
   // ── Mock-Interview 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "Mock-Interview",

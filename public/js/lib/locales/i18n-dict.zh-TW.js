@@ -983,6 +983,8 @@ window.__I18N_DICT_ZH_TW = {
   'scan.fitIcon': "契合度：{band}",
   'scan.boostIcon': "由 {by} 提升",
   'scan.scoreIcon': "契合度得分 {score}/100",
+  'scan.scoreNone': "匹配分數：無 — 與兩頁紙比對沒有匹配的關鍵字",
+  'scan.scoreNoneTip': "與您的兩頁紙沒有匹配的關鍵字，因此沒有匹配分數",
   'scan.postedMeta': "職缺詳情",
   // ── 模擬面試 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "模擬面試",

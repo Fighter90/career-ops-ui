@@ -983,6 +983,8 @@ window.__I18N_DICT_IT = {
   'scan.fitIcon': "Corrispondenza: {band}",
   'scan.boostIcon': "Potenziato da {by}",
   'scan.scoreIcon': "Punteggio di corrispondenza {score} su 100",
+  'scan.scoreNone': "Punteggio: nessuno — il confronto con il two-pager non ha trovato corrispondenze",
+  'scan.scoreNoneTip': "Nessuna parola chiave corrispondente al tuo two-pager, quindi nessun punteggio",
   'scan.postedMeta': "Dettagli dell'offerta",
   // ── Mock interview 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "Colloquio simulato",

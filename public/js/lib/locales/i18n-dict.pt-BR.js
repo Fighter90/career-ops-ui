@@ -982,6 +982,8 @@ window.__I18N_DICT_PT_BR = {
   'scan.fitIcon': "Encaixe: {band}",
   'scan.boostIcon': "Boost por {by}",
   'scan.scoreIcon': "Pontuação de encaixe {score} de 100",
+  'scan.scoreNone': "Pontuação: nenhuma — a comparação com o two-pager não encontrou correspondências",
+  'scan.scoreNoneTip': "Sem palavras-chave correspondentes ao seu two-pager, então não há pontuação",
   'scan.postedMeta': "Detalhes da vaga",
 
   // ── Entrevista simulada 2.0 (Epic 15 / v1.90.0) ──

@@ -982,6 +982,8 @@ window.__I18N_DICT_UK = {
   'scan.fitIcon': "Відповідність: {band}",
   'scan.boostIcon': "Буст від {by}",
   'scan.scoreIcon': "Оцінка відповідності {score} зі 100",
+  'scan.scoreNone': "Оцінка відповідності: немає — порівняння з two-pager не знайшло збігів",
+  'scan.scoreNoneTip': "Немає збіжних ключових слів з вашим two-pager, тому оцінки немає",
   'scan.postedMeta': "Деталі вакансії",
   // ── Пробна співбесіда 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "Пробна співбесіда",

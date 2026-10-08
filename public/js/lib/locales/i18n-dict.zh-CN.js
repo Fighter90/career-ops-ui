@@ -983,6 +983,8 @@ window.__I18N_DICT_ZH_CN = {
   'scan.fitIcon': "匹配度：{band}",
   'scan.boostIcon': "由 {by} 提升",
   'scan.scoreIcon': "匹配度得分 {score}/100",
+  'scan.scoreNone': "匹配分数：无 — 与两页纸对比没有匹配的关键词",
+  'scan.scoreNoneTip': "与您的两页纸没有匹配的关键词，因此没有匹配分数",
   'scan.postedMeta': "职位详情",
   // ── 模拟面试 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "模拟面试",

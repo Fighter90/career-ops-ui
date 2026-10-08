@@ -982,6 +982,8 @@ window.__I18N_DICT_AR = {
   'scan.fitIcon': "الملاءمة: {band}",
   'scan.boostIcon': "معزّز بواسطة {by}",
   'scan.scoreIcon': "درجة الملاءمة {score} من 100",
+  'scan.scoreNone': "درجة المطابقة: لا يوجد — المقارنة مع الصفحتين لم تجد كلمات مطابقة",
+  'scan.scoreNoneTip': "لا توجد كلمات مفتاحية مطابقة لصفحتك، لذلك لا توجد درجة مطابقة",
   'scan.postedMeta': "تفاصيل الوظيفة",
   // ── مقابلة تجريبية 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "مقابلة تجريبية",

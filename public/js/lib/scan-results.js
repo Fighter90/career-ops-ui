@@ -389,7 +389,19 @@ window.ScanResults = (function () {
       // (◎ NN); the tooltip lists what matched / what a deal-breaker violated.
       if (ctx.twoPagerData && window.FitScore) {
         const fit = window.FitScore.scoreJob(r, ctx.twoPagerData, window.Countries);
-        if (fit && fit.score != null) {
+        // v1.244.2 — rows WITHOUT a matchable signal render a muted "◎ —"
+        // (was: nothing, which read as broken/inconsistent next to scored
+        // rows). The tooltip says why: the two-pager compare found no
+        // matching keywords — a number is never fabricated.
+        if (!fit || fit.score == null) {
+          signals.push(c('span', {
+            className: 'scan-icon scan-icon--score scan-icon--none', role: 'img',
+            'aria-label': t('scan.scoreNone', 'Match score: none — the two-pager compare found no matching keywords'),
+            title: t('scan.scoreNoneTip', 'No matching keywords vs your two-pager, so there is no match score'),
+            style: { color: 'var(--foggy)' },
+          }, '◎ —'));
+        }
+        else if (fit && fit.score != null) {
           const tip = [
             fit.matched.length ? '✓ ' + fit.matched.map((x) => x.label).join(', ') : '',
             fit.violated.length ? '✗ ' + fit.violated.map((x) => x.label).join(', ') : '',
@@ -433,9 +445,13 @@ window.ScanResults = (function () {
       // `javascript:` / `data:` url (or a missing one) used to be written
       // straight into href. Unlinkable rows render the title as plain text.
       const safeUrl = /^https?:\/\//i.test(r.url || '') ? r.url : null;
+      // v1.244.2 — a row with an empty title rendered a blank cell that
+      // stretched with its aux columns; fall back to the company, then a
+      // locale-neutral dash, so every row has visible content.
+      const titleText = split.title || r.company || '—';
       const titleEl = safeUrl
-        ? c('a', { className: 'scan-posting-title', href: safeUrl, target: '_blank', rel: 'noopener', title: fullTitle }, split.title)
-        : c('span', { className: 'scan-posting-title', title: fullTitle }, split.title);
+        ? c('a', { className: 'scan-posting-title', href: safeUrl, target: '_blank', rel: 'noopener', title: fullTitle }, titleText)
+        : c('span', { className: 'scan-posting-title', title: fullTitle }, titleText);
       // Meta line 2 — company · location · source · date · work-type (the
       // company/location/type/source/age columns folded into one bounded
       // line; the aux detail that stays a column is seniority + salary). One
@@ -484,10 +500,22 @@ window.ScanResults = (function () {
       // v1.129.0 — zero-token seniority bucket stays a desktop-only column
       // (hidden ≤900px; the meta line carries the story on a phone).
       const sen = senOf(r);
-      const senCell = c('td', { className: 'scan-cell-aux' }, sen
-        ? c('span', { className: 'badge', style: { fontSize: '11px' } }, senLabel(sen))
+      const senCell = c('td', { className: 'scan-cell-aux', style: { whiteSpace: 'nowrap' } }, sen
+        ? c('span', { className: 'badge', style: { fontSize: '11px', whiteSpace: 'nowrap' } }, senLabel(sen))
         : '');
-      const salaryCell = c('td', { className: 'scan-cell-aux', style: { fontSize: '13px', color: 'var(--foggy)' } }, r.salary || '');
+      // v1.244.2 — some boards put the whole benefits blurb in the salary
+      // field; an unclamped cell stretched rows to ~10 lines (caught live on
+      // production). One ellipsized line + the full text as the tooltip.
+      const salaryText = String(r.salary || '');
+      const salaryCell = c('td', { className: 'scan-cell-aux' },
+        c('span', {
+          className: 'scan-salary-text',
+          style: {
+            display: 'block', fontSize: '13px', color: 'var(--foggy)',
+            maxWidth: '220px', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis',
+          },
+          title: salaryText,
+        }, salaryText));
       return c('tr', { className: 'scan-row' + (r._boosted ? ' row-boosted' : '') }, [
         starCell,
         postingCell,

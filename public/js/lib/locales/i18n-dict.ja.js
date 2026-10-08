@@ -983,6 +983,8 @@ window.__I18N_DICT_JA = {
   'scan.fitIcon': "適合：{band}",
   'scan.boostIcon': "{by}によるブースト",
   'scan.scoreIcon': "適合スコア {score}／100",
+  'scan.scoreNone': "適合スコア：なし — two-pager 比較で一致するキーワードがありません",
+  'scan.scoreNoneTip': "two-pager と一致するキーワードがないため、適合スコアはありません",
   'scan.postedMeta': "求人詳細",
   // ── 模擬面接 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "模擬面接",
