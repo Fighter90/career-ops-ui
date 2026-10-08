@@ -10,13 +10,14 @@
 
 ## [1.243.2] — 2026-10-08
 
-### Fixed
+### 수정
 
-- **Deployable release cut as v1.243.2.** The v1.243.1 tag was re-pointed after publishing, and the server's `git fetch --tags` correctly refuses to clobber an existing tag — so v1.243.1 was never deployable. This tag carries the identical tree (the tracker outcome-modal window-listener fix on top of v1.243.0) plus this version bump. Nothing else changed; the published npm 1.243.1 tarball already contained the fix.
-### Notes
+- **배포 가능한 릴리스가 v1.243.2로 잘렸습니다.** v1.243.1 태그는 게시 후 재지정되었고, 서버의 `git fetch --tags`는 기존 태그를 덮어쓰기를 올바르게 거부합니다 — 그래서 v1.243.1은 배포 가능하지 않았습니다. 이 태그는 동일한 트리(v1.243.0 기반의 트래커 결과-모달 window-리스너 수정)와 이 버전 상승을 담습니다. 다른 변경은 없습니다. 게시된 npm 1.243.1 타르볼에는 이미 수정이 포함되어 있습니다.
 
-- App code is identical to v1.243.1 — only the deployable tag is fresh (the server's `git fetch --tags` refused the re-pointed v1.243.1).
-- Deliberately not done: force-updating the server-side tag (published tags are never moved).
+### 참고
+
+- 앱 코드는 v1.243.1과 동일합니다 — 새로운 배포 가능 태그만 추가되었습니다(서버의 `git fetch --tags`가 재지정된 v1.243.1을 거부했습니다).
+- 의도적으로 하지 않음: 게시된 태그를 강제로 이동(서버 측 태그 강제 갱신 안 함).
 
 ## [1.243.1] — 2026-10-08
 
