@@ -205,25 +205,28 @@ test('AC2: boost/fit/score are icons with accessible names (en)', { skip: SKIP }
       assert.ok(count > 0,
         `no "${SEL.icons[name]}" elements rendered — boost/fit/score must be icons per the contract`);
     }
-    // v1.244.1 — the dict values carry {band}/{by}/{score} placeholders and the
-    // view interpolates them; the accessible name must be the SUBSTITUTED text
-    // (no brace tokens reach assistive tech) and must carry the real value.
+    // The dict templates carry {band}/{by}/{score} placeholders and the view
+    // interpolates them: the accessible name must be the SUBSTITUTED text —
+    // no brace tokens reach assistive tech, the key must not fall back to
+    // itself, and the name must be strictly longer than the template's
+    // leading prefix (the placeholder was replaced with a real value, not
+    // stripped). No fixture-value coupling: the contract is about
+    // substitution, not about specific booster/band/score literals.
+    const key_of = { boost: SEL.keys.boostIcon, fit: SEL.keys.fitIcon, score: SEL.keys.scoreIcon };
     for (const [name, aria, mapped] of [
       ['boost', m.boostAria, m.tBoost],
       ['fit', m.fitAria, m.tFit],
       ['score', m.scoreAria, m.tScore],
     ]) {
       assert.ok(aria, `the ${name} icon has no aria-label`);
+      assert.notEqual(mapped, key_of[name], `i18n key for ${name} is unmapped (t() returned the key itself)`);
+      const prefix = mapped.split('{')[0].trim();
+      assert.ok(prefix.length > 0,
+        `the ${name} dict template should start with a word before its placeholder (got "${mapped}")`);
       assert.ok(!aria.includes('{'), `the ${name} icon aria-label leaks a placeholder: "${aria}"`);
-      assert.ok(mapped.includes('{') ? mapped.split('{')[0].trim().length > 0 : true);
-      assert.ok(aria.length >= 4, `the ${name} icon aria-label is too short: "${aria}"`);
+      assert.ok(aria.startsWith(prefix), `the ${name} icon aria-label must start with the dict prefix "${prefix}" — got "${aria}"`);
+      assert.ok(aria.length > prefix.length, `the ${name} icon aria-label carries no interpolated value: "${aria}"`);
     }
-    // Grafana (fixture row 1) is boosted + strong fit + score 65 — the first
-    // icon of each kind belongs to it, so the values must be visible in the names.
-    assert.ok(m.boostAria.includes('remote') || m.boostAria.includes(m.tBoost.split('{')[0].trim()),
-      `boost aria-label lost the booster value: "${m.boostAria}"`);
-    assert.ok(/strong/i.test(m.fitAria), `fit aria-label lost the band word: "${m.fitAria}"`);
-    assert.ok(m.scoreAria.includes('65'), `score aria-label lost the score: "${m.scoreAria}"`);
   } finally {
     await context.close();
   }
@@ -237,17 +240,20 @@ test('AC2: icon accessible names are localized in ru', { skip: SKIP }, async () 
   const { context, page } = await openScan({ lang: 'ru' });
   try {
     const m = await measureAC2(page);
-    // The aria-label is the SUBSTITUTED dict template: it must start with the
-    // dict value's prefix (the part before the first placeholder) and must not
-    // leak any brace token to assistive tech.
+    // Same substituted-name contract as the EN case: no brace tokens, the name
+    // starts with the ru template's leading prefix (asserted non-empty so the
+    // check cannot pass vacuously) and carries the interpolated value.
     const prefix = (k) => dict[k].ru.split('{')[0].trim();
     for (const [name, aria, key] of [
       ['boost', m.boostAria, SEL.keys.boostIcon],
       ['fit', m.fitAria, SEL.keys.fitIcon],
       ['score', m.scoreAria, SEL.keys.scoreIcon],
     ]) {
+      const pfx = prefix(key);
+      assert.ok(pfx.length > 0, `the ru template '${key}' starts with a placeholder — assert the contract against a worded template`);
       assert.ok(!aria.includes('{'), `the ${name} icon aria-label leaks a placeholder: "${aria}"`);
-      assert.ok(aria.startsWith(prefix(key)), `the ${name} icon aria-label must start with the ru prefix "${prefix(key)}" — got "${aria}"`);
+      assert.ok(aria.startsWith(pfx), `the ${name} icon aria-label must start with the ru prefix "${pfx}" — got "${aria}"`);
+      assert.ok(aria.length > pfx.length, `the ${name} icon aria-label carries no interpolated value: "${aria}"`);
     }
   } finally {
     await context.close();
