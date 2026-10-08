@@ -26,7 +26,7 @@ test('pipe.hint keeps both sentences in every locale', () => {
     // ⇒ ≥2 terminators remain; the six locales that dropped sentence 2
     // collapse to exactly 1.
     const stripped = v.split('data/pipeline.md').join(' ').split('/career-ops pipeline').join(' ');
-    const terminators = (stripped.match(/[.!?。！?…।]/g) || []).length;
+    const terminators = (stripped.match(/[.!?。！…।]/g) || []).length;
     assert.ok(terminators >= 2,
       `pipe.hint[${lang}] lost its 2nd sentence (${terminators} sentence terminator outside the literals): "${v}"`);
   }

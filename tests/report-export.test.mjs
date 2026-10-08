@@ -124,7 +124,6 @@ test('copy: execCommand fallback REJECTS when the browser refuses (was: silent s
 test('saveDocx: success downloads slugified .docx and re-enables the button', async () => {
   const dom = makeDom();
   const btn = { disabled: false };
-  const calls = [];
   globalThis.fetch = async () => new Response(new Blob(['docx-bytes']), { status: 200 });
   const realCreate = URL.createObjectURL;
   const realRevoke = URL.revokeObjectURL;
