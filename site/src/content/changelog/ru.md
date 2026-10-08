@@ -8,6 +8,16 @@
 
 ---
 
+## [1.243.2] — 2026-10-08
+
+### Исправлено
+
+- **Деплоибельный релиз вырезан как v1.243.2.** Тег v1.243.1 был перевыставлен после публикации, а серверный `git fetch --tags` корректно отказывается затирать существующий тег — поэтому v1.243.1 оказался недеплоибельным. Этот тег несёт то же дерево (фикс window-листенера модалки на базе v1.243.0) плюс этот подъём версии. Больше ничего не менялось; опубликованный npm 1.243.1 уже содержал фикс.
+### Notes
+
+- App code is identical to v1.243.1 — only the deployable tag is fresh (the server's `git fetch --tags` refused the re-pointed v1.243.1).
+- Deliberately not done: force-updating the server-side tag (published tags are never moved).
+
 ## [1.243.1] — 2026-10-08
 
 ### Исправлено

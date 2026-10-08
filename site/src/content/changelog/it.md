@@ -2,6 +2,16 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.243.2] — 2026-10-08
+
+### Corretto
+
+- **Deployable release cut as v1.243.2.** The v1.243.1 tag was re-pointed after publishing, and the server's `git fetch --tags` correctly refuses to clobber an existing tag — so v1.243.1 was never deployable. This tag carries the identical tree (the tracker outcome-modal window-listener fix on top of v1.243.0) plus this version bump. Nothing else changed; the published npm 1.243.1 tarball already contained the fix.
+### Note
+
+- Il codice dell'app è identico a v1.243.1 — nuovo è solo il tag deployabile (il `git fetch --tags` del server ha rifiutato la v1.243.1 ri-puntata).
+- Deliberatamente non fatto: forzare l'aggiornamento del tag lato server (i tag pubblicati non si spostano mai).
+
 ## [1.243.1] — 2026-10-08
 
 ### Corretto
