@@ -8,6 +8,30 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.243.0] — 2026-10-08
+
+**A camada do navegador protege seu trabalho e fala o seu idioma: nenhuma edição não salva se perde, nenhuma falha passa em silêncio, nenhum inglês silencioso numa UI traduzida, contraste AA em todo lugar.**
+
+### Corrigido
+
+- **Edições não salvas sobrevivem a re-renders.** O editor do CV mantém um buffer dirty e o restaura em cada render — Cancelar, trocar o idioma ou navegar para o CV Studio agora perguntam em vez de descartar; o plano de carreira mantém o texto gerado da mesma forma. Falhas de carregamento em Configurações/CV Studio/plano de carreira/Memória/two-pager mostram um erro e desabilitam o Salvar em vez de sobrescrever o arquivo silenciosamente com conteúdo vazio.
+- **O modal "Registrar resultado" não sobrevive mais à navegação.** Abrí-lo no `#/tracker` e clicar em outra view o deixava bloqueando a página inteira (achado na regressão two-stand da v1.242.1) — agora ele fecha na troca de rota; seus irmãos das views de scan também param seus streams SSE e desanexam os listeners ao navegar.
+- **A análise de salários e palavras-chave lê todos os alfabetos.** Os chips de palavras-chave usam fronteiras de palavra Unicode (cirílico, `c++`, `.net` filtram corretamente em vez de zerar as linhas); um parser de salário compartilhado corrige `$182.9K - $240K`, `от 100 000 руб`, `100 тыс. руб.`, `50 000 Kč` (antes 50 milhões de USD) e a semântica de faixas (`$100-150K`); um must-have "Alemanha ou Países Baixos" não conta mais como atendido e violado ao mesmo tempo.
+- **Streams se resolvem exatamente uma vez.** Uma conexão SSE interrompida entregava o erro duas vezes e podia deixar o Gerar desabilitado para sempre; todo estado terminal (done/error/close/throw, incluindo um processo filho morto) se resolve por um único caminho e reabilita o botão. O auto-pipeline descarrega seu último frame em buffer em vez de descartá-lo.
+- **Privacidade e correção nos caminhos pequenos.** O corpo do relatório de bug não carrega mais a URL da vaga avaliada nem os slugs de relatórios; a privacidade do CV mascara links `linkedin.com/in/…` soltos, nomes EM MAIÚSCULAS, e para de estragar datas europeias; a resolução de país fica com a correspondência mais longa e se recusa a adivinhar quando dois países são citados ("Cambridge, MA" não vira mais Reino Unido); o download de arquivos mantém nomes cirílicos.
+- **Router e a11y.** O link de pular não dá mais 404 em `ontent`; o item ativo da navegação carrega `aria-current="page"`; um `<main>`/um `<nav>`; Escape fecha o drawer mobile (que agora sai de verdade da ordem de tabulação quando fechado); `scroll-padding-top` mantém o foco visível além das barras fixas; o banner fixo não cobre mais a topbar.
+- **O contraste é AA nos dois temas** — os toasts do tema escuro eram branco sobre branco (1.10:1): toasts, botões, banners e links sobre `--rausch` agora resolvem por tokens invariantes de tema, guardados por testes de contrato WCAG calculados (≥ 4.5:1).
+- **Todo o resto da rodada**: o evaluate renderiza o aviso de truncamento; Memória/Configurações/two-pager se recusam a Salvar sobre um carregamento que falhou; o scan para de deixar seus streams SSE órfãos; os resultados do scan classificam boards servidos por API pelo registro do servidor em vez de uma regex que havia divergido; o "Proceed with Caution" do tracker é um aviso, não um badge vermelho; as estatísticas agregam status localizados; gráficos de barras são lidos corretamente em RTL; o FAB de docs não cobre mais o conteúdo em celulares; `GET /app.js` responde 404 em vez do shell do index; `GET /api/runners` lista suas ações.
+
+### Adicionado
+
+- **O dinamarquês entra na detecção automática** — um navegador `da-DK` agora recebe a UI em dinamarquês (o dicionário estava completo; era a detecção que não o enxergava); `zh-Hant*` mapeia para chinês tradicional. `cv-diagnostics` — a checklist de currículo — está totalmente localizado (28 chaves `diag.*` × 17). 26 rótulos de field-spec adicionados; 31 chaves mortas removidas; as listas de provedores não afirmam mais que o Hermes é "o último na ordem automática"; os aria-labels do docs-fab/menu estão localizados.
+
+### Notas
+
+- Testes **4812 → 5036** unitários, de navegador **118 + novos contratos de navegação/contraste**, média de cobertura **98.15 % linhas / 89.34 % branches** (piso 96/86).
+- Fora desta versão: o redesign do `#/scan` (Fase 4 — v1.244.0, spec já rascunhada); uma chave de dicionário dedicada `export.docxFailed` (a falha reutiliza `common.error`); `5 lakhs INR` ainda é interpretado como 5 (pré-existente).
+
 ## [1.242.1] — 2026-10-08
 
 ### Corrigido

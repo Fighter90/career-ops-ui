@@ -309,6 +309,7 @@ window.__I18N_DICT_KO = {
   'nav.toggleMenu': "메뉴 열기/닫기",
 
   'common.closeDialog': "대화상자 닫기",
+  'top.search.toggle': "검색",
   'top.doctor': "진단",
   'top.quickscan': "Scan 열기",
   'top.themeToggle': "테마 전환",

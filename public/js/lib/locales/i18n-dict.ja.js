@@ -309,6 +309,7 @@ window.__I18N_DICT_JA = {
   'nav.toggleMenu': "メニューを開く／閉じる",
 
   'common.closeDialog': "ダイアログを閉じる",
+  'top.search.toggle': "検索",
   'top.doctor': "診断",
   'top.quickscan': "Scan を開く",
   'top.themeToggle': "テーマを切り替え",

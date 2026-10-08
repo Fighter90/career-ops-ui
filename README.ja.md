@@ -7,19 +7,19 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-4812%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-5036%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.242.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.242.1)
+[![release](https://img.shields.io/badge/release-v1.243.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.243.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.242.1** — **スキャナーのデータ層が再び信頼できるものになりました。死んでいたソースが復活し、不正な応答はもう「0件のボード」として読まれず、敵対的なボードURLもスキャンをリダイレクトできません。**
+> **🆕 最新リリース — v1.243.0** — **ブラウザ層があなたの作業を守り、あなたの言語で語ります。未保存の編集を失わせず、失敗を黙って握りつぶさず、翻訳済み UI に黙って英語を混ぜることもなく、コントラストはどこでも AA です。**
 >
-> **前バージョン — v1.241.1** — **ライブ評価がすべてのロケールで最後まで動作し、求人マップは長い複数所在地の求人を配置し、デプロイは実行中の毎時スキャンを待ちます。**
+> **前バージョン — v1.242.1** — **リリースアーカイブから `node_modules` のシンボリックリンクを再び排除。アプリコードは v1.242.0 と同一の、パッケージングのみの修正リリースです。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

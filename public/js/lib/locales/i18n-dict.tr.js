@@ -309,6 +309,7 @@ window.__I18N_DICT_TR = {
   'nav.toggleMenu': "Menüyü aç veya kapat",
 
   'common.closeDialog': "İletişim kutusunu kapat",
+  'top.search.toggle': "Ara",
   'top.doctor': "Doctor",
   'top.quickscan': "Taramayı Aç",
   'top.themeToggle': "Temayı değiştir",

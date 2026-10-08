@@ -7,19 +7,19 @@
 
 _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von diesen unterstützt._
 
-[![tests](https://img.shields.io/badge/tests-4812%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-5036%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.242.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.242.1)
+[![release](https://img.shields.io/badge/release-v1.243.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.243.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Neueste Version — v1.242.1** — **Die Datenschicht des Scanners ist wieder vertrauenswürdig.** Tote Quellen leben wieder (justjoin und nofluffjobs lesen wieder ihre vollständigen Kataloge; himalayas und jobicy laufen über die neuesten 20 hinaus), eine fehlerhafte oder Challenge-Antwort **wirft** jetzt auf Seite 1 eine Ausnahme, statt als „0 Stellen“ gelesen zu werden (`server/lib/sources/_shape.mjs`), und Substring-Anbieterprüfungen wurden zu geparsten exakten Host-Pins — `clever.com` kann sich nicht mehr als lever ausgeben, und eine feindliche Board-URL kann einen Scan nicht mehr umleiten. Ein falsch konfigurierter Portals-Eintrag kann keinen ganzen Scan mehr abbrechen.
+> **🆕 Neueste Version — v1.243.0** — **Die Browser-Schicht bewahrt deine Arbeit und spricht deine Sprache: keine verlorenen ungespeicherten Änderungen, keine stillen Fehler, kein stilles Englisch in einer übersetzten Oberfläche, AA-Kontrast überall.** Ungespeicherte Änderungen im CV Studio überleben Neu-Renders und werden nachgefragt statt verworfen; das „Ergebnis erfassen“-Modal bleibt bei der Navigation nicht mehr als Blocker auf der Seite hängen; Gehalts- und Keyword-Parsing versteht jede Schrift (`$182.9K - $240K`, `от 100 000 руб`, `100 тыс. руб.`, `50 000 Kč`); abgebrochene SSE-Streams legen sich genau einmal fest und reaktivieren Generate; Toasts, Buttons und Banner erfüllen WCAG-AA in beiden Themes; und Dänisch (`da-DK`) kommt in die automatische Spracherkennung. **5036 Tests · 118 Browser.**
 >
-> **Vorherige Version — v1.241.1** — Live-Bewertungen funktionieren in jeder Sprache Ende-zu-Ende; die Stellenkarte platziert lange Multi-Location-Anzeigen; ein Deploy wartet auf einen laufenden Stundenscan.
+> **Vorherige Version — v1.242.1** — Nur Verpackung: das Release-Archiv enthält wieder keine `node_modules`-Symlinks; der App-Code ist identisch mit v1.242.0, dessen Sources-Correctness-Inhalte damit erstmals in die Produktion kamen.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

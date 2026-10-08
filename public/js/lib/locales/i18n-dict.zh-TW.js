@@ -309,6 +309,7 @@ window.__I18N_DICT_ZH_TW = {
   'nav.toggleMenu': "開啟或收起選單",
 
   'common.closeDialog': "關閉對話框",
+  'top.search.toggle': "搜尋",
   'top.doctor': "診斷",
   'top.quickscan': "開啟 Scan",
   'top.themeToggle': "切換主題",

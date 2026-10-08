@@ -9,6 +9,30 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.243.0] — 2026-10-08
+
+**Warstwa przeglądarkowa chroni twoją pracę i mówi twoim językiem: żadnych utrat niezapisanych edycji, żadnych cichych awarii, żadnego cichego angielskiego w przetłumaczonym interfejsie, kontrast AA wszędzie.**
+
+### Naprawiono
+
+- **Niezapisane edycje przetrwają ponowne renderowanie.** Edytor CV przechowuje brudny bufor i przywraca go przy każdym renderze — „Anuluj”, zmiana języka lub przejście do CV Studio wywołują teraz pytanie zamiast odrzucać zmiany; plan kariery przechowuje swój wygenerowany tekst w ten sam sposób. Błędy ładowania w Config/CV Studio/career-plan/memory/two-pager pokazują komunikat o błędzie i wyłączają Zapis, zamiast po cichu nadpisywać plik pustkami.
+- **Modal „Zarejestruj wynik” nie przeżywa już nawigacji.** Otwarcie go na `#/tracker` i kliknięcie innego widoku pozostawiało go blokującego całą stronę (odkryte podczas dwustanowiskowej regresji z v1.242.1) — teraz zamyka się przy zmianie trasy; jego siostrzane widoki skanu zatrzymują przy nawigacji także swoje strumienie SSE i odczepiają nasłuchiwacze.
+- **Parsowanie wynagrodzeń i słów kluczowych czyta każde pismo.** Żetony słów kluczowych używają granic słów Unicode (cyrylica, `c++`, `.net` filtrują się poprawnie, zamiast zerować listę wyników); jeden wspólny parser wynagrodzeń naprawia `$182.9K - $240K`, `от 100 000 руб`, `100 тыс. руб.`, `50 000 Kč` (wcześniej 50 mln USD) oraz semantykę zakresów (`$100-150K`); wymagane „Niemcy lub Holandia” nie liczy się już jednocześnie jako spełnione i naruszone.
+- **Strumienie domykają się dokładnie raz.** Zerwane połączenie SSE dostarczało błąd dwukrotnie i mogło na zawsze zostawić wyłączony przycisk Generuj; każdy stan końcowy (done/error/close/throw, łącznie z zabitym procesem potomnym) domyka jedną ścieżkę i ponownie włącza przycisk. Auto-pipeline wypłukuje swój ostatni zbuforowany fragment zamiast go porzucać.
+- **Prywatność i poprawność na ubocznych ścieżkach.** Treść zgłoszenia błędu nie zawiera już adresu URL ocenianej oferty ani slugów raportów; prywatność CV maskuje nagie linki `linkedin.com/in/…` i nazwy PISANE WERSALIKAMI oraz przestaje psuć daty w formacie europejskim; określanie kraju wybiera najdłuższe dopasowanie i odmawia zgadywania, gdy wymienione są dwa kraje („Cambridge, MA” już nie → Wielka Brytania); pobierane pliki zachowują nazwy pisane cyrylicą.
+- **Router i a11y.** Skip link nie prowadzi już do 404 na `ontent`; aktywny element nawigacji nosi `aria-current="page"`; jedno `<main>`/jedno `<nav>`; Escape zamyka mobilną szufladę (która jest teraz naprawdę poza kolejnością tabulacji, gdy jest zamknięta); `scroll-padding-top` utrzymuje fokus widoczny za przyklejonymi paskami; przyklejony baner nie zasłania już górnego paska.
+- **Kontrast jest AA w obu motywach** — ciemne toasty były białym na białym (1.10:1): toasty, przyciski, banery i linki na `--rausch` korzystają teraz z tokenów niezmiennych względem motywu, pilnowanych obliczanymi testami kontraktowymi WCAG (≥ 4.5:1).
+- **Wszystko inne z tej rundy**: evaluate wyświetla ostrzeżenie o ucięciu; memory/config/two-pager odmawiają Zapisu po nieudanym ładowaniu; scan przestaje zostawiać osierocone połączenia SSE; wyniki skanu klasyfikują boardy oparte o API na podstawie rejestru serwera, a nie rozjazdanego regexa; „Proceed with Caution” w trackerze to ostrzeżenie, a nie czerwona odznaka; statystyki agregują zlokalizowane statusy; wykresy słupkowe czytają się poprawnie w RTL; dokumentacyjny FAB nie zasłania już treści na telefonach; `GET /app.js` odpowiada 404 zamiast powłoki index; `GET /api/runners` zwraca listę swoich akcji.
+
+### Dodano
+
+- **Duński dołącza do autowykrywania** — przeglądarka `da-DK` dostaje teraz duński interfejs (słownik był kompletny, wykrywanie go pomijało); `zh-Hant*` mapuje się na chiński tradycyjny. `cv-diagnostics` — lista kontrolna CV — jest w pełni zlokalizowana (28 kluczy `diag.*` × 17). Dodano 26 etykiet specyfikacji pól; usunięto 31 martwych kluczy; listy dostawców nie twierdzą już, że Hermes jest „ostatni w automatycznej kolejności”; aria-labely docs-fab/menu są zlokalizowane.
+
+### Uwagi
+
+- Testy **4812 → 5036** jednostkowe, przeglądarkowe **118 + nowe kontrakty nawigacji/kontrastu**, średnie pokrycie **98.15 % linii / 89.34 % gałęzi** (minimum bramki 96/86).
+- Poza tym wydaniem: przeprojektowanie `#/scan` (Faza 4 — v1.244.0, spec napisana); dedykowany klucz słownika `export.docxFailed` (ta awaria korzysta z `common.error`); `5 lakhs INR` nadal parsuje się jako 5 (istniejące wcześniej zachowanie).
+
 ## [1.242.1] — 2026-10-08
 
 ### Naprawiono

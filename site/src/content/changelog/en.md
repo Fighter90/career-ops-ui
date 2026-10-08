@@ -8,11 +8,40 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.243.0] — 2026-10-08
+
+**The browser layer keeps your work safe and speaks your language: no unsaved-edit losses, no silent failures, no silent English in a translated UI, AA contrast everywhere.**
+
+### Fixed
+
+- **Unsaved edits survive re-renders.** The CV editor keeps a dirty buffer and restores it on every render — Cancel, a language switch, or navigating to CV Studio now prompts instead of discarding; the career plan keeps its generated text the same way. Load failures in Config/CV Studio/career-plan/memory/two-pager surface an error and disable Save instead of quietly overwriting the file with blanks.
+- **The "Record outcome" modal no longer survives navigation.** Opening it on `#/tracker` and clicking another view left it blocking the whole page (found in the v1.242.1 two-stand regression) — it now closes on route change; its scan-view siblings stop their SSE streams and detach listeners on navigation too.
+- **Salary and keyword parsing reads every script.** Keyword chips use Unicode word boundaries (Cyrillic, `c++`, `.net` filter correctly instead of to zero rows); one shared salary parser fixes `$182.9K - $240K`, `от 100 000 руб`, `100 тыс. руб.`, `50 000 Kč` (was 50M USD) and range semantics (`$100-150K`); must-have "Germany or Netherlands" no longer counts as both matched and violated.
+- **Streams settle exactly once.** A dropped SSE connection delivered the error twice and could leave Generate disabled forever; every terminal state (done/error/close/throw, including a killed child) settles one path and re-enables the button. The auto-pipeline flushes its final buffered frame instead of dropping it.
+- **Privacy and correctness in the little paths.** The bug-report body no longer carries the evaluated job URL or report slugs; CV privacy masks bare `linkedin.com/in/…` links, ALL-CAPS names, and stops mangling EU dates; country resolution takes the longest match and refuses to guess when two countries are named ("Cambridge, MA" no longer → UK); filename downloads keep Cyrillic names.
+- **Router and a11y.** The skip link no longer 404s into `ontent`; the active nav item carries `aria-current="page"`; one `<main>`/one `<nav>`; Escape closes the mobile drawer (which is now truly out of the tab order when closed); `scroll-padding-top` keeps focus visible past sticky bars; the sticky banner no longer covers the topbar.
+- **Contrast is AA in both themes** — dark toasts were white-on-white (1.10:1): toasts, buttons, banners and links on `--rausch` now resolve through theme-invariant tokens, guarded by computed WCAG contract tests (≥ 4.5:1).
+- **Everything else from the round**: evaluate renders the truncation warning; memory/config/two-pager refuse to Save over a failed load; scan stops orphaning its SSE; scan results classify API-backed boards from the server registry instead of a drifted regex; the tracker's "Proceed with Caution" is a warning, not a badge-red; stats fold localized statuses; bar charts read correctly in RTL; the docs FAB no longer covers content on phones; `GET /app.js` answers 404 instead of the index shell; `GET /api/runners` lists its actions.
+
+### Added
+
+- **Danish joins auto-detection** — a `da-DK` browser now gets the Danish UI (the dict was complete, detection was missing it); `zh-Hant*` maps to Traditional Chinese. `cv-diagnostics` — the résumé checklist — is fully localized (28 `diag.*` keys × 17). 26 field-spec labels added; 31 dead keys removed; provider lists no longer claim Hermes is "last in the auto order"; the docs-fab/menu aria-labels are localized.
+
+### Notes
+
+- Tests **4812 → 5036** unit, browser **118 + new navigation/contrast contracts**, coverage mean **98.15 % line / 89.34 % branch** (floor 96/86).
+- Not in this release: the `#/scan` redesign (Phase 4 — v1.244.0, spec drafted); a dedicated `export.docxFailed` dict key (the failure reuses `common.error`); `5 lakhs INR` still parses as 5 (pre-existing).
+
 ## [1.242.1] — 2026-10-08
 
 ### Fixed
 
 - **The release archive ships no `node_modules` symlinks again.** The v1.242.0 git tag carried a root `node_modules` symlink and `site/node_modules` (a blanket `git add -A` slipped them past the trailing-slash ignore patterns), which failed the server deploy's tar extraction — the deploy rolled back safely and production stayed on 1.241.1. Both symlinks are untracked and the ignore patterns widened; the npm tarball was never affected (npm excludes `node_modules` when packing).
+
+### Notes
+
+- App code is identical to v1.242.0 — packaging only. The sources-correctness content ships to production with this deploy (v1.242.0 never reached production; its server deploy rolled back on the tar failure).
+- Deliberately not done: re-tagging v1.242.0 (npm already published 1.242.0; the registry tarball is clean — npm excludes `node_modules` when packing).
 
 ## [1.242.0] — 2026-10-07
 

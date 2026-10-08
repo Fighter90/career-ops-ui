@@ -309,6 +309,7 @@ window.__I18N_DICT_FR = {
   'nav.toggleMenu': "Ouvrir ou fermer le menu",
 
   'common.closeDialog': "Fermer la boîte de dialogue",
+  'top.search.toggle': "Rechercher",
   'top.doctor': "Docteur",
   'top.quickscan': "Ouvrir un scan",
   'top.themeToggle': "Changer de thème",

@@ -310,6 +310,7 @@ window.__I18N_DICT_HI = {
   'nav.toggleMenu': "मेन्यू खोलें या बंद करें",
 
   'common.closeDialog': "डायलॉग बंद करें",
+  'top.search.toggle': "खोजें",
   'top.doctor': "डॉक्टर",
   'top.quickscan': "स्कैन खोलें",
   'top.themeToggle': "थीम बदलें",

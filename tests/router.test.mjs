@@ -34,7 +34,9 @@ test('router: #/portals is a real registered view (v1.99.0), no longer aliased t
 test('router: nav highlight handles both alias name and resolved route', () => {
   // The nav-active toggle should compare against EITHER `name` or `rawName`,
   // otherwise #/profile would not light up the Profile sidebar item.
-  assert.match(SRC, /classList\.toggle\(\s*['"]active['"]\s*,\s*r\s*===\s*name\s*\|\|\s*r\s*===\s*rawName/);
+  assert.match(SRC, /const active = r === name \|\| r === rawName;/);
+  assert.match(SRC, /classList\.toggle\(\s*['"]active['"]\s*,\s*active\);/);
+  assert.match(SRC, /aria-current/);
 });
 
 // ───────────────────────── FIX-C7: catch-all 404 ─────────────────────────

@@ -308,6 +308,7 @@ window.__I18N_DICT_AR = {
   'nav.toggleMenu': "فتح القائمة أو إغلاقها",
 
   'common.closeDialog': "إغلاق مربع الحوار",
+  'top.search.toggle': "بحث",
   'top.doctor': "الفحص",
   'top.quickscan': "فتح المسح",
   'top.themeToggle': "تبديل المظهر",

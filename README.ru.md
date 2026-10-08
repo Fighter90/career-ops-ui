@@ -7,19 +7,19 @@
 
 _Неофициальный интерфейс — не аффилирован с career-ops / santifer и не одобрен ими._
 
-[![tests](https://img.shields.io/badge/tests-4812%20passed-brightgreen)](#тесты)
+[![tests](https://img.shields.io/badge/tests-5036%20passed-brightgreen)](#тесты)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.242.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.242.1)
+[![release](https://img.shields.io/badge/release-v1.243.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.243.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Последний релиз — v1.242.1** — **Слой данных сканера снова заслуживает доверия.** Мёртвые источники ожили (justjoin и nofluffjobs снова читают свои полные каталоги; himalayas и jobicy проходят дальше 20 новейших), искажённый или challenge-ответ теперь **выбрасывает ошибку** уже на странице 1, вместо того чтобы читаться как «0 вакансий» (`server/lib/sources/_shape.mjs`), а проверки вендоров по подстроке превратились в разобранные точные закрепления хостов — `clever.com` больше не может выдавать себя за lever, и враждебный URL доски больше не может перенаправить скан. Одна неверно настроенная запись portals больше не обрывает весь скан.
+> **🆕 Последний релиз — v1.243.0** — **Браузерный слой сохраняет вашу работу и говорит на вашем языке: без потерь несохранённых правок, без молчаливых сбоев, без молчаливого английского в переведённом интерфейсе, AA-контраст повсюду.** Редактор CV держит «грязный» буфер — «Отмена», смена языка или уход в CV Studio теперь спрашивают подтверждение, а сбои загрузки отключают Save вместо тихой перезаписи файла пустотой; модалка «Записать итог» больше не блокирует страницу после смены вида; разбор зарплат и ключевых слов читает любую письменность (кириллица, `c++`, `.net`, `$182.9K - $240K`, `50 000 Kč`); SSE-потоки завершаются ровно один раз; тёмные тосты больше не белым по белому (1.10:1) — контраст AA в обеих темах под защитой WCAG-контрактных тестов; датский присоединился к авто-детекции, `cv-diagnostics` полностью локализован. **5036 тестов · 118 браузерных.**
 >
-> **Предыдущий релиз — v1.241.1** — **Живые оценки работают end-to-end на всех языках; карта вакансий размещает длинные многолокационные объявления; деплой дожидается идущего часового скана.**
+> **Предыдущий релиз — v1.242.1** — упаковочный патч: код идентичен v1.242.0, из релизного тега убраны симлинки `node_modules`, из-за которых не проходил серверный деплой.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

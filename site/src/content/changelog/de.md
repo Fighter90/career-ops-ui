@@ -2,11 +2,40 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.243.0] — 2026-10-08
+
+**Die Browser-Schicht bewahrt deine Arbeit und spricht deine Sprache: keine verlorenen ungespeicherten Änderungen, keine stillen Fehler, kein stilles Englisch in einer übersetzten Oberfläche, AA-Kontrast überall.**
+
+### Behoben
+
+- **Ungespeicherte Änderungen überleben Neu-Renders.** Der CV-Editor hält einen Dirty-Puffer und stellt ihn bei jedem Render wieder her — Abbrechen, ein Sprachwechsel oder die Navigation zum CV Studio fragt jetzt nach, statt zu verwerfen; der Karriereplan bewahrt seinen generierten Text auf dieselbe Weise. Ladefehler in Config/CV Studio/Karriereplan/Memory/Two-Pager zeigen einen Fehler an und deaktivieren Speichern, statt die Datei stillschweigend mit Leerwerten zu überschreiben.
+- **Das Modal „Ergebnis erfassen“ überlebt die Navigation nicht mehr.** Es auf `#/tracker` zu öffnen und dann eine andere Ansicht anzuklicken ließ es die ganze Seite blockieren (gefunden in der Zwei-Stand-Regression von v1.242.1) — es schließt jetzt beim Routenwechsel; seine Geschwister in der Scan-Ansicht stoppen ihre SSE-Streams und hängen ihre Listener bei der Navigation ebenfalls ab.
+- **Gehalts- und Keyword-Parsing liest jede Schrift.** Keyword-Chips verwenden Unicode-Wortgrenzen (Kyrillisch, `c++`, `.net` filtern korrekt, statt auf null Zeilen zu filtern); ein gemeinsamer Gehalts-Parser behebt `$182.9K - $240K`, `от 100 000 руб`, `100 тыс. руб.`, `50 000 Kč` (war 50M USD) und die Bereichssemantik (`$100-150K`); das Must-have „Deutschland oder Niederlande“ zählt nicht mehr gleichzeitig als erfüllt und als verletzt.
+- **Streams legen sich genau einmal fest.** Eine abgebrochene SSE-Verbindung lieferte den Fehler zweimal aus und konnte Generate dauerhaft deaktiviert lassen; jeder Endzustand (done/error/close/throw, eingeschlossen ein getöteter Kindprozess) legt genau einen Pfad fest und aktiviert die Schaltfläche wieder. Die Auto-Pipeline spült ihren letzten gepufferten Frame aus, statt ihn zu verwerfen.
+- **Privatsphäre und Korrektheit in den kleinen Pfaden.** Der Bugreport-Body trägt nicht mehr die bewertete Job-URL oder Report-Slugs; die CV-Privatsphäre-Maskierung erfasst reine `linkedin.com/in/…`-Links und Namen in Versalien und verstümmelt EU-Daten nicht mehr; die Länderauflösung nimmt den längsten Treffer und weigert sich zu raten, wenn zwei Länder genannt sind („Cambridge, MA“ nicht mehr → UK); Datei-Downloads behalten kyrillische Dateinamen.
+- **Router und a11y.** Der Skip-Link mündet nicht mehr in einen 404 auf `ontent`; der aktive Navigationspunkt trägt `aria-current="page"`; ein `<main>`/ein `<nav>`; Escape schließt den mobilen Drawer (der im geschlossenen Zustand jetzt wirklich außerhalb der Tab-Reihenfolge liegt); `scroll-padding-top` hält den Fokus auch hinter Sticky-Bars sichtbar; das Sticky-Banner überdeckt nicht mehr die Topbar.
+- **Der Kontrast ist in beiden Themes AA** — dunkle Toasts waren Weiß-auf-Weiß (1.10:1): Toasts, Buttons, Banner und Links auf `--rausch` lösen jetzt über themeninvariante Tokens auf, abgesichert durch berechnete WCAG-Contract-Tests (≥ 4.5:1).
+- **Alles Übrige aus der Runde**: evaluate rendert die Truncation-Warnung; memory/config/two-pager verweigern das Speichern nach einem fehlgeschlagenen Laden; scan verwaist seine SSE-Streams nicht mehr; die Scan-Ergebnisse klassifizieren API-gestützte Boards über das Server-Register statt über eine abgedriftete Regex; das „Proceed with Caution“ des Trackers ist eine Warnung, kein rotes Badge; stats faltet lokalisierte Statusse zusammen; Balkendiagramme lesen sich in RTL korrekt; das Docs-FAB verdeckt auf Telefonen keinen Inhalt mehr; `GET /app.js` antwortet mit 404 statt der Index-Shell; `GET /api/runners` listet seine Aktionen auf.
+
+### Hinzugefügt
+
+- **Dänisch kommt in die Auto-Erkennung** — ein `da-DK`-Browser erhält jetzt die dänische Oberfläche (das Wörterbuch war vollständig, nur die Erkennung übersprang es); `zh-Hant*` ordnet Traditionelles Chinesisch zu. `cv-diagnostics` — die Lebenslauf-Checkliste — ist vollständig lokalisiert (28 `diag.*`-Schlüssel × 17). 26 Feldspezifikations-Labels ergänzt; 31 tote Schlüssel entfernt; Anbieterlisten behaupten nicht mehr, Hermes sei „zuletzt in der Auto-Reihenfolge“; die docs-fab/menu-aria-labels sind lokalisiert.
+
+### Anmerkungen
+
+- Tests **4812 → 5036** Unit, Browser **118 + neue Navigations-/Kontrast-Contracts**, Coverage-Mittelwert **98.15 % Zeilen / 89.34 % Branch** (Untergrenze 96/86).
+- Nicht in diesem Release: das `#/scan`-Redesign (Phase 4 — v1.244.0, Spezifikation entworfen); ein eigener `export.docxFailed`-Dict-Schlüssel (der Fehlerfall nutzt `common.error`); `5 lakhs INR` parst weiterhin als 5 (vorbestehend).
+
 ## [1.242.1] — 2026-10-08
 
 ### Behoben
 
 - **Das Release-Archiv enthält erneut keine `node_modules`-Symlinks.** Der Git-Tag v1.242.0 trug einen `node_modules`-Symlink im Root und `site/node_modules` (ein pauschales `git add -A` schlüpfte an den Ignore-Mustern mit abschließendem Schrägstrich vorbei), wodurch die tar-Entpackung des Server-Deploys scheiterte — der Deploy rollte sicher zurück, die Produktion blieb auf 1.241.1. Beide Symlinks sind aus der Verfolgung entfernt, die Ignore-Muster verbreitert; das npm-Tarball war nie betroffen (npm schließt `node_modules` beim Packen aus).
+
+### Anmerkungen
+
+- Der App-Code ist identisch mit v1.242.0 — nur Verpackung. Die Sources-Correctness-Inhalte kommen mit diesem Deploy in die Produktion (v1.242.0 erreichte die Produktion nie; sein Server-Deploy rollte nach dem tar-Fehler zurück).
+- Bewusst nicht getan: v1.242.0 neu taggen (npm hat 1.242.0 bereits veröffentlicht; das Registry-Tarball ist sauber — npm schließt `node_modules` beim Packen aus).
 
 ## [1.242.0] — 2026-10-07
 

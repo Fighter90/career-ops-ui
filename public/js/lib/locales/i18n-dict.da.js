@@ -308,6 +308,7 @@ window.__I18N_DICT_DA = {
   'nav.toggleMenu': "Åbn eller luk menuen",
 
   'common.closeDialog': "Luk dialogboksen",
+  'top.search.toggle': "Søg",
   'top.doctor': "Doctor",
   'top.quickscan': "Åbn Scanning",
   'top.themeToggle': "Skift tema",

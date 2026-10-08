@@ -309,6 +309,7 @@ window.__I18N_DICT_RU = {
   'nav.toggleMenu': "Открыть или закрыть меню",
 
   'common.closeDialog': "Закрыть диалог",
+  'top.search.toggle': "Поиск",
   'top.doctor': "Диагностика",
   'top.quickscan': "Открыть Scan",
   'top.themeToggle': "Сменить тему",

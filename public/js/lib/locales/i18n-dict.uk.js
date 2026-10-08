@@ -308,6 +308,7 @@ window.__I18N_DICT_UK = {
   'nav.toggleMenu': "Відкрити або закрити меню",
 
   'common.closeDialog': "Закрити діалог",
+  'top.search.toggle': "Пошук",
   'top.doctor': "Діагностика",
   'top.quickscan': "Відкрити сканування",
   'top.themeToggle': "Переключити тему",
