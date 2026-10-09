@@ -17,9 +17,9 @@ _Неофициальный интерфейс — не аффилирован �
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Последний релиз — v1.244.0** — **Результаты скана читаются как список, а не как стена: одна вакансия = две строки, сигналы — иконки, а скан на 700 строк — таблица с постраничной разбивкой вместо страницы в 37,000 px.** Каждая вакансия — ограниченная двухстрочная строка: заголовок плюс мета `company · location · source · date · work-type`; бейдж буста по грейду, полоса соответствия заголовка и балл стали иконками с локализованными accessible-именами и тултипами; хвосты вроде `| Germany | Remote` аккуратно переезжают в мета-строку; горизонтального переполнения больше нет (на телефонной ширине страница вылезала на 675 px); результаты — по 50 на страницу (25/50/100/200), DOM держит ~1,000 узлов вместо 5,500+. Контрактные тесты раскладки в браузерном наборе не дадут редизайну тихо деградировать. **5045 тестов · 118 браузерных.**
+> **🆕 Последний релиз — v1.247.0** — **Хвост дизайн-свипа CAR-49…58 закрыт — все оставшиеся minor/polish-находки плюс тёмная карта, которую прошлый релиз осознанно отложил.**
 >
-> **Предыдущий релиз — v1.243.2** — перевыпуск v1.243.1 под свежим деплоибельным тегом: перевыставленный после публикации тег серверный `git fetch --tags` корректно отказался затирать, поэтому тот же код уехал на серверы только с новым тегом.
+> **Предыдущий релиз — v1.246.0** — Все десять топ-находок сеньор-дизайн прохода CAR-48 исправлены — включая блокер и все семь мажоров.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -261,7 +261,7 @@ npm start
 | **Профиль**      | Доступная только для чтения витрина `config/profile.yml` и архетипов — компактная сводка для UI. |
 | **App settings** | Встроенный редактор ключей из родительского `.env`: `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, переопределение моделей, порт и хост. Секреты маскируются при чтении. |
 | **Health**       | Все проверки конфигурации в виде badge OK / OPTIONAL / FAIL и кнопки для запуска `doctor.mjs` и `verify-pipeline.mjs`. |
-| **Help**         | Встроенное руководство пользователя в Markdown (`/#/help`), переведённое на все 17 поддерживаемых языков (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi). |
+| **Help**         | Встроенное руководство пользователя в Markdown (`/#/help`), переведённое на все 18 поддерживаемых языков (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta). |
 | **Журнал активности** | Аудит-журнал всех изменяющих состояние запросов (writes, runs, scans). Секреты редактируются. |
 | **Уведомления** 🔔 *(v1.58.34 / v1.58.35)* | Колокольчик в верхней панели с красным badge непрочитанных. Клик → правый drawer показывает последние 50 toast (per-tab, per-session) — Success / Error / Info-progress, у каждой локальное время, текст и, если есть, технический хвост `(METHOD /path · HTTP NNN)` в `<details>`. Справка **§18** документирует каждую категорию. Drawer открывается **только** по клику на колокольчик (или клавиатура Enter / Space); закрывается ×, Esc или повторным кликом по колокольчику. |
 
@@ -363,7 +363,7 @@ career-ops-ui/
 │     │  ├─ lever.mjs        # клиент api.lever.co
 │     │  ├─ hh.mjs           # клиент api.hh.ru (учитывает UA)
 │     │  └─ habr.mjs         # парсер HTML career.habr.com (без cheerio, только regex)
-│     └─ routes/             # 37 модулей маршрутов — по одному на тему (P-2)
+│     └─ routes/             # 39 модулей маршрутов — по одному на тему (P-2)
 │        ├─ activity.mjs     # /api/activity
 │        ├─ config.mjs       # /api/config (round-trip родительского .env)
 │        ├─ content.mjs      # /api/cv, /api/profile, /api/portals, /api/modes
@@ -392,7 +392,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 3009 unit + 101 Playwright + 23 e2e:full + 21 e2e:smoke
+└─ tests/                    # 5116 unit + 118 Playwright + 23 e2e:full + 21 e2e:smoke
    ├─ parsers.test.mjs       # парсеры markdown / pipeline / отчётов (чистые функции)
    ├─ api.test.mjs           # каждая точка входа, эфемерный сервер, без сети
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -405,7 +405,7 @@ career-ops-ui/
    ├─ url-validation.test.mjs    # SSRF-reject sweep (FIX-M3 + M6 + M7)
    ├─ cv-xss.test.mjs        # round-trip stripDangerousMarkdown (включая entity-aware кейсы)
    ├─ jd-sanitize.test.mjs   # sanitizeJobDescription
-   ├─ help.test.mjs / help-ui.test.mjs    # паритет i18n по всем 17 локалям
+   ├─ help.test.mjs / help-ui.test.mjs    # паритет i18n по всем 18 локалям
    ├─ playwright-smoke.mjs   # 22 browser-сценария (CV save, tracker, pipeline, evaluate, config и т. д.)
    └─ e2e{,-comprehensive}.mjs   # полный Playwright-walkthrough
 ```
@@ -528,20 +528,20 @@ event: error    data: { message }
 ## Тесты
 
 ```bash
-npm test                       # 3009 unit/integration-теста
+npm test                       # 5116 unit/integration-теста
 npm run test:e2e               # 21 smoke e2e (поднимает собственный сервер)
 npm run test:e2e:full          # 23 comprehensive e2e
-npm run test:e2e:browser       # 101 Playwright browser-smoke
+npm run test:e2e:browser       # 118 Playwright browser-smoke
 npm run test:coverage          # то же, что `npm test`, плюс V8-покрытие
 ```
 
 | Сьют                       | Тестов | Что покрывает                                                                                              |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integration) | **3009** | Каждый эндпоинт, эфемерный сервер, без сети. Включая парсеры, сканер (mocked), runner, anthropic, заголовки безопасности, XSS, sanitize JD, валидацию URL, защиту от DNS-rebind, состояние гонки на трекере, rate-limit, path-traversal, паритет i18n. |
+| `node --test tests/*.test.mjs` (unit + integration) | **5116** | Каждый эндпоинт, эфемерный сервер, без сети. Включая парсеры, сканер (mocked), runner, anthropic, заголовки безопасности, XSS, sanitize JD, валидацию URL, защиту от DNS-rebind, состояние гонки на трекере, rate-limit, path-traversal, паритет i18n. |
 | `tests/e2e.mjs` (smoke)      | 21 | Playwright headless: каждый маршрут рендерится, базовые сценарии работают.                                 |
 | `tests/e2e-comprehensive.mjs` | 23 | Полный Playwright-walkthrough: 11 маршрутов + 12 функциональных сценариев.                                 |
 | `tests/playwright-smoke.mjs` (`npm run test:e2e:browser`) | **32** | Browser-driven smoke: рендер дашборда, навигация, переключение языка, 404, health, tracker round-trip (BF-1), pipeline add + invalid-URL sweep, пустые reports, evaluate manual fallback, маскирование ключей в config, XSS-strip на PUT CV, pipeline preview 400. |
-| **Итого** (все четыре набора)                   | **3101** | **0 fails, 0 flakes**                                                                                   |
+| **Итого** (все четыре набора)                   | **5278** | **0 fails, 0 flakes**                                                                                   |
 
 Покрытие: ~93 % строк / ~83 % веток через `--experimental-test-coverage`.
 
@@ -621,7 +621,7 @@ russian_portals:
 
 career-ops лучше всего работает **постоянно включённым** — сканирует, пока вы спите, доступен из любого браузера. Чтобы разместить весь стек на небольшом сервере — родительский пайплайн **career-ops**, этот вьюер **career-ops-ui** и **движок**, выполняющий ИИ (ваша **подписка Claude** через CLI Claude Code, локальный **Hermes**-шлюз или ключи API провайдеров) — поднимите VPS (Node ≥ 18), установите родителя + этот репозиторий, выберите движок и выставьте вьюер за **HTTPS обратным прокси с аутентификацией**, сохранив инварианты безопасности (CSP, SSRF-guard, граница XSS, никаких секретов в логах).
 
-📖 Встроенная **Справка §31** («Запуск всего стека в облаке») проводит по шагам на всех 17 языках; чек-лист оператора — [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), а на [вики-странице облачного развёртывания](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) есть справочные таблицы.
+📖 Встроенная **Справка §31** («Запуск всего стека в облаке») проводит по шагам на всех 18 языках; чек-лист оператора — [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), а на [вики-странице облачного развёртывания](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) есть справочные таблицы.
 
 ---
 
@@ -638,9 +638,9 @@ career-ops лучше всего работает **постоянно вклю�
 
 ## Локализация
 
-Интерфейс поддерживает **17 локалей** — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `fr`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`. С **v1.60.0 (I18N-SPLIT)** переводы хранятся **по одному файлу на язык** в [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, плоская таблица `ключ → строка` — плюс общий `i18n-dict.aliases.js`. [`i18n-dict.js`](public/js/lib/i18n-dict.js) собирает их в `window.__I18N_DICT`; [`i18n.js`](public/js/lib/i18n.js) разрешает `t('ключ', 'fallback')`. Без сборки и без fetch — переводчик правит один файл языка.
+Интерфейс поддерживает **18 локалей** — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `fr`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`, `ta`. С **v1.60.0 (I18N-SPLIT)** переводы хранятся **по одному файлу на язык** в [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, плоская таблица `ключ → строка` — плюс общий `i18n-dict.aliases.js`. [`i18n-dict.js`](public/js/lib/i18n-dict.js) собирает их в `window.__I18N_DICT`; [`i18n.js`](public/js/lib/i18n.js) разрешает `t('ключ', 'fallback')`. Без сборки и без fetch — переводчик правит один файл языка.
 
-**Добавить или изменить строку:** добавьте один и тот же ключ во все 17 файлов локалей (паритет проверяется тестами), используйте через `data-i18n="scan.newButton"` или `t('scan.newButton')` и запустите `npm test`.
+**Добавить или изменить строку:** добавьте один и тот же ключ во все 18 файлов локалей (паритет проверяется тестами), используйте через `data-i18n="scan.newButton"` или `t('scan.newButton')` и запустите `npm test`.
 
 ```js
 // public/js/lib/locales/i18n-dict.en.js   →   'scan.newButton': 'Run scan',
@@ -692,7 +692,7 @@ node evals/workflow/run.mjs --task qa-prompt-mandatory
 
 Issues и PR приветствуются. Правила:
 
-- Перед push выполняйте `npm test` — **3009 проверок green** — это минимальная планка (плюс 101 Playwright, если изменения касаются UI).
+- Перед push выполняйте `npm test` — **5116 проверок green** — это минимальная планка (плюс 118 Playwright, если изменения касаются UI).
 - Нетривиальные изменения проходят через GSD-конвейер. См. [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md).
 - Не модифицируйте ничего в родительском `career-ops/` из этого репозитория. Смысл проекта именно в том, что это неинвазивный overlay. Жёсткие правила — в [`CLAUDE.md`](CLAUDE.md).
 - Conventional commits: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`. Опциональный scope: `feat(scan):`. Breaking change: `feat!:`.

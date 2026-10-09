@@ -1015,7 +1015,7 @@ HTML 标签,返回最多 8 KB 纯文本。
 1. **Anthropic** — 当 `ANTHROPIC_API_KEY` 已设置时首选。服务器在
    提示之前会把 `cv.md`、`config/profile.yml`、`modes/_shared.md`
    和 `modes/oferta.md` 打包进 `<project_context>` 块(每个文件硬上
-   限 16 KB,整份提示软上限 200 KB)。返回的接地 markdown 直接落入
+   按文件类型设限 — cv 64 KB、mode 文件 128 KB、其他 32 KB — 整份提示软上限 256 KB)。返回的接地 markdown 直接落入
    页面。
 2. **Gemini** — 当只设置了 `GEMINI_API_KEY` 时。服务器生成
    `gemini-eval.mjs` 子进程,把 JD 作为临时文件传入。免费层模型
@@ -1529,7 +1529,7 @@ tracker 写入、CV 保存、JD 保存、evaluate 运行、deep-research 运
 | `/career-ops apply` 报 "no report found" | 该 JD 还从未被 pipeline 评分 | 先运行 `/career-ops pipeline`(或 `#/evaluate`);见第 14 节前置条件。 |
 | `batch-runner.sh: no such file` | 在错误目录下运行 | 调用 `./batch/batch-runner.sh` 之前先 `cd $CAREER_OPS_ROOT`。 |
 | 服务器报 `EADDRINUSE: 4317` | 老实例仍在运行 | `pkill -f 'node server/index.mjs'` 后重启。 |
-| 实时 LLM 调用挂起超过 2 分钟 | 提示过大或 Anthropic 缓慢 | 检查 `/api/health` 的 Anthropic 标志;服务器对提示软上限 200 KB,超出返回 413。 |
+| 实时 LLM 调用挂起超过 2 分钟 | 提示过大或 Anthropic 缓慢 | 检查 `/api/health` 的 Anthropic 标志;服务器对提示软上限 256 KB,超出返回 413。 |
 | Pipeline 预览显示 `(unsafe redirect)` | 职位重定向到私网 IP / loopback | 这是一项安全机制(REVIEW-B1)。重定向目标被拒绝,原始 URL 不受影响。 |
 | Tracker 行文本撑破表格 | v1.9.1 之前公司名中的竖线 | 升级到 v1.9.1+ — 竖线已端到端转义(BF-1)。 |
 | 全新 clone 上 `npm test` 失败 | 测试假设父项目布局 | 使用 `CAREER_OPS_ROOT=$(mktemp -d)` 并 bootstrap fixtures。 |

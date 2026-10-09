@@ -1095,8 +1095,7 @@ API-вызове — эффект тот же).
 1. **Anthropic** — предпочтительный путь при заданном
    `ANTHROPIC_API_KEY`. Сервер бандлит `cv.md`, `config/profile.yml`,
    `modes/_shared.md` и `modes/oferta.md` в блок `<project_context>`
-   перед промптом (каждый файл обрезается на 16 KB, общий prompt
-   soft-cap 200 KB). Возвращает grounded markdown прямо на страницу.
+   перед промптом (лимиты по типу файла — cv 64 KB, mode-файлы 128 KB, прочие 32 KB — весь prompt с soft-cap на 256 KB). Возвращает grounded markdown прямо на страницу.
 2. **Gemini** — при заданном только `GEMINI_API_KEY`. Сервер спавнит
    `gemini-eval.mjs` с JD как временным файлом. Free-tier-модель
    (`gemini-3.6-flash`) нормально справляется с рутинным скорингом.
@@ -1664,7 +1663,7 @@ CV, save'ы JD, запуски evaluate, запуски deep-research, запу�
 | `/career-ops apply` говорит «no report found» | Pipeline ни разу не оценивал этот JD | Сначала запустите `/career-ops pipeline` (или `#/evaluate`); см. предусловия §14. |
 | `batch-runner.sh: no such file` | Запуск из неверной директории | `cd $CAREER_OPS_ROOT` перед вызовом `./batch/batch-runner.sh`. |
 | Сервер ругается `EADDRINUSE: 4317` | Старый инстанс ещё работает | `pkill -f 'node server/index.mjs'`, затем перезапустите. |
-| Live-вызов LLM висит > 2 минут | Огромный prompt или Anthropic тормозит | Проверьте `/api/health` (флаг Anthropic); сервер делает soft-cap промптов на 200 KB и возвращает 413. |
+| Live-вызов LLM висит > 2 минут | Огромный prompt или Anthropic тормозит | Проверьте `/api/health` (флаг Anthropic); сервер делает soft-cap промптов на 256 KB и возвращает 413. |
 | Pipeline-превью показывает `(unsafe redirect)` | Вакансия редиректит на приватный IP / loopback | Это защитная мера (REVIEW-B1). Целевой URL отклоняется, исходный URL не меняется. |
 | Текст строки трекера ломает таблицу | Пайп в имени компании на pre-v1.9.1 | Обновитесь до v1.9.1+ — пайпы экранируются end-to-end (BF-1). |
 | `npm test` падает на свежем клоне | Тесты предполагают layout родителя | Используйте `CAREER_OPS_ROOT=$(mktemp -d)` и поднимите фикстуры. |
@@ -2217,7 +2216,7 @@ career-ops-ui по умолчанию слушает `127.0.0.1`. Чтобы д�
 
 ### Выберите свой движок
 
-career-ops не привязан к конкретной CLI, поэтому у вас есть три честных варианта для ИИ. **Ваша подписка Claude** — установите на сервере CLI **Claude Code** и выполните `claude login` со своим планом Pro/Max; тогда агент родителя будет использовать вашу подписку без поминутной оплаты по токенам. **Hermes** — запустите `hermes gateway` на том же сервере (он открывает OpenAI-совместимый API на `http://127.0.0.1:8642/v1`) и укажите `HERMES_API_KEY` в **настройках приложения**; живые оценки career-ops-ui пойдут через него (последний в автоматическом порядке провайдеров). **API-ключи** — укажите `ANTHROPIC_API_KEY` (или любой из семи провайдеров: Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama → BytePlus Ark → Volcengine Ark) в `.env` родителя, и ⚡ живые действия будут работать без участия человека. Их можно комбинировать: подписку Claude — для тяжёлой агентной работы родителя, а дешёвого или локального провайдера — для быстрых оценок во вьюере.
+career-ops не привязан к конкретной CLI, поэтому у вас есть три честных варианта для ИИ. **Ваша подписка Claude** — установите на сервере CLI **Claude Code** и выполните `claude login` со своим планом Pro/Max; тогда агент родителя будет использовать вашу подписку без поминутной оплаты по токенам. **Hermes** — запустите `hermes gateway` на том же сервере (он открывает OpenAI-совместимый API на `http://127.0.0.1:8642/v1`) и укажите `HERMES_API_KEY` в **настройках приложения**; живые оценки career-ops-ui пойдут через него (последний в автоматическом порядке провайдеров). **API-ключи** — укажите `ANTHROPIC_API_KEY` (или любой из провайдеров: Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama → BytePlus Ark → Volcengine Ark) в `.env` родителя, и ⚡ живые действия будут работать без участия человека. Их можно комбинировать: подписку Claude — для тяжёлой агентной работы родителя, а дешёвого или локального провайдера — для быстрых оценок во вьюере.
 
 ### Откройте доступ безопасно
 

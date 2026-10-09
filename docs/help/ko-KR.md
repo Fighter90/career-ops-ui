@@ -1078,8 +1078,7 @@ true`도 동일 효과).
 
 1. **Anthropic** — `ANTHROPIC_API_KEY` 설정 시 선호. 서버는 프롬프트
    앞에 `<project_context>` 블록으로 `cv.md`, `config/profile.yml`,
-   `modes/_shared.md`, `modes/oferta.md`를 묶습니다 (각 파일 16
-   KB, 전체 프롬프트 200 KB 소프트 캡). 페이지로 grounded
+   `modes/_shared.md`, `modes/oferta.md`를 묶습니다 (파일 종류별 한도 — cv 64 KB, mode 파일 128 KB, 기타 32 KB — 전체 프롬프트 256 KB 소프트 캡). 페이지로 grounded
    markdown을 직접 반환합니다.
 2. **Gemini** — `GEMINI_API_KEY`만 설정된 경우. 서버가 JD를 임시
    파일로 두고 `gemini-eval.mjs`를 스폰합니다. 무료 티어 모델
@@ -1624,7 +1623,7 @@ deep research 실행, scan 실행, 설정 변경, 모드 실행.
 | `/career-ops apply`가 "no report found"라 함 | Pipeline이 이 JD를 채점한 적 없음 | `/career-ops pipeline` (또는 `#/evaluate`) 먼저 실행. 14절 선결 조건 참조. |
 | `batch-runner.sh: no such file` | 잘못된 디렉터리에서 실행 | `./batch/batch-runner.sh` 호출 전에 `cd $CAREER_OPS_ROOT`. |
 | 서버가 `EADDRINUSE: 4317` 보고 | 기존 인스턴스 실행 중 | `pkill -f 'node server/index.mjs'` 후 재시작. |
-| 라이브 LLM 호출이 2분 이상 멈춤 | 프롬프트가 거대하거나 Anthropic이 느림 | `/api/health`의 Anthropic 플래그 확인. 서버는 프롬프트를 200 KB 소프트 캡으로 자르고 413을 반환합니다. |
+| 라이브 LLM 호출이 2분 이상 멈춤 | 프롬프트가 거대하거나 Anthropic이 느림 | `/api/health`의 Anthropic 플래그 확인. 서버는 프롬프트를 256 KB 소프트 캡으로 자르고 413을 반환합니다. |
 | Pipeline 미리보기에 `(unsafe redirect)` | 공고가 사설 IP / loopback으로 리디렉트 | 보안 기능입니다(REVIEW-B1). 리디렉트 타깃은 거부되고 원본 URL은 변경되지 않습니다. |
 | Tracker 행이 테이블을 깨뜨림 | v1.9.1 이전의 회사 이름 파이프 | v1.9.1+로 업데이트 — 파이프는 종단 간 이스케이프됩니다 (BF-1). |
 | 신선한 클론에서 `npm test` 실패 | 테스트가 부모 프로젝트 레이아웃 가정 | `CAREER_OPS_ROOT=$(mktemp -d)` 사용 및 픽스처 부트스트랩. |

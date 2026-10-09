@@ -1118,8 +1118,7 @@ efekt).
 1. **Anthropic** — preferowany gdy ustawiony `ANTHROPIC_API_KEY`. Serwer
    pakuje `cv.md`, `config/profile.yml`, `modes/_shared.md`
    i `modes/oferta.md` do bloku `<project_context>` przed
-   promptem (każdy plik ograniczony do 16 KB, cały prompt miękko ograniczony do
-   200 KB). Zwraca ugruntowany Markdown bezpośrednio do strony.
+   promptem (limity według typu pliku — cv 64 KB, pliki trybów 128 KB, inne 32 KB — cały prompt miękko ograniczony do 256 KB). Zwraca ugruntowany Markdown bezpośrednio do strony.
 2. **Gemini** — gdy ustawiony tylko `GEMINI_API_KEY`. Serwer tworzy
    `gemini-eval.mjs` z JD jako plikiem tymczasowym. Model darmowego planu
    (`gemini-3.6-flash`) jest odpowiedni do rutynowego oceniania.
@@ -1663,7 +1662,7 @@ zdarzeń.
 | `/career-ops apply` mówi „no report found" | Pipeline nigdy nie ocenił tego JD | Najpierw uruchom `/career-ops pipeline` (lub `#/evaluate`); patrz wymagania wstępne §14. |
 | `batch-runner.sh: no such file` | Uruchamianie z niewłaściwego katalogu | `cd $CAREER_OPS_ROOT` przed wywołaniem `./batch/batch-runner.sh`. |
 | Serwer zgłasza `EADDRINUSE: 4317` | Stara instancja nadal działa | `pkill -f 'node server/index.mjs'` i uruchom ponownie. |
-| Wywołanie LLM na żywo wisi > 2 min | Ogromny prompt lub wolne Anthropic | Sprawdź flagę Anthropic `/api/health`; serwer miękko ogranicza prompty do 200 KB i zwraca 413. |
+| Wywołanie LLM na żywo wisi > 2 min | Ogromny prompt lub wolne Anthropic | Sprawdź flagę Anthropic `/api/health`; serwer miękko ogranicza prompty do 256 KB i zwraca 413. |
 | Podgląd pipeline pokazuje `(unsafe redirect)` | Ogłoszenie przekierowało do prywatnego IP / loopback | To jest funkcja bezpieczeństwa (REVIEW-B1). Cel przekierowania jest odrzucany, a oryginalny URL pozostaje bez zmian. |
 | Tekst wiersza trackera psuje tabelę | Potok w nazwie firmy przed v1.9.1 | Zaktualizuj do v1.9.1+ — potoki są escapowane end-to-end (BF-1). |
 | `npm test` nie udaje się na świeżym klonie | Testy zakładają układ projektu nadrzędnego | Użyj `CAREER_OPS_ROOT=$(mktemp -d)` i bootstrap fixtures. |
@@ -2237,7 +2236,7 @@ Wynajmij mały VPS (1 vCPU / 1 GB RAM w pełni wystarczy dla widoku) z aktualnym
 
 ### Wybierz swój silnik
 
-career-ops jest niezależny od CLI, więc masz trzy uczciwe opcje dla AI. **Twoja subskrypcja Claude** — zainstaluj na maszynie CLI **Claude Code** i wykonaj `claude login` ze swoim planem Pro/Max; agent rodzica wtedy korzysta z twojej subskrypcji, bez rozliczania API za token. **Hermes** — uruchom `hermes gateway` na tej samej maszynie (wystawia API zgodne z OpenAI na `http://127.0.0.1:8642/v1`) i ustaw `HERMES_API_KEY` w **ustawieniach aplikacji**; oceny na żywo career-ops-ui przechodzą przez niego (ostatni w automatycznej kolejności dostawców). **Klucze API** — ustaw `ANTHROPIC_API_KEY` (lub jednego z siedmiu dostawców: Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama → BytePlus Ark → Volcengine Ark) w `.env` rodzica, i akcje na żywo ⚡ działają bez nadzoru. Możesz je łączyć: subskrypcję Claude do ciężkiej pracy agenta rodzica, a tani lub lokalny dostawca do szybkich ocen w widoku.
+career-ops jest niezależny od CLI, więc masz trzy uczciwe opcje dla AI. **Twoja subskrypcja Claude** — zainstaluj na maszynie CLI **Claude Code** i wykonaj `claude login` ze swoim planem Pro/Max; agent rodzica wtedy korzysta z twojej subskrypcji, bez rozliczania API za token. **Hermes** — uruchom `hermes gateway` na tej samej maszynie (wystawia API zgodne z OpenAI na `http://127.0.0.1:8642/v1`) i ustaw `HERMES_API_KEY` w **ustawieniach aplikacji**; oceny na żywo career-ops-ui przechodzą przez niego (ostatni w automatycznej kolejności dostawców). **Klucze API** — ustaw `ANTHROPIC_API_KEY` (lub jednego z dostawców: Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama → BytePlus Ark → Volcengine Ark) w `.env` rodzica, i akcje na żywo ⚡ działają bez nadzoru. Możesz je łączyć: subskrypcję Claude do ciężkiej pracy agenta rodzica, a tani lub lokalny dostawca do szybkich ocen w widoku.
 
 ### Wystaw to bezpiecznie
 

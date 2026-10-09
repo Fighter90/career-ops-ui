@@ -1102,8 +1102,7 @@ la llamada API — mismo efecto).
 1. **Anthropic** — preferida cuando `ANTHROPIC_API_KEY` está
    configurada. El servidor agrupa `cv.md`, `config/profile.yml`,
    `modes/_shared.md` y `modes/oferta.md` en un bloque
-   `<project_context>` antes del prompt (cada archivo capado a 16
-   KB, prompt completo soft-cap a 200 KB). Devuelve markdown
+   `<project_context>` antes del prompt (límites por tipo de archivo — cv 64 KB, archivos mode 128 KB, otros 32 KB — prompt completo soft-cap a 256 KB). Devuelve markdown
    fundamentado directo a la página.
 2. **Gemini** — cuando solo `GEMINI_API_KEY` está configurada. El
    servidor spawnea `gemini-eval.mjs` con el JD como archivo
@@ -1683,7 +1682,7 @@ Filtra por prefijo de acción (`pipeline.`, `cv.`, `evaluate`,
 | `/career-ops apply` dice "no report found" | El pipeline nunca puntuó este JD | Ejecuta `/career-ops pipeline` (o `#/evaluate`) primero; ver prerrequisitos del §14. |
 | `batch-runner.sh: no such file` | Ejecutando desde el directorio incorrecto | `cd $CAREER_OPS_ROOT` antes de invocar `./batch/batch-runner.sh`. |
 | El servidor reporta `EADDRINUSE: 4317` | Instancia vieja aún corriendo | `pkill -f 'node server/index.mjs'` y reinicia. |
-| Llamada LLM live cuelga > 2 min | Prompt enorme o Anthropic lento | Revisa el flag de Anthropic en `/api/health`; el servidor pone soft-cap a los prompts en 200 KB y devuelve 413. |
+| Llamada LLM live cuelga > 2 min | Prompt enorme o Anthropic lento | Revisa el flag de Anthropic en `/api/health`; el servidor pone soft-cap a los prompts en 256 KB y devuelve 413. |
 | Pipeline preview muestra `(unsafe redirect)` | El posting redirigió a una IP privada / loopback | Es un feature de seguridad (REVIEW-B1). El target de redirect se rechaza y la URL original se mantiene sin cambios. |
 | El texto de una fila del tracker rompe la tabla | Pipe en el nombre de empresa pre-v1.9.1 | Actualiza a v1.9.1+ — los pipes se escapan end-to-end (BF-1). |
 | `npm test` falla en clon fresco | Los tests asumen el layout del proyecto padre | Usa `CAREER_OPS_ROOT=$(mktemp -d)` y bootstrapea fixtures. |
@@ -2243,7 +2242,7 @@ Alquila un pequeño VPS (1 vCPU / 1 GB de RAM es de sobra para el visor) con un 
 
 ### Elige tu motor
 
-career-ops es agnóstico respecto a la CLI, así que tienes tres opciones honestas para la IA. **Tu suscripción a Claude** — instala la CLI de **Claude Code** en la máquina y haz `claude login` con tu plan Pro/Max; el agente del padre entonces usa tu suscripción, sin factura de API por token. **Hermes** — ejecuta `hermes gateway` en la misma máquina (expone una API compatible con OpenAI en `http://127.0.0.1:8642/v1`) y define `HERMES_API_KEY` en **Ajustes de la app**; las evaluaciones en vivo de career-ops-ui pasan por ahí (el último en el orden auto de proveedores). **Claves de API** — define `ANTHROPIC_API_KEY` (o cualquiera de los siete proveedores: Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama → BytePlus Ark → Volcengine Ark) en el `.env` del padre, y las acciones en vivo ⚡ funcionan sin intervención. Puedes combinarlos: una suscripción a Claude para el trabajo pesado del agente del padre, y un proveedor barato o local para las evaluaciones rápidas del visor.
+career-ops es agnóstico respecto a la CLI, así que tienes tres opciones honestas para la IA. **Tu suscripción a Claude** — instala la CLI de **Claude Code** en la máquina y haz `claude login` con tu plan Pro/Max; el agente del padre entonces usa tu suscripción, sin factura de API por token. **Hermes** — ejecuta `hermes gateway` en la misma máquina (expone una API compatible con OpenAI en `http://127.0.0.1:8642/v1`) y define `HERMES_API_KEY` en **Ajustes de la app**; las evaluaciones en vivo de career-ops-ui pasan por ahí (el último en el orden auto de proveedores). **Claves de API** — define `ANTHROPIC_API_KEY` (o cualquiera de los proveedores: Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama → BytePlus Ark → Volcengine Ark) en el `.env` del padre, y las acciones en vivo ⚡ funcionan sin intervención. Puedes combinarlos: una suscripción a Claude para el trabajo pesado del agente del padre, y un proveedor barato o local para las evaluaciones rápidas del visor.
 
 ### Exponlo con seguridad
 

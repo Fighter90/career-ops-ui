@@ -1245,7 +1245,7 @@ için **💾 Save JD**'ye tıklayın (veya API çağrısında `save: true` geçi
 1. **Anthropic** — `ANTHROPIC_API_KEY` ayarlıysa tercih edilir. Sunucu,
    prompttan önce `cv.md`, `config/profile.yml`, `modes/_shared.md` ve
    `modes/oferta.md`'yi bir `<project_context>` bloğuna paketler (her
-   dosya 16 KB ile sınırlı, tam prompt 200 KB ile yumuşak sınırlı).
+   dosya türüne göre sınır — cv 64 KB, mode dosyaları 128 KB, diğerleri 32 KB — tam prompt 256 KB ile yumuşak sınırlı).
    Gerekçelendirilmiş markdown'ı doğrudan sayfaya döndürür.
 2. **Gemini** — yalnızca `GEMINI_API_KEY` ayarlıyken. Sunucu, iş
    tanımını geçici bir dosya olarak `gemini-eval.mjs`'yi başlatır.
@@ -1808,7 +1808,7 @@ vb.). Sayfa başına 25 satır; sunucu en fazla 500 en-son olay döndürür.
 | `/career-ops apply` "no report found" diyor | Pipeline bu iş tanımını hiç puanlamadı | Önce `/career-ops pipeline` (veya `#/evaluate`) çalıştırın; §14 ön koşullarına bakın. |
 | `batch-runner.sh: no such file` | Yanlış dizinden çalıştırma | `./batch/batch-runner.sh`'yi çağırmadan önce `cd $CAREER_OPS_ROOT`. |
 | Sunucu `EADDRINUSE: 4317` bildiriyor | Eski örnek hâlâ çalışıyor | `pkill -f 'node server/index.mjs'` ardından yeniden başlatın. |
-| Canlı LLM çağrısı > 2 dk takılıyor | Prompt devasa veya Anthropic yavaş | `/api/health` Anthropic bayrağını kontrol edin; sunucu promptları 200 KB ile yumuşak sınırlar ve 413 döndürür. |
+| Canlı LLM çağrısı > 2 dk takılıyor | Prompt devasa veya Anthropic yavaş | `/api/health` Anthropic bayrağını kontrol edin; sunucu promptları 256 KB ile yumuşak sınırlar ve 413 döndürür. |
 | Pipeline önizlemesi `(unsafe redirect)` gösteriyor | İlan özel bir IP'ye / loopback'e yönlendirdi | Bu bir güvenlik özelliğidir (REVIEW-B1). Yönlendirme hedefi reddedilir ve orijinal URL değişmeden kalır. |
 | Tracker satırı metni tabloyu bozuyor | v1.9.1 öncesi şirket adında boru | v1.9.1+'ya güncelleyin — borular baştan sona kaçırılır (BF-1). |
 | Taze klonda `npm test` başarısız | Testler üst proje düzenini varsayıyor | `CAREER_OPS_ROOT=$(mktemp -d)` kullanın ve fikstürleri önyükleyin. |

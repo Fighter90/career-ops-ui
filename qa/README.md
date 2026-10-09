@@ -2,17 +2,17 @@
 
 Regression drivers, design/UX prompts, and dated run evidence.
 
-**Baselines as of v1.236.0** — **3164** `node --test` · **101** Playwright ·
-**21** smoke E2E · **23** comprehensive E2E · **92** scan sources (87 EN + 5 RU) ·
-**37** route modules · **31** views · **17** locales · help parity
-**32 H2 / 122 H3** · **18** LLM providers.
+**Baselines as of v1.247.0** — **5116** `node --test` · **118** Playwright ·
+**21** smoke E2E · **23** comprehensive E2E · **109** scan sources (104 EN + 5 RU) ·
+**39** route modules · **32** views · **18** locales · help parity
+**33 H2 / 125 H3** · **18** LLM providers.
 
 ## Layout
 
 ```text
 qa/
 ├── README.md                          ← you are here
-├── QA-REGRESSION-PROMPT-v1.236.0.md   ← the CURRENT release's delta driver
+├── QA-REGRESSION-PROMPT-v1.247.0.md   ← the CURRENT release's delta driver
 ├── FUNCTIONALITY-CHECK.md             ← perennial: does it actually work?
 ├── UX-AUDIT-PROMPT.md                 ← perennial: is it good UX?
 ├── DESIGNER-EXPORT-PROMPT.md          ← perennial: design-system + key-flow export
@@ -35,10 +35,10 @@ below.
 
 | File | Scope | When |
 |---|---|---|
-| **[`QA-REGRESSION-PROMPT-v1.236.0.md`](./QA-REGRESSION-PROMPT-v1.236.0.md)** | This release's delta: §0 exact `node --test` gates, what changed, the manual browser pass, contract/security invariants, what was deliberately not ported | Every release, before merge |
+| **[`QA-REGRESSION-PROMPT-v1.247.0.md`](./QA-REGRESSION-PROMPT-v1.247.0.md)** | This release's delta: §0 exact `node --test` gates, what changed, the manual browser pass, contract/security invariants, what was deliberately not ported | Every release, before merge |
 | **[`FUNCTIONALITY-CHECK.md`](./FUNCTIONALITY-CHECK.md)** | Every route + the 7 `#/<mode>` pages, every API contract, the OR provider matrix, SSE/SSRF/sanitizer gates, the parent read-only write-through contract, deploy hygiene. Pass/fail per item | Every release, or before a risky refactor |
 | **[`UX-AUDIT-PROMPT.md`](./UX-AUDIT-PROMPT.md)** | Senior-UX heuristic + task-based audit against the product intent at <https://career-ops.org/docs>. Carries a ledger of already-closed findings — do not re-file those | On demand; assumes the app already works |
-| **[`DESIGNER-EXPORT-PROMPT.md`](./DESIGNER-EXPORT-PROMPT.md)** | Design-quality audit + a structured design-system export: every page, component and key flow, all 17 locales | On demand |
+| **[`DESIGNER-EXPORT-PROMPT.md`](./DESIGNER-EXPORT-PROMPT.md)** | Design-quality audit + a structured design-system export: every page, component and key flow, all 18 locales | On demand |
 
 The three perennial prompts read `package.json::version` and validate the
 current `HEAD`. Save run reports under

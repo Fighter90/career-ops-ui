@@ -17,9 +17,9 @@ _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.244.0** — **掃描結果讀起來像一份清單，而不是一面牆：一個職缺＝兩行，訊號化為圖示，700 筆的掃描變成分頁表格，而不是 37,000 px 的長頁面。**
+> **🆕 最新版本 — v1.247.0** — **CAR-49…58 設計巡檢的收尾完成——剩餘所有次要與打磨項，加上上一版刻意延後的深色地圖。**
 >
-> **前一版本 — v1.243.2** — 打包版本：v1.243.1 以全新的可部署標籤重新切割（原標籤發佈後被重新指向，伺服器無法部署），應用程式碼完全相同。
+> **前一版本 — v1.246.0** — CAR-48 資深設計巡檢的十大發現全部修復——含 1 個阻塞級與全部 7 個重要級。
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -261,7 +261,7 @@ npm start
 | **Profile**      | `config/profile.yml` + archetypes 的唯讀檢視 — UI 友善摘要。                                                          |
 | **App settings** | UI 內建編輯器,可編輯父專案 `.env` 中的金鑰:`ANTHROPIC_API_KEY`、`GEMINI_API_KEY`、模型 override、port / host。讀取時 secrets 會被遮罩。 |
 | **Health**       | 所有 setup 檢查以 OK / OPTIONAL / FAIL 徽章呈現 + 用於執行 `doctor.mjs` 與 `verify-pipeline.mjs` 的按鈕。              |
-| **Help**         | 應用程式內的 Markdown 使用指南(`/#/help`),已本地化為所有 17 種支援語言(en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi)。 |
+| **Help**         | 應用程式內的 Markdown 使用指南(`/#/help`),已本地化為所有 18 種支援語言(en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta)。 |
 | **Activity log** | 每一筆會改變狀態的請求(寫入、執行、掃描)的稽核軌跡。secrets 會被遮蔽。 |
 | **通知** 🔔 *(v1.58.34 / v1.58.35)* | 頂列鈴鐺 + 紅色未讀徽章。點擊 → 右側抽屜展示最近 50 條 toast(按分頁/作業階段)— 成功 / 錯誤 / 資訊-進度,每條帶本地時間、訊息,及在需要時把 `(METHOD /path · HTTP NNN)` 後綴放入 `<details>`。說明 **§18** 描述每個類別。抽屜**僅在點擊鈴鐺時開啟**(或鍵盤 Enter / Space);透過 ×、Esc 或再次點擊鈴鐺關閉。|
 
@@ -392,7 +392,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 3009 unit + 101 Playwright + 23 e2e:full + 21 e2e:smoke
+└─ tests/                    # 5116 unit + 118 Playwright + 23 e2e:full + 21 e2e:smoke
    ├─ parsers.test.mjs       # markdown / pipeline / report 解析器(純函式)
    ├─ api.test.mjs           # 每個端點、暫時性伺服器、無網路
    ├─ {ru,en}-scanner.test.mjs   # 已 mock 的 fetch
@@ -529,7 +529,7 @@ event: error    data: { message }
 ## 測試
 
 ```bash
-npm test                       # 3009 個 unit/integration 測試
+npm test                       # 5116 個 unit/integration 測試
 npm run test:e2e               # 21 個 smoke e2e(自行啟動伺服器)
 npm run test:e2e:full          # 23 個 comprehensive e2e
 npm run test:e2e:browser       # 101 個 Playwright 瀏覽器 smoke
@@ -538,11 +538,11 @@ npm run test:coverage          # 同 `npm test`,加上 V8 coverage
 
 | Suite                       | 測試數 | 內容                                                                                                         |
 | --------------------------- | ----- | ------------------------------------------------------------------------------------------------------------ |
-| `node --test tests/*.test.mjs`(unit + integration) | **3009** | 每個端點、暫時性伺服器、無網路。涵蓋解析器、scanner(已 mock)、runner、anthropic、CSP / 安全 header、實體感知 XSS、JD sanitize、URL 驗證、SSRF redirect rebind、檔案互斥下的並行 tracker 寫入、`llmRateLimit`、路徑統一 sanitization、i18n parity。 |
+| `node --test tests/*.test.mjs`(unit + integration) | **5116** | 每個端點、暫時性伺服器、無網路。涵蓋解析器、scanner(已 mock)、runner、anthropic、CSP / 安全 header、實體感知 XSS、JD sanitize、URL 驗證、SSRF redirect rebind、檔案互斥下的並行 tracker 寫入、`llmRateLimit`、路徑統一 sanitization、i18n parity。 |
 | `tests/e2e.mjs`(smoke)      | 21 | Playwright headless:每條路由可渲染、基本流程。                                                              |
 | `tests/e2e-comprehensive.mjs` | 23 | 完整 Playwright walkthrough:11 條路由 + 12 條功能流程。                                                      |
 | `tests/playwright-smoke.mjs`(`npm run test:e2e:browser`) | **32** | 瀏覽器驅動 smoke:dashboard render、navigation、語言切換、404、health、tracker round-trip(BF-1)、pipeline add + 無效 URL 掃描、reports empty、evaluate 手動 fallback、config 金鑰遮罩、CV PUT XSS strip、pipeline preview 400、WCAG 1.4.1 視覺冗餘線索回歸。 |
-| **總計** (四個套件合計)                   | **3101** | **0 fails、0 flakes**                                                                                       |
+| **總計** (四個套件合計)                   | **5278** | **0 fails、0 flakes**                                                                                       |
 
 Coverage:透過 `--experimental-test-coverage` ~93% 列 / ~83% 分支。
 
@@ -623,7 +623,7 @@ Claude Code 中既有的 `/career-ops apply` Playwright 表單填寫流程,仍�
 
 career-ops **常開** 時最佳 —— 在你睡覺時掃描,可從任何瀏覽器存取。要把整個技術棧放到一台小型伺服器上 —— 父級 **career-ops** 流水線、此 **career-ops-ui** 檢視器,以及執行 AI 的**引擎**(透過 Claude Code CLI 的 **Claude 訂閱**、本機 **Hermes** 閘道,或供應方 API 金鑰)—— 開通一台 VPS(Node ≥ 18),安裝父專案 + 本儲存庫,選擇引擎,並將檢視器置於**帶認證的 HTTPS 反向代理**之後,同時保持安全不變式(CSP、SSRF 防護、XSS 邊界、日誌不含機密)完好。
 
-📖 應用內**說明 §31**(「在雲端執行整個技術棧」)以 17 種語言逐步講解;維運清單見 [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md),[雲端部署 wiki 頁面](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) 提供參考表格。
+📖 應用內**說明 §31**(「在雲端執行整個技術棧」)以 18 種語言逐步講解;維運清單見 [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md),[雲端部署 wiki 頁面](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) 提供參考表格。
 
 ---
 
@@ -640,7 +640,7 @@ career-ops **常開** 時最佳 —— 在你睡覺時掃描,可從任何瀏覽�
 
 ## 在地化(Localization)
 
-介面提供 **17 種語言** — `en`、`es`、`pt-BR`、`ko`、`ja`、`ru`、`zh-CN`、`zh-TW`、`fr`、`pl`、`uk`、`da`、`ar`、`de`、`it`、`tr`、`hi`。自 **v1.60.0 (I18N-SPLIT)** 起,翻譯以**每種語言一個檔案**存放於 [`public/js/lib/locales/`](public/js/lib/locales/) —— `i18n-dict.<lang>.js`(扁平的 `鍵 → 字串` 表)外加共用的 `i18n-dict.aliases.js`。[`i18n-dict.js`](public/js/lib/i18n-dict.js) 將它們組裝為 `window.__I18N_DICT`;[`i18n.js`](public/js/lib/i18n.js) 負責解析 `t('鍵', 'fallback')`。無建置、無 fetch —— 譯者只需編輯單一語言檔案。
+介面提供 **18 種語言** — `en`、`es`、`pt-BR`、`ko`、`ja`、`ru`、`zh-CN`、`zh-TW`、`fr`、`pl`、`uk`、`da`、`ar`、`de`、`it`、`tr`、`hi`、`ta`。自 **v1.60.0 (I18N-SPLIT)** 起,翻譯以**每種語言一個檔案**存放於 [`public/js/lib/locales/`](public/js/lib/locales/) —— `i18n-dict.<lang>.js`(扁平的 `鍵 → 字串` 表)外加共用的 `i18n-dict.aliases.js`。[`i18n-dict.js`](public/js/lib/i18n-dict.js) 將它們組裝為 `window.__I18N_DICT`;[`i18n.js`](public/js/lib/i18n.js) 負責解析 `t('鍵', 'fallback')`。無建置、無 fetch —— 譯者只需編輯單一語言檔案。
 
 **新增或修改文案:** 將同一個鍵加入全部 16 個語言檔案(由測試強制保證一致性),透過 `data-i18n="scan.newButton"` 或 `t('scan.newButton')` 使用,然後執行 `npm test`。
 
@@ -694,7 +694,7 @@ node evals/workflow/run.mjs --task qa-prompt-mandatory
 
 歡迎 Issues 與 PRs。House rules:
 
-- 推送前執行 `npm test` — **3009 項檢查綠燈**為門檻(若觸碰 UI 則加上 92 個 Playwright)。
+- 推送前執行 `npm test` — **5116 項檢查綠燈**為門檻(若觸碰 UI 則加上 92 個 Playwright)。
 - 非微不足道的變更請走 GSD pipeline。詳見 [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md)。
 - 不要從本儲存庫內修改父專案 `career-ops/` 內的任何東西。重點在於這是一個非侵入式 overlay。Hard rules 位於 [`CLAUDE.md`](CLAUDE.md)。
 - Conventional commits:`feat`、`fix`、`refactor`、`docs`、`test`、`chore`、`perf`、`ci`。選填 scope:`feat(scan):`。Breaking change:`feat!:`。

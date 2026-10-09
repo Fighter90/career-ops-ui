@@ -1111,8 +1111,7 @@ JD をテキストエリアに貼り付けるか、`#/pipeline` から `?url=<hr
 1. **Anthropic** — `ANTHROPIC_API_KEY` が設定されている場合に優先。
    サーバはプロンプトの前に `cv.md`、`config/profile.yml`、
    `modes/_shared.md`、`modes/oferta.md` を `<project_context>`
-   ブロックに束ねます (各ファイル 16 KB でキャップ、フルプロンプトは
-   200 KB のソフトキャップ)。グラウンディングされた markdown を
+   ブロックに束ねます (ファイル種類ごとの上限 — cv 64 KB、mode ファイル 128 KB、その他 32 KB — フルプロンプトは 256 KB のソフトキャップ)。グラウンディングされた markdown を
    直接ページに返します。
 2. **Gemini** — `GEMINI_API_KEY` のみが設定されている場合。
    サーバが JD を一時ファイルとして `gemini-eval.mjs` を spawn
@@ -1673,7 +1672,7 @@ evaluate 実行、deep-research 実行、scan 実行、設定変更、モード
 | `/career-ops apply` が "no report found" | この JD で pipeline がまだ採点していない | まず `/career-ops pipeline` (または `#/evaluate`) を実行; 第 14 章の前提条件を参照。 |
 | `batch-runner.sh: no such file` | 間違ったディレクトリで実行 | `cd $CAREER_OPS_ROOT` してから `./batch/batch-runner.sh` を起動。 |
 | サーバが `EADDRINUSE: 4317` を報告 | 古いインスタンスがまだ実行中 | `pkill -f 'node server/index.mjs'` してから再起動。 |
-| ライブ LLM 呼び出しが 2 分超ハング | プロンプトが巨大、または Anthropic が低速 | `/api/health` の Anthropic フラグを確認; サーバはプロンプトを 200 KB でソフトキャップし 413 を返します。 |
+| ライブ LLM 呼び出しが 2 分超ハング | プロンプトが巨大、または Anthropic が低速 | `/api/health` の Anthropic フラグを確認; サーバはプロンプトを 256 KB でソフトキャップし 413 を返します。 |
 | Pipeline プレビューに `(unsafe redirect)` | 投稿がプライベート IP / ループバックへリダイレクト | これはセキュリティ機能です (REVIEW-B1)。リダイレクト先は拒否され、元の URL は変更されません。 |
 | Tracker 行のテキストがテーブルを壊す | v1.9.1 以前で会社名にパイプ | v1.9.1 以上へ更新 — パイプはエンドツーエンドでエスケープされます (BF-1)。 |
 | 新規クローンで `npm test` が失敗 | テストが親プロジェクトレイアウトを仮定 | `CAREER_OPS_ROOT=$(mktemp -d)` を使ってフィクスチャをブートストラップ。 |
@@ -2210,7 +2209,7 @@ career-ops-uiはデフォルトで`127.0.0.1`にバインドします。サー�
 
 ### エンジンを選ぶ
 
-career-opsはCLIに依存しないため、AIについて三つの正直な選択肢があります。**Claudeサブスクリプション** — サーバーに**Claude Code**CLIをインストールし、Pro/Maxプランで`claude login`します。そうすると親のエージェントはあなたのサブスクリプションを使うようになり、トークンごとのAPI料金は発生しません。**Hermes** — 同じサーバーで`hermes gateway`を実行し(`http://127.0.0.1:8642/v1`でOpenAI互換APIを公開します)、**アプリ設定**で`HERMES_API_KEY`を設定します。career-ops-uiのライブ評価はこれを経由します(自動プロバイダー順序の最後です)。**APIキー** — 親の`.env`に`ANTHROPIC_API_KEY`(または七つのプロバイダーのいずれか:Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama → BytePlus Ark → Volcengine Ark)を設定すると、⚡ライブアクションがヘッドレスで動作します。組み合わせることも可能です:親の重いエージェント作業にはClaudeサブスクリプションを、ビューアの手早い評価には安価またはローカルなプロバイダーを使う、といった形です。
+career-opsはCLIに依存しないため、AIについて三つの正直な選択肢があります。**Claudeサブスクリプション** — サーバーに**Claude Code**CLIをインストールし、Pro/Maxプランで`claude login`します。そうすると親のエージェントはあなたのサブスクリプションを使うようになり、トークンごとのAPI料金は発生しません。**Hermes** — 同じサーバーで`hermes gateway`を実行し(`http://127.0.0.1:8642/v1`でOpenAI互換APIを公開します)、**アプリ設定**で`HERMES_API_KEY`を設定します。career-ops-uiのライブ評価はこれを経由します(自動プロバイダー順序の最後です)。**APIキー** — 親の`.env`に`ANTHROPIC_API_KEY`(または次のプロバイダーのいずれか:Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama → BytePlus Ark → Volcengine Ark)を設定すると、⚡ライブアクションがヘッドレスで動作します。組み合わせることも可能です:親の重いエージェント作業にはClaudeサブスクリプションを、ビューアの手早い評価には安価またはローカルなプロバイダーを使う、といった形です。
 
 ### 安全に公開する
 

@@ -10,7 +10,7 @@ Since v1.9.1 (the original baseline of this doc) the codebase shipped through th
 
 | Dimension | Status | Notes |
 |---|---|---|
-| Architecture | ✅ ready | Orchestrator-only `index.mjs` (~275 LOC); 37 focused route modules under `lib/routes/`. `server/lib/sources/registry.mjs` is the single source of truth for 92 adapters (87 EN-region incl. RSS + 5 RU), auto-discovered at boot since v1.69.0 (P-14). |
+| Architecture | ✅ ready | Orchestrator-only `index.mjs` (~275 LOC); 39 focused route modules under `lib/routes/`. `server/lib/sources/registry.mjs` is the single source of truth for 109 adapters (104 EN-region incl. RSS + 5 RU), auto-discovered at boot since v1.69.0 (P-14). |
 | Tests | ✅ ready | **2527** `node --test` cases (unit + functional + acceptance) + 4 E2E surfaces + the shell-surface tier (`bin/*.sh` + `.githooks`, WS9) as of v1.197.0. ~93 % line / ~83 % branch. `npm run test:ci` gates: tests + `check-no-also-leftovers` + 17-locale CHANGELOG parity; `help-ru-config-section.test.mjs` additionally locks H2+H3 help-bundle parity. |
 | Accessibility | ✅ ready | WS2 UX-audit (40 findings) shipped: SPA route-focus, focus-trapped `UI.confirm`, WAI-ARIA tabs, SSE live-regions, bound form labels, sortable-table `aria-sort` — codified in `docs/sdd/CONVENTIONS.md`. |
 | Security (single-tenant loopback) | ✅ ready | CSP, SSRF guard, XSS strip, secret masking, log redaction. |
@@ -72,7 +72,7 @@ Currently fine — disk usage grows ~slowly, kilobytes per scan. P-13 (Persisten
 | API-key leak via console / logs | Low | `runAnthropic` log-guard test enforces zero console output. Activity log redacts secrets. | — (closed) |
 | Stuck child process holds SSE connection | Low | SIGTERM → SIGKILL escalation after 5 s; max-runtime cap of 30 min. Tested. | — (closed) |
 | Unbounded log growth | Medium (long-running deploys) | None today. | P-13 |
-| Prompt cost runaway | Low | 200 KB soft cap returns 413. | — (closed v1.9.1) |
+| Prompt cost runaway | Low | 256 KB soft cap returns 413. | — (closed v1.9.1) |
 | Tracker corruption from pipe in name | Was Medium | Fixed v1.9.1 (BF-1) — writer + parser now lossless. | — (closed) |
 | Config write permission denied → unhandled rejection | Was Medium | Fixed v1.9.1 (BF-2) — clean 500 with details. | — (closed) |
 | Stuck Anthropic call on huge prompt | Was Medium | Fixed v1.9.1 (BF-3/BF-4) — soft cap. | — (closed) |

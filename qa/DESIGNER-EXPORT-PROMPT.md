@@ -3,13 +3,13 @@
 > Paste verbatim to an agent (or run it as a senior product/UX
 > designer, 10+ yrs). Produces a **design-quality audit + a
 > structured design export** of the whole product — every page, every
-> component, every key user flow, all **17 locales** — judged against
+> component, every key user flow, all **18 locales** — judged against
 > the canonical product intent at **<https://career-ops.org/docs>**.
 >
 > Output **one** file: `qa/reports/<YYYY-MM-DD>-DESIGN-EXPORT.md`.
 >
-> Current baseline **v1.231.2** (37 route modules · 92 scan sources =
-> 87 EN + 5 RU · 17 locales · help 32 H2 / 122 H3 · **18 LLM providers**,
+> Current baseline **v1.247.0** (39 route modules · 109 scan sources =
+> 104 EN + 5 RU · 18 locales · help 33 H2 / 125 H3 · **18 LLM providers**,
 > the headless eval order being Anthropic → Gemini → OpenAI → Qwen → OpenRouter →
 > GitHub Models → Hermes — a keyless forced `LLM_PROVIDER` falls back to any
 > configured provider (v1.157.0), so live evals run on ANY key). The UX
@@ -78,8 +78,8 @@ exact value + where it's defined (`public/css/app.css`,
    a11y contract (role, name, keyboard), the file + line.
 4. **Iconography & emoji** — every glyph used as UI affordance, where,
    and whether it has a text/`aria-label` equivalent.
-5. **Content & i18n surface** — the 17 locales (`en es pt-BR ko ja ru
-   zh-CN zh-TW fr pl uk da ar de it tr hi`; Arabic is RTL — `<html
+5. **Content & i18n surface** — the 18 locales (`en es pt-BR ko ja ru
+   zh-CN zh-TW fr pl uk da ar de it tr hi ta`; Arabic is RTL — `<html
    dir="rtl">` + the `[dir="rtl"]` mirror block in `app.css`); how
    `t()` + the per-locale `i18n-dict.<lang>.js` files + the assembler
    + `<html lang>` work; the per-route `document.title` pattern.

@@ -17,9 +17,9 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Najnowsze wydanie — v1.244.0** — **Wyniki skanu czytają się jak lista, a nie jak ściana: jedna oferta = dwa wiersze, sygnały to ikony, a skan 700 ofert to stronicowana tabela zamiast strony o wysokości 37,000 px.** Promowanie, pas dopasowania i wynik to ikony ze zlokalizowanymi nazwami dostępnymi; końcowy segment `| Germany | Remote` przenosi się z tytułu do linii metadanych; tabela przestała przepełniać stronę przy szerokości telefonu (675 px wewnętrznego przewijania → 0) i stronicuje po 50 wierszy.
+> **🆕 Najnowsze wydanie — v1.247.0** — **Ogon przeglądu senior-design CAR-49…58 domknięty — wszystkie pozostałe minor/polish oraz ciemna mapa, którą poprzednie wydanie celowo odłożyło.**
 >
-> **Poprzednie wydanie — v1.243.2** — Wydanie czysto pakunkowe: to samo drzewo co v1.243.1 (poprawka modalu wyniku w trackerze — nasłuch na `window`), wycięte pod świeżym, wdrażalnym tagiem, bo `git fetch --tags` na serwerze odrzucił przepiętą v1.243.1.
+> **Poprzednie wydanie — v1.246.0** — Wszystkich dziesięć czołowych ustaleń przeglądu senior-design CAR-48 naprawiono — łącznie z blockerem i wszystkimi siedmioma major.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -144,7 +144,7 @@ career-ops/
 └─ web-ui/          ← to repozytorium
    ├─ server/       # Express + 15 modułów tras
    ├─ public/       # vanilla JS SPA, bez bundlera
-   └─ tests/        # 3009 testów jednostkowych + 101 Playwright + 44 e2e
+   └─ tests/        # 5116 testów jednostkowych + 118 Playwright + 44 e2e
 ```
 
 Serwer ma dwie zależności produkcyjne: `express` i `js-yaml`. Brak transpilacji, brak bundlera — cały interfejs to mniej niż 30 KB zminifikowanego kodu.
@@ -153,7 +153,7 @@ Serwer ma dwie zależności produkcyjne: `express` i `js-yaml`. Brak transpilacj
 
 career-ops działa najlepiej **zawsze włączony** — skanuje, gdy śpisz, dostępny z dowolnej przeglądarki. Aby umieścić cały stack na małym serwerze — nadrzędny pipeline **career-ops**, tę przeglądarkę **career-ops-ui** oraz **silnik** uruchamiający AI (Twoja **subskrypcja Claude** przez CLI Claude Code, lokalna brama **Hermes**, lub klucze API) — postaw VPS (Node ≥ 18), zainstaluj rodzica + to repo, wybierz silnik i wystaw przeglądarkę za **odwrotnym proxy HTTPS z uwierzytelnianiem**, zachowując nienaruszone niezmienniki bezpieczeństwa (CSP, guard SSRF, granica XSS, brak sekretów w logach).
 
-📖 Wbudowana **Pomoc §31** („Uruchom cały stack w chmurze”) prowadzi krok po kroku we wszystkich 17 językach; lista kontrolna operatora to [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), a [wiki wdrożenia w chmurze](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) zawiera tabele referencyjne.
+📖 Wbudowana **Pomoc §31** („Uruchom cały stack w chmurze”) prowadzi krok po kroku we wszystkich 18 językach; lista kontrolna operatora to [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), a [wiki wdrożenia w chmurze](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) zawiera tabele referencyjne.
 
 ---
 
@@ -173,7 +173,7 @@ Oficjalna strona: [career-ops.org](https://career-ops.org) · Dokumentacja: [car
 ## Testy
 
 ```bash
-npm test                    # 3009 testów jednostkowych/integracyjnych
+npm test                    # 5116 testów jednostkowych/integracyjnych
 npm run test:e2e            # 21 smoke e2e
 npm run test:e2e:full       # 23 comprehensive e2e
 npm run test:e2e:browser    # 101 testów Playwright

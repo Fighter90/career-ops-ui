@@ -17,9 +17,9 @@ _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santi
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Seneste udgivelse — v1.244.0** — **Scan-resultaterne læses som en liste, ikke en væg: ét opslag = to linjer, signalerne er ikoner, og en scanning på 700 rækker er en pagineret tabel i stedet for en side på 37,000 px.** Boost, fit-bånd og score er ikoner med lokaliserede tilgængelige navne; et afsluttende `| Germany | Remote` flyttes ud af titlen og ind i meta-linjen; tabellen holdt op med at flyde over ved telefonbredde (675 px intern scroll → 0) og paginerer ved 50 rækker.
+> **🆕 Seneste udgivelse — v1.247.0** — **Halens af CAR-49…58-design-sweepet er lukket — alle resterende minor/polish-fund plus det mørke kort, som den forrige udgivelse bevidst udsatte.**
 >
-> **Tidligere — v1.243.2** — v1.243.1 genudgivet under en frisk, deploybar tag (serverens `git fetch --tags` afviste den ompointerede v1.243.1); bærer window-listener-fixet til trackerens udfalds-modal.
+> **Tidligere — v1.246.0** — Alle ti topfund fra CAR-48-senior-design-sweepet er rettet — blockeren og alle syv majors inkluderet.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -294,7 +294,7 @@ npm start
 | **Profile**      | Skrivebeskyttet visning af `config/profile.yml` + arketyper — UI-venligt resumé.                                         |
 | **App settings** | In-UI-editor til den overordnede `.env`'s nøgler: `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, model-overrides, port / vært. Hemmeligheder maskeres ved læsning. |
 | **Health**       | Alle opsætningstjek i OK / OPTIONAL / FAIL-badges + knapper til at køre `doctor.mjs` og `verify-pipeline.mjs`.           |
-| **Help**         | In-app Markdown-brugervejledning (`/#/help`), lokaliseret til alle 17 understøttede sprog (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi). |
+| **Help**         | In-app Markdown-brugervejledning (`/#/help`), lokaliseret til alle 18 understøttede sprog (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta). |
 | **Activity log** | Revisionsspor af hver tilstandsændrende forespørgsel (writes, runs, scans). Hemmeligheder redigeret. |
 | **Notifications** 🔔 *(v1.58.34 / v1.58.35)* | Klokke i topbjælken med rødt ulæst-badge. Klik for at glide en skuffe ind, der oplister de seneste 50 toasts (pr. fane, pr. session) — Success / Error / Info-progress, hver med et lokaliseret tidsstempel, den menneskelige besked og ethvert `(METHOD /path · HTTP NNN)`-postfiks gemt i en `<details>`. Hjælp **§18** dokumenterer hver kategori. Skuffen åbner **kun** ved klik på klokken (eller tastatur Enter / Space); lukkes via ×, Esc eller ved at klikke på klokken igen. |
 
@@ -393,7 +393,7 @@ career-ops-ui/
 │     │  ├─ lever.mjs        # api.lever.co client
 │     │  ├─ hh.mjs           # hh.ru/search/vacancy HTML scraper (paginated, UA-aware)
 │     │  └─ habr.mjs         # career.habr.com HTML parser (no cheerio, regex only)
-│     └─ routes/             # 37 route modules — one per topic (P-2)
+│     └─ routes/             # 39 route modules — one per topic (P-2)
 │        ├─ activity.mjs     # /api/activity
 │        ├─ config.mjs       # /api/config (parent .env round-trip)
 │        ├─ content.mjs      # /api/cv, /api/profile, /api/portals, /api/modes
@@ -422,7 +422,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 3009 unit + 101 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.121.0)
+└─ tests/                    # 5116 unit + 118 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.247.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -431,7 +431,7 @@ career-ops-ui/
    ├─ url-validation.test.mjs    # SSRF reject sweep (FIX-M3 + M6 + M7)
    ├─ cv-xss.test.mjs        # stripDangerousMarkdown round-trip
    ├─ jd-sanitize.test.mjs   # sanitizeJobDescription
-   ├─ help.test.mjs / help-ui.test.mjs    # i18n parity across all 17 locales
+   ├─ help.test.mjs / help-ui.test.mjs    # i18n parity across all 18 locales
    ├─ playwright-smoke.mjs   # 22 browser flows (CV save, tracker, pipeline, evaluate, config, etc.)
    └─ e2e{,-comprehensive}.mjs   # full Playwright walkthrough
 ```
@@ -553,20 +553,20 @@ Når `run: true` er sat på `/api/deep` eller `/api/mode/:slug`, foretrækker se
 ## Tests
 
 ```bash
-npm test                       # 3009 unit/integration tests
+npm test                       # 5116 unit/integration tests
 npm run test:e2e               # 21 smoke e2e (boots own server)
 npm run test:e2e:full          # 23 comprehensive e2e
-npm run test:e2e:browser       # 101 Playwright browser (smoke + full-cycle + forms + locale-sweep ×17 + theme)
+npm run test:e2e:browser       # 118 Playwright browser (smoke + full-cycle + forms + locale-sweep ×18 + theme)
 npm run test:coverage          # same as `npm test` plus V8 coverage
 ```
 
 | Suite                       | Tests | What                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integration) | **3009** | Every endpoint, ephemeral server, no network. 329 files: parsers, scanners (mocked), runners, anthropic/openai, security headers, XSS, JD sanitize, URL validation, i18n parity, + the v1.55→v1.56 UX-fix suites. |
+| `node --test tests/*.test.mjs` (unit + integration) | **5116** | Every endpoint, ephemeral server, no network. 490 files: parsers, scanners (mocked), runners, anthropic/openai, security headers, XSS, JD sanitize, URL validation, i18n parity, + the v1.55→v1.56 UX-fix suites. |
 | `tests/e2e.mjs` (smoke)      | 21 | Playwright headless: every route renders, basic flows.                                                     |
 | `tests/e2e-comprehensive.mjs` | 23 | Full Playwright walkthrough: 11 routes + 12 functional flows.                                              |
-| `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **101** | Browser-driven: dashboard render, navigation, language switch, 404, health, tracker round-trip, pipeline add + invalid-URL sweep, reports, evaluate manual fallback, config keys masked, CV PUT XSS strip, pipeline preview 400, auto-pipeline SSE. |
-| **Total** (all four suites)                   | **3101** | **0 fails, 0 flakes**                                                                                    |
+| `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **118** | Browser-driven: dashboard render, navigation, language switch, 404, health, tracker round-trip, pipeline add + invalid-URL sweep, reports, evaluate manual fallback, config keys masked, CV PUT XSS strip, pipeline preview 400, auto-pipeline SSE. |
+| **Total** (all four suites)                   | **5278** | **0 fails, 0 flakes**                                                                                    |
 
 Dækning: ~93 % linjer / ~83 % grene via `--experimental-test-coverage`.
 
@@ -645,7 +645,7 @@ For vurderingen af produktionsparathed (deployment-gates, risikoregister, udskud
 
 career-ops er bedst **altid tændt** — scanner mens du sover, tilgængelig fra enhver browser. For at lægge hele stakken på en lille server — det overordnede **career-ops**-pipeline, denne **career-ops-ui**-fremviser, og **motoren** der kører AI’en (dit **Claude-abonnement** via Claude Code-CLI’en, en lokal **Hermes**-gateway, eller provider-API-nøgler) — klargør en VPS (Node ≥ 18), installer forælderen + dette repo, vælg din motor, og eksponer fremviseren bag en **HTTPS reverse proxy med autentificering**, mens sikkerhedsinvarianterne (CSP, SSRF-guard, XSS-grænse, ingen hemmeligheder i logs) forbliver intakte.
 
-📖 Den indbyggede **Hjælp §31** ("Kør hele stakken i skyen") gennemgår det trin for trin på alle 17 sprog; operatør-tjeklisten er [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), og [wiki-siden om sky-deployment](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) har opslagstabellerne.
+📖 Den indbyggede **Hjælp §31** ("Kør hele stakken i skyen") gennemgår det trin for trin på alle 18 sprog; operatør-tjeklisten er [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), og [wiki-siden om sky-deployment](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) har opslagstabellerne.
 
 ---
 
@@ -662,14 +662,14 @@ career-ops er bedst **altid tændt** — scanner mens du sover, tilgængelig fra
 
 ## Lokalisering
 
-UI'en leverer **17 lokaliteter** — `en`, `es`, `fr`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`. Siden **v1.60.0 (I18N-SPLIT)** ligger oversættelser **én fil pr. lokalitet** under [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, hver en flad `key → string`-tabel — plus en delt `i18n-dict.aliases.js`. [`i18n-dict.js`](public/js/lib/i18n-dict.js) samler dem til `window.__I18N_DICT`; [`i18n.js`](public/js/lib/i18n.js) løser `t('key', 'fallback')`. Intet build-trin, ingen runtime-fetch — en oversætter redigerer en enkelt sprogfil isoleret.
+UI'en leverer **18 lokaliteter** — `en`, `es`, `fr`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`, `ta`. Siden **v1.60.0 (I18N-SPLIT)** ligger oversættelser **én fil pr. lokalitet** under [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, hver en flad `key → string`-tabel — plus en delt `i18n-dict.aliases.js`. [`i18n-dict.js`](public/js/lib/i18n-dict.js) samler dem til `window.__I18N_DICT`; [`i18n.js`](public/js/lib/i18n.js) løser `t('key', 'fallback')`. Intet build-trin, ingen runtime-fetch — en oversætter redigerer en enkelt sprogfil isoleret.
 
 **Tilføj eller ændr en streng:**
 
 ```js
 // public/js/lib/locales/i18n-dict.en.js   →   'scan.newButton': 'Run scan',
 // public/js/lib/locales/i18n-dict.es.js   →   'scan.newButton': 'Ejecutar búsqueda',
-// …add the same key to all 17 locale files (parity is gated)
+// …add the same key to all 18 locale files (parity is gated)
 ```
 
 Brug den derefter via `data-i18n="scan.newButton"` i markup eller `t('scan.newButton')` i JS, og kør `npm test`. For at tilføje et helt nyt sprog skal du registrere det i `i18n.js` (`LANGS` + `detect()`), assembleren, `index.html` og det lokalitetstællende værktøj.
@@ -733,7 +733,7 @@ revideres på wiki-siden [Agentic Practices](https://github.com/Fighter90/career
 
 Issues og PR'er er velkomne. Husregler:
 
-- Kør `npm test` før push — **3009 checks green** er barren (plus 101 Playwright, hvis du rører UI).
+- Kør `npm test` før push — **5116 checks green** er barren (plus 118 Playwright, hvis du rører UI).
 - Ikke-trivielle ændringer går gennem GSD-konveyeren. Se [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md).
 - Modificér ikke noget i det overordnede `career-ops/`-projekt fra dette repo. Hele pointen er, at dette er et ikke-invasivt overlay. Hårde regler i [`CLAUDE.md`](CLAUDE.md).
 - Conventional commits: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`. Valgfrit scope: `feat(scan):`. Breaking change: `feat!:`.

@@ -19,9 +19,9 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.243.0** — **ब्राउज़र-परत आपका काम सुरक्षित रखती है और आपकी भाषा बोलती है।** बिना सेव किए गए बदलाव री-रेंडर से बच जाते हैं (CV एडिटर dirty बफ़र रखता है; Cancel या भाषा बदलने पर छोड़ने के बजाय पूछता है), "Record outcome" मोडल नेविगेशन पर बंद हो जाता है, वेतन/कीवर्ड पार्सिंग हर लिपि पढ़ती है (`$182.9K - $240K`, `от 100 000 руб`, `50 000 Kč`), SSE स्ट्रीम ठीक एक बार settle होती हैं, डेनिश अब ऑटो-पहचान में शामिल है, और दोनों थीम में कंट्रास्ट अब AA (≥ 4.5:1) है।
+> **🆕 नवीनतम रिलीज़ — v1.247.0** — **CAR-49…58 डिज़ाइन-स्वीप की पूँछ पूरी हुई — शेष सभी minor/polish निष्कर्ष, और वह डार्क मैप भी जिसे पिछले रिलीज़ ने जानबूझकर टाला था।**
 >
-> **पिछला — v1.242.1** — केवल पैकेजिंग: ऐप कोड v1.242.0 के समान; सोर्सेस-करेक्टनेस सामग्री इसी डिप्लॉय से प्रोडक्शन जाती है (tar विफलता पर डिप्लॉय सुरक्षित रूप से रोलबैक हो गया था)।
+> **पिछला — v1.246.0** — CAR-48 सीनियर-डिज़ाइन स्वीप के शीर्ष दस निष्कर्ष ठीक कर दिए गए — ब्लॉकर और सभी सात मेजर शामिल।
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -297,7 +297,7 @@ http://127.0.0.1:4317 खोलें। Pipeline काउंटर को अ�
 | **Profile**      | `config/profile.yml` + archetypes का रीड-ओनली दृश्य — UI-फ़्रेंडली सारांश।                                         |
 | **App settings** | पैरेंट `.env` keys के लिए इन-UI एडिटर: `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, मॉडल ओवरराइड, पोर्ट / होस्ट। सीक्रेट्स पढ़ने पर मास्क्ड। |
 | **Health**       | OK / OPTIONAL / FAIL बैज में सभी सेटअप जाँचें + `doctor.mjs` और `verify-pipeline.mjs` चलाने के लिए बटन।           |
-| **Help**         | इन-ऐप मार्कडाउन यूज़र गाइड (`/#/help`), सभी 16 समर्थित भाषाओं के लिए लोकलाइज़्ड (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr)। |
+| **Help**         | इन-ऐप मार्कडाउन यूज़र गाइड (`/#/help`), सभी 18 समर्थित भाषाओं के लिए लोकलाइज़्ड (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta)। |
 | **Activity log** | हर स्टेट-बदलने वाले अनुरोध (writes, runs, scans) का ऑडिट ट्रेल। सीक्रेट्स रीडैक्टेड। |
 | **Notifications** 🔔 *(v1.58.34 / v1.58.35)* | लाल unread बैज के साथ टॉप-बार बेल। क्लिक करने पर पिछले 50 टोस्ट (प्रति टैब, प्रति सेशन) की सूची वाला ड्रॉअर स्लाइड-इन होता है — Success / Error / Info-progress, हर एक के साथ एक लोकलाइज़्ड टाइमस्टैंप, मानवीय संदेश, और किसी भी `(METHOD /path · HTTP NNN)` पोस्टफ़िक्स के साथ जो एक `<details>` में समेट दिया गया है। Help **§18** हर श्रेणी का दस्तावेज़ीकरण करता है। ड्रॉअर **केवल** बेल क्लिक (या कीबोर्ड Enter / Space) पर खुलता है; ×, Esc, या बेल पर फिर क्लिक करने से बंद होता है। |
 
@@ -425,7 +425,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 3009 यूनिट + 101 Playwright + 23/23 e2e:full + 21 e2e:smoke (बेसलाइन @ v1.121.0)
+└─ tests/                    # 5116 यूनिट + 118 Playwright + 23/23 e2e:full + 21 e2e:smoke (बेसलाइन @ v1.247.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report पार्सर (प्योर फ़ंक्शन)
    ├─ api.test.mjs           # हर एंडपॉइंट, एफ़ेमरल सर्वर, कोई नेटवर्क नहीं
    ├─ {ru,en}-scanner.test.mjs   # मॉक्ड fetch
@@ -434,7 +434,7 @@ career-ops-ui/
    ├─ url-validation.test.mjs    # SSRF रिजेक्ट स्वीप (FIX-M3 + M6 + M7)
    ├─ cv-xss.test.mjs        # stripDangerousMarkdown राउंड-ट्रिप
    ├─ jd-sanitize.test.mjs   # sanitizeJobDescription
-   ├─ help.test.mjs / help-ui.test.mjs    # सभी 16 लोकेल में i18n पैरिटी
+   ├─ help.test.mjs / help-ui.test.mjs    # सभी 18 लोकेल में i18n पैरिटी
    ├─ playwright-smoke.mjs   # 22 ब्राउज़र फ़्लो (CV सेव, tracker, pipeline, evaluate, config, आदि)
    └─ e2e{,-comprehensive}.mjs   # पूर्ण Playwright वॉकथ्रू
 ```
@@ -556,20 +556,20 @@ event: error    data: { message }
 ## टेस्ट
 
 ```bash
-npm test                       # 3009 यूनिट/इंटीग्रेशन टेस्ट
+npm test                       # 5116 यूनिट/इंटीग्रेशन टेस्ट
 npm run test:e2e               # 21 स्मोक e2e (अपना सर्वर खुद बूट करता है)
 npm run test:e2e:full          # 23 व्यापक e2e
-npm run test:e2e:browser       # 101 Playwright ब्राउज़र (smoke + full-cycle + forms + locale-sweep ×17 + theme)
+npm run test:e2e:browser       # 118 Playwright ब्राउज़र (smoke + full-cycle + forms + locale-sweep ×18 + theme)
 npm run test:coverage          # `npm test` जैसा ही, साथ में V8 कवरेज
 ```
 
 | सूट                       | टेस्ट | क्या                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (यूनिट + इंटीग्रेशन) | **3009** | हर एंडपॉइंट, एफ़ेमरल सर्वर, कोई नेटवर्क नहीं। 218 फ़ाइलें: parsers, scanners (मॉक्ड), runners, anthropic/openai, सुरक्षा हेडर, XSS, JD सैनिटाइज़, URL वैलिडेशन, i18n पैरिटी, + v1.55→v1.56 UX-फ़िक्स सूट। |
+| `node --test tests/*.test.mjs` (यूनिट + इंटीग्रेशन) | **5116** | हर एंडपॉइंट, एफ़ेमरल सर्वर, कोई नेटवर्क नहीं। 490 फ़ाइलें: parsers, scanners (मॉक्ड), runners, anthropic/openai, सुरक्षा हेडर, XSS, JD सैनिटाइज़, URL वैलिडेशन, i18n पैरिटी, + v1.55→v1.56 UX-फ़िक्स सूट। |
 | `tests/e2e.mjs` (स्मोक)      | 21 | Playwright हेडलेस: हर राउट रेंडर होता है, बुनियादी फ़्लो।                                                     |
 | `tests/e2e-comprehensive.mjs` | 23 | पूर्ण Playwright वॉकथ्रू: 11 राउट + 12 फ़ंक्शनल फ़्लो।                                              |
-| `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **101** | ब्राउज़र-ड्रिवन: डैशबोर्ड रेंडर, नेविगेशन, भाषा स्विच, 404, health, tracker राउंड-ट्रिप, pipeline जोड़ना + अमान्य-URL स्वीप, reports, evaluate मैनुअल फ़ॉलबैक, config कीज़ मास्क्ड, CV PUT XSS स्ट्रिप, pipeline preview 400, auto-pipeline SSE। |
-| **कुल** (चारों सुइट)                   | **3101** | **0 विफलताएँ, 0 फ़्लेक**                                                                                    |
+| `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **118** | ब्राउज़र-ड्रिवन: डैशबोर्ड रेंडर, नेविगेशन, भाषा स्विच, 404, health, tracker राउंड-ट्रिप, pipeline जोड़ना + अमान्य-URL स्वीप, reports, evaluate मैनुअल फ़ॉलबैक, config कीज़ मास्क्ड, CV PUT XSS स्ट्रिप, pipeline preview 400, auto-pipeline SSE। |
+| **कुल** (चारों सुइट)                   | **5278** | **0 विफलताएँ, 0 फ़्लेक**                                                                                    |
 
 कवरेज: `--experimental-test-coverage` के माध्यम से ~93% लाइन / ~83% ब्रांच।
 
@@ -648,7 +648,7 @@ Claude Code के अंदर मौजूदा `/career-ops apply` Playwrigh
 
 career-ops **हमेशा चालू** रहने पर सर्वोत्तम है — जब आप सोते हैं तब स्कैन करता है, किसी भी ब्राउज़र से पहुँच योग्य। पूरे स्टैक को एक छोटे सर्वर पर रखने के लिए — पैरेंट **career-ops** पाइपलाइन, यह **career-ops-ui** व्यूअर, और AI चलाने वाला **इंजन** (Claude Code CLI के माध्यम से आपकी **Claude सदस्यता**, एक स्थानीय **Hermes** गेटवे, या प्रदाता API कुंजियाँ) — एक VPS (Node ≥ 18) तैयार करें, पैरेंट + यह रिपॉज़िटरी इंस्टॉल करें, अपना इंजन चुनें, और सुरक्षा अपरिवर्तनीयताओं (CSP, SSRF गार्ड, XSS सीमा, लॉग में कोई रहस्य नहीं) को बरकरार रखते हुए व्यूअर को **प्रमाणीकरण सहित HTTPS रिवर्स प्रॉक्सी** के पीछे प्रकट करें।
 
-📖 इन-ऐप **सहायता §31** ("पूरे स्टैक को क्लाउड में चलाएँ") सभी 17 भाषाओं में चरण-दर-चरण मार्गदर्शन देती है; ऑपरेटर चेकलिस्ट [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md) है, और [क्लाउड परिनियोजन wiki पृष्ठ](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) में संदर्भ तालिकाएँ हैं।
+📖 इन-ऐप **सहायता §31** ("पूरे स्टैक को क्लाउड में चलाएँ") सभी 18 भाषाओं में चरण-दर-चरण मार्गदर्शन देती है; ऑपरेटर चेकलिस्ट [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md) है, और [क्लाउड परिनियोजन wiki पृष्ठ](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) में संदर्भ तालिकाएँ हैं।
 
 ---
 
@@ -665,14 +665,14 @@ career-ops **हमेशा चालू** रहने पर सर्वो�
 
 ## स्थानीयकरण
 
-यह UI **16 लोकेल** शिप करता है — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `fr`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`। **v1.60.0 (I18N-SPLIT)** से अनुवाद [`public/js/lib/locales/`](public/js/lib/locales/) के अंतर्गत **प्रति लोकेल एक फ़ाइल** में रहते हैं — `i18n-dict.<lang>.js`, प्रत्येक एक फ़्लैट `key → string` टेबल है — साथ ही एक साझा `i18n-dict.aliases.js`। [`i18n-dict.js`](public/js/lib/i18n-dict.js) इन्हें `window.__I18N_DICT` में असेंबल करता है; [`i18n.js`](public/js/lib/i18n.js) `t('key', 'fallback')` को रिज़ॉल्व करता है। कोई बिल्ड स्टेप नहीं, कोई रनटाइम fetch नहीं — एक अनुवादक अलगाव में एक ही भाषा फ़ाइल को संपादित करता है।
+यह UI **18 लोकेल** शिप करता है — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `fr`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`, `ta`। **v1.60.0 (I18N-SPLIT)** से अनुवाद [`public/js/lib/locales/`](public/js/lib/locales/) के अंतर्गत **प्रति लोकेल एक फ़ाइल** में रहते हैं — `i18n-dict.<lang>.js`, प्रत्येक एक फ़्लैट `key → string` टेबल है — साथ ही एक साझा `i18n-dict.aliases.js`। [`i18n-dict.js`](public/js/lib/i18n-dict.js) इन्हें `window.__I18N_DICT` में असेंबल करता है; [`i18n.js`](public/js/lib/i18n.js) `t('key', 'fallback')` को रिज़ॉल्व करता है। कोई बिल्ड स्टेप नहीं, कोई रनटाइम fetch नहीं — एक अनुवादक अलगाव में एक ही भाषा फ़ाइल को संपादित करता है।
 
 **एक स्ट्रिंग जोड़ें या बदलें:**
 
 ```js
 // public/js/lib/locales/i18n-dict.en.js   →   'scan.newButton': 'Run scan',
 // public/js/lib/locales/i18n-dict.es.js   →   'scan.newButton': 'Ejecutar búsqueda',
-// …वही की सभी 16 लोकेल फ़ाइलों में जोड़ें (पैरिटी गेटेड है)
+// …वही की सभी 18 लोकेल फ़ाइलों में जोड़ें (पैरिटी गेटेड है)
 ```
 
 फिर इसे मार्कअप में `data-i18n="scan.newButton"` के ज़रिए या JS में `t('scan.newButton')` के ज़रिए उपयोग करें, और `npm test` चलाएँ। बिल्कुल नई भाषा जोड़ने के लिए, इसे `i18n.js` (`LANGS` + `detect()`), असेंबलर, `index.html`, और लोकेल-सूचीबद्ध करने वाले टूलिंग में रजिस्टर करें।
@@ -737,7 +737,7 @@ node evals/workflow/run.mjs --task qa-prompt-mandatory
 
 Issues और PRs का स्वागत है। घर के नियम:
 
-- पुश करने से पहले `npm test` चलाएँ — **3009 चेक ग्रीन** बार है (यदि आप UI छूते हैं तो साथ में 101 Playwright भी)।
+- पुश करने से पहले `npm test` चलाएँ — **5116 चेक ग्रीन** बार है (यदि आप UI छूते हैं तो साथ में 118 Playwright भी)।
 - गैर-तुच्छ बदलाव GSD पाइपलाइन से होकर गुज़रते हैं। [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md) देखें।
 - इस रेपो के अंदर से पैरेंट `career-ops/` प्रोजेक्ट में कुछ भी संशोधित न करें। पूरा उद्देश्य यही है कि यह एक गैर-आक्रामक ओवरले है। कठोर नियम [`CLAUDE.md`](CLAUDE.md) में हैं।
 - कन्वेंशनल कमिट्स: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`। वैकल्पिक स्कोप: `feat(scan):`। ब्रेकिंग चेंज: `feat!:`।

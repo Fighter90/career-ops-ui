@@ -17,9 +17,9 @@ _非公式 UI — career-ops / santifer とは提携しておらず、承認も�
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.244.0** — **スキャン結果が壁ではなくリストのように読めます: 1 求人 = 2 行、シグナルはアイコン、700 行のスキャンは 37,000 px のページの代わりにページ分割されたテーブルに。**
+> **🆕 最新リリース — v1.247.0** — **CAR-49…58 デザインスイープの尻尾が完了 — 残る minor/polish 所見のすべてと、前リリースが意図的に見送ったダークマップを含みます。**
 >
-> **前バージョン — v1.243.2** — **デプロイ可能タグとして v1.243.2 を再カット。アプリコードは v1.243.1 と同一の、パッケージングのみのリリースです。**
+> **前バージョン — v1.246.0** — CAR-48 シニアデザイン通し検査のトップ10所見をすべて修正 — ブロッカーと7つの major を含みます。
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -261,7 +261,7 @@ http://127.0.0.1:4317 を開きます。Pipeline カウンタが `0 件待機中
 | **Profile**      | `config/profile.yml` とアーキタイプの読み取り専用ビュー。UI フレンドリーなサマリーを表示します。 |
 | **App settings** | 親 `.env` キー用の UI 内エディタ。`ANTHROPIC_API_KEY`、`GEMINI_API_KEY`、モデルのオーバーライド、ポートとホストを編集できます。シークレットは読み取り時にマスクされます。 |
 | **Health**       | すべてのセットアップチェックを OK / OPTIONAL / FAIL バッジで表示し、`doctor.mjs` と `verify-pipeline.mjs` を実行するボタンを備えます。 |
-| **Help**         | アプリ内 Markdown ユーザーガイド(`/#/help`)。サポート対象の 17 言語すべてにローカライズ済みです(en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi)。 |
+| **Help**         | アプリ内 Markdown ユーザーガイド(`/#/help`)。サポート対象の 18 言語すべてにローカライズ済みです(en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta)。 |
 | **Activity log** | すべての状態変更リクエスト(書き込み・実行・スキャン)の監査証跡。シークレットはマスク済みです。 |
 | **通知** 🔔 *(v1.58.34 / v1.58.35)* | トップバーのベル + 赤い未読バッジ。クリック → 右ドロワーが最新 50 件のトースト(タブ単位/セッション単位)を表示 — 成功 / エラー / 情報-進行、それぞれにローカル時刻・メッセージ・必要に応じて `(METHOD /path · HTTP NNN)` 末尾を `<details>` で表示。ヘルプ **§18** が各カテゴリを説明。ドロワーは **ベルのクリック時にのみ** 開く(キーボード Enter / Space 含む)。× / Esc / ベル再クリックで閉じる。|
 
@@ -394,7 +394,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 3009 unit + 101 Playwright + e2e:full + e2e:smoke
+└─ tests/                    # 5116 unit + 118 Playwright + e2e:full + e2e:smoke
    ├─ parsers.test.mjs       # markdown / pipeline / report パーサー(純粋関数)
    ├─ api.test.mjs           # 全エンドポイント、ephemeral server、ネットワークなし
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -530,16 +530,16 @@ LLM エンドポイントはレート制限の対象です(`server/lib/rate-limi
 ## テスト
 
 ```bash
-npm test                       # 3009 unit/integration テスト
+npm test                       # 5116 unit/integration テスト
 npm run test:e2e               # 21 smoke e2e(独自サーバーを起動)
 npm run test:e2e:full          # 23 comprehensive e2e
-npm run test:e2e:browser       # 101 Playwright browser-smoke
+npm run test:e2e:browser       # 118 Playwright browser-smoke
 npm run test:coverage          # `npm test` 相当 + V8 coverage
 ```
 
 | スイート                       | テスト数 | 内容                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs`(unit + integration) | **3009** | 全エンドポイント、ephemeral server、ネットワーク非依存。parser、scanner(モック)、runner、anthropic、security headers、XSS、JD サニタイズ、URL バリデーション、i18n parity、レート制限、ファイルロック、safe-fetch、path-traversal、DNS リバインドリダイレクトを含みます。 |
+| `node --test tests/*.test.mjs`(unit + integration) | **5116** | 全エンドポイント、ephemeral server、ネットワーク非依存。parser、scanner(モック)、runner、anthropic、security headers、XSS、JD サニタイズ、URL バリデーション、i18n parity、レート制限、ファイルロック、safe-fetch、path-traversal、DNS リバインドリダイレクトを含みます。 |
 | `tests/e2e.mjs`(smoke)     | 21 | Playwright ヘッドレス: 各 route のレンダリングと基本フロー。                                                |
 | `tests/e2e-comprehensive.mjs` | 23 | Playwright による完全な walkthrough: 11 routes + 12 機能フロー。                                          |
 | `tests/playwright-smoke.mjs`(`npm run test:e2e:browser`) | **32** | ブラウザ駆動 smoke: dashboard レンダリング、ナビゲーション、言語切替、404、health、tracker ラウンドトリップ (BF-1)、pipeline 追加と無効 URL sweep、reports 空、evaluate 手動フォールバック、config キーマスク、CV PUT XSS ストリップ、pipeline preview 400、レート制限、競合書き込み、エンティティ対応 XSS。 |
@@ -623,7 +623,7 @@ production-readiness アセスメント(デプロイメントゲート、リス�
 
 career-ops は **常時稼働** が最適です — 就寝中もスキャンし、どのブラウザからも到達できます。スタック全体を小さなサーバーに載せるには — 親の **career-ops** パイプライン、この **career-ops-ui** ビューアー、そして AI を動かす **エンジン**(Claude Code CLI 経由の **Claude サブスクリプション**、ローカルの **Hermes** ゲートウェイ、またはプロバイダー API キー)—— VPS(Node ≥ 18)を用意し、親 + このリポジトリを入れ、エンジンを選び、**認証付き HTTPS リバースプロキシ** の背後にビューアーを公開しつつ、セキュリティ不変条件(CSP、SSRF ガード、XSS 境界、ログに秘密を残さない)を保ちます。
 
-📖 アプリ内 **ヘルプ §31**(「スタック全体をクラウドで動かす」)が 17 言語で手順を案内します。運用チェックリストは [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md)、[クラウドデプロイの Wiki ページ](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) に参照テーブルがあります。
+📖 アプリ内 **ヘルプ §31**(「スタック全体をクラウドで動かす」)が 18 言語で手順を案内します。運用チェックリストは [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md)、[クラウドデプロイの Wiki ページ](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) に参照テーブルがあります。
 
 ---
 
@@ -640,9 +640,9 @@ career-ops は **常時稼働** が最適です — 就寝中もスキャンし�
 
 ## ローカライズ (Localization)
 
-UI は **17 言語** を提供します — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `fr`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`。**v1.60.0 (I18N-SPLIT)** 以降、翻訳は [`public/js/lib/locales/`](public/js/lib/locales/) 配下の **言語ごとに 1 ファイル**（`i18n-dict.<lang>.js`、フラットな `キー → 文字列` テーブル）と共通の `i18n-dict.aliases.js` にあります。[`i18n-dict.js`](public/js/lib/i18n-dict.js) がそれらを `window.__I18N_DICT` に組み立て、[`i18n.js`](public/js/lib/i18n.js) が `t('キー', 'fallback')` を解決します。ビルドも fetch もなし — 翻訳者は 1 つの言語ファイルだけを編集します。
+UI は **18 言語** を提供します — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `fr`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`, `ta`。**v1.60.0 (I18N-SPLIT)** 以降、翻訳は [`public/js/lib/locales/`](public/js/lib/locales/) 配下の **言語ごとに 1 ファイル**（`i18n-dict.<lang>.js`、フラットな `キー → 文字列` テーブル）と共通の `i18n-dict.aliases.js` にあります。[`i18n-dict.js`](public/js/lib/i18n-dict.js) がそれらを `window.__I18N_DICT` に組み立て、[`i18n.js`](public/js/lib/i18n.js) が `t('キー', 'fallback')` を解決します。ビルドも fetch もなし — 翻訳者は 1 つの言語ファイルだけを編集します。
 
-**文字列の追加・変更:** 同じキーを 17 個の言語ファイルすべてに追加し（パリティはテストで強制）、`data-i18n="scan.newButton"` または `t('scan.newButton')` で使い、`npm test` を実行します。
+**文字列の追加・変更:** 同じキーを 18 個の言語ファイルすべてに追加し（パリティはテストで強制）、`data-i18n="scan.newButton"` または `t('scan.newButton')` で使い、`npm test` を実行します。
 
 ```js
 // public/js/lib/locales/i18n-dict.en.js   →   'scan.newButton': 'Run scan',
@@ -694,7 +694,7 @@ node evals/workflow/run.mjs --task qa-prompt-mandatory
 
 Issue と PR を歓迎します。ハウスルール:
 
-- プッシュ前に `npm test` を実行してください。**3009 checks green** がバーラインです(UI に手を入れる場合は加えて 101 Playwright)。
+- プッシュ前に `npm test` を実行してください。**5116 checks green** がバーラインです(UI に手を入れる場合は加えて 118 Playwright)。
 - 非自明な変更は GSD パイプラインを経由します。[`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md) を参照してください。
 - 本リポジトリから親 `career-ops/` プロジェクト内のファイルを変更してはなりません。本プロジェクトの本質は、非侵襲的なオーバーレイであることです。ハードルールは [`CLAUDE.md`](CLAUDE.md) にあります。
 - Conventional commits: `feat`、`fix`、`refactor`、`docs`、`test`、`chore`、`perf`、`ci`。オプショナルスコープ: `feat(scan):`。Breaking change は `feat!:`。

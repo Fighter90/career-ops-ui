@@ -17,9 +17,9 @@ _Неофіційний інтерфейс — не пов'язаний із car
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Останній реліз — v1.244.0** — **Результати скану читаються списком, а не стіною: одна вакансія = два рядки, сигнали — іконки, а скан на 700 рядків — це таблиця з посторінковим розбиттям замість сторінки на 37,000 px.** Буст, смуга відповідності та бал — іконки з локалізованими accessible-назвами; хвостовий `| Germany | Remote` переїжджає з назви в мета-рядок; таблиця перестала переповнюватися на ширині телефону (675 px внутрішнього скролу → 0) і розбита на сторінки по 50 рядків.
+> **🆕 Останній реліз — v1.247.0** — **Хвіст дизайн-свипу CAR-49…58 закрито — всі решта minor/polish-знахідки плюс темна карта, яку минулий реліз навмисно відклав.**
 >
-> **Попередній реліз — v1.243.2** — Повторний зріз v1.243.1 під свіжим розгортабельним тегом (серверний `git fetch --tags` відмовив перевказаній v1.243.1); несе фікс window-слухача модалки «Записати підсумок» трекера.
+> **Попередній реліз — v1.246.0** — Усі десять топ-знахідок сеньйор-дизайн проходу CAR-48 виправлено — включно з блокером і всіма сьома мажорами.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -144,7 +144,7 @@ career-ops/
 └─ web-ui/          ← це репозиторій
    ├─ server/       # Express + 15 модулів маршрутів
    ├─ public/       # vanilla JS SPA, без бандлера
-   └─ tests/        # 3009 unit + 101 Playwright + 43 e2e
+   └─ tests/        # 5116 unit + 118 Playwright + 44 e2e
 ```
 
 Сервер має дві виробничі залежності: `express` та `js-yaml`. Жодного transpile, жодного бандлера — весь UI займає менше 30 KB у мінімізованому вигляді.
@@ -153,7 +153,7 @@ career-ops/
 
 career-ops найкраще працює **завжди увімкненим** — сканує, поки ви спите, доступний з будь-якого браузера. Щоб розмістити весь стек на невеликому сервері — батьківський пайплайн **career-ops**, цей переглядач **career-ops-ui** та **рушій**, що виконує ШІ (ваша **підписка Claude** через CLI Claude Code, локальний шлюз **Hermes**, або ключі API) — підніміть VPS (Node ≥ 18), встановіть батька + цей репозиторій, оберіть рушій і виставте переглядач за **HTTPS зворотним проксі з автентифікацією**, зберігши інваріанти безпеки (CSP, SSRF-guard, межа XSS, жодних секретів у логах).
 
-📖 Вбудована **Довідка §31** («Запуск усього стеку в хмарі») проводить крок за кроком усіма 17 мовами; чек-лист оператора — [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), а на [вікі-сторінці хмарного розгортання](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) є довідкові таблиці.
+📖 Вбудована **Довідка §31** («Запуск усього стеку в хмарі») проводить крок за кроком усіма 18 мовами; чек-лист оператора — [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), а на [вікі-сторінці хмарного розгортання](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) є довідкові таблиці.
 
 ---
 
@@ -173,7 +173,7 @@ career-ops найкраще працює **завжди увімкненим** �
 ## Тести
 
 ```bash
-npm test                    # 3009 unit/integration-тестів
+npm test                    # 5116 unit/integration-тестів
 npm run test:e2e            # 21 smoke e2e
 npm run test:e2e:full       # 23 comprehensive e2e
 npm run test:e2e:browser    # 101 тестів Playwright

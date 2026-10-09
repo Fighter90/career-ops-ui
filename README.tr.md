@@ -17,9 +17,9 @@ _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve 
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Son sürüm — v1.244.0** — **Tarama sonuçları bir duvar gibi değil, liste gibi okunuyor: bir ilan = iki satır, sinyaller simge biçiminde ve 700 satırlık bir tarama, 37,000 px'lik bir sayfa yerine sayfalı bir tablo.** Artırma, uyum bandı ve puan, yerelleştirilmiş erişilebilir adlara sahip simgeler; sondaki `| Germany | Remote` segmenti başlıktan çıkıp meta satırına taşınıyor; tablo telefon genişliğinde taşmayı bıraktı (675 px'lik iç kaydırma → 0) ve 50 satırla sayfalanıyor.
+> **🆕 Son sürüm — v1.247.0** — **CAR-49…58 tasarım-taramasının kuyruğu tamamlandı — kalan tüm minor/polish bulguları ve önceki sürümün bilinçli olarak ertelediği koyu harita.**
 >
-> **Önceki — v1.243.2** — **v1.243.1'in yeni, dağıtılabilir bir etiket altında yeniden kesimi** (sunucunun `git fetch --tags` komutu yeniden işaretlenen v1.243.1'i reddetti); tracker «Sonucu kaydet» kalıcısı `window`-dinleyici düzeltmesini taşır.
+> **Önceki — v1.246.0** — CAR-48 kıdemli-tasarım taramasının ilk 10 bulgusunun tamamı düzeltildi — engelleyici ve yedi major dahil.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -294,7 +294,7 @@ http://127.0.0.1:4317 adresini açın. Pipeline sayacı artık `0 pending` okuma
 | **Profile**      | `config/profile.yml` + arketiplerin salt okunur görünümü — arayüz dostu özet.                                         |
 | **App settings** | Üst `.env` anahtarları için arayüz içi düzenleyici: `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, model geçersiz kılmaları, port / host. Okuma sırasında gizli bilgiler maskelenir. |
 | **Health**       | Tüm kurulum kontrolleri OK / OPTIONAL / FAIL rozetleri halinde + `doctor.mjs` ve `verify-pipeline.mjs` çalıştırma düğmeleri.           |
-| **Help**         | Desteklenen 17 dilin tamamı için yerelleştirilmiş, uygulama içi Markdown kullanıcı kılavuzu (`/#/help`) (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi). |
+| **Help**         | Desteklenen 18 dilin tamamı için yerelleştirilmiş, uygulama içi Markdown kullanıcı kılavuzu (`/#/help`) (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi). |
 | **Activity log** | Durum değiştiren her isteğin (yazma, çalıştırma, tarama) denetim izi. Gizli bilgiler kaldırılır. |
 | **Notifications** 🔔 *(v1.58.34 / v1.58.35)* | Kırmızı okunmamış rozetli üst çubuk zili. Son 50 bildirimi (sekme başına, oturum başına) listeleyen bir çekmeceyi açmak için tıklayın — Başarı / Hata / Bilgi-ilerleme, her biri yerelleştirilmiş bir zaman damgası, insan okunur mesaj ve bir `<details>` içine tucked edilmiş herhangi bir `(METHOD /path · HTTP NNN)` son ekiyle. Yardım **§18** her kategoriyi belgeler. Çekmece **yalnızca** zile tıklandığında (veya klavye Enter / Space ile) açılır; ×, Esc ile ya da zile yeniden tıklayarak kapanır. |
 
@@ -422,7 +422,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 3009 birim + 101 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.121.0)
+└─ tests/                    # 5116 birim + 118 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.247.0)
    ├─ parsers.test.mjs       # markdown / pipeline / rapor ayrıştırıcıları (saf fonksiyonlar)
    ├─ api.test.mjs           # her uç nokta, geçici sunucu, ağ yok
    ├─ {ru,en}-scanner.test.mjs   # taklit edilmiş fetch
@@ -431,7 +431,7 @@ career-ops-ui/
    ├─ url-validation.test.mjs    # SSRF reddetme taraması (FIX-M3 + M6 + M7)
    ├─ cv-xss.test.mjs        # stripDangerousMarkdown gidiş-dönüşü
    ├─ jd-sanitize.test.mjs   # sanitizeJobDescription
-   ├─ help.test.mjs / help-ui.test.mjs    # 17 yerel dilin tamamında i18n eşitliği
+   ├─ help.test.mjs / help-ui.test.mjs    # 18 yerel dilin tamamında i18n eşitliği
    ├─ playwright-smoke.mjs   # 22 tarayıcı akışı (CV kaydetme, tracker, pipeline, evaluate, config, vb.)
    └─ e2e{,-comprehensive}.mjs   # tam Playwright gezintisi
 ```
@@ -553,20 +553,20 @@ event: error    data: { message }
 ## Testler
 
 ```bash
-npm test                       # 3009 birim/entegrasyon testi
+npm test                       # 5116 birim/entegrasyon testi
 npm run test:e2e               # 21 smoke e2e (kendi sunucusunu başlatır)
 npm run test:e2e:full          # 23 kapsamlı e2e
-npm run test:e2e:browser       # 101 Playwright tarayıcı (smoke + full-cycle + forms + locale-sweep)
+npm run test:e2e:browser       # 118 Playwright tarayıcı (smoke + full-cycle + forms + locale-sweep)
 npm run test:coverage          # `npm test` ile aynı, artı V8 kapsamı
 ```
 
 | Paket                       | Test | Ne                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (birim + entegrasyon) | **3009** | Her uç nokta, geçici sunucu, ağ yok. 329 dosya: ayrıştırıcılar, tarayıcılar (taklit edilmiş), çalıştırıcılar, anthropic/openai, güvenlik başlıkları, XSS, iş tanımı temizleme, URL doğrulama, i18n eşitliği, + v1.55→v1.56 UX-düzeltme paketleri. |
+| `node --test tests/*.test.mjs` (birim + entegrasyon) | **5116** | Her uç nokta, geçici sunucu, ağ yok. 329 dosya: ayrıştırıcılar, tarayıcılar (taklit edilmiş), çalıştırıcılar, anthropic/openai, güvenlik başlıkları, XSS, iş tanımı temizleme, URL doğrulama, i18n eşitliği, + v1.55→v1.56 UX-düzeltme paketleri. |
 | `tests/e2e.mjs` (smoke)      | 21 | Playwright başsız: her rota render edilir, temel akışlar.                                                     |
 | `tests/e2e-comprehensive.mjs` | 23 | Tam Playwright gezintisi: 11 rota + 12 işlevsel akış.                                              |
-| `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **101** | Tarayıcı güdümlü: dashboard render, gezinme, dil değiştirme, 404, health, tracker gidiş-dönüşü, pipeline ekleme + geçersiz-URL taraması, raporlar, evaluate manuel yedeği, config anahtarları maskeli, CV PUT XSS temizleme, pipeline preview 400, auto-pipeline SSE. |
-| **Toplam** (dört paketin tümü)                   | **3101** | **0 başarısızlık, 0 kararsızlık**                                                                                    |
+| `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **118** | Tarayıcı güdümlü: dashboard render, gezinme, dil değiştirme, 404, health, tracker gidiş-dönüşü, pipeline ekleme + geçersiz-URL taraması, raporlar, evaluate manuel yedeği, config anahtarları maskeli, CV PUT XSS temizleme, pipeline preview 400, auto-pipeline SSE. |
+| **Toplam** (dört paketin tümü)                   | **5278** | **0 başarısızlık, 0 kararsızlık**                                                                                    |
 
 Kapsam: `--experimental-test-coverage` aracılığıyla ~%93 satır / ~%83 dal.
 
@@ -645,7 +645,7 @@ Claude Code içindeki mevcut `/career-ops apply` Playwright form doldurma akış
 
 career-ops **her zaman açık** olduğunda en iyisidir — siz uyurken tarar, herhangi bir tarayıcıdan erişilebilir. Tüm yığını küçük bir sunucuya koymak için — üst **career-ops** hattı, bu **career-ops-ui** görüntüleyici ve yapay zekâyı çalıştıran **motor** (Claude Code CLI üzerinden **Claude aboneliğiniz**, yerel bir **Hermes** ağ geçidi veya sağlayıcı API anahtarları) — bir VPS hazırlayın (Node ≥ 18), üst projeyi + bu depoyu kurun, motorunuzu seçin ve görüntüleyiciyi güvenlik değişmezlerini (CSP, SSRF koruması, XSS sınırı, günlüklerde sır yok) bozmadan **kimlik doğrulamalı HTTPS ters proxy** arkasında yayınlayın.
 
-📖 Uygulama içi **Yardım §31** ("Tüm yığını bulutta çalıştır") tüm 17 dilde adım adım anlatır; operatör kontrol listesi [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), ve [bulut dağıtımı wiki sayfası](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) referans tablolarını içerir.
+📖 Uygulama içi **Yardım §31** ("Tüm yığını bulutta çalıştır") tüm 18 dilde adım adım anlatır; operatör kontrol listesi [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), ve [bulut dağıtımı wiki sayfası](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) referans tablolarını içerir.
 
 ---
 
@@ -662,14 +662,14 @@ career-ops **her zaman açık** olduğunda en iyisidir — siz uyurken tarar, he
 
 ## Yerelleştirme
 
-Arayüz **17 yerel dilde** gelir — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `fr`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`. **v1.60.0 (I18N-SPLIT)**'ten bu yana çeviriler [`public/js/lib/locales/`](public/js/lib/locales/) altında **yerel dil başına bir dosyada** bulunur — `i18n-dict.<lang>.js`, her biri düz bir `key → string` tablosu — artı paylaşılan bir `i18n-dict.aliases.js`. [`i18n-dict.js`](public/js/lib/i18n-dict.js) bunları `window.__I18N_DICT`'e birleştirir; [`i18n.js`](public/js/lib/i18n.js), `t('key', 'fallback')`'ı çözer. Derleme adımı yok, çalışma zamanı getirmesi yok — bir çevirmen tek bir dil dosyasını izole olarak düzenler.
+Arayüz **18 yerel dilde** gelir — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `fr`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`, `ta`. **v1.60.0 (I18N-SPLIT)**'ten bu yana çeviriler [`public/js/lib/locales/`](public/js/lib/locales/) altında **yerel dil başına bir dosyada** bulunur — `i18n-dict.<lang>.js`, her biri düz bir `key → string` tablosu — artı paylaşılan bir `i18n-dict.aliases.js`. [`i18n-dict.js`](public/js/lib/i18n-dict.js) bunları `window.__I18N_DICT`'e birleştirir; [`i18n.js`](public/js/lib/i18n.js), `t('key', 'fallback')`'ı çözer. Derleme adımı yok, çalışma zamanı getirmesi yok — bir çevirmen tek bir dil dosyasını izole olarak düzenler.
 
 **Bir dize ekleyin veya değiştirin:**
 
 ```js
 // public/js/lib/locales/i18n-dict.en.js   →   'scan.newButton': 'Run scan',
 // public/js/lib/locales/i18n-dict.es.js   →   'scan.newButton': 'Ejecutar búsqueda',
-// …aynı anahtarı 17 yerel dil dosyasının tamamına ekleyin (eşitlik kapılıdır)
+// …aynı anahtarı 18 yerel dil dosyasının tamamına ekleyin (eşitlik kapılıdır)
 ```
 
 Ardından bunu işaretlemede `data-i18n="scan.newButton"` ya da JS'de `t('scan.newButton')` aracılığıyla kullanın ve `npm test` çalıştırın. Yepyeni bir dil eklemek için, onu `i18n.js` (`LANGS` + `detect()`), birleştirici, `index.html` ve yerel dilleri sıralayan araçlara kaydedin.
@@ -735,7 +735,7 @@ sayfasında denetlenir.
 
 Issue'lar ve PR'lar memnuniyetle karşılanır. Ev kuralları:
 
-- Push'tan önce `npm test` çalıştırın — **3009 kontrol yeşil** çıtadır (arayüze dokunursanız artı 101 Playwright).
+- Push'tan önce `npm test` çalıştırın — **5116 kontrol yeşil** çıtadır (arayüze dokunursanız artı 118 Playwright).
 - Önemsiz olmayan değişiklikler GSD pipeline'ından geçer. Bkz. [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md).
 - Bu depo içinden üst `career-ops/` projesindeki hiçbir şeyi değiştirmeyin. Bütün mesele, bunun invaziv olmayan bir örtü olmasıdır. Katı kurallar [`CLAUDE.md`](CLAUDE.md) içinde.
 - Konvansiyonel commit'ler: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`. İsteğe bağlı kapsam: `feat(scan):`. Kırıcı değişiklik: `feat!:`.

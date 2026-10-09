@@ -17,9 +17,9 @@ _واجهة غير رسمية — لا علاقة لها بـ career-ops / santi
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 أحدث إصدار — v1.243.0** — **طبقة المتصفح تحفظ عملك وتتحدث بلغتك: لا خسارة للتعديلات غير المحفوظة، ولا إخفاقات صامتة، ولا إنجليزية صامتة في واجهة مترجَمة، وتباين AA في كل مكان.**
+> **🆕 أحدث إصدار — v1.247.0** — **اكتمل ذيل جولة التصميم CAR-49…58 — كل النتائج الثانوية والتحسينية المتبقية، بالإضافة إلى الخريطة الداكنة التي أجّلها الإصدار السابق عمدًا.**
 >
-> **السابق — v1.242.1** — **أرشيف الإصدار لم يعد يحمل روابط `node_modules` الرمزية — تغليف فقط، وكود التطبيق مطابق لـ v1.242.0.**
+> **السابق — v1.246.0** — أُصلحت جميع النتائج العشر الكبرى من جولة التصميم الأولية CAR-48 — بما في ذلك العائق وكل السبع الكبرى.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -168,7 +168,7 @@ career-ops/
 └─ web-ui/          ← هذا المستودع
    ├─ server/       # Express + 15 وحدة مسارات
    ├─ public/       # vanilla JS SPA — بدون bundler
-   └─ tests/        # 3009 unit + 101 Playwright + 43 e2e
+   └─ tests/        # 5116 unit + 118 Playwright + 44 e2e
 ```
 
 <div dir="rtl">
@@ -179,7 +179,7 @@ career-ops/
 
 يعمل career-ops على أفضل نحو حين يكون **دائم التشغيل** — يمسح بينما تنام، ويمكن الوصول إليه من أي متصفح. لوضع المنظومة كاملةً على خادم صغير — خط الأنابيب الأصل **career-ops**، وهذا العارض **career-ops-ui**، و**المحرّك** الذي يشغّل الذكاء الاصطناعي (**اشتراك Claude** عبر واجهة Claude Code، أو بوابة **Hermes** محلية، أو مفاتيح API) — جهّز خادمًا افتراضيًا (Node ≥ 18)، وثبّت الأصل + هذا المستودع، واختر محرّكك، واعرض العارض خلف **بروكسي عكسي HTTPS مع مصادقة** مع بقاء ثوابت الأمان (CSP، حارس SSRF، حدّ XSS، لا أسرار في السجلات) سليمة.
 
-📖 تشرح **المساعدة §31** داخل التطبيق («تشغيل المنظومة كاملةً في السحابة») الخطوات بالتفصيل بجميع اللغات الـ17؛ قائمة المشغّل هي [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md)، وتحتوي [صفحة ويكي النشر السحابي](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) على جداول مرجعية.
+📖 تشرح **المساعدة §31** داخل التطبيق («تشغيل المنظومة كاملةً في السحابة») الخطوات بالتفصيل بجميع اللغات الـ18؛ قائمة المشغّل هي [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md)، وتحتوي [صفحة ويكي النشر السحابي](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) على جداول مرجعية.
 
 ---
 
@@ -201,7 +201,7 @@ career-ops/
 </div>
 
 ```bash
-npm test                    # 3009 اختبار وحدة وتكامل
+npm test                    # 5116 اختبار وحدة وتكامل
 npm run test:e2e            # 21 اختبار e2e دخاني
 npm run test:e2e:full       # 23 اختبار e2e شامل
 npm run test:e2e:browser    # 101 اختبار Playwright

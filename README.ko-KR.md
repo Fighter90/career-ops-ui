@@ -17,9 +17,9 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.243.0** — **브라우저 레이어가 작업물을 안전하게 지키고 여러분의 언어로 말합니다.** 저장하지 않은 편집이 더 이상 사라지지 않습니다(CV 편집기와 커리어 플랜이 dirty 버퍼를 매 렌더링마다 복원하고, 로드 실패 시 조용히 빈 내용으로 덮어쓰는 대신 오류를 표시합니다). 연봉·키워드 파서가 모든 문자 체계를 읽습니다(`от 100 000 руб`, `100 тыс. руб.`, `50 000 Kč`), 스트림은 정확히 한 번 정리되며, 두 테마 모두에서 대비가 AA를 충족합니다(계산된 WCAG 계약 테스트 ≥ 4.5:1). 덴마이크어가 자동 감지에 합류하고 `cv-diagnostics` 체크리스트가 완전히 현지화되었습니다.
+> **🆕 최신 릴리스 — v1.247.0** — **CAR-49…58 디자인 스윕의 꼬리가 완료됐습니다 — 남은 minor/polish 발견 전부와, 이전 릴리스가 의도적으로 미뤄둔 다크 맵까지.**
 >
-> **이전 버전 — v1.242.1** — 패키징 전용 릴리스로 앱 코드는 v1.242.0과 동일하며, 릴리스 아카이브에서 `node_modules` 심볼릭 링크를 제거한 정정과 함께 소스 정정 내용이 이 배포로 프로덕션에 도달했습니다.
+> **이전 버전 — v1.246.0** — CAR-48 시니어 디자인 스윕의 상위 10개 발견 항목을 모두 수정했습니다 — 블로커와 7개의 major 전부 포함입니다.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -261,7 +261,7 @@ http://127.0.0.1:4317 를 엽니다. Pipeline 카운터가 `0 대기 중` 으로
 | **Profile**      | `config/profile.yml` + archetypes의 읽기 전용 뷰 — UI 친화적인 요약 화면입니다.                                         |
 | **App settings** | 부모 `.env` 키를 UI 내부에서 편집합니다: `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, 모델 오버라이드, port / host. 시크릿은 읽을 때 마스킹됩니다. |
 | **Health**       | 모든 setup 체크를 OK / OPTIONAL / FAIL 배지로 보여 주며, `doctor.mjs`와 `verify-pipeline.mjs` 실행 버튼을 제공합니다.           |
-| **Help**         | 인앱 마크다운 사용자 가이드(`/#/help`). 지원되는 17개 언어(en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi)로 현지화되어 있습니다. |
+| **Help**         | 인앱 마크다운 사용자 가이드(`/#/help`). 지원되는 18개 언어(en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta)로 현지화되어 있습니다. |
 | **Activity log** | 상태를 변경하는 모든 요청(writes, runs, scans)에 대한 감사 추적. 시크릿은 redact 처리됩니다. |
 | **알림** 🔔 *(v1.58.34 / v1.58.35)* | 상단바 벨 + 빨간 안 읽음 배지. 클릭 → 우측 드로어가 최근 50 개의 토스트(탭별/세션별) 표시 — 성공 / 오류 / 정보-진행, 각 항목에 현지화된 시각·메시지·필요 시 `(METHOD /path · HTTP NNN)` 후미가 `<details>` 안에 포함. 도움말 **§18** 가 모든 카테고리 설명. 드로어는 **벨 클릭에서만** 열림(키보드 Enter / Space 포함); ×, Esc, 또는 벨 재클릭으로 닫힘. |
 
@@ -392,7 +392,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 3009 unit + 101 Playwright + 23 e2e:full + 21 e2e:smoke
+└─ tests/                    # 5116 unit + 118 Playwright + 23 e2e:full + 21 e2e:smoke
    ├─ parsers.test.mjs       # markdown / pipeline / report 파서 (순수 함수)
    ├─ api.test.mjs           # 모든 엔드포인트, 임시 서버, 네트워크 없음
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -405,7 +405,7 @@ career-ops-ui/
    ├─ url-validation.test.mjs    # SSRF 거부 스윕 (FIX-M3 + M6 + M7)
    ├─ cv-xss.test.mjs        # stripDangerousMarkdown 라운드트립 (entity-aware, v1.22.0)
    ├─ jd-sanitize.test.mjs   # sanitizeJobDescription
-   ├─ help.test.mjs / help-ui.test.mjs    # 17개 로케일 i18n 패리티
+   ├─ help.test.mjs / help-ui.test.mjs    # 18개 로케일 i18n 패리티
    ├─ playwright-smoke.mjs   # 22개 브라우저 플로우
    └─ e2e{,-comprehensive}.mjs   # 전체 Playwright 워크스루
 ```
@@ -526,20 +526,20 @@ event: error    data: { message }
 ## 테스트
 
 ```bash
-npm test                       # 3009 unit/integration 테스트
+npm test                       # 5116 unit/integration 테스트
 npm run test:e2e               # 21 smoke e2e (자체 서버 부팅)
 npm run test:e2e:full          # 23 comprehensive e2e
-npm run test:e2e:browser       # 101 Playwright browser-smoke
+npm run test:e2e:browser       # 118 Playwright browser-smoke
 npm run test:coverage          # `npm test`와 동일 + V8 coverage
 ```
 
 | Suite                       | Tests | 내용                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integration) | **3009** | 모든 엔드포인트, 임시 서버, 네트워크 없음. parser, scanner (mocked), runner, anthropic, security headers, XSS, JD sanitize, URL validation, path traversal, DNS-rebind, file lock, rate limit, i18n 패리티 포함. |
+| `node --test tests/*.test.mjs` (unit + integration) | **5116** | 모든 엔드포인트, 임시 서버, 네트워크 없음. parser, scanner (mocked), runner, anthropic, security headers, XSS, JD sanitize, URL validation, path traversal, DNS-rebind, file lock, rate limit, i18n 패리티 포함. |
 | `tests/e2e.mjs` (smoke)      | 21 | Playwright headless: 모든 라우트 렌더링, 기본 플로우.                                                     |
 | `tests/e2e-comprehensive.mjs` | 23 | 전체 Playwright 워크스루: 11개 라우트 + 12개 기능 플로우.                                              |
 | `tests/playwright-smoke.mjs` (`npm run test:e2e:browser`) | **32** | 브라우저 주도 smoke: dashboard render, navigation, language switch, 404, health, tracker round-trip (BF-1), pipeline add + invalid-URL 스윕, reports empty, evaluate manual fallback, config keys masked, CV PUT XSS strip, pipeline preview 400. |
-| **합계** (네 스위트 합계)                   | **3101** | **0 fails, 0 flakes**                                                                                    |
+| **합계** (네 스위트 합계)                   | **5278** | **0 fails, 0 flakes**                                                                                    |
 
 Coverage: `--experimental-test-coverage` 기준 약 93% 라인 / 약 83% 브랜치.
 
@@ -621,7 +621,7 @@ production-readiness 평가(배포 게이트, 리스크 등록부, 보류된 작
 
 career-ops는 **항상 켜져 있을 때** 가장 좋습니다 — 자는 동안 스캔하고, 어느 브라우저에서든 접근 가능합니다. 전체 스택을 작은 서버에 올리려면 — 부모 **career-ops** 파이프라인, 이 **career-ops-ui** 뷰어, 그리고 AI를 실행하는 **엔진**(Claude Code CLI를 통한 **Claude 구독**, 로컬 **Hermes** 게이트웨이, 또는 제공자 API 키) — VPS(Node ≥ 18)를 프로비저닝하고, 부모 + 이 저장소를 설치하고, 엔진을 고르고, **인증이 있는 HTTPS 리버스 프록시** 뒤에 뷰어를 노출하되 보안 불변식(CSP, SSRF 가드, XSS 경계, 로그에 비밀 없음)을 그대로 유지합니다.
 
-📖 인앱 **도움말 §31**("클라우드에서 전체 스택 실행")이 17개 언어로 단계별로 안내합니다; 운영자 체크리스트는 [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), [클라우드 배포 위키 페이지](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment)에 참조 표가 있습니다.
+📖 인앱 **도움말 §31**("클라우드에서 전체 스택 실행")이 18개 언어로 단계별로 안내합니다; 운영자 체크리스트는 [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), [클라우드 배포 위키 페이지](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment)에 참조 표가 있습니다.
 
 ---
 
@@ -638,9 +638,9 @@ career-ops는 **항상 켜져 있을 때** 가장 좋습니다 — 자는 동안
 
 ## 현지화 (Localization)
 
-UI는 **17개 언어**를 제공합니다 — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `fr`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`. **v1.60.0 (I18N-SPLIT)**부터 번역은 [`public/js/lib/locales/`](public/js/lib/locales/) 아래 **언어당 한 파일**(`i18n-dict.<lang>.js`, 평면 `키 → 문자열` 테이블) + 공용 `i18n-dict.aliases.js`에 있습니다. [`i18n-dict.js`](public/js/lib/i18n-dict.js)가 이를 `window.__I18N_DICT`로 조립하고, [`i18n.js`](public/js/lib/i18n.js)가 `t('키', 'fallback')`을 해석합니다. 빌드·fetch 없음 — 번역가는 단일 언어 파일만 편집합니다.
+UI는 **18개 언어**를 제공합니다 — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `fr`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`, `ta`. **v1.60.0 (I18N-SPLIT)**부터 번역은 [`public/js/lib/locales/`](public/js/lib/locales/) 아래 **언어당 한 파일**(`i18n-dict.<lang>.js`, 평면 `키 → 문자열` 테이블) + 공용 `i18n-dict.aliases.js`에 있습니다. [`i18n-dict.js`](public/js/lib/i18n-dict.js)가 이를 `window.__I18N_DICT`로 조립하고, [`i18n.js`](public/js/lib/i18n.js)가 `t('키', 'fallback')`을 해석합니다. 빌드·fetch 없음 — 번역가는 단일 언어 파일만 편집합니다.
 
-**문자열 추가/수정:** 동일한 키를 17개 언어 파일 모두에 추가하고(파리티는 테스트로 강제), `data-i18n="scan.newButton"` 또는 `t('scan.newButton')`로 사용한 뒤 `npm test`를 실행하세요.
+**문자열 추가/수정:** 동일한 키를 18개 언어 파일 모두에 추가하고(파리티는 테스트로 강제), `data-i18n="scan.newButton"` 또는 `t('scan.newButton')`로 사용한 뒤 `npm test`를 실행하세요.
 
 ```js
 // public/js/lib/locales/i18n-dict.en.js   →   'scan.newButton': 'Run scan',
@@ -692,7 +692,7 @@ node evals/workflow/run.mjs --task qa-prompt-mandatory
 
 이슈와 PR을 환영합니다. 하우스 룰은 다음과 같습니다.
 
-- 푸시 전에 `npm test`를 실행합니다 — **3009 checks green**이 기준입니다(UI를 건드리는 경우 101개의 Playwright 테스트도 포함).
+- 푸시 전에 `npm test`를 실행합니다 — **5116 checks green**이 기준입니다(UI를 건드리는 경우 118개의 Playwright 테스트도 포함).
 - 비자명한 변경은 GSD 파이프라인을 거칩니다. [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md)를 참고하십시오.
 - 이 저장소 내부에서 부모 `career-ops/` 프로젝트의 어떤 파일도 수정하지 마십시오. 핵심 가치는 이것이 비침습적 오버레이라는 점에 있습니다. [`CLAUDE.md`](CLAUDE.md)의 hard rule을 확인하십시오.
 - Conventional commits: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`. 선택적 스코프: `feat(scan):`. Breaking change: `feat!:`.
