@@ -44,6 +44,7 @@ export const LOCALES: readonly Locale[] = [
   { code: 'it', slug: 'it', endonym: 'Italiano', flag: '🇮🇹', dir: 'ltr', file: 'it', ogLocale: 'it_IT' },
   { code: 'tr', slug: 'tr', endonym: 'Türkçe', flag: '🇹🇷', dir: 'ltr', file: 'tr', ogLocale: 'tr_TR' },
   { code: 'hi', slug: 'hi', endonym: 'हिन्दी', flag: '🇮🇳', dir: 'ltr', file: 'hi', ogLocale: 'hi_IN' },
+  { code: 'ta', slug: 'ta', endonym: 'தமிழ்', flag: '🇮🇳', dir: 'ltr', file: 'ta', ogLocale: 'ta_IN' },
 ] as const;
 
 export const DEFAULT_LOCALE: Locale = LOCALES[0];
