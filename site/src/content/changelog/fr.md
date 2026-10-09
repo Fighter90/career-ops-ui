@@ -10,6 +10,27 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 
 ---
 
+## [1.246.0] — 2026-10-09
+
+**Les dix constats majeurs du passage design senior CAR-48 sont corrigés — le bloqueur et les sept majeurs inclus.**
+
+### Corrigé
+
+- **Apply sombre : le lien de la carte d’info redevient visible.** La carte gardait sa surface claire en mode sombre ; le lien « Need Playwright? See … » était à ≈1.0:1. Le `.callout--info` à tokens par thème (surface/border/text/link) remonte le lien sombre à ≈7.3:1.
+- **Le RTL n’inverse plus les compositions numériques.** Les pills de score (« 1.5 / 5 »), les bandes de rapports (« ≥ 4.5 », « < 3.5 ») et le « / 5.0 » du tableau reçoivent une isolation directionnelle (spans LTR) ; le dictionnaire ar reformule certaines plages en toutes lettres.
+- **Le markdown du CV reste LTR.** Le textarea et l’aperçu se rendent en `dir="ltr"` en arabe ; l’habillage reste RTL.
+- **La colonne DATE des rapports ne coupe plus jamais** une date ISO (nowrap + chiffres tabulaires).
+- **La sidebar se termine au-dessus du HUD d’usage** (réserve du scrollport + fondu) — le dernier item de navigation ne passe plus sous le panneau ; miroir RTL.
+- **Scan mobile @390 : « Save search » entièrement visible** — la rangée de contrôles passe à la ligne et se compresse au lieu d’être tronquée.
+- **Les contrôles de carte suivent le thème sombre** (zoom, couches, attribution). Les tuiles restent volontairement inchangées : leur origine est épinglée côté serveur par le CSP `img-src`.
+- **Le FAB de chat ne recouvre plus de contenu interactif** — le padding de défilement le dégage (boutons Disable de Portals, pill de score de Reports, saisie du two-pager, attribution Leaflet).
+- **Le journal d’activité parle la langue de l’UI** : 22 slugs d’action localisés ×18 locales (fallback sur l’id brut pour les inconnus) et les chips de filtre traduits ; la colonne TARGET reste — auto-pipeline la remplit.
+- **Les formulaires d’assessments ont de vrais labels** (casse phrase, liaison `htmlFor`/`id`) au lieu de simples placeholders.
+
+### Notes
+
+- Pas dans cette version : tuiles de carte sombres (nécessite d’élargir le CSP `img-src` — côté serveur, volontairement pas côté client) ; variantes sombres des callouts jaunes (`config`, `batch`) — la mécanique de tokens est prête pour une suite.
+
 ## [1.245.0] — 2026-10-09
 
 **Le tamoul (தமிழ்) rejoint l’interface comme 18ᵉ langue — la première nouvelle langue depuis la vague des 17, avec parité complète des clés.**

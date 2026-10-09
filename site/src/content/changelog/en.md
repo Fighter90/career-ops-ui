@@ -8,6 +8,27 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.246.0] — 2026-10-09
+
+**All ten top findings from the CAR-48 senior-design sweep are fixed — the blocker and all seven majors included.**
+
+### Fixed
+
+- **Apply dark: the info-card link is visible again.** The card kept its light surface in dark mode; the “Need Playwright? See …” link sat at ≈1.0:1. Theme-aware `.callout--info` (surface/border/text/link tokens) puts the dark link at ≈7.3:1.
+- **RTL no longer flips numeric compositions.** Score pills (“1.5 / 5”), report bands (“≥ 4.5”, “< 3.5”) and the dashboard “/ 5.0” get directional isolation (LTR-isolated spans); the ar dictionary rephrases numeric ranges in words where prose reads better.
+- **CV markdown stays LTR.** The textarea and the preview render `dir="ltr"` in Arabic; the chrome around them stays RTL.
+- **Reports DATE column never wraps** an ISO date again (nowrap + tabular numerals).
+- **The sidebar ends above the USAGE HUD** (scrollport reserve + fade) — the last nav item is no longer scrolled under the panel; mirrored for RTL.
+- **Mobile scan @390: “Save search” is fully visible** — the controls row wraps and compresses instead of clipping at the viewport edge.
+- **Map controls follow the dark theme** (zoom, layers, attribution). The tiles themselves stay as-is by design: the tile origin is pinned server-side by the CSP `img-src` directive, and client-side layer swapping would mean changing a security header.
+- **The chat FAB no longer covers interactive content** — page scroll padding clears it (Portals Disable buttons, Reports score pill, the two-pager input, Leaflet attribution).
+- **Activity log speaks the UI language**: 22 action slugs localized ×18 locales (with a raw-id fallback for unknown ones) and the filter chips translate; the TARGET column stays — auto-pipeline fills it.
+- **Assessments forms get real labels** (sentence case, `htmlFor`/`id` binding) instead of placeholder-only fields.
+
+### Notes
+
+- Not in this release: dark map tiles (needs a CSP `img-src` addition for a dark tile origin — a server-side change, deliberately not done client-side); dark variants of the yellow callouts (`config`, `batch`) — the callout token mechanics are in place for a follow-up.
+
 ## [1.245.0] — 2026-10-09
 
 **Tamil (தமிழ்) joins as the 18th UI locale — the first new language since the 17-locale wave, with full key parity.**

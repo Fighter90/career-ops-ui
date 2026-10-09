@@ -2,6 +2,27 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.246.0] — 2026-10-09
+
+**CAR-48 kıdemli-tasarım taramasının ilk 10 bulgusunun tamamı düzeltildi — engelleyici ve yedi major dahil.**
+
+### Düzeltildi
+
+- **Apply koyu: bilgi kartındaki bağlantı yeniden görünür.** Kart koyu modda açık yüzeyini koruyordu; «Need Playwright? See …» bağlantısı ≈1.0:1'deydi. Tema duyarlı `.callout--info` (surface/border/text/link belirteçleri) koyu bağlantıyı ≈7.3:1'e çıkarır.
+- **RTL artık sayısal bileşimleri ters çevirmiyor.** Skor hapları («1.5 / 5»), rapot bantları («≥ 4.5», «< 3.5») ve panodaki «/ 5.0» yön izolasyonu alıyor (LTR span); ar sözlüğü düzyazının daha iyi olduğu aralıkları sözcüklerle yeniden yazıyor.
+- **CV markdown'ı LTR kalır.** Arapçada textarea ve önizleme `dir="ltr"` ile çizilir; çevresindeki çerçeve RTL kalır.
+- **Raporların DATE sütunu bir ISO tarihini daha asla bölmez** (nowrap + tabular rakamlar).
+- **Kenar çubuğu USAGE HUD'unun üstünde biter** (kaydırma portu rezervi + geçiş) — son gezinme ögesi artık panelin altına kaymıyor; RTL için aynalandı.
+- **Mobil tarama @390: «Save search» tam görünür** — kontrol satırı sarılıp sıkışır, kenardan kırpılmaz.
+- **Harita kontrolleri koyu temayı izler** (yakınlaştırma, katmanlar, atıf). Döşemeler bilinçli olarak değişmedi: kökenleri sunucu tarafındaki CSP `img-src` ile sabit.
+- **Sohbet FAB'ı artık etkileşimli içeriği kapatmıyor** — sayfa kaydırma dolgusu onu temizler (Portals'ın Disable düğmeleri, Reports skor hapi, two-pager girişi, Leaflet atfı).
+- **Etkinlik günlüğü arayüz dilini konuşur**: 22 eylem slagu ×18 yerelde çevrildi (bilinmeyenler için ham id fallback'ı), filtre çipleri çevrildi; TARGET sütunu kalır — auto-pipeline doldurur.
+- **Assessments formlarına gerçek etiketler geldi** (cümle büyük-küçük harf, `htmlFor`/`id` bağı) — yalnız-placeholder'dan ileri.
+
+### Notlar
+
+- Bu sürümde yok: haritanın koyu döşemeleri (CSP `img-src` genişletmesi gerekir — sunucu tarafı değişiklik, bilinçli olarak istemcide yapılmadı); sarı callout'ların koyu biçimleri (`config`, `batch`) — belirteç mekaniği sonraki adım için hazır.
+
 ## [1.245.0] — 2026-10-09
 
 **Tamilce (தமிழ்), 18. arayüz dili olarak katılıyor — 17 dil dalgasından sonra ilk yeni dil, tam anahtar paritesiyle.**

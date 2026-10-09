@@ -2,6 +2,27 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.246.0] — 2026-10-09
+
+**Tutti i dieci reperti principali della scansione senior-design CAR-48 sono corretti — bloccante e tutti e sette i major inclusi.**
+
+### Corretto
+
+- **Apply scuro: il link della scheda info è di nuovo visibile.** La scheda conservava la superficie chiara in modalità scura; il link «Need Playwright? See …» era a ≈1.0:1. Il `.callout--info` a token di tema (surface/border/text/link) porta il link scuro a ≈7.3:1.
+- **RTL non ribalta più le composizioni numeriche.** Le pillole di punteggio («1.5 / 5»), le fasce dei report («≥ 4.5», «< 3.5») e il «/ 5.0» della dashboard ricevono isolamento direzionale (span LTR); il dizionario ar riformula in parole gli intervalli dove la prosa lo chiede.
+- **Il markdown del CV resta LTR.** Textarea e anteprima si rendono con `dir="ltr"` in arabo; il telaio attorno resta RTL.
+- **La colonna DATE dei report non spezza mai più** una data ISO (nowrap + cifre tabulari).
+- **La sidebar termina sopra l’HUD di utilizzo** (riserva dello scrollport + dissolvenza) — l’ultima voce di navigazione non scorre più sotto il pannello; specchiato per RTL.
+- **Scan mobile @390: «Save search» interamente visibile** — la riga di controlli va a capo e si comprime invece di tagliarsi al bordo.
+- **I controlli della mappa seguono il tema scuro** (zoom, livelli, attribuzione). Le tessere restano volutamente invariate: la loro origine è fissata lato server dal CSP `img-src`.
+- **Il FAB della chat non copre più contenuto interattivo** — il padding di scorrimento lo libera (pulsanti Disable di Portals, pill di punteggio di Reports, input del two-pager, attribuzione Leaflet).
+- **Il log attività parla la lingua dell’UI**: 22 slug d’azione localizzati ×18 locale (fallback sull’id grezzo per gli sconosciuti) e le chip di filtro tradotte; la colonna TARGET resta — la riempie auto-pipeline.
+- **I form di assessments hanno etichette vere** (caratteri da frase, legame `htmlFor`/`id`) invece di soli segnaposto.
+
+### Note
+
+- Non in questa release: tessere mappa scure (richiede un ampliamento del CSP `img-src` — lato server, volutamente non lato client); varianti scure dei callout gialli (`config`, `batch`) — la meccanica a token è pronta per un seguito.
+
 ## [1.245.0] — 2026-10-09
 
 **Il tamil (தமிழ்) entra come 18ª lingua dell’interfaccia — la prima nuova lingua dall’ondata delle 17, con parità completa delle chiavi.**
