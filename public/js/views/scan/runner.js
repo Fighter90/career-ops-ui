@@ -26,17 +26,11 @@
 (function () {
   window.createScanRunner = function (ctx) {
     const {
-      consoleEl, statusRegion, errBanner, terminalEl,
+      consoleEl, statusRegion, errBanner,
       scanProgress, scanProgressBar, scanProgressLabel, scanProgressWrap,
       scanBtn, stopBtn, dryRun, companySelect, maxPerSource,
       t, c, refreshResults, resetResultsCache,
     } = ctx;
-
-    // v1.244.2 — console-strip status dot (.scan-terminal__dot). The
-    // wrapper is optional: unit tests boot the runner without it.
-    function setTerminalState(state) {
-      if (terminalEl) terminalEl.dataset.state = state;
-    }
 
     // v1.46.0 (WS2 #6/#21/#24) — run-state, Stop, persistent error banner.
     let activeES = null;   // in-flight EventSource handle (for #6 Stop)
@@ -64,9 +58,6 @@
       stopBtn.hidden = !running;
       scanProgressWrap.hidden = !running;   // v1.63.0/1.63.1 — progress bar + caption follow scan state
       if (running) resetScanProgress();     // v1.63.2 — start each run indeterminate, then fill on progress events
-      // v1.244.2 — console-strip dot follows the run state ('idle' here;
-      // done/error overrides land at their own call sites below).
-      setTerminalState(running ? 'running' : 'idle');
       // v1.55.4 — UX-6: while the multi-minute crawl is running, Stop
       // is the primary action — promote it to a prominent destructive
       // button so the user can find and trust it under load. Quiet
@@ -88,7 +79,6 @@
       }, '↻ ' + t('scan.errRetry', 'Retry scan')));
       errBanner.hidden = false;
       announce(t('scan.statusFailed', 'Scan failed') + ': ' + (msg || ''));
-      setTerminalState('error');   // v1.244.2 — dot turns red until the next run
     }
     function stopScan() {
       if (activeES) { try { activeES.close(); } catch { /* already closed */ } activeES = null; }
@@ -142,7 +132,6 @@
           __cancelActiveScanPoll();
           activeES = null;
           setScanRunning(false);
-          setTerminalState('done');   // v1.244.2 — green dot after a clean finish
           const okMsg = data.counts
             ? `\n✓ done · raw=${data.counts.raw}, NEW=${data.counts.fresh}` +
               (data.errors ? ` · ${data.errors} non-fatal errors` : '')
@@ -259,7 +248,6 @@
             __cancelActiveScanPoll();
             activeES = null;
             setScanRunning(false);
-            setTerminalState('done');   // v1.244.2 — green dot after a clean finish
             announce(t('scan.statusDone', 'Scan complete') + ' · NEW=' + totalNew);
             __activeScanDoneTimeout = setTimeout(() => {
               __activeScanDoneTimeout = null;

@@ -8,7 +8,7 @@ Release history belongs in [CHANGELOG.md](CHANGELOG.md), decisions in
 [docs/adr/](docs/adr/), vocabulary in [CONTEXT.md](CONTEXT.md). Anything already
 recoverable from those does **not** belong here.
 
-_Last updated: 2026-10-09 · **v1.244.1 SHIPPED** (prod verified: version 1.244.1, CAR-36 modal PASS, 150 icon aria-labels interpolated, 49/50 meta dates; remote-qa scan green) · v1.244.0 scan redesign SHIPPED (prod verified, CAR-36 fixed live, Playwright 15/15, regression green; live-LLM × 7 blocked by upstream credits — CAR-44); next: Phase 4 `#/scan` redesign (v1.244.0) (hotfix: the v1.243.0 modal nav-guard listened at document — dead code, caught live on prod); v1.243.0 SHIPPED (client fixes, 8 agents, +224 tests) (resumecraft.ru deployed+verified, Playwright 15/15, full regression green; live-LLM × 7 locales blocked by upstream credit exhaustion — Linear CAR-44, 11/17 passed live before the credits ran out)_
+_Last updated: 2026-10-08 · **v1.244.1 in deploy** (3 fixes from the v1.244.0 regression round: icon interpolation [HIGH a11y], title-split country predicate, ISO datetime meta dates); v1.244.0 scan redesign SHIPPED (prod verified, CAR-36 fixed live, Playwright 15/15, regression green; live-LLM × 7 blocked by upstream credits — CAR-44); next: Phase 4 `#/scan` redesign (v1.244.0) (hotfix: the v1.243.0 modal nav-guard listened at document — dead code, caught live on prod); v1.243.0 SHIPPED (client fixes, 8 agents, +224 tests) (resumecraft.ru deployed+verified, Playwright 15/15, full regression green; live-LLM × 7 locales blocked by upstream credit exhaustion — Linear CAR-44, 11/17 passed live before the credits ran out)_
 
 ---
 

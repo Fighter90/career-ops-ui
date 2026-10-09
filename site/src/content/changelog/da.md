@@ -8,34 +8,24 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
-## [1.244.1] — 2026-10-08
+## [1.244.2] — 2026-10-08
 
-### Fixed
-
-- **Scan icons announce real values.** The boost/fit/score icons' accessible names leaked the raw dict templates ("Fit: {band}", "Boosted by {by}") — `{band}`/`{by}`/`{score}` are now substituted (band word, booster keyword, numeric score). [HIGH a11y, caught live in the v1.244.0 regression round]
-- **Title pipes split correctly.** A 4-segment title like «C++ | Rust | Go Developer | Onsite» no longer lifts "Go Developer" out as a "country" — the split demands the segment resolves to a real country (conservative `Countries.detectCountry`).
-- **Meta dates render for every row.** `daysSince` accepted date-only ISO, but the API serves full timestamps for ~83% of dated rows — those rows showed no date segment.
-
-## [1.244.0] — 2026-10-08
-
-**Scan-resultaterne læses som en liste, ikke en væg: ét opslag = to linjer, signalerne er ikoner, og en scanning på 700 rækker er en pagineret tabel i stedet for en side på 37,000 px.**
+**Scan-sidens polering: launcher, statuslinje, reposts-panel og filtre er redesignet som en konsistent chrome — og resultattabellen kan ikke længere strækkes af board-data.**
 
 ### Rettet
 
-- **Række-anatomi.** Hvert opslag renderes som en afgrænset to-linjers række: linje 1 titlen, linje 2 `company · location · source · date · work-type`. Boost-badge, title-fit-båndet og fit-scoren blev til ikoner med lokaliserede tilgængelige navne og tooltips (skærmlæsere læser «Соответствие: сильное» / "Fit: strong", ikke en væg af ord); tillids- og relokations-badges foldede sig ind i samme skinne. Senioritet og løn forbliver som hjælpekolonner, der kun vises på desktop.
-- **Titel-hygiejne.** Et afsluttende `| Germany | Remote`-segment skæres ud af titlen og ind i meta-linjen — Unicode-bevidst, kun når halen er en ægte work-type-markør, og midtersegmentet er stedsformet (legitime pipes som "C++ | Rust | Go Developer" splittes aldrig).
-- **Ikke mere vandret udbredelse.** Fast tabel-layout, `min-width: 0`, titel/meta på én linje afkortet med ellipse med den fulde tekst i tooltippen: nul sideoverflow og nul intern tabel-scroll ved 1440 px og 390 px (den gamle side overflowede med 675 px ved telefonbredde).
-- **Paginering.** Resultaterne renderes 50 per side (25/50/100/200 kan vælges) — en scanning på 700 rækker er nu ~4,600 px høj i stedet for ~37,000 px, og DOM'en holder ~1,000 noder i stedet for 5,500+.
+- **Lønceller viser kun beløbsintervallet.** Nogle boards putter hele benefit-teksten i lønefeltet — den synlige celle viser nu kun beløbsdelen og flytter teksten til tooltippen (før: en 6-linjers celle, der strakte hver række).
+- **Rækker med tom titel viser virksomheden** (og derefter en neutral bindestreg) i stedet for en kæmpe tom celle.
+- **Seniority-badget bryder aldrig** i sin kolonne med fast bredde.
+- **Rækker uden score viser en dæmpet «◎ —»** med en tooltip, der forklarer, at two-pager-sammenligningen ikke fandt matchende nøgleord (før: intet, hvilket så ødelagt ud ved siden af scorede rækker).
 
 ### Tilføjet
 
-- Layout-kontrakt-tests: den to-linjers række, ikonernes tilgængelige navne (en + ru), pagineringens node-budget og title-fit-antal-/rækkefølge-vogteren kører i browser-suitten — redesignet kan ikke stille regressere.
+- **Chrome-redesign: launcher-kort (justeret kontrolrække, dominerende primærknap), terminal-statuslinje med statuspunkt (inaktiv/kører/færdig/fejl) respekterer reduced-motion, reposts-panelet har en højdetag med sticky-header (et datasæt på 1,560 klynger renderede et 155,000 px-panel), og filterblokken som ensartet responsivt grid med justeret footer.**
 
 ### Noter
 
-- Tests **5036 → 5045** unit (browser-suitten fik layout-kontrakterne), gennemsnitlig dækning **98.14 % linjer / 89.34 % grene** (gulv 96/86).
-- Det, scanneren finder, scoreformlerne og `last-scan.json`, er urørte — title-fit forbliver en annotering.
-- Ikke i denne udgivelse: URL-hash-filtertilstand og tastaturstyret rækkenavigation (opfølgning); `5 lakhs INR`-parsing (pre-existing).
+- Alt andet i #/scan er identisk med v1.244.1 — kun chrome-poleringen og de fire rettelser ovenfor er ændret. Tests 5045 → 5060 unit.
 
 ## [1.243.2] — 2026-10-08
 

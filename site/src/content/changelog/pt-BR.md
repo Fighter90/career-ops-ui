@@ -8,34 +8,24 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
-## [1.244.1] — 2026-10-08
+## [1.244.2] — 2026-10-08
 
-### Fixed
-
-- **Scan icons announce real values.** The boost/fit/score icons' accessible names leaked the raw dict templates ("Fit: {band}", "Boosted by {by}") — `{band}`/`{by}`/`{score}` are now substituted (band word, booster keyword, numeric score). [HIGH a11y, caught live in the v1.244.0 regression round]
-- **Title pipes split correctly.** A 4-segment title like «C++ | Rust | Go Developer | Onsite» no longer lifts "Go Developer" out as a "country" — the split demands the segment resolves to a real country (conservative `Countries.detectCountry`).
-- **Meta dates render for every row.** `daysSince` accepted date-only ISO, but the API serves full timestamps for ~83% of dated rows — those rows showed no date segment.
-
-## [1.244.0] — 2026-10-08
-
-**Os resultados do scan se leem como uma lista, não como um muro: uma vaga = duas linhas, os sinais viram ícones, e um scan de 700 linhas é uma tabela paginada em vez de uma página de 37,000 px.**
+**O polimento da página de escaneio: o lançador, a barra de status, o painel de reposts e os filtros são redesenhados como um chrome consistente — e a tabela de resultados não pode mais ser esticada por dados de boards.**
 
 ### Corrigido
 
-- **Anatomia da linha.** Toda vaga é renderizada como uma linha delimitada de duas linhas: linha 1 o título, linha 2 `company · location · source · date · work-type`. O badge de boost, a faixa de title-fit e a pontuação de fit viraram ícones com nomes acessíveis localizados e tooltips (leitores de tela leem «Соответствие: сильное» / "Fit: strong", não um muro de palavras); os badges de confiança e de realocação se recolheram no mesmo trilho. Senioridade e salário continuam como colunas auxiliares apenas no desktop.
-- **Higiene do título.** Um segmento final `| Germany | Remote` é separado do título para a linha de metadados — consciente de Unicode, apenas quando a cauda é um marcador real de work-type e o segmento do meio tem forma de lugar (pipes legítimos como "C++ | Rust | Go Developer" nunca são separados).
-- **Fim do espalhamento horizontal.** Layout de tabela fixo, `min-width: 0`, título/meta de uma linha com ellipsis e o texto completo no tooltip: zero overflow da página e zero scroll interno da tabela em 1440 px e 390 px (a página antiga estourava 675 px na largura de celular).
-- **Paginação.** Os resultados são renderizados 50 por página (25/50/100/200 selecionável) — um scan de 700 linhas agora tem ~4,600 px de altura em vez de ~37,000 px, e o DOM mantém ~1,000 nós em vez de 5,500+.
+- **As células de salário mostram apenas a faixa monetária.** Alguns boards colocam toda a descrição de benefícios no campo do salário — a célula visível agora mostra só o trecho econômico e move o texto para o tooltip (antes: uma célula de 6 linhas esticando cada linha).
+- **Linhas com título vazio mostram a empresa** (e depois um travessão neutro) em vez de uma célula gigante em branco.
+- **O badge de seniority nunca quebra** em sua coluna de largura fixa.
+- **Linhas sem pontuação mostram um «◎ —» esmaecido** com tooltip explicando que a comparação com o two-pager não encontrou correspondências (antes: nada, o que parecia quebrado perto de linhas com pontuação).
 
 ### Adicionado
 
-- Testes de contrato de layout: a linha de duas linhas, os nomes acessíveis dos ícones (en + ru), o orçamento de nós da paginação e a guarda de contagem/ordem do title-fit rodam na suíte de navegador — o redesign não pode regredir em silêncio.
+- **Redesign do chrome: cartão lançador (linha de controles alinhada, botão primário dominante), barra de status do terminal com ponto de estado (ocioso/executando/concluído/erro) safe para reduced-motion, painel de reposts com teto de altura e cabeçalho fixo (um dataset de 1,560 clusters renderizava um painel de 155,000 px), e o bloco de filtros como grade responsiva uniforme com rodapé alinhado.**
 
 ### Notas
 
-- Testes **5036 → 5045** unitários (a suíte de navegador ganhou os contratos de layout), média de cobertura **98.14 % linhas / 89.34 % branches** (piso 96/86).
-- O que o scanner encontra, as fórmulas de pontuação e o `last-scan.json` ficam intocados — o title-fit continua sendo apenas uma anotação.
-- Fora desta versão: o estado de filtros via hash de URL e a navegação de linhas por teclado (follow-up); a interpretação de `5 lakhs INR` (pré-existente).
+- Todo o resto do #/scan é idêntico ao v1.244.1 — apenas o polimento do chrome e as quatro correções acima mudaram. Testes 5045 → 5060 unit.
 
 ## [1.243.2] — 2026-10-08
 

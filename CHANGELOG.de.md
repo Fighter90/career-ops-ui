@@ -2,6 +2,25 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.244.2] — 2026-10-08
+
+**Der Scan-Seiten-Polish: Launcher, Statusleiste, Reposts-Panel und Filter sind als konsistenter Chrome neu gestaltet — und die Ergebnistabelle kann nicht mehr durch Board-Daten gestreckt werden.**
+
+### Behoben
+
+- **Die Gehaltszellen zeigen nur den Geldbereich.** Manche Boards packen den ganzen Benefits-Text ins Gehaltsfeld — die sichtbare Zelle zeigt jetzt nur den Geldteil und verschiebt den Text in den Tooltip (vorher: eine 6-zeilige Zelle, die jede Reihe streckte).
+- **Reihen mit leerem Titel zeigen die Firma** (danach einen neutralen Strich) statt einer riesigen leeren Zelle.
+- **Das Seniority-Badge bricht nie um** in seiner festen Spaltenbreite.
+- **Nicht bewertete Reihen zeigen ein gedämpftes «◎ —»** mit Tooltip, warum der Two-Pager-Vergleich keine Treffer fand (vorher: nichts, was neben bewerteten Reihen kaputt wirkte).
+
+### Hinzugefügt
+
+- **Chrome-Redesign: Launcher-Karte (ausgerichtete Steuerungsreihe, dominanter Primary-Button), Terminal-Statusleiste mit Statuspunkt (idle/running/done/error) reduced-motion-sicher, Reposts-Panel mit Höhenbegrenzung und Sticky-Header (ein 1,560-Cluster-Datensatz renderierte ein 155,000-px-Panel), und der Filterblock als gleichmäßiges responsives Raster mit ausgerichtetem Footer.**
+
+### Anmerkungen
+
+- Alles andere in #/scan ist identisch mit v1.244.1 — nur der Chrome-Polish und die vier Korrekturen oben haben sich geändert. Tests 5045 → 5060 unit.
+
 ## [1.244.1] — 2026-10-08
 
 ### Behoben

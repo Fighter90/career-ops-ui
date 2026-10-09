@@ -2,34 +2,24 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
-## [1.244.1] — 2026-10-08
+## [1.244.2] — 2026-10-08
 
-### Fixed
-
-- **Scan icons announce real values.** The boost/fit/score icons' accessible names leaked the raw dict templates ("Fit: {band}", "Boosted by {by}") — `{band}`/`{by}`/`{score}` are now substituted (band word, booster keyword, numeric score). [HIGH a11y, caught live in the v1.244.0 regression round]
-- **Title pipes split correctly.** A 4-segment title like «C++ | Rust | Go Developer | Onsite» no longer lifts "Go Developer" out as a "country" — the split demands the segment resolves to a real country (conservative `Countries.detectCountry`).
-- **Meta dates render for every row.** `daysSince` accepted date-only ISO, but the API serves full timestamps for ~83% of dated rows — those rows showed no date segment.
-
-## [1.244.0] — 2026-10-08
-
-**Tarama sonuçları bir duvar gibi değil, liste gibi okunuyor: bir ilan = iki satır, sinyaller simge biçiminde ve 700 satırlık bir tarama, ~37,000 px'lik bir sayfa yerine sayfalı bir tablo.**
+**Tarama sayfası parlatması: başlatıcı, durum çubuğu, repost paneli ve filtreler tek bir tutarlı krom olarak yeniden tasarlandı — ve sonuç tablosu artık board verileriyle gerilemiyor.**
 
 ### Düzeltildi
 
-- **Satır anatomisi.** Her ilan, sınırlanmış iki satırlık bir kayıt satırı olarak çiziliyor: 1. satır başlık, 2. satır `company · location · source · date · work-type`. Artırma rozeti, başlık-uyum bandı ve uyum puanı, yerelleştirilmiş erişilebilir adları ve araç ipuçları olan simgelere dönüştü (ekran okuyucular bir sözcük duvarı değil, «Соответствие: сильное» / "Fit: strong" okuyor); güven ve taşınma rozetleri aynı şeride katlandı. Kıdem ve maaş, yalnızca masaüstünde görünen yardımcı sütunlar olarak kalıyor.
-- **Başlık hijyeni.** Sondaki `| Germany | Remote` segmenti başlıktan ayrılıp meta satırına taşınıyor — Unicode duyarlı: yalnızca kuyruk gerçek bir çalışma türü işareti ve orta segment bir yer adı biçiminde olduğunda ("C++ | Rust | Go Developer" gibi meşru dikey çizgiler asla bölünmez).
-- **Yatay yayılma bitti.** Sabit tablo düzeni, `min-width: 0`, tam metni araç ipucunda taşıyan üç noktayla kısaltılmış tek satırlık başlık/meta: 1440 px'te de 390 px'te de sıfır sayfa taşması ve sıfır iç tablo kaydırması (eski sayfa telefon genişliğinde 675 px'lik bir taşma yapıyordu).
-- **Sayfalama.** Sonuçlar sayfa başına 50 olarak çiziliyor (25/50/100/200 seçilebilir) — 700 satırlık bir tarama artık ~37,000 px yerine ~4,600 px yüksekliğinde ve DOM, 5,500+ yerine ~1,000 düğüm tutuyor.
+- **Maaş hücreleri yalnızca parasal aralığı gösterir.** Bazı board'lar yanıt alanına tüm yan metni koyar — görünür hücre artık yalnızca parasal kısmı gösterir ve metni tooltip'e taşır (önce: her satırı uzatan 6 satırlık hücre).
+- **Boş başlıklı satırlar şirketi gösterir** (sonra nötr tire) dev boş hücre yerine.
+- **Kıdem rozeti sabit genişlikli sütununda asla kırılmaz**.
+- **Puanı olmayan satırlar soluk bir «◎ —» gösterir**, tooltip two-pager karşılaştırmasında eşleşen anahtar kelime bulunmadığını açıklar (önce: puanlı satırların yanında bozuk görünüyordu).
 
 ### Eklendi
 
-- Yerleşim sözleşmesi testleri: iki satırlık kayıt satırı, simgelerin erişilebilir adları (en + ru), sayfalama düğüm bütçesi ve başlık-uyum sayı/sıra koruması tarayıcı paketinde çalışıyor — yeniden tasarım sessizce gerileyemez.
+- **Krom yeniden tasarımı: başlatıcı kartı (hizalı kontrol satırı, baskın birincil düğme), durum noktalı terminal durum çubuğu (boşta/çalışıyor/bitti/hata) reduced-motion'u destekler, repost paneli sticky başlıklı yükseklik sınırına sahiptir (1,560 küme, 155,000 px'lik bir panel oluşturuyordu) ve filtre bloğu düzgün responsive ızgara ve hizalanmış altbilgi olarak.**
 
 ### Notlar
 
-- Testler **5036 → 5045** birim (tarayıcı paketi yerleşim sözleşmelerini kazandı), kapsam ortalaması **98.14 % satır / 89.34 % dal** (alt sınır 96/86).
-- Tarayıcının buldukları, puanlama formülleri ve `last-scan.json` dokunulmadan kalıyor — başlık-uyumu bir ek açıklama olmaya devam ediyor.
-- Bu sürümde yok: URL-hash filtre durumu ve klavyeyle satır gezinmesi (takip); `5 lakhs INR` ayrıştırması (önceden var olan).
+- #/scan'in geri kalanı v1.244.1 ile özdeş — yalnızca krom parlatması ve yukarıdaki dört düzeltme değişti. Testler 5045 → 5060 unit.
 
 ## [1.243.2] — 2026-10-08
 

@@ -21,7 +21,9 @@
 .card-value { font-size: 17px; font-weight: 600; margin-top: 6px; overflow-wrap: anywhere; }
 .card-row > * { min-width: 0; }
 
-/* v1.55.5 — UX-3: dashboard hero; P0 CTAs dominate, recent-activity focal, quiet chips. */
+/* v1.55.5 — UX-3: dashboard hero. The two P0 CTAs dominate; a single
+   focal recent-activity hint sits under them; status buckets are
+   demoted to quiet chips so they don't compete for attention. */
 .dash-hero {
   display: flex; flex-direction: column; gap: 12px; padding: 20px 24px; margin-bottom: var(--space-4);
   border: 1px solid var(--border, rgba(0,0,0,.08)); border-radius: 14px;
@@ -36,12 +38,17 @@
 .dash-hero-focal-title { color: var(--foggy); }
 .dash-chip { display: inline-block; padding: 3px 10px; font-size: var(--font-size-sm); border-radius: 999px; background: var(--bg-subtle, rgba(0,0,0,.04)); color: var(--foggy); }
 
-/* v1.55.6 — UX-4: #/scan "Advanced filters" (facet-chip) disclosure. Compact
-   v1.244.2: same rules, fewer lines (components.css 800-LOC contract). */
+/* v1.55.6 — UX-4: #/scan "Advanced filters" disclosure. Quiet,
+   discoverable summary; body indents under it when expanded. */
 .scan-advanced { display: inline-block; }
 .scan-advanced > summary {
-  cursor: pointer; font-size: var(--font-size-md); color: var(--rausch-text, var(--rausch));
-  -webkit-user-select: none; user-select: none; list-style: none; padding: 6px 2px;
+  cursor: pointer;
+  font-size: var(--font-size-md);
+  color: var(--rausch-text, var(--rausch));
+  -webkit-user-select: none;
+  user-select: none;
+  list-style: none;
+  padding: 6px 2px;
 }
 .scan-advanced > summary::-webkit-details-marker { display: none; }
 .scan-advanced > summary::before { content: '⚙ '; }
@@ -102,17 +109,32 @@
 @media (max-width: 900px) {
   .grid-2, .grid-3 { grid-template-columns: minmax(0, 1fr); }
 }
-/* v1.208.0 — grid items may shrink below content width (min-width:auto is the
-   grid min-content trap): a wide child must not burst the track/page; each
-   item's own overflow strategy contains it. Harmless on desktop. */
+/* v1.208.0 — grid items must be allowed to shrink below their content's
+   intrinsic width (min-width:auto is the grid min-content trap). Without this a
+   wide child — a table, a ```code block, a long help URL — forces its grid
+   track, the content column, and the whole page wider than a phone screen; each
+   item's own overflow strategy (`.table-wrap`/`.md pre` scroll, `.md` wraps)
+   then contains that width INSIDE the item. Harmless on desktop (rooms to spare). */
 .grid-2 > *, .grid-3 > *, .qa-grid > *, .card-row > *, .help-grid > * { min-width: 0; }
 /* Help = a 240px table-of-contents + a 1fr article. On a phone it stacks to a
    single column (the TOC card sits above the article) so neither is squeezed. */
 .help-grid { grid-template-columns: 240px 1fr; }
 @media (max-width: 900px) { .help-grid { grid-template-columns: 1fr; } }
 
-/* UX-A14 (v1.59.0) — mobile ≤420px pass: 1-up card-row, stacked hero CTAs,
-   stacked page-header, tighter qa-grid floor, tighter notif head gaps. */
+/* UX-A14 (v1.59.0) — Mobile (≤ 420 px) pass. Targets phone-sized
+   viewports that the desktop-first layout otherwise pushes to a
+   horizontal scroll. Five specific issues from the audit baseline:
+   1. .card-row (4 dashboard metric cards) sits in a 4-up grid that
+      forces a 900+ px floor — collapse to 1-up below 420.
+   2. .dash-hero CTAs sat side-by-side; on a 360 px iPhone they wrap
+      mid-label. Stack vertically with full-width buttons.
+   3. .page-header puts H1+sub on the left and action buttons on the
+      right via flex-between; on phones the right side overflows.
+      Stack vertically; right-align buttons row.
+   4. .qa-grid minmax(220px, 1fr) leaves ~120 px gutter on phones;
+      tighten the floor to 160px.
+   5. .api-keys__summary chips wrap at 360 px — keep flex-wrap but
+      drop horizontal padding for breathing room. */
 @media (max-width: 420px) {
   .card-row { grid-template-columns: 1fr; }
   .dash-hero-cta {
@@ -186,7 +208,9 @@
   outline: 2px solid var(--rausch);
   outline-offset: 2px;
 }
-/* UX-A15 (v1.58.63) — primary tile (Pipeline): accent border + bolder label. */
+/* UX-A15 (v1.58.63) — primary tile (Pipeline). Subtle accent border +
+   slightly larger icon + bolder label so the highest-frequency action
+   draws the eye first without crowding out the rest of the grid. */
 .qa-tile--primary {
   border-color: var(--rausch);
   border-width: 1px;
@@ -236,8 +260,10 @@
   align-items: center;
   justify-content: center;
   min-width: 48px;
-  /* v1.174.0 — a score chip stays compact: never wraps, never grows past the
-     card (the parser compacts; this is the hard cap against stray long values). */
+  /* v1.174.0 — a score chip must stay compact: never wrap, never grow past the
+     card. The parser already compacts the value, but this is the hard cap so a
+     stray long value (e.g. a report whose score line carried trailing status
+     text) can't spill its coloured background out of the card. */
   flex-shrink: 0;
   max-width: 100%;
   white-space: nowrap;
@@ -273,9 +299,10 @@
 .score-low::before  { content: '○'; }
 
 /* ───────────────────────── tables ───────────────────────── */
-/* v1.199.0 — wide tables scroll horizontally instead of clipping (was
-   `overflow: hidden`, the scan-table "не вмещается" bug); non-visible
-   overflow still clips to the rounded border. */
+/* v1.199.0 — wide tables (scan/tracker/stats/usage/…) scroll horizontally
+   instead of clipping. Was `overflow: hidden`, which cut off nowrap columns on
+   a narrow viewport with no scrollbar (the scan-table "не вмещается" bug). Any
+   non-visible overflow still clips to the rounded border, so the corners stay. */
 .table-wrap {
   border: 1px solid var(--slate);
   border-radius: var(--radius-lg);
@@ -307,11 +334,14 @@ table.tbl th {
 }
 table.tbl tr:last-child td { border-bottom: none; }
 table.tbl tr:hover td { background: var(--beach); }
-/* v1.13.0 — boosted rows get a subtle accent strip, scannable in dark mode. */
+/* v1.13.0 — boosted rows (seniority_boost match) get a subtle accent
+   strip so they're scannable even in dark mode. */
 table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch); }
 
-/* v1.180.0 — #/reports list is a table in its own scroll wrapper: rounded
-   border kept, 4 columns scroll instead of breaking titles per character. */
+/* v1.180.0 — #/reports list is a table (was a card grid). Its own scroll
+   wrapper keeps the rounded border AND lets the 4-column table scroll
+   horizontally on a narrow viewport instead of the report title breaking
+   one character per line (the old card-grid "вёрстка поехала" bug). */
 .reports-scroll {
   border: 1px solid var(--slate);
   border-radius: var(--radius-lg);
@@ -330,8 +360,37 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
 }
 .field-hint { color: var(--foggy); font-size: var(--font-size-md); }
 
-/* #/scan result-filter panel + all other #/scan chrome: see the
-   "scan page chrome" section at the end of this file (v1.244.2). */
+/* #/scan result-filter panel: every filter is a labelled .field (label above
+   its control). v1.148.0 — laid out on a responsive GRID (was a ragged
+   flex-wrap of rigid 160–240px boxes) so the controls align into tidy columns
+   with even gutters at every width; the Apply/Reset actions sit on their own
+   separated, right-aligned row that spans the grid. The `min(180px, 100%)` track
+   floor lets a column collapse to full-width below 180px rather than overflowing
+   the panel on very narrow viewports. */
+.scan-filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(min(180px, 100%), 1fr));
+  gap: var(--space-3) var(--space-4);
+  align-items: end;
+  margin-bottom: var(--space-3);
+}
+.scan-filters .scan-field { margin-bottom: 0; min-width: 0; }
+.scan-field__label { font-weight: 600; font-size: var(--font-size-md); color: var(--hof); }
+.scan-filters .scan-field .input,
+.scan-filters .scan-field .select { width: 100%; }
+/* Actions span the full grid, separated from the filters by a hairline, and
+   right-align so Apply/Reset read as the panel's primary action. */
+.scan-filters__actions {
+  grid-column: 1 / -1;
+  display: flex;
+  justify-content: flex-end;
+  align-items: center;
+  gap: var(--space-2);
+  margin-top: var(--space-1);
+  padding-top: var(--space-3);
+  border-top: 1px solid var(--line);
+}
+.scan-filters__hint { margin: 0 0 var(--space-4); max-width: 72ch; }
 .input, .textarea, .select {
   width: 100%;
   padding: 12px 14px;
@@ -346,9 +405,12 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
   border-color: var(--hof);
   box-shadow: 0 0 0 3px rgba(34,34,34,.08);
 }
-/* M-1 (v1.58.9, WCAG 2.4.7) — the zero-`outline` form base overrode the global
-   focus-visible ring; re-establish a keyboard-only ring at matching specificity
-   (mouse focus stays clean via `:focus`). */
+/* M-1 (v1.58.9, WCAG 2.4.7 Level AA) — the `.input/.textarea/.select`
+   baseline above (and `.searchbar input` below) zero `outline`, which
+   silently overrode the global `*:focus-visible` ring on every form
+   field (88 focusable elements per page). Re-establish a visible
+   keyboard-only ring at higher specificity than the form-base rules.
+   Mouse focus stays clean (uses `:focus`, not `:focus-visible`). */
 .input:focus-visible,
 .textarea:focus-visible,
 .select:focus-visible {
@@ -395,8 +457,10 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
 .md h1 { font-size: 26px; margin-top: 0; }
 .md h2 { font-size: 20px; margin-top: var(--space-6); padding-top: var(--space-3); border-top: 1px solid var(--slate); }
 .md h3 { font-size: 17px; margin-top: var(--space-5); }
-/* A markdown table is its own scroll container (display:block + overflow-x)
-   so wide tables scroll inside the article on a phone; desktop unchanged. */
+/* A markdown table (help/AI output) is not wrapped in a `.table-wrap`, so make
+   the table itself the scroll container: `display:block` + `overflow-x:auto`
+   lets a wide table scroll horizontally on a phone instead of forcing the
+   article — and the page — sideways. Desktop is unchanged (fits, no scroll). */
 .md table { display: block; width: 100%; max-width: 100%; overflow-x: auto; border-collapse: collapse; margin: var(--space-3) 0; }
 .md th, .md td { padding: 8px 12px; border: 1px solid var(--slate); font-size: 13.5px; text-align: left; }
 .md th { background: var(--beach); }
@@ -408,8 +472,10 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
 
 /* ───────────────────────── language switcher ───────────────────────── */
 .lang-switcher { padding-bottom: 8px; }
-/* I18N-EXPAND (v1.70.0) — native <select> language picker, ≥28px target
-   (WCAG 2.5.8), full-width so long native labels never clip. */
+/* I18N-EXPAND (v1.70.0) — native <select> language picker. Replaces the
+   old wrapping .lang-btn row (12 locales wrapped to 3 lines). The control
+   keeps a ≥ 28 px target height (WCAG 2.5.8, carried over from UX-A4) and
+   full-width so long native labels (Українська, 简体中文) never clip. */
 .lang-select {
   width: 100%;
   min-height: 32px;
@@ -430,7 +496,8 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
 .chip-row {
   display: flex;
   flex-wrap: wrap;
-  /* WCAG 2.5.8 spaced-target exception (v1.20.0): gap 8 → chip ≥24px + ≥24px spacing. */
+  /* WCAG 2.5.8 spaced-target exception (v1.20.0): bumped gap 6 → 8 so
+     each chip has ≥ 24 px of breathing room from its neighbors. */
   gap: 8px;
   align-items: center;
 }
@@ -446,8 +513,10 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  /* WCAG 2.5.8 (v1.20.0): ≥28×28px chip + 8px gap = spaced-target AA
-     (previous 5px+11px landed ~22×50px). */
+  /* WCAG 2.5.8 (v1.20.0): bumped chip touch target to ≥ 28 × 28 px
+     paired with `.chip-row gap: 8px` so we meet AA via the
+     spaced-target exception (≥ 24 px target + ≥ 24 px spacing).
+     Previous 5px+11px landed around 22 × 50 px. */
   min-height: 28px;
   padding: 6px 12px;
   border-radius: var(--radius-pill);
@@ -480,8 +549,9 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
 .chip.clear:hover { background: rgba(255,56,92,.08); }
 
 /* ───────────────────────── connection banner ───────────────────────── */
-/* CAR-23 v1.243.0 — was sticky (painted over the topbar once scrolled); now a
-   plain in-flow block. Fill = --rausch-dark/--paper pair (≥4.57:1 both themes). */
+/* CAR-23 v1.243.0 — was sticky top:0/z:50, painting OVER the sticky topbar (z:5)
+   once scrolled (search/Doctor unclickable). Now a plain in-flow block — ONE sticky
+   layer remains. Fill = --rausch-dark/--paper pair (--rausch+white: 3.52/2.94). */
 .conn-banner {
   background: var(--rausch-dark); color: var(--paper);
   padding: 12px 24px; display: flex; align-items: center; justify-content: space-between;
@@ -515,17 +585,28 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
   background: var(--bg-subtle, rgba(0,0,0,.03));
   border-bottom: 1px solid var(--border, rgba(0,0,0,.08));
 }
-/* v1.22.0 (M-3) — WCAG 1.4.1 redundant cue: the leading ⚠ carries the
- * "server down" signal without relying on hue alone. */
+/* v1.22.0 (M-3) — WCAG 1.4.1 redundant cue. The banner used to rely
+ * on the red `--rausch` background alone to signal "server down".
+ * The leading ⚠ glyph gives a non-color signal that works for users
+ * who can't perceive hue, in monochrome / high-contrast modes, and
+ * with grayscale screenshots.
+ */
 .conn-msg::before {
   content: '⚠ ';
   font-weight: 700;
   margin-right: 4px;
 }
 
-/* v1.139.0 — HelpHint: `?` affordance + theme-aware popover, CSP-safe,
-   RTL-mirrored. FIX-4 (v1.162.0): 24×24 hit box with an 18px visible ring
-   drawn by ::before, so the target grows without shifting the title baseline. */
+/* v1.139.0 — HelpHint: a `?` affordance next to a title/tab + its popover.
+ * CSP-safe (handlers via addEventListener), theme-aware, RTL-mirrored. The
+ * icon is inline with the heading; the popover is position:fixed and rendered
+ * into <body>, positioned by help-hint.js and clamped to the viewport. */
+/* FIX-4 (v1.162.0) — the "?" pointer target is now 24×24 (WCAG 2.5.8 Target
+ * Size Minimum), while the VISIBLE ring stays 18px. The box is 24×24 and
+ * transparent; the 18px bordered circle is drawn by ::before, centered in the
+ * box, so the hit area grows without enlarging the glyph or shifting the h1
+ * baseline (the page-title line is taller than 24px). margin trimmed 6→3px so
+ * the visual gap to the title text is unchanged (box grew 3px each side). */
 .help-hint {
   position: relative;
   display: inline-flex;
@@ -602,12 +683,25 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
 }
 
 
-/* ── FIND-3 (v1.231.3): the ≤420px topbar search. At 320px no min-width works
-   (32px padding + 40px menu + 162px actions leave nothing), so the field hides
-   behind a magnifier and expands over the whole bar on tap. Lives HERE, not
-   app.css (800-LOC limit there; base rule must precede the media query).
-   SPECIFICITY: matches app.css's `.topbar .topbar-actions .btn` (0,3,0) so
-   `.search-toggle` wins on source order (v1.231.2 regression). */
+/* ── FIND-3 (v1.231.3): the search field collapsed to 8px on a 320px phone ──
+   v1.231.2 put the top bar on one row by leaving the searchbar as the only
+   flexible item — "may shrink to nothing, so no negative space exists to
+   distribute". It did: 8px of input at 320px, 28px at 340px, one character of
+   a 21-character placeholder. Clickable and typable, but no longer a field.
+
+   No min-width can fix it — at 320px the bar holds 32px of padding, a 40px
+   menu and 162px of actions, with no 120px left to give. So below 420px (where
+   the input finally clears 100px) it hides behind a magnifier and expands over
+   the whole bar on tap.
+
+   Here, not in app.css: that file is at its 800-line limit AND its mobile block
+   is declared ABOVE the desktop rules it must beat — the trap that cost two
+   rounds in v1.231.2. Here the base rule precedes the media query.
+   SPECIFICITY: app.css sets `.topbar .topbar-actions .btn { display:inline-flex }`
+   (0,3,0) under max-width:900px, so a bare `.search-toggle` (0,1,0) loses and
+   the magnifier ate 42px of the row at every width up to 900px — shrinking the
+   very field it protects, 118px -> 76px at 430px. Both rules below match that
+   specificity and win on source order. */
 header.topbar .topbar-actions .search-toggle { display: none; }
 .search-ico-close { display: none; }
 
@@ -682,116 +776,3 @@ a.scan-posting-title:hover, a.scan-posting-title:focus-visible { text-decoration
 @media (max-width: 900px) {
   #scan-results .scan-col-aux, #scan-results .scan-cell-aux { display: none; }
 }
-
-/* ───────────────────── #/scan page chrome (v1.244.2) ─────────────────────
- * Blocks AROUND the results table, unified: small-caps 11px labels above
- * 40px controls, one baseline per row, tokens only, RTL via logical props. */
-.scan-field__label {
-  font-size: 11px; font-weight: 600; letter-spacing: .06em;
-  text-transform: uppercase; color: var(--foggy);
-}
-/* Shared 40px control height for launcher + filter-grid chrome. */
-.scan-launcher .select, .scan-launcher .input,
-.scan-filters .scan-field .input, .scan-filters .scan-field .select,
-.scan-filters__saved .select, .scan-filters__saved .input {
-  width: 100%; min-height: 40px; height: 40px; padding: 8px 12px; box-sizing: border-box;
-}
-.scan-launcher .btn, .scan-filters__saved .btn, .scan-filters__actions .btn {
-  min-height: 40px; height: 40px; padding: 0 18px;
-}
-/* 1 · Launcher card — one aligned control row; [Scan] dominant primary. */
-.scan-launcher { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--space-3) var(--space-4); }
-.scan-launcher .scan-cell { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
-.scan-launcher .scan-cell--grow { flex: 1 1 240px; }
-.scan-launcher .scan-cell--max .input { width: 110px; }
-.scan-launcher .scan-launcher__actions { flex-direction: row; align-items: center; gap: var(--space-2); }
-.scan-launcher .scan-run-btn { padding-inline: 22px; font-weight: 700; }
-@media (max-width: 560px) {
-  /* Phones: stack launcher cells full-width; the action cell goes vertical
-     (the ≤420 dash-hero pattern) so touch targets never wrap mid-label. */
-  .scan-launcher .scan-cell { flex: 1 1 100%; }
-  .scan-launcher .scan-cell--max .input { width: 100%; }
-  .scan-launcher .scan-launcher__actions { flex-direction: column; align-items: stretch; }
-}
-.scan-checkline {
-  display: flex; align-items: center; gap: 8px; min-height: 40px;
-  cursor: pointer; -webkit-user-select: none; user-select: none;
-}
-.scan-checkline__hint { font-size: 13px; color: var(--foggy); }
-.scan-launcher .scan-checkline input[type='checkbox'],
-.scan-filters .scan-checkline input[type='checkbox'] {
-  flex: none; width: 16px; height: 16px; margin: 0; accent-color: var(--rausch); cursor: pointer;
-}
-/* 2 · Terminal status bar — dark console strip with a state dot
- * (idle=foggy, running=pulsing accent, done=green, error=red). */
-.scan-terminal {
-  display: flex; align-items: flex-start; gap: 10px; margin: var(--space-2) 0;
-  background: #0f1115; border: 1px solid rgba(255,255,255,.09);
-  border-radius: var(--radius-lg); padding: 14px 16px;
-}
-.scan-terminal .console {
-  flex: 1; min-width: 0; margin: 0; background: transparent;
-  border-radius: 0; padding: 0; font-size: 13px; color: #c8d3c8;
-}
-.scan-terminal .console .meta { color: #8b949e; }
-.scan-terminal .console .err { color: #ff9a9a; }
-.scan-terminal__dot {
-  flex: none; width: 8px; height: 8px; margin-top: 7px; border-radius: 50%;
-  background: #6b7280; transition: background var(--transition);
-}
-.scan-terminal[data-state='running'] .scan-terminal__dot { background: var(--rausch); animation: scan-dot 1.2s ease-in-out infinite; }
-.scan-terminal[data-state='done'] .scan-terminal__dot { background: var(--kazan); }
-.scan-terminal[data-state='error'] .scan-terminal__dot { background: var(--rausch-dark); }
-@keyframes scan-dot { 50% { box-shadow: 0 0 0 5px rgba(255,56,92,.18); } }
-/* 3 · Reposts disclosure — proper card header: chevron caret, hover,
- * count badge; inner table shares the results-table cell rhythm. */
-.reposts { padding: 0; overflow: hidden; }
-.reposts-summary {
-  display: flex; align-items: center; gap: 10px; padding: 14px 20px;
-  font-weight: 600; cursor: pointer; transition: background var(--transition);
-  -webkit-user-select: none; user-select: none; list-style: none;
-}
-.reposts-summary::-webkit-details-marker { display: none; }
-.reposts-summary:hover { background: var(--beach); }
-.reposts-summary::before {
-  content: ''; flex: none; width: 7px; height: 7px; margin-inline-start: 2px;
-  border-right: 2px solid var(--foggy); border-bottom: 2px solid var(--foggy);
-  transform: rotate(-45deg); transition: transform var(--transition);
-}
-.reposts[open] .reposts-summary::before { transform: rotate(45deg); }
-[dir='rtl'] .reposts-summary::before { transform: rotate(-135deg); }
-[dir='rtl'] .reposts[open] .reposts-summary::before { transform: rotate(45deg); }
-.reposts-badge {
-  margin-inline-start: auto; padding: 2px 10px; border-radius: var(--radius-pill);
-  background: var(--elev); color: var(--foggy); font-size: var(--font-size-sm);
-  font-weight: 600; font-variant-numeric: tabular-nums;
-}
-.reposts-body { padding: 0 20px 20px; max-height: 460px; overflow: auto; }
-.reposts-body .tbl th { position: sticky; top: 0; } /* positioned ⇒ paints above the row backgrounds */
-.reposts-body .tbl th, .reposts-body .tbl td { padding: 10px 12px; font-size: 13.5px; }
-/* 4 · Filter grid — uniform responsive cells; saved searches = one bordered
- * sub-card spanning the top; footer = hint LEFT, [Apply]+[Reset] RIGHT on
- * one baseline above a hairline. */
-.scan-filters {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(min(210px, 100%), 1fr));
-  gap: var(--space-4);
-  align-items: end;
-  margin-bottom: var(--space-3);
-}
-.scan-filters .scan-field { margin-bottom: 0; min-width: 0; }
-.scan-filters__saved {
-  grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center;
-  gap: var(--space-2); padding: var(--space-3);
-  border: 1px solid var(--slate); border-radius: var(--radius); background: var(--beach);
-}
-.scan-filters__saved .select { flex: 2 1 200px; width: auto; }
-.scan-filters__saved .input { flex: 1 1 160px; }
-.scan-filters__saved .btn { padding: 0 14px; font-size: var(--font-size-md); }
-.scan-filters__footer {
-  grid-column: 1 / -1; display: flex; flex-wrap: wrap; align-items: center;
-  justify-content: space-between; gap: var(--space-2) var(--space-4);
-  padding-top: var(--space-3); border-top: 1px solid var(--line);
-}
-.scan-filters__actions { display: flex; justify-content: flex-end; align-items: center; gap: var(--space-2); }
-.scan-filters__hint { margin: 0; max-width: 72ch; }

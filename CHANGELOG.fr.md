@@ -10,6 +10,25 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.244.2] — 2026-10-08
+
+**Le polissage de la page de scan : le lanceur, la barre d'état, le panneau de reposts et les filtres sont redessinés comme un chrome cohérent — et le tableau de résultats ne peut plus être étiré par les données des boards.**
+
+### Corrigé
+
+- **Les cellules de salaire ne gardent que la fourchette monétaire.** Certains boards mettent toute la description des avantages dans le champ du salaire — la cellule visible ne montre plus que le segment économique et déplace le texte dans l'infobulle (avant : une cellule de 6 lignes qui étirait chaque rangée).
+- **Les rangées sans titre affichent l'entreprise** (puis un tiret neutre) au lieu d'une cellule géante vide.
+- **Le badge de séniorité ne se coupe jamais** dans sa colonne à largeur fixe.
+- **Les rangées sans score affichent un «◎ —» atténué** avec une infobulle expliquant que la comparaison two-pager n'a trouvé aucune correspondance (avant : rien, ce qui paraissait cassé à côté des rangées notées).
+
+### Ajouté
+
+- **Refonte du chrome : carte lanceur (rangée de contrôles alignée, bouton primaire dominant), barre d'état du terminal avec point d'état (repos/en cours/terminé/erreur) respectant reduced-motion, panneau de reposts plafonné en hauteur avec en-tête collante (un jeu de 1,560 clusters rendait un panneau de 155,000 px), et le bloc de filtres en grille responsive uniforme avec pied aligné.**
+
+### Notes
+
+- Tout le reste de #/scan est identique à v1.244.1 — seuls le polissage du chrome et les quatre corrections ci-dessus ont changé. Tests 5045 → 5060 unit.
+
 ## [1.244.1] — 2026-10-08
 
 ### Corrigé

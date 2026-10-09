@@ -8,34 +8,24 @@
 
 ---
 
-## [1.244.1] — 2026-10-08
+## [1.244.2] — 2026-10-08
 
-### Fixed
-
-- **Scan icons announce real values.** The boost/fit/score icons' accessible names leaked the raw dict templates ("Fit: {band}", "Boosted by {by}") — `{band}`/`{by}`/`{score}` are now substituted (band word, booster keyword, numeric score). [HIGH a11y, caught live in the v1.244.0 regression round]
-- **Title pipes split correctly.** A 4-segment title like «C++ | Rust | Go Developer | Onsite» no longer lifts "Go Developer" out as a "country" — the split demands the segment resolves to a real country (conservative `Countries.detectCountry`).
-- **Meta dates render for every row.** `daysSince` accepted date-only ISO, but the API serves full timestamps for ~83% of dated rows — those rows showed no date segment.
-
-## [1.244.0] — 2026-10-08
-
-**掃描結果讀起來像一份清單，而不是一面牆：一個職缺＝兩行，訊號化為圖示，700 筆的掃描變成分頁表格，而不是 37,000 px 的長頁面。**
+**掃描頁面打磨：啟動器、狀態列、轉發面板與篩選器重構為一致的外觀——結果表格不再會被看板資料撐開。**
 
 ### 修復
 
-- **列的結構。** 每個職缺都渲染為一個有邊界的兩行列：第 1 行是職稱，第 2 行是 `company · location · source · date · work-type`。提升徽章、職稱契合度色帶與契合度得分改為圖示，並附上在地化的無障礙名稱與工具提示（螢幕閱讀器讀出的是 «Соответствие: сильное» / "Fit: strong"，而不是一整面文字牆）；信任與搬遷徽章也併入同一側欄。級別與薪資仍保留為僅桌面版顯示的輔助欄位。
-- **職稱清理。** 結尾的 `| Germany | Remote` 片段會從職稱中拆出、併入 meta 行——具 Unicode 感知，僅當結尾是真正的工作型態標記、且中間片段呈地名形狀時才拆分（像 "C++ | Rust | Go Developer" 這種正當的豎線永不拆分）。
-- **不再橫向蔓延。** 固定表格版面、`min-width: 0`、單行職稱／meta 以省略號截斷、完整文字放進工具提示：在 1440 px 與 390 px 寬度下，頁面零溢出、表格內部零捲動（舊版頁面在手機寬度會溢出 675 px）。
-- **分頁。** 結果每頁渲染 50 筆（可選 25/50/100/200）——700 筆的掃描現在高度為 ~4,600 px，而不是 ~37,000 px，DOM 節點約 ~1,000 個，而不是 5,500+ 個。
+- **薪資儲存格只顯示金額區間。** 有些看板把整段福利說明塞進薪資欄位——可見儲存格現在只顯示金額部分，說明文字移入提示框（此前：6 行高的儲存格撐開每一列）。
+- **空標題的列顯示公司名**（再退化為中性破折號），而不是巨大的空白儲存格。
+- **資歷徽章在固定寬度欄中不再換行**。
+- **無評分的列顯示淡化的「◎ —」**，提示框說明兩頁紙比對未找到匹配關鍵字（此前：空白，在有評分的列旁邊顯得像壞掉）。
 
 ### 新增
 
-- 版面契約測試：兩行列結構、圖示的無障礙名稱（en + ru）、分頁的節點數預算，以及職稱契合度的數量／順序守衛，都在瀏覽器測試套件中執行——這次重新設計不可能再無聲地回歸。
+- **外觀重構：啟動卡片（對齊的控件列、主導按鈕）、帶狀態點的終端機狀態列（閒置/執行中/完成/錯誤）支援 reduced-motion、轉發面板有高度上限與固定表頭（1,560 個集群曾渲染出 155,000 px 的面板）、篩選器塊為均勻響應式網格並對齊頁腳。**
 
 ### 說明
 
-- 單元測試 **5036 → 5045**（瀏覽器套件新增了版面契約），覆蓋率平均 **98.14 % 行 / 89.34 % 分支**（下限 96/86）。
-- 掃描器找到的內容、評分公式與 `last-scan.json` 都未更動——職稱契合度仍只是一項註記。
-- 本版未包含：URL-hash 篩選狀態與鍵盤列導航（後續跟進）；`5 lakhs INR` 的解析（既有問題）。
+- #/scan 的其餘部分與 v1.244.1 完全相同——僅變更了外觀拋光與上述四個修復。測試 5045 → 5060 unit。
 
 ## [1.243.2] — 2026-10-08
 

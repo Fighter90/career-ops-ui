@@ -8,6 +8,25 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.244.2] — 2026-10-08
+
+**Scan-sidens polering: launcher, statuslinje, reposts-panel og filtre er redesignet som en konsistent chrome — og resultattabellen kan ikke længere strækkes af board-data.**
+
+### Rettet
+
+- **Lønceller viser kun beløbsintervallet.** Nogle boards putter hele benefit-teksten i lønefeltet — den synlige celle viser nu kun beløbsdelen og flytter teksten til tooltippen (før: en 6-linjers celle, der strakte hver række).
+- **Rækker med tom titel viser virksomheden** (og derefter en neutral bindestreg) i stedet for en kæmpe tom celle.
+- **Seniority-badget bryder aldrig** i sin kolonne med fast bredde.
+- **Rækker uden score viser en dæmpet «◎ —»** med en tooltip, der forklarer, at two-pager-sammenligningen ikke fandt matchende nøgleord (før: intet, hvilket så ødelagt ud ved siden af scorede rækker).
+
+### Tilføjet
+
+- **Chrome-redesign: launcher-kort (justeret kontrolrække, dominerende primærknap), terminal-statuslinje med statuspunkt (inaktiv/kører/færdig/fejl) respekterer reduced-motion, reposts-panelet har en højdetag med sticky-header (et datasæt på 1,560 klynger renderede et 155,000 px-panel), og filterblokken som ensartet responsivt grid med justeret footer.**
+
+### Noter
+
+- Alt andet i #/scan er identisk med v1.244.1 — kun chrome-poleringen og de fire rettelser ovenfor er ændret. Tests 5045 → 5060 unit.
+
 ## [1.244.1] — 2026-10-08
 
 ### Rettet
