@@ -3,18 +3,45 @@ Router.register('activity', async () => {
   const c = UI.el;
   const t = (k, f) => I18n.t(k, f);
 
-  // Filter chips for the most common action prefixes.
+  // Filter chips for the most common action prefixes. Labels are localized
+  // (CAR-49 v1.246.0 — they used to render the raw prefix slugs); pipeline/
+  // scan/evaluate/cv reuse the existing nav/page keys via the alias map, the
+  // three without a canonical sibling carry their own activity.filter.* keys.
   const FILTERS = [
     { key: '',            label: t('activity.filter.all', 'All actions') },
-    { key: 'pipeline.',   label: 'pipeline' },
-    { key: 'cv.',         label: 'cv' },
-    { key: 'jd.',         label: 'jd' },
-    { key: 'evaluate',    label: 'evaluate' },
-    { key: 'scan.',       label: 'scan' },
-    { key: 'stream.',     label: 'stream' },
-    { key: 'script.',     label: 'script' },
+    { key: 'pipeline.',   label: t('activity.filter.pipeline', 'Pipeline') },
+    { key: 'cv.',         label: t('activity.filter.cv', 'CV') },
+    { key: 'jd.',         label: t('activity.filter.jd', 'Job descriptions') },
+    { key: 'evaluate',    label: t('activity.filter.evaluate', 'Evaluate') },
+    { key: 'scan.',       label: t('activity.filter.scan', 'Scan') },
+    { key: 'stream.',     label: t('activity.filter.stream', 'Streams') },
+    { key: 'script.',     label: t('activity.filter.script', 'Scripts') },
   ];
   let activeFilter = '';
+
+  // CAR-49 (v1.246.0) — the ACTION column used to show the raw event slug
+  // ("stream.scan", "config.save"). Known slugs map to activity.act.* keys;
+  // dynamic families (stream.<x>, script.<x>) translate the family word and
+  // keep the machine tail as an identifier. Anything unknown falls back to
+  // the raw slug, so a future server action can never render a bare key.
+  // (Template-literal keys — the static i18n-coverage scan skips them, same
+  // convention as cv-diagnostics.js's t(`diag.section.${k}`).)
+  function dictHit(key) {
+    const v = t(key, null);
+    return v && v !== key ? v : null;
+  }
+  function actionLabel(action) {
+    const slug = String(action || '');
+    if (!slug) return '';
+    const exact = dictHit(`activity.act.${slug}`);
+    if (exact) return exact;
+    const dot = slug.indexOf('.');
+    if (dot > 0) {
+      const famLabel = dictHit(`activity.prefix.${slug.slice(0, dot)}`);
+      if (famLabel) return `${famLabel} · ${slug.slice(dot + 1)}`;
+    }
+    return slug;
+  }
 
   const tableBody = c('tbody');
   const empty = c('div', { className: 'empty' }, t('activity.empty'));
@@ -25,9 +52,18 @@ Router.register('activity', async () => {
     const time = isNaN(ts) ? evt.ts : ts.toLocaleString();
     const dot = evt.ok === false ? '✗' : evt.ok === true ? '✓' : '·';
     const cls = evt.ok === false ? 'badge-bad' : evt.ok === true ? 'badge-ok' : 'badge-info';
+    // The raw slug stays discoverable (title attr; mono tail for dynamic
+    // families) while the visible label reads in the UI language.
+    const label = actionLabel(evt.action);
+    const actionCell = label === evt.action
+      ? c('code', null, label)
+      : c('span', { title: evt.action }, [
+          label,
+          c('code', { className: 'activity-raw-slug' }, evt.action),
+        ]);
     return c('tr', null, [
       c('td', { style: { whiteSpace: 'nowrap', color: 'var(--foggy)', fontVariantNumeric: 'tabular-nums' } }, time),
-      c('td', null, c('code', null, evt.action || '')),
+      c('td', null, actionCell),
       c('td', { style: { wordBreak: 'break-all', maxWidth: '480px' } }, evt.target || c('span', { style: { color: 'var(--foggy)' } }, '—')),
       c('td', null, [
         c('span', { className: 'badge ' + cls }, dot),

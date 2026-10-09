@@ -192,10 +192,12 @@ Router.register('apply', async () => {
         c('p', { className: 'page-subtitle' }, t('apply.subtitle')),
       ]),
     ]),
-    c('div', {
-      className: 'card mb-3',
-      style: { background: '#eef5ff', borderColor: '#9bb6e0', color: '#1f3b6e' },
-    }, [
+    // CAR-52/58 (v1.246.0) — the info banner was inline-styled with light-theme
+    // colors, so in dark mode it kept a light-blue surface while its links
+    // inherited the dark-theme `a` color (#f3f4f6) → ≈1.0:1 invisible. The
+    // theme-aware .callout.callout--info pair (app.css) owns surface/border/
+    // text/link colors per theme now.
+    c('div', { className: 'card mb-3 callout callout--info' }, [
       c('strong', null, 'ℹ ' + t('apply.bannerTitle', 'Checklist only')),
       c('p', { style: { margin: '6px 0 0', fontSize: '14px' } },
         t('apply.bannerBody', 'This page generates a checklist + paste-ready text. Real Playwright form-fill (with a final-confirm) lives in Claude Code: /career-ops apply <url>')),

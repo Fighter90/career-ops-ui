@@ -231,7 +231,7 @@ Router.register('dashboard', async () => {
       metric(t('dash.apps'), data.counts.applications, t('dash.tracker')),
       metric(t('dash.pipeline'), data.counts.pipeline, t('dash.pending')),
       metric(t('dash.reports'), data.counts.reports, t('dash.generated')),
-      metric(t('dash.avgScore'), data.avgScore ?? '—', '/ 5.0', scoreClass(data.avgScore)),
+      metric(t('dash.avgScore'), data.avgScore ?? '—', '/ 5.0', scoreClass(data.avgScore), true),
     ]),
 
     // ── Quick actions (every sidebar item, grouped by purpose) ────
@@ -335,12 +335,14 @@ Router.register('dashboard', async () => {
   return root;
 });
 
-function metric(label, value, sub, cls) {
+function metric(label, value, sub, cls, numericSub) {
   const c = UI.el;
   return c('div', { className: 'card metric-card' }, [
     c('div', { className: 'metric-label' }, label),
     c('div', { className: 'metric-value ' + (cls || '') }, String(value)),
-    c('div', { className: 'metric-sub' }, sub),
+    // CAR-58 (v1.246.0) — a numeric unit ("/ 5.0") is a bidi composition: in an
+    // RTL locale it rendered "5.0 /". Isolate it LTR (prose subs pass no flag).
+    c('div', { className: 'metric-sub', ...(numericSub ? { dir: 'ltr' } : {}) }, sub),
   ]);
 }
 
