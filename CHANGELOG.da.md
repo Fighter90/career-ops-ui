@@ -25,7 +25,7 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ### Noter
 
-- Alt andet i #/scan er identisk med v1.244.1 — kun chrome-poleringen og de fire rettelser ovenfor er ændret. Tests 5045 → 5060 unit.
+- Alt andet i #/scan er identisk med v1.244.1 — kun chrome-poleringen og de fire rettelser ovenfor er ændret. Tests 5045 → 5068 unit.
 
 ## [1.244.1] — 2026-10-08
 

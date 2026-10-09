@@ -19,7 +19,7 @@
 
 ### Notlar
 
-- #/scan'in geri kalanı v1.244.1 ile özdeş — yalnızca krom parlatması ve yukarıdaki dört düzeltme değişti. Testler 5045 → 5060 unit.
+- #/scan'in geri kalanı v1.244.1 ile özdeş — yalnızca krom parlatması ve yukarıdaki dört düzeltme değişti. Testler 5045 → 5068 unit.
 
 ## [1.244.1] — 2026-10-08
 

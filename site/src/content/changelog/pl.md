@@ -26,7 +26,7 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 
 ### Uwagi
 
-- Reszta #/scan jest identyczna z v1.244.1 — zmieniło się tylko polerowanie chromu i cztery poprawki powyżej. Testy 5045 → 5060 unit.
+- Reszta #/scan jest identyczna z v1.244.1 — zmieniło się tylko polerowanie chromu i cztery poprawki powyżej. Testy 5045 → 5068 unit.
 
 ## [1.243.2] — 2026-10-08
 

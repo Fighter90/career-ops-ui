@@ -26,7 +26,7 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ### Uwagi
 
-- Reszta #/scan jest identyczna z v1.244.1 — zmieniło się tylko polerowanie chromu i cztery poprawki powyżej. Testy 5045 → 5060 unit.
+- Reszta #/scan jest identyczna z v1.244.1 — zmieniło się tylko polerowanie chromu i cztery poprawki powyżej. Testy 5045 → 5068 unit.
 
 ## [1.244.1] — 2026-10-08
 

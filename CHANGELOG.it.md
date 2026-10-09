@@ -19,7 +19,7 @@
 
 ### Note
 
-- Tutto il resto di #/scan è identico a v1.244.1 — sono cambiati solo la rifinitura del chrome e le quattro correzioni sopra. Test 5045 → 5060 unit.
+- Tutto il resto di #/scan è identico a v1.244.1 — sono cambiati solo la rifinitura del chrome e le quattro correzioni sopra. Test 5045 → 5068 unit.
 
 ## [1.244.1] — 2026-10-08
 

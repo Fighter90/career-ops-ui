@@ -19,7 +19,7 @@
 
 ### Anmerkungen
 
-- Alles andere in #/scan ist identisch mit v1.244.1 — nur der Chrome-Polish und die vier Korrekturen oben haben sich geändert. Tests 5045 → 5060 unit.
+- Alles andere in #/scan ist identisch mit v1.244.1 — nur der Chrome-Polish und die vier Korrekturen oben haben sich geändert. Tests 5045 → 5068 unit.
 
 ## [1.243.2] — 2026-10-08
 

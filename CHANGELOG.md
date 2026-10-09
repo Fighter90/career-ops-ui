@@ -26,7 +26,7 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 ### Notes
 
-- Tests **5045 → 5060** unit; browser layout contracts extended (aux one-line bound).
+- Tests **5045 → 5068** unit; browser layout contracts extended (aux one-line bound).
 - Not in this release: URL-hash filter state and keyboard row navigation (follow-ups); live-LLM regression × 7 locales blocked earlier by upstream credits (unblocked — CAR-44).
 
 ## [1.244.1] — 2026-10-08

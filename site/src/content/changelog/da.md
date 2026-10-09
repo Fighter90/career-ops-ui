@@ -25,7 +25,7 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ### Noter
 
-- Alt andet i #/scan er identisk med v1.244.1 — kun chrome-poleringen og de fire rettelser ovenfor er ændret. Tests 5045 → 5060 unit.
+- Alt andet i #/scan er identisk med v1.244.1 — kun chrome-poleringen og de fire rettelser ovenfor er ændret. Tests 5045 → 5068 unit.
 
 ## [1.243.2] — 2026-10-08
 
