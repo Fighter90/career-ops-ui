@@ -1,6 +1,6 @@
 # மாற்றப் பதிவு (தமிழ்)
 
-> இந்த மாற்றப் பதிவு v1.245.0-இல் தொடங்குகிறது — தமிழ் மொழியாக்கம் சேர்க்கப்பட்ட பதிப்பு. முந்தைய பதிப்புகளுக்கு [🇬🇧 CHANGELOG.md](CHANGELOG.md) பார்க்கவும்.
+> இந்த மாற்றப் பதிவு v1.244.1-இல் தொடங்குகிறது; தமிழ் மொழியாக்கம் v1.245.0-இல் சேர்க்கப்படும். முந்தைய பதிப்புகளுக்கு [🇬🇧 CHANGELOG.md](CHANGELOG.md) பார்க்கவும்.
 
 மொழிபெயர்ப்புகள்: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHANGELOG.pt-BR.md) · [🇰🇷 한국어](CHANGELOG.ko-KR.md) · [🇯🇵 日本語](CHANGELOG.ja.md) · [🇷🇺 Русский](CHANGELOG.ru.md) · [🇨🇳 简体中文](CHANGELOG.zh-CN.md) · [🇹🇼 繁體中文](CHANGELOG.zh-TW.md) · [🇫🇷 Français](CHANGELOG.fr.md) · [🇵🇱 Polski](CHANGELOG.pl.md) · [🇺🇦 Українська](CHANGELOG.uk.md) · [🇩🇰 Dansk](CHANGELOG.da.md) · [🇸🇦 العربية](CHANGELOG.ar.md) · [🇩🇪 Deutsch](CHANGELOG.de.md) · [🇮🇹 Italiano](CHANGELOG.it.md) · [🇹🇷 Türkçe](CHANGELOG.tr.md) · [🇮🇳 हिन्दी](CHANGELOG.hi.md)
 
