@@ -2,6 +2,26 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.248.0] — 2026-10-09
+
+**Ebeveyn-parite: beş yukarı sağlayıcı/liveness düzeltmesi portlandı — API'sini taşıyan panolar çalışmaya devam ediyor ve kendi satırındaki bir kapanış bannerı artık gözden kaçmıyor.**
+
+### Düzeltildi
+
+- **Gupy API'yi `portal.gupy.io`'ya takip eder** ve API'nin gerçekten okuduğu filtre adlarını gönderir (`workplaceType`/`type`) — eski çoğul adlar sessizce yok sayılıyordu; `country` artık gönderilmiyor (yapılandırılmış ülke, gönderim yerine giriş adıyla uyarı çizer). Gizli işverenler tam etiket eşleşmesinde düşer («Confidencial Seguros» hayatta kalır), `max_pages` 100 ile sınırlıdır — API offset 10.000 sonrasında 400 döner ve kesilme uyarısı artık sınırı yükseltmek yerine anahtar kelimeleri daraltmayı önerir.
+- **Workable, çok ülkeli bir ilanın tüm ülkelerini korur**: aynı iş URL'si altındaki kardeşler tek satıra katlanır („London, United Kingdom · Romania · Poland · Croatia“) — ilk ülke kazanmaz.
+- **Liveness: kendi satırındaki bir banner, üstteki satırın parçası değildir** — ilanın altındaki „Sign in if you want to apply“ / „Get notified when this position is filled“, olduğu gibi kapanış cümlesi olarak okunur; satırlara yayılan gerçek „until filled“ hâlâ aktif okunur.
+- **Radancy, eski kart işaretlemesinde kardeş `job-location` öğesini okur** (Barclays ailesi düzenleri konumu `</a>`'dan sonra koyar) — kendi konumu olmayan satırlar boş kalır, komşusunu ödünç almaz.
+- **SmartRecruiters yedek iş bağlantıları yapılandırılmış slug'ı korur** — güvenilmeyen/eksik `ref`'li bir ilan, genel URL'sini görünen addan asla değil, kiracı slug'ından sentezler.
+
+### Eklendi
+
+- No-port'lar belgelendi: yukarı `_http` proxy `fetchImpl` düzeltmesi (web-ui'de proxy dalı yok — port etmek DNS-rebinding korumasının kimlik denetimini etkisiz kılar ve deponun bilinçli olarak kaçındığı bir undici bağımlılığı ekler); yukarı `verify-ats` (+226 satır) ve `cv-facts` (web-ui kendi ATS puanlamasını ve CV ayrıştırmayı uygular); ebeveyn panosu Go TUI ve CLI betikleri; Teamtailor import sıralaması (kozmetik).
+
+### Notlar
+
+- Bilinen eksik takip olarak: ebeveyn konum filtresinin `always_allow` katmanı (workable tüketici testi sayesinde UK bloğundan kurtulur) web-ui'de yok; port aynı tüketici yargısını allow-list testiyle ifade etti. Ayrı bir değişiklik olarak kaydedildi.
+
 ## [1.247.0] — 2026-10-09
 
 **CAR-49…58 tasarım-taramasının kuyruğu tamamlandı — kalan tüm minor/polish bulguları ve önceki sürümün bilinçli olarak ertelediği koyu harita.**

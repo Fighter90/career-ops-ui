@@ -130,6 +130,55 @@ test('radancy parseLegacyResults: Kaiser variant (no div / class / req span)', (
   assert.equal(rows[0].location, 'Denver, CO, Flexible, Full-time, Day');
 });
 
+// search.jobs.barclays — card layout: title in <strong> inside the anchor,
+// location as a SIBLING <div class="job-location"> after it (not inside),
+// plus a job-date block whose <span> must not be mistaken for the location.
+const LEGACY_BARCLAYS = `
+<section id="search-results" data-total-results="797" data-total-pages="8" data-records-per-page="100">
+<div class="list-item list-item--card fs-column fs-top round-corners bg--pale-blue-light p-1 text--black">
+  <a href="/job/noida/fcs-senior-analyst/13015/101304506192" class="headline-3 job-title--link text--black" data-job-id="101304506192"><strong>FCS Senior Analyst</strong></a>
+  <div class="job-location"> Noida, India</div>
+  <div class="bg--white round-corners--small job-date"><img src="https://tbcdn.talentbrew.com/company/13015/v1_0/img/icons/icon-date--active-blue.svg" alt="" class="job-date--icon" /> <span>28 Sep</span></div>
+</div>
+<div class="list-item list-item--card fs-column fs-top round-corners bg--pale-blue-light p-1 text--black">
+  <a href="/job/hong-kong/vp-quant-analyst/13015/99719476320" class="headline-3 job-title--link text--black" data-job-id="99719476320"><strong>VP Global Markets Liquid Financing Quant Analyst</strong></a>
+  <div class="job-location"> Hong Kong, Hong Kong</div>
+  <div class="bg--white round-corners--small job-date"><span>27 Sep</span></div>
+</div>
+</section>`;
+
+test('radancy parseLegacyResults: Barclays card layout (title in <strong>, sibling job-location div)', () => {
+  const rows = parseLegacyResults(LEGACY_BARCLAYS, 'https://search.jobs.barclays', 'Barclays');
+  assert.equal(rows.length, 2);
+  assert.equal(rows[0].id, 'radancy-101304506192');
+  assert.equal(rows[0].title, 'FCS Senior Analyst');
+  assert.equal(rows[0].url, 'https://search.jobs.barclays/job/noida/fcs-senior-analyst/13015/101304506192');
+  assert.equal(rows[0].location, 'Noida, India');
+  assert.equal(rows[1].title, 'VP Global Markets Liquid Financing Quant Analyst');
+  assert.equal(rows[1].location, 'Hong Kong, Hong Kong');
+  // The job-date <span>s between the anchors must never be mistaken for the location.
+  assert.ok(rows.every((r) => !/Sep/.test(r.location)));
+});
+
+test('radancy modern parser does not claim the Barclays card layout (legacy branch still reached)', () => {
+  assert.equal(parseModernResults(LEGACY_BARCLAYS, 'https://search.jobs.barclays', 'Barclays').length, 0);
+  assert.equal(parseResults(LEGACY_BARCLAYS, 'https://search.jobs.barclays', 'Barclays').length, 2);
+});
+
+test('radancy parseLegacyResults: <p class="job-location"> is read; a location-less row stays empty', () => {
+  // The sibling fallback reads the <p> variant and must not invent a location
+  // for the unplaced row — nor borrow the next row's.
+  const LEGACY_MIXED = `
+<ul>
+<li><a href="/job/london/analyst/13015/1" data-job-id="1"><strong>Analyst</strong></a><p class="job-location">London (United Kingdom)</p></li>
+<li><a href="/job/nowhere/unplaced/13015/2" data-job-id="2"><strong>Unplaced</strong></a></li>
+<li><a href="/job/pune/engineer/13015/3" data-job-id="3"><strong>Engineer</strong></a><div class="job-location">Pune (India)</div></li>
+</ul>`;
+  const rows = parseLegacyResults(LEGACY_MIXED, 'https://search.jobs.barclays');
+  assert.equal(rows.length, 3);
+  assert.deepEqual(rows.map((r) => r.location), ['London (United Kingdom)', '', 'Pune (India)']);
+});
+
 test('radancy parseResults falls back to the legacy parser only when modern finds nothing', () => {
   assert.equal(parseResults(LEGACY_KP, 'https://www.kaiserpermanentejobs.org', 'Kaiser').length, 1);
   // Modern markup still resolves through the modern branch (no legacy fallback).

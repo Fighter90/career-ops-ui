@@ -8,6 +8,26 @@
 
 ---
 
+## [1.248.0] — 2026-10-09
+
+**父級對齊：移植五個上游 provider/liveness 修復——遷移了 API 的招聘版繼續運作，獨立一行的關閉橫幅不再被漏讀。**
+
+### 修復
+
+- **Gupy 跟隨 API 遷至 `portal.gupy.io`**，並發送 API 真正讀取的過濾參數名（`workplaceType`/`type`）——舊的複數名稱被靜默忽略；`country` 不再發送（配置的國家會以條目名繪製警告）。機密雇主按精確標籤匹配丟棄（「Confidencial Seguros」存活），`max_pages` 上限 100——API 在 offset 10,000 之後回傳 400，截斷警告現在建議收窄關鍵字。
+- **Workable 保留多國職缺的所有國家**：同一職缺 URL 下的兄弟條目摺疊為一行（「London, United Kingdom · Romania · Poland · Croatia」），不再由第一個國家獲勝。
+- **Liveness：獨立一行的橫幅不屬於上一行**——職缺下方的「Sign in if you want to apply」/「Get notified when this position is filled」被讀作它本來的關閉子句，而跨行的真正「until filled」仍讀為活躍。
+- **Radancy 讀取舊版卡片標記中的兄弟 `job-location` 元素**（Barclays 家族佈局把地點放在 `</a>` 之後）——沒有自己地點的列保持為空，而非借用鄰居的。
+- **SmartRecruiters 後備職缺連結保留配置的 slug**——缺少/不可信 `ref` 的職缺從租戶 slug 合成公開 URL，絕不用顯示名稱。
+
+### 新增
+
+- 記錄在案的 no-port：上游 `_http` 代理 `fetchImpl` 修復（web-ui 沒有代理分支——移植會使 DNS-rebinding 守衛的身分檢查失效，並加入本儲存庫刻意避開的 undici 依賴）；上游 `verify-ats`（+226 行）與 `cv-facts`（web-ui 實作自己的 ATS 評分與 CV 解析）；父級儀表板 Go TUI 與 CLI 腳本；Teamtailor 的 import 重排（表面性）。
+
+### 備註
+
+- 已知缺口列為後續：父級 location 過濾器的 `always_allow` 層級（workable 的消費者測試靠它挺過 UK 封鎖）在 web-ui 中不存在；移植以 allow-list 測試表達了相同的消費者結論。已立案為單獨變更。
+
 ## [1.247.0] — 2026-10-09
 
 **CAR-49…58 設計巡檢的收尾完成——剩餘所有次要與打磨項，加上上一版刻意延後的深色地圖。**

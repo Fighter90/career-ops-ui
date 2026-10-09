@@ -8,6 +8,26 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.248.0] — 2026-10-09
+
+**Paridade com o pai: cinco correções de provedores/liveness portadas — boards que mudaram de API continuam funcionando e um banner de encerramento na própria linha não passa mais despercebido.**
+
+### Corrigido
+
+- **Gupy segue a API até `portal.gupy.io`** e envia os nomes de filtro que a API lê de fato (`workplaceType`/`type`) — os nomes plurais antigos eram ignorados em silêncio; `country` não é mais enviado (um país configurado gera um aviso com o nome da entrada). Empregadores confidenciais caem por correspondência exata de rótulo («Confidencial Seguros» sobrevive) e `max_pages` tem teto de 100 — a API responde 400 após o offset 10.000, e o aviso de truncamento agora sugere restringir palavras-chave.
+- **Workable mantém todos os países de uma vaga multipaís**: irmãos sob a mesma URL de vaga se dobram em uma linha («London, United Kingdom · Romania · Poland · Croatia») em vez de o primeiro país vencer.
+- **Liveness: um banner na própria linha não faz parte da linha de cima** — «Sign in if you want to apply» / «Get notified when this position is filled» abaixo da vaga é lido como a cláusula de fechamento que é, enquanto um genuíno «until filled» atravessando linhas ainda lê ativo.
+- **Radancy lê um elemento irmão `job-location`** na marcação legada de cartões (layouts da família Barclays põem a localização depois de `</a>`) — linhas sem localização própria ficam vazias em vez de emprestar a do vizinho.
+- **Links de fallback do SmartRecruiters mantêm o slug configurado** — uma vaga sem `ref` confiável sintetiza a URL pública a partir do slug do tenant, nunca do nome de exibição.
+
+### Adicionado
+
+- No-ports documentados: a correção `_http` de proxy `fetchImpl` do pai (web-ui não tem ramo de proxy — portá-la anularia a verificação de identidade da guarda de DNS-rebinding e adicionaria uma dependência undici que o repositório evita); `verify-ats` (+226 linhas) e `cv-facts` do pai (web-ui implementa seu próprio scoring ATS e parsing de CV); o dashboard Go TUI e scripts CLI do pai; um reordenamento de imports no Teamtailor (cosmético).
+
+### Notas
+
+- Lacuna conhecida levada como follow-up: o tier `always_allow` do filtro de localização do pai (o teste consumidor do workable sobrevive a um bloqueio UK por causa dele) não existe em web-ui; o port expressou o mesmo veredicto do consumidor por um teste de allow-list. Registrado para mudança separada.
+
 ## [1.247.0] — 2026-10-09
 
 **A cauda da varredura de design CAR-49…58 está completa — todos os menores e polimentos restantes, mais o mapa escuro que a versão anterior adiou de propósito.**

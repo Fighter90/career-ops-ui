@@ -10,6 +10,26 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 
 ---
 
+## [1.248.0] — 2026-10-09
+
+**Parité parent : cinq corrections amont de fournisseurs/liveness portées — les tableaux qui ont déplacé leur API continuent de fonctionner, et une bannière de clôture sur sa propre ligne n’est plus manquée.**
+
+### Corrigé
+
+- **Gupy suit l’API vers `portal.gupy.io`** et envoie les noms de filtres que l’API lit réellement (`workplaceType`/`type`) — les anciens noms pluriels étaient ignorés en silence ; `country` n’est plus envoyé (un pays configuré produit un avertissement nommant l’entrée). Les employeurs confidentiels tombent sur correspondance exacte de libellé (« Confidencial Seguros » survit), et `max_pages` est plafonné à 100 — l’API répond 400 au-delà de l’offset 10 000, et l’avertissement de troncature conseille désormais de resserrer les mots-clés.
+- **Workable garde tous les pays d’une offre multi-pays** : les sœurs sous une même URL d’offre se replient en une ligne (« London, United Kingdom · Romania · Poland · Croatia ») au lieu que le premier pays gagne.
+- **Liveness : une bannière sur sa propre ligne ne fait pas partie de la ligne au-dessus** — « Sign in if you want to apply » / « Get notified when this position is filled » sous une offre se lit comme la clause de clôture qu’elle est, tandis qu’un véritable « until filled » à cheval sur des lignes se lit toujours actif.
+- **Radancy lit un élément voisin `job-location`** dans le balisage de cartes legacy (les mises en page de la famille Barclays placent la localisation après `</a>`) — les lignes sans leur propre localisation restent vides plutôt que d’emprunter celle du voisin.
+- **Les liens de repli SmartRecruiters conservent le slug configuré** — une offre sans `ref` fiable synthétise son URL publique depuis le slug du tenant, jamais depuis le nom affiché.
+
+### Ajouté
+
+- Non-portés, documentés : le correctif amont `_http` proxy `fetchImpl` (web-ui n’a pas de branche proxy — le porter annulerait la vérification d’identité du garde DNS-rebinding et ajouterait une dépendance undici que le dépôt évite volontairement) ; `verify-ats` (+226 lignes) et `cv-facts` amont (web-ui implémente son propre scoring ATS et son analyse CV) ; le tableau de bord Go TUI du parent et ses scripts CLI ; un réordonnancement d’imports Teamtailor (cosmétique).
+
+### Notes
+
+- Lacune connue reportée en suivi : le tier `always_allow` du filtre de localisation du parent (le test consommateur workable survit à un bloc UK grâce à lui) n’existe pas dans web-ui ; le port exprime le même verdict consommateur via un test allow-list. Classé pour un changement séparé.
+
 ## [1.247.0] — 2026-10-09
 
 **La queue du balayage design CAR-49…58 est terminée — tous les mineurs et polishes restants, plus la carte sombre que la version précédente avait volontairement différée.**

@@ -57,6 +57,13 @@ export async function fetchSmartRecruiters(apiUrl, opts = {}) {
   let page = 0;
   let totalFound = null;
 
+  // The configured company slug: the tenant path segment the adapter spliced
+  // into this endpoint (`/v1/companies/<slug>/postings`). Fallback job links
+  // are synthesised from it (not from j.company.name, which is a display
+  // label) — see buildPublicUrl / #4770. Empty when the caller hands us a URL
+  // without that path shape, which just keeps the legacy display-name fallback.
+  const configuredSlug = (new URL(base).pathname.match(/\/v1\/companies\/([^/]+)/) || [])[1] || '';
+
   while (page < MAX_PAGES) {
     const url = `${base}${sep}limit=${PAGE_SIZE}&offset=${offset}`;
     let content;
@@ -89,7 +96,7 @@ export async function fetchSmartRecruiters(apiUrl, opts = {}) {
       console.error(`  ⚠ smartrecruiters: truncated at offset ${offset} (${all.length} jobs): ${err.message}`);
       break;
     }
-    const batch = content.map((j) => normalize(j));
+    const batch = content.map((j) => normalize(j, configuredSlug));
     all.push(...batch);
     if (totalFound == null && envelopeTotal != null) totalFound = envelopeTotal;
     // Stop conditions:
@@ -113,14 +120,17 @@ export async function fetchSmartRecruiters(apiUrl, opts = {}) {
  * The public site has no `/postings/` segment; carrying it over yields a 404,
  * which the liveness checker then reports as an expired posting (#2047).
  * SmartRecruiters resolves the page by id alone, so the trailing title slug is
- * cosmetic. If `ref` is missing or untrusted, synthesise the same shape from the
- * company slug + posting id; only then fall back to the raw applyUrl.
+ * cosmetic. If `ref` is missing or untrusted, synthesise the same shape from
+ * the configured company slug + posting id. The display name (j.company.name)
+ * is only a fallback for callers that do not supply a company slug — it is a
+ * label, not the tenant path segment, so slugifying it yields links the public
+ * site 404s (#4770). Last resort is the raw applyUrl.
  */
 function slugify(s) {
   return (s || '').toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-|-$/g, '');
 }
 
-export function buildPublicUrl(j) {
+export function buildPublicUrl(j, companySlug) {
   const slugified = slugify(j.name);
   if (typeof j.ref === 'string') {
     let parsedRef;
@@ -140,15 +150,15 @@ export function buildPublicUrl(j) {
     }
   }
   if (j.id) {
-    const companySlug = slugify(j.company?.name);
-    if (companySlug) {
-      return `https://jobs.smartrecruiters.com/${companySlug}/${j.id}${slugified ? `-${slugified}` : ''}`;
+    const fallbackSlug = companySlug || slugify(j.company?.name);
+    if (fallbackSlug) {
+      return `https://jobs.smartrecruiters.com/${fallbackSlug}/${j.id}${slugified ? `-${slugified}` : ''}`;
     }
   }
   return j.applyUrl || '';
 }
 
-function normalize(j) {
+function normalize(j, companySlug) {
   const locParts = [j.location?.city, j.location?.region, j.location?.country].filter(Boolean);
   const loc = locParts.join(', ');
   const isRemote = !!j.location?.remote || /remote|anywhere/i.test(loc) || /\bremote\b/i.test(j.name || '');
@@ -157,7 +167,7 @@ function normalize(j) {
     id: `sr-${j.id}`,
     title: j.name || '',
     company: j.company?.name || '',
-    url: buildPublicUrl(j),
+    url: buildPublicUrl(j, companySlug),
     salary: '',
     location: loc,
     isRemote,

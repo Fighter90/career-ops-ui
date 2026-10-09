@@ -9,6 +9,26 @@
 ---
 
 
+## [1.248.0] — 2026-10-09
+
+**父级对齐：移植五个上游 provider/liveness 修复——迁移了 API 的招聘版继续工作，独立一行的关闭横幅不再被漏读。**
+
+### 修复
+
+- **Gupy 跟随 API 迁至 `portal.gupy.io`**，并发送 API 真正读取的过滤参数名（`workplaceType`/`type`）——旧的复数名称被静默忽略；`country` 不再发送（配置的国家会以条目名绘制警告）。机密雇主按精确标签匹配丢弃（「Confidencial Seguros」保留），`max_pages` 上限 100——API 在 offset 10,000 之后返回 400，截断警告现在建议收窄关键词而非提高上限。
+- **Workable 保留多国职位的所有国家**：同一职位 URL 下的兄弟条目折叠为一行（「London, United Kingdom · Romania · Poland · Croatia」），不再由第一个国家获胜。
+- **Liveness：独立一行的横幅不属于上一行**——职位下方的「Sign in if you want to apply」/「Get notified when this position is filled」被读作它本来的关闭从句，而跨行的真正「until filled」仍读为活跃。
+- **Radancy 读取旧版卡片标记中的兄弟 `job-location` 元素**（Barclays 家族布局把地点放在 `</a>` 之后）——没有自己地点的行保持为空，而不是借用邻居的。
+- **SmartRecruiters 回退职位链接保留配置的 slug**——缺少/不可信 `ref` 的职位从租户 slug 合成公开 URL，绝不用显示名。
+
+### 新增
+
+- 记录在案的 no-port：上游 `_http` 代理 `fetchImpl` 修复（web-ui 没有代理分支——移植会使 DNS-rebinding 守卫的身份检查失效，并加入本仓库刻意避开的 undici 依赖）；上游 `verify-ats`（+226 行）与 `cv-facts`（web-ui 实现自己的 ATS 评分与 CV 解析）；父级仪表盘 Go TUI 与 CLI 脚本；Teamtailor 的 import 重排（表面性）。
+
+### 备注
+
+- 已知缺口列为后续：父级 location 过滤器的 `always_allow` 层级（workable 的消费者测试靠它挺过 UK 封锁）在 web-ui 中不存在；移植以 allow-list 测试表达了相同的消费者结论。已立项为单独变更。
+
 ## [1.247.0] — 2026-10-09
 
 **CAR-49…58 设计巡检的收尾完成——剩余所有次要与打磨项，加上上一版有意推迟的深色地图。**

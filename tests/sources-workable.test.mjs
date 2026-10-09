@@ -28,6 +28,7 @@ import {
   resolveWorkableSlug,
   meta,
 } from '../server/lib/sources/workable.mjs';
+import { buildLocationFilter } from '../server/lib/location-filter.mjs';
 
 // The v3 endpoint the adapter builds (locked by adapter-registry.test.mjs).
 const ADAPTER_V3_URL = 'https://apply.workable.com/api/v3/accounts/optimile/jobs?details=true';
@@ -125,6 +126,118 @@ test('workable: state is folded into the location when present', () => {
     }],
   });
   assert.equal(jobs[0].location, 'Austin, TX, USA');
+});
+
+// ── multi-country fan-out (parent parity b07171d1, #4806) ──────────────
+// The widget API returns a multi-country posting as ONE ENTRY PER LOCATION,
+// all sharing the same shortlink and differing only in city/state/country.
+// Real shape, captured live upstream 2026-08-21 from
+//   apply.workable.com/api/v1/widget/accounts/digitalgenius?details=true
+// ("Implementation Engineer" 801183DB79). First-wins-on-URL dedup kept only
+// the first location, so an EU allow-list dropped a posting that had three
+// viable EU alternatives. The payload interleaves two fanned-out postings —
+// the fold must key on the URL, not on adjacency.
+const FAN_OUT_PAYLOAD = {
+  name: 'DigitalGenius',
+  jobs: [
+    {
+      title: 'Implementation Engineer', shortcode: '801183DB79',
+      shortlink: 'https://apply.workable.com/j/801183DB79',
+      city: 'London', country: 'United Kingdom', published_on: '2026-06-30',
+    },
+    {
+      title: 'Solutions Engineer', shortcode: 'E8064EA4C7',
+      shortlink: 'https://apply.workable.com/j/E8064EA4C7',
+      country: 'Romania', published_on: '2026-06-12',
+    },
+    {
+      title: 'Implementation Engineer', shortcode: '801183DB79',
+      shortlink: 'https://apply.workable.com/j/801183DB79',
+      country: 'Romania', published_on: '2026-06-30',
+    },
+    {
+      title: 'Implementation Engineer', shortcode: '801183DB79',
+      shortlink: 'https://apply.workable.com/j/801183DB79',
+      country: 'Poland', published_on: '2026-06-30',
+    },
+    {
+      title: 'Solutions Engineer', shortcode: 'E8064EA4C7',
+      shortlink: 'https://apply.workable.com/j/E8064EA4C7',
+      country: 'Portugal', published_on: '2026-06-12',
+    },
+    {
+      title: 'Implementation Engineer', shortcode: '801183DB79',
+      shortlink: 'https://apply.workable.com/j/801183DB79',
+      country: 'Croatia', published_on: '2026-06-30',
+    },
+  ],
+};
+
+test('workable: a multi-country fan-out keeps all of its locations (interleaved postings stay separate)', () => {
+  const jobs = parseWorkableWidget(FAN_OUT_PAYLOAD);
+  assert.equal(
+    jobs.length,
+    2,
+    `each fan-out must collapse into one job, got ${jobs.length}: ${JSON.stringify(jobs.map((j) => `${j.title}@${j.location}`))}`,
+  );
+  const impl = jobs.find((j) => j.title === 'Implementation Engineer');
+  assert.equal(impl?.location, 'London, United Kingdom · Romania · Poland · Croatia',
+    'every fanned-out location must survive, joined in payload order');
+  // The interleaved second posting must not absorb the first one's locations.
+  const solutions = jobs.find((j) => j.title === 'Solutions Engineer');
+  assert.equal(solutions?.location, 'Romania · Portugal',
+    'interleaved fan-outs are keyed on URL, not adjacency');
+});
+
+test('workable: fanned-out siblings take every non-location field from the first entry', () => {
+  const jobs = parseWorkableWidget(FAN_OUT_PAYLOAD);
+  const impl = jobs.find((j) => j.title === 'Implementation Engineer');
+  assert.equal(impl?.id, 'wk-801183DB79');
+  assert.equal(impl?.url, 'https://apply.workable.com/j/801183DB79');
+  assert.equal(impl?.date, '2026-06-30');
+});
+
+test('workable: repeated siblings collapse and location-less siblings add nothing', () => {
+  const jobs = parseWorkableWidget({
+    jobs: [
+      { title: 'Ops Lead', shortlink: 'https://apply.workable.com/j/N1', country: 'Spain' },
+      { title: 'Ops Lead', shortlink: 'https://apply.workable.com/j/N1', country: 'Spain' },
+      { title: 'Ops Lead', shortlink: 'https://apply.workable.com/j/N1', city: '', country: '' },
+      { title: 'Ops Lead', shortlink: 'https://apply.workable.com/j/N1', country: 'Italy' },
+    ],
+  });
+  assert.equal(jobs.length, 1);
+  assert.equal(jobs[0].location, 'Spain · Italy', 'the cell never says "Spain · Spain"');
+});
+
+test('workable: a location-less remote fan-out keeps its "Remote" cell (no fallback regression)', () => {
+  const jobs = parseWorkableWidget({
+    jobs: [
+      { title: 'Remote Dev', shortlink: 'https://apply.workable.com/j/R1', telecommuting: true },
+      { title: 'Remote Dev', shortlink: 'https://apply.workable.com/j/R1', telecommuting: true },
+    ],
+  });
+  assert.equal(jobs.length, 1);
+  assert.equal(jobs[0].location, 'Remote');
+  assert.equal(jobs[0].isRemote, true);
+});
+
+// The point of the fix: ask the real consumer, not a reimplementation of it.
+// buildLocationFilter (location-filter.mjs) is exactly what en-scanner.mjs
+// runs over every emitted location cell. NOTE on the port: the parent's check
+// drives its always_allow tier (which beats `block`); web-ui's filter has no
+// always_allow tier, so the same consumer verdict is expressed through the
+// allow-list tier instead — an EU allow-list keeps the merged cell and still
+// rejects the pre-fix London-only string. (A web-ui `block: ['United Kingdom']`
+// rule is substring matching over the whole cell and would reject the merged
+// cell too — that is a location-filter.mjs capability gap, out of scope here.)
+test('workable: the merged location survives a location_filter that rejects the pre-fix string', () => {
+  const euFilter = buildLocationFilter({ allow: ['Romania', 'Poland', 'Croatia'] });
+  const preFix = 'London, United Kingdom';
+  const merged = parseWorkableWidget(FAN_OUT_PAYLOAD)
+    .find((j) => j.title === 'Implementation Engineer')?.location;
+  assert.equal(euFilter(preFix), false, 'pre-fix cell must be rejected by the EU allow-list');
+  assert.equal(euFilter(merged), true, 'merged cell must survive the EU allow-list');
 });
 
 // ── large account: the whole point of the widget switch ────────────────

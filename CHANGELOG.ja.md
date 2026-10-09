@@ -8,6 +8,26 @@
 
 ---
 
+## [1.248.0] — 2026-10-09
+
+**親パリティ：上流のプロバイダー/liveness 修正を5件ポート — API を移したボードは動作し続け、独立行のクローズバナーを見逃しません。**
+
+### 修正
+
+- **Gupy は API を `portal.gupy.io` に追従**し、API が実際に読むフィルター名（`workplaceType`/`type`）を送信 — 旧複数形の名前は黙って無視されていました。`country` は送信されず、設定された国は送信の代わりに警告を出します。Confidential 雇用主はラベル完全一致でドロップ（「Confidencial Seguros」は存続）し、`max_pages` は 100 に上限 — API は offset 10,000 を超えると 400 を返すため、切り詰め警告は上限引き上げではなくキーワード絞り込みを提案します。
+- **Workable は複数国の求人の全ての国を保持**：同じ求人 URL の兄弟は 1 行に折りたたまれ（「London, United Kingdom · Romania · Poland · Croatia」）、最初の国が勝つのではなくなりました。
+- **Liveness：独立行のバナーは上の行の一部ではありません** — 求人下の「Sign in if you want to apply」/「Get notified when this position is filled」はクローズ節として読まれ、行をまたぐ本物の「until filled」は今までどおりアクティブと読まれます。
+- **Radancy はレガシーカードmarkupの兄弟 `job-location` 要素を読みます**（Barclays 系レイアウトは場所を `</a>` の後に置く）— 自分の場所を持たない行は隣から借りず空のままです。
+- **SmartRecruiters のフォールバック求人リンクは設定済みスラッグを保持** — 信頼できない `ref` のない求人は、表示名ではなくテナントのスラッグから公開 URL を合成します。
+
+### 追加
+
+- ノーポートを文書化：上流 `_http` プロキシ `fetchImpl` 修正（web-ui にはプロキシ分岐がなく、ポートすると DNS-rebinding ガードの同一性チェックが無効化され、リポジトリが意図的に避ける undici 依存が追加されます）；上流 `verify-ats`（+226 行）と `cv-facts`（web-ui は独自の ATS スコアリングと CV パースを実装）；親のダッシュボード Go TUI と CLI スクリプト；Teamtailor の import 並べ替え（表面的）。
+
+### メモ
+
+- 既知のギャップをフォローアップへ：親の location フィルター `always_allow` ティア（workable の消費者テストはこれで UK ブロックを生き延びる）は web-ui に存在しません；ポートは同じ消費者判定を許可リストテストで表現しました。別変更として記録済み。
+
 ## [1.247.0] — 2026-10-09
 
 **CAR-49…58 デザインスイープの尻尾が完了 — 残る minor/polish 所見のすべてと、前リリースが意図的に見送ったダークマップを含みます。**

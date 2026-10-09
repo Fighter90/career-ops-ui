@@ -54,6 +54,32 @@ test('classifyLiveness: a hard-expired banner → expired even on 200', () => {
   assert.equal(r.code, 'expired_body');
 });
 
+test('classifyLiveness: a banner on its own line is not part of the line above (parent 880a1cb4)', () => {
+  // Chrome above a banner often ends without punctuation, so joined lines put
+  // its "if"/"when" within ten words of the banner's end. The clause test now
+  // sees the line break, and a closed posting with an Apply control reads
+  // expired — while a stated future closure ("until … filled") on its own
+  // line still stays active.
+  const body = (text) => `${LONG_BODY}\n${text}`;
+  const closed = classifyLiveness({
+    status: 200,
+    finalUrl: 'https://careers.example.com/job/123',
+    bodyText: body('Sign in if you have an account\nThis job has been filled.'),
+    applyControls: ['Apply'],
+  });
+  assert.equal(closed.result, 'expired');
+  assert.equal(closed.code, 'expired_body');
+
+  const open = classifyLiveness({
+    status: 200,
+    finalUrl: 'https://careers.example.com/job/123',
+    bodyText: body('Applications will be accepted until the position has been filled.'),
+    applyControls: ['Apply'],
+  });
+  assert.equal(open.result, 'active');
+  assert.equal(open.code, 'apply_control_visible');
+});
+
 test('classifyLiveness: 200, content present, no apply control → uncertain (conservative)', () => {
   const r = classifyLiveness({ status: 200, bodyText: LONG_BODY, applyControls: [] });
   assert.equal(r.result, 'uncertain');

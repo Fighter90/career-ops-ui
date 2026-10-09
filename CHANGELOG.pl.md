@@ -9,6 +9,26 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.248.0] — 2026-10-09
+
+**Paritet z rodzicem: pięć poprawek dostawców/liveness przeniesionych — tablice, które przeniosły API, dalej działają, a baner zamknięcia w osobnej linii nie umyka.**
+
+### Naprawiono
+
+- **Gupy podąża za API na `portal.gupy.io`** i wysyła nazwy filtrów, które API faktycznie czyta (`workplaceType`/`type`) — stare liczby mnogie były po cichu ignorowane; `country` nie jest już wysyłane (skonfigurowany kraj rysuje ostrzeżenie z nazwą wpisu). Poufni pracodawcy wypadają przy dokładnym dopasowaniu etykiety („Confidencial Seguros” przeżywa), a `max_pages` ma sufit 100 — API odpowiada 400 po offsecie 10 000, a ostrzeżenie o obcięciu doradza zawężenie słów kluczowych.
+- **Workable zachowuje wszystkie kraje oferty wielokrajowej**: rodzeństwo pod tym samym URL-em zadania składa się w jeden wiersz („London, United Kingdom · Romania · Poland · Croatia”) zamiast wygrywać pierwszy kraj.
+- **Liveness: baner w osobnej linii nie jest częścią linii powyżej** — „Sign in if you want to apply” / „Get notified when this position is filled” pod ofertą czyta się jako klauzulę zamknięcia, a prawdziwe „until filled” przez linie nadal czyta aktywne.
+- **Radancy czyta elementy-rodzeństwo `job-location`** w legacy-markupie kart (układy rodziny Barclays kładą lokalizację po `</a>`) — wiersze bez własnej lokalizacji zostają puste zamiast pożyczać sąsiada.
+- **Fallbackowe linki SmartRecruiters zachowują skonfigurowany slug** — oferta bez zaufanego `ref` syntetyzuje publiczny URL ze sluga tenanta, nigdy z nazwy wyświetlanej.
+
+### Dodano
+
+- No-porty udokumentowane: nadrzędna poprawka `_http` proxy `fetchImpl` (web-ui nie ma gałęzi proxy — port unieważniłby sprawdzanie tożsamości straży DNS-rebinding i dodał zależność undici, której repo świadomie unika); nadrzędne `verify-ats` (+226 linii) i `cv-facts` (web-ui ma własny scoring ATS i parsowanie CV); nadrzędny dashboard Go TUI i skrypty CLI; przestawienie importów w Teamtailor (kosmetyka).
+
+### Uwagi
+
+- Znana luka jako follow-up: tier `always_allow` nadrzędnego filtra lokalizacji (test konsumencki workable przeżywa dzięki niemu blok UK) nie istnieje w web-ui; port wyraził ten sam werdykt konsumenta testem allow-list. Zapisane jako osobna zmiana.
+
 ## [1.247.0] — 2026-10-09
 
 **Ogon przeglądu senior-design CAR-49…58 domknięty — wszystkie pozostałe minor/polish oraz ciemna mapa, którą poprzednie wydanie celowo odłożyło.**
