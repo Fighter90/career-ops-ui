@@ -35,8 +35,9 @@ const WHITELIST = new Set([
 // Katakana / Hangeul / non-Latin scripts all fail this test.
 const PURE_LATIN = /^[A-Za-z][A-Za-z0-9\s\-/·:.,()&]*$/;
 
-// Locales whose UX expects native (non-Latin) script.
-const NON_LATIN_LOCALES = ['ru', 'ko', 'ja', 'zh-CN', 'zh-TW', 'uk', 'ar', 'hi'];
+// Locales whose UX expects native (non-Latin) script. ta joins with
+// v1.245.0 — Tamil script, like Devanagari for hi.
+const NON_LATIN_LOCALES = ['ru', 'ko', 'ja', 'zh-CN', 'zh-TW', 'uk', 'ar', 'hi', 'ta'];
 
 // Adapt the assembled key-major DICT into Map<key, Map<locale, value>>.
 // Alias keys (`{ '@alias': … }`) carry no per-locale strings of their own
@@ -50,7 +51,7 @@ function parseDict() {
   return map;
 }
 
-test('NEW-D1: no Latin-only *.title leaks on ru / ja / ko / zh-CN / zh-TW / uk / ar / hi', () => {
+test('NEW-D1: no Latin-only *.title leaks on ru / ja / ko / zh-CN / zh-TW / uk / ar / hi / ta', () => {
   const dict = parseDict();
   const failures = [];
   for (const [key, locales] of dict.entries()) {

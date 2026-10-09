@@ -18,7 +18,7 @@ import { dirname, resolve } from 'node:path';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const HELP = resolve(ROOT, 'docs', 'help');
-const LOCALES = ['en', 'es', 'pt-BR', 'ko-KR', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi'];
+const LOCALES = ['en', 'es', 'pt-BR', 'ko-KR', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi', 'ta'];
 const read = (lang) => readFileSync(resolve(HELP, `${lang}.md`), 'utf8');
 
 /** The Hermes §30 slice: from its H2 up to the next `^## ` heading (or EOF). */

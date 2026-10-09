@@ -1,6 +1,6 @@
 /* global window, localStorage */
 /**
- * Tiny i18n module. 17 languages, key-based translations, persisted in
+ * Tiny i18n module. 18 languages, key-based translations, persisted in
  * localStorage. Falls back to English (and to the key itself) when missing.
  *
  * Usage in views:
@@ -36,6 +36,12 @@ window.I18n = (function () {
     { code: 'it',    label: 'Italiano',   flag: '🇮🇹' },
     { code: 'tr',    label: 'Türkçe',     flag: '🇹🇷' },
     { code: 'hi',    label: 'हिन्दी',      flag: '🇮🇳' },
+    // v1.245.0 (Phase 5) — Tamil, the 18th locale. Flag follows the
+    // language-community pattern the table already uses (hi → 🇮🇳, ar → 🇸🇦):
+    // the primary Tamil-speaking base is Tamil Nadu, India (~70M speakers,
+    // Tamil is an official Indian language), vs ~4M in Sri Lanka. Documented
+    // here so the choice isn't relitigated every release.
+    { code: 'ta',    label: 'தமிழ்',      flag: '🇮🇳' },
   ];
 
   // I18N-EXPAND (v1.70.0) — locales whose script is written right-to-left.
@@ -84,6 +90,9 @@ window.I18n = (function () {
     if (browser.startsWith('it')) return 'it';
     if (browser.startsWith('tr')) return 'tr';
     if (browser.startsWith('hi')) return 'hi';
+    // Tamil — plain 'ta' plus the India and Sri-Lanka region tags (Tamil
+    // is official in both; script is identical, one locale covers them).
+    if (browser.startsWith('ta')) return 'ta';
     return 'en';
   }
 

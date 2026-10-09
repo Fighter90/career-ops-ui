@@ -1,0 +1,20 @@
+# மாற்றப் பதிவு (தமிழ்)
+
+> இந்த மாற்றப் பதிவு v1.245.0-இல் தொடங்குகிறது — தமிழ் மொழியாக்கம் சேர்க்கப்பட்ட பதிப்பு. முந்தைய பதிப்புகளுக்கு [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md) பார்க்கவும்.
+
+மொழிபெயர்ப்புகள்: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md) · [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.es.md) · [🇧🇷 Português](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.pt-BR.md) · [🇰🇷 한국어](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ko-KR.md) · [🇯🇵 日本語](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ja.md) · [🇷🇺 Русский](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ru.md) · [🇨🇳 简体中文](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.zh-CN.md) · [🇹🇼 繁體中文](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.zh-TW.md) · [🇫🇷 Français](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.fr.md) · [🇵🇱 Polski](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.pl.md) · [🇺🇦 Українська](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.uk.md) · [🇩🇰 Dansk](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.da.md) · [🇸🇦 العربية](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ar.md) · [🇩🇪 Deutsch](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.de.md) · [🇮🇹 Italiano](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.it.md) · [🇹🇷 Türkçe](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.tr.md) · [🇮🇳 हिन्दी](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.hi.md)
+
+---
+
+## [1.244.1] — 2026-10-08
+
+### சரி செய்யப்பட்டது
+
+- **ஸ்கேன் குறியீடுகள் உண்மையான மதிப்புகளை அறிவிக்கின்றன.** பூஸ்ட்/பிட்/ஸ்கோர் குறியீடுகளின் accessible பெயர்கள் மூல டிக்ட் டெம்ப்ளேட்களை ("Fit: {band}", "Boosted by {by}") கசிவு செய்தன — `{band}`/`{by}`/`{score}` இப்போது மாற்றப்படுகின்றன (பேண்ட் சொல், ஊக்குவிப்பான் முக்கிய சொல், எண் மதிப்பெண்). [உயர் a11y; v1.244.0 ரிக்ரெஷன் சுற்றில் நேரடியாகப் பிடிக்கப்பட்டது]
+- **தலைப்பு pipes சரியாகப் பிரிகின்றன.** «C++ | Rust | Go Developer | Onsite» போன்ற 4-பகுதி தலைப்பு "Go Developer"-ஐ ஒரு "நாடாக" எடுக்காது — பிரிப்பு அந்தப் பகுதி ஒரு உண்மையான நாடாகத் தீர்க்கப்பட வேண்டும் (கவனமான `Countries.detectCountry`).
+- **Meta தேதிகள் ஒவ்வொரு வரிசையிலும் render ஆகும்.** `daysSince` தேதி-மட்டும் ISO-ஐ ஏற்றது, ஆனால் API தேதியிடப்பட்ட வரிசைகளில் ~83% க்கு முழு timestamps-ஐ வழங்குகிறது — அந்த வரிசைகளில் தேதி பகுதி தோன்றவில்லை.
+
+### குறிப்புகள்
+
+- #/scan-இன் மீதியெல்லாம் v1.244.0-ஐப் போலவே — மேலே உள்ள மூன்று ரிக்ரெஷன் சரிசெய்தல்கள் மட்டுமே மாற்றப்பட்டன.
+- வேண்டுமென்றே செய்யப்படாதது: URL-hash வடிப்பான் நிலை, விசைப்பலகை வரிசை வழிசெலுத்தல், `5 lakhs INR` பாகுபடுத்தல் (எல்லாம் ஏற்கனவே உள்ள தொடர் பணிகள்).
