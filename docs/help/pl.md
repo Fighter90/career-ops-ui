@@ -622,6 +622,8 @@ Semantyka identyczna z kanonicznym `scan.mjs` career-ops:
   nie są karane).
 - Dopasowanie słowa kluczowego `block` → **odrzucona** (blok ma pierwszeństwo przed
   allow).
+- Dopasowanie w `always_allow` → **przechodzi**, nawet gdy dopasowuje się też `block` — zawór dla wielokrajowych ciągów lokalizacji (v1.248.1).
+- Dopasowanie w `block_hard` → **odrzucone**, i `always_allow` nie może tego nadpisać.
 - `allow` puste → przechodzi (blok ją już oczyścił).
 - `allow` niepuste → musi pasować **do co najmniej jednego** słowa kluczowego.
 

@@ -8,6 +8,20 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.248.1] — 2026-10-09
+
+**`location_filter` gains the parent's `always_allow` and `block_hard` tiers (CAR-60) — a multi-country location string survives a blocked-sibling list, and an explicit hard block can no longer be rescued.**
+
+### Fixed
+
+- `always_allow` beats `block`: with `block: [romania, poland, croatia]` and `always_allow: [united kingdom]`, the workable merged cell «London, United Kingdom · Romania · Poland · Croatia» passes — the home region is an option (workable #4806's consumer case, now in the parent's own form).
+- `block_hard` beats `always_allow`: country-level terms that must never be rescued by an always_allow hit elsewhere in the string.
+- `strict: true` now counts `block_hard` as a restricting tier; the `docs/help` location_filter section documents both tiers ×18.
+
+### Notes
+
+- Deliberately not ported this time: the parent's word-boundary location keyword compiler and its USPS state-name table (web-ui keeps case-insensitive substring matching; the table serves US-centric configs — file under CAR-60 if a US config needs it). The workable consumer test's interim allow-list form stays as a second verdict alongside the new parent-form check.
+
 ## [1.248.0] — 2026-10-09
 
 **Parent parity: five upstream provider/liveness fixes ported — boards that moved their APIs keep working, and a closed-posting banner on its own line is no longer missed.**

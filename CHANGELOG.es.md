@@ -10,6 +10,20 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 
 ---
 
+## [1.248.1] — 2026-10-09
+
+**`location_filter` gana los niveles `always_allow` y `block_hard` del padre (CAR-60): una cadena de ubicación multipaís sobrevive a una lista de bloqueo de hermanos, y un bloqueo explícito duro ya no puede rescatarse.**
+
+### Corregido
+
+- `always_allow` vence a `block`: con `block: [romania, poland, croatia]` y `always_allow: [united kingdom]`, la celda combinada de workable «London, United Kingdom · Romania · Poland · Croatia» pasa: la región propia es una opción (el caso consumidor de workable #4806, ahora en forma paterna).
+- `block_hard` vence a `always_allow`: términos de nivel país que nunca deben rescatarse por un acierto de always_allow en otra parte de la cadena.
+- `strict: true` ya cuenta `block_hard` como nivel restrictivo; la sección `location_filter` de docs/help documenta ambos niveles ×18.
+
+### Notas
+
+- No portado esta vez a propósito: el compilador de palabras clave de ubicación con límites de palabra del padre y su tabla de estados USPS (web-ui mantiene coincidencia de subcadena; la tabla sirve a configuraciones centradas en EE. UU. — archívalo bajo CAR-60 si hace falta). La forma de lista de permisos del test consumidor de workable queda como segundo veredicto junto al nuevo de forma paterna.
+
 ## [1.248.0] — 2026-10-09
 
 **Paridad con el padre: cinco correcciones de proveedores/liveness portadas — los tableros que movieron su API siguen funcionando y un banner de cierre en su propia línea ya no se pasa por alto.**

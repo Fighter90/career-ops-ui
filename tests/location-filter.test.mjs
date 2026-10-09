@@ -98,3 +98,46 @@ test('strict:true with no restricting tier is inert; block-only strict fails clo
 test('strict must be literally true — a truthy string does not opt in', () => {
   assert.equal(buildLocationFilter({ allow: ['remote'], strict: 'yes' })(''), true);
 });
+
+// ── v1.248.1 (CAR-60) — the parent's always_allow / block_hard tiers ────────
+// Parent semantics (scan.mjs #652/#4549): block_hard match → reject (the only
+// tier always_allow cannot override); always_allow match → pass (takes
+// precedence over block); block match → reject; allow empty → pass; allow
+// non-empty → ≥ 1 keyword.
+
+test('location_filter: always_allow beats block (the workable merged-cell case)', () => {
+  const f = buildLocationFilter({
+    block: ['romania', 'poland', 'croatia'],
+    always_allow: ['united kingdom'],
+  });
+  assert.equal(f('London, United Kingdom · Romania · Poland · Croatia'), true,
+    'the home region (UK) is an option — the blocked countries in the same cell do not sink it');
+  assert.equal(f('Warsaw, Poland'), false, 'a pure blocked location still rejects');
+});
+
+test('location_filter: block_hard beats always_allow', () => {
+  const f = buildLocationFilter({
+    block_hard: ['russia'],
+    always_allow: ['remote'],
+    allow: ['remote'],
+  });
+  assert.equal(f('Remote (Russia)'), false, 'block_hard is the one tier always_allow cannot override');
+  assert.equal(f('Remote (Berlin)'), true, 'always_allow passes everything else');
+});
+
+test('location_filter: empty always_allow is inert', () => {
+  const f = buildLocationFilter({ block: ['india'], always_allow: [] });
+  assert.equal(f('Berlin'), true);
+  assert.equal(f('India'), false, 'block still works when always_allow is absent/empty');
+});
+
+test('location_filter: strict counts block_hard as a restricting tier', () => {
+  const f = buildLocationFilter({ block_hard: ['russia'], always_allow: ['remote'], strict: true });
+  assert.equal(f(''), false, 'a restricting tier is configured → an empty location rejects under strict');
+  assert.equal(f('Remote'), true);
+});
+
+test('location_filter: always_allow alone (no block) passes everything', () => {
+  const f = buildLocationFilter({ always_allow: ['united kingdom'] });
+  assert.equal(f('Tokyo, Japan'), true, 'no block tier → nothing to override');
+});

@@ -675,6 +675,8 @@ zum kanonischen career-ops `scan.mjs`:
   Daten werden nicht bestraft).
 - Eine `block`-Schlüsselwort-Übereinstimmung → **abgelehnt** (block hat
   Vorrang vor allow).
+- Ein `always_allow`-Treffer → **passt**, selbst wenn auch ein `block`-Treffer vorliegt — das Ventil für Mehrländer-Standortstrings (v1.248.1).
+- Ein `block_hard`-Treffer → **abgelehnt**, und `always_allow` kann das nicht überschreiben.
 - `allow` leer → passt (block hat es bereits durchgelassen).
 - `allow` nicht leer → muss **mindestens ein** Schlüsselwort treffen.
 

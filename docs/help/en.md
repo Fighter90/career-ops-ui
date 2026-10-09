@@ -637,6 +637,8 @@ Semantics, identical to the canonical career-ops `scan.mjs`:
   is not penalized).
 - A `block` keyword match → **rejected** (block takes precedence over
   allow).
+- An `always_allow` keyword match → **passes** even when a `block` keyword also matches — the escape hatch for multi-country location strings (v1.248.1).
+- A `block_hard` keyword match → **rejected**, and `always_allow` cannot override it.
 - `allow` empty → passes (block already cleared it).
 - `allow` non-empty → must match **at least one** keyword.
 

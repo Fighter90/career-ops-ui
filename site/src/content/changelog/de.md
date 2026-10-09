@@ -2,6 +2,20 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.248.1] — 2026-10-09
+
+**`location_filter` erhält die Parent-Tiers `always_allow` und `block_hard` (CAR-60) — ein Mehrfach-Länder-String überlebt eine Geschwister-Sperrliste, und eine explizite harte Sperre kann nicht mehr gerettet werden.**
+
+### Behoben
+
+- `always_allow` schlägt `block`: mit `block: [romania, poland, croatia]` und `always_allow: [united kingdom]` passiert die workable-Zusammenführung „London, United Kingdom · Romania · Poland · Croatia“ — die Heimatregion ist eine Option (der Workable-Consumer-Fall #4806, jetzt in Parent-Form).
+- `block_hard` schlägt `always_allow`: länderbezogene Begriffe, die nie durch einen always_allow-Treffer anderswo im String gerettet werden dürfen.
+- `strict: true` zählt `block_hard` als einschränkenden Tier; der `location_filter`-Abschnitt in docs/help dokumentiert beide Tiers ×18.
+
+### Hinweise
+
+- Bewusst diesmal nicht portiert: der Parent-Compiler für ortsbezogene Schlüssel mit Wortgrenzen und seine Tabelle der US-Bundesstaaten (web-ui behält Substring-Matching; die Tabelle dient US-zentrierten Konfigurationen — unter CAR-60 ablegen, falls nötig). Die Übergangs-Allow-List-Form des Workable-Consumer-Tests bleibt als zweites Urteil neben der neuen Parent-Form.
+
 ## [1.248.0] — 2026-10-09
 
 **Parent-Parität: fünf Upstream-Fixes für Provider/Liveness portiert — Boards, die ihre API umgezogen haben, arbeiten weiter, und ein Closing-Banner in eigener Zeile wird nicht mehr übersehen.**

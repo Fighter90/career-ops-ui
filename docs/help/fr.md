@@ -663,6 +663,8 @@ Sémantique, identique au `scan.mjs` canonique de career-ops :
   manquante n'est pas pénalisée).
 - Une correspondance de mot-clé `block` → **rejetée** (block prime sur
   allow).
+- Une correspondance `always_allow` → **passe** même quand un `block` correspond aussi — la soupape pour les chaînes de localisation multi-pays (v1.248.1).
+- Une correspondance `block_hard` → **rejetée**, et `always_allow` ne peut pas l’emporter.
 - `allow` vide → passe (block l'a déjà filtrée).
 - `allow` non vide → doit correspondre à **au moins un** mot-clé.
 

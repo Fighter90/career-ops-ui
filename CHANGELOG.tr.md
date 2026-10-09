@@ -2,6 +2,20 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.248.1] — 2026-10-09
+
+**`location_filter`, ebeveynin `always_allow` ve `block_hard` katmanlarını kazandı (CAR-60) — çok ülkeli bir konum dizisi kardeş-engel listesini atlatır ve açık bir sert blok artık kurtarılamaz.**
+
+### Düzeltildi
+
+- `always_allow`, `block`ü yener: `block: [romania, poland, croatia]` ve `always_allow: [united kingdom]` iken workable'ın birleştirilmiş hücresi „London, United Kingdom · Romania · Poland · Croatia“ geçer — ana bölge bir seçenektir (workable #4806'nın tüketici vakası, artık ebeveyn biçiminde).
+- `block_hard`, `always_allow`ü yener: dizinin başka bir yerindeki always_allow isabetiyle asla kurtarılmaması gereken ülke düzeyi terimler.
+- `strict: true` artık `block_hard`u kısıtlayıcı katman sayar; docs/help'teki location_filter bölümü her iki katmanı ×18 belgeledi.
+
+### Notlar
+
+- Bu sefer bilinçli olarak portlanmadı: ebeveynin kelime-sınırlı konum anahtar kelime derleyicisi ve USPS eyalet tablosu (web-ui substring eşleşmesini korur; tablo ABD merkezli yapılandırmalar içindir — gerekirse CAR-60 altına arşivleyin). workable tüketici testinin geçici allow-list biçimi, yeni ebeveyn biçiminin yanında ikinci bir yargı olarak kalır.
+
 ## [1.248.0] — 2026-10-09
 
 **Ebeveyn-parite: beş yukarı sağlayıcı/liveness düzeltmesi portlandı — API'sini taşıyan panolar çalışmaya devam ediyor ve kendi satırındaki bir kapanış bannerı artık gözden kaçmıyor.**

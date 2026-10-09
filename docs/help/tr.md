@@ -655,6 +655,8 @@ ile aynı olan semantik:
   cezalandırılmaz).
 - Bir `block` anahtar kelime eşleşmesi → **reddedilir** (block, allow'a
   göre önceliklidir).
+- `always_allow` eşleşmesi → **geçer**, bir `block` eşleşmesi de olsa — çok ülkeli konum dizeleri için kaçış kapısı (v1.248.1).
+- `block_hard` eşleşmesi → **reddedilir** ve `always_allow` bunu geçersiz kılamaz.
 - `allow` boş → geçer (block onu zaten temizledi).
 - `allow` boş değil → **en az bir** anahtar kelimeyle eşleşmelidir.
 

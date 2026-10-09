@@ -634,6 +634,8 @@ Semantik, identisk med den kanoniske career-ops `scan.mjs`:
   straffes ikke).
 - Et `block`-nøgleordsmatch → **afvist** (block har forrang over
   allow).
+- Et `always_allow`-match → **består**, selv når et `block`-match også rammer — ventilen til flernations-lokationsstrenge (v1.248.1).
+- Et `block_hard`-match → **afvist**, og `always_allow` kan ikke tilsidesætte det.
 - `allow` tom → består (block har allerede ryddet den).
 - `allow` ikke-tom → skal matche **mindst ét** nøgleord.
 

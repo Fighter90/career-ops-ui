@@ -640,6 +640,8 @@ Semantica, identica alla `scan.mjs` canonica di career-ops:
   non sono penalizzati).
 - Una corrispondenza con keyword `block` → **rifiutata** (block ha precedenza su
   allow).
+- Una corrispondenza `always_allow` → **passa** anche quando corrisponde anche un `block` — la via di fuga per le stringhe di localizzazione multipaese (v1.248.1).
+- Una corrispondenza `block_hard` → **rifiutata**, e `always_allow` non può prevalere.
 - `allow` vuoto → passa (block l'ha già lasciata passare).
 - `allow` non vuoto → deve corrispondere ad **almeno una** keyword.
 

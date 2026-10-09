@@ -589,6 +589,8 @@ location_filter:
 - `location_filter` 없음 → 모든 위치 통과(기본값).
 - 위치가 비어 있음/없음 → 통과(누락 데이터는 불이익 없음).
 - `block` 일치 → **거부**(block이 allow보다 우선).
+- `always_allow` 일치 → **통과**. `block` 일치가 있어도 우선합니다 — 다국적 위치 문자열을 위한 안전판입니다(v1.248.1).
+- `block_hard` 일치 → **거부**. `always_allow`도 이것을 재정의할 수 없습니다.
 - `allow` 비어 있음 → 통과(block이 이미 거름).
 - `allow` 비어 있지 않음 → **최소 한 개** 키워드와 일치해야 함.
 

@@ -609,6 +609,8 @@ Filtra as vagas escaneadas pela **localização** (substring, sem diferenciar ma
 - Sem `location_filter` → todas as localizações passam (padrão).
 - Localização vazia/ausente → passa (dado faltante não é penalizado).
 - Match em `block` → **rejeitada** (block tem precedência sobre allow).
+- Uma correspondência em `always_allow` → **passa** mesmo quando um `block` também corresponde — a válvula de escape para strings de localização multipaís (v1.248.1).
+- Uma correspondência em `block_hard` → **rejeitada**, e `always_allow` não pode sobrepor isso.
 - `allow` vazio → passa (block já filtrou).
 - `allow` não vazio → precisa casar **ao menos uma** palavra-chave.
 

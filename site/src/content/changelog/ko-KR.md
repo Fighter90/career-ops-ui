@@ -8,6 +8,20 @@
 
 ---
 
+## [1.248.1] — 2026-10-09
+
+**`location_filter`에 부모의 `always_allow`와 `block_hard` 티어가 추가됐습니다(CAR-60) — 다국적 위치 문자열이 형제 차단 목록을 생존하고, 명시적 하드 차단은 더 이상 구제되지 않습니다.**
+
+### 수정
+
+- `always_allow`가 `block`를 이깁니다: `block: [romania, poland, croatia]`와 `always_allow: [united kingdom]`일 때 workable 병합 셀 「London, United Kingdom · Romania · Poland · Croatia」는 통과 — 홈 리전이 옵션에 있습니다(workable #4806의 소비자 케이스, 이제 부모 형태로).
+- `block_hard`가 `always_allow`를 이깁니다: 문자열 어디선가 always_allow 적중으로 구제되어서는 안 되는 국가 수준 용어입니다.
+- `strict: true`는 이제 `block_hard`를 제한 티어로 계산합니다; docs/help의 location_filter 섹션에 두 티어를 ×18로 문서화했습니다.
+
+### 참고
+
+- 이번에는 의도적으로 미포팅: 부모의 단어 경계 로케이션 키워드 컴파일러와 USPS 주 이름 테이블(web-ui는 부분 일치 유지; 테이블은 미국 중심 설정용 — 필요하면 CAR-60으로). workable 소비자 테스트의 과도 allow-list 형식은 새 부모 형식과 함께 두 번째 판정으로 남습니다.
+
 ## [1.248.0] — 2026-10-09
 
 **부모 패리티: 업스트림 제공자/liveness 수정 5건 포팅 — API를 옮긴 보드도 계속 작동하고, 독립 줄의 마감 배너가 더 이상 놓치지 않습니다.**
