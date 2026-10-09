@@ -9,6 +9,27 @@
 ---
 
 
+## [1.248.3] — 2026-10-10
+
+**回归轮续篇：评估定时器在任何情况下都无法再把无名 Telegram 垃圾存为报告，QA 清理不再删除真实 Telegram 职位，地图署名重新可见，仪表盘芯片对比度 ≥ 4.5:1。**
+
+### 修复
+
+- **auto-pipeline 在保存前验证**：没有 0–5 分数或缺 A–G 块的报告在 evaluate 步骤终止运行（SSE 载荷带 `rejected: true`）——不写报告文件、不加 tracker 行。通过了 v1.248.2 长度门的 t.me 条目在那版之后又产生了两个垃圾；现在无名条目以 `company/role not identifiable` 拒绝。
+- **`guessCompanyRole` 不再从即时通讯主机捏造公司**——`t.me`、`telegram.me`、`vk.com`、`linkedin.com` 等在 EMPTY_DOMAINS：Telegram 帖子回退到频道名，无名条目被拒绝而不是存为 `unknown-role`。
+- **`post-qa-cleanup` 先读头部分数**：auto-pipeline 保存前会剥离 SCORE_SUMMARY 块，因此旧的仅-summary 检查把每条已保存的 Telegram 职位判为垃圾——生产 41 个中 8 个头部有分数，`--apply` 本会删掉它们。头部分数（经 `parseReportHeader`）现在是主信号；块作为后备。dry-run 逐文件打印原因。
+- **#/map 的 Leaflet 署名可见**——docs FAB 曾遮住它（违反 OSM 许可证）；角落抬高 96px。
+- **仪表盘芯片对比度 ≥ 4.5:1**——`dash-chip` 标签与 `--manual` 变体改用 `--foggy-strong`（此前 4.31:1）。
+
+### 新增
+
+- **auto-pipeline 失败在 SSE 错误中携带 `rejected: true`**——服务端评估定时器用该标志跳过 pipeline 条目，而不是每 2 小时重试。
+
+### 备注
+
+- ar/ja 漂移在重跑中**未再现**（见 v1.248.2）。
+- 生产清理仍等待用户明确「是」（CAR-61c）；本次修复后清理已无法删除真实 Telegram 职位。
+
 ## [1.248.2] — 2026-10-10
 
 **回归轮：评估定时器不再把 pipeline 垃圾变成「Last evaluation」，SCORE 解析扛得住真实格式，跟踪器终于说你的语言。**

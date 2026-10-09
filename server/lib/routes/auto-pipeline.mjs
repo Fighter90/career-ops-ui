@@ -42,7 +42,7 @@ import { runActiveProvider, PROMPT_SIZE_SOFT_CAP } from '../llm-dispatch.mjs';
 import { recordUsage } from '../llm-usage.mjs';
 import { evaluationWarnings, EVAL_MAX_TOKENS } from './llm.mjs';
 import { stripDangerousMarkdown } from '../security.mjs';
-import { stripScoreSummary } from '../eval-validate.mjs';
+import { stripScoreSummary, validateEvaluationReport } from '../eval-validate.mjs';
 import { parseApplications, today } from '../parsers.mjs';
 import { logActivity } from '../activity-log.mjs';
 import { safeGet } from '../safe-fetch.mjs';
@@ -123,10 +123,29 @@ async function fetchJobDescription(url, signal) {
   }
 }
 
-function guessCompanyRole(jdText, url) {
+// Hosts that say nothing about the hiring company: messenger/aggregator
+// pages whose domain slug would become a nonsense company name («T» from
+// t.me was the motivating bug — 44 `t-role` junk reports on prod).
+const EMPTY_DOMAINS = new Set([
+  't.me', 'telegram.me', 'vk.com', 'linkedin.com', 'www.linkedin.com',
+  'facebook.com', 'www.facebook.com', 'x.com', 'twitter.com',
+  'example.com', 'jobs.google.com',
+]);
+
+export function guessCompanyRole(jdText, url) {
   const lines = (jdText || '').split('\n').map((l) => l.trim()).filter(Boolean).slice(0, 30);
   let company = '';
   let role = '';
+  // A t.me/s/<channel>/<postId> page names its channel in the path — the
+  // closest thing to a «company» a Telegram post has (CONTEXT.md:
+  // telegram-channel source). Only used for messenger hosts.
+  let channelGuess = '';
+  try {
+    const u = new URL(url);
+    if ((u.hostname === 't.me' || u.hostname === 'telegram.me') && u.pathname.split('/').filter(Boolean).length > 0) {
+      channelGuess = u.pathname.split('/').filter(Boolean)[0];
+    }
+  } catch {}
   for (const line of lines) {
     if (line.length > 200) continue;
     let m = line.match(/^([A-Z][\w\s/&,.()-]{4,80}?)\s+(?:at|@|·|\|)\s+([A-Z][\w\s.&-]{1,40})$/);
@@ -139,7 +158,12 @@ function guessCompanyRole(jdText, url) {
       const u = new URL(url);
       const parts = u.hostname.split('.');
       const slug = parts.length >= 2 ? parts[parts.length - 2] : u.hostname;
-      if (!['greenhouse', 'ashbyhq', 'lever', 'workable', 'smartrecruiters', 'myworkdayjobs'].includes(slug)) {
+      if (EMPTY_DOMAINS.has(u.hostname.toLowerCase())) {
+        // Messenger/aggregator host: the domain is not a company. Fall back
+        // to the Telegram channel name when we have one; otherwise leave
+        // empty — the caller refuses to file a nameless report.
+        if (channelGuess) company = channelGuess.charAt(0).toUpperCase() + channelGuess.slice(1);
+      } else if (!['greenhouse', 'ashbyhq', 'lever', 'workable', 'smartrecruiters', 'myworkdayjobs'].includes(slug)) {
         company = slug.charAt(0).toUpperCase() + slug.slice(1);
       }
     } catch {}
@@ -207,8 +231,10 @@ export function registerAutoPipelineRoutes(app) {
       if (aborted) return;
       send('step', { i, key: STEPS[i].key, label: STEPS[i].label, status, detail });
     }
-    function fail(stepIndex, message) {
-      send('error', { step: STEPS[stepIndex].key, message });
+    function fail(stepIndex, message, extra = {}) {
+      // `rejected: true` marks a validation-driven stop: the server-side
+      // timer uses it to skip the pipeline entry instead of retrying it.
+      send('error', { step: STEPS[stepIndex].key, message, ...extra });
       res.end();
     }
 
@@ -344,6 +370,23 @@ export function registerAutoPipelineRoutes(app) {
         step(2, 'failed', 'empty evaluation');
         return fail(2, 'the model returned an empty evaluation');
       }
+      // v1.248.3 — validate BEFORE anything is written. A junk entry (a
+      // t.me/telegram placeholder that clears the length gate) used to
+      // produce a «the model answered insufficient data» report that was
+      // saved, tracker-rowed and shown by the dashboard as «Last
+      // evaluation» (44 such files on prod).
+      const issues = validateEvaluationReport(markdown);
+      const preScore = extractScore(markdown);
+      if (preScore == null || issues.length > 0) {
+        const reason = preScore == null
+          ? 'no SCORE 0–5 in the report'
+          : issues.slice(0, 3).join('; ');
+        // Host only — the entry URL is user-supplied and CI logs are public.
+        const logHost = (() => { try { return new URL(url).hostname; } catch { return '[unparsable URL]'; } })();
+        logActivity({ action: 'auto-pipeline.evaluation.rejected', target: logHost, detail: reason });
+        step(2, 'failed', `evaluation incomplete: ${reason}`);
+        return fail(2, `evaluation incomplete: ${reason}`, { rejected: true });
+      }
       const score = extractScore(markdown);
       step(2, 'done', score != null ? `${evalMode} · score ${score}/5` : evalMode);
     } catch (e) {
@@ -352,6 +395,13 @@ export function registerAutoPipelineRoutes(app) {
     }
 
     const guess = guessCompanyRole(jdText, url);
+    if (!guess.company || !guess.role) {
+      // v1.248.3 — never file an `unknown-role` report: a nameless entry
+      // is by definition the junk the validation gate just rejected.
+      logActivity({ action: 'auto-pipeline.evaluation.rejected', target: 'unknown', detail: 'company/role not identifiable' });
+      step(3, 'failed', 'company/role not identifiable for this entry');
+      return fail(3, 'company/role not identifiable for this entry', { rejected: true });
+    }
     const score = extractScore(markdown);
     const legitimacy = extractLegitimacy(markdown);
 

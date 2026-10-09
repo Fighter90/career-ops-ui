@@ -91,3 +91,31 @@ test('map renders when reached via the nav (hashchange), and again on return', {
     assert.equal(await page.locator('#job-map').count(), 1);
   } finally { await page.close(); }
 });
+
+// v1.248.3 — the docs FAB (fixed, bottom-right) must not cover the Leaflet
+// attribution: the OSM licence requires it visible. ALL FOUR CORNERS of the
+// attribution rect are probed with elementFromPoint — a single-centre check
+// gave a false pass before the 96px lift shipped.
+test('map: the Leaflet attribution is fully visible (all 4 corners unobstructed)', async () => {
+  const page = await context.newPage();
+  try {
+    await page.goto(baseUrl + '/#/map', { waitUntil: 'domcontentloaded' });
+    await page.waitForSelector('.leaflet-control-attribution', { timeout: 15000 });
+    // A transient toast floats above everything for up to 20 s (errors dwell
+    // longer to be readable) — steady-state visibility is what this contract
+    // probes, so dismiss it the same way the app's dismissToast() does.
+    await page.evaluate(() => { const t = document.getElementById('toast'); if (t) t.hidden = true; });
+    await page.waitForTimeout(150);
+    const obstructed = await page.evaluate(() => {
+      const el = document.querySelector('.leaflet-control-attribution');
+      const r = el.getBoundingClientRect();
+      const pts = [[r.left + 1, r.top + 1], [r.right - 1, r.top + 1], [r.left + 1, r.bottom - 1], [r.right - 1, r.bottom - 1]];
+      return pts.map(([x, y]) => {
+        const hit = document.elementFromPoint(x, y);
+        const who = hit ? hit.tagName + '.' + String(hit.className).split(' ').slice(0, 2).join('.') : 'nothing';
+        return { x: Math.round(x), y: Math.round(y), ok: !!(hit && (el === hit || el.contains(hit) || hit.contains(el))), who };
+      });
+    });
+    for (const p of obstructed) assert.ok(p.ok, `attribution corner ${p.x},${p.y} is covered by: ${p.who || 'unknown'}`);
+  } finally { await page.close(); }
+});

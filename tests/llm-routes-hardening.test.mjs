@@ -53,7 +53,7 @@ before(async () => {
     "const a = process.argv.slice(2);",
     "const f = a[a.indexOf('--file') + 1];",
     "appendFileSync('gemini-argv.jsonl', JSON.stringify({ args: a, fileExisted: existsSync(f) }) + '\\n');",
-    "if (!process.env.FAKE_GEMINI_EMPTY) console.log('## Block A\\nGemini report. Score: 4.0/5');",
+    "if (!process.env.FAKE_GEMINI_EMPTY) console.log(['## A) Context', '## B) Fit', '## C) Risks', '## D) Salary', '## E) Questions', '## F) Legitimacy: high', '## G) Verdict: proceed', '---SCORE_SUMMARY---', 'COMPANY: Vandelay', 'ROLE: Engineer', 'ARCHETYPE: backend', 'LEGITIMACY: high', 'SCORE: 4.0/5', '---END_SUMMARY---'].join('\\n'));",
     '',
   ].join('\n'));
   for (const k of KEYS) { saved[k] = process.env[k]; delete process.env[k]; }
@@ -280,13 +280,18 @@ test('/api/auto-pipeline: the tracker row of a deduped report links the written 
   assert.ok(row.includes(`[${d2.slug}](reports/${d2.slug}.md)`), row);
 });
 
-test('/api/auto-pipeline: evaluation warnings reach the done event', async () => {
+test('/api/auto-pipeline: an incomplete report (missing SCORE_SUMMARY) is rejected before saving (v1.248.3)', async () => {
+  // v1.248.2 — the run completed with `evaluationWarnings`; v1.248.3 — the
+  // validation gate moved BEFORE the save: an incomplete report now fails
+  // step evaluate with `rejected: true` and writes nothing.
   await stubJobPage(JOB_HTML.replace('Acme', 'Initech'));
   process.env.ANTHROPIC_API_KEY = ANT;
   mockProviders({ 'api.anthropic.com': anthropicReply('## Block A\nOnly one block. Score: 3/5') });
-  const done = sseEvents((await post('/api/auto-pipeline', { url: 'https://jobs.example.com/initech/1' })).text).find((e) => e.event === 'done').data;
-  assert.equal(done.evalMode, 'anthropic');
-  assert.ok(done.warnings.includes('missing SCORE_SUMMARY block'), JSON.stringify(done.warnings));
+  const ev = sseEvents((await post('/api/auto-pipeline', { url: 'https://jobs.example.com/initech/1' })).text);
+  const err = ev.find((e) => e.event === 'error');
+  assert.match(err.data.message, /evaluation incomplete: missing Block/);
+  assert.ok(!ev.some((e) => e.event === 'done'), 'no done event for a rejected report');
+  assert.ok(!readdirSync(resolve(ROOT, 'reports')).some((f) => f.includes('initech')), 'no report file');
 });
 
 test('/api/auto-pipeline: a cut-off evaluation fails step 3 and writes nothing', async () => {

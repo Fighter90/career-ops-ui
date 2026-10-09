@@ -2,6 +2,27 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.248.3] — 2026-10-10
+
+**Regresyon turunun devamı: değerlendirme zamanlayıcısı hiçbir koşulda adsız Telegram çöpünü rapor olarak arşivleyemiyor, QA temizliği gerçek Telegram ilanlarını silemiyor, harita atıfı yeniden görünüyor ve pano çipleri ≥ 4.5:1 okunuyor.**
+
+### Düzeltildi
+
+- **auto-pipeline kaydetmeden ÖNCE doğruluyor**: 0–5 puanı olmayan veya A–G blokları eksik bir rapor evaluate adımında koşuyu bitirir (SSE yükünde `rejected: true`) — rapor dosyası yok, tracker satırı yok. v1.248.2 uzunluk kapısını geçen t.me girdileri o sürümden sonra iki çöp daha üretti; artık adsız girdiler `company/role not identifiable` ile reddediliyor.
+- **`guessCompanyRole` mesajlaşma hostlarından şirket uydurmuyor** — `t.me`, `telegram.me`, `vk.com`, `linkedin.com` ve arkadaşları EMPTY_DOMAINS içinde: bir Telegram gönderisi kanal adına düşer, adsız girdi `unknown-role` olarak arşivlenmek yerine reddedilir.
+- **`post-qa-cleanup` önce başlık puanını okur**: auto-pipeline kaydetmeden önce SCORE_SUMMARY bloğunu keser, böylece eski yalnız-summary kontrol kaydedilen her Telegram ilanını çöp sayıyordu — prod'da 41'nin 8'i başlıkta puana sahip ve `--apply` onları silecekti. Başlık puanı (`parseReportHeader` üzerinden) artık birincil sinyal; blok yedek. Dry-run dosya başına nedeni basıyor.
+- **#/map'te Leaflet atfı görünüyor** — docs FAB örtüyordu (OSM lisans ihlali); köşe 96px kaldırıldı.
+- **Pano çipleri ≥ 4.5:1** — `dash-chip` etiketleri ve `--manual` varyantı `--foggy-strong`a geçti (önce 4.31:1).
+
+### Eklendi
+
+- **auto-pipeline başarısızlıkları SSE hatasında `rejected: true` taşıyor** — sunucu tarafı eval zamanlayıcısı bu bayrakla pipeline girdisini atlıyor, 2 saatte bir yeniden denemek yerine.
+
+### Notlar
+
+- ar/ja kayması yeniden koşuda **tekrarlanmadı** (bkz. v1.248.2).
+- **Prod temizliği hâlâ kullanıcının açık 「evet」ini bekliyor** (CAR-61c); bu düzeltmeyle temizlik gerçek Telegram ilanlarını silemez oldu.
+
 ## [1.248.2] — 2026-10-10
 
 **Regresyon turu: değerlendirme zamanlayıcısı pipeline çöpünü artık 「Last evaluation」e dönüştürmüyor, SCORE ayrıştırma gerçek biçimleri toluyor ve tracker sonunda dilinizi konuşuyor.**

@@ -692,7 +692,8 @@ body.sidebar-open .sidebar-backdrop { display: block; }
   line-height: 1.4;
 }
 .dash-chip.dash-chip--provider[hidden] { display: none; }
-.dash-chip--manual { color: var(--muted, #6b7280); }
+.leaflet-bottom.leaflet-right { bottom: 96px; } /* v1.248.3 — docs FAB covered the Leaflet attribution (OSM licence) */
+.dash-chip--manual { color: var(--foggy-strong); } /* v1.248.3: --muted was 4.31:1 */
 .dash-chip__icon { font-size: 1.05em; flex: 0 0 auto; }
 .dash-chip__label { min-width: 0; overflow-wrap: anywhere; }
 

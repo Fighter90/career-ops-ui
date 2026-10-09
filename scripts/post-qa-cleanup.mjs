@@ -30,6 +30,7 @@ import { fileURLToPath } from 'node:url';
 // Pure module (no server deps) — the same tolerant number parser the live
 // evaluation gate uses, so "valid score" means the same thing here.
 import { asciiNumber } from '../server/lib/eval-validate.mjs';
+import { parseReportHeader } from '../server/lib/parsers.mjs';
 
 const APPLY = process.argv.includes('--apply');
 const ROOT = process.env.CAREER_OPS_ROOT || resolve(process.cwd(), '..');
@@ -78,6 +79,16 @@ export const T_ROLE_REPORT = /-t-role-/;
  * filenames, never to a human-written report.
  */
 export function hasValidScore(text) {
+  // v1.248.3 — auto-pipeline strips the SCORE_SUMMARY block before saving
+  // (stripScoreSummary), so EVERY saved t-role file used to read as
+  // «no score» here and --apply would delete REAL Telegram postings. The
+  // header score (**Score:** 4.2/5, locale-tolerant label parsing) is the
+  // primary signal — exactly what parseReportHeader reads for the dashboard.
+  const header = parseReportHeader(String(text || ''));
+  if (header.scoreNum != null && Number.isFinite(header.scoreNum) && header.scoreNum >= 0 && header.scoreNum <= 5) {
+    return true;
+  }
+  // Fallback: the machine block, for reports that kept it.
   const m = String(text || '').match(/---SCORE_SUMMARY---\s*([\s\S]*?)---END_SUMMARY---/);
   if (!m) return false;
   const line = m[1].match(/^[ \t]*(?:\*\*)?[ \t]*SCORE[ \t]*(?:\*\*)?[ \t]*:[ \t]*(.*)$/mi);

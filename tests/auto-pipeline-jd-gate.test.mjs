@@ -39,6 +39,8 @@ before(async () => {
   writeFileSync(resolve(ROOT, 'modes', 'oferta.md'), '# Oferta\n');
   writeFileSync(resolve(ROOT, 'modes', '_shared.md'), '# Shared\n');
   for (const k of KEYS) { savedEnv[k] = process.env[k]; delete process.env[k]; }
+  savedEnv.LLM_RATE_LIMIT = process.env.LLM_RATE_LIMIT;
+  process.env.LLM_RATE_LIMIT = '1000/60s'; // v1.248.3 — the suite fires more POSTs than the default window allows
   process.env.CAREER_OPS_ROOT = ROOT;
   const { createApp } = await import('../server/index.mjs');
   ({ _setTransport } = await import('../server/lib/safe-fetch.mjs'));
@@ -50,7 +52,7 @@ after(async () => {
   globalThis.fetch = realFetch;
   dns.lookup = realLookup;
   if (restoreTransport) restoreTransport();
-  for (const k of KEYS) { if (savedEnv[k] === undefined) delete process.env[k]; else process.env[k] = savedEnv[k]; }
+  for (const k of [...KEYS, 'LLM_RATE_LIMIT']) { if (savedEnv[k] === undefined) delete process.env[k]; else process.env[k] = savedEnv[k]; }
   delete process.env.CAREER_OPS_ROOT;
   await new Promise((r) => server.close(r));
   try { rmSync(ROOT, { recursive: true, force: true }); } catch {}
@@ -71,10 +73,10 @@ afterEach(() => {
 });
 
 /** Stub the page fetch + provider HTTP; drain the SSE stream into events. */
-async function run(body, providerBody) {
+async function run(body, providerBody, pageBody = PAGE_BODY) {
   const { _setTransport: set } = await import('../server/lib/safe-fetch.mjs');
   dns.lookup = async () => ({ address: '93.184.216.34', family: 4 });
-  restoreTransport = set(async () => ({ status: 200, headers: { 'content-type': 'text/html' }, body: Buffer.from(PAGE_BODY) }));
+  restoreTransport = set(async () => ({ status: 200, headers: { 'content-type': 'text/html' }, body: Buffer.from(pageBody) }));
   globalThis.fetch = async (u, o = {}) => {
   const host = (() => { try { return new URL(String(u)).hostname; } catch { return ''; } })();
   if (host === 'api.openai.com') {
@@ -90,6 +92,7 @@ async function run(body, providerBody) {
     body: JSON.stringify(body),
   });
   const text = await resp.text();
+  if (process.env.DEBUG_SSE) console.log('SSE TEXT[0:200]:', JSON.stringify(text.slice(0, 200)), 'status', resp.status);
   const events = text.split('\n\n').filter(Boolean).map((b) => ({
     event: (b.match(/^event: (.+)$/m) || [])[1],
     data: JSON.parse((b.match(/^data: (.+)$/m) || [, 'null'])[1]),
@@ -161,4 +164,50 @@ test('control: a real-size JD passes the gate (reaches the evaluate step)', asyn
   assert.ok(err, 'expected an error event');
   assert.equal(err.data.step, 'evaluate', 'a real-size JD must clear the fetch gate');
   assert.equal(err.data.message, 'no LLM key');
+});
+
+// ── v1.248.3 — t.me entries: validation gate + company/role guessing ──────
+test('v1.248.3: guessCompanyRole never returns «T» for a t.me URL (channel fallback)', async () => {
+  const { guessCompanyRole } = await import('../server/lib/routes/auto-pipeline.mjs');
+  const g = guessCompanyRole('Какой-то длинный текст поста из телеграм-канала о вакансии инженера.', 'https://t.me/somechannel/123');
+  assert.notEqual(g.company, 'T', 'the domain slug must not become the company');
+  assert.equal(g.company, 'Somechannel', 'the channel name is the closest thing to a company');
+});
+
+test('v1.248.3: guessCompanyRole returns empty for example.com (no nonsense company)', async () => {
+  const { guessCompanyRole } = await import('../server/lib/routes/auto-pipeline.mjs');
+  const g = guessCompanyRole('Placeholder body text.', 'https://example.com/qa-v167-t-role');
+  assert.equal(g.company, '', 'example.com is an EMPTY_DOMAINS host');
+});
+
+test('v1.248.3: a long t.me page + a scoreless model answer → NO report, NO tracker row', async () => {
+  // A telegram post page sanitizes to >200 chars (the v1.248.2 gate passes
+  // it), but the model answers «insufficient data» without A–G or a score —
+  // v1.248.3 validates BEFORE saving: no report file, no tracker row.
+  const longPage = '<html><body>' + '<p>Телеграм-пост о вакансии инженера в распределённой команде, стек и условия внутри. '.repeat(12) + '</p></body></html>';
+const out5 = await run({ url: 'https://t.me/somejobschannel/4567' }, 'Недостаточно данных для оценки вакансии. Извините.', longPage);
+    const events = out5.events;
+  console.log('EVENTS:', JSON.stringify(events, null, 1).slice(0, 1200));
+assert.ok(events.some((e) => e.event === 'error' && /evaluation incomplete/.test(e.data?.message || '')),
+    'an SSE error with «evaluation incomplete» must arrive');
+  assert.ok(events.some((e) => e.event === 'error' && e.data?.rejected === true),
+    'the error payload carries rejected: true (the server-side timer skips the entry)');
+  const reports = readdirSync(resolve(ROOT, 'reports')).filter((f) => f.includes('t-role'));
+  assert.equal(reports.length, 0, 'no t-role report file');
+  const apps = readFileSync(resolve(ROOT, 'data', 'applications.md'), 'utf8');
+  assert.ok(!/somechannel|Somechannel/i.test(apps), 'no tracker row for the rejected entry');
+});
+
+test('v1.248.3: a REAL report (A–G + SCORE) still saves as before', async () => {
+  const good = ['## A) Контекст', '## B) Соответствие', '## C) Риски', '## D) Зарплата',
+    '## E) Вопросы работодателю', '## F) Легитимность', '## G) Рекомендация',
+    '---SCORE_SUMMARY---', 'COMPANY: Acme', 'ROLE: Engineer', 'ARCHETYPE: backend',
+    'LEGITIMACY: high', 'SCORE: 4,2/5', '---END_SUMMARY---'].join('\n');
+  // Plain text (the transport returns it as-is; sanitize passes it through).
+  const longGreenhouse = 'Acme — Senior Backend Engineer\n' + 'Berlin, Germany. Hybrid. Acme builds developer tools. '.repeat(20);
+  const { events } = await run({ url: 'https://boards.greenhouse.io/acme/jobs/1' }, good, longGreenhouse);
+  if (!events.some((e) => e.event === 'done')) console.log('NO DONE. events:', JSON.stringify(events).slice(-700));
+  assert.ok(events.some((e) => e.event === 'done'), 'the pipeline completes');
+  const reports = readdirSync(resolve(ROOT, 'reports')).filter((f) => f.includes('acme'));
+  assert.equal(reports.length, 1, 'the report is saved');
 });

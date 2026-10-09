@@ -8,6 +8,27 @@
 
 ---
 
+## [1.248.3] — 2026-10-10
+
+**回歸輪續篇：評估計時器在任何情況下都無法把無名 Telegram 垃圾存為報告，QA 清理不再刪除真實 Telegram 職缺，地圖署名重新可見，儀表板晶片對比 ≥ 4.5:1。**
+
+### 修復
+
+- **auto-pipeline 在儲存前驗證**：沒有 0–5 分數或缺 A–G 區塊的報告在 evaluate 步驟終止執行（SSE 載荷帶 `rejected: true`）——不寫報告檔案、不加 tracker 列。通過 v1.248.2 長度閘的 t.me 條目在那版之後又產生兩個垃圾；現在無名條目以 `company/role not identifiable` 拒絕。
+- **`guessCompanyRole` 不再從即時通訊主機捏造公司**——`t.me`、`telegram.me`、`vk.com`、`linkedin.com` 等在 EMPTY_DOMAINS：Telegram 貼文回退到頻道名，無名條目被拒絕而非存為 `unknown-role`。
+- **`post-qa-cleanup` 先讀標頭分數**：auto-pipeline 儲存前會剝除 SCORE_SUMMARY 區塊，因此舊的僅-summary 檢查把每份已存的 Telegram 職缺判為垃圾——生產 41 份中 8 份標頭有分數，`--apply` 本會刪除它們。標頭分數（經 `parseReportHeader`）現在是主信號；區塊作為後備。dry-run 逐檔案列印原因。
+- **#/map 的 Leaflet 署名可見**——docs FAB 曾遮住它（違反 OSM 授權）；角落抬高 96px。
+- **儀表板晶片 ≥ 4.5:1**——`dash-chip` 標籤與 `--manual` 變體改用 `--foggy-strong`（先前 4.31:1）。
+
+### 新增
+
+- **auto-pipeline 失敗在 SSE 錯誤中帶 `rejected: true`**——伺服器端評估計時器用該旗標跳過 pipeline 條目，而非每 2 小時重試。
+
+### 備註
+
+- ar/ja 漂移在重跑中**未再現**（見 v1.248.2）。
+- 生產清理仍等待使用者明確「是」（CAR-61c）；本次修復後清理已無法刪除真實 Telegram 職缺。
+
 ## [1.248.2] — 2026-10-10
 
 **回歸輪：評估計時器不再把 pipeline 垃圾變成「Last evaluation」，SCORE 解析扛得住真實格式，追蹤器終於說你的語言。**

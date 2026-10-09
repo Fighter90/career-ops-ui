@@ -9,6 +9,27 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.248.3] — 2026-10-10
+
+**Kontynuacja rundy regresji: timer ocen nie może już pod żadnym pozorem archiwizować bezimiennych śmieci z Telegrama, czyszczenie QA nie usuwa już prawdziwych ofert, atrybucja mapy jest znowu widoczna, a chipy panelu czytają ≥ 4.5:1.**
+
+### Naprawiono
+
+- **Auto-pipeline waliduje PRZED zapisem**: raport bez wyniku 0–5 lub bez bloków A–G kończy bieg na kroku evaluate (`rejected: true` w ładunku SSE) — bez pliku raportu, bez wiersza trackera. Wpisy t.me, które przechodziły bramę długości v1.248.2, dały po tamtej wersji dwa kolejne śmieci; teraz wpisy bez nazwy są odrzucane z `company/role not identifiable`.
+- **`guessCompanyRole` nie wymyśla już firmy z hostów komunikatorów** — `t.me`, `telegram.me`, `vk.com`, `linkedin.com` i podobne są w EMPTY_DOMAINS: post Telegrama cofa się do nazwy kanału, a bezimienny wpis jest odrzucany zamiast trafić do archiwum jako `unknown-role`.
+- **`post-qa-cleanup` czyta najpierw wynik z nagłówka**: auto-pipeline wycina blok SCORE_SUMMARY przed zapisem, więc stara kontrola tylko-summary oznaczała każdą zapisaną ofertę Telegrama jako śmieć — na produkcji 8 z 41 nosi wynik w nagłówku i `--apply` skasowałby je. Wynik z nagłówka (przez `parseReportHeader`) to teraz sygnał pierwotny; blok jest rezerwą. Dry-run drukuje powód dla każdego pliku.
+- **Atrybucja Leaflet jest widoczna na #/map** — docs-FAB ją zasłaniał (naruszenie licencji OSM); róg podniesiono o 96px.
+- **Chipу panelu osiągają 4.5:1** — etykiety `dash-chip` i wariant `--manual` przeszły na `--foggy-strong` (wcześniej 4.31:1).
+
+### Dodano
+
+- **Porażki auto-pipeline niosą `rejected: true` w błędzie SSE** — serwerowy timer ocen używa flagi, by pominąć wpis pipeline zamiast ponawiać go co 2 godziny.
+
+### Uwagi
+
+- Dryf ar/ja **nie powtórzył się** przy ponownym uruchomieniu (patrz v1.248.2).
+- **Czyszczenie produkcji wciąż czeka na wyraźne „tak”** (CAR-61c); z tą poprawką czyszczenie nie może już usunąć prawdziwych ofert Telegrama.
+
 ## [1.248.2] — 2026-10-10
 
 **Runda regresji: timer ocen nie zamienia już śmieci z pipeline w „Last evaluation”, parsowanie SCORE przeżywa realne formaty, a tracker wreszcie mówi Twoim językiem.**

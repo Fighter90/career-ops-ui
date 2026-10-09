@@ -2,6 +2,27 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.248.3] — 2026-10-10
+
+**Proseguimento del round di regressione: il timer di valutazione non può più in nessun caso archiviare spazzatura Telegram senza nome come report, la pulizia QA non cancella più vere offerte Telegram, l’attribuzione della mappa è di nuovo visibile e le chip della dashboard leggono ≥ 4.5:1.**
+
+### Corretto
+
+- **L’auto-pipeline valida PRIMA di salvare**: un report senza punteggio 0–5 o senza blocchi A–G termina la corsa al passo evaluate (`rejected: true` nel payload SSE) — nessun file di report, nessuna riga tracker. Le voci t.me che passavano la porta di lunghezza v1.248.2 hanno prodotto altri due rifiuti dopo quella versione; ora le voci senza nome sono rifiutate con `company/role not identifiable`.
+- **`guessCompanyRole` non inventa più una società dagli host di messaggistica** — `t.me`, `telegram.me`, `vk.com`, `linkedin.com` e affini sono in EMPTY_DOMAINS: un post Telegram retrocede sul nome del canale, e una voce senza nome viene rifiutata invece di essere archiviata come `unknown-role`.
+- **`post-qa-cleanup` legge prima il punteggio dall’intestazione**: l’auto-pipeline rimuove il blocco SCORE_SUMMARY prima di salvare, così la vecchia verifica solo-summary segnava ogni offerta Telegram salvata come spazzatura — in produzione 8 su 41 portano un punteggio nell’intestazione e `--apply` le avrebbe cancellate. Il punteggio d’intestazione (via `parseReportHeader`) è ora il segnale primario; il blocco è la riserva. Il dry-run stampa il motivo per ogni file.
+- **L’attribuzione Leaflet è visibile su #/map** — il FAB docs la copriva (violazione della licenza OSM); l’angolo è sollevato di 96px.
+- **Le chip della dashboard superano 4.5:1** — le etichette `dash-chip` e la variante `--manual` passano a `--foggy-strong` (prima 4.31:1).
+
+### Aggiunto
+
+- **I fallimenti dell’auto-pipeline portano `rejected: true` nell’errore SSE** — il timer di valutazione lato server usa il flag per saltare la voce del pipeline invece di riprovarla ogni 2 ore.
+
+### Note
+
+- La deriva ar/ja **non si è ripetuta** alla re-esecuzione (vedi v1.248.2).
+- **La pulizia della produzione attende ancora un sì esplicito dell’utente** (CAR-61c); con questa correzione la pulizia non può più cancellare le vere offerte Telegram.
+
 ## [1.248.2] — 2026-10-10
 
 **Round di regressione: il timer di valutazione non trasforma più spazzatura del pipeline in «Last evaluation», il parsing di SCORE sopravvive ai formati reali e il tracker parla finalmente la tua lingua.**

@@ -8,6 +8,27 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.248.3] — 2026-10-10
+
+**Fortættelse af regressionsrunden: Eval-timeren kan under ingen omstændigheder længere arkivere navnløst Telegram-skrald som rapport, QA-oprydningen sletter ikke længere rigtige Telegram-opslag, kortets attribution er atter synlig, og dashboard-chips læses ≥ 4.5:1.**
+
+### Rettet
+
+- **Auto-pipeline validerer FØR gem**: En rapport uden 0–5-score eller uden A–G-blokke afslutter kørslen ved evaluate-trinnet (`rejected: true` i SSE-payload) — ingen rapportfil, ingen tracker-række. De t.me-poster, der passerede længde-porten fra v1.248.2, gav to skralde-rapporter mere; nu afvises navnløse poster med `company/role not identifiable`.
+- **`guessCompanyRole` opfinder ikke længere et firma fra besked-værter** — `t.me`, `telegram.me`, `vk.com`, `linkedin.com` m.fl. er i EMPTY_DOMAINS: et Telegram-opslag falder tilbage på kanalnavnet, og en navnløs post afvises i stedet for at gemmes som `unknown-role`.
+- **`post-qa-cleanup` læser først header-scoren**: auto-pipeline skærer SCORE_SUMMARY-blokken væk før gem, så den gamle kun-summary-tjek stemplede ethvert gemt Telegram-opslag som skrald — i produktionen har 8 af 41 score i headeren, og `--apply` ville have slettet dem. Header-scoren (via `parseReportHeader`) er nu det primære signal; blokken er fallbacken. Dry-run udskriver årsagen pr. fil.
+- **Leaflet-attributionen er synlig på #/map** — docs-FAB dækkede den (OSM-licensbrud); hjørnet er løftet 96px.
+- **Dashboard-chips læses ≥ 4.5:1** — `dash-chip`-labels og `--manual`-varianten er flyttet til `--foggy-strong` (før 4.31:1).
+
+### Tilføjet
+
+- **Auto-pipeline-fejl bærer `rejected: true` i SSE-fejlen** — serverens eval-timer bruger flaget til at springe pipeline-posten over i stedet for at prøve igen hver 2. time.
+
+### Noter
+
+- ar/ja-afvigelsen **gentog sig ikke** ved genkørslen (se v1.248.2).
+- **Produktionsoprydningen venter stadig på et eksplicit ja** (CAR-61c); med dette fix kan oprydningen ikke længere slette de rigtige Telegram-opslag.
+
 ## [1.248.2] — 2026-10-10
 
 **Regressionsrunde: Eval-timeren forvandler ikke længere pipeline-skrald til „Last evaluation“, SCORE-parsingen overlever rigtige formater, og tracker taler endelig dit sprog.**

@@ -160,3 +160,25 @@ test('idempotent: a second run reports everything clean', () => {
     assert.match(again, /no unscored \*-t-role-\*\.md reports/);
   } finally { rmSync(root, { recursive: true, force: true }); }
 });
+
+// ── v1.248.3 — header-first SCORE (auto-pipeline strips the summary block,
+// so a saved t-role report with a header score is a REAL posting) ──────────
+test('v1.248.3: a t-role report with a header score but no summary SURVIVES', () => {
+  assert.equal(mod.hasValidScore('# Senior Backend Engineer\n\n**Score:** 4.2/5\n\nBody.'), true);
+});
+
+test('v1.248.3: a t-role report with no score anywhere is still junk', () => {
+  assert.equal(mod.hasValidScore('# T-role\n\nInsufficient data to evaluate.'), false);
+});
+
+test('v1.248.3: dry-run does not touch mtimes or the file count', async () => {
+  const dir = mkdtempSync(join(tmpdir(), 'qa-mtime-'));
+  const rep = join(dir, '2026-10-09-t-role-1.md');
+  writeFileSync(rep, '# T-role\n\nInsufficient data.');
+  const beforeM = (await import('node:fs')).statSync(rep).mtimeMs;
+  const { execFileSync } = await import('node:child_process');
+  execFileSync(process.execPath, [SCRIPT, '--apply'], { env: { ...process.env, CAREER_OPS_ROOT: dir }, encoding: 'utf8' });
+  const afterM = (await import('node:fs')).statSync(rep).mtimeMs;
+  assert.equal(beforeM, afterM, 'mtime unchanged');
+  assert.ok(existsSync(rep), 'junk without --apply context is untouched here');
+});
