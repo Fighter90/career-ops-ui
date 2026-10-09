@@ -4,7 +4,12 @@
  *
  * Quirks pinned here, all easy to undo by accident:
  *   - pagination.total reports the PAGE SIZE; only a short page ends a sweep.
- *   - workplaceType is a singular string; confidential / employer-less rows drop.
+ *   - Filters ride under the names the API reads — workplaceType and type,
+ *     comma-joined; it ignores the plural spellings and has no country filter
+ *     (a configured country warns and is not sent).
+ *   - max_pages caps at 100: the API serves no offset past 9,900.
+ *   - workplaceType is a singular string; confidential rows (flagged or
+ *     labelled "Confidencial", matched whole) and employer-less rows drop.
  *   - Posting URLs are host-locked to HTTPS gupy.io / *.gupy.io.
  *   - ctx window is early-stop only; the entry's since_days also filters.
  *   - opts.maxPages is a TOTAL page budget; a probe failure propagates as-is.
@@ -91,6 +96,9 @@ test('adapter claims provider: gupy and the platform-wide hosts, never a tenant 
   assert.equal(gupyAdapter.matches({ provider: 'gupy' }), true);
   assert.equal(gupyAdapter.matches({ careers_url: 'https://portal.gupy.io' }), true);
   assert.equal(gupyAdapter.matches({ careers_url: 'https://portal.gupy.io/job-search/term=dev' }), true);
+  assert.equal(gupyAdapter.matches({ api: 'https://portal.gupy.io/api/job-search/jobs' }), true);
+  // An entry written against the API's retired host still resolves here;
+  // buildEndpoint maps it to the pinned endpoint, so fetch never calls it.
   assert.equal(gupyAdapter.matches({ api: 'https://employability-portal.gupy.io/api/v1/jobs' }), true);
   for (const careers_url of [
     'https://acme.gupy.io',
@@ -115,13 +123,25 @@ test('adapter buildEndpoint is the pinned API unless api: overrides; fetch is fe
   assert.equal(gupyAdapter.fetch, fetchGupy);
 });
 
+test('buildEndpoint maps a platform-wide api: (including the retired API host) to the pinned endpoint', () => {
+  assert.equal(
+    gupyAdapter.buildEndpoint({ provider: 'gupy', api: 'https://employability-portal.gupy.io/api/v1/jobs' }),
+    API_BASE,
+  );
+  assert.equal(gupyAdapter.buildEndpoint({ provider: 'gupy', api: 'https://portal.gupy.io/api/v1/jobs' }), API_BASE);
+  assert.equal(gupyAdapter.buildEndpoint({ provider: 'gupy', api: 'https://portal.gupy.io' }), API_BASE);
+});
+
 // ── SSRF guards ─────────────────────────────────────────────────────────────
 
 test('assertGupyUrl accepts only HTTPS on the pinned API host', () => {
   assert.equal(assertGupyUrl(API_BASE), API_BASE);
-  assert.throws(() => assertGupyUrl('http://employability-portal.gupy.io/api/v1/jobs'), /HTTPS/);
-  assert.throws(() => assertGupyUrl('https://portal.gupy.io/api/v1/jobs'), /untrusted hostname/);
-  assert.throws(() => assertGupyUrl('https://employability-portal.gupy.io.evil.example/x'), /untrusted hostname/);
+  // The pin is host-level: any path on the API host passes.
+  assert.equal(assertGupyUrl('https://portal.gupy.io/api/v1/jobs'), 'https://portal.gupy.io/api/v1/jobs');
+  assert.throws(() => assertGupyUrl('http://portal.gupy.io/api/job-search/jobs'), /HTTPS/);
+  // The retired API host is no longer fetchable: not a pinned host.
+  assert.throws(() => assertGupyUrl('https://employability-portal.gupy.io/api/v1/jobs'), /untrusted hostname/);
+  assert.throws(() => assertGupyUrl('https://portal.gupy.io.evil.example/x'), /untrusted hostname/);
   assert.throws(() => assertGupyUrl('nope'), /invalid URL/);
 });
 
@@ -244,6 +264,21 @@ test('normalizeGupyJob drops rows with no employer name, confidential rows and b
   assert.equal(attributed?.company, 'Acme');
 });
 
+test('normalizeGupyJob drops an unflagged "Confidencial" employer label and keeps a company that only contains the word', () => {
+  // The portal endpoint carries no isConfidentialCareerPage flag: a
+  // confidential posting only says "Confidencial" where the employer goes. The
+  // label must match whole, so an employer that merely has the word in its
+  // name stays.
+  const unflagged = ['Confidencial', 'Empresa Confidencial', '  CONFIDENCIAL  '].map((careerPageName, i) => normalizeGupyJob({
+    name: 'Analista', jobUrl: `https://acme.gupy.io/job/u${i}`, careerPageName,
+  }));
+  const namedLikeIt = normalizeGupyJob({
+    name: 'Analista', jobUrl: 'https://acme.gupy.io/job/u9', careerPageName: 'Confidencial Seguros',
+  });
+  assert.ok(unflagged.every((r) => r === null), JSON.stringify(unflagged));
+  assert.equal(namedLikeIt?.company, 'Confidencial Seguros');
+});
+
 // ── extractGupyRows ─────────────────────────────────────────────────────────
 
 test('extractGupyRows returns [] for a present-and-empty data array', () => {
@@ -315,11 +350,16 @@ test('fetchGupy sweeps each keyword separately instead of joining them', async (
   assert.equal(jobs.length, 2);
 });
 
-test('fetchGupy sends optional filters comma-joined and omits unset ones', async () => {
+test('fetchGupy sends optional filters under the names the API reads and omits unset ones', async () => {
+  // The API reads the two lists as workplaceType and type, comma-joined, as
+  // portal.gupy.io sends them. It ignores the plural workplaceTypes/jobTypes
+  // (and answers with the unfiltered feed), and it has no country filter, so a
+  // configured country is not sent and draws a warning instead.
   const withAll = emptyFeed();
-  await fetchGupy(API_BASE, {
+  const { logged } = await captureErrors(() => fetchGupy(API_BASE, {
     fetchImpl: withAll,
     company: {
+      name: 'Gupy',
       gupy: {
         keywords: ['X'],
         workplace_types: ['remote', 'hybrid'],
@@ -330,19 +370,23 @@ test('fetchGupy sends optional filters comma-joined and omits unset ones', async
       max_pages: 1,
     },
     ...FAST,
-  });
+  }));
   const url = withAll.calls[0].url;
-  assert.equal(param(url, 'workplaceTypes'), 'remote,hybrid');
-  assert.equal(param(url, 'jobTypes'), 'vacancy_type_effective');
+  assert.equal(param(url, 'workplaceType'), 'remote,hybrid');
+  assert.equal(param(url, 'type'), 'vacancy_type_effective');
   assert.equal(param(url, 'state'), 'Rio Grande do Sul');
-  assert.equal(param(url, 'country'), 'Brasil');
+  for (const key of ['workplaceTypes', 'jobTypes', 'country']) assert.equal(param(url, key), null, key);
+  assert.equal(logged.length, 1, JSON.stringify(logged));
+  assert.ok(logged[0].includes('gupy.country') && logged[0].includes('"Gupy"'), logged[0]);
 
   const bare = emptyFeed();
   await fetchGupy(API_BASE, {
     fetchImpl: bare, company: { gupy: { keywords: ['X'], workplace_types: [] }, max_pages: 1 }, ...FAST,
   });
   const sp = new URL(bare.calls[0].url).searchParams;
-  for (const key of ['workplaceTypes', 'jobTypes', 'state', 'country']) assert.equal(sp.has(key), false, key);
+  for (const key of ['workplaceType', 'type', 'state', 'country', 'workplaceTypes', 'jobTypes']) {
+    assert.equal(sp.has(key), false, key);
+  }
 });
 
 test('fetchGupy sleeps delayMs before every request except the first', async () => {
@@ -462,7 +506,28 @@ test('fetchGupy stops a never-ending feed at max_pages and warns', async () => {
   }));
   assert.equal(impl.calls.length, 2);
   assert.equal(result.length, 200);
-  assert.ok(logged.some((w) => w.includes('truncated at max_pages=2')));
+  assert.ok(logged.some((w) => w.includes('truncated at max_pages=2') && w.includes('raise max_pages')), JSON.stringify(logged));
+});
+
+test('fetchGupy caps max_pages at 100, the deepest page the API serves (offset 9,900)', async () => {
+  // The API answers offset 10,000 and beyond with a 400, so no max_pages takes
+  // a sweep past 100 pages — and at that ceiling the warning must not tell the
+  // user to raise max_pages.
+  const impl = fake((url) => {
+    const offset = offsetOf(url);
+    return okJson({ data: Array.from({ length: PER_PAGE }, (_, i) => mk(offset + i)), pagination: { total: 100 } });
+  });
+  const { result, logged } = await captureErrors(() => fetchGupy(API_BASE, {
+    fetchImpl: impl, company: { gupy: { keywords: ['X'] }, max_pages: 500 }, ...FAST,
+  }));
+  assert.equal(impl.calls.length, 100);
+  assert.equal(offsetOf(impl.calls.at(-1).url), 9900);
+  assert.equal(result.length, 10_000);
+  assert.ok(impl.calls.every((c) => c.url.startsWith(`${API_BASE}?`)), impl.calls.at(-1).url);
+  assert.equal(logged.length, 1, JSON.stringify(logged));
+  assert.ok(logged[0].includes('truncated at max_pages=100'), logged[0]);
+  assert.ok(!logged[0].includes('raise max_pages'), logged[0]);
+  assert.ok(logged[0].includes('narrower keywords'), logged[0]);
 });
 
 test('max_pages is clamped: invalid values fall back to the default of 5', async () => {

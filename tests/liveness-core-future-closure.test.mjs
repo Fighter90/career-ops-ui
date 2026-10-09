@@ -7,12 +7,12 @@
  * --verify wrote it to scan-history as skipped_expired, dedup-filtering a real
  * job out of every later scan.
  *
- * The fix (parent c0264e7c, incl. the open #4810 line-break guard): an
- * occurrence counts only when no time/condition word (until, once, when, if…)
- * opens its clause — none within ten words of the end of the match, no clause
- * punctuation in between. Every occurrence is checked, so a real banner on a
- * page whose copy also says "until … has been filled" still closes the
- * posting.
+ * The fix (parent c0264e7c; the line-break guard is parent 880a1cb4, ported
+ * here too): an occurrence counts only when no time/condition word (until,
+ * once, when, if…) opens its clause — none within ten words of the end of the
+ * match, no clause punctuation or line break in between. Every occurrence is
+ * checked, so a real banner on a page whose copy also says "until … has been
+ * filled" still closes the posting.
  *
  * Pure classifier tests — no network, no server, no CAREER_OPS_ROOT.
  */
@@ -120,5 +120,69 @@ test('#4810 guard: a real banner still closes the posting', () => {
     const v = live(text);
     assert.equal(v.result, 'expired', `${label} → ${v.result}/${v.code}`);
     assert.equal(v.code, 'expired_body', label);
+  }
+});
+
+// ---------------------------------------------------------------------------
+// Parent 880a1cb4, ported: a banner on its own line is not part of the line
+// above. The clause check used to read the page with its lines joined, so
+// chrome ending without punctuation ("Sign in if you have an account", "Get
+// notified when new jobs are posted") put its "if"/"when" within ten words of
+// the banner's end — the banner read as that line's clause, and a CLOSED
+// posting with an Apply control on the page came back active.
+// ---------------------------------------------------------------------------
+
+// Same page shape the parent tests: a JD body, then the chrome + banner lines.
+const lineAware = (text) => classifyLiveness({
+  status: 200,
+  requestedUrl: 'https://careers.example.com/job/123',
+  finalUrl: 'https://careers.example.com/job/123',
+  bodyText: `${JD_BODY}\n${text}`,
+  applyControls: ['Apply'],
+});
+
+test('#4810: a banner on its own line closes the posting despite clause words in the chrome above', () => {
+  const cases = [
+    {
+      text: 'Sign in if you have an account\nThis job has been filled.',
+      label: 'a filled banner under "Sign in if you have an account"',
+    },
+    {
+      text: 'Get notified when new jobs are posted\nNo longer accepting applications',
+      label: '"No longer accepting applications" under "Get notified when new jobs are posted"',
+    },
+    {
+      text: 'Please read the full posting before you apply\nThis position is no longer available.',
+      label: '"This position is no longer available" under a line ending "before you apply"',
+    },
+    {
+      // A line break inside the banner does not stop the pattern: patterns
+      // still match on the joined text; only the clause test sees the breaks.
+      text: 'We are no longer accepting\napplications for this role.',
+      label: 'a banner broken over two lines',
+    },
+  ];
+  for (const { text, label } of cases) {
+    const v = lineAware(text);
+    assert.equal(v.result, 'expired', `${label} → ${v.result}/${v.code}`);
+    assert.equal(v.code, 'expired_body', label);
+  }
+});
+
+test('#4810: a closing clause on a line of its own still keeps the posting active (no regression)', () => {
+  const cases = [
+    {
+      text: 'Salary: $80,000\nApplications will be accepted until the position has been filled.\nBenefits',
+      label: '"accepted until the position has been filled" between two other lines',
+    },
+    {
+      text: 'How to apply\nYou will receive final notification via email when this vacancy has been filled.',
+      label: '"when this vacancy has been filled" under a heading',
+    },
+  ];
+  for (const { text, label } of cases) {
+    const v = lineAware(text);
+    assert.equal(v.result, 'active', `${label} → ${v.result}/${v.code}`);
+    assert.equal(v.code, 'apply_control_visible', label);
   }
 });

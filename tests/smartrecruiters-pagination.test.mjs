@@ -7,6 +7,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { fetchSmartRecruiters, buildPublicUrl } from '../server/lib/sources/smartrecruiters.mjs';
+import { smartRecruitersAdapter } from '../server/lib/portals/adapters/smartrecruiters.mjs';
 
 function makeFetchStub(pages) {
   return async (url) => {
@@ -159,4 +160,98 @@ test('buildPublicUrl: ref rewrite, id synthesis, and applyUrl fallback', () => {
     buildPublicUrl({ name: 'Ghost', applyUrl: 'https://apply.example/ghost' }),
     'https://apply.example/ghost',
   );
+});
+
+// ─────────────── Configured slug in fallback job links (#4770) ───────────────
+// A display name is not the SmartRecruiters company slug: a board configured
+// as ExampleLabs42 whose display name is "Example Research & Design" used to
+// synthesise jobs.smartrecruiters.com/example-research-design/… links when a
+// posting carried no usable ref — links the public site 404s, which the
+// liveness checker then reports as expired postings. The slug the adapter
+// configured (the endpoint's /v1/companies/<slug>/ segment) is authoritative;
+// the display name is only the legacy fallback when no slug is supplied.
+// All fixtures are fictional; fetchImpl never touches the network.
+
+const SLUG_POSTING = {
+  id: '12345',
+  name: 'Research Engineer',
+  company: { name: 'Example Research & Design' },
+  location: { city: 'Example City' },
+};
+const SLUG_REF = 'https://api.smartrecruiters.com/v1/companies/ExampleLabs42/postings/12345';
+const SLUG_EXPECTED = 'https://jobs.smartrecruiters.com/ExampleLabs42/12345-research-engineer';
+
+/** One-page transport serving `row`; records and returns the request URLs. */
+async function fetchOne(row, endpoint = 'https://api.smartrecruiters.com/v1/companies/ExampleLabs42/postings') {
+  const calls = [];
+  const jobs = await fetchSmartRecruiters(endpoint, {
+    fetchImpl: async (url, init) => {
+      calls.push({ url, init });
+      return { ok: true, status: 200, json: async () => ({ offset: 0, totalFound: 1, content: [row] }) };
+    },
+  });
+  assert.equal(calls.length, 1);
+  assert.equal(jobs.length, 1);
+  return { job: jobs[0], calls };
+}
+
+test('missing-ref link is synthesised from the configured company slug, not the display name (#4770)', async () => {
+  const { job, calls } = await fetchOne(SLUG_POSTING);
+  assert.match(calls[0].url, /\/companies\/ExampleLabs42\/postings/);
+  assert.equal(job.url, SLUG_EXPECTED);
+  // The display name stays a label on the row; it just never becomes the link slug.
+  assert.equal(job.company, 'Example Research & Design');
+  assert.equal(job.location, 'Example City');
+  assert.equal(job.title, 'Research Engineer');
+});
+
+test('ref and missing-ref forms produce the same URL when the slugs agree', async () => {
+  const withRef = await fetchOne({ ...SLUG_POSTING, ref: SLUG_REF });
+  const withoutRef = await fetchOne(SLUG_POSTING);
+  assert.equal(withoutRef.job.url, withRef.job.url);
+});
+
+test('malformed ref falls back to the configured slug', async () => {
+  const { job } = await fetchOne({ ...SLUG_POSTING, ref: 'not a URL' });
+  assert.equal(job.url, SLUG_EXPECTED);
+});
+
+test('untrusted ref falls back to the configured slug', async () => {
+  const { job } = await fetchOne({ ...SLUG_POSTING, ref: 'https://example.test/posting' });
+  assert.equal(job.url, SLUG_EXPECTED);
+});
+
+test('a trusted ref keeps precedence over the configured fallback slug', () => {
+  const jobs = buildPublicUrl({ ...SLUG_POSTING, ref: SLUG_REF }, 'OtherTenant');
+  assert.equal(jobs, SLUG_EXPECTED);
+});
+
+test('buildPublicUrl keeps the legacy display-name fallback when no slug is supplied', () => {
+  assert.equal(
+    buildPublicUrl(SLUG_POSTING),
+    'https://jobs.smartrecruiters.com/example-research-design/12345-research-engineer',
+  );
+});
+
+test('missing ref and id still yields no job URL', async () => {
+  const { job } = await fetchOne({ name: SLUG_POSTING.name });
+  assert.equal(job.url, '');
+});
+
+test('the adapter endpoint slug drives fallback links end-to-end', async () => {
+  // careers_url slug (the regular wiring)…
+  const fromCareers = smartRecruitersAdapter.buildEndpoint({
+    name: 'Example Research & Design',
+    careers_url: 'https://jobs.smartrecruiters.com/ExampleLabs42',
+  });
+  assert.equal(fromCareers, 'https://api.smartrecruiters.com/v1/companies/ExampleLabs42/postings');
+  // …and an explicit api: pinning the slug ahead of a branded careers_url.
+  const fromApi = smartRecruitersAdapter.buildEndpoint({
+    name: 'Example Research & Design',
+    careers_url: 'https://example.test/careers',
+    api: 'https://api.smartrecruiters.com/v1/companies/ExampleLabs42/postings',
+  });
+  assert.equal(fromApi, 'https://api.smartrecruiters.com/v1/companies/ExampleLabs42/postings');
+  const { job } = await fetchOne(SLUG_POSTING, fromApi);
+  assert.equal(job.url, SLUG_EXPECTED);
 });

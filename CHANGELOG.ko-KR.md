@@ -8,6 +8,26 @@
 
 ---
 
+## [1.248.0] — 2026-10-09
+
+**부모 패리티: 업스트림 제공자/liveness 수정 5건 포팅 — API를 옮긴 보드도 계속 작동하고, 독립 줄의 마감 배너가 더 이상 놓치지 않습니다.**
+
+### 수정
+
+- **Gupy가 API를 `portal.gupy.io`로 따라가며** API가 실제로 읽는 필터 이름(`workplaceType`/`type`)을 전송 — 이전 복수형 이름은 조용히 무시되었습니다. `country`는 더 이상 전송되지 않고(설정된 국가는 전송 대신 항목 이름으로 경고), 기밀 고용주는 라벨 완전 일치로 드롭되며(「Confidencial Seguros」는 생존), `max_pages`는 100으로 제한 — API는 offset 10,000을 넘으면 400을 반환하고, 잘림 경고는 이제 한도 올리기 대신 키워드를 좁히라고 안내합니다.
+- **Workable은 다국적 공고의 모든 국가를 유지합니다**: 같은 채용 URL 아래 형제들이 한 행으로 접힙니다(「London, United Kingdom · Romania · Poland · Croatia」) — 첫 국가가 이기는 대신.
+- **Liveness: 독립 줄의 배너는 윗줄의 일부가 아닙니다** — 공고 아래의 「Sign in if you want to apply」/「Get notified when this position is filled」은 마감 절로 읽히고, 줄에 걸친 실제 「until filled」은 여전히 활성으로 읽힙니다.
+- **Radancy가 레거시 카드 마크업의 형제 `job-location` 요소를 읽습니다**(Barclays 계열 레이아웃은 위치를 `</a>` 뒤에 둠) — 자체 위치가 없는 행은 이웃 것을 빌리지 않고 빈 채로 남습니다.
+- **SmartRecruiters 폴백 채용 링크는 설정된 슬러그를 유지합니다** — 신뢰할 수 없는 `ref`가 없는 공고는 표시 이름이 아니라 테넌트 슬러그에서 공개 URL을 합성합니다.
+
+### 추가
+
+- 노포트 문서화: 업스트림 `_http` 프록시 `fetchImpl` 수정(web-ui에는 프록시 분기가 없어 포팅하면 DNS-rebinding 가드의 동일성 검사가 무력화되고 저장소가 의도적으로 피하는 undici 의존성이 추가됨); 업스트림 `verify-ats`(+226줄)와 `cv-facts`(web-ui는 자체 ATS 스코어링과 CV 파싱 구현); 부모 대시보드 Go TUI와 CLI 스크립트; Teamtailor import 재배열(외관상).
+
+### 참고
+
+- 알려진 갭을 후속으로: 부모 location 필터의 `always_allow` 티어(workable 소비자 테스트가 이것으로 UK 블록을 생존)가 web-ui에는 없습니다; 포트는 동일한 소비자 판정을 허용 목록 테스트로 표현했습니다. 별도 변경으로 기록.
+
 ## [1.247.0] — 2026-10-09
 
 **CAR-49…58 디자인 스윕의 꼬리가 완료됐습니다 — 남은 minor/polish 발견 전부와, 이전 릴리스가 의도적으로 미뤄둔 다크 맵까지.**

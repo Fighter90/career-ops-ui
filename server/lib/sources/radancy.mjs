@@ -31,7 +31,12 @@
  *   (b) LEGACY markup — a bare <li> holding the anchor itself, no list-item
  *       class to split on (careers.unitedhealthgroup.com, kaiserpermanentejobs.org).
  *       Parsed by parseLegacyResults(); parseResults() tries modern first, then
- *       falls back to legacy. On legacy tenants the ?p=N page is catastrophically
+ *       falls back to legacy. search.jobs.barclays is the same family in a
+ *       card layout: the title sits in <strong> inside the anchor and the
+ *       location is a SIBLING <div class="job-location"> after </a>, so the
+ *       legacy parser also looks between one anchor and the next, and accepts
+ *       span, p or div as the location element (the class is the stable part).
+ *       On legacy tenants the ?p=N page is catastrophically
  *       heavy (a facet blob repeated per page), so fetchRadancy prefers the JSON
  *       results-fragment endpoint (buildFragmentUrl/readFragmentTotals) when the
  *       caller supplies a `fetchJson` capability, and falls back to ?p=N otherwise.
@@ -207,10 +212,14 @@ export function parseModernResults(html, origin, companyName = '') {
   return out;
 }
 
+// The element carrying the location varies per tenant (span on UHG/KP, div on
+// Barclays); the class is the stable part.
+const LEGACY_LOCATION_RE = /class="[^"]*\bjob-location\b[^"]*"[^>]*>([\s\S]*?)<\/(?:span|p|div)>/i;
+
 /**
- * Parse the LEGACY markup, seen live on careers.unitedhealthgroup.com and
- * www.kaiserpermanentejobs.org: the anchor IS the row, with no list-item class
- * to split on —
+ * Parse the LEGACY markup, seen live on careers.unitedhealthgroup.com,
+ * www.kaiserpermanentejobs.org and search.jobs.barclays: the anchor IS the row,
+ * with no list-item class to split on —
  *   <li><a href="/job/{city}/{slug}/{org}/{id}" data-job-id="{id}">
  *        <h2>{Title}</h2>
  *        <span class="job-id job-info">{reqNo}</span>      (UHG only)
@@ -227,8 +236,8 @@ export function parseLegacyResults(html, origin, companyName = '') {
   const out = [];
   const seen = new Set();
   // Anchors never nest, so a non-greedy run to </a> is a safe row boundary.
-  const anchors = html.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/gi);
-  for (const a of anchors) {
+  const anchors = [...html.matchAll(/<a\b([^>]*)>([\s\S]*?)<\/a>/gi)];
+  for (const [n, a] of anchors.entries()) {
     const attrs = a[1];
     const inner = a[2];
     const idM = attrs.match(/data-job-id="([^"]+)"/i);
@@ -249,7 +258,11 @@ export function parseLegacyResults(html, origin, companyName = '') {
 
     const url = resolveJobUrl(href, origin);
     if (!url) continue;
-    const locM = inner.match(/class="[^"]*job-location[^"]*"[^>]*>([\s\S]*?)<\/span>/i);
+    // Barclays puts job-location AFTER the anchor rather than inside it, so
+    // fall back to the markup up to the next anchor (to the end of the page for
+    // the last row — the results fragment carries nothing else after it).
+    const locM = inner.match(LEGACY_LOCATION_RE)
+      || html.slice(a.index + a[0].length, anchors[n + 1]?.index ?? html.length).match(LEGACY_LOCATION_RE);
     const location = locM ? clean(locM[1]) : '';
     seen.add(id);
     out.push(makeJob(id, title, url, location, companyName));

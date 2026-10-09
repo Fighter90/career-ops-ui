@@ -2,6 +2,26 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.248.0] — 2026-10-09
+
+**Parità col padre: cinque correzioni a monte di provider/liveness portate — le board che hanno spostato l’API continuano a funzionare e un banner di chiusura su riga propria non viene più perso.**
+
+### Corretto
+
+- **Gupy segue l’API verso `portal.gupy.io`** e invia i nomi dei filtri che l’API legge davvero (`workplaceType`/`type`) — i vecchi nomi plurali venivano ignorati in silenzio; `country` non viene più inviato (un paese configurato disegna un avviso con il nome della voce). I datori confidenciali cadono per corrispondenza esatta dell’etichetta («Confidencial Seguros» sopravvive) e `max_pages` ha un tetto di 100 — l’API risponde 400 oltre l’offset 10.000, e l’avviso di troncamento ora suggerisce di restringere le parole chiave.
+- **Workable conserva tutti i paesi di una offerta multipaese**: i fratelli sotto lo stesso URL di offerta si ripiegano in una riga («London, United Kingdom · Romania · Poland · Croatia») invece di lasciar vincere il primo paese.
+- **Liveness: un banner su riga propria non fa parte della riga sopra** — «Sign in if you want to apply» / «Get notified when this position is filled» sotto un’offerta si legge come la clausola di chiusura che è, mentre un genuino «until filled» a cavallo di righe si legge ancora attivo.
+- **Radancy legge un elemento fratello `job-location`** nel markup legacy delle card (i layout della famiglia Barclays mettono la localizzazione dopo `</a>`) — le righe senza localizzazione propria restano vuote invece di prendere in prestito quella del vicino.
+- **I link di fallback di SmartRecruiters conservano lo slug configurato** — un’offerta senza `ref` affidabile sintetizza il suo URL pubblico dallo slug del tenant, mai dal nome visualizzato.
+
+### Aggiunto
+
+- No-port documentati: la correzione a monte `_http` proxy `fetchImpl` (web-ui non ha un ramo proxy — portarla annullerebbe il controllo d’identità della guardia DNS-rebinding e aggiungerebbe una dipendenza undici che il repo evita di proposito); `verify-ats` a monte (+226 righe) e `cv-facts` (web-ui implementa il proprio scoring ATS e il parsing CV); la dashboard Go TUI del padre e i suoi script CLI; un riordino degli import in Teamtailor (cosmetico).
+
+### Note
+
+- Lacuna nota come follow-up: il tier `always_allow` del filtro di localizzazione del padre (il test consumatore di workable sopravvive a un blocco UK grazie a esso) non esiste in web-ui; il port ha espresso lo stesso verdetto consumatore tramite un test allow-list. Archiviato come modifica separata.
+
 ## [1.247.0] — 2026-10-09
 
 **La coda della scansione design CAR-49…58 è chiusa — tutti i reperti minori e di polish rimanenti, più la mappa scura che la versione precedente aveva rimandato di proposito.**

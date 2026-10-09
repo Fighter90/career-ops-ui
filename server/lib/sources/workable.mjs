@@ -158,6 +158,13 @@ function safeJobUrl(raw) {
   }
 }
 
+// Joins the locations of a multi-country posting into one cell (parent
+// parity: career-ops b07171d1, #4806). This is the multi-location shape
+// sources/ashby.mjs already emits for Ashby's secondaryLocations, and the
+// shape location_filter (location-filter.mjs, wired into en-scanner.mjs)
+// judges as one string — so the two sources read identically to the scanner.
+const LOCATION_SEPARATOR = ' · ';
+
 export async function fetchWorkable(apiUrl, opts = {}) {
   const { fetchImpl = fetch, signal, retryDelayMs = 500 } = opts;
 
@@ -191,8 +198,29 @@ export async function fetchWorkable(apiUrl, opts = {}) {
  * Parse the widget API payload into the scanner's job shape. Exported for unit
  * tests. The documented envelope is REQUIRED (v1.242.0 Phase 2): a 200 whose
  * body is null or jobs-less is a masked board, not an empty one, so it throws
- * instead of silently returning []. Keeps only titled, on-domain, deduped jobs
- * — off-domain or non-HTTPS permalinks are dropped rather than emitted.
+ * instead of silently returning []. Keeps only titled, on-domain jobs —
+ * off-domain or non-HTTPS permalinks are dropped rather than emitted.
+ *
+ * A multi-country posting is FANNED OUT by this endpoint into one entry per
+ * location, every one carrying the same shortlink, title, description and
+ * published_on and differing only in city/state/country (parent parity:
+ * career-ops b07171d1, #4806; verified live upstream 2026-10-06 against
+ * DigitalGenius, where "Implementation Engineer" (801183DB79) comes back as
+ * four entries — London/United Kingdom, Romania, Poland, Croatia).
+ *
+ * The siblings are therefore folded together here: the first entry supplies
+ * every field, the rest contribute only their location, and the accumulated
+ * set is joined with LOCATION_SEPARATOR. Discarding them (first-wins on URL,
+ * which is what this did before) recorded that role as "London, United
+ * Kingdom" alone, so an EU allow-list in location_filter rejected a posting
+ * that had three viable EU alternatives.
+ *
+ * Two dead ends, both measured rather than assumed upstream: each entry's own
+ * `locations[]` array holds ONLY that entry's single location, so it is not a
+ * shortcut to the full set; the per-job detail endpoint
+ * (/api/v1/accounts/<slug>/jobs/<shortcode>) does carry a complete array but
+ * costs one extra request per posting. This source has no second parse path
+ * (single-request contract, no markdown feed), so the fold lives here alone.
  *
  * @param {any} payload — parsed JSON body of the widget endpoint
  * @returns {Array<object>}
@@ -201,7 +229,8 @@ export function parseWorkableWidget(payload) {
   const body = requireObject(payload, 'Workable widget');
   const rows = requireArray(body.jobs, 'Workable widget jobs');
   const jobs = [];
-  const seen = new Set();
+  /** @type {Map<string, {job: object, locations: Set<string>}>} */
+  const byUrl = new Map();
   for (const raw of rows) {
     const title = typeof raw?.title === 'string' ? raw.title.trim() : '';
     if (!title) continue;
@@ -209,10 +238,30 @@ export function parseWorkableWidget(payload) {
     // shortlink is the canonical public permalink; url is the same host. Both
     // are validated; off-domain / non-https entries are dropped.
     const url = safeJobUrl(raw?.shortlink) || safeJobUrl(raw?.url) || safeJobUrl(raw?.application_url);
-    if (!url || seen.has(url)) continue;
-    seen.add(url);
+    if (!url) continue;
 
-    jobs.push(normalize(raw, url));
+    const loc = rawLocation(raw);
+    const merged = byUrl.get(url);
+    if (merged) {
+      // Fanned-out sibling of a posting already emitted: it contributes its
+      // location and nothing else. Empty locations add nothing; a repeated one
+      // collapses, so the cell never says "Romania · Romania".
+      if (loc) merged.locations.add(loc);
+      continue;
+    }
+
+    const job = normalize(raw, url);
+    jobs.push(job);
+    // Seeded from the EMITTED location, not rawLocation: normalize falls back
+    // to "Remote" when the entry names no place, and that fallback must not be
+    // lost when the final join rewrites the cell below.
+    byUrl.set(url, { job, locations: new Set(job.location ? [job.location] : []) });
+  }
+
+  // A Set iterates in insertion order, so the joined cell follows payload order
+  // and a single-location posting re-joins to the exact string it already had.
+  for (const { job, locations } of byUrl.values()) {
+    job.location = [...locations].join(LOCATION_SEPARATOR);
   }
   return jobs;
 }
@@ -235,11 +284,25 @@ function toIsoDateUtc(value) {
   return Number.isNaN(ms) ? '' : new Date(ms).toISOString().slice(0, 10);
 }
 
-function normalize(j, url) {
-  const loc = [j.city, j.state, j.country]
+/**
+ * The "<city>, <state>, <country>" cell for ONE widget entry — the shape
+ * location_filter matches on, matching the markdown feed's rendering so the
+ * filter behaves identically across both paths (parent wording, adapted).
+ * Used both by normalize() and by the multi-country fold in
+ * parseWorkableWidget, so a sibling contributes exactly the string the first
+ * entry would have rendered.
+ * @param {any} j
+ * @returns {string} '' when the entry names no place
+ */
+function rawLocation(j) {
+  return [j.city, j.state, j.country]
     .filter((v) => typeof v === 'string' && v.trim())
     .map((v) => v.trim())
     .join(', ');
+}
+
+function normalize(j, url) {
+  const loc = rawLocation(j);
   const remote = !!j.telecommuting || /remote|anywhere/i.test(loc) || /\bremote\b/i.test(j.title || '');
   const hybrid = /hybrid/i.test(loc);
   return {

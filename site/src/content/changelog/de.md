@@ -2,6 +2,26 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.248.0] — 2026-10-09
+
+**Parent-Parität: fünf Upstream-Fixes für Provider/Liveness portiert — Boards, die ihre API umgezogen haben, arbeiten weiter, und ein Closing-Banner in eigener Zeile wird nicht mehr übersehen.**
+
+### Behoben
+
+- **Gupy folgt der API zu `portal.gupy.io`** und sendet die Filternamen, die die API wirklich liest (`workplaceType`/`type`) — die alten Pluralnamen wurden stillschweigend ignoriert; `country` wird nicht mehr gesendet (ein konfiguriertes Land erzeugt eine Warnung mit dem Eintragsnamen). Vertrauliche Arbeitgeber fallen bei exakter Label-Übereinstimmung („Confidencial Seguros“ überlebt), und `max_pages` ist auf 100 begrenzt — die API antwortet mit 400 ab Offset 10.000, und die Truncation-Warnung rät jetzt, Keywords einzugrenzen.
+- **Workable behält alle Länder einer Mehrfach-Länder-Vakanz**: Geschwister unter derselben Job-URL falten in eine Zeile („London, United Kingdom · Romania · Poland · Croatia“) statt dass das erste Land gewinnt.
+- **Liveness: Ein Banner in eigener Zeile ist nicht Teil der Zeile darüber** — „Sign in if you want to apply“ / „Get notified when this position is filled“ unter einer Vakanz wird als Closing-Klausel gelesen, während ein echtes „until filled“ über Zeilen hinweg weiterhin aktiv liest.
+- **Radancy liest ein Geschwister-`job-location`-Element** im Legacy-Card-Markup (Barclays-Familien-Layouts legen den Ort nach `</a>`) — Zeilen ohne eigenen Ort bleiben leer statt den des Nachbarn zu leihen.
+- **SmartRecruiters-Fallback-Links behalten den konfigurierten Slug** — eine Vakanz ohne vertrauenswürdige `ref` synthetisiert ihre öffentliche URL aus dem Tenant-Slug, nie aus dem Anzeigenamen.
+
+### Hinzugefügt
+
+- Keine Ports, dokumentiert: der Upstream-`_http`-Proxy-`fetchImpl`-Fix (web-ui hat keinen Proxy-Zweig — ein Port würde die Identitätsprüfung des DNS-Rebinding-Guards aushebeln und eine undici-Abhängigkeit hinzufügen, der das Repo bewusst ausweicht); Upstream-`verify-ats` (+226 Zeilen) und `cv-facts` (web-ui implementiert eigenes ATS-Scoring und CV-Parsing); das Parent-Dashboard Go TUI und CLI-Skripte; eine Teamtailor-Import-Umordnung (kosmetisch).
+
+### Hinweise
+
+- Bekannte Lücke als Follow-up: der `always_allow`-Tier des Parent-Standortfilters (der Workable-Consumer-Test überlebt dank ihm einen UK-Block) fehlt in web-ui; der Port drückt dasselbe Verbraucherurteil über einen Allow-List-Test aus. Als separate Änderung eingetragen.
+
 ## [1.247.0] — 2026-10-09
 
 **Der Schwanz des Design-Sweeps CAR-49…58 ist abgeschlossen — alle übrigen Minor/Polish-Funde plus die dunkle Karte, die das vorige Release bewusst zurückstellte.**

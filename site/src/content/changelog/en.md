@@ -8,6 +8,26 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.248.0] — 2026-10-09
+
+**Parent parity: five upstream provider/liveness fixes ported — boards that moved their APIs keep working, and a closed-posting banner on its own line is no longer missed.**
+
+### Fixed
+
+- **Gupy follows the API to `portal.gupy.io`** and sends the filter names the API actually reads (`workplaceType`/`type`) — the old plural names were silently ignored; `country` is no longer sent (a configured country now draws a naming warning instead). Confidential employers drop on an exact label match («Confidencial Seguros» survives), and `max_pages` is capped at 100 — the API answers 400 past offset 10,000, and the truncation warning now says to narrow keywords instead of raising the cap.
+- **Workable keeps every country of a multi-country posting**: siblings listed under the same job URL fold into one row («London, United Kingdom · Romania · Poland · Croatia») instead of the first country winning.
+- **Liveness: a banner on its own line is not part of the line above** — «Sign in if you want to apply» / «Get notified when this position is filled» under a posting is read as the closing clause it is, while a genuine «until filled» spanning lines still reads active.
+- **Radancy reads a sibling `job-location` element** in the legacy card markup (Barclays-family layouts put the location after `</a>`) — rows without their own location stay empty rather than borrowing a neighbour's.
+- **SmartRecruiters fallback job links keep the configured slug** — a posting with a missing/untrusted `ref` synthesizes its public URL from the tenant slug, never from the display name.
+
+### Added
+
+- No-ports, documented: the upstream `_http` proxy `fetchImpl` fix (web-ui has no proxy branch — porting would defeat the DNS-rebinding guard's identity check and add an undici dependency the repo deliberately avoids); upstream `verify-ats` (+226 lines) and `cv-facts` (web-ui implements its own ATS scoring and CV parsing); the parent dashboard Go TUI and CLI scripts (web-ui does not shell into them); a Teamtailor import reorder (cosmetic).
+
+### Notes
+
+- Not ported (follow-up filed): the parent's `always_allow` location-filter tier — workable's consumer test survives a UK block via it, but web-ui's location filter does not have that tier; the port expresses the same consumer verdict through an allow-list test instead.
+
 ## [1.247.0] — 2026-10-09
 
 **The tail of the CAR-49…58 design sweep is done — every remaining minor and polish finding, plus the dark map the previous release deliberately deferred.**

@@ -8,6 +8,26 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.248.0] — 2026-10-09
+
+**Parent-paritet: fem upstream-fixes for udbydere/liveness portet — boards der har flyttet deres API, virker videre, og et lukkebanner på egen linie overses ikke længere.**
+
+### Rettet
+
+- **Gupy følger API'en til `portal.gupy.io`** og sender de filternavne, API'en faktisk læser (`workplaceType`/`type`) — de gamle flertalsnavne blev stiltiende ignoreret; `country` sendes ikke længere (et konfigureret land tegner en advarsel med postens navn). Fortrolige arbejdsgivere falder på nøjagtig label-match („Confidencial Seguros“ overlever), og `max_pages` er loftet til 100 — API'en svarer 400 efter offset 10.000, og truncation-advarslen råder nu til at indsnævre nøgleord.
+- **Workable beholder alle lande i en flernations-opslag**: søskende under samme job-URL foldes i én linje („London, United Kingdom · Romania · Poland · Croatia“) i stedet for at det første land vinder.
+- **Liveness: Et banner på egen linie er ikke en del af linien ovenover** — „Sign in if you want to apply“ / „Get notified when this position is filled“ under en opslag læses som den lukkeklausul, det er, mens et ægte „until filled“ på tværs af linjer stadig læses aktivt.
+- **Radancy læser et søskende-`job-location`-element** i legacy-card-markup (Barclays-familiens layouts lægger lokationen efter `</a>`) — rækker uden egen lokation forbliver tomme i stedet for at låne naboens.
+- **SmartRecruiters-fallback-links beholder den konfigurerede slug** — en opslag uden betroet `ref` syntetiserer sin offentlige URL fra tenant-slugen, aldrig fra visningsnavnet.
+
+### Tilføjet
+
+- No-porter dokumenteret: upstream `_http`-proxy-`fetchImpl`-fixen (web-ui har ingen proxy-gren — en port ville omgå DNS-rebinding-vagtens identitetstjek og tilføje en undici-afhængighed, repoet bevidst undgår); upstream `verify-ats` (+226 linjer) og `cv-facts` (web-ui implementerer egen ATS-scoring og CV-parsing); parent-dashboardet Go TUI og CLI-scripts; en Teamtailor-import-omstokning (kosmetisk).
+
+### Noter
+
+- Kendt hul som follow-up: parentens `always_allow`-tier i lokationsfilteret (workables forbrugertest overlever en UK-blok takket være det) findes ikke i web-ui; porten udtrykte samme forbrugerdom gennem en allow-list-test. Registreret som separat ændring.
+
 ## [1.247.0] — 2026-10-09
 
 **Halens af CAR-49…58-design-sweepet er lukket — alle resterende minor/polish-fund plus det mørke kort, som den forrige udgivelse bevidst udsatte.**
