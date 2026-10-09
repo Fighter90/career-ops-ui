@@ -48,7 +48,23 @@ export const TRACKER_TEST_ROW = /Acme \\?\| Co/;
 // v1.248.2 — QA-harness leftovers:
 export const QA_TRACKER_ROW = /ZZ-QA-TEST/;
 // example.com pipeline fixtures (same rule as clean-test-fixtures.mjs).
-export const EXAMPLE_URL = /example\.com/i;
+// CodeQL js/incomplete-url-substring-sanitization: a bare /example\.com/i
+// would match `notexample.com.evil.io` too. Extract the HOSTNAME and compare
+// it (or the registrable suffix) strictly instead.
+export function isExampleUrl(raw) {
+  // A pipeline line carries prose around the link — cut the first
+  // http(s) URL out, then judge it by its HOSTNAME (strict equality),
+  // never by substring (CodeQL js/incomplete-url-substring-sanitization:
+  // `notexample.com.evil.io` must not match).
+  const m = /https:\/\/[^\s|)]+/.exec(String(raw));
+  if (!m) return false;
+  try {
+    const host = new URL(m[0]).hostname.toLowerCase();
+    return host === 'example.com' || host.endsWith('.example.com');
+  } catch {
+    return false;
+  }
+}
 // Report filenames written by the eval timer from pipeline garbage:
 // `2026-10-09-t-role-<ts>.md` and variants.
 export const T_ROLE_REPORT = /-t-role-/;
@@ -80,11 +96,15 @@ function preview(line) {
 }
 
 function sweepLines(file, predicate, label) {
-  if (!existsSync(file)) {
+  // Read-first (no existsSync pre-check — CodeQL TOCTOU): a file vanishing
+  // between the check and the read is handled by the catch below.
+  let before;
+  try {
+    before = readFileSync(file, 'utf8').split('\n');
+  } catch {
     console.log(`  · skip ${relabel(file)} — not present`);
     return { changed: 0 };
   }
-  const before = readFileSync(file, 'utf8').split('\n');
   const after = before.filter((l) => !predicate(l));
   const changed = before.length - after.length;
   if (!changed) {
@@ -105,12 +125,15 @@ function sweepLines(file, predicate, label) {
 function sweepReports() {
   const dir = join(ROOT, 'reports');
   const backupDir = join(ROOT, 'qa', `cleanup-backup-${TS}`);
-  if (!existsSync(dir)) {
+  let entries;
+  try {
+    entries = readdirSync(dir);
+  } catch {
     console.log(`  · skip ${relabel(dir)} — not present`);
     return { changed: 0 };
   }
   const junk = [];
-  for (const f of readdirSync(dir)) {
+  for (const f of entries) {
     if (!f.endsWith('.md') || !T_ROLE_REPORT.test(f)) continue;
     let text = '';
     try { text = readFileSync(join(dir, f), 'utf8'); } catch { continue; }
@@ -146,7 +169,7 @@ function main() {
   }
 
   sweepLines(join(ROOT, 'data/pipeline.md'),
-    (l) => DIRTY_URL.test(l) || EXAMPLE_URL.test(l), 'dirty-URL');
+    (l) => DIRTY_URL.test(l) || isExampleUrl(l), 'dirty-URL');
   sweepLines(join(ROOT, 'data/applications.md'),
     (l) => TRACKER_TEST_ROW.test(l) || QA_TRACKER_ROW.test(l), 'test-row');
   sweepReports();

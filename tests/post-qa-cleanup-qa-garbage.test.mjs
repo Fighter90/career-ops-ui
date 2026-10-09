@@ -74,8 +74,10 @@ function makeRoot() {
 test('exports: the QA-garbage matchers and the SCORE gate behave', () => {
   assert.ok(mod.QA_TRACKER_ROW.test('| 2 | 2026-10-09 | ZZ-QA-TEST | QA |'), 'tracker row matcher');
   assert.ok(!mod.QA_TRACKER_ROW.test('| 3 | 2026-10-09 | Real Co | SRE |'), 'real rows untouched');
-  assert.ok(mod.EXAMPLE_URL.test('- [ ] https://example.com/qa-v167-t-role | QA'));
-  assert.ok(!mod.EXAMPLE_URL.test('- [ ] https://boards.greenhouse.io/acme/jobs/1'));
+  assert.ok(mod.isExampleUrl('- [ ] https://example.com/qa-v167-t-role | QA'),
+    'the example.com host is detected from the full pipeline line (production path)');
+  assert.ok(!mod.isExampleUrl('https://boards.greenhouse.io/acme/jobs/1'));
+  assert.ok(!mod.isExampleUrl('https://notexample.com.evil.io/x'), 'host must match strictly, not by substring');
   assert.ok(mod.T_ROLE_REPORT.test('2026-10-09-t-role-1760000000000.md'));
   assert.ok(!mod.T_ROLE_REPORT.test('2026-10-08-acme-sre.md'));
   assert.equal(mod.hasValidScore(VALID_REPORT), true, 'SCORE: 4,2/5 is a valid 0..5 score');
@@ -115,7 +117,7 @@ test('apply removes exactly the targets, backs up data files, MOVES junk reports
 
     // Pipeline: example.com + private-IP gone, the real URL stays.
     const pipeline = readFileSync(join(root, 'data', 'pipeline.md'), 'utf8');
-    assert.ok(!pipeline.includes('example.com'));
+    assert.ok(!mod.isExampleUrl(pipeline), 'no example.com URL remains in the pipeline');
     assert.ok(!pipeline.includes('192.168'));
     assert.ok(pipeline.includes('boards.greenhouse.io/acme/jobs/1'));
 
@@ -131,7 +133,8 @@ test('apply removes exactly the targets, backs up data files, MOVES junk reports
     const appsBak = dataFiles.find((f) => /^applications\.md\.bak-/.test(f));
     assert.ok(pipelineBak, 'pipeline.md.bak-<ts> created');
     assert.ok(appsBak, 'applications.md.bak-<ts> created');
-    assert.ok(readFileSync(join(root, 'data', pipelineBak), 'utf8').includes('example.com'), 'pipeline backup holds the original');
+    const bakLines = readFileSync(join(root, 'data', pipelineBak), 'utf8').split('\n');
+    assert.ok(bakLines.some((l) => mod.isExampleUrl(l)), 'pipeline backup holds the original (strict host check)');
     assert.ok(readFileSync(join(root, 'data', appsBak), 'utf8').includes('ZZ-QA-TEST'), 'tracker backup holds the original');
 
     // Reports: junk t-role MOVED into qa/cleanup-backup-<ts>/, valid one kept,

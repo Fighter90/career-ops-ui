@@ -16,7 +16,7 @@
  */
 import test, { before, after, beforeEach, afterEach } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, readdirSync, rmSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, readdirSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 import { promises as dns } from 'node:dns';
@@ -76,7 +76,8 @@ async function run(body, providerBody) {
   dns.lookup = async () => ({ address: '93.184.216.34', family: 4 });
   restoreTransport = set(async () => ({ status: 200, headers: { 'content-type': 'text/html' }, body: Buffer.from(PAGE_BODY) }));
   globalThis.fetch = async (u, o = {}) => {
-    if (String(u).includes('api.openai.com')) {
+  const host = (() => { try { return new URL(String(u)).hostname; } catch { return ''; } })();
+  if (host === 'api.openai.com') {
       return new Response(JSON.stringify({ choices: [{ message: { content: providerBody }, finish_reason: 'stop' }] }),
         { status: 200, headers: { 'content-type': 'application/json' } });
     }
@@ -104,7 +105,7 @@ const JUNK_ANSWER = 'Insufficient JD information to evaluate.';
 
 const SANITIZED_LEN = 'Example Domain. This domain is for use in illustrative examples in documents.'.length;
 
-test('placeholder page (<200 chars): SSE error at fetch, NO report file, console warning with the URL', async () => {
+test('placeholder page (<200 chars): SSE error at fetch, NO report file, console warning with the host', async () => {
   assert.ok(SANITIZED_LEN >= 50 && SANITIZED_LEN < 200, `fixture must sit between the old and new gates, got ${SANITIZED_LEN}`);
   const warnings = [];
   const origWarn = console.warn;
@@ -129,8 +130,8 @@ test('placeholder page (<200 chars): SSE error at fetch, NO report file, console
   assert.ok(!apps.includes('Example'), 'no tracker row for the placeholder run');
 
   // Server-console warning carries the URL + the reason, nothing else.
-  const hit = warnings.find((w) => w.includes('example.com/qa-v167-t-role'));
-  assert.ok(hit, `expected a console warning naming the URL, got: ${warnings.join(' | ')}`);
+  const hit = warnings.find((w) => w.includes('host: example.com'));
+  assert.ok(hit, `expected a console warning naming the host, got: ${warnings.join(' | ')}`);
   assert.match(hit, /JD too short|200/);
   // Never the page text or the model answer.
   assert.ok(!warnings.join(' ').includes('illustrative examples'));

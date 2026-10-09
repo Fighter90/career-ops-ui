@@ -608,9 +608,9 @@ test('UX-D-J (v1.58.42): every advisor view renders a localized ETA chip next to
       `${f} must render a <span class="advisor-eta"> chip`);
     // v1.248.2 — evaluate.js renders eval.eta (the honest ~2–4 min key);
     // deep.js / mode-page.js keep advisor.eta. Both localize the chip.
-    const etaKey = f === 'evaluate.js' ? 'eval\.eta' : 'advisor\.eta';
-    assert.match(v, new RegExp(`t\\('${etaKey}`),
-      `${f} must localize the ETA chip (${etaKey})`);
+    const etaKey = f === 'evaluate.js' ? 'eval.eta' : 'advisor.eta';
+    assert.ok(v.includes(`t('${etaKey}`),
+      `${f} must localize the ETA chip via t('${etaKey}', …)`);
   }
   const dict = legacyDictText();
   const row = dict.match(/'advisor\.eta':\s*\{([^}]+)\}/);

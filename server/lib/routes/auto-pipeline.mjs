@@ -259,7 +259,9 @@ export function registerAutoPipelineRoutes(app) {
       if (!jdText || jdText.length < MIN_JD_CHARS) {
         // Warning goes to the SERVER CONSOLE ONLY (never a file) — URL + reason
         // + length, never the fetched page text (it can hold third-party content).
-        console.warn(`[auto-pipeline] no evaluation: JD too short after sanitization (${jdText ? jdText.length : 0} < ${MIN_JD_CHARS} chars) — ${url}`);
+        // Host-only (never the full user-supplied URL) — CI logs are public.
+        const logHost = (() => { try { return new URL(url).hostname; } catch { return '[unparsable URL]'; } })();
+        console.warn(`[auto-pipeline] no evaluation: JD too short after sanitization (${jdText ? jdText.length : 0} < ${MIN_JD_CHARS} chars) — host: ${logHost}`);
         step(1, 'failed', `JD too short after sanitization (${jdText ? jdText.length : 0} < ${MIN_JD_CHARS} chars)`);
         return fail(1, 'JD too short');
       }

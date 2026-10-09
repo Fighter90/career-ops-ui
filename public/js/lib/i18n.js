@@ -36,12 +36,11 @@ window.I18n = (function () {
     { code: 'it',    label: 'Italiano',   flag: '🇮🇹' },
     { code: 'tr',    label: 'Türkçe',     flag: '🇹🇷' },
     { code: 'hi',    label: 'हिन्दी',      flag: '🇮🇳' },
-    // v1.245.0 (Phase 5) — Tamil, the 18th locale. Flag follows the
-    // language-community pattern the table already uses (hi → 🇮🇳, ar → 🇸🇦):
-    // the primary Tamil-speaking base is Tamil Nadu, India (~70M speakers,
-    // Tamil is an official Indian language), vs ~4M in Sri Lanka. Documented
-    // here so the choice isn't relitigated every release.
-    { code: 'ta',    label: 'தமிழ்',      flag: '🇮🇳' },
+    // v1.245.0 (Phase 5) — Tamil, the 18th locale. v1.248.2 — flag moved
+    // 🇮🇳 → 🇱🇰: two identical flags side by side in the picker (hi and ta)
+    // read as a duplicate, and Sri Lanka is Tamil's other home state (Tamil
+    // is an official language there), which keeps the row scannable.
+    { code: 'ta',    label: 'தமிழ்',      flag: '🇱🇰' },
   ];
 
   // I18N-EXPAND (v1.70.0) — locales whose script is written right-to-left.
