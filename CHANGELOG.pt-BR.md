@@ -8,6 +8,21 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.245.0] — 2026-10-09
+
+**O tâmil (தமிழ்) entra como o 18.º idioma da interface — o primeiro novo desde a onda de 17, com paridade total de chaves.**
+
+### Adicionado
+
+- **Tâmil (`ta`): 1449/1449 chaves** com paridade total com `en`, nenhum placeholder perdido, convenções índico-técnicas no estilo hi (provedores, modelos, caminhos e comandos permanecem em latino). `detect()` aceita `ta`, `ta-IN`, `ta-LK`; tâmil é LTR (garantido por teste).
+- **docs/help/ta.md completo** (33 H2 / 125 H3, contagens de fontes verificadas no registro vivo, âncoras canary do Hermes, YAML literal), além dos espelhos README.ta.md e CHANGELOG.ta.md.
+- **Portões de enumeração 17 → 18**: LANGS, sondas de detect, auditoria i18n, paridade de changelogs, guarda RTL, `langs` do CI — que também incorpora `hi`, antes ausente da lista.
+
+### Notas
+
+- A landing do cvstart.org segue com 17 locales por enquanto — traduzi-la é uma tarefa separada; a sincronização de conteúdo do site já publica docs/help/ta.md e o changelog ta.
+- REPORT_LABELS do `report-header.js` segue em 17 — o parsing de relatórios tâmeis chega com a geração de relatórios tâmeis no repo pai.
+
 ## [1.244.2] — 2026-10-08
 
 **O polimento da página de escaneio: o lançador, a barra de status, o painel de reposts e os filtros são redesenhados como um chrome consistente — e a tabela de resultados não pode mais ser esticada por dados de boards.**

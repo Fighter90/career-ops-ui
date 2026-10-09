@@ -9,6 +9,21 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.245.0] — 2026-10-09
+
+**Tamilski (தமிழ்) dołącza jako 18. język interfejsu — pierwszy nowy język od fali 17 lokalizacji, z pełną parnością kluczy.**
+
+### Dodano
+
+- **Tamilski (`ta`): 1449/1449 kluczy** w pełnej parności z `en`, zero zgubionych placeholderów, konwencje indic-tech w stylu hi (dostawcy, modele, ścieżki i polecenia zostają w alfabecie łacińskim). `detect()` przyjmuje `ta`, `ta-IN`, `ta-LK`; tamilski jest LTR (zabezpieczone testem).
+- **Pełny docs/help/ta.md** (33 H2 / 125 H3, liczniki źródeł zweryfikowane z żywym rejestrem, kotwice canary Hermes, dosłowny YAML), plus lustra README.ta.md i CHANGELOG.ta.md.
+- **Bramy wyliczeniowe 17 → 18**: LANGS, sondy detect, audyt i18n, parność changelogów, strażnik RTL, `langs` w CI — przy okazji łapie `hi`, wcześniej nieobecne na liście CI.
+
+### Uwagi
+
+- Landing cvstart.org pozostaje na razie przy 17 językach — tłumaczenie to osobne zadanie; sync treści strony już dostarcza docs/help/ta.md i changelog ta.
+- REPORT_LABELS w `report-header.js` zostaje przy 17 — parsowanie tamilskich raportów przyjdzie wraz z generowaniem tamilskich raportów w repo nadrzędnym.
+
 ## [1.244.2] — 2026-10-08
 
 **Polerowanie strony skanowania: launcher, pasek statusu, panel repostów i filtry zaprojektowane jako spójny chrome — a tabela wyników nie może już być rozciągana przez dane boardów.**
@@ -27,6 +42,40 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ### Uwagi
 
 - Reszta #/scan jest identyczna z v1.244.1 — zmieniło się tylko polerowanie chromu i cztery poprawki powyżej. Testy 5045 → 5068 unit.
+
+## [1.244.1] — 2026-10-08
+
+### Naprawiono
+
+- **Scan icons announce real values.** The boost/fit/score icons' accessible names leaked the raw dict templates ("Fit: {band}", "Boosted by {by}") — `{band}`/`{by}`/`{score}` are now substituted (band word, booster keyword, numeric score). [HIGH a11y, caught live in the v1.244.0 regression round]
+- **Title pipes split correctly.** A 4-segment title like «C++ | Rust | Go Developer | Onsite» no longer lifts "Go Developer" out as a "country" — the split demands the segment resolves to a real country (conservative `Countries.detectCountry`).
+- **Meta dates render for every row.** `daysSince` accepted date-only ISO, but the API serves full timestamps for ~83% of dated rows — those rows showed no date segment.
+
+### Uwagi
+
+- Reszta #/scan jest identyczna z v1.244.0 — zmieniły się tylko trzy poprawki powyżej.
+- Świadomie nie zrobione: stan filtrów w hashu URL, nawigacja wierszy klawiaturą i parsowanie `5 lakhs INR` (wcześniejsze zadania).
+
+## [1.244.0] — 2026-10-08
+
+**Wyniki skanu czytają się jak lista, a nie jak ściana: jedna oferta = dwa wiersze, sygnały to ikony, a skan 700 ofert to stronicowana tabela zamiast strony o wysokości 37,000 px.**
+
+### Naprawiono
+
+- **Anatomia wiersza.** Każda oferta renderuje się jako ograniczony dwuwierszowy wiersz: linia 1 to tytuł, linia 2 to `company · location · source · date · work-type`. Odznaka promowania, pas dopasowania tytułu i wynik dopasowania stały się ikonami ze zlokalizowanymi nazwami dostępnymi i podpowiedziami (czytniki ekranu odczytują «Соответствие: сильное» / „Fit: strong", a nie ścianę słów); odznaki zaufania i relokacji złożyły się do tej samej szyny. Seniority i wynagrodzenie pozostają kolumnami pomocniczymi widocznymi tylko na desktopie.
+- **Higiena tytułów.** Końcowy segment `| Germany | Remote` jest wydzielany z tytułu do linii metadanych — z uwzględnieniem Unicode, tylko gdy ogon jest prawdziwym znacznikiem trybu pracy, a środkowy segment ma kształt miejsca (uzasadnione piony jak „C++ | Rust | Go Developer" nigdy się nie dzielą).
+- **Koniec z rozlewaniem się w poziomie.** Stały układ tabeli, `min-width: 0`, tytuł i metadane skracane wielokropkiem do jednej linii z pełnym tekstem w podpowiedzi: zero przepełnienia strony i zero wewnętrznego przewijania tabeli przy 1440 px i 390 px (stara strona przepełniała się o 675 px przy szerokości telefonu).
+- **Stronicowanie.** Wyniki renderują się po 50 na stronę (do wyboru 25/50/100/200) — skan 700 ofert ma teraz ~4,600 px wysokości zamiast ~37,000 px, a DOM trzyma ~1,000 węzłów zamiast 5,500+.
+
+### Dodano
+
+- Testy kontraktów układu: dwuwierszowy wiersz, dostępne nazwy ikon (en + ru), budżet węzłów stronicowania i straż liczby/kolejności dopasowania tytułu działają w zestawie przeglądarkowym — przeprojektowanie nie może po cichu się zregresować.
+
+### Uwagi
+
+- Testy **5036 → 5045** unit (zestaw przeglądarkowy zyskał kontrakty układu), średnie pokrycie **98.14 % linii / 89.34 % gałęzi** (podłoga 96/86).
+- To, co znajduje skaner, wzory punktacji i `last-scan.json` pozostają nietknięte — dopasowanie tytułu nadal jest tylko adnotacją.
+- Poza tym wydaniem: stan filtrów w hashu URL i nawigacja po wierszach klawiaturą (follow-up); parsowanie `5 lakhs INR` (istniejące wcześniej).
 
 ## [1.243.2] — 2026-10-08
 

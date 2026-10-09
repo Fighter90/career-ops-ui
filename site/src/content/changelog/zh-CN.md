@@ -9,6 +9,21 @@
 ---
 
 
+## [1.245.0] — 2026-10-09
+
+**泰米尔语（தமிழ்）作为第 18 个界面语言加入——这是 17 语言浪潮之后的第一个新语言，键位完全对齐。**
+
+### 新增
+
+- **泰米尔语（`ta`）：1449/1449 个键**，与 `en` 完全对齐，无占位符丢失，沿用 hi 风格的印度系技术惯例（供应商、模型名、路径与命令保留拉丁字母）。`detect()` 接受 `ta`、`ta-IN`、`ta-LK`；泰米尔语为 LTR（由测试锁定）。
+- **完整的 docs/help/ta.md**（33 个 H2 / 125 个 H3，来源计数与在线注册表核对，Hermes 金丝雀锚点，逐字 YAML），并附带 README.ta.md 与 CHANGELOG.ta.md 镜像。
+- **枚举门禁 17 → 18**：LANGS、detect 探针、i18n 审计、更新日志对齐、RTL 守卫、CI `langs`——同时补上了此前 CI 列表缺失的 `hi`。
+
+### 备注
+
+- cvstart.org 落地页暂保持 17 个语言——翻译落地页是单独任务；站点内容同步已发布 docs/help/ta.md 与 ta 更新日志。
+- `report-header.js` 的 REPORT_LABELS 仍为 17——泰米尔语报告解析将随父仓库的泰米尔语报告生成一并到来。
+
 ## [1.244.2] — 2026-10-08
 
 **扫描页面打磨：启动器、状态栏、转发面板和过滤器重构为一致的外观——结果表格不再会被看板数据撑开。**
@@ -27,6 +42,40 @@
 ### 备注
 
 - #/scan 的其余部分与 v1.244.1 完全相同——仅变更了外观打磨与上述四个修复。测试 5045 → 5068 unit。
+
+## [1.244.1] — 2026-10-08
+
+### 修复
+
+- **Scan icons announce real values.** The boost/fit/score icons' accessible names leaked the raw dict templates ("Fit: {band}", "Boosted by {by}") — `{band}`/`{by}`/`{score}` are now substituted (band word, booster keyword, numeric score). [HIGH a11y, caught live in the v1.244.0 regression round]
+- **Title pipes split correctly.** A 4-segment title like «C++ | Rust | Go Developer | Onsite» no longer lifts "Go Developer" out as a "country" — the split demands the segment resolves to a real country (conservative `Countries.detectCountry`).
+- **Meta dates render for every row.** `daysSince` accepted date-only ISO, but the API serves full timestamps for ~83% of dated rows — those rows showed no date segment.
+
+### 备注
+
+- #/scan 的其余部分与 v1.244.0 完全相同——仅变更了上述三个修复。
+- 刻意不做：URL 哈希筛选状态、键盘行导航和 `5 lakhs INR` 解析（均为既有后续）。
+
+## [1.244.0] — 2026-10-08
+
+**扫描结果读起来像一份列表，而不是一堵墙：一个职位 = 两行，信号变成图标，700 行的扫描是一张分页表格，而不是一页 37,000 px 的长页。**
+
+### 修复
+
+- **行的构造。** 每个职位都渲染为边界清晰的两行：第 1 行是标题，第 2 行是 `company · location · source · date · work-type`。加成徽章、标题匹配度色带与匹配分数变成了带有本地化可访问名称和工具提示的图标（屏幕阅读器读出的是 «Соответствие: сильное» / “Fit: strong”，而不是一整墙文字）；信任与搬迁徽章并入同一条图标栏。级别与薪资保留为仅桌面端显示的辅助列。
+- **标题卫生。** 标题尾部的 `| Germany | Remote` 片段会被拆出、并入元信息行——具备 Unicode 感知，只有当尾部是真实的工作类型标记、且中间片段形如地名时才拆分（像 “C++ | Rust | Go Developer” 这样合法的竖线永不拆分）。
+- **不再横向铺开。** 固定表格布局、`min-width: 0`、单行省略号截断的标题/元信息（完整文本放入工具提示）：在 1440 px 与 390 px 宽度下页面零溢出、表格内部零滚动（旧页面在手机宽度下溢出 675 px）。
+- **分页。** 结果每页渲染 50 条（可选 25/50/100/200）——700 行的扫描现在只有 ~4,600 px 高，而不是 ~37,000 px，DOM 中保留 ~1,000 个节点而不是 5,500+ 个。
+
+### 新增
+
+- 布局契约测试：两行结构、图标的可访问名称（en + ru）、分页节点预算以及标题匹配数量/顺序守卫，全部在浏览器套件中运行——重设计不可能悄悄回退。
+
+### 备注
+
+- 测试 **5036 → 5045** 单元（浏览器套件新增了布局契约），覆盖率均值 **98.14 % 行 / 89.34 % 分支**（门槛 96/86）。
+- 扫描器找到的内容、评分公式与 `last-scan.json` 均未改动——标题匹配度仍然只是注记。
+- 本版本不包含：URL-hash 过滤状态与键盘行导航（后续跟进）；`5 lakhs INR` 解析（既有问题）。
 
 ## [1.243.2] — 2026-10-08
 

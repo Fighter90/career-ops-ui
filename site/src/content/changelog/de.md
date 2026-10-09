@@ -2,6 +2,21 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.245.0] — 2026-10-09
+
+**Tamil (தமிழ்) kommt als 18. UI-Sprache hinzu — die erste neue Sprache nach der 17-Sprachen-Welle, mit voller Schlüsselparität.**
+
+### Hinzugefügt
+
+- **Tamil (`ta`): 1449/1449 Schlüssel** mit voller Parität zu `en`, keine verlorenen Platzhalter, hi-Stil Indic-Tech-Konventionen (Provider, Modellnamen, Pfade und Befehle bleiben lateinisch). `detect()` akzeptiert `ta`, `ta-IN`, `ta-LK`; Tamil ist LTR (per Test fixiert).
+- **Vollständiges docs/help/ta.md** (33 H2 / 125 H3, Quellzähler gegen die Live-Registry geprüft, Hermes-Canary-Anker, wörtlicher YAML), dazu README.ta.md- und CHANGELOG.ta.md-Spiegel.
+- **Enumerations-Gates 17 → 18**: LANGS, detect-Sonden, i18n-Audit, Changelog-Parität, RTL-Wächter, CI-`langs` — zieht damit auch `hi` nach, das bisher in der CI-Liste fehlte.
+
+### Hinweise
+
+- Die cvstart.org-Landingpage bleibt vorerst bei 17 Sprachen — die Übersetzung ist eine eigene Aufgabe; der Site-Content-Sync liefert docs/help/ta.md und das ta-Changelog bereits aus.
+- `report-header.js` REPORT_LABELS bleibt bei 17 — das Parsen tamilischer Berichte kommt mit der tamilischen Berichtsgenerierung im Parent-Repo.
+
 ## [1.244.2] — 2026-10-08
 
 **Der Scan-Seiten-Polish: Launcher, Statusleiste, Reposts-Panel und Filter sind als konsistenter Chrome neu gestaltet — und die Ergebnistabelle kann nicht mehr durch Board-Daten gestreckt werden.**
@@ -20,6 +35,40 @@
 ### Anmerkungen
 
 - Alles andere in #/scan ist identisch mit v1.244.1 — nur der Chrome-Polish und die vier Korrekturen oben haben sich geändert. Tests 5045 → 5068 unit.
+
+## [1.244.1] — 2026-10-08
+
+### Behoben
+
+- **Scan icons announce real values.** The boost/fit/score icons' accessible names leaked the raw dict templates ("Fit: {band}", "Boosted by {by}") — `{band}`/`{by}`/`{score}` are now substituted (band word, booster keyword, numeric score). [HIGH a11y, caught live in the v1.244.0 regression round]
+- **Title pipes split correctly.** A 4-segment title like «C++ | Rust | Go Developer | Onsite» no longer lifts "Go Developer" out as a "country" — the split demands the segment resolves to a real country (conservative `Countries.detectCountry`).
+- **Meta dates render for every row.** `daysSince` accepted date-only ISO, but the API serves full timestamps for ~83% of dated rows — those rows showed no date segment.
+
+### Anmerkungen
+
+- Alles andere in #/scan ist identisch mit v1.244.0 — nur die drei Korrekturen oben haben sich geändert.
+- Bewusst nicht getan: Filterzustand im URL-Hash, Tastatur-Zeilennavigation und das Parsen von `5 lakhs INR` (bestehende Nachzügler).
+
+## [1.244.0] — 2026-10-08
+
+**Die Scan-Ergebnisse lesen sich wie eine Liste, nicht wie eine Wand: eine Stelle = zwei Zeilen, die Signale sind Icons, und ein 700-Zeilen-Scan ist eine paginierte Tabelle statt einer 37,000-px-Seite.**
+
+### Behoben
+
+- **Zeilenanatomie.** Jede Stelle rendert als begrenzte Zwei-Zeilen-Zeile: Zeile 1 der Titel, Zeile 2 `company · location · source · date · work-type`. Das Boost-Badge, das Titel-Fit-Band und der Fit-Score wurden zu Icons mit lokalisierten zugänglichen Namen und Tooltips (Screenreader lesen „Passung: stark“ / „Fit: strong“, keine Wortwand); die Trust- und Umzugs-Badges wanderten in dieselbe Leiste. Seniorität und Gehalt bleiben zusätzliche Spalten, nur auf dem Desktop sichtbar.
+- **Titelhygiene.** Ein abschließendes `| Germany | Remote`-Segment wird aus dem Titel in die Meta-Zeile ausgespalten — Unicode-bewusst, und nur wenn der Schwanz ein echtes Arbeitsform-Kennzeichen ist und das mittlere Segment nach einem Ort aussieht (legitime Pipes wie „C++ | Rust | Go Developer“ werden nie geteilt).
+- **Kein horizontales Ausufern mehr.** Festes Tabellen-Layout, `min-width: 0`, einzeiliger Titel/Meta mit Auslassungspunkten und dem vollen Text im Tooltip: kein Seitenüberlauf und kein internes Tabellen-Scrollen bei 1440 px und 390 px (die alte Seite lief bei Telefonbreite um 675 px über).
+- **Paginierung.** Ergebnisse rendern 50 pro Seite (25/50/100/200 wählbar) — ein 700-Zeilen-Scan ist jetzt ~4,600 px hoch statt ~37,000 px, und das DOM hält ~1,000 Knoten statt 5,500+.
+
+### Hinzugefügt
+
+- Layout-Contract-Tests: Die Zwei-Zeilen-Zeile, die zugänglichen Icon-Namen (en + ru), das Paginierungs-Knotenbudget und der Titel-Fit-Zähl- und Reihenfolge-Guard laufen in der Browser-Suite — das Redesign kann nicht mehr stillschweigend regressieren.
+
+### Anmerkungen
+
+- Tests **5036 → 5045** Unit (die Browser-Suite bekam die Layout-Contracts), Coverage-Mittelwert **98.14 % Zeilen / 89.34 % Branch** (Untergrenze 96/86).
+- Was der Scanner findet, die Scoring-Formeln und `last-scan.json` sind unberührt — der Titel-Fit bleibt eine Anmerkung.
+- Nicht in diesem Release: URL-Hash-Filterzustand und Tastatur-Zeilennavigation (Follow-up); `5 lakhs INR` parst weiterhin als 5 (vorbestehend).
 
 ## [1.243.2] — 2026-10-08
 

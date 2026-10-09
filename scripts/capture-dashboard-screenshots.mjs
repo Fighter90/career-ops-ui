@@ -41,6 +41,7 @@ const LOCALE_TO_FILE = {
   ko: 'ko-KR', ja: 'ja', 'zh-CN': 'zh-CN', 'zh-TW': 'zh-TW', fr: 'fr',
   pl: 'pl', uk: 'uk', da: 'da', ar: 'ar',
   de: 'de', it: 'it', tr: 'tr', hi: 'hi',
+  ta: 'ta',
 };
 const SETTLE_MS = 2000;
 const VIEWPORT = { width: 1440, height: 900 };

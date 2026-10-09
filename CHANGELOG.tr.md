@@ -2,6 +2,21 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.245.0] — 2026-10-09
+
+**Tamilce (தமிழ்), 18. arayüz dili olarak katılıyor — 17 dil dalgasından sonra ilk yeni dil, tam anahtar paritesiyle.**
+
+### Eklendi
+
+- **Tamilce (`ta`): 1449/1449 anahtar** — `en` ile tam parite, kayıp yer tutucu yok, hi tarzı Hint-teciz conventionaları (sağlayıcılar, model adları, yollar ve komutlar Latin harflerinde kalır). `detect()` artık `ta`, `ta-IN`, `ta-LK` kabul ediyor; Tamilce LTR'dir (testle sabitlenmiştir).
+- **Eksiksiz docs/help/ta.md** (33 H2 / 125 H3, kaynak sayaçları canlı kayıt defteriyle doğrulandı, Hermes canary çapaları, harfiyen YAML) — ayrıca README.ta.md ve CHANGELOG.ta.md aynaları.
+- **Sayım kapıları 17 → 18**: LANGS, detect sondaları, i18n denetimi, changelog paritesi, RTL koruması, CI `langs` — bir dıkışta CI listesinde daha önce eksik olan `hi` de eklenmiş oldu.
+
+### Notlar
+
+- cvstart.org açılış sayfası şimdilik 17 dilde kalıyor — çevirisi ayrı bir görev; site içerik senkronizasyonu zaten docs/help/ta.md ve ta changelog'unu dağıtıyor.
+- `report-header.js` içindeki REPORT_LABELS 17'de kalıyor — Tamilce rapor ayrıştırma, ana depodaki Tamilce rapor üretimiyle gelecek.
+
 ## [1.244.2] — 2026-10-08
 
 **Tarama sayfası parlatması: başlatıcı, durum çubuğu, repost paneli ve filtreler tek bir tutarlı krom olarak yeniden tasarlandı — ve sonuç tablosu artık board verileriyle gerilemiyor.**

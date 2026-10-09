@@ -8,6 +8,21 @@
 
 ---
 
+## [1.245.0] — 2026-10-09
+
+**坦米爾語（தமிழ்）以第 18 個介面語言加入——這是 17 語言浪潮後的第一個新語言，鍵值完全對齊。**
+
+### 新增
+
+- **坦米爾語（`ta`）：1449/1449 個鍵值**，與 `en` 完全對齊，無佔位符遺漏，沿用 hi 風格的印度系技術慣例（供應商、模型名稱、路徑與指令保留拉丁字母）。`detect()` 接受 `ta`、`ta-IN`、`ta-LK`；坦米爾語為 LTR（由測試鎖定）。
+- **完整的 docs/help/ta.md**（33 個 H2 / 125 個 H3，來源計數與線上註冊表核對，Hermes 金絲雀錨點，逐字 YAML），並附 README.ta.md 與 CHANGELOG.ta.md 鏡像。
+- **列舉關卡 17 → 18**：LANGS、detect 探針、i18n 稽核、更新日誌對齊、RTL 守衛、CI `langs`——同時補上先前 CI 清單缺席的 `hi`。
+
+### 備註
+
+- cvstart.org 落地頁暫維持 17 個語言——翻譯落地頁是獨立任務；網站內容同步已發布 docs/help/ta.md 與 ta 更新日誌。
+- `report-header.js` 的 REPORT_LABELS 維持 17——坦米爾語報告解析將隨父儲存庫的坦米爾語報告生成一併到來。
+
 ## [1.244.2] — 2026-10-08
 
 **掃描頁面打磨：啟動器、狀態列、轉發面板與篩選器重構為一致的外觀——結果表格不再會被看板資料撐開。**
@@ -26,6 +41,40 @@
 ### 說明
 
 - #/scan 的其餘部分與 v1.244.1 完全相同——僅變更了外觀拋光與上述四個修復。測試 5045 → 5068 unit。
+
+## [1.244.1] — 2026-10-08
+
+### 修復
+
+- **Scan icons announce real values.** The boost/fit/score icons' accessible names leaked the raw dict templates ("Fit: {band}", "Boosted by {by}") — `{band}`/`{by}`/`{score}` are now substituted (band word, booster keyword, numeric score). [HIGH a11y, caught live in the v1.244.0 regression round]
+- **Title pipes split correctly.** A 4-segment title like «C++ | Rust | Go Developer | Onsite» no longer lifts "Go Developer" out as a "country" — the split demands the segment resolves to a real country (conservative `Countries.detectCountry`).
+- **Meta dates render for every row.** `daysSince` accepted date-only ISO, but the API serves full timestamps for ~83% of dated rows — those rows showed no date segment.
+
+### 說明
+
+- #/scan 的其餘部分與 v1.244.0 完全相同——僅變更了上述三個修復。
+- 刻意不做：URL 雜湊篩選狀態、鍵盤列導覽與 `5 lakhs INR` 解析（皆為既有後續）。
+
+## [1.244.0] — 2026-10-08
+
+**掃描結果讀起來像一份清單，而不是一面牆：一個職缺＝兩行，訊號化為圖示，700 筆的掃描變成分頁表格，而不是 37,000 px 的長頁面。**
+
+### 修復
+
+- **列的結構。** 每個職缺都渲染為一個有邊界的兩行列：第 1 行是職稱，第 2 行是 `company · location · source · date · work-type`。提升徽章、職稱契合度色帶與契合度得分改為圖示，並附上在地化的無障礙名稱與工具提示（螢幕閱讀器讀出的是 «Соответствие: сильное» / "Fit: strong"，而不是一整面文字牆）；信任與搬遷徽章也併入同一側欄。級別與薪資仍保留為僅桌面版顯示的輔助欄位。
+- **職稱清理。** 結尾的 `| Germany | Remote` 片段會從職稱中拆出、併入 meta 行——具 Unicode 感知，僅當結尾是真正的工作型態標記、且中間片段呈地名形狀時才拆分（像 "C++ | Rust | Go Developer" 這種正當的豎線永不拆分）。
+- **不再橫向蔓延。** 固定表格版面、`min-width: 0`、單行職稱／meta 以省略號截斷、完整文字放進工具提示：在 1440 px 與 390 px 寬度下，頁面零溢出、表格內部零捲動（舊版頁面在手機寬度會溢出 675 px）。
+- **分頁。** 結果每頁渲染 50 筆（可選 25/50/100/200）——700 筆的掃描現在高度為 ~4,600 px，而不是 ~37,000 px，DOM 節點約 ~1,000 個，而不是 5,500+ 個。
+
+### 新增
+
+- 版面契約測試：兩行列結構、圖示的無障礙名稱（en + ru）、分頁的節點數預算，以及職稱契合度的數量／順序守衛，都在瀏覽器測試套件中執行——這次重新設計不可能再無聲地回歸。
+
+### 說明
+
+- 單元測試 **5036 → 5045**（瀏覽器套件新增了版面契約），覆蓋率平均 **98.14 % 行 / 89.34 % 分支**（下限 96/86）。
+- 掃描器找到的內容、評分公式與 `last-scan.json` 都未更動——職稱契合度仍只是一項註記。
+- 本版未包含：URL-hash 篩選狀態與鍵盤列導航（後續跟進）；`5 lakhs INR` 的解析（既有問題）。
 
 ## [1.243.2] — 2026-10-08
 

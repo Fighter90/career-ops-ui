@@ -2,6 +2,21 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.245.0] — 2026-10-09
+
+**Tamilce (தமிழ்), 18. arayüz dili olarak katılıyor — 17 dil dalgasından sonra ilk yeni dil, tam anahtar paritesiyle.**
+
+### Eklendi
+
+- **Tamilce (`ta`): 1449/1449 anahtar** — `en` ile tam parite, kayıp yer tutucu yok, hi tarzı Hint-teciz conventionaları (sağlayıcılar, model adları, yollar ve komutlar Latin harflerinde kalır). `detect()` artık `ta`, `ta-IN`, `ta-LK` kabul ediyor; Tamilce LTR'dir (testle sabitlenmiştir).
+- **Eksiksiz docs/help/ta.md** (33 H2 / 125 H3, kaynak sayaçları canlı kayıt defteriyle doğrulandı, Hermes canary çapaları, harfiyen YAML) — ayrıca README.ta.md ve CHANGELOG.ta.md aynaları.
+- **Sayım kapıları 17 → 18**: LANGS, detect sondaları, i18n denetimi, changelog paritesi, RTL koruması, CI `langs` — bir dıkışta CI listesinde daha önce eksik olan `hi` de eklenmiş oldu.
+
+### Notlar
+
+- cvstart.org açılış sayfası şimdilik 17 dilde kalıyor — çevirisi ayrı bir görev; site içerik senkronizasyonu zaten docs/help/ta.md ve ta changelog'unu dağıtıyor.
+- `report-header.js` içindeki REPORT_LABELS 17'de kalıyor — Tamilce rapor ayrıştırma, ana depodaki Tamilce rapor üretimiyle gelecek.
+
 ## [1.244.2] — 2026-10-08
 
 **Tarama sayfası parlatması: başlatıcı, durum çubuğu, repost paneli ve filtreler tek bir tutarlı krom olarak yeniden tasarlandı — ve sonuç tablosu artık board verileriyle gerilemiyor.**
@@ -20,6 +35,40 @@
 ### Notlar
 
 - #/scan'in geri kalanı v1.244.1 ile özdeş — yalnızca krom parlatması ve yukarıdaki dört düzeltme değişti. Testler 5045 → 5068 unit.
+
+## [1.244.1] — 2026-10-08
+
+### Düzeltildi
+
+- **Scan icons announce real values.** The boost/fit/score icons' accessible names leaked the raw dict templates ("Fit: {band}", "Boosted by {by}") — `{band}`/`{by}`/`{score}` are now substituted (band word, booster keyword, numeric score). [HIGH a11y, caught live in the v1.244.0 regression round]
+- **Title pipes split correctly.** A 4-segment title like «C++ | Rust | Go Developer | Onsite» no longer lifts "Go Developer" out as a "country" — the split demands the segment resolves to a real country (conservative `Countries.detectCountry`).
+- **Meta dates render for every row.** `daysSince` accepted date-only ISO, but the API serves full timestamps for ~83% of dated rows — those rows showed no date segment.
+
+### Notlar
+
+- #/scan'in geri kalanı v1.244.0 ile özdeş — yalnızca yukarıdaki üç düzeltme değişti.
+- Bilinçli olarak yapılmadı: URL hash filtre durumu, klavye satır navigasyonu ve `5 lakhs INR` ayrıştırma (mevcut takipler).
+
+## [1.244.0] — 2026-10-08
+
+**Tarama sonuçları bir duvar gibi değil, liste gibi okunuyor: bir ilan = iki satır, sinyaller simge biçiminde ve 700 satırlık bir tarama, ~37,000 px'lik bir sayfa yerine sayfalı bir tablo.**
+
+### Düzeltildi
+
+- **Satır anatomisi.** Her ilan, sınırlanmış iki satırlık bir kayıt satırı olarak çiziliyor: 1. satır başlık, 2. satır `company · location · source · date · work-type`. Artırma rozeti, başlık-uyum bandı ve uyum puanı, yerelleştirilmiş erişilebilir adları ve araç ipuçları olan simgelere dönüştü (ekran okuyucular bir sözcük duvarı değil, «Соответствие: сильное» / "Fit: strong" okuyor); güven ve taşınma rozetleri aynı şeride katlandı. Kıdem ve maaş, yalnızca masaüstünde görünen yardımcı sütunlar olarak kalıyor.
+- **Başlık hijyeni.** Sondaki `| Germany | Remote` segmenti başlıktan ayrılıp meta satırına taşınıyor — Unicode duyarlı: yalnızca kuyruk gerçek bir çalışma türü işareti ve orta segment bir yer adı biçiminde olduğunda ("C++ | Rust | Go Developer" gibi meşru dikey çizgiler asla bölünmez).
+- **Yatay yayılma bitti.** Sabit tablo düzeni, `min-width: 0`, tam metni araç ipucunda taşıyan üç noktayla kısaltılmış tek satırlık başlık/meta: 1440 px'te de 390 px'te de sıfır sayfa taşması ve sıfır iç tablo kaydırması (eski sayfa telefon genişliğinde 675 px'lik bir taşma yapıyordu).
+- **Sayfalama.** Sonuçlar sayfa başına 50 olarak çiziliyor (25/50/100/200 seçilebilir) — 700 satırlık bir tarama artık ~37,000 px yerine ~4,600 px yüksekliğinde ve DOM, 5,500+ yerine ~1,000 düğüm tutuyor.
+
+### Eklendi
+
+- Yerleşim sözleşmesi testleri: iki satırlık kayıt satırı, simgelerin erişilebilir adları (en + ru), sayfalama düğüm bütçesi ve başlık-uyum sayı/sıra koruması tarayıcı paketinde çalışıyor — yeniden tasarım sessizce gerileyemez.
+
+### Notlar
+
+- Testler **5036 → 5045** birim (tarayıcı paketi yerleşim sözleşmelerini kazandı), kapsam ortalaması **98.14 % satır / 89.34 % dal** (alt sınır 96/86).
+- Tarayıcının buldukları, puanlama formülleri ve `last-scan.json` dokunulmadan kalıyor — başlık-uyumu bir ek açıklama olmaya devam ediyor.
+- Bu sürümde yok: URL-hash filtre durumu ve klavyeyle satır gezinmesi (takip); `5 lakhs INR` ayrıştırması (önceden var olan).
 
 ## [1.243.2] — 2026-10-08
 
