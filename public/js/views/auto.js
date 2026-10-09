@@ -238,17 +238,21 @@ Router.register('auto', async () => {
   urlInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') run(); });
 
   const root = c('div', null, [
-    // U-2 (v1.58.21) — split the `✨` decoration out of the H1 text. At
-    // 1280-1600 px widths the leading emoji + 'Auto-pipeline a URL' /
-    // its translations wrapped to a second line. Move the emoji to a
-    // sibling `<span class="page-icon" aria-hidden="true">` so the H1
-    // can flow on its own grid column and the emoji never participates
-    // in line-wrap. The i18n value drops the leading emoji + space.
-    c('header', { className: 'page-header page-header--icon' }, [
-      c('span', { className: 'page-icon', 'aria-hidden': 'true' }, '✨'),
-      HelpHint.title(t('auto.title', 'Auto-pipeline a URL'), 'help.hint.auto'),
-      c('p', { className: 'page-subtitle' },
-        t('auto.subtitle', 'Paste one job URL. One click runs the whole flow — validate, fetch, evaluate against your CV, save the report, add it to the tracker.')),
+    // CAR-51 #2 (v1.247.0) — the sparkle decoration is gone: this was the app's
+    // only decorated title, breaking the shared left-edge rhythm of the 31
+    // other page titles. (U-2 v1.58.21 had already moved the glyph out of the
+    // H1 text; the sibling span ends here for good.) The i18n values never
+    // carried the emoji.
+    // CAR-51 #1 (v1.247.0) — the ⏱ ETA + cost hint moved into ONE meta line
+    // under the view title (UI.pageMeta), matching #/evaluate, #/deep and
+    // the mode pages; the Run row keeps just the controls.
+    c('header', { className: 'page-header' }, [
+      c('div', null, [
+        HelpHint.title(t('auto.title', 'Auto-pipeline a URL'), 'help.hint.auto'),
+        c('p', { className: 'page-subtitle' },
+          t('auto.subtitle', 'Paste one job URL. One click runs the whole flow — validate, fetch, evaluate against your CV, save the report, add it to the tracker.')),
+        UI.pageMeta(t, etaHint, UI.providerCostHint(t)),
+      ]),
     ]),
     c('div', { className: 'card' }, [
       c('label', { htmlFor: 'auto-url', style: { fontWeight: 600, fontSize: '14px' } },
@@ -256,10 +260,7 @@ Router.register('auto', async () => {
       c('div', { className: 'flex gap-3 mt-3', style: { flexWrap: 'wrap', alignItems: 'center' } }, [
         c('div', { style: { flex: '1 1 320px' } }, urlInput),
         runBtn,
-        etaHint,
       ]),
-      // v1.56.0 — UX-10: honest cost ballpark before the live run.
-      UI.providerCostHint(t),
       liveRegion,
       stepperEl,
     ]),

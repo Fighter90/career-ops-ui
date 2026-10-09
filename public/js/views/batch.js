@@ -223,19 +223,22 @@ Router.register('batch', async () => {
     c('header', { className: 'page-header' }, [
       c('div', null, [
         HelpHint.title(t('batch.title', 'Batch evaluate'), 'help.hint.batch'),
-        c('p', { className: 'page-subtitle' },
-          t('batch.subtitle', 'Score 10+ JDs at once via batch/batch-runner.sh — see ') + ' '),
-        c('p', { style: { fontSize: '13px', color: 'var(--foggy)' } }, [
+        // CAR-51 #3 (v1.247.0) — the docs link was a second, unstyled
+        // paragraph of its own; it now rides inline in the subtitle and may
+        // break at "/" instead of pushing the page wide.
+        c('p', { className: 'page-subtitle' }, [
+          t('batch.subtitle', 'Score 10+ JDs at once via batch/batch-runner.sh — see '),
           c('a', {
             href: 'https://career-ops.org/docs/introduction/guides/batch-evaluate-offers',
+            style: { overflowWrap: 'anywhere' },
             target: '_blank', rel: 'noopener noreferrer',
           }, 'career-ops.org/docs/.../batch-evaluate-offers'),
         ]),
       ]),
     ]),
+    // CAR-58 #4 (v1.247.0) — theme-aware .callout--warn, not inline light yellow.
     !state.runnerExists ? c('div', {
-      className: 'card mb-3',
-      style: { background: '#fff8e6', borderColor: '#f0c674', color: '#8a6300' },
+      className: 'card mb-3 callout callout--warn',
     }, [
       c('strong', null, '⚠ ' + t('batch.noRunnerTitle', 'batch/batch-runner.sh not found')),
       c('p', { style: { margin: '6px 0 0', fontSize: '14px' } },

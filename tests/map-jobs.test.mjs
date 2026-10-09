@@ -56,11 +56,29 @@ test('notesPlace: leading verified workplace from tracker notes, any language; r
 });
 
 test('tileConfig: OSM by default; MAP_TILE_URL drives URL and CSP origin; junk falls back', async () => {
-  const { tileConfig } = await import('../server/lib/routes/map.mjs');
-  assert.deepEqual(tileConfig({}), { url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', attribution: '', origin: 'https://tile.openstreetmap.org' });
+  const { tileConfig, DARK_TILES } = await import('../server/lib/routes/map.mjs');
+  assert.deepEqual(tileConfig({}), {
+    url: 'https://tile.openstreetmap.org/{z}/{x}/{y}.png',
+    attribution: '',
+    origin: 'https://tile.openstreetmap.org',
+    // CAR-57 (v1.247.0) — the dark-theme basemap rides along in every payload.
+    // The Carto preset ships UNCONFIGURED: keyless Carto answers real tile
+    // requests with an "API KEY REQUIRED" placeholder, so the client renders
+    // dark mode with CSS-inverted light tiles unless MAP_TILE_DARK_URL is set.
+    darkOrigin: 'https://*.basemaps.cartocdn.com',
+    dark: { url: DARK_TILES.url, attribution: DARK_TILES.attribution, configured: false },
+  });
   const own = tileConfig({ MAP_TILE_URL: 'https://{s}.tiles.example.org/{z}/{x}/{y}.png', MAP_TILE_ATTRIBUTION: '© Example' });
   assert.equal(own.origin, 'https://*.tiles.example.org');
   assert.equal(own.attribution, '© Example');
+  assert.equal(own.darkOrigin, 'https://*.basemaps.cartocdn.com', 'dark origin is independent of MAP_TILE_URL');
+  assert.equal(own.dark.configured, false);
+  // An operator-configured dark provider becomes THE dark layer (and its CSP origin).
+  const dark = tileConfig({ MAP_TILE_DARK_URL: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png?apiKey=x', MAP_TILE_DARK_ATTRIBUTION: '© CARTO' });
+  assert.equal(dark.dark.configured, true);
+  assert.equal(dark.darkOrigin, 'https://*.basemaps.cartocdn.com');
+  assert.equal(dark.dark.attribution, '© CARTO');
+  assert.equal(tileConfig({ MAP_TILE_DARK_URL: 'javascript:alert(1)//x' }).dark.configured, false, 'junk dark URL falls back to the unconfigured preset');
   assert.equal(tileConfig({ MAP_TILE_ATTRIBUTION: '<img src=x onerror=alert(1)>' }).attribution, '&#60;img src=x onerror=alert(1)&#62;');
   assert.equal(tileConfig({ MAP_TILE_URL: 'https://evil;script-src */x.png' }).origin, 'https://tile.openstreetmap.org');
   assert.equal(tileConfig({ MAP_TILE_URL: 'javascript:alert(1)//x' }).origin, 'https://tile.openstreetmap.org');

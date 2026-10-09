@@ -665,11 +665,15 @@ body.sidebar-open .sidebar-backdrop { display: block; }
 /* UX-A3 (v1.58.55) — Dashboard active-provider chip. Pill below the
    hero CTAs. Soft surface, rounded, inline-flex with icon + label so
    the user knows whether they're in live-eval mode or manual-prompt
-   fallback without having to visit Health. */
+   fallback without having to visit Health.
+   CAR-49 #6 (v1.247.0) — the provider tile + ⚡ used to collide with the
+   label in ru/ar (long text, no shrink rules): icons are non-shrinking,
+   the label may wrap inside the pill instead of overlapping. */
 .dash-chip--provider {
   display: inline-flex;
   align-items: center;
-  gap: 6px;
+  flex-wrap: wrap;
+  gap: 6px 8px;
   margin-top: 12px;
   padding: 6px 12px;
   border-radius: 999px;
@@ -680,7 +684,8 @@ body.sidebar-open .sidebar-backdrop { display: block; }
 }
 .dash-chip--provider[hidden] { display: none; }
 .dash-chip--manual { color: var(--muted, #6b7280); }
-.dash-chip__icon { font-size: 1.05em; }
+.dash-chip__icon { font-size: 1.05em; flex: 0 0 auto; }
+.dash-chip__label { min-width: 0; overflow-wrap: anywhere; }
 
 /* M-8 (v1.58.13) — interactive Apply checklist. The pre-fix view
    rendered the checklist as a plain <pre> block; users couldn't tick
@@ -754,24 +759,6 @@ label:has(> input[type="radio"]) {
   margin-bottom: var(--space-6);
   gap: var(--space-4);
 }
-/* U-2 (v1.58.22) — header with a decorative leading emoji (e.g. ✨ on
-   #/auto). Switch to grid so the icon sits on its own column and the
-   <h1>/<p> pair flows in the remaining track without the emoji
-   participating in line-wrap. At narrow widths the H1 still wraps;
-   the icon never breaks to a new line ahead of the title. */
-.page-header--icon {
-  display: grid;
-  grid-template-columns: auto 1fr;
-  column-gap: var(--space-3, .75rem);
-  align-items: baseline;
-}
-.page-header--icon > .page-subtitle { grid-column: 2 / -1; }
-.page-icon {
-  font-size: 1.5em;
-  line-height: 1;
-  -webkit-user-select: none;
-  user-select: none;
-}
 .page-title {
   font-size: 32px;
   font-weight: 700;
@@ -789,6 +776,12 @@ label:has(> input[type="radio"]) {
   overflow-wrap: anywhere;
 }
 .page-header h1 + p { overflow-wrap: anywhere; }
+/* CAR-51 #1 (v1.247.0) — the ONE time/cost meta line: ⏱ ETA chip + cost hint
+   under the view title on every advisor view (UI.pageMeta). */
+.page-meta {
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: 6px 14px; margin: var(--space-2) 0 0;
+}
 /* U-14 (v1.58.33) — safety-net rule for any page that uses raw <h1>+<p>
    without the .page-subtitle class. Mirrors the canonical spacing so
    future page-header authors don't have to remember the class name. */

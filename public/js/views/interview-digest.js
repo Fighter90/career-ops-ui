@@ -12,24 +12,32 @@ Router.register('interview-digest', async () => {
   const c = UI.el;
   const t = (k, f) => I18n.t(k, f);
 
+  // CAR-54 #1 (v1.247.0) — designed empty state (tracker pattern: title +
+  // hint + CTA) instead of a blank page under the CTA. The Load button
+  // lives inside the box until a result replaces it.
+  const btn = c('button', { className: 'btn btn-primary', type: 'button' }, t('digest.load', 'Load this week'));
+  const out = c('div');
+  const emptyState = c('div', { className: 'empty', style: { margin: '16px 0 0' } }, [
+    c('strong', null, t('digest.emptyTitle', 'No digest loaded yet')),
+    c('p', { style: { margin: '8px 0 0' } },
+      t('digest.emptyHint', 'Load this week to roll up your interview sessions — companies, rounds, recurring competencies, and open gaps.')),
+    c('div', { style: { marginTop: '12px' } }, [btn]),
+  ]);
+
   const root = c('div');
   root.appendChild(HelpHint.title(t('digest.title', 'Weekly interview digest'), 'help.hint.digest'));
   root.appendChild(c('p', { className: 'page-subtitle' },
     t('digest.subtitle', 'A mechanical roll-up of your interview sessions this week — which companies and rounds, recurring competencies, and open gaps. Zero-LLM; reads your interview-prep session notes.')));
-
-  const btn = c('button', { className: 'btn btn-primary', type: 'button' }, t('digest.load', 'Load this week'));
-  root.appendChild(c('div', { style: { margin: '16px 0' } }, btn));
-
-  const out = c('div');
+  root.appendChild(emptyState);
   root.appendChild(out);
 
   btn.addEventListener('click', async () => {
     btn.disabled = true;
-    out.textContent = '';
-    out.appendChild(c('div', { className: 'loading' }, t('digest.loading', 'Rolling up your week…')));
+    emptyState.replaceChildren(c('div', { className: 'loading' }, t('digest.loading', 'Rolling up your week…')));
     try {
       const res = await API.get('/api/interview/weekly-digest');
-      out.textContent = '';
+      emptyState.replaceChildren();
+      emptyState.hidden = true; // a result (or its error) replaces the box
       if (!res || res.available === false) {
         // CAR-21 (v1.243.0) — reason-aware, same split as #/funded:
         // script-not-found keeps the muted note; timeout / script-error

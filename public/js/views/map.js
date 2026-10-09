@@ -27,7 +27,15 @@
   // The live Leaflet instance: removed on leaving or re-rendering, or its
   // window listeners outlive the detached container.
   let live = null;
-  const drop = () => { if (live) { live.remove(); live = null; } };
+  // CAR-57 — the theme watcher for the live view: attribute flips (toggle)
+  // and OS-scheme flips both re-mount the tile layer. Cleared in drop().
+  let themeObs = null;
+  let themeMql = null;
+  const drop = () => {
+    if (live) { live.remove(); live = null; }
+    if (themeObs) { themeObs.disconnect(); themeObs = null; }
+    if (themeMql) { themeMql.onchange = null; themeMql = null; }
+  };
   // Only on leaving: the router's hashchange listener runs first, so arriving at
   // #/map has already claimed a fresh gen — bumping it here would kill that render.
   window.addEventListener('hashchange', () => { if (Router.current().name !== 'map') { gen++; drop(); } });
@@ -40,6 +48,15 @@
   // a query over its MAX_QUERY (2000) — cap the raw cell to that, nothing more.
   const geoQuery = (loc) => String(loc).slice(0, 2000);
   const openUrl = (u) => (/^https?:\/\//i.test(u || '') ? () => window.open(u, '_blank', 'noopener') : null);
+
+  // CAR-57 (v1.247.0) — the effective theme, mirroring app.js's
+  // readEffectiveTheme(): an explicit data-theme wins, else the OS setting.
+  // The tile layer re-mounts when it flips so dark mode gets a dark basemap.
+  function effectiveTheme() {
+    const explicit = document.documentElement.getAttribute('data-theme');
+    if (explicit === 'light' || explicit === 'dark') return explicit;
+    return window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light';
+  }
 
   /** Pipeline/scan row → fit band (two-pager FitScore wins over the title band). */
   function fitOf(r, twoPager) {
@@ -162,14 +179,41 @@
       drop();
       const map = live = L.map(mapEl, { worldCopyJump: true }).setView([20, 0], 2);
       const tiles = jobs.tiles || {};
-      L.tileLayer(tiles.url || 'https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        maxZoom: 19,
-        // OSM's tile policy rejects requests without a Referer, and the app-wide
-        // Referrer-Policy is same-origin. Send the bare origin for tiles only.
-        referrerPolicy: 'strict-origin-when-cross-origin',
-        // MAP_TILE_ATTRIBUTION arrives HTML-escaped from the server.
-        attribution: tiles.attribution || '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>',
-      }).addTo(map);
+      // CAR-57 (v1.247.0) — theme-aware basemap. If the server has a
+      // CONFIGURED dark provider (MAP_TILE_DARK_URL — keyed Carto, a
+      // self-hosted dark style), it is mounted per theme like any layer.
+      // Without one, dark mode keeps the light OSM layer and inverts the
+      // raster in place (.job-map--invert, app.css): the keyless Carto
+      // preset answers real requests with an "API KEY REQUIRED" placeholder
+      // PNG, so it must not be the default. Either way the appearance
+      // re-mounts on every theme flip — Leaflet has no in-place URL swap.
+      const darkCfg = tiles.dark || {};
+      const darkConfigured = Boolean(darkCfg.configured && darkCfg.url);
+      const OSM_FALLBACK = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
+      const OSM_ATTR = '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>';
+      let tileLayer = null;
+      function applyTiles() {
+        const dark = effectiveTheme() === 'dark';
+        const real = dark && darkConfigured;
+        const cfg = real ? darkCfg : tiles;
+        if (tileLayer) map.removeLayer(tileLayer);
+        tileLayer = L.tileLayer(cfg.url || OSM_FALLBACK, {
+          maxZoom: 19,
+          subdomains: 'abcd',
+          // OSM's tile policy rejects requests without a Referer, and the app-wide
+          // Referrer-Policy is same-origin. Send the bare origin for tiles only.
+          referrerPolicy: 'strict-origin-when-cross-origin',
+          // MAP_TILE_ATTRIBUTION arrives HTML-escaped from the server; a
+          // configured dark provider may name its own attribution.
+          attribution: (real && darkCfg.attribution) || cfg.attribution || OSM_ATTR,
+        }).addTo(map);
+        mapEl.classList.toggle('job-map--invert', dark && !darkConfigured);
+      }
+      applyTiles();
+      themeObs = new MutationObserver(applyTiles);
+      themeObs.observe(document.documentElement, { attributes: true, attributeFilter: ['data-theme'] });
+      themeMql = window.matchMedia('(prefers-color-scheme: dark)');
+      themeMql.onchange = () => { if (myGen === gen && live) applyTiles(); };
       // Rings under clusters (markerPane 600) under evaluated dots.
       map.createPane('scorePane').style.zIndex = 620;   // above clusters (600), below tooltips (650)
 

@@ -8,6 +8,42 @@
 
 ---
 
+## [1.247.0] — 2026-10-09
+
+**CAR-49…58 設計巡檢的收尾完成——剩餘所有次要與打磨項，加上上一版刻意延後的深色地圖。**
+
+### 修復
+
+- **地圖渲染真正的深色主題。** 縮放/圖層/歸屬已在 v1.246.0 變暗；現在圖磚也跟隨：深色模式繪製 CSS 反轉的 OSM 圖層（無需供應商金鑰），並可透過 `MAP_TILE_DARK_URL` 使用帶金鑰的 Carto-dark 預設（其主機已加入 CSP `img-src` 許可）。切換主題時圖層即時重掛。
+- **黃色提示條獲得深色變體**（`config`、`batch`、hero 警告）——使用 v1.246.0 的代幣機制；順帶捕獲一處回歸：`.callout a` 蓋過 `.btn-primary`，現已限定 `:not(.btn)`。
+- **Apply 資訊卡 URL 不再於詞中截斷**。
+- **CV 標頭按鈕統一圖示體系**（文字；📁/📄/💾 混用移除）。
+- **Tracker 狀態分頁大小寫統一**——句首大寫，並按語言適配（CJK/ar/hi/ta 無性數變化）。
+- **頂欄圖示統一為描邊 SVG 套裝**——🔔/🌙/🩺 混用移除；主題按鈕的日/月由 CSS 繪製。
+- **儀表板 Pipeline 卡片移除多餘粉色高亮**（圓環僅 hover/focus）。
+- **刪除已存搜尋呈現破壞性樣式**（`.btn-danger`，而非中性幽靈按鈕）。
+- **Pipeline 預覽擁有真正的空狀態**（標題 + 提示 + CTA，tracker 模式）。
+- **時間/成本元資訊統一**：`UI.pageMeta` 在視圖標題下以一行繪製 ⏱ + 成本（evaluate/deep/auto/mode-page/orientation）。
+- **Auto-pipeline 去除 ✨**——全應用唯一帶裝飾的 h1 回歸共同的左緣。
+- **Batch 文件 URL 為內嵌連結**。
+- **interview-digest / orientation 擁有設計過的空狀態**（標題 + 提示 + CTA）。
+- **無計畫時 career-plan 匯出停用**，操作收進一行。
+- **stats：移除重複的「Market report」標題**，地區佔位符可完整顯示（×18 縮短文案，固定寬度）。
+- **Config 不再洩漏絕對檔案路徑**——伺服器端 `displayPath()` 顯示 `~/…` 或裸檔名。
+- **LLM_PROVIDER 說明拆成三短行**（×18 + `pre-line`），不再是 150 字元的等寬牆。
+- **Profile EMAIL 卡片地址保持單行**（省略號；僅 ≤480px 才換行）。
+- **Health 文案不再詞中斷行**（「Run buttons」完整；overflow-wrap anywhere）。
+- **Help 內嵌代碼在 RTL 下不破碎**（LTR 隔離、nowrap、可捲動）。
+- **Hero「Live evals」膠囊在 ru/ar 下不再碰撞**（flex-wrap、不可收縮圖示）。
+
+### 新增
+
+- **深色圖磚預設**（`MAP_TILE_DARK_URL` + attribution）已在程式碼內文件化；CSP `img-src` 的擴充涵蓋其 Carto 主機。
+
+### 備註
+
+- 深色圖磚預設為 OSM 的 CSS 反轉——無金鑰的 Carto 已把底圖關進 API 金鑰之後（經請求驗證），帶金鑰預設為可選而非預設。
+
 ## [1.246.0] — 2026-10-09
 
 **CAR-48 資深設計巡檢的十大發現全部修復——含 1 個阻塞級與全部 7 個重要級。**

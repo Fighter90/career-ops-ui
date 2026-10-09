@@ -183,12 +183,16 @@ Router.register('stats', async () => {
       b.style.color = on ? 'var(--fg, #111)' : 'var(--foggy)';
       b.style.borderBottomColor = on ? 'var(--accent, #4c8bf5)' : 'transparent';
     });
-    // refresh the active-tab caption + its help hint
+    // refresh the active-tab caption + its help hint.
+    // CAR-55 #1 (v1.247.0) — the caption used to repeat the active tab's
+    // label right under the tab strip it mirrored; only the "?" help hint
+    // remains (its aria-label still names the tab for screen readers).
     const activeDef = tabDefs.find((d) => d.id === id);
     hintRow.textContent = '';
     if (activeDef) {
-      hintRow.appendChild(c('span', null, activeDef.label));
-      if (window.HelpHint && activeDef.hint) hintRow.appendChild(window.HelpHint.icon(activeDef.hint, { sectionLabel: activeDef.label }));
+      if (window.HelpHint && activeDef.hint) {
+        hintRow.appendChild(window.HelpHint.icon(activeDef.hint, { sectionLabel: activeDef.label }));
+      }
     }
     panel.textContent = '';
     panel.appendChild(c('div', { className: 'loading' }, t('common.loading', 'Loading…')));
@@ -211,8 +215,11 @@ Router.register('stats', async () => {
     wrap.appendChild(c('p', { style: { color: 'var(--foggy)', margin: '0 0 12px' } },
       t('stats.marketIntro', 'A salary & market analysis for your target roles and region — grades, percentiles, top employers, in-demand skills, benefits. Figures are directional estimates from the model’s knowledge, not scraped data.')));
 
-    const region = c('input', { type: 'text', className: 'input', 'data-i18n-placeholder': 'stats.marketRegionPh', style: { maxWidth: '340px' } });
-    region.placeholder = t('stats.marketRegionPh', 'e.g. Russia · EU-remote · US · Germany…');
+    // CAR-55 #1 (v1.247.0) — the placeholder was truncated twice over: the
+    // copy was long AND the shrink-wrapped label column starved the input.
+    // Short copy + an explicit min(340px, 100%) width fit both concerns.
+    const region = c('input', { type: 'text', className: 'input', 'data-i18n-placeholder': 'stats.marketRegionPh', style: { width: '340px', maxWidth: '100%' } });
+    region.placeholder = t('stats.marketRegionPh', 'e.g. EU-remote · Germany');
     const curSel = currencySelect();
     const genBtn = c('button', { className: 'btn btn-primary', type: 'button' }, t('stats.marketGenerate', 'Generate market report'));
     const controls = c('div', { style: { display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'flex-end', margin: '0 0 16px' } }, [

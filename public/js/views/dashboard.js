@@ -162,8 +162,11 @@ Router.register('dashboard', async () => {
     if (!health || !Array.isArray(health.checks)) return null;
     const row = health.checks.find((x) => x && x.name === 'Profile customized');
     if (!row || row.ok) return null;
+    // CAR-58 #4 (v1.247.0) — the warning surface moved to the shared
+    // .callout--warn tokens (components.css); overlays.css keeps the banner's
+    // geometry but no longer hardcodes a light-only yellow.
     return c('div', {
-      className: 'hero-banner hero-banner--warning',
+      className: 'hero-banner hero-banner--warning callout callout--warn',
       role: 'status',
       'aria-live': 'polite',
       id: 'profile-fixture-banner',

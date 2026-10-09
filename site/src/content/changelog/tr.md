@@ -2,6 +2,42 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.247.0] — 2026-10-09
+
+**CAR-49…58 tasarım-taramasının kuyruğu tamamlandı — kalan tüm minor/polish bulguları ve önceki sürümün bilinçli olarak ertelediği koyu harita.**
+
+### Düzeltildi
+
+- **Harita gerçek bir koyu tema render ediyor.** Yakınlaştırma/katmanlar/atıf v1.246.0'da koyulaşmıştı; şimdi döşemeler de izliyor: koyu mod, CSS tersine çevirme ile OSM katmanını çizer (satıcı anahtarı yok) ve anahtarlı Carto-dark ön ayarı `MAP_TILE_DARK_URL` üzerinden kullanılabilir (ana makinesi CSP `img-src` içinde izinli). Tema değişiminde katman canlı yeniden takılır.
+- **Sarı callout'ların koyu biçimleri var** (`config`, `batch`, hero uyarısı) — v1.246.0 belirteç mekaniğiyle; yolda bir gerileme de yakalandı: `.callout a` `.btn-primary`ü eziyordu; artık `:not(.btn)` kapsamında.
+- **Apply bilgi kartındaki URL artık kelime ortasından kırılmıyor**.
+- **CV başlık düğmeleri tek ikon sistemi** (metin; 📁/📄/💾 karışımı gitti).
+- **Tracker durum sekmeleri tek yazım kalıbında** — cümle düzeni, yerel uyarlamalarla (CJK/ar/hi/ta'da cins formu yok).
+- **Üst çubuk ikonları tek stroke-SVG seti** — 🔔/🌙/🩺 karışımı gitti; tema düğmesi güneş/ay'ı CSS ile çizer.
+- **Panodaki Pipeline kartu pembe vurgusunu kaybetti** (halka yalnız hover/focus).
+- **Kayıtlı arama silme gerçekten yıkıcı görünür** (`.btn-danger`, nötr ghost değil).
+- **Pipeline önizlemesinin gerçek boş durumu var** (başlık + ipucu + CTA, tracker kalıbı).
+- **Süre/maliyet meta'sı tek kalıp**: `UI.pageMeta` ⏱ + maliyeti görünüm başlığının altında tek satırda çizer (evaluate/deep/auto/mode-page/orientation).
+- **Auto-pipeline ✨'sini kaybetti** — uygulamanın tek süslü h1'i ortak sol kenara döndü.
+- **Batch docs URL'si satır içi bağlantı**.
+- **interview-digest / orientation tasarlanmış boş durumlara sahip** (başlık + ipucu + CTA).
+- **Plan yokken career-plan Export devre dışı**, eylemler tek satırda.
+- **stats: Yinelenen «Market report» başlığı kaldırıldı** ve bölge yer tutucusu sığıyor (×18 kısaltıldı, sabit genişlik).
+- **Config artık mutlak dosya yolu sızdırmıyor** — sunucu tarafı `displayPath()` `~/…` ya da çıplak dosya adını gösterir.
+- **LLM_PROVIDER yardımcısı üç kısa satır** (×18 + `pre-line`), 150 karakterlik mono duvar değil.
+- **Profil EMAIL kartı adresi tek satırda tutar** (üç nokta; yalnız ≤480px'de kırılır).
+- **Health metni artık kelime kırıyor** değil («Run buttons» bütün; overflow-wrap anywhere).
+- **Help satır içi kodu RTL'de hayatta kalır** (LTR izolasyonu, nowrap, kaydırılabilir).
+- **Hero'daki «Live evals» hapı ru/ar'da artık çarpışmıyor** (flex-wrap, büzülmeyen ikonlar).
+
+### Eklendi
+
+- **Koyu döşeme ön ayarı** (`MAP_TILE_DARK_URL` + atıf) kod içinde belgelendi; CSP `img-src` genişlemesi onun Carto ana makinesini kapsıyor.
+
+### Notlar
+
+- Koyu döşemenin varsayılanı OSM'in CSS ters çevirmesidir — anahtarsız Carto baz haritalarını API anahtarı ardına kapattı (istekle doğrulandı); anahtarlı ön ayar bir opt-in'dir, varsayılan değil.
+
 ## [1.246.0] — 2026-10-09
 
 **CAR-48 kıdemli-tasarım taramasının ilk 10 bulgusunun tamamı düzeltildi — engelleyici ve yedi major dahil.**

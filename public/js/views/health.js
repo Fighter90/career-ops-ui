@@ -97,7 +97,11 @@ Router.register('health', async () => {
           c('div', { className: 'flex-between health-check-row' }, [
             c('div', null, [
               c('div', { className: 'metric-label' }, ch.name),
-              ch.value && c('div', { style: { fontSize: '13px', color: 'var(--foggy)', marginTop: '6px', wordBreak: 'break-all' } }, ch.value),
+              // CAR-56 #4 (v1.247.0) — was word-break: break-all, which cut
+              // ordinary words mid-letter («"Run" butt ons)»). overflow-wrap:
+              // anywhere still folds a pathological long token (a URL) but
+              // leaves normal words whole.
+              ch.value && c('div', { style: { fontSize: '13px', color: 'var(--foggy)', marginTop: '6px', overflowWrap: 'anywhere' } }, ch.value),
             ]),
             c('div', { className: 'flex gap-3', style: { alignItems: 'center' } }, [
               fixUrl ? c('a', {

@@ -2,6 +2,42 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.247.0] — 2026-10-09
+
+**Der Schwanz des Design-Sweeps CAR-49…58 ist abgeschlossen — alle übrigen Minor/Polish-Funde plus die dunkle Karte, die das vorige Release bewusst zurückstellte.**
+
+### Behoben
+
+- **Die Karte rendert ein echtes Dunkelthema.** Zoom/Ebenen/Attribution wurden in v1.246.0 dunkel; jetzt folgen die Kacheln: Der Dunkelmodus zeichnet den OSM-Layer mit CSS-Inversion (ohne Vendor-Keys), ein keyed Carto-dark-Preset ist über `MAP_TILE_DARK_URL` verfügbar (dessen Host ist in der CSP `img-src` erlaubt). Der Layer wird bei Themenwechsel live neu montiert.
+- **Gelbe Callouts haben dunkle Varianten** (`config`, `batch`, Hero-Warnung) über die Token-Mechanik von v1.246.0 — und nebenbei eine Regression erwischt: `.callout a` überdeckte `.btn-primary`; jetzt auf `:not(.btn)` begrenzt.
+- **Die URL in der Apply-Info-Karte bricht nicht mehr mitten im Wort**.
+- **CV-Kopfschaltflächen nutzen ein einziges Icon-System** (Text; der 📁/📄/💾-Emoji-Mix ist weg).
+- **Tracker-Status-Tabs in einer Schreibweise** — Sentence case, mit lokalen Besonderheiten (CJK/ar/hi/ta ohne Genusformen).
+- **Topbar-Icons sind ein einzelner Stroke-SVG-Satz** — der 🔔/🌙/🩺-Mix ist weg; der Themenknopf zeichnet Sonne/Mond per CSS.
+- **Die Pipeline-Karte des Dashboards verliert ihre rosa Hervorhebung** (Ring nur bei Hover/Focus).
+- **Gespeicherte Suche löschen ist sichtbar destruktiv** (`.btn-danger`, kein neutraler Ghost).
+- **Die Pipeline-Vorschau hat einen echten Leerzustand** (Titel + Hinweis + CTA, Tracker-Muster).
+- **Zeit/Kosten-Meta ist ein Muster**: `UI.pageMeta` zeichnet ⏱ + Kosten in eine Zeile unter den View-Titel (evaluate/deep/auto/mode-page/orientation).
+- **Auto-pipeline verliert sein ✨** — die einzige dekorierte h1 kehrt an die gemeinsame linke Kante zurück.
+- **Batch-Docs-URL ist ein Inline-Link**.
+- **interview-digest / orientation haben gestaltete Leerzustände** (Titel + Hinweis + CTA).
+- **Career-Plan-Export ist ohne Plan deaktiviert**, Aktionen in einer Reihe.
+- **stats: Die doppelte Überschrift „Market Report“ ist weg** (Anmerkung: getestet), und der Regions-Platzhalter passt (kürzer ×18, feste Breite).
+- **Config leakt keine absoluten Pfade mehr** — das serverseitige `displayPath()` zeigt `~/…` oder den nackten Dateinamen.
+- **Der LLM_PROVIDER-Helper sind drei kurze Zeilen** (×18 + `pre-line`), keine 150-Zeichen-Mono-Wand.
+- **Die PROFIL-E-Mail-Karte hält Adressen in einer Zeile** (Ellipsis; Umbruch nur ≤480px).
+- **Health-Text bricht keine Wörter mehr** („Run buttons“ bleibt ganz; overflow-wrap anywhere).
+- **Inline-Code im Help überlebt RTL** (LTR-isoliert, nowrap, scrollbar).
+- **Die Hero-Pille „Live evals“ kollidiert nicht mehr** in ru/ar (Flex-Wrap, nicht schrumpfende Icons).
+
+### Hinzugefügt
+
+- **Dunkelkachel-Preset** (`MAP_TILE_DARK_URL` + Attribution) im Code dokumentiert; die CSP-`img-src`-Erweiterung deckt den Carto-Host dafür ab.
+
+### Hinweise
+
+- Der Dunkel-Kachel-Standard ist eine CSS-Inversion von OSM — keyless Carto hat seine Basemaps hinter einen API-Key gesperrt (per Request verifiziert); das keyed Preset ist Opt-in, nicht Standard.
+
 ## [1.246.0] — 2026-10-09
 
 **Alle zehn Top-Funde des Senior-Design-Sweeps CAR-48 sind behoben — der Blocker und alle sieben Majors inklusive.**

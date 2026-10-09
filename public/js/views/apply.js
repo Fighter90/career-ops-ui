@@ -205,9 +205,12 @@ Router.register('apply', async () => {
         // PR-9: surface the canonical Playwright setup guide so users
         // who hit a "browser not installed" error in the CLI have an
         // exact, vendor-blessed install path.
+        // CAR-52 #2 (v1.247.0) — the display URL may break anywhere instead
+        // of clipping mid-glyph ("…/set-up-playwrigh…") even at 1440.
         t('apply.playwrightHint', 'Need Playwright? See '),
         c('a', {
           href: 'https://career-ops.org/docs/introduction/guides/set-up-playwright',
+          style: { overflowWrap: 'anywhere' },
           target: '_blank', rel: 'noopener noreferrer',
         }, 'career-ops.org/docs/.../set-up-playwright'),
         ' · ',
