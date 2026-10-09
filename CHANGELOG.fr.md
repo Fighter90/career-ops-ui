@@ -10,6 +10,21 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.245.0] — 2026-10-09
+
+**Le tamoul (தமிழ்) rejoint l’interface comme 18ᵉ langue — la première nouvelle langue depuis la vague des 17, avec parité complète des clés.**
+
+### Ajouté
+
+- **Tamoul (`ta`) : 1449/1449 clés** en parité complète avec `en`, aucun placeholder perdu, conventions indic-tech à la hi (fournisseurs, modèles, chemins et commandes restent en latin). `detect()` accepte `ta`, `ta-IN`, `ta-LK` ; le tamoul est LTR (verrouillé par test).
+- **docs/help/ta.md complet** (33 H2 / 125 H3, comptages de sources vérifiés contre le registre vivant, ancres canary Hermes, YAML verbatim), plus les miroirs README.ta.md et CHANGELOG.ta.md.
+- **Gates d’énumération 17 → 18** : LANGS, sondes detect, audit i18n, parité des changelogs, garde RTL, `langs` du CI — ce qui récupère aussi `hi`, jusque-là absent de la liste CI.
+
+### Notes
+
+- La landing cvstart.org reste à 17 langues pour l’instant — la traduire est une tâche à part ; la synchro de contenu du site publie déjà docs/help/ta.md et le changelog ta.
+- REPORT_LABELS de `report-header.js` reste à 17 — le parsing des rapports tamouls arrivera avec la génération de rapports tamouls dans le repo parent.
+
 ## [1.244.2] — 2026-10-08
 
 **Le polissage de la page de scan : le lanceur, la barre d'état, le panneau de reposts et les filtres sont redessinés comme un chrome cohérent — et le tableau de résultats ne peut plus être étiré par les données des boards.**

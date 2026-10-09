@@ -67,6 +67,11 @@ const MAPPING = [
   ['it-CH', 'it'],
   ['tr-TR', 'tr'],
   ['hi-IN', 'hi'],
+  // Tamil — v1.245.0 (Phase 5, the 18th locale). Plain 'ta' plus the
+  // India and Sri-Lanka region tags (Tamil is official in both).
+  ['ta', 'ta'],
+  ['ta-IN', 'ta'],
+  ['ta-LK', 'ta'],
   // No mapping → English.
   ['en-GB', 'en'],
   ['nb-NO', 'en'],
@@ -93,7 +98,7 @@ test('detect(): every LANGS entry has a detect() hit (a shippable locale is reac
   const probes = {
     en: 'en', es: 'es', 'pt-BR': 'pt', ko: 'ko', ja: 'ja', ru: 'ru',
     'zh-CN': 'zh', 'zh-TW': 'zh-hk', fr: 'fr', pl: 'pl', uk: 'uk', da: 'da',
-    ar: 'ar', de: 'de', it: 'it', tr: 'tr', hi: 'hi',
+    ar: 'ar', de: 'de', it: 'it', tr: 'tr', hi: 'hi', ta: 'ta',
   };
   for (const code of langs) {
     assert.ok(probes[code] !== undefined, `locale ${code} has no detect() probe in this test`);

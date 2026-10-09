@@ -76,7 +76,7 @@ test('i18n: nav.help / help.* keys present in every supported locale', () => {
 test('docs/help/{lang}.md exists for every supported locale', () => {
   const helpDir = resolve(ROOT, 'docs', 'help');
   // We accept either ko-KR.md or ko.md to mirror i18n's two naming conventions.
-  for (const lang of ['en', 'es', 'pt-BR', 'ko-KR', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi']) {
+  for (const lang of ['en', 'es', 'pt-BR', 'ko-KR', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi', 'ta']) {
     assert.ok(existsSync(resolve(helpDir, `${lang}.md`)),
       `docs/help/${lang}.md missing`);
   }
@@ -95,7 +95,7 @@ test('every help doc covers the same 31 sections (all 17 gated locales — §31 
   // §33 "Job map" (`#/map`) — 32 → 33.
   const helpDir = resolve(ROOT, 'docs', 'help');
   const SECTION_COUNT = 33;
-  const ALL_LOCALES = ['en', 'es', 'pt-BR', 'ko-KR', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi'];
+  const ALL_LOCALES = ['en', 'es', 'pt-BR', 'ko-KR', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi', 'ta'];
   for (const lang of ALL_LOCALES) {
     const fname = `${lang}.md`;
     const text = readFileSync(resolve(helpDir, fname), 'utf8');
@@ -113,7 +113,7 @@ test('every help locale has substantive content (P-8 floor)', () => {
   const helpDir = resolve(ROOT, 'docs', 'help');
   const en = readFileSync(resolve(helpDir, 'en.md'), 'utf8');
   const FLOOR = en.length * 0.3;
-  const ALL_LOCALES = ['es', 'pt-BR', 'ko-KR', 'ja', 'ru', 'zh-CN', 'zh-TW', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi'];
+  const ALL_LOCALES = ['es', 'pt-BR', 'ko-KR', 'ja', 'ru', 'zh-CN', 'zh-TW', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi', 'ta'];
   for (const lang of ALL_LOCALES) {
     const text = readFileSync(resolve(helpDir, `${lang}.md`), 'utf8');
     assert.ok(text.length >= FLOOR,

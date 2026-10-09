@@ -9,6 +9,21 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.245.0] — 2026-10-09
+
+**Tamilski (தமிழ்) dołącza jako 18. język interfejsu — pierwszy nowy język od fali 17 lokalizacji, z pełną parnością kluczy.**
+
+### Dodano
+
+- **Tamilski (`ta`): 1449/1449 kluczy** w pełnej parności z `en`, zero zgubionych placeholderów, konwencje indic-tech w stylu hi (dostawcy, modele, ścieżki i polecenia zostają w alfabecie łacińskim). `detect()` przyjmuje `ta`, `ta-IN`, `ta-LK`; tamilski jest LTR (zabezpieczone testem).
+- **Pełny docs/help/ta.md** (33 H2 / 125 H3, liczniki źródeł zweryfikowane z żywym rejestrem, kotwice canary Hermes, dosłowny YAML), plus lustra README.ta.md i CHANGELOG.ta.md.
+- **Bramy wyliczeniowe 17 → 18**: LANGS, sondy detect, audyt i18n, parność changelogów, strażnik RTL, `langs` w CI — przy okazji łapie `hi`, wcześniej nieobecne na liście CI.
+
+### Uwagi
+
+- Landing cvstart.org pozostaje na razie przy 17 językach — tłumaczenie to osobne zadanie; sync treści strony już dostarcza docs/help/ta.md i changelog ta.
+- REPORT_LABELS w `report-header.js` zostaje przy 17 — parsowanie tamilskich raportów przyjdzie wraz z generowaniem tamilskich raportów w repo nadrzędnym.
+
 ## [1.244.2] — 2026-10-08
 
 **Polerowanie strony skanowania: launcher, pasek statusu, panel repostów i filtry zaprojektowane jako spójny chrome — a tabela wyników nie może już być rozciągana przez dane boardów.**

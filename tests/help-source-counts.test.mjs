@@ -34,7 +34,7 @@ import { SOURCES } from '../server/lib/sources/registry.mjs';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
 const HELP_LOCALES = ['en', 'es', 'pt-BR', 'ko-KR', 'ja', 'ru', 'zh-CN', 'zh-TW',
-  'fr', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi'];
+  'fr', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi', 'ta'];
 
 const TOTAL = SOURCES.length;
 const EN_COUNT = SOURCES.filter((s) => s.region === 'en').length;

@@ -2,6 +2,21 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.245.0] — 2026-10-09
+
+**Il tamil (தமிழ்) entra come 18ª lingua dell’interfaccia — la prima nuova lingua dall’ondata delle 17, con parità completa delle chiavi.**
+
+### Aggiunto
+
+- **Tamil (`ta`): 1449/1449 chiavi** in piena parità con `en`, nessun segnaposto perso, convenzioni indic-tech in stile hi (provider, nomi di modello, percorsi e comandi restano in caratteri latini). `detect()` accetta `ta`, `ta-IN`, `ta-LK`; il tamil è LTR (bloccato da test).
+- **docs/help/ta.md completo** (33 H2 / 125 H3, conteggi sorgenti verificati contro il registro attivo, ancore canary Hermes, YAML letterale), più i specchi README.ta.md e CHANGELOG.ta.md.
+- **Gate di enumerazione 17 → 18**: LANGS, sonde detect, audit i18n, parità dei changelog, guardia RTL, `langs` del CI — che recupera anche `hi`, finora assente dall’elenco CI.
+
+### Note
+
+- La landing di cvstart.org resta per ora a 17 lingue — tradurla è un’attività a parte; la sincronizzazione dei contenuti del sito pubblica già docs/help/ta.md e il changelog ta.
+- REPORT_LABELS di `report-header.js` resta a 17 — il parsing dei rapporti tamil arriverà con la generazione dei rapporti tamil nel repo padre.
+
 ## [1.244.2] — 2026-10-08
 
 **La rifinitura della pagina di scansione: launcher, barra di stato, pannello repost e filtri ridisegnati come un chrome coerente — e la tabella dei risultati non può più essere allungata dai dati dei board.**

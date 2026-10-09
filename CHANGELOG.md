@@ -8,6 +8,21 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.245.0] — 2026-10-09
+
+**Tamil (தமிழ்) joins as the 18th UI locale — the first new language since the 17-locale wave, with full key parity.**
+
+### Added
+
+- **Tamil (`ta`) — 1449/1449 keys** with full parity to `en`, zero placeholders lost, hi-style Indic-tech conventions (providers, model names, paths and commands stay Latin). `detect()` accepts `ta`, `ta-IN`, `ta-LK`; Tamil is LTR (locked by test).
+- **Full docs/help/ta.md** (33 H2 / 125 H3, source counts verified against the live registry, Hermes canary anchors, verbatim YAML), plus README.ta.md and CHANGELOG.ta.md mirrors.
+- **Enumeration gates 17 → 18**: LANGS, detect probes, i18n audit, changelog parity, RTL guard, CI `langs` — which also picks up `hi`, previously missing from the CI list.
+
+### Notes
+
+- Not in this release: the cvstart.org landing translation (the landing stays 17 locales for now — a separate task); the site content sync already ships docs/help/ta.md and the ta changelog.
+- Not in this release: Tamil report parsing — `report-header.js` REPORT_LABELS stays 17; it arrives with parent-repo Tamil report generation.
+
 ## [1.244.2] — 2026-10-08
 
 **Scan page polish: the launcher, status bar, reposts panel and filters are redesigned as one consistent chrome — and the results table can no longer be stretched by board-side data.**

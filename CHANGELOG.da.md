@@ -8,6 +8,21 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.245.0] — 2026-10-09
+
+**Tamil (தமிழ்) tilslutter sig som det 18. UI-sprog — det første nye sprog siden bølgen på 17, med fuld nøgleparitet.**
+
+### Tilføjet
+
+- **Tamil (`ta`): 1449/1449 nøgler** i fuld paritet med `en`, ingen mistede pladsholdere, hi-stil indic-tech-konventioner (udbydere, modelnavne, stier og kommandoer forbliver latinske). `detect()` accepterer `ta`, `ta-IN`, `ta-LK`; tamil er LTR (låst af test).
+- **Fuldt docs/help/ta.md** (33 H2 / 125 H3, kildetællinger verificeret mod det levende register, Hermes-canary-ankre, ordret YAML), plus README.ta.md- og CHANGELOG.ta.md-spejle.
+- **Enumerationsgates 17 → 18**: LANGS, detect-sonder, i18n-revision, changelog-paritet, RTL-vagt, CI-`langs` — henter også `hi`, som tidligere manglede på CI-listen.
+
+### Noter
+
+- cvstart.org-landingssiden forbliver ved 17 sprog for nu — oversættelse er en separat opgave; sitets indholdssync leverer allerede docs/help/ta.md og ta-changeloggen.
+- `report-header.js` REPORT_LABELS forbliver ved 17 — parsing af tamilske rapporter kommer med tamilske rapportgenerering i parent-repoet.
+
 ## [1.244.2] — 2026-10-08
 
 **Scan-sidens polering: launcher, statuslinje, reposts-panel og filtre er redesignet som en konsistent chrome — og resultattabellen kan ikke længere strækkes af board-data.**

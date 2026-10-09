@@ -1,8 +1,10 @@
 # Localization guide
 
-How translation works in **career-ops-ui**, and how to add or edit a language. The SPA ships **17 locales** — `en`, `es`, `fr`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi` (Hindi added v1.122.0) — and every user-facing string flows through the i18n layer. **Arabic (`ar`) is right-to-left** (I18N-EXPAND, v1.70.0): `i18n.js` sets `<html dir="rtl">` for RTL locales and `app.css` carries a scoped `[dir="rtl"]` block. The in-app language picker is a flag-prefixed `<select>` (`renderLangSwitcher` in `public/js/app.js`).
+How translation works in **career-ops-ui**, and how to add or edit a language. The SPA ships **18 locales** — `en`, `es`, `fr`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`, `ta` (Hindi added v1.122.0, Tamil v1.245.0) — and every user-facing string flows through the i18n layer. **Arabic (`ar`) is right-to-left** (I18N-EXPAND, v1.70.0): `i18n.js` sets `<html dir="rtl">` for RTL locales and `app.css` carries a scoped `[dir="rtl"]` block. The in-app language picker is a flag-prefixed `<select>` (`renderLangSwitcher` in `public/js/app.js`).
 
-> **Help guide (v1.71.1; de/it/tr in v1.85.0).** The long-form help bundle (`docs/help/<locale>.md`) is fully translated in all **17 locales** — `pl`/`uk`/`ar` bundles were added in v1.71.1 and `de`/`it`/`tr` in v1.85.0, each holding the gated **33 H2 / 125 H3** structure (the H2 count is asserted by `tests/help-ui.test.mjs` + `tests/canonical-docs-coverage.test.mjs`; Hermes is §30, the cloud stack §31).
+> **Help guide (v1.71.1; de/it/tr in v1.85.0, ta in v1.245.0).** The long-form help bundle (`docs/help/<locale>.md`) is fully translated in all **18 locales** — `pl`/`uk`/`ar` bundles were added in v1.71.1, `de`/`it`/`tr` in v1.85.0 and `ta` in v1.245.0, each holding the gated **33 H2 / 125 H3** structure (the H2 count is asserted by `tests/help-ui.test.mjs` + `tests/canonical-docs-coverage.test.mjs`; Hermes is §30, the cloud stack §31).
+
+> **Tamil specifics (`ta`, v1.245.0).** Tamil is an LTR script — never add it to `RTL_LANGS`. The switcher flag is **🇮🇳**: the table maps by language community (the primary Tamil-speaking base is Tamil Nadu, India; Tamil is also official in Sri Lanka, whose regional variant `ta-LK` resolves to the same locale), mirroring how `hi` maps to 🇮🇳. `detect()` covers `ta`, `ta-IN` and `ta-LK`. Per the `hi` table's Indic-tech convention, provider names, model ids, env vars, file paths, and `/career-ops …` commands stay Latin; the surrounding prose is Tamil. The cvstart.org landing keeps 17 locales for now — adding `ta` there is a separate task (needs `site/src/i18n/ta.json` + a `locales.ts` entry); the site's help/changelog content sync (`site/scripts/sync-assets.mjs`) already picks `docs/help/ta.md` and `CHANGELOG.ta.md` up automatically.
 
 > Server diagnostics stay **English by policy** (consistency across logs). Only client-owned UI strings are localized. Don't add per-locale text to server error bodies.
 
@@ -49,7 +51,7 @@ The fallback is a dev convenience — a key missing from the dictionary fails CI
 
 ## Common task — add or edit a translation key
 
-1. **Add the key to all 17 locale files** in `public/js/lib/locales/` — same key, translated value:
+1. **Add the key to all 18 locale files** in `public/js/lib/locales/` — same key, translated value:
    ```js
    // i18n-dict.en.js
    'scan.newButton': 'Run scan',
@@ -87,7 +89,7 @@ When several keys must always read identically in **every** locale (e.g. the sid
 - The alias **target must exist** as a real key (in the per-locale files).
 - **No chains** — an alias target must not itself be an alias.
 - An alias key must **not** also appear in the per-locale tables.
-- Only alias keys that are byte-identical in all 17 locales. Keys that merely collapse in English but diverge elsewhere (e.g. `nav.config` "App settings" vs `config.title`, which differ in Spanish) stay **independent**.
+- Only alias keys that are byte-identical in all 18 locales. Keys that merely collapse in English but diverge elsewhere (e.g. `nav.config` "App settings" vs `config.title`, which differ in Spanish) stay **independent**.
 
 ---
 
@@ -135,12 +137,12 @@ node scripts/check-changelog-parity.mjs   # all CHANGELOG.<locale>.md at the sam
 
 | Gate | What it locks |
 |---|---|
-| `tests/i18n-coverage.test.mjs` | every key present in all 17 locales; every `t('key')` call maps to a real entry |
+| `tests/i18n-coverage.test.mjs` | every key present in all 18 locales; every `t('key')` call maps to a real entry |
 | `tests/i18n-locale-files.test.mjs` | per-locale key parity · alias integrity · `index.html` load order · assembled dict ≡ snapshot |
 | `tests/i18n-alias.test.mjs` | alias targets exist, no chains, `t(alias) === t(canonical)` in every locale |
 | `tools/i18n-audit.mjs` | no personal data, no empty values, no bare-calendar-date placeholders, no broken aliases |
 | `tests/playwright-locale-sweep.mjs` | every page renders + localizes in every locale, zero console errors |
-| `tests/i18n-no-latin-leaks.test.mjs` | no Latin-only `*.title` on the non-Latin locales (ru/ko/ja/zh-CN/zh-TW/uk/ar/hi) |
+| `tests/i18n-no-latin-leaks.test.mjs` | no Latin-only `*.title` on the non-Latin locales (ru/ko/ja/zh-CN/zh-TW/uk/ar/hi/ta) |
 | `tests/i18n-no-personal-data.test.mjs` | no maintainer PII across any locale file |
 | `tests/i18n-dead-keys.test.mjs` | zero dictionary keys that no code references (removal guard against translator busywork) |
 | `tests/i18n-detect.test.mjs` | the full `detect()` browser-language → locale mapping (da, zh-Hant/zh-HK/zh-MO → zh-TW, …) |
