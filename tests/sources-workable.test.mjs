@@ -224,13 +224,11 @@ test('workable: a location-less remote fan-out keeps its "Remote" cell (no fallb
 
 // The point of the fix: ask the real consumer, not a reimplementation of it.
 // buildLocationFilter (location-filter.mjs) is exactly what en-scanner.mjs
-// runs over every emitted location cell. NOTE on the port: the parent's check
-// drives its always_allow tier (which beats `block`); web-ui's filter has no
-// always_allow tier, so the same consumer verdict is expressed through the
-// allow-list tier instead — an EU allow-list keeps the merged cell and still
-// rejects the pre-fix London-only string. (A web-ui `block: ['United Kingdom']`
-// rule is substring matching over the whole cell and would reject the merged
-// cell too — that is a location-filter.mjs capability gap, out of scope here.)
+// runs over every emitted location cell. v1.248.1 (CAR-60) added the parent's
+// `always_allow` tier, so the consumer check now runs in the parent's own
+// form: block the sibling countries, always_allow the home region — the
+// merged cell survives because the home region is an option. The EU
+// allow-list form from the interim port is kept as a second consumer verdict.
 test('workable: the merged location survives a location_filter that rejects the pre-fix string', () => {
   const euFilter = buildLocationFilter({ allow: ['Romania', 'Poland', 'Croatia'] });
   const preFix = 'London, United Kingdom';
@@ -238,6 +236,19 @@ test('workable: the merged location survives a location_filter that rejects the 
     .find((j) => j.title === 'Implementation Engineer')?.location;
   assert.equal(euFilter(preFix), false, 'pre-fix cell must be rejected by the EU allow-list');
   assert.equal(euFilter(merged), true, 'merged cell must survive the EU allow-list');
+});
+
+test('workable: parent-form consumer check — always_allow UK beats blocked sibling countries (v1.248.1)', () => {
+  const parentForm = buildLocationFilter({
+    block: ['romania', 'poland', 'croatia'],
+    always_allow: ['united kingdom'],
+  });
+  const merged = parseWorkableWidget(FAN_OUT_PAYLOAD)
+    .find((j) => j.title === 'Implementation Engineer')?.location;
+  assert.equal(parentForm(merged), true,
+    'always_allow [united kingdom] rescues the merged cell even though romania/poland/croatia are blocked');
+  assert.equal(parentForm('Warsaw, Poland'), false, 'a pure blocked location still rejects');
+  assert.equal(parentForm('London, United Kingdom'), true, 'the plain home-region cell passes');
 });
 
 // ── large account: the whole point of the widget switch ────────────────

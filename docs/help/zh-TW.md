@@ -551,6 +551,8 @@ location_filter:
 - 無 `location_filter` → 所有地點通過(預設)。
 - 地點為空/缺失 → 通過(缺失資料不懲罰)。
 - 命中 `block` → **拒絕**(block 優先於 allow)。
+- 匹配 `always_allow` → **通過**，即使 `block` 也匹配——這是多國位置字串的逃生通道（v1.248.1）。
+- 匹配 `block_hard` → **拒絕**，`always_allow` 無法覆蓋它。
 - `allow` 為空 → 通過(block 已過濾)。
 - `allow` 非空 → 必須符合**至少一個**關鍵字。
 

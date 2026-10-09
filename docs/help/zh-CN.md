@@ -548,6 +548,8 @@ location_filter:
 - 无 `location_filter` → 所有地点通过(默认)。
 - 地点为空/缺失 → 通过(缺失数据不惩罚)。
 - 命中 `block` → **拒绝**(block 优先于 allow)。
+- 匹配 `always_allow` → **通过**，即使 `block` 也匹配——这是多国位置字符串的逃生通道（v1.248.1）。
+- 匹配 `block_hard` → **拒绝**，`always_allow` 无法覆盖它。
 - `allow` 为空 → 通过(block 已过滤)。
 - `allow` 非空 → 必须匹配**至少一个**关键词。
 

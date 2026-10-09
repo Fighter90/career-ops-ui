@@ -45,12 +45,12 @@ npm run test:coverage:gate      # coverage ratchet (scripts/coverage-baseline.js
 
 1. `npm version X.Y.Z --no-git-tag-version`; EN `CHANGELOG.md` entry (Added/Fixed/Notes — Notes
    must name what is deliberately *not* done); README banner (new lead, previous = old lead, drop
-   the older previous); badges ×17 by script; `qa/QA-REGRESSION-PROMPT-vX.Y.Z.md` (archive the old
+   the older previous); badges ×18 by script; `qa/QA-REGRESSION-PROMPT-vX.Y.Z.md` (archive the old
    one to `qa/archive/superseded-prompts/`); `docs/sdd/CONVENTIONS.md` test baseline;
    `.claude/PROJECT-CONTEXT.md` repo state; `PROGRESS.md`.
 2. 16 locale files ×2 (`README.<L>.md`, `CHANGELOG.<L>.md`) — one sub-agent per locale; English
    source of truth; the file's own section labels; exactly one `## [X.Y.Z]` per file.
-   If the source count changed: help ×17 §17 sentence, `CONTEXT.md`, `CLAUDE.md`.
+   If the source count changed: help ×18 §17 sentence, `CONTEXT.md`, `CLAUDE.md`.
 3. `cd site && npm run build` **after** all 17 changelogs are final; then
    `grep -L 'X.Y.Z' site/src/content/changelog/*.md` must print nothing.
 4. Gates (above). Commit (`Co-Authored-By:` trailer), push branch, `gh pr create`.
@@ -64,7 +64,7 @@ npm run test:coverage:gate      # coverage ratchet (scripts/coverage-baseline.js
 10. **resumecraft.ru:** `gh workflow run deploy.yml --ref main -f mode=deploy -f ui_ref=vX.Y.Z -f parent_ref=<parent sha>`;
     watch it; the log must show `version=X.Y.Z` and the public check `401` (basic auth) — a `421`
     means `ALLOWED_HOSTS` is wrong. Then `-f mode=verify`.
-11. Wiki: fresh clone of `Fighter90/career-ops-ui.wiki`, Home ×17 banners, Scanner-Providers rows,
+11. Wiki: fresh clone of `Fighter90/career-ops-ui.wiki`, Home ×18 banners, Scanner-Providers rows,
     Testing-and-QA / Release-Process counts; push.
 12. Delete the release branch locally and remotely; update `PROGRESS.md`.
 
@@ -74,18 +74,18 @@ Every release — patch included — also carries ALL of the following. If any s
 the release is not done:
 
 1. **Full regression on BOTH stands**: local `127.0.0.1:4317` AND prod (resumecraft.ru).
-   All views, all 17 locales, LLM providers live (`gh workflow run remote-qa.yml -f live=true`),
+   All views, all 18 locales, LLM providers live (`gh workflow run remote-qa.yml -f live=true`),
    scanner (`-f scan=true`), plus an adversarial browser pass (Playwright; creds via env,
    never committed). Findings become Linear issues (Russian) in the carrer-ops-ui workspace
    immediately — then they are executed in order until done.
 2. **A QA regression prompt per release**: `qa/QA-REGRESSION-PROMPT-vX.Y.Z.md`, with the
    real counts; the previous prompt moves to `qa/archive/`.
-3. **CHANGELOG ×17**: EN entry first, then all 16 locale files (one agent per locale,
+3. **CHANGELOG ×18**: EN entry first, then all 17 locale files (one agent per locale,
    English is the source of truth, exactly one `## [X.Y.Z]` per file) — changelog parity
    and the `locale-fanout-integrity` grader must be green.
 4. **A spec per phase/release in `docs/sdd/specs/`** (`_TEMPLATE.md`): goal, scope, out of
    scope, acceptance criteria, Verification filled with REAL output before the PR merges.
-5. **Wiki refresh in the same release**: Home ×17 banners + test floor, Scanner-Providers,
+5. **Wiki refresh in the same release**: Home ×18 banners + test floor, Scanner-Providers,
    Testing-and-QA / Release-Process counts, Roadmap page mirror of Linear.
 6. **Site freshness**: `cd site && npm run build` only after all 17 changelogs are final;
    `grep -L 'X.Y.Z' site/src/content/changelog/*.md` must print nothing (sync-assets keeps

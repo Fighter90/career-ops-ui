@@ -8,6 +8,20 @@
 
 ---
 
+## [1.248.1] — 2026-10-09
+
+**`location_filter` に親の `always_allow` と `block_hard` ティアが加わりました（CAR-60）— 複数国のロケーション文字列が兄弟ブロックを生き延び、明示的なハードブロックはもう救えません。**
+
+### 修正
+
+- `always_allow` は `block` に勝ちます：`block: [romania, poland, croatia]` と `always_allow: [united kingdom]` のとき、workable の統合セル「London, United Kingdom · Romania · Poland · Croatia」は通過 — ホームリージョンが選択肢にあるため（workable #4806 の消費者ケース、ついに親フォームで）。
+- `block_hard` は `always_allow` に勝ちます：文字列のどこかで always_allow に救われてはならない国レベルの語です。
+- `strict: true` は `block_hard` を制限ティアとして数えます；docs/help の location_filter セクションに両ティアを ×18 で文書化。
+
+### メモ
+
+- 今回は意図的に未ポート：親の単語境界付きロケーションキーワードコンパイラと USPS 州名テーブル（web-ui は部分一致を維持；テーブルは米国中心の設定向け — 必要なら CAR-60 へ）。workable 消費者テストの中間 allow-list 形式は、新しい親フォームと並ぶ第二の判定として残ります。
+
 ## [1.248.0] — 2026-10-09
 
 **親パリティ：上流のプロバイダー/liveness 修正を5件ポート — API を移したボードは動作し続け、独立行のクローズバナーを見逃しません。**

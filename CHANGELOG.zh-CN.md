@@ -9,6 +9,20 @@
 ---
 
 
+## [1.248.1] — 2026-10-09
+
+**`location_filter` 获得父级的 `always_allow` 与 `block_hard` 层级（CAR-60）——多国位置字符串挺过兄弟封锁列表，而显式硬封锁不再能被救回。**
+
+### 修复
+
+- `always_allow` 胜过 `block`：在 `block: [romania, poland, croatia]` 与 `always_allow: [united kingdom]` 下，workable 的合并单元格「London, United Kingdom · Romania · Poland · Croatia」通过——家乡地区是一个选项（workable #4806 的消费者用例，现为父级形式）。
+- `block_hard` 胜过 `always_allow`：绝不允许被字符串他处的 always_allow 命中救回的国家级词条。
+- `strict: true` 现在将 `block_hard` 计为限制性层级；docs/help 的 location_filter 小节以 ×18 记录两个层级。
+
+### 备注
+
+- 本次刻意未移植：父级的词边界位置关键词编译器与 USPS 州名表（web-ui 保持子串匹配；该表服务于以美国为中心的配置——如需请归档至 CAR-60）。workable 消费者测试的过渡 allow-list 形式作为第二判定保留，与新的父级形式并列。
+
 ## [1.248.0] — 2026-10-09
 
 **父级对齐：移植五个上游 provider/liveness 修复——迁移了 API 的招聘版继续工作，独立一行的关闭横幅不再被漏读。**

@@ -2,6 +2,20 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.248.1] — 2026-10-09
+
+**`location_filter` ottiene i livelli `always_allow` e `block_hard` del padre (CAR-60) — una stringa di localizzazione multipaese sopravvive a un elenco di blocco dei fratelli, e un blocco duro esplicito non può più essere salvato.**
+
+### Corretto
+
+- `always_allow` batte `block`: con `block: [romania, poland, croatia]` e `always_allow: [united kingdom]`, la cella fusa di workable «London, United Kingdom · Romania · Poland · Croatia» passa — la regione d’origine è un’opzione (il caso consumatore di workable #4806, ora in forma padre).
+- `block_hard` batte `always_allow`: termini di livello paese che non devono mai essere salvati da un hit always_allow altrove nella stringa.
+- `strict: true` ora conta `block_hard` come livello restrittivo; la sezione `location_filter` di docs/help documenta entrambi i livelli ×18.
+
+### Note
+
+- Non portato questa volta di proposito: il compilatore di parole chiave di localizzazione a confini di parola del padre e la sua tabella degli stati USPS (web-ui mantiene la corrispondenza per sottostringa; la tabella serve configurazioni centrate sugli USA — archiviare sotto CAR-60 se serve). La forma allow-list del test consumatore di workable resta un secondo verdetto accanto alla nuova forma padre.
+
 ## [1.248.0] — 2026-10-09
 
 **Parità col padre: cinque correzioni a monte di provider/liveness portate — le board che hanno spostato l’API continuano a funzionare e un banner di chiusura su riga propria non viene più perso.**

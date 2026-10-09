@@ -23,11 +23,11 @@ they are relevant.
 - **Every release ships a QA prompt** (`qa/QA-REGRESSION-PROMPT-v<version>.md`),
   patches included.
 - **Every release runs the full regression on BOTH stands** — local `127.0.0.1:4317`
-  and prod (resumecraft.ru): all views, ×17 locales, live LLM (`remote-qa -f live=true`)
+  and prod (resumecraft.ru): all views, ×18 locales, live LLM (`remote-qa -f live=true`)
   and scanner (`-f scan=true`). Findings go to Linear (Russian) immediately and are
   executed until done.
-- **Every release updates: CHANGELOG ×17 (EN + 16 locales, parity green), the wiki
-  (Home ×17 banners + counts + Roadmap), the site build (cvstart.org), `PROGRESS.md`,
+- **Every release updates: CHANGELOG ×18 (EN + 17 locales, parity green), the wiki
+  (Home ×18 banners + counts + Roadmap), the site build (cvstart.org), `PROGRESS.md`,
   and a spec in `docs/sdd/specs/` with real verification output.** Linear statuses move
   with the work (In Progress → In Review → Done on deployed-and-verified). Full list:
   `docs/sdd/HANDOFF.md` → *Post-release standing rules*.

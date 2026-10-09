@@ -8,6 +8,20 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.248.1] — 2026-10-09
+
+**`location_filter` får parentens `always_allow`- og `block_hard`-tiers (CAR-60) — en flernations-lokationsstreng overlever en blokeret-søskende-liste, og en eksplicit hård blokering kan ikke længere reddes.**
+
+### Rettet
+
+- `always_allow` slår `block`: med `block: [romania, poland, croatia]` og `always_allow: [united kingdom]` passerer workables flettede celle „London, United Kingdom · Romania · Poland · Croatia“ — hjemregionen er en mulighed (workable #4806's forbrugercase, nu i parent-form).
+- `block_hard` slår `always_allow`: landeniveau-termer der aldrig må reddes af et always_allow-hit et andet sted i strengen.
+- `strict: true` tæller nu `block_hard` som en begrænsende tier; `location_filter`-afsnittet i docs/help dokumenterer begge tiers ×18.
+
+### Noter
+
+- Bevidst ikke portet denne gang: parentens word-boundary-lokationsnøgleordskompiler og dens USPS-statstabel (web-ui beholder substring-match; tabellen tjener US-centrerede opsætninger — læg under CAR-60 hvis nødvendig). Workable-forbrugertestens midlertidige allow-list-form forbliver som en anden dom ved siden af den nye parent-form.
+
 ## [1.248.0] — 2026-10-09
 
 **Parent-paritet: fem upstream-fixes for udbydere/liveness portet — boards der har flyttet deres API, virker videre, og et lukkebanner på egen linie overses ikke længere.**

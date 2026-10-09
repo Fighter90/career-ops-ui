@@ -601,6 +601,8 @@ Filtra las vacantes escaneadas por su **ubicación** (subcadena, sin distinguir 
 - Sin `location_filter` → todas las ubicaciones pasan (por defecto).
 - Ubicación vacía/ausente → pasa (no se penaliza el dato faltante).
 - Coincidencia en `block` → **rechazada** (block tiene prioridad sobre allow).
+- Una coincidencia en `always_allow` → **pasa** incluso cuando también coincide un `block`: la válvula de escape para cadenas de ubicación multicountry (v1.248.1).
+- Una coincidencia en `block_hard` → **rechazada**, y `always_allow` no puede anularla.
 - `allow` vacío → pasa (block ya filtró).
 - `allow` no vacío → debe coincidir con **al menos una** palabra clave.
 

@@ -220,12 +220,23 @@ export function buildTitleFilter(titleFilter) {
 
 /**
  * `strict: true` (opt-in, parent parity career-ops @ 98e62de4, #3276): when a
- * restricting tier (`allow` / `block`) is configured, a posting with no
- * location is REJECTED instead of passed. A location-restricted sweep over a
- * source that never returns a location otherwise silently inverts the filter
- * — the "only these places" allow list is never consulted. `strict: true`
- * alone restricts nothing and stays inert. (The parent also counts
- * `block_hard`; web-ui does not implement that tier.)
+ * restricting tier (`allow` / `block` / `block_hard`) is configured, a posting
+ * with no location is REJECTED instead of passed. A location-restricted sweep
+ * over a source that never returns a location otherwise silently inverts the
+ * filter — the "only these places" allow list is never consulted.
+ * `strict: true` alone restricts nothing and stays inert.
+ *
+ * v1.248.1 (CAR-60, parent parity — scan.mjs #652/#4549 lineage): the parent's
+ * `always_allow` and `block_hard` tiers. `always_allow` beats `block` — a
+ * multi-country cell like "London, United Kingdom · Romania · Poland ·
+ * Croatia" survives a `block: [romania, poland, croatia]` because the home
+ * region is an option (workable #4806's consumer case). `block_hard` is the
+ * one tier `always_allow` cannot override — country-level terms that must
+ * never be rescued by an always_allow hit elsewhere in the string. Matching
+ * stays case-insensitive substring (web-ui idiom); the parent's word-boundary
+ * location compiler and its USPS state table are documented no-ports for now
+ * (EU-focused installs; file under CAR-60 follow-up if a US config needs
+ * them).
  * @param {{allow?: string[], block?: string[], strict?: boolean}|null|undefined} locationFilter
  * @returns {(location: string) => boolean} predicate — true = keep the job
  */
@@ -235,13 +246,22 @@ export function buildLocationFilter(locationFilter) {
   // location and used to reject the whole scan; a null became the text "null".
   const allow = cleanStringList(locationFilter.allow).map((k) => k.toLowerCase());
   const block = cleanStringList(locationFilter.block).map((k) => k.toLowerCase());
-  const strict = locationFilter.strict === true && (allow.length > 0 || block.length > 0);
+  // v1.248.1 (CAR-60) — the parent's tier model (scan.mjs #652/#4549):
+  //   block_hard match → reject (the only tier always_allow cannot override)
+  //   always_allow match → pass (takes precedence over block)
+  //   block match → reject
+  //   allow empty → pass; non-empty → ≥ 1 match
+  const alwaysAllow = cleanStringList(locationFilter.always_allow).map((k) => k.toLowerCase());
+  const blockHard = cleanStringList(locationFilter.block_hard).map((k) => k.toLowerCase());
+  const strict = locationFilter.strict === true && (allow.length > 0 || block.length > 0 || blockHard.length > 0);
 
   return (location) => {
     // Nothing to judge on → pass (don't penalize missing data), unless strict.
     // Whitespace-only is "nothing" too.
     if (!location || !String(location).trim()) return !strict;
     const lower = String(location).toLowerCase();
+    if (blockHard.length > 0 && blockHard.some((k) => lower.includes(k))) return false;
+    if (alwaysAllow.length > 0 && alwaysAllow.some((k) => lower.includes(k))) return true;
     if (block.length > 0 && block.some((k) => lower.includes(k))) return false;
     if (allow.length === 0) return true;
     return allow.some((k) => lower.includes(k));

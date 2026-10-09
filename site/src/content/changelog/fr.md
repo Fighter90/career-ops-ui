@@ -10,6 +10,20 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 
 ---
 
+## [1.248.1] — 2026-10-09
+
+**`location_filter` gagne les niveaux `always_allow` et `block_hard` du parent (CAR-60) — une chaîne de localisation multi-pays survit à une liste de bloqués, et un blocage dur explicite ne peut plus être secouru.**
+
+### Corrigé
+
+- `always_allow` l’emporte sur `block` : avec `block: [romania, poland, croatia]` et `always_allow: [united kingdom]`, la cellule fusionnée workable « London, United Kingdom · Romania · Poland · Croatia » passe — la région d’origine est une option (le cas consommateur workable #4806, désormais sous forme parente).
+- `block_hard` l’emporte sur `always_allow` : les termes de niveau pays qui ne doivent jamais être secourus par une correspondance always_allow ailleurs dans la chaîne.
+- `strict: true` compte désormais `block_hard` comme niveau restrictif ; la section `location_filter` de docs/help documente les deux niveaux ×18.
+
+### Notes
+
+- Volontairement non porté cette fois : le compilateur de mots-clés de localisation à frontières de mots du parent et sa table des États USPS (web-ui garde la correspondance par sous-chaîne ; la table sert aux configs centrées US — classer sous CAR-60 si besoin). La forme allow-list du test consommateur workable reste un second verdict aux côtés de la nouvelle forme parente.
+
 ## [1.248.0] — 2026-10-09
 
 **Parité parent : cinq corrections amont de fournisseurs/liveness portées — les tableaux qui ont déplacé leur API continuent de fonctionner, et une bannière de clôture sur sa propre ligne n’est plus manquée.**
