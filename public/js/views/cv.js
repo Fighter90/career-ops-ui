@@ -56,6 +56,11 @@ Router.register('cv', async () => {
   const ta = c('textarea', {
     className: 'textarea', rows: 30, style: { minHeight: '60vh' },
     id: 'cv-editor',
+    // CAR-58 (v1.246.0) — markdown source is LTR content: in an RTL locale the
+    // bidi algorithm mirrored it ("# Sergey Emelyanov" → "Sergey Emelyanov #")
+    // and displaced the markers. The editor stays LTR in every locale; the
+    // chrome around it (headings, buttons) keeps the page direction.
+    dir: 'ltr',
     'aria-label': t('cv.editorAria', 'CV markdown editor — your professional resume in markdown format'),
   }, data.markdown || '');
   const pdfBox = c('div');
@@ -369,7 +374,9 @@ Router.register('cv', async () => {
       ]),
       c('div', null, [
         c('h3', { className: 'section-title' }, t('cv.preview')),
-        c('div', { className: 'card md', id: 'cv-preview', html: cvMd(data.markdown || '') }),
+        // CAR-58 (v1.246.0) — the rendered CV is LTR content (same contract as
+        // the editor pane); dir keeps punctuation from jumping lines in RTL.
+        c('div', { className: 'card md', id: 'cv-preview', dir: 'ltr', html: cvMd(data.markdown || '') }),
       ]),
     ]),
 

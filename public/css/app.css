@@ -18,22 +18,13 @@
    viewport. Lets keyboard users bypass the persistent sidebar +
    topbar to land directly on the content. */
 .skip-link {
-  position: absolute;
-  top: -100px;
-  left: 8px;
-  z-index: var(--z-skiplink);
-  padding: 12px 20px;
-  background: #222;
-  color: #fff;
-  font-weight: 600;
-  text-decoration: none;
-  border-radius: 0 0 8px 8px;
+  position: absolute; top: -100px; left: 8px; z-index: var(--z-skiplink);
+  padding: 12px 20px; background: #222; color: #fff; font-weight: 600;
+  text-decoration: none; border-radius: 0 0 8px 8px;
   transition: top 120ms ease-out;
   /* WCAG 2.5.5 target-size: 44×44 minimum for touch interactions. */
-  min-width: 44px;
-  min-height: 44px;
-  display: inline-flex;
-  align-items: center;
+  min-width: 44px; min-height: 44px;
+  display: inline-flex; align-items: center;
 }
 .skip-link:focus {
   top: 0;
@@ -234,8 +225,10 @@
 
 * { box-sizing: border-box; }
 
-/* CAR-23 v1.243.0 — WCAG 2.4.11: focus/anchor scrolling lands BELOW the sticky topbar. */
-html { scroll-padding-top: calc(var(--topbar-h) + 16px); }
+/* CAR-23 v1.243.0 — WCAG 2.4.11: focus/anchor scrolling lands BELOW the sticky topbar.
+   CAR-49 (v1.246.0) — …and clear of the bottom: anchored scroll targets keep a
+   FAB-sized gap so the chat launcher never sits on the scrolled-to control. */
+html { scroll-padding-top: calc(var(--topbar-h) + 16px); scroll-padding-bottom: 96px; }
 html, body {
   margin: 0;
   padding: 0;
@@ -745,7 +738,11 @@ label:has(> input[type="radio"]) {
 
 /* ───────────────────────── content shell ───────────────────────── */
 .content {
-  padding: var(--space-7) var(--space-6);
+  /* CAR-49 (v1.246.0) — the extra bottom padding keeps the last interactive
+     element of every page clear of the fixed chat FAB (56px + 24px offset) at
+     scroll-end: Portals Disable buttons, Reports score pills, the two-pager
+     input and the map attribution are no longer occluded at rest. */
+  padding: var(--space-7) var(--space-6) calc(var(--space-7) + 88px);
   max-width: 1280px;
   margin: 0 auto;
 }

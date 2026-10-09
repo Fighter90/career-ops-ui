@@ -45,11 +45,15 @@ const sources = SCAN_DIRS
   .map((f) => { try { return readFileSync(f, 'utf8'); } catch { return ''; } })
   .join('\n');
 
-// Prefixes used by dynamic key construction, e.g. t('diag.section.' + kind).
-// Extend when a new computed-key family is added.
+// Prefixes used by dynamic key construction, e.g. t('diag.section.' + kind)
+// or the template-literal form t(`diag.section.${kind}`) (cv-diagnostics.js,
+// activity.js v1.246.0). Extend when a new computed-key family is added.
 const DYN_PREFIXES = new Set();
 for (const m of sources.matchAll(/['"`]([a-zA-Z][\w-]*(?:\.[\w-]+)+)\.['"`]\s*\+/g)) DYN_PREFIXES.add(m[1] + '.');
 for (const m of sources.matchAll(/\+\s*['"`]((?:[\w-]+\.)+)['"`]/g)) DYN_PREFIXES.add(m[1]);
+// Template-literal prefixes: t(`diag.section.${k}`) — the prefix scan above
+// only sees `'x.' +` concatenation, so collect `` `x.${ `` too.
+for (const m of sources.matchAll(/['"`]([a-zA-Z][\w-]*(?:\.[\w-]+)+)\.\$\{/g)) DYN_PREFIXES.add(m[1] + '.');
 
 test('the dictionary has zero dead keys (every key is referenced or an alias)', () => {
   const dict = loadAssembledDict();

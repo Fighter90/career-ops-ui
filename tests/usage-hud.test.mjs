@@ -28,20 +28,23 @@ test('usage-hud is CSP-safe: no inline on* handlers, uses addEventListener', () 
   assert.match(SRC, /addEventListener\(/);
 });
 
-test('usage-hud is pinned to the sidebar bottom (fixed, full sidebar width) and pads the sidebar so nav is never covered', () => {
+test('usage-hud is pinned to the sidebar bottom (fixed, full sidebar width) and the sidebar box ends above it', () => {
   assert.match(SRC, /document\.body\.appendChild/);
   const css = loadAppCss();
   // Fixed to the bottom-left, sidebar-width, on top of the sidebar.
   assert.match(css, /\.usage-hud\s*\{[^}]*position:\s*fixed[^}]*left:\s*0[^}]*bottom:\s*0/);
   assert.match(css, /\.usage-hud\s*\{[^}]*width:\s*var\(--sidebar-w\)/);
-  // JS reserves matching space at the sidebar bottom (via a CSS custom property,
-  // never clobbering inline padding) so the menu clears above it; and without a
-  // sidebar in the DOM the HUD does not mount at all (v1.116 review findings).
+  // JS publishes the HUD height (+8 clearance) via a CSS custom property, never
+  // clobbering inline padding; the sidebar's fixed box ENDS above the HUD
+  // (bottom = pad − 8, CAR-49) so nav items never slide under it at any scroll
+  // position — and without a sidebar in the DOM the HUD does not mount at all
+  // (v1.116 review findings).
   assert.match(SRC, /function syncSidebarPad/);
   assert.match(SRC, /setProperty\(['"]--usage-hud-pad['"]/);
   assert.doesNotMatch(SRC, /style\.paddingBottom\s*=/);
   assert.match(SRC, /if \(!document\.querySelector\(['"]\.sidebar['"]\)\) return;/);
   assert.match(css, /--usage-hud-pad/);
+  assert.match(css, /\.sidebar\s*\{[^}]*bottom:\s*max\(0px,\s*calc\(var\(--usage-hud-pad,\s*0px\)\s*-\s*8px\)\)/);
 });
 
 test('usage-hud refreshes in real time (interval + tab-focus + hashchange)', () => {

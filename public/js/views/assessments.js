@@ -20,31 +20,42 @@ Router.register('assessments', async () => {
   root.appendChild(c('p', { className: 'page-subtitle' },
     t('asmt.subtitle', 'Log a skills assessment you took — the platform, the skill, and how you scored — and track them over time.')));
 
-  // Placeholder-as-label inputs (aria-label mirrors the localized placeholder,
-  // which is not a reliable accessible name once the field has content).
-  function input(phKey, phFallback, opts) {
-    const el = c('input', {
+  // CAR-53 (v1.246.0) — the form used to be placeholder-only (the app's third
+  // label system). It now follows the #30/#31 sentence-case pattern: a visible
+  // <label> wired htmlFor ↔ id per control, with the placeholder demoted to a
+  // hint. data-i18n hooks keep applyI18n() re-localizing on language switch.
+  // Returns { field, input } so the save handler keeps a direct handle.
+  function labeled(id, lblKey, lblFallback, phKey, phFallback, opts) {
+    const input = c('input', {
       type: (opts && opts.type) || 'text',
       className: 'input',
+      id,
       'data-i18n-placeholder': phKey,
-      'data-i18n-aria-label': phKey,
     });
-    el.placeholder = t(phKey, phFallback);
-    el.setAttribute('aria-label', el.placeholder);
-    if (opts && opts.type === 'number') { el.min = '0'; el.max = '100'; el.step = '1'; }
-    return el;
+    input.placeholder = t(phKey, phFallback);
+    if (opts && opts.type === 'number') { input.min = '0'; input.max = '100'; input.step = '1'; }
+    const field = c('div', { className: 'field' }, [
+      c('label', { htmlFor: id, 'data-i18n': lblKey }, t(lblKey, lblFallback)),
+      input,
+    ]);
+    return { field, input };
   }
 
-  const companyInput = input('asmt.companyPh', 'Company (required)');
-  const platformInput = input('asmt.platformPh', 'Platform, e.g. HackerRank, eSkill (required)');
-  const subjectInput = input('asmt.subjectPh', 'Skill / subject, e.g. JavaScript (required)');
-  const scoreInput = input('asmt.scorePh', 'Your score % — optional, 0–100', { type: 'number' });
-  const staleInput = input('asmt.stalePh', 'Note — optional (e.g. outdated test content)');
+  const companyField = labeled('asmt-company', 'asmt.companyLbl', 'Company', 'asmt.companyPh', 'e.g. Acme Corp — required');
+  const platformField = labeled('asmt-platform', 'asmt.platformLbl', 'Platform', 'asmt.platformPh', 'e.g. HackerRank, eSkill — required');
+  const subjectField = labeled('asmt-subject', 'asmt.subjectLbl', 'Skill / subject', 'asmt.subjectPh', 'e.g. JavaScript — required');
+  const scoreField = labeled('asmt-score', 'asmt.scoreLbl', 'Score % (optional)', 'asmt.scorePh', '0–100', { type: 'number' });
+  const staleField = labeled('asmt-stale', 'asmt.staleLbl', 'Note (optional)', 'asmt.stalePh', 'e.g. outdated test content');
+  const companyInput = companyField.input;
+  const platformInput = platformField.input;
+  const subjectInput = subjectField.input;
+  const scoreInput = scoreField.input;
+  const staleInput = staleField.input;
 
   const saveBtn = c('button', { className: 'btn btn-primary', type: 'button' }, t('asmt.save', 'Log assessment'));
 
   const form = c('div', { className: 'card', style: { padding: '16px', margin: '12px 0 18px', display: 'grid', gap: '10px' } }, [
-    companyInput, platformInput, subjectInput, scoreInput, staleInput,
+    companyField.field, platformField.field, subjectField.field, scoreField.field, staleField.field,
     c('div', {}, saveBtn),
   ]);
   root.appendChild(form);

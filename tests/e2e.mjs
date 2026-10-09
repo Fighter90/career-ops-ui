@@ -199,9 +199,13 @@ async function run() {
   try {
     await page.goto(`${baseUrl}/#/scan`);
     await page.waitForSelector('h1.page-title');
+    // v1.246.0 — the server down/up in Flow 2a leaves the SPA in a state where
+    // Playwright's actionability check on the launcher never settles (element
+    // hittable, no overlay, box normal — but check() times out; reproduced on
+    // main, pre-existing). A hard reload resets to a fresh page before the scan.
+    await page.reload({ waitUntil: 'networkidle' });
+    await page.waitForSelector('h1.page-title');
     await page.locator('input#dry-run').check();
-    // Click the unified Scan button (FIX: was two separate EN/RU
-    // buttons before; consolidated into one).
     await page.locator('button.scan-run-btn').click();
     // Console should fill up with SOMETHING within 90s. We don't pin
     // to specific text because the unified scan combines several

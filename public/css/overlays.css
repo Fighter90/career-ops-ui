@@ -17,19 +17,12 @@
   background: var(--hof);
   /* CAR-23 — `white` on dark's near-white --hof was 1.10:1; --paper flips with the theme. */
   color: var(--paper);
-  padding: 14px 20px;
-  border-radius: var(--radius);
-  box-shadow: var(--shadow-lg);
-  font-weight: 500;
-  font-size: 14px;
-  z-index: var(--z-toast);
-  max-width: 360px;
+  padding: 14px 20px; border-radius: var(--radius); box-shadow: var(--shadow-lg);
+  font-weight: 500; font-size: 14px; z-index: var(--z-toast); max-width: 360px;
   /* v1.57.1 — detailed what/where/why error messages must wrap and stay
      readable instead of being clipped to one line. */
-  white-space: normal;
-  overflow-wrap: anywhere;
-  max-height: 50vh;
-  overflow-y: auto;
+  white-space: normal; overflow-wrap: anywhere;
+  max-height: 50vh; overflow-y: auto;
   animation: slide-in 200ms ease-out;
 }
 /* CAR-23 — variant fills AA with the inherited --paper text in BOTH themes. */
@@ -87,18 +80,14 @@
   border: 1px solid var(--slate, #ddd);
 }
 .hero-banner--warning {
-  background: #fff8e1;
-  border-color: #f0c674;
-  color: #5a4500;
+  background: #fff8e1; border-color: #f0c674; color: #5a4500;
 }
 .hero-banner__msg { margin: 0; font-size: 14px; flex: 1; }
 
 .help-toc a.toc-current {
   color: var(--rausch-text); /* CAR-23: AA text variant */
-  font-weight: 600;
-  border-left: 3px solid var(--rausch, #ff385c);
-  padding-left: 8px;
-  margin-left: -11px; /* keeps the link-row geometry aligned */
+  font-weight: 600; border-left: 3px solid var(--rausch, #ff385c);
+  padding-left: 8px; margin-left: -11px; /* keeps the link-row geometry aligned */
 }
 
 /* U-15 (v1.58.33) — CV Save button dirty-state. When the editor has
@@ -110,14 +99,9 @@
 
 /* v1.58.34 — Notifications bell + right-slide drawer (closes U-13). */
 .notif-bell {
-  position: relative;
-  background: transparent;
-  border: 1px solid var(--slate, #ddd);
-  border-radius: 8px;
-  width: 36px; height: 36px;
-  font-size: var(--font-size-lg);
-  cursor: pointer;
-  transition: background var(--transition);
+  position: relative; background: transparent; border: 1px solid var(--slate, #ddd);
+  border-radius: 8px; width: 36px; height: 36px; font-size: var(--font-size-lg);
+  cursor: pointer; transition: background var(--transition);
 }
 .notif-bell:hover { background: var(--beach, #f7f7f7); }
 .notif-bell:focus-visible { outline: 2px solid var(--rausch, #ff385c); outline-offset: 2px; }
@@ -140,15 +124,10 @@
    restore the expected hiding behaviour. */
 .notif-badge[hidden] { display: none; }
 .notif-drawer {
-  position: fixed;
-  top: 0; right: 0; bottom: 0;
-  width: min(380px, 92vw);
-  background: var(--paper, #fff);
-  border-left: 1px solid var(--slate, #ddd);
-  box-shadow: -8px 0 24px rgba(0,0,0,.1);
-  z-index: var(--z-drawer);
-  display: flex; flex-direction: column;
-  animation: notif-slide-in 200ms ease-out;
+  position: fixed; top: 0; right: 0; bottom: 0; width: min(380px, 92vw);
+  background: var(--paper, #fff); border-left: 1px solid var(--slate, #ddd);
+  box-shadow: -8px 0 24px rgba(0,0,0,.1); z-index: var(--z-drawer);
+  display: flex; flex-direction: column; animation: notif-slide-in 200ms ease-out;
 }
 /* v1.58.35 — explicit `[hidden]` override. The `.notif-drawer`
    `display: flex` above shadowed the UA `[hidden] { display: none }`
@@ -158,12 +137,11 @@
 .notif-drawer[hidden] { display: none; }
 @keyframes notif-slide-in {
   from { transform: translateX(100%); }
-  to   { transform: translateX(0); }
+  to { transform: translateX(0); }
 }
 .notif-drawer__head {
   display: flex; justify-content: space-between; align-items: center;
-  padding: 16px;
-  border-bottom: 1px solid var(--slate, #eee);
+  padding: 16px; border-bottom: 1px solid var(--slate, #eee);
 }
 .notif-drawer__head h2 { margin: 0; font-size: 16px; }
 .notif-drawer__close {
@@ -196,11 +174,8 @@
 .notif-item { position: relative; }
 .notif-item__dismiss {
   position: absolute; top: 6px; right: 8px;
-  background: transparent; border: none;
-  font-size: 14px; line-height: 1;
-  width: 20px; height: 20px; padding: 0;
-  cursor: pointer; color: var(--foggy, #999);
-  opacity: 0.6;
+  background: transparent; border: none; font-size: 14px; line-height: 1;
+  width: 20px; height: 20px; padding: 0; cursor: pointer; color: var(--foggy, #999); opacity: 0.6;
 }
 .notif-item__dismiss:hover { opacity: 1; color: var(--hof, #000); }
 .notif-item__dismiss:focus-visible { outline: 2px solid var(--rausch, #ff385c); outline-offset: 1px; border-radius: 4px; opacity: 1; }
@@ -217,13 +192,8 @@
    back to it naturally. */
 .api-keys__summary {
   display: flex; flex-wrap: wrap; gap: 12px; align-items: center;
-  background: var(--surface-elev1, #f3f4f6);
-  border: 1px solid var(--border, #e5e7eb);
-  border-radius: 8px;
-  padding: 8px 14px;
-  margin: 0 0 14px;
-  font-size: 0.92em;
-  line-height: 1.4;
+  background: var(--surface-elev1, #f3f4f6); border: 1px solid var(--border, #e5e7eb);
+  border-radius: 8px; padding: 8px 14px; margin: 0 0 14px; font-size: 0.92em; line-height: 1.4;
 }
 .api-keys__summary[hidden] { display: none; }
 .api-keys__active { font-weight: 600; }
@@ -232,11 +202,8 @@
 .notif-drawer__empty { margin: 24px; color: var(--foggy, #999); font-size: var(--font-size-md); text-align: center; }
 .notif-item {
   display: flex; flex-direction: column; gap: 4px;
-  padding: 10px 12px;
-  border-radius: 6px;
-  border-left: 3px solid var(--slate, #ddd);
-  margin-bottom: 8px;
-  background: var(--beach, #fafafa);
+  padding: 10px 12px; border-radius: 6px; border-left: 3px solid var(--slate, #ddd);
+  margin-bottom: 8px; background: var(--beach, #fafafa);
 }
 .notif-item--error   { border-left-color: var(--rausch, #ff385c); }
 .notif-item--success { border-left-color: var(--kazan, #00a699); }
@@ -692,10 +659,23 @@
 /* Pinned to the BOTTOM of the sidebar column (bottom-right in RTL) — full
    sidebar width, matching the sidebar surface, sitting just on top of it
    (z above the sidebar's 10). It never covers the menu: usage-hud.js publishes
-   its height as the `--usage-hud-pad` custom property and the rule below adds
-   it to the sidebar's own padding (no inline-style clobbering — v1.116 review
-   finding), so the nav + version footer always scroll clear above it. */
-.sidebar { padding-bottom: calc(var(--space-5) + var(--usage-hud-pad, 0px)); }
+   its height + 8 as the `--usage-hud-pad` custom property and the sidebar's
+   fixed box ENDS above the HUD (bottom = pad − 8, no inline-style clobbering —
+   v1.116 review finding), so nav items never slide under it at ANY scroll
+   position (CAR-49) — padding alone only cleared the last item at scroll-end. */
+.sidebar { padding-bottom: var(--space-5); bottom: max(0px, calc(var(--usage-hud-pad, 0px) - 8px)); }
+/* CAR-49 — a soft fade at the scrollport's bottom edge (just above the HUD):
+   mid-scroll nav items dissolve into the surface instead of stopping at a hard
+   line. Paints inside the sidebar's stacking context (below the HUD's z), and
+   pointer-events: none keeps it from blocking the last visible link. */
+.sidebar::after {
+  content: ''; position: fixed; left: 0;
+  bottom: max(0px, calc(var(--usage-hud-pad, 0px) - 8px));
+  width: var(--sidebar-w); height: 22px;
+  background: linear-gradient(to bottom, transparent, var(--paper));
+  pointer-events: none;
+}
+[dir="rtl"] .sidebar::after { left: auto; right: 0; }
 .usage-hud {
   position: fixed; left: 0; bottom: 0; z-index: var(--z-hud);
   width: var(--sidebar-w); max-width: 100%;
@@ -797,3 +777,23 @@ a:focus-visible, .chip:focus-visible { box-shadow: 0 0 0 4px rgba(255, 56, 92, .
 .job-map-swatch.dot { background: #008a05; border: 1.5px solid #fff; box-shadow: 0 0 0 1px #008a05; }
 .job-map-swatch.ring { background: #fff; border: 2.5px solid #2b6cb0; }
 .job-map-swatch.count { background: #e0a100; color: #fff; width: 14px; height: 14px; }
+
+/* CAR-57 (v1.246.0) — Leaflet's stock controls stayed white in dark mode while
+   the app's own legend adapted: a jarring light block on a dark widget. Tiles
+   stay on the server-configured layer (the CSP img-src origin is derived from
+   MAP_TILE_URL server-side, so the client cannot swap layers); the chrome —
+   zoom, layers, attribution — follows the theme instead. */
+[data-theme="dark"] .job-map .leaflet-control-zoom a {
+  background: var(--elev); color: var(--hof); border-bottom-color: var(--slate);
+}
+[data-theme="dark"] .job-map .leaflet-control-zoom a:hover { background: var(--paper); }
+[data-theme="dark"] .job-map .leaflet-control-layers,
+[data-theme="dark"] .job-map .leaflet-control-attribution { background: var(--paper); color: var(--foggy); }
+[data-theme="dark"] .job-map .leaflet-control-attribution a { color: var(--foggy); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .job-map .leaflet-control-zoom a { background: var(--elev); color: var(--hof); border-bottom-color: var(--slate); }
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .job-map .leaflet-control-zoom a:hover { background: var(--paper); }
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .job-map .leaflet-control-layers,
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .job-map .leaflet-control-attribution { background: var(--paper); color: var(--foggy); }
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .job-map .leaflet-control-attribution a { color: var(--foggy); }
+}

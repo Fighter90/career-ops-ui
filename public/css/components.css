@@ -15,6 +15,20 @@
 }
 .card:hover { box-shadow: var(--shadow-md); }
 
+/* CAR-52/58 (v1.246.0) — theme-aware callout banners. Views used to inline
+   light-theme colors (#eef5ff surface), which in dark mode kept a light block
+   whose inherited link color (#f3f4f6) dropped to ≈1.0:1 — invisible. A callout
+   names its surface/border/text/link as --callout-* custom properties; the
+   dark-theme blocks below swap them, and `.callout a` picks the per-theme link
+   color instead of the global `a` color. Light values stay the original ones. */
+.callout { background: var(--callout-bg, var(--elev)); border-color: var(--callout-border, var(--slate)); color: var(--callout-text, var(--hof)); }
+.callout a { color: var(--callout-link, var(--rausch-text)); text-decoration: underline; }
+.callout--info { --callout-bg: #eef5ff; --callout-border: #9bb6e0; --callout-text: #1f3b6e; --callout-link: #1d4e89; }
+[data-theme="dark"] .callout--info { --callout-bg: #1d2434; --callout-border: #3d5a86; --callout-text: #c9d9f2; --callout-link: #8ab4f8; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .callout--info { --callout-bg: #1d2434; --callout-border: #3d5a86; --callout-text: #c9d9f2; --callout-link: #8ab4f8; }
+}
+
 .card-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-4); }
 /* PROFILE-1 — `anywhere`, not `break-word`: only `anywhere` counts toward
    min-content, which is what bursts the track. tests/playwright-card-overflow.mjs. */
@@ -52,11 +66,8 @@
    canonical funnel — ALL + every stage the server sent, zero-count stages
    included — each with a live whole-history count. */
 .tracker-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 2px;
-  border-bottom: 1px solid var(--slate);
-  margin-bottom: 12px;
+  display: flex; flex-wrap: wrap; gap: 2px;
+  border-bottom: 1px solid var(--slate); margin-bottom: 12px;
 }
 .tracker-tab {
   appearance: none; border: none; background: none; color: var(--foggy);
@@ -69,13 +80,10 @@
 .tracker-tab:hover { color: var(--hof); }
 /* CAR-23 v1.243.0 — TEXT from AA-tuned --rausch-text (raw --rausch on --paper: 3.52/2.94); underline stays decorative. */
 .tracker-tab.is-active {
-  color: var(--rausch-text);
-  border-bottom-color: var(--rausch);
+  color: var(--rausch-text); border-bottom-color: var(--rausch);
 }
 .tracker-tab-n {
-  color: var(--foggy);
-  font-weight: 500;
-  font-variant-numeric: tabular-nums;
+  color: var(--foggy); font-weight: 500; font-variant-numeric: tabular-nums;
 }
 .tracker-tab.is-active .tracker-tab-n { color: var(--rausch-text); }
 
@@ -85,9 +93,7 @@
 
 /* v1.56.0 — UX-10: quiet, honest cost ballpark next to ⚡ Run live. */
 .cost-hint {
-  font-size: var(--font-size-sm);
-  color: var(--foggy);
-  margin: 8px 0 0;
+  font-size: var(--font-size-sm); color: var(--foggy); margin: 8px 0 0;
 }
 .cost-hint[hidden] { display: none; }
 
@@ -135,20 +141,14 @@
 
 .section { margin-top: var(--space-6); }
 .section-title {
-  font-size: 20px;
-  font-weight: 700;
-  margin: 0 0 var(--space-4);
+  font-size: 20px; font-weight: 700; margin: 0 0 var(--space-4);
 }
 
 /* ── Quick-action grid on Dashboard (Command Center) ── */
 .qa-group { margin-bottom: var(--space-5); }
 .qa-group-title {
-  font-size: var(--font-size-md);
-  font-weight: 600;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  color: var(--foggy);
-  margin: 0 0 var(--space-3);
+  font-size: var(--font-size-md); font-weight: 600; text-transform: uppercase;
+  letter-spacing: 0.06em; color: var(--foggy); margin: 0 0 var(--space-3);
 }
 .qa-grid {
   display: grid;
@@ -178,13 +178,10 @@
   transition: transform 0.08s ease, box-shadow 0.08s ease, border-color 0.08s ease;
 }
 .qa-tile:hover {
-  transform: translateY(-2px);
-  box-shadow: var(--shadow-2);
-  border-color: var(--rausch);
+  transform: translateY(-2px); box-shadow: var(--shadow-2); border-color: var(--rausch);
 }
 .qa-tile:focus-visible {
-  outline: 2px solid var(--rausch);
-  outline-offset: 2px;
+  outline: 2px solid var(--rausch); outline-offset: 2px;
 }
 /* UX-A15 (v1.58.63) — primary tile (Pipeline): accent border + bolder label. */
 .qa-tile--primary {
@@ -205,19 +202,13 @@
 
 /* ── Paginator (UI.paginate) ── */
 .paginator {
-  display: flex;
-  align-items: center;
-  gap: var(--space-2);
-  flex-wrap: wrap;
-  padding: var(--space-3) 0;
-  margin-top: var(--space-3);
+  display: flex; align-items: center; gap: var(--space-2); flex-wrap: wrap;
+  padding: var(--space-3) 0; margin-top: var(--space-3);
 }
 .paginator .pg-btn { min-width: 36px; padding: 4px 10px; }
 .paginator .pg-btn:disabled { opacity: 0.4; cursor: not-allowed; }
 .paginator .pg-summary {
-  font-size: var(--font-size-md);
-  color: var(--foggy);
-  padding: 0 var(--space-2);
+  font-size: var(--font-size-md); color: var(--foggy); padding: 0 var(--space-2);
 }
 
 /* ───────────────────────── badges ───────────────────────── */
@@ -232,22 +223,17 @@
 .hired-banner-emoji { font-size: var(--font-size-xl); line-height: 1; }
 
 .score-pill {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  min-width: 48px;
+  display: inline-flex; align-items: center; justify-content: center; min-width: 48px;
   /* v1.174.0 — a score chip stays compact: never wraps, never grows past the
      card (the parser compacts; this is the hard cap against stray long values). */
-  flex-shrink: 0;
-  max-width: 100%;
-  white-space: nowrap;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  padding: 4px 10px;
-  border-radius: var(--radius-pill);
-  font-weight: 700;
-  font-size: var(--font-size-md);
-  background: var(--beach);
+  flex-shrink: 0; max-width: 100%;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  padding: 4px 10px; border-radius: var(--radius-pill);
+  font-weight: 700; font-size: var(--font-size-md); background: var(--beach);
+  /* CAR-58 (v1.246.0) — a score is a numeric composition ("1.5 / 5"); in an RTL
+     page the neutral "/" made bidi flip it to "5 / 1.5". LTR + isolate renders
+     the numbers in logical order in every locale (same as dir="ltr" markup). */
+  direction: ltr; unicode-bidi: isolate;
 }
 .score-high { background: rgba(0,138,5,.16); color: var(--kazan-text); }
 .score-mid { background: rgba(255,180,0,.18); color: var(--darjeeling-text); }
@@ -277,33 +263,21 @@
    `overflow: hidden`, the scan-table "не вмещается" bug); non-visible
    overflow still clips to the rounded border. */
 .table-wrap {
-  border: 1px solid var(--slate);
-  border-radius: var(--radius-lg);
-  overflow-x: auto;
+  border: 1px solid var(--slate); border-radius: var(--radius-lg); overflow-x: auto;
   /* Release the flex/grid-item content floor so a wide table scrolls INSIDE
      the wrap instead of forcing the wrap (and the page) wider than the
      viewport on a phone. */
-  min-width: 0;
-  max-width: 100%;
+  min-width: 0; max-width: 100%;
 }
 table.tbl {
-  width: 100%;
-  border-collapse: collapse;
-  background: var(--paper);
+  width: 100%; border-collapse: collapse; background: var(--paper);
 }
 table.tbl th, table.tbl td {
-  padding: 14px 16px;
-  text-align: left;
-  border-bottom: 1px solid var(--slate);
-  font-size: 14px;
+  padding: 14px 16px; text-align: left; border-bottom: 1px solid var(--slate); font-size: 14px;
 }
 table.tbl th {
-  background: var(--beach);
-  font-weight: 600;
-  color: var(--foggy);
-  font-size: var(--font-size-sm);
-  text-transform: uppercase;
-  letter-spacing: 0.5px;
+  background: var(--beach); font-weight: 600; color: var(--foggy);
+  font-size: var(--font-size-sm); text-transform: uppercase; letter-spacing: 0.5px;
 }
 table.tbl tr:last-child td { border-bottom: none; }
 table.tbl tr:hover td { background: var(--beach); }
@@ -313,12 +287,13 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
 /* v1.180.0 — #/reports list is a table in its own scroll wrapper: rounded
    border kept, 4 columns scroll instead of breaking titles per character. */
 .reports-scroll {
-  border: 1px solid var(--slate);
-  border-radius: var(--radius-lg);
-  overflow-x: auto;
+  border: 1px solid var(--slate); border-radius: var(--radius-lg); overflow-x: auto;
 }
 .reports-tbl { min-width: 520px; }
 .reports-tbl td.report-title-cell { font-weight: 600; overflow-wrap: anywhere; }
+/* CAR-53 (v1.246.0) — an ISO date is one token: never let the DATE column break
+   it across lines ("2026-07-" / "01"); the cell keeps the full string on one line. */
+.reports-tbl td.report-date-cell { white-space: nowrap; font-variant-numeric: tabular-nums; }
 .reports-tbl tr.report-row { cursor: pointer; }
 
 /* ───────────────────────── forms ───────────────────────── */
@@ -699,6 +674,11 @@ a.scan-posting-title:hover, a.scan-posting-title:focus-visible { text-decoration
 .scan-launcher .btn, .scan-filters__saved .btn, .scan-filters__actions .btn {
   min-height: 40px; height: 40px; padding: 0 18px;
 }
+/* CAR-50 (v1.246.0) — controls may shrink below their intrinsic min-width so a
+   narrow viewport WRAPS the row instead of clipping "Save search" at the edge;
+   the buttons keep their natural size and flow onto the next flex line. */
+.scan-filters__saved .select, .scan-filters__saved .input { min-width: 0; }
+.scan-filters__saved .btn { flex: 0 0 auto; }
 /* 1 · Launcher card — one aligned control row; [Scan] dominant primary. */
 .scan-launcher { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--space-3) var(--space-4); }
 .scan-launcher .scan-cell { display: flex; flex-direction: column; gap: 6px; min-width: 0; }
@@ -795,3 +775,6 @@ a.scan-posting-title:hover, a.scan-posting-title:focus-visible { text-decoration
 }
 .scan-filters__actions { display: flex; justify-content: flex-end; align-items: center; gap: var(--space-2); }
 .scan-filters__hint { margin: 0; max-width: 72ch; }
+/* CAR-49 (v1.246.0) — the machine slug tail shown after a localized activity
+   ACTION label (dynamic families keep the identifier traceable). */
+.activity-raw-slug { margin-left: 6px; font-size: 11px; color: var(--foggy); }

@@ -18,4 +18,8 @@ window.__I18N_ALIASES = {
   'dash.quick.reportsCta': "rep.title",
   'dash.quick.healthCta': "health.title",
   'dash.quick.helpCta': "help.title",
+  'activity.filter.pipeline': "nav.pipeline",
+  'activity.filter.scan': "nav.scan",
+  'activity.filter.evaluate': "nav.evaluate",
+  'activity.filter.cv': "cv.title",
 };

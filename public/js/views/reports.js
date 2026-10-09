@@ -80,7 +80,9 @@ Router.register('reports', async (params) => {
       },
     }, [
       c('td', { className: 'report-title-cell' }, rep.title || rep.slug),
-      c('td', null, rep.date || '—'),
+      // CAR-53 (v1.246.0) — ISO dates ("2026-07-01") must never wrap mid-string;
+      // .report-date-cell pins them to one line (components.css).
+      c('td', { className: 'report-date-cell' }, rep.date || '—'),
       c('td', null, rep.legitimacy || '—'),
       c('td', null, scoreCell),
     ]);
@@ -142,6 +144,10 @@ Router.register('reports', async (params) => {
   // table inline so users see what to do with each report without
   // jumping to help. Collapsible <details>: open by default first time
   // (no localStorage gate; cheap & obvious).
+  // CAR-58 (v1.246.0) — tdNum isolates the numeric band ("≥ 4.5") so RTL bidi
+  // cannot mirror it; tdTxt is the shared prose-cell style.
+  const tdNum = { padding: '4px 8px', fontWeight: 600, direction: 'ltr', unicodeBidi: 'isolate' };
+  const tdTxt = { padding: '4px 8px' };
   const thresholdsCard = c('details', {
     className: 'card',
     style: { marginBottom: '16px' },
@@ -156,21 +162,24 @@ Router.register('reports', async (params) => {
           c('th', { style: { textAlign: 'left', padding: '4px 8px' } }, t('rep.thrAction', 'Next step')),
         ])),
         c('tbody', null, [
+          // CAR-58 (v1.246.0) — the band cells are numeric compositions ("≥ 4.5");
+          // in an RTL locale bidi flips them ("4.5 ≤"). Each gets an isolated LTR
+          // direction (inline: the row already carries inline cell styling).
           c('tr', null, [
-            c('td', { style: { padding: '4px 8px', fontWeight: 600 } }, '≥ 4.5'),
-            c('td', { style: { padding: '4px 8px' } }, t('rep.thr45', 'Run /career-ops apply — high fit, push immediately')),
+            c('td', { style: tdNum }, '≥ 4.5'),
+            c('td', { style: tdTxt }, t('rep.thr45', 'Run /career-ops apply — high fit, push immediately')),
           ]),
           c('tr', null, [
-            c('td', { style: { padding: '4px 8px', fontWeight: 600 } }, '4.0 – 4.4'),
-            c('td', { style: { padding: '4px 8px' } }, t('rep.thr40', 'Apply, or /career-ops contacto for warm intro first')),
+            c('td', { style: tdNum }, '4.0 – 4.4'),
+            c('td', { style: tdTxt }, t('rep.thr40', 'Apply, or /career-ops contacto for warm intro first')),
           ]),
           c('tr', null, [
-            c('td', { style: { padding: '4px 8px', fontWeight: 600 } }, '3.5 – 3.9'),
-            c('td', { style: { padding: '4px 8px' } }, t('rep.thr35', 'Run /career-ops deep — research the company / role first')),
+            c('td', { style: tdNum }, '3.5 – 3.9'),
+            c('td', { style: tdTxt }, t('rep.thr35', 'Run /career-ops deep — research the company / role first')),
           ]),
           c('tr', null, [
-            c('td', { style: { padding: '4px 8px', fontWeight: 600 } }, '< 3.5'),
-            c('td', { style: { padding: '4px 8px' } }, t('rep.thrLow', 'Skip unless you have a specific personal reason')),
+            c('td', { style: tdNum }, '< 3.5'),
+            c('td', { style: tdTxt }, t('rep.thrLow', 'Skip unless you have a specific personal reason')),
           ]),
         ]),
       ]),
