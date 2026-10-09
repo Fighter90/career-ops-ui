@@ -169,7 +169,17 @@ test('tracker: "All statuses" is sentence case wherever the locale has case', ()
 
 // ── 6 · topbar icon set ─────────────────────────────────────────────────────
 test('topbar: bell/theme/doctor are stroke SVGs; the emoji are gone from index.html', () => {
-  const htmlNoComments = INDEX.replace(/<!--[\s\S]*?-->/g, '');
+  // Strip comments to a fixpoint: a malformed/nested `<!--` would survive a
+  // single pass, and the emoji assertions below are only sound on a
+  // comment-free string (CodeQL js/incomplete-multi-character-sanitization).
+  let htmlNoComments = INDEX;
+  while (htmlNoComments.includes('<!--')) {
+    htmlNoComments = htmlNoComments.replace(/<!--[\s\S]*?-->/g, '');
+    if (htmlNoComments.includes('<!--') && !/<!--[\s\S]*?-->/.test(htmlNoComments)) {
+      // unterminated comment opener — nothing left to strip; fail loudly below
+      break;
+    }
+  }
   assert.match(INDEX, /class="notif-bell"[^]*<svg class="ico"/);
   assert.match(INDEX, /theme-ico--moon/);
   assert.match(INDEX, /theme-ico--sun/);
