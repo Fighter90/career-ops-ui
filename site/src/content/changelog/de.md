@@ -2,6 +2,28 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.248.2] — 2026-10-10
+
+**Reggressionsrunde: Der Eval-Timer verwandelt Pipeline-Müll nicht mehr in „Last evaluation“, das SCORE-Parsing überlebt reale Formate, und der Tracker spricht endlich Ihre Sprache.**
+
+### Behoben
+
+- **Leere-JD-Berichte werden nie mehr geschrieben.** Die JD-Gate des Auto-Pipelines stieg vor dem LLM-Aufruf von 50 auf 200 Zeichen — Platzhalterseiten (`example.com/qa-v167-…`) enden als SSE-Fehler + Konsolenwarnung statt als `…-t-role-<ts>.md`-Bericht, den das Dashboard als „Last evaluation“ zeigte (42 solche Dateien in der Produktion).
+- **Das SCORE_SUMMARY-Parsing überlebt reale Formate**: „4,2/5“, „4.2 / 5“, „**4.2**“, „SCORE :“ validieren; ein Komma mit 1–2 Ziffern ist dezimal, mit 3 ist es Tausender (der alte Code las „4,200“ als 4.2 und passierte die 0–5-Gate). Ein Fehlschlag loggt nur die `SCORE:`-Zeile — nie den Berichtsinhalt (CI-Logs sind öffentlich).
+- **Tracker-Status werden übersetzt**: Stage-Tabs und Badges zeigen lokalisierte Labels in allen 18 Sprachen; der kanonische Wert in Daten, Filtern und URLs bleibt unberührt.
+- **Ehrliche ETA**: „⏱ ~30s“ wurde zu „~2–4 Min“ in evaluate/advisor/Marktbericht (die echte Spanne: 86–285 s), und der Evaluate-Untertitel liest **A–G**.
+- **Barrierefreiheit**: Der API-Keys-Zähler in config und der Pipeline-Zähler klarieren jetzt 4.5:1 (vorher 4.31:1); ein Facetten-Chip mit leerem Wert wird nicht mehr ohne zugänglichen Namen gerendert.
+- **UI-Politur**: Der Delete-Knopf gespeicherter Suchen wirkt nur bei gewählter Suche destruktiv (sonst disabled); die PROFIL-E-Mail-Karte schneidet bei 1440 px nicht mehr ab; die Live-Evals-Pille bekam Icon/Text-Abstand inklusive RTL; der Docs-FAB überdeckt die Leaflet-Attribution nicht mehr; das Help-„?“ bricht nicht mehr unter den Stats-Tabs um; usage bekam Luft zwischen Untertitel und Range-Tabs; health sagt jetzt **career-ops-ui**.
+
+### Hinzugefügt
+
+- **`scripts/post-qa-cleanup.mjs`**: standardmäßig Dry-Run, `--apply` mit automatischen Backups (`*.bak-<ts>`, Berichte wandern nach `qa/cleanup-backup-<ts>/`): ZZ-QA-TEST-Zeilen im Tracker, `*-t-role-*`-Berichte ohne gültigen SCORE, `example.com`-Pipeline-Einträge.
+
+### Hinweise
+
+- Der ar/ja-Drift der Regressionsrunde **wiederholte sich nicht** beim erneuten Lauf (beide: lang ✓ + A–G ✓) — der ta-Eintrag im Language-Check und das gehärtete SCORE-Parsing gehen als Defense-in-Depth an Bord.
+- Die **Produktionsbereinigung wartet auf ein explizites Ja des Nutzers**: zuerst der Dry-Run-Plan, dann `--apply`.
+
 ## [1.248.1] — 2026-10-09
 
 **`location_filter` erhält die Parent-Tiers `always_allow` und `block_hard` (CAR-60) — ein Mehrfach-Länder-String überlebt eine Geschwister-Sperrliste, und eine explizite harte Sperre kann nicht mehr gerettet werden.**

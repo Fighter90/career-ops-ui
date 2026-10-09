@@ -96,10 +96,10 @@ test('UX-A11 (v1.58.64): es/pt-BR copy polish — English loanwords replaced wit
   // The ES eval.subtitle previously used "fit CV", "Score", "header",
   // "reporte"; the polish replaces them with "ajuste del CV",
   // "Puntaje", "cabecera", "informe" — fewer English calques.
-  assert.match(dict, /es:\s*'Análisis canónico A–F:[^']*ajuste del CV[^']*Puntaje y legitimidad en la cabecera del informe/,
+  assert.match(dict, /es:\s*'Análisis canónico A–G:[^']*ajuste del CV[^']*Puntaje y legitimidad en la cabecera del informe/,
     'es eval.subtitle must use ajuste del CV + Puntaje + cabecera + informe');
   // pt-BR analogous polish.
-  assert.match(dict, /'pt-BR':\s*'Análise canônica A–F:[^']*aderência do CV[^']*Pontuação e legitimidade no cabeçalho do relatório/,
+  assert.match(dict, /'pt-BR':\s*'Análise canônica A–G:[^']*aderência do CV[^']*Pontuação e legitimidade no cabeçalho do relatório/,
     'pt-BR eval.subtitle must use aderência do CV + Pontuação + cabeçalho + relatório');
   // pipe.title polish: ES "Pipeline de candidaturas".
   assert.match(dict, /'pipe\.title':\s*\{[^}]*es:\s*'Pipeline de candidaturas'/,
@@ -606,8 +606,11 @@ test('UX-D-J (v1.58.42): every advisor view renders a localized ETA chip next to
     const v = read('public', 'js', 'views', f);
     assert.match(v, /className:\s*'advisor-eta'/,
       `${f} must render a <span class="advisor-eta"> chip`);
-    assert.match(v, /t\('advisor\.eta'/,
-      `${f} must localize the ETA via t('advisor.eta', …)`);
+    // v1.248.2 — evaluate.js renders eval.eta (the honest ~2–4 min key);
+    // deep.js / mode-page.js keep advisor.eta. Both localize the chip.
+    const etaKey = f === 'evaluate.js' ? 'eval\.eta' : 'advisor\.eta';
+    assert.match(v, new RegExp(`t\\('${etaKey}`),
+      `${f} must localize the ETA chip (${etaKey})`);
   }
   const dict = legacyDictText();
   const row = dict.match(/'advisor\.eta':\s*\{([^}]+)\}/);

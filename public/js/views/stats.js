@@ -156,21 +156,30 @@ Router.register('stats', async () => {
     // relayed read-only by /api/stats/rejection-latency. Suggestion-only.
     { id: 'rejection', label: t('stats.tabRejection', 'Silent after interview'), hint: 'stats.hint.rejection', render: renderRejection },
   ];
+  // v1.248.2 (QA) — the "?" help affordance rides ON the tab strip (end-aligned,
+  // after the tablist) instead of dropping to its own line under the tabs. The
+  // wrapping flex STRIP owns the border; the tablist inside keeps only tabs
+  // (the CAR-55 a11y shape), and each tab is nowrap so a long localized label
+  // wraps as a unit and never drags the "?" onto a stray line.
   const tabBar = c('div', { className: 'tabs', role: 'tablist',
-    style: { display: 'flex', gap: '6px', flexWrap: 'wrap', borderBottom: '1px solid var(--line, #e5e7eb)', margin: '4px 0 18px' } });
+    style: { display: 'flex', gap: '6px', flexWrap: 'wrap' } });
   const btns = {};
   tabDefs.forEach((def) => {
     const b = c('button', { className: 'tab-btn', type: 'button', role: 'tab',
-      style: { border: 'none', background: 'none', padding: '8px 14px', cursor: 'pointer', fontWeight: '600', color: 'var(--foggy)', borderBottom: '2px solid transparent' } }, def.label);
+      style: { border: 'none', background: 'none', padding: '8px 14px', cursor: 'pointer', fontWeight: '600', color: 'var(--foggy)', borderBottom: '2px solid transparent', whiteSpace: 'nowrap' } }, def.label);
     b.addEventListener('click', () => activate(def.id));
     btns[def.id] = b;
     tabBar.appendChild(b);
   });
-  root.appendChild(tabBar);
   // v1.139.0 — a caption for the active tab carrying a `?` help hint ("Rejection
   // patterns (?)"). Kept OUTSIDE the tablist so the tablist holds only tabs.
-  const hintRow = c('div', { style: { display: 'flex', alignItems: 'center', gap: '2px', margin: '-8px 0 14px', minHeight: '20px', fontSize: '13px', fontWeight: '600', color: 'var(--ink, #111)' } });
-  root.appendChild(hintRow);
+  // v1.248.2 — marginInlineStart: auto pushes it to the strip's end; the
+  // LOGICAL margin mirrors correctly under [dir="rtl"] (no physical margin-left).
+  const hintRow = c('div', { style: { display: 'flex', alignItems: 'center', gap: '2px', marginInlineStart: 'auto', minHeight: '20px', fontSize: '13px', fontWeight: '600', color: 'var(--ink, #111)' } });
+  const tabStrip = c('div', {
+    style: { display: 'flex', alignItems: 'stretch', gap: '4px', flexWrap: 'wrap', borderBottom: '1px solid var(--line, #e5e7eb)', margin: '4px 0 18px' },
+  }, [tabBar, hintRow]);
+  root.appendChild(tabStrip);
   root.appendChild(panel);
 
   let active = null;
@@ -226,9 +235,11 @@ Router.register('stats', async () => {
       c('label', { style: { display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '12px', color: 'var(--foggy)' } }, [t('stats.marketRegion', 'Region / market'), region]),
       c('label', { style: { display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '12px', color: 'var(--foggy)' } }, [t('stats.currency', 'Currency'), curSel]),
       genBtn,
-      // P4-ETA (v1.170.0) — honest duration hint for a long AI generation.
+      // P4-ETA (v1.170.0) → v1.248.2 — honest duration hint: a live market
+      // report really runs 86–285 s, so the shared "~{n}s / 30" placeholder
+      // became the dedicated stats.marketEta key ("~2–4 min" ×18).
       c('span', { className: 'eta-hint', title: t('common.etaTitle', 'Typical generation time') },
-        '⏱ ' + t('common.eta', '~{n}s').replace('{n}', '30')),
+        '⏱ ' + t('stats.marketEta', '~2–4 min')),
     ]);
     const out = c('div');
     wrap.appendChild(controls);

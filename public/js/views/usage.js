@@ -39,7 +39,9 @@ Router.register('usage', async () => {
   ];
   let active = '7d';
 
-  const tabs = c('div', { style: { display: 'flex', gap: '8px', flexWrap: 'wrap', margin: '0 0 14px' } });
+  // v1.248.2 (QA) — 16px of air between the subtitle (margin-bottom 0) and the
+  // range tabs; the two sat flush before.
+  const tabs = c('div', { style: { display: 'flex', gap: '8px', flexWrap: 'wrap', margin: '16px 0 14px' } });
   const panel = c('div');
 
   function renderPanel() {

@@ -18,7 +18,7 @@ import { loadAssembledDict, I18N_LANGS } from './helpers/i18n-vm.mjs';
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const view = (f) => readFileSync(resolve(ROOT, 'public', 'js', 'views', f), 'utf8');
 
-const PAGES = ['career-plan.js', 'orientation.js', 'stats.js', 'two-pager.js', 'networking.js'];
+const PAGES = ['career-plan.js', 'orientation.js', 'two-pager.js', 'networking.js'];
 
 test('P4-ETA: each long-generation view renders an eta-hint via common.eta', () => {
   for (const f of PAGES) {
@@ -31,7 +31,13 @@ test('P4-ETA: each long-generation view renders an eta-hint via common.eta', () 
   }
 });
 
-test('P4-ETA: common.eta / common.etaTitle exist in all 17 locales', () => {
+test('P4-ETA: stats.js renders the dedicated market ETA (v1.248.2 — honest ~2–4 min)', () => {
+  const src = view('stats.js');
+  assert.match(src, /className:\s*'eta-hint'/, 'stats.js renders an .eta-hint span');
+  assert.match(src, /t\(\s*'stats\.marketEta'/, 'stats.js uses the localized stats.marketEta');
+});
+
+test('P4-ETA: common.eta / common.etaTitle exist in all locales', () => {
   const D = loadAssembledDict();
   for (const key of ['common.eta', 'common.etaTitle']) {
     assert.ok(D[key], `${key} exists`);

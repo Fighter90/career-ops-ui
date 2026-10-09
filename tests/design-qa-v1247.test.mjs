@@ -206,9 +206,13 @@ test('dashboard: the Pipeline tile accent ring is hover/focus-only (no resting t
 });
 
 // ── 8 · scan Delete affordance ──────────────────────────────────────────────
-test('scan: the saved-search Delete button wears the destructive .btn-danger', () => {
+// v1.248.2 refinement: the destructive affordance stays, but only while a
+// saved search is selected (armed); unselected it is a disabled neutral
+// ghost. Full contract in tests/design-qa-v1248.test.mjs.
+test('scan: the saved-search Delete button wears the destructive .btn-danger when armed', () => {
   const src = read('public', 'js', 'views', 'scan.js');
-  assert.match(src, /className: 'btn btn-danger', type: 'button', onClick: \(\) => \{\s*\n\s*const name = ssSelect\.value;/);
+  assert.match(src, /className: 'btn btn-ghost', type: 'button', disabled: true, onClick: \(\) => \{\s*\n\s*const name = ssSelect\.value;/);
+  assert.match(src, /classList\.toggle\('btn-danger', armed\)/);
   assert.match(src, /t\('scan\.deleteSearch', 'Delete'\)/);
 });
 
@@ -326,7 +330,7 @@ test('config: the LLM_PROVIDER hint renders as short lines, not one mono wall', 
 test('profile: the email value gets .card-value--nowrap (ellipsis; wrap only on phones)', () => {
   const src = read('public', 'js', 'views', 'settings.js');
   assert.match(src, /info\(t\('set\.email'\), summary\.email, 'card-value--nowrap'\)/);
-  assert.match(COMPONENTS, /\.card-value--nowrap \{ white-space: nowrap; overflow: hidden; text-overflow: ellipsis; \}/);
+  assert.match(COMPONENTS, /\.card-value--nowrap \{ white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 15px; \}/);
   assert.match(COMPONENTS, /@media \(max-width: 480px\) \{\s*\.card-value--nowrap \{ white-space: normal; overflow: visible; overflow-wrap: anywhere; \}\s*\}/);
 });
 

@@ -8,6 +8,24 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.248.2] — 2026-10-10
+
+**Reggressionsrunde: Eval-timeren forvandler ikke længere pipeline-skrald til „Last evaluation“, SCORE-parsingen overlever rigtige formater, og tracker taler endelig dit sprog.**
+
+### Rettet
+
+- **Tom-JD-rapporter skrives aldrig mere.** Auto-pipelineens JD-gate steg fra 50 til 200 tegn før LLM-kaldet — placeholdersider (`example.com/qa-v167-…`) ender som SSE-fejl + konsoladvarsel i stedet for en `…-t-role-<ts>.md`-rapport, som dashboardet viste som „Last evaluation“ (42 sådanne filer i produktionen).
+- **SCORE_SUMMARY-parsingen overlever rigtige formater**: „4,2/5“, „4.2 / 5“, „**4.2**“, „SCORE :“ validerer alle; et komma med 1–2 cifre er decimal, med 3 er det tusindtal (den gamle kode læste „4,200“ som 4.2 og passerede 0–5-porten). En fejl logger kun `SCORE:`-linjen — aldrig rapportindhold (CI-logs er offentlige).
+
+### Tilføjet
+
+- **`scripts/post-qa-cleanup.mjs`**: dry-run som standard, `--apply` med automatiske backups (`*.bak-<ts>`, rapporter flyttes til `qa/cleanup-backup-<ts>/`): ZZ-QA-TEST-rækker i trackeren, `*-t-role-*`-rapporter uden gyldig SCORE og `example.com`-pipeline-poster.
+
+### Noter
+
+- Ar/ja-driften fra regressionsrunden **gentog sig ikke** ved genkørslen (begge: lang ✓ + A–G ✓) — ta-posten i language-check og den hærdede SCORE-parser følger som defense-in-depth.
+- **Produktionsoprydningen venter på et eksplicit ja fra brugeren**: først dry-run-planen, derefter `--apply`.
+
 ## [1.248.1] — 2026-10-09
 
 **`location_filter` får parentens `always_allow`- og `block_hard`-tiers (CAR-60) — en flernations-lokationsstreng overlever en blokeret-søskende-liste, og en eksplicit hård blokering kan ikke længere reddes.**

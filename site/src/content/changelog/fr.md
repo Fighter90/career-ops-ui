@@ -10,6 +10,28 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 
 ---
 
+## [1.248.2] — 2026-10-10
+
+**Tour de régression : le minuteur d’évaluation ne transforme plus des déchets de pipeline en « Last evaluation », l’analyse de SCORE survit aux formats réels, et le tracker parle enfin votre langue.**
+
+### Corrigé
+
+- **Les rapports à JD vide ne sont plus écrits.** La porte JD de l’auto-pipeline passe de 50 à 200 caractères avant l’appel LLM — les pages-placeholder (`example.com/qa-v167-…`) finissent en erreur SSE + avertissement console au lieu d’un rapport `…-t-role-<ts>.md` que le tableau montrait comme « Last evaluation » (42 fichiers en production).
+- **L’analyse de SCORE_SUMMARY survit aux formats réels** : « 4,2/5 », « 4.2 / 5 », « **4.2** », « SCORE : » valident ; une virgule suivie de 1–2 chiffres est décimale, de 3 c’est un millier (l’ancien code lisait « 4,200 » comme 4.2 et passait la porte 0–5). Un échec ne journalise que la ligne `SCORE:` — jamais le contenu du rapport (les logs CI sont publics).
+- **Les statuts du tracker sont traduits** : onglets et badges affichent des libellés localisés dans les 18 locales ; la valeur canonique des données, filtres et URL reste intacte.
+- **ETA honnête** : « ⏱ ~30s » est devenu « ~2–4 min » dans evaluate/advisor/rapport marché (la fourchette réelle : 86–285 s), et le sous-titre d’evaluate lit **A–G**.
+- **Accessibilité** : le compteur API-keys de config et celui du pipeline dépassent 4.5:1 (avant 4.31:1) ; une puce de facette à valeur vide n’est plus rendue sans nom accessible.
+- **Polish UI** : le bouton Delete des recherches sauvegardées ne semble destructif qu’une recherche sélectionnée (sinon désactivé) ; la carte EMAIL du profil ne rogne plus à 1440 px ; la pilule live-evals a gagné un espacement icône/texte y compris RTL ; le FAB docs ne couvre plus l’attribution Leaflet ; le « ? » de help ne passe plus sous les onglets stats ; usage a gagné de l’air entre sous-titre et onglets ; health dit désormais **career-ops-ui**.
+
+### Ajouté
+
+- **`scripts/post-qa-cleanup.mjs`** : dry-run par défaut, `--apply` avec sauvegardes automatiques (`*.bak-<ts>`, rapports déplacés vers `qa/cleanup-backup-<ts>/`) : lignes ZZ-QA-TEST du tracker, rapports `*-t-role-*` sans SCORE valide, entrées `example.com` du pipeline.
+
+### Notes
+
+- La dérive ar/ja du tour de régression **ne s’est pas répétée** à la relance (tous deux : lang ✓ + A–G ✓) — l’entrée ta du language-check et l’analyse SCORE renforcée arrivent comme défense en profondeur.
+- Le **nettoyage de production attend un oui explicite de l’utilisateur** : d’abord le plan en dry-run, ensuite `--apply`.
+
 ## [1.248.1] — 2026-10-09
 
 **`location_filter` gagne les niveaux `always_allow` et `block_hard` du parent (CAR-60) — une chaîne de localisation multi-pays survit à une liste de bloqués, et un blocage dur explicite ne peut plus être secouru.**

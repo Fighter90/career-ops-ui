@@ -2,6 +2,24 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.248.2] — 2026-10-10
+
+**Round di regressione: il timer di valutazione non trasforma più spazzatura del pipeline in «Last evaluation», il parsing di SCORE sopravvive ai formati reali e il tracker parla finalmente la tua lingua.**
+
+### Corretto
+
+- **I report con JD vuoto non vengono più scritti.** Il gate JD dell’auto-pipeline è salito da 50 a 200 caratteri prima della chiamata LLM — le pagine segnaposto (`example.com/qa-v167-…`) finiscono in errore SSE + avviso in console invece di un report `…-t-role-<ts>.md` che la dashboard mostrava come «Last evaluation» (42 file in produzione).
+- **Il parsing di SCORE_SUMMARY sopravvive ai formati reali**: «4,2/5», «4.2 / 5», «**4.2**», «SCORE :» validano tutti; una virgola con 1–2 cifre è decimale, con 3 è migliaia (il vecchio codice leggeva «4,200» come 4.2 e passava il gate 0–5). Un fallimento registra solo la riga `SCORE:` — mai il contenuto del report (i log CI sono pubblici).
+
+### Aggiunto
+
+- **`scripts/post-qa-cleanup.mjs`**: dry-run per impostazione predefinita, `--apply` con backup automatici (`*.bak-<ts>`, report spostati in `qa/cleanup-backup-<ts>/`): righe ZZ-QA-TEST del tracker, report `*-t-role-*` senza SCORE valido, voci `example.com` del pipeline.
+
+### Note
+
+- La deriva ar/ja del round di regressione **non si è ripetuta** alla re-esecuzione (entrambi: lang ✓ + A–G ✓) — la voce ta del language-check e il parsing SCORE irrobustito vanno come defense-in-depth.
+- **La pulizia della produzione attende un sì esplicito dell’utente**: prima il piano in dry-run, poi `--apply`.
+
 ## [1.248.1] — 2026-10-09
 
 **`location_filter` ottiene i livelli `always_allow` e `block_hard` del padre (CAR-60) — una stringa di localizzazione multipaese sopravvive a un elenco di blocco dei fratelli, e un blocco duro esplicito non può più essere salvato.**

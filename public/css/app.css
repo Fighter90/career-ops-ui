@@ -72,6 +72,7 @@
   --arches: #fc642d;           /* warm orange */
   --hof: #222222;              /* primary text */
   --foggy: #717171;            /* secondary text */
+  --foggy-strong: #5f5f5f;     /* AA secondary text on --elev surfaces (v1.248.2: plain --foggy was 4.31:1 on --elev light) */
   --beach: #f7f7f7;            /* canvas */
   --slate: #ebebeb;            /* divider / hairline */
   --elev: #eef1f6;             /* D-3 (v1.167.0): raised surface, distinct from the --slate hairline so an elevated panel/chip separates from a bordered card */
@@ -165,6 +166,7 @@
   --arches: #fb923c;
   --hof: #f3f4f6;
   --foggy: #9ca3af;
+  --foggy-strong: #9ca3af;   /* dark AA on --elev (#1e232e) ≈ 6.2:1 */
   --beach: #0f1115;
   --slate: #2a2f3a;
   --elev: #1e232e;
@@ -189,6 +191,7 @@
     --arches: #fb923c;
     --hof: #f3f4f6;
     --foggy: #9ca3af;
+    --foggy-strong: #9ca3af; /* dark AA on --elev (#1e232e) ≈ 6.2:1 */
     --beach: #0f1115;
     --slate: #2a2f3a;
     --elev: #1e232e;
@@ -668,8 +671,14 @@ body.sidebar-open .sidebar-backdrop { display: block; }
    fallback without having to visit Health.
    CAR-49 #6 (v1.247.0) — the provider tile + ⚡ used to collide with the
    label in ru/ar (long text, no shrink rules): icons are non-shrinking,
-   the label may wrap inside the pill instead of overlapping. */
-.dash-chip--provider {
+   the label may wrap inside the pill instead of overlapping.
+   v1.248.2 (QA) — DOUBLED-CLASS selector, deliberately: the plain
+   `.dash-chip` base in components.css (loaded AFTER app.css) has the same
+   specificity and `display: inline-block` + its own padding/background, so
+   it silently overrode this variant's inline-flex + gap — the pill rendered
+   without ANY icon↔label spacing. (0,2,0) beats (0,1,0) at any load order;
+   `gap` (not a physical margin) keeps the spacing correct under [dir="rtl"]. */
+.dash-chip.dash-chip--provider {
   display: inline-flex;
   align-items: center;
   flex-wrap: wrap;
@@ -682,7 +691,7 @@ body.sidebar-open .sidebar-backdrop { display: block; }
   font-size: 0.9em;
   line-height: 1.4;
 }
-.dash-chip--provider[hidden] { display: none; }
+.dash-chip.dash-chip--provider[hidden] { display: none; }
 .dash-chip--manual { color: var(--muted, #6b7280); }
 .dash-chip__icon { font-size: 1.05em; flex: 0 0 auto; }
 .dash-chip__label { min-width: 0; overflow-wrap: anywhere; }

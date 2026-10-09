@@ -385,7 +385,10 @@ Router.register('pipeline', async () => {
   const overview = c('div', { className: 'card mb-3', style: { display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center' } });
   function ovChip(n, label, route) {
     const base = { style: { display: 'inline-flex', alignItems: 'center', gap: '5px', padding: '4px 10px', borderRadius: '12px', background: 'var(--panel-2, #eef1f6)', fontSize: '13px', textDecoration: 'none', color: 'inherit' } };
-    const kids = [c('strong', { style: { fontVariantNumeric: 'tabular-nums' } }, String(n)), c('span', { style: { color: 'var(--foggy)' } }, label)];
+    // v1.248.2 (QA) — the label wears --foggy-strong (not --foggy): the chip's
+    // --elev surface put plain foggy at 4.31:1 in light theme; the AA variant
+    // (app.css) clears 4.5:1 on every surface it can appear on.
+    const kids = [c('strong', { style: { fontVariantNumeric: 'tabular-nums' } }, String(n)), c('span', { style: { color: 'var(--foggy-strong, #5f5f5f)' } }, label)];
     return route ? c('a', { href: '#' + route, ...base }, kids) : c('span', base, kids);
   }
   function paintOverview() {

@@ -8,7 +8,7 @@ Router.register('health', async () => {
     c('header', { className: 'page-header' }, [
       c('div', null, [
         c('h1', { className: 'page-title' }, t('health.title')),
-        c('p', { className: 'page-subtitle' }, `career-ops v${data.version}`),
+        c('p', { className: 'page-subtitle' }, `career-ops-ui v${data.version}`),
       ]),
       c('div', { className: 'flex gap-3' }, [
         // CAR-21 (v1.243.0) — both run buttons were async handlers without a

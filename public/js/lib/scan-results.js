@@ -391,7 +391,7 @@ window.ScanResults = (function () {
         signals.push(c('span', {
           className: 'scan-icon scan-icon--fit scan-icon--' + band, role: 'img',
           'aria-label': t('scan.fitIcon', 'Fit').replace('{band}', bandWord),
-          title: bandWord + ' · ' + t('scan.titleFitTip', "Free keyword-level estimate: posting title vs your profile's target roles (config/profile.yml). Not an evaluation — Evaluate still gives the real A–F fit score."),
+          title: bandWord + ' · ' + t('scan.titleFitTip', "Free keyword-level estimate: posting title vs your profile's target roles (config/profile.yml). Not an evaluation — Evaluate still gives the real A–G fit score."),
         }, band === 'strong' ? '◆' : band === 'related' ? '◇' : '○'));
       }
       // v1.89.0 — fit-to-what-you-want score badge → icon. Only shown when
@@ -556,8 +556,17 @@ window.ScanResults = (function () {
   // because ctx.activeTech / ctx.activeLevel are scoped above.
   function buildChipRow(label, counts, activeSet) {
     const row = c('div', { className: 'chip-row' }, c('span', { className: 'chip-label' }, label));
+    // v1.248.2 (QA) — a board can emit a facet value that is EMPTY (blank
+    // tech/level token). An empty chip had no accessible name — its text was
+    // only the aria-hidden count span — and selecting it filtered nothing
+    // meaningful. Blank names are SKIPPED rather than labelled "(no value)":
+    // an empty value is not a real facet dimension (it has no filterable
+    // meaning and no stable identity across boards), so the clean contract is
+    // a chip row that lists only real values.
     // Sort by count desc, then alpha
-    const ordered = Object.entries(counts).sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
+    const ordered = Object.entries(counts)
+      .filter(([name]) => String(name == null ? '' : name).trim() !== '')
+      .sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0]));
     if (!ordered.length) {
       row.appendChild(c('span', { style: { color: 'var(--foggy)', fontSize: '12px' } }, '—'));
       return row;

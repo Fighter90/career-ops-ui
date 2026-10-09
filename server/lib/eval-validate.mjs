@@ -57,11 +57,17 @@ export function validateEvaluationReport(text) {
         issues.push(`SCORE_SUMMARY ${key} is required`);
       }
     }
-    const scoreLine = summaryBlock.match(/^[ \t]*SCORE:[ \t]*(.*)$/mi);
+    const scoreLine = summaryBlock.match(/^[ \t]*(?:\*\*)?[ \t]*SCORE[ \t]*(?:\*\*)?[ \t]*:[ \t]*(.*)$/mi);
     const score = scoreLine && asciiNumber(scoreLine[1]).match(/^[*_ \t]*([0-9]+(?:\.[0-9]+)?)/);
     const scoreValue = score ? Number(score[1]) : NaN;
     if (!Number.isFinite(scoreValue) || scoreValue < 0 || scoreValue > 5) {
       issues.push('SCORE_SUMMARY score must be a number between 0 and 5');
+      // v1.248.2 (da regression) — when the score check fails, the server log
+      // gets ONLY the SCORE: line itself (trimmed, capped). CI logs are public:
+      // no other report content (JD/CV quotes, company prose) may be printed.
+      if (scoreLine) {
+        console.warn(`[eval-validate] invalid score — SCORE line: ${JSON.stringify(scoreLine[0].trim().slice(0, 120))}`);
+      }
     }
   }
 
@@ -69,9 +75,14 @@ export function validateEvaluationReport(text) {
 }
 
 /**
- * Localized digits → ASCII, and a decimal comma / Arabic decimal separator →
- * `.`, so `SCORE: ३.८`, `٣٫٨`, `３．８` and `3,8` read as 3.8. Digit blocks are
- * contiguous 0–9 runs; each entry is the code point of its zero.
+ * Localized digits → ASCII, then comma disambiguation:
+ *  - a separator followed by 1–2 digits is DECIMAL («4,2» → 4.2, the da/fr
+ *    form) — Arabic decimal \u066B and fullwidth full stop \uFF0E behave alike;
+ *  - a comma followed by EXACTLY 3 digits is a THOUSANDS separator
+ *    («4,200» → 4200). The old code read it as 4.200 = 4.2 and passed the
+ *    0..5 gate — the exact false positive the v1.248.2 regression flagged.
+ * Ambiguous runs (4 digits+, several commas) are left untouched so the
+ * score match simply fails and the report is flagged instead of misread.
  */
 const DIGIT_ZEROS = [0x0660, 0x06F0, 0x0966, 0x09E6, 0x0A66, 0x0AE6, 0x0B66, 0x0BE6, 0x0C66, 0x0CE6, 0x0D66, 0x0E50, 0xFF10];
 export function asciiNumber(s) {
@@ -79,7 +90,11 @@ export function asciiNumber(s) {
     const cp = c.codePointAt(0);
     const zero = DIGIT_ZEROS.find((z) => cp >= z && cp <= z + 9);
     return String(cp - zero);
-  }).replace(/(\d)[,\u066B\uFF0E](\d)/g, '$1.$2');
+  })
+    // thousands first: exactly 3 trailing digits (ASCII, Arabic \u066C, fullwidth \uFF0C comma)
+    .replace(/(\d)[,\u066C\uFF0C](\d{3})(?!\d)/g, '$1$2')
+    // then decimal: 1–2 trailing digits (ASCII, Arabic \u066B, fullwidth \uFF0E)
+    .replace(/(\d)[,\u066B\uFF0E](\d{1,2})(?!\d)/g, '$1.$2');
 }
 
 /**

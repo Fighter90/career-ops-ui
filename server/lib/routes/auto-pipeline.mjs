@@ -52,6 +52,15 @@ import { llmRateLimit } from '../rate-limit.mjs';
 const FETCH_TIMEOUT_MS = 30_000;
 const FETCH_MAX_BODY_BYTES = 64 * 1024;
 const EVAL_TIMEOUT_MS = 300_000;       // 5 min — a full A–G report took up to 136 s on prod
+// v1.248.2 — an evaluate of a real posting clears 1 KB of sanitized text; the
+// old 50-char floor was passed by any boilerplate (cookie banners, placeholder
+// pages like the example.com QA entries that leaked into the prod pipeline).
+// ~200 chars (≈ 2–3 sentences) is the smallest text that can still describe a
+// role — below it the model can only answer "Insufficient JD", and saving that
+// answer as reports/<date>-t-role-<ts>.md is how the dashboard ended up
+// showing junk as "Last evaluation". Stop BEFORE the LLM call: no report, no
+// tracker row, no spend.
+const MIN_JD_CHARS = 200;
 const STEPS = [
   { key: 'validate', label: 'Validating URL' },
   { key: 'fetch',    label: 'Fetching job description' },
@@ -247,8 +256,11 @@ export function registerAutoPipelineRoutes(app) {
         return fail(1, result.error || 'fetch failed');
       }
       jdText = sanitizeJobDescription(result.text);
-      if (!jdText || jdText.length < 50) {
-        step(1, 'failed', 'JD too short after sanitization');
+      if (!jdText || jdText.length < MIN_JD_CHARS) {
+        // Warning goes to the SERVER CONSOLE ONLY (never a file) — URL + reason
+        // + length, never the fetched page text (it can hold third-party content).
+        console.warn(`[auto-pipeline] no evaluation: JD too short after sanitization (${jdText ? jdText.length : 0} < ${MIN_JD_CHARS} chars) — ${url}`);
+        step(1, 'failed', `JD too short after sanitization (${jdText ? jdText.length : 0} < ${MIN_JD_CHARS} chars)`);
         return fail(1, 'JD too short');
       }
       step(1, 'done', `${(jdText.length / 1024).toFixed(1)} KB`);

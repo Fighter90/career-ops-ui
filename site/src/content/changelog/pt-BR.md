@@ -8,6 +8,28 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.248.2] — 2026-10-10
+
+**Rodada de regressão: o temporizador de avaliação não transforma mais lixo do pipeline em «Last evaluation», a análise de SCORE sobrevive a formatos reais e o tracker finalmente fala o seu idioma.**
+
+### Corrigido
+
+- **Relatórios com JD vazio nunca mais são escritos.** A porta de JD do auto-pipeline subiu de 50 para 200 caracteres antes da chamada ao LLM — páginas-placeholder (`example.com/qa-v167-…`) terminam em erro SSE + aviso no console em vez de um relatório `…-t-role-<ts>.md` que o painel mostrava como «Last evaluation» (42 arquivos na produção).
+- **A análise de SCORE_SUMMARY sobrevive a formatos reais**: «4,2/5», «4.2 / 5», «**4.2**», «SCORE :» validam; vírgula com 1–2 dígitos é decimal, com 3 é milhar (o código antigo lia «4,200» como 4.2 e passava a porta 0–5). Uma falha registra só a linha `SCORE:` — nunca o conteúdo do relatório (os logs de CI são públicos).
+- **Os status do tracker são traduzidos**: abas e badges mostram rótulos localizados nas 18 locales; o valor canônico em dados, filtros e URL não é tocado.
+- **ETA honesta**: «⏱ ~30s» virou «~2–4 min» em evaluate/advisor/relatório de mercado (a faixa real é 86–285 s), e o subtítulo do evaluate lê **A–G**.
+- **Acessibilidade**: o contador de API-keys do config e o do pipeline ultrapassam 4.5:1 (antes 4.31:1); chip de faceta com valor vazio não é mais renderizado sem nome acessível.
+- **Polimento de UI**: o Delete de buscas salvas parece destrutivo só com uma busca selecionada (senão desabilitado); o cartão EMAIL do perfil não corta mais em 1440 px; a pílula live-evals ganhou espaçamento ícone/texto inclusive RTL; o FAB de docs não cobre a atribuição do Leaflet; o «?» do help não quebra sob as abas de stats; usage ganhou respiro entre subtítulo e abas; health agora diz **career-ops-ui**.
+
+### Adicionado
+
+- **`scripts/post-qa-cleanup.mjs`**: dry-run por padrão, `--apply` com backups automáticos (`*.bak-<ts>`, relatórios movidos a `qa/cleanup-backup-<ts>/`): linhas ZZ-QA-TEST do tracker, relatórios `*-t-role-*` sem SCORE válido e entradas `example.com` do pipeline.
+
+### Notas
+
+- O desvio ar/ja da rodada de regressão **não se repetiu** na reexecução (ambos: lang ✓ + A–G ✓) — a entrada ta do language-check e o parser de SCORE seguem como defesa em profundidade.
+- A **limpeza da produção aguarda um sim explícito do usuário**: primeiro o plano em dry-run, depois `--apply`.
+
 ## [1.248.1] — 2026-10-09
 
 **`location_filter` ganha os níveis `always_allow` e `block_hard` do pai (CAR-60) — uma string de localização multipaís sobrevive a uma lista de irmãos bloqueados, e um bloqueio explícito duro não pode mais ser resgatado.**
