@@ -9,34 +9,24 @@
 ---
 
 
-## [1.244.1] — 2026-10-08
+## [1.244.2] — 2026-10-08
 
-### Fixed
-
-- **Scan icons announce real values.** The boost/fit/score icons' accessible names leaked the raw dict templates ("Fit: {band}", "Boosted by {by}") — `{band}`/`{by}`/`{score}` are now substituted (band word, booster keyword, numeric score). [HIGH a11y, caught live in the v1.244.0 regression round]
-- **Title pipes split correctly.** A 4-segment title like «C++ | Rust | Go Developer | Onsite» no longer lifts "Go Developer" out as a "country" — the split demands the segment resolves to a real country (conservative `Countries.detectCountry`).
-- **Meta dates render for every row.** `daysSince` accepted date-only ISO, but the API serves full timestamps for ~83% of dated rows — those rows showed no date segment.
-
-## [1.244.0] — 2026-10-08
-
-**扫描结果读起来像一份列表，而不是一堵墙：一个职位 = 两行，信号变成图标，700 行的扫描是一张分页表格，而不是一页 37,000 px 的长页。**
+**扫描页面打磨：启动器、状态栏、转发面板和过滤器重构为一致的外观——结果表格不再会被看板数据撑开。**
 
 ### 修复
 
-- **行的构造。** 每个职位都渲染为边界清晰的两行：第 1 行是标题，第 2 行是 `company · location · source · date · work-type`。加成徽章、标题匹配度色带与匹配分数变成了带有本地化可访问名称和工具提示的图标（屏幕阅读器读出的是 «Соответствие: сильное» / “Fit: strong”，而不是一整墙文字）；信任与搬迁徽章并入同一条图标栏。级别与薪资保留为仅桌面端显示的辅助列。
-- **标题卫生。** 标题尾部的 `| Germany | Remote` 片段会被拆出、并入元信息行——具备 Unicode 感知，只有当尾部是真实的工作类型标记、且中间片段形如地名时才拆分（像 “C++ | Rust | Go Developer” 这样合法的竖线永不拆分）。
-- **不再横向铺开。** 固定表格布局、`min-width: 0`、单行省略号截断的标题/元信息（完整文本放入工具提示）：在 1440 px 与 390 px 宽度下页面零溢出、表格内部零滚动（旧页面在手机宽度下溢出 675 px）。
-- **分页。** 结果每页渲染 50 条（可选 25/50/100/200）——700 行的扫描现在只有 ~4,600 px 高，而不是 ~37,000 px，DOM 中保留 ~1,000 个节点而不是 5,500+ 个。
+- **薪资单元格只显示金额区间。** 有些看板把整个福利说明塞进薪资字段——可见单元格现在只显示金额部分，说明文字移入提示框（此前：6 行高的单元格撑开每一行）。
+- **空标题的行显示公司名**（再退化为中性的破折号），而不是巨大的空白单元格。
+- **资历徽章在固定宽度列中不再换行**。
+- **无评分的行显示淡化的「◎ —」**，提示框说明两页纸对比未找到匹配关键词（此前：空白，在有评分的行旁边显得像坏了）。
 
 ### 新增
 
-- 布局契约测试：两行结构、图标的可访问名称（en + ru）、分页节点预算以及标题匹配数量/顺序守卫，全部在浏览器套件中运行——重设计不可能悄悄回退。
+- **外观重构：启动卡片（对齐的控件行、主导按钮）、带状态点的终端状态栏（空闲/运行/完成/错误）支持 reduced-motion、转发面板有高度上限和粘性表头（1,560 个集群曾渲染出 155,000 px 的面板）、过滤器块为均匀响应式网格并对齐页脚。**
 
 ### 备注
 
-- 测试 **5036 → 5045** 单元（浏览器套件新增了布局契约），覆盖率均值 **98.14 % 行 / 89.34 % 分支**（门槛 96/86）。
-- 扫描器找到的内容、评分公式与 `last-scan.json` 均未改动——标题匹配度仍然只是注记。
-- 本版本不包含：URL-hash 过滤状态与键盘行导航（后续跟进）；`5 lakhs INR` 解析（既有问题）。
+- #/scan 的其余部分与 v1.244.1 完全相同——仅变更了外观打磨与上述四个修复。测试 5045 → 5068 unit。
 
 ## [1.243.2] — 2026-10-08
 

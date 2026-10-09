@@ -982,6 +982,8 @@ window.__I18N_DICT_FR = {
   'scan.fitIcon': "Adéquation : {band}",
   'scan.boostIcon': "Augmenté par {by}",
   'scan.scoreIcon': "Score d'adéquation {score} sur 100",
+  'scan.scoreNone': "Score : aucun — la comparaison avec le two-pager n'a trouvé aucune correspondance",
+  'scan.scoreNoneTip': "Aucun mot-clé correspondant à votre two-pager, donc pas de score",
   'scan.postedMeta': "Détails du poste",
 
   // ── Entretien simulé 2.0 (Epic 15 / v1.90.0) ── // Mock interview 2.0 (Epic 15 / v1.90.0)

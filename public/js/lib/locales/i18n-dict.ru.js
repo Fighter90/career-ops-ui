@@ -983,6 +983,8 @@ window.__I18N_DICT_RU = {
   'scan.fitIcon': "Соответствие: {band}",
   'scan.boostIcon': "Продвинуто: {by}",
   'scan.scoreIcon': "Оценка соответствия {score} из 100",
+  'scan.scoreNone': "Оценка соответствия: нет — сравнение с two-pager не нашло совпадений",
+  'scan.scoreNoneTip': "Нет совпадающих ключевых слов с вашим two-pager, поэтому оценки нет",
   'scan.postedMeta': "Детали вакансии",
   // ── Пробное собеседование 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "Пробное собеседование",

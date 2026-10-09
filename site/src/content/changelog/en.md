@@ -8,6 +8,27 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.244.2] — 2026-10-08
+
+**Scan page polish: the launcher, status bar, reposts panel and filters are redesigned as one consistent chrome — and the results table can no longer be stretched by board-side data.**
+
+### Fixed
+
+- **Salary cells keep only the money range.** Some boards put the whole benefits blurb in the salary field ("$243K – $286K • Offers Equity • This role is also eligible for medical benefits, 401(k) plan…") — the visible cell now shows the money chunk and moves the blurb to the tooltip (was: a 6-line cell stretching every row).
+- **Rows with an empty title render the company** (then a locale-neutral dash) instead of a giant blank cell.
+- **The seniority badge never wraps** in its fixed-width column.
+- **Unscored rows show a muted «◎ —»** with a tooltip explaining the two-pager compare found no matching keywords (was: nothing, which read as broken next to scored rows).
+- **The aux-height layout contract** now measures the content element inside the aux cell — a td stretches to its row's height, which masked real wraps.
+
+### Added
+
+- Scan chrome redesign: launcher card (aligned control row, dominant primary button), terminal status bar (status dot idle/running/done/error, reduced-motion safe), reposts disclosure (styled header, count badge, capped panel with sticky header — a 1,560-cluster dataset rendered a 155,000-px panel before), and the filters block as a uniform responsive grid with an aligned footer.
+
+### Notes
+
+- Tests **5045 → 5068** unit; browser layout contracts extended (aux one-line bound).
+- Not in this release: URL-hash filter state and keyboard row navigation (follow-ups); live-LLM regression × 7 locales blocked earlier by upstream credits (unblocked — CAR-44).
+
 ## [1.244.1] — 2026-10-08
 
 ### Fixed
@@ -15,6 +36,11 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 - **Scan icons announce real values.** The boost/fit/score icons' accessible names leaked the raw dict templates ("Fit: {band}", "Boosted by {by}") — `{band}`/`{by}`/`{score}` are now substituted (band word, booster keyword, numeric score). [HIGH a11y, caught live in the v1.244.0 regression round]
 - **Title pipes split correctly.** A 4-segment title like «C++ | Rust | Go Developer | Onsite» no longer lifts "Go Developer" out as a "country" — the split demands the segment resolves to a real country (conservative `Countries.detectCountry`).
 - **Meta dates render for every row.** `daysSince` accepted date-only ISO, but the API serves full timestamps for ~83% of dated rows — those rows showed no date segment.
+
+### Notes
+
+- Everything else in #/scan is identical to v1.244.0 — only the three regression fixes above changed.
+- Deliberately not done: URL-hash filter state, keyboard row navigation and `5 lakhs INR` parsing (all pre-existing follow-ups).
 
 ## [1.244.0] — 2026-10-08
 

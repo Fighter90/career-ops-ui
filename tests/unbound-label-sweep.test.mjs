@@ -17,8 +17,10 @@ const read = (f) => readFileSync(R('public', 'js', 'views', f), 'utf8');
 
 test('#7 scan: dry-run + company-select labels are bound', () => {
   const s = read('scan.js');
-  assert.match(s, /c\('label',\s*\{ htmlFor: 'company-select' \}/);
-  assert.match(s, /c\('label',\s*\{ className: 'flex', htmlFor: 'dry-run'/);
+  // v1.244.2 — the launcher cells keep explicit label[htmlFor] ↔ control[id]
+  // bindings; labels gained the small-caps .scan-field__label class.
+  assert.match(s, /c\('label',\s*\{ className: 'scan-field__label', htmlFor: 'company-select' \}/);
+  assert.match(s, /c\('label',\s*\{ className: 'scan-cell scan-cell--check', htmlFor: 'dry-run' \}/);
   assert.match(s, /id: 'dry-run'/);
   assert.match(s, /id: 'company-select'/);
 });

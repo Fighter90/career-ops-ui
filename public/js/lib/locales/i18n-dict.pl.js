@@ -982,6 +982,8 @@ window.__I18N_DICT_PL = {
   'scan.fitIcon': "Dopasowanie: {band}",
   'scan.boostIcon': "Promowany przez {by}",
   'scan.scoreIcon': "Wynik dopasowania {score} na 100",
+  'scan.scoreNone': "Wynik: brak — porównanie z two-pagerem nie znalazło dopasowań",
+  'scan.scoreNoneTip': "Brak pasujących słów kluczowych z two-pagerem, więc nie ma wyniku",
   'scan.postedMeta': "Szczegóły oferty",
   // ── Próbna rozmowa kwalifikacyjna 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "Próbna rozmowa",

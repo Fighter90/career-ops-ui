@@ -10,34 +10,24 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 
 ---
 
-## [1.244.1] — 2026-10-08
+## [1.244.2] — 2026-10-08
 
-### Fixed
-
-- **Scan icons announce real values.** The boost/fit/score icons' accessible names leaked the raw dict templates ("Fit: {band}", "Boosted by {by}") — `{band}`/`{by}`/`{score}` are now substituted (band word, booster keyword, numeric score). [HIGH a11y, caught live in the v1.244.0 regression round]
-- **Title pipes split correctly.** A 4-segment title like «C++ | Rust | Go Developer | Onsite» no longer lifts "Go Developer" out as a "country" — the split demands the segment resolves to a real country (conservative `Countries.detectCountry`).
-- **Meta dates render for every row.** `daysSince` accepted date-only ISO, but the API serves full timestamps for ~83% of dated rows — those rows showed no date segment.
-
-## [1.244.0] — 2026-10-08
-
-**Les résultats du scan se lisent comme une liste, pas un mur : une offre = deux lignes, les signaux sont des icônes, et un scan de 700 lignes devient un tableau paginé au lieu d'une page de 37,000 px.**
+**Le polissage de la page de scan : le lanceur, la barre d'état, le panneau de reposts et les filtres sont redessinés comme un chrome cohérent — et le tableau de résultats ne peut plus être étiré par les données des boards.**
 
 ### Corrigé
 
-- **Anatomie des lignes.** Chaque offre s'affiche sous la forme d'une rangée bornée de deux lignes : ligne 1 le titre, ligne 2 `company · location · source · date · work-type`. Le badge de boost, la bande d'adéquation du titre et le score d'adéquation sont devenus des icônes avec des noms accessibles localisés et des infobulles (les lecteurs d'écran lisent «Соответствие: сильное» / "Fit: strong", pas un mur de mots) ; les badges de confiance et de relocalisation se replient dans le même rail. L'ancienneté et le salaire restent des colonnes auxiliaires réservées au bureau.
-- **Hygiène des titres.** Un segment final `| Germany | Remote` est séparé du titre et déplacé dans la ligne meta — en tenant compte d'Unicode, uniquement quand la fin est un vrai marqueur de type de travail et que le segment du milieu a une forme de lieu (les pipes légitimes comme « C++ | Rust | Go Developer » ne sont jamais scindées).
-- **Fini l'étalement horizontal.** Mise en page de tableau fixe, `min-width: 0`, titre/meta sur une ligne avec ellipse et le texte complet dans l'infobulle : zéro débordement de page et zéro défilement interne du tableau à 1440 px et 390 px (l'ancienne page débordait de 675 px en largeur téléphone).
-- **Pagination.** Les résultats s'affichent 50 par page (25/50/100/200 au choix) — un scan de 700 lignes fait désormais ~4,600 px de haut au lieu de ~37,000 px, et le DOM contient ~1,000 nœuds au lieu de 5,500+.
+- **Les cellules de salaire ne gardent que la fourchette monétaire.** Certains boards mettent toute la description des avantages dans le champ du salaire — la cellule visible ne montre plus que le segment économique et déplace le texte dans l'infobulle (avant : une cellule de 6 lignes qui étirait chaque rangée).
+- **Les rangées sans titre affichent l'entreprise** (puis un tiret neutre) au lieu d'une cellule géante vide.
+- **Le badge de séniorité ne se coupe jamais** dans sa colonne à largeur fixe.
+- **Les rangées sans score affichent un «◎ —» atténué** avec une infobulle expliquant que la comparaison two-pager n'a trouvé aucune correspondance (avant : rien, ce qui paraissait cassé à côté des rangées notées).
 
 ### Ajouté
 
-- Tests de contrat de mise en page : la rangée à deux lignes, les noms accessibles des icônes (en + ru), le budget de nœuds de la pagination et le garde de nombre/ordre de l'adéquation du titre tournent dans la suite navigateur — la refonte ne peut plus régresser silencieusement.
+- **Refonte du chrome : carte lanceur (rangée de contrôles alignée, bouton primaire dominant), barre d'état du terminal avec point d'état (repos/en cours/terminé/erreur) respectant reduced-motion, panneau de reposts plafonné en hauteur avec en-tête collante (un jeu de 1,560 clusters rendait un panneau de 155,000 px), et le bloc de filtres en grille responsive uniforme avec pied aligné.**
 
 ### Notes
 
-- Tests **5036 → 5045** unitaires (la suite navigateur a gagné les contrats de mise en page), couverture moyenne **98.14 % lignes / 89.34 % branches** (plancher 96/86).
-- Ce que le scanner trouve, les formules de scoring et `last-scan.json` sont intacts — l'adéquation du titre reste une annotation.
-- Hors de cette version : l'état de filtre par hash d'URL et la navigation clavier entre lignes (follow-up) ; l'analyse de `5 lakhs INR` (préexistant).
+- Tout le reste de #/scan est identique à v1.244.1 — seuls le polissage du chrome et les quatre corrections ci-dessus ont changé. Tests 5045 → 5068 unit.
 
 ## [1.243.2] — 2026-10-08
 

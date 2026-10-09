@@ -10,6 +10,25 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 
 ---
 
+## [1.244.2] — 2026-10-08
+
+**El pulido de la página de escaneo: el lanzador, la barra de estado, el panel de reposts y los filtros se rediseñan como un chrome consistente — y la tabla de resultados ya no puede ser estirada por datos del board.**
+
+### Corregido
+
+- **Las celdas de salario muestran solo el rango monetario.** Algunos boards ponen toda la descripción de beneficios en el campo del salario — la celda visible ahora muestra solo el tramo económico y mueve el texto al tooltip (antes: una celda de 6 líneas que estiraba cada fila).
+- **Las filas con título vacío muestran la empresa** (y luego un guion neutro) en lugar de una celda gigante en blanco.
+- **El badge de seniority nunca se parte** en su columna de ancho fijo.
+- **Las filas sin puntuación muestran un «◎ —» atenuado** con tooltip explicando que la comparación con el dos-páginas no encontró coincidencias (antes: nada, lo que parecía roto junto a filas con puntuación).
+
+### Añadido
+
+- **Rediseño del chrome: tarjeta lanzadora (fila de controles alineada, botón primario dominante), barra de estado del terminal con punto de estado (reposo/ejecutando/listo/error) safe para reduced-motion, panel de reposts con tope de altura y cabecera sticky (un dataset de 1,560 clústeres renderizaba un panel de 155,000 px), y el bloque de filtros como cuadrícula responsiva uniforme con pie alineado.**
+
+### Notas
+
+- Todo lo demás en #/scan es idéntico a v1.244.1 — solo cambiaron el pulido del chrome y las cuatro correcciones anteriores. Tests 5045 → 5068 unit.
+
 ## [1.244.1] — 2026-10-08
 
 ### Corregido

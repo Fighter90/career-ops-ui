@@ -983,6 +983,8 @@ window.__I18N_DICT_KO = {
   'scan.fitIcon': "적합: {band}",
   'scan.boostIcon': "{by}에 의해 부스트됨",
   'scan.scoreIcon': "적합도 점수 100점 만점에 {score}점",
+  'scan.scoreNone': "적합 점수: 없음 — two-pager 비교에서 일치하는 키워드가 없습니다",
+  'scan.scoreNoneTip': "two-pager와 일치하는 키워드가 없어 적합 점수가 없습니다",
   'scan.postedMeta': "공고 정보",
   // ── 모의 면접 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "모의 면접",

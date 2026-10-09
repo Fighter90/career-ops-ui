@@ -2,6 +2,25 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.244.2] — 2026-10-08
+
+**La rifinitura della pagina di scansione: launcher, barra di stato, pannello repost e filtri ridisegnati come un chrome coerente — e la tabella dei risultati non può più essere allungata dai dati dei board.**
+
+### Corretto
+
+- **Le celle dello stipendio mostrano solo la forbice monetaria.** Alcuni board mettono tutta la descrizione dei benefit nel campo stipendio — la cella visibile ora mostra solo la parte economica e sposta il testo nel tooltip (prima: una cella di 6 righe che stirava ogni riga).
+- **Le righe con titolo vuoto mostrano l'azienda** (poi un trattino neutro) invece di una cella gigante vuota.
+- **Il badge di seniority non va mai a capo** nella sua colonna a larghezza fissa.
+- **Le righe senza punteggio mostrano un «◎ —» attenuato** con tooltip che spiega che il confronto two-pager non ha trovato corrispondenze (prima: nulla, sembrava rotto accanto alle righe con punteggio).
+
+### Aggiunto
+
+- **Refonte du chrome: card launcher (riga di controlli allineata, pulsante primario dominante), barra di stato del terminale con punto di stato (idle/running/done/errore) rispetta reduced-motion, pannello dei repost con tetto di altezza e header sticky (un dataset di 1,560 cluster renderizzava un pannello da 155,000 px), e il blocco filtri come griglia responsiva uniforme con footer allineato.**
+
+### Note
+
+- Tutto il resto di #/scan è identico a v1.244.1 — sono cambiati solo la rifinitura del chrome e le quattro correzioni sopra. Test 5045 → 5068 unit.
+
 ## [1.244.1] — 2026-10-08
 
 ### Corretto

@@ -983,6 +983,8 @@ window.__I18N_DICT_TR = {
   'scan.fitIcon': "Uyum: {band}",
   'scan.boostIcon': "{by} ile artırıldı",
   'scan.scoreIcon': "Eşleşme puanı 100 üzerinden {score}",
+  'scan.scoreNone': "Eşleşme puanı: yok — two-pager karşılaştırmasında eşleşen anahtar kelime yok",
+  'scan.scoreNoneTip': "Two-pager'ınızla eşleşen anahtar kelime olmadığı için eşleşme puanı yok",
   'scan.postedMeta': "İlan ayrıntıları",
   // ── Deneme mülakatı 2.0 (Epic 15 / v1.90.0) ──
   'nav.mockInterview': "Deneme mülakatı",

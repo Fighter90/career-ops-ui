@@ -2,34 +2,24 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
-## [1.244.1] — 2026-10-08
+## [1.244.2] — 2026-10-08
 
-### Fixed
-
-- **Scan icons announce real values.** The boost/fit/score icons' accessible names leaked the raw dict templates ("Fit: {band}", "Boosted by {by}") — `{band}`/`{by}`/`{score}` are now substituted (band word, booster keyword, numeric score). [HIGH a11y, caught live in the v1.244.0 regression round]
-- **Title pipes split correctly.** A 4-segment title like «C++ | Rust | Go Developer | Onsite» no longer lifts "Go Developer" out as a "country" — the split demands the segment resolves to a real country (conservative `Countries.detectCountry`).
-- **Meta dates render for every row.** `daysSince` accepted date-only ISO, but the API serves full timestamps for ~83% of dated rows — those rows showed no date segment.
-
-## [1.244.0] — 2026-10-08
-
-**Die Scan-Ergebnisse lesen sich wie eine Liste, nicht wie eine Wand: eine Stelle = zwei Zeilen, die Signale sind Icons, und ein 700-Zeilen-Scan ist eine paginierte Tabelle statt einer 37,000-px-Seite.**
+**Der Scan-Seiten-Polish: Launcher, Statusleiste, Reposts-Panel und Filter sind als konsistenter Chrome neu gestaltet — und die Ergebnistabelle kann nicht mehr durch Board-Daten gestreckt werden.**
 
 ### Behoben
 
-- **Zeilenanatomie.** Jede Stelle rendert als begrenzte Zwei-Zeilen-Zeile: Zeile 1 der Titel, Zeile 2 `company · location · source · date · work-type`. Das Boost-Badge, das Titel-Fit-Band und der Fit-Score wurden zu Icons mit lokalisierten zugänglichen Namen und Tooltips (Screenreader lesen „Passung: stark“ / „Fit: strong“, keine Wortwand); die Trust- und Umzugs-Badges wanderten in dieselbe Leiste. Seniorität und Gehalt bleiben zusätzliche Spalten, nur auf dem Desktop sichtbar.
-- **Titelhygiene.** Ein abschließendes `| Germany | Remote`-Segment wird aus dem Titel in die Meta-Zeile ausgespalten — Unicode-bewusst, und nur wenn der Schwanz ein echtes Arbeitsform-Kennzeichen ist und das mittlere Segment nach einem Ort aussieht (legitime Pipes wie „C++ | Rust | Go Developer“ werden nie geteilt).
-- **Kein horizontales Ausufern mehr.** Festes Tabellen-Layout, `min-width: 0`, einzeiliger Titel/Meta mit Auslassungspunkten und dem vollen Text im Tooltip: kein Seitenüberlauf und kein internes Tabellen-Scrollen bei 1440 px und 390 px (die alte Seite lief bei Telefonbreite um 675 px über).
-- **Paginierung.** Ergebnisse rendern 50 pro Seite (25/50/100/200 wählbar) — ein 700-Zeilen-Scan ist jetzt ~4,600 px hoch statt ~37,000 px, und das DOM hält ~1,000 Knoten statt 5,500+.
+- **Die Gehaltszellen zeigen nur den Geldbereich.** Manche Boards packen den ganzen Benefits-Text ins Gehaltsfeld — die sichtbare Zelle zeigt jetzt nur den Geldteil und verschiebt den Text in den Tooltip (vorher: eine 6-zeilige Zelle, die jede Reihe streckte).
+- **Reihen mit leerem Titel zeigen die Firma** (danach einen neutralen Strich) statt einer riesigen leeren Zelle.
+- **Das Seniority-Badge bricht nie um** in seiner festen Spaltenbreite.
+- **Nicht bewertete Reihen zeigen ein gedämpftes «◎ —»** mit Tooltip, warum der Two-Pager-Vergleich keine Treffer fand (vorher: nichts, was neben bewerteten Reihen kaputt wirkte).
 
 ### Hinzugefügt
 
-- Layout-Contract-Tests: Die Zwei-Zeilen-Zeile, die zugänglichen Icon-Namen (en + ru), das Paginierungs-Knotenbudget und der Titel-Fit-Zähl- und Reihenfolge-Guard laufen in der Browser-Suite — das Redesign kann nicht mehr stillschweigend regressieren.
+- **Chrome-Redesign: Launcher-Karte (ausgerichtete Steuerungsreihe, dominanter Primary-Button), Terminal-Statusleiste mit Statuspunkt (idle/running/done/error) reduced-motion-sicher, Reposts-Panel mit Höhenbegrenzung und Sticky-Header (ein 1,560-Cluster-Datensatz renderierte ein 155,000-px-Panel), und der Filterblock als gleichmäßiges responsives Raster mit ausgerichtetem Footer.**
 
 ### Anmerkungen
 
-- Tests **5036 → 5045** Unit (die Browser-Suite bekam die Layout-Contracts), Coverage-Mittelwert **98.14 % Zeilen / 89.34 % Branch** (Untergrenze 96/86).
-- Was der Scanner findet, die Scoring-Formeln und `last-scan.json` sind unberührt — der Titel-Fit bleibt eine Anmerkung.
-- Nicht in diesem Release: URL-Hash-Filterzustand und Tastatur-Zeilennavigation (Follow-up); `5 lakhs INR` parst weiterhin als 5 (vorbestehend).
+- Alles andere in #/scan ist identisch mit v1.244.1 — nur der Chrome-Polish und die vier Korrekturen oben haben sich geändert. Tests 5045 → 5068 unit.
 
 ## [1.243.2] — 2026-10-08
 

@@ -1061,6 +1061,8 @@ window.__I18N_DICT_EN = {
   'scan.fitIcon': "Fit: {band}",
   'scan.boostIcon': "Boosted by {by}",
   'scan.scoreIcon': "Match score {score} out of 100",
+  'scan.scoreNone': "Match score: none — the two-pager compare found no matching keywords",
+  'scan.scoreNoneTip': "No matching keywords vs your two-pager, so there is no match score",
   'scan.postedMeta': "Posting details",
 
   // ── Mock interview 2.0 (Epic 15 / v1.90.0) ──

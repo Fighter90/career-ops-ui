@@ -9,6 +9,25 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.244.2] — 2026-10-08
+
+**Polerowanie strony skanowania: launcher, pasek statusu, panel repostów i filtry zaprojektowane jako spójny chrome — a tabela wyników nie może już być rozciągana przez dane boardów.**
+
+### Naprawiono
+
+- **Komórki wynagrodzenia pokazują tylko zakres kwot.** Niektóre boardy wkładają cały opis benefitów do pola wynagrodzenia — widoczna komórka pokazuje teraz tylko część kwotową, a tekst trafia do tooltipa (wcześniej: 6-wierszowa komórka rozciągająca każdy wiersz).
+- **Wiersze z pustym tytułem pokazują firmę** (potem neutralny myślnik) zamiast gigantycznej pustej komórki.
+- **Badge seniority nigdy nie łamie się** w swojej kolumnie o stałej szerokości.
+- **Wiersze bez oceny pokazują przygaszone «◎ —»** z tooltipem wyjaśniającym, że porównanie z two-pagerem nie znalazło dopasowań (wcześniej: nic, co wyglądało jak błąd obok wierszy z oceną).
+
+### Dodano
+
+- **Przeprojektowanie chromu: karta launchera (wyrównany rząd kontrolek, dominujący przycisk podstawowy), pasek stanu terminalu z kropką stanu (bezczynny/uruchomiono/gotowe/błąd) respektujący reduced-motion, panel repostów z limitem wysokości i przyklejonym nagłówkiem (zbiór 1,560 klastrów renderował panel 155,000 px), oraz blok filtrów jako równomierna responsywna siatka z wyrównaną stopką.**
+
+### Uwagi
+
+- Reszta #/scan jest identyczna z v1.244.1 — zmieniło się tylko polerowanie chromu i cztery poprawki powyżej. Testy 5045 → 5068 unit.
+
 ## [1.244.1] — 2026-10-08
 
 ### Naprawiono

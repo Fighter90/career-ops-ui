@@ -1065,6 +1065,8 @@ window.__I18N_DICT_HI = {
   'scan.fitIcon': "मेल: {band}",
   'scan.boostIcon': "{by} द्वारा बूस्ट किया गया",
   'scan.scoreIcon': "मेल स्कोर 100 में से {score}",
+  'scan.scoreNone': "मेल स्कोर: कोई नहीं — two-pager तुलना में कोई मेल खाता कीवर्ड नहीं मिला",
+  'scan.scoreNoneTip': "आपके two-pager से कोई मेल खाता कीवर्ड नहीं, इसलिए कोई मेल स्कोर नहीं",
   'scan.postedMeta': "रिक्ति विवरण",
 
   // ── Mock interview 2.0 (Epic 15 / v1.90.0) ──

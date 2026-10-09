@@ -2,6 +2,25 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.244.2] — 2026-10-08
+
+**Tarama sayfası parlatması: başlatıcı, durum çubuğu, repost paneli ve filtreler tek bir tutarlı krom olarak yeniden tasarlandı — ve sonuç tablosu artık board verileriyle gerilemiyor.**
+
+### Düzeltildi
+
+- **Maaş hücreleri yalnızca parasal aralığı gösterir.** Bazı board'lar yanıt alanına tüm yan metni koyar — görünür hücre artık yalnızca parasal kısmı gösterir ve metni tooltip'e taşır (önce: her satırı uzatan 6 satırlık hücre).
+- **Boş başlıklı satırlar şirketi gösterir** (sonra nötr tire) dev boş hücre yerine.
+- **Kıdem rozeti sabit genişlikli sütununda asla kırılmaz**.
+- **Puanı olmayan satırlar soluk bir «◎ —» gösterir**, tooltip two-pager karşılaştırmasında eşleşen anahtar kelime bulunmadığını açıklar (önce: puanlı satırların yanında bozuk görünüyordu).
+
+### Eklendi
+
+- **Krom yeniden tasarımı: başlatıcı kartı (hizalı kontrol satırı, baskın birincil düğme), durum noktalı terminal durum çubuğu (boşta/çalışıyor/bitti/hata) reduced-motion'u destekler, repost paneli sticky başlıklı yükseklik sınırına sahiptir (1,560 küme, 155,000 px'lik bir panel oluşturuyordu) ve filtre bloğu düzgün responsive ızgara ve hizalanmış altbilgi olarak.**
+
+### Notlar
+
+- #/scan'in geri kalanı v1.244.1 ile özdeş — yalnızca krom parlatması ve yukarıdaki dört düzeltme değişti. Testler 5045 → 5068 unit.
+
 ## [1.244.1] — 2026-10-08
 
 ### Düzeltildi

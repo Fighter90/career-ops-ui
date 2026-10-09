@@ -22,6 +22,7 @@ const src = readFileSync(resolve(ROOT, 'public', 'js', 'lib', 'scan-results.js')
 const fakeWindow = {};
 new Function('window', src)(fakeWindow); // eslint-disable-line no-new-func
 const splitTitleCountry = fakeWindow.ScanResults?.splitTitleCountry;
+const salaryHead = fakeWindow.ScanResults?.salaryHead;
 
 test('scan-results.js exports the splitTitleCountry helper', () => {
   assert.equal(typeof splitTitleCountry, 'function',
@@ -99,4 +100,26 @@ test('whitespace is normalized; empty/null input is safe', () => {
   assert.deepEqual(splitTitleCountry(''), { title: '', country: '' });
   assert.deepEqual(splitTitleCountry(null), { title: '', country: '' });
   assert.deepEqual(splitTitleCountry(undefined), { title: '', country: '' });
+});
+
+
+// ── salaryHead (v1.244.2): the visible cell keeps only the money chunk ──
+
+test('scan-results.js exports the salaryHead helper', () => {
+  assert.equal(typeof salaryHead, 'function',
+    'window.ScanResults.salaryHead must be exported (contract: money chunk for the visible cell)');
+});
+
+test('salaryHead: keeps the money range, drops the benefits blurb after •/·', () => {
+  assert.equal(salaryHead('$224K – $263K • Offers Equity • This role is also eligible for medical benefits, 401(k) plan.'),
+    '$224K – $263K');
+  assert.equal(salaryHead('$195K – $229K · Offers · Perks'), '$195K – $229K');
+});
+
+test('salaryHead: pass-through and edge cases', () => {
+  assert.equal(salaryHead('$85,000'), '$85,000');           // no separator — whole string
+  assert.equal(salaryHead('50 000 kr/month'), '50 000 kr/month');
+  assert.equal(salaryHead(''), '');
+  assert.equal(salaryHead(null), '');
+  assert.equal(salaryHead('• trailing separator'), '• trailing separator'); // nothing before • → raw
 });

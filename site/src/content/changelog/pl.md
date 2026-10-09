@@ -9,34 +9,24 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
-## [1.244.1] — 2026-10-08
+## [1.244.2] — 2026-10-08
 
-### Fixed
-
-- **Scan icons announce real values.** The boost/fit/score icons' accessible names leaked the raw dict templates ("Fit: {band}", "Boosted by {by}") — `{band}`/`{by}`/`{score}` are now substituted (band word, booster keyword, numeric score). [HIGH a11y, caught live in the v1.244.0 regression round]
-- **Title pipes split correctly.** A 4-segment title like «C++ | Rust | Go Developer | Onsite» no longer lifts "Go Developer" out as a "country" — the split demands the segment resolves to a real country (conservative `Countries.detectCountry`).
-- **Meta dates render for every row.** `daysSince` accepted date-only ISO, but the API serves full timestamps for ~83% of dated rows — those rows showed no date segment.
-
-## [1.244.0] — 2026-10-08
-
-**Wyniki skanu czytają się jak lista, a nie jak ściana: jedna oferta = dwa wiersze, sygnały to ikony, a skan 700 ofert to stronicowana tabela zamiast strony o wysokości 37,000 px.**
+**Polerowanie strony skanowania: launcher, pasek statusu, panel repostów i filtry zaprojektowane jako spójny chrome — a tabela wyników nie może już być rozciągana przez dane boardów.**
 
 ### Naprawiono
 
-- **Anatomia wiersza.** Każda oferta renderuje się jako ograniczony dwuwierszowy wiersz: linia 1 to tytuł, linia 2 to `company · location · source · date · work-type`. Odznaka promowania, pas dopasowania tytułu i wynik dopasowania stały się ikonami ze zlokalizowanymi nazwami dostępnymi i podpowiedziami (czytniki ekranu odczytują «Соответствие: сильное» / „Fit: strong", a nie ścianę słów); odznaki zaufania i relokacji złożyły się do tej samej szyny. Seniority i wynagrodzenie pozostają kolumnami pomocniczymi widocznymi tylko na desktopie.
-- **Higiena tytułów.** Końcowy segment `| Germany | Remote` jest wydzielany z tytułu do linii metadanych — z uwzględnieniem Unicode, tylko gdy ogon jest prawdziwym znacznikiem trybu pracy, a środkowy segment ma kształt miejsca (uzasadnione piony jak „C++ | Rust | Go Developer" nigdy się nie dzielą).
-- **Koniec z rozlewaniem się w poziomie.** Stały układ tabeli, `min-width: 0`, tytuł i metadane skracane wielokropkiem do jednej linii z pełnym tekstem w podpowiedzi: zero przepełnienia strony i zero wewnętrznego przewijania tabeli przy 1440 px i 390 px (stara strona przepełniała się o 675 px przy szerokości telefonu).
-- **Stronicowanie.** Wyniki renderują się po 50 na stronę (do wyboru 25/50/100/200) — skan 700 ofert ma teraz ~4,600 px wysokości zamiast ~37,000 px, a DOM trzyma ~1,000 węzłów zamiast 5,500+.
+- **Komórki wynagrodzenia pokazują tylko zakres kwot.** Niektóre boardy wkładają cały opis benefitów do pola wynagrodzenia — widoczna komórka pokazuje teraz tylko część kwotową, a tekst trafia do tooltipa (wcześniej: 6-wierszowa komórka rozciągająca każdy wiersz).
+- **Wiersze z pustym tytułem pokazują firmę** (potem neutralny myślnik) zamiast gigantycznej pustej komórki.
+- **Badge seniority nigdy nie łamie się** w swojej kolumnie o stałej szerokości.
+- **Wiersze bez oceny pokazują przygaszone «◎ —»** z tooltipem wyjaśniającym, że porównanie z two-pagerem nie znalazło dopasowań (wcześniej: nic, co wyglądało jak błąd obok wierszy z oceną).
 
 ### Dodano
 
-- Testy kontraktów układu: dwuwierszowy wiersz, dostępne nazwy ikon (en + ru), budżet węzłów stronicowania i straż liczby/kolejności dopasowania tytułu działają w zestawie przeglądarkowym — przeprojektowanie nie może po cichu się zregresować.
+- **Przeprojektowanie chromu: karta launchera (wyrównany rząd kontrolek, dominujący przycisk podstawowy), pasek stanu terminalu z kropką stanu (bezczynny/uruchomiono/gotowe/błąd) respektujący reduced-motion, panel repostów z limitem wysokości i przyklejonym nagłówkiem (zbiór 1,560 klastrów renderował panel 155,000 px), oraz blok filtrów jako równomierna responsywna siatka z wyrównaną stopką.**
 
 ### Uwagi
 
-- Testy **5036 → 5045** unit (zestaw przeglądarkowy zyskał kontrakty układu), średnie pokrycie **98.14 % linii / 89.34 % gałęzi** (podłoga 96/86).
-- To, co znajduje skaner, wzory punktacji i `last-scan.json` pozostają nietknięte — dopasowanie tytułu nadal jest tylko adnotacją.
-- Poza tym wydaniem: stan filtrów w hashu URL i nawigacja po wierszach klawiaturą (follow-up); parsowanie `5 lakhs INR` (istniejące wcześniej).
+- Reszta #/scan jest identyczna z v1.244.1 — zmieniło się tylko polerowanie chromu i cztery poprawki powyżej. Testy 5045 → 5068 unit.
 
 ## [1.243.2] — 2026-10-08
 
