@@ -8,6 +8,42 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ---
 
+## [1.247.0] — 2026-10-09
+
+**Halens af CAR-49…58-design-sweepet er lukket — alle resterende minor/polish-fund plus det mørke kort, som den forrige udgivelse bevidst udsatte.**
+
+### Rettet
+
+- **Kortet renderer et rigtigt mørkt tema.** Zoom/lag/attribution blev mørke i v1.246.0; nu følger fliserne: Mørk tilstand tegner OSM-laget med CSS-inversion (uden leverandørnøgler), og et keyed Carto-dark-preset er tilgængeligt via `MAP_TILE_DARK_URL` (dets vært er tilladt i CSP `img-src`). Laget remontères live ved temasift.
+- **Gule callouts har mørke varianter** (`config`, `batch`, hero-advarsel) via token-mekanikken fra v1.246.0 — og en regression blev fanget undervejs: `.callout a` overdøvede `.btn-primary`; nu afgrænset til `:not(.btn)`.
+- **URL'en på Apply-infokortet knækker ikke længere midt i et ord**.
+- **CV-headerknapper er ét ikonsystem** (tekst; 📁/📄/💾-emoji-mix er væk).
+- **Trackerens statusfaner har én kasus** — sentence case med lokale nyancer (CJK/ar/hi/ta uden kønsformer).
+- **Topbar-ikoner er ét stroke-SVG-sæt** — 🔔/🌙/🩺-mixet er væk; temaknappen tegner sol/måne via CSS.
+- **Dashboardets Pipeline-kort mister sin lyserøde fremhævning** (ring kun hover/focus).
+- **Sletning af gemte søgninger ser destruktivt ud** (`.btn-danger`, ikke en neutral ghost).
+- **Pipeline-forhåndsvisning har en rigtig tom tilstand** (titel + hint + CTA, tracker-mønster).
+- **Tid/omkostnings-meta er ét mønster**: `UI.pageMeta` tegner ⏱ + omkostning på én linje under visningstitlen (evaluate/deep/auto/mode-page/orientation).
+- **Auto-pipeline mister sin ✨** — appens eneste dekorerede h1 tilbage på den fælles venstre kant.
+- **Batch-docs-URL er et inline-link**.
+- **interview-digest / orientation har designede tomme tilstande** (titel + hint + CTA).
+- **Career-plan-eksport er deaktiveret uden plan**, handlinger på én række.
+- **stats: Den duplikerede „Market report“-overskrift er væk**, og regions-placeholderen passer (kortere tekst ×18, fast bredde).
+- **Config lækker ikke længere absolutte stier** — serverens `displayPath()` viser `~/…` eller det bare filnavn.
+- **LLM_PROVIDER-hjælpeteksten er tre korte linjer** (×18 + `pre-line`), ikke en 150-tegns mono-væg.
+- **PROFILens E-mail-kort holder adressen på én linje** (ellipsis; brud kun ≤480px).
+- **Health-tekst bryder ikke længere ord** („Run buttons“ hele; overflow-wrap anywhere).
+- **Inline-kode i help overlever RTL** (LTR-isoleret, nowrap, rullebar).
+- **Hero-pillen „Live evals“ kolliderer ikke længere** i ru/ar (flex-wrap, ikke-skrumpende ikoner).
+
+### Tilføjet
+
+- **Mørk-flise-preset** (`MAP_TILE_DARK_URL` + attribution) dokumenteret i koden; CSP-`img-src`-udvidelsen dækker Carto-værten.
+
+### Noter
+
+- Standarden for mørke fliser er en CSS-inversion af OSM — keyless Carto har lukket sine basemaps bag en API-nøgle (verificeret per request); keyed-presettet er opt-in, ikke standard.
+
 ## [1.246.0] — 2026-10-09
 
 **Alle ti topfund fra CAR-48-senior-design-sweepet er rettet — blockeren og alle syv majors inkluderet.**

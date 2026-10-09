@@ -22,13 +22,11 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { loadAssembledDict, I18N_LANGS } from './helpers/i18n-vm.mjs';
-import { loadAppCss } from './helpers/css.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const R = (...p) => resolve(__dirname, '..', ...p);
 const read = (...p) => readFileSync(R(...p), 'utf8');
 
-const CSS = loadAppCss();
 const APP = read('public', 'css', 'app.css');
 const COMPONENTS = read('public', 'css', 'components.css');
 const OVERLAYS = read('public', 'css', 'overlays.css');

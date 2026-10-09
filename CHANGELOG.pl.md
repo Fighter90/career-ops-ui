@@ -9,6 +9,42 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.247.0] — 2026-10-09
+
+**Ogon przeglądu senior-design CAR-49…58 domknięty — wszystkie pozostałe minor/polish oraz ciemna mapa, którą poprzednie wydanie celowo odłożyło.**
+
+### Naprawiono
+
+- **Mapa renderuje prawdziwy ciemny motyw.** Zoom/warstwy/atrybucja ściemniały w v1.246.0; teraz podążają też kafle: tryb ciemny rysuje warstwę OSM z CSS-ową inwersją (bez kluczy dostawcy), a keyed preset Carto-dark jest dostępny przez `MAP_TILE_DARK_URL` (jego host dopuszczony w CSP `img-src`). Warstwa przemontowuje się na żywo przy zmianie motywu.
+- **Żółte callouty mają warianty ciemne** (`config`, `batch`, ostrzeżenie hero) przez mechanikę tokenów z v1.246.0 — i przy okazji złapany regres: `.callout a` przygważdżał `.btn-primary`; teraz w zakresie `:not(.btn)`.
+- **URL na karcie info Apply nie ucina się już w połowie słowa**.
+- **Przyciski nagłówka CV to jeden system ikon** (tekst; mix 📁/📄/💾 zniknął).
+- **Zakładki statusów trackera w jednym repertuarze wielkości liter** — sentence case z lokalnymi niuansami (CJK/ar/hi/ta bez form rodzajowych).
+- **Ikony topbara to jeden zestaw stroke-SVG** — mix 🔔/🌙/🩺 zniknął; przycisk motywu rysuje słońce/księżyc przez CSS.
+- **Karta Pipeline na dashboardzie traci różowe wyróżnienie** (pierścień tylko hover/focus).
+- **Usuwanie zapisanych wyszukiwań wygląda destrukcyjnie** (`.btn-danger`, nie neutralny ghost).
+- **Podgląd pipeline ma prawdziwy stan pusty** (tytuł + podpowiedź + CTA, wzór trackera).
+- **Meta czasu/kosztu to jeden wzorzec**: `UI.pageMeta` rysuje ⏱ + koszt w jednej linii pod tytułem widoku (evaluate/deep/auto/mode-page/orientation).
+- **Auto-pipeline traci ✨** — jedyny dekorowany h1 wraca na wspólną lewą krawędź.
+- **URL docs w batch to inline-link**.
+- **interview-digest / orientation mają zaprojektowane stany puste** (tytuł + podpowiedź + CTA).
+- **Export career-plan jest wyłączony bez planu**, akcje w jednym rzędzie.
+- **stats: zniknął zduplikowany nagłówek „Market report”**, a placeholder regionu się mieści (krótszy tekst ×18, stała szerokość).
+- **Config nie wycieka już absolutnych ścieżek** — serwerowy `displayPath()` pokazuje `~/…` lub samą nazwę pliku.
+- **Helper LLM_PROVIDER to trzy krótkie linie** (×18 + `pre-line`), nie 150-znakowy mono-mur.
+- **Karta EMAIL profilu trzyma adres w jednej linii** (ellipsis; zawijanie tylko ≤480px).
+- **Tekst Health nie łamie już słów** („Run buttons” w całości; overflow-wrap anywhere).
+- **Inline-code w helpu przeżywa RTL** (izolacja LTR, nowrap, przewijalne).
+- **Pigułka „Live evals” w hero nie koliduje już** w ru/ar (flex-wrap, nieskurczalne ikony).
+
+### Dodano
+
+- **Preset ciemnych kafli** (`MAP_TILE_DARK_URL` + atrybucja) udokumentowany w kodzie; rozszerzenie CSP `img-src` obejmuje host Carto.
+
+### Uwagi
+
+- Domyślne ciemne kafle to CSS-owa inwersja OSM — Carto bez klucza zamknął basemapy za API key (zweryfikowane zapytaniem); keyed preset to opt-in, nie domyślne.
+
 ## [1.246.0] — 2026-10-09
 
 **Wszystkich dziesięć czołowych ustaleń przeglądu senior-design CAR-48 naprawiono — łącznie z blockerem i wszystkimi siedmioma major.**

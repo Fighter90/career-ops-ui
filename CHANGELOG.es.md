@@ -10,6 +10,42 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 
 ---
 
+## [1.247.0] — 2026-10-09
+
+**La cola del barrido de diseño CAR-49…58 está completa: todos los menores y pulidos restantes, más el mapa oscuro que la versión anterior aplazó a propósito.**
+
+### Corregido
+
+- **El mapa renderiza un tema oscuro real.** Zoom/capas/atribución se oscurecieron en v1.246.0; ahora los mosaicos también siguen: el modo oscuro dibuja la capa OSM con una inversión CSS (sin claves de proveedor) y hay un preajuste Carto-dark con clave vía `MAP_TILE_DARK_URL` (su host está permitido en el CSP `img-src`). La capa se remonta en vivo al cambiar de tema.
+- **Los callouts amarillos tienen variante oscura** (`config`, `batch`, aviso del hero) con la mecánica de tokens de v1.246.0 — y se cazó una regresión: `.callout a` pisaba a `.btn-primary`; ahora con ámbito `:not(.btn)`.
+- **La URL de la tarjeta de información de Apply ya no se corta** a mitad de palabra.
+- **Los botones de cabecera del CV usan un solo sistema de iconos** (texto; fuera el mezclillo 📁/📄/💾).
+- **Las pestañas de estado del tracker tienen un solo estilo de caja** — frase normal, con matices por locale (CJK/ar/hi/ta sin formas de género).
+- **Los iconos de la barra superior son un único set de SVG de trazo** — fuera 🔔/🌙/🩺; el botón de tema dibuja sol/luna con CSS.
+- **La tarjeta Pipeline del panel pierde su resaltado rosa** (anillo solo en hover/focus).
+- **Borrar búsquedas guardadas se ve destructivo** (`.btn-danger`, no un fantasma neutro).
+- **La vista previa de pipeline tiene estado vacío real** (título + pista + CTA, patrón tracker).
+- **El metadato de tiempo/costo es un patrón único**: `UI.pageMeta` pinta ⏱ + costo en una línea bajo el título (evaluate/deep/auto/mode-page/orientation).
+- **Auto-pipeline pierde su ✨** — el único h1 decorado vuelve al borde izquierdo común.
+- **La URL de docs de batch es un enlace en línea**.
+- **interview-digest / orientation tienen estados vacíos diseñados** (título + pista + CTA).
+- **Export de career-plan queda deshabilitado sin plan**, acciones en una fila.
+- **stats: fuera el encabezado duplicado «Market report»** y el placeholder de región ya cabe (texto más corto ×18, ancho fijo).
+- **Config ya no filtra rutas absolutas** — `displayPath()` del servidor muestra `~/…` o el nombre del archivo.
+- **El helper de LLM_PROVIDER son tres líneas cortas** (×18 + `pre-line`), no un muro mono de 150 caracteres.
+- **La tarjeta EMAIL del perfil mantiene la dirección en una línea** (puntos suspensivos; salto solo ≤480px).
+- **El texto de Health ya no parte palabras** («Run buttons» entero; overflow-wrap anywhere).
+- **El código en línea de help sobrevive en RTL** (aislado LTR, nowrap, desplazable).
+- **La píldora «Live evals» del hero ya no colisiona** en ru/ar (flex-wrap, iconos no reducibles).
+
+### Añadido
+
+- **Preajuste de mosaicos oscuros** (`MAP_TILE_DARK_URL` + attribution) documentado en código; la ampliación del CSP `img-src` cubre el host de Carto.
+
+### Notas
+
+- El modo oscuro por defecto es una inversión CSS de OSM: Carto sin clave cerró sus mapas tras una API key (verificado), así que el preajuste con clave es opcional, no el defecto.
+
 ## [1.246.0] — 2026-10-09
 
 **Los diez hallazgos principales del barrido de diseño sénior CAR-48 están corregidos, incluidos el bloqueante y los siete mayores.**

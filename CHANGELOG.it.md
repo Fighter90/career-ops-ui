@@ -2,6 +2,42 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.247.0] — 2026-10-09
+
+**La coda della scansione design CAR-49…58 è chiusa — tutti i reperti minori e di polish rimanenti, più la mappa scura che la versione precedente aveva rimandato di proposito.**
+
+### Corretto
+
+- **La mappa renderizza un vero tema scuro.** Zoom/livelli/attribuzione sono diventati scuri in v1.246.0; ora seguono anche le tessere: il modo scuro disegna il layer OSM con un’inversione CSS (senza chiavi di fornitore) e un preset Carto-dark con chiave è disponibile via `MAP_TILE_DARK_URL` (il suo host è ammesso nel CSP `img-src`). Il layer si rimonta in diretta al cambio tema.
+- **I callout gialli hanno varianti scure** (`config`, `batch`, avviso hero) con la meccanica a token di v1.246.0 — e in corsa è stata colta una regressione: `.callout a` soffocava `.btn-primary`; ora con ambito `:not(.btn)`.
+- **L’URL della scheda info di Apply non si tronca più** a metà parola.
+- **I pulsanti d’intestazione del CV usano un unico sistema di icone** (testo; fuori il miscuglio 📁/📄/💾).
+- **Le tab di stato del tracker hanno un’unica cassa** — caratteri da frase, con adattamenti per locale (CJK/ar/hi/ta senza forme di genere).
+- **Le icone della barra superiore sono un solo set SVG a tratto** — fuori il miscuglio 🔔/🌙/🩺; il pulsante tema disegna sole/luna via CSS.
+- **La card Pipeline della dashboard perde il suo evidenziato rosa** (anello solo hover/focus).
+- **Eliminare le ricerche salvate appare davvero distruttivo** (`.btn-danger`, non un ghost neutro).
+- **L’anteprima di pipeline ha un vero stato vuoto** (titolo + suggerimento + CTA, schema tracker).
+- **Il meta tempo/costo segue un unico schema**: `UI.pageMeta` disegna ⏱ + costo su una riga sotto il titolo della vista (evaluate/deep/auto/mode-page/orientation).
+- **Auto-pipeline perde il suo ✨** — l’unico h1 decorato dell’app torna sul bordo sinistro condiviso.
+- **L’URL dei docs di batch è un link in linea**.
+- **interview-digest / orientation hanno stati vuoti disegnati** (titolo + suggerimento + CTA).
+- **L’export di career-plan è disabilitato senza piano**, azioni su una sola riga.
+- **stats: via il titolo duplicato «Market report»** e il placeholder di regione sta in riga (testo più corto ×18, larghezza fissa).
+- **Config non perde più percorsi assoluti** — il `displayPath()` lato server mostra `~/…` o il nome nudo del file.
+- **L’helper di LLM_PROVIDER sono tre righe brevi** (×18 + `pre-line`), non un muro mono di 150 caratteri.
+- **La card EMAIL del profilo tiene l’indirizzo su una riga** (ellipsis; a capo solo ≤480px).
+- **Il testo di Health non spezza più le parole** («Run buttons» intero; overflow-wrap anywhere).
+- **Il codice inline del help sopravvive all’RTL** (isolato LTR, nowrap, scorrevole).
+- **La pill «Live evals» dell’hero non collide più** in ru/ar (flex-wrap, icone non riducibili).
+
+### Aggiunto
+
+- **Preset di tessere scure** (`MAP_TILE_DARK_URL` + attribuzione) documentato nel codice; l’ampliamento del CSP `img-src` copre l’host Carto.
+
+### Note
+
+- Il default delle tessere scure è un’inversione CSS di OSM — Carto senza chiave ha chiuso le basemaps dietro una API key (verificato con richiesta); il preset con chiave è un opt-in, non il default.
+
 ## [1.246.0] — 2026-10-09
 
 **Tutti i dieci reperti principali della scansione senior-design CAR-48 sono corretti — bloccante e tutti e sette i major inclusi.**

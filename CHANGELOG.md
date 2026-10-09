@@ -8,6 +8,42 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.247.0] — 2026-10-09
+
+**The tail of the CAR-49…58 design sweep is done — every remaining minor and polish finding, plus the dark map the previous release deliberately deferred.**
+
+### Fixed
+
+- **The map renders a real dark theme.** Zoom/layers/attribution went dark in v1.246.0; the tiles themselves now follow: the dark mode renders an OSM tile layer with a CSS inversion (no vendor keys), and a keyed Carto-dark preset is available via `MAP_TILE_DARK_URL` (its host is allow-listed in the CSP `img-src`). The layer remounts live on theme switches.
+- **Yellow callouts have dark variants** (`config`, `batch`, hero warning) via the v1.246.0 callout token mechanics — and a regression caught on the way: `.callout a` styling overpowered `.btn-primary`; now scoped `:not(.btn)`.
+- **Apply info-card URL no longer truncates mid-word** (overflow-wrap anywhere).
+- **CV header buttons are one icon system** (text-only; the 📁/📄/💾 emoji mix is gone).
+- **Tracker status tabs are one case** — sentence case, folded across locales (CJK/ar/hi/ta handled without gender forms).
+- **Topbar icons are a single stroke-SVG set** — the 🔔/🌙/🩺 emoji mix is gone; the theme button renders sun/moon via CSS, so the app no longer rewrites button text.
+- **The dashboard Pipeline card lost its stray pink highlight** (ring is hover/focus-only now).
+- **Saved-search Delete is visibly destructive** (`.btn-danger`, not a neutral ghost).
+- **Pipeline preview has a real empty state** (title + hint + CTA, tracker pattern).
+- **Time/cost meta is one pattern** — `UI.pageMeta` renders ⏱ + cost as a single line under the view title (evaluate/deep/auto/mode-page/orientation).
+- **Auto-pipeline lost its ✨** — the only decorated h1 in the app is back on the shared left edge.
+- **Batch docs URL is an inline link** (no bare mid-paragraph wrap).
+- **interview-digest / orientation have designed empty states** (title + hint + CTA).
+- **Career-plan export is disabled until a plan exists**, actions on one row.
+- **stats: the duplicate «Market report» heading is gone** and the region placeholder fits (shorter copy ×18, fixed width).
+- **Config no longer leaks absolute filesystem paths** — server-side `displayPath()` renders `~/…` or the bare file name.
+- **The LLM_PROVIDER helper is three short lines** (×18 copy + `pre-line`), not a 150-char mono wall.
+- **Profile EMAIL card keeps addresses on one line** (ellipsis; wrap only ≤480px).
+- **Health text no longer breaks inside words** («Run buttons» stays whole; overflow-wrap anywhere).
+- **Help inline code survives RTL** (LTR-isolated, nowrap, scrollable; `career-ops` in docs/help/ar.md is now coded as a token).
+- **The hero «Live evals» pill no longer collides** in ru/ar (flex-wrap, non-shrink icons).
+
+### Added
+
+- **Dark-tile preset** (`MAP_TILE_DARK_URL` + attribution env) documented in-code; the CSP `img-src` addition covers the Carto host for it.
+
+### Notes
+
+- The dark-tile default is a CSS inversion of OSM tiles — keyless Carto now gates its basemaps behind an API key (verified by request), so the keyed preset is opt-in, not the default.
+
 ## [1.246.0] — 2026-10-09
 
 **All ten top findings from the CAR-48 senior-design sweep are fixed — the blocker and all seven majors included.**

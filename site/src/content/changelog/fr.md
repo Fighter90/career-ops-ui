@@ -10,6 +10,42 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 
 ---
 
+## [1.247.0] — 2026-10-09
+
+**La queue du balayage design CAR-49…58 est terminée — tous les mineurs et polishes restants, plus la carte sombre que la version précédente avait volontairement différée.**
+
+### Corrigé
+
+- **La carte rend un vrai thème sombre.** Zoom/couches/attribution sont passés au sombre en v1.246.0 ; les tuiles suivent désormais : le mode sombre dessine la couche OSM avec une inversion CSS (sans clés vendeur), et un préréglage Carto-dark à clé est disponible via `MAP_TILE_DARK_URL` (son hôte est autorisé dans le CSP `img-src`). La couche se remonte en direct au changement de thème.
+- **Les callouts jaunes ont des variantes sombres** (`config`, `batch`, avertissement du hero) via la mécanique de tokens de v1.246.0 — et une régression interceptée au passage : `.callout a` écrasait `.btn-primary` ; désormais scoping `:not(.btn)`.
+- **L’URL de la carte d’info d’Apply ne coupe plus** au milieu d’un mot.
+- **Les boutons d’en-tête CV forment un seul système d’icônes** (texte ; le mélange 📁/📄/💾 disparaît).
+- **Les onglets de statut du tracker sont d’une seule casse** — casse phrase, avec variantes par locale (CJK/ar/hi/ta sans formes de genre).
+- **Les icônes de la barre supérieure forment un unique jeu SVG au trait** — le mélange 🔔/🌙/🩺 disparaît ; le bouton de thème dessine soleil/lune en CSS.
+- **La carte Pipeline du tableau perd son surlignage rose** (anneau hover/focus uniquement).
+- **Supprimer une recherche enregistrée est visiblement destructif** (`.btn-danger`, pas un fantôme neutre).
+- **L’aperçu de pipeline a un vrai état vide** (titre + indice + CTA, motif tracker).
+- **La méta temps/coût suit un motif unique** : `UI.pageMeta` affiche ⏱ + coût sur une ligne sous le titre de vue (evaluate/deep/auto/mode-page/orientation).
+- **Auto-pipeline perd son ✨** — le seul h1 décoré revient sur le bord gauche commun.
+- **L’URL des docs batch est un lien en ligne**.
+- **interview-digest / orientation ont des états vides dessinés** (titre + indice + CTA).
+- **L’export de career-plan est désactivé sans plan**, actions sur une seule rangée.
+- **stats : le titre « Market report » dupliqué disparaît** et le placeholder de région tient (texte plus court ×18, largeur fixe).
+- **Config ne divulgue plus de chemins absolus** — le `displayPath()` serveur affiche `~/…` ou le nom nu du fichier.
+- **L’aide LLM_PROVIDER tient en trois lignes courtes** (×18 + `pre-line`), fini le mur mono de 150 caractères.
+- **La carte EMAIL du profil garde l’adresse sur une ligne** (ellipse ; retour seulement ≤480px).
+- **Le texte Health ne coupe plus les mots** (« Run buttons » entier ; overflow-wrap anywhere).
+- **Le code en ligne du help survit au RTL** (isolé LTR, nowrap, défilable).
+- **La pilule « Live evals » du hero ne se cogne plus** en ru/ar (flex-wrap, icônes non réductibles).
+
+### Ajouté
+
+- **Préréglage de tuiles sombres** (`MAP_TILE_DARK_URL` + attribution) documenté dans le code ; l’ajout au CSP `img-src` couvre l’hôte Carto.
+
+### Notes
+
+- Le défaut des tuiles sombres est une inversion CSS d’OSM — Carto sans clé a fermé ses basemaps derrière une clé API (vérifié par requête) ; le préréglage à clé est un opt-in, pas le défaut.
+
 ## [1.246.0] — 2026-10-09
 
 **Les dix constats majeurs du passage design senior CAR-48 sont corrigés — le bloqueur et les sept majeurs inclus.**
