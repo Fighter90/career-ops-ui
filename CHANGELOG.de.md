@@ -4,7 +4,7 @@
 
 ## [1.248.2] — 2026-10-10
 
-**Reggressionsrunde: Der Eval-Timer verwandelt Pipeline-Müll nicht mehr in „Last evaluation“, das SCORE-Parsing überlebt reale Formate, und der Tracker spricht endlich Ihre Sprache.**
+**Regressionsrunde: Der Eval-Timer verwandelt Pipeline-Müll nicht mehr in „Last evaluation“, das SCORE-Parsing überlebt reale Formate, und der Tracker spricht endlich Ihre Sprache.**
 
 ### Behoben
 

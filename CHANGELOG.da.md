@@ -10,7 +10,7 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ## [1.248.2] — 2026-10-10
 
-**Reggressionsrunde: Eval-timeren forvandler ikke længere pipeline-skrald til „Last evaluation“, SCORE-parsingen overlever rigtige formater, og tracker taler endelig dit sprog.**
+**Regressionsrunde: Eval-timeren forvandler ikke længere pipeline-skrald til „Last evaluation“, SCORE-parsingen overlever rigtige formater, og tracker taler endelig dit sprog.**
 
 ### Rettet
 
