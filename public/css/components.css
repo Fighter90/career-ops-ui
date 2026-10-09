@@ -40,8 +40,8 @@
 /* PROFILE-1 — `anywhere`, not `break-word`: only `anywhere` counts toward min-content, which is what bursts the track (tests/playwright-card-overflow.mjs). */
 .card-value { font-size: 17px; font-weight: 600; margin-top: 6px; overflow-wrap: anywhere; }
 .card-row > * { min-width: 0; }
-/* CAR-56 #3 (v1.247.0) — long identifiers (an email) stay on one line with an ellipsis; wrap-anywhere only on a phone-narrow card. */
-.card-value--nowrap { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+/* CAR-56 #3 (v1.247.0) — long identifiers (an email) stay on one line with an ellipsis; wrap-anywhere only on a phone-narrow card. v1.248.2 (QA) — at 1440 the 17px value still clipped a normal 24-char address in the card's ≈218px inner width; 15px keeps it whole (computed in tests/design-qa-v1248). */
+.card-value--nowrap { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-size: 15px; }
 @media (max-width: 480px) {
   .card-value--nowrap { white-space: normal; overflow: visible; overflow-wrap: anywhere; }
 }

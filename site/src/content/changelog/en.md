@@ -8,6 +8,28 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.248.2] — 2026-10-10
+
+**Regression round: the eval timer can no longer turn pipeline junk into «Last evaluation», SCORE parsing survives real-world formats, and the tracker finally speaks your language.**
+
+### Fixed
+
+- **Empty-JD reports are never written.** The auto-pipeline's JD gate rose from 50 to 200 characters before any LLM call — placeholder pages (`example.com/qa-v167-…`) now end as an SSE error + console warning instead of a `…-t-role-<ts>.md` report that the dashboard showed as «Last evaluation» (42 such files on prod).
+- **SCORE_SUMMARY parsing survives real formats**: «4,2/5», «4.2 / 5», «**4.2**», «SCORE :» all validate now; a comma with exactly 1–2 digits is decimal, with 3 it is thousands (the old code read «4,200» as 4.2 and passed the 0–5 gate). A failed check logs only the `SCORE:` line — never report content (CI logs are public).
+- **Tracker statuses are translated**: stage tabs and status badges render localized labels in all 18 locales; the canonical value in data, filters and URLs is untouched.
+- **Honest ETA**: «⏱ ~30s» became «~2–4 min» across evaluate/advisor/market-report (the real range is 86–285 s), and the evaluate subtitle reads **A–G**.
+- **Accessibility**: the config API-keys counter and the pipeline counter now clear 4.5:1 (was 4.31:1); a facet chip with an empty value is no longer rendered without an accessible name.
+- **UI polish**: the saved-search Delete button reads destructive only while a search is selected (disabled otherwise); the profile EMAIL card no longer clips at 1440 px; the live-evals pill gained icon/text spacing including RTL; the docs FAB no longer covers the Leaflet attribution; the help «?» no longer wraps under the stats tabs; the usage view gained air between its subtitle and range tabs; health now says **career-ops-ui**.
+
+### Added
+
+- **`scripts/post-qa-cleanup.mjs`**: dry-run by default, `--apply` with automatic backups (`*.bak-<ts>`, reports moved to `qa/cleanup-backup-<ts>/`) — ZZ-QA-TEST tracker rows, `*-t-role-*` reports without a valid SCORE, and `example.com` pipeline entries.
+
+### Notes
+
+- The ar/ja evaluation drift from the regression round did **not** repeat on the re-run (both: lang ✓ + A–G ✓) — the language-check ta entry and the SCORE parser hardening ship as defense-in-depth.
+- The prod **cleanup itself awaits an explicit user yes**: the dry-run plan precedes any `--apply`.
+
 ## [1.248.1] — 2026-10-09
 
 **`location_filter` gains the parent's `always_allow` and `block_hard` tiers (CAR-60) — a multi-country location string survives a blocked-sibling list, and an explicit hard block can no longer be rescued.**

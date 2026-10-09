@@ -3,7 +3,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { validateEvaluationReport } from '../server/lib/eval-validate.mjs';
+import { validateEvaluationReport, asciiNumber } from '../server/lib/eval-validate.mjs';
 
 const GOOD = `
 ## Block A — Fit
@@ -144,3 +144,61 @@ test('v1.241.1: SCORE in local digits or with a decimal comma is a number', asyn
   assert.equal(asciiNumber('४,५ / ५'), '4.5 / 5');
   assert.equal(asciiNumber('Berlin, 3'), 'Berlin, 3', 'a comma between words stays');
 });
+
+// ── v1.248.2 — robust SCORE parsing (the da regression) ─────────────────────
+// A well-formed da report (blocks A–G) was rejected with
+// "SCORE_SUMMARY score must be a number between 0 and 5" because its score
+// line used a form the strict `SCORE:` regex / bare number parse refused.
+
+const daSummary = (scoreLine) => blocks((L) => `## Block ${L} — x`).replace(/^SCORE:.*$/m, scoreLine);
+const scoreOk = (scoreLine) => !validateEvaluationReport(daSummary(scoreLine)).some((i) => i.startsWith('SCORE_SUMMARY score'));
+
+test('v1.248.2: «4,2/5», «4.2 / 5», «**4.2**», «SCORE :» and bold labels all parse as a valid score', () => {
+  for (const line of ['SCORE: 4,2/5', 'SCORE : 4,2 / 5', 'SCORE : 4.2', 'SCORE: **4.2**', '**SCORE:** 4.2', '**SCORE:** 4,2/5']) {
+    assert.ok(scoreOk(line), `${JSON.stringify(line)} must parse as a valid 0..5 score`);
+  }
+});
+
+test('v1.248.2: a comma with three trailing digits is thousands — «4,200» must NOT read as 4.2', () => {
+  // The old parser turned "4,200" into 4.200 → 4.2 and PASSED the gate.
+  assert.equal(asciiNumber('4,200'), '4200');
+  assert.equal(asciiNumber('1,234'), '1234');
+  assert.ok(!scoreOk('SCORE: 4,200 applicants'), 'thousands are out of the 0..5 range');
+  // 1–2 trailing digits stay decimal.
+  assert.equal(asciiNumber('4,2/5'), '4.2/5');
+  assert.equal(asciiNumber('4,25'), '4.25');
+});
+
+test('v1.248.2: an ambiguous comma group is left untouched, not misread as a decimal', () => {
+  // The old parser turned "1,2345" into 1.2345; the new one refuses to guess.
+  assert.equal(asciiNumber('1,2345'), '1,2345');
+  assert.ok(!scoreOk('SCORE: 1,234,567'), 'multi-group thousands stay out of the 0..5 range');
+});
+
+test('v1.248.2: a failing score logs ONLY the SCORE line — never other report content', () => {
+  const seen = [];
+  const origWarn = console.warn;
+  console.warn = (...a) => seen.push(a.map(String).join(' '));
+  let issues;
+  try {
+    issues = validateEvaluationReport(daSummary('SCORE: high — see analysis'));
+  } finally { console.warn = origWarn; }
+  assert.ok(issues.some((i) => i.startsWith('SCORE_SUMMARY score')));
+  assert.equal(seen.length, 1, `exactly one log line, got ${seen.length}`);
+  assert.match(seen[0], /SCORE line/);
+  assert.ok(seen[0].includes('SCORE:'), 'the SCORE line itself is logged');
+  // The SUMMARY block's other fields and the report body must not leak.
+  for (const leak of ['COMPANY', 'ROLE:', 'ARCHETYPE', 'LEGITIMACY', 'Block A']) {
+    assert.ok(!seen[0].includes(leak), `log must not carry "${leak}"`);
+  }
+});
+
+test('v1.248.2: a valid score logs nothing', () => {
+  const seen = [];
+  const origWarn = console.warn;
+  console.warn = (...a) => seen.push(a.map(String).join(' '));
+  try { validateEvaluationReport(daSummary('SCORE : 4,2 / 5')); }
+  finally { console.warn = origWarn; }
+  assert.deepEqual(seen, [], 'no console output for a well-formed score');
+});
+

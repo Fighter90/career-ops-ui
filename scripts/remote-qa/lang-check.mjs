@@ -10,6 +10,10 @@
 const SCRIPT = {
   ar: /[؀-ۿ]/u, hi: /[ऀ-ॿ]/u, ko: /[가-힯]/u,
   ru: /[Ѐ-ӿ]/u, uk: /[Ѐ-ӿ]/u,
+  // v1.248.2 — Tamil (U+0B80–U+0BFF): the 18th UI locale was missing here, so
+  // a live ta evaluation fell through to the English stop-word table and could
+  // read as "not in ta" even when it was pure Tamil prose.
+  ta: /[஀-௿]/u,
 };
 const WORDS = {
   en: ['the', 'and', 'with', 'for', 'you', 'your', 'this', 'that', 'are', 'is'],

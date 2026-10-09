@@ -449,18 +449,35 @@ Router.register('scan', async () => {
     window.ScanPrefs.saveSearch(name, getFilterState());
     ssName.value = '';
     refreshSavedSearches(name);
+    syncSsDelBtn();
     UI.toast(t('scan.savedOk', 'Search saved'), 'success');
   } }, '💾 ' + t('scan.saveSearch', 'Save search'));
-  // CAR-50 #3 (v1.247.0) — Delete is destructive; it wears the shared
-  // .btn-danger affordance instead of the neutral ghost it sat in before
-  // (same class the scan Stop button is promoted to while running).
-  const ssDelBtn = c('button', { className: 'btn btn-danger', type: 'button', onClick: () => {
+  // CAR-50 #3 (v1.247.0) + v1.248.2 (QA) — Delete is destructive, but the red
+  // fill only makes sense when there is something selected to delete: with a
+  // saved search chosen the button wears .btn-danger (the same affordance the
+  // scan Stop button gets while running); with NO selection it is a disabled
+  // neutral ghost, so a full-red button never invites a click that has nothing
+  // to delete. v1.247.0 made it red unconditionally — the QA pass flagged that.
+  const ssDelBtn = c('button', { className: 'btn btn-ghost', type: 'button', disabled: true, onClick: () => {
     const name = ssSelect.value;
     if (!name) return;
     window.ScanPrefs.removeSearch(name);
     refreshSavedSearches('');
+    syncSsDelBtn();
     UI.toast(t('scan.savedDeleted', 'Search deleted'), 'success');
   } }, '🗑 ' + t('scan.deleteSearch', 'Delete'));
+  // Red only while a saved search is actually selected; the [aria-disabled]
+  // mirror keeps AT consistent with the disabled state.
+  function syncSsDelBtn() {
+    const armed = !!ssSelect.value;
+    ssDelBtn.classList.toggle('btn-danger', armed);
+    ssDelBtn.classList.toggle('btn-ghost', !armed);
+    ssDelBtn.disabled = !armed;
+    if (armed) ssDelBtn.removeAttribute('aria-disabled');
+    else ssDelBtn.setAttribute('aria-disabled', 'true');
+  }
+  ssSelect.addEventListener('change', syncSsDelBtn);
+  syncSsDelBtn();
   const applyBtn = c('button', { className: 'btn btn-primary', type: 'button', id: 'scan-apply', onClick: applyFilters }, t('scan.applyFilters', 'Apply'));
   const resetBtn = c('button', { className: 'btn btn-ghost', type: 'button', onClick: resetFilters }, t('scan.resetFilters', 'Reset'));
   // Labelled field: the control is WRAPPED in a <label> (implicit association

@@ -2,6 +2,24 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.248.2] — 2026-10-10
+
+**Regresyon turu: değerlendirme zamanlayıcısı pipeline çöpünü artık 「Last evaluation」e dönüştürmüyor, SCORE ayrıştırma gerçek biçimleri toluyor ve tracker sonunda dilinizi konuşuyor.**
+
+### Düzeltildi
+
+- **Boş-JD raporları artık yazılmıyor.** Auto-pipeline'ın JD kapısı LLM çağrısından önce 50 → 200 karaktere çıktı — yer tutucu sayfalar (`example.com/qa-v167-…`) `…-t-role-<ts>.md` raporu yerine SSE hatası + konsol uyarısıyla bitiyor; panonun 「Last evaluation」 olarak gösterdiği (prod'da 42 dosya) tam olarak buydu.
+- **SCORE_SUMMARY ayrıştırma gerçek biçimleri tolüyor**: 「4,2/5」「4.2 / 5」「**4.2**」「SCORE :」 hepsi geçerli; 1–2 haneli virgül ondalık, 3 haneli binliktir (eski kod 「4,200」ü 4.2 okuyup 0–5 kapısından geçiyordu). Başarısızlık yalnızca `SCORE:` satırını loglar — rapor içeriğini asla (CI logları herkese açık).
+
+### Eklendi
+
+- **`scripts/post-qa-cleanup.mjs`**: varsayılan dry-run, `--apply` otomatik yedeklerle (`*.bak-<ts>`, raporlar `qa/cleanup-backup-<ts>/`e taşınır): tracker'daki ZZ-QA-TEST satırları, geçerli SCORE'suz `*-t-role-*` raporları, pipeline'daki `example.com` girdileri.
+
+### Notlar
+
+- Regresyon turunun ar/ja kayması yeniden koşuda **tekrarlanmadı** (ikisi de lang ✓ + A–G ✓) — language-check'taki ta girdisi ve sağlamlaştırılmış SCORE ayrıştırıcı defense-in-depth olarak çıkıyor.
+- **Prod temizliği kullanıcının açık 「evet」ini bekliyor**: önce dry-run planı, sonra `--apply`.
+
 ## [1.248.1] — 2026-10-09
 
 **`location_filter`, ebeveynin `always_allow` ve `block_hard` katmanlarını kazandı (CAR-60) — çok ülkeli bir konum dizisi kardeş-engel listesini atlatır ve açık bir sert blok artık kurtarılamaz.**

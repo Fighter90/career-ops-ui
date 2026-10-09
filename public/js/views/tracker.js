@@ -37,6 +37,17 @@ Router.register('tracker', async () => {
   // plus a leading ALL tab. Active stage drives the filter; the labels are the
   // canonical status labels verbatim (same as the row badges), so no client-side
   // whitelist and no new i18n keys. `activeStage === ''` means ALL.
+  // v1.248.2 — the stage tabs and row badges TRANSLATE their displayed label
+  // (track.status.*); the canonical value stays canonical everywhere it is
+  // DATA: the tab's filter value, the stage-folding comparisons, sorting and
+  // the URL are untouched. Unknown/alias statuses fall back to the raw label
+  // (t() returns the fallback), so the server-driven whitelist stays the only
+  // source of truth (v1.128.0 doctrine). The key is composed in a variable so
+  // the static t('…') coverage scan sees no phantom literal key.
+  const statusLabel = (s) => {
+    const key = 'track.status.' + String(s || '').toLowerCase();
+    return t(key, s || '');
+  };
   let activeStage = '';
   const tabBar = c('div', {
     className: 'tracker-tabs',
@@ -78,7 +89,9 @@ Router.register('tracker', async () => {
       return b;
     };
     tabBar.appendChild(tab(t('track.allStatus', 'All'), '', rows.length));
-    for (const s of STAGES) tabBar.appendChild(tab(s, s, counts[s] || 0));
+    // The tab's DISPLAYED caption is the localized label; the tab's filter
+    // VALUE stays the canonical stage label `s` (comparison + folding below).
+    for (const s of STAGES) tabBar.appendChild(tab(statusLabel(s), s, counts[s] || 0));
   }
 
   const tbody = c('tbody');
@@ -224,8 +237,12 @@ Router.register('tracker', async () => {
       c('td', null, c('span', { className: 'score-pill ' + scoreCls }, r.score || '—')),
       // Status badge + (for ATS postings) a lazy "still live?" check. The
       // affordance is null for non-ATS rows, so most rows are unchanged.
+      // v1.248.2 — the badge CAPTION is the localized canonical label (the raw
+      // status is folded through the server alias map first, so "contratado"
+      // shows as "Hired"/«Нанят»); statusClass + every comparison still read
+      // the canonical value.
       c('td', null, [
-        c('span', { className: 'badge ' + statusClass(r.status) }, r.status || ''),
+        c('span', { className: 'badge ' + statusClass(r.status) }, statusLabel(fold(r.status))),
         livenessAffordance(r.url),
       ]),
       // G-006 (v1.15.0) — Legitimacy column. Mirrors the badge tint used on
@@ -265,7 +282,7 @@ Router.register('tracker', async () => {
     ? c('div', { className: 'card mb-3 hired-banner', role: 'status' }, [
       c('span', { className: 'hired-banner-emoji', 'aria-hidden': 'true' }, '🎉'),
       c('strong', null, t('track.hiredTitle', 'Congratulations — job landed!')),
-      c('span', null, ` ${hiredCount} × Hired · ${t('track.hiredNote', 'The search that ends well.')}`),
+      c('span', null, ` ${hiredCount} × ${statusLabel('Hired')} · ${t('track.hiredNote', 'The search that ends well.')}`),
     ])
     : null;
 

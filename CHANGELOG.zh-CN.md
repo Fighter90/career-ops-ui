@@ -9,6 +9,24 @@
 ---
 
 
+## [1.248.2] — 2026-10-10
+
+**回归轮：评估定时器不再把 pipeline 垃圾变成「Last evaluation」，SCORE 解析扛得住真实格式，跟踪器终于说你的语言。**
+
+### 修复
+
+- **空 JD 报告不再被写入。** auto-pipeline 的 JD 门在 LLM 调用前从 50 提到 200 字符——占位页（`example.com/qa-v167-…`）以 SSE 错误 + 控制台警告结束，而不是被仪表盘显示为「Last evaluation」的 `…-t-role-<ts>.md` 报告（生产环境已有 42 个）。
+- **SCORE_SUMMARY 解析扛得住真实格式**：「4,2/5」「4.2 / 5」「**4.2**」「SCORE :」全部有效；逗号后 1–2 位是小数，3 位是千分位（旧代码把「4,200」读成 4.2 并通过 0–5 门）。失败只记录 `SCORE:` 行——绝不记录报告内容（CI 日志公开）。
+
+### 新增
+
+- **`scripts/post-qa-cleanup.mjs`**：默认 dry-run，`--apply` 带自动备份（`*.bak-<ts>`，报告移入 `qa/cleanup-backup-<ts>/`）：tracker 的 ZZ-QA-TEST 行、无有效 SCORE 的 `*-t-role-*` 报告、pipeline 的 `example.com` 条目。
+
+### 备注
+
+- 回归轮的 ar/ja 漂移在重跑中**未再现**（两者 lang ✓ + A–G ✓）——language-check 的 ta 条目与强化的 SCORE 解析作为纵深防御发布。
+- 生产清理等待用户明确「是」：先 dry-run 计划，后 `--apply`。
+
 ## [1.248.1] — 2026-10-09
 
 **`location_filter` 获得父级的 `always_allow` 与 `block_hard` 层级（CAR-60）——多国位置字符串挺过兄弟封锁列表，而显式硬封锁不再能被救回。**

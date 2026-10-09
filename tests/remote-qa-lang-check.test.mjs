@@ -7,7 +7,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { languageOk, describe, prose, headingSkeleton } from '../scripts/remote-qa/lang-check.mjs';
+import { languageOk, describe, prose, headingSkeleton, scriptShare } from '../scripts/remote-qa/lang-check.mjs';
 
 const HI = 'यह भूमिका प्लेटफ़ॉर्म टीम के लिए है और उम्मीदवार का अनुभव इसके अनुरूप है। ';
 const EN_TERMS = 'Kubernetes Terraform PostgreSQL AWS GCP Go gRPC Kafka ';
@@ -96,3 +96,18 @@ test('a stray quote (inches) or a one-word quote does not hide prose', () => {
   assert.doesNotMatch(prose('x „eins zwei drei“ y'), /eins/);
   assert.doesNotMatch(prose('x «un deux trois» y'), /deux/);
 });
+
+// v1.248.2 — Tamil (ta) is the 18th UI locale but had no entry in the SCRIPT
+// table, so a live ta evaluation fell through to the English stop-word table.
+test('Tamil prose passes the ta check; English is not Tamil', () => {
+  const ta = 'இந்தப் பணி வேட்பாளருக்கு மிகவும் பொருத்தமானது மற்றும் அவரது அனுபவம் தேவைகளுடன் ஒத்துப்போகிறது. ';
+  assert.ok(scriptShare(ta, 'ta').own > 0, 'own-words share above zero');
+  assert.equal(languageOk(ta.repeat(10), 'ta'), true, describe(ta.repeat(10), 'ta'));
+  assert.match(describe(ta.repeat(10), 'ta'), /^ta script \d+%$/);
+  assert.doesNotMatch(describe(ta.repeat(10), 'ta'), /பணி/); // numbers only, no text
+  const en = 'The candidate fits the platform role and the evidence supports it. '.repeat(20);
+  assert.equal(languageOk(en, 'ta'), false, describe(en, 'ta'));
+  // Tamil prose with Latin tech terms stays Tamil (same rule as hi/ar/ko).
+  assert.equal(languageOk((ta + 'Kubernetes AWS ').repeat(10), 'ta'), true);
+});
+

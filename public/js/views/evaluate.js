@@ -137,8 +137,10 @@ Router.register('evaluate', async () => {
   // CAR-51 #1 (v1.247.0) — the ⏱ ETA + cost hint live in ONE meta line
   // under the view title (shared UI.pageMeta helper), not as orphans
   // wrapped after the action row.
+  // v1.248.2 — the ETA is honest now: live evaluations really run
+  // 86–285 s, so the stale "~30s" became "~2–4 min" (eval.eta ×18).
   const pageMeta = UI.pageMeta(t,
-    c('span', { className: 'advisor-eta' }, '⏱ ' + t('advisor.eta', '~30s')),
+    c('span', { className: 'advisor-eta' }, '⏱ ' + t('eval.eta', '~2–4 min')),
     UI.providerCostHint(t),
   );
 
