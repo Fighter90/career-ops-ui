@@ -32,6 +32,7 @@ export default defineConfig({
           it: 'it',
           tr: 'tr',
           hi: 'hi',
+          ta: 'ta',
         },
       },
     }),
