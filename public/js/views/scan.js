@@ -143,6 +143,13 @@ Router.register('scan', async () => {
     'aria-label': t('scan.consoleLabel', 'Scan output log'),
     tabindex: '0',
   }, t('scan.consoleReady'));
+  // v1.244.2 — refined console strip: the pre lives inside a .scan-terminal
+  // wrapper that owns the dark-slate chrome + status dot. The wrapper's
+  // data-state (idle/running/done/error) is driven by scan/runner.js.
+  const terminalEl = c('div', { className: 'scan-terminal', 'data-state': 'idle' }, [
+    c('span', { className: 'scan-terminal__dot', 'aria-hidden': 'true' }),
+    consoleEl,
+  ]);
   // (#5) assertive region for terminal announcements (done / failed /
   // stopped) — visually hidden, separate from the polite log stream.
   const statusRegion = c('div', {
@@ -290,11 +297,11 @@ Router.register('scan', async () => {
   }
   paintCompanyOptions();
   // v1.80.0 — optional per-source cap (0/empty = unlimited, the default).
+  // Width owned by .scan-launcher CSS (v1.244.2 chrome pass) — no inline style.
   const maxPerSource = c('input', {
     type: 'number', inputmode: 'numeric', min: '0', step: '10',
-    className: 'input', placeholder: '∞',
+    className: 'input', id: 'max-per-source', placeholder: '∞',
     'aria-label': t('scan.maxPerSource', 'Max jobs per source'),
-    style: { maxWidth: '110px' },
   });
 
   // v1.46.0 (WS2 #6/#21/#24) — run-state, Stop, persistent error banner.
@@ -390,7 +397,7 @@ Router.register('scan', async () => {
   // resetResultsCache all exist; the Scan/Stop buttons defer to it via `runner`
   // (file-size split → public/js/views/scan/runner.js).
   runner = window.createScanRunner({
-    consoleEl, statusRegion, errBanner,
+    consoleEl, statusRegion, errBanner, terminalEl,
     scanProgress, scanProgressBar, scanProgressLabel, scanProgressWrap,
     scanBtn, stopBtn, dryRun, companySelect, maxPerSource,
     t, c, refreshResults, resetResultsCache,
@@ -419,9 +426,11 @@ Router.register('scan', async () => {
     el.addEventListener('change', applyFilters));
 
   // v1.80.0 — saved-searches bar (localStorage via window.ScanPrefs).
+  // v1.244.2 — rendered INSIDE .scan-filters as the bordered sub-card
+  // (.scan-filters__saved); widths/heights owned by the chrome CSS.
   const ssSelect = c('select', { className: 'select', 'aria-label': t('scan.savedSearches', 'Saved searches') },
     [c('option', { value: '' }, t('scan.savedNone', 'Saved searches…'))]);
-  const ssName = c('input', { className: 'input', placeholder: t('scan.savedName', 'Name this search…'), style: { maxWidth: '200px' } });
+  const ssName = c('input', { className: 'input', placeholder: t('scan.savedName', 'Name this search…') });
   function refreshSavedSearches(selected) {
     while (ssSelect.children.length > 1) ssSelect.removeChild(ssSelect.lastChild);
     for (const s of window.ScanPrefs.listSearches()) ssSelect.appendChild(c('option', { value: s.name }, s.name));
@@ -449,8 +458,6 @@ Router.register('scan', async () => {
     refreshSavedSearches('');
     UI.toast(t('scan.savedDeleted', 'Search deleted'), 'success');
   } }, '🗑 ' + t('scan.deleteSearch', 'Delete'));
-  const savedSearchBar = c('div', { className: 'flex', style: { gap: '8px', flexWrap: 'wrap', alignItems: 'center', marginBottom: '8px' } },
-    [ssSelect, ssName, ssSaveBtn, ssDelBtn]);
   const applyBtn = c('button', { className: 'btn btn-primary', type: 'button', id: 'scan-apply', onClick: applyFilters }, t('scan.applyFilters', 'Apply'));
   const resetBtn = c('button', { className: 'btn btn-ghost', type: 'button', onClick: resetFilters }, t('scan.resetFilters', 'Reset'));
   // Labelled field: the control is WRAPPED in a <label> (implicit association
@@ -463,9 +470,15 @@ Router.register('scan', async () => {
   // A collapsed panel that lazy-loads GET /api/scan/reposts on first open:
   // company+role clusters re-listed under different URLs within a window =
   // likely stale / ghost postings. CSP-safe (addEventListener, no innerHTML).
+  // v1.244.2 — styled disclosure header (.reposts-summary) carries a subtle
+  // cluster-count badge, filled in once the lazy fetch lands.
+  const repostsCount = c('span', { className: 'reposts-badge', hidden: '' });
   const repostsBody = c('div', { className: 'reposts-body' });
   const repostsPanel = c('details', { className: 'card mb-3 reposts' }, [
-    c('summary', { className: 'reposts-summary' }, '🔁 ' + t('scan.reposts.title', 'Reposted / ghost roles')),
+    c('summary', { className: 'reposts-summary' }, [
+      c('span', null, '🔁 ' + t('scan.reposts.title', 'Reposted / ghost roles')),
+      repostsCount,
+    ]),
     repostsBody,
   ]);
   let repostsLoaded = false;
@@ -477,6 +490,11 @@ Router.register('scan', async () => {
       const d = await API.get('/api/scan/reposts');
       repostsBody.textContent = '';
       const clusters = Array.isArray(d.clusters) ? d.clusters : [];
+      // v1.244.2 — subtle count badge in the disclosure header.
+      if (clusters.length > 0) {
+        repostsCount.textContent = String(clusters.length);
+        repostsCount.hidden = false;
+      }
       if (clusters.length === 0) {
         repostsBody.appendChild(c('p', { className: 'muted' },
           t('scan.reposts.empty', 'No reposted roles detected in scan history.')));
@@ -523,43 +541,55 @@ Router.register('scan', async () => {
     // card is gone for good.
     null,
 
-    c('div', { className: 'card mb-3' }, [
-      c('div', { className: 'flex gap-3', style: { flexWrap: 'wrap', alignItems: 'flex-end' } }, [
-        c('div', { className: 'field', style: { flex: 1, marginBottom: 0, minWidth: '220px' } }, [
-          c('label', { htmlFor: 'company-select' }, t('scan.companyLbl')),
-          companySelect,
+    // v1.244.2 — launcher redesigned as ONE aligned control row
+    // (.scan-launcher): every cell is a small-caps label above a 40px
+    // control, so select / checkbox / cap input / buttons share a single
+    // baseline. [Scan] stays the visually dominant primary; [Pipeline]
+    // rides as the ghost secondary.
+    c('div', { className: 'card mb-3 scan-launcher' }, [
+      c('div', { className: 'scan-cell scan-cell--grow' }, [
+        c('label', { className: 'scan-field__label', htmlFor: 'company-select' }, t('scan.companyLbl')),
+        companySelect,
+      ]),
+      c('label', { className: 'scan-cell scan-cell--check', htmlFor: 'dry-run' }, [
+        c('span', { className: 'scan-checkline' }, [
+          dryRun,
+          c('span', null, t('scan.dryRun')),
         ]),
-        c('label', { className: 'flex', htmlFor: 'dry-run', style: { gap: '8px', userSelect: 'none' } }, [
-          dryRun, c('span', null, t('scan.dryRun')),
-        ]),
-        // v1.80.0 — optional per-source cap (∞ by default).
-        c('div', { className: 'field', style: { marginBottom: 0 } }, [
-          c('label', null, t('scan.maxPerSource', 'Max per source')),
-          maxPerSource,
-        ]),
-        // Single "Scan" button — runs every enabled source (EN APIs +
-        // RU portals) in one go. The earlier separate EN-scan / RU-scan
-        // buttons were noisy; users almost always want everything.
-        // Title attribute lists what it actually crawls so the
-        // expectation is set on hover.
+      ]),
+      // v1.80.0 — optional per-source cap (∞ by default).
+      c('div', { className: 'scan-cell scan-cell--max' }, [
+        c('label', { className: 'scan-field__label', htmlFor: 'max-per-source' }, t('scan.maxPerSource', 'Max per source')),
+        maxPerSource,
+      ]),
+      // Single "Scan" button — runs every enabled source (EN APIs +
+      // RU portals) in one go. The earlier separate EN-scan / RU-scan
+      // buttons were noisy; users almost always want everything.
+      // Title attribute lists what it actually crawls so the
+      // expectation is set on hover.
+      // v1.244.2 — Scan/Stop/Pipeline live in one action cell so the
+      // group wraps as a unit instead of stranding a lone button.
+      c('div', { className: 'scan-cell scan-launcher__actions' }, [
         scanBtn,
         stopBtn,
         c('button', { className: 'btn btn-ghost', onClick: () => Router.go('/pipeline') }, t('scan.btnPipe')),
       ]),
     ]),
 
-    c('div', null, [errBanner, scanProgressWrap, statusRegion, consoleEl]),
+    c('div', null, [errBanner, scanProgressWrap, statusRegion, terminalEl]),
 
     repostsPanel,
 
     c('section', { className: 'section' }, [
       c('h2', { className: 'section-title', style: { marginTop: 0 } }, t('scan.results')),
-      // v1.80.0 — saved-searches bar (name + Save + apply/delete).
-      savedSearchBar,
-      // v1.68.0 — every filter is a labelled .field (label ABOVE the control),
-      // laid out in one panel so it's obvious what each box does. An explicit
-      // Apply button re-runs the filter (esp. the salary range); Reset clears.
+      // v1.244.2 — the whole filter panel is one grid: the saved-searches
+      // row is a bordered sub-card spanning the top (grouped with the
+      // filters it configures), each filter is a small-caps label above a
+      // 40px full-width control, and the footer row keeps the hint LEFT
+      // and [Apply] primary + [Reset] ghost RIGHT on one baseline.
       c('div', { className: 'scan-filters', role: 'group', 'aria-label': t('scan.filtersGroup', 'Result filters') }, [
+        c('div', { className: 'scan-filters__saved', role: 'group', 'aria-label': t('scan.savedSearches', 'Saved searches') },
+          [ssSelect, ssName, ssSaveBtn, ssDelBtn]),
         field(t('scan.lblSearch', 'Search'), filterText),
         field(t('scan.lblExclude', 'Exclude'), filterExclude),
         field(t('scan.lblType', 'Work type'), filterRemote),
@@ -573,15 +603,20 @@ Router.register('scan', async () => {
         // v1.80.0 — ⭐ favorites-only toggle (labelled checkbox field).
         c('label', { className: 'field scan-field', htmlFor: 'fav-only' }, [
           c('span', { className: 'scan-field__label' }, t('scan.favOnly', '★ Favorites')),
-          c('span', { className: 'flex', style: { gap: '6px', alignItems: 'center', height: '38px' } }, [favOnly, c('span', { style: { fontSize: '13px', color: 'var(--foggy)' } }, t('scan.favOnlyHint', 'starred only'))]),
+          c('span', { className: 'scan-checkline' }, [
+            favOnly,
+            c('span', { className: 'scan-checkline__hint' }, t('scan.favOnlyHint', 'starred only')),
+          ]),
         ]),
-        // v1.148.0 — actions are a full-width, right-aligned row (styled by
-        // .scan-filters__actions); the old hidden-label alignment hack + inner
-        // flex wrapper are no longer needed.
-        c('div', { className: 'scan-filters__actions' }, [applyBtn, resetBtn]),
+        // v1.148.0 — separated actions row. v1.244.2 — the footer spans the
+        // grid with the hint on the left and the buttons right on ONE
+        // baseline (.scan-filters__footer).
+        c('div', { className: 'scan-filters__footer' }, [
+          c('p', { className: 'field-hint scan-filters__hint' }, t('scan.filtersHint',
+            'Fill any boxes and press Apply. Salary from/to keeps only jobs whose pay overlaps your range — jobs with no listed salary are hidden once you set a salary. Amounts are compared as plain numbers (currency is ignored).')),
+          c('div', { className: 'scan-filters__actions' }, [applyBtn, resetBtn]),
+        ]),
       ]),
-      c('p', { className: 'field-hint scan-filters__hint' }, t('scan.filtersHint',
-        'Fill any boxes and press Apply. Salary from/to keeps only jobs whose pay overlaps your range — jobs with no listed salary are hidden once you set a salary. Amounts are compared as plain numbers (currency is ignored).')),
       // v1.244.0 — rows-per-page for the results pager (AC3); sits just
       // above the table, outside the re-rendered #scan-results subtree.
       scanPagebar,
