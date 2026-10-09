@@ -27,7 +27,7 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const CHECK = join(ROOT, 'site', 'scripts', 'check-i18n.mjs');
 const SYNC = join(ROOT, 'site', 'scripts', 'sync-assets.mjs');
 
-const CODES = ['en', 'es', 'fr', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi'];
+const CODES = ['en', 'es', 'fr', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi', 'ta'];
 
 /** Build a minimal site-shaped skeleton with two-key dictionaries. */
 function fixtureSite() {
@@ -58,7 +58,7 @@ function run(script) {
   }
 }
 
-test('check-i18n: passes on a key-parity fixture (16 locales, same keys)', () => {
+test('check-i18n: passes on a key-parity fixture (18 locales, same keys)', () => {
   const dir = fixtureSite();
   assert.equal(run(join(dir, 'scripts', 'check-i18n.mjs')), 0);
 });
