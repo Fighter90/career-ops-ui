@@ -8,6 +8,27 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.246.0] — 2026-10-09
+
+**Alle ti topfund fra CAR-48-senior-design-sweepet er rettet — blockeren og alle syv majors inkluderet.**
+
+### Rettet
+
+- **Apply mørk: Linket på infokortet er synligt igen.** Kortet holdt sin lyse flade i mørk tilstand; linket „Need Playwright? See …“ lå på ≈1.0:1. Temabevidst `.callout--info` (surface/border/text/link-tokens) løfter det mørke link til ≈7.3:1.
+- **RTL vender ikke længere numeriske sammensætninger.** Score-piller („1.5 / 5“), rapportbånd („≥ 4.5“, „< 3.5“) og dashboardets „/ 5.0“ får retningsisolation (LTR-spans); ar-ordbogen omformulerer områder i ord, hvor prosa beder om det.
+- **CV-markdown forbliver LTR.** Tekstområde og forhåndsvisning renderes med `dir="ltr"` på arabisk; rammen omkring forbliver RTL.
+- **Rapporternes DATE-kolonne bryder aldrig mere** en ISO-dato (nowrap + tabulære tal).
+- **Sidebar slutter over USAGE-HUD'en** (scrollport-reserve + fade) — det sidste navigationselement ruller ikke længere under panelet; spejlet for RTL.
+- **Mobil scan @390: „Save search“ fuldt synlig** — kontrollerækken bryder og komprimerer i stedet for at klippes ved kanten.
+- **Kortkontroller følger det mørke tema** (zoom, lag, attribution). Fliserne bevidst uændrede: Deres oprindelse er fastlåst server-side af CSP `img-src`.
+- **Chat-FAB'en dækker ikke længere interaktivt indhold** — scroll-padding rydder den af vejen (Disable-knapper i Portals, score-pille i Reports, two-pager-input, Leaflet-attribution).
+- **Aktivitetsloggen taler UI-sproget**: 22 action-slugs lokaliseret ×18 locales (fallback til rå id for ukendte) og filterchips oversat; TARGET-kolonnen bliver — auto-pipeline fylder den.
+- **Assessments-formularer får rigtige labels** (sentence case, `htmlFor`/`id`-binding) i stedet for kun placeholders.
+
+### Noter
+
+- Ikke i denne udgivelse: mørke kortfliser (kræver en CSP-`img-src`-udvidelse — server-side, bevidst ikke klientside); mørke varianter af de gule callouts (`config`, `batch`) — token-mekanikken er klar til opfølgning.
+
 ## [1.245.0] — 2026-10-09
 
 **Tamil (தமிழ்) tilslutter sig som det 18. UI-sprog — det første nye sprog siden bølgen på 17, med fuld nøgleparitet.**

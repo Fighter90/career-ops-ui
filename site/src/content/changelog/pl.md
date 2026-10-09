@@ -9,6 +9,27 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.246.0] — 2026-10-09
+
+**Wszystkich dziesięć czołowych ustaleń przeglądu senior-design CAR-48 naprawiono — łącznie z blockerem i wszystkimi siedmioma major.**
+
+### Naprawiono
+
+- **Apply w ciemnym motywie: link na karcie info jest znowu widoczny.** Karta trzymała jasną powierzchnię w ciemnym motywie; link „Need Playwright? See …” miał ≈1.0:1. Theme-aware `.callout--info` (tokeny surface/border/text/link) podnosi ciemny link do ≈7.3:1.
+- **RTL nie odwraca już kompozycji liczbowych.** Pigułki wyniku („1.5 / 5”), pasy raportów („≥ 4.5”, „< 3.5”) i dashboardowe „/ 5.0” dostają izolację kierunkową (spany LTR); słownik ar przeformułowuje zakresy słowami tam, gdzie proza tego chce.
+- **Markdown CV pozostaje LTR.** Textarea i podgląd renderują się z `dir="ltr"` po arabsku; otoczka pozostaje RTL.
+- **Kolumna DATE raportów nigdy więcej nie łamie** daty ISO (nowrap + cyfry tabelaryczne).
+- **Sidebar kończy się nad HUD-em użycia** (rezerwa scrollportu + fade) — ostatni element nawigacji nie zjeżdża już pod panel; z lustrzaną obsługą RTL.
+- **Skan mobilny @390: „Save search” w pełni widoczny** — rząd kontrolek się zawija i ściska zamiast ucinać się na krawędzi.
+- **Kontrolki mapy podążają za ciemnym motywem** (zoom, warstwy, atrybucja). Kafle celowo bez zmian: ich origin jest przypięty serwerowo przez CSP `img-src`.
+- **FAB czatu nie zasłania już interaktywnych treści** — padding przewijania go omija (przyciski Disable w Portals, pigułka wyniku w Reports, input two-pager, atrybucja Leaflet).
+- **Dziennik aktywności mówi językiem interfejsu**: 22 slugów akcji zlokalizowanych ×18 locale (z fallbackiem na surowy id dla nieznanych) i przetłumaczone chipy filtrów; kolumna TARGET zostaje — wypełnia ją auto-pipeline.
+- **Formularze assessments mają prawdziwe etykiety** (sentence case, powiązanie `htmlFor`/`id`) zamiast samych placeholderów.
+
+### Uwagi
+
+- Poza tym wydaniem: ciemne kafle mapy (wymaga rozszerzenia CSP `img-src` — zmiana serwerowa, celowo nie po stronie klienta); ciemne warianty żółtych calloutów (`config`, `batch`) — mechanika tokenów gotowa na kontynuację.
+
 ## [1.245.0] — 2026-10-09
 
 **Tamilski (தமிழ்) dołącza jako 18. język interfejsu — pierwszy nowy język od fali 17 lokalizacji, z pełną parnością kluczy.**

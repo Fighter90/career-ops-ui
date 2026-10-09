@@ -2,6 +2,27 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.246.0] — 2026-10-09
+
+**Alle zehn Top-Funde des Senior-Design-Sweeps CAR-48 sind behoben — der Blocker und alle sieben Majors inklusive.**
+
+### Behoben
+
+- **Apply dunkel: Der Link in der Info-Karte ist wieder sichtbar.** Die Karte behielt ihre helle Fläche im Dunkelmodus; der Link ‚Need Playwright? See …‘ lag bei ≈1.0:1. Theme-aware `.callout--info` (Surface/Border/Text/Link-Tokens) hebt den dunklen Link auf ≈7.3:1.
+- **RTL dreht numerische Kompositionen nicht mehr.** Score-Pills (‚1.5 / 5‘), Report-Bänder (‚≥ 4.5‘, ‚< 3.5‘) und das Dashboard-‚/ 5.0‘ bekommen Richtungsisolation (LTR-Spans); das ar-Wörterbuch formuliert Bereiche in Worten, wo Prosa es verlangt.
+- **CV-Markdown bleibt LTR.** Textarea und Vorschau rendern in Arabisch mit `dir="ltr"`; der Rahmen drumherum bleibt RTL.
+- **Die DATE-Spalte der Reports bricht nie wieder** ein ISO-Datum (nowrap + Tabellenziffern).
+- **Die Sidebar endet über dem USAGE-HUD** (Scrollport-Reserve + Fade) — der letzte Nav-Punkt scrollt nicht mehr unter das Panel; für RTL gespiegelt.
+- **Mobiles Scan @390: ‚Save search‘ vollständig sichtbar** — die Steuerreihe bricht um und schrumpft, statt am Rand abgeschnitten zu werden.
+- **Karten-Steuerungen folgen dem Dunkelthema** (Zoom, Ebenen, Attribution). Die Kacheln bleiben bewusst, wie sie sind: Ihr Ursprung ist serverseitig per CSP `img-src` fixiert.
+- **Der Chat-FAB überdeckt keinen interaktiven Inhalt mehr** — das Scroll-Padding räumt ihn frei (Disable-Buttons in Portals, Score-Pill in Reports, Two-Pager-Eingabe, Leaflet-Attribution).
+- **Das Aktivitätslog spricht die UI-Sprache**: 22 Action-Slugs in 18 Sprachen lokalisiert (Fallback auf die rohe ID für Unbekannte), Filter-Chips übersetzt; die TARGET-Spalte bleibt — auto-pipeline füllt sie.
+- **Assessments-Formulare bekommen echte Labels** (Sentence case, `htmlFor`/`id`-Bindung) statt reiner Placeholder.
+
+### Hinweise
+
+- Nicht in diesem Release: dunkle Kartenkacheln (erfordert eine CSP-`img-src`-Erweiterung — serverseitig, bewusst nicht clientseitig); dunkle Varianten der gelben Callouts (`config`, `batch`) — die Token-Mechanik steht für ein Follow-up bereit.
+
 ## [1.245.0] — 2026-10-09
 
 **Tamil (தமிழ்) kommt als 18. UI-Sprache hinzu — die erste neue Sprache nach der 17-Sprachen-Welle, mit voller Schlüsselparität.**

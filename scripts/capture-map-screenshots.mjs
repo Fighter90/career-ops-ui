@@ -31,7 +31,7 @@ const LOCALE_TO_FILE = {
 const HAND_MADE = new Set(['en', 'ru']);
 const only = (process.env.ONLY || '').split(',').map((s) => s.trim()).filter(Boolean);
 const locales = only.length ? only : Object.keys(LOCALE_TO_FILE).filter((l) => !HAND_MADE.has(l));
-const MAX_WAIT_MS = 1500000_000;
+const MAX_WAIT_MS = 1_500_000; // 25 min — cold geocode of the full map dataset
 
 if (!existsSync(IMAGES_DIR)) mkdirSync(IMAGES_DIR, { recursive: true });
 

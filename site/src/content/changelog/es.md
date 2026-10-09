@@ -10,6 +10,27 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 
 ---
 
+## [1.246.0] — 2026-10-09
+
+**Los diez hallazgos principales del barrido de diseño sénior CAR-48 están corregidos, incluidos el bloqueante y los siete mayores.**
+
+### Corregido
+
+- **Apply oscuro: el enlace de la tarjeta de información vuelve a verse.** La tarjeta mantenía su superficie clara en modo oscuro; el enlace «Need Playwright? See …» quedaba en ≈1.0:1. `.callout--info` con tokens por tema (surface/border/text/link) sitúa el enlace oscuro en ≈7.3:1.
+- **RTL ya no invierte las composiciones numéricas.** Las píldoras de puntuación («1.5 / 5»), las bandas de informes («≥ 4.5», «< 3.5») y el «/ 5.0» del panel reciben aislamiento direccional (spans LTR); el diccionario ar reformula los rangos numéricos con palabras donde la prosa lo pide.
+- **El markdown del CV permanece LTR.** El textarea y la vista previa se renderizan con `dir="ltr"` en árabe; el resto sigue RTL.
+- **La columna DATE de informes no parte nunca más** una fecha ISO (nowrap + cifras tabulares).
+- **La barra lateral termina sobre el HUD de uso** (reserva del scrollport + desvanecido): el último elemento de navegación ya no queda debajo del panel; espejado para RTL.
+- **Escaneo móvil @390: «Save search» se ve completo**: la fila de controles salta y se comprime en vez de recortarse en el borde.
+- **Los controles del mapa siguen el tema oscuro** (zoom, capas, atribución). Los mosaicos no cambian a propósito: su origen está fijado por la directiva CSP `img-src` del servidor.
+- **El FAB de chat ya no tapa contenido interactivo**: el padding de desplazamiento lo despeja (botones Disable de Portals, píldora de puntuación de Reports, entrada de two-pager, atribución de Leaflet).
+- **El registro de actividad habla el idioma de la interfaz**: 22 slugs de acción localizados ×18 locales (con fallback al id crudo) y chips de filtro traducidos; la columna TARGET permanece (la llena auto-pipeline).
+- **Los formularios de assessments tienen etiquetas reales** (frase normal, enlace `htmlFor`/`id`) en lugar de solo marcadores.
+
+### Notas
+
+- No en esta versión: mosaicos oscuros del mapa (requiere ampliar el CSP `img-src`; cambio del servidor, no hecho en cliente a propósito); variantes oscuras de los callouts amarillos (`config`, `batch`): la mecánica de tokens ya queda lista.
+
 ## [1.245.0] — 2026-10-09
 
 **El tamil (தமிழ்) se une como el 18.º idioma de la interfaz: el primer idioma nuevo desde la ola de 17, con paridad completa de claves.**

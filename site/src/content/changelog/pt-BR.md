@@ -8,6 +8,27 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.246.0] — 2026-10-09
+
+**Os dez principais achados da varredura sênior de design CAR-48 estão corrigidos — incluindo o bloqueador e os sete maiores.**
+
+### Corrigido
+
+- **Apply escuro: o link do cartão de informações volta a ser visível.** O cartão mantinha a superfície clara no modo escuro; o link «Need Playwright? See …» ficava a ≈1.0:1. O `.callout--info` com tokens por tema (surface/border/text/link) eleva o link escuro a ≈7.3:1.
+- **RTL não inverte mais composições numéricas.** Pílulas de pontuação («1.5 / 5»), faixas de relatórios («≥ 4.5», «< 3.5») e o «/ 5.0» do painel ganham isolamento direcional (spans LTR); o dicionário ar reformula faixas numéricas em palavras onde a prosa pede.
+- **O markdown do CV permanece LTR.** Textarea e pré-visualização renderizam com `dir="ltr"` em árabe; o entorno segue RTL.
+- **A coluna DATE dos relatórios nunca mais quebra** uma data ISO (nowrap + numerais tabulares).
+- **A barra lateral termina acima do HUD de uso** (reserva de scrollport + fade) — o último item de navegação não rola mais para baixo do painel; espelhado para RTL.
+- **Scan móvel @390: «Save search» totalmente visível** — a linha de controles quebra e comprime em vez de cortar na borda.
+- **Controles do mapa seguem o tema escuro** (zoom, camadas, atribuição). Os mosaicos ficam como estão por design: a origem é fixada pelo CSP `img-src` do servidor.
+- **O FAB de chat não cobre mais conteúdo interativo** — o padding de rolagem o limpa (botões Disable do Portals, pílula de pontuação do Reports, entrada do two-pager, atribuição do Leaflet).
+- **O registro de atividade fala o idioma da interface**: 22 slugs de ação localizados ×18 locais (com fallback ao id cru) e chips de filtro traduzidos; a coluna TARGET permanece (o auto-pipeline a preenche).
+- **Formulários de assessments ganham rótulos reais** (frase simples, vínculo `htmlFor`/`id`) em vez de só placeholders.
+
+### Notas
+
+- Fora desta versão: mosaicos escuros do mapa (exige ampliar o CSP `img-src` — mudança de servidor, feita de propósito no cliente); variantes escuras dos callouts amarelos (`config`, `batch`) — a mecânica de tokens já fica pronta.
+
 ## [1.245.0] — 2026-10-09
 
 **O tâmil (தமிழ்) entra como o 18.º idioma da interface — o primeiro novo desde a onda de 17, com paridade total de chaves.**
