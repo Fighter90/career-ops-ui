@@ -77,7 +77,7 @@ Every row below corresponds to a documented HTTP action initiated by a UI contro
 Watch-outs:
 
 - The spawned script may write anywhere inside the parent project — that's outside our auditing surface. Trust comes from the user owning the parent code.
-- Hard timeout: 60 s buffered, 180 s for `gemini-eval.mjs`, no fixed cap on streaming runners (they live until client disconnect or natural exit).
+- Hard timeout: 60 s buffered; the LLM-bound `gemini-eval.mjs` calls get their own budgets (120 s in `/api/evaluate`, the 300 s `EVAL_TIMEOUT_MS` in auto-pipeline); no fixed cap on streaming runners (they live until client disconnect or natural exit).
 - On client disconnect (SSE), the runner sends `SIGTERM` and falls through to `SIGKILL` after a grace period.
 
 ## Outbound URL fetches (DNS-rebind-safe)

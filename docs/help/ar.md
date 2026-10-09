@@ -807,7 +807,7 @@ npm run scan -- --company Anthropic   # تضييق على شركة متتبّع�
 
 ### سلسلة الاحتياط
 
-1. **Anthropic** — مُفضَّل عند ضبط `ANTHROPIC_API_KEY`. يُجمّع الخادم `cv.md` و`config/profile.yml` و`modes/_shared.md` و`modes/oferta.md` في كتلة `<project_context>` قبل الـ prompt (كل ملف محدود بـ 16 كيلوبايت، الـ prompt الكامل محدود بـ 200 كيلوبايت). يُعيد markdown مستنداً للصفحة مباشرةً.
+1. **Anthropic** — مُفضَّل عند ضبط `ANTHROPIC_API_KEY`. يُجمّع الخادم `cv.md` و`config/profile.yml` و`modes/_shared.md` و`modes/oferta.md` في كتلة `<project_context>` قبل الـ prompt (حدود حسب نوع الملف — cv بحد 64 KB، وملفات modes بحد 128 KB، وغيرها 32 KB — مع حد كلي للـ prompt عند 256 KB). يُعيد markdown مستنداً للصفحة مباشرةً.
 2. **Gemini** — عند ضبط `GEMINI_API_KEY` فقط. الخادم يُشغّل `gemini-eval.mjs` مع توصيف الوظيفة كملف مؤقت. نموذج المستوى المجاني (`gemini-3.6-flash`) مناسب للتقييم الروتيني.
 3. **يدوي** — بدون مفتاح. تُعيد الصفحة prompt مُشكَّلاً بالكامل يمكنك لصقه في Claude Code أو ChatGPT أو أي LLM آخر.
 
@@ -1206,7 +1206,7 @@ npm run doctor
 | `/career-ops apply` يقول "no report found" | Pipeline لم يُقيّم هذا الإعلان | شغّل `/career-ops pipeline` (أو `#/evaluate`) أولاً؛ راجع المتطلبات في §14. |
 | `batch-runner.sh: no such file` | التشغيل من مجلد خاطئ | `cd $CAREER_OPS_ROOT` قبل استدعاء `./batch/batch-runner.sh`. |
 | الخادم يُبلّغ `EADDRINUSE: 4317` | نسخة قديمة لا تزال تعمل | `pkill -f 'node server/index.mjs'` ثم إعادة التشغيل. |
-| استدعاء LLM المباشر يتعلّق أكثر من دقيقتين | Prompt ضخم أو Anthropic بطيء | تحقق من علامة Anthropic في `/api/health`؛ الخادم يحدّ الـ prompt بـ 200 KB ويُعيد 413. |
+| استدعاء LLM المباشر يتعلّق أكثر من دقيقتين | Prompt ضخم أو Anthropic بطيء | تحقق من علامة Anthropic في `/api/health`؛ الخادم يحدّ الـ prompt بـ 256 KB ويُعيد 413. |
 | معاينة Pipeline تُظهر `(unsafe redirect)` | الإعلان أعاد التوجيه إلى IP خاص / loopback | هذه ميزة أمان (REVIEW-B1). يُرفض هدف إعادة التوجيه ويبقى الرابط الأصلي دون تغيير. |
 | نص صف المتتبّع يكسر الجدول | خط مائل في اسم الشركة قبل v1.9.1 | حدّث إلى v1.9.1+ — يُهرَّب الخط المائل من البداية إلى النهاية (BF-1). |
 | `npm test` يفشل على استنساخ جديد | الاختبارات تفترض تخطيط المشروع الأصلي | استخدم `CAREER_OPS_ROOT=$(mktemp -d)` وهيّئ المصادر الوهمية. |
@@ -1718,7 +1718,7 @@ Hermes بيئة تشغيل وكيل تتصل بمزوّدي LLM الخاصين �
 
 ### اختر محركك
 
-career-ops مستقل عن واجهة سطر الأوامر، فلديك ثلاثة خيارات صادقة للذكاء الاصطناعي. **اشتراك Claude الخاص بك** — ثبّت واجهة **Claude Code** على الجهاز وسجّل الدخول بأمر `claude login` باستخدام خطة Pro/Max الخاصة بك؛ يستخدم وكيل المشروع الأصل بعد ذلك اشتراكك، دون فوترة API لكل رمز. **Hermes** — شغّل `hermes gateway` على نفس الجهاز (يكشف واجهة API متوافقة مع OpenAI على `http://127.0.0.1:8642/v1`) وحدّد `HERMES_API_KEY` في **إعدادات التطبيق**؛ تمرّ التقييمات المباشرة في career-ops-ui عبره (الأخير في ترتيب المزوّدين التلقائي). **مفاتيح API** — حدّد `ANTHROPIC_API_KEY` (أو أيًّا من المزوّدين السبعة: Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama → BytePlus Ark → Volcengine Ark) في ملف `.env` الخاص بالمشروع الأصل، فتعمل الإجراءات المباشرة ⚡ دون تدخّل بشري. يمكنك الجمع بينها: اشتراك Claude للعمل الثقيل لوكيل المشروع الأصل، ومزوّد رخيص أو محلي للتقييمات السريعة في العارض.
+career-ops مستقل عن واجهة سطر الأوامر، فلديك ثلاثة خيارات صادقة للذكاء الاصطناعي. **اشتراك Claude الخاص بك** — ثبّت واجهة **Claude Code** على الجهاز وسجّل الدخول بأمر `claude login` باستخدام خطة Pro/Max الخاصة بك؛ يستخدم وكيل المشروع الأصل بعد ذلك اشتراكك، دون فوترة API لكل رمز. **Hermes** — شغّل `hermes gateway` على نفس الجهاز (يكشف واجهة API متوافقة مع OpenAI على `http://127.0.0.1:8642/v1`) وحدّد `HERMES_API_KEY` في **إعدادات التطبيق**؛ تمرّ التقييمات المباشرة في career-ops-ui عبره (الأخير في ترتيب المزوّدين التلقائي). **مفاتيح API** — حدّد `ANTHROPIC_API_KEY` (أو أيًّا من المزوّدين: Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama → BytePlus Ark → Volcengine Ark) في ملف `.env` الخاص بالمشروع الأصل، فتعمل الإجراءات المباشرة ⚡ دون تدخّل بشري. يمكنك الجمع بينها: اشتراك Claude للعمل الثقيل لوكيل المشروع الأصل، ومزوّد رخيص أو محلي للتقييمات السريعة في العارض.
 
 ### اكشفه بأمان
 

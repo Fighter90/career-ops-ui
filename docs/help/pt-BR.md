@@ -1113,8 +1113,7 @@ Clique em **💾 Save JD** para persistir o JD em
 1. **Anthropic** — preferida quando `ANTHROPIC_API_KEY` está
    configurada. O servidor empacota `cv.md`, `config/profile.yml`,
    `modes/_shared.md`, e `modes/oferta.md` num bloco
-   `<project_context>` antes do prompt (cada arquivo limitado a
-   16 KB, prompt completo com soft-cap em 200 KB). Retorna markdown
+   `<project_context>` antes do prompt (limites por tipo de arquivo — cv 64 KB, arquivos mode 128 KB, outros 32 KB — prompt completo com soft-cap em 256 KB). Retorna markdown
    fundamentado diretamente à página.
 2. **Gemini** — quando apenas `GEMINI_API_KEY` está configurada. O
    servidor faz spawn de `gemini-eval.mjs` com o JD como arquivo
@@ -1696,7 +1695,7 @@ mais recentes.
 | `/career-ops apply` diz "no report found" | O pipeline nunca pontuou este JD | Rode `/career-ops pipeline` (ou `#/evaluate`) primeiro; veja os pré-requisitos da §14. |
 | `batch-runner.sh: no such file` | Rodando do diretório errado | `cd $CAREER_OPS_ROOT` antes de invocar `./batch/batch-runner.sh`. |
 | Servidor reporta `EADDRINUSE: 4317` | Instância antiga ainda rodando | `pkill -f 'node server/index.mjs'` e reinicie. |
-| Chamada LLM live trava > 2 min | Prompt enorme ou Anthropic lento | Verifique a flag Anthropic em `/api/health`; o servidor faz soft-cap em prompts de 200 KB e retorna 413. |
+| Chamada LLM live trava > 2 min | Prompt enorme ou Anthropic lento | Verifique a flag Anthropic em `/api/health`; o servidor faz soft-cap em prompts de 256 KB e retorna 413. |
 | Preview do pipeline mostra `(unsafe redirect)` | Postagem redirecionou para um IP privada / loopback | Esta é uma feature de segurança (REVIEW-B1). O alvo do redirect é rejeitado e a URL original permanece inalterada. |
 | Texto da linha do tracker quebra a tabela | Pipe no nome da empresa pre-v1.9.1 | Atualize para v1.9.1+ — pipes são escapados ponta a ponta (BF-1). |
 | `npm test` falha em clone fresco | Os testes assumem layout do projeto pai | Use `CAREER_OPS_ROOT=$(mktemp -d)` e bootstrap fixtures. |

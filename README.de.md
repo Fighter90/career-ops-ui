@@ -17,9 +17,9 @@ _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Neueste Version — v1.244.0** — **Die Scan-Ergebnisse lesen sich wie eine Liste, nicht wie eine Wand: eine Stelle = zwei Zeilen, die Signale sind Icons, und ein 700-Zeilen-Scan ist eine paginierte Tabelle statt einer 37,000-px-Seite.** Boost, Fit-Band und Score sind Icons mit lokalisierten zugänglichen Namen; ein abschließendes `| Germany | Remote` wandert aus dem Titel in die Meta-Zeile; die Tabelle läuft bei Telefonbreite nicht mehr über (675 px internes Scrollen → 0) und paginiert bei 50 Zeilen.
+> **🆕 Neueste Version — v1.247.0** — **Der Schwanz des Design-Sweeps CAR-49…58 ist abgeschlossen — alle übrigen Minor/Polish-Funde plus die dunkle Karte, die das vorige Release bewusst zurückstellte.**
 >
-> **Vorherige Version — v1.243.2** — Nur Verpackung: der v1.243.1-Tag wurde nach dem Veröffentlichen umgepunktet, und das `git fetch --tags` des Servers lehnt das zu Recht ab — dieser frische Tag trägt denselben App-Code (den Tracker-Outcome-Modal-Fix auf v1.243.0) und ist damit die erste wirklich deploybare 1.243.x-Version.
+> **Vorherige Version — v1.246.0** — Alle zehn Top-Funde des Senior-Design-Sweeps CAR-48 sind behoben — der Blocker und alle sieben Majors inklusive.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -294,7 +294,7 @@ npm start
 | **Profile**      | Schreibgeschützte Ansicht von `config/profile.yml` + Archetypen — UI-freundliche Zusammenfassung.                                         |
 | **App settings** | UI-interner Editor für Schlüssel der übergeordneten `.env`: `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, Modell-Overrides, Port / Host. Geheimnisse beim Lesen maskiert. |
 | **Health**       | Alle Setup-Prüfungen in OK / OPTIONAL / FAIL-Badges + Schaltflächen zum Ausführen von `doctor.mjs` und `verify-pipeline.mjs`.           |
-| **Help**         | In-App-Markdown-Benutzerhandbuch (`/#/help`), lokalisiert für alle 17 unterstützten Sprachen (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi). |
+| **Help**         | In-App-Markdown-Benutzerhandbuch (`/#/help`), lokalisiert für alle 18 unterstützten Sprachen (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta). |
 | **Activity log** | Prüfpfad jeder zustandsverändernden Anfrage (Schreibvorgänge, Ausführungen, Scans). Geheimnisse geschwärzt. |
 | **Notifications** 🔔 *(v1.58.34 / v1.58.35)* | Glocke in der oberen Leiste mit rotem Ungelesen-Badge. Klicken Sie, um eine einschiebbare Schublade mit den letzten 50 Toasts (pro Tab, pro Sitzung) einzublenden — Success / Error / Info-progress, jeweils mit einem lokalisierten Zeitstempel, der menschlichen Nachricht und jedem in ein `<details>` eingebetteten `(METHOD /path · HTTP NNN)`-Postfix. Help **§18** dokumentiert jede Kategorie. Die Schublade öffnet sich **nur** beim Klick auf die Glocke (oder per Tastatur Enter / Space); schließt über ×, Esc oder erneutes Klicken auf die Glocke. |
 
@@ -393,7 +393,7 @@ career-ops-ui/
 │     │  ├─ lever.mjs        # api.lever.co client
 │     │  ├─ hh.mjs           # hh.ru/search/vacancy HTML scraper (paginated, UA-aware)
 │     │  └─ habr.mjs         # career.habr.com HTML parser (no cheerio, regex only)
-│     └─ routes/             # 37 route modules — one per topic (P-2)
+│     └─ routes/             # 39 route modules — one per topic (P-2)
 │        ├─ activity.mjs     # /api/activity
 │        ├─ config.mjs       # /api/config (parent .env round-trip)
 │        ├─ content.mjs      # /api/cv, /api/profile, /api/portals, /api/modes
@@ -422,7 +422,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 3009 unit + 101 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.121.0)
+└─ tests/                    # 5116 unit + 118 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.247.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -431,7 +431,7 @@ career-ops-ui/
    ├─ url-validation.test.mjs    # SSRF reject sweep (FIX-M3 + M6 + M7)
    ├─ cv-xss.test.mjs        # stripDangerousMarkdown round-trip
    ├─ jd-sanitize.test.mjs   # sanitizeJobDescription
-   ├─ help.test.mjs / help-ui.test.mjs    # i18n parity across all 17 locales
+   ├─ help.test.mjs / help-ui.test.mjs    # i18n parity across all 18 locales
    ├─ playwright-smoke.mjs   # 22 browser flows (CV save, tracker, pipeline, evaluate, config, etc.)
    └─ e2e{,-comprehensive}.mjs   # full Playwright walkthrough
 ```
@@ -553,20 +553,20 @@ Wenn `run: true` bei `/api/deep` oder `/api/mode/:slug` gesetzt ist, bevorzugt d
 ## Tests
 
 ```bash
-npm test                       # 3009 unit/integration tests
+npm test                       # 5116 unit/integration tests
 npm run test:e2e               # 21 smoke e2e (boots own server)
 npm run test:e2e:full          # 23 comprehensive e2e
-npm run test:e2e:browser       # 101 Playwright browser (smoke + full-cycle + forms + locale-sweep ×17 + theme)
+npm run test:e2e:browser       # 118 Playwright browser (smoke + full-cycle + forms + locale-sweep ×18 + theme)
 npm run test:coverage          # same as `npm test` plus V8 coverage
 ```
 
 | Suite                       | Tests | Was                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integration) | **3009** | Jeder Endpunkt, ephemerer Server, kein Netzwerk. 329 Dateien: Parser, Scanner (gemockt), Runner, anthropic/openai, Security-Header, XSS, JD-Sanitize, URL-Validierung, i18n-Parität, + die UX-Fix-Suites v1.55→v1.56. |
+| `node --test tests/*.test.mjs` (unit + integration) | **5116** | Jeder Endpunkt, ephemerer Server, kein Netzwerk. 329 Dateien: Parser, Scanner (gemockt), Runner, anthropic/openai, Security-Header, XSS, JD-Sanitize, URL-Validierung, i18n-Parität, + die UX-Fix-Suites v1.55→v1.56. |
 | `tests/e2e.mjs` (smoke)      | 21 | Playwright headless: jede Route rendert, grundlegende Flows.                                                     |
 | `tests/e2e-comprehensive.mjs` | 23 | Vollständiger Playwright-Durchlauf: 11 Routen + 12 funktionale Flows.                                              |
-| `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **101** | Browsergesteuert: Dashboard-Rendering, Navigation, Sprachwechsel, 404, Health, Tracker-Round-Trip, Pipeline-Add + Invalid-URL-Sweep, Reports, Evaluate-Manual-Fallback, Config-Keys maskiert, CV-PUT-XSS-Strip, Pipeline-Preview 400, Auto-Pipeline-SSE. |
-| **Gesamt** (alle vier Suites)                   | **3101** | **0 Fehler, 0 Flakes**                                                                                    |
+| `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **118** | Browsergesteuert: Dashboard-Rendering, Navigation, Sprachwechsel, 404, Health, Tracker-Round-Trip, Pipeline-Add + Invalid-URL-Sweep, Reports, Evaluate-Manual-Fallback, Config-Keys maskiert, CV-PUT-XSS-Strip, Pipeline-Preview 400, Auto-Pipeline-SSE. |
+| **Gesamt** (alle vier Suites)                   | **5278** | **0 Fehler, 0 Flakes**                                                                                    |
 
 Abdeckung: ~93 % Zeilen / ~83 % Zweige über `--experimental-test-coverage`.
 
@@ -645,7 +645,7 @@ Für die Bewertung der Produktionsreife (Deployment-Gates, Risikoregister, aufge
 
 career-ops ist am besten **immer an** — scannt, während du schläfst, aus jedem Browser erreichbar. Um den ganzen Stack auf einen kleinen Server zu legen — die übergeordnete **career-ops**-Pipeline, diesen **career-ops-ui**-Viewer und die **Engine**, die die KI ausführt (dein **Claude-Abo** über die Claude-Code-CLI, ein lokales **Hermes**-Gateway oder Provider-API-Schlüssel) — richte einen VPS ein (Node ≥ 18), installiere das Parent + dieses Repo, wähle deine Engine und stelle den Viewer hinter einen **HTTPS-Reverse-Proxy mit Authentifizierung**, während die Sicherheits-Invarianten (CSP, SSRF-Guard, XSS-Grenze, keine Secrets in Logs) intakt bleiben.
 
-📖 Die integrierte **Hilfe §31** („Den ganzen Stack in der Cloud betreiben“) führt Schritt für Schritt in allen 17 Sprachen; die Betreiber-Checkliste ist [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), und die [Cloud-Deployment-Wiki-Seite](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) enthält die Referenztabellen.
+📖 Die integrierte **Hilfe §31** („Den ganzen Stack in der Cloud betreiben“) führt Schritt für Schritt in allen 18 Sprachen; die Betreiber-Checkliste ist [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), und die [Cloud-Deployment-Wiki-Seite](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) enthält die Referenztabellen.
 
 ---
 
@@ -662,14 +662,14 @@ career-ops ist am besten **immer an** — scannt, während du schläfst, aus jed
 
 ## Lokalisierung
 
-Die UI wird mit **17 Sprachen** ausgeliefert — `en`, `es`, `fr`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`. Seit **v1.60.0 (I18N-SPLIT)** liegen die Übersetzungen **eine Datei pro Sprache** unter [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, jede eine flache `key → string`-Tabelle — plus eine gemeinsame `i18n-dict.aliases.js`. [`i18n-dict.js`](public/js/lib/i18n-dict.js) fügt sie zu `window.__I18N_DICT` zusammen; [`i18n.js`](public/js/lib/i18n.js) löst `t('key', 'fallback')` auf. Kein Build-Schritt, kein Laufzeit-Fetch — ein Übersetzer bearbeitet eine einzelne Sprachdatei isoliert.
+Die UI wird mit **18 Sprachen** ausgeliefert — `en`, `es`, `fr`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`, `ta`. Seit **v1.60.0 (I18N-SPLIT)** liegen die Übersetzungen **eine Datei pro Sprache** unter [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, jede eine flache `key → string`-Tabelle — plus eine gemeinsame `i18n-dict.aliases.js`. [`i18n-dict.js`](public/js/lib/i18n-dict.js) fügt sie zu `window.__I18N_DICT` zusammen; [`i18n.js`](public/js/lib/i18n.js) löst `t('key', 'fallback')` auf. Kein Build-Schritt, kein Laufzeit-Fetch — ein Übersetzer bearbeitet eine einzelne Sprachdatei isoliert.
 
 **Eine Zeichenkette hinzufügen oder ändern:**
 
 ```js
 // public/js/lib/locales/i18n-dict.en.js   →   'scan.newButton': 'Run scan',
 // public/js/lib/locales/i18n-dict.es.js   →   'scan.newButton': 'Ejecutar búsqueda',
-// …add the same key to all 17 locale files (parity is gated)
+// …add the same key to all 18 locale files (parity is gated)
 ```
 
 Verwenden Sie sie dann über `data-i18n="scan.newButton"` im Markup oder `t('scan.newButton')` im JS und führen Sie `npm test` aus. Um eine brandneue Sprache hinzuzufügen, registrieren Sie sie in `i18n.js` (`LANGS` + `detect()`), im Assembler, in `index.html` und im Locale-aufzählenden Tooling.
@@ -736,7 +736,7 @@ geprüft.
 
 Issues und PRs willkommen. Hausregeln:
 
-- Führen Sie `npm test` vor dem Pushen aus — **3009 checks green** ist die Messlatte (plus 101 Playwright, wenn Sie die UI berühren).
+- Führen Sie `npm test` vor dem Pushen aus — **5116 checks green** ist die Messlatte (plus 118 Playwright, wenn Sie die UI berühren).
 - Nicht-triviale Änderungen durchlaufen die GSD-Pipeline. Siehe [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md).
 - Ändern Sie nichts im übergeordneten `career-ops/`-Projekt von innerhalb dieses Repos. Der ganze Sinn ist, dass dies ein nicht-invasives Overlay ist. Harte Regeln in [`CLAUDE.md`](CLAUDE.md).
 - Conventional Commits: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`. Optionaler Scope: `feat(scan):`. Breaking Change: `feat!:`.

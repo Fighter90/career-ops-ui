@@ -24,7 +24,7 @@ Activity log: `deep.research` event on success.
 | Case | Expected |
 |---|---|
 | Missing `company` | `400 { error: "company required" }` |
-| Prompt > 200 KB | `413` |
+| Prompt > 256 KB | `413` |
 | Anthropic error | `502 { mode: "anthropic", prompt, error }` |
 
 ## Test coverage

@@ -8,25 +8,19 @@ Release history belongs in [CHANGELOG.md](CHANGELOG.md), decisions in
 [docs/adr/](docs/adr/), vocabulary in [CONTEXT.md](CONTEXT.md). Anything already
 recoverable from those does **not** belong here.
 
-_Last updated: 2026-10-08 · **v1.244.1 SHIPPED (prod verified: version 1.244.1, CAR-36 modal PASS, Playwright 15/15)** (3 fixes from the v1.244.0 regression round: icon interpolation [HIGH a11y], title-split country predicate, ISO datetime meta dates); v1.244.0 scan redesign SHIPPED (prod verified, CAR-36 fixed live, Playwright 15/15, regression green; live-LLM × 7 blocked by upstream credits — CAR-44); next: Phase 4 `#/scan` redesign (v1.244.0) (hotfix: the v1.243.0 modal nav-guard listened at document — dead code, caught live on prod); v1.243.0 SHIPPED (client fixes, 8 agents, +224 tests) (resumecraft.ru deployed+verified, Playwright 15/15, full regression green; live-LLM × 7 locales blocked by upstream credit exhaustion — Linear CAR-44, 11/17 passed live before the credits ran out)_
+_Last updated: 2026-10-09 · **v1.247.0 SHIPPED** (tag `v1.247.0` @ `4c3778bf`, badges ×18 at tests 5116 / browser 118): the tail of the CAR-49…58 design sweep — dark map tiles, dark `callout--warn` variants, one stroke-SVG icon set for the topbar, empty states. Before it: **v1.246.0** (all ten top findings of the CAR-48 senior-design sweep), **v1.245.0** (Tamil joins as the 18th UI locale), **v1.244.x** `#/scan` redesign + hotfixes (prod verified, CAR-36 modal PASS, Playwright 15/15)._
 
 ---
 
 ## Current state
 
-**v1.242.0 — IN RELEASE TRAIN 2026-10-07** (sources correctness: 9 parallel fix agents over the source families, ~600 new tests, all gates green; Linear CAR-6…CAR-16). Before it: **v1.241.0/1.241.1 — SHIPPED 2026-10-07** (tag `v1.241.0` @ `c6de9cca`, npm published, cvstart.org deployed, resumecraft.ru deployed with `ALLOWED_HOSTS=resumecraft.ru`, public check 401). **Hardening from the 2026-10-06 code review** (28 read-only review agents, ~190 verified
-findings, fixed by 6 fix-and-cover agents A/B/C/D/CI/T). Tests **4404**, browser **118**, server coverage
-baseline line 96.7 % / branch 86.3 % (`scripts/coverage-baseline.json`, ratchet). Ships the job map (#381).
-v1.240.0 (parent parity @ `62905981`, 109 sources) is released and deployed.
+**v1.247.0 — SHIPPED 2026-10-09** (design sweep tail: CAR-49…58 minors + the dark map tiles the previous release deferred). Tests **5116** (0 fail), browser **118**, e2e **23/23 + 21/21**; server coverage baseline in `scripts/coverage-baseline.json` (ratchet). The 2026-10-07/08 trains are done and shipped: **v1.242.0** sources correctness (9 parallel fix agents, ~600 tests, CAR-6…16), **v1.243.0** client fixes, **v1.244.x** `#/scan` redesign (prod verified).
 
-Remaining plan (`docs/sdd/PLAN.md`): v1.243.0 client fixes,
-v1.244.0 `#/scan` redesign, v1.245.0 Tamil locale, v1.246.0 upstream features, plus the
-newest parent/upstream delta (research in progress). All web-ui branches are merged into
-`main` and deleted after each release (maintainer's rule, 2026-10-07).
+Remaining plan (`docs/sdd/BACKLOG.md`): the docs-reality sweep **CAR-30…35** (help ×18 vs code, prompt-machine docs, README ×18, site cvstart.org, help mirrors), the parked `job-map-ta` screenshot (blocked on the geocode capture, #417), and the next parent/upstream delta (research in progress). All web-ui branches are merged into `main` and deleted after each release (maintainer's rule, 2026-10-07).
 
 ## Next step
 
-Phase 2 — v1.242.0 sources correctness: start with `docs/sdd/BACKLOG.md` → *v1.242.0*. Any agent: read `docs/sdd/HANDOFF.md` first (OpenCode: `/continue`). Code-scanning: all open alerts on `main` are fixed or dismissed with a written reason (2026-10-07); Dependabot: 0 open.
+Docs-reality sweep CAR-30…35 — one branch, one verdict comment per ticket. Any agent: read `docs/sdd/HANDOFF.md` first (OpenCode: `/continue`). Code-scanning: all open alerts on `main` are fixed or dismissed with a written reason (2026-10-07); Dependabot: 0 open.
 
 
 **Deploying** — `Actions → Deploy (server) → Run workflow`: `recon` (read-only), `deploy`, `verify`

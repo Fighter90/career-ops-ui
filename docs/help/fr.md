@@ -1214,7 +1214,7 @@ l'appel API — même effet).
 1. **Anthropic** — préféré quand `ANTHROPIC_API_KEY` est définie. Le serveur
    regroupe `cv.md`, `config/profile.yml`, `modes/_shared.md` et
    `modes/oferta.md` dans un bloc `<project_context>` avant le prompt (chaque
-   fichier plafonné à 16 Ko, prompt complet plafonné en douceur à 200 Ko).
+   plafonds par type de fichier — cv 64 Ko, fichiers mode 128 Ko, autres 32 Ko — prompt complet plafonné en douceur à 256 Ko).
    Renvoie du markdown ancré directement à la page.
 2. **Gemini** — quand seule `GEMINI_API_KEY` est définie. Le serveur lance
    `gemini-eval.mjs` avec l'offre en fichier temporaire. Le modèle du palier

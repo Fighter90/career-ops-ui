@@ -1179,8 +1179,7 @@ effekt).
 1. **Anthropic** — foretrukket når `ANTHROPIC_API_KEY` er sat.
    Serveren bundter `cv.md`, `config/profile.yml`, `modes/_shared.md`,
    og `modes/oferta.md` ind i en `<project_context>`-blok før
-   prompten (hver fil begrænset til 16 KB, fuld prompt soft-capped ved
-   200 KB). Returnerer grundet markdown direkte til siden.
+   prompten (grænser pr. filtype — cv 64 KB, mode-filer 128 KB, andre 32 KB — fuld prompt soft-capped ved 256 KB). Returnerer grundet markdown direkte til siden.
 2. **Gemini** — når kun `GEMINI_API_KEY` er sat. Serveren spawner
    `gemini-eval.mjs` med JD'en som en temp-fil. Gratis-niveau-model
    (`gemini-3.6-flash`) er fin til rutinescoring.
@@ -1729,7 +1728,7 @@ events.
 | `/career-ops apply` siger "no report found" | Pipeline scorede aldrig denne JD | Kør `/career-ops pipeline` (eller `#/evaluate`) først; se §14-forudsætninger. |
 | `batch-runner.sh: no such file` | Kører fra forkert mappe | `cd $CAREER_OPS_ROOT` før du invokerer `./batch/batch-runner.sh`. |
 | Serveren rapporterer `EADDRINUSE: 4317` | Gammel instans kører stadig | `pkill -f 'node server/index.mjs'` derefter genstart. |
-| Live LLM-kald hænger > 2 min | Prompt enorm eller Anthropic langsom | Tjek `/api/health` Anthropic-flag; serveren soft-capper prompts ved 200 KB og returnerer 413. |
+| Live LLM-kald hænger > 2 min | Prompt enorm eller Anthropic langsom | Tjek `/api/health` Anthropic-flag; serveren soft-capper prompts ved 256 KB og returnerer 413. |
 | Pipeline-preview viser `(unsafe redirect)` | Opslag omdirigerede til en privat IP / loopback | Dette er en sikkerhedsfunktion (REVIEW-B1). Redirect-målet afvises, og den oprindelige URL er uændret. |
 | Tracker-rækketekst bryder tabellen | Pipe i virksomhedsnavn pre-v1.9.1 | Opdater til v1.9.1+ — pipes escapes end-to-end (BF-1). |
 | `npm test` fejler på frisk clone | Tests antager overordnet projektlayout | Brug `CAREER_OPS_ROOT=$(mktemp -d)` og bootstrap fixtures. |

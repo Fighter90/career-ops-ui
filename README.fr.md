@@ -17,9 +17,9 @@ _Interface non officielle — sans affiliation ni approbation de career-ops / sa
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Dernière version — v1.244.0** — **Les résultats du scan se lisent comme une liste, pas un mur : une offre = deux lignes, les signaux sont des icônes, et un scan de 700 lignes devient un tableau paginé au lieu d'une page de 37,000 px.**
+> **🆕 Dernière version — v1.247.0** — **La queue du balayage design CAR-49…58 est terminée — tous les mineurs et polishes restants, plus la carte sombre que la version précédente avait volontairement différée.**
 >
-> **Précédente — v1.243.2** — Empaquetage uniquement : le même arbre que v1.243.1 (le correctif de fermeture de la modale « Consigner le résultat ») recoupé sous un tag neuf, car la v1.243.1 réorientée après publication n'a jamais été déployable.
+> **Précédente — v1.246.0** — Les dix constats majeurs du passage design senior CAR-48 sont corrigés — le bloqueur et les sept majeurs inclus.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -260,7 +260,7 @@ Ouvrez http://127.0.0.1:4317. Le compteur du Pipeline doit maintenant indiquer `
 | **Profile**      | Vue en lecture seule de `config/profile.yml` + archétypes — résumé adapté à l'UI. |
 | **App settings** | Éditeur dans l'UI pour les clés `.env` parent : `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, surcharges de modèle, port / hôte. Secrets masqués à la lecture. |
 | **Health**       | Toutes les vérifications de config en badges OK / OPTIONAL / FAIL + boutons pour lancer `doctor.mjs` et `verify-pipeline.mjs`. |
-| **Help**         | Guide utilisateur Markdown dans l'app (`/#/help`), localisé pour les 17 langues prises en charge (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi). |
+| **Help**         | Guide utilisateur Markdown dans l'app (`/#/help`), localisé pour les 18 langues prises en charge (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta). |
 | **Activity log** | Journal d'audit de chaque requête modifiant l'état (écritures, exécutions, scans). Secrets caviardés. |
 | **Notifications** 🔔 *(v1.58.34 / v1.58.35)* | Cloche dans la barre du haut avec badge rouge de non-lus. Cliquez pour faire glisser un tiroir listant les 50 derniers toasts (par onglet, par session) — Success / Error / Info-progress, chacun avec un horodatage localisé, le message humain, et tout postfixe `(METHOD /path · HTTP NNN)` rangé dans un `<details>`. L'aide **§18** documente chaque catégorie. Le tiroir s'ouvre **uniquement** au clic sur la cloche (ou clavier Entrée / Espace) ; se ferme via ×, Échap, ou re-clic sur la cloche. |
 
@@ -359,7 +359,7 @@ career-ops-ui/
 │     │  ├─ lever.mjs        # api.lever.co client
 │     │  ├─ hh.mjs           # api.hh.ru client (UA-aware)
 │     │  └─ habr.mjs         # career.habr.com HTML parser (no cheerio, regex only)
-│     └─ routes/             # 37 route modules — one per topic (P-2)
+│     └─ routes/             # 39 route modules — one per topic (P-2)
 │        ├─ activity.mjs     # /api/activity
 │        ├─ config.mjs       # /api/config (parent .env round-trip)
 │        ├─ content.mjs      # /api/cv, /api/profile, /api/portals, /api/modes
@@ -388,7 +388,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 3009 unit + 101 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.121.0)
+└─ tests/                    # 5116 unit + 118 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.247.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -397,7 +397,7 @@ career-ops-ui/
    ├─ url-validation.test.mjs    # SSRF reject sweep (FIX-M3 + M6 + M7)
    ├─ cv-xss.test.mjs        # stripDangerousMarkdown round-trip
    ├─ jd-sanitize.test.mjs   # sanitizeJobDescription
-   ├─ help.test.mjs / help-ui.test.mjs    # i18n parity across all 17 locales
+   ├─ help.test.mjs / help-ui.test.mjs    # i18n parity across all 18 locales
    ├─ playwright-smoke.mjs   # 22 browser flows (CV save, tracker, pipeline, evaluate, config, etc.)
    └─ e2e{,-comprehensive}.mjs   # full Playwright walkthrough
 ```
@@ -519,20 +519,20 @@ Quand `run: true` est défini sur `/api/deep` ou `/api/mode/:slug`, le serveur p
 ## Tests
 
 ```bash
-npm test                       # 3009 unit/integration tests
+npm test                       # 5116 unit/integration tests
 npm run test:e2e               # 21 smoke e2e (boots own server)
 npm run test:e2e:full          # 23 comprehensive e2e
-npm run test:e2e:browser       # 101 Playwright browser (smoke + full-cycle + forms + locale-sweep ×17 + theme)
+npm run test:e2e:browser       # 118 Playwright browser (smoke + full-cycle + forms + locale-sweep ×18 + theme)
 npm run test:coverage          # same as `npm test` plus V8 coverage
 ```
 
 | Suite                       | Tests | Quoi                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + intégration) | **3009** | Chaque endpoint, serveur éphémère, sans réseau. 329 fichiers : parsers, scanners (mockés), runners, anthropic/openai, en-têtes de sécurité, XSS, désinfection d'offre, validation d'URL, parité i18n, + les suites de fixes UX v1.55→v1.56. |
+| `node --test tests/*.test.mjs` (unit + intégration) | **5116** | Chaque endpoint, serveur éphémère, sans réseau. 329 fichiers : parsers, scanners (mockés), runners, anthropic/openai, en-têtes de sécurité, XSS, désinfection d'offre, validation d'URL, parité i18n, + les suites de fixes UX v1.55→v1.56. |
 | `tests/e2e.mjs` (smoke)      | 21 | Playwright headless : chaque route s'affiche, flux de base.                                                |
 | `tests/e2e-comprehensive.mjs` | 23 | Parcours Playwright complet : 11 routes + 12 flux fonctionnels.                                            |
-| `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **101** | Piloté par navigateur : rendu du dashboard, navigation, changement de langue, 404, health, aller-retour tracker, ajout pipeline + balayage URL-invalide, rapports, repli manuel d'évaluation, clés de config masquées, retrait XSS au PUT du CV, aperçu pipeline 400, SSE auto-pipeline. |
-| **Total** (all four suites)                   | **3101** | **0 échec, 0 flake**                                                                                    |
+| `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **118** | Piloté par navigateur : rendu du dashboard, navigation, changement de langue, 404, health, aller-retour tracker, ajout pipeline + balayage URL-invalide, rapports, repli manuel d'évaluation, clés de config masquées, retrait XSS au PUT du CV, aperçu pipeline 400, SSE auto-pipeline. |
+| **Total** (all four suites)                   | **5278** | **0 échec, 0 flake**                                                                                    |
 
 Couverture : ~93 % ligne / ~83 % branche via `--experimental-test-coverage`.
 
@@ -612,7 +612,7 @@ Pour l'évaluation de production-readiness (barrières de déploiement, registre
 
 career-ops est au mieux **toujours actif** — il scanne pendant votre sommeil, accessible depuis n’importe quel navigateur. Pour mettre toute la stack sur un petit serveur — le pipeline parent **career-ops**, ce visualiseur **career-ops-ui**, et le **moteur** qui exécute l’IA (votre **abonnement Claude** via le CLI Claude Code, une passerelle **Hermes** locale, ou des clés API) — provisionnez un VPS (Node ≥ 18), installez le parent + ce dépôt, choisissez votre moteur, et exposez le visualiseur derrière un **reverse-proxy HTTPS avec authentification** en gardant intactes les invariantes de sécurité (CSP, garde SSRF, frontière XSS, aucun secret dans les logs).
 
-📖 L’**Aide §31** intégrée (« Exécuter toute la stack dans le cloud ») détaille chaque étape dans les 17 langues ; la checklist opérateur est [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), et la [page wiki de déploiement cloud](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) contient les tableaux de référence.
+📖 L’**Aide §31** intégrée (« Exécuter toute la stack dans le cloud ») détaille chaque étape dans les 18 langues ; la checklist opérateur est [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), et la [page wiki de déploiement cloud](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) contient les tableaux de référence.
 
 ---
 
@@ -629,14 +629,14 @@ career-ops est au mieux **toujours actif** — il scanne pendant votre sommeil, 
 
 ## Localisation
 
-L'UI est livrée en **17 locales** — `en`, `es`, `fr`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`. Depuis la **v1.60.0 (I18N-SPLIT)**, les traductions vivent **un fichier par locale** sous [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, chacune une table plate `key → string` — plus un `i18n-dict.aliases.js` partagé. [`i18n-dict.js`](public/js/lib/i18n-dict.js) les assemble dans `window.__I18N_DICT` ; [`i18n.js`](public/js/lib/i18n.js) résout `t('key', 'fallback')`. Pas d'étape de build, pas de fetch runtime — un traducteur édite un seul fichier de langue de façon isolée.
+L'UI est livrée en **18 locales** — `en`, `es`, `fr`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`, `ta`. Depuis la **v1.60.0 (I18N-SPLIT)**, les traductions vivent **un fichier par locale** sous [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, chacune une table plate `key → string` — plus un `i18n-dict.aliases.js` partagé. [`i18n-dict.js`](public/js/lib/i18n-dict.js) les assemble dans `window.__I18N_DICT` ; [`i18n.js`](public/js/lib/i18n.js) résout `t('key', 'fallback')`. Pas d'étape de build, pas de fetch runtime — un traducteur édite un seul fichier de langue de façon isolée.
 
 **Ajouter ou changer une chaîne :**
 
 ```js
 // public/js/lib/locales/i18n-dict.en.js   →   'scan.newButton': 'Run scan',
 // public/js/lib/locales/i18n-dict.fr.js   →   'scan.newButton': 'Lancer le scan',
-// …add the same key to all 17 locale files (parity is gated)
+// …add the same key to all 18 locale files (parity is gated)
 ```
 
 Utilisez-la ensuite via `data-i18n="scan.newButton"` dans le markup ou `t('scan.newButton')` en JS, puis lancez `npm test`. Pour ajouter une langue toute neuve, enregistrez-la dans `i18n.js` (`LANGS` + `detect()`), l'assembleur, `index.html`, et l'outillage qui énumère les locales.

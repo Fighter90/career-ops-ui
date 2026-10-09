@@ -1023,7 +1023,7 @@ hh.ru 透過讀取其公開搜尋頁面（`hh.ru/search/vacancy`）來掃描,與
 1. **Anthropic** — 設定 `ANTHROPIC_API_KEY` 時為首選。伺服器會
    把 `cv.md`、`config/profile.yml`、`modes/_shared.md`、
    `modes/oferta.md` 打包進 `<project_context>` 區塊再放到提示前
-   (每個檔案限制 16 KB,完整提示軟上限 200 KB)。直接回傳有
+   (每個檔案依類型設限 — cv 64 KB、mode 檔案 128 KB、其他 32 KB — 完整提示軟上限 256 KB)。直接回傳有
    依據的 markdown 到頁面。
 2. **Gemini** — 只有設定 `GEMINI_API_KEY` 時。伺服器會 spawn
    `gemini-eval.mjs`,把 JD 當作暫存檔傳入。免費模型
@@ -1544,7 +1544,7 @@ scan 執行、設定變更、mode 執行。
 | `/career-ops apply` 顯示「no report found」 | Pipeline 從未為此 JD 評分 | 先執行 `/career-ops pipeline`(或 `#/evaluate`);見第 14 節前置條件。 |
 | `batch-runner.sh: no such file` | 在錯誤的目錄執行 | 在叫用 `./batch/batch-runner.sh` 前先 `cd $CAREER_OPS_ROOT`。 |
 | 伺服器報 `EADDRINUSE: 4317` | 舊實例仍在執行 | `pkill -f 'node server/index.mjs'` 後重啟。 |
-| Live LLM 呼叫掛起 > 2 分鐘 | 提示太大或 Anthropic 慢 | 檢查 `/api/health` 的 Anthropic 旗標;伺服器對提示有 200 KB 軟上限並回 413。 |
+| Live LLM 呼叫掛起 > 2 分鐘 | 提示太大或 Anthropic 慢 | 檢查 `/api/health` 的 Anthropic 旗標;伺服器對提示有 256 KB 軟上限並回 413。 |
 | Pipeline 預覽顯示 `(unsafe redirect)` | 貼文被轉址到私有 IP / loopback | 這是安全功能(REVIEW-B1)。轉址目標被拒絕,原 URL 不變。 |
 | Tracker 列文字撐破表格 | v1.9.1 之前公司名稱含豎線 | 升級到 v1.9.1+ — 豎線已端到端跳脫(BF-1)。 |
 | `npm test` 在新 clone 上失敗 | 測試假設父專案版面 | 使用 `CAREER_OPS_ROOT=$(mktemp -d)` 並 bootstrap fixtures。 |

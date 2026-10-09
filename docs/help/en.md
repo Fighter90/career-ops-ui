@@ -1206,8 +1206,7 @@ effect).
 1. **Anthropic** — preferred when `ANTHROPIC_API_KEY` is set. The
    server bundles `cv.md`, `config/profile.yml`, `modes/_shared.md`,
    and `modes/oferta.md` into a `<project_context>` block before the
-   prompt (each file capped at 16 KB, full prompt soft-capped at
-   200 KB). Returns grounded markdown directly to the page.
+   prompt (caps per file kind — cv 64 KB, mode files 128 KB, others 32 KB — with the full prompt soft-capped at 256 KB). Returns grounded markdown directly to the page.
 2. **Gemini** — when only `GEMINI_API_KEY` is set. Server spawns
    `gemini-eval.mjs` with the JD as a temp file. Free-tier model
    (`gemini-3.6-flash`) is fine for routine scoring.
@@ -1757,7 +1756,7 @@ events.
 | `/career-ops apply` says "no report found" | Pipeline never scored this JD | Run `/career-ops pipeline` (or `#/evaluate`) first; see §14 prerequisites. |
 | `batch-runner.sh: no such file` | Running from wrong directory | `cd $CAREER_OPS_ROOT` before invoking `./batch/batch-runner.sh`. |
 | Server reports `EADDRINUSE: 4317` | Old instance still running | `pkill -f 'node server/index.mjs'` then restart. |
-| Live LLM call hangs > 2 min | Prompt huge or Anthropic slow | Check `/api/health` Anthropic flag; the server soft-caps prompts at 200 KB and returns 413. |
+| Live LLM call hangs > 2 min | Prompt huge or Anthropic slow | Check `/api/health` Anthropic flag; the server soft-caps prompts at 256 KB and returns 413. |
 | Pipeline preview shows `(unsafe redirect)` | Posting redirected to a private IP / loopback | This is a security feature (REVIEW-B1). The redirect target is rejected and the original URL is unchanged. |
 | Tracker row text breaks the table | Pipe in company name pre-v1.9.1 | Update to v1.9.1+ — pipes are escaped end-to-end (BF-1). |
 | `npm test` fails on fresh clone | Tests assume parent project layout | Use `CAREER_OPS_ROOT=$(mktemp -d)` and bootstrap fixtures. |
@@ -2339,7 +2338,7 @@ Rent a small VPS (1 vCPU / 1 GB RAM is plenty for the viewer) running a current 
 
 ### Pick your engine
 
-career-ops is CLI-agnostic, so you have three honest options for the AI. **Your Claude subscription** — install the **Claude Code** CLI on the box and `claude login` with your Pro/Max plan; the parent's agent runs then use your subscription, with no per-token API bill. **Hermes** — run `hermes gateway` on the same box (it exposes an OpenAI-compatible API at `http://127.0.0.1:8642/v1`) and set `HERMES_API_KEY` in **App settings**; career-ops-ui's live evaluations route through it (last in the auto provider order). **API keys** — set `ANTHROPIC_API_KEY` (or any of the seven providers: Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama → BytePlus Ark → Volcengine Ark) in the parent `.env`, and the ⚡ live actions work headlessly. You can mix them: a Claude subscription for the parent's heavy agent work, and a cheap or local provider for the viewer's quick evaluations.
+career-ops is CLI-agnostic, so you have three honest options for the AI. **Your Claude subscription** — install the **Claude Code** CLI on the box and `claude login` with your Pro/Max plan; the parent's agent runs then use your subscription, with no per-token API bill. **Hermes** — run `hermes gateway` on the same box (it exposes an OpenAI-compatible API at `http://127.0.0.1:8642/v1`) and set `HERMES_API_KEY` in **App settings**; career-ops-ui's live evaluations route through it (last in the auto provider order). **API keys** — set `ANTHROPIC_API_KEY` (or any of the providers: Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama → BytePlus Ark → Volcengine Ark) in the parent `.env`, and the ⚡ live actions work headlessly. You can mix them: a Claude subscription for the parent's heavy agent work, and a cheap or local provider for the viewer's quick evaluations.
 
 ### Expose it safely
 

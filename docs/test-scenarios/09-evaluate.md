@@ -26,7 +26,7 @@ User pastes a JD, optionally toggles **Manual mode**, clicks **Evaluate**. With 
 | Case | Expected |
 |---|---|
 | JD shorter than 50 chars after sanitization | `400 { error: "JD text required (min 50 chars after sanitization)" }` |
-| Assembled prompt > 200 KB soft cap | `413 { error: "prompt too large", details }` |
+| Assembled prompt > 256 KB soft cap | `413 { error: "prompt too large", details }` |
 | Anthropic call fails | `502 { mode: "anthropic", prompt, error, saved? }` |
 
 ## Test coverage

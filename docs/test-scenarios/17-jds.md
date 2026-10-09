@@ -20,7 +20,7 @@
 | Slug not matching `[\w\-.]+` | `400 { error: "invalid name" }` |
 | Empty text | `400 { error: "name and text required" }` |
 | File missing on read or delete | `404 { error: "not found" }` |
-| JD text > 200 KB | `413` |
+| JD text > 50,000 characters (`MAX_JD_CHARS`) | `413` |
 
 ## Test coverage
 

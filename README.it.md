@@ -17,9 +17,9 @@ _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santi
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Ultima release — v1.244.0** — **I risultati della scansione si leggono come un elenco, non come un muro: un annuncio = due righe, i segnali sono icone e una scansione da 700 righe è una tabella impaginata invece di una pagina da 37,000 px.** Ogni annuncio è una riga compatta a due linee — titolo in alto, riga di dettaglio di piccole icone sotto (title-fit, potenziamento, punteggio di corrispondenza, fonte e data) con nomi accessibili localizzati; i segmenti `| Germany | Remote` escono dal titolo; niente più overflow orizzontale (la vecchia pagina traboccava di 675 px sul telefono); risultati impaginati 50 per pagina (25/50/100/200 selezionabili) e test contrattuali di layout nella suite browser — test **5036 → 5045**.
+> **🆕 Ultima release — v1.247.0** — **La coda della scansione design CAR-49…58 è chiusa — tutti i reperti minori e di polish rimanenti, più la mappa scura che la versione precedente aveva rimandato di proposito.**
 >
-> **Precedente — v1.243.2** — Il codice dell'app è identico a v1.243.1 — nuovo è solo il tag deployabile (il `git fetch --tags` del server aveva rifiutato la v1.243.1 ri-puntata).
+> **Precedente — v1.246.0** — Tutti i dieci reperti principali della scansione senior-design CAR-48 sono corretti — bloccante e tutti e sette i major inclusi.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -294,7 +294,7 @@ Apri http://127.0.0.1:4317. Il contatore della Pipeline dovrebbe ora indicare `0
 | **Profile**      | Vista in sola lettura di `config/profile.yml` + archetipi — riepilogo adatto alla UI.                                         |
 | **App settings** | Editor nella UI per le chiavi del `.env` principale: `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, override dei modelli, porta / host. Segreti mascherati in lettura. |
 | **Health**       | Tutti i controlli di configurazione in badge OK / OPTIONAL / FAIL + pulsanti per eseguire `doctor.mjs` e `verify-pipeline.mjs`.           |
-| **Help**         | Guida utente Markdown in-app (`/#/help`), localizzata per tutte le 17 lingue supportate (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi). |
+| **Help**         | Guida utente Markdown in-app (`/#/help`), localizzata per tutte le 18 lingue supportate (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta). |
 | **Activity log** | Traccia di audit di ogni richiesta che modifica lo stato (scritture, esecuzioni, scansioni). Segreti oscurati. |
 | **Notifications** 🔔 *(v1.58.34 / v1.58.35)* | Campanella nella barra superiore con badge rosso per i non letti. Cliccala per far scorrere un pannello che elenca gli ultimi 50 toast (per scheda, per sessione) — Successo / Errore / Info-progresso, ciascuno con un timestamp localizzato, il messaggio leggibile e qualsiasi postfisso `(METHOD /path · HTTP NNN)` racchiuso in un `<details>`. La sezione Help **§18** documenta ogni categoria. Il pannello si apre **solo** al clic sulla campanella (o da tastiera Invio / Spazio); si chiude tramite ×, Esc, o ricliccando la campanella. |
 
@@ -393,7 +393,7 @@ career-ops-ui/
 │     │  ├─ lever.mjs        # api.lever.co client
 │     │  ├─ hh.mjs           # hh.ru/search/vacancy HTML scraper (paginated, UA-aware)
 │     │  └─ habr.mjs         # career.habr.com HTML parser (no cheerio, regex only)
-│     └─ routes/             # 37 route modules — one per topic (P-2)
+│     └─ routes/             # 39 route modules — one per topic (P-2)
 │        ├─ activity.mjs     # /api/activity
 │        ├─ config.mjs       # /api/config (parent .env round-trip)
 │        ├─ content.mjs      # /api/cv, /api/profile, /api/portals, /api/modes
@@ -422,7 +422,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 3009 unit + 101 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.121.0)
+└─ tests/                    # 5116 unit + 118 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.247.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -553,20 +553,20 @@ Quando `run: true` è impostato su `/api/deep` o `/api/mode/:slug`, il server pr
 ## Test
 
 ```bash
-npm test                       # 3009 unit/integration tests
+npm test                       # 5116 unit/integration tests
 npm run test:e2e               # 21 smoke e2e (boots own server)
 npm run test:e2e:full          # 23 comprehensive e2e
-npm run test:e2e:browser       # 101 Playwright browser (smoke + full-cycle + forms + locale-sweep ×17 + theme)
+npm run test:e2e:browser       # 118 Playwright browser (smoke + full-cycle + forms + locale-sweep ×18 + theme)
 npm run test:coverage          # same as `npm test` plus V8 coverage
 ```
 
 | Suite                       | Test | Cosa                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integration) | **3009** | Ogni endpoint, server effimero, nessuna rete. 329 file: parser, scanner (mockati), runner, anthropic/openai, header di sicurezza, XSS, sanitizzazione JD, validazione URL, parità i18n, + le suite di correzioni UX v1.55→v1.56. |
+| `node --test tests/*.test.mjs` (unit + integration) | **5116** | Ogni endpoint, server effimero, nessuna rete. 329 file: parser, scanner (mockati), runner, anthropic/openai, header di sicurezza, XSS, sanitizzazione JD, validazione URL, parità i18n, + le suite di correzioni UX v1.55→v1.56. |
 | `tests/e2e.mjs` (smoke)      | 21 | Playwright headless: ogni rotta viene renderizzata, flussi di base.                                                     |
 | `tests/e2e-comprehensive.mjs` | 23 | Walkthrough Playwright completo: 11 rotte + 12 flussi funzionali.                                              |
-| `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **101** | Guidati da browser: render della dashboard, navigazione, cambio lingua, 404, health, round-trip del tracker, aggiunta alla pipeline + sweep di URL non validi, report, fallback manuale di evaluate, chiavi di config mascherate, rimozione XSS su CV PUT, anteprima pipeline 400, SSE auto-pipeline. |
-| **Totale** (tutte e quattro le suite)                   | **3101** | **0 fallimenti, 0 flake**                                                                                    |
+| `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **118** | Guidati da browser: render della dashboard, navigazione, cambio lingua, 404, health, round-trip del tracker, aggiunta alla pipeline + sweep di URL non validi, report, fallback manuale di evaluate, chiavi di config mascherate, rimozione XSS su CV PUT, anteprima pipeline 400, SSE auto-pipeline. |
+| **Totale** (tutte e quattro le suite)                   | **5278** | **0 fallimenti, 0 flake**                                                                                    |
 
 Copertura: ~93% righe / ~83% branch tramite `--experimental-test-coverage`.
 
@@ -645,7 +645,7 @@ Per la valutazione della prontezza per la produzione (gate di deployment, regist
 
 career-ops dà il meglio **sempre attivo** — scansiona mentre dormi, raggiungibile da qualsiasi browser. Per mettere l’intero stack su un piccolo server — la pipeline padre **career-ops**, questo visualizzatore **career-ops-ui**, e il **motore** che esegue l’IA (il tuo **abbonamento Claude** via CLI di Claude Code, un gateway **Hermes** locale, o chiavi API) — allestisci un VPS (Node ≥ 18), installa il padre + questo repo, scegli il motore, ed esponi il visualizzatore dietro un **reverse proxy HTTPS con autenticazione** mantenendo intatte le invarianti di sicurezza (CSP, guard SSRF, confine XSS, nessun segreto nei log).
 
-📖 L’**Aiuto §31** in-app ("Esegui l’intero stack nel cloud") lo illustra passo passo in tutte le 17 lingue; la checklist operatore è [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), e la [pagina wiki di deploy nel cloud](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) ha le tabelle di riferimento.
+📖 L’**Aiuto §31** in-app ("Esegui l’intero stack nel cloud") lo illustra passo passo in tutte le 18 lingue; la checklist operatore è [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), e la [pagina wiki di deploy nel cloud](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) ha le tabelle di riferimento.
 
 ---
 
@@ -662,7 +662,7 @@ career-ops dà il meglio **sempre attivo** — scansiona mentre dormi, raggiungi
 
 ## Localizzazione
 
-La UI viene fornita con **17 lingue** — `en`, `es`, `fr`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`. Dalla **v1.60.0 (I18N-SPLIT)** le traduzioni vivono **un file per lingua** sotto [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, ciascuno una tabella piatta `key → string` — più un `i18n-dict.aliases.js` condiviso. [`i18n-dict.js`](public/js/lib/i18n-dict.js) le assembla in `window.__I18N_DICT`; [`i18n.js`](public/js/lib/i18n.js) risolve `t('key', 'fallback')`. Nessuno step di build, nessun fetch a runtime — un traduttore modifica un singolo file di lingua in isolamento.
+La UI viene fornita con **18 lingue** — `en`, `es`, `fr`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`, `ta`. Dalla **v1.60.0 (I18N-SPLIT)** le traduzioni vivono **un file per lingua** sotto [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, ciascuno una tabella piatta `key → string` — più un `i18n-dict.aliases.js` condiviso. [`i18n-dict.js`](public/js/lib/i18n-dict.js) le assembla in `window.__I18N_DICT`; [`i18n.js`](public/js/lib/i18n.js) risolve `t('key', 'fallback')`. Nessuno step di build, nessun fetch a runtime — un traduttore modifica un singolo file di lingua in isolamento.
 
 **Aggiungere o cambiare una stringa:**
 
@@ -733,7 +733,7 @@ nella pagina wiki [Agentic Practices](https://github.com/Fighter90/career-ops-ui
 
 Issue e PR benvenuti. Regole della casa:
 
-- Esegui `npm test` prima del push — **3009 checks green** è il minimo (più 101 Playwright se tocchi la UI).
+- Esegui `npm test` prima del push — **5116 checks green** è il minimo (più 118 Playwright se tocchi la UI).
 - Le modifiche non banali passano attraverso la pipeline GSD. Vedi [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md).
 - Non modificare nulla nel progetto principale `career-ops/` da dentro questo repository. Il punto è proprio che questo è un overlay non invasivo. Regole ferree in [`CLAUDE.md`](CLAUDE.md).
 - Conventional commits: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`. Scope opzionale: `feat(scan):`. Breaking change: `feat!:`.

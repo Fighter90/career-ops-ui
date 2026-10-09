@@ -1279,8 +1279,7 @@ Sie `save: true` im API-Aufruf — gleicher Effekt).
 1. **Anthropic** — bevorzugt, wenn `ANTHROPIC_API_KEY` gesetzt ist. Der
    Server bündelt `cv.md`, `config/profile.yml`, `modes/_shared.md` und
    `modes/oferta.md` vor dem Prompt in einen `<project_context>`-Block
-   (jede Datei bei 16 KB begrenzt, vollständiger Prompt weich begrenzt bei
-   200 KB). Gibt fundiertes Markdown direkt an die Seite zurück.
+   (Limits pro Dateityp — cv 64 KB, Mode-Dateien 128 KB, andere 32 KB — vollständiger Prompt weich begrenzt bei 256 KB). Gibt fundiertes Markdown direkt an die Seite zurück.
 2. **Gemini** — wenn nur `GEMINI_API_KEY` gesetzt ist. Der Server startet
    `gemini-eval.mjs` mit der JD als temporäre Datei. Das Modell des
    kostenlosen Tarifs (`gemini-3.6-flash`) ist für routinemäßige Bewertung
@@ -1864,7 +1863,7 @@ Ereignisse zurück.
 | `/career-ops apply` sagt „no report found" | Pipeline hat diese JD nie bewertet | Zuerst `/career-ops pipeline` (oder `#/evaluate`) ausführen; siehe §14-Voraussetzungen. |
 | `batch-runner.sh: no such file` | Aus falschem Verzeichnis ausgeführt | `cd $CAREER_OPS_ROOT` vor dem Aufruf von `./batch/batch-runner.sh`. |
 | Server meldet `EADDRINUSE: 4317` | Alte Instanz läuft noch | `pkill -f 'node server/index.mjs'`, dann neu starten. |
-| Live-LLM-Aufruf hängt > 2 min | Prompt riesig oder Anthropic langsam | Prüfen Sie das Anthropic-Flag von `/api/health`; der Server begrenzt Prompts weich bei 200 KB und gibt 413 zurück. |
+| Live-LLM-Aufruf hängt > 2 min | Prompt riesig oder Anthropic langsam | Prüfen Sie das Anthropic-Flag von `/api/health`; der Server begrenzt Prompts weich bei 256 KB und gibt 413 zurück. |
 | Pipeline-Vorschau zeigt `(unsafe redirect)` | Ausschreibung leitet zu einer privaten IP / Loopback um | Dies ist eine Sicherheitsfunktion (REVIEW-B1). Das Umleitungsziel wird abgelehnt und die ursprüngliche URL bleibt unverändert. |
 | Tracker-Zeilentext bricht die Tabelle | Pipe im Unternehmensnamen vor v1.9.1 | Auf v1.9.1+ aktualisieren — Pipes werden durchgängig escaped (BF-1). |
 | `npm test` schlägt bei frischem Klon fehl | Tests setzen das Layout des übergeordneten Projekts voraus | `CAREER_OPS_ROOT=$(mktemp -d)` verwenden und Fixtures bootstrappen. |
@@ -2445,7 +2444,7 @@ Mieten Sie einen kleinen VPS (1 vCPU / 1 GB RAM reicht für den Viewer völlig a
 
 ### Ihre Engine wählen
 
-career-ops ist CLI-agnostisch, sodass Sie drei ehrliche Optionen für die KI haben. **Ihr Claude-Abonnement** — installieren Sie die **Claude Code**-CLI auf der Maschine und führen Sie `claude login` mit Ihrem Pro/Max-Plan aus; der Agent des Eltern-Projekts nutzt dann Ihr Abonnement, ohne API-Abrechnung pro Token. **Hermes** — führen Sie `hermes gateway` auf derselben Maschine aus (es exponiert eine OpenAI-kompatible API unter `http://127.0.0.1:8642/v1`) und setzen Sie `HERMES_API_KEY` in den **App-Einstellungen**; die Live-Auswertungen von career-ops-ui laufen darüber (als letztes in der automatischen Provider-Reihenfolge). **API-Keys** — setzen Sie `ANTHROPIC_API_KEY` (oder einen der sieben Provider: Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama → BytePlus Ark → Volcengine Ark) in der `.env` des Eltern-Projekts, und die ⚡ Live-Aktionen funktionieren ohne Aufsicht. Sie können sie mischen: ein Claude-Abonnement für die schwere Agenten-Arbeit des Eltern-Projekts, und einen günstigen oder lokalen Provider für die schnellen Auswertungen des Viewers.
+career-ops ist CLI-agnostisch, sodass Sie drei ehrliche Optionen für die KI haben. **Ihr Claude-Abonnement** — installieren Sie die **Claude Code**-CLI auf der Maschine und führen Sie `claude login` mit Ihrem Pro/Max-Plan aus; der Agent des Eltern-Projekts nutzt dann Ihr Abonnement, ohne API-Abrechnung pro Token. **Hermes** — führen Sie `hermes gateway` auf derselben Maschine aus (es exponiert eine OpenAI-kompatible API unter `http://127.0.0.1:8642/v1`) und setzen Sie `HERMES_API_KEY` in den **App-Einstellungen**; die Live-Auswertungen von career-ops-ui laufen darüber (als letztes in der automatischen Provider-Reihenfolge). **API-Keys** — setzen Sie `ANTHROPIC_API_KEY` (oder einen der Provider: Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama → BytePlus Ark → Volcengine Ark) in der `.env` des Eltern-Projekts, und die ⚡ Live-Aktionen funktionieren ohne Aufsicht. Sie können sie mischen: ein Claude-Abonnement für die schwere Agenten-Arbeit des Eltern-Projekts, und einen günstigen oder lokalen Provider für die schnellen Auswertungen des Viewers.
 
 ### Sicher exponieren
 

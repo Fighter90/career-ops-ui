@@ -1,8 +1,8 @@
 # SENIOR UX-DESIGNER AUDIT — career-ops-ui
 
-> **Baseline: v1.231.2** (37 route modules · 31 views · **17 locales** ·
-> help bundles **32 H2 / 122 H3** — §31 "Running the whole stack in the cloud"
-> added v1.154.0 · **92 scanner sources = 87 EN + 5 RU** ·
+> **Baseline: v1.247.0** (39 route modules · 32 views · **18 locales** ·
+> help bundles **33 H2 / 125 H3** — §31 "Running the whole stack in the cloud"
+> added v1.154.0 · **109 scanner sources = 104 EN + 5 RU** ·
 > **18 LLM providers**, headless eval order Anthropic → Gemini → OpenAI → Qwen →
 > OpenRouter → GitHub Models → Hermes, auto-ordered — and as of v1.157.0 a
 > forced `LLM_PROVIDER` with no key falls back to any configured provider, so
@@ -132,7 +132,7 @@ concept it serves:
 9. **Accessibility as UX** — keyboard-only completion of the core
    journey; screen-reader sensibility of names/roles/status (not just
    WCAG box-ticking — does it make sense *aurally*?).
-10. **i18n integrity** — switch through all 17 locales on the core
+10. **i18n integrity** — switch through all 18 locales on the core
     flow (en · es · pt-BR · ko · ja · ru · zh-CN · zh-TW · fr · pl ·
     uk · da · ar · de · it · tr · hi; Arabic is RTL): truncation,
     untranslated leakage, RTL/character issues, terminology drift
@@ -262,7 +262,7 @@ findings are all shipped and locked — SSRF `timeoutMs` honored, batch +
 key-smoke routes rate-limited, router render-epoch guard, empty-tracker
 relay keyed to exact messages + stderr path-stripping, memory/career-plan
 markdown sanitized, raw `fetch()` routed through `API.*`, usage-HUD
-backoff, CI i18n step at 17 locales. Do **not** re-file these; re-open
+backoff, CI i18n step at 18 locales. Do **not** re-file these; re-open
 only with concrete live regression evidence. The **open design backlog**
 (P4 report) — token-enforcement gate, skeletons, spacing/shadow/radius/
 type/color consolidation, motion system, IA regroup + `#/about` — is
@@ -286,7 +286,7 @@ separately from findings. Cite evidence for every claim.
 
 ---
 
-## §UX-A — EXHAUSTIVE UX MATRIX (every page × every control × 17 locales)
+## §UX-A — EXHAUSTIVE UX MATRIX (every page × every control × 18 locales)
 
 > Sweep this in full. For every cell, rate **GOOD / FRICTION /
 > BROKEN** with evidence (screenshot, route, exact copy, locale).
@@ -304,7 +304,7 @@ per locale, judge:
    leftover English inside a localized sentence (regression class:
    I18N-012/013 "smart questions"/`Deep research` RU; I18N-011
    help-TOC CLOSED v1.58.2 — TOC now matches the sidebar `nav.*`
-   term in all 17 locales, verify it stays so). Mixed-language UI is
+   term in all 18 locales, verify it stays so). Mixed-language UI is
    a trust defect, file it.
 2. **Fit & truncation** — CJK (`ko`/`ja`/`zh`) and longer Romance
    (`es`/`pt-BR`) strings must not clip, wrap mid-word, overflow
@@ -321,7 +321,7 @@ per locale, judge:
    the `⌘K`/`Ctrl K` hint platform-correct; placeholders that are
    examples (ISO date) stay neutral but labels around them localize.
 
-### §UX-A.1 — Per-page heuristic pass (all pages, all 17 locales)
+### §UX-A.1 — Per-page heuristic pass (all pages, all 18 locales)
 
 For **every** route — `#/dashboard #/scan #/pipeline #/evaluate
 #/deep #/cv #/tracker #/reports #/activity #/config #/profile
