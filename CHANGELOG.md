@@ -8,6 +8,27 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 
 
+## [1.248.3] — 2026-10-10
+
+**Follow-up to the regression round: the eval timer can no longer file nameless Telegram-junk reports under any circumstances, the QA-cleanup can no longer delete real Telegram postings, the map attribution is visible again, and the dashboard chips read ≥ 4.5:1.**
+
+### Fixed
+
+- **The auto-pipeline validates BEFORE saving**: a report without a 0–5 score or with missing A–G blocks ends the run at the evaluate step (`rejected: true` in the SSE payload) — no report file, no tracker row. The t.me entries that cleared the v1.248.2 length gate produced two more junk reports after that release; with this fix the pipeline's nameless entries are rejected and the run reports `company/role not identifiable`.
+- **`guessCompanyRole` no longer invents a company from messenger hosts** — `t.me`, `telegram.me`, `vk.com`, `linkedin.com` and friends are EMPTY_DOMAINS: a Telegram post falls back to its channel name, and a nameless entry is rejected instead of filed as `unknown-role`.
+- **`post-qa-cleanup` reads the header score first**: auto-pipeline strips the SCORE_SUMMARY block before saving, so the old summary-only check flagged every saved Telegram posting as junk — on prod 8 of 41 carry a header score and `--apply` would have deleted them. Header score (via `parseReportHeader`) is now the primary signal; the summary block is the fallback. The dry-run prints a per-file reason.
+- **The Leaflet attribution is visible on #/map** — the docs FAB covered it (an OSM-licence violation); the corner is lifted 96px.
+- **Dashboard chips clear 4.5:1** — `dash-chip` labels and the `--manual` variant moved to `--foggy-strong` (were 4.31:1).
+
+### Added
+
+- **`auto-pipeline` failures carry `rejected: true` in the SSE error payload** — the server-side eval timer uses the flag to skip the pipeline entry instead of retrying it every 2 hours.
+
+### Notes
+
+- The ar/ja evaluation drift did **not** repeat on the re-run (see v1.248.2).
+- The prod cleanup itself still awaits an explicit user yes (CAR-61c); with this fix the cleanup can no longer delete the real Telegram postings.
+
 ## [1.248.2] — 2026-10-10
 
 **Regression round: the eval timer can no longer turn pipeline junk into «Last evaluation», SCORE parsing survives real-world formats, and the tracker finally speaks your language.**

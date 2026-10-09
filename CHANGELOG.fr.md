@@ -10,6 +10,27 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.248.3] — 2026-10-10
+
+**Suite de la tour de régression : le minuteur d’évaluation ne peut plus archiver de quelque manière que ce soit du déchet Telegram sans nom, le nettoyage QA ne supprime plus de vraies offres Telegram, l’attribution de la carte redevient visible, et les chips du tableau lisent ≥ 4.5:1.**
+
+### Corrigé
+
+- **L’auto-pipeline valide AVANT d’enregistrer** : un rapport sans score 0–5 ou sans blocs A–G termine la course à l’étape evaluate (`rejected: true` dans la charge SSE) — aucun fichier de rapport, aucune ligne de tracker. Les entrées t.me qui passaient la porte de longueur v1.248.2 ont produit deux déchets de plus après cette version ; désormais les entrées sans nom sont rejetées avec `company/role not identifiable`.
+- **`guessCompanyRole` n’invente plus de société depuis les hôtes de messagerie** — `t.me`, `telegram.me`, `vk.com`, `linkedin.com` et compagnie sont dans EMPTY_DOMAINS : un post Telegram retombe sur le nom du canal, et une entrée sans nom est rejetée au lieu d’être archivée en `unknown-role`.
+- **`post-qa-cleanup` lit d’abord le score d’en-tête** : l’auto-pipeline retire le bloc SCORE_SUMMARY avant d’enregistrer, si bien que l’ancienne vérification summary-seule marquait chaque offre Telegram sauvegardée comme déchet — en production 8 sur 41 portent un score d’en-tête et `--apply` les aurait supprimées. Le score d’en-tête (via `parseReportHeader`) est désormais le signal primaire ; le bloc reste le repli. Le dry-run imprime le motif par fichier.
+- **L’attribution Leaflet est visible sur #/map** — le FAB docs la couvrait (violation de la licence OSM) ; le coin est relevé de 96px.
+- **Les chips du tableau dépassent 4.5:1** — les libellés `dash-chip` et la variante `--manual` passent à `--foggy-strong` (avant 4.31:1).
+
+### Ajouté
+
+- **Les échecs de l’auto-pipeline portent `rejected: true` dans l’erreur SSE** — le minuteur d’évaluation côté serveur utilise le drapeau pour sauter l’entrée du pipeline au lieu de la retenter toutes les 2 heures.
+
+### Notes
+
+- La dérive ar/ja **ne s’est pas répétée** à la relance (voir v1.248.2).
+- Le **nettoyage de production attend toujours un oui explicite** (CAR-61c) ; avec ce correctif, le nettoyage ne peut plus supprimer les vraies offres Telegram.
+
 ## [1.248.2] — 2026-10-10
 
 **Tour de régression : le minuteur d’évaluation ne transforme plus des déchets de pipeline en « Last evaluation », l’analyse de SCORE survit aux formats réels, et le tracker parle enfin votre langue.**

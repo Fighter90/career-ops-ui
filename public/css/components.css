@@ -59,7 +59,7 @@
 .dash-hero-focal--empty { color: var(--foggy); }
 .dash-hero-focal-label { font-weight: 600; }
 .dash-hero-focal-title { color: var(--foggy); }
-.dash-chip { display: inline-block; padding: 3px 10px; font-size: var(--font-size-sm); border-radius: 999px; background: var(--bg-subtle, rgba(0,0,0,.04)); color: var(--foggy); }
+.dash-chip { display: inline-block; padding: 3px 10px; font-size: var(--font-size-sm); border-radius: 999px; background: var(--bg-subtle, rgba(0,0,0,.04)); color: var(--foggy-strong); } /* v1.248.3 — plain --foggy was 4.31:1 on the chip surface (CAR-68 follow-up) */
 
 /* v1.55.6 — UX-4: #/scan "Advanced filters" (facet-chip) disclosure. Compact
    v1.244.2: same rules, fewer lines (components.css 800-LOC contract). */

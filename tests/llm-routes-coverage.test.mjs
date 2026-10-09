@@ -9,7 +9,7 @@
  */
 import { test, before, after, beforeEach, afterEach } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync, existsSync, chmodSync, rmSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, existsSync, chmodSync, rmSync , readdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 import { promises as dns } from 'node:dns';
@@ -70,6 +70,13 @@ function mockProviders(map) {
 const ok = (o) => () => json(o);
 const fail = (msg, status = 500) => () => json({ error: { message: msg } }, status);
 const antText = (t) => ok({ content: [{ type: 'text', text: t }], stop_reason: 'end_turn', usage: { input_tokens: 1, output_tokens: 1 } });
+// v1.248.3 — a report that passes validateEvaluationReport (A–G + a complete
+// SCORE_SUMMARY): the pipeline validates BEFORE saving, so gate stubs must
+// return a full report, not a one-block sketch.
+const FULL_REPORT = ['## A) Context', '## B) Fit', '## C) Risks', '## D) Salary',
+  '## E) Questions', '## F) Legitimacy: high', '## G) Verdict: proceed',
+  '---SCORE_SUMMARY---', 'COMPANY: Acme', 'ROLE: Engineer', 'ARCHETYPE: backend',
+  'LEGITIMACY: high', 'SCORE: 3.5/5', '---END_SUMMARY---'].join('\n');
 const oaiText = (t) => ok({ choices: [{ message: { content: t }, finish_reason: 'stop' }] });
 const gemText = (t) => ok({ candidates: [{ content: { parts: [{ text: t }] }, finishReason: 'STOP' }] });
 
@@ -209,7 +216,7 @@ test('/api/auto-pipeline: provider error fails step 3 with its message', async (
 
 test('/api/auto-pipeline: "Company — Role" title and hostname fallbacks', async () => {
   process.env.ANTHROPIC_API_KEY = ANT;
-  mockProviders({ 'api.anthropic.com': antText('## Block A\nScore: 3.5/5\nLegitimacy: high') });
+  mockProviders({ 'api.anthropic.com': antText(FULL_REPORT) });
   await stubPage(() => ({ body: '<h1>Initrode — Staff Platform Engineer</h1>\n' + LONG }));
   let done = (await pipeline({ url: 'https://jobs.example.com/f' })).find((e) => e.event === 'done').data;
   assert.deepEqual([done.company, done.role, done.score, done.legitimacy], ['Initrode', 'Staff Platform Engineer', 3.5, 'High']);
@@ -217,16 +224,21 @@ test('/api/auto-pipeline: "Company — Role" title and hostname fallbacks', asyn
   await stubPage(() => ({ body: LONG + '\n<p>Software engineer wanted</p>' }));
   done = (await pipeline({ url: 'https://careers.globodyne.com/g' })).find((e) => e.event === 'done').data;
   assert.equal(done.company, 'Globodyne');
-  // An ATS host is not a company: the tracker step reports it, the run still completes.
+  // An ATS host is not a company (v1.248.3, CAR follow-up): with no company
+  // in the text the run is REJECTED instead of filing an `unknown-role`
+  // report — the exact pattern that produced 44 junk `t-role` files on prod.
   await stubPage(() => ({ body: LONG }));
   const ev = await pipeline({ url: 'https://boards.greenhouse.io/x/jobs/1' });
-  assert.ok(ev.some((e) => e.event === 'step' && e.data.key === 'tracker' && e.data.status === 'failed'));
-  assert.equal(ev.find((e) => e.event === 'done').data.trackerNum, '');
+  const err = ev.find((e) => e.event === 'error');
+  assert.match(err?.data?.message || '', /company\/role not identifiable/);
+  assert.equal(err?.data?.rejected, true);
+  assert.ok(!ev.some((e) => e.event === 'done'), 'no done event for a nameless entry');
+  assert.ok(!readdirSync(resolve(ROOT, 'reports')).some((f) => f.includes('unknown-role')), 'no unknown-role report');
 });
 
 test('/api/auto-pipeline: a duplicate company/role row is deduped, not appended', async () => {
   process.env.ANTHROPIC_API_KEY = ANT;
-  mockProviders({ 'api.anthropic.com': antText('## Block A\nScore: 4/5') });
+  mockProviders({ 'api.anthropic.com': antText(FULL_REPORT) });
   await stubPage(() => ({ body: '<h1>Dedupe Engineer at Soylent</h1>' + LONG }));
   const a = (await pipeline({ url: 'https://jobs.example.com/h1' })).find((e) => e.event === 'done').data;
   const b = (await pipeline({ url: 'https://jobs.example.com/h2' })).find((e) => e.event === 'done').data;

@@ -8,6 +8,27 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.248.3] — 2026-10-10
+
+**Continuação da rodada de regressão: o temporizador de avaliação não pode mais arquivar lixo de Telegram sem nome em hipótese alguma, a limpeza QA não exclui mais vagas reais do Telegram, a atribuição do mapa volta a ficar visível e os chips do painel leem ≥ 4.5:1.**
+
+### Corrigido
+
+- **O auto-pipeline valida ANTES de salvar**: um relatório sem pontuação 0–5 ou sem blocos A–G encerra a execução no passo evaluate (`rejected: true` no payload SSE) — sem arquivo de relatório, sem linha no tracker. As entradas de t.me que passavam na porta de comprimento da v1.248.2 produziram mais dois lixos depois daquela versão; agora entradas sem nome são rejeitadas com `company/role not identifiable`.
+- **`guessCompanyRole` não inventa mais empresa de hosts de mensageria** — `t.me`, `telegram.me`, `vk.com`, `linkedin.com` e afins estão em EMPTY_DOMAINS: uma publicação do Telegram retrocede ao nome do canal, e uma entrada sem nome é rejeitada em vez de arquivada como `unknown-role`.
+- **`post-qa-cleanup` lê primeiro a pontuação do cabeçalho**: o auto-pipeline remove o bloco SCORE_SUMMARY antes de salvar, então a velha checagem só-summary marcava toda vaga do Telegram salva como lixo — na produção 8 de 41 têm pontuação no cabeçalho e o `--apply` as teria excluído. A pontuação do cabeçalho (via `parseReportHeader`) é agora o sinal primário; o bloco fica como reserva. O dry-run imprime o motivo por arquivo.
+- **A atribuição do Leaflet fica visível em #/map** — o FAB de docs a cobria (violação da licença OSM); o canto sobe 96px.
+- **Os chips do painel superam 4.5:1** — os rótulos `dash-chip` e a variante `--manual` migraram para `--foggy-strong` (antes 4.31:1).
+
+### Adicionado
+
+- **Falhas do auto-pipeline carregam `rejected: true` no erro SSE** — o temporizador de avaliação do servidor usa a marca para pular a entrada do pipeline em vez de repeti-la a cada 2 horas.
+
+### Notas
+
+- O desvio ar/ja **não se repetiu** na reexecução (ver v1.248.2).
+- A limpeza da produção ainda aguarda um sim explícito do usuário (CAR-61c); com esta correção a limpeza não pode mais excluir as vagas reais do Telegram.
+
 ## [1.248.2] — 2026-10-10
 
 **Rodada de regressão: o temporizador de avaliação não transforma mais lixo do pipeline em «Last evaluation», a análise de SCORE sobrevive a formatos reais e o tracker finalmente fala o seu idioma.**

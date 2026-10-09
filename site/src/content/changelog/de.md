@@ -2,9 +2,30 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.248.3] — 2026-10-10
+
+**Fortsetzung der Regressionsrunde: Der Eval-Timer kann namenlosen Telegram-Müll unter keinen Umständen mehr als Bericht ablegen, die QA-Bereinigung löscht keine echten Telegram-Vakanzen mehr, die Karten-Attribution ist wieder sichtbar, und die Dashboard-Chips lesen ≥ 4.5:1.**
+
+### Behoben
+
+- **Das Auto-Pipeline validiert VOR dem Speichern**: Ein Bericht ohne 0–5-Score oder ohne A–G-Blöcke beendet den Lauf im Evaluate-Schritt (`rejected: true` in der SSE-Nutzlast) — keine Berichtsdatei, keine Tracker-Zeile. Die t.me-Einträge, die die Längen-Schwelle von v1.248.2 nahmen, erzeugten nach jener Version zwei weitere Müllberichte; jetzt werden namenlose Einträge mit `company/role not identifiable` abgelehnt.
+- **`guessCompanyRole` erfindet keine Firma aus Messenger-Hosts mehr** — `t.me`, `telegram.me`, `vk.com`, `linkedin.com` & Co. stehen in EMPTY_DOMAINS: Ein Telegram-Post fällt auf den Kanalnamen zurück, und ein namenloser Eintrag wird statt als `unknown-role` abgelegt abgelehnt.
+- **`post-qa-cleanup` liest zuerst den Kopf-Score**: Das Auto-Pipeline entfernt den SCORE_SUMMARY-Block vor dem Speichern, damit las die alte Nur-Summary-Prüfung jede gespeicherte Telegram-Vakanz als Müll — in der Produktion tragen 8 von 41 einen Kopf-Score und `--apply` hätte sie gelöscht. Der Kopf-Score (via `parseReportHeader`) ist jetzt das Primärsignal; der Block ist der Fallback. Der Dry-Run druckt den Grund je Datei.
+- **Die Leaflet-Attribution ist auf #/map sichtbar** — der Docs-FAB verdeckte sie (OSM-Lizenzverstoß); die Ecke ist um 96px angehoben.
+- **Dashboard-Chips erreichen 4.5:1** — `dash-chip`-Labels und die `--manual`-Variante auf `--foggy-strong` (vorher 4.31:1).
+
+### Hinzugefügt
+
+- **Auto-Pipeline-Fehler tragen `rejected: true` im SSE-Fehler** — der serverseitige Eval-Timer nutzt das Flag, um den Pipeline-Eintrag zu überspringen statt ihn alle 2 Stunden zu wiederholen.
+
+### Hinweise
+
+- Die ar/ja-Abweichung **wiederholte sich nicht** beim erneuten Lauf (siehe v1.248.2).
+- Die Produktionsbereinigung wartet weiterhin auf ein explizites Ja (CAR-61c); mit diesem Fix kann die Bereinigung die echten Telegram-Vakanzen nicht mehr löschen.
+
 ## [1.248.2] — 2026-10-10
 
-**Reggressionsrunde: Der Eval-Timer verwandelt Pipeline-Müll nicht mehr in „Last evaluation“, das SCORE-Parsing überlebt reale Formate, und der Tracker spricht endlich Ihre Sprache.**
+**Regressionsrunde: Der Eval-Timer verwandelt Pipeline-Müll nicht mehr in „Last evaluation“, das SCORE-Parsing überlebt reale Formate, und der Tracker spricht endlich Ihre Sprache.**
 
 ### Behoben
 
