@@ -87,7 +87,7 @@
   "features.11.title": "Privat by Design",
   "features.11.desc": "Lokale Markdown- und YAML-Dateien, ein Server auf 127.0.0.1, keine Cloud-Konten, keine Telemetrie, kein Auto-Versand.",
   "features.12.title": "{n} Sprachen, inkl. RTL",
-  "features.12.desc": "App und Handbuch gibt es in {n} Sprachen — inklusive Arabisch von rechts nach links.",
+  "features.12.desc": "App, Handbuch und diese Website gibt es in {n} Sprachen — inklusive Arabisch von rechts nach links.",
   "showcase.h2": "Ein Tab statt zehn",
   "showcase.sub": "Ein Dashboard im Docs-Stil über deinen eigenen Dateien: scannen, bewerten, bewerben und verfolgen, ohne die Seite zu verlassen.",
   "showcase.alt": "Vollständiges career-ops-ui-Dashboard mit Scan-Ergebnissen, Match-Scores und dem Bewerbungs-Tracker",

@@ -87,7 +87,7 @@
   "features.11.title": "Prywatność w standardzie",
   "features.11.desc": "Lokalne pliki markdown i YAML, serwer na 127.0.0.1, bez kont w chmurze, telemetrii i automatycznego wysyłania.",
   "features.12.title": "{n} języków, w tym RTL",
-  "features.12.desc": "Aplikacja i jej pełny podręcznik są dostępne w {n} językach — w tym po arabsku, pisanym od prawej do lewej.",
+  "features.12.desc": "Aplikacja, pełny podręcznik i ta strona są dostępne w {n} językach — w tym po arabsku, pisanym od prawej do lewej.",
   "showcase.h2": "Jedna karta zamiast dziesięciu",
   "showcase.sub": "Panel w stylu dokumentacji nad Twoimi własnymi plikami: skanuj, oceniaj, aplikuj i śledź bez opuszczania strony.",
   "showcase.alt": "Pełny panel career-ops-ui z wynikami skanowania, ocenami dopasowania i trackerem aplikacji",

@@ -87,7 +87,7 @@
   "features.11.title": "Privat by design",
   "features.11.desc": "Lokale markdown- og YAML-filer, en server bundet til 127.0.0.1, ingen cloud-konti, ingen telemetri, ingen auto-afsendelse.",
   "features.12.title": "{n} sprog, inkl. RTL",
-  "features.12.desc": "Appen og dens fulde vejledning findes på {n} sprog — inklusive arabisk, skrevet fra højre mod venstre.",
+  "features.12.desc": "Appen, den fulde vejledning og dette websted findes på {n} sprog — inklusive arabisk, skrevet fra højre mod venstre.",
   "showcase.h2": "Én fane i stedet for ti",
   "showcase.sub": "Et dashboard i docs-stil oven på dine egne filer: scan, vurdér, ansøg og følg op uden at forlade siden.",
   "showcase.alt": "Fuldt career-ops-ui-dashboard med scanningsresultater, matchscores og ansøgningstrackeren",

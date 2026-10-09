@@ -87,7 +87,7 @@
   "features.11.title": "隐私优先的设计",
   "features.11.desc": "本地 markdown 和 YAML 文件、绑定 127.0.0.1 的服务器、没有云账户、没有遥测、不会自动投递。",
   "features.12.title": "{n} 种语言,含 RTL",
-  "features.12.desc": "应用及其完整指南提供 {n} 种语言 — 包括从右往左书写的阿拉伯语。",
+  "features.12.desc": "应用、完整指南和本站均提供 {n} 种语言 — 包括从右往左书写的阿拉伯语。",
   "showcase.h2": "一个标签页,顶十个",
   "showcase.sub": "架在你自己文件之上的 docs 风格仪表盘:搜索、评估、投递、跟踪,全程不用离开页面。",
   "showcase.alt": "career-ops-ui 完整仪表盘,展示搜索结果、匹配评分与求职跟踪器",

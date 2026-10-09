@@ -87,7 +87,7 @@
   "features.11.title": "Privado por diseño",
   "features.11.desc": "Archivos markdown y YAML locales, un servidor en 127.0.0.1, sin cuentas en la nube, sin telemetría, sin envío automático.",
   "features.12.title": "{n} idiomas, RTL incluido",
-  "features.12.desc": "La app y su guía completa están en {n} idiomas — incluido el árabe de derecha a izquierda.",
+  "features.12.desc": "La app, la guía completa y este sitio están en {n} idiomas — incluido el árabe de derecha a izquierda.",
   "showcase.h2": "Una pestaña en lugar de diez",
   "showcase.sub": "Un panel estilo docs sobre tus propios archivos: busca, evalúa, postula y haz seguimiento sin salir de la página.",
   "showcase.alt": "Panel completo de career-ops-ui con resultados de búsqueda, puntuaciones de encaje y el tracker de candidaturas",

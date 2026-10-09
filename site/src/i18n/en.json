@@ -87,7 +87,7 @@
   "features.11.title": "Private by design",
   "features.11.desc": "Local markdown and YAML files, a server bound to 127.0.0.1, no cloud accounts, no telemetry, no auto-submit.",
   "features.12.title": "{n} languages, RTL included",
-  "features.12.desc": "The app and its full user guide ship in {n} languages — including right-to-left Arabic.",
+  "features.12.desc": "The app, the full user guide and this site ship in {n} languages — including right-to-left Arabic.",
   "showcase.h2": "One tab instead of ten",
   "showcase.sub": "A docs-style dashboard over your own files: scan, evaluate, apply and track without leaving the page.",
   "showcase.alt": "Full career-ops-ui dashboard with scan results, fit scores and the application tracker",

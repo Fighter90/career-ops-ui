@@ -87,7 +87,7 @@
   "features.11.title": "Tasarım gereği gizli",
   "features.11.desc": "Yerel markdown ve YAML dosyaları, 127.0.0.1'e bağlı sunucu, bulut hesabı yok, telemetri yok, otomatik gönderim yok.",
   "features.12.title": "{n} dil, RTL dahil",
-  "features.12.desc": "Uygulama ve eksiksiz kılavuzu {n} dilde sunulur — sağdan sola yazılan Arapça dahil.",
+  "features.12.desc": "Uygulama, eksiksiz kılavuz ve bu site {n} dilde sunulur — sağdan sola yazılan Arapça dahil.",
   "showcase.h2": "On sekme yerine bir sekme",
   "showcase.sub": "Kendi dosyalarınızın üzerinde docs tarzı bir pano: sayfadan ayrılmadan tarayın, değerlendirin, başvurun ve takip edin.",
   "showcase.alt": "Tarama sonuçları, uyum puanları ve başvuru takibiyle eksiksiz career-ops-ui panosu",
