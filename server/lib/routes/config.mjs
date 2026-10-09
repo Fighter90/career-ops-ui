@@ -12,6 +12,7 @@
  */
 import { readFileSync, existsSync, mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
+import { homedir } from 'node:os';
 import { PATHS } from '../paths.mjs';
 import yaml from 'js-yaml';
 import {
@@ -42,6 +43,23 @@ function regionalSourcesPresent() {
   } catch { return false; }
 }
 
+/**
+ * CAR-56 (v1.247.0) — display form of the .env path. The UI prints this in
+ * the settings subtitle, and the raw absolute path leaked the username
+ * ("Saved to /Users/<name>/…"). Shorten a path under the home directory to
+ * its `~/…` form; anything else shows the bare file name (never a full
+ * machine path). Server-side, because only the server knows $HOME.
+ */
+export function displayPath(p) {
+  const s = String(p || '');
+  const home = homedir();
+  if (home && home !== '/' && (s === home || s.startsWith(home + '/'))) {
+    return '~' + s.slice(home.length);
+  }
+  const base = s.split(/[\\/]/).pop();
+  return base || s;
+}
+
 export function registerConfigRoutes(app) {
   app.get('/api/config', (_req, res) => {
     let parsed = {};
@@ -57,7 +75,8 @@ export function registerConfigRoutes(app) {
       out[k] = SECRET_KEYS.has(k) ? maskSecret(v) : (v || '');
     }
     res.json({
-      envFile: PATHS.envFile,
+      // Display form (`~/…` or bare name) — never the absolute machine path.
+      envFile: displayPath(PATHS.envFile),
       keys: KNOWN_KEYS,
       secretKeys: [...SECRET_KEYS],
       groups: KEY_GROUPS,

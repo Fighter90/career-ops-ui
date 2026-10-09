@@ -486,20 +486,21 @@
     return c('div', null, [
       liveAnnounce,
       deprecationBanner,
+      // CAR-51 #1 (v1.247.0) — ONE time/cost pattern: ⏱ ETA + cost hint in a
+      // meta line under the view title (was an orphan row inside the card).
       c('header', { className: 'page-header' }, [
         c('div', null, [
           c('h1', { className: 'page-title' }, t(cfg.titleKey)),
           c('p', { className: 'page-subtitle' }, t(cfg.subtitleKey)),
+          UI.pageMeta(t,
+            c('span', { className: 'advisor-eta' }, '⏱ ' + t('advisor.eta', '~30s')),
+            UI.providerCostHint(t)),
         ]),
       ]),
       cadenceBoard,
       c('div', { className: 'card' }, [
         ...cfg.fields.map(field),
         c('div', { className: 'flex gap-3' }, [manualBtn, runLiveBtn]),
-        // v1.56.0 — UX-10: honest cost ballpark before the live run.
-        UI.providerCostHint(t),
-      // UX-D-J (v1.58.42) — advisor ETA chip parity with #/auto (UX-6).
-      c('span', { className: 'advisor-eta' }, '⏱ ' + t('advisor.eta', '~30s')),
       ]),
       c('div', { className: 'mt-5' }, out),
     ]);

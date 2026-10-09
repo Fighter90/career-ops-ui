@@ -38,10 +38,13 @@ Router.register('profile', async () => {
   // ran and the section rendered empty despite a populated profile.
   const archetypes = pickArchetypes(summary, profile);
 
-  function info(k, v) {
+  function info(k, v, valueClass) {
     return c('div', { className: 'card' }, [
       c('div', { className: 'metric-label' }, k),
-      c('div', { className: 'card-value' },
+      // CAR-56 #3 (v1.247.0) — long identifiers (an email) pass a
+      // .card-value--nowrap modifier: one line + ellipsis on a wide card,
+      // wrap-anywhere only on a phone-narrow card (components.css).
+      c('div', { className: 'card-value' + (valueClass ? ' ' + valueClass : ''), title: v || '' },
         v || c('span', { style: { color: 'var(--foggy)', fontWeight: 400 } },
                        t('profile.missing', '— not set'))),
     ]);
@@ -57,7 +60,7 @@ Router.register('profile', async () => {
 
     c('div', { className: 'card-row' }, [
       info(t('set.name'), summary.full_name),
-      info(t('set.email'), summary.email),
+      info(t('set.email'), summary.email, 'card-value--nowrap'),
       info(t('set.location'), summary.location),
       info(t('set.linkedin', 'LinkedIn'), summary.linkedin),
     ]),

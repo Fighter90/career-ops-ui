@@ -29,10 +29,12 @@ const view = (name) => readFileSync(resolve(HERE, '..', 'public', 'js', 'views',
 // For funded.js the anchor is tied to the `, btn)` lead row so the legitimate
 // top-0 result card (`… '0 0 16px' } }, [`) is not mistaken for the lead row.
 const CASES = [
-  { name: 'interview-digest.js', fixed: "margin: '16px 0'", cramped: "margin: '0 0 16px'" },
+  // CAR-54 #1 (v1.247.0) — interview-digest.js / orientation.js no longer
+  // render a bare lead control row: the Load/Generate button moved INSIDE
+  // the designed empty-state box (title + hint + CTA), which carries its
+  // own generous padding — the cramped-subtitle failure mode is gone.
   { name: 'portals.js', fixed: "margin: '16px 0'", cramped: "margin: '0 0 16px'" },
   { name: 'career-plan.js', fixed: "margin: '16px 0'", cramped: "margin: '0 0 16px'" },
-  { name: 'orientation.js', fixed: "margin: '16px 0'", cramped: "margin: '0 0 16px'" },
   { name: 'funded.js', fixed: "{ margin: '16px 0' } }, btn)", cramped: "{ margin: '0 0 16px' } }, btn)" },
 ];
 

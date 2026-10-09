@@ -89,11 +89,21 @@ Router.register('career-plan', async () => {
 
   const title = () => t('plan.title', 'Career plan');
   const exportBar = ReportExport.actionsBar(() => editor.value, title, t);
+  // CAR-54 #2 (v1.247.0) — the export row used to look enabled over an EMPTY
+  // plan (exporting blanks) and competed with the Save/Preview row above it.
+  // It merges into that one actions row, and its buttons stay disabled while
+  // the plan has no content.
+  function syncExportEnabled() {
+    const has = Boolean(editor.value.trim());
+    exportBar.querySelectorAll('button').forEach((b) => { b.disabled = !has; });
+  }
+  editor.addEventListener('input', syncExportEnabled);
+  syncExportEnabled();
 
   root.appendChild(c('div', { className: 'card', style: { padding: '16px', margin: '0 0 12px' } }, [
     editor,
-    c('div', { style: { display: 'flex', gap: '10px', flexWrap: 'wrap', marginTop: '10px' } }, [saveBtn, previewBtn]),
-    exportBar,
+    c('div', { className: 'plan-actions', style: { display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center', marginTop: '10px' } },
+      [saveBtn, previewBtn, exportBar]),
   ]));
   root.appendChild(preview);
   root.appendChild(c('p', { style: { color: 'var(--foggy)', fontSize: '12px', margin: '10px 0 0' } },
@@ -110,6 +120,8 @@ Router.register('career-plan', async () => {
         // CAR-20 — a generated plan is unsaved: track it in the module
         // buffer so a re-render (language switch) keeps it.
         planBuffer = res.markdown;
+        // CAR-54 #2 — the plan now has content; arm the export row.
+        syncExportEnabled();
         // Show the plan as READABLE formatted text immediately (no raw tags) —
         // the textarea below stays available for editing. Preview toggles it.
         preview.textContent = '';

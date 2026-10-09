@@ -82,18 +82,51 @@ function reportUrl(reportPath) {
 const OSM_TILES = 'https://tile.openstreetmap.org/{z}/{x}/{y}.png';
 
 /**
+ * CAR-57 (v1.247.0) — dark-theme tile set. CARTO's "dark matter" raster
+ * (served over OpenStreetMap data) is the canonical dark basemap; `{s}` walks
+ * a–d, `{r}` upgrades to @2x on retina. CAVEAT (verified 2026-10-09): the
+ * keyless endpoint now answers real tile requests with an "API KEY REQUIRED"
+ * placeholder PNG, so it is only a PRESET for operators — the client mounts it
+ * when MAP_TILE_DARK_URL names a working (keyed/self-hosted) dark provider,
+ * and otherwise renders dark mode with a CSS-inverted light layer.
+ * `origin` is the CSP form (wildcard subdomains). Attribution links are
+ * anchors, not images — no CSP entry needed for carto.com.
+ */
+export const DARK_TILES = Object.freeze({
+  url: 'https://{s}.basemaps.cartocdn.com/dark_all/{z}/{x}/{y}{r}.png',
+  attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors &copy; <a href="https://carto.com/attributions">CARTO</a>',
+  origin: 'https://*.basemaps.cartocdn.com',
+});
+
+/**
  * Tile server for the map: OpenStreetMap unless MAP_TILE_URL names another
  * Leaflet template (self-hosted or a provider's). `origin` feeds the CSP
  * (host limited to [\w.{}:-], so the env cannot smuggle in a directive);
- * a `{s}` subdomain becomes the CSP wildcard `*.`.
+ * a `{s}` subdomain becomes the CSP wildcard `*.`. `darkOrigin` is the
+ * second allowed img-src host — the dark-theme basemap the client swaps in.
  */
 export function tileConfig(env = process.env) {
   const url = /^https?:\/\/[\w.{}:-]+\/\S+$/.test(env.MAP_TILE_URL || '') ? env.MAP_TILE_URL : OSM_TILES;
+  // MAP_TILE_DARK_URL — an operator-configured dark basemap (e.g. keyed
+  // Carto, or a self-hosted dark style). Without it the client falls back to
+  // CSS-inverted light tiles, because the Carto preset is placeholder-gated.
+  const darkConfigured = /^https?:\/\/[\w.{}:-]+\/\S+$/.test(env.MAP_TILE_DARK_URL || '');
+  const darkUrl = darkConfigured ? env.MAP_TILE_DARK_URL : DARK_TILES.url;
   return {
     url,
     // Plain text: Leaflet renders attribution as HTML.
     attribution: String(env.MAP_TILE_ATTRIBUTION || '').replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`),
     origin: url.match(/^https?:\/\/[^/]+/)[0].replace(/\{s\}/g, '*'),
+    darkOrigin: darkConfigured
+      ? darkUrl.match(/^https?:\/\/[^/]+/)[0].replace(/\{s\}/g, '*')
+      : DARK_TILES.origin,
+    dark: {
+      url: darkUrl,
+      attribution: darkConfigured
+        ? String(env.MAP_TILE_DARK_ATTRIBUTION || '').replace(/[&<>"']/g, (c) => `&#${c.charCodeAt(0)};`)
+        : DARK_TILES.attribution,
+      configured: darkConfigured,
+    },
   };
 }
 
@@ -115,7 +148,7 @@ export function registerMapRoutes(app) {
       const href = r.url || reportUrl(r.reportPath);
       return { ...r, href: httpOnly(href), location: r.location || idx.get(href) || '', workplace: notesPlace(r.notes) };
     });
-    const { url, attribution } = tileConfig();
-    res.json({ pipeline, tracker, tiles: { url, attribution } });
+    const { url, attribution, dark } = tileConfig();
+    res.json({ pipeline, tracker, tiles: { url, attribution, dark: { url: dark.url, attribution: dark.attribution } } });
   });
 }

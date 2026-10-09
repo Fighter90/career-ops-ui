@@ -81,8 +81,14 @@ Router.register('pipeline', async () => {
   function renderPreview() {
     previewPane.innerHTML = '';
     if (!activeUrl) {
-      previewPane.appendChild(c('div', { className: 'empty', style: { border: 'none' } },
-        t('pipe.previewIdle', 'Pick a URL to preview, evaluate, or delete.')));
+      // CAR-50 #4 (v1.247.0) — designed empty state (tracker pattern):
+      // title + hint + CTA, not one bare sentence in a large box.
+      previewPane.appendChild(c('div', { className: 'empty', style: { border: 'none' } }, [
+        c('strong', null, t('pipe.previewEmptyTitle', 'Nothing previewed yet')),
+        c('p', { style: { margin: '8px 0 0' } }, t('pipe.previewIdle', 'Pick a URL to preview, evaluate, or delete.')),
+        c('a', { href: '#/evaluate', className: 'btn btn-primary btn-sm', style: { marginTop: '12px' } },
+          t('pipe.previewEmptyCta', 'Evaluate a JD')),
+      ]));
       return;
     }
     const head = c('div', { className: 'flex-between mb-3', style: { flexWrap: 'wrap', gap: '8px' } }, [

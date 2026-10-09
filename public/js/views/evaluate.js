@@ -134,11 +134,20 @@ Router.register('evaluate', async () => {
     }
   }
 
+  // CAR-51 #1 (v1.247.0) — the ⏱ ETA + cost hint live in ONE meta line
+  // under the view title (shared UI.pageMeta helper), not as orphans
+  // wrapped after the action row.
+  const pageMeta = UI.pageMeta(t,
+    c('span', { className: 'advisor-eta' }, '⏱ ' + t('advisor.eta', '~30s')),
+    UI.providerCostHint(t),
+  );
+
   return c('div', null, [
     c('header', { className: 'page-header' }, [
       c('div', null, [
         HelpHint.title(t('eval.title'), 'help.hint.evaluate'),
         c('p', { className: 'page-subtitle' }, t('eval.subtitle')),
+        pageMeta,
       ]),
     ]),
 
@@ -159,10 +168,6 @@ Router.register('evaluate', async () => {
         c('button', { className: 'btn btn-primary', onClick: (e) => UI.withSpinner(e.currentTarget, run) }, t('eval.btnEval')),
         c('button', { className: 'btn btn-ghost', onClick: () => { jdInput.value = ''; out.innerHTML = ''; } }, t('eval.btnClear')),
       ]),
-      // v1.56.0 — UX-10: honest cost ballpark before the live eval.
-      UI.providerCostHint(t),
-      // UX-D-J (v1.58.42) — advisor ETA chip parity with #/auto (UX-6).
-      c('span', { className: 'advisor-eta' }, '⏱ ' + t('advisor.eta', '~30s')),
     ]),
 
     c('div', { className: 'mt-5' }, out),

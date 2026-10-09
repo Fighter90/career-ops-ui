@@ -224,12 +224,15 @@ Router.register('cv', async () => {
       ]),
       c('div', { className: 'flex gap-3' }, [
         fileInput,
+        // CAR-52 #3 (v1.247.0) — the header row mixed four icon treatments
+        // (folder / none / page / floppy emoji); the buttons are text-only
+        // now, one quiet system, matching label-led buttons elsewhere.
         c('button', {
           className: 'btn btn-ghost',
           onClick: () => fileInput.click(),
           title: t('cv.uploadHint',
             'Upload .md, .txt, .html, .pdf, .docx, .odt, .rtf or .doc — converted server-side, then review and Save.'),
-        }, '📁 ' + t('cv.upload', 'Upload CV')),
+        }, t('cv.upload', 'Upload CV')),
         c('button', { className: 'btn btn-ghost', onClick: async (e) => {
           // M-2 (v1.58.10): UI.modal() now auto-dismisses the progress
           // toast (defence-in-depth in api.js). Localize the toast/modal
@@ -253,7 +256,7 @@ Router.register('cv', async () => {
           className: 'btn btn-ghost',
           onClick: (e) => streamPdf(e.currentTarget),
           title: t('cv.pdfHint', 'Run generate-pdf.mjs and save into output/'),
-        }, '📄 ' + t('cv.generatePdf', 'Generate PDF')),
+        }, t('cv.generatePdf', 'Generate PDF')),
         (() => {
           // U-15 (v1.58.33) — dirty-state indicator on the CV Save
           // button. The baseline (`initial`) is the SERVER copy the
@@ -285,7 +288,7 @@ Router.register('cv', async () => {
                 UI.toast((err && err.message) || t('common.error', 'Error'), 'error');
               }
             },
-          }, '💾 ' + t('common.save'));
+          }, t('common.save'));
           let initial = ta.value;
           let cvDirty = false;
           if (hasBuffer) {

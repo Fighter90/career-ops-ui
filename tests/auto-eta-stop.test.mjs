@@ -30,14 +30,17 @@ const DICT = legacyDictText();
 const CSS = loadAppCss();
 const LOCALES = I18N_LANGS; // every shipped UI locale, from the live list
 
-test('#/auto renders an ETA hint via auto.eta next to Run', () => {
+test('#/auto renders an ETA hint via auto.eta in the header meta line', () => {
   assert.match(AUTO, /t\('auto\.eta'/, 'auto.js must render t(auto.eta)');
-  // ETA element carries the .auto-eta class and is built near runBtn.
+  // ETA element carries the .auto-eta class.
   assert.match(AUTO, /className: 'auto-eta'/, 'ETA hint needs the .auto-eta class');
-  // It must be in the same flex row as runBtn (rendered alongside it).
-  assert.match(AUTO,
-    /runBtn,\s*\n\s*etaHint,|etaHint,\s*\n\s*runBtn,|runBtn,\s*etaHint|etaHint[\s\S]{0,40}runBtn/,
-    'the ETA hint must sit next to runBtn in the action row');
+  // CAR-51 #1 (v1.247.0) — the ETA + cost hint moved into the ONE shared
+  // meta line under the view title (UI.pageMeta); the Run row holds only
+  // controls. The meta node must sit inside the page-header block.
+  assert.match(AUTO, /UI\.pageMeta\(t,\s*etaHint/, 'the ETA hint rides UI.pageMeta under the title');
+  assert.match(AUTO, /className: 'page-header'[\s\S]{0,600}UI\.pageMeta\(t, etaHint/,
+    'pageMeta must be part of the page header');
+  assert.doesNotMatch(AUTO, /runBtn,\s*\n\s*etaHint,/, 'the Run row no longer embeds the ETA chip');
 });
 
 test('auto.eta present in every locale', () => {

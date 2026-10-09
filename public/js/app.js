@@ -249,7 +249,10 @@ I18n.onChange(() => {
   } catch { /* private mode — ignore */ }
 
   // v1.12.0 — Theme toggle. Click cycles light → dark → light and persists.
-  // The icon swaps to ☀ in dark mode so the affordance reads correctly.
+  // CAR-49 #3 (v1.247.0) — the sun/moon glyphs are two SVGs in index.html;
+  // CSS (components.css) shows the one matching the resolved theme, so this
+  // handler never writes into the button (the v1.58.63 Doctor-button lesson:
+  // textContent writes wiped sibling icons).
   function readEffectiveTheme() {
     const explicit = document.documentElement.getAttribute('data-theme');
     if (explicit === 'light' || explicit === 'dark') return explicit;
@@ -258,12 +261,9 @@ I18n.onChange(() => {
   function applyTheme(t) {
     document.documentElement.setAttribute('data-theme', t);
     try { localStorage.setItem('theme', t); } catch {}
-    const btn = document.getElementById('theme-toggle');
-    if (btn) btn.textContent = t === 'dark' ? '☀' : '🌙';
   }
   const themeBtn = document.getElementById('theme-toggle');
   if (themeBtn) {
-    themeBtn.textContent = readEffectiveTheme() === 'dark' ? '☀' : '🌙';
     themeBtn.addEventListener('click', () => {
       applyTheme(readEffectiveTheme() === 'dark' ? 'light' : 'dark');
     });

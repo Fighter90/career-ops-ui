@@ -48,7 +48,9 @@ test('callout--info defines per-theme surface/text/link colors (light + explicit
   assert.match(COMPONENTS, /\.callout--info\s*\{[^}]*--callout-bg:\s*#eef5ff/);
   assert.match(COMPONENTS, /\[data-theme="dark"\]\s*\.callout--info\s*\{[^}]*--callout-bg:\s*#1d2434[^}]*--callout-link:\s*#8ab4f8/);
   // The callout link reads the per-theme link variable instead of the global a color.
-  assert.match(COMPONENTS, /\.callout a\s*\{[^}]*var\(--callout-link/);
+  // v1.247.0 — `:not(.btn)` keeps the banner's .btn-primary CTA white (the raw
+  // rule outranked .btn-primary and left dark amber text on a crimson fill).
+  assert.match(COMPONENTS, /\.callout a:not\(\.btn\)\s*\{[^}]*var\(--callout-link/);
   // The system-dark fallback mirrors the strict three-part guard the dark
   // tokens use in app.css (explicit light wins over a dark OS setting).
   assert.match(COMPONENTS, /@media \(prefers-color-scheme: dark\)\s*\{\s*:root:not\(\[data-theme="light"\]\):not\(\[data-theme="dark"\]\)\s*\.callout--info/);

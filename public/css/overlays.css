@@ -80,7 +80,8 @@
   border: 1px solid var(--slate, #ddd);
 }
 .hero-banner--warning {
-  background: #fff8e1; border-color: #f0c674; color: #5a4500;
+  /* CAR-58 #4 (v1.247.0) — shared .callout--warn tokens (components.css): with `callout callout--warn` on the element, dark swaps the surface. */
+  background: var(--callout-bg, #fff8e1); border-color: var(--callout-border, #f0c674); color: var(--callout-text, #5a4500);
 }
 .hero-banner__msg { margin: 0; font-size: 14px; flex: 1; }
 
@@ -102,6 +103,8 @@
   position: relative; background: transparent; border: 1px solid var(--slate, #ddd);
   border-radius: 8px; width: 36px; height: 36px; font-size: var(--font-size-lg);
   cursor: pointer; transition: background var(--transition);
+  /* CAR-49 #3 (v1.247.0) — the glyph is an SVG now. */
+  display: inline-flex; align-items: center; justify-content: center;
 }
 .notif-bell:hover { background: var(--beach, #f7f7f7); }
 .notif-bell:focus-visible { outline: 2px solid var(--rausch, #ff385c); outline-offset: 2px; }
@@ -369,9 +372,7 @@
   margin-right: 4px;
 }
 
-/* v1.216.0 — brand-colored provider monogram tiles (provider-logo.js). The
-   colors are self-contained in the SVG; this only handles layout + a subtle
-   ring so light tiles read on any theme background. */
+/* v1.216.0 — brand-colored provider monogram tiles (provider-logo.js): colors live in the SVG; this is layout + a subtle ring. */
 .provider-logo {
   flex: 0 0 auto;
   border-radius: 6px;
@@ -379,10 +380,7 @@
   box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.08);
 }
 
-/* v1.243.0 — the ≤768 block no longer re-declares off-canvas .sidebar/.main: app.css's
-   ≤900 block already applies (769-900 showed the pinned sidebar OVER the content).
-   CAR-43 — the shell gains a FAB tail (60px + 24px offset) so the last row never
-   scrolls under the fixed docs launcher on phones. */
+/* v1.243.0 — the ≤768 block no longer re-declares off-canvas .sidebar/.main (app.css's ≤900 block already applies). CAR-43 — the shell gains a FAB tail so the last row never scrolls under the fixed docs launcher on phones. */
 @media (max-width: 768px) {
   .topbar { padding: 0 var(--space-4); }
   .content { padding: var(--space-5) var(--space-4); padding-bottom: calc(var(--space-4) + 84px); }
@@ -505,13 +503,10 @@
   [dir="rtl"] .main { margin-left: 0 !important; margin-right: 0 !important; }
 }
 
-/* ──────────────────────────────────────────────────────────────────────────
-   Ask-the-docs floating assistant (docs-fab.js, v1.113.0)
-   A gradient chat launcher pinned bottom-right (bottom-left in RTL) on every
-   page, opening a compact grounded-help chat panel. Self-contained cool-gradient
-   accent (deliberately distinct from the coral brand, per the requested look);
-   theme-aware surfaces via light/dark blocks. CSP-safe (no inline handlers).
-   ────────────────────────────────────────────────────────────────────────── */
+/* Ask-the-docs floating assistant (docs-fab.js, v1.113.0): a gradient chat
+   launcher pinned bottom-right (bottom-left in RTL), opening a compact
+   grounded-help chat panel. Self-contained cool-gradient accent (deliberately
+   distinct from the coral brand); theme-aware surfaces; CSP-safe. */
 :root {
   --fab-grad: linear-gradient(135deg, #6aa8ff 0%, #a487e6 100%);
   --fab-glow: 0 6px 26px rgba(112, 140, 240, .50);
@@ -639,12 +634,10 @@
   .docs-fab__panel { animation: none; }
 }
 
-/* ──────────────────────────────────────────────────────────────────────────
-   AI usage & cost HUD (usage-hud.js, v1.114.0)
-   A compact "USAGE" meter pinned bottom-left (bottom-right in RTL) on every
-   page: gauge header + per-window token bars (24h/7d/30d) + an est-cost footer.
-   Collapsible; theme-aware; CSP-safe. Opposite corner from the docs launcher.
-   ────────────────────────────────────────────────────────────────────────── */
+/* AI usage & cost HUD (usage-hud.js, v1.114.0): a compact "USAGE" meter
+   pinned bottom-left (bottom-right in RTL) — gauge header + per-window token
+   bars + an est-cost footer. Collapsible; theme-aware; opposite corner from
+   the docs launcher. */
 :root {
   --hud-bg: #ffffff;
   --hud-border: rgba(0, 0, 0, .10);
@@ -715,15 +708,11 @@
 @media (max-width: 900px) { .usage-hud { display: none; } }
 @media (prefers-reduced-motion: reduce) { .usage-hud__barfill, .usage-hud__chev { transition: none; } }
 
-/* ──────────────────────────────────────────────────────────────────────────
-   v1.115.0 — conservative design polish (coral brand kept)
-   Adds cohesion + tactility to the shared components WITHOUT restructuring:
-   dashboard metric cards now feel interactive like the QA tiles; content cards
-   lift a hair on hover; primary/dark/danger buttons gain a resting shadow +
-   gentle hover lift for depth; big numbers align via tabular-nums; and the
-   focus ring gets a soft coral halo so keyboard focus reads as intentional.
-   All motion respects prefers-reduced-motion.
-   ────────────────────────────────────────────────────────────────────────── */
+/* v1.115.0 — conservative design polish (coral brand kept): metric cards feel
+   interactive like the QA tiles; cards lift on hover; primary/dark/danger
+   buttons gain a resting shadow + gentle hover lift; numbers use
+   tabular-nums; the focus ring gets a soft coral halo. Motion respects
+   prefers-reduced-motion. */
 .metric-card { transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition); }
 .metric-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--rausch); }
 .metric-value { font-variant-numeric: tabular-nums; }
@@ -769,6 +758,15 @@ a:focus-visible, .chip:focus-visible { box-shadow: 0 0 0 4px rgba(255, 56, 92, .
 
 /* #/map — Leaflet job map (views/map.js). */
 .job-map { height: calc(100vh - 300px); min-height: 360px; border-radius: 12px; border: 1px solid var(--slate); isolation: isolate; }
+/* CAR-57 (v1.247.0) — dark-theme basemap with no key and no extra vendor:
+   unless MAP_TILE_DARK_URL configures a real dark provider (the Carto preset
+   in map.mjs is placeholder-gated keyless), dark mode keeps the light OSM
+   raster and inverts it in place — only the tile <img>s; markers, tooltips
+   and controls keep their own theme tokens. JS toggles the class exactly
+   while the effective theme is dark. */
+.job-map--invert .leaflet-tile {
+  filter: invert(1) hue-rotate(180deg) brightness(.87) contrast(.88) saturate(.55);
+}
 .job-map .leaflet-tooltip { min-width: 200px; max-width: 280px; white-space: normal; line-height: 1.35; }
 .job-cluster { box-sizing: border-box; display: flex; align-items: center; justify-content: center; border-radius: 50%; background: var(--c); color: #fff; border: 2px solid #fff; font: 700 12px/1 Inter, sans-serif; box-shadow: 0 1px 4px rgba(0,0,0,.35); cursor: pointer; }
 .job-cluster.ring { background: #fff; color: var(--c); border: 3px solid var(--c); }

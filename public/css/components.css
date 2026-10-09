@@ -22,18 +22,29 @@
    dark-theme blocks below swap them, and `.callout a` picks the per-theme link
    color instead of the global `a` color. Light values stay the original ones. */
 .callout { background: var(--callout-bg, var(--elev)); border-color: var(--callout-border, var(--slate)); color: var(--callout-text, var(--hof)); }
-.callout a { color: var(--callout-link, var(--rausch-text)); text-decoration: underline; }
+/* CAR-58 #4 (v1.247.0) — `:not(.btn)`: the hero banner's CTA is a .btn-primary anchor, and this rule (0,2,1) outranked .btn-primary's white — dark amber on crimson. Text links keep the per-theme link color. */
+.callout a:not(.btn) { color: var(--callout-link, var(--rausch-text)); text-decoration: underline; }
 .callout--info { --callout-bg: #eef5ff; --callout-border: #9bb6e0; --callout-text: #1f3b6e; --callout-link: #1d4e89; }
 [data-theme="dark"] .callout--info { --callout-bg: #1d2434; --callout-border: #3d5a86; --callout-text: #c9d9f2; --callout-link: #8ab4f8; }
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]):not([data-theme="dark"]) .callout--info { --callout-bg: #1d2434; --callout-border: #3d5a86; --callout-text: #c9d9f2; --callout-link: #8ab4f8; }
 }
+/* CAR-58 #4 (v1.247.0) — yellow warning banners (config / batch / dashboard hero): same token contract as --info; dark swaps to a warm dark surface. */
+.callout--warn { --callout-bg: #fff8e6; --callout-border: #f0c674; --callout-text: #6b5200; --callout-link: #8a6300; }
+[data-theme="dark"] .callout--warn { --callout-bg: #2b2413; --callout-border: #6e5a1e; --callout-text: #ecd9a0; --callout-link: #f0c674; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .callout--warn { --callout-bg: #2b2413; --callout-border: #6e5a1e; --callout-text: #ecd9a0; --callout-link: #f0c674; }
+}
 
 .card-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-4); }
-/* PROFILE-1 — `anywhere`, not `break-word`: only `anywhere` counts toward
-   min-content, which is what bursts the track. tests/playwright-card-overflow.mjs. */
+/* PROFILE-1 — `anywhere`, not `break-word`: only `anywhere` counts toward min-content, which is what bursts the track (tests/playwright-card-overflow.mjs). */
 .card-value { font-size: 17px; font-weight: 600; margin-top: 6px; overflow-wrap: anywhere; }
 .card-row > * { min-width: 0; }
+/* CAR-56 #3 (v1.247.0) — long identifiers (an email) stay on one line with an ellipsis; wrap-anywhere only on a phone-narrow card. */
+.card-value--nowrap { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+@media (max-width: 480px) {
+  .card-value--nowrap { white-space: normal; overflow: visible; overflow-wrap: anywhere; }
+}
 
 /* v1.55.5 — UX-3: dashboard hero; P0 CTAs dominate, recent-activity focal, quiet chips. */
 .dash-hero {
@@ -183,14 +194,13 @@
 .qa-tile:focus-visible {
   outline: 2px solid var(--rausch); outline-offset: 2px;
 }
-/* UX-A15 (v1.58.63) — primary tile (Pipeline): accent border + bolder label. */
-.qa-tile--primary {
-  border-color: var(--rausch);
-  border-width: 1px;
-  box-shadow: 0 0 0 1px var(--rausch) inset, var(--shadow-1);
-}
+/* UX-A15 (v1.58.63) — primary tile: bolder label + larger icon. CAR-49 #4 (v1.247.0) — the always-on crimson border read as an unexplained third emphasis level; hover/focus only now. */
 .qa-tile--primary .qa-icon { font-size: 26px; }
 .qa-tile--primary .qa-label { font-weight: 600; }
+.qa-tile--primary:hover, .qa-tile--primary:focus-visible {
+  border-color: var(--rausch);
+  box-shadow: 0 0 0 1px var(--rausch) inset, var(--shadow-2);
+}
 .qa-icon {
   font-size: var(--font-size-xl);
   line-height: 1;
@@ -376,6 +386,11 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
 .md th, .md td { padding: 8px 12px; border: 1px solid var(--slate); font-size: 13.5px; text-align: left; }
 .md th { background: var(--beach); }
 .md code { background: var(--beach); padding: 2px 6px; border-radius: 6px; font-size: var(--font-size-md); }
+/* CAR-57 #2 (v1.247.0) — inline code is a directional island: LTR + isolate keeps the token whole in RTL, nowrap bans mid-token wraps, long values scroll in place. */
+[dir="rtl"] .md code, [dir="rtl"] .help-pop-body code {
+  direction: ltr; unicode-bidi: isolate; white-space: nowrap;
+  display: inline-block; max-width: 100%; overflow-x: auto; vertical-align: bottom;
+}
 .md pre { background: #111; color: #c5e6c5; padding: var(--space-4); border-radius: var(--radius); overflow-x: auto; }
 .md pre code { background: transparent; color: inherit; padding: 0; }
 .md a { color: var(--rausch-text); } /* CAR-23: AA on --paper in both themes (raw --rausch was 3.52/2.94) */
@@ -577,12 +592,10 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
 }
 
 
-/* ── FIND-3 (v1.231.3): the ≤420px topbar search. At 320px no min-width works
-   (32px padding + 40px menu + 162px actions leave nothing), so the field hides
-   behind a magnifier and expands over the whole bar on tap. Lives HERE, not
-   app.css (800-LOC limit there; base rule must precede the media query).
-   SPECIFICITY: matches app.css's `.topbar .topbar-actions .btn` (0,3,0) so
-   `.search-toggle` wins on source order (v1.231.2 regression). */
+/* FIND-3 (v1.231.3): ≤420px topbar search — at 320px the field collapses behind
+   a magnifier that expands over the whole bar on tap. Lives HERE, not app.css
+   (800-LOC limit); specificity matches `.topbar .topbar-actions .btn` (0,3,0)
+   so `.search-toggle` wins on source order (v1.231.2 regression). */
 header.topbar .topbar-actions .search-toggle { display: none; }
 .search-ico-close { display: none; }
 
@@ -609,17 +622,23 @@ header.topbar .topbar-actions .search-toggle { display: none; }
   header.topbar.search-open .search-ico-close { display: inline; }
 }
 
-/* ───────────────────── #/scan results rows (v1.244.0) ─────────────────────
- * One posting = one scannable row (spec 2026-10-06-scan-page-redesign):
- * tr.scan-row → the ⭐ cell + THE bounded td.scan-cell-posting, which is a
- * 2-column grid — a signal-icon rail (boost / title-fit / fit-score / trust
- * / reloc, each role="img" with a localized accessible name + tooltip) left
- * of exactly two one-line text blocks: .scan-posting-title (line 1) and
- * .scan-posting-meta (company · location · source · date · work-type, line
- * 2). table-layout:fixed + minmax(0,1fr) keep the posting column bounded at
- * every viewport: lines ellipsize and the full text rides in title=
- * attributes. Seniority/salary stay as desktop aux columns and hide below
- * 900px — the meta line carries their story on a phone. */
+/* CAR-49 #3 (v1.247.0) — topbar icon set: bell/theme/doctor are one stroke-SVG
+   language (currentColor); the toggle ships BOTH glyphs and CSS shows the right
+   one per resolved theme — JS never writes into the button. */
+.topbar-actions svg.ico { display: block; width: 17px; height: 17px; }
+.theme-toggle .theme-ico--sun { display: none; }
+[data-theme="dark"] .theme-toggle .theme-ico--sun { display: block; }
+[data-theme="dark"] .theme-toggle .theme-ico--moon { display: none; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .theme-toggle .theme-ico--sun { display: block; }
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .theme-toggle .theme-ico--moon { display: none; }
+}
+
+/* #/scan results rows (v1.244.0, spec 2026-10-06-scan-page-redesign): one
+   posting = one row — ⭐ cell + bounded td.scan-cell-posting (a 2-col grid:
+   signal-icon rail left of .scan-posting-title + .scan-posting-meta).
+   table-layout:fixed + minmax(0,1fr) bound the posting column at every
+   viewport; seniority/salary hide below 900px. */
 table.scan-tbl { table-layout: fixed; }
 table.scan-tbl th, table.scan-tbl td { padding: 10px 12px; }
 table.scan-tbl .scan-col-star { width: 40px; padding: 10px 4px; text-align: center; }

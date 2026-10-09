@@ -245,10 +245,6 @@ Router.register('deep', async () => {
           },
         }, '⚡ ' + t('deep.showResult', 'Show result')),
       ]),
-      // v1.56.0 — UX-10: honest cost ballpark before the live run.
-      UI.providerCostHint(t),
-      // UX-D-J (v1.58.42) — advisor ETA chip parity with #/auto (UX-6).
-      c('span', { className: 'advisor-eta' }, '⏱ ' + t('advisor.eta', '~30s')),
     ]));
   }
 
@@ -295,11 +291,20 @@ Router.register('deep', async () => {
 
   await loadArchive();
 
+  // CAR-51 #1 (v1.247.0) — ONE time/cost pattern: ⏱ ETA + cost hint sit in
+  // a meta line under the view title (was an orphan row inside the
+  // manual-prompt result card).
+  const pageMeta = UI.pageMeta(t,
+    c('span', { className: 'advisor-eta' }, '⏱ ' + t('advisor.eta', '~30s')),
+    UI.providerCostHint(t),
+  );
+
   return c('div', null, [
     c('header', { className: 'page-header' }, [
       c('div', null, [
         HelpHint.title(t('deep.title'), 'help.hint.deep'),
         c('p', { className: 'page-subtitle' }, t('deep.subtitle')),
+        pageMeta,
       ]),
     ]),
     c('div', { className: 'card' }, [

@@ -107,13 +107,19 @@ export function createApp() {
   //   - inline favicon as data: URI (img-src 'self' data:)
   // 'unsafe-inline' is intentionally NOT in script-src — all event handlers
   // are addEventListener; 'unsafe-eval' is never granted.
+  // CAR-57 (v1.247.0) — img-src carries BOTH tile hosts: the light basemap
+  // (OpenStreetMap, or MAP_TILE_URL's origin) and CARTO's dark-matter tiles
+  // the client swaps in under dark themes. Attribution renders as an anchor,
+  // so carto.com needs no img-src entry. This widening is the single
+  // sanctioned CSP change of the design-tail pass — no other directive moves.
+  const TILE_CSP_ORIGINS = `${tileConfig().origin} ${tileConfig().darkOrigin}`;
   const CSP = [
     "default-src 'self'",
     "script-src 'self'",
     "style-src 'self' https://fonts.googleapis.com 'unsafe-inline'",
     "font-src 'self' https://fonts.gstatic.com",
-    // Raster tiles for the #/map view: OpenStreetMap, or MAP_TILE_URL's host.
-    `img-src 'self' data: ${tileConfig().origin}`,
+    // Raster tiles for the #/map view (light + dark basemaps).
+    `img-src 'self' data: ${TILE_CSP_ORIGINS}`,
     "connect-src 'self'",
     "object-src 'none'",
     "base-uri 'self'",

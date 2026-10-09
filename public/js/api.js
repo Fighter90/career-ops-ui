@@ -831,5 +831,20 @@ window.UI = (function () {
     return node;
   }
 
-  return { toast, dismissToast, modal, closeModal, confirm, el, escapeHtml, md, withSpinner, paginate, providerCostHint, getToastHistory, onToast, clearToastHistory, dismissToastHistory };
+  // CAR-51 #1 (v1.247.0) — ONE time/cost pattern across the advisor views:
+  // a meta line directly under the view title holding the ⏱ ETA chip and
+  // the cost hint, instead of evaluate/deep/mode-page orphans after the
+  // action row and auto's chip floating beside its button. Views call:
+  //   UI.pageMeta(t, UI.providerCostHint(t), etaChip)
+  // The cost node keeps its own self-cleanup (it observes its connection).
+  function pageMeta(t, ...nodes) {
+    // Layout lives in the .page-meta rule (app.css) — no inline styles.
+    return el('div', {
+      className: 'page-meta',
+      role: 'note',
+      'aria-label': (t ?? ((_k, f) => f))('common.etaTitle', 'Typical generation time'),
+    }, nodes.filter(Boolean));
+  }
+
+  return { toast, dismissToast, modal, closeModal, confirm, el, escapeHtml, md, withSpinner, paginate, providerCostHint, pageMeta, getToastHistory, onToast, clearToastHistory, dismissToastHistory };
 })();

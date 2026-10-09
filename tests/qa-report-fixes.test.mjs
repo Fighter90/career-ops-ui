@@ -106,7 +106,7 @@ test('UX-A11 (v1.58.64): es/pt-BR copy polish — English loanwords replaced wit
     'es pipe.title must read "Pipeline de candidaturas" (candidate-side perspective)');
 });
 
-test('UX-A15 (v1.58.63): dashboard Pipeline tile carries the qa-tile--primary visual weight modifier', () => {
+test('UX-A15 (v1.58.63) + CAR-49 #4 (v1.247.0): dashboard Pipeline tile keeps its modifier; the accent is hover/focus-only', () => {
   const dash = read('public', 'js', 'views', 'dashboard.js');
   // The qa() helper must accept a `primary` flag.
   assert.match(dash, /function qa\(icon, labelKey, labelFallback, subKey, subFallback, route, primary\)/,
@@ -116,11 +116,16 @@ test('UX-A15 (v1.58.63): dashboard Pipeline tile carries the qa-tile--primary vi
   // The Pipeline tile must call qa(..., true).
   assert.match(dash, /qa\('📥',\s*'nav\.pipeline',[^)]*,\s*'\/pipeline',\s*true\)/,
     'Pipeline tile must be flagged primary so it gets the accent');
-  // CSS rule present.
+  // CSS: bolder label stays; the always-on crimson border is retired —
+  // the accent ring appears only on hover/focus (an unexplained third
+  // emphasis level under the two hero CTAs was the CAR-49 finding).
   const css = loadAppCss();
-  assert.match(css, /\.qa-tile--primary\s*\{/, 'app.css must style .qa-tile--primary');
   assert.match(css, /\.qa-tile--primary\s+\.qa-label\s*\{[^}]*font-weight:\s*600/,
     'primary tile label must be bolder (font-weight: 600)');
+  assert.match(css, /\.qa-tile--primary:hover,\s*\.qa-tile--primary:focus-visible\s*\{[^}]*border-color:\s*var\(--rausch\)/,
+    'the crimson accent must be hover/focus-only');
+  const resting = css.match(/\.qa-tile--primary\s*\{[^}]*\}/);
+  assert.equal(resting, null, 'no always-on .qa-tile--primary border block');
 });
 
 test('NEW-OR1 (v1.59.4): #/config api-keys summary refresh is race-safe (atomic replaceChildren + stale-token drop)', () => {
@@ -485,8 +490,8 @@ test('UX-D-B (v1.58.48): #/dashboard renders a fixture-profile warning banner wh
     'dashboard.js must define profileFixtureBanner()');
   assert.match(dash, /health\.checks\.find\([\s\S]{0,200}?'Profile customized'/,
     "banner must look for the 'Profile customized' check from /api/health");
-  assert.match(dash, /'hero-banner hero-banner--warning'/,
-    'banner must use .hero-banner.hero-banner--warning classes');
+  assert.match(dash, /'hero-banner hero-banner--warning callout callout--warn'/,
+    'banner must use .hero-banner.hero-banner--warning + the theme-aware .callout--warn tokens (CAR-58 #4, v1.247.0)');
   assert.match(dash, /t\('onboarding\.fixtureWarning'/,
     "banner message must come from t('onboarding.fixtureWarning', …)");
   assert.match(dash, /t\('onboarding\.fixProfile'/,
@@ -1038,14 +1043,16 @@ test('I18N-CL2 (v1.59.12): followup.lastPh dict value is a format hint, not a ro
     'followup.lastPh[en] must be the format hint "YYYY-MM-DD"');
 });
 
-test('U-2 (v1.58.22): #/auto separates ✨ from the H1 via a .page-icon span', () => {
+test('CAR-51 #2 (v1.247.0): #/auto title drops the ✨ decoration — plain header like the other 31 views', () => {
   const auto = read('public', 'js', 'views', 'auto.js');
-  // Header must use the icon variant + emoji as a sibling span:
-  assert.match(auto, /className:\s*'page-header page-header--icon'/,
-    "auto.js header must use 'page-header page-header--icon'");
-  assert.match(auto, /c\('span',\s*\{\s*className:\s*'page-icon',\s*'aria-hidden':\s*'true'\s*\},\s*'✨'\)/,
-    'auto.js must emit ✨ as a separate <span class="page-icon" aria-hidden="true">');
-  // The H1 i18n value must NOT include the leading ✨ anymore:
+  // The decorated header variant is gone entirely (CAR-51 #2 retired
+  // U-2's .page-icon span — it was the app's ONLY decorated title and
+  // broke the shared left-edge rhythm):
+  assert.doesNotMatch(auto, /page-header--icon/,
+    'auto.js must use the plain .page-header, not the icon variant');
+  assert.doesNotMatch(auto, /page-icon/, 'auto.js must not emit a .page-icon span');
+  assert.doesNotMatch(auto, /✨/, 'auto.js must not render ✨ anywhere');
+  // The H1 i18n values never carried the emoji (still guarded):
   const dict = legacyDictText();
   const row = dict.match(/'auto\.title':\s*\{([^}]+)\}/);
   assert.ok(row, 'auto.title row must exist');
@@ -1054,14 +1061,12 @@ test('U-2 (v1.58.22): #/auto separates ✨ from the H1 via a .page-icon span', (
     const m = row[1].match(new RegExp(`${keyPat}\\s*:\\s*'([^']+)'`));
     assert.ok(m, `auto.title row missing ${lang}`);
     assert.ok(!/^✨/.test(m[1]),
-      `auto.title[${lang}] must not start with ✨ (moved to .page-icon span): '${m[1]}'`);
+      `auto.title[${lang}] must not start with ✨: '${m[1]}'`);
   }
-  // CSS must define the grid header + icon class:
+  // The decorative grid variant is retired from the CSS too:
   const css = loadAppCss();
-  assert.match(css, /\.page-header--icon\s*\{[^}]*display:\s*grid/,
-    '.page-header--icon must declare display: grid');
-  assert.match(css, /\.page-icon\s*\{[^}]*line-height:\s*1/,
-    '.page-icon rule must exist');
+  assert.doesNotMatch(css, /\.page-header--icon/, '.page-header--icon CSS is retired');
+  assert.doesNotMatch(css, /\.page-icon\s*\{/, '.page-icon CSS is retired');
 });
 
 test('U-1 (v1.58.21): #/cv has a proper page-header H1 + subtitle (no `.cv-breadcrumb` chip)', () => {

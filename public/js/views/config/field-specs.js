@@ -109,7 +109,10 @@
       options: ['auto', 'claude', 'gemini', 'openai', 'qwen', 'openrouter', 'github', 'hermes', 'deepseek', 'zai', 'kimi', 'minimax', 'mistral', 'grok', 'together', 'fireworks', 'ollama', 'ark', 'arkcn'], defaultValue: 'auto',
       labelKey: 'config.llmProvider', label: 'LLM_PROVIDER',
       hintKey: 'config.llmProviderHint',
-      hintFallback: "auto = use whichever key is set, preferring Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi → MiniMax → Mistral → Grok → Together → Fireworks → Ollama → BytePlus Ark → Volcengine Ark. Pinning one prefers it — but if its key isn't set it falls back to any other provider you have configured. Only with no provider key at all → manual-prompt fallback.",
+      // CAR-56 #2 (v1.247.0) — the chain reads as three short lines, not one
+      // ~150-char mono-prose wall (the hint <p> renders white-space: pre-line).
+      // Line breaks mirror the 18 dict entries: intro / order chain / pin+fallback.
+      hintFallback: 'auto = use whichever key is set, preferring\nAnthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi → MiniMax → Mistral → Grok → Together → Fireworks → Ollama → BytePlus Ark → Volcengine Ark\nclaude / gemini / openai / … / arkcn = prefer that one — without its key it falls back to any other configured provider; with no provider key at all → manual-prompt fallback.',
     },
     {
       key: 'ANTHROPIC_API_KEY', secret: true,

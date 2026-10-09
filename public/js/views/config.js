@@ -143,7 +143,10 @@ Router.register('config', async () => {
           ? c('span', { style: { marginLeft: '10px', fontSize: '12px', color: 'var(--ok, #008a05)', fontWeight: 'normal' } }, '✓ set')
           : null,
       ]),
-      c('p', { id: hintId, style: { color: 'var(--foggy)', fontSize: '13px', margin: '4px 0 8px' } },
+      // CAR-56 #2 (v1.247.0) — hints may carry \n breaks (the LLM_PROVIDER
+      // chain hint does): pre-line renders them as short lines instead of
+      // one ~150-char mono-prose wall. Hints without \n are unchanged.
+      c('p', { id: hintId, style: { color: 'var(--foggy)', fontSize: '13px', margin: '4px 0 8px', whiteSpace: 'pre-line' } },
         t(spec.hintKey, spec.hintFallback)),
       input,
     ]);
@@ -962,7 +965,10 @@ Router.register('config', async () => {
 
     appearanceCard,
 
-    c('div', { className: 'card', style: { background: '#fff8e6', borderColor: '#f0c674', color: '#8a6300', marginBottom: '20px' } }, [
+    // CAR-58 #4 (v1.247.0) — was inline light-theme yellow, which kept a
+    // light block in dark mode. The shared .callout--warn tokens own the
+    // palette per theme now.
+    c('div', { className: 'card callout callout--warn', style: { marginBottom: '20px' } }, [
       c('strong', null, 'ℹ ' + t('config.bannerTitle', 'Both projects pick this up')),
       c('p', { style: { margin: '6px 0 0', fontSize: '14px' } },
         t('config.bannerBody',
