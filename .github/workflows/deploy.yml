@@ -496,7 +496,7 @@ jobs:
           # Same as the plan, but --apply: writes backups and moves the junk.
           # Numbers only in the log — no file names, no line previews.
           # shellcheck disable=SC2029
-          ssh prod "cd '$APP_DIR/web-ui' && CAREER_OPS_ROOT='$APP_DIR' node scripts/post-qa-cleanup.mjs --apply 2>&1 | grep -cE 't-role|ZZ-QA-TEST|dirty-URL|backup' || true; echo 'cleanup-apply done'; ls '$APP_DIR/web-ui/qa/cleanup-backup-'* 2>/dev/null | wc -l"
+          ssh prod "cd '$APP_DIR/web-ui' && CAREER_OPS_ROOT='$APP_DIR' node scripts/post-qa-cleanup.mjs --apply 2>&1 | grep -cE 't-role|ZZ-QA-TEST|dirty-URL|backup' || true; echo 'cleanup-apply done'; ls -d '$APP_DIR/qa/cleanup-backup-'* 2>/dev/null | wc -l"
 
       - name: Verify (read-only smoke)
         if: inputs.mode != 'recon' && inputs.mode != 'cleanup-plan' && inputs.mode != 'cleanup-apply'
