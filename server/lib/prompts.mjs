@@ -402,9 +402,12 @@ export function buildModePrompt(template, slug, context, lang) {
 export function buildEvaluationPrompt(jd, lang) {
   // v1.248.7 — the language requirement opens the instruction too (the tail
   // reminder alone drifted: ta evaluate came back 2–22 % own-script 2/2 on
-  // prod while the docs assistant stayed on-language).
+  // prod while the docs assistant stayed on-language). One calm sentence,
+  // fused with the machine-format requirement — a thundering standalone
+  // mandate made the weak-ta model drop the Latin A–G headings entirely
+  // (prod: A–G ✗ 2/3 under the hard form, A–G ✓ 2/2 without it).
   const langOpen = lang && lang !== 'en' && localeName(lang)
-    ? `\n**LANGUAGE (mandatory): write the ENTIRE report — every section, bullet, table cell and the final verdict — in ${localeName(lang)}. Technology and company names may stay Latin.\n`
+    ? `\n**Language: the ENTIRE report — every section, bullet, table cell and the verdict — is written in ${localeName(lang)}. Keep the machine format unchanged: block headings start with the Latin capitals A–G, and the ---SCORE_SUMMARY--- block stays in English.\n`
     : '';
   return `${buildLocaleDirective(lang)}${langOpen}${scaffold('evalRoleLine', lang)}
 
@@ -494,7 +497,7 @@ export function buildLanguageReminder(lang) {
     + 'Two parts of the format are machine-read and must NOT be translated: '
     + 'every block heading KEEPS its Latin capital letter A–G and starts with it (for example `## <translated word> A — <translated title>`; never А Б В or any other native numbering), '
     + 'and the report ends with the ---SCORE_SUMMARY--- … ---END_SUMMARY--- block, markers and keys in English, exactly as shown above.\n'
-    + `This is the LAST instruction: the whole report below is written in ${name} — first heading to last line, tables included. An English report when ${name} was requested is a defect.\n`;
+    + `Once more, briefly: the whole report below is written in ${name}, tables included.\n`;
 }
 
 export function buildDeepPrompt(rawCompany, rawRole, lang, opts = {}) {
