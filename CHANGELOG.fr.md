@@ -11,6 +11,23 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.248.6] — 2026-10-10
+
+**Poli post-régression de la chaîne Telegram : un vrai post conserve sa structure de lignes (le libellé «Компания : X» et la ligne de rôle sont trouvés là où ils sont réellement), le rôle du tracker vient de l’en-tête du rapport plutôt que d’une ligne brute du post, et les surfaces opérationnelles (recon, cleanup-plan, link-check) rapportent ce qu’elles prétendent rapporter.**
+
+### Corrigé
+
+- **Un post t.me ne colle plus en une seule ligne** : `<br>` devient un saut de ligne avant le retrait des balises et les entités HTML numériques sont décodées ; le motif du libellé société accepte « Компания : X » avec une espace avant les deux-points.
+- **Le rôle du tracker vient de l’en-tête du rapport** (H1 `# <Rôle> — <Société>`) ; la ligne de secours est nettoyée — sans hashtags, sans emoji, ≤80 caractères.
+- **`## Rejected` ne se duplique plus** : la section est créée une fois ; chaque rejet y ajoute sa ligne.
+- **Une racine de domaine est rejetée avant la requête** — une URL indésirable ne coûte plus rien.
+- **Recon calcule le signal du contrat au lieu de l’affirmer** (`honours rejected:` vérifie `markPipelineRejected` dans le code déployé) ; le compteur de marques n’imprime plus deux fois « 0 ».
+- **cleanup-plan rapporte des nombres par catégorie** (t-role à déplacer, lignes dirty-URL, lignes test-row) au lieu d’un `grep -c` unique qui comptait sa propre ligne de succès.
+- **link-check traite les 5xx de github.com comme non vérifiés** — derrière le mur à bots, pas comme des liens cassés.
+### Notes
+
+- Non porté et non touché (vérifié lors de la régression v1.248.5) : le embed-fetch lui-même, le contrat de saut pipeline, les tests offline _setLookup, l’acceptation des ordinaux uk, les frontières de mots du filtre de rôle et le mode cleanup-apply. Le comptage par catégories de cleanup-plan lit les libellés de sortie du propre script — les renommer casserait silencieusement les compteurs.
+
 ## [1.248.5] — 2026-10-10
 
 **Durcissement post-régression : les entrées de post unique t.me récupèrent désormais le texte du post lui-même (forme embed), une entrée rejetée quitte le pool du minuteur d'évaluation côté serveur, et la numération native des blocs d'un rapport ukrainien est acceptée — plus un test qui utilisait secrètement le réseau en direct est hors ligne pour de bon.**

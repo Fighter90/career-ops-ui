@@ -216,9 +216,13 @@ jobs:
           # rejected entries in data/pipeline.md (## Rejected section below
           # the fence); the timer greps bare URLs in the fence and naturally
           # skips the marked ones. Count the marks (numbers only).
-          marks=$(grep -c '^- .*rejected:' "$APP_DIR/data/pipeline.md" 2>/dev/null || echo 0)
+          marks=$(grep -c '^- .*rejected:' "$APP_DIR/data/pipeline.md" 2>/dev/null) || true
+          [ -n "$marks" ] || marks=0
           echo "pipeline rejected marks: $marks"
-          echo "honours rejected: yes (server-side — marks in data/pipeline.md)"
+          # Computed, not asserted: the deployed auto-pipeline must carry the
+          # server-side skip contract (markPipelineRejected).
+          src="$APP_DIR/web-ui/server/lib/routes/auto-pipeline.mjs"
+          echo "honours rejected: $(grep -q markPipelineRejected "$src" 2>/dev/null && echo yes || echo no) (server-side — marks in data/pipeline.md)"
           sec node-heap
           systemctl show -p Environment --value career-ops-ui 2>/dev/null | tr ' ' '\n' | grep -E '^NODE_OPTIONS=' || echo "NODE_OPTIONS unset (V8 default heap)"
           sec listeners; ss -ltnp 2>/dev/null | awk 'NR>1{print $4, $6}' | grep -E 'node|python|hermes|caddy' || true
@@ -486,7 +490,7 @@ jobs:
         run: |
           # Numbers only — the log is public and file names carry company names.
           # shellcheck disable=SC2029
-          ssh prod "cd '$APP_DIR/web-ui' && CAREER_OPS_ROOT='$APP_DIR' node scripts/post-qa-cleanup.mjs 2>&1 | grep -cE 't-role|ZZ-QA-TEST|dirty-URL' || true; echo 'cleanup-plan done (dry run — nothing changed)'"
+          ssh prod "cd '$APP_DIR/web-ui' && out=\$(CAREER_OPS_ROOT='$APP_DIR' node scripts/post-qa-cleanup.mjs 2>&1); printf '%s\n' \"\$out\" | grep -c 'no valid SCORE' || true; printf '%s\n' \"\$out\" | grep -c 'dirty-URL line' || true; printf '%s\n' \"\$out\" | grep -c 'test-row line' || true; echo 'cleanup-plan done (t-role to move / pipeline lines / tracker rows — dry run)'"
 
       - name: Cleanup apply (with automatic backups)
         if: inputs.mode == 'cleanup-apply'

@@ -2,6 +2,23 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.248.6] — 2026-10-10
+
+**Nach der Regression poliert: Ein echter Telegram-Post behält seine Zeilenstruktur (das Label «Компания : X» und die Rollenzeile werden dort gefunden, wo sie wirklich sind), die Tracker-Rolle kommt aus dem Berichtskopf statt aus einer rohen Post-Zeile, und die Betriebsoberflächen (recon, cleanup-plan, link-check) melden das, was sie zu melden behaupten.**
+
+### Behoben
+
+- **Ein t.me-Post klebt nicht mehr in einer Zeile**: `<br>` wird vor dem Entfernen der Tags zum Zeilenumbruch, numerische HTML-Entities werden dekodiert; das Firmenlabel-Muster akzeptiert die Form mit Leerzeichen vor dem Doppelpunkt.
+- **Die Tracker-Rolle kommt aus dem Berichtskopf** (H1 `# <Rolle> — <Firma>`)； die Fallback-Zeile wird gesäubert — keine Hashtags, keine Emoji, ≤80 Zeichen.
+- **`## Rejected` dupliziert sich nicht mehr**: der Abschnitt wird einmal erzeugt; jede Ablehnung fügt ihre Zeile darin an.
+- **Eine Domain-Root wird vor der Anfrage abgelehnt** — eine Junk-URL kostet nichts mehr.
+- **Recon berechnet das Vertragssignal, statt es zu behaupten** (`honours rejected:` prüft `markPipelineRejected` im deployten Code); der Mark-Zähler druckt «0» nicht mehr doppelt.
+- **cleanup-plan meldet Zahlen je Kategorie** (zu verschiebende t-role, dirty-URL-Zeilen, test-row-Zeilen) statt eines einzelnen `grep -c`, der die eigene Erfolgszeile mitzählte.
+- **link-check behandelt github.com-5xx als unbestätigt** — hinter der Bot-Mauer, nicht als kaputte Links.
+### Hinweise
+
+- Nicht portiert und unangetastet (in der v1.248.5-Regression verifiziert): der Embed-Fetch selbst, der Pipeline-Skip-Vertrag, die _setLookup-Offline-Tests, die uk-Ordinal-Akzeptanz, Wortgrenzen im Rollenfilter und der cleanup-apply-Modus. Die kategoriebezogene Zählung im cleanup-plan liest die Ausgabe-Labels des Bereinigungsskripts selbst — eine Umbenennung würde die Zähler stillschweigend brechen.
+
 ## [1.248.5] — 2026-10-10
 
 **Nach der Regression gehärtet: Einzel-Post-Einträge von t.me holen jetzt den Posttext selbst (Embed-Form), ein abgelehnter Eintrag verlässt serverseitig den Pool des Eval-Timers, und die native Blocknummerierung eines ukrainischen Berichts wird akzeptiert — dazu ist ein Test, der heimlich das Live-Netzwerk nutzte, für immer offline.**

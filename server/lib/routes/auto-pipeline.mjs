@@ -128,7 +128,19 @@ export function extractTelegramPostText(html) {
       if (depth === 0) { i = m.index; break; }
     }
     if (depth === 0) {
-      const t = raw.slice(start, i).replace(/<[^>]+>/g, ' ').replace(/&[a-z]+;/gi, ' ').replace(/[ \t]+/g, ' ').trim();
+      // v1.248.6 — <br> is a LINE break (the «Компания: X» label and the role
+      // line live on their own lines in real posts; a flat space glued the
+      // whole post into one line and the line-anchored patterns never fired).
+      const t = raw.slice(start, i)
+        .replace(/<br\s*\/?>/gi, '\n')
+        .replace(/<\/blockquote>/gi, '\n')
+        .replace(/<[^>]+>/g, ' ')
+        .replace(/&#x([0-9a-f]+);/gi, (_, h) => { const n = parseInt(h, 16); return Number.isFinite(n) && n > 0 && n <= 0x10ffff ? String.fromCodePoint(n) : ' '; })
+        .replace(/&#(\d+);/g, (_, d) => { const n = parseInt(d, 10); return Number.isFinite(n) && n > 0 && n <= 0x10ffff ? String.fromCodePoint(n) : ' '; })
+        .replace(/&[a-z]+;/gi, ' ')
+        .replace(/[ \t]+/g, ' ')
+        .replace(/\s*\n\s*/g, '\n')
+        .trim();
       if (t) return t;
     }
   }
@@ -218,8 +230,9 @@ export function guessCompanyRole(jdText, url) {
     if (m) { role = m[1].trim(); company = m[2].trim(); break; }
     m = line.match(/^([A-Z][\w\s.&-]{1,40})\s+[—–-]\s+(.{4,80})$/);
     if (m && !role) { company = m[1].trim(); role = m[2].trim(); }
-    // v1.248.4 — «Компания: X» / «Компания — X» self-labels on Telegram posts.
-    m = line.match(/^Компания:\s*(.+)$/u);
+    // v1.248.4 — «Компания: X» self-labels on Telegram posts; v1.248.6 —
+    // also «Компания : X» (space before the colon) and «Компания — X».
+    m = line.match(/^Компания\s*[:—–-]\s*(.+)$/u);
     if (m && !company) company = m[1].trim().slice(0, 60);
   }
   if (!company) {
@@ -279,6 +292,18 @@ function channelHintFor(u) {
 }
 
 /** Cheap pre-LLM check: does this entry text carry any role/company hint? */
+// v1.248.6 — the post-line role fallback lands in the tracker verbatim
+// otherwise: hashtags (#удаленка) and emoji ride along, and the cell can
+// exceed the column's sane width. Clean: no hashtags, no emoji, ≤80 chars.
+function cleanRoleLine(line) {
+  return String(line || '')
+    .replace(/#[^\s#]+/g, ' ')
+    .replace(/\p{Extended_Pictographic}/gu, ' ')
+    .replace(/\s+/g, ' ')
+    .trim()
+    .slice(0, 80);
+}
+
 export function guessRoleHint(jdText, url) {
   const lines = (jdText || '').split('\n').map((l) => l.trim()).filter(Boolean).slice(0, 30);
   // v1.248.5 — word-boundary matching: a bare `includes` matched 'lead'
@@ -344,7 +369,6 @@ function markPipelineRejected(url, reason) {
     const inFence = fence !== -1 && close !== -1
       ? lines.findIndex((l, i) => i > fence && i < close && l.trim() === url.trim()) !== -1
       : false;
-    const already = lines.some((l) => l.includes(url) && /rejected:/i.test(l));
     if (inFence) {
       const out = [];
       let f = false;
@@ -358,14 +382,30 @@ function markPipelineRejected(url, reason) {
       }
       src = out.join('\n');
     }
-    if (!already) {
+    {
       // Defense-in-depth: a line is the record's boundary in pipeline.md, so
       // control characters are stripped from both interpolated pieces (WHATWG
       // URL parsing already drops \n\r\t, but the guarantee is made explicit
       // here rather than delegated to the URL parser).
       const safeUrl = String(url || '').replace(/[\u0000-\u001f\u007f]+/g, ' ').trim();
       const safeReason = short.replace(/[\u0000-\u001f\u007f]+/g, ' ').trim();
-      src = src.replace(/\s*$/, '') + `\n\n## Rejected\n\n- ${safeUrl} — rejected: ${safeReason} (${today()})\n`;
+      const line = `- ${safeUrl} — rejected: ${safeReason} (${today()})`;
+      // v1.248.6 — a section exists? Append INTO it; only the first rejection
+      // creates the header. Every rejection appends ITS line (per the owner's
+      // contract: two rejections in a row → one header, two lines).
+      const arr = src.split('\n');
+      const secAt = arr.findIndex((l) => /^## Rejected\s*$/i.test(l.trim()));
+      if (secAt !== -1) {
+        let end = arr.length;
+        for (let k = secAt + 1; k < arr.length; k++) {
+          if (/^##\s/.test(arr[k].trim())) { end = k; break; }
+        }
+        while (end > secAt + 1 && arr[end - 1].trim() === '') end--;
+        arr.splice(end, 0, line);
+        src = arr.join('\n');
+      } else {
+        src = src.replace(/\s*$/, '') + `\n\n## Rejected\n\n${line}\n`;
+      }
     }
     writeFileSync(file, src);
     return true;
@@ -440,6 +480,21 @@ export function registerAutoPipelineRoutes(app) {
       return res.end();
     }
 
+    // v1.248.6 — a domain root is not a job posting; checked BEFORE the
+    // request, so a junk URL costs no fetch at all (previously the page was
+    // downloaded (fetch: done) and only then rejected).
+    {
+      let rootRejection = false;
+      try { rootRejection = new URL(url).pathname.replace(/\/+$/, '').length <= 1; } catch {}
+      if (rootRejection) {
+        const logHost = (() => { try { return new URL(url).hostname; } catch { return '[unparsable URL]'; } })();
+        logActivity({ action: 'auto-pipeline.evaluation.rejected', target: logHost, detail: 'domain root — not a job posting' });
+        markPipelineRejected(url, 'domain root — not a job posting');
+        step(1, 'failed', 'domain root — not a job posting');
+        return fail(1, 'domain root — not a job posting', { rejected: true });
+      }
+    }
+
     // Step 2 — fetch JD
     step(1, 'running');
     const timer = setTimeout(() => ctrl.abort(), FETCH_TIMEOUT_MS);
@@ -476,18 +531,7 @@ export function registerAutoPipelineRoutes(app) {
     // v1.248.4 — the identity gate runs BEFORE the LLM call: an entry with
     // neither a company nor any role hint would burn a full evaluation and
     // then be rejected. Host-only logging (CI logs are public).
-    // v1.248.5 — a domain root is not a job posting (linkedin.com/, x.com/
-    // fired the role gate on junk page text).
-    let rootRejection = false;
-    try { rootRejection = new URL(url).pathname.replace(/\/+$/, '').length <= 1; } catch {}
     const guess = guessCompanyRole(jdText, url);
-    if (rootRejection) {
-      const logHost = (() => { try { return new URL(url).hostname; } catch { return '[unparsable URL]'; } })();
-      logActivity({ action: 'auto-pipeline.evaluation.rejected', target: logHost, detail: 'domain root — not a job posting' });
-      markPipelineRejected(url, 'domain root — not a job posting');
-      step(1, 'failed', 'domain root — not a job posting');
-      return fail(1, 'domain root — not a job posting', { rejected: true });
-    }
     if (!guess.company && !guess.roleHint) {
       const logHost = (() => { try { return new URL(url).hostname; } catch { return '[unparsable URL]'; } })();
       logActivity({ action: 'auto-pipeline.evaluation.rejected', target: logHost, detail: 'no company/role hints' });
@@ -599,8 +643,15 @@ export function registerAutoPipelineRoutes(app) {
     // with a company but no post-report role still rejects (never file a
     // `<company>-role` placeholder).
     const header = parseReportHeader(markdown);
-    const reportRole = (header.title || '').replace(/^#+\s*/, '').trim();
-    const role = reportRole || guess.role || '';
+    // The H1 follows the oferta convention `# <Role> — <Company>` — keep the
+    // role side, so the company doesn't ride into the tracker cell / slug.
+    // A title without the separator IS the role.
+    const rawTitle = (header.title || '').replace(/^#+\s*/, '').trim();
+    const titleSplit = rawTitle.match(/^(.{2,80}?)\s+[—–-]\s+(.+)$/u);
+    const reportRole = titleSplit ? titleSplit[1].trim() : rawTitle;
+    // v1.248.6 — the fallback line is cleaned before it can reach the
+    // tracker (no hashtags, no emoji, ≤80 chars); the header title wins.
+    const role = reportRole || cleanRoleLine(guess.role);
     if (!guess.company || !role) {
       logActivity({ action: 'auto-pipeline.evaluation.rejected', target: guess.company || 'unknown', detail: 'company/role not identifiable after evaluation' });
       markPipelineRejected(url, 'company/role not identifiable');
@@ -612,7 +663,7 @@ export function registerAutoPipelineRoutes(app) {
 
     // Step 4 — save report
     step(3, 'running');
-    let slug = buildSlug(guess.company || 'unknown', guess.role || 'role');
+    let slug = buildSlug(guess.company || 'unknown', role || 'role'); // v1.248.6 — the header role, not the raw post line
     let reportPath = `reports/${slug}.md`;
     try {
       // Score and legitimacy were read above, with the summary block present;
@@ -648,7 +699,7 @@ export function registerAutoPipelineRoutes(app) {
       } else {
         const cell = (s) => String(s || '').replace(/\|/g, '\\|').replace(/[\r\n]+/g, ' ').trim();
         const safeCompany = cell(guess.company);
-        const safeRole    = cell(guess.role || 'Role TBD');
+        const safeRole    = cell(role || 'Role TBD'); // v1.248.6 — header role
         const safeStatus  = 'Evaluated';
         const safeScore   = score != null ? `${score}/5` : '—';
         const safeDate    = today();
@@ -697,7 +748,7 @@ export function registerAutoPipelineRoutes(app) {
         slug, score, legitimacy,
         reportPath,
         trackerNum,
-        company: guess.company, role: guess.role,
+        company: guess.company, role: role || guess.role,
         evalMode,
         ...(warnings.length ? { warnings } : {}),
       });

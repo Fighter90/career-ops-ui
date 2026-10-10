@@ -11,6 +11,23 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.248.6] — 2026-10-10
+
+**Pulido posregresión de la cadena de Telegram: una publicación real conserva su estructura de líneas (la etiqueta «Компания : X» y la línea del rol se encuentran donde realmente están), el rol del rastreador proviene del encabezado del informe en lugar de una línea cruda de la publicación, y las superficies operativas (recon, cleanup-plan, link-check) informan lo que dicen que informan.**
+
+### Corregido
+
+- **Una publicación de t.me ya no se pega en una sola línea**: `<br>` (y `</blockquote>`) ahora se convierten en salto de línea antes de quitar las etiquetas, y las entidades HTML numéricas se decodifican; el patrón de la etiqueta de empresa acepta «Empresa : X» con espacio antes de los dos puntos.
+- **El rol del rastreador viene del encabezado del informe**: el H1 sigue la convención `# <Rol> — <Empresa>` (se toma el lado del rol); la línea de respaldo se limpia — sin hashtags, sin emojis, ≤80 caracteres.
+- **`## Rejected` ya no se duplica**: la sección se crea una vez; cada rechazo añade su línea dentro de la sección existente.
+- **La raíz de dominio se rechaza antes de la solicitud**: la comprobación de `pathname` se ejecuta antes del fetch — una URL basura no cuesta nada.
+- **Recon calcula la señal del contrato en lugar de afirmarla**: `honours rejected:` es `yes` solo si el `auto-pipeline.mjs` desplegado contiene `markPipelineRejected`; el contador de marcas ya no imprime `0` dos veces.
+- **cleanup-plan informa números por categoría**: informes t-role a mover, líneas dirty-URL en pipeline, filas test-row en el rastreador — en lugar de un único `grep -c` que contaba su propia línea de éxito.
+- **link-check trata los 5xx de github.com como no verificados**: tres ejecuciones seguidas dieron 503 en enlaces blob desde los runners de Actions mientras otras redes los veían 200 — detrás del muro de bots, no como enlaces rotos.
+### Notas
+
+- No portado y sin tocar (verificado en el regression de v1.248.5): el propio embed-fetch, el contrato de salto en pipeline, los tests offline _setLookup, la aceptación de ordinales uk, los límites de palabra en el filtro de rol y el modo cleanup-apply. El conteo por categorías de cleanup-plan lee las etiquetas de salida del propio script — renombrarlas rompería los contadores en silencio.
+
 ## [1.248.5] — 2026-10-10
 
 **Reforzamiento posregresión: las entradas individuales de t.me ahora obtienen el propio texto del post (forma embed), una entrada rechazada sale del pool del temporizador de evaluación del lado del servidor, y la numeración nativa de bloques en un informe ucraniano es aceptada — además, un test que usaba la red en secreto queda offline para siempre.**

@@ -81,8 +81,12 @@ if (!SKIP_EXTERNAL) {
         r.body?.cancel().catch(() => {});
       } catch (e) { status = e.cause?.code || e.name; }
       const files = [...external.get(u)].slice(0, 3).join(', ');
-      // 999 is LinkedIn's bot-wall status.
-      if (status === 401 || status === 403 || status === 429 || status === 999) { unverified++; continue; }
+      // 999 is LinkedIn's bot-wall status. 5xx from github.com is Actions-
+      // runner-only flakiness (three runs in a row 503'd from Actions while
+      // the same blob URLs returned 200 from other networks) — "unverified",
+      // not broken. v1.248.6.
+      const ghWall = status >= 500 && /(^|\.)github\.com$/.test(new URL(u).hostname);
+      if (status === 401 || status === 403 || status === 429 || status === 999 || ghWall) { unverified++; continue; }
       if (status === 404 && u === PENDING_RELEASE) { pendingRelease = true; continue; }
       if (typeof status !== 'number' || status >= 400) add(files, 'external-link', `${status} ${u}`);
     }
@@ -96,7 +100,7 @@ const byKind = {};
 for (const f of findings) byKind[f.kind] = (byKind[f.kind] || 0) + 1;
 const lines = [
   '## Link check — READMEs + wiki', '',
-  `${sources.length} files (${sources.filter((s) => s.kind === 'wiki').length} wiki pages), ${external.size} distinct external links${SKIP_EXTERNAL ? ' (not fetched)' : `, ${unverified} behind a bot wall (401/403/429, not counted as broken)`}.${pendingRelease ? ` The release page for v${VERSION} does not exist yet (cut after the merge) — pending, not broken.` : ''}`, '',
+  `${sources.length} files (${sources.filter((s) => s.kind === 'wiki').length} wiki pages), ${external.size} distinct external links${SKIP_EXTERNAL ? ' (not fetched)' : `, ${unverified} behind a bot wall / github.com 5xx (not counted as broken)`}.${pendingRelease ? ` The release page for v${VERSION} does not exist yet (cut after the merge) — pending, not broken.` : ''}`, '',
   findings.length ? '| kind | count |\n|---|---|\n' + Object.entries(byKind).map(([k, n]) => `| ${k} | ${n} |`).join('\n') : '**No broken links.**', '',
 ];
 if (findings.length) {

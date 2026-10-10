@@ -2,6 +2,23 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.248.6] — 2026-10-10
+
+**Lucidatura post-regressione della catena Telegram: un post reale mantiene la sua struttura di righe (l'etichetta «Компания : X» e la riga del ruolo vengono trovate dove realmente sono), il ruolo del tracker arriva dall'intestazione del report invece che da una riga grezza del post, e le superfici operative (recon, cleanup-plan, link-check) riportano ciò che dichiarano di riportare.**
+
+### Corretto
+
+- **Un post t.me non si incolla più in una riga**: `<br>` diventa un a-capo prima della rimozione dei tag e le entità HTML numeriche vengono decodificate; il pattern dell'etichetta azienda accetta la forma con spazio prima dei due punti.
+- **Il ruolo del tracker viene dall'intestazione del report** (H1 `# <Ruolo> — <Azienda>`)； la riga di fallback viene pulita — senza hashtag, senza emoji, ≤80 caratteri.
+- **`## Rejected` non si duplica più**: la sezione viene creata una volta; ogni rifiuto vi aggiunge la propria riga.
+- **La radice di dominio viene rifiutata prima della richiesta** — un URL spazzatura non costa più nulla.
+- **Recon calcola il segnale del contratto invece di asserirlo** (`honours rejected:` verifica `markPipelineRejected` nel codice deployato); il contatore dei marchi non stampa più «0» due volte.
+- **cleanup-plan riporta numeri per categoria** (t-role da spostare, righe dirty-URL, righe test-row) invece di un singolo `grep -c` che contava la propria riga di successo.
+- **link-check tratta i 5xx di github.com come non verificati** — dietro il muro dei bot, non come link rotti.
+### Note
+
+- Non portato e intoccato (verificato nella regressione v1.248.5): l'embed-fetch stesso, il contratto di salto in pipeline, i test offline _setLookup, l'accettazione degli ordinali uk, i confini di parola nel filtro del ruolo e la modalità cleanup-apply. Il conteggio per categorie di cleanup-plan legge le etichette di output dello script stesso — rinominarle romperebbe silenziosamente i contatori.
+
 ## [1.248.5] — 2026-10-10
 
 **Indurimento post-regressione: le voci di post singolo t.me ora recuperano il testo stesso del post (forma embed), una voce rifiutata lascia il pool del timer di valutazione lato server, e la numerazione nativa dei blocchi in un report ucraino viene accettata — inoltre un test che usava segretamente la rete live è offline per sempre.**
