@@ -138,3 +138,13 @@ The eval timer greps bare URLs in the fence, so a marked entry is skipped
 naturally — the contract lives server-side, in this repository, never in the
 timer script (which lives outside the repo and is deliberately not edited).
 The mark is idempotent: re-rejecting the same URL never duplicates the line.
+
+**SSE messages are English-only (v1.248.6 review call-out)** — `step()` /
+`fail()` payloads from `auto-pipeline` (and every other route) are plain
+English strings; the server has no `I18n.t` and no locale files. The UI
+language is a client-side concern: `public/js/i18n.js` owns the per-locale
+labels, and the server payloads carry stable machine keys (`key`, `status`,
+`rejected`) the client maps. A new server-side message therefore needs no
+locale entry — but if a message must ever become user-visible prose in a
+locale, it belongs in the client dictionary, keyed by the machine payload,
+not translated on the server.
