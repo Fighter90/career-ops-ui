@@ -2,6 +2,26 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.248.4] — 2026-10-10
+
+**Il proseguimento del round di regressione: la catena di risoluzione del ruolo per le voci Telegram — un post cirillico con una vera offerta ora produce un report nominato invece di un file `unknown-role` rifiutato — e la chiamata LLM si attiva solo per le voci che vale la pena valutare.**
+
+### Corretto
+
+- **La catena del ruolo funziona per i post cirillici**: l’elenco di parole chiave ha guadagnato разработчик/программист/инженер/аналитик/менеджер/руководитель/тимлид/лид/дизайнер/тестировщик/QA/архитектор/специалист/директор/DevOps/SRE (il vecchio era solo EN: 0 post reali su 40 ottenevano un ruolo), l’intestazione del report è consultata (`parseReportHeader` — il modello scrive il ruolo nell’H1), e la prima riga sensata del post è l’ultima risorsa.
+- **Il gate d’identità si è spostato PRIMA della chiamata LLM**: una voce senza società e senza traccia di ruolo fallisce al passo fetch (`rejected: true`) — niente token bruciati per una valutazione che sarebbe stata rifiutata comunque.
+- **`t.me/s/<canale>/<id>` non nomina più la società «S»** — il segmento di anteprima è saltato; entrambe le forme di link risolvono al canale.
+- **Le auto-etichette «Компания: X» nei post Telegram** sono onorate (e «…в компании X» a metà frase per gli host di messaggistica).
+
+### Aggiunto
+
+- **I fallimenti dell’auto-pipeline portano `rejected: true` nell’errore SSE** — il timer di valutazione lato server usa il flag per saltare la voce del pipeline invece di riprovarla ogni 2 ore.
+
+### Note
+
+- Non portato: il compilatore di parole chiave di localizzazione a confini di parola del padre e la tabella USPS (documentato dal v1.248.1).
+- Il blocco «Translations» del README è generato da un’unica lista canonica, con un test di parità in CI (17 link per file, il proprio mai linkato) — ar/pl/uk hanno ottenuto il blocco; la deriva dei separatori `|`/`·` è eliminata.
+
 ## [1.248.3] — 2026-10-10
 
 **Proseguimento del round di regressione: il timer di valutazione non può più in nessun caso archiviare spazzatura Telegram senza nome come report, la pulizia QA non cancella più vere offerte Telegram, l’attribuzione della mappa è di nuovo visibile e le chip della dashboard leggono ≥ 4.5:1.**

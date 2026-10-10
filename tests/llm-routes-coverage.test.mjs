@@ -230,7 +230,7 @@ test('/api/auto-pipeline: "Company — Role" title and hostname fallbacks', asyn
   await stubPage(() => ({ body: LONG }));
   const ev = await pipeline({ url: 'https://boards.greenhouse.io/x/jobs/1' });
   const err = ev.find((e) => e.event === 'error');
-  assert.match(err?.data?.message || '', /company\/role not identifiable/);
+  assert.match(err?.data?.message || '', /company\/role not identifiable|no company\/role hints/);
   assert.equal(err?.data?.rejected, true);
   assert.ok(!ev.some((e) => e.event === 'done'), 'no done event for a nameless entry');
   assert.ok(!readdirSync(resolve(ROOT, 'reports')).some((f) => f.includes('unknown-role')), 'no unknown-role report');

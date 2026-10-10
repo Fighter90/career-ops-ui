@@ -2,6 +2,26 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.248.4] — 2026-10-10
+
+**Regresyon turunun devamı: Telegram girdilerinin rol-çözümleme zinciri — gerçek bir ilan içeren Kiril gönderisi artık reddedilen bir `unknown-role` dosyası yerine adlandırılmış bir rapor üretiyor — ve LLM çağrısı yalnızca değerlemeye değer girdiler için tetikleniyor.**
+
+### Düzeltildi
+
+- **Rol zinciri Kiril gönderilerde çalışıyor**: anahtar kelime listesine разработчик/программист/инженер/аналитик/менеджер/руководитель/тимлид/лид/дизайнер/тестировщик/QA/архитектор/специалист/директор/DevOps/SRE eklendi (eskisi yalnızca EN idi: 40 gerçek gönderiden 0'ı rol alıyordu), rapor başlığına başvuruluyor (`parseReportHeader` — model rolü H1'e yazıyor), ve gönderinin ilk anlamlı satırı son çare.
+- **Kimlik kapısı LLM çağrısından ÖNE taşındı**: ne şirket ne rol izi taşıyan bir girdi fetch adımında başarısız olur (`rejected: true`) — zaten reddedilecek bir değerlendirme için token harcanmaz.
+- **`t.me/s/<kanal>/<id>` artık şirketi 「S」 olarak adlandırmıyor** — önizleme segmenti atlanıyor; her iki bağlantı biçimi de kanala çözülüyor.
+- **Telegram gönderilerindeki 「Компания: X」 öz-etiketleri onurlandırılıyor** (mesajlaşma hostlarının cümle içi 「…в компании X」 de).
+
+### Eklendi
+
+- **auto-pipeline başarısızlıkları SSE hatasında `rejected: true` taşıyor** — sunucu tarafındaki değerlendirme zamanlayıcısı bu bayrakla pipeline girdisini atlıyor, 2 saatte bir yeniden denemek yerine.
+
+### Notlar
+
+- Bu sefer portlanmadı: ebeveynin word-boundary konum anahtar kelime derleyicisi ve USPS tablosu (v1.248.1'den beri belgeli).
+- README 「Translations」 bloğu artık tek bir kanonik listeden üretiliyor, CI'da parite testi var (dosya başına 17 bağlantı, kendisi asla bağlanmıyor) — ar/pl/uk bloğu kazandı; `|`/`·` ayraç kayması giderildi.
+
 ## [1.248.3] — 2026-10-10
 
 **Regresyon turunun devamı: değerlendirme zamanlayıcısı hiçbir koşulda adsız Telegram çöpünü rapor olarak arşivleyemiyor, QA temizliği gerçek Telegram ilanlarını silemiyor, harita atıfı yeniden görünüyor ve pano çipleri ≥ 4.5:1 okunuyor.**

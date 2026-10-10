@@ -9,6 +9,26 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.248.4] — 2026-10-10
+
+**Łańcuch rozpoznawania roli dla wpisów z Telegrama: cyrylicki post z prawdziwą ofertą daje teraz nazwany raport zamiast odrzuconego pliku `unknown-role` — a wywołanie LLM następuje tylko dla wpisów warte oceny.**
+
+### Naprawiono
+
+- **Łańcuch roli działa dla postów cyrylickich**: lista słów kluczowych zyskała developer/programist/инженер/аналитик/менеджер/руководитель/timlid/lid/designer/tester/QA/architect/specialist/director/DevOps/SRE (stara była tylko EN: 0 z 40 prawdziwych postów otrzymywało rolę), konsultowany jest nagłówek raportu (`parseReportHeader` — model pisze rolę w H1), a pierwsza sensowna linia posta to ostatnia deska ratunku.
+- **Brama tożsamości przeniosła się PRZED wywołanie LLM**: wpis bez firmy i bez śladu roli pada już na kroku fetch (`rejected: true`) — bez palenia tokenów na ocenę, która i tak zostałaby odrzucona.
+- **`t.me/s/<kanał>/<id>` nie nazywa już firmy „S”** — segment podglądu jest pomijany; obie formy linku rozwiązywane do kanału.
+- **Samoopis „Компания: X” w postach Telegrama** jest honorowany (i „…в компании X” w środku zdania dla hostów komunikatorów).
+
+### Dodano
+
+- **Porażki auto-pipeline niosą `rejected: true` w błędzie SSE** — serwerowy timer ocen używa flagi, by pominąć wpis pipeline zamiast ponawiać go co 2 godziny.
+
+### Uwagi
+
+- Nie portowano: kompilator słów lokalizacji z granicami słów i tabela USPS (udokumentowane od v1.248.1).
+- Blok „Translations” w README jest generowany z jednej kanonicznej listy, z testem paritetu w CI (17 linków na plik, własny nigdy nie linkowany) — ar/pl/uk zyskały blok; dryf separatorów `|`/`·` wyeliminowany.
+
 ## [1.248.3] — 2026-10-10
 
 **Kontynuacja rundy regresji: timer ocen nie może już pod żadnym pozorem archiwizować bezimiennych śmieci z Telegrama, czyszczenie QA nie usuwa już prawdziwych ofert, atrybucja mapy jest znowu widoczna, a chipy panelu czytają ≥ 4.5:1.**

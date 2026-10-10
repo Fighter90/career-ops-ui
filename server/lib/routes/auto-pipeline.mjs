@@ -43,6 +43,7 @@ import { recordUsage } from '../llm-usage.mjs';
 import { evaluationWarnings, EVAL_MAX_TOKENS } from './llm.mjs';
 import { stripDangerousMarkdown } from '../security.mjs';
 import { stripScoreSummary, validateEvaluationReport } from '../eval-validate.mjs';
+import { parseReportHeader } from '../parsers.mjs';
 import { parseApplications, today } from '../parsers.mjs';
 import { logActivity } from '../activity-log.mjs';
 import { safeGet } from '../safe-fetch.mjs';
@@ -136,22 +137,42 @@ export function guessCompanyRole(jdText, url) {
   const lines = (jdText || '').split('\n').map((l) => l.trim()).filter(Boolean).slice(0, 30);
   let company = '';
   let role = '';
-  // A t.me/s/<channel>/<postId> page names its channel in the path — the
-  // closest thing to a «company» a Telegram post has (CONTEXT.md:
-  // telegram-channel source). Only used for messenger hosts.
+  // Telegram page shapes: t.me/<channel>/<postId> (scan links) and
+  // t.me/s/<channel>/<postId> (the web-preview form — v1.248.4: the «s»
+  // segment is skipped, it is not a channel). The channel is the closest
+  // thing to a «company» a Telegram post has (CONTEXT.md: telegram-channel
+  // source).
   let channelGuess = '';
   try {
     const u = new URL(url);
-    if ((u.hostname === 't.me' || u.hostname === 'telegram.me') && u.pathname.split('/').filter(Boolean).length > 0) {
-      channelGuess = u.pathname.split('/').filter(Boolean)[0];
+    if (u.hostname === 't.me' || u.hostname === 'telegram.me') {
+      const seg = u.pathname.split('/').filter(Boolean);
+      const chan = seg[0] === 's' ? seg[1] : seg[0];
+      if (chan) channelGuess = chan;
     }
   } catch {}
   for (const line of lines) {
     if (line.length > 200) continue;
     let m = line.match(/^([A-Z][\w\s/&,.()-]{4,80}?)\s+(?:at|@|·|\|)\s+([A-Z][\w\s.&-]{1,40})$/);
     if (m) { role = m[1].trim(); company = m[2].trim(); break; }
-    m = line.match(/^([A-Z][\w\s.&-]{1,40})\s+[—-]\s+(.{4,80})$/);
+    m = line.match(/^([A-Z][\w\s.&-]{1,40})\s+[—–-]\s+(.{4,80})$/);
     if (m && !role) { company = m[1].trim(); role = m[2].trim(); }
+    // v1.248.4 — «Компания: X» / «Компания — X» self-labels on Telegram posts.
+    m = line.match(/^Компания:\s*(.+)$/u);
+    if (m && !company) company = m[1].trim().slice(0, 60);
+  }
+  if (!company) {
+    // «…в X» / «…в компании X» — the employer named mid-sentence (Cyrillic
+    // posts routinely do this). Only for messenger hosts, where the domain
+    // carries nothing.
+    try {
+      const u = new URL(url);
+      if (EMPTY_DOMAINS.has(u.hostname.toLowerCase())) {
+        const inMatch = (jdText || '').match(/\bв\s+компании\s+([A-ZА-Я][\w\s&.-]{2,40})/u)
+          || (jdText || '').match(/\bв\s+([A-ZА-Я][\w\s&.-]{2,40})\s+(?:ищем|требуется|открываем|нанимаем)/u);
+        if (inMatch) company = inMatch[1].trim();
+      }
+    } catch {}
   }
   if (!company) {
     try {
@@ -159,9 +180,6 @@ export function guessCompanyRole(jdText, url) {
       const parts = u.hostname.split('.');
       const slug = parts.length >= 2 ? parts[parts.length - 2] : u.hostname;
       if (EMPTY_DOMAINS.has(u.hostname.toLowerCase())) {
-        // Messenger/aggregator host: the domain is not a company. Fall back
-        // to the Telegram channel name when we have one; otherwise leave
-        // empty — the caller refuses to file a nameless report.
         if (channelGuess) company = channelGuess.charAt(0).toUpperCase() + channelGuess.slice(1);
       } else if (!['greenhouse', 'ashbyhq', 'lever', 'workable', 'smartrecruiters', 'myworkdayjobs'].includes(slug)) {
         company = slug.charAt(0).toUpperCase() + slug.slice(1);
@@ -169,10 +187,43 @@ export function guessCompanyRole(jdText, url) {
     } catch {}
   }
   if (!role) {
-    role = lines.find((l) => /engineer|developer|manager|lead|architect|designer|analyst|director|specialist/i.test(l)) || '';
-    role = role.slice(0, 100);
+    // The matching LINE (not the bare keyword): the tracker dedupes on
+    // company+role, and a bare keyword would collide with earlier rows.
+    const kw = ROLE_KEYWORDS.find((k) => lines.some((l) => l.toLowerCase().includes(k)));
+    role = kw ? (lines.find((l) => l.toLowerCase().includes(kw)) || '').slice(0, 100) : '';
   }
-  return { company: company || '', role: role || '' };
+  return { company: company || '', role: role || '', roleHint: guessRoleHint(jdText, url) };
+}
+
+// v1.248.4 — role keywords in EN + RU (the old list was EN-only: a Cyrillic
+// post never matched, so every Telegram entry looked role-less and was
+// rejected after a full LLM call — 0 of 40 real posts got a role).
+const ROLE_KEYWORDS = [
+  'engineer', 'developer', 'manager', 'lead', 'architect', 'designer',
+  'analyst', 'director', 'specialist', 'devops', 'sre', 'qa',
+  'data scientist',
+  'разработчик', 'программист', 'инженер', 'аналитик', 'менеджер',
+  'руководитель', 'тимлид', 'лид', 'дизайнер', 'тестировщик',
+  'архитектор', 'специалист', 'директор',
+];
+
+function channelHintFor(u) {
+  try { const seg = new URL(u).pathname.split('/').filter(Boolean); return Boolean(seg[0]); } catch { return false; }
+}
+
+/** Cheap pre-LLM check: does this entry text carry any role/company hint? */
+export function guessRoleHint(jdText, url) {
+  const lines = (jdText || '').split('\n').map((l) => l.trim()).filter(Boolean).slice(0, 30);
+  const kw = ROLE_KEYWORDS.find((k) => lines.some((l) => l.toLowerCase().includes(k)));
+  if (kw) return kw;
+  // A messenger-host entry with a channel name has an identity even without
+  // a keyword — the channel fallback gives the company, so the entry is
+  // trackable and worth evaluating.
+  try {
+    const u = new URL(url);
+    if ((u.hostname === 't.me' || u.hostname === 'telegram.me') && channelHintFor(u) && lines.length > 0) return 'channel-post';
+  } catch {}
+  return '';
 }
 
 function extractScore(md) {
@@ -298,6 +349,17 @@ export function registerAutoPipelineRoutes(app) {
       return fail(1, e.message);
     }
 
+    // v1.248.4 — the identity gate runs BEFORE the LLM call: an entry with
+    // neither a company nor any role hint would burn a full evaluation and
+    // then be rejected. Host-only logging (CI logs are public).
+    const guess = guessCompanyRole(jdText, url);
+    if (!guess.company && !guess.roleHint) {
+      const logHost = (() => { try { return new URL(url).hostname; } catch { return '[unparsable URL]'; } })();
+      logActivity({ action: 'auto-pipeline.evaluation.rejected', target: logHost, detail: 'no company/role hints' });
+      step(1, 'failed', 'no company/role hints — entry skipped before the LLM call');
+      return fail(1, 'no company/role hints — entry skipped before the LLM call', { rejected: true });
+    }
+
     // Step 3 — evaluate
     step(2, 'running', 'LLM call (30–90 s)…');
     let markdown = '';
@@ -394,11 +456,16 @@ export function registerAutoPipelineRoutes(app) {
       return fail(2, e.message);
     }
 
-    const guess = guessCompanyRole(jdText, url);
-    if (!guess.company || !guess.role) {
-      // v1.248.3 — never file an `unknown-role` report: a nameless entry
-      // is by definition the junk the validation gate just rejected.
-      logActivity({ action: 'auto-pipeline.evaluation.rejected', target: 'unknown', detail: 'company/role not identifiable' });
+    // v1.248.4 — the role chain: (a) the model writes the role into the
+    // report header (parseReportHeader reads the H1); (b) the keyword/line
+    // guess from the entry text. An entry that survives the pre-LLM gate
+    // with a company but no post-report role still rejects (never file a
+    // `<company>-role` placeholder).
+    const header = parseReportHeader(markdown);
+    const reportRole = (header.title || '').replace(/^#+\s*/, '').trim();
+    const role = reportRole || guess.role || '';
+    if (!guess.company || !role) {
+      logActivity({ action: 'auto-pipeline.evaluation.rejected', target: guess.company || 'unknown', detail: 'company/role not identifiable after evaluation' });
       step(3, 'failed', 'company/role not identifiable for this entry');
       return fail(3, 'company/role not identifiable for this entry', { rejected: true });
     }

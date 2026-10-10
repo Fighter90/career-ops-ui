@@ -10,6 +10,26 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 
 ---
 
+## [1.248.4] — 2026-10-10
+
+**La cadena de resolución de rol para entradas de Telegram: una publicación cirílica con una vacante real ahora produce un informe con nombre en vez de un archivo `unknown-role` rechazado — y la llamada al LLM solo se dispara para entradas que vale la pena evaluar.**
+
+### Corregido
+
+- **La cadena de rol funciona para publicaciones cirílicas**: la lista de palabras clave suma desarrollador/programmista/ingeniero/analista/manager/руководитель/timlid/lid/diseñador/tester/QA/arquitecto/especialista/director/DevOps/SRE (la antigua era solo EN: 0 de 40 publicaciones reales obtenían un rol), se consulta la cabecera del informe (`parseReportHeader` — el modelo escribe el rol en el H1) y la primera línea con sentido del post es el último recurso.
+- **La puerta de identidad se movió ANTES de la llamada al LLM**: una entrada sin empresa ni rastro de rol falla en el paso fetch (`rejected: true`) — no se gastan tokens en una evaluación que se iba a rechazar de todos modos.
+- **`t.me/s/<canal>/<id>` ya no nombra la empresa «S»** — se salta el segmento de vista previa; ambas formas de enlace resuelven al canal.
+- **Las autoetiquetas «Компания: X» en publicaciones de Telegram** se respetan (y «…в компании X» a mitad de frase para hosts de mensajería).
+
+### Añadido
+
+- **Los fallos del auto-pipeline llevan `rejected: true` en el error SSE** — el temporizador de evaluación del servidor usa la marca para saltarse la entrada del pipeline en vez de reintentarla cada 2 horas.
+
+### Notas
+
+- No portado: el compilador de localización con límites de palabra del padre y su tabla USPS (documentado desde v1.248.1).
+- El bloque «Translations» del README se genera desde una lista canónica, con un test de paridad en CI (17 enlaces por archivo, el propio nunca enlazado) — ar/pl/uk ganaron el bloque; se eliminó la deriva de separadores `|`/`·`.
+
 ## [1.248.3] — 2026-10-10
 
 **Continuación de la ronda de regresión: el temporizador de evaluación ya no puede archivar bajo ningún concepto basura de Telegram sin nombre, la limpieza QA ya no borra ofertas reales de Telegram, la atribución del mapa vuelve a verse y los chips del panel leen ≥ 4.5:1.**

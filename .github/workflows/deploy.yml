@@ -206,6 +206,17 @@ jobs:
           else
             echo "not present"
           fi
+          sec eval-timer
+          # What the eval timer runs — v1.248.3: the timer must honour the
+          # `rejected: true` flag (skip entries the auto-pipeline declined).
+          # Yes/no only: the script contents stay off the public log.
+          evs=$(systemctl show -p ExecStart --value career-ops-eval.service 2>/dev/null | grep -oE '/[^ ]+\.(sh|mjs)' | head -1)
+          if [ -n "$evs" ] && [ -f "$evs" ]; then
+            echo "script: $evs · lines: $(wc -l < "$evs")"
+            echo "honours rejected: $(grep -qiE 'rejected' "$evs" && echo yes || echo no)"
+          else
+            echo "eval timer script not found (systemctl show career-ops-eval.service)"
+          fi
           sec node-heap
           systemctl show -p Environment --value career-ops-ui 2>/dev/null | tr ' ' '\n' | grep -E '^NODE_OPTIONS=' || echo "NODE_OPTIONS unset (V8 default heap)"
           sec listeners; ss -ltnp 2>/dev/null | awk 'NR>1{print $4, $6}' | grep -E 'node|python|hermes|caddy' || true
