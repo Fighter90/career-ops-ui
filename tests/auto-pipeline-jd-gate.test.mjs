@@ -272,18 +272,18 @@ test('v1.248.6: a real t.me post («Компания : X», <br>, hashtags) → 
   // name and the tracker role cell carried the full post text.
   const tmeEmbed = '<html><body><div class="tgme_widget_message_text js-message_text" dir="auto">'
     + '<p>PHP-разработчик (middle) #удаленка 🚀</p><br>'
-    + 'Компания : Sveak<br>'
+    + 'Компания : Nordwind<br>'
     + 'Удалённо, Европа. Опыт PHP от 3 лет, Laravel, MySQL, Docker. Зарплата 3500–4500 € net, оформление по контракту, гибкий график, код-ревью и наставник в команде. Пишите в личку.</div></body></html>';
-  const fullReport = ['# Middle PHP Developer — Sveak', '## A) Контекст', '## B) Соответствие',
+  const fullReport = ['# Middle PHP Developer — Nordwind', '## A) Контекст', '## B) Соответствие',
     '## C) Риски', '## D) Зарплата', '## E) Вопросы', '## F) Легитимность: high', '## G) Вердикт: proceeding',
-    '---SCORE_SUMMARY---', 'COMPANY: Sveak', 'ROLE: Middle PHP Developer', 'ARCHETYPE: backend',
+    '---SCORE_SUMMARY---', 'COMPANY: Nordwind', 'ROLE: Middle PHP Developer', 'ARCHETYPE: backend',
     'LEGITIMACY: high', 'SCORE: 4/5', '---END_SUMMARY---'].join('\n');
-  const out = await run({ url: 'https://t.me/phprabota/123' }, fullReport, tmeEmbed);
+  const out = await run({ url: 'https://t.me/jobsfeed/123' }, fullReport, tmeEmbed);
   assert.ok(out.events.some((e) => e.event === 'done'), 'the pipeline completes: ' + JSON.stringify(out.events).slice(-300));
   // Item 1: the company comes from the «Компания : X» label — not the channel.
-  assert.equal(out.events.find((e) => e.event === 'done')?.data?.company, 'Sveak', 'company from the self-label, not the channel');
+  assert.equal(out.events.find((e) => e.event === 'done')?.data?.company, 'Nordwind', 'company from the self-label, not the channel');
   // Item 2: the tracker role cell — from the report header, no hashtags, no emoji.
-  const row = readFileSync(resolve(ROOT, 'data', 'applications.md'), 'utf8').split('\n').find((l) => l.includes('Sveak'));
+  const row = readFileSync(resolve(ROOT, 'data', 'applications.md'), 'utf8').split('\n').find((l) => l.includes('Nordwind'));
   assert.ok(row, 'a tracker row exists');
   const roleCell = row.split('|')[4].trim();
   assert.equal(roleCell, 'Middle PHP Developer', 'the tracker role comes from the report header');
@@ -293,7 +293,7 @@ test('v1.248.6: a real t.me post («Компания : X», <br>, hashtags) → 
   // the ASCII company remains — pre-existing slug behaviour).
   const reports = readdirSync(resolve(ROOT, 'reports'));
   assert.equal(reports.length, 1, 'one report saved');
-  assert.match(reports[0], /sveak/i, 'the company lands in the filename');
+  assert.match(reports[0], /nordwind/i, 'the company lands in the filename');
 });
 
 test('v1.248.6: two rejections in a row → ONE «## Rejected» header, two lines', async () => {

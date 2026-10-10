@@ -392,7 +392,11 @@ function markPipelineRejected(url, reason) {
       const line = `- ${safeUrl} — rejected: ${safeReason} (${today()})`;
       // v1.248.6 — a section exists? Append INTO it; only the first rejection
       // creates the header. Every rejection appends ITS line (per the owner's
-      // contract: two rejections in a row → one header, two lines).
+      // contract: two rejections in a row → one header, two lines). Re-fire
+      // safety is structural, not counted here: a rejected URL leaves the
+      // fence, and the timer only takes bare URLs from the fence — a manual
+      // UI re-run of the same URL is the one path that can append twice, and
+      // that repetition reflects reality (the entry WAS declined twice).
       const arr = src.split('\n');
       const secAt = arr.findIndex((l) => /^## Rejected\s*$/i.test(l.trim()));
       if (secAt !== -1) {
