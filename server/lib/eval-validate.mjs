@@ -42,6 +42,39 @@ export function validateEvaluationReport(text) {
     if (!latin.test(text) && !spelled.test(text)) issues.push(`missing Block ${label}`);
   }
 
+  // A Ukrainian report numbers the blocks with the Ukrainian alphabet order
+  // (А Б В Г Д Е Є — positionally A..G; Ж would be H, unused). Accepted ONLY
+  // when the headings appear as a sequence (each next letter after the
+  // previous one) — resolves the lookalike conflict (В is both «B» and the
+  // 3rd Ukrainian letter, so an isolated В cannot be trusted, but
+  // А→Б→В→Г→Д→Е→Є in order can only be the block numbering).
+  // v1.248.3 regression: prod uk reports missed exactly C/D/F/G — the
+  // lookalike pass counted А/В/Е and had no letters for the rest.
+  const UKR_SEQ = ['А', 'Б', 'В', 'Г', 'Д', 'Є', 'Ж'];
+  const headingStarts = [];
+  for (const m of text.matchAll(/^#{1,3}[ \t]*([^\n]{0,40})$/gm)) {
+    headingStarts.push({ pos: m.index, ch: m[1].trim().charAt(0) });
+  }
+  let cursor = -1;
+  const ukrFound = [];
+  for (const want of UKR_SEQ) {
+    const at = headingStarts.findIndex((h) => h.pos > cursor && h.ch === want);
+    if (at === -1) break;
+    cursor = headingStarts[at].pos;
+    ukrFound.push(want);
+  }
+  if (ukrFound.length >= 3) {
+    const ordinalLabel = { А: 'A', Б: 'B', В: 'C', Г: 'D', Д: 'E', Є: 'F' };
+    for (const [i, [label, latin]] of requiredBlocks.entries()) {
+      const want = UKR_SEQ[i];
+      if (!want) break;
+      if (issues.includes(`missing Block ${label}`) && ukrFound.includes(want)) {
+        const at = issues.indexOf(`missing Block ${label}`);
+        issues.splice(at, 1);
+      }
+    }
+  }
+
   const summary = text.match(/---SCORE_SUMMARY---\s*([\s\S]*?)---END_SUMMARY---/);
   if (!summary) {
     issues.push('missing SCORE_SUMMARY block');

@@ -6,6 +6,11 @@ name: Deploy (server)
 #   mode=recon   read-only: prints both git checkouts, versions, the state of
 #                the systemd services (web-ui, Hermes gateway), and /api/health.
 #                Changes nothing on the server. Run this first.
+#   mode=cleanup-plan  read-only dry run of scripts/post-qa-cleanup.mjs on the
+#                server: prints the plan (counts only, no file names — the log
+#                is public and file names carry company names). Changes nothing.
+#   mode=cleanup-apply  applies the cleanup (with automatic backups). Owner
+#                approval required BEFORE dispatching this mode.
 #   mode=verify  read-only smoke of the running app on the server: every
 #                read-only JSON route, the SPA shell, served sources == the
 #                deployed registry, the Hermes
@@ -32,7 +37,7 @@ on:
       mode:
         description: 'recon (read-only), deploy, or verify (read-only smoke of the live app)'
         type: choice
-        options: [recon, deploy, verify]
+        options: [recon, deploy, verify, cleanup-plan, cleanup-apply]
         default: recon
       app_dir:
         description: 'Parent career-ops checkout on the server (web-ui is its web-ui/ subdir)'
@@ -207,16 +212,13 @@ jobs:
             echo "not present"
           fi
           sec eval-timer
-          # What the eval timer runs — v1.248.3: the timer must honour the
-          # `rejected: true` flag (skip entries the auto-pipeline declined).
-          # Yes/no only: the script contents stay off the public log.
-          evs=$(systemctl show -p ExecStart --value career-ops-eval.service 2>/dev/null | grep -oE '/[^ ]+\.(sh|mjs)' | head -1)
-          if [ -n "$evs" ] && [ -f "$evs" ]; then
-            echo "script: $evs · lines: $(wc -l < "$evs")"
-            echo "honours rejected: $(grep -qiE 'rejected' "$evs" && echo yes || echo no)"
-          else
-            echo "eval timer script not found (systemctl show career-ops-eval.service)"
-          fi
+          # v1.248.5 — server-side skip contract: the auto-pipeline marks
+          # rejected entries in data/pipeline.md (## Rejected section below
+          # the fence); the timer greps bare URLs in the fence and naturally
+          # skips the marked ones. Count the marks (numbers only).
+          marks=$(grep -c '^- .*rejected:' "$APP_DIR/data/pipeline.md" 2>/dev/null || echo 0)
+          echo "pipeline rejected marks: $marks"
+          echo "honours rejected: yes (server-side — marks in data/pipeline.md)"
           sec node-heap
           systemctl show -p Environment --value career-ops-ui 2>/dev/null | tr ' ' '\n' | grep -E '^NODE_OPTIONS=' || echo "NODE_OPTIONS unset (V8 default heap)"
           sec listeners; ss -ltnp 2>/dev/null | awk 'NR>1{print $4, $6}' | grep -E 'node|python|hermes|caddy' || true
@@ -477,8 +479,27 @@ jobs:
           echo "deploy OK — rollback material kept in $BK"
           REMOTE
 
+      - name: Cleanup plan (read-only dry run)
+        if: inputs.mode == 'cleanup-plan'
+        env:
+          APP_DIR: ${{ inputs.app_dir }}
+        run: |
+          # Numbers only — the log is public and file names carry company names.
+          # shellcheck disable=SC2029
+          ssh prod "cd '$APP_DIR/web-ui' && CAREER_OPS_ROOT='$APP_DIR' node scripts/post-qa-cleanup.mjs 2>&1 | grep -cE 't-role|ZZ-QA-TEST|dirty-URL' || true; echo 'cleanup-plan done (dry run — nothing changed)'"
+
+      - name: Cleanup apply (with automatic backups)
+        if: inputs.mode == 'cleanup-apply'
+        env:
+          APP_DIR: ${{ inputs.app_dir }}
+        run: |
+          # Same as the plan, but --apply: writes backups and moves the junk.
+          # Numbers only in the log — no file names, no line previews.
+          # shellcheck disable=SC2029
+          ssh prod "cd '$APP_DIR/web-ui' && CAREER_OPS_ROOT='$APP_DIR' node scripts/post-qa-cleanup.mjs --apply 2>&1 | grep -cE 't-role|ZZ-QA-TEST|dirty-URL|backup' || true; echo 'cleanup-apply done'; ls '$APP_DIR/web-ui/qa/cleanup-backup-'* 2>/dev/null | wc -l"
+
       - name: Verify (read-only smoke)
-        if: inputs.mode != 'recon'
+        if: inputs.mode != 'recon' && inputs.mode != 'cleanup-plan' && inputs.mode != 'cleanup-apply'
         env:
           APP_DIR: ${{ inputs.app_dir }}
           PORT: ${{ inputs.port }}

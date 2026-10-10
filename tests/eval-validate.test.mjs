@@ -202,3 +202,21 @@ test('v1.248.2: a valid score logs nothing', () => {
   assert.deepEqual(seen, [], 'no console output for a well-formed score');
 });
 
+
+// ── v1.248.5 — Ukrainian ordinal block numbering (CAR follow-up) ────────────
+// A uk report numbers the blocks with the Ukrainian alphabet order (А Б В Г
+// Д Е Є — positionally A..G). Accepted ONLY when the headings appear as a
+// sequence; resolves the v1.248.3 prod regression (missing C/D/F/G — the
+// lookalike pass counted А/В/Е and had no letters for the rest).
+test('eval-validate: uk ordinal headings (А Б В Г Д Є Ж) are accepted in sequence', () => {
+  const uk = ['## А) Контекст', '## Б) Соответствие', '## В) Риски', '## Г) Зарплата',
+    '## Д) Вопросы', '## Є) Легитимность', '## Ж) Вердикт', '---SCORE_SUMMARY---',
+    'COMPANY: Acme', 'ROLE: Engineer', 'ARCHETYPE: x', 'LEGITIMACY: high',
+    'SCORE: 4/5', '---END_SUMMARY---'].join('\n');
+  assert.deepEqual(validateEvaluationReport(uk), []);
+});
+
+test('eval-validate: a partial uk ordinal sequence is still rejected', () => {
+  const partial = ['## А) Один', '## Б) Два'].join('\n');
+  assert.ok(validateEvaluationReport(partial).length > 0);
+});

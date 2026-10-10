@@ -2,6 +2,27 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.248.5] — 2026-10-10
+
+**Regresyon sonrası sağlamlaştırma: t.me tek gönderi girdileri artık gönderi metninin kendisini getiriyor (embed formu), reddedilen bir girdi sunucu tarafında değerlendirme zamanlayıcısının havuzundan çıkıyor ve Ukraynaca bir raporun yerel blok numaralandırması kabul ediliyor — ayrıca gizlice canlı ağı kullanan bir test sonsuza dek çevrimdışı kalıyor.**
+
+### Düzeltildi
+
+- **t.me girdileri sonunda değerlendiriliyor**: tek gönderi sayfası düz HTML'de yalnızca kanal başlığını sunuyor (~0,2 KB — «View in Telegram» ve başka hiçbir şey), model boş bir açıklama alıyordu ve her Telegram girdisi değerlendirmede ölüyordu. Getirme artık `t.me/<kanal>/<id>` (ve `t.me/s/…` akış formunu) embed formuna (`?embed=1&mode=tme`) yeniden yazıyor — aynı ana bilgisayar, SSRF doğrulaması değişmedi — ve gönderiyi `.tgme_widget_message_text`'ten okuyor (yedek: `og:description`). Widget metni yok → herhangi bir LLM token'ı harcanmadan getirme adımında red (`telegram post has no text`, `rejected: true`).
+- **Değerlendirme zamanlayıcısı reddedilen girdiler için tekrar ödemeyi bırakıyor (sunucu tarafı sözleşme)**: reddedilen bir girdi artık `data/pipeline.md` içinde işaretleniyor — satırı URL çitinden çıkıp kısa bir gerekçeyle `## Rejected` bölümüne yerleşiyor (idempotent, asla kopyalanmaz). Zamanlayıcı çitten çıplak URL'leri alıyor, bu yüzden işaretli bir girdi doğal olarak atlanıyor — zamanlayıcı betiğinin iç kısmına bağımlılık olmadan. Recon, betiği incelemek yerine `pipeline rejected marks: N` + `honours rejected: yes (server-side)` yazdırıyor.
+- **Ukraynaca raporlar A–G doğrulamasını yeniden geçiyor**: bir uk modeli blokları kendi alfabesinin sırasına göre numaralandırıyor (А Б В Г Д Є Ж), ve benzer görünüm geçişi yalnızca А/В/Е'yi sayıyordu — tam olarak C, D, F, G blokları üretimde eksikti (2/2 yeniden üretim). Doğrulayıcı artık başlıklar sırayla göründüğünde Ukraynaca sıralı diziyi kabul ediyor (ar için abjad ve hi için Devanagari ile aynı disiplin) ve her yerel ayar için değerlendirme istemi artık açıkça Latin `A`–`G` gerektiriyor.
+- **Rol anahtar kelime kapısı alt dize değil kelime üzerinde tetikleniyor**: `linkedin.com/` ve `x.com/` kökleri, `lead`/`it` sayfanın alakasız arayüz metninde yaşadığı için kapıdan geçiyordu. Anahtar kelimeler artık Unicode kelime sınırlarında eşleşiyor ve alan adı kökü (yolu olmayan URL) LLM çağrısından önce reddediliyor.
+- **Bir birim test artık canlı ağa ihtiyaç duymuyor**: no-hints testi (`tests/auto-pipeline-jd-gate.test.mjs`) HTTP taşımını değiştirdi ama yine de gerçek bir DNS araması yapıyordu — CI'da yalnızca koşucunun bağlantısı olduğu için yeşildi. safe-fetch bir `_setLookup()` kancası kazandı (çözümleyicinin kendisi testlerde değiştirilebilir; üretim kodu onu asla geçersiz kılmaz) ve test çevrimdışı çözüyor.
+
+### Eklendi
+
+- **deploy.yml'de `cleanup-plan` / `cleanup-apply` iş akışı modları**: üretimdeki QA çöp temizliği (post-qa-cleanup), dizüstü bilgisayardan SSH olmadan sunucu tarafında çalışıyor. Günlük yalnızca sayılar içeriyor — dosya adı veya satır önizlemesi yok, çünkü günlük herkese açık ve dosya adları şirket adları içeriyor. Temizlik modları için Verify adımı atlanıyor.
+
+### Notlar
+
+- Taınmadı: ebeveynin kelime sınırı konum derleyicisi ve USPS eyalet tablosu (v1.248.1'den beri belgelenmiş). Reddedilen girdileri atlama sözleşmesi sunucu tarafında yaşıyor (data/pipeline.md içinde işaretleme), zamanlayıcı betiğinde değil — o depo dışında ve bilinçli olarak değiştirilmiyor.
+
+
 ## [1.248.4] — 2026-10-10
 
 **Regresyon turunun devamı: Telegram girdilerinin rol-çözümleme zinciri — gerçek bir ilan içeren Kiril gönderisi artık reddedilen bir `unknown-role` dosyası yerine adlandırılmış bir rapor üretiyor — ve LLM çağrısı yalnızca değerlemeye değer girdiler için tetikleniyor.**

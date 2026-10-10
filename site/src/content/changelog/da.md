@@ -8,6 +8,28 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+
+## [1.248.5] — 2026-10-10
+
+**Efterregressions-hærdning: t.me enkeltindlæg-hentninger henter nu selve indlægget teksten (embed-form), et afvist indlæg forlader eval-timerens pulje på serversiden, og ukrainske rapports native bloknummerering accepteres — plus én test, der i hemmelighed brugte det levende netværk, er offline for altid.**
+
+### Rettet
+
+- **t.me-indlæg bliver endelig evalueret**: en enkeltindlægsside serverer kun kanalens sidehoved i ren HTML (~0,2 KB — «View in Telegram» og intet andet), modellen fik en tom beskrivelse, og hver Telegram-indlæg døde ved evaluering. Hentningen omskriver nu `t.me/<kanal>/<id>` (og feed-formen `t.me/s/…`) til embed-formen (`?embed=1&mode=tme`) — samme vært, SSRF-validering uændret — og læser indlægget fra `.tgme_widget_message_text` (fallback: `og:description`). Ingen widgettekst → afvisning ved hentningstrinnet (`telegram post has no text`, `rejected: true`) før LLM-tokens bruges.
+- **Eval-timeren stopper med at betale igen for afviste indlæg (serverside-kontrakt)**: et afvist indlæg markeres nu i `data/pipeline.md` — dets linje forlader URL-hegn og lander i en `## Rejected`-sektion med en kort begrundelse (idempotent, aldrig duplikeret). Timeren tager nøgne URL'er fra hegnet, så et markeret indlæg springes naturligt over — uden afhængighed af timer-scriptets indre. Recon udskriver `pipeline rejected marks: N` + `honours rejected: yes (server-side)` i stedet for at gennemsøge scriptet.
+- **Ukrainske rapporter består A–G-validering igen**: en uk-model nummererer blokkene efter sit eget alfabets rækkefølge (А Б В Г Д Є Ж), og lookalike-passet talte kun А/В/Е — præcis blokkene C, D, F, G manglede i produktion (2/2 reproduktioner). Validatoren accepterer nu den ukrainske ordinalsekvens, når overskrifterne vises i rækkefølge (samme disciplin som abjad for ar og devanagari for hi), og evalueringsprompten for hver locale kræver nu eksplicit latinske `A`–`G`.
+- **Røle nøgleords-porten udløses på ord, ikke understrenge**: `linkedin.com/`- og `x.com/`-rødder kom gennem porten, fordi `lead`/`it` levede i sidens UI-tekst. Nøgleord matcher nu på Unicode-ordgrænser, og en domænerod (URL uden sti) afvises før LLM-kaldet.
+- **En enhedstest behøver ikke længere det levende netværk**: no-hints-testen (`tests/auto-pipeline-jd-gate.test.mjs`) erstattede HTTP-transporten men udførte stadig en rigtig DNS-opslag — grøn i CI kun fordi runneren havde forbindelse. safe-fetch fik en `_setLookup()`-hook (selve resolveren kan udskiftes i tests; produktionskoden tilsidesætter den aldrig), og testen løser offline.
+
+### Tilføjet
+
+- **`cleanup-plan` / `cleanup-apply` workflow-tilstande i deploy.yml**: produktionens QA-affaldsoprydning (post-qa-cleanup) kører på serversiden uden SSH fra en bærbar. Loggen indeholder kun tal — ingen filnavne eller linjeforhåndsvisninger, for loggen er offentlig og filnavne indeholder firmanavne. Verify-trinnet springes over for oprydningstilstande.
+
+### Noter
+
+- Ikke porteret: forælderens ordgrænse-lokationskompiler og USPS-statstabel (dokumenteret siden v1.248.1). Kontrakten om at springe afviste indlæg over bor på serversiden (markering i data/pipeline.md), ikke i timer-scriptet — det er uden for repoet og bevidst uændret.
+
+
 ## [1.248.4] — 2026-10-10
 
 **Rolleopløsningskæden for Telegram-poster: En kyrillisk post med en rigtig vakans giver nu en navngiven rapport i stedet for en afvist `unknown-role`-fil — og LLM-kaldet fyres kun for poster, der er værd at evaluere.**

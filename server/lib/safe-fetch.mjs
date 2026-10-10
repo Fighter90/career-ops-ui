@@ -58,6 +58,18 @@ export function _setTransport(fn) {
 }
 
 /**
+ * v1.248.5 — test hook: replace the resolver itself, so a suite can run
+ * fully offline (the transport stub alone does not remove the real DNS
+ * lookup in resolvePinned). fn: async (hostname, opts) => { address, family }.
+ */
+let _lookupOverride = null;
+export function _setLookup(fn) {
+  const prev = _lookupOverride;
+  _lookupOverride = fn || null;
+  return () => { _lookupOverride = prev; };
+}
+
+/**
  * Resolve hostname → address pair (v4 preferred for compatibility) and
  * reject if it points into private/loopback space.
  * Fail-CLOSED on lookup error: an error here is either a typo, a stub,
@@ -66,7 +78,9 @@ export function _setTransport(fn) {
 async function resolvePinned(hostname) {
   let res;
   try {
-    res = await dns.lookup(hostname, { verbatim: true });
+    res = _lookupOverride
+      ? await _lookupOverride(hostname, { verbatim: true })
+      : await dns.lookup(hostname, { verbatim: true });
   } catch (e) {
     throw new Error(`DNS lookup failed for ${hostname}: ${e.code || e.message}`);
   }

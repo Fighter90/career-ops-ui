@@ -10,6 +10,28 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+
+## [1.248.5] — 2026-10-10
+
+**Durcissement post-régression : les entrées de post unique t.me récupèrent désormais le texte du post lui-même (forme embed), une entrée rejetée quitte le pool du minuteur d'évaluation côté serveur, et la numération native des blocs d'un rapport ukrainien est acceptée — plus un test qui utilisait secrètement le réseau en direct est hors ligne pour de bon.**
+
+### Corrigé
+
+- **Les entrées t.me sont enfin évaluées** : la page d'un post unique ne sert que l'en-tête du canal en HTML brut (~0,2 Ko — « View in Telegram » et rien d'autre), le modèle recevait une description vide et chaque entrée Telegram mourait à l'évaluation. La récupération réécrit maintenant `t.me/<canal>/<id>` (et la forme de flux `t.me/s/…`) vers la forme embed (`?embed=1&mode=tme`) — même hôte, validation SSRF inchangée — et lit le post depuis `.tgme_widget_message_text` (secours : `og:description`). Pas de texte du widget → rejet à l'étape de récupération (`telegram post has no text`, `rejected: true`) avant de dépenser des tokens LLM.
+- **Le minuteur d'évaluation cesse de payer à nouveau pour les entrées rejetées (contrat côté serveur)** : une entrée rejetée est désormais marquée dans `data/pipeline.md` — sa ligne quitte la clôture d'URL et atterrit dans une section `## Rejected` avec un motif court (idempotent, jamais dupliqué). Le minuteur prend les URLs nues dans la clôture, donc une entrée marquée est naturellement ignorée — sans dépendre des entrailles du script du minuteur. Recon affiche `pipeline rejected marks: N` + `honours rejected: yes (server-side)` au lieu de fouiller le script.
+- **Les rapports ukrainiens passent à nouveau la validation A–G** : un modèle uk numérote les blocs selon l'ordre de son propre alphabet (А Б В Г Д Є Ж), et la passe des lookalikes ne comptait que А/В/Е — exactement les blocs C, D, F, G manquaient en production (2/2 reproductions). Le validateur accepte désormais la séquence ordinale ukrainienne lorsque les en-têtes apparaissent dans l'ordre (la même discipline qu'abjad pour ar et devanagari pour hi), et le prompt d'évaluation pour chaque locale exige désormais explicitement des `A`–`G` latines.
+- **Le filtre de mots-clés de rôle se déclenche sur des mots, pas des sous-chaînes** : les racines `linkedin.com/` et `x.com/` passaient le filtre parce que `lead`/`it` vivaient dans le texte d'interface de la page. Les mots-clés correspondent désormais aux frontières de mots Unicode, et une racine de domaine (URL sans chemin) est rejetée avant l'appel LLM.
+- **Un test unitaire n'a plus besoin du réseau en direct** : le test no-hints (`tests/auto-pipeline-jd-gate.test.mjs`) remplaçait le transport HTTP mais effectuait toujours une vraie recherche DNS — vert en CI seulement parce que le runner avait la connectivité. safe-fetch a gagné un hook `_setLookup()` (le résolveur lui-même est remplaçable dans les tests ; le code de production ne le remplace jamais), et le test résout hors ligne.
+
+### Ajouté
+
+- **Modes de workflow `cleanup-plan` / `cleanup-apply` dans deploy.yml** : le nettoyage des déchets QA en production (post-qa-cleanup) s'exécute côté serveur sans SSH depuis un ordinateur portable. Le journal ne contient que des chiffres — pas de noms de fichiers ni d'aperçus de lignes, car le journal est public et les noms de fichiers contiennent des noms d'entreprises. L'étape Verify est ignorée pour les modes de nettoyage.
+
+### Notes
+
+- Non porté : le compilateur de localisations par frontières de mots et la table des États USPS du parent (documenté depuis v1.248.1). Le contrat de saut des entrées rejetées vit côté serveur (marquage dans data/pipeline.md), pas dans le script du minuteur — il est hors du dépôt et volontairement non modifié.
+
+
 ## [1.248.4] — 2026-10-10
 
 **La chaîne de résolution de rôle pour les entrées Telegram : un post cyrillique avec une vraie offre produit désormais un rapport nommé au lieu d’un fichier `unknown-role` rejeté — et l’appel LLM ne se déclenche que pour les entrées qui méritent une évaluation.**

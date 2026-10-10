@@ -2,6 +2,27 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.248.5] — 2026-10-10
+
+**Nach der Regression gehärtet: Einzel-Post-Einträge von t.me holen jetzt den Posttext selbst (Embed-Form), ein abgelehnter Eintrag verlässt serverseitig den Pool des Eval-Timers, und die native Blocknummerierung eines ukrainischen Berichts wird akzeptiert — dazu ist ein Test, der heimlich das Live-Netzwerk nutzte, für immer offline.**
+
+### Behoben
+
+- **t.me-Einträge werden endlich evaluiert**: Eine Einzel-Post-Seite liefert im reinen HTML nur den Kanal-Header (~0,2 KB — «View in Telegram» und sonst nichts), das Modell erhielt eine leere Beschreibung, und jeder Telegram-Eintrag starb bei der Evaluierung. Der Fetch schreibt `t.me/<kanal>/<id>` (und die Feed-Form `t.me/s/…`) jetzt in die Embed-Form um (`?embed=1&mode=tme`) — gleicher Host, SSRF-Validierung unverändert — und liest den Post aus `.tgme_widget_message_text` (Fallback: `og:description`). Kein Widget-Text → Ablehnung im Fetch-Schritt (`telegram post has no text`, `rejected: true`), bevor LLM-Tokens verbrannt werden.
+- **Der Eval-Timer zahlt nicht mehr erneut für abgelehnte Einträge (serverseitiger Vertrag)**: Ein abgelehnter Eintrag wird jetzt in `data/pipeline.md` markiert — seine Zeile verlässt den URL-Zaun und landet in einem `## Rejected`-Abschnitt mit kurzem Grund (idempotent, nie dupliziert). Der Timer nimmt nacktes URL aus dem Zaun, also wird ein markierter Eintrag natürlich übersprungen — ohne Abhängigkeit von den Eingeweiden des Timer-Skripts. Recon druckt `pipeline rejected marks: N` + `honours rejected: yes (server-side)` statt das Skript zu durchsuchen.
+- **Ukrainische Berichte bestehen die A–G-Validierung wieder**: Ein uk-Modell nummeriert die Blöcke nach der Reihenfolge seines eigenen Alphabets (А Б В Г Д Є Ж), und der Lookalike-Durchgang zählte nur А/В/Е — genau die Blöcke C, D, F, G fehlten in der Produktion (2/2 Reproduktionen). Der Validator akzeptiert jetzt die ukrainische Ordinalsequenz, wenn die Überschriften der Reihe nach erscheinen (dieselbe Disziplin wie Abjad für ar und Devanagari für hi), und der Evaluierungs-Prompt verlangt für jede Locale jetzt explizit lateinische `A`–`G`.
+- **Das Rollen-Keyword-Tor springt bei Wörtern an, nicht bei Teilzeichenketten**: `linkedin.com/`- und `x.com/`-Roots kamen durchs Tor, weil `lead`/`it` im UI-Text der Seite lebten. Keywords matchen jetzt an Unicode-Wortgrenzen, und eine Domain-Root (URL ohne Pfad) wird vor dem LLM-Aufruf abgelehnt.
+- **Ein Unit-Test braucht das Live-Netzwerk nicht mehr**: Der No-Hints-Test (`tests/auto-pipeline-jd-gate.test.mjs`) ersetzte den HTTP-Transport, führte aber weiterhin eine echte DNS-Abfrage durch — in CI nur grün, weil der Runner Konnektivität hatte. safe-fetch erhielt einen `_setLookup()`-Hook (der Resolver selbst ist in Tests austauschbar; Produktionscode überschreibt ihn nie), und der Test löst offline auf.
+
+### Hinzugefügt
+
+- **`cleanup-plan` / `cleanup-apply` Workflow-Modi in deploy.yml**: Die QA-Müllbereinigung in der Produktion (post-qa-cleanup) läuft serverseitig ohne SSH vom Laptop. Das Log trägt nur Zahlen — keine Dateinamen oder Zeilenvorschauen, denn das Log ist öffentlich und Dateinamen enthalten Firmennamen. Der Verify-Schritt wird für Cleanup-Modi übersprungen.
+
+### Hinweise
+
+- Nicht portiert: der Wortgrenzen-Standort-Compiler und die USPS-Staaten-Tabelle des Parents (dokumentiert seit v1.248.1). Der Überspring-Vertrag für abgelehnte Einträge lebt serverseitig (Markierung in data/pipeline.md), nicht im Timer-Skript — dieses liegt außerhalb des Repos und wird bewusst nicht geändert.
+
+
 ## [1.248.4] — 2026-10-10
 
 **Die Rollen-Auflösungskette für Telegram-Einträge: Ein kyrillischer Post mit echter Vakanz liefert jetzt einen benannten Bericht statt einer abgelehnten `unknown-role`-Datei — und der LLM-Aufruf feuert nur für Einträge, die eine Bewertung wert sind.**

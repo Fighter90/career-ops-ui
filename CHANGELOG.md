@@ -7,6 +7,28 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 ---
 
 
+## [1.248.5] — 2026-10-10
+
+**Post-regression hardening: Telegram single-post entries now fetch the post text itself (the embed form), a rejected entry leaves the eval timer's pool server-side, and a Ukrainian report's native block numbering is accepted — plus one test that secretly needed the live network is offline for good.**
+
+### Fixed
+
+- **t.me entries finally evaluate**: a single-post page serves only the channel header in plain HTML (~0.2 KB — «View in Telegram» and nothing else), so the model got an empty description and every Telegram entry died at evaluation. The fetch now rewrites `t.me/<channel>/<id>` (and the `t.me/s/…` feed form) to the embed form (`?embed=1&mode=tme`) — same host, SSRF validation unchanged — and reads the post from `.tgme_widget_message_text` (fallback: `og:description`). No widget text → rejected at the fetch step (`telegram post has no text`, `rejected: true`) before any LLM tokens are spent.
+- **The eval timer stops re-paying for rejected entries (server-side contract)**: a rejected entry is now marked in `data/pipeline.md` — its line leaves the URL fence and lands in a `## Rejected` section with a short reason (idempotent, never duplicated). The timer picks bare URLs from the fence, so a marked entry is skipped naturally — no dependence on the timer script's internals. Recon prints `pipeline rejected marks: N` + `honours rejected: yes (server-side)` instead of grepping the timer script.
+- **Ukrainian reports pass A–G validation again**: a uk model numbers the blocks with its own alphabet order (А Б В Г Д Є Ж), and the lookalike pass only counted А/В/Е — exactly blocks C, D, F, G went missing on prod (2/2 reproductions). The validator now accepts the Ukrainian ordinal sequence when the headings appear in order (the same discipline as abjad for ar and Devanagari for hi), and the evaluation prompt for every locale now demands Latin `A`–`G` explicitly.
+- **The role keyword gate fires on words, not substrings**: `linkedin.com/` and `x.com/` roots passed the gate because `lead`/`it` lived inside unrelated page chrome. Keywords match on Unicode word boundaries now, and a domain root (a URL with no path) is rejected before the LLM call.
+- **A unit test no longer needs the live network**: the no-hints test (`tests/auto-pipeline-jd-gate.test.mjs`) stubbed the HTTP transport but still performed a real DNS lookup — green in CI only because the runner had connectivity. safe-fetch gained a `_setLookup()` hook (the resolver itself is replaceable in tests; production code never overrides it), and the test resolves offline.
+
+### Added
+
+- **`cleanup-plan` / `cleanup-apply` workflow modes** in deploy.yml: the prod QA-junk cleanup (post-qa-cleanup) runs server-side without SSH from a laptop. The log carries numbers only — no file names or line previews, because the log is public and file names contain company names. The Verify step is skipped for cleanup modes.
+
+### Notes
+
+- Not ported: the parent's word-boundary location compiler and USPS state table (documented since v1.248.1). The rejected-entry skip contract lives server-side (marking in `data/pipeline.md`), not in the timer script — the script is outside the repository and deliberately not edited.
+- The `telegram post has no text` rejection is a validation-driven stop, not a fetch failure: the SSE error payload distinguishes it with `rejected: true`, and plain fetch failures (404 etc.) keep the bare error shape.
+
+
 
 ## [1.248.4] — 2026-10-10
 
