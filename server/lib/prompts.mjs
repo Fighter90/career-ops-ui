@@ -413,6 +413,8 @@ Application Strategy, Verdict, Posting Legitimacy) and a 0-5 score.
 
 Start every block heading with its letter as modes/oferta.md does (\`## Block A — …\` to
 \`## Block G — …\`). If you translate the headings, keep the letter A–G in each one.
+The letter MUST be a LATIN capital (A B C D E F G) — never a letter of your own
+alphabet's numbering (for a Ukrainian report: А Б В Г Д Є Ж; for Russian: А Б В …).
 
 At the very end, output this machine-readable summary block exactly as shown (keys in English):
 
@@ -484,7 +486,7 @@ export function buildLanguageReminder(lang) {
   const name = localeName(lang);
   return `\nWrite the whole report in ${name} (locale: ${lang}) — every sentence, bullet and table cell, in ${name}'s own script. The files and the JD above are in English; that does not change the output language. Company, product and technology names may stay as they are, and so may text quoted word for word from the CV or the JD (keep it in quotation marks). Everything else — including ordinary words such as role, team, design, production, critical — is written in ${name}, not left in English.\n`
     + 'Two parts of the format are machine-read and must NOT be translated: '
-    + 'every block heading keeps its Latin capital letter A–G (for example `## <translated word> A — <translated title>`), '
+    + 'every block heading KEEPS its Latin capital letter A–G and starts with it (for example `## <translated word> A — <translated title>`; never А Б В or any other native numbering), '
     + 'and the report ends with the ---SCORE_SUMMARY--- … ---END_SUMMARY--- block, markers and keys in English, exactly as shown above.\n';
 }
 

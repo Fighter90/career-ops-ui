@@ -8,6 +8,28 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+
+## [1.248.5] — 2026-10-10
+
+**Endurecimento pós-regressão: entradas individuais do t.me agora buscam o próprio texto da postagem (forma embed), uma entrada rejeitada sai do pool do temporizador de avaliação do lado do servidor, e a numeração nativa de blocos num relatório ucraniano é aceita — além de um teste que usava a rede secretamente ficar offline para sempre.**
+
+### Corrigido
+
+- **As entradas do t.me finalmente são avaliadas**: a página de uma única postagem serve apenas o cabeçalho do canal em HTML simples (~0,2 KB — «View in Telegram» e nada mais), o modelo recebia uma descrição vazia e cada entrada do Telegram morria na avaliação. A busca agora reescreve `t.me/<canal>/<id>` (e a forma de feed `t.me/s/…`) para a forma embed (`?embed=1&mode=tme`) — mesmo host, validação SSRF inalterada — e lê a postagem de `.tgme_widget_message_text` (fallback: `og:description`). Sem texto do widget → rejeição na etapa de busca (`telegram post has no text`, `rejected: true`) antes de gastar tokens do LLM.
+- **O temporizador de avaliação para de pagar novamente pelas entradas rejeitadas (contrato do lado do servidor)**: uma entrada rejeitada agora é marcada em `data/pipeline.md` — sua linha sai da cerca de URLs e vai para uma seção `## Rejected` com um motivo curto (idempotente, nunca duplicado). O temporizador pega URLs nuas da cerca, então uma entrada marcada é pulada naturalmente — sem depender das entranhas do script do temporizador. O recon imprime `pipeline rejected marks: N` + `honours rejected: yes (server-side)` em vez de buscar no script.
+- **Relatórios ucranianos passam na validação A–G novamente**: um modelo uk numera os blocos pela ordem do seu próprio alfabeto (А Б В Г Д Є Ж), e a passagem de lookalike contava apenas А/В/Е — exatamente os blocos C, D, F, G estavam faltando na produção (2/2 reproduções). O validador agora aceita a sequência ordinal ucraniana quando os cabeçalhos aparecem em ordem (a mesma disciplina que abjad para ar e devanagari para hi), e o prompt de avaliação para cada locale exige explicitamente `A`–`G` latinas.
+- **O portão de palavras-chave de função dispara em palavras, não em substrings**: as raízes `linkedin.com/` e `x.com/` passavam pelo portão porque `lead`/`it` viviam dentro do texto da interface da página. As palavras-chave agora correspondem em limites de palavras Unicode, e uma raiz de domínio (URL sem caminho) é rejeitada antes da chamada ao LLM.
+- **Um teste unitário não precisa mais da rede ao vivo**: o teste no-hints (`tests/auto-pipeline-jd-gate.test.mjs`) substituía o transporte HTTP, mas ainda fazia uma consulta DNS real — verde no CI só porque o runner tinha conectividade. O safe-fetch ganhou um hook `_setLookup()` (o próprio resolvedor é substituível em testes; o código de produção nunca o sobrescreve), e o teste resolve offline.
+
+### Adicionado
+
+- **Modos de workflow `cleanup-plan` / `cleanup-apply` no deploy.yml**: a limpeza de lixo de QA na produção (post-qa-cleanup) roda do lado do servidor sem SSH de um laptop. O log carrega apenas números — sem nomes de arquivos ou prévias de linhas, porque o log é público e os nomes de arquivos contêm nomes de empresas. A etapa Verify é pulada para os modos de limpeza.
+
+### Notas
+
+- Não portado: o compilador de localizações por limites de palavras e a tabela de estados USPS do pai (documentado desde v1.248.1). O contrato de salto de entradas rejeitadas vive no servidor (marcação em data/pipeline.md), não no script do temporizador — está fora do repositório e não é modificado de propósito.
+
+
 ## [1.248.4] — 2026-10-10
 
 **A cadeia de resolução de função para entradas de Telegram: uma publicação cirílica com uma vaga real agora produz um relatório nomeado em vez de um arquivo `unknown-role` rejeitado — e a chamada ao LLM só dispara para entradas que valem a pena avaliar.**

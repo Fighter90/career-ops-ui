@@ -2,6 +2,27 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.248.5] — 2026-10-10
+
+**Indurimento post-regressione: le voci di post singolo t.me ora recuperano il testo stesso del post (forma embed), una voce rifiutata lascia il pool del timer di valutazione lato server, e la numerazione nativa dei blocchi in un report ucraino viene accettata — inoltre un test che usava segretamente la rete live è offline per sempre.**
+
+### Corretto
+
+- **Le voci t.me finalmente vengono valutate**: la pagina di un singolo post serve solo l'intestazione del canale in HTML puro (~0,2 KB — «View in Telegram» e nient'altro), il modello riceveva una descrizione vuota e ogni voce Telegram moriva in valutazione. Il fetch ora riscrive `t.me/<canale>/<id>` (e la forma feed `t.me/s/…`) nella forma embed (`?embed=1&mode=tme`) — stesso host, validazione SSRF invariata — e legge il post da `.tgme_widget_message_text` (fallback: `og:description`). Nessun testo del widget → rifiuto al passaggio fetch (`telegram post has no text`, `rejected: true`) prima di spendere token LLM.
+- **Il timer di valutazione smette di pagare di nuovo per le voci rifiutate (contratto lato server)**: una voce rifiutata ora viene contrassegnata in `data/pipeline.md` — la sua riga lascia la recinzione degli URL e atterra in una sezione `## Rejected` con un motivo breve (idempotente, mai duplicato). Il timer prende URL nudi dalla recinuzione, quindi una voce contrassegnata viene saltata naturalmente — senza dipendere dalle viscere dello script del timer. Recon stampa `pipeline rejected marks: N` + `honours rejected: yes (server-side)` invece di setacciare lo script.
+- **I report ucraini superano di nuovo la validazione A–G**: un modello uk numera i blocchi secondo l'ordine del proprio alfabeto (А Б В Г Д Є Ж), e il passaggio dei lookalike contava solo А/В/Е — esattamente i blocchi C, D, F, G mancavano in produzione (2/2 riproduzioni). Il validatore ora accetta la sequenza ordinale ucraina quando i titoli appaiono in ordine (la stessa disciplina di abjad per ar e devanagari per hi), e il prompt di valutazione per ogni locale ora richiede esplicitamente `A`–`G` latine.
+- **Il cancello delle parole chiave di ruolo scatta su parole, non sottostringhe**: le radici `linkedin.com/` e `x.com/` passavano il cancello perché `lead`/`it` vivevano nel testo dell'interfaccia della pagina. Le parole chiave ora corrispondono ai confini di parole Unicode, e una radice di dominio (URL senza percorso) viene rifiutata prima della chiamata LLM.
+- **Un test unitario non ha più bisogno della rete live**: il test no-hints (`tests/auto-pipeline-jd-gate.test.mjs`) sostituiva il trasporto HTTP ma eseguiva comunque una vera query DNS — verde in CI solo perché il runner aveva connettività. safe-fetch ha guadagnato un hook `_setLookup()` (il risolutore stesso è sostituibile nei test; il codice di produzione non lo sovrascrive mai), e il test risolve offline.
+
+### Aggiunto
+
+- **Modalità workflow `cleanup-plan` / `cleanup-apply` in deploy.yml**: la pulizia dei rifiuti QA in produzione (post-qa-cleanup) gira lato server senza SSH da un laptop. Il log riporta solo numeri — nessun nome di file o anteprime di righe, perché il log è pubblico e i nomi dei file contengono nomi di aziende. Il passaggio Verify viene saltato per le modalità di pulizia.
+
+### Note
+
+- Non portato: il compilatore di localizzazioni a confini di parola e la tabella degli stati USPS del genitore (documentato da v1.248.1). Il contratto di salto delle voci rifiutate vive lato server (contrassegno in data/pipeline.md), non nello script del timer — è fuori dal repository e volutamente non modificato.
+
+
 ## [1.248.4] — 2026-10-10
 
 **Il proseguimento del round di regressione: la catena di risoluzione del ruolo per le voci Telegram — un post cirillico con una vera offerta ora produce un report nominato invece di un file `unknown-role` rifiutato — e la chiamata LLM si attiva solo per le voci che vale la pena valutare.**

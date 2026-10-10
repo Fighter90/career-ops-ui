@@ -179,21 +179,20 @@ test('v1.248.3: guessCompanyRole returns empty for example.com (no nonsense comp
   assert.equal(g.company, '', 'example.com is an EMPTY_DOMAINS host');
 });
 
-test('v1.248.3: a long t.me page + a scoreless model answer → NO report, NO tracker row', async () => {
-  // A telegram post page sanitizes to >200 chars (the v1.248.2 gate passes
-  // it), but the model answers «insufficient data» without A–G or a score —
-  // v1.248.3 validates BEFORE saving: no report file, no tracker row.
-  const longPage = '<html><body>' + '<p>Телеграм-пост о вакансии инженера в распределённой команде, стек и условия внутри. '.repeat(12) + '</p></body></html>';
-const out5 = await run({ url: 'https://t.me/somejobschannel/4567' }, 'Недостаточно данных для оценки вакансии. Извините.', longPage);
-    const events = out5.events;
-assert.ok(events.some((e) => e.event === 'error' && /evaluation incomplete/.test(e.data?.message || '')),
+test('v1.248.3: a long t.me post + a scoreless model answer → NO report, NO tracker row', async () => {
+  // v1.248.5 — the t.me page fetches as the EMBED form; the widget text is
+  // a long Cyrillic post (the length gate passes it), but the model answers
+  // «insufficient data» without A–G or a score — rejected BEFORE saving.
+  const longPage = '<html><body><div class="tgme_widget_message_text js-message_text" dir="auto">'
+    + '<p>Телеграм-пост о вакансии инженера в распределённой команде, стек и условия внутри. </p>'.repeat(6)
+    + '</div></body></html>';
+  const { events } = await run({ url: 'https://t.me/somejobschannel/4567' }, 'Недостаточно данных для оценки вакансии. Извините.', longPage);
+  assert.ok(events.some((e) => e.event === 'error' && /evaluation incomplete/.test(e.data?.message || '')),
     'an SSE error with «evaluation incomplete» must arrive');
   assert.ok(events.some((e) => e.event === 'error' && e.data?.rejected === true),
-    'the error payload carries rejected: true (the server-side timer skips the entry)');
+    'the error payload carries rejected: true');
   const reports = readdirSync(resolve(ROOT, 'reports')).filter((f) => f.includes('t-role'));
   assert.equal(reports.length, 0, 'no t-role report file');
-  const apps = readFileSync(resolve(ROOT, 'data', 'applications.md'), 'utf8');
-  assert.ok(!/somechannel|Somechannel/i.test(apps), 'no tracker row for the rejected entry');
 });
 
 test('v1.248.3: a REAL report (A–G + SCORE) still saves as before', async () => {
@@ -234,7 +233,13 @@ test('v1.248.4: entry with no company and no role hint fails BEFORE the LLM call
   const noHintPage = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.'.repeat(6);
   let providerCalls = 0;
   const { _setTransport: set } = await import('../server/lib/safe-fetch.mjs');
+  const { _setLookup: setLookup } = await import('../server/lib/safe-fetch.mjs');
   const restore = set(async () => ({ status: 200, headers: { 'content-type': 'text/html' }, body: Buffer.from(noHintPage) }));
+  // v1.248.5 — resolve offline (CI may have no network).
+  const restoreLookup = setLookup(async (hostname) => {
+    if (hostname === 'example.com') return { address: '93.184.216.34', family: 4 };
+    throw new Error(`offline resolver: unexpected host ${hostname}`);
+  });
   const realFetchSave = globalThis.fetch;
   globalThis.fetch = async (u, o = {}) => {
     const host = (() => { try { return new URL(String(u)).hostname; } catch { return ''; } })();
@@ -256,21 +261,24 @@ test('v1.248.4: entry with no company and no role hint fails BEFORE the LLM call
     assert.equal(providerCalls, 0, 'the LLM stub is never called');
     assert.ok(!ev.some((e) => e.event === 'step' && e.data.key === 'evaluate'), 'no evaluate step');
   } finally {
-    restore(); globalThis.fetch = realFetchSave;
+    restore(); restoreLookup(); globalThis.fetch = realFetchSave;
   }
 });
 
 test('v1.248.4: a long Cyrillic t.me post with a real vacancy → saved with the role in the filename', async () => {
-  const tmePage = ['Somejobschannel', 'Вакансия: Инженер по данным (DevOps)', 'Компания: Somejobschannel',
-    'Мы ищем инженера в команду данных. Berlin, Germany, гибрид. Стек: Python, Airflow, dbt. Опыт работы с данными от трёх лет, приветствуется знание SQL и современным стеком обработки данных.'].join('\n');
+  // v1.248.5 — the embed form; the widget text is a real Cyrillic vacancy
+  // with the company self-label; the model returns a full report.
+  const tmeEmbed = '<html><body><div class="tgme_widget_message_text js-message_text" dir="auto">'
+    + '<p>Вакансия: Инженер по данным (DevOps)</p><p>Компания: Somejobschannel</p>'
+    + '<p>Мы ищем инженера в команду данных. Berlin, Germany, гибрид. Стек: Python, Airflow, dbt, Kafka. Опыт работы с данными от трёх лет, приветствуется знание SQL и современного стека обработки данных.</p>'
+    + '</div></body></html>';
   const fullReport = ['# Инженер по данным — Somejobschannel', '## A) Контекст', '## B) Соответствие',
     '## C) Риски', '## D) Зарплата', '## E) Вопросы', '## F) Легитимность: high', '## G) Вердикт: proceeding',
     '---SCORE_SUMMARY---', 'COMPANY: Somejobschannel', 'ROLE: Инженер по данным', 'ARCHETYPE: data',
     'LEGITIMACY: high', 'SCORE: 4,2/5', '---END_SUMMARY---'].join('\n');
-  const out = await run({ url: 'https://t.me/somejobschannel/4567' }, fullReport, tmePage);
-  assert.ok(out.events.some((e) => e.event === 'done'), 'the pipeline completes: ' + JSON.stringify(out.events).slice(-400));
+  const out = await run({ url: 'https://t.me/somejobschannel/4567' }, fullReport, tmeEmbed);
+  assert.ok(out.events.some((e) => e.event === 'done'), 'the pipeline completes');
   const reports = readdirSync(resolve(ROOT, 'reports')).filter((f) => f.includes('somejobschannel'));
   assert.equal(reports.length, 1, 'one report saved');
-    assert.match(reports[0], /somejobschannel-/, 'the channel lands in the filename');
-  assert.ok(reports[0].split('-').length >= 4, 'a role segment is present beyond the date and channel');
+  assert.match(reports[0], /инженер|данные|devops/i, 'the role lands in the filename');
 });

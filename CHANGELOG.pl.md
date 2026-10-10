@@ -9,6 +9,27 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.248.5] — 2026-10-10
+
+**Utrwalenie po regresji: pojedyncze wpisy t.me teraz pobierają sam tekst posta (forma embed), odrzucony wpis opuszcza pulę licznika ewaluacji po stronie serwera, a natywna numeracja bloków w ukraińskim raporcie jest akceptowana — do tego jeden test, który potajemnie korzystał z żywej sieci, na zawsze przechodzi offline.**
+
+### Naprawiono
+
+- **Wpisy t.me w końcu są oceniane**: strona pojedynczego posta serwuje w czystym HTML tylko nagłówek kanału (~0,2 KB — «View in Telegram» i nic więcej), model otrzymywał pusty opis i każdy wpis z Telegrama umierał na etapie oceny. Pobieranie teraz przepisuje `t.me/<kanał>/<id>` (i formę feedu `t.me/s/…`) na formę embed (`?embed=1&mode=tme`) — ten sam host, walidacja SSRF bez zmian — i czyta posta z `.tgme_widget_message_text` (fallback: `og:description`). Brak tekstu widżetu → odrzucenie na etapie pobierania (`telegram post has no text`, `rejected: true`) przed wydaniem tokenów LLM.
+- **Licznik ewaluacji przestaje ponownie płacić za odrzucone wpisy (kontrakt po stronie serwera)**: odrzucony wpis jest teraz oznaczany w `data/pipeline.md` — jego linia opuszcza ogrodzenie URL-i i trafia do sekcji `## Rejected` z krótkim powodem (idempotentne, nigdy nie zduplikowane). Licznik pobiera gołe URL-e z ogrodzenia, więc oznaczony wpis jest naturalnie pomijany — bez zależności od wnętrza skryptu licznika. Recon wypisuje `pipeline rejected marks: N` + `honours rejected: yes (server-side)` zamiast przeszukiwać skrypt.
+- **Ukraińskie raporty ponownie przechodzą walidację A–G**: model uk numeruje bloki według kolejności własnego alfabetu (А Б В Г Д Є Ж), a przejście podobnych znaków liczyło tylko А/В/Е — dokładnie bloki C, D, F, G brakowały na produkcji (2/2 reprodukcje). Walidator teraz akceptuje ukraińską sekwencję porządkową, gdy nagłówki pojawiają się w kolejności (ta sama dyscyplina co abjad dla ar i dewanagari dla hi), a prompt ewaluacji dla każdego locale teraz wyraźnie wymaga łacińskich `A`–`G`.
+- **Bramka słów kluczowych roli działa na słowa, nie podciągi**: korzenie `linkedin.com/` i `x.com/` przechodziły bramkę, bo `lead`/`it` żyły w tekście interfejsu strony. Słowa kluczowe dopasowują się teraz na granicach słów Unicode, a korzeń domeny (URL bez ścieżki) jest odrzucany przed wywołaniem LLM.
+- **Test jednostkowy nie potrzebuje już żywej sieci**: test no-hints (`tests/auto-pipeline-jd-gate.test.mjs`) podmieniał transport HTTP, ale nadal wykonywał prawdziwe zapytanie DNS — zielony w CI tylko dlatego, że runner miał łączność. safe-fetch zyskał hook `_setLookup()` (sam resolver jest wymienny w testach; kod produkcyjny nigdy go nie nadpisuje), a test rozwiązuje offline.
+
+### Dodano
+
+- **Tryby workflow `cleanup-plan` / `cleanup-apply` w deploy.yml**: produkcyjne czyszczenie śmieci QA (post-qa-cleanup) uruchamia się po stronie serwera bez SSH z laptopa. Log zawiera tylko liczby — bez nazw plików ani podglądów linii, bo log jest publiczny, a nazwy plików zawierają nazwy firm. Krok Verify jest pomijany dla trybów czyszczenia.
+
+### Uwagi
+
+- Nie przeniesiono: kompilator lokalizacji po granicach słów i tabela stanów USPS z rodzica (udokumentowane od v1.248.1). Kontrakt pomijania odrzuconych wpisów żyje po stronie serwera (oznaczanie w data/pipeline.md), a nie w skrypcie licznika — ten jest poza repozytorium i celowo niezmieniany.
+
+
 ## [1.248.4] — 2026-10-10
 
 **Łańcuch rozpoznawania roli dla wpisów z Telegrama: cyrylicki post z prawdziwą ofertą daje teraz nazwany raport zamiast odrzuconego pliku `unknown-role` — a wywołanie LLM następuje tylko dla wpisów warte oceny.**

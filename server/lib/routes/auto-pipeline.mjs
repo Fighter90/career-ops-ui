@@ -94,6 +94,49 @@ function openSse(res) {
   };
 }
 
+// v1.248.5 — a t.me single-post page serves only the channel header in its
+// HTML (~0.2 KB: title, channel, «View in Telegram») — the post text arrives
+// only in the embed widget. Rewrite to the embed form and read the post from
+// `.tgme_widget_message_text` (fallback: og:description).
+export function telegramEmbedUrl(url) {
+  try {
+    const u = new URL(url);
+    if (u.hostname !== 't.me' && u.hostname !== 'telegram.me') return null;
+    const seg = u.pathname.split('/').filter(Boolean);
+    const chan = seg[0] === 's' ? seg[1] : seg[0];
+    const id = seg[0] === 's' ? seg[2] : seg[1];
+    if (!chan || !id) return null;
+    return `https://t.me/${chan}/${id}?embed=1&mode=tme`;
+  } catch {
+    return null;
+  }
+}
+
+/** Pull the post text out of the embed widget HTML (tag-stripped). */
+export function extractTelegramPostText(html) {
+  const raw = String(html || '');
+  const open = raw.match(/<div[^>]*class="[^"]*tgme_widget_message_text[^"]*"[^>]*>/i);
+  if (open) {
+    // Walk forward with a div-depth counter — the widget div can nest quotes.
+    const start = raw.indexOf(open[0]) + open[0].length;
+    let depth = 1, i = start;
+    const re = /<\/?div\b/gi;
+    re.lastIndex = start;
+    let m;
+    while ((m = re.exec(raw))) {
+      depth += m[0][1] === '/' ? -1 : 1;
+      if (depth === 0) { i = m.index; break; }
+    }
+    if (depth === 0) {
+      const t = raw.slice(start, i).replace(/<[^>]+>/g, ' ').replace(/&[a-z]+;/gi, ' ').replace(/[ \t]+/g, ' ').trim();
+      if (t) return t;
+    }
+  }
+  const og = raw.match(/<meta[^>]+property="og:description"[^>]+content="([^"]*)"/i);
+  if (og && og[1].trim()) return og[1].trim().replace(/&[a-z]+;/gi, ' ');
+  return '';
+}
+
 async function fetchJobDescription(url, signal) {
   // v1.20.1 (B-1) — safeGet pins the DNS lookup at validation time
   // and reuses the IP for the actual TCP connection, closing the
@@ -101,13 +144,26 @@ async function fetchJobDescription(url, signal) {
   // second lookup `fetch()` would do internally. Redirect targets
   // are re-validated per hop inside safeGet itself.
   try {
-    const r = await safeGet(url, {
+    // v1.248.5 — the embed form of a t.me single post (same host, only the
+    // path/query change; SSRF validation inside safeGet applies unchanged).
+    // The /s/ feed page carries ~20 posts — evaluating it would score
+    // someone else's posting, so the embed form is used for BOTH link forms.
+    const embed = telegramEmbedUrl(url);
+    const r = await safeGet(embed || url, {
       signal,
       maxBytes: FETCH_MAX_BODY_BYTES * 4, // raw HTML budget before strip
       userAgent: 'Mozilla/5.0 (career-ops-ui auto-pipeline) AppleWebKit/537.36',
     });
     if (r.status < 200 || r.status >= 300) {
       return { ok: false, error: `HTTP ${r.status}` };
+    }
+    if (embed) {
+      const post = extractTelegramPostText(r.text);
+      if (!post || post.length < MIN_JD_CHARS) {
+        // No widget text (or shorter than the JD floor) → the entry is junk.
+        return { ok: false, error: 'telegram post has no text', rejected: true };
+      }
+      return { ok: true, text: post };
     }
     const text = r.text
       .replace(/<script[\s\S]*?<\/script>/gi, '')
@@ -189,8 +245,14 @@ export function guessCompanyRole(jdText, url) {
   if (!role) {
     // The matching LINE (not the bare keyword): the tracker dedupes on
     // company+role, and a bare keyword would collide with earlier rows.
-    const kw = ROLE_KEYWORDS.find((k) => lines.some((l) => l.toLowerCase().includes(k)));
-    role = kw ? (lines.find((l) => l.toLowerCase().includes(kw)) || '').slice(0, 100) : '';
+    // v1.248.5 — word boundaries: a bare substring matched 'lead'/'it'
+    // inside unrelated page chrome (linkedin.com/x.com roots).
+    const matchIn = (l, k) => {
+      const esc = k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+      return new RegExp(`(?<![\\p{L}\\p{M}])${esc}(?![\\p{L}\\p{M}])`, 'iu').test(l);
+    };
+    const kw = ROLE_KEYWORDS.find((k) => lines.some((l) => matchIn(l, k)));
+    role = kw ? (lines.find((l) => matchIn(l, kw)) || '').slice(0, 100) : '';
   }
   return { company: company || '', role: role || '', roleHint: guessRoleHint(jdText, url) };
 }
@@ -214,7 +276,13 @@ function channelHintFor(u) {
 /** Cheap pre-LLM check: does this entry text carry any role/company hint? */
 export function guessRoleHint(jdText, url) {
   const lines = (jdText || '').split('\n').map((l) => l.trim()).filter(Boolean).slice(0, 30);
-  const kw = ROLE_KEYWORDS.find((k) => lines.some((l) => l.toLowerCase().includes(k)));
+  // v1.248.5 — word-boundary matching: a bare `includes` matched 'lead'
+  // inside a LinkedIn page's own chrome text and let domain roots through.
+  const matchIn = (l, k) => {
+    const esc = k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return new RegExp(`(?<![\\p{L}\\p{M}])${esc}(?![\\p{L}\\p{M}])`, 'iu').test(l);
+  };
+  const kw = ROLE_KEYWORDS.find((k) => lines.some((l) => matchIn(l, k)));
   if (kw) return kw;
   // A messenger-host entry with a channel name has an identity even without
   // a keyword — the channel fallback gives the company, so the entry is
@@ -252,6 +320,49 @@ function extractLegitimacy(md) {
 function buildSlug(company, role) {
   const base = `${today()}-${company}-${role}`.toLowerCase();
   return base.replace(/[^\w-]+/g, '-').replace(/^-+|-+$/g, '').replace(/-{2,}/g, '-').slice(0, 120) || `auto-${Date.now()}`;
+}
+
+// v1.248.5 — server-side skip contract: a rejected entry leaves the timer's
+// candidate pool. The URL line moves OUT of the code fence into a
+// «## Rejected» section below it (the timer greps bare URLs in the fence),
+// annotated with a short reason. Idempotent: re-rejecting the same URL
+// never duplicates the mark.
+function markPipelineRejected(url, reason) {
+  const short = String(reason || 'rejected').slice(0, 80);
+  try {
+    const file = projPath('data', 'pipeline.md');
+    let src = readFileSync(file, 'utf8');
+    if (!src.includes(url)) return false;
+    const lines = src.split('\n');
+    const fence = lines.indexOf('```');
+    const close = lines.indexOf('```', fence + 1);
+    const inFence = fence !== -1 && close !== -1
+      ? lines.findIndex((l, i) => i > fence && i < close && l.trim() === url.trim()) !== -1
+      : false;
+    const already = lines.some((l) => l.includes(url) && /rejected:/i.test(l));
+    if (inFence) {
+      const out = [];
+      let f = false;
+      for (const l of lines) {
+        if (/^```/.test(l)) { out.push(l); f = !f; continue; }
+        if (f && l.trim() === url.trim()) continue; // drop from the pool
+        out.push(l);
+      }
+      src = out.join('\n');
+    }
+    if (!already) {
+      // Defense-in-depth: a line is the record's boundary in pipeline.md, so
+      // control characters are stripped from both interpolated pieces (WHATWG
+      // URL parsing already drops \n\r\t, but the guarantee is made explicit
+      // here rather than delegated to the URL parser).
+      const safeUrl = String(url || '').replace(/[\u0000-\u001f\u007f]+/g, ' ').trim();
+      const safeReason = short.replace(/[\u0000-\u001f\u007f]+/g, ' ').trim();
+      src = src.replace(/\s*$/, '') + `\n\n## Rejected\n\n- ${safeUrl} — rejected: ${safeReason} (${today()})\n`;
+    }
+    writeFileSync(file, src);
+    return true;
+  } catch { /* pipeline.md not writable — the timer will retry; never crash the SSE */ }
+  return false;
 }
 
 export function registerAutoPipelineRoutes(app) {
@@ -330,7 +441,12 @@ export function registerAutoPipelineRoutes(app) {
       clearTimeout(timer);
       if (!result.ok || !result.text) {
         step(1, 'failed', result.error || 'empty body');
-        return fail(1, result.error || 'fetch failed');
+        // rejected:true marks a validation-driven stop (t.me no-text) — the
+        // server-side timer skips the entry; plain fetch failures (404 etc.)
+        // keep the bare error shape.
+        const extra = result.rejected ? { rejected: true } : {};
+        if (result.rejected) markPipelineRejected(url, result.error);
+        return fail(1, result.error || 'fetch failed', extra);
       }
       jdText = sanitizeJobDescription(result.text);
       if (!jdText || jdText.length < MIN_JD_CHARS) {
@@ -352,10 +468,22 @@ export function registerAutoPipelineRoutes(app) {
     // v1.248.4 — the identity gate runs BEFORE the LLM call: an entry with
     // neither a company nor any role hint would burn a full evaluation and
     // then be rejected. Host-only logging (CI logs are public).
+    // v1.248.5 — a domain root is not a job posting (linkedin.com/, x.com/
+    // fired the role gate on junk page text).
+    let rootRejection = false;
+    try { rootRejection = new URL(url).pathname.replace(/\/+$/, '').length <= 1; } catch {}
     const guess = guessCompanyRole(jdText, url);
+    if (rootRejection) {
+      const logHost = (() => { try { return new URL(url).hostname; } catch { return '[unparsable URL]'; } })();
+      logActivity({ action: 'auto-pipeline.evaluation.rejected', target: logHost, detail: 'domain root — not a job posting' });
+      markPipelineRejected(url, 'domain root — not a job posting');
+      step(1, 'failed', 'domain root — not a job posting');
+      return fail(1, 'domain root — not a job posting', { rejected: true });
+    }
     if (!guess.company && !guess.roleHint) {
       const logHost = (() => { try { return new URL(url).hostname; } catch { return '[unparsable URL]'; } })();
       logActivity({ action: 'auto-pipeline.evaluation.rejected', target: logHost, detail: 'no company/role hints' });
+      markPipelineRejected(url, 'no company/role hints');
       step(1, 'failed', 'no company/role hints — entry skipped before the LLM call');
       return fail(1, 'no company/role hints — entry skipped before the LLM call', { rejected: true });
     }
@@ -446,6 +574,7 @@ export function registerAutoPipelineRoutes(app) {
         // Host only — the entry URL is user-supplied and CI logs are public.
         const logHost = (() => { try { return new URL(url).hostname; } catch { return '[unparsable URL]'; } })();
         logActivity({ action: 'auto-pipeline.evaluation.rejected', target: logHost, detail: reason });
+        markPipelineRejected(url, reason);
         step(2, 'failed', `evaluation incomplete: ${reason}`);
         return fail(2, `evaluation incomplete: ${reason}`, { rejected: true });
       }
@@ -466,6 +595,7 @@ export function registerAutoPipelineRoutes(app) {
     const role = reportRole || guess.role || '';
     if (!guess.company || !role) {
       logActivity({ action: 'auto-pipeline.evaluation.rejected', target: guess.company || 'unknown', detail: 'company/role not identifiable after evaluation' });
+      markPipelineRejected(url, 'company/role not identifiable');
       step(3, 'failed', 'company/role not identifiable for this entry');
       return fail(3, 'company/role not identifiable for this entry', { rejected: true });
     }
