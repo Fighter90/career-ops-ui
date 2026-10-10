@@ -18,7 +18,9 @@ has no server-side mode.
    `?embed=1&mode=tme`; `extractTelegramPostText()` walks the
    `.tgme_widget_message_text` div (depth-counted for nested quotes) with
    og:description fallback; the /s/ feed form fetches as the same embed
-   (not the 20-post feed). Same host, SSRF unchanged. If no widget text →
+   (not the 20-post feed). The rewrite can change the host (telegram.me →
+   t.me), so the embed URL is RE-VALIDATED through the same `isValidJobUrl()`
+   entry gate before any fetch (fails closed). If no widget text →
    rejected at fetch before the LLM call.
 2. **Pipeline skip contract (server-side)** — `markPipelineRejected(url,
    reason)`: the rejected URL's line is removed from the pipeline fence and
