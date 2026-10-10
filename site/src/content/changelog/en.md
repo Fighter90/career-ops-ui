@@ -8,6 +8,26 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 
 
+## [1.248.4] — 2026-10-10
+
+**The role-resolution chain for Telegram entries: a Cyrillic post with a real vacancy now yields a named report instead of a rejected `unknown-role` file — and the LLM call only fires for entries worth evaluating.**
+
+### Fixed
+
+- **The role chain works for Cyrillic posts**: the keyword list gained разработчик/программист/инженер/аналитик/менеджер/руководитель/тимлид/лид/дизайнер/тестировщик/QA/архитектор/специалист/директор/DevOps/SRE (the old list was EN-only — 0 of 40 real posts got a role), the report header is consulted (`parseReportHeader` — the model writes the role into the H1), and the first meaningful line of the post is the last resort.
+- **The identity gate moved BEFORE the LLM call**: an entry with neither a company nor any role hint now fails at the fetch step (`rejected: true`) — no tokens burned on an evaluation that was going to be rejected anyway.
+- **`t.me/s/<channel>/<id>` no longer names the company «S»** — the web-preview prefix segment is skipped; both link forms resolve to the channel.
+- **«Компания: X» self-labels on Telegram posts** are honoured (and «…в компании X» mid-sentence for messenger hosts).
+
+### Added
+
+- **`auto-pipeline` failures carry `rejected: true`** — the server-side eval timer uses the flag to skip the pipeline entry instead of retrying it every 2 hours.
+
+### Notes
+
+- Not ported: the parent's word-boundary location compiler and USPS state table (documented since v1.248.1).
+- The README «Translations» blockquote is now generated from one canonical locale list, with a CI parity test (17 links per file, own never linked) — ar/pl/uk gained the block; the `|`-vs-`·` separator drift is gone.
+
 ## [1.248.3] — 2026-10-10
 
 **Follow-up to the regression round: the eval timer can no longer file nameless Telegram-junk reports under any circumstances, the QA-cleanup can no longer delete real Telegram postings, the map attribution is visible again, and the dashboard chips read ≥ 4.5:1.**

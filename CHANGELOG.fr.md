@@ -10,6 +10,26 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.248.4] — 2026-10-10
+
+**La chaîne de résolution de rôle pour les entrées Telegram : un post cyrillique avec une vraie offre produit désormais un rapport nommé au lieu d’un fichier `unknown-role` rejeté — et l’appel LLM ne se déclenche que pour les entrées qui méritent une évaluation.**
+
+### Corrigé
+
+- **La chaîne de rôle fonctionne pour les posts cyrilliques** : la liste de mots-clés a gagné développeur/programmeur/ingénieur/analyste/manager/руководитель/timlid/lid/designer/testeur/QA/architecte/spécialiste/directeur/DevOps/SRE (l’ancienne était EN seule : 0 post réel sur 40 obtenait un rôle), l’en-tête du rapport est consulté (`parseReportHeader` — le modèle écrit le rôle dans le H1), et la première ligne signifiante du post est le dernier recours.
+- **La porte d’identité a bougé AVANT l’appel LLM** : une entrée sans société ni trace de rôle échoue au pas fetch (`rejected: true`) — pas de tokens brûlés pour une évaluation qui aurait été rejetée de toute façon.
+- **`t.me/s/<canal>/<id>` ne nomme plus la société « S »** — le segment d’aperçu est sauté ; les deux formes de lien résolvent vers le canal.
+- **Les auto-étiquettes « Компания : X » des posts Telegram** sont honorées (et « …в компании X » en pleine phrase pour les hôtes de messagerie).
+
+### Ajouté
+
+- **Les échecs de l’auto-pipeline portent `rejected: true` dans l’erreur SSE** — le minuteur d’évaluation côté serveur utilise le drapeau pour sauter l’entrée du pipeline au lieu de la retenter toutes les 2 heures.
+
+### Notes
+
+- Non porté : le compilateur de localisation à frontières de mots du parent et sa table USPS (documenté depuis v1.248.1).
+- Le bloc « Translations » du README est généré depuis une liste canonique, avec un test de parité en CI (17 liens par fichier, le sien jamais lié) — ar/pl/uk ont gagné le bloc ; la dérive de séparateurs `|`/`·` est éliminée.
+
 ## [1.248.3] — 2026-10-10
 
 **Suite de la tour de régression : le minuteur d’évaluation ne peut plus archiver de quelque manière que ce soit du déchet Telegram sans nom, le nettoyage QA ne supprime plus de vraies offres Telegram, l’attribution de la carte redevient visible, et les chips du tableau lisent ≥ 4.5:1.**

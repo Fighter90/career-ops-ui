@@ -270,11 +270,13 @@ test('/api/auto-pipeline: the tracker row of a deduped report links the written 
   await stubJobPage(JOB_HTML.replace('Acme', 'Globex'));
   process.env.OPENAI_API_KEY = OAI;
   mockProviders({ 'api.openai.com': openaiReply(GOOD_REPORT) });
-  const d1 = sseEvents((await post('/api/auto-pipeline', { url: 'https://jobs.example.com/globex/1' })).text).find((e) => e.event === 'done').data;
+  const ev1 = sseEvents((await post('/api/auto-pipeline', { url: 'https://jobs.example.com/globex/1' })).text);
+  const d1 = ev1.find((e) => e.event === 'done').data;
   // Remove the row so the next run appends a fresh one instead of deduping.
   const apps = resolve(ROOT, 'data', 'applications.md');
   writeFileSync(apps, readFileSync(apps, 'utf8').split('\n').filter((l) => !l.includes('Globex')).join('\n'));
-  const d2 = sseEvents((await post('/api/auto-pipeline', { url: 'https://jobs.example.com/globex/2' })).text).find((e) => e.event === 'done').data;
+  const ev2 = sseEvents((await post('/api/auto-pipeline', { url: 'https://jobs.example.com/globex/2' })).text);
+  const d2 = ev2.find((e) => e.event === 'done').data;
   assert.notEqual(d2.slug, d1.slug);
   const row = readFileSync(apps, 'utf8').split('\n').find((l) => l.includes('Globex'));
   assert.ok(row.includes(`[${d2.slug}](reports/${d2.slug}.md)`), row);

@@ -2,6 +2,26 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.248.4] — 2026-10-10
+
+**Die Rollen-Auflösungskette für Telegram-Einträge: Ein kyrillischer Post mit echter Vakanz liefert jetzt einen benannten Bericht statt einer abgelehnten `unknown-role`-Datei — und der LLM-Aufruf feuert nur für Einträge, die eine Bewertung wert sind.**
+
+### Behoben
+
+- **Die Rollen-Kette funktioniert für kyrillische Posts**: Die Schlüsselwortliste bekam разработчик/программист/инженер/аналитик/менеджер/руководитель/тимлид/лид/дизайнер/тестировщик/QA/архитектор/специалист/директор/DevOps/SRE (die alte war nur EN: 0 von 40 echten Posts bekamen eine Rolle), der Berichtskopf wird konsultiert (`parseReportHeader` — das Modell schreibt die Rolle in die H1), und die erste sinnvolle Zeile des Posts ist der letzte Ausweg.
+- **Das Identitäts-Gate zog VOR den LLM-Aufruf**: Ein Eintrag ohne Firma und ohne Rollen-Hinweis scheitert jetzt im Fetch-Schritt (`rejected: true`) — keine Tokens für eine Bewertung, die ohnehin abgelehnt worden wäre.
+- **`t.me/s/<Kanal>/<id>` benennt die Firma nicht mehr „S“** — das Vorschau-Segment wird übersprungen; beide Linkformen lösen auf den Kanal auf.
+- **„Компания: X“-Selbstetiketten in Telegram-Posts** werden honoured (und „…в компании X“ mitten im Satz für Messenger-Hosts).
+
+### Hinzugefügt
+
+- **Auto-Pipeline-Fehler tragen `rejected: true` im SSE-Fehler** — der serverseitige Eval-Timer nutzt das Flag, um den Pipeline-Eintrag zu überspringen statt ihn alle 2 Stunden zu wiederholen.
+
+### Hinweise
+
+- Nicht portiert: der Parent-Compiler mit Wortgrenzen und die USPS-Tabelle (dokumentiert seit v1.248.1).
+- Der README-„Translations“-Block wird aus einer kanonischen Liste generiert, mit einem Paritätstest in CI (17 Links je Datei, der eigene nie verlinkt) — ar/pl/uk bekamen den Block; die `|`/`·`-Drift ist beseitigt.
+
 ## [1.248.3] — 2026-10-10
 
 **Fortsetzung der Regressionsrunde: Der Eval-Timer kann namenlosen Telegram-Müll unter keinen Umständen mehr als Bericht ablegen, die QA-Bereinigung löscht keine echten Telegram-Vakanzen mehr, die Karten-Attribution ist wieder sichtbar, und die Dashboard-Chips lesen ≥ 4.5:1.**

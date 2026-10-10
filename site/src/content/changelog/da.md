@@ -8,6 +8,26 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 ---
 
+## [1.248.4] — 2026-10-10
+
+**Rolleopløsningskæden for Telegram-poster: En kyrillisk post med en rigtig vakans giver nu en navngiven rapport i stedet for en afvist `unknown-role`-fil — og LLM-kaldet fyres kun for poster, der er værd at evaluere.**
+
+### Rettet
+
+- **Rollekæden virker for kyrilliske poster**: Nøgleordslisten fik разработчик/программист/инженер/аналитик/менеджер/руководитель/тимлид/лид/дизайнер/тестировщик/QA/архитектор/специалист/директор/DevOps/SRE (den gamle var kun EN: 0 af 40 rigtige poster fik en rolle), rapportheaderen konsulteres (`parseReportHeader` — modellen skriver rollen i H1), og postens første meningsfulde linje er den sidste udvej.
+- **Identitetsporten flyttede FØR LLM-kaldet**: En post uden firma og uden rolle-spor fejler ved fetch-trinnet (`rejected: true`) — ingen tokens brændt på en evaluering, der alligevel ville være afvist.
+- **`t.me/s/<kanal>/<id>` navngiver ikke længere firmaet „S“** — forhåndsvisningssegmentet springes over; begge linkformer løser til kanalen.
+- **Selvetiketter „Компания: X“ i Telegram-poster** honoreret (og „…в компании X“ midt i sætningen for besked-værter).
+
+### Tilføjet
+
+- **Auto-pipeline-fejl bærer `rejected: true` i SSE-fejlen** — serverens eval-timer bruger flaget til at springe pipeline-posten over i stedet for at gensende den hver 2. time.
+
+### Noter
+
+- Ikke portet denne gang: parentens word-boundary-lokationskompiler og USPS-tabellen (dokumenteret siden v1.248.1).
+- README-„Translations“-blokken genereres nu fra én kanonisk liste, med en paritetstest i CI (17 links pr. fil, egen aldrig linket) — ar/pl/uk fik blokken; `|`/`·`-separator-driften er elimineret.
+
 ## [1.248.3] — 2026-10-10
 
 **Fortættelse af regressionsrunden: Eval-timeren kan under ingen omstændigheder længere arkivere navnløst Telegram-skrald som rapport, QA-oprydningen sletter ikke længere rigtige Telegram-opslag, kortets attribution er atter synlig, og dashboard-chips læses ≥ 4.5:1.**

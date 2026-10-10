@@ -92,7 +92,6 @@ async function run(body, providerBody, pageBody = PAGE_BODY) {
     body: JSON.stringify(body),
   });
   const text = await resp.text();
-  if (process.env.DEBUG_SSE) console.log('SSE TEXT[0:200]:', JSON.stringify(text.slice(0, 200)), 'status', resp.status);
   const events = text.split('\n\n').filter(Boolean).map((b) => ({
     event: (b.match(/^event: (.+)$/m) || [])[1],
     data: JSON.parse((b.match(/^data: (.+)$/m) || [, 'null'])[1]),
@@ -187,7 +186,6 @@ test('v1.248.3: a long t.me page + a scoreless model answer → NO report, NO tr
   const longPage = '<html><body>' + '<p>Телеграм-пост о вакансии инженера в распределённой команде, стек и условия внутри. '.repeat(12) + '</p></body></html>';
 const out5 = await run({ url: 'https://t.me/somejobschannel/4567' }, 'Недостаточно данных для оценки вакансии. Извините.', longPage);
     const events = out5.events;
-  console.log('EVENTS:', JSON.stringify(events, null, 1).slice(0, 1200));
 assert.ok(events.some((e) => e.event === 'error' && /evaluation incomplete/.test(e.data?.message || '')),
     'an SSE error with «evaluation incomplete» must arrive');
   assert.ok(events.some((e) => e.event === 'error' && e.data?.rejected === true),
@@ -206,8 +204,73 @@ test('v1.248.3: a REAL report (A–G + SCORE) still saves as before', async () =
   // Plain text (the transport returns it as-is; sanitize passes it through).
   const longGreenhouse = 'Acme — Senior Backend Engineer\n' + 'Berlin, Germany. Hybrid. Acme builds developer tools. '.repeat(20);
   const { events } = await run({ url: 'https://boards.greenhouse.io/acme/jobs/1' }, good, longGreenhouse);
-  if (!events.some((e) => e.event === 'done')) console.log('NO DONE. events:', JSON.stringify(events).slice(-700));
-  assert.ok(events.some((e) => e.event === 'done'), 'the pipeline completes');
+  if (!events.some((e) => e.event === 'done'))   assert.ok(events.some((e) => e.event === 'done'), 'the pipeline completes');
   const reports = readdirSync(resolve(ROOT, 'reports')).filter((f) => f.includes('acme'));
   assert.equal(reports.length, 1, 'the report is saved');
+});
+
+// ── v1.248.4 — role resolution chain for t.me entries ──────────────────────
+test('v1.248.4: guessCompanyRole — RU role keywords + «Компания: X» + channel', async () => {
+  const { guessCompanyRole } = await import('../server/lib/routes/auto-pipeline.mjs');
+  const g = guessCompanyRole(
+    ['Компания: Somejobschannel', 'Вакансия: Инженер по данным', 'Мы ищем инженера в команду данных. Berlin.'].join('\n'),
+    'https://t.me/somejobschannel/4567');
+  assert.equal(g.company, 'Somejobschannel', 'the self-label wins');
+  assert.match(g.role, /инженер|Инженер|данные/i, 'the RU keyword line becomes the role');
+});
+
+test('v1.248.4: t.me/s/<channel>/<id> skips the «s» segment (both forms give the channel)', async () => {
+  const { guessCompanyRole } = await import('../server/lib/routes/auto-pipeline.mjs');
+  const scanForm = guessCompanyRole('Инженер в Берлине.', 'https://t.me/somejobschannel/4567');
+  const previewForm = guessCompanyRole('Инженер в Берлине.', 'https://t.me/s/somejobschannel/4567');
+  assert.equal(scanForm.company, 'Somejobschannel');
+  assert.equal(previewForm.company, 'Somejobschannel', 'the /s/ preview prefix is skipped');
+  assert.notEqual(previewForm.company, 'S', 'the «s» segment must not become the company');
+});
+
+test('v1.248.4: entry with no company and no role hint fails BEFORE the LLM call', async () => {
+  // A page with neither a company self-label, nor a channel fallback
+  // (non-messenger host with an ATS-domain slug), nor any role keyword.
+  const noHintPage = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor.'.repeat(6);
+  let providerCalls = 0;
+  const { _setTransport: set } = await import('../server/lib/safe-fetch.mjs');
+  const restore = set(async () => ({ status: 200, headers: { 'content-type': 'text/html' }, body: Buffer.from(noHintPage) }));
+  const realFetchSave = globalThis.fetch;
+  globalThis.fetch = async (u, o = {}) => {
+    const host = (() => { try { return new URL(String(u)).hostname; } catch { return ''; } })();
+    if (host === 'api.openai.com') { providerCalls += 1; return new Response(JSON.stringify({ choices: [{ message: { content: 'x' } }] }), { status: 200 }); }
+    return realFetchSave(u, o);
+  };
+  try {
+    const resp = await fetch(baseUrl + '/api/auto-pipeline', {
+      method: 'POST', headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ url: 'https://example.com/no-hints' }),
+    });
+    const text = await resp.text();
+    const ev = text.split('\n\n').filter(Boolean).map((b) => ({
+      event: (b.match(/^event: (.+)$/m) || [])[1],
+      data: JSON.parse((b.match(/^data: (.+)$/m) || [, 'null'])[1]),
+    }));
+    assert.ok(ev.some((e) => e.event === 'error' && /no company\/role hints/.test(e.data?.message || '')),
+      'fails at step fetch with the skip reason');
+    assert.equal(providerCalls, 0, 'the LLM stub is never called');
+    assert.ok(!ev.some((e) => e.event === 'step' && e.data.key === 'evaluate'), 'no evaluate step');
+  } finally {
+    restore(); globalThis.fetch = realFetchSave;
+  }
+});
+
+test('v1.248.4: a long Cyrillic t.me post with a real vacancy → saved with the role in the filename', async () => {
+  const tmePage = ['Somejobschannel', 'Вакансия: Инженер по данным (DevOps)', 'Компания: Somejobschannel',
+    'Мы ищем инженера в команду данных. Berlin, Germany, гибрид. Стек: Python, Airflow, dbt. Опыт работы с данными от трёх лет, приветствуется знание SQL и современным стеком обработки данных.'].join('\n');
+  const fullReport = ['# Инженер по данным — Somejobschannel', '## A) Контекст', '## B) Соответствие',
+    '## C) Риски', '## D) Зарплата', '## E) Вопросы', '## F) Легитимность: high', '## G) Вердикт: proceeding',
+    '---SCORE_SUMMARY---', 'COMPANY: Somejobschannel', 'ROLE: Инженер по данным', 'ARCHETYPE: data',
+    'LEGITIMACY: high', 'SCORE: 4,2/5', '---END_SUMMARY---'].join('\n');
+  const out = await run({ url: 'https://t.me/somejobschannel/4567' }, fullReport, tmePage);
+  assert.ok(out.events.some((e) => e.event === 'done'), 'the pipeline completes: ' + JSON.stringify(out.events).slice(-400));
+  const reports = readdirSync(resolve(ROOT, 'reports')).filter((f) => f.includes('somejobschannel'));
+  assert.equal(reports.length, 1, 'one report saved');
+    assert.match(reports[0], /somejobschannel-/, 'the channel lands in the filename');
+  assert.ok(reports[0].split('-').length >= 4, 'a role segment is present beyond the date and channel');
 });

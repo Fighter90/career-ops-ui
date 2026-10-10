@@ -8,6 +8,26 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 ---
 
+## [1.248.4] — 2026-10-10
+
+**A cadeia de resolução de função para entradas de Telegram: uma publicação cirílica com uma vaga real agora produz um relatório nomeado em vez de um arquivo `unknown-role` rejeitado — e a chamada ao LLM só dispara para entradas que valem a pena avaliar.**
+
+### Corrigido
+
+- **A cadeia de função funciona para publicações cirílicas**: a lista de palavras-chave somou desenvolvedor/programador/engenheiro/analista/gerente/руководитель/timlid/lid/designer/tester/QA/arquiteto/especialista/diretor/DevOps/SRE (a antiga era só EN: 0 de 40 publicações reais recebiam uma função), o cabeçalho do relatório é consultado (`parseReportHeader` — o modelo escreve a função no H1) e a primeira linha com sentido da publicação é o último recurso.
+- **A porta de identidade mudou para ANTES da chamada ao LLM**: uma entrada sem empresa nem traço de função falha no passo fetch (`rejected: true`) — sem gastar tokens numa avaliação que seria rejeitada de qualquer forma.
+- **`t.me/s/<canal>/<id>` não nomeia mais a empresa «S»** — o segmento de pré-visualização é pulado; ambas as formas de link resolvem ao canal.
+- **Autoetiquetas «Компания: X» em publicações do Telegram** são honradas (e «…в компании X» no meio da frase para hosts de mensageria).
+
+### Adicionado
+
+- **Falhas do auto-pipeline carregam `rejected: true` no erro SSE** — o temporizador de avaliação do servidor usa a marca para pular a entrada do pipeline em vez de repeti-la a cada 2 horas.
+
+### Notas
+
+- Não portado desta vez: o compilador de localização com fronteira de palavra do pai e sua tabela USPS (documentado desde v1.248.1).
+- O bloco «Translations» do README é gerado de uma lista canônica, com um teste de paridade no CI (17 links por arquivo, o próprio nunca linkado) — ar/pl/uk ganharam o bloco; a deriva de separadores `|`/`·` eliminada.
+
 ## [1.248.3] — 2026-10-10
 
 **Continuação da rodada de regressão: o temporizador de avaliação não pode mais arquivar lixo de Telegram sem nome em hipótese alguma, a limpeza QA não exclui mais vagas reais do Telegram, a atribuição do mapa volta a ficar visível e os chips do painel leem ≥ 4.5:1.**
