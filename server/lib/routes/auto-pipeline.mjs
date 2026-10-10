@@ -351,7 +351,13 @@ function markPipelineRejected(url, reason) {
       src = out.join('\n');
     }
     if (!already) {
-      src = src.replace(/\s*$/, '') + `\n\n## Rejected\n\n- ${url.trim()} — rejected: ${short} (${today()})\n`;
+      // Defense-in-depth: a line is the record's boundary in pipeline.md, so
+      // control characters are stripped from both interpolated pieces (WHATWG
+      // URL parsing already drops \n\r\t, but the guarantee is made explicit
+      // here rather than delegated to the URL parser).
+      const safeUrl = String(url || '').replace(/[\u0000-\u001f\u007f]+/g, ' ').trim();
+      const safeReason = short.replace(/[\u0000-\u001f\u007f]+/g, ' ').trim();
+      src = src.replace(/\s*$/, '') + `\n\n## Rejected\n\n- ${safeUrl} — rejected: ${safeReason} (${today()})\n`;
     }
     writeFileSync(file, src);
     return true;

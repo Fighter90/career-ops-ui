@@ -64,8 +64,7 @@ export function validateEvaluationReport(text) {
     ukrFound.push(want);
   }
   if (ukrFound.length >= 3) {
-    const ordinalLabel = { А: 'A', Б: 'B', В: 'C', Г: 'D', Д: 'E', Є: 'F' };
-    for (const [i, [label, latin]] of requiredBlocks.entries()) {
+    for (const [i, [label]] of requiredBlocks.entries()) {
       const want = UKR_SEQ[i];
       if (!want) break;
       if (issues.includes(`missing Block ${label}`) && ukrFound.includes(want)) {
