@@ -490,7 +490,7 @@ jobs:
         run: |
           # Numbers only — the log is public and file names carry company names.
           # shellcheck disable=SC2029
-          ssh prod "cd '$APP_DIR/web-ui' && out=\$(CAREER_OPS_ROOT='$APP_DIR' node scripts/post-qa-cleanup.mjs 2>&1); printf '%s\n' \"\$out\" | grep -c 'no valid SCORE' || true; printf '%s\n' \"\$out\" | grep -c 'dirty-URL line' || true; printf '%s\n' \"\$out\" | grep -c 'test-row line' || true; echo 'cleanup-plan done (t-role to move / pipeline lines / tracker rows — dry run)'"
+          ssh prod "cd '$APP_DIR/web-ui' && out=\$(CAREER_OPS_ROOT='$APP_DIR' node scripts/post-qa-cleanup.mjs 2>&1); printf '%s\n' \"\$out\" | grep -c 'no valid SCORE' || true; printf '%s\n' \"\$out\" | grep -oE '[0-9]+ dirty-URL line' | awk '{s+=\$1} END{print s+0}'; printf '%s\n' \"\$out\" | grep -oE '[0-9]+ test-row line' | awk '{s+=\$1} END{print s+0}'; echo 'cleanup-plan done (t-role reports / pipeline lines / tracker rows — dry run)'"
 
       - name: Cleanup apply (with automatic backups)
         if: inputs.mode == 'cleanup-apply'

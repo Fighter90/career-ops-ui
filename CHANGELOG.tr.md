@@ -2,6 +2,20 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.248.7] — 2026-10-11
+
+**Rapor başlığındaki rol artık ebeveynin gerçek kuralını okuyor — `# <Rol> — <Şirket>` varsayımı yerine `# Evaluation: {Şirket} — {Rol}` — böylece izleyici artık «Evaluation: <Şirket>» öğesini rol olarak taşımıyor; yanlış dilde bir rapor sessizce kaydedilmek yerine uyarıyor; ve H1 öncesindeki model gevezeliği kaydedilen raporlardan kesiliyor.**
+
+### Düzeltildi
+
+- **Yerelleştirilmiş etiket önce sökülür** (`Evaluation:`, `Оценка вакансии:` ve 16 varyant daha); etiketten sonra `Company — Role` → rol sağ taraftır; etiketsiz `Role — Company` → sol taraf; şirketi adlandıran kısım karar verir; rol asla şirket ya da etiket kelimesi değildir — yedek temizlenmiş gönderi satırıdır.
+- **cleanup-plan satırların N'ini toplar** (`— N dirty-URL line(s)`), dosya saymaz — 5 kirli URL'li bir dosya 1 değil 5 verirdi.
+- **Yanlış dilde bir rapor uyarır**: istem zorunlu dil talimatıyla açılır VE kapanır (tüm rapor, tablolar dâhil), hat kaydedilen raporun dilini doğrular — sürüklenme `report not in <locale>` uyarısı olarak ortaya çıkar.
+- **H1 öncesi model gevezeliği yok** — rapor kendi başlık satırında başlar.
+### Notlar
+
+- Taınmadı ve dokunulmadı (v1.248.6 regresyonunda doğrulandı): embed-fetch, gönderinin satır yapısı («Компания : X»), «## Rejected» tekilleştirme, fetch'ten önce alan adı kökü reddi, recon/link-check dürüstlüğü ve cleanup modları. Dil doğrulaması bir uyarıdır — (içeriği A–G + puan olarak doğrulanmış) rapor kaydedilir; operatör sürüklenmeyi görür ve değerlendirmeyi tekrarlayabilir.
+
 ## [1.248.6] — 2026-10-10
 
 **Regresyon sonrası Telegram zinciri cilası: gerçek bir gönderi satır yapısını korur («Компания : X» etiketi ve rol satırı gerçekten bulundukları yerde bulunur), izleyici rolü ham gönderi satırı yerine rapor başlığından gelir ve operasyonel yüzeyler (recon, cleanup-plan, link-check) iddia ettiklerini raporlar.**

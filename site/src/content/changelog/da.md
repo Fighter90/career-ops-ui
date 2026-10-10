@@ -9,6 +9,20 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 ---
 
 
+## [1.248.7] — 2026-10-11
+
+**Rollen fra rapportens sidehoved læser nu forælderens faktiske konvention — `# Evaluation: {Company} — {Role}` — i stedet for at antage `# <Rolle> — <Firma>`, så trackeren ikke længere bærer «Evaluation: <Firma>» som rolle; en rapport på det forkerte sprog advarer i stedet for at gemme lydløst; og modelsludderet før H1 skæres fra gemte rapporter.**
+
+### Rettet
+
+- **Den lokaliserede mærkat fjernes først** (`Evaluation:`, `Оценка вакансии:` og 16 varianter); efter mærkaten `Company — Role` → rollen er højre side; uden mærkat `Role — Company` → venstre; delen der navngiver firmaet afgør; rollen er aldrig firmaet eller et mærkatord — fallback er den rensede indlægslinje.
+- **cleanup-plan summer N fra linjerne** (`— N dirty-URL line(s)`), tæller ikke filer — en fil med 5 snavsede URL'er gav 1, ikke 5.
+- **En rapport på det forkerte sprog advarer**: prompten åbner OG lukker med den obligatoriske sproginstruktion (hele rapporten, tabeller inkluderet), og pipelinen validerer den gemte rapports sprog — drift vises som advarslen `report not in <locale>`.
+- **Ingen modelsludder før H1** — rapporten starter ved sin overskriftslinje.
+### Noter
+
+- Ikke portet og urørt (verificeret i v1.248.6-regressionen): embed-fetch, indlæggets linjestruktur («Компания : X»), «## Rejected»-deduplisering, domænerods-afvisning før fetch, recon/link-check-ærlighed og cleanup-tilstande. Sprogsvalidering er en advarsel — rapporten (indhold allerede valideret A–G + score) gemmes; operatøren ser driften og kan gentage evalueringen.
+
 ## [1.248.6] — 2026-10-10
 
 **Efterregressions-polering af Telegram-kæden: et rigtigt indlæg bevarer sin linjestruktur (mærkaten «Компания : X» og rullelinjen findes der, hvor de faktisk er), tracker-rollen kommer fra rapportens sidehoved i stedet for en rå indlægslinje, og de operationelle overflader (recon, cleanup-plan, link-check) rapporterer det, de udgiver sig for at rapportere.**

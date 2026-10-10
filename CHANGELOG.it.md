@@ -2,6 +2,20 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.248.7] — 2026-10-11
+
+**Il ruolo dall'intestazione del report ora legge la vera convenzione del genitore — `# Evaluation: {Company} — {Role}` — invece di assumere `# <Ruolo> — <Azienda>`, quindi il tracker non porta più «Evaluation: <Azienda>» come ruolo; un report nella lingua sbagliata avvisa invece di salvare in silenzio; e lo chiacchiericcio del modello prima dell'H1 viene rimosso dai report salvati.**
+
+### Corretto
+
+- **L'etichetta localizzata viene rimossa per prima** (`Evaluation:`, `Оценка вакансии:` e altre 16 varianti); dopo l'etichetta `Company — Role` → il ruolo è il lato destro; senza etichetta `Role — Company` → il sinistro; la parte che nomina l'azienda decide; il ruolo non è mai l'azienda né una parola di etichetta — il ripiego è la riga del post pulita.
+- **cleanup-plan somma gli N delle righe** (`— N dirty-URL line(s)`), non conta i file — un file con 5 URL sporchi dava 1, non 5.
+- **Un report nella lingua sbagliata avvisa**: il prompt apre E chiude con l'istruzione obbligatoria di lingua (tutto il report, tabelle incluse), e la pipeline valida la lingua del report salvato — la deriva appare come avviso `report not in <locale>`.
+- **Niente chiacchiericcio del modello prima dell'H1** — il report inizia alla sua riga di intestazione.
+### Note
+
+- Non portato e intoccato (verificato nella regressione v1.248.6): l'embed-fetch, la struttura a righe del post («Компания : X»), la deduplicazione «## Rejected», il rifiuto della radice di dominio prima del fetch, l'onestà di recon/link-check e le modalità cleanup. La validazione della lingua è un avviso — il report (contenuto già validato A–G + punteggio) viene salvato; l'operatore vede la deriva e può ripetere la valutazione.
+
 ## [1.248.6] — 2026-10-10
 
 **Lucidatura post-regressione della catena Telegram: un post reale mantiene la sua struttura di righe (l'etichetta «Компания : X» e la riga del ruolo vengono trovate dove realmente sono), il ruolo del tracker arriva dall'intestazione del report invece che da una riga grezza del post, e le superfici operative (recon, cleanup-plan, link-check) riportano ciò che dichiarano di riportare.**

@@ -9,6 +9,20 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.248.7] — 2026-10-11
+
+**Rola z nagłówka raportu czyta teraz rzeczywistą konwencję rodzica — `# Evaluation: {Company} — {Role}` — zamiast zakładać `# <Rola> — <Firma>`, więc tracker nie niesie już «Evaluation: <Firma>» jako roli; raport w złym języku ostrzega zamiast zapisywać po cichu; a paplanina modelu przed H1 jest wycinana z zapisanych raportów.**
+
+### Naprawiono
+
+- **Zlokalizowana etykieta jest zdejmowana najpierw** (`Evaluation:`, `Оценка вакансии:` i 16 wariantów); po etykiecie `Company — Role` → rola to prawa strona; bez etykiety `Role — Company` → lewa; część nazywającą firmę decyduje; rola nigdy nie jest firmą ani słowem etykiety — zapasem jest czyszczona linia posta.
+- **cleanup-plan sumuje N z linii** (`— N dirty-URL line(s)`), nie liczy plików — plik z 5 brudnymi URL dawał 1, nie 5.
+- **Raport w złym języku ostrzega**: prompt otwiera SIĘ i zamyka obowiązkową instrukcją języka (cały raport, tabele włącznie), a pipeline sprawdza język zapisanego raportu — dryf pojawia się jako ostrzeżenie `report not in <locale>`.
+- **Bez paplaniny modelu przed H1** — raport zaczyna się od swojej linii nagłówka.
+### Uwagi
+
+- Nie przeniesiono i nie dotykano (zweryfikowano w regresji v1.248.6): embed-fetch, struktura linii posta («Компания : X»), deduplikacja «## Rejected», odrzucenie korzenia domeny przed fetch, uczciwość recon/link-check i tryby cleanup. Walidacja języka to ostrzeżenie — raport (już zwalidowany A–G + wynik) zapisuje się; operator widzi dryf i może powtórzyć ocenę.
+
 ## [1.248.6] — 2026-10-10
 
 **Szlif po regresji łańcucha Telegram: rzeczywisty post zachowuje strukturę linii (etykieta «Компания : X» i linia roli są znajdywane tam, gdzie faktycznie są), rola w trackerze pochodzi z nagłówka raportu, a nie z surowej linii posta, a powierzchnie operacyjne (recon, cleanup-plan, link-check) raportują to, co deklarują.**
