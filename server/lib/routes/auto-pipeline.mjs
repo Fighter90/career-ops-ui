@@ -144,11 +144,16 @@ async function fetchJobDescription(url, signal) {
   // second lookup `fetch()` would do internally. Redirect targets
   // are re-validated per hop inside safeGet itself.
   try {
-    // v1.248.5 — the embed form of a t.me single post (same host, only the
-    // path/query change; SSRF validation inside safeGet applies unchanged).
+    // v1.248.5 — the embed form of a t.me single post. The rewrite can change
+    // the host (telegram.me → t.me), so the embed URL goes through the SAME
+    // isValidJobUrl() entry gate as the original — never fetch an unvalidated
+    // URL, even one this module constructed itself.
     // The /s/ feed page carries ~20 posts — evaluating it would score
     // someone else's posting, so the embed form is used for BOTH link forms.
     const embed = telegramEmbedUrl(url);
+    if (embed && !isValidJobUrl(embed)) {
+      return { ok: false, error: 'telegram embed URL failed validation', rejected: true };
+    }
     const r = await safeGet(embed || url, {
       signal,
       maxBytes: FETCH_MAX_BODY_BYTES * 4, // raw HTML budget before strip
@@ -343,9 +348,12 @@ function markPipelineRejected(url, reason) {
     if (inFence) {
       const out = [];
       let f = false;
+      let dropped = false;
       for (const l of lines) {
         if (/^```/.test(l)) { out.push(l); f = !f; continue; }
-        if (f && l.trim() === url.trim()) continue; // drop from the pool
+        // Drop exactly ONE matching line: if the same URL was queued twice,
+        // one rejection must not silently consume the second copy.
+        if (f && !dropped && l.trim() === url.trim()) { dropped = true; continue; }
         out.push(l);
       }
       src = out.join('\n');
