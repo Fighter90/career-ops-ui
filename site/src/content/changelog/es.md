@@ -11,6 +11,20 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.248.7] — 2026-10-11
+
+**La función de la cabecera del informe ahora lee la convención real del padre — `# Evaluation: {Company} — {Role}` — en lugar de asumir `# <Función> — <Empresa>`, así que el rastreador ya no lleva «Evaluation: <Empresa>» como función; un informe en el idioma equivocado avisa en lugar de guardarse en silencio; y la charla del modelo antes del H1 desaparece de los informes guardados.**
+
+### Corregido
+
+- **La etiqueta localizada se quita primero** (`Evaluation:`, `Оценка вакансии:` y 16 variantes más); tras la etiqueta `Company — Role` → la función es el lado derecho; sin etiqueta `Role — Company` → la izquierda; la parte que nombra a la empresa decide; la función nunca es la empresa ni una palabra de etiqueta — el respaldo es la línea de la publicación limpia.
+- **cleanup-plan suma los N de las líneas** (`— N dirty-URL line(s)`), no cuenta archivos — un archivo con 5 URLs sucias daba 1, no 5.
+- **Un informe en el idioma equivocado avisa**: el prompt abre Y cierra con la instrucción obligatoria de idioma (todo el informe, tablas incluidas), y el pipeline valida el idioma del informe guardado — el deriva aparece como aviso `report not in <locale>`.
+- **Sin charla del modelo antes del H1** — el informe empieza en su línea de encabezado.
+### Notas
+
+- No portado y sin tocar (verificado en el regression v1.248.6): el fetch embed, la estructura de líneas del post («Компания : X»), el dedup «## Rejected», el rechazo de la raíz de dominio antes del fetch, la honradez de recon/link-check y los modos cleanup. La validación de idioma es un aviso — el informe (ya validado en contenido A–G + puntuación) se guarda; el operador ve la deriva y puede repetir la evaluación.
+
 ## [1.248.6] — 2026-10-10
 
 **Pulido posregresión de la cadena de Telegram: una publicación real conserva su estructura de líneas (la etiqueta «Компания : X» y la línea del rol se encuentran donde realmente están), el rol del rastreador proviene del encabezado del informe en lugar de una línea cruda de la publicación, y las superficies operativas (recon, cleanup-plan, link-check) informan lo que dicen que informan.**

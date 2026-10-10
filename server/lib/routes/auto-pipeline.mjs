@@ -44,6 +44,8 @@ import { evaluationWarnings, EVAL_MAX_TOKENS } from './llm.mjs';
 import { stripDangerousMarkdown } from '../security.mjs';
 import { stripScoreSummary, validateEvaluationReport } from '../eval-validate.mjs';
 import { parseReportHeader } from '../parsers.mjs';
+// v1.248.7 — the language check is a pure module shared with remote-qa.
+import { languageOk } from '../../../scripts/remote-qa/lang-check.mjs';
 import { parseApplications, today } from '../parsers.mjs';
 import { logActivity } from '../activity-log.mjs';
 import { safeGet } from '../safe-fetch.mjs';
@@ -295,6 +297,18 @@ function channelHintFor(u) {
 // v1.248.6 — the post-line role fallback lands in the tracker verbatim
 // otherwise: hashtags (#удаленка) and emoji ride along, and the cell can
 // exceed the column's sane width. Clean: no hashtags, no emoji, ≤80 chars.
+// v1.248.7 — the parent's H1 convention (modes/oferta.md «Report format»)
+// is `# Evaluation: {Company} — {Role}`. The label word is localized by the
+// model's output language; longest first so «Оценка вакансии» wins over
+// «Оценка». The pattern SHAPE matches parsers.mjs's prose-label regex.
+const escReMeta = (v) => String(v).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+const H1_LABEL_WORDS = [
+  'Evaluation', 'Оценка вакансии', 'Оценка', 'Оцінка вакансії', 'Оцінка',
+  'Evaluación', 'Avaliação', 'Évaluation', 'Bewertung', 'Valutazione',
+  'Ocena', 'Değerlendirme', '評価', '평가', '评估', '評估', 'Evaluering',
+  'تقييم', 'मूल्यांकन', 'மதிப்பீடு',
+].sort((a, b) => b.length - a.length);
+
 function cleanRoleLine(line) {
   return String(line || '')
     .replace(/#[^\s#]+/g, ' ')
@@ -634,8 +648,15 @@ export function registerAutoPipelineRoutes(app) {
         step(2, 'failed', `evaluation incomplete: ${reason}`);
         return fail(2, `evaluation incomplete: ${reason}`, { rejected: true });
       }
+      // v1.248.7 — a wrong-language report is surfaced as a WARNING, not a
+      // rejection: the content passed validation (A–G + score) and saves,
+      // but the drift (ta came back 2–22 % own-script 2/2 on prod) must not
+      // pass silently.
+      if (lang && lang !== 'en' && !languageOk(markdown, lang)) {
+        warnings.push(`report not in ${lang}`);
+      }
       const score = extractScore(markdown);
-      step(2, 'done', score != null ? `${evalMode} · score ${score}/5` : evalMode);
+      step(2, 'done', score != null ? `${evalMode} · score ${score}/5${warnings.some((w) => w.startsWith('report not in')) ? ' · report not in ' + lang : ''}` : evalMode);
     } catch (e) {
       step(2, 'failed', e.message);
       return fail(2, e.message);
@@ -647,12 +668,37 @@ export function registerAutoPipelineRoutes(app) {
     // with a company but no post-report role still rejects (never file a
     // `<company>-role` placeholder).
     const header = parseReportHeader(markdown);
-    // The H1 follows the oferta convention `# <Role> — <Company>` — keep the
-    // role side, so the company doesn't ride into the tracker cell / slug.
-    // A title without the separator IS the role.
+    // v1.248.7 — the H1 follows the parent's oferta convention
+    // `# Evaluation: {Company} — {Role}`. v1.248.6 assumed
+    // `# <Role> — <Company>` and read the COMPANY as the role — every
+    // auto-pipeline tracker row came out as «Evaluation: <Company>».
     const rawTitle = (header.title || '').replace(/^#+\s*/, '').trim();
-    const titleSplit = rawTitle.match(/^(.{2,80}?)\s+[—–-]\s+(.+)$/u);
-    const reportRole = titleSplit ? titleSplit[1].trim() : rawTitle;
+    // 1) strip a localized prose label (`Evaluation:`, `Оценка вакансии:`,
+    //    …) with the same pattern shape parsers.mjs uses for prose labels.
+    const labelRe = new RegExp('^[ \\t]*\\*{0,2}[ \\t]*(?:' + H1_LABEL_WORDS.map(escReMeta).join('|') + ')[ \\t]*\\*{0,2}[ \\t]*[:：][ \\t]*(.+)$', 'iu');
+    const labelMatch = rawTitle.match(labelRe);
+    const labelled = Boolean(labelMatch);
+    const titleBody = (labelMatch ? labelMatch[1] : rawTitle).trim();
+    // 2) after a label the format is `Company — Role` → the role is the
+    //    RIGHT side; without a label `Role — Company` → the left side. A
+    //    part that names the company decides regardless of the label.
+    const dash = titleBody.match(/^(.{1,120}?)\s+[—–-]\s+(.+)$/u);
+    const left = dash ? dash[1].trim() : '';
+    const right = dash ? dash[2].trim() : '';
+    const sameAsCompany = (a) => Boolean(a) && Boolean(guess.company)
+      && a.toLowerCase() === String(guess.company).toLowerCase();
+    let reportRole;
+    if (left && right) {
+      if (sameAsCompany(left)) reportRole = right;
+      else if (sameAsCompany(right)) reportRole = left;
+      else reportRole = labelled ? right : left;
+    } else {
+      reportRole = titleBody;
+    }
+    // 3) the role is never the company and never a bare label word —
+    //    then the cleaned post line is the fallback.
+    const bareLabel = H1_LABEL_WORDS.some((w) => reportRole.toLowerCase().startsWith(w.toLowerCase()));
+    if (!reportRole || bareLabel || sameAsCompany(reportRole)) reportRole = '';
     // v1.248.6 — the fallback line is cleaned before it can reach the
     // tracker (no hashtags, no emoji, ≤80 chars); the header title wins.
     const role = reportRole || cleanRoleLine(guess.role);
@@ -672,7 +718,13 @@ export function registerAutoPipelineRoutes(app) {
     try {
       // Score and legitimacy were read above, with the summary block present;
       // the saved report drops that machine block, as the parent's scripts do.
-      const sanitized = stripDangerousMarkdown(stripScoreSummary(markdown));
+      const sanitizedFull = stripDangerousMarkdown(stripScoreSummary(markdown));
+      // v1.248.7 — model chatter («I'll evaluate this job description…»,
+      // «**Reading files...**») before the H1 is dropped: the report starts
+      // at its heading line. Only a slice BEFORE the first H1 is removed —
+      // the chatter never carries facts, the header does.
+      const h1At = sanitizedFull.search(/^#[ \t]/m);
+      const sanitized = h1At > 0 ? sanitizedFull.slice(h1At) : sanitizedFull;
       mkdirSync(PATHS.reportsDir, { recursive: true });
       const file = projPath('reports', `${slug}.md`);
       if (existsSync(file)) {

@@ -9,6 +9,20 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 ---
 
 
+## [1.248.7] — 2026-10-11
+
+**A função do cabeçalho do relatório agora lê a convenção real do pai — `# Evaluation: {Company} — {Role}` — em vez de assumir `# <Função> — <Empresa>`, então o rastreador não carrega mais «Evaluation: <Empresa>» como função; um relatório no idioma errado avisa em vez de salvar em silêncio; e o papo do modelo antes do H1 sumiu dos relatórios salvos.**
+
+### Corrigido
+
+- **O rótulo localizado é removido primeiro** (`Evaluation:`, `Оценка вакансии:` e mais 16 variantes); após o rótulo `Company — Role` → a função é o lado direito; sem rótulo `Role — Company` → a esquerda; a parte que nomeia a empresa decide; a função nunca é a empresa nem uma palavra de rótulo — o fallback é a linha da postagem limpa.
+- **cleanup-plan soma os N das linhas** (`— N dirty-URL line(s)`), não conta arquivos — um arquivo com 5 URLs sujas dava 1, não 5.
+- **Um relatório no idioma errado avisa**: o prompt abre E fecha com a instrução obrigatória de idioma (todo o relatório, tabelas incluídas), e o pipeline valida o idioma do relatório salvo — a deriva aparece como aviso `report not in <locale>`.
+- **Sem papo do modelo antes do H1** — o relatório começa na sua linha de cabeçalho.
+### Notas
+
+- Não portado e intocado (verificado no regression v1.248.6): o fetch embed, a estrutura de linhas do post («Компания : X»), o dedup «## Rejected», a rejeição da raiz de domínio antes do fetch, a honestidade de recon/link-check e os modos cleanup. A validação de idioma é um aviso — o relatório (já validado em conteúdo A–G + pontuação) é salvo; o operador vê a deriva e pode repetir a avaliação.
+
 ## [1.248.6] — 2026-10-10
 
 **Polimento pós-regressão da cadeia do Telegram: uma postagem real mantém sua estrutura de linhas (o rótulo «Компания : X» e a linha da função são encontrados onde realmente estão), a função do rastreador vem do cabeçalho do relatório em vez de uma linha crua da postagem, e as superfícies operacionais (recon, cleanup-plan, link-check) relatam o que dizem relatar.**

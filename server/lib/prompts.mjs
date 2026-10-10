@@ -400,7 +400,13 @@ export function buildModePrompt(template, slug, context, lang) {
 }
 
 export function buildEvaluationPrompt(jd, lang) {
-  return `${buildLocaleDirective(lang)}${scaffold('evalRoleLine', lang)}
+  // v1.248.7 — the language requirement opens the instruction too (the tail
+  // reminder alone drifted: ta evaluate came back 2–22 % own-script 2/2 on
+  // prod while the docs assistant stayed on-language).
+  const langOpen = lang && lang !== 'en' && localeName(lang)
+    ? `\n**LANGUAGE (mandatory): write the ENTIRE report — every section, bullet, table cell and the final verdict — in ${localeName(lang)}. Technology and company names may stay Latin.\n`
+    : '';
+  return `${buildLocaleDirective(lang)}${langOpen}${scaffold('evalRoleLine', lang)}
 
 ${scaffold('readFiles', lang)}
   • cv.md
@@ -487,7 +493,8 @@ export function buildLanguageReminder(lang) {
   return `\nWrite the whole report in ${name} (locale: ${lang}) — every sentence, bullet and table cell, in ${name}'s own script. The files and the JD above are in English; that does not change the output language. Company, product and technology names may stay as they are, and so may text quoted word for word from the CV or the JD (keep it in quotation marks). Everything else — including ordinary words such as role, team, design, production, critical — is written in ${name}, not left in English.\n`
     + 'Two parts of the format are machine-read and must NOT be translated: '
     + 'every block heading KEEPS its Latin capital letter A–G and starts with it (for example `## <translated word> A — <translated title>`; never А Б В or any other native numbering), '
-    + 'and the report ends with the ---SCORE_SUMMARY--- … ---END_SUMMARY--- block, markers and keys in English, exactly as shown above.\n';
+    + 'and the report ends with the ---SCORE_SUMMARY--- … ---END_SUMMARY--- block, markers and keys in English, exactly as shown above.\n'
+    + `This is the LAST instruction: the whole report below is written in ${name} — first heading to last line, tables included. An English report when ${name} was requested is a defect.\n`;
 }
 
 export function buildDeepPrompt(rawCompany, rawRole, lang, opts = {}) {

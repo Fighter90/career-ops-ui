@@ -7,6 +7,21 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 ---
 
 
+## [1.248.7] — 2026-10-11
+
+**The report-header role now reads the parent's actual H1 convention — `# Evaluation: {Company} — {Role}` — instead of assuming `# <Role> — <Company>`, so the tracker no longer carries «Evaluation: <Company>» as a role; a wrong-language report warns instead of saving silently; and the model chatter before the H1 is gone from saved reports.**
+
+### Fixed
+
+- **The role is read from the header in the parent's format**: v1.248.7 strips the localized prose label first (`Evaluation:`, `Оценка вакансии:`, `Оцінка:`, and 16 more locale variants — longest first, same pattern shape as the prose-label regex in parsers.mjs). After a label the format is `Company — Role` → the role is the RIGHT side; without a label `Role — Company` → the left side; a part that names the company decides regardless. The role is never the company and never a bare label word — the cleaned post line is the fallback. (v1.248.6 read the left side and produced `Evaluation: Sveak` as the role on every auto-pipeline tracker row.)
+- **cleanup-plan reports line counts, not file counts**: `— N dirty-URL line(s)` lines are summed (the N), not counted as one line each — a file with 5 dirty URLs reported 1, not 5.
+- **A wrong-language evaluate report warns instead of saving silently**: the docs assistant answers on-language but the evaluate drifted (ta own-script share 22 % and 2 %, reproduced 2/2 on prod; ja flaked once and passed on the retry). The evaluation prompt now opens AND closes with a mandatory language instruction — the entire report including tables — and the pipeline validates the saved report's language: a drift surfaces as a `report not in <locale>` warning on the done event and in the step detail, while the (otherwise valid) report still saves.
+- **No model chatter before the H1**: «I'll evaluate this job description… **Reading files...**» preamble is sliced off at save — the report starts at its heading line.
+
+### Notes
+
+- Not ported and not touched (verified in the v1.248.6 regression): the embed fetch, the post line structure («Компания : X» with a space before the colon), the «## Rejected» dedup, the domain-root rejection before the fetch, recon/link-check honesty, and the cleanup modes. The language check is a WARNING, not a rejection — a report whose content passed validation (A–G + score) still saves; the operator sees the drift (`report not in <locale>` on the done event and in the step detail) and can re-run the evaluation.
+
 ## [1.248.6] — 2026-10-10
 
 **Post-regression polish for the Telegram chain: a real post keeps its line structure (so «Компания : X» and the role line are found where they actually are), the tracker role comes from the report header instead of a raw post line, and the operational surfaces (recon, cleanup-plan, link-check) report what they claim to report.**

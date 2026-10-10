@@ -296,6 +296,86 @@ test('v1.248.6: a real t.me post («Компания : X», <br>, hashtags) → 
   assert.match(reports[0], /nordwind/i, 'the company lands in the filename');
 });
 
+test('v1.248.7: H1 «Evaluation: Sveak — PHP-разработчик (senior)» → the role is the RIGHT side', async () => {
+  // The parent's report format is `# Evaluation: {Company} — {Role}`
+  // (modes/oferta.md); v1.248.6 read the left side and named the role
+  // «Evaluation: Sveak» on every auto-pipeline tracker row.
+  const tmeEmbed = '<html><body><div class="tgme_widget_message_text js-message_text" dir="auto">'
+    + '<p>PHP-разработчик (senior) #удаленка 🚀</p><br>'
+    + 'Компания : Sveak<br>'
+    + 'Удалённо, Европа. Опыт PHP от 5 лет, Laravel, MySQL, Docker. Зарплата 4500–5500 € net, оформление по контракту, код-ревью и наставник в команде. Пишите в личку.</div></body></html>';
+  const report = ['# Evaluation: Sveak — PHP-разработчик (senior)', '## A) Контекст', '## B) Соответствие',
+    '## C) Риски', '## D) Зарплата', '## E) Вопросы', '## F) Легитимность: high', '## G) Вердикт: proceeding',
+    '---SCORE_SUMMARY---', 'COMPANY: Sveak', 'ROLE: PHP-разработчик (senior)', 'ARCHETYPE: backend',
+    'LEGITIMACY: high', 'SCORE: 4/5', '---END_SUMMARY---'].join('\n');
+  const out = await run({ url: 'https://t.me/jobsfeed/123' }, report, tmeEmbed);
+  const done = out.events.find((e) => e.event === 'done');
+  assert.ok(done, 'the pipeline completes');
+  assert.equal(done.data.role, 'PHP-разработчик (senior)', 'the role is the RIGHT side after the label');
+  assert.equal(done.data.company, 'Sveak', 'the company comes from the self-label');
+  const file = readdirSync(resolve(ROOT, 'reports'))[0] || '';
+  assert.ok(!/evaluation/i.test(file), 'no «evaluation» in the slug: ' + file);
+  assert.match(file, /sveak/i, 'the company lands in the slug');
+  const row = readFileSync(resolve(ROOT, 'data', 'applications.md'), 'utf8').split('\n').find((l) => l.includes('Sveak'));
+  assert.ok(row && !/Evaluation:/i.test(row), 'the tracker row carries no «Evaluation:» prefix');
+});
+
+test('v1.248.7: H1 «Оценка вакансии: Acme — Backend Engineer» → «Backend Engineer»', async () => {
+  const page = '<html><body><div class="tgme_widget_message_text js-message_text" dir="auto">'
+    + '<p>Backend Engineer в продуктовой команде. Компания : Acme. Полностью удалённо, Европа. Опыт Go от 4 лет, Kubernetes, Postgres, Prometheus. Оформление по контракту, опционы, ежегодные бонусы, обучение за счёт компании, код-ревью и наставник. Откликайтесь в личку.</p></div></body></html>';
+  const report = ['# Оценка вакансии: Acme — Backend Engineer', '## A) Контекст', '## B) Соответствие',
+    '## C) Риски', '## D) Зарплата', '## E) Вопросы', '## F) Легитимность: high', '## G) Вердикт: proceeding',
+    '---SCORE_SUMMARY---', 'COMPANY: Acme', 'ROLE: Backend Engineer', 'ARCHETYPE: backend',
+    'LEGITIMACY: high', 'SCORE: 4/5', '---END_SUMMARY---'].join('\n');
+  const out = await run({ url: 'https://t.me/jobsfeed/124' }, report, page);
+  const done = out.events.find((e) => e.event === 'done');
+  assert.ok(done, 'the pipeline completes');
+  assert.equal(done.data.role, 'Backend Engineer', 'the localized label is stripped, the role is the right side');
+});
+
+test('v1.248.7: H1 «Backend Engineer — Acme» (no label) → the LEFT side is the role', async () => {
+  const page = '<html><body><div class="tgme_widget_message_text js-message_text" dir="auto">'
+    + '<p>Backend Engineer в платформенной команде. Компания : Acme. Полностью удалённо, Европа. Опыт Go от 4 лет, Kubernetes, Postgres, Prometheus. Оформление по контракту, опционы, ежегодные бонусы, обучение за счёт компании. Откликайтесь в личку.</p></div></body></html>';
+  const report = ['# Backend Engineer — Acme', '## A) Контекст', '## B) Соответствие',
+    '## C) Риски', '## D) Зарплата', '## E) Вопросы', '## F) Легитимность: high', '## G) Вердикт: proceeding',
+    '---SCORE_SUMMARY---', 'COMPANY: Acme', 'ROLE: Backend Engineer', 'ARCHETYPE: backend',
+    'LEGITIMACY: high', 'SCORE: 4/5', '---END_SUMMARY---'].join('\n');
+  const out = await run({ url: 'https://t.me/jobsfeed/125' }, report, page);
+  const done = out.events.find((e) => e.event === 'done');
+  assert.ok(done, 'the pipeline completes');
+  assert.equal(done.data.role, 'Backend Engineer', 'without a label the left side is the role');
+});
+
+test('v1.248.7: H1 «Evaluation: Acme» (no role) → the cleaned post line is the fallback', async () => {
+  const page = '<html><body><div class="tgme_widget_message_text js-message_text" dir="auto">'
+    + '<p>Backend Engineer (Go) #удаленка 🚀</p><br>'
+    + 'Компания : Acme<br>'
+    + 'Полностью удалённо. Опыт Go от 4 лет, Kubernetes, Postgres, Prometheus. Оформление по контракту, опционы, ежегодный бонус, обучение за счёт компании. Откликайтесь в личку.</div></body></html>';
+  const report = ['# Evaluation: Acme', '## A) Контекст', '## B) Соответствие',
+    '## C) Риски', '## D) Зарплата', '## E) Вопросы', '## F) Легитимность: high', '## G) Вердикт: proceeding',
+    '---SCORE_SUMMARY---', 'COMPANY: Acme', 'ROLE: Backend Engineer (Go)', 'ARCHETYPE: backend',
+    'LEGITIMACY: high', 'SCORE: 4/5', '---END_SUMMARY---'].join('\n');
+  const out = await run({ url: 'https://t.me/jobsfeed/126' }, report, page);
+  const done = out.events.find((e) => e.event === 'done');
+  assert.ok(done, 'the pipeline completes');
+  assert.ok(!/evaluation/i.test(done.data.role || ''), 'the role is never a bare label');
+  assert.match(done.data.role || '', /Backend Engineer/, 'the fallback comes from the post line (cleaned)');
+  assert.ok(!/#/.test(done.data.role || ''), 'no hashtags in the fallback');
+});
+
+test('v1.248.7: an English answer at lang=ta saves with a «report not in ta» warning', async () => {
+  const page = '<html><body><div class="tgme_widget_message_text js-message_text" dir="auto">'
+    + '<p>Backend Engineer в платформенной команде. Компания : Acme. Полностью удалённо, Европа. Опыт Go от 4 лет, Kubernetes, Postgres, Prometheus. Оформление по контракту, опционы, ежегодные бонусы, обучение за счёт компании. Откликайтесь в личку.</p></div></body></html>';
+  const report = ['# Evaluation: Acme — Backend Engineer', '## A) Context', '## B) Match',
+    '## C) Risks', '## D) Compensation', '## E) Questions', '## F) Legitimacy: high', '## G) Verdict: proceeding',
+    '---SCORE_SUMMARY---', 'COMPANY: Acme', 'ROLE: Backend Engineer', 'ARCHETYPE: backend',
+    'LEGITIMACY: high', 'SCORE: 4/5', '---END_SUMMARY---'].join('\n');
+  const out = await run({ url: 'https://t.me/jobsfeed/127', lang: 'ta' }, report, page);
+  const done = out.events.find((e) => e.event === 'done');
+  assert.ok(done, 'the pipeline completes — a wrong-language report is NOT a rejection');
+  assert.ok((done.data.warnings || []).some((w) => /report not in ta/.test(w)), 'the warning names the requested locale');
+});
+
 test('v1.248.6: two rejections in a row → ONE «## Rejected» header, two lines', async () => {
   // The section must not grow a new heading per rejection: the second call
   // appends its line INTO the existing section.

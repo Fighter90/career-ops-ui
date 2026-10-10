@@ -2,6 +2,20 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.248.7] — 2026-10-11
+
+**Die Rolle aus dem Berichtskopf liest jetzt die tatsächliche Parent-Konvention — `# Evaluation: {Company} — {Role}` — statt `# <Rolle> — <Firma>` anzunehmen, sodass der Tracker nicht mehr «Evaluation: <Firma>» als Rolle trägt; ein Bericht in der falschen Sprache warnt, statt still gespeichert zu werden; und das Modell-Geplänkel vor dem H1 wird aus gespeicherten Berichten entfernt.**
+
+### Behoben
+
+- **Das lokalisierte Label wird zuerst entfernt** (`Evaluation:`, `Оценка вакансии:` und 16 weitere Varianten); nach dem Label `Company — Role` → die Rolle ist die rechte Seite; ohne Label `Role — Company` → die linke; der Teil, der die Firma nennt, entscheidet; die Rolle ist nie die Firma noch ein Labelwort — der Fallback ist die gesäuberte Post-Zeile.
+- **cleanup-plan summiert die N der Zeilen** (`— N dirty-URL line(s)`), zählt keine Dateien — eine Datei mit 5 dreckigen URLs ergab 1, nicht 5.
+- **Ein Bericht in der falschen Sprache warnt**: der Prompt öffnet UND schließt mit der verpflichtenden Sprachanweisung (der ganze Bericht, Tabellen eingeschlossen), und die Pipeline prüft die Sprache des gespeicherten Berichts — die Drift erscheint als Warnung `report not in <locale>`.
+- **Kein Modell-Geplänkel vor dem H1** — der Bericht beginnt bei seiner Überschriftenzeile.
+### Hinweise
+
+- Nicht portiert und unangetastet (in der v1.248.6-Regression verifiziert): der Embed-Fetch, die Zeilenstruktur des Posts («Компания : X»), die «## Rejected»-Deduplikation, die Domain-Root-Ablehnung vor dem Fetch, die Recon/Link-Check-Ehrlichkeit und die Cleanup-Modi. Die Sprachprüfung ist eine Warnung — der Bericht (Inhalt bereits validiert A–G + Score) wird gespeichert; der Betreiber sieht die Drift und kann die Bewertung wiederholen.
+
 ## [1.248.6] — 2026-10-10
 
 **Nach der Regression poliert: Ein echter Telegram-Post behält seine Zeilenstruktur (das Label «Компания : X» und die Rollenzeile werden dort gefunden, wo sie wirklich sind), die Tracker-Rolle kommt aus dem Berichtskopf statt aus einer rohen Post-Zeile, und die Betriebsoberflächen (recon, cleanup-plan, link-check) melden das, was sie zu melden behaupten.**

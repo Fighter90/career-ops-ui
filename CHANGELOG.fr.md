@@ -11,6 +11,20 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.248.7] — 2026-10-11
+
+**Le rôle de l’en-tête du rapport lit désormais la vraie convention du parent — `# Evaluation: {Company} — {Role}` — au lieu de supposer `# <Rôle> — <Société>`, donc le tracker ne porte plus «Evaluation: <Société>» comme rôle ; un rapport dans la mauvaise langue avertit au lieu de s’enregistrer en silence ; et le bavardage du modèle avant le H1 est retiré des rapports sauvegardés.**
+
+### Corrigé
+
+- **Le libellé localisé est retiré d’abord** (`Evaluation:`, `Оценка вакансии:` et 16 variantes) ; après le libellé `Company — Role` → le rôle est le côté droit ; sans libellé `Role — Company` → le gauche ; la partie qui nomme la société décide ; le rôle n’est jamais la société ni un mot de libellé — le secours est la ligne de post nettoyée.
+- **cleanup-plan somme les N des lignes** (`— N dirty-URL line(s)`), ne compte pas les fichiers — un fichier avec 5 URL sales donnait 1, pas 5.
+- **Un rapport dans la mauvaise langue avertit** : le prompt ouvre ET ferme avec l’instruction de langue obligatoire (tout le rapport, tables comprises), et le pipeline valide la langue du rapport sauvegardé — la dérive apparaît comme avertissement `report not in <locale>`.
+- **Pas de bavardage du modèle avant le H1** — le rapport commence à sa ligne de titre.
+### Notes
+
+- Non porté et intouché (vérifié lors de la régression v1.248.6) : le fetch embed, la structure de lignes du post («Компания : X»), le dédoublonnage «## Rejected», le rejet de la racine de domaine avant le fetch, l’honnêteté de recon/link-check et les modes cleanup. La validation de langue est un avertissement — le rapport (contenu déjà validé A–G + score) est sauvegardé ; l’opérateur voit la dérive et peut relancer l’évaluation.
+
 ## [1.248.6] — 2026-10-10
 
 **Poli post-régression de la chaîne Telegram : un vrai post conserve sa structure de lignes (le libellé «Компания : X» et la ligne de rôle sont trouvés là où ils sont réellement), le rôle du tracker vient de l’en-tête du rapport plutôt que d’une ligne brute du post, et les surfaces opérationnelles (recon, cleanup-plan, link-check) rapportent ce qu’elles prétendent rapporter.**
