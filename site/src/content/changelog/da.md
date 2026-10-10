@@ -9,6 +9,23 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 ---
 
 
+## [1.248.6] — 2026-10-10
+
+**Efterregressions-polering af Telegram-kæden: et rigtigt indlæg bevarer sin linjestruktur (mærkaten «Компания : X» og rullelinjen findes der, hvor de faktisk er), tracker-rollen kommer fra rapportens sidehoved i stedet for en rå indlægslinje, og de operationelle overflader (recon, cleanup-plan, link-check) rapporterer det, de udgiver sig for at rapportere.**
+
+### Rettet
+
+- **Et t.me-indlæg klæber ikke længere sammen i én linje**: `<br>` bliver et linjeskift før tag-fjernelse, og numeriske HTML-entiteter dekodes; firma-mærkat-mønsteret accepterer formen med mellemrum før kolon.
+- **Tracker-rollen kommer fra rapportens sidehoved** (H1 `# <Rolle> — <Firma>`)； fallback-linjen renses — ingen hashtags, ingen emoji, ≤80 tegn.
+- **`## Rejected` duplikeres ikke længere**: sektionen oprettes én gang; hver afvisning tilføjer sin linje i den.
+- **En domænerod afvises før anmodningen** — en junk-URL koster ikke længere noget.
+- **Recon beregner kontraktsignalet i stedet for at påstå det** (`honours rejected:` tjekker `markPipelineRejected` i den udrullede kode); mærketælleren udskriver ikke længere «0» to gange.
+- **cleanup-plan rapporterer tal pr. kategori** (t-role der skal flyttes, dirty-URL-linjer, test-row-linjer) i stedet for én `grep -c`, der talte sin egen succeslinje.
+- **link-check behandler github.com 5xx som uverificeret** — bag bot-muren, ikke som ødelagte links.
+### Noter
+
+- Ikke portet og urørt (verificeret i v1.248.5-regressionen): selve embed-fetch, pipeline-spring-kontrakten, _setLookup-offline-testene, uk-ordinalaccept, ordboundary i rullefilteret og cleanup-apply-tilstanden. cleanup-plans kategoritælling læser oprydningsscriptets egne output-labels — at omdøbe dem ville knække tællerne lydløst.
+
 ## [1.248.5] — 2026-10-10
 
 **Efterregressions-hærdning: t.me enkeltindlæg-hentninger henter nu selve indlægget teksten (embed-form), et afvist indlæg forlader eval-timerens pulje på serversiden, og ukrainske rapports native bloknummerering accepteres — plus én test, der i hemmelighed brugte det levende netværk, er offline for altid.**

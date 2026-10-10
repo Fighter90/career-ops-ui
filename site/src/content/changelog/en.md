@@ -7,6 +7,24 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 ---
 
 
+## [1.248.6] — 2026-10-10
+
+**Post-regression polish for the Telegram chain: a real post keeps its line structure (so «Компания : X» and the role line are found where they actually are), the tracker role comes from the report header instead of a raw post line, and the operational surfaces (recon, cleanup-plan, link-check) report what they claim to report.**
+
+### Fixed
+
+- **A t.me post no longer glues into one line**: `extractTelegramPostText` turned every tag into a space — including `<br>` — so the line-anchored patterns (`^Компания:`) never fired and the role fell back to the first 100 characters of the whole post. `<br>` (and a closing `</blockquote>`) now become a newline before tag-stripping, and numeric HTML entities (`&#NN;`, `&#xNN;`) decode to their characters. The company self-label pattern widened to `^Компания\s*[:—–-]\s*(.+)` — the live post said «Компания : Sveak» with a space before the colon, and the tracker got the channel name instead.
+- **The tracker role comes from the report header**: the pipeline computed the merged role (header H1 → post line fallback) for its gate but wrote the RAW `guess.role` into the slug, the tracker row and the done event. The header's H1 follows the `# <Role> — <Company>` convention, so the role side is taken (the company doesn't ride along); the post-line fallback is cleaned — no hashtags (`#удаленка`), no emoji, ≤80 characters.
+- **`## Rejected` no longer duplicates**: every rejection appended a fresh `## Rejected` heading to `data/pipeline.md`. The section is created once; each rejection appends its line INTO the existing section (two rejections in a row → one heading, two lines).
+- **A domain root is rejected before the request**: the `pathname` check ran after `fetchJobDescription`, so a junk `linkedin.com/` cost a full page download (fetch: done) before being declined. The check now fires before the fetch — a junk URL costs nothing.
+- **Recon computes the skip-contract signal instead of asserting it**: `honours rejected:` is now `yes` only if the deployed `auto-pipeline.mjs` actually contains `markPipelineRejected` (grep of the fetched source), and the marks count no longer prints `0` twice (`grep -c` already prints `0` on no-match; the `|| echo 0` fallback duplicated it).
+- **cleanup-plan reports numbers per category**: t-role reports to move, dirty-URL pipeline lines, test-row tracker lines — instead of one `grep -c` that counted its own «no unscored *-t-role-*.md reports» success line (a clean dataset printed a phantom «1»).
+- **link-check treats github.com 5xx as unverified**: three runs in a row 503'd on `github.com/…/blob/main/…` links from Actions runners while the same URLs returned 200 from other networks — counted behind the bot wall (like 401/403/429), not as broken links.
+
+### Notes
+
+- Not ported and not touched (verified working in the v1.248.5 regression): the embed fetch itself, the pipeline skip contract, the offline `_setLookup` tests, the uk ordinal acceptance, word-boundary role keywords, and the cleanup-apply workflow mode. The `cleanup-plan` per-category counting reads the cleanup script's own output labels (`no valid SCORE` / `dirty-URL line` / `test-row line`) — renaming those labels would silently break the counters.
+
 ## [1.248.5] — 2026-10-10
 
 **Post-regression hardening: Telegram single-post entries now fetch the post text itself (the embed form), a rejected entry leaves the eval timer's pool server-side, and a Ukrainian report's native block numbering is accepted — plus one test that secretly needed the live network is offline for good.**

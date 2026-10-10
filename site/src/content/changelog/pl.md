@@ -9,6 +9,23 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.248.6] — 2026-10-10
+
+**Szlif po regresji łańcucha Telegram: rzeczywisty post zachowuje strukturę linii (etykieta «Компания : X» i linia roli są znajdywane tam, gdzie faktycznie są), rola w trackerze pochodzi z nagłówka raportu, a nie z surowej linii posta, a powierzchnie operacyjne (recon, cleanup-plan, link-check) raportują to, co deklarują.**
+
+### Naprawiono
+
+- **Post z t.me nie skleja się już w jedną linię**: `<br>` staje się nową linią przed zdjęciem tagów, a numeryczne encje HTML są dekodowane; wzorzec etykiety firmy akceptuje formę ze spacją przed dwukropkiem.
+- **Rola w trackerze pochodzi z nagłówka raportu** (H1 `# <Rola> — <Firma>`)； linia zapasowa jest czyszczona — bez hashtagów, bez emoji, ≤80 znaków.
+- **`## Rejected` nie duplikuje się już**: sekcja jest tworzona raz; każde odrzucenie dopisuje w niej swoją linię.
+- **Korzeń domeny jest odrzucany przed żądaniem** — śmieciowy URL nie kosztuje już nic.
+- **Recon wylicza sygnał kontraktu zamiast go deklarować** (`honours rejected:` sprawdza `markPipelineRejected` we wdrożonym kodzie); licznik znaczników nie drukuje już «0» dwukrotnie.
+- **cleanup-plan raportuje liczby per kategoria** (t-role do przeniesienia, linie dirty-URL, linie test-row) zamiast pojedynczego `grep -c`, który liczył własną linię sukcesu.
+- **link-check traktuje 5xx z github.com jako niezweryfikowane** — za murem botów, nie jako zepsute linki.
+### Uwagi
+
+- Nie przeniesiono i nie dotykano (zweryfikowano w regresji v1.248.5): sam embed-fetch, kontrakt pomijania pipeline, testy offline _setLookup, akceptacja porządkowych uk, granice słów w filtrze roli oraz tryb cleanup-apply. Liczenie per kategoria w cleanup-plan czyta etykiety wyjściowe samego skryptu — zmiana ich nazw po cichu zepsułaby liczniki.
+
 ## [1.248.5] — 2026-10-10
 
 **Utrwalenie po regresji: pojedyncze wpisy t.me teraz pobierają sam tekst posta (forma embed), odrzucony wpis opuszcza pulę licznika ewaluacji po stronie serwera, a natywna numeracja bloków w ukraińskim raporcie jest akceptowana — do tego jeden test, który potajemnie korzystał z żywej sieci, na zawsze przechodzi offline.**

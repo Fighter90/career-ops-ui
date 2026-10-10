@@ -265,20 +265,79 @@ test('v1.248.4: entry with no company and no role hint fails BEFORE the LLM call
   }
 });
 
-test('v1.248.4: a long Cyrillic t.me post with a real vacancy → saved with the role in the filename', async () => {
-  // v1.248.5 — the embed form; the widget text is a real Cyrillic vacancy
-  // with the company self-label; the model returns a full report.
+test('v1.248.6: a real t.me post («Компания : X», <br>, hashtags) → company from the label, clean role in the tracker', async () => {
+  // The user-reported live shape: <br>-separated post, «Компания : X» with a
+  // space before the colon, hashtags and emoji in the role line. Before the
+  // fix the whole post glued into one line: company fell back to the channel
+  // name and the tracker role cell carried the full post text.
   const tmeEmbed = '<html><body><div class="tgme_widget_message_text js-message_text" dir="auto">'
-    + '<p>Вакансия: Инженер по данным (DevOps)</p><p>Компания: Somejobschannel</p>'
-    + '<p>Мы ищем инженера в команду данных. Berlin, Germany, гибрид. Стек: Python, Airflow, dbt, Kafka. Опыт работы с данными от трёх лет, приветствуется знание SQL и современного стека обработки данных.</p>'
-    + '</div></body></html>';
-  const fullReport = ['# Инженер по данным — Somejobschannel', '## A) Контекст', '## B) Соответствие',
+    + '<p>PHP-разработчик (middle) #удаленка 🚀</p><br>'
+    + 'Компания : Sveak<br>'
+    + 'Удалённо, Европа. Опыт PHP от 3 лет, Laravel, MySQL, Docker. Зарплата 3500–4500 € net, оформление по контракту, гибкий график, код-ревью и наставник в команде. Пишите в личку.</div></body></html>';
+  const fullReport = ['# Middle PHP Developer — Sveak', '## A) Контекст', '## B) Соответствие',
     '## C) Риски', '## D) Зарплата', '## E) Вопросы', '## F) Легитимность: high', '## G) Вердикт: proceeding',
-    '---SCORE_SUMMARY---', 'COMPANY: Somejobschannel', 'ROLE: Инженер по данным', 'ARCHETYPE: data',
-    'LEGITIMACY: high', 'SCORE: 4,2/5', '---END_SUMMARY---'].join('\n');
-  const out = await run({ url: 'https://t.me/somejobschannel/4567' }, fullReport, tmeEmbed);
-  assert.ok(out.events.some((e) => e.event === 'done'), 'the pipeline completes');
-  const reports = readdirSync(resolve(ROOT, 'reports')).filter((f) => f.includes('somejobschannel'));
+    '---SCORE_SUMMARY---', 'COMPANY: Sveak', 'ROLE: Middle PHP Developer', 'ARCHETYPE: backend',
+    'LEGITIMACY: high', 'SCORE: 4/5', '---END_SUMMARY---'].join('\n');
+  const out = await run({ url: 'https://t.me/phprabota/123' }, fullReport, tmeEmbed);
+  assert.ok(out.events.some((e) => e.event === 'done'), 'the pipeline completes: ' + JSON.stringify(out.events).slice(-300));
+  // Item 1: the company comes from the «Компания : X» label — not the channel.
+  assert.equal(out.events.find((e) => e.event === 'done')?.data?.company, 'Sveak', 'company from the self-label, not the channel');
+  // Item 2: the tracker role cell — from the report header, no hashtags, no emoji.
+  const row = readFileSync(resolve(ROOT, 'data', 'applications.md'), 'utf8').split('\n').find((l) => l.includes('Sveak'));
+  assert.ok(row, 'a tracker row exists');
+  const roleCell = row.split('|')[4].trim();
+  assert.equal(roleCell, 'Middle PHP Developer', 'the tracker role comes from the report header');
+  assert.ok(!/#/.test(roleCell), 'no hashtags in the tracker role');
+  assert.ok(!/\p{Extended_Pictographic}/u.test(roleCell), 'no emoji in the tracker role');
+  // The report slug carries the header role (Cyrillic is dropped by the slug,
+  // the ASCII company remains — pre-existing slug behaviour).
+  const reports = readdirSync(resolve(ROOT, 'reports'));
   assert.equal(reports.length, 1, 'one report saved');
-  assert.match(reports[0], /инженер|данные|devops/i, 'the role lands in the filename');
+  assert.match(reports[0], /sveak/i, 'the company lands in the filename');
+});
+
+test('v1.248.6: two rejections in a row → ONE «## Rejected» header, two lines', async () => {
+  // The section must not grow a new heading per rejection: the second call
+  // appends its line INTO the existing section.
+  writeFileSync(resolve(ROOT, 'data', 'pipeline.md'),
+    '# Pipeline\n\n```\nhttps://t.me/somejobschannel/4567\n```\n');
+  const scoreless = 'Недостаточно данных для оценки вакансии. Извините.';
+  const longPage = '<html><body><div class="tgme_widget_message_text js-message_text" dir="auto">'
+    + '<p>Телеграм-пост о вакансии инженера в распределённой команде, стек и условия внутри. </p>'.repeat(6)
+    + '</div></body></html>';
+  await run({ url: 'https://t.me/somejobschannel/4567' }, scoreless, longPage);
+  await run({ url: 'https://t.me/somejobschannel/4567' }, scoreless, longPage);
+  const pipe = readFileSync(resolve(ROOT, 'data', 'pipeline.md'), 'utf8');
+  const headers = pipe.split('\n').filter((l) => /^## Rejected\s*$/i.test(l.trim())).length;
+  const marks = pipe.split('\n').filter((l) => /^- .*rejected:/i.test(l)).length;
+  assert.equal(headers, 1, 'exactly one «## Rejected» header');
+  assert.equal(marks, 2, 'two mark lines (the URL left the fence, so the idempotence check does not swallow the second)');
+});
+
+test('v1.248.6: a domain root is rejected BEFORE the fetch', async () => {
+  let pageFetches = 0;
+  const { _setTransport: set } = await import('../server/lib/safe-fetch.mjs');
+  const restore = set(async () => { pageFetches += 1; return { status: 200, headers: { 'content-type': 'text/html' }, body: Buffer.from('<p>' + 'x'.repeat(400) + '</p>') }; });
+  const realFetchSave = globalThis.fetch;
+  globalThis.fetch = async (u, o = {}) => {
+    const host = (() => { try { return new URL(String(u)).hostname; } catch { return ''; } })();
+    if (host === 'api.openai.com') return new Response(JSON.stringify({ choices: [{ message: { content: 'x' } }] }), { status: 200 });
+    return realFetchSave(u, o);
+  };
+  try {
+    let providerCalls = 0;
+    const prevFetch = globalThis.fetch;
+    globalThis.fetch = async (u, o = {}) => {
+      const host = (() => { try { return new URL(String(u)).hostname; } catch { return ''; } })();
+      if (host === 'api.openai.com') { providerCalls += 1; return prevFetch(u, o); }
+      return prevFetch(u, o);
+    };
+    const { events } = await run({ url: 'https://linkedin.com/' }, 'x', '<p>y</p>');
+    assert.equal(providerCalls, 0, 'the LLM stub is never called');
+    const fetchStep = events.filter((e) => e.event === 'step' && e.data?.key === 'fetch');
+    assert.ok(!fetchStep.some((e) => e.data?.status === 'done'), 'no fetch:done — the root check fires before the request');
+    assert.ok(events.some((e) => e.event === 'error' && e.data?.rejected === true && /domain root/.test(e.data?.message || '')), 'rejected with the root reason');
+  } finally {
+    restore(); globalThis.fetch = realFetchSave;
+  }
 });

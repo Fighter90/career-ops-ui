@@ -2,6 +2,23 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.248.6] — 2026-10-10
+
+**Regresyon sonrası Telegram zinciri cilası: gerçek bir gönderi satır yapısını korur («Компания : X» etiketi ve rol satırı gerçekten bulundukları yerde bulunur), izleyici rolü ham gönderi satırı yerine rapor başlığından gelir ve operasyonel yüzeyler (recon, cleanup-plan, link-check) iddia ettiklerini raporlar.**
+
+### Düzeltildi
+
+- **Bir t.me gönderisi artık tek satıra yapışmıyor**: etiketler sökülmeden önce `<br>` satır sonu olur ve sayısal HTML varlıkları çözülür; şirket etiket deseni iki nokta üst üste öncesi boşluklu biçimi de kabul eder.
+- **İzleyici rolü rapor başlığından gelir** (H1 `# <Rol> — <Şirket>`)； yedek satır temizlenir — hashtag yok, emoji yok, ≤80 karakter.
+- **`## Rejected` artık çoğalmıyor**: bölüm bir kez oluşturulur; her ret kendi satırını içine ekler.
+- **Alan adı kökü istekten önce reddedilir** — çöp bir URL artık hiçbir şeye mal olmaz.
+- **Recon sözleşme sinyalini hesaplar, iddia etmez** (`honours rejected:` dağıtılan koddaki `markPipelineRejected`’ı doğrular); işaret sayacı `0`’ı iki kez yazdırmıyor.
+- **cleanup-plan kategori başına sayı raporlar** (taşınacak t-role, dirty-URL satırları, test-row satırları) — kendi başarı satırını sayan tek `grep -c` yerine.
+- **link-check github.com 5xx’i doğrulanmamış sayar** — bot duvarının arkasında, bozuk bağlantı olarak değil.
+### Notlar
+
+- Taınmadı ve dokunulmadı (v1.248.5 regresyonunda doğrulandı): embed-fetch'in kendisi, pipeline atlama sözleşmesi, _setLookup çevrimdışı testleri, uk sıra sayılarının kabulü, rol filtresinde kelime sınırları ve cleanup-apply modu. cleanup-plan'ın kategori bazlı sayımı temizlik betiğinin kendi çıktı etiketlerini okur — onları yeniden adlandırmak sayaçları sessizce kırar.
+
 ## [1.248.5] — 2026-10-10
 
 **Regresyon sonrası sağlamlaştırma: t.me tek gönderi girdileri artık gönderi metninin kendisini getiriyor (embed formu), reddedilen bir girdi sunucu tarafında değerlendirme zamanlayıcısının havuzundan çıkıyor ve Ukraynaca bir raporun yerel blok numaralandırması kabul ediliyor — ayrıca gizlice canlı ağı kullanan bir test sonsuza dek çevrimdışı kalıyor.**

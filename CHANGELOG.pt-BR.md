@@ -9,6 +9,23 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 ---
 
 
+## [1.248.6] — 2026-10-10
+
+**Polimento pós-regressão da cadeia do Telegram: uma postagem real mantém sua estrutura de linhas (o rótulo «Компания : X» e a linha da função são encontrados onde realmente estão), a função do rastreador vem do cabeçalho do relatório em vez de uma linha crua da postagem, e as superfícies operacionais (recon, cleanup-plan, link-check) relatam o que dizem relatar.**
+
+### Corrigido
+
+- **Uma postagem do t.me não cola mais em uma linha**: `<br>` vira quebra de linha antes da remoção de tags e entidades HTML numéricas são decodificadas; o padrão do rótulo de empresa aceita «Компания : X» com espaço antes dos dois pontos.
+- **A função do rastreador vem do cabeçalho do relatório** (H1 `# <Função> — <Empresa>`); a linha de fallback é limpa — sem hashtags, sem emojis, ≤80 caracteres.
+- **`## Rejected` não se duplica mais**: a seção é criada uma vez; cada rejeição adiciona sua linha dentro dela.
+- **A raiz de domínio é rejeitada antes da requisição** — uma URL de lixo não custa nada.
+- **Recon calcula o sinal do contrato** (`honours rejected:` verifica `markPipelineRejected` no código implantado); a contagem de marcas não imprime `0` duas vezes.
+- **cleanup-plan relata números por categoria** (t-role a mover, linhas dirty-URL, linhas test-row) em vez de um único `grep -c` que contava a própria linha de sucesso.
+- **link-check trata 5xx do github.com como não verificados** — atrás do muro de bots, não como links quebrados.
+### Notas
+
+- Não portado e intocado (verificado no regression v1.248.5): o próprio embed-fetch, o contrato de salto em pipeline, os testes offline _setLookup, a aceitação de ordinais uk, os limites de palavra no filtro de função e o modo cleanup-apply. A contagem por categorias do cleanup-plan lê os rótulos de saída do próprio script — renomeá-los quebraria os contadores em silêncio.
+
 ## [1.248.5] — 2026-10-10
 
 **Endurecimento pós-regressão: entradas individuais do t.me agora buscam o próprio texto da postagem (forma embed), uma entrada rejeitada sai do pool do temporizador de avaliação do lado do servidor, e a numeração nativa de blocos num relatório ucraniano é aceita — além de um teste que usava a rede secretamente ficar offline para sempre.**
