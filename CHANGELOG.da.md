@@ -9,6 +9,22 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 ---
 
 
+## [1.250.0] — 2026-10-12
+
+**Kortsiden bliver arbejdsbar: en joblocator over kortet flyver til ethvert synligt job og åbner dets forhåndsvisning (også på desktop), og en tekstsøgning indsnævrer kortet efter firma eller titel — begge overlever en genindlæsning.**
+
+### Tilføjet
+
+- **Joblocator**: en select over kortet viser de synlige jobs sorteret efter firma+titel; valg flyver til cirklen og åbner forhåndsvisningen — også på desktop.
+- **Tekstsøgning**: indsnævrer kortet efter firma+titel (case-uafhængig sammenligning; feltet beholder det indtastede), gemmes i map-prefs, Reset rydder.
+- **FAB'en dækker ikke attributionen på `#/map`** ved alle bredder.
+### Rettet
+
+- To mobilhøjde-specs: gulvet går til 540 px (bjælken tager ~90 px af viewporten).
+### Noter
+
+- Miles udskydes af ejeren til næste release. De 4 nye i18n-nøgler kommer i alle 18 ordbøger, og det samlede snapshot gendannes. Locatoren åbner altid forhåndsvisningen (at navigere ville ophæve dens formål); cirklen findes via __job-referencen — IKKE _point, som L.Circle allerede ejer.
+
 ## [1.249.0] — 2026-10-11
 
 **Jobkortet prioriterer nu relevans: en rolig skala fra petroleum til grå fremhæver de bedste job, score- og køretidsfiltre huskes, mobilen får et kort i fuld højde med forhåndsvisning ved tryk, og trackeren deler køretidsfilter og sortering.**

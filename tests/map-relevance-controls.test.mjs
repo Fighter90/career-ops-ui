@@ -23,7 +23,7 @@ test('map exposes the agreed score, commute, unknown and unevaluated controls', 
 test('mobile map uses one bottom sheet and marker tap opens a peek before navigation', () => {
   assert.match(css, /@media \(max-width: 900px\)[\s\S]*\.job-map-sheet\.is-open \{ display: block;/);
   assert.match(css, /\.job-map-page \{ height: calc\(100dvh/);
-  assert.match(map, /if \(!coarsePointer\(\)\) \{ point\.open\?\.\(\); return; \}/);
+  assert.match(map, /if \(!coarsePointer\(\) && !opts\.peek\) \{ point\.open\?\.\(\); return; \}/);
   assert.match(map, /sheet\.classList\.add\('is-open', 'is-peek'\)/);
   assert.match(map, /map\.panBy\(\[0, Math\.ceil\(sheet\.offsetHeight \/ 2\)\]/);
 });

@@ -23,6 +23,9 @@
   }
 }
 .job-map-page { display: flex; min-height: 0; flex-direction: column; gap: 12px; }
+.job-map-toolbar { display: flex; gap: 8px; align-items: center; padding: 0 0 8px; }
+.job-map-toolbar .job-map-job-select { flex: 1 1 58%; min-width: 0; }
+.job-map-toolbar .job-map-search { flex: 1 1 42%; min-width: 0; }
 .job-map-wrap { position: relative; display: flex; min-height: 0; flex-direction: column; gap: 10px; }
 .job-map { height: calc(100vh - 390px); min-height: 360px; border-radius: 12px; border: 1px solid var(--slate); isolation: isolate; }
 .job-map-sheet { position: relative; display: flex; flex-wrap: wrap; align-items: center; gap: 14px; padding: 10px 12px; border: 1px solid var(--slate); border-radius: 12px; background: var(--paper); color: var(--hof); box-shadow: var(--shadow-sm); }
@@ -81,11 +84,18 @@
   :root:not([data-theme="light"]):not([data-theme="dark"]) .job-map .leaflet-control-attribution a { color: var(--foggy); }
 }
 
+/* v1.250.0 — the FAB is hidden on the map page at every width: it covered
+   the Leaflet attribution's bottom-right corner once the toolbar shifted the
+   map down, and the map is a full-bleed surface (the docs assistant stays
+   reachable from every other page). */
+body.job-map-active .docs-fab { display: none; }
+
 @media (max-width: 900px) {
   body.job-map-active .content { width: 100%; max-width: none; padding: 0; overflow: hidden; }
-  body.job-map-active .docs-fab { display: none; }
   .job-map-page { height: calc(100dvh - var(--topbar-h, 80px)); gap: 0; }
   .job-map-page > .page-header { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+  .job-map-toolbar { gap: 6px; padding-bottom: 6px; }
+  .job-map-toolbar .job-map-job-select, .job-map-toolbar .job-map-search { flex: 1 1 50%; min-height: 38px; }
   .job-map-wrap { flex: 1; gap: 0; overflow: hidden; }
   .job-map { width: 100%; height: 100%; min-height: 0; border: 0; border-radius: 0; }
   .job-map-status-chip { position: absolute; z-index: var(--z-map-control); top: 12px; left: 12px; display: block; min-height: 38px; padding: 9px 12px; border: 1px solid var(--slate); border-radius: 999px; background: color-mix(in srgb, var(--paper) 92%, transparent); color: var(--hof); font-size: 12px; font-weight: 700; box-shadow: var(--shadow-sm); backdrop-filter: blur(8px); }

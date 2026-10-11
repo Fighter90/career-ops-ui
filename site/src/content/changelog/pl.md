@@ -9,6 +9,22 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.250.0] — 2026-10-12
+
+**Strona mapy staje się użyteczna: lokalizator ofert nad mapą przenosi do dowolnej widocznej oferty i otwiera jej podgląd (również na desktopie), a wyszukiwanie tekstowe zawęża mapę po firmie lub stanowisku — oba przetrwają odświeżenie.**
+
+### Dodano
+
+- **Lokalizator ofert**: select nad mapą wyświetla widoczne (po filtrach) oferty posortowane po firmie+stanowisku; wybranie przenosi do kółka i otwiera podgląd — także na desktopie.
+- **Wyszukiwanie tekstowe**: zawęża mapę po podciągu firma+stanowisko (porównanie bez wielkości liter; pole zachowuje wpisaną wielkość), trwa w map-prefs, Reset czyści.
+- **FAB nie zasłania atrybucji na `#/map`** na wszystkich szerokościach.
+### Naprawiono
+
+- Dwa specy wysokości mobilnej: próg spada do 540 px (pasek zajmuje ~90 px viewportu).
+### Uwagi
+
+- Mile właściciel odkłada na następny release. 4 nowe klucze i18n wchodzą do 18 słowników, złożona migawka jest regenerowana. Lokalizator zawsze otwiera podgląd (nawigacja zniweczyłaby jego cel); kółko znajduje się przez odwrotne odwołanie __job — NIE _point, który L.Circle już posiada.
+
 ## [1.249.0] — 2026-10-11
 
 **Mapa ofert stawia teraz trafność na pierwszym miejscu: spokojna skala morski→szary wyróżnia najlepsze oferty, filtry oceny i dojazdu są zapamiętywane, telefon otrzymuje mapę na całą dostępną wysokość z podglądem po dotknięciu, a tracker współdzieli filtr i sortowanie dojazdu.**

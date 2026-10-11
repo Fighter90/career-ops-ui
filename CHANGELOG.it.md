@@ -2,6 +2,22 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.250.0] — 2026-10-12
+
+**La pagina della mappa diventa operativa: un selettore di posizioni sopra la mappa vola verso qualsiasi posizione visibile e apre la sua scheda (desktop incluso), e una ricerca testuale restringe la mappa per azienda o titolo — entrambe sopravvivono al ricaricamento.**
+
+### Aggiunto
+
+- **Selettore di posizioni**: un select sopra la mappa elenca le posizioni visibili ordinate per azienda+titolo; sceglierne una vola al cerchio e apre la scheda — anche su desktop.
+- **Ricerca testuale**: restringe la mappa per azienda+titolo, persiste in map-prefs, Reset la cancella.
+- **Il FAB non copre l'attribuzione su `#/map`** a tutte le larghezze.
+### Corretto
+
+- Due specifiche di altezza mobile: il minimo va a 540 px (la barra occupa ~90 px del viewport).
+### Note
+
+- Le miglia sono rimandate dal proprietario al prossimo rilascio. Le 4 nuove chiavi i18n entrano in tutti i 18 dizionari e lo snapshot assemblato viene rigenerato. Il selettore apre sempre l'anteprima (navigarne via ne vanificherebbe lo scopo); il cerchio si trova tramite un riferimento inverso __job — NON _point, che L.Circle possiede già.
+
 ## [1.249.0] — 2026-10-11
 
 **La mappa delle offerte ora privilegia la pertinenza: una scala calma dal verde petrolio al grigio evidenzia le offerte migliori, i filtri per punteggio e tragitto restano memorizzati, il telefono usa una mappa a tutta altezza con anteprima al tocco e il tracker condivide filtro e ordinamento del tragitto.**

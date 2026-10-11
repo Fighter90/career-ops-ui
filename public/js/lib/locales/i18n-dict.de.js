@@ -60,6 +60,14 @@ window.__I18N_DICT_DE = {
   'map.filter.allScores': "Alle Bewertungen",
   'map.filter.scoreAtLeast': "Bewertung ≥ {n}",
   'map.filter.unevaluated': "Stellen ohne Score anzeigen",
+  'map.filter.job': "Stelle",
+
+  'map.filter.jobAny': "Stelle wählen…",
+
+  'map.filter.search': "Firma oder Titel suchen",
+
+  'map.filter.searchPlaceholder': "Firma oder Titel…",
+
   'map.filter.unevaluatedShort': "Ohne Score",
   'map.filter.reset': "Zurücksetzen",
   'map.filter.fit': "Ergebnisse einpassen",

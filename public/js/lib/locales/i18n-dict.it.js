@@ -60,6 +60,14 @@ window.__I18N_DICT_IT = {
   'map.filter.allScores': "Tutti i punteggi",
   'map.filter.scoreAtLeast': "Punteggio ≥ {n}",
   'map.filter.unevaluated': "Mostra offerte senza punteggio",
+  'map.filter.job': "Posizione",
+
+  'map.filter.jobAny': "Scegli una posizione…",
+
+  'map.filter.search': "Cerca azienda o titolo",
+
+  'map.filter.searchPlaceholder': "azienda o titolo…",
+
   'map.filter.unevaluatedShort': "Senza punteggio",
   'map.filter.reset': "Reimposta",
   'map.filter.fit': "Adatta ai risultati",
