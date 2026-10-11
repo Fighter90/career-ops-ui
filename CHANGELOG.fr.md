@@ -15,6 +15,20 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 **La carte des offres privilégie désormais la pertinence : une gamme calme du sarcelle au gris met en avant les meilleures offres, les filtres de note et de trajet sont mémorisés, le mobile bénéficie d’une carte pleine hauteur avec aperçu au toucher et le suivi partage le filtre et le tri du trajet.**
 
+## [1.248.8] — 2026-10-11
+
+**Parité avec le parent : le fork et web-ui se synchronisent sur le delta de 115 commits de l’amont — une nouvelle source PageUp, les cellules URL du tracker analysées comme liens markdown, l’état Assessment — plus le travail de langue ta/ja : les rapports en boucle sont coupés et nommés, le squelette de titres garde A–G stable, et la part d’écriture ne lit que la prose.**
+
+### Ajouté
+
+### Corrigé
+
+- **Nouvelle source PageUp** (105 adaptateurs EN / 110 sources) ; les cellules URL du tracker sont analysées comme liens markdown (le href est la clé de dédup) ; l’état Assessment arrive via states.yml.
+- **Un rapport en boucle est coupé et nommé** (`report looping (block B repeated)`), squelette de titres `## A) … ## G)` pour le non-anglais.
+- **La part d’écriture ne lit que la prose** (tables, SCORE_SUMMARY, code et URLs exclus) — un rapport japonais avec tables latines ne flotte plus.
+- **/api/evaluate avertit `report not in <locale>`** et remote-qa imprime les codes en colonne.
+### -
+
 ## [1.248.7] — 2026-10-11
 
 **Le rôle de l’en-tête du rapport lit désormais la vraie convention du parent — `# Evaluation: {Company} — {Role}` — au lieu de supposer `# <Rôle> — <Société>`, donc le tracker ne porte plus «Evaluation: <Société>» comme rôle ; un rapport dans la mauvaise langue avertit au lieu de s’enregistrer en silence ; et le bavardage du modèle avant le H1 est retiré des rapports sauvegardés.**

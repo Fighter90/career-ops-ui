@@ -13,6 +13,20 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 **Jobkortet prioriterer nu relevans: en rolig skala fra petroleum til grå fremhæver de bedste job, score- og køretidsfiltre huskes, mobilen får et kort i fuld højde med forhåndsvisning ved tryk, og trackeren deler køretidsfilter og sortering.**
 
+## [1.248.8] — 2026-10-11
+
+**Forælder-paritet: fork og web-ui synkroniseres med upstreams 115-commit-delta — en ny PageUp-kilde, tracker-URL-celler analyseres som markdown-links, Assessment-tilstanden — plus ta/ja-sprogarbejdet: looperende rapporter skæres og navngives, overskriftsskelettet holder A–G stabilt, og skriptandelen læses kun som prosa.**
+
+### Tilføjet
+
+### Rettet
+
+- **Ny PageUp-kilde** (105 EN-adaptere / 110 kilder); tracker-URL-celler analyseres som markdown-links (href er dedup-nøglen); Assessment-tilstanden kommer via states.yml.
+- **En looperende rapport skæres og navngives** (`report looping (block B repeated)`), overskriftsskelettet `## A) … ## G)` for ikke-engelsk.
+- **Skriptandelen læser kun prosa** (tabeller, SCORE_SUMMARY, kode og URLs udelukket) — en japansk rapport med latinske tabeller flaker ikke længere.
+- **/api/evaluate advarer `report not in <locale>`**, og remote-qa udskriver koderne i en kolonne.
+### -
+
 ## [1.248.7] — 2026-10-11
 
 **Rollen fra rapportens sidehoved læser nu forælderens faktiske konvention — `# Evaluation: {Company} — {Role}` — i stedet for at antage `# <Rolle> — <Firma>`, så trackeren ikke længere bærer «Evaluation: <Firma>» som rolle; en rapport på det forkerte sprog advarer i stedet for at gemme lydløst; og modelsludderet før H1 skæres fra gemte rapporter.**

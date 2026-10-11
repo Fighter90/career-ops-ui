@@ -14,6 +14,8 @@ _Last updated: 2026-10-09 · **v1.247.0 SHIPPED** (tag `v1.247.0` @ `4c3778bf`, 
 
 ## Current state
 
+**v1.248.8 — SHIPPED 2026-10-11** (parent parity: the fork synced to career-ops-hq 1db6517a — 115 commits; web-ui ported pageup + extractCellUrl + Assessment state; CAR-74/75/76 ta/ja language work closed). Tests **5219** (0 fail), coverage gate green, evals 12/0. The releases v1.248.2…v1.248.8 shipped back-to-back on 2026-10-10/11 (regression rounds → t.me embed fetch → skip contract → uk ordinals → polish → header role → parity). Linear: CAR-61…77 Done; CAR-70 (ta model drift on hermes) deliberately open — the owner decides accept/switch backend.
+
 **v1.247.0 — SHIPPED 2026-10-09** (design sweep tail: CAR-49…58 minors + the dark map tiles the previous release deferred). Tests **5116** (0 fail), browser **118**, e2e **23/23 + 21/21**; server coverage baseline in `scripts/coverage-baseline.json` (ratchet). The 2026-10-07/08 trains are done and shipped: **v1.242.0** sources correctness (9 parallel fix agents, ~600 tests, CAR-6…16), **v1.243.0** client fixes, **v1.244.x** `#/scan` redesign (prod verified).
 
 Remaining plan (`docs/sdd/BACKLOG.md`): the docs-reality sweep **CAR-30…35** (help ×18 vs code, prompt-machine docs, README ×18, site cvstart.org, help mirrors), the parked `job-map-ta` screenshot (blocked on the geocode capture, #417), and the next parent/upstream delta (research in progress). All web-ui branches are merged into `main` and deleted after each release (maintainer's rule, 2026-10-07).
@@ -160,3 +162,10 @@ Recorded so they are not retried.
   kinds of check; do not let the first stand in for the second.
 - **Following upstream's `providers/telegram.mjs` deletion** — see [ADR-0001](docs/adr/0001-keep-both-telegram-sources.md).
 - **Taking upstream's `LOCATIONISH_RE`** — see [ADR-0002](docs/adr/0002-defend-fork-divergences.md).
+- **Dispatching `parent_ref` the server clone cannot resolve** (v1.248.8): the deploy verifies `git rev-parse $PARENT_REF^{commit}`
+  against the SERVER's parent clone after a plain `fetch origin` — so the ref must be the exact SHA **pushed to the fork's main**
+  before dispatch. A mistyped full SHA fails as `unknown parent ref`; a merge that is local-only fails the same way. Copy the SHA
+  from `git rev-parse HEAD` in the fork checkout, never reconstruct it.
+- **Re-cutting a release tag after the PR train continued on main**: cut the tag from the final main (post follow-up PRs), delete the
+  stale tag + release first (`gh release delete`, `git push :refs/tags/…`), and redeploy — v1.248.7 did this for #437, v1.248.8's
+  follow-up (#440, test-only) rode the tag as-is because prod matched the tagged commit.

@@ -13,6 +13,22 @@
 
 **채용 지도는 이제 관련성을 우선합니다. 차분한 청록색→회색 단계가 가장 적합한 공고를 강조하고, 점수·통근 필터가 저장되며, 모바일은 전체 높이 지도와 탭 미리보기를 사용하고, 트래커도 통근 필터와 정렬을 공유합니다.**
 
+## [1.248.8] — 2026-10-11
+
+**부모 패리티: 포크와 web-ui가 업스트림의 115커밋 델타와 동기화됩니다 — 새로운 PageUp 소스, 트래커 URL 셀을 마크다운 링크로 파싱, Assessment 상태 — 그리고 ta/ja 언어 작업: 루핑 보고서는 잘리고 이름이 붙고, 헤딩 스켈레톤이 A–G를 안정적으로 유지하며, 스크립트 비율은 산문만 읽습니다.**
+
+### 추가
+
+### 수정
+
+- **새 PageUp 소스** (EN 어댑터 105 / 소스 110); 트래커 URL 셀을 마크다운 링크로 파싱(href가 중복 제거 키); Assessment 상태는 states.yml로 전달됩니다.
+- **루핑 보고서는 잘리고 이름이 붙습니다**(`report looping (block B repeated)`), 비영어용 헤딩 스켈레톤 `## A) … ## G)`.
+- **스크립트 비율은 산문만** (표, SCORE_SUMMARY, 코드, URL 제외) — 라틴 표가 있는 일본어 보고서가 더 이상 흔들리지 않습니다.
+- **/api/evaluate가 `report not in <locale>` 경고**를 추가하고 remote-qa는 코드를 열로 출력합니다.
+### 참고
+
+- 미포트(문서화): scan-ats-full 인프라(fetchListing/listingIdentity/_connection-scope — web-ui에는 역방향-ATS 스캔이 없음), liveness 만료-이력 기록기(web-ui는 scan-history를 쓰지 않음; 작성기가 생기면 순수 플래너를 포트), coverage-check/discover/story-bank/pdf --ats/text mode/domain_filter(CLI 전용), dedup-tracker req-id 수정(web-ui에는 dedup-tracker가 없음), README.vi.md(web-ui의 로케일 세트는 자체 것). 부모 포크는 ADR-0001/0002를 방어: telegram.mjs 생존, Unicode LOCATIONISH_RE 유지(업스트림이 ASCII \b로 되돌림).
+
 ## [1.248.7] — 2026-10-11
 
 **보고서 헤더의 역할은 이제 `# <역할> — <회사>`를 가정하는 대신 부모의 실제 관례인 `# Evaluation: {회사} — {역할}`을 읽어서 트래커가 «Evaluation: <회사>»를 역할로 담지 않습니다; 잘못된 언어의 보고서는 조용히 저장되는 대신 경고하고, H1 이전의 모델 잡담은 저장된 보고서에서 잘려나갑니다.**

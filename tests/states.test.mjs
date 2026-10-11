@@ -52,11 +52,11 @@ test('SANITY: PATHS.statesYml resolves under our temp root (isolation guard)', a
   assert.ok(PATHS.statesYml.startsWith(ROOT), 'statesYml must live under the temp CAREER_OPS_ROOT');
 });
 
-test('falls back to the built-in 9 states when states.yml is absent', () => {
+test('falls back to the built-in 10 states when states.yml is absent', () => {
   useFallback();
   assert.deepEqual(
     states.canonicalLabels(),
-    ['Evaluated', 'Applied', 'Responded', 'Interview', 'Offer', 'Rejected', 'Discarded', 'SKIP', 'Hired'],
+    ['Evaluated', 'Applied', 'Responded', 'Assessment', 'Interview', 'Offer', 'Rejected', 'Discarded', 'SKIP', 'Hired'],
   );
 });
 
@@ -99,7 +99,7 @@ test('reads templates/states.yml live (a label/alias only in the file)', () => {
 test('malformed states.yml (no states array) falls back', () => {
   useFile('garbage: true\n');
   assert.ok(states.canonicalLabels().includes('Evaluated'), 'fallback used on malformed file');
-  assert.equal(states.canonicalLabels().length, 9);
+  assert.equal(states.canonicalLabels().length, 10);
 });
 
 test('the FALLBACK is NOT cached — a file appearing later is picked up without a reset', () => {

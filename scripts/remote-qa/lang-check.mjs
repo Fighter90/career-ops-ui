@@ -31,6 +31,12 @@ const QUOTED = /(?<![\p{L}\p{N}])"(?=\S)([^"\n]{1,300})(?<=\S)"(?![\p{L}\p{N}])|
 
 export function prose(text) {
   return String(text || '')
+    // v1.248.8 (CAR-75) — the share is a PROSE metric: tables (every cell a
+    // company/tech name in Latin), the SCORE_SUMMARY block and bare URLs say
+    // nothing about the report's language. A Japanese report with Latin
+    // tables scored 26–27 % own-script and flaked; prose-only holds.
+    .replace(/---SCORE_SUMMARY---[\s\S]*?(?:---END_SUMMARY---|$)/g, ' ')
+    .replace(/^\s*\|.*$/gm, ' ')
     .replace(/```[\s\S]*?```/g, ' ')
     .replace(/`[^`\n]*`/g, ' ')
     .replace(/\bhttps?:\/\/\S+/g, ' ')

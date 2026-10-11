@@ -296,6 +296,22 @@ test('v1.248.6: a real t.me post («Компания : X», <br>, hashtags) → 
   assert.match(reports[0], /nordwind/i, 'the company lands in the filename');
 });
 
+test('v1.248.8: a looping answer (Block B repeated, no D–G) → warning + rejection, never a silent save', async () => {
+  const looping = ['# Evaluation: Acme — Backend Engineer', '## A) Контекст', 'Текст анализа блока A, достаточно длинный для валидного вида отчёта и проверки структуры. Ещё немного содержимого блока, чтобы выглядело как настоящий ответ модели на русском языке.',
+    '## B) Соответствие', 'Текст анализа блока B. Опыт кандидата соответствует требованиям позиции, стек совпадает, философия команды близка. Здесь тоже достаточно содержимого.',
+    '## B) Соответствие', 'Повтор блока B — модель зациклилась: тот же анализ снова и снова, бесконечный хвост повторов без новых блоков.',
+    '---SCORE_SUMMARY---', 'COMPANY: Acme', 'ROLE: Backend Engineer', 'ARCHETYPE: backend', 'LEGITIMACY: high', 'SCORE: 4/5', '---END_SUMMARY---'].join('\n');
+  const page = '<html><body><div class="tgme_widget_message_text js-message_text" dir="auto">'
+    + '<p>Backend Engineer в платформенной команде. Компания : Acme. Полностью удалённо, Европа. Опыт Go от 4 лет, Kubernetes, Postgres, Prometheus. Оформление по контракту, опционы, ежегодные бонусы, обучение за счёт компании. Откликайтесь в личку.</p></div></body></html>';
+  const out = await run({ url: 'https://t.me/jobsfeed/128' }, looping, page);
+  assert.ok(out.events.some((e) => e.event === 'error' && /evaluation incomplete/.test(e.data?.message || '')),
+    'the cut prefix fails validation (missing C–G) — the loop is NOT filed');
+  assert.ok(out.events.some((e) => (e.event === 'step' || e.event === 'error') && /report looping/.test(e.data?.detail || e.data?.message || '')),
+    'the looping note reaches the step detail / error message');
+  const reports = readdirSync(resolve(ROOT, 'reports'));
+  assert.equal(reports.length, 0, 'nothing saved');
+});
+
 test('v1.248.7: H1 «Evaluation: Sveak — PHP-разработчик (senior)» → the role is the RIGHT side', async () => {
   // The parent's report format is `# Evaluation: {Company} — {Role}`
   // (modes/oferta.md); v1.248.6 read the left side and named the role
