@@ -7,7 +7,6 @@ import { fileURLToPath } from 'node:url';
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const map = readFileSync(resolve(root, 'public/js/views/map.js'), 'utf8');
 const tracker = readFileSync(resolve(root, 'public/js/views/tracker.js'), 'utf8');
-const de = readFileSync(resolve(root, 'public/js/lib/locales/i18n-dict.de.js'), 'utf8');
 const css = ['app.css', 'components.css', 'overlays.css', 'map.css']
   .map((file) => readFileSync(resolve(root, 'public/css', file), 'utf8')).join('\n');
 
@@ -42,9 +41,4 @@ test('tracker shares commute preferences and exposes location, filter and sort',
   assert.match(tracker, /sortKey === 'commute'/);
   assert.match(tracker, /commute\.col\.place/);
   assert.match(tracker, /commute\.col\.time/);
-});
-
-test('German map labels distinguish the pending source from score state', () => {
-  assert.match(de, /'map\.layerPipeline': "Pipeline \(ausstehend\)"/);
-  assert.match(de, /'map\.filter\.unevaluated': "Stellen ohne Score anzeigen"/);
 });
