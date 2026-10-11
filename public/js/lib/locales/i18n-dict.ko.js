@@ -60,9 +60,9 @@ window.__I18N_DICT_KO = {
   'map.filter.allScores': "모든 점수",
   'map.filter.scoreAtLeast': "점수 ≥ {n}",
   'map.filter.unevaluated': "점수 없는 채용 공고 표시",
-  'map.filter.job': "채용",
+  'map.filter.spec': "전문 분야",
 
-  'map.filter.jobAny': "채용을 선택하세요…",
+  'map.filter.specAny': "모든 전문 분야",
 
   'map.filter.search': "회사 또는 직무 검색",
 

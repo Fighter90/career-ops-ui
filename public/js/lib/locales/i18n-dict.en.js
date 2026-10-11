@@ -60,9 +60,9 @@ window.__I18N_DICT_EN = {
   'map.filter.allScores': "All scores",
   'map.filter.scoreAtLeast': "Score ≥ {n}",
   'map.filter.unevaluated': "Show jobs without a score",
-  'map.filter.job': "Job",
+  'map.filter.spec': "Specialization",
 
-  'map.filter.jobAny': "Select a job…",
+  'map.filter.specAny': "All specializations",
 
   'map.filter.search': "Search company or title",
 

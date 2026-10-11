@@ -60,9 +60,9 @@ window.__I18N_DICT_JA = {
   'map.filter.allScores': "すべてのスコア",
   'map.filter.scoreAtLeast': "スコア ≥ {n}",
   'map.filter.unevaluated': "スコアのない求人を表示",
-  'map.filter.job': "求人",
+  'map.filter.spec': "専門分野",
 
-  'map.filter.jobAny': "求人を選択…",
+  'map.filter.specAny': "すべての専門分野",
 
   'map.filter.search': "会社名や役職を検索",
 

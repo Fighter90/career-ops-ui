@@ -67,9 +67,9 @@ window.__I18N_DICT_TA = {
   'map.filter.allScores': "அனைத்து மதிப்பெண்கள்",
   'map.filter.scoreAtLeast': "மதிப்பெண் ≥ {n}",
   'map.filter.unevaluated': "மதிப்பெண் இல்லாத வேலைகளைக் காட்டு",
-  'map.filter.job': "வேலை",
+  'map.filter.spec': "சிறப்புத்துறை",
 
-  'map.filter.jobAny': "வேலையைத் தேர்ந்தெடுக்கவும்…",
+  'map.filter.specAny': "அனைத்து சிறப்புத்துறைகளும்",
 
   'map.filter.search': "நிறுவனம் அல்லது பதவியைத் தேடு",
 

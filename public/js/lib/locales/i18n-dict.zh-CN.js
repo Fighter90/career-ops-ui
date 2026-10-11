@@ -60,9 +60,9 @@ window.__I18N_DICT_ZH_CN = {
   'map.filter.allScores': "所有评分",
   'map.filter.scoreAtLeast': "评分 ≥ {n}",
   'map.filter.unevaluated': "显示无评分职位",
-  'map.filter.job': "职位",
+  'map.filter.spec': "专业方向",
 
-  'map.filter.jobAny': "选择职位…",
+  'map.filter.specAny': "所有专业方向",
 
   'map.filter.search': "搜索公司或职位",
 

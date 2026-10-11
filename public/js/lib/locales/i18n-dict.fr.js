@@ -60,9 +60,9 @@ window.__I18N_DICT_FR = {
   'map.filter.allScores': "Toutes les notes",
   'map.filter.scoreAtLeast': "Note ≥ {n}",
   'map.filter.unevaluated': "Afficher les offres sans score",
-  'map.filter.job': "Offre",
+  'map.filter.spec': "Spécialisation",
 
-  'map.filter.jobAny': "Choisissez une offre…",
+  'map.filter.specAny': "Toutes les spécialisations",
 
   'map.filter.search': "Rechercher entreprise ou poste",
 

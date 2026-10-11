@@ -7,6 +7,23 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 ---
 
 
+## [1.251.0] — 2026-10-12
+
+**The map's select now filters by SPECIALIZATION from the settings (config/profile.yml → target_roles.primary): pick «Product Manager» or «Backend Engineer (Go / PHP)» and the map keeps only the postings whose title matches that role's own words. The v1.250.0 job-list locator is gone — it was the wrong lens (the owner's correction).**
+
+### Added
+
+- **Specialization filter**: the map's select lists the specializations configured in the settings (target_roles.primary), and choosing one keeps only the postings whose title carries one of that role's distinguishing tokens (word-bounded, case-insensitive — «Go» never matches «Google», Cyrillic works through the same Unicode lookarounds). Filter changes redraw the map and the status chip immediately; Reset returns to all specializations.
+
+### Changed
+
+- **The v1.250.0 vacancy-list locator is removed**: the owner's correction — a select listing individual vacancies was the wrong lens for the map; the specialization filter replaces it. The peek cards, marker clicks and the text search stay as they are.
+
+### Notes
+
+- Drive-time MILES are deliberately NOT part of this release either — the owner already deferred them.
+- The specialization match is deliberately TITLE-ONLY (with the settings' own words as tokens): matching against company names or descriptions would pull unrelated postings into a specialization. A posting outside every configured role stays visible under «All specializations» and disappears only when a specific one is chosen.
+
 ## [1.250.0] — 2026-10-12
 
 **The map page becomes workable: a job locator above the map pans to any visible job and opens its peek (desktop included), and a text search narrows the map by company or title — with both surviving reloads.**

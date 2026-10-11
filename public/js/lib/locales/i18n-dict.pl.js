@@ -59,9 +59,9 @@ window.__I18N_DICT_PL = {
   'map.filter.allScores': "Wszystkie oceny",
   'map.filter.scoreAtLeast': "Ocena ≥ {n}",
   'map.filter.unevaluated': "Pokaż oferty bez oceny",
-  'map.filter.job': "Oferta pracy",
+  'map.filter.spec': "Specjalizacja",
 
-  'map.filter.jobAny': "Wybierz ofertę…",
+  'map.filter.specAny': "Wszystkie specjalizacje",
 
   'map.filter.search': "Szukaj firmy lub stanowiska",
 

@@ -9,6 +9,21 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 ---
 
 
+## [1.251.0] — 2026-10-12
+
+**O select do mapa agora filtra por ESPECIALIDADE das configurações (config/profile.yml → target_roles.primary): escolha «Product Manager» ou «Backend Engineer (Go / PHP)» e o mapa mantém apenas as vagas cujo título traz as palavras desse papel. O localizador de lista de vagas do v1.250.0 é removido — era a ferramenta errada (correção do proprietário).**
+
+### Adicionado
+
+- **Filtro de especialidade**: o select lista as especialidades das configurações (target_roles.primary); escolher uma mantém apenas as vagas cujo título carrega um dos tokens distintivos do papel (por limites de palavra, sem maiúsculas — «Go» nunca coincide com «Google»); o Reset devolve todas.
+- **O localizador de lista do v1.250.0 é removido** — o substituto: filtro por especialidade, não lista de vagas (correção do proprietário).
+### Alterado
+
+- Two mobile-map height specs: the floor moves 600 -> 540 px (the toolbar takes ~90 px of the viewport).
+### Notas
+
+- As milas seguem adiadas pelo proprietário. A correspondência é deliberadamente SOMENTE pelo título com as palavras das configurações: empresas ou descrições trariam vagas alheias para a especialidade. Uma vaga fora de todos os papéis configurados continua visível em «Todas».
+
 ## [1.250.0] — 2026-10-12
 
 **A página do mapa torna-se operacional: um localizador de vagas acima do mapa voa para qualquer vaga visível e abre seu cartão de prévia (inclusive no desktop), e uma busca de texto restringe o mapa por empresa ou cargo — ambos sobrevivem ao recarregamento.**

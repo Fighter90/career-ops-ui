@@ -9,6 +9,21 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 ---
 
 
+## [1.251.0] — 2026-10-12
+
+**Kortets select filtrerer nu efter SPECIALISERING fra indstillingerne (config/profile.yml → target_roles.primary): vælg «Product Manager» eller «Backend Engineer (Go / PHP)», og kortet beholder kun opslagene, hvis titel bærer rollens egne ord. V1.250.0's jobliste-locator er fjernet — det var det forkerte værktøj (ejerkorrektion).**
+
+### Tilføjet
+
+- **Specialiseringsfilter**: select'en viser specialiseringerne fra indstillingerne (target_roles.primary); valg beholder kun opslagene, hvis titel bærer en af rollens distingverende tokens (ordgrænser, uden store/små bogstaver — «Go» matcher aldrig «Google»); Reset gendanner alle.
+- **V1.250.0's jobliste-locator er fjernet** — erstatningen: specialiseringsfilter, ikke jobliste (ejerkorrektion).
+### Ændret
+
+- Two mobile-map height specs: the floor moves 600 -> 540 px (the toolbar takes ~90 px of the viewport).
+### Noter
+
+- Miles stadig udskudt af ejeren. matching er bevidst KUN titel med ordene fra indstillingerne: firmaer eller beskrivelser ville trække urelaterede opslag ind i specialiseringen. Et opslag uden for alle konfigurerede roller forbliver synligt under «All».
+
 ## [1.250.0] — 2026-10-12
 
 **Kortsiden bliver arbejdsbar: en joblocator over kortet flyver til ethvert synligt job og åbner dets forhåndsvisning (også på desktop), og en tekstsøgning indsnævrer kortet efter firma eller titel — begge overlever en genindlæsning.**

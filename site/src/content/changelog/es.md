@@ -11,6 +11,21 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.251.0] — 2026-10-12
+
+**El select del mapa ahora filtra por ESPECIALIDAD de los ajustes (config/profile.yml → target_roles.primary): elige «Product Manager» o «Backend Engineer (Go / PHP)» y el mapa conserva solo las vacantes cuyo título lleva las palabras de ese rol. El localizador de lista de vacancias de v1.250.0 se elimina — era la herramienta equivocada (corrección del propietario).**
+
+### Añadido
+
+- **Filtro de especialización**: el select lista las especializaciones de los ajustes (target_roles.primary); elegir una conserva solo las vacantes cuyo título lleva uno de los tokens distintivos del rol (por límites de palabra, sin mayúsculas — «Go» nunca coincide con «Google»); Reset devuelve todas.
+- **El localizador de lista de v1.250.0 se elimina** — el sustituye: filtro por especialización, no lista de vacantes (corrección del propietario).
+### Cambiado
+
+- Two mobile-map height specs: the floor moves 600 -> 540 px (the toolbar takes ~90 px of the viewport).
+### Notas
+
+- Las millas siguen aplazadas por el propietario. El matching es deliberadamente SOLO por título con las palabras de los ajustes: empresas o descripciones meterían vacantes ajenas en la especialización. Una vacante fuera de todos los roles configurados sigue visible en «Todas».
+
 ## [1.250.0] — 2026-10-12
 
 **La página del mapa se vuelve operativa: un localizador de vacancias sobre el mapa vuela hacia cualquier vacante visible y abre su tarjeta emergente (también en escritorio), y una búsqueda de texto acota el mapa por empresa o puesto — ambas sobreviven a la recarga.**

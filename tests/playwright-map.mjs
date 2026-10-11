@@ -39,7 +39,8 @@ before(async () => {
   const dir = mkdtempSync(resolve(tmpdir(), 'pw-map-'));
   for (const d of ['config', 'data', 'modes']) mkdirSync(resolve(dir, d), { recursive: true });
   writeFileSync(resolve(dir, 'cv.md'), '# CV\n');
-  writeFileSync(resolve(dir, 'config', 'profile.yml'), 'candidate:\n  full_name: Tester\n');
+  writeFileSync(resolve(dir, 'config', 'profile.yml'),
+    'candidate:\n  full_name: Tester\ntarget_roles:\n  primary:\n    - Platform Engineer\n    - SRE\n');
   writeFileSync(resolve(dir, 'config', 'plugins.yml'), 'plugins:\n  commute:\n    home_lat: 53.8\n    home_lon: -1.55\n    max_minutes: 45\n');
   writeFileSync(resolve(dir, 'portals.yml'), 'tracked_companies: []\n');
   writeFileSync(resolve(dir, 'data', 'applications.md'), '');
@@ -176,19 +177,24 @@ test('map: the Leaflet attribution is fully visible (all 4 corners unobstructed)
 });
 
 // v1.250.0 — the job locator + the text search (the toolbar above the map).
-test('map: the job locator pans and opens the peek for the chosen job', { skip: SKIP }, async () => {
+test('map: the specialization select (from settings) filters the map', { skip: SKIP }, async () => {
   const page = await context.newPage();
   try {
     await page.goto(baseUrl + '/#/map');
     await placesLocated(page);
-    const sel = page.locator('.job-map-job-select');
+    const sel = page.locator('.job-map-spec-select');
     await sel.waitFor({ timeout: 10000 });
     const options = await sel.locator('option').allInnerTexts();
-    assert.ok(options.some((o) => o.includes('Acme')), 'Acme listed: ' + JSON.stringify(options));
-    assert.ok(options.some((o) => o.includes('Globex')), 'Globex listed');
-    await sel.selectOption({ index: 2 });
-    await page.waitForSelector('.job-map-sheet.is-open.is-peek', { timeout: 10000 });
-    assert.match(await page.locator('.job-map-peek-card').innerText(), /Globex · SRE/, 'the peek shows the chosen job');
+    assert.ok(options.some((o) => o.includes('Platform Engineer')), 'the settings\' role is an option: ' + JSON.stringify(options));
+    assert.ok(options.some((o) => o.includes('SRE')), 'SRE listed');
+    // «Platform Engineer» keeps only Acme's posting (Globex is an SRE).
+    await sel.selectOption({ label: 'Platform Engineer' });
+    await page.waitForFunction(() => /^1 \/ 2 mapped/.test(document.querySelector('.job-map-status-chip')?.textContent || ''),
+      null, { timeout: 10000 });
+    // All specializations → everything back.
+    await sel.selectOption({ index: 0 });
+    await page.waitForFunction(() => /^2 \/ 2 mapped/.test(document.querySelector('.job-map-status-chip')?.textContent || ''),
+      null, { timeout: 10000 });
   } finally { await page.close(); }
 });
 
@@ -204,7 +210,7 @@ test('map: the search narrows the map and persists across reload', { skip: SKIP 
     // half; the locator's options narrow with it (syncJobSelect).
     await page.waitForFunction(() => /^1 \/ 2 mapped/.test(document.querySelector('.job-map-status-chip')?.textContent || ''),
       null, { timeout: 10000 });
-    assert.equal(await page.locator('.job-map-job-select option').count(), 2, 'the locator lists only the passing job');
+    assert.equal(await page.locator('.job-map-spec-select option').count(), 3, 'the specialization options are settings-driven — the search does not narrow them');
     await page.reload();
     await placesLocated(page);
     assert.equal(await page.locator('.job-map-search').inputValue(), 'Acme', 'the query persists');
@@ -213,6 +219,6 @@ test('map: the search narrows the map and persists across reload', { skip: SKIP 
     await page.locator('.job-map-search').fill('');
     await page.waitForFunction(() => /^2 \/ 2 mapped/.test(document.querySelector('.job-map-status-chip')?.textContent || ''),
       null, { timeout: 10000 });
-    assert.equal(await page.locator('.job-map-job-select option').count(), 3, 'clearing restores both jobs');
+    assert.equal(await page.locator('.job-map-spec-select option').count(), 3, 'clearing restores both jobs');
   } finally { await page.close(); }
 });

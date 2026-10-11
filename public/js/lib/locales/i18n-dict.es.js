@@ -60,9 +60,9 @@ window.__I18N_DICT_ES = {
   'map.filter.allScores': "Todas las puntuaciones",
   'map.filter.scoreAtLeast': "Puntuación ≥ {n}",
   'map.filter.unevaluated': "Mostrar empleos sin puntuación",
-  'map.filter.job': "Oferta",
+  'map.filter.spec': "Especialización",
 
-  'map.filter.jobAny': "Elige una oferta…",
+  'map.filter.specAny': "Todas las especializaciones",
 
   'map.filter.search': "Buscar empresa o puesto",
 

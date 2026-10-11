@@ -60,9 +60,9 @@ window.__I18N_DICT_IT = {
   'map.filter.allScores': "Tutti i punteggi",
   'map.filter.scoreAtLeast': "Punteggio ≥ {n}",
   'map.filter.unevaluated': "Mostra offerte senza punteggio",
-  'map.filter.job': "Posizione",
+  'map.filter.spec': "Specializzazione",
 
-  'map.filter.jobAny': "Scegli una posizione…",
+  'map.filter.specAny': "Tutte le specializzazioni",
 
   'map.filter.search': "Cerca azienda o titolo",
 

@@ -59,9 +59,9 @@ window.__I18N_DICT_AR = {
   'map.filter.allScores': "كل التقييمات",
   'map.filter.scoreAtLeast': "التقييم ≥ {n}",
   'map.filter.unevaluated': "إظهار الوظائف دون درجة",
-  'map.filter.job': "وظيفة",
+  'map.filter.spec': "التخصص",
 
-  'map.filter.jobAny': "اختر وظيفة…",
+  'map.filter.specAny': "كل التخصصات",
 
   'map.filter.search': "ابحث عن شركة أو مسمى وظيفي",
 

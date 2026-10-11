@@ -9,6 +9,21 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.251.0] — 2026-10-12
+
+**Select mapy filtruje teraz według SPECJALIZACJI z ustawień (config/profile.yml → target_roles.primary): wybierz «Product Manager» lub «Backend Engineer (Go / PHP)», a mapa zachowa tylko oferty, których tytuł niesie słowa tej roli. Lokalizator listy ofert z v1.250.0 usunięto — to było złe narzędzie (korekta właściciela).**
+
+### Dodano
+
+- **Filtr specjalizacji**: select wyświetla specjalizacje z ustawień (target_roles.primary); wybranie zachowuje tylko oferty, których tytuł niesie jeden z wyróżniających tokenów roli (granice słów, bez wielkości liter — «Go» nigdy nie matchuje «Google»); Reset przywraca wszystkie.
+- **Lokalizator listy ofert z v1.250.0 usunięty** — zamiennik: filtr specjalizacji, nie lista ofert (korekta właściciela).
+### Zmieniono
+
+- Two mobile-map height specs: the floor moves 600 -> 540 px (the toolbar takes ~90 px of the viewport).
+### Uwagi
+
+- Mile wciąż odkłada właściciel. Dopasowanie celowo TYLKO po tytule słowami z ustawień: firmy czy opisy wciągnęłyby do specjalizacji niepowiązane oferty. Oferta spoza skonfigurowanych ról pozostaje widoczna przy «All».
+
 ## [1.250.0] — 2026-10-12
 
 **Strona mapy staje się użyteczna: lokalizator ofert nad mapą przenosi do dowolnej widocznej oferty i otwiera jej podgląd (również na desktopie), a wyszukiwanie tekstowe zawęża mapę po firmie lub stanowisku — oba przetrwają odświeżenie.**
