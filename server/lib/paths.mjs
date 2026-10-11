@@ -83,6 +83,8 @@ export const PATHS = {
   voiceDna: path('voice-dna.md'),
   writingSamplesDir: path('writing-samples'),
   profile: path('config', 'profile.yml'),
+  plugins: path('config', 'plugins.yml'),
+  commute: path('data', 'commute.tsv'),
   twoPager: path('config', 'two-pager.yml'),
   // v1.93.0 (Epic 24 — memory layer) — a short, USER-EDITABLE "remember this
   // about me" note (behavioural steering + preferences, never fabricated

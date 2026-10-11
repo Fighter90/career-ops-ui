@@ -24,6 +24,7 @@ import { PATHS } from '../paths.mjs';
 import { parsePipelineRows, parseReportHeader } from '../parsers.mjs';
 import { safeReadApps } from '../store.mjs';
 import { titleFit, loadProfileTargetRoles } from '../title-fit.mjs';
+import { commutePayload } from '../commute.mjs';
 
 const read = (f) => { try { return readFileSync(f, 'utf8'); } catch { return ''; } };
 // Only http(s) links reach window.open in the client — parent data is LLM-written.
@@ -131,6 +132,11 @@ export function tileConfig(env = process.env) {
 }
 
 export function registerMapRoutes(app) {
+  app.get('/api/commute', (_req, res) => {
+    res.set('Cache-Control', 'no-store');
+    res.json(commutePayload());
+  });
+
   app.get('/api/map/jobs', (_req, res) => {
     const pending = parsePipelineRows(read(PATHS.pipeline));
     const idx = buildLocationIndex({

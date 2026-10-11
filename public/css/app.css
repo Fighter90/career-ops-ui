@@ -111,12 +111,12 @@
   --font-size-md: 13px;
   --font-size-base: 15px;
   --font-size-lg: 18px;
-  --font-size-xl: 22px;
-  --font-size-2xl: 28px;
+  --font-size-xl: 22px; --font-size-2xl: 28px;
   --z-topbar: 5;
   --z-sidebar: 10;   /* backdrop sits one below via calc(var(--z-sidebar) - 1) */
   --z-hud: 11;
   --z-banner: 50;    /* onboarding banner one below via calc(var(--z-banner) - 1) */
+  --z-map-control: 70; --z-map-sheet: 80;
   --z-modal: 200;
   --z-popover: 950;
   --z-toast: 1000;

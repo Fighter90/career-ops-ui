@@ -1,9 +1,9 @@
 /**
  * CSS test helper (v1.131.2).
  *
- * `app.css` was split into three ordered stylesheets — `app.css`,
- * `components.css`, `overlays.css` — to satisfy the < 800-LOC file-size
- * contract (no bundler; they load as three ordered `<link>`s in index.html, and
+ * `app.css` was split into ordered concern stylesheets — `app.css`,
+ * `components.css`, `overlays.css`, `map.css` — to satisfy the < 800-LOC file-size
+ * contract (no bundler; they load as ordered `<link>`s in index.html, and
  * the cascade is byte-for-byte identical to the pre-split file).
  *
  * Any test that asserts on a CSS rule reads the CONCATENATION via `loadAppCss()`
@@ -17,8 +17,8 @@ import { fileURLToPath } from 'node:url';
 
 const CSS_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', 'public', 'css');
 
-/** The three app stylesheets, in index.html `<link>` (cascade) order. */
-export const APP_CSS_FILES = ['app.css', 'components.css', 'overlays.css'];
+/** The app stylesheets, in index.html `<link>` (cascade) order. */
+export const APP_CSS_FILES = ['app.css', 'components.css', 'overlays.css', 'map.css'];
 
 /** Concatenated CSS of all app stylesheets, in load order. */
 export function loadAppCss() {

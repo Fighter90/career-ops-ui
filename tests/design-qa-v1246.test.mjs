@@ -22,6 +22,7 @@ import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { loadAssembledDict, I18N_LANGS } from './helpers/i18n-vm.mjs';
+import { loadAppCss } from './helpers/css.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const R = (...p) => resolve(__dirname, '..', ...p);
@@ -30,6 +31,7 @@ const read = (...p) => readFileSync(R(...p), 'utf8');
 const APP = read('public', 'css', 'app.css');
 const COMPONENTS = read('public', 'css', 'components.css');
 const OVERLAYS = read('public', 'css', 'overlays.css');
+const CSS = loadAppCss();
 const DICT = loadAssembledDict();
 
 // ── 1 · apply-dark invisible link ───────────────────────────────────────────
@@ -106,9 +108,9 @@ test('scan: saved-search controls may shrink and the row wraps (no viewport clip
 
 // ── 7 · map dark controls ───────────────────────────────────────────────────
 test('map: Leaflet zoom/layers/attribution follow the dark theme (explicit + system)', () => {
-  assert.match(OVERLAYS, /\[data-theme="dark"\] \.job-map \.leaflet-control-zoom a\s*\{[^}]*background:\s*var\(--elev\)[^}]*color:\s*var\(--hof\)/);
-  assert.match(OVERLAYS, /\[data-theme="dark"\] \.job-map \.leaflet-control-attribution\s*\{[^}]*background:\s*var\(--paper\)/);
-  assert.match(OVERLAYS, /@media \(prefers-color-scheme: dark\)\s*\{\s*:root:not\(\[data-theme="light"\]\):not\(\[data-theme="dark"\]\) \.job-map \.leaflet-control-zoom a/);
+  assert.match(CSS, /\[data-theme="dark"\] \.job-map \.leaflet-control-zoom a\s*\{[^}]*background:\s*var\(--elev\)[^}]*color:\s*var\(--hof\)/);
+  assert.match(CSS, /\[data-theme="dark"\] \.job-map \.leaflet-control-attribution\s*\{[^}]*background:\s*var\(--paper\)/);
+  assert.match(CSS, /@media \(prefers-color-scheme: dark\)\s*\{\s*:root:not\(\[data-theme="light"\]\):not\(\[data-theme="dark"\]\) \.job-map \.leaflet-control-zoom a/);
 });
 
 // ── 8 · chat FAB clearance ──────────────────────────────────────────────────

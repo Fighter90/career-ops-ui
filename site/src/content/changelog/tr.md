@@ -2,6 +2,10 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.249.0] — 2026-10-11
+
+**İş haritası artık uygunluğu öne çıkarıyor: sakin turkuazdan griye ölçek en iyi işleri vurguluyor, puan ve yol süresi filtreleri saklanıyor, mobilde tam yükseklikte harita ve dokunarak önizleme sunuluyor; tracker da yol süresi filtresi ile sıralamasını paylaşıyor.**
+
 ## [1.248.8] — 2026-10-11
 
 **Ebeveyn paritesi: fork ve web-ui upstream’ın 115 commit’lik deltasıyla senkronize oluyor — yeni bir PageUp kaynağı, izleyici URL hücreleri markdown bağlantısı olarak ayrıştırılıyor, Assessment durumu — artı ta/ja dil çalışması: döngüye giren raporlar kesilip adlandırılıyor, başlık iskeleti A–G’yi sabit tutuyor ve betik payı yalnızca düzyazıyı okuyor.**
@@ -15,8 +19,6 @@
 - **Betik payı yalnızca düzyazıyı okur** (tablolar, SCORE_SUMMARY, kod ve URL hariç) — Latince tablolu bir Japonca rapor artık dalgalanmıyor.
 - **/api/evaluate `report not in <locale>` uyarısı ekler** ve remote-qa kodları bir sütun olarak yazdırır.
 ### -
-
- 
 
 ## [1.248.7] — 2026-10-11
 

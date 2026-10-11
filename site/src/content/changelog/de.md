@@ -2,6 +2,10 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.249.0] — 2026-10-11
+
+**Die Stellenkarte ist jetzt relevanzorientiert: Eine ruhige Türkis-bis-Grau-Skala hebt die besten Stellen hervor, Bewertungs- und Fahrzeitfilter bleiben gespeichert, das Handy erhält eine Karte in voller nutzbarer Höhe mit Vorschau beim Antippen, und der Tracker teilt Fahrzeitfilter und -sortierung.**
+
 ## [1.248.8] — 2026-10-11
 
 **Parent-Parität: Fork und web-ui synchronisieren sich mit dem 115-Commit-Delta des Upstreams — eine neue PageUp-Quelle, Tracker-URL-Zellen werden als Markdown-Links geparst, der Assessment-State — plus die ta/ja-Spracharbeit: Looper-Berichte werden abgeschnitten und benannt, das Überschriftenskelett hält A–G stabil, und die Skript-Quote liest nur Prosa.**
@@ -15,8 +19,6 @@
 - **Die Skript-Quote liest nur Prosa** (Tabellen, SCORE_SUMMARY, Code und URLs ausgeschlossen) — ein japanischer Bericht mit lateinischen Tabellen schwankt nicht mehr.
 - **/api/evaluate warnt `report not in <locale>`**, und remote-qa druckt die Codes als Spalte.
 ### -
-
- 
 
 ## [1.248.7] — 2026-10-11
 

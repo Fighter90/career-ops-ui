@@ -11,6 +11,10 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.249.0] — 2026-10-11
+
+**La carte des offres privilégie désormais la pertinence : une gamme calme du sarcelle au gris met en avant les meilleures offres, les filtres de note et de trajet sont mémorisés, le mobile bénéficie d’une carte pleine hauteur avec aperçu au toucher et le suivi partage le filtre et le tri du trajet.**
+
 ## [1.248.8] — 2026-10-11
 
 **Parité avec le parent : le fork et web-ui se synchronisent sur le delta de 115 commits de l’amont — une nouvelle source PageUp, les cellules URL du tracker analysées comme liens markdown, l’état Assessment — plus le travail de langue ta/ja : les rapports en boucle sont coupés et nommés, le squelette de titres garde A–G stable, et la part d’écriture ne lit que la prose.**
@@ -24,8 +28,6 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 - **La part d’écriture ne lit que la prose** (tables, SCORE_SUMMARY, code et URLs exclus) — un rapport japonais avec tables latines ne flotte plus.
 - **/api/evaluate avertit `report not in <locale>`** et remote-qa imprime les codes en colonne.
 ### -
-
- 
 
 ## [1.248.7] — 2026-10-11
 

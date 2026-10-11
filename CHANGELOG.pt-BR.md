@@ -9,6 +9,10 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 ---
 
 
+## [1.249.0] — 2026-10-11
+
+**O mapa de vagas agora prioriza a relevância: uma escala calma de verde-petróleo a cinza destaca as melhores vagas, os filtros de nota e trajeto são persistentes, o celular ganha mapa em tela cheia com prévia ao toque e o tracker compartilha filtro e ordenação de trajeto.**
+
 ## [1.248.8] — 2026-10-11
 
 **Paridade com o pai: o fork e o web-ui sincronizam com o delta de 115 commits do upstream — uma nova fonte PageUp, as células URL do rastreador são analisadas como links markdown, o estado Assessment — além do trabalho de idioma ta/ja: relatórios em loop são cortados e nomeados, o esqueleto de cabeçalhos mantém A–G estável, e a cota de escrita lê apenas prosa.**

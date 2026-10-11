@@ -2,6 +2,10 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.249.0] — 2026-10-11
+
+**La mappa delle offerte ora privilegia la pertinenza: una scala calma dal verde petrolio al grigio evidenzia le offerte migliori, i filtri per punteggio e tragitto restano memorizzati, il telefono usa una mappa a tutta altezza con anteprima al tocco e il tracker condivide filtro e ordinamento del tragitto.**
+
 ## [1.248.8] — 2026-10-11
 
 **Parità con il genitore: il fork e web-ui si sincronizzano con il delta di 115 commit dell’upstream — una nuova fonte PageUp, le celle URL del tracker analizzate come link markdown, lo stato Assessment — più il lavoro linguistico ta/ja: i report in loop vengono tagliati e nominati, lo scheletro dei titoli mantiene A–G stabile, e la quota di scrittura legge solo la prosa.**
@@ -15,8 +19,6 @@
 - **La quota di scrittura legge solo la prosa** (tabelle, SCORE_SUMMARY, codice e URL esclusi) — un report giapponese con tabelle latine non fluttua più.
 - **/api/evaluate avvisa `report not in <locale>`** e remote-qa stampa i codici in una colonna.
 ### -
-
- 
 
 ## [1.248.7] — 2026-10-11
 

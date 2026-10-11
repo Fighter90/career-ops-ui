@@ -283,7 +283,9 @@ test('map: the docs-fab never reaches the attribution at rest at 1440 and 390 (c
   assert.ok(FAB_CLEAR_PHONE >= 12, `phone air between FAB top and map bottom: ${FAB_CLEAR_PHONE}px`);
   // The attribution also stays inside the map's own stacking context, so the
   // FAB (below the modal cap) can never paint over it while both are visible.
-  assert.match(OVERLAYS, /\.job-map \{ height: calc\(100vh - 300px\); min-height: 360px; border-radius: 12px; border: 1px solid var\(--slate\); isolation: isolate; \}/);
+  assert.match(CSS, /\.job-map \{ height: calc\(100vh - 390px\); min-height: 360px; border-radius: 12px; border: 1px solid var\(--slate\); isolation: isolate; \}/);
+  assert.match(CSS, /body\.job-map-active \.docs-fab \{ display: none; \}/,
+    'the mobile full-screen map removes the FAB instead of covering attribution');
   assert.match(OVERLAYS, /\.docs-fab \{\s*[^}]*z-index: calc\(var\(--z-modal\) - 1\);/s);
 });
 

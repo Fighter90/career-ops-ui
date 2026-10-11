@@ -1,4 +1,4 @@
-/* global Router, API, UI, I18n, L */
+/* global Router, API, UI, I18n, L, MapPrefs, PostingUrlKey */
 /**
  * #/map — scan results, pending pipeline and tracked applications on an
  * OpenStreetMap map.
@@ -17,8 +17,10 @@
 (function () {
   const SPREAD_ZOOM = 11;
   const CLUSTER_PX = 20;
-  const SCORE_COLORS = { good: '#008a05', warn: '#e0a100', muted: '#2b6cb0', bad: '#ff385c', none: '#9a9a9a' };
-  const FIT_COLORS = { strong: '#008a05', related: '#2b6cb0', weak: '#a0a0a0', none: '#a0a0a0' };
+  const SCORE_COLORS = { good: 'var(--map-score-top)', warn: 'var(--map-score-good)', muted: 'var(--map-score-mid)', bad: 'var(--map-score-low)', none: 'var(--map-score-none)' };
+  const FIT_COLORS = { strong: 'var(--map-score-top)', related: 'var(--map-score-mid)', weak: 'var(--map-score-low)', none: 'var(--map-score-none)' };
+  const SCORE_RADIUS = { good: 10, warn: 8, muted: 7, bad: 5.5, none: 6 };
+  const SCORE_OPACITY = { good: 1, warn: 0.9, muted: 0.7, bad: 0.42, none: 0.7 };
   const FIT_RANK = { strong: 3, related: 2, weak: 1, none: 0 };
 
   // Generation counter — a newer render (or leaving the route) stops the
@@ -31,19 +33,25 @@
   // and OS-scheme flips both re-mount the tile layer. Cleared in drop().
   let themeObs = null;
   let themeMql = null;
+  let sheetObs = null;
+  let viewportHandler = null;
   const drop = () => {
     if (live) { live.remove(); live = null; }
     if (themeObs) { themeObs.disconnect(); themeObs = null; }
+    if (sheetObs) { sheetObs.disconnect(); sheetObs = null; }
     if (themeMql) { themeMql.onchange = null; themeMql = null; }
+    if (viewportHandler) {
+      window.removeEventListener('resize', viewportHandler);
+      window.visualViewport?.removeEventListener('resize', viewportHandler);
+      viewportHandler = null;
+    }
+    document.body.classList.remove('job-map-active');
   };
   // Only on leaving: the router's hashchange listener runs first, so arriving at
   // #/map has already claimed a fresh gen — bumping it here would kill that render.
   window.addEventListener('hashchange', () => { if (Router.current().name !== 'map') { gen++; drop(); } });
 
-  const urlKey = (u) => {
-    try { const x = new URL(u); return (x.host + x.pathname).replace(/\/+$/, '').toLowerCase(); }
-    catch { return ''; }
-  };
+  const urlKey = (u) => PostingUrlKey ? PostingUrlKey.normalizeUrl(u) : '';
   // The server keeps the first place of a multi-location cell and refuses only
   // a query over its MAX_QUERY (2000) — cap the raw cell to that, nothing more.
   const geoQuery = (loc) => String(loc).slice(0, 2000);
@@ -74,7 +82,7 @@
     const num = r.scoreNum ?? (window.ScoreTone ? window.ScoreTone.scoreNum(r.score) : NaN);
     const has = Number.isFinite(num);
     const tone = has && window.ScoreTone ? window.ScoreTone.scoreTone(num) : 'none';
-    return { tone, num: has ? num : 0, label: r.score && r.score !== '—' ? r.score : '' };
+    return { tone, num: has ? num : null, label: r.score && r.score !== '—' ? r.score : '', evaluated: has };
   }
 
   // DOM built with textContent — job data is untrusted.
@@ -117,11 +125,13 @@
     const c = UI.el;
     const t = (k, f) => I18n.t(k, f);
     const myGen = ++gen;
+    document.body.classList.add('job-map-active');
 
-    const [scan, jobs, tp] = await Promise.all([
+    const [scan, jobs, tp, commute] = await Promise.all([
       API.get('/api/scan-results').catch(() => ({})),
       API.get('/api/map/jobs').catch(() => ({ pipeline: [], tracker: [] })),
       API.get('/api/two-pager').catch(() => ({})),
+      API.get('/api/commute').catch(() => null),
     ]);
     const twoPager = tp && tp.twoPager;
 
@@ -130,17 +140,25 @@
       for (const r of (scan?.[region]?.filtered || [])) scanRows.push(r);
     }
     const locByUrl = new Map(scanRows.filter((r) => r.url && r.location).map((r) => [urlKey(r.url), r.location]));
+    const byUrl = (commute && commute.byUrl) || {};
+    const byNum = (commute && commute.byNum) || {};
+    const commuteOf = (r, href) => byNum[r?.num] || byUrl[urlKey(href || r?.url)] || null;
+    const driveLabel = (cm) => !cm ? '' : cm.precision === 'remote'
+      ? t('commute.remote', 'Remote')
+      : Number.isFinite(cm.min) ? cm.min + ' min' : '?';
 
     // Uniform point: { layer, places, company, filled, color, rank, label, title, lines, open }
     // `places` are tried in order until one geocodes to a settlement.
     const points = [];
     const fitPoint = (layer, r, href) => {
       const { band, label } = fitOf(r, twoPager);
+      const cm = commuteOf(r, href);
       points.push({
         layer, places: [r.location], company: r.company, filled: false,
         color: FIT_COLORS[band], rank: FIT_RANK[band], label: label ? t('map.fit', 'Fit') + ': ' + label : '',
+        fitBand: band, evaluated: false, scoreNum: null, commute: cm,
         title: r.title, lines: [r.company, r.location,
-          [r.workplaceType || (r.isRemote ? 'Remote' : ''), r.salary].filter(Boolean).join(' · ')],
+          [r.workplaceType || (r.isRemote ? 'Remote' : ''), r.salary].filter(Boolean).join(' · '), driveLabel(cm)],
         open: openUrl(href),
       });
     };
@@ -160,16 +178,84 @@
       points.push({
         layer: 'tracker', places, company: r.company, filled: true,
         color: SCORE_COLORS[s.tone] || SCORE_COLORS.none, rank: 100 + s.num,
+        tone: s.tone, evaluated: s.evaluated, scoreNum: s.num, commute: commuteOf(r, r.href),
         label: s.label ? t('map.score', 'Score') + ': ' + s.label : '',
-        title: r.role, lines: [r.company, r.workplace || location, r.status],
+        title: r.role, lines: [r.company, r.workplace || location, r.status, driveLabel(commuteOf(r, r.href))],
         open: r.reportPath
           ? () => Router.go('/reports/' + r.reportPath.replace(/^(\.\.\/)*reports\//, '').replace(/\.md$/, ''))
           : openUrl(r.href),
       });
     }
 
+    for (const p of points) {
+      if (Number.isFinite(p.commute?.lat) && Number.isFinite(p.commute?.lon)) {
+        p.lat = p.commute.lat; p.lon = p.commute.lon; p.fixed = true;
+      }
+    }
+
     const mapEl = c('div', { className: 'job-map', id: 'job-map' });
     const status = c('p', { className: 'page-subtitle', role: 'status', 'aria-live': 'polite' }, '');
+    const statusChip = c('div', { className: 'job-map-status-chip', 'aria-hidden': 'true' }, '');
+    const mapPrefs = MapPrefs ? MapPrefs.loadMap() : { scoreMin: null, showUnevaluated: true, layers: { scan: true, pipeline: true, tracker: true } };
+    const commutePrefs = MapPrefs ? MapPrefs.loadCommute() : { maxMinutes: null, showUnknown: true };
+    const scoreFilter = c('select', { className: 'select', 'aria-label': t('map.filter.score', 'Minimum evaluation score') }, [
+      c('option', { value: '' }, t('map.filter.allScores', 'All scores')),
+      ...[3, 3.8, 4.2].map((n) => c('option', { value: String(n) }, t('map.filter.scoreAtLeast', 'Score ≥ {n}').replace('{n}', n))),
+    ]);
+    scoreFilter.value = mapPrefs.scoreMin == null ? '' : String(mapPrefs.scoreMin);
+    const unevaluated = c('input', { type: 'checkbox', checked: mapPrefs.showUnevaluated });
+    const commuteLimits = [...new Set([commute?.maxMinutes, 30, 45, 60, 90, commutePrefs.maxMinutes]
+      .map(Number).filter((n) => Number.isFinite(n) && n > 0))].sort((a, b) => a - b);
+    const commuteFilter = c('select', { className: 'select', 'aria-label': t('commute.filter', 'Maximum drive time') }, [
+      c('option', { value: '' }, t('commute.any', 'Any drive time')),
+      ...commuteLimits.map((n) => c('option', { value: String(n) }, n === Number(commute?.maxMinutes)
+        ? t('commute.max', '≤ {n} min (profile)').replace('{n}', n)
+        : t('commute.upTo', '≤ {n} min').replace('{n}', n))),
+    ]);
+    commuteFilter.value = commutePrefs.maxMinutes == null ? '' : String(commutePrefs.maxMinutes);
+    const unknownCommute = c('input', { type: 'checkbox', checked: commutePrefs.showUnknown });
+    const layerInputs = Object.fromEntries(['scan', 'pipeline', 'tracker'].map((layer) => [layer,
+      c('input', { type: 'checkbox', checked: mapPrefs.layers[layer] !== false })]));
+    const check = (input, label) => c('label', { className: 'map-check' }, [input, label]);
+    const legend = c('div', { className: 'job-map-legend-inline' }, [
+      c('strong', null, t('map.legend.title', 'Relevance')),
+      c('span', null, t('map.legend.colors', 'teal strongest · grey weakest')),
+      c('span', null, t('map.legend.score', 'Filled: evaluated')),
+      c('span', null, t('map.legend.fit', 'Ring: not evaluated')),
+      c('span', null, t('map.legend.count', 'Number: grouped postings')),
+      c('span', null, t('map.legend.exact', '📍 company address, otherwise place centre')),
+    ]);
+    const filtersBody = c('div', { className: 'job-map-filter-body' }, [
+      c('div', { className: 'job-map-filter-group' }, [
+        c('strong', null, t('map.layers', 'Layers')),
+        check(layerInputs.scan, t('map.layerScan', 'Scan results')),
+        check(layerInputs.pipeline, t('map.layerPipeline', 'Pipeline (pending)')),
+        check(layerInputs.tracker, t('map.layerTracker', 'Tracker')),
+      ]),
+      c('div', { className: 'job-map-filter-group' }, [scoreFilter, check(unevaluated, t('map.filter.unevaluated', 'Show jobs without a score'))]),
+      commute?.available ? c('div', { className: 'job-map-filter-group' }, [commuteFilter, check(unknownCommute, t('commute.unknown', 'Show unknown drive time'))]) : null,
+      legend,
+    ].filter(Boolean));
+    const resetBtn = c('button', { className: 'btn btn-ghost btn-sm', type: 'button' }, t('map.filter.reset', 'Reset'));
+    const fitBtn = c('button', { className: 'btn btn-ghost btn-sm', type: 'button' }, t('map.filter.fit', 'Fit results'));
+    const closeSheet = c('button', { className: 'job-map-sheet-close', type: 'button', 'aria-label': t('common.closeDialog', 'Close dialog') }, '×');
+    const sheet = c('section', { className: 'job-map-sheet', id: 'job-map-sheet', 'aria-label': t('map.filters', 'Map filters') }, [
+      closeSheet,
+      filtersBody,
+      c('div', { className: 'job-map-filter-actions' }, [resetBtn, fitBtn]),
+      c('div', { className: 'job-map-peek', hidden: true }),
+    ]);
+    const filterButton = c('button', { className: 'btn btn-primary job-map-filter-button', type: 'button', 'aria-controls': 'job-map-sheet', 'aria-expanded': 'false' }, t('map.filters', 'Filters'));
+    const mapWrap = c('div', { className: 'job-map-wrap' }, [mapEl, statusChip, filterButton, sheet]);
+    const page = c('div', { className: 'job-map-page' }, [
+      c('header', { className: 'page-header' }, [
+        c('div', null, [
+          c('h1', { className: 'page-title' }, t('map.title', 'Job map')),
+          status,
+        ]),
+      ]),
+      mapWrap,
+    ]);
 
     // Leaflet needs the container in the DOM with a size — init after the
     // router has mounted the returned node.
@@ -177,6 +263,17 @@
       if (myGen !== gen || !mapEl.isConnected || !window.L) return;
       // World view until the first places are located; fit() then frames the data.
       drop();
+      document.body.classList.add('job-map-active');
+      const syncViewport = () => {
+        page.style.height = window.matchMedia('(max-width: 900px)').matches
+          ? Math.max(320, window.innerHeight - page.getBoundingClientRect().top) + 'px'
+          : '';
+        live?.invalidateSize({ pan: false });
+      };
+      viewportHandler = syncViewport;
+      window.addEventListener('resize', viewportHandler);
+      window.visualViewport?.addEventListener('resize', viewportHandler);
+      syncViewport();
       const map = live = L.map(mapEl, { worldCopyJump: true }).setView([20, 0], 2);
       const tiles = jobs.tiles || {};
       // CAR-57 (v1.247.0) — theme-aware basemap. If the server has a
@@ -217,55 +314,90 @@
       // Rings under clusters (markerPane 600) under evaluated dots.
       map.createPane('scorePane').style.zIndex = 620;   // above clusters (600), below tooltips (650)
 
-      // Layer toggles are empty groups; the actual markers live in `drawn` and
-      // are rebuilt from the visible layers on every zoom/toggle.
-      const toggles = { scan: L.layerGroup().addTo(map), pipeline: L.layerGroup().addTo(map), tracker: L.layerGroup().addTo(map) };
-      L.control.layers(null, {
-        [t('map.layerScan', 'Scan results')]: toggles.scan,
-        [t('map.layerPipeline', 'Pipeline (pending)')]: toggles.pipeline,
-        [t('map.layerTracker', 'Tracker')]: toggles.tracker,
-      }, { collapsed: false }).addTo(map);
+      // Empty groups retain Leaflet's layer semantics while page-level controls
+      // keep overlays off the map itself (especially on phones).
+      const toggles = { scan: L.layerGroup(), pipeline: L.layerGroup(), tracker: L.layerGroup() };
+      for (const layer of Object.keys(toggles)) if (layerInputs[layer].checked) toggles[layer].addTo(map);
       const drawn = L.layerGroup().addTo(map);
       // Stop auto-fitting once the user pans/zooms themselves.
       let userMoved = false;
 
-      const legend = L.control({ position: 'bottomleft' });
-      legend.onAdd = () => {
-        const box = L.DomUtil.create('div', 'job-map-legend');
-        [
-          ['dot', t('map.legend.score', 'Filled: evaluation score (tracker)')],
-          ['ring', t('map.legend.fit', 'Ring: title fit, not evaluated (pipeline, scan)')],
-          ['', t('map.legend.colors', 'green good · yellow ok · blue medium · red weak · grey none')],
-          ['count', t('map.legend.count', 'Number: grouped postings, zoom in to spread')],
-          ['', t('map.legend.exact', '📍 company address, otherwise place centre')],
-        ].forEach(([kind, text]) => {
-          const row = L.DomUtil.create('div', '', box);
-          if (kind) L.DomUtil.create('span', 'job-map-swatch ' + kind, row).textContent = kind === 'count' ? '3' : '';
-          row.appendChild(document.createTextNode(text));
+      if (commute?.home) {
+        L.marker([commute.home.lat, commute.home.lon], {
+          keyboard: true,
+          icon: L.divIcon({ html: '<span aria-hidden="true">⌂</span>', className: 'job-map-home', iconSize: [32, 32], iconAnchor: [16, 16] }),
+          title: t('map.home', 'Home'),
+        }).bindTooltip(t('map.home', 'Home')).addTo(map);
+      }
+
+      const coarsePointer = () => window.matchMedia('(hover: none), (pointer: coarse)').matches;
+      const peek = sheet.querySelector('.job-map-peek');
+      let selectedMarker = null;
+      function syncSheetOffset() {
+        const open = sheet.classList.contains('is-open');
+        mapWrap.style.setProperty('--map-sheet-h', open ? sheet.offsetHeight + 'px' : '0px');
+      }
+      function hideSheet({ restore = false } = {}) {
+        sheet.classList.remove('is-open', 'is-peek');
+        filterButton.setAttribute('aria-expanded', 'false');
+        filtersBody.hidden = false;
+        sheet.querySelector('.job-map-filter-actions').hidden = false;
+        peek.hidden = true;
+        selectedMarker = null;
+        syncSheetOffset();
+        if (restore) filterButton.focus();
+      }
+      function showPeek(point, marker, event) {
+        if (!coarsePointer()) { point.open?.(); return; }
+        if (event?.originalEvent) L.DomEvent.stopPropagation(event.originalEvent);
+        selectedMarker = marker;
+        filtersBody.hidden = true;
+        sheet.querySelector('.job-map-filter-actions').hidden = true;
+        peek.hidden = false;
+        peek.textContent = '';
+        const card = c('div', { className: 'job-map-peek-card', role: 'button', tabIndex: 0 }, [
+          c('strong', null, [point.company, point.title].filter(Boolean).join(' · ')),
+          c('span', null, point.label || t('map.filter.unevaluatedShort', 'No score')),
+          c('span', null, commute?.available
+            ? t('commute.col.time', 'Drive') + ': ' + (point.commute ? driveLabel(point.commute) : '?')
+            : ''),
+        ]);
+        const open = () => point.open?.();
+        card.addEventListener('click', open);
+        card.addEventListener('keydown', (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); open(); } });
+        peek.appendChild(card);
+        sheet.classList.add('is-open', 'is-peek');
+        filterButton.setAttribute('aria-expanded', 'true');
+        syncSheetOffset();
+        requestAnimationFrame(() => {
+          if (!selectedMarker) return;
+          map.panBy([0, Math.ceil(sheet.offsetHeight / 2)], { animate: true });
+          card.focus({ preventScroll: true });
         });
-        return box;
-      };
-      legend.addTo(map);
+      }
 
       const single = (p, at) => {
+        const tone = p.tone || (p.evaluated ? 'none' : p.fitBand === 'strong' ? 'good' : p.fitBand === 'related' ? 'muted' : 'bad');
         const m = L.circleMarker(at, p.filled
-          ? { pane: 'scorePane', radius: 8, color: '#fff', weight: 1.5, fillColor: p.color, fillOpacity: 0.95 }
-          : { radius: 6, color: p.color, weight: 2.5, fillColor: '#fff', fillOpacity: 0.85 });
+          ? { pane: 'scorePane', bubblingMouseEvents: false, radius: SCORE_RADIUS[tone] || 6, className: tone === 'good' ? 'job-marker-best' : '', color: '#fff', weight: 1.5, fillColor: p.color, fillOpacity: SCORE_OPACITY[tone] ?? 0.7 }
+          : { bubblingMouseEvents: false, radius: SCORE_RADIUS[tone] || 6, color: p.color, weight: tone === 'good' ? 3 : 2.5, fillColor: 'var(--paper)', fillOpacity: 0.88 });
         m.bindTooltip(tip([p.title, ...p.lines, p.label, p.exact ? '📍 ' + t('map.exact', 'Company address') : '']),
           { direction: 'top', offset: [0, -6] });
-        if (p.open) m.on('click', p.open);
+        if (p.open) m.on('click', (e) => showPeek(p, m, e));
         return m;
       };
 
       const cluster = (members, at) => {
         const best = members[0];               // members are sorted by rank
         const n = members.length;
-        const size = Math.round(24 + Math.min(16, Math.log2(n) * 4));
+        const size = Math.max(36, Math.round(24 + Math.min(16, Math.log2(n) * 4)));
         const el = document.createElement('div');
         el.className = 'job-cluster' + (best.filled ? '' : ' ring');
         el.style.setProperty('--c', best.color);
         el.style.width = el.style.height = size + 'px';
-        el.textContent = String(n);
+        const bestLabel = best.evaluated && best.scoreNum != null ? best.scoreNum.toFixed(1)
+          : best.label.replace(/^.*:\s*/, '').replace(/^◎\s*/, '') || '–';
+        el.append(c('span', { className: 'job-cluster-best' }, bestLabel), c('span', { className: 'job-cluster-count' }, String(n)));
         const m = L.marker(at, { icon: L.divIcon({ html: el, className: '', iconSize: [size, size] }), keyboard: false });
         const shown = members.slice(0, 8).map((p) => [p.label, p.company, p.title].filter(Boolean).join(' · '));
         if (n > shown.length) shown.push('+' + (n - shown.length) + ' ' + t('map.more', 'more'));
@@ -278,10 +410,25 @@
         return m;
       };
 
+      function passes(point) {
+        const minScore = scoreFilter.value ? Number(scoreFilter.value) : null;
+        if (point.evaluated) {
+          if (minScore != null && point.scoreNum < minScore) return false;
+        } else if (!unevaluated.checked) return false;
+        const maxDrive = commuteFilter.value ? Number(commuteFilter.value) : null;
+        const remote = point.commute?.precision === 'remote';
+        const known = remote || Number.isFinite(point.commute?.min);
+        if (!known && !unknownCommute.checked) return false;
+        if (maxDrive != null) {
+          if (known && !remote && point.commute.min > maxDrive) return false;
+        }
+        return true;
+      }
+
       function render() {
         drawn.clearLayers();
         const zoom = map.getZoom();
-        const visible = points.filter((p) => p.lat != null && map.hasLayer(toggles[p.layer]))
+        const visible = points.filter((p) => p.lat != null && map.hasLayer(toggles[p.layer]) && passes(p))
           .sort((a, b) => b.rank - a.rank);
         // Spread postings sharing a coordinate; best one stays at the centre.
         const seen = new Map();
@@ -312,10 +459,12 @@
       map.on('zoomend overlayadd overlayremove', render);
       map.on('dragstart', () => { userMoved = true; });
       mapEl.addEventListener('wheel', () => { userMoved = true; }, { passive: true });
+      map.on('click', () => { if (sheet.classList.contains('is-peek')) hideSheet(); });
 
       // One geocode per distinct place+employer, progressively.
       const byKey = new Map();
       for (const p of points) {
+        if (p.fixed) continue;
         p.places = [...new Set(p.places.map((x) => String(x || '').trim()).filter(Boolean))];
         if (!p.places.length) continue;
         const k = JSON.stringify([p.places, p.company || '']);
@@ -328,8 +477,11 @@
         // mapLayerStats above): located / total / without-a-location are all
         // counts over the SAME active-layer point set.
         const s = mapLayerStats(points, (layer) => map.hasLayer(toggles[layer]));
+        const visible = points.filter((p) => p.lat != null && map.hasLayer(toggles[p.layer]) && passes(p)).length;
         status.textContent = t('map.progress', 'Places located') + ': ' + s.located + '/' + s.total
           + ' · ' + t('map.noLocation', 'Without a location') + ': ' + s.noLoc;
+        statusChip.textContent = t('map.visible', '{visible} / {total} mapped')
+          .replace('{visible}', visible).replace('{total}', s.total);
       };
       // CAR-41 — the header stats follow the layer toggles, so the located
       // counter is bound to what is actually shown (registered after `update`
@@ -337,9 +489,9 @@
       map.on('overlayadd overlayremove', update);
       // Frame where most postings are (10th–90th percentile box), so a few
       // far-away outliers don't zoom the whole region into one blob.
-      const fit = () => {
-        if (userMoved) return;
-        const placed = points.filter((p) => p.lat != null);
+      const fit = (force = false) => {
+        if (userMoved && !force) return;
+        const placed = points.filter((p) => p.lat != null && map.hasLayer(toggles[p.layer]) && passes(p));
         if (!placed.length) return;
         const lats = placed.map((p) => p.lat).sort((a, b) => a - b);
         const lons = placed.map((p) => p.lon).sort((a, b) => a - b);
@@ -348,6 +500,54 @@
         map.fitBounds([[lats[cut], lons[cut]], [lats[hi], lons[hi]]],
           { maxZoom: 9, padding: [30, 30] });
       };
+      function savePreferences() {
+        MapPrefs?.saveMap({
+          scoreMin: scoreFilter.value ? Number(scoreFilter.value) : null,
+          showUnevaluated: unevaluated.checked,
+          layers: Object.fromEntries(Object.keys(layerInputs).map((layer) => [layer, layerInputs[layer].checked])),
+        });
+        MapPrefs?.saveCommute({
+          maxMinutes: commuteFilter.value ? Number(commuteFilter.value) : null,
+          showUnknown: unknownCommute.checked,
+        });
+      }
+      function filtersChanged() { savePreferences(); render(); update(); }
+      ;[scoreFilter, unevaluated, commuteFilter, unknownCommute].forEach((control) => control.addEventListener('input', filtersChanged));
+      for (const [layer, control] of Object.entries(layerInputs)) control.addEventListener('input', () => {
+        if (control.checked) toggles[layer].addTo(map); else toggles[layer].removeFrom(map);
+        filtersChanged();
+      });
+      resetBtn.addEventListener('click', () => {
+        MapPrefs?.reset();
+        scoreFilter.value = '';
+        unevaluated.checked = true;
+        commuteFilter.value = '';
+        unknownCommute.checked = true;
+        for (const [layer, control] of Object.entries(layerInputs)) {
+          control.checked = true;
+          if (!map.hasLayer(toggles[layer])) toggles[layer].addTo(map);
+        }
+        filtersChanged();
+      });
+      fitBtn.addEventListener('click', () => { fit(true); if (coarsePointer()) hideSheet({ restore: true }); });
+      filterButton.addEventListener('click', () => {
+        const opening = !sheet.classList.contains('is-open') || sheet.classList.contains('is-peek');
+        if (!opening) { hideSheet({ restore: true }); return; }
+        filtersBody.hidden = false;
+        sheet.querySelector('.job-map-filter-actions').hidden = false;
+        peek.hidden = true;
+        sheet.classList.add('is-open');
+        sheet.classList.remove('is-peek');
+        filterButton.setAttribute('aria-expanded', 'true');
+        syncSheetOffset();
+        scoreFilter.focus({ preventScroll: true });
+      });
+      closeSheet.addEventListener('click', () => hideSheet({ restore: true }));
+      sheet.addEventListener('keydown', (event) => { if (event.key === 'Escape') hideSheet({ restore: true }); });
+      if (window.ResizeObserver) {
+        sheetObs = new ResizeObserver(syncSheetOffset);
+        sheetObs.observe(sheet);
+      }
       update();
       // A few lookups in flight: cached places answer at once, while the server
       // still sends uncached ones to Nominatim one by one.
@@ -378,14 +578,6 @@
       render();
     }, 0);
 
-    return c('div', null, [
-      c('header', { className: 'page-header' }, [
-        c('div', null, [
-          c('h1', { className: 'page-title' }, t('map.title', 'Job map')),
-          status,
-        ]),
-      ]),
-      mapEl,
-    ]);
+    return page;
   });
 })();

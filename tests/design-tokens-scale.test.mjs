@@ -15,7 +15,7 @@ import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
-const FILES = ['app.css', 'components.css', 'overlays.css'].map((f) =>
+const FILES = ['app.css', 'components.css', 'overlays.css', 'map.css'].map((f) =>
   readFileSync(resolve(ROOT, 'public', 'css', f), 'utf8'));
 const ALL = FILES.join('\n');
 const APP = FILES[0];

@@ -9,6 +9,10 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.249.0] — 2026-10-11
+
+**Mapa ofert stawia teraz trafność na pierwszym miejscu: spokojna skala morski→szary wyróżnia najlepsze oferty, filtry oceny i dojazdu są zapamiętywane, telefon otrzymuje mapę na całą dostępną wysokość z podglądem po dotknięciu, a tracker współdzieli filtr i sortowanie dojazdu.**
+
 ## [1.248.8] — 2026-10-11
 
 **Paritet z rodzicem: fork i web-ui synchronizują się ze 115-commitowym delta upstream — nowe źródło PageUp, komórki URL trackera parsowane jako linki markdown, stan Assessment — plus praca językowa ta/ja: zapętlone raporty są ucinane i nazywane, szkielet nagłówków utrzymuje A–G stabilne, a udział pisma liczy się tylko z prozy.**
@@ -22,8 +26,6 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 - **Udział pisma liczy tylko prozę** (tabele, SCORE_SUMMARY, kod i URL wyłączone) — japoński raport z łacińskimi tabelami już nie faluje.
 - **/api/evaluate ostrzega `report not in <locale>`**, a remote-qa drukuje kody w kolumnie.
 ### -
-
- 
 
 ## [1.248.7] — 2026-10-11
 

@@ -11,6 +11,10 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.249.0] — 2026-10-11
+
+**El mapa de empleos ahora prioriza la relevancia: una escala tranquila de turquesa a gris destaca las mejores ofertas, los filtros de puntuación y trayecto se conservan, el móvil usa un mapa a pantalla completa con vista previa al tocar y el tracker comparte filtro y orden de trayecto.**
+
 ## [1.248.8] — 2026-10-11
 
 **Paridad con el padre: el fork y web-ui se sincronizan con el delta de 115 commits del upstream — una nueva fuente PageUp, las celdas URL del rastreador se analizan como enlaces markdown, el estado Assessment — más el trabajo de idioma ta/ja: los informes en bucle se cortan y se nombran, el esqueleto de encabezados mantiene A–G estable, y la cuota de escritura se lee solo en prosa.**

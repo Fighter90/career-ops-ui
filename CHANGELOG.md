@@ -7,6 +7,21 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 ---
 
 
+## [1.249.0] — 2026-10-11
+
+**The job map is now relevance-first: strong jobs lead with a calm teal-to-grey scale, score and commute filters persist, phones get a full-height map with tap-to-peek, and the tracker shares commute filtering and sorting.**
+
+### Added
+
+- **Upstream commute integration**: a read-only, no-store projection of career-ops-plugin-commute v0.2.0 joins jobs by canonical posting URL without exposing router, email or other private plugin settings. A configured home is a neutral reference marker and never enters job counts or clusters.
+- **Decision filters**: All / 3.0+ / 3.8+ / 4.2+ score presets, independent unevaluated and unknown-commute toggles, profile/30/45/60/90-minute commute ceilings, persistent preferences, Reset and explicit Fit results. Filter changes never reframe automatically.
+- **Usable phone map**: the map owns the usable viewport; one bottom sheet serves filters and marker peek. First tap shows company + title, score/fit and commute, while tapping the card opens the job. Desktop keeps hover plus direct click.
+- **Tracker commute lens**: Location and Drive columns appear when commute data exists, with filtering, sorting and an over-profile warning. New UI copy is translated across all 18 locales.
+
+### Notes
+
+- **Not coupled to the Fighter90 fork**: the integration reads the stable upstream plugin files only, so an original-upstream career-ops checkout works once it carries `career-ops-plugin-commute` v0.2.0. The UI does not run routing/geocoding, refresh commute data, edit plugin settings or expose private router/email configuration.
+
 ## [1.248.8] — 2026-10-11
 
 **Parent parity: the fork and web-ui sync to the upstream's 115-commit delta — a new PageUp source, tracker URL cells parsed as markdown links, the Assessment state — plus the ta/ja language work: looping reports are cut and named, the heading skeleton keeps A–G stable, and the script share reads prose only.**
