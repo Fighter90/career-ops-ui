@@ -232,7 +232,7 @@
         check(layerInputs.pipeline, t('map.layerPipeline', 'Pipeline (pending)')),
         check(layerInputs.tracker, t('map.layerTracker', 'Tracker')),
       ]),
-      c('div', { className: 'job-map-filter-group' }, [scoreFilter, check(unevaluated, t('map.filter.unevaluated', 'Show unevaluated jobs'))]),
+      c('div', { className: 'job-map-filter-group' }, [scoreFilter, check(unevaluated, t('map.filter.unevaluated', 'Show jobs without a score'))]),
       commute?.available ? c('div', { className: 'job-map-filter-group' }, [commuteFilter, check(unknownCommute, t('commute.unknown', 'Show unknown drive time'))]) : null,
       legend,
     ].filter(Boolean));
@@ -357,7 +357,7 @@
         peek.textContent = '';
         const card = c('div', { className: 'job-map-peek-card', role: 'button', tabIndex: 0 }, [
           c('strong', null, [point.company, point.title].filter(Boolean).join(' · ')),
-          c('span', null, point.label || t('map.filter.unevaluatedShort', 'Unevaluated')),
+          c('span', null, point.label || t('map.filter.unevaluatedShort', 'No score')),
           c('span', null, commute?.available
             ? t('commute.col.time', 'Drive') + ': ' + (point.commute ? driveLabel(point.commute) : '?')
             : ''),
