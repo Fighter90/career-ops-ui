@@ -11,6 +11,22 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.250.0] — 2026-10-12
+
+**La page de carte devient exploitable : un localisateur d’offres au-dessus de la carte vole vers toute offre visible et ouvre sa carte d’aperçu (bureau inclus), et une recherche textuelle resserre la carte par entreprise ou poste — les deux survivent au rechargement.**
+
+### Ajouté
+
+- **Localisateur d’offres** : un select au-dessus de la carte liste les offres visibles (post-filtre) triées par entreprise+titre ; en choisir une vole vers le cercle et ouvre sa carte d’aperçu — y compris sur bureau.
+- **Recherche textuelle** : resserre la carte par sous-chaîne entreprise+poste (comparaison insensible à la casse ; le champ garde la casse saisie), persiste dans map-prefs, Reset l’efface.
+- **Le FAB ne couvre plus l’attribution sur `#/map`** à toutes les largeurs.
+### Corrigé
+
+- Deux specs de hauteur mobile : le plancher passe à 540 px (la barre prend ~90 px du viewport).
+### Notes
+
+- Les miles sont reportés par le propriétaire au prochain release. Les 4 nouvelles clés i18n entrent dans les 18 dictionnaires et l’instantané assemblé est régénéré. Le localisateur ouvre toujours l’aperçu (naviguer l’annulerait) ; le cercle est retrouvé via la référence inverse __job — pas _point, que L.Circle possède déjà.
+
 ## [1.249.0] — 2026-10-11
 
 **La carte des offres privilégie désormais la pertinence : une gamme calme du sarcelle au gris met en avant les meilleures offres, les filtres de note et de trajet sont mémorisés, le mobile bénéficie d’une carte pleine hauteur avec aperçu au toucher et le suivi partage le filtre et le tri du trajet.**

@@ -2,6 +2,22 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.250.0] — 2026-10-12
+
+**Harita sayfası kullanılabilir hale geliyor: haritanın üstündeki iş konumlandırıcısı görünen herhangi bir işe uçar ve önizlemesini açar (masaüstü dahil), metin araması haritayı şirket veya unvana göre daraltır — ikisi de yenilemeden sonra kalıcıdır.**
+
+### Eklendi
+
+- **İş konumlandırıcı**: haritanın üstündeki select, görünen işleri şirket+ünvan sırasına göre listeler; seçmek daireye uçar ve önizlemeyi açar — masaüstünde de.
+- **Metin arama**: haritayı şirket+ünvana göre daraltır, map-prefs'te kalıcıdır, Reset temizler.
+- **FAB artık `#/map`'te atıfı kapsamıyor** (tüm genişlikler).
+### Düzeltildi
+
+- İki mobil harita yükseklik spec'i: alt sınır 540 px (araç çubuğu görünümün ~90 px'ini alır).
+### Notlar
+
+- Mil bir sonraki sürüme ertelendi. 4 yeni i18n anahtarı 18 sözlüğe giriyor ve birleştirilen anlık görüntü yeniden üretiliyor. Konumlandırıcı her zaman önizlemeyi açar (gezinmek amacını boşa düşürür); daire __job geri referansıyla bulunur — L.Circle'in zaten sahip olduğu _point değil.
+
 ## [1.249.0] — 2026-10-11
 
 **İş haritası artık uygunluğu öne çıkarıyor: sakin turkuazdan griye ölçek en iyi işleri vurguluyor, puan ve yol süresi filtreleri saklanıyor, mobilde tam yükseklikte harita ve dokunarak önizleme sunuluyor; tracker da yol süresi filtresi ile sıralamasını paylaşıyor.**

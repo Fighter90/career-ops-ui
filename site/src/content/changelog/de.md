@@ -2,6 +2,22 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.250.0] — 2026-10-12
+
+**Die Karten Seite wird bedienbar: ein Stellen-Locator über der Karte fliegt zu jedem sichtbaren Job und öffnet seine Vorschaukarte (auch am Desktop), und eine Textsuche grenzt die Karte nach Firma oder Titel ein — beides übersteht ein Neuladen.**
+
+### Hinzugefügt
+
+- **Stellen-Locator**: ein Select über der Karte listet die sichtbaren Jobs nach Firma+Titel; die Wahl fliegt zum Kreis und öffnet die Vorschau — auch am Desktop.
+- **Textsuche**: grenzt die Karte nach Firma+Titel ein, persisted in map-prefs, Reset löscht.
+- **Der FAB verdeckt die Attribution auf `#/map`** in allen Breiten nicht mehr.
+### Behoben
+
+- Zwei Mobile-Höhen-Specs: die Untergrenze geht auf 540 px (die Leiste nimmt ~90 px des Viewports).
+### Hinweise
+
+- Meilen verschiebt der Eigentümer auf das nächste Release. Die 4 neuen i18n-Schlüssel kommen in alle 18 Wörterbücher und der zusammengesetzte Snapshot wird regeneriert. Der Locator öffnet immer die Vorschau (Wegnavigieren würde seinen Zweck zunichtemachen); der Kreis wird über den __job-Rückverweis gefunden — NICHT _point, das L.Circle bereits besitzt.
+
 ## [1.249.0] — 2026-10-11
 
 **Die Stellenkarte ist jetzt relevanzorientiert: Eine ruhige Türkis-bis-Grau-Skala hebt die besten Stellen hervor, Bewertungs- und Fahrzeitfilter bleiben gespeichert, das Handy erhält eine Karte in voller nutzbarer Höhe mit Vorschau beim Antippen, und der Tracker teilt Fahrzeitfilter und -sortierung.**

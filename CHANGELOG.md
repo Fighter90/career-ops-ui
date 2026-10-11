@@ -7,6 +7,26 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 ---
 
 
+## [1.250.0] — 2026-10-12
+
+**The map page becomes workable: a job locator above the map pans to any visible job and opens its peek (desktop included), and a text search narrows the map by company or title — with both surviving reloads.**
+
+### Added
+
+- **Job locator**: a select above the map lists the currently visible (post-filter) jobs sorted by company+title; choosing one flies to its circle — zooming into the spread so clusters separate — and opens its peek card. The peek opens on desktop too: the locator's whole purpose is «show me this job», which navigating away would defeat. The options mirror the active filters on every render, so the select never offers a job the map isn't showing.
+- **Text search**: a search input narrows the map by company+title substring (case-insensitive matching; the input keeps the case as typed). The query persists in map-prefs across reloads, Reset clears it, and the locator's options narrow with the visible set.
+
+### Fixed
+
+- **The docs FAB no longer covers the map's attribution**: with the new toolbar the map shifted down and the Leaflet attribution's bottom-right corner landed under the floating button. The FAB is now hidden on `#/map` at every width (on mobile it already was); the docs assistant stays reachable from every other page.
+- **The two mobile-map height specs** move their floor 600 → 540 px: the toolbar legally takes ~90 px of the viewport, and the specs assert «the map fills most of the viewport», not an exact pixel value.
+
+### Notes
+
+- Drive-time MILES are deliberately NOT part of this release — the owner deferred them to the next one.
+- The locator resolves the drawn layer via a `__job` back-reference: the first attempt used `_point`, which L.Circle already owns — the lookup silently failed and the peek never opened. A property-name collision with a library is invisible until the feature is exercised.
+- The 4 new i18n keys enter all 18 dictionaries and the assembled-dict snapshot is regenerated.
+
 ## [1.249.0] — 2026-10-11
 
 **The job map is now relevance-first: strong jobs lead with a calm teal-to-grey scale, score and commute filters persist, phones get a full-height map with tap-to-peek, and the tracker shares commute filtering and sorting.**

@@ -60,6 +60,14 @@ window.__I18N_DICT_FR = {
   'map.filter.allScores': "Toutes les notes",
   'map.filter.scoreAtLeast': "Note ≥ {n}",
   'map.filter.unevaluated': "Afficher les offres sans score",
+  'map.filter.job': "Offre",
+
+  'map.filter.jobAny': "Choisissez une offre…",
+
+  'map.filter.search': "Rechercher entreprise ou poste",
+
+  'map.filter.searchPlaceholder': "entreprise ou poste…",
+
   'map.filter.unevaluatedShort': "Sans score",
   'map.filter.reset': "Réinitialiser",
   'map.filter.fit': "Ajuster aux résultats",

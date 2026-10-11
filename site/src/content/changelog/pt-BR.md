@@ -9,6 +9,22 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 ---
 
 
+## [1.250.0] — 2026-10-12
+
+**A página do mapa torna-se operacional: um localizador de vagas acima do mapa voa para qualquer vaga visível e abre seu cartão de prévia (inclusive no desktop), e uma busca de texto restringe o mapa por empresa ou cargo — ambos sobrevivem ao recarregamento.**
+
+### Adicionado
+
+- **Localizador de vagas**: um select acima do mapa lista as vagas visíveis (pós-filtro) ordenadas por empresa+título; escolher uma voa ao círculo e abre a prévia — também no desktop.
+- **Busca de texto**: restringe o mapa por empresa+cargo (sem maiúsculas na comparação; o campo mantém o caso digitado), persiste em map-prefs e o Reset limpa.
+- **O FAB não cobre mais a atribuição em `#/map`** em todas as larguras.
+### Corrigido
+
+- Duas especificações de altura móvel: o piso vai a 540 px (a barra ocupa ~90 px do viewport).
+### Notas
+
+- As milhas quedam adiadas pelo proprietário ao próximo release. As 4 chaves i18n novas entram nos 18 dicionários e o snapshot montado é regenerado. O localizador sempre abre a prévia (navegar o derrotaria); o círculo é encontrado pela referência inversa __job — não _point, que o L.Circle já possui.
+
 ## [1.249.0] — 2026-10-11
 
 **O mapa de vagas agora prioriza a relevância: uma escala calma de verde-petróleo a cinza destaca as melhores vagas, os filtros de nota e trajeto são persistentes, o celular ganha mapa em tela cheia com prévia ao toque e o tracker compartilha filtro e ordenação de trajeto.**

@@ -11,6 +11,22 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.250.0] — 2026-10-12
+
+**La página del mapa se vuelve operativa: un localizador de vacancias sobre el mapa vuela hacia cualquier vacante visible y abre su tarjeta emergente (también en escritorio), y una búsqueda de texto acota el mapa por empresa o puesto — ambas sobreviven a la recarga.**
+
+### Añadido
+
+- **Localizador de vacancias**: un select sobre el mapa lista las vacantes visibles (post-filtro) ordenadas por empresa+título; elegir una vuela al círculo y abre su tarjeta — también en escritorio.
+- **Búsqueda de texto**: reduce el mapa por empresa+puesto (sin mayúsculas en la comparación; el campo guarda el caso escrito), persiste en map-prefs y Reset lo limpia.
+- **El FAB ya no cubre la atribución en `#/map`** a todos los anchos.
+### Corregido
+
+- Dos especificaciones de altura móvil: el suelo pasa a 540 px (la barra toma ~90 px del viewport).
+### Notas
+
+- Las millas quedan aplazadas por el propietario al siguiente release. Las 4 claves i18n nuevas entran en los 18 diccionarios y el snapshot ensamblado se regenera. El localizador siempre abre la pre vista (navegar lo derrotaría); el círculo se encuentra por la referencia inversa __job — no _point, que L.Circle ya posee.
+
 ## [1.249.0] — 2026-10-11
 
 **El mapa de empleos ahora prioriza la relevancia: una escala tranquila de turquesa a gris destaca las mejores ofertas, los filtros de puntuación y trayecto se conservan, el móvil usa un mapa a pantalla completa con vista previa al tocar y el tracker comparte filtro y orden de trayecto.**

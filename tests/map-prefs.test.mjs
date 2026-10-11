@@ -25,15 +25,16 @@ test('inclusive defaults and defensive validation', () => {
     'career-ops-ui:commute-prefs:v1': JSON.stringify({ maxMinutes: -5, showUnknown: 'yes' }),
   });
   assert.deepEqual(JSON.parse(JSON.stringify(api.loadMap())), {
-    scoreMin: null, showUnevaluated: true, layers: { scan: true, pipeline: true, tracker: true },
+    scoreMin: null, showUnevaluated: true, q: '', layers: { scan: true, pipeline: true, tracker: true },
   });
   assert.deepEqual({ ...api.loadCommute() }, { maxMinutes: null, showUnknown: true });
 });
 test('map and shared commute preferences persist independently and reset', () => {
   const { api } = load();
-  api.saveMap({ scoreMin: 3.8, showUnevaluated: false, layers: { scan: false, pipeline: true, tracker: true } });
+  api.saveMap({ scoreMin: 3.8, showUnevaluated: false, q: 'acme', layers: { scan: false, pipeline: true, tracker: true } });
   api.saveCommute({ maxMinutes: 45, showUnknown: false });
   assert.equal(api.loadMap().scoreMin, 3.8);
+  assert.equal(api.loadMap().q, 'acme');
   assert.equal(api.loadMap().layers.scan, false);
   assert.deepEqual({ ...api.loadCommute() }, { maxMinutes: 45, showUnknown: false });
   api.reset();

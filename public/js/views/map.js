@@ -196,7 +196,7 @@
     const mapEl = c('div', { className: 'job-map', id: 'job-map' });
     const status = c('p', { className: 'page-subtitle', role: 'status', 'aria-live': 'polite' }, '');
     const statusChip = c('div', { className: 'job-map-status-chip', 'aria-hidden': 'true' }, '');
-    const mapPrefs = MapPrefs ? MapPrefs.loadMap() : { scoreMin: null, showUnevaluated: true, layers: { scan: true, pipeline: true, tracker: true } };
+    const mapPrefs = MapPrefs ? MapPrefs.loadMap() : { scoreMin: null, showUnevaluated: true, q: '', layers: { scan: true, pipeline: true, tracker: true } };
     const commutePrefs = MapPrefs ? MapPrefs.loadCommute() : { maxMinutes: null, showUnknown: true };
     const scoreFilter = c('select', { className: 'select', 'aria-label': t('map.filter.score', 'Minimum evaluation score') }, [
       c('option', { value: '' }, t('map.filter.allScores', 'All scores')),
@@ -214,6 +214,19 @@
     ]);
     commuteFilter.value = commutePrefs.maxMinutes == null ? '' : String(commutePrefs.maxMinutes);
     const unknownCommute = c('input', { type: 'checkbox', checked: commutePrefs.showUnknown });
+    // v1.250.0 — a job LOCATOR and a text search: the located postings used to
+    // be reachable only by hunting circles around the Home marker. The select
+    // lists the currently visible jobs; choosing one pans to its circle and
+    // opens the peek. The search narrows what passes() keeps.
+    const jobSelect = c('select', { className: 'select job-map-job-select', 'aria-label': t('map.filter.job', 'Job') },
+      [c('option', { value: '' }, t('map.filter.jobAny', 'Select a job…'))]);
+    const searchInput = c('input', {
+      className: 'input job-map-search', type: 'search',
+      'aria-label': t('map.filter.search', 'Search company or title'),
+      placeholder: t('map.filter.searchPlaceholder', 'company or title…'),
+      value: String(mapPrefs.q || ''),
+      maxLength: 120,
+    });
     const layerInputs = Object.fromEntries(['scan', 'pipeline', 'tracker'].map((layer) => [layer,
       c('input', { type: 'checkbox', checked: mapPrefs.layers[layer] !== false })]));
     const check = (input, label) => c('label', { className: 'map-check' }, [input, label]);
@@ -246,6 +259,7 @@
       c('div', { className: 'job-map-peek', hidden: true }),
     ]);
     const filterButton = c('button', { className: 'btn btn-primary job-map-filter-button', type: 'button', 'aria-controls': 'job-map-sheet', 'aria-expanded': 'false' }, t('map.filters', 'Filters'));
+    const jobToolbar = c('div', { className: 'job-map-toolbar' }, [jobSelect, searchInput]);
     const mapWrap = c('div', { className: 'job-map-wrap' }, [mapEl, statusChip, filterButton, sheet]);
     const page = c('div', { className: 'job-map-page' }, [
       c('header', { className: 'page-header' }, [
@@ -254,6 +268,7 @@
           status,
         ]),
       ]),
+      jobToolbar,
       mapWrap,
     ]);
 
@@ -275,6 +290,7 @@
       window.visualViewport?.addEventListener('resize', viewportHandler);
       syncViewport();
       const map = live = L.map(mapEl, { worldCopyJump: true }).setView([20, 0], 2);
+      let q = String(mapPrefs.q || '').toLowerCase();
       const tiles = jobs.tiles || {};
       // CAR-57 (v1.247.0) — theme-aware basemap. If the server has a
       // CONFIGURED dark provider (MAP_TILE_DARK_URL — keyed Carto, a
@@ -347,8 +363,10 @@
         syncSheetOffset();
         if (restore) filterButton.focus();
       }
-      function showPeek(point, marker, event) {
-        if (!coarsePointer()) { point.open?.(); return; }
+      function showPeek(point, marker, event, opts = {}) {
+        // The job locator ALWAYS peeks: its whole purpose is «show me this
+        // job here» — navigating away would defeat it on desktop.
+        if (!coarsePointer() && !opts.peek) { point.open?.(); return; }
         if (event?.originalEvent) L.DomEvent.stopPropagation(event.originalEvent);
         selectedMarker = marker;
         filtersBody.hidden = true;
@@ -383,6 +401,7 @@
           : { bubblingMouseEvents: false, radius: SCORE_RADIUS[tone] || 6, color: p.color, weight: tone === 'good' ? 3 : 2.5, fillColor: 'var(--paper)', fillOpacity: 0.88 });
         m.bindTooltip(tip([p.title, ...p.lines, p.label, p.exact ? '📍 ' + t('map.exact', 'Company address') : '']),
           { direction: 'top', offset: [0, -6] });
+        m.__job = p; // v1.250.0 — the job locator resolves the layer back to its point (NOT `_point`: L.Circle owns it)
         if (p.open) m.on('click', (e) => showPeek(p, m, e));
         return m;
       };
@@ -411,6 +430,10 @@
       };
 
       function passes(point) {
+        if (q) {
+          const hay = (point.company + ' ' + point.title).toLowerCase();
+          if (!hay.includes(q.toLowerCase())) return false;
+        }
         const minScore = scoreFilter.value ? Number(scoreFilter.value) : null;
         if (point.evaluated) {
           if (minScore != null && point.scoreNum < minScore) return false;
@@ -455,11 +478,53 @@
           const mid = members.reduce((s, p) => s.add(p.px), L.point(0, 0)).divideBy(members.length);
           cluster(members, at(mid)).addTo(drawn);
         }
+        syncJobSelect(visible);
+      }
+
+      // v1.250.0 — the locator's options mirror the VISIBLE (filtered) jobs,
+      // so what the select offers is always what the map can show.
+      function syncJobSelect(visible) {
+        const keep = jobSelect.value;
+        const rows = visible
+          .slice()
+          .sort((a, b) => (a.company + a.title).localeCompare(b.company + b.title, undefined, { sensitivity: 'base' }));
+        jobSelect.replaceChildren(
+          c('option', { value: '' }, t('map.filter.jobAny', 'Select a job…')),
+          ...rows.map((p) => c('option', { value: p.url || p.company + '|' + p.title },
+            [p.company, p.title, p.label].filter(Boolean).join(' · '))),
+        );
+        jobSelect.value = rows.some((p) => (p.url || p.company + '|' + p.title) === keep) ? keep : '';
       }
       map.on('zoomend overlayadd overlayremove', render);
       map.on('dragstart', () => { userMoved = true; });
       mapEl.addEventListener('wheel', () => { userMoved = true; }, { passive: true });
       map.on('click', () => { if (sheet.classList.contains('is-peek')) hideSheet(); });
+
+      // v1.250.0 — choosing a job pans to its circle (zooming into the spread
+      // so clusters separate) and opens its peek. The circle marker is found
+      // among the drawn layers via the _point back-reference.
+      function focusPoint(p) {
+        if (!p || p.lat == null) return;
+        jobSelect.value = p.url || p.company + '|' + p.title;
+        map.flyTo([p.lat, p.lon], Math.max(map.getZoom(), SPREAD_ZOOM), { duration: 0.6 });
+        map.once('moveend', () => {
+          let found = null;
+          drawn.eachLayer((l) => { if (l.__job === p) found = l; });
+          if (found) showPeek(p, found, null, { peek: true });
+        });
+      }
+      jobSelect.addEventListener('change', () => {
+        const key = jobSelect.value;
+        if (!key) return;
+        const p = points.find((x) => (x.url || x.company + '|' + x.title) === key);
+        if (p) focusPoint(p);
+      });
+      searchInput.addEventListener('input', () => {
+        q = searchInput.value.trim(); // raw text — the display keeps the user's case
+        savePreferences();
+        render();
+        update();
+      });
 
       // One geocode per distinct place+employer, progressively.
       const byKey = new Map();
@@ -504,6 +569,7 @@
         MapPrefs?.saveMap({
           scoreMin: scoreFilter.value ? Number(scoreFilter.value) : null,
           showUnevaluated: unevaluated.checked,
+          q: searchInput.value.trim(),
           layers: Object.fromEntries(Object.keys(layerInputs).map((layer) => [layer, layerInputs[layer].checked])),
         });
         MapPrefs?.saveCommute({
@@ -519,6 +585,9 @@
       });
       resetBtn.addEventListener('click', () => {
         MapPrefs?.reset();
+        searchInput.value = '';
+        q = '';
+        jobSelect.value = '';
         scoreFilter.value = '';
         unevaluated.checked = true;
         commuteFilter.value = '';

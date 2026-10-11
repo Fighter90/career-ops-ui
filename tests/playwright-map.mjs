@@ -128,7 +128,7 @@ test('mobile marker tap opens a peek before navigation and keeps the map usable'
     // The rendered height depends on the viewport chrome and font metrics
     // (642.5px on CI and locally); what matters is that the map fills most
     // of the 844px-tall viewport, not an exact pixel value.
-    assert.ok(mapHeight >= 600, `mobile map is only ${mapHeight}px high`);
+    assert.ok(mapHeight >= 540, `mobile map is only ${mapHeight}px high`);
     const before = page.url();
     // A touch context: Leaflet synthesizes its layer 'click' from the tap
     // gesture — a force mouse click never reaches the marker handler. The
@@ -172,5 +172,47 @@ test('map: the Leaflet attribution is fully visible (all 4 corners unobstructed)
       });
     });
     for (const p of obstructed) assert.ok(p.ok, `attribution corner ${p.x},${p.y} is covered by: ${p.who || 'unknown'}`);
+  } finally { await page.close(); }
+});
+
+// v1.250.0 — the job locator + the text search (the toolbar above the map).
+test('map: the job locator pans and opens the peek for the chosen job', { skip: SKIP }, async () => {
+  const page = await context.newPage();
+  try {
+    await page.goto(baseUrl + '/#/map');
+    await placesLocated(page);
+    const sel = page.locator('.job-map-job-select');
+    await sel.waitFor({ timeout: 10000 });
+    const options = await sel.locator('option').allInnerTexts();
+    assert.ok(options.some((o) => o.includes('Acme')), 'Acme listed: ' + JSON.stringify(options));
+    assert.ok(options.some((o) => o.includes('Globex')), 'Globex listed');
+    await sel.selectOption({ index: 2 });
+    await page.waitForSelector('.job-map-sheet.is-open.is-peek', { timeout: 10000 });
+    assert.match(await page.locator('.job-map-peek-card').innerText(), /Globex · SRE/, 'the peek shows the chosen job');
+  } finally { await page.close(); }
+});
+
+test('map: the search narrows the map and persists across reload', { skip: SKIP }, async () => {
+  const page = await context.newPage();
+  try {
+    await page.goto(baseUrl + '/#/map');
+    await placesLocated(page);
+    const box = page.locator('.job-map-search');
+    await box.waitFor({ timeout: 10000 });
+    await box.fill('Acme');
+    // The chip is «visible / total mapped» — filtering narrows the visible
+    // half; the locator's options narrow with it (syncJobSelect).
+    await page.waitForFunction(() => /^1 \/ 2 mapped/.test(document.querySelector('.job-map-status-chip')?.textContent || ''),
+      null, { timeout: 10000 });
+    assert.equal(await page.locator('.job-map-job-select option').count(), 2, 'the locator lists only the passing job');
+    await page.reload();
+    await placesLocated(page);
+    assert.equal(await page.locator('.job-map-search').inputValue(), 'Acme', 'the query persists');
+    await page.waitForFunction(() => /^1 \/ 2 mapped/.test(document.querySelector('.job-map-status-chip')?.textContent || ''),
+      null, { timeout: 10000 });
+    await page.locator('.job-map-search').fill('');
+    await page.waitForFunction(() => /^2 \/ 2 mapped/.test(document.querySelector('.job-map-status-chip')?.textContent || ''),
+      null, { timeout: 10000 });
+    assert.equal(await page.locator('.job-map-job-select option').count(), 3, 'clearing restores both jobs');
   } finally { await page.close(); }
 });

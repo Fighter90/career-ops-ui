@@ -60,6 +60,14 @@ window.__I18N_DICT_ZH_CN = {
   'map.filter.allScores': "所有评分",
   'map.filter.scoreAtLeast': "评分 ≥ {n}",
   'map.filter.unevaluated': "显示无评分职位",
+  'map.filter.job': "职位",
+
+  'map.filter.jobAny': "选择职位…",
+
+  'map.filter.search': "搜索公司或职位",
+
+  'map.filter.searchPlaceholder': "公司或职位…",
+
   'map.filter.unevaluatedShort': "无评分",
   'map.filter.reset': "重置",
   'map.filter.fit': "缩放至结果",

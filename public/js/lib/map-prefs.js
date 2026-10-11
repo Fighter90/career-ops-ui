@@ -8,6 +8,7 @@
   const mapDefaults = () => ({
     scoreMin: null,
     showUnevaluated: true,
+    q: '',
     layers: { scan: true, pipeline: true, tracker: true },
   });
   const commuteDefaults = () => ({ maxMinutes: null, showUnknown: true });
@@ -27,6 +28,8 @@
     if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return out;
     if (raw.scoreMin == null || SCORE_VALUES.has(Number(raw.scoreMin))) out.scoreMin = raw.scoreMin == null ? null : Number(raw.scoreMin);
     if (typeof raw.showUnevaluated === 'boolean') out.showUnevaluated = raw.showUnevaluated;
+    // v1.250.0 — the map search query persists with the rest of the filters.
+    if (typeof raw.q === 'string') out.q = raw.q.slice(0, 120);
     if (raw.layers && typeof raw.layers === 'object') {
       for (const layer of Object.keys(out.layers)) if (typeof raw.layers[layer] === 'boolean') out.layers[layer] = raw.layers[layer];
     }
@@ -47,6 +50,7 @@
     if (!raw || typeof raw !== 'object') return out;
     if (raw.scoreMin == null || SCORE_VALUES.has(Number(raw.scoreMin))) out.scoreMin = raw.scoreMin == null ? null : Number(raw.scoreMin);
     if (typeof raw.showUnevaluated === 'boolean') out.showUnevaluated = raw.showUnevaluated;
+    if (typeof raw.q === 'string') out.q = raw.q.slice(0, 120);
     if (raw.layers && typeof raw.layers === 'object') {
       for (const layer of Object.keys(out.layers)) if (typeof raw.layers[layer] === 'boolean') out.layers[layer] = raw.layers[layer];
     }

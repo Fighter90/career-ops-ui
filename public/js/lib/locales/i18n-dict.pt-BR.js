@@ -60,6 +60,14 @@ window.__I18N_DICT_PT_BR = {
   'map.filter.allScores': "Todas as notas",
   'map.filter.scoreAtLeast': "Nota ≥ {n}",
   'map.filter.unevaluated': "Mostrar vagas sem pontuação",
+  'map.filter.job': "Vaga",
+
+  'map.filter.jobAny': "Selecione uma vaga…",
+
+  'map.filter.search': "Buscar empresa ou cargo",
+
+  'map.filter.searchPlaceholder': "empresa ou cargo…",
+
   'map.filter.unevaluatedShort': "Sem pontuação",
   'map.filter.reset': "Redefinir",
   'map.filter.fit': "Ajustar resultados",

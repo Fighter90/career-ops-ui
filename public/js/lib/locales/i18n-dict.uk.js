@@ -59,6 +59,14 @@ window.__I18N_DICT_UK = {
   'map.filter.allScores': "Усі оцінки",
   'map.filter.scoreAtLeast': "Оцінка ≥ {n}",
   'map.filter.unevaluated': "Показувати вакансії без оцінки",
+  'map.filter.job': "Вакансія",
+
+  'map.filter.jobAny': "Виберіть вакансію…",
+
+  'map.filter.search': "Пошук за компанією або посадою",
+
+  'map.filter.searchPlaceholder': "компанія або посада…",
+
   'map.filter.unevaluatedShort': "Без оцінки",
   'map.filter.reset': "Скинути",
   'map.filter.fit': "Показати результати",
