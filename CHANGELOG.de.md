@@ -2,6 +2,10 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.249.0] — 2026-10-11
+
+**Die Stellenkarte ist jetzt relevanzorientiert: Eine ruhige Türkis-bis-Grau-Skala hebt die besten Stellen hervor, Bewertungs- und Fahrzeitfilter bleiben gespeichert, das Handy erhält eine Karte in voller nutzbarer Höhe mit Vorschau beim Antippen, und der Tracker teilt Fahrzeitfilter und -sortierung.**
+
 ## [1.248.7] — 2026-10-11
 
 **Die Rolle aus dem Berichtskopf liest jetzt die tatsächliche Parent-Konvention — `# Evaluation: {Company} — {Role}` — statt `# <Rolle> — <Firma>` anzunehmen, sodass der Tracker nicht mehr «Evaluation: <Firma>» als Rolle trägt; ein Bericht in der falschen Sprache warnt, statt still gespeichert zu werden; und das Modell-Geplänkel vor dem H1 wird aus gespeicherten Berichten entfernt.**

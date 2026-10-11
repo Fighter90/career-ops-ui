@@ -2,6 +2,10 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.249.0] — 2026-10-11
+
+**La mappa delle offerte ora privilegia la pertinenza: una scala calma dal verde petrolio al grigio evidenzia le offerte migliori, i filtri per punteggio e tragitto restano memorizzati, il telefono usa una mappa a tutta altezza con anteprima al tocco e il tracker condivide filtro e ordinamento del tragitto.**
+
 ## [1.248.7] — 2026-10-11
 
 **Il ruolo dall'intestazione del report ora legge la vera convenzione del genitore — `# Evaluation: {Company} — {Role}` — invece di assumere `# <Ruolo> — <Azienda>`, quindi il tracker non porta più «Evaluation: <Azienda>» come ruolo; un report nella lingua sbagliata avvisa invece di salvare in silenzio; e lo chiacchiericcio del modello prima dell'H1 viene rimosso dai report salvati.**

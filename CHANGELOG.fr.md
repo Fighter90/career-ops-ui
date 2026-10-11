@@ -11,6 +11,10 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.249.0] — 2026-10-11
+
+**La carte des offres privilégie désormais la pertinence : une gamme calme du sarcelle au gris met en avant les meilleures offres, les filtres de note et de trajet sont mémorisés, le mobile bénéficie d’une carte pleine hauteur avec aperçu au toucher et le suivi partage le filtre et le tri du trajet.**
+
 ## [1.248.7] — 2026-10-11
 
 **Le rôle de l’en-tête du rapport lit désormais la vraie convention du parent — `# Evaluation: {Company} — {Role}` — au lieu de supposer `# <Rôle> — <Société>`, donc le tracker ne porte plus «Evaluation: <Société>» comme rôle ; un rapport dans la mauvaise langue avertit au lieu de s’enregistrer en silence ; et le bavardage du modèle avant le H1 est retiré des rapports sauvegardés.**

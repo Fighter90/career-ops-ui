@@ -11,6 +11,10 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.249.0] — 2026-10-11
+
+**El mapa de empleos ahora prioriza la relevancia: una escala tranquila de turquesa a gris destaca las mejores ofertas, los filtros de puntuación y trayecto se conservan, el móvil usa un mapa a pantalla completa con vista previa al tocar y el tracker comparte filtro y orden de trayecto.**
+
 ## [1.248.7] — 2026-10-11
 
 **La función de la cabecera del informe ahora lee la convención real del padre — `# Evaluation: {Company} — {Role}` — en lugar de asumir `# <Función> — <Empresa>`, así que el rastreador ya no lleva «Evaluation: <Empresa>» como función; un informe en el idioma equivocado avisa en lugar de guardarse en silencio; y la charla del modelo antes del H1 desaparece de los informes guardados.**

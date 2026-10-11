@@ -2366,7 +2366,11 @@ Then add the coworker in OpenWorker's **Install a coworker** panel — by **GitH
 
 ## 33. Job map (`#/map`)
 
-The map shows scan results, the pending pipeline and your tracker on an OpenStreetMap map. A **filled dot** is an evaluation score (tracker); a **ring** is a title-fit hint for a posting you have not evaluated yet (pipeline, scan). A **number** groups nearby postings; zoom in to spread them. 📍 marks an employer address found in OpenStreetMap, otherwise the dot sits at the place's centre. The layer switch toggles scan, pipeline and tracker.
+The map shows scan results, the pending pipeline and your tracker on an OpenStreetMap map. A **filled dot** is an evaluation score (tracker); a **ring** is a title-fit hint for a posting you have not evaluated yet (pipeline, scan). A **number** groups nearby postings and shows the best visible score/fit; zoom in to spread them. The sequential teal-to-grey scale makes the strongest jobs largest and most prominent while weak jobs recede. 📍 marks an employer address found in OpenStreetMap, otherwise the dot sits at the place's centre.
+
+The toolbar filters layers, evaluated score (**All / 3.0+ / 3.8+ / 4.2+**) and, when `career-ops-plugin-commute` v0.2.0 data is present, maximum drive time. Unevaluated jobs and unknown commutes have independent, inclusive-by-default toggles. Choices are kept in this browser; **Reset** restores the defaults and **Fit results** is the only filter action that reframes the map. A configured home is shown as a neutral reference marker and is never counted or clustered. On phones the map fills the usable viewport: **Filters** opens one bottom sheet, and the first marker tap peeks at company + title, score/fit and commute; tap the card to open the job.
+
+The UI reads the plugin's stable `config/plugins.yml` + `data/commute.tsv` contract through a no-store endpoint. Router URLs, geocoder email and other private plugin settings never reach the browser. The same commute preference drives the Tracker's optional Location/Drive columns, filter and sort.
 
 ### How to use the map
 

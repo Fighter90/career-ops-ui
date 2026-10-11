@@ -14,7 +14,7 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.248.7-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.248.7)
+[![release](https://img.shields.io/badge/release-v1.249.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.249.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
@@ -35,7 +35,7 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 ### 🗺️ New: every posting on a map
 
-Scan results, the pipeline and the tracker on one world map (`#/map`) — see where the offers cluster and which cities are worth relocating to. A filled marker is your evaluation score, a ring is title fit before evaluation; postings are pinned to the company address when known, otherwise to the city centre (free OpenStreetMap geocoding, no keys).
+Scan results, the pipeline and the tracker on one relevance-first world map (`#/map`) — high-fit jobs lead in teal while weak jobs recede to grey. Filter by score and commute, keep unknown/unevaluated jobs independently, and share commute filtering with the tracker. On phones the map stays full-height and the first marker tap opens a company + title / score / commute peek before navigation. Postings use commute-plugin coordinates when available, then the company address or city centre (OpenStreetMap geocoding, no keys).
 
 ![career-ops-ui — Job map](./images/job-map-en.png)
 

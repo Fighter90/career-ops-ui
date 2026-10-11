@@ -9,6 +9,10 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.249.0] — 2026-10-11
+
+**Mapa ofert stawia teraz trafność na pierwszym miejscu: spokojna skala morski→szary wyróżnia najlepsze oferty, filtry oceny i dojazdu są zapamiętywane, telefon otrzymuje mapę na całą dostępną wysokość z podglądem po dotknięciu, a tracker współdzieli filtr i sortowanie dojazdu.**
+
 ## [1.248.7] — 2026-10-11
 
 **Rola z nagłówka raportu czyta teraz rzeczywistą konwencję rodzica — `# Evaluation: {Company} — {Role}` — zamiast zakładać `# <Rola> — <Firma>`, więc tracker nie niesie już «Evaluation: <Firma>» jako roli; raport w złym języku ostrzega zamiast zapisywać po cichu; a paplanina modelu przed H1 jest wycinana z zapisanych raportów.**

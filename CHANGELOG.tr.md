@@ -2,6 +2,10 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.249.0] — 2026-10-11
+
+**İş haritası artık uygunluğu öne çıkarıyor: sakin turkuazdan griye ölçek en iyi işleri vurguluyor, puan ve yol süresi filtreleri saklanıyor, mobilde tam yükseklikte harita ve dokunarak önizleme sunuluyor; tracker da yol süresi filtresi ile sıralamasını paylaşıyor.**
+
 ## [1.248.7] — 2026-10-11
 
 **Rapor başlığındaki rol artık ebeveynin gerçek kuralını okuyor — `# <Rol> — <Şirket>` varsayımı yerine `# Evaluation: {Şirket} — {Rol}` — böylece izleyici artık «Evaluation: <Şirket>» öğesini rol olarak taşımıyor; yanlış dilde bir rapor sessizce kaydedilmek yerine uyarıyor; ve H1 öncesindeki model gevezeliği kaydedilen raporlardan kesiliyor.**

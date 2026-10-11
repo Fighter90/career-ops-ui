@@ -1,4 +1,4 @@
-/* global Router, API, UI, I18n, HelpHint */
+/* global Router, API, UI, I18n, HelpHint, MapPrefs, PostingUrlKey */
 Router.register('tracker', async () => {
   const c = UI.el;
   const t = (k, f) => I18n.t(k, f);
@@ -6,15 +6,23 @@ Router.register('tracker', async () => {
   // the canonical funnel are fetched together; the stages endpoint fails soft
   // to an empty funnel (the board degrades to an ALL-only view) so the tracker
   // still renders if the parent's states.yml is momentarily unreadable.
-  const [data, stagesData] = await Promise.all([
+  const [data, stagesData, commute] = await Promise.all([
     API.get('/api/tracker'),
     API.get('/api/tracker/stages').catch(() => ({ stages: [], aliases: {} })),
+    API.get('/api/commute').catch(() => null),
   ]);
   const rows = data.rows || [];
   const STAGES = Array.isArray(stagesData.stages) ? stagesData.stages : [];
   const ALIASES = stagesData.aliases || {};
   const TS = window.TrackerStages;
   const fold = (s) => (TS ? TS.foldStatus(s, ALIASES) : (s || ''));
+  const commutePrefs = MapPrefs ? MapPrefs.loadCommute() : { maxMinutes: null, showUnknown: true };
+  const commuteOf = (r) => {
+    if (!commute) return null;
+    const key = PostingUrlKey ? PostingUrlKey.normalizeUrl(r.url || '') : '';
+    return (commute.byNum || {})[r.num] || (key && (commute.byUrl || {})[key]) || null;
+  };
+  const hasCommute = Boolean(commute?.available);
 
   const filterScore = c('select', { className: 'select', style: { maxWidth: '180px' } }, [
     c('option', { value: '' }, t('track.anyScore')),
@@ -30,6 +38,19 @@ Router.register('tracker', async () => {
     placeholder: t('track.search'),
     'aria-label': t('track.searchAria', 'Search applications by company name or role title'),
   });
+  const commuteLimits = [...new Set([commute?.maxMinutes, 30, 45, 60, 90, commutePrefs.maxMinutes]
+    .map(Number).filter((n) => Number.isFinite(n) && n > 0))].sort((a, b) => a - b);
+  const filterCommute = c('select', {
+    className: 'select', style: { maxWidth: '210px' }, 'aria-label': t('commute.filter', 'Maximum drive time'),
+  }, [
+    c('option', { value: '' }, t('commute.any', 'Any drive time')),
+    ...commuteLimits.map((n) => c('option', { value: String(n) }, n === Number(commute?.maxMinutes)
+      ? t('commute.max', '≤ {n} min (profile)').replace('{n}', n)
+      : t('commute.upTo', '≤ {n} min').replace('{n}', n))),
+  ]);
+  filterCommute.value = commutePrefs.maxMinutes == null ? '' : String(commutePrefs.maxMinutes);
+  const showUnknown = c('input', { type: 'checkbox', checked: commutePrefs.showUnknown });
+  const unknownLabel = c('label', { className: 'map-check' }, [showUnknown, t('commute.unknown', 'Show unknown drive time')]);
 
   // v1.131.0 — the CRM stage-tab strip. Replaces the v1.55.8 funnel chip bar +
   // the status <select>: a tab per canonical stage (from GET /api/tracker/stages,
@@ -109,6 +130,13 @@ Router.register('tracker', async () => {
       if (filterScore.value === '4' && (r.scoreNum ?? -1) < 4) continue;
       if (filterScore.value === '3' && (r.scoreNum ?? -1) < 3) continue;
       if (filterScore.value === '0' && (r.scoreNum ?? 0) >= 3) continue;
+      if (hasCommute) {
+        const cm = commuteOf(r);
+        const remote = cm?.precision === 'remote';
+        const known = remote || Number.isFinite(cm?.min);
+        if (!known && !showUnknown.checked) continue;
+        if (filterCommute.value && known && !remote && cm.min > Number(filterCommute.value)) continue;
+      }
       const q = filterText.value.toLowerCase().trim();
       // Search the PRESENTED identity too, so a confidential row is findable by
       // the agency in its Via column and not only by the literal '?'.
@@ -122,12 +150,13 @@ Router.register('tracker', async () => {
   }
 
   // v1.49.0 (WS2 #11) — client-side sort on date / score / status.
-  let sortKey = null;       // 'date' | 'score' | 'status' | null
+  let sortKey = null;       // 'date' | 'score' | 'status' | 'commute' | null
   let sortDir = 'asc';      // 'asc' | 'desc'
   function sorted(arr) {
     if (!sortKey) return arr;
     const dir = sortDir === 'asc' ? 1 : -1;
     const val = (r) => sortKey === 'score' ? (r.scoreNum ?? -1)
+      : sortKey === 'commute' ? (commuteOf(r)?.precision === 'remote' ? 0 : commuteOf(r)?.min ?? Number.POSITIVE_INFINITY)
       : sortKey === 'date' ? (r.date || '')
       : (r.status || '');
     return [...arr].sort((a, b) => {
@@ -150,12 +179,12 @@ Router.register('tracker', async () => {
         // WS2 #26 — distinguish first-run (no data at all) from a filter that
         // excluded everything; the former gets an actionable CTA.
         const emptyCell = rows.length === 0
-          ? c('td', { colspan: 9, style: { textAlign: 'center', padding: '40px', color: 'var(--foggy)' } }, [
+          ? c('td', { colspan: hasCommute ? 11 : 9, style: { textAlign: 'center', padding: '40px', color: 'var(--foggy)' } }, [
               c('strong', null, t('track.emptyTitle', 'No applications yet')),
               c('p', { style: { margin: '8px 0 0' } }, t('track.emptyBody', 'Run the pipeline or evaluate a JD to populate this tracker.')),
               c('a', { href: '#/pipeline', className: 'btn btn-primary btn-sm', style: { marginTop: '12px' } }, t('track.emptyCta', 'Open pipeline')),
             ])
-          : c('td', { colspan: 9, style: { textAlign: 'center', padding: '40px', color: 'var(--foggy)' } }, t('track.noMatch'));
+          : c('td', { colspan: hasCommute ? 11 : 9, style: { textAlign: 'center', padding: '40px', color: 'var(--foggy)' } }, t('track.noMatch'));
         tbody.appendChild(c('tr', null, emptyCell));
         return;
       }
@@ -199,9 +228,21 @@ Router.register('tracker', async () => {
     return th;
   }
   // Resetting the pager when filter inputs change keeps page-1 sticky.
-  ;[filterScore, filterText].forEach((el) =>
+  ;[filterScore, filterText, filterCommute, showUnknown].forEach((el) =>
     el.addEventListener('input', () => { pager.reset(); applyFilters(); })
   );
+  ;[filterCommute, showUnknown].forEach((el) => el.addEventListener('input', () => {
+    MapPrefs?.saveCommute({ maxMinutes: filterCommute.value ? Number(filterCommute.value) : null, showUnknown: showUnknown.checked });
+  }));
+  function commuteCell(cm) {
+    if (!cm) return c('td', { className: 'commute-cell is-unknown' }, '?');
+    if (cm.precision === 'remote') return c('td', { className: 'commute-cell' }, t('commute.remote', 'Remote'));
+    if (!Number.isFinite(cm.min)) return c('td', { className: 'commute-cell is-unknown' }, '?');
+    const over = commute?.maxMinutes && cm.min > commute.maxMinutes;
+    const detail = [Number.isFinite(cm.km) ? cm.km + ' km' : '', cm.precision || ''].filter(Boolean).join(' · ');
+    return c('td', { className: 'commute-cell' + (over ? ' is-over' : ''), title: detail },
+      (over ? '⚠ ' : '') + cm.min + ' min');
+  }
   function row(r) {
     // v1.128.0 — finer 4-tier tone (>=4.2/3.8/3.0) with a
     // letter-grade fallback, via the shared ScoreTone helper. Falls back to the
@@ -234,6 +275,8 @@ Router.register('tracker', async () => {
       c('td', null, r.date || ''),
       c('td', null, companyCell),
       c('td', null, r.role || ''),
+      hasCommute ? c('td', null, commuteOf(r)?.location || r.location || '—') : null,
+      hasCommute ? commuteCell(commuteOf(r)) : null,
       c('td', null, c('span', { className: 'score-pill ' + scoreCls }, r.score || '—')),
       // Status badge + (for ATS postings) a lazy "still live?" check. The
       // affordance is null for non-ATS rows, so most rows are unchanged.
@@ -320,8 +363,8 @@ Router.register('tracker', async () => {
     c('div', { className: 'card mb-3' }, [
       tabBar,
       c('div', { className: 'flex gap-3', style: { flexWrap: 'wrap' } }, [
-        filterScore, filterText,
-      ]),
+        filterScore, hasCommute ? filterCommute : null, hasCommute ? unknownLabel : null, filterText,
+      ].filter(Boolean)),
     ]),
 
     companyHistoryCard(rows, c, t),
@@ -333,6 +376,8 @@ Router.register('tracker', async () => {
           sortableTh(t('track.col.date'), 'date'),
           c('th', { scope: 'col' }, t('scan.col.company')),
           c('th', { scope: 'col' }, t('scan.col.role')),
+          hasCommute ? c('th', { scope: 'col' }, t('commute.col.place', 'Location')) : null,
+          hasCommute ? sortableTh(t('commute.col.time', 'Drive'), 'commute') : null,
           sortableTh(t('track.col.score', 'Score'), 'score'),
           sortableTh(t('track.col.status'), 'status'),
           c('th', { scope: 'col' }, [

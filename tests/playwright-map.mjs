@@ -40,8 +40,14 @@ before(async () => {
   for (const d of ['config', 'data', 'modes']) mkdirSync(resolve(dir, d), { recursive: true });
   writeFileSync(resolve(dir, 'cv.md'), '# CV\n');
   writeFileSync(resolve(dir, 'config', 'profile.yml'), 'candidate:\n  full_name: Tester\n');
+  writeFileSync(resolve(dir, 'config', 'plugins.yml'), 'plugins:\n  commute:\n    home_lat: 53.8\n    home_lon: -1.55\n    max_minutes: 45\n');
   writeFileSync(resolve(dir, 'portals.yml'), 'tracked_companies: []\n');
   writeFileSync(resolve(dir, 'data', 'applications.md'), '');
+  writeFileSync(resolve(dir, 'data', 'commute.tsv'), [
+    'url\tlocation\tprecision\tlat\tlon\tkm\tmin\tchecked\tfactor',
+    'https://example.com/j/1\tLeeds, UK\tcity\t53.8\t-1.55\t18\t20\t2026-10-11\t1',
+    '',
+  ].join('\n'));
   writeFileSync(resolve(dir, 'modes', 'oferta.md'), 'x\n');
   const snap = { en: { kind: 'en', when: new Date().toISOString(), fresh: ROWS, filtered: ROWS }, ru: null };
   writeFileSync(resolve(dir, 'data', 'last-scan.json'), JSON.stringify(snap));
@@ -92,11 +98,50 @@ test('map renders when reached via the nav (hashchange), and again on return', {
   } finally { await page.close(); }
 });
 
+test('map commute/unknown filters persist and Reset restores inclusive defaults', { skip: SKIP }, async () => {
+  const page = await context.newPage();
+  try {
+    await page.goto(baseUrl + '/#/map');
+    await placesLocated(page);
+    const unknown = page.getByLabel('Show unknown drive time');
+    await unknown.uncheck();
+    await page.waitForFunction(() => /^1 \/ 2/.test(document.querySelector('.job-map-status-chip')?.textContent || ''));
+    await page.reload();
+    await placesLocated(page);
+    assert.equal(await page.getByLabel('Show unknown drive time').isChecked(), false);
+    await page.getByRole('button', { name: 'Reset' }).click();
+    assert.equal(await page.getByLabel('Show unknown drive time').isChecked(), true);
+    assert.equal(await page.getByLabel('Show unevaluated jobs').isChecked(), true);
+  } finally { await page.close(); }
+});
+
+test('mobile marker tap opens a peek before navigation and keeps the map usable', { skip: SKIP }, async () => {
+  const mobile = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+  await mobile.route('**/api/geocode?**', (route) =>
+    route.fulfill({ contentType: 'application/json', body: JSON.stringify({ lat: 50, lon: 0, exact: false }) }));
+  await mobile.route('https://tile.openstreetmap.org/**', (route) => route.abort());
+  const page = await mobile.newPage();
+  try {
+    await page.goto(baseUrl + '/#/map');
+    await placesLocated(page);
+    const mapHeight = await page.locator('#job-map').evaluate((el) => el.getBoundingClientRect().height);
+    assert.ok(mapHeight >= 650, `mobile map is only ${mapHeight}px high`);
+    const before = page.url();
+    await page.locator('.leaflet-interactive').first().click({ force: true });
+    await page.waitForSelector('.job-map-sheet.is-open.is-peek');
+    assert.equal(page.url(), before, 'the first marker tap must not navigate');
+    assert.match(await page.locator('.job-map-peek-card').innerText(), /Acme · Platform Engineer/);
+    assert.equal(await page.locator('.job-map-filter-body').isVisible(), false, 'peek must not retain the filter controls');
+    const sheetBottom = await page.locator('.job-map-sheet').evaluate((el) => el.getBoundingClientRect().bottom);
+    assert.ok(sheetBottom <= 844, `peek sheet extends below the viewport (${sheetBottom}px)`);
+  } finally { await mobile.close(); }
+});
+
 // v1.248.3 — the docs FAB (fixed, bottom-right) must not cover the Leaflet
 // attribution: the OSM licence requires it visible. ALL FOUR CORNERS of the
 // attribution rect are probed with elementFromPoint — a single-centre check
 // gave a false pass before the 96px lift shipped.
-test('map: the Leaflet attribution is fully visible (all 4 corners unobstructed)', async () => {
+test('map: the Leaflet attribution is fully visible (all 4 corners unobstructed)', { skip: SKIP }, async () => {
   const page = await context.newPage();
   try {
     await page.goto(baseUrl + '/#/map', { waitUntil: 'domcontentloaded' });

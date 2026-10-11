@@ -9,6 +9,10 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 ---
 
 
+## [1.249.0] — 2026-10-11
+
+**Jobkortet prioriterer nu relevans: en rolig skala fra petroleum til grå fremhæver de bedste job, score- og køretidsfiltre huskes, mobilen får et kort i fuld højde med forhåndsvisning ved tryk, og trackeren deler køretidsfilter og sortering.**
+
 ## [1.248.7] — 2026-10-11
 
 **Rollen fra rapportens sidehoved læser nu forælderens faktiske konvention — `# Evaluation: {Company} — {Role}` — i stedet for at antage `# <Rolle> — <Firma>`, så trackeren ikke længere bærer «Evaluation: <Firma>» som rolle; en rapport på det forkerte sprog advarer i stedet for at gemme lydløst; og modelsludderet før H1 skæres fra gemte rapporter.**

@@ -1,7 +1,7 @@
 /**
  * v1.131.2 — app.css was split into three ordered stylesheets to satisfy the
  * < 800-LOC file-size contract (no bundler). This canary locks the split:
- *   - the three files exist and are each within the hard limit,
+ *   - the concern files exist and are each within the hard limit,
  *   - index.html loads them in the exact cascade order,
  *   - together they still carry a rule from every original concern (no content
  *     was dropped in the cut).
@@ -17,21 +17,21 @@ import { APP_CSS_FILES, loadAppCss } from './helpers/css.mjs';
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const HARD_LIMIT = 800; // docs/sdd/CONVENTIONS.md file-size contract
 
-test('the three app stylesheets exist and are each within the 800-LOC hard limit', () => {
-  assert.deepEqual(APP_CSS_FILES, ['app.css', 'components.css', 'overlays.css']);
+test('the app stylesheets exist and are each within the 800-LOC hard limit', () => {
+  assert.deepEqual(APP_CSS_FILES, ['app.css', 'components.css', 'overlays.css', 'map.css']);
   for (const f of APP_CSS_FILES) {
     const lines = readFileSync(resolve(ROOT, 'public', 'css', f), 'utf8').split('\n').length;
     assert.ok(lines <= HARD_LIMIT, `public/css/${f} is ${lines} lines — over the ${HARD_LIMIT}-LOC hard limit; split it`);
   }
 });
 
-test('index.html links all three stylesheets in cascade order', () => {
+test('index.html links all stylesheets in cascade order', () => {
   const html = readFileSync(resolve(ROOT, 'public', 'index.html'), 'utf8');
   const idx = APP_CSS_FILES.map((f) => html.indexOf(`/css/${f}`));
   for (const [i, pos] of idx.entries()) {
     assert.ok(pos > -1, `index.html must <link> /css/${APP_CSS_FILES[i]}`);
   }
-  assert.ok(idx[0] < idx[1] && idx[1] < idx[2], 'stylesheets must load app.css → components.css → overlays.css (cascade order)');
+  assert.ok(idx.every((pos, i) => i === 0 || idx[i - 1] < pos), 'stylesheets must follow APP_CSS_FILES cascade order');
 });
 
 test('the concatenation still carries a rule from every original concern', () => {

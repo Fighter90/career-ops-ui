@@ -9,6 +9,10 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 ---
 
 
+## [1.249.0] — 2026-10-11
+
+**O mapa de vagas agora prioriza a relevância: uma escala calma de verde-petróleo a cinza destaca as melhores vagas, os filtros de nota e trajeto são persistentes, o celular ganha mapa em tela cheia com prévia ao toque e o tracker compartilha filtro e ordenação de trajeto.**
+
 ## [1.248.7] — 2026-10-11
 
 **A função do cabeçalho do relatório agora lê a convenção real do pai — `# Evaluation: {Company} — {Role}` — em vez de assumir `# <Função> — <Empresa>`, então o rastreador não carrega mais «Evaluation: <Empresa>» como função; um relatório no idioma errado avisa em vez de salvar em silêncio; e o papo do modelo antes do H1 sumiu dos relatórios salvos.**
