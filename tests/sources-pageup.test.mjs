@@ -223,7 +223,6 @@ test('pageup: fetchPageup — a later page throwing (socket) keeps the collected
 });
 
 test('pageup: isRemote follows the title', async () => {
-  const r = parsePageupListing(listing(['Remote Data Engineer']), CFG, 'Acme');
   const jobs = await fetchPageup('https://careers.pageuppeople.com/932/cw/en/listing/', {
     fetchImpl: async () => ({ ok: true, status: 200, text: async () => listing(['Remote Data Engineer'], { }) }),
     delayMs: 0,
