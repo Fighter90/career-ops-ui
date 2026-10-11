@@ -44,6 +44,10 @@ test('assembled dict is byte-for-byte the pre-split snapshot (lossless migration
   const assembled = JSON.parse(JSON.stringify(loadAssembledDict())); // strip vm-realm prototype
   const snapshot = JSON.parse(readFileSync(resolve(ROOT, 'tests', 'fixtures', 'i18n-dict.snapshot.json'), 'utf8'));
   assert.deepEqual(assembled, snapshot);
+  // The two filters are orthogonal: source/lifecycle vs. score state. Keep the
+  // German labels explicit so regenerating the snapshot cannot blur them again.
+  assert.equal(assembled['map.layerPipeline'].de, 'Pipeline (ausstehend)');
+  assert.equal(assembled['map.filter.unevaluated'].de, 'Stellen ohne Score anzeigen');
 });
 
 test('every locale file defines its window global as a non-empty object', () => {
