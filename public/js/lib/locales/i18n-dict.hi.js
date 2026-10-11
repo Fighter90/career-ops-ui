@@ -60,9 +60,9 @@ window.__I18N_DICT_HI = {
   'map.filter.allScores': "सभी स्कोर",
   'map.filter.scoreAtLeast': "स्कोर ≥ {n}",
   'map.filter.unevaluated': "बिना स्कोर वाली नौकरियाँ दिखाएँ",
-  'map.filter.job': "नौकरी",
+  'map.filter.spec': "विशेषज्ञता",
 
-  'map.filter.jobAny': "नौकरी चुनें…",
+  'map.filter.specAny': "सभी विशेषज्ञताएँ",
 
   'map.filter.search': "कंपनी या पद खोजें",
 

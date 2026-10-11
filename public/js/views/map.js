@@ -127,11 +127,15 @@
     const myGen = ++gen;
     document.body.classList.add('job-map-active');
 
-    const [scan, jobs, tp, commute] = await Promise.all([
+    const [scan, jobs, tp, commute, profile] = await Promise.all([
       API.get('/api/scan-results').catch(() => ({})),
       API.get('/api/map/jobs').catch(() => ({ pipeline: [], tracker: [] })),
       API.get('/api/two-pager').catch(() => ({})),
       API.get('/api/commute').catch(() => null),
+      // v1.251.0 — the specializations live in the settings
+      // (config/profile.yml → target_roles.primary); /api/profile's summary
+      // already exposes them as target_roles.
+      API.get('/api/profile').catch(() => ({})),
     ]);
     const twoPager = tp && tp.twoPager;
 
@@ -214,12 +218,13 @@
     ]);
     commuteFilter.value = commutePrefs.maxMinutes == null ? '' : String(commutePrefs.maxMinutes);
     const unknownCommute = c('input', { type: 'checkbox', checked: commutePrefs.showUnknown });
-    // v1.250.0 — a job LOCATOR and a text search: the located postings used to
-    // be reachable only by hunting circles around the Home marker. The select
-    // lists the currently visible jobs; choosing one pans to its circle and
-    // opens the peek. The search narrows what passes() keeps.
-    const jobSelect = c('select', { className: 'select job-map-job-select', 'aria-label': t('map.filter.job', 'Job') },
-      [c('option', { value: '' }, t('map.filter.jobAny', 'Select a job…'))]);
+    // v1.251.0 — a SPECIALIZATION filter fed from the settings
+    // (config/profile.yml → target_roles.primary — «PHP-разработчик»,
+    // «Product Manager», …) plus the v1.250.0 text search. The owner's
+    // correction to the v1.250.0 job locator: the select must filter by
+    // specialization, not list individual vacancies.
+    const specSelect = c('select', { className: 'select job-map-spec-select', 'aria-label': t('map.filter.spec', 'Specialization') },
+      [c('option', { value: '' }, t('map.filter.specAny', 'All specializations'))]);
     const searchInput = c('input', {
       className: 'input job-map-search', type: 'search',
       'aria-label': t('map.filter.search', 'Search company or title'),
@@ -259,7 +264,7 @@
       c('div', { className: 'job-map-peek', hidden: true }),
     ]);
     const filterButton = c('button', { className: 'btn btn-primary job-map-filter-button', type: 'button', 'aria-controls': 'job-map-sheet', 'aria-expanded': 'false' }, t('map.filters', 'Filters'));
-    const jobToolbar = c('div', { className: 'job-map-toolbar' }, [jobSelect, searchInput]);
+    const jobToolbar = c('div', { className: 'job-map-toolbar' }, [specSelect, searchInput]);
     const mapWrap = c('div', { className: 'job-map-wrap' }, [mapEl, statusChip, filterButton, sheet]);
     const page = c('div', { className: 'job-map-page' }, [
       c('header', { className: 'page-header' }, [
@@ -291,6 +296,27 @@
       syncViewport();
       const map = live = L.map(mapEl, { worldCopyJump: true }).setView([20, 0], 2);
       let q = String(mapPrefs.q || '').toLowerCase();
+      // v1.251.0 — the SPECIALIZATION filter: the selected entry from
+      // config/profile.yml → target_roles.primary (loaded from /api/profile).
+      let specialization = '';
+      let specKeywords = {}; // specialization name -> its token list
+      {
+        const roles = ((profile || {}).summary || {}).target_roles;
+        if (Array.isArray(roles) && roles.length) {
+          for (const role of roles) {
+            if (typeof role !== 'string' || !role.trim()) continue;
+            const name = role.trim();
+            specSelect.append(c('option', { value: name }, name));
+            // Tokens of the role string = its matchers. Length ≥ 2 («Go»),
+            // letters/digits/+/#/. — «PHP», «C++», «.NET» survive.
+            specKeywords[name] = (name.match(/[\p{L}\p{N}][\p{L}\p{N}+#.]*/gu) || [])
+              .filter((tok) => tok.length >= 2);
+          }
+          // A specialization whose tokens are a subset of another's longer
+          // name still works: matching is per-token ANY, per the settings'
+          // own wording.
+        }
+      }
       const tiles = jobs.tiles || {};
       // CAR-57 (v1.247.0) — theme-aware basemap. If the server has a
       // CONFIGURED dark provider (MAP_TILE_DARK_URL — keyed Carto, a
@@ -401,7 +427,6 @@
           : { bubblingMouseEvents: false, radius: SCORE_RADIUS[tone] || 6, color: p.color, weight: tone === 'good' ? 3 : 2.5, fillColor: 'var(--paper)', fillOpacity: 0.88 });
         m.bindTooltip(tip([p.title, ...p.lines, p.label, p.exact ? '📍 ' + t('map.exact', 'Company address') : '']),
           { direction: 'top', offset: [0, -6] });
-        m.__job = p; // v1.250.0 — the job locator resolves the layer back to its point (NOT `_point`: L.Circle owns it)
         if (p.open) m.on('click', (e) => showPeek(p, m, e));
         return m;
       };
@@ -433,6 +458,18 @@
         if (q) {
           const hay = (point.company + ' ' + point.title).toLowerCase();
           if (!hay.includes(q.toLowerCase())) return false;
+        }
+        // v1.251.0 — a chosen specialization keeps only the postings whose
+        // title carries one of its distinguishing tokens (word-bounded, so
+        // «Go» never matches «Google»; Cyrillic works through the same
+        // Unicode lookarounds).
+        if (specialization && specKeywords[specialization]) {
+          const kws = specKeywords[specialization];
+          const title = String(point.title || '');
+          if (!kws.some((k) => {
+            const esc = k.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+            return new RegExp(`(?<![\\p{L}\\p{N}])${esc}(?![\\p{L}\\p{N}])`, 'iu').test(title);
+          })) return false;
         }
         const minScore = scoreFilter.value ? Number(scoreFilter.value) : null;
         if (point.evaluated) {
@@ -478,50 +515,20 @@
           const mid = members.reduce((s, p) => s.add(p.px), L.point(0, 0)).divideBy(members.length);
           cluster(members, at(mid)).addTo(drawn);
         }
-        syncJobSelect(visible);
-      }
-
-      // v1.250.0 — the locator's options mirror the VISIBLE (filtered) jobs,
-      // so what the select offers is always what the map can show.
-      function syncJobSelect(visible) {
-        const keep = jobSelect.value;
-        const rows = visible
-          .slice()
-          .sort((a, b) => (a.company + a.title).localeCompare(b.company + b.title, undefined, { sensitivity: 'base' }));
-        jobSelect.replaceChildren(
-          c('option', { value: '' }, t('map.filter.jobAny', 'Select a job…')),
-          ...rows.map((p) => c('option', { value: p.url || p.company + '|' + p.title },
-            [p.company, p.title, p.label].filter(Boolean).join(' · '))),
-        );
-        jobSelect.value = rows.some((p) => (p.url || p.company + '|' + p.title) === keep) ? keep : '';
       }
       map.on('zoomend overlayadd overlayremove', render);
       map.on('dragstart', () => { userMoved = true; });
       mapEl.addEventListener('wheel', () => { userMoved = true; }, { passive: true });
       map.on('click', () => { if (sheet.classList.contains('is-peek')) hideSheet(); });
 
-      // v1.250.0 — choosing a job pans to its circle (zooming into the spread
-      // so clusters separate) and opens its peek. The circle marker is found
-      // among the drawn layers via the _point back-reference.
-      function focusPoint(p) {
-        if (!p || p.lat == null) return;
-        jobSelect.value = p.url || p.company + '|' + p.title;
-        map.flyTo([p.lat, p.lon], Math.max(map.getZoom(), SPREAD_ZOOM), { duration: 0.6 });
-        map.once('moveend', () => {
-          let found = null;
-          drawn.eachLayer((l) => { if (l.__job === p) found = l; });
-          if (found) showPeek(p, found, null, { peek: true });
-        });
-      }
-      jobSelect.addEventListener('change', () => {
-        const key = jobSelect.value;
-        if (!key) return;
-        const p = points.find((x) => (x.url || x.company + '|' + x.title) === key);
-        if (p) focusPoint(p);
-      });
       searchInput.addEventListener('input', () => {
         q = searchInput.value.trim(); // raw text — the display keeps the user's case
         savePreferences();
+        render();
+        update();
+      });
+      specSelect.addEventListener('change', () => {
+        specialization = specSelect.value;
         render();
         update();
       });
@@ -587,7 +594,8 @@
         MapPrefs?.reset();
         searchInput.value = '';
         q = '';
-        jobSelect.value = '';
+        specSelect.value = '';
+        specialization = '';
         scoreFilter.value = '';
         unevaluated.checked = true;
         commuteFilter.value = '';

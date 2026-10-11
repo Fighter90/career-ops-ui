@@ -60,9 +60,9 @@ window.__I18N_DICT_RU = {
   'map.filter.allScores': "Все оценки",
   'map.filter.scoreAtLeast': "Оценка ≥ {n}",
   'map.filter.unevaluated': "Показывать вакансии без оценки",
-  'map.filter.job': "Вакансия",
+  'map.filter.spec': "Специализация",
 
-  'map.filter.jobAny': "Выберите вакансию…",
+  'map.filter.specAny': "Все специализации",
 
   'map.filter.search': "Поиск по компании или должности",
 

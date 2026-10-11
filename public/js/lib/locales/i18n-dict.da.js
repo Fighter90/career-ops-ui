@@ -59,9 +59,9 @@ window.__I18N_DICT_DA = {
   'map.filter.allScores': "Alle vurderinger",
   'map.filter.scoreAtLeast': "Vurdering ≥ {n}",
   'map.filter.unevaluated': "Vis job uden score",
-  'map.filter.job': "Job",
+  'map.filter.spec': "Specialisering",
 
-  'map.filter.jobAny': "Vælg et job…",
+  'map.filter.specAny': "Alle specialiseringer",
 
   'map.filter.search': "Søg firma eller titel",
 

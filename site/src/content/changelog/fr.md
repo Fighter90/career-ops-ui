@@ -11,6 +11,21 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.251.0] — 2026-10-12
+
+**Le select de la carte filtre désormais par SPÉCIALISATION des réglages (config/profile.yml → target_roles.primary) : choisissez «Product Manager» ou «Backend Engineer (Go / PHP)» et la carte ne garde que les offres dont le titre porte les mots de ce rôle. Le localisateur de liste d’offres de v1.250.0 est retiré — c’était le mauvais outil (correction du propriétaire).**
+
+### Ajouté
+
+- **Filtre de spécialisation** : le select liste les spécialisations des réglages (target_roles.primary) ; en choisir une ne garde que les offres dont le titre porte un des tokens distinctifs du rôle (frontières de mots, insensible à la casse — «Go» ne matche jamais «Google») ; Reset restaure tout.
+- **Le localisateur de liste d’offres de v1.250.0 est retiré** — le remplacement : filtre par spécialisation, pas liste d’offres (correction du propriétaire).
+### Changé
+
+- Two mobile-map height specs: the floor moves 600 -> 540 px (the toolbar takes ~90 px of the viewport).
+### - Les miles restent reportés par le propriétaire. La correspondance est délibérément TITRE-SEULE avec les mots des réglages : matcher entreprises ou descriptions attirerait des offres sans rapport dans la spécialisation. Une offre hors de tous les rôles configurés reste visible sous «All».
+
+
+
 ## [1.250.0] — 2026-10-12
 
 **La page de carte devient exploitable : un localisateur d’offres au-dessus de la carte vole vers toute offre visible et ouvre sa carte d’aperçu (bureau inclus), et une recherche textuelle resserre la carte par entreprise ou poste — les deux survivent au rechargement.**

@@ -2,6 +2,21 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.251.0] — 2026-10-12
+
+**Il select della mappa ora filtra per SPECIALIZZAZIONE dalle impostazioni (config/profile.yml → target_roles.primary): scegli «Product Manager» o «Backend Engineer (Go / PHP)» e la mappa mantiene solo le posizioni il cui titolo porta le parole di quel ruolo. Il localizzatore a lista di v1.250.0 è rimosso — era lo strumento sbagliato (correzione del proprietario).**
+
+### Aggiunto
+
+- **Filtro per specializzazione**: il select elenca le specializzazioni dalle impostazioni (target_roles.primary); sceglierne una mantiene solo le posizioni il cui titolo porta uno dei token distintivi del ruolo (ai confini di parola, senza maiuscole — «Go» non matcha mai «Google»); il Reset ripristina tutto.
+- **Il localizzatore a lista di v1.250.0 è rimosso** — la sostituzione: filtro per specializzazione, non lista di posizioni (correzione del proprietario).
+### Cambiato
+
+- Two mobile-map height specs: the floor moves 600 -> 540 px (the toolbar takes ~90 px of the viewport).
+### Note
+
+- Le miglia restano rinviate dal proprietario. Il matching è deliberatamente SOLO TITOLO con le parole delle impostazioni: aziende o descrizioni trarrebbero posizioni non correlate nella specializzazione. Una posizione fuori da tutti i ruoli configurati resta visibile sotto «All».
+
 ## [1.250.0] — 2026-10-12
 
 **La pagina della mappa diventa operativa: un selettore di posizioni sopra la mappa vola verso qualsiasi posizione visibile e apre la sua scheda (desktop incluso), e una ricerca testuale restringe la mappa per azienda o titolo — entrambe sopravvivono al ricaricamento.**

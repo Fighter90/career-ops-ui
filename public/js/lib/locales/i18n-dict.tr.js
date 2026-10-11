@@ -60,9 +60,9 @@ window.__I18N_DICT_TR = {
   'map.filter.allScores': "Tüm puanlar",
   'map.filter.scoreAtLeast': "Puan ≥ {n}",
   'map.filter.unevaluated': "Puansız işleri göster",
-  'map.filter.job': "İş",
+  'map.filter.spec': "Uzmanlık",
 
-  'map.filter.jobAny': "Bir iş seçin…",
+  'map.filter.specAny': "Tüm uzmanlıklar",
 
   'map.filter.search': "Şirket veya ünvan ara",
 

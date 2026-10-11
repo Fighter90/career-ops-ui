@@ -2,6 +2,21 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.251.0] — 2026-10-12
+
+**Der Select der Karte filtert jetzt nach der SPEZIALISIERUNG aus den Einstellungen (config/profile.yml → target_roles.primary): «Product Manager» oder «Backend Engineer (Go / PHP)» wählen, und die Karte behält nur die Postings, deren Titel die Wörter dieser Rolle trägt. Der v1.250.0-Joblisten-Locator ist entfernt — das falsche Werkzeug (Korrektur des Eigentümers).**
+
+### Hinzugefügt
+
+- **Spezialisierungsfilter**: der Select listet die Spezialisierungen aus den Einstellungen (target_roles.primary); eine Wahl behält nur die Postings, deren Titel einen der unterscheidenden Tokens der Rolle trägt (Wortgrenzen, groß-/kleinschreibungslos — «Go» matcht nie «Google»); Reset stellt alles wieder her.
+- **Der v1.250.0-Joblisten-Locator ist entfernt** — der Ersatz: Spezialisierungsfilter, keine Jobliste (Korrektur des Eigentümers).
+### Geändert
+
+- Two mobile-map height specs: the floor moves 600 -> 540 px (the toolbar takes ~90 px of the viewport).
+### Hinweise
+
+- Meilen weiterhin vom Eigentümer verschoben. Das Matching ist bewusst NUR Titel mit den Wörtern der Einstellungen: Firmen oder Beschreibungen würden fremde Postings in die Spezialisierung ziehen. Ein Posting außerhalb aller konfigurierten Rollen bleibt unter «All» sichtbar.
+
 ## [1.250.0] — 2026-10-12
 
 **Die Karten Seite wird bedienbar: ein Stellen-Locator über der Karte fliegt zu jedem sichtbaren Job und öffnet seine Vorschaukarte (auch am Desktop), und eine Textsuche grenzt die Karte nach Firma oder Titel ein — beides übersteht ein Neuladen.**
