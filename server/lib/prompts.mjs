@@ -409,6 +409,13 @@ export function buildEvaluationPrompt(jd, lang) {
   const langOpen = lang && lang !== 'en' && localeName(lang)
     ? `\n**Language: the ENTIRE report — every section, bullet, table cell and the verdict — is written in ${localeName(lang)}. Keep the machine format unchanged: block headings start with the Latin capitals A–G, and the ---SCORE_SUMMARY--- block stays in English.\n`
     : '';
+  // v1.248.8 (CAR-74) — a ready-made heading skeleton for non-EN reports:
+  // the model fills these instead of inventing its own numbering (the weak
+  // locales dropped D–G under the hard language mandate). The Latin letter
+  // is what the validator reads; the title text is the model's to translate.
+  const skeleton = lang && lang !== 'en' && localeName(lang)
+    ? `\nYour report uses EXACTLY these seven headings, in this order — translate the title text, keep the Latin capital and the \`## \` prefix:\n\n## A) Role summary\n## B) CV match\n## C) Risks\n## D) Compensation\n## E) Application strategy\n## F) Posting legitimacy\n## G) Verdict\n`
+    : '';
   return `${buildLocaleDirective(lang)}${langOpen}${scaffold('evalRoleLine', lang)}
 
 ${scaffold('readFiles', lang)}
@@ -436,7 +443,7 @@ LEGITIMACY: <High Confidence | Proceed with Caution | Suspicious>
 ---END_SUMMARY---
 
 ${untrustedJd(jd)}
-${buildLanguageReminder(lang)}`;
+${skeleton}${buildLanguageReminder(lang)}`;
 }
 
 /**

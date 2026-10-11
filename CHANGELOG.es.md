@@ -11,6 +11,22 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.248.8] — 2026-10-11
+
+**Paridad con el padre: el fork y web-ui se sincronizan con el delta de 115 commits del upstream — una nueva fuente PageUp, las celdas URL del rastreador se analizan como enlaces markdown, el estado Assessment — más el trabajo de idioma ta/ja: los informes en bucle se cortan y se nombran, el esqueleto de encabezados mantiene A–G estable, y la cuota de escritura se lee solo en prosa.**
+
+### Añadido
+
+### Corregido
+
+- **Nueva fuente PageUp** (105 adaptadores EN / 110 fuentes); las celdas URL del rastreador se analizan como enlaces markdown (el href es la clave de deduplicación); el estado Assessment llega vía states.yml.
+- **Informe en bucle cortado y nombrado** (`report looping (block B repeated)`), esqueleto de encabezados `## A) … ## G)` para no-EN.
+- **La cuota de escritura lee solo prosa** (tablas, SCORE_SUMMARY, código y URLs fuera) — un informe japonés con tablas latinas ya no flaquea.
+- **/api/evaluate avisa `report not in <locale>`** y remote-qa imprime los códigos en una columna.
+### Notas
+
+- No portado (documentado): la infraestructura scan-ats-full (fetchListing/listingIdentity/_connection-scope — web-ui no tiene barrido reverse-ATS), el grabador de historial de vencidos en liveness (web-ui no escribe scan-history; el planificador puro se porta cuando aparezca un escritor), coverage-check/discover/story-bank/pdf --ats/text mode/domain_filter (solo CLI), el fix de req-id en dedup-tracker (web-ui no tiene dedup-tracker), README.vi.md (el conjunto de locales de web-ui es propio). El fork del padre defiende ADR-0001/0002: telegram.mjs sobrevive, LOCATIONISH_RE Unicode se mantiene (el upstream lo revirtió a \b ASCII).
+
 ## [1.248.7] — 2026-10-11
 
 **La función de la cabecera del informe ahora lee la convención real del padre — `# Evaluation: {Company} — {Role}` — en lugar de asumir `# <Función> — <Empresa>`, así que el rastreador ya no lleva «Evaluation: <Empresa>» como función; un informe en el idioma equivocado avisa en lugar de guardarse en silencio; y la charla del modelo antes del H1 desaparece de los informes guardados.**

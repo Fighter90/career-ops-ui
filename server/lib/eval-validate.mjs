@@ -17,6 +17,30 @@
  * @param {string} text the model's evaluation markdown
  * @returns {string[]} issue messages — empty array means the shape is valid
  */
+/**
+ * v1.248.8 (CAR-74) — detect a REPEATED block heading and cut the report at
+ * its first occurrence. A model that repeats Block B (the 46 587-char ta
+ * report on prod) is looping; everything after the first repeat is garbage
+ * the validator would read as missing blocks anyway. Returns the cut text
+ * plus what happened, so the caller can warn instead of filing half a
+ * report silently.
+ *
+ * @param {string} text
+ * @returns {{ text: string, cut: boolean, letter: string | null, at: number }}
+ */
+export function cutRepeatedBlockHeadings(text) {
+  const src = String(text ?? '');
+  const seen = new Set();
+  for (const m of src.matchAll(/^#{1,3}[ \t]*[^\n]{0,24}?(?<![A-Za-z\u0400-\u04FF])([A-G])(?![A-Za-z\u0400-\u04FF])/gm)) {
+    const letter = m[1];
+    if (seen.has(letter)) {
+      return { text: src.slice(0, m.index).replace(/\s*$/, ''), cut: true, letter, at: m.index };
+    }
+    seen.add(letter);
+  }
+  return { text: src, cut: false, letter: null, at: -1 };
+}
+
 export function validateEvaluationReport(text) {
   const issues = [];
   if (typeof text !== 'string' || text.trim() === '') return ['empty evaluation report'];

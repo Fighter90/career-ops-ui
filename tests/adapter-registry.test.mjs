@@ -99,7 +99,7 @@ test('registry: Workday defaults site=External when careers_url omits site', () 
 
 test('registry: ALL_ADAPTERS has the expected entries', async () => {
   const { ALL_ADAPTERS } = await import('../server/lib/portals/registry.mjs');
-  assert.equal(ALL_ADAPTERS.length, 104);
+  assert.equal(ALL_ADAPTERS.length, 105);
   const ids = ALL_ADAPTERS.map((a) => a.id).sort();
   assert.deepEqual(ids, [
     '4dayweek', 'a16z-speedrun-talent', 'adp-workforcenow', 'agenticjobs', 'alibaba', 'amazon',
@@ -112,14 +112,14 @@ test('registry: ALL_ADAPTERS has the expected entries', async () => {
     'itviec', 'jazzhr', 'jibeapply', 'jobbankca', 'jobicy', 'jobspresso',
     'jobstreet', 'jobvite', 'join', 'joinup', 'justjoin', 'landingjobs',
     'larajobs', 'lever', 'manfred', 'meituan', 'mokahr', 'mycareersfuture',
-    'neogov', 'nodesk', 'nofluffjobs', 'occ', 'oraclecloud', 'peoplesoft',
-    'personio', 'phenom', 'pinpoint', 'prevueaps', 'pythonorg', 'radancy',
-    'recruitee', 'redrover', 'remoteok', 'remotive', 'remotli', 'rheinmetall',
-    'rippling', 'rss', 'schoolspring', 'senjob', 'smartrecruiters', 'softgarden',
-    'solidjobs', 'startup-jobs', 'successfactors', 'taleo', 'teamtailor', 'telegram',
-    'telegram-channel', 'tencent', 'thehub', 'themuse', 'tkms', 'torre',
-    'ultipro', 'vdab', 'weworkremotely', 'workable', 'workday', 'workingnomads',
-    'wttj', 'yourator',
+    'neogov', 'nodesk', 'nofluffjobs', 'occ', 'oraclecloud', 'pageup',
+    'peoplesoft', 'personio', 'phenom', 'pinpoint', 'prevueaps', 'pythonorg',
+    'radancy', 'recruitee', 'redrover', 'remoteok', 'remotive', 'remotli',
+    'rheinmetall', 'rippling', 'rss', 'schoolspring', 'senjob', 'smartrecruiters',
+    'softgarden', 'solidjobs', 'startup-jobs', 'successfactors', 'taleo', 'teamtailor',
+    'telegram', 'telegram-channel', 'tencent', 'thehub', 'themuse', 'tkms',
+    'torre', 'ultipro', 'vdab', 'weworkremotely', 'workable', 'workday',
+    'workingnomads', 'wttj', 'yourator'
   ]);
 });
 

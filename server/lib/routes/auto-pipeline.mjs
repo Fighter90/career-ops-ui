@@ -42,7 +42,7 @@ import { runActiveProvider, PROMPT_SIZE_SOFT_CAP } from '../llm-dispatch.mjs';
 import { recordUsage } from '../llm-usage.mjs';
 import { evaluationWarnings, EVAL_MAX_TOKENS } from './llm.mjs';
 import { stripDangerousMarkdown } from '../security.mjs';
-import { stripScoreSummary, validateEvaluationReport } from '../eval-validate.mjs';
+import { stripScoreSummary, validateEvaluationReport, cutRepeatedBlockHeadings } from '../eval-validate.mjs';
 import { parseReportHeader } from '../parsers.mjs';
 // v1.248.7 — the language check is a pure module shared with remote-qa.
 import { languageOk } from '../../../scripts/remote-qa/lang-check.mjs';
@@ -630,6 +630,17 @@ export function registerAutoPipelineRoutes(app) {
         step(2, 'failed', 'empty evaluation');
         return fail(2, 'the model returned an empty evaluation');
       }
+      // v1.248.8 (CAR-74) — a repeated block heading is the model looping
+      // (the 46 587-char ta report repeated Block B and never reached D–G or
+      // the score). Cut at the first repeat and say so — never file half a
+      // report silently; validation below still rejects the cut prefix if
+      // blocks or the score are missing.
+      const loop = cutRepeatedBlockHeadings(markdown);
+      if (loop.cut) {
+        warnings.push(`report looping: block ${loop.letter} repeated — cut at ${loop.at} chars`);
+        logActivity({ action: 'auto-pipeline.evaluation.repeated-block', target: (() => { try { return new URL(url).hostname; } catch { return '[unparsable URL]'; } })(), detail: `block ${loop.letter}` });
+      }
+      markdown = loop.text;
       // v1.248.3 — validate BEFORE anything is written. A junk entry (a
       // t.me/telegram placeholder that clears the length gate) used to
       // produce a «the model answered insufficient data» report that was
@@ -638,9 +649,10 @@ export function registerAutoPipelineRoutes(app) {
       const issues = validateEvaluationReport(markdown);
       const preScore = extractScore(markdown);
       if (preScore == null || issues.length > 0) {
-        const reason = preScore == null
-          ? 'no SCORE 0–5 in the report'
-          : issues.slice(0, 3).join('; ');
+        const reason = (loop.cut ? `report looping (block ${loop.letter} repeated), ` : '')
+          + (preScore == null
+            ? 'no SCORE 0–5 in the report'
+            : issues.slice(0, 3).join('; '));
         // Host only — the entry URL is user-supplied and CI logs are public.
         const logHost = (() => { try { return new URL(url).hostname; } catch { return '[unparsable URL]'; } })();
         logActivity({ action: 'auto-pipeline.evaluation.rejected', target: logHost, detail: reason });

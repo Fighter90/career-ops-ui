@@ -25,6 +25,9 @@ const FALLBACK = [
   { id: 'evaluated', label: 'Evaluated', aliases: ['evaluada', 'condicional', 'hold', 'evaluar', 'verificar', 'değerlendirildi', 'degerlendirildi'], description: 'Offer evaluated with report, pending decision', group: 'evaluated' },
   { id: 'applied', label: 'Applied', aliases: ['aplicado', 'enviada', 'aplicada', 'sent', 'başvuruldu', 'basvuruldu'], description: 'Application submitted', group: 'applied' },
   { id: 'responded', label: 'Responded', aliases: ['respondido', 'yanıt verildi', 'yanıt_verildi', 'yanit verildi', 'yanit_verildi'], description: 'Company has responded (not yet interview)', group: 'responded' },
+  // v1.248.8 — parent parity: the `assessment` state (online assessment or
+  // asynchronous screening) between Responded and Interview.
+  { id: 'assessment', label: 'Assessment', aliases: ['screening', 'online assessment', 'online_assessment', 'online screening'], description: 'Online assessment or asynchronous screening stage', group: 'assessment' },
   { id: 'interview', label: 'Interview', aliases: ['entrevista', 'mülakat', 'mulakat'], description: 'Active interview process', group: 'interview' },
   { id: 'offer', label: 'Offer', aliases: ['oferta', 'teklif'], description: 'Offer received', group: 'offer' },
   { id: 'rejected', label: 'Rejected', aliases: ['rechazado', 'rechazada', 'reddedildi'], description: 'Rejected by company', group: 'rejected' },
