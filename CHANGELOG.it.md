@@ -2,6 +2,22 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.248.8] — 2026-10-11
+
+**Parità con il genitore: il fork e web-ui si sincronizzano con il delta di 115 commit dell’upstream — una nuova fonte PageUp, le celle URL del tracker analizzate come link markdown, lo stato Assessment — più il lavoro linguistico ta/ja: i report in loop vengono tagliati e nominati, lo scheletro dei titoli mantiene A–G stabile, e la quota di scrittura legge solo la prosa.**
+
+### Aggiunto
+
+### Corretto
+
+- **Nuova fonte PageUp** (105 adattatori EN / 110 fonti); le celle URL del tracker vengono analizzate come link markdown (l'href è la chiave di dedup); lo stato Assessment arriva via states.yml.
+- **Un report in loop viene tagliato e nominato** (`report looping (block B repeated)`), scheletro di titoli `## A) … ## G)` per il non-inglese.
+- **La quota di scrittura legge solo la prosa** (tabelle, SCORE_SUMMARY, codice e URL esclusi) — un report giapponese con tabelle latine non fluttua più.
+- **/api/evaluate avvisa `report not in <locale>`** e remote-qa stampa i codici in una colonna.
+### -
+
+ 
+
 ## [1.248.7] — 2026-10-11
 
 **Il ruolo dall'intestazione del report ora legge la vera convenzione del genitore — `# Evaluation: {Company} — {Role}` — invece di assumere `# <Ruolo> — <Azienda>`, quindi il tracker non porta più «Evaluation: <Azienda>» come ruolo; un report nella lingua sbagliata avvisa invece di salvare in silenzio; e lo chiacchiericcio del modello prima dell'H1 viene rimosso dai report salvati.**

@@ -17,7 +17,7 @@ import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 
 let createApp, stub, lastPrompt = '', lastMaxTokens = 0;
-const REPLY = ['A', 'B', 'C', 'D', 'E', 'F', 'G'].map((L) => `## Bloque ${L} — Sección\ntexto`).join('\n\n')
+const REPLY = ['A', 'B', 'C', 'D', 'E', 'F', 'G'].map((L) => `## Bloque ${L} — Sección\nEl candidato cumple los requisitos del puesto: su experiencia en la plataforma es relevante, y el equipo valora el conocimiento de Kubernetes y Go para este rol.`).join('\n\n')
   + '\n\n---SCORE_SUMMARY---\nCOMPANY: Acme\nROLE: Ingeniera\nSCORE: 4.1\nARCHETYPE: Platform\nLEGITIMACY: High Confidence\n---END_SUMMARY---\n';
 
 before(async () => {

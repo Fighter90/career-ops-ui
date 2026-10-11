@@ -2,6 +2,22 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.248.8] — 2026-10-11
+
+**Parent-Parität: Fork und web-ui synchronisieren sich mit dem 115-Commit-Delta des Upstreams — eine neue PageUp-Quelle, Tracker-URL-Zellen werden als Markdown-Links geparst, der Assessment-State — plus die ta/ja-Spracharbeit: Looper-Berichte werden abgeschnitten und benannt, das Überschriftenskelett hält A–G stabil, und die Skript-Quote liest nur Prosa.**
+
+### Hinzugefügt
+
+### Behoben
+
+- **Neue PageUp-Quelle** (105 EN-Adapter / 110 Quellen); Tracker-URL-Zellen werden als Markdown-Links geparst (der href ist der Dedup-Schlüssel); der Assessment-State kommt über states.yml.
+- **Ein Looper-Bericht wird abgeschnitten und benannt** (`report looping (block B repeated)`), Überschriftenskelett `## A) … ## G)` für Nicht-Englisch.
+- **Die Skript-Quote liest nur Prosa** (Tabellen, SCORE_SUMMARY, Code und URLs ausgeschlossen) — ein japanischer Bericht mit lateinischen Tabellen schwankt nicht mehr.
+- **/api/evaluate warnt `report not in <locale>`**, und remote-qa druckt die Codes als Spalte.
+### -
+
+ 
+
 ## [1.248.7] — 2026-10-11
 
 **Die Rolle aus dem Berichtskopf liest jetzt die tatsächliche Parent-Konvention — `# Evaluation: {Company} — {Role}` — statt `# <Rolle> — <Firma>` anzunehmen, sodass der Tracker nicht mehr «Evaluation: <Firma>» als Rolle trägt; ein Bericht in der falschen Sprache warnt, statt still gespeichert zu werden; und das Modell-Geplänkel vor dem H1 wird aus gespeicherten Berichten entfernt.**

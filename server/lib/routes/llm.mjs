@@ -25,6 +25,9 @@ import { runNodeScript } from '../runner.mjs';
 import { runAnthropic, hasAnthropicKey, hasGeminiKey } from '../anthropic.mjs';
 import { runGemini } from '../gemini.mjs';
 import { validateEvaluationReport, stripScoreSummary } from '../eval-validate.mjs';
+// v1.248.8 (CAR-76) — the wrong-language report is surfaced as a warning on
+// /api/evaluate too (the auto-pipeline has had it since v1.248.7).
+import { languageOk } from '../../../scripts/remote-qa/lang-check.mjs';
 
 // An A–G report plus the SCORE_SUMMARY block runs past 8192 output tokens in
 // CJK locales (ko / zh-TW / ja, 10–13k characters): the summary at the end was
@@ -241,6 +244,12 @@ export function registerLlmRoutes(app) {
       // v1.75.0 (#819) — flag malformed A–G / SCORE_SUMMARY shape as a non-fatal
       // warning so the user knows the report may be truncated/off-format.
       const warnings = [...ctxWarnings, ...evaluationWarnings(r)];
+      // v1.248.8 (CAR-76) — same language warning the auto-pipeline carries:
+      // a drift (ta came back 2–22 % own-script on prod) must surface on
+      // /api/evaluate as well, where remote-qa reads it.
+      if (lang && lang !== 'en' && r.markdown && !languageOk(r.markdown, lang)) {
+        warnings.push(`report not in ${lang}`);
+      }
       recordUsage('anthropic', r.usage);
       return res.json({ mode: 'anthropic', prompt: promptText, markdown: stripScoreSummary(r.markdown), usage: r.usage, saved, ...(warnings.length ? { warnings } : {}) });
     }
@@ -279,6 +288,12 @@ export function registerLlmRoutes(app) {
       if (r.error) return res.status(502).json({ mode: tp.mode, prompt: promptText, error: r.error, saved });
       // v1.75.0 (#819) — same shape guard for the OpenAI/Qwen/OpenRouter/GitHub tail.
       const warnings = [...ctxWarnings, ...evaluationWarnings(r)];
+      // v1.248.8 (CAR-76) — same language warning the auto-pipeline carries:
+      // a drift (ta came back 2–22 % own-script on prod) must surface on
+      // /api/evaluate as well, where remote-qa reads it.
+      if (lang && lang !== 'en' && r.markdown && !languageOk(r.markdown, lang)) {
+        warnings.push(`report not in ${lang}`);
+      }
       recordUsage(tp.mode, r.usage);
       return res.json({ mode: tp.mode, prompt: promptText, markdown: stripScoreSummary(r.markdown), usage: r.usage, saved, ...(warnings.length ? { warnings } : {}) });
     }

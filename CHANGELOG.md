@@ -7,6 +7,27 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 ---
 
 
+## [1.248.8] — 2026-10-11
+
+**Parent parity: the fork and web-ui sync to the upstream's 115-commit delta — a new PageUp source, tracker URL cells parsed as markdown links, the Assessment state — plus the ta/ja language work: looping reports are cut and named, the heading skeleton keeps A–G stable, and the script share reads prose only.**
+
+### Added
+
+- **PageUp source** (`provider: pageup`): scrapes the vendor-hosted `careers.pageuppeople.com` listing tables — one tenant, one entry, paginated with the no-fresh / short-page stop rules and a capped `max_pages`. The registry is 105 EN adapters / 110 sources; PageUp appears in the `#/scan` Source filter (FALLBACK + live registry). A branded domain is deliberately not claimed — point the entry at the vendor host.
+- **Tracker URL cells parse as markdown links** (parent #3516): the parent writes the `URL` cell as `[ashby](https://…)`; `parseApplications` now extracts the href (the dedup key) at parse time. Bare URLs and placeholders pass through verbatim.
+- **The Assessment state** (between Responded and Interview) flows through the live states.yml read; the built-in fallback list is updated for parity.
+
+### Fixed
+
+- **A looping report is cut and named, never filed silently** (CAR-74): the 46 587-char ta report repeated Block B and never reached D–G or the score. A repeated block heading now cuts the report at its first occurrence, the rejection reason names the loop (`report looping (block B repeated), …`), and non-EN prompts carry a ready `## A) … ## G)` heading skeleton so the machine format and the language mandate stop competing (the hard mandate had dropped D–G entirely, A–G ✗ 2/3 on prod).
+- **The script share reads prose only** (CAR-75): tables, the SCORE_SUMMARY block, code and URLs say nothing about the report's language. A Japanese report with Latin tables scored 26–27 % own-script under the full-text share and flaked against the 30 % gate; prose-only holds it deterministically.
+- **/api/evaluate surfaces the language warning** (CAR-76): both provider tails push `report not in <locale>` when the saved report is off-language, and remote-qa prints the warning codes as a table column (codes only — the log is public).
+
+### Notes
+
+- Not ported (documented): the scan-ats-full infrastructure (fetchListing/listingIdentity/_connection-scope — web-ui has no reverse-ATS sweep), the liveness expired-history recorder (web-ui writes no scan-history; the pure `planExpiredHistoryRows` ports when a writer appears), coverage-check/discover/story-bank template/pdf --ats/text mode/domain_filter (CLI-only), the dedup-tracker req-id fix (web-ui has no dedup-tracker), README.vi.md (web-ui's locale set is its own).
+- The parent fork (Fighter90/career-ops) was synced first: main = db11bee7, the merge defended ADR-0001/0002 — providers/telegram.mjs survives (upstream deleted it on their side) and the Unicode-boundary LOCATIONISH_RE is kept (upstream reverted to ASCII `\b`, which never fires next to Cyrillic; the revert merged with zero conflicts, exactly the shape the pipeline warns about).
+
 ## [1.248.7] — 2026-10-11
 
 **The report-header role now reads the parent's actual H1 convention — `# Evaluation: {Company} — {Role}` — instead of assuming `# <Role> — <Company>`, so the tracker no longer carries «Evaluation: <Company>» as a role; a wrong-language report warns instead of saving silently; and the model chatter before the H1 is gone from saved reports.**

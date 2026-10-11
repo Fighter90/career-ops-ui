@@ -225,7 +225,7 @@ const lines = [
   scan ? `**Scan (#/scan, all sources):** ${scan.secs}s${scan.busyWaits ? ` (waited ${scan.busyWaits} min for a scan already running)` : ''} · ${scan.phases.join(' · ') || 'no phase finished'}${scan.failed.length ? ' · failed: ' + scan.failed.join(',') : ''} · stderr lines ${scan.errLines} · result rows ${scan.before} → ${scan.after}` : '_Scan skipped (SCAN=0)._', '',
   `${rows.length} locales × (docs assistant + evaluate, driven through the UI).`, '',
   '| locale | docs assistant | evaluate (save=false) |', '|---|---|---|',
-  ...rows.map((r) => `| ${md(r.locale)} | ${md(cell(r.docs))} | ${md(cell(r.eval))} |`), '',
+  ...rows.map((r) => `| ${md(r.locale)} | ${md(cell(r.docs))} | ${md(cell(r.eval))} | ${(r.eval && r.eval.warnings || []).map(md).join('<br>') || '—'} |`), '',
   findings.length ? '| locale | step | finding |\n|---|---|---|\n' + findings.map((f) => `| ${md(f.locale)} | ${md(f.step)} | ${md(f.msg)} |`).join('\n') : '**No findings.**',
 ];
 console.log(redact(lines.join('\n')));

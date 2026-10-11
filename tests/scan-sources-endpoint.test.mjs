@@ -82,14 +82,14 @@ test('GET /api/scan/sources includes the EN ATS + aggregator sources', async () 
     'itviec', 'jazzhr', 'jibeapply', 'jobbankca', 'jobicy', 'jobspresso',
     'jobstreet', 'jobvite', 'join', 'joinup', 'justjoin', 'landingjobs',
     'larajobs', 'lever', 'manfred', 'meituan', 'mokahr', 'mycareersfuture',
-    'neogov', 'nodesk', 'nofluffjobs', 'occ', 'oraclecloud', 'peoplesoft',
-    'personio', 'phenom', 'pinpoint', 'prevueaps', 'pythonorg', 'radancy',
-    'recruitee', 'redrover', 'remoteok', 'remotive', 'remotli', 'rheinmetall',
-    'rippling', 'rss', 'schoolspring', 'senjob', 'smartrecruiters', 'softgarden',
-    'solidjobs', 'startup-jobs', 'successfactors', 'taleo', 'teamtailor', 'telegram',
-    'telegram-channel', 'tencent', 'thehub', 'themuse', 'tkms', 'torre',
-    'ultipro', 'vdab', 'weworkremotely', 'workable', 'workday', 'workingnomads',
-    'wttj', 'yourator',
+    'neogov', 'nodesk', 'nofluffjobs', 'occ', 'oraclecloud', 'pageup',
+    'peoplesoft', 'personio', 'phenom', 'pinpoint', 'prevueaps', 'pythonorg',
+    'radancy', 'recruitee', 'redrover', 'remoteok', 'remotive', 'remotli',
+    'rheinmetall', 'rippling', 'rss', 'schoolspring', 'senjob', 'smartrecruiters',
+    'softgarden', 'solidjobs', 'startup-jobs', 'successfactors', 'taleo', 'teamtailor',
+    'telegram', 'telegram-channel', 'tencent', 'thehub', 'themuse', 'tkms',
+    'torre', 'ultipro', 'vdab', 'weworkremotely', 'workable', 'workday',
+    'workingnomads', 'wttj', 'yourator'
   ],
   );
 });

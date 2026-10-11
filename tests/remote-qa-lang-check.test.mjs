@@ -111,3 +111,12 @@ test('Tamil prose passes the ta check; English is not Tamil', () => {
   assert.equal(languageOk((ta + 'Kubernetes AWS ').repeat(10), 'ta'), true);
 });
 
+
+// v1.248.8 (CAR-75) — the script share is a PROSE metric: a report whose
+// tables/summary are Latin is still on-language. A Japanese report with
+// Latin tables scored 26–27 % own-script under the old full-text share and
+// flaked against the 30 % gate.
+test('languageOk: ja report with Latin tables counts prose only', () => {
+  const ja = ['# Evaluation: Acme — バックエンドエンジニア', '## A) 概要', 'この企業は東京に本社を置くテクノロジー企業です。チームの規模と文化について評価します。', '## B) マッチ度', '候補者の経験はこの役割に適しています。GoとKubernetesの経験が必要です。', '| 項目 | 評価 |', '|---|---|', '| Salary | 90-120k EUR |', '| Stack | Go, K8s, AWS |', '## C) リスク', '給与範囲は市場水準です。', '## D) 給与', '年収 800万〜1000万円。', '## E) 質問', 'チームの構成を確認してください。', '## F) 信頼性', '投稿は正規のものです。', '## G) 判定', '応答を推奨します。'].join('\n');
+  assert.equal(languageOk(ja, 'ja'), true, describe(ja, 'ja'));
+});

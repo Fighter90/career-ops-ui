@@ -120,6 +120,7 @@ import { icimsAdapter } from './adapters/icims.mjs';
 import { a16zSpeedrunTalentAdapter } from './adapters/a16z-speedrun-talent.mjs';
 import { cryptocurrencyjobsAdapter } from './adapters/cryptocurrencyjobs.mjs';
 import { manfredAdapter } from './adapters/manfred.mjs';
+import { pageupAdapter } from './adapters/pageup.mjs';
 // v1.135.0 — 5 new zero-auth sources.
 import { joinAdapter } from './adapters/join.mjs';
 import { joinupAdapter } from './adapters/joinup.mjs';
@@ -271,6 +272,7 @@ export const ALL_ADAPTERS = [
   a16zSpeedrunTalentAdapter,
   cryptocurrencyjobsAdapter,
   manfredAdapter,
+  pageupAdapter,
   joinAdapter,
   joinupAdapter,
   getroAdapter,

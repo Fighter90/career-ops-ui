@@ -9,6 +9,22 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 ---
 
 
+## [1.248.8] — 2026-10-11
+
+**Paridade com o pai: o fork e o web-ui sincronizam com o delta de 115 commits do upstream — uma nova fonte PageUp, as células URL do rastreador são analisadas como links markdown, o estado Assessment — além do trabalho de idioma ta/ja: relatórios em loop são cortados e nomeados, o esqueleto de cabeçalhos mantém A–G estável, e a cota de escrita lê apenas prosa.**
+
+### Adicionado
+
+### Corrigido
+
+- **Nova fonte PageUp** (105 adaptadores EN / 110 fontes); células URL do rastreador analisadas como links markdown (o href é a chave de dedup); o estado Assessment chega via states.yml.
+- **Relatório em loop cortado e nomeado** (`report looping (block B repeated)`), esqueleto de cabeçalhos `## A) … ## G)` para não-EN.
+- **A cota de escrita lê apenas prosa** (tabelas, SCORE_SUMMARY, código e URLs fora) — um relatório japonês com tabelas latinas não flaqueia mais.
+- **/api/evaluate avisa `report not in <locale>`** e o remote-qa imprime os códigos numa coluna.
+### Notas
+
+- Não portado (documentado): a infraestrutura scan-ats-full (fetchListing/listingIdentity/_connection-scope — o web-ui não tem varredura reverse-ATS), o gravador de histórico de expirados em liveness (o web-ui não escreve scan-history; o planejador puro é portado quando aparecer um escritor), coverage-check/discover/story-bank/pdf --ats/text mode/domain_filter (só CLI), o fix de req-id no dedup-tracker (o web-ui não tem dedup-tracker), README.vi.md (o conjunto de locales do web-ui é próprio). O fork do pai defende ADR-0001/0002: telegram.mjs sobrevive, LOCATIONISH_RE Unicode se mantém (o upstream reverteu para \b ASCII).
+
 ## [1.248.7] — 2026-10-11
 
 **A função do cabeçalho do relatório agora lê a convenção real do pai — `# Evaluation: {Company} — {Role}` — em vez de assumir `# <Função> — <Empresa>`, então o rastreador não carrega mais «Evaluation: <Empresa>» como função; um relatório no idioma errado avisa em vez de salvar em silêncio; e o papo do modelo antes do H1 sumiu dos relatórios salvos.**

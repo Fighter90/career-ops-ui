@@ -130,6 +130,106 @@ export const HEADER_ALIASES = {
  * Parse applications.md → array of objects keyed by canonical field names.
  * Adds .reportPath if a `[\d+](reports/...)` link is present in the Report cell.
  */
+// ── v1.248.8 — parent parity #3516 (URL cell rendering) ─────────────────────
+// The parent now writes a tracker `URL` cell as a markdown link
+// (`[careers.acme.com](https://…)`) so the table stays readable. The href IS
+// the dedup key, so every reader extracts it before normalizing. Ported from
+// the parent's tracker-parse.mjs (markdownLinkDestination / parseMarkdownLinks
+// / extractCellUrl): a cell with a link yields the first http(s) target; a
+// bare URL / `N/A` / `—` / empty cell is returned verbatim (trimmed), so the
+// "no key is not a key" rule keeps working unchanged.
+function markdownLinkDestination(raw) {
+  const value = String(raw).trimStart();
+  if (value.startsWith('<')) {
+    for (let i = 1; i < value.length; i++) {
+      if (value[i] === '\\') {
+        i++;
+      } else if (value[i] === '>') {
+        return value.slice(1, i).replace(/\\([\\()<> ])/g, '$1');
+      }
+    }
+    return null;
+  }
+
+  let depth = 0;
+  let end = value.length;
+  for (let i = 0; i < value.length; i++) {
+    if (value[i] === '\\') {
+      i++;
+      continue;
+    }
+    if (value[i] === '(') depth++;
+    else if (value[i] === ')' && depth > 0) depth--;
+    else if (/\s/.test(value[i]) && depth === 0) {
+      end = i;
+      break;
+    }
+  }
+  const destination = value.slice(0, end).trim();
+  return destination ? destination.replace(/\\([\\()<> ])/g, '$1') : null;
+}
+
+/** Every markdown link in a string, as {label, target} in encounter order. */
+export function parseMarkdownLinks(value) {
+  const links = [];
+  let cursor = 0;
+  const v = String(value ?? '');
+  while (cursor < v.length) {
+    const labelStart = v.indexOf('[', cursor);
+    if (labelStart === -1) break;
+
+    let labelEnd = -1;
+    for (let i = labelStart + 1; i < v.length; i++) {
+      if (v[i] === '\\') i++;
+      else if (v[i] === ']') {
+        labelEnd = i;
+        break;
+      }
+    }
+    if (labelEnd === -1 || v[labelEnd + 1] !== '(') {
+      cursor = labelStart + 1;
+      continue;
+    }
+
+    let depth = 1;
+    let linkEnd = -1;
+    for (let i = labelEnd + 2; i < v.length; i++) {
+      if (v[i] === '\\') {
+        i++;
+      } else if (v[i] === '(') {
+        depth++;
+      } else if (v[i] === ')' && --depth === 0) {
+        linkEnd = i;
+        break;
+      }
+    }
+    if (linkEnd === -1) {
+      cursor = labelStart + 1;
+      continue;
+    }
+
+    const target = markdownLinkDestination(v.slice(labelEnd + 2, linkEnd));
+    if (target != null) links.push({ label: v.slice(labelStart + 1, labelEnd), target });
+    cursor = linkEnd + 1;
+  }
+  return links;
+}
+
+/**
+ * The posting URL a tracker `URL` cell points at, in either written form
+ * (markdown link or bare URL). First http(s) target wins; no link → the
+ * trimmed cell, so placeholder handling keeps working unchanged.
+ */
+export function extractCellUrl(cellValue) {
+  const value = String(cellValue ?? '').trim();
+  if (!value) return '';
+  for (const link of parseMarkdownLinks(value)) {
+    const target = String(link.target).trim().replace(/^<|>$/g, '');
+    if (/^https?:\/\//i.test(target)) return target;
+  }
+  return value;
+}
+
 export function parseApplications(text) {
   const { headers, rows } = parseMarkdownTable(text);
   if (!headers.length) return [];
@@ -147,6 +247,9 @@ export function parseApplications(text) {
     keys.forEach((k, i) => {
       obj[k] = cells[i] ?? '';
     });
+    // v1.248.8 — the parent renders the URL cell as a markdown link
+    // (#3516); the href is the dedup key, so extract it at parse time.
+    if (obj.url) obj.url = extractCellUrl(obj.url);
 
     // Extract score number
     if (obj.score) {
