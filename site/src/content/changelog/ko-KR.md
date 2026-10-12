@@ -30,9 +30,11 @@
 
 ### 수정
 
-- **Специализационные токены**: общие слова (старшинство, должности) выброшены из матчера; отличительные матчатся по границам слов; фолбэк — вся фраза.
-- **remote-qa: форма ≠ язык**: A–G только по block/summary/looping-кодам; `report not in <locale>` — в свою колонку.
-- **Тулбар 50/50 на 390px**; мёртвый CSS удалён; CodeQL 552 закрыт.
+- **전문 분야 필터가 고유 토큰만 남깁니다**: «Senior PHP Developer»가 공유된 Senior/Developer 때문에 «Senior Java Developer»와 일치했습니다. 매처는 고유 토큰(PHP, Go, Platform, SRE, Backend…)만 유지하고, 고유 토큰이 없는 역할(«Software Engineer»)은 전체 문구 일치로 폴백합니다. 단어 경계는 유지: «Go»는 절대 «Golang»이나 «Google»과 일치하지 않습니다.
+- **remote-qa가 형태와 언어를 분리**: A–G 플래그는 블록/SCORE_SUMMARY/looping 코드로만 판정; `report not in <locale>` 드리프트는 자체 플래그와 warnings 열로 이동(표에 누락됐던 4번째 열 추가, 코드는 행별 저장).
+- **지도 툴바가 390px에서 진짜 50/50**(58/42 분할이 검색창을 124px로 남기고 자리표시자를 잘랐고), 죽은 `.job-map-job-select` CSS 규칙 제거.
+- **CodeQL 552** — design-qa 테스트의 미사용 `OVERLAYS` 변수 제거.
+
 ### 참고
 
 - 마일은 여전히 소유자가 연기. ta 언어 드리프트는 hermes 백엔드의 문서화된 제한으로 유지(실행 간 산문 2–26%; A–G 유지): remote-qa는 이를 예상 finding으로 보고합니다. 일반 토큰 목록은 의도적으로 최소 — 확장은 언어당 한 줄.
