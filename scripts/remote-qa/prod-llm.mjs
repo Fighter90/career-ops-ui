@@ -195,7 +195,7 @@ for (const locale of LOCALES) {
     const md = e.body.markdown || '';
     // v1.251.1 — shape is judged ONLY by the block/summary codes; the
     // language drift lives in its own flag and its own table column.
-    const { shape: shapeCodes, language: langCodes } = splitWarnings(e.body.warnings);
+    const { shape: shapeCodes } = splitWarnings(e.body.warnings);
     row.eval = { status: e.status, mode: e.body.mode, ms: e.ms, len: md.length,
       shape: shapeCodes.length === 0, warnings: (e.body.warnings || []).map(String), lang: languageOk(md, locale) };
     if (e.status !== 200) add(locale, 'evaluate', `HTTP ${e.status} ${e.body.error || ''}`);
