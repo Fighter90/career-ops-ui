@@ -2,6 +2,20 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.251.1] — 2026-10-12
+
+**Der Spezialisierungsfilter matcht nur noch die DISTINCTIVEN Wörter der Rolle — Seniorität und generische Berufs-substantive matchen kein Posting mehr allein — und remote-qa trennt Form von Sprache, damit ein Drift A–G nie rot markiert.**
+
+### Behoben
+
+- **Der Spezialisierungsfilter wirft Seniorität und generische Berufs-substantive aus seinem Matcher**: «Senior PHP Developer» matchte «Senior Java Developer» über das gemeinsame Senior/Developer. Der Matcher behält nur unterscheidende Tokens (PHP, Go, Platform, SRE, Backend…); eine Rolle ohne unterscheidende Tokens («Software Engineer») fällt auf den Ganzsatz-Match zurück. Wortgrenzen bleiben: «Go» matcht nie «Golang» oder «Google».
+- **remote-qa trennt Form von Sprache**: Das A–G-Flag wird nur anhand von Block/SCORE_SUMMARY/looping-Codes bewertet; eine `report not in <locale>`-Drift geht in ein eigenes Flag und eine Warnings-Spalte (die Tabelle gewinnt die fehlende 4. Spalte; die Codes werden pro Zeile gespeichert).
+- **Die Karten-Leiste ist ein echtes 50/50 bei 390 px** (die 58/42-Aufteilung ließ die Suche bei 124 px und schnitt ihren Platzhalter ab), und die tote CSS-Regel `.job-map-job-select` ist entfernt.
+- **CodeQL 552** — die ungenutzte Variable `OVERLAYS` im design-qa-Test entfernt.
+
+### Hinweise
+
+- Meilen weiterhin vom Eigentümer verschoben. Der ta-Sprachdrift bleibt als DOKUMENTIerte Grenze des hermes-Backends (2–26 % Prosa über Läufe; A–G hält): remote-qa meldet sie als erwarteten Fund. Die generische Token-Liste ist bewusst minimal — Erweitern kostet eine Zeile pro Sprache.
 ## [1.251.0] — 2026-10-12
 
 **Der Select der Karte filtert jetzt nach der SPEZIALISIERUNG aus den Einstellungen (config/profile.yml → target_roles.primary): «Product Manager» oder «Backend Engineer (Go / PHP)» wählen, und die Karte behält nur die Postings, deren Titel die Wörter dieser Rolle trägt. Der v1.250.0-Joblisten-Locator ist entfernt — das falsche Werkzeug (Korrektur des Eigentümers).**
@@ -17,20 +31,6 @@
 
 - Meilen weiterhin vom Eigentümer verschoben. Das Matching ist bewusst NUR Titel mit den Wörtern der Einstellungen: Firmen oder Beschreibungen würden fremde Postings in die Spezialisierung ziehen. Ein Posting außerhalb aller konfigurierten Rollen bleibt unter «All» sichtbar.
 
-## [1.251.1] — 2026-10-12
-
-**Der Spezialisierungsfilter matcht nur noch die DISTINCTIVEN Wörter der Rolle — Seniorität und generische Berufs-substantive matchen kein Posting mehr allein — und remote-qa trennt Form von Sprache, damit ein Drift A–G nie rot markiert.**
-
-### Behoben
-
-- **Der Spezialisierungsfilter wirft Seniorität und generische Berufs-substantive aus seinem Matcher**: «Senior PHP Developer» matchte «Senior Java Developer» über das gemeinsame Senior/Developer. Der Matcher behält nur unterscheidende Tokens (PHP, Go, Platform, SRE, Backend…); eine Rolle ohne unterscheidende Tokens («Software Engineer») fällt auf den Ganzsatz-Match zurück. Wortgrenzen bleiben: «Go» matcht nie «Golang» oder «Google».
-- **remote-qa trennt Form von Sprache**: Das A–G-Flag wird nur anhand von Block/SCORE_SUMMARY/looping-Codes bewertet; eine `report not in <locale>`-Drift geht in ein eigenes Flag und eine Warnings-Spalte (die Tabelle gewinnt die fehlende 4. Spalte; die Codes werden pro Zeile gespeichert).
-- **Die Karten-Leiste ist ein echtes 50/50 bei 390 px** (die 58/42-Aufteilung ließ die Suche bei 124 px und schnitt ihren Platzhalter ab), und die tote CSS-Regel `.job-map-job-select` ist entfernt.
-- **CodeQL 552** — die ungenutzte Variable `OVERLAYS` im design-qa-Test entfernt.
-
-### Hinweise
-
-- Meilen weiterhin vom Eigentümer verschoben. Der ta-Sprachdrift bleibt als DOKUMENTIerte Grenze des hermes-Backends (2–26 % Prosa über Läufe; A–G hält): remote-qa meldet sie als erwarteten Fund. Die generische Token-Liste ist bewusst minimal — Erweitern kostet eine Zeile pro Sprache.
 
 ## [1.250.0] — 2026-10-12
 

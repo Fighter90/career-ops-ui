@@ -11,6 +11,20 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.251.1] — 2026-10-12
+
+**Le filtre de spécialisation ne matche plus que les mots DISTINCTIFS du rôle — l’ancienneté et les noms de poste génériques ne matchent plus une offre à eux seuls — et remote-qa sépare forme et langue pour qu’une dérive ne marque jamais A–G en rouge.**
+
+### Corrigé
+
+- **Le filtre de spécialisation retire l’ancienneté et les noms de poste génériques de son comparateur** : «Senior PHP Developer» correspondait à «Senior Java Developer» par le Senior/Developer partagé. Le comparateur ne garde que les tokens distinctifs (PHP, Go, Platform, SRE, Backend…) ; un rôle sans tokens distinctifs («Software Engineer») retombe sur la correspondance de la phrase entière. Les frontières de mots restent : «Go» ne matche jamais «Golang» ni «Google».
+- **remote-qa sépare forme et langue** : le drapeau A–G n’est jugé que par les codes blocs/SCORE_SUMMARY/looping ; une dérive `report not in <locale>` va à son propre drapeau et sa colonne warnings (le tableau gagne la 4e colonne manquante ; les codes sont stockés par ligne).
+- **La barre de la carte est un vrai 50/50 à 390 px** (le découpage 58/42 laissait la recherche à 124 px et tronquait son placeholder), et la règle CSS morte `.job-map-job-select` est supprimée.
+- **CodeQL 552** — la variable inutilisée `OVERLAYS` du test design-qa supprimée.
+
+### Notes
+
+- Les miles restent reportés par le propriétaire. La dérive de langue ta reste une limite DOCUMENTÉE du backend hermes (2–26 % de prose entre les runs ; A–G tient) : remote-qa la signale comme résultat attendu. La liste des tokens génériques est volontairement minimale — l’étendre coûte une ligne par langue.
 ## [1.251.0] — 2026-10-12
 
 **Le select de la carte filtre désormais par SPÉCIALISATION des réglages (config/profile.yml → target_roles.primary) : choisissez «Product Manager» ou «Backend Engineer (Go / PHP)» et la carte ne garde que les offres dont le titre porte les mots de ce rôle. Le localisateur de liste d’offres de v1.250.0 est retiré — c’était le mauvais outil (correction du propriétaire).**
@@ -26,20 +40,6 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 
 
-## [1.251.1] — 2026-10-12
-
-**Le filtre de spécialisation ne matche plus que les mots DISTINCTIFS du rôle — l’ancienneté et les noms de poste génériques ne matchent plus une offre à eux seuls — et remote-qa sépare forme et langue pour qu’une dérive ne marque jamais A–G en rouge.**
-
-### Corrigé
-
-- **Le filtre de spécialisation retire l’ancienneté et les noms de poste génériques de son comparateur** : «Senior PHP Developer» correspondait à «Senior Java Developer» par le Senior/Developer partagé. Le comparateur ne garde que les tokens distinctifs (PHP, Go, Platform, SRE, Backend…) ; un rôle sans tokens distinctifs («Software Engineer») retombe sur la correspondance de la phrase entière. Les frontières de mots restent : «Go» ne matche jamais «Golang» ni «Google».
-- **remote-qa sépare forme et langue** : le drapeau A–G n’est jugé que par les codes blocs/SCORE_SUMMARY/looping ; une dérive `report not in <locale>` va à son propre drapeau et sa colonne warnings (le tableau gagne la 4e colonne manquante ; les codes sont stockés par ligne).
-- **La barre de la carte est un vrai 50/50 à 390 px** (le découpage 58/42 laissait la recherche à 124 px et tronquait son placeholder), et la règle CSS morte `.job-map-job-select` est supprimée.
-- **CodeQL 552** — la variable inutilisée `OVERLAYS` du test design-qa supprimée.
-
-### Notes
-
-- Les miles restent reportés par le propriétaire. La dérive de langue ta reste une limite DOCUMENTÉE du backend hermes (2–26 % de prose entre les runs ; A–G tient) : remote-qa la signale comme résultat attendu. La liste des tokens génériques est volontairement minimale — l’étendre coûte une ligne par langue.
 
 ## [1.250.0] — 2026-10-12
 

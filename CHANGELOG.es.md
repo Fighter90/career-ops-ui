@@ -11,6 +11,20 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.251.1] — 2026-10-12
+
+**El filtro de especialización ahora coincide solo con palabras DISTINTIVAS del rol — la antigüedad y los sustantivos genéricos de trabajo ya no coinciden una vacante por sí mismos — y remote-qa separa forma de idioma para que un deriva nunca marque en rojo A–G.**
+
+### Corregido
+
+- **El filtro de especialización elimina la antigüedad y los sustantivos genéricos de su comparador**: «Senior PHP Developer» coincidía con «Senior Java Developer» por el Senior/Developer compartido. El comparador conserva solo los tokens distintivos (PHP, Go, Platform, SRE, Backend…); un rol sin tokens distintivos («Software Engineer») retrocede a la coincidencia de frase completa. Los límites de palabra se mantienen: «Go» nunca coincide con «Golang» ni «Google».
+- **remote-qa separa forma de idioma**: el indicador A–G se juzga solo por códigos de bloques/SCORE_SUMMARY/looping; un deriva `report not in <locale>` pasa a su propio indicador y columna de warnings (la tabla gana la 4ª columna que faltaba; los códigos se guardan por fila).
+- **La barra del mapa es un verdadero 50/50 a 390 px** (la división 58/42 dejaba el buscador en 124 px y truncaba su marcador), y la regla CSS muerta `.job-map-job-select` se ha eliminado.
+- **CodeQL 552** — la variable sin uso `OVERLAYS` en el test design-qa eliminada.
+
+### Notas
+
+- Las millas siguen aplazadas por el propietario. El deriva de idioma ta queda como limitación DOCUMENTADA del backend hermes (2–26 % de prosa entre corridas; A–G se sostiene): remote-qa la reporta como hallazgo esperado. La lista de tokens genéricos es mínima a propósito — ampliarla es una línea por idioma.
 ## [1.251.0] — 2026-10-12
 
 **El select del mapa ahora filtra por ESPECIALIDAD de los ajustes (config/profile.yml → target_roles.primary): elige «Product Manager» o «Backend Engineer (Go / PHP)» y el mapa conserva solo las vacantes cuyo título lleva las palabras de ese rol. El localizador de lista de vacancias de v1.250.0 se elimina — era la herramienta equivocada (corrección del propietario).**
@@ -26,20 +40,6 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 
 - Las millas siguen aplazadas por el propietario. El matching es deliberadamente SOLO por título con las palabras de los ajustes: empresas o descripciones meterían vacantes ajenas en la especialización. Una vacante fuera de todos los roles configurados sigue visible en «Todas».
 
-## [1.251.1] — 2026-10-12
-
-**El filtro de especialización ahora coincide solo con palabras DISTINTIVAS del rol — la antigüedad y los sustantivos genéricos de trabajo ya no coinciden una vacante por sí mismos — y remote-qa separa forma de idioma para que un deriva nunca marque en rojo A–G.**
-
-### Corregido
-
-- **El filtro de especialización elimina la antigüedad y los sustantivos genéricos de su comparador**: «Senior PHP Developer» coincidía con «Senior Java Developer» por el Senior/Developer compartido. El comparador conserva solo los tokens distintivos (PHP, Go, Platform, SRE, Backend…); un rol sin tokens distintivos («Software Engineer») retrocede a la coincidencia de frase completa. Los límites de palabra se mantienen: «Go» nunca coincide con «Golang» ni «Google».
-- **remote-qa separa forma de idioma**: el indicador A–G se juzga solo por códigos de bloques/SCORE_SUMMARY/looping; un deriva `report not in <locale>` pasa a su propio indicador y columna de warnings (la tabla gana la 4ª columna que faltaba; los códigos se guardan por fila).
-- **La barra del mapa es un verdadero 50/50 a 390 px** (la división 58/42 dejaba el buscador en 124 px y truncaba su marcador), y la regla CSS muerta `.job-map-job-select` se ha eliminado.
-- **CodeQL 552** — la variable sin uso `OVERLAYS` en el test design-qa eliminada.
-
-### Notas
-
-- Las millas siguen aplazadas por el propietario. El deriva de idioma ta queda como limitación DOCUMENTADA del backend hermes (2–26 % de prosa entre corridas; A–G se sostiene): remote-qa la reporta como hallazgo esperado. La lista de tokens genéricos es mínima a propósito — ampliarla es una línea por idioma.
 
 ## [1.250.0] — 2026-10-12
 

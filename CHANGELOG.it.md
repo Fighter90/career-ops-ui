@@ -2,6 +2,20 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.251.1] — 2026-10-12
+
+**Il filtro di specializzazione ora matcha solo le parole DISTINTIVE del ruolo — anzianità e sostantivi generici non matchano più una posizione da soli — e remote-qa separa forma da lingua così che una deriva non segni mai A–G in rosso.**
+
+### Corretto
+
+- **Il filtro di specializzazione elimina anzianità e sostantivi generici dal suo matcher**: «Senior PHP Developer» matchava «Senior Java Developer» tramite il Senior/Developer condiviso. Il matcher mantiene solo token distintivi (PHP, Go, Platform, SRE, Backend…); un ruolo senza token distintivi («Software Engineer») ripiega sulla corrispondenza dell'intera frase. I confini di parola restano: «Go» non matcha mai «Golang» né «Google».
+- **remote-qa separa forma da lingua**: il flag A–G è giudicato solo dai codici blocchi/SCORE_SUMMARY/looping; una deriva `report not in <locale>` va al proprio flag e alla colonna warnings (la tabella guadagna la 4a colonna mancante; i codici sono salvati per riga).
+- **La barra della mappa è un vero 50/50 a 390 px** (la divisione 58/42 lasciava la ricerca a 124 px e ne troncava il placeholder), e la regola CSS morta `.job-map-job-select` è rimossa.
+- **CodeQL 552** — la variabile inutilizzata `OVERLAYS` nel test design-qa rimossa.
+
+### Note
+
+- Le miglia restano rinviate dal proprietario. La deriva linguistica ta rimane una limitazione DOCUMENTATA del backend hermes (2–26 % di prosa tra le esecuzioni; A–G regge): remote-qa la segnala come reperto atteso. La lista dei token generici è volutamente minimale — estenderla costa una riga per lingua.
 ## [1.251.0] — 2026-10-12
 
 **Il select della mappa ora filtra per SPECIALIZZAZIONE dalle impostazioni (config/profile.yml → target_roles.primary): scegli «Product Manager» o «Backend Engineer (Go / PHP)» e la mappa mantiene solo le posizioni il cui titolo porta le parole di quel ruolo. Il localizzatore a lista di v1.250.0 è rimosso — era lo strumento sbagliato (correzione del proprietario).**
@@ -17,20 +31,6 @@
 
 - Le miglia restano rinviate dal proprietario. Il matching è deliberatamente SOLO TITOLO con le parole delle impostazioni: aziende o descrizioni trarrebbero posizioni non correlate nella specializzazione. Una posizione fuori da tutti i ruoli configurati resta visibile sotto «All».
 
-## [1.251.1] — 2026-10-12
-
-**Il filtro di specializzazione ora matcha solo le parole DISTINTIVE del ruolo — anzianità e sostantivi generici non matchano più una posizione da soli — e remote-qa separa forma da lingua così che una deriva non segni mai A–G in rosso.**
-
-### Corretto
-
-- **Il filtro di specializzazione elimina anzianità e sostantivi generici dal suo matcher**: «Senior PHP Developer» matchava «Senior Java Developer» tramite il Senior/Developer condiviso. Il matcher mantiene solo token distintivi (PHP, Go, Platform, SRE, Backend…); un ruolo senza token distintivi («Software Engineer») ripiega sulla corrispondenza dell'intera frase. I confini di parola restano: «Go» non matcha mai «Golang» né «Google».
-- **remote-qa separa forma da lingua**: il flag A–G è giudicato solo dai codici blocchi/SCORE_SUMMARY/looping; una deriva `report not in <locale>` va al proprio flag e alla colonna warnings (la tabella guadagna la 4a colonna mancante; i codici sono salvati per riga).
-- **La barra della mappa è un vero 50/50 a 390 px** (la divisione 58/42 lasciava la ricerca a 124 px e ne troncava il placeholder), e la regola CSS morta `.job-map-job-select` è rimossa.
-- **CodeQL 552** — la variabile inutilizzata `OVERLAYS` nel test design-qa rimossa.
-
-### Note
-
-- Le miglia restano rinviate dal proprietario. La deriva linguistica ta rimane una limitazione DOCUMENTATA del backend hermes (2–26 % di prosa tra le esecuzioni; A–G regge): remote-qa la segnala come reperto atteso. La lista dei token generici è volutamente minimale — estenderla costa una riga per lingua.
 
 ## [1.250.0] — 2026-10-12
 

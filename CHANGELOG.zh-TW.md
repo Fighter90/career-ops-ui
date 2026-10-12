@@ -9,6 +9,20 @@
 ---
 
 
+## [1.251.1] — 2026-10-12
+
+**地圖的專業篩選現在只匹配角色的特有詞 — 資歷和泛型職位名詞不再自行匹配職缺 — 且 remote-qa 將形狀與語言分離，語言漂移不會標紅 A–G。**
+
+### 修復
+
+- **專業篩選只保留區分性 token**：«Senior PHP Developer» 曾透過共用的 Senior/Developer 匹配到 «Senior Java Developer»。匹配器只保留區分性 token（PHP、Go、Platform、SRE、Backend…）；沒有區分性 token 的角色（«Software Engineer»）回退到整短語匹配。詞邊界保留：«Go» 永不匹配 «Golang»/«Google»。
+- **remote-qa 分離形狀與語言**：A–G 僅按塊/SCORE_SUMMARY/looping 代碼判定；`report not in <locale>` 漂移移到自己的標誌和 warnings 欄（表格補上缺失的第 4 欄；代碼按行儲存）。
+- **地圖工具列在 390px 為真正的 50/50**（58/42 分割使搜尋框只剩 124px 並截斷佔位符），死代碼 `.job-map-job-select` CSS 規則刪除。
+- **CodeQL 552** — design-qa 測試中未使用的 `OVERLAYS` 變數已刪除。
+
+### 備註
+
+- 英里仍由所有者推遲。ta 語言漂移保留為 hermes 後端的已記錄限制（各次執行散文佔比 2–26%；A–G 保持）：remote-qa 將其報告為預期發現。泛型 token 清單刻意保持最小 — 擴充只需每個語言一行。
 ## [1.251.0] — 2026-10-12
 
 **地圖的下拉現在按設定中的專業方向篩選（config/profile.yml → target_roles.primary）：選擇 «Product Manager» 或 «Backend Engineer (Go / PHP)» 後，地圖只保留標題帶有該角色詞語的職缺。v1.250.0 的職缺列表定位器已移除 — 那是錯誤的工具（所有者修正）。**
@@ -24,20 +38,6 @@
 
 
 
-## [1.251.1] — 2026-10-12
-
-**地圖的專業篩選現在只匹配角色的特有詞 — 資歷和泛型職位名詞不再自行匹配職缺 — 且 remote-qa 將形狀與語言分離，語言漂移不會標紅 A–G。**
-
-### 修復
-
-- **專業篩選只保留區分性 token**：«Senior PHP Developer» 曾透過共用的 Senior/Developer 匹配到 «Senior Java Developer»。匹配器只保留區分性 token（PHP、Go、Platform、SRE、Backend…）；沒有區分性 token 的角色（«Software Engineer»）回退到整短語匹配。詞邊界保留：«Go» 永不匹配 «Golang»/«Google»。
-- **remote-qa 分離形狀與語言**：A–G 僅按塊/SCORE_SUMMARY/looping 代碼判定；`report not in <locale>` 漂移移到自己的標誌和 warnings 欄（表格補上缺失的第 4 欄；代碼按行儲存）。
-- **地圖工具列在 390px 為真正的 50/50**（58/42 分割使搜尋框只剩 124px 並截斷佔位符），死代碼 `.job-map-job-select` CSS 規則刪除。
-- **CodeQL 552** — design-qa 測試中未使用的 `OVERLAYS` 變數已刪除。
-
-### 備註
-
-- 英里仍由所有者推遲。ta 語言漂移保留為 hermes 後端的已記錄限制（各次執行散文佔比 2–26%；A–G 保持）：remote-qa 將其報告為預期發現。泛型 token 清單刻意保持最小 — 擴充只需每個語言一行。
 
 ## [1.250.0] — 2026-10-12
 
