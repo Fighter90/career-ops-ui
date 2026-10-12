@@ -24,6 +24,19 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 - As milas seguem adiadas pelo proprietário. A correspondência é deliberadamente SOMENTE pelo título com as palavras das configurações: empresas ou descrições trariam vagas alheias para a especialidade. Uma vaga fora de todos os papéis configurados continua visível em «Todas».
 
+## [1.251.1] — 2026-10-12
+
+**O filtro de especialidade agora coincide apenas com palavras DISTINTIVAS do papel — antiguidade e substantivos genéricos de trabalho não coincidem mais uma vaga por si mesmos — e o remote-qa separa forma de idioma para que uma deriva nunca marque A–G em vermelho.**
+
+### Corrigido
+
+- **Специализационные токены**: общие слова (старшинство, должности) выброшены из матчера; отличительные матчатся по границам слов; фолбэк — вся фраза.
+- **remote-qa: форма ≠ язык**: A–G только по block/summary/looping-кодам; `report not in <locale>` — в свою колонку.
+- **Тулбар 50/50 на 390px**; мёртвый CSS удалён; CodeQL 552 закрыт.
+### Notas
+
+- As milas seguem adiadas pelo proprietário. A deriva de idioma ta fica como limitação DOCUMENTADA do backend hermes (2–26 % de prosa entre execuções; A–G se sustenta): o remote-qa a reporta como achado esperado. A lista de tokens genéricos é mínima de propósito — ampliá-la é uma linha por idioma.
+
 ## [1.250.0] — 2026-10-12
 
 **A página do mapa torna-se operacional: um localizador de vagas acima do mapa voa para qualquer vaga visível e abre seu cartão de prévia (inclusive no desktop), e uma busca de texto restringe o mapa por empresa ou cargo — ambos sobrevivem ao recarregamento.**

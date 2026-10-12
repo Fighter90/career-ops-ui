@@ -24,6 +24,23 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 - Drive-time MILES are deliberately NOT part of this release either — the owner already deferred them.
 - The specialization match is deliberately TITLE-ONLY (with the settings' own words as tokens): matching against company names or descriptions would pull unrelated postings into a specialization. A posting outside every configured role stays visible under «All specializations» and disappears only when a specific one is chosen.
 
+## [1.251.1] — 2026-10-12
+
+**The map's specialization filter matches on DISTINCTIVE role words only — seniority and generic job nouns no longer match a posting by themselves — and remote-qa splits shape from language so a drift never red-marks A–G.**
+
+### Fixed
+
+- **The specialization filter drops seniority and generic job nouns from its matcher**: «Senior PHP Developer» matched «Senior Java Developer» through the shared Senior/Developer. The matcher keeps only distinctive tokens (PHP, Go, Platform, SRE, Backend…); a role with no distinctive tokens left («Software Engineer») falls back to the whole-phrase match. Word boundaries stay: «Go» never matches «Golang» or «Google».
+- **remote-qa separates shape from language**: the A–G flag is now judged only by block/SCORE_SUMMARY/looping codes; a `report not in <locale>` drift moves to the language flag and its own warnings column (the table header gains the missing 4th column; the codes are stored per row).
+- **The map toolbar is a true 50/50 at 390 px** (the 58/42 flex split left the search field at 124 px and truncated its placeholder), and the dead `.job-map-job-select` CSS rule is gone.
+- **CodeQL 552** — the unused `OVERLAYS` variable in the design-qa test removed.
+
+### Notes
+
+- Drive-time MILES remain deferred by the owner to the next release.
+- The ta evaluate language drift stays a DOCUMENTED backend limitation (hermes, prose share 2–26 % across runs; A–G holds, no looping): remote-qa now reports it as an expected finding for ta, not a regression. A two-step flow (English evaluation + translation pass) remains an option if the owner wants it.
+- The generic-token list is deliberately minimal (seniority + generic job nouns, en/ru): broadening it is one line per language, and every addition risks over-filtering a legitimate posting.
+
 ## [1.250.0] — 2026-10-12
 
 **The map page becomes workable: a job locator above the map pans to any visible job and opens its peek (desktop included), and a text search narrows the map by company or title — with both surviving reloads.**

@@ -17,6 +17,19 @@
 
 - Meilen weiterhin vom Eigentümer verschoben. Das Matching ist bewusst NUR Titel mit den Wörtern der Einstellungen: Firmen oder Beschreibungen würden fremde Postings in die Spezialisierung ziehen. Ein Posting außerhalb aller konfigurierten Rollen bleibt unter «All» sichtbar.
 
+## [1.251.1] — 2026-10-12
+
+**Der Spezialisierungsfilter matcht nur noch die DISTINCTIVEN Wörter der Rolle — Seniorität und generische Berufs-substantive matchen kein Posting mehr allein — und remote-qa trennt Form von Sprache, damit ein Drift A–G nie rot markiert.**
+
+### Behoben
+
+- **Специализационные токены**: общие слова (старшинство, должности) выброшены из матчера; отличительные матчатся по границам слов; фолбэк — вся фраза.
+- **remote-qa: форма ≠ язык**: A–G только по block/summary/looping-кодам; `report not in <locale>` — в свою колонку.
+- **Тулбар 50/50 на 390px**; мёртвый CSS удалён; CodeQL 552 закрыт.
+### Hinweise
+
+- Meilen weiterhin vom Eigentümer verschoben. Der ta-Sprachdrift bleibt als DOKUMENTIerte Grenze des hermes-Backends (2–26 % Prosa über Läufe; A–G hält): remote-qa meldet sie als erwarteten Fund. Die generische Token-Liste ist bewusst minimal — Erweitern kostet eine Zeile pro Sprache.
+
 ## [1.250.0] — 2026-10-12
 
 **Die Karten Seite wird bedienbar: ein Stellen-Locator über der Karte fliegt zu jedem sichtbaren Job und öffnet seine Vorschaukarte (auch am Desktop), und eine Textsuche grenzt die Karte nach Firma oder Titel ein — beides übersteht ein Neuladen.**

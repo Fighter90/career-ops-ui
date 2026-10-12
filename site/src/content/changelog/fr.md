@@ -26,6 +26,19 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 
 
 
+## [1.251.1] — 2026-10-12
+
+**Le filtre de spécialisation ne matche plus que les mots DISTINCTIFS du rôle — l’ancienneté et les noms de poste génériques ne matchent plus une offre à eux seuls — et remote-qa sépare forme et langue pour qu’une dérive ne marque jamais A–G en rouge.**
+
+### Corrigé
+
+- **Специализационные токены**: общие слова (старшинство, должности) выброшены из матчера; отличительные матчатся по границам слов; фолбэк — вся фраза.
+- **remote-qa: форма ≠ язык**: A–G только по block/summary/looping-кодам; `report not in <locale>` — в свою колонку.
+- **Тулбар 50/50 на 390px**; мёртвый CSS удалён; CodeQL 552 закрыт.
+### Notes
+
+- Les miles restent reportés par le propriétaire. La dérive de langue ta reste une limite DOCUMENTÉE du backend hermes (2–26 % de prose entre les runs ; A–G tient) : remote-qa la signale comme résultat attendu. La liste des tokens génériques est volontairement minimale — l’étendre coûte une ligne par langue.
+
 ## [1.250.0] — 2026-10-12
 
 **La page de carte devient exploitable : un localisateur d’offres au-dessus de la carte vole vers toute offre visible et ouvre sa carte d’aperçu (bureau inclus), et une recherche textuelle resserre la carte par entreprise ou poste — les deux survivent au rechargement.**

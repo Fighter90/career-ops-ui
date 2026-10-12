@@ -26,6 +26,19 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 
 - Las millas siguen aplazadas por el propietario. El matching es deliberadamente SOLO por título con las palabras de los ajustes: empresas o descripciones meterían vacantes ajenas en la especialización. Una vacante fuera de todos los roles configurados sigue visible en «Todas».
 
+## [1.251.1] — 2026-10-12
+
+**El filtro de especialización ahora coincide solo con palabras DISTINTIVAS del rol — la antigüedad y los sustantivos genéricos de trabajo ya no coinciden una vacante por sí mismos — y remote-qa separa forma de idioma para que un deriva nunca marque en rojo A–G.**
+
+### Corregido
+
+- **Специализационные токены**: общие слова (старшинство, должности) выброшены из матчера; отличительные матчатся по границам слов; фолбэк — вся фраза.
+- **remote-qa: форма ≠ язык**: A–G только по block/summary/looping-кодам; `report not in <locale>` — в свою колонку.
+- **Тулбар 50/50 на 390px**; мёртвый CSS удалён; CodeQL 552 закрыт.
+### Notas
+
+- Las millas siguen aplazadas por el propietario. El deriva de idioma ta queda como limitación DOCUMENTADA del backend hermes (2–26 % de prosa entre corridas; A–G se sostiene): remote-qa la reporta como hallazgo esperado. La lista de tokens genéricos es mínima a propósito — ampliarla es una línea por idioma.
+
 ## [1.250.0] — 2026-10-12
 
 **La página del mapa se vuelve operativa: un localizador de vacancias sobre el mapa vuela hacia cualquier vacante visible y abre su tarjeta emergente (también en escritorio), y una búsqueda de texto acota el mapa por empresa o puesto — ambas sobreviven a la recarga.**

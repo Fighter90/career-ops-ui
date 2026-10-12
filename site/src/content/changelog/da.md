@@ -24,6 +24,19 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 
 - Miles stadig udskudt af ejeren. matching er bevidst KUN titel med ordene fra indstillingerne: firmaer eller beskrivelser ville trække urelaterede opslag ind i specialiseringen. Et opslag uden for alle konfigurerede roller forbliver synligt under «All».
 
+## [1.251.1] — 2026-10-12
+
+**Specialiseringsfilteret matcher nu kun rollens DISTINKTIVE ord — anciennitet og generiske jobsubstantiver matcher ikke længere et opslag alene — og remote-qa adskiller form fra sprog, så et drift aldrig rødmarkerer A–G.**
+
+### Rettet
+
+- **Специализационные токены**: общие слова (старшинство, должности) выброшены из матчера; отличительные матчатся по границам слов; фолбэк — вся фраза.
+- **remote-qa: форма ≠ язык**: A–G только по block/summary/looping-кодам; `report not in <locale>` — в свою колонку.
+- **Тулбар 50/50 на 390px**; мёртвый CSS удалён; CodeQL 552 закрыт.
+### Noter
+
+- Miles stadig udskudt af ejeren. ta-sprogedriften forbliver en DOKUMENTERET begrænsning i hermes-backend (2–26 % prosa på tværs af kørsler; A–G holder): remote-qa rapporterer den som et forventet fund. Den generiske token-liste er med vilje minimal — at udvide den koster én linje pr. sprog.
+
 ## [1.250.0] — 2026-10-12
 
 **Kortsiden bliver arbejdsbar: en joblocator over kortet flyver til ethvert synligt job og åbner dets forhåndsvisning (også på desktop), og en tekstsøgning indsnævrer kortet efter firma eller titel — begge overlever en genindlæsning.**

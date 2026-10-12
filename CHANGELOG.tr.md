@@ -17,6 +17,19 @@
 
 - Mil hâlâ sahip tarafından erteleniyor. Eşleştirme bilinçli olarak SADECE başlık, ayarlardaki kelimelerle: şirketler veya açıklamalar ilgisiz ilanları uzmanlığa çekerdi. Yapılandırılmış tüm rollerin dışındaki bir ilan «All» altında görünür kalır.
 
+## [1.251.1] — 2026-10-12
+
+**Uzmanlık filtresi artık yalnızca rolün AYIRT EDİCİ kelimelerini eşliyor — kıdem ve genel iş isimleri artık tek başına bir ilanı eşlemiyor — ve remote-qa şekli dilden ayırıyor, böylece bir kayma A–G'yi asla kırmızı işaretlemiyor.**
+
+### Düzeltildi
+
+- **Специализационные токены**: общие слова (старшинство, должности) выброшены из матчера; отличительные матчатся по границам слов; фолбэк — вся фраза.
+- **remote-qa: форма ≠ язык**: A–G только по block/summary/looping-кодам; `report not in <locale>` — в свою колонку.
+- **Тулбар 50/50 на 390px**; мёртвый CSS удалён; CodeQL 552 закрыт.
+### Notlar
+
+- Mil hâlâ sahip tarafından erteleniyor. ta dil kayması hermes backend'inin BELGELENMİŞ sınırlaması olarak kalıyor (çalışmalar arası düzyazı %2–26; A–G tutuyor): remote-qa bunu beklenen bulgu olarak raporluyor. Genel token listesi bilinçli olarak minimal — genişletmek dil başına bir satır.
+
 ## [1.250.0] — 2026-10-12
 
 **Harita sayfası kullanılabilir hale geliyor: haritanın üstündeki iş konumlandırıcısı görünen herhangi bir işe uçar ve önizlemesini açar (masaüstü dahil), metin araması haritayı şirket veya unvana göre daraltır — ikisi de yenilemeden sonra kalıcıdır.**

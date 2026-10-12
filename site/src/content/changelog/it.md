@@ -17,6 +17,19 @@
 
 - Le miglia restano rinviate dal proprietario. Il matching è deliberatamente SOLO TITOLO con le parole delle impostazioni: aziende o descrizioni trarrebbero posizioni non correlate nella specializzazione. Una posizione fuori da tutti i ruoli configurati resta visibile sotto «All».
 
+## [1.251.1] — 2026-10-12
+
+**Il filtro di specializzazione ora matcha solo le parole DISTINTIVE del ruolo — anzianità e sostantivi generici non matchano più una posizione da soli — e remote-qa separa forma da lingua così che una deriva non segni mai A–G in rosso.**
+
+### Corretto
+
+- **Специализационные токены**: общие слова (старшинство, должности) выброшены из матчера; отличительные матчатся по границам слов; фолбэк — вся фраза.
+- **remote-qa: форма ≠ язык**: A–G только по block/summary/looping-кодам; `report not in <locale>` — в свою колонку.
+- **Тулбар 50/50 на 390px**; мёртвый CSS удалён; CodeQL 552 закрыт.
+### Note
+
+- Le miglia restano rinviate dal proprietario. La deriva linguistica ta rimane una limitazione DOCUMENTATA del backend hermes (2–26 % di prosa tra le esecuzioni; A–G regge): remote-qa la segnala come reperto atteso. La lista dei token generici è volutamente minimale — estenderla costa una riga per lingua.
+
 ## [1.250.0] — 2026-10-12
 
 **La pagina della mappa diventa operativa: un selettore di posizioni sopra la mappa vola verso qualsiasi posizione visibile e apre la sua scheda (desktop incluso), e una ricerca testuale restringe la mappa per azienda o titolo — entrambe sopravvivono al ricaricamento.**

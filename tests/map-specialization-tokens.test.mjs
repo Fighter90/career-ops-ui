@@ -16,16 +16,17 @@ import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 
+import { createRequire } from 'node:module';
+const require = createRequire(import.meta.url);
+
 function resolvePlaywright() {
   try {
     // CI: npm install --no-save playwright
     return require('playwright');
   } catch {
-    throw new Error('playwright is required');
+    return null; // нет браузера — тесты ниже skip-нутся (CI-safe)
   }
 }
-import { createRequire } from 'node:module';
-const require = createRequire(import.meta.url);
 
 const ROOT = mkdtempSync(resolve(tmpdir(), 'pw-map-tokens-'));
 let server; let baseUrl; let browser; let context;
@@ -42,7 +43,9 @@ const POSTINGS = [
 ];
 const ROLES = ['Senior PHP Developer', 'Go Developer', 'Platform Engineer', 'Software Engineer'];
 
+const SKIP_TOKENS = resolvePlaywright() === null;
 before(async () => {
+  if (SKIP_TOKENS) return;
   process.env.CAREER_OPS_ROOT = ROOT;
   for (const d of ['config', 'data', 'modes']) mkdirSync(resolve(ROOT, d), { recursive: true });
   writeFileSync(resolve(ROOT, 'cv.md'), '# CV\n');
@@ -69,8 +72,7 @@ before(async () => {
   const { createApp } = await import('../server/index.mjs');
   const app = createApp();
   await new Promise((r) => { server = app.listen(0, '127.0.0.1', () => { baseUrl = `http://127.0.0.1:${server.address().port}`; r(); }); });
-  const pw = resolvePlaywright();
-  browser = await pw.chromium.launch({ headless: process.env.PWDEBUG !== '1' });
+  browser = await resolvePlaywright().chromium.launch({ headless: process.env.PWDEBUG !== '1' });
   context = await browser.newContext();
 });
 
@@ -82,20 +84,29 @@ after(async () => {
 async function chipAfterSpec(page, role) {
   const sel = page.locator('.job-map-spec-select');
   await sel.waitFor({ timeout: 10000 });
-  await sel.selectOption(role === null ? { index: 0 } : { label: role });
-  await page.waitForFunction(
-    (want) => (document.querySelector('.job-map-status-chip')?.textContent || '').startsWith(want),
-    role === null ? '8 / 8' : role === 'Senior PHP Developer' ? '2 / 8'
-      : role === 'Go Developer' ? '1 / 8'
-      : role === 'Platform Engineer' ? '1 / 8'
-      : role === 'Software Engineer' ? '1 / 8'
-      : '',
-    { timeout: 10000 },
-  );
-  return (document.querySelector('.job-map-status-chip')?.textContent || '').trim();
+  await sel.selectOption(role === null ? { index: 0 } : { label: role }).catch((e) => { throw new Error('selectOption: ' + e.message.split('\n')[0]); });
+  const want = role === null ? '8 / 8' : role === 'Senior PHP Developer' ? '2 / 8'
+    : role === 'Go Developer' ? '1 / 8'
+    : role === 'Platform Engineer' ? '1 / 8'
+    : role === 'Software Engineer' ? '1 / 8' : '';
+  try {
+    await page.waitForFunction(
+      (w) => (document.querySelector('.job-map-status-chip')?.textContent || '').startsWith(w),
+      want, { timeout: 10000 },
+    );
+  } catch (e) {
+    const got = await page.evaluate(() => ({
+      chip: document.querySelector('.job-map-status-chip')?.textContent || '(none)',
+      sel: document.querySelector('.job-map-spec-select')?.value || '(none)',
+      selOptions: [...document.querySelectorAll('.job-map-spec-select option')].map((o) => o.textContent),
+    }));
+    e.message += ` — want "${want}", got ${JSON.stringify(got)}`;
+    throw e;
+  }
+  return (await page.locator('.job-map-status-chip').textContent()).trim();
 }
 
-test('specialization tokens: «Senior PHP Developer» keeps only the PHP postings', async () => {
+test('specialization tokens: «Senior PHP Developer» keeps only the PHP postings', { skip: SKIP_TOKENS }, async () => {
   const page = await context.newPage();
   try {
     await page.goto(`${baseUrl}/#/map`);
@@ -106,7 +117,7 @@ test('specialization tokens: «Senior PHP Developer» keeps only the PHP posting
   } finally { await page.close(); }
 });
 
-test('specialization tokens: «Go Developer» keeps «Go Engineer», never «Golang»', async () => {
+test('specialization tokens: «Go Developer» keeps «Go Engineer», never «Golang»', { skip: SKIP_TOKENS }, async () => {
   const page = await context.newPage();
   try {
     await page.goto(`${baseUrl}/#/map`);
@@ -117,7 +128,7 @@ test('specialization tokens: «Go Developer» keeps «Go Engineer», never «Gol
   } finally { await page.close(); }
 });
 
-test('specialization tokens: «Platform Engineer» keeps only itself (generic Engineer dropped)', async () => {
+test('specialization tokens: «Platform Engineer» keeps only itself (generic Engineer dropped)', { skip: SKIP_TOKENS }, async () => {
   const page = await context.newPage();
   try {
     await page.goto(`${baseUrl}/#/map`);
@@ -128,7 +139,7 @@ test('specialization tokens: «Platform Engineer» keeps only itself (generic En
   } finally { await page.close(); }
 });
 
-test('specialization fallback: «Software Engineer» (no distinctive tokens) matches the whole phrase', async () => {
+test('specialization fallback: «Software Engineer» (no distinctive tokens) matches the whole phrase', { skip: SKIP_TOKENS }, async () => {
   const page = await context.newPage();
   try {
     await page.goto(`${baseUrl}/#/map`);
@@ -139,7 +150,7 @@ test('specialization fallback: «Software Engineer» (no distinctive tokens) mat
   } finally { await page.close(); }
 });
 
-test('specialization reset: «All specializations» restores all 8', async () => {
+test('specialization reset: «All specializations» restores all 8', { skip: SKIP_TOKENS }, async () => {
   const page = await context.newPage();
   try {
     await page.goto(`${baseUrl}/#/map`);
