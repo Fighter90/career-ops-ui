@@ -23,9 +23,11 @@
 
 ### Behoben
 
-- **Специализационные токены**: общие слова (старшинство, должности) выброшены из матчера; отличительные матчатся по границам слов; фолбэк — вся фраза.
-- **remote-qa: форма ≠ язык**: A–G только по block/summary/looping-кодам; `report not in <locale>` — в свою колонку.
-- **Тулбар 50/50 на 390px**; мёртвый CSS удалён; CodeQL 552 закрыт.
+- **Der Spezialisierungsfilter wirft Seniorität und generische Berufs-substantive aus seinem Matcher**: «Senior PHP Developer» matchte «Senior Java Developer» über das gemeinsame Senior/Developer. Der Matcher behält nur unterscheidende Tokens (PHP, Go, Platform, SRE, Backend…); eine Rolle ohne unterscheidende Tokens («Software Engineer») fällt auf den Ganzsatz-Match zurück. Wortgrenzen bleiben: «Go» matcht nie «Golang» oder «Google».
+- **remote-qa trennt Form von Sprache**: Das A–G-Flag wird nur anhand von Block/SCORE_SUMMARY/looping-Codes bewertet; eine `report not in <locale>`-Drift geht in ein eigenes Flag und eine Warnings-Spalte (die Tabelle gewinnt die fehlende 4. Spalte; die Codes werden pro Zeile gespeichert).
+- **Die Karten-Leiste ist ein echtes 50/50 bei 390 px** (die 58/42-Aufteilung ließ die Suche bei 124 px und schnitt ihren Platzhalter ab), und die tote CSS-Regel `.job-map-job-select` ist entfernt.
+- **CodeQL 552** — die ungenutzte Variable `OVERLAYS` im design-qa-Test entfernt.
+
 ### Hinweise
 
 - Meilen weiterhin vom Eigentümer verschoben. Der ta-Sprachdrift bleibt als DOKUMENTIerte Grenze des hermes-Backends (2–26 % Prosa über Läufe; A–G hält): remote-qa meldet sie als erwarteten Fund. Die generische Token-Liste ist bewusst minimal — Erweitern kostet eine Zeile pro Sprache.

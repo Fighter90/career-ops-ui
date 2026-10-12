@@ -30,9 +30,11 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ### Rettet
 
-- **Специализационные токены**: общие слова (старшинство, должности) выброшены из матчера; отличительные матчатся по границам слов; фолбэк — вся фраза.
-- **remote-qa: форма ≠ язык**: A–G только по block/summary/looping-кодам; `report not in <locale>` — в свою колонку.
-- **Тулбар 50/50 на 390px**; мёртвый CSS удалён; CodeQL 552 закрыт.
+- **Specialiseringsfilteret fjerner anciennitet og generiske jobsubstantiver fra sin matcher**: «Senior PHP Developer» matchede «Senior Java Developer» via den fælles Senior/Developer. Matcheren beholder kun distinktive tokens (PHP, Go, Platform, SRE, Backend…); en rolle uden distinktive tokens («Software Engineer») falder tilbage på hel-sætningsmatchet. Ordgrænser består: «Go» matcher aldrig «Golang» eller «Google».
+- **remote-qa adskiller form fra sprog**: A–G-flaget bedømmes kun af blok/SCORE_SUMMARY/looping-koder; et `report not in <locale>`-drift går til sit eget flag og warnings-kolonne (tabellen får den manglende 4. kolonne; koderne gemmes pr. række).
+- **Kortværktøjsbjælken er en ægte 50/50 ved 390 px** (58/42-opdelingen efterlod søgningen på 124 px og klippede dens pladsholder), og den døde CSS-regel `.job-map-job-select` er fjernet.
+- **CodeQL 552** — den ubrugte `OVERLAYS`-variabel i design-qa-testen fjernet.
+
 ### Noter
 
 - Miles stadig udskudt af ejeren. ta-sprogedriften forbliver en DOKUMENTERET begrænsning i hermes-backend (2–26 % prosa på tværs af kørsler; A–G holder): remote-qa rapporterer den som et forventet fund. Den generiske token-liste er med vilje minimal — at udvide den koster én linje pr. sprog.

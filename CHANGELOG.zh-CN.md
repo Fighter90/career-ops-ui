@@ -30,9 +30,11 @@
 
 ### 修复
 
-- **Специализационные токены**: общие слова (старшинство, должности) выброшены из матчера; отличительные матчатся по границам слов; фолбэк — вся фраза.
-- **remote-qa: форма ≠ язык**: A–G только по block/summary/looping-кодам; `report not in <locale>` — в свою колонку.
-- **Тулбар 50/50 на 390px**; мёртвый CSS удалён; CodeQL 552 закрыт.
+- **专业筛选只保留区分性 token**：«Senior PHP Developer» 曾通过共享的 Senior/Developer 匹配到 «Senior Java Developer»。匹配器只保留区分性 token（PHP、Go、Platform、SRE、Backend…）；没有区分性 token 的角色（«Software Engineer»）回退到整短语匹配。词边界保留：«Go» 永不匹配 «Golang»/«Google»。
+- **remote-qa 分离形状与语言**：A–G 仅按块/SCORE_SUMMARY/looping 代码判定；`report not in <locale>` 漂移移到自己的标志和 warnings 列（表格补上缺失的第 4 列；代码按行存储）。
+- **地图工具栏在 390px 为真正的 50/50**（58/42 分割使搜索框只剩 124px 并截断占位符），死代码 `.job-map-job-select` CSS 规则删除。
+- **CodeQL 552** — design-qa 测试中未使用的 `OVERLAYS` 变量已删除。
+
 ### 备注
 
 - 英里仍由所有者推迟。ta 语言漂移保留为 hermes 后端的已记录限制（各次运行散文占比 2–26%；A–G 保持）：remote-qa 将其报告为预期发现。泛型 token 列表刻意保持最小 — 扩充只需每个语言一行。

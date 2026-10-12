@@ -30,9 +30,11 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ### Corrigido
 
-- **Специализационные токены**: общие слова (старшинство, должности) выброшены из матчера; отличительные матчатся по границам слов; фолбэк — вся фраза.
-- **remote-qa: форма ≠ язык**: A–G только по block/summary/looping-кодам; `report not in <locale>` — в свою колонку.
-- **Тулбар 50/50 на 390px**; мёртвый CSS удалён; CodeQL 552 закрыт.
+- **O filtro de especialidade remove antiguidade e substantivos genéricos de seu comparador**: «Senior PHP Developer» coincidia com «Senior Java Developer» pelo Senior/Developer compartilhado. O comparador mantém apenas tokens distintivos (PHP, Go, Platform, SRE, Backend…); um papel sem tokens distintivos («Software Engineer») retrocede à correspondência de frase completa. Os limites de palavra se mantêm: «Go» nunca coincide com «Golang» nem «Google».
+- **O remote-qa separa forma de idioma**: o indicador A–G é julgado apenas por códigos de blocos/SCORE_SUMMARY/looping; uma deriva `report not in <locale>` vai para seu próprio indicador e coluna de warnings (a tabela ganha a 4ª coluna que faltava; os códigos são armazenados por linha).
+- **A barra do mapa é um verdadeiro 50/50 a 390 px** (a divisão 58/42 deixava a busca com 124 px e truncava seu marcador), e a regra CSS morta `.job-map-job-select` foi removida.
+- **CodeQL 552** — a variável sem uso `OVERLAYS` no teste design-qa removida.
+
 ### Notas
 
 - As milas seguem adiadas pelo proprietário. A deriva de idioma ta fica como limitação DOCUMENTADA do backend hermes (2–26 % de prosa entre execuções; A–G se sustenta): o remote-qa a reporta como achado esperado. A lista de tokens genéricos é mínima de propósito — ampliá-la é uma linha por idioma.

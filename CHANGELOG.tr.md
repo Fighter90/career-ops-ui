@@ -23,9 +23,11 @@
 
 ### Düzeltildi
 
-- **Специализационные токены**: общие слова (старшинство, должности) выброшены из матчера; отличительные матчатся по границам слов; фолбэк — вся фраза.
-- **remote-qa: форма ≠ язык**: A–G только по block/summary/looping-кодам; `report not in <locale>` — в свою колонку.
-- **Тулбар 50/50 на 390px**; мёртвый CSS удалён; CodeQL 552 закрыт.
+- **Uzmanlık filtresi, kıdem ve genel iş isimlerini eşleştiriciden çıkarır**: «Senior PHP Developer», paylaşılan Senior/Developer yüzünden «Senior Java Developer» ile eşleşiyordu. Eşleştirici yalnızca ayırt edici token'ları tutar (PHP, Go, Platform, SRE, Backend…); ayırt edici token'ı kalmayan bir rol («Software Engineer») tüm tümce eşlemesine düşer. Kelime sınırları korunur: «Go» asla «Golang» veya «Google» ile eşleşmez.
+- **remote-qa şekli dilden ayırır**: A–G bayrağı yalnızca blok/SCORE_SUMMARY/looping kodlarıyla değerlendirilir; bir `report not in <locale>` kayması kendi bayrağına ve warnings sütununa gider (tablo eksik 4. sütunu kazandı; kodlar satır başına saklanır).
+- **Harita araç çubuğu 390px'de gerçek 50/50** (58/42 bölünmesi aramayı 124px'te bırakmış ve yer tutucusunu kesmişti), ölü `.job-map-job-select` CSS kuralı kaldırıldı.
+- **CodeQL 552** — design-qa testindeki kullanılmayan `OVERLAYS` değişkeni kaldırıldı.
+
 ### Notlar
 
 - Mil hâlâ sahip tarafından erteleniyor. ta dil kayması hermes backend'inin BELGELENMİŞ sınırlaması olarak kalıyor (çalışmalar arası düzyazı %2–26; A–G tutuyor): remote-qa bunu beklenen bulgu olarak raporluyor. Genel token listesi bilinçli olarak minimal — genişletmek dil başına bir satır.
