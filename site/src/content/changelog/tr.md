@@ -17,6 +17,21 @@
 
 - Mil hâlâ sahip tarafından erteleniyor. Eşleştirme bilinçli olarak SADECE başlık, ayarlardaki kelimelerle: şirketler veya açıklamalar ilgisiz ilanları uzmanlığa çekerdi. Yapılandırılmış tüm rollerin dışındaki bir ilan «All» altında görünür kalır.
 
+## [1.251.1] — 2026-10-12
+
+**Uzmanlık filtresi artık yalnızca rolün AYIRT EDİCİ kelimelerini eşliyor — kıdem ve genel iş isimleri artık tek başına bir ilanı eşlemiyor — ve remote-qa şekli dilden ayırıyor, böylece bir kayma A–G'yi asla kırmızı işaretlemiyor.**
+
+### Düzeltildi
+
+- **Uzmanlık filtresi, kıdem ve genel iş isimlerini eşleştiriciden çıkarır**: «Senior PHP Developer», paylaşılan Senior/Developer yüzünden «Senior Java Developer» ile eşleşiyordu. Eşleştirici yalnızca ayırt edici token'ları tutar (PHP, Go, Platform, SRE, Backend…); ayırt edici token'ı kalmayan bir rol («Software Engineer») tüm tümce eşlemesine düşer. Kelime sınırları korunur: «Go» asla «Golang» veya «Google» ile eşleşmez.
+- **remote-qa şekli dilden ayırır**: A–G bayrağı yalnızca blok/SCORE_SUMMARY/looping kodlarıyla değerlendirilir; bir `report not in <locale>` kayması kendi bayrağına ve warnings sütununa gider (tablo eksik 4. sütunu kazandı; kodlar satır başına saklanır).
+- **Harita araç çubuğu 390px'de gerçek 50/50** (58/42 bölünmesi aramayı 124px'te bırakmış ve yer tutucusunu kesmişti), ölü `.job-map-job-select` CSS kuralı kaldırıldı.
+- **CodeQL 552** — design-qa testindeki kullanılmayan `OVERLAYS` değişkeni kaldırıldı.
+
+### Notlar
+
+- Mil hâlâ sahip tarafından erteleniyor. ta dil kayması hermes backend'inin BELGELENMİŞ sınırlaması olarak kalıyor (çalışmalar arası düzyazı %2–26; A–G tutuyor): remote-qa bunu beklenen bulgu olarak raporluyor. Genel token listesi bilinçli olarak minimal — genişletmek dil başına bir satır.
+
 ## [1.250.0] — 2026-10-12
 
 **Harita sayfası kullanılabilir hale geliyor: haritanın üstündeki iş konumlandırıcısı görünen herhangi bir işe uçar ve önizlemesini açar (masaüstü dahil), metin araması haritayı şirket veya unvana göre daraltır — ikisi de yenilemeden sonra kalıcıdır.**

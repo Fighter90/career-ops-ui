@@ -30,7 +30,6 @@ const read = (...p) => readFileSync(R(...p), 'utf8');
 
 const APP = read('public', 'css', 'app.css');
 const COMPONENTS = read('public', 'css', 'components.css');
-const OVERLAYS = read('public', 'css', 'overlays.css');
 const CSS = loadAppCss();
 const DICT = loadAssembledDict();
 

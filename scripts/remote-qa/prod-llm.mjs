@@ -27,7 +27,7 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { createRequire } from 'node:module';
 import { makeRedactor } from './redact.mjs';
-import { languageOk, describe, headingSkeleton } from './lang-check.mjs';
+import { languageOk, describe, headingSkeleton, splitWarnings } from './lang-check.mjs';
 import { discoverLocales, requireNonEmpty, httpCredentialsFor } from './targets.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
@@ -193,14 +193,18 @@ for (const locale of LOCALES) {
     const btn = page.locator('#eval-jd').locator('xpath=ancestor::*[.//button[contains(@class,"btn-primary")]][1]').locator('button.btn-primary').first();
     const e = await llmStep(page, locale, 'evaluate', '/api/evaluate', () => btn.click());
     const md = e.body.markdown || '';
-    row.eval = { status: e.status, mode: e.body.mode, ms: e.ms, len: md.length, shape: !(e.body.warnings || []).length, lang: languageOk(md, locale) };
+    // v1.251.1 — shape is judged ONLY by the block/summary codes; the
+    // language drift lives in its own flag and its own table column.
+    const { shape: shapeCodes, language: langCodes } = splitWarnings(e.body.warnings);
+    row.eval = { status: e.status, mode: e.body.mode, ms: e.ms, len: md.length,
+      shape: shapeCodes.length === 0, warnings: (e.body.warnings || []).map(String), lang: languageOk(md, locale) };
     if (e.status !== 200) add(locale, 'evaluate', `HTTP ${e.status} ${e.body.error || ''}`);
     else if (!e.body.mode || e.body.mode === 'manual') add(locale, 'evaluate', `no live provider (mode=${e.body.mode})`);
     else if (md.length < 800) add(locale, 'evaluate', `report only ${md.length} chars`);
     else {
       // The server's warnings are fixed strings ("missing Block C", "SCORE_SUMMARY ROLE is required"),
       // never report text, so they can be printed as they are.
-      if (!row.eval.shape) add(locale, 'evaluate', `A–G shape: ${(e.body.warnings || []).map(String).join('; ')}`);
+      if (!row.eval.shape) add(locale, 'evaluate', `A–G shape: ${shapeCodes.join('; ')}`);
       if (!row.eval.shape) console.error(`${locale} evaluate heading skeleton — ${headingSkeleton(md)}`);
       if (!row.eval.lang) add(locale, 'evaluate', `report not in ${locale} (${describe(md, locale)})`);
     }
@@ -224,7 +228,7 @@ const lines = [
   '## Live LLM regression', '',
   scan ? `**Scan (#/scan, all sources):** ${scan.secs}s${scan.busyWaits ? ` (waited ${scan.busyWaits} min for a scan already running)` : ''} · ${scan.phases.join(' · ') || 'no phase finished'}${scan.failed.length ? ' · failed: ' + scan.failed.join(',') : ''} · stderr lines ${scan.errLines} · result rows ${scan.before} → ${scan.after}` : '_Scan skipped (SCAN=0)._', '',
   `${rows.length} locales × (docs assistant + evaluate, driven through the UI).`, '',
-  '| locale | docs assistant | evaluate (save=false) |', '|---|---|---|',
+  '| locale | docs assistant | evaluate (save=false) | warnings |', '|---|---|---|---|',
   ...rows.map((r) => `| ${md(r.locale)} | ${md(cell(r.docs))} | ${md(cell(r.eval))} | ${(r.eval && r.eval.warnings || []).map(md).join('<br>') || '—'} |`), '',
   findings.length ? '| locale | step | finding |\n|---|---|---|\n' + findings.map((f) => `| ${md(f.locale)} | ${md(f.step)} | ${md(f.msg)} |`).join('\n') : '**No findings.**',
 ];

@@ -9,6 +9,20 @@
 ---
 
 
+## [1.251.1] — 2026-10-12
+
+**地图的专业筛选现在只匹配角色的特有词 — 资历和泛型职位名词不再自行匹配职位 — 且 remote-qa 将形状与语言分离，语言漂移不会标红 A–G。**
+
+### 修复
+
+- **专业筛选只保留区分性 token**：«Senior PHP Developer» 曾通过共享的 Senior/Developer 匹配到 «Senior Java Developer»。匹配器只保留区分性 token（PHP、Go、Platform、SRE、Backend…）；没有区分性 token 的角色（«Software Engineer»）回退到整短语匹配。词边界保留：«Go» 永不匹配 «Golang»/«Google»。
+- **remote-qa 分离形状与语言**：A–G 仅按块/SCORE_SUMMARY/looping 代码判定；`report not in <locale>` 漂移移到自己的标志和 warnings 列（表格补上缺失的第 4 列；代码按行存储）。
+- **地图工具栏在 390px 为真正的 50/50**（58/42 分割使搜索框只剩 124px 并截断占位符），死代码 `.job-map-job-select` CSS 规则删除。
+- **CodeQL 552** — design-qa 测试中未使用的 `OVERLAYS` 变量已删除。
+
+### 备注
+
+- 英里仍由所有者推迟。ta 语言漂移保留为 hermes 后端的已记录限制（各次运行散文占比 2–26%；A–G 保持）：remote-qa 将其报告为预期发现。泛型 token 列表刻意保持最小 — 扩充只需每个语言一行。
 ## [1.251.0] — 2026-10-12
 
 **地图的下拉现在按设置中的专业方向筛选（config/profile.yml → target_roles.primary）：选择 «Product Manager» 或 «Backend Engineer (Go / PHP)» 后，地图只保留标题带有该角色词语的职位。v1.250.0 的职位列表定位器已移除 — 那是错误的工具（所有者修正）。**
@@ -23,6 +37,7 @@
 ### 备注
 
 - 英里仍由所有者推迟。匹配刻意仅按标题（使用设置中的词）：对公司名或描述匹配会把无关职位拉进专业方向。未配置角色之外的职位在 «All» 下仍然可见。
+
 
 ## [1.250.0] — 2026-10-12
 

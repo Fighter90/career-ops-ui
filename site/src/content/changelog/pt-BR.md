@@ -24,6 +24,21 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 
 - As milas seguem adiadas pelo proprietário. A correspondência é deliberadamente SOMENTE pelo título com as palavras das configurações: empresas ou descrições trariam vagas alheias para a especialidade. Uma vaga fora de todos os papéis configurados continua visível em «Todas».
 
+## [1.251.1] — 2026-10-12
+
+**O filtro de especialidade agora coincide apenas com palavras DISTINTIVAS do papel — antiguidade e substantivos genéricos de trabalho não coincidem mais uma vaga por si mesmos — e o remote-qa separa forma de idioma para que uma deriva nunca marque A–G em vermelho.**
+
+### Corrigido
+
+- **O filtro de especialidade remove antiguidade e substantivos genéricos de seu comparador**: «Senior PHP Developer» coincidia com «Senior Java Developer» pelo Senior/Developer compartilhado. O comparador mantém apenas tokens distintivos (PHP, Go, Platform, SRE, Backend…); um papel sem tokens distintivos («Software Engineer») retrocede à correspondência de frase completa. Os limites de palavra se mantêm: «Go» nunca coincide com «Golang» nem «Google».
+- **O remote-qa separa forma de idioma**: o indicador A–G é julgado apenas por códigos de blocos/SCORE_SUMMARY/looping; uma deriva `report not in <locale>` vai para seu próprio indicador e coluna de warnings (a tabela ganha a 4ª coluna que faltava; os códigos são armazenados por linha).
+- **A barra do mapa é um verdadeiro 50/50 a 390 px** (a divisão 58/42 deixava a busca com 124 px e truncava seu marcador), e a regra CSS morta `.job-map-job-select` foi removida.
+- **CodeQL 552** — a variável sem uso `OVERLAYS` no teste design-qa removida.
+
+### Notas
+
+- As milas seguem adiadas pelo proprietário. A deriva de idioma ta fica como limitação DOCUMENTADA do backend hermes (2–26 % de prosa entre execuções; A–G se sustenta): o remote-qa a reporta como achado esperado. A lista de tokens genéricos é mínima de propósito — ampliá-la é uma linha por idioma.
+
 ## [1.250.0] — 2026-10-12
 
 **A página do mapa torna-se operacional: um localizador de vagas acima do mapa voa para qualquer vaga visível e abre seu cartão de prévia (inclusive no desktop), e uma busca de texto restringe o mapa por empresa ou cargo — ambos sobrevivem ao recarregamento.**

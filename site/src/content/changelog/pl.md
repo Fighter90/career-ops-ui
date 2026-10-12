@@ -24,6 +24,21 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 
 - Mile wciąż odkłada właściciel. Dopasowanie celowo TYLKO po tytule słowami z ustawień: firmy czy opisy wciągnęłyby do specjalizacji niepowiązane oferty. Oferta spoza skonfigurowanych ról pozostaje widoczna przy «All».
 
+## [1.251.1] — 2026-10-12
+
+**Filtr specjalizacji dopasowuje teraz tylko WYRÓŻNIAJĄCE słowa roli — staż i ogólne rzeczowniki stanowiskowe nie dopasowują już oferty same z siebie — a remote-qa oddziela kształt od języka, więc dryf nie czerwieni A–G.**
+
+### Naprawiono
+
+- **Filtr specjalizacji wyrzuca staż i ogólne rzeczowniki ze swojego matchera**: «Senior PHP Developer» dopasowywał «Senior Java Developer» przez wspólny Senior/Developer. Matcher zachowuje tylko wyróżniające tokeny (PHP, Go, Platform, SRE, Backend…); rola bez wyróżniających tokenów («Software Engineer») spada na dopasowanie całej frazy. Granice słów zostają: «Go» nigdy nie dopasuje «Golang» ani «Google».
+- **remote-qa oddziela kształt od języka**: flaga A–G oceniana tylko po kodach bloków/SCORE_SUMMARY/looping; dryf `report not in <locale>` trafia do własnej flagi i kolumny warnings (tabela zyskuje brakującą 4. kolumnę; kody zapisywane per wiersz).
+- **Pasek mapy to prawdziwe 50/50 przy 390 px** (podział 58/42 zostawiał wyszukiwarkę na 124 px i ucinał placeholder), martwa reguła CSS `.job-map-job-select` usunięta.
+- **CodeQL 552** — nieużywana zmienna `OVERLAYS` w teście design-qa usunięta.
+
+### Uwagi
+
+- Mile wciąż odkłada właściciel. Dryf języka ta pozostaje UDOKUMENTOWANYM ograniczeniem backendu hermes (2–26 % prozy między przebiegami; A–G się trzyma): remote-qa zgłasza to jako oczekiwane znalezisko. Lista tokenów ogólnych jest celowo minimalna — rozszerzenie to jedna linijka na język.
+
 ## [1.250.0] — 2026-10-12
 
 **Strona mapy staje się użyteczna: lokalizator ofert nad mapą przenosi do dowolnej widocznej oferty i otwiera jej podgląd (również na desktopie), a wyszukiwanie tekstowe zawęża mapę po firmie lub stanowisku — oba przetrwają odświeżenie.**

@@ -120,3 +120,27 @@ test('languageOk: ja report with Latin tables counts prose only', () => {
   const ja = ['# Evaluation: Acme — バックエンドエンジニア', '## A) 概要', 'この企業は東京に本社を置くテクノロジー企業です。チームの規模と文化について評価します。', '## B) マッチ度', '候補者の経験はこの役割に適しています。GoとKubernetesの経験が必要です。', '| 項目 | 評価 |', '|---|---|', '| Salary | 90-120k EUR |', '| Stack | Go, K8s, AWS |', '## C) リスク', '給与範囲は市場水準です。', '## D) 給与', '年収 800万〜1000万円。', '## E) 質問', 'チームの構成を確認してください。', '## F) 信頼性', '投稿は正規のものです。', '## G) 判定', '応答を推奨します。'].join('\n');
   assert.equal(languageOk(ja, 'ja'), true, describe(ja, 'ja'));
 });
+
+// v1.251.1 — remote-qa: shape is judged ONLY by block/summary codes; the
+// language drift is its own bucket (the ticket's stub: warnings
+// ['report not in ta'] must give A–G ✓ and the code in the language column).
+import { splitWarnings } from '../scripts/remote-qa/lang-check.mjs';
+test('splitWarnings: a language-only warning leaves the shape clean', () => {
+  const { shape, language } = splitWarnings(['report not in ta']);
+  assert.deepEqual(shape, [], 'no shape codes');
+  assert.deepEqual(language, ['report not in ta']);
+});
+
+test('splitWarnings: block and looping codes are shape', () => {
+  const { shape, language } = splitWarnings([
+    'missing Block D', 'missing SCORE_SUMMARY block', 'report looping: block B repeated', 'report not in ta',
+  ]);
+  assert.equal(shape.length, 3);
+  assert.deepEqual(language, ['report not in ta']);
+});
+
+test('splitWarnings: empty warnings → clean shape, no language', () => {
+  const { shape, language } = splitWarnings([]);
+  assert.deepEqual(shape, []);
+  assert.deepEqual(language, []);
+});
