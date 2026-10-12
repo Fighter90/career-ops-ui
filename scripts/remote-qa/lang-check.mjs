@@ -83,6 +83,24 @@ export function languageOk(text, locale) {
   return (mine >= 5 && mine >= en) || (mine >= 3 && en === 0);
 }
 
+/**
+ * v1.251.1 — split the server's evaluate warnings into SHAPE codes
+ * (missing blocks / SCORE_SUMMARY / looping — what "A–G ✓" asserts) and
+ * everything else (the language drift code). Before this, remote-qa folded
+ * "report not in ta" into the shape flag, so a language drift red-marked
+ * A–G that was actually fine.
+ *
+ * @param {string[]} warnings - the /api/evaluate `warnings` codes (fixed
+ *   strings, never report text).
+ * @returns {{ shape: string[], language: string[] }}
+ */
+export function splitWarnings(warnings) {
+  const all = (warnings || []).map(String).filter(Boolean);
+  const shape = all.filter((w) => /missing Block|SCORE_SUMMARY|looping/i.test(w));
+  const language = all.filter((w) => !shape.includes(w));
+  return { shape, language };
+}
+
 /** Numbers only — safe for a public log. */
 export function describe(text, locale) {
   const script = SCRIPT[locale] || ['ja', 'zh-CN', 'zh-TW'].includes(locale);

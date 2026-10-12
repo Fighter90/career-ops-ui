@@ -300,6 +300,17 @@
       // config/profile.yml → target_roles.primary (loaded from /api/profile).
       let specialization = '';
       let specKeywords = {}; // specialization name -> its token list
+      // v1.251.1 — seniority and generic job nouns never single-handedly
+      // match a specialization: «Senior PHP Developer» matched «Senior Java
+      // Developer» because both carry Senior/Developer. A token on this list
+      // is dropped from the role's matcher; if nothing distinctive remains
+      // («Software Engineer»), the whole phrase is the matcher.
+      const GENERIC_TOKENS = new Set([
+        'senior', 'junior', 'middle', 'lead', 'principal', 'staff', 'head',
+        'ведущий', 'старший', 'младший', 'главный',
+        'developer', 'engineer', 'разработчик', 'инженер',
+        'specialist', 'специалист', 'manager', 'менеджер',
+      ]);
       {
         const roles = ((profile || {}).summary || {}).target_roles;
         if (Array.isArray(roles) && roles.length) {
@@ -309,8 +320,13 @@
             specSelect.append(c('option', { value: name }, name));
             // Tokens of the role string = its matchers. Length ≥ 2 («Go»),
             // letters/digits/+/#/. — «PHP», «C++», «.NET» survive.
-            specKeywords[name] = (name.match(/[\p{L}\p{N}][\p{L}\p{N}+#.]*/gu) || [])
+            const tokens = (name.match(/[\p{L}\p{N}][\p{L}\p{N}+#.]*/gu) || [])
               .filter((tok) => tok.length >= 2);
+            // v1.251.1 — keep only DISTINCTIVE tokens (seniority and generic
+            // job nouns dropped); a role with no distinctive tokens left
+            // («Software Engineer») falls back to the whole phrase.
+            const distinctive = tokens.filter((tok) => !GENERIC_TOKENS.has(tok.toLowerCase()));
+            specKeywords[name] = distinctive.length ? distinctive : [name];
           }
           // A specialization whose tokens are a subset of another's longer
           // name still works: matching is per-token ANY, per the settings'
