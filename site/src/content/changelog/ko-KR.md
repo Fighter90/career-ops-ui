@@ -9,6 +9,24 @@
 ---
 
 
+## [1.252.1] — 2026-10-17
+
+**위키 릴리스 배너는 이제 수동 스윕이 아닌 스크립트로 검증됩니다 — v1.252.0 회귀는 수동으로만 잡았습니다 — 그리고 로케일 디렉티브는 프로필의 language.output과 채용 공고 언어를 명시적으로 재정의합니다.**
+
+### 추가
+
+- **`scripts/wiki-banner-check.mjs`** — 회귀가 요구한 게이트: 위키 클론의 모든 `Home*.md`를 읽고 배너를 `package.json` 및 레지스트리의 라이브 카운터(포털 레지스트리의 scanner adapters — 배너의 낡은 109이 아닌 105; `server/lib/routes/`의 route modules; CHANGELOG 집합의 UI locales)와 비교합니다. 배너 정규식은 단어가 아닌 형태로 언어 독립적입니다: 현지화된 Home 페이지는 라벨과 카운터를 번역하며(«Текущий релиз», «Aktuel udgivelse», «адаптеров сканера», «enhedstests») 그 수치는 EN 페이지(5245)보다 더 밀렸습니다(5177). `--tests N`은 방금 실행된 `test:ci`가 출력한 수를 받고, `--check-only`는 오프라인 사용을 위해 암시적 클론을 금지합니다. 오프라인 픽스처 테스트는 `tests/wiki-banner-check.test.mjs`.
+
+### 수정
+
+- **위키 Home ×18 배너가 다시 동기화됩니다** (이 릴리스와 함께 푸시): v1.252.0 스윕은 배지와 링크만 바꾸었고 배너 줄은 바꾸지 않았으며, 이를 알리는 기계적 장치도 없었습니다. 위의 게이트가 이를 릴리스 차단 검사로 만듭니다.
+- **로케일 디렉티브가 언어 우선순위를 확정합니다** (`buildLocaleDirective`): «This UI locale overrides the profile's `language.output` setting and the job posting's own language». 부모 자체의 규칙 6은 `language.output`으로 쓰라고 요구합니다 — 우선순위 문장이 없으면 모델은 두 모순된 지시를 로케일마다 일관성 없게 해소했고, 그것이 v1.252.0 언어 열의 흩어짐이었습니다. `tests/locale-directive-language-output.test.mjs`가 디렉티브 텍스트(비-EN 17개 로케일 + 빈 EN)로 고정합니다.
+
+### 참고
+
+- **ta evaluate 형태 관찰 (§3, 주시)**: v1.252.0의 첫 라이브 실행이 Block G와 SCORE_SUMMARY 없는 48 336자 evaluate를 만들었습니다 — 루프 형태이지 언어 형태가 아닙니다(CAR-70은 언어). 다음 릴리스에서 반복되면 CAR-70과 별개의 Linear 이슈로 갑니다.
+- FIX-PROMPT에 따라: 부모는 읽기 전용으로 두고, 재정의는 전적으로 UI 디렉티브에 삽니다.
+
 ## [1.252.0] — 2026-10-17
 
 **상위 포크가 career-ops-hq/career-ops와 동기화되었습니다 — 업스트림 264커밋, 상위 1.36.0 → 1.37.0 — 포크의 두 분기 모두 지켜졌으며, 배포가 실행 중인 상위를 해당 베이스로 다시 고정합니다.**

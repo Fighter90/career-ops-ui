@@ -9,6 +9,24 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.252.1] — 2026-10-17
+
+**Baner wersji w wiki jest teraz sprawdzany przez skrypt, a nie ręczny przegląd — regresja v1.252.0 wykryła go tylko ręcznie — a dyrektywa locale jawnie nadpisuje language.output profilu i język oferty.**
+
+### Dodano
+
+- **`scripts/wiki-banner-check.mjs`** — brama, o którą prosiła regresja: czyta każdy `Home*.md` w klonie wiki i porównuje baner z `package.json` i z ŻYWYMI licznikami rejestru (scanner adapters z rejestru portali — 105, a nie przeterminowane 109 z banera; route modules z `server/lib/routes/`; UI locales z zestawu CHANGELOG). Regex banera jest agnostyczny językowo po KSZTAŁCIE: zlokalizowane strony Home tłumaczą etykietę i liczniki («Текущий релиз», «Aktuel udgivelse», «адаптеров сканера», «enhedstests»), a ich liczby uciekły dalej (5177) niż strona EN (5245). `--tests N` przyjmuje liczbę, którą właśnie wypisał świeży `test:ci`; `--check-only` zakazuje niejawne klonowanie do użytku offline. Test fixtury offline w `tests/wiki-banner-check.test.mjs`.
+
+### Naprawiono
+
+- **Baner wiki Home ×18 znów jest w synchronizacji** (idzie z tym wydaniem): przegląd v1.252.0 zmieniał badge'y i linki, ale nigdy linię banera, i nic mechanicznego tego nie flagowało. Brama powyżej czyni to blokującą kontrolą wydania.
+- **Dyrektywa locale ustala priorytet języka** (`buildLocaleDirective`): «This UI locale overrides the profile's `language.output` setting and the job posting's own language». Własna reguła 6 rodzica każe pisać w `language.output` — bez zdania o priorytecie model rozwiązywał dwa sprzeczne polecenia niespójnie per locale, co było rozrzutem kolumny języka w v1.252.0. Przypięte przez `tests/locale-directive-language-output.test.mjs` na tekście dyrektywy (17 lokali nie-EN + pusty EN).
+
+### Uwagi
+
+- **Obserwacja FORMY w ta evaluate (§3, pilnować)**: pierwszy żywy przebieg v1.252.0 dał evaluate na 48 336 znaków bez Block G i bez SCORE_SUMMARY — kształt pętli, nie języka (CAR-70 dotyczy języka). Powtórzy się w następnym wydaniu — osobne zadanie w Linear, obok CAR-70.
+- Zgodnie z FIX-PROMPT: rodzic zostaje read-only; nadpisanie mieszka wyłącznie w dyrektywie UI.
+
 ## [1.252.0] — 2026-10-17
 
 **Fork rodzica jest zsynchronizowany z career-ops-hq/career-ops — 264 commity upstream, rodzic 1.36.0 → 1.37.0 — obie dywergencje forka obronione, a wdrożenie przypina działającego rodzica z powrotem do tej bazy.**

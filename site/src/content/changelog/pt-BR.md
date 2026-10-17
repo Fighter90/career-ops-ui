@@ -9,6 +9,24 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 ---
 
 
+## [1.252.1] — 2026-10-17
+
+**O banner de versão da wiki agora é verificado por um script em vez de uma varredura manual — a regressão v1.252.0 só o detectou manualmente — e a diretiva de locale sobrepõe explicitamente o language.output do perfil e o idioma da vaga.**
+
+### Adicionado
+
+- **`scripts/wiki-banner-check.mjs`** — o gate que a regressão pedia: lê cada `Home*.md` num clone da wiki e compara o banner com `package.json` e com os contadores VIVOS do registro (scanner adapters do registro de portais — 105, não os 109 vencidos do banner; route modules de `server/lib/routes/`; UI locales do conjunto CHANGELOG). O regex do banner é agnóstico de idioma por FORMA: as páginas Home localizadas traduzem o rótulo e os contadores («Текущий релиз», «Aktuel udgivelse», «адаптеров сканера», «enhedstests») e seus números haviam derivado mais (5177) que a página EN (5245). `--tests N` recebe o número que o `test:ci` recém-executado imprimiu; `--check-only` proíbe o clone implícito para uso offline. Teste de fixture offline em `tests/wiki-banner-check.test.mjs`.
+
+### Corregido
+
+- **O banner da wiki Home ×18 volta a ficar em sincronia** (enviado com esta versão): a varredura da v1.252.0 mudava badges e links mas nunca a linha do banner, e nada mecânico o sinalizava. O gate acima o torna verificação bloqueante de release.
+- **A diretiva de locale define a prioridade do idioma** (`buildLocaleDirective`): «This UI locale overrides the profile's `language.output` setting and the job posting's own language». A própria regra 6 do pai manda escrever em `language.output` — sem a frase de prioridade o modelo resolvia as duas instruções contraditórias de forma inconsistente por locale, que era a dispersão da coluna de idioma na v1.252.0. Fixado por `tests/locale-directive-language-output.test.mjs` no texto da diretiva (17 locales não-EN + EN vazio).
+
+### Notas
+
+- **Observação de FORMA no ta evaluate (§3, vigiar)**: a primeira execução ao vivo da v1.252.0 produziu um evaluate de 48 336 caracteres sem Block G e sem SCORE_SUMMARY — com forma de loop, não de idioma (CAR-70 é de idioma). Se se repetir no próximo release, terá tarefa própria no Linear, separada da CAR-70.
+- Pelo FIX-PROMPT: o pai fica somente-leitura; a sobreposição vive inteiramente na diretiva da UI.
+
 ## [1.252.0] — 2026-10-17
 
 **O fork do pai está sincronizado com career-ops-hq/career-ops — 264 commits do upstream, pai 1.36.0 → 1.37.0 — com ambas as divergências do fork defendidas, e o deploy volta a fixar o pai em execução nessa base.**

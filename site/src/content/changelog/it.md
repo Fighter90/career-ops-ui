@@ -2,6 +2,24 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.252.1] — 2026-10-17
+
+**Il banner di versione della wiki ora è verificato da uno script invece che da una passata manuale — la regressione v1.252.0 l'ha colto solo a mano — e la direttiva locale prevale esplicitamente sul language.output del profilo e sulla lingua dell'annuncio.**
+
+### Aggiunto
+
+- **`scripts/wiki-banner-check.mjs`** — il gate richiesto dalla regressione: legge ogni `Home*.md` in un clone della wiki e confronta il banner con `package.json` e con i contatori VIVI del registro (scanner adapters dal registro dei portali — 105, non i 109 scaduti del banner; route modules da `server/lib/routes/`; UI locales dall'insieme CHANGELOG). La regex del banner è language-agnostic per FORMA: le pagine Home localizzate traducono etichetta e contatori («Текущий релиз», «Aktuel udgivelse», «адаптеров сканера», «enhedstests») e i loro numeri erano derivati più (5177) della pagina EN (5245). `--tests N` prende il numero che il `test:ci` appena eseguito ha stampato; `--check-only` vieta il clone implicito per l'uso offline. Test di fixture offline in `tests/wiki-banner-check.test.mjs`.
+
+### Corretto
+
+- **Il banner wiki Home ×18 torna in sincrono** (spinto con questa release): la passata v1.252.0 cambiava badge e link ma mai la riga del banner, e nulla di meccanico lo segnalava. Il gate sopra lo rende controllo bloccante della release.
+- **La direttiva locale fissa la priorità della lingua** (`buildLocaleDirective`): «This UI locale overrides the profile's `language.output` setting and the job posting's own language». La stessa regola 6 del padre comanda di scrivere in `language.output` — senza la frase di priorità il modello risolveva le due istruzioni contraddittorie in modo incoerente per locale, che era la dispersione della colonna lingua in v1.252.0. Conficcato da `tests/locale-directive-language-output.test.mjs` sul testo della direttiva (17 locale non-EN + EN vuoto).
+
+### Note
+
+- **Osservazione sulla FORMA del ta evaluate (§3, tenere d'occhio)**: la prima esecuzione live della v1.252.0 ha prodotto un evaluate di 48 336 caratteri senza Block G e senza SCORE_SUMMARY — a forma di loop, non di lingua (CAR-70 è lingua). Se si ripete al prossimo release, avrà un suo issue Linear, separato da CAR-70.
+- Secondo il FIX-PROMPT: il parent resta in sola lettura; l'override vive interamente nella direttiva della UI.
+
 ## [1.252.0] — 2026-10-17
 
 **Il fork del parent è sincronizzato con career-ops-hq/career-ops — 264 commit upstream, parent 1.36.0 → 1.37.0 — entrambe le divergenze del fork difese, e il deploy riaggancia il parent in esecuzione a quella base.**

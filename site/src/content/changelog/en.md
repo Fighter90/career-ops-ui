@@ -7,6 +7,24 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 ---
 
 
+## [1.252.1] — 2026-10-17
+
+**The wiki's release banner is now gated by a script instead of a hand-run sweep — the v1.252.0 regression caught it stale only by hand — and the locale directive explicitly overrides the profile's language.output and the job posting's language.**
+
+### Added
+
+- **`scripts/wiki-banner-check.mjs`** — the release gate the regression asked for: it reads every `Home*.md` in a wiki checkout and compares the banner to `package.json` and to the LIVE registry counters (scanner adapters from the portals registry — 105, not the banner's stale 109 — route modules from `server/lib/routes/`, UI locales from the CHANGELOG set). The banner regex is language-agnostic by SHAPE, not by words: the localized Home pages translate the label and the counters («Текущий релиз», «Aktuel udgivelse», «адаптеров сканера», «enhedstests») and their counts had drifted further (5177) than the EN page (5245). `--tests N` takes the count a fresh `test:ci` just printed; `--check-only` forbids the implicit clone for offline use. Fixture-tested offline in `tests/wiki-banner-check.test.mjs`.
+
+### Fixed
+
+- **The wiki Home ×18 banner is brought back in sync** (pushed with this release): the v1.252.0 sweep replaced badges and links but never the banner line, and nothing mechanical flagged it. The gate above makes that a release-blocking check.
+- **The locale directive settles the language priority** (`buildLocaleDirective`): "This UI locale overrides the profile's `language.output` setting and the job posting's own language." The parent's own rule 6 says to write in `language.output` — with no priority sentence the model resolved the two contradictory instructions inconsistently per locale, which is what the v1.252.0 language-column scatter was. Pinned by `tests/locale-directive-language-output.test.mjs` on the directive text (17 non-EN locales + EN-empty).
+
+### Notes
+
+- **ta evaluate FORM observation (§3, watch)**: the first v1.252.0 live run produced a 48 336-character evaluate with no Block G and no SCORE_SUMMARY — looping-shaped, not language-shaped (CAR-70 is language). If it repeats on the next release, it gets its own Linear issue, separate from CAR-70.
+- Per the FIX-PROMPT: the parent stays read-only; the override lives entirely in the UI directive.
+
 ## [1.252.0] — 2026-10-17
 
 **The parent fork is synced with career-ops-hq/career-ops — 264 upstream commits, parent 1.36.0 → 1.37.0 — with both fork divergences defended, and the deployment re-pins the running parent to that base.**
