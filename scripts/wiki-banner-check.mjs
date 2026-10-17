@@ -56,7 +56,7 @@ export function checkWikiBanners(pages, expected) {
   const problems = [];
   if (!pages.length) return ['no Home*.md pages found in the wiki checkout'];
   for (const { file, text } of pages) {
-    const m = text.match(/^>[^\S\n]*[^*\n:·]+:[^\S\n]*\*\*v([0-9][0-9.]*)\*\*[^\n·]*·[^·\n]*·[^·\n]*·[^\S\n]*(\d+)[^·\n]*·[^\S\n]*(\d+)[^·\n]*·[^\S\n]*(\d+)[^·\n]*·[^\S\n]*(\d+)/m);
+    const m = text.match(/^>[^\S\n]*[^*\n:·：]+[：:][^\S\n]*\*\*v([0-9][0-9.]*)\*\*[^\n·]*·[^·\n]*·[^·\n]*·[^·\n]*?(\d+)[^·\n]*·[^·\n]*?(\d+)[^·\n]*·[^·\n]*?(\d+)[^·\n]*·[^·\n]*?(\d+)/m);
     if (!m) {
       problems.push(`${file}: banner line not found or shape drifted (expected "> <label>: **vX.Y.Z** · … · N … · N … · N … · N …" — label colon, version, then four ·-separated counters)`);
       continue;

@@ -22,30 +22,33 @@ const GOOD_RU = (v, a, r, l, t) =>
 const GOOD_DA = (v, a, r, l, t) =>
   `# Hjem\n\n> Aktuel udgivelse: **v${v}** · Node ≥ 18 · Express 4 + vanilla-JS SPA · ${a} scanner-adaptere · ${r} rutemoduler · ${l} sprog i grænsefladen · ${t} enhedstests.`;
 
-const EXPECTED = { version: '1.252.1', unitTests: 5261, adapters: 105, routes: 39, locales: 18 };
+const EXPECTED = { version: '1.252.1', unitTests: 5262, adapters: 105, routes: 39, locales: 18 };
 
-test('a banner that matches every expected counter passes — EN, RU and DA shapes alike', () => {
+test('a banner that matches every expected counter passes — EN, RU, DA, ZH (full-width colon) and JA (word-before-counter) shapes alike', () => {
   const pages = [
-    { file: 'Home.md', text: GOOD_EN('1.252.1', 105, 39, 18, 5261) },
-    { file: 'Home-(Русский).md', text: GOOD_RU('1.252.1', 105, 39, 18, 5261) },
-    { file: 'Home-(Dansk).md', text: GOOD_DA('1.252.1', 105, 39, 18, 5261) },
+    { file: 'Home.md', text: GOOD_EN('1.252.1', 105, 39, 18, 5262) },
+    { file: 'Home-(Русский).md', text: GOOD_RU('1.252.1', 105, 39, 18, 5262) },
+    { file: 'Home-(Dansk).md', text: GOOD_DA('1.252.1', 105, 39, 18, 5262) },
+    { file: 'Home-(简体中文).md', text: GOOD_ZH('1.252.1', 105, 39, 18, 5262) },
+    { file: 'Home-(日本語).md', text: GOOD_JA('1.252.1', 105, 39, 18, 5262) },
   ];
   assert.deepEqual(checkWikiBanners(pages, EXPECTED), []);
 });
 
 test('a stale version, count or shape is reported per file — in any language', () => {
   const pages = [
-    { file: 'Home.md', text: GOOD_EN('1.251.0', 105, 39, 18, 5261) },
-    { file: 'Home-(Русский).md', text: GOOD_RU('1.252.1', 109, 39, 18, 5261) },
-    { file: 'Home-(Dansk).md', text: GOOD_DA('1.252.1', 105, 39, 18, 5261).replace('39', '41') },
-    { file: 'Home-(日本語).md', text: 'some other page without a banner' },
+    { file: 'Home.md', text: GOOD_EN('1.251.0', 105, 39, 18, 5262) },
+    { file: 'Home-(Русский).md', text: GOOD_RU('1.252.1', 109, 39, 18, 5262) },
+    { file: 'Home-(Dansk).md', text: GOOD_DA('1.252.1', 105, 39, 18, 5262).replace('39', '41') },
+    { file: 'Home-(日本語).md', text: GOOD_JA('1.252.1', 109, 39, 18, 5177) },
   ];
   const problems = checkWikiBanners(pages, EXPECTED);
-  assert.equal(problems.length, 4, 'one problem per broken page');
+  assert.equal(problems.length, 5, 'one problem per finding (the JA page misses two counters at once)');
   assert.match(problems[0], /Home\.md: banner version 1\.251\.0 != package\.json 1\.252\.1/);
   assert.match(problems[1], /Home-\(Русский\)\.md: scanner adapters 109 != registry 105/);
   assert.match(problems[2], /Home-\(Dansk\)\.md: route modules 41 != registry 39/);
-  assert.match(problems[3], /Home-\(日本語\)\.md: banner line not found/);
+  assert.match(problems[3], /Home-\(日本語\)\.md: scanner adapters 109 != registry 105/);
+  assert.match(problems[4], /Home-\(日本語\)\.md: unit tests 5177 != expected 5262/);
 });
 
 test('the localized stale count (5177) is caught, not just the EN one (5245)', () => {
@@ -54,7 +57,7 @@ test('the localized stale count (5177) is caught, not just the EN one (5245)', (
     EXPECTED,
   );
   assert.equal(problems.length, 1);
-  assert.match(problems[0], /unit tests 5177 != expected 5261/);
+  assert.match(problems[0], /unit tests 5177 != expected 5262/);
 });
 
 test('an empty wiki checkout is a problem, not a silent pass', () => {
@@ -62,6 +65,15 @@ test('an empty wiki checkout is a problem, not a silent pass', () => {
   assert.equal(problems.length, 1);
   assert.match(problems[0], /no Home\*\.md pages/);
 });
+
+
+// CJK shapes: full-width colon (zh) and word-BEFORE-counter (ja/ko)
+const GOOD_ZH = (v, a, r, l, t) =>
+  `# 主页\n\n> 当前版本：**v${v}** · Node ≥ 18 · Express 4 + 原生 JS SPA · ${a} 个扫描适配器 · ${r} 个路由模块 · ${l} 种界面语言 · ${t} 个单元测试。`;
+const GOOD_JA = (v, a, r, l, t) =>
+  `# ホーム\n\n> 最新リリース: **v${v}** · Node ≥ 18 · Express 4 + バニラ JS SPA · スキャナーアダプター ${a} 個 · ルートモジュール ${r} 個 · UI ロケール ${l} 言語 · ユニットテスト ${t} 件。`;
+
+
 
 test('registryCounters reads live repo counters (routes dir + CHANGELOG locales)', () => {
   const { routes, locales } = registryCounters();
