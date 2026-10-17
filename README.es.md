@@ -12,14 +12,14 @@ _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.252.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.252.0)
+[![release](https://img.shields.io/badge/release-v1.252.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.252.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versión — v1.252.0** — **El fork del padre está sincronizado con career-ops-hq — 264 commits de upstream, padre 1.36.0 → 1.37.0 — con ambas divergencias del fork defendidas, y el despliegue vuelve a fijar el padre en ejecución a esa base.**
+> **🆕 Última versión — v1.252.1** — **El banner de versión de la wiki ahora lo verifica un script en lugar de un barrido manual — la regresión v1.252.0 solo lo detectó a mano — y la directiva de locale anula explícitamente el language.output del perfil y el idioma de la vacante.**
 >
-> **Anterior — v1.251.1** — El filtro de especialización coincide solo con palabras DISTINTIVAS del rol — la antigüedad y los sustantivos genéricos ya no coinciden una vacante por sí mismos — y remote-qa separa forma de idioma para que un deriva nunca marque en rojo A–G.
+> **Anterior — v1.252.0** — **El fork del padre está sincronizado con career-ops-hq — 264 commits de upstream, padre 1.36.0 → 1.37.0 — con ambas divergencias del fork defendidas, y el despliegue vuelve a fijar el padre en ejecución a esa base.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -392,7 +392,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 5253 unit + 129 Playwright + 23 e2e:full + 21 e2e:smoke
+└─ tests/                    # 5262 unit + 129 Playwright + 23 e2e:full + 21 e2e:smoke
    ├─ parsers.test.mjs       # parsers markdown / pipeline / report (funciones puras)
    ├─ api.test.mjs           # cada endpoint, servidor efímero, sin red
    ├─ {ru,en}-scanner.test.mjs   # fetch mockeado

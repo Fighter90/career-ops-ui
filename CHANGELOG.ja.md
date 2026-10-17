@@ -9,6 +9,24 @@
 ---
 
 
+## [1.252.1] — 2026-10-17
+
+**Wiki のリリースバナーは手動スイープではなくスクリプトで検証されるようになりました — v1.252.0 の回帰は手動でしか捕捉できませんでした — さらにロケールディレクティブはプロフィールの language.output と求人言語を明示的に上書きします。**
+
+### 追加
+
+- **`scripts/wiki-banner-check.mjs`** — 回帰が求めていたゲート: wiki クローンの各 `Home*.md` を読み、バナーを `package.json` とレジストリのライブカウンター(ポータルレジストリの scanner adapters — バナーの古い 109 ではなく 105; `server/lib/routes/` の route modules; CHANGELOG セットの UI locales)と比較します。バナー正規表現は語ではなく形状で言語非依存です: ローカライズされた Home ページはラベルとカウンターを翻訳しており(«Текущий релиз»、«Aktuel udgivelse»、«адаптеров сканера»、«enhedstests»)、その数値は EN ページ(5245)よりさらに逸脱していました(5177)。`--tests N` は実行直後の `test:ci` が出力した数を受け取り、`--check-only` はオフライン用に暗黙クローンを禁止します。オフラインのフィクスチャテストは `tests/wiki-banner-check.test.mjs`。
+
+### 修正
+
+- **Wiki の Home ×18 バナーが再び同期されます** (このリリースと共にプッシュ): v1.252.0 のスイープはバッジとリンクだけを替え、バナー行は替えず、それを機械的に知らせるものもありませんでした。上記のゲートがこれをリリースブロック検査にします。
+- **ロケールディレクティブが言語の優先順位を確定します** (`buildLocaleDirective`): «This UI locale overrides the profile's `language.output` setting and the job posting's own language». 親自身のルール 6 は `language.output` での執筆を命じます — 優先文がなければモデルは二つの矛盾する指示をロケールごとに不均整に解決していて、それが v1.252.0 の言語列のばらつきでした。`tests/locale-directive-language-output.test.mjs` がディレクティブテキスト(非 EN 17 ロケール + 空 EN)で固定します。
+
+### メモ
+
+- **ta evaluate の形状観察 (§3、 watch)**: v1.252.0 の最初のライブ実行は Block G も SCORE_SUMMARY もない 48 336 文字の evaluate を出しました — ループ形状であり言語形状ではありません(CAR-70 は言語)。次のリリースで再発すれば CAR-70 とは別の Linear 課題にします。
+- FIX-PROMPT どおり: 親は読み取り専用のまま、上書きは entirely UI ディレクティブの中に住みます。
+
 ## [1.252.0] — 2026-10-17
 
 **親フォークを career-ops-hq/career-ops と同期しました — アップストリーム 264コミット、親 1.36.0 → 1.37.0 — フォークの両 divergences は守られ、デプロイは実行中の親をそのベースに再固定します。**

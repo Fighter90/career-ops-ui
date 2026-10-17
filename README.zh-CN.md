@@ -12,14 +12,14 @@ _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.252.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.252.0)
+[![release](https://img.shields.io/badge/release-v1.252.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.252.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.252.0** — **父分支已与 career-ops-hq 同步 — 上游 264 个提交，父版本 1.36.0 → 1.37.0 — 两处分叉差异均获保留，部署将运行中的父版本重新固定到该基线。**
+> **🆕 最新版本 — v1.252.1** — **Wiki 的版本横幅现在由脚本把关而非手动扫描 — v1.252.0 回归只能靠人工发现 — 且 locale 指令显式覆盖个人资料的 language.output 和职位发布语言。**
 >
-> **上一版本 — v1.251.1** — 专业筛选只匹配角色的特有词 — 资历和泛型职位名词不再自行匹配职位 — 且 remote-qa 将形状与语言分离，语言漂移不会标红 A–G。
+> **上一版本 — v1.252.0** — **父分支已与 career-ops-hq 同步 — 上游 264 个提交，父版本 1.36.0 → 1.37.0 — 两处分叉差异均获保留，部署将运行中的父版本重新固定到该基线。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -392,7 +392,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 5253 unit + 129 Playwright + 23 e2e:full + 21 e2e:smoke
+└─ tests/                    # 5262 unit + 129 Playwright + 23 e2e:full + 21 e2e:smoke
    ├─ parsers.test.mjs       # markdown / pipeline / report 解析器(纯函数)
    ├─ api.test.mjs           # 每个端点,临时端口,无外网
    ├─ {ru,en}-scanner.test.mjs   # mock 后的 fetch

@@ -2,6 +2,24 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.252.1] — 2026-10-17
+
+**Wiki sürüm banneri artık manuel tarama yerine bir betikle doğrulanıyor — v1.252.0 gerilemesi onu yalnızca elle yakaladı — ve yerel ayar yönergesi profilin language.output'ını ve iş ilanının dilini açıkça geçersiz kılıyor.**
+
+### Eklendi
+
+- **`scripts/wiki-banner-check.mjs`** — gerilemenin istediği kapı: wiki klonundaki her `Home*.md`'yi okur ve banneri `package.json` ile ve kayıt defterinin CANLI sayaçlarıyla (portal kaydındaki scanner adapters — banner'daki eski 109 değil 105; `server/lib/routes/`'daki route modules; CHANGELOG kümesindeki UI locales) karşılaştırır. Banner regex'i dile göre değil BİÇİME göre dilden bağımsızdır: yerelleştirilmiş Home sayfaları etiketi ve sayaçları çevirir («Текущий релиз», «Aktuel udgivelse», «адаптеров сканера», «enhedstests») ve sayıları EN sayfasından (5245) daha fazla sapmıştı (5177). `--tests N` yeni koşulan `test:ci`'nin bastığı sayıyı alır; `--check-only` çevrimdışı kullanım için örtük klonlamayı yasaklar. Çevrimdışı fixture testi `tests/wiki-banner-check.test.mjs`.
+
+### Düzeltildi
+
+- **Wiki Home ×18 banneri yeniden senkrona alınıyor** (bu sürümle gidiyor): v1.252.0 taraması badge'leri ve bağlantıları değiştiriyor ama asla banner satırını değiştirmiyordu ve bunu mekanik olarak işaretleyen bir şey yoktu. Yukarıdaki kapı bunu sürümü durduran bir denetime dönüştürüyor.
+- **Locale yönergesi dil önceliğini netleştiriyor** (`buildLocaleDirective`): «This UI locale overrides the profile's `language.output` setting and the job posting's own language». Üst'ün kendi kural 6'sı `language.output` ile yazmayı emrediyor — öncelik cümlesi olmadan model iki çelişkili talimatı locale'e göre tutarsız çözüyordu; v1.252.0'daki dil sütununun dağınıklığı buydu. `tests/locale-directive-language-output.test.mjs` yönerge metni üzerinde sabitliyor (17 EN olmayan locale + boş EN).
+
+### Notlar
+
+- **ta evaluate BİÇİM gözlemi (§3, izle)**: v1.252.0'nin ilk canlı koşusu 48 336 karakterlik, Block G'siz ve SCORE_SUMMARY'siz bir evaluate üretti — döngü biçimli, dil biçimli değil (CAR-70 dil). Sonraki sürümde tekrarlarsa CAR-70'ten ayrı kendi Linear kaydını alacak.
+- FIX-PROMPT'e göre: üst read-only kalıyor; geçersiz kılma tamamen UI yönergesinde yaşıyor.
+
 ## [1.252.0] — 2026-10-17
 
 **Üst fork career-ops-hq/career-ops ile senkronize edildi — 256 upstream commit'i, üst 1.36.0 → 1.37.0 — fork'un her iki sapması savunuldu ve dağıtım, çalışan üstü bu tabana yeniden sabitliyor.**

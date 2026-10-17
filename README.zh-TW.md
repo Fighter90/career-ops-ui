@@ -12,14 +12,14 @@ _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.252.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.252.0)
+[![release](https://img.shields.io/badge/release-v1.252.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.252.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.252.0** — **父分支已與 career-ops-hq 同步 — 上游 264 個提交，父版本 1.36.0 → 1.37.0 — 兩處 fork 差異均獲保留，部署將執行中的父版本重新固定到該基線。**
+> **🆕 最新版本 — v1.252.1** — **Wiki 的版本橫幅現在由腳本把關而非手動掃描 — v1.252.0 回歸只能靠人工發現 — 且 locale 指令明確覆蓋個人資料的 language.output 和職缺發布語言。**
 >
-> **前一版本 — v1.251.1** — 專業篩選只匹配角色的特有詞 — 資歷和泛型職位名詞不再自行匹配職缺 — 且 remote-qa 將形狀與語言分離，語言漂移不會標紅 A–G。
+> **前一版本 — v1.252.0** — **父分支已與 career-ops-hq 同步 — 上游 264 個提交，父版本 1.36.0 → 1.37.0 — 兩處 fork 差異均獲保留，部署將執行中的父版本重新固定到該基線。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -392,7 +392,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 5253 unit + 129 Playwright + 23 e2e:full + 21 e2e:smoke
+└─ tests/                    # 5262 unit + 129 Playwright + 23 e2e:full + 21 e2e:smoke
    ├─ parsers.test.mjs       # markdown / pipeline / report 解析器(純函式)
    ├─ api.test.mjs           # 每個端點、暫時性伺服器、無網路
    ├─ {ru,en}-scanner.test.mjs   # 已 mock 的 fetch
