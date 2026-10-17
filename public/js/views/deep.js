@@ -295,7 +295,7 @@ Router.register('deep', async () => {
   // a meta line under the view title (was an orphan row inside the
   // manual-prompt result card).
   const pageMeta = UI.pageMeta(t,
-    c('span', { className: 'advisor-eta' }, '⏱ ' + t('advisor.eta', '~30s')),
+    c('span', { className: 'advisor-eta' }, '⏱ ' + t('advisor.eta', '~2–4 min')),
     UI.providerCostHint(t),
   );
 

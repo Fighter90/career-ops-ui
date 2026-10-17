@@ -169,3 +169,14 @@ Recorded so they are not retried.
 - **Re-cutting a release tag after the PR train continued on main**: cut the tag from the final main (post follow-up PRs), delete the
   stale tag + release first (`gh release delete`, `git push :refs/tags/…`), and redeploy — v1.248.7 did this for #437, v1.248.8's
   follow-up (#440, test-only) rode the tag as-is because prod matched the tagged commit.
+
+- **A wiki sweep is not a gate** (v1.252.0 → v1.252.1): the per-release wiki sweep replaced badges and tag
+  links but never the "Current release:" banner line, and every locale's banner had drifted separately
+  (EN 5245, localized pages 5177; the adapter count was stale at 109 vs the registry's 105 — and the CJK
+  banners put the word before the number with a full-width colon). A hand-run sweep cannot be trusted to
+  cover a shape it was written for once the shape drifts. Fixed by `scripts/wiki-banner-check.mjs`
+  (language-agnostic by SHAPE: version + four ·-separated counters) wired into the release train.
+- **A tmp worktree dies with the agent-server restart — commit per coherent chunk** (v1.252.1): a whole
+  docs train (CHANGELOG ×18, README ×18, prompts, baselines) was lost once to an uncommitted worktree
+  wipe. Redo cost ~20 min; the rule since: `git commit` after every coherent chunk (code+tests, then
+  docs), push the branch before running long gates.

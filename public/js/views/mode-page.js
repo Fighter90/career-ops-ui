@@ -493,7 +493,7 @@
           c('h1', { className: 'page-title' }, t(cfg.titleKey)),
           c('p', { className: 'page-subtitle' }, t(cfg.subtitleKey)),
           UI.pageMeta(t,
-            c('span', { className: 'advisor-eta' }, '⏱ ' + t('advisor.eta', '~30s')),
+            c('span', { className: 'advisor-eta' }, '⏱ ' + t('advisor.eta', '~2–4 min')),
             UI.providerCostHint(t)),
         ]),
       ]),
