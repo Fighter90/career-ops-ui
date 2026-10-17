@@ -17,9 +17,9 @@ _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santi
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Ultima release — v1.247.0** — **La coda della scansione design CAR-49…58 è chiusa — tutti i reperti minori e di polish rimanenti, più la mappa scura che la versione precedente aveva rimandato di proposito.**
+> **🆕 Ultima release — v1.252.0** — **Il fork del parent è sincronizzato con career-ops-hq — 264 commit upstream, parent 1.36.0 → 1.37.0 — entrambe le divergenze del fork difese, e il deploy riaggancia il parent in esecuzione a quella base.**
 >
-> **Precedente — v1.246.0** — Tutti i dieci reperti principali della scansione senior-design CAR-48 sono corretti — bloccante e tutti e sette i major inclusi.
+> **Precedente — v1.251.1** — Il filtro di specializzazione matcha solo le parole DISTINTIVE del ruolo — anzianità e sostantivi generici non matchano più una posizione da soli — e remote-qa separa forma da lingua così che una deriva non segni mai A–G in rosso.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -422,7 +422,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 5116 unit + 118 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.247.0)
+└─ tests/                    # 5253 unit + 129 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.252.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch

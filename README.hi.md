@@ -19,9 +19,9 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.247.0** — **CAR-49…58 डिज़ाइन-स्वीप की पूँछ पूरी हुई — शेष सभी minor/polish निष्कर्ष, और वह डार्क मैप भी जिसे पिछले रिलीज़ ने जानबूझकर टाला था।**
+> **🆕 नवीनतम रिलीज़ — v1.252.0** — **पैरेंट फोर्क career-ops-hq के साथ समेकित है — 264 अपस्ट्रीम कमिट, पैरेंट 1.36.0 → 1.37.0 — फोर्क के दोनों विचलन सुरक्षित हैं, और डिप्लॉय चल रहे पैरेंट को उस बेस पर फिर से पिन करता है।**
 >
-> **पिछला — v1.246.0** — CAR-48 सीनियर-डिज़ाइन स्वीप के शीर्ष दस निष्कर्ष ठीक कर दिए गए — ब्लॉकर और सभी सात मेजर शामिल।
+> **पिछला — v1.251.1** — विशेषज्ञता फ़िल्टर केवल भूमिका के विशिष्ट शब्दों से मैच करता है — सीनियरिटी और सामान्य जॉब संज्ञाएँ अब स्वयं किसी पोस्टिंग से मैच नहीं करतीं — और remote-qa आकार को भाषा से अलग करता है ताकि ड्रिफ्ट A–G को लाल न चिह्नित करे।
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -425,7 +425,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 5116 यूनिट + 118 Playwright + 23/23 e2e:full + 21 e2e:smoke (बेसलाइन @ v1.247.0)
+└─ tests/                    # 5253 यूनिट + 129 Playwright + 23/23 e2e:full + 21 e2e:smoke (बेसलाइन @ v1.252.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report पार्सर (प्योर फ़ंक्शन)
    ├─ api.test.mjs           # हर एंडपॉइंट, एफ़ेमरल सर्वर, कोई नेटवर्क नहीं
    ├─ {ru,en}-scanner.test.mjs   # मॉक्ड fetch

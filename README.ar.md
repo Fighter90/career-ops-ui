@@ -20,9 +20,9 @@ _واجهة غير رسمية — لا علاقة لها بـ career-ops / santi
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 أحدث إصدار — v1.247.0** — **اكتمل ذيل جولة التصميم CAR-49…58 — كل النتائج الثانوية والتحسينية المتبقية، بالإضافة إلى الخريطة الداكنة التي أجّلها الإصدار السابق عمدًا.**
+> **🆕 أحدث إصدار — v1.252.0** — **تمت مزامنة شوكة الأب مع career-ops-hq — 264 التزاماً من المنبع، الأب 1.36.0 → 1.37.0 — مع صيانة انحرافي الشوكة، ويعيد النشر تثبيت الأب العامل على تلك القاعدة.**
 >
-> **السابق — v1.246.0** — أُصلحت جميع النتائج العشر الكبرى من جولة التصميم الأولية CAR-48 — بما في ذلك العائق وكل السبع الكبرى.
+> **السابق — v1.251.1** — مرشح التخصص يطابق الكلمات المميزة للدور فقط — الأقدمية وأسماء الوظائف العامة لم تعد تطابق وظيفة بمفردها — وremote-qa يفصل الشكل عن اللغة حتى لا يحمرّ A–G بسبب الانجراف.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -171,7 +171,7 @@ career-ops/
 └─ web-ui/          ← هذا المستودع
    ├─ server/       # Express + 15 وحدة مسارات
    ├─ public/       # vanilla JS SPA — بدون bundler
-   └─ tests/        # 5116 unit + 118 Playwright + 44 e2e
+   └─ tests/        # 5253 unit + 129 Playwright + 44 e2e
 ```
 
 <div dir="rtl">

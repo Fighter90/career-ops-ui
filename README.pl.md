@@ -20,9 +20,9 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Najnowsze wydanie — v1.247.0** — **Ogon przeglądu senior-design CAR-49…58 domknięty — wszystkie pozostałe minor/polish oraz ciemna mapa, którą poprzednie wydanie celowo odłożyło.**
+> **🆕 Najnowsze wydanie — v1.252.0** — **Fork rodzica jest zsynchronizowany z career-ops-hq — 264 commity upstream, rodzic 1.36.0 → 1.37.0 — obie dywergencje forka obronione, a wdrożenie przypina działającego rodzica z powrotem do tej bazy.**
 >
-> **Poprzednie wydanie — v1.246.0** — Wszystkich dziesięć czołowych ustaleń przeglądu senior-design CAR-48 naprawiono — łącznie z blockerem i wszystkimi siedmioma major.
+> **Poprzednie wydanie — v1.251.1** — Filtr specjalizacji dopasowuje teraz tylko WYRÓŻNIAJĄCE słowa roli — staż i ogólne rzeczowniki stanowiskowe nie dopasowują już oferty same z siebie — a remote-qa oddziela kształt od języka, więc dryf nie czerwieni A–G.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

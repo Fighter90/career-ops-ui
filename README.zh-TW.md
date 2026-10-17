@@ -17,9 +17,9 @@ _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.247.0** — **CAR-49…58 設計巡檢的收尾完成——剩餘所有次要與打磨項，加上上一版刻意延後的深色地圖。**
+> **🆕 最新版本 — v1.252.0** — **父分支已與 career-ops-hq 同步 — 上游 264 個提交，父版本 1.36.0 → 1.37.0 — 兩處 fork 差異均獲保留，部署將執行中的父版本重新固定到該基線。**
 >
-> **前一版本 — v1.246.0** — CAR-48 資深設計巡檢的十大發現全部修復——含 1 個阻塞級與全部 7 個重要級。
+> **前一版本 — v1.251.1** — 專業篩選只匹配角色的特有詞 — 資歷和泛型職位名詞不再自行匹配職缺 — 且 remote-qa 將形狀與語言分離，語言漂移不會標紅 A–G。
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -392,7 +392,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 5116 unit + 118 Playwright + 23 e2e:full + 21 e2e:smoke
+└─ tests/                    # 5253 unit + 129 Playwright + 23 e2e:full + 21 e2e:smoke
    ├─ parsers.test.mjs       # markdown / pipeline / report 解析器(純函式)
    ├─ api.test.mjs           # 每個端點、暫時性伺服器、無網路
    ├─ {ru,en}-scanner.test.mjs   # 已 mock 的 fetch

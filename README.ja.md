@@ -17,9 +17,9 @@ _非公式 UI — career-ops / santifer とは提携しておらず、承認も�
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.247.0** — **CAR-49…58 デザインスイープの尻尾が完了 — 残る minor/polish 所見のすべてと、前リリースが意図的に見送ったダークマップを含みます。**
+> **🆕 最新リリース — v1.252.0** — **親フォークを career-ops-hq と同期しました — アップストリーム 264コミット、親 1.36.0 → 1.37.0 — フォークの両分岐は守られ、デプロイは実行中の親をそのベースに再固定します。**
 >
-> **前バージョン — v1.246.0** — CAR-48 シニアデザイン通し検査のトップ10所見をすべて修正 — ブロッカーと7つの major を含みます。
+> **前バージョン — v1.251.1** — 専門フィルターは役割の識別語のみをマッチします — 年齢や一般的な職業名はそれだけでは求人に一致しなくなり — remote-qa は形状と言語を分離し、ドリフトが A–G を赤くしません。
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -394,7 +394,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 5116 unit + 118 Playwright + e2e:full + e2e:smoke
+└─ tests/                    # 5253 unit + 129 Playwright + e2e:full + e2e:smoke
    ├─ parsers.test.mjs       # markdown / pipeline / report パーサー(純粋関数)
    ├─ api.test.mjs           # 全エンドポイント、ephemeral server、ネットワークなし
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch

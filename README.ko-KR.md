@@ -17,9 +17,9 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.247.0** — **CAR-49…58 디자인 스윕의 꼬리가 완료됐습니다 — 남은 minor/polish 발견 전부와, 이전 릴리스가 의도적으로 미뤄둔 다크 맵까지.**
+> **🆕 최신 릴리스 — v1.252.0** — **상위 포크가 career-ops-hq와 동기화되었습니다 — 업스트림 264커밋, 상위 1.36.0 → 1.37.0 — 포크의 두 분기 모두 지켜졌으며, 배포가 실행 중인 상위를 해당 베이스로 다시 고정합니다.**
 >
-> **이전 버전 — v1.246.0** — CAR-48 시니어 디자인 스윕의 상위 10개 발견 항목을 모두 수정했습니다 — 블로커와 7개의 major 전부 포함입니다.
+> **이전 버전 — v1.251.1** — 전문 분야 필터가 역할의 고유 단어만 매칭합니다 — 연령과 일반 직무 명사는 더 이상 스스로 채용을 매칭하지 않으며 — remote-qa는 언어와 형태를 분리해 드리프트가 A–G를 빨간색으로 표시하지 않습니다.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -392,7 +392,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 5116 unit + 118 Playwright + 23 e2e:full + 21 e2e:smoke
+└─ tests/                    # 5253 unit + 129 Playwright + 23 e2e:full + 21 e2e:smoke
    ├─ parsers.test.mjs       # markdown / pipeline / report 파서 (순수 함수)
    ├─ api.test.mjs           # 모든 엔드포인트, 임시 서버, 네트워크 없음
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
