@@ -7,6 +7,41 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 ---
 
 
+## [1.252.0] — 2026-10-17
+
+**The parent fork is synced with career-ops-hq/career-ops — 264 upstream commits, parent 1.36.0 → 1.37.0 — with both fork divergences defended, and the deployment re-pins the running parent to that base.**
+
+### Added
+
+- **Vietnamese (vi) market mode** arrives from upstream (`modes/vi/`, `tuyen-dung` / `ung-tuyen`): BHXH/BHYT/BHTN, thử việc, lương tháng 13, trợ cấp thôi việc — the 21st declared market in the parent's mode table.
+- **Tech in Asia board provider** (upstream): reads the public Algolia `job_postings` index the techinasia.com jobs UI itself queries — a SEA startup board, ~300 live postings at sampling, 273 of them Indonesian. Keys are discovered fresh per run from the site's build, the employer's own application link wins over the board page, and salary stays unattached (the index's salary fields are flags, not money).
+- Eight new Block G posting-legitimacy signal docs (`modes/oferta-signals/08–17`): benefits/employment terminology country mismatch, third-party platform location tag mismatch, agency licensing, immigration-status overreach, jurisdiction-prohibited content, pay-transparency range width, minimum-wage lawyer question, AI-screening disclosure, fixed-term disclosure, relocation purchasing power.
+
+### Changed
+
+- **Parent-side hardening carried by the base bump**: the story-provenance check now works by unit and sentence and keeps `user-cannot-confirm` figures out of negotiation, ATS and interview output; the CV fact-gate runs on every renderer and reads respelled and structured claims; LaTeX rejects stale extracted slots before writing; the follow-ups launchd sweep is skipped when follow-ups are off; update-system keeps its local-edits scan under the argv limit.
+- **The fork's divergences survived the merge**: `providers/telegram.mjs` (fork-only parser, ADR-0001) and the Unicode lookaround `LOCATIONISH_RE` in `telegram-channel.mjs` (ADR-0002). The boards doc now lists upstream's improved `telegram-channel` row, the fork-only `telegram` row, Tech in Asia, and Tencent's `max_pages` default raised 20 → 100.
+
+### Notes
+
+- **The SPA ships no behavior change in this release**: it is the docs train plus the parent re-pin. The deployment now runs parent 1.37.0; the parent delta does not touch the canonical-states table, so tracker statuses render exactly as before.
+- The upstream merge resolved two conflicts: `docs/SUPPORTED_JOB_BOARDS.md` (both telegram rows kept) and `test-all.mjs` (upstream's walkTree-based `copyDirSync` subsumes the fork's hand-rolled `.git` nested-checkout guard; the import list is the union).
+## [1.251.1] — 2026-10-12
+
+**The map's specialization filter matches on DISTINCTIVE role words only — seniority and generic job nouns no longer match a posting by themselves — and remote-qa splits shape from language so a drift never red-marks A–G.**
+
+### Fixed
+
+- **The specialization filter drops seniority and generic job nouns from its matcher**: «Senior PHP Developer» matched «Senior Java Developer» through the shared Senior/Developer. The matcher keeps only distinctive tokens (PHP, Go, Platform, SRE, Backend…); a role with no distinctive tokens left («Software Engineer») falls back to the whole-phrase match. Word boundaries stay: «Go» never matches «Golang» or «Google».
+- **remote-qa separates shape from language**: the A–G flag is now judged only by block/SCORE_SUMMARY/looping codes; a `report not in <locale>` drift moves to the language flag and its own warnings column (the table header gains the missing 4th column; the codes are stored per row).
+- **The map toolbar is a true 50/50 at 390 px** (the 58/42 flex split left the search field at 124 px and truncated its placeholder), and the dead `.job-map-job-select` CSS rule is gone.
+- **CodeQL 552** — the unused `OVERLAYS` variable in the design-qa test removed.
+
+### Notes
+
+- Drive-time MILES remain deferred by the owner to the next release.
+- The ta evaluate language drift stays a DOCUMENTED backend limitation (hermes, prose share 2–26 % across runs; A–G holds, no looping): remote-qa now reports it as an expected finding for ta, not a regression. A two-step flow (English evaluation + translation pass) remains an option if the owner wants it.
+- The generic-token list is deliberately minimal (seniority + generic job nouns, en/ru): broadening it is one line per language, and every addition risks over-filtering a legitimate posting.
 ## [1.251.0] — 2026-10-12
 
 **The map's select now filters by SPECIALIZATION from the settings (config/profile.yml → target_roles.primary): pick «Product Manager» or «Backend Engineer (Go / PHP)» and the map keeps only the postings whose title matches that role's own words. The v1.250.0 job-list locator is gone — it was the wrong lens (the owner's correction).**
@@ -24,22 +59,6 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 - Drive-time MILES are deliberately NOT part of this release either — the owner already deferred them.
 - The specialization match is deliberately TITLE-ONLY (with the settings' own words as tokens): matching against company names or descriptions would pull unrelated postings into a specialization. A posting outside every configured role stays visible under «All specializations» and disappears only when a specific one is chosen.
 
-## [1.251.1] — 2026-10-12
-
-**The map's specialization filter matches on DISTINCTIVE role words only — seniority and generic job nouns no longer match a posting by themselves — and remote-qa splits shape from language so a drift never red-marks A–G.**
-
-### Fixed
-
-- **The specialization filter drops seniority and generic job nouns from its matcher**: «Senior PHP Developer» matched «Senior Java Developer» through the shared Senior/Developer. The matcher keeps only distinctive tokens (PHP, Go, Platform, SRE, Backend…); a role with no distinctive tokens left («Software Engineer») falls back to the whole-phrase match. Word boundaries stay: «Go» never matches «Golang» or «Google».
-- **remote-qa separates shape from language**: the A–G flag is now judged only by block/SCORE_SUMMARY/looping codes; a `report not in <locale>` drift moves to the language flag and its own warnings column (the table header gains the missing 4th column; the codes are stored per row).
-- **The map toolbar is a true 50/50 at 390 px** (the 58/42 flex split left the search field at 124 px and truncated its placeholder), and the dead `.job-map-job-select` CSS rule is gone.
-- **CodeQL 552** — the unused `OVERLAYS` variable in the design-qa test removed.
-
-### Notes
-
-- Drive-time MILES remain deferred by the owner to the next release.
-- The ta evaluate language drift stays a DOCUMENTED backend limitation (hermes, prose share 2–26 % across runs; A–G holds, no looping): remote-qa now reports it as an expected finding for ta, not a regression. A two-step flow (English evaluation + translation pass) remains an option if the owner wants it.
-- The generic-token list is deliberately minimal (seniority + generic job nouns, en/ru): broadening it is one line per language, and every addition risks over-filtering a legitimate posting.
 
 ## [1.250.0] — 2026-10-12
 

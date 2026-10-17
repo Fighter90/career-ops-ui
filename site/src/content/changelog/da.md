@@ -9,20 +9,25 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 ---
 
 
-## [1.251.0] — 2026-10-12
+## [1.252.0] — 2026-10-17
 
-**Kortets select filtrerer nu efter SPECIALISERING fra indstillingerne (config/profile.yml → target_roles.primary): vælg «Product Manager» eller «Backend Engineer (Go / PHP)», og kortet beholder kun opslagene, hvis titel bærer rollens egne ord. V1.250.0's jobliste-locator er fjernet — det var det forkerte værktøj (ejerkorrektion).**
+**Parent-forket er synkroniseret med career-ops-hq/career-ops — 264 upstream-commits, parent 1.36.0 → 1.37.0 — begge fork-afvigelser er forsvaret, og udrulningen fastgør den kørende parent til den base igen.**
 
 ### Tilføjet
 
-- **Specialiseringsfilter**: select'en viser specialiseringerne fra indstillingerne (target_roles.primary); valg beholder kun opslagene, hvis titel bærer en af rollens distingverende tokens (ordgrænser, uden store/små bogstaver — «Go» matcher aldrig «Google»); Reset gendanner alle.
-- **V1.250.0's jobliste-locator er fjernet** — erstatningen: specialiseringsfilter, ikke jobliste (ejerkorrektion).
+- **Vietnamesisk (vi) markedstilstand** fra upstream (`modes/vi/`, `tuyen-dung` / `ung-tuyen`): BHXH/BHYT/BHTN, thử việc, lương tháng 13, trợ cấp thôi việc — det 21. marked i parentens modetabel.
+- **Tech in Asia-tavleudbyder** (upstream): læser det offentlige Algolia-indeks `job_postings`, som techinasia.coms job-UI selv forespørger — et SEA-startup-tavle, ~300 levende opslag ved sampling, 273 af dem indonesiske. Nøgler opdages for hver kørsel fra sitets build, arbejdsgiverens egen ansøgningslink vinder over tavlesiden, og løn følger bevidst ikke med (indeksets lønfelter er flag, ikke penge).
+- Otte nye Block G-dokumenter om opslagslegitimitetssignaler (`modes/oferta-signals/08–17`): land i benefitterminologi, tredjepartsplatformens lokationstag, agenturlicensering, overdrevne indvandringskrav, jurisdiktionsforbudt indhold, pay-transparency-intervalbredde, advokatspørgsmål om mindsteløn, AI-screening-offentliggørelse, tidsbegrænset kontrakt-offentliggørelse, købekraft ved relokering.
+
 ### Ændret
 
-- Two mobile-map height specs: the floor moves 600 -> 540 px (the toolbar takes ~90 px of the viewport).
+- **Hærdninger på parents side, der følger med basen**: story-provenance-tjekket arbejder per enhed og sætning og holder `user-cannot-confirm`-tal ude af forhandling, ATS og interview-output; CV-fact-gate kører på hver renderer og læser omformulerede og strukturerede påstande; LaTeX afviser forældede udtrukne slots før skrivning; launchd-svinget af follow-ups springes over, når follow-ups er slukket; update-system holder sit lokal-redigerings-scan inden for argv-grænsen.
+- **Forkets afvigelser overlevede fletningen**: `providers/telegram.mjs` (fork-eksklusiv parser, ADR-0001) og Unicode-lookaround `LOCATIONISH_RE` i `telegram-channel.mjs` (ADR-0002). Tavledokumentet lister nu upstreams forbedrede `telegram-channel`-række, fork-eksklusiv `telegram`-række, Tech in Asia og Tencents `max_pages`-standard hævet 20 → 100.
+
 ### Noter
 
-- Miles stadig udskudt af ejeren. matching er bevidst KUN titel med ordene fra indstillingerne: firmaer eller beskrivelser ville trække urelaterede opslag ind i specialiseringen. Et opslag uden for alle konfigurerede roller forbliver synligt under «All».
+- **Ingen SPA-adfærdsændring i denne udgivelse**: det er dokumenttoget plus parent-ompinning. Udrulningen kører nu parent 1.37.0; tabellen over kanoniske statusser røres ikke af parent-deltaet — tracker-statusser renderes præcis som før.
+- Upstream-fletningen løste to konflikter: `docs/SUPPORTED_JOB_BOARDS.md` (begge telegram-rækker bevaret) og `test-all.mjs` (upstreams walkTree-baserede `copyDirSync` subsumerer forkets håndrullede `.git`-guard for indlejrede checkouts; importlisten er foreningen).
 
 ## [1.251.1] — 2026-10-12
 
@@ -38,6 +43,21 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 ### Noter
 
 - Miles stadig udskudt af ejeren. ta-sprogedriften forbliver en DOKUMENTERET begrænsning i hermes-backend (2–26 % prosa på tværs af kørsler; A–G holder): remote-qa rapporterer den som et forventet fund. Den generiske token-liste er med vilje minimal — at udvide den koster én linje pr. sprog.
+## [1.251.0] — 2026-10-12
+
+**Kortets select filtrerer nu efter SPECIALISERING fra indstillingerne (config/profile.yml → target_roles.primary): vælg «Product Manager» eller «Backend Engineer (Go / PHP)», og kortet beholder kun opslagene, hvis titel bærer rollens egne ord. V1.250.0's jobliste-locator er fjernet — det var det forkerte værktøj (ejerkorrektion).**
+
+### Tilføjet
+
+- **Specialiseringsfilter**: select'en viser specialiseringerne fra indstillingerne (target_roles.primary); valg beholder kun opslagene, hvis titel bærer en af rollens distingverende tokens (ordgrænser, uden store/små bogstaver — «Go» matcher aldrig «Google»); Reset gendanner alle.
+- **V1.250.0's jobliste-locator er fjernet** — erstatningen: specialiseringsfilter, ikke jobliste (ejerkorrektion).
+### Ændret
+
+- Two mobile-map height specs: the floor moves 600 -> 540 px (the toolbar takes ~90 px of the viewport).
+### Noter
+
+- Miles stadig udskudt af ejeren. matching er bevidst KUN titel med ordene fra indstillingerne: firmaer eller beskrivelser ville trække urelaterede opslag ind i specialiseringen. Et opslag uden for alle konfigurerede roller forbliver synligt under «All».
+
 
 ## [1.250.0] — 2026-10-12
 

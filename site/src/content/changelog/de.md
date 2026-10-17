@@ -2,20 +2,25 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
-## [1.251.0] — 2026-10-12
+## [1.252.0] — 2026-10-17
 
-**Der Select der Karte filtert jetzt nach der SPEZIALISIERUNG aus den Einstellungen (config/profile.yml → target_roles.primary): «Product Manager» oder «Backend Engineer (Go / PHP)» wählen, und die Karte behält nur die Postings, deren Titel die Wörter dieser Rolle trägt. Der v1.250.0-Joblisten-Locator ist entfernt — das falsche Werkzeug (Korrektur des Eigentümers).**
+**Der Parent-Fork ist mit career-ops-hq/career-ops synchronisiert — 264 Upstream-Commits, Parent 1.36.0 → 1.37.0 — beide Fork-Divergenzen verteidigt, und das Deployment pinnt den laufenden Parent wieder auf diese Basis.**
 
 ### Hinzugefügt
 
-- **Spezialisierungsfilter**: der Select listet die Spezialisierungen aus den Einstellungen (target_roles.primary); eine Wahl behält nur die Postings, deren Titel einen der unterscheidenden Tokens der Rolle trägt (Wortgrenzen, groß-/kleinschreibungslos — «Go» matcht nie «Google»); Reset stellt alles wieder her.
-- **Der v1.250.0-Joblisten-Locator ist entfernt** — der Ersatz: Spezialisierungsfilter, keine Jobliste (Korrektur des Eigentümers).
+- **Vietnamesischer (vi) Marktmodus** aus dem Upstream (`modes/vi/`, `tuyen-dung` / `ung-tuyen`): BHXH/BHYT/BHTN, thử việc, lương tháng 13, trợ cấp thôi việc — der 21. Markt in der Modustabelle des Parents.
+- **Tech-in-Asia-Board-Provider** (Upstream): liest den öffentlichen Algolia-Index `job_postings`, den das Jobs-UI von techinasia.com selbst abfragt — ein SEA-Startup-Board, ~300 lebende Postings bei der Stichprobe, 273 davon indonesisch. Schlüssel werden bei jedem Lauf frisch aus dem Site-Build entdeckt, der eigene Bewerbungslink des Arbeitgebers schlägt die Board-Seite, und das Gehalt bleibt bewusst unangehängt (die Gehaltsfelder des Index sind Flags, kein Geld).
+- Acht neue Block-G-Dokumente zu Posting-Legitimitätssignalen (`modes/oferta-signals/08–17`): Land in der Benefit-Terminologie, Standort-Tag einer Drittplattform, Agentur-Lizenzierung, überzogene Einwanderungsanforderungen, jurisdiktionsverbotener Inhalt, Pay-Transparency-Spannenbreite, Mindestlohn-Anwaltsfrage, AI-Screening-Offenlegung, Befristungsvertrag-Offenlegung, Kaufkraft bei der Relocation.
+
 ### Geändert
 
-- Two mobile-map height specs: the floor moves 600 -> 540 px (the toolbar takes ~90 px of the viewport).
+- **Härtungen auf Parent-Seite, die mit der Basis kommen**: die Story-Provenance-Prüfung arbeitet nach Einheit und Satz und hält `user-cannot-confirm`-Zahlen aus Verhandlung, ATS und Interview-Output heraus; der CV-Fact-Gate läuft auf jedem Renderer und liest umformulierte und strukturierte Aussagen; LaTeX verwirft abgelaufene extrahierte Slots vor dem Schreiben; der Launchd-Sweep der Follow-ups wird übersprungen, wenn Follow-ups aus sind; update-system hält seinen Scan lokaler Bearbeitungen unter der argv-Grenze.
+- **Die Fork-Divergenzen überlebten den Merge**: `providers/telegram.mjs` (nur im Fork vorhandener Parser, ADR-0001) und das Unicode-Lookaround `LOCATIONISH_RE` in `telegram-channel.mjs` (ADR-0002). Das Boards-Dokument listet nun die verbesserte `telegram-channel`-Zeile des Upstreams, die nur im Fork vorhandene `telegram`-Zeile, Tech in Asia und den Tencent-Standard `max_pages` erhöht auf 20 → 100.
+
 ### Hinweise
 
-- Meilen weiterhin vom Eigentümer verschoben. Das Matching ist bewusst NUR Titel mit den Wörtern der Einstellungen: Firmen oder Beschreibungen würden fremde Postings in die Spezialisierung ziehen. Ein Posting außerhalb aller konfigurierten Rollen bleibt unter «All» sichtbar.
+- **Keine SPA-Verhaltensänderung in diesem Release**: es ist der Dokumentenzug plus das Neu-Pinnen des Parents. Das Deployment läuft jetzt auf Parent 1.37.0; die Tabelle der kanonischen Status wird vom Parent-Delta nicht berührt — die Tracker-Status rendern genau wie zuvor.
+- Der Upstream-Merge löste zwei Konflikte: `docs/SUPPORTED_JOB_BOARDS.md` (beide telegram-Zeilen erhalten) und `test-all.mjs` (der walkTree-basierte `copyDirSync` des Upstreams subsumiert den handgerollten `.git`-Guard des Forks für verschachtelte Checkouts; die Importliste ist die Vereinigung).
 
 ## [1.251.1] — 2026-10-12
 
@@ -31,6 +36,21 @@
 ### Hinweise
 
 - Meilen weiterhin vom Eigentümer verschoben. Der ta-Sprachdrift bleibt als DOKUMENTIerte Grenze des hermes-Backends (2–26 % Prosa über Läufe; A–G hält): remote-qa meldet sie als erwarteten Fund. Die generische Token-Liste ist bewusst minimal — Erweitern kostet eine Zeile pro Sprache.
+## [1.251.0] — 2026-10-12
+
+**Der Select der Karte filtert jetzt nach der SPEZIALISIERUNG aus den Einstellungen (config/profile.yml → target_roles.primary): «Product Manager» oder «Backend Engineer (Go / PHP)» wählen, und die Karte behält nur die Postings, deren Titel die Wörter dieser Rolle trägt. Der v1.250.0-Joblisten-Locator ist entfernt — das falsche Werkzeug (Korrektur des Eigentümers).**
+
+### Hinzugefügt
+
+- **Spezialisierungsfilter**: der Select listet die Spezialisierungen aus den Einstellungen (target_roles.primary); eine Wahl behält nur die Postings, deren Titel einen der unterscheidenden Tokens der Rolle trägt (Wortgrenzen, groß-/kleinschreibungslos — «Go» matcht nie «Google»); Reset stellt alles wieder her.
+- **Der v1.250.0-Joblisten-Locator ist entfernt** — der Ersatz: Spezialisierungsfilter, keine Jobliste (Korrektur des Eigentümers).
+### Geändert
+
+- Two mobile-map height specs: the floor moves 600 -> 540 px (the toolbar takes ~90 px of the viewport).
+### Hinweise
+
+- Meilen weiterhin vom Eigentümer verschoben. Das Matching ist bewusst NUR Titel mit den Wörtern der Einstellungen: Firmen oder Beschreibungen würden fremde Postings in die Spezialisierung ziehen. Ein Posting außerhalb aller konfigurierten Rollen bleibt unter «All» sichtbar.
+
 
 ## [1.250.0] — 2026-10-12
 

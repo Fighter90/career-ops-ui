@@ -9,6 +9,26 @@
 ---
 
 
+## [1.252.0] — 2026-10-17
+
+**상위 포크가 career-ops-hq/career-ops와 동기화되었습니다 — 업스트림 264커밋, 상위 1.36.0 → 1.37.0 — 포크의 두 분기 모두 지켜졌으며, 배포가 실행 중인 상위를 해당 베이스로 다시 고정합니다.**
+
+### 추가
+
+- **베트남(vi) 마켓 모드** 업스트림 추가(`modes/vi/`, `tuyen-dung` / `ung-tuyen`): BHXH/BHYT/BHTN, thử việc, lương tháng 13, trợ cấp thôi việc — 상위 모드 테이블의 21번째 시장.
+- **Tech in Asia 보드 공급자**(업스트림): techinasia.com 채용 UI 자체가 쿼리하는 공개 Algolia `job_postings` 인덱스를 읽습니다 — SEA 스타트업 보드, 샘플링 시 약 300개 라이브 공고 중 273개가 인도네시아. 키는 실행마다 사이트 빌드에서 새로 발견되고, 고용주 자체 지원 링크가 보드 페이지를 이기며, 급여는 첨부하지 않습니다(인덱스의 급여 필드는 돈이 아닌 플래그).
+- Block G 게시 적법성 신호 문서 8개 추가(`modes/oferta-signals/08–17`): 국가 복지 용어 불일치, 제3자 플랫폼 위치 태그 불일치, 에이전시 라이선싱, 이민 요구 과잉, 관할 금지 콘텐츠, pay-transparency 범위 폭, 최저임금 변호사 질문, AI 스크리닝 공개, 기간제 계약 공개, relocation 구매력.
+
+### 변경
+
+- **베이스와 함께 오는 상위 측 강화**: story-provenance 검사가 단위·문장 단위로 작동하고 `user-cannot-confirm` 수치를 협상·ATS·인터뷰 출력에서 배제; CV fact-gate가 모든 렌더러에서 실행되고 재표현·구조화된 주장을 읽음; LaTeX가 쓰기 전에 스테일 추출 슬롯 거부; follow-ups가 꺼져 있으면 launchd 스윕 생략; update-system이 로컬 편집 스캔을 argv 한도 내로 유지.
+- **포크의 분기들이 병합에서 살아남았습니다**: `providers/telegram.mjs`(포크 전용 파서, ADR-0001)와 `telegram-channel.mjs`의 Unicode lookaround `LOCATIONISH_RE`(ADR-0002). 보드 문서는 이제 업스트림의 개선된 `telegram-channel` 행, 포크 전용 `telegram` 행, Tech in Asia, 그리고 20 → 100으로 올라간 Tencent의 기본 `max_pages`를 나열합니다.
+
+### 참고
+
+- **이 릴리스에는 SPA 동작 변경이 없습니다**: 문서 트레인 + 상위 재고정입니다. 배포는 이제 상위 1.37.0에서 실행; 표준 상태 테이블은 상위 델타의 영향을 받지 않아 트래커 상태는 이전과 동일하게 렌더링됩니다.
+- 업스트림 병합에서 두 충돌이 해결되었습니다: `docs/SUPPORTED_JOB_BOARDS.md`(두 telegram 행 모두 유지)와 `test-all.mjs`(업스트림의 walkTree 기반 `copyDirSync`가 포크의 `.git` 중첩 체크아웃 수동 가드를 대체; 임포트 목록은 합집합).
+
 ## [1.251.1] — 2026-10-12
 
 **전문 분야 필터가 이제 역할의 고유 단어만 매칭합니다 — 연령과 일반 직무 명사는 더 이상 스스로 채용을 매칭하지 않으며 — remote-qa는 언어와 형태를 분리해 드리프트가 A–G를 빨간색으로 표시하지 않습니다.**

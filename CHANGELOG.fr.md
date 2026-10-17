@@ -11,6 +11,26 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.252.0] — 2026-10-17
+
+**Le fork parent est synchronisé avec career-ops-hq/career-ops — 264 commits amont, parent 1.36.0 → 1.37.0 — les deux divergences du fork sont défendues, et le déploiement épingle à nouveau le parent en cours d'exécution sur cette base.**
+
+### Ajouté
+
+- **Mode de marché vietnamien (vi)** en provenance de l'amont (`modes/vi/`, `tuyen-dung` / `ung-tuyen`) : BHXH/BHYT/BHTN, thử việc, lương tháng 13, trợ cấp thôi việc — le 21e marché de la table des modes du parent.
+- **Fournisseur du tableau Tech in Asia** (amont) : lit l'index Algolia public `job_postings` que l'UI emploi de techinasia.com interroge elle-même — un tableau SEA de startups, ~300 offres vivres à l'échantillonnage, dont 273 indonésiennes. Les clés sont redécouvertes à chaque exécution depuis le build du site, le lien de candidature de l'employeur prime sur la page du tableau, et le salaire reste délibérément non attaché (les champs salaire de l'index sont des drapeaux, pas des montants).
+- Huit nouveaux documents de signaux de légitimité Block G (`modes/oferta-signals/08–17`) : pays dans la terminologie des avantages, étiquette de localisation d'une plateforme tierce, agrément des agences, excès d'exigences migratoires, contenu interdit par juridiction, largeur de fourchette pay-transparency, question d'avocat sur le salaire minimum, divulgation du présélectionnage IA, divulgation du contrat à durée déterminée, pouvoir d'achat à la rélocation.
+
+### Changé
+
+- **Durcissements côté parent portés par la base** : la vérification story-provenance travaille par unité et par phrase et tient les chiffres `user-cannot-confirm` hors de la négociation, de l'ATS et de la sortie d'entretien ; le fact-gate CV tourne sur chaque moteur de rendu et lit les affirmations reformulées et structurées ; LaTeX rejette les slots extraits périmés avant d'écrire ; le balayage launchd des follow-ups est sauté quand les follow-ups sont désactivés ; update-system garde son scan des éditions locales sous la limite d'argv.
+- **Les divergences du fork ont survécu à la fusion** : `providers/telegram.mjs` (parseur exclusif au fork, ADR-0001) et le `LOCATIONISH_RE` en lookaround Unicode dans `telegram-channel.mjs` (ADR-0002). Le document des tableaux liste désormais la ligne `telegram-channel` améliorée de l'amont, la ligne `telegram` exclusive au fork, Tech in Asia, et le `max_pages` par défaut de Tencent porté de 20 à 100.
+
+### Notes
+
+- **Aucun changement de comportement du SPA dans cette version** : c'est le train de documentation plus le re-épinglage du parent. Le déploiement tourne désormais sur le parent 1.37.0 ; la table des statuts canoniques n'est pas touchée par le delta du parent — les statuts du tracker se rendent exactement comme avant.
+- La fusion amont a résolu deux conflits : `docs/SUPPORTED_JOB_BOARDS.md` (les deux lignes telegram conservées) et `test-all.mjs` (le `copyDirSync` basé sur walkTree de l'amont subsume le garde manuel `.git` de checkouts imbriqués du fork ; la liste d'import est l'union).
+
 ## [1.251.1] — 2026-10-12
 
 **Le filtre de spécialisation ne matche plus que les mots DISTINCTIFS du rôle — l’ancienneté et les noms de poste génériques ne matchent plus une offre à eux seuls — et remote-qa sépare forme et langue pour qu’une dérive ne marque jamais A–G en rouge.**

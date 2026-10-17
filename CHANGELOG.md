@@ -7,6 +7,25 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 ---
 
 
+## [1.252.0] — 2026-10-17
+
+**The parent fork is synced with career-ops-hq/career-ops — 264 upstream commits, parent 1.36.0 → 1.37.0 — with both fork divergences defended, and the deployment re-pins the running parent to that base.**
+
+### Added
+
+- **Vietnamese (vi) market mode** arrives from upstream (`modes/vi/`, `tuyen-dung` / `ung-tuyen`): BHXH/BHYT/BHTN, thử việc, lương tháng 13, trợ cấp thôi việc — the 21st declared market in the parent's mode table.
+- **Tech in Asia board provider** (upstream): reads the public Algolia `job_postings` index the techinasia.com jobs UI itself queries — a SEA startup board, ~300 live postings at sampling, 273 of them Indonesian. Keys are discovered fresh per run from the site's build, the employer's own application link wins over the board page, and salary stays unattached (the index's salary fields are flags, not money).
+- Eight new Block G posting-legitimacy signal docs (`modes/oferta-signals/08–17`): benefits/employment terminology country mismatch, third-party platform location tag mismatch, agency licensing, immigration-status overreach, jurisdiction-prohibited content, pay-transparency range width, minimum-wage lawyer question, AI-screening disclosure, fixed-term disclosure, relocation purchasing power.
+
+### Changed
+
+- **Parent-side hardening carried by the base bump**: the story-provenance check now works by unit and sentence and keeps `user-cannot-confirm` figures out of negotiation, ATS and interview output; the CV fact-gate runs on every renderer and reads respelled and structured claims; LaTeX rejects stale extracted slots before writing; the follow-ups launchd sweep is skipped when follow-ups are off; update-system keeps its local-edits scan under the argv limit.
+- **The fork's divergences survived the merge**: `providers/telegram.mjs` (fork-only parser, ADR-0001) and the Unicode lookaround `LOCATIONISH_RE` in `telegram-channel.mjs` (ADR-0002). The boards doc now lists upstream's improved `telegram-channel` row, the fork-only `telegram` row, Tech in Asia, and Tencent's `max_pages` default raised 20 → 100.
+
+### Notes
+
+- **The SPA ships no behavior change in this release**: it is the docs train plus the parent re-pin. The deployment now runs parent 1.37.0; the parent delta does not touch the canonical-states table, so tracker statuses render exactly as before.
+- The upstream merge resolved two conflicts: `docs/SUPPORTED_JOB_BOARDS.md` (both telegram rows kept) and `test-all.mjs` (upstream's walkTree-based `copyDirSync` subsumes the fork's hand-rolled `.git` nested-checkout guard; the import list is the union).
 ## [1.251.1] — 2026-10-12
 
 **The map's specialization filter matches on DISTINCTIVE role words only — seniority and generic job nouns no longer match a posting by themselves — and remote-qa splits shape from language so a drift never red-marks A–G.**

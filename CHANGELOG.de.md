@@ -2,6 +2,26 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.252.0] — 2026-10-17
+
+**Der Parent-Fork ist mit career-ops-hq/career-ops synchronisiert — 264 Upstream-Commits, Parent 1.36.0 → 1.37.0 — beide Fork-Divergenzen verteidigt, und das Deployment pinnt den laufenden Parent wieder auf diese Basis.**
+
+### Hinzugefügt
+
+- **Vietnamesischer (vi) Marktmodus** aus dem Upstream (`modes/vi/`, `tuyen-dung` / `ung-tuyen`): BHXH/BHYT/BHTN, thử việc, lương tháng 13, trợ cấp thôi việc — der 21. Markt in der Modustabelle des Parents.
+- **Tech-in-Asia-Board-Provider** (Upstream): liest den öffentlichen Algolia-Index `job_postings`, den das Jobs-UI von techinasia.com selbst abfragt — ein SEA-Startup-Board, ~300 lebende Postings bei der Stichprobe, 273 davon indonesisch. Schlüssel werden bei jedem Lauf frisch aus dem Site-Build entdeckt, der eigene Bewerbungslink des Arbeitgebers schlägt die Board-Seite, und das Gehalt bleibt bewusst unangehängt (die Gehaltsfelder des Index sind Flags, kein Geld).
+- Acht neue Block-G-Dokumente zu Posting-Legitimitätssignalen (`modes/oferta-signals/08–17`): Land in der Benefit-Terminologie, Standort-Tag einer Drittplattform, Agentur-Lizenzierung, überzogene Einwanderungsanforderungen, jurisdiktionsverbotener Inhalt, Pay-Transparency-Spannenbreite, Mindestlohn-Anwaltsfrage, AI-Screening-Offenlegung, Befristungsvertrag-Offenlegung, Kaufkraft bei der Relocation.
+
+### Geändert
+
+- **Härtungen auf Parent-Seite, die mit der Basis kommen**: die Story-Provenance-Prüfung arbeitet nach Einheit und Satz und hält `user-cannot-confirm`-Zahlen aus Verhandlung, ATS und Interview-Output heraus; der CV-Fact-Gate läuft auf jedem Renderer und liest umformulierte und strukturierte Aussagen; LaTeX verwirft abgelaufene extrahierte Slots vor dem Schreiben; der Launchd-Sweep der Follow-ups wird übersprungen, wenn Follow-ups aus sind; update-system hält seinen Scan lokaler Bearbeitungen unter der argv-Grenze.
+- **Die Fork-Divergenzen überlebten den Merge**: `providers/telegram.mjs` (nur im Fork vorhandener Parser, ADR-0001) und das Unicode-Lookaround `LOCATIONISH_RE` in `telegram-channel.mjs` (ADR-0002). Das Boards-Dokument listet nun die verbesserte `telegram-channel`-Zeile des Upstreams, die nur im Fork vorhandene `telegram`-Zeile, Tech in Asia und den Tencent-Standard `max_pages` erhöht auf 20 → 100.
+
+### Hinweise
+
+- **Keine SPA-Verhaltensänderung in diesem Release**: es ist der Dokumentenzug plus das Neu-Pinnen des Parents. Das Deployment läuft jetzt auf Parent 1.37.0; die Tabelle der kanonischen Status wird vom Parent-Delta nicht berührt — die Tracker-Status rendern genau wie zuvor.
+- Der Upstream-Merge löste zwei Konflikte: `docs/SUPPORTED_JOB_BOARDS.md` (beide telegram-Zeilen erhalten) und `test-all.mjs` (der walkTree-basierte `copyDirSync` des Upstreams subsumiert den handgerollten `.git`-Guard des Forks für verschachtelte Checkouts; die Importliste ist die Vereinigung).
+
 ## [1.251.1] — 2026-10-12
 
 **Der Spezialisierungsfilter matcht nur noch die DISTINCTIVEN Wörter der Rolle — Seniorität und generische Berufs-substantive matchen kein Posting mehr allein — und remote-qa trennt Form von Sprache, damit ein Drift A–G nie rot markiert.**

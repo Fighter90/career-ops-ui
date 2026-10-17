@@ -9,6 +9,26 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 ---
 
 
+## [1.252.0] — 2026-10-17
+
+**Parent-forket er synkroniseret med career-ops-hq/career-ops — 264 upstream-commits, parent 1.36.0 → 1.37.0 — begge fork-afvigelser er forsvaret, og udrulningen fastgør den kørende parent til den base igen.**
+
+### Tilføjet
+
+- **Vietnamesisk (vi) markedstilstand** fra upstream (`modes/vi/`, `tuyen-dung` / `ung-tuyen`): BHXH/BHYT/BHTN, thử việc, lương tháng 13, trợ cấp thôi việc — det 21. marked i parentens modetabel.
+- **Tech in Asia-tavleudbyder** (upstream): læser det offentlige Algolia-indeks `job_postings`, som techinasia.coms job-UI selv forespørger — et SEA-startup-tavle, ~300 levende opslag ved sampling, 273 af dem indonesiske. Nøgler opdages for hver kørsel fra sitets build, arbejdsgiverens egen ansøgningslink vinder over tavlesiden, og løn følger bevidst ikke med (indeksets lønfelter er flag, ikke penge).
+- Otte nye Block G-dokumenter om opslagslegitimitetssignaler (`modes/oferta-signals/08–17`): land i benefitterminologi, tredjepartsplatformens lokationstag, agenturlicensering, overdrevne indvandringskrav, jurisdiktionsforbudt indhold, pay-transparency-intervalbredde, advokatspørgsmål om mindsteløn, AI-screening-offentliggørelse, tidsbegrænset kontrakt-offentliggørelse, købekraft ved relokering.
+
+### Ændret
+
+- **Hærdninger på parents side, der følger med basen**: story-provenance-tjekket arbejder per enhed og sætning og holder `user-cannot-confirm`-tal ude af forhandling, ATS og interview-output; CV-fact-gate kører på hver renderer og læser omformulerede og strukturerede påstande; LaTeX afviser forældede udtrukne slots før skrivning; launchd-svinget af follow-ups springes over, når follow-ups er slukket; update-system holder sit lokal-redigerings-scan inden for argv-grænsen.
+- **Forkets afvigelser overlevede fletningen**: `providers/telegram.mjs` (fork-eksklusiv parser, ADR-0001) og Unicode-lookaround `LOCATIONISH_RE` i `telegram-channel.mjs` (ADR-0002). Tavledokumentet lister nu upstreams forbedrede `telegram-channel`-række, fork-eksklusiv `telegram`-række, Tech in Asia og Tencents `max_pages`-standard hævet 20 → 100.
+
+### Noter
+
+- **Ingen SPA-adfærdsændring i denne udgivelse**: det er dokumenttoget plus parent-ompinning. Udrulningen kører nu parent 1.37.0; tabellen over kanoniske statusser røres ikke af parent-deltaet — tracker-statusser renderes præcis som før.
+- Upstream-fletningen løste to konflikter: `docs/SUPPORTED_JOB_BOARDS.md` (begge telegram-rækker bevaret) og `test-all.mjs` (upstreams walkTree-baserede `copyDirSync` subsumerer forkets håndrullede `.git`-guard for indlejrede checkouts; importlisten er foreningen).
+
 ## [1.251.1] — 2026-10-12
 
 **Specialiseringsfilteret matcher nu kun rollens DISTINKTIVE ord — anciennitet og generiske jobsubstantiver matcher ikke længere et opslag alene — og remote-qa adskiller form fra sprog, så et drift aldrig rødmarkerer A–G.**

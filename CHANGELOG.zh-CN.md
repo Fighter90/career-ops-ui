@@ -9,6 +9,26 @@
 ---
 
 
+## [1.252.0] — 2026-10-17
+
+**父分支已与 career-ops-hq/career-ops 同步 — 上游 264 个提交，父版本 1.36.0 → 1.37.0 — 两处分叉差异均获保留，部署将运行中的父版本重新固定到该基线。**
+
+### 新增
+
+- **越南语（vi）市场模式**来自上游（`modes/vi/`、`tuyen-dung` / `ung-tuyen`）：BHXH/BHYT/BHTN、thử việc、lương tháng 13、trợ cấp thôi việc — 父模式表中的第 21 个市场。
+- **Tech in Asia 板块提供者**（上游）：读取 techinasia.com 招聘 UI 自己查询的公开 Algolia `job_postings` 索引 — SEA 初创公司板块，抽样时约 300 条在招职位，其中 273 条在印度尼西亚。密钥每次运行都从网站构建中重新发现，雇主自己的申请链接优先于板块页面，且刻意不附加薪资（索引的薪资字段是标志，不是金额）。
+- 新增八份 Block G 发布合法性信号文档（`modes/oferta-signals/08–17`）：福利/雇佣术语国家不匹配、第三方平台位置标签不匹配、中介牌照、移民身份要求越权、管辖区禁止内容、pay-transparency 区间宽度、最低工资律师问题、AI 筛选披露、固定期限合同披露、搬迁购买力。
+
+### 更改
+
+- **随基线上车的父端加固**：story-provenance 检查按单位和句子工作，并把 `user-cannot-confirm` 数字挡在谈判、ATS 和面试输出之外；CV fact-gate 在每个渲染器上运行并读取改写和结构化声明；LaTeX 在写入前拒绝过期的提取槽位；follow-ups 关闭时跳过 launchd 扫描；update-system 把本地编辑扫描保持在 argv 限制内。
+- **叉的分叉差异在合并中存活**：`providers/telegram.mjs`（仅叉有的解析器，ADR-0001）和 `telegram-channel.mjs` 中的 Unicode 环视 `LOCATIONISH_RE`（ADR-0002）。板块文档现在列出上游改进的 `telegram-channel` 行、仅叉有的 `telegram` 行、Tech in Asia，以及提升至 20 → 100 的 Tencent 默认 `max_pages`。
+
+### 备注
+
+- **本版本无 SPA 行为变化**：这是文档列车加父版本重新固定。部署现在运行父 1.37.0；规范状态表不受父版本增量影响 — 追踪器状态渲染与之前完全一致。
+- 上游合并解决了两个冲突：`docs/SUPPORTED_JOB_BOARDS.md`（两行 telegram 均保留）和 `test-all.mjs`（上游基于 walkTree 的 `copyDirSync` 吸收了叉的 `.git` 嵌套检出手动守卫；导入列表为并集）。
+
 ## [1.251.1] — 2026-10-12
 
 **地图的专业筛选现在只匹配角色的特有词 — 资历和泛型职位名词不再自行匹配职位 — 且 remote-qa 将形状与语言分离，语言漂移不会标红 A–G。**
