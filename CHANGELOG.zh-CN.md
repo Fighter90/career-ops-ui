@@ -9,6 +9,24 @@
 ---
 
 
+## [1.252.1] — 2026-10-17
+
+**Wiki 的版本横幅现在由脚本把关而非手动扫描 — v1.252.0 回归只能靠人工发现 — 且 locale 指令显式覆盖个人资料的 language.output 和职位发布语言。**
+
+### 新增
+
+- **`scripts/wiki-banner-check.mjs`** — 回归所要求的门禁：读取 wiki 克隆中的每个 `Home*.md`，将横幅与 `package.json` 及注册表的实时计数器（门户注册表的 scanner adapters — 105，而非横幅里过期的 109；`server/lib/routes/` 的 route modules；CHANGELOG 集合的 UI locales）比对。横幅正则按形状而非词语实现语言无关：本地化的 Home 页面翻译了标签和计数器（«Текущий релиз»、«Aktuel udgivelse»、«адаптеров сканера»、«enhedstests»），其数字比英文页（5245）偏离得更远（5177）。`--tests N` 接收刚运行的 `test:ci` 打印的数字；`--check-only` 禁止隐式克隆以便离线使用。离线夹具测试在 `tests/wiki-banner-check.test.mjs`。
+
+### 修复
+
+- **Wiki Home ×18 横幅重新同步**（随本版本一起推送）：v1.252.0 的扫描只换徽章和链接，从不碰横幅行，也没有任何机械手段标记它。上面的门禁使其成为发布阻塞检查。
+- **Locale 指令确定语言优先级**（`buildLocaleDirective`）：«This UI locale overrides the profile's `language.output` setting and the job posting's own language»。父端自己的规则 6 要求用 `language.output` 写作 — 没有优先级句子时，模型按 locale 不一致地解决两条矛盾指令，这正是 v1.252.0 语言列的散乱。由 `tests/locale-directive-language-output.test.mjs` 以指令文本钉死（17 个非 EN locale + 空 EN）。
+
+### 备注
+
+- **ta evaluate 形态观察（§3，盯着）**：v1.252.0 的首次实况运行产出了 48 336 字符、无 Block G、无 SCORE_SUMMARY 的 evaluate — 是循环形态，不是语言形态（CAR-70 是语言）。下个版本再犯，就单开 Linear issue，与 CAR-70 分开。
+- 按 FIX-提示：父端保持只读；覆盖完全活在 UI 指令里。
+
 ## [1.252.0] — 2026-10-17
 
 **父分支已与 career-ops-hq/career-ops 同步 — 上游 264 个提交，父版本 1.36.0 → 1.37.0 — 两处分叉差异均获保留，部署将运行中的父版本重新固定到该基线。**

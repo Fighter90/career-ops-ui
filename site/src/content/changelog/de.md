@@ -2,6 +2,24 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.252.1] — 2026-10-17
+
+**Das Release-Banner des Wikis wird jetzt von einem Skript geprüft statt von einem manuellen Durchlauf — die v1.252.0-Regression hat es nur von Hand erwischt — und die Locale-Direktive überschreibt explizit den language.output des Profils und die Sprache der Stellenanzeige.**
+
+### Hinzugefügt
+
+- **`scripts/wiki-banner-check.mjs`** — das Gate, das die Regression forderte: es liest jede `Home*.md` in einem Wiki-Checkout und vergleicht das Banner mit `package.json` und den LIVE-Zählern aus dem Register (scanner adapters aus dem Portals-Register — 105, nicht die veralteten 109 des Banners; route modules aus `server/lib/routes/`; UI locales aus dem CHANGELOG-Satz). Die Banner-Regex ist sprachagnostisch nach FORM: die lokalisierten Home-Seiten übersetzen Label und Zähler („Текущий релиз“, „Aktuel udgivelse“, „адаптеров сканера“, „enhedstests“), und ihre Zahlen waren weiter abgedriftet (5177) als die EN-Seite (5245). `--tests N` übernimmt die Zahl, die ein frisches `test:ci` gerade ausgegeben hat; `--check-only` verbietet den impliziten Clone für Offline-Nutzung. Offline-Fixture-Test in `tests/wiki-banner-check.test.mjs`.
+
+### Behoben
+
+- **Das Wiki-Home-×18-Banner wird wieder in Sync gebracht** (kommt mit diesem Release): der v1.252.0-Durchlauf tauschte Badges und Links, aber nie die Banner-Zeile, und nichts Mechanisches flaggte das. Das obige Gate macht daraus eine release-blockierende Prüfung.
+- **Die Locale-Direktive legt die Sprachpriorität fest** (`buildLocaleDirective`): „This UI locale overrides the profile's `language.output` setting and the job posting's own language“. Die eigene Regel 6 des Parents gebietet das Schreiben in `language.output` — ohne den Prioritätssatz löste das Modell die beiden widersprüchlichen Anweisungen je Locale inkonsistent auf, genau die Streuung der Sprachspalte in v1.252.0. Verankert durch `tests/locale-directive-language-output.test.mjs` auf dem Direktivtext (17 Nicht-EN-Locales + leeres EN).
+
+### Hinweise
+
+- **FORM-Beobachtung bei ta evaluate (§3, beobachten)**: der erste Live-Lauf der v1.252.0 erzeugte ein 48 336-Zeichen-evaluate ohne Block G und ohne SCORE_SUMMARY — schleifenförmig, nicht sprachförmig (CAR-70 ist Sprache). Wiederholt es sich beim nächsten Release, bekommt es ein eigenes Linear-Issue, getrennt von CAR-70.
+- Laut FIX-PROMPT: der Parent bleibt read-only; die Überschreibung lebt entirely in der UI-Direktive.
+
 ## [1.252.0] — 2026-10-17
 
 **Der Parent-Fork ist mit career-ops-hq/career-ops synchronisiert — 264 Upstream-Commits, Parent 1.36.0 → 1.37.0 — beide Fork-Divergenzen verteidigt, und das Deployment pinnt den laufenden Parent wieder auf diese Basis.**

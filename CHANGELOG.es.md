@@ -11,6 +11,24 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.252.1] — 2026-10-17
+
+**El banner de versión de la wiki ahora lo verifica un script en lugar de un barrido manual — la regresión v1.252.0 solo lo detectó a mano — y la directiva de locale anula explícitamente el language.output del perfil y el idioma de la vacante.**
+
+### Añadido
+
+- **`scripts/wiki-banner-check.mjs`** — el gate que pedía la regresión: lee cada `Home*.md` en un clon de la wiki y compara el banner con `package.json` y con los contadores VIVOS del registro (scanner adapters del registro de portales — 105, no los 109 caducos del banner; route modules de `server/lib/routes/`; UI locales del conjunto CHANGELOG). El regex del banner es agnóstico de idioma por FORMA: las páginas Home localizadas traducen la etiqueta y los contadores («Текущий релиз», «Aktuel udgivelse», «адаптеров сканера», «enhedstests») y sus cifras habían derivado más (5177) que la página EN (5245). `--tests N` toma el número que el `test:ci` recién impreso; `--check-only` prohíbe el clon implícito para uso offline. Test de fixture offline en `tests/wiki-banner-check.test.mjs`.
+
+### Corregido
+
+- **El banner de la wiki Home ×18 vuelve a estar sincronizado** (se envía con esta versión): el barrido de v1.252.0 cambiaba badges y enlaces pero nunca la línea del banner, y nada mecánico lo señalaba. El gate de arriba lo convierte en comprobación bloqueante de release.
+- **La directiva de locale fija la prioridad del idioma** (`buildLocaleDirective`): «This UI locale overrides the profile's `language.output` setting and the job posting's own language». La propia regla 6 del padre manda escribir en `language.output` — sin la frase de prioridad el modelo resolvía las dos instrucciones contradictorias de forma inconsistente según el locale, que era la dispersión de la columna de idioma en v1.252.0. Fijado por `tests/locale-directive-language-output.test.mjs` sobre el texto de la directiva (17 locales no-EN + EN vacío).
+
+### Notas
+
+- **Observación de FORMA en ta evaluate (§3, vigilar)**: la primera ejecución en vivo de v1.252.0 produjo un evaluate de 48 336 caracteres sin Block G ni SCORE_SUMMARY — con forma de bucle, no de idioma (CAR-70 es de idioma). Si se repite en el próximo release, tendrá su propia tarea en Linear, separada de CAR-70.
+- Según el FIX-PROMPT: el padre queda en solo-lectura; la anulación vive enteramente en la directiva de la UI.
+
 ## [1.252.0] — 2026-10-17
 
 **El fork del padre está sincronizado con career-ops-hq/career-ops — 264 commits de upstream, padre 1.36.0 → 1.37.0 — con ambas divergencias del fork defendidas, y el despliegue vuelve a fijar el padre en ejecución a esa base.**

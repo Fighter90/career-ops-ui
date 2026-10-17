@@ -66,12 +66,20 @@ function localeName(code) {
  * One-line directive prepended to every LLM prompt so the response
  * matches the UI locale. Code/identifiers stay English; prose is
  * localized. Empty string for English (no directive needed).
+ *
+ * v1.252.1 — the directive also settles the priority conflict the parent's
+ * own rule 6 introduces (modes/oferta.md: "write human-facing content in
+ * language.output from config/profile.yml, whatever the JD's language"):
+ * when the user picked a UI locale, THAT wins — over the profile's
+ * language.output and over the vacancy's language. Without the sentence the
+ * model sees two contradictory instructions (parent mode says profile-EN,
+ * our directive says locale-X) and resolved them inconsistently per locale.
  */
 export function buildLocaleDirective(lang) {
   if (!lang || lang === 'en' || !localeName(lang)) return '';
   return [
     '# Output language',
-    `Respond in ${localeName(lang)} (locale: ${lang}). Keep code and identifiers in English; translate prose, headings, and bullet points.`,
+    `Respond in ${localeName(lang)} (locale: ${lang}). This UI locale overrides the profile's language.output setting and the job posting's own language. Keep code and identifiers in English; translate prose, headings, and bullet points.`,
     '',
     '',
   ].join('\n');

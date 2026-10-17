@@ -9,6 +9,24 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 ---
 
 
+## [1.252.1] — 2026-10-17
+
+**Wiki'ens udgivelsesbanner verificeres nu af et script i stedet for en manuel omgang — v1.252.0-regressionen fangede den kun i hånden — og locale-direktivet tilsidesætter eksplicit profilens language.output og opslagets eget sprog.**
+
+### Tilføjet
+
+- **`scripts/wiki-banner-check.mjs`** — den gate, regressionen bad om: læser hver `Home*.md` i en wiki-klon og sammenligner banneret med `package.json` og med de LEVENDE tællere fra registret (scanner adapters fra portalregistret — 105, ikke bannerets forældede 109; route modules fra `server/lib/routes/`; UI locales fra CHANGELOG-sættet). Banner-regex'et er sproguafhængigt efter FORM: de lokaliserede Home-sider oversætter etiketten og tællerne («Текущий релиз», «Aktuel udgivelse», «адаптеров сканера», «enhedstests»), og deres tal var drevet længere (5177) end EN-siden (5245). `--tests N` tager det tal, den friske `test:ci` netop udskrev; `--check-only` forbyder den implicitte klon til offline brug. Offline-fixturetest i `tests/wiki-banner-check.test.mjs`.
+
+### Rettet
+
+- **Wiki'ens Home ×18-banner bringes tilbage i synk** (skubbes med denne udgivelse): v1.252.0-omgangen ændrede badges og links men aldrig bannerlinjen, og intet mekanisk flaggede det. Gaten ovenfor gør det til en release-blokerende kontrol.
+- **Locale-direktivet fastlægger sprogets prioritet** (`buildLocaleDirective`): «This UI locale overrides the profile's `language.output` setting and the job posting's own language». Parentens egen regel 6 byder at skrive i `language.output` — uden prioritetssætningen løste modellen de to modstridende instrukser inkonsistent pr. locale, hvilket var sprogsøjens spredning i v1.252.0. Fastgjort af `tests/locale-directive-language-output.test.mjs` på direktivteksten (17 ikke-EN-lokaler + tom EN).
+
+### Noter
+
+- **FORM-observation på ta evaluate (§3, hold øje)**: den første live-kørsel af v1.252.0 producerede en evaluate på 48 336 tegn uden Block G og uden SCORE_SUMMARY — løkkeformet, ikke sprogformet (CAR-70 er sprog). Gentager det sig ved næste udgivelse, får det sin egen Linear-opgave, adskilt fra CAR-70.
+- Efter FIX-PROMPTET: parent forbliver read-only; tilsidesættelsen bor udelukkende i UI-direktivet.
+
 ## [1.252.0] — 2026-10-17
 
 **Parent-forket er synkroniseret med career-ops-hq/career-ops — 264 upstream-commits, parent 1.36.0 → 1.37.0 — begge fork-afvigelser er forsvaret, og udrulningen fastgør den kørende parent til den base igen.**

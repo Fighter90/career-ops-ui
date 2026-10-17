@@ -12,14 +12,14 @@ _அதிகாரப்பூர்வமற்ற இடைமுகம் �
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#சோதனைகள்)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#தேவைகள்)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.252.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.252.0)
+[![release](https://img.shields.io/badge/release-v1.252.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.252.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 சமீபத்திய வெளியீடு — v1.252.0** — **பேரண்ட் ஃபோர்க் career-ops-hq-உடன் ஒத்திசைக்கப்பட்டது — அப்ஸ்ட்ரீம் 264 கமிட்கள், பேரண்ட் 1.36.0 → 1.37.0 — ஃபோர்க்கின் இரு வேறுபாடுகளும் பாதுகாக்கப்பட்டன, மேலும் டிப்ளாய் இயங்கும் பேரண்டை அந்த அடிப்படைக்கு மீண்டும் பின் செய்கிறது.**
+> **🆕 சமீபத்திய வெளியீடு — v1.252.1** — **Wiki-இன் வெளியீட்டு பேனரை இப்போது கைமுறை ஸ்வீப்புக்கு பதிலாக ஒரு ஸ்கிரிப்ட் சரிபார்க்கிறது — v1.252.0 ரிக்ரெஷன் அதை கையால் மட்டுமே கண்டறிந்தது — மேலும் locale டைரக்டிவ் சுயவிவரத்தின் language.output-ஐயும் வேலை இடுகையின் மொழியையும் வெளிப்படையாக மேலெழுதுகிறது.**
 >
-> **முந்தைய வெளியீடு — v1.251.1** — சிறப்புத்துறை வடிகட்டி பாத்திரத்தின் வேறுபடும் சொற்களை மட்டுமே match செய்கிறது — சினியாரிட்டி மற்றும் பொது வேலை பெயர்கள் தாங்களாகவே வேலையை match செய்யாது — remote-qa வடிவத்தையும் மொழியையும் பிரிக்கிறது, எனவே டிரிஃப்ட் A–G-ஐ சிவப்பாக்காது.
+> **முந்தைய வெளியீடு — v1.252.0** — **பேரண்ட் ஃபோர்க் career-ops-hq-உடன் ஒத்திசைக்கப்பட்டது — அப்ஸ்ட்ரீம் 264 கமிட்கள், பேரண்ட் 1.36.0 → 1.37.0 — ஃபோர்க்கின் இரு வேறுபாடுகளும் பாதுகாக்கப்பட்டன, மேலும் டிப்ளாய் இயங்கும் பேரண்டை அந்த அடிப்படைக்கு மீண்டும் பின் செய்கிறது.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
