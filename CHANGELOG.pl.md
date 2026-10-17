@@ -9,6 +9,26 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.252.0] — 2026-10-17
+
+**Fork rodzica jest zsynchronizowany z career-ops-hq/career-ops — 264 commity upstream, rodzic 1.36.0 → 1.37.0 — obie dywergencje forka obronione, a wdrożenie przypina działającego rodzica z powrotem do tej bazy.**
+
+### Dodano
+
+- **Wietnamski (vi) tryb rynkowy** z upstream (`modes/vi/`, `tuyen-dung` / `ung-tuyen`): BHXH/BHYT/BHTN, thử việc, lương tháng 13, trợ cấp thôi việc — 21. rynek w tabeli trybów rodzica.
+- **Dostawca tablicy Tech in Asia** (upstream): czyta publiczny indeks Algolia `job_postings`, o który sam pyta UI ofert techinasia.com — SEA-owa tablica startupów, ~300 żywych ofert przy próbkowaniu, 273 z nich indonezyjskie. Klucze są odkrywane na nowo przy każdym przebiegu z builda strony, własny link aplikacji pracodawcy wygrywa ze stroną tablicy, a wynagrodzenie celowo nie jest przyczepiane (pola wynagrodzeń w indeksie to flagi, nie kwoty).
+- Osiem nowych dokumentów sygnałów legitymizacji ofert Block G (`modes/oferta-signals/08–17`): kraj w terminologii benefitów, tag lokalizacji platformy zewnętrznej, licencjonowanie agencji, nadmiar wymogów migracyjnych, treści zakazane w jurysdykcji, szerokość widełek pay-transparency, pytanie prawnika o płacę minimalną, ujawnienie AI-screeningu, ujawnienie umowy na czas określony, siła nabywcza przy relokacji.
+
+### Zmieniono
+
+- **Usztywnienia po stronie rodzica, które jadą z bazą**: sprawdzenie story-provenance działa per jednostka i zdanie i trzyma liczby `user-cannot-confirm` poza negocjacjami, ATS i wyjściem interview; fact-gate CV odpala się na każdym renderze i czyta przeformułowane i ustrukturyzowane twierdzenia; LaTeX odrzuca przedawnione wyciągnięte sloty przed zapisem; przemiatanie launchd follow-ups jest pomijane, gdy follow-ups są wyłączone; update-system trzyma skan lokalnych edycji w limicie argv.
+- **Dywergencje forka przeżyły merge**: `providers/telegram.mjs` (parser wyłącznie forka, ADR-0001) i Unicode lookaround `LOCATIONISH_RE` w `telegram-channel.mjs` (ADR-0002). Dokument tablic wymienia teraz ulepszony wiersz `telegram-channel` z upstream, wiersz `telegram` wyłącznie forka, Tech in Asia i domyślny `max_pages` Tencent podniesiony 20 → 100.
+
+### Uwagi
+
+- **Brak zmian zachowania SPA w tym wydaniu**: to pociąg dokumentacyjny plus przypięcie rodzica na nowo. Wdrożenie działa teraz na rodzicu 1.37.0; tabela statusów kanonicznych nie jest dotykana przez deltę rodzica — statusy trackera renderują się jak dawniej.
+- W merge'u upstream rozwiązano dwa konflikty: `docs/SUPPORTED_JOB_BOARDS.md` (oba wiersze telegram zachowane) i `test-all.mjs` (oparty na walkTree `copyDirSync` z upstream subsumuje ręczny guard zagnieżdżonych checkoutów po `.git` z forka; lista importu to suma).
+
 ## [1.251.1] — 2026-10-12
 
 **Filtr specjalizacji dopasowuje teraz tylko WYRÓŻNIAJĄCE słowa roli — staż i ogólne rzeczowniki stanowiskowe nie dopasowują już oferty same z siebie — a remote-qa oddziela kształt od języka, więc dryf nie czerwieni A–G.**

@@ -2,20 +2,25 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
-## [1.251.0] — 2026-10-12
+## [1.252.0] — 2026-10-17
 
-**Harita select'i artık ayarlardaki UZMANLIĞA göre filtreliyor (config/profile.yml → target_roles.primary): «Product Manager» veya «Backend Engineer (Go / PHP)» seçin, harita başlığı o rolün kelimelerini taşıyan ilanları tutar. V1.250.0'daki iş listesi konumlandırıcısı kaldırıldı — yanlış araçtı (sahip düzeltmesi).**
+**Üst fork career-ops-hq/career-ops ile senkronize edildi — 256 upstream commit'i, üst 1.36.0 → 1.37.0 — fork'un her iki sapması savunuldu ve dağıtım, çalışan üstü bu tabana yeniden sabitliyor.**
 
 ### Eklendi
 
-- **Uzmanlık filtresi**: select, ayarlardaki uzmanlıkları (target_roles.primary) listeler; birini seçmek, başlığında o rolün ayırt edici token'larından birini taşıyan ilanları tutar (kelime sınırları, büyük/küçük harfsiz — «Go» asla «Google»'u match etmez); Reset hepsini geri getirir.
-- **V1.250.0'daki iş listesi konumlandırıcısı kaldırıldı** — yerine: uzmanlık filtresi, iş listesi değil (sahip düzeltmesi).
+- **Vietnamca (vi) pazar modu** upstream'den (`modes/vi/`, `tuyen-dung` / `ung-tuyen`): BHXH/BHYT/BHTN, thử việc, lương tháng 13, trợ cấp thôi việc — üst'ün mod tablosunda 21. pazar.
+- **Tech in Asia panosu sağlayıcısı** (upstream): techinasia.com iş UI'sinin kendisinin sorguladığı genel Algolia `job_postings` indeksini okur — SEA startup panosu, örneklemede ~300 canlı ilan, 273'si Endonezyalı. Anahtarlar her koşuda sitenin build'inden yeniden keşfedilir, işverenin kendi başvuru bağlantısı pano sayfasını yener ve maaş bilinçli olarak eklenmez (indeksin maaş alanları para değil bayraktır).
+- Sekiz yeni Block G ilan meşruiyet sinyali belgesi (`modes/oferta-signals/08–17`): yan haklar terminolojisinde ülke, üçüncü taraf platform konum etiketi, ajans lisanslama, göç gereksinimlerinde aşırılık, yargı bölgesi yasaklı içerik, pay-transparency aralık genişliği, asgari ücret avukat sorusu, AI eleme ifşası, süreli sözleşme ifşası, relocation satın alma gücü.
+
 ### Değişti
 
-- Two mobile-map height specs: the floor moves 600 -> 540 px (the toolbar takes ~90 px of the viewport).
+- **Tabanla gelen üst tarafı sağlamlaştırmalar**: story-provenance kontrolü birim ve cümle bazında çalışır ve `user-cannot-confirm` rakamlarını müzakere, ATS ve mülakat çıktısının dışında tutar; CV fact-gate her renderer'da çalışır ve yeniden ifade edilen ve yapılandırılmış iddiaları okur; LaTeX yazmadan önce süresi geçmiş çıkarılmış slotları reddeder; follow-ups kapalıyken launchd taraması atlanır; update-system yerel düzenleme taramasını argv sınırı içinde tutar.
+- **Fork'un sapmaları birleşmeyi atlattı**: `providers/telegram.mjs` (yalnızca fork'ta bulunan ayrıştırıcı, ADR-0001) ve `telegram-channel.mjs` içindeki Unicode lookaround `LOCATIONISH_RE` (ADR-0002). Pano belgesi artık upstream'in geliştirilmiş `telegram-channel` satırını, yalnızca fork'ta bulunan `telegram` satırını, Tech in Asia'yı ve 20 → 100'e yükseltilen Tencent varsayılan `max_pages`'ini listeliyor.
+
 ### Notlar
 
-- Mil hâlâ sahip tarafından erteleniyor. Eşleştirme bilinçli olarak SADECE başlık, ayarlardaki kelimelerle: şirketler veya açıklamalar ilgisiz ilanları uzmanlığa çekerdi. Yapılandırılmış tüm rollerin dışındaki bir ilan «All» altında görünür kalır.
+- **Bu sürümde SPA davranış değişikliği yok**: bu bir doküman treni plus üst yeniden sabitlemedir. Dağıtım artık üst 1.37.0 üzerinde çalışıyor; kanonik durum tablosu üst deltasundan etkilenmiyor — izleyici durumları eskisi gibi görüntüleniyor.
+- Upstream birleştirmesinde iki çatışma çözüldü: `docs/SUPPORTED_JOB_BOARDS.md` (her iki telegram satırı korundu) ve `test-all.mjs` (upstream'in walkTree tabanlı `copyDirSync`'i fork'un `.git` iç içe checkout manuel korumasını kapsıyor; içe aktarma listesi birleşimdir).
 
 ## [1.251.1] — 2026-10-12
 
@@ -31,6 +36,21 @@
 ### Notlar
 
 - Mil hâlâ sahip tarafından erteleniyor. ta dil kayması hermes backend'inin BELGELENMİŞ sınırlaması olarak kalıyor (çalışmalar arası düzyazı %2–26; A–G tutuyor): remote-qa bunu beklenen bulgu olarak raporluyor. Genel token listesi bilinçli olarak minimal — genişletmek dil başına bir satır.
+## [1.251.0] — 2026-10-12
+
+**Harita select'i artık ayarlardaki UZMANLIĞA göre filtreliyor (config/profile.yml → target_roles.primary): «Product Manager» veya «Backend Engineer (Go / PHP)» seçin, harita başlığı o rolün kelimelerini taşıyan ilanları tutar. V1.250.0'daki iş listesi konumlandırıcısı kaldırıldı — yanlış araçtı (sahip düzeltmesi).**
+
+### Eklendi
+
+- **Uzmanlık filtresi**: select, ayarlardaki uzmanlıkları (target_roles.primary) listeler; birini seçmek, başlığında o rolün ayırt edici token'larından birini taşıyan ilanları tutar (kelime sınırları, büyük/küçük harfsiz — «Go» asla «Google»'u match etmez); Reset hepsini geri getirir.
+- **V1.250.0'daki iş listesi konumlandırıcısı kaldırıldı** — yerine: uzmanlık filtresi, iş listesi değil (sahip düzeltmesi).
+### Değişti
+
+- Two mobile-map height specs: the floor moves 600 -> 540 px (the toolbar takes ~90 px of the viewport).
+### Notlar
+
+- Mil hâlâ sahip tarafından erteleniyor. Eşleştirme bilinçli olarak SADECE başlık, ayarlardaki kelimelerle: şirketler veya açıklamalar ilgisiz ilanları uzmanlığa çekerdi. Yapılandırılmış tüm rollerin dışındaki bir ilan «All» altında görünür kalır.
+
 
 ## [1.250.0] — 2026-10-12
 

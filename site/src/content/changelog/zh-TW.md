@@ -9,20 +9,25 @@
 ---
 
 
-## [1.251.0] — 2026-10-12
+## [1.252.0] — 2026-10-17
 
-**地圖的下拉現在按設定中的專業方向篩選（config/profile.yml → target_roles.primary）：選擇 «Product Manager» 或 «Backend Engineer (Go / PHP)» 後，地圖只保留標題帶有該角色詞語的職缺。v1.250.0 的職缺列表定位器已移除 — 那是錯誤的工具（所有者修正）。**
+**父分支已與 career-ops-hq/career-ops 同步 — 上游 264 個提交，父版本 1.36.0 → 1.37.0 — 兩處 fork 差異均獲保留，部署將執行中的父版本重新固定到該基線。**
 
 ### 新增
 
-- **專業方向篩選**：下拉列出設定中的專業方向（target_roles.primary）；選擇一個後，只保留標題帶有該角色區分詞的職缺（詞邊界、不分大小寫 — «Go» 不會匹配 «Google»）；Reset 恢復全部。
-- **移除 v1.250.0 的職缺列表定位器** — 替代：按專業方向篩選，而非職缺列表（所有者修正）。
+- **越南語（vi）市場模式**來自上游（`modes/vi/`、`tuyen-dung` / `ung-tuyen`）：BHXH/BHYT/BHTN、thử việc、lương tháng 13、trợ cấp thôi việc — 父模式表中的第 21 個市場。
+- **Tech in Asia 板塊提供者**（上游）：讀取 techinasia.com 招聘 UI 自己查詢的公開 Algolia `job_postings` 索引 — SEA 初創公司板塊，抽樣時約 300 條在招職缺，其中 273 條在印尼。金鑰每次執行都從網站建置重新發現，雇主自己的應徵連結優先於板塊頁面，且刻意不附加薪資（索引的薪資欄位是旗標，不是金額）。
+- 新增八份 Block G 發布合法性信號文件（`modes/oferta-signals/08–17`）：福利/僱傭術語國家不匹配、第三方平台位置標籤不匹配、仲介牌照、移民身分要求越權、管轄區禁止內容、pay-transparency 區間寬度、最低工資律師問題、AI 篩選揭露、定期契約揭露、搬遷購買力。
+
 ### 更改
 
-- Two mobile-map height specs: the floor moves 600 -> 540 px (the toolbar takes ~90 px of the viewport).
-### - 英里仍由所有者推遲。匹配刻意僅按標題（使用設定中的詞）：對公司名或描述匹配會把無關職缺拉進專業方向。未配置角色之外的職缺在 «All» 下仍然可見。
+- **隨基線上車的父端強化**：story-provenance 檢查按單位和句子工作，並把 `user-cannot-confirm` 數字擋在談判、ATS 和面試輸出之外；CV fact-gate 在每個渲染器上執行並讀取改寫和結構化聲明；LaTeX 在寫入前拒絕過期的提取槽位；follow-ups 關閉時跳過 launchd 掃描；update-system 把本地編輯掃描保持在 argv 限制內。
+- **叉的分叉差異在合併中存活**：`providers/telegram.mjs`（僅叉有的解析器，ADR-0001）和 `telegram-channel.mjs` 中的 Unicode 環視 `LOCATIONISH_RE`（ADR-0002）。板塊文件現在列出上游改進的 `telegram-channel` 行、僅叉有的 `telegram` 行、Tech in Asia，以及提升至 20 → 100 的 Tencent 預設 `max_pages`。
 
+### 備註
 
+- **本版本無 SPA 行為變化**：這是文件列車加父版本重新固定。部署現在執行父 1.37.0；規範狀態表不受父版本增量影響 — 追蹤器狀態渲染與之前完全一致。
+- 上游合併解決了兩個衝突：`docs/SUPPORTED_JOB_BOARDS.md`（兩行 telegram 均保留）和 `test-all.mjs`（上游基於 walkTree 的 `copyDirSync` 吸收了叉的 `.git` 巢狀檢出手動守衛；匯入列表為聯集）。
 
 ## [1.251.1] — 2026-10-12
 
@@ -38,6 +43,21 @@
 ### 備註
 
 - 英里仍由所有者推遲。ta 語言漂移保留為 hermes 後端的已記錄限制（各次執行散文佔比 2–26%；A–G 保持）：remote-qa 將其報告為預期發現。泛型 token 清單刻意保持最小 — 擴充只需每個語言一行。
+## [1.251.0] — 2026-10-12
+
+**地圖的下拉現在按設定中的專業方向篩選（config/profile.yml → target_roles.primary）：選擇 «Product Manager» 或 «Backend Engineer (Go / PHP)» 後，地圖只保留標題帶有該角色詞語的職缺。v1.250.0 的職缺列表定位器已移除 — 那是錯誤的工具（所有者修正）。**
+
+### 新增
+
+- **專業方向篩選**：下拉列出設定中的專業方向（target_roles.primary）；選擇一個後，只保留標題帶有該角色區分詞的職缺（詞邊界、不分大小寫 — «Go» 不會匹配 «Google»）；Reset 恢復全部。
+- **移除 v1.250.0 的職缺列表定位器** — 替代：按專業方向篩選，而非職缺列表（所有者修正）。
+### 更改
+
+- Two mobile-map height specs: the floor moves 600 -> 540 px (the toolbar takes ~90 px of the viewport).
+### - 英里仍由所有者推遲。匹配刻意僅按標題（使用設定中的詞）：對公司名或描述匹配會把無關職缺拉進專業方向。未配置角色之外的職缺在 «All» 下仍然可見。
+
+
+
 
 ## [1.250.0] — 2026-10-12
 

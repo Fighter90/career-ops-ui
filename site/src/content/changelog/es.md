@@ -11,20 +11,25 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
-## [1.251.0] — 2026-10-12
+## [1.252.0] — 2026-10-17
 
-**El select del mapa ahora filtra por ESPECIALIDAD de los ajustes (config/profile.yml → target_roles.primary): elige «Product Manager» o «Backend Engineer (Go / PHP)» y el mapa conserva solo las vacantes cuyo título lleva las palabras de ese rol. El localizador de lista de vacancias de v1.250.0 se elimina — era la herramienta equivocada (corrección del propietario).**
+**El fork del padre está sincronizado con career-ops-hq/career-ops — 264 commits de upstream, padre 1.36.0 → 1.37.0 — con ambas divergencias del fork defendidas, y el despliegue vuelve a fijar el padre en ejecución a esa base.**
 
 ### Añadido
 
-- **Filtro de especialización**: el select lista las especializaciones de los ajustes (target_roles.primary); elegir una conserva solo las vacantes cuyo título lleva uno de los tokens distintivos del rol (por límites de palabra, sin mayúsculas — «Go» nunca coincide con «Google»); Reset devuelve todas.
-- **El localizador de lista de v1.250.0 se elimina** — el sustituye: filtro por especialización, no lista de vacantes (corrección del propietario).
+- **Modo de mercado vietnamita (vi)** desde upstream (`modes/vi/`, `tuyen-dung` / `ung-tuyen`): BHXH/BHYT/BHTN, thử việc, lương tháng 13, trợ cấp thôi việc — el mercado nº 21 en la tabla de modos del padre.
+- **Proveedor del tablero Tech in Asia** (upstream): lee el índice Algolia público `job_postings` que la propia UI de empleo de techinasia.com consulta — un tablero SEA de startups, ~300 vacantes vivas en el muestreo, 273 indonesias. Las claves se descubren en cada ejecución desde el build del sitio, el enlace propio del empleador gana a la página del tablero y el salario se queda sin adjuntar (los campos de salario del índice son banderas, no dinero).
+- Ocho nuevos documentos de señales de legitimidad Block G (`modes/oferta-signals/08–17`): país en terminología de beneficios, etiqueta de ubicación de plataforma de terceros, licencias de agencias, exceso de requisitos migratorios, contenido prohibido por jurisdicción, amplitud del rango pay-transparency, pregunta al abogado sobre salario mínimo, divulgación de AI-screening, divulgación de contrato fijo, poder adquisitivo en reubicación.
+
 ### Cambiado
 
-- Two mobile-map height specs: the floor moves 600 -> 540 px (the toolbar takes ~90 px of the viewport).
+- **Endurecimientos del padre que viajan con la base**: la comprobación story-provenance funciona por unidades y frases y mantiene las cifras `user-cannot-confirm` fuera de negociación, ATS y salida de entrevista; el fact-gate del CV se ejecuta en cada renderizador y lee afirmaciones reformuladas y estructuradas; LaTeX rechaza slots extraídos caducados antes de escribir; el barrido launchd de follow-ups se omite cuando los follow-ups están apagados; update-system mantiene su escaneo de ediciones locales dentro del límite de argv.
+- **Las divergencias del fork sobrevivieron al merge**: `providers/telegram.mjs` (parser exclusivo del fork, ADR-0001) y el `LOCATIONISH_RE` Unicode lookaround en `telegram-channel.mjs` (ADR-0002). El documento de tableros ahora enumera la fila `telegram-channel` mejorada de upstream, la fila `telegram` exclusiva del fork, Tech in Asia y el `max_pages` por defecto de Tencent subido 20 → 100.
+
 ### Notas
 
-- Las millas siguen aplazadas por el propietario. El matching es deliberadamente SOLO por título con las palabras de los ajustes: empresas o descripciones meterían vacantes ajenas en la especialización. Una vacante fuera de todos los roles configurados sigue visible en «Todas».
+- **Sin cambios de comportamiento del SPA en esta versión**: es el tren de documentación más la re-fijación del padre. El despliegue ahora corre el padre 1.37.0; la tabla de estados canónicos no es tocada por el delta del padre — los estados del tracker se renderizan igual que antes.
+- En el merge de upstream se resolvieron dos conflictos: `docs/SUPPORTED_JOB_BOARDS.md` (ambas filas telegram conservadas) y `test-all.mjs` (el `copyDirSync` basado en walkTree de upstream subsume el guard manual de checkouts anidados por `.git` del fork; la lista de import es la unión).
 
 ## [1.251.1] — 2026-10-12
 
@@ -40,6 +45,21 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ### Notas
 
 - Las millas siguen aplazadas por el propietario. El deriva de idioma ta queda como limitación DOCUMENTADA del backend hermes (2–26 % de prosa entre corridas; A–G se sostiene): remote-qa la reporta como hallazgo esperado. La lista de tokens genéricos es mínima a propósito — ampliarla es una línea por idioma.
+## [1.251.0] — 2026-10-12
+
+**El select del mapa ahora filtra por ESPECIALIDAD de los ajustes (config/profile.yml → target_roles.primary): elige «Product Manager» o «Backend Engineer (Go / PHP)» y el mapa conserva solo las vacantes cuyo título lleva las palabras de ese rol. El localizador de lista de vacancias de v1.250.0 se elimina — era la herramienta equivocada (corrección del propietario).**
+
+### Añadido
+
+- **Filtro de especialización**: el select lista las especializaciones de los ajustes (target_roles.primary); elegir una conserva solo las vacantes cuyo título lleva uno de los tokens distintivos del rol (por límites de palabra, sin mayúsculas — «Go» nunca coincide con «Google»); Reset devuelve todas.
+- **El localizador de lista de v1.250.0 se elimina** — el sustituye: filtro por especialización, no lista de vacantes (corrección del propietario).
+### Cambiado
+
+- Two mobile-map height specs: the floor moves 600 -> 540 px (the toolbar takes ~90 px of the viewport).
+### Notas
+
+- Las millas siguen aplazadas por el propietario. El matching es deliberadamente SOLO por título con las palabras de los ajustes: empresas o descripciones meterían vacantes ajenas en la especialización. Una vacante fuera de todos los roles configurados sigue visible en «Todas».
+
 
 ## [1.250.0] — 2026-10-12
 
