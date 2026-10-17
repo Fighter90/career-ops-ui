@@ -20,9 +20,9 @@ _Неофіційний інтерфейс — не пов'язаний із car
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Останній реліз — v1.247.0** — **Хвіст дизайн-свипу CAR-49…58 закрито — всі решта minor/polish-знахідки плюс темна карта, яку минулий реліз навмисно відклав.**
+> **🆕 Останній реліз — v1.252.0** — **Батьківський форк синхронізовано з career-ops-hq — 264 апстрим-коміти, батько 1.36.0 → 1.37.0 — з захистом обох форк-дивергенцій, а деплой переустановлює робочого батька на цю базу.**
 >
-> **Попередній реліз — v1.246.0** — Усі десять топ-знахідок сеньйор-дизайн проходу CAR-48 виправлено — включно з блокером і всіма сьома мажорами.
+> **Попередній реліз — v1.251.1** — Фільтр спеціалізацій матчить лише ВІДМІННІ слова ролі — стаж і загальні посадові іменники більше не матчать вакансію самі по собі — а remote-qa розділяє форму та мову, щоб дрейф не червонив A–G.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -147,7 +147,7 @@ career-ops/
 └─ web-ui/          ← це репозиторій
    ├─ server/       # Express + 15 модулів маршрутів
    ├─ public/       # vanilla JS SPA, без бандлера
-   └─ tests/        # 5116 unit + 118 Playwright + 44 e2e
+   └─ tests/        # 5253 unit + 129 Playwright + 44 e2e
 ```
 
 Сервер має дві виробничі залежності: `express` та `js-yaml`. Жодного transpile, жодного бандлера — весь UI займає менше 30 KB у мінімізованому вигляді.

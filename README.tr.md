@@ -17,9 +17,9 @@ _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve 
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Son sürüm — v1.247.0** — **CAR-49…58 tasarım-taramasının kuyruğu tamamlandı — kalan tüm minor/polish bulguları ve önceki sürümün bilinçli olarak ertelediği koyu harita.**
+> **🆕 Son sürüm — v1.252.0** — **Üst fork career-ops-hq ile senkronize edildi — 264 upstream commit'i, üst 1.36.0 → 1.37.0 — fork'un her iki sapması savunuldu ve dağıtım, çalışan üstü bu tabana yeniden sabitliyor.**
 >
-> **Önceki — v1.246.0** — CAR-48 kıdemli-tasarım taramasının ilk 10 bulgusunun tamamı düzeltildi — engelleyici ve yedi major dahil.
+> **Önceki — v1.251.1** — Uzmanlık filtresi yalnızca rolün AYIRT EDİCİ kelimelerini eşliyor — kıdem ve genel iş isimleri artık tek başına bir ilanı eşlemiyor — ve remote-qa şekli dilden ayırıyor, böylece bir kayma A–G'yi asla kırmızı işaretlemiyor.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -422,7 +422,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 5116 birim + 118 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.247.0)
+└─ tests/                    # 5253 birim + 129 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.252.0)
    ├─ parsers.test.mjs       # markdown / pipeline / rapor ayrıştırıcıları (saf fonksiyonlar)
    ├─ api.test.mjs           # her uç nokta, geçici sunucu, ağ yok
    ├─ {ru,en}-scanner.test.mjs   # taklit edilmiş fetch

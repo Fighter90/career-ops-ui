@@ -17,9 +17,9 @@ _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santi
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Seneste udgivelse — v1.247.0** — **Halens af CAR-49…58-design-sweepet er lukket — alle resterende minor/polish-fund plus det mørke kort, som den forrige udgivelse bevidst udsatte.**
+> **🆕 Seneste udgivelse — v1.252.0** — **Parent-forket er synkroniseret med career-ops-hq — 264 upstream-commits, parent 1.36.0 → 1.37.0 — begge fork-afvigelser er forsvaret, og udrulningen fastgør den kørende parent til den base igen.**
 >
-> **Tidligere — v1.246.0** — Alle ti topfund fra CAR-48-senior-design-sweepet er rettet — blockeren og alle syv majors inkluderet.
+> **Tidligere — v1.251.1** — Specialiseringsfilteret matcher nu kun rollens DISTINKTIVE ord — anciennitet og generiske jobsubstantiver matcher ikke længere et opslag alene — og remote-qa adskiller form fra sprog, så et drift aldrig rødmarkerer A–G.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -422,7 +422,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 5116 unit + 118 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.247.0)
+└─ tests/                    # 5253 unit + 129 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.252.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch

@@ -17,9 +17,9 @@ _Неофициальный интерфейс — не аффилирован �
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Последний релиз — v1.247.0** — **Хвост дизайн-свипа CAR-49…58 закрыт — все оставшиеся minor/polish-находки плюс тёмная карта, которую прошлый релиз осознанно отложил.**
+> **🆕 Последний релиз — v1.252.0** — **Родительский форк синхронизирован с career-ops-hq — 264 апстрим-коммита, родитель 1.36.0 → 1.37.0 — с защитой обоих форк-дивергенций, а деплой переустанавливает работающего родителя на эту базу.**
 >
-> **Предыдущий релиз — v1.246.0** — Все десять топ-находок сеньор-дизайн прохода CAR-48 исправлены — включая блокер и все семь мажоров.
+> **Предыдущий релиз — v1.251.1** — Фильтр специализаций матчится только по отличительным словам роли — старшинство и общие должностные существительные больше не матчат вакансию сами по себе — а remote-qa разделяет форму и язык, чтобы дрейф не краснил A–G.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -392,7 +392,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 5116 unit + 118 Playwright + 23 e2e:full + 21 e2e:smoke
+└─ tests/                    # 5253 unit + 129 Playwright + 23 e2e:full + 21 e2e:smoke
    ├─ parsers.test.mjs       # парсеры markdown / pipeline / отчётов (чистые функции)
    ├─ api.test.mjs           # каждая точка входа, эфемерный сервер, без сети
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch

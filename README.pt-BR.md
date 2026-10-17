@@ -17,9 +17,9 @@ _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versão — v1.247.0** — **A cauda da varredura de design CAR-49…58 está completa — todos os menores e polimentos restantes, mais o mapa escuro que a versão anterior adiou de propósito.**
+> **🆕 Última versão — v1.252.0** — **O fork do pai está sincronizado com career-ops-hq — 264 commits do upstream, pai 1.36.0 → 1.37.0 — com ambas as divergências do fork defendidas, e o deploy volta a fixar o pai em execução nessa base.**
 >
-> **Anterior — v1.246.0** — Os dez principais achados da varredura sênior de design CAR-48 estão corrigidos — incluindo o bloqueador e os sete maiores.
+> **Anterior — v1.251.1** — O filtro de especialidade coincide apenas com palavras DISTINTIVAS do papel — antiguidade e substantivos genéricos não coincidem mais uma vaga por si mesmos — e o remote-qa separa forma de idioma para que uma deriva nunca marque A–G em vermelho.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -392,7 +392,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 5116 unit/integration + 118 Playwright e2e
+└─ tests/                    # 5253 unit/integration + 129 Playwright e2e
    ├─ parsers.test.mjs       # parsers de markdown / pipeline / report (funções puras)
    ├─ api.test.mjs           # cada endpoint, servidor efêmero, sem rede
    ├─ {ru,en}-scanner.test.mjs   # fetch mockado
