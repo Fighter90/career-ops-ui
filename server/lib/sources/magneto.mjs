@@ -81,7 +81,7 @@ export const RETRY_MAX_DELAY_MS = 8000;
 /** A posting detail path: /co/empleos/{slug}-{numeric id}. */
 const POSTING_PATH_RE = /^\/[a-z]{2}\/empleos\/[a-z0-9-]+-(\d+)\/?$/i;
 /** A posting detail link anywhere in the page: the "this is a listing" signal. */
-const POSTING_HREF_RE = /href="(?:https:\/\/(?:www\.)?magneto365\.com)?\/[a-z]{2}\/empleos\/[a-z0-9-]+-\d+\/?"/i;
+const POSTING_HREF_RE = /href="(?:https:\/\/(?:www\.)?magneto365\.com(?!\w))?\/[a-z]{2}\/empleos\/[a-z0-9-]+-\d+\/?"/i;
 
 /** Decode-then-strip via the shared helper: a local strip-then-decode lets
  * "&lt;script&gt;" come back out as a live "<script>" in a title or company

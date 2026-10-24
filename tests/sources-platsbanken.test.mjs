@@ -40,13 +40,6 @@ const resp = (body, { ok = true, status = 200 } = {}) => ({
   json: async () => body,
   text: async () => JSON.stringify(body),
 });
-const httpError = (status) => ({
-  ok: false,
-  status,
-  headers: { get: () => null },
-  json: async () => ({}),
-  text: async () => '',
-});
 
 const hit = (i, extra = {}) => ({
   id: `ad-${i}`,
