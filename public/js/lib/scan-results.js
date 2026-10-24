@@ -95,6 +95,7 @@ window.ScanResults = (function () {
     { value: 'occ', label: 'OCC Mundial' },,
     { value: 'oraclecloud', label: 'Oracle Cloud (ORC)' },,
     { value: 'pageup', label: 'PageUp' },,
+    { value: 'paylocity', label: 'Paylocity' },,
     { value: 'peoplesoft', label: 'PeopleSoft Candidate Gateway' },,
     { value: 'personio', label: 'Personio' },,
     { value: 'phenom', label: 'Phenom' },,
