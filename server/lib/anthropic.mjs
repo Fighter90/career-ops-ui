@@ -38,6 +38,16 @@ export async function runAnthropic(prompt, opts = {}) {
 
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+  // CAR-92 — a caller-supplied signal (the SSE route's req-close controller)
+  // is linked into the runner's own controller, so a client disconnect kills
+  // the upstream request instead of burning tokens to nobody. Removed in the
+  // `finally` so the caller's signal never holds this runner's listener.
+  const extSignal = opts.signal || null;
+  const onExtAbort = extSignal ? () => ctrl.abort() : null;
+  if (extSignal && onExtAbort) {
+    if (extSignal.aborted) ctrl.abort();
+    else extSignal.addEventListener('abort', onExtAbort);
+  }
   try {
     const res = await fetchImpl(ANTHROPIC_URL, {
       method: 'POST',
@@ -80,6 +90,7 @@ export async function runAnthropic(prompt, opts = {}) {
     return { markdown: '', usage: null, error: e.name === 'AbortError' ? 'timeout' : e.message };
   } finally {
     clearTimeout(timer);
+    if (extSignal && onExtAbort) extSignal.removeEventListener('abort', onExtAbort);
   }
 }
 

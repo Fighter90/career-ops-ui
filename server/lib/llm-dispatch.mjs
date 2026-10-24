@@ -90,13 +90,16 @@ export function providerAvailable() {
  *                                            returns the copy-paste prompt)
  *   { mode: 'too-large', size, cap }       — prompt exceeds the soft cap
  */
-export async function runActiveProvider(fullPrompt, { sizeCap = PROMPT_SIZE_SOFT_CAP, maxTokens, timeoutMs } = {}) {
+export async function runActiveProvider(fullPrompt, { sizeCap = PROMPT_SIZE_SOFT_CAP, maxTokens, timeoutMs, signal } = {}) {
   if (typeof fullPrompt !== 'string' || !fullPrompt) return { mode: 'manual' };
   if (fullPrompt.length > sizeCap) return { mode: 'too-large', size: fullPrompt.length, cap: sizeCap };
 
   const runOpts = {};
   if (maxTokens) runOpts.maxTokens = maxTokens;
   if (timeoutMs) runOpts.timeoutMs = timeoutMs;
+  // CAR-92 — a route-level abort (the SSE client hung up) must reach the
+  // provider request, not die at the dispatch boundary.
+  if (signal) runOpts.signal = signal;
   const g = gate();
   let mode = null;
   let run = null;
