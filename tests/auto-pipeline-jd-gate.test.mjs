@@ -437,3 +437,42 @@ test('v1.248.6: a domain root is rejected BEFORE the fetch', async () => {
     restore(); globalThis.fetch = realFetchSave;
   }
 });
+
+// ── CAR-127 / CAR-128 (v1.256.0) — identity: the role is never filed as
+// the company, and a job board's domain slug is never filed as the
+// employer. ──────────────────────────────────────────────────────────────
+
+test('CAR-128: a "Role - Company" header line never files the role as the company', async () => {
+  const { guessCompanyRole } = await import('../server/lib/routes/auto-pipeline.mjs');
+  const g = guessCompanyRole(
+    'Senior Frontend Engineer - Grafana Labs\n\nAbout the team\nWe build dashboards.',
+    'https://jobs.lever.co/grafana/11111111',
+  );
+  assert.equal(g.company, 'Grafana Labs');
+  assert.match(g.role, /Senior Frontend Engineer/);
+});
+
+test('CAR-128: "Company — Role" keeps the company on the left (regression)', async () => {
+  const { guessCompanyRole } = await import('../server/lib/routes/auto-pipeline.mjs');
+  const g = guessCompanyRole(
+    'Grafana Labs — Senior Frontend Engineer\n\nAbout the team',
+    'https://jobs.lever.co/grafana/22222222',
+  );
+  assert.equal(g.company, 'Grafana Labs');
+  assert.match(g.role, /Senior Frontend Engineer/);
+});
+
+test('CAR-127: an hh.ru URL never becomes the company «hh»', async () => {
+  const { guessCompanyRole } = await import('../server/lib/routes/auto-pipeline.mjs');
+  const g = guessCompanyRole('Текст вакансии без названия работодателя.', 'https://hh.ru/vacancy/91827364');
+  assert.notEqual(g.company.toLowerCase(), 'hh');
+});
+
+test('CAR-127: an hh.ru JD naming the employer in text yields the employer', async () => {
+  const { guessCompanyRole } = await import('../server/lib/routes/auto-pipeline.mjs');
+  const g = guessCompanyRole(
+    'Приглашаем в команду.\nСбер. IT ищет опытного инженера.',
+    'https://hh.ru/vacancy/91827365',
+  );
+  assert.equal(g.company, 'Сбер. IT');
+});

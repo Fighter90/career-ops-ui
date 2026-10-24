@@ -232,21 +232,39 @@ export function guessCompanyRole(jdText, url) {
     let m = line.match(/^([A-Z][\w\s/&,.()-]{4,80}?)\s+(?:at|@|·|\|)\s+([A-Z][\w\s.&-]{1,40})$/);
     if (m) { role = m[1].trim(); company = m[2].trim(); break; }
     m = line.match(/^([A-Z][\w\s.&-]{1,40})\s+[—–-]\s+(.{4,80})$/);
-    if (m && !role) { company = m[1].trim(); role = m[2].trim(); }
+    if (m && !role) {
+      // CAR-128 — the dash carries no ORDER: boards write both
+      // `Company — Role` and `Role - Company` («Senior Frontend Engineer
+      // - Grafana Labs» filed the role AS the company — 13 rows did).
+      // The side carrying a word-bounded role keyword is the role; when
+      // both (or neither) do, the parent's company-first convention stands.
+      const l = m[1].trim(); const r = m[2].trim();
+      if (roleish(l) && !roleish(r)) { role = l; company = r; }
+      else { company = l; role = r; }
+    }
     // v1.248.4 — «Компания: X» self-labels on Telegram posts; v1.248.6 —
     // also «Компания : X» (space before the colon) and «Компания — X».
     m = line.match(/^Компания\s*[:—–-]\s*(.+)$/u);
     if (m && !company) company = m[1].trim().slice(0, 60);
   }
   if (!company) {
-    // «…в X» / «…в компании X» — the employer named mid-sentence (Cyrillic
-    // posts routinely do this). Only for messenger hosts, where the domain
-    // carries nothing.
+    // «…в X» / «…в компании X» / «X ищет…» — the employer named mid-sentence
+    // (Cyrillic posts routinely do this). Allowed for messenger hosts, where
+    // the domain carries nothing, and for JOB-BOARD hosts (CAR-127: an
+    // hh.ru page names the employer in its text, but the domain is the
+    // board, not the company).
     try {
       const u = new URL(url);
-      if (EMPTY_DOMAINS.has(u.hostname.toLowerCase())) {
-        const inMatch = (jdText || '').match(/\bв\s+компании\s+([A-ZА-Я][\w\s&.-]{2,40})/u)
-          || (jdText || '').match(/\bв\s+([A-ZА-Я][\w\s&.-]{2,40})\s+(?:ищем|требуется|открываем|нанимаем)/u);
+      const host = u.hostname.toLowerCase();
+      const isBoard = /(^|\.)hh\.ru$/.test(host) || /(^|\.)habr\.com$/.test(host);
+      if (EMPTY_DOMAINS.has(host) || isBoard) {
+        // \p{L} classes, not ASCII \w — and Unicode lookbehinds, not \b:
+        // ASCII \b does not treat Cyrillic as word characters, so the old
+        // \bв… patterns NEVER matched a «в компании X» / «X ищет» phrase
+        // after a space or newline (silently broken since v1.248.4).
+        const inMatch = (jdText || '').match(/(?<![\p{L}\p{N}])в\s+компании\s+([A-ZА-ЯЁ][\p{L}\p{N}\s&.\-]{2,38}?[\p{L}\p{N}])(?=\s*[.,!?)\n]|\s*$)/u)
+          || (jdText || '').match(/(?<![\p{L}\p{N}])в\s+([A-ZА-ЯЁ][\p{L}\p{N}\s&.\-]{2,38}?[\p{L}\p{N}])\s+(?:ищем|ищет|ищут|требуется|открываем|нанимаем)(?![\p{L}\p{N}])/u)
+          || (jdText || '').match(/(?<![\p{L}\p{N}])([A-ZА-ЯЁ][\p{L}\p{N}&.\- ]{1,38}[\p{L}\p{N}])\s+(?:ищем|ищет|ищут|требуется|открываем|нанимаем)(?![\p{L}\p{N}])/u);
         if (inMatch) company = inMatch[1].trim();
       }
     } catch {}
@@ -258,7 +276,12 @@ export function guessCompanyRole(jdText, url) {
       const slug = parts.length >= 2 ? parts[parts.length - 2] : u.hostname;
       if (EMPTY_DOMAINS.has(u.hostname.toLowerCase())) {
         if (channelGuess) company = channelGuess.charAt(0).toUpperCase() + channelGuess.slice(1);
-      } else if (!['greenhouse', 'ashbyhq', 'lever', 'workable', 'smartrecruiters', 'myworkdayjobs'].includes(slug)) {
+      } else if (![
+        'greenhouse', 'ashbyhq', 'lever', 'workable', 'smartrecruiters', 'myworkdayjobs',
+        // CAR-127 — job boards, not employers: hh.ru must never file the
+        // tracker row as «hh» (120 rows did), nor habr as «Habr».
+        'hh', 'habr',
+      ].includes(slug)) {
         company = slug.charAt(0).toUpperCase() + slug.slice(1);
       }
     } catch {}
@@ -289,6 +312,14 @@ const ROLE_KEYWORDS = [
   'руководитель', 'тимлид', 'лид', 'дизайнер', 'тестировщик',
   'архитектор', 'специалист', 'директор',
 ];
+
+// CAR-128 — word-bounded role-keyword probe shared by the dash-order
+// heuristic in guessCompanyRole and the role fallback below. \p{L}\p{M}
+// boundaries (not ASCII \b) keep 'lead' from matching inside 'leading'.
+const roleish = (s) => ROLE_KEYWORDS.some((k) => {
+  const esc = String(k).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+  return new RegExp(`(?<![\\p{L}\\p{M}])${esc}(?![\\p{L}\\p{M}])`, 'iu').test(String(s || ''));
+});
 
 function channelHintFor(u) {
   try { const seg = new URL(u).pathname.split('/').filter(Boolean); return Boolean(seg[0]); } catch { return false; }
