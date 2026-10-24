@@ -43,7 +43,7 @@ import { recordUsage, parseSubprocessUsage } from '../llm-usage.mjs';
 import { evaluationWarnings, EVAL_MAX_TOKENS, GEMINI_EVAL_TIMEOUT_MS, geminiEvalArgs } from './llm.mjs';
 import { providerOrder } from '../env-config.mjs';
 import { stripDangerousMarkdown } from '../security.mjs';
-import { stripScoreSummary, validateEvaluationReport, cutRepeatedBlockHeadings, extractSummaryScore } from '../eval-validate.mjs';
+import { stripScoreSummary, validateEvaluationReport, cutRepeatedBlockHeadings, extractSummaryScore, extractBodyScore } from '../eval-validate.mjs';
 import { parseReportHeader } from '../parsers.mjs';
 // v1.248.7 — the language check is a pure module shared with remote-qa.
 import { languageOk } from '../../../scripts/remote-qa/lang-check.mjs';
@@ -372,6 +372,40 @@ export function extractLegitimacy(md) {
   return tier ? tier[1] : '';
 }
 
+/**
+ * CAR-92 round 2 (review finding 5) — the gemini-eval.mjs subprocess path's
+ * whole-report fallback. The subprocess prints the parent's oferta report,
+ * whose ---SCORE_SUMMARY--- block only exists when the model (or the script's
+ * own prompt) asks for one — the parent copy deployed on the server predates
+ * the summary prompt — so the body's `Score: x/5` line is the only score
+ * source. Synthesizes the summary block from the body (score via
+ * extractBodyScore, legitimacy/archetype from their body lines, company/role
+ * from the JD guess) so the shared validator + extractors keep ONE code path.
+ * `—` marks a field the body does not state: the block is machine-only (it is
+ * stripped before the report is saved) and the validator only requires the
+ * fields to be present. Returns the markdown unchanged when a summary block
+ * already exists or the body carries no usable score.
+ * @param {string} markdown the subprocess stdout
+ * @param {{ company?: string, role?: string }} guess the pre-LLM JD guess
+ * @returns {string}
+ */
+export function synthesizeGeminiSummary(markdown, guess) {
+  const src = String(markdown ?? '');
+  if (/---SCORE_SUMMARY---/.test(src)) return src;
+  const score = extractBodyScore(src);
+  if (score == null) return src;
+  const leg = src.match(/\blegitimacy\s*[:：\-–—][ \t]*([^\n]+)/i);
+  const arch = src.match(/(?:\*\*)?[ \t]*archetype(?:\*\*)?[ \t]*[:：][ \t]*([^\n]+)/i);
+  const clean = (v, cap) => String(v || '').trim().slice(0, cap);
+  return `${src.trimEnd()}\n\n---SCORE_SUMMARY---\n`
+    + `COMPANY: ${clean(guess?.company, 80) || '—'}\n`
+    + `ROLE: ${clean(guess?.role, 80) || '—'}\n`
+    + `SCORE: ${score}\n`
+    + `ARCHETYPE: ${clean(arch?.[1], 60) || '—'}\n`
+    + `LEGITIMACY: ${clean(leg?.[1], 40) || '—'}\n`
+    + '---END_SUMMARY---\n';
+}
+
 function buildSlug(company, role) {
   const base = `${today()}-${company}-${role}`.toLowerCase();
   return base.replace(/[^\w-]+/g, '-').replace(/^-+|-+$/g, '').replace(/-{2,}/g, '-').slice(0, 120) || `auto-${Date.now()}`;
@@ -609,7 +643,10 @@ export function registerAutoPipelineRoutes(app) {
         writeFileSync(tmp, jdText);
         let r;
         try {
-          r = await runNodeScript('gemini-eval.mjs', geminiEvalArgs(tmp, { lang }), { timeoutMs: GEMINI_EVAL_TIMEOUT_MS });
+          // CAR-92 (round 2, review finding 3): `signal` wires the route's
+          // disconnect controller into the runner's kill plumbing — without
+          // it a hung-up client still burned up to 300 s of Gemini spend.
+          r = await runNodeScript('gemini-eval.mjs', geminiEvalArgs(tmp, { lang }), { timeoutMs: GEMINI_EVAL_TIMEOUT_MS, signal: ctrl.signal });
         } finally {
           try { unlinkSync(tmp); } catch { /* already gone */ }
         }
@@ -619,6 +656,15 @@ export function registerAutoPipelineRoutes(app) {
         }
         recordUsage('gemini', parseSubprocessUsage(r.stdout));
         markdown = r.stdout || '';
+        // CAR-92 round 2 (review finding 5) — the subprocess prints the
+        // parent's oferta report, whose ---SCORE_SUMMARY--- block only exists
+        // when the model (or the script's own prompt) asks for one; the
+        // parent copy deployed on the server predates the summary prompt. The
+        // body's `Score: x/5` line is then the only score source. Synthesize
+        // the summary from the body so the shared validator + extractor below
+        // keep ONE code path. In-process reports (which always carry the
+        // summary) are returned unchanged.
+        markdown = synthesizeGeminiSummary(markdown, guess);
       } else {
         const ctx = bundleProjectContext({ modeSlugs: ['_shared', 'oferta'], lang, warnings });
         const full = ctx + promptText;

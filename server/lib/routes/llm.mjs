@@ -71,7 +71,6 @@ import {
   buildEvaluationPrompt,
   buildDeepPrompt,
   buildModePrompt,
-  buildLanguageReminder,
   buildApplyChecklist,
   resolveLocale,
   deepReportStem,
