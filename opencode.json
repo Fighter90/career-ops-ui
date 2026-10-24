@@ -10,5 +10,13 @@
     "docs/sdd/BACKLOG.md",
     "docs/sdd/TRACEABILITY.md",
     "docs/sdd/CONVENTIONS.md"
-  ]
+  ],
+  "mcp": {
+    "servers": {
+      "linear": {
+        "type": "remote",
+        "url": "https://mcp.linear.app/mcp"
+      }
+    }
+  }
 }
