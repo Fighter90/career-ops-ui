@@ -7,6 +7,21 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 ---
 
 
+## [1.253.1] — 2026-10-24
+
+**Two HIGH security findings from the max-model review are fixed: IPv6-literal URLs no longer bypass the scanner's SSRF guard, and the CV-markdown escape regex no longer backtracks quadratically.**
+
+### Fixed
+
+- **IPv6 literals bypass the SSRF guard** (`http-json.mjs` `guardResolvedHost`): a bracketed IPv6 literal (`[::1]`, `[::ffff:169.254.169.254]`, `[fd00:ec2::254]` — the AWS IPv6 metadata endpoint) made `dns.lookup` throw and the guard fail open, letting fetch reach cloud metadata. Bracketed hosts are now unbracketed, classified directly via `isIP` + the private/loopback classifier — no DNS, no fail-open. Found by the Opus 5-5 max-model sweep (CAR-90).
+- **ReDoS in the CV-markdown escape regex** (`security.mjs` `stripDangerousMarkdown`): the belt pattern's `\s*/?\s*` backtracked quadratically — `<` + ~100k spaces cost ~16 s. Replaced with one flat bounded class `\s|/` run (linear; the same input now ~1 ms); every opener the old pattern escaped still gets escaped.
+- **tests/wiki-banner-check**: the JA fixture's stale version (a leftover from #461) is aligned.
+
+### Notes
+
+- The two fixes carry red→green regression tests (3 new IPv6-guard cases + a time-bounded ReDoS case; 5511 tests total, +7).
+- The scanner source files are not affected (the guard sits in the shared transport both scanners already route through).
+
 ## [1.253.0] — 2026-10-24
 
 **Ten new job-board sources join the scanner — Atlassian, BWI, Computrabajo, Dover, Google, Kalibrr, Magneto365, Platsbanken, Tech in Asia and Zoho Recruit — the registry now ships 120 sources (115 EN + 5 RU) with 115 adapters, and the role matcher keeps titles apart when they differ only by a short capitalised code.**

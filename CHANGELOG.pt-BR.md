@@ -9,6 +9,20 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 ---
 
 
+## [1.253.1] — 2026-10-24
+
+**Dois achados HIGH de segurança da revisão com o modelo máximo estão corrigidos: URLs literais IPv6 não mais contornam a guarda SSRF do scanner, e o regex de escape do markdown do CV não mais retrocede quadraticamente.**
+
+### Corregido
+
+- **Literais IPv6 burlavam a guarda SSRF** (`http-json.mjs`): um literal IPv6 entre colchetes fazia `dns.lookup` lançar e a guarda falhar aberta. Agora os colchetes são removidos e o literal é classificado via `isIP` — sem DNS, sem fail-open.
+- **ReDoS no escape do markdown CV** (`security.mjs`): o padrão retrocedia quadraticamente — `<` + ~100k espaços custavam ~16 s; agora ~1 ms com uma classe plana limitada. Tudo que era escapado antes continua sendo.
+
+### Notas
+
+- Ambos fixos levam testes vermelho→verde (3 casos IPv6 novos + ReDoS com cota de tempo; 5511 testes, +7).
+- Os arquivos de fonte do scanner não são afetados — a guarda vive no transporte compartilhado.
+
 ## [1.253.0] — 2026-10-24
 
 **Dez novas fontes de vagas entram no scanner — Atlassian, BWI, Computrabajo, Dover, Google, Kalibrr, Magneto365, Platsbanken, Tech in Asia e Zoho Recruit — o registro agora entrega 120 fontes (115 EN + 5 RU) com 115 adaptadores, e o role matcher mantém separados os títulos que diferem apenas por um código curto em maiúsculas.**
