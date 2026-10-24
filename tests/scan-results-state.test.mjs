@@ -43,6 +43,7 @@ function makeEl(docRef) {
     const node = {
       tag, attrs: {}, children: [], style: {}, value: '', checked: false,
       className: '', open: false, scrollTop: 0, scrollHeight: 0,
+      dataset: {}, // CAR-93 — the saved-search stash lives on el.dataset
       _listeners: {},
       get classList() {
         const self = this;

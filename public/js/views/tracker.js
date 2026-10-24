@@ -282,11 +282,11 @@ Router.register('tracker', async () => {
       // affordance is null for non-ATS rows, so most rows are unchanged.
       // v1.248.2 — the badge CAPTION is the localized canonical label (the raw
       // status is folded through the server alias map first, so "contratado"
-      // shows as "Hired"/«Нанят»); statusClass + every comparison still read
-      // the canonical value.
+      // shows as "Hired"/«Нанят»); trackerStatusClass + every comparison
+      // still read the canonical value.
       c('td', null, [
-        c('span', { className: 'badge ' + statusClass(r.status) }, statusLabel(fold(r.status))),
-        livenessAffordance(r.url),
+        c('span', { className: 'badge ' + trackerStatusClass(r.status) }, statusLabel(fold(r.status))),
+        livenessAffordance(r.url, r.num),
       ]),
       // G-006 (v1.15.0) — Legitimacy column. Mirrors the badge tint used on
       // /#/reports cards. Empty string when the source row had no Legitimacy
@@ -298,6 +298,10 @@ Router.register('tracker', async () => {
       c('td', null, [
         r.reportPath ? c('button', {
           className: 'btn btn-ghost btn-sm',
+          // CAR-93 — row-scoped identity for the focus restore: the
+          // tag|class|text marker is identical for this button on every
+          // row, which sent focus to row 1 after a rebuild.
+          'data-key': String(r.num ?? ''),
           'aria-label': t('track.report') + ((r.company || r.role) ? ' — ' + (r.company || r.role) : ''),
           onClick: () => Router.go('/reports/' + r.reportPath.replace(/^(\.\.\/)*reports\//, '').replace(/\.md$/, '')),
         }, t('track.report')) : '',
@@ -307,6 +311,7 @@ Router.register('tracker', async () => {
         c('button', {
           className: 'btn btn-ghost btn-sm',
           type: 'button',
+          'data-key': String(r.num ?? ''),
           'aria-label': t('track.outcome.record', 'Record outcome') + (r.company ? ' — ' + r.company : ''),
           onClick: () => openOutcomeModal(r, c, t),
         }, t('track.outcome.btn', 'Outcome')),
@@ -558,7 +563,8 @@ function isAtsPostingUrl(raw) {
 
 // Returns a small lazy "still live?" control for an ATS posting URL, or null
 // for any row whose URL is not a recognizable ATS posting. CSP-safe DOM only.
-function livenessAffordance(url) {
+// `rowKey` (the tracker #) scopes the focus-restore marker to this row (CAR-93).
+function livenessAffordance(url, rowKey) {
   const c = UI.el;
   const t = (k, f) => I18n.t(k, f);
   if (!url || !isAtsPostingUrl(url)) return null;
@@ -573,6 +579,7 @@ function livenessAffordance(url) {
     className: 'btn btn-ghost btn-sm',
     type: 'button',
     style: { padding: '0 8px', fontSize: '11px' },
+    'data-key': String(rowKey ?? ''),
     'aria-label': t('track.liveCheckAria', 'Check whether this job posting is still live'),
     title: t('track.liveCheckAria', 'Check whether this job posting is still live'),
   }, t('track.liveCheck', 'Still live?'));
@@ -601,7 +608,13 @@ function livenessAffordance(url) {
   return wrap;
 }
 
-function statusClass(s) {
+// CAR-93 — renamed from statusClass: dashboard.js declares the SAME name as
+// a top-level function in a sibling classic script, so the window binding
+// belonged to whichever file loaded last and one view's badges silently
+// followed the other's classifier (the dashboard copy has no Hired branch —
+// a re-order would have cost tracker its badge-hired). Distinct names keep
+// each view's classifier its own.
+function trackerStatusClass(s) {
   s = (s || '').toLowerCase();
   // v1.118.0 — parent v1.18.0 parity: Hired (job landed) gets the celebratory tint.
   if (s.includes('hired')) return 'badge-hired';
@@ -631,16 +644,24 @@ function legitimacyClass(s) {
 // (a paginator button, a row button, a <select>) drops focus to <body>.
 // Snapshot the focused element among the container's focusable descendants,
 // let `mutate()` rebuild, then restore focus to the matching node (matched by
-// tag + class + text, i.e. the same control). No-op when focus is outside the
-// container. Kept file-local: lib/ is shared and outside this change's file
-// set; tracker.js, reports.js and stats.js each carry this same copy.
+// the same control). No-op when focus is outside the container. Kept
+// file-local: lib/ is shared and outside this change's file set; tracker.js,
+// reports.js and stats.js each carry this same copy.
+// CAR-93 — the marker was tag|class|text, which is IDENTICAL for the same
+// control on every row (the Outcome/Report buttons, the Still-live button),
+// so focus jumped to row 1. The marker now keys on data-key (row-scoped
+// controls carry one) or aria-label before falling back to the text — and
+// all three copies stay byte-identical.
 function withFocusPreserved(container, mutate) {
+  const markOf = (el) => el.tagName + '|' + el.className + '|'
+    + ((el.getAttribute && (el.getAttribute('data-key') || el.getAttribute('aria-label'))) || '')
+    + '|' + (el.textContent || '');
   let marker = null;
   try {
     const doc = container.ownerDocument || document;
     const active = doc.activeElement;
     if (active && active !== container && container.contains(active)) {
-      marker = active.tagName + '|' + active.className + '|' + (active.textContent || '');
+      marker = markOf(active);
     }
   } catch { marker = null; }
   mutate();
@@ -649,7 +670,7 @@ function withFocusPreserved(container, mutate) {
   let candidates = [];
   try { candidates = Array.from(container.querySelectorAll(sel)); } catch { return; }
   for (const el of candidates) {
-    if (el.tagName + '|' + el.className + '|' + (el.textContent || '') === marker) {
+    if (markOf(el) === marker) {
       try { el.focus(); } catch { /* detached node */ }
       return;
     }

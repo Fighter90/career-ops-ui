@@ -38,6 +38,12 @@
       filterScope.value = 'all';
       filterAge.value = '';
       favOnly.checked = false;
+      // CAR-93 — clear any pending saved-search stash (dataset.want); a
+      // reset must not leave a stale country/seniority/source wish that
+      // paint*Options would re-apply on the next repaint.
+      filterSource.dataset.want = '';
+      filterCountry.dataset.want = '';
+      filterSeniority.dataset.want = '';
       activeTech.clear(); activeLevel.clear(); activeDynamic.clear();
       applyFilters();
     }
@@ -65,6 +71,18 @@
       filterScope.value = s.scope || 'all';
       filterAge.value = s.age || '';
       favOnly.checked = !!s.favOnly;
+      // CAR-93 — the source/country/seniority options are painted FROM the
+      // result corpus (paintSourceOptions / paintCountryOptions /
+      // paintSeniorityOptions), so at restore time the option matching the
+      // saved value may not exist yet: the assignment silently falls back
+      // to '' and the repaint then preserves the empty choice — saved
+      // searches lost those filters. Stash the desired value on the
+      // element; the paint* helpers apply it (and clear the stash) once
+      // the option exists. A manual change voids the stash (scan.js), and
+      // resetFilters clears it.
+      filterSource.dataset.want = s.source || '';
+      filterCountry.dataset.want = s.country || '';
+      filterSeniority.dataset.want = s.seniority || '';
       activeTech.clear(); (Array.isArray(s.tech) ? s.tech : []).forEach((x) => activeTech.add(x));
       activeLevel.clear(); (Array.isArray(s.level) ? s.level : []).forEach((x) => activeLevel.add(x));
       activeDynamic.clear(); (Array.isArray(s.dynamic) ? s.dynamic : []).forEach((x) => activeDynamic.add(x));

@@ -138,8 +138,14 @@ test('CAR-20 [M] config.js: providers-changed listener is scoped to the route li
     'the subscription itself stays');
   assert.match(CONFIG, /document\.removeEventListener\('providers-changed', refreshApiSummary\)/,
     'every visit used to stack one more listener forever — cleanup required');
-  assert.match(CONFIG, /window\.addEventListener\('hashchange', providersCleanup\)/,
+  // CAR-93 — Router.render() re-entry (Save) has NO hashchange, so the
+  // cleanup is additionally invoked at the top of every route invocation
+  // via the module-scoped handle; the hashchange detach remains for
+  // leaving the route.
+  assert.match(CONFIG, /window\.addEventListener\('hashchange', onConfigHashChange\)/,
     'cleanup rides the existing hashchange flow');
+  assert.match(CONFIG, /if \(typeof __configVisitCleanup === 'function'\) __configVisitCleanup\(\)/,
+    'a re-render must detach the previous visit\u2019s pair first');
 });
 
 test('CAR-20 [M] config.js: a failed Modes/Profile load can no longer be saved over the file', () => {

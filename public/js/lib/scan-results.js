@@ -212,7 +212,17 @@ window.ScanResults = (function () {
     for (const co of window.Countries.countriesIn(rows)) {
       ctx.filterCountry.appendChild(c('option', { value: co.code }, `${co.flag} ${co.name} (${co.count})`));
     }
-    if (prev && [...ctx.filterCountry.options].some((o) => o.value === prev)) ctx.filterCountry.value = prev;
+    // CAR-93 — a saved-search restore stashes the desired value in
+    // dataset.want because the matching option does not exist yet at
+    // setFilterState time; apply it once it does (and clear the stash).
+    // A user change voids the stash (scan.js), so a stale want can never
+    // resurrect a filter the user just moved away from.
+    const want = ctx.filterCountry.dataset.want || '';
+    const target = want || prev;
+    if (target && [...ctx.filterCountry.options].some((o) => o.value === target)) {
+      ctx.filterCountry.value = target;
+      if (want) delete ctx.filterCountry.dataset.want;
+    }
   }
   function paintSeniorityOptions(rows) {
     const prev = ctx.filterSeniority.value;
@@ -223,7 +233,13 @@ window.ScanResults = (function () {
       if (!counts[s]) continue;
       ctx.filterSeniority.appendChild(c('option', { value: s }, `${senLabel(s)} (${counts[s]})`));
     }
-    if (prev && [...ctx.filterSeniority.options].some((o) => o.value === prev)) ctx.filterSeniority.value = prev;
+    // CAR-93 — same saved-search stash contract as paintCountryOptions.
+    const want = ctx.filterSeniority.dataset.want || '';
+    const target = want || prev;
+    if (target && [...ctx.filterSeniority.options].some((o) => o.value === target)) {
+      ctx.filterSeniority.value = target;
+      if (want) delete ctx.filterSeniority.dataset.want;
+    }
   }
   function getRows() {
     const scope = ctx.filterScope.value || 'all';
@@ -245,6 +261,17 @@ window.ScanResults = (function () {
     const prevFocusChip = (active && typeof active.getAttribute === 'function' &&
       active.classList && active.classList.contains('chip') &&
       ctx.resultsEl.contains(active)) ? active.getAttribute('data-chip') : null;
+    // CAR-93 — chips were the only focus restored across the rebuild; a
+    // ⭐ toggle or a paginator click rebuilt the subtree and dropped focus
+    // to <body>. Stars carry data-key (= the row URL); pager buttons are
+    // matched by their full marker (tag|class|key|text — the ‹ › « » glyphs
+    // are stable across rebuilds).
+    const prevFocusKey = (active && typeof active.getAttribute === 'function' &&
+      ctx.resultsEl.contains(active)) ? (active.getAttribute('data-key') || '') : '';
+    const prevFocusMark = (active && typeof active.getAttribute === 'function' &&
+      ctx.resultsEl.contains(active) && !prevFocusChip && !prevFocusKey)
+      ? active.tagName + '|' + active.className + '|' + (active.getAttribute('data-key') || '') + '|' + (active.textContent || '')
+      : null;
     ctx.resultsEl.innerHTML = '';
     const allRows = getRows();
     // v1.78.0 — refresh the country dropdown from the (scope-filtered) corpus so
@@ -513,6 +540,10 @@ window.ScanResults = (function () {
         c('button', {
           type: 'button',
           className: 'btn-star' + (starred ? ' on' : ''),
+          // CAR-93 — stable row identity: render() restores keyboard focus
+          // to the starred row's button after the rebuild (the tag|class|
+          // text marker is identical for every row's star).
+          'data-key': r.url || '',
           title: starred ? t('scan.unstar', 'Remove from favorites') : t('scan.star', 'Add to favorites'),
           'aria-label': starred ? t('scan.unstar', 'Remove from favorites') : t('scan.star', 'Add to favorites'),
           'aria-pressed': starred ? 'true' : 'false',
@@ -559,9 +590,24 @@ window.ScanResults = (function () {
       ])
     ));
     // v1.30.0 — paginator replaces the v1.12-v1.29.x "first 200 of N"
-    // hint. controls() returns null when there's only one page, so
-    // small result sets stay clean.
-    ctx.resultsEl.appendChild(ctx.pager.controls(sorted.length, rows.length));
+    // hint. With everything on one page controls() renders just the
+    // "N items" summary (never null — see UI.paginate), so small result
+    // sets stay clean.
+    const ctl = ctx.pager.controls(sorted.length, rows.length);
+    if (ctl) ctx.resultsEl.appendChild(ctl);
+    // CAR-93 — restore the star / pager focus AFTER the table + pager are
+    // back in the tree (the chip restore above runs before they exist).
+    if (prevFocusKey || prevFocusMark) {
+      const sel = 'a[href], button:not([disabled]), [tabindex]:not([tabindex="-1"])';
+      for (const el of ctx.resultsEl.querySelectorAll(sel)) {
+        const key = el.getAttribute && el.getAttribute('data-key');
+        if (prevFocusKey && key && key === prevFocusKey) { try { el.focus(); } catch { /* detached */ } break; }
+        if (!prevFocusKey && prevFocusMark) {
+          const mark = el.tagName + '|' + el.className + '|' + (key || '') + '|' + (el.textContent || '');
+          if (mark === prevFocusMark) { try { el.focus(); } catch { /* detached */ } break; }
+        }
+      }
+    }
   }
   // Build a chip row for one facet category. Active selections survive across re-renders
   // because ctx.activeTech / ctx.activeLevel are scoped above.
