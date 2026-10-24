@@ -242,6 +242,18 @@ test('v1.239.2: the closing language reminder protects the machine-read format',
   }
 });
 
+test('CAR-98: the closing reminder makes SCORE_SUMMARY PRESENCE mandatory, not just untranslated', () => {
+  // The zh-TW live regression (2026-10-24): a short report carried the A–G
+  // blocks but omitted the summary block entirely — the reminder only said the
+  // markers must not be translated, never that the block must exist.
+  for (const lang of ['zh-TW', 'ja', 'ru', 'vi']) {
+    const p = buildEvaluationPrompt('Senior Platform Engineer. Kubernetes, Go.', lang);
+    const tail = p.slice(p.lastIndexOf('"""'));
+    assert.match(tail, /MUST END with the ---SCORE_SUMMARY---/, lang);
+    assert.match(tail, /mandatory in every report/, lang);
+  }
+});
+
 test('PR-2: buildDeepPrompt embeds the locale directive', () => {
   const p = buildDeepPrompt('Anthropic', 'Backend', 'ja');
   assert.match(p, /Respond in Japanese/);

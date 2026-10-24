@@ -426,7 +426,7 @@ export function buildEvaluationPrompt(jd, lang) {
   // mandate made the weak-ta model drop the Latin A–G headings entirely
   // (prod: A–G ✗ 2/3 under the hard form, A–G ✓ 2/2 without it).
   const langOpen = lang && lang !== 'en' && localeName(lang)
-    ? `\n**Language: the ENTIRE report — every section, bullet, table cell and the verdict — is written in ${localeName(lang)}. Keep the machine format unchanged: block headings start with the Latin capitals A–G, and the ---SCORE_SUMMARY--- block stays in English.\n`
+    ? `\n**Language: the ENTIRE report — every section, bullet, table cell and the verdict — is written in ${localeName(lang)}. Keep the machine format unchanged: block headings start with the Latin capitals A–G, and the ---SCORE_SUMMARY--- block stays in English and is always present at the end.\n`
     : '';
   // v1.248.8 (CAR-74) — a ready-made heading skeleton for non-EN reports:
   // the model fills these instead of inventing its own numbering (the weak
@@ -522,7 +522,8 @@ export function buildLanguageReminder(lang) {
   return `\nWrite the whole report in ${name} (locale: ${lang}) — every sentence, bullet and table cell, in ${name}'s own script. The files and the JD above are in English; that does not change the output language. Company, product and technology names may stay as they are, and so may text quoted word for word from the CV or the JD (keep it in quotation marks). Everything else — including ordinary words such as role, team, design, production, critical — is written in ${name}, not left in English.\n`
     + 'Two parts of the format are machine-read and must NOT be translated: '
     + 'every block heading KEEPS its Latin capital letter A–G and starts with it (for example `## <translated word> A — <translated title>`; never А Б В or any other native numbering), '
-    + 'and the report ends with the ---SCORE_SUMMARY--- … ---END_SUMMARY--- block, markers and keys in English, exactly as shown above.\n'
+    + 'and the report MUST END with the ---SCORE_SUMMARY--- … ---END_SUMMARY--- block — markers and keys in English, exactly as shown above. '
+    + 'The block is mandatory in every report: a report that omits it is invalid, whatever the language.\n'
     + `Once more, briefly: the whole report below is written in ${name}, tables included.\n`;
 }
 

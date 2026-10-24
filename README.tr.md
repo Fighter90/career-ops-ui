@@ -12,14 +12,14 @@ _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve 
 [![playwright](https://img.shields.io/badge/playwright-143%2F143-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.255.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.255.1)
+[![release](https://img.shields.io/badge/release-v1.255.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.255.2)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Son sürüm — v1.255.1** — **İki inceleme düzeltme turu: Vietnamca yerelleştirmesinin Opus incelemesi (Hangul glif sızıntısı ve altı boşluklu yardım URL'si, artık kapılı) ve CAR-91/92 düzeltmelerinin ikinci tur incelemesi — değerlendirme başlık sınırları (`## Q&A` artık bir blok değil), Ukraynaca numaralı raporlar `### A.` alt bölümlerinden hayatta kalıyor, taşınan tarama satırları eskimeyle düşüyor ve gemini-sentez paydası/legitimacy ayrıştırması düzeltildi.**
+> **🆕 Son sürüm — v1.255.2** — **Üç düzeltme: `#/scan` render çökmesi (sayı-kapısı yenilemesinden gelen 120 dizi boşluğu, şirket sınıflandırıcısını her render'da fırlatıyordu), kör Vietnamca dil denetimi (canlı QA vi için İngilizce stop-word sayıyordu — artık kendi tablosu var) ve zh-TW özet-bloğu kaybı (kapanış hatırlatması artık `SCORE_SUMMARY`'yi zorunlu kılıyor, yalnızca çevrilmemiş olmaktan öte).**
 >
-> **Önceki — v1.255.0** — **Vietnamca (Tiếng Việt), 19. arayüz dili olarak katılıyor — EN ile tam pariteli 1525 anahtarlık sözlük, vi/vi-VN algılama, eksiksiz yardım paketi, README ve CHANGELOG aynaları, cvstart.org açılış sayfası entegrasyonu ve dil değiştiricideki 🇻🇳.**
+> **Önceki — v1.255.1** — **İki inceleme düzeltme turu: Vietnamca yerelleştirmesinin Opus incelemesi (Hangul glif sızıntısı ve altı boşluklu yardım URL'si, artık kapılı) ve CAR-91/92 düzeltmelerinin ikinci tur incelemesi — değerlendirme başlık sınırları (`## Q&A` artık bir blok değil), Ukraynaca numaralı raporlar `### A.` alt bölümlerinden hayatta kalıyor, taşınan tarama satırları eskimeyle düşüyor ve gemini-sentez paydası/legitimacy ayrıştırması düzeltildi.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -422,7 +422,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 5686 birim + 144 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.255.1)
+└─ tests/                    # 5695 birim + 144 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.255.2)
    ├─ parsers.test.mjs       # markdown / pipeline / rapor ayrıştırıcıları (saf fonksiyonlar)
    ├─ api.test.mjs           # her uç nokta, geçici sunucu, ağ yok
    ├─ {ru,en}-scanner.test.mjs   # taklit edilmiş fetch

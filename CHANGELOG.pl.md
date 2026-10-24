@@ -9,6 +9,21 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.255.2] — 2026-10-24
+
+**Trzy poprawki widoczne dla użytkownika, z live regression i raportu o awarii na produkcji: awaria renderowania #/scan, ślepe sprawdzenie języka wietnamskiego i powtarzająca się utrata bloku podsumowania zh-TW.**
+
+### Naprawiono
+
+- **Awaria #/scan (CAR-99)**: regeneracja bramek zliczających od v1.253.0 zapisywała literał `FALLBACK_SOURCES` z podwójnym przecinkiem na końcu każdego wpisu — 120 dziur w tablicy (elision holes). `new Set(FALLBACK_SOURCES.map((s) => s.value))` w widoku skanu trzymało więc `undefined`, a `id.length` klasyfikatora firm rzucało `TypeError: Cannot read properties of undefined (reading 'length')` przy każdym renderze strony (złapane przez logbuf na produkcji). Dziury usunięto, a nowa bramka (4 specyfikacje, zweryfikowana na czerwono) wykonuje plik i failuje na każdej dziurze, bezużytecznym wpisie lub `undefined` w Secie identyfikatorów adapterów — tekstowa bramka dryfu nie widziała tej klasy.
+- **Ślepe sprawdzenie języka vi (CAR-97)**: wietnamski jest zapisem łacińskim i nie miał wpisu w tabeli stop words live-QA, więc „stop words vi" liczyło angielskie trafienia, a wietnamska odpowiedź czytała się jako `report not in vi` (live regression: vi 2, en 2). Wietnamski ma teraz własną dziesięciowyrazową tabelę słów funkcyjnych — czysto wietnamski raport przechodzi, angielski nadal failuje.
+- **zh-TW tracił blok SCORE_SUMMARY (CAR-98)**: końcowe przypomnienie językowe mówiło tylko, że format maszynowy nie może być tłumaczony, nigdy że blok podsumowania musi istnieć — krótki raport zh-TW (5983 znaki) niósł bloki A–G, ale pomijał ten blok całkowicie (nawrót klasy v1.239.2). Dyrektywa otwierająca i końcowe przypomnienie stwierdzają teraz, że blok jest obowiązkowy, a bez niego raport jest nieważny.
+
+### Uwagi
+
+- To wydanie celowo nie zmienia żadnego źródła skanera, liczby rejestru (121 = 116 EN + 5 RU · 116 adapterów) ani okablowania dostawców — to wydanie wyłącznie poprawek, więc bramki zliczające są nietknięte.
+- Testy 5695 (+9: `car99-fallback-holes` ×4, `car97-vi-lang-check` ×4, niezmiennik promptu CAR-98 ×1). Przeglądarka 143/143. Ponowne sprawdzenie live vi/zh-TW jedzie z regresją po wdrożeniu.
+
 ## [1.255.1] — 2026-10-24
 
 **Dwie rundy poprawek recenzenckich: recenzja Opus lokalizacji wietnamskiej (9 ustaleń) i recenzja drugiego przebiegu poprawek CAR-91/92 (5 imperatywów) — obie zamknięte testami czerwony→zielony.**

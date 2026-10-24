@@ -11,6 +11,21 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.255.2] — 2026-10-24
+
+**Trois correctifs visibles pour l'utilisateur, issus de la régression en direct et d'un rapport de crash en prod : le crash de rendu de #/scan, la vérification de langue vietnamienne aveugle et la perte récurrente du bloc de résumé en zh-TW.**
+
+### Corrigé
+
+- **Crash de #/scan (CAR-99)** : la régénération des portes de comptage depuis la v1.253.0 écrivait le littéral `FALLBACK_SOURCES` avec une double virgule finale sur chaque entrée — 120 trous d'élision dans le tableau. `new Set(FALLBACK_SOURCES.map((s) => s.value))` dans la vue scan contenait alors `undefined`, et le `id.length` du classificateur d'entreprises levait `TypeError: Cannot read properties of undefined (reading 'length')` à chaque rendu de page (repéré par logbuf en prod). Les trous sont supprimés et une nouvelle porte (4 specs, vérifiée en rouge) exécute le fichier et échoue sur tout trou, toute entrée inutilisable ou tout `undefined` dans le Set des ids d'adaptateurs — la porte de drift purement textuelle ne pouvait pas voir cette classe.
+- **Vérification de langue vi aveugle (CAR-97)** : le vietnamien est en écriture latine et n'avait pas d'entrée dans la table de mots vides de la QA en direct ; les « mots vides vi » comptaient donc des occurrences anglaises et une réponse vietnamienne était lue comme `report not in vi` (régression en direct : vi 2, en 2). Le vietnamien a désormais sa propre table de dix mots fonctionnels — un rapport purement vietnamien passe, un rapport anglais échoue toujours.
+- **zh-TW perdait le bloc SCORE_SUMMARY (CAR-98)** : le rappel de langue final disait seulement que le format machine ne doit pas être traduit, jamais que le bloc de résumé doit exister — un court rapport zh-TW (5,983 caractères) portait les blocs A–G mais omettait totalement le bloc (une récurrence de la classe v1.239.2). La directive d'ouverture et le rappel final stipulent désormais que le bloc est obligatoire et que sans lui le rapport est invalide.
+
+### Notes
+
+- Cette version ne change délibérément aucune source du scanner, ni le comptage du registre (121 = 116 EN + 5 RU · 116 adaptateurs), ni le câblage des fournisseurs — c'est une version de correctifs uniquement, les portes de comptage restent intactes.
+- Tests 5695 (+9 : `car99-fallback-holes` ×4, `car97-vi-lang-check` ×4, l'invariant de prompt CAR-98 ×1). Navigateur 143/143. La re-vérification en direct de vi/zh-TW fait partie de la régression post-déploiement.
+
 ## [1.255.1] — 2026-10-24
 
 **Deux rondes de correctifs issues de revues : la revue Opus de la locale vietnamienne (9 constats) et la revue de seconde passe des correctifs CAR-91/92 (5 impératifs) — toutes deux closes avec des tests rouge→vert.**

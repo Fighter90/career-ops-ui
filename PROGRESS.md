@@ -8,7 +8,7 @@ Release history belongs in [CHANGELOG.md](CHANGELOG.md), decisions in
 [docs/adr/](docs/adr/), vocabulary in [CONTEXT.md](CONTEXT.md). Anything already
 recoverable from those does **not** belong here.
 
-_Last updated: 2026-10-24 · **v1.255.1 SHIPPED** (review fix-rounds: vi-locale Opus review + CAR-92 r2 — 5686 tests, registry 121/116, locales 19, CodeQL 0 open) · before it: **v1.255.0** (vi 19th locale + cold-load bundle)_
+_Last updated: 2026-10-24 · **v1.255.2 SHIPPED** (CAR-99 scan-holes crash + CAR-97 vi checker + CAR-98 zh-TW summary — 5695 tests, browser 143/143, live ×19 re-check post-deploy) · before it: **v1.255.1** (vi review round + CAR-92 r2)_
 
 ---
 

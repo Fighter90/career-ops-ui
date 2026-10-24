@@ -2,6 +2,21 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.255.2] — 2026-10-24
+
+**Tre fix visibili all'utente dalla regressione live e da una segnalazione di crash in produzione: il crash del render di #/scan, il controllo linguistico cieco per il vietnamita e la perdita ricorrente del blocco summary in zh-TW.**
+
+### Corretto
+
+- **Crash di #/scan (CAR-99)**: dalla v1.253.0 la rigenerazione dei count-gate ha scritto il letterale `FALLBACK_SOURCES` con una virgola doppia finale su ogni voce — 120 buchi di elisione nell'array. `new Set(FALLBACK_SOURCES.map((s) => s.value))` nella vista scan conteneva allora `undefined`, e l'`id.length` del classificatore di aziende lanciava `TypeError: Cannot read properties of undefined (reading 'length')` a ogni render di pagina (colto da logbuf in produzione). I buchi sono rimossi e un nuovo gate (4 specifiche, verificato in rosso) esegue il file e fallisce su qualunque buco, voce inutilizzabile o `undefined` nel Set degli id adattatore — il gate di deriva solo-testuale non poteva vedere questa classe.
+- **Controllo linguistico cieco per il vi (CAR-97)**: il vietnamita è in alfabeto latino e non aveva voce nella tabella delle stop-word della QA live, quindi le «vi stop words» contavano le occorrenze inglesi e una risposta vietnamita risultava `report not in vi` (regressione live: vi 2, en 2). Il vietnamita ora ha la sua tabella di dieci parole funzionali — un report puro in vi passa, uno in inglese fallisce ancora.
+- **zh-TW ha perso il blocco SCORE_SUMMARY (CAR-98)**: il promemoria linguistico di chiusura diceva solo che il formato macchina non va tradotto, mai che il blocco summary deve esistere — un report zh-TW corto (5.983 caratteri) portava i blocchi A–G ma ometteva il blocco del tutto (una ricorrenza della classe v1.239.2). La direttiva di apertura e il promemoria di chiusura ora dichiarano che il blocco è obbligatorio e che il report senza è invalido.
+
+### Note
+
+- Questa release non cambia deliberatamente alcuna fonte scanner, né il conteggio del registro (121 = 116 EN + 5 RU · 116 adattatori), né il cablaggio dei provider — sono solo fix, quindi i count-gate restano intatti.
+- Test 5695 (+9: `car99-fallback-holes` ×4, `car97-vi-lang-check` ×4, l'invariante del prompt CAR-98 ×1). Browser 143/143. Il ri-controllo live vi/zh-TW viaggia con la regressione post-deploy.
+
 ## [1.255.1] — 2026-10-24
 
 **Due giri di correzioni dalle revisioni: la revisione Opus della localizzazione vietnamita (9 reperti) e la revisione di seconda passata dei fix CAR-91/92 (5 imperativi) — entrambi chiusi con test rosso→verde.**
