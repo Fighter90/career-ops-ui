@@ -7,19 +7,19 @@
 
 _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-5245%20passed-brightgreen)](#testes)
+[![tests](https://img.shields.io/badge/tests-5642%20passed-brightgreen)](#testes)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
-[![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#testes)
+[![playwright](https://img.shields.io/badge/playwright-143%2F143-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.254.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.254.0)
+[![release](https://img.shields.io/badge/release-v1.255.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.255.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versão — v1.253.1** — **Dez novas fontes de vagas entram no scanner — Atlassian, BWI, Computrabajo, Dover, Google, Kalibrr, Magneto365, Platsbanken, Tech in Asia e Zoho Recruit — o registro agora entrega 120 fontes (115 EN + 5 RU) com 115 adaptadores, e o role matcher mantém separados os títulos que diferem apenas por um código curto em maiúsculas.**
+> **🆕 Última versão — v1.255.0** — **O vietnamita (Tiếng Việt) entra como o 19.º idioma da interface — um dicionário de 1525 chaves com paridade total com o EN, detecção de vi/vi-VN, o pacote de ajuda completo, espelhos de README e CHANGELOG, integração na landing do cvstart.org e a 🇻🇳 no seletor de idioma.**
 >
-> **Anterior — v1.252.1** — **O fork do pai está sincronizado com career-ops-hq — 264 commits do upstream, pai 1.36.0 → 1.37.0 — com ambas as divergências do fork defendidas, e o deploy volta a fixar o pai em execução nessa base.**
+> **Anterior — v1.254.0** — **Uma versão de endurecimento da rodada de revisão com o modelo máximo: o snapshot do scanner nunca mais perde linhas, onze violações invariantes da camada LLM estão corrigidas, vinte e três must-fix do SPA aterrissam, e o ATS Paylocity se junta ao scanner — o registro agora entrega 121 fontes (116 EN + 5 RU) com 116 adaptadores.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -392,7 +392,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 5634 unit/integration + 129 Playwright e2e
+└─ tests/                    # 5642 unit/integration + 144 Playwright e2e
    ├─ parsers.test.mjs       # parsers de markdown / pipeline / report (funções puras)
    ├─ api.test.mjs           # cada endpoint, servidor efêmero, sem rede
    ├─ {ru,en}-scanner.test.mjs   # fetch mockado

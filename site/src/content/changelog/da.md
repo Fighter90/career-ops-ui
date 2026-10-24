@@ -2,12 +2,29 @@
 
 Alle væsentlige ændringer i **career-ops-ui** er dokumenteret her. Formatet følger [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), og projektet følger [Semantic Versioning](https://semver.org/).
 
-Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md) · [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.es.md) · [🇧🇷 Português](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.pt-BR.md) · [🇰🇷 한국어](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ko-KR.md) · [🇯🇵 日本語](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ja.md) · [🇷🇺 Русский](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ru.md) · [🇨🇳 简体中文](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.zh-CN.md) · [🇹🇼 繁體中文](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.zh-TW.md) · [🇫🇷 Français](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.fr.md) · [🇵🇱 Polski](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.pl.md) · [🇺🇦 Українська](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.uk.md) · [🇸🇦 العربية](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ar.md) · [🇩🇪 Deutsch](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.de.md) · [🇮🇹 Italiano](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.it.md) · [🇹🇷 Türkçe](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.tr.md) · [🇮🇳 हिन्दी](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.hi.md)
+Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md) · [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.es.md) · [🇧🇷 Português](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.pt-BR.md) · [🇰🇷 한국어](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ko-KR.md) · [🇯🇵 日本語](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ja.md) · [🇷🇺 Русский](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ru.md) · [🇨🇳 简体中文](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.zh-CN.md) · [🇹🇼 繁體中文](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.zh-TW.md) · [🇫🇷 Français](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.fr.md) · [🇵🇱 Polski](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.pl.md) · [🇺🇦 Українська](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.uk.md) · [🇸🇦 العربية](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ar.md) · [🇩🇪 Deutsch](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.de.md) · [🇮🇹 Italiano](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.it.md) · [🇹🇷 Türkçe](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.tr.md) · [🇮🇳 हिन्दी](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.hi.md) · [🇻🇳 Tiếng Việt](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.vi.md)
 
 > **Oversættelsesnote.** Filen er oversat til dansk: de seneste poster (fra v1.77.0 og bagud, inkl. v1.76.0 / v1.75.2 / v1.75.1 / v1.75.0) er fuldt oversat til teknisk dansk. Ældre poster bevares på engelsk; versionsoverskrifter og datoer er identiske med den engelske kildefil.
 
 ---
 
+
+## [1.255.0] — 2026-10-24
+
+**Vietnamesisk (Tiếng Việt) tilslutter sig som det 19. brugerfladesprog — en ordbog med 1525 nøgler i fuld paritet med EN, detektion af vi/vi-VN, den fulde hjælpepakke, README- og CHANGELOG-spejle, cvstart.org-landingsside-integration og 🇻🇳 i sprogskifteren.**
+
+### Tilføjet
+
+- **Vietnamesisk (`vi`) — 1525/1525 nøgler** i fuld paritet med `en`; `detect()` accepterer `vi` og `vi-VN`; vietnamesisk er LTR (kommer aldrig i `RTL_LANGS`). 'Pipeline' forbliver 'Pipeline' — standard teknisk låneord, på hvidlisten.
+- **Fuld docs/help/vi.md** (33 H2 / 125 H3), plus README.vi.md- og CHANGELOG.vi.md-spejle og de vietnamesiske stilladsstrenge i `prompts.mjs` (`LOCALE_NAMES` + `SCAFFOLD_STRINGS`) — vietnamesisk LLM-output virker ud af boksen.
+- **cvstart.org-landingsside på vietnamesisk** — `site/src/i18n/vi.json`, sitemap-locale-indgangen og et `dashboard-vi.png`-skærmbillede; sprogskifteren får 🇻🇳 (19 positioner).
+- **Opregningsgates 18 → 19** — LANGS, detect-prober, i18n-audit, changelog-paritet, README-oversættelsesblok, locale-sweep — plus red-first `tests/i18n-vi-locale.test.mjs` (139 linjer).
+
+### Noter
+
+- Landingssiden får vi — en bevidst afvigelse fra ta-præcedensen (den udgivelse holdt landingssiden på 17 med vilje); dokumenteret i udgivelsesspecifikationen.
+- vi er latinsk skrift, så no-latin-leaks-gaten gælder ikke (den vogter ikke-latinske locales); latinsk tech-ordforråd er normen her.
+- Testgulv: 5634 → **5642** (1 sprunget over = den opt-in browser-test til layout-indfangning, uændret).
 
 ## [1.254.0] — 2026-10-24
 

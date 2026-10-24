@@ -2,12 +2,29 @@
 
 Wszystkie istotne zmiany w **career-ops-ui**. Format wg [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), wersjonowanie [SemVer](https://semver.org/).
 
-Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md) · [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.es.md) · [🇧🇷 Português](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.pt-BR.md) · [🇰🇷 한국어](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ko-KR.md) · [🇯🇵 日本語](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ja.md) · [🇷🇺 Русский](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ru.md) · [🇨🇳 简体中文](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.zh-CN.md) · [🇹🇼 繁體中文](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.zh-TW.md) · [🇫🇷 Français](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.fr.md) · [🇺🇦 Українська](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.uk.md) · [🇩🇰 Dansk](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.da.md) · [🇸🇦 العربية](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ar.md) · [🇩🇪 Deutsch](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.de.md) · [🇮🇹 Italiano](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.it.md) · [🇹🇷 Türkçe](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.tr.md) · [🇮🇳 हिन्दी](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.hi.md)
+Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md) · [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.es.md) · [🇧🇷 Português](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.pt-BR.md) · [🇰🇷 한국어](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ko-KR.md) · [🇯🇵 日本語](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ja.md) · [🇷🇺 Русский](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ru.md) · [🇨🇳 简体中文](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.zh-CN.md) · [🇹🇼 繁體中文](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.zh-TW.md) · [🇫🇷 Français](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.fr.md) · [🇺🇦 Українська](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.uk.md) · [🇩🇰 Dansk](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.da.md) · [🇸🇦 العربية](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ar.md) · [🇩🇪 Deutsch](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.de.md) · [🇮🇹 Italiano](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.it.md) · [🇹🇷 Türkçe](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.tr.md) · [🇮🇳 हिन्दी](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.hi.md) · [🇻🇳 Tiếng Việt](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.vi.md)
 
 > **Uwaga dot. tłumaczenia (v1.70.0)** — polski dodano jako jeden z trzech nowych języków interfejsu. Ten plik tłumaczy najnowsze wpisy; pełna historia znajduje się w [🇬🇧 angielskim CHANGELOG](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md), który jest źródłem normatywnym.
 
 ---
 
+
+## [1.255.0] — 2026-10-24
+
+**Wietnamski (Tiếng Việt) dołącza jako 19. język interfejsu — słownik 1525 kluczy w pełnej parzystości z EN, wykrywanie vi/vi-VN, pełny pakiet pomocy, kopie lustrzane README i CHANGELOG, integracja z landingiem cvstart.org oraz 🇻🇳 w przełączniku języka.**
+
+### Dodano
+
+- **Wietnamski (`vi`) — 1525/1525 kluczy** w pełnej parzystości z `en`; `detect()` przyjmuje `vi` i `vi-VN`; wietnamski jest LTR (nigdy nie trafia do `RTL_LANGS`). „Pipeline” zostaje „Pipeline” — standardowe zapożyczenie techniczne, na białej liście.
+- **Pełny docs/help/vi.md** (33 H2 / 125 H3), plus kopie lustrzane README.vi.md i CHANGELOG.vi.md oraz wietnamskie ciągi szkieletowe w `prompts.mjs` (`LOCALE_NAMES` + `SCAFFOLD_STRINGS`) — wyjście LLM po wietnamsku działa od razu.
+- **Landing cvstart.org po wietnamsku** — `site/src/i18n/vi.json`, wpis locale w sitemap i zrzut `dashboard-vi.png`; przełącznik języka dostaje 🇻🇳 (19 pozycji).
+- **Bramki wyliczeniowe 18 → 19** — LANGS, sondy detect, audyt i18n, parzystość changeloga, blok tłumaczeń README, locale-sweep — plus red-first `tests/i18n-vi-locale.test.mjs` (139 linii).
+
+### Uwagi
+
+- Landing cvstart.org dostaje vi — świadome odstępstwo od precedensu ta (tamta wersja trzymała landing na 17 celowo); udokumentowane w specyfikacji wydania.
+- vi jest w piśmie łacińskim, więc bramka no-latin-leaks nie ma zastosowania (pilnuje locale niełacińskich); łacińskie słownictwo techniczne to tu norma.
+- Podłoga testów: 5634 → **5642** (1 pominięta = opcjonalny przeglądarkowy test przechwytywania układu, bez zmian).
 
 ## [1.254.0] — 2026-10-24
 

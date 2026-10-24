@@ -6,6 +6,23 @@ Bản dịch: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.255.0] — 2026-10-24
+
+**Tiếng Việt gia-nhập làm ngôn-ngữ-giao-diện thứ 19 — từ-điển 1525 khóa đối-xứng hoàn-toàn với EN, nhận-diện vi/vi-VN, trọn gói trợ-giúp, bản-phản-ánh README và CHANGELOG, tích-hợp landing cvstart.org, và lá 🇻🇳 trên bộ-chọn-ngôn-ngữ.**
+
+### Thêm mới
+
+- **Tiếng Việt (`vi`) — 1525/1525 khóa** đối-xứng hoàn-toàn với `en`; `detect()` chấp-nhận `vi` và `vi-VN`; tiếng Việt là LTR (không-bao-giờ thêm vào `RTL_LANGS`). 'Pipeline' vẫn-là 'Pipeline' — từ-mượn-kỹ-thuật-chuẩn, nằm trong danh-sách-trắng.
+- **Đầy-đủ docs/help/vi.md** (33 H2 / 125 H3), cộng với bản-phản-ánh README.vi.md và CHANGELOG.vi.md, và các-chuỗi-khung tiếng Việt trong `prompts.mjs` (`LOCALE_NAMES` + `SCAFFOLD_STRINGS`) — đầu-ra LLM tiếng Việt chạy-ngay-từ-hộp.
+- **Landing cvstart.org bằng tiếng Việt** — `site/src/i18n/vi.json`, mục-locale trong sitemap và ảnh-chụp `dashboard-vi.png`; bộ-chọn-ngôn-ngữ có-thêm 🇻🇳 (19 vị-trí).
+- **Các-cổng-liệt-kê 18 → 19** — LANGS, thăm-dò detect, kiểm-toán i18n, đối-xứng changelog, khối-bản-dịch README, quét-locale — cùng `tests/i18n-vi-locale.test.mjs` đỏ-trước (139 dòng).
+
+### Ghi chú
+
+- Landing cvstart.org nhận-thêm vi — một-lệch-chủ-đích so-với tiền-lệ ta (bản-phát-hành-ấy cố-ý giữ landing ở mức 17); đã-ghi trong đặc-tả-phát-hành.
+- vi là chữ-Latin nên cổng no-latin-leaks không-áp-dụng (nó canh các-locale không-Latin); từ-vựng-kỹ-thuật-Latin là-chuẩn-tắc.
+- Sàn-kiểm-thử: 5634 → **5642** (1 bị-bỏ-qua = test-trình-duyệt-bắt-ảnh-layout tùy-chọn, không-đổi).
+
 ## [1.254.0] — 2026-10-24
 
 **Một bản phát hành gia-cố từ vòng rà-soát mô-hình-tối: ảnh-chụp-scanner không bao giờ mất dòng nữa, mười-một vi-phạm-bất-biến ở-tầng-LLM được sửa, hai-mươi-ba bản-sửa-bắt-buộc-SPA đổ-bộ, và ATS Paylocity gia-nhập-máy-quét — registry giờ cung cấp 121 nguồn (116 EN + 5 RU) với 116 adapter.**

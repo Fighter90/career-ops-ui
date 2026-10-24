@@ -2,6 +2,23 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.255.0] — 2026-10-24
+
+**Vietnamca (Tiếng Việt), 19. arayüz dili olarak katılıyor — EN ile tam pariteli 1525 anahtarlık sözlük, vi/vi-VN algılama, eksiksiz yardım paketi, README ve CHANGELOG aynaları, cvstart.org açılış sayfası entegrasyonu ve dil değiştiricideki 🇻🇳.**
+
+### Eklendi
+
+- **Vietnamca (`vi`) — 1525/1525 anahtar**, `en` ile tam parite; `detect()` `vi` ve `vi-VN` kabul eder; Vietnamca LTR'dir (asla `RTL_LANGS`'a eklenmez). 'Pipeline' 'Pipeline' olarak kalır — standart teknik ödünç kelime, beyaz listede.
+- **Eksiksiz docs/help/vi.md** (33 H2 / 125 H3), ayrıca README.vi.md ve CHANGELOG.vi.md aynaları ve `prompts.mjs` içindeki Vietnamca iskele dizeleri (`LOCALE_NAMES` + `SCAFFOLD_STRINGS`) — Vietnamca LLM çıktısı kutudan çıktığı gibi çalışır.
+- **cvstart.org açılış sayfasının Vietnamca'sı** — `site/src/i18n/vi.json`, sitemap locale girdisi ve bir `dashboard-vi.png` ekran görüntüsü; dil değiştirici 🇻🇳 kazanır (19 konum).
+- **Sayım kapıları 18 → 19** — LANGS, detect prob'ları, i18n denetimi, changelog paritesi, README çeviri bloğu, locale taraması — ayrıca red-first `tests/i18n-vi-locale.test.mjs` (139 satır).
+
+### Notlar
+
+- Açılış sayfası vi kazanıyor — ta emsalinden kasıtlı bir sapma (o sürüm açılış sayfasını bilerek 17'de tutmuştu); sürüm şartnamesinde belgelendi.
+- vi Latin yazıdır, bu yüzden no-latin-leaks kapısı uygulanmaz (Latin olmayan dilleri korur); Latin teknik kelime hazinesi burada normdur.
+- Test tabanı: 5634 → **5642** (1 atlanan = katılım-isteğe bağlı yerleşim-yakalama tarayıcı testi, değişmedi).
+
 ## [1.254.0] — 2026-10-24
 
 **Maksimum model inceleme turundan bir sağlamlaştırma sürümü: tarayıcı anlık görüntüsü artık satır kaybetmiyor, LLM katmanının on bir invariat ihlali düzeltildi, yirmi üç SPA must-fix'i indi ve Paylocity ATS tarayıcıya katılıyor — kayıt defteri artık 115 adaptörle 121 kaynak (115 EN + 5 RU) sunuyor.**

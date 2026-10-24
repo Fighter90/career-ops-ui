@@ -2,12 +2,29 @@
 
 Alle væsentlige ændringer i **career-ops-ui** er dokumenteret her. Formatet følger [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), og projektet følger [Semantic Versioning](https://semver.org/).
 
-Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHANGELOG.pt-BR.md) · [🇰🇷 한국어](CHANGELOG.ko-KR.md) · [🇯🇵 日本語](CHANGELOG.ja.md) · [🇷🇺 Русский](CHANGELOG.ru.md) · [🇨🇳 简体中文](CHANGELOG.zh-CN.md) · [🇹🇼 繁體中文](CHANGELOG.zh-TW.md) · [🇫🇷 Français](CHANGELOG.fr.md) · [🇵🇱 Polski](CHANGELOG.pl.md) · [🇺🇦 Українська](CHANGELOG.uk.md) · [🇸🇦 العربية](CHANGELOG.ar.md) · [🇩🇪 Deutsch](CHANGELOG.de.md) · [🇮🇹 Italiano](CHANGELOG.it.md) · [🇹🇷 Türkçe](CHANGELOG.tr.md) · [🇮🇳 हिन्दी](CHANGELOG.hi.md)
+Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHANGELOG.pt-BR.md) · [🇰🇷 한국어](CHANGELOG.ko-KR.md) · [🇯🇵 日本語](CHANGELOG.ja.md) · [🇷🇺 Русский](CHANGELOG.ru.md) · [🇨🇳 简体中文](CHANGELOG.zh-CN.md) · [🇹🇼 繁體中文](CHANGELOG.zh-TW.md) · [🇫🇷 Français](CHANGELOG.fr.md) · [🇵🇱 Polski](CHANGELOG.pl.md) · [🇺🇦 Українська](CHANGELOG.uk.md) · [🇸🇦 العربية](CHANGELOG.ar.md) · [🇩🇪 Deutsch](CHANGELOG.de.md) · [🇮🇹 Italiano](CHANGELOG.it.md) · [🇹🇷 Türkçe](CHANGELOG.tr.md) · [🇮🇳 हिन्दी](CHANGELOG.hi.md) · [🇻🇳 Tiếng Việt](CHANGELOG.vi.md)
 
 > **Oversættelsesnote.** Filen er oversat til dansk: de seneste poster (fra v1.77.0 og bagud, inkl. v1.76.0 / v1.75.2 / v1.75.1 / v1.75.0) er fuldt oversat til teknisk dansk. Ældre poster bevares på engelsk; versionsoverskrifter og datoer er identiske med den engelske kildefil.
 
 ---
 
+
+## [1.255.0] — 2026-10-24
+
+**Vietnamesisk (Tiếng Việt) tilslutter sig som det 19. brugerfladesprog — en ordbog med 1525 nøgler i fuld paritet med EN, detektion af vi/vi-VN, den fulde hjælpepakke, README- og CHANGELOG-spejle, cvstart.org-landingsside-integration og 🇻🇳 i sprogskifteren.**
+
+### Tilføjet
+
+- **Vietnamesisk (`vi`) — 1525/1525 nøgler** i fuld paritet med `en`; `detect()` accepterer `vi` og `vi-VN`; vietnamesisk er LTR (kommer aldrig i `RTL_LANGS`). 'Pipeline' forbliver 'Pipeline' — standard teknisk låneord, på hvidlisten.
+- **Fuld docs/help/vi.md** (33 H2 / 125 H3), plus README.vi.md- og CHANGELOG.vi.md-spejle og de vietnamesiske stilladsstrenge i `prompts.mjs` (`LOCALE_NAMES` + `SCAFFOLD_STRINGS`) — vietnamesisk LLM-output virker ud af boksen.
+- **cvstart.org-landingsside på vietnamesisk** — `site/src/i18n/vi.json`, sitemap-locale-indgangen og et `dashboard-vi.png`-skærmbillede; sprogskifteren får 🇻🇳 (19 positioner).
+- **Opregningsgates 18 → 19** — LANGS, detect-prober, i18n-audit, changelog-paritet, README-oversættelsesblok, locale-sweep — plus red-first `tests/i18n-vi-locale.test.mjs` (139 linjer).
+
+### Noter
+
+- Landingssiden får vi — en bevidst afvigelse fra ta-præcedensen (den udgivelse holdt landingssiden på 17 med vilje); dokumenteret i udgivelsesspecifikationen.
+- vi er latinsk skrift, så no-latin-leaks-gaten gælder ikke (den vogter ikke-latinske locales); latinsk tech-ordforråd er normen her.
+- Testgulv: 5634 → **5642** (1 sprunget over = den opt-in browser-test til layout-indfangning, uændret).
 
 ## [1.254.0] — 2026-10-24
 

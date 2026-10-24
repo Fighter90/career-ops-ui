@@ -2,12 +2,29 @@
 
 **career-ops-ui** 的所有重要变更均记录于此。格式遵循 [Keep a Changelog](https://keepachangelog.com/zh-CN/1.1.0/),版本号遵循 [SemVer](https://semver.org/lang/zh-CN/)。
 
-翻译版本:[🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHANGELOG.pt-BR.md) · [🇰🇷 한국어](CHANGELOG.ko-KR.md) · [🇯🇵 日本語](CHANGELOG.ja.md) · [🇷🇺 Русский](CHANGELOG.ru.md) · [🇹🇼 繁體中文](CHANGELOG.zh-TW.md) · [🇫🇷 Français](CHANGELOG.fr.md) · [🇵🇱 Polski](CHANGELOG.pl.md) · [🇺🇦 Українська](CHANGELOG.uk.md) · [🇩🇰 Dansk](CHANGELOG.da.md) · [🇸🇦 العربية](CHANGELOG.ar.md) · [🇩🇪 Deutsch](CHANGELOG.de.md) · [🇮🇹 Italiano](CHANGELOG.it.md) · [🇹🇷 Türkçe](CHANGELOG.tr.md) · [🇮🇳 हिन्दी](CHANGELOG.hi.md)
+翻译版本:[🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHANGELOG.pt-BR.md) · [🇰🇷 한국어](CHANGELOG.ko-KR.md) · [🇯🇵 日本語](CHANGELOG.ja.md) · [🇷🇺 Русский](CHANGELOG.ru.md) · [🇹🇼 繁體中文](CHANGELOG.zh-TW.md) · [🇫🇷 Français](CHANGELOG.fr.md) · [🇵🇱 Polski](CHANGELOG.pl.md) · [🇺🇦 Українська](CHANGELOG.uk.md) · [🇩🇰 Dansk](CHANGELOG.da.md) · [🇸🇦 العربية](CHANGELOG.ar.md) · [🇩🇪 Deutsch](CHANGELOG.de.md) · [🇮🇹 Italiano](CHANGELOG.it.md) · [🇹🇷 Türkçe](CHANGELOG.tr.md) · [🇮🇳 हिन्दी](CHANGELOG.hi.md) · [🇻🇳 Tiếng Việt](CHANGELOG.vi.md)
 
 > **说明** — 本文件已完整翻译为出版级简体中文(中国大陆用语规范),包含全部历史版本条目。代码块、提交信息、文件路径、URL、环境变量、命令行片段以及 CSP / SSRF / TOCTOU / WCAG / ATS / JD / SSE / REST / API 等通用英文缩写按原文保留。
 
 ---
 
+
+## [1.255.0] — 2026-10-24
+
+**越南语（Tiếng Việt）作为第19个界面语言加入 — 一个与 EN 完全对齐的 1525 键词典、vi/vi-VN 检测、完整帮助包、README 与 CHANGELOG 镜像、cvstart.org 落地页集成，以及语言切换器中的 🇻🇳。**
+
+### 新增
+
+- **越南语(`vi`) — 1525/1525 键**，与 `en` 完全对齐；`detect()` 接受 `vi` 与 `vi-VN`；越南语为 LTR(不加入 `RTL_LANGS`)。'Pipeline' 保留为 'Pipeline' — 标准技术外来词，已列入白名单。
+- **完整 docs/help/vi.md**(33 H2 / 125 H3)，外加 README.vi.md 与 CHANGELOG.vi.md 镜像，以及 `prompts.mjs` 中的越南语脚手架字符串(`LOCALE_NAMES` + `SCAFFOLD_STRINGS`)— 越南语 LLM 输出开箱即用。
+- **cvstart.org 落地页越南语版** — `site/src/i18n/vi.json`、sitemap 的 locale 条目和 `dashboard-vi.png` 截图；语言切换器新增 🇻🇳(19 个位置)。
+- **枚举门槛 18 → 19** — LANGS、detect 探针、i18n 审计、changelog 对齐、README 翻译块、locale 扫描 — 外加 red-first 的 `tests/i18n-vi-locale.test.mjs`(139 行)。
+
+### 备注
+
+- cvstart.org 落地页新增 vi — 对 ta 先例的一次有意偏离(该版本刻意保持落地页为 17 种)；已在发布规格中记录。
+- vi 是拉丁文字，不适用 no-latin-leaks 门槛(它守护非拉丁语言)；拉丁技术词汇在此是常态。
+- 测试下限：5634 → **5642**(1 项跳过 = 可选的布局截图浏览器测试，未变)。
 
 ## [1.254.0] — 2026-10-24
 

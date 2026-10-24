@@ -2,12 +2,29 @@
 
 **career-ops-ui** の主要な変更履歴。形式は [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)、バージョンは [SemVer](https://semver.org/) に準拠します。
 
-翻訳: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md) · [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.es.md) · [🇧🇷 Português](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.pt-BR.md) · [🇰🇷 한국어](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ko-KR.md) · [🇷🇺 Русский](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ru.md) · [🇨🇳 简体中文](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.zh-CN.md) · [🇹🇼 繁體中文](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.zh-TW.md) · [🇫🇷 Français](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.fr.md) · [🇵🇱 Polski](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.pl.md) · [🇺🇦 Українська](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.uk.md) · [🇩🇰 Dansk](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.da.md) · [🇸🇦 العربية](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ar.md) · [🇩🇪 Deutsch](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.de.md) · [🇮🇹 Italiano](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.it.md) · [🇹🇷 Türkçe](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.tr.md) · [🇮🇳 हिन्दी](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.hi.md)
+翻訳: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md) · [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.es.md) · [🇧🇷 Português](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.pt-BR.md) · [🇰🇷 한국어](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ko-KR.md) · [🇷🇺 Русский](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ru.md) · [🇨🇳 简体中文](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.zh-CN.md) · [🇹🇼 繁體中文](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.zh-TW.md) · [🇫🇷 Français](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.fr.md) · [🇵🇱 Polski](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.pl.md) · [🇺🇦 Українська](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.uk.md) · [🇩🇰 Dansk](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.da.md) · [🇸🇦 العربية](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.ar.md) · [🇩🇪 Deutsch](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.de.md) · [🇮🇹 Italiano](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.it.md) · [🇹🇷 Türkçe](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.tr.md) · [🇮🇳 हिन्दी](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.hi.md) · [🇻🇳 Tiếng Việt](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.vi.md)
 
 > **翻訳ノート** — このファイルは全エントリが日本語本文で完全に翻訳済みです。コードブロック、コミットメッセージ、ファイルパス、URL、環境変数、コマンド、リンクラベルは原文のまま保持しています。
 
 ---
 
+
+## [1.255.0] — 2026-10-24
+
+**ベトナム語(Tiếng Việt)が19番目のUIロケールとして登場 — ENと完全なパリティを持つ1525キーの辞書、vi/vi-VNの検出、ヘルプバンドル全文、README・CHANGELOGのミラー、cvstart.orgランディング統合、そして言語スイッチャーの🇻🇳。**
+
+### 追加
+
+- **ベトナム語(`vi`) — 1525/1525キー**、`en`と完全なパリティ。`detect()`は`vi`と`vi-VN`を受け付ける。ベトナム語はLTR(`RTL_LANGS`には入れない)。'Pipeline'は'Pipeline'のまま — 標準的な技術用語の外来語としてホワイトリスト登録済み。
+- **docs/help/vi.md完全版**(33 H2 / 125 H3)に加え、README.vi.md・CHANGELOG.vi.mdのミラー、そして`prompts.mjs`のベトナム語スキャフォールド文字列(`LOCALE_NAMES` + `SCAFFOLD_STRINGS`) — ベトナム語のLLM出力が最初から動く。
+- **cvstart.orgランディングのベトナム語版** — `site/src/i18n/vi.json`、サイトマップのロケール項目、`dashboard-vi.png`のスクリーンショット。言語スイッチャーに🇻🇳を追加(19枠)。
+- **列挙ゲート 18 → 19** — LANGS、detectプローブ、i18n監査、チェンジログのパリティ、README翻訳ブロック、ロケールスイープ — さらに赤から始まる`tests/i18n-vi-locale.test.mjs`(139行)。
+
+### メモ
+
+- cvstart.orgランディングにviを追加 — taの前例からの意図的な逸脱(あのリリースはランディングを意図的に17のまま維持)。リリース仕様に記載。
+- viはラテン文字系なのでno-latin-leaksゲートは適用外(非ラテン系ロケールを守るもの)。ラテンの技術語彙が標準。
+- テストフロア: 5634 → **5642**(1件スキップ = オプトインのレイアウトキャプチャ・ブラウザテスト、変更なし)。
 
 ## [1.254.0] — 2026-10-24
 

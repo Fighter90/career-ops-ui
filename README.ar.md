@@ -10,19 +10,19 @@
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
-[![tests](https://img.shields.io/badge/tests-5245%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-5642%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#الاختبارات)
-[![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#الاختبارات)
+[![playwright](https://img.shields.io/badge/playwright-143%2F143-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.254.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.254.0)
+[![release](https://img.shields.io/badge/release-v1.255.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.255.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 أحدث إصدار — v1.253.1** — **عشرة مصادر وظائف جديدة تنضم إلى الماسح — Atlassian وBWI وComputrabajo وDover وGoogle وKalibrr وMagneto365 وPlatsbanken وTech in Asia وZoho Recruit — يقدم السجل الآن 120 مصدراً (115 EN + 5 RU) مع 115 محولاً، ويُبقي مطابق الأدوار على التفريق بين العناوين التي تختلف فقط برمز قصير بأحرف كبيرة.**
+> **🆕 أحدث إصدار — v1.255.0** — **تنضم الفيتنامية (Tiếng Việt) بوصفها اللغة التاسعة عشرة لواجهة المستخدم — قاموس من 1525 مفتاحًا بموازاة كاملة مع EN، وكشف vi/vi-VN، وحزمة المساعدة الكاملة، ونسختا README و CHANGELOG المطابقتان، وتكامل صفحة الهبوط cvstart.org، و🇻🇳 في مبدّل اللغة.**
 >
-> **السابق — v1.252.1** — **تمت مزامنة شوكة الأب مع career-ops-hq — 264 التزاماً من المنبع، الأب 1.36.0 → 1.37.0 — مع صيانة انحرافي الشوكة، ويعيد النشر تثبيت الأب العامل على تلك القاعدة.**
+> **السابق — v1.254.0** — **إصدار تقوية من جولة المراجعة بالطراز الأقصى: لقطة الماسح لم تعد تفقد صفاً، وأحد عشر انتهاكاً لثوابت طبقة LLM أُصلحت، وثلاثة وعشرين إصلاحاً إلزامياً للواجهة هبطت، وانضم ATS Paylocity إلى الماسح — يقدم السجل الآن 121 مصدراً (115 EN + 5 RU) مع 115 محولاً.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -171,7 +171,7 @@ career-ops/
 └─ web-ui/          ← هذا المستودع
    ├─ server/       # Express + 15 وحدة مسارات
    ├─ public/       # vanilla JS SPA — بدون bundler
-   └─ tests/        # 5634 unit + 129 Playwright + 44 e2e
+   └─ tests/        # 5642 unit + 144 Playwright + 44 e2e
 ```
 
 <div dir="rtl">

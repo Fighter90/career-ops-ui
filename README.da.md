@@ -7,19 +7,19 @@
 
 _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-5245%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-5642%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
-[![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#tests)
+[![playwright](https://img.shields.io/badge/playwright-143%2F143-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.254.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.254.0)
+[![release](https://img.shields.io/badge/release-v1.255.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.255.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Seneste udgivelse — v1.253.1** — **Ti nye jobkilder slutte sig til scanneren — Atlassian, BWI, Computrabajo, Dover, Google, Kalibrr, Magneto365, Platsbanken, Tech in Asia og Zoho Recruit — registret leverer nu 120 kilder (115 EN + 5 RU) med 115 adaptere, og role matcher holder titler adskilt når de kun adskiller sig ved en kort kode med store bogstaver.**
+> **🆕 Seneste udgivelse — v1.255.0** — **Vietnamesisk (Tiếng Việt) tilslutter sig som det 19. brugerfladesprog — en ordbog med 1525 nøgler i fuld paritet med EN, detektion af vi/vi-VN, den fulde hjælpepakke, README- og CHANGELOG-spejle, cvstart.org-landingsside-integration og 🇻🇳 i sprogskifteren.**
 >
-> **Tidligere — v1.252.1** — **Parent-forket er synkroniseret med career-ops-hq — 264 upstream-commits, parent 1.36.0 → 1.37.0 — begge fork-afvigelser er forsvaret, og udrulningen fastgør den kørende parent til den base igen.**
+> **Tidligere — v1.254.0** — **En hærdningsudgivelse fra anmeldelsesrunden med maksimal-modellen: scannerens snapshot mister aldrig igen rækker, elleve invariantovertrædelser i LLM-laget er rettet, treogtyve SPA-must-fixes lander, og Paylocity-ATS'en slutte sig til scanneren — registret leverer nu 121 kilder (115 EN + 5 RU) med 116 adaptere.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -422,7 +422,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 5634 unit + 129 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.254.0)
+└─ tests/                    # 5642 unit + 144 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.255.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch

@@ -2,6 +2,23 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.255.0] — 2026-10-24
+
+**Il vietnamita (Tiếng Việt) entra come 19ª lingua dell'interfaccia — un dizionario di 1525 chiavi in piena parità con l'EN, rilevamento di vi/vi-VN, il pacchetto guida completo, i mirror README e CHANGELOG, l'integrazione nella landing di cvstart.org e il 🇻🇳 nel selettore lingua.**
+
+### Aggiunto
+
+- **Vietnamita (`vi`) — 1525/1525 chiavi** in piena parità con `en`; `detect()` accetta `vi` e `vi-VN`; il vietnamita è LTR (mai aggiunto a `RTL_LANGS`). 'Pipeline' resta 'Pipeline' — prestito tecnico standard, in whitelist.
+- **docs/help/vi.md completo** (33 H2 / 125 H3), più i mirror README.vi.md e CHANGELOG.vi.md e le stringhe-scaffold in vietnamita in `prompts.mjs` (`LOCALE_NAMES` + `SCAFFOLD_STRINGS`) — l'output LLM in vietnamita funziona fin da subito.
+- **Landing di cvstart.org in vietnamita** — `site/src/i18n/vi.json`, la voce locale della sitemap e uno screenshot `dashboard-vi.png`; il selettore lingua guadagna il 🇻🇳 (19 posizioni).
+- **Cancelli di enumerazione 18 → 19** — LANGS, sonde detect, audit i18n, parità del changelog, blocco traduzioni README, spazzata locale — più il `tests/i18n-vi-locale.test.mjs` red-first (139 righe).
+
+### Note
+
+- La landing di cvstart.org guadagna il vi — una deviazione deliberata dal precedente ta (quel rilascio teneva la landing a 17 di proposito); documentato nella specifica del rilascio.
+- vi è in scrittura latina, quindi il cancello no-latin-leaks non si applica (custodisce le lingue non latine); il lessico tecnico latino qui è la norma.
+- Pavimento dei test: 5634 → **5642** (1 saltata = il test browser opt-in di cattura del layout, invariato).
+
 ## [1.254.0] — 2026-10-24
 
 **Una versione di indurimento dal giro di revisione col modello massimo: lo snapshot dello scanner non perde più righe, undici violazioni d'invariante del layer LLM sono corrette, ventitré must-fix SPA atterrano, e l'ATS Paylocity si unisce allo scanner — il registro ora fornisce 121 fonti (115 EN + 5 RU) con 116 adattatori.**

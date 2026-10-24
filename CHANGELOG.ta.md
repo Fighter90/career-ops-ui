@@ -2,9 +2,26 @@
 
 > இந்த மாற்றப் பதிவு v1.245.0-இல் தொடங்குகிறது — தமிழ் மொழியாக்கம் சேர்க்கப்பட்ட பதிப்பு. முந்தைய பதிப்புகளுக்கு [🇬🇧 CHANGELOG.md](CHANGELOG.md) பார்க்கவும்.
 
-மொழிபெயர்ப்புகள்: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHANGELOG.pt-BR.md) · [🇰🇷 한국어](CHANGELOG.ko-KR.md) · [🇯🇵 日本語](CHANGELOG.ja.md) · [🇷🇺 Русский](CHANGELOG.ru.md) · [🇨🇳 简体中文](CHANGELOG.zh-CN.md) · [🇹🇼 繁體中文](CHANGELOG.zh-TW.md) · [🇫🇷 Français](CHANGELOG.fr.md) · [🇵🇱 Polski](CHANGELOG.pl.md) · [🇺🇦 Українська](CHANGELOG.uk.md) · [🇩🇰 Dansk](CHANGELOG.da.md) · [🇸🇦 العربية](CHANGELOG.ar.md) · [🇩🇪 Deutsch](CHANGELOG.de.md) · [🇮🇹 Italiano](CHANGELOG.it.md) · [🇹🇷 Türkçe](CHANGELOG.tr.md) · [🇮🇳 हिन्दी](CHANGELOG.hi.md)
+மொழிபெயர்ப்புகள்: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHANGELOG.pt-BR.md) · [🇰🇷 한국어](CHANGELOG.ko-KR.md) · [🇯🇵 日本語](CHANGELOG.ja.md) · [🇷🇺 Русский](CHANGELOG.ru.md) · [🇨🇳 简体中文](CHANGELOG.zh-CN.md) · [🇹🇼 繁體中文](CHANGELOG.zh-TW.md) · [🇫🇷 Français](CHANGELOG.fr.md) · [🇵🇱 Polski](CHANGELOG.pl.md) · [🇺🇦 Українська](CHANGELOG.uk.md) · [🇩🇰 Dansk](CHANGELOG.da.md) · [🇸🇦 العربية](CHANGELOG.ar.md) · [🇩🇪 Deutsch](CHANGELOG.de.md) · [🇮🇹 Italiano](CHANGELOG.it.md) · [🇹🇷 Türkçe](CHANGELOG.tr.md) · [🇮🇳 हिन्दी](CHANGELOG.hi.md) · [🇻🇳 Tiếng Việt](CHANGELOG.vi.md)
 
 ---
+
+## [1.255.0] — 2026-10-24
+
+**வியட்நாமிஸ் (Tiếng Việt) 19வது UI மொழியாக இணைகிறது — EN-உடன் முழு சமநிலை கொண்ட 1525 விசை அகராதி, vi/vi-VN கண்டறிதல், முழு உதவி தொகுப்பு, README மற்றும் CHANGELOG கண்ணாடிகள், cvstart.org லேண்டிங் ஒருங்கிணைப்பு, மொழி மாற்றியின் 🇻🇳.**
+
+### சேர்க்கப்பட்டது
+
+- **வியட்நாமிஸ் (`vi`) — 1525/1525 விசைகள்**, `en`-உடன் முழு சமநிலை; `detect()` `vi`, `vi-VN` ஏற்கும்; வியட்நாமிஸ் LTR (`RTL_LANGS`-இல் சேர்க்கப்படாது). 'Pipeline' 'Pipeline'-ஆகவே இருக்கும் — நிலையான தொழில்நுட்ப கடன்சொல், வெள்ளைப்பட்டியலில்.
+- **முழு docs/help/vi.md** (33 H2 / 125 H3), மேலும் README.vi.md, CHANGELOG.vi.md கண்ணாடிகள், `prompts.mjs`-இல் வியட்நாமிஸ் ஸ்காஃபோல்டு சரங்கள் (`LOCALE_NAMES` + `SCAFFOLD_STRINGS`) — வியட்நாமிஸ் LLM வெளியீடு பெட்டியிலிருந்தே இயங்கும்.
+- **cvstart.org லேண்டிங் வியட்நாமிஸ் பதிப்பு** — `site/src/i18n/vi.json`, sitemap locale உள்ளீடு, `dashboard-vi.png` ஸ்கிரீன்ஷாட்; மொழி மாற்றிக்கு 🇻🇳 சேர்கிறது (19 இடங்கள்).
+- **எண்ணும் வாயில்கள் 18 → 19** — LANGS, detect ப்ரோப்கள், i18n தணிக்கை, changelog சமநிலை, README மொழிபெயர்ப்பு தொகுதி, locale ஸ்வீப் — மேலும் red-first `tests/i18n-vi-locale.test.mjs` (139 வரிகள்).
+
+### குறிப்புகள்
+
+- cvstart.org லேண்டிங்கு vi கிடைக்கிறது — ta முன்னுதாரணத்திலிருந்து நோக்கத்துடன் விலகல் (அந்த வெளியீடு லேண்டிங்கை வேண்டுமென்றே 17-இல் வைத்திருந்தது); வெளியீட்டு விவரக்குறிப்பில் ஆவணப்படுத்தப்பட்டது.
+- vi லத்தீன் எழுத்து; எனவே no-latin-leaks வாயில் பொருந்தாது (அது லத்தீன் அல்லாத மொழிகளைக் காக்கும்); லத்தீன் தொழில்நுட்ப சொற்களே இங்கு இயல்பு.
+- சோதனை தளம்: 5634 → **5642** (1 தவிர்க்கப்பட்டது = விருப்ப layout-கேப்சர் உலாவி சோதனை, மாற்றமில்லை).
 
 ## [1.254.0] — 2026-10-24
 

@@ -2,12 +2,29 @@
 
 **career-ops-ui** 의 모든 주요 변경 사항을 기록합니다. 형식은 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) 를 따르며, 버전은 [Semantic Versioning](https://semver.org/) 을 준수합니다.
 
-번역: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHANGELOG.pt-BR.md) · [🇯🇵 日本語](CHANGELOG.ja.md) · [🇷🇺 Русский](CHANGELOG.ru.md) · [🇨🇳 简体中文](CHANGELOG.zh-CN.md) · [🇹🇼 繁體中文](CHANGELOG.zh-TW.md) · [🇫🇷 Français](CHANGELOG.fr.md) · [🇵🇱 Polski](CHANGELOG.pl.md) · [🇺🇦 Українська](CHANGELOG.uk.md) · [🇩🇰 Dansk](CHANGELOG.da.md) · [🇸🇦 العربية](CHANGELOG.ar.md) · [🇩🇪 Deutsch](CHANGELOG.de.md) · [🇮🇹 Italiano](CHANGELOG.it.md) · [🇹🇷 Türkçe](CHANGELOG.tr.md) · [🇮🇳 हिन्दी](CHANGELOG.hi.md)
+번역: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHANGELOG.pt-BR.md) · [🇯🇵 日本語](CHANGELOG.ja.md) · [🇷🇺 Русский](CHANGELOG.ru.md) · [🇨🇳 简体中文](CHANGELOG.zh-CN.md) · [🇹🇼 繁體中文](CHANGELOG.zh-TW.md) · [🇫🇷 Français](CHANGELOG.fr.md) · [🇵🇱 Polski](CHANGELOG.pl.md) · [🇺🇦 Українська](CHANGELOG.uk.md) · [🇩🇰 Dansk](CHANGELOG.da.md) · [🇸🇦 العربية](CHANGELOG.ar.md) · [🇩🇪 Deutsch](CHANGELOG.de.md) · [🇮🇹 Italiano](CHANGELOG.it.md) · [🇹🇷 Türkçe](CHANGELOG.tr.md) · [🇮🇳 हिन्दी](CHANGELOG.hi.md) · [🇻🇳 Tiếng Việt](CHANGELOG.vi.md)
 
 > **i18n 노트** — 이 파일은 완전히 한국어로 번역되었습니다. 모든 버전 항목의 본문이 출판 등급의 한국어로 제공되며, 영어 본문 임시 대체 표기는 더 이상 사용되지 않습니다.
 
 ---
 
+
+## [1.255.0] — 2026-10-24
+
+**베트남어(Tiếng Việt)가 19번째 UI 로캘로 합류합니다 — EN과 완전한 동등성을 갖춘 1525키 사전, vi/vi-VN 감지, 전체 도움말 번들, README·CHANGELOG 미러, cvstart.org 랜딩 통합, 그리고 언어 전환기의 🇻🇳입니다.**
+
+### 추가
+
+- **베트남어(`vi`) — 1525/1525키**, `en`과 완전한 동등성; `detect()`는 `vi`와 `vi-VN`을 받습니다; 베트남어는 LTR(`RTL_LANGS`에 넣지 않음). 'Pipeline'은 'Pipeline'으로 남습니다 — 표준 기술 차용어로 화이트리스트 등재.
+- **docs/help/vi.md 전체** (33 H2 / 125 H3), README.vi.md·CHANGELOG.vi.md 미러, 그리고 `prompts.mjs`의 베트남어 스캐폴드 문자열(`LOCALE_NAMES` + `SCAFFOLD_STRINGS`)까지 — 베트남어 LLM 출력이 기본으로 동작합니다.
+- **cvstart.org 랜딩의 베트남어** — `site/src/i18n/vi.json`, 사이트맵 로캘 항목, `dashboard-vi.png` 스크린샷; 언어 전환기에 🇻🇳 추가(19개 위치).
+- **열거 게이트 18 → 19** — LANGS, detect 프룹, i18n 감사, 체인지로그 패리티, README 번역 블록, 로캘 스윕 — 그리고 우선-빨강 `tests/i18n-vi-locale.test.mjs`(139줄).
+
+### 참고
+
+- cvstart.org 랜딩에 vi 추가 — ta 선례에서의 의도된 이탈(해당 릴리스는 랜딩을 의도적으로 17로 유지); 릴리스 스펙에 문서화.
+- vi는 라틴 문자이므로 no-latin-leaks 게이트가 적용되지 않습니다(비-라틴 로캘을 보호); 라틴 기술 어휘가 표준입니다.
+- 테스트 바닥: 5634 → **5642** (1개 건너뜀 = 옵트인 레이아웃-캡처 브라우저 테스트, 변경 없음).
 
 ## [1.254.0] — 2026-10-24
 

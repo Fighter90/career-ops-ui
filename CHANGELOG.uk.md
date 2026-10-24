@@ -2,12 +2,29 @@
 
 Усі важливі зміни **career-ops-ui**. Формат — [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), версії за [SemVer](https://semver.org/).
 
-Переклади: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHANGELOG.pt-BR.md) · [🇰🇷 한국어](CHANGELOG.ko-KR.md) · [🇯🇵 日本語](CHANGELOG.ja.md) · [🇷🇺 Русский](CHANGELOG.ru.md) · [🇨🇳 简体中文](CHANGELOG.zh-CN.md) · [🇹🇼 繁體中文](CHANGELOG.zh-TW.md) · [🇫🇷 Français](CHANGELOG.fr.md) · [🇵🇱 Polski](CHANGELOG.pl.md) · [🇩🇰 Dansk](CHANGELOG.da.md) · [🇸🇦 العربية](CHANGELOG.ar.md) · [🇩🇪 Deutsch](CHANGELOG.de.md) · [🇮🇹 Italiano](CHANGELOG.it.md) · [🇹🇷 Türkçe](CHANGELOG.tr.md) · [🇮🇳 हिन्दी](CHANGELOG.hi.md)
+Переклади: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHANGELOG.pt-BR.md) · [🇰🇷 한국어](CHANGELOG.ko-KR.md) · [🇯🇵 日本語](CHANGELOG.ja.md) · [🇷🇺 Русский](CHANGELOG.ru.md) · [🇨🇳 简体中文](CHANGELOG.zh-CN.md) · [🇹🇼 繁體中文](CHANGELOG.zh-TW.md) · [🇫🇷 Français](CHANGELOG.fr.md) · [🇵🇱 Polski](CHANGELOG.pl.md) · [🇩🇰 Dansk](CHANGELOG.da.md) · [🇸🇦 العربية](CHANGELOG.ar.md) · [🇩🇪 Deutsch](CHANGELOG.de.md) · [🇮🇹 Italiano](CHANGELOG.it.md) · [🇹🇷 Türkçe](CHANGELOG.tr.md) · [🇮🇳 हिन्दी](CHANGELOG.hi.md) · [🇻🇳 Tiếng Việt](CHANGELOG.vi.md)
 
 > **Примітка щодо перекладу (v1.70.0)** — українську додано як одну з трьох нових мов інтерфейсу. Цей файл перекладає найновіші записи; повна історія — в [🇬🇧 англійському CHANGELOG](CHANGELOG.md), який є нормативним джерелом.
 
 ---
 
+
+## [1.255.0] — 2026-10-24
+
+**В'єтнамська (Tiếng Việt) стає 19-ю мовою інтерфейсу — словник на 1525 ключів із повним паритетом до EN, розпізнавання vi/vi-VN, повний довідковий пакунок, дзеркала README та CHANGELOG, інтеграція в лендінг cvstart.org і 🇻🇳 у перемикачі мови.**
+
+### Додано
+
+- **В'єтнамська (`vi`) — 1525/1525 ключів** із повним паритетом до `en`; `detect()` приймає `vi` та `vi-VN`; в'єтнамська — LTR (до `RTL_LANGS` не додається). 'Pipeline' залишається 'Pipeline' — стандартне технічне запозичення, у білому списку.
+- **Повний docs/help/vi.md** (33 H2 / 125 H3), плюс дзеркала README.vi.md і CHANGELOG.vi.md та в'єтнамські рядки-скафолди в `prompts.mjs` (`LOCALE_NAMES` + `SCAFFOLD_STRINGS`) — вивід LLM в'єтнамською працює з коробки.
+- **Лендінг cvstart.org в'єтнамською** — `site/src/i18n/vi.json`, запис локалі в sitemap і скриншот `dashboard-vi.png`; перемикач мови отримує 🇻🇳 (19 позицій).
+- **Перелічувальні гейти 18 → 19** — LANGS, проби detect, i18n-аудит, паритет changelog, блок перекладів README, locale-sweep — плюс red-first `tests/i18n-vi-locale.test.mjs` (139 рядків).
+
+### Примітки
+
+- Лендінг cvstart.org отримує vi — навмисне відхилення від прецеденту ta (той реліз тримав лендінг на 17 спеціально); задокументовано в спесі релізу.
+- vi — латиниця, тож гейт no-latin-leaks не застосовується (він сторожить нелатинські локалі); латинська технічна лексика тут норма.
+- Тестова підлога: 5634 → **5642** (1 пропуск — опціональний браузерний capture-тест розкладки, без змін).
 
 ## [1.254.0] — 2026-10-24
 

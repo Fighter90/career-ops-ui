@@ -2,12 +2,29 @@
 
 **career-ops-ui** 的所有重要變更記錄於此。格式遵循 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),版本號遵循 [Semantic Versioning](https://semver.org/)。
 
-翻譯版本: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHANGELOG.pt-BR.md) · [🇰🇷 한국어](CHANGELOG.ko-KR.md) · [🇯🇵 日本語](CHANGELOG.ja.md) · [🇷🇺 Русский](CHANGELOG.ru.md) · [🇨🇳 简体中文](CHANGELOG.zh-CN.md) · [🇵🇱 Polski](CHANGELOG.pl.md) · [🇺🇦 Українська](CHANGELOG.uk.md) · [🇩🇰 Dansk](CHANGELOG.da.md) · [🇸🇦 العربية](CHANGELOG.ar.md) · [🇩🇪 Deutsch](CHANGELOG.de.md) · [🇮🇹 Italiano](CHANGELOG.it.md) · [🇹🇷 Türkçe](CHANGELOG.tr.md) · [🇮🇳 हिन्दी](CHANGELOG.hi.md)
+翻譯版本: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHANGELOG.pt-BR.md) · [🇰🇷 한국어](CHANGELOG.ko-KR.md) · [🇯🇵 日本語](CHANGELOG.ja.md) · [🇷🇺 Русский](CHANGELOG.ru.md) · [🇨🇳 简体中文](CHANGELOG.zh-CN.md) · [🇵🇱 Polski](CHANGELOG.pl.md) · [🇺🇦 Українська](CHANGELOG.uk.md) · [🇩🇰 Dansk](CHANGELOG.da.md) · [🇸🇦 العربية](CHANGELOG.ar.md) · [🇩🇪 Deutsch](CHANGELOG.de.md) · [🇮🇹 Italiano](CHANGELOG.it.md) · [🇹🇷 Türkçe](CHANGELOG.tr.md) · [🇮🇳 हिन्दी](CHANGELOG.hi.md) · [🇻🇳 Tiếng Việt](CHANGELOG.vi.md)
 
 > **i18n 註記** — 本檔案已完整翻譯為繁體中文(臺灣慣用語)。規範英文正文仍以 [🇬🇧 CHANGELOG.md](CHANGELOG.md) 為準。
 
 ---
 
+
+## [1.255.0] — 2026-10-24
+
+**越南語（Tiếng Việt）成為第19個介面語言 — 一個與 EN 完全對齊的 1525 鍵詞典、vi/vi-VN 偵測、完整說明包、README 與 CHANGELOG 鏡像、cvstart.org 落地頁整合，以及語言切換器中的 🇻🇳。**
+
+### 新增
+
+- **越南語(`vi`) — 1525/1525 鍵**，與 `en` 完全對齊；`detect()` 接受 `vi` 與 `vi-VN`；越南語為 LTR(不加入 `RTL_LANGS`)。'Pipeline' 維持 'Pipeline' — 標準技術外來詞，已列入白名單。
+- **完整 docs/help/vi.md**(33 H2 / 125 H3)，外加 README.vi.md 與 CHANGELOG.vi.md 鏡像，以及 `prompts.mjs` 中的越南語鷹架字串(`LOCALE_NAMES` + `SCAFFOLD_STRINGS`)— 越南語 LLM 輸出開箱即用。
+- **cvstart.org 落地頁越南語版** — `site/src/i18n/vi.json`、sitemap 的 locale 項目與 `dashboard-vi.png` 截圖；語言切換器新增 🇻🇳(19 個位置)。
+- **列舉閘門 18 → 19** — LANGS、detect 探針、i18n 稽核、changelog 對齊、README 翻譯區塊、locale 掃描 — 外加 red-first 的 `tests/i18n-vi-locale.test.mjs`(139 行)。
+
+### 備註
+
+- cvstart.org 落地頁新增 vi — 對 ta 前例的一次有意偏離(該版本刻意維持落地頁為 17 種)；已記錄於發布規格。
+- vi 是拉丁文字，不適用 no-latin-leaks 閘門(它守護非拉丁語言)；拉丁技術詞彙在此是常態。
+- 測試下限：5634 → **5642**(1 項跳過 = 可選的版面截圖瀏覽器測試，未變)。
 
 ## [1.254.0] — 2026-10-24
 

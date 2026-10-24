@@ -7,19 +7,19 @@
 
 _அதிகாரப்பூர்வமற்ற இடைமுகம் — career-ops / santifer உடன் எந்தத் தொடர்பும் அல்ல, அவர்களால் அங்கீகரிக்கப்படவும் இல்லை._
 
-[![tests](https://img.shields.io/badge/tests-5245%20passed-brightgreen)](#சோதனைகள்)
+[![tests](https://img.shields.io/badge/tests-5642%20passed-brightgreen)](#சோதனைகள்)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#சோதனைகள்)
-[![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#சோதனைகள்)
+[![playwright](https://img.shields.io/badge/playwright-143%2F143-brightgreen)](#சோதனைகள்)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#தேவைகள்)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.254.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.254.0)
+[![release](https://img.shields.io/badge/release-v1.255.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.255.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 சமீபத்திய வெளியீடு — v1.253.1** — **பத்து புதிய வேலை மூலங்கள் ஸ்கேனரில் இணைகின்றன — Atlassian, BWI, Computrabajo, Dover, Google, Kalibrr, Magneto365, Platsbanken, Tech in Asia, Zoho Recruit — பதிவேடு இப்போது 115 அடாப்டர்களுடன் 120 மூலங்களை (115 EN + 5 RU) வழங்குகிறது, மேலும் ரோல் மேட்சர் ஒரு குறுகிய கேப்பிட்டல் குறியீட்டால் மட்டும் வேறுபடும் தலைப்புகளை இனி ஒரே பணியாக இணைக்காது.**
+> **🆕 சமீபத்திய வெளியீடு — v1.255.0** — **வியட்நாமிஸ் (Tiếng Việt) 19வது UI மொழியாக இணைகிறது — EN-உடன் முழு சமநிலை கொண்ட 1525 விசை அகராதி, vi/vi-VN கண்டறிதல், முழு உதவி தொகுப்பு, README மற்றும் CHANGELOG கண்ணாடிகள், cvstart.org லேண்டிங் ஒருங்கிணைப்பு, மொழி மாற்றியின் 🇻🇳.**
 >
-> **முந்தைய வெளியீடு — v1.252.1** — **பேரண்ட் ஃபோர்க் career-ops-hq-உடன் ஒத்திசைக்கப்பட்டது — அப்ஸ்ட்ரீம் 264 கமிட்கள், பேரண்ட் 1.36.0 → 1.37.0 — ஃபோர்க்கின் இரு வேறுபாடுகளும் பாதுகாக்கப்பட்டன, மேலும் டிப்ளாய் இயங்கும் பேரண்டை அந்த அடிப்படைக்கு மீண்டும் பின் செய்கிறது.**
+> **முந்தைய வெளியீடு — v1.254.0** — **அதிகபட்ச மாடல் மறுஆய்வு சுற்றிலிருந்து ஒரு ஹார்டனிங் வெளியீடு: ஸ்கேனர் ஸ்னாப்ஷாட் இனி வரிசைகளை இழக்காது, LLM லேயரின் பதினொரு இன்வேரியண்ட் மீறல்கள் சரி செய்யப்பட்டன, முப்பத்திரண்டு SPA must-fix-கள் தரையிறங்கின, Paylocity ATS ஸ்கேனரில் இணைகிறது — பதிவேடு இப்போது 115 அடாப்டர்களுடன் 121 மூலங்களை (115 EN + 5 RU) வழங்குகிறது.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

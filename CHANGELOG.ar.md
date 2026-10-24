@@ -2,12 +2,29 @@
 
 جميع التغييرات المهمة في **career-ops-ui**. التنسيق وفق [Keep a Changelog](https://keepachangelog.com/en/1.1.0/)، والإصدارات وفق [SemVer](https://semver.org/).
 
-الترجمات: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHANGELOG.pt-BR.md) · [🇰🇷 한국어](CHANGELOG.ko-KR.md) · [🇯🇵 日本語](CHANGELOG.ja.md) · [🇷🇺 Русский](CHANGELOG.ru.md) · [🇨🇳 简体中文](CHANGELOG.zh-CN.md) · [🇹🇼 繁體中文](CHANGELOG.zh-TW.md) · [🇫🇷 Français](CHANGELOG.fr.md) · [🇵🇱 Polski](CHANGELOG.pl.md) · [🇺🇦 Українська](CHANGELOG.uk.md) · [🇩🇰 Dansk](CHANGELOG.da.md) · [🇩🇪 Deutsch](CHANGELOG.de.md) · [🇮🇹 Italiano](CHANGELOG.it.md) · [🇹🇷 Türkçe](CHANGELOG.tr.md) · [🇮🇳 हिन्दी](CHANGELOG.hi.md)
+الترجمات: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHANGELOG.pt-BR.md) · [🇰🇷 한국어](CHANGELOG.ko-KR.md) · [🇯🇵 日本語](CHANGELOG.ja.md) · [🇷🇺 Русский](CHANGELOG.ru.md) · [🇨🇳 简体中文](CHANGELOG.zh-CN.md) · [🇹🇼 繁體中文](CHANGELOG.zh-TW.md) · [🇫🇷 Français](CHANGELOG.fr.md) · [🇵🇱 Polski](CHANGELOG.pl.md) · [🇺🇦 Українська](CHANGELOG.uk.md) · [🇩🇰 Dansk](CHANGELOG.da.md) · [🇩🇪 Deutsch](CHANGELOG.de.md) · [🇮🇹 Italiano](CHANGELOG.it.md) · [🇹🇷 Türkçe](CHANGELOG.tr.md) · [🇮🇳 हिन्दी](CHANGELOG.hi.md) · [🇻🇳 Tiếng Việt](CHANGELOG.vi.md)
 
 > **ملاحظة بشأن الترجمة (v1.70.0)** — أُضيفت العربية كإحدى ثلاث لغات واجهة جديدة. يترجم هذا الملف أحدث الإدخالات؛ السجل الكامل في [🇬🇧 CHANGELOG الإنجليزي](CHANGELOG.md) وهو المرجع المعتمد.
 
 ---
 
+
+## [1.255.0] — 2026-10-24
+
+**تنضم الفيتنامية (Tiếng Việt) بوصفها اللغة التاسعة عشرة لواجهة المستخدم — قاموس من 1525 مفتاحًا بموازاة كاملة مع EN، وكشف vi/vi-VN، وحزمة المساعدة الكاملة، ونسختا README و CHANGELOG المطابقتان، وتكامل صفحة الهبوط cvstart.org، و🇻🇳 في مبدّل اللغة.**
+
+### أُضيف
+
+- **الفيتنامية (`vi`) — 1525/1525 مفتاحًا** بموازاة كاملة مع `en`؛ `detect()` يقبل `vi` و`vi-VN`؛ الفيتنامية LTR (لا تُضاف أبدًا إلى `RTL_LANGS`). تبقى «Pipeline» كما هي — مقترض تقني قياسي مدرج في القائمة البيضاء.
+- **docs/help/vi.md كاملة** (33 H2 / 125 H3)، إضافة إلى نسختي README.vi.md وCHANGELOG.vi.md، وسلاسل السقالة الفيتنامية في `prompts.mjs` (`LOCALE_NAMES` + `SCAFFOLD_STRINGS`) — فمخرجات LLM بالفيتنامية تعمل من الصندوق.
+- **صفحة هبوط cvstart.org بالفيتنامية** — `site/src/i18n/vi.json`، ومدخل locale في sitemap، ولقطة شاشة `dashboard-vi.png`؛ يكتسب مبدّل اللغة 🇻🇳 (19 موضعًا).
+- **بوابات التعداد 18 → 19** — LANGS، ومجسّات detect، وتدقيق i18n، وموازاة changelog، وكتلة ترجمات README، ومسح الـ locales — إضافة إلى `tests/i18n-vi-locale.test.mjs` الأحمر أولًا (139 سطرًا).
+
+### ملاحظات
+
+- صفحة الهبوط تكسب vi — انحراف مقصود عن سابقة ta (ذلك الإصدار أبقى الهبوط على 17 عمدًا)؛ موثّق في مواصفة الإصدار.
+- vi بالكتابة اللاتينية، لذا لا تنطبق بوابة no-latin-leaks (تحرس اللغات غير اللاتينية)؛ المصطلحات التقنية اللاتينية هي القاعدة هنا.
+- أرضية الاختبارات: 5634 → **5642** (الحالة المتخطاة الواحدة = اختبار الالتقاط الاختياري للمتصفح، دون تغيير).
 
 ## [1.254.0] — 2026-10-24
 

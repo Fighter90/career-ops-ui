@@ -2,12 +2,29 @@
 
 Todas as mudanças relevantes do **career-ops-ui** estão documentadas aqui. O formato segue [Keep a Changelog](https://keepachangelog.com/pt-BR/1.1.0/) e o projeto adere ao [Versionamento Semântico](https://semver.org/lang/pt-BR/).
 
-Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.es.md) · [🇰🇷 한국어](CHANGELOG.ko-KR.md) · [🇯🇵 日本語](CHANGELOG.ja.md) · [🇷🇺 Русский](CHANGELOG.ru.md) · [🇨🇳 简体中文](CHANGELOG.zh-CN.md) · [🇹🇼 繁體中文](CHANGELOG.zh-TW.md) · [🇫🇷 Français](CHANGELOG.fr.md) · [🇵🇱 Polski](CHANGELOG.pl.md) · [🇺🇦 Українська](CHANGELOG.uk.md) · [🇩🇰 Dansk](CHANGELOG.da.md) · [🇸🇦 العربية](CHANGELOG.ar.md) · [🇩🇪 Deutsch](CHANGELOG.de.md) · [🇮🇹 Italiano](CHANGELOG.it.md) · [🇹🇷 Türkçe](CHANGELOG.tr.md) · [🇮🇳 हिन्दी](CHANGELOG.hi.md)
+Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.es.md) · [🇰🇷 한국어](CHANGELOG.ko-KR.md) · [🇯🇵 日本語](CHANGELOG.ja.md) · [🇷🇺 Русский](CHANGELOG.ru.md) · [🇨🇳 简体中文](CHANGELOG.zh-CN.md) · [🇹🇼 繁體中文](CHANGELOG.zh-TW.md) · [🇫🇷 Français](CHANGELOG.fr.md) · [🇵🇱 Polski](CHANGELOG.pl.md) · [🇺🇦 Українська](CHANGELOG.uk.md) · [🇩🇰 Dansk](CHANGELOG.da.md) · [🇸🇦 العربية](CHANGELOG.ar.md) · [🇩🇪 Deutsch](CHANGELOG.de.md) · [🇮🇹 Italiano](CHANGELOG.it.md) · [🇹🇷 Türkçe](CHANGELOG.tr.md) · [🇮🇳 हिन्दी](CHANGELOG.hi.md) · [🇻🇳 Tiếng Việt](CHANGELOG.vi.md)
 
 > **Nota** — este arquivo está integralmente traduzido para o português brasileiro. Cada entrada de versão foi reescrita em PT-BR técnico de qualidade editorial, preservando blocos de código, mensagens de commit, caminhos de arquivo, URLs, variáveis de ambiente, comandos e rótulos de link em sua forma original.
 
 ---
 
+
+## [1.255.0] — 2026-10-24
+
+**O vietnamita (Tiếng Việt) entra como o 19.º idioma da interface — um dicionário de 1525 chaves com paridade total com o EN, detecção de vi/vi-VN, o pacote de ajuda completo, espelhos de README e CHANGELOG, integração na landing do cvstart.org e a 🇻🇳 no seletor de idioma.**
+
+### Adicionado
+
+- **Vietnamita (`vi`) — 1525/1525 chaves** com paridade total com `en`; `detect()` aceita `vi` e `vi-VN`; o vietnamita é LTR (nunca adicionado a `RTL_LANGS`). «Pipeline» continua «Pipeline» — empréstimo técnico padrão, na lista de permissões.
+- **docs/help/vi.md completo** (33 H2 / 125 H3), além dos espelhos README.vi.md e CHANGELOG.vi.md e as strings de andaime em vietnamita no `prompts.mjs` (`LOCALE_NAMES` + `SCAFFOLD_STRINGS`) para que a saída de LLM em vietnamita funcione de fábrica.
+- **Landing do cvstart.org em vietnamita** — `site/src/i18n/vi.json`, a entrada de locale no sitemap e uma captura `dashboard-vi.png`; o seletor de idioma ganha a 🇻🇳 (19 posições).
+- **Portões de enumeração 18 → 19** — LANGS, sondas de detect, auditoria i18n, paridade do changelog, bloco de traduções do README, varredura de locales — mais o `tests/i18n-vi-locale.test.mjs` vermelho-primeiro (139 linhas).
+
+### Notas
+
+- A landing do cvstart.org ganha o vi — um desvio deliberado do precedente do ta (aquela versão manteve a landing em 17 de propósito); documentado na especificação da versão.
+- vi é de escrita latina, então o portão no-latin-leaks não se aplica (ele guarda os idiomas não latinos); vocabulário técnico latino é a norma.
+- Piso de testes: 5634 → **5642** (1 ignorada = o teste opcional de captura de layout do navegador, inalterado).
 
 ## [1.254.0] — 2026-10-24
 

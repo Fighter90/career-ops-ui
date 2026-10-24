@@ -2,6 +2,23 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.255.0] — 2026-10-24
+
+**Vietnamesisch (Tiếng Việt) kommt als 19. UI-Sprache hinzu — ein 1525-Schlüssel-Wörterbuch in voller Parität mit EN, Erkennung für vi/vi-VN, das vollständige Hilfe-Paket, README- und CHANGELOG-Spiegel, die cvstart.org-Landingpage-Integration und das 🇻🇳 im Sprachumschalter.**
+
+### Hinzugefügt
+
+- **Vietnamesisch (`vi`) — 1525/1525 Schlüssel** in voller Parität mit `en`; `detect()` akzeptiert `vi` und `vi-VN`; Vietnamesisch ist LTR (nie in `RTL_LANGS`). 'Pipeline' bleibt 'Pipeline' — ein übliches technisches Lehnwort, auf der Whitelist.
+- **Vollständiges docs/help/vi.md** (33 H2 / 125 H3), dazu die README.vi.md- und CHANGELOG.vi.md-Spiegel und die vietnamesischen Scaffold-Strings in `prompts.mjs` (`LOCALE_NAMES` + `SCAFFOLD_STRINGS`) — vietnamesische LLM-Ausgabe funktioniert ab Werk.
+- **cvstart.org-Landingpage auf Vietnamesisch** — `site/src/i18n/vi.json`, der Sitemap-Locale-Eintrag und ein `dashboard-vi.png`-Screenshot; der Sprachumschalter bekommt 🇻🇳 (19 Positionen).
+- **Enumerations-Gates 18 → 19** — LANGS, detect-Sonden, i18n-Audit, Changelog-Parität, README-Übersetzungsblock, Locale-Sweep — plus das Red-First-`tests/i18n-vi-locale.test.mjs` (139 Zeilen).
+
+### Hinweise
+
+- Die Landingpage bekommt vi — eine bewusste Abweichung vom ta-Präzedenzfall (jenes Release hielt die Landing absichtlich bei 17); dokumentiert in der Release-Spezifikation.
+- vi ist lateinisch geschrieben, daher greift das no-latin-leaks-Gate nicht (es bewacht nicht-lateinische Locales); lateinischer Tech-Wortschatz ist hier die Norm.
+- Testuntergrenze: 5634 → **5642** (1 übersprungen = der Opt-in-Browsertest zum Layout-Capture, unverändert).
+
 ## [1.254.0] — 2026-10-24
 
 **Ein Härtungs-Release aus der Review-Runde mit dem Maximal-Modell: der Scanner-Snapshot verliert nie wieder Zeilen, elf Invarianten-Verstöße der LLM-Schicht sind behoben, dreiundzwanzig SPA-Must-Fixes landen, und die Paylocity-ATS stößt zum Scanner — die Registry liefert jetzt 121 Quellen (115 EN + 5 RU) mit 116 Adaptern.**
