@@ -168,7 +168,6 @@ test('buildBundleHtml: order kept, //#src= separators, ; terminator defeats the 
   // Negative control: WITHOUT the `;` terminator this parses as a call on 1 —
   // the exact hazard the separator exists to prevent.
   assert.throws(() => {
-    const ctx = {};
     // eslint-disable-next-line no-new-func
     (0, eval)('var CAR85_X = 1\n//#src=/js/middle.js\n(function () { throw new Error("ran"); })()');
   }, TypeError);
