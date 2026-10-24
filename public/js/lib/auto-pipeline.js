@@ -73,7 +73,6 @@
     const c = UI.el;
     const t = (k, f) => I18n.t(k, f);
 
-    let modalRef = null;
     let state = { url: '', score: null, legitimacy: '', company: '', role: '', slug: '', reportPath: '', trackerNum: '' };
     const stepState = STEPS.map(() => ({ status: 'pending', detail: '', startedAt: null, finishedAt: null }));
 
@@ -272,7 +271,7 @@
     // run: the SSE fetch carries currentAbort's signal, so the request — and
     // the server-side spend — stop with the modal. The module-scope running
     // flag then frees the next open() to start a fresh run.
-    modalRef = UI.modal(t('auto.title', '✨ Auto-pipeline a URL'), c('div', null, [
+    UI.modal(t('auto.title', '✨ Auto-pipeline a URL'), c('div', null, [
       c('p', { style: { color: 'var(--foggy)' } },
         t('auto.intro', "Paste a job URL — we'll fetch the JD, evaluate it against your CV, save a report, and add a row to your tracker.")),
       c('div', { className: 'flex gap-3 mt-3' }, [urlInput, startBtn]),
