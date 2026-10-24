@@ -52,16 +52,30 @@ export function cutRepeatedBlockHeadings(text) {
 // ── Block-heading scan (CAR-92) ─────────────────────────────────────────────
 // A block heading is a `#`–`###` heading carrying a STANDALONE A–G letter
 // (Latin, or the Cyrillic look-alikes А В С Е) that is FOLLOWED by a
-// separator — `)`, a dash, a colon, a dot (ASCII or fullwidth) — or ends the
+// separator — `)`, a dash, a colon, a dot, a bracket, a comma — or ends the
 // line. `## Block A — …`, `## A) …`, `## Blok A. Sekcja` are block headings;
 // `### Plan B`, `### Q&A`, `### A1` and `## About` are not.
-const LETTER_TERMINATOR = '(?=[ \\t]*[)\\u2014\\u2013\\-.:\\uFF1A\\uFF0E]|[ \\t]*$)';
+// Review round 2: bold headings (`**Block A** — x`), bracketed letters
+// (`[A] x`), the fullwidth paren （）, the CJK enumerator 、, the pipe/asterisk
+// forms, and CRLF output (the `\r` before the newline) all terminated real
+// headings and were rejected. The CJK case is its own regex: `ブロックA 役割`
+// glues the letter to the block word (CJK has no spaces), so a WHITESPACE
+// after the letter is the separator — allowed only when the character before
+// the letter is CJK.
+const LETTER_TERMINATOR = '(?=[ \\t]*[)\\]\\uFF09\\u3011\\u3001,:\\uFF1A.\\uFF0E|*\\u2013\\u2014-]|[ \\t]*\\r?$)';
+// The letter must close a CJK compound (a CJK char immediately before it), then
+// any separator — or just whitespace/line end, which in CJK IS the separator.
+const LETTER_TERMINATOR_CJK = '(?=[ \\t]*[)\\]\\uFF09\\u3011\\u3001,:\\uFF1A.\\uFF0E|*\\u2013\\u2014-]|[ \\t]|\\r?$)';
+// CJK ideographs + kana (2E80–9FFF), hangul (AC00–D7AF), compatibility ideographs (F900–FAFF).
+const CJK_CHAR = '[\\u2E80-\\u9FFF\\uAC00-\\uD7AF\\uF900-\\uFAFF]';
 
 // Spelled-out letters (Arabic abjad أ ب ج د هـ و ز; Devanagari ए बी सी …):
 // the letter must be followed by a separator — for the cutter too. A bare
 // letter — line end, or another word after it — is ordinary prose («و» IS
 // the Arabic word "and"; CAR-92: `## تحليل و تطوير` must not satisfy Block F).
-const SPELLED_TERMINATOR = `(?=[ \\t]*[)\\u2014\\u2013\\-])`;
+// Review round 2: `:` (ASCII/fullwidth) and `.` separators — `## أ: x`,
+// `## ए. x` — are real heading forms and were false-rejected.
+const SPELLED_TERMINATOR = `(?=[ \\t]*[)\\u2014\\u2013\\-.:\\uFF1A\\uFF0E])`;
 
 // Heading LEVELS matter (CAR-92): only headings at the report's own
 // block-heading level count, so a subheading can neither cut a report nor
@@ -69,15 +83,28 @@ const SPELLED_TERMINATOR = `(?=[ \\t]*[)\\u2014\\u2013\\-])`;
 // the scanned letter headings (a stray early subheading must not set it).
 function scanBlockLetterHeadings(text) {
   const found = [];
-  for (const [label, latin, spelled] of blockLetterRegexes()) {
-    for (const m of text.matchAll(latin)) {
-      found.push({ pos: m.index, level: headingLevel(m[0]), letter: label });
-    }
-    for (const m of text.matchAll(spelled)) {
-      found.push({ pos: m.index, level: headingLevel(m[0]), letter: label });
+  for (const [label, ...regexes] of blockLetterRegexes()) {
+    for (const re of regexes) {
+      for (const m of text.matchAll(re)) {
+        // `at` — the letter's own offset in the text (the letter is the last
+        // character the regex consumed).
+        found.push({ pos: m.index, at: m.index + m[0].length - 1, level: headingLevel(m[0]), letter: label });
+      }
     }
   }
-  return found.sort((a, b) => a.pos - b.pos);
+  // Review round 2 — one heading used to register SEVERAL letters (one regex
+  // per letter, each free to match a DIFFERENT letter of the heading text:
+  // «## G) Interview Q&A» also registered the trailing A, «## D) Plan B» the
+  // B, «## F) Red Flags (Grade: D)» the graded D). The validator then read
+  // «Plan B» as a present Block B and the cutter truncated at the wrong
+  // heading. Only the EARLIEST letter of each heading counts — the one its
+  // author wrote as the block letter.
+  const byPos = new Map();
+  for (const h of found) {
+    const cur = byPos.get(h.pos);
+    if (!cur || h.at < cur.at) byPos.set(h.pos, h);
+  }
+  return [...byPos.values()].sort((a, b) => a.pos - b.pos);
 }
 
 function headingLevel(heading) {
@@ -85,17 +112,23 @@ function headingLevel(heading) {
 }
 
 function referenceHeadingLevel(headings) {
-  const counts = new Map(); // level → { count, firstPos }
+  // Review round 2 — the MOST COMMON level false-rejects a report whose
+  // blocks carry recurring same-shaped subsections: seven blocks with an
+  // `### A. Strengths` / `### B. Gaps` pair each give 14 headings at `###`
+  // against 7 at `##`, `###` wins the count, and C–G read as missing. The
+  // block-heading level is the one carrying the most DISTINCT letters; ties
+  // go to the shallowest (block headings are the outer letter level).
+  const per = new Map(); // level → { letters: Set, }
   for (const h of headings) {
-    const e = counts.get(h.level) || { count: 0, firstPos: h.pos };
-    e.count += 1;
-    counts.set(h.level, e);
+    let e = per.get(h.level);
+    if (!e) { e = { letters: new Set() }; per.set(h.level, e); }
+    e.letters.add(h.letter);
   }
   let best = null;
-  for (const [level, e] of counts) {
-    if (!best || e.count > best.count
-      || (e.count === best.count && e.firstPos < best.firstPos)) {
-      best = { level, count: e.count, firstPos: e.firstPos };
+  for (const [level, e] of per) {
+    if (!best || e.letters.size > best.size
+      || (e.letters.size === best.size && level < best.level)) {
+      best = { level, size: e.letters.size };
     }
   }
   return best ? best.level : -1;
@@ -119,6 +152,7 @@ function blockLetterRegexes() {
   return ['A', 'B', 'C', 'D', 'E', 'F', 'G'].map((L) => [
     L,
     new RegExp(`^#{1,3}[ \\t]*[^\\n]{0,24}?(?<![A-Za-z\\u0400-\\u04FF])[${LOOKALIKE[L] || L}](?![A-Za-z\\u0400-\\u04FF])${LETTER_TERMINATOR}`, 'gmu'),
+    new RegExp(`^#{1,3}[ \\t]*[^\\n]{0,24}?${CJK_CHAR}[${LOOKALIKE[L] || L}](?![A-Za-z\\u0400-\\u04FF])${LETTER_TERMINATOR_CJK}`, 'gmu'),
     new RegExp(`^#{1,3}[ \\t]*[^\\n]{0,24}?(?<![\\p{L}\\p{M}])(?:${ABJAD[L]}|${DEVANAGARI[L]})${SPELLED_TERMINATOR}`, 'gmu'),
   ]);
 }
@@ -226,6 +260,31 @@ export function extractSummaryScore(text) {
   const summary = String(text ?? '').match(/---SCORE_SUMMARY---\s*([\s\S]*?)---END_SUMMARY---/);
   if (!summary) return null;
   return summaryScoreValue(summary[1]);
+}
+
+/**
+ * Review round 2 (gemini-eval.mjs subprocess path) — the LAST-RESORT whole-
+ * report score scan. The subprocess prints the parent's oferta report, whose
+ * machine summary block only exists when the model (or the script's own
+ * prompt) asked for one; the body's `Score: x/5` line — the parent's saved
+ * header form is `**Score:** 4.2/5` — is then the only score source. Reads
+ * line-anchored score lines (never mid-sentence prose), folds localized
+ * digits through asciiNumber, and keeps the same 0–5 gate as the summary
+ * parser. Callers use it only where the summary block cannot exist.
+ * @param {string} text the full report
+ * @returns {number | null}
+ */
+export function extractBodyScore(text) {
+  const src = String(text ?? '');
+  if (!src) return null;
+  for (const line of src.split('\n')) {
+    const m = asciiNumber(line)
+      .match(/^[ \t]*(?:\*\*)?[ \t]*score[ \t]*(?:\*\*)?[ \t]*[:：\-–—][ \t]*(?:\*\*)?[ \t]*([0-9]+(?:\.[0-9]+)?)/i);
+    if (!m) continue;
+    const value = Number(m[1]);
+    if (Number.isFinite(value) && value >= 0 && value <= 5) return value;
+  }
+  return null;
 }
 
 /** SCORE line → 0–5 number or null. Callers pass the summary block's text. */
