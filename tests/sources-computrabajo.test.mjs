@@ -24,6 +24,7 @@ import {
   DEFAULT_MAX_JOBS,
 } from '../server/lib/sources/computrabajo.mjs';
 import { computrabajoAdapter } from '../server/lib/portals/adapters/computrabajo.mjs';
+import { REDIRECT_REFUSAL_CAUSE_MESSAGE } from '../server/lib/http-json.mjs';
 
 const BASE = 'https://co.computrabajo.com/trabajo-de-sistemas';
 
@@ -143,6 +144,49 @@ test('computrabajo: parseCards ignores non-posting links and non-card articles',
   const cards = parseCards(html, 'https://co.computrabajo.com');
   assert.equal(cards.length, 1);
   assert.equal(cards[0].id, 'K1');
+});
+
+test('computrabajo: parseCards — an unresolvable origin drops the card instead of throwing', () => {
+  // `new URL(href, origin)` throws when the origin itself is not a URL; the
+  // card is skipped, never a parser crash.
+  assert.deepEqual(parseCards(page(card('V1')), 'not a valid origin'), []);
+});
+
+test('computrabajo: parseCards — a link resolved off the Computrabajo host is dropped', () => {
+  // A relative href inherits the origin: a foreign origin means the URL can
+  // never pass the country-host guard.
+  assert.deepEqual(parseCards(page(card('F1')), 'https://evil.example'), []);
+});
+
+test('computrabajo: parseCards — a box_offer card without a posting link is skipped', () => {
+  const html = `<article class="box_offer" data-id='NL1'><h2>No posting link here</h2><p><span class="mr10">Bogotá</span></p></article>${card('K2')}`;
+  const cards = parseCards(html, 'https://co.computrabajo.com');
+  assert.equal(cards.length, 1);
+  assert.equal(cards[0].id, 'K2');
+});
+
+test('computrabajo: parseCards — an empty anchor falls back to the heading; a 2-char title drops', () => {
+  const html = `<article class="box_offer" data-id='H1'><h2 class="t"><a href="/ofertas-de-trabajo/x-h1"> </a> Analista T&iacute;tulo</h2></article>
+    <article class="box_offer" data-id='T2'><h2><a href="/ofertas-de-trabajo/x-t2">Ab</a></h2></article>`;
+  const cards = parseCards(html, 'https://co.computrabajo.com');
+  assert.equal(cards.length, 1, 'the 2-char title drops its card');
+  assert.equal(cards[0].id, 'H1');
+  assert.equal(cards[0].title, 'Analista Título', 'the heading is the title fallback');
+});
+
+test('computrabajo: parseCards — an empty anchor with no heading drops the card', () => {
+  const html = `<article class="box_offer" data-id='NH1'><h2 class="t"><a href="/ofertas-de-trabajo/x-nh1">   </a></h2></article>${card('K3')}`;
+  const cards = parseCards(html, 'https://co.computrabajo.com');
+  assert.equal(cards.length, 1, 'no anchor text and no heading is no title');
+  assert.equal(cards[0].id, 'K3');
+});
+
+test('computrabajo: parseCards — a card without data-id falls back to the path; no location span reads as none', () => {
+  const html = `<article class="box_offer"><h2><a href="/ofertas-de-trabajo/x-noid-77">Analista de Nube</a></h2></article>`;
+  const cards = parseCards(html, 'https://co.computrabajo.com');
+  assert.equal(cards.length, 1);
+  assert.equal(cards[0].id, '/ofertas-de-trabajo/x-noid-77', 'the path identifies the posting when data-id is gone');
+  assert.equal(cards[0].location, '');
 });
 
 test('computrabajo: fetchComputrabajo — normalized rows, redirect error + UA, sort params applied', async () => {
@@ -278,6 +322,87 @@ test('computrabajo: fetchComputrabajo asserts the endpoint before any request', 
   await assert.rejects(
     () => fetchComputrabajo('http://co.computrabajo.com/x', { fetchImpl, delayMs: 0 }),
     /must be https/);
+});
+
+test('computrabajo: fetchComputrabajo — a transient failure is retried and the page still parses', async () => {
+  const calls = [];
+  const fetchImpl = async (url) => {
+    const p = Number(new URL(url).searchParams.get('p'));
+    calls.push(p);
+    if (calls.length === 1) {
+      const err = new Error('HTTP 503');
+      err.status = 503;
+      throw err;
+    }
+    return { ok: true, status: 200, text: async () => (p === 1 ? page(card('RT1')) : page()) };
+  };
+  const jobs = await fetchComputrabajo(BASE, { fetchImpl, delayMs: 0, retries: 1, retryDelayMs: 0 });
+  assert.deepEqual(calls, [1, 1, 2], 'page 1 is retried after the transient 503, then the walk probes page 2');
+  assert.equal(jobs.length, 1);
+  assert.equal(jobs[0].id, 'computrabajo-RT1');
+});
+
+test('computrabajo: fetchComputrabajo — a statusless network error retries; a refused redirect never does', async () => {
+  let page1Attempts = 0;
+  const flaky = async (url) => {
+    const p = Number(new URL(url).searchParams.get('p'));
+    if (p !== 1) return { ok: true, status: 200, text: async () => page() };
+    page1Attempts += 1;
+    if (page1Attempts === 1) throw new Error('ECONNRESET'); // no .status — a network error
+    return { ok: true, status: 200, text: async () => page(card('NE1')) };
+  };
+  const jobs = await fetchComputrabajo(BASE, {
+    fetchImpl: flaky, delayMs: 0, retries: 1, retryDelayMs: 0,
+    signal: new AbortController().signal, // a live signal rides the retry delay
+  });
+  assert.equal(page1Attempts, 2, 'a statusless error is transient — page 1 is fetched twice');
+  assert.equal(jobs.length, 1);
+
+  let refused = 0;
+  const redirectRefused = async () => {
+    refused += 1;
+    const err = new TypeError('fetch failed');
+    err.cause = new Error(REDIRECT_REFUSAL_CAUSE_MESSAGE);
+    throw err;
+  };
+  await assert.rejects(
+    () => fetchComputrabajo(BASE, { fetchImpl: redirectRefused, delayMs: 0, retries: 2, retryDelayMs: 0 }),
+    /fetch failed/);
+  assert.equal(refused, 1, 'a redirect refusal is rethrown at once, never retried');
+});
+
+test('computrabajo: fetchComputrabajo — an abort between pages keeps the partials', async () => {
+  const ac = new AbortController();
+  const calls = [];
+  const fetchImpl = async (url) => {
+    calls.push(url);
+    const p = Number(new URL(url).searchParams.get('p'));
+    if (p === 1) {
+      ac.abort(); // aborted while page 1 is being processed
+      return { ok: true, status: 200, text: async () => page(card('AB1')) };
+    }
+    return { ok: true, status: 200, text: async () => page() };
+  };
+  const jobs = await fetchComputrabajo(BASE, { fetchImpl, delayMs: 0, signal: ac.signal });
+  assert.equal(jobs.length, 1, 'an aborted walk is not an empty board');
+  assert.equal(calls.length, 1, 'page 2 is never fetched after the abort');
+});
+
+test('computrabajo: fetchComputrabajo — the inter-page delay is honoured when non-zero', async () => {
+  const { fetchImpl } = makeFetch({ 1: page(card('D1')), 2: page() });
+  const jobs = await fetchComputrabajo(BASE, { fetchImpl, delayMs: 1 });
+  assert.equal(jobs.length, 1);
+});
+
+test('computrabajo: fetchComputrabajo — an employer-less card keeps ?, a location-less card keeps "" (entry: null)', async () => {
+  const employerless = `<article class="box_offer" data-id='Q1'><h2><a href="/ofertas-de-trabajo/x-q1">Analista Sin Empresa</a></h2><p><span class="mr10">Cali</span></p></article>`;
+  const nolocation = `<article class="box_offer" data-id='Q2'><h2><a href="/ofertas-de-trabajo/x-q2">Analista Sin Ciudad</a></h2><p><span class="mr10"></span></p></article>`;
+  const jobs = await fetchComputrabajo(BASE, {
+    fetchImpl: makeFetch({ 1: page(employerless, nolocation) }).fetchImpl,
+    delayMs: 0, company: null,
+  });
+  assert.equal(jobs[0].company, '?', 'a hidden employer is never replaced by an entry name');
+  assert.equal(jobs[1].location, '', 'an empty location span is no city');
 });
 
 test('computrabajo adapter: provider- or host-selected, endpoint normalized, invalid → null', () => {

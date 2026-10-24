@@ -25,6 +25,7 @@ import {
   DETAIL_BUDGET,
 } from '../server/lib/sources/bwi.mjs';
 import { bwiAdapter } from '../server/lib/portals/adapters/bwi.mjs';
+import { REDIRECT_REFUSAL_CAUSE_MESSAGE } from '../server/lib/http-json.mjs';
 
 const LISTING = `<html><head><script type="application/ld+json">
   {"@context":"https://schema.org","@type":"CollectionPage","mainEntity":{"@type":"ItemList","itemListElement":[
@@ -97,6 +98,24 @@ test('bwi: collectJobUrls — `\\/`-escaped JSON-LD URLs read exactly like bare 
   assert.deepEqual(collectJobUrls(escaped), [OK_URL, 'https://www.bwi.de/karriere/stellenangebote/job/consultant-cloud-22222']);
 });
 
+test('bwi: collectJobUrls — a non-URL value under a url key is skipped, the rest survives', () => {
+  const mixed = `<script type="application/ld+json">{"@type":"CollectionPage","mainEntity":{"@type":"ItemList","itemListElement":[
+    {"@type":"ListItem","position":1,"url":"not a url"},
+    {"@type":"ListItem","position":2,"url":"${OK_URL}"}
+  ]}}</script>`;
+  assert.deepEqual(collectJobUrls(mixed), [OK_URL], 'the unparseable candidate never aborts the walk');
+});
+
+test('bwi: collectJobUrls — a block that fails JSON.parse falls back to the escape-tolerant regex', () => {
+  const broken = `<script type="application/ld+json">{ "broken": true,
+    "url": "https:\\/\\/www.bwi.de\\/karriere\\/stellenangebote\\/job\\/soc-analyst-m-w-d-77777"
+  </script>`;
+  assert.deepEqual(
+    collectJobUrls(broken),
+    ['https://www.bwi.de/karriere/stellenangebote/job/soc-analyst-m-w-d-77777'],
+    'the `\\/` escapes decode exactly like a parsed block would read them');
+});
+
 test('bwi: a 200 listing with an ItemList but zero parsable job URLs throws (markup change)', async () => {
   // On-host but the job/ path segment moved — nothing collects, yet the page
   // still carries the structured listing.
@@ -123,6 +142,7 @@ test('bwi: slugToTitle rebuilds a readable title and restores the (m/w/d) marker
   assert.equal(slugToTitle('https://www.bwi.de/karriere/stellenangebote/job/senior-security-analyst-m-w-d-69624'), 'Senior Security Analyst (m/w/d)');
   assert.equal(slugToTitle('https://www.bwi.de/karriere/stellenangebote/job/consultant-cloud-22222'), 'Consultant Cloud');
   assert.equal(slugToTitle('https://www.bwi.de/karriere/stellenangebote/job/-69624'), '', 'a boilerplate-only slug is no title');
+  assert.equal(slugToTitle('https://www.bwi.de/karriere/stellenangebote/'), '', 'a URL with no slug is no title');
   assert.equal(slugToTitle('not a url'), '');
 });
 
@@ -275,11 +295,124 @@ test('bwi: fetchBwi — retries count against the detail budget (transport-level
   assert.equal(failingDetails, 3, '3 HTTP requests total, not 3 postings x 3 attempts');
 });
 
+test('bwi: fetchBwi — a retry outliving the budget draws the non-retryable budget error (400) mid-posting', async () => {
+  const manyItems = Array.from({ length: 46 }, (_, i) =>
+    `{"@type":"ListItem","position":${i + 1},"url":"https://www.bwi.de/karriere/stellenangebote/job/security-analyst-m-w-d-${10000 + i}"}`
+  ).join(',');
+  const BIG_LISTING = `<script type="application/ld+json">{"@type":"CollectionPage","mainEntity":{"@type":"ItemList","itemListElement":[${manyItems}]}}</script>`;
+  let detailCalls = 0;
+  const fetchImpl = async (url) => {
+    if (url.endsWith('/stellenangebote')) return { ok: true, status: 200, text: async () => BIG_LISTING };
+    detailCalls += 1;
+    const err = new Error('HTTP 503');
+    err.status = 503;
+    throw err;
+  };
+  const jobs = await fetchBwi(LIST_URL, {
+    fetchImpl, detailDelayMs: 0, retryDelayMs: 0, retries: 3,
+    company: { name: 'BWI GmbH', bwi: { fetchDetails: true, detailLimit: 2 } },
+  });
+  assert.equal(jobs.length, 46, 'every listing row is returned regardless of the budget');
+  assert.equal(detailCalls, 2, 'the 2-request budget is spent inside ONE posting\'s retries; the next attempt fails fast');
+  assert.ok(jobs.every((j) => j.title), 'every job keeps at least its slug title');
+});
+
 test('bwi: fetchBwi asserts the endpoint before any request', async () => {
   const fetchImpl = async () => { throw new Error('must not be called'); };
   await assert.rejects(
     () => fetchBwi('https://attacker.example/karriere/stellenangebote', { fetchImpl }),
     /untrusted hostname/);
+});
+
+test('bwi: fetchBwi enrichment — jobLocation as an array of places; a non-string locality reads as none', async () => {
+  const detailFor = (loc) => `<html><head>
+    <script type="application/ld+json">{"@type":"JobPosting","title":"T","jobLocation":${loc}}</script></head></html>`;
+  const pairListing = `<script type="application/ld+json">{"@type":"CollectionPage","mainEntity":{"@type":"ItemList","itemListElement":[
+    {"@type":"ListItem","position":1,"url":"https://www.bwi.de/karriere/stellenangebote/job/soc-analyst-90001"},
+    {"@type":"ListItem","position":2,"url":"https://www.bwi.de/karriere/stellenangebote/job/soc-analyst-90002"}
+  ]}}</script>`;
+  const fetchImpl = async (url) => ({
+    ok: true,
+    status: 200,
+    text: async () => (String(url).endsWith('/stellenangebote')
+      ? pairListing
+      : (String(url).endsWith('90001')
+        ? detailFor('[{"address":{"addressLocality":"Berlin"}}]')
+        : detailFor('{"address":{"addressLocality":42}}'))),
+  });
+  const jobs = await fetchBwi(LIST_URL, {
+    fetchImpl, detailDelayMs: 1,
+    company: { name: 'BWI GmbH', bwi: { fetchDetails: true } },
+  });
+  assert.equal(jobs[0].location, 'Berlin', 'the first place of an array jobLocation is the city');
+  assert.equal(jobs[1].location, '', 'a non-string addressLocality is no city');
+});
+
+test('bwi: fetchBwi — a statusless network error retries; a refused redirect never does', async () => {
+  let attempts = 0;
+  const flaky = async (url) => {
+    if (url.endsWith('/stellenangebote')) return { ok: true, status: 200, text: async () => LISTING };
+    attempts += 1;
+    if (attempts === 1) throw new Error('ECONNRESET'); // no .status — a network error
+    return { ok: true, status: 200, text: async () => DETAIL };
+  };
+  const jobs = await fetchBwi(LIST_URL, {
+    fetchImpl: flaky, detailDelayMs: 0, retryDelayMs: 0,
+    signal: new AbortController().signal, // a live signal rides the retry delay
+    company: { name: 'BWI GmbH', bwi: { fetchDetails: true } },
+  });
+  assert.equal(attempts, 2, 'a statusless error is transient');
+  assert.equal(jobs.find((j) => j.url.includes('security-analyst')).location, 'Köln');
+
+  let refused = 0;
+  const redirectRefused = async (url) => {
+    if (url.endsWith('/stellenangebote')) return { ok: true, status: 200, text: async () => LISTING };
+    refused += 1;
+    const err = new TypeError('fetch failed');
+    err.cause = new Error(REDIRECT_REFUSAL_CAUSE_MESSAGE);
+    throw err;
+  };
+  const kept = await fetchBwi(LIST_URL, {
+    fetchImpl: redirectRefused, detailDelayMs: 0, retryDelayMs: 0, retries: 2,
+    company: { name: 'BWI GmbH', bwi: { fetchDetails: true } },
+  });
+  assert.equal(refused, 1, 'the redirect refusal is rethrown at once, never retried');
+  assert.equal(kept.length, 2, 'the failing detail never drops its listing row');
+});
+
+test('bwi: fetchBwi — an abort between detail requests stops enrichment, keeps the rows', async () => {
+  const ac = new AbortController();
+  let detailCalls = 0;
+  const fetchImpl = async (url) => {
+    if (url.endsWith('/stellenangebote')) return { ok: true, status: 200, text: async () => LISTING };
+    detailCalls += 1;
+    ac.abort(); // aborted while the first detail is being processed
+    return { ok: true, status: 200, text: async () => DETAIL };
+  };
+  const jobs = await fetchBwi(LIST_URL, {
+    fetchImpl, signal: ac.signal, detailDelayMs: 0,
+    company: { name: 'BWI GmbH', bwi: { fetchDetails: true } },
+  });
+  assert.equal(detailCalls, 1);
+  assert.equal(jobs.length, 2, 'an aborted enrichment is not an empty board');
+});
+
+test('bwi: fetchBwi — a detail page without a JobPosting record keeps the slug row', async () => {
+  const fetchImpl = async (url) => ({
+    ok: true,
+    status: 200,
+    text: async () => (url.endsWith('/stellenangebote') ? LISTING : '<html><body>no posting here</body></html>'),
+  });
+  const jobs = await fetchBwi(LIST_URL, { fetchImpl, detailDelayMs: 0, company: { name: 'BWI GmbH', bwi: { fetchDetails: true } } });
+  assert.equal(jobs.length, 2);
+  assert.equal(jobs.find((j) => j.url.includes('security-analyst')).title, 'Security Analyst (m/w/d)');
+});
+
+test('bwi: fetchBwi — no entry (company: null) reads as an empty company on the rows', async () => {
+  const fetchImpl = async () => ({ ok: true, status: 200, text: async () => LISTING });
+  const jobs = await fetchBwi(LIST_URL, { fetchImpl, company: null });
+  assert.equal(jobs.length, 2);
+  assert.ok(jobs.every((j) => j.company === ''), 'the entry name is never invented');
 });
 
 test('bwi adapter: provider- or host-selected; the endpoint is always the listing URL', () => {
@@ -289,6 +422,7 @@ test('bwi adapter: provider- or host-selected; the endpoint is always the listin
   assert.equal(bwiAdapter.matches({ careers_url: 'https://www.bwi.de.attacker.example/karriere' }), false, 'a lookalike host is never claimed');
   assert.equal(bwiAdapter.matches({ careers_url: 'http://www.bwi.de/karriere' }), false, 'http is refused');
   assert.equal(bwiAdapter.matches({ careers_url: 'https://example.com/jobs' }), false);
+  assert.equal(bwiAdapter.matches({ careers_url: 'not a url' }), false, 'an unparseable careers_url is never claimed');
   assert.equal(bwiAdapter.matches({}), false);
   assert.equal(bwiAdapter.matches(null), false);
 

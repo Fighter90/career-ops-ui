@@ -220,6 +220,8 @@ test('google adapter: provider- or `google:`-selected; endpoint is the first que
   assert.equal(googleAdapter.matches({ google: { queries: ['x'] } }), true);
   assert.equal(googleAdapter.matches({}), false);
   assert.equal(googleAdapter.matches({ provider: 'kalibrr' }), false);
+  assert.equal(googleAdapter.matches(null), false, 'a missing entry never matches');
+  assert.equal(googleAdapter.matches('google'), false, 'a non-object entry never matches');
   const endpoint = googleAdapter.buildEndpoint({ google: { queries: ['tax law'], location: 'India' } });
   assert.equal(endpoint, `${BASE}?q=tax+law&location=India&sort_by=date`);
   assert.equal(googleAdapter.buildEndpoint({}), `${BASE}?q=${encodeURIComponent(DEFAULT_QUERIES[0]).replace(/%20/g, '+')}&location=${DEFAULT_LOCATION.replace(/ /g, '+')}&sort_by=date`);

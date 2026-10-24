@@ -25,6 +25,7 @@ import {
   MAX_JOBS_CAP,
 } from '../server/lib/sources/magneto.mjs';
 import { magnetoAdapter } from '../server/lib/portals/adapters/magneto.mjs';
+import { REDIRECT_REFUSAL_CAUSE_MESSAGE } from '../server/lib/http-json.mjs';
 
 const BASE = 'https://www.magneto365.com/co/trabajos/buscar/tecnologia';
 
@@ -136,6 +137,38 @@ test('magneto: "Confidencial" and the board\'s own name become ?, never the entr
   assert.deepEqual(cards.map((c) => c.company), ['?', '?', 'Acme S.A.S']);
 });
 
+test('magneto: parseCards — a malformed posting href drops that anchor, never the parser', () => {
+  // `new URL(href, origin)` throws on the broken absolute URL; the anchor is
+  // skipped and the next candidate link still resolves the card.
+  const html = `<html><body>`
+    + `<article class="x card-jobs y"><h2><a href="http://[::1">Broken</a></h2><p>Medellín</p></article>`
+    + `<article class="x card-jobs y"><h2><a href="https://www.magneto365.com/co/empleos/ok-1">Analista</a></h2><p>Bogotá</p></article>`
+    + `</body></html>`;
+  const cards = parseCards(html, 'https://www.magneto365.com');
+  assert.equal(cards.length, 1);
+  assert.equal(cards[0].id, '1', 'the next candidate link still resolves the card');
+});
+
+test('magneto: parseCards — an off-host or non-posting anchor never reads as the posting link', () => {
+  const html = `<html><body>`
+    + `<article class="x card-jobs y"><h2><a href="https://evil.example/co/empleos/x-1">Evil</a></h2><p>Bogotá</p></article>`
+    + `<article class="x card-jobs y"><h2><a href="https://www.magneto365.com/co/trabajos/empleos-todo">Nav</a></h2><p>Cali</p></article>`
+    + `<article class="x card-jobs y"><h2><a href="https://www.magneto365.com/co/empleos/ok-9">Analista</a></h2><p>Medellín</p></article>`
+    + `</body></html>`;
+  const cards = parseCards(html, 'https://www.magneto365.com');
+  assert.equal(cards.length, 1);
+  assert.equal(cards[0].id, '9');
+});
+
+test('magneto: parseCards — a card without paragraphs reads as no location', () => {
+  const html = `<html><body>`
+    + `<article class="x card-jobs y"><h2><a href="https://www.magneto365.com/co/empleos/np-8">Sin Parrafos</a></h2></article>`
+    + `</body></html>`;
+  const cards = parseCards(html, 'https://www.magneto365.com');
+  assert.equal(cards.length, 1);
+  assert.equal(cards[0].location, '');
+});
+
 test('magneto: fetchMagneto — one normalized web-ui row per card, redirect error + UA on every request', async () => {
   const { calls, fetchImpl } = makeFetch({ 1: page(card(1110175, { title: 'Ingeniero Remoto de Datos' }), card(1108924)) });
   const jobs = await fetchMagneto(BASE, { fetchImpl, delayMs: 0, company: { name: 'Magneto365' } });
@@ -177,6 +210,86 @@ test('magneto: fetchMagneto — a later page failing keeps the earlier pages (pa
   assert.equal(calls.length, 2);
   assert.equal(jobs.length, 1, 'page-1 jobs kept');
   assert.equal(jobs.magnetoTruncated, undefined, 'an error stop is not a cap truncation');
+});
+
+test('magneto: fetchMagneto — a transient failure is retried and the page still parses', async () => {
+  const calls = [];
+  const fetchImpl = async (url) => {
+    const p = Number(new URL(url).searchParams.get('paginator[page]'));
+    calls.push(p);
+    if (calls.length === 1) {
+      const err = new Error('HTTP 503');
+      err.status = 503;
+      throw err;
+    }
+    return { ok: true, status: 200, text: async () => (p === 1 ? page(card(1)) : '<html><body></body></html>') };
+  };
+  const jobs = await fetchMagneto(BASE, { fetchImpl, delayMs: 0, retries: 1, retryDelayMs: 0 });
+  assert.deepEqual(calls, [1, 1, 2], 'page 1 is retried after the transient 503, then probed once more');
+  assert.equal(jobs.length, 1);
+  assert.equal(jobs[0].id, 'magneto-1');
+});
+
+test('magneto: fetchMagneto — a statusless network error retries; a refused redirect never does', async () => {
+  let page1Attempts = 0;
+  const flaky = async (url) => {
+    const p = Number(new URL(url).searchParams.get('paginator[page]'));
+    if (p !== 1) return { ok: true, status: 200, text: async () => '<html><body></body></html>' };
+    page1Attempts += 1;
+    if (page1Attempts === 1) throw new Error('ECONNRESET'); // no .status — a network error
+    return { ok: true, status: 200, text: async () => page(card(1)) };
+  };
+  const jobs = await fetchMagneto(BASE, {
+    fetchImpl: flaky, delayMs: 0, retries: 1, retryDelayMs: 0,
+    signal: new AbortController().signal, // a live signal rides the retry delay
+  });
+  assert.equal(page1Attempts, 2, 'a statusless error is transient — page 1 is fetched twice');
+  assert.equal(jobs.length, 1);
+
+  let refused = 0;
+  const redirectRefused = async () => {
+    refused += 1;
+    const err = new TypeError('fetch failed');
+    err.cause = new Error(REDIRECT_REFUSAL_CAUSE_MESSAGE);
+    throw err;
+  };
+  await assert.rejects(
+    () => fetchMagneto(BASE, { fetchImpl: redirectRefused, delayMs: 0, retries: 2, retryDelayMs: 0 }),
+    /fetch failed/);
+  assert.equal(refused, 1, 'a redirect refusal is rethrown at once, never retried');
+});
+
+test('magneto: fetchMagneto — an abort between pages keeps the partials', async () => {
+  const ac = new AbortController();
+  const calls = [];
+  const fetchImpl = async (url) => {
+    calls.push(url);
+    const p = Number(new URL(url).searchParams.get('paginator[page]'));
+    if (p === 1) {
+      ac.abort(); // aborted while page 1 is being processed
+      return { ok: true, status: 200, text: async () => page(card(1)) };
+    }
+    return { ok: true, status: 200, text: async () => '<html><body></body></html>' };
+  };
+  const jobs = await fetchMagneto(BASE, { fetchImpl, delayMs: 0, signal: ac.signal });
+  assert.equal(jobs.length, 1, 'an aborted walk is not an empty board');
+  assert.equal(calls.length, 1, 'page 2 is never fetched after the abort');
+});
+
+test('magneto: fetchMagneto — the inter-page delay is honoured when non-zero', async () => {
+  const { fetchImpl } = makeFetch({ 1: page(card(1)), 2: page() });
+  const jobs = await fetchMagneto(BASE, { fetchImpl, delayMs: 1 });
+  assert.equal(jobs.length, 1);
+});
+
+test('magneto: fetchMagneto — an employer-less card keeps ? and a location-less card keeps "" (entry: null)', async () => {
+  const html = `<html><body>`
+    + `<article class="x card-jobs y"><h2><a href="https://www.magneto365.com/co/empleos/q1-1">Analista Confidencial</a></h2><h3>Confidencial | Obra</h3><p>$ 1.000, </p><p>Cali</p></article>`
+    + `<article class="x card-jobs y"><h2><a href="https://www.magneto365.com/co/empleos/q2-2">Sin Ubicacion</a></h2><h3>Acme | Obra</h3><p>$ 2.000, </p></article>`
+    + `</body></html>`;
+  const jobs = await fetchMagneto(BASE, { fetchImpl: makeFetch({ 1: html }).fetchImpl, delayMs: 0, company: null });
+  assert.equal(jobs[0].company, '?', 'a hidden employer is never replaced by an entry name');
+  assert.equal(jobs[1].location, '', 'a card whose last paragraph is a salary reads as no city');
 });
 
 test('magneto: fetchMagneto — pagination stops on a page with no new ids and honours max_pages', async () => {

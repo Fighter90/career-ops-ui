@@ -29,6 +29,7 @@ import {
   ZOHO_HOST_RE,
 } from '../server/lib/sources/zoho-recruit.mjs';
 import { zohoRecruitAdapter } from '../server/lib/portals/adapters/zoho-recruit.mjs';
+import { REDIRECT_REFUSAL_CAUSE_MESSAGE } from '../server/lib/http-json.mjs';
 
 const ORIGIN = 'https://exampleco.zohorecruit.com';
 const BOARD = { origin: ORIGIN };
@@ -105,6 +106,27 @@ test('zoho: extractZohoListRecords — a non-JSON and a non-array value throw', 
   assert.throws(() => extractZohoListRecords(`<input id="jobs" value="{&quot;a&quot;:1}">`), /value is not an array, got: \{a\}/);
 });
 
+test('zoho: extractZohoListRecords — input variants: other ids skip, single-quoted values read, scalars and valueless inputs throw', () => {
+  assert.equal(extractZohoListRecords(`<input type="hidden" id="jobs" value='[{"id":1}]'>`).length, 1,
+    'a single-quoted value reads like a double-quoted one');
+  assert.throws(
+    () => extractZohoListRecords('<input type="hidden" id="other" value="[1]"><html><head><title>Tenant missing</title></head></html>'),
+    /no id="jobs" input/,
+    'an input whose id is not "jobs" is skipped, not read');
+  assert.throws(
+    () => extractZohoListRecords('<input type="hidden" id="jobs">'),
+    /value is not JSON/,
+    'an input without a value attribute reads as an empty value');
+  assert.throws(
+    () => extractZohoListRecords('<input id="jobs" value="42">'),
+    /value is not an array, got: number/,
+    'a scalar JSON value names its type in the error');
+  assert.throws(
+    () => extractZohoListRecords('<html><body><input type="hidden" id="other"></body></html>'),
+    (err) => /no id="jobs" input/.test(err.message) && !err.message.includes('page title'),
+    'a page without a title omits the title clause');
+});
+
 test('zoho: isZohoRecordClosed — Is_Locked or Publish:false reads as filled', () => {
   assert.equal(isZohoRecordClosed({ Is_Locked: true }), true);
   assert.equal(isZohoRecordClosed({ Publish: false }), true);
@@ -147,6 +169,21 @@ test('zoho: parseZohoJobsPage — postedAt and flattened description ride the li
   ]), BOARD, 'Example Co');
   assert.equal(job.postedAt, Date.parse('2026-10-01'));
   assert.equal(job.description, 'Own the roadmap');
+  const [unparsableDate] = parseZohoJobsPage(listHtml([
+    record(7, { Date_Opened: 'soon' }),
+  ]), BOARD, 'Example Co');
+  assert.equal(unparsableDate.postedAt, undefined, 'an unparsable date is no date, never NaN');
+});
+
+test('zoho: parseZohoJobsPage — string ids read; empty and lone-surrogate ids skip the row', () => {
+  const jobs = parseZohoJobsPage(listHtml([
+    { id: 'str-9', Posting_Title: 'String Id' },
+    { id: '', Posting_Title: 'No Id' },
+    { id: '\uD800', Posting_Title: 'Lone Surrogate' },
+    record(8),
+  ]), BOARD, 'Example Co');
+  assert.deepEqual(jobs.map((j) => j.externalId), ['str-9', '508'],
+    'an id that cannot be percent-encoded drops its row instead of poisoning the URL');
 });
 
 test('zoho: parseZohoDetailPage — unescapes the JS string literal without evaluating anything', () => {
@@ -166,6 +203,24 @@ test('zoho: parseZohoDetailPage — unescapes the JS string literal without eval
   assert.equal(parseZohoDetailPage('<script>var jobs = JSON.parse(\'not json\');</script>'), null);
   assert.equal(parseZohoDetailPage('<script>var jobs = JSON.parse(\'[1,2]\');</script>'), null, 'a non-object record is null');
   assert.equal(parseZohoDetailPage(null), null);
+});
+
+test('zoho: parseZohoDetailPage — braced \\u{...} escapes decode; beyond the Unicode range drops', () => {
+  const braced = `<script>var jobs = JSON.parse('{"Note":"caf\\u00e9 \\u{1F600} \\u{110000}end"}');</script>`;
+  assert.equal(parseZohoDetailPage(braced).Note, 'café 😀 end',
+    'a braced code point decodes (never through eval); a code point past U+10FFFF is dropped, not a crash');
+  const continuation = `<script>var jobs = JSON.parse('{"Note":"a\\
+b"}');</script>`;
+  assert.equal(parseZohoDetailPage(continuation).Note, 'ab',
+    'a JS line continuation inside the literal is dropped, never kept as a newline');
+  for (const sep of ['\r', '\r\n', '\u2028', '\u2029']) {
+    const page = `<script>var jobs = JSON.parse('{"Note":"a\\${sep}b"}');</script>`;
+    assert.equal(parseZohoDetailPage(page).Note, 'ab',
+      `a backslash-${JSON.stringify(sep)} line continuation is dropped, never kept`);
+  }
+  const unknownEscape = `<script>var jobs = JSON.parse('{"Note":"a\\-b"}');</script>`;
+  assert.equal(parseZohoDetailPage(unknownEscape).Note, 'a-b',
+    'an escape outside the known table passes its character through');
 });
 
 test('zoho: parseZohoSalary — annual figures only; currency from text, then the list record', () => {
@@ -197,6 +252,26 @@ test('zoho: parseZohoSalary — ISO-4217 whitelist; LPA/CTC/lakh figures are ref
     'the Lao Kip code is a currency (LAK, not the magnitude word "lakh")');
   assert.deepEqual(parseZohoSalary('3000 XYZ', 'USD'), { min: 3000, max: 3000, currency: 'USD' },
     'a non-ISO token is never a currency; the list currency falls back');
+});
+
+test('zoho: parseZohoSalary — a text naming two currencies is ambiguous: the amount stays, the currency drops', () => {
+  assert.deepEqual(parseZohoSalary('80.000 EUR-90.000 USD', 'USD'), { min: 80000, max: 90000 },
+    'two ISO codes name no single currency — and never the list currency either');
+  assert.deepEqual(parseZohoSalary('€50.000-£60.000'), { min: 50000, max: 60000 },
+    'two unambiguous symbols are just as ambiguous');
+  assert.deepEqual(parseZohoSalary('€5.000', ''), { min: 5000, max: 5000, currency: 'EUR' },
+    'one unambiguous symbol names the currency outright');
+});
+
+test('zoho: parseZohoSalary — separator orders and unreadable figures', () => {
+  assert.deepEqual(parseZohoSalary('1,234.56', 'USD'), { min: 1234.56, max: 1234.56, currency: 'USD' },
+    'comma-grouped, dot-decimal');
+  assert.deepEqual(parseZohoSalary('1.234,56'), { min: 1234.56, max: 1234.56 },
+    'dot-grouped, comma-decimal');
+  assert.equal(parseZohoSalary('..-..'), null, 'an unreadable range is null, never NaN');
+  assert.equal(parseZohoSalary('..'), null, 'an unreadable single figure is null');
+  assert.equal(parseZohoSalary('?', 'USD'), null, 'the placeholder ? is no amount');
+  assert.equal(parseZohoSalary('n/a', 'USD'), null);
 });
 
 test('zoho: renderZohoSalary — the web-ui STRING salary field', () => {
@@ -307,6 +382,123 @@ test('zoho: fetchZohoRecruit — detailLimit caps the detail requests; failures 
   assert.equal(detailCalls.length, 1,
     'the budget is EXACTLY 1 detail request — not one per posting, and every one failed');
   assert.ok(jobs.every((j) => j.snippet === ''), 'no detail survived');
+});
+
+test('zoho: fetchZohoRecruit — a retry outliving the budget draws the non-retryable budget error (400) mid-posting', async () => {
+  const detailCalls = [];
+  const fetchImpl = async (url) => {
+    if (String(url).endsWith(BOARD_PATH)) {
+      return htmlResponse(listHtml([record(12), record(13), record(14)]));
+    }
+    detailCalls.push(String(url));
+    const err = new Error('HTTP 503');
+    err.status = 503;
+    throw err;
+  };
+  const jobs = await fetchZohoRecruit(`${ORIGIN}${BOARD_PATH}`, {
+    fetchImpl,
+    company: { ...ENTRY, zohoRecruit: { fetchDetails: true, detailLimit: 1 } },
+    detailDelayMs: 0, retries: 2, retryDelayMs: 0,
+  });
+  assert.equal(jobs.length, 3, 'every list row is kept');
+  assert.equal(detailCalls.length, 1,
+    'the 1-request budget is spent inside ONE posting\'s retries; the next attempt fails fast (a 4xx, not retried)');
+});
+
+test('zoho: fetchZohoRecruit — a transient list failure is retried and the board still parses', async () => {
+  let calls = 0;
+  const fetchImpl = async () => {
+    calls += 1;
+    if (calls === 1) {
+      const err = new Error('HTTP 503');
+      err.status = 503;
+      throw err;
+    }
+    return htmlResponse(listHtml([record(30)]));
+  };
+  const jobs = await fetchZohoRecruit(`${ORIGIN}${BOARD_PATH}`, { fetchImpl, retries: 1, retryDelayMs: 0 });
+  assert.equal(calls, 2, 'one retry after the transient 503');
+  assert.equal(jobs.length, 1);
+  assert.equal(jobs[0].id, 'zoho-recruit-530');
+});
+
+test('zoho: fetchZohoRecruit — a statusless error retries; a refused redirect never does', async () => {
+  let bare = 0;
+  const flaky = async (url) => {
+    if (!String(url).endsWith(BOARD_PATH)) return htmlResponse(detailHtml({ id: '520' }));
+    bare += 1;
+    if (bare === 1) throw new Error('ECONNRESET'); // no .status — a network error
+    return htmlResponse(listHtml([record(20)]));
+  };
+  const jobs = await fetchZohoRecruit(`${ORIGIN}${BOARD_PATH}`, {
+    fetchImpl: flaky, retries: 1, retryDelayMs: 0,
+    signal: new AbortController().signal, // a live signal rides the retry delay
+    company: { ...ENTRY, zohoRecruit: { fetchDetails: true } },
+    detailDelayMs: 0,
+  });
+  assert.equal(bare, 2, 'a statusless error is transient');
+  assert.equal(jobs.length, 1);
+
+  let refused = 0;
+  const redirectRefused = async () => {
+    refused += 1;
+    const err = new TypeError('fetch failed');
+    err.cause = new Error(REDIRECT_REFUSAL_CAUSE_MESSAGE);
+    throw err;
+  };
+  await assert.rejects(
+    () => fetchZohoRecruit(`${ORIGIN}${BOARD_PATH}`, { fetchImpl: redirectRefused, retries: 2, retryDelayMs: 0 }),
+    /fetch failed/);
+  assert.equal(refused, 1, 'a redirect refusal is rethrown at once, never retried');
+});
+
+test('zoho: fetchZohoRecruit — an abort between detail requests keeps the rows', async () => {
+  const ac = new AbortController();
+  let detailCalls = 0;
+  const fetchImpl = async (url) => {
+    if (String(url).endsWith(BOARD_PATH)) return htmlResponse(listHtml([record(40), record(41)]));
+    detailCalls += 1;
+    ac.abort(); // aborted while the first detail is being processed
+    return htmlResponse(detailHtml({ id: String(540 + detailCalls - 1) }));
+  };
+  const jobs = await fetchZohoRecruit(`${ORIGIN}${BOARD_PATH}`, {
+    fetchImpl,
+    company: { ...ENTRY, zohoRecruit: { fetchDetails: true } },
+    detailDelayMs: 0,
+    signal: ac.signal,
+  });
+  assert.equal(detailCalls, 1);
+  assert.equal(jobs.length, 2, 'an aborted enrichment is not an empty board');
+});
+
+test('zoho: fetchZohoRecruit — the inter-detail delay, Remote workplace and empty locations', async () => {
+  const detailFor = (id) => detailHtml({ id: String(id), Job_Description: '<p>D</p>' });
+  const fetchImpl = async (url) => {
+    if (String(url).endsWith(BOARD_PATH)) {
+      return htmlResponse(listHtml([
+        record(40, { Remote_Job: true }),
+        record(41, { City: '', State: '', Country: '' }),
+      ]));
+    }
+    const id = Number(String(url).split('/').pop());
+    return htmlResponse(detailFor(id));
+  };
+  const jobs = await fetchZohoRecruit(`${ORIGIN}${BOARD_PATH}`, {
+    fetchImpl,
+    company: { ...ENTRY, zohoRecruit: { fetchDetails: true } },
+    detailDelayMs: 1,
+  });
+  assert.equal(jobs.length, 2);
+  assert.equal(jobs[0].workplaceType, 'Remote', 'a Remote_Job row reads as a Remote workplace');
+  assert.equal(jobs[1].location, '', 'a record with no location parts reads as no location');
+  assert.ok(jobs.every((j) => j.company === 'Example Co'));
+});
+
+test('zoho: fetchZohoRecruit — an explicitly null entry reads as no entry name', async () => {
+  const fetchImpl = async () => htmlResponse(listHtml([record(50)]));
+  const jobs = await fetchZohoRecruit(`${ORIGIN}${BOARD_PATH}`, { fetchImpl, company: null });
+  assert.equal(jobs.length, 1);
+  assert.equal(jobs[0].company, '', 'the entry name is never invented');
 });
 
 test('zoho adapter: provider- or tenant-host-selected; endpoint is the fixed list URL', () => {
