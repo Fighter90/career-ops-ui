@@ -17,12 +17,21 @@ Router.register('interview-digest', async () => {
   // lives inside the box until a result replaces it.
   const btn = c('button', { className: 'btn btn-primary', type: 'button' }, t('digest.load', 'Load this week'));
   const out = c('div');
-  const emptyState = c('div', { className: 'empty', style: { margin: '16px 0 0' } }, [
+  // CAR-94 (7) — the button used to live INSIDE the content every attempt
+  // replaced (emptyState.replaceChildren): the catch path left the spinner
+  // forever and the retry button was gone with it, and success left no way
+  // to reload. The box is now [status, btnRow] — only `status` is replaced
+  // per attempt; the (re)load affordance stays visible under it on every
+  // path.
+  const status = c('div');
+  const btnRow = c('div', { style: { marginTop: '12px' } }, [btn]);
+  const emptyState = c('div', { className: 'empty', style: { margin: '16px 0 0' } }, [status, btnRow]);
+  const showStatus = (...children) => status.replaceChildren(...children);
+  showStatus(
     c('strong', null, t('digest.emptyTitle', 'No digest loaded yet')),
     c('p', { style: { margin: '8px 0 0' } },
       t('digest.emptyHint', 'Load this week to roll up your interview sessions — companies, rounds, recurring competencies, and open gaps.')),
-    c('div', { style: { marginTop: '12px' } }, [btn]),
-  ]);
+  );
 
   const root = c('div');
   root.appendChild(HelpHint.title(t('digest.title', 'Weekly interview digest'), 'help.hint.digest'));
@@ -33,11 +42,11 @@ Router.register('interview-digest', async () => {
 
   btn.addEventListener('click', async () => {
     btn.disabled = true;
-    emptyState.replaceChildren(c('div', { className: 'loading' }, t('digest.loading', 'Rolling up your week…')));
+    showStatus(c('div', { className: 'loading' }, t('digest.loading', 'Rolling up your week…')));
+    out.innerHTML = ''; // a re-run replaces the previous digest instead of appending below it
     try {
       const res = await API.get('/api/interview/weekly-digest');
-      emptyState.replaceChildren();
-      emptyState.hidden = true; // a result (or its error) replaces the box
+      showStatus(); // CAR-94 (7) — the box shrinks to the reload button
       if (!res || res.available === false) {
         // CAR-21 (v1.243.0) — reason-aware, same split as #/funded:
         // script-not-found keeps the muted note; timeout / script-error
@@ -104,10 +113,10 @@ Router.register('interview-digest', async () => {
         out.appendChild(gl);
       }
     } catch (err) {
-      out.textContent = '';
-      out.appendChild(c('p', { style: { color: 'var(--danger, #d9534f)' } },
-        (err && err.message) || t('digest.failed', 'Could not load the digest')));
-    } finally {
+      // CAR-94 (7) — the error replaces the spinner INSIDE the box, with the
+      // re-enabled button right below it: retry stays available.
+      showStatus(c('p', { style: { color: 'var(--danger, #d9534f)', margin: '0' } },
+        (err && err.message) || t('digest.failed', 'Could not load the digest')));    } finally {
       btn.disabled = false;
     }
   });

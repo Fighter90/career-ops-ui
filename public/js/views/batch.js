@@ -11,6 +11,17 @@
  * After the runner finishes, a list of `batch/tracker-additions/` files
  * appears with a "Merge to tracker" button (POST /api/batch/merge).
  */
+
+// CAR-94 (4) — module-scope single-flight + stream handle. Per-render closure
+// state had two holes: a language-switch re-render RESET the running flag
+// (a second paid batch-runner could start while the first was still
+// streaming over the same TSV), and the EventSource handle was unreachable
+// after navigation, so its handlers kept mutating a detached console and a
+// stuck flag blocked nothing. Both live at module scope now; the hashchange
+// guard below closes the stream when the SPA leaves #/batch.
+let batchRunning = false;
+let batchStream = null;
+
 Router.register('batch', async () => {
   const c = UI.el;
   const t = (k, f) => I18n.t(k, f);
@@ -132,8 +143,7 @@ Router.register('batch', async () => {
   // started a SECOND concurrent batch-runner over the same TSV, with
   // interleaved consoles and doubled tracker merges. Single-flight flag,
   // tracked stream, disabled Run button, one finish path.
-  let batchRunning = false;
-  let batchStream = null;
+  // CAR-94 (4) — the flag and the handle are module-scope now (see above).
   const runBtn = c('button', {
     className: 'btn btn-primary',
     onClick: () => runRunner(),
@@ -307,4 +317,19 @@ Router.register('batch', async () => {
       additionsHost,
     ]),
   ]);
+});
+
+// CAR-94 (4) — leaving #/batch closes the tracked stream: its handlers would
+// otherwise keep appending to a detached console forever, and a stream that
+// outlives the view can neither be stopped from the new one nor release the
+// module-scope single-flight flag. A re-entry then starts clean; closing via
+// .close() fires no error frame (the detached handlers would not reach
+// anything anyway), so no phantom ✗ lands anywhere.
+window.addEventListener('hashchange', () => {
+  if ((location.hash || '').startsWith('#/batch')) return;
+  if (batchStream) {
+    try { batchStream.close(); } catch { /* already closed */ }
+    batchStream = null;
+  }
+  batchRunning = false;
 });

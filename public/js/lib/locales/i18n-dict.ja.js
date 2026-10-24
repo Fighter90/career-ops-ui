@@ -1040,6 +1040,8 @@ window.__I18N_DICT_JA = {
   'twoPager.save': "ツーページャーを保存",
   'twoPager.saved': "ツーページャーを保存しました",
   'twoPager.saveFailed': "ツーページャーを保存できませんでした",
+  'twoPager.overwriteWarn': "保存済みのツーページャーを読み込めなかったため、フォームに保存済みのデータが表示されていない可能性があります。今保存すると、フォームの内容で config/two-pager.yml が上書きされます。",
+
   'twoPager.privacyNote': "親プロジェクトのユーザーレイヤー（config/two-pager.yml）に保存されます — あなたが実行する LLM プロンプト以外にはどこにも送信されません。",
   'scan.fitTip': "あなたが求めるものとの適合度",
   'scan.titleFit.strong': "高い適合",

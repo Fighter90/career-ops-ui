@@ -21939,6 +21939,26 @@
     "hi": "टू-पेजर सेव नहीं हो सका",
     "ta": "இரு-பக்கத்தைச் சேமிக்க முடியவில்லை"
   },
+  "twoPager.overwriteWarn": {
+    "en": "The saved two-pager could not be loaded, so the form may not show your saved data. Saving now overwrites config/two-pager.yml with what the form shows.",
+    "es": "No se pudo cargar el two-pager guardado, así que puede que el formulario no muestre tus datos guardados. Guardar ahora sobrescribirá config/two-pager.yml con lo que muestra el formulario.",
+    "pt-BR": "Não foi possível carregar o two-pager salvo, então o formulário pode não mostrar seus dados salvos. Salvar agora sobrescreverá config/two-pager.yml com o que o formulário mostra.",
+    "ko": "저장된 투페이저를 불러오지 못했으므로 양식에 저장된 데이터가 표시되지 않을 수 있습니다. 지금 저장하면 config/two-pager.yml이 양식의 내용으로 덮어써집니다.",
+    "ja": "保存済みのツーページャーを読み込めなかったため、フォームに保存済みのデータが表示されていない可能性があります。今保存すると、フォームの内容で config/two-pager.yml が上書きされます。",
+    "ru": "Не удалось загрузить сохранённый документ на два листа — возможно, форма не показывает сохранённые данные. Сохранение сейчас перезапишет config/two-pager.yml тем, что заполнено в форме.",
+    "zh-CN": "无法加载已保存的两页简介，表单可能没有显示你已保存的数据。现在保存将用表单中的内容覆盖 config/two-pager.yml。",
+    "zh-TW": "無法載入已儲存的兩頁簡介，表單可能沒有顯示你已儲存的資料。現在儲存將以表單內容覆蓋 config/two-pager.yml。",
+    "fr": "Le two-pager enregistré n'a pas pu être chargé : le formulaire peut ne pas afficher vos données. Enregistrer maintenant écrasera config/two-pager.yml avec le contenu du formulaire.",
+    "pl": "Nie udało się wczytać zapisanego dokumentu na dwie strony, więc formularz może nie pokazywać zapisanych danych. Zapisanie teraz nadpisze config/two-pager.yml zawartością formularza.",
+    "uk": "Не вдалося завантажити збережений документ на два аркуші — можливо, форма не показує збережені дані. Збереження зараз перезапише config/two-pager.yml тим, що заповнено у формі.",
+    "da": "Den gemte two-pager kunne ikke indlæses, så formularen viser måske ikke dine gemte data. Gem nu overskriver config/two-pager.yml med formularens indhold.",
+    "ar": "تعذّر تحميل الصفحتين المحفوظتين، لذا قد لا يعرض النموذج بياناتك المحفوظة. الحفظ الآن سيستبدل config/two-pager.yml بما يعرضه النموذج.",
+    "de": "Der gespeicherte Two-Pager konnte nicht geladen werden – das Formular zeigt möglicherweise nicht Ihre gespeicherten Daten. Das Speichern überschreibt config/two-pager.yml mit dem Formularinhalt.",
+    "it": "Non è stato possibile caricare il two-pager salvato, quindi il modulo potrebbe non mostrare i tuoi dati salvati. Salvando ora sovrascriverai config/two-pager.yml con il contenuto del modulo.",
+    "tr": "Kaydedilmiş Two-pager yüklenemedi, bu yüzden form kaydedilmiş verilerinizi göstermiyor olabilir. Şimdi kaydetmek, config/two-pager.yml dosyasının üzerine formdaki içeriği yazar.",
+    "hi": "सेव किया गया टू-पेजर लोड नहीं हो सका, इसलिए फ़ॉर्म में आपका सेव किया डेटा नहीं दिख रहा हो सकता है। अभी सेव करने पर config/two-pager.yml फ़ॉर्म की सामग्री से ओवरराइट हो जाएगा।",
+    "ta": "சேமித்த இரு-பக்கத்தை ஏற்ற முடியவில்லை, எனவே படிவம் உங்கள் சேமித்த தரவைக் காட்டாமல் இருக்கலாம். இப்போது சேமித்தால் config/two-pager.yml படிவத்தில் உள்ள உள்ளடக்கத்தால் மேலெழுதப்படும்."
+  },
   "twoPager.privacyNote": {
     "en": "Stored in your parent project’s user layer (config/two-pager.yml) — never sent anywhere except the LLM prompts you run.",
     "es": "Se guarda en la capa de usuario de tu proyecto padre (config/two-pager.yml) — nunca se envía a ningún sitio salvo a los prompts de LLM que ejecutes.",

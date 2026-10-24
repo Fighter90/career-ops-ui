@@ -77,6 +77,11 @@
   }
 
   async function send() {
+    // CAR-94 (11) — single-flight on the shared guard, not per entry point:
+    // Enter used to call send() directly and bypass sendBtn.disabled, so an
+    // in-flight paid request could be duplicated (the CAR-21 fix landed on
+    // the page view but never here).
+    if (sendBtn.disabled) return;
     var question = (input.value || '').trim();
     if (question.length < 3) { if (window.UI && UI.toast) UI.toast(t('docs.needQ', 'Type a question first'), 'error'); return; }
     input.value = '';
@@ -86,7 +91,14 @@
     log.appendChild(pending);
     pending.scrollIntoView({ block: 'end' });
     try {
-      var res = await API.post('/api/docs-assistant/ask', { question: question, run: true });
+      // CAR-94 (11) — thread the UI language explicitly like the other AI
+      // endpoints (API.post also auto-augments object bodies with lang; the
+      // explicit field keeps the contract visible at the call site).
+      var res = await API.post('/api/docs-assistant/ask', {
+        question: question,
+        run: true,
+        lang: (window.I18n && I18n.getLang && I18n.getLang()) || 'en',
+      });
       pending.remove();
       if (res && res.answer) {
         var parts = [el('div', { className: 'md', html: UI.md(res.answer) })];
@@ -189,7 +201,12 @@
       'aria-label': t('docs.title', 'Ask the docs'),
     });
     input.placeholder = t('docs.ph', 'Ask a question about using the app…');
-    input.addEventListener('keydown', function (ev) { if (ev.key === 'Enter') { ev.preventDefault(); send(); } });
+    input.addEventListener('keydown', function (ev) {
+      // CAR-94 (11) — IME composition Enter is text input, not a send
+      // (same guard as the #/docs-assistant page view, CAR-21).
+      if (ev.isComposing || ev.keyCode === 229) return;
+      if (ev.key === 'Enter') { ev.preventDefault(); send(); }
+    });
 
     sendBtn = el('button', {
       className: 'docs-fab__send', type: 'button',

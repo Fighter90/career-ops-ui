@@ -1039,6 +1039,8 @@ window.__I18N_DICT_AR = {
   'twoPager.save': "حفظ الصفحتين",
   'twoPager.saved': "تم حفظ الصفحتين",
   'twoPager.saveFailed': "تعذّر حفظ الصفحتين",
+  'twoPager.overwriteWarn': "تعذّر تحميل الصفحتين المحفوظتين، لذا قد لا يعرض النموذج بياناتك المحفوظة. الحفظ الآن سيستبدل config/two-pager.yml بما يعرضه النموذج.",
+
   'twoPager.privacyNote': "تُخزَّن في طبقة المستخدم للمشروع الأصلي (config/two-pager.yml) — لا تُرسَل إلى أي مكان سوى موجّهات LLM التي تشغّلها بنفسك.",
   'scan.fitTip': "الملاءمة لما تريده",
   'scan.titleFit.strong': "ملاءمة قوية",

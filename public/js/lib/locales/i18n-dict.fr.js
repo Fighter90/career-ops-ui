@@ -1039,6 +1039,8 @@ window.__I18N_DICT_FR = {
   'twoPager.save': "Enregistrer le two-pager",
   'twoPager.saved': "Two-pager enregistré",
   'twoPager.saveFailed': "Impossible d'enregistrer le two-pager",
+  'twoPager.overwriteWarn': "Le two-pager enregistré n'a pas pu être chargé : le formulaire peut ne pas afficher vos données. Enregistrer maintenant écrasera config/two-pager.yml avec le contenu du formulaire.",
+
   'twoPager.privacyNote': "Stocké dans la couche utilisateur de votre projet parent (config/two-pager.yml) — jamais envoyé ailleurs qu'aux prompts LLM que vous exécutez.",
   'scan.fitTip': "Adéquation avec ce que vous voulez",
   'scan.titleFit.strong': "adéquation forte",

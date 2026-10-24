@@ -1040,6 +1040,8 @@ window.__I18N_DICT_DE = {
   'twoPager.save': "Two-Pager speichern",
   'twoPager.saved': "Two-Pager gespeichert",
   'twoPager.saveFailed': "Der Two-Pager konnte nicht gespeichert werden",
+  'twoPager.overwriteWarn': "Der gespeicherte Two-Pager konnte nicht geladen werden – das Formular zeigt möglicherweise nicht Ihre gespeicherten Daten. Das Speichern überschreibt config/two-pager.yml mit dem Formularinhalt.",
+
   'twoPager.privacyNote': "Wird in der Benutzerschicht Ihres übergeordneten Projekts gespeichert (config/two-pager.yml) — wird nirgendwohin gesendet außer an die LLM-Prompts, die Sie ausführen.",
   'scan.fitTip': "Passung zu dem, was Sie wollen",
   'scan.titleFit.strong': "starke Passung",

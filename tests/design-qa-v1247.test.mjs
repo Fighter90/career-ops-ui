@@ -258,19 +258,23 @@ test('batch: the docs link rides inline in the subtitle and may wrap anywhere', 
 });
 
 // ── 13 · interview-digest / orientation designed empty states ───────────────
-test('interview-digest + orientation: designed empty state with the CTA inside the box', () => {
+test('interview-digest + orientation: designed empty state — title + hint + a CTA that survives every attempt', () => {
   for (const [view, titleKey, hintKey, btnExpr] of [
-    ['interview-digest.js', 'digest.emptyTitle', 'digest.emptyHint', /c\('div', \{ style: \{ marginTop: '12px' \} \}, \[btn\]\)/],
-    ['orientation.js', 'orient.emptyTitle', 'orient.emptyHint', /c\('div', \{ style: \{ marginTop: '12px' \} \}, \[genBtn\]\)/],
+    ['interview-digest.js', 'digest.emptyTitle', 'digest.emptyHint', /const btnRow = c\('div', \{ style: \{ marginTop: '12px' \} \}, \[btn\]\)/],
+    ['orientation.js', 'orient.emptyTitle', 'orient.emptyHint', /const genBtnRow = c\('div', \{ style: \{ marginTop: '12px' \} \}, \[genBtn\]\)/],
   ]) {
     const src = read('public', 'js', 'views', view);
-    // The box: .empty (+ a top margin under the subtitle) + a strong title + hint paragraph, tracker-style.
-    assert.match(src, /className: 'empty', style: \{ margin: '16px 0 0' \} \}, \[\s*\n\s*c\('strong', null, t\('/, `${view}: empty box with a title`);
+    // The box: .empty (+ a top margin under the subtitle), tracker-style.
+    // CAR-94.7 — the box is [status, CTA row]: only the status half is
+    // replaced per attempt, so the catch path can no longer consume the
+    // button with the spinner and success keeps the reload affordance.
+    assert.match(src, /const emptyState = c\('div', \{ className: 'empty', style: \{ margin: '16px 0 0' \} \}, \[status, \w+Row\]\);/, `${view}: [status, CTA row] inside the empty box`);
+    assert.match(src, btnExpr, `${view}: the CTA lives in its own always-visible row inside the box`);
+    assert.ok(src.includes('showStatus('), `${view}: attempts replace only the status half`);
     assert.ok(src.includes(`t('${titleKey}'`), `${view}: ${titleKey}`);
     assert.ok(src.includes(`t('${hintKey}'`), `${view}: ${hintKey}`);
-    assert.match(src, btnExpr, `${view}: the CTA lives inside the box`);
-    // The result replaces the box instead of stacking under it.
-    assert.match(src, /emptyState\.hidden = true/, `${view}: box hidden once a result lands`);
+    // The result lands in `out` beside the box; the box (with the CTA) never hides.
+    assert.doesNotMatch(src, /emptyState\.hidden = true/, `${view}: the box stays — the CTA is the reload affordance`);
   }
   need('digest.emptyTitle'); need('digest.emptyHint');
   need('orient.emptyTitle'); need('orient.emptyHint');

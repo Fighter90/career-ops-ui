@@ -1039,6 +1039,8 @@ window.__I18N_DICT_PT_BR = {
   'twoPager.save': "Salvar two-pager",
   'twoPager.saved': "Two-pager salvo",
   'twoPager.saveFailed': "Não foi possível salvar o two-pager",
+  'twoPager.overwriteWarn': "Não foi possível carregar o two-pager salvo, então o formulário pode não mostrar seus dados salvos. Salvar agora sobrescreverá config/two-pager.yml com o que o formulário mostra.",
+
   'twoPager.privacyNote': "Armazenado na camada de usuário do seu projeto pai (config/two-pager.yml) — nunca enviado a lugar nenhum, exceto aos prompts de LLM que você executar.",
   'scan.fitTip': "Encaixe com o que você quer",
   'scan.titleFit.strong': "encaixe forte",

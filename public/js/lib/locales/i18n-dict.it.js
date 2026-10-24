@@ -1040,6 +1040,8 @@ window.__I18N_DICT_IT = {
   'twoPager.save': "Salva two-pager",
   'twoPager.saved': "Two-pager salvato",
   'twoPager.saveFailed': "Impossibile salvare il two-pager",
+  'twoPager.overwriteWarn': "Non è stato possibile caricare il two-pager salvato, quindi il modulo potrebbe non mostrare i tuoi dati salvati. Salvando ora sovrascriverai config/two-pager.yml con il contenuto del modulo.",
+
   'twoPager.privacyNote': "Salvato nel livello utente del tuo progetto principale (config/two-pager.yml) — non viene inviato da nessuna parte tranne che ai prompt LLM che esegui.",
   'scan.fitTip': "Corrispondenza a ciò che vuoi",
   'scan.titleFit.strong': "corrispondenza forte",

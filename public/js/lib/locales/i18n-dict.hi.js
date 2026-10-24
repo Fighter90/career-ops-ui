@@ -1123,6 +1123,8 @@ window.__I18N_DICT_HI = {
   'twoPager.save': "टू-पेजर सेव करें",
   'twoPager.saved': "टू-पेजर सेव हो गया",
   'twoPager.saveFailed': "टू-पेजर सेव नहीं हो सका",
+  'twoPager.overwriteWarn': "सेव किया गया टू-पेजर लोड नहीं हो सका, इसलिए फ़ॉर्म में आपका सेव किया डेटा नहीं दिख रहा हो सकता है। अभी सेव करने पर config/two-pager.yml फ़ॉर्म की सामग्री से ओवरराइट हो जाएगा।",
+
   'twoPager.privacyNote': "आपके पैरेंट प्रोजेक्ट की यूज़र लेयर में संग्रहीत (config/two-pager.yml) — आपके द्वारा चलाए गए LLM प्रॉम्प्ट के अलावा कहीं नहीं भेजा जाता।",
   'scan.fitTip': "आप जो चाहते हैं उससे मेल",
   'scan.titleFit.strong': "मज़बूत मेल",

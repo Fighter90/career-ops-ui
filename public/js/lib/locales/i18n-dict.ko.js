@@ -1040,6 +1040,8 @@ window.__I18N_DICT_KO = {
   'twoPager.save': "투페이저 저장",
   'twoPager.saved': "투페이저가 저장됨",
   'twoPager.saveFailed': "투페이저를 저장할 수 없습니다",
+  'twoPager.overwriteWarn': "저장된 투페이저를 불러오지 못했으므로 양식에 저장된 데이터가 표시되지 않을 수 있습니다. 지금 저장하면 config/two-pager.yml이 양식의 내용으로 덮어써집니다.",
+
   'twoPager.privacyNote': "상위 프로젝트의 사용자 계층(config/two-pager.yml)에 저장됩니다 — 당신이 실행하는 LLM 프롬프트 외에는 어디에도 전송되지 않습니다.",
   'scan.fitTip': "원하는 것과의 적합도",
   'scan.titleFit.strong': "높은 적합",
