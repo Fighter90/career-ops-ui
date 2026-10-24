@@ -2,6 +2,20 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.253.1] — 2026-10-24
+
+**Due riscontri HIGH di sicurezza dalla revisione col modello massimo sono corretti: gli URL letterali IPv6 non aggirano più il guardia SSRF dello scanner, e la regex di escape del markdown CV non fa più backtracking quadratico.**
+
+### Corretto
+
+- **I letterali IPv6 aggiravano la guardia SSRF** (`http-json.mjs`): un letterale IPv6 tra parentesi faceva lanciare `dns.lookup` e la guardia fail-open. Ora le parentesi si tolgono e il letterale si classifica via `isIP` — senza DNS, senza fail-open.
+- **ReDoS nell'escape del markdown CV** (`security.mjs`): il pattern faceva backtracking quadratico — `<` + ~100k spazi costavano ~16 s; ora ~1 ms con una classe piatta limitata. Tutto ciò che si escapeva prima si escape ancora.
+
+### Note
+
+- Entrambe le correzioni portano test rosso→verde (3 nuovi casi IPv6 + ReDoS con limite temporale; 5511 test, +7).
+- I file sorgente dello scanner non sono toccati — la guardia vive nel trasporto condiviso.
+
 ## [1.253.0] — 2026-10-24
 
 **Dieci nuove fonti di offerte entrano nello scanner — Atlassian, BWI, Computrabajo, Dover, Google, Kalibrr, Magneto365, Platsbanken, Tech in Asia e Zoho Recruit — il registro ora fornisce 120 fonti (115 EN + 5 RU) con 115 adattatori, e il role matcher tiene separati i titoli che differiscono solo per un breve codice in maiuscolo.**

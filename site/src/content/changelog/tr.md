@@ -2,6 +2,20 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.253.1] — 2026-10-24
+
+**Maksimum model incelemesindeki iki HIGH güvenlik bulgusu düzeltildi: IPv6 literal URL'leri artık tarayıcının SSRF korumasını atlamıyor ve CV markdown kaçış regex'i de artık ikinci dereceden geri izleme yapmıyor.**
+
+### Düzeltildi
+
+- **IPv6 literalleri SSRF korumasını atlıyordu** (`http-json.mjs`): köşeli parantezli bir IPv6 literali `dns.lookup`'u fırlatıyordu ve koruma açık kalarak başarısız oluyordu. Artık parantezler sökülüyor ve literal `isIP` ile sınıflandırılıyor — DNS'siz, fail-open'sız.
+- **CV markdown kaçışında ReDoS** (`security.mjs`): desen ikinci dereceden geri izliyordu — `<` + ~100k boşluk ~16 s sürüyordu; şimdi düz sınırlı bir sınıfla ~1 ms. Önce kaçış yapılan her şey hâlâ yapılıyor.
+
+### Notlar
+
+- Her iki düzeltme kırmızı→yeşil regresyon testleri taşıyor (3 yeni IPv6 vakası + zaman sınırlı ReDoS; toplam 5511 test, +7).
+- Tarayıcı kaynak dosyaları etkilenmiyor — koruma, her iki tarayıcının da kullandığı paylaşılan taşımada yaşıyor.
+
 ## [1.253.0] — 2026-10-24
 
 **On yeni iş kaynağı tarayıcıya katılıyor — Atlassian, BWI, Computrabajo, Dover, Google, Kalibrr, Magneto365, Platsbanken, Tech in Asia ve Zoho Recruit — kayıt defteri artık 115 adaptörle 120 kaynak (115 EN + 5 RU) sunuyor ve rol eşleştirici yalnızca kısa bir büyük harf koduyla farklılaşan unvanları artık aynı ilan olarak eşlemiyor.**

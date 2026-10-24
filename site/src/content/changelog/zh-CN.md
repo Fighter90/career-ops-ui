@@ -9,6 +9,20 @@
 ---
 
 
+## [1.253.1] — 2026-10-24
+
+**最大模型评审的两项 HIGH 安全发现已修复：IPv6 字面量 URL 不再绕过扫描器的 SSRF 守卫，CV markdown 的转义正则也不再二次回溯。**
+
+### 修复
+
+- **IPv6 字面量绕过 SSRF 守卫**（`http-json.mjs`）：括号 IPv6 字面量使 `dns.lookup` 抛异常、守卫 fail-open。现在去括号后经 `isIP` 直接分类 — 无 DNS、无 fail-open。
+- **CV markdown 转义的 ReDoS**（`security.mjs`）：模式二次回溯 — `<` + ~10万空格耗时 ~16 秒；现在用扁平有界类 ~1 毫秒。旧有转义全部保留。
+
+### 备注
+
+- 两处修复均带红→绿回归测试（3 个新 IPv6 用例 + 时间边界的 ReDoS；共 5511 测试，+7）。
+- 扫描器源文件不受影响 — 守卫位于两个扫描器共用的传输层。
+
 ## [1.253.0] — 2026-10-24
 
 **十个新的职位来源加入扫描器 — Atlassian、BWI、Computrabajo、Dover、Google、Kalibrr、Magneto365、Platsbanken、Tech in Asia 和 Zoho Recruit — 注册表现在提供 120 个来源(115 EN + 5 RU)与 115 个适配器，且角色匹配器不再把仅差一个短大写代码的职位名称当作同一职位。**

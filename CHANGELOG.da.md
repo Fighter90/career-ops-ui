@@ -9,6 +9,20 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 ---
 
 
+## [1.253.1] — 2026-10-24
+
+**To HIGH-sikkerhedsfund fra anmeldelsen med maksimal-modellen er rettet: IPv6-literal-URL'er omgår ikke længere scannerens SSRF-vagt, og escape-regex'en i CV-markdown backtracker ikke længere kvadratisk.**
+
+### Rettet
+
+- **IPv6-literaller omgik SSRF-vagten** (`http-json.mjs`): en bracketed IPv6-literal fik `dns.lookup` til at kaste, og vagten fejlede åbent. Nu tages klammerne af og literalet klassificeres via `isIP` — uden DNS, uden fail-open.
+- **ReDoS i CV-markdown-escape** (`security.mjs`): mønsteret backtrackede kvadratisk — `<` + ~100k mellemrum kostede ~16 s; nu ~1 ms med en flad afgrænset klasse. Alt der blev eskaperet før eskaperes stadig.
+
+### Noter
+
+- Begge rettelser bærer rød→grøn regressionstests (3 nye IPv6-tilfælde + ReDoS med tidsgrænse; 5511 tests, +7).
+- Scannerens kildefiler påvirkes ikke — vagten bor i den delte transport.
+
 ## [1.253.0] — 2026-10-24
 
 **Ti nye jobkilder slutte sig til scanneren — Atlassian, BWI, Computrabajo, Dover, Google, Kalibrr, Magneto365, Platsbanken, Tech in Asia og Zoho Recruit — registret leverer nu 120 kilder (115 EN + 5 RU) med 115 adaptere, og role matcher holder titler adskilt når de kun adskiller sig ved en kort kode med store bogstaver.**

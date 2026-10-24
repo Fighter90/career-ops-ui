@@ -9,6 +9,20 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.253.1] — 2026-10-24
+
+**Dwa HIGH-owe znaleziska bezpieczeństwa z recenzji maksymalnym modelem naprawione: literały IPv6 nie omijają już SSRF-gate skanera, a regex escape markdownu CV nie backtrackuje już kwadratowo.**
+
+### Naprawiono
+
+- **Literały IPv6 omijały SSRF-gate** (`http-json.mjs`): literał IPv6 w nawiasach sprawiał, że `dns.lookup` rzucał, a gate fail-open. Teraz nawiasy są zdejmowane, a literał klasyfikowany przez `isIP` — bez DNS, bez fail-open.
+- **ReDoS w escape markdownu CV** (`security.mjs`): wzór backtrackował kwadratowo — `<` + ~100k spacji kosztowało ~16 s; teraz ~1 ms na płaskiej ograniczonej klasie. Wszystko escapowane wcześniej jest escapowane dalej.
+
+### Uwagi
+
+- Obie poprawki niosą testy czerwony→zielony (3 nowe przypadki IPv6 + ReDoS z limitem czasu; 5511 testów, +7).
+- Pliki źródłowe skanera nie są dotknięte — gate żyje we wspólnym transporcie.
+
 ## [1.253.0] — 2026-10-24
 
 **Dziesięć nowych źródeł ofert dołącza do skanera — Atlassian, BWI, Computrabajo, Dover, Google, Kalibrr, Magneto365, Platsbanken, Tech in Asia i Zoho Recruit — rejestr dostarcza teraz 120 źródeł (115 EN + 5 RU) z 115 adapterami, a role matcher rozdziela tytuły różniące się tylko krótkim kodem wielkimi literami.**

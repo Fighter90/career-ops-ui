@@ -130,3 +130,37 @@ test('passes through markdown with safe entities (currency)', () => {
   // The literal &copy; isn't in our decode list; it should survive.
   assert.match(out, /&copy;/);
 });
+
+// ─── Final-escape belt: bounded lookahead (CAR-90 ReDoS) ───────────
+// The old opener-escape pattern `/<(?=\s*\/?\s*(?:script|…)\b)/gi` carried a
+// nested quantifier (`\s*` … `\/?` … `\s*` over the SAME run): a single `<`
+// followed by k spaces backtracked the split O(k²) ways. Measured on the old
+// shape: 5k→39ms, 10k→157ms, 20k→632ms, 40k→2.5s — a 100k-space CV pasted
+// into /api/cv/import blocked the event loop for ~16s. The fixed pattern is
+// one flat character class (no nested quantifier), so the same payload is
+// linear — and every opener the old pattern escaped is still escaped.
+
+test('a < followed by a huge whitespace run is processed in bounded time', () => {
+  const payload = '<' + ' '.repeat(100000);
+  const t0 = performance.now();
+  const out = stripDangerousMarkdown(payload);
+  const ms = performance.now() - t0;
+  assert.equal(typeof out, 'string');
+  // The old shape needs ~16s for this input; the fixed shape is sub-millisecond.
+  // A generous 1s bound still fails loudly on the quadratic regression.
+  assert.ok(ms < 1000, `stripDangerousMarkdown took ${ms.toFixed(0)}ms — quadratic backtracking is back`);
+});
+
+test('the final belt still escapes whitespace-prefixed dangerous openers', () => {
+  for (const opener of ['< script>', '<\tscript>', '<\nscript>', '< /script', '< / iframe']) {
+    const out = stripDangerousMarkdown(`x ${opener} y`);
+    assert.ok(!/<\s*\/?\s*(?:script|iframe)\b/i.test(out), `opener survived: ${JSON.stringify(opener)} → ${out.slice(0, 40)}`);
+  }
+});
+
+test('a harmless whitespace-prefixed tag is still NOT escaped', () => {
+  // Semantics preserved in the safe direction: `< b>` is not a dangerous
+  // opener, so the belt must leave the `<` alone.
+  const out = stripDangerousMarkdown('< b>hi</b>');
+  assert.ok(out.includes('< b>'), `< b> was over-escaped: ${out}`);
+});

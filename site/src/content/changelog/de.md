@@ -2,6 +2,20 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.253.1] — 2026-10-24
+
+**Zwei HIGH-Sicherheitsfunde aus dem Review mit dem Maximal-Modell sind behoben: IPv6-Literal-URLs umgehen den SSRF-Guard des Scanners nicht mehr, und die Escape-Regex des CV-Markdowns backtracket nicht mehr quadratisch.**
+
+### Behoben
+
+- **IPv6-Literale umgingen den SSRF-Guard** (`http-json.mjs`): ein geklammertes IPv6-Literal ließ `dns.lookup` werfen und der Guard fail-open. Jetzt werden die Klammern entfernt und das Literal via `isIP` klassifiziert — ohne DNS, ohne Fail-open.
+- **ReDoS im CV-Markdown-Escape** (`security.mjs`): das Muster backtrackete quadratisch — `<` + ~100k Leerzeichen kosteten ~16 s; jetzt ~1 ms mit einer flachen begrenzten Klasse. Alles früher Escapete wird weiter escapet.
+
+### Hinweise
+
+- Beide Fixes tragen Rot→Grün-Regressionstests (3 neue IPv6-Fälle + ReDoS mit Zeitgrenze; 5511 Tests, +7).
+- Die Scanner-Quelldateien sind nicht betroffen — der Guard lebt im gemeinsamen Transport.
+
 ## [1.253.0] — 2026-10-24
 
 **Zehn neue Job-Quellen stoßen zum Scanner — Atlassian, BWI, Computrabajo, Dover, Google, Kalibrr, Magneto365, Platsbanken, Tech in Asia und Zoho Recruit — die Registry liefert jetzt 120 Quellen (115 EN + 5 RU) mit 115 Adaptern, und der Role-Matcher hält Titel auseinander, die sich nur durch einen kurzen Großbuchstaben-Code unterscheiden.**
