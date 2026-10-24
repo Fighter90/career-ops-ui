@@ -7,6 +7,24 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 ---
 
 
+## [1.255.1] — 2026-10-24
+
+**Two review fix-rounds: the Opus review of the Vietnamese locale (9 findings) and the second-pass review of the CAR-91/92 fixes (5 must-fixes) — both closed with red→green tests.**
+
+### Fixed
+
+- **vi locale review round (CAR-88 follow-up)**: the Hangul glyph (`신`) that leaked into `project.subtitle` / `project.roleHint` is corrected (`độ khớp tín hiệu`), with a gate that fails any CJK/Kana glyph in a vi value the EN dict doesn't carry; the six spaced markdown URLs in docs/help/vi.md (`what-is career-ops`, `apply for a job`, `set up playwright` and three more) are hyphenated to the real guide slugs, with a no-spaces-in-URLs gate.
+- **Evaluation heading boundaries (CAR-92 r2 H1)**: `&`, `.`, `/`, `'` are now word characters in the block-letter's left boundary — `## Q&A`, `## Plan B`, `## Ph.D. requirement`, `## E-commerce` no longer register as blocks A/B/D/E; the bare end-of-line terminator is accepted only after a block-word token (Block/блок/블록/…); ASCII `-` left the spelled-terminator classes so `E-commerce`/`ई-मेल` headings survive.
+- **Ukrainian/Russian-numbered reports (CAR-92 r2 H2)**: the А Б В Г Д Є Ж sequence detector is a shared helper now; when it finds 3+ sequence letters at a heading level, that level becomes the cutter's reference level — lettered `### A.` subsections no longer truncate the report at block Б.
+- **Carried-row lifecycle (CAR-92 r2 M1)**: rows a failed source carries into the next scan are stamped `carriedSince`, dropped after 30 days or 5 consecutive carries, and appended after the fresh rows instead of silently re-accumulating forever.
+- **Gemini synthesis denominator + legitimacy (CAR-92 r2 M2) and the subprocess body-score path (M3)**: read from the findings file, fixed with red tests.
+- **Cold-load bundle drift gate** updated for the vi dict (90 script tags / 87 bundlable) and its unused test binding removed (CodeQL 572).
+
+### Notes
+
+- The README.vi "Latest" banner adapter-count phrasing the review flagged lives in the **Previous** banner and already mirrors EN README byte-for-byte — deliberately not reworded, to keep EN↔vi parity (documented in the commit body). The vi/ta/cvstart localizations are not touched by this release; registry unchanged.
+- Tests 5686 (+26: `eval-validate-opus-r2`, `scanner-carryover-r2`, vi-gate assertions). Registry unchanged at **121 sources (116 EN + 5 RU) · 116 adapters**.
+
 ## [1.255.0] — 2026-10-24
 
 **Vietnamese (Tiếng Việt) joins as the 19th UI locale — a 1,525-key dict with full EN parity, detection for vi/vi-VN, the full help bundle, README and CHANGELOG mirrors, cvstart.org landing integration, and the language switcher's 🇻🇳.**

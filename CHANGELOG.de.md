@@ -2,6 +2,24 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.255.1] — 2026-10-24
+
+**Zwei Review-Fix-Runden: das Opus-Review der vietnamesischen Lokalisierung (9 Befunde) und das Second-Pass-Review der CAR-91/92-Fixes (5 Muss-Fixes) — beide mit Rot→Grün-Tests geschlossen.**
+
+### Behoben
+
+- **Review-Runde der vi-Lokalisierung (CAR-88-Follow-up)**: das Hangul-Zeichen (`신`), das sich in `project.subtitle` / `project.roleHint` eingeschlichen hatte, ist korrigiert (`độ khớp tín hiệu`), mit einem Gate, das jedes CJK-/Kana-Zeichen in einem vi-Wert fallen lässt, das das EN-Wörterbuch nicht selbst trägt; die sechs URLs mit Leerzeichen in docs/help/vi.md (`what-is career-ops`, `apply for a job`, `set up playwright` und drei weitere) sind zu den echten Guide-Slugs hypheniert, mit einem kein-Leerzeichen-in-URLs-Gate.
+- **Auswertungs-Heading-Grenzen (CAR-92 r2 H1)**: `&`, `.`, `/`, `'` sind jetzt Wortzeichen in der linken Grenze des Block-Buchstabens — `## Q&A`, `## Plan B`, `## Ph.D. requirement`, `## E-commerce` registrieren sich nicht länger als Blöcke A/B/D/E; der nackte Zeilenende-Terminator wird nur nach einem Block-Wort-Token akzeptiert (Block/блок/블록/…); ASCII `-` hat die ausgeschriebenen Terminator-Klassen verlassen, damit `E-commerce`-/`ई-मेल`-Headings überleben.
+- **Ukrainisch/russisch nummerierte Reports (CAR-92 r2 H2)**: der А-Б-В-Г-Д-Є-Ж-Sequenz-Detektor ist jetzt ein gemeinsamer Helfer; findet er auf einer Heading-Ebene 3+ Sequenzbuchstaben, wird diese Ebene das Referenz-Level des Cutters — mit Buchstaben versehene `### A.`-Untersektionen schneiden den Report nicht mehr an Block Б ab.
+- **Lebenszyklus getragener Zeilen (CAR-92 r2 M1)**: Zeilen, die eine fehlgeschlagene Quelle in den nächsten Scan trägt, werden mit `carriedSince` gestempelt, nach 30 Tagen oder 5 aufeinanderfolgenden Übertragungen verworfen und hinter den frischen Zeilen angehängt, statt sich still für immer wieder anzusammeln.
+- **Gemini-Synthesis-Nenner + Legitimacy (CAR-92 r2 M2)** und der Body-Score-Pfad des Subprocess (M3): aus der Befunde-Datei gelesen, mit Rot-Tests behoben.
+- **Cold-Load-Bundle-Drift-Gate** für das vi-Wörterbuch aktualisiert (90 Script-Tags / 87 bündelbar) und dessen ungenutzte Test-Bindung entfernt (CodeQL 572).
+
+### Hinweise
+
+- Die vom Review angemerkte Adapter-Zähl-Formulierung im „Latest“-Banner der README.vi lebt im **Vorherige-Version**-Banner und spiegelt das EN-README bereits Byte für Byte — unangetastet gelassen, um die EN↔vi-Parität zu wahren (im Commit-Body dokumentiert).
+- Tests: 5686 (+26: `eval-validate-opus-r2`, `scanner-carryover-r2`, vi-Gate-Assertions). Registry unverändert bei **121 Quellen (116 EN + 5 RU) · 116 Adapter**.
+
 ## [1.255.0] — 2026-10-24
 
 **Vietnamesisch (Tiếng Việt) kommt als 19. UI-Sprache hinzu — ein 1525-Schlüssel-Wörterbuch in voller Parität mit EN, Erkennung für vi/vi-VN, das vollständige Hilfe-Paket, README- und CHANGELOG-Spiegel, die cvstart.org-Landingpage-Integration und das 🇻🇳 im Sprachumschalter.**

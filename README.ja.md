@@ -12,14 +12,14 @@ _非公式 UI — career-ops / santifer とは提携しておらず、承認も�
 [![playwright](https://img.shields.io/badge/playwright-143%2F143-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.255.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.255.0)
+[![release](https://img.shields.io/badge/release-v1.255.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.255.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.255.0** — **ベトナム語(Tiếng Việt)が19番目のUIロケールとして登場 — ENと完全なパリティを持つ1525キーの辞書、vi/vi-VNの検出、ヘルプバンドル全文、README・CHANGELOGのミラー、cvstart.orgランディング統合、そして言語スイッチャーの🇻🇳。**
+> **🆕 最新リリース — v1.255.1** — **2つのレビュー修正ラウンド: ベトナム語ロケールへのOpusレビュー(ハングル字形のリークとスペース入りの6つのヘルプURL — 現在はゲートで保護)と、CAR-91/92修正のセカンドパスレビュー — 評価ヘディング境界(`## Q&A`はもはやブロックとして登録されない)、ウクライナ数字レポートは`### A.`サブセクションを生き残り、持ち越されたスキャン行はエージングアウトし、gemini-synthesisの分母/正当性パースが修正されました。**
 >
-> **前バージョン — v1.254.0** — **最大モデル レビューラウンドからの強化リリース: スキャナーのスナップショットは二度と行を失わず、LLM レイヤーの 11 不変違反が修正され、23 の SPA must-fix が着地し、Paylocity ATS がスキャナーに加わります — レジストリは 116 アダプタとともに 121 ソース(EN 115 + RU 5)を提供します。**
+> **前バージョン — v1.255.0** — **ベトナム語(Tiếng Việt)が19番目のUIロケールとして登場 — ENと完全なパリティを持つ1525キーの辞書、vi/vi-VNの検出、ヘルプバンドル全文、README・CHANGELOGのミラー、cvstart.orgランディング統合、そして言語スイッチャーの🇻🇳。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -394,7 +394,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 5642 unit + 144 Playwright + e2e:full + e2e:smoke
+└─ tests/                    # 5686 unit + 144 Playwright + e2e:full + e2e:smoke (baseline @ v1.255.1)
    ├─ parsers.test.mjs       # markdown / pipeline / report パーサー(純粋関数)
    ├─ api.test.mjs           # 全エンドポイント、ephemeral server、ネットワークなし
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch

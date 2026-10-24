@@ -12,14 +12,14 @@ _Неофициальный интерфейс — не аффилирован �
 [![playwright](https://img.shields.io/badge/playwright-143%2F143-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.255.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.255.0)
+[![release](https://img.shields.io/badge/release-v1.255.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.255.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Последний релиз — v1.255.0** — **Вьетнамский (Tiếng Việt) становится 19-м языком интерфейса — словарь на 1525 ключей с полной паритетностью к EN, распознавание vi/vi-VN, полный комплект справки, зеркала README и CHANGELOG, интеграция в лендинг cvstart.org и 🇻🇳 в переключателе языка.**
+> **🆕 Последний релиз — v1.255.1** — **Два раунда исправлений по ревью: ревью Opus вьетнамской локали (утечка хангыльного глифа и шесть URL справки с пробелами — теперь под гейтами) и второй проход ревью по фиксам CAR-91/92 — границы заголовков оценки (`## Q&A` больше не блок), отчёты с украинской нумерацией переживают подразделы `### A.`, переносимые строки сканера устаревают и выбывают, а разбор знаменателя/легитимности gemini-synthesis исправлен.**
 >
-> **Предыдущий релиз — v1.254.0** — **Релиз укрепления из раунда ревью максимальной моделью: снапшот сканера больше не теряет строки, одиннадцать инвариантных нарушений LLM-слоя исправлены, двадцать три SPA-must-fix въехали, и Paylocity ATS присоединяется к сканеру — реестр теперь поставляет 121 источник (116 EN + 5 RU) со 116 адаптерами.**
+> **Предыдущий релиз — v1.255.0** — **Вьетнамский (Tiếng Việt) становится 19-м языком интерфейса — словарь на 1525 ключей с полной паритетностью к EN, распознавание vi/vi-VN, полный комплект справки, зеркала README и CHANGELOG, интеграция в лендинг cvstart.org и 🇻🇳 в переключателе языка.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -392,7 +392,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 5642 unit + 144 Playwright + 23 e2e:full + 21 e2e:smoke
+└─ tests/                    # 5686 unit + 144 Playwright + 23 e2e:full + 21 e2e:smoke (baseline @ v1.255.1)
    ├─ parsers.test.mjs       # парсеры markdown / pipeline / отчётов (чистые функции)
    ├─ api.test.mjs           # каждая точка входа, эфемерный сервер, без сети
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch

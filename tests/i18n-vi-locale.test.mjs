@@ -20,7 +20,8 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync } from 'node:fs';
+import { mkdtempSync, readFileSync, rmSync, writeFileSync } from 'node:fs';
+import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
 import { createContext, runInContext } from 'node:vm';
@@ -136,4 +137,97 @@ test('Vietnamese stays LTR — RTL_LANGS does not grow vi', () => {
   assert.ok(rtl, 'RTL_LANGS declaration changed shape — update this test');
   const members = rtl[1].split(',').map((s) => s.trim().replace(/^['"]|['"]$/g, '')).filter(Boolean);
   assert.deepEqual(members, ['ar'], 'only ar is RTL');
+});
+
+// ---------------------------------------------------------------------------
+// vi review round (CAR-88 follow-up) — regression locks for the Opus review's
+// must-fix findings. Each assertion below failed against the v1.255.0 dict.
+// ---------------------------------------------------------------------------
+
+/** CJK: Hangul jamo+syllables, kana, and the CJK unified ideographs. */
+const CJK = /[\u3131-\uD7A3\u3040-\u30FF\u4E00-\u9FFF]/;
+
+test('no CJK/Hangul glyph leaks into a vi value beyond what the en value itself carries', () => {
+  // Brand names pass through (config.arkcnHint carries "Ark (方舟)" in en too).
+  // A glyph present in vi but absent from en is a translation leak (the v1.255.0
+  // dict shipped a Hangul 신 inside "độ 신 hiệu" in two project.* values).
+  const leaked = Object.entries(DICT)
+    .filter(([, row]) => row.vi && row.en !== undefined)
+    .filter(([, row]) => CJK.test(row.vi) && !CJK.test(row.en))
+    .map(([k]) => k);
+  assert.deepEqual(leaked, [], `CJK/Hangul leaked into vi values: ${leaked.join(', ')}`);
+});
+
+test('help vi.md markdown links carry hyphenated slugs — no spaces inside any URL', () => {
+  // Markdown link URLs containing spaces do not parse as links. The v1.255.0
+  // bundle shipped "…/guides/apply for a job", "…/set up playwright" and four
+  // "…/what-is career-ops" occurrences; en.md hyphenates all of them.
+  const md = readFileSync(resolve(__dirname, '..', 'docs', 'help', 'vi.md'), 'utf8');
+  const spaced = [...md.matchAll(/\]\((https?:\/\/[^()\s]*[ ][^()]*)\)/g)].map((m) => m[1]);
+  assert.deepEqual(spaced, [], `help links with spaces in the URL: ${spaced.join(' | ')}`);
+  // And the three known guide slugs stay byte-equal to en.md.
+  for (const slug of ['what-is-career-ops', 'guides/apply-for-a-job', 'guides/set-up-playwright']) {
+    assert.ok(md.includes(`https://career-ops.org/docs/introduction/${slug})`), `vi.md must link ${slug}`);
+  }
+});
+
+test('no vi value points at the English "Run live" button label', () => {
+  // The button itself renders as mode.runLive / deep.runLive = "Chạy trực tiếp";
+  // hint prose must reference the label the user actually sees.
+  assert.equal(DICT['mode.runLive'].vi, 'Chạy trực tiếp', 'sanity: the button label is localized');
+  const offenders = Object.entries(DICT)
+    .filter(([, row]) => /Run live/.test(row.vi || ''))
+    .map(([k]) => k);
+  assert.deepEqual(offenders, [], `"Run live" leaked into vi values: ${offenders.join(', ')}`);
+});
+
+test('relocation reads "chuyển nơi ở" — it must not collide with the commute family', () => {
+  // "di chuyển" is the word family the commute.* drive-time filters use on the
+  // same page; relocation is a different feature (willing to move for the job).
+  assert.match(DICT['scan.reloc'].vi, /chuyển nơi ở/);
+  assert.match(DICT['scan.col.reloc'].vi, /[Cc]huyển nơi ở/);
+  assert.match(DICT['scan.relocBadge'].vi, /chuyển nơi ở/);
+  for (const key of ['scan.reloc', 'scan.relocBadge']) {
+    assert.doesNotMatch(DICT[key].vi, /^[Dd]i chuyển$/, `${key} must not read "di chuyển"`);
+  }
+});
+
+test('legitimacy reads "xác thực" (the posting is real), not the moral "chính đáng"', () => {
+  assert.equal(DICT['track.col.legitimacy'].vi, 'Độ xác thực');
+  assert.equal(DICT['auto.legitimacy'].vi, 'Độ xác thực');
+  assert.equal(DICT['auto.legit'].vi, 'Xác thực');
+});
+
+test('nav.patterns / dash.quick.patternsCta are "Mẫu từ chối", never the Trend label', () => {
+  // "Xu hướng" is stats.tabTrend / stats.trend — two sidebar/CTA entries must
+  // not carry it, or the Patterns page reads as the Trend page.
+  assert.equal(DICT['nav.patterns'].vi, 'Mẫu từ chối');
+  assert.equal(DICT['dash.quick.patternsCta'].vi, 'Mẫu từ chối');
+  assert.notEqual(DICT['nav.patterns'].vi, DICT['stats.tabTrend'].vi, 'Patterns must not share the Trend label');
+});
+
+test('the vi prompt scaffold is pinned: every key translated, tone-marked, {slug} intact', async () => {
+  // prompts.mjs resolves PATHS at import time — point CAREER_OPS_ROOT at an
+  // isolated temp root (with cv.md) before the dynamic import. This file does
+  // not import any other server module, so the one-time resolution is safe.
+  const ROOT = mkdtempSync(resolve(tmpdir(), 'i18n-vi-scaffold-'));
+  writeFileSync(resolve(ROOT, 'cv.md'), '# CV\n');
+  writeFileSync(resolve(ROOT, 'portals.yml'), 'tracked_companies: []\n');
+  const saved = process.env.CAREER_OPS_ROOT;
+  process.env.CAREER_OPS_ROOT = ROOT;
+  try {
+    const { scaffold } = await import('../server/lib/prompts.mjs');
+    const keys = ['readFiles', 'userContext', 'modeTemplate', 'modeRoleLine', 'evalRoleLine'];
+    for (const key of keys) {
+      const vi = scaffold(key, 'vi');
+      assert.ok(vi, `scaffold(${key}, 'vi') must not be empty`);
+      assert.notEqual(vi, scaffold(key, 'en'), `scaffold(${key}, 'vi') fell back to en — the vi entry is missing`);
+      assert.match(vi, VIET, `scaffold(${key}, 'vi') carries no Vietnamese diacritics: "${vi}"`);
+    }
+    assert.ok(scaffold('modeRoleLine', 'vi').includes('{slug}'), "modeRoleLine.vi must keep the {slug} placeholder");
+  } finally {
+    if (saved === undefined) delete process.env.CAREER_OPS_ROOT;
+    else process.env.CAREER_OPS_ROOT = saved;
+    try { rmSync(ROOT, { recursive: true, force: true }); } catch { /* temp dir */ }
+  }
 });

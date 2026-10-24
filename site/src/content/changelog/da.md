@@ -9,6 +9,24 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 ---
 
 
+## [1.255.1] — 2026-10-24
+
+**To rettelsesrunder fra anmeldelser: Opus-gennemgangen af den vietnamesiske locale (9 fund) og andengennemgangen af CAR-91/92-rettelserne (5 must-fixes) — begge lukket med rød→grøn tests.**
+
+### Rettet
+
+- **vi-locale-anmeldelsesrunden (CAR-88-opfølgning)**: Hangul-glyffen (`신`), der lækkede ind i `project.subtitle` / `project.roleHint`, er rettet (`độ khớp tín hiệu`), med en gate, der fejler enhver CJK/Kana-glyf i en vi-værdi, som EN-ordbogen ikke selv bærer; de seks markdown-URL'er med mellemrum i docs/help/vi.md (`what-is career-ops`, `apply for a job`, `set up playwright` og tre flere) er forsynet med bindestreger til de rigtige guide-slugs, med en no-spaces-in-URLs-gate.
+- **Overskriftsgrænser i evalueringer (CAR-92 r2 H1)**: `&`, `.`, `/` og `'` er nu ordtegn i blokbogstavets venstre grænse — `## Q&A`, `## Plan B`, `## Ph.D. requirement` og `## E-commerce` registreres ikke længere som blokkene A/B/D/E; den blotte linjeslut-terminator accepteres kun efter et blokords-token (Block/блок/블록/…); ASCII `-` er fjernet fra tegnklasserne for de stavede terminators, så overskrifter som `E-commerce`/`ई-मेल` overlever.
+- **Ukrainsk/russisk nummererede rapporter (CAR-92 r2 H2)**: sekvensdetektoren for А Б В Г Д Є Ж er nu en delt hjælpefunktion; når den finder 3+ sekvensbogstaver på et overskriftsniveau, bliver det niveauet cutterens referenceniveau — bogstavmerkede `### A.`-underafsnit trunkerer ikke længere rapporten ved blok Б.
+- **Livscyklus for overførte rækker (CAR-92 r2 M1)**: rækker, som en fejlet kilde bærer med ind i den næste scanning, stemples `carriedSince`, kasseres efter 30 dage eller 5 på hinanden følgende overførsler og tilføjes efter de friske rækker i stedet for evigt at hobe sig op i stilhed.
+- **Gemini-syntesens nævner + legitimacy (CAR-92 r2 M2) og subprocessens body-score-sti (M3)**: aflæst fra findings-filen, rettet med røde tests.
+- **Cold-load bundle-drift-gaten** er opdateret til vi-ordbogen (90 script-tags / 87 bundlbare) og dens ubrugte testbinding fjernet (CodeQL 572).
+
+### Noter
+
+- Den adapter-antals-formulering i README.vi's "Seneste"-banner, som anmeldelsen påpegede, ligger i **Tidligere**-banneret og spejler allerede EN-README'en byte-for-byte — efterladt urørt for at bevare EN↔vi-pariteten (dokumenteret i commit-body'en).
+- Tests 5686 (+26: `eval-validate-opus-r2`, `scanner-carryover-r2`, vi-gate-påstande). Registret uændret ved **121 kilder (116 EN + 5 RU) · 116 adaptere**.
+
 ## [1.255.0] — 2026-10-24
 
 **Vietnamesisk (Tiếng Việt) tilslutter sig som det 19. brugerfladesprog — en ordbog med 1525 nøgler i fuld paritet med EN, detektion af vi/vi-VN, den fulde hjælpepakke, README- og CHANGELOG-spejle, cvstart.org-landingsside-integration og 🇻🇳 i sprogskifteren.**

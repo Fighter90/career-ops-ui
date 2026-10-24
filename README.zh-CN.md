@@ -12,14 +12,14 @@ _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。
 [![playwright](https://img.shields.io/badge/playwright-143%2F143-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.255.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.255.0)
+[![release](https://img.shields.io/badge/release-v1.255.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.255.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.255.0** — **越南语（Tiếng Việt）作为第19个界面语言加入 — 一个与 EN 完全对齐的 1525 键词典、vi/vi-VN 检测、完整帮助包、README 与 CHANGELOG 镜像、cvstart.org 落地页集成，以及语言切换器中的 🇻🇳。**
+> **🆕 最新版本 — v1.255.1** — **两轮评审修复：越南语界面语言的 Opus 评审（谚文字符泄漏与六个含空格的帮助 URL，现已加门槛防守），以及对 CAR-91/92 修复的第二轮评审 — 评估标题边界（`## Q&A` 不再被识别为一个块）、乌克兰语编号报告可在 `### A.` 子节中存活、携带的扫描行会过期淘汰，以及 gemini-synthesis 的分母/合法性解析已修复。**
 >
-> **上一版本 — v1.254.0** — **来自最大模型评审轮的加固版本：扫描器快照不再丢失行，LLM 层的 11 个不变量违规已修复，23 个 SPA 必修项落地，Paylocity ATS 加入扫描器 — 注册表现在提供 121 个来源(116 EN + 5 RU)与 116 个适配器。**
+> **上一版本 — v1.255.0** — **越南语（Tiếng Việt）作为第19个界面语言加入 — 一个与 EN 完全对齐的 1525 键词典、vi/vi-VN 检测、完整帮助包、README 与 CHANGELOG 镜像、cvstart.org 落地页集成，以及语言切换器中的 🇻🇳。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -392,7 +392,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 5642 unit + 144 Playwright + 23 e2e:full + 21 e2e:smoke
+└─ tests/                    # 5686 unit + 144 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.255.1)
    ├─ parsers.test.mjs       # markdown / pipeline / report 解析器(纯函数)
    ├─ api.test.mjs           # 每个端点,临时端口,无外网
    ├─ {ru,en}-scanner.test.mjs   # mock 后的 fetch

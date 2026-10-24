@@ -12,14 +12,14 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 [![playwright](https://img.shields.io/badge/playwright-143%2F143-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.255.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.255.0)
+[![release](https://img.shields.io/badge/release-v1.255.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.255.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.255.0** — **undefined**
+> **🆕 최신 릴리스 — v1.255.1** — **두 차례의 리뷰 수정 라운드: 베트남어 로캘에 대한 Opus 리뷰(한글 글리프 유출과 공백 포함 help URL 6개 — 이제 게이트로 보호), 그리고 CAR-91/92 수정의 2차 리뷰 — 평가 헤딩 경계(`## Q&A`는 더 이상 블록이 아님), 우크라이나어 숫자 리포트가 `### A.` 하위 섹션을 유지, 이월 스캔 행의 만료(에이징 아웃), gemini-synthesis 분모/legitimacy 파싱 수정.**
 >
-> **이전 버전 — v1.254.0** — **undefined**
+> **이전 버전 — v1.255.0** — **베트남어(Tiếng Việt)가 19번째 UI 로캘로 합류합니다 — EN과 완전한 동등성을 갖춘 1525키 사전, vi/vi-VN 감지, 전체 도움말 번들, README·CHANGELOG 미러, cvstart.org 랜딩 통합, 그리고 언어 전환기의 🇻🇳입니다.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -392,7 +392,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 5642 unit + 144 Playwright + 23 e2e:full + 21 e2e:smoke
+└─ tests/                    # 5686 unit + 144 Playwright + 23 e2e:full + 21 e2e:smoke (baseline @ v1.255.1)
    ├─ parsers.test.mjs       # markdown / pipeline / report 파서 (순수 함수)
    ├─ api.test.mjs           # 모든 엔드포인트, 임시 서버, 네트워크 없음
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch

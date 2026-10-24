@@ -11,6 +11,24 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.255.1] — 2026-10-24
+
+**Deux rondes de correctifs issues de revues : la revue Opus de la locale vietnamienne (9 constats) et la revue de seconde passe des correctifs CAR-91/92 (5 impératifs) — toutes deux closes avec des tests rouge→vert.**
+
+### Corrigé
+
+- **Ronde de revue de la locale vi (suite de CAR-88)** : le glyphe hangul (`신`) qui s'était glissé dans `project.subtitle` / `project.roleHint` est corrigé (`độ khớp tín hiệu`), avec une porte qui échoue dès qu'un glyphe CJK/Kana apparaît dans une valeur vi que le dictionnaire EN ne porte pas ; les six URLs markdown espacées de docs/help/vi.md (`what-is career-ops`, `apply for a job`, `set up playwright` et trois autres) sont hyphénées vers les vrais slugs des guides, avec une porte no-spaces-in-URLs.
+- **Frontières des titres d'évaluation (CAR-92 r2 H1)** : `&`, `.`, `/`, `'` sont désormais des caractères de mot dans la frontière gauche de la lettre de bloc — `## Q&A`, `## Plan B`, `## Ph.D. requirement`, `## E-commerce` ne s'enregistrent plus comme blocs A/B/D/E ; le terminateur de fin de ligne nu n'est accepté qu'après un jeton mot-bloc (Block/блок/블록/…) ; le `-` ASCII a quitté les classes de terminateurs épelés afin que les titres `E-commerce`/`ई-मेल` survivent.
+- **Rapports numérotés en ukrainien/russe (CAR-92 r2 H2)** : le détecteur de séquence А Б В Г Д Є Ж est désormais une fonction utilitaire partagée ; lorsqu'il trouve 3+ lettres de séquence à un niveau de titre, ce niveau devient le niveau de référence du coupeur — les sous-sections lettrées `### A.` ne tronquent plus le rapport au bloc Б.
+- **Cycle de vie des lignes reportées (CAR-92 r2 M1)** : les lignes qu'une source en échec reporte au scan suivant sont estampillées `carriedSince`, retirées après 30 jours ou 5 reports consécutifs, et ajoutées après les lignes fraîches au lieu de se ré-accumuler silencieusement indéfiniment.
+- **Dénominateur de synthèse Gemini + légitimité (CAR-92 r2 M2) et chemin body-score du sous-processus (M3)** : lus depuis le fichier de constats, corrigés avec des tests rouges.
+- **Porte de dérive du bundle cold-load** mise à jour pour le dictionnaire vi (90 balises script / 87 bundlables) et sa liaison de test inutilisée supprimée (CodeQL 572).
+
+### Notes
+
+- La phraséologie du comptage d'adaptateurs de la bannière « Dernière version » du README.vi, signalée par la revue, se trouve dans la bannière **Précédente** et reflète déjà le README EN à l'octet près — laissée intacte pour préserver la parité EN↔vi (documenté dans le corps du commit).
+- Tests 5686 (+26 : `eval-validate-opus-r2`, `scanner-carryover-r2`, assertions des portes vi). Registre inchangé : **121 sources (116 EN + 5 RU) · 116 adaptateurs**.
+
 ## [1.255.0] — 2026-10-24
 
 **Le vietnamien (Tiếng Việt) rejoint l'interface comme 19e langue — un dictionnaire de 1525 clés en pleine parité avec l'EN, la détection vi/vi-VN, le guide d'aide complet, les miroirs README et CHANGELOG, l'intégration à la landing cvstart.org et le 🇻🇳 du sélecteur de langue.**

@@ -14,14 +14,14 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 [![playwright](https://img.shields.io/badge/playwright-143%2F143-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.255.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.255.0)
+[![release](https://img.shields.io/badge/release-v1.255.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.255.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.255.0** — **वियतनामी (Tiếng Việt) 19वीं UI भाषा के रूप में जुड़ती है — EN के साथ पूर्ण समता वाला 1525-कुंजी शब्दकोश, vi/vi-VN पहचान, पूरा हेल्प बंडल, README और CHANGELOG मिरर, cvstart.org लैंडिंग एकीकरण, और भाषा-चयनकर्ता में 🇻🇳।**
+> **🆕 नवीनतम रिलीज़ — v1.255.1** — **दो समीक्षा-फ़िक्स राउंड: वियतनामी लोकेल की Opus समीक्षा (हैंगुल ग्लिफ़ लीक और छह स्पेसयुक्त help-URL — अब गेट के साथ) और CAR-91/92 फ़िक्स की दूसरी-पास समीक्षा — evaluation हेडिंग सीमाएँ (`## Q&A` अब ब्लॉक नहीं), यूक्रेनियन-संख्यांकित रिपोर्ट `### A.` सबसेक्शन से बच जाती हैं, कैरी की गई स्कैन पंक्तियाँ समय के साथ हट जाती हैं, और gemini-synthesis का denominator/legitimacy पार्स ठीक हुआ।**
 >
-> **पिछला — v1.254.0** — **अधिकतम मॉडल समीक्षा राउंड से एक हार्डनिंग रिलीज़: स्कैनर स्नैपशॉट अब पंक्तियाँ कभी नहीं खोता, LLM लेयर के ग्यारह इनवेरिएंट उल्लंघन ठीक हुए, तेईस SPA मस्ट-फ़िक्स लैंड हुए, और Paylocity ATS स्कैनर से जुड़ता है — रजिस्ट्री अब 115 एडाप्टर के साथ 121 सोर्स (115 EN + 5 RU) देती है।**
+> **पिछला — v1.255.0** — **वियतनामी (Tiếng Việt) 19वीं UI भाषा के रूप में जुड़ती है — EN के साथ पूर्ण समता वाला 1525-कुंजी शब्दकोश, vi/vi-VN पहचान, पूरा हेल्प बंडल, README और CHANGELOG मिरर, cvstart.org लैंडिंग एकीकरण, और भाषा-चयनकर्ता में 🇻🇳।**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -425,7 +425,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 5642 यूनिट + 144 Playwright + 23/23 e2e:full + 21 e2e:smoke (बेसलाइन @ v1.255.0)
+└─ tests/                    # 5686 यूनिट + 144 Playwright + 23/23 e2e:full + 21 e2e:smoke (बेसलाइन @ v1.255.1)
    ├─ parsers.test.mjs       # markdown / pipeline / report पार्सर (प्योर फ़ंक्शन)
    ├─ api.test.mjs           # हर एंडपॉइंट, एफ़ेमरल सर्वर, कोई नेटवर्क नहीं
    ├─ {ru,en}-scanner.test.mjs   # मॉक्ड fetch

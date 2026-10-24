@@ -552,13 +552,29 @@ function mergeSnapshot(old, payload, companies) {
  *     never in `fresh`, so they are never re-appended to pipeline/history or
  *     re-shown as new. Rows are deduped by canonical URL (old `fresh` is a
  *     subset of old `filtered` — both were carried before, doubling each row).
+ *   Review round 3 (CAR-92 r2 / M1) — the carry is bounded and marked. A
+ *     source that fails EVERY scan would re-carry its rows forever (closed
+ *     vacancies never dropping), so each carried row is stamped — `carried:
+ *     true`, `carriedSince` (the snapshot `when` of the run that FIRST
+ *     carried it, preserved) and `carriedCount` — and a row is retired once
+ *     it has been carried MAX_CARRIED_RUNS times or its first-carry stamp
+ *     ages past MAX_CARRIED_AGE_DAYS days (both overridable through opts for
+ *     tests). Carried rows are appended AFTER this run's rows (current offers
+ *     first in #/scan) and carry the `carried` flag so the UI can badge them.
  * @param {any} old previous snapshot for this kind
  * @param {any} payload this run's snapshot
  * @param {string[]} failed companies / sources this run failed to scan
- * @param {{ bySource?: boolean, carriedCheck?: (job: any) => boolean }} [opts]
- *   bySource      — match the failed set against `j.source` (RU) instead of the entry stamp
- *   carriedCheck  — re-run the current filters on a carried row; false drops it
+ * @param {{ bySource?: boolean, carriedCheck?: (job: any) => boolean,
+ *           carryMaxRuns?: number, carryMaxAgeDays?: number }} [opts]
+ *   bySource        — match the failed set against `j.source` (RU) instead of the entry stamp
+ *   carriedCheck    — re-run the current filters on a carried row; false drops it
+ *   carryMaxRuns    — retire a row after this many carries (default MAX_CARRIED_RUNS)
+ *   carryMaxAgeDays — retire a row first carried longer than this many days ago
+ *                     (default MAX_CARRIED_AGE_DAYS)
  */
+export const MAX_CARRIED_RUNS = 5;
+export const MAX_CARRIED_AGE_DAYS = 30;
+
 function keepFailedSourcesSnapshot(old, payload, failed, opts = {}) {
   const lc = (v) => String(v ?? '').toLowerCase();
   const key = (j) => normalizeUrl(j.url) || j.url;
@@ -568,11 +584,29 @@ function keepFailedSourcesSnapshot(old, payload, failed, opts = {}) {
     : (j) => failedSet.has(lc(j._entry ?? j.company));
   const newKeys = new Set([...(payload.fresh || []), ...(payload.filtered || [])].map(key));
   const check = typeof opts.carriedCheck === 'function' ? opts.carriedCheck : null;
+  const maxRuns = Number.isFinite(opts.carryMaxRuns) ? opts.carryMaxRuns : MAX_CARRIED_RUNS;
+  const maxAgeMs = (Number.isFinite(opts.carryMaxAgeDays) ? opts.carryMaxAgeDays : MAX_CARRIED_AGE_DAYS) * 86400_000;
+  const now = Date.now();
+  // Stamp + retire. The age clock reads the PRESERVED first-carry stamp: a
+  // row carried for the first time is stamped (old.when — an upper bound on
+  // the row's age) and survives; from its second carry on, a stamp older than
+  // maxAgeMs retires it.
+  const stamp = (j) => {
+    const count = (Number(j.carriedCount) || 0) + 1;
+    if (count > maxRuns) return null;
+    if (j.carriedSince) {
+      const since = Date.parse(j.carriedSince);
+      if (Number.isFinite(since) && now - since > maxAgeMs) return null;
+    }
+    return { ...j, carried: true, carriedSince: j.carriedSince || old.when, carriedCount: count };
+  };
   const carry = (rows) => (Array.isArray(rows) ? rows : [])
     .filter((j) => j && typeof j === 'object'
       && matchesFailure(j)
       && !newKeys.has(key(j))
-      && (!check || check(j) !== false));
+      && (!check || check(j) !== false))
+    .map(stamp)
+    .filter(Boolean);
   const seenKeys = new Set();
   const carried = [...carry(old.fresh), ...carry(old.filtered)].filter((j) => {
     const k = key(j);
@@ -583,7 +617,7 @@ function keepFailedSourcesSnapshot(old, payload, failed, opts = {}) {
   return {
     ...payload,
     fresh: [...(payload.fresh || [])],
-    filtered: [...carried, ...(payload.filtered || [])],
+    filtered: [...(payload.filtered || []), ...carried],
   };
 }
 

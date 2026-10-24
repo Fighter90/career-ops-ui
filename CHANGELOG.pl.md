@@ -9,6 +9,23 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.255.1] — 2026-10-24
+
+**Dwie rundy poprawek recenzenckich: recenzja Opus lokalizacji wietnamskiej (9 ustaleń) i recenzja drugiego przebiegu poprawek CAR-91/92 (5 imperatywów) — obie zamknięte testami czerwony→zielony.**
+
+### Naprawiono
+
+- **Runda recenzji lokalizacji vi (ciąg dalszy CAR-88)**: glif hangul (`신`), który wyciekł do `project.subtitle` / `project.roleHint`, poprawiony (`độ khớp tín hiệu`), z bramką odrzucającą dowolny glif CJK/Kany w wartości vi, której słownik EN nie niesie; sześć adresów URL markdownu ze spacjami w docs/help/vi.md (`what-is career-ops`, `apply for a job`, `set up playwright` i trzy kolejne) połączono łącznikami z prawdziwymi slugami przewodnika, z bramką no-spaces-in-URLs.
+- **Granice nagłówków oceny (CAR-92 r2 H1)**: `&`, `.`, `/`, `'` są teraz znakami słowymi w lewej granicy litery bloku — `## Q&A`, `## Plan B`, `## Ph.D. requirement`, `## E-commerce` nie rejestrują się już jako bloki A/B/D/E; goły terminator końca wiersza jest akceptowany tylko po tokenie słowa bloku (Block/блок/블록/…); ASCII `-` opuścił klasy terminatorów zapisanych słownie, więc nagłówki `E-commerce`/`ई-मेल` przetrwają.
+- **Raporty numerowane ukraińsko-rosyjskimi literami (CAR-92 r2 H2)**: detektor sekwencji А Б В Г Д Є Ж jest teraz wspólnym helperem; gdy znajdzie 3+ liter sekwencji na poziomie nagłówka, ten poziom staje się poziomem referencyjnym cuttera — literowane podsekcje `### A.` nie tną już raportu na bloku Б.
+- **Cykl życia przenoszonych wierszy (CAR-92 r2 M1)**: wiersze, które poległe źródło niesie do następnego skanu, dostają pieczęć `carriedSince`, są usuwane po 30 dniach lub 5 kolejnych przeniesieniach i dopisywane po świeżych wierszach zamiast po cichu kumulować się w nieskończoność.
+- **Mianownik i legitimacy syntez Gemini (CAR-92 r2 M2) oraz ścieżka body-score podprocesu (M3)**: odczytane z pliku ustaleń recenzji, naprawione z testami czerwony→zielony.
+
+### Uwagi
+
+- Frazy liczby adapterów w banerze „Najnowsze wydanie" README.vi, które recenzja oznaczyła, żyją w banerze **Poprzednie wydanie** i już teraz są kopią lustrzaną EN README bajt w bajt — nietknięte, by zachować parzystość EN↔vi (udokumentowane w treści commita).
+- Podłoga testów: 5642 → **5686** (+26: `eval-validate-opus-r2`, `scanner-carryover-r2`, asercje bramek vi). Rejestr bez zmian: **121 źródeł (116 EN + 5 RU) · 116 adapterów**.
+
 ## [1.255.0] — 2026-10-24
 
 **Wietnamski (Tiếng Việt) dołącza jako 19. język interfejsu — słownik 1525 kluczy w pełnej parzystości z EN, wykrywanie vi/vi-VN, pełny pakiet pomocy, kopie lustrzane README i CHANGELOG, integracja z landingiem cvstart.org oraz 🇻🇳 w przełączniku języka.**

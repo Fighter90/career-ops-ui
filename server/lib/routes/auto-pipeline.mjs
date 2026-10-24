@@ -396,7 +396,15 @@ export function synthesizeGeminiSummary(markdown, guess) {
   if (score == null) return src;
   const leg = src.match(/\blegitimacy\s*[:：\-–—][ \t]*([^\n]+)/i);
   const arch = src.match(/(?:\*\*)?[ \t]*archetype(?:\*\*)?[ \t]*[:：][ \t]*([^\n]+)/i);
-  const clean = (v, cap) => String(v || '').trim().slice(0, cap);
+  // Review round 2 (M3) — the parent's saved form is bold (`**Legitimacy:**
+  // High Confidence`), so the capture kept the marker (`** High Confidence`)
+  // and extractLegitimacy's startsWith('high') failed — legitimacy was always
+  // '' on the subprocess path. Strip the leading/trailing emphasis markers.
+  const clean = (v, cap) => String(v || '')
+    .replace(/^[*_ \t]+/, '')
+    .replace(/[*_ \t]+$/, '')
+    .trim()
+    .slice(0, cap);
   return `${src.trimEnd()}\n\n---SCORE_SUMMARY---\n`
     + `COMPANY: ${clean(guess?.company, 80) || '—'}\n`
     + `ROLE: ${clean(guess?.role, 80) || '—'}\n`

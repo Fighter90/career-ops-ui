@@ -11,6 +11,24 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.255.1] — 2026-10-24
+
+**Dos rondas de correcciones tras revisión: la revisión Opus del idioma vietnamita (9 hallazgos) y la segunda pasada sobre las correcciones CAR-91/92 (5 must-fix) — ambas cerradas con tests rojo→verde.**
+
+### Corregido
+
+- **Ronda de revisión del locale vi (seguimiento de CAR-88)**: el glifo hangul (`신`) que se coló en `project.subtitle` / `project.roleHint` queda corregido (`độ khớp tín hiệu`), con una puerta que falla ante cualquier glifo CJK/Kana en un valor de vi que el diccionario EN no lleve; las seis URLs markdown con espacios en docs/help/vi.md (`what-is career-ops`, `apply for a job`, `set up playwright` y tres más) llevan guiones hasta los slugs reales de las guías, con una puerta sin-espacios-en-URLs.
+- **Límites de los encabezados de evaluación (CAR-92 r2 H1)**: `&`, `.`, `/`, `'` son ahora caracteres de palabra en el límite izquierdo de la letra de bloque — `## Q&A`, `## Plan B`, `## Ph.D. requirement`, `## E-commerce` ya no se registran como bloques A/B/D/E; el terminador pelado de fin de línea solo se acepta tras un token de palabra de bloque (Block/блок/블록/…); el `-` ASCII salió de las clases de terminador escrito para que los encabezados `E-commerce`/`ई-मेल` sobrevivan.
+- **Informes numerados en ucraniano/ruso (CAR-92 r2 H2)**: el detector de la secuencia А Б В Г Д Є Ж es ahora un helper compartido; cuando encuentra 3+ letras de la secuencia en un nivel de encabezado, ese nivel se convierte en el nivel de referencia del cortador — las subsecciones con letra `### A.` ya no truncan el informe en el bloque Б.
+- **Ciclo de vida de las filas arrastradas (CAR-92 r2 M1)**: las filas que una fuente fallida arrastra al siguiente escaneo se sellan con `carriedSince`, se descartan tras 30 días o 5 arrastres consecutivos, y se añaden después de las filas frescas en lugar de re-acumularse en silencio para siempre.
+- **Denominador de la síntesis Gemini + legitimacy (CAR-92 r2 M2) y la ruta de body-score del subprocess (M3)**: leídos del archivo de hallazgos, corregidos con tests rojos.
+- **Puerta de deriva del bundle de carga en frío** actualizada para el diccionario vi (90 script tags / 87 bundlable) y su binding de test sin usar eliminado (CodeQL 572).
+
+### Notas
+
+- La redacción del recuento de adaptadores del banner «Latest» de README.vi que la revisión señaló vive en el banner **Anterior** y ya replica el README EN byte a byte — se deja intacta para mantener la paridad EN↔vi (documentado en el cuerpo del commit).
+- Tests 5686 (+26: `eval-validate-opus-r2`, `scanner-carryover-r2`, aserciones de la puerta vi). Registro sin cambios en **121 fuentes (116 EN + 5 RU) · 116 adaptadores**.
+
 ## [1.255.0] — 2026-10-24
 
 **El vietnamita (Tiếng Việt) se une como el 19.º idioma de la interfaz — un diccionario de 1525 claves con paridad completa con el EN, detección de vi/vi-VN, el paquete de ayuda completo, réplicas de README y CHANGELOG, integración en la landing de cvstart.org y la 🇻🇳 en el selector de idioma.**
