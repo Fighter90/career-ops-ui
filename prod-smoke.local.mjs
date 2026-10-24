@@ -8,7 +8,7 @@ const j = async (p) => (await fetch(BASE + p, { headers: H })).json();
 const code = async (p) => (await fetch(BASE + p, { headers: H })).status;
 const health = await j('/api/health');
 ok('health.ok', health.ok === true);
-ok('version 1.253.0', health.version === '1.253.0', health.version);
+ok('version 1.253.0', health.version === '1.254.0', health.version);
 ok('parentVersion 1.38.0', health.parentVersion === '1.38.0', health.parentVersion);
 ok('tracker 200', (await code('/api/tracker')) === 200);
 ok('reports 200', (await code('/api/reports')) === 200);
