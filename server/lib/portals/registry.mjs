@@ -177,6 +177,13 @@ import { jazzhrAdapter } from './adapters/jazzhr.mjs';
 import { startupJobsAdapter } from './adapters/startup-jobs.mjs';
 import { taleoAdapter } from './adapters/taleo.mjs';
 import { ultiproAdapter } from './adapters/ultipro.mjs';
+// v1.253.0 — parent parity: Platsbanken (Sweden's national board via the
+// JobTech JobSearch API, keyword-scoped — the API stops serving past offset
+// 2000, so each keyword gets its own window) and Tech in Asia (the jobs UI's
+// own Algolia index; credentials discovered fresh per run from the site
+// build). Both board-wide, explicit `provider:` only.
+import { platsbankenAdapter } from './adapters/platsbanken.mjs';
+import { techinasiaAdapter } from './adapters/techinasia.mjs';
 
 export const ALL_ADAPTERS = [
   builtinAdapter,
@@ -353,6 +360,11 @@ export const ALL_ADAPTERS = [
   // <tenant>.zohorecruit.com or `provider: zoho-recruit`; hidden-input JSON
   // board on the fixed /jobs/Careers path).
   zohoRecruitAdapter,
+  // v1.253.0 — parent parity: Platsbanken (Sweden's national board, keyword-
+  // scoped JobTech API, explicit `provider: platsbanken` only) and Tech in
+  // Asia (Algolia job_postings index, explicit `provider: techinasia` only).
+  platsbankenAdapter,
+  techinasiaAdapter,
 ];
 
 /**
