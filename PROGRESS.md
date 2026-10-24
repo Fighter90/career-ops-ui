@@ -8,7 +8,7 @@ Release history belongs in [CHANGELOG.md](CHANGELOG.md), decisions in
 [docs/adr/](docs/adr/), vocabulary in [CONTEXT.md](CONTEXT.md). Anything already
 recoverable from those does **not** belong here.
 
-_Last updated: 2026-10-09 · **v1.247.0 SHIPPED** (tag `v1.247.0` @ `4c3778bf`, badges ×18 at tests 5116 / browser 118): the tail of the CAR-49…58 design sweep — dark map tiles, dark `callout--warn` variants, one stroke-SVG icon set for the topbar, empty states. Before it: **v1.246.0** (all ten top findings of the CAR-48 senior-design sweep), **v1.245.0** (Tamil joins as the 18th UI locale), **v1.244.x** `#/scan` redesign + hotfixes (prod verified, CAR-36 modal PASS, Playwright 15/15)._
+_Last updated: 2026-10-24 · **v1.255.1 SHIPPED** (review fix-rounds: vi-locale Opus review + CAR-92 r2 — 5686 tests, registry 121/116, locales 19, CodeQL 0 open) · before it: **v1.255.0** (vi 19th locale + cold-load bundle)_
 
 ---
 

@@ -2,6 +2,24 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.255.1] — 2026-10-24
+
+**Due giri di correzioni dalle revisioni: la revisione Opus della localizzazione vietnamita (9 reperti) e la revisione di seconda passata dei fix CAR-91/92 (5 imperativi) — entrambi chiusi con test rosso→verde.**
+
+### Corretto
+
+- **Giro di revisione della locale vi (follow-up di CAR-88)**: il glifo Hangul (`신`) che era filtrato in `project.subtitle` / `project.roleHint` è corretto (`độ khớp tín hiệu`), con un gate che fallisce su qualunque glifo CJK/Kana in un valore vi che il dizionario EN non porta; i sei URL markdown con spazi in docs/help/vi.md (`what-is career-ops`, `apply for a job`, `set up playwright` e altri tre) sono riportati col trattino agli slug reali delle guide, con un gate che vieta gli spazi negli URL.
+- **Confini delle intestazioni di valutazione (CAR-92 r2 H1)**: `&`, `.`, `/`, `'` sono ora caratteri di parola nel confine sinistro della lettera-blocco — `## Q&A`, `## Plan B`, `## Ph.D. requirement`, `## E-commerce` non si registrano più come blocchi A/B/D/E; il terminatore nudo a fine riga è accettato solo dopo un token parola-blocco (Block/блок/블록/…); l'ASCII `-` è uscito dalle classi dei terminatori scritti per esteso, così le intestazioni `E-commerce`/`ई-मेल` sopravvivono.
+- **Report numerati in ucraino/russo (CAR-92 r2 H2)**: il rilevatore della sequenza А Б В Г Д Є Ж è ora un helper condiviso; quando trova 3+ lettere della sequenza a un livello di intestazione, quel livello diventa il livello di riferimento del cutter — le sottosezioni `### A.` con lettera non troncano più il report al blocco Б.
+- **Ciclo di vita delle righe riportate (CAR-92 r2 M1)**: le righe che una fonte fallita riporta nella scansione successiva vengono timbrate `carriedSince`, scartate dopo 30 giorni o 5 riporti consecutivi, e accodate dopo le righe fresche invece di ri-accumularsi in silenzio per sempre.
+- **Denominatore della gemini-synthesis + legitimacy (CAR-92 r2 M2) e il percorso subprocess del body-score (M3)**: letti dal file dei reperti, corretti con test rossi.
+- **Gate di deriva del bundle a caricamento a freddo aggiornato per il dizionario vi** (90 tag script / 87 bundleizzabili) e rimossa la sua associazione di test inutilizzata (CodeQL 572).
+
+### Note
+
+- La formulazione del conteggio adattatori nel banner «Ultima» del README.vi segnalata dalla revisione sta nel banner **Precedente** e rispecchia già il README EN byte per byte — lasciata intatta per mantenere la parità EN↔vi (documentata nel corpo del commit).
+- Test 5686 (+26: `eval-validate-opus-r2`, `scanner-carryover-r2`, asserzioni dei gate vi). Registro invariato a **121 fonti (116 EN + 5 RU) · 116 adattatori**.
+
 ## [1.255.0] — 2026-10-24
 
 **Il vietnamita (Tiếng Việt) entra come 19ª lingua dell'interfaccia — un dizionario di 1525 chiavi in piena parità con l'EN, rilevamento di vi/vi-VN, il pacchetto guida completo, i mirror README e CHANGELOG, l'integrazione nella landing di cvstart.org e il 🇻🇳 nel selettore lingua.**

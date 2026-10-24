@@ -12,14 +12,14 @@ _Giao diện không chính thức — không liên kết với career-ops / sant
 [![playwright](https://img.shields.io/badge/playwright-143%2F143-brightgreen)](#kiểm-thử)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#yêu-cầu)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.255.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.255.0)
+[![release](https://img.shields.io/badge/release-v1.255.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.255.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Bản phát hành mới nhất — v1.255.0** — **Tiếng Việt gia-nhập làm ngôn-ngữ-giao-diện thứ 19 — từ-điển 1525 khóa đối-xứng hoàn-toàn với EN, nhận-diện vi/vi-VN, trọn gói trợ-giúp, bản-phản-ánh README và CHANGELOG, tích-hợp landing cvstart.org, và lá 🇻🇳 trên bộ-chọn-ngôn-ngữ.**
+> **🆕 Bản phát hành mới nhất — v1.255.1** — **Hai-vòng-sửa-sau-rà-soát: rà-soát-Opus cho-locale-tiếng-Việt (glyph-Hangul-rò-rỉ và sáu-URL-trợ-giúp-có-khoảng-trắng, giờ đã-có-cổng-canh) và rà-soát-lần-hai các-bản-sửa CAR-91/92 — ranh-giới-tiêu-đề-đánh-giá (`## Q&A` không-còn-là-một-khối), báo-cáo-đánh-số-Ukraina sống-sót trước các-mục-con `### A.`, các-dòng-quét-được-chuyển-tiếp tự-hết-hạn, và phần-parse-mẫu-số/legitimacy của-gemini-synthesis đã-được-sửa.**
 >
-> **Bản trước — v1.254.0** — **Một bản phát hành gia-cố từ vòng rà-soát mô-hình-tối: ảnh-chụp-scanner không bao giờ mất dòng nữa, mười-một vi-phạm-bất-biến ở-tầng-LLM được sửa, hai-mươi-ba bản-sửa-bắt-buộc-SPA đổ-bộ, và ATS Paylocity gia-nhập-máy-quét — registry giờ cung cấp 121 nguồn (116 EN + 5 RU) với 116 adapter.**
+> **Bản trước — v1.255.0** — **Tiếng Việt gia-nhập làm ngôn-ngữ-giao-diện thứ 19 — từ-điển 1525 khóa đối-xứng hoàn-toàn với EN, nhận-diện vi/vi-VN, trọn gói trợ-giúp, bản-phản-ánh README và CHANGELOG, tích-hợp landing cvstart.org, và lá 🇻🇳 trên bộ-chọn-ngôn-ngữ.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -203,7 +203,7 @@ web-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 5642 unit + 144 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.255.0)
+└─ tests/                    # 5686 unit + 144 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.255.1)
    ├─ parsers.test.mjs       # bộ-phân-tách-markdown / pipeline / báo-cáo (hàm-thuần)
    ├─ api.test.mjs           # mọi-endpoint, máy-chủ-ephemeral, không-mạng
    ├─ {ru,en}-scanner.test.mjs   # fetch-mocked

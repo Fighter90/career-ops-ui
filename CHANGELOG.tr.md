@@ -2,6 +2,24 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.255.1] — 2026-10-24
+
+**İki inceleme düzeltme turu: Vietnamca yerelleştirmesinin Opus incelemesi (9 bulgu) ve CAR-91/92 düzeltmelerinin ikinci tur incelemesi (5 zorunlu düzeltme) — her ikisi de kırmızı→yeşil testlerle kapatıldı.**
+
+### Düzeltildi
+
+- **vi yerelleştirmesi inceleme turu (CAR-88 devamı)**: `project.subtitle` / `project.roleHint` içine sızan Hangul glifi (`신`) düzeltildi (`độ khớp tín hiệu`); EN sözlüğünün taşımadığı bir vi değerindeki herhangi bir CJK/Kana glifi için başarısız olan bir kapı eklendi. docs/help/vi.md içindeki altı boşluklu markdown URL'si (`what-is career-ops`, `apply for a job`, `set up playwright` ve üç tane daha) gerçek kılavuz slug'larına kısa çizgili biçime çevrildi; URL'lerde-boşluk-olmaz kapısı eklendi.
+- **Değerlendirme başlık sınırları (CAR-92 r2 H1)**: `&`, `.`, `/`, `'` artık blok harfinin sol sınırında kelime karakteri sayılıyor — `## Q&A`, `## Plan B`, `## Ph.D. requirement`, `## E-commerce` artık A/B/D/E blokları olarak kaydedilmiyor; çıplak satır sonu sonlandırıcısı yalnızca bir blok-kelime dizgecinden (Block/блок/블록/…) sonra kabul ediliyor; ASCII `-` yazılı-sonlandırıcı sınıflarından çıkarıldı, böylece `E-commerce`/`ई-मेल` başlıkları hayatta kalıyor.
+- **Ukraynaca/Rusça numaralı raporlar (CAR-92 r2 H2)**: А Б В Г Д Є Ж dizi algılayıcısı artık paylaşılan bir yardımcı; bir başlık düzeyinde 3+ dizi harfi bulduğunda o düzey kesicinin referans düzeyi oluyor — harfli `### A.` alt bölümleri raporu artık Б bloğunda kesmiyor.
+- **Taşınan-satır yaşam döngüsü (CAR-92 r2 M1)**: başarısız bir kaynağın sonraki taramaya taşıdığı satırlar `carriedSince` damgası alıyor, 30 gün sonra ya da 5 art arda taşınmadan sonra atılıyor ve sessizce sonsuza dek birikmek yerine taze satırların arkasına ekleniyor.
+- **Gemini sentez paydası + legitimacy (CAR-92 r2 M2) ve alt süreç gövde-puanı yolu (M3)**: bulgular dosyasından okundu, kırmızı testlerle düzeltildi.
+- **Soğuk-yükleme paketi sapma kapısı** vi sözlüğü için güncellendi (90 script etiketi / 87 paketlenebilir) ve kullanılmayan test bağlaması kaldırıldı (CodeQL 572).
+
+### Notlar
+
+- İncelemenin işaretlediği README.vi "Son sürüm" bandındaki adaptör-sayısı ifadesi **Önceki** bandında yaşıyor ve zaten EN README ile bayt-bayt aynı — EN↔vi paritesini korumak için dokunulmadan bırakıldı (commit gövdesinde belgelendi).
+- Test tabanı: 5686 (+26: `eval-validate-opus-r2`, `scanner-carryover-r2`, vi-kapısı doğrulamaları). Kayıt defteri değişmedi: **121 kaynak (116 EN + 5 RU) · 116 adaptör**.
+
 ## [1.255.0] — 2026-10-24
 
 **Vietnamca (Tiếng Việt), 19. arayüz dili olarak katılıyor — EN ile tam pariteli 1525 anahtarlık sözlük, vi/vi-VN algılama, eksiksiz yardım paketi, README ve CHANGELOG aynaları, cvstart.org açılış sayfası entegrasyonu ve dil değiştiricideki 🇻🇳.**

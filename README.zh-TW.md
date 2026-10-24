@@ -12,14 +12,14 @@ _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。
 [![playwright](https://img.shields.io/badge/playwright-143%2F143-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.255.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.255.0)
+[![release](https://img.shields.io/badge/release-v1.255.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.255.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.255.0** — **越南語（Tiếng Việt）成為第19個介面語言 — 一個與 EN 完全對齊的 1525 鍵詞典、vi/vi-VN 偵測、完整說明包、README 與 CHANGELOG 鏡像、cvstart.org 落地頁整合，以及語言切換器中的 🇻🇳。**
+> **🆕 最新版本 — v1.255.1** — **兩輪評審修復：越南語的 Opus 評審（韓文字母洩漏與六個含空格的說明 URL，現已設閘把關）以及 CAR-91/92 修復的第二輪評審 — 評估標題邊界（`## Q&A` 不再被視為區塊）、烏克蘭字母編號報告在 `### A.` 子節下得以存活、攜帶的掃描列會過期淘汰，gemini-synthesis 分母/合法性解析亦已修復。**
 >
-> **前一版本 — v1.254.0** — **來自最大模型評審輪的強化版本：掃描器快照不再遺失列，LLM 層的 11 個不變量違規已修復，23 個 SPA 必修項落地，Paylocity ATS 加入掃描器 — 註冊表現在提供 121 個來源(116 EN + 5 RU)與 116 個配接器。**
+> **前一版本 — v1.255.0** — **越南語（Tiếng Việt）成為第19個介面語言 — 一個與 EN 完全對齊的 1525 鍵詞典、vi/vi-VN 偵測、完整說明包、README 與 CHANGELOG 鏡像、cvstart.org 落地頁整合，以及語言切換器中的 🇻🇳。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -392,7 +392,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 5642 unit + 144 Playwright + 23 e2e:full + 21 e2e:smoke
+└─ tests/                    # 5686 unit + 144 Playwright + 23 e2e:full + 21 e2e:smoke (baseline @ v1.255.1)
    ├─ parsers.test.mjs       # markdown / pipeline / report 解析器(純函式)
    ├─ api.test.mjs           # 每個端點、暫時性伺服器、無網路
    ├─ {ru,en}-scanner.test.mjs   # 已 mock 的 fetch

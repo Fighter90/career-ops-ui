@@ -6,6 +6,24 @@ Bản dịch: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.255.1] — 2026-10-24
+
+**Hai-vòng-sửa-sau-rà-soát: vòng-rà-soát-Opus cho-locale-tiếng-Việt (9 phát-hiện) và vòng-rà-soát-lần-hai các-bản-sửa CAR-91/92 (5 bản-sửa-bắt-buộc) — cả-hai được-đóng lại với-các-test-đỏ→xanh.**
+
+### Đã sửa
+
+- **Vòng-rà-soát-locale-vi (tiếp-nối CAR-88)**: chữ-glyph-Hangul (`신`) rò-vào `project.subtitle` / `project.roleHint` đã-được-sửa lại (`độ khớp tín hiệu`), kèm-một-cổng trượt khi-bất-kỳ-glyph-CJK/Kana nào xuất-hiện trong một-giá-trị-vi mà từ-điển-EN không mang; sáu-URL-markdown-có-khoảng-trắng trong docs/help/vi.md (`what-is career-ops`, `apply for a job`, `set up playwright` cùng-ba-mục-khác) được-gạch-nối về đúng-các-slug-hướng-dẫn-thực, kèm-cổng-cấm-khoảng-trắng-trong-URL.
+- **Ranh-giới-tiêu-đề-đánh-giá (CAR-92 r2 H1)**: `&`, `.`, `/`, `'` giờ là ký-tự-từ trong biên-trái của-chữ-khối — `## Q&A`, `## Plan B`, `## Ph.D. requirement`, `## E-commerce` không-còn-được-đăng-ký thành khối A/B/D/E; ký-tự-kết-thúc-cuối-dòng-thuần chỉ-được-chấp-nhận sau-một-token-từ-khối (Block/блок/블록/…); ASCII `-` đã-rời các-lớp-ký-tự-kết-thúc-viết-chữ nên các-tiêu-đề `E-commerce`/`ई-मेल` sống-sót.
+- **Báo-cáo-đánh-số-Ukraina/Nga (CAR-92 r2 H2)**: bộ-dò-dãy А Б В Г Д Є Ж giờ là một-helper-dùng-chung; khi tìm-thấy 3+ chữ-cái-của-dãy tại-một-mức-tiêu-đề, mức-đó trở-thành mức-tham-chiếu của-bộ-cắt — các-mục-con `### A.` có-chữ-cái không-còn-cắt-ngắn báo-cáo tại-khối Б.
+- **Vòng-đời-dòng-chuyển-tiếp (CAR-92 r2 M1)**: các-dòng mà một-nguồn-thất-bại chuyển-tiếp sang-lượt-quét-kế được-đóng-dấu `carriedSince`, bị-loại sau 30 ngày hay 5 lần-chuyển-tiếp-liên-tục, và được-nối vào sau-các-dòng-mới thay-vì tích-tụy-lặng-lẽ mãi-mãi.
+- **Mẫu-số-của-gemini-synthesis + legitimacy (CAR-92 r2 M2) và đường-điểm-phần-thân-của-tiến-trình-con (M3)**: đọc từ tệp-ghi-phát-hiện, sửa với-các-test-đỏ.
+- **Cổng-phát-hiện-lệch-bundle-tải-lạnh** cập-nhật cho từ-điển-vi (90 thẻ-script / 87 có-thể-bundle) và loại-bỏ-biến-gán-test-không-dùng của nó (CodeQL 572).
+
+### Ghi chú
+
+- Cách-diễn-đạt-số-adapter trong banner "Mới-nhất" của README.vi mà-rà-soát-chỉ-ra nằm trong banner **Bản-trước** và hiện-đã-ánh-xạ README-EN byte-for-byte — để-nguyên-tiêu để-giữ-đối-xứng EN↔vi (đã-ghi trong thân-commit).
+- Kiểm-thử 5686 (+26: `eval-validate-opus-r2`, `scanner-carryover-r2`, các-assertion cổng-vi). Registry không-đổi ở mức **121 nguồn (116 EN + 5 RU) · 116 adapter**.
+
 ## [1.255.0] — 2026-10-24
 
 **Tiếng Việt gia-nhập làm ngôn-ngữ-giao-diện thứ 19 — từ-điển 1525 khóa đối-xứng hoàn-toàn với EN, nhận-diện vi/vi-VN, trọn gói trợ-giúp, bản-phản-ánh README và CHANGELOG, tích-hợp landing cvstart.org, và lá 🇻🇳 trên bộ-chọn-ngôn-ngữ.**
