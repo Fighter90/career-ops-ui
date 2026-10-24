@@ -15,7 +15,9 @@
 import express from 'express';
 import { fileURLToPath } from 'node:url';
 import { resolve, dirname } from 'node:path';
+import { readFileSync, statSync } from 'node:fs';
 import { PATHS, PROJECT_ROOT, PUBLIC_DIR, WEB_UI_ROOT } from './lib/paths.mjs';
+import { rewriteIndexHtml, BUNDLE_SRC } from '../scripts/make-bundle.mjs';
 import { activityMiddleware } from './lib/activity-log.mjs';
 import { loadEnvFile } from './lib/dotenv.mjs';
 import { isValidJobUrl, sanitizeJobDescription, stripDangerousMarkdown } from './lib/security.mjs';
@@ -79,6 +81,51 @@ export { isValidJobUrl, sanitizeJobDescription, stripDangerousMarkdown };
 // Load parent's .env (GEMINI_API_KEY, ANTHROPIC_API_KEY, …) BEFORE createApp
 // runs so health checks and scanner config see the real values.
 loadEnvFile(PATHS.envFile);
+
+// ──────────────── CAR-85 — release-time SPA bundle ────────────────
+// Prod cold load fetched ~89 classic <script src> tags 6-at-a-time over
+// HTTP/1.1 (~30 s). scripts/make-bundle.mjs (run by the deploy) concatenates
+// the body scripts into public/js/bundle.js; this middleware swaps the
+// individual tags for ONE bundle tag on GET /. Dev stays untouched: with no
+// bundle file on disk (or NO_BUNDLE=1) it passes straight through to
+// express.static and the shell keeps its individual tags. Only "/" is
+// rewritten — the SPA is hash-routed, so "/" is the cold-load path; the
+// rare SPA fallback further down keeps serving the original shell.
+// CSP-safe by construction: same files, same order, one classic script.
+export function bundleHtmlMiddleware({ publicDir }) {
+  const disabled = process.env.NO_BUNDLE === '1';
+  const indexHtmlPath = resolve(publicDir, 'index.html');
+  const bundlePath = resolve(publicDir, 'js', 'bundle.js');
+  // Cached rewritten shell, re-derived when either file changes on disk
+  // (a dev rebuilding the bundle picks up without a server restart).
+  // html === null means "nothing to rewrite" — pass through.
+  let cache = null;
+  return function bundleHtml(req, res, next) {
+    if (disabled || req.method !== 'GET' || req.path !== '/' || !req.accepts('html')) return next();
+    let key;
+    try {
+      const st = statSync(indexHtmlPath);
+      const sb = statSync(bundlePath);
+      key = `${st.size}:${st.mtimeMs}:${sb.size}:${sb.mtimeMs}`;
+    } catch {
+      return next(); // no shell or no bundle → individual scripts
+    }
+    if (!cache || cache.key !== key) {
+      try {
+        const rewritten = rewriteIndexHtml(readFileSync(indexHtmlPath, 'utf8'), BUNDLE_SRC);
+        cache = { key, html: rewritten ? rewritten.html : null };
+      } catch (err) {
+        console.warn(`[bundle] shell rewrite failed, serving individual scripts: ${err.message}`);
+        cache = { key, html: null };
+      }
+    }
+    if (!cache.html) return next();
+    // W-001 — the shell references un-hashed code assets, so it must
+    // always-revalidate (same policy express.static applies to HTML).
+    res.setHeader('Cache-Control', 'no-store');
+    res.type('html').send(cache.html);
+  };
+}
 
 export function createApp() {
   ensureRussianPortalsDefaults();
@@ -151,6 +198,8 @@ export function createApp() {
   // Resolve Leaflet through Node's resolver, not a fixed path: in an `npm i` /
   // `npx` install npm hoists it into the parent node_modules, where the old
   // WEB_UI_ROOT/node_modules path 404'd and the map failed silently.
+  // CAR-85 — must run BEFORE express.static so the bundled shell wins on "/".
+  app.use(bundleHtmlMiddleware({ publicDir: PUBLIC_DIR }));
   app.use('/vendor/leaflet', express.static(LEAFLET_DIST));
   app.use(express.static(PUBLIC_DIR, {
     setHeaders: (res, filePath) => {
