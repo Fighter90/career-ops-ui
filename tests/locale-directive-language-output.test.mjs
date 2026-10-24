@@ -21,7 +21,7 @@ test('non-EN directive names the locale AND the override over language.output an
 });
 
 test('the override sentence is present for every non-EN locale the directive knows', () => {
-  const locales = ['es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi', 'ta'];
+  const locales = ['es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi', 'ta', 'vi'];
   for (const l of locales) {
     const d = buildLocaleDirective(l);
     assert.ok(d.includes("overrides the profile's language.output setting and the job posting's own language"), `${l}: override sentence missing`);

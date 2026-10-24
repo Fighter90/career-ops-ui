@@ -33,6 +33,7 @@ export default defineConfig({
           tr: 'tr',
           hi: 'hi',
           ta: 'ta',
+          vi: 'vi',
         },
       },
     }),

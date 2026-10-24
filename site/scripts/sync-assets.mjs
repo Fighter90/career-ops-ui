@@ -216,7 +216,7 @@ const facts = {
   adaptersRu,
   tests,
   providers,
-  locales: 18,
+  locales: 19,
   stars,
   contributors,
   repoUrl: REPO_URL,

@@ -78,5 +78,5 @@ const GOOD_JA = (v, a, r, l, t) =>
 test('registryCounters reads live repo counters (routes dir + CHANGELOG locales)', () => {
   const { routes, locales } = registryCounters();
   assert.ok(routes >= 39, `route modules counted from server/lib/routes: ${routes}`);
-  assert.equal(locales, 18, '18 UI locales = 17 CHANGELOG.{loc}.md + EN');
+  assert.equal(locales, 19, '19 UI locales = 18 CHANGELOG.{loc}.md + EN');
 });

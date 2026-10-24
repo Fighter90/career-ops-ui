@@ -144,7 +144,7 @@ test('CAR-94.3: two-pager Save with an unrecovered failed load requires an expli
 
 test('CAR-94.3: the overwrite warning sentence is localized in all 18 locales', () => {
   const dict = loadAssembledDict();
-  const langs = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi', 'ta'];
+  const langs = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi', 'ta', 'vi'];
   const row = dict['twoPager.overwriteWarn'];
   assert.ok(row && !row['@alias'], 'twoPager.overwriteWarn must be a real dict key');
   for (const lang of langs) {

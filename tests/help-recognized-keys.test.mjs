@@ -100,7 +100,7 @@ test('DOC-2: no bundle still sends the reader to dev.hh.ru', async () => {
  * The heading gates cannot see it: nothing about it adds an H2 or an H3.
  */
 test('DOC-1: every bundle explains the "Use the default" entry', () => {
-  const PATTERNS = /use the default|использовать умолчание|використовувати усталене|usar el valor por defecto|usar o padrão|utiliser la valeur par défaut|usa il valore predefinito|standard verwenden|użyj wartości domyślnej|brug standardværdien|varsayılanı kullan|既定値を使う|使用默认值|使用預設值|기본값 사용|استخدام القيمة الافتراضية|डिफ़ॉल्ट का उपयोग करें/i;
+  const PATTERNS = /use the default|использовать умолчание|використовувати усталене|usar el valor por defecto|usar o padrão|utiliser la valeur par défaut|usa il valore predefinito|standard verwenden|użyj wartości domyślnej|brug standardværdien|varsayılanı kullan|既定値を使う|使用默认值|使用預設值|기본값 사용|استخدام القيمة الافتراضية|डिफ़ॉल्ट का उपयोग करें|dùng mặc định/i;
   const missing = readdirSync(HELP)
     .filter((f) => f.endsWith('.md'))
     .filter((f) => !PATTERNS.test(readFileSync(resolve(HELP, f), 'utf8')));

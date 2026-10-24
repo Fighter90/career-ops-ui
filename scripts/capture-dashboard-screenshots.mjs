@@ -33,7 +33,7 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const WEB_UI_ROOT = path.resolve(__dirname, '..');
 const IMAGES_DIR = path.join(WEB_UI_ROOT, 'images');
 const BASE_URL = process.env.CAREER_OPS_UI_URL || 'http://127.0.0.1:4317';
-const LOCALES = ['en', 'ru', 'es', 'pt-BR', 'ko', 'ja', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi', 'ta'];
+const LOCALES = ['en', 'ru', 'es', 'pt-BR', 'ko', 'ja', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi', 'ta', 'vi'];
 // What the lang switch stores in localStorage. Internal locale ID — not
 // always the same as the file naming convention (ko ↔ ko-KR).
 const LOCALE_TO_FILE = {
@@ -41,7 +41,7 @@ const LOCALE_TO_FILE = {
   ko: 'ko-KR', ja: 'ja', 'zh-CN': 'zh-CN', 'zh-TW': 'zh-TW', fr: 'fr',
   pl: 'pl', uk: 'uk', da: 'da', ar: 'ar',
   de: 'de', it: 'it', tr: 'tr', hi: 'hi',
-  ta: 'ta',
+  ta: 'ta', vi: 'vi',
 };
 const SETTLE_MS = 2000;
 const VIEWPORT = { width: 1440, height: 900 };
