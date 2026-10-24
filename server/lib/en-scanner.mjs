@@ -210,6 +210,9 @@ export async function runEnScan(opts = {}) {
 
   const errors = [];
   const log = (s, line) => onLog(s, line);
+  // R-12 (CAR-91) — entries whose detection or fetch failed this run. Their
+  // previous snapshot rows must survive the full-replace save below.
+  const failedCompanies = new Set();
   // Detection runs per company, inside its own catch: an adapter that throws on
   // one misconfigured entry is that entry's error, not the end of the scan.
   const withApiAll = [];
@@ -218,6 +221,7 @@ export async function runEnScan(opts = {}) {
     let failed = false;
     const recordError = (msg) => {
       failed = true;
+      failedCompanies.add(c.name);
       errors.push(`${c.name}: ${msg}`);
       log('stderr', `  ✗ ${String(c.name ?? '').padEnd(28)} ${msg}`);
     };
@@ -291,6 +295,7 @@ export async function runEnScan(opts = {}) {
       return withCo;
     } catch (e) {
       fetchFailures += 1;
+      failedCompanies.add(c.name);
       errors.push(`${c.name}: ${e.message}`);
       log('stderr', `  ✗ ${label} ${c._api.type.padEnd(10)} ${e.message}`);
       // v1.80.0 — a permanent 404/410 quarantines the source so future scans
@@ -407,6 +412,14 @@ export async function runEnScan(opts = {}) {
     if (keepReason) {
       log('stderr', `last-scan snapshot kept (${keepReason})`);
     } else {
+      // R-12 (CAR-91) — full-replace carry-over: a source this run FAILED to
+      // scan contributed nothing, so its previous snapshot rows survive instead
+      // of silently vanishing (one timed-out board among fifty used to erase
+      // that board's rows on every scan). Successfully-scanned sources are
+      // replaced; single-company scans keep their merge semantics unchanged.
+      const opts = companyName
+        ? { mergeCompanies: withApi.map((c) => c.name) }
+        : (failedCompanies.size ? { keepSources: [...failedCompanies] } : {});
       saveLastScan({
         kind: 'en',
         when: new Date().toISOString(),
@@ -414,7 +427,7 @@ export async function runEnScan(opts = {}) {
         filtered: afterCooldown, // v1.76.0 — full matched set, no cap; #/scan paginates client-side (v1.84.0: post-cooldown)
         errors,
         truncatedSources, // v1.242.0 — sources whose board hit the page cap
-      }, companyName ? { mergeCompanies: withApi.map((c) => c.name) } : {});
+      }, opts);
     }
   }
 
@@ -466,7 +479,11 @@ const LAST_SCAN_PATH = PATHS.applications.replace(/applications\.md$/, 'last-sca
  */
 export function snapshotKeepReason({ aborted, attempted, failed }) {
   if (aborted) return 'scan aborted';
-  if (attempted > 0 && failed >= attempted) return 'every source failed';
+  // CAR-91 — a scan that attempted nothing (missing/empty portals.yml, every
+  // company quarantined, RU `sources: []`) must not be mistaken for a
+  // legitimate empty result: overwriting would wipe the snapshot #/scan reads.
+  if (attempted === 0) return 'nothing scanned';
+  if (failed >= attempted) return 'every source failed';
   return null;
 }
 
@@ -505,17 +522,53 @@ function mergeSnapshot(old, payload, companies) {
 }
 
 /**
+ * R-12 (CAR-91) — full-replace carry-over: rows whose source/company belongs
+ * to a source this run FAILED to scan survive into the new snapshot — a failed
+ * source contributes no information, so a successful scan of the other sources
+ * must not silently erase its rows (one timed-out board among fifty used to
+ * drop that board's rows on every scan; hh.ru 451-ing from a non-RU IP wiped
+ * every hh row). Rows of every successfully-scanned source are replaced
+ * wholesale, exactly as a plain full replace would: a role the company closed
+ * must still drop out.
+ * `failed` holds company names (EN) or the stamped source ids (RU), matched
+ * case-insensitively against each old row's `company` / `source` field; a row
+ * whose canonical URL also appears in the new rows is dropped (the new row wins).
+ * @param {any} old previous snapshot for this kind
+ * @param {any} payload this run's snapshot
+ * @param {string[]} failed companies / sources this run failed to scan
+ */
+function keepFailedSourcesSnapshot(old, payload, failed) {
+  const lc = (v) => String(v ?? '').toLowerCase();
+  const key = (j) => normalizeUrl(j.url) || j.url;
+  const failedSet = new Set((Array.isArray(failed) ? failed : []).map(lc).filter(Boolean));
+  const newKeys = new Set([...(payload.fresh || []), ...(payload.filtered || [])].map(key));
+  const keep = (rows) => (Array.isArray(rows) ? rows : [])
+    .filter((j) => j && typeof j === 'object'
+      && (failedSet.has(lc(j.company)) || failedSet.has(lc(j.source)))
+      && !newKeys.has(key(j)));
+  return {
+    ...payload,
+    fresh: [...keep(old.fresh), ...(payload.fresh || [])],
+    filtered: [...keep(old.filtered), ...(payload.filtered || [])],
+  };
+}
+
+/**
  * Persist one scanner's snapshot into data/last-scan.json (tmp + rename, so a
  * crash mid-write can't truncate the file the #/scan page reads).
  * @param {{ kind: 'en'|'ru', fresh: any[], filtered: any[] } & Record<string, any>} payload
- * @param {{ mergeCompanies?: string[] }} [opts] merge instead of replace
+ * @param {{ mergeCompanies?: string[], keepSources?: string[] }} [opts]
+ *   mergeCompanies — single-company scan: fold into the previous snapshot
+ *   keepSources    — full replace carrying over failed sources' rows (R-12, CAR-91)
  */
 export function saveLastScan(payload, opts = {}) {
   const prev = readLastScanFile();
   const old = prev[payload.kind];
   prev[payload.kind] = Array.isArray(opts.mergeCompanies) && old && typeof old === 'object'
     ? mergeSnapshot(old, payload, opts.mergeCompanies)
-    : payload;
+    : Array.isArray(opts.keepSources) && opts.keepSources.length && old && typeof old === 'object'
+      ? keepFailedSourcesSnapshot(old, payload, opts.keepSources)
+      : payload;
   mkdirSync(LAST_SCAN_PATH.replace(/\/[^/]+$/, ''), { recursive: true });
   const tmp = `${LAST_SCAN_PATH}.${process.pid}.tmp`;
   writeFileSync(tmp, JSON.stringify(prev, null, 2));

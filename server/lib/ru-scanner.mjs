@@ -43,11 +43,14 @@ import { buildTrustValidator } from './trust-validator.mjs';
  * scanner's loop body.
  */
 const RU_DISPATCH = {
-  hh:       { label: 'hh.ru',       search: searchHH,       hhAware: true },
-  habr:     { label: 'habr',        search: searchHabr },
-  trudvsem: { label: 'trudvsem',    search: searchTrudvsem },
-  getmatch: { label: 'getmatch',    search: searchGetMatch },
-  geekjob:  { label: 'geekjob',     search: searchGeekJob },
+  // `snapSource` — the `source:` string the adapter stamps on its job rows, so
+  // the snapshot carry-over (R-12, CAR-91) can match a failed source's old rows
+  // (they don't always equal the config key: hh → 'hh.ru', habr → 'habr-career').
+  hh:       { label: 'hh.ru',       search: searchHH,       hhAware: true, snapSource: 'hh.ru' },
+  habr:     { label: 'habr',        search: searchHabr,     snapSource: 'habr-career' },
+  trudvsem: { label: 'trudvsem',    search: searchTrudvsem, snapSource: 'trudvsem' },
+  getmatch: { label: 'getmatch',    search: searchGetMatch, snapSource: 'getmatch' },
+  geekjob:  { label: 'geekjob',     search: searchGeekJob,  snapSource: 'geekjob' },
 };
 
 /**
@@ -338,13 +341,20 @@ export async function runRuScan(opts = {}) {
     if (keepReason) {
       log('stderr', `last-scan snapshot kept (${keepReason})`);
     } else {
+      // R-12 (CAR-91) — carry-over for sources this run failed to reach: hh.ru
+      // 451-ing from a non-RU IP used to wipe every hh row on every scan.
+      // Failed sources' previous rows survive; sources that answered are
+      // replaced. Documented rule in en-scanner::keepFailedSourcesSnapshot.
+      const failedSources = Object.keys(sourceFailures)
+        .map((k) => RU_DISPATCH[k]?.snapSource)
+        .filter(Boolean);
       saveLastScan({
         kind: 'ru',
         when: new Date().toISOString(),
         fresh,
         filtered, // v1.76.0 — full matched set, no cap; #/scan paginates client-side
         errors,
-      });
+      }, failedSources.length ? { keepSources: failedSources } : {});
     }
   }
 
