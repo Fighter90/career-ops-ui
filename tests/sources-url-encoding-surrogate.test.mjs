@@ -215,6 +215,7 @@ const CONVERTED = [
 const ALLOWLIST = {
   '4dayweek.mjs': 'slug is validated against SLUG_RE (ASCII letters/digits/hyphen) before encoding — a surrogate never reaches encodeURIComponent',
   'csod.mjs': 'corpName comes from portals.yml, not the API — a bad value is a config bug and should fail loud',
+  'dover.mjs': 'board comes from resolveBoard, which already validated it against UUID_RE (hex+hyphens only) — encodeURIComponent cannot see a surrogate',
 };
 
 const SHARED_IMPORT = /\bfrom\s*['"]\.\/_safe-url\.mjs['"]/;
