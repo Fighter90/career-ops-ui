@@ -80,6 +80,16 @@ test('#26: first-run empty state is distinct from no-filter-match', () => {
   assert.match(TRK, /t\('track\.noMatch'\)/);
 });
 
+test('CAR-129: score sort — rows without a score sort LAST in BOTH directions', () => {
+  // The -1 sentinel made an empty score the SMALLEST value, so with the
+  // default ascending sort the unscored rows always came first. (The score
+  // FILTER keeps its ?? -1 — there "unscored fails a ≥4 filter" is correct.)
+  assert.ok(!/sortKey === 'score' \? \(r\.scoreNum \?\? -1\)/.test(TRK), 'the sort val line must not carry the -1 sentinel');
+  assert.match(TRK, /scoreNum \?\? null/);
+  assert.match(TRK, /x == null && y != null\) return 1/);
+  assert.match(TRK, /y == null && x != null\) return -1/);
+});
+
 test('i18n: 7 new track keys present with all 8 locales', () => {
   for (const k of [
     'track.col.score', 'track.col.pdf', 'track.col.actions', 'track.fixHint',

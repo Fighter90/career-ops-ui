@@ -155,12 +155,17 @@ Router.register('tracker', async () => {
   function sorted(arr) {
     if (!sortKey) return arr;
     const dir = sortDir === 'asc' ? 1 : -1;
-    const val = (r) => sortKey === 'score' ? (r.scoreNum ?? -1)
+    const val = (r) => sortKey === 'score' ? (r.scoreNum ?? null)
       : sortKey === 'commute' ? (commuteOf(r)?.precision === 'remote' ? 0 : commuteOf(r)?.min ?? Number.POSITIVE_INFINITY)
       : sortKey === 'date' ? (r.date || '')
       : (r.status || '');
     return [...arr].sort((a, b) => {
       const x = val(a); const y = val(b);
+      // CAR-129 — a missing value is not the smallest value: rows without
+      // one sort LAST under either direction (the old -1 sentinel made
+      // unscored rows always come first on the default ascending sort).
+      if (x == null && y != null) return 1;
+      if (y == null && x != null) return -1;
       if (typeof x === 'number') return (x - y) * dir;
       return String(x).localeCompare(String(y)) * dir;
     });
