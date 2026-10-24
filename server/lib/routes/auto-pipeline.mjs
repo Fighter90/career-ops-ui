@@ -247,6 +247,11 @@ export function guessCompanyRole(jdText, url) {
     m = line.match(/^Компания\s*[:—–-]\s*(.+)$/u);
     if (m && !company) company = m[1].trim().slice(0, 60);
   }
+  // CAR-128 review round (opus r1) — the dash-order swap can hand the
+  // company side an employment type or a place: «Senior Engineer -
+  // Remote (EU)» must not file «Remote (EU)» as an employer. Empty beats
+  // fabricated — the in-text inference below may still rescue a real name.
+  if (/^(?:remote|hybrid|удал[её]нн|гибрид|дистанционн|full[- ]?time|part[- ]?time|contract|временн|проектн|стаж)/i.test(company || '')) company = '';
   if (!company) {
     // «…в X» / «…в компании X» / «X ищет…» — the employer named mid-sentence
     // (Cyrillic posts routinely do this). Allowed for messenger hosts, where
@@ -256,15 +261,17 @@ export function guessCompanyRole(jdText, url) {
     try {
       const u = new URL(url);
       const host = u.hostname.toLowerCase();
-      const isBoard = /(^|\.)hh\.ru$/.test(host) || /(^|\.)habr\.com$/.test(host);
+      const isBoard = /(^|\.)hh\.(ru|kz|uz|by)$/.test(host) || /(^|\.)habr\.com$/.test(host);
       if (EMPTY_DOMAINS.has(host) || isBoard) {
         // \p{L} classes, not ASCII \w — and Unicode lookbehinds, not \b:
         // ASCII \b does not treat Cyrillic as word characters, so the old
-        // \bв… patterns NEVER matched a «в компании X» / «X ищет» phrase
-        // after a space or newline (silently broken since v1.248.4).
-        const inMatch = (jdText || '').match(/(?<![\p{L}\p{N}])в\s+компании\s+([A-ZА-ЯЁ][\p{L}\p{N}\s&.\-]{2,38}?[\p{L}\p{N}])(?=\s*[.,!?)\n]|\s*$)/u)
-          || (jdText || '').match(/(?<![\p{L}\p{N}])в\s+([A-ZА-ЯЁ][\p{L}\p{N}\s&.\-]{2,38}?[\p{L}\p{N}])\s+(?:ищем|ищет|ищут|требуется|открываем|нанимаем)(?![\p{L}\p{N}])/u)
-          || (jdText || '').match(/(?<![\p{L}\p{N}])([A-ZА-ЯЁ][\p{L}\p{N}&.\- ]{1,38}[\p{L}\p{N}])\s+(?:ищем|ищет|ищут|требуется|открываем|нанимаем)(?![\p{L}\p{N}])/u);
+        // \bв… patterns NEVER matched a «в компании X» phrase after a
+        // space or newline (silently broken since v1.248.4). [вВ] — the
+        // sentence-initial form is the common one. Deliberately NO bare
+        // «X ищет» pattern (opus review r1): any capitalised run before
+        // the verb would file «Мы активно» / «Наша команда» as an employer.
+        const inMatch = (jdText || '').match(/[вВ]\s+компании\s+([A-ZА-ЯЁ][\p{L}\p{N}\s&.\-]{2,38}?[\p{L}\p{N}])(?=\s*[.,!?)\n]|\s*$|\s+(?:ищем|ищет|ищут|требуется|открываем|нанимаем)(?![\p{L}\p{N}]))/u)
+          || (jdText || '').match(/[вВ]\s+([A-ZА-ЯЁ][\p{L}\p{N}\s&.\-]{2,38}?[\p{L}\p{N}])\s+(?:ищем|ищет|ищут|требуется|открываем|нанимаем)(?![\p{L}\p{N}])/u);
         if (inMatch) company = inMatch[1].trim();
       }
     } catch {}

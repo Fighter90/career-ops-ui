@@ -462,17 +462,40 @@ test('CAR-128: "Company — Role" keeps the company on the left (regression)', a
   assert.match(g.role, /Senior Frontend Engineer/);
 });
 
-test('CAR-127: an hh.ru URL never becomes the company «hh»', async () => {
+test('CAR-127: an hh.ru URL never becomes the company «hh» — employer-less JD yields empty', async () => {
   const { guessCompanyRole } = await import('../server/lib/routes/auto-pipeline.mjs');
   const g = guessCompanyRole('Текст вакансии без названия работодателя.', 'https://hh.ru/vacancy/91827364');
-  assert.notEqual(g.company.toLowerCase(), 'hh');
+  assert.equal(g.company, '');
 });
 
-test('CAR-127: an hh.ru JD naming the employer in text yields the employer', async () => {
+test('CAR-127: sentence-initial «В Сбер. IT ищут…» yields the employer (capital В, P2)', async () => {
   const { guessCompanyRole } = await import('../server/lib/routes/auto-pipeline.mjs');
-  const g = guessCompanyRole(
-    'Приглашаем в команду.\nСбер. IT ищет опытного инженера.',
-    'https://hh.ru/vacancy/91827365',
-  );
+  const g = guessCompanyRole('В Сбер. IT ищут опытного инженера.', 'https://hh.ru/vacancy/91827365');
   assert.equal(g.company, 'Сбер. IT');
+});
+
+test('CAR-127: «В компании X ищут…» yields the employer (capital В, P1)', async () => {
+  const { guessCompanyRole } = await import('../server/lib/routes/auto-pipeline.mjs');
+  // A dot INSIDE the name («Сбер. IT») is indistinguishable from a
+  // sentence dot for the «в компании X» anchor — P1 files the conservative
+  // prefix («Сбер», a real employer); the verb-anchored P2 catches the
+  // full dotted form (see the previous test).
+  const g = guessCompanyRole('В компании Сбер. IT ищут инженера.', 'https://hh.ru/vacancy/91827366');
+  assert.equal(g.company, 'Сбер');
+  // a multi-word name without internal punctuation survives in full
+  const g2 = guessCompanyRole('В компании Яндекс Терра ищут инженера.', 'https://hh.ru/vacancy/91827368');
+  assert.equal(g2.company, 'Яндекс Терра');
+});
+
+test('CAR-127 review: no bare «X ищет» fabrication — «Мы активно ищем» files nothing', async () => {
+  const { guessCompanyRole } = await import('../server/lib/routes/auto-pipeline.mjs');
+  const g = guessCompanyRole('Мы активно ищем инженера в команду.', 'https://hh.ru/vacancy/91827367');
+  assert.equal(g.company, '');
+});
+
+test('CAR-128 review: an employment type never becomes the employer', async () => {
+  const { guessCompanyRole } = await import('../server/lib/routes/auto-pipeline.mjs');
+  const g = guessCompanyRole('Senior Engineer - Remote (EU)\n\nWe build things.', 'https://jobs.lever.co/grafana/33333333');
+  assert.equal(g.company, '');
+  assert.match(g.role, /Senior Engineer/);
 });
