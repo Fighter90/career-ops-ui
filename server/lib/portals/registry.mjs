@@ -24,6 +24,9 @@
  */
 import { greenhouseAdapter } from './adapters/greenhouse.mjs';
 import { ashbyAdapter } from './adapters/ashby.mjs';
+// v1.253.0 — parent parity: Atlassian (single public JSON feed, whole board,
+// provider-selected).
+import { atlassianAdapter } from './adapters/atlassian.mjs';
 import { leverAdapter } from './adapters/lever.mjs';
 import { workableAdapter } from './adapters/workable.mjs';
 import { smartRecruitersAdapter } from './adapters/smartrecruiters.mjs';
@@ -87,6 +90,9 @@ import { csodAdapter } from './adapters/csod.mjs';
 import { phenomAdapter } from './adapters/phenom.mjs';
 import { radancyAdapter } from './adapters/radancy.mjs';
 import { deutschebahnAdapter } from './adapters/deutschebahn.mjs';
+// v1.253.0 — parent parity: Dover (paginated DRF envelope, single-company ATS,
+// `provider: dover` + a `https://app.dover.com/<Company>/careers/<uuid>` URL).
+import { doverAdapter } from './adapters/dover.mjs';
 import { tkmsAdapter } from './adapters/tkms.mjs';
 import { hecklerkochAdapter } from './adapters/hecklerkoch.mjs';
 import { rheinmetallAdapter } from './adapters/rheinmetall.mjs';
@@ -168,6 +174,9 @@ export const ALL_ADAPTERS = [
   mokahrAdapter,
   greenhouseAdapter,
   ashbyAdapter,
+  // v1.253.0 — Atlassian: one fixed JSON feed (www.atlassian.com), whole board
+  // per request, `provider: atlassian` only.
+  atlassianAdapter,
   leverAdapter,
   workableAdapter,
   smartRecruitersAdapter,
@@ -241,6 +250,9 @@ export const ALL_ADAPTERS = [
   phenomAdapter,
   radancyAdapter,
   deutschebahnAdapter,
+  // v1.253.0 — Dover: `provider: dover` + an app.dover.com careers/<uuid> URL;
+  // DRF pagination, max_pages (cap 20).
+  doverAdapter,
   tkmsAdapter,
   hecklerkochAdapter,
   rheinmetallAdapter,
