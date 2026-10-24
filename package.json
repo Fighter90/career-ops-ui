@@ -67,7 +67,7 @@
     "express": "^4.22.2",
     "js-yaml": "^4.3.2",
     "leaflet": "^1.9.4",
-    "multer": "^2.4.0"
+    "multer": "^2.5.0"
   },
   "overrides": {
     "qs": "^6.16.0"
