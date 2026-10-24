@@ -9,6 +9,21 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 ---
 
 
+## [1.255.2] — 2026-10-24
+
+**Tre brugersynlige rettelser fra live-regressionen og en prod-crash-rapport: #/scan-render-crashet, den blinde vietnamesiske sprogkontrol og det tilbagevendende tab af zh-TW-summary-blokken.**
+
+### Rettet
+
+- **#/scan-crash (CAR-99)**: count-gate-regenereringen siden v1.253.0 skrev `FALLBACK_SOURCES`-literalen med et efterstillet dobbelt komma på hver post — 120 array-elision-huller. `new Set(FALLBACK_SOURCES.map((s) => s.value))` i scan-viewet holdt derfor `undefined`, og virksomhedsklassifikatorens `id.length` kastede `TypeError: Cannot read properties of undefined (reading 'length')` ved hver side-rendering (fanget af logbuf i produktionen). Hullerne er fjernet, og en ny gate (4 specs, rød-verificeret) eksekverer filen og fejler på ethvert hul, ubrugelig post eller `undefined` i adapter-id-Sættet — den tekstbaserede drift-gate kunne ikke se denne klasse.
+- **Blind vi-sprogkontrol (CAR-97)**: vietnamesisk er latinsk skrift og havde ingen post i live-QA'ens stopordstabel, så "vi stopord" talte engelske træffere, og et vietnamesisk svar blev læst som `report not in vi` (live-regression: vi 2, en 2). Vietnamesisk har nu sin egen ti-ords tabel med funktionsord — en ren vietnamesisk rapport består, en engelsk fejler stadig.
+- **zh-TW mistede SCORE_SUMMARY-blokken (CAR-98)**: slut-sprogpåmindelsen sagde kun, at maskineformatet ikke må oversættes, aldrig at summary-blokken skal findes — en kort zh-TW-rapport (5983 tegn) bar A–G-blokkene men udelod blokken helt (et v1.239.2-klasse-tilbagefald). Åbningsdirektivet og slut-reminderen angiver nu, at blokken er obligatorisk, og at rapporten er ugyldig uden den.
+
+### Noter
+
+- Denne udgivelse ændrer bevidst ingen scannerkilde, registry-antal (121 = 116 EN + 5 RU · 116 adaptere) eller provider-kabeltræk — den er kun rettelser, så count-gates er urørte.
+- Tests 5695 (+9: `car99-fallback-holes` ×4, `car97-vi-lang-check` ×4, CAR-98-prompt-invarianten ×1). Browser 143/143. Vi/zh-TW-live-genkontrollen kører med post-deploy-regressionen.
+
 ## [1.255.1] — 2026-10-24
 
 **To rettelsesrunder fra anmeldelser: Opus-gennemgangen af den vietnamesiske locale (9 fund) og andengennemgangen af CAR-91/92-rettelserne (5 must-fixes) — begge lukket med rød→grøn tests.**

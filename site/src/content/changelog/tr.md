@@ -2,6 +2,21 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.255.2] — 2026-10-24
+
+**Canlı regresyondan ve bir üretim çökme bildiriminden gelen üç kullanıcıya-görünür düzeltme: #/scan render çökmesi, kör Vietnamca dil denetimi ve yinelenen zh-TW özet-bloğu kaybı.**
+
+### Düzeltildi
+
+- **#/scan çökmesi (CAR-99)**: v1.253.0'dan bu yana sayı-kapısı yenilemesi `FALLBACK_SOURCES` literalini her girdinin sonuna çift virgül koyarak yazdı — dizide 120 eleman-bırakma boşluğu. Tarama görünümündeki `new Set(FALLBACK_SOURCES.map((s) => s.value))` böylece `undefined` tuttu ve şirket sınıflandırıcısının `id.length`'i her sayfa render'ında `TypeError: Cannot read properties of undefined (reading 'length')` attı (üretimde logbuf yakaladı). Boşluklar kaldırıldı ve yeni bir kapı (4 özellik, kırmızı-doğrulanmış) dosyayı çalıştırıp herhangi bir boşlukta, kullanılamaz girdide ya da adaptör-kimliği Set'indeki bir `undefined`'da başarısız oluyor — yalnızca-metin sapma kapısı bu sınıfı göremiyordu.
+- **Kör vi dil denetimi (CAR-97)**: Vietnamca Latin yazıdır ve canlı-QA stop-word tablosunda girdisi yoktu; bu yüzden "vi stop words" İngilizce eşleşmeleri sayıyordu ve bir Vietnamca yanıt `report not in vi` olarak okunuyordu (canlı regresyon: vi 2, en 2). Vietnamcanın artık kendi on-kelimelik işlev-sözcüğü tablosu var — saf bir vi raporu geçiyor, İngilizce olan hâlâ düşüyor.
+- **zh-TW SCORE_SUMMARY bloğunu kaybetti (CAR-98)**: kapanış dil hatırlatması yalnızca makine biçiminin çevrilmemesi gerektiğini söylüyordu, özet bloğunun var olması gerektiğini asla — kısa bir zh-TW raporu (5.983 karakter) A–G bloklarını taşıyordu ama bloğu tümüyle atlıyordu (v1.239.2 sınıfı bir yinelenme). Açılış yönergesi ve kapanış hatırlatması artık bloğun zorunlu olduğunu ve bloksuz raporun geçersiz olduğunu söylüyor.
+
+### Notlar
+
+- Bu sürüm bilinçli olarak hiçbir tarayıcı kaynağını, kayıt defteri sayısını (121 = 116 EN + 5 RU · 116 adaptör) ya da sağlayıcı kablolamasını değiştirmiyor — yalnızca düzeltmedir, sayı-kapılarına dokunulmadı.
+- Test tabanı: 5695 (+9: `car99-fallback-holes` ×4, `car97-vi-lang-check` ×4, CAR-98 prompt değişmezi ×1). Tarayıcı süiti 143/143. vi/zh-TW canlı yeniden-denetimi dağıtım-sonrası regresyonla geliyor.
+
 ## [1.255.1] — 2026-10-24
 
 **İki inceleme düzeltme turu: Vietnamca yerelleştirmesinin Opus incelemesi (9 bulgu) ve CAR-91/92 düzeltmelerinin ikinci tur incelemesi (5 zorunlu düzeltme) — her ikisi de kırmızı→yeşil testlerle kapatıldı.**

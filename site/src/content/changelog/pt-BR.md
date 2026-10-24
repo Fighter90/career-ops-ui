@@ -9,6 +9,21 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 ---
 
 
+## [1.255.2] — 2026-10-24
+
+**Três correções visíveis para o usuário vindas da regressão ao vivo e de um relato de crash em produção: o crash de renderização do #/scan, a checagem de idioma vietnamita às cegas e a perda recorrente do bloco de resumo no zh-TW.**
+
+### Corregido
+
+- **Crash do #/scan (CAR-99)**: a regeneração dos count gates desde a v1.253.0 escreveu o literal `FALLBACK_SOURCES` com vírgula dupla no final de cada entrada — 120 buracos de elisão no array. `new Set(FALLBACK_SOURCES.map((s) => s.value))` na view de scan passou então a conter `undefined`, e o `id.length` do classificador de empresas lançava `TypeError: Cannot read properties of undefined (reading 'length')` em cada renderização de página (capturado pelo logbuf em produção). Os buracos foram removidos e um novo portão (4 specs, verificado em vermelho) executa o arquivo e falha diante de qualquer buraco, entrada inutilizável ou `undefined` no Set de ids de adaptadores — o portão de drift só-texto não podia ver essa classe.
+- **Checagem de idioma vi às cegas (CAR-97)**: o vietnamita é escrita em alfabeto latino e não tinha entrada na tabela de stop words da QA ao vivo, então as «stop words de vi» contavam acertos em inglês e uma resposta em vietnamita era lida como `report not in vi` (regressão ao vivo: vi 2, en 2). O vietnamita agora tem sua própria tabela de dez palavras funcionais — um relatório puramente vietnamita passa, e um em inglês continua falhando.
+- **zh-TW perdia o bloco SCORE_SUMMARY (CAR-98)**: o lembrete final de idioma só dizia que o formato de máquina não deve ser traduzido, nunca que o bloco de resumo precisa existir — um relatório curto em zh-TW (5,983 caracteres) carregava os blocos A–G mas omitia o bloco por inteiro (uma recorrência da classe v1.239.2). A diretiva de abertura e o lembrete final agora afirmam que o bloco é obrigatório e que sem ele o relatório é inválido.
+
+### Notas
+
+- Esta versão deliberadamente não muda nenhuma fonte do scanner, a contagem do registro (121 = 116 EN + 5 RU · 116 adaptadores) nem a fiação dos provedores — é só de correções, então os count gates ficam intocados.
+- Testes 5695 (+9: `car99-fallback-holes` ×4, `car97-vi-lang-check` ×4, o invariante de prompt do CAR-98 ×1). Navegador 143/143. A re-checagem ao vivo de vi/zh-TW acompanha a regressão pós-deploy.
+
 ## [1.255.1] — 2026-10-24
 
 **Duas rodadas de correção vindas de revisões: a revisão Opus da localização vietnamita (9 achados) e a segunda passagem sobre as correções CAR-91/92 (5 must-fix) — ambas fechadas com testes vermelho→verde.**

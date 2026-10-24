@@ -12,14 +12,14 @@ _அதிகாரப்பூர்வமற்ற இடைமுகம் �
 [![playwright](https://img.shields.io/badge/playwright-143%2F143-brightgreen)](#சோதனைகள்)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#தேவைகள்)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.255.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.255.1)
+[![release](https://img.shields.io/badge/release-v1.255.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.255.2)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 சமீபத்திய வெளியீடு — v1.255.1** — **இரண்டு மறுஆய்வு-திருத்த சுற்றுகள்: வியட்நாமிஸ் மொழியின் Opus மறுஆய்வு (ஹங்குல் கிளிஃப் கசிவு மற்றும் இடைவெளி-கொண்ட ஆறு உதவி-URL-கள் — இப்போது வாயில்களில்) மற்றும் CAR-91/92 திருத்தங்களின் இரண்டாம்-பாஸ் மறுஆய்வு — மதிப்பீட்டு தலைப்பு எல்லைகள் (`## Q&A` இனி ஒரு பிளாக்காக பதிவாகாது), உக்ரைன்-எண்ணிடப்பட்ட அறிக்கைகள் `### A.` துணைப்பிரிவுகளால் வெட்டப்படாமல் இருக்கின்றன, கேரி-ஓவர் ஸ்கேன் வரிசைகள் காலாவதியாகின்றன, மேலும் gemini-synthesis டெனாமினேட்டர்/legitimacy பாகுபடுத்தல் சரி செய்யப்பட்டது.**
+> **🆕 சமீபத்திய வெளியீடு — v1.255.2** — **மூன்று திருத்தங்கள்: `#/scan` ரெண்டர் செயலிழப்பு (எண்ணிக்கை-வாயில் மறுஉருவாக்கத்திலிருந்து வந்த 120 அணிவரிசை இடைவெளிகள் நிறுவன வகைப்படுத்தியை ஒவ்வொரு ரெண்டரிலும் எறியச் செய்தன), குருட்டு வியட்நாமிஸ் மொழி-சோதனை (நேரடி QA vi-க்கு ஆங்கில நிறுத்தச்-சொற்களை எண்ணியது — இப்போது அதற்கு அதன் சொந்த அட்டவணை உள்ளது), மற்றும் zh-TW சுருக்க-பிளாக் இழப்பு (முடிவுறுத்தல் நினைவூட்டல் இப்போது `SCORE_SUMMARY`-ஐ கட்டாயமாக்குகிறது, வெறும் மொழிபெயர்க்கப்படாமல்-இருப்பது மட்டுமல்ல).**
 >
-> **முந்தைய வெளியீடு — v1.255.0** — **வியட்நாமிஸ் (Tiếng Việt) 19வது UI மொழியாக இணைகிறது — EN-உடன் முழு சமநிலை கொண்ட 1525 விசை அகராதி, vi/vi-VN கண்டறிதல், முழு உதவி தொகுப்பு, README மற்றும் CHANGELOG கண்ணாடிகள், cvstart.org லேண்டிங் ஒருங்கிணைப்பு, மொழி மாற்றியின் 🇻🇳.**
+> **முந்தைய வெளியீடு — v1.255.1** — **இரண்டு மறுஆய்வு-திருத்த சுற்றுகள்: வியட்நாமிஸ் மொழியின் Opus மறுஆய்வு (ஹங்குல் கிளிஃப் கசிவு மற்றும் இடைவெளி-கொண்ட ஆறு உதவி-URL-கள் — இப்போது வாயில்களில்) மற்றும் CAR-91/92 திருத்தங்களின் இரண்டாம்-பாஸ் மறுஆய்வு — மதிப்பீட்டு தலைப்பு எல்லைகள் (`## Q&A` இனி ஒரு பிளாக்காக பதிவாகாது), உக்ரைன்-எண்ணிடப்பட்ட அறிக்கைகள் `### A.` துணைப்பிரிவுகளால் வெட்டப்படாமல் இருக்கின்றன, கேரி-ஓவர் ஸ்கேன் வரிசைகள் காலாவதியாகின்றன, மேலும் gemini-synthesis டெனாமினேட்டர்/legitimacy பாகுபடுத்தல் சரி செய்யப்பட்டது.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -198,7 +198,7 @@ web-ui/
 │       ├── app.js          # தொடக்கம், lang switcher, theme
 │       ├── lib/            # i18n (18 மொழிகள்), api, ui, format
 │       └── views/          # ஒரு பக்கத்திற்கு ஒரு பார்வை
-├── tests/                  # 5686 unit (baseline @ v1.255.1) — node --test, கணினி முழுவதும் CI-isolated
+├── tests/                  # 5695 unit (baseline @ v1.255.2) — node --test, கணினி முழுவதும் CI-isolated
 └── docs/                   # உதவி வழிகாட்டிகள் ×18, LOCALIZATION, SDD
 ```
 

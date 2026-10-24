@@ -12,14 +12,14 @@ _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-143%2F143-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.255.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.255.1)
+[![release](https://img.shields.io/badge/release-v1.255.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.255.2)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Ultima release — v1.255.1** — **Due giri di correzioni dalle revisioni: la revisione Opus della localizzazione vietnamita (la fuga del glifo Hangul e sei URL guida con spazi, ora sotto gate) e la revisione di seconda passata dei fix CAR-91/92 — i confini delle intestazioni di valutazione (`## Q&A` non è più un blocco), i report numerati in ucraino sopravvivono alle sottosezioni `### A.`, le righe di scansione riportate scadono, e il denominatore della gemini-synthesis e il parse della legitimacy sono corretti.**
+> **🆕 Ultima release — v1.255.2** — **Tre fix: il crash del render di `#/scan` (120 buchi nell'array dalla rigenerazione dei count-gate facevano lanciare un'eccezione al classificatore di aziende a ogni render), il controllo linguistico cieco per il vietnamita (la QA live contava le stop-word inglesi per il vi — ora ha la sua tabella) e la perdita del blocco summary in zh-TW (il promemoria di chiusura ora rende `SCORE_SUMMARY` obbligatorio, non semplicemente non tradotto).**
 >
-> **Precedente — v1.255.0** — **Il vietnamita (Tiếng Việt) entra come 19ª lingua dell'interfaccia — un dizionario di 1525 chiavi in piena parità con l'EN, rilevamento di vi/vi-VN, il pacchetto guida completo, i mirror README e CHANGELOG, l'integrazione nella landing di cvstart.org e il 🇻🇳 nel selettore lingua.**
+> **Precedente — v1.255.1** — **Due giri di correzioni dalle revisioni: la revisione Opus della localizzazione vietnamita (la fuga del glifo Hangul e sei URL guida con spazi, ora sotto gate) e la revisione di seconda passata dei fix CAR-91/92 — i confini delle intestazioni di valutazione (`## Q&A` non è più un blocco), i report numerati in ucraino sopravvivono alle sottosezioni `### A.`, le righe di scansione riportate scadono, e il denominatore della gemini-synthesis e il parse della legitimacy sono corretti.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -422,7 +422,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 5686 unit + 144 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.255.1)
+└─ tests/                    # 5695 unit + 144 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.255.2)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch

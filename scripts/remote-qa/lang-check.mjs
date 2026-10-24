@@ -25,6 +25,10 @@ const WORDS = {
   it: ['il', 'la', 'di', 'che', 'e', 'per', 'con', 'una', 'non', 'del'],
   tr: ['ve', 'bir', 'bu', 'için', 'ile', 'olarak', 'daha', 'de', 'da', 'değil'],
   da: ['og', 'at', 'det', 'en', 'til', 'med', 'for', 'er', 'ikke', 'af'],
+  // CAR-97 — Vietnamese is Latin-script, so without its own table it fell
+  // through to WORDS.en: "vi stop words" counted ENGLISH hits and a pure-vi
+  // report read as "not in vi" (live regression 2026-10-24: vi 2, en 2).
+  vi: ['và', 'của', 'là', 'các', 'cho', 'không', 'với', 'trong', 'việc', 'được'],
 };
 
 const QUOTED = /(?<![\p{L}\p{N}])"(?=\S)([^"\n]{1,300})(?<=\S)"(?![\p{L}\p{N}])|“([^“”\n]{1,300})”|«([^«»\n]{1,300})»|„([^„“”\n]{1,300})[“”]|「([^「」\n]{1,300})」|『([^『』\n]{1,300})』/gu;

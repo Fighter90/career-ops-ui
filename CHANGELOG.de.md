@@ -2,6 +2,21 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.255.2] — 2026-10-24
+
+**Drei für Nutzer sichtbare Fixes aus der Live-Regression und einem Prod-Crash-Report: der #/scan-Render-Crash, die blinde Vietnamese-Sprachprüfung und der wiederkehrende Verlust des Summary-Blocks in zh-TW.**
+
+### Behoben
+
+- **#/scan-Crash (CAR-99)**: die Count-Gate-Regenerierung seit v1.253.0 schrieb das `FALLBACK_SOURCES`-Literal mit einem doppelten Komma am Ende jedes Eintrags — 120 Elision-Löcher im Array. `new Set(FALLBACK_SOURCES.map((s) => s.value))` in der Scan-View hielt daraufhin `undefined`, und `id.length` im Firmen-Klassifikator warf bei jedem Seiten-Render `TypeError: Cannot read properties of undefined (reading 'length')` (auf Prod von logbuf gefangen). Die Löcher sind entfernt, und ein neues Gate (4 Specs, rot-verifiziert) führt die Datei aus und schlägt bei jedem Loch, unbrauchbaren Eintrag oder `undefined` im Adapter-ID-Set fehl — das rein textuelle Drift-Gate konnte diese Klasse nicht sehen.
+- **Blinde vi-Sprachprüfung (CAR-97)**: Vietnamesisch ist Lateinschrift und hatte keinen Eintrag in der Stoppwort-Tabelle der Live-QA, daher zählten die „vi-Stoppwörter" englische Treffer und eine vietnamesische Antwort las sich als `report not in vi` (Live-Regression: vi 2, en 2). Vietnamesisch hat jetzt seine eigene Zehn-Wort-Tabelle mit Funktionswörtern — ein rein vietnamesischer Report besteht, ein englischer fällt weiterhin durch.
+- **zh-TW verlor den SCORE_SUMMARY-Block (CAR-98)**: die abschließende Spracherinnerung sagte nur, dass das Maschinenformat nicht übersetzt werden darf, nie aber, dass der Summary-Block existieren muss — ein kurzer zh-TW-Report (5,983 Zeichen) trug die A–G-Blöcke, ließ den Block aber komplett weg (ein Rezidiv der Klasse v1.239.2). Die Eröffnungs-Direktive und die abschließende Erinnerung stellen jetzt klar, dass der Block Pflicht ist und der Report ohne ihn ungültig ist.
+
+### Hinweise
+
+- Diese Version ändert absichtlich keine Scanner-Quelle, keine Registry-Zählung (121 = 116 EN + 5 RU · 116 Adapter) und keine Provider-Verdrahtung — sie ist nur Fixes, die Count-Gates bleiben unangetastet.
+- Tests 5695 (+9: `car99-fallback-holes` ×4, `car97-vi-lang-check` ×4, die CAR-98-Prompt-Invariante ×1). Browser 143/143. Der vi/zh-TW-Live-Recheck fährt mit der Post-Deploy-Regression mit.
+
 ## [1.255.1] — 2026-10-24
 
 **Zwei Review-Fix-Runden: das Opus-Review der vietnamesischen Lokalisierung (9 Befunde) und das Second-Pass-Review der CAR-91/92-Fixes (5 Muss-Fixes) — beide mit Rot→Grün-Tests geschlossen.**

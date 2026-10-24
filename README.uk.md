@@ -15,14 +15,14 @@ _Неофіційний інтерфейс — не пов'язаний із car
 [![playwright](https://img.shields.io/badge/playwright-143%2F143-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.255.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.255.1)
+[![release](https://img.shields.io/badge/release-v1.255.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.255.2)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Останній реліз — v1.255.1** — **Два раунди виправлень за ревізіями: ревізія Opus в'єтнамської локалі (витік гліфа хангиль і шість URL довідки з пробілами — тепер під гейтами) і другий прохід ревізії виправлень CAR-91/92 — межі блокових заголовків оцінювання (`## Q&A` більше не блок), звіти з українською нумерацією переживають підрозділи `### A.`, перенесені рядки скана старіють і відпадають, а парсинг знаменника/легітимності gemini-synthesis виправлено.**
+> **🆕 Останній реліз — v1.255.2** — **Три виправлення: збій рендеру `#/scan` (120 дірок у масиві від перегенерації count-гейтів змушували класифікатор компаній падати з винятком на кожному рендері), сліпа мовна перевірка в'єтнамської (live QA рахувала для vi англійські стоп-слова — тепер у неї власна таблиця) і втрата блоку summary zh-TW (закривний reminder тепер робить `SCORE_SUMMARY` обов'язковим, а не лише неперекладним).**
 >
-> **Попередній реліз — v1.255.0** — **В'єтнамська (Tiếng Việt) стає 19-ю мовою інтерфейсу — словник на 1525 ключів із повним паритетом до EN, розпізнавання vi/vi-VN, повний довідковий пакунок, дзеркала README та CHANGELOG, інтеграція в лендінг cvstart.org і 🇻🇳 у перемикачі мови.**
+> **Попередній реліз — v1.255.1** — **Два раунди виправлень за ревізіями: ревізія Opus в'єтнамської локалі (витік гліфа хангиль і шість URL довідки з пробілами — тепер під гейтами) і другий прохід ревізії виправлень CAR-91/92 — межі блокових заголовків оцінювання (`## Q&A` більше не блок), звіти з українською нумерацією переживають підрозділи `### A.`, перенесені рядки скана старіють і відпадають, а парсинг знаменника/легітимності gemini-synthesis виправлено.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -147,7 +147,7 @@ career-ops/
 └─ web-ui/          ← це репозиторій
    ├─ server/       # Express + 15 модулів маршрутів
    ├─ public/       # vanilla JS SPA, без бандлера
-   └─ tests/        # 5686 unit + 144 Playwright + 44 e2e (baseline @ v1.255.1)
+   └─ tests/        # 5695 unit + 144 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.255.2)
 ```
 
 Сервер має дві виробничі залежності: `express` та `js-yaml`. Жодного transpile, жодного бандлера — весь UI займає менше 30 KB у мінімізованому вигляді.

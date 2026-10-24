@@ -6,6 +6,21 @@ Bản dịch: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 
 ---
 
+## [1.255.2] — 2026-10-24
+
+**Ba-bản-sửa-hiện-thế-từ-rà-soát-trực-tiếp và-một-báo-cáo-sập-trên-máy-chủ-thật: sập-khi-render-#/scan, kiểm-tra-ngôn-ngữ-tiếng-Việt-mù, và-việc-mất-khối-tóm-tắt-zh-TW lặp-lại.**
+
+### Đã sửa
+
+- **Sập-#/scan (CAR-99)**: việc-tái-sinh-cổng-đếm từ-v1.253.0 đã-viết literal `FALLBACK_SOURCES` với-dấu-phẩy-kép-thừa ở-cuối-mỗi-mục — 120-lỗ-elision trong-mảng. `new Set(FALLBACK_SOURCES.map((s) => s.value))` trong-view-quét khi-đó giữ-`undefined`, và-`id.length` của-bộ-phân-loại-công-ty ném-`TypeError: Cannot read properties of undefined (reading 'length')` ở-mỗi-lượt-render-trang (logbuf bắt-được trên-máy-chủ-thật). Các-lỗ đã-được-loại-bỏ, và-một-cổng-mới (4-spec, xác-minh-bằng-đỏ) chạy-file và-trượt ở-bất-kỳ-lỗ nào, mục-không-dùng-được nào, hay-`undefined` nào trong-Set-id-adapter — cổng-phát-hiện-lệch chỉ-đọc-văn-bản không-thể-thấy-lớp-này.
+- **Kiểm-tra-ngôn-ngữ-vi-mù (CAR-97)**: tiếng-Việt là-chữ-Latin và-không-có-mục trong-bảng-stop-word của-QA-trực-tiếp, nên-"vi stop words" đếm-các-trúng-tiếng-Anh và-một-câu-trả-lời-tiếng-Việt bị-đọc là-`report not in vi` (rà-soát-trực-tiếp: vi 2, en 2). Tiếng-Việt giờ có-bảng-chức-từ mười-từ riêng-của-mình — một-báo-cáo-thuần-vi đỗ, một-báo-cáo-tiếng-Anh vẫn-trượt.
+- **zh-TW mất-khối-SCORE_SUMMARY (CAR-98)**: lời-nhắc-ngôn-ngữ-kết chỉ-nói định-dạng-máy không-được-dịch, chưa-bao-giờ nói khối-tóm-tắt phải-tồn-tại — một-báo-cáo-zh-TW ngắn (5,983 ký-tự) mang-các-khối-A–G nhưng-bỏ-hẳn-khối-tóm-tắt (một-sự-lặp-lại-cùng-loại-v1.239.2). Chỉ-đạo-mở-đầu và-lời-nhắc-kết giờ khẳng-định khối là-bắt-buộc và-báo-cáo-thiếu-nó là-không-hợp-lệ.
+
+### Ghi chú
+
+- Bản-phát-hành-này cố-ý không-đổi bất-kỳ-nguồn-quét nào, con-số-registry (121 = 116 EN + 5 RU · 116 adapter), hay-cách-nối-provider — chỉ-là-bản-sửa, nên-các-cổng-đếm nguyên-vẹn.
+- Kiểm-thử 5695 (+9: `car99-fallback-holes` ×4, `car97-vi-lang-check` ×4, bất-biến-prompt-CAR-98 ×1). Trình-duyệt 143/143. Lượt-kiểm-tra-trực-tiếp-lại vi/zh-TW đi-cùng-rà-soát-sau-triển-khai.
+
 ## [1.255.1] — 2026-10-24
 
 **Hai-vòng-sửa-sau-rà-soát: vòng-rà-soát-Opus cho-locale-tiếng-Việt (9 phát-hiện) và vòng-rà-soát-lần-hai các-bản-sửa CAR-91/92 (5 bản-sửa-bắt-buộc) — cả-hai được-đóng lại với-các-test-đỏ→xanh.**

@@ -7,6 +7,21 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 ---
 
 
+## [1.255.2] — 2026-10-24
+
+**Three user-visible fixes from the live regression and a prod crash report: the #/scan render crash, the blind Vietnamese language check, and a recurring zh-TW summary-block loss.**
+
+### Fixed
+
+- **#/scan crash (CAR-99)**: the count-gate regeneration since v1.253.0 wrote the `FALLBACK_SOURCES` literal with a trailing double comma on every entry — 120 array elision holes. `new Set(FALLBACK_SOURCES.map((s) => s.value))` in the scan view then held `undefined`, and the company classifier's `id.length` threw `TypeError: Cannot read properties of undefined (reading 'length')` on every page render (caught by logbuf on prod). The holes are removed and a new gate (4 specs, red-verified) executes the file and fails on any hole, unusable entry, or `undefined` in the adapter-id Set — the text-only drift gate could not see this class.
+- **Blind vi language check (CAR-97)**: Vietnamese is Latin-script and had no entry in the live-QA stop-word table, so "vi stop words" counted English hits and a Vietnamese answer read as `report not in vi` (live regression: vi 2, en 2). Vietnamese now has its own ten-word function-word table — a pure-vi report passes, an English one still fails.
+- **zh-TW lost the SCORE_SUMMARY block (CAR-98)**: the closing language reminder only said the machine format must not be translated, never that the summary block must exist — a short zh-TW report (5,983 chars) carried the A–G blocks but omitted the block entirely (a v1.239.2-class recurrence). The opening directive and the closing reminder now state the block is mandatory and the report is invalid without it.
+
+### Notes
+
+- This release deliberately does not change any scanner source, registry count (121 = 116 EN + 5 RU · 116 adapters), or provider wiring — it is fixes only, so the count gates are untouched.
+- Tests 5695 (+9: `car99-fallback-holes` ×4, `car97-vi-lang-check` ×4, the CAR-98 prompt invariant ×1). Browser 143/143. The vi/zh-TW live re-check rides the post-deploy regression.
+
 ## [1.255.1] — 2026-10-24
 
 **Two review fix-rounds: the Opus review of the Vietnamese locale (9 findings) and the second-pass review of the CAR-91/92 fixes (5 must-fixes) — both closed with red→green tests.**
@@ -22,7 +37,7 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 
 ### Notes
 
-- The README.vi "Latest" banner adapter-count phrasing the review flagged lives in the **Previous** banner and already mirrors EN README byte-for-byte — left untouched to keep EN↔vi parity (documented in the commit body).
+- The README.vi "Latest" banner adapter-count phrasing the review flagged lives in the **Previous** banner and already mirrors EN README byte-for-byte — deliberately not reworded, to keep EN↔vi parity (documented in the commit body). The vi/ta/cvstart localizations are not touched by this release; registry unchanged.
 - Tests 5686 (+26: `eval-validate-opus-r2`, `scanner-carryover-r2`, vi-gate assertions). Registry unchanged at **121 sources (116 EN + 5 RU) · 116 adapters**.
 
 ## [1.255.0] — 2026-10-24
