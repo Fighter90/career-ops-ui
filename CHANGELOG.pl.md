@@ -9,6 +9,26 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.254.0] — 2026-10-24
+
+**Wydanie utwardzające z rundy recenzji maksymalnym modelem: snapshot skanera nigdy więcej nie traci wierszy, jedenaście naruszeń niezmienników warstwy LLM naprawiono, dwadzieścia trzy must-fix SPA lądują, a ATS Paylocity dołącza do skanera — rejestr dostarcza teraz 121 źródeł (115 EN + 5 RU) z 116 adapterami.**
+
+### Dodano
+
+- **ATS Paylocity** (rodzic #5687): tablice per tenant `recruiting.paylocity.com`, martwa tablica 302 → JobNotFound mapowana na 404, by kwarantanna przeniosła wpis w stan spoczynku, limit `max_jobs` z flagą ucięcia. Rejestr: **121 źródeł = 116 EN + 5 RU · 116 adapterów**; gate liczników regenerowane.
+
+### Naprawiono
+
+- **Bezpieczeństwo snapshotu skanera (R-12)**: skan, który niczego nie próbuje, teraz ZACHOWUJE snapshot (`nothing scanned`); pełne zastąpienie przenosi stare wiersze źródeł, które poległy — ostępowane per wpis — ponownie przez AKTUALNE filtry, lądując tylko w `filtered`.
+- **Jedenaście naruszeń niezmienników warstwy LLM**: dyrektywa językowa otwiera I zamyka prompty deep/mode; podproces Gemini przekazuje `--lang`, wyjście niezerowe → 502, nie wycieka stderrem do klienta, trzyma 300 s i rejestruje usage; manual fallback niesie URL oferty; truncation i ostrzeżenia bundla wynurzają się w `/api/mode`; spend tier nie jest już nadpisywany przez klienta; rozłączenie klienta przerywa wywołanie dostawcy w locie; cutter powtarzalnych nagłówków nie niszczy już ważnych raportów; ekstraktory score/legitimacy zgodne z walidatorem; ukraińska sekwencja i arabskie wa zaostrzone.
+- **Runda rewizji Opus 5-5 NA samych poprawkach** (8 imperatywów): wielo-literowa rejestracja cuttera, szersze terminatory nagłówków, okablowanie abortu podprocesu Gemini, ostępowana atrybucja przenoszenia, przeniesione wiersze przechodzą aktualne filtry, poziom referencyjny po liczbie różnych liter.
+- **Dwadzieścia trzy must-fix SPA** w widokach sourcing (append pagera jednostronicowego, klawiatura wierszy pipeline, przywracanie filtrów saved-search, reset selecta source, cofanie domyślnej wartości w config, wycieki listenerów, close SSE na terminalu, teardown scan-runnera, goły fetch, nieudane wczytania wyglądające jak puste, kolizja globalna, zachowanie fokusu) i assist (martwy deep-link help, wycieki help, ponowne uzbrojenie blank-overwrite w two-pager, single-flight płatnych uruchomień batch/deep/mode, ciche końce streamów, wieczne spinnery na błędach, wiersze-widma nieudanych filtrów, duplikaty docs-fab + język).
+
+### Uwagi
+
+- Cała runda była recenzowana przez Opus 5-5 z maksymalną surowością — porty przed merge'em (21 ustaleń, 13 naprawionych) i same poprawki post-hoc (8 imperatywów, wszystkie tutaj z testami czerwony→zielony).
+- Podłoga testów: 5262 → **5634** (372 nowe specyfikacje w źródłach, skanerach, warstwie LLM i SPA).
+
 ## [1.253.1] — 2026-10-24
 
 **Dwa HIGH-owe znaleziska bezpieczeństwa z recenzji maksymalnym modelem naprawione: literały IPv6 nie omijają już SSRF-gate skanera, a regex escape markdownu CV nie backtrackuje już kwadratowo.**

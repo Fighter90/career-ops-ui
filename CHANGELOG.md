@@ -7,6 +7,26 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 ---
 
 
+## [1.254.0] — 2026-10-24
+
+**A hardening release from the max-model review round: the scanner snapshot never loses rows again, eleven LLM-layer invariant violations are fixed, twenty-three SPA must-fixes land, and the Paylocity ATS joins the scanner — the registry now ships 121 sources (116 EN + 5 RU) with 116 adapters.**
+
+### Added
+
+- **Paylocity ATS** (parent #5687): per-tenant `recruiting.paylocity.com` boards, dead-board 302 → JobNotFound mapped to a 404 so quarantine retires the entry, `max_jobs` cap with a truncation flag, ISO-4217-safe row shaping. Registry: **121 sources = 116 EN + 5 RU · 116 adapters**; the count gates regenerated.
+
+### Fixed
+
+- **Scanner snapshot safety (R-12)**: a scan that attempts nothing now KEEPS the saved snapshot (`nothing scanned`) instead of wiping it; a full-replace carries over the failed sources' old rows — stamped per entry so a failed "Lever" no longer keeps other companies' lever-source rows — re-run through the CURRENT filters, landing in `filtered` only (an already-applied job never resurfaces as fresh).
+- **Eleven LLM-layer invariants**: the language directive now opens AND closes the deep/mode prompts; the Gemini subprocess forwards `--lang`, exits non-zero to a 502, stops leaking stderr, honours the 300 s timeout and records usage; the auto-pipeline manual fallback carries the posting URL; truncation and bundle warnings surface in `/api/mode`; the spend tier can no longer be overridden by the client; a client disconnect aborts the in-flight provider call (signal threaded through every provider); the repeated-heading cutter no longer destroys valid reports; the score and legitimacy extractors agree with the validator; the Ukrainian sequence and Arabic wa-aw false-accepts are tightened.
+- **An Opus 5-5 review round ON the fixes themselves** (8 must-fixes) then landed: the heading cutter's multi-letter registration (one heading could register a letter inside its own window — `## G) Interview Q&A` cut at G), wider heading terminators (`**Block A** —`, `[A]`, fullwidth/`、`/CRLF), the Gemini subprocess abort wiring, entry-stamped carry-over attribution, carried rows re-run the current filters, and the reference-heading level now counts distinct letters.
+- **Twenty-three SPA must-fixes** across the sourcing views (the single-page pager append, pipeline row keyboard handling, saved-search filter restore, source-select resets, config default-revert, listener leaks, SSE close-on-terminal, scan runner teardown, a bare fetch, failed-loads-look-empty, a window-collision, focus preservation) and the assist views (the dead help deep-link, help listener leaks, the two-pager blank-overwrite re-arm, batch/deep/mode paid-run single-flight, silent stream ends, spinner-forever error paths, failed-filter ghost rows, docs-fab duplicates + language).
+
+### Notes
+
+- The whole round was reviewed by Opus 5-5 at maximum rigor — the ports pre-merge (21 findings, 13 fixed) and the fixes themselves post-hoc (8 must-fixes, all landed here with red→green tests).
+- Test floor: 5262 → **5634** (372 new specs across the sources, scanners, LLM layer and SPA).
+
 ## [1.253.1] — 2026-10-24
 
 **Two HIGH security findings from the max-model review are fixed: IPv6-literal URLs no longer bypass the scanner's SSRF guard, and the CV-markdown escape regex no longer backtracks quadratically.**

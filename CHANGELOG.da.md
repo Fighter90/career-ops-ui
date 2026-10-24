@@ -9,6 +9,26 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 ---
 
 
+## [1.254.0] — 2026-10-24
+
+**En hærdningsudgivelse fra anmeldelsesrunden med maksimal-modellen: scannerens snapshot mister aldrig igen rækker, elleve invariantovertrædelser i LLM-laget er rettet, treogtyve SPA-must-fixes lander, og Paylocity-ATS'en slutte sig til scanneren — registret leverer nu 121 kilder (115 EN + 5 RU) med 116 adaptere.**
+
+### Tilføjet
+
+- **Paylocity-ATS** (forælder #5687): tenant-specifikke `recruiting.paylocity.com`-tavler, død tavle 302 → JobNotFound mappet til 404 så karantænen pensionerer indgangen, `max_jobs`-loft med afkortningsflag. Register: **121 kilder = 116 EN + 5 RU · 116 adaptere**; tællegates regenereret.
+
+### Rettet
+
+- **Scanner-snapshot-sikkerhed (R-12)**: en scanning, der ikke prøver noget, BEVARER nu snapshotet (`nothing scanned`); en fuld-erstatning bærer de fejlede kilders gamle rækker med — stemplet per indgang — gennemaflæst gennem de NUVÆRENDE filtre, landende kun i `filtered`.
+- **Elleven invariantovertrædelser i LLM-laget**: sprogdirektivet åbner OG lukker deep/mode-prompterne; Gemini-subprocessen videresender `--lang`, ikke-nul exit → 502, lækker ikke stderr til klienten, holder 300 s og registrerer usage; manual-fallbacken bærer opslagets URL; trunkering og bundle-advarsler synlige i `/api/mode`; spend-tier kan ikke længere tilsidesættes af klienten; et klient-frakoblet aborterer det igangværende udbyderkald; den gentagne-overskrifts-cutter ødelægger ikke længere gyldige rapporter; score/legitimacy-ekstraktorerne stemmer med validatoren; ukrainsk sekvens og arabisk wa strammet.
+- **En Opus 5-5-anmeldelsesrunde PÅ selve rettelserne** (8 imperativer): cutterens multi-bogstav-registrering, bredere overskriftsterminatorer, Gemini-subprocessens abort-kabelsledning, stempledt carry-over-attribuering, carryede rækker gennemløber de nuværende filtre, referenceoverskriftsniveau efter antal distincte bogstaver.
+- **Dog og tyve-ish SPA-must-fixes** i sourcing- og assist-visningerne (én-sides pager-append, pipeline-række-tastatur, saved-search-filtergendannelse, source-select-nulstillinger, config-standardtilbagevending, listener-lækager, SSE close ved terminal, scanner-runner-teardown, nøgen fetch, fejlede indlæsninger der så tomme ud, global kollision, fokusbevaring; død help deep-link, help-lytterlækager, two-pager blank-overwrite-genarmering, single-flight af betalte kørsler, stille strøm-slutninger, evige spinner-fejlveje, spøgelsesrækker fra fejlede filtre, docs-fab-duplikater + sprog).
+
+### Noter
+
+- Hele runden blev anmeldt af Opus 5-5 med maksimal stringens — portene før merge (21 fund, 13 rettet) og rettelserne selv post-hoc (8 imperativer, alle her med rød→grøn tests).
+- Testgulv: 5262 → **5634** (372 nye specs på tværs af kilder, scannere, LLM-laget og SPA).
+
 ## [1.253.1] — 2026-10-24
 
 **To HIGH-sikkerhedsfund fra anmeldelsen med maksimal-modellen er rettet: IPv6-literal-URL'er omgår ikke længere scannerens SSRF-vagt, og escape-regex'en i CV-markdown backtracker ikke længere kvadratisk.**

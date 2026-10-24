@@ -12,12 +12,12 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.253.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.253.1)
+[![release](https://img.shields.io/badge/release-v1.254.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.254.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.253.0** — **10개의 새 채용 소스가 스캐너에 합류합니다 — Atlassian, BWI, Computrabajo, Dover, Google, Kalibrr, Magneto365, Platsbanken, Tech in Asia, Zoho Recruit — 레지스트리는 이제 115개 어댑터와 함께 120개 소스(EN 115 + RU 5)를 제공하며, 역할 매처는 짧은 대문자 코드만 다른 직함을 더 이상 같은 공고로 묶지 않습니다.**
+> **🆕 최신 릴리스 — v1.253.1** — **10개의 새 채용 소스가 스캐너에 합류합니다 — Atlassian, BWI, Computrabajo, Dover, Google, Kalibrr, Magneto365, Platsbanken, Tech in Asia, Zoho Recruit — 레지스트리는 이제 115개 어댑터와 함께 120개 소스(EN 115 + RU 5)를 제공하며, 역할 매처는 짧은 대문자 코드만 다른 직함을 더 이상 같은 공고로 묶지 않습니다.**
 >
 > **이전 버전 — v1.252.1** — **상위 포크가 career-ops-hq와 동기화되었습니다 — 업스트림 264커밋, 상위 1.36.0 → 1.37.0 — 포크의 두 분기 모두 지켜졌으며, 배포가 실행 중인 상위를 해당 베이스로 다시 고정합니다.**
 
@@ -392,7 +392,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 5511 unit + 129 Playwright + 23 e2e:full + 21 e2e:smoke
+└─ tests/                    # 5634 unit + 129 Playwright + 23 e2e:full + 21 e2e:smoke
    ├─ parsers.test.mjs       # markdown / pipeline / report 파서 (순수 함수)
    ├─ api.test.mjs           # 모든 엔드포인트, 임시 서버, 네트워크 없음
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch

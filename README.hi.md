@@ -14,12 +14,12 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.253.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.253.1)
+[![release](https://img.shields.io/badge/release-v1.254.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.254.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.253.0** — **दस नए जॉब-सोर्स स्कैनर में शामिल होते हैं — Atlassian, BWI, Computrabajo, Dover, Google, Kalibrr, Magneto365, Platsbanken, Tech in Asia और Zoho Recruit — रजिस्ट्री अब 115 एडाप्टर के साथ 120 सोर्स (115 EN + 5 RU) देती है, और रोल मैचर केवल एक छोटे कैपिटल कोड से अलग टाइटल को अब एक ही ओपनिंग नहीं मानता।**
+> **🆕 नवीनतम रिलीज़ — v1.253.1** — **दस नए जॉब-सोर्स स्कैनर में शामिल होते हैं — Atlassian, BWI, Computrabajo, Dover, Google, Kalibrr, Magneto365, Platsbanken, Tech in Asia और Zoho Recruit — रजिस्ट्री अब 115 एडाप्टर के साथ 120 सोर्स (115 EN + 5 RU) देती है, और रोल मैचर केवल एक छोटे कैपिटल कोड से अलग टाइटल को अब एक ही ओपनिंग नहीं मानता।**
 >
 > **पिछला — v1.252.1** — **पैरेंट फोर्क career-ops-hq के साथ समेकित है — 264 अपस्ट्रीम कमिट, पैरेंट 1.36.0 → 1.37.0 — फोर्क के दोनों विचलन सुरक्षित हैं, और डिप्लॉय चल रहे पैरेंट को उस बेस पर फिर से पिन करता है।**
 
@@ -425,7 +425,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 5511 यूनिट + 129 Playwright + 23/23 e2e:full + 21 e2e:smoke (बेसलाइन @ v1.253.1)
+└─ tests/                    # 5634 यूनिट + 129 Playwright + 23/23 e2e:full + 21 e2e:smoke (बेसलाइन @ v1.254.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report पार्सर (प्योर फ़ंक्शन)
    ├─ api.test.mjs           # हर एंडपॉइंट, एफ़ेमरल सर्वर, कोई नेटवर्क नहीं
    ├─ {ru,en}-scanner.test.mjs   # मॉक्ड fetch

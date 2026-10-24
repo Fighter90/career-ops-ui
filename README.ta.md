@@ -12,12 +12,12 @@ _அதிகாரப்பூர்வமற்ற இடைமுகம் �
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#சோதனைகள்)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#தேவைகள்)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.253.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.253.1)
+[![release](https://img.shields.io/badge/release-v1.254.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.254.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 சமீபத்திய வெளியீடு — v1.253.0** — **பத்து புதிய வேலை மூலங்கள் ஸ்கேனரில் இணைகின்றன — Atlassian, BWI, Computrabajo, Dover, Google, Kalibrr, Magneto365, Platsbanken, Tech in Asia, Zoho Recruit — பதிவேடு இப்போது 115 அடாப்டர்களுடன் 120 மூலங்களை (115 EN + 5 RU) வழங்குகிறது, மேலும் ரோல் மேட்சர் ஒரு குறுகிய கேப்பிட்டல் குறியீட்டால் மட்டும் வேறுபடும் தலைப்புகளை இனி ஒரே பணியாக இணைக்காது.**
+> **🆕 சமீபத்திய வெளியீடு — v1.253.1** — **பத்து புதிய வேலை மூலங்கள் ஸ்கேனரில் இணைகின்றன — Atlassian, BWI, Computrabajo, Dover, Google, Kalibrr, Magneto365, Platsbanken, Tech in Asia, Zoho Recruit — பதிவேடு இப்போது 115 அடாப்டர்களுடன் 120 மூலங்களை (115 EN + 5 RU) வழங்குகிறது, மேலும் ரோல் மேட்சர் ஒரு குறுகிய கேப்பிட்டல் குறியீட்டால் மட்டும் வேறுபடும் தலைப்புகளை இனி ஒரே பணியாக இணைக்காது.**
 >
 > **முந்தைய வெளியீடு — v1.252.1** — **பேரண்ட் ஃபோர்க் career-ops-hq-உடன் ஒத்திசைக்கப்பட்டது — அப்ஸ்ட்ரீம் 264 கமிட்கள், பேரண்ட் 1.36.0 → 1.37.0 — ஃபோர்க்கின் இரு வேறுபாடுகளும் பாதுகாக்கப்பட்டன, மேலும் டிப்ளாய் இயங்கும் பேரண்டை அந்த அடிப்படைக்கு மீண்டும் பின் செய்கிறது.**
 

@@ -11,6 +11,26 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.254.0] — 2026-10-24
+
+**Une version de durcissement issue de la ronde de révision par le modèle maximum : le snapshot du scanner ne perd plus jamais de lignes, onze violations d'invariants de la couche LLM sont corrigées, vingt-trois must-fix du SPA atterrissent, et l'ATS Paylocity rejoint le scanner — le registre livre désormais 121 sources (116 EN + 5 RU) avec 116 adaptateurs.**
+
+### Ajouté
+
+- **ATS Paylocity** (parent #5687) : plateaux par tenant `recruiting.paylocity.com`, plateau mort 302 → JobNotFound mappé en 404 pour que la quarantaine retire l'entrée, plafond `max_jobs` avec drapeau de troncature. Registre : **121 sources = 116 EN + 5 RU · 116 adaptateurs** ; les gates de comptage régénérées.
+
+### Corrigé
+
+- **Sûreté du snapshot du scanner (R-12)** : un scan qui ne tente rien CONSERVE désormais le snapshot (`nothing scanned`) ; un remplacement complet reporte les anciennes lignes des sources en échec — estampillées par entrée — repassées par les filtres ACTUELS, atterrissant seulement dans `filtered`.
+- **Onze violations d'invariants de la couche LLM** : la directive de langue ouvre ET ferme les prompts deep/mode ; le sous-processus Gemini transmet `--lang`, une sortie non nulle → 502, ne laisse plus fuir le stderr au client, honore les 300 s et enregistre l'usage ; le fallback manual porte l'URL de l'offre ; le tronquage et les warnings du bundle remontent dans `/api/mode` ; le palier de dépense ne peut plus être écrasé par le client ; la déconnexion du client avorte l'appel fournisseur en vol ; le coupeur de titres répétés ne détruit plus les rapports valides ; les extracteurs score/legitimacy s'accordent avec le validateur ; les faux-accepts séquence ukrainienne et wa arabe sont resserrés.
+- **Une ronde de revue Opus 5-5 SUR les correctifs eux-mêmes** (8 impératifs) : l'enregistrement multi-lettres du coupeur, des terminateurs de titres plus larges, le câblage d'abandon du sous-processus Gemini, l'attribution estampillée du report, les lignes reportées repassent les filtres actuels, le niveau de référence par lettres distinctes.
+- **Vingt-trois must-fix SPA** dans les vues de sourcing (l'append du pager mono-page, le clavier des lignes pipeline, la restauration des filtres des recherches sauvegardées, les resets du select source, le retour au défaut de config, les fuites de listeners, la fermeture SSE au terminal, le teardown du runner de scan, un fetch nu, les chargements échoués qui ressemblaient à du vide, une collision globale, la préservation du focus) et les vues d'assistance (le lien profond mort de l'aide, les fuites de listeners de l'aide, le ré-armement du blank-overwrite du two-pager, le single-flight des exécutions payantes batch/deep/mode, les fins de flux silencieuses, les chemins d'erreur à spinner éternel, les lignes fantômes de filtres en échec, les doublons docs-fab + la langue).
+
+### Notes
+
+- Toute la ronde a été revue par Opus 5-5 à la rigueur maximale — les portages pré-fusion (21 constats, 13 corrigés) et les correctifs eux-mêmes post-hoc (8 impératifs, tous ici avec des tests rouge→vert).
+- Plancher de tests : 5262 → **5634** (372 nouvelles spécifications sur les sources, les scanners, la couche LLM et le SPA).
+
 ## [1.253.1] — 2026-10-24
 
 **Deux découvertes HIGH de sécurité de la revue par le modèle maximum sont corrigées : les URLs littérales IPv6 ne contournent plus le garde-fou SSRF du scanner, et la regex d'échappement du markdown CV ne backtrack plus de façon quadratique.**

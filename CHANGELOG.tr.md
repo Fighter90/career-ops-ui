@@ -2,6 +2,26 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.254.0] — 2026-10-24
+
+**Maksimum model inceleme turundan bir sağlamlaştırma sürümü: tarayıcı anlık görüntüsü artık satır kaybetmiyor, LLM katmanının on bir invariat ihlali düzeltildi, yirmi üç SPA must-fix'i indi ve Paylocity ATS tarayıcıya katılıyor — kayıt defteri artık 115 adaptörle 121 kaynak (115 EN + 5 RU) sunuyor.**
+
+### Eklendi
+
+- **Paylocity ATS** (üst #5687): kiracı başına `recruiting.paylocity.com` panoları, ölü pano 302 → JobNotFound 404'e eşleniyor ki karantina girişi emekli etsin, kesme bayraklı `max_jobs` sınırı. Kayıt: **121 kaynak = 116 EN + 5 RU · 116 adaptör**; sayaç kapıları yeniden üretildi.
+
+### Düzeltildi
+
+- **Tarayıcı anlık görüntü güvenliği (R-12)**: hiçbir şey denemeyen bir tarama artık anlık görüntüyü KORUYOR (`nothing scanned`); tam değiştirme, başarısız kaynakların eski satırlarını — girişe damgalı — MEVCUT filtrelerden yeniden geçirerek yalnızca `filtered`'e indiriyor.
+- **LLM katmanının on bir invariat ihlali**: dil yönergesi deep/mode istemlerini açar VE kapatır; Gemini alt süreci `--lang` iletiyor, sıfır olmayan çıkış → 502, stderr'i istemciye sızdırmıyor, 300 s'ye uyuyor ve usage kaydediyor; manuel fallback iş ilanının URL'sini taşıyor; `/api/mode`'da truncation ve paket uyarıları görünüyor; harcama katmanı artık istemci tarafından geçersiz kılınamıyor; istemci kopması uçuştaki sağlayıcı çağrısını iptal ediyor (sinyal on dört sağlayıcı üzerinden); tekrarlayan-başlık kesici artık geçerli raporları yok etmiyor; score/legitimacy çıkarıcıları doğrulayıcıyla uyumlu; Ukrayna dizisi ve Arapça و yanlış-kabulleri sıkılaştırıldı.
+- **Düzeltmelerin KENDİSİNE bir Opus 5-5 inceleme turu** (8 zorunlu): kesicinin çoklu-harf kaydı, daha geniş başlık sonlandırıcıları, Gemini alt sürecinin abort kablolaması, girişe damgalı taşıma atıfı, taşınan satırların mevcut filtrelerden yeniden geçmesi, farklı harf sayısına göre referans düzeyi.
+- **Yirmi üç SPA must-fix'u**: sourcing görünümlerinde (tek sayfalık pager eki, pipeline satır klavyesi, saved-search filtre geri yükleme, source select sıfırlamaları, config varsayılan-geri dönüşü, dinleyici sızıntıları, terminalde SSE kapanışı, tarama koşucusu teardown, çıplak fetch, boş görünen başarısız yüklemeler, global çakışma, odak korunumu) ve assist görünümlerinde (ölü help derin-bağlantısı, help dinleyici sızıntıları, two-pager boş-üzerine-yazma yeniden-silahlanması, batch/deep/mode ücretli çalıştırmalarında tek-uçuş, sessiz akış uçları, sonsuz dönen hata yolları, başarısız filtre hayalet satırları, docs-fab kopyaları + dil).
+
+### Notlar
+
+- Tüm tur Opus 5-5 tarafından maksimum titizlikle incelendi — merge öncesi portlar (21 bulgu, 13 düzeltildi) ve fixlerin kendisi sonradan (8 zorunlu, hepsi burada kırmızı→yeşil testlerle).
+- Test tabanı: 5262 → **5634** (kaynaklar, tarayıcılar, LLM katmanı ve SPA genelinde 372 yeni spec).
+
 ## [1.253.1] — 2026-10-24
 
 **Maksimum model incelemesindeki iki HIGH güvenlik bulgusu düzeltildi: IPv6 literal URL'leri artık tarayıcının SSRF korumasını atlamıyor ve CV markdown kaçış regex'i de artık ikinci dereceden geri izleme yapmıyor.**

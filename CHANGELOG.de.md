@@ -2,6 +2,26 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.254.0] — 2026-10-24
+
+**Ein Härtungs-Release aus der Review-Runde mit dem Maximal-Modell: der Scanner-Snapshot verliert nie wieder Zeilen, elf Invarianten-Verstöße der LLM-Schicht sind behoben, dreiundzwanzig SPA-Must-Fixes landen, und die Paylocity-ATS stößt zum Scanner — die Registry liefert jetzt 121 Quellen (115 EN + 5 RU) mit 116 Adaptern.**
+
+### Hinzugefügt
+
+- **Paylocity-ATS** (Parent #5687): Tenant-Boards auf `recruiting.paylocity.com`, totes Board 302 → JobNotFound auf 404 gemappt, damit die Quarantäne den Eintrag in den Ruhestand schickt, `max_jobs`-Cap mit Truncation-Flag. Registry: **121 Quellen = 116 EN + 5 RU · 116 Adapter**; die Zähl-Gates regeneriert.
+
+### Behoben
+
+- **Scanner-Snapshot-Sicherheit (R-12)**: ein Scan, der nichts versucht, BEHALTET jetzt den Snapshot (`nothing scanned`); ein Voll-Ersatz überträgt die alten Zeilen der fehlgeschlagenen Quellen — pro Entry gestempelt — erneut durch die AKTUELLEN Filter, landend nur in `filtered`.
+- **Elf Invarianten-Verstöße der LLM-Schicht**: die Sprachdirektive öffnet UND schließt die Deep-/Mode-Prompts; der Gemini-Subprocess reicht `--lang` durch, Nicht-Null-Exit → 502, leckt kein stderr zum Kunden, hält 300 s ein und zeichnet Usage auf; der Manual-Fallback trägt die Posting-URL; Truncation und Bundle-Warnungen tauchen in `/api/mode` auf; die Spend-Tier ist nicht mehr vom Kunden überschreibbar; ein Client-Disconnect bricht den Provider-Aufruf in flight ab; der Repeat-Heading-Cutter zerstört keine gültigen Reports mehr; Score/Legitimacy-Extraktoren stimmen mit dem Validator überein; die ukrainische Sequenz und das arabische Wa sind straffer.
+- **Eine Opus-5-5-Review-Runde ÜBER die Fixes selbst** (8 Muss): die Multi-Letter-Registrierung des Cutters, weitere Heading-Terminatoren, die Abort-Verdrahtung des Gemini-Subprocess, die gestempelte Carry-Over-Attribution, getragene Zeilen laufen erneut durch die aktuellen Filter, das Referenz-Heading-Level nach Distinct-Letters.
+- **Dreiundzwanzig SPA-Must-Fixes** in den Sourcing-Views (der Single-Page-Pager-Append, Pipeline-Zeilen-Tastatur, Saved-Search-Filter-Wiederherstellung, Source-Select-Resets, Config-Default-Rücksetzung, Listener-Leaks, SSE-Close-am-Terminal, Scan-Runner-Teardown, ein nackter Fetch, fehlgeschlagene Ladevorgänge, die leer aussahen, eine globale Kollision, Fokuserhalt) und den Assist-Views (der tote Help-Deep-Link, Help-Listener-Leaks, das Two-Pager-Blank-Overwrite-Neu-Scharfmachen, Single-Flight bezahlter Läufe, stille Stream-Enden, ewige Spinner-Fehlerpfade, Geisterzeilen gescheiterter Filter, Docs-Fab-Duplikate + Sprache).
+
+### Hinweise
+
+- Die ganze Runde wurde von Opus 5-5 mit maximaler Strenge rezensiert — die Ports vor dem Merge (21 Befunde, 13 behoben) und die Fixes selbst post-hoc (8 Muss, alle hier mit Rot→Grün-Tests).
+- Test-Boden: 5262 → **5634** (372 neue Specs über Quellen, Scanner, LLM-Schicht und SPA).
+
 ## [1.253.1] — 2026-10-24
 
 **Zwei HIGH-Sicherheitsfunde aus dem Review mit dem Maximal-Modell sind behoben: IPv6-Literal-URLs umgehen den SSRF-Guard des Scanners nicht mehr, und die Escape-Regex des CV-Markdowns backtracket nicht mehr quadratisch.**

@@ -2,6 +2,26 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.254.0] — 2026-10-24
+
+**Una versione di indurimento dal giro di revisione col modello massimo: lo snapshot dello scanner non perde più righe, undici violazioni d'invariante del layer LLM sono corrette, ventitré must-fix SPA atterrano, e l'ATS Paylocity si unisce allo scanner — il registro ora fornisce 121 fonti (115 EN + 5 RU) con 116 adattatori.**
+
+### Aggiunto
+
+- **ATS Paylocity** (parent #5687): board per tenant `recruiting.paylocity.com`, board morto 302 → JobNotFound mappato a 404 così la quarantena va in pensione la voce, cap `max_jobs` con flag di troncamento. Registro: **121 fonti = 116 EN + 5 RU · 116 adattatori**; i gate di conteggio rigenerati.
+
+### Corretto
+
+- **Sicurezza dello snapshot dello scanner (R-12)**: una scansione che non tenta nulla CONSERVA ora lo snapshot (`nothing scanned`); un replace completo riporta le vecchie righe delle fonti fallite — timbrate per voce — ripassate nei filtri ATTUALI, atterrando solo in `filtered`.
+- **Undici violazioni d'invariante del layer LLM**: la direttiva di lingua apre E chiude i prompt deep/mode; il subprocess Gemini inoltra `--lang`, exit non-zero → 502, non fa più filtrare il stderr al client, rispetta i 300 s e registra l'usage; il fallback manual porta l'URL dell'annuncio; truncation e warning del bundle emergono in `/api/mode`; il spend tier non è più sovrascrivibile dal client; la disconnessione del client abortisce la chiamata al provider in volo; il cutter delle intestazioni ripetute non distrugge più report validi; gli estrattori score/legitimacy concordano col validatore; la sequenza ucraina e il wa arabo sono stretti.
+- **Un giro di revisione Opus 5-5 SUI fix stessi** (8 imperativi): la registrazione multi-lettera del cutter, terminatori di intestazione più larghi, il cablaggio di abort del subprocess Gemini, l'attribuzione timbrata del riporto, le righe riportate ripassano i filtri attuali, il livello di riferimento per lettere distinte.
+- **Ventitré must-fix SPA** nelle viste di sourcing (l'append del pager a pagina singola, la tastiera delle righe pipeline, il ripristino dei filtri saved-search, i reset del select source, il ritorno al default in config, le fughe di listener, la chiusura SSE al terminale, il teardown del runner di scansione, un fetch nudo, i caricamenti falliti che sembravano vuoti, una collisione globale, la conservazione del focus) e nelle viste di assistenza (il deep-link morto dell'help, le fughe di listener dell'help, il riarmo del blank-overwrite del two-pager, il single-flight delle esecuzioni a pagamento batch/deep/mode, le fini silenziose di stream, i percorsi d'errore a spinner eterno, le righe fantasma dei filtri falliti, i duplicati docs-fab + la lingua).
+
+### Note
+
+- L'intero giro è stato rivisto da Opus 5-5 al massimo rigore — i port pre-merge (21 reperti, 13 corretti) e i fix stessi post-hoc (8 imperativi, tutti qui con test rosso→verde).
+- Pavimento dei test: 5262 → **5634** (372 nuove specifiche su fonti, scanner, layer LLM e SPA).
+
 ## [1.253.1] — 2026-10-24
 
 **Due riscontri HIGH di sicurezza dalla revisione col modello massimo sono corretti: gli URL letterali IPv6 non aggirano più il guardia SSRF dello scanner, e la regex di escape del markdown CV non fa più backtracking quadratico.**

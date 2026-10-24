@@ -11,6 +11,26 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.254.0] — 2026-10-24
+
+**Una versión de endurecimiento desde la ronda de revisión con el modelo máximo: el snapshot del escáner nunca más pierde filas, once violaciones invariantes de la capa LLM están corregidas, veintitrés must-fix del SPA aterrizan, y el ATS Paylocity se une al escáner — el registro ahora entrega 121 fuentes (116 EN + 5 RU) con 116 adaptadores.**
+
+### Añadido
+
+- **Paylocity ATS** (padre #5687): tableros por tenant `recruiting.paylocity.com`, tablero muerto 302 → JobNotFound mapeado a 404 para que la cuarentena retire la entrada, tope `max_jobs` con bandera de truncamiento. Registro: **121 fuentes = 116 EN + 5 RU · 116 adaptadores**; los gates de recuento regenerados.
+
+### Corregido
+
+- **Seguridad del snapshot del escáner (R-12)**: un escaneo que no intenta nada ahora CONSERVA el snapshot (`nothing scanned`); un reemplazo completo arrastra las filas antiguas de las fuentes fallidas — selladas por entrada — re-pasadas por los filtros ACTUALES, aterrizando solo en `filtered`.
+- **Once invariantes de la capa LLM**: directiva de idioma que abre Y cierra los prompts deep/mode; subprocess Gemini con `--lang`, 502 en salida no cero, stderr sin filtrar al cliente, 300 s y usage registrado; manual fallback con URL; truncamiento visible en `/api/mode`; el spend tier ya no lo cambia el cliente; la desconexión del cliente aborta la llamada al proveedor; el cortador de encabezados repetidos ya no destruye reportes válidos; extractores score/legitimacy alineados; falsos-aceptes uk y árabe tensionados.
+- **Una ronda de revisión Opus 5-5 SOBRE las correcciones** (8 imperativos): registro multi-letra del cortador, terminadores más amplios, abort del subprocess Gemini, atribución sellada del arrastre, re-filtrado de filas arrastradas, nivel de referencia por letras distintas.
+- **Veintitrés must-fix del SPA** en las vistas de sourcing y de asistencia (pager de una página, teclado de pipeline, restauración de filtros, resets de select, fugas de listeners, cierre SSE, teardown del runner, fetch pelado, cargas fallidas que parecían vacías, colisión global, preservación de foco; deep-link de help muerto, fugas de help, re-armado de blank-overwrite, single-flight de ejecuciones pagas, fines silenciosos de stream, spinners eternos, filas fantasma, duplicados de docs-fab + idioma).
+
+### Notas
+
+- Toda la ronda fue revisada por Opus 5-5 con máxima exigencia — los puertos pre-merge (21 hallazgos, 13 corregidos) y los propios fixes post-hoc (8 imperativos, todos aquí con tests rojo→verde).
+- Piso de tests: 5262 → **5634** (372 specs nuevas en fuentes, escáneres, capa LLM y SPA).
+
 ## [1.253.1] — 2026-10-24
 
 **Dos hallazgos HIGH de seguridad de la revisión con el modelo máximo están corregidos: las URLs literales IPv6 ya no sortean el guardia SSRF del escáner, y el regex de escape del markdown del CV ya no retrocede cuadráticamente.**

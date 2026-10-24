@@ -12,12 +12,12 @@ _Неофициальный интерфейс — не аффилирован �
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.253.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.253.1)
+[![release](https://img.shields.io/badge/release-v1.254.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.254.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Последний релиз — v1.253.0** — **Десять новых источников присоединяются к сканеру — Atlassian, BWI, Computrabajo, Dover, Google, Kalibrr, Magneto365, Platsbanken, Tech in Asia и Zoho Recruit — реестр теперь поставляет 120 источников (115 EN + 5 RU) со 115 адаптерами, а роль-матчер разводит заголовки, различающиеся только коротким капсом-кодом.**
+> **🆕 Последний релиз — v1.253.1** — **Десять новых источников присоединяются к сканеру — Atlassian, BWI, Computrabajo, Dover, Google, Kalibrr, Magneto365, Platsbanken, Tech in Asia и Zoho Recruit — реестр теперь поставляет 120 источников (115 EN + 5 RU) со 115 адаптерами, а роль-матчер разводит заголовки, различающиеся только коротким капсом-кодом.**
 >
 > **Предыдущий релиз — v1.252.1** — **Родительский форк синхронизирован с career-ops-hq — 264 апстрим-коммита, родитель 1.36.0 → 1.37.0 — с защитой обоих форк-дивергенций, а деплой переустанавливает работающего родителя на эту базу.**
 
@@ -392,7 +392,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 5511 unit + 129 Playwright + 23 e2e:full + 21 e2e:smoke
+└─ tests/                    # 5634 unit + 129 Playwright + 23 e2e:full + 21 e2e:smoke
    ├─ parsers.test.mjs       # парсеры markdown / pipeline / отчётов (чистые функции)
    ├─ api.test.mjs           # каждая точка входа, эфемерный сервер, без сети
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch

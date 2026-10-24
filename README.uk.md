@@ -15,12 +15,12 @@ _Неофіційний інтерфейс — не пов'язаний із car
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.253.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.253.1)
+[![release](https://img.shields.io/badge/release-v1.254.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.254.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Останній реліз — v1.253.0** — **Десять нових джерел долучаються до сканера — Atlassian, BWI, Computrabajo, Dover, Google, Kalibrr, Magneto365, Platsbanken, Tech in Asia та Zoho Recruit — реєстр тепер поставляє 120 джерел (115 EN + 5 RU) зі 115 адаптерами, а роль-матчер розділяє заголовки, що різняться лише коротким капсом-кодом.**
+> **🆕 Останній реліз — v1.253.1** — **Десять нових джерел долучаються до сканера — Atlassian, BWI, Computrabajo, Dover, Google, Kalibrr, Magneto365, Platsbanken, Tech in Asia та Zoho Recruit — реєстр тепер поставляє 120 джерел (115 EN + 5 RU) зі 115 адаптерами, а роль-матчер розділяє заголовки, що різняться лише коротким капсом-кодом.**
 >
 > **Попередній реліз — v1.252.1** — **Батьківський форк синхронізовано з career-ops-hq — 264 апстрим-коміти, батько 1.36.0 → 1.37.0 — з захистом обох форк-дивергенцій, а деплой переустановлює робочого батька на цю базу.**
 
@@ -147,7 +147,7 @@ career-ops/
 └─ web-ui/          ← це репозиторій
    ├─ server/       # Express + 15 модулів маршрутів
    ├─ public/       # vanilla JS SPA, без бандлера
-   └─ tests/        # 5511 unit + 129 Playwright + 44 e2e
+   └─ tests/        # 5634 unit + 129 Playwright + 44 e2e
 ```
 
 Сервер має дві виробничі залежності: `express` та `js-yaml`. Жодного transpile, жодного бандлера — весь UI займає менше 30 KB у мінімізованому вигляді.
