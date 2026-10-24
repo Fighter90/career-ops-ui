@@ -92,7 +92,7 @@ test('M1: a row already carried MAX_CARRIED_RUNS times is retired, not carried a
   const r = await runEnScan({ fetchImpl: greenhouseFetch({ othercorp: ['Engineer'] }) });
   assert.ok(r.errors.some((e) => e.startsWith('Acme:')), 'the Acme entry failed this run');
   const urls = readSnap().en.filtered.map((j) => j.url);
-  assert.ok(!urls.includes('https://jobs.acme.com/1'),
+  assert.ok(!urls.some((u) => u === 'https://jobs.acme.com/1'),
     'a 6th carry exceeds the run limit — the row is retired');
 });
 
@@ -114,8 +114,8 @@ test('M1: a row whose first carry stamp is older than MAX_CARRIED_AGE_DAYS is dr
   ]);
   await runEnScan({ fetchImpl: greenhouseFetch({ othercorp: ['Engineer'] }) });
   const urls = readSnap().en.filtered.map((j) => j.url);
-  assert.ok(!urls.includes('https://jobs.acme.com/old'), '31 days carried — retired by age');
-  assert.ok(urls.includes('https://jobs.acme.com/new'), '3 days carried — kept');
+  assert.ok(!urls.some((u) => u === 'https://jobs.acme.com/old'), '31 days carried — retired by age');
+  assert.ok(urls.some((u) => u === 'https://jobs.acme.com/new'), '3 days carried — kept');
 });
 
 test('M1: first carry stamps the row and appends it AFTER this run\'s rows', async () => {
