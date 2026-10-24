@@ -116,8 +116,11 @@ test('tracker: labels render through t(); comparisons and tab values stay canoni
   // Tab: TRANSLATED caption, CANONICAL filter value (the second `s`).
   assert.match(TRACKER, /for \(const s of STAGES\) tabBar\.appendChild\(tab\(statusLabel\(s\), s, counts\[s\] \|\| 0\)\);/);
   // Badge: the caption is the folded+translated label; the class still reads
-  // the canonical status.
-  assert.match(TRACKER, /c\('span', \{ className: 'badge ' \+ statusClass\(r\.status\) \}, statusLabel\(fold\(r\.status\)\)\)/);
+  // the canonical status. (CAR-93 — the classifier was renamed from
+  // statusClass to trackerStatusClass: dashboard.js declared the same
+  // top-level name in a sibling classic script, so the last-loaded file
+  // won the window binding.)
+  assert.match(TRACKER, /c\('span', \{ className: 'badge ' \+ trackerStatusClass\(r\.status\) \}, statusLabel\(fold\(r\.status\)\)\)/);
   // The stage FOLDING / filtering math is untouched (canonical on both sides).
   assert.match(TRACKER, /if \(activeStage && fold\(r\.status\) !== activeStage\) continue;/);
   assert.match(TRACKER, /const hiredCount = rows\.filter\(\(r\) => fold\(r && r\.status\) === 'Hired'\)\.length;/);

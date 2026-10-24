@@ -322,10 +322,16 @@ test('UX-A3 (v1.58.55): dashboard renders an active-provider chip wired to /api/
   assert.match(dash, /document\.addEventListener\('visibilitychange', onVisibility\)/,
     'chip must re-render on tab refocus (cross-tab provider switch)');
   // M-1 discipline: listeners must self-detach when leaving #/dashboard.
-  assert.match(dash, /window\.addEventListener\('hashchange', cleanup\)/,
+  // CAR-93 — Router.render() re-entry (Refresh) has NO hashchange, so the
+  // cleanup is additionally invoked at the top of the next chip mount via
+  // the module-scoped handle; the hashchange detach remains for leaving
+  // the route.
+  assert.match(dash, /window\.addEventListener\('hashchange', onChipHashChange\)/,
     'chip must register a hashchange cleanup so listeners do not stack');
   assert.match(dash, /document\.removeEventListener\('providers-changed', refresh\)/,
     'cleanup must remove providers-changed listener');
+  assert.match(dash, /if \(typeof __dashChipCleanup === 'function'\) __dashChipCleanup\(\)/,
+    'a re-render must detach the previous visit\u2019s pair first');
   // i18n keys present in 8 locales.
   const dict = legacyDictText();
   for (const key of ['dash.provider.live', 'dash.provider.manual']) {

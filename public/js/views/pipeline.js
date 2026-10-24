@@ -205,6 +205,16 @@ Router.register('pipeline', async () => {
       'aria-pressed': isActive ? 'true' : 'false',
       onClick: () => selectUrl(url),
       onKeyDown: (e) => {
+        // CAR-93 — only the ROW itself reacts to Enter/Space. Keydowns from
+        // the nested ▶/✕ buttons and the <a> bubble up to this handler, and
+        // without this guard the row swallowed them (preventDefault +
+        // selectUrl), so keyboard users could not evaluate, delete or open
+        // from a row at all. (Nesting interactive elements inside
+        // role=button is invalid ARIA; the inner controls predate the
+        // row-level role and the DOM shape is load-bearing for the a11y +
+        // interaction tests — the guard restores the nested controls'
+        // keyboard reachability without restructuring the row.)
+        if (e.target !== e.currentTarget) return;
         if (e.key !== 'Enter' && e.key !== ' ') return;
         e.preventDefault();
         selectUrl(url);
@@ -356,9 +366,14 @@ Router.register('pipeline', async () => {
     // CAR-21 (v1.243.0) — pipeline + tracker rows are re-read together so
     // the overview strip stays truthful after add/delete (it used to be
     // built once at mount and never refreshed).
+    // CAR-93 — a failed /api/tracker read used to fall back to {} and
+    // render as "0 tracked", indistinguishable from an empty tracker.
+    // trackerLoadFailed makes the failure visible (the chip shows "—").
     const [fresh, tr] = await Promise.all([
       API.get('/api/pipeline'),
-      API.get('/api/tracker').catch(() => ({})),
+      API.get('/api/tracker').then(
+        (r) => { trackerLoadFailed = false; return r; },
+        () => { trackerLoadFailed = true; return {}; }),
     ]);
     allUrls = fresh.urls || [];
     trackerRows = (tr && tr.rows) || [];
@@ -380,6 +395,9 @@ Router.register('pipeline', async () => {
   // every refresh(). Read-only; degrades to the inbox/tracked chips when the
   // tracker or the stages endpoint can't be read.
   let trackerRows = [];
+  // CAR-93 — true when the last /api/tracker read failed; paintOverview()
+  // shows "—" instead of a fake "0 tracked" (see refresh() above).
+  let trackerLoadFailed = false;
   let STAGES = [];
   let ALIASES = {};
   const overview = c('div', { className: 'card mb-3', style: { display: 'flex', flexWrap: 'wrap', gap: '8px', alignItems: 'center' } });
@@ -393,11 +411,12 @@ Router.register('pipeline', async () => {
   }
   function paintOverview() {
     const TS = window.TrackerStages;
-    const counts = (TS && STAGES.length) ? TS.stageCounts(trackerRows, STAGES, ALIASES) : {};
+    const counts = (TS && STAGES.length && !trackerLoadFailed) ? TS.stageCounts(trackerRows, STAGES, ALIASES) : {};
     overview.replaceChildren(
       c('strong', { style: { marginRight: '2px' } }, t('pipe.title', 'Pipeline') + ':'),
       ovChip(allUrls.length, t('pipe.ovInbox', 'in inbox'), '/pipeline'),
-      ovChip(trackerRows.length, t('pipe.ovTracked', 'tracked'), '/tracker'),
+      // CAR-93 — a failed tracker read renders "—", never a fake "0".
+      ovChip(trackerLoadFailed ? '—' : trackerRows.length, t('pipe.ovTracked', 'tracked'), '/tracker'),
       // Server-driven labels; only stages that actually have rows (same
       // non-zero rule as before, minus the hard-coded whitelist).
       ...STAGES.filter((s) => counts[s] > 0).map((s) => ovChip(counts[s], s, '/tracker')),
@@ -409,7 +428,9 @@ Router.register('pipeline', async () => {
   renderList();
   renderPreview();
   const [tr0, sd0] = await Promise.all([
-    API.get('/api/tracker').catch(() => ({})),
+    API.get('/api/tracker').then(
+      (r) => { trackerLoadFailed = false; return r; },
+      () => { trackerLoadFailed = true; return {}; }),
     API.get('/api/tracker/stages').catch(() => ({})),
   ]);
   trackerRows = (tr0 && tr0.rows) || [];

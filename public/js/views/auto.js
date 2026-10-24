@@ -16,9 +16,11 @@
  *   - A failed step is marked, its message shown, and the CTA re-enabled
  *     so the user can correct the URL and retry without a reload.
  *
- * SSE transport mirrors public/js/lib/auto-pipeline.js — POST + manual
- * stream drain (the endpoint is POST; EventSource is GET-only). The
- * multi-line `data:` join is the v1.22.0 (L-4) correct behaviour.
+ * SSE transport mirrors public/js/lib/auto-pipeline.js — a POST + manual
+ * stream drain, shipped as the shared API.postStream() (api.js, CAR-93: the
+ * raw in-view fetch lost the API layer's lang header and error shaping, and
+ * had no AbortController). The multi-line `data:` join is the v1.22.0
+ * (L-4) correct behaviour.
  */
 Router.register('auto', async () => {
   const c = UI.el;
@@ -181,51 +183,50 @@ Router.register('auto', async () => {
     resultEl.style.display = 'none';
     renderStepper();
 
+    // CAR-93 — the drain used to be a raw `fetch` in the view (API-layer
+    // invariant breach) with no AbortController: navigating away kept the
+    // stream draining, so step/toast writes landed on whatever view was
+    // showing next ("Pipeline failed" on #/tracker). And a stream that
+    // ended WITHOUT a done/error frame reset the button silently — a
+    // failed PAID run looked idle. Route through API.postStream, abort on
+    // navigation, and toast whenever the stream ends non-terminally.
+    let terminal = false;
+    const ctrl = new AbortController();
+    const onNavAway = () => ctrl.abort();
+    window.addEventListener('hashchange', onNavAway, { once: true });
     try {
       const lang = (I18n && I18n.getLang && I18n.getLang()) || 'en';
-      const resp = await fetch('/api/auto-pipeline', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url, lang }),
-      });
-      if (!resp.ok || !resp.body) {
-        // WS2 #14 — was a bare "HTTP 500" on the step with no toast and
-        // an empty live-region. Surface an actionable message both ways.
-        const msg = t('auto.httpFail', 'Server error (HTTP {n}). Check the server is running, then retry.')
-          .replace('{n}', String(resp.status));
-        setStep(0, 'failed', msg);
-        UI.toast(msg, 'error');
-        return;
-      }
-      const reader = resp.body.getReader();
-      const dec = new TextDecoder();
-      let buf = '';
-      for (;;) {
-        const { value, done } = await reader.read();
-        if (done) break;
-        buf += dec.decode(value, { stream: true });
-        const parts = buf.split('\n\n'); buf = parts.pop();
-        for (const p of parts) {
-          const evMatch = p.match(/^event:\s*([\w-]+)/m);
-          const dataLines = [];
-          for (const line of p.split('\n')) {
-            const m = line.match(/^data:\s?(.*)$/);
-            if (m) dataLines.push(m[1]);
-          }
-          if (!evMatch || !dataLines.length) continue;
-          let data; try { data = JSON.parse(dataLines.join('\n')); } catch { data = {}; }
-          if (evMatch[1] === 'step') setStep(data.i, data.status, data.detail || '');
-          else if (evMatch[1] === 'done') showResult(data);
-          else if (evMatch[1] === 'error') {
-            const idx = STEPS.findIndex((s) => s.key === data.step);
-            if (idx >= 0) setStep(idx, 'failed', data.message || 'error');
+      await API.postStream('/api/auto-pipeline', { url, lang }, (ev, data) => {
+        if (ev === 'step') setStep(data.i, data.status, data.detail || '');
+        else if (ev === 'done') { terminal = true; showResult(data); }
+        else if (ev === 'error') {
+          terminal = true;
+          const idx = STEPS.findIndex((s) => s.key === data.step);
+          if (idx >= 0) {
+            setStep(idx, 'failed', data.message || 'error');
+            UI.toast(data.message || t('auto.failed', 'Pipeline failed'), 'error');
+          } else if (data.step === 0) {
+            // Transport-level failure (HTTP error / network): flag the
+            // first stage with the localized sentence, as before.
+            const msg = data.status
+              ? t('auto.httpFail', 'Server error (HTTP {n}). Check the server is running, then retry.').replace('{n}', String(data.status))
+              : (data.message || t('auto.failed', 'Pipeline failed'));
+            setStep(0, 'failed', msg);
+            UI.toast(msg, 'error');
+          } else {
             UI.toast(data.message || t('auto.failed', 'Pipeline failed'), 'error');
           }
         }
+      }, ctrl.signal);
+      if (!terminal && !ctrl.signal.aborted) {
+        const msg = t('auto.failed', 'Pipeline failed');
+        setStep(0, 'failed', msg);
+        UI.toast(msg, 'error');
       }
     } catch (e) {
       UI.toast((e && e.message) || t('auto.failed', 'Pipeline failed'), 'error');
     } finally {
+      window.removeEventListener('hashchange', onNavAway);
       running = false;
       runBtn.disabled = false; urlInput.disabled = false;
       runBtn.classList.remove('is-loading');

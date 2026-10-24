@@ -1000,13 +1000,18 @@ function rowsReachedStage(rows, fold, stages) {
 // a rebuild that replaces the node a keyboard user is on drops focus to
 // <body>. Kept file-local (lib/ is shared and outside this change's file
 // set); tracker.js, reports.js and stats.js each carry the same copy.
+// CAR-93 — marker keyed on data-key/aria-label (see tracker.js); the three
+// copies stay byte-identical.
 function withFocusPreserved(container, mutate) {
+  const markOf = (el) => el.tagName + '|' + el.className + '|'
+    + ((el.getAttribute && (el.getAttribute('data-key') || el.getAttribute('aria-label'))) || '')
+    + '|' + (el.textContent || '');
   let marker = null;
   try {
     const doc = container.ownerDocument || document;
     const active = doc.activeElement;
     if (active && active !== container && container.contains(active)) {
-      marker = active.tagName + '|' + active.className + '|' + (active.textContent || '');
+      marker = markOf(active);
     }
   } catch { marker = null; }
   mutate();
@@ -1015,7 +1020,7 @@ function withFocusPreserved(container, mutate) {
   let candidates = [];
   try { candidates = Array.from(container.querySelectorAll(sel)); } catch { return; }
   for (const el of candidates) {
-    if (el.tagName + '|' + el.className + '|' + (el.textContent || '') === marker) {
+    if (markOf(el) === marker) {
       try { el.focus(); } catch { /* detached node */ }
       return;
     }

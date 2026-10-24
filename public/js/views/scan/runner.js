@@ -41,6 +41,16 @@
     // v1.46.0 (WS2 #6/#21/#24) — run-state, Stop, persistent error banner.
     let activeES = null;   // in-flight EventSource handle (for #6 Stop)
     let lastRunFn = null;  // for the #24 Retry action
+    // CAR-93 — every branch that releases the stream handle must CLOSE it
+    // first: leaving a live EventSource in `activeES` made stopScan()/
+    // teardown() no-ops (they saw null) and — should a transport ever
+    // bypass the API.stream close-on-done contract — the socket would
+    // auto-reconnect after the server closed, re-launching a scan or
+    // burning SCAN_BUSY with no visible way to stop it.
+    function clearActiveES() {
+      if (activeES) { try { activeES.close(); } catch { /* already closed */ } }
+      activeES = null;
+    }
 
     // back to indeterminate (animated stripe) for the next run
     function resetScanProgress() {
@@ -91,7 +101,7 @@
       setTerminalState('error');   // v1.244.2 — dot turns red until the next run
     }
     function stopScan() {
-      if (activeES) { try { activeES.close(); } catch { /* already closed */ } activeES = null; }
+      clearActiveES();
       __cancelActiveScanPoll();
       appendMeta(consoleEl, '\n■ ' + t('scan.stopped', 'stopped') + '\n');
       announce(t('scan.statusStopped', 'Scan stopped'));
@@ -110,7 +120,7 @@
     // not kill the child process) and the results still land in the shared
     // last-scan snapshot the next visit reads.
     function teardown() {
-      if (activeES) { try { activeES.close(); } catch { /* already closed */ } activeES = null; }
+      clearActiveES();
       __cancelActiveScanPoll();
       setScanRunning(false);
     }
@@ -140,7 +150,7 @@
           setScanProgress(data.done, data.total);
         } else if (ev === 'done') {
           __cancelActiveScanPoll();
-          activeES = null;
+          clearActiveES();
           setScanRunning(false);
           setTerminalState('done');   // v1.244.2 — green dot after a clean finish
           const okMsg = data.counts
@@ -162,7 +172,7 @@
           }, 300);
         } else if (ev === 'error') {
           __cancelActiveScanPoll();
-          activeES = null;
+          clearActiveES();
           setScanRunning(false);
           appendMeta(consoleEl, `\n✗ ${data.message}\n`);
           UI.toast(data.message, 'error');
@@ -257,7 +267,7 @@
             // a beat later so the server has flushed last-scan.json. Guarantees
             // the results table shows the final set without a manual reload.
             __cancelActiveScanPoll();
-            activeES = null;
+            clearActiveES();
             setScanRunning(false);
             setTerminalState('done');   // v1.244.2 — green dot after a clean finish
             announce(t('scan.statusDone', 'Scan complete') + ' · NEW=' + totalNew);
@@ -275,7 +285,7 @@
           const label = phase === 'ats' ? 'ATS' : (phase === 'regional' ? 'Regional' : 'scan');
           const msg = (data && data.message) || 'unknown error';
           appendMeta(consoleEl, `\n✗ ${label} error: ${msg}\n`);
-          activeES = null;
+          clearActiveES();
           setScanRunning(false);
           UI.toast(msg, 'error');
           showScanError(label + ' — ' + msg);

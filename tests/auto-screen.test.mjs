@@ -23,6 +23,7 @@ import { dirname, resolve } from 'node:path';
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const R = (...p) => resolve(__dirname, '..', ...p);
 const AUTO = readFileSync(R('public', 'js', 'views', 'auto.js'), 'utf8');
+const API = readFileSync(R('public', 'js', 'api.js'), 'utf8');
 const INDEX = readFileSync(R('public', 'index.html'), 'utf8');
 const DASH = readFileSync(R('public', 'js', 'views', 'dashboard.js'), 'utf8');
 
@@ -31,10 +32,14 @@ test('auto.js registers the "auto" route', () => {
 });
 
 test('auto.js POSTs /api/auto-pipeline and drains the SSE stream', () => {
-  assert.match(AUTO, /fetch\(\s*['"]\/api\/auto-pipeline['"]/);
-  assert.match(AUTO, /method:\s*['"]POST['"]/);
-  assert.match(AUTO, /getReader\(\)/);
-  assert.match(AUTO, /event:\s*\\s\*\(\[/); // the `^event:` SSE match regex
+  // CAR-93 — the drain moved into the shared API.postStream() transport
+  // (api.js): the in-view raw fetch lost the API layer's lang header and
+  // error shaping, and had no AbortController. The view passes the same
+  // frame contract through.
+  assert.match(AUTO, /API\.postStream\(\s*['"]\/api\/auto-pipeline['"]/);
+  assert.match(API, /method:\s*['"]POST['"]/);
+  assert.match(API, /getReader\(\)/);
+  assert.match(API, /\^event:\\s\*\(\[\\w-\]\+\)/); // the `^event:` SSE match regex
 });
 
 test('a11y: aria-live region + aria-current on running step', () => {

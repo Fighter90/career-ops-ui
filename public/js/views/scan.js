@@ -111,6 +111,12 @@ Router.register('scan', async () => {
   // Clean up any stale poll/listeners from a previous /scan visit.
   __cancelActiveScanPoll();
   detachScanRefreshListeners();
+  // CAR-93 — the stale runner used to be torn down ONLY on hashchange, so
+  // a same-hash re-render (a locale switch calls Router.render() with no
+  // hashchange; Save-like re-entries too) left the old EventSource
+  // streaming into detached nodes and the poll writing into them. Tear
+  // the runner down here as well — it is a no-op when none is running.
+  __teardownActiveScanRunner();
   const c = UI.el;
   const t = (k, f) => I18n.t(k, f);
   let portalsData = null;
@@ -225,16 +231,29 @@ Router.register('scan', async () => {
   ]);
   function paintSourceOptions(list) {
     // Keep the "all sources" first option; drop the rest and re-render.
+    // CAR-93 — removing the selected <option> RESETS the select to '' (the
+    // old comment claimed appending doesn't, but the removal does): the
+    // live registry refresh silently unfilters the table until the next
+    // render, then drops the filter for good. Capture the choice (or the
+    // pending saved-search stash) and restore it after the repaint; a
+    // choice that is no longer offered is a harmless no-op.
+    const want = filterSource.dataset.want || '';
+    const prev = want || filterSource.value;
     while (filterSource.children.length > 1) filterSource.removeChild(filterSource.lastChild);
     list
       .slice()
       .sort((a, b) => a.label.localeCompare(b.label))
       .forEach((s) => filterSource.appendChild(c('option', { value: s.value }, s.label)));
+    if (prev && [...filterSource.options].some((o) => o.value === prev)) {
+      filterSource.value = prev;
+      if (want) delete filterSource.dataset.want;
+    }
   }
   paintSourceOptions(window.ScanResults.FALLBACK_SOURCES);
   // Best-effort live refresh from the registry. Network failure → keep
-  // the fallback list. Race vs. user interaction is fine — appending
-  // to a <select> after first paint doesn't reset the user's choice.
+  // the fallback list. paintSourceOptions restores the user's choice
+  // across the repaint (CAR-93 — the removal of the selected <option>
+  // used to reset the select to '').
   // v1.243.0 (views-3) — when the live registry carries adapter ids this
   // build's fallback lacked, re-classify the companies with it: the
   // dropdown, the Direct-API / Web-search groups and the Active-companies
@@ -340,15 +359,33 @@ Router.register('scan', async () => {
   // {en:null,ru:null}. Sequence every call; a stale or failed response leaves
   // the last good table (and the last good labels) untouched.
   let refreshSeq = 0;
+  // CAR-93 — a failed FIRST load used to leave #scan-results blank (and a
+  // failure after resetResultsCache() rendered as "No results"), both
+  // indistinguishable from a broken page. resultsEverLoaded separates
+  // "nothing yet" (error state + Retry) from "had data" (keep the table).
+  let resultsEverLoaded = false;
   async function refreshResults() {
     const mySeq = ++refreshSeq;
     try {
       const next = await API.get('/api/scan-results');
       if (mySeq !== refreshSeq) return; // a newer refresh owns the table now
       lastResults = next;
-    } catch {
+      resultsEverLoaded = true;
+    } catch (e) {
       if (mySeq !== refreshSeq) return;
       // Network blip — keep the previous table instead of wiping it.
+      // CAR-93 — unless nothing was ever loaded: then show an error state,
+      // never a blank area that reads as a dead page.
+      if (!resultsEverLoaded) {
+        resultsEl.replaceChildren(c('div', { className: 'empty', role: 'alert' }, [
+          c('strong', null, '✗ ' + t('common.error', 'Error')),
+          (e && e.message) ? c('p', { style: { margin: '8px 0 12px', color: 'var(--foggy)', wordBreak: 'break-word' } }, String(e.message)) : null,
+          c('button', {
+            className: 'btn btn-ghost btn-sm',
+            onClick: () => refreshResults(),
+          }, '↻ ' + t('common.retry', 'Retry')),
+        ]));
+      }
       return;
     }
     SR.render();
@@ -423,7 +460,13 @@ Router.register('scan', async () => {
     el.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); applyFilters(); } }));
   // Selects/checkboxes feel broken if they need a second click, so they apply on change.
   ;[filterRemote, filterSource, filterCountry, filterSeniority, filterScope, filterAge, favOnly].forEach((el) =>
-    el.addEventListener('change', applyFilters));
+    el.addEventListener('change', () => {
+      // CAR-93 — a manual change on a dynamically-painted select voids any
+      // pending saved-search stash (dataset.want), so the next repaint
+      // cannot resurrect an option the user just moved away from.
+      if (el.dataset && 'want' in el.dataset) delete el.dataset.want;
+      applyFilters();
+    }));
 
   // v1.80.0 — saved-searches bar (localStorage via window.ScanPrefs).
   // v1.244.2 — rendered INSIDE .scan-filters as the bordered sub-card

@@ -29,7 +29,8 @@ test('pipeline.js renders an overview strip (inbox + tracked + key statuses)', (
   const src = read('public', 'js', 'views', 'pipeline.js');
   assert.match(src, /const overview = /);
   assert.match(src, /ovChip\(allUrls\.length, t\('pipe\.ovInbox'/);
-  assert.match(src, /ovChip\(trackerRows\.length, t\('pipe\.ovTracked'/);
+  // CAR-93 — a failed tracker read shows "—" instead of a fake "0 tracked".
+  assert.match(src, /ovChip\(trackerLoadFailed \? '—' : trackerRows\.length, t\('pipe\.ovTracked'/);
   // CAR-21 (v1.243.0) — the hard-coded English stage list is replaced by the
   // server's canonical stages (GET /api/tracker/stages) folded through
   // window.TrackerStages, and paintOverview() runs on every refresh() so the
@@ -39,6 +40,7 @@ test('pipeline.js renders an overview strip (inbox + tracked + key statuses)', (
   assert.doesNotMatch(src, /\['Applied', 'Responded', 'Interview', 'Offer'\]/,
     'the hard-coded stage whitelist must stay gone');
   assert.match(src, /paintOverview\(\)/);
-  // degrades gracefully if the tracker can't be read
-  assert.match(src, /API\.get\('\/api\/tracker'\)\.catch/);
+  // degrades gracefully if the tracker can't be read (CAR-93 — the failure
+  // is now VISIBLE: the .then(onFailure) handler flips trackerLoadFailed).
+  assert.match(src, /API\.get\('\/api\/tracker'\)\.then/);
 });

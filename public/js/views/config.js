@@ -8,6 +8,11 @@
  * Secret values are masked on read (first/last 4 chars). Saving an
  * empty field unsets that key in the .env.
  */
+// CAR-93 — Save re-runs this route via Router.render() WITHOUT a
+// hashchange, so the per-visit listener pair below stacked one set per
+// re-render (each re-fetching into a detached chip). The previous visit's
+// detach runs at the top of every route invocation.
+let __configVisitCleanup = null;
 Router.register('config', async () => {
   const c = UI.el;
   const t = (k, f) => I18n.t(k, f);
@@ -94,7 +99,12 @@ Router.register('config', async () => {
         API.get(spec.remote).then((data) => {
           const models = Array.isArray(data && data.models) ? data.models : [];
           if (!models.length) return;
-          const keep = input.value || current;
+          // CAR-93 — `input.value || current` here resurrected the stored
+          // value over a deliberate "Use the default" ('') choice: the
+          // control snapped back to its seed once the catalogue landed, so
+          // the clear was never sent (the very cannot-clear bug ADJACENT-2
+          // fixed). The chosen value wins verbatim — '' is a real choice.
+          const keep = input.value;
           const ids = models.map((m) => m.id).filter(Boolean);
           if (keep && !ids.includes(keep)) ids.unshift(keep);
           // ADJACENT-2 — replaceChildren wipes the "use the default" entry
@@ -539,13 +549,19 @@ Router.register('config', async () => {
   // added another via the dispatch + the next visit added another
   // subscriber). Scope it to the route lifetime — the same M-1
   // discipline as the dashboard provider chip.
-  const providersCleanup = () => {
-    if (!(window.location.hash || '').startsWith('#/config')) {
-      document.removeEventListener('providers-changed', refreshApiSummary);
-      window.removeEventListener('hashchange', providersCleanup);
-    }
+  // CAR-93 — Router.render() re-invocations (Save) run this handler again
+  // with NO hashchange; the previous visit's pair is detached here first,
+  // so listeners can never stack across re-renders.
+  if (typeof __configVisitCleanup === 'function') __configVisitCleanup();
+  const detachConfigListeners = () => {
+    document.removeEventListener('providers-changed', refreshApiSummary);
+    window.removeEventListener('hashchange', onConfigHashChange);
   };
-  window.addEventListener('hashchange', providersCleanup);
+  const onConfigHashChange = () => {
+    if (!(window.location.hash || '').startsWith('#/config')) detachConfigListeners();
+  };
+  window.addEventListener('hashchange', onConfigHashChange);
+  __configVisitCleanup = detachConfigListeners;
   refreshApiSummary();
   const apiPanel = c('div', { className: 'card' }, [
     apiSummary,

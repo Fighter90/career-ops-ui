@@ -241,6 +241,66 @@ window.API = (function () {
       es.onerror = () => deliverError({ message: 'connection lost' });
       return es;
     },
+
+    // CAR-93 — POST endpoints that answer with an SSE body (/api/auto-pipeline)
+    // cannot use EventSource (GET-only), so views used to hand-roll the
+    // fetch + drain loop (raw `fetch` in a view breaches the API-layer
+    // invariant and loses the lang/headers/error-shaping every other call
+    // gets). postStream is the shared transport: same frame contract as
+    // stream() — onEvent(ev, data), multi-line `data:` join (v1.22.0 L-4),
+    // one well-formed {message} error — plus an AbortSignal so navigating
+    // away STOPS the drain instead of streaming into a detached view.
+    // A body that ends without the caller seeing a terminal frame is the
+    // caller's to detect (it resolves normally); the signal.aborted case
+    // resolves silently (navigation is not an error).
+    async postStream(path, body, onEvent, signal) {
+      const lang = currentLang();
+      let res;
+      try {
+        res = await fetch(path, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', Accept: 'text/event-stream', 'Accept-Language': lang },
+          body: JSON.stringify(
+            body && typeof body === 'object' && !Array.isArray(body) && body.lang === undefined
+              ? { ...body, lang }
+              : body),
+          signal,
+        });
+      } catch (netErr) {
+        if (signal && signal.aborted) return;
+        onEvent('error', { message: (netErr && netErr.message) || 'network error' });
+        return;
+      }
+      if (!res.ok || !res.body) {
+        // Machine-English payload; the view owns the localized sentence
+        // (server diagnostics stay English by policy). `step` marks where
+        // the run died so single-step flows can flag the first stage.
+        onEvent('error', { step: 0, status: res.status, message: 'HTTP ' + res.status });
+        return;
+      }
+      const reader = res.body.getReader();
+      const dec = new TextDecoder();
+      let buf = '';
+      for (;;) {
+        let chunk;
+        try { chunk = await reader.read(); } catch { return; } // aborted mid-stream
+        const { value, done } = chunk;
+        if (done) break;
+        buf += dec.decode(value, { stream: true });
+        const parts = buf.split('\n\n'); buf = parts.pop();
+        for (const p of parts) {
+          const evMatch = p.match(/^event:\s*([\w-]+)/m);
+          const dataLines = [];
+          for (const line of p.split('\n')) {
+            const m = line.match(/^data:\s?(.*)$/);
+            if (m) dataLines.push(m[1]);
+          }
+          if (!evMatch || !dataLines.length) continue;
+          let data; try { data = JSON.parse(dataLines.join('\n')); } catch { data = {}; }
+          onEvent(evMatch[1], data);
+        }
+      }
+    },
   };
 })();
 
@@ -668,6 +728,10 @@ window.UI = (function () {
    * Each call to slice() AUTOMATICALLY clamps the current page when the
    * underlying list shrinks (filter applied, items deleted), so the
    * caller never has to track that themselves.
+   *
+   * controls() ALWAYS returns a node (CAR-93 canary): a single-page list
+   * renders the "N items" summary instead of buttons — it never returns
+   * null, so appendChild(controls(...)) cannot throw.
    */
   function paginate(opts = {}) {
     const pageSize = Math.max(1, opts.pageSize || 25);

@@ -1,4 +1,11 @@
 /* global Router, API, UI, I18n */
+
+// CAR-93 — dashboard Refresh re-runs the route via Router.render() WITHOUT
+// a hashchange, so the provider chip's per-visit document listeners stacked
+// one set per re-render (each re-fetching into a detached chip). The
+// previous visit's detach runs before the chip mounts.
+let __dashChipCleanup = null;
+
 Router.register('dashboard', async () => {
   // Pull both dashboard data and live health in parallel — saves a round-trip
   // since the System Status card reuses /api/health.
@@ -111,14 +118,20 @@ Router.register('dashboard', async () => {
     // Without this, every re-visit of the dashboard hash stacks another
     // pair of listeners on `document` and they fire forever. The cleanup
     // self-detaches the first time the hash leaves `#/dashboard`.
-    const cleanup = () => {
-      if (!location.hash.startsWith('#/dashboard')) {
-        document.removeEventListener('visibilitychange', onVisibility);
-        document.removeEventListener('providers-changed', refresh);
-        window.removeEventListener('hashchange', cleanup);
-      }
+    // CAR-93 — Router.render() re-invocations (Refresh) run the route
+    // again with NO hashchange; detach the previous visit's pair here
+    // first so listeners can never stack across re-renders.
+    if (typeof __dashChipCleanup === 'function') __dashChipCleanup();
+    const detachChipListeners = () => {
+      document.removeEventListener('visibilitychange', onVisibility);
+      document.removeEventListener('providers-changed', refresh);
+      window.removeEventListener('hashchange', onChipHashChange);
     };
-    window.addEventListener('hashchange', cleanup);
+    const onChipHashChange = () => {
+      if (!location.hash.startsWith('#/dashboard')) detachChipListeners();
+    };
+    window.addEventListener('hashchange', onChipHashChange);
+    __dashChipCleanup = detachChipListeners;
     return chip;
   }
 

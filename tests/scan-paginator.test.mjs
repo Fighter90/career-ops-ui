@@ -73,8 +73,13 @@ test('scan.js uses pager.slice(sortedAll) — pages over the FULL sorted set', (
 
 test('scan.js appends pager.controls AFTER the table', () => {
   const src = loadScanSrc();
-  assert.match(src, /(?:ctx\.)?resultsEl\.appendChild\s*\(\s*(?:ctx\.)?pager\.controls\s*\(\s*sorted\.length\s*,\s*rows\.length\s*\)\s*\)/,
-    'the render subsystem must append pager.controls(visible, total) after the results table');
+  // CAR-93 — the append keeps its position (table first, pager last) but
+  // goes through a null-guarded local, so a paginate() contract change can
+  // never turn the append into appendChild(null).
+  assert.match(src, /const ctl = (?:ctx\.)?pager\.controls\(\s*sorted\.length\s*,\s*rows\.length\s*\)/,
+    'the render subsystem must take pager.controls(visible, total) after the results table');
+  assert.match(src, /if \(ctl\) (?:ctx\.)?resultsEl\.appendChild\(ctl\)/,
+    'the append is null-guarded');
 });
 
 test('scan.js no longer truncates with rows.slice(0, 200)', () => {

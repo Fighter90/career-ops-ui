@@ -26,7 +26,10 @@ test('#13 auto: run button shows a busy state, restored in finally', () => {
 });
 
 test('#14 auto: HTTP failure is actionable + toasted (not a bare code)', () => {
-  assert.match(AUTO, /t\('auto\.httpFail'[\s\S]{0,90}\.replace\('\{n\}', String\(resp\.status\)\)/);
+  // CAR-93 — the transport moved into API.postStream, which delivers a
+  // machine payload { step: 0, status, message } for a non-OK response;
+  // the view still owns the localized auto.httpFail sentence + the toast.
+  assert.match(AUTO, /t\('auto\.httpFail'[\s\S]{0,90}\.replace\('\{n\}', String\(data\.status\)\)/);
   assert.match(AUTO, /setStep\(0, 'failed', msg\);\s*\n\s*UI\.toast\(msg, 'error'\)/);
   assert.ok(!/setStep\(0, 'failed', 'HTTP ' \+ resp\.status\)/.test(AUTO),
     'old bare "HTTP <code>" detail must be gone');
