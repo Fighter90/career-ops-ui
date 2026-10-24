@@ -219,7 +219,9 @@ test('/api/auto-pipeline: "Company — Role" title and hostname fallbacks', asyn
   mockProviders({ 'api.anthropic.com': antText(FULL_REPORT) });
   await stubPage(() => ({ body: '<h1>Initrode — Staff Platform Engineer</h1>\n' + LONG }));
   let done = (await pipeline({ url: 'https://jobs.example.com/f' })).find((e) => e.event === 'done').data;
-  assert.deepEqual([done.company, done.role, done.score, done.legitimacy], ['Initrode', 'Staff Platform Engineer', 3.5, 'High']);
+  // CAR-92 — extractLegitimacy returns the prompt's own enum value
+  // (`High Confidence`), not the shorted word.
+  assert.deepEqual([done.company, done.role, done.score, done.legitimacy], ['Initrode', 'Staff Platform Engineer', 3.5, 'High Confidence']);
   // No title line: the company comes from the hostname.
   await stubPage(() => ({ body: LONG + '\n<p>Software engineer wanted</p>' }));
   done = (await pipeline({ url: 'https://careers.globodyne.com/g' })).find((e) => e.event === 'done').data;

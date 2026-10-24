@@ -25,76 +25,157 @@
  * plus what happened, so the caller can warn instead of filing half a
  * report silently.
  *
+ * CAR-92: the heading scan tightened (see scanBlockLetterHeadings) — a
+ * subheading like `### Option A` no longer counts as a block heading, so a
+ * valid report with such subheadings is never destroyed; only a repeated
+ * heading at the report's own block-heading level cuts.
+ *
  * @param {string} text
  * @returns {{ text: string, cut: boolean, letter: string | null, at: number }}
  */
 export function cutRepeatedBlockHeadings(text) {
   const src = String(text ?? '');
+  const headings = scanBlockLetterHeadings(src);
+  if (!headings.length) return { text: src, cut: false, letter: null, at: -1 };
+  const ref = referenceHeadingLevel(headings);
   const seen = new Set();
-  for (const m of src.matchAll(/^#{1,3}[ \t]*[^\n]{0,24}?(?<![A-Za-z\u0400-\u04FF])([A-G])(?![A-Za-z\u0400-\u04FF])/gm)) {
-    const letter = m[1];
-    if (seen.has(letter)) {
-      return { text: src.slice(0, m.index).replace(/\s*$/, ''), cut: true, letter, at: m.index };
+  for (const h of headings) {
+    if (h.level !== ref) continue; // subheadings never count (CAR-92)
+    if (seen.has(h.letter)) {
+      return { text: src.slice(0, h.pos).replace(/\s*$/, ''), cut: true, letter: h.letter, at: h.pos };
     }
-    seen.add(letter);
+    seen.add(h.letter);
   }
   return { text: src, cut: false, letter: null, at: -1 };
+}
+
+// ── Block-heading scan (CAR-92) ─────────────────────────────────────────────
+// A block heading is a `#`–`###` heading carrying a STANDALONE A–G letter
+// (Latin, or the Cyrillic look-alikes А В С Е) that is FOLLOWED by a
+// separator — `)`, a dash, a colon, a dot (ASCII or fullwidth) — or ends the
+// line. `## Block A — …`, `## A) …`, `## Blok A. Sekcja` are block headings;
+// `### Plan B`, `### Q&A`, `### A1` and `## About` are not.
+const LETTER_TERMINATOR = '(?=[ \\t]*[)\\u2014\\u2013\\-.:\\uFF1A\\uFF0E]|[ \\t]*$)';
+
+// Spelled-out letters (Arabic abjad أ ب ج د هـ و ز; Devanagari ए बी सी …):
+// the letter must be followed by a separator — for the cutter too. A bare
+// letter — line end, or another word after it — is ordinary prose («و» IS
+// the Arabic word "and"; CAR-92: `## تحليل و تطوير` must not satisfy Block F).
+const SPELLED_TERMINATOR = `(?=[ \\t]*[)\\u2014\\u2013\\-])`;
+
+// Heading LEVELS matter (CAR-92): only headings at the report's own
+// block-heading level count, so a subheading can neither cut a report nor
+// fake a missing block. The reference level is the MOST COMMON level among
+// the scanned letter headings (a stray early subheading must not set it).
+function scanBlockLetterHeadings(text) {
+  const found = [];
+  for (const [label, latin, spelled] of blockLetterRegexes()) {
+    for (const m of text.matchAll(latin)) {
+      found.push({ pos: m.index, level: headingLevel(m[0]), letter: label });
+    }
+    for (const m of text.matchAll(spelled)) {
+      found.push({ pos: m.index, level: headingLevel(m[0]), letter: label });
+    }
+  }
+  return found.sort((a, b) => a.pos - b.pos);
+}
+
+function headingLevel(heading) {
+  return (heading.match(/^#+/) || ['#'])[0].length;
+}
+
+function referenceHeadingLevel(headings) {
+  const counts = new Map(); // level → { count, firstPos }
+  for (const h of headings) {
+    const e = counts.get(h.level) || { count: 0, firstPos: h.pos };
+    e.count += 1;
+    counts.set(h.level, e);
+  }
+  let best = null;
+  for (const [level, e] of counts) {
+    if (!best || e.count > best.count
+      || (e.count === best.count && e.firstPos < best.firstPos)) {
+      best = { level, count: e.count, firstPos: e.firstPos };
+    }
+  }
+  return best ? best.level : -1;
+}
+
+// Per-block letter → [latin regex, spelled regex]. Built fresh per call —
+// validateEvaluationReport runs once per evaluation, the cost is noise.
+function blockLetterRegexes() {
+  // Cyrillic look-alikes are accepted INSIDE the Latin classes (А looks like
+  // A, В like B, С like C, Е like E) — a translated report keeps its Latin
+  // letter but the model often writes the look-alike.
+  const LOOKALIKE = { A: 'АA', B: 'ВB', C: 'СC', E: 'ЕE' };
+  // An Arabic report writes the block letter in abjad order (أ ب ج د هـ و ز)
+  // however the prompt asks — three live runs in a row (v1.239.x). Accepted
+  // only as a standalone word followed by a separator, so a letter inside an
+  // Arabic word — or «و» the conjunction — never counts.
+  const ABJAD = { A: 'أ|ا|إ|آ', B: 'ب', C: 'ج', D: 'د', E: 'هـ|ه', F: 'و', G: 'ز' };
+  // A Hindi report spells the letter out in Devanagari: `## ए)`, `## बी)` …
+  // `## जी)` (local deepseek run, 2026-10-07). Same standalone + separator rule.
+  const DEVANAGARI = { A: 'ए', B: 'बी', C: 'सी', D: 'डी', E: 'ई', F: 'एफ़|एफ', G: 'जी' };
+  return ['A', 'B', 'C', 'D', 'E', 'F', 'G'].map((L) => [
+    L,
+    new RegExp(`^#{1,3}[ \\t]*[^\\n]{0,24}?(?<![A-Za-z\\u0400-\\u04FF])[${LOOKALIKE[L] || L}](?![A-Za-z\\u0400-\\u04FF])${LETTER_TERMINATOR}`, 'gmu'),
+    new RegExp(`^#{1,3}[ \\t]*[^\\n]{0,24}?(?<![\\p{L}\\p{M}])(?:${ABJAD[L]}|${DEVANAGARI[L]})${SPELLED_TERMINATOR}`, 'gmu'),
+  ]);
 }
 
 export function validateEvaluationReport(text) {
   const issues = [];
   if (typeof text !== 'string' || text.trim() === '') return ['empty evaluation report'];
 
-  // A block heading carries its letter, optionally after a word: `## A)`,
-  // `## Block A — …`, or — in a translated report — `## Bloque A`,
-  // `## ブロックA`, `## Блок А` (Cyrillic look-alikes accepted for A/B/C/E).
-  // The letter must not sit inside a Latin word (`## About` is not Block A).
-  const LOOKALIKE = { A: 'АA', B: 'ВB', C: 'СC', E: 'ЕE' };
-  // An Arabic report writes the block letter in abjad order (أ ب ج د هـ و ز)
-  // however the prompt asks — three live runs in a row (v1.239.x). Accepted
-  // only as a standalone word, so a letter inside an Arabic word never counts.
-  const ABJAD = { A: 'أ|ا|إ|آ', B: 'ب', C: 'ج', D: 'د', E: 'هـ|ه', F: 'و', G: 'ز' };
-  // A Hindi report spells the letter out in Devanagari: `## ए)`, `## बी)` …
-  // `## जी)` (local deepseek run, 2026-10-07). Same standalone-word rule.
-  const DEVANAGARI = { A: 'ए', B: 'बी', C: 'सी', D: 'डी', E: 'ई', F: 'एफ़|एफ', G: 'जी' };
-  const requiredBlocks = ['A', 'B', 'C', 'D', 'E', 'F', 'G'].map((L) => [
-    L,
-    new RegExp(`^#{1,3}[ \\t]*[^\\n]{0,24}?(?<![A-Za-z\\u0400-\\u04FF])[${LOOKALIKE[L] || L}](?![A-Za-z\\u0400-\\u04FF])`, 'mu'),
-    new RegExp(`^#{1,3}[ \\t]*[^\\n]{0,24}?(?<![\\p{L}\\p{M}])(?:${ABJAD[L]}|${DEVANAGARI[L]})(?![\\p{L}\\p{M}])`, 'mu'),
-  ]);
-  for (const [label, latin, spelled] of requiredBlocks) {
-    if (!latin.test(text) && !spelled.test(text)) issues.push(`missing Block ${label}`);
+  // CAR-92: one shared scan feeds the block check — each letter counts only
+  // at the report's reference heading level (see scanBlockLetterHeadings).
+  const requiredBlocks = blockLetterRegexes();
+  const headings = scanBlockLetterHeadings(text);
+  const ref = headings.length ? referenceHeadingLevel(headings) : -1;
+  const present = new Set(headings.filter((h) => h.level === ref).map((h) => h.letter));
+  for (const [label] of requiredBlocks) {
+    if (!present.has(label)) issues.push(`missing Block ${label}`);
   }
 
   // A Ukrainian report numbers the blocks with the Ukrainian alphabet order
-  // (А Б В Г Д Е Є — positionally A..G; Ж would be H, unused). Accepted ONLY
-  // when the headings appear as a sequence (each next letter after the
-  // previous one) — resolves the lookalike conflict (В is both «B» and the
-  // 3rd Ukrainian letter, so an isolated В cannot be trusted, but
-  // А→Б→В→Г→Д→Е→Є in order can only be the block numbering).
-  // v1.248.3 regression: prod uk reports missed exactly C/D/F/G — the
-  // lookalike pass counted А/В/Е and had no letters for the rest.
-  const UKR_SEQ = ['А', 'Б', 'В', 'Г', 'Д', 'Є', 'Ж'];
+  // (А Б В Г Д Є Ж — positionally A..G). Accepted ONLY when the headings
+  // appear as a sequence (each next letter after the previous one) — resolves
+  // the lookalike conflict (В is both «B» and the 3rd Ukrainian letter, so an
+  // isolated В cannot be trusted, but А→Б→В→Г→Д→Є→Ж in order can only be the
+  // block numbering).
+  // CAR-92: the letters must be STANDALONE in the heading (`## А) Роль`) —
+  // the first character of any heading word let a Russian report's ordinary
+  // headings («Анализ», «Бюджет», «Выводы», «Гибкость») clear A–D with no
+  // block letters at all. And the Russian-tail numbering (…Д Е Ж) is
+  // accepted alongside the Ukrainian tail (…Д Є Ж) — the prompt's example
+  // names the Ukrainian order, but a Russian-numbered report broke at Є and
+  // was false-rejected.
+  const UKR_SEQS = [
+    ['А', 'Б', 'В', 'Г', 'Д', 'Є', 'Ж'],
+    ['А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ж'],
+  ];
   const headingStarts = [];
   for (const m of text.matchAll(/^#{1,3}[ \t]*([^\n]{0,40})$/gm)) {
-    headingStarts.push({ pos: m.index, ch: m[1].trim().charAt(0) });
+    const standalone = m[1].match(/(?<![\p{L}])([АБВГДЕЄЖ])(?![\p{L}])/u);
+    headingStarts.push({ pos: m.index, ch: standalone ? standalone[1] : null });
   }
-  let cursor = -1;
-  const ukrFound = [];
-  for (const want of UKR_SEQ) {
-    const at = headingStarts.findIndex((h) => h.pos > cursor && h.ch === want);
-    if (at === -1) break;
-    cursor = headingStarts[at].pos;
-    ukrFound.push(want);
+  let best = [];
+  for (const seq of UKR_SEQS) {
+    let cursor = -1;
+    const found = [];
+    for (const want of seq) {
+      const at = headingStarts.findIndex((h) => h.pos > cursor && h.ch === want);
+      if (at === -1) break;
+      cursor = headingStarts[at].pos;
+      found.push(want);
+    }
+    if (found.length > best.length) best = found;
   }
-  if (ukrFound.length >= 3) {
-    for (const [i, [label]] of requiredBlocks.entries()) {
-      const want = UKR_SEQ[i];
-      if (!want) break;
-      if (issues.includes(`missing Block ${label}`) && ukrFound.includes(want)) {
-        const at = issues.indexOf(`missing Block ${label}`);
-        issues.splice(at, 1);
-      }
+  if (best.length >= 3) {
+    for (let i = 0; i < best.length; i++) {
+      const label = requiredBlocks[i][0];
+      const at = issues.indexOf(`missing Block ${label}`);
+      if (at !== -1) issues.splice(at, 1);
     }
   }
 
@@ -113,14 +194,15 @@ export function validateEvaluationReport(text) {
         issues.push(`SCORE_SUMMARY ${key} is required`);
       }
     }
-    const scoreLine = summaryBlock.match(/^[ \t]*(?:\*\*)?[ \t]*SCORE[ \t]*(?:\*\*)?[ \t]*:[ \t]*(.*)$/mi);
-    const score = scoreLine && asciiNumber(scoreLine[1]).match(/^[*_ \t]*([0-9]+(?:\.[0-9]+)?)/);
-    const scoreValue = score ? Number(score[1]) : NaN;
-    if (!Number.isFinite(scoreValue) || scoreValue < 0 || scoreValue > 5) {
+    // CAR-92 — one score parser, shared with the auto-pipeline extractor, so
+    // a report the validator accepts can never be read with a different score.
+    const scoreValue = summaryScoreValue(summaryBlock);
+    if (scoreValue == null) {
       issues.push('SCORE_SUMMARY score must be a number between 0 and 5');
       // v1.248.2 (da regression) — when the score check fails, the server log
       // gets ONLY the SCORE: line itself (trimmed, capped). CI logs are public:
       // no other report content (JD/CV quotes, company prose) may be printed.
+      const scoreLine = summaryBlock.match(/^[ \t]*(?:\*\*)?[ \t]*SCORE[ \t]*(?:\*\*)?[ \t]*:[ \t]*(.*)$/mi);
       if (scoreLine) {
         console.warn(`[eval-validate] invalid score — SCORE line: ${JSON.stringify(scoreLine[0].trim().slice(0, 120))}`);
       }
@@ -128,6 +210,31 @@ export function validateEvaluationReport(text) {
   }
 
   return issues;
+}
+
+/**
+ * CAR-92 — the global score, read ONLY from the ---SCORE_SUMMARY--- block,
+ * localized digits folded through asciiNumber. The auto-pipeline's own
+ * extractor used to re-scan the whole report (`score: 4/5` in a Block B
+ * sub-table won; `SCORE: 4,2` read as 4; native digits read as null) and
+ * disagree with this validator. Returns null when the summary is absent,
+ * has no SCORE line, or the value is outside 0–5.
+ * @param {string} text the full report (or any string)
+ * @returns {number | null}
+ */
+export function extractSummaryScore(text) {
+  const summary = String(text ?? '').match(/---SCORE_SUMMARY---\s*([\s\S]*?)---END_SUMMARY---/);
+  if (!summary) return null;
+  return summaryScoreValue(summary[1]);
+}
+
+/** SCORE line → 0–5 number or null. Callers pass the summary block's text. */
+function summaryScoreValue(summaryBlock) {
+  const scoreLine = summaryBlock.match(/^[ \t]*(?:\*\*)?[ \t]*SCORE[ \t]*(?:\*\*)?[ \t]*:[ \t]*(.*)$/mi);
+  if (!scoreLine) return null;
+  const m = asciiNumber(scoreLine[1]).match(/^[*_ \t]*([0-9]+(?:\.[0-9]+)?)/);
+  const value = m ? Number(m[1]) : NaN;
+  return Number.isFinite(value) && value >= 0 && value <= 5 ? value : null;
 }
 
 /**
