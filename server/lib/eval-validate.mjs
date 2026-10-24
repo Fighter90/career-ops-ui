@@ -323,9 +323,15 @@ export function extractBodyScore(text) {
   if (!src) return null;
   for (const line of src.split('\n')) {
     const m = asciiNumber(line)
-      .match(/^[ \t]*(?:\*\*)?[ \t]*score[ \t]*(?:\*\*)?[ \t]*[:：\-–—][ \t]*(?:\*\*)?[ \t]*([0-9]+(?:\.[0-9]+)?)/i);
+      .match(/^[ \t]*(?:\*\*)?[ \t]*score[ \t]*(?:\*\*)?[ \t]*[:：\-–—][ \t]*(?:\*\*)?[ \t]*([0-9]+(?:\.[0-9]+)?)(?:[ \t]*[/\u2044][ \t]*([0-9]+))?/i);
     if (!m) continue;
     const value = Number(m[1]);
+    // Review round 2 (M2) — an explicit denominator says which rubric the
+    // number is from. Anything but /5 is NOT the report's 0–5 score, and the
+    // line is skipped: scaling a sub-rubric would still let it beat the
+    // header line below it (first match wins), and a /10-only report is a
+    // malformed report the gate should reject, not a guess to convert.
+    if (m[2] != null && Number(m[2]) !== 5) continue;
     if (Number.isFinite(value) && value >= 0 && value <= 5) return value;
   }
   return null;

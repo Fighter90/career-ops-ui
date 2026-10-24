@@ -21,7 +21,7 @@ import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 
 let ROOT;
-let validateEvaluationReport, cutRepeatedBlockHeadings;
+let validateEvaluationReport, cutRepeatedBlockHeadings, extractBodyScore;
 
 const SUMMARY = (score = '4.2', legitimacy = 'High Confidence') => `
 ---SCORE_SUMMARY---
@@ -43,7 +43,7 @@ before(async () => {
   writeFileSync(resolve(ROOT, 'cv.md'), '# CV\n');
   writeFileSync(resolve(ROOT, 'config', 'profile.yml'), 'candidate:\n  full_name: T\n');
   process.env.CAREER_OPS_ROOT = ROOT;
-  ({ validateEvaluationReport, cutRepeatedBlockHeadings } =
+  ({ validateEvaluationReport, cutRepeatedBlockHeadings, extractBodyScore } =
     await import('../server/lib/eval-validate.mjs'));
 });
 
@@ -105,4 +105,23 @@ test('H2: a genuinely looping UKR-numbered report is still cut at its repeat', (
   const r = cutRepeatedBlockHeadings(looping);
   assert.equal(r.cut, true, 'the UKR level override must not disable loop detection at that level');
   assert.equal(r.letter, 'A');
+});
+
+// ── M2 — extractBodyScore respects the denominator ──────────────────────────
+
+test('M2: a non-5 denominator is not the 0–5 score — the line is skipped', () => {
+  assert.equal(extractBodyScore('**Score:** 4/10'), null, '4 of 10 is not 4 of 5');
+  assert.equal(extractBodyScore('Score: 2.5/10'), null);
+  assert.equal(extractBodyScore('Score: 85/100'), null, 'a percentage is not the score either');
+  assert.equal(extractBodyScore('Score: 4/7'), null, 'a 7-point rubric is not the score');
+  assert.equal(extractBodyScore('Score: 9/20'), null);
+  assert.equal(extractBodyScore('Score: 4/0'), null, 'a zero denominator never divides');
+});
+
+test('M2: a foreign-denominator sub-score no longer beats the header score', () => {
+  const md = ['# Evaluation: Acme — Engineer', 'Score: 4/10', 'body', '**Score:** 4.2/5'].join('\n');
+  assert.equal(extractBodyScore(md), 4.2, 'the /10 line is skipped; the header /5 line wins');
+  const md2 = ['# Evaluation: Acme — Engineer', '**Score:** 4.2/5', 'body', 'Score: 3/10'].join('\n');
+  assert.equal(extractBodyScore(md2), 4.2, 'the first usable line still wins');
+  assert.equal(extractBodyScore('Score: 4/10'), null, 'a /10-only report has no 0–5 score');
 });
