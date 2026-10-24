@@ -22,42 +22,42 @@ const GOOD_RU = (v, a, r, l, t) =>
 const GOOD_DA = (v, a, r, l, t) =>
   `# Hjem\n\n> Aktuel udgivelse: **v${v}** · Node ≥ 18 · Express 4 + vanilla-JS SPA · ${a} scanner-adaptere · ${r} rutemoduler · ${l} sprog i grænsefladen · ${t} enhedstests.`;
 
-const EXPECTED = { version: '1.252.1', unitTests: 5262, adapters: 105, routes: 39, locales: 18 };
+const EXPECTED = { version: '1.253.0', unitTests: 5504, adapters: 120, routes: 39, locales: 18 };
 
 test('a banner that matches every expected counter passes — EN, RU, DA, ZH (full-width colon) and JA (word-before-counter) shapes alike', () => {
   const pages = [
-    { file: 'Home.md', text: GOOD_EN('1.252.1', 105, 39, 18, 5262) },
-    { file: 'Home-(Русский).md', text: GOOD_RU('1.252.1', 105, 39, 18, 5262) },
-    { file: 'Home-(Dansk).md', text: GOOD_DA('1.252.1', 105, 39, 18, 5262) },
-    { file: 'Home-(简体中文).md', text: GOOD_ZH('1.252.1', 105, 39, 18, 5262) },
-    { file: 'Home-(日本語).md', text: GOOD_JA('1.252.1', 105, 39, 18, 5262) },
+    { file: 'Home.md', text: GOOD_EN('1.253.0', 120, 39, 18, 5504) },
+    { file: 'Home-(Русский).md', text: GOOD_RU('1.253.0', 120, 39, 18, 5504) },
+    { file: 'Home-(Dansk).md', text: GOOD_DA('1.253.0', 120, 39, 18, 5504) },
+    { file: 'Home-(简体中文).md', text: GOOD_ZH('1.253.0', 120, 39, 18, 5504) },
+    { file: 'Home-(日本語).md', text: GOOD_JA('1.253.0', 120, 39, 18, 5504) },
   ];
   assert.deepEqual(checkWikiBanners(pages, EXPECTED), []);
 });
 
 test('a stale version, count or shape is reported per file — in any language', () => {
   const pages = [
-    { file: 'Home.md', text: GOOD_EN('1.251.0', 105, 39, 18, 5262) },
-    { file: 'Home-(Русский).md', text: GOOD_RU('1.252.1', 109, 39, 18, 5262) },
-    { file: 'Home-(Dansk).md', text: GOOD_DA('1.252.1', 105, 39, 18, 5262).replace('39', '41') },
-    { file: 'Home-(日本語).md', text: GOOD_JA('1.252.1', 109, 39, 18, 5177) },
+    { file: 'Home.md', text: GOOD_EN('1.251.0', 120, 39, 18, 5504) },
+    { file: 'Home-(Русский).md', text: GOOD_RU('1.253.0', 109, 39, 18, 5504) },
+    { file: 'Home-(Dansk).md', text: GOOD_DA('1.253.0', 120, 39, 18, 5504).replace('39', '41') },
+    { file: 'Home-(日本語).md', text: GOOD_JA('1.252.1', 109, 39, 18, 5176) },
   ];
   const problems = checkWikiBanners(pages, EXPECTED);
   assert.equal(problems.length, 5, 'one problem per finding (the JA page misses two counters at once)');
-  assert.match(problems[0], /Home\.md: banner version 1\.251\.0 != package\.json 1\.252\.1/);
-  assert.match(problems[1], /Home-\(Русский\)\.md: scanner adapters 109 != registry 105/);
+  assert.match(problems[0], /Home\.md: banner version 1\.251\.0 != package\.json 1\.253\.0/);
+  assert.match(problems[1], /Home-\(Русский\)\.md: scanner adapters 109 != registry 120/);
   assert.match(problems[2], /Home-\(Dansk\)\.md: route modules 41 != registry 39/);
-  assert.match(problems[3], /Home-\(日本語\)\.md: scanner adapters 109 != registry 105/);
-  assert.match(problems[4], /Home-\(日本語\)\.md: unit tests 5177 != expected 5262/);
+  assert.match(problems[3], /Home-\(日本語\)\.md: scanner adapters 109 != registry 120/);
+  assert.match(problems[4], /Home-\(日本語\)\.md: unit tests 5176 != expected 5504/);
 });
 
-test('the localized stale count (5177) is caught, not just the EN one (5245)', () => {
+test('the localized stale count (5176) is caught, not just the EN one (5245)', () => {
   const problems = checkWikiBanners(
-    [{ file: 'Home-(Українська).md', text: GOOD_RU('1.252.1', 105, 39, 18, 5177).replace('юнит-тест', 'юніт-тестів') }],
+    [{ file: 'Home-(Українська).md', text: GOOD_RU('1.253.0', 120, 39, 18, 5176).replace('юнит-тест', 'юніт-тестів') }],
     EXPECTED,
   );
   assert.equal(problems.length, 1);
-  assert.match(problems[0], /unit tests 5177 != expected 5262/);
+  assert.match(problems[0], /unit tests 5176 != expected 5504/);
 });
 
 test('an empty wiki checkout is a problem, not a silent pass', () => {

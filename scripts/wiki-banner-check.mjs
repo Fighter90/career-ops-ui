@@ -37,6 +37,15 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(fileURLToPath(new URL('.', import.meta.url)), '..');
 
+/** The SOURCES registry total — the banner's public "N scanner adapters" phrasing
+ * carries the SOURCES count per CONTEXT.md (kept for historical continuity),
+ * not ALL_ADAPTERS.length (which equals the EN sources only). */
+function sourcesCount(rootOverride) {
+  const root = rootOverride ?? ROOT;
+  const dir = join(root, 'server', 'lib', 'sources');
+  return readdirSync(dir).filter((f) => f.endsWith('.mjs') && !f.startsWith('_') && f !== 'registry.mjs').length;
+}
+
 /** Count the registry-driven counters from THIS repo checkout. */
 export function registryCounters(rootOverride) {
   const root = rootOverride ?? ROOT;
@@ -94,11 +103,11 @@ async function main() {
 
   const pkg = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8'));
   const { routes, locales } = registryCounters();
-  const adaptersMod = await import(`file://${join(ROOT, 'server/lib/portals/registry.mjs')}`);
+
   const expected = {
     version: pkg.version,
     unitTests: argValue('--tests') ?? '?',
-    adapters: adaptersMod.ALL_ADAPTERS.length,
+    adapters: sourcesCount(),
     routes,
     locales,
   };
