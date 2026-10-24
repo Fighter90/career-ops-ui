@@ -2,6 +2,26 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.253.0] — 2026-10-24
+
+**Dieci nuove fonti di offerte entrano nello scanner — Atlassian, BWI, Computrabajo, Dover, Google, Kalibrr, Magneto365, Platsbanken, Tech in Asia e Zoho Recruit — il registro ora fornisce 120 fonti (115 EN + 5 RU) con 115 adattatori, e il role matcher tiene separati i titoli che differiscono solo per un breve codice in maiuscolo.**
+
+### Aggiunto
+
+- **10 fonti portate dal parent 1.38.0**, ciascuna con il suo adattatore fetch-walk e una suite isolata CI (fetchImpl finto, zero rete): **Atlassian** (singolo feed JSON senza auth, URL iCIMS, allowlist https+icims.com), **BWI** (ItemList JSON-LD, JSON.parse prima), **Computrabajo** (LATAM, decodifica entità, «remoto» spagnolo letto remote), **Dover** (paginazione DRF per tenant, rendering `Remote (International)`, board validati UUID), **Google Careers** (prime pagine per frase, il datore della carta vince, dedup tra query), **Kalibrr** (aggregatore SEA, id del feed come id di riga), **Magneto365** (LATAM, ritmo inter-pagina fisso), **Platsbanken** (API JobTech svedese, finestre per parola chiave), **Tech in Asia** (chiavi Algolia scoperte dal build del sito), **Zoho Recruit** (board hidden-input, arricchimento dettaglio limitato, valuta solo ISO-4217).
+- Conteggio registro: **120 fonti = 115 EN + 5 RU · 115 adattatori**; i cinque gate di conteggio rigenerati dal registro vivo; il fallback del dropdown `#/scan`, i link cvstart.org e help §17 ×18 seguono.
+
+### Corretto
+
+- **role-matcher (port #5688)**: i titoli che differiscono solo per un breve codice in maiuscolo («HR BP» vs «HR GP», «AWS» vs «GCP», anche in scritture miste) non vengono più accostati per fuzzy come la stessa posizione; i codici si leggono dal titolo grezzo con esclusione delle parole-rumore, e il guard sta subito prima del rapporto di Jaccard.
+- **I port sono sopravvissuti a una revisione Opus 5-5 di rigore massimo** (21 reperti): throw sui board silenziosamente vuoti per deriva di markup (google/bwi), una scansione pre-abortita lancia invece di restituire `[]`, l'ordine decode-then-strip sugli scraper LATAM (la forma XSS strip-then-decode), https+allowlist sugli URL di riga atlassian, assert di host che rifiutano porte, parse delle pagine tardive dentro il try (i parziali sopravvivono) e onestà dei test (budget contati esattamente, contratti di coercizione conficcati veritieri). 13 reperti corretti; la coda [spec] tracciata a parte.
+
+### Note
+
+- I cinque RU restano web-ui-only (nessun adattatore upstream — di proposito); ogni fonte EN ha il suo adattatore.
+- Ratchet di copertura: i sei port maggiori alzati a ≥95 % branch (27 nuovi casi); il resto del codice morto difensivo è documentato per file.
+- Le nuove fonti si selezionano con `provider: <slug>` in portals.yml — nulla cambia per le configurazioni esistenti.
+
 ## [1.252.1] — 2026-10-17
 
 **Il banner di versione della wiki ora è verificato da uno script invece che da una passata manuale — la regressione v1.252.0 l'ha colto solo a mano — e la direttiva locale prevale esplicitamente sul language.output del profilo e sulla lingua dell'annuncio.**

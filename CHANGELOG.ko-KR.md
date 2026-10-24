@@ -9,6 +9,26 @@
 ---
 
 
+## [1.253.0] — 2026-10-24
+
+**10개의 새 채용 소스가 스캐너에 합류합니다 — Atlassian, BWI, Computrabajo, Dover, Google, Kalibrr, Magneto365, Platsbanken, Tech in Asia, Zoho Recruit — 레지스트리는 이제 115개 어댑터와 함께 120개 소스(EN 115 + RU 5)를 제공하며, 역할 매처는 짧은 대문자 코드만 다른 직함을 더 이상 같은 공고로 묶지 않습니다.**
+
+### 추가
+
+- **10개 소스를 상위 1.38.0에서 포팅**, 각각 fetch-walk 어댑터와 CI 고립 스위트(가짜 fetchImpl, 네트워크 없음): **Atlassian**(단일 무인증 JSON 피드, iCIMS URL, https+icims.com allowlist), **BWI**(JSON-LD ItemList, JSON.parse 우선), **Computrabajo**(LATAM, 엔티티 디코드, 스페인어 «remoto»=remote), **Dover**(테넌트별 DRF 페이지네이션, `Remote (International)` 렌더, UUID 검증 보드), **Google Careers**(구문별 첫 페이지, 카드 고용주 우선, 쿼리 간 dedup), **Kalibrr**(SEA 애그리게이터, 피드 id가 행 id), **Magneto365**(LATAM, 고정 페이지 간 페이싱), **Platsbanken**(스웨덴 JobTech API, 키워드별 윈도), **Tech in Asia**(사이트 빌드에서 Algolia 키 발견), **Zoho Recruit**(히든-인풋 보드, 제한적 detail enrichment, ISO-4217 전용 통화 파싱).
+- 레지스트리 카운트: **120 소스 = 115 EN + 5 RU · 115 어댑터**; 5개 카운트 게이트를 라이브 레지스트리에서 재생성; `#/scan` 드롭다운 폴백, cvstart.org 소스 링크, help §17 ×18이 따라갑니다.
+
+### 수정
+
+- **역할 매처 (#5688 포트)**: 짧은 대문자 코드만 다른 직함(«HR BP» vs «HR GP», «AWS» vs «GCP», 혼합 스크립트 포함)을 더 이상 퍼지 매치로 같은 공고로 묶지 않습니다; 코드는 노이즈 단어를 제외하고 원시 직함에서 읽히며, 가드는 Jaccard 비율 바로 앞에 놓입니다.
+- **포트들이 최대 강도의 Opus 5-5 리뷰를 통과했습니다** (21개 발견): 마크업 드리프트 시 조용히 빈 보드 대신 throw (google/bwi), 사전 중단된 스캔은 `[]` 대신 throw, LATAM 스크래퍼의 decode-then-strip 순서 (strip-then-decode XSS 형태), atlassian 행 URL의 https+allowlist, 포트를 거부하는 호스트 단정, 후반 페이지 parse를 try 안으로 (부분 유지), 테스트 정직성(예산 정확히 카운트, 강제 계약을 진실하게 고정). 13개 발견 수정; [spec] 꼬리는 별도 추적.
+
+### 참고
+
+- 다섯 RU 소스는 web-ui 전용으로 남습니다(업스트림 어댑터 없음 — 의도적); 모든 EN 소스는 어댑터를 갖습니다.
+- 커버리지 래칫: 6개 대형 포트가 ≥95 % branch로 상향(신규 27 케이스); 방어적 데드 코드 잔여는 파일별 문서화.
+- 새 소스는 portals.yml에서 `provider: <slug>`로 선택 — 기존 구성에는 변화 없음.
+
 ## [1.252.1] — 2026-10-17
 
 **위키 릴리스 배너는 이제 수동 스윕이 아닌 스크립트로 검증됩니다 — v1.252.0 회귀는 수동으로만 잡았습니다 — 그리고 로케일 디렉티브는 프로필의 language.output과 채용 공고 언어를 명시적으로 재정의합니다.**

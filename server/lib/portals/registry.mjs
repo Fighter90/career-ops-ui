@@ -24,6 +24,9 @@
  */
 import { greenhouseAdapter } from './adapters/greenhouse.mjs';
 import { ashbyAdapter } from './adapters/ashby.mjs';
+// v1.253.0 — parent parity: Atlassian (single public JSON feed, whole board,
+// provider-selected).
+import { atlassianAdapter } from './adapters/atlassian.mjs';
 import { leverAdapter } from './adapters/lever.mjs';
 import { workableAdapter } from './adapters/workable.mjs';
 import { smartRecruitersAdapter } from './adapters/smartrecruiters.mjs';
@@ -87,6 +90,22 @@ import { csodAdapter } from './adapters/csod.mjs';
 import { phenomAdapter } from './adapters/phenom.mjs';
 import { radancyAdapter } from './adapters/radancy.mjs';
 import { deutschebahnAdapter } from './adapters/deutschebahn.mjs';
+// v1.253.0 — parent parity: Dover (paginated DRF envelope, single-company ATS,
+// `provider: dover` + a `https://app.dover.com/<Company>/careers/<uuid>` URL).
+import { doverAdapter } from './adapters/dover.mjs';
+// v1.253.0 — parent parity: Magneto365 (Colombia board, search-URL-driven),
+// Computrabajo (LATAM country hosts, search-URL-driven) and BWI (single-company
+// German careers site) — server-rendered HTML scrapers.
+import { magnetoAdapter } from './adapters/magneto.mjs';
+import { computrabajoAdapter } from './adapters/computrabajo.mjs';
+import { bwiAdapter } from './adapters/bwi.mjs';
+// v1.253.0 — parent parity: Google (server-rendered careers results, phrase
+// queries, robots.txt-bounded first page), Kalibrr (SEA board aggregator,
+// limit/offset JSON search) and Zoho Recruit (per-tenant ATS, hidden-input
+// JSON board).
+import { googleAdapter } from './adapters/google.mjs';
+import { kalibrrAdapter } from './adapters/kalibrr.mjs';
+import { zohoRecruitAdapter } from './adapters/zoho-recruit.mjs';
 import { tkmsAdapter } from './adapters/tkms.mjs';
 import { hecklerkochAdapter } from './adapters/hecklerkoch.mjs';
 import { rheinmetallAdapter } from './adapters/rheinmetall.mjs';
@@ -158,16 +177,41 @@ import { jazzhrAdapter } from './adapters/jazzhr.mjs';
 import { startupJobsAdapter } from './adapters/startup-jobs.mjs';
 import { taleoAdapter } from './adapters/taleo.mjs';
 import { ultiproAdapter } from './adapters/ultipro.mjs';
+// v1.253.0 — parent parity: Platsbanken (Sweden's national board via the
+// JobTech JobSearch API, keyword-scoped — the API stops serving past offset
+// 2000, so each keyword gets its own window) and Tech in Asia (the jobs UI's
+// own Algolia index; credentials discovered fresh per run from the site
+// build). Both board-wide, explicit `provider:` only.
+import { platsbankenAdapter } from './adapters/platsbanken.mjs';
+import { techinasiaAdapter } from './adapters/techinasia.mjs';
 
 export const ALL_ADAPTERS = [
   builtinAdapter,
+  // v1.253.0 — parent parity: BWI (single-company German careers site,
+  // provider- or www.bwi.de-selected; one fixed listing URL).
+  bwiAdapter,
   collageAdapter,
+  // v1.253.0 — parent parity: Computrabajo (LATAM board, one host per country,
+  // search-URL-driven, tight 3-page/15-posting crawl caps).
+  computrabajoAdapter,
   feishuJobsAdapter,
   garenaAdapter,
+  // v1.253.0 — parent parity: Google (provider:/`google:`-selected; one
+  // first-page request per phrase query, robots.txt-bounded).
+  googleAdapter,
   telegramChannelAdapter,
+  // v1.253.0 — parent parity: Magneto365 (Colombia board, search-URL-driven,
+  // max_pages/max_jobs caps).
+  magnetoAdapter,
+  // v1.253.0 — parent parity: Kalibrr (SEA board aggregator, `provider:`
+  // selected only; limit/offset JSON search, `count`-driven walk).
+  kalibrrAdapter,
   mokahrAdapter,
   greenhouseAdapter,
   ashbyAdapter,
+  // v1.253.0 — Atlassian: one fixed JSON feed (www.atlassian.com), whole board
+  // per request, `provider: atlassian` only.
+  atlassianAdapter,
   leverAdapter,
   workableAdapter,
   smartRecruitersAdapter,
@@ -241,6 +285,9 @@ export const ALL_ADAPTERS = [
   phenomAdapter,
   radancyAdapter,
   deutschebahnAdapter,
+  // v1.253.0 — Dover: `provider: dover` + an app.dover.com careers/<uuid> URL;
+  // DRF pagination, max_pages (cap 20).
+  doverAdapter,
   tkmsAdapter,
   hecklerkochAdapter,
   rheinmetallAdapter,
@@ -309,6 +356,15 @@ export const ALL_ADAPTERS = [
   startupJobsAdapter,
   taleoAdapter,
   ultiproAdapter,
+  // v1.253.0 — parent parity: Zoho Recruit (per-tenant ATS, host-detected
+  // <tenant>.zohorecruit.com or `provider: zoho-recruit`; hidden-input JSON
+  // board on the fixed /jobs/Careers path).
+  zohoRecruitAdapter,
+  // v1.253.0 — parent parity: Platsbanken (Sweden's national board, keyword-
+  // scoped JobTech API, explicit `provider: platsbanken` only) and Tech in
+  // Asia (Algolia job_postings index, explicit `provider: techinasia` only).
+  platsbankenAdapter,
+  techinasiaAdapter,
 ];
 
 /**

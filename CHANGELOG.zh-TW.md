@@ -9,6 +9,26 @@
 ---
 
 
+## [1.253.0] — 2026-10-24
+
+**十個新的職缺來源加入掃描器 — Atlassian、BWI、Computrabajo、Dover、Google、Kalibrr、Magneto365、Platsbanken、Tech in Asia 和 Zoho Recruit — 註冊表現在提供 120 個來源(115 EN + 5 RU)與 115 個配接器，且角色匹配器不再把僅差一個短大寫代碼的職缺名稱當作同一職缺。**
+
+### 新增
+
+- **10 個來源移植自父 1.38.0**，各帶 fetch-walk 配接器與 CI 隔離套件（假 fetchImpl、零網路）：**Atlassian**(單一免認證 JSON 源、iCIMS URL、https+icims.com allowlist)、**BWI**(JSON-LD ItemList、JSON.parse 優先)、**Computrabajo**(拉美、實體解碼、西語 «remoto» 識別 remote)、**Dover**(按租戶 DRF 分頁、`Remote (International)` 渲染、UUID 驗證板塊)、**Google Careers**(按短語首頁、卡片雇主優先、查詢間去重)、**Kalibrr**(SEA 聚合、feed id 作列 id)、**Magneto365**(拉美、固定翻頁節奏)、**Platsbanken**(瑞典 JobTech API、按關鍵字視窗)、**Tech in Asia**(從網站建置發現 Algolia 金鑰)、**Zoho Recruit**(隱藏輸入板塊、受限 detail 增强、僅 ISO-4217 幣別解析)。
+- 註冊表計數：**120 來源 = 115 EN + 5 RU · 115 配接器**；五個計數閘從活註冊表再生成；`#/scan` 下拉回退、cvstart.org 來源連結與 help §17 ×18 跟隨。
+
+### 修復
+
+- **角色匹配器（#5688 移植）**：僅差一個短大寫代碼的職缺名稱（«HR BP» vs «HR GP»、«AWS» vs «GCP»、包括混合文字）不再被模糊匹配為同一職缺；代碼從原始標題讀取並排除噪音詞，守衛放在 Jaccard 比率之前。
+- **移植通過了最嚴格的 Opus 5-5 評審**（21 項發現）：標記漂移時的靜默空板塊改為 throw（google/bwi），預中止的掃描 throw 而非返回 `[]`，拉美爬蟲的 decode-then-strip 順序（strip-then-decode XSS 形態），atlassian 列 URL 的 https+allowlist，拒絕連接埠的主機斷言，後段頁面 parse 移入 try（部分結果存活），以及測試誠實度（預算精確斷言、強制契約如實釘死）。13 項已修，[spec] 尾巴單獨追蹤。
+
+### 備註
+
+- 五個 RU 來源保持 web-ui 專屬（上游無配接器 — 有意為之）；每個 EN 來源都有配接器。
+- 覆蓋率棘輪：六個最大的移植檔案提升至 ≥95 % branch（27 個新用例）；防禦性死代碼餘項按檔案記錄。
+- 新來源透過 portals.yml 的 `provider: <slug>` 選擇 — 對現有配置無任何變化。
+
 ## [1.252.1] — 2026-10-17
 
 **Wiki 的版本橫幅現在由腳本把關而非手動掃描 — v1.252.0 回歸只能靠人工發現 — 且 locale 指令明確覆蓋個人資料的 language.output 和職缺發布語言。**

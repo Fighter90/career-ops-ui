@@ -3,6 +3,12 @@ import { t, type Locale } from '../i18n/locales';
 import facts from '../generated/facts.json';
 
 interface Props {
+  'atlassian': 'https://www.atlassian.com/company/careers',
+  'bwi': 'https://www.bwi.de/karriere',
+  'computrabajo': 'https://www.computrabajo.com',
+  'dover': 'https://app.dover.com',
+  'google': 'https://www.google.com/about/careers/',
+  'kalibrr': 'https://www.kalibrr.com',
   locale: Locale;
 }
 const { locale } = Astro.props;
@@ -58,6 +64,7 @@ const SOURCE_URLS: Record<string, string> = {
   landingjobs: 'https://landing.jobs',
   larajobs: 'https://larajobs.com',
   lever: 'https://www.lever.co',
+  'magneto': 'https://www.magneto365.com',
   manfred: 'https://www.getmanfred.com',
   meituan: 'https://zhaopin.meituan.com',
   mycareersfuture: 'https://www.mycareersfuture.gov.sg',
@@ -67,6 +74,7 @@ const SOURCE_URLS: Record<string, string> = {
   personio: 'https://www.personio.com',
   phenom: 'https://www.phenom.com',
   pinpoint: 'https://www.pinpointhq.com',
+  'platsbanken': 'https://www.arbetsformedlingen.se/platsbanken',
   radancy: 'https://www.radancy.com',
   recruitee: 'https://recruitee.com',
   remoteok: 'https://remoteok.com',
@@ -86,6 +94,7 @@ const SOURCE_URLS: Record<string, string> = {
   'feishu-jobs': 'https://jobs.bytedance.com',
   garena: 'https://careers.garena.com',
   mokahr: 'https://www.mokahr.com',
+  'techinasia': 'https://www.techinasia.com/jobs',
   telegram: 'https://telegram.org',
   'telegram-channel': 'https://telegram.org',
   tencent: 'https://careers.tencent.com',
@@ -123,6 +132,7 @@ const SOURCE_URLS: Record<string, string> = {
   'habr-career': 'https://career.habr.com',
   'hh.ru': 'https://hh.ru',
   trudvsem: 'https://trudvsem.ru',
+  'zoho-recruit': 'https://www.zoho.com/recruit/',
 };
 
 const home = locale.slug === '' ? '/' : `/${locale.slug}/`;
