@@ -276,8 +276,12 @@ export async function runEnScan(opts = {}) {
       // sources (ibm / arbeitsagentur / glints / jobstreet) can read their
       // `<provider>:` block. URL-detected ATS fetchers ignore the extra opt.
       const items = await fetcher(c._api.url, { fetchImpl, signal, company: c });
-      // Stamp company name on each (Greenhouse fills its own; Ashby/Lever do not)
-      const withCo = items.map((i) => ({ ...i, company: i.company || c.name }));
+      // Stamp company name on each (Greenhouse fills its own; Ashby/Lever do not),
+      // plus the portals ENTRY the row was fetched for (`_entry`): the snapshot
+      // carry-over (R-12, CAR-91) must match the failed set against the entry,
+      // never against `source` — a failed entry named "Lever" used to keep
+      // every successfully-rescanned company's lever-source rows.
+      const withCo = items.map((i) => ({ ...i, company: i.company || c.name, _entry: c.name }));
       log('stdout', `  ✓ ${label} ${c._api.type.padEnd(10)} ${items.length} jobs`);
       // A source that stopped early tags its result array; say so instead of
       // presenting a partial board as the whole one. The flag itself is lost
@@ -417,9 +421,13 @@ export async function runEnScan(opts = {}) {
       // of silently vanishing (one timed-out board among fifty used to erase
       // that board's rows on every scan). Successfully-scanned sources are
       // replaced; single-company scans keep their merge semantics unchanged.
-      const opts = companyName
+      // Review round 2 — carried rows re-run THIS run's filters (the config
+      // may have changed since their run) and are never re-flagged as fresh.
+      const saveOpts = companyName
         ? { mergeCompanies: withApi.map((c) => c.name) }
-        : (failedCompanies.size ? { keepSources: [...failedCompanies] } : {});
+        : (failedCompanies.size
+          ? { keepSources: [...failedCompanies], carriedCheck: (j) => passes(j) && !cooldownFilter(j).skip }
+          : {});
       saveLastScan({
         kind: 'en',
         when: new Date().toISOString(),
@@ -427,7 +435,7 @@ export async function runEnScan(opts = {}) {
         filtered: afterCooldown, // v1.76.0 — full matched set, no cap; #/scan paginates client-side (v1.84.0: post-cooldown)
         errors,
         truncatedSources, // v1.242.0 — sources whose board hit the page cap
-      }, opts);
+      }, saveOpts);
     }
   }
 
@@ -522,34 +530,60 @@ function mergeSnapshot(old, payload, companies) {
 }
 
 /**
- * R-12 (CAR-91) — full-replace carry-over: rows whose source/company belongs
- * to a source this run FAILED to scan survive into the new snapshot — a failed
+ * R-12 (CAR-91) — full-replace carry-over: rows whose entry/source belongs to
+ * a source this run FAILED to scan survive into the new snapshot — a failed
  * source contributes no information, so a successful scan of the other sources
  * must not silently erase its rows (one timed-out board among fifty used to
  * drop that board's rows on every scan; hh.ru 451-ing from a non-RU IP wiped
  * every hh row). Rows of every successfully-scanned source are replaced
  * wholesale, exactly as a plain full replace would: a role the company closed
  * must still drop out.
- * `failed` holds company names (EN) or the stamped source ids (RU), matched
- * case-insensitively against each old row's `company` / `source` field; a row
- * whose canonical URL also appears in the new rows is dropped (the new row wins).
+ * Review round 2 — two corrections to the matching and the carry itself:
+ *   · EN (`bySource` unset) matches the failed set against the portals ENTRY
+ *     the row was fetched for (`_entry`, stamped at fetch time; `company` for
+ *     rows saved by an older build) and NEVER against `source` — the failed
+ *     set holds entry names, so a failed entry named "Lever" used to keep
+ *     every successfully-rescanned company's lever-source rows, and a failed
+ *     company name kept rows that came from a succeeded aggregator. RU
+ *     (`bySource`) rows carry no entry; they match on `source` only.
+ *   · Carried rows are HISTORY, not new offers: they re-run the current run's
+ *     filters through `opts.carriedCheck` (cooldown, title/location — the
+ *     config may have changed since their run) and land in `filtered` only,
+ *     never in `fresh`, so they are never re-appended to pipeline/history or
+ *     re-shown as new. Rows are deduped by canonical URL (old `fresh` is a
+ *     subset of old `filtered` — both were carried before, doubling each row).
  * @param {any} old previous snapshot for this kind
  * @param {any} payload this run's snapshot
  * @param {string[]} failed companies / sources this run failed to scan
+ * @param {{ bySource?: boolean, carriedCheck?: (job: any) => boolean }} [opts]
+ *   bySource      — match the failed set against `j.source` (RU) instead of the entry stamp
+ *   carriedCheck  — re-run the current filters on a carried row; false drops it
  */
-function keepFailedSourcesSnapshot(old, payload, failed) {
+function keepFailedSourcesSnapshot(old, payload, failed, opts = {}) {
   const lc = (v) => String(v ?? '').toLowerCase();
   const key = (j) => normalizeUrl(j.url) || j.url;
   const failedSet = new Set((Array.isArray(failed) ? failed : []).map(lc).filter(Boolean));
+  const matchesFailure = opts.bySource
+    ? (j) => failedSet.has(lc(j.source))
+    : (j) => failedSet.has(lc(j._entry ?? j.company));
   const newKeys = new Set([...(payload.fresh || []), ...(payload.filtered || [])].map(key));
-  const keep = (rows) => (Array.isArray(rows) ? rows : [])
+  const check = typeof opts.carriedCheck === 'function' ? opts.carriedCheck : null;
+  const carry = (rows) => (Array.isArray(rows) ? rows : [])
     .filter((j) => j && typeof j === 'object'
-      && (failedSet.has(lc(j.company)) || failedSet.has(lc(j.source)))
-      && !newKeys.has(key(j)));
+      && matchesFailure(j)
+      && !newKeys.has(key(j))
+      && (!check || check(j) !== false));
+  const seenKeys = new Set();
+  const carried = [...carry(old.fresh), ...carry(old.filtered)].filter((j) => {
+    const k = key(j);
+    if (seenKeys.has(k)) return false;
+    seenKeys.add(k);
+    return true;
+  });
   return {
     ...payload,
-    fresh: [...keep(old.fresh), ...(payload.fresh || [])],
-    filtered: [...keep(old.filtered), ...(payload.filtered || [])],
+    fresh: [...(payload.fresh || [])],
+    filtered: [...carried, ...(payload.filtered || [])],
   };
 }
 
@@ -557,9 +591,11 @@ function keepFailedSourcesSnapshot(old, payload, failed) {
  * Persist one scanner's snapshot into data/last-scan.json (tmp + rename, so a
  * crash mid-write can't truncate the file the #/scan page reads).
  * @param {{ kind: 'en'|'ru', fresh: any[], filtered: any[] } & Record<string, any>} payload
- * @param {{ mergeCompanies?: string[], keepSources?: string[] }} [opts]
+ * @param {{ mergeCompanies?: string[], keepSources?: string[], bySource?: boolean, carriedCheck?: (job: any) => boolean }} [opts]
  *   mergeCompanies — single-company scan: fold into the previous snapshot
  *   keepSources    — full replace carrying over failed sources' rows (R-12, CAR-91)
+ *   bySource       — keepSources match on `source` (RU) instead of the entry stamp
+ *   carriedCheck   — re-run the current filters on carried rows (see keepFailedSourcesSnapshot)
  */
 export function saveLastScan(payload, opts = {}) {
   const prev = readLastScanFile();
@@ -567,7 +603,7 @@ export function saveLastScan(payload, opts = {}) {
   prev[payload.kind] = Array.isArray(opts.mergeCompanies) && old && typeof old === 'object'
     ? mergeSnapshot(old, payload, opts.mergeCompanies)
     : Array.isArray(opts.keepSources) && opts.keepSources.length && old && typeof old === 'object'
-      ? keepFailedSourcesSnapshot(old, payload, opts.keepSources)
+      ? keepFailedSourcesSnapshot(old, payload, opts.keepSources, { bySource: opts.bySource, carriedCheck: opts.carriedCheck })
       : payload;
   mkdirSync(LAST_SCAN_PATH.replace(/\/[^/]+$/, ''), { recursive: true });
   const tmp = `${LAST_SCAN_PATH}.${process.pid}.tmp`;

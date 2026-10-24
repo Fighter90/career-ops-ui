@@ -345,6 +345,9 @@ export async function runRuScan(opts = {}) {
       // 451-ing from a non-RU IP used to wipe every hh row on every scan.
       // Failed sources' previous rows survive; sources that answered are
       // replaced. Documented rule in en-scanner::keepFailedSourcesSnapshot.
+      // Review round 2 — RU matches on `source` only, and carried rows re-run
+      // this run's filters (negative/location/tier/content) and never re-enter
+      // fresh.
       const failedSources = Object.keys(sourceFailures)
         .map((k) => RU_DISPATCH[k]?.snapSource)
         .filter(Boolean);
@@ -354,7 +357,9 @@ export async function runRuScan(opts = {}) {
         fresh,
         filtered, // v1.76.0 — full matched set, no cap; #/scan paginates client-side
         errors,
-      }, failedSources.length ? { keepSources: failedSources } : {});
+      }, failedSources.length
+        ? { keepSources: failedSources, bySource: true, carriedCheck: (j) => passesAll(j) }
+        : {});
     }
   }
 
