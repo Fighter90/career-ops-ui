@@ -93,6 +93,12 @@ import { deutschebahnAdapter } from './adapters/deutschebahn.mjs';
 // v1.253.0 — parent parity: Dover (paginated DRF envelope, single-company ATS,
 // `provider: dover` + a `https://app.dover.com/<Company>/careers/<uuid>` URL).
 import { doverAdapter } from './adapters/dover.mjs';
+// v1.253.0 — parent parity: Magneto365 (Colombia board, search-URL-driven),
+// Computrabajo (LATAM country hosts, search-URL-driven) and BWI (single-company
+// German careers site) — server-rendered HTML scrapers.
+import { magnetoAdapter } from './adapters/magneto.mjs';
+import { computrabajoAdapter } from './adapters/computrabajo.mjs';
+import { bwiAdapter } from './adapters/bwi.mjs';
 import { tkmsAdapter } from './adapters/tkms.mjs';
 import { hecklerkochAdapter } from './adapters/hecklerkoch.mjs';
 import { rheinmetallAdapter } from './adapters/rheinmetall.mjs';
@@ -167,10 +173,19 @@ import { ultiproAdapter } from './adapters/ultipro.mjs';
 
 export const ALL_ADAPTERS = [
   builtinAdapter,
+  // v1.253.0 — parent parity: BWI (single-company German careers site,
+  // provider- or www.bwi.de-selected; one fixed listing URL).
+  bwiAdapter,
   collageAdapter,
+  // v1.253.0 — parent parity: Computrabajo (LATAM board, one host per country,
+  // search-URL-driven, tight 3-page/15-posting crawl caps).
+  computrabajoAdapter,
   feishuJobsAdapter,
   garenaAdapter,
   telegramChannelAdapter,
+  // v1.253.0 — parent parity: Magneto365 (Colombia board, search-URL-driven,
+  // max_pages/max_jobs caps).
+  magnetoAdapter,
   mokahrAdapter,
   greenhouseAdapter,
   ashbyAdapter,
