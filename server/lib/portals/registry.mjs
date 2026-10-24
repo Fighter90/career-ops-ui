@@ -99,6 +99,13 @@ import { doverAdapter } from './adapters/dover.mjs';
 import { magnetoAdapter } from './adapters/magneto.mjs';
 import { computrabajoAdapter } from './adapters/computrabajo.mjs';
 import { bwiAdapter } from './adapters/bwi.mjs';
+// v1.253.0 — parent parity: Google (server-rendered careers results, phrase
+// queries, robots.txt-bounded first page), Kalibrr (SEA board aggregator,
+// limit/offset JSON search) and Zoho Recruit (per-tenant ATS, hidden-input
+// JSON board).
+import { googleAdapter } from './adapters/google.mjs';
+import { kalibrrAdapter } from './adapters/kalibrr.mjs';
+import { zohoRecruitAdapter } from './adapters/zoho-recruit.mjs';
 import { tkmsAdapter } from './adapters/tkms.mjs';
 import { hecklerkochAdapter } from './adapters/hecklerkoch.mjs';
 import { rheinmetallAdapter } from './adapters/rheinmetall.mjs';
@@ -182,10 +189,16 @@ export const ALL_ADAPTERS = [
   computrabajoAdapter,
   feishuJobsAdapter,
   garenaAdapter,
+  // v1.253.0 — parent parity: Google (provider:/`google:`-selected; one
+  // first-page request per phrase query, robots.txt-bounded).
+  googleAdapter,
   telegramChannelAdapter,
   // v1.253.0 — parent parity: Magneto365 (Colombia board, search-URL-driven,
   // max_pages/max_jobs caps).
   magnetoAdapter,
+  // v1.253.0 — parent parity: Kalibrr (SEA board aggregator, `provider:`
+  // selected only; limit/offset JSON search, `count`-driven walk).
+  kalibrrAdapter,
   mokahrAdapter,
   greenhouseAdapter,
   ashbyAdapter,
@@ -336,6 +349,10 @@ export const ALL_ADAPTERS = [
   startupJobsAdapter,
   taleoAdapter,
   ultiproAdapter,
+  // v1.253.0 — parent parity: Zoho Recruit (per-tenant ATS, host-detected
+  // <tenant>.zohorecruit.com or `provider: zoho-recruit`; hidden-input JSON
+  // board on the fixed /jobs/Careers path).
+  zohoRecruitAdapter,
 ];
 
 /**
