@@ -20,7 +20,7 @@ ngay trên máy của bạn.
 
 **Tài liệu tham chiếu chính thức (đọc theo thứ tự này khi lần đầu cài):**
 
-- [What is career-ops](https://career-ops.org/docs/introduction/what-is career-ops)
+- [What is career-ops](https://career-ops.org/docs/introduction/what-is-career-ops)
   — hệ thống, nguyên tắc, và bảng khái niệm.
 - [Scan job portals](https://career-ops.org/docs/introduction/guides/scan-job-portals)
   — khám phá tin tuyển dụng; làm đầy Pipeline.
@@ -36,7 +36,7 @@ ngay trên máy của bạn.
   [cvstart.org/methodology](https://cvstart.org/methodology/) bằng ngôn ngữ của bạn.
 
 **Nguyên tắc nền tảng** (từ
-[career-ops.org/docs/introduction/what-is career-ops](https://career-ops.org/docs/introduction/what-is career-ops)):
+[career-ops.org/docs/introduction/what-is-career-ops](https://career-ops.org/docs/introduction/what-is-career-ops)):
 
 - **Mã nguồn mở, nghiêm túc** — MIT, không gói trả phí, không danh sách chờ, không
   telemetry, không tài khoản. Hệ thống vận hành không cần gói trả phí,
@@ -101,7 +101,7 @@ bị thay đổi. Cả hai mặt bàn dùng chung `cv.md`, `config/profile.yml`,
 
 Khi một JD đã có đánh giá, điểm số quyết định bước tiếp theo
 (bảng chính thức từ
-[career-ops.org/docs/introduction/what-is career-ops](https://career-ops.org/docs/introduction/what-is career-ops)):
+[career-ops.org/docs/introduction/what-is-career-ops](https://career-ops.org/docs/introduction/what-is-career-ops)):
 
 | Điểm | Bước tiếp theo |
 |---|---|
@@ -120,7 +120,7 @@ Tài liệu tham chiếu đầy đủ cho engine career-ops bên dưới
 thiết lập Playwright) nằm tại
 [career-ops.org/docs](https://career-ops.org/docs):
 
-- [What is career-ops](https://career-ops.org/docs/introduction/what-is career-ops)
+- [What is career-ops](https://career-ops.org/docs/introduction/what-is-career-ops)
 - [Scan job portals](https://career-ops.org/docs/introduction/guides/scan-job-portals)
 - [Apply for a job](https://career-ops.org/docs/introduction/guides/apply-for-a-job)
 - [Batch-evaluate offers](https://career-ops.org/docs/introduction/guides/batch-evaluate-offers)
@@ -1459,7 +1459,7 @@ Hai đường cho việc nộp thực tế:
   đọc mọi trường form, trả các câu trả lời bản nháp đánh số. Bạn vẫn
   tự bấm Submit. Dùng khi form dài, động, hay bạn muốn dấu vết kiểm toán của câu nào thuộc câu trả lời nào.
 
-### Toàn bộ luồng apply CLI ([apply for a job](https://career-ops.org/docs/introduction/guides/apply for a job))
+### Toàn bộ luồng apply CLI ([apply for a job](https://career-ops.org/docs/introduction/guides/apply-for-a-job))
 
 **Điều kiện tiên quyết:**
 
@@ -1604,7 +1604,7 @@ pill điểm có màu) và các dòng tracker dưới `#/tracker` — chính xá
 như bạn tự thêm từng cái qua `#/evaluate`. Ghép cặp với nút bảo trì
 **▶ Merge** trên `#/tracker` nếu bạn không muốn đổ xuống CLI.
 
-### Thiết lập Playwright ([set up playwright](https://career-ops.org/docs/introduction/guides/set up playwright))
+### Thiết lập Playwright ([set up playwright](https://career-ops.org/docs/introduction/guides/set-up-playwright))
 
 Cần thiết cho hai tính năng career-ops:
 

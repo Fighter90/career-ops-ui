@@ -1761,7 +1761,7 @@
     "tr": "Örüntüler",
     "hi": "पैटर्न",
     "ta": "போக்குகள்",
-    "vi": "Xu hướng"
+    "vi": "Mẫu từ chối"
   },
   "mode.required": {
     "en": "Please fill the required fields",
@@ -1929,7 +1929,7 @@
     "tr": "Bir proje fikri sunun, inşa etmeden önce kapsam + sinyal-uyum geri bildirimi alın.",
     "hi": "अपना प्रोजेक्ट आइडिया बताएं, बनाने से पहले स्कोप + सिग्नल-फ़िट फ़ीडबैक पाएं।",
     "ta": "திட்ட யோசனையை முன்வையுங்கள்; கட்டியெழுப்புவதற்கு முன்பே நோக்கம் + சமிக்ஞை-பொருத்த கருத்தைப் பெறுங்கள்.",
-    "vi": "Đưa ra ý tưởng dự án, nhận phản hồi về phạm vi và độ 신 hiệu trước khi xây dựng."
+    "vi": "Đưa ra ý tưởng dự án, nhận phản hồi về phạm vi và độ khớp tín hiệu trước khi xây dựng."
   },
   "project.ideaLbl": {
     "en": "Project idea",
@@ -2055,7 +2055,7 @@
     "tr": "İsteğe bağlı — sinyal-uyum geri bildirimini bu rol ailesine daraltır.",
     "hi": "वैकल्पिक — सिग्नल-फ़िट फ़ीडबैक को इस भूमिका समूह की ओर संकीर्ण करता है।",
     "ta": "விருப்பத்தேர்வு — சமிக்ஞை-பொருத்த கருத்தை இந்தப் பதவி வகையை நோக்கி குறுக்குகிறது.",
-    "vi": "Không bắt buộc — thu hẹp phản hồi về độ 신 hiệu theo nhóm vị trí này."
+    "vi": "Không bắt buộc — thu hẹp phản hồi về độ khớp tín hiệu theo nhóm vị trí này."
   },
   "training.title": {
     "en": "Course / certification advisor",
@@ -4680,7 +4680,7 @@
     "tr": "console.anthropic.com → API keys adresinden bir tane alın. Ayarlandığında, \"⚡ Canlı çalıştır\" prompt'ları Claude aracılığıyla yürütür.",
     "hi": "console.anthropic.com → API keys पर एक प्राप्त करें। सेट होने पर, \"⚡ लाइव चलाएं\" प्रॉम्प्ट को Claude के ज़रिए निष्पादित करता है।",
     "ta": "console.anthropic.com → API keys இங்கே பெறுங்கள். அமைக்கப்பட்டால், \"⚡ Run live\" பிராம்ட்டுகளை Claude வழியாக இயக்கும்.",
-    "vi": "Lấy khóa tại console.anthropic.com → API keys. Khi đã đặt, \"⚡ Run live\" thực thi prompt qua Claude."
+    "vi": "Lấy khóa tại console.anthropic.com → API keys. Khi đã đặt, \"⚡ Chạy trực tiếp\" thực thi prompt qua Claude."
   },
   "config.anthropicModel": {
     "en": "Anthropic model",
@@ -8733,7 +8733,7 @@
     "tr": "Güvenilirlik",
     "hi": "वैधता",
     "ta": "நம்பகத்தன்மை",
-    "vi": "Độ chính đáng"
+    "vi": "Độ xác thực"
   },
   "auto.manualTitle": {
     "en": "Manual mode — no API key",
@@ -9195,7 +9195,7 @@
     "tr": "Güvenilir",
     "hi": "वैध",
     "ta": "நம்பகம்",
-    "vi": "Chính đáng"
+    "vi": "Xác thực"
   },
   "auto.failed": {
     "en": "Auto-pipeline failed",
@@ -9594,7 +9594,7 @@
     "tr": "Örüntüler",
     "hi": "पैटर्न",
     "ta": "போக்குகள்",
-    "vi": "Xu hướng"
+    "vi": "Mẫu từ chối"
   },
   "dash.quick.patternsSub": {
     "en": "Analyze your wins",
@@ -11820,7 +11820,7 @@
     "tr": "taşınma",
     "hi": "रिलोकेशन",
     "ta": "இடமாற்றம்",
-    "vi": "di chuyển"
+    "vi": "hỗ trợ chuyển nơi ở"
   },
   "scan.onsite": {
     "en": "on-site",
@@ -13038,7 +13038,7 @@
     "tr": "Taşınma",
     "hi": "स्थानां.",
     "ta": "இடமாற்றம்",
-    "vi": "Di chuyển"
+    "vi": "Chuyển nơi ở"
   },
   "scan.col.salary": {
     "en": "Salary",
@@ -13311,7 +13311,7 @@
     "tr": "LLM anahtarı ayarlı değil — “⚡ Canlı çalıştır” manuel-prompt modunda. Anthropic / Gemini / OpenAI / Qwen / …'den herhangi birini ayarlayın.",
     "hi": "कोई LLM कुंजी सेट नहीं है — “⚡ लाइव चलाएँ” मैनुअल-प्रॉम्प्ट मोड में है। Anthropic / Gemini / OpenAI / Qwen / … में से कोई एक सेट करें।",
     "ta": "LLM கீ அமைக்கப்படவில்லை — \"⚡ Run live\" கைமுறை-பிராம்ட் முறையில் உள்ளது. Anthropic / Gemini / OpenAI / Qwen / … இல் எதையும் அமையுங்கள்.",
-    "vi": "Chưa đặt khóa LLM — \"⚡ Run live\" đang ở chế độ prompt thủ công. Đặt một trong các khóa Anthropic / Gemini / OpenAI / Qwen / …"
+    "vi": "Chưa đặt khóa LLM — \"⚡ Chạy trực tiếp\" đang ở chế độ prompt thủ công. Đặt một trong các khóa Anthropic / Gemini / OpenAI / Qwen / …"
   },
   "onboarding.noKey.cta": {
     "en": "Set up a key →",
@@ -13416,7 +13416,7 @@
     "tr": "LLM anahtarı ayarlı değil — “⚡ Canlı çalıştır” manuel bir prompt kopyalar (API maliyeti yok).",
     "hi": "कोई LLM कुंजी सेट नहीं है — “⚡ लाइव चलाएँ” एक मैनुअल प्रॉम्प्ट कॉपी करता है (कोई API लागत नहीं)।",
     "ta": "LLM கீ அமைக்கப்படவில்லை — \"⚡ Run live\" கைமுறைப் பிராம்ட்டை நகலெடுக்கும் (API செலவில்லை).",
-    "vi": "Chưa đặt khóa LLM — \"⚡ Run live\" sao chép prompt thủ công (không tốn phí API)."
+    "vi": "Chưa đặt khóa LLM — \"⚡ Chạy trực tiếp\" sao chép prompt thủ công (không tốn phí API)."
   },
   "router.loading": {
     "en": "Loading…",
@@ -15054,7 +15054,7 @@
     "tr": "Canlı çalıştır ile yeniden çalıştırın veya son biçim çıktısını zorlamak için üst projenizdeki `modes/deep.md` dosyasını kontrol edin.",
     "hi": "लाइव चलाएँ के साथ फिर से चलाएँ, या अंतिम-रूप आउटपुट लागू करने के लिए अपने पेरेंट प्रोजेक्ट में `modes/deep.md` जाँचें।",
     "ta": "Run live உடன் மீண்டும் இயக்கவும், அல்லது இறுதி-வடிவ வெளியீட்டை கட்டாயப்படுத்த உங்கள் பெற்றோர் திட்டத்தின் `modes/deep.md`-ஐச் சரிபார்க்கவும்.",
-    "vi": "Chạy lại với Run live, hoặc xem `modes/deep.md` trong dự án gốc để ép đầu-ra dạng cuối."
+    "vi": "Chạy lại với Chạy trực tiếp, hoặc xem `modes/deep.md` trong dự án gốc để ép đầu-ra dạng cuối."
   },
   "deep.docsLink": {
     "en": "Read the deep-research reference",
@@ -15894,7 +15894,7 @@
     "tr": "Güvenilirlik",
     "hi": "वैधता",
     "ta": "நம்பகத்தன்மை",
-    "vi": "Độ chính đáng"
+    "vi": "Độ xác thực"
   },
   "track.col.legitimacy.help": {
     "en": "Confidence that the posting is real (High / Caution / Suspicious).",
@@ -22446,7 +22446,7 @@
     "tr": "taşınma",
     "hi": "रीलोक",
     "ta": "இடமாற்றம்",
-    "vi": "di chuyển"
+    "vi": "chuyển nơi ở"
   },
   "nav.twoPager": {
     "en": "Two-pager",
