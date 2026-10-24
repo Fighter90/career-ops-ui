@@ -9,6 +9,26 @@
 ---
 
 
+## [1.253.0] — 2026-10-24
+
+**10の新しい求人ソースがスキャナーに加わります — Atlassian、BWI、Computrabajo、Dover、Google、Kalibrr、Magneto365、Platsbanken、Tech in Asia、Zoho Recruit — レジストリは 115 アダプタとともに 120 ソース(EN 115 + RU 5)を提供し、ロールマッチャーは短い大文字コードのみが異なる役職を同一求人としてマッチしなくなります。**
+
+### 追加
+
+- **10ソースを親 1.38.0 から移植**、各フェッチウォーク adapter と CI 孤立スイート(フェイク fetchImpl、ネットワークゼロ): **Atlassian**(単一無認証 JSON フィード、iCIMS URL、https+icims.com allowlist)、**BWI**(JSON-LD ItemList、JSON.parse 先行)、**Computrabajo**(LATAM、エンティティ デコード、スペイン語 «remoto»=remote)、**Dover**(テナント別 DRF ページネーション、`Remote (International)` 描写、UUID 検証ボード)、**Google Careers**(フレーズ別 first page、カードの雇用主が勝つ、クエリ間 dedup)、**Kalibrr**(SEA アグリゲータ、フィード id を行 id に)、**Magneto365**(LATAM、固定インターページ ペーシング)、**Platsbanken**(スウェーデン JobTech API、キーワード別ウィンドウ)、**Tech in Asia**(サイト ビルドから Algolia キーを発見)、**Zoho Recruit**(hidden-input ボード、限定 detail エンリッチ、通貨は ISO-4217 のみ)。
+- レジストリ カウント: **120 ソース = 115 EN + 5 RU · 115 アダプタ**; 5つのカウントゲートをライブ レジストリから再生成; `#/scan` ドロップダウン フォールバック、cvstart.org のソース リンク、help §17 ×18 が追従。
+
+### 修正
+
+- **ロールマッチャー (#5688 ポート)**: 短い大文字コードのみが異なる役職(«HR BP» vs «HR GP»、«AWS» vs «GCP»、混在スクリプト含む)を、ファジーマッチで同一求人としてまとめなくなりました; コードはノイズ語を除外して生の役職から読まれ、ガードは Jaccard 比の直前に置かれます。
+- **ポートは最大厳格な Opus 5-5 レビューを生き延びました** (21件の指摘): マークアップドリフト時の静かな空ボードで throw (google/bwi)、事前中断されたスキャンは `[]` ではなく throw、LATAM スクレイパーの decode-then-strip 順 (strip-then-decode XSS 形)、atlassian 行 URL の https+allowlist、ポートを拒否するホスト断言、後半ページの parse を try 内へ (部分が生き残る)、テスト誠実さ (予算を正確にカウント、強制契約を正直に固定)。13件を修正; [spec] テールは別途追跡。
+
+### メモ
+
+- 5つの RU ソースは web-ui 専用のまま(上流アダプタなし — 意図的); すべての EN ソースにはアダプタがあります。
+- カバレッジ ラチェット: 大きい 6ポートを ≥95 % branch へ引き上げ(新規 27ケース); 防御的デッドコードの残りはファイルごとに文書化。
+- 新ソースは portals.yml の `provider: <slug>` で選択 — 既存設定には何も変わりません。
+
 ## [1.252.1] — 2026-10-17
 
 **Wiki のリリースバナーは手動スイープではなくスクリプトで検証されるようになりました — v1.252.0 の回帰は手動でしか捕捉できませんでした — さらにロケールディレクティブはプロフィールの language.output と求人言語を明示的に上書きします。**

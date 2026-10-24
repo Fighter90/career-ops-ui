@@ -2,6 +2,26 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.253.0] — 2026-10-24
+
+**Zehn neue Job-Quellen stoßen zum Scanner — Atlassian, BWI, Computrabajo, Dover, Google, Kalibrr, Magneto365, Platsbanken, Tech in Asia und Zoho Recruit — die Registry liefert jetzt 120 Quellen (115 EN + 5 RU) mit 115 Adaptern, und der Role-Matcher hält Titel auseinander, die sich nur durch einen kurzen Großbuchstaben-Code unterscheiden.**
+
+### Hinzugefügt
+
+- **10 Quellen aus dem Parent 1.38.0 portiert**, jeweils mit Fetch-Walk-Adapter und CI-isolierter Suite (fake fetchImpl, null Netzwerk): **Atlassian** (einzelner auth-freier JSON-Feed, iCIMS-URLs, https+icims.com-Allowlist), **BWI** (JSON-LD ItemList, JSON.parse zuerst), **Computrabajo** (LATAM, Entitäten-Dekodierung, spanisches „remoto“ liest remote), **Dover** (DRF-Paginierung pro Tenant, `Remote (International)`-Rendering, UUID-validierte Boards), **Google Careers** (Erstseiten pro Phrase, Karten-Arbeitgeber gewinnt, Dedup über Abfragen), **Kalibrr** (SEA-Aggregator, Feed-ID als Zeilen-ID), **Magneto365** (LATAM, festes Inter-Page-Tempo), **Platsbanken** (schwedische JobTech-API, Keyword-Fenster), **Tech in Asia** (Algolia-Schlüssel frisch aus dem Site-Build), **Zoho Recruit** (Hidden-Input-Board, begrenzte Detail-Anreicherung, Währung nur ISO-4217).
+- Registerzählung: **120 Quellen = 115 EN + 5 RU · 115 Adapter**; die fünf Zähl-Gates aus der Live-Registry regeneriert; `#/scan`-Dropdown-Fallback, cvstart.org-Quellenlinks und help §17 ×18 folgen.
+
+### Behoben
+
+- **Role-Matcher (#5688-Port)**: Titel, die sich nur durch einen kurzen Großbuchstaben-Code unterscheiden („HR BP“ vs. „HR GP“, „AWS“ vs. „GCP“, auch in gemischten Schriften), werden nicht mehr fuzzy als dieselbe Stelle gematcht; Codes werden aus dem Rohtitel ohne Noise-Wörter gelesen, der Guard sitzt direkt vor der Jaccard-Ratio.
+- **Die Ports überlebten ein Opus-5-5-Review maximaler Strenge** (21 Befunde): Throw bei still-leeren Boards durch Markup-Drift (google/bwi), ein vorab abgebrochener Scan wirft, statt `[]` zu liefern, Decode-then-strip-Reihenfolge in den LATAM-Scrapern (die Strip-then-decode-XSS-Form), https+Allowlist auf Atlassians Zeilen-URLs, ports-abweisende Host-Asserts, Late-Page-Parse im try (Partials überleben) und Test-Ehrlichkeit (Budgets exakt gezählt, Coercion-Verträge wahr fixiert). 13 Befunde behoben; der [spec]-Schwanz separat getrackt.
+
+### Hinweise
+
+- Die fünf RU bleiben web-ui-only (keine Upstream-Adapter — mit Absicht); jede EN-Quelle hat ihren Adapter.
+- Coverage-Ratchet: die sechs größten Ports auf ≥95 % Branch gehoben (27 neue Fälle); der restliche defensive Totcode ist je Datei dokumentiert.
+- Neue Quellen werden mit `provider: <slug>` in portals.yml gewählt — für bestehende Konfigurationen ändert sich nichts.
+
 ## [1.252.1] — 2026-10-17
 
 **Das Release-Banner des Wikis wird jetzt von einem Skript geprüft statt von einem manuellen Durchlauf — die v1.252.0-Regression hat es nur von Hand erwischt — und die Locale-Direktive überschreibt explizit den language.output des Profils und die Sprache der Stellenanzeige.**

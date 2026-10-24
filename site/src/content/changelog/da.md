@@ -9,6 +9,26 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 ---
 
 
+## [1.253.0] — 2026-10-24
+
+**Ti nye jobkilder slutte sig til scanneren — Atlassian, BWI, Computrabajo, Dover, Google, Kalibrr, Magneto365, Platsbanken, Tech in Asia og Zoho Recruit — registret leverer nu 120 kilder (115 EN + 5 RU) med 115 adaptere, og role matcher holder titler adskilt når de kun adskiller sig ved en kort kode med store bogstaver.**
+
+### Tilføjet
+
+- **10 kilder portet fra forælder 1.38.0**, hver med sin fetch-walk-adapter og en CI-isoleret suite (fake fetchImpl, nul netværk): **Atlassian** (én auth-fri JSON-feed, iCIMS-URL'er, https+icims.com-allowlist), **BWI** (JSON-LD ItemList, JSON.parse først), **Computrabajo** (LATAM, entitetsafkodning, spansk «remoto» læses som remote), **Dover** (DRF-paginering per tenant, `Remote (International)`-rendering, UUID-validerede tavler), **Google Careers** (first side pr. frase, kortets arbejdsgiver vinder, dedup på tværs af forespørgsler), **Kalibrr** (SEA-aggregator, feed-id som række-id), **Magneto365** (LATAM, fast sideinterval), **Platsbanken** (svenske JobTech-API, vinduer pr. nøgleord), **Tech in Asia** (Algolia-nøgler opdaget fra site-buildet), **Zoho Recruit** (hidden-input-tavle, begrænset detail-berigelse, kun ISO-4217-valuta).
+- Registertælling: **120 kilder = 115 EN + 5 RU · 115 adaptere**; de fem tælle-gates regenereret fra det levende register; `#/scan`-dropdown-fallback, cvstart.org-kilder og help §17 ×18 følger med.
+
+### Rettet
+
+- **role-matcher (#5688-port)**: titler der kun adskiller sig ved en kort kode med store bogstaver («HR BP» vs «HR GP», «AWS» vs «GCP», også i blandede skrifter) matches ikke længere fuzz-agtigt som samme opslag; koder læses fra rå titel med støjord-eksklusion, og gardet sidder lige før Jaccard-ratioen.
+- **Portene overlevede en Opus 5-5-anmeldelse af maksimal stringens** (21 fund): throw på stille-tomme tavler ved markup-drift (google/bwi), en forud-aborteret scan kaster i stedet for at returnere `[]`, decode-then-strip-rækkefølge i LATAM-scraperne (strip-then-decode XSS-formen), https+allowlist på atlassians række-URL'er, værter der afviser porte, sen-sides parse inde i try'et (partialer overlever) og test-ærlighed (budgetter talt præcist, coercionskontrakter ærligt fastgjort). 13 fund rettet; [spec]-halen spores separat.
+
+### Noter
+
+- De fem RU forbliver web-ui-only (ingen upstream-adaptere — med vilje); hver EN-kilde har sin adapter.
+- Dæknings-skinne: de seks største porte hævet til ≥95 % branch (27 nye tilfælde); den defensive dødkode-rest er dokumenteret pr. fil.
+- Nye kilder vælges med `provider: <slug>` i portals.yml — intet ændres for eksisterende konfigurationer.
+
 ## [1.252.1] — 2026-10-17
 
 **Wiki'ens udgivelsesbanner verificeres nu af et script i stedet for en manuel omgang — v1.252.0-regressionen fangede den kun i hånden — og locale-direktivet tilsidesætter eksplicit profilens language.output og opslagets eget sprog.**

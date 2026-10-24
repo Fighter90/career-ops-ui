@@ -2,6 +2,26 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.253.0] — 2026-10-24
+
+**On yeni iş kaynağı tarayıcıya katılıyor — Atlassian, BWI, Computrabajo, Dover, Google, Kalibrr, Magneto365, Platsbanken, Tech in Asia ve Zoho Recruit — kayıt defteri artık 115 adaptörle 120 kaynak (115 EN + 5 RU) sunuyor ve rol eşleştirici yalnızca kısa bir büyük harf koduyla farklılaşan unvanları artık aynı ilan olarak eşlemiyor.**
+
+### Eklendi
+
+- **10 kaynak parent 1.38.0'den portlandı**, her biri kendi fetch-walk adaptörü ve CI-izole suitiyle (sahte fetchImpl, sıfır ağ): **Atlassian** (tek auth'suz JSON akışı, iCIMS URL'leri, https+icims.com allowlist), **BWI** (JSON-LD ItemList, JSON.parse önce), **Computrabajo** (LATAM, varlık çözme, İspanyolca «remoto»=remote), **Dover** (tenant başına DRF sayfalama, `Remote (International)` gösterimi, UUID doğrulanmış panolar), **Google Careers** (fazla başına ilk sayfa, kart işvereni kazanır, sorgular arası dedup), **Kalibrr** (SEA toplayıcısı, feed id satır id'si olarak), **Magneto365** (LATAM, sabit sayfalar-arası tempo), **Platsbanken** (İsveç JobTech API'si, anahtar kelime başına pencereler), **Tech in Asia** (Algolia anahtarları site build'inden keşfediliyor), **Zoho Recruit** (hidden-input pano, sınırlı detail zenginleştirme, para birimi yalnız ISO-4217).
+- Kayıt sayacı: **120 kaynak = 115 EN + 5 RU · 115 adaptör**; beş sayaç kapısı canlı kayıt defterinden yeniden üretildi; `#/scan` dropdown fallback'u, cvstart.org kaynak bağlantıları ve help §17 ×18 takip ediyor.
+
+### Düzeltildi
+
+- **rol eşleştirici (#5688 portu)**: yalnızca kısa bir büyük harf koduyla farklılaşan unvanlar («HR BP» vs «HR GP», «AWS» vs «GCP», karma alfabeler dahil) artık fuzzy eşleşmeyle aynı ilan sayılmıyor; kodlar ham unvandan gürültü-kelime hariç okunuyor, koruma Jaccard oranının hemen önünde duruyor.
+- **Portlar maksimum titizlikteki bir Opus 5-5 incelemesini atlattı** (21 bulgu): işaretleme kaymasında sessizce-boş panolarda throw (google/bwi), önceden iptal edilen tarama `[]` döndürmek yerine throw, LATAM scraper'larında decode-then-strip sırası (strip-then-decode XSS biçimi), atlassian satır URL'lerinde https+allowlist, portları reddeden anahtar doğrulamalar, sonraki sayfa parse'ının try içinde olması (kısmiler hayatta kalıyor) ve test dürüstlüğü (bütçeler tam sayıldı, zorlama sözleşmeler dürüstçe sabitlendi). 13 bulgu düzeltildi; [spec] kuyruğu ayrı takip ediliyor.
+
+### Notlar
+
+- Beş RU web-ui-only kalıyor (upstream adaptörü yok — bilinçli); her EN kaynağın bir adaptörü var.
+- Kapsam tırmığı: en büyük altı port ≥95 % branch'e çıkarıldı (27 yeni vaka); kalan savunma ölü kodu dosya başına belgelendi.
+- Yeni kaynaklar portals.yml'de `provider: <slug>` ile seçilir — mevcut yapılandırmalar için hiçbir şey değişmez.
+
 ## [1.252.1] — 2026-10-17
 
 **Wiki sürüm banneri artık manuel tarama yerine bir betikle doğrulanıyor — v1.252.0 gerilemesi onu yalnızca elle yakaladı — ve yerel ayar yönergesi profilin language.output'ını ve iş ilanının dilini açıkça geçersiz kılıyor.**

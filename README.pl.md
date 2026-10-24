@@ -15,14 +15,14 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 [![playwright](https://img.shields.io/badge/playwright-118%2F118-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.252.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.252.1)
+[![release](https://img.shields.io/badge/release-v1.253.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.253.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Najnowsze wydanie — v1.252.1** — **Baner wersji w wiki jest teraz sprawdzany przez skrypt, a nie ręczny przegląd — regresja v1.252.0 wykryła go tylko ręcznie — a dyrektywa locale jawnie nadpisuje language.output profilu i język oferty.**
+> **🆕 Najnowsze wydanie — v1.253.0** — **Dziesięć nowych źródeł ofert dołącza do skanera — Atlassian, BWI, Computrabajo, Dover, Google, Kalibrr, Magneto365, Platsbanken, Tech in Asia i Zoho Recruit — rejestr dostarcza teraz 120 źródeł (115 EN + 5 RU) z 115 adapterami, a role matcher rozdziela tytuły różniące się tylko krótkim kodem wielkimi literami.**
 >
-> **Poprzednie wydanie — v1.252.0** — **Fork rodzica jest zsynchronizowany z career-ops-hq — 264 commity upstream, rodzic 1.36.0 → 1.37.0 — obie dywergencje forka obronione, a wdrożenie przypina działającego rodzica z powrotem do tej bazy.**
+> **Poprzednie wydanie — v1.252.1** — **Fork rodzica jest zsynchronizowany z career-ops-hq — 264 commity upstream, rodzic 1.36.0 → 1.37.0 — obie dywergencje forka obronione, a wdrożenie przypina działającego rodzica z powrotem do tej bazy.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

@@ -7,6 +7,26 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 ---
 
 
+## [1.253.0] — 2026-10-24
+
+**Ten new job-board sources join the scanner — Atlassian, BWI, Computrabajo, Dover, Google, Kalibrr, Magneto365, Platsbanken, Tech in Asia and Zoho Recruit — the registry now ships 120 sources (115 EN + 5 RU) with 115 adapters, and the role matcher keeps titles apart when they differ only by a short capitalised code.**
+
+### Added
+
+- **10 scan sources ported from parent 1.38.0**, each with its fetch-walk adapter and a CI-isolated suite (fake fetchImpl, zero network): **Atlassian** (single auth-free JSON feed, iCIMS posting URLs, https+icims.com allowlist on the row URL), **BWI** (JSON-LD ItemList, JSON.parse-first with an escape-tolerant fallback), **Computrabajo** (LATAM, entity decode via the shared table, Spanish "remoto" reads remote), **Dover** (per-tenant DRF pagination, `Remote (International)` rendering, UUID-validated boards), **Google Careers** (per-phrase first-page queries, card employer wins, dedup across queries), **Kalibrr** (SEA aggregator, feed id as row id — slug churn no longer mints ids), **Magneto365** (LATAM, fixed inter-page pacing), **Platsbanken** (Sweden's JobTech API, keyword windows past the offset-2000 ceiling), **Tech in Asia** (Algolia keys discovered fresh from the site build, employer's own link wins when https and not shared), **Zoho Recruit** (hidden-input board, opt-in bounded detail enrichment, ISO-4217-only currency parse).
+- Registry counts move to **120 sources = 115 EN + 5 RU · 115 adapters**; the five count gates regenerated from the live registry; `#/scan` dropdown fallback, cvstart.org source links and help §17 ×18 follow.
+
+### Fixed
+
+- **role-matcher (#5688 port)**: titles differing only by a short capitalised code ("HR BP" vs "HR GP", "AWS" vs "GCP", even in mixed scripts) are no longer fuzzy-matched as the same opening; codes are read from the raw title with noise words excluded, and the guard sits right before the Jaccard ratio.
+- **Survived a maximum-rigor Opus 5-5 review of the ports** (21 findings): silent-empty-board throws on markup drift (google/bwi), pre-aborted scans throw instead of returning `[]`, decode-then-strip ordering on the LATAM scrapers (the strip-then-decode XSS shape), https+allowlist on atlassian row URLs, port-rejecting host asserts, later-page parse inside the try (partials survive), and test-honesty fixes (budget counts asserted exactly, coerce contracts pinned truthfully). 13 findings fixed, the [spec] tail tracked separately.
+
+### Notes
+
+- The five RU sources remain web-ui-only (no upstream adapters — by design); every EN source has an adapter.
+- Coverage ratchet: the six largest port files raised to ≥95 % branch (27 new cases); the defensive-dead-code remainder is documented per file.
+- New sources are provider-selected (`provider: <slug>` in portals.yml) — existing configs are not affected, and no canonical behavior is changed beyond the dropdown/list counts.
+
 ## [1.252.1] — 2026-10-17
 
 **The wiki's release banner is now gated by a script instead of a hand-run sweep — the v1.252.0 regression caught it stale only by hand — and the locale directive explicitly overrides the profile's language.output and the job posting's language.**

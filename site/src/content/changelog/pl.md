@@ -9,6 +9,26 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.253.0] — 2026-10-24
+
+**Dziesięć nowych źródeł ofert dołącza do skanera — Atlassian, BWI, Computrabajo, Dover, Google, Kalibrr, Magneto365, Platsbanken, Tech in Asia i Zoho Recruit — rejestr dostarcza teraz 120 źródeł (115 EN + 5 RU) z 115 adapterami, a role matcher rozdziela tytuły różniące się tylko krótkim kodem wielkimi literami.**
+
+### Dodano
+
+- **10 źródeł portowanych z rodzica 1.38.0**, każde ze swoim adapterem fetch-walk i wyizolowaną CI-suitem (fałszywy fetchImpl, zero sieci): **Atlassian** (pojedynczy feed JSON bez auth, URL-e iCIMS, allowlist https+icims.com), **BWI** (ItemList JSON-LD, JSON.parse najpierw), **Computrabajo** (LATAM, dekodowanie encji, hiszpańskie „remoto” czytane jako remote), **Dover** (paginacja DRF per tenant, render `Remote (International)`, tablice walidowane UUID), **Google Careers** (pierwsze strony per fraza, pracodawca karty wygrywa, dedup między zapytaniami), **Kalibrr** (agregator SEA, id feedu jako id wiersza), **Magneto365** (LATAM, stałe tempo między stronami), **Platsbanken** (szwedzkie API JobTech, okna per słowo kluczowe), **Tech in Asia** (klucze Algolia odkrywane z builda strony), **Zoho Recruit** (board hidden-input, ograniczone wzbogacanie detail, waluta tylko ISO-4217).
+- Licznik rejestru: **120 źródeł = 115 EN + 5 RU · 115 adapterów**; pięć gate'ów liczników regenerowanych z żywego rejestru; fallback dropdownu `#/scan`, linki cvstart.org i help §17 ×18 podążają.
+
+### Naprawiono
+
+- **role-matcher (port #5688)**: tytuły różniące się tylko krótkim kodem wielkimi literami („HR BP” vs „HR GP”, „AWS” vs „GCP”, także w mieszanych pismach) nie są już sklejane fuzz-matchem jako ta sama oferta; kody czytane są z surowego tytułu z wykluczeniem słów-szumów, a guard stoi tuż przed współczynnikiem Jaccarda.
+- **Porty przeżyły rewizję Opus 5-5 o maksymalnej surowości** (21 ustaleń): throw na cicho-pustych tablicach przy dryfie markupu (google/bwi), przedwczesnie przerwany skan rzuca zamiast zwracać `[]`, kolejność decode-then-strip w scraperach LATAM (forma XSS strip-then-decode), https+allowlist na URL-ach wierszy atlassian, asercje hostów odrzucające porty, parse późnych stron wewnątrz try (partialie przeżywają) oraz uczciwość testów (budżety liczone dokładnie, kontrakty koercji przypięte prawdziwie). 13 ustaleń naprawionych; ogon [spec] śledzony osobno.
+
+### Uwagi
+
+- Pięć RU pozostaje web-ui-only (brak adapterów upstream — celowo); każde źródło EN ma swój adapter.
+- Ratchet pokrycia: sześć największych portów podniesionych do ≥95 % branch (27 nowych przypadków); reszta defensywnego martwego kodu udokumentowana per plik.
+- Nowe źródła wybiera się przez `provider: <slug>` w portals.yml — dla istniejących konfiguracji nic się nie zmienia.
+
 ## [1.252.1] — 2026-10-17
 
 **Baner wersji w wiki jest teraz sprawdzany przez skrypt, a nie ręczny przegląd — regresja v1.252.0 wykryła go tylko ręcznie — a dyrektywa locale jawnie nadpisuje language.output profilu i język oferty.**

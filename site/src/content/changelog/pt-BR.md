@@ -9,6 +9,26 @@ Traduções: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob/
 ---
 
 
+## [1.253.0] — 2026-10-24
+
+**Dez novas fontes de vagas entram no scanner — Atlassian, BWI, Computrabajo, Dover, Google, Kalibrr, Magneto365, Platsbanken, Tech in Asia e Zoho Recruit — o registro agora entrega 120 fontes (115 EN + 5 RU) com 115 adaptadores, e o role matcher mantém separados os títulos que diferem apenas por um código curto em maiúsculas.**
+
+### Adicionado
+
+- **10 fontes portadas do pai 1.38.0**, cada uma com seu adaptador de fetch-walk e uma suíte isolada de CI (fetchImpl falso, zero rede): **Atlassian** (feed JSON único sem auth, URLs iCIMS, allowlist https+icims.com), **BWI** (ItemList JSON-LD, JSON.parse-first), **Computrabajo** (LATAM, decodificação de entidades, «remoto» lê remote), **Dover** (paginação DRF por tenant, render `Remote (International)`, quadros validados por UUID), **Google Careers** (primeiras páginas por frase, o empregador do cartão vence, dedup entre consultas), **Kalibrr** (agregador SEA, id do feed como id da linha), **Magneto365** (LATAM, ritmo inter-página fixo), **Platsbanken** (API JobTech da Suécia, janelas por palavra-chave), **Tech in Asia** (chaves Algolia descobertas do build do site), **Zoho Recruit** (board de hidden-input, enriquecimento de detalhe limitado, moeda só ISO-4217).
+- Contagem do registro: **120 fontes = 115 EN + 5 RU · 115 adaptadores**; os cinco gates de contagem regenerados do registro vivo; o fallback do dropdown `#/scan`, os links do cvstart.org e help §17 ×18 seguem.
+
+### Corregido
+
+- **role-matcher (porto #5688)**: títulos que diferem apenas por um código curto em maiúsculas («HR BP» vs «HR GP», «AWS» vs «GCP», mesmo em escritas mistas) não são mais emparelhados por fuzz como a mesma vaga; os códigos são lidos do título cru com exclusões de palavras-ruído e o guard fica logo antes do ratio de Jaccard.
+- **Os portos sobreviveram a uma revisão Opus 5-5 de rigor máximo** (21 achados): throws em quadros silenciosamente vazios por deriva de marcação (google/bwi), varredura pré-abortida lança em vez de devolver `[]`, ordem decode-then-strip nos scrapers LATAM (a forma XSS strip-then-decode), https+allowlist nos URLs de linha do atlassian, asserts de host que rejeitam portas, parse de páginas tardias dentro do try (parciais sobrevivem) e honestidade de testes (orçamentos contados exatamente, contratos de coerção fixados com verdade). 13 achados corrigidos; a cauda [spec] rastreada à parte.
+
+### Notas
+
+- Os cinco RU continuam web-ui-only (sem adaptadores upstream — de propósito); cada fonte EN tem seu adaptador.
+- Ratchet de cobertura: os seis maiores portos elevados a ≥95 % branch (27 casos novos); o código morto defensivo restante fica documentado por arquivo.
+- As fontes novas são selecionadas com `provider: <slug>` no portals.yml — nada muda para configurações existentes.
+
 ## [1.252.1] — 2026-10-17
 
 **O banner de versão da wiki agora é verificado por um script em vez de uma varredura manual — a regressão v1.252.0 só o detectou manualmente — e a diretiva de locale sobrepõe explicitamente o language.output do perfil e o idioma da vaga.**
