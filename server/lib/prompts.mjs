@@ -34,6 +34,7 @@ const LOCALE_NAMES = {
   da: 'Danish',
   hi: 'Hindi',
   ta: 'Tamil',
+  vi: 'Vietnamese',
 };
 
 /**
@@ -115,6 +116,7 @@ const SCAFFOLD_STRINGS = {
     da: 'Læs disse filer først (de findes i projektets rod):',
     hi: 'पहले ये फ़ाइलें पढ़ें (ये प्रोजेक्ट रूट में मौजूद हैं):',
     ta: 'இந்தக் கோப்புகளை முதலில் படியுங்கள் (அவை திட்ட மூலத்தில் உள்ளன):',
+    vi: 'Hãy đọc các tệp này trước (chúng nằm ở thư mục gốc của dự án):',
   },
   userContext: {
     en: 'User-supplied context:',
@@ -135,6 +137,7 @@ const SCAFFOLD_STRINGS = {
     da: 'Kontekst fra brugeren:',
     hi: 'उपयोगकर्ता द्वारा दिया गया संदर्भ:',
     ta: 'பயனர் வழங்கிய சூழல்:',
+    vi: 'Bối cảnh do người dùng cung cấp:',
   },
   modeTemplate: {
     en: 'mode template',
@@ -155,6 +158,7 @@ const SCAFFOLD_STRINGS = {
     da: 'tilstandsskabelon',
     hi: 'मोड टेम्पलेट',
     ta: 'முறை டெம்ப்ளேட்',
+    vi: 'mẫu chế độ',
   },
   // Template STRINGS (not functions) with a `{slug}` placeholder. Storing
   // strings — resolved via a guarded own-key lookup and interpolated with
@@ -180,6 +184,7 @@ const SCAFFOLD_STRINGS = {
     da: 'Du er career-ops i {slug}-tilstand.',
     hi: 'आप {slug} मोड में career-ops हैं।',
     ta: 'நீங்கள் {slug} முறையில் career-ops ஆவீர்கள்.',
+    vi: 'Bạn là career-ops ở chế độ {slug}.',
   },
   evalRoleLine: {
     en: 'You are career-ops. Evaluate this Job Description against the user\'s CV.',
@@ -200,6 +205,7 @@ const SCAFFOLD_STRINGS = {
     da: 'Du er career-ops. Vurder denne Job Description i forhold til brugerens CV.',
     hi: 'आप career-ops हैं। इस Job Description का मूल्यांकन उपयोगकर्ता के CV के आधार पर करें।',
     ta: 'நீங்கள் career-ops. இந்த Job Description-ஐ பயனரின் CV-உடன் ஒப்பிட்டு மதிப்பிடுங்கள்.',
+    vi: 'Bạn là career-ops. Hãy đánh giá Mô tả Công việc này so với CV của người dùng.',
   },
 };
 

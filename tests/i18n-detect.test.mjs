@@ -72,6 +72,9 @@ const MAPPING = [
   ['ta', 'ta'],
   ['ta-IN', 'ta'],
   ['ta-LK', 'ta'],
+  // Vietnamese — the 19th locale. Plain 'vi' plus the Vietnam region tag.
+  ['vi', 'vi'],
+  ['vi-VN', 'vi'],
   // No mapping → English.
   ['en-GB', 'en'],
   ['nb-NO', 'en'],
@@ -98,7 +101,7 @@ test('detect(): every LANGS entry has a detect() hit (a shippable locale is reac
   const probes = {
     en: 'en', es: 'es', 'pt-BR': 'pt', ko: 'ko', ja: 'ja', ru: 'ru',
     'zh-CN': 'zh', 'zh-TW': 'zh-hk', fr: 'fr', pl: 'pl', uk: 'uk', da: 'da',
-    ar: 'ar', de: 'de', it: 'it', tr: 'tr', hi: 'hi', ta: 'ta',
+    ar: 'ar', de: 'de', it: 'it', tr: 'tr', hi: 'hi', ta: 'ta', vi: 'vi',
   };
   for (const code of langs) {
     assert.ok(probes[code] !== undefined, `locale ${code} has no detect() probe in this test`);

@@ -41,6 +41,9 @@ window.I18n = (function () {
     // read as a duplicate, and Sri Lanka is Tamil's other home state (Tamil
     // is an official language there), which keeps the row scannable.
     { code: 'ta',    label: 'தமிழ்',      flag: '🇱🇰' },
+    // Vietnamese, the 19th locale. Latin-based script with tone marks —
+    // LTR, never added to RTL_LANGS.
+    { code: 'vi',    label: 'Tiếng Việt', flag: '🇻🇳' },
   ];
 
   // I18N-EXPAND (v1.70.0) — locales whose script is written right-to-left.
@@ -92,6 +95,8 @@ window.I18n = (function () {
     // Tamil — plain 'ta' plus the India and Sri-Lanka region tags (Tamil
     // is official in both; script is identical, one locale covers them).
     if (browser.startsWith('ta')) return 'ta';
+    // Vietnamese — plain 'vi' plus the Vietnam region tag.
+    if (browser.startsWith('vi')) return 'vi';
     return 'en';
   }
 
