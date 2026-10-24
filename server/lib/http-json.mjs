@@ -22,6 +22,7 @@
  *     connection-pinning in `safe-fetch.mjs`.
  */
 import { promises as dns } from 'node:dns';
+import { isIP } from 'node:net';
 import { isPrivateOrLoopbackHost } from './security.mjs';
 
 /**
@@ -34,6 +35,12 @@ import { isPrivateOrLoopbackHost } from './security.mjs';
  * connected to either, so the subsequent `fetch` surfaces the real failure —
  * blocking here would only turn a connect error into a confusing one.
  *
+ * CAR-90: an IPv6 LITERAL must never reach the resolver. `new URL(u).hostname`
+ * keeps the brackets (`[::1]`), `dns.lookup` throws ENOTFOUND on the bracketed
+ * form, and the fail-open catch above let `fetch` connect straight to the
+ * loopback / cloud-metadata address the guard exists to refuse. A literal IP
+ * needs no resolution at all — classify it directly and never consult DNS.
+ *
  * @param {typeof fetch} fetchImpl
  * @param {string} url
  */
@@ -42,9 +49,25 @@ export async function guardResolvedHost(fetchImpl, url) {
   let hostname;
   try { hostname = new URL(url).hostname; } catch { return; }
   if (!hostname) return;
+  // Strip the URL parser's IPv6 brackets, then short-circuit literals: an
+  // address in the URL is the address fetch will connect to, so the private/
+  // loopback classification is final without any lookup.
+  const bare = hostname.startsWith('[') && hostname.endsWith(']')
+    ? hostname.slice(1, -1)
+    : hostname;
+  if (isIP(bare)) {
+    if (isPrivateOrLoopbackHost(bare)) {
+      const err = new Error(`Refusing to fetch ${hostname}: literal non-public address ${bare}`);
+      err.code = 'ECAREEROPS_BLOCKED_ADDRESS';
+      err.hostname = hostname;
+      err.address = bare;
+      throw err;
+    }
+    return;
+  }
   let answers;
   try {
-    answers = await dns.lookup(hostname, { all: true, verbatim: true });
+    answers = await dns.lookup(bare, { all: true, verbatim: true });
   } catch { return; }
   // Every answer, not just the first: the connection may use any of them, so a
   // record set that mixes a public and a private address is refused.

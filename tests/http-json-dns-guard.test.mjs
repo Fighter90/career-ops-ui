@@ -9,7 +9,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { fetchJson, fetchText } from '../server/lib/http-json.mjs';
+import { fetchJson, fetchText, guardResolvedHost } from '../server/lib/http-json.mjs';
 
 test('real fetch to a loopback host is blocked before connecting', async () => {
   await assert.rejects(
@@ -39,4 +39,38 @@ test('a malformed URL is left for fetch to surface, not turned into a BLOCKED er
   // guardResolvedHost returns early on an unparseable URL; the mock still answers.
   const mock = async () => ({ ok: true, json: async () => ({ ok: 1 }) });
   assert.deepEqual(await fetchJson(mock, 'not a url'), { ok: 1 });
+});
+
+// ─── IPv6 literals (CAR-90) ────────────────────────────────────────
+// `new URL(u).hostname` keeps the brackets, `dns.lookup('[::1]')` throws
+// ENOTFOUND, and the old guard's `catch { return; }` FAILED OPEN — so fetch
+// connected straight to the loopback / cloud-metadata address the guard
+// exists to refuse. A literal IP needs no DNS at all: classify it directly.
+
+test('an IPv6 loopback literal is blocked before connecting', async () => {
+  await assert.rejects(
+    () => guardResolvedHost(globalThis.fetch, 'http://[::1]:59999/x'),
+    (e) => e.code === 'ECAREEROPS_BLOCKED_ADDRESS' && e.address === '::1',
+  );
+});
+
+test('IPv4-mapped IPv6 literals naming the cloud-metadata endpoint are blocked', async () => {
+  // new URL() normalises the dotted form to hex: hostname `[::ffff:a9fe:a9fe]`.
+  await assert.rejects(
+    () => guardResolvedHost(globalThis.fetch, 'http://[::ffff:169.254.169.254]/latest/meta-data/'),
+    (e) => e.code === 'ECAREEROPS_BLOCKED_ADDRESS' && e.address === '::ffff:a9fe:a9fe',
+  );
+});
+
+test('an IPv6 unique-local-address literal (AWS IMDSv6) is blocked', async () => {
+  await assert.rejects(
+    () => guardResolvedHost(globalThis.fetch, 'http://[fd00:ec2::254]/x'),
+    (e) => e.code === 'ECAREEROPS_BLOCKED_ADDRESS',
+  );
+});
+
+test('a public IPv6 literal passes the guard without a DNS round-trip', async () => {
+  // 2606:4700:4700::1111 is a public Cloudflare resolver address; a literal
+  // needs no resolution, so the guard must return (never throw) for it.
+  await guardResolvedHost(globalThis.fetch, 'http://[2606:4700:4700::1111]/x');
 });

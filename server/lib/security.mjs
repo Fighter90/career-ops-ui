@@ -236,7 +236,14 @@ export function stripDangerousMarkdown(text) {
   // Escaping a single `<` → `&lt;` is a COMPLETE sanitization (no partial
   // multi-character delimiter can be reconstructed downstream), which closes
   // the incomplete-multi-character-sanitization class at the trust boundary.
-  s = s.replace(/<(?=\s*\/?\s*(?:script|iframe|object|embed|style|form|svg)\b)/gi, '&lt;');
+  // CAR-90: one FLAT character class, not `\s*\/?\s*`. The old shape carried a
+  // nested quantifier (two `\s*` runs around an optional `\/` over the SAME
+  // whitespace run), so `<` + 100k spaces split the run O(k²) ways — ~16s of
+  // blocked event loop through /api/cv/import. A single-class run has no
+  // ambiguity to backtrack (per-`<` work is bounded by its own following run,
+  // and runs are disjoint → linear overall). Same openers escaped; the only
+  // widening is extra slashes (`< //script`), which is the safe direction.
+  s = s.replace(/<(?=[\s/]*(?:script|iframe|object|embed|style|form|svg)\b)/gi, '&lt;');
   // Same belt for event-handler attributes: the strip loop is capped at 8
   // passes, so nesting deeper than that could leave an `on…=` behind. Rename
   // what survives to an inert `data-blocked=`; the replacement cannot
