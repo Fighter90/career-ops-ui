@@ -1119,6 +1119,8 @@ window.__I18N_DICT_EN = {
   'twoPager.save': "Save two-pager",
   'twoPager.saved': "Two-pager saved",
   'twoPager.saveFailed': "Could not save the two-pager",
+  'twoPager.overwriteWarn': "The saved two-pager could not be loaded, so the form may not show your saved data. Saving now overwrites config/two-pager.yml with what the form shows.",
+
   'twoPager.privacyNote': "Stored in your parent project’s user layer (config/two-pager.yml) — never sent anywhere except the LLM prompts you run.",
   'scan.fitTip': "Fit to what you want",
   'scan.titleFit.strong': "strong fit",

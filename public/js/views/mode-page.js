@@ -213,6 +213,13 @@
     }
 
     const out = c('div');
+    // CAR-94 (5) — cross-button single-flight + stale token, the same shape
+    // as deep.js: "Generate prompt", "Run live" and the prompt card's
+    // "Show result" all POST /api/mode/:slug; withSpinner disables only the
+    // clicked button, so two concurrent paid calls could race and the last
+    // resolution clobbered `out`.
+    let inFlight = false;
+    let runToken = 0;
 
     function payload() {
       const body = {};
@@ -328,6 +335,9 @@
 
     async function submit(btn, run) {
       if (!validate()) return;
+      if (inFlight) return; // CAR-94 (5) — one paid POST at a time for this view
+      inFlight = true;
+      const myToken = ++runToken;
       out.innerHTML = `<div class="loading">${t('mode.generating', 'Generating…')}</div>`;
       try {
         // v1.17.0 — serverSlug (if set) decouples the route hash from the
@@ -335,6 +345,7 @@
         // modes/batch.md.
         const apiSlug = cfg.serverSlug || cfg.slug;
         const r = await UI.withSpinner(btn, () => API.post('/api/mode/' + apiSlug, { ...payload(), run }));
+        if (myToken !== runToken) return; // a newer run owns `out`
         const titleStr = `${t(cfg.titleKey)} — ${new Date().toLocaleString()}`;
         if (r.markdown) {
           showResult(titleStr, r.markdown, cfg.slug);
@@ -342,8 +353,11 @@
           showPrompt(r.prompt, r.message, cfg.slug);
         }
       } catch (e) {
+        if (myToken !== runToken) return;
         out.innerHTML = '';
         out.appendChild(c('div', { className: 'empty' }, e.message || String(e)));
+      } finally {
+        if (myToken === runToken) inFlight = false;
       }
     }
 

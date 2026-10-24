@@ -9,6 +9,14 @@ Router.register('deep', async () => {
   const archive = c('div');
   let liveAvailable = false;
   let liveEngine = '';
+  // CAR-94 (5) — cross-button single-flight + stale token. "Run live",
+  // "Copy prompt"/"Generate prompt" and the prompt card's "Show result" all
+  // POST /api/deep; withSpinner disables only the clicked button, so two of
+  // them could fire concurrent paid calls, and whichever resolved last
+  // clobbered `out`. One flag guards entry for the whole view; a token
+  // invalidates a resolution that is no longer the newest before it writes.
+  let inFlight = false;
+  let runToken = 0;
 
   // v1.157.0 — "Run live" availability follows the SERVER's active provider, i.e.
   // ANY of the seven (Anthropic / Gemini / OpenAI / Qwen / OpenRouter / GitHub
@@ -38,8 +46,15 @@ Router.register('deep', async () => {
       title: new Date(f.mtime).toLocaleString(),
       'data-slug': f.name.replace(/\.md$/, ''),
       onClick: async (e) => {
-        const r = await UI.withSpinner(e.currentTarget, () => API.get('/api/interview-prep/' + encodeURIComponent(f.name)));
-        showResult(f.name, r.markdown, { saved: f.name });
+        // CAR-94 (10) — the awaited spinner had no try/catch: a failed GET
+        // rejected unhandled (no toast, error only in the console). Surface
+        // it like every other failure in this view.
+        try {
+          const r = await UI.withSpinner(e.currentTarget, () => API.get('/api/interview-prep/' + encodeURIComponent(f.name)));
+          showResult(f.name, r.markdown, { saved: f.name });
+        } catch (err) {
+          UI.toast((err && err.message) || t('common.error', 'Error'), 'error');
+        }
       },
     }, [
       c('span', { className: 'saved-card__title' }, f.name.replace(/\.md$/, '')),
@@ -65,8 +80,14 @@ Router.register('deep', async () => {
     try {
       const r = await API.get('/api/interview-prep');
       renderArchive(r.files || []);
-    } catch {
-      renderArchive([]);
+    } catch (e) {
+      // CAR-94 (9) — a failed GET used to render an EMPTY archive here,
+      // which reads as "No saved deep-research files yet" — a fake empty
+      // state over a real failure. Render the error instead (existing
+      // common.error key + the server's own message).
+      archive.innerHTML = '';
+      archive.appendChild(c('p', { style: { color: 'var(--danger, #d9534f)', fontSize: '13px' } },
+        t('common.error', 'Error') + ': ' + ((e && e.message) || t('common.error', 'Error'))));
     }
   }
 
@@ -250,6 +271,9 @@ Router.register('deep', async () => {
 
   async function runLive(btn) {
     if (!company.value.trim()) return UI.toast(t('deep.enterCompany'), 'error');
+    if (inFlight) return; // CAR-94 (5) — one paid POST at a time for this view
+    inFlight = true;
+    const myToken = ++runToken;
     out.innerHTML = `<div class="loading">${t('deep.generating')}</div>`;
     try {
       const r = await UI.withSpinner(btn, () => API.post('/api/deep', {
@@ -257,35 +281,46 @@ Router.register('deep', async () => {
         role: role.value.trim() || undefined,
         run: true,
       }));
+      if (myToken !== runToken) return; // a newer run owns `out`
       if (r.markdown) {
         showResult(`${company.value.trim()}${role.value.trim() ? ' — ' + role.value.trim() : ''}`, r.markdown, { saved: r.saved });
         loadArchive();
       } else {
         // CAR-20 (v1.243.0) — the old message hard-named Gemini while the
-        // active provider can be any of the seven; prefer the server's
-        // own (provider-neutral) message when it supplies one. (A
+        // active provider can be any of the seven; prefer the server's own
+        // (provider-neutral) message when it supplies one. (A
         // provider-neutral dict key to replace deep.geminiNoOutput is
         // still worth a follow-up — reported to the parent session.)
         showPrompt(r.prompt, r.message || t('deep.geminiNoOutput', 'Gemini returned no output. Showing the prompt — paste it into Claude Code instead.'));
       }
     } catch (e) {
+      if (myToken !== runToken) return;
       out.innerHTML = '';
       out.appendChild(c('div', { className: 'empty' }, e.message));
+    } finally {
+      if (myToken === runToken) inFlight = false;
     }
   }
 
   async function runManual(btn) {
     if (!company.value.trim()) return UI.toast(t('deep.enterCompany'), 'error');
+    if (inFlight) return; // CAR-94 (5) — shared with runLive / Show result
+    inFlight = true;
+    const myToken = ++runToken;
     out.innerHTML = `<div class="loading">${t('deep.generating')}</div>`;
     try {
       const r = await UI.withSpinner(btn, () => API.post('/api/deep', {
         company: company.value.trim(),
         role: role.value.trim() || undefined,
       }));
+      if (myToken !== runToken) return;
       showPrompt(r.prompt, r.message);
     } catch (e) {
+      if (myToken !== runToken) return;
       out.innerHTML = '';
       out.appendChild(c('div', { className: 'empty' }, e.message));
+    } finally {
+      if (myToken === runToken) inFlight = false;
     }
   }
 

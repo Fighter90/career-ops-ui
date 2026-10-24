@@ -38,6 +38,10 @@ Router.register('two-pager', async () => {
     .then(({ twoPager }) => ({ twoPager }))
     .catch((e) => ({ error: e }));
   const loadErr = load.error || null;
+  // CAR-94 (3) — the failure is recoverable: a later successful GET (page
+  // reload, or any code path that re-reads the file) flips this and the
+  // overwrite confirm is no longer needed.
+  let loadRecovered = false;
   let data = load.twoPager || { who_i_am: '', loves: [], must_haves: [], hates: [], deal_breakers: [], non_negotiables: [], target_environment: '' };
 
   // ── free-text blocks ──
@@ -156,6 +160,21 @@ Router.register('two-pager', async () => {
   });
 
   saveBtn.addEventListener('click', async () => {
+    // CAR-94 (3) — after a failed load the form is NOT the file's real
+    // content, and one keystroke used to re-enable Save: a click then PUT a
+    // near-empty form over config/two-pager.yml. A deliberate edit (or an
+    // AI fill) may still arm the button, but while the failed load has not
+    // been recovered the destructive save itself requires an explicit
+    // danger confirm.
+    if (loadErr && !loadRecovered) {
+      const ok = await UI.confirm(
+        t('twoPager.save', 'Save two-pager'),
+        t('twoPager.overwriteWarn',
+          'The saved two-pager could not be loaded, so the form may not show your saved data. Saving now overwrites config/two-pager.yml with what the form shows.'),
+        { danger: true },
+      );
+      if (!ok) return;
+    }
     saveBtn.disabled = true;
     try {
       await API.put('/api/two-pager', collect());

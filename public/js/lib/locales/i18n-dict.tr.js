@@ -1040,6 +1040,8 @@ window.__I18N_DICT_TR = {
   'twoPager.save': "Two-pager'ı kaydet",
   'twoPager.saved': "Two-pager kaydedildi",
   'twoPager.saveFailed': "Two-pager kaydedilemedi",
+  'twoPager.overwriteWarn': "Kaydedilmiş Two-pager yüklenemedi, bu yüzden form kaydedilmiş verilerinizi göstermiyor olabilir. Şimdi kaydetmek, config/two-pager.yml dosyasının üzerine formdaki içeriği yazar.",
+
   'twoPager.privacyNote': "Üst projenizin kullanıcı katmanında saklanır (config/two-pager.yml) — çalıştırdığınız LLM istemleri dışında hiçbir yere gönderilmez.",
   'scan.fitTip': "İstediğinize uygunluk",
   'scan.titleFit.strong': "güçlü uyum",

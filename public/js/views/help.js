@@ -18,7 +18,24 @@ function helpSectionIdFromHash(hash) {
   return id ? decodeURIComponent(id) : null;
 }
 
+// CAR-94 (2) — module-level teardown for the CURRENT help instance. Two
+// re-render paths never fire a hashchange that leaves '#/help': a language
+// switch (Router.render(), no hashchange at all) and Back/Forward between
+// '#/help?h=a' and '#/help?h=b' (the hash keeps its '#/help' prefix). The
+// old hashchange-only cleanup therefore leaked one scroll + one resize + one
+// hashchange listener set per re-render — each stale set kept touching a
+// detached backTop and a stale linkByTarget — and never cleared
+// tocScrollTimer. The next render's FIRST statement calls the previous
+// instance's detach (below), and leaving '#/help' entirely detaches via the
+// same handle from the hashchange guard.
+let helpDetach = null;
+
 Router.register('help', async () => {
+  // CAR-94 (2) — tear the previous instance down before building a new one.
+  if (helpDetach) {
+    helpDetach();
+    helpDetach = null;
+  }
   const c = UI.el;
   const t = (k, f) => I18n.t(k, f);
   const lang = (I18n.getLang && I18n.getLang()) || 'en';
@@ -261,26 +278,38 @@ Router.register('help', async () => {
   // Removed on cleanup so the marker accurately reflects route state.
   document.body.setAttribute('data-toc-spy', 'active');
 
-  // Detach all listeners + the marker when the SPA leaves #/help.
-  const cleanup = () => {
-    if (!location.hash.startsWith('#/help')) {
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('scroll', onSpyScroll);
-      window.removeEventListener('resize', onSpyScroll);
-      window.removeEventListener('hashchange', cleanup);
-      document.body.removeAttribute('data-toc-spy');
-    }
+  // CAR-94 (2) — install this instance's listeners and register the
+  // module-level teardown. helpDetach runs either at the top of the NEXT
+  // #/help render (re-render paths that never leave the hash) or when the
+  // hash leaves '#/help' (the guard below). The handle is nulled first, so
+  // exactly one of the two paths ever runs a given detach.
+  const detach = () => {
+    helpDetach = null;
+    window.removeEventListener('scroll', onScroll);
+    window.removeEventListener('scroll', onSpyScroll);
+    window.removeEventListener('resize', onSpyScroll);
+    window.removeEventListener('hashchange', onHashLeave);
+    clearTimeout(tocScrollTimer);
+    document.body.removeAttribute('data-toc-spy');
   };
-  window.addEventListener('hashchange', cleanup);
+  const onHashLeave = () => {
+    if (!location.hash.startsWith('#/help')) detach();
+  };
+  window.addEventListener('hashchange', onHashLeave);
+  helpDetach = detach;
 
   // CAR-42 (v1.243.0) — deep-link + Back/Forward support: '#/help?h=<id>'
-  // scrolls to that section once the router has mounted the article (the
-  // headings are detached nodes until then, hence the double rAF — the same
-  // mount-ordering pattern the scroll-spy uses). Best-effort: an unknown id
-  // just stays at the top.
+  // scrolls to that section once the router has mounted the article.
+  // Best-effort: an unknown id just stays at the top.
+  // CAR-94 (1) — the lookup used document.getElementById, but the article is
+  // still DETACHED while this handler runs (the router appends the returned
+  // root only afterwards), so the lookup returned null and the CAR-42
+  // Back/Forward deep link never scrolled. Worse, on a re-render it could
+  // return the OLD view's node. Resolve against the `headings` array we
+  // already hold — the same nodes that travel with the article into the DOM.
   const deepLinkTarget = (() => {
     const id = helpSectionIdFromHash(location.hash);
-    return id ? document.getElementById(id) : null;
+    return id ? (headings.find((h) => h.id === id) || null) : null;
   })();
   if (deepLinkTarget) {
     requestAnimationFrame(() => requestAnimationFrame(() => {

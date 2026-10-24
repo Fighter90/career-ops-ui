@@ -1039,6 +1039,8 @@ window.__I18N_DICT_DA = {
   'twoPager.save': "Gem two-pager",
   'twoPager.saved': "Two-pager gemt",
   'twoPager.saveFailed': "Kunne ikke gemme two-pageren",
+  'twoPager.overwriteWarn': "Den gemte two-pager kunne ikke indlæses, så formularen viser måske ikke dine gemte data. Gem nu overskriver config/two-pager.yml med formularens indhold.",
+
   'twoPager.privacyNote': "Gemmes i det overordnede projekts brugerlag (config/two-pager.yml) — sendes aldrig nogen steder undtagen de LLM-prompts, du selv kører.",
   'scan.fitTip': "Match til det, du ønsker",
   'scan.titleFit.strong': "stærkt match",

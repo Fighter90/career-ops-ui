@@ -1040,6 +1040,8 @@ window.__I18N_DICT_ZH_TW = {
   'twoPager.save': "儲存兩頁簡介",
   'twoPager.saved': "兩頁簡介已儲存",
   'twoPager.saveFailed': "無法儲存兩頁簡介",
+  'twoPager.overwriteWarn': "無法載入已儲存的兩頁簡介，表單可能沒有顯示你已儲存的資料。現在儲存將以表單內容覆蓋 config/two-pager.yml。",
+
   'twoPager.privacyNote': "儲存在你父專案的使用者層（config/two-pager.yml）中 — 除了你執行的 LLM 提示詞外，不會傳送到任何地方。",
   'scan.fitTip': "與你所想的契合度",
   'scan.titleFit.strong': "高度契合",

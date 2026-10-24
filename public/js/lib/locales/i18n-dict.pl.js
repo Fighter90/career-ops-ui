@@ -1039,6 +1039,8 @@ window.__I18N_DICT_PL = {
   'twoPager.save': "Zapisz dwie strony",
   'twoPager.saved': "Dokument na dwie strony zapisany",
   'twoPager.saveFailed': "Nie udało się zapisać dokumentu na dwie strony",
+  'twoPager.overwriteWarn': "Nie udało się wczytać zapisanego dokumentu na dwie strony, więc formularz może nie pokazywać zapisanych danych. Zapisanie teraz nadpisze config/two-pager.yml zawartością formularza.",
+
   'twoPager.privacyNote': "Przechowywane w warstwie użytkownika Twojego projektu nadrzędnego (config/two-pager.yml) — nigdzie nie wysyłane poza promptami LLM, które uruchamiasz.",
   'scan.fitTip': "Dopasowanie do Twoich oczekiwań",
   'scan.titleFit.strong': "mocne dopasowanie",

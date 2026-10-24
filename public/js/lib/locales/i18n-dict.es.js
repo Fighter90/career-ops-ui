@@ -1039,6 +1039,8 @@ window.__I18N_DICT_ES = {
   'twoPager.save': "Guardar two-pager",
   'twoPager.saved': "Two-pager guardado",
   'twoPager.saveFailed': "No se pudo guardar el two-pager",
+  'twoPager.overwriteWarn': "No se pudo cargar el two-pager guardado, así que puede que el formulario no muestre tus datos guardados. Guardar ahora sobrescribirá config/two-pager.yml con lo que muestra el formulario.",
+
   'twoPager.privacyNote': "Se guarda en la capa de usuario de tu proyecto padre (config/two-pager.yml) — nunca se envía a ningún sitio salvo a los prompts de LLM que ejecutes.",
   'scan.fitTip': "Encaje con lo que quieres",
   'scan.titleFit.strong': "encaje fuerte",

@@ -46,6 +46,12 @@ Router.register('activity', async () => {
   const tableBody = c('tbody');
   const empty = c('div', { className: 'empty' }, t('activity.empty'));
   empty.hidden = true;
+  // CAR-94 (8) — a FAILED load used to leave the previous filter's rows in
+  // the table while the new chip showed active: the failure looked exactly
+  // like the new filter's data. The load now drops the stale rows and this
+  // alert carries the failure instead.
+  const loadError = c('div', { role: 'alert', className: 'empty' });
+  loadError.hidden = true;
 
   function renderRow(evt) {
     const ts = new Date(evt.ts);
@@ -119,9 +125,22 @@ Router.register('activity', async () => {
       if (myToken !== loadToken) return; // a newer load owns the table
       allEvents = data.events || [];
       pager.reset();
+      loadError.hidden = true;
       render();
     } catch (err) {
       if (myToken !== loadToken) return;
+      // CAR-94 (8) — drop the previous filter's rows and show the failure:
+      // a failed load must never read as the new filter's (empty) data.
+      allEvents = [];
+      pager.reset();
+      render();
+      empty.hidden = true; // the "no activity" empty state would lie here
+      loadError.replaceChildren(
+        c('strong', null, t('common.error', 'Error')),
+        c('span', { style: { marginLeft: '8px', color: 'var(--foggy)' } },
+          String((err && err.message) || '')),
+      );
+      loadError.hidden = false;
       UI.toast((err && err.message) || t('common.error', 'Error'), 'error');
     }
   }
@@ -157,6 +176,7 @@ Router.register('activity', async () => {
     ]),
 
     c('div', { className: 'card mb-3' }, [filterRow]),
+    loadError,
     empty,
     c('div', { className: 'table-wrap' },
       c('table', { className: 'tbl' }, [

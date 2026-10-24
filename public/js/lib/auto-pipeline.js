@@ -39,6 +39,15 @@
   // server-side (server/lib/routes/auto-pipeline.mjs). Client only
   // renders what the SSE `done` event reports.
 
+  // CAR-94 (6) — module-scope single-flight + abort handle. They must
+  // outlive one modal instance: closing the modal used to leave the paid
+  // run streaming (handlers wrote into detached DOM), and reopening let a
+  // SECOND paid run start while the first was still in flight. The abort
+  // also stops the spend server-side (the route threads the client
+  // disconnect into the provider call).
+  let running = false;
+  let currentAbort = null;
+
   function urlIsValid(url) {
     if (typeof url !== 'string') return false;
     if (!/^https?:\/\//i.test(url)) return false;
@@ -118,6 +127,9 @@
     // v1.16.0 — orchestration now runs server-side via POST /api/auto-pipeline
     // SSE. Client only drains the event stream and updates UI state.
     async function start(url) {
+      if (running) return; // CAR-94 (6) — one paid run at a time across modals
+      running = true;
+      currentAbort = new AbortController();
       timelineRoot.style.display = '';
       resultRoot.style.display = 'none';
       startBtn.disabled = true;
@@ -131,6 +143,7 @@
         setStep(0, 'running');
         setStep(0, 'failed', t('auto.invalidUrl', 'invalid URL'));
         startBtn.disabled = false; urlInput.disabled = false;
+        running = false; currentAbort = null;
         return;
       }
 
@@ -140,6 +153,7 @@
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ url, lang }),
+          signal: currentAbort.signal, // CAR-94 (6) — modal close aborts the run
         });
         if (!resp.ok || !resp.body) {
           setStep(0, 'failed', 'HTTP ' + resp.status);
@@ -205,9 +219,17 @@
         // unprocessed — the modal rendered NOTHING (no result, no error).
         buf += dec.decode();
         if (buf.trim()) handleFrame(buf);
+        // CAR-94 (6) — a stream that ends WITHOUT a done/error frame used to
+        // leave the timeline on "running" forever with a disabled button and
+        // no explanation. Any non-aborted end must land in a terminal state.
+        if (!terminal && !currentAbort.signal.aborted) renderError('network', t('common.error', 'Error'));
       } catch (e) {
-        renderError('network', e.message || 'network error');
+        // CAR-94 (6) — a deliberate modal-close abort paints nothing: the
+        // modal is gone and a fresh one must open clean.
+        if (!currentAbort.signal.aborted) renderError('network', e.message || 'network error');
       } finally {
+        running = false;
+        currentAbort = null;
         startBtn.disabled = false; urlInput.disabled = false;
       }
     }
@@ -246,13 +268,21 @@
       ]));
     }
 
+    // CAR-94 (6) — the close hook (Esc / backdrop / ×) aborts the in-flight
+    // run: the SSE fetch carries currentAbort's signal, so the request — and
+    // the server-side spend — stop with the modal. The module-scope running
+    // flag then frees the next open() to start a fresh run.
     modalRef = UI.modal(t('auto.title', '✨ Auto-pipeline a URL'), c('div', null, [
       c('p', { style: { color: 'var(--foggy)' } },
         t('auto.intro', "Paste a job URL — we'll fetch the JD, evaluate it against your CV, save a report, and add a row to your tracker.")),
       c('div', { className: 'flex gap-3 mt-3' }, [urlInput, startBtn]),
       timelineRoot,
       resultRoot,
-    ]));
+    ]), () => {
+      if (currentAbort) {
+        try { currentAbort.abort(); } catch { /* already closed */ }
+      }
+    });
 
     // v1.16.0 — Cmd+K → URL → Enter sets autoStart so the modal opens
     // already running, no extra click. Defer to next tick so the modal

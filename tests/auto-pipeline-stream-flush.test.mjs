@@ -16,7 +16,9 @@
  *   3. An `error` frame as the final unterminated frame renders the error
  *      card instead of nothing.
  *   4. A stream that ends with no terminal frame at all leaves the timeline
- *      (no invented result) and re-enables the controls.
+ *      WITHOUT an invented result (CAR-94.6: it now lands in the terminal
+ *      error card instead of staying on "running" forever) and re-enables
+ *      the controls.
  *
  * auto-pipeline.js is a browser classic script → loaded with a synthetic
  * UI (same pattern as tests/countries.test.mjs); the SSE transport is an
@@ -152,7 +154,7 @@ test('a final unterminated `error` frame renders the failure card', async () => 
   assert.match(collectStrings(result).join(' | '), /playwright missing/, 'error frame must be flushed and rendered');
 });
 
-test('a stream that ends without any terminal frame invents nothing and re-enables controls', async () => {
+test('a stream that ends without any terminal frame renders the error card (no invented result) and re-enables controls', async () => {
   const env = makeEnv([
     'event: start\ndata: {}\n\n',
     'event: step\ndata: {"i":0,"status":"done"}\n\n',
@@ -160,7 +162,12 @@ test('a stream that ends without any terminal frame invents nothing and re-enabl
   ]);
   await settle();
   const { timeline, result } = roots(env);
-  assert.equal(result.children.length, 0, 'no phantom result card');
+  // CAR-94.6 — a silent end-of-stream is a TERMINAL state: the timeline may
+  // not sit on "running" forever, but the error card must not invent a
+  // result either (no score, no company).
+  const text = collectStrings(result).join(' | ');
+  assert.doesNotMatch(text, /Auto-pipeline complete/, 'no phantom result card');
+  assert.match(text, /Auto-pipeline failed/, 'the failure card is the terminal state');
   const startBtn = env.created.find((e) => e.tagName === 'button' && (e.children[0] || '').toString().includes('Run auto-pipeline'));
   assert.ok(startBtn, 'start button exists');
   assert.equal(startBtn.disabled, false, 'controls re-enabled after the stream ends');

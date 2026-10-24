@@ -1040,6 +1040,8 @@ window.__I18N_DICT_ZH_CN = {
   'twoPager.save': "保存两页简介",
   'twoPager.saved': "两页简介已保存",
   'twoPager.saveFailed': "无法保存两页简介",
+  'twoPager.overwriteWarn': "无法加载已保存的两页简介，表单可能没有显示你已保存的数据。现在保存将用表单中的内容覆盖 config/two-pager.yml。",
+
   'twoPager.privacyNote': "存储在你父项目的用户层（config/two-pager.yml）中 — 除了你运行的 LLM 提示词外，不会发送到任何地方。",
   'scan.fitTip': "与你所想的匹配度",
   'scan.titleFit.strong': "高度匹配",
