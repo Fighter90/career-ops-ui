@@ -53,6 +53,14 @@ export function runNodeScript(scriptName, args = [], opts = {}) {
       resolve({ code: -1, stdout: '', stderr: String(err?.message || err) });
       return;
     }
+    // CAR-92 — a caller-supplied abort signal (the SSE route's req-close
+    // controller) terminates the child, so a client disconnect stops the
+    // subprocess (and its spend) instead of letting it run to completion.
+    if (opts.signal) {
+      const kill = () => { try { child.kill('SIGTERM'); } catch { /* already gone */ } };
+      if (opts.signal.aborted) kill();
+      else opts.signal.addEventListener('abort', kill, { once: true });
+    }
     let stdout = '';
     let stderr = '';
     let timedOut = false;

@@ -291,7 +291,11 @@ test('/api/auto-pipeline: an incomplete report (missing SCORE_SUMMARY) is reject
   mockProviders({ 'api.anthropic.com': anthropicReply('## Block A\nOnly one block. Score: 3/5') });
   const ev = sseEvents((await post('/api/auto-pipeline', { url: 'https://jobs.example.com/initech/1' })).text);
   const err = ev.find((e) => e.event === 'error');
-  assert.match(err.data.message, /evaluation incomplete: missing Block/);
+  // CAR-92 — the score is read only from the SCORE_SUMMARY block, so a
+  // report with only a prose `Score: 3/5` sub-line has NO score: the reason
+  // names the missing summary score (the old extractScore read the Block A
+  // prose and reported "missing Block" instead).
+  assert.match(err.data.message, /evaluation incomplete: no SCORE 0–5 in the report/);
   assert.ok(!ev.some((e) => e.event === 'done'), 'no done event for a rejected report');
   assert.ok(!readdirSync(resolve(ROOT, 'reports')).some((f) => f.includes('initech')), 'no report file');
 });

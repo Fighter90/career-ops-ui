@@ -43,6 +43,42 @@ export function recordUsage(provider, usage, nowMs, file = PATHS.llmUsage) {
   } catch { /* best-effort: never break the response over telemetry */ }
 }
 
+/**
+ * CAR-92 — best-effort usage extraction from a provider SUBPROCESS's stdout
+ * (the gemini-eval.mjs path). The script does not print usage today, so this
+ * usually finds nothing and the caller skips recording silently — but when a
+ * usage line IS present (a JSON line carrying the common token keys, or a
+ * human "usage: 1234 prompt / 567 output tokens" line), the Gemini spend
+ * reaches the Usage page like every other provider's. Returns null when no
+ * usage is found; malformed numbers are never fabricated.
+ * @param {string} stdout
+ * @returns {{ prompt_tokens: number, completion_tokens: number } | null}
+ */
+export function parseSubprocessUsage(stdout) {
+  const s = String(stdout || '');
+  const lines = s.split('\n');
+  for (let i = lines.length - 1; i >= 0; i--) {
+    const l = lines[i].trim();
+    if (!l.startsWith('{') || !l.endsWith('}') || !/tokens/i.test(l)) continue;
+    try {
+      const o = JSON.parse(l);
+      const inp = Number(o.prompt_tokens ?? o.input_tokens ?? o.promptTokenCount);
+      const out = Number(o.completion_tokens ?? o.output_tokens ?? o.candidatesTokenCount);
+      if (Number.isFinite(inp) || Number.isFinite(out)) {
+        return { prompt_tokens: Number.isFinite(inp) ? inp : 0, completion_tokens: Number.isFinite(out) ? out : 0 };
+      }
+    } catch { /* not JSON after all */ }
+  }
+  const m = s.match(/usage[^:\n]*:\s*([\d,]+)\s*(?:prompt|input)[^\d]+([\d,]+)\s*(?:output|completion|out)/i);
+  if (m) {
+    return {
+      prompt_tokens: Number(m[1].replace(/,/g, '')) || 0,
+      completion_tokens: Number(m[2].replace(/,/g, '')) || 0,
+    };
+  }
+  return null;
+}
+
 /** Read + parse the usage log (bounded), newest-last. Exported for tests. */
 export function readUsage(file = PATHS.llmUsage) {
   if (!existsSync(file)) return [];

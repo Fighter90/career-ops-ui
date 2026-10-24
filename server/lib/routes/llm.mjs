@@ -43,6 +43,18 @@ export function evaluationWarnings(r) {
   if (r.truncated) warnings.unshift('report cut off at the output-token limit');
   return warnings;
 }
+
+/**
+ * CAR-92 — warnings for the generic mode runner: the bundled-context notices
+ * (a file left out / truncated) plus a cut-off answer. Every /api/mode
+ * provider branch returns them; the default 8192-token output used to cut
+ * silently and the user saw a half artifact with no explanation.
+ */
+function modeWarnings(ctxWarnings, r) {
+  const warnings = [...(ctxWarnings || [])];
+  if (r.truncated) warnings.push('answer cut off at the output-token limit');
+  return warnings;
+}
 import { runOpenAI, runQwen, runOpenRouter, runGitHubModels, runHermes, hasOpenAIKey, hasQwenKey, hasOpenRouterKey, hasGitHubModelsKey, hasHermesKey } from '../openai.mjs';
 // v1.216.0 — 9 more OpenAI-compatible providers. Kept as a SECOND import from the
 // same module so the v1.55.0 line above stays byte-stable for provider-selector.test.mjs.
@@ -50,7 +62,7 @@ import { runDeepSeek, runZai, runKimi, runMiniMax, runMistral, runGrok, runToget
 // v1.217.0 — Ark pair (BytePlus + Volcengine), OpenAI-compatible Chat Completions.
 import { runArk, runArkCn, hasArkKey, hasArkCnKey } from '../openai.mjs';
 import { providerOrder, AUTO_ORDER } from '../env-config.mjs';
-import { recordUsage } from '../llm-usage.mjs';
+import { recordUsage, parseSubprocessUsage } from '../llm-usage.mjs';
 import { sanitizeJobDescription, sanitizePathName } from '../security.mjs';
 import { cleanLlmMarkdown } from '../llm-output.mjs';
 import { llmRateLimit } from '../rate-limit.mjs';
@@ -59,6 +71,7 @@ import {
   buildEvaluationPrompt,
   buildDeepPrompt,
   buildModePrompt,
+  buildLanguageReminder,
   buildApplyChecklist,
   resolveLocale,
   deepReportStem,
@@ -67,6 +80,26 @@ import {
 /** Remove a temp file; a missing file or a race is not an error. */
 function unlinkQuiet(file) {
   try { unlinkSync(file); } catch { /* already gone */ }
+}
+
+// ─── gemini-eval.mjs subprocess contract (CAR-92) ───────────────────────────
+// The evaluate route and the auto-pipeline both shell out to the parent's
+// gemini-eval.mjs. The subprocess ignores the output locale unless told, its
+// failures surfaced as HTTP 200 with raw stderr attached, and its Gemini
+// spend never reached the Usage page. One shared shape:
+//   · `--lang <locale>` FIRST — the script skips unknown `--` flags but would
+//     glue the bare VALUE onto the positional JD text; `--file` (later)
+//     replaces the text, so an unknown `--lang` stays harmless either way.
+//   · the 300 s EVAL_TIMEOUT_MS (a real evaluation ran 136 s; the old 120 s
+//     evaluate-side timeout killed live runs).
+//   · a non-zero exit is the CALLER's failure path; stderr stays on the
+//     server (it can echo provider errors) and never reaches the client.
+//   · usage is parsed from stdout best-effort (parseSubprocessUsage) and
+//     recorded; the script prints none today, so this usually no-ops.
+export const GEMINI_EVAL_TIMEOUT_MS = EVAL_TIMEOUT_MS;
+
+export function geminiEvalArgs(tmpFile, { save = false, lang = 'en' } = {}) {
+  return ['--lang', String(lang || 'en'), '--file', tmpFile, ...(save ? [] : ['--no-save'])];
 }
 
 // Deep-research briefs live in interview-prep/ next to the parent's own
@@ -260,13 +293,23 @@ export function registerLlmRoutes(app) {
       // bundleProjectContext needed here. --no-save: the script otherwise
       // writes its own report, tracker row and merge — side effects the user
       // asked for only with `save`. The temp JD file is always removed.
+      // CAR-92: --lang, the 300 s timeout, a bounded error on a non-zero
+      // exit (raw stderr stays server-side) and best-effort usage recording.
       const tmpFile = projPath('output', `web-jd-${Date.now()}.txt`);
       mkdirSync(PATHS.outputDir, { recursive: true });
       writeFileSync(tmpFile, jd);
       try {
-        const args = ['--file', tmpFile, ...(save ? [] : ['--no-save'])];
-        const result = await runNodeScript('gemini-eval.mjs', args, { timeoutMs: 120_000 });
-        return res.json({ mode: 'gemini', saved, ...result });
+        const args = geminiEvalArgs(tmpFile, { save: !!save, lang });
+        const result = await runNodeScript('gemini-eval.mjs', args, { timeoutMs: GEMINI_EVAL_TIMEOUT_MS });
+        if (result.code !== 0) {
+          // Server log gets a bounded stderr excerpt (provider errors live
+          // there); the client gets the exit code, never the raw output.
+          console.error(`[evaluate] gemini-eval.mjs exit ${result.code}: ${(result.stderr || '').trim().slice(0, 400)}`);
+          return res.status(502).json({ mode: 'gemini', prompt: promptText, saved, error: `gemini-eval.mjs exited with code ${result.code}` });
+        }
+        recordUsage('gemini', parseSubprocessUsage(result.stdout));
+        const stdout = result.stdout || '';
+        return res.json({ mode: 'gemini', prompt: promptText, saved, code: 0, stdout, markdown: stdout });
       } finally {
         unlinkQuiet(tmpFile);
       }
@@ -368,9 +411,11 @@ export function registerLlmRoutes(app) {
       // REVIEW-A1 — the API providers have no filesystem; inline cv/profile/mode
       // content so "Read these files first" actually has files to read. The
       // shared cascade (llm-dispatch) honours LLM_PROVIDER, covers every
-      // provider and records usage.
+      // provider and records usage. CAR-92: `lang` leads the bundled context
+      // (the directive after ~150 KB of English context lost to it), and the
+      // prompt itself now closes with the language reminder (prompts.mjs).
       const ctxWarnings = [];
-      const ctx = bundleProjectContext({ modeSlugs: ['_shared', 'deep'], headless: true, warnings: ctxWarnings });
+      const ctx = bundleProjectContext({ modeSlugs: ['_shared', 'deep'], headless: true, warnings: ctxWarnings, lang });
       const r = await runActiveProvider(ctx + prompt, { maxTokens: 8192, sizeCap: PROMPT_SIZE_SOFT_CAP });
       if (r.mode === 'too-large') {
         return res.status(413).json({
@@ -455,15 +500,15 @@ export function registerLlmRoutes(app) {
     const prompt = buildModePrompt(template, slug, context, lang);
 
     if (context.run) {
-      // Prefer Anthropic for live execution (better at long-form
-      // structured output than Gemini for these modes); fall back to
-      // Gemini if no Anthropic key. Either path produces the same
-      // response shape so the UI doesn't care which engine ran.
+      // CAR-92 — `lang` leads the bundled context and a cut-off answer is
+      // surfaced as a warning on every provider branch. buildModePrompt
+      // already opens with the locale directive and closes with the reminder.
       if (_provGate().wantAnthropic && hasAnthropicKey()) {
         // REVIEW-A1 — buildModePrompt already inlines modes/<slug>.md;
         // here we add cv.md + profile.yml + modes/_shared.md so Anthropic
         // has the same context that Claude Code would read locally.
-        const ctx = bundleProjectContext({ modeSlugs: ['_shared'] });
+        const ctxWarnings = [];
+        const ctx = bundleProjectContext({ modeSlugs: ['_shared'], lang, warnings: ctxWarnings });
         const fullPrompt = ctx + prompt;
         if (fullPrompt.length > PROMPT_SIZE_SOFT_CAP) {
           return res.status(413).json({
@@ -474,14 +519,16 @@ export function registerLlmRoutes(app) {
         const r = await runAnthropic(fullPrompt);
         if (r.error) return res.status(502).json({ mode: 'anthropic', slug, prompt, error: r.error });
         recordUsage('anthropic', r.usage);
-        return res.json({ mode: 'anthropic', slug, prompt, markdown: r.markdown, usage: r.usage });
+        const warnings = modeWarnings(ctxWarnings, r);
+        return res.json({ mode: 'anthropic', slug, prompt, markdown: r.markdown, usage: r.usage, ...(warnings.length ? { warnings } : {}) });
       }
       if (_provGate().wantGemini && hasGeminiKey()) {
         // v1.73.0 — use the generic Gemini client with the real mode prompt
         // (cv.md + profile.yml inlined via bundleProjectContext), NOT the
         // oferta-only gemini-eval.mjs which would mis-evaluate the prompt as
         // a JD. Now matches the Anthropic / OpenAI-compatible branches.
-        const ctx = bundleProjectContext({ modeSlugs: ['_shared'] });
+        const ctxWarnings = [];
+        const ctx = bundleProjectContext({ modeSlugs: ['_shared'], lang, warnings: ctxWarnings });
         const fullPrompt = ctx + prompt;
         if (fullPrompt.length > PROMPT_SIZE_SOFT_CAP) {
           return res.status(413).json({
@@ -492,12 +539,14 @@ export function registerLlmRoutes(app) {
         const r = await runGemini(fullPrompt);
         if (r.error) return res.status(502).json({ mode: 'gemini', slug, prompt, error: r.error });
         recordUsage('gemini', r.usage);
-        return res.json({ mode: 'gemini', slug, prompt, markdown: r.markdown, usage: r.usage });
+        const warnings = modeWarnings(ctxWarnings, r);
+        return res.json({ mode: 'gemini', slug, prompt, markdown: r.markdown, usage: r.usage, ...(warnings.length ? { warnings } : {}) });
       }
       // v1.55.0 — OpenAI / Qwen tail (in-process, inline _shared ctx).
       const tp = _tailProvider();
       if (tp) {
-        const ctx = bundleProjectContext({ modeSlugs: ['_shared'] });
+        const ctxWarnings = [];
+        const ctx = bundleProjectContext({ modeSlugs: ['_shared'], lang, warnings: ctxWarnings });
         const fullPrompt = ctx + prompt;
         if (fullPrompt.length > PROMPT_SIZE_SOFT_CAP) {
           return res.status(413).json({
@@ -508,7 +557,8 @@ export function registerLlmRoutes(app) {
         const r = await tp.run(fullPrompt);
         if (r.error) return res.status(502).json({ mode: tp.mode, slug, prompt, error: r.error });
         recordUsage(tp.mode, r.usage);
-        return res.json({ mode: tp.mode, slug, prompt, markdown: r.markdown, usage: r.usage });
+        const warnings = modeWarnings(ctxWarnings, r);
+        return res.json({ mode: tp.mode, slug, prompt, markdown: r.markdown, usage: r.usage, ...(warnings.length ? { warnings } : {}) });
       }
     }
     res.json({

@@ -51,6 +51,13 @@ export async function runOpenAICompatible(prompt, opts = {}) {
 
   const ctrl = new AbortController();
   const timer = setTimeout(() => ctrl.abort(), timeoutMs);
+  // CAR-92 — link a caller-supplied abort signal (see anthropic.mjs).
+  const extSignal = opts.signal || null;
+  const onExtAbort = extSignal ? () => ctrl.abort() : null;
+  if (extSignal && onExtAbort) {
+    if (extSignal.aborted) ctrl.abort();
+    else extSignal.addEventListener('abort', onExtAbort);
+  }
   try {
     const res = await fetchImpl(url, {
       method: 'POST',
@@ -99,6 +106,7 @@ export async function runOpenAICompatible(prompt, opts = {}) {
     return { markdown: '', usage: null, error: e.name === 'AbortError' ? 'timeout' : e.message };
   } finally {
     clearTimeout(timer);
+    if (extSignal && onExtAbort) extSignal.removeEventListener('abort', onExtAbort);
   }
 }
 
