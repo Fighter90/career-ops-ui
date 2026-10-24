@@ -83,12 +83,14 @@ beforeEach(() => {
   }
 });
 
-test('snapshotKeepReason: aborted / every source failed keep; anything else saves', () => {
+test('snapshotKeepReason: aborted / nothing scanned / every source failed keep; anything else saves', () => {
   assert.equal(snapshotKeepReason({ aborted: true, attempted: 3, failed: 0 }), 'scan aborted');
   assert.equal(snapshotKeepReason({ aborted: false, attempted: 3, failed: 3 }), 'every source failed');
   assert.equal(snapshotKeepReason({ aborted: false, attempted: 3, failed: 2 }), null);
-  // Nothing to scan is not a failure — an empty config legitimately empties it.
-  assert.equal(snapshotKeepReason({ aborted: false, attempted: 0, failed: 0 }), null);
+  // CAR-91 — nothing attempted (missing/empty portals.yml, every company
+  // quarantined, RU `sources: []`) is NOT a legitimate empty result: it must
+  // keep the snapshot instead of wiping it.
+  assert.equal(snapshotKeepReason({ aborted: false, attempted: 0, failed: 0 }), 'nothing scanned');
 });
 
 test('EN: an aborted scan keeps the previous snapshot', async () => {
@@ -108,11 +110,40 @@ test('EN: a scan where every source errored keeps the previous snapshot', async 
   assert.equal(readSnap().en.filtered.length, 3);
 });
 
-test('EN: a partial failure still saves (one source succeeded)', async () => {
+test('EN: an empty scan (portals.yml missing) keeps the previous snapshot', async () => {
+  seed([row('Alpha', 1), row('Beta', 2)]);
+  const logs = [];
+  const portalsPath = resolve(dir, 'portals.yml');
+  const orig = readFileSync(portalsPath, 'utf8');
+  rmSync(portalsPath);
+  try {
+    await runEnScan({ fetchImpl: greenhouseFetch({}), onLog: (_s, l) => logs.push(l) });
+    assert.deepEqual(readSnap().en.filtered.map((j) => j.url), ['https://example.com/Alpha/1', 'https://example.com/Beta/2'],
+      'nothing was attempted, so the snapshot must not be wiped');
+    assert.ok(logs.some((l) => /snapshot kept \(nothing scanned\)/.test(l)), 'the keep is logged');
+  } finally {
+    writeFileSync(portalsPath, orig);
+  }
+});
+
+test('EN: a failed source keeps its old rows; successful sources are replaced', async () => {
   seed([row('Alpha', 1), row('Beta', 2), row('Beta', 3)]);
   const r = await runEnScan({ fetchImpl: greenhouseFetch({ alpha: ['Lead Engineer'] }) });
   assert.equal(r.errors.length, 1);
   const snap = readSnap().en;
+  // Beta timed out this run — its previous rows must survive the full replace.
+  assert.deepEqual(snap.filtered.map((j) => j.url).sort(), [
+    'https://example.com/Beta/2',
+    'https://example.com/Beta/3',
+    'https://example.com/alpha/1',
+  ]);
+});
+
+test('EN: a successful full-replace still drops a closed role (no carry-over without failure)', async () => {
+  seed([row('Alpha', 1), row('Beta', 2), row('Beta', 3)]);
+  await runEnScan({ fetchImpl: greenhouseFetch({ alpha: ['Lead Engineer'], beta: [] }) });
+  const snap = readSnap().en;
+  // Both sources answered — Beta answered ZERO rows, meaning the role closed.
   assert.deepEqual(snap.filtered.map((j) => j.url), ['https://example.com/alpha/1']);
 });
 
@@ -155,6 +186,57 @@ test('RU: a successful scan replaces the snapshot', async () => {
   });
   await runRuScan({ fetchImpl });
   assert.deepEqual(readSnap().ru.filtered.map((j) => j.url), ['https://trudvsem.ru/vacancy/v1']);
+});
+
+test('RU: sources: [] (nothing scanned) keeps the previous snapshot', async () => {
+  seed([], [row('Ru', 1), row('Ru', 2)]);
+  const logs = [];
+  const portalsPath = resolve(dir, 'portals.yml');
+  const orig = readFileSync(portalsPath, 'utf8');
+  writeFileSync(portalsPath, [
+    'russian_portals:',
+    '  sources: []',
+    '  queries: ["Go"]',
+  ].join('\n'));
+  try {
+    await runRuScan({ fetchImpl: async () => { throw new Error('must not fetch'); }, onLog: (_s, l) => logs.push(l) });
+    assert.equal(readSnap().ru.filtered.length, 2, 'nothing was attempted, so the snapshot must not be wiped');
+    assert.ok(logs.some((l) => /snapshot kept \(nothing scanned\)/.test(l)), 'the keep is logged');
+  } finally {
+    writeFileSync(portalsPath, orig);
+  }
+});
+
+test('RU: a failed source (hh 451) keeps its rows while trudvsem is replaced', async () => {
+  seed([], [
+    { source: 'hh.ru', company: 'HH Co', title: 'Go dev', url: 'https://hh.ru/vacancy/1' },
+    { source: 'trudvsem', company: 'X', title: 'Go dev', url: 'https://trudvsem.ru/vacancy/v1' },
+  ]);
+  const logs = [];
+  const portalsPath = resolve(dir, 'portals.yml');
+  const orig = readFileSync(portalsPath, 'utf8');
+  writeFileSync(portalsPath, [
+    'russian_portals:',
+    '  sources: [hh, trudvsem]',
+    '  queries: ["Go"]',
+  ].join('\n'));
+  try {
+    const fetchImpl = async (url) => {
+      if (String(url).includes('hh.ru')) return new Response('blocked', { status: 451 });
+      return json({
+        results: { vacancies: [{ vacancy: { id: 'v2', 'job-name': 'Go developer', vac_url: 'https://trudvsem.ru/vacancy/v2', company: { name: 'X' } } }] },
+      });
+    };
+    await runRuScan({ fetchImpl, onLog: (_s, l) => logs.push(l) });
+    const urls = readSnap().ru.filtered.map((j) => j.url).sort();
+    assert.deepEqual(urls, [
+      'https://hh.ru/vacancy/1',       // hh 451'd — its old row must survive
+      'https://trudvsem.ru/vacancy/v2', // trudvsem answered — v1 is replaced by v2
+    ]);
+    assert.ok(logs.some((l) => /hh\.ru/.test(l) && /451/.test(l)), 'the hh failure is visible in the log');
+  } finally {
+    writeFileSync(portalsPath, orig);
+  }
 });
 
 test('saveLastScan: a file holding JSON `null` (or an array) is treated as empty, not a crash', () => {
