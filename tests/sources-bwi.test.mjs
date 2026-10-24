@@ -54,9 +54,10 @@ function makeFetch(extra = {}) {
   return { requested, fetchImpl, ...extra };
 }
 
-test('bwi: assertBwiUrl — HTTPS on www.bwi.de only', () => {
+test('bwi: assertBwiUrl — HTTPS on www.bwi.de only, default port only', () => {
   assert.equal(assertBwiUrl(OK_URL), OK_URL);
   assert.equal(assertBwiUrl(LIST_URL), LIST_URL);
+  assert.throws(() => assertBwiUrl('https://www.bwi.de:8443/karriere/stellenangebote'), /non-default port/);
   for (const [label, url] of [
     ['a plain-HTTP URL', 'http://www.bwi.de/karriere/stellenangebote/job/security-analyst-11111'],
     ['a foreign host', 'https://attacker.example/karriere/stellenangebote/job/security-analyst-11111'],
@@ -85,6 +86,39 @@ test('bwi: collectJobUrls — every ItemList entry, deduped; off-host and plain-
   assert.deepEqual(collectJobUrls(hostile), [OK_URL], 'only the on-host https URL survives');
 });
 
+test('bwi: collectJobUrls — `\\/`-escaped JSON-LD URLs read exactly like bare ones', () => {
+  // json_encode's default escapes the slashes: https:\/\/www.bwi.de\/...
+  const escaped = `<html><head><script type="application/ld+json">
+  {"@context":"https://schema.org","@type":"CollectionPage","mainEntity":{"@type":"ItemList","itemListElement":[
+    {"@type":"ListItem","position":1,"url":"https:\\/\\/www.bwi.de\\/karriere\\/stellenangebote\\/job\\/security-analyst-m-w-d-11111"},
+    {"@type":"ListItem","position":2,"url":"https:\\/\\/www.bwi.de\\/karriere\\/stellenangebote\\/job\\/consultant-cloud-22222"}
+  ]}}
+  </script></head><body></body></html>`;
+  assert.deepEqual(collectJobUrls(escaped), [OK_URL, 'https://www.bwi.de/karriere/stellenangebote/job/consultant-cloud-22222']);
+});
+
+test('bwi: a 200 listing with an ItemList but zero parsable job URLs throws (markup change)', async () => {
+  // On-host but the job/ path segment moved — nothing collects, yet the page
+  // still carries the structured listing.
+  const moved = `<html><head><script type="application/ld+json">
+  {"@type":"CollectionPage","mainEntity":{"@type":"ItemList","itemListElement":[
+    {"@type":"ListItem","position":1,"url":"https://www.bwi.de/karriere/stellenangebote/security-analyst-11111"}
+  ]}}</script></head><body></body></html>`;
+  const fetchImpl = async () => ({ ok: true, status: 200, text: async () => moved });
+  await assert.rejects(
+    () => fetchBwi(LIST_URL, { fetchImpl }),
+    /embeds a JSON-LD CollectionPage\/ItemList but no on-host job URL parsed/);
+});
+
+test('bwi: a 200 page with no structured listing at all stays a quiet empty board', async () => {
+  const fetchImpl = async () => ({
+    ok: true, status: 200,
+    text: async () => '<html><body>closed for the holidays</body></html>',
+  });
+  const jobs = await fetchBwi(LIST_URL, { fetchImpl });
+  assert.deepEqual(jobs, []);
+});
+
 test('bwi: slugToTitle rebuilds a readable title and restores the (m/w/d) marker', () => {
   assert.equal(slugToTitle('https://www.bwi.de/karriere/stellenangebote/job/senior-security-analyst-m-w-d-69624'), 'Senior Security Analyst (m/w/d)');
   assert.equal(slugToTitle('https://www.bwi.de/karriere/stellenangebote/job/consultant-cloud-22222'), 'Consultant Cloud');
@@ -107,7 +141,11 @@ test('bwi: parseBwiConfig — fetchDetails is the only switch; detailLimit is a 
   assert.equal(parseBwiConfig({ bwi: { fetchDetails: true, detailLimit: 3 } }).detailLimit, 3);
   assert.equal(parseBwiConfig({ bwi: { fetchDetails: true, detailLimit: 0 } }).detailLimit, DETAIL_BUDGET);
   assert.equal(parseBwiConfig({ bwi: { fetchDetails: true, detailLimit: 101 } }).detailLimit, DETAIL_BUDGET);
-  assert.equal(parseBwiConfig({ bwi: { fetchDetails: true, detailLimit: '45' } }).detailLimit, DETAIL_BUDGET, 'a non-integer is ignored');
+  assert.equal(parseBwiConfig({ bwi: { fetchDetails: true, detailLimit: '10' } }).detailLimit, 10,
+    'a numeric string coerces (Number(value)) — pinned contract, not a coincidence with the default');
+  assert.equal(parseBwiConfig({ bwi: { fetchDetails: true, detailLimit: 'abc' } }).detailLimit, DETAIL_BUDGET,
+    'a non-numeric value falls back to the default');
+  assert.equal(parseBwiConfig({ bwi: { fetchDetails: true, detailLimit: null } }).detailLimit, DETAIL_BUDGET);
 });
 
 test('bwi: fetchBwi default — ONE listing request, slug titles, empty location, web-ui rows', async () => {
@@ -168,6 +206,30 @@ test('bwi: fetchBwi — a transient detail failure is retried and still enriches
   const jobs = await fetchBwi(LIST_URL, { fetchImpl, detailDelayMs: 0, retryDelayMs: 0, company: { name: 'BWI GmbH', bwi: { fetchDetails: true } } });
   assert.equal(attempts, 2);
   assert.equal(jobs.find((j) => j.url.includes('security-analyst')).location, 'Köln');
+});
+
+test('bwi: detail enrichment decodes-then-strips — an entity-escaped tag never survives as markup', async () => {
+  const XSS_DETAIL = `<html><head>
+  <script type="application/ld+json">
+  {"@type":"JobPosting","title":"Security Analyst &lt;script&gt;alert(1)&lt;/script&gt; (m/w/d)",
+   "jobLocation":{"address":{"addressLocality":"K&amp;#246;ln&lt;b&gt;"}}}
+  </script></head><body></body></html>`;
+  const fetchImpl = async (url) => ({
+    ok: true,
+    status: 200,
+    text: async () => (url.endsWith('/stellenangebote') ? LISTING : XSS_DETAIL),
+  });
+  const jobs = await fetchBwi(LIST_URL, {
+    fetchImpl, detailDelayMs: 0,
+    company: { name: 'BWI GmbH', bwi: { fetchDetails: true } },
+  });
+  const analyst = jobs.find((j) => j.url.includes('security-analyst'));
+  assert.equal(analyst.title, 'Security Analyst (m/w/d)',
+    'the decoded <script> is stripped with its contents — strip-then-decode would have emitted it live');
+  assert.ok(!analyst.title.includes('<'), 'no angle bracket survives in the title');
+  assert.ok(!/script/i.test(analyst.title), 'no tag text survives in the title');
+  assert.equal(analyst.location, 'Köln', 'the double-encoded locality decodes after the tag strip');
+  assert.ok(!analyst.location.includes('<'), 'no angle bracket survives in the locality');
 });
 
 test('bwi: fetchBwi — the detail budget stops enrichment but returns every job', async () => {

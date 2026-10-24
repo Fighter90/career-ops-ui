@@ -76,7 +76,7 @@ test('google: parseResultsPage — card text decodes through the shared html-to-
       employerLine: 'YouTube &amp; Creators | London, UK; Manchester, UK',
     }),
   ]));
-  assert.equal(decoded.title, 'Comps & Public Affairs'.replace('Comps', 'Comms'));
+  assert.equal(decoded.title, 'Comms & Public Affairs');
   assert.equal(decoded.employer, 'YouTube & Creators');
   assert.deepEqual(decoded.locations, ['London, UK', 'Manchester, UK']);
 });
@@ -106,11 +106,13 @@ test('google: buildQueryUrl — URLSearchParams encoding, sort_by=date, fixed BA
   assert.ok(buildQueryUrl('a&b=c?d', 'X%Y').startsWith(`${BASE}?`));
 });
 
-test('google: assertGoogleUrl — HTTPS on the results host only', () => {
+test('google: assertGoogleUrl — HTTPS on the results host only, default port only', () => {
   assert.equal(assertGoogleUrl(BASE), BASE);
   assert.throws(() => assertGoogleUrl('http://www.google.com/about/careers'), /must use HTTPS/);
+  assert.throws(() => assertGoogleUrl('https://www.google.com:8443/about/careers'), /non-default port/);
   assert.throws(() => assertGoogleUrl('https://evil.example/jobs/results/'), /untrusted hostname/);
   assert.throws(() => assertGoogleUrl('not a url'), /invalid URL/);
+  assert.equal(ALLOWED_HOST, 'www.google.com');
 });
 
 test('google: fetchGoogle — dedupes by id across queries; the card employer wins over the entry', async () => {
@@ -159,6 +161,35 @@ test('google: fetchGoogle — one failed query is tolerated (recall-first), all 
   await assert.rejects(
     () => fetchGoogle(BASE, { fetchImpl: always, company: { name: 'Google', google: { queries: ['a', 'b'] } } }),
     /all 2 query request\(s\) failed/);
+});
+
+test('google: fetchGoogle — every query answering 200 with zero cards throws (markup change)', async () => {
+  const fetchImpl = async () => ({
+    ok: true, status: 200,
+    text: async () => '<html><body><div>consent wall</div></body></html>',
+  });
+  await assert.rejects(
+    () => fetchGoogle(BASE, { fetchImpl, company: { name: 'Google', google: { queries: ['a', 'b'] } } }),
+    /answered 200 but parsed 0 postings/,
+    'a silent empty board on every query is a markup change, not an outage-free board');
+});
+
+test('google: fetchGoogle — an explicit no-results marker keeps the quiet empty board', async () => {
+  const fetchImpl = async () => ({
+    ok: true, status: 200,
+    text: async () => '<html><body><p>0 results</p></body></html>',
+  });
+  const jobs = await fetchGoogle(BASE, { fetchImpl, company: { name: 'Google', google: { queries: ['a'] } } });
+  assert.deepEqual(jobs, [], 'a page that says it has no results is a healthy empty board');
+});
+
+test('google: fetchGoogle — a pre-aborted signal throws before any request, never returns []', async () => {
+  const fetchImpl = async () => { throw new Error('must not be called'); };
+  const ac = new AbortController();
+  ac.abort();
+  await assert.rejects(
+    () => fetchGoogle(BASE, { fetchImpl, signal: ac.signal, company: { name: 'Google' } }),
+    (err) => err?.name === 'AbortError');
 });
 
 test('google: fetchGoogle — an off-host endpoint rejects before any request', async () => {

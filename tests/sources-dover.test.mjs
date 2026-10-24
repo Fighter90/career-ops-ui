@@ -24,7 +24,6 @@ import {
   HOST,
 } from '../server/lib/sources/dover.mjs';
 import { doverAdapter } from '../server/lib/portals/adapters/dover.mjs';
-import { atlassianAdapter } from '../server/lib/portals/adapters/atlassian.mjs';
 
 const UUID = '0f0e9d8c-7b6a-5432-1098-76543210fedc';
 const CAREERS_URL = `https://app.dover.com/Acme/careers/${UUID}`;
@@ -161,9 +160,10 @@ test('dover: hasNext follows json.next', () => {
   assert.equal(parseDoverPage(page([result(1)]), { companyName: 'A', companySegment: 'A' }).hasNext, false);
 });
 
-test('dover: assertDoverUrl — HTTPS on the API host only', () => {
+test('dover: assertDoverUrl — HTTPS on the API host only, default port only', () => {
   assert.equal(assertDoverUrl(apiUrlFor(UUID, 0)), apiUrlFor(UUID, 0));
   assert.throws(() => assertDoverUrl(`http://${HOST}/api/v1/careers-page/x/jobs`), /must use HTTPS/);
+  assert.throws(() => assertDoverUrl(`https://${HOST}:8443/api/v1/careers-page/x/jobs`), /non-default port/);
   assert.throws(() => assertDoverUrl('https://evil.example/jobs'), /untrusted hostname/);
   assert.throws(() => assertDoverUrl('not a url'), /invalid URL/);
 });
@@ -188,6 +188,21 @@ test('dover: fetchDover — a later page failing keeps the collected jobs (parti
   assert.equal(calls, 2);
   assert.equal(jobs.length, PAGE_SIZE, 'page-1 jobs kept');
   assert.equal(jobs.doverTruncated, undefined, 'an error stop is not a cap truncation');
+});
+
+test('dover: fetchDover — a later-page shape throw keeps the collected jobs (partials)', async () => {
+  let calls = 0;
+  const fetchImpl = async () => {
+    calls += 1;
+    if (calls === 1) return { ok: true, status: 200, json: async () => fullPage(0) };
+    // A shape change on page 2 (no results[]): the parse throws inside the
+    // try, so the page-1 partials survive instead of being discarded.
+    return { ok: true, status: 200, json: async () => ({ count: 5 }) };
+  };
+  const jobs = await fetchDover(apiUrlFor(UUID, 0), { fetchImpl, company: ENTRY, delayMs: 0, retries: 0 });
+  assert.equal(calls, 2);
+  assert.equal(jobs.length, PAGE_SIZE, 'page-1 jobs kept');
+  assert.equal(jobs.doverTruncated, undefined, 'a shape stop is not a cap truncation');
 });
 
 test('dover: fetchDover — a short page (raw count, before filtering) ends the sweep', async () => {
@@ -269,16 +284,15 @@ test('dover: fetchDover — an entry without a resolvable board rejects before a
     /cannot derive the app\.dover\.com board/);
 });
 
-test('dover adapter: buildEndpoint resolves the board URL, else null', () => {
+test('dover adapter: provider- or host-selected, endpoint resolved, invalid → null, null-safe matches', () => {
   assert.equal(doverAdapter.buildEndpoint(ENTRY), apiUrlFor(UUID, 0));
   assert.equal(doverAdapter.buildEndpoint({ provider: 'dover', careers_url: 'https://app.dover.com/Acme' }), null);
   assert.equal(doverAdapter.buildEndpoint({ provider: 'dover' }), null);
-  assert.equal(doverAdapter.matches(ENTRY), true);
+  assert.equal(doverAdapter.matches(ENTRY), true, 'provider-selected');
+  assert.equal(doverAdapter.matches({ careers_url: CAREERS_URL }), true, 'a Dover-hosted careers_url auto-detects');
+  assert.equal(doverAdapter.matches({ careers_url: 'https://app.dover.com/Acme/notcareers/xyz' }), false, 'a non-careers path is never claimed');
   assert.equal(doverAdapter.matches({ provider: 'greenhouse' }), false);
-});
-
-test('atlassian adapter: fixed feed endpoint, provider-selected only', () => {
-  assert.equal(atlassianAdapter.matches({ provider: 'atlassian' }), true);
-  assert.equal(atlassianAdapter.matches({ provider: 'dover' }), false);
-  assert.equal(atlassianAdapter.buildEndpoint({}), 'https://www.atlassian.com/endpoint/careers/listings');
+  assert.equal(doverAdapter.matches(null), false, 'a null entry is false, never a throw');
+  assert.equal(doverAdapter.matches(undefined), false);
+  assert.equal(doverAdapter.matches(42), false);
 });

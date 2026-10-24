@@ -1,8 +1,8 @@
 /**
  * Dover adapter (registry contract).
  *
- * Single-company ATS — matches ONLY on `provider: dover`, with `careers_url`
- * on the Dover host:
+ * Single-company ATS — matches on an explicit `provider: dover` OR a
+ * `careers_url` on the Dover host naming a board:
  *   https://app.dover.com/<Company>/careers/<board-uuid>
  *
  * Example portals.yml entry:
@@ -29,8 +29,14 @@ import {
 export const doverAdapter = {
   id: 'dover',
   label: 'Dover',
+  // `provider: dover` selects explicitly; a careers_url on app.dover.com whose
+  // path names a `<Company>/careers/<uuid>` board auto-detects (the header
+  // doc's "auto-detects a Dover-hosted careers page" — resolveBoard does the
+  // https + host + shape checks and null-guards the entry itself).
   matches(company) {
-    return company.provider === 'dover';
+    if (!company || typeof company !== 'object') return false;
+    if (company.provider === 'dover') return true;
+    return !!resolveBoard(company);
   },
   buildEndpoint(company) {
     const board = resolveBoard(company);

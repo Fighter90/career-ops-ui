@@ -80,12 +80,15 @@ test('magneto: resolveListUrl — https on a magneto365.com host only, port and 
   }
 });
 
-test('magneto: caps resolve — positive integers bounded, anything else defaulted', () => {
+test('magneto: caps resolve — positive integers bounded, non-numeric values defaulted (strings coerce)', () => {
   assert.equal(resolveMaxPages({}), DEFAULT_MAX_PAGES);
   assert.equal(resolveMaxPages({ max_pages: 3 }), 3);
   assert.equal(resolveMaxPages({ max_pages: 9999 }), MAX_PAGES_CAP);
   assert.equal(resolveMaxPages({ max_pages: -1 }), DEFAULT_MAX_PAGES);
-  assert.equal(resolveMaxPages({ max_pages: '5' }), DEFAULT_MAX_PAGES, 'a non-integer is ignored, not trusted');
+  assert.equal(resolveMaxPages({ max_pages: '7' }), 7,
+    'a numeric string coerces (Number(value)) — pinned contract, and 7 proves it against the default 5');
+  assert.equal(resolveMaxPages({ max_pages: 'abc' }), DEFAULT_MAX_PAGES, 'a non-numeric value falls back to the default');
+  assert.equal(resolveMaxPages({ max_pages: null }), DEFAULT_MAX_PAGES);
   assert.equal(resolveMaxJobs({}), DEFAULT_MAX_JOBS);
   assert.equal(resolveMaxJobs({ max_jobs: 9999 }), MAX_JOBS_CAP);
 });
@@ -196,6 +199,40 @@ test('magneto: fetchMagneto — max_jobs caps the sweep and tags magnetoTruncate
   assert.equal(jobs.length, 3);
   assert.equal(calls.length, 1, 'the cap stops the walk before the next page');
   assert.equal(jobs.magnetoTruncated, true);
+});
+
+test('magneto: a walk landing exactly on max_jobs with pages remaining is a cap stop (partial board)', async () => {
+  // 15 + 5 across two pages with page 3 unexamined: the sweep ended ON the
+  // cap, not at the end of the board — the flag has to say the board is
+  // partial (a short page landing exactly on the cap is not a natural end).
+  const p1 = page(...Array.from({ length: 15 }, (_, i) => card(i + 1)));
+  const p2 = page(...Array.from({ length: 5 }, (_, i) => card(100 + i)));
+  const { calls, fetchImpl } = makeFetch({ 1: p1, 2: p2, 3: p2 });
+  const jobs = await fetchMagneto(BASE, { fetchImpl, delayMs: 0, company: { max_jobs: 20 } });
+  assert.equal(jobs.length, 20);
+  assert.equal(calls.length, 2, 'the cap stops the walk before page 3');
+  assert.equal(jobs.magnetoTruncated, true, 'pages remain unexamined — the board is partial');
+});
+
+test('magneto: clean() decodes then strips — an entity-escaped tag never survives as markup', () => {
+  const cards = parseCards(
+    page(card(1, { title: 'Analista &lt;script&gt;alert(1)&lt;/script&gt; de Datos', company: 'Acme &lt;b&gt;Ltd' })),
+    'https://www.magneto365.com',
+  );
+  assert.equal(cards.length, 1);
+  assert.equal(cards[0].title, 'Analista de Datos', 'the decoded tag is stripped with its contents');
+  assert.equal(cards[0].company, 'Acme Ltd', 'the decoded tag is stripped');
+  assert.ok(!cards[0].title.includes('<') && !cards[0].company.includes('<'));
+});
+
+test('magneto: a pre-aborted signal throws on page 1, never returns []', async () => {
+  const fetchImpl = async () => { throw new Error('must not be called'); };
+  const ac = new AbortController();
+  ac.abort();
+  await assert.rejects(
+    () => fetchMagneto(BASE, { fetchImpl, delayMs: 0, signal: ac.signal }),
+    (err) => err?.name === 'AbortError',
+    'a pre-aborted scan must fail loud, not read as an empty board');
 });
 
 test('magneto: fetchMagneto — default limits: five full pages of 20 reach max_jobs 100 (partial board)', async () => {

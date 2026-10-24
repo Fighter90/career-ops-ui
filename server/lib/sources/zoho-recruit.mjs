@@ -69,7 +69,9 @@ export const meta = {
   region: 'en',
 };
 
-/** A tenant host: exampleco.zohorecruit.com. */
+/** A tenant host: exampleco.zohorecruit.com. Only .com tenants are matched —
+ * [spec, review round CAR-86 #24] zohorecruit.eu / .in / .com.au tenants are
+ * silently unsupported; extend ZOHO_HOST_RE (with fixtures) if one appears. */
 export const ZOHO_HOST_RE = /^[a-z0-9][a-z0-9-]*\.zohorecruit\.com$/;
 export const BOARD_PATH = '/jobs/Careers';
 
@@ -103,23 +105,28 @@ function intInRange(val, def, min, max) {
 }
 
 /**
- * Parse an entry's careers_url / api into its Zoho Recruit host, or null for
- * anything that is not an HTTPS `<tenant>.zohorecruit.com` URL.
+ * Parse an entry's `api` / careers_url into its Zoho Recruit host, or null for
+ * anything that is not an HTTPS `<tenant>.zohorecruit.com` URL. Candidates are
+ * tried in order (`api` first, then careers_url) like the computrabajo /
+ * magneto adapters: a non-Zoho human careers_url must never shadow a valid
+ * Zoho `api`.
  * @param {any} entry
  * @returns {URL | null}
  */
 function parseZohoUrl(entry) {
-  const raw = str(entry?.careers_url) || str(entry?.api);
-  if (!raw) return null;
-  let parsed;
-  try {
-    parsed = new URL(raw);
-  } catch {
-    return null;
+  for (const raw of [str(entry?.api), str(entry?.careers_url)]) {
+    if (!raw) continue;
+    let parsed;
+    try {
+      parsed = new URL(raw);
+    } catch {
+      continue;
+    }
+    if (parsed.protocol !== 'https:') continue;
+    if (!ZOHO_HOST_RE.test(parsed.hostname)) continue;
+    return parsed;
   }
-  if (parsed.protocol !== 'https:') return null;
-  if (!ZOHO_HOST_RE.test(parsed.hostname)) return null;
-  return parsed;
+  return null;
 }
 
 /**
@@ -158,7 +165,9 @@ export function assertZohoBoardUrl(url) {
 }
 
 // A tag ends at an unquoted `>`: a JSON value inside an attribute can carry a
-// literal `>`.
+// literal `>`. [spec, review round CAR-86 #20] an unterminated attribute quote
+// scans to EOF per `<input` — O(k·n), no catastrophic case found; cap the
+// HTML length here if a tenant page ever grows past the scanner's sanity size.
 const INPUT_TAG_RE = /<input\b(?:[^>"']|"[^"]*"|'[^']*')*>/gi;
 
 /**
@@ -403,7 +412,47 @@ function compensationPeriod(raw) {
 
 // Symbols that name exactly one currency. `$` does not (USD, CAD, AUD…).
 const CURRENCY_SYMBOLS = /** @type {Record<string, string>} */ ({ '€': 'EUR', '£': 'GBP' });
-const CURRENCY_CODE_RE = /(?<![A-Za-z])[A-Z]{3}(?![A-Za-z])/g;
+
+// ISO-4217 active alpha codes (as of 2026). Any three-capital token is NOT
+// necessarily a currency — Indian tenants (the fixtures' Chennai market)
+// write "12 LPA" and "CTC", which a bare `[A-Z]{3}` turns into a fake code
+// and a wrong-magnitude figure. Only this whitelist reads as a code.
+const ISO_4217_CODES = [
+  'AED', 'AFN', 'ALL', 'AMD', 'ANG', 'AOA', 'ARS', 'AUD', 'AWG', 'AZN',
+  'BAM', 'BBD', 'BDT', 'BGN', 'BHD', 'BIF', 'BMD', 'BND', 'BOB', 'BOV', 'BRL', 'BSD', 'BTN', 'BWP', 'BYN', 'BZD',
+  'CAD', 'CDF', 'CHE', 'CHF', 'CHW', 'CLF', 'CLP', 'CNY', 'COP', 'COU', 'CRC', 'CUP', 'CVE', 'CZK',
+  'DJF', 'DKK', 'DOP', 'DZD',
+  'EGP', 'ERN', 'ETB', 'EUR',
+  'FJD', 'FKP',
+  'GBP', 'GEL', 'GHS', 'GIP', 'GMD', 'GNF', 'GTQ', 'GYD',
+  'HKD', 'HNL', 'HTG', 'HUF',
+  'IDR', 'ILS', 'INR', 'IQD', 'IRR', 'ISK',
+  'JMD', 'JOD', 'JPY',
+  'KES', 'KGS', 'KHR', 'KMF', 'KPW', 'KRW', 'KWD', 'KYD', 'KZT',
+  'LAK', 'LBP', 'LKR', 'LRD', 'LSL', 'LYD',
+  'MAD', 'MDL', 'MGA', 'MKD', 'MMK', 'MNT', 'MOP', 'MRU', 'MUR', 'MVR', 'MWK', 'MXN', 'MXV', 'MYR', 'MZN',
+  'NAD', 'NGN', 'NIO', 'NOK', 'NPR', 'NZD',
+  'OMR',
+  'PAB', 'PEN', 'PGK', 'PHP', 'PKR', 'PLN', 'PYG',
+  'QAR',
+  'RON', 'RSD', 'RUB', 'RWF',
+  'SAR', 'SBD', 'SCR', 'SDG', 'SEK', 'SGD', 'SHP', 'SLE', 'SOS', 'SRD', 'SSP', 'STN', 'SYP', 'SZL',
+  'THB', 'TJS', 'TMT', 'TND', 'TOP', 'TRY', 'TTD', 'TWD', 'TZS',
+  'UAH', 'UGX', 'USD', 'USN', 'UYI', 'UYU', 'UYW', 'UZS',
+  'VES', 'VND', 'VUV',
+  'WST',
+  'XAF', 'XCD', 'XDR', 'XOF', 'XPF', 'XSU', 'XTS', 'XUA',
+  'YER',
+  'ZAR', 'ZMW', 'ZWG', 'ZWL',
+];
+const CURRENCY_CODE_RE = new RegExp(`(?<![A-Za-z])(?:${ISO_4217_CODES.join('|')})(?![A-Za-z])`, 'g');
+
+// Indian-market magnitude tokens: a figure carrying one is NOT an absolute
+// annual amount ("12 LPA" = 12 lakhs per annum ≈ 1,200,000; "8-12 CTC"
+// likewise; a bare lakh/lac is a magnitude unit, not a currency). Parsing
+// such a figure as the raw number would render it wrong by ~100000x, so the
+// compensation is refused outright (null) rather than unit-mangled.
+const INDIAN_MAGNITUDE_RE = /\b(?:lpa|ctc|lakhs?|lacs?)\b/i;
 
 /**
  * The currency a compensation string names: its one upper-case three-letter
@@ -451,6 +500,9 @@ function parseAnnualCompensation(raw) {
 export function parseZohoSalary(salaryText, listCurrency) {
   const text = str(salaryText);
   if (!text) return null;
+  // LPA / CTC / lakh figures carry their own magnitude unit — reading them as
+  // an absolute annual amount is wrong by orders of magnitude. Refuse.
+  if (INDIAN_MAGNITUDE_RE.test(text)) return null;
   const amount = parseAnnualCompensation(text);
   if (!amount || !(amount.max > 0)) return null;
   const named = compensationCurrency(text);

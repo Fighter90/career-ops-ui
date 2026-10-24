@@ -77,12 +77,23 @@ export const DEFAULT_QUERIES = [
 // The anchor that closes each card; the markup since the previous anchor is that
 // card. Google serves the href relative ("jobs/results/…"); a path prefix is
 // tolerated, and the URL is rebuilt from BASE either way.
+// [spec, review round CAR-86 #20] ANCHOR_RE is O(k·n) backtracking (no
+// catastrophic case found — bounded input, one page per query); cap the HTML
+// length here if a live page ever grows past the scanner's sanity size.
 const ANCHOR_RE = /<a\b[^>]*?\bhref="(?:[^"]*\/)?jobs\/results\/(\d+)-([a-z0-9-]+)[^"]*"[^>]*>/g;
 const H3_RE = /<h3\b[^>]*>([^<]+)<\/h3>/g;
 const EMPLOYER_LINE_RE = /<p class="l103df">([\s\S]*?)<\/p>/g;
 const ARIA_TITLE_RE = /\baria-label="Learn more about ([^"]+)"/;
 // "+2 more" is Google collapsing the rest of the list, not a place.
 const MORE_RE = /^\+\d+ more$/;
+
+// Any posting link the page still carries, however the markup shifted — the
+// "this is a results page" signal when zero cards parsed.
+const POSTING_LINK_RE = /jobs\/results\/\d+/;
+// Google's own empty-state copy. Only this explicit marker keeps a zero-card
+// board quiet (see fetchGoogle): every other zero-card answer is a markup
+// change worth failing on.
+const NO_RESULTS_RE = /\b0 results\b|no (?:matching )?(?:results|jobs|positions|openings)\b/i;
 
 /**
  * Defence-in-depth endpoint check: HTTPS on exactly the results host.
@@ -97,6 +108,7 @@ export function assertGoogleUrl(url) {
     throw new Error(`google: invalid URL: ${url}`);
   }
   if (parsed.protocol !== 'https:') throw new Error(`google: URL must use HTTPS: ${url}`);
+  if (parsed.port !== '') throw new Error(`google: a non-default port is not allowed: ${url}`);
   if (parsed.hostname !== ALLOWED_HOST)
     throw new Error(`google: untrusted hostname "${parsed.hostname}" — must be ${ALLOWED_HOST}`);
   return url;
@@ -223,8 +235,13 @@ export async function fetchGoogle(endpoint, opts = {}) {
 
   const byId = new Map();
   let succeeded = 0; // queries whose request completed (i.e. the source answered)
+  let sawNoResults = false; // a page said outright it has no results
   const errors = [];
-  for (const q of queries) {
+  for (const [qi, q] of queries.entries()) {
+    // A scan aborted before the first query must fail loud, not report an
+    // empty board; past the first query a break keeps the partials.
+    if (qi === 0) signal?.throwIfAborted();
+    else if (signal?.aborted) break;
     let html;
     try {
       html = await fetchText(fetchImpl, buildQueryUrl(q, location), {
@@ -240,6 +257,9 @@ export async function fetchGoogle(endpoint, opts = {}) {
       errors.push(`"${q}": ${(err && err.message) || err}`);
       continue;
     }
+    if (!POSTING_LINK_RE.test(html) && NO_RESULTS_RE.test(html)) {
+      sawNoResults = true;
+    }
     for (const card of parseResultsPage(html)) {
       if (!byId.has(card.id)) byId.set(card.id, card);
     }
@@ -248,6 +268,13 @@ export async function fetchGoogle(endpoint, opts = {}) {
   // Total outage = every query failed.
   if (succeeded === 0 && errors.length) {
     throw new Error(`google: all ${queries.length} query request(s) failed — ${errors[0]}`);
+  }
+
+  // Every query answered 200 but not a single card parsed anywhere: a markup
+  // change (ANCHOR_RE no longer matching) would read as an empty board
+  // forever. Only a page that says outright it has no results may stay quiet.
+  if (succeeded > 0 && byId.size === 0 && !sawNoResults) {
+    throw new Error(`google: ${succeeded} query page(s) answered 200 but parsed 0 postings across ${queries.length} quer${queries.length === 1 ? 'y' : 'ies'} — results markup changed?`);
   }
 
   return [...byId.values()].map((card) => normalize(card, entry));

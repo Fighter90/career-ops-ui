@@ -41,6 +41,7 @@ export function assertAtlassianUrl(url) {
     throw new Error(`atlassian: invalid URL: ${url}`);
   }
   if (parsed.protocol !== 'https:') throw new Error(`atlassian: URL must use HTTPS: ${url}`);
+  if (parsed.port !== '') throw new Error(`atlassian: a non-default port is not allowed: ${url}`);
   if (parsed.hostname !== ALLOWED_HOST)
     throw new Error(`atlassian: untrusted hostname "${parsed.hostname}" — must be ${ALLOWED_HOST}`);
   return url;
@@ -59,9 +60,15 @@ export function formatLocation(job) {
   return locs.map((l) => String(l).replace(/\s+/g, ' ').trim()).filter(Boolean).join('; ');
 }
 
+// Hosts a posting URL may point at: the feed's own site, and the iCIMS tenant
+// the feed links to. Anchored, so a suffix spoof (icims.com.evil.example)
+// never matches.
+const POSTING_HOST_RE = /^(?:www\.atlassian\.com|(?:[a-z0-9-]+\.)*icims\.com)$/;
+
 // The posting link the row keeps: the iCIMS posting page, else the apply form.
-// Only an absolute http(s) URL string qualifies, so a relative path, a non-string
-// or a javascript: link from the feed is dropped rather than copied into Job.url.
+// This URL feeds liveness checks and JD fetches, so a hostile or compromised
+// feed row must not turn it into a downstream SSRF target: https only, on the
+// allowlist above only, no non-default port — anything else drops the row.
 /**
  * @param {any} job
  * @returns {string|null}
@@ -71,7 +78,7 @@ export function postingUrl(job) {
     if (typeof raw !== 'string' || !raw.trim()) continue;
     try {
       const u = new URL(raw.trim());
-      if (u.protocol === 'https:' || u.protocol === 'http:') return raw.trim();
+      if (u.protocol === 'https:' && u.port === '' && POSTING_HOST_RE.test(u.hostname)) return raw.trim();
     } catch {
       // relative or malformed — try the next candidate
     }

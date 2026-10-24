@@ -18,6 +18,7 @@ import {
   LISTINGS_URL,
   ALLOWED_HOST,
 } from '../server/lib/sources/atlassian.mjs';
+import { atlassianAdapter } from '../server/lib/portals/adapters/atlassian.mjs';
 
 const row = (extra = {}) => ({
   id: '12345',
@@ -63,11 +64,38 @@ test('atlassian: a messy locations field never throws', () => {
   assert.equal(formatLocation(null), '');
 });
 
-test('atlassian: postingUrl drops relative, non-string and javascript: candidates', () => {
+test('atlassian: postingUrl — https + host allowlist only (never an arbitrary SSRF target)', () => {
   assert.equal(postingUrl(row({ portalJobPost: { portalUrl: '/relative/job' }, applyUrl: 'javascript:alert(1)' })), null);
   assert.equal(postingUrl(row({ portalJobPost: { portalUrl: 42 }, applyUrl: '' })), null);
   assert.equal(postingUrl({}), null);
-  assert.equal(postingUrl(row({ portalJobPost: { portalUrl: 'http://legacy.example/job' } })), 'http://legacy.example/job', 'absolute http(s) qualifies');
+  assert.equal(
+    postingUrl(row({ portalJobPost: { portalUrl: 'http://evil.example/job' }, applyUrl: 'http://www.atlassian.com/x' })),
+    null,
+    'plain http is dropped outright — this URL feeds liveness and JD fetches');
+  assert.equal(
+    postingUrl(row({ portalJobPost: { portalUrl: 'https://evil.example/job' }, applyUrl: '' })),
+    null,
+    'a foreign host is dropped');
+  assert.equal(
+    postingUrl(row({ portalJobPost: { portalUrl: 'https://icims.com.evil.example/job' }, applyUrl: '' })),
+    null,
+    'a suffix spoof is dropped');
+  assert.equal(
+    postingUrl(row({ portalJobPost: { portalUrl: 'https://www.atlassian.com:8443/job' }, applyUrl: '' })),
+    null,
+    'a non-default port is dropped');
+  assert.equal(
+    postingUrl(row({ portalJobPost: { portalUrl: 'http://www.atlassian.com/company/careers/1/job' } })),
+    'https://www.atlassian.com/company/careers/12345/job?mode=apply',
+    'a plain-http portalUrl is dropped; the https applyUrl fallback wins');
+  assert.equal(
+    postingUrl(row({ portalJobPost: { portalUrl: 'https://atlassian.app.icims.com/jobs/12345/job' } })),
+    'https://atlassian.app.icims.com/jobs/12345/job',
+    'an iCIMS tenant host qualifies');
+  assert.equal(
+    postingUrl(row({ portalJobPost: {}, applyUrl: 'https://www.atlassian.com/company/careers/12345/job?mode=apply' })),
+    'https://www.atlassian.com/company/careers/12345/job?mode=apply',
+    'the feed\'s own host qualifies as the apply fallback');
 });
 
 test('atlassian: malformed rows are skipped, never the board', () => {
@@ -92,9 +120,10 @@ test('atlassian: a non-array feed throws naming what arrived (never a silent emp
     /got string/);
 });
 
-test('atlassian: assertAtlassianUrl — HTTPS on the feed host only', () => {
+test('atlassian: assertAtlassianUrl — HTTPS on the feed host only, default port only', () => {
   assert.equal(assertAtlassianUrl(LISTINGS_URL), LISTINGS_URL);
   assert.throws(() => assertAtlassianUrl('http://www.atlassian.com/endpoint/careers/listings'), /must use HTTPS/);
+  assert.throws(() => assertAtlassianUrl('https://www.atlassian.com:8443/endpoint/careers/listings'), /non-default port/);
   assert.throws(() => assertAtlassianUrl('https://evil.example/endpoint/careers/listings'), /untrusted hostname/);
   assert.throws(() => assertAtlassianUrl('not a url'), /invalid URL/);
   assert.equal(ALLOWED_HOST, 'www.atlassian.com');
@@ -149,4 +178,13 @@ test('atlassian: fetchAtlassian asserts the endpoint before any request', async 
   await assert.rejects(
     () => fetchAtlassian('https://evil.example/listings', { fetchImpl }),
     /untrusted hostname/);
+});
+
+test('atlassian adapter: fixed feed endpoint, provider-selected only, null-safe matches', () => {
+  assert.equal(atlassianAdapter.matches({ provider: 'atlassian' }), true);
+  assert.equal(atlassianAdapter.matches({ provider: 'dover' }), false);
+  assert.equal(atlassianAdapter.matches(null), false);
+  assert.equal(atlassianAdapter.matches(undefined), false);
+  assert.equal(atlassianAdapter.matches(42), false);
+  assert.equal(atlassianAdapter.buildEndpoint({}), 'https://www.atlassian.com/endpoint/careers/listings');
 });

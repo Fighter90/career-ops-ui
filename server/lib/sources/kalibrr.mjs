@@ -100,6 +100,7 @@ export function assertKalibrrUrl(url) {
     throw new Error(`kalibrr: invalid URL: ${url}`);
   }
   if (parsed.protocol !== 'https:') throw new Error(`kalibrr: URL must use HTTPS: ${url}`);
+  if (parsed.port !== '') throw new Error(`kalibrr: a non-default port is not allowed: ${url}`);
   if (parsed.hostname !== TRUSTED_HOST) {
     throw new Error(`kalibrr: untrusted hostname "${parsed.hostname}" — must be ${TRUSTED_HOST}`);
   }
@@ -189,7 +190,7 @@ function buildJobUrl(job) {
  *
  * @param {any} job — raw row from /kjs/job_board/search
  * @param {string} [fallbackCompany]
- * @returns {{ title: string, url: string, company: string, location: string, description?: string, postedAt?: number } | null}
+ * @returns {{ title: string, url: string, company: string, location: string, externalId: string, description?: string, postedAt?: number } | null}
  */
 export function normalizeKalibrrJob(job, fallbackCompany) {
   if (!job || typeof job !== 'object') return null;
@@ -199,6 +200,8 @@ export function normalizeKalibrrJob(job, fallbackCompany) {
 
   const url = buildJobUrl(job);
   if (!url) return null; // an id-less (or off-host) row cannot be deduped or linked
+
+  const externalId = String(job.id);
 
   const name = typeof job.company?.name === 'string' ? job.company.name.trim() : '';
   const company =
@@ -214,8 +217,8 @@ export function normalizeKalibrrJob(job, fallbackCompany) {
   }
   if (job.is_work_from_home === true) parts.push('Remote');
 
-  /** @type {{ title: string, url: string, company: string, location: string, description?: string, postedAt?: number }} */
-  const out = { title, url, company, location: parts.join(', ') };
+  /** @type {{ title: string, url: string, company: string, location: string, externalId: string, description?: string, postedAt?: number }} */
+  const out = { title, url, company, location: parts.join(', '), externalId };
 
   const description = htmlToText([job.description, job.qualifications].filter(Boolean).join(' '));
   if (description) out.description = description;
@@ -233,20 +236,41 @@ const SNIPPET_CAP = 500;
  * tests (the parent validated the envelope inline; the pure helper keeps the
  * fetch loop thin).
  *
- * The guide's empty-body branch: `null`, `{}`, `[]`, `{jobs: null}` and
- * `{jobs: []}` all mean "the endpoint answered, nothing matched" — rowsLength 0
- * ends the walk naturally. Only a body carrying unexpected keys, or a `jobs`
- * that is not an array, is a shape change worth throwing on (never a quiet
- * empty board).
+ * Page 0 is strict: a 200 whose body is `null`, `{}` or a bare `[]` is not
+ * "nothing matched" on a board of thousands — it is a shape change, and
+ * returning [] would read as an empty board forever. Only an object carrying
+ * an own `jobs` key answers page 0 honestly. Later pages stay lenient (the
+ * guide's empty-body branch): `null`, `{}`, `[]`, `{jobs: null}` and
+ * `{jobs: []}` all mean "the endpoint answered, nothing more" — rowsLength 0
+ * ends the walk naturally. On either page, a body carrying unexpected keys or
+ * a `jobs` that is not an array is a shape change worth throwing on (never a
+ * quiet empty board).
  *
  * @param {any} json
  * @param {{ offset?: number, fallbackCompany?: string }} [opts]
  * @returns {{ jobs: Array<{title: string, url: string, company: string, location: string, description?: string, postedAt?: number}>, total: number|null, rowsLength: number }}
  */
 export function parseKalibrrPage(json, { offset = 0, fallbackCompany = '' } = {}) {
-  // Null, an empty object and an empty array all carry no keys — the parent's
-  // own empty-body test.
-  if (json == null || Object.keys(json ?? {}).length === 0) {
+  if (offset === 0) {
+    const isEnvelope = json !== null
+      && typeof json === 'object'
+      && !Array.isArray(json)
+      && Object.hasOwn(json, 'jobs');
+    if (!isEnvelope) {
+      const got = json === null || json === undefined
+        ? String(json)
+        : Array.isArray(json)
+          ? `an array of ${json.length}`
+          : typeof json === 'object'
+            ? `keys: [${Object.keys(json).join(', ')}]`
+            : typeof json;
+      throw new Error(
+        `kalibrr: unexpected API response at offset 0 — expected { jobs: [...] }, got ${got}`,
+      );
+    }
+  } else if (json == null || Object.keys(json ?? {}).length === 0) {
+    // Null, an empty object and an empty array all carry no keys — the
+    // parent's own empty-body test.
     return { jobs: [], total: null, rowsLength: 0 };
   }
   if (!Object.hasOwn(json, 'jobs')) {
@@ -271,7 +295,9 @@ export function parseKalibrrPage(json, { offset = 0, fallbackCompany = '' } = {}
 
 function normalize(row, entry) {
   return {
-    id: `kalibrr-${String(row.url).replace(`${SITE_ORIGIN}/c/`, '')}`,
+    // The feed's own job id — NOT the URL slug, which churns on title edits
+    // and would mint a new row id (and a duplicate tracker row) per rename.
+    id: `kalibrr-${row.externalId}`,
     title: row.title,
     company: row.company || String(entry?.name ?? ''),
     url: row.url,
@@ -324,21 +350,29 @@ export async function fetchKalibrr(endpoint, opts = {}) {
 
   for (let page = 0; page < maxPages; page++) {
     if (page > 0 && delayMs > 0) await delay(delayMs, signal);
-    if (signal?.aborted) break;
+    // A scan aborted before page 0 must fail loud, not report an empty board;
+    // past page 0 a break keeps the partials.
+    if (page === 0) signal?.throwIfAborted();
+    else if (signal?.aborted) break;
 
     const url = new URL(api);
     url.searchParams.set('limit', String(pageSize));
     url.searchParams.set('offset', String(offset));
     if (keywords) url.searchParams.set('text', keywords);
 
-    let json;
+    let parsed;
     try {
-      json = await fetchJsonWithRetry(fetchImpl, url.href, {
+      const json = await fetchJsonWithRetry(fetchImpl, url.href, {
         signal,
         redirect: 'error',
         headers: { 'User-Agent': UA, Accept: 'application/json' },
         retries,
       });
+      // Parse INSIDE the try: a later-page shape throw keeps the pages
+      // already collected (partials, the later-page invariant) instead of
+      // discarding them; on page 0 the throw propagates — the first page
+      // failing means there is no board to report on.
+      parsed = parseKalibrrPage(json, { offset, fallbackCompany });
     } catch (err) {
       // A first-page failure means the board itself is unreachable or has
       // changed shape: fail loud rather than report a quiet empty board, which
@@ -349,7 +383,7 @@ export async function fetchKalibrr(endpoint, opts = {}) {
       break;
     }
 
-    const { jobs: pageJobs, total: pageTotal, rowsLength } = parseKalibrrPage(json, { offset, fallbackCompany });
+    const { jobs: pageJobs, total: pageTotal, rowsLength } = parsed;
     if (total === null && pageTotal !== null) total = pageTotal;
 
     for (const row of pageJobs) {

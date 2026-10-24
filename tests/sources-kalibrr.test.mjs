@@ -3,11 +3,14 @@
  * Covers the canonical posting-URL build (safeEncodeURIComponent'd segments,
  * placeholder company code, apply_redirect_url never used), the row
  * normalization (title/company/location/Remote/description/postedAt), the
- * envelope contract (null/{}/[]/null-jobs are empty boards; a missing `jobs`
- * key or a non-array `jobs` throws naming what arrived), the config caps, the
- * `count`-driven pagination with the short-page fallback, the max_pages cap
- * tagging `kalibrrTruncated`, the first-page/later-page failure split, and
- * the `text` keyword param. No network — pure parses plus a fake fetchImpl.
+ * envelope contract (page 0 is strict — null/{}/[] throw naming what arrived;
+ * {jobs:null}/{jobs:[]} are empty boards; later pages stay lenient; a missing
+ * `jobs` key or a non-array `jobs` throws naming what arrived), the feed id as
+ * the row id (stable across slug edits), the config caps, the `count`-driven
+ * pagination with the short-page fallback, the max_pages cap tagging
+ * `kalibrrTruncated`, the first-page/later-page failure split (fetch and
+ * parse), the `text` keyword param, and the host/port assert. No network —
+ * pure parses plus a fake fetchImpl.
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -87,17 +90,38 @@ test('kalibrr: normalizeKalibrrJob — missing slug shortens the path; missing c
   assert.equal(noCode.url, `${SITE_ORIGIN}/c/-/jobs/1004/role-4`);
 });
 
+test('kalibrr: the feed id is the externalId — stable when the slug (title) churns', () => {
+  assert.equal(normalizeKalibrrJob(row(1, { slug: 'old-slug' })).externalId, '1001');
+  assert.equal(
+    normalizeKalibrrJob(row(1, { slug: 'renamed-slug' })).externalId,
+    '1001',
+    'the id follows the feed id, not the URL slug — a title edit must not mint a new row id');
+  assert.equal(normalizeKalibrrJob(row(2, { id: 4242 })).externalId, '4242', 'a numeric id stringifies');
+});
+
 test('kalibrr: apply_redirect_url is never the URL (opaque shortener)', () => {
   const j = normalizeKalibrrJob(row(5, { apply_redirect_url: 'https://bit.ly/xyz' }));
   assert.ok(!j.url.includes('bit.ly'));
   assert.equal(j.url, `${SITE_ORIGIN}/c/employer5/jobs/1005/role-5`);
 });
 
-test('kalibrr: parseKalibrrPage — empty bodies are empty boards, shape changes throw', () => {
+test('kalibrr: parseKalibrrPage — page 0 is strict, later pages are lenient', () => {
+  // Page 0: a 200 whose body is null/{}/[] is a shape change on a board of
+  // thousands, never "nothing matched" — it throws naming what arrived.
+  for (const empty of [null, undefined, {}, []]) {
+    assert.throws(
+      () => parseKalibrrPage(empty, { offset: 0 }),
+      /unexpected API response at offset 0/,
+      `${JSON.stringify(empty) ?? String(empty)} on page 0 throws`);
+  }
+  // {jobs: null} and {jobs: []} carry the own `jobs` key the envelope needs.
+  assert.deepEqual(parseKalibrrPage({ jobs: null }, { offset: 0 }).jobs, []);
+  assert.deepEqual(parseKalibrrPage({ jobs: [] }, { offset: 0 }).jobs, []);
+  // Later pages: the lenient empty-body branch — any of these ends the walk.
   for (const empty of [null, undefined, {}, [], { jobs: null }, { jobs: [] }]) {
-    const parsed = parseKalibrrPage(empty, { offset: 0 });
-    assert.deepEqual(parsed.jobs, [], `${JSON.stringify(empty)} is an empty board`);
-    assert.equal(parsed.rowsLength, empty && empty.jobs && empty.jobs.length ? empty.jobs.length : 0);
+    const parsed = parseKalibrrPage(empty, { offset: 100 });
+    assert.deepEqual(parsed.jobs, [], `${JSON.stringify(empty) ?? String(empty)} on a later page is an empty board`);
+    assert.equal(parsed.rowsLength, 0);
   }
   assert.throws(
     () => parseKalibrrPage({ count: 5, results: [] }, { offset: 300 }),
@@ -117,9 +141,10 @@ test('kalibrr: parseKalibrrPage — count is captured as the total when finite a
   assert.equal(parseKalibrrPage({ count: 'x', jobs: [] }, {}).total, null);
 });
 
-test('kalibrr: assertKalibrrUrl — HTTPS on www.kalibrr.com only', () => {
+test('kalibrr: assertKalibrrUrl — HTTPS on www.kalibrr.com only, default port only', () => {
   assert.equal(assertKalibrrUrl(DEFAULT_API), DEFAULT_API);
   assert.throws(() => assertKalibrrUrl('http://www.kalibrr.com/kjs/job_board/search'), /must use HTTPS/);
+  assert.throws(() => assertKalibrrUrl('https://www.kalibrr.com:8443/kjs/job_board/search'), /non-default port/);
   assert.throws(() => assertKalibrrUrl('https://evil.example/kjs'), /untrusted hostname/);
   assert.throws(() => assertKalibrrUrl('not a url'), /invalid URL/);
 });
@@ -208,6 +233,35 @@ test('kalibrr: fetchKalibrr — the first page failing means there is no board',
   assert.equal(calls, 1, 'a permanent 4xx is not retried');
 });
 
+test('kalibrr: a pre-aborted signal throws on page 0, never returns []', async () => {
+  const fetchImpl = async () => { throw new Error('must not be called'); };
+  const ac = new AbortController();
+  ac.abort();
+  await assert.rejects(
+    () => fetchKalibrr(DEFAULT_API, { fetchImpl, signal: ac.signal, company: { name: 'Kalibrr' }, delayMs: 0 }),
+    (err) => err?.name === 'AbortError',
+    'a pre-aborted scan must fail loud, not read as an empty board');
+});
+
+test('kalibrr: fetchKalibrr — a later-page shape throw keeps the collected jobs (partials)', async () => {
+  let calls = 0;
+  const fetchImpl = async () => {
+    calls += 1;
+    // No `count` on page 1 — the short-page fallback must keep the walk going,
+    // so page 2 (the shape change) is actually fetched.
+    if (calls === 1) return jsonResponse({ jobs: Array.from({ length: 100 }, (_, i) => row(i)) });
+    // A shape change on page 2 (no `jobs` key): the parse throws inside the
+    // try, so the page-1 partials survive instead of being discarded.
+    return jsonResponse({ count: 5, unexpected: true });
+  };
+  const jobs = await fetchKalibrr(DEFAULT_API, {
+    fetchImpl, company: { name: 'Kalibrr' }, delayMs: 0, retries: 0,
+  });
+  assert.equal(calls, 2);
+  assert.equal(jobs.length, 100, 'page-1 jobs kept');
+  assert.equal(jobs.kalibrrTruncated, undefined, 'a shape stop is not a cap truncation');
+});
+
 test('kalibrr: fetchKalibrr — a later page failing keeps the collected jobs (no truncation flag)', async () => {
   let calls = 0;
   const fetchImpl = async () => {
@@ -230,7 +284,7 @@ test('kalibrr: fetchKalibrr — normalized rows carry the web-ui shape', async (
     description: '<p>Desc</p>',
   })]));
   const [job] = await fetchKalibrr(DEFAULT_API, { fetchImpl, company: { name: 'Kalibrr', provider: 'kalibrr' }, delayMs: 0 });
-  assert.equal(job.id, 'kalibrr-employer1/jobs/1001/role-1');
+  assert.equal(job.id, 'kalibrr-1001', 'the feed id is the row id');
   assert.equal(job.source, 'kalibrr');
   assert.equal(job.company, 'Employer 1');
   assert.equal(job.isRemote, true);
@@ -257,6 +311,10 @@ test('kalibrr adapter: provider-selected only; api override validated, else null
     kalibrrAdapter.buildEndpoint({ provider: 'kalibrr', api: 'https://www.kalibrr.com/kjs/job_board/search' }),
     DEFAULT_API);
   assert.equal(kalibrrAdapter.buildEndpoint({ provider: 'kalibrr', api: 'https://evil.example/kjs' }), null);
+  assert.equal(
+    kalibrrAdapter.buildEndpoint({ provider: 'kalibrr', api: 'https://www.kalibrr.com:8443/kjs' }),
+    null,
+    'a ported api override is no endpoint');
   assert.equal(kalibrrAdapter.id, 'kalibrr');
   assert.equal(TRUSTED_HOST, 'www.kalibrr.com');
 });

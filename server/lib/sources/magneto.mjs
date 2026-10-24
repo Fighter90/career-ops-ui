@@ -35,6 +35,7 @@
  *   - isRemote also reads Spanish "remoto" (the board is Spanish-language).
  */
 import { decodeEntities } from '../html-entities.mjs';
+import { htmlToText } from '../html-to-text.mjs';
 import {
   fetchText,
   delay,
@@ -60,6 +61,13 @@ export const MAX_JOBS_CAP = 500;
 export const OBSERVED_PAGE_SIZE = 20; // cards per page, measured 2026-10-23
 export const PAGE_PARAM = 'paginator[page]';
 
+// OBSERVED_PAGE_SIZE feeds the last-full-page cap heuristic only. [spec,
+// review round CAR-86 #15 — deliberate follow-up]: there is no short-page
+// stop yet, so a 2-card page 1 still fetches page 2 on this ban-prone board,
+// and the heuristic reads parsed cards rather than raw card-jobs articles.
+// The cap flag covers the truncation case for now; add the raw-count stop
+// with a byte-level fixture when this source is next touched.
+
 // Courtesy pause between pages — only multi-page searches pay it. The parent
 // paused 1-2 s at random; the fixed lower bound keeps the same politeness
 // without the randomness other web-ui sources don't have.
@@ -75,10 +83,10 @@ const POSTING_PATH_RE = /^\/[a-z]{2}\/empleos\/[a-z0-9-]+-(\d+)\/?$/i;
 /** A posting detail link anywhere in the page: the "this is a listing" signal. */
 const POSTING_HREF_RE = /href="(?:https:\/\/(?:www\.)?magneto365\.com)?\/[a-z]{2}\/empleos\/[a-z0-9-]+-\d+\/?"/i;
 
-/** @param {unknown} s */
-function clean(s) {
-  return decodeEntities(String(s ?? '').replace(/<[^>]*>/g, ' ')).replace(/\s+/g, ' ').trim();
-}
+/** Decode-then-strip via the shared helper: a local strip-then-decode lets
+ * "&lt;script&gt;" come back out as a live "<script>" in a title or company
+ * (the CodeQL order bug — see html-to-text.mjs). */
+const clean = (/** @type {unknown} */ s) => htmlToText(String(s ?? ''));
 
 /** Keep user overrides bounded so a typo cannot turn one board into an unbounded crawl. */
 function boundedPositiveInt(value, fallback, cap) {
@@ -227,6 +235,11 @@ const PAGE_HEADERS = {
   'User-Agent': UA,
   Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
 };
+// [spec, review round CAR-86 #19 — deliberate follow-up]: every fixture here
+// carries entities (&#xF3;), but raw ISO-8859-1 bytes served with
+// `charset=iso-8859-1` would be mangled by fetchText's utf-8 res.text();
+// decode via the Content-Type charset (TextDecoder) and add a byte-level
+// fixture when this source is next touched.
 
 function normalize(card, entry) {
   return {
@@ -281,7 +294,10 @@ export async function fetchMagneto(endpoint, opts = {}) {
   let page = 1;
   for (; page <= maxPages; page++) {
     if (page > 1 && delayMs > 0) await delay(delayMs, signal);
-    if (signal?.aborted) break;
+    // A scan aborted before page 1 must fail loud, not report an empty board;
+    // past page 1 a break keeps the partials.
+    if (page === 1) signal?.throwIfAborted();
+    else if (signal?.aborted) break;
 
     const pageUrl = buildPageUrl(listUrl, page);
     let html;
@@ -315,9 +331,16 @@ export async function fetchMagneto(endpoint, opts = {}) {
       jobs.push(normalize(card, entry));
     }
     if (stopReason === 'cap' || fresh === 0) break;
-    // A full page that ends exactly on max_jobs, or the last allowed page, may hide more results.
+    // A full page that ends exactly on max_jobs, or the last allowed page, may
+    // hide more results. A SHORT page landing exactly on max_jobs with pages
+    // unexamined is likewise a cap stop, not a natural end — the board was cut
+    // mid-list, and the flag has to say so.
     if (cards.length >= OBSERVED_PAGE_SIZE && (jobs.length >= maxJobs || page === maxPages)) stopReason = 'cap';
-    if (stopReason === 'cap' || jobs.length >= maxJobs) break;
+    if (stopReason === 'cap') break;
+    if (jobs.length >= maxJobs) {
+      if (page < maxPages) stopReason = 'cap';
+      break;
+    }
   }
 
   if (stopReason === 'cap') {

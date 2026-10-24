@@ -23,6 +23,7 @@ export const atlassianAdapter = {
   id: 'atlassian',
   label: 'Atlassian',
   matches(company) {
+    if (!company || typeof company !== 'object') return false;
     return company.provider === 'atlassian';
   },
   // One fixed, host-pinned endpoint: the whole board arrives in a single

@@ -124,6 +124,19 @@ test('computrabajo: parseCards keeps the real employer, decodes entities, drops 
   ]);
 });
 
+test('computrabajo: clean() decodes then strips — an entity-escaped tag never survives as markup', () => {
+  // Strip-then-decode would emit "&lt;script&gt;" as a live "<script>" in the
+  // stored title; the shared helper strips the decoded tag instead.
+  const cards = parseCards(
+    page(card('X9', { title: 'Analista &lt;script&gt;alert(1)&lt;/script&gt; de Datos', company: 'Acme &lt;b&gt;Ltd' })),
+    'https://co.computrabajo.com',
+  );
+  assert.equal(cards.length, 1);
+  assert.equal(cards[0].title, 'Analista de Datos', 'the decoded tag is stripped with its contents');
+  assert.equal(cards[0].company, 'Acme Ltd', 'the decoded tag is stripped');
+  assert.ok(!cards[0].title.includes('<') && !cards[0].company.includes('<'));
+});
+
 test('computrabajo: parseCards ignores non-posting links and non-card articles', () => {
   const html = `<article class="other"><a href="/ofertas-de-trabajo/oferta-de-trabajo-de-x-9">Nope</a></article>
     <a href="/trabajo-de-sistemas-en-bogota">Bogota</a>${card('K1')}`;
@@ -179,6 +192,28 @@ test('computrabajo: fetchComputrabajo enforces the 3-page / 15-posting crawl cap
   assert.equal(out.length, 15, 'the default max_jobs stops the sweep mid-page');
   assert.equal(capped.calls.length, 1);
   assert.equal(out.computrabajoTruncated, true, 'the cap stopped the sweep — the board is partial');
+});
+
+test('computrabajo: a walk landing exactly on max_jobs with pages remaining is a cap stop (partial board)', async () => {
+  // 10 + 5 across two pages, page 3 never fetched: the sweep ended ON the cap,
+  // not at the end of the board — the flag has to say the board is partial.
+  const ten = page(...Array.from({ length: 10 }, (_, i) => card(`T1-${i}`)));
+  const five = page(...Array.from({ length: 5 }, (_, i) => card(`T2-${i}`)));
+  const { calls, fetchImpl } = makeFetch({ 1: ten, 2: five, 3: five });
+  const jobs = await fetchComputrabajo(BASE, { fetchImpl, delayMs: 0, company: { max_jobs: 15 } });
+  assert.equal(jobs.length, 15);
+  assert.equal(calls.length, 2, 'the cap stops the walk before page 3');
+  assert.equal(jobs.computrabajoTruncated, true, 'pages remain unexamined — the board is partial');
+});
+
+test('computrabajo: a pre-aborted signal throws on page 1, never returns []', async () => {
+  const fetchImpl = async () => { throw new Error('must not be called'); };
+  const ac = new AbortController();
+  ac.abort();
+  await assert.rejects(
+    () => fetchComputrabajo(BASE, { fetchImpl, delayMs: 0, signal: ac.signal }),
+    (err) => err?.name === 'AbortError',
+    'a pre-aborted scan must fail loud, not read as an empty board');
 });
 
 test('computrabajo: fetchComputrabajo stops when a page brings no new ids (ignored page parameter)', async () => {

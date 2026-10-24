@@ -102,9 +102,7 @@ test('zoho: extractZohoListRecords — a missing input is an unknown tenant, not
 test('zoho: extractZohoListRecords — a non-JSON and a non-array value throw', () => {
   const bad = '<input type="hidden" id="jobs" value="not json at all">';
   assert.throws(() => extractZohoListRecords(bad), /id="jobs" value is not JSON/);
-  const obj = `<input type="hidden" id="jobs" value="${'&quot;a&quot;:1'.replace(/"/g, '&quot;')}">`;
   assert.throws(() => extractZohoListRecords(`<input id="jobs" value="{&quot;a&quot;:1}">`), /value is not an array, got: \{a\}/);
-  assert.ok(obj.length > 0); // fixture built, shape asserted above
 });
 
 test('zoho: isZohoRecordClosed — Is_Locked or Publish:false reads as filled', () => {
@@ -184,6 +182,21 @@ test('zoho: parseZohoSalary — annual figures only; currency from text, then th
   assert.equal(parseZohoSalary('', 'USD'), null);
   assert.deepEqual(parseZohoSalary('80-90k', 'DOLLAR'), { min: 80000, max: 90000 },
     'a non-3-letter list currency is ignored');
+});
+
+test('zoho: parseZohoSalary — ISO-4217 whitelist; LPA/CTC/lakh figures are refused outright', () => {
+  // Indian-market magnitude tokens: rendering them as the raw number would be
+  // wrong by ~100000x, so they return null rather than a unit-mangled figure.
+  assert.equal(parseZohoSalary('12 LPA', 'INR'), null, 'an LPA figure is a lakh-magnitude, never an absolute annual amount');
+  assert.equal(parseZohoSalary('8-12 CTC'), null, 'a CTC range carries its own magnitude unit');
+  assert.equal(parseZohoSalary('10 lakhs per annum', 'INR'), null);
+  assert.equal(parseZohoSalary('5 lac', 'INR'), null);
+  // The whitelist, not any three capitals: a real ISO code reads as a
+  // currency, a made-up one falls back to the list currency.
+  assert.deepEqual(parseZohoSalary('5000 LAK'), { min: 5000, max: 5000, currency: 'LAK' },
+    'the Lao Kip code is a currency (LAK, not the magnitude word "lakh")');
+  assert.deepEqual(parseZohoSalary('3000 XYZ', 'USD'), { min: 3000, max: 3000, currency: 'USD' },
+    'a non-ISO token is never a currency; the list currency falls back');
 });
 
 test('zoho: renderZohoSalary — the web-ui STRING salary field', () => {
@@ -276,10 +289,12 @@ test('zoho: fetchZohoRecruit — a detail page for another posting keeps the lis
 });
 
 test('zoho: fetchZohoRecruit — detailLimit caps the detail requests; failures keep the list rows', async () => {
+  const detailCalls = [];
   const fetchImpl = async (url) => {
     if (String(url).endsWith(BOARD_PATH)) {
       return htmlResponse(listHtml([record(12), record(13), record(14)]));
     }
+    detailCalls.push(String(url));
     return { ok: false, status: 500, headers: { get: () => null }, text: async () => '' };
   };
   const jobs = await fetchZohoRecruit(`${ORIGIN}${BOARD_PATH}`, {
@@ -289,6 +304,8 @@ test('zoho: fetchZohoRecruit — detailLimit caps the detail requests; failures 
     retries: 0,
   });
   assert.equal(jobs.length, 3, 'every list row is kept');
+  assert.equal(detailCalls.length, 1,
+    'the budget is EXACTLY 1 detail request — not one per posting, and every one failed');
   assert.ok(jobs.every((j) => j.snippet === ''), 'no detail survived');
 });
 
@@ -303,4 +320,20 @@ test('zoho adapter: provider- or tenant-host-selected; endpoint is the fixed lis
   assert.equal(zohoRecruitAdapter.id, 'zoho-recruit');
   assert.ok(ZOHO_HOST_RE.test('exampleco.zohorecruit.com'));
   assert.ok(!ZOHO_HOST_RE.test('exampleco.zohorecruit.com.evil.dev'));
+});
+
+test('zoho: parseZohoUrl tries candidates in order — a foreign careers_url never shadows a valid Zoho api', () => {
+  // careers_url first (the old `careers_url || api`) resolved null and the
+  // adapter never matched; the api-first candidate walk resolves the board.
+  const entry = { careers_url: 'https://exampleco.example.com/careers', api: `${ORIGIN}/jobs/Careers` };
+  assert.deepEqual(
+    resolveZohoBoard(entry),
+    { origin: ORIGIN, boardUrl: `${ORIGIN}${BOARD_PATH}` },
+    'the Zoho api resolves even with a non-Zoho careers_url present');
+  assert.equal(zohoRecruitAdapter.matches(entry), true);
+  assert.equal(zohoRecruitAdapter.buildEndpoint(entry), `${ORIGIN}${BOARD_PATH}`);
+  assert.deepEqual(
+    resolveZohoBoard({ careers_url: `${ORIGIN}/jobs/Careers`, api: `${ORIGIN}/jobs/1/posting` }),
+    { origin: ORIGIN, boardUrl: `${ORIGIN}${BOARD_PATH}` },
+    'both candidates on-host resolve the same board (hostname-only)');
 });

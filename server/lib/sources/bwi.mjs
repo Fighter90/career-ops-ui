@@ -45,7 +45,7 @@
  *   - the detail budget is enforced by wrapping the injected fetchImpl, so
  *     retries are counted exactly as the parent counted them at the transport.
  */
-import { decodeEntities } from '../html-entities.mjs';
+import { htmlToText } from '../html-to-text.mjs';
 import {
   fetchText,
   delay,
@@ -93,12 +93,20 @@ export function assertBwiUrl(url) {
     throw new Error(`bwi: invalid URL: ${url}`);
   }
   if (parsed.protocol !== 'https:') throw new Error(`bwi: URL must use HTTPS: ${url}`);
+  if (parsed.port !== '') throw new Error(`bwi: a non-default port is not allowed: ${url}`);
   if (parsed.hostname !== ALLOWED_HOST)
     throw new Error(`bwi: untrusted hostname "${parsed.hostname}" — must be ${ALLOWED_HOST}`);
   return url;
 }
 
-const JOB_URL_RE = /"url":\s*"(https:\/\/www\.bwi\.de\/karriere\/stellenangebote\/job\/[^"]+)"/g;
+// `\/`-tolerant: JSON serializers (json_encode's default) escape the slashes,
+// so the same URL can arrive as https:\/\/www.bwi.de\/karriere\/... . Used as
+// the regex fallback for an ld+json block that fails to JSON.parse; the
+// primary path parses the block and reads the parsed tree.
+const JOB_URL_RE = /"url"\s*:\s*"(https:(?:\\\/|\/){2}www\.bwi\.de(?:\\\/|\/)karriere(?:\\\/|\/)stellenangebote(?:\\\/|\/)job(?:\\\/|\/)[^"]+)"/g;
+// [spec, review round CAR-86 #20] LD_JSON_RE's lazy scan is O(k·n) with no
+// catastrophic case found; cap the HTML length here if a listing page ever
+// grows past the scanner's sanity size.
 const LD_JSON_RE = /<script[^>]*application\/ld\+json[^>]*>([\s\S]*?)<\/script>/gi;
 
 /**
@@ -143,24 +151,72 @@ export function slugToTitle(url) {
   return words.join(' ') + (gendered ? ' (m/w/d)' : '');
 }
 
+/** Every string value under a `url` key in a parsed JSON tree (any shape). */
+function walkUrlValues(node, out) {
+  if (Array.isArray(node)) {
+    for (const v of node) walkUrlValues(v, out);
+  } else if (node && typeof node === 'object') {
+    for (const [k, v] of Object.entries(node)) {
+      if (k === 'url' && typeof v === 'string') out.push(v);
+      else walkUrlValues(v, out);
+    }
+  }
+}
+
 /**
- * Every on-host https job URL in the listing page's CollectionPage ItemList,
- * deduplicated, first-seen order. The regex matches ONLY
- * `https://www.bwi.de/karriere/stellenangebote/job/…`, so an off-host or
- * plain-HTTP url embedded in the same JSON-LD is never collected.
+ * Every on-host https job URL in the listing page's JSON-LD (the
+ * CollectionPage ItemList), deduplicated, first-seen order. The primary path
+ * JSON.parses each ld+json block and walks the parsed tree — so a `\/`-escaped
+ * URL (json_encode's default) reads exactly like a bare one. A block that
+ * fails to parse falls back to the escape-tolerant JOB_URL_RE over its text.
+ * Only `https://www.bwi.de/karriere/stellenangebote/job/…` is ever collected:
+ * an off-host or plain-HTTP url embedded in the same JSON-LD never passes.
  * @param {string} html
  * @returns {string[]}
  */
 export function collectJobUrls(html) {
   const urls = [];
   const seen = new Set();
-  for (const m of String(html).matchAll(JOB_URL_RE)) {
-    if (!seen.has(m[1])) {
-      seen.add(m[1]);
-      urls.push(m[1]);
+  const push = (/** @type {string} */ raw) => {
+    let parsed;
+    try {
+      parsed = new URL(raw);
+    } catch {
+      return;
     }
+    if (parsed.protocol !== 'https:' || parsed.hostname !== ALLOWED_HOST) return;
+    if (!parsed.pathname.startsWith('/karriere/stellenangebote/job/')) return;
+    if (!seen.has(parsed.href)) {
+      seen.add(parsed.href);
+      urls.push(parsed.href);
+    }
+  };
+  for (const m of String(html).matchAll(LD_JSON_RE)) {
+    let data;
+    try {
+      data = JSON.parse(m[1]);
+    } catch {
+      // Malformed block: same extraction, regex over the raw text.
+      for (const u of m[1].matchAll(JOB_URL_RE)) push(u[1].replace(/\\\//g, '/'));
+      continue;
+    }
+    const found = [];
+    walkUrlValues(data, found);
+    for (const u of found) push(u);
   }
   return urls;
+}
+
+/**
+ * True when the page carries a JSON-LD block that names a CollectionPage /
+ * ItemList — the structured listing a healthy board page embeds.
+ * @param {string} html
+ */
+function hasListingJson(html) {
+  for (const m of String(html).matchAll(LD_JSON_RE)) {
+    if (/"@type"\s*:\s*"(?:CollectionPage|ItemList)"|"itemListElement"/.test(m[1])) return true;
+  }
+  return false;
 }
 
 /**
@@ -246,6 +302,14 @@ export async function fetchBwi(endpoint, opts = {}) {
 
   const listing = await fetchTextWithRetry(fetchImpl, endpoint, { signal, retries, retryDelayMs, headers: PAGE_HEADERS });
   const urls = collectJobUrls(listing);
+  // A 200 listing that still embeds a JSON-LD CollectionPage/ItemList but
+  // yields zero on-host job URLs is a markup/encoding change, not an empty
+  // board — on a ~272-posting site a quiet [] would hide every job forever.
+  // A page with no structured listing at all can still be a genuinely empty
+  // board, so only the ItemList presence makes it loud.
+  if (urls.length === 0 && hasListingJson(listing)) {
+    throw new Error(`bwi: ${endpoint} embeds a JSON-LD CollectionPage/ItemList but no on-host job URL parsed — the listing markup changed`);
+  }
   const jobs = urls
     .map(url => ({ url, title: slugToTitle(url), location: '' }))
     .filter(j => j.title)
@@ -285,10 +349,13 @@ export async function fetchBwi(endpoint, opts = {}) {
         await fetchTextWithRetry(budgetedFetch, assertBwiUrl(job.url), { signal, retries, retryDelayMs, headers: PAGE_HEADERS }),
       );
       if (!posting) continue;
+      // Decode-then-strip via the shared helper: stripping tags before
+      // decoding lets "&lt;script&gt;" come back out as a live "<script>" in
+      // the title (the CodeQL order bug — see html-to-text.mjs).
       if (typeof posting.title === 'string' && posting.title.trim()) {
-        job.title = decodeEntities(posting.title);
+        job.title = htmlToText(posting.title);
       }
-      job.location = decodeEntities(localityOf(posting));
+      job.location = htmlToText(localityOf(posting));
     } catch {
       // Detail enrichment is best-effort — keep the slug-derived title.
     }

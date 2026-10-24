@@ -41,7 +41,7 @@
  *     the web-ui partial-board convention (the parent only warns);
  *   - isRemote also reads Spanish "remoto" (the board is Spanish-language).
  */
-import { decodeEntities } from '../html-entities.mjs';
+import { htmlToText } from '../html-to-text.mjs';
 import {
   fetchText,
   delay,
@@ -71,6 +71,13 @@ export const OBSERVED_PAGE_SIZE = 20; // cards per page, measured 2026-10-23
 // without the randomness other web-ui sources don't have.
 export const INTER_PAGE_DELAY_MS = 2000;
 
+// OBSERVED_PAGE_SIZE feeds the last-full-page cap heuristic only. [spec,
+// review round CAR-86 #15 — deliberate follow-up]: there is no short-page
+// stop yet, so a 2-card page 1 still fetches page 2 on this ban-prone board,
+// and the heuristic reads parsed cards rather than raw box_offer articles.
+// The cap flag covers the truncation case for now; add the raw-count stop
+// with a byte-level fixture when this source is next touched.
+
 // Parent retry budget (1 attempt + 2 retries on a transient failure).
 export const RETRIES = 2;
 export const RETRY_DELAY_MS = 500;
@@ -86,10 +93,10 @@ const CHALLENGE_RE = /<title[^>]*>[^<]*(?:just a moment|attention required|acces
 /** A posting detail link anywhere in the page: the "this is a listing" signal. */
 const POSTING_HREF_RE = /href="(?:https:\/\/[a-z]{2}\.computrabajo\.com)?\/ofertas-de-trabajo\/[^"]+"/i;
 
-/** @param {string} s */
-function clean(s) {
-  return decodeEntities(String(s).replace(/<[^>]*>/g, ' ')).replace(/\s+/g, ' ').trim();
-}
+/** Decode-then-strip via the shared helper: a local strip-then-decode lets
+ * "&lt;script&gt;" come back out as a live "<script>" in a title or company
+ * (the CodeQL order bug — see html-to-text.mjs). */
+const clean = (/** @type {unknown} */ s) => htmlToText(String(s ?? ''));
 
 /** Keep user overrides bounded so a typo cannot turn one board into a ban-prone crawl. */
 function boundedPositiveInt(value, fallback, cap) {
@@ -212,6 +219,11 @@ const PAGE_HEADERS = {
   'Cache-Control': 'no-cache',
   Pragma: 'no-cache',
 };
+// [spec, review round CAR-86 #19 — deliberate follow-up]: every fixture here
+// carries entities (&#xF3;), but raw ISO-8859-1 bytes served with
+// `charset=iso-8859-1` would be mangled by fetchText's utf-8 res.text();
+// decode via the Content-Type charset (TextDecoder) and add a byte-level
+// fixture when this source is next touched.
 
 /**
  * The URL of one results page. Newest first (the board's own "Fecha" sort).
@@ -287,7 +299,10 @@ export async function fetchComputrabajo(endpoint, opts = {}) {
   let page = 1;
   for (; page <= maxPages; page++) {
     if (page > 1 && delayMs > 0) await delay(delayMs, signal);
-    if (signal?.aborted) break;
+    // A scan aborted before page 1 must fail loud, not report an empty board;
+    // past page 1 a break keeps the partials.
+    if (page === 1) signal?.throwIfAborted();
+    else if (signal?.aborted) break;
 
     const pageUrl = buildPageUrl(listUrl, page);
     let html;
@@ -327,7 +342,15 @@ export async function fetchComputrabajo(endpoint, opts = {}) {
       }
       jobs.push(normalize(card, entry));
     }
-    if (stopReason === 'cap' || fresh === 0 || jobs.length >= maxJobs) break;
+    if (stopReason === 'cap' || fresh === 0) break;
+    // The walk stopped because the posting cap was hit: unless this was the
+    // last allowed page, pages remain unexamined — a cap stop, not a natural
+    // end, even when the page lands exactly on max_jobs (10 + 5 across two
+    // pages with more to come reads as partial, never as the whole board).
+    if (jobs.length >= maxJobs) {
+      if (page < maxPages) stopReason = 'cap';
+      break;
+    }
     if (page === maxPages && cards.length >= OBSERVED_PAGE_SIZE) stopReason = 'cap';
   }
 

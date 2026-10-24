@@ -72,6 +72,7 @@ export function assertDoverUrl(url) {
     throw new Error(`dover: invalid URL: ${url}`);
   }
   if (parsed.protocol !== 'https:') throw new Error(`dover: URL must use HTTPS: ${url}`);
+  if (parsed.port !== '') throw new Error(`dover: a non-default port is not allowed: ${url}`);
   if (parsed.hostname !== HOST) {
     throw new Error(`dover: untrusted hostname "${parsed.hostname}" — must be ${HOST}`);
   }
@@ -169,6 +170,10 @@ export function parseDoverPage(json, { companyName, companySegment }) {
   }
   const rawCount = json.results.length;
   const jobs = [];
+  // [spec, review round CAR-86 #18 — deliberate follow-up]: a non-string id
+  // drops its row, so a Dover switch to numeric ids would empty the board
+  // while rawCount > 0. Add a rawCount>0 && jobs.length===0 throw (and a
+  // numeric-id fixture) when this source is next touched.
   for (const j of json.results) {
     if (!j || typeof j !== 'object') continue;
     if (j.is_published === false || j.is_sample === true) continue;
@@ -242,14 +247,18 @@ export async function fetchDover(endpoint, opts = {}) {
   let page = 0;
   for (; page < maxPages; page++) {
     if (page > 0 && delayMs > 0) await delay(delayMs, signal);
-    let json;
+    let parsed;
     try {
-      json = await fetchJsonWithRetry(fetchImpl, apiUrlFor(board.board, page), {
+      const json = await fetchJsonWithRetry(fetchImpl, apiUrlFor(board.board, page), {
         signal,
         redirect: 'error',
         headers: { 'User-Agent': UA, Accept: 'application/json' },
         retries,
       });
+      // Parse INSIDE the try: a later-page shape throw keeps the pages already
+      // collected (partials, the later-page invariant); on page 0 the throw
+      // propagates — the first page failing means there is no board.
+      parsed = parseDoverPage(json, { companyName, companySegment });
     } catch (err) {
       // The first page failing means there is no board to report on.
       if (page === 0) throw err;
@@ -257,7 +266,7 @@ export async function fetchDover(endpoint, opts = {}) {
       stopReason = STOP_REASON.FETCH_ERROR;
       break;
     }
-    const { jobs: pageJobs, rawCount, hasNext } = parseDoverPage(json, { companyName, companySegment });
+    const { jobs: pageJobs, rawCount, hasNext } = parsed;
     for (const row of pageJobs) jobs.push(normalize(row, entry));
     // Natural end: a short page (raw count, before row filtering) or no `next`.
     // Break WITHOUT incrementing page so a short last-allowed page is not
