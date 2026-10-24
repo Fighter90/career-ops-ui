@@ -230,9 +230,9 @@ const REAL_HTML = readFileSync(join(REPO_ROOT, 'public', 'index.html'), 'utf8');
 
 test('real index.html: 89 script tags, 86 bundlable /js/ body scripts (regenerate when the shell changes)', () => {
   const all = mod.scanScriptTags(REAL_HTML);
-  assert.equal(all.length, 89, 'total classic <script src> tags (86 /js/ body + 2 head + 1 leaflet)');
+  assert.equal(all.length, 90, 'total classic <script src> tags (87 /js/ body + 2 head + 1 leaflet)');
   const srcs = mod.extractBundleScripts(REAL_HTML);
-  assert.equal(srcs.length, 86);
+  assert.equal(srcs.length, 87);
   assert.equal(srcs[0], '/js/lib/locales/i18n-dict.en.js');
   assert.equal(srcs[srcs.length - 1], '/js/app.js');
   assert.ok(srcs.includes('/js/lib/i18n.js'));
