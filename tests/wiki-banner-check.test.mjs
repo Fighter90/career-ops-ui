@@ -40,7 +40,7 @@ test('a stale version, count or shape is reported per file — in any language',
     { file: 'Home.md', text: GOOD_EN('1.251.0', 120, 39, 18, 5504) },
     { file: 'Home-(Русский).md', text: GOOD_RU('1.253.0', 109, 39, 18, 5504) },
     { file: 'Home-(Dansk).md', text: GOOD_DA('1.253.0', 120, 39, 18, 5504).replace('39', '41') },
-    { file: 'Home-(日本語).md', text: GOOD_JA('1.252.1', 109, 39, 18, 5176) },
+    { file: 'Home-(日本語).md', text: GOOD_JA('1.253.0', 109, 39, 18, 5176) },
   ];
   const problems = checkWikiBanners(pages, EXPECTED);
   assert.equal(problems.length, 5, 'one problem per finding (the JA page misses two counters at once)');
