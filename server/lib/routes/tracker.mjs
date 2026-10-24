@@ -185,8 +185,14 @@ export function registerTrackerRoutes(app) {
         if (!slug) continue; // no report link at all
         const rep = byReport.get(slug);
         if (!rep) { missingReport += 1; continue; }
-        if (rep.scoreNum == null || !rep.score) { reportScoreless += 1; continue; }
-        updates.set(String(row.num), String(rep.score));
+        // Review round (opus r1 #5): only a bounded score shape reaches the
+        // table — never a free-form header line (compactScore already
+        // normalizes; this pins the contract at the write site).
+        if (rep.scoreNum == null || !/^\d+(?:[.,]\d+)?(?:\s*\/\s*5)?$/.test(String(rep.score).trim())) {
+          reportScoreless += 1;
+          continue;
+        }
+        updates.set(String(row.num), String(rep.score).trim());
       }
       const done = (updated) => ({ ok: true, updated, missingReport, reportScoreless });
       if (!updates.size) return done(0);
@@ -198,18 +204,19 @@ export function registerTrackerRoutes(app) {
       if (scoreCol === -1) return done(0);
       let applied = 0;
       for (let i = headerIdx + 2; i < lines.length; i++) { // headerIdx+1 is the |---| separator
-        if (!/^\s*\|/.test(lines[i])) continue;
+        if (!/^\s*\|/.test(lines[i])) break; // review r1 #6: the tracker table ends at the first non-table line
         const cells = lines[i].split(/(?<!\\)\|/);
         const num = (cells[1] || '').trim();
         if (!updates.has(num)) continue;
+        // Review r1 #3: re-check the TARGET cell before writing — a
+        // duplicate # after manual edits must never clobber a real score.
+        const current = (cells[scoreCol] || '').trim();
+        if (current && current !== '—' && current !== '-') continue;
         cells[scoreCol] = ` ${updates.get(num)} `;
         lines[i] = cells.join('|');
         applied += 1;
       }
-      if (applied) {
-        mkdirSync(projPath('data'), { recursive: true });
-        writeFileSync(PATHS.applications, lines.join('\n'));
-      }
+      if (applied) writeFileSync(PATHS.applications, lines.join('\n'));
       return done(applied);
     });
     res.json(result);

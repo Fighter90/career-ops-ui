@@ -23,6 +23,7 @@ const TRACKER = [
   '|---|------|---------|------|-------|--------|-----|--------|-------|',
   '| 001 | 2026-10-01 | Acme | Engineer | — | Evaluated | ❌ | [001](reports/001-acme-engineer.md) | scoreless row |',
   '| 002 | 2026-10-02 | Beta | Engineer | 4.2/5 | Evaluated | ❌ | [002](reports/002-beta-engineer.md) | already scored |',
+  '| 002 | 2026-10-06 | Beta2 | Engineer | — | Evaluated | ❌ | [002](reports/002-beta-engineer.md) | duplicate #: scoreless twin |',
   '| 003 | 2026-10-03 | Gamma | Engineer | — | Evaluated | ❌ | [003](reports/003-gamma-engineer.md) | report without a score |',
   '| 004 | 2026-10-04 | Delta | Engineer | — | Evaluated | ❌ |  | no report at all |',
   '| 005 | 2026-10-05 | Epsilon | Engineer | N/A | SKIP | ❌ | [005](reports/005-epsilon-engineer.md) | explicit sentinel |',
@@ -39,6 +40,8 @@ before(async () => {
   writeFileSync(join(projectRoot, 'portals.yml'), 'tracked_companies: []\n');
   writeFileSync(join(projectRoot, 'reports', '001-acme-engineer.md'),
     '# Evaluation: Acme — Engineer\n\n**Score:** 3.8/5\n**URL:** https://example.com/1\n\n## A\nBody.\n');
+  writeFileSync(join(projectRoot, 'reports', '002-beta-engineer.md'),
+    '# Evaluation: Beta — Engineer\n\n**Score:** 4.2/5\n**URL:** https://example.com/2\n\n## A\nBody.\n');
   writeFileSync(join(projectRoot, 'reports', '003-gamma-engineer.md'),
     '# Evaluation: Gamma — Engineer\n\n**URL:** https://example.com/3\n\n## A\nNo score in this report.\n');
   process.env.CAREER_OPS_ROOT = projectRoot;
@@ -63,9 +66,9 @@ async function post(path) {
   return { status: res.status, body: await res.json() };
 }
 
-function rowCells(content, num) {
-  const line = content.split('\n').find((l) => l.startsWith(`| ${num} `));
-  return line ? line.split(/(?<!\\)\|/).map((c) => c.trim()) : null;
+function allRows(content, num) {
+  return content.split('\n').filter((l) => l.startsWith(`| ${num} `))
+    .map((l) => l.split(/(?<!\\)\|/).map((c) => c.trim()));
 }
 
 test('backfill fills only the scoreless rows whose report carries a score', async () => {
@@ -73,18 +76,20 @@ test('backfill fills only the scoreless rows whose report carries a score', asyn
   const { status, body } = await post('/api/tracker/backfill-scores');
   assert.equal(status, 200);
   assert.equal(body.ok, true);
-  assert.equal(body.updated, 1, 'only row 001 has a scoreless cell AND a scoreful report');
+  assert.equal(body.updated, 2, 'row 001 + the scoreless duplicate of row 002');
   assert.equal(body.reportScoreless, 1, 'row 003: report exists but carries no score');
-  assert.equal(body.missingReport, 0, 'row 004 has no report link at all — counted separately from 003');
+  assert.equal(body.missingReport, 0, 'row 004 has no report link at all — not a missing file');
 
   const content = readFileSync(join(projectRoot, 'data', 'applications.md'), 'utf8');
-  assert.equal(rowCells(content, '001')[5], '3.8/5', 'row 001 score filled from the report header');
-  assert.equal(rowCells(content, '002')[5], '4.2/5', 'already-scored row untouched');
-  assert.equal(rowCells(content, '003')[5], '—', 'scoreless report leaves the cell alone');
-  assert.equal(rowCells(content, '004')[5], '—', 'no report → untouched');
-  assert.equal(rowCells(content, '005')[5], 'N/A', 'explicit sentinel is never overwritten');
+  assert.equal(allRows(content, '001')[0][5], '3.8/5', 'row 001 score filled from the report header');
+  assert.equal(allRows(content, '002')[0][5], '4.2/5', 'the already-scored twin keeps its own score');
+  assert.equal(allRows(content, '002')[1][5], '4.2/5', 'the scoreless duplicate gets the report score');
+  assert.equal(allRows(content, '003')[0][5], '—', 'scoreless report leaves the cell alone');
+  assert.equal(allRows(content, '004')[0][5], '—', 'no report → untouched');
+  assert.equal(allRows(content, '005')[0][5], 'N/A', 'explicit sentinel is never overwritten');
   // no other cell moved
   assert.match(content, /\| 001 \| 2026-10-01 \| Acme \| Engineer \| 3\.8\/5 \| Evaluated \| ❌ \| \[001\]\(reports\/001-acme-engineer\.md\) \| scoreless row \|/);
+  assert.match(content, /\| 002 \| 2026-10-02 \| Beta \| Engineer \| 4\.2\/5 \| Evaluated \| ❌ \| \[002\]\(reports\/002-beta-engineer\.md\) \| already scored \|/);
 });
 
 test('backfill is idempotent: the second run updates nothing', async () => {
