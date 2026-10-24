@@ -22,7 +22,7 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 ### Notes
 
-- The README.vi "Latest" banner adapter-count phrasing the review flagged lives in the **Previous** banner and already mirrors EN README byte-for-byte — left untouched to keep EN↔vi parity (documented in the commit body).
+- The README.vi "Latest" banner adapter-count phrasing the review flagged lives in the **Previous** banner and already mirrors EN README byte-for-byte — deliberately not reworded, to keep EN↔vi parity (documented in the commit body). The vi/ta/cvstart localizations are not touched by this release; registry unchanged.
 - Tests 5686 (+26: `eval-validate-opus-r2`, `scanner-carryover-r2`, vi-gate assertions). Registry unchanged at **121 sources (116 EN + 5 RU) · 116 adapters**.
 
 ## [1.255.0] — 2026-10-24
