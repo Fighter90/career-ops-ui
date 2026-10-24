@@ -419,6 +419,11 @@ jobs:
               (cd "$d" && xargs -r -d '\n' rm -f -- < "$BK/$n.created")
               tar -C "$d" -xzpf "$BK/$n.tgz" --same-owner
             done
+            # CAR-85: the bundle is untracked (never in the archive or the created
+            # list) — a stale one would serve the FAILED release's scripts through
+            # the rolled-back middleware. Removing it makes the shell fall back to
+            # the restored individual tags, which always match the restored code.
+            rm -f "$UI_DIR/public/js/bundle.js"
             install_deps rollback || echo "::error::npm ci failed during rollback"
             systemctl restart "$SERVICE" || echo "::error::restart failed during rollback"
             healthy skip || echo "::error::service still unhealthy after rollback"
@@ -440,6 +445,17 @@ jobs:
           echo "parent now $(g "$APP_DIR" log -1 --format='%h %s' "$PARENT_REF") VERSION=$want_parent"
           echo "web-ui now $UI_REF ($(node -p "require('$UI_DIR/package.json').version"))"
           install_deps
+          # CAR-85 — release-time SPA bundle: concat every body <script src="/js/…">
+          # from public/index.html into public/js/bundle.js (89 cold-load script
+          # requests → 4: the two <head> scripts + vendored Leaflet stay individual
+          # by design). Guarded + non-fatal: if it fails, the middleware keeps
+          # serving the individual tags (a missing bundle = passthrough).
+          if as_owner "$UI_DIR" bash -c 'cd "$1" && node scripts/make-bundle.mjs' _ "$UI_DIR"; then
+            echo "spa bundle: $(wc -c < "$UI_DIR/public/js/bundle.js") bytes"
+          else
+            rm -f "$UI_DIR/public/js/bundle.js"
+            echo "::warning::make-bundle failed — serving individual scripts (same as NO_BUNDLE=1)"
+          fi
           # V8's default heap on this 1 GB box (~240 MB) was exhausted by in-process
           # scans (FATAL "JavaScript heap out of memory", 2026-09-27, twice).
           if [ "$HEAP_MB" != 0 ]; then
