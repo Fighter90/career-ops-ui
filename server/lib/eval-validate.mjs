@@ -37,7 +37,13 @@ export function cutRepeatedBlockHeadings(text) {
   const src = String(text ?? '');
   const headings = scanBlockLetterHeadings(src);
   if (!headings.length) return { text: src, cut: false, letter: null, at: -1 };
-  const ref = referenceHeadingLevel(headings);
+  // Review round 2 (H2) — a UKR/RU-numbered report registers only the
+  // look-alike letters (А→A, В→B) at its block level, so recurring lettered
+  // subsections (`### A. Strengths` ×3+ letters) out-count it and win the
+  // reference level — the cutter then truncated at block Б's `### A.`. A
+  // found UKR sequence IS the block numbering: its level is the reference.
+  const ukrSeq = scanUkrNumberedHeadings(src);
+  const ref = ukrSeq.length >= 3 ? ukrSeq[0].level : referenceHeadingLevel(headings);
   const seen = new Set();
   for (const h of headings) {
     if (h.level !== ref) continue; // subheadings never count (CAR-92)
@@ -62,10 +68,30 @@ export function cutRepeatedBlockHeadings(text) {
 // glues the letter to the block word (CJK has no spaces), so a WHITESPACE
 // after the letter is the separator — allowed only when the character before
 // the letter is CJK.
-const LETTER_TERMINATOR = '(?=[ \\t]*[)\\]\\uFF09\\u3011\\u3001,:\\uFF1A.\\uFF0E|*\\u2013\\u2014-]|[ \\t]*\\r?$)';
+// Characters a block letter may not be GLUED to on its LEFT: a letter preceded
+// by one of these is part of a compound token, not a block letter — `Q&A` (the
+// A), `Ph.D.` (the D), `B.Sc.` (the B), `L'A…` (CAR-92 r2 / H1: & . / ' are
+// word characters on this side).
+const LETTER_PRE_WORDCHARS = "A-Za-z\\u0400-\\u04FF&./'";
+// The RIGHT-hand guard keeps the original letter class: a FOLLOWING `.` is the
+// `## A. Название` separator, not a compound — the H1 fix is a left-boundary
+// fix (`Ph.D.` dies on the lookbehind, `## Blok A. Sekcja` survives).
+const LETTER_POST_WORDCHARS = 'A-Za-z\\u0400-\\u04FF';
+// A SEPARATED terminator only (round 2 / H1): the bare end-of-line form moved
+// to its own regex below, and the ASCII hyphen left the class — `## Block A —
+// x` separates through `—`/`–` with a space, so `-` glued to the letter
+// (`## E-commerce`) must not read as a terminator.
+const LETTER_TERMINATOR = '(?=[ \\t]*[)\\]\\uFF09\\u3011\\u3001,:\\uFF1A.\\uFF0E|*\\u2013\\u2014])';
 // The letter must close a CJK compound (a CJK char immediately before it), then
 // any separator — or just whitespace/line end, which in CJK IS the separator.
-const LETTER_TERMINATOR_CJK = '(?=[ \\t]*[)\\]\\uFF09\\u3011\\u3001,:\\uFF1A.\\uFF0E|*\\u2013\\u2014-]|[ \\t]|\\r?$)';
+const LETTER_TERMINATOR_CJK = '(?=[ \\t]*[)\\]\\uFF09\\u3011\\u3001,:\\uFF1A.\\uFF0E|*\\u2013\\u2014]|[ \\t]|\\r?$)';
+// A bare letter that just ends the line (`## Block A`) is a block heading only
+// when the one word before it is the locale's word for "Block" — any ordinary
+// word would read `## Plan B` as Block B (CAR-92 r2 / H1). The bare-EOL regex
+// is case-insensitive so the block word matches in any case; the letter class
+// gaining lowercase is harmless (a heading that is literally «block b» IS
+// block B).
+const BLOCK_WORDS = 'block|blok|bloco|bloque|blocco|bloc|блок|블록|ブロック|区块|块|khối|ব্লক|பிளாக்|الكتلة|بلوك';
 // CJK ideographs + kana (2E80–9FFF), hangul (AC00–D7AF), compatibility ideographs (F900–FAFF).
 const CJK_CHAR = '[\\u2E80-\\u9FFF\\uAC00-\\uD7AF\\uF900-\\uFAFF]';
 
@@ -74,8 +100,10 @@ const CJK_CHAR = '[\\u2E80-\\u9FFF\\uAC00-\\uD7AF\\uF900-\\uFAFF]';
 // letter — line end, or another word after it — is ordinary prose («و» IS
 // the Arabic word "and"; CAR-92: `## تحليل و تطوير` must not satisfy Block F).
 // Review round 2: `:` (ASCII/fullwidth) and `.` separators — `## أ: x`,
-// `## ए. x` — are real heading forms and were false-rejected.
-const SPELLED_TERMINATOR = `(?=[ \\t]*[)\\u2014\\u2013\\-.:\\uFF1A\\uFF0E])`;
+// `## ए. x` — are real heading forms and were false-rejected. Round 2 of the
+// review (H1): the ASCII hyphen left the class — `## ई-मेल संचार` is one word
+// glued by a hyphen, not Block E followed by «-मेल».
+const SPELLED_TERMINATOR = `(?=[ \\t]*[)\\u2014\\u2013.:\\uFF1A\\uFF0E])`;
 
 // Heading LEVELS matter (CAR-92): only headings at the report's own
 // block-heading level count, so a subheading can neither cut a report nor
@@ -134,6 +162,36 @@ function referenceHeadingLevel(headings) {
   return best ? best.level : -1;
 }
 
+// Ukrainian/Russian-numbered reports (CAR-92.10) write the block letters in
+// alphabet order — А Б В Г Д Є Ж (uk) / А Б В Г Д Е Ж (ru) — as STANDALONE
+// heading letters. A run of 3+ such headings can only be block numbering.
+// Shared by the validator (the rescue below) and the cutter (which has no
+// UKR-sequence awareness of its own — review round 2 / H2).
+const UKR_SEQS = [
+  ['А', 'Б', 'В', 'Г', 'Д', 'Є', 'Ж'],
+  ['А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ж'],
+];
+function scanUkrNumberedHeadings(text) {
+  const headingStarts = [];
+  for (const m of text.matchAll(/^#{1,3}[ \t]*([^\n]{0,40})$/gm)) {
+    const standalone = m[1].match(/(?<![\p{L}])([АБВГДЕЄЖ])(?![\p{L}])/u);
+    headingStarts.push({ pos: m.index, level: headingLevel(m[0]), ch: standalone ? standalone[1] : null });
+  }
+  let best = [];
+  for (const seq of UKR_SEQS) {
+    let cursor = -1;
+    const found = [];
+    for (const want of seq) {
+      const at = headingStarts.findIndex((h) => h.pos > cursor && h.ch === want);
+      if (at === -1) break;
+      cursor = headingStarts[at].pos;
+      found.push(headingStarts[at]);
+    }
+    if (found.length > best.length) best = found;
+  }
+  return best; // [{ pos, level, ch }, …] — length < 3 means "not UKR-numbered"
+}
+
 // Per-block letter → [latin regex, spelled regex]. Built fresh per call —
 // validateEvaluationReport runs once per evaluation, the cost is noise.
 function blockLetterRegexes() {
@@ -151,9 +209,14 @@ function blockLetterRegexes() {
   const DEVANAGARI = { A: 'ए', B: 'बी', C: 'सी', D: 'डी', E: 'ई', F: 'एफ़|एफ', G: 'जी' };
   return ['A', 'B', 'C', 'D', 'E', 'F', 'G'].map((L) => [
     L,
-    new RegExp(`^#{1,3}[ \\t]*[^\\n]{0,24}?(?<![A-Za-z\\u0400-\\u04FF])[${LOOKALIKE[L] || L}](?![A-Za-z\\u0400-\\u04FF])${LETTER_TERMINATOR}`, 'gmu'),
-    new RegExp(`^#{1,3}[ \\t]*[^\\n]{0,24}?${CJK_CHAR}[${LOOKALIKE[L] || L}](?![A-Za-z\\u0400-\\u04FF])${LETTER_TERMINATOR_CJK}`, 'gmu'),
+    // Separated form — the letter is followed by a real separator character
+    // (`)`, `.`, `—`, `:`, `、` …), any heading text before it.
+    new RegExp(`^#{1,3}[ \\t]*[^\\n]{0,24}?(?<![${LETTER_PRE_WORDCHARS}])[${LOOKALIKE[L] || L}](?![${LETTER_POST_WORDCHARS}])${LETTER_TERMINATOR}`, 'gmu'),
+    new RegExp(`^#{1,3}[ \\t]*[^\\n]{0,24}?${CJK_CHAR}[${LOOKALIKE[L] || L}](?![${LETTER_POST_WORDCHARS}])${LETTER_TERMINATOR_CJK}`, 'gmu'),
     new RegExp(`^#{1,3}[ \\t]*[^\\n]{0,24}?(?<![\\p{L}\\p{M}])(?:${ABJAD[L]}|${DEVANAGARI[L]})${SPELLED_TERMINATOR}`, 'gmu'),
+    // Bare end-of-line form — `## Block A`, `## Блок А`, `## A` — only with
+    // the locale's block word (or nothing) before the letter (round 2 / H1).
+    new RegExp(`^#{1,3}[ \\t]*(?:(?:${BLOCK_WORDS})[ \\t]+)?(?<![${LETTER_PRE_WORDCHARS}])[${LOOKALIKE[L] || L}][ \\t]*\\r?$`, 'gmui'),
   ]);
 }
 
@@ -183,30 +246,11 @@ export function validateEvaluationReport(text) {
   // block letters at all. And the Russian-tail numbering (…Д Е Ж) is
   // accepted alongside the Ukrainian tail (…Д Є Ж) — the prompt's example
   // names the Ukrainian order, but a Russian-numbered report broke at Є and
-  // was false-rejected.
-  const UKR_SEQS = [
-    ['А', 'Б', 'В', 'Г', 'Д', 'Є', 'Ж'],
-    ['А', 'Б', 'В', 'Г', 'Д', 'Е', 'Ж'],
-  ];
-  const headingStarts = [];
-  for (const m of text.matchAll(/^#{1,3}[ \t]*([^\n]{0,40})$/gm)) {
-    const standalone = m[1].match(/(?<![\p{L}])([АБВГДЕЄЖ])(?![\p{L}])/u);
-    headingStarts.push({ pos: m.index, ch: standalone ? standalone[1] : null });
-  }
-  let best = [];
-  for (const seq of UKR_SEQS) {
-    let cursor = -1;
-    const found = [];
-    for (const want of seq) {
-      const at = headingStarts.findIndex((h) => h.pos > cursor && h.ch === want);
-      if (at === -1) break;
-      cursor = headingStarts[at].pos;
-      found.push(want);
-    }
-    if (found.length > best.length) best = found;
-  }
-  if (best.length >= 3) {
-    for (let i = 0; i < best.length; i++) {
+  // was false-rejected. Review round 2 (H2): the scan moved into the shared
+  // scanUkrNumberedHeadings helper (the cutter consumes it too).
+  const ukrSeq = scanUkrNumberedHeadings(text);
+  if (ukrSeq.length >= 3) {
+    for (let i = 0; i < ukrSeq.length; i++) {
       const label = requiredBlocks[i][0];
       const at = issues.indexOf(`missing Block ${label}`);
       if (at !== -1) issues.splice(at, 1);
@@ -279,9 +323,15 @@ export function extractBodyScore(text) {
   if (!src) return null;
   for (const line of src.split('\n')) {
     const m = asciiNumber(line)
-      .match(/^[ \t]*(?:\*\*)?[ \t]*score[ \t]*(?:\*\*)?[ \t]*[:：\-–—][ \t]*(?:\*\*)?[ \t]*([0-9]+(?:\.[0-9]+)?)/i);
+      .match(/^[ \t]*(?:\*\*)?[ \t]*score[ \t]*(?:\*\*)?[ \t]*[:：\-–—][ \t]*(?:\*\*)?[ \t]*([0-9]+(?:\.[0-9]+)?)(?:[ \t]*[/\u2044][ \t]*([0-9]+))?/i);
     if (!m) continue;
     const value = Number(m[1]);
+    // Review round 2 (M2) — an explicit denominator says which rubric the
+    // number is from. Anything but /5 is NOT the report's 0–5 score, and the
+    // line is skipped: scaling a sub-rubric would still let it beat the
+    // header line below it (first match wins), and a /10-only report is a
+    // malformed report the gate should reject, not a guess to convert.
+    if (m[2] != null && Number(m[2]) !== 5) continue;
     if (Number.isFinite(value) && value >= 0 && value <= 5) return value;
   }
   return null;
