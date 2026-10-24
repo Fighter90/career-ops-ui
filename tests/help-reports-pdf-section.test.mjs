@@ -19,7 +19,7 @@ import { splitSections, topSections } from '../server/lib/routes/docs-assistant.
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const help = (lang) => readFileSync(resolve(ROOT, 'docs', 'help', `${lang}.md`), 'utf8');
-const BUNDLES = ['en', 'es', 'pt-BR', 'ko-KR', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi'];
+const BUNDLES = ['en', 'es', 'pt-BR', 'ko-KR', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi', 'ta', 'vi'];
 
 test('FIX-5: every help bundle documents report → PDF export in §10 Reports', () => {
   for (const lang of BUNDLES) {
