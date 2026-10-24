@@ -26,6 +26,7 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 - The whole round was reviewed by Opus 5-5 at maximum rigor — the ports pre-merge (21 findings, 13 fixed) and the fixes themselves post-hoc (8 must-fixes, all landed here with red→green tests).
 - Test floor: 5262 → **5634** (372 new specs across the sources, scanners, LLM layer and SPA).
+- The scanner R-12 carry-over does NOT resurrect applied or dismissed postings (carried rows re-run the current filters), and the RU five still do not ship upstream adapters — web-ui-only by design.
 
 ## [1.253.1] — 2026-10-24
 
