@@ -106,6 +106,10 @@ import { bwiAdapter } from './adapters/bwi.mjs';
 import { googleAdapter } from './adapters/google.mjs';
 import { kalibrrAdapter } from './adapters/kalibrr.mjs';
 import { zohoRecruitAdapter } from './adapters/zoho-recruit.mjs';
+// v1.253.2 — parent parity: Paylocity (single-company ATS, `provider: paylocity`
+// or a recruiting.paylocity.com /Recruiting/Jobs/All/<guid> board URL — the
+// whole board arrives in one server-rendered window.pageData blob).
+import { paylocityAdapter } from './adapters/paylocity.mjs';
 import { tkmsAdapter } from './adapters/tkms.mjs';
 import { hecklerkochAdapter } from './adapters/hecklerkoch.mjs';
 import { rheinmetallAdapter } from './adapters/rheinmetall.mjs';
@@ -199,6 +203,10 @@ export const ALL_ADAPTERS = [
   // v1.253.0 — parent parity: Google (provider:/`google:`-selected; one
   // first-page request per phrase query, robots.txt-bounded).
   googleAdapter,
+  // v1.253.2 — parent parity: Paylocity (single-company ATS — `provider:
+  // paylocity` or a recruiting.paylocity.com board URL; ONE request per
+  // board, the whole list in the page's window.pageData blob, max_jobs cap).
+  paylocityAdapter,
   telegramChannelAdapter,
   // v1.253.0 — parent parity: Magneto365 (Colombia board, search-URL-driven,
   // max_pages/max_jobs caps).
