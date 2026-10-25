@@ -8,21 +8,23 @@ Release history belongs in [CHANGELOG.md](CHANGELOG.md), decisions in
 [docs/adr/](docs/adr/), vocabulary in [CONTEXT.md](CONTEXT.md). Anything already
 recoverable from those does **not** belong here.
 
-_Last updated: 2026-10-24 · **v1.255.2 SHIPPED** (CAR-99 scan-holes crash + CAR-97 vi checker + CAR-98 zh-TW summary — 5695 tests, browser 143/143, live ×19 re-check post-deploy) · before it: **v1.255.1** (vi review round + CAR-92 r2)_
+_Last updated: 2026-10-25 · **v1.256.0 SHIPPED** (CAR-127/128 identity: role-never-company + board-never-employer + revived Cyrillic inference; CAR-129 score sort + `POST /api/tracker/backfill-scores`; 5705 tests, browser 143/143, evals 14/0/1; deployed, health 1.256.0) · before it: **v1.255.2** (CAR-99 scan-holes crash + CAR-97 vi checker + CAR-98 zh-TW summary) · before that: **v1.255.1** (vi review round + CAR-92 r2)_
 
 ---
 
 ## Current state
 
-**v1.248.8 — SHIPPED 2026-10-11** (parent parity: the fork synced to career-ops-hq 1db6517a — 115 commits; web-ui ported pageup + extractCellUrl + Assessment state; CAR-74/75/76 ta/ja language work closed). Tests **5219** (0 fail), coverage gate green, evals 12/0. The releases v1.248.2…v1.248.8 shipped back-to-back on 2026-10-10/11 (regression rounds → t.me embed fetch → skip contract → uk ordinals → polish → header role → parity). Linear: CAR-61…77 Done; CAR-70 (ta model drift on hermes) deliberately open — the owner decides accept/switch backend.
+**v1.256.0 — SHIPPED 2026-10-25** (tracker data quality: CAR-128 dash-order heuristic — «Senior Frontend Engineer - Grafana Labs» no longer files the role as the company (13 rows) + an employment-type guard; CAR-127 — hh.ru/habr slugs are never employers (120 «hh» rows) and the mid-sentence Cyrillic employer inference was found silently dead since v1.248.4 (ASCII `\b`/`\w`) and revived for job-board hosts; CAR-129 — tracker score sort nulls-last + `POST /api/tracker/backfill-scores` (sentinels/scored/report-less/scoreless untouched, idempotent); an opus-5-5 review round + 3 project reviewers applied — no bare «X ищет» fabrication, [вВ] anchors, duplicate-# cell re-check, score-shape guard, employment-type guard). **Tests 5705** (+10), browser 143/143, evals 14/0/1, coverage 98.3/89.8. Docs train ×18 (ta included — the parity gate caught the missing mirror), QA prompt v1.256.0, site built. **Open after-ships:** run the backfill on prod (writes `data/applications.md` — needs the owner's explicit yes); CAR-104 (`fix/car104-bundle-compression`, bundle 3.1 MB → 598 KB br + cacheable, 16 specs red→green) is pushed and waits as release v1.257.0 with its hand-offs (.gitignore for `.br/.gz`, deploy.yml rollback rm); CAR-100 re-scoped to the `labelN()` semantics (prod check: CAR-99 fix IS deployed, counter now 1554/90); CAR-102 Canceled with prod evidence (only ru/en reports exist; recent ones carry `## Machine Summary`; `---SCORE_SUMMARY---` is stripped at save by design).
+
+**v1.255.2 — SHIPPED 2026-10-24** (CAR-99: the 120 `,,` elision holes in `FALLBACK_SOURCES` removed + a dense-array gate — every `#/scan` render had thrown `id.length` on undefined; CAR-97: vi stop-word table in the live-QA language checker; CAR-98: the closing evaluation reminder makes the SCORE_SUMMARY block mandatory). Tests **5695** (0 fail), browser 143/143, live ×19 re-check post-deploy.
 
 **v1.247.0 — SHIPPED 2026-10-09** (design sweep tail: CAR-49…58 minors + the dark map tiles the previous release deferred). Tests **5116** (0 fail), browser **118**, e2e **23/23 + 21/21**; server coverage baseline in `scripts/coverage-baseline.json` (ratchet). The 2026-10-07/08 trains are done and shipped: **v1.242.0** sources correctness (9 parallel fix agents, ~600 tests, CAR-6…16), **v1.243.0** client fixes, **v1.244.x** `#/scan` redesign (prod verified).
 
-Remaining plan (`docs/sdd/BACKLOG.md`): the docs-reality sweep **CAR-30…35** (help ×18 vs code, prompt-machine docs, README ×18, site cvstart.org, help mirrors), the parked `job-map-ta` screenshot (blocked on the geocode capture, #417), and the next parent/upstream delta (research in progress). All web-ui branches are merged into `main` and deleted after each release (maintainer's rule, 2026-10-07).
+Remaining plan (`docs/sdd/BACKLOG.md` + Linear CAR): merge the pushed agent branches **CAR-103** (`fix/car103-help-tokenizer`) and **CAR-106** (`fix/car106-hermes-usage-cost`) as their own releases, then CAR-104 as v1.257.0; then the bug queue (CAR-130, CAR-111 prompt caching, CAR-110 deep-research sources, CAR-105 map geocoding), then the UX epics (CAR-113…124) and the docs/cvstart batch (CAR-131…141). All web-ui branches are merged into `main` and deleted after each release (maintainer's rule, 2026-10-07).
 
 ## Next step
 
-Docs-reality sweep CAR-30…35 — one branch, one verdict comment per ticket. Any agent: read `docs/sdd/HANDOFF.md` first (OpenCode: `/continue`). Code-scanning: all open alerts on `main` are fixed or dismissed with a written reason (2026-10-07); Dependabot: 0 open.
+Merge `fix/car103-help-tokenizer` + `fix/car106-hermes-usage-cost` (CI green, one release each or one combined patch — same concern class: small verified fixes), then ship CAR-104 as v1.257.0. Code-scanning: all open alerts on `main` are fixed or dismissed with a written reason (2026-10-07); Dependabot: 0 open.
 
 
 **Deploying** — `Actions → Deploy (server) → Run workflow`: `recon` (read-only), `deploy`, `verify`
