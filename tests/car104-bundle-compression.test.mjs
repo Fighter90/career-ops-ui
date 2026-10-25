@@ -34,6 +34,7 @@ import { tmpdir } from 'node:os';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { brotliDecompressSync, gunzipSync } from 'node:zlib';
+import { createHash } from 'node:crypto';
 import http from 'node:http';
 import express from 'express';
 
@@ -372,5 +373,139 @@ test('createApp: CSP headers are still applied to /js/bundle.js responses (mini 
     assert.equal(res.status, 200);
     assert.equal(res.headers['content-encoding'], 'br');
     assert.match(res.headers['content-security-policy'] || '', /script-src 'self'/);
+  } finally { srv.close(); }
+});
+
+// ─────────────── CAR-145 — the shell cache-busts the bundle URL ───────────────
+// index.html is no-store but the bundle is `public, max-age=300` — without a
+// versioned URL a browser can pair a NEW shell with a CACHED OLD bundle for up
+// to 5 minutes after a deploy. The shell must therefore reference
+// /js/bundle.js?v=<content-hash>, and the negotiation middleware must keep
+// matching (and revalidating) on the PATHNAME so the versioned URL behaves.
+
+/** The real wiring order: shell rewrite → negotiation → static. */
+function shellApp(publicDir) {
+  const app = express();
+  app.use(serverMod.bundleHtmlMiddleware({ publicDir }));
+  app.use(serverMod.bundleCompressionMiddleware({ publicDir }));
+  app.use(express.static(publicDir, {
+    setHeaders: (res, filePath) => {
+      if (/\.(?:js|mjs|css|html)$/i.test(filePath)) {
+        res.setHeader('Cache-Control', 'no-store');
+      }
+    },
+  }));
+  app.use((_req, res) => res.status(404).send('nope'));
+  return app;
+}
+
+/** The ?v= value the shell must cite for a bundle with these exact bytes. */
+function expectedVersion(publicDir) {
+  return createHash('sha256')
+    .update(readFileSync(join(publicDir, 'js', 'bundle.js')))
+    .digest('hex')
+    .slice(0, 12);
+}
+
+test('bundleVersionOf: content hash of the identity bundle, mtime fallback when unreadable', () => {
+  const root = makeScratch('car145-version');
+  const pub = writeFixturePublic(root);
+  writeFileSync(join(pub, 'js', 'bundle.js'), 'var CAR145 = 1;\n');
+  const bundlePath = join(pub, 'js', 'bundle.js');
+  assert.equal(serverMod.bundleVersionOf(bundlePath, null), expectedVersion(pub));
+
+  // Unreadable file (race with a rebuild): the stat of ANY file keeps the URL
+  // changing when the file changes — no crash, no empty version.
+  const ghost = join(pub, 'js', 'bundle-gone.js');
+  const st = { size: 255, mtimeMs: 1700000000000 };
+  assert.equal(serverMod.bundleVersionOf(ghost, st), 'ff-18bcfe56800');
+});
+
+test('CAR-145: the served shell references the bundle with a content-hash query', async () => {
+  const root = await buildFixtureBundle('car145-shell');
+  const pub = join(root, 'public');
+  const srv = await listen(shellApp(pub));
+  const port = srv.address().port;
+  try {
+    const res = await fetch(`http://127.0.0.1:${port}/`);
+    const body = await res.text();
+    assert.equal(res.status, 200);
+    assert.equal(res.headers.get('cache-control'), 'no-store', 'shell stays always-revalidate');
+    assert.match(
+      body,
+      new RegExp(`<script src="/js/bundle.js\\?v=${expectedVersion(pub)}"></script>`),
+      'the ?v= hash must be the sha256 of the served identity bundle',
+    );
+    assert.doesNotMatch(body, /<script src="\/js\/bundle\.js"><\/script>/, 'un-versioned tag is gone');
+  } finally { srv.close(); }
+});
+
+test('CAR-145: after a rebuild the shell cites the NEW hash (the deploy skew window is closed)', async () => {
+  const root = await buildFixtureBundle('car145-skew', { content: 'var CAR145_V1 = 1;' });
+  const pub = join(root, 'public');
+  const srv1 = await listen(shellApp(pub));
+  let first;
+  try {
+    first = await fetch(`http://127.0.0.1:${srv1.address().port}/`).then((r) => r.text());
+  } finally { srv1.close(); }
+  const v1 = expectedVersion(pub);
+  assert.match(first, new RegExp(`src="/js/bundle.js\\?v=${v1}"`));
+
+  // A deploy lands: same paths, new bundle bytes (the shipped make-bundle
+  // replaces the file in place; the shell middleware re-derives on change).
+  writeFixturePublic(root, { content: 'var CAR145_V2 = 2;' });
+  await execFileP(process.execPath, [MAKE_BUNDLE, '--root', root]);
+  const v2 = expectedVersion(pub);
+  assert.notEqual(v1, v2, 'different content must mean a different version');
+
+  const srv2 = await listen(shellApp(pub));
+  const port = srv2.address().port;
+  try {
+    const second = await fetch(`http://127.0.0.1:${port}/`).then((r) => r.text());
+    assert.match(second, new RegExp(`src="/js/bundle.js\\?v=${v2}"`),
+      'the fresh shell must point at the new bundle URL — never the cached old one');
+    assert.ok(!second.includes(`?v=${v1}`), 'the old versioned URL must disappear from the shell');
+  } finally { srv2.close(); }
+});
+
+test('CAR-145: the versioned URL is served by negotiation (pathname-only matching)', async () => {
+  const root = await buildFixtureBundle('car145-versioned-served');
+  const pub = join(root, 'public');
+  const { srv, port } = await bootNegotiation(pub);
+  try {
+    const res = await reqRaw(port, `/js/bundle.js?v=${expectedVersion(pub)}`, {
+      headers: { 'accept-encoding': 'br, gzip' },
+    });
+    assert.equal(res.status, 200);
+    assert.equal(res.headers['content-encoding'], 'br');
+    assert.equal(Number(res.headers['content-length']), readFileSync(join(pub, 'js', 'bundle.js.br')).length);
+    assert.deepEqual(brotliDecompressSync(res.body), readFileSync(join(pub, 'js', 'bundle.js')));
+  } finally { srv.close(); }
+});
+
+test('CAR-145: ETag/304 revalidation keeps working for the same ?v= value', async () => {
+  const root = await buildFixtureBundle('car145-304-versioned');
+  const { srv, port } = await bootNegotiation(join(root, 'public'));
+  try {
+    const url = '/js/bundle.js?v=deadbeefdead';
+    const first = await reqRaw(port, url, { headers: { 'accept-encoding': 'br' } });
+    assert.equal(first.status, 200);
+    assert.ok(first.headers.etag, 'versioned response carries an ETag');
+    const second = await reqRaw(port, url, {
+      headers: { 'accept-encoding': 'br', 'if-none-match': first.headers.etag },
+    });
+    assert.equal(second.status, 304);
+    assert.equal(second.body.length, 0);
+  } finally { srv.close(); }
+});
+
+test('CAR-145: direct artifact fetches still 404 even with a query string', async () => {
+  const root = await buildFixtureBundle('car145-artifact-404');
+  const { srv, port } = await bootNegotiation(join(root, 'public'));
+  try {
+    for (const p of ['/js/bundle.js.br?v=1', '/js/bundle.js.gz?v=1']) {
+      const res = await reqRaw(port, p);
+      assert.equal(res.status, 404, `${p} must 404 — the query does not open a hole`);
+    }
   } finally { srv.close(); }
 });

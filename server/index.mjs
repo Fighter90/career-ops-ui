@@ -16,6 +16,7 @@ import express from 'express';
 import { fileURLToPath } from 'node:url';
 import { resolve, dirname } from 'node:path';
 import { readFileSync, statSync, createReadStream } from 'node:fs';
+import { createHash } from 'node:crypto';
 import { PATHS, PROJECT_ROOT, PUBLIC_DIR, WEB_UI_ROOT } from './lib/paths.mjs';
 import { rewriteIndexHtml, BUNDLE_SRC } from '../scripts/make-bundle.mjs';
 import { activityMiddleware } from './lib/activity-log.mjs';
@@ -92,6 +93,24 @@ loadEnvFile(PATHS.envFile);
 // rewritten — the SPA is hash-routed, so "/" is the cold-load path; the
 // rare SPA fallback further down keeps serving the original shell.
 // CSP-safe by construction: same files, same order, one classic script.
+/**
+ * CAR-145 — the cache-busting ?v= value the shell cites for the bundle URL.
+ * The bundle is a STATIC NAME under `public, max-age=300` (CAR-104), so a
+ * deploy could otherwise serve a NEW no-store shell against a CACHED OLD
+ * bundle for up to 5 minutes. A short content hash of the identity bundle
+ * makes the URL itself change on every rebuild; the negotiation middleware
+ * matches on the pathname, so the versioned URL reuses the same
+ * ETag/negotiation path. When the file cannot be read (a race with a
+ * rebuild), the size-mtime pair of the stat keeps the URL still changing.
+ */
+export function bundleVersionOf(bundlePath, st) {
+  try {
+    return createHash('sha256').update(readFileSync(bundlePath)).digest('hex').slice(0, 12);
+  } catch {
+    return `${st.size.toString(16)}-${st.mtimeMs.toString(16)}`;
+  }
+}
+
 export function bundleHtmlMiddleware({ publicDir }) {
   const disabled = process.env.NO_BUNDLE === '1';
   const indexHtmlPath = resolve(publicDir, 'index.html');
@@ -103,16 +122,22 @@ export function bundleHtmlMiddleware({ publicDir }) {
   return function bundleHtml(req, res, next) {
     if (disabled || req.method !== 'GET' || req.path !== '/' || !req.accepts('html')) return next();
     let key;
+    let bundleStat;
     try {
       const st = statSync(indexHtmlPath);
       const sb = statSync(bundlePath);
+      bundleStat = sb;
       key = `${st.size}:${st.mtimeMs}:${sb.size}:${sb.mtimeMs}`;
     } catch {
       return next(); // no shell or no bundle → individual scripts
     }
     if (!cache || cache.key !== key) {
       try {
-        const rewritten = rewriteIndexHtml(readFileSync(indexHtmlPath, 'utf8'), BUNDLE_SRC);
+        // CAR-145 — reference the bundle with a content-hash query so the
+        // long-cache bundle URL changes on every rebuild: a fresh (no-store)
+        // shell can then never point at a cached OLD bundle after a deploy.
+        const versionedSrc = `${BUNDLE_SRC}?v=${bundleVersionOf(bundlePath, bundleStat)}`;
+        const rewritten = rewriteIndexHtml(readFileSync(indexHtmlPath, 'utf8'), versionedSrc);
         cache = { key, html: rewritten ? rewritten.html : null };
       } catch (err) {
         console.warn(`[bundle] shell rewrite failed, serving individual scripts: ${err.message}`);
@@ -139,12 +164,15 @@ export function bundleHtmlMiddleware({ publicDir }) {
 //   - Content-Encoding + Vary: Accept-Encoding + exact Content-Length;
 //   - a weak ETag derived from the identity file — shared by every variant,
 //     so revalidation (If-None-Match → 304) stays cheap after max-age;
-//   - `public, max-age=300, must-revalidate`: the bundle is a STATIC NAME
-//     (no content hash), so a bounded, revalidating window is the safe
-//     policy. After a deploy a browser may reuse the old bundle for at most
-//     5 minutes and must revalidate after that — W-001's hours-long
-//     staleness cannot recur. Individual scripts keep express.static's
-//     no-store (the setHeaders on the static mount below).
+//   - `public, max-age=300, must-revalidate`: CAR-145 makes the SHELL cite
+//     the bundle as /js/bundle.js?v=<content-hash> (bundleHtmlMiddleware), so
+//     the URL changes on every rebuild and the bounded cache is safe — after
+//     a deploy a fresh shell can no longer pair with a cached OLD bundle.
+//     must-revalidate keeps the revalidation contract after max-age.
+//     Individual scripts keep express.static's no-store (the setHeaders on
+//     the static mount below). Matching is on the PATHNAME (req.path is
+//     query-free), so versioned URLs share this response path and the
+//     direct-artifact 404 rule holds for them too.
 // Guard rails: a companion is used only when it exists, is non-empty, and is
 // at least as new as the identity bundle — an interrupted build or the
 // deploy's rollback path can leave stale artifacts on disk and they are
