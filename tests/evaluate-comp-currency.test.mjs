@@ -292,3 +292,19 @@ test('buildCompensationBlock: differing mapped currencies → indicative ≈-ref
   );
   assert.match(block, /≈/, 'indicative static-table reference present');
 });
+
+// ── Coverage: non-string input reads PATHS.profile (exists + missing branches) ──
+
+test('readProfileCompensation: no argument reads the existing profile from PATHS', async () => {
+  const { readProfileCompensation } = await import('../server/lib/comp-compare.mjs');
+  const profPath = resolve(ROOT, 'config', 'profile.yml');
+  writeFileSync(profPath, PROFILE_EUR);
+  const comp = readProfileCompensation();
+  assert.ok(comp && comp.low != null && /85,000/.test(comp.raw), 'compensation read from disk: ' + JSON.stringify(comp));
+});
+
+test('readProfileCompensation: profile file missing → null (no throw)', async () => {
+  const { readProfileCompensation } = await import('../server/lib/comp-compare.mjs');
+  rmSync(resolve(ROOT, 'config', 'profile.yml'));
+  assert.equal(readProfileCompensation(), null);
+});
