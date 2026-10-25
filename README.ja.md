@@ -17,9 +17,9 @@ _非公式 UI — career-ops / santifer とは提携しておらず、承認も�
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.258.0** — **エージェントフリートによる6つの修正: «アクティブな会社»カウンターは2つの母集団を混ぜるのをやめ(1554/90)、ディープリサーチは`[source: …]`マーカーを要求してunknownを認め、失敗したフォームフィールドはトーストだけのエラーではなくフィールド自体が点灯し、#/mapと#/trackerはh1を即座に描画してスケルトンのローディング行を表示し、すべての/api/evaluateが約37kトークンの安定プレフィックスをキャッシュします(最初の呼び出し以降は≈10×安く)。**
+> **🆕 最新リリース — v1.259.0** — **エージェントフリートによる2本目の列車、6つの修正: レポートの日付はサーバー側で固定され(捏造された2026-01-xxはもう出ません)、ディープリサーチの出典は先行して到着済み、マップのジオコーダはキャッシュしてRUの都市を読み取り(位置情報なしの92% → カバー済み)、ヘルプ×18はローカライズされたボタンラベルを引用し、UIの文は言語の混在をやめ(23のキー付きリーク)、給与比較はサーバー側で1つの正規形で計算されます(zh-TWの判定反転は死にました)。さらにCAR-104: JSバンドルはプリコンプレスされて出荷されるようになります — コールドロード 3.1 MB → 598 KB。**
 >
-> **前バージョン — v1.257.0** — **エージェントフリートによる2つの修正: アプリ内ヘルプアシスタントがデーヴァナーガリー文字とタミル文字を理解できるようになりました(トークナイザーは結合記号を落としていました — ヒンディー語のクエリは0セクションにマッチし、タミル語は断片にしかマッチしませんでした)。さらに、使用量ページがHermesの実際のコストを表示します(ゲートウェイ報告のコストが静かに落とされていました — 9.5 Mトークンに対して$0.0000)。**
+> **前バージョン — v1.258.0** — **エージェントフリートによる6つの修正: «アクティブな会社»カウンターは2つの母集団を混ぜるのをやめ(1554/90)、ディープリサーチは`[source: …]`マーカーを要求してunknownを認め、失敗したフォームフィールドはトーストだけのエラーではなくフィールド自体が点灯し、#/mapと#/trackerはh1を即座に描画してスケルトンのローディング行を表示し、すべての/api/evaluateが約37kトークンの安定プレフィックスをキャッシュします(最初の呼び出し以降は≈10×安く)。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
