@@ -15,10 +15,11 @@ Router.register('reports', async (params) => {
     return c('div', null, [
       c('header', { className: 'page-header' }, [
         c('div', null, [
-          // CAR-118 — the unified «Company — Role» header format (same
-          // ReportOps.displayTitle the list renders; falls back to the
-          // raw title / slug).
-          c('h1', { className: 'page-title' }, ReportOps.displayTitle(r) || slug),
+          // CAR-118 review finding 4 — the detail view keeps the report's
+          // RAW H1 (rewriting a legacy hand-written title could
+          // mis-attribute role and company; the list rewrites only when a
+          // recognised label was stripped).
+          c('h1', { className: 'page-title' }, r.title || slug),
           c('p', { className: 'page-subtitle' }, [r.date, r.archetype, r.legitimacy].filter(Boolean).join(' · ')),
         ]),
         c('div', { className: 'flex gap-3' }, [
@@ -67,14 +68,6 @@ Router.register('reports', async (params) => {
     catch { /* private mode — the view still works, it just forgets */ }
   }
 
-  function debounce(fn, ms) {
-    let handle;
-    return (...args) => {
-      clearTimeout(handle);
-      handle = setTimeout(() => fn(...args), ms);
-    };
-  }
-
   const prefs = loadPrefs();
   const state = {
     q: '',
@@ -88,6 +81,13 @@ Router.register('reports', async (params) => {
     view: prefs.view === 'cards' ? 'cards' : 'table',
   };
   const persist = () => savePrefs({ view: state.view, sortKey: state.sortKey, sortDir: state.sortDir });
+
+  // Debounced live filters (ReportOps.debounce carries .cancel() — the
+  // reset button must be able to kill a pending keystroke, review
+  // finding 8: a stale 200 ms callback would otherwise resurrect a filter
+  // the user just cleared).
+  const searchApply = ReportOps.debounce((e) => applyState({ q: e.target.value }), DEBOUNCE_MS);
+  const companyApply = ReportOps.debounce((e) => applyState({ company: e.target.value }), DEBOUNCE_MS);
 
   // v1.180.0 — the table layout (kept next to the new card view). A long
   // "Score not detected" chip used to squeeze the title column to
@@ -138,6 +138,11 @@ Router.register('reports', async (params) => {
 
   // CAR-118 — the legend rows, as in-card action buttons (spec: «Подать»
   // ≥4.5, «Найти контакт» 4.0–4.4, «Исследовать» 3.5–3.9). CLI-free.
+  // Review finding 9 — #/deep, #/apply and #/contacto (mode-page factory)
+  // consume NO hash query parameters today (deep's inputs are #deep-company
+  // / #deep-role and are never prefilled from the URL), so there is no
+  // context to pass yet; report→form autofill is CAR-119's «выбор вакансии
+  // из трекера/отчёта» scope. The buttons navigate to the band's flow.
   function actionFor(rep) {
     const band = ReportOps.bandOf(rep.scoreNum);
     if (band === 'high') return { route: '/apply', cls: 'btn-primary', label: t('rep2.actApply', 'Apply now — top fit') };
@@ -215,7 +220,7 @@ Router.register('reports', async (params) => {
     id: 'reports-search',
     placeholder: t('rep2.searchPh', 'Company or role…'),
     autoComplete: 'off',
-    onInput: debounce((e) => applyState({ q: e.target.value }), DEBOUNCE_MS),
+    onInput: searchApply,
   });
   const companyInp = c('input', {
     type: 'text',
@@ -223,7 +228,7 @@ Router.register('reports', async (params) => {
     list: 'reports-company-options',
     placeholder: t('rep2.companyPh', 'Company…'),
     autoComplete: 'off',
-    onInput: debounce((e) => applyState({ company: e.target.value }), DEBOUNCE_MS),
+    onInput: companyApply,
   });
   const datalist = c('datalist', { id: 'reports-company-options' },
     ReportOps.companies(reports).map((name) => c('option', { value: name })));
@@ -298,6 +303,10 @@ Router.register('reports', async (params) => {
     type: 'button',
     className: 'btn btn-ghost btn-sm',
     onClick: () => {
+      // Kill pending debounces FIRST (review finding 8) — a stale 200 ms
+      // callback must not re-apply a filter the user just cleared.
+      searchApply.cancel();
+      companyApply.cancel();
       searchInp.value = ''; companyInp.value = ''; legSel.value = '';
       bandSel.value = 'all'; fromInp.value = ''; toInp.value = '';
       applyState({ q: '', company: '', legitimacy: '', band: 'all', dateFrom: '', dateTo: '' });
@@ -370,13 +379,17 @@ Router.register('reports', async (params) => {
         ]));
       }
       // Unparsed — display-only (the band filter selects scored bands).
+      // CAR-118 review finding 12 — this is the ONLY place the unparsed
+      // count appears, so it must stay in the accessibility tree: a note
+      // with a label, never aria-hidden.
       histogramWrap.appendChild(c('span', {
         className: 'report-hist-btn band-unparsed',
-        'aria-hidden': 'true',
+        role: 'note',
+        'aria-label': t('rep2.bandUnparsed', 'No score') + ' · ' + (hist.unparsed || 0),
         title: t('rep2.bandUnparsed', 'No score') + ' · ' + (hist.unparsed || 0),
       }, [
         c('span', { className: 'report-hist-count' }, String(hist.unparsed || 0)),
-        c('span', { className: 'report-hist-bar' }),
+        c('span', { className: 'report-hist-bar', 'aria-hidden': 'true' }),
         c('span', { className: 'report-hist-label' }, t('rep2.bandUnparsed', 'No score')),
       ]));
     });

@@ -29,7 +29,7 @@ const INDEX = R('public/index.html');
 
 test('CAR-118: search input is debounced at 200 ms and live (no Apply button)', () => {
   assert.match(SRC, /DEBOUNCE_MS = 200/, 'a named 200 ms debounce constant');
-  assert.match(SRC, /function debounce\(/, 'a local debounce helper');
+  assert.match(SRC, /ReportOps\.debounce\(/, 'the shared debounce helper (with .cancel())');
   assert.ok(!/id: 'reports-apply-filters'/.test(SRC), 'no Apply-style submit button');
 });
 
@@ -64,8 +64,10 @@ test('CAR-118: sortable table headers carry aria-sort', () => {
 test('CAR-118: unified title + score rendering goes through ReportOps', () => {
   assert.match(SRC, /ReportOps\.displayTitle\(/, 'title via the shared helper');
   assert.match(SRC, /ReportOps\.formatScore\(/, 'score via the shared helper (always x.x/5)');
-  // The single-report view uses the same unified title.
-  assert.match(SRC, /ReportOps\.displayTitle\(r\)/, 'the detail view reuses the same format');
+  // Review finding 4 — the DETAIL view keeps the report's RAW H1; only the
+  // list rewrites (and only when a recognised label was stripped).
+  assert.match(SRC, /c\('h1', \{ className: 'page-title' \}, r\.title \|\| slug\)/,
+    'the detail view renders the raw r.title, never a rewritten one');
 });
 
 test('CAR-118: NO CLI commands anywhere in the reports view', () => {
@@ -106,9 +108,43 @@ test('CAR-118: card view ships badge chips (legitimacy + PDF) and a per-band act
   assert.match(SRC, /route: '\/contacto'/, '4.0–4.4 → contact');
   assert.match(SRC, /route: '\/deep'/, '3.5–3.9 → research');
   assert.match(SRC, /Router\.go\(act\.route\)/, 'the action button navigates by its band route');
-  // Action buttons must never nest inside the role=link card body.
-  const cardBody = SRC.match(/report-card-main[\s\S]{0,900}?\]\)/)?.[0] || '';
-  assert.ok(cardBody && !cardBody.includes('Router.go(act.route)'), 'action button sits outside the link region');
+  // Review finding 10 — the action button must be a SIBLING argument after
+  // the report-card-main element closes, never a child of the link region
+  // (the old lazy `[\s\S]{0,900}?` regex could stop at the wrong `])`).
+  assert.match(
+    SRC,
+    /report-card-main[\s\S]*?\]\),\s*\n\s*act \? c\('div', \{ className: 'report-card-actions'/,
+    'report-card-actions is a sibling of report-card-main inside the card',
+  );
+});
+
+test('CAR-118 review: the three action routes are real registered routes (finding 9)', () => {
+  assert.match(R('public/js/views/apply.js'), /Router\.register\('apply'/, '#/apply is registered');
+  assert.match(R('public/js/views/deep.js'), /Router\.register\('deep'/, '#/deep is registered');
+  // `contacto` is the mode-page factory's slug (router.js maps /outreach →
+  // contacto); the factory registers every configured mode route.
+  const modePage = R('public/js/views/mode-page.js');
+  assert.match(modePage, /Router\.register\(/, 'the mode-page factory registers routes');
+  assert.match(modePage, /slug/, 'the factory keys routes on the mode slug');
+});
+
+test('CAR-118 review: reset kills pending debounces; the unparsed column stays in the a11y tree', () => {
+  // finding 8 — ReportOps.debounce exposes .cancel() and reset calls it.
+  assert.match(R('public/js/lib/report-ops.js'), /wrapped\.cancel = /, 'debounce carries .cancel()');
+  assert.match(SRC, /searchApply\.cancel\(\)/, 'reset cancels the pending search keystroke');
+  assert.match(SRC, /companyApply\.cancel\(\)/, 'reset cancels the pending company keystroke');
+  assert.ok(!/function debounce\(/.test(SRC), 'the view uses the shared debounce (one implementation)');
+  // finding 12 — the unparsed histogram column is the only place that
+  // count appears: role=note + an aria-label of its own (the decorative
+  // BAR inside it stays aria-hidden, the note does not).
+  assert.match(SRC, /band-unparsed',\s*\n\s*role: 'note'/, 'the unparsed column is role=note');
+  const unparsed = SRC.match(/band-unparsed[\s\S]{0,700}?\]\)\);/)?.[0] || '';
+  assert.match(unparsed, /'aria-label':/, 'the note carries its own aria-label');
+});
+
+test('CAR-118 review: escapeRe is actually used for the label alternation (finding 11)', () => {
+  assert.match(R('public/js/lib/report-ops.js'), /H1_LABEL_WORDS\.map\(escapeRe\)\.join\('\|'\)/,
+    'the label regex escapes each label word');
 });
 
 test('CAR-118: score histogram sits above the list and filters on click', () => {
