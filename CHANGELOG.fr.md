@@ -10,6 +10,28 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.259.0] — 2026-10-25
+
+**Deuxième train de la flotte d'agents, six correctifs : les dates des rapports sont épinglées côté serveur, le géocodeur de la carte met en cache et lit les villes russes, l'aide ×18 cite les libellés de boutons localisés, les phrases de l'interface cessent de mélanger les langues, les comparaisons de salaires sont calculées côté serveur — et le bundle JS est livré précompressé (chargement à froid 3.1 MB → 598 KB).**
+
+### Corrigé
+
+- **Dates de rapport inventées (CAR-101)** : le prompt d'évaluation épingle désormais la date du jour côté serveur («the **Date:** field MUST be exactly <date> — copy verbatim; never invent»), et `fixReportDate` réécrit une date dérivée en date du jour à chaque site d'acceptation (branche Anthropic, sous-processus Gemini, queue compatible OpenAI, /api/deep, auto-pipeline) avec un avertissement + un enregistrement d'activité — une correction, jamais un rejet. 349/789 rapports en prod portaient des dates inventées ; les nouveaux ne le peuvent plus.
+- **Géocodage de la carte (CAR-105)** : les chaînes de villes en cyrillique des lignes hh.ru/Habr parviennent désormais au géocodeur ; un cache persistant et borné (`data/geocode-cache.json`, withFileLock) garantit qu'une ville déjà résolue ne frappe plus jamais deux fois le fournisseur ; les appels de géocodage sont budgétés par requête, si bien que la carte se remplit progressivement au lieu de bloquer 13.9 s.
+- **Interface en langues mélangées (CAR-108)** : 23 fuites indexées corrigées dans 17 des 19 dictionnaires (85 valeurs) — «все matching», «только remote», «Открыть Scan», l'entonnoir «Evaluated → Applied…» et d'autres sont devenus des phrases entièrement localisées réutilisant le vocabulaire produit propre à chaque langue. `i18n-no-latin-leaks` est étendu avec la table des fragments + la sonde d'entonnoir (rouge→vert).
+- **Bascule de verdict monétaire (CAR-109)** : la comparaison des salaires est calculée côté serveur dans `comp-compare.mjs` et intégrée sous forme canonique (`Candidate minimum: … per YEAR (raw: …)` vs `JD offer: …`) ; les formes mensuelles ×12, k/к/тыс/萬 et à virgule décimale sont normalisées avant comparaison ; une conversion incertaine ne peut plus à elle seule faire basculer le verdict (le cas zh-TW «€80–100k ниже минимума» est mort). Le modèle ne multiplie plus jamais.
+- **Libellés de boutons dans l'aide ×18 (CAR-107)** : les bundles d'aide localisés citaient des libellés anglais («⚡ Run live», «Save», «Scan now») que l'interface n'affiche plus — 263 remplacements à travers 18 langues, établis à partir des sources des vues ; le docs-assistant hérite du correctif.
+
+### Ajouté
+
+- **Bundle précompressé + chargement à froid cachable (CAR-104)** : `make-bundle.mjs` émet `bundle.js.br` (brotli q11) + `.gz` au moment de la release ; un middleware dédié au bundle négocie br > gz avec `Vary: Accept-Encoding`, `public, max-age=300, must-revalidate` + ETag/304 ; protégé en fraîcheur (un artefact compagnon ne sert jamais un contenu plus vieux que le bundle identité), les récupérations directes d'artefacts répondent 404, la CSP est identique à l'octet près. Chargement à froid : 3.1 MB → ~0.6 MB sur le fil (−80%) ; les visites répétées dans les 5 minutes transfèrent ≈0 octet.
+
+### Notes
+
+- Tous les correctifs viennent de la flotte d'agents avec preuve rouge→vert (13 + 28 + 1 + 30 + 7 nouveaux cas dans leurs suites respectives) et ont été polis en revue (CodeQL #579/#580/#584 corrigés dans le code — URLs de stub analysées via `new URL().host`, une chaîne de prompt morte supprimée).
+- Les chiffres du comblement des scores de la v1.258.0 sont désormais consignés dans CAR-129 (`updated: 22`, `reportScoreless: 159`).
+- Délibérément non fait : pas de correction rétroactive des dates pour les 349 rapports historiques (un comblement serait une opération approuvée par le propriétaire), pas de vue en clusters de la carte (CAR-125 reste en file derrière ce correctif de géocodage).
+- Tests 5823 (+74). Aucune source du scanner touchée (registre 121 = 116 EN + 5 RU · 116 adaptateurs) ; aucune clé i18n (CAR-108 ne modifie que les valeurs de clés existantes).
 
 ## [1.258.0] — 2026-10-25
 
