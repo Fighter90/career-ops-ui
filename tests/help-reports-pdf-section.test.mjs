@@ -57,14 +57,39 @@ test('FIX-5: every help bundle documents report → PDF export in §10 Reports',
 
 // CAR-144 — the resolver is keyed to the dict it is GIVEN: no silent English
 // fallback when a locale entry is missing (the old `?? 'Generate PDF'`
-// fallback let the gate pass against the pre-CAR-107 English label), and a
-// label containing an apostrophe is returned whole (the old `[^']*` scan
-// truncated at the first `'`, making the match vacuously broad).
+// fallback let the gate pass against the pre-CAR-107 English label).
+// CAR-144 rev-2 — the REAL dict's shape is asserted directly: `en` is a
+// string and every BUNDLES entry resolves modulo the ko→ko-KR alias, so a
+// future locale-normalization change fails loudly here instead of throwing
+// per-locale at runtime. Round-trips run against the real fr / ko labels —
+// a synthetic label cannot fail a plain property lookup.
 test('CAR-144: the PDF label resolver reads the dict it is given and fails loudly on a missing locale', () => {
   const partial = { 'common.generatePdf': { en: 'Generate PDF', ru: 'Создать PDF' } };
   assert.equal(generatePdfLabel(partial, 'ru'), 'Создать PDF', 'the label comes from the injected dict, per locale');
   assert.throws(() => generatePdfLabel(partial, 'fr'), /common\.generatePdf/,
     'a missing locale entry must fail the gate, never fall back to the English label');
+
+  // The REAL dict carries the key for every bundle, modulo the ko→ko-KR alias.
+  const DICT = loadAssembledDict();
+  assert.equal(typeof DICT['common.generatePdf']?.en, 'string', 'the real dict has common.generatePdf.en');
+  for (const lang of BUNDLES) {
+    const dictLang = lang === 'ko-KR' ? 'ko' : lang; // dict key is ko, help file is ko-KR
+    assert.equal(typeof DICT['common.generatePdf']?.[dictLang], 'string',
+      `the real dict must cover common.generatePdf.${dictLang} (bundle ${lang})`);
+  }
+  // Round-trips against the real labels (not synthetic ones a lookup cannot fail).
+  assert.equal(generatePdfLabel(DICT, 'fr'), DICT['common.generatePdf'].fr, 'the fr label round-trips');
+  assert.equal(generatePdfLabel(DICT, 'ko-KR'), DICT['common.generatePdf'].ko, 'the ko→ko-KR alias round-trips');
+  // CAR-144 r3 — one locale against a LITERAL expected string, independent
+  // of the dict lookup: a resolver alias bug cannot mask itself. Both
+  // sides NFC-normalized (r5) so a composed-vs-decomposed é can never
+  // fail an otherwise-correct label.
+  assert.equal(generatePdfLabel(DICT, 'fr').normalize('NFC'), 'Générer un PDF'.normalize('NFC'),
+    'the fr label is the literal «Générer un PDF»');
+  // CAR-144 r3 — the apostrophe contract, pinned synthetically: if a
+  // regex-scraping implementation (the old `[^']*` capture, truncated at
+  // the first `'`) ever returns, this fails where the real round-trips
+  // cannot — no current label contains an apostrophe.
   const apostrophe = { 'common.generatePdf': { fr: "Générer l'aperçu PDF" } };
   assert.equal(generatePdfLabel(apostrophe, 'fr'), "Générer l'aperçu PDF",
     'a label containing an apostrophe is returned whole');

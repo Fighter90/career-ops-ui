@@ -130,10 +130,17 @@ test('CAR-101: prose mentioning a date or the template never matches', () => {
   assert.equal(r.text, prose);
 });
 
-// CAR-144 — header scoping: only the report HEADER (the text before the
-// first `## ` heading) is subject to the correction. A bulleted `- Date: …`
-// posting bullet in a Block F/G legitimacy body — or a dated news item in a
-// deep brief — is user content; rewriting it would fabricate a fact.
+// CAR-144 r5 — preamble-only scoping: the correction applies to the text
+// before the FIRST `## ` heading and nothing else. A report that OPENS
+// with an H2 (a model-written H2 title, or no title at all) has an empty
+// preamble — not this pipeline's generated shape (the prompt pins
+// `# Evaluation: …` / `# Deep Brief…` H1s) — and gets a conservative
+// no-op: a stale date is acceptable, a fabricated one is not. Within the
+// preamble the selection rule is: unique candidate, else unique bold
+// `**Date:**`, else no-op — a second REAL date survives, and the only
+// change in the output is that one header date, proven by full-output
+// equality (guarded: the fixture must contain the invented date exactly
+// once): any stray rewrite anywhere fails the test.
 test('CAR-144: a bulleted Date: line inside a block body is never rewritten; the header date still is', () => {
   const input = [
     '# Evaluation: Acme — Engineer',
@@ -154,9 +161,189 @@ test('CAR-144: a bulleted Date: line inside a block body is never rewritten; the
   ].join('\n');
   const r = fixReportDate(input, '2026-10-25');
   assert.equal(r.replaced, 1, 'exactly one line — the header date — is corrected');
-  assert.ok(r.text.includes('**Date:** 2026-10-25'), 'header date corrected');
-  assert.ok(r.text.includes('- Date: 2025-11-02'), 'the bulleted posting date in a block body is untouched');
-  assert.ok(r.text.includes('Date: 2024-02-03'), 'a date-shaped line in a block body is untouched');
+  assert.equal(input.split('2026-01-15').length, 2, 'fixture: the invented date appears exactly once');
+  assert.equal(
+    r.text,
+    input.replace('2026-01-15', '2026-10-25'),
+    'full-output equality: the header date is the ONLY change — no stray rewrite anywhere',
+  );
+});
+
+// CAR-144 r4 — an H2 opening line means an EMPTY preamble (the boundary is
+// the first `## ` line itself): conservative no-op, byte-identical.
+// Deliberate reversal of the r2/r3 positive expectation — the H2-title
+// branch was the whack-a-mole; the prompt pins H1 titles, so this shape is
+// not ours to correct.
+test('CAR-144 r4: a report that opens with an ## title is a conservative no-op', () => {
+  const input = [
+    '## Evaluation: Acme — Engineer',
+    '**Date:** 2026-01-15',
+    '**URL:** https://jobs.acme.example/42',
+    '',
+    '## Block A — x',
+    '- Date: 2025-11-02',
+  ].join('\n');
+  const r = fixReportDate(input, '2026-10-25');
+  assert.equal(r.replaced, 0, 'empty preamble — nothing may be rewritten');
+  assert.equal(r.text, input, 'byte-identical');
+});
+
+// CAR-144 r4 — a title-less report opening with a block heading: empty
+// preamble, conservative no-op — bulleted or not, nothing is rewritten.
+test('CAR-144 r4: a title-less report opening with a block heading is never touched', () => {
+  const input = [
+    '## Block A — x',
+    '- Date: 2025-11-02',
+    '## Block B — y',
+    'Body text.',
+  ].join('\n');
+  const r = fixReportDate(input, '2026-10-25');
+  assert.equal(r.replaced, 0, 'no header exists — nothing may be rewritten');
+  assert.equal(r.text, input, 'byte-identical');
+});
+
+// CAR-144 r4 — the r3 bullet-stop could not save a NON-bulleted Date line
+// after a block heading (it became "header"); the preamble rule does.
+test('CAR-144 r4: a plain Date: body line after an opening block heading is never touched', () => {
+  const input = [
+    '## Block A — x',
+    'Date: 2024-02-03',
+    '## Block B — y',
+    'Body text.',
+  ].join('\n');
+  const r = fixReportDate(input, '2026-10-25');
+  assert.equal(r.replaced, 0, 'empty preamble — nothing may be rewritten');
+  assert.equal(r.text, input, 'byte-identical');
+});
+
+// CAR-144 r4 — a title-only H2 followed by more headings: empty preamble.
+test('CAR-144 r4: a title-only H2 followed by more headings is never touched', () => {
+  const input = [
+    '## Evaluation: X',
+    '## Block A',
+    '- Date: 2025-11-02',
+  ].join('\n');
+  const r = fixReportDate(input, '2026-10-25');
+  assert.equal(r.replaced, 0, 'no header fields exist — nothing may be rewritten');
+  assert.equal(r.text, input, 'byte-identical');
+});
+
+// CAR-144 r4 — ambiguity rule, preference: a preamble holding a plain AND
+// a bold Date candidate corrects the BOLD one (the report header's own
+// label shape) and the plain real date survives.
+test('CAR-144 r4: with a plain and a bold Date candidate, the bold one is corrected', () => {
+  const input = [
+    '# Evaluation: Acme — Engineer',
+    '',
+    'Date: 2025-06-01',
+    '**Date:** 2026-01-15',
+    '**URL:** https://jobs.acme.example/42',
+    '',
+    '## Block A — x',
+    '- Date: 2024-01-01',
+  ].join('\n');
+  const r = fixReportDate(input, '2026-10-25');
+  assert.equal(r.replaced, 1, 'the bold header label is the correction target');
+  assert.equal(input.split('2026-01-15').length, 2, 'fixture: the invented date appears exactly once');
+  assert.equal(
+    r.text,
+    input.replace('2026-01-15', '2026-10-25'),
+    'full-output equality: the bold date is corrected, the plain one survives',
+  );
+});
+
+// CAR-144 r4 — ambiguity rule, no-op: TWO bold **Date:** candidates in the
+// preamble cannot be disambiguated — rewrite none.
+test('CAR-144 r4: two bold Date candidates in the preamble are an ambiguity no-op', () => {
+  const input = [
+    '# Evaluation: Acme — Engineer',
+    '',
+    '**Date:** 2026-01-15',
+    '**Date:** 2025-06-01',
+    '**URL:** https://jobs.acme.example/42',
+    '',
+    '## Block A — x',
+  ].join('\n');
+  const r = fixReportDate(input, '2026-10-25');
+  assert.equal(r.replaced, 0, 'two bold candidates are ambiguous — rewrite none');
+  assert.equal(r.text, input, 'byte-identical');
+});
+
+// CAR-144 r4 — first-match-only + bold preference: a second REAL date in
+// the preamble (a posting date, an as-of date) SURVIVES; the bold header
+// label is the one corrected.
+test('CAR-144 r4: only the bold header Date is corrected; a second real date survives', () => {
+  const input = [
+    '# Evaluation: Acme — Engineer',
+    '',
+    '**Date:** 2026-01-15',
+    'Date: 2025-06-01',
+    '**URL:** https://jobs.acme.example/42',
+    '',
+    '## Block A — x',
+    '- Date: 2024-01-01',
+  ].join('\n');
+  const r = fixReportDate(input, '2026-10-25');
+  assert.equal(r.replaced, 1, 'exactly the bold header Date line is corrected');
+  assert.equal(input.split('2026-01-15').length, 2, 'fixture: the invented date appears exactly once');
+  assert.equal(
+    r.text,
+    input.replace('2026-01-15', '2026-10-25'),
+    'full-output equality: the bold date is corrected, the plain one and the body bullet survive',
+  );
+});
+
+// CAR-144 r5 — deliberate, pinned: two PLAIN candidates have no bold to
+// prefer, which is ambiguous → rewrite none, byte-identical.
+test('CAR-144 r5: two plain Date candidates in the preamble are an ambiguity no-op', () => {
+  const input = [
+    '# Evaluation: Acme — Engineer',
+    '',
+    'Date: 2026-01-15',
+    'Date: 2025-06-01',
+    '**URL:** https://jobs.acme.example/42',
+    '',
+    '## Block A — x',
+  ].join('\n');
+  const r = fixReportDate(input, '2026-10-25');
+  assert.equal(r.replaced, 0, 'no bold to prefer — ambiguous, rewrite none');
+  assert.equal(r.text, input, 'byte-identical');
+});
+
+// CAR-144 r5 — accepted asymmetry, pinned: a LONE plain Date: line in the
+// preamble IS rewritten (there is nothing to prefer against it — it IS
+// the header field), while a plain line NEXT TO a bold one is protected
+// as the real date. Chosen over a bulletless/after-H1 restriction.
+test('CAR-144 r5: a lone plain Date line in the preamble is still corrected', () => {
+  const input = '# Evaluation: Acme — Engineer\n\nDate: 2026-01-15\n**URL:** https://jobs.acme.example/42\n';
+  const r = fixReportDate(input, '2026-10-25');
+  assert.equal(r.replaced, 1, 'the lone plain candidate is the header field — corrected');
+  assert.equal(input.split('2026-01-15').length, 2, 'fixture: the invented date appears exactly once');
+  assert.equal(r.text, input.replace('2026-01-15', '2026-10-25'), 'full-output equality');
+});
+
+// CAR-144 r5 — bulleted-bold alignment: `- **Date:** …` matches
+// REPORT_DATE_LINE, so BOLD_DATE_LINE must accept the optional list
+// marker too — otherwise a bulleted-bold next to any other Date yields
+// zero bold candidates and nothing is corrected.
+test('CAR-144 r5: a bulleted-bold Date candidate is preferred over a plain one', () => {
+  const input = [
+    '# Evaluation: Acme — Engineer',
+    '',
+    '- **Date:** 2026-01-15',
+    'Date: 2025-06-01',
+    '**URL:** https://jobs.acme.example/42',
+    '',
+    '## Block A — x',
+  ].join('\n');
+  const r = fixReportDate(input, '2026-10-25');
+  assert.equal(r.replaced, 1, 'the bulleted-bold header label is the correction target');
+  assert.equal(input.split('2026-01-15').length, 2, 'fixture: the invented date appears exactly once');
+  assert.equal(
+    r.text,
+    input.replace('2026-01-15', '2026-10-25'),
+    'full-output equality: the bulleted-bold date is corrected, the plain one survives',
+  );
 });
 
 test('CAR-101: an invalid today argument falls back to the server date', () => {
