@@ -463,10 +463,16 @@ test('readProfileCompensation: missing profile file → null (no throw)', async 
   const { readProfileCompensation } = await import('../server/lib/comp-compare.mjs');
   // No argument → the PATHS.profile read branch actually runs. PATHS resolves
   // once at import (CAREER_OPS_ROOT in before()), so remove the file itself —
-  // 'not-a-string' never exercised the branch (it short-circuits as YAML), and
-  // setting CAREER_OPS_ROOT after import has no effect.
-  rmSync(resolve(ROOT, 'config', 'profile.yml'), { force: true });
-  assert.equal(readProfileCompensation(), null);
+  // and restore it afterwards: later tests and --test-only runs rely on the
+  // shared fixture.
+  const profPath = resolve(ROOT, 'config', 'profile.yml');
+  const original = readFileSync(profPath, 'utf8');
+  try {
+    rmSync(profPath);
+    assert.equal(readProfileCompensation(), null);
+  } finally {
+    writeFileSync(profPath, original);
+  }
 });
 
 test('readProfileCompensation: malformed YAML → null (no throw)', async () => {
