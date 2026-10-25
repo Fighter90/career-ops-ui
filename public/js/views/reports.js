@@ -1,28 +1,12 @@
 /* global Router, API, UI, I18n, ReportOps */
-// CAR-118 i18n — NEW keys below use I18n.t with EN fallbacks; dict fan-out
-// is tracked in the ship report (NO locale files were edited here):
-//   rep2.searchLabel, rep2.searchPh, rep2.companyLabel, rep2.companyPh,
-//   rep2.legitimacyAll, rep2.bandLabel, rep2.bandAll, rep2.bandHigh,
-//   rep2.bandGood, rep2.bandMid, rep2.bandLow, rep2.bandUnparsed,
-//   rep2.dateFrom, rep2.dateTo, rep2.sortLabel, rep2.sortDate,
-//   rep2.sortScore, rep2.sortCompany, rep2.sortDirAsc, rep2.sortDirDesc,
-//   rep2.viewLabel, rep2.viewTable, rep2.viewCards, rep2.reset,
-//   rep2.noMatches, rep2.pdfBadge, rep2.actApply, rep2.actContact,
-//   rep2.actResearch, rep2.actLow, rep2.histogramLabel
-// The old rep.thr45/40/35 keys are no longer referenced: their dict values
-// carried CLI commands and CAR-118 bans those from this UI (the action copy
-// is replaced by the rep2.act* keys below).
+// The rep2.* keys below (CAR-118 #/reports v2) are translated in all 19
+// locale dicts (public/js/lib/locales/i18n-dict.<lang>.js) and enforced by
+// tests/i18n-coverage.test.mjs. The old rep.thr45/40/35 keys are no longer
+// referenced here: their dict values carried CLI commands and CAR-118 bans
+// those from this UI (the action copy is the rep2.act* keys).
 Router.register('reports', async (params) => {
   const c = UI.el;
   const t = (k, f) => I18n.t(k, f);
-  // CAR-118 i18n bridge — the NEW rep2.* keys ship with EN fallbacks until
-  // the ×19 dict fan-out lands (locale files are outside this change's file
-  // set). The i18n-coverage gate statically scans literal quoted-key t()
-  // calls and
-  // hard-fails any key missing from DICT, so the pending keys route through
-  // this local alias instead. After the fan-out adds the keys, t2 resolves
-  // them from DICT exactly like t() — and can be folded back into t().
-  const t2 = t;
 
   // single report view
   if (params[0]) {
@@ -156,9 +140,9 @@ Router.register('reports', async (params) => {
   // ≥4.5, «Найти контакт» 4.0–4.4, «Исследовать» 3.5–3.9). CLI-free.
   function actionFor(rep) {
     const band = ReportOps.bandOf(rep.scoreNum);
-    if (band === 'high') return { route: '/apply', cls: 'btn-primary', label: t2('rep2.actApply', 'Apply now — top fit') };
-    if (band === 'good') return { route: '/contacto', cls: '', label: t2('rep2.actContact', 'Apply, or find a warm contact first') };
-    if (band === 'mid') return { route: '/deep', cls: '', label: t2('rep2.actResearch', 'Research the company first') };
+    if (band === 'high') return { route: '/apply', cls: 'btn-primary', label: t('rep2.actApply', 'Apply now — top fit') };
+    if (band === 'good') return { route: '/contacto', cls: '', label: t('rep2.actContact', 'Apply, or find a warm contact first') };
+    if (band === 'mid') return { route: '/deep', cls: '', label: t('rep2.actResearch', 'Research the company first') };
     return null; // low / unparsed: no suggested action
   }
 
@@ -185,7 +169,7 @@ Router.register('reports', async (params) => {
           c('span', { className: 'report-date-cell' }, rep.date || '—'),
           rep.legitimacy ? c('span', { className: 'chip report-legit-chip' }, rep.legitimacy) : null,
           scoreChip(rep),
-          rep.pdf ? c('span', { className: 'chip report-pdf-chip' }, t2('rep2.pdfBadge', 'PDF')) : null,
+          rep.pdf ? c('span', { className: 'chip report-pdf-chip' }, t('rep2.pdfBadge', 'PDF')) : null,
         ]),
       ]),
       act ? c('div', { className: 'report-card-actions' },
@@ -204,7 +188,7 @@ Router.register('reports', async (params) => {
       c('button', {
         type: 'button',
         className: 'th-sort',
-        title: t2('rep2.sortLabel', 'Sort by'),
+        title: t('rep2.sortLabel', 'Sort by'),
         onClick: () => applyState(sortPatch(key)),
       }, [
         labelNode,
@@ -229,7 +213,7 @@ Router.register('reports', async (params) => {
   const searchInp = c('input', {
     type: 'search',
     id: 'reports-search',
-    placeholder: t2('rep2.searchPh', 'Company or role…'),
+    placeholder: t('rep2.searchPh', 'Company or role…'),
     autoComplete: 'off',
     onInput: debounce((e) => applyState({ q: e.target.value }), DEBOUNCE_MS),
   });
@@ -237,7 +221,7 @@ Router.register('reports', async (params) => {
     type: 'text',
     id: 'reports-company',
     list: 'reports-company-options',
-    placeholder: t2('rep2.companyPh', 'Company…'),
+    placeholder: t('rep2.companyPh', 'Company…'),
     autoComplete: 'off',
     onInput: debounce((e) => applyState({ company: e.target.value }), DEBOUNCE_MS),
   });
@@ -248,25 +232,33 @@ Router.register('reports', async (params) => {
     id: 'reports-legitimacy',
     onChange: (e) => applyState({ legitimacy: e.target.value }),
   }, [
-    c('option', { value: '' }, t2('rep2.legitimacyAll', 'All')),
+    c('option', { value: '' }, t('rep2.legitimacyAll', 'All')),
     ...Array.from(new Set(reports.map((r) => r.legitimacy).filter(Boolean))).sort()
       .map((v) => c('option', { value: v }, v)),
   ]);
+
+  // CAR-118 (review) — band labels are LITERAL keys (the i18n-coverage
+  // gate scans quoted-key literals; string-built keys bypassed it).
+  const BAND_LABEL_KEYS = {
+    high: 'rep2.bandHigh', good: 'rep2.bandGood', mid: 'rep2.bandMid', low: 'rep2.bandLow',
+  };
+  const BAND_LABEL_FALLBACKS = {
+    high: 'High (4.5+)', good: 'Good (4.0+)', mid: 'Mid (3.5+)', low: 'Below 3.5',
+  };
+  const bandLabel = (id) => t(BAND_LABEL_KEYS[id], BAND_LABEL_FALLBACKS[id]);
 
   const bandSel = c('select', {
     id: 'reports-band',
     onChange: (e) => applyState({ band: e.target.value }),
   }, [
-    c('option', { value: 'all' }, t2('rep2.bandAll', 'All scores')),
-    ...ReportOps.BANDS.map((b) => c('option', { value: b.id }, t2('rep2.band' + b.id[0].toUpperCase() + b.id.slice(1),
-      { high: 'High (4.5+)', good: 'Good (4.0+)', mid: 'Mid (3.5+)', low: 'Below 3.5' }[b.id]))),
+    c('option', { value: 'all' }, t('rep2.bandAll', 'All scores')),
+    ...ReportOps.BANDS.map((b) => c('option', { value: b.id }, bandLabel(b.id))),
   ]);
 
   const fromInp = c('input', {
     type: 'date', id: 'reports-date-from',
     onChange: (e) => applyState({ dateFrom: e.target.value }),
-  });
-  const toInp = c('input', {
+  });  const toInp = c('input', {
     type: 'date', id: 'reports-date-to',
     onChange: (e) => applyState({ dateTo: e.target.value }),
   });
@@ -275,9 +267,9 @@ Router.register('reports', async (params) => {
     id: 'reports-sort',
     onChange: (e) => applyState(sortPatch(e.target.value)),
   }, [
-    c('option', { value: 'date' }, t2('rep2.sortDate', 'Date')),
-    c('option', { value: 'score' }, t2('rep2.sortScore', 'Score')),
-    c('option', { value: 'company' }, t2('rep2.sortCompany', 'Company')),
+    c('option', { value: 'date' }, t('rep2.sortDate', 'Date')),
+    c('option', { value: 'score' }, t('rep2.sortScore', 'Score')),
+    c('option', { value: 'company' }, t('rep2.sortCompany', 'Company')),
   ]);
   const dirBtn = c('button', { type: 'button', className: 'btn btn-ghost btn-sm report-dir-btn' });
 
@@ -294,12 +286,12 @@ Router.register('reports', async (params) => {
   const viewGroup = c('div', {
     className: 'report-view-toggle',
     role: 'radiogroup',
-    'aria-label': t2('rep2.viewLabel', 'View'),
+    'aria-label': t('rep2.viewLabel', 'View'),
   }, [
     tableRadio,
-    c('label', { htmlFor: 'reports-view-table' }, t2('rep2.viewTable', 'Table')),
+    c('label', { htmlFor: 'reports-view-table' }, t('rep2.viewTable', 'Table')),
     cardsRadio,
-    c('label', { htmlFor: 'reports-view-cards' }, t2('rep2.viewCards', 'Cards')),
+    c('label', { htmlFor: 'reports-view-cards' }, t('rep2.viewCards', 'Cards')),
   ]);
 
   const resetBtn = c('button', {
@@ -310,7 +302,7 @@ Router.register('reports', async (params) => {
       bandSel.value = 'all'; fromInp.value = ''; toInp.value = '';
       applyState({ q: '', company: '', legitimacy: '', band: 'all', dateFrom: '', dateTo: '' });
     },
-  }, t2('rep2.reset', 'Reset filters'));
+  }, t('rep2.reset', 'Reset filters'));
 
   const toolbar = c('div', { className: 'card report-toolbar' }, [
     c('div', { className: 'report-toolbar-row report-toolbar-search' }, [
@@ -353,7 +345,7 @@ Router.register('reports', async (params) => {
   const histogramWrap = c('div', {
     className: 'report-histogram',
     role: 'group',
-    'aria-label': t2('rep2.histogramLabel', 'Score distribution — click a column to filter'),
+    'aria-label': t('rep2.histogramLabel', 'Score distribution — click a column to filter'),
   });
 
   function renderHistogram() {
@@ -363,8 +355,7 @@ Router.register('reports', async (params) => {
     withFocusPreserved(histogramWrap, () => {
       histogramWrap.innerHTML = '';
       for (const [id, n] of entries) {
-        const label = t2('rep2.band' + id[0].toUpperCase() + id.slice(1),
-          { high: 'High (4.5+)', good: 'Good (4.0+)', mid: 'Mid (3.5+)', low: 'Below 3.5' }[id]);
+        const label = bandLabel(id);
         histogramWrap.appendChild(c('button', {
           type: 'button',
           className: 'report-hist-btn band-' + id,
@@ -382,11 +373,11 @@ Router.register('reports', async (params) => {
       histogramWrap.appendChild(c('span', {
         className: 'report-hist-btn band-unparsed',
         'aria-hidden': 'true',
-        title: t2('rep2.bandUnparsed', 'No score') + ' · ' + (hist.unparsed || 0),
+        title: t('rep2.bandUnparsed', 'No score') + ' · ' + (hist.unparsed || 0),
       }, [
         c('span', { className: 'report-hist-count' }, String(hist.unparsed || 0)),
         c('span', { className: 'report-hist-bar' }),
-        c('span', { className: 'report-hist-label' }, t2('rep2.bandUnparsed', 'No score')),
+        c('span', { className: 'report-hist-label' }, t('rep2.bandUnparsed', 'No score')),
       ]));
     });
   }
@@ -414,19 +405,19 @@ Router.register('reports', async (params) => {
           // each gets an isolated LTR direction.
           c('tr', null, [
             c('td', { style: tdNum }, '≥ 4.5'),
-            c('td', { style: tdTxt }, t2('rep2.actApply', 'Apply now — top fit')),
+            c('td', { style: tdTxt }, t('rep2.actApply', 'Apply now — top fit')),
           ]),
           c('tr', null, [
             c('td', { style: tdNum }, '4.0 – 4.4'),
-            c('td', { style: tdTxt }, t2('rep2.actContact', 'Apply, or find a warm contact first')),
+            c('td', { style: tdTxt }, t('rep2.actContact', 'Apply, or find a warm contact first')),
           ]),
           c('tr', null, [
             c('td', { style: tdNum }, '3.5 – 3.9'),
-            c('td', { style: tdTxt }, t2('rep2.actResearch', 'Research the company first')),
+            c('td', { style: tdTxt }, t('rep2.actResearch', 'Research the company first')),
           ]),
           c('tr', null, [
             c('td', { style: tdNum }, '< 3.5'),
-            c('td', { style: tdTxt }, t2('rep2.actLow', 'Skip unless there is a personal reason')),
+            c('td', { style: tdTxt }, t('rep2.actLow', 'Skip unless there is a personal reason')),
           ]),
         ]),
       ]),
@@ -493,8 +484,8 @@ Router.register('reports', async (params) => {
     }
     dirBtn.textContent = state.sortDir === 'asc' ? '↑' : '↓';
     dirBtn.setAttribute('aria-label', state.sortDir === 'asc'
-      ? t2('rep2.sortDirAsc', 'Sorted ascending — switch to descending')
-      : t2('rep2.sortDirDesc', 'Sorted descending — switch to ascending'));
+      ? t('rep2.sortDirAsc', 'Sorted ascending — switch to descending')
+      : t('rep2.sortDirDesc', 'Sorted descending — switch to ascending'));
     sortSel.value = state.sortKey;
     bandSel.value = state.band;
     tableWrap.hidden = state.view !== 'table';
@@ -519,7 +510,7 @@ Router.register('reports', async (params) => {
       if (state.view !== 'cards') {
         if (list.length === 0) {
           tbody.appendChild(c('tr', null, c('td', { colSpan: '4', className: 'report-empty-cell' },
-            t2('rep2.noMatches', 'No reports match the current filters'))));
+            t('rep2.noMatches', 'No reports match the current filters'))));
         } else page.forEach((rep) => tbody.appendChild(makeRow(rep)));
       }
     });
@@ -528,7 +519,7 @@ Router.register('reports', async (params) => {
       if (state.view === 'cards') {
         if (list.length === 0) {
           cardsWrap.appendChild(c('div', { className: 'report-cards-empty' },
-            t2('rep2.noMatches', 'No reports match the current filters')));
+            t('rep2.noMatches', 'No reports match the current filters')));
         } else page.forEach((rep) => cardsWrap.appendChild(makeCard(rep)));
       }
     });

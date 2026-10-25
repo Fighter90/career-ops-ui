@@ -19,6 +19,7 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
+import { loadAssembledDict, I18N_LANGS } from './helpers/i18n-vm.mjs';
 import { dirname, resolve } from 'node:path';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
@@ -113,6 +114,35 @@ test('CAR-118: card view ships badge chips (legitimacy + PDF) and a per-band act
 test('CAR-118: score histogram sits above the list and filters on click', () => {
   assert.match(SRC, /ReportOps\.scoreHistogram\(/);
   assert.match(SRC, /className: 'report-histogram'/);
+});
+
+test('CAR-118 review: no i18n gate bypass — literal t() keys, all rep2 keys in every dict', () => {
+  // Opus review finding 1 [high]: `const t2 = t` + dynamic band keys kept
+  // the new strings invisible to the i18n-coverage scan. The view must call
+  // t() with LITERAL keys only, and every rep2.* key must exist in all 19
+  // locale files (enforce via the assembled dict).
+  assert.ok(!/const t2\b/.test(SRC), 'no t2 alias — literal t() only');
+  assert.ok(!/\bt2\(/.test(SRC), 'no t2 call sites');
+  assert.ok(!/t\('rep2\.band' \+/.test(SRC), 'band labels are literal keys, not string-built');
+  const D = loadAssembledDict();
+  const REP2_KEYS = [
+    'rep2.searchLabel', 'rep2.searchPh', 'rep2.companyLabel', 'rep2.companyPh',
+    'rep2.legitimacyAll', 'rep2.bandLabel', 'rep2.bandAll', 'rep2.bandHigh',
+    'rep2.bandGood', 'rep2.bandMid', 'rep2.bandLow', 'rep2.bandUnparsed',
+    'rep2.dateFrom', 'rep2.dateTo', 'rep2.sortLabel', 'rep2.sortDate',
+    'rep2.sortScore', 'rep2.sortCompany', 'rep2.sortDirAsc', 'rep2.sortDirDesc',
+    'rep2.viewLabel', 'rep2.viewTable', 'rep2.viewCards', 'rep2.reset',
+    'rep2.noMatches', 'rep2.pdfBadge', 'rep2.actApply', 'rep2.actContact',
+    'rep2.actResearch', 'rep2.actLow', 'rep2.histogramLabel',
+  ];
+  const missing = [];
+  for (const k of REP2_KEYS) {
+    if (!D[k]) { missing.push(k + ' (key absent)'); continue; }
+    for (const lang of I18N_LANGS) {
+      if (!D[k][lang] || !D[k][lang].trim()) missing.push(`${k}.${lang}`);
+    }
+  }
+  assert.deepEqual(missing, [], 'rep2 keys missing from the dict:\n  ' + missing.join('\n  '));
 });
 
 test('CAR-118: index.html wires the new stylesheet and the ReportOps lib', () => {
