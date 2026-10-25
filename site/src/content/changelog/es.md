@@ -11,6 +11,27 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.256.0] — 2026-10-25
+
+**Calidad de los datos del tracker: el rol nunca se archiva como empresa, un tablero de ofertas nunca se archiva como empleador, las filas sin puntuación dejan de aparecer primero — y un endpoint one-shot rellena (backfill) las puntuaciones que faltan a partir de los propios informes.**
+
+### Añadido
+
+- **Relleno de puntuaciones (backfill, CAR-129)**: `POST /api/tracker/backfill-scores` rellena la celda Score de las filas cuyo informe enlazado lleva una puntuación parseable (181 filas evaluadas tenían informe pero ninguna puntuación). Las filas ya puntuadas, los centinelas explícitos (`N/A`), las filas sin informe y los informes sin puntuación no se tocan nunca; solo se reescribe la celda Score, bajo el file lock; la forma de la puntuación se valida en el punto de escritura y se normaliza a la convención `X.X/5` del tracker; la ejecución es idempotente y devuelve `{ok, updated, missingReport, reportScoreless}`.
+
+### Corregido
+
+- **El rol nunca es la empresa (CAR-128)**: `guessCompanyRole` trataba el lado IZQUIERDO de una línea de encabezado con guion como la empresa, pero los tableros escriben ambos órdenes — «Senior Frontend Engineer - Grafana Labs» archivaba el rol COMO la empresa (13 filas: Grafana, CircleCI…). Una heurística de palabras clave de rol con límites de palabra elige ahora el lado del rol, y un tipo de empleo nunca se convierte en el empleador («Senior Engineer - Remote (EU)» no archiva nada en lugar de «Remote (EU)»).
+- **Un tablero de ofertas nunca es el empleador (CAR-127)**: el fallback de slug de dominio archivaba las filas de hh.ru como «hh» (120 filas). Los slugs `hh`/`habr` se unen a la lista de no-empleadores; la inferencia de empleador a mitad de frase («в компании X», «X ищет») se ejecuta ahora también para los hosts de tableros de ofertas (hh.ru/kz/uz/by, habr.com) — donde el texto de la página nombra al empleador real. Causa raíz encontrada por el camino: los `\b`/`\w` ASCII de esos patrones de inferencia nunca coincidieron con el cirílico en absoluto — muertos en silencio desde v1.248.4; los sustituyen lookbehinds Unicode y clases `\p{L}`.
+- **Las filas sin puntuación se ordenan al final (CAR-129)**: la ordenación por puntuación del tracker usaba un centinela `-1`, así que con la ordenación ascendente por defecto cada fila sin puntuación aparecía antes que todas las puntuadas. Los nulos ahora se ordenan al final en ambas direcciones (el FILTRO de puntuación conserva su `-1` — «sin puntuación no pasa un filtro ≥4» es la semántica correcta ahí).
+
+### Notas
+
+- Las filas históricas NO se migran con esta versión: las correcciones del parser se aplican a las evaluaciones nuevas; las puntuaciones se recuperan vía el endpoint de backfill, mientras que las 120 celdas de empleador «hh» necesitan re-evaluación, no una reescritura.
+- Se incorpora una ronda de revisión opus-5-5: el patrón sin anclar «X ищет» se descartó antes del envío (cualquier secuencia con inicial mayúscula antes del verbo se habría archivado como empleador — el invariante de no fabricación), se añadieron anclas «В…» a inicio de frase, y el escritor del backfill re-verifica la celda objetivo (existen filas `#` duplicadas tras ediciones manuales), conserva el número de columnas de una fila corta malformada a mano y se detiene en la primera línea fuera de la tabla. El punto dentro de un nombre con punto («Сбер. IT») es indistinguible de un punto de frase para la ancla «в компании» — se archiva el prefijo conservador («Сбер»); el patrón anclado al verbo captura la forma completa.
+- A propósito no hecho: sin extracción del comparador de `tracker.js` a una lib testeable con unitarios (la puerta estática sobre el fuente se queda; anotado en CAR-129 como seguimiento), sin cambio de nulos-al-final en la columna de commute (rareza preexistente de `Infinity` en descendente), sin migración de datos para las filas «hh».
+- Tests 5705 (+10: 5 de identidad en `auto-pipeline-jd-gate`, 2 de CAR-128, la puerta de ordenación de CAR-129, 4 de backfill incl. el pin de ruta hostil — menos los casos v1.248.x sustituidos). No se toca ninguna fuente del escáner (registro 121 = 116 EN + 5 RU · 116 adaptadores); sin claves i18n.
+
 ## [1.255.2] — 2026-10-24
 
 **Tres correcciones visibles para el usuario procedentes de la regresión en vivo y de un informe de caída en producción: el crash de renderizado de #/scan, la comprobación de idioma vietnamita ciega y la pérdida recurrente del bloque de resumen en zh-TW.**

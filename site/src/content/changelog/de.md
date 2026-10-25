@@ -2,6 +2,27 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.256.0] — 2026-10-25
+
+**Tracker-Datenqualität: die Rolle wird nie als Firma abgelegt, ein Job-Board nie als Arbeitgeber, unbenotete Zeilen tauchen nicht mehr zuerst auf — und ein One-Shot-Endpunkt füllt fehlende Scores direkt aus den Reports selbst nach.**
+
+### Hinzugefügt
+
+- **Score-Backfill (CAR-129)**: `POST /api/tracker/backfill-scores` füllt die Score-Zelle von Zeilen nach, deren verknüpfter Report einen auswertbaren Score trägt (181 evaluierte Zeilen hatten einen Report, aber keinen Score). Bereits benotete Zeilen, explizite Sentinels (`N/A`), Zeilen ohne Report und Reports ohne Score werden nie angefasst; nur die Score-Zelle wird neu geschrieben, unter der Datei-Sperre; die Score-Form wird an der Schreibstelle validiert und auf die `X.X/5`-Konvention des Trackers normalisiert; der Lauf ist idempotent und liefert `{ok, updated, missingReport, reportScoreless}` zurück.
+
+### Behoben
+
+- **Die Rolle ist nie die Firma (CAR-128)**: `guessCompanyRole` behandelte die LINKE Seite einer Bindestrich-Header-Zeile als die Firma, aber Boards schreiben beide Reihenfolgen — «Senior Frontend Engineer - Grafana Labs» legte die Rolle ALS die Firma ab (13 Zeilen: Grafana, CircleCI…). Eine Heuristik mit Wortgrenzen um Rollen-Keywords wählt jetzt die Rollenseite, und ein Beschäftigungstyp wird nie zum Arbeitgeber («Senior Engineer - Remote (EU)» legt nichts ab statt «Remote (EU)»).
+- **Ein Job-Board ist nie der Arbeitgeber (CAR-127)**: der Domain-Slug-Fallback legte hh.ru-Zeilen als «hh» ab (120 Zeilen). Die Slugs `hh`/`habr` stoßen zur Kein-Arbeitgeber-Liste; die Employer-Inferenz mitten im Satz («в компании X», «X ищет») läuft jetzt auch für Job-Board-Hosts (hh.ru/kz/uz/by, habr.com) — wo der Seitentext den echten Arbeitgeber nennt. Nebenbei fand sich die Wurzel: das ASCII-`\b`/`\w` in diesen Inferenz-Mustern hat auf Kyrillisch nie gematcht — still tot seit v1.248.4; Unicode-Lookbehinds und `\p{L}`-Klassen ersetzen sie.
+- **Unbenotete Zeilen sortieren zuletzt (CAR-129)**: die Score-Sortierung des Trackers nutzte ein `-1`-Sentinel, sodass bei der standardmäßigen aufsteigenden Sortierung jede unbenotete Zeile vor jeder benoteten auftauchte. Nullen sortieren jetzt in beide Richtungen zuletzt (der Score-FILTER behält sein `-1` — „unbenotet fällt durch einen ≥4-Filter“ ist dort die korrekte Semantik).
+
+### Hinweise
+
+- Historische Zeilen werden von diesem Release NICHT migriert: die Parser-Fixes greifen bei neuen Auswertungen; Scores sind über den Backfill-Endpunkt wiederherstellbar, während die 120 «hh»-Arbeitgeber-Zellen eine Neuauswertung brauchen, kein Umschreiben.
+- Eine Opus-5-5-Review-Runde ist eingearbeitet: das nicht verankerte «X ищет»-Muster wurde vor dem Ausliefern gestrichen (jede großgeschriebene Folge vor dem Verb wäre als Arbeitgeber abgelegt worden — die No-Fabrication-Invariante), satzanfängliche «В…»-Anker kamen hinzu, und der Backfill-Writer prüft die Zielzelle erneut (doppelte `#`-Zeilen existieren nach manuellen Bearbeitungen), erhält die Spaltenanzahl einer handverformten kurzen Zeile und stoppt an der ersten Zeile außerhalb der Tabelle. Der Punkt in einem punktierten Namen («Сбер. IT») ist für den «в компании»-Anker vom Satzpunkt nicht zu unterscheiden — der konservative Präfix («Сбер») wird abgelegt; das verb-verankerte Muster fängt die volle Form.
+- Bewusst nicht getan: keine Comparator-Extraktion aus `tracker.js` in eine unit-testbare Lib (das source-statische Gate bleibt; in CAR-129 als Follow-up vermerkt), keine Nullen-zuletzt-Änderung an der Commute-Spalte (vorbestehender `Infinity`-bei-absteigend-Quirk), keine Datenmigration für die «hh»-Zeilen.
+- Tests 5705 (+10: 5 Identitätsfälle in `auto-pipeline-jd-gate`, 2 CAR-128, das CAR-129-Sortier-Gate, 4 Backfill inkl. des Hostile-Path-Pins — abzüglich der ersetzten v1.248.x-Fälle). Keine Scanner-Quellen angefasst (Registry 121 = 116 EN + 5 RU · 116 Adapter); keine i18n-Schlüssel.
+
 ## [1.255.2] — 2026-10-24
 
 **Drei für Nutzer sichtbare Fixes aus der Live-Regression und einem Prod-Crash-Report: der #/scan-Render-Crash, die blinde Vietnamese-Sprachprüfung und der wiederkehrende Verlust des Summary-Blocks in zh-TW.**
