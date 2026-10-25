@@ -390,16 +390,19 @@ export function registerLlmRoutes(app) {
 
   // ─── /api/deep ──────────────────────────────────────────────────────
   app.post('/api/deep', llmRateLimit, async (req, res) => {
-    const { company, role, run } = req.body || {};
+    const { company, role, run, url } = req.body || {};
     // Typed before use: a non-string company/role used to throw inside the
     // prompt builder (R-03 — a malformed body is a 4xx, never a 500).
     if (typeof company !== 'string' || !company.trim()) return res.status(400).json({ error: 'company required' });
     if (role != null && typeof role !== 'string') return res.status(400).json({ error: 'role must be a string' });
+    // CAR-110 — optional freshness anchor. The URL is embedded in the prompt
+    // as a bounded research label (promptLabel); the server never fetches it.
+    if (url != null && typeof url !== 'string') return res.status(400).json({ error: 'url must be a string' });
     const lang = resolveLocale(req);
     // Manual copy keeps Claude Code tool names (WebFetch/WebSearch). Live run
     // must not — Gemini otherwise returns MALFORMED_FUNCTION_CALL (no tools).
-    const manualPrompt = buildDeepPrompt(company, role, lang);
-    const livePrompt = buildDeepPrompt(company, role, lang, { headless: true });
+    const manualPrompt = buildDeepPrompt(company, role, lang, { companyUrl: url });
+    const livePrompt = buildDeepPrompt(company, role, lang, { headless: true, companyUrl: url });
 
     // When run:true AND a key is configured, execute server-side and
     // return the rendered Markdown so the user sees real research output
