@@ -90,14 +90,18 @@ loadEnvFile(PATHS.envFile);
  * 5 minutes. A short content hash of the identity bundle makes the URL itself
  * change on every rebuild; the negotiation middleware matches on the pathname,
  * so the versioned URL reuses the same ETag/negotiation path. When the file
- * cannot be read (a race with a rebuild), a stat-derived fallback keeps the
- * URL still changing.
+ * cannot be read (a race with a rebuild), a sha256 of the stat identity keeps
+ * the URL still changing — a raw mtimeMs.toString(16) would carry a fractional
+ * part ('18bcfe56800.4cccccccd'), which is not a valid ?v= token.
  */
 export function bundleVersionOf(bundlePath, st) {
   try {
     return createHash('sha256').update(readFileSync(bundlePath)).digest('hex').slice(0, 12);
   } catch {
-    return `${st.size.toString(16)}-${st.mtimeMs.toString(16)}`;
+    return createHash('sha256')
+      .update(`${st?.size}:${st?.mtimeMs}:${st?.ino}`)
+      .digest('hex')
+      .slice(0, 12);
   }
 }
 
@@ -169,11 +173,17 @@ export function bundleHtmlMiddleware({ publicDir }) {
 //   - Content-Encoding + Vary: Accept-Encoding + exact Content-Length;
 //   - a weak ETag derived from the identity file — shared by every variant,
 //     so revalidation (If-None-Match → 304) stays cheap after max-age;
-//   - `public, max-age=300, must-revalidate`: CAR-145 makes the SHELL cite
-//     the bundle as /js/bundle.js?v=<content-hash> (bundleHtmlMiddleware), so
-//     the URL changes on every rebuild and the bounded cache is safe — after
-//     a deploy a fresh shell can no longer pair with a cached OLD bundle.
-//     must-revalidate keeps the revalidation contract after max-age.
+//   - the cache policy is decided by the ?v= the request presents
+//     (CAR-145/CAR-145 r2): the SHELL cites /js/bundle.js?v=<content-hash>
+//     (bundleHtmlMiddleware), so the URL changes on every rebuild and a fresh
+//     shell can never pair with a cached OLD bundle.
+//       ?v= absent        → public, max-age=300, must-revalidate (the
+//                           bounded revalidating window; the pre-CAR-145 shape)
+//       ?v= current hash  → public, max-age=31536000, immutable (content-
+//                           addressed: the hash is the correctness guarantee)
+//       ?v= anything else → no-store (a rolling deploy's old instance could
+//                           otherwise pin NEW-URL→OLD-bytes into a shared
+//                           cache; the bytes still ship, uncacheable)
 //     Individual scripts keep express.static's no-store (the setHeaders on
 //     the static mount below). Matching is on the PATHNAME (req.path is
 //     query-free), so versioned URLs share this response path and the
@@ -191,6 +201,9 @@ const BUNDLE_VARIANTS = [
 ];
 const BUNDLE_CONTENT_TYPE = 'application/javascript; charset=UTF-8';
 const BUNDLE_CACHE_CONTROL = 'public, max-age=300, must-revalidate';
+// CAR-145 r2 — a ?v= that MATCHES the current hash is content-addressed: the
+// hash IS the correctness guarantee, so the URL may cache for a year.
+const BUNDLE_CACHE_CONTROL_IMMUTABLE = 'public, max-age=31536000, immutable';
 
 /** Weak ETag in the same shape serve-static uses, from the identity stat. */
 function bundleETag(st) {
@@ -208,6 +221,17 @@ function ifNoneMatchSatisfied(header, etag) {
 export function bundleCompressionMiddleware({ publicDir }) {
   const identityPath = resolve(publicDir, 'js', 'bundle.js');
   const variants = BUNDLE_VARIANTS.map((v) => ({ ...v, path: `${identityPath}${v.ext}` }));
+  // CAR-145 r2 — the current content hash, re-derived only when the identity
+  // file changes (same stat-identity trick as bundleHtmlMiddleware): the
+  // per-request path must not re-read ~3 MB just to compare a presented ?v=.
+  let hashCache = null;
+  const currentHash = (st) => {
+    const key = `${st.size}:${st.mtimeMs}:${st.ino}:${st.ctimeMs}`;
+    if (!hashCache || hashCache.key !== key) {
+      hashCache = { key, hash: bundleVersionOf(identityPath, st) };
+    }
+    return hashCache.hash;
+  };
   return function bundleCompression(req, res, next) {
     if (req.method !== 'GET' && req.method !== 'HEAD') return next();
     if (req.path !== BUNDLE_ROUTE) {
@@ -223,10 +247,32 @@ export function bundleCompressionMiddleware({ publicDir }) {
     } catch {
       return next(); // no bundle on disk → dev / rolled-back deploy
     }
+    // CAR-145 r2 — the presented ?v= decides the cache policy:
+    //   - absent          → `public, max-age=300, must-revalidate` (the
+    //                       bounded revalidating window; the pre-CAR-145 URL
+    //                       shape keeps its cheap revalidation contract)
+    //   - current hash    → `public, max-age=31536000, immutable` — the URL is
+    //                       content-addressed, so a match can never go stale;
+    //                       correctness comes from the hash, not the window
+    //   - anything else   → `no-store`: during a rolling deploy an old
+    //                       instance can still hold the OLD bytes under a NEW
+    //                       ?v=; a cacheable answer would pin NEW-URL→
+    //                       OLD-bytes into a shared cache for max-age (cache
+    //                       poisoning that would defeat the buster). The bytes
+    //                       are still served — just uncacheable. (Chosen over
+    //                       a redirect so browsers mid-reload keep working.)
+    const presented = new URL(req.url, 'http://localhost').searchParams.get('v');
+    const hash = currentHash(st);
     const etag = bundleETag(st);
     res.setHeader('Vary', 'Accept-Encoding');
     res.setHeader('ETag', etag);
-    res.setHeader('Cache-Control', BUNDLE_CACHE_CONTROL);
+    if (presented === null) {
+      res.setHeader('Cache-Control', BUNDLE_CACHE_CONTROL);
+    } else if (presented === hash) {
+      res.setHeader('Cache-Control', BUNDLE_CACHE_CONTROL_IMMUTABLE);
+    } else {
+      res.setHeader('Cache-Control', 'no-store');
+    }
     if (ifNoneMatchSatisfied(req.headers['if-none-match'], etag)) {
       return res.status(304).end();
     }

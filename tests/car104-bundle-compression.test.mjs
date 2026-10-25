@@ -414,11 +414,18 @@ test('bundleVersionOf: content hash of the identity bundle, mtime fallback when 
   const bundlePath = join(pub, 'js', 'bundle.js');
   assert.equal(serverMod.bundleVersionOf(bundlePath, null), expectedVersion(pub));
 
-  // Unreadable file (race with a rebuild): the stat of ANY file keeps the URL
-  // changing when the file changes — no crash, no empty version.
+  // Unreadable file (race with a rebuild): the stat identity keeps the URL
+  // changing when the file changes — and the value stays inside the documented
+  // 12-hex format (a raw mtimeMs.toString(16) can carry a fractional part,
+  // e.g. '18bcfe56800.4cccccccd', which is not a valid ?v= token).
   const ghost = join(pub, 'js', 'bundle-gone.js');
-  const st = { size: 255, mtimeMs: 1700000000000 };
-  assert.equal(serverMod.bundleVersionOf(ghost, st), 'ff-18bcfe56800');
+  const st = { size: 255, mtimeMs: 1700000000000.4, ino: 42 };
+  const fallback = serverMod.bundleVersionOf(ghost, st);
+  assert.match(fallback, /^[0-9a-f]{12}$/, 'fallback must be 12 hex chars');
+  assert.equal(fallback, createHash('sha256').update('255:1700000000000.4:42').digest('hex').slice(0, 12),
+    'fallback = sha256 of the stat identity');
+  assert.equal(serverMod.bundleVersionOf(ghost, st), fallback, 'deterministic for the same stat');
+  assert.match(serverMod.bundleVersionOf(ghost, null), /^[0-9a-f]{12}$/, 'null stat still yields 12 hex chars');
 });
 
 test('CAR-145: the served shell references the bundle with a content-hash query', async () => {
@@ -493,14 +500,42 @@ test('CAR-145: the versioned URL is served by negotiation (pathname-only matchin
     assert.equal(res.headers['content-encoding'], 'br');
     assert.equal(Number(res.headers['content-length']), readFileSync(join(pub, 'js', 'bundle.js.br')).length);
     assert.deepEqual(brotliDecompressSync(res.body), readFileSync(join(pub, 'js', 'bundle.js')));
+    // CAR-145 r2 — a ?v= that MATCHES the current hash is content-addressed:
+    // correctness comes from the hash, so the cache policy can be immutable.
+    assert.equal(
+      res.headers['cache-control'],
+      'public, max-age=31536000, immutable',
+      'matching ?v= → immutable (the hash is the correctness guarantee)',
+    );
   } finally { srv.close(); }
 });
 
-test('CAR-145: ETag/304 revalidation keeps working for the same ?v= value', async () => {
-  const root = await buildFixtureBundle('car145-304-versioned');
-  const { srv, port } = await bootNegotiation(join(root, 'public'));
+test('CAR-145: a MISMATCHED ?v= is served but marked no-store (rolling-deploy cache poisoning closed)', async () => {
+  const root = await buildFixtureBundle('car145-mismatch-nostore');
+  const pub = join(root, 'public');
+  const { srv, port } = await bootNegotiation(pub);
   try {
-    const url = '/js/bundle.js?v=deadbeefdead';
+    // During a rolling deploy an old instance can still hold the OLD bundle
+    // under a NEW instance's ?v= — if that answer were cacheable, a shared
+    // cache would pin NEW-URL→OLD-bytes for max-age and defeat the buster.
+    const res = await reqRaw(port, '/js/bundle.js?v=deadbeefdead', {
+      headers: { 'accept-encoding': 'identity' },
+    });
+    assert.equal(res.status, 200, 'the bytes are still served');
+    assert.equal(res.headers['cache-control'], 'no-store', '…but uncacheable');
+    assert.deepEqual(res.body, readFileSync(join(pub, 'js', 'bundle.js')), 'current bytes, not the claimed version');
+    // Empty / garbage v= values are mismatches too.
+    const empty = await reqRaw(port, '/js/bundle.js?v=', { headers: { 'accept-encoding': 'identity' } });
+    assert.equal(empty.headers['cache-control'], 'no-store');
+  } finally { srv.close(); }
+});
+
+test('CAR-145: ETag/304 revalidation keeps working for the CURRENT ?v= value', async () => {
+  const root = await buildFixtureBundle('car145-304-versioned');
+  const pub = join(root, 'public');
+  const { srv, port } = await bootNegotiation(pub);
+  try {
+    const url = `/js/bundle.js?v=${expectedVersion(pub)}`;
     const first = await reqRaw(port, url, { headers: { 'accept-encoding': 'br' } });
     assert.equal(first.status, 200);
     assert.ok(first.headers.etag, 'versioned response carries an ETag');
