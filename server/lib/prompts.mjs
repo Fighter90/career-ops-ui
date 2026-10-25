@@ -419,6 +419,33 @@ export function buildModePrompt(template, slug, context, lang) {
 }
 
 export function buildEvaluationPrompt(jd, lang) {
+  // CAR-111 — the prompt is cut exactly at the JD block so the route can
+  // cache the byte-stable prefix on the Anthropic path (see the parts export
+  // below). stable + volatile is byte-identical to the pre-split prompt.
+  const { stable, volatile } = buildEvaluationPromptParts(jd, lang);
+  return stable + volatile;
+}
+
+/**
+ * CAR-111 — the evaluation prompt as TWO parts for Anthropic prompt caching.
+ *
+ * `stable` carries everything that does not depend on this posting: the
+ * locale directive, the role line, the read-files scaffold, the A–G and
+ * ---SCORE_SUMMARY--- format instructions. `volatile` starts at the JD block
+ * — whose fence tag is RANDOM per prompt (untrustedJd) — followed by the
+ * heading skeleton and the closing language reminder, which must stay the
+ * prompt's last instruction (CAR-92), so they ride the uncached tail.
+ *
+ * Invariant: `stable + volatile` is byte-identical to
+ * `buildEvaluationPrompt(jd, lang)`. The route combines
+ * `bundleProjectContext(...) + stable` into the cached prefix — the context
+ * bundle is a deterministic read of the same files on every call — and the
+ * Anthropic request caches that prefix with an ephemeral breakpoint, so a
+ * run of evaluations pays full input price once, not per JD.
+ *
+ * @returns {{ stable: string, volatile: string }}
+ */
+export function buildEvaluationPromptParts(jd, lang) {
   // v1.248.7 — the language requirement opens the instruction too (the tail
   // reminder alone drifted: ta evaluate came back 2–22 % own-script 2/2 on
   // prod while the docs assistant stayed on-language). One calm sentence,
@@ -428,14 +455,7 @@ export function buildEvaluationPrompt(jd, lang) {
   const langOpen = lang && lang !== 'en' && localeName(lang)
     ? `\n**Language: the ENTIRE report — every section, bullet, table cell and the verdict — is written in ${localeName(lang)}. Keep the machine format unchanged: block headings start with the Latin capitals A–G, and the ---SCORE_SUMMARY--- block stays in English and is always present at the end.\n`
     : '';
-  // v1.248.8 (CAR-74) — a ready-made heading skeleton for non-EN reports:
-  // the model fills these instead of inventing its own numbering (the weak
-  // locales dropped D–G under the hard language mandate). The Latin letter
-  // is what the validator reads; the title text is the model's to translate.
-  const skeleton = lang && lang !== 'en' && localeName(lang)
-    ? `\nYour report uses EXACTLY these seven headings, in this order — translate the title text, keep the Latin capital and the \`## \` prefix:\n\n## A) Role summary\n## B) CV match\n## C) Risks\n## D) Compensation\n## E) Application strategy\n## F) Posting legitimacy\n## G) Verdict\n`
-    : '';
-  return `${buildLocaleDirective(lang)}${langOpen}${scaffold('evalRoleLine', lang)}
+  const stable = `${buildLocaleDirective(lang)}${langOpen}${scaffold('evalRoleLine', lang)}
 
 ${scaffold('readFiles', lang)}
   • cv.md
@@ -461,7 +481,20 @@ ARCHETYPE: <detected archetype>
 LEGITIMACY: <High Confidence | Proceed with Caution | Suspicious>
 ---END_SUMMARY---
 
-${untrustedJd(jd)}
+`;
+  return { stable, volatile: evaluationPromptTail(jd, lang) };
+}
+
+/** The per-posting tail: fenced JD, heading skeleton, closing language reminder. */
+function evaluationPromptTail(jd, lang) {
+  // v1.248.8 (CAR-74) — a ready-made heading skeleton for non-EN reports:
+  // the model fills these instead of inventing its own numbering (the weak
+  // locales dropped D–G under the hard language mandate). The Latin letter
+  // is what the validator reads; the title text is the model's to translate.
+  const skeleton = lang && lang !== 'en' && localeName(lang)
+    ? `\nYour report uses EXACTLY these seven headings, in this order — translate the title text, keep the Latin capital and the \`## \` prefix:\n\n## A) Role summary\n## B) CV match\n## C) Risks\n## D) Compensation\n## E) Application strategy\n## F) Posting legitimacy\n## G) Verdict\n`
+    : '';
+  return `${untrustedJd(jd)}
 ${skeleton}${buildLanguageReminder(lang)}`;
 }
 

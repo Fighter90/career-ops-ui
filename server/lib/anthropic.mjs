@@ -13,6 +13,15 @@
  * the key the request actually SENDS. This removes the asymmetry that
  * routed evaluations to a stale/invalid Gemini key when Anthropic was
  * the configured provider.
+ *
+ * CAR-111 — prompt caching is implemented on THIS Anthropic Messages path
+ * only: `opts.cachePrefix` marks the byte-stable head of `prompt` (project
+ * context + instructions) and ships as the first content block of the single
+ * user message with a `cache_control: { type: 'ephemeral' }` breakpoint at
+ * its end; the volatile tail (the JD) rides the last block uncached. The
+ * OpenAI-compatible providers (the llm-dispatch tail — Hermes, OpenRouter,
+ * DeepSeek, …) cache prefixes server-side automatically and are deliberately
+ * left unchanged.
  */
 import { effectiveEnv, isUsableKey } from './env-config.mjs';
 import { PATHS } from './paths.mjs';
@@ -49,6 +58,23 @@ export async function runAnthropic(prompt, opts = {}) {
     else extSignal.addEventListener('abort', onExtAbort);
   }
   try {
+    // CAR-111 — with a valid cachePrefix the single user message becomes two
+    // content blocks: the byte-stable prefix with an ephemeral breakpoint at
+    // its end (Anthropic reuses it across calls — cache reads bill at a
+    // fraction of input price), and the volatile tail uncached after it.
+    // Anything else (no prefix, empty, or not actually a prefix of `prompt`)
+    // fails open to the plain single-string request — never an error.
+    let content = prompt;
+    const cachePrefix = opts.cachePrefix;
+    if (typeof cachePrefix === 'string' && cachePrefix && prompt.startsWith(cachePrefix)) {
+      const tail = prompt.slice(cachePrefix.length);
+      content = tail
+        ? [
+            { type: 'text', text: cachePrefix, cache_control: { type: 'ephemeral' } },
+            { type: 'text', text: tail },
+          ]
+        : [{ type: 'text', text: prompt, cache_control: { type: 'ephemeral' } }];
+    }
     const res = await fetchImpl(ANTHROPIC_URL, {
       method: 'POST',
       signal: ctrl.signal,
@@ -60,7 +86,7 @@ export async function runAnthropic(prompt, opts = {}) {
       body: JSON.stringify({
         model,
         max_tokens: maxTokens,
-        messages: [{ role: 'user', content: prompt }],
+        messages: [{ role: 'user', content }],
       }),
     });
     const text = await res.text();
