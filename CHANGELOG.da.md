@@ -9,6 +9,27 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 ---
 
 
+## [1.256.0] — 2026-10-25
+
+**Tracker-datakvalitet: rollen bliver aldrig arkiveret som virksomheden, en jobtavle bliver aldrig arkiveret som arbejdsgiveren, uscorede rækker dukker ikke længere op først — og et one-shot-endpoint udfylder manglende scores fra rapporterne selv.**
+
+### Tilføjet
+
+- **Score-backfill (CAR-129)**: `POST /api/tracker/backfill-scores` udfylder Score-cellen for de rækker, hvis tilknyttede rapport bærer en parserbar score (181 evaluerede rækker havde en rapport, men ingen score). Scorede rækker, eksplicitte sentinels (`N/A`), rækker uden rapport og rapporter uden score røres aldrig; kun Score-cellen omskrives, under fillåsen; scorens form valideres ved skrivestedet og normaliseres til trackerens `X.X/5`-konvention; kørslen er idempotent og returnerer `{ok, updated, missingReport, reportScoreless}`.
+
+### Rettet
+
+- **Rollen er aldrig virksomheden (CAR-128)**: `guessCompanyRole` behandlede VENSTRE side af en overskriftslinje med bindestreg som virksomheden, men tavlerne skriver begge rækkefølger — «Senior Frontend Engineer - Grafana Labs» fik rollen arkiveret SOM virksomheden (13 rækker: Grafana, CircleCI…). En heuristik med ordafgrænsede rolle-nøgleord vælger nu rollsiden, og en ansættelsestype bliver aldrig arbejdsgiveren («Senior Engineer - Remote (EU)» arkiverer intet frem for «Remote (EU)»).
+- **En jobtavle er aldrig arbejdsgiveren (CAR-127)**: domæne-slug-fallbacken arkiverede hh.ru-rækker som «hh» (120 rækker). `hh`/`habr`-slugs kommer på listen over ikke-arbejdsgivere; arbejdsgiver-inferensen midt i en sætning («в компании X», «X ищет») kører nu også for jobtavle-hosts (hh.ru/kz/uz/by, habr.com) — hvor sideteksten nævner den reelle arbejdsgiver. Rodårsagen, fundet undervejs: ASCII `\b`/`\w` i disse inferensmønstre matchede aldrig kyrillisk overhovedet — stiltiende døde siden v1.248.4; Unicode-lookbehinds og `\p{L}`-klasser erstatter dem.
+- **Uscorede rækker sorteres sidst (CAR-129)**: trackerens score-sortering brugte en `-1`-sentinel, så med den stigende standardsortering dukkede hver uscoret række op før hver scoret. Nuller sorteres nu sidst i begge retninger (score-FILTRET beholder sin `-1` — "uscoret fejler et ≥4-filter" er korrekt semantik der).
+
+### Noter
+
+- Historiske rækker MIGRERES IKKE af denne udgivelse: parserrettelserne gælder nye evalueringer; scores kan genvindes via backfill-endpointet, mens de 120 «hh»-arbejdsgiverceller kræver re-evaluering, ikke en omskrivning.
+- En opus-5-5-anmeldelsesrunde er foldet ind: det uforankrede «X ищет»-mønster blev droppet før udgivelsen (ethvert versaliseret forløb før verbet ville være blevet arkiveret som en arbejdsgiver — no-fabrication-invarianten), sætningsinitiale «В…»-forankringer er tilføjet, og backfill-skriveren genkontrollerer målcellen (der findes duplikerede `#`-rækker efter manuelle redigeringer), bevarer kolonneantallet for en kort række, der er fejlformateret i hånden, og stopper ved den første ikke-tabel-linje. Punktet inde i et navn med punktum («Сбер. IT») kan for «в компании»-forankringen ikke skelnes fra et sætningspunktum — det konservative præfiks («Сбер») arkiveres; det verbforankrede mønster fanger den fulde form.
+- Bevidst ikke gjort: ingen komparator-ekstraktion fra `tracker.js` til en enhedstestbar lib (source-static-gaten består; noteret i CAR-129 som opfølgning), ingen nulls-last-ændring af pendlerkolonnen (præeksisterende `Infinity`-on-desc-quirk), ingen datamigrering af «hh»-rækkerne.
+- Tests 5705 (+10: 5 identitetstests i `auto-pipeline-jd-gate`, 2 CAR-128, CAR-129-sorteringsgaten, 4 backfill inkl. hostile-path-pinnen — minus de erstattede v1.248.x-cases). Ingen scannerkilder rørt (registry 121 = 116 EN + 5 RU · 116 adaptere); ingen i18n-nøgler.
+
 ## [1.255.2] — 2026-10-24
 
 **Tre brugersynlige rettelser fra live-regressionen og en prod-crash-rapport: #/scan-render-crashet, den blinde vietnamesiske sprogkontrol og det tilbagevendende tab af zh-TW-summary-blokken.**
