@@ -23,7 +23,7 @@ export const PRICES = {
   qwen:       { in: 0.40,    out: 1.20 },  // Qwen-Plus-class
   openrouter: { in: 1.00,    out: 3.00 },  // varies wildly by routed model
   github:     { in: 0.00,    out: 0.00 },  // GitHub Models free tier
-  hermes:     { in: 0.00,    out: 0.00 },  // local gateway — the real cost is billed by whatever provider you configured INSIDE Hermes, outside this app's view
+  hermes:     { in: 0.00,    out: 0.00 },  // local gateway — billed by whatever provider you configured INSIDE Hermes; CAR-106: when the gateway reports its own usage cost, that real number is recorded and preferred over this 0 estimate
   // v1.216.0 — extended OpenAI-compatible roster (rough list prices for a
   // representative model of each; edit to match your plan).
   deepseek:   { in: 0.28,    out: 0.42 },  // DeepSeek-V3-class
