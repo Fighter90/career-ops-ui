@@ -129,3 +129,22 @@ test('POST /api/deep rejects missing company', async () => {
   const r = await post('/api/deep', {});
   assert.equal(r.status, 400);
 });
+
+// ── CAR-110 — source/freshness contract on the served prompt ───────────────
+
+test('CAR-110: /api/deep prompt carries the grounding contract and today\'s date', async () => {
+  const r = await post('/api/deep', { company: 'Wheely', role: 'Senior Backend' });
+  assert.equal(r.status, 200);
+  assert.match(r.body.prompt, /Grounding rules/);
+  assert.match(r.body.prompt, /\[source: domain\.com\]/);
+  assert.match(r.body.prompt, /## Data freshness/);
+  assert.match(r.body.prompt, /today's date is \d{4}-\d{2}-\d{2}/);
+});
+
+test('CAR-110: /api/deep passes an optional url into the prompt; a non-string url is a 400', async () => {
+  const r = await post('/api/deep', { company: 'Wheely', url: 'https://wheely.com/en/careers' });
+  assert.equal(r.status, 200);
+  assert.match(r.body.prompt, /company URL: https:\/\/wheely\.com\/en\/careers/);
+  const bad = await post('/api/deep', { company: 'Wheely', url: { host: 'evil.example' } });
+  assert.equal(bad.status, 400);
+});
