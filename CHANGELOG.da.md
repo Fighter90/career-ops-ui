@@ -9,6 +9,29 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 ---
 
 
+## [1.259.0] — 2026-10-25
+
+**Det andet agentflåde-tog, seks rettelser: rapportdatoer pinnet på serversiden, kortgeokoderen cacher og læser russiske byer, hjælpen ×18 citerer lokaliserede knapmærkater, UI-sætninger blander ikke længere sprog, lønsammenligninger beregnes på serversiden — og JS-bundlen leveres prekomprimeret (kold indlæsning 3.1 MB → 598 KB).**
+
+### Rettet
+
+- **Opdigtede rapportdatoer (CAR-101)**: evalueringsprompten pinner nu dagens dato på serversiden («the **Date:** field MUST be exactly <date> — copy verbatim; never invent»), og `fixReportDate` omskriver en afvigende dato til i dag på hvert acceptsted (Anthropic-grenen, Gemini-subprocessen, den OpenAI-kompatible hale, /api/deep, auto-pipeline) med en advarsel + aktivitetspost — en korrektion, aldrig en afvisning. 349/789 prod-rapporter havde opdigtede datoer; det kan nye ikke blive.
+- **Kortgeokodning (CAR-105)**: hh.ru/Habr-rækkernes kyrilliske bystrenge når nu frem til geokoderen; en persistent, afgrænset cache (`data/geocode-cache.json`, withFileLock) betyder, at en løst by aldrig rammer udbyderen to gange; geokodekald budgetteres pr. anmodning, så kortet fyldes progressivt i stedet for at blokere i 13.9 s.
+- **Blandet sprog i UI'en (CAR-108)**: 23 nøglebårne lækager rettet på tværs af 17 af 19 ordbøger (85 værdier) — «все matching», «только remote», «Открыть Scan», tragtens «Evaluated → Applied…» og mere blev til fulde, lokaliserede sætninger, der genbruger hvert locales eget produktordforråd. `i18n-no-latin-leaks` er udvidet med fragmenttabellen + tragtprøven (rød→grøn).
+- **Valuta-domsflip (CAR-109)**: lønsammenligningen beregnes på serversiden i `comp-compare.mjs` og indlejres kanonisk (`Candidate minimum: … per YEAR (raw: …)` mod `JD offer: …`); månedlige beløb ×12, k/к/тыс/萬 og decimal-komma-former normaliseres før sammenligningen; en usikker konvertering kan aldrig alene flippe dommen (zh-TW-tilfældet «€80–100k ниже минимума» er dødt). Modellen multiplicerer aldrig.
+- **Hjælp ×18 knapmærkater (CAR-107)**: de lokaliserede hjælpebundles citerede engelske mærkater («⚡ Run live», «Save», «Scan now»), som UI'en ikke længere viser — 263 udskiftninger på tværs af 18 lokaler, kortlagt ud fra view-kilderne; docs-assistenten arver rettelsen.
+
+### Tilføjet
+
+- **Prekomprimeret bundle + cachebar kold indlæsning (CAR-104)**: `make-bundle.mjs` udsender `bundle.js.br` (brotli q11) + `.gz` ved udgivelsen; en bundle-scoped middleware forhandler br > gz med `Vary: Accept-Encoding`, `public, max-age=300, must-revalidate` + ETag/304; vogtet af friskhedstjek (en følgefil serveres aldrig ældre end identitets-bundlen), direkte artifact-hentninger svarer 404, CSP byte-identisk. Kold indlæsning: 3.1 MB → ~0.6 MB over kablet (−80%); gentagne besøg inden for 5 min overfører ≈0 bytes.
+
+### Noter
+
+- Alle rettelser kom fra agentflåden med rød→grøn evidens (13 + 28 + 1 + 30 + 7 nye cases på tværs af deres suiter) og anmeldelsesrunder (CodeQL #579/#580/#584 rettet i koden — stub-URL'er parset via `new URL().host`, en død prompt-streng droppet).
+- Score-backfill-tallene fra v1.258.0 er nu registreret i CAR-129 (`updated: 22`, `reportScoreless: 159`).
+- Bevidst ikke gjort: ingen retrosaktiv datorettelse af de 349 historiske rapporter (en backfill ville være ejer-godkendt ops), intet klynge-view på kortet (CAR-125 forbliver i køen bag denne geokoderettelse).
+- Tests 5823 (+74). Ingen scannerkilder rørt (registry 121 = 116 EN + 5 RU · 116 adaptere); ingen i18n-nøgler (CAR-108 redigerer kun eksisterende nøglers værdier).
+
 ## [1.258.0] — 2026-10-25
 
 **Seks rettelser fra agentflåden, ét tog: #/scan-virksomhedstælleren blander ikke længere to universer, deep research kræver kilder, formularfejl får feltet til at lyse op, indlæsningstilstande får skeletter og en øjeblikkelig h1, og evalueringer cacher deres 37k-token-præfiks.**
