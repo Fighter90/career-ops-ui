@@ -28,9 +28,9 @@ import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import {
   mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync,
-  existsSync, utimesSync, statSync, chmodSync, openSync, closeSync, renameSync,
+  existsSync, utimesSync, statSync, chmodSync, openSync, closeSync,
+  renameSync, readdirSync,
 } from 'node:fs';
-import fs from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -145,6 +145,20 @@ before(async () => {
 
 // ─────────────── make-bundle emits the precompressed siblings ───────────────
 
+test('CAR-145 r3: make-bundle temp names are DOT-prefixed (serve-static never serves dotfiles)', () => {
+  // Structural gate — weak by TRACEABILITY rule 2 (greps the source, does not
+  // run the writer): a SIGKILL between the temp write and the rename leaves
+  // the temp file on disk, and a bare `bundle.js.tmp-<pid>` would be SERVED by
+  // express.static for as long as it lingers; a dot-prefixed name hits
+  // serve-static's dotfiles default and is never served.
+  const src = readFileSync(MAKE_BUNDLE, 'utf8');
+  assert.match(
+    src,
+    /`\.\$\{basename\(path\)\}\.tmp-\$\{process\.pid\}`/,
+    'the atomic-write temp template must be .<basename>.tmp-<pid>',
+  );
+});
+
 test('CLI: emits bundle.js.br and bundle.js.gz that decompress to the identity bundle', async () => {
   const root = await buildFixtureBundle('cli-artifacts');
   const js = join(root, 'public', 'js');
@@ -185,13 +199,13 @@ test('CAR-145 r2: the build writes ATOMICALLY — a fresh inode per rebuild, no 
   await execFileP(process.execPath, [MAKE_BUNDLE, '--root', root]);
   const js = join(root, 'public', 'js');
   const ino1 = statSync(join(js, 'bundle.js')).ino;
-  assert.equal(fs.readdirSync(js).filter((f) => /\.tmp-/.test(f)).length, 0, 'no temp files left behind');
+  assert.equal(readdirSync(js).filter((f) => /\.tmp-/.test(f)).length, 0, 'no temp files left behind');
 
   writeFixturePublic(root, { content: 'var CAR145_A2 = 2;' });
   await execFileP(process.execPath, [MAKE_BUNDLE, '--root', root]);
   const ino2 = statSync(join(js, 'bundle.js')).ino;
   assert.notEqual(ino1, ino2, 'a rebuild must publish a NEW inode (temp + rename), never rewrite in place');
-  assert.equal(fs.readdirSync(js).filter((f) => /\.tmp-/.test(f)).length, 0, 'no temp files left behind');
+  assert.equal(readdirSync(js).filter((f) => /\.tmp-/.test(f)).length, 0, 'no temp files left behind');
   assert.ok(readFileSync(join(js, 'bundle.js')).includes('CAR145_A2'), 'the renamed file is the new build');
 });
 
@@ -535,8 +549,14 @@ test('CAR-145: ONE server, after a same-size same-mtime rebuild, cites the NEW h
     // old mtime restored — size:mtimeMs alone cannot tell the rebuild happened,
     // only the inode identity (ino/ctimeMs) still can.
     // Rewrite ONLY the bundle's variable input — touching index.html would
-    // change the other half of the shell cache key and prove nothing.
-    writeFileSync(join(pub, 'js', 'first.js'), '// first\nvar CAR145_V2 = 2;\n'); // same length as V1
+    // change the other half of the shell cache key and prove nothing. V2 is
+    // derived from the file the build actually consumed (equal length by
+    // construction), not from re-typing the fixture layout (r3, finding 7).
+    const firstV1 = readFileSync(join(pub, 'js', 'first.js'), 'utf8');
+    const firstV2 = firstV1.replace('CAR145_V1 = 1', 'CAR145_V2 = 2');
+    assert.notEqual(firstV2, firstV1, 'fixture: the replacement must have matched');
+    assert.equal(firstV2.length, firstV1.length, 'fixture: same byte length');
+    writeFileSync(join(pub, 'js', 'first.js'), firstV2);
     await execFileP(process.execPath, [MAKE_BUNDLE, '--root', root]);
     utimesSync(bundlePath, pinned, pinned);
     const st2 = statSync(bundlePath);

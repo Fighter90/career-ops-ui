@@ -29,7 +29,7 @@
  *   (default root: this checkout; --root exists for tests / odd layouts)
  */
 import { readFileSync, writeFileSync, mkdirSync, rmSync, renameSync } from 'node:fs';
-import { resolve, dirname } from 'node:path';
+import { resolve, dirname, basename, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { brotliCompressSync, gzipSync, constants as zlibConstants } from 'node:zlib';
 
@@ -152,11 +152,20 @@ export function collectScripts(root) {
 /**
  * CAR-145 r2 — write via a fully written temp file + rename: the published
  * inode is never mutated in place, so a concurrent reader (the server hashes
- * AND streams this file) can never observe torn bytes. POSIX rename over an
- * existing path is atomic.
+ * AND streams this file) can never observe torn bytes.
+ *
+ * POSIX-only (CAR-145 r3, finding 4): renameSync over an existing open file
+ * throws EPERM/EBUSY on Windows — this build runs in the release workflow on
+ * Linux; no retry machinery is added for that.
+ *
+ * The temp name is DOT-prefixed (CAR-145 r3, finding 5 — dot-prefix chosen
+ * over a writeBundle-start sweep): a SIGKILL between the write and the rename
+ * leaves the temp file on disk, and serve-static's dotfiles default never
+ * serves a dotfile — a bare `bundle.js.tmp-<pid>` would be publicly served
+ * for as long as it lingers.
  */
 function atomicWriteFileSync(path, data) {
-  const tmp = `${path}.tmp-${process.pid}`;
+  const tmp = join(dirname(path), `.${basename(path)}.tmp-${process.pid}`);
   try {
     writeFileSync(tmp, data);
     renameSync(tmp, path);
