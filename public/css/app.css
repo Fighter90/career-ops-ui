@@ -624,20 +624,20 @@ body.sidebar-open .sidebar-backdrop { display: block; }
 .btn-sm { padding: 6px 12px; font-size: var(--font-size-md); min-height: 32px; }
 .btn-block { width: 100%; }
 
-/* M-4 (v1.58.11) — saved-research / saved-prep card. Pre-fix the
-   inner spans relied on an inline `marginLeft: 8px` between title and
-   date; on some entries that collapsed and produced
-   `software-engineer-generaltoday`. Use a flex container with explicit
-   `gap` so the title↔date space is structural and can't collapse, and
-   tag the date with `<time class="saved-card__date">` semantically. */
+/* M-4 (v1.58.11) — saved-research / saved-prep card: structural flex `gap`
+   so the title↔date space can't collapse (`software-engineer-generaltoday`).
+   CAR-146 — the card caps at its row (max-width: 100%) and the title wraps
+   break-anywhere (zeroing the flex content-based minimum); date keeps nowrap. */
 .saved-card {
   display: inline-flex;
   align-items: baseline;
   gap: var(--space-2, 8px);
-  white-space: nowrap;
+  max-width: 100%;
 }
 .saved-card__title {
   font-weight: 500;
+  white-space: normal;
+  overflow-wrap: anywhere;
 }
 .saved-card__date {
   color: var(--foggy);

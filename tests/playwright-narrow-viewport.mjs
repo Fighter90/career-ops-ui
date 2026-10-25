@@ -49,7 +49,17 @@ const SKIP = playwright ? false : 'Playwright not installed';
 // tracked as a separate finding rather than folded in here. Raise this list to
 // [320, 280] once that work lands; the assertion already handles both.
 const WIDTHS = [320];
-const ROUTES = ['#/config', '#/dashboard', '#/scan', '#/tracker', '#/cv', '#/help'];
+const ROUTES = ['#/config', '#/dashboard', '#/scan', '#/tracker', '#/cv', '#/help', '#/deep'];
+
+// CAR-146 — the prod-only 9px overflow at 390px on #/deep was a saved
+// deep-research brief whose FILENAME alone was wider than a phone viewport:
+// `.saved-card` rendered the name with `white-space: nowrap` and nothing let
+// the card shrink, so the wrapping archive row could not fold it and
+// scrollWidth exceeded the viewport. The sweep above cannot catch it with
+// empty fixtures, so the harness seeds a realistically over-long brief name.
+const DEEP_NAME = 'deep-senior-backend-engineer-python-aws-kubernetes-berlin-germany-hybrid-' +
+  'verylongcompanynameholdings-international-research-brief-interview-prep-2026.md';
+const DEEP_SLUG = DEEP_NAME.replace(/\.md$/, '');
 
 let server, baseUrl, browser;
 
@@ -59,6 +69,7 @@ before(async () => {
   mkdirSync(resolve(dir, 'config'), { recursive: true });
   mkdirSync(resolve(dir, 'data'), { recursive: true });
   mkdirSync(resolve(dir, 'modes'), { recursive: true });
+  mkdirSync(resolve(dir, 'interview-prep'), { recursive: true });
   writeFileSync(resolve(dir, 'cv.md'), '# CV\n\nReal Person, Senior Engineer.\n');
   writeFileSync(resolve(dir, 'config', 'profile.yml'),
     'candidate:\n  full_name: Real Person\n  email: real@example.com\n');
@@ -66,6 +77,10 @@ before(async () => {
   writeFileSync(resolve(dir, 'data', 'applications.md'), '');
   writeFileSync(resolve(dir, 'data', 'pipeline.md'), '# Pipeline\n');
   writeFileSync(resolve(dir, 'modes', 'oferta.md'), '# Oferta\n');
+  // CAR-146 seed — listed by GET /api/interview-prep (deep-*.md filter) and
+  // rendered as a .saved-card in the "Saved research" archive on #/deep.
+  writeFileSync(resolve(dir, 'interview-prep', DEEP_NAME),
+    '# Deep research\n\nSeeded fixture: a brief whose filename alone exceeds a phone viewport.\n');
   process.env.CAREER_OPS_ROOT = dir;
 
   const { createApp } = await import('../server/index.mjs');
@@ -118,6 +133,47 @@ test('no route scrolls horizontally at 320 px or 280 px', { skip: SKIP }, async 
     }
   }
 });
+
+/**
+ * CAR-146 — a saved deep-research brief with an over-long filename must not
+ * push #/deep past the viewport.
+ *
+ * Both remote-QA runs 40191080691 (v1.258.0) and 40200723185 (v1.259.0) caught
+ * a 9px horizontal overflow on prod #/deep at 390px, en locale — the only
+ * finding across 39 routes. It was invisible locally because the trigger was
+ * prod DATA: `.saved-card` (app.css) rendered the archive entry's filename
+ * with `white-space: nowrap` and no shrink allowance, so the flex-wrap row
+ * could not fold the card and the page grew a horizontal scrollbar.
+ *
+ * The sweep test above now also walks #/deep at 320px against the seeded
+ * fixture; this test pins the exact regression at BOTH phone widths and
+ * guards against passing vacuously by asserting the seeded card rendered.
+ */
+test('CAR-146: a long saved-research title cannot push #/deep past the viewport',
+  { skip: SKIP }, async () => {
+    for (const width of [320, 390]) {
+      const context = await browser.newContext({ viewport: { width, height: 720 } });
+      const page = await context.newPage();
+      try {
+        await page.goto(baseUrl + '/#/deep');
+        // The seeded card must actually be on the page — otherwise the
+        // scrollWidth assertion below would pass on an empty archive.
+        await page.waitForSelector(`.saved-card[data-slug="${DEEP_SLUG}"]`, { timeout: 8000 });
+        await page.waitForTimeout(150);
+        const m = await page.evaluate(() => ({
+          scrollWidth: document.documentElement.scrollWidth,
+          clientWidth: document.documentElement.clientWidth,
+          cards: document.querySelectorAll('.saved-card').length,
+        }));
+        assert.ok(m.cards >= 1, 'the seeded saved-research card must render in the archive');
+        assert.ok(m.scrollWidth <= m.clientWidth,
+          `#/deep at ${width}px: scrollWidth ${m.scrollWidth} > clientWidth ${m.clientWidth}` +
+          ' — a long saved-research filename pushed the page wide');
+      } finally {
+        await context.close();
+      }
+    }
+  });
 
 test('#/config select controls shrink with the viewport (MOBILE-1)', { skip: SKIP }, async () => {
   const context = await browser.newContext({ viewport: { width: 320, height: 720 } });
