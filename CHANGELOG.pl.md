@@ -8,6 +8,29 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.259.0] — 2026-10-25
+
+**Drugi pociąg floty agentów, sześć poprawek: daty raportów są przypinane po stronie serwera, geokoder mapy cache'uje i rozpoznaje rosyjskie miasta, pomoc ×18 przywołuje zlokalizowane etykiety przycisków, zdania interfejsu przestają mieszać języki, porównania wynagrodzeń liczone są po stronie serwera — a pakiet JS dystrybuowany jest wstępnie skompresowany (zimne ładowanie 3.1 MB → 598 KB).**
+
+### Naprawiono
+
+- **Wymyślone daty raportów (CAR-101)**: prompt ewaluacji przypina teraz dzisiejszą datę po stronie serwera („pole **Date:** MUSI być dokładnie <date> — przepisz dosłownie; nigdy nie wymyślaj”), a `fixReportDate` przepisuje wymyśloną datę na dzisiejszą w każdym miejscu akceptacji (gałąź Anthropic, podproces Gemini, ogon zgodny z OpenAI, /api/deep, auto-pipeline) z ostrzeżeniem + rekordem aktywności — to korekta, nigdy odrzucenie. 349/789 raportów na produkcji miało wymyślone daty; nowe już nie mogą.
+- **Geokodowanie mapy (CAR-105)**: cyryliczne nazwy miast w wierszach hh.ru/Habr docierają teraz do geokodera; trwały, ograniczony rozmiarem cache (`data/geocode-cache.json`, z blokadą withFileLock) sprawia, że już rozwiązane miasto nigdy nie sięga po dostawcę drugi raz; wywołania geokodowania mają budżet na żądanie, więc mapa wypełnia się stopniowo zamiast blokować przez 13.9 s.
+- **Mieszane języki interfejsu (CAR-108)**: naprawiono 23 wycieki na poziomie kluczy w 17 z 19 słowników (85 wartości) — „все matching”, „только remote”, „Открыть Scan”, lejek „Evaluated → Applied…” i inne stały się pełnymi zlokalizowanymi zdaniami ponownie używającymi własnego słownictwa produktowego każdej wersji językowej. `i18n-no-latin-leaks` rozszerzono o tabelę fragmentów + sondę lejka (czerwony→zielony).
+- **Odwrócenie werdyktu walutowego (CAR-109)**: porównanie wynagrodzeń liczone jest po stronie serwera w `comp-compare.mjs` i wstawiane w kanonicznej formie (`Candidate minimum: … per YEAR (raw: …)` vs `JD offer: …`); formy miesięczne ×12, k/к/тыс/萬 i przecinki dziesiętne normalizują się przed porównaniem; niepewna konwersja sama w sobie nigdy nie może odwrócić werdyktu (przypadek zh-TW „€80–100k ниже минимума” jest martwy). Model nigdy nic nie mnoży.
+- **Etykiety przycisków w pomocy ×18 (CAR-107)**: zlokalizowane pakiety pomocy przywoływały angielskie etykiety („⚡ Run live”, „Save”, „Scan now”), których interfejs już nie pokazuje — 263 zastąpienia w 18 wersjach językowych, zmapowane ze źródeł widoków; docs-assistant dziedziczy tę poprawkę.
+
+### Dodano
+
+- **Wstępnie skompresowany pakiet + cache'owalne zimne ładowanie (CAR-104)**: `make-bundle.mjs` emituje `bundle.js.br` (brotli q11) + `.gz` w czasie wydania; middleware ograniczony do pakietu negocjuje br > gz z `Vary: Accept-Encoding`, `public, max-age=300, must-revalidate` + ETag/304; z zabezpieczeniem świeżości (plik towarzyszący nigdy nie serwuje niczego starszego niż właściwy pakiet), bezpośrednie żądania artefaktów zwracają 404, CSP bajt w bajt identyczne. Zimne ładowanie: 3.1 MB → ~0.6 MB transferu (−80%); powtórne wizyty w ciągu 5 minut przenoszą ≈0 bajtów.
+
+### Uwagi
+
+- Wszystkie poprawki pochodzą od floty agentów z dowodami czerwony→zielony (13 + 28 + 1 + 30 + 7 nowych przypadków w ich zestawach) i przeszły rundy recenzji (CodeQL #579/#580/#584 naprawiono w kodzie — stuby URL są parsowane przez `new URL().host`, martwy ciąg promptu usunięto).
+- Liczby uzupełniania ocen z v1.258.0 są teraz odnotowane w CAR-129 (`updated: 22`, `reportScoreless: 159`).
+- Świadomie nie zrobiono: bez wstecznej poprawy dat dla 349 historycznych raportów (backfill byłby operacją wykonywaną za zgodą właściciela), bez widoku klastrów na mapie (CAR-125 pozostaje w kolejce za tą poprawką geokodowania).
+- Testy 5823 (+74). Żadne źródło skanera nietknięte (rejestr 121 = 116 EN + 5 RU · 116 adapterów); brak kluczy i18n (CAR-108 edytuje wyłącznie wartości istniejących kluczy).
+
 ## [1.258.0] — 2026-10-25
 
 **Sześć poprawek od floty agentów w jednym pociągu: licznik firm na #/scan przestaje mieszać wszechświaty, deep research wymaga źródeł, błędy formularzy podświetlają pole, stany ładowania zyskują szkielety i natychmiastowy h1, a ewaluacje cache'ują swój 37k-tokenowy prefiks promptu.**
