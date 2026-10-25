@@ -6,6 +6,27 @@ Bản dịch: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.256.0] — 2026-10-25
+
+**Chất-lượng-dữ-liệu-tracker: vị-trí không-bao-giờ-được-ghi thành-công-ty, một-bảng-việc-làm không-bao-giờ-được-ghi thành-nhà-tuyển-dụng, các-dòng-không-có-điểm ngừng-nổi-lên-đầu — và-một-endpoint-một-lần-chạy backfill các-điểm-còn-thiếu từ-chính-các-báo-cáo.**
+
+### Thêm mới
+
+- **Backfill-điểm (CAR-129)**: `POST /api/tracker/backfill-scores` điền ô Score của-các-dòng mà-báo-cáo-liên-kết mang-một-điểm-parse-được (181 dòng-đã-đánh-giá có-báo-cáo nhưng-không-có-điểm). Các-dòng-đã-có-điểm, các-sentinel-tường-minh (`N/A`), các-dòng-không-có-báo-cáo và-các-báo-cáo-không-có-điểm không-bao-giờ-bị-động-đến; chỉ ô Score được-viết-lại, dưới-khóa-tệp; hình-thạng-điểm được-xác-thực ngay-tại-điểm-ghi và-chuẩn-hóa theo-quy-ước-`X.X/5` của-tracker; lượt-chạy là-idempotent và-trả-về `{ok, updated, missingReport, reportScoreless}`.
+
+### Đã sửa
+
+- **Vị-trí không-bao-giờ-là-công-ty (CAR-128)**: `guessCompanyRole` coi-bên-TRÁI của-một-dòng-tiêu-đề-có-dấu-gạch là-công-ty, nhưng-các-bảng viết-cả-hai-thứ-tự — "Senior Frontend Engineer - Grafana Labs" bị-ghi chức-danh THÀNH-công-ty (13 dòng: Grafana, CircleCI…). Một-heuristic-từ-khóa-chức-danh có-biên-từ giờ chọn-bên-chức-danh, và-một-loại-hình-việc-làm không-bao-giờ-trở-thành-nhà-tuyển-dụng ("Senior Engineer - Remote (EU)" không-ghi-gì-cả thay-vì-ghi "Remote (EU)").
+- **Một-bảng-việc-làm không-bao-giờ-là-nhà-tuyển-dụng (CAR-127)**: bộ-dự-phòng-slug-tên-miền ghi-các-dòng-hh.ru là-"hh" (120 dòng). Các-slug-`hh`/`habr` gia-nhập danh-sách-không-phải-nhà-tuyển-dụng; suy-diễn-nhà-tuyển-dụng-giữa-câu ("в компании X", "X ищет") giờ cũng chạy cho-các-host-bảng-việc-làm (hh.ru/kz/uz/by, habr.com) — nơi-văn-bản-trang nêu-tên-nhà-tuyển-dụng-thật. Nguyên-nhân-gốc được-tìm-thấy trên-quá-trình: các-`\b`/`\w`-ASCII trong-các-mẫu-suy-diễn ấy chưa-bao-giờ khớp-chữ-Cyrillic — chết-lặng-lẽ từ-v1.248.4; lookbehind-Unicode và-các-lớp-`\p{L}` thay-thế chúng.
+- **Các-dòng-không-có-điểm xếp-cuối (CAR-129)**: sắp-xếp-điểm của-tracker dùng-sentinel-`-1`, nên-với-sắp-xếp-tăng-dần-mặc-định mọi-dòng-không-có-điểm nổi-lên-trước mọi-dòng-có-điểm. Giá-trị-null giờ xếp-cuối ở-cả-hai-hướng (bộ-LỌC-điểm giữ-`-1` của-nó — "không-có-điểm trượt-một-bộ-lọc ≥4" là-ngữ-nghĩa-đúng ở-đó).
+
+### Ghi chú
+
+- Các-dòng-lịch-sử KHÔNG-được-di-cư bởi-bản-phát-hành-này: các-bản-sửa-parser áp-dụng cho-các-lượt-đánh-giá-mới; điểm có-thể-lấy-lại qua-endpoint-backfill, trong-khi 120-ô-nhà-tuyển-dụng-"hh" cần-đánh-giá-lại, chứ-không-phải-một-lần-viết-lại.
+- Một-vòng-rà-soát-opus-5-5 được-gộp-vào: mẫu-"X ищет" không-có-mỏ-neo đã-bị-loại trước-khi-phát-hành (bất-kỳ-cụm-viết-hoa nào trước-động-từ đều-sẽ-bị-ghi là-nhà-tuyển-dụng — bất-biến-không-bịa), các-mỏ-neo-"В…"-đầu-câu được-thêm, và-bộ-viết-backfill kiểm-tra-lại-ô-đích (các-dòng-`#`-trùng tồn-tại sau-các-sửa-tay), giữ-nguyên-số-cột của-một-dòng-ngắn-bị-hỏng-bằng-tay, và-dừng ở-dòng-không-phải-bảng-đầu-tiên. Dấu-chấm bên-trong-một-tên-có-dấu-chấm ("Сбер. IT") không-thể-phân-biệt với-dấu-chấm-câu cho-mỏ-neo-"в компании" — tiền-tố-bảo-thủ ("Сбер") được-ghi; mẫu-neo-động-từ bắt-được-dạng-đầy-đủ.
+- Cố-ý-không-làm: không-trích-bộ-so-sánh từ-`tracker.js` ra-một-lib-kiểm-thử-được (cổng-source-static giữ-nguyên; được-ghi trong-CAR-129 như-một-tiếp-nối), không-đổi-nulls-last cho-cột-commute (một-quirk-`Infinity`-khi-giảm-dần có-từ-trước), không-di-cư-dữ-liệu cho-các-dòng-"hh".
+- Kiểm-thử 5705 (+10: 5-identity trong-`auto-pipeline-jd-gate`, 2 cho-CAR-128, cổng-sắp-xếp-CAR-129, 4-backfill kể-cả-việc-ghim-đường-dẫn-địch — trừ-các-case-v1.248.x-bị-thay-thế). Không-chạm-nguồn-quét nào (registry 121 = 116 EN + 5 RU · 116 adapter); không-có-khóa-i18n nào.
+
 ## [1.255.2] — 2026-10-24
 
 **Ba-bản-sửa-hiện-thế-từ-rà-soát-trực-tiếp và-một-báo-cáo-sập-trên-máy-chủ-thật: sập-khi-render-#/scan, kiểm-tra-ngôn-ngữ-tiếng-Việt-mù, và-việc-mất-khối-tóm-tắt-zh-TW lặp-lại.**
