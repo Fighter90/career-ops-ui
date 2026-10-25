@@ -384,18 +384,18 @@ export function stripScoreSummary(text) {
 // prose — or a Data-freshness date in a deep brief — never matches. The
 // `{YYYY-MM-DD}` placeholder echo (the model copying the template literally)
 // is a non-date and is rewritten too.
-// CAR-144 r4 — non-global on purpose (first-match-only semantics live in
-// fixReportDate, which also enumerates candidates via a local global copy
-// of this source): no last-match state for a future .test/.exec caller,
-// and a second REAL date in the preamble (a posting date, an as-of date)
-// survives unless the ambiguity rule picks it. Sole consumer is
-// fixReportDate.
+// CAR-144 r5 — non-global on purpose: fixReportDate owns the selection
+// rule — unique candidate, else unique bold `**Date:**`, else no-op — and
+// enumerates candidates via a local global copy of this source, so the
+// shared constant carries no last-match state for a future .test/.exec
+// caller. Sole consumer is fixReportDate.
 const REPORT_DATE_LINE = /^[ \t]*(?:[-*][ \t]*)?(?:\*\*)?[ \t]*Date[ \t]*[:：][ \t]*(?:\*\*)?[ \t]*(\d{4}-\d{2}-\d{2}|\{YYYY-MM-DD\})[ \t]*(?:\*\*)?[ \t]*\r?$/mi;
 
-// CAR-144 r4 — the bold `**Date:**` header-label shape, the report header's
-// own form. Used only to PREFER a candidate when the preamble holds more
-// than one; never to match on its own.
-const BOLD_DATE_LINE = /^[ \t]*\*\*[ \t]*Date[ \t]*[:：]/i;
+// CAR-144 r5 — the bold `**Date:**` header-label shape, the report
+// header's own form, including its bulleted variant (`- **Date:** …`),
+// which the matcher above also accepts. Used only to PREFER a candidate
+// when the preamble holds more than one; never to match on its own.
+const BOLD_DATE_LINE = /^[ \t]*(?:[-*][ \t]*)?\*\*[ \t]*Date[ \t]*[:：]/i;
 
 /**
  * CAR-101 — belt-and-braces for the report header's **Date:** field. The
@@ -417,24 +417,25 @@ export function fixReportDate(text, today) {
   const day = typeof today === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(today)
     ? today
     : (() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; })();
-  let replaced = 0;
   // CAR-144 r4 — the boundary is the r1 rule, plain: the preamble is
   // everything before the FIRST `## ` heading. A report that OPENS with an
   // H2 (a model-written H2 title, or no title at all) has an empty
   // preamble — not this pipeline's generated shape (the prompt pins
   // `# Evaluation: …` / `# Deep Brief…` H1s) — and gets a conservative
   // no-op: a stale date is acceptable, a fabricated one is not. The r3
-  // title-aware/bullet-stop machinery is gone (with it, the offsetOf
-  // line-walking helper).
+  // title-aware/bullet-stop machinery is gone.
   const headerEnd = src.search(/^## /m);
   const preamble = headerEnd === -1 ? src : src.slice(0, headerEnd);
+  // Explanatory — an all-whitespace preamble cannot contain a candidate;
+  // kept so the dominant no-op path returns before any regex is built.
   if (!/\S/.test(preamble)) return { text: src, replaced: 0 };
-  // CAR-144 r4 — ambiguity rule: with more than one Date: candidate in the
-  // preamble, prefer the bold `**Date:**` label (the report header's own
-  // shape); two bold candidates (or none) are ambiguous → rewrite none.
-  // Otherwise exactly the chosen candidate is rewritten — first-match-only
-  // semantics, everything after the preamble untouched.
-  const candidates = [...preamble.matchAll(new RegExp(REPORT_DATE_LINE.source, 'gmi'))];
+  // CAR-144 r5 — selection rule: unique candidate, else unique bold
+  // `**Date:**`, else no-op. A LONE plain Date is rewritten (accepted
+  // asymmetry: a plain candidate next to a bold one is protected as the
+  // real date; a lone plain line IS the header field there is to
+  // correct). Bulleted-bold counts as bold.
+  const enumFlags = REPORT_DATE_LINE.flags.includes('g') ? REPORT_DATE_LINE.flags : REPORT_DATE_LINE.flags + 'g';
+  const candidates = [...preamble.matchAll(new RegExp(REPORT_DATE_LINE.source, enumFlags))];
   let target = null;
   if (candidates.length === 1) {
     target = candidates[0];
@@ -442,8 +443,7 @@ export function fixReportDate(text, today) {
     const bold = candidates.filter((m) => BOLD_DATE_LINE.test(m[0]));
     if (bold.length === 1) target = bold[0];
   }
-  if (!target || target[1] === day) return { text: src, replaced };
+  if (!target || target[1] === day) return { text: src, replaced: 0 };
   const newLine = target[0].replace(target[1], day);
-  replaced += 1;
-  return { text: src.slice(0, target.index) + newLine + src.slice(target.index + target[0].length), replaced };
+  return { text: src.slice(0, target.index) + newLine + src.slice(target.index + target[0].length), replaced: 1 };
 }

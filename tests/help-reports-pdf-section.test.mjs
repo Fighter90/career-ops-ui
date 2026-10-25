@@ -81,8 +81,11 @@ test('CAR-144: the PDF label resolver reads the dict it is given and fails loudl
   assert.equal(generatePdfLabel(DICT, 'fr'), DICT['common.generatePdf'].fr, 'the fr label round-trips');
   assert.equal(generatePdfLabel(DICT, 'ko-KR'), DICT['common.generatePdf'].ko, 'the ko→ko-KR alias round-trips');
   // CAR-144 r3 — one locale against a LITERAL expected string, independent
-  // of the dict lookup: a resolver alias bug cannot mask itself.
-  assert.equal(generatePdfLabel(DICT, 'fr'), 'Générer un PDF', 'the fr label is the literal «Générer un PDF»');
+  // of the dict lookup: a resolver alias bug cannot mask itself. Both
+  // sides NFC-normalized (r5) so a composed-vs-decomposed é can never
+  // fail an otherwise-correct label.
+  assert.equal(generatePdfLabel(DICT, 'fr').normalize('NFC'), 'Générer un PDF'.normalize('NFC'),
+    'the fr label is the literal «Générer un PDF»');
   // CAR-144 r3 — the apostrophe contract, pinned synthetically: if a
   // regex-scraping implementation (the old `[^']*` capture, truncated at
   // the first `'`) ever returns, this fails where the real round-trips
