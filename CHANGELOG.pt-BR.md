@@ -9,6 +9,27 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 ---
 
 
+## [1.256.0] — 2026-10-25
+
+**Qualidade de dados do tracker: a função nunca é registrada como a empresa, um quadro de vagas nunca é registrado como o empregador, as linhas sem pontuação param de aparecer primeiro — e um endpoint de execução única preenche as pontuações faltantes a partir dos próprios relatórios.**
+
+### Adicionado
+
+- **Preenchimento de pontuações (CAR-129)**: `POST /api/tracker/backfill-scores` preenche a célula Score das linhas cujo relatório vinculado carrega uma pontuação parseável (181 linhas avaliadas tinham relatório, mas nenhuma pontuação). Linhas já pontuadas, sentinelas explícitas (`N/A`), linhas sem relatório e relatórios sem pontuação nunca são tocados; só a célula Score é reescrita, sob o file lock; o formato da pontuação é validado no ponto de escrita e normalizado para a convenção `X.X/5` do tracker; a execução é idempotente e retorna `{ok, updated, missingReport, reportScoreless}`.
+
+### Corregido
+
+- **A função nunca é a empresa (CAR-128)**: o `guessCompanyRole` tratava o lado ESQUERDO de uma linha de cabeçalho com travessão como a empresa, mas os quadros escrevem as duas ordens — «Senior Frontend Engineer - Grafana Labs» registrava a função COMO a empresa (13 linhas: Grafana, CircleCI…). Uma heurística de palavras-chave de função com fronteiras de palavra agora escolhe o lado da função, e um tipo de vínculo nunca se torna o empregador («Senior Engineer - Remote (EU)» não registra nada em vez de «Remote (EU)»).
+- **Um quadro de vagas nunca é o empregador (CAR-127)**: o fallback de slug de domínio registrava as linhas do hh.ru como «hh» (120 linhas). Os slugs `hh`/`habr` entram na lista de não-empregadores; a inferência de empregador em meio à frase («в компании X», «X ищет») agora roda também para os hosts de quadros de vagas (hh.ru/kz/uz/by, habr.com) — onde o texto da página nomeia o empregador real. A causa raiz apareceu no caminho: o `\b`/`\w` ASCII desses padrões de inferência nunca casou com cirílico — silenciosamente mortos desde a v1.248.4; lookbehinds Unicode e classes `\p{L}` os substituem.
+- **Linhas sem pontuação ordenam por último (CAR-129)**: a ordenação por pontuação do tracker usava uma sentinela `-1`, então com a ordenação ascendente padrão toda linha sem pontuação aparecia antes de todas as pontuadas. Os nulos agora ordenam por último nas duas direções (o FILTRO de pontuação mantém o seu `-1` — «sem pontuação falha num filtro ≥4» é a semântica correta ali).
+
+### Notas
+
+- As linhas históricas NÃO são migradas por esta versão: as correções do parser valem para novas avaliações; as pontuações são recuperáveis pelo endpoint de preenchimento, enquanto as 120 células de empregador «hh» precisam de re-avaliação, não de reescrita.
+- Uma rodada de revisão opus-5-5 é incorporada: o padrão não ancorado «X ищет» foi descartado antes do lançamento (qualquer sequência capitalizada antes do verbo teria sido registrada como empregador — o invariante de não-fabricação), âncoras «В…» em início de frase foram adicionadas, e o escritor do backfill re-checa a célula alvo (linhas `#` duplicadas existem após edições manuais), preserva a contagem de colunas de uma linha curta malformada à mão e para na primeira linha fora da tabela. O ponto dentro de um nome pontuado («Сбер. IT») é indistinguível de um ponto de frase para a âncora «в компании» — o prefixo conservador («Сбер») é registrado; o padrão ancorado no verbo captura a forma completa.
+- Deliberadamente não feito: nenhuma extração do comparador de `tracker.js` para uma biblioteca testável unitariamente (o portão estático-de-fonte permanece; anotado no CAR-129 como follow-up), nenhuma mudança de nulos-por-último na coluna de trajeto (o quirk pré-existente do `Infinity` em descendente), nenhuma migração de dados para as linhas «hh».
+- Testes 5705 (+10: 5 de identidade em `auto-pipeline-jd-gate`, 2 CAR-128, o portão de ordenação do CAR-129, 4 de backfill incluindo o pin de caminho hostil — menos os casos substituídos da v1.248.x). Nenhuma fonte do scanner tocada (registro 121 = 116 EN + 5 RU · 116 adaptadores); nenhuma chave de i18n.
+
 ## [1.255.2] — 2026-10-24
 
 **Três correções visíveis para o usuário vindas da regressão ao vivo e de um relato de crash em produção: o crash de renderização do #/scan, a checagem de idioma vietnamita às cegas e a perda recorrente do bloco de resumo no zh-TW.**
