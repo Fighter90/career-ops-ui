@@ -299,13 +299,50 @@ test('CAR-143: ¥30k/月 (RMB-shaped) is not converted at the JPY rate', () => {
   assert.match(block, /No reliable conversion from ¥ to EUR/);
 });
 
-test('CAR-143: an explicit code on the line disambiguates the symbol', () => {
+test('CAR-143 r2: an explicit code sits next to the figure — exact AUD→EUR reference', () => {
   const block = CC.buildCompensationBlock(
     'Engineer at Sydney.\nSalary: AUD $100k per year.',
     { low: 85000, high: null, currency: 'EUR', period: 'year', raw: '85,000' },
   );
   assert.match(block, /100000 AUD per YEAR/);
-  assert.match(block, /≈/); // AUD is a mapped code once explicit
+  assert.match(block, /≈\s*61111 EUR per year/); // exact static-table AUD→EUR (was: any ≈ passed)
+});
+
+test('CAR-143 r2: a code elsewhere in the line does not disambiguate the symbol', () => {
+  // prose «CAD» (tools) is not a currency marker for the figure
+  const f = CC.parseMoneyFigures('Experience with CAD tools, $90k per year');
+  assert.equal(f[0].currencyRaw, '$');
+  assert.equal(f[0].currency, null);
+  // no /i: a lowercase prose «usd» does not match either
+  assert.equal(CC.parseMoneyFigures('paid in usd, $90k per year')[0].currency, null);
+  // the first code on the line may belong to ANOTHER figure
+  const paren = CC.parseMoneyFigures('$100k (vs USD 80k last year)');
+  assert.equal(paren[0].currency, null);
+  assert.equal(paren[1].currency, 'USD'); // the coded figure resolves on its own
+});
+
+test('CAR-143 r2: a bare $ falls back to the profile currency within the $-family, with a caveat', () => {
+  // The most common case — a US posting vs a USD minimum — used to die as
+  // «No reliable conversion from $ to USD», dropping a same-currency compare.
+  const block = CC.buildCompensationBlock(
+    'Engineer at Gamma US.\nSalary: $150k per year.',
+    { low: 140000, high: null, currency: 'USD', period: 'year', raw: '140,000' },
+  );
+  assert.match(block, /150000 USD per YEAR/);
+  assert.match(block, /150000 USD vs 140000 USD/);
+  assert.match(block, /presumed/i);
+});
+
+test('CAR-143 r2: the symbol fallback never guesses across families', () => {
+  assert.equal(CC.parseMoneyFigures('$100k per year', { symbolFallback: 'EUR' })[0].currency, null);
+  assert.equal(CC.parseMoneyFigures('¥4,000,000 per year', { symbolFallback: 'USD' })[0].currency, null);
+  const ok = CC.parseMoneyFigures('$100k per year', { symbolFallback: 'AUD' });
+  assert.equal(ok[0].currency, 'AUD');
+  assert.equal(ok[0].currencyAssumed, true);
+  // RMB resolves to CNY and sits in the ¥-family
+  const rmb = CC.parseMoneyFigures('¥30k/月', { symbolFallback: 'RMB' });
+  assert.equal(rmb[0].currency, 'CNY');
+  assert.equal(rmb[0].currencyAssumed, true);
 });
 
 test('unmappable conversion: raw annual figures + explicit caveat, no invented number', () => {

@@ -35,13 +35,24 @@ const CCY_MAP = {
   '€': 'EUR', 'US$': 'USD', '£': 'GBP', '₽': 'RUB', '₴': 'UAH',
   USD: 'USD', EUR: 'EUR', GBP: 'GBP', CHF: 'CHF', RUB: 'RUB', RUR: 'RUB', UAH: 'UAH',
   PLN: 'PLN', CZK: 'CZK', SEK: 'SEK', NOK: 'NOK', DKK: 'DKK', INR: 'INR', BRL: 'BRL',
-  SGD: 'SGD', AUD: 'AUD', CAD: 'CAD', CNY: 'CNY', JPY: 'JPY',
+  SGD: 'SGD', AUD: 'AUD', CAD: 'CAD', CNY: 'CNY', RMB: 'CNY', JPY: 'JPY',
   'руб': 'RUB', 'руб.': 'RUB', 'рублей': 'RUB', 'рубля': 'RUB',
   'грн': 'UAH', 'грн.': 'UAH', 'zł': 'PLN', 'Kč': 'CZK',
 };
 const CCY_UNMAPPED = ['kr', '$', '¥']; // recognized as a currency token, no FX rate
 const AMBIGUOUS_SYMBOLS = new Set(['$', '¥']);
-const EXPLICIT_CCY_RE = /\b(USD|AUD|CAD|SGD|NZD|HKD|TWD|MXN|CNY|RMB|JPY)\b/i;
+// Codes that share a symbol with another currency. Only codes CCY_MAP can
+// resolve, only the $/¥-relevant ones, and case-sensitive — prose «cad»
+// (tools) / «usd» must not match. NZD/HKD live in SYMBOL_FAMILY for the
+// profile fallback but are not independently mappable here.
+const EXPLICIT_CCY_RE = /\b(USD|AUD|CAD|SGD|CNY|RMB|JPY)\b/;
+// A bare $ / ¥ may presume the PROFILE's currency, but only within its own
+// symbol family — never across («$150k» vs a USD minimum is the same figure;
+// «$150k» vs EUR stays unresolved; a ¥ is never read as USD).
+const SYMBOL_FAMILY = {
+  '$': new Set(['USD', 'AUD', 'CAD', 'SGD', 'NZD', 'HKD']),
+  '¥': new Set(['JPY', 'CNY']),
+};
 
 const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const CCY_ALT = [...Object.keys(CCY_MAP), ...CCY_UNMAPPED]
@@ -153,10 +164,17 @@ function periodOf(line, start, end, prevEnd, nextStart) {
  * profile's `compensation.currency` field), bare values qualify and inherit
  * it. `opts.allowBare` — the caller vouches that bare numbers are salary
  * context (the profile's compensation fields); the JD path requires a salary
- * word on the line instead. */
+ * word on the line instead. `opts.symbolFallback` — a bare `$` / `¥` with no
+ * explicit code presumes this currency when it is in the symbol's family
+ * ($: USD/AUD/CAD/SGD/NZD/HKD; ¥: JPY/CNY); the figure is then marked
+ * `currencyAssumed` so the block can caveat the presumption. */
 export function parseMoneyFigures(text, opts = {}) {
   const declared = opts.declaredCurrency ?? null;
   const allowBare = opts.allowBare === true;
+  // A $ / ¥ with no explicit code on the figure presumes this currency —
+  // but only within its symbol family (buildCompensationBlock passes the
+  // profile's currency; resolveCcy normalizes RMB → CNY etc.).
+  const symFallback = opts.symbolFallback ? resolveCcy(String(opts.symbolFallback).trim().toUpperCase()) : null;
   const out = [];
   for (const line of String(text ?? '').split(/\r?\n/)) {
     const bareOk = allowBare || SALARY_WORD_RE.test(line);
@@ -192,9 +210,23 @@ export function parseMoneyFigures(text, opts = {}) {
         if (looksLikeYear(n, qualified)) continue;
       }
       let currency = resolveCcy(curToken) ?? declared;
+      let currencyAssumed = false;
       if (currency == null && AMBIGUOUS_SYMBOLS.has(curToken)) {
-        const explicit = EXPLICIT_CCY_RE.exec(line);
-        if (explicit) currency = resolveCcy(explicit[1]);
+        // An explicit code must sit ADJACENT to the figure («AUD $100k»,
+        // «$100k AUD») — never the first code anywhere on the line
+        // («$100k (vs USD 80k last year)» belongs to the other figure). The
+        // \u0001 sentinel keeps a code from straddling the figure itself.
+        const adj = line.slice(Math.max(0, start - 6), start) + '\u0001' + line.slice(end, end + 6);
+        const explicit = EXPLICIT_CCY_RE.exec(adj);
+        if (explicit) {
+          currency = resolveCcy(explicit[1].toUpperCase());
+        } else if (symFallback != null && SYMBOL_FAMILY[curToken]?.has(symFallback)) {
+          // No explicit code: presume the profile's own currency, within the
+          // family only — and mark it, so the block can say the comparison
+          // rests on that presumption.
+          currency = symFallback;
+          currencyAssumed = true;
+        }
       }
       hits.push({
         start,
@@ -202,6 +234,7 @@ export function parseMoneyFigures(text, opts = {}) {
         raw: m[0].trim(),
         currencyRaw: curToken,
         currency,
+        currencyAssumed,
         suffixMult,
         value: n,
         period,
@@ -220,6 +253,7 @@ export function parseMoneyFigures(text, opts = {}) {
           high: b.value * (mult ?? 1),
           currency: a.currency ?? b.currency,
           currencyRaw: a.currencyRaw ?? b.currencyRaw,
+          currencyAssumed: Boolean(a.currencyAssumed || b.currencyAssumed),
           period: a.period ?? b.period,
           raw: line.slice(a.start, b.end),
         });
@@ -230,6 +264,7 @@ export function parseMoneyFigures(text, opts = {}) {
           high: null,
           currency: a.currency,
           currencyRaw: a.currencyRaw,
+          currencyAssumed: Boolean(a.currencyAssumed),
           period: a.period,
           raw: a.raw,
         });
@@ -346,7 +381,7 @@ function pickOfferFigure(figures) {
  * neither side states a figure (the static rule in the prompt still applies).
  */
 export function buildCompensationBlock(jdText, profile = readProfileCompensation()) {
-  const offer = pickOfferFigure(parseMoneyFigures(String(jdText ?? '')));
+  const offer = pickOfferFigure(parseMoneyFigures(String(jdText ?? ''), { symbolFallback: profile ? profile.currency : null }));
   if (!offer && !profile) return '';
 
   const lines = ['COMPENSATION COMPARISON — canonical figures (server-normalized; do not re-multiply or re-convert):'];
@@ -389,6 +424,11 @@ export function buildCompensationBlock(jdText, profile = readProfileCompensation
       } else {
         lines.push(`- No reliable conversion from ${oCcy} to ${pCcy}: compare the raw annual figures and treat the currency mismatch as an explicit caveat.`);
       }
+    }
+    if (offer.currencyAssumed) {
+      // The JD carried only the shared symbol ($/¥) — the same-currency
+      // compare above rests on the presumption, so say so explicitly.
+      lines.push(`- Note: the JD symbol "${safeEcho(offer.currencyRaw)}" is ambiguous (several currencies share it) — presumed to be the candidate minimum's currency (${oCcy}); if the posting means a different ${safeEcho(offer.currencyRaw)}-currency, treat this comparison as unconfirmed.`);
     }
   }
 
