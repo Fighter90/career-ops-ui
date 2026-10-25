@@ -208,11 +208,15 @@ export function registerTrackerRoutes(app) {
         const cells = lines[i].split(/(?<!\\)\|/);
         const num = (cells[1] || '').trim();
         if (!updates.has(num)) continue;
+        if (scoreCol >= cells.length) continue; // review r2: a hand-malformed short row must keep its column count
         // Review r1 #3: re-check the TARGET cell before writing — a
         // duplicate # after manual edits must never clobber a real score.
         const current = (cells[scoreCol] || '').trim();
         if (current && current !== '—' && current !== '-') continue;
-        cells[scoreCol] = ` ${updates.get(num)} `;
+        // Review r2: the tracker convention is X[.X]/5 — a Machine-Summary
+        // `score: 4.2` (no fraction) is normalized at the write site.
+        const score = updates.get(num);
+        cells[scoreCol] = ` ${/\/\s*5$/.test(score) ? score : score + '/5'} `;
         lines[i] = cells.join('|');
         applied += 1;
       }

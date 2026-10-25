@@ -98,6 +98,23 @@ test('backfill is idempotent: the second run updates nothing', async () => {
   assert.equal(body.updated, 0);
 });
 
+test('backfill review: a hostile report path is an inert Map key, never a fs path', async () => {
+  const hostile = [
+    '# Applications Tracker',
+    '',
+    '| # | Date | Company | Role | Score | Status | PDF | Report | Notes |',
+    '|---|------|---------|------|-------|--------|-----|--------|-------|',
+    '| 004 | 2026-10-04 | Delta | Engineer | — | Evaluated | ❌ | [x](reports/../../etc/passwd.md) | hostile path |',
+    '',
+  ].join('\n');
+  writeFileSync(join(projectRoot, 'data', 'applications.md'), hostile);
+  const { status, body } = await post('/api/tracker/backfill-scores');
+  assert.equal(status, 200);
+  assert.equal(body.ok, true);
+  assert.equal(body.missingReport, 1, 'counted as missing; the slug is only ever a Map key');
+  assert.equal(body.updated, 0);
+});
+
 test('backfill on a missing tracker file is a clean no-op, not a crash', async () => {
   unlinkSync(join(projectRoot, 'data', 'applications.md'));
   const { status, body } = await post('/api/tracker/backfill-scores');
