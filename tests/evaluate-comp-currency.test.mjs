@@ -107,6 +107,56 @@ test('bare 4-digit years do not become salaries', () => {
   assert.equal(CC.parseMoneyFigures('Founded in 2019, we ship quarterly.').length, 0);
 });
 
+test('CAR-143: a bare year next to a period word is never an offer figure', () => {
+  // Used to read «Founded 2019, yearly bonus» as «JD offer: 2019 unknown
+  // currency per YEAR» — the line's period word qualified the bare number and
+  // the year guard only fired on marker-less lines.
+  assert.equal(CC.parseMoneyFigures('Founded 2019, yearly bonus').length, 0);
+  assert.equal(CC.parseMoneyFigures('Revenue 2023, annual growth 40%').length, 0);
+  assert.equal(CC.parseMoneyFigures('Salary review scheduled for 2024').length, 0);
+});
+
+test('CAR-143: bare numbers qualify only next to a salary keyword, not any period word', () => {
+  assert.equal(CC.parseMoneyFigures('85,000 happy users, growing every month').length, 0);
+  const f = CC.parseMoneyFigures('Salary: 85,000 per year');
+  assert.equal(f.length, 1);
+  assert.equal(f[0].low, 85000);
+  assert.equal(f[0].period, 'year');
+  const ru = CC.parseMoneyFigures('Зарплата: 85 000 в месяц');
+  assert.equal(ru.length, 1);
+  assert.equal(ru[0].period, 'month');
+});
+
+test('CAR-143: a period noun elsewhere on the line does not make the figure monthly', () => {
+  // «6 month contract» used to mark the $120k figure monthly → ×12 → 1,440,000.
+  const f = CC.parseMoneyFigures('6 month contract, $120k');
+  assert.equal(f.length, 1);
+  assert.equal(f[0].period, null); // no period stated, assumed per year
+  assert.equal(CC.annualLowHigh(f[0]).low, 120000);
+});
+
+test('CAR-143: an hourly mention elsewhere on the line does not drop the yearly offer', () => {
+  // The whole line used to be skipped on any hourly marker, losing the offer.
+  const f = CC.parseMoneyFigures('$120k per year, overtime paid hourly');
+  assert.equal(f.length, 1);
+  assert.equal(f[0].period, 'year');
+  assert.equal(CC.annualLowHigh(f[0]).low, 120000);
+});
+
+test('CAR-143: /mo is an attached monthly marker', () => {
+  const f = CC.parseMoneyFigures('€3,000/mo');
+  assert.equal(f.length, 1);
+  assert.equal(f[0].period, 'month');
+  assert.equal(CC.annualLowHigh(f[0]).low, 36000);
+});
+
+test('CAR-143: an hourly figure is dropped, a same-line yearly figure survives', () => {
+  const f = CC.parseMoneyFigures('$50 per hour, or $104k per year');
+  assert.equal(f.length, 1);
+  assert.equal(f[0].period, 'year');
+  assert.equal(f[0].low, 104000);
+});
+
 // ── profile compensation ────────────────────────────────────────────────────
 
 test('readProfileCompensation reads the minimum, currency and raw text', () => {
@@ -129,6 +179,18 @@ test('a target_range falls back to its low end as the minimum', () => {
   assert.equal(prof.low, 90000);
   assert.equal(prof.high, 110000);
   assert.equal(prof.currency, 'EUR');
+});
+
+test('CAR-143: minimum and target_range are never spliced into one range', () => {
+  // Used to produce «Candidate minimum: 85000-90000» — figures[1].low from
+  // target_range was spliced onto the minimum's range.
+  const prof = CC.readProfileCompensation(
+    'compensation:\n  currency: EUR\n  minimum: "85,000"\n  target_range: "90k–110k"\n',
+  );
+  assert.equal(prof.low, 85000);
+  assert.equal(prof.high, null); // was 90000 — spliced across the two fields
+  assert.equal(prof.currency, 'EUR');
+  assert.equal(prof.period, 'year');
 });
 
 test('a profile without a compensation block yields null', () => {
@@ -171,10 +233,42 @@ test('monthly JD offer is annualized into the prompt, never left as €5,000 vs 
 });
 
 test('cross-currency JD offer gets an indicative conversion toward the minimum currency', () => {
-  const block = CC.buildCompensationBlock('Engineer at Gamma.\nSalary: $100k–$120k per year.');
+  // CAR-143: the JD carries an explicit code — a bare «$» is ambiguous
+  // (AU/CA/SG/NZ dollars) and is no longer hard-mapped to USD.
+  const block = CC.buildCompensationBlock('Engineer at Gamma.\nSalary: USD 100k–120k per year.');
   assert.match(block, /100000-120000 USD per YEAR/);
   assert.match(block, /≈\s*92593-111111 EUR per year/); // USD → profile EUR, static table
   assert.match(block, /indicative only|approximate/i);
+});
+
+test('CAR-143: $ and ¥ are ambiguous symbols — recognized, never invented into a code', () => {
+  const d = CC.parseMoneyFigures('$100k per year');
+  assert.equal(d[0].currencyRaw, '$');
+  assert.equal(d[0].currency, null); // used to hard-map to USD
+  const y = CC.parseMoneyFigures('¥4,000,000 per year');
+  assert.equal(y[0].currencyRaw, '¥');
+  assert.equal(y[0].currency, null); // used to hard-map to JPY
+});
+
+test('CAR-143: ¥30k/月 (RMB-shaped) is not converted at the JPY rate', () => {
+  const block = CC.buildCompensationBlock(
+    'Engineer at Acme CN.\nSalary: ¥30k/月.\nGo, k8s.',
+    { low: 250000, high: null, currency: 'EUR', period: 'year', raw: '250 000' },
+  );
+  assert.match(block, /360000 ¥ per YEAR/); // 30k/month ×12
+  assert.match(block, /×12 applied/);
+  assert.match(block, /Candidate minimum: 250000 EUR per YEAR/);
+  assert.doesNotMatch(block, /≈\s*\d/); // no JPY-rate (or any invented) conversion
+  assert.match(block, /No reliable conversion from ¥ to EUR/);
+});
+
+test('CAR-143: an explicit code on the line disambiguates the symbol', () => {
+  const block = CC.buildCompensationBlock(
+    'Engineer at Sydney.\nSalary: AUD $100k per year.',
+    { low: 85000, high: null, currency: 'EUR', period: 'year', raw: '85,000' },
+  );
+  assert.match(block, /100000 AUD per YEAR/);
+  assert.match(block, /≈/); // AUD is a mapped code once explicit
 });
 
 test('unmappable conversion: raw annual figures + explicit caveat, no invented number', () => {
@@ -255,13 +349,12 @@ test('the language reminder still closes the prompt after the figures block', ()
 
 test('readProfileCompensation: missing profile file → null (no throw)', async () => {
   const { readProfileCompensation } = await import('../server/lib/comp-compare.mjs');
-  const prev = process.env.CAREER_OPS_ROOT;
-  process.env.CAREER_OPS_ROOT = '/nonexistent/car105-cover';
-  try {
-    assert.equal(readProfileCompensation('not-a-string'), null);
-  } finally {
-    if (prev === undefined) delete process.env.CAREER_OPS_ROOT; else process.env.CAREER_OPS_ROOT = prev;
-  }
+  // No argument → the PATHS.profile read branch actually runs. PATHS resolves
+  // once at import (CAREER_OPS_ROOT in before()), so remove the file itself —
+  // 'not-a-string' never exercised the branch (it short-circuits as YAML), and
+  // setting CAREER_OPS_ROOT after import has no effect.
+  rmSync(resolve(ROOT, 'config', 'profile.yml'), { force: true });
+  assert.equal(readProfileCompensation(), null);
 });
 
 test('readProfileCompensation: malformed YAML → null (no throw)', async () => {
@@ -276,10 +369,14 @@ test('readProfileCompensation: non-compensation YAML → null', async () => {
 
 test('buildCompensationBlock: kr (unmapped CCY) → explicit caveat, never an invented rate', async () => {
   const { buildCompensationBlock } = await import('../server/lib/comp-compare.mjs');
+  // buildCompensationBlock reads profile.low/high — the profile shape is
+  // {low, high, currency, period, raw}, not the raw profile.yml fields.
   const block = buildCompensationBlock(
     'Engineer at Beta.\nSalary: 600 000 kr per year.\nGo, k8s.',
-    { minimum: 500000, currency: 'EUR', raw: '500 000', period: 'year' },
+    { low: 500000, high: null, currency: 'EUR', period: 'year', raw: '500 000' },
   );
+  assert.match(block, /Candidate minimum: 500000 EUR per YEAR/);
+  assert.match(block, /600000 kr per YEAR/);
   assert.match(block, /No reliable conversion/i, 'unmapped-CCY caveat present');
   assert.doesNotMatch(block, /=\s*~?\s*\d[\d\s]*\s*(USD|EUR)/, 'no invented converted figure');
 });
@@ -288,8 +385,9 @@ test('buildCompensationBlock: differing mapped currencies → indicative ≈-ref
   const { buildCompensationBlock } = await import('../server/lib/comp-compare.mjs');
   const block = buildCompensationBlock(
     'Engineer at Beta.\nSalary: €80–100k.\nGo, k8s.',
-    { minimum: 9000000, currency: 'RUB', raw: '9 000 000', period: 'year' },
+    { low: 9000000, high: null, currency: 'RUB', period: 'year', raw: '9 000 000' },
   );
+  assert.match(block, /Candidate minimum: 9000000 RUB per YEAR/);
   assert.match(block, /≈/, 'indicative static-table reference present');
 });
 

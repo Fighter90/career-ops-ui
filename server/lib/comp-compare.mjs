@@ -26,16 +26,22 @@ import { PATHS } from './paths.mjs';
 // ── currency recognition ────────────────────────────────────────────────────
 // Own-key lookups only. `kr` (SEK/NOK/DKK) is deliberately recognized but
 // UNMAPPED — an ambiguous code must not produce an invented conversion; the
-// block then says so explicitly instead.
+// block then says so explicitly instead. Same for `$` and `¥` (CAR-143):
+// "$100k" in a Sydney posting is AUD, «¥30k/月» in a Shanghai one is CNY —
+// hard-mapping them invented a ~20×-off JPY conversion and billed AU/CA/SG
+// dollars as USD. They resolve only when an explicit ISO code shares the line
+// (EXPLICIT_CCY_RE below).
 const CCY_MAP = {
-  '€': 'EUR', '$': 'USD', 'US$': 'USD', '£': 'GBP', '¥': 'JPY', '₽': 'RUB', '₴': 'UAH',
+  '€': 'EUR', 'US$': 'USD', '£': 'GBP', '₽': 'RUB', '₴': 'UAH',
   USD: 'USD', EUR: 'EUR', GBP: 'GBP', CHF: 'CHF', RUB: 'RUB', RUR: 'RUB', UAH: 'UAH',
   PLN: 'PLN', CZK: 'CZK', SEK: 'SEK', NOK: 'NOK', DKK: 'DKK', INR: 'INR', BRL: 'BRL',
   SGD: 'SGD', AUD: 'AUD', CAD: 'CAD', CNY: 'CNY', JPY: 'JPY',
   'руб': 'RUB', 'руб.': 'RUB', 'рублей': 'RUB', 'рубля': 'RUB',
   'грн': 'UAH', 'грн.': 'UAH', 'zł': 'PLN', 'Kč': 'CZK',
 };
-const CCY_UNMAPPED = ['kr']; // recognized as a currency token, no FX rate
+const CCY_UNMAPPED = ['kr', '$', '¥']; // recognized as a currency token, no FX rate
+const AMBIGUOUS_SYMBOLS = new Set(['$', '¥']);
+const EXPLICIT_CCY_RE = /\b(USD|AUD|CAD|SGD|NZD|HKD|TWD|MXN|CNY|RMB|JPY)\b/i;
 
 const escapeRe = (s) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 const CCY_ALT = [...Object.keys(CCY_MAP), ...CCY_UNMAPPED]
@@ -59,11 +65,14 @@ const FIG_RE = new RegExp(
   'gu',
 );
 
-// Period markers per figure window, falling back to the whole line. Unicode
-// endings use negative lookahead instead of `\b` — JS word boundaries are
-// ASCII-only and never matched Cyrillic (a known web-ui pitfall).
-const MONTH_RE = /per\s+month|\/\s*month|monthly|\bmonth\b|\bMonat\b|monatlich|\bm[eę]s\b|mensal|mensual|al\s+mes|por\s+mes|par\s+mois|mensuel|мес(?:яц|я|е|ах)?(?![а-яё])|в\s+месяц|за\s+месяц|月給|月薪|每月|\/月|aylık/i;
-const YEAR_RE = /per\s+(?:year|annum)|p\.\s?a\.|\/\s*(?:year|yr|annum|a[ñn]o|ano)|\bannum\b|annual(?:ly)?|yearly|\byear\b|\bJahr\b|j[aä]hrlich|anual|al\s+a[ñn]o|por\s+a[ñn]o|por\s+ano|par\s+an|annuel|год(?:а|у|овой|овая)?(?![а-яё])|в\s+год|за\s+год|年薪|年給|每年|\/年|年俸|yıllık/i;
+// Period markers per figure window (CAR-143: matched only inside the figure's
+// own ±24-char window, and only in forms ATTACHED to the figure — the bare
+// nouns \bmonth\b / \byear\b / Monat / Jahr are NOT markers, so «6 month
+// contract, $120k» no longer annualizes ×12). Unicode endings use negative
+// lookahead instead of `\b` — JS word boundaries are ASCII-only and never
+// matched Cyrillic (a known web-ui pitfall).
+const MONTH_RE = /per\s+month|\/\s*month|\/\s*mo\b|monthly|pro\s+Monat|monatlich|\bm[eę]s\b|mensal|mensual|al\s+mes|por\s+mes|par\s+mois|mensuel|мес(?:яц|я|е|ах)?(?![а-яё])|в\s+месяц|за\s+месяц|月給|月薪|每月|\/月|aylık/i;
+const YEAR_RE = /per\s+(?:year|annum)|p\.\s?a\.|\/\s*(?:year|yr|annum|a[ñn]o|ano)|\bannum\b|annual(?:ly)?|yearly|pro\s+Jahr|j[aä]hrlich|anual|al\s+a[ñn]o|por\s+a[ñn]o|por\s+ano|par\s+an|annuel|год(?:а|у|овой|овая)?(?![а-яё])|в\s+год|за\s+год|年薪|年給|每年|\/年|年俸|yıllık/i;
 const HOUR_RE = /per\s+hour|\/\s*hour\b|\/\s*hr\b|hourly|в\s+час|за\s+час|st[üu]ndlich|pro\s+Stunde|par\s+heure|\bhora\b|時給|saatlık/i;
 
 /** Resolve a currency token to a canonical code by OWN key (null otherwise). */
@@ -92,27 +101,44 @@ function parseNumberToken(raw) {
   return Number.isFinite(n) && s !== '' ? n : null;
 }
 
-function looksLikeYear(n, qualified, hasMarker) {
-  return !qualified && !hasMarker && n >= 1900 && n <= 2099;
+// A bare number is salary-shaped only when a salary word frames the line —
+// a bare period word alone no longer qualifies it (CAR-143).
+const SALARY_WORD_RE = /salary|salaries|compensation|remuneration|\bwages?\b|\bpay\b|зарпла|оклад|Gehalt|sal[áa]rio|salario|salaire|薪|給料|급여/i;
+
+function looksLikeYear(n, qualified) {
+  // CAR-143: ALWAYS reject a bare 19xx/20xx number, whatever period words the
+  // line carries — «Founded 2019, yearly bonus» is a founding year, never a
+  // salary. Currency- or suffix-qualified figures keep the old scope.
+  return !qualified && n >= 1900 && n <= 2099;
 }
 
-function periodOf(window_, linePeriod) {
-  if (HOUR_RE.test(window_)) return 'hour';
-  if (MONTH_RE.test(window_)) return 'month';
-  if (YEAR_RE.test(window_)) return 'year';
-  return linePeriod;
+// The period comes ONLY from markers attached to the figure: checked in the
+// figure's own window, after-side first (a marker following the number or
+// range outranks an incidental word before it), then hourly, then year/month
+// on the before-side (CJK markers — 月薪/年薪 — precede the figure).
+function periodOf(after, before) {
+  if (YEAR_RE.test(after)) return 'year';
+  if (MONTH_RE.test(after)) return 'month';
+  if (HOUR_RE.test(after)) return 'hour';
+  if (HOUR_RE.test(before)) return 'hour';
+  if (YEAR_RE.test(before)) return 'year';
+  if (MONTH_RE.test(before)) return 'month';
+  return null;
 }
 
-/** Parse every qualifying money figure in `text`. Period: 'year'|'month'|null.
+/** Parse every qualifying money figure in `text`. Period: 'year'|'month'|null
+ * ('hour' figures are dropped — an hourly rate never annualizes).
  * `opts.declaredCurrency` — when the caller already knows the currency (the
  * profile's `compensation.currency` field), bare values qualify and inherit
- * it; the JD path passes nothing and keeps the strict bare filter. */
+ * it. `opts.allowBare` — the caller vouches that bare numbers are salary
+ * context (the profile's compensation fields); the JD path requires a salary
+ * word on the line instead. */
 export function parseMoneyFigures(text, opts = {}) {
   const declared = opts.declaredCurrency ?? null;
+  const allowBare = opts.allowBare === true;
   const out = [];
   for (const line of String(text ?? '').split(/\r?\n/)) {
-    if (HOUR_RE.test(line)) continue; // hourly rates never annualize — skip the line
-    const linePeriod = MONTH_RE.test(line) ? 'month' : YEAR_RE.test(line) ? 'year' : null;
+    const bareOk = allowBare || SALARY_WORD_RE.test(line);
     const hits = [];
     FIG_RE.lastIndex = 0;
     for (let m = FIG_RE.exec(line); m; m = FIG_RE.exec(line)) {
@@ -121,20 +147,32 @@ export function parseMoneyFigures(text, opts = {}) {
       const curToken = m.groups.pre ?? m.groups.post ?? null;
       const sufToken = m.groups.suf ?? null;
       const qualified = Boolean(curToken || sufToken || declared);
-      // Bare numbers (no currency, no suffix) qualify ONLY on a line that
-      // states a period and only salary-shaped values ("85,000 per year",
-      // "8500/mo") — never years, ids, head-counts or "Go, k8s". With a
-      // declared currency (profile minimum) any value qualifies.
-      if (!qualified && !(linePeriod && n >= 1000)) continue;
-      if (looksLikeYear(n, qualified, linePeriod != null)) continue;
+      // Bare numbers (no currency, no suffix) qualify only on a line framed
+      // by a salary word and only salary-shaped values ("Salary: 85,000 per
+      // year") — never years, ids, head-counts or "Go, k8s". With a declared
+      // currency (profile minimum) any value qualifies.
+      if (!qualified) {
+        if (!bareOk || n < 1000) continue;
+        if (looksLikeYear(n, qualified)) continue;
+      }
+      let currency = resolveCcy(curToken) ?? declared;
+      if (currency == null && AMBIGUOUS_SYMBOLS.has(curToken)) {
+        const explicit = EXPLICIT_CCY_RE.exec(line);
+        if (explicit) currency = resolveCcy(explicit[1]);
+      }
+      const after = line.slice(m.index + m[0].length, m.index + m[0].length + 24);
+      const before = line.slice(Math.max(0, m.index - 24), m.index);
+      const period = periodOf(after, before);
+      if (period === 'hour') continue; // hourly figure — drop the figure, not the whole line
       hits.push({
         start: m.index,
         end: m.index + m[0].length,
         raw: m[0].trim(),
         currencyRaw: curToken,
-        currency: resolveCcy(curToken) ?? declared,
+        currency,
         suffixMult: sufToken ? (SUFFIX_MULT[sufToken] ?? null) : null,
         value: n,
+        period,
       });
     }
     // Pair adjacent figures into ranges ("€80–100k", "$100k to $120k").
@@ -150,7 +188,7 @@ export function parseMoneyFigures(text, opts = {}) {
           high: b.value * (mult ?? 1),
           currency: a.currency ?? b.currency,
           currencyRaw: a.currencyRaw ?? b.currencyRaw,
-          period: periodOf(line.slice(Math.max(0, a.start - 24), Math.min(line.length, b.end + 24)), linePeriod),
+          period: a.period ?? b.period,
           raw: line.slice(a.start, b.end),
         });
         i++; // consumed both
@@ -160,7 +198,7 @@ export function parseMoneyFigures(text, opts = {}) {
           high: null,
           currency: a.currency,
           currencyRaw: a.currencyRaw,
-          period: periodOf(line.slice(Math.max(0, a.start - 24), Math.min(line.length, a.end + 24)), linePeriod),
+          period: a.period,
           raw: a.raw,
         });
       }
@@ -180,9 +218,11 @@ export function annualLowHigh(fig) {
 
 /**
  * The candidate minimum from `config/profile.yml` — `compensation.minimum`,
- * falling back to the low end of `compensation.target_range`. Currency comes
- * from `compensation.currency` (code or symbol) or the value's own symbol.
- * Returns {low, high, currency, period, raw} or null.
+ * falling back to `compensation.target_range` ONLY when minimum is absent
+ * (CAR-143: the two fields are never spliced into one range — a `high` never
+ * crosses fields). Currency comes from `compensation.currency` (code or
+ * symbol) or the value's own symbol. Returns {low, high, currency, period,
+ * raw} or null.
  */
 export function readProfileCompensation(profileText) {
   let text = profileText;
@@ -206,20 +246,23 @@ export function readProfileCompensation(profileText) {
   if (!comp) return null;
 
   const declared = resolveCcy(typeof comp.currency === 'string' ? comp.currency.trim() : '');
-  const strings = [comp.minimum, comp.target_range].filter((v) => typeof v === 'string' && v.trim());
-  const figures = typeof comp.minimum === 'number' && Number.isFinite(comp.minimum)
-    ? [{ low: comp.minimum, high: null, currency: declared, currencyRaw: null, period: null, raw: String(comp.minimum) }]
-    : parseMoneyFigures(strings.join('\n'), { declaredCurrency: declared });
+  const minNum = typeof comp.minimum === 'number' && Number.isFinite(comp.minimum) ? comp.minimum : null;
+  const minStr = typeof comp.minimum === 'string' && comp.minimum.trim() ? comp.minimum : null;
+  const rangeStr = typeof comp.target_range === 'string' && comp.target_range.trim() ? comp.target_range : null;
+  // The profile's compensation fields ARE salary context — bare numbers
+  // qualify without a salary word on the line.
+  const figures = minNum != null
+    ? [{ low: minNum, high: null, currency: declared, currencyRaw: null, period: null, raw: String(minNum) }]
+    : parseMoneyFigures(minStr ?? rangeStr ?? '', { declaredCurrency: declared, allowBare: true });
   if (!figures.length) return null;
   const fig = figures[0];
-  if (figures.length > 1) fig.high = figures[1].low;
   return {
     low: fig.low,
     high: fig.high ?? null,
     currency: fig.currency ?? declared ?? null,
     currencyRaw: fig.currencyRaw,
     period: fig.period ?? 'year', // an unstated profile minimum is annual by convention
-    raw: strings[0] ?? fig.raw,
+    raw: minStr ?? (minNum != null ? String(minNum) : rangeStr) ?? fig.raw,
   };
 }
 
