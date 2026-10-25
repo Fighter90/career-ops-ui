@@ -174,7 +174,7 @@ test('two /api/evaluate calls with different JDs send byte-identical cached pref
     usage: { input_tokens: 37000, output_tokens: 900, cache_read_input_tokens: 36999 },
   });
   globalThis.fetch = async (u, o = {}) => {
-    if (String(u).includes('api.anthropic.com')) {
+    if (new URL(String(u)).host === 'api.anthropic.com') {
       sent.push(JSON.parse(o.body));
       return reply(anthropicJson())();
     }
