@@ -17,9 +17,9 @@ _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.258.0** — **六项智能体集群修复：«活动公司» 计数器不再混用两个统计口径（1554/90），深度调研必须给出 `[source: …]` 标记并承认未知，失败的表单字段点亮显示而非只弹一条 toast 错误，#/map 与 #/tracker 即时渲染 h1 并配有骨架屏加载行，且每一次 /api/evaluate 都缓存约 37k token 的稳定前缀（首次调用之后 ≈10× 更便宜）。**
+> **🆕 最新版本 — v1.259.0** — **第二趟智能体集群发布列车，六项修复：报告日期由服务端钉定（不再出现凭空捏造的 2026-01-xx），深度调研的来源标记已先行落地，地图地理编码器带缓存并能读取 RU 城市（92% 的无位置 → 已覆盖），帮助 ×18 引用本地化后的按钮标签，UI 句子不再混用语言（23 处键值泄漏），薪资对比改为在服务端以单一规范形式计算（zh-TW 的判定翻转案例已不复存在）。外加 CAR-104：JS bundle 现在以预压缩形态交付 —— 冷加载 3.1 MB → 598 KB。**
 >
-> **上一版本 — v1.257.0** — **两项智能体集群修复：应用内帮助助手现已理解天城文与泰米尔文（分词器此前会丢弃组合标记 — 一条印地语查询匹配到 0 个章节，泰米尔语只匹配到碎片），且用量页面显示 Hermes 的真实成本（网关上报的成本此前被静默丢弃 — 9.5 M 个 token 显示 $0.0000）。**
+> **上一版本 — v1.258.0** — **六项智能体集群修复：«活动公司» 计数器不再混用两个统计口径（1554/90），深度调研必须给出 `[source: …]` 标记并承认未知，失败的表单字段点亮显示而非只弹一条 toast 错误，#/map 与 #/tracker 即时渲染 h1 并配有骨架屏加载行，且每一次 /api/evaluate 都缓存约 37k token 的稳定前缀（首次调用之后 ≈10× 更便宜）。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
