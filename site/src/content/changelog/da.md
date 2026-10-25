@@ -9,6 +9,25 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 ---
 
 
+## [1.258.0] — 2026-10-25
+
+**Seks rettelser fra agentflåden, ét tog: #/scan-virksomhedstælleren blander ikke længere to universer, deep research kræver kilder, formularfejl får feltet til at lyse op, indlæsningstilstande får skeletter og en øjeblikkelig h1, og evalueringer cacher deres 37k-token-præfiks.**
+
+### Rettet
+
+- **#/scan «Aktive virksomheder»-tælleren (CAR-100)**: tælleren talte forskellige virksomheder på tværs af ALLE resultatrækker (1554 i prod — hh.ru alene bidrager med hundredvis), mens nævneren talte API-baserede sporede virksomheder (~90) — to universer i én brøk. Kobling (a): tælleren tæller nu virksomheder blandt de rækker, som det API-baserede sporede scan selv hentede (matchet via `_entry ?? company`; hh.ru/telegram-arbejdsgiverrækker falder ud); pre-scan-fallbacken er flyttet ind i samme univers (den kunne vise «104/90»).
+- **Opdigtede kilder i deep research (CAR-110)**: deep-prompten bærer nu en hård kontrakt — enhver faktuel påstand slutter med `[source: domain.com]` (kan du ikke navngive den → skriv den ikke; et opdigtet mærke er værre end at skrive `unknown`), ukendte fakta skrives som `unknown`, og rapporten SKAL slutte med en `## Data freshness`-sektion. Aktualitetsforankringer: dagens UTC-dato + en valgfri virksomheds-`url` på `POST /api/deep` (afgrænset, hentes aldrig på serversiden).
+- **Formularfejl fremhæver feltet (CAR-130)**: et fejlet POST markerer det første formularfelt med `aria-invalid` + `.is-error` og fokuserer det (WCAG 3.3.1); nulstilles ved redigering. Netværksfejl-hintet skelner nu mellem deployments — loopback beholder dev-kommando-hintet, et deployeret origin får «serveren svarer ikke» i stedet for rådet om `bash web-ui/bin/start.md` (forbindelsesbanneret havde den samme hardcode).
+- **Indlæsningstilstande (CAR-112)**: #/map og #/tracker renderer deres h1 øjeblikkeligt (fokusmålet i routeren eksisterede først, efter at dataene ankom), og en delt skeleton-hjælper (`Skeleton.rows`, aria-skjulte shimmer-rækker inde i en `role="status"`-region, der genbruger `common.loading`) erstatter den blotte «Indlæser…»-tekst på tracker, scan-resultater og kort-skallen; `prefers-reduced-motion` stopper pulsen.
+- **Prompt-caching til evaluering (CAR-111)**: `buildEvaluationPromptParts` deler den ~37k-token lange prompt i et byte-stabilt præfiks (CV + profil + mode-filer + instruktioner) og JD-halen; Anthropic-stien sender `[prefix + cache_control: ephemeral] + [JD]` — præfikset afregnes til cache-læse-tariffen (≈10× billigere) på hvert kald efter det første. Mangler eller afviger præfikset, falder det åbent tilbage til den byte-identiske gamle anmodning; den OpenAI-kompatible kaskade er urørt (caching sker serverside dér).
+
+### Noter
+
+- Alle seks rettelser kom fra agentflåden med rød→grøn evidens (5 + 7 + 7 + 7 + 8 nye cases) og anmeldelsesrunder; de første CAR-111 CodeQL-advarsler (#579/#580) blev rettet i koden — test-stubben parser URL-hosten i stedet for substring-match, og en død fuld-prompt-streng blev droppet.
+- **Score-backfill'en er kørt på prod** (v1.256.0-endpointet, godkendt af ejeren): `updated: 22`, `missingReport: 0`, `reportScoreless: 159` — 159 rækker uden score peger på rapporter, hvis overskrifter er ældre end maskineblokken eller bærer uparsbare scoreformater; kan kun genvindes ved re-evaluering eller en bredere parsergennemgang (noteret i CAR-129).
+- Bevidst ikke gjort: ingen nulls-last-ændring af pendlerkolonnen (præeksisterende `Infinity`-on-desc-quirk), ingen retrosaktiv omprisering af gamle forbrugsposter, ingen `.is-error`-agtig fremhævning af scan-filterformularerne (CAR-130 afgrænset til den delte mode-page submit-hjælper + api.js-hintet).
+- Tests 5749 (+36). Ingen scannerkilder rørt (registry 121 = 116 EN + 5 RU · 116 adaptere); ingen i18n-nøgler (CAR-130-hintet genbruger `conn.down`; skeleton-regionen genbruger `common.loading`).
+
 ## [1.257.0] — 2026-10-25
 
 **To rettelser fra agentflåden: den indbyggede hjælpeassistent forstår devanagari og tamil, og forbrugssiden viser, hvad Hermes faktisk koster.**

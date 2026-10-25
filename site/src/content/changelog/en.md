@@ -7,6 +7,25 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 ---
 
 
+## [1.258.0] — 2026-10-25
+
+**Six fixes from the agent fleet, one train: the #/scan company counter stops mixing universes, deep research demands sources, form errors light up the field, loading states get skeletons and an instant h1, and evaluations cache their 37k-token prompt prefix.**
+
+### Fixed
+
+- **#/scan «Active companies» counter (CAR-100)**: the numerator counted distinct companies across ALL result rows (1554 on prod — hh.ru alone contributes hundreds) while the denominator counted API-backed tracked companies (~90) — two universes in one fraction. Pairing (a): the numerator now counts companies among rows the API-backed tracked scan itself fetched (matched by `_entry ?? company`; hh.ru/telegram employer rows drop out); the pre-scan fallback moved into the same universe (it could read «104/90»).
+- **Deep research fabrication (CAR-110)**: the deep prompt now carries a hard contract — every factual claim ends with `[source: domain.com]` (cannot name it → do not state it; inventing a marker is worse than writing "unknown"), unknown facts are written `unknown`, and the report MUST end with a `## Data freshness` section. Freshness anchors: today's UTC date + an optional company `url` on `POST /api/deep` (bounded, never fetched server-side).
+- **Form errors highlight the field (CAR-130)**: a failed POST marks the first form field `aria-invalid` + `.is-error` and focuses it (WCAG 3.3.1); cleared on edit. The network-error hint is deployment-aware — loopback keeps the dev-command hint, a deployed origin gets «server is not responding» instead of `bash web-ui/bin/start.md` advice (the connection banner had the same hardcode).
+- **Loading states (CAR-112)**: #/map and #/tracker render their h1 instantly (the router focus target existed only after data arrived) and a shared skeleton helper (`Skeleton.rows`, aria-hidden shimmer rows inside a `role="status"` region reusing `common.loading`) replaces bare «Loading…» text on tracker, scan results and the map shell; `prefers-reduced-motion` stops the pulse.
+- **Evaluate prompt caching (CAR-111)**: `buildEvaluationPromptParts` splits the ~37k-token prompt into a byte-stable prefix (CV + profile + mode files + instructions) and the JD tail; the Anthropic path sends `[prefix + cache_control: ephemeral] + [JD]` — the prefix bills at the cache-read rate (≈10× cheaper) on every call after the first. Missing/mismatched prefix fails open to the byte-identical old request; the OpenAI-compatible cascade is untouched (server-side caching there).
+
+### Notes
+
+- All six fixes came from the agent fleet with red→green evidence (5 + 7 + 7 + 7 + 8 new cases) and review rounds; the first CAR-111 CodeQL alerts (#579/#580) were fixed in code — the test stub parses the URL host instead of substring matching, and a dead full-prompt string was dropped.
+- **The score backfill ran on prod** (v1.256.0 endpoint, owner-approved): `updated: 22`, `missingReport: 0`, `reportScoreless: 159` — 159 scoreless rows point at reports whose headers predate the machine block or carry unparseable score formats; recoverable only by re-evaluation or a wider parser pass (noted in CAR-129).
+- Deliberately not done: no commute-column nulls-last change (pre-existing `Infinity`-on-desc quirk), no retroactive re-pricing of old usage records, no `.is-error`-style highlighting for the scan filter forms (CAR-130 scoped to the shared mode-page submit helper + api.js hint).
+- Tests 5749 (+36). No scanner sources touched (registry 121 = 116 EN + 5 RU · 116 adapters); no i18n keys (the CAR-130 hint reuses `conn.down`; the skeleton region reuses `common.loading`).
+
 ## [1.257.0] — 2026-10-25
 
 **Two agent-fleet fixes: the in-app help assistant understands Devanagari and Tamil, and the usage page shows what Hermes actually costs.**

@@ -11,6 +11,25 @@ Traductions : [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.258.0] — 2026-10-25
+
+**Six correctifs de la flotte d'agents, un seul train : le compteur d'entreprises de #/scan cesse de mélanger les univers, la recherche approfondie exige des sources, les erreurs de formulaire s'allument sur le champ, les états de chargement gagnent des skeletons et un h1 instantané, et les évaluations mettent en cache leur préfixe de prompt de 37k tokens.**
+
+### Corrigé
+
+- **Compteur « entreprises actives » de #/scan (CAR-100)** : le numérateur comptait les entreprises distinctes sur TOUTES les lignes de résultats (1554 en prod — hh.ru à elle seule en apporte des centaines) tandis que le dénominateur comptait les entreprises suivies adossées à une API (~90) — deux univers dans une même fraction. Appariement (a) retenu : le numérateur compte désormais les entreprises parmi les lignes que le scan suivi adossé à l'API a lui-même récupérées (correspondance par `_entry ?? company` ; les lignes employeur hh.ru/telegram sortent) ; le repli de pré-scan a rejoint le même univers (il pouvait lire « 104/90 »).
+- **Fabrication dans la recherche approfondie (CAR-110)** : le prompt deep porte désormais un contrat strict — chaque affirmation factuelle se termine par `[source: domain.com]` (impossible de nommer la source → ne pas énoncer l'affirmation ; inventer un marqueur est pire qu'écrire « unknown »), les faits inconnus s'écrivent `unknown`, et le rapport DOIT se terminer par une section `## Data freshness`. Ancres de fraîcheur : la date UTC du jour + une `url` d'entreprise optionnelle sur `POST /api/deep` (bornée, jamais récupérée côté serveur).
+- **Les erreurs de formulaire surlignent le champ (CAR-130)** : un POST en échec marque le premier champ du formulaire `aria-invalid` + `.is-error` et lui donne le focus (WCAG 3.3.1) ; effacé à l'édition. L'indice d'erreur réseau s'adapte au déploiement — en loopback on garde l'indice de la commande dev, une origine déployée reçoit « le serveur ne répond pas » au lieu du conseil `bash web-ui/bin/start.md` (la bannière de connexion portait le même code en dur).
+- **États de chargement (CAR-112)** : #/map et #/tracker rendent leur h1 instantanément (la cible de focus du routeur n'existait qu'une fois les données arrivées) et un helper de skeleton partagé (`Skeleton.rows`, des lignes shimmer aria-hidden dans une région `role="status"` qui réutilise `common.loading`) remplace le simple texte « Chargement… » sur le tracker, les résultats de scan et le conteneur de la carte ; `prefers-reduced-motion` arrête l'animation pulsée.
+- **Cache du prompt d'évaluation (CAR-111)** : `buildEvaluationPromptParts` scinde le prompt de ~37k tokens en un préfixe stable à l'octet (CV + profil + fichiers de modes + instructions) et la queue JD ; le chemin Anthropic envoie `[prefix + cache_control: ephemeral] + [JD]` — le préfixe est facturé au tarif de lecture du cache (≈10× moins cher) à chaque appel après le premier. Un préfixe absent ou non conforme retombe en fail-open sur la requête historique, identique à l'octet près ; la cascade compatible OpenAI reste intacte (le caching y est géré côté serveur).
+
+### Notes
+
+- Les six correctifs viennent de la flotte d'agents avec preuve rouge→vert (5 + 7 + 7 + 7 + 8 nouveaux cas) et des rondes de revue ; les premières alertes CodeQL de CAR-111 (#579/#580) ont été corrigées dans le code — le stub de test analyse l'hôte de l'URL au lieu d'une sous-chaîne, et une chaîne de prompt complet morte a été supprimée.
+- **Le comblement des scores a tourné en prod** (endpoint de la v1.256.0, approuvé par le propriétaire) : `updated: 22`, `missingReport: 0`, `reportScoreless: 159` — 159 lignes sans score pointent vers des rapports dont les en-têtes sont antérieurs au bloc machine ou portent des formats de score non analysables ; récupérables uniquement par une ré-évaluation ou une passe de parseur plus large (noté dans CAR-129).
+- Délibérément non fait : pas de changement nulls-last pour la colonne commute (bizarrerie préexistante de `Infinity` en ordre descendant), pas de re-tarification rétroactive des enregistrements d'utilisation historiques, pas de surlignage de type `.is-error` pour les formulaires de filtres du scan (CAR-130 limité au helper de soumission partagé des pages de modes + l'indice api.js).
+- Tests 5749 (+36). Aucune source du scanner touchée (registre 121 = 116 EN + 5 RU · 116 adaptateurs) ; aucune clé i18n (l'indice CAR-130 réutilise `conn.down` ; la région skeleton réutilise `common.loading`).
+
 ## [1.257.0] — 2026-10-25
 
 **Deux correctifs de la flotte d'agents : l'assistant d'aide intégré comprend le devanagari et le tamoul, et la page d'utilisation affiche ce qu'Hermes coûte réellement.**
