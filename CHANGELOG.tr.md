@@ -2,6 +2,25 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.258.0] — 2026-10-25
+
+**Ajan filosundan tek tren üzerinde altı düzeltme: #/scan şirket sayacı evrenleri karıştırmayı bırakıyor, derin araştırma kaynak talep ediyor, form hataları alanı aydınlatıyor, yükleme durumları iskeletler ve anında h1 kazanıyor ve değerlendirmeler 37k-belirteçlik prompt öneklerini önbelleğe alıyor.**
+
+### Düzeltildi
+
+- **#/scan «Aktif şirketler» sayacı (CAR-100)**: pay, TÜM sonuç satırlarında ayırt edilen şirketleri sayıyordu (üretimde 1554 — tek başına hh.ru yüzlerce katıyor), payda ise API destekli izlenen şirketleri sayıyordu (~90) — tek kesirde iki evren. (a) eşleştirmesi: pay artık API destekli izlenen taramanın kendisinin getirdiği satırlar arasındaki şirketleri sayıyor (`_entry ?? company` ile eşleşen; hh.ru/telegram işveren satırları düşüyor); tarama-öncesi geri dönüş aynı evrene taşındı («104/90» okuyabiliyordu).
+- **Derin araştırma uydurması (CAR-110)**: derin prompt artık katı bir sözleşme taşıyor — her olgusal iddia `[source: domain.com]` ile bitiyor (adlandıramıyorsa → söyleme; bir işaret uydurmak «unknown» yazmaktan daha kötüdür), bilinmeyen olgular `unknown` olarak yazılıyor ve rapor MUTLAKA bir `## Data freshness` bölümüyle bitmelidir. Tazelik çapaları: bugünün UTC tarihi + `POST /api/deep` üzerinde isteğe bağlı bir şirket `url` (sınırlı, sunucu tarafında asla getirilmez).
+- **Form hataları alanı vurguluyor (CAR-130)**: başarısız bir POST ilk form alanını `aria-invalid` + `.is-error` ile işaretleyip odağı ona veriyor (WCAG 3.3.1); düzenlenince temizleniyor. Ağ-hatası ipucu dağıtım-farkında — loopback geliştirici-komutu ipucunu koruyor, dağıtılmış bir kaynak `bash web-ui/bin/start.md` tavsiyesi yerine «sunucu yanıt vermiyor» mesajını alıyor (bağlantı banner'ında da aynı sabit-kod vardı).
+- **Yükleme durumları (CAR-112)**: #/map ve #/tracker h1'lerini anında render ediyor (router odak hedefi ancak veri geldikten sonra var oluyordu) ve paylaşılan bir iskelet yardımcısı (`Skeleton.rows`, `common.loading`'i yeniden kullanan bir `role="status"` bölgesi içinde aria-hidden parıltı satırları), takipçi, tarama sonuçları ve harita kabuğundaki çıplak «Yükleniyor…» metninin yerini alıyor; `prefers-reduced-motion` nabzı durduruyor.
+- **Değerlendirme prompt önbelleği (CAR-111)**: `buildEvaluationPromptParts`, ~37k-belirteçlik prompt'u bayt-kararlı bir öneke (CV + profil + mod dosyaları + talimatlar) ve JD kuyruğuna ayırıyor; Anthropic yolu `[önek + cache_control: ephemeral] + [JD]` gönderiyor — önek, ilkinden sonraki her çağrıda önbellek-okuma tarifesiyle faturalanıyor (≈10× daha ucuz). Eksik/uyuşmayan önek, bayt-aynı eski isteğe geri düşüyor; OpenAI-uyumlu basamak dokunulmadan bırakıldı (oradaki önbellekleme sunucu-taraflı).
+
+### Notlar
+
+- Altı düzeltmenin tamamı kırmızı→yeşil kanıtla (5 + 7 + 7 + 7 + 8 yeni vaka) ve inceleme turlarıyla ajan filosundan geldi; ilk CAR-111 CodeQL uyarıları (#579/#580) kodda düzeltildi — test stub'ı alt-dizge eşleştirmesi yerine URL ana makinesini ayrıştırıyor ve ölü bir tam-prompt dizgesi düşüldü.
+- **Puan geri-doldurması üretimde çalıştırıldı** (v1.256.0 uç noktası, sahibin onayıyla): `updated: 22`, `missingReport: 0`, `reportScoreless: 159` — 159 puansız satır, başlıkları makine bloğundan önce gelen ya da ayrıştırılamayan puan biçimleri taşıyan raporlara işaret ediyor; yalnızca yeniden değerlendirmeyle ya da daha geniş bir ayrıştırıcı geçişiyle kurtarılabilir (CAR-129'da not edildi).
+- Bilinçli olarak yapılmayanlar: yol-süresi sütunu sona-sıralama değişikliği yok (önceden var olan `Infinity`-on-desc tuhaflığı), eski kullanım kayıtlarının geriye dönük yeniden fiyatlandırması yok, tarama filtre formları için `.is-error` tarzı vurgu yok (CAR-130, paylaşılan mod-sayfası gönderim yardımcısı + api.js ipucuyla sınırlı).
+- Test tabanı: 5749 (+36). Hiçbir tarayıcı kaynağına dokunulmadı (kayıt defteri 121 = 116 EN + 5 RU · 116 adaptör); i18n anahtarı yok (CAR-130 ipucu `conn.down`'u yeniden kullanıyor; iskelet bölgesi `common.loading`'i yeniden kullanıyor).
+
 ## [1.257.0] — 2026-10-25
 
 **Ajan filosundan iki düzeltme: uygulama içi yardım asistanı Devanagari ve Tamil yazılarını anlıyor ve kullanım sayfası Hermes'in gerçekte neye mal olduğunu gösteriyor.**
