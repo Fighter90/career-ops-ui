@@ -86,14 +86,23 @@ const FIG_RE = new RegExp(
 // Period markers matched only in the figure's own window and only in forms
 // ATTACHED to the figure (CAR-143): the bare nouns month/year/Monat/Jahr and
 // the bare RU/ES мес/год/mes are NOT markers («6 month contract, $120k»,
-// «el mes pasado, $90k», «Контракт на 6 мес, 200 000 ₽» stay annual), and
-// «anual»/«annual» are anchored so «manual»/«biannual» cannot match. Unicode
-// endings use negative lookahead instead of `\b` — JS word boundaries are
-// ASCII-only and never matched Cyrillic (a known web-ui pitfall). The /g flag
-// feeds the nearest-marker scan below (lastIndex reset per use).
-const MONTH_RE = /per\s+month|\/\s*month|\/\s*mo\b|monthly|pro\s+Monat|monatlich|mensal|mensual|al\s+mes|por\s+mes|\/\s*mes\b|\/\s*m[eę]s\b|par\s+mois|mensuel|в\s+месяц|за\s+месяц|\/\s*мес(?![а-яё])|月給|月薪|每月|\/月|aylık/gi;
-const YEAR_RE = /per\s+(?:year|annum)|p\.\s?a\.|\/\s*(?:year|yr|annum|a[ñn]o|ano)|\bannum\b|(?<![a-z])annual(?:ly)?|yearly|pro\s+Jahr|j[aä]hrlich|(?<![a-z])anual|al\s+a[ñn]o|por\s+a[ñn]o|por\s+ano|par\s+an|annuel|в\s+год|за\s+год|\/\s*год(?![а-яё])|年薪|年給|每年|\/年|年俸|yıllık/gi;
-const HOUR_RE = /per\s+hour|\/\s*hour\b|\/\s*hr\b|hourly|в\s+час|за\s+час|st[üu]ndlich|pro\s+Stunde|par\s+heure|\bhora\b|時給|saatlık/gi;
+// «el mes pasado, $90k», «Контракт на 6 мес, 200 000 ₽» stay annual), while
+// the attached forms — в/за месяц, /мес(яц…), /года, por/al mes, /mes — are,
+// and «anual»/«annual» are anchored so «manual»/«biannual» cannot match.
+// Unicode endings use negative lookahead instead of `\b` — JS word boundaries
+// are ASCII-only and never matched Cyrillic (a known web-ui pitfall). The
+// constants stay NON-global (a shared /g regex makes any .test() stateful);
+// periodOf builds its own /g working copies.
+const MONTH_RE = /per\s+month|\/\s*month|\/\s*mo\b|monthly|pro\s+Monat|monatlich|mensal|mensual|al\s+mes|por\s+mes|\/\s*m[eę]s\b|par\s+mois|mensuel|в\s+мес(?:яц|\.)?(?![а-яё])|за\s+месяц|\/\s*мес(?:яц[аеу]?|\.)?(?![а-яё])|月給|月薪|每月|\/月|aylık/i;
+const YEAR_RE = /per\s+(?:year|annum)|p\.\s?a\.|\/\s*(?:year|yr|annum|a[ñn]o|ano)|\bannum\b|(?<![a-z])annual(?:ly)?|yearly|pro\s+Jahr|j[aä]hrlich|(?<![a-z])anual|al\s+a[ñn]o|por\s+a[ñn]o|por\s+ano|par\s+an|annuel|в\s+год|за\s+год|\/\s*год(?:а|у)?(?![а-яё])|年薪|年給|每年|\/年|年俸|yıllık/i;
+const HOUR_RE = /per\s+hour|\/\s*hour\b|\/\s*hr\b|hourly|в\s+час|за\s+час|st[üu]ndlich|pro\s+Stunde|par\s+heure|\bhora\b|時給|saatlık/i;
+const MONTH_RE_SCAN = new RegExp(MONTH_RE.source, 'gi');
+const YEAR_RE_SCAN = new RegExp(YEAR_RE.source, 'gi');
+const HOUR_RE_SCAN = new RegExp(HOUR_RE.source, 'gi');
+// A figure and its neighbour separated by this are ONE range — the marker
+// after the range covers both ends («85,000–95,000 per year», «4.000–5.000 €
+// pro Monat», «85,000 to 95,000 per year»).
+const RANGE_SEP_RE = /^[\s~–—−-]+$|^\s*(?:to|bis|до)\s*$/i;
 
 /** Resolve a currency token to a canonical code by OWN key (null otherwise). */
 function resolveCcy(token) {
@@ -126,9 +135,11 @@ function parseNumberToken(raw) {
 const SALARY_WORD_RE = /salary|salaries|compensation|remuneration|\bwages?\b|\bpay\b|зарпла|оклад|Gehalt|sal[áa]rio|salario|salaire|薪|給料|급여/i;
 
 function looksLikeYear(rawNum) {
-  // CAR-143 rev-2: a PLAIN 4-digit bare token (no thousands separator, no
-  // attached period — the caller checks both) is a year, never a salary.
-  // "2 000" / "2,050" carry separators and are real sub-year salaries.
+  // CAR-143 r3: a PLAIN 4-digit bare token is a year, never a salary — but
+  // ONLY when the period marker (if any) sits BEFORE the figure. An
+  // after-attached marker makes it a real salary («2000 в месяц», «1950 per
+  // month»); a before-side frame is the misread to catch («Salary monthly:
+  // 2019»). Tokens with thousands separators ("2 000", "2,050") never match.
   const s = String(rawNum);
   return /^\d{4}$/.test(s) && Number(s) >= 1900 && Number(s) <= 2099;
 }
@@ -138,32 +149,38 @@ function looksLikeYear(rawNum) {
 // cannot read $50 through $104k's "/yr" — and among several markers the one
 // NEAREST the figure edge wins, not a fixed year>month>hour order. A
 // before-side word must sit within BEFORE_WINDOW chars of the figure (the
-// CJK/adjective prefix zone — 月薪 8萬, "annual salary 90k"); further left it
-// describes something else («Hourly staff welcome. $120k»).
+// CJK/adjective prefix zone — 月薪 8萬, "Monthly gross salary: €4,000") and
+// never crosses sentence punctuation («Hourly staff welcome. $120k» is about
+// the staff, not the figure). Returns the winning {dist, side, period} or
+// null — the side matters to the year guard.
 const AFTER_WINDOW = 24;
-const BEFORE_WINDOW = 16;
+const BEFORE_WINDOW = 24;
+const clampBefore = (s) => {
+  const cut = Math.max(s.lastIndexOf('.'), s.lastIndexOf(';'));
+  return cut >= 0 ? s.slice(cut + 1) : s;
+};
 function periodOf(line, start, end, prevEnd, nextStart) {
   const after = line.slice(end, Math.min(nextStart, end + AFTER_WINDOW));
-  const before = line.slice(Math.max(prevEnd, start - BEFORE_WINDOW), start);
+  const before = clampBefore(line.slice(Math.max(prevEnd, start - BEFORE_WINDOW), start));
   const cands = [];
-  const scan = (re, s, isBefore) => {
+  const scan = (re, period, s, isBefore) => {
     re.lastIndex = 0;
     for (let m = re.exec(s); m; m = re.exec(s)) {
       cands.push({
         dist: isBefore ? s.length - m.index - m[0].length : m.index,
         side: isBefore ? 1 : 0,
-        period: re === YEAR_RE ? 'year' : re === MONTH_RE ? 'month' : 'hour',
+        period,
       });
     }
   };
-  scan(YEAR_RE, after, false);
-  scan(MONTH_RE, after, false);
-  scan(HOUR_RE, after, false);
-  scan(HOUR_RE, before, true);
-  scan(YEAR_RE, before, true);
-  scan(MONTH_RE, before, true);
+  scan(YEAR_RE_SCAN, 'year', after, false);
+  scan(MONTH_RE_SCAN, 'month', after, false);
+  scan(HOUR_RE_SCAN, 'hour', after, false);
+  scan(HOUR_RE_SCAN, 'hour', before, true);
+  scan(YEAR_RE_SCAN, 'year', before, true);
+  scan(MONTH_RE_SCAN, 'month', before, true);
   cands.sort((a, b) => a.dist - b.dist || a.side - b.side);
-  return cands.length ? cands[0].period : null;
+  return cands.length ? cands[0] : null;
 }
 
 /** Parse every qualifying money figure in `text`. Period: 'year'|'month'|null
@@ -186,28 +203,61 @@ export function parseMoneyFigures(text, opts = {}) {
   const out = [];
   for (const line of String(text ?? '').split(/\r?\n/)) {
     const bareOk = allowBare || SALARY_WORD_RE.test(line);
-    // Collect all figure matches first — the period windows are clamped to
-    // the neighbouring figures so one figure's marker cannot bleed into
-    // another's («$50/hr, $104k/yr»).
+    // Pass A — collect and parse all figure matches without admission
+    // decisions. The period windows are clamped to the neighbouring figures
+    // so one figure's marker cannot bleed into another's («$50/hr, $104k/yr»).
     const matches = [];
     FIG_RE.lastIndex = 0;
     for (let m = FIG_RE.exec(line); m; m = FIG_RE.exec(line)) matches.push(m);
-    const hits = [];
+    const infos = [];
     for (let i = 0; i < matches.length; i++) {
       const m = matches[i];
       const n = parseNumberToken(m.groups.num);
-      if (n == null) continue;
+      if (n == null) { infos.push(null); continue; }
       const start = m.index;
       const end = m.index + m[0].length;
       const curToken = m.groups.pre ?? m.groups.post ?? null;
       const sufToken = m.groups.suf ?? null;
-      const suffixMult = sufToken ? (SUFFIX_MULT[sufToken] ?? null) : null;
-      const qualified = Boolean(curToken || sufToken || declared);
-      const period = periodOf(
-        line, start, end,
-        i > 0 ? matches[i - 1].index + matches[i - 1][0].length : 0,
-        i + 1 < matches.length ? matches[i + 1].index : line.length,
-      );
+      infos.push({
+        start,
+        end,
+        curToken,
+        suffixMult: sufToken ? (SUFFIX_MULT[sufToken] ?? null) : null,
+        value: n,
+        qualified: Boolean(curToken || sufToken || declared),
+        periodInfo: periodOf(
+          line, start, end,
+          i > 0 ? matches[i - 1].index + matches[i - 1][0].length : 0,
+          i + 1 < matches.length ? matches[i + 1].index : line.length,
+        ),
+      });
+    }
+    // Pass B — figures joined by a range separator are ONE range: the marker
+    // after the range covers its low end too. Window clamping must not cost
+    // «85,000–95,000 per year» its 85,000 (the bare gate would drop it and
+    // overstate the offer at 95k) — inherit the partner's period and
+    // qualification across the separator (CAR-143 r3).
+    for (let i = 0; i < infos.length; i++) {
+      const inf = infos[i];
+      if (!inf) continue;
+      const next = infos[i + 1];
+      const prev = infos[i - 1];
+      if (next && RANGE_SEP_RE.test(line.slice(inf.end, next.start))) {
+        if (!inf.qualified && next.qualified) inf.qualified = true;
+        if (inf.periodInfo == null && next.periodInfo != null) inf.periodInfo = next.periodInfo;
+      }
+      if (prev && RANGE_SEP_RE.test(line.slice(prev.end, inf.start))) {
+        if (!inf.qualified && prev.qualified) inf.qualified = true;
+        if (inf.periodInfo == null && prev.periodInfo != null) inf.periodInfo = prev.periodInfo;
+      }
+    }
+    // Pass C — admission gates, currency resolution, hits.
+    const hits = [];
+    for (let i = 0; i < infos.length; i++) {
+      const inf = infos[i];
+      if (!inf) continue;
+      const m = matches[i];
+      const period = inf.periodInfo != null ? inf.periodInfo.period : null;
       if (period === 'hour') continue; // hourly figure — drop the figure, not the whole line
       // Bare numbers (no currency, no suffix) qualify only when they are
       // salary-shaped AND framed by salary context (CAR-143 rev-2): a salary
@@ -216,31 +266,34 @@ export function parseMoneyFigures(text, opts = {}) {
       // (allowBare), which are salary context by construction. A salary word
       // alone no longer qualifies ("team of 5,000 engineers" under
       // "Competitive pay"), and neither does a bare period word.
-      if (!qualified) {
-        // scaled, not the raw token: "90k" is 90000, not a 90
-        if (n * (suffixMult ?? 1) < 1000) continue;
+      if (!inf.qualified) {
+        // Inside !qualified the suffix multiplier is always null (a suffix
+        // qualifies), so the plain token value is the salary-shaped value.
+        if (inf.value < 1000) continue;
         if (!allowBare && !(bareOk && period != null)) continue;
-        // A plain 4-digit bare token with no attached period is a year, never
-        // a salary («Founded 2019…», «Salary review scheduled for 2024»); the
-        // profile's own fields are exempt — minimum: "2000" is a real 2000.
-        if (!allowBare && looksLikeYear(m.groups.num)) continue;
+        // A plain 4-digit bare token framed from BEFORE is a year, never a
+        // salary («Founded 2019…», «Salary monthly: 2019»); an AFTER-attached
+        // marker makes it a real salary («2000 в месяц», «1950 per month»).
+        // The profile's own fields are exempt — minimum: "2000" is a real
+        // 2000.
+        if (!allowBare && (inf.periodInfo == null || inf.periodInfo.side === 1) && looksLikeYear(m.groups.num)) continue;
       }
-      let currency = resolveCcy(curToken) ?? declared;
+      let currency = resolveCcy(inf.curToken) ?? declared;
       let currencyAssumed = false;
-      if (currency == null && AMBIGUOUS_SYMBOLS.has(curToken)) {
+      if (currency == null && AMBIGUOUS_SYMBOLS.has(inf.curToken)) {
         // An explicit code must sit ADJACENT to the figure («AUD $100k»,
         // «$100k AUD») — never the first code anywhere on the line
         // («$100k (vs USD 80k last year)» belongs to the other figure). The
         // \u0001 sentinel keeps a code from straddling the figure itself.
-        const adjBefore = line.slice(Math.max(0, start - 6), start);
-        const adjAfter = line.slice(end, end + 6);
+        const adjBefore = line.slice(Math.max(0, inf.start - 6), inf.start);
+        const adjAfter = line.slice(inf.end, inf.end + 6);
         const explicit = EXPLICIT_CCY_RE.exec(adjBefore + '\u0001' + adjAfter);
         // A glued prefix (C$, HK$, MX$…) is explicit-but-unmapped: resolve it
         // to null and never fall back past it.
-        const glued = GLUED_SYMBOL_RE.test(adjBefore + curToken);
+        const glued = GLUED_SYMBOL_RE.test(adjBefore + inf.curToken);
         if (explicit) {
           currency = resolveCcy(explicit[1].toUpperCase()); // null → caveat, never a guess
-        } else if (!glued && symFallback != null && SYMBOL_FAMILY[curToken]?.has(symFallback)) {
+        } else if (!glued && symFallback != null && SYMBOL_FAMILY[inf.curToken]?.has(symFallback)) {
           // No explicit code and no glued prefix: presume the profile's own
           // currency, within the family only — and mark it, so the block can
           // say the comparison rests on that presumption.
@@ -249,14 +302,14 @@ export function parseMoneyFigures(text, opts = {}) {
         }
       }
       hits.push({
-        start,
-        end,
+        start: inf.start,
+        end: inf.end,
         raw: m[0].trim(),
-        currencyRaw: curToken,
+        currencyRaw: inf.curToken,
         currency,
         currencyAssumed,
-        suffixMult,
-        value: n,
+        suffixMult: inf.suffixMult,
+        value: inf.value,
         period,
       });
     }
@@ -265,7 +318,7 @@ export function parseMoneyFigures(text, opts = {}) {
       const a = hits[i];
       const b = hits[i + 1];
       const between = b ? line.slice(a.end, b.start) : null;
-      if (b && /^[\s~–—−-]+$/.test(between)) {
+      if (b && RANGE_SEP_RE.test(between)) {
         // A shared suffix ("80–100k") applies to both sides.
         const mult = a.suffixMult ?? b.suffixMult;
         out.push({

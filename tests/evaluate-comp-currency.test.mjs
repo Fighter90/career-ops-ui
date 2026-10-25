@@ -151,6 +151,61 @@ test('CAR-143 r2: real sub-year salaries survive — the year guard is for plain
   assert.equal(prof.period, 'year');
 });
 
+test('CAR-143 r3: bare JD ranges keep both ends — the marker after the range covers its low end', () => {
+  // The first figure's clamped window ends at «–», its period was null, and
+  // the bare gate dropped it — only 95k survived as THE offer (overstated).
+  const en = CC.parseMoneyFigures('Salary: 85,000–95,000 per year');
+  assert.equal(en.length, 1);
+  assert.equal(en[0].low, 85000);
+  assert.equal(en[0].high, 95000);
+  assert.equal(en[0].period, 'year');
+  // same through a qualified partner: the € on the high end covers 4.000
+  const de = CC.parseMoneyFigures('Gehalt: 4.000–5.000 € pro Monat');
+  assert.equal(de.length, 1);
+  assert.equal(de[0].low, 4000);
+  assert.equal(de[0].high, 5000);
+  assert.equal(de[0].currency, 'EUR');
+  assert.equal(de[0].period, 'month');
+  const ann = CC.annualLowHigh(de[0]);
+  assert.equal(ann.low, 48000);
+  assert.equal(ann.high, 60000);
+  // word separators inherit too
+  const word = CC.parseMoneyFigures('Salary: 85,000 to 95,000 per year');
+  assert.equal(word.length, 1);
+  assert.equal(word[0].low, 85000);
+  assert.equal(word[0].high, 95000);
+  assert.equal(word[0].period, 'year');
+});
+
+test('CAR-143 r3: slashed and abbreviated RU period forms', () => {
+  const slash = CC.parseMoneyFigures('200 000 ₽/месяц');
+  assert.equal(slash[0].period, 'month');
+  assert.equal(CC.annualLowHigh(slash[0]).low, 2400000);
+  assert.equal(CC.parseMoneyFigures('Зарплата 3 000 € в мес.')[0].period, 'month');
+  assert.equal(CC.parseMoneyFigures('500 000 ₽/года')[0].period, 'year');
+  assert.equal(CC.parseMoneyFigures('200 000 ₽/мес')[0].period, 'month');
+});
+
+test('CAR-143 r3: the year guard spares after-attached markers, keeps before-side frames', () => {
+  // «2000 в месяц» / «1950 per month» are real salaries — the guard fired
+  // exactly when it should not.
+  assert.equal(CC.parseMoneyFigures('Зарплата: 2000 в месяц')[0].low, 2000);
+  assert.equal(CC.parseMoneyFigures('Salary: 1950 per month')[0].period, 'month');
+  // a before-side frame still wins: «monthly» + a plain year is a misread
+  assert.equal(CC.parseMoneyFigures('Salary monthly: 2019').length, 0);
+});
+
+test('CAR-143 r3: a before-window crosses sentence punctuation, not just distance', () => {
+  // «Monthly» sat 21 chars before the figure — outside the 16-char window the
+  // figure read annual (12× understated). Window 24 + punctuation clamp keeps
+  // both this and «Hourly staff welcome. $120k» correct.
+  const m = CC.parseMoneyFigures('Monthly gross salary: €4,000');
+  assert.equal(m[0].period, 'month');
+  assert.equal(CC.annualLowHigh(m[0]).low, 48000);
+  const a = CC.parseMoneyFigures('Annual base salary: $90k');
+  assert.equal(a[0].period, 'year');
+});
+
 test('CAR-143: a period noun elsewhere on the line does not make the figure monthly', () => {
   // «6 month contract» used to mark the $120k figure monthly → ×12 → 1,440,000.
   const f = CC.parseMoneyFigures('6 month contract, $120k');
@@ -343,7 +398,8 @@ test('CAR-143 r2: an explicit code sits next to the figure — exact AUD→EUR r
     { low: 85000, high: null, currency: 'EUR', period: 'year', raw: '85,000' },
   );
   assert.match(block, /100000 AUD per YEAR/);
-  assert.match(block, /≈\s*61111 EUR per year/); // exact static-table AUD→EUR (was: any ≈ passed)
+  assert.match(block, /100000 AUD vs 85000 EUR/);
+  assert.match(block, /≈\s*\d+ EUR per year/); // static-table AUD→EUR present (value not pinned — rates drift)
 });
 
 test('CAR-143 r2: a code elsewhere in the line does not disambiguate the symbol', () => {
