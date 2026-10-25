@@ -17,12 +17,21 @@
  *   - Anything outside /js/ (the vendored /vendor/leaflet/leaflet.js).
  *   - Any tag carrying the `data-no-bundle` attribute (escape hatch).
  *
+ * CAR-104 additionally writes two precompressed siblings next to the identity
+ * bundle — bundle.js.br (brotli, max quality) and bundle.js.gz (gzip 9) — so
+ * server/index.mjs::bundleCompressionMiddleware can serve the bundle behind
+ * content negotiation instead of shipping 3.1 MB of identity bytes per cold
+ * load. Stale artifacts are removed BEFORE the new identity lands, so an
+ * interrupted build leaves no compressed file at all (the server then serves
+ * identity) rather than an old artifact beside a new bundle.
+ *
  * Usage: node scripts/make-bundle.mjs [--root <web-ui checkout>]
  *   (default root: this checkout; --root exists for tests / odd layouts)
  */
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, rmSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { brotliCompressSync, gzipSync, constants as zlibConstants } from 'node:zlib';
 
 const NO_BUNDLE_ATTR = 'data-no-bundle';
 export const BUNDLE_SRC = '/js/bundle.js';
@@ -140,14 +149,43 @@ export function collectScripts(root) {
   }));
 }
 
-/** Build + write public/js/bundle.js. Returns { count, bytes, outPath }. */
+/** Build + write public/js/bundle.js (+ its .br/.gz companions). Returns { count, bytes, outPath, brBytes, gzBytes }. */
 export function writeBundle(root) {
   const scripts = collectScripts(root);
   const bundle = buildBundleHtml(scripts);
   const outPath = resolve(root, 'public', 'js', 'bundle.js');
   mkdirSync(dirname(outPath), { recursive: true });
+  // CAR-104 — stale precompressed artifacts go BEFORE the identity write, so
+  // an interrupted build can never pair a new bundle with an old companion
+  // (the server also defends this with an mtime freshness check).
+  rmSync(`${outPath}.br`, { force: true });
+  rmSync(`${outPath}.gz`, { force: true });
   writeFileSync(outPath, bundle);
-  return { count: scripts.length, bytes: Buffer.byteLength(bundle), outPath };
+  const bundleBuf = Buffer.from(bundle, 'utf8');
+  let brBytes = null;
+  let gzBytes = null;
+  // Compression is best-effort per companion: a failure here must not cost
+  // the whole bundle — the server falls back to identity when a file is absent.
+  try {
+    const br = brotliCompressSync(bundleBuf, {
+      params: {
+        [zlibConstants.BROTLI_PARAM_QUALITY]: 11, // max — the default today, pinned explicitly
+        [zlibConstants.BROTLI_PARAM_SIZE_HINT]: bundleBuf.length,
+      },
+    });
+    writeFileSync(`${outPath}.br`, br);
+    brBytes = br.length;
+  } catch (err) {
+    console.warn(`make-bundle: brotli companion skipped (${err.message}) — serving identity only`);
+  }
+  try {
+    const gz = gzipSync(bundleBuf, { level: 9 });
+    writeFileSync(`${outPath}.gz`, gz);
+    gzBytes = gz.length;
+  } catch (err) {
+    console.warn(`make-bundle: gzip companion skipped (${err.message}) — serving identity only`);
+  }
+  return { count: scripts.length, bytes: bundleBuf.length, outPath, brBytes, gzBytes };
 }
 
 // ───────────────────────────── CLI ─────────────────────────────
@@ -161,9 +199,14 @@ async function main(argv) {
   const rootFlag = argv.indexOf('--root');
   if (rootFlag !== -1 && argv[rootFlag + 1]) root = resolve(process.cwd(), argv[rootFlag + 1]);
   try {
-    const { count, bytes, outPath } = writeBundle(root);
+    const { count, bytes, outPath, brBytes, gzBytes } = writeBundle(root);
     const kb = Math.max(1, Math.round(bytes / 1024));
-    console.log(`make-bundle: ${count} scripts, ${kb} KB → ${outPath}`);
+    let line = `make-bundle: ${count} scripts, ${kb} KB → ${outPath}`;
+    const companions = [];
+    if (brBytes != null) companions.push(`br ${Math.max(1, Math.round(brBytes / 1024))} KB`);
+    if (gzBytes != null) companions.push(`gz ${Math.max(1, Math.round(gzBytes / 1024))} KB`);
+    if (companions.length > 0) line += ` (${companions.join(', ')})`;
+    console.log(line);
   } catch (err) {
     console.error(`make-bundle failed: ${err.message}`);
     console.error('(the server falls back to the individual <script> tags when no bundle exists)');

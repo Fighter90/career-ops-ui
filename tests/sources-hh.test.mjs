@@ -38,3 +38,22 @@ test('parseHhCards: decodes exactly once (no double-unescape)', () => {
   const [j] = parseHhCards(card('T', 'A&amp;lt;B'));
   assert.equal(j.company, 'A&lt;B', 'a double-encoded entity must survive as its single-decoded form');
 });
+
+// CAR-105 — pinned against the LIVE hh.ru card markup (2026-10-25): the
+// address span survived the magritte redesign and the parser still reads a
+// plain city out of it, so hh rows geocode on #/map. This locks the shape —
+// hh.ru losing the span again would resurface as a map full of RU no-location
+// rows, exactly the CAR-105 symptom.
+test('parseHhCards: the magritte address span yields the city (live markup shape)', () => {
+  const html = '<div data-qa="vacancy-serp__vacancy">'
+    + '<a data-qa="serp-item__title" href="https://hh.ru/vacancy/100">Dev</a>'
+    + '<address class="address--sQo6S3UaqQUt843N">'
+    + '<div class="magritte-v-spacing___R3QYf_2-1-32_xhh"></div>'
+    + '<span data-qa="vacancy-serp__vacancy-address" class="magritte-text___pbpft_5-3-17_xhh">Новосибирск, р-н Центральный</span>'
+    + '</address>'
+    + '<span class="metro-station"><span class="metro-point metro-point_redesign" style="color:#CD0505"></span>'
+    + '<span data-qa="address-metro-station-name">Гагаринская</span></span>'
+    + '</div>';
+  const [j] = parseHhCards(html);
+  assert.equal(j.location, 'Новосибирск, р-н Центральный');
+});

@@ -43,7 +43,7 @@ import { recordUsage, parseSubprocessUsage } from '../llm-usage.mjs';
 import { evaluationWarnings, EVAL_MAX_TOKENS, GEMINI_EVAL_TIMEOUT_MS, geminiEvalArgs } from './llm.mjs';
 import { providerOrder } from '../env-config.mjs';
 import { stripDangerousMarkdown } from '../security.mjs';
-import { stripScoreSummary, validateEvaluationReport, cutRepeatedBlockHeadings, extractSummaryScore, extractBodyScore } from '../eval-validate.mjs';
+import { stripScoreSummary, validateEvaluationReport, cutRepeatedBlockHeadings, extractSummaryScore, extractBodyScore, fixReportDate } from '../eval-validate.mjs';
 import { parseReportHeader } from '../parsers.mjs';
 // v1.248.7 — the language check is a pure module shared with remote-qa.
 import { languageOk } from '../../../scripts/remote-qa/lang-check.mjs';
@@ -801,6 +801,16 @@ export function registerAutoPipelineRoutes(app) {
       if (lang && lang !== 'en' && !languageOk(markdown, lang)) {
         warnings.push(`report not in ${lang}`);
       }
+      // CAR-101 — the header date is server-side knowledge: a model that
+      // ignored the prompt's pinned date gets its **Date:** line rewritten to
+      // today here, so the saved report, its header day and the tracker row
+      // agree. A correction with a warning — never a rejection over a date.
+      const dated = fixReportDate(markdown, today());
+      if (dated.replaced) {
+        warnings.push(`report **Date:** corrected to ${today()}`);
+        logActivity({ action: 'auto-pipeline.evaluation.date-corrected', target: (() => { try { return new URL(url).hostname; } catch { return '[unparsable URL]'; } })() });
+      }
+      markdown = dated.text;
       const score = extractScore(markdown);
       step(2, 'done', score != null ? `${evalMode} · score ${score}/5${warnings.some((w) => w.startsWith('report not in')) ? ' · report not in ' + lang : ''}` : evalMode);
     } catch (e) {

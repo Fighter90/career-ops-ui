@@ -214,8 +214,8 @@ career-ops-ui 的 `#/dashboard` 与 `#/tracker` 会高亮每一条 ≥ 4.0 的
 
 ### C. 发现职位空缺(每次扫描约 2 分钟)
 
-**第 9 步 — 在侧边栏点击 `🌐 Scan`。** 确认 `portals.yml` 列出了你
-关心的招聘版面(详见本帮助第 5 节)。按下 **🌐 Scan now** 按钮。实
+**第 9 步 — 在侧边栏点击 `🌐 搜索`。** 确认 `portals.yml` 列出了你
+关心的招聘版面(详见本帮助第 5 节)。按下 **🌐 立即扫描** 按钮。实
 时 SSE 日志会流式输出,扫描器会遍历 Greenhouse / Ashby / Lever /
 Workable / SmartRecruiters / Workday(英文版面)以及启用情况下的
 hh.ru / Habr Career / Trudvsem / GetMatch / GeekJob(俄罗斯版面)。
@@ -333,8 +333,8 @@ LinkedIn / 邮件消息。把开场白个性化(嵌入一条来自深度调研�
    - **Gemini** —— 设置 `GEMINI_API_KEY`(aistudio.google.com/apikey),可选 `GEMINI_MODEL`(默认 `gemini-3.6-flash`)。
    - **OpenAI** —— 设置 `OPENAI_API_KEY`(platform.openai.com),可选 `OPENAI_MODEL`(默认 `gpt-5-codex`)。
    - **Qwen** —— 设置 `QWEN_API_KEY`(阿里云百炼 / DashScope,dashscope.console.aliyun.com),可选 `QWEN_MODEL`(默认 `qwen-max`)。中国大陆端点请在 raw `.env` 中设置 `QWEN_BASE_URL`。
-4. 点击 **Save**。密钥写入父项目的 `.env`;更改立即生效 —— 无需重启服务器。
-5. 在 `#/evaluate` 上验证:粘贴一个职位 URL/描述并按 **⚡ Run live**。结果头部会显示运行了哪个供应方(`anthropic` / `gemini` / `openai` / `qwen`)。任何地方都未设置密钥 → 则得到复制粘贴的手动 prompt。
+4. 点击 **保存**。密钥写入父项目的 `.env`;更改立即生效 —— 无需重启服务器。
+5. 在 `#/evaluate` 上验证:粘贴一个职位 URL/描述并按 **⚡ 实时运行**。结果头部会显示运行了哪个供应方(`anthropic` / `gemini` / `openai` / `qwen`)。任何地方都未设置密钥 → 则得到复制粘贴的手动 prompt。
 
 密钥在保存后被掩码且从不记录。模型 id 字段(`*_MODEL`)不是机密。
 
@@ -463,7 +463,7 @@ Health 页面会暴露一项 **Profile customized** 检查,只要
 - **sync-check** — 在父项目运行 `cv-sync-check.mjs`。标出不一致:
   例如 CV 中列出的项目未出现在 `data/applications.md` 的 archetype
   里等。
-- **📄 Generate PDF** — 流式运行 `generate-pdf.mjs`。输出落到
+- **📄 生成 PDF** — 流式运行 `generate-pdf.mjs`。输出落到
   `output/*.pdf`。需要 Playwright(Health 页面会显示是否已安装在父
   项目的 `node_modules` 中)。生成完毕后,**最新** PDF 会自动下载到
   你的默认下载文件夹;页面上的列表保留所有历史生成文件。
@@ -818,7 +818,7 @@ $EDITOR portals.yml
 
 ### 运行按钮
 
-- **▶ Doctor** 运行 `node doctor.mjs` 并在模态框里显示输出。
+- **运行 doctor** 运行 `node doctor.mjs` 并在模态框里显示输出。
 - **▶ Verify pipeline** 运行 `node verify-pipeline.mjs`。
 
 ---
@@ -832,7 +832,7 @@ $EDITOR portals.yml
 
 ### 一键扫描(SPA)
 
-**🌐 Scan** 一次性运行所有启用的来源:
+**🌐 扫描** 一次性运行所有启用的来源:
 
 - Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday
   (ATS 全量扫描)针对 `tracked_companies` 中每家有可识别 ATS URL 的
@@ -840,14 +840,14 @@ $EDITOR portals.yml
 - v1.75.0 聚合器,针对每个选择启用其一的 `tracked_companies` 条目:RemoteOK / Remotive / Working Nomads(全板块远程订阅源,`provider: <slug>`)以及 IBM / Arbeitsagentur / Glints / Jobstreet · SEEK(配置驱动,每条目一个 `<provider>:` 块)。
 - hh.ru API + Habr Career + Trudvsem + GetMatch + GeekJob,针对 `russian_portals` 中的每个查询。
 
-**一键两阶段(v1.29.2)。** 唯一的 🌐 Scan 按钮在一个 SSE 流中同时驱动 ATS 与区域两次扫描。日志会按顺序出现两个阶段标题:
+**一键两阶段(v1.29.2)。** 唯一的 🌐 扫描 按钮在一个 SSE 流中同时驱动 ATS 与区域两次扫描。日志会按顺序出现两个阶段标题:
 
 1. `▶ ATS scan (Greenhouse + Ashby + Lever)` — EN ATS 板块。
 2. `▶ Regional scan (hh.ru + Habr Career)` — 来自 registry 的 5 个 RU 来源。
 
 每阶段以 `✓ done · NEW=N` 总结结束。如果只看到 ATS 阶段,说明 stand 仍是 v1.29.2 之前的版本 —— 请升级。v1.29.2 之前,SSE 客户端在第一个 `done` 上就关闭了,区域阶段会被静默丢弃。
 
-实时 SSE 日志会在扫描期间流向右侧面板。点击 **Stop**(或直接离开页
+实时 SSE 日志会在扫描期间流向右侧面板。点击 **停止**(或直接离开页
 面)即可中止 — 服务器会通过 `AbortController` 取消进行中的 HTTPS
 请求。
 
@@ -992,9 +992,9 @@ HTML 标签,返回最多 8 KB 纯文本。
 
 ### 右上角按钮
 
-- **⚡ Evaluate first** — 把第一个排队 URL 直接在 Evaluate 页面打
+- **⚡ 评估第一个** — 把第一个排队 URL 直接在 Evaluate 页面打
   开,准备评分。
-- **Scan** — 想要更多 URL 时,返回扫描器。
+- **职位搜索** — 想要更多 URL 时,返回扫描器。
 
 ---
 
@@ -1077,7 +1077,7 @@ URL 时,逐条点击就不现实了 — 跳转到第 14 节的 **Batch evaluate*
 
 ### 将报告导出为 PDF
 
-打开已保存的报告并点击 **📄 Generate PDF**。它在父项目中运行
+打开已保存的报告并点击 **📄 生成 PDF**。它在父项目中运行
 `generate-pdf.mjs`,并将文件写入 `output/*.pdf`(需要 Playwright — 健康页面会
 显示是否已安装)。不会发送到任何地方:在把 PDF 附到申请之前先检查一下。
 
@@ -1220,13 +1220,13 @@ reportSlug?, notes?, date? }`。按 `(company, role)` 大小写不敏感地
 
 每页有一个小表单(字段因模式而异)、一个 **▶ Generate prompt**
 (手工)按钮,以及在已设置 Anthropic 或 Gemini key 时,提升为主操
-作的 **⚡ Run live** 按钮。
+作的 **⚡ 实时运行** 按钮。
 
 点击 **▶ Generate prompt** 返回组装好的提示: 表单值 JSON 序列化进
 `User-supplied context:` 块,后接原样的 `modes/<slug>.md` 模板。复
 制后粘贴到你选用的 LLM。
 
-点击 **⚡ Run live** 把同一份提示发给 Anthropic(或 Gemini),通过
+点击 **⚡ 实时运行** 把同一份提示发给 Anthropic(或 Gemini),通过
 `bundleProjectContext` 内联 `cv.md` + `profile.yml` +
 `_shared.md`。结果在页面上渲染,可复制,也可作为 `.md` 下载。
 
@@ -1417,7 +1417,7 @@ career-ops 的两个特性需要 Playwright:
 
 - **表单填写**: `/career-ops apply` 第 3 步(Playwright 打开浏览
   器、读取字段标签、建议答案)。
-- **PDF 生成**: 通过 `/career-ops pdf` 与 SPA 的 **📄 Generate PDF**
+- **PDF 生成**: 通过 `/career-ops pdf` 与 SPA 的 **📄 生成 PDF**
   按钮(位于 `#/cv` / `#/reports/:slug` / `#/evaluate` / `#/deep` /
   `#/interview-prep`)。
 
@@ -1536,7 +1536,7 @@ tracker 写入、CV 保存、JD 保存、evaluate 运行、deep-research 运
 | Tracker 行文本撑破表格 | v1.9.1 之前公司名中的竖线 | 升级到 v1.9.1+ — 竖线已端到端转义(BF-1)。 |
 | 全新 clone 上 `npm test` 失败 | 测试假设父项目布局 | 使用 `CAREER_OPS_ROOT=$(mktemp -d)` 并 bootstrap fixtures。 |
 
-更深入的诊断:在 Health 页运行 **▶ Doctor**,复制输出,在
+更深入的诊断:在 Health 页运行 **运行 doctor**,复制输出,在
 <https://github.com/Fighter90/career-ops-ui/issues> 的 issue tracker
 中搜索。
 

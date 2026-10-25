@@ -22,6 +22,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { WEB_UI_ROOT } from '../paths.mjs';
+import { withFileLock } from '../file-lock.mjs';
 
 const NOMINATIM_BASE = (process.env.NOMINATIM_URL || 'https://nominatim.openstreetmap.org').replace(/\/+$/, '');
 const NOMINATIM = NOMINATIM_BASE + '/search';
@@ -37,6 +38,35 @@ const GAP_MS = PUBLIC_NOMINATIM
 // After a 429/503 stop asking entirely for a while instead of retrying each second.
 const BACKOFF_MS = 10 * 60 * 1000;
 const MAX_LEN = 200;
+
+// Env knobs are read lazily so tests (and operators) can tune a running
+// deployment via the environment without a rebuild.
+const numEnv = (k, d) => {
+  const n = Number(process.env[k]);
+  return Number.isFinite(n) && n > 0 ? n : d;
+};
+// CAR-105 — cap uncached lookups per rolling window (default 50 / minute).
+// A cold first map load used to fire thousands of serialized Nominatim calls
+// and blocked the page for tens of seconds; now the map fills progressively:
+// the first window resolves up to BUDGET places, everything already cached
+// answers instantly, later loads spend the next window. Saves the public
+// instance from a burst too. Cached keys never consume the budget.
+const BUDGET_DEFAULT = 50;
+const BUDGET_WINDOW_DEFAULT = 60 * 1000;
+let budgetUsed = 0;
+let budgetSince = 0;
+
+function budgetAllows() {
+  const now = Date.now();
+  if (now - budgetSince >= numEnv('GEOCODE_BUDGET_WINDOW_MS', BUDGET_WINDOW_DEFAULT)) {
+    budgetSince = now;
+    budgetUsed = 0;
+  }
+  if (budgetUsed >= numEnv('GEOCODE_BUDGET', BUDGET_DEFAULT)) return false;
+  budgetUsed++;
+  return true;
+}
+
 // Longest raw `q` the route accepts; normalizeLocation keeps its first place.
 export const MAX_QUERY = 2000;
 // Locations that are not a place — answered without a request.
@@ -82,10 +112,33 @@ function loadCache() {
   return cache;
 }
 
-function saveCache() {
+// CAR-105 — one debounced write per burst instead of a full-file rewrite per
+// insert (a big board made the old code rewrite the whole cache thousands of
+// times per map load). The write is bounded (GEOCODE_CACHE_MAX, oldest
+// entries dropped — Map keeps insertion order) and serialised through
+// withFileLock, like every other shared-file write in this repo.
+let saveTimer = null;
+let dirty = false;
+
+function scheduleSave() {
+  dirty = true;
+  if (saveTimer) return;
+  saveTimer = setTimeout(() => { _flushGeocodeCache().catch(() => {}); }, numEnv('GEOCODE_SAVE_MS', 2000));
+  saveTimer.unref?.();
+}
+
+/** Persist the cache now (test hook; also the trailing edge of the debounce). */
+export async function _flushGeocodeCache() {
+  if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; }
+  if (!dirty || !cache) return;
+  dirty = false;
+  const max = numEnv('GEOCODE_CACHE_MAX', 20000);
+  const entries = max > 0 && cache.size > max ? [...cache].slice(-max) : [...cache];
   try {
     mkdirSync(dirname(cacheFile), { recursive: true });
-    writeFileSync(cacheFile, JSON.stringify(Object.fromEntries(cache)));
+    await withFileLock(cacheFile, () => {
+      writeFileSync(cacheFile, JSON.stringify(Object.fromEntries(entries)));
+    });
   } catch { /* read-only install → memory cache only */ }
 }
 
@@ -98,6 +151,7 @@ const MAX_COMPANY_KM = 25;
 /** Rate-limited Nominatim search → raw jsonv2 hits. */
 async function search(q, limit, fetchImpl) {
   if (Date.now() < blockedUntil) throw new Error('nominatim backoff');
+  if (!budgetAllows()) throw new Error('geocode budget exhausted');
   const wait = lastCall + GAP_MS - Date.now();
   if (wait > 0) await new Promise((r) => setTimeout(r, wait));
   lastCall = Date.now();
@@ -165,7 +219,7 @@ function cached(key, compute) {
   const run = queue.then(async () => {
     if (c.has(key)) return c.get(key);     // filled while we were queued
     c.set(key, await compute());
-    saveCache();
+    scheduleSave();
     return c.get(key);
   });
   // A failed lookup (network/429) is NOT cached and must not stall the queue.
@@ -215,6 +269,9 @@ export async function geocode(q, deps = {}, company = '') {
 
 /** Test hook: reset state, seed the cache, redirect the cache file. */
 export function _resetGeocode(seed = null, file = cacheFile) {
+  if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; }
+  dirty = false;
+  budgetUsed = 0; budgetSince = 0;
   cache = seed instanceof Map ? new Map(seed) : seed && typeof seed === 'object' ? new Map(Object.entries(seed)) : null;
   cacheFile = file; queue = Promise.resolve(); lastCall = 0; blockedUntil = 0;
 }

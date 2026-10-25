@@ -232,7 +232,7 @@ på siden bevarer hver tidligere genereret fil.
 
 ### C. Find ledige stillinger (~2 minutter per scan)
 
-**Trin 9 — Klik på `🌐 Scan` i sidebjælken.** Bekræft, at `portals.yml`
+**Trin 9 — Klik på `🌐 Scanning` i sidebjælken.** Bekræft, at `portals.yml`
 lister de boards, du bekymrer dig om (sektion 5 i denne hjælp). Tryk på
 knappen **🌐 Scan nu**. En live SSE-log streamer, mens scanneren
 gennemgår Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday (engelske boards) og hh.ru / Habr
@@ -972,7 +972,7 @@ svaret, så en nysgerrig nabo ikke kan fingerprint'e din installation.
 
 ### Kør-knapper
 
-- **▶ Doctor** kører `node doctor.mjs` og viser outputtet i en modal.
+- **Kør doctor** kører `node doctor.mjs` og viser outputtet i en modal.
 - **▶ Verify pipeline** kører `node verify-pipeline.mjs`.
 
 ---
@@ -1156,7 +1156,7 @@ igen, så et fjendtligt board ikke kan sende dig til loopback / privat IP
 
 - **⚡ Evaluér første** — åbner den første køsatte URL på Evaluate-
   siden, klar til at score.
-- **Scan** — tilbage til scanneren, hvis du vil have flere URL'er.
+- **Jobsøgning** — tilbage til scanneren, hvis du vil have flere URL'er.
 
 ---
 
@@ -1246,7 +1246,7 @@ Enkelt-rapport-visningen har også:
 
 ### Eksportér en rapport til PDF
 
-Åbn en gemt rapport, og klik på **📄 Generate PDF**. Den kører
+Åbn en gemt rapport, og klik på **📄 Generér PDF**. Den kører
 `generate-pdf.mjs` i forældre-projektet og skriver filen til `output/*.pdf`
 (kræver Playwright; Health-siden viser, om den er installeret). Intet sendes
 nogen steder: gennemgå PDF'en, før du vedhæfter den til en ansøgning.
@@ -1735,7 +1735,7 @@ events.
 | Tracker-rækketekst bryder tabellen | Pipe i virksomhedsnavn pre-v1.9.1 | Opdater til v1.9.1+ — pipes escapes end-to-end (BF-1). |
 | `npm test` fejler på frisk clone | Tests antager overordnet projektlayout | Brug `CAREER_OPS_ROOT=$(mktemp -d)` og bootstrap fixtures. |
 
-For dybere diagnostik: kør **▶ Doctor** på Health-siden, kopier
+For dybere diagnostik: kør **Kør doctor** på Health-siden, kopier
 outputtet, og søg i issue-trackeren på
 <https://github.com/Fighter90/career-ops-ui/issues>.
 

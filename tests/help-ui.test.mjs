@@ -12,7 +12,7 @@ import assert from 'node:assert/strict';
 import { readFileSync, existsSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { dirname, resolve } from 'node:path';
-import { loadI18n } from './helpers/i18n-vm.mjs';
+import { loadAssembledDict, I18N_LANGS, loadI18n } from './helpers/i18n-vm.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const ROOT = resolve(__dirname, '..');
@@ -148,4 +148,43 @@ test('deep.js has the Show result button + needKey toast guard', () => {
   const src = readFileSync(resolve(ROOT, 'public', 'js', 'views', 'deep.js'), 'utf8');
   assert.match(src, /deep\.showResult/);
   assert.match(src, /deep\.needKey/);
+});
+
+// ─────────────── CAR-107: bundles quote the UI's own button labels ───────────────
+
+// The three most-cited button citations in the localized bundles, mapped to the
+// dict key whose label the UI actually renders for that button:
+//   • the #/evaluate primary action   → `⚡ ` + mode.runLive        (mode-page.js:156)
+//   • the report/CV PDF export button → `📄 ` + common.generatePdf  (deep.js / evaluate.js)
+//   • the settings Save button        → `💾 ` + common.save         (config.js)
+// `locales` = the bundles that carried the ENGLISH citation before the CAR-107
+// sweep (ar phrases the evaluation walkthrough differently; da abbreviates the
+// setup walk and the settings section) — for those the dict label must appear.
+const CAR107_SLOTS = [
+  { key: 'mode.runLive', en: '**⚡ Run live**',
+    locales: ['es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'de', 'it', 'tr', 'hi', 'ta', 'vi'] },
+  { key: 'common.generatePdf', en: '**📄 Generate PDF**',
+    locales: ['es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'da', 'de', 'it', 'tr', 'hi', 'ta', 'vi', 'ar'] },
+  { key: 'common.save', en: '**Save**',
+    locales: ['es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'de', 'it', 'tr', 'hi', 'ta', 'vi'] },
+];
+
+test('CAR-107: localized bundles quote the localized button label, not the English one', () => {
+  const D = loadAssembledDict();
+  const helpDir = resolve(ROOT, 'docs', 'help');
+  for (const lang of I18N_LANGS.filter((l) => l !== 'en')) {
+    const text = readFileSync(resolve(helpDir, `${lang === 'ko' ? 'ko-KR' : lang}.md`), 'utf8');
+    for (const { key, en, locales } of CAR107_SLOTS) {
+      // The exact English citation is gone from EVERY localized bundle…
+      assert.ok(!text.includes(en),
+        `${lang}.md cites the English button label ${en} — the UI renders the localized one (CAR-107)`);
+      // …and where the bundle cites the button at all, it names it by its UI label.
+      if (locales.includes(lang)) {
+        const label = D[key] && D[key][lang];
+        assert.ok(label && label.trim(), `dict ${key} empty for ${lang}`);
+        assert.ok(text.includes(label),
+          `${lang}.md cites the ${key} button but never its UI label "${label}" (CAR-107)`);
+      }
+    }
+  }
 });

@@ -230,9 +230,9 @@ dưới trang giữ mọi tệp đã tạo trước đó.
 
 ### C. Tìm tin tuyển dụng (~2 phút mỗi lần quét)
 
-**Bước 9 — Bấm `🌐 Scan` trên thanh bên.** Xác nhận `portals.yml`
+**Bước 9 — Bấm `🌐 Quét` trên thanh bên.** Xác nhận `portals.yml`
 liệt kê các bảng bạn quan tâm (mục 5 của hướng dẫn này). Bấm nút
-**🌐 Scan now**. Một nhật ký SSE trực tiếp chạy trong lúc scanner
+**🌐 Quét ngay**. Một nhật ký SSE trực tiếp chạy trong lúc scanner
 đi qua Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday (bảng tiếng Anh) và hh.ru / Habr
 Career (bảng tiếng Nga nếu bật).
 
@@ -390,8 +390,8 @@ Lưu ở bất kỳ tab nào áp dụng ngay lập tức — không cần khởi
    - **OpenAI** — đặt `OPENAI_API_KEY` (platform.openai.com), tùy chọn `OPENAI_MODEL` (mặc định `gpt-5-codex`).
    - **Qwen** — đặt `QWEN_API_KEY` (Alibaba Model Studio / DashScope, dashscope.console.aliyun.com), tùy chọn `QWEN_MODEL` (mặc định `qwen-max`). Với endpoint Trung-Quốc-đại-lục đặt `QWEN_BASE_URL` trong `.env` thô.
    - **Thêm các nhà cung cấp tương thích OpenAI (v1.216.0)** — mỗi cái chỉ cách một khóa, cùng đánh giá ⚡ trực tiếp và ô monogram trong danh sách trường: **DeepSeek** (`DEEPSEEK_API_KEY`, platform.deepseek.com), **GLM / Z.ai** (`ZAI_API_KEY`, z.ai — `ZAI_BASE_URL` chuyển sang endpoint Trung Quốc `open.bigmodel.cn`), **Kimi / Moonshot** (`MOONSHOT_API_KEY`, platform.moonshot.ai — `MOONSHOT_BASE_URL` cho endpoint CN), **MiniMax** (`MINIMAX_API_KEY`), **Mistral** (`MISTRAL_API_KEY`, console.mistral.ai), **Grok / xAI** (`XAI_API_KEY`, console.x.ai), **Together** (`TOGETHER_API_KEY`, together.ai — các mô hình trọng-số-mở kể cả **Inkling** của Thinking Machines, `thinkingmachines/Inkling`), **Fireworks** (`FIREWORKS_API_KEY`, fireworks.ai), và **Ollama** — hoàn toàn cục bộ, **không cần khóa**: đặt `OLLAMA_BASE_URL` (mặc định `http://localhost:11434/v1`) và chạy `ollama serve`. Mỗi cái có trường `*_MODEL` tùy chọn với mặc định hợp lý.
-4. Bấm **Save**. Khóa được ghi vào `.env` của dự án gốc; thay đổi áp dụng ngay — không cần khởi động lại máy chủ.
-5. Kiểm chứng tại `#/evaluate`: dán URL/mô tả việc làm và bấm **⚡ Run live**. Phần đầu kết quả cho biết nhà cung cấp nào đã chạy (`anthropic` / `gemini` / `openai` / `qwen`). Không khóa nào được đặt ở đâu cả → bạn nhận prompt thủ công sao-chép-dán thay thế.
+4. Bấm **Lưu**. Khóa được ghi vào `.env` của dự án gốc; thay đổi áp dụng ngay — không cần khởi động lại máy chủ.
+5. Kiểm chứng tại `#/evaluate`: dán URL/mô tả việc làm và bấm **⚡ Chạy trực tiếp**. Phần đầu kết quả cho biết nhà cung cấp nào đã chạy (`anthropic` / `gemini` / `openai` / `qwen`). Không khóa nào được đặt ở đâu cả → bạn nhận prompt thủ công sao-chép-dán thay thế.
 
 Secret được che sau khi lưu và không bao giờ được ghi log. Các trường id-mô-hình (`*_MODEL`) không phải secret.
 
@@ -547,7 +547,7 @@ Giới hạn kích thước body: 1 MB. Lớn hơn trả về 413.
 - **sync-check** — chạy `cv-sync-check.mjs` trong dự án gốc.
   Gắn cờ mâu thuẫn: một dự án có trong CV nhưng không có archetype
   `data/applications.md`, v.v.
-- **📄 Generate PDF** — streaming `generate-pdf.mjs`. Kết quả đổ vào
+- **📄 Tạo PDF** — streaming `generate-pdf.mjs`. Kết quả đổ vào
   `output/*.pdf`. Cần Playwright (trang Health cho biết nó
   có trong `node_modules` của dự án gốc chưa). Khi tạo xong,
   PDF **mới nhất** tự tải về thư mục Downloads mặc định; danh sách
@@ -977,7 +977,7 @@ trong phản hồi để hàng-xóm tò-mò không fingerprint được bản c�
 
 ### Các nút chạy
 
-- **▶ Doctor** chạy `node doctor.mjs` và hiện kết quả trong một modal.
+- **Chạy doctor** chạy `node doctor.mjs` và hiện kết quả trong một modal.
 - **▶ Verify pipeline** chạy `node verify-pipeline.mjs`.
 
 ---
@@ -990,14 +990,14 @@ của bạn, và ghi các kết quả trúng vào `data/last scan.json` và
 
 ### Quét một cú bấm (SPA)
 
-**🌐 Scan** chạy mọi nguồn đang bật trong một lượt duy nhất:
+**🌐 Quét** chạy mọi nguồn đang bật trong một lượt duy nhất:
 
 - Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday (lượt quét ATS) cho mọi công ty trong
   `tracked_companies` có URL ATS nhận diện được.
 - Các aggregator v1.75.0 cho mọi mục `tracked_companies` chọn tham gia: RemoteOK / Remotive / Working Nomads (feed remote toàn bảng, `provider: <slug>`) và IBM / Arbeitsagentur / Glints / Jobstreet · SEEK (điều khiển bằng cấu hình, khối `<provider>:` theo mục).
 - hh.ru API + Habr Career + Trudvsem + GetMatch + GeekJob cho mọi truy vấn trong `russian_portals`.
 
-**Hai pha, một cú bấm (v1.29.2).** Nút 🌐 Scan duy nhất điều khiển CẢ lượt quét ATS lẫn lượt quét khu vực trong một luồng SSE. Bạn sẽ thấy hai phần đầu pha trong nhật ký, theo thứ tự:
+**Hai pha, một cú bấm (v1.29.2).** Nút 🌐 Quét duy nhất điều khiển CẢ lượt quét ATS lẫn lượt quét khu vực trong một luồng SSE. Bạn sẽ thấy hai phần đầu pha trong nhật ký, theo thứ tự:
 
 1. `▶ ATS scan (Greenhouse + Ashby + Lever)` — các bảng ATS EN.
 2. `▶ Regional scan (hh.ru + Habr Career)` — 5 nguồn RU từ registry.
@@ -1005,7 +1005,7 @@ của bạn, và ghi các kết quả trúng vào `data/last scan.json` và
 Mỗi pha kết thúc bằng một tóm tắt `✓ done · NEW=N`. Nếu bạn chỉ thấy pha ATS, bản của bạn là pre v1.29.2 — hãy nâng cấp. Trước v1.29.2, client SSE đóng ở sự kiện `done` đầu tiên và pha khu vực bị bỏ lặng lẽ (`tests/scan stream multi phase.test.mjs` là lưới hồi quy).
 
 Nhật ký SSE trực tiếp đổ vào khung phải trong lúc quét chạy. Bấm
-**Stop** (hoặc chỉ cần rời trang) để hủy — máy chủ hủy
+**Dừng** (hoặc chỉ cần rời trang) để hủy — máy chủ hủy
 các yêu cầu HTTPS đang bay qua `AbortController`.
 
 ### Lọc kết quả
@@ -1163,9 +1163,9 @@ thêm một lần, nên một bảng ác ý không thể ném bạn về loopbac
 
 ### Các nút trên phải
 
-- **⚡ Evaluate first** — mở URL đầu tiên trong hàng đợi trên trang
+- **⚡ Đánh giá đầu tiên** — mở URL đầu tiên trong hàng đợi trên trang
   Evaluate, sẵn sàng chấm điểm.
-- **Scan** — quay về scanner nếu bạn muốn thêm URL.
+- **Tìm kiếm việc làm** — quay về scanner nếu bạn muốn thêm URL.
 
 ---
 
@@ -1254,7 +1254,7 @@ Chế độ xem báo cáo đơn còn có:
 
 ### Xuất báo cáo ra PDF
 
-Mở một báo cáo đã lưu và bấm **📄 Generate PDF**. Nó streaming
+Mở một báo cáo đã lưu và bấm **📄 Tạo PDF**. Nó streaming
 `generate pdf.mjs` trong dự án gốc và ghi tệp vào
 `output/*.pdf` (việc này cần Playwright — trang Health cho biết nó
 được cài chưa). Không gửi đi đâu cả: xem lại PDF trước khi đính kèm
@@ -1402,14 +1402,14 @@ recruiter, one pager **Interview prep**, và hồi đáo **Patterns**
 
 Mỗi trang có một biểu mẫu nhỏ (các trường riêng từng mode), một nút **▶
 Generate prompt** (thủ công), và — khi có khóa Anthropic hay Gemini
-— một nút **⚡ Run live** được nâng lên làm nút chính.
+— một nút **⚡ Chạy trực tiếp** được nâng lên làm nút chính.
 
 Bấm **▶ Generate prompt** trả về prompt đã lắp ráp với các giá trị
 biểu mẫu JSON stringify vào một khối `User supplied context:`,
 tiếp theo là mẫu `modes/<slug>.md` nguyên văn. Sao chép và dán
 vào LLM tùy chọn của bạn.
 
-Bấm **⚡ Run live** gửi cùng prompt tới Anthropic (hay
+Bấm **⚡ Chạy trực tiếp** gửi cùng prompt tới Anthropic (hay
 Gemini), với `cv.md` + `profile.yml` + `_shared.md` nhúng qua
 `bundleProjectContext`. Kết quả được render trên trang, sao chép được, và
 tải được dưới dạng `.md`.
@@ -1611,7 +1611,7 @@ Cần thiết cho hai tính năng career-ops:
 - **Điền form** trong `/career-ops apply` (bước 3 ở trên — Playwright
   mở trình duyệt, đọc nhãn các trường, gợi ý câu trả lời).
 - **Tạo PDF** qua `/career-ops pdf` và nút
-  **📄 Generate PDF** của SPA trên `#/cv` / `#/reports/:slug` /
+  **📄 Tạo PDF** của SPA trên `#/cv` / `#/reports/:slug` /
   `#/evaluate` / `#/deep` / `#/interview prep`.
 
 **Dự phòng khi thiếu Playwright:** luồng apply quay về
@@ -1736,7 +1736,7 @@ gần nhất.
 | Văn bản dòng tracker làm vỡ bảng | Dấu ống trong tên công ty trước v1.9.1 | Nâng lên v1.9.1+ — dấu ống được thoát từ đầu đến cuối (BF-1). |
 | `npm test` thất bại trên bản clone mới | Các test giả định bố cục dự án gốc | Dùng `CAREER_OPS_ROOT=$(mktemp -d)` và dựng fixtures. |
 
-Để chẩn đoán sâu hơn: chạy **▶ Doctor** trên trang Health, sao chép
+Để chẩn đoán sâu hơn: chạy **Chạy doctor** trên trang Health, sao chép
 kết quả, và tìm trên trình theo dõi issue tại
 <https://github.com/Fighter90/career-ops-ui/issues>.
 
@@ -1954,7 +1954,7 @@ Tải lại `#/scan` trên trình duyệt. Dropdown bộ lọc nguồn tự nh�
 mục mới (một nguồn chân lý duy nhất qua
 [`GET /api/scan/sources`](../../server/lib/routes/scan.mjs) →
 [`registry.mjs`](../../server/lib/sources/registry.mjs)). Nút
-🌐 Scan giờ bao gồm nguồn mới trong mỗi lượt quét khu vực.
+🌐 Quét giờ bao gồm nguồn mới trong mỗi lượt quét khu vực.
 
 ### Các adapter tham chiếu (lấy làm mẫu cho nguồn mới)
 

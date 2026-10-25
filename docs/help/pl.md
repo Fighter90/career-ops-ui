@@ -228,9 +228,9 @@ strony przechowuje każdy wcześniej wygenerowany plik.
 
 ### C. Znajdowanie ofert (~2 minuty na skan)
 
-**Krok 9 — Kliknij `🌐 Scan` w pasku bocznym.** Potwierdź, że `portals.yml`
+**Krok 9 — Kliknij `🌐 Skanowanie` w pasku bocznym.** Potwierdź, że `portals.yml`
 zawiera portale, którymi jesteś zainteresowany (sekcja 5 tej pomocy). Naciśnij przycisk
-**🌐 Scan now**. Na żywo streamuje log SSE, gdy skaner
+**🌐 Skanuj teraz**. Na żywo streamuje log SSE, gdy skaner
 przechodzi przez Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday (angielskie portale) i hh.ru / Habr
 Career (rosyjskie portale, jeśli włączone).
 
@@ -394,8 +394,8 @@ Zapis w dowolnej zakładce propaguje natychmiast — bez restartu serwera.
    - **Gemini** — ustaw `GEMINI_API_KEY` (aistudio.google.com/apikey), opcjonalnie `GEMINI_MODEL` (domyślnie `gemini-3.6-flash`).
    - **OpenAI** — ustaw `OPENAI_API_KEY` (platform.openai.com), opcjonalnie `OPENAI_MODEL` (domyślnie `gpt-5-codex`).
    - **Qwen** — ustaw `QWEN_API_KEY` (Alibaba Model Studio / DashScope, dashscope.console.aliyun.com), opcjonalnie `QWEN_MODEL` (domyślnie `qwen-max`). Dla punktu końcowego mainland-CN ustaw `QWEN_BASE_URL` w surowym `.env`.
-4. Kliknij **Save**. Klucze są zapisywane do `.env` projektu nadrzędnego; zmiana wchodzi w życie natychmiast — restart serwera nie jest potrzebny.
-5. Zweryfikuj na `#/evaluate`: wklej URL/opis stanowiska i naciśnij **⚡ Run live**. Nagłówek wynikowy pokazuje, który dostawca działał (`anthropic` / `gemini` / `openai` / `qwen`). Brak ustawionego klucza gdziekolwiek → dostajesz zamiast tego ręczny prompt do skopiowania.
+4. Kliknij **Zapisz**. Klucze są zapisywane do `.env` projektu nadrzędnego; zmiana wchodzi w życie natychmiast — restart serwera nie jest potrzebny.
+5. Zweryfikuj na `#/evaluate`: wklej URL/opis stanowiska i naciśnij **⚡ Uruchom na żywo**. Nagłówek wynikowy pokazuje, który dostawca działał (`anthropic` / `gemini` / `openai` / `qwen`). Brak ustawionego klucza gdziekolwiek → dostajesz zamiast tego ręczny prompt do skopiowania.
 
 Sekrety są maskowane po zapisaniu i nigdy nie są logowane. Pola ID modelu (`*_MODEL`) nie są sekretne.
 
@@ -546,7 +546,7 @@ Maksymalny rozmiar treści: 1 MB. Większe zwraca 413.
 - **sync-check** — uruchamia `cv-sync-check.mjs` w projekcie nadrzędnym.
   Oznacza niespójności: projekt wymieniony w Twoim CV, ale nie w
   archetype'ach `data/applications.md`, itp.
-- **📄 Generate PDF** — streamuje `generate-pdf.mjs`. Wynik trafia do
+- **📄 Generuj PDF** — streamuje `generate-pdf.mjs`. Wynik trafia do
   `output/*.pdf`. Wymaga Playwright (strona Health pokazuje, czy jest
   zainstalowany w `node_modules` projektu nadrzędnego). Po zakończeniu generowania,
   **najnowszy** PDF jest automatycznie pobierany do Twojego domyślnego folderu Pobrane;
@@ -924,7 +924,7 @@ odpowiedzi, żeby ciekawski sąsiad nie mógł sfingerprintować Twojej instalac
 
 ### Przyciski uruchamiania
 
-- **▶ Doctor** uruchamia `node doctor.mjs` i pokazuje wyniki w modalu.
+- **Uruchom doctor** uruchamia `node doctor.mjs` i pokazuje wyniki w modalu.
 - **▶ Verify pipeline** uruchamia `node verify-pipeline.mjs`.
 
 ---
@@ -939,14 +939,14 @@ historii i zapisuje trafienia do `data/last-scan.json` i
 
 ### Skan jednym kliknięciem (SPA)
 
-**🌐 Scan** uruchamia każde włączone źródło w jednym przebiegu:
+**🌐 Skanuj** uruchamia każde włączone źródło w jednym przebiegu:
 
 - Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday (sweep ATS) dla każdej firmy w
   `tracked_companies` z rozpoznawalnym URL ATS.
 - Agregatory z v1.75.0 dla każdego wpisu `tracked_companies`, który się na nie zdecyduje: RemoteOK / Remotive / Working Nomads (ogólnoportalowe kanały zdalne, `provider: <slug>`) oraz IBM / Arbeitsagentur / Glints / Jobstreet · SEEK (sterowane konfiguracją, blok `<provider>:` na wpis).
 - hh.ru API + Habr Career + Trudvsem + GetMatch + GeekJob dla każdego zapytania w `russian_portals`.
 
-**Dwie fazy, jedno kliknięcie (v1.29.2).** Pojedynczy przycisk 🌐 Scan napędza OBIE sweep ATS i sweep regionalny w jednym strumieniu SSE. W logu zobaczysz dwa nagłówki faz, w kolejności:
+**Dwie fazy, jedno kliknięcie (v1.29.2).** Pojedynczy przycisk 🌐 Skanuj napędza OBIE sweep ATS i sweep regionalny w jednym strumieniu SSE. W logu zobaczysz dwa nagłówki faz, w kolejności:
 
 1. `▶ ATS scan (Greenhouse + Ashby + Lever)` — portale ATS EN.
 2. `▶ Regional scan (hh.ru + Habr Career)` — 5 źródeł RU z rejestru.
@@ -954,7 +954,7 @@ historii i zapisuje trafienia do `data/last-scan.json` i
 Każda faza kończy się podsumowaniem `✓ done · NEW=N`. Jeśli widzisz tylko fazę ATS, Twoja instalacja jest na kompilacji sprzed v1.29.2 — zaktualizuj. Przed v1.29.2 klient SSE zamykał się przy pierwszym zdarzeniu `done` i faza regionalna była po cichu pomijana (`tests/scan-stream-multi-phase.test.mjs` to sieć regresji).
 
 Log SSE na żywo streamuje do prawego panelu podczas skanowania. Kliknij
-**Stop** (lub po prostu przejdź do innej strony), aby przerwać — serwer anuluje
+**Zatrzymaj** (lub po prostu przejdź do innej strony), aby przerwać — serwer anuluje
 żądania HTTPS w trakcie przez `AbortController`.
 
 ### Filtrowanie wyników
@@ -1093,9 +1093,9 @@ ponownie, więc wrogie forum nie może odbić Cię do loopbacku / prywatnego IP
 
 ### Przyciski w prawym górnym rogu
 
-- **⚡ Evaluate first** — otwiera pierwszy kolejkowany URL na stronie Evaluate,
+- **⚡ Oceń pierwszy** — otwiera pierwszy kolejkowany URL na stronie Evaluate,
   gotowy do oceniania.
-- **Scan** — powrót do skanera jeśli chcesz więcej URL-i.
+- **Wyszukiwanie ofert** — powrót do skanera jeśli chcesz więcej URL-i.
 
 ---
 
@@ -1184,7 +1184,7 @@ Widok jednego raportu zawiera też:
 
 ### Eksport raportu do PDF
 
-Otwórz zapisany raport i kliknij **📄 Generate PDF**. Uruchamia to
+Otwórz zapisany raport i kliknij **📄 Generuj PDF**. Uruchamia to
 `generate-pdf.mjs` w projekcie nadrzędnym i zapisuje plik w `output/*.pdf`
 (wymaga Playwrighta; strona Zdrowie pokazuje, czy jest zainstalowany). Nic
 nie jest wysyłane: sprawdź PDF, zanim dołączysz go do aplikacji.
@@ -1333,14 +1333,14 @@ retrospekcje **Patterns**. Każdy opakowuje konkretny szablon `modes/<slug>.md`:
 
 Każda strona ma mały formularz (pola są specyficzne dla trybu), przycisk **▶
 Generate prompt** (ręczny) i — gdy obecny jest klucz Anthropic lub Gemini —
-przycisk **⚡ Run live**, który awansuje do podstawowego.
+przycisk **⚡ Uruchom na żywo**, który awansuje do podstawowego.
 
 Kliknięcie **▶ Generate prompt** zwraca zmontowany prompt z Twoimi
 wartościami formularza JSON-ifikowanymi do bloku `User-supplied context:`,
 po którym następuje verbatim szablon `modes/<slug>.md`. Kopiuj i wklej
 do wybranego przez Ciebie LLM.
 
-Kliknięcie **⚡ Run live** wysyła ten sam prompt do Anthropic (lub
+Kliknięcie **⚡ Uruchom na żywo** wysyła ten sam prompt do Anthropic (lub
 Gemini), z `cv.md` + `profile.yml` + `_shared.md` inlinowanymi przez
 `bundleProjectContext`. Wynik jest renderowany na stronie, możliwy do skopiowania i
 pobierania jako `.md`.
@@ -1545,7 +1545,7 @@ Wymagana dla dwóch funkcji career-ops:
 - **Wypełnianie formularzy** w `/career-ops apply` (krok 3 powyżej — Playwright
   otwiera przeglądarkę, odczytuje etykiety pól, sugeruje odpowiedzi).
 - **Generowanie PDF** przez `/career-ops pdf` i przycisk SPA
-  **📄 Generate PDF** na `#/cv` / `#/reports/:slug` /
+  **📄 Generuj PDF** na `#/cv` / `#/reports/:slug` /
   `#/evaluate` / `#/deep` / `#/interview-prep`.
 
 **Fallback gdy brakuje Playwright:** przepływ apply wraca do
@@ -1669,7 +1669,7 @@ zdarzeń.
 | Tekst wiersza trackera psuje tabelę | Potok w nazwie firmy przed v1.9.1 | Zaktualizuj do v1.9.1+ — potoki są escapowane end-to-end (BF-1). |
 | `npm test` nie udaje się na świeżym klonie | Testy zakładają układ projektu nadrzędnego | Użyj `CAREER_OPS_ROOT=$(mktemp -d)` i bootstrap fixtures. |
 
-Dla głębszej diagnostyki: uruchom **▶ Doctor** na stronie Health, skopiuj
+Dla głębszej diagnostyki: uruchom **Uruchom doctor** na stronie Health, skopiuj
 wynik i przeszukaj tracker problemów na
 <https://github.com/Fighter90/career-ops-ui/issues>.
 
@@ -1876,7 +1876,7 @@ Przeładuj `#/scan` w przeglądarce. Menu rozwijane filtra źródeł automatyczn
 pobiera nowy wpis (jeden punkt prawdy przez
 [`GET /api/scan/sources`](../../server/lib/routes/scan.mjs) →
 [`registry.mjs`](../../server/lib/sources/registry.mjs)). Przycisk
-🌐 Scan teraz uwzględnia nowe źródło w każdym sweepie regionalnym.
+🌐 Skanuj teraz uwzględnia nowe źródło w każdym sweepie regionalnym.
 
 ### Adaptery referencyjne (wzoruj się na nich dla nowych źródeł)
 

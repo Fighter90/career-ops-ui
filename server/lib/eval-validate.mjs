@@ -377,3 +377,40 @@ export function asciiNumber(s) {
 export function stripScoreSummary(text) {
   return String(text ?? '').replace(/\n*---SCORE_SUMMARY---[\s\S]*?---END_SUMMARY---\n*/, '\n').trimEnd();
 }
+
+// CAR-101 — a report-header date line. Line-anchored on purpose: the line
+// must be exactly the label plus a date value (both optional-bold, either
+// colon shape, an optional leading list marker), so a "Date:" mentioned in
+// prose — or a Data-freshness date in a deep brief — never matches. The
+// `{YYYY-MM-DD}` placeholder echo (the model copying the template literally)
+// is a non-date and is rewritten too.
+const REPORT_DATE_LINE = /^[ \t]*(?:[-*][ \t]*)?(?:\*\*)?[ \t]*Date[ \t]*[:：][ \t]*(?:\*\*)?[ \t]*(\d{4}-\d{2}-\d{2}|\{YYYY-MM-DD\})[ \t]*(?:\*\*)?[ \t]*\r?$/gmi;
+
+/**
+ * CAR-101 — belt-and-braces for the report header's **Date:** field. The
+ * date is server-side knowledge (the evaluation prompt pins it, see
+ * prompts.mjs), but a model that ignores the pin still files an invented
+ * 2026-01-xx header — 349 of 789 prod reports did. The header date must
+ * equal the day the report is accepted (the same value the tracker row and
+ * the filename carry), so a differing or placeholder **Date:** line is
+ * REWRITTEN to `today` here — a correction, never a rejection: the rest of
+ * the report is still valid work.
+ *
+ * @param {string} text the model's report markdown
+ * @param {string} today YYYY-MM-DD to enforce (callers pass their own
+ *   `today()`; a malformed value falls back to the server's local date)
+ * @returns {{ text: string, replaced: number }} replaced = lines rewritten
+ */
+export function fixReportDate(text, today) {
+  const src = String(text ?? '');
+  const day = typeof today === 'string' && /^\d{4}-\d{2}-\d{2}$/.test(today)
+    ? today
+    : (() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; })();
+  let replaced = 0;
+  const out = src.replace(REPORT_DATE_LINE, (line, value) => {
+    if (value === day) return line;
+    replaced += 1;
+    return line.replace(value, day);
+  });
+  return { text: out, replaced };
+}

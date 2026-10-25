@@ -64,6 +64,7 @@ test('geocode: miss is fetched once, then cached; failures are not cached', asyn
   assert.deepEqual(await mod.geocode('Leeds', { fetch: f }), { lat: 53.8, lon: -1.55, exact: false });
   assert.deepEqual(await mod.geocode('leeds', { fetch: f }), { lat: 53.8, lon: -1.55, exact: false });
   assert.equal(f.calls, 1);
+  await mod._flushGeocodeCache();          // CAR-105 — saves are debounced
   assert.equal(JSON.parse(readFileSync(file, 'utf8')).leeds.lat, 53.8);
 
   const down = async () => ({ ok: false, status: 500 });

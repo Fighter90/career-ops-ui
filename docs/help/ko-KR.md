@@ -232,9 +232,9 @@ batch 처리, apply 흐름, Playwright 설정)는
 
 ### C. 채용 공고 찾기 (스캔당 약 2분)
 
-**9단계 — 사이드바 `🌐 Scan`을 클릭합니다.** `portals.yml`에
+**9단계 — 사이드바 `🌐 검색`을 클릭합니다.** `portals.yml`에
 원하는 보드가 등록되어 있는지 확인하십시오 (이 도움말의 5절).
-**🌐 Scan now** 버튼을 누르십시오. 스캐너가 Greenhouse / Ashby /
+**🌐 지금 스캔** 버튼을 누르십시오. 스캐너가 Greenhouse / Ashby /
 Lever / Workable / SmartRecruiters / Workday(영문 보드)와 hh.ru / Habr Career / Trudvsem / GetMatch / GeekJob(활성화된 경우의 러시아어 보드)를 순회하는 동안 SSE
 라이브 로그가 흐릅니다.
 
@@ -362,8 +362,8 @@ Evaluate → Reports → Deep research → Apply checklist → Outreach
    - **Gemini** — `GEMINI_API_KEY`(aistudio.google.com/apikey) 설정, 선택적으로 `GEMINI_MODEL`(기본값 `gemini-3.6-flash`).
    - **OpenAI** — `OPENAI_API_KEY`(platform.openai.com) 설정, 선택적으로 `OPENAI_MODEL`(기본값 `gpt-5-codex`).
    - **Qwen** — `QWEN_API_KEY`(Alibaba Model Studio / DashScope, dashscope.console.aliyun.com) 설정, 선택적으로 `QWEN_MODEL`(기본값 `qwen-max`). 중국 본토 엔드포인트는 raw `.env` 에서 `QWEN_BASE_URL` 을 설정합니다.
-4. **Save** 를 클릭합니다. 키는 부모 프로젝트의 `.env` 에 기록됩니다; 변경은 즉시 반영됩니다 — 서버 재시작 불필요.
-5. `#/evaluate` 에서 검증합니다: 채용 URL/설명을 붙여넣고 **⚡ Run live** 를 누릅니다. 결과 헤더에 어떤 공급자가 실행됐는지(`anthropic` / `gemini` / `openai` / `qwen`) 표시됩니다. 어디에도 키가 설정되지 않으면 → 복사-붙여넣기 수동 프롬프트가 대신 제공됩니다.
+4. **저장** 를 클릭합니다. 키는 부모 프로젝트의 `.env` 에 기록됩니다; 변경은 즉시 반영됩니다 — 서버 재시작 불필요.
+5. `#/evaluate` 에서 검증합니다: 채용 URL/설명을 붙여넣고 **⚡ 실시간 실행** 를 누릅니다. 결과 헤더에 어떤 공급자가 실행됐는지(`anthropic` / `gemini` / `openai` / `qwen`) 표시됩니다. 어디에도 키가 설정되지 않으면 → 복사-붙여넣기 수동 프롬프트가 대신 제공됩니다.
 
 비밀 값은 저장 후 마스킹되며 결코 로깅되지 않습니다. 모델 id 필드(`*_MODEL`)는 비밀이 아닙니다.
 
@@ -401,7 +401,7 @@ Evaluate → Reports → Deep research → Apply checklist → Outreach
 - **Read** (`GET /api/config`)는 인식되는 모든 키를 반환합니다.
   비밀 키 (`ANTHROPIC_API_KEY`, `GEMINI_API_KEY`)는 **마스킹**됩니다 —
   `sk-ant•••••••a1b2` 형태로만 보이고 원본은 노출되지 않습니다.
-- **Save** (`POST /api/config`)는 각 값을 검증하고
+- **저장** (`POST /api/config`)는 각 값을 검증하고
   `<parent>/.env`에 쓴 다음 실행 중인 프로세스에 즉시 적용합니다.
   재시작 불필요.
 - **빈 값은 키 삭제**입니다 — 설정이 *설정되지 않음*으로 돌아가고 프로젝트 기본값이 다시 적용됩니다.
@@ -497,7 +497,7 @@ Health 페이지는 `full_name`이 알려진 자리표시자 이름과 일치하
 - **sync-check** — 부모 프로젝트에서 `cv-sync-check.mjs` 실행.
   불일치 항목(CV에는 있지만 `data/applications.md` archetypes에는
   없는 프로젝트 등)을 표시합니다.
-- **📄 Generate PDF** — `generate-pdf.mjs`를 스트림합니다.
+- **📄 PDF 생성** — `generate-pdf.mjs`를 스트림합니다.
   출력은 `output/*.pdf`에 저장됩니다. Playwright 필요 (Health
   페이지에서 부모의 `node_modules`에 설치되었는지 확인 가능).
   생성이 완료되면 **가장 새** PDF가 기본 다운로드 폴더로 자동
@@ -868,7 +868,7 @@ Node 버전은 응답에서 `"hidden"`으로 대체되어, 호기심 많은 이�
 
 ### 실행 버튼
 
-- **▶ Doctor**는 `node doctor.mjs`를 실행하고 모달에 출력 표시.
+- **doctor 실행**는 `node doctor.mjs`를 실행하고 모달에 출력 표시.
 - **▶ Verify pipeline**은 `node verify-pipeline.mjs` 실행.
 
 ---
@@ -882,7 +882,7 @@ hits를 `data/last-scan.json`과 `data/pipeline.md`에 기록합니다.
 
 ### 원클릭 스캔 (SPA)
 
-**🌐 Scan**은 활성화된 모든 소스를 한 번에 실행합니다:
+**🌐 스캔**은 활성화된 모든 소스를 한 번에 실행합니다:
 
 - Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday
   (ATS 스윕) — 인식 가능한 ATS URL을 가진 `tracked_companies`의
@@ -890,7 +890,7 @@ hits를 `data/last-scan.json`과 `data/pipeline.md`에 기록합니다.
 - v1.75.0 애그리게이터 — 하나에 옵트인한 `tracked_companies`의 각 항목: RemoteOK / Remotive / Working Nomads(보드 전체 리모트 피드, `provider: <slug>`)와 IBM / Arbeitsagentur / Glints / Jobstreet · SEEK(설정 기반, 항목별 `<provider>:` 블록).
 - hh.ru API + Habr Career + Trudvsem + GetMatch + GeekJob — `russian_portals`의 모든 쿼리.
 
-**한 번의 클릭으로 두 단계 (v1.29.2).** 단일 🌐 Scan 버튼이 ATS 스윕과 지역 스윕을 모두 하나의 SSE 스트림으로 실행합니다. 로그에는 두 개의 단계 헤더가 순서대로 나타납니다:
+**한 번의 클릭으로 두 단계 (v1.29.2).** 단일 🌐 스캔 버튼이 ATS 스윕과 지역 스윕을 모두 하나의 SSE 스트림으로 실행합니다. 로그에는 두 개의 단계 헤더가 순서대로 나타납니다:
 
 1. `▶ ATS scan (Greenhouse + Ashby + Lever)` — EN ATS 보드.
 2. `▶ Regional scan (hh.ru + Habr Career)` — 레지스트리의 5개 RU 소스.
@@ -898,7 +898,7 @@ hits를 `data/last-scan.json`과 `data/pipeline.md`에 기록합니다.
 각 단계는 `✓ done · NEW=N` 요약으로 끝납니다. ATS 단계만 보인다면 stand가 v1.29.2 이전 빌드입니다 — 업그레이드하세요. v1.29.2 이전에는 SSE 클라이언트가 첫 `done`에서 닫혀 지역 단계가 조용히 누락되었습니다.
 
 스캔이 진행되는 동안 SSE 라이브 로그가 오른쪽 패널에 흐릅니다.
-중단하려면 **Stop**을 클릭하거나 페이지에서 나가면 됩니다. 서버는
+중단하려면 **중지**을 클릭하거나 페이지에서 나가면 됩니다. 서버는
 진행 중인 HTTPS 요청을 `AbortController`로 취소합니다.
 
 ### 결과 필터링
@@ -1054,9 +1054,9 @@ ATS 보드는 CORS 헤더를 보내지 않으므로 브라우저가 직접 가�
 
 ### 오른쪽 상단 버튼
 
-- **⚡ Evaluate first** — Evaluate 페이지에서 큐 첫 번째 URL을
+- **⚡ 첫 항목 평가** — Evaluate 페이지에서 큐 첫 번째 URL을
   열어 채점 준비.
-- **Scan** — 더 많은 URL이 필요하면 스캐너로 돌아가기.
+- **채용 공고 검색** — 더 많은 URL이 필요하면 스캐너로 돌아가기.
 
 ---
 
@@ -1145,7 +1145,7 @@ pipeline에 10개 이상 URL이 큐잉되었다면 JD별 클릭은 비현실적�
 
 ### 리포트를 PDF로 내보내기
 
-저장된 리포트를 열고 **📄 Generate PDF**를 클릭하세요. 부모 프로젝트에서
+저장된 리포트를 열고 **📄 PDF 생성**를 클릭하세요. 부모 프로젝트에서
 `generate-pdf.mjs`를 실행해 파일을 `output/*.pdf`에 씁니다(Playwright가
 필요하며, 상태 페이지에서 설치 여부를 확인할 수 있습니다). 아무 데도
 전송되지 않으니, 지원서에 첨부하기 전에 PDF를 검토하세요.
@@ -1297,14 +1297,14 @@ Evaluate와 동일한 폴백 체인:
 
 각 페이지에 모드별 소형 폼, **▶ Generate prompt** 버튼(수동),
 그리고 Anthropic 또는 Gemini 키가 있을 때 — 기본 액션으로 격상되는
-**⚡ Run live** 버튼이 있습니다.
+**⚡ 실시간 실행** 버튼이 있습니다.
 
 **▶ Generate prompt** 클릭은 폼 값을 `User-supplied context:`
 블록에 JSON 직렬화한 다음 `modes/<slug>.md` 템플릿을 그대로
 이어 붙인 조립된 프롬프트를 반환합니다. 선호하는 LLM에 복사해
 붙여넣으십시오.
 
-**⚡ Run live** 클릭은 동일 프롬프트를 Anthropic(또는 Gemini)에
+**⚡ 실시간 실행** 클릭은 동일 프롬프트를 Anthropic(또는 Gemini)에
 보내며, `cv.md` + `profile.yml` + `_shared.md`는
 `bundleProjectContext`로 인라인됩니다. 결과는 페이지에
 렌더링되고, 복사 가능하며, `.md`로 다운로드할 수 있습니다.
@@ -1507,7 +1507,7 @@ tracker 행을 `#/tracker`에 노출합니다 — 마치 `#/evaluate`로 각각
   브라우저를 열고 필드 레이블을 읽으며 답변을 제안합니다).
 - **PDF 생성**: `/career-ops pdf` 및 `#/cv` / `#/reports/:slug` /
   `#/evaluate` / `#/deep` / `#/interview-prep`의 SPA
-  **📄 Generate PDF** 버튼.
+  **📄 PDF 생성** 버튼.
 
 **Playwright가 없을 때의 폴백:** apply 흐름은 WebFetch로
 폴백합니다 (텍스트 전용 폼 미리보기, 클릭 채우기 없음). PDF
@@ -1630,7 +1630,7 @@ deep research 실행, scan 실행, 설정 변경, 모드 실행.
 | Tracker 행이 테이블을 깨뜨림 | v1.9.1 이전의 회사 이름 파이프 | v1.9.1+로 업데이트 — 파이프는 종단 간 이스케이프됩니다 (BF-1). |
 | 신선한 클론에서 `npm test` 실패 | 테스트가 부모 프로젝트 레이아웃 가정 | `CAREER_OPS_ROOT=$(mktemp -d)` 사용 및 픽스처 부트스트랩. |
 
-더 깊은 진단: Health 페이지에서 **▶ Doctor** 실행, 출력 복사,
+더 깊은 진단: Health 페이지에서 **doctor 실행** 실행, 출력 복사,
 <https://github.com/Fighter90/career-ops-ui/issues>의 이슈
 트래커에서 검색하십시오.
 

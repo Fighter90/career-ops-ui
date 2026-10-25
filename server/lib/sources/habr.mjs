@@ -36,6 +36,12 @@ export const meta = {
 // Hard safety cap on pagination depth per query (Habr pages are 1-indexed).
 const MAX_PAGES = 50;
 
+// A qualification level in the meta row is never a city. ASCII \b is dead
+// next to Cyrillic — the boundary is Unicode-letter/digit (see the
+// specialization matcher in public/js/views/map.js for the same pattern).
+const QUALIFICATION_CHIP =
+  /^(?:junior|middle|senior|lead|intern|стаж[её]р|младший|средний|старший|ведущий)(?![\p{L}\p{N}])/iu;
+
 export async function searchHabr(query, opts = {}) {
   const { onlyRemote = false, experience, sort = 'date', maxPages = MAX_PAGES, fetchImpl = fetch, signal } = opts;
 
@@ -108,6 +114,18 @@ export function parseHabrCards(html) {
 
     const isRemote = chips.includes('Можно удалённо');
     const hasRelocation = chips.some((ch) => /релок|reloc/i.test(ch));
+    // CAR-105 — the meta row is "qualification · remote marker · CITY"; the
+    // city feeds `location` so the job map can geocode a real place instead
+    // of the country string 'Russia' (a country centroid is exactly what the
+    // geocoder refuses, so every Habr row landed in the map's no-location
+    // bucket). Skills chips live in their own section AFTER the meta row and
+    // are excluded by slicing at it; qualification levels are excluded by
+    // name (Unicode boundary — ASCII \b never matches Cyrillic).
+    const metaEnd = block.indexOf('vacancy-card__skills');
+    const metaBlock = metaEnd === -1 ? block : block.slice(0, metaEnd);
+    const city = [...metaBlock.matchAll(/chip-with-icon__text">([^<]+)</g)]
+      .map((c) => decodeEntities(c[1].trim()))
+      .find((ch) => ch && ch !== 'Можно удалённо' && !QUALIFICATION_CHIP.test(ch)) || '';
     out.push({
       id: id ? `habr-${id}` : `habr-${out.length}`,
       // Decode HTML entities BEFORE the title reaches title_filter and before
@@ -118,7 +136,7 @@ export function parseHabrCards(html) {
       company: decodeEntities(company?.trim() || ''),
       url: HABR_BASE + titleMatch[1],
       salary: (salary || '').trim(),
-      location: isRemote ? 'Remote' : 'Russia',
+      location: city || (isRemote ? 'Remote' : 'Russia'),
       isRemote,
       relocates: hasRelocation,
       workplaceType: isRemote ? 'Remote' : 'Onsite',
