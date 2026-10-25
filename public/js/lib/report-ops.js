@@ -32,42 +32,95 @@ window.ReportOps = (function () {
 
   const escapeRe = (s) => String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const LABEL_RE = new RegExp(
-    '^[ \\t]*\\*{0,2}[ \\t]*(?:' + H1_LABEL_WORDS.join('|') + ')[ \\t]*\\*{0,2}[ \\t]*[:：][ \\t]*(.+)$',
+    '^[ \\t]*\\*{0,2}[ \\t]*(?:' + H1_LABEL_WORDS.map(escapeRe).join('|') + ')[ \\t]*\\*{0,2}[ \\t]*[:：][ \\t]*(.+)$',
     'iu',
   );
-  const DASH_RE = /^(.{1,120}?)\s+[—–-]\s+(.+)$/u;
+
+  // Dash separators: em/en dashes take priority; a spaced hyphen is only a
+  // separator when the body carries no em/en dash at all (a hyphen inside a
+  // company or role name — «Acme - Labs» — is content, not a boundary).
+  const EM_DASH_SEP = '\\s+[—–]\\s+';
+  const HYPHEN_SEP = '\\s+-\\s+';
+
+  /** All separator occurrences of `sepSrc` in `body` (leftmost-first). */
+  function separators(body, sepSrc) {
+    const re = new RegExp(sepSrc, 'g');
+    const out = [];
+    let m;
+    while ((m = re.exec(body)) !== null) out.push({ idx: m.index, len: m[0].length });
+    return out;
+  }
 
   /**
-   * Split a report H1 into { company, role } following the server's
-   * v1.248.7 convention. Never throws; unknown parts come back ''.
+   * Split `body` at the LAST dash separator (em/en dashes take priority; a
+   * spaced hyphen is only a separator when the body carries no em/en dash at
+   * all — a hyphen inside a name, «Acme - Labs», is content, not a boundary).
+   *
+   * LAST, not first, keeps the multi-token side whole in BOTH H1 forms:
+   *   labelled   `Company — Role`   → «Acme - Labs — Staff Eng» keeps the
+   *                                    hyphenated company intact;
+   *   unlabelled `Role — Company`   → «Engineer - Platform — Acme» keeps the
+   *                                    role intact.
+   */
+  function splitDash(body) {
+    const seps = separators(body, EM_DASH_SEP).length
+      ? separators(body, EM_DASH_SEP)
+      : separators(body, HYPHEN_SEP);
+    if (!seps.length) return null;
+    const sep = seps[seps.length - 1];
+    const left = body.slice(0, sep.idx).trim();
+    const right = body.slice(sep.idx + sep.len).trim();
+    if (!left || !right) return null;
+    return { left, right };
+  }
+
+  /**
+   * Split a report H1 into { company, role, labelled } following the
+   * server's v1.248.7 convention. Never throws; unknown parts come back ''.
+   * `labelled` records whether a recognised H1 label was stripped —
+   * displayTitle rewrites the order ONLY for labelled headers.
    */
   function normalizeTitle(title) {
     const raw = String(title || '').replace(/^#+\s*/, '').trim();
-    if (!raw) return { company: '', role: '' };
+    if (!raw) return { company: '', role: '', labelled: false };
     const labelled = raw.match(LABEL_RE);
     const body = (labelled ? labelled[1] : raw).trim();
-    const dash = body.match(DASH_RE);
-    if (!dash) return { company: '', role: body };
-    const left = dash[1].trim();
-    const right = dash[2].trim();
+    const split = splitDash(body);
+    if (!split) return { company: '', role: body, labelled: Boolean(labelled) };
     // After a label: `Company — Role` (role is the RIGHT side); without a
     // label: `Role — Company` (role is the LEFT side).
-    return labelled ? { company: left, role: right } : { company: right, role: left };
+    return labelled
+      ? { company: split.left, role: split.right, labelled: true }
+      : { company: split.right, role: split.left, labelled: false };
   }
 
-  /** Unified list format: «Company — Role», falling back to title then slug. */
-  function displayTitle(rep) {
-    const rep2 = rep || {};
-    const { company, role } = normalizeTitle(rep2.title);
-    if (company && role) return company + ' — ' + role;
-    if (role) return role;
-    return String(rep2.title || rep2.slug || '');
-  }
-
-  /** Score is ALWAYS «x.x/5»; null when the server couldn't parse one. */
-  function formatScore(scoreNum) {
+  /**
+   * The ONE rounding for display AND banding (review finding 2): a score is
+   * shown to one decimal, so band decisions must run on the same rounded
+   * value — 4.47 displays «4.5» and bands high, never «4.5»+good.
+   */
+  function roundScore(scoreNum) {
     if (scoreNum == null || !Number.isFinite(Number(scoreNum))) return null;
-    return Number(scoreNum).toFixed(1) + '/5';
+    return Math.round(Number(scoreNum) * 10) / 10;
+  }
+
+  /** Unified list format. Rewrites to «Company — Role» ONLY when a
+   * recognised H1 label was stripped (review finding 4): a legacy
+   * hand-written label-less title keeps its raw form — reordering it would
+   * mis-attribute role and company. Label-less + no dash → the raw title. */
+  function displayTitle(rep) {
+    const r = rep || {};
+    const raw = String(r.title || '').replace(/^#+\s*/, '').trim();
+    const { company, role, labelled } = normalizeTitle(r.title);
+    if (labelled) return (company && role) ? company + ' — ' + role : (role || raw);
+    return raw || String(r.slug || '');
+  }
+
+  /** Score is ALWAYS «x.x/5» (rounded via roundScore); null when the server
+   * couldn't parse one. */
+  function formatScore(scoreNum) {
+    const n = roundScore(scoreNum);
+    return n == null ? null : n.toFixed(1) + '/5';
   }
 
   // The four action bands (career-ops.org scan guide): ≥4.5 apply now,
@@ -79,10 +132,11 @@ window.ReportOps = (function () {
     { id: 'low', max: 3.5 },
   ];
 
-  /** 'high' | 'good' | 'mid' | 'low' | null (unparsed). */
+  /** 'high' | 'good' | 'mid' | 'low' | null (unparsed) — bands the
+   * DISPLAYED (rounded) value so a «4.0/5» chip never sits in the mid band. */
   function bandOf(scoreNum) {
-    const n = Number(scoreNum);
-    if (scoreNum == null || !Number.isFinite(n)) return null;
+    const n = roundScore(scoreNum);
+    if (n == null) return null;
     if (n >= 4.5) return 'high';
     if (n >= 4.0) return 'good';
     if (n >= 3.5) return 'mid';
@@ -98,6 +152,11 @@ window.ReportOps = (function () {
    *   legitimacy — exact legitimacy chip value ('' = all)
    *   band       — 'all' | 'high' | 'good' | 'mid' | 'low'
    *   dateFrom / dateTo — inclusive ISO YYYY-MM-DD bounds
+   *
+   * Missing title/slug contribute nothing to the haystack (no literal
+   * "undefined" tokens — review finding 6); an undated report is excluded
+   * as soon as EITHER date bound is set (review finding 7 — the old
+   * ''-string compare passed dateTo but failed dateFrom).
    */
   function applyFilters(reports, f) {
     const fs = f || {};
@@ -108,16 +167,19 @@ window.ReportOps = (function () {
     const from = fs.dateFrom ? String(fs.dateFrom) : '';
     const to = fs.dateTo ? String(fs.dateTo) : '';
     return (reports || []).filter((r) => {
+      const date = String(r.date || '');
+      if ((from || to) && !date) return false;
       if (q) {
-        const { company: pc, role: pr } = normalizeTitle(r.title);
-        const hay = norm(pc + ' ' + pr + ' ' + r.title + ' ' + r.slug);
+        const parts = normalizeTitle(r.title);
+        const hay = norm((parts.company || '') + ' ' + (parts.role || '') + ' '
+          + (r.title || '') + ' ' + (r.slug || ''));
         if (!hay.includes(q)) return false;
       }
       if (company && !norm(normalizeTitle(r.title).company).includes(company)) return false;
       if (legitimacy && norm(r.legitimacy) !== legitimacy) return false;
       if (band && bandOf(r.scoreNum) !== band) return false;
-      if (from && !(String(r.date || '') >= from)) return false;
-      if (to && !(String(r.date || '') <= to)) return false;
+      if (from && !(date >= from)) return false;
+      if (to && !(date <= to)) return false;
       return true;
     });
   }
@@ -173,5 +235,22 @@ window.ReportOps = (function () {
     return Array.from(seen.values()).sort((a, b) => collator.compare(a, b));
   }
 
-  return { normalizeTitle, displayTitle, formatScore, bandOf, BANDS, applyFilters, sortReports, scoreHistogram, companies };
+  /**
+   * Trailing debounce with a .cancel() escape (review finding 8): a pending
+   * filter keystroke must not resurrect state the user just reset.
+   */
+  function debounce(fn, ms) {
+    let handle;
+    const wrapped = (...args) => {
+      clearTimeout(handle);
+      handle = setTimeout(() => fn(...args), ms);
+    };
+    wrapped.cancel = () => { clearTimeout(handle); };
+    return wrapped;
+  }
+
+  return {
+    normalizeTitle, displayTitle, roundScore, formatScore, bandOf, BANDS,
+    applyFilters, sortReports, scoreHistogram, companies, debounce,
+  };
 })();
