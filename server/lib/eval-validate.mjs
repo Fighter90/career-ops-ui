@@ -384,7 +384,11 @@ export function stripScoreSummary(text) {
 // prose — or a Data-freshness date in a deep brief — never matches. The
 // `{YYYY-MM-DD}` placeholder echo (the model copying the template literally)
 // is a non-date and is rewritten too.
-const REPORT_DATE_LINE = /^[ \t]*(?:[-*][ \t]*)?(?:\*\*)?[ \t]*Date[ \t]*[:：][ \t]*(?:\*\*)?[ \t]*(\d{4}-\d{2}-\d{2}|\{YYYY-MM-DD\})[ \t]*(?:\*\*)?[ \t]*\r?$/gmi;
+// CAR-144 — header-scoped and first-match-only (no `g` flag): fixReportDate
+// applies it to the text before the first `## ` heading, so a `- Date: …`
+// posting bullet in a Block F/G body or a dated news item in a deep brief —
+// user content — is never rewritten.
+const REPORT_DATE_LINE = /^[ \t]*(?:[-*][ \t]*)?(?:\*\*)?[ \t]*Date[ \t]*[:：][ \t]*(?:\*\*)?[ \t]*(\d{4}-\d{2}-\d{2}|\{YYYY-MM-DD\})[ \t]*(?:\*\*)?[ \t]*\r?$/mi;
 
 /**
  * CAR-101 — belt-and-braces for the report header's **Date:** field. The
@@ -407,10 +411,15 @@ export function fixReportDate(text, today) {
     ? today
     : (() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; })();
   let replaced = 0;
-  const out = src.replace(REPORT_DATE_LINE, (line, value) => {
+  // CAR-144 — the header is everything before the first `## ` heading; the
+  // correction never reaches past it (deep-brief Block bodies are content).
+  const headerEnd = src.search(/^## /m);
+  const header = headerEnd === -1 ? src : src.slice(0, headerEnd);
+  const body = headerEnd === -1 ? '' : src.slice(headerEnd);
+  const fixedHeader = header.replace(REPORT_DATE_LINE, (line, value) => {
     if (value === day) return line;
     replaced += 1;
     return line.replace(value, day);
   });
-  return { text: out, replaced };
+  return { text: fixedHeader + body, replaced };
 }
