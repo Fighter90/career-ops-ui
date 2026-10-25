@@ -1,0 +1,168 @@
+/**
+ * CAR-116 — #/pipeline v2 (UX·Воронка): 30 358 raw URLs → enriched
+ * cards, grouping with collapse, bulk discard with progress + cancel,
+ * and session undo. Contract lock for the view + its stylesheet + the
+ * shell wiring (browser-only view → asserted statically, the
+ * pipeline-row-action-names.test.mjs style; the PURE helpers behind it
+ * get behavioural tests in pipeline-view-lib.test.mjs).
+ *
+ * Enrichment boundary (the load-bearing rule): the view may only join
+ * payloads the EXISTING endpoints already return — /api/tracker rows,
+ * /api/reports headers, /api/map/jobs checklist cells. No new endpoint,
+ * no invented data; unmatched entries render host + URL and nothing else.
+ */
+import { test } from 'node:test';
+import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { fileURLToPath } from 'node:url';
+import { dirname, resolve } from 'node:path';
+
+const __dirname = dirname(fileURLToPath(import.meta.url));
+const R = (...p) => resolve(__dirname, '..', ...p);
+const PIPE = readFileSync(R('public', 'js', 'views', 'pipeline.js'), 'utf8');
+const LIB = readFileSync(R('public', 'js', 'lib', 'pipeline-view.js'), 'utf8');
+const CSS = readFileSync(R('public', 'css', 'v2-pipeline.css'), 'utf8');
+const HTML = readFileSync(R('public', 'index.html'), 'utf8');
+
+// ── enrichment: existing endpoints only ──────────────────────────────
+
+test('enrichment fetches only existing endpoints, fail-soft, once at mount', () => {
+  assert.match(PIPE, /API\.get\('\/api\/tracker'\)/, 'tracker rows');
+  assert.match(PIPE, /API\.get\('\/api\/reports'\)/, 'report headers');
+  assert.match(PIPE, /API\.get\('\/api\/map\/jobs'\)/, 'checklist cells');
+  // each new source degrades to a harmless default — a failing report/map
+  // read must never blank the queue
+  assert.match(PIPE, /API\.get\('\/api\/reports'\)\.catch\(\(\) => null\)/);
+  assert.match(PIPE, /API\.get\('\/api\/map\/jobs'\)\.catch\(\(\) => null\)/);
+});
+
+test('the view never invents payloads — the join lives in the pure lib', () => {
+  assert.match(PIPE, /PV\.buildEnrichment\(\{\s*\n?\s*trackerRows,/);
+  assert.match(PIPE, /PV\.enrichEntries\(allUrls, enrichment\)/);
+  // the lib reads only the three documented shapes
+  for (const marker of ['o.mapRows', 'o.reports', 'o.trackerRows']) {
+    assert.ok(LIB.includes(marker), `lib consumes ${marker}`);
+  }
+});
+
+// ── grouped view: cards, collapse, volume ────────────────────────────
+
+test('grouped view is the default and renders enriched entry cards', () => {
+  assert.match(PIPE, /setViewMode\(PV \? 'grouped' : 'flat'\)/,
+    'grouped cards are the default view when the lib loaded');
+  assert.match(PIPE, /function entryCard\(url\)/);
+  // role/company title, URL link, score chip, evaluated chip
+  assert.match(PIPE, /className: 'v2-row-title'/);
+  assert.match(PIPE, /className: 'v2-row-url'/);
+  assert.match(PIPE, /v2-chip-score/);
+  assert.match(PIPE, /t\('pipe\.evaluatedBadge', 'Evaluated'\)/);
+});
+
+test('groups collapse; the count is announced; volume is bounded', () => {
+  assert.match(PIPE, /'aria-expanded': open \? 'true' : 'false'/);
+  assert.match(PIPE, /'aria-controls': bodyId/);
+  assert.match(PIPE, /'aria-hidden': 'true'[\s\S]{0,80}open \? '▾' : '▸'/);
+  // 30k rows must never render at once: pagination over groups +
+  // a per-group render budget with an explicit "show more"
+  assert.match(PIPE, /GROUPS_PER_PAGE = \d+/);
+  assert.match(PIPE, /GROUP_WINDOW = \d+/);
+  assert.match(PIPE, /groupPager = UI\.paginate\(\{ pageSize: GROUPS_PER_PAGE/);
+  assert.match(PIPE, /g\.entries\.slice\(0, budget\)/);
+  assert.match(PIPE, /t\('pipe\.showMore', 'Show more'\)/);
+});
+
+test('focus management on group collapse (a11y)', () => {
+  const at = PIPE.indexOf('function toggleGroup');
+  const body = PIPE.slice(at, PIPE.indexOf('function groupBlock', at));
+  assert.match(body, /body\.contains\(document\.activeElement\)/,
+    'collapse detects focus inside the vanishing body');
+  assert.match(body, /btn\.focus\(\)/,
+    '…and hands focus back to the group toggle');
+});
+
+test('hide-already-evaluated defaults ON and filters both views', () => {
+  assert.match(PIPE, /id: 'pipe-hide-tracked',\s*\n\s*type: 'checkbox',\s*\n\s*checked: '',/);
+  assert.match(PIPE, /htmlFor: 'pipe-hide-tracked'/);
+  assert.match(PIPE, /hideTracked: hideTracked\.checked/, 'grouped filter');
+  assert.match(PIPE, /hideT && trackedKeys\.has\(PV\.normKey\(u\)\)/, 'flat filter');
+});
+
+// ── bulk select + discard: existing per-entry mechanism, sequential ──
+
+test('bulk selection: every checkbox carries a disambiguated label', () => {
+  assert.match(PIPE, /function selectLabel\(u\)/, 'row checkbox label helper');
+  assert.match(PIPE, /t\('pipe\.selectOne', 'Select'\) \+ ': ' \+ shortUrl\(u\)/);
+  assert.match(PIPE, /t\('pipe\.selectGroup', 'Select all in group'\) \+ ': ' \+ g\.label/);
+  // the group checkbox announces its three-state via indeterminate
+  assert.match(PIPE, /box\.indeterminate = true/);
+});
+
+test('bulk discard: confirm → sequential per-entry DELETE → progress → undo', () => {
+  // the only NEW confirm is the bulk one, danger:true
+  const at = PIPE.indexOf('async function bulkRemove');
+  const body = PIPE.slice(at, PIPE.indexOf('function toggleSelect', at));
+  assert.match(body, /await UI\.confirm\(/);
+  assert.match(body, /danger: true/);
+  // sequential client-side calls through the shared per-entry remover
+  assert.match(body, /for \(let i = 0; i < urls\.length; i\+\+\)/);
+  assert.match(body, /await removeFromPipeline\(urls\[i\]\)/);
+  // progress is announced (role=status) and cancellable
+  assert.match(PIPE, /role: 'status', 'aria-live': 'polite', className: 'v2-bulk-progress'/);
+  assert.match(body, /bulkCancelFlag \|\| Router\.current\(\)\.name !== 'pipeline'/,
+    'cancels on button AND on leaving #/pipeline');
+  // nothing submits applications — only pipeline deletes happen
+  assert.doesNotMatch(body, /api\/tracker|applications|auto-pipeline/);
+});
+
+// ── undo: session-scoped, through the existing add path ─────────────
+
+test('undo bar: body-level (survives re-render), keyboard-reachable, POST re-add', () => {
+  assert.match(PIPE, /document\.body\.appendChild\(bar\)/,
+    'the bar must live on body — Router.render() re-mounts the view');
+  assert.match(PIPE, /id: 'pipeline-undo-btn'/);
+  assert.match(PIPE, /API\.post\('\/api\/pipeline', \{ url: u \}\)/,
+    'undo re-adds through the existing add path');
+  assert.match(PIPE, /undoQueue = PV \? PV\.createUndoQueue\(5\) : null/,
+    'bounded session queue');
+});
+
+// ── shell wiring ─────────────────────────────────────────────────────
+
+test('index.html loads the stylesheet after the three app sheets, lib before the view', () => {
+  const cssOrder = ['/css/app.css', '/css/components.css', '/css/overlays.css', '/css/v2-pipeline.css', '/css/map.css']
+    .map((f) => HTML.indexOf(f));
+  assert.ok(cssOrder.every((p) => p > -1), 'every stylesheet linked');
+  assert.ok(cssOrder.every((p, i) => i === 0 || cssOrder[i - 1] < p),
+    'v2-pipeline.css sits between overlays.css and map.css');
+  assert.match(HTML, /<!-- CAR-116 — #\/pipeline v2/);
+  const lib = HTML.indexOf('/js/lib/pipeline-view.js');
+  const view = HTML.indexOf('/js/views/pipeline.js');
+  assert.ok(lib > -1 && view > -1 && lib < view,
+    'the lib must load before the view (document order = bundle order)');
+  const between = HTML.slice(lib, view).match(/<script src=/g) || [];
+  assert.equal(between.length, 1,
+    'no other script may sit between the lib and the view');
+});
+
+test('v2-pipeline.css: exists, token-based, ≤ 800-LOC contract, RTL/motion-safe', () => {
+  const lines = CSS.split('\n').length;
+  assert.ok(lines <= 800, `v2-pipeline.css is ${lines} lines — over the 800-LOC hard limit`);
+  assert.ok(!/#\s*[0-9a-fA-F]{3,8}\b/.test(CSS.replace(/\/\*[\s\S]*?\*\//g, '')),
+    'no hardcoded hex colors — tokens only, so dark theme follows');
+  assert.match(CSS, /direction: ltr/, 'URLs stay LTR in RTL locales');
+  assert.match(CSS, /prefers-reduced-motion: reduce/);
+  assert.match(CSS, /inset-inline-start/, 'logical (RTL-mirrorable) positioning');
+  assert.match(CSS, /max-width: 720px/, 'narrow-viewport stacking');
+});
+
+// ── i18n discipline ──────────────────────────────────────────────────
+
+test('CAR-116 strings: I18n.t + EN fallback only, with the hand-off comment', () => {
+  assert.match(PIPE, /CAR-116 i18n:/, 'the locale fan-out hand-off list is declared');
+  const keys = Array.from(PIPE.matchAll(/t\('(pipe\.[A-Za-z]+)',\s*'[^']*'\)/g), (m) => m[1]);
+  assert.ok(keys.length >= 15, `new fallback-keyed strings present (${keys.length})`);
+  for (const k of ['pipe.viewGrouped', 'pipe.viewFlat', 'pipe.hideTracked', 'pipe.undo',
+    'pipe.bulkRemove', 'pipe.showMore', 'pipe.evaluatedBadge']) {
+    assert.ok(keys.includes(k), `missing new key ${k}`);
+  }
+});

@@ -1,0 +1,295 @@
+/* ==========================================================================
+   v2-pipeline.css — CAR-116 (#/pipeline v2): enriched cards, group
+   collapse, bulk select + discard-with-undo. Scoped to the pipeline
+   view's v2-* classes so the legacy .pipeline-row chrome keeps working
+   in both views. Tokens only (no hardcoded colors) → dark theme and
+   RTL follow the app automatically; the one directional margin uses
+   logical properties.
+   ========================================================================== */
+
+/* ── toolbar: view toggle + hide-already-evaluated ── */
+.v2-toolbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+}
+
+.v2-viewbtn[aria-pressed='true'] {
+  border-color: var(--hof);
+  font-weight: 600;
+}
+
+.v2-hide-tracked {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  margin-inline-start: var(--space-2);
+  font-size: var(--font-size-md);
+  color: var(--foggy-strong);
+  cursor: pointer;
+  user-select: none;
+}
+
+.v2-hide-tracked input {
+  accent-color: var(--rausch-fill);
+}
+
+/* ── bulk action bar ── */
+.v2-bulkbar {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--slate);
+  border-radius: var(--radius);
+  background: var(--elev);
+}
+
+/* author display: beats the UA [hidden] rule — restore hide-by-attribute */
+.v2-bulkbar[hidden] {
+  display: none;
+}
+
+.v2-bulk-count {
+  font-size: var(--font-size-md);
+  color: var(--foggy-strong);
+  margin-inline-end: var(--space-1);
+}
+
+.v2-bulk-progress {
+  font-size: var(--font-size-md);
+  color: var(--foggy-strong);
+  font-variant-numeric: tabular-nums;
+  min-width: 0;
+}
+
+/* ── groups ── */
+.v2-groups {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  min-width: 0;
+}
+
+/* the view toggles the two hosts with explicit style.display (the list's
+   inline flex layout would beat [hidden]); this rule is belt-and-braces
+   for any attribute-driven hide */
+.v2-groups[hidden] {
+  display: none;
+}
+
+.v2-group {
+  border: 1px solid var(--slate);
+  border-radius: var(--radius);
+  background: var(--paper);
+  overflow: hidden;
+}
+
+.v2-group-head {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--beach);
+  border-bottom: 1px solid var(--slate);
+}
+
+.v2-group-head input[type='checkbox'] {
+  flex: 0 0 auto;
+  accent-color: var(--rausch-fill);
+}
+
+.v2-group-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  flex: 1;
+  min-width: 0;
+  padding: 4px 6px;
+  border: 0;
+  background: transparent;
+  font: inherit;
+  text-align: start;
+  cursor: pointer;
+  border-radius: var(--radius-sm);
+  transition: background var(--transition);
+}
+
+.v2-group-toggle:hover {
+  background: var(--elev);
+}
+
+.v2-caret {
+  flex: 0 0 auto;
+  color: var(--foggy-strong);
+  width: 1em;
+}
+
+.v2-group-label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.v2-group-count {
+  flex: 0 0 auto;
+  font-size: var(--font-size-sm);
+  color: var(--foggy-strong);
+  background: var(--elev);
+  border-radius: var(--radius-pill);
+  padding: 1px 8px;
+  font-variant-numeric: tabular-nums;
+}
+
+.v2-group-body {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: var(--space-2) var(--space-3);
+}
+
+.v2-show-more {
+  align-self: flex-start;
+}
+
+/* ── enriched entry card (grouped view) ── */
+.pipeline-row.v2-row {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--slate);
+  border-radius: var(--radius-sm);
+  cursor: pointer;
+  transition: border-color var(--transition), background var(--transition);
+}
+
+.pipeline-row.v2-row:hover {
+  background: var(--beach);
+}
+
+.pipeline-row.v2-row[aria-pressed='true'] {
+  border-color: var(--hof);
+  background: var(--beach);
+}
+
+.v2-row-check {
+  flex: 0 0 auto;
+  margin-top: 3px;
+  accent-color: var(--rausch-fill);
+}
+
+.v2-row-main {
+  flex: 1;
+  min-width: 0;
+}
+
+.v2-row-title {
+  font-weight: 600;
+  font-size: 14px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.v2-row-url {
+  display: block;
+  font-size: var(--font-size-sm);
+  color: var(--foggy);
+  text-decoration: none;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  direction: ltr; /* URLs stay LTR even in RTL locales */
+}
+
+.v2-row-url:hover,
+.v2-row-url:focus-visible {
+  text-decoration: underline;
+}
+
+.v2-row-chips {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 4px;
+  margin-top: 4px;
+}
+
+.v2-chip {
+  display: inline-flex;
+  align-items: center;
+  font-size: var(--font-size-xs);
+  color: var(--foggy-strong);
+  background: var(--elev);
+  border-radius: var(--radius-pill);
+  padding: 1px 8px;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+
+.v2-chip-score {
+  color: var(--babu-text);
+  font-weight: 600;
+}
+
+.v2-chip-tracked {
+  color: var(--kazan-text);
+}
+
+/* ── undo bar (session discard undo; body-level, like the toast) ── */
+.v2-undo-bar {
+  position: fixed;
+  inset-inline-start: 50%;
+  bottom: calc(var(--space-4) + 8px);
+  transform: translateX(-50%);
+  z-index: var(--z-toast, 1000);
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--paper);
+  color: var(--hof);
+  border: 1px solid var(--slate);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  max-width: min(560px, calc(100vw - 32px));
+}
+
+.v2-undo-bar[hidden] {
+  display: none;
+}
+
+.v2-undo-msg {
+  font-size: var(--font-size-md);
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* ── motion discipline (CAR-123 will own the global ramp) ── */
+@media (prefers-reduced-motion: reduce) {
+  .v2-group-toggle,
+  .pipeline-row.v2-row {
+    transition: none;
+  }
+}
+
+/* ── narrow viewports: controls stack before they overflow ── */
+@media (max-width: 720px) {
+  .v2-toolbar,
+  .v2-bulkbar {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .v2-hide-tracked {
+    margin-inline-start: 0;
+  }
+}

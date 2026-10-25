@@ -24,14 +24,26 @@ test('#8: no native confirm() left anywhere in pipeline.js', () => {
     'pipeline.js still calls native confirm()');
 });
 
-test('#8: all three actions go through focus-trapped UI.confirm()', () => {
+test('#8: destructive + nav actions go through focus-trapped UI.confirm()', () => {
   const calls = PIPE.match(/await UI\.confirm\(/g) || [];
-  assert.ok(calls.length >= 3, `expected ≥3 UI.confirm sites, found ${calls.length}`);
-  // the two deletes are danger:true; evaluate-all is danger:false
-  assert.ok((PIPE.match(/danger:\s*true/g) || []).length >= 2, 'both deletes danger:true');
+  // CAR-116 — the single-row delete lost its confirm ON PURPOSE: it is
+  // now immediate with an undo bar (the epic's ask). The confirm sites
+  // that remain are the BULK discard (danger) and evaluate-first (nav).
+  assert.ok(calls.length >= 2, `expected ≥2 UI.confirm sites, found ${calls.length}`);
+  // the bulk discard is danger:true; evaluate-first is danger:false
+  assert.ok((PIPE.match(/danger:\s*true/g) || []).length >= 1, 'bulk discard danger:true');
   assert.match(PIPE, /danger:\s*false/);
-  assert.match(PIPE, /t\('pipe\.confirmDelTitle'/);
+  assert.match(PIPE, /t\('pipe\.confirmDelTitle'/, 'bulk discard reuses the remove-from-pipeline title');
   assert.match(PIPE, /t\('pipe\.evaluateAllTitle'/);
+});
+
+test('#8b (CAR-116): single-row deletes do NOT confirm — they push undo', () => {
+  // the row + preview-pane delete paths must not open a confirm modal;
+  // they funnel through removeFromPipeline and show the undo bar.
+  const row = PIPE.slice(PIPE.indexOf('function urlRow'), PIPE.indexOf('// Virtualization state'));
+  assert.ok(!/UI\.confirm/.test(row), 'flat row delete must not confirm');
+  assert.match(PIPE, /pushUndo\(\[url\]\);\s*\n\s*showUndoBar\(1\);/,
+    'single deletes push a one-URL undo batch');
 });
 
 test('#22: previewPane is a labelled polite live region', () => {
