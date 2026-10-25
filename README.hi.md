@@ -19,9 +19,9 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.257.0** — **दो एजेंट-फ़्लीट फ़िक्स: इन-ऐप हेल्प असिस्टेंट अब देवनागरी और तमिल समझता है (टोकनाइज़र संयुक्त चिह्न छोड़ देता था — हिन्दी क्वेरी 0 सेक्शन से मेल खाती थी, तमिल टुकड़ों पर), और यूसेज पेज दिखाता है कि Hermes की असल लागत क्या है (गेटवे-रिपोर्टेड लागत चुपचाप छोड़ दी जाती थी — 9.5 M टोकन पर $0.0000)।**
+> **🆕 नवीनतम रिलीज़ — v1.258.0** — **एजेंट फ़्लीट के छह फ़िक्स: «Active companies» काउंटर दो जगतों को मिलाना बंद करता है (1554/90), डीप रिसर्च `[source: …]` मार्कर माँगता है और अज्ञात को स्वीकार करता है, विफल फ़ॉर्म फ़ील्ड केवल-टोस्ट त्रुटि की जगह रोशन होते हैं, #/map और #/tracker अपना h1 स्केलेटन लोडिंग-पंक्तियों के साथ तुरंत रेंडर करते हैं, और हर /api/evaluate ~37k-टोकन स्थिर प्रीफ़िक्स कैश करता है (पहली कॉल के बाद ≈10× सस्ता)।**
 >
-> **पिछला — v1.256.0** — **ट्रैकर डेटा गुणवत्ता: रोल कभी कंपनी के रूप में दर्ज नहीं होता (`Senior Frontend Engineer - Grafana Labs` उल्टा पार्स होता था — 13 पंक्तियाँ), जॉब बोर्ड कभी एम्प्लॉयर के रूप में दर्ज नहीं होता (hh.ru की पंक्तियाँ «hh» के रूप में दर्ज — 120 पंक्तियाँ; सिरिलिक इन्फ़रेंस पैटर्न v1.248.4 से चुपचाप निष्क्रिय थे — ASCII `\b`), ट्रैकर सॉर्ट में बिना स्कोर वाली पंक्तियाँ सबसे पहले सामने आना बंद कर देती हैं, और नया वन-शॉट एंडपॉइंट रिपोर्टों से ही गुम स्कोर बैकफ़िल कर देता है।**
+> **पिछला — v1.257.0** — **दो एजेंट-फ़्लीट फ़िक्स: इन-ऐप हेल्प असिस्टेंट अब देवनागरी और तमिल समझता है (टोकनाइज़र संयुक्त चिह्न छोड़ देता था — हिन्दी क्वेरी 0 सेक्शन से मेल खाती थी, तमिल टुकड़ों पर), और यूसेज पेज दिखाता है कि Hermes की असल लागत क्या है (गेटवे-रिपोर्टेड लागत चुपचाप छोड़ दी जाती थी — 9.5 M टोकन पर $0.0000)।**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
