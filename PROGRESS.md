@@ -8,7 +8,13 @@ Release history belongs in [CHANGELOG.md](CHANGELOG.md), decisions in
 [docs/adr/](docs/adr/), vocabulary in [CONTEXT.md](CONTEXT.md). Anything already
 recoverable from those does **not** belong here.
 
-_Last updated: 2026-10-25 · **v1.259.0 SHIPPED** (the second agent-fleet train: CAR-101 server-pinned report dates + `fixReportDate`, CAR-105 map geocode cache + RU cities + budget, CAR-107 help ×18 localized labels (263), CAR-108 23 keyed language leaks ×19 dicts, CAR-109 canonical currency comparison (`comp-compare.mjs`), CAR-104 precompressed bundle 3.1 MB → 598 KB br; 5823 tests, browser 143/144 (1 opt-in skip), evals 14/0/1, coverage 98.30/89.79; deployed, verify ✓ 0×502, publish ✓, Release ✓; remote-QA ×19 live dispatched run 40200723185) · before it: **v1.258.0** (CAR-100/110/130/112/111) · before that: **v1.257.0** (CAR-103/106)_
+_Last updated: 2026-10-26 · **v1.259.0 SHIPPED** (the second agent-fleet train: CAR-101 server-pinned report dates + `fixReportDate`, CAR-105 map geocode cache + RU cities + budget, CAR-107 help ×18 localized labels (263), CAR-108 23 keyed language leaks ×19 dicts, CAR-109 canonical currency comparison (`comp-compare.mjs`), CAR-104 precompressed bundle 3.1 MB → 598 KB br; 5823 tests, browser 143/144 (1 opt-in skip), evals 14/0/1, coverage 98.30/89.79; deployed, verify ✓ 0×502, publish ✓, Release ✓; remote-QA ×19 live dispatched run 40200723185) · before it: **v1.258.0** (CAR-100/110/130/112/111) · before that: **v1.257.0** (CAR-103/106)_
+
+**Standing owner preference (2026-10-26, memory: `release-ceremony-preference.md`):** releases in
+README are no longer updated — no banner rotation, no `release-vX.Y.Z`/`tests-N` badge sweeps ×18;
+stale release badges in README are acceptable. Deploys to resumecraft.ru happen **only on the
+owner's explicit per-release go** — tagging/Release/publish do not imply a deploy. CHANGELOG ×18,
+QA prompts and internal baselines stay.
 
 ---
 
