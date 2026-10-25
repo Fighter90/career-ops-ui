@@ -134,6 +134,8 @@ test('CAR-101: prose mentioning a date or the template never matches', () => {
 // first `## ` heading) is subject to the correction. A bulleted `- Date: …`
 // posting bullet in a Block F/G legitimacy body — or a dated news item in a
 // deep brief — is user content; rewriting it would fabricate a fact.
+// CAR-144 rev-2 — the only change in the output is the header date, proven
+// by full-output equality: any stray rewrite anywhere fails the test.
 test('CAR-144: a bulleted Date: line inside a block body is never rewritten; the header date still is', () => {
   const input = [
     '# Evaluation: Acme — Engineer',
@@ -154,9 +156,53 @@ test('CAR-144: a bulleted Date: line inside a block body is never rewritten; the
   ].join('\n');
   const r = fixReportDate(input, '2026-10-25');
   assert.equal(r.replaced, 1, 'exactly one line — the header date — is corrected');
-  assert.ok(r.text.includes('**Date:** 2026-10-25'), 'header date corrected');
-  assert.ok(r.text.includes('- Date: 2025-11-02'), 'the bulleted posting date in a block body is untouched');
-  assert.ok(r.text.includes('Date: 2024-02-03'), 'a date-shaped line in a block body is untouched');
+  assert.equal(
+    r.text,
+    input.replace('2026-01-15', '2026-10-25'),
+    'full-output equality: the header date is the ONLY change — no stray rewrite anywhere',
+  );
+});
+
+// CAR-144 rev-2 — the title line may itself be an H2 (`## Evaluation: …`),
+// so the header/body boundary is the first `## ` heading AFTER the first
+// non-heading content line — never a heading at the very top of the text.
+test('CAR-144 rev-2: a report that opens with an ## title still gets its header date corrected', () => {
+  const input = [
+    '## Evaluation: Acme — Engineer',
+    '**Date:** 2026-01-15',
+    '**URL:** https://jobs.acme.example/42',
+    '',
+    '## Block A — x',
+    '- Date: 2025-11-02',
+  ].join('\n');
+  const r = fixReportDate(input, '2026-10-25');
+  assert.equal(r.replaced, 1, 'the H2 opening line is the title, not the header/body boundary');
+  assert.equal(
+    r.text,
+    input.replace('2026-01-15', '2026-10-25'),
+    'the header date is corrected and the body bullet stays untouched',
+  );
+});
+
+// CAR-144 rev-2 — semantic choice, made explicit: the `g` flag STAYS but is
+// scoped to the header slice, so EVERY Date line inside the header is
+// corrected (the original bug was body rewrites, not multi-header reports).
+test('CAR-144 rev-2: every Date line inside the header is corrected; body bullets never are', () => {
+  const input = [
+    '# Evaluation: Acme — Engineer',
+    '',
+    '**Date:** 2026-01-15',
+    'Date: 2025-06-01',
+    '**URL:** https://jobs.acme.example/42',
+    '',
+    '## Block A — x',
+    '- Date: 2024-01-01',
+  ].join('\n');
+  const r = fixReportDate(input, '2026-10-25');
+  assert.equal(r.replaced, 2, 'both header Date lines are corrected (g scoped to the header slice)');
+  assert.ok(!r.text.includes('2026-01-15'));
+  assert.ok(!r.text.includes('2025-06-01'));
+  assert.ok(r.text.includes('- Date: 2024-01-01'), 'the body bullet stays untouched');
 });
 
 test('CAR-101: an invalid today argument falls back to the server date', () => {

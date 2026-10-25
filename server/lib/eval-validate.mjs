@@ -384,11 +384,14 @@ export function stripScoreSummary(text) {
 // prose — or a Data-freshness date in a deep brief — never matches. The
 // `{YYYY-MM-DD}` placeholder echo (the model copying the template literally)
 // is a non-date and is rewritten too.
-// CAR-144 — header-scoped and first-match-only (no `g` flag): fixReportDate
-// applies it to the text before the first `## ` heading, so a `- Date: …`
-// posting bullet in a Block F/G body or a dated news item in a deep brief —
-// user content — is never rewritten.
-const REPORT_DATE_LINE = /^[ \t]*(?:[-*][ \t]*)?(?:\*\*)?[ \t]*Date[ \t]*[:：][ \t]*(?:\*\*)?[ \t]*(\d{4}-\d{2}-\d{2}|\{YYYY-MM-DD\})[ \t]*(?:\*\*)?[ \t]*\r?$/mi;
+// CAR-144 — header-scoped: fixReportDate applies it only to the text before
+// the header/body boundary, so a `- Date: …` posting bullet in a Block F/G
+// body or a dated news item in a deep brief — user content — is never
+// rewritten. Global on purpose (rev-2): EVERY Date line inside the header
+// is corrected; the original bug was body rewrites, not multi-header
+// headers. Sole consumer is the .replace() in fixReportDate — never an
+// .exec loop or .matchAll, so the flags are safe here.
+const REPORT_DATE_LINE = /^[ \t]*(?:[-*][ \t]*)?(?:\*\*)?[ \t]*Date[ \t]*[:：][ \t]*(?:\*\*)?[ \t]*(\d{4}-\d{2}-\d{2}|\{YYYY-MM-DD\})[ \t]*(?:\*\*)?[ \t]*\r?$/gmi;
 
 /**
  * CAR-101 — belt-and-braces for the report header's **Date:** field. The
@@ -411,9 +414,21 @@ export function fixReportDate(text, today) {
     ? today
     : (() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; })();
   let replaced = 0;
-  // CAR-144 — the header is everything before the first `## ` heading; the
-  // correction never reaches past it (deep-brief Block bodies are content).
-  const headerEnd = src.search(/^## /m);
+  // CAR-144 — the header/body boundary is the first `## ` heading that
+  // follows the first non-heading, non-blank line; the correction never
+  // reaches past it (deep-brief Block bodies are content). The title line
+  // may itself be an H2 (`## Evaluation: …`) — a heading at the very top
+  // of the text is never the boundary (rev-2).
+  const lines = src.split('\n');
+  let headerEnd = -1;
+  let seenContent = false;
+  for (let i = 0; i < lines.length; i++) {
+    if (!seenContent) {
+      if (lines[i].trim() !== '' && !lines[i].startsWith('## ')) seenContent = true;
+      continue;
+    }
+    if (lines[i].startsWith('## ')) { headerEnd = lines.slice(0, i).join('\n').length + 1; break; }
+  }
   const header = headerEnd === -1 ? src : src.slice(0, headerEnd);
   const body = headerEnd === -1 ? '' : src.slice(headerEnd);
   const fixedHeader = header.replace(REPORT_DATE_LINE, (line, value) => {
