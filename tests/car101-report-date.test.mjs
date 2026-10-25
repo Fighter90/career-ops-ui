@@ -230,7 +230,7 @@ async function runPipeline(reportDateLine) {
   process.env.LLM_PROVIDER = 'anthropic';
   await stubJobPage();
   globalThis.fetch = async (u, o = {}) => {
-    if (String(u).includes('api.anthropic.com')) {
+    if (new URL(String(u)).host === 'api.anthropic.com') {
       return json({
         content: [{ type: 'text', text: GOOD_BLOCKS(reportDateLine) }],
         stop_reason: 'end_turn',
