@@ -89,8 +89,11 @@ test('#/reports view source contains the score-thresholds card scaffold', () => 
   const view = readFileSync(resolve(ROOT, 'public', 'js', 'views', 'reports.js'), 'utf8');
   assert.match(view, /rep\.thresholdsTitle/, 'reports.js must reference rep.thresholdsTitle i18n key');
   assert.match(view, /career-ops\.org\/docs/, 'reports.js must link out to career-ops.org/docs');
-  // Each of the four rubric rows must be present so the table can't be silently truncated.
-  for (const key of ['rep.thr45', 'rep.thr40', 'rep.thr35', 'rep.thrLow']) {
+  // Each of the four rubric rows must be present so the table can't be
+  // silently truncated. CAR-118 — the action copy moved to the CLI-free
+  // rep2.act* keys (the old rep.thr45/40/35 dict values carried shell
+  // commands; acceptance: no CLI in the reports UI).
+  for (const key of ['rep2.actApply', 'rep2.actContact', 'rep2.actResearch', 'rep2.actLow']) {
     assert.ok(view.includes(key), `reports.js missing i18n key ${key}`);
   }
 });
