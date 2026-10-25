@@ -127,6 +127,26 @@
     const myGen = ++gen;
     document.body.classList.add('job-map-active');
 
+    // CAR-112 — the page h1 + shimmer rows mount BEFORE the five GETs: the
+    // route used to show only the router's bare «Loading…» (the map's DOM,
+    // h1 included, did not exist until every fetch resolved). The title is
+    // static per view (existing i18n keys); the full page below replaces
+    // this shell when the data lands, and a navigation away mid-fetch is
+    // discarded by the router's epoch check (and this view's own `gen`).
+    const shell = document.getElementById('content');
+    if (shell) {
+      shell.replaceChildren(
+        c('div', null, [
+          c('header', { className: 'page-header' }, [
+            c('div', null, [
+              c('h1', { className: 'page-title' }, t('map.title', 'Job map')),
+            ]),
+          ]),
+          window.Skeleton.block(6, t('common.loading', 'Loading…')),
+        ]),
+      );
+    }
+
     const [scan, jobs, tp, commute, profile] = await Promise.all([
       API.get('/api/scan-results').catch(() => ({})),
       API.get('/api/map/jobs').catch(() => ({ pipeline: [], tracker: [] })),

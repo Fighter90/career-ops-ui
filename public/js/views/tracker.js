@@ -2,6 +2,24 @@
 Router.register('tracker', async () => {
   const c = UI.el;
   const t = (k, f) => I18n.t(k, f);
+  // CAR-112 — the page h1 exists the moment the route opens, BEFORE the data
+  // fetch: the router's focus target (focusNewView reads h1/.page-title) and
+  // the heading tree are present while the three GETs are in flight, with
+  // shimmer rows standing in for the board instead of a bare «Loading…».
+  // The title is static per view (existing i18n keys); the full page returned
+  // below replaces this shell when the data lands, and a render superseded by
+  // a newer navigation is discarded by the router's epoch check.
+  const shell = document.getElementById('content');
+  if (shell) {
+    shell.replaceChildren(
+      c('header', { className: 'page-header' }, [
+        c('div', null, [
+          HelpHint.title(t('track.title'), 'help.hint.tracker'),
+        ]),
+      ]),
+      window.Skeleton.block(8, t('common.loading', 'Loading…')),
+    );
+  }
   // v1.131.0 — CRM stage-tab board. Rows +
   // the canonical funnel are fetched together; the stages endpoint fails soft
   // to an empty funnel (the board degrades to an ALL-only view) so the tracker
