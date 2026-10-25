@@ -626,8 +626,9 @@ body.sidebar-open .sidebar-backdrop { display: block; }
 
 /* M-4 (v1.58.11) — saved-research / saved-prep card: structural flex `gap`
    so the title↔date space can't collapse (`software-engineer-generaltoday`).
-   CAR-146 — the card caps at its row (max-width: 100%) and the title wraps
-   break-anywhere (zeroing the flex content-based minimum); date keeps nowrap. */
+   CAR-146 — the card caps at its row (max-width: 100%); each child owns its
+   own white-space and shrink: the title grows and wraps break-anywhere
+   (zeroing the flex content-based minimum), the date never wraps or shrinks. */
 .saved-card {
   display: inline-flex;
   align-items: baseline;
@@ -636,14 +637,12 @@ body.sidebar-open .sidebar-backdrop { display: block; }
 }
 .saved-card__title {
   font-weight: 500;
+  flex: 1 1 auto;
+  min-width: 0;
   white-space: normal;
   overflow-wrap: anywhere;
 }
-.saved-card__date {
-  color: var(--foggy);
-  font-size: 0.85em;
-  white-space: nowrap;
-}
+.saved-card__date { color: var(--foggy); flex-shrink: 0; font-size: 0.85em; white-space: nowrap; }
 
 /* UX-A1 (v1.58.54) — Defensive Deep-brief structure warning. When a
    saved brief lacks ≥3 of the 6 canonical H2 sections (Company snapshot
