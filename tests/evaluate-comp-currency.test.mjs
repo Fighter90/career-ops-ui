@@ -127,6 +127,30 @@ test('CAR-143: bare numbers qualify only next to a salary keyword, not any perio
   assert.equal(ru[0].period, 'month');
 });
 
+test('CAR-143 r2: bare numbers need an attached period marker, not just a salary word', () => {
+  assert.equal(CC.parseMoneyFigures('Competitive pay, team of 5,000 engineers').length, 0);
+  assert.equal(CC.parseMoneyFigures('Compensation includes equity for 10,000 employees').length, 0);
+  // the keyword + attached-marker combination still parses
+  assert.equal(CC.parseMoneyFigures('Salary: 85,000 per year')[0].low, 85000);
+});
+
+test('CAR-143 r2: real sub-year salaries survive — the year guard is for plain 4-digit tokens only', () => {
+  const ru = CC.parseMoneyFigures('Зарплата: 2 000 в месяц');
+  assert.equal(ru.length, 1);
+  assert.equal(ru[0].period, 'month');
+  assert.equal(CC.annualLowHigh(ru[0]).low, 24000);
+  const comma = CC.parseMoneyFigures('Salary: 2,050 per month');
+  assert.equal(comma.length, 1);
+  assert.equal(comma[0].low, 2050);
+  assert.equal(comma[0].period, 'month');
+  // the profile's own fields are salary context by construction — a bare
+  // "2000" there is a real 2000, not a year
+  const prof = CC.readProfileCompensation('compensation:\n  minimum: "2000"\n');
+  assert.ok(prof, 'profile bare minimum parses');
+  assert.equal(prof.low, 2000);
+  assert.equal(prof.period, 'year');
+});
+
 test('CAR-143: a period noun elsewhere on the line does not make the figure monthly', () => {
   // «6 month contract» used to mark the $120k figure monthly → ×12 → 1,440,000.
   const f = CC.parseMoneyFigures('6 month contract, $120k');
@@ -228,6 +252,20 @@ test('CAR-143: minimum and target_range are never spliced into one range', () =>
   assert.equal(prof.high, null); // was 90000 — spliced across the two fields
   assert.equal(prof.currency, 'EUR');
   assert.equal(prof.period, 'year');
+});
+
+test('CAR-143 r2: an unparseable minimum falls back to target_range', () => {
+  // "negotiable" parses to no figure — the old join recovered the range, the
+  // splice fix lost it; the fallback is back, with raw naming the real source.
+  const prof = CC.readProfileCompensation(
+    'compensation:\n  currency: EUR\n  minimum: "negotiable"\n  target_range: "90k–110k per year"\n',
+  );
+  assert.ok(prof, 'range fallback present');
+  assert.equal(prof.low, 90000);
+  assert.equal(prof.high, 110000);
+  assert.equal(prof.currency, 'EUR');
+  assert.equal(prof.period, 'year');
+  assert.equal(prof.raw, '90k–110k per year'); // the source actually used
 });
 
 test('a profile without a compensation block yields null', () => {

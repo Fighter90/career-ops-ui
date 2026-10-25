@@ -118,11 +118,12 @@ function parseNumberToken(raw) {
 // a bare period word alone no longer qualifies it (CAR-143).
 const SALARY_WORD_RE = /salary|salaries|compensation|remuneration|\bwages?\b|\bpay\b|зарпла|оклад|Gehalt|sal[áa]rio|salario|salaire|薪|給料|급여/i;
 
-function looksLikeYear(n, qualified) {
-  // CAR-143: ALWAYS reject a bare 19xx/20xx number, whatever period words the
-  // line carries — «Founded 2019, yearly bonus» is a founding year, never a
-  // salary. Currency- or suffix-qualified figures keep the old scope.
-  return !qualified && n >= 1900 && n <= 2099;
+function looksLikeYear(rawNum) {
+  // CAR-143 rev-2: a PLAIN 4-digit bare token (no thousands separator, no
+  // attached period — the caller checks both) is a year, never a salary.
+  // "2 000" / "2,050" carry separators and are real sub-year salaries.
+  const s = String(rawNum);
+  return /^\d{4}$/.test(s) && Number(s) >= 1900 && Number(s) <= 2099;
 }
 
 // The period comes ONLY from markers ATTACHED to the figure (CAR-143 rev-2):
@@ -201,13 +202,21 @@ export function parseMoneyFigures(text, opts = {}) {
         i + 1 < matches.length ? matches[i + 1].index : line.length,
       );
       if (period === 'hour') continue; // hourly figure — drop the figure, not the whole line
-      // Bare numbers (no currency, no suffix) qualify only on a line framed
-      // by a salary word and only salary-shaped values ("Salary: 85,000 per
-      // year") — never years, ids, head-counts or "Go, k8s". With a declared
-      // currency (profile minimum) any value qualifies.
+      // Bare numbers (no currency, no suffix) qualify only when they are
+      // salary-shaped AND framed by salary context (CAR-143 rev-2): a salary
+      // word on the line PLUS a period marker attached to the figure ("Salary:
+      // 85,000 per year") — or the profile's own compensation fields
+      // (allowBare), which are salary context by construction. A salary word
+      // alone no longer qualifies ("team of 5,000 engineers" under
+      // "Competitive pay"), and neither does a bare period word.
       if (!qualified) {
-        if (!bareOk || n < 1000) continue;
-        if (looksLikeYear(n, qualified)) continue;
+        // scaled, not the raw token: "90k" is 90000, not a 90
+        if (n * (suffixMult ?? 1) < 1000) continue;
+        if (!allowBare && !(bareOk && period != null)) continue;
+        // A plain 4-digit bare token with no attached period is a year, never
+        // a salary («Founded 2019…», «Salary review scheduled for 2024»); the
+        // profile's own fields are exempt — minimum: "2000" is a real 2000.
+        if (!allowBare && looksLikeYear(m.groups.num)) continue;
       }
       let currency = resolveCcy(curToken) ?? declared;
       let currencyAssumed = false;
@@ -317,10 +326,24 @@ export function readProfileCompensation(profileText) {
   const minStr = typeof comp.minimum === 'string' && comp.minimum.trim() ? comp.minimum : null;
   const rangeStr = typeof comp.target_range === 'string' && comp.target_range.trim() ? comp.target_range : null;
   // The profile's compensation fields ARE salary context — bare numbers
-  // qualify without a salary word on the line.
-  const figures = minNum != null
-    ? [{ low: minNum, high: null, currency: declared, currencyRaw: null, period: null, raw: String(minNum) }]
-    : parseMoneyFigures(minStr ?? rangeStr ?? '', { declaredCurrency: declared, allowBare: true });
+  // qualify without a salary word on the line. The minimum parses alone;
+  // target_range steps in only when the minimum is absent OR unparseable
+  // ("negotiable") — never spliced with it (CAR-143), and raw names the
+  // source the figures actually came from.
+  const parseOpts = { declaredCurrency: declared, allowBare: true };
+  let figures = [];
+  let rawSource = null;
+  if (minNum != null) {
+    figures = [{ low: minNum, high: null, currency: declared, currencyRaw: null, period: null, raw: String(minNum) }];
+    rawSource = String(minNum);
+  } else if (minStr) {
+    figures = parseMoneyFigures(minStr, parseOpts);
+    rawSource = minStr;
+  }
+  if (!figures.length && rangeStr) {
+    figures = parseMoneyFigures(rangeStr, parseOpts);
+    rawSource = rangeStr;
+  }
   if (!figures.length) return null;
   const fig = figures[0];
   return {
@@ -329,7 +352,7 @@ export function readProfileCompensation(profileText) {
     currency: fig.currency ?? declared ?? null,
     currencyRaw: fig.currencyRaw,
     period: fig.period ?? 'year', // an unstated profile minimum is annual by convention
-    raw: minStr ?? (minNum != null ? String(minNum) : rangeStr) ?? fig.raw,
+    raw: rawSource ?? fig.raw,
   };
 }
 
