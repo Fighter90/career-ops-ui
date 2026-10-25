@@ -481,7 +481,9 @@ test('CAR-145 r3: bundleContentHashFromFd — the hash belongs to the fd, not th
   writeFileSync(join(dir, 'swap.js'), 'BBB');
   const fd = openSync(pathA, 'r');
   try {
-    const sizeA = statSync(pathA).size;
+    // CodeQL js/file-system-race: no stat-then-use — the size of the opened
+    // inode is statically known from the fixture content ('AAA').
+    const sizeA = Buffer.byteLength('AAA');
     const h1 = serverMod.bundleContentHashFromFd(fd, sizeA);
     assert.equal(h1, createHash('sha256').update('AAA').digest('hex').slice(0, 12));
     // A rename-based build swaps the inode under the path mid-flight.
