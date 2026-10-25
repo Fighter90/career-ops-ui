@@ -10,19 +10,19 @@
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
-[![tests](https://img.shields.io/badge/tests-5642%20passed-brightgreen)](#testy)
+[![tests](https://img.shields.io/badge/tests-5749%20passed-brightgreen)](#testy)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#testy)
 [![playwright](https://img.shields.io/badge/playwright-143%2F143-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.257.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.257.0)
+[![release](https://img.shields.io/badge/release-v1.258.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.258.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Najnowsze wydanie — v1.257.0** — **Dwie poprawki od floty agentów: asystent pomocy w aplikacji rozumie teraz dewanagari i tamilski (tokenizator gubił znaki łączące — zapytanie po hindi dopasowywało 0 sekcji, tamilski dopasowywał jedynie fragmenty), a strona użycia pokazuje, ile Hermes faktycznie kosztuje (koszt raportowany przez bramkę był po cichu gubiony — $0.0000 przy 9.5 M tokenów).**
+> **🆕 Najnowsze wydanie — v1.258.0** — **Sześć poprawek od floty agentów: licznik „Aktywne firmy” przestaje mieszać dwa wszechświaty (1554/90), deep research wymaga znaczników `[source: …]` i zapisuje `unknown`, gdy czegoś nie wie, pola formularza z błędem podświetlają się zamiast błędu widocznego tylko jako toast, #/map i #/tracker renderują swój h1 natychmiast wraz z szkieletowymi wierszami ładowania, a każde /api/evaluate cache'uje stabilny prefiks ~37k tokenów (≈10× taniej po pierwszym wywołaniu).**
 >
-> **Poprzednie wydanie — v1.256.0** — **Jakość danych trackera: stanowisko nigdy nie zapisuje się jako firma (`Senior Frontend Engineer - Grafana Labs` sparsowane odwrotnie — 13 wierszy), tablica ofert nigdy nie zapisuje się jako pracodawca (wiersze hh.ru zapisywane jako „hh” — 120 wierszy; cyrylickie wzorce wnioskowania były martwe bez śladu od v1.248.4 — ASCII `\b`), wiersze bez oceny przestają wysuwać się na czoło sortowania trackera, a nowy endpoint jednorazowego użycia uzupełnia brakujące oceny z samych raportów.**
+> **Poprzednie wydanie — v1.257.0** — **Dwie poprawki od floty agentów: asystent pomocy w aplikacji rozumie teraz dewanagari i tamilski (tokenizator gubił znaki łączące — zapytanie po hindi dopasowywało 0 sekcji, tamilski dopasowywał jedynie fragmenty), a strona użycia pokazuje, ile Hermes faktycznie kosztuje (koszt raportowany przez bramkę był po cichu gubiony — $0.0000 przy 9.5 M tokenów).**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

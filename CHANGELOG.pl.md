@@ -8,6 +8,24 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.258.0] — 2026-10-25
+
+**Sześć poprawek od floty agentów w jednym pociągu: licznik firm na #/scan przestaje mieszać wszechświaty, deep research wymaga źródeł, błędy formularzy podświetlają pole, stany ładowania zyskują szkielety i natychmiastowy h1, a ewaluacje cache'ują swój 37k-tokenowy prefiks promptu.**
+
+### Naprawiono
+
+- **Licznik „Aktywne firmy” na #/scan (CAR-100)**: licznik zliczał odrębne firmy wśród WSZYSTKICH wierszy wyników (1554 na produkcji — sam hh.ru wnosi setki), podczas gdy mianownik zliczał firmy śledzone z zapleczem API (~90) — dwa wszechświaty w jednej frakcji. Wybrano parowanie (a): licznik zlicza teraz firmy wśród wierszy, które sam skan śledzonych firm z zapleczem API pobrał (dopasowanie po `_entry ?? company`; wiersze pracodawców z hh.ru/telegram wypadają); fallback przedskanowy przeniesiono do tego samego wszechświata (mógł pokazywać „104/90”).
+- **Fabrykowanie w deep research (CAR-110)**: prompt deep niesie teraz twardy kontrakt — każde twierdzenie faktograficzne kończy się znacznikiem `[source: domain.com]` (nie potrafisz nazwać źródła → nie stawiaj twierdzenia; sfabrykowany znacznik jest gorszy niż napisanie `unknown`), nieznane fakty zapisuje się jako `unknown`, a raport MUSI kończyć się sekcją `## Data freshness`. Kotwice świeżości: dzisiejsza data UTC + opcjonalny `url` firmy w `POST /api/deep` (ograniczony, nigdy pobierany po stronie serwera).
+- **Błędy formularzy podświetlają pole (CAR-130)**: nieudany POST oznacza pierwsze pole formularza jako `aria-invalid` + `.is-error` i ustawia na nim fokus (WCAG 3.3.1); oznaczenie czyszczone przy edycji. Podpowiedź przy błędzie sieci jest świadoma wdrożenia — loopback zachowuje podpowiedź z komendą deweloperską, a wdrożony origin dostaje „Serwer nie odpowiada.” zamiast porady `bash web-ui/bin/start.md` (baner połączenia nosił to samo zaszyte na sztywno sformułowanie).
+- **Stany ładowania (CAR-112)**: #/map i #/tracker renderują swój h1 natychmiast (cel fokusu routera istniał dopiero po nadejściu danych), a współdzielony helper szkieletów (`Skeleton.rows`, wiersze aria-hidden z migotaniem wewnątrz regionu `role="status"` ponownie używającego `common.loading`) zastępuje goły tekst „Ładowanie…” na trackerze, w wynikach skanu i w powłoce mapy; `prefers-reduced-motion` zatrzymuje pulsowanie.
+- **Cache'owanie promptu ewaluacji (CAR-111)**: `buildEvaluationPromptParts` dzieli ~37k-tokenowy prompt na stabilny bajtowo prefiks (CV + profil + pliki trybów + instrukcje) i ogon z JD; ścieżka Anthropic wysyła `[prefix + cache_control: ephemeral] + [JD]` — prefiks rozliczany jest stawką odczytu z cache (≈10× taniej) przy każdym wywołaniu po pierwszym. Brakujący/niedopasowany prefiks otwarcie wraca (fail open) do bajt w bajt identycznego starego żądania; kaskada zgodna z OpenAI pozostaje nietknięta (tam cache po stronie serwera).
+
+### Uwagi
+
+- Wszystkie sześć poprawek pochodzi od floty agentów z dowodami czerwony→zielony (5 + 7 + 7 + 7 + 8 nowych przypadków) i rundami recenzji; pierwsze alerty CodeQL dla CAR-111 (#579/#580) naprawiono w kodzie — testowy stub parsuje host z URL zamiast dopasowania podłańcuchowego, a martwy ciąg pełnego promptu usunięto.
+- **Uzupełnianie ocen wykonano na produkcji** (endpoint z v1.256.0, za zgodą właściciela): `updated: 22`, `missingReport: 0`, `reportScoreless: 159` — 159 wierszy bez oceny wskazuje na raporty, których nagłówki poprzedzają blok maszynowy albo niosą nieparsowalne formaty oceny; do odzyskania wyłącznie ponowną ewaluacją lub szerszym przebiegiem parsera (odnotowane w CAR-129).
+- Świadomie nie zrobiono: bez zmiany nulls-last dla kolumny dojazdów (istniejąca od dawna dziwność `Infinity` przy sortowaniu malejącym), bez wstecznej ponownej wyceny starych rekordów użycia, bez podświetlania w stylu `.is-error` dla formularzy filtrów skanu (CAR-130 ograniczone do współdzielonego helpera submit widoku mode-page + podpowiedzi w api.js).
+- Testy 5749 (+36). Żadne źródło skanera nietknięte (rejestr 121 = 116 EN + 5 RU · 116 adapterów); brak kluczy i18n (podpowiedź CAR-130 ponownie używa `conn.down`; region szkieletu ponownie używa `common.loading`).
 
 ## [1.257.0] — 2026-10-25
 
