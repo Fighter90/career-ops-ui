@@ -157,6 +157,43 @@ test('CAR-143: an hourly figure is dropped, a same-line yearly figure survives',
   assert.equal(f[0].low, 104000);
 });
 
+test('CAR-143 r2: a later figure\'s /yr cannot claim the earlier /hr figure (nearest marker wins)', () => {
+  // The $50 figure's after-window used to run into «$104k/yr» and YEAR was
+  // tested before HOUR, so $50 became a $50/YEAR offer.
+  const f = CC.parseMoneyFigures('$50/hr, $104k/yr');
+  assert.equal(f.length, 1);
+  assert.equal(f[0].low, 104000);
+  assert.equal(f[0].period, 'year');
+});
+
+test('CAR-143 r2: a distant before-side hourly word does not describe the figure', () => {
+  const f = CC.parseMoneyFigures('Hourly staff welcome. $120k');
+  assert.equal(f.length, 1);
+  assert.equal(f[0].period, null); // no marker attached to the figure — assumed per year
+});
+
+test('CAR-143 r2: bare RU/ES period nouns no longer mark an unrelated figure', () => {
+  // bare «мес» used to mark the ₽ figure monthly → ×12 → 2,400,000
+  const ru = CC.parseMoneyFigures('Контракт на 6 мес, 200 000 ₽');
+  assert.equal(ru.length, 1);
+  assert.equal(ru[0].period, null);
+  assert.equal(CC.annualLowHigh(ru[0]).low, 200000);
+  // attached forms still work
+  assert.equal(CC.parseMoneyFigures('200 000 ₽/мес')[0].period, 'month');
+  assert.equal(CC.parseMoneyFigures('Зарплата 200 000 в месяц')[0].period, 'month');
+  // bare «mes» in prose («el mes pasado») is not a marker either
+  const es = CC.parseMoneyFigures('el mes pasado, $90k');
+  assert.equal(es.length, 1);
+  assert.equal(es[0].period, null);
+  assert.equal(CC.parseMoneyFigures('$3,000/mes')[0].period, 'month');
+});
+
+test('CAR-143 r2: «manual» no longer reads as «anual» → year', () => {
+  const f = CC.parseMoneyFigures('manual QA role, $90k');
+  assert.equal(f.length, 1);
+  assert.equal(f[0].period, null);
+});
+
 // ── profile compensation ────────────────────────────────────────────────────
 
 test('readProfileCompensation reads the minimum, currency and raw text', () => {

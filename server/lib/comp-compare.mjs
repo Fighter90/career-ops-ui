@@ -65,15 +65,17 @@ const FIG_RE = new RegExp(
   'gu',
 );
 
-// Period markers per figure window (CAR-143: matched only inside the figure's
-// own ±24-char window, and only in forms ATTACHED to the figure — the bare
-// nouns \bmonth\b / \byear\b / Monat / Jahr are NOT markers, so «6 month
-// contract, $120k» no longer annualizes ×12). Unicode endings use negative
-// lookahead instead of `\b` — JS word boundaries are ASCII-only and never
-// matched Cyrillic (a known web-ui pitfall).
-const MONTH_RE = /per\s+month|\/\s*month|\/\s*mo\b|monthly|pro\s+Monat|monatlich|\bm[eę]s\b|mensal|mensual|al\s+mes|por\s+mes|par\s+mois|mensuel|мес(?:яц|я|е|ах)?(?![а-яё])|в\s+месяц|за\s+месяц|月給|月薪|每月|\/月|aylık/i;
-const YEAR_RE = /per\s+(?:year|annum)|p\.\s?a\.|\/\s*(?:year|yr|annum|a[ñn]o|ano)|\bannum\b|annual(?:ly)?|yearly|pro\s+Jahr|j[aä]hrlich|anual|al\s+a[ñn]o|por\s+a[ñn]o|por\s+ano|par\s+an|annuel|год(?:а|у|овой|овая)?(?![а-яё])|в\s+год|за\s+год|年薪|年給|每年|\/年|年俸|yıllık/i;
-const HOUR_RE = /per\s+hour|\/\s*hour\b|\/\s*hr\b|hourly|в\s+час|за\s+час|st[üu]ndlich|pro\s+Stunde|par\s+heure|\bhora\b|時給|saatlık/i;
+// Period markers matched only in the figure's own window and only in forms
+// ATTACHED to the figure (CAR-143): the bare nouns month/year/Monat/Jahr and
+// the bare RU/ES мес/год/mes are NOT markers («6 month contract, $120k»,
+// «el mes pasado, $90k», «Контракт на 6 мес, 200 000 ₽» stay annual), and
+// «anual»/«annual» are anchored so «manual»/«biannual» cannot match. Unicode
+// endings use negative lookahead instead of `\b` — JS word boundaries are
+// ASCII-only and never matched Cyrillic (a known web-ui pitfall). The /g flag
+// feeds the nearest-marker scan below (lastIndex reset per use).
+const MONTH_RE = /per\s+month|\/\s*month|\/\s*mo\b|monthly|pro\s+Monat|monatlich|mensal|mensual|al\s+mes|por\s+mes|\/\s*mes\b|\/\s*m[eę]s\b|par\s+mois|mensuel|в\s+месяц|за\s+месяц|\/\s*мес(?![а-яё])|月給|月薪|每月|\/月|aylık/gi;
+const YEAR_RE = /per\s+(?:year|annum)|p\.\s?a\.|\/\s*(?:year|yr|annum|a[ñn]o|ano)|\bannum\b|(?<![a-z])annual(?:ly)?|yearly|pro\s+Jahr|j[aä]hrlich|(?<![a-z])anual|al\s+a[ñn]o|por\s+a[ñn]o|por\s+ano|par\s+an|annuel|в\s+год|за\s+год|\/\s*год(?![а-яё])|年薪|年給|每年|\/年|年俸|yıllık/gi;
+const HOUR_RE = /per\s+hour|\/\s*hour\b|\/\s*hr\b|hourly|в\s+час|за\s+час|st[üu]ndlich|pro\s+Stunde|par\s+heure|\bhora\b|時給|saatlık/gi;
 
 /** Resolve a currency token to a canonical code by OWN key (null otherwise). */
 function resolveCcy(token) {
@@ -112,18 +114,37 @@ function looksLikeYear(n, qualified) {
   return !qualified && n >= 1900 && n <= 2099;
 }
 
-// The period comes ONLY from markers attached to the figure: checked in the
-// figure's own window, after-side first (a marker following the number or
-// range outranks an incidental word before it), then hourly, then year/month
-// on the before-side (CJK markers — 月薪/年薪 — precede the figure).
-function periodOf(after, before) {
-  if (YEAR_RE.test(after)) return 'year';
-  if (MONTH_RE.test(after)) return 'month';
-  if (HOUR_RE.test(after)) return 'hour';
-  if (HOUR_RE.test(before)) return 'hour';
-  if (YEAR_RE.test(before)) return 'year';
-  if (MONTH_RE.test(before)) return 'month';
-  return null;
+// The period comes ONLY from markers ATTACHED to the figure (CAR-143 rev-2):
+// the windows are clamped to the neighbouring figures — «$50/hr, $104k/yr»
+// cannot read $50 through $104k's "/yr" — and among several markers the one
+// NEAREST the figure edge wins, not a fixed year>month>hour order. A
+// before-side word must sit within BEFORE_WINDOW chars of the figure (the
+// CJK/adjective prefix zone — 月薪 8萬, "annual salary 90k"); further left it
+// describes something else («Hourly staff welcome. $120k»).
+const AFTER_WINDOW = 24;
+const BEFORE_WINDOW = 16;
+function periodOf(line, start, end, prevEnd, nextStart) {
+  const after = line.slice(end, Math.min(nextStart, end + AFTER_WINDOW));
+  const before = line.slice(Math.max(prevEnd, start - BEFORE_WINDOW), start);
+  const cands = [];
+  const scan = (re, s, isBefore) => {
+    re.lastIndex = 0;
+    for (let m = re.exec(s); m; m = re.exec(s)) {
+      cands.push({
+        dist: isBefore ? s.length - m.index - m[0].length : m.index,
+        side: isBefore ? 1 : 0,
+        period: re === YEAR_RE ? 'year' : re === MONTH_RE ? 'month' : 'hour',
+      });
+    }
+  };
+  scan(YEAR_RE, after, false);
+  scan(MONTH_RE, after, false);
+  scan(HOUR_RE, after, false);
+  scan(HOUR_RE, before, true);
+  scan(YEAR_RE, before, true);
+  scan(MONTH_RE, before, true);
+  cands.sort((a, b) => a.dist - b.dist || a.side - b.side);
+  return cands.length ? cands[0].period : null;
 }
 
 /** Parse every qualifying money figure in `text`. Period: 'year'|'month'|null
@@ -139,14 +160,29 @@ export function parseMoneyFigures(text, opts = {}) {
   const out = [];
   for (const line of String(text ?? '').split(/\r?\n/)) {
     const bareOk = allowBare || SALARY_WORD_RE.test(line);
-    const hits = [];
+    // Collect all figure matches first — the period windows are clamped to
+    // the neighbouring figures so one figure's marker cannot bleed into
+    // another's («$50/hr, $104k/yr»).
+    const matches = [];
     FIG_RE.lastIndex = 0;
-    for (let m = FIG_RE.exec(line); m; m = FIG_RE.exec(line)) {
+    for (let m = FIG_RE.exec(line); m; m = FIG_RE.exec(line)) matches.push(m);
+    const hits = [];
+    for (let i = 0; i < matches.length; i++) {
+      const m = matches[i];
       const n = parseNumberToken(m.groups.num);
       if (n == null) continue;
+      const start = m.index;
+      const end = m.index + m[0].length;
       const curToken = m.groups.pre ?? m.groups.post ?? null;
       const sufToken = m.groups.suf ?? null;
+      const suffixMult = sufToken ? (SUFFIX_MULT[sufToken] ?? null) : null;
       const qualified = Boolean(curToken || sufToken || declared);
+      const period = periodOf(
+        line, start, end,
+        i > 0 ? matches[i - 1].index + matches[i - 1][0].length : 0,
+        i + 1 < matches.length ? matches[i + 1].index : line.length,
+      );
+      if (period === 'hour') continue; // hourly figure — drop the figure, not the whole line
       // Bare numbers (no currency, no suffix) qualify only on a line framed
       // by a salary word and only salary-shaped values ("Salary: 85,000 per
       // year") — never years, ids, head-counts or "Go, k8s". With a declared
@@ -160,17 +196,13 @@ export function parseMoneyFigures(text, opts = {}) {
         const explicit = EXPLICIT_CCY_RE.exec(line);
         if (explicit) currency = resolveCcy(explicit[1]);
       }
-      const after = line.slice(m.index + m[0].length, m.index + m[0].length + 24);
-      const before = line.slice(Math.max(0, m.index - 24), m.index);
-      const period = periodOf(after, before);
-      if (period === 'hour') continue; // hourly figure — drop the figure, not the whole line
       hits.push({
-        start: m.index,
-        end: m.index + m[0].length,
+        start,
+        end,
         raw: m[0].trim(),
         currencyRaw: curToken,
         currency,
-        suffixMult: sufToken ? (SUFFIX_MULT[sufToken] ?? null) : null,
+        suffixMult,
         value: n,
         period,
       });
