@@ -17,9 +17,9 @@ _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.256.0** — **追蹤器資料品質：職稱絕不會被記錄成公司（`Senior Frontend Engineer - Grafana Labs` 被反向解析 — 13 列）、職缺看板絕不會被記錄成雇主（hh.ru 的列被記錄為 «hh» — 120 列；西里爾字母推斷模式自 v1.248.4 起便默默失效 — ASCII `\b`）、未評分列不再在追蹤器排序中浮現在最前面，並新增一個一次性端點直接從報告本身回填缺失的分數。**
+> **🆕 最新版本 — v1.257.0** — **兩項 agent 艦隊修復：應用程式內的說明助理現在能理解天城文與坦米爾文（分詞器丟棄了組合記號 — 一則印地語查詢比對到 0 個章節，坦米爾文只比對到碎片），用量頁面也會顯示 Hermes 實際的成本（閘道器回報的成本被默默丟棄 — 9.5 M 個權杖顯示 $0.0000）。**
 >
-> **前一版本 — v1.255.2** — **三項來自線上迴歸與一次正式環境崩潰報告的使用者可見修復：`#/scan` 渲染崩潰（計數閘門再生留下的 120 個陣列空洞使公司分類器在每次渲染時都拋出例外）、失明的越南語語言檢查（線上 QA 此前為 vi 統計的是英文停用詞 — 現已改用它自己的詞表），以及 zh-TW 摘要區塊丟失（收尾提醒現在將 `SCORE_SUMMARY` 設為強制，而不只是不可翻譯）。**
+> **前一版本 — v1.256.0** — **追蹤器資料品質：職稱絕不會被記錄成公司（`Senior Frontend Engineer - Grafana Labs` 被反向解析 — 13 列）、職缺看板絕不會被記錄成雇主（hh.ru 的列被記錄為 «hh» — 120 列；西里爾字母推斷模式自 v1.248.4 起便默默失效 — ASCII `\b`）、未評分列不再在追蹤器排序中浮現在最前面，並新增一個一次性端點直接從報告本身回填缺失的分數。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
