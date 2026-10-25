@@ -7,6 +7,29 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 ---
 
 
+## [1.259.0] — 2026-10-25
+
+**The second agent-fleet train, six fixes: report dates are server-pinned, the map geocoder caches and reads RU cities, help ×18 cites localized button labels, UI sentences stop mixing languages, salary comparisons are computed server-side — and the JS bundle ships precompressed (cold load 3.1 MB → 598 KB).**
+
+### Fixed
+
+- **Invented report dates (CAR-101)**: the evaluation prompt now pins today's date server-side ("the **Date:** field MUST be exactly <date> — copy verbatim; never invent"), and `fixReportDate` rewrites a drifted date to today at every acceptance site (Anthropic branch, Gemini subprocess, OpenAI-compatible tail, /api/deep, auto-pipeline) with a warning + activity record — a correction, never a rejection. 349/789 prod reports had invented dates; new ones can't.
+- **Map geocoding (CAR-105)**: hh.ru/Habr rows' Cyrillic city strings now reach the geocoder; a persistent bounded cache (`data/geocode-cache.json`, withFileLock) means a resolved city never hits the provider twice; geocode calls are budgeted per request so the map fills progressively instead of blocking 13.9 s.
+- **Mixed-language UI (CAR-108)**: 23 keyed leaks fixed across 17 of 19 dicts (85 values) — «все matching», «только remote», «Открыть Scan», the funnel «Evaluated → Applied…» and more became full localized sentences reusing each locale's own product vocabulary. `i18n-no-latin-leaks` extended with the fragment table + funnel probe (red→green).
+- **Currency verdict flip (CAR-109)**: salary comparison is computed server-side in `comp-compare.mjs` and embedded canonically (`Candidate minimum: … per YEAR (raw: …)` vs `JD offer: …`); monthly ×12, k/к/тыс/萬 and decimal-comma forms normalize before comparing; an uncertain conversion can never by itself flip the verdict (the zh-TW «€80–100k ниже минимума» case is dead). The model never multiplies.
+- **Help ×18 button labels (CAR-107)**: localized help bundles cited English labels («⚡ Run live», «Save», «Scan now») the UI no longer shows — 263 replacements across 18 locales mapped from the view sources; the docs-assistant inherits the fix.
+
+### Added
+
+- **Precompressed bundle + cacheable cold load (CAR-104)**: `make-bundle.mjs` emits `bundle.js.br` (brotli q11) + `.gz` at release time; a bundle-scoped middleware negotiates br > gz with `Vary: Accept-Encoding`, `public, max-age=300, must-revalidate` + ETag/304; freshness-guarded (a companion never serves older than the identity bundle), direct artifact fetches 404, CSP byte-identical. Cold load: 3.1 MB → ~0.6 MB wire (−80%); repeat visits within 5 min transfer ≈0 bytes.
+
+### Notes
+
+- All fixes came from the agent fleet with red→green evidence (13 + 28 + 1 + 30 + 7 new cases across their suites) and were review-rounded (CodeQL #579/#580/#584 fixed in code — stub URLs parsed via `new URL().host`, a dead prompt string dropped).
+- The v1.258.0 score backfill numbers are now recorded in CAR-129 (`updated: 22`, `reportScoreless: 159`).
+- Deliberately not done: no retroactive date fix for the 349 historical reports (a backfill would be owner-approved ops), no map cluster view (CAR-125 stays queued behind this geocode fix).
+- Tests 5823 (+74). No scanner sources touched (registry 121 = 116 EN + 5 RU · 116 adapters); no i18n keys (CAR-108 edits existing keys' values only).
+
 ## [1.258.0] — 2026-10-25
 
 **Six fixes from the agent fleet, one train: the #/scan company counter stops mixing universes, deep research demands sources, form errors light up the field, loading states get skeletons and an instant h1, and evaluations cache their 37k-token prompt prefix.**
