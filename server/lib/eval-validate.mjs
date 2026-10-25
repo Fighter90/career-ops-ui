@@ -384,14 +384,18 @@ export function stripScoreSummary(text) {
 // prose — or a Data-freshness date in a deep brief — never matches. The
 // `{YYYY-MM-DD}` placeholder echo (the model copying the template literally)
 // is a non-date and is rewritten too.
-// CAR-144 — header-scoped: fixReportDate applies it only to the header/body
-// boundary region, so a `- Date: …` posting bullet in a Block F/G body or a
-// dated news item in a deep brief — user content — is never rewritten.
-// First-match-only (r3, no `g` flag): a second REAL date in the header (a
-// posting date, an as-of date) survives, and the non-global regex carries
-// no last-match state for a future .test/.exec caller. Sole consumer is
-// the .replace() in fixReportDate.
+// CAR-144 r4 — non-global on purpose (first-match-only semantics live in
+// fixReportDate, which also enumerates candidates via a local global copy
+// of this source): no last-match state for a future .test/.exec caller,
+// and a second REAL date in the preamble (a posting date, an as-of date)
+// survives unless the ambiguity rule picks it. Sole consumer is
+// fixReportDate.
 const REPORT_DATE_LINE = /^[ \t]*(?:[-*][ \t]*)?(?:\*\*)?[ \t]*Date[ \t]*[:：][ \t]*(?:\*\*)?[ \t]*(\d{4}-\d{2}-\d{2}|\{YYYY-MM-DD\})[ \t]*(?:\*\*)?[ \t]*\r?$/mi;
+
+// CAR-144 r4 — the bold `**Date:**` header-label shape, the report header's
+// own form. Used only to PREFER a candidate when the preamble holds more
+// than one; never to match on its own.
+const BOLD_DATE_LINE = /^[ \t]*\*\*[ \t]*Date[ \t]*[:：]/i;
 
 /**
  * CAR-101 — belt-and-braces for the report header's **Date:** field. The
@@ -414,42 +418,32 @@ export function fixReportDate(text, today) {
     ? today
     : (() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; })();
   let replaced = 0;
-  // CAR-144 r3 — title-aware header/body boundary; only the FIRST non-blank
-  // line can be a title (never a run of headings). If it is an `## ` H2,
-  // the header is that title plus its header-label lines, ending at the
-  // first body-structure line after it — the next `## ` heading or the
-  // first list bullet. Otherwise (an `# ` H1 title, the normal shape) the
-  // header is the preamble before the first `## ` heading, as before. The
-  // correction never reaches past the boundary: Block bodies and
-  // deep-brief dated items are content.
-  const lines = src.split('\n');
-  let first = -1;
-  for (let i = 0; i < lines.length; i++) {
-    if (lines[i].trim() !== '') { first = i; break; }
+  // CAR-144 r4 — the boundary is the r1 rule, plain: the preamble is
+  // everything before the FIRST `## ` heading. A report that OPENS with an
+  // H2 (a model-written H2 title, or no title at all) has an empty
+  // preamble — not this pipeline's generated shape (the prompt pins
+  // `# Evaluation: …` / `# Deep Brief…` H1s) — and gets a conservative
+  // no-op: a stale date is acceptable, a fabricated one is not. The r3
+  // title-aware/bullet-stop machinery is gone (with it, the offsetOf
+  // line-walking helper).
+  const headerEnd = src.search(/^## /m);
+  const preamble = headerEnd === -1 ? src : src.slice(0, headerEnd);
+  if (!/\S/.test(preamble)) return { text: src, replaced: 0 };
+  // CAR-144 r4 — ambiguity rule: with more than one Date: candidate in the
+  // preamble, prefer the bold `**Date:**` label (the report header's own
+  // shape); two bold candidates (or none) are ambiguous → rewrite none.
+  // Otherwise exactly the chosen candidate is rewritten — first-match-only
+  // semantics, everything after the preamble untouched.
+  const candidates = [...preamble.matchAll(new RegExp(REPORT_DATE_LINE.source, 'gmi'))];
+  let target = null;
+  if (candidates.length === 1) {
+    target = candidates[0];
+  } else if (candidates.length > 1) {
+    const bold = candidates.filter((m) => BOLD_DATE_LINE.test(m[0]));
+    if (bold.length === 1) target = bold[0];
   }
-  const offsetOf = (lineIdx) => lines.slice(0, lineIdx).join('\n').length + 1;
-  let headerEnd = -1;
-  if (first !== -1 && lines[first].startsWith('## ')) {
-    for (let i = first + 1; i < lines.length; i++) {
-      if (lines[i].startsWith('## ') || /^[ \t]*[-*][ \t]/.test(lines[i])) {
-        headerEnd = offsetOf(i);
-        break;
-      }
-    }
-  } else {
-    for (let i = 0; i < lines.length; i++) {
-      if (lines[i].startsWith('## ')) {
-        headerEnd = offsetOf(i);
-        break;
-      }
-    }
-  }
-  const header = headerEnd === -1 ? src : src.slice(0, headerEnd);
-  const body = headerEnd === -1 ? '' : src.slice(headerEnd);
-  const fixedHeader = header.replace(REPORT_DATE_LINE, (line, value) => {
-    if (value === day) return line;
-    replaced += 1;
-    return line.replace(value, day);
-  });
-  return { text: fixedHeader + body, replaced };
+  if (!target || target[1] === day) return { text: src, replaced };
+  const newLine = target[0].replace(target[1], day);
+  replaced += 1;
+  return { text: src.slice(0, target.index) + newLine + src.slice(target.index + target[0].length), replaced };
 }
