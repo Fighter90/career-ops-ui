@@ -198,6 +198,9 @@
       if (spec.type === 'textarea') opts.rows = spec.rows || 4;
       const el = c(spec.type, opts);
       fields[spec.name] = el;
+      // CAR-130 (1) — any edit anywhere clears the failed-POST marking.
+      el.addEventListener('input', clearFieldError);
+      el.addEventListener('change', clearFieldError);
       const children = [
         c('label', { htmlFor: inputId }, t(spec.i18n.label, spec.i18n.label)),
         el,
@@ -244,6 +247,30 @@
         }
       }
       return true;
+    }
+
+    // CAR-130 (1) — a failed POST used to surface only as a toast: the
+    // offending control kept no visual state (WCAG 3.3.1). The FIRST form
+    // control gets aria-invalid="true" + .is-error and receives focus;
+    // both are cleared on the next input/change (field() wires the
+    // listeners), so a stale red border never outlives the user's edit.
+    let errorField = null;
+    function clearFieldError() {
+      if (!errorField) return;
+      errorField.removeAttribute('aria-invalid');
+      errorField.classList.remove('is-error');
+      errorField = null;
+    }
+    function markFormError() {
+      const first = cfg.fields
+        .map((spec) => fields[spec.name])
+        .find((el) => el && /^(input|select|textarea)$/i.test(el.tagName));
+      if (!first) return;
+      clearFieldError();
+      errorField = first;
+      first.setAttribute('aria-invalid', 'true');
+      first.classList.add('is-error');
+      first.focus();
     }
 
     function showResult(title, markdown, slug) {
@@ -354,6 +381,7 @@
         }
       } catch (e) {
         if (myToken !== runToken) return;
+        markFormError();
         out.innerHTML = '';
         out.appendChild(c('div', { className: 'empty' }, e.message || String(e)));
       } finally {

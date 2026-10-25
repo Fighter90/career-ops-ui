@@ -28,6 +28,15 @@
 /* CAR-23 — variant fills AA with the inherited --paper text in BOTH themes. */
 .toast.error { background: var(--rausch-dark); }
 .toast.success { background: var(--kazan); }
+/* CAR-130 — failed-POST field marking (the shared mode-page submit helper):
+   the control the error focuses also gets a visible invalid state (WCAG
+   3.3.1), cleared on the next input/change. Lives here, not in
+   components.css (forms), because that file sits exactly at the 800-LOC
+   canary. Existing --err token only — no new colors. */
+.input.is-error, .textarea.is-error, .select.is-error {
+  border-color: var(--err);
+  box-shadow: 0 0 0 3px rgba(255, 56, 92, 0.18);
+}
 /* U-4 (v1.58.24) — collapsible technical detail inside the toast. The
    human sentence stays at the top; the "(METHOD /path · HTTP NNN)"
    postfix is tucked into <details> so it's reachable (BUG-006
