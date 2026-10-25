@@ -17,9 +17,9 @@ _非公式 UI — career-ops / santifer とは提携しておらず、承認も�
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.257.0** — **エージェントフリートによる2つの修正: アプリ内ヘルプアシスタントがデーヴァナーガリー文字とタミル文字を理解できるようになりました(トークナイザーは結合記号を落としていました — ヒンディー語のクエリは0セクションにマッチし、タミル語は断片にしかマッチしませんでした)。さらに、使用量ページがHermesの実際のコストを表示します(ゲートウェイ報告のコストが静かに落とされていました — 9.5 Mトークンに対して$0.0000)。**
+> **🆕 最新リリース — v1.258.0** — **エージェントフリートによる6つの修正: «アクティブな会社»カウンターは2つの母集団を混ぜるのをやめ(1554/90)、ディープリサーチは`[source: …]`マーカーを要求してunknownを認め、失敗したフォームフィールドはトーストだけのエラーではなくフィールド自体が点灯し、#/mapと#/trackerはh1を即座に描画してスケルトンのローディング行を表示し、すべての/api/evaluateが約37kトークンの安定プレフィックスをキャッシュします(最初の呼び出し以降は≈10×安く)。**
 >
-> **前バージョン — v1.256.0** — **トラッカーのデータ品質: 役職が企業として登録されることはなく(`Senior Frontend Engineer - Grafana Labs`は逆方向にパースされていました — 13行)、求人ボードが雇用主として登録されることもありません(hh.ruの行が«hh»として登録されていました — 120行。キリル文字の推論パターンはASCII`\b`のせいでv1.248.4以降静かに死んでいました)。スコアなしの行がトラッカーのソートで先頭に浮上するのは止まり、そして新しいワンショットエンドポイントがレポートそのものから欠落しているスコアをバックフィルします。**
+> **前バージョン — v1.257.0** — **エージェントフリートによる2つの修正: アプリ内ヘルプアシスタントがデーヴァナーガリー文字とタミル文字を理解できるようになりました(トークナイザーは結合記号を落としていました — ヒンディー語のクエリは0セクションにマッチし、タミル語は断片にしかマッチしませんでした)。さらに、使用量ページがHermesの実際のコストを表示します(ゲートウェイ報告のコストが静かに落とされていました — 9.5 Mトークンに対して$0.0000)。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
