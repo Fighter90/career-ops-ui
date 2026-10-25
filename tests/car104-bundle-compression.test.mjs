@@ -28,7 +28,7 @@ import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import {
   mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync,
-  existsSync, utimesSync,
+  existsSync, utimesSync, statSync,
 } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve, dirname, join } from 'node:path';
@@ -440,32 +440,45 @@ test('CAR-145: the served shell references the bundle with a content-hash query'
   } finally { srv.close(); }
 });
 
-test('CAR-145: after a rebuild the shell cites the NEW hash (the deploy skew window is closed)', async () => {
+test('CAR-145: ONE server, after a same-size same-mtime rebuild, cites the NEW hash (cache invalidation)', async () => {
   const root = await buildFixtureBundle('car145-skew', { content: 'var CAR145_V1 = 1;' });
   const pub = join(root, 'public');
-  const srv1 = await listen(shellApp(pub));
-  let first;
+  const bundlePath = join(pub, 'js', 'bundle.js');
+  // ONE app/server — the middleware's shell cache must invalidate across the
+  // rebuild; two shellApp() calls would give the second one a fresh cache and
+  // prove nothing about invalidation.
+  const srv = await listen(shellApp(pub));
   try {
-    first = await fetch(`http://127.0.0.1:${srv1.address().port}/`).then((r) => r.text());
-  } finally { srv1.close(); }
-  const v1 = expectedVersion(pub);
-  assert.match(first, new RegExp(`src="/js/bundle.js\\?v=${v1}"`));
+    // Pin the mtime BEFORE the first fetch so the cached shell key carries the
+    // pinned value (pinning only after would change the key by itself and
+    // invalidate the cache for the wrong reason).
+    const pinned = new Date(1700000000000);
+    utimesSync(bundlePath, pinned, pinned);
+    const st1 = statSync(bundlePath);
+    assert.equal(st1.mtimeMs, 1700000000000, 'fixture: pinned mtime is exact');
+    const before = await fetch(`http://127.0.0.1:${srv.address().port}/`).then((r) => r.text());
+    const v1 = expectedVersion(pub);
+    assert.match(before, new RegExp(`src="/js/bundle\\.js\\?v=${v1}"`));
 
-  // A deploy lands: same paths, new bundle bytes (the shipped make-bundle
-  // replaces the file in place; the shell middleware re-derives on change).
-  writeFixturePublic(root, { content: 'var CAR145_V2 = 2;' });
-  await execFileP(process.execPath, [MAKE_BUNDLE, '--root', root]);
-  const v2 = expectedVersion(pub);
-  assert.notEqual(v1, v2, 'different content must mean a different version');
+    // A deploy lands with the rsync -p / cp -p shape: SAME byte length and the
+    // old mtime restored — size:mtimeMs alone cannot tell the rebuild happened,
+    // only the inode identity (ino/ctimeMs) still can.
+    // Rewrite ONLY the bundle's variable input — touching index.html would
+    // change the other half of the shell cache key and prove nothing.
+    writeFileSync(join(pub, 'js', 'first.js'), '// first\nvar CAR145_V2 = 2;\n'); // same length as V1
+    await execFileP(process.execPath, [MAKE_BUNDLE, '--root', root]);
+    utimesSync(bundlePath, pinned, pinned);
+    const st2 = statSync(bundlePath);
+    assert.equal(st2.size, st1.size, 'fixture: same byte length');
+    assert.equal(st2.mtimeMs, st1.mtimeMs, 'fixture: mtime restored exactly');
+    const v2 = expectedVersion(pub);
+    assert.notEqual(v1, v2, 'different content must mean a different version');
 
-  const srv2 = await listen(shellApp(pub));
-  const port = srv2.address().port;
-  try {
-    const second = await fetch(`http://127.0.0.1:${port}/`).then((r) => r.text());
-    assert.match(second, new RegExp(`src="/js/bundle.js\\?v=${v2}"`),
-      'the fresh shell must point at the new bundle URL — never the cached old one');
-    assert.ok(!second.includes(`?v=${v1}`), 'the old versioned URL must disappear from the shell');
-  } finally { srv2.close(); }
+    const after = await fetch(`http://127.0.0.1:${srv.address().port}/`).then((r) => r.text());
+    assert.match(after, new RegExp(`src="/js/bundle\\.js\\?v=${v2}"`),
+      'the served shell must point at the new bundle URL — never the cached old one');
+    assert.ok(!after.includes(`?v=${v1}`), 'the old versioned URL must disappear from the shell');
+  } finally { srv.close(); }
 });
 
 test('CAR-145: the versioned URL is served by negotiation (pathname-only matching)', async () => {

@@ -83,6 +83,24 @@ export { isValidJobUrl, sanitizeJobDescription, stripDangerousMarkdown };
 // runs so health checks and scanner config see the real values.
 loadEnvFile(PATHS.envFile);
 
+/**
+ * CAR-145 — the cache-busting ?v= value the shell cites for the bundle URL.
+ * The bundle is a STATIC NAME under a long cache (CAR-104), so a deploy could
+ * otherwise serve a NEW no-store shell against a CACHED OLD bundle for up to
+ * 5 minutes. A short content hash of the identity bundle makes the URL itself
+ * change on every rebuild; the negotiation middleware matches on the pathname,
+ * so the versioned URL reuses the same ETag/negotiation path. When the file
+ * cannot be read (a race with a rebuild), a stat-derived fallback keeps the
+ * URL still changing.
+ */
+export function bundleVersionOf(bundlePath, st) {
+  try {
+    return createHash('sha256').update(readFileSync(bundlePath)).digest('hex').slice(0, 12);
+  } catch {
+    return `${st.size.toString(16)}-${st.mtimeMs.toString(16)}`;
+  }
+}
+
 // ──────────────── CAR-85 — release-time SPA bundle ────────────────
 // Prod cold load fetched ~89 classic <script src> tags 6-at-a-time over
 // HTTP/1.1 (~30 s). scripts/make-bundle.mjs (run by the deploy) concatenates
@@ -93,24 +111,6 @@ loadEnvFile(PATHS.envFile);
 // rewritten — the SPA is hash-routed, so "/" is the cold-load path; the
 // rare SPA fallback further down keeps serving the original shell.
 // CSP-safe by construction: same files, same order, one classic script.
-/**
- * CAR-145 — the cache-busting ?v= value the shell cites for the bundle URL.
- * The bundle is a STATIC NAME under `public, max-age=300` (CAR-104), so a
- * deploy could otherwise serve a NEW no-store shell against a CACHED OLD
- * bundle for up to 5 minutes. A short content hash of the identity bundle
- * makes the URL itself change on every rebuild; the negotiation middleware
- * matches on the pathname, so the versioned URL reuses the same
- * ETag/negotiation path. When the file cannot be read (a race with a
- * rebuild), the size-mtime pair of the stat keeps the URL still changing.
- */
-export function bundleVersionOf(bundlePath, st) {
-  try {
-    return createHash('sha256').update(readFileSync(bundlePath)).digest('hex').slice(0, 12);
-  } catch {
-    return `${st.size.toString(16)}-${st.mtimeMs.toString(16)}`;
-  }
-}
-
 export function bundleHtmlMiddleware({ publicDir }) {
   const disabled = process.env.NO_BUNDLE === '1';
   const indexHtmlPath = resolve(publicDir, 'index.html');
@@ -127,7 +127,12 @@ export function bundleHtmlMiddleware({ publicDir }) {
       const st = statSync(indexHtmlPath);
       const sb = statSync(bundlePath);
       bundleStat = sb;
-      key = `${st.size}:${st.mtimeMs}:${sb.size}:${sb.mtimeMs}`;
+      // CAR-145 r2 — size+mtimeMs alone miss the rsync -p / cp -p shape (same
+      // bytes length, mtime preserved by the copy): the cached shell would keep
+      // citing the OLD ?v= hash — the exact skew CAR-145 closes. ino/ctimeMs
+      // cannot survive a content rewrite (ctime bumps on any write; a
+      // rename-based build replaces the inode).
+      key = `${st.size}:${st.mtimeMs}:${sb.size}:${sb.mtimeMs}:${sb.ino}:${sb.ctimeMs}`;
     } catch {
       return next(); // no shell or no bundle → individual scripts
     }
