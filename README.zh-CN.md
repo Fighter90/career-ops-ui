@@ -17,9 +17,9 @@ _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.257.0** — **两项智能体集群修复：应用内帮助助手现已理解天城文与泰米尔文（分词器此前会丢弃组合标记 — 一条印地语查询匹配到 0 个章节，泰米尔语只匹配到碎片），且用量页面显示 Hermes 的真实成本（网关上报的成本此前被静默丢弃 — 9.5 M 个 token 显示 $0.0000）。**
+> **🆕 最新版本 — v1.258.0** — **六项智能体集群修复：«活动公司» 计数器不再混用两个统计口径（1554/90），深度调研必须给出 `[source: …]` 标记并承认未知，失败的表单字段点亮显示而非只弹一条 toast 错误，#/map 与 #/tracker 即时渲染 h1 并配有骨架屏加载行，且每一次 /api/evaluate 都缓存约 37k token 的稳定前缀（首次调用之后 ≈10× 更便宜）。**
 >
-> **上一版本 — v1.256.0** — **追踪器数据质量：角色绝不会被记作公司（`Senior Frontend Engineer - Grafana Labs` 被反向解析 — 13 行），职位板绝不会被记作雇主（hh.ru 的行被记作 «hh» — 120 行；西里尔推断模式自 v1.248.4 起一直静默失效 — ASCII `\b`），无分数的行不再在追踪器排序中浮到最前，此外新增一个一次性端点，从报告本身回填缺失的分数。**
+> **上一版本 — v1.257.0** — **两项智能体集群修复：应用内帮助助手现已理解天城文与泰米尔文（分词器此前会丢弃组合标记 — 一条印地语查询匹配到 0 个章节，泰米尔语只匹配到碎片），且用量页面显示 Hermes 的真实成本（网关上报的成本此前被静默丢弃 — 9.5 M 个 token 显示 $0.0000）。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
