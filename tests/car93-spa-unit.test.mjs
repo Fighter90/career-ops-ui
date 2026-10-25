@@ -383,9 +383,12 @@ test('CAR-93 F6: config + dashboard detach the per-visit listeners on Router.ren
   assert.match(CONFIG, /__configVisitCleanup/, 'config keeps a module-scoped cleanup');
   assert.match(CONFIG, /if \(typeof __configVisitCleanup === 'function'\) __configVisitCleanup\(\)/,
     'config invokes the previous visit cleanup at the top of the route');
-  assert.match(DASH, /__dashChipCleanup/, 'dashboard keeps a module-scoped cleanup');
-  assert.match(DASH, /if \(typeof __dashChipCleanup === 'function'\) __dashChipCleanup\(\)/,
-    'dashboard invokes the previous visit cleanup before mounting the chip');
+  // CAR-114 — the v1.58 provider chip was removed (the header badge owns
+  // provider status); the same module-scoped discipline now guards the
+  // parallax hero's window listeners instead of the chip's document ones.
+  assert.match(DASH, /__dashV2Cleanup/, 'dashboard keeps a module-scoped cleanup');
+  assert.match(DASH, /if \(typeof __dashV2Cleanup === 'function'\) __dashV2Cleanup\(\)/,
+    'dashboard invokes the previous visit cleanup before mounting the listeners');
 });
 
 test('CAR-93 F8: the scan route prologue tears down the stale runner (not only on hashchange)', () => {

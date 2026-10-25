@@ -784,3 +784,137 @@ a:focus-visible, .chip:focus-visible { box-shadow: 0 0 0 4px rgba(255, 56, 92, .
    order at equal specificity. */
 .btn.is-loading .btn-ico { display: none; }
 .btn.is-loading::before { content: "⏳"; line-height: 1; }
+
+/* ═══════════════ CAR-114 — dashboard v2 (command center) ═══════════════
+   Appended by the CAR-114 epic ONLY. File-ownership contract: every
+   selector in this section is prefixed `v2-dash-`. All motion here is
+   neutralized for prefers-reduced-motion by the block at the end of the
+   section; the JS half (count-up, parallax listeners) is gated in
+   dashboard.js before anything is scheduled. */
+
+/* Hero shell — a layered parallax surface. The planes are decorative,
+   absolutely positioned and sit UNDER the content; isolation: isolate
+   keeps the new stacking context scoped so no other z-index shifts. */
+.v2-dash-hero { position: relative; overflow: hidden; isolation: isolate; }
+.v2-dash-planes { position: absolute; inset: 0; z-index: 0; pointer-events: none; }
+.v2-dash-plane {
+  position: absolute;
+  border-radius: var(--radius-lg);
+  filter: blur(2px);
+  opacity: .55;
+  will-change: transform;
+  transition: transform 320ms cubic-bezier(.2, .8, .2, 1);
+}
+.v2-dash-plane--a {
+  top: -35%; right: -8%; width: 46%; height: 140%;
+  background: radial-gradient(closest-side,
+    color-mix(in srgb, var(--rausch) 10%, transparent), transparent 72%);
+}
+.v2-dash-plane--b {
+  bottom: -45%; left: 18%; width: 52%; height: 120%;
+  background: radial-gradient(closest-side,
+    color-mix(in srgb, var(--babu) 9%, transparent), transparent 70%);
+}
+.v2-dash-plane--c {
+  top: -10%; left: -12%; width: 34%; height: 90%;
+  background: radial-gradient(closest-side,
+    color-mix(in srgb, var(--darjeeling) 7%, transparent), transparent 68%);
+}
+.v2-dash-hero-inner { position: relative; z-index: 1; }
+
+/* Greeting line — muted AA secondary text above the CTA group. */
+.v2-dash-greeting {
+  margin: 0 0 var(--space-2);
+  color: var(--foggy-strong);
+  font-size: var(--font-size-base);
+}
+
+/* The ONE primary CTA — a split control: primary scan segment + ghost
+   paste-URL segment, joined radii. Logical-radius join so the seam sits
+   on the correct side in RTL locales. */
+.v2-dash-split { display: inline-flex; flex-wrap: wrap; max-width: 100%; }
+.v2-dash-split .btn-hero:first-child {
+  border-start-end-radius: 0; border-end-end-radius: 0;
+}
+.v2-dash-split-seg {
+  border-start-start-radius: 0; border-end-start-radius: 0;
+  border: 1px solid var(--slate);
+  border-inline-start: 0;
+}
+.v2-dash-split-seg:hover { border-color: var(--rausch); }
+
+/* Status funnel strip — one row of steps, each with a localized label,
+   an Intl-formatted count and a proportional fill bar; conversions sit
+   between steps (decorative — the visually-hidden summary carries the
+   numbers for AT). Zero-count steps stay visible but muted, so the
+   "stuck after Evaluated" shape reads instantly. */
+.v2-dash-funnel-card { padding: var(--space-4); }
+.v2-dash-funnel {
+  list-style: none;
+  margin: 0; padding: 0;
+  display: flex; flex-wrap: wrap; gap: var(--space-3) var(--space-4);
+}
+.v2-dash-fstep {
+  flex: 1 1 96px;
+  min-width: 96px;
+  display: flex; flex-direction: column; gap: 2px;
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--slate);
+  border-radius: var(--radius-sm);
+  background: var(--paper);
+}
+.v2-dash-fstep--zero { opacity: .62; }
+.v2-dash-fstep-label {
+  color: var(--foggy-strong);
+  font-size: var(--font-size-md);
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.v2-dash-fstep-n {
+  color: var(--hof);
+  font-size: var(--font-size-xl);
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+.v2-dash-fstep-bar {
+  height: 6px; border-radius: var(--radius-pill);
+  background: var(--elev);
+  overflow: hidden;
+}
+.v2-dash-fstep-fill {
+  display: block; height: 100%; min-width: 0;
+  border-radius: inherit;
+  background: var(--rausch-fill);
+  transition: width var(--transition);
+}
+.v2-dash-fstep--zero .v2-dash-fstep-fill { background: var(--slate); }
+.v2-dash-fconv {
+  align-self: center;
+  color: var(--foggy-strong);
+  font-size: var(--font-size-sm);
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+.v2-dash-funnel-cta { margin-top: var(--space-3); display: inline-block; }
+
+/* KPI trend delta — ▲/▼ chip against the previous visit's snapshot.
+   Text tokens are the AA variants, so the chip passes in both themes. */
+.v2-dash-delta {
+  display: inline-flex; align-items: center;
+  align-self: flex-start;
+  padding: 1px 8px;
+  border-radius: var(--radius-pill);
+  font-size: var(--font-size-sm);
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+.v2-dash-delta--up { color: var(--kazan-text); background: color-mix(in srgb, var(--kazan) 12%, transparent); }
+.v2-dash-delta--down { color: var(--rausch-text); background: color-mix(in srgb, var(--rausch) 10%, transparent); }
+
+/* CAR-114 — reduced motion: the planes never drift, no width/transform
+   transitions, no pulse. (The count-up and the parallax listeners are
+   additionally gated in JS before anything is scheduled.) */
+@media (prefers-reduced-motion: reduce) {
+  .v2-dash-plane { transition: none; transform: none !important; }
+  .v2-dash-fstep-fill { transition: none; }
+  .v2-dash-delta, .v2-dash-split-seg, .v2-dash-fstep { animation: none; transition: none; }
+}
