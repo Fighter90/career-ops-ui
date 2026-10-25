@@ -28,7 +28,7 @@
  * Usage: node scripts/make-bundle.mjs [--root <web-ui checkout>]
  *   (default root: this checkout; --root exists for tests / odd layouts)
  */
-import { readFileSync, writeFileSync, mkdirSync, rmSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, rmSync, renameSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { brotliCompressSync, gzipSync, constants as zlibConstants } from 'node:zlib';
@@ -149,6 +149,23 @@ export function collectScripts(root) {
   }));
 }
 
+/**
+ * CAR-145 r2 — write via a fully written temp file + rename: the published
+ * inode is never mutated in place, so a concurrent reader (the server hashes
+ * AND streams this file) can never observe torn bytes. POSIX rename over an
+ * existing path is atomic.
+ */
+function atomicWriteFileSync(path, data) {
+  const tmp = `${path}.tmp-${process.pid}`;
+  try {
+    writeFileSync(tmp, data);
+    renameSync(tmp, path);
+  } catch (err) {
+    rmSync(tmp, { force: true });
+    throw err;
+  }
+}
+
 /** Build + write public/js/bundle.js (+ its .br/.gz companions). Returns { count, bytes, outPath, brBytes, gzBytes }. */
 export function writeBundle(root) {
   const scripts = collectScripts(root);
@@ -160,7 +177,7 @@ export function writeBundle(root) {
   // (the server also defends this with an mtime freshness check).
   rmSync(`${outPath}.br`, { force: true });
   rmSync(`${outPath}.gz`, { force: true });
-  writeFileSync(outPath, bundle);
+  atomicWriteFileSync(outPath, bundle);
   const bundleBuf = Buffer.from(bundle, 'utf8');
   let brBytes = null;
   let gzBytes = null;
@@ -173,14 +190,14 @@ export function writeBundle(root) {
         [zlibConstants.BROTLI_PARAM_SIZE_HINT]: bundleBuf.length,
       },
     });
-    writeFileSync(`${outPath}.br`, br);
+    atomicWriteFileSync(`${outPath}.br`, br);
     brBytes = br.length;
   } catch (err) {
     console.warn(`make-bundle: brotli companion skipped (${err.message}) — serving identity only`);
   }
   try {
     const gz = gzipSync(bundleBuf, { level: 9 });
-    writeFileSync(`${outPath}.gz`, gz);
+    atomicWriteFileSync(`${outPath}.gz`, gz);
     gzBytes = gz.length;
   } catch (err) {
     console.warn(`make-bundle: gzip companion skipped (${err.message}) — serving identity only`);

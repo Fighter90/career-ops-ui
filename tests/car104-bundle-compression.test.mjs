@@ -30,6 +30,7 @@ import {
   mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync,
   existsSync, utimesSync, statSync,
 } from 'node:fs';
+import fs from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -172,6 +173,26 @@ test('writeBundle reports the compressed sizes alongside the identity size', () 
   assert.equal(out.count, 3);
   assert.ok(out.bytes > 0 && out.brBytes > 0 && out.gzBytes > 0, 'brBytes/gzBytes reported');
   assert.ok(out.brBytes < out.bytes, 'brotli must actually shrink the bundle');
+});
+
+test('CAR-145 r2: the build writes ATOMICALLY — a fresh inode per rebuild, no temp leftovers', async () => {
+  // The server hashes AND streams this file concurrently with builds; an
+  // in-place write would let a reader observe torn bytes. Renaming a fully
+  // written temp file over the target means the published inode is never
+  // mutated — pinning the inode change pins that contract.
+  const root = makeScratch('write-bundle-atomic');
+  writeFixturePublic(root, { content: 'var CAR145_A1 = 1;' });
+  await execFileP(process.execPath, [MAKE_BUNDLE, '--root', root]);
+  const js = join(root, 'public', 'js');
+  const ino1 = statSync(join(js, 'bundle.js')).ino;
+  assert.equal(fs.readdirSync(js).filter((f) => /\.tmp-/.test(f)).length, 0, 'no temp files left behind');
+
+  writeFixturePublic(root, { content: 'var CAR145_A2 = 2;' });
+  await execFileP(process.execPath, [MAKE_BUNDLE, '--root', root]);
+  const ino2 = statSync(join(js, 'bundle.js')).ino;
+  assert.notEqual(ino1, ino2, 'a rebuild must publish a NEW inode (temp + rename), never rewrite in place');
+  assert.equal(fs.readdirSync(js).filter((f) => /\.tmp-/.test(f)).length, 0, 'no temp files left behind');
+  assert.ok(readFileSync(join(js, 'bundle.js')).includes('CAR145_A2'), 'the renamed file is the new build');
 });
 
 // ─────────────── negotiation over the real wiring order ───────────────
@@ -440,7 +461,7 @@ test('CAR-145: the served shell references the bundle with a content-hash query'
     assert.equal(res.headers.get('cache-control'), 'no-store', 'shell stays always-revalidate');
     assert.match(
       body,
-      new RegExp(`<script src="/js/bundle.js\\?v=${expectedVersion(pub)}"></script>`),
+      new RegExp(`<script src="/js/bundle\\.js\\?v=${expectedVersion(pub)}"></script>`),
       'the ?v= hash must be the sha256 of the served identity bundle',
     );
     assert.doesNotMatch(body, /<script src="\/js\/bundle\.js"><\/script>/, 'un-versioned tag is gone');

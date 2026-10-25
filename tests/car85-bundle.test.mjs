@@ -272,8 +272,8 @@ test('middleware: GET / serves the bundle-tagged shell when bundle.js exists', a
     assert.equal(res.status, 200);
     assert.match(res.headers.get('content-type') || '', /text\/html/);
     assert.equal(res.headers.get('cache-control'), 'no-store');
-    // CAR-145 — the shell's bundle tag carries a content-hash ?v= query.
-    assert.match(body, /<script src="\/js\/bundle\.js\?v=[0-9a-f]+"><\/script>/);
+    // CAR-145 — the shell's bundle tag carries a 12-hex content-hash ?v= query.
+    assert.match(body, /<script src="\/js\/bundle\.js\?v=[0-9a-f]{12}"><\/script>/);
     assert.doesNotMatch(body, /<script src="\/js\/first\.js"><\/script>/);
     assert.match(body, /<script src="\/js\/lib\/theme-bootstrap\.js"><\/script>/);
   } finally { srv.close(); }
@@ -339,8 +339,10 @@ test('createApp: / keeps CSP + no-store and serves the shell (bundled or not, th
     assert.match(body, /<script src="\/js\/lib\/theme-bootstrap\.js"><\/script>/);
     const bundleOnDisk = existsSync(join(pathsMod.PUBLIC_DIR, 'js', 'bundle.js'));
     if (bundleOnDisk) {
-      // CAR-145 — the ?v= content-hash query is part of the tag now.
-      assert.match(body, /<script src="\/js\/bundle\.js(\?v=[0-9a-f]+)?"><\/script>/);
+      // CAR-145 — the versioned tag is MANDATORY in the real wiring: the
+      // 12-hex content-hash query is what closes the deploy skew window, so a
+      // regression dropping it must fail here (finding 4).
+      assert.match(body, /<script src="\/js\/bundle\.js\?v=[0-9a-f]{12}"><\/script>/);
       assert.doesNotMatch(body, /<script src="\/js\/lib\/locales\/i18n-dict\.en\.js"><\/script>/);
     } else {
       assert.match(body, /<script src="\/js\/lib\/locales\/i18n-dict\.en\.js"><\/script>/);
