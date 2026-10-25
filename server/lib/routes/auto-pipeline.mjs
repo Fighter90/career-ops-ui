@@ -677,10 +677,9 @@ export function registerAutoPipelineRoutes(app) {
     const warnings = [];
     try {
       // CAR-111 — parts, as /api/evaluate: the Anthropic branch caches
-      // ctx + stable and leaves the JD tail uncached; promptText stays the
-      // byte-identical full prompt for the manual echo.
+      // ctx + stable and leaves the JD tail uncached. No manual echo here
+      // (auto-pipeline writes the report itself), so no full-prompt string.
       const promptParts = buildEvaluationPromptParts(jdText, lang);
-      const promptText = promptParts.stable + promptParts.volatile;
 
       if (evalMode === 'gemini') {
         // Explicit `mode: 'gemini'` keeps the oferta-tuned gemini-eval.mjs.
