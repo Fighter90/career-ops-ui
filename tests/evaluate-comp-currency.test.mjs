@@ -250,3 +250,45 @@ test('the language reminder still closes the prompt after the figures block', ()
   assert.ok(tail.indexOf('COMPENSATION COMPARISON') < tail.indexOf('## A)'));
   assert.match(tail.slice(tail.lastIndexOf('## G) Verdict')), /语言|Traditional Chinese|remind/i);
 });
+
+// ── Coverage: I/O-failure guards, kr (unmapped CCY) caveat, malformed YAML ──
+
+test('readProfileCompensation: missing profile file → null (no throw)', async () => {
+  const { readProfileCompensation } = await import('../server/lib/comp-compare.mjs');
+  const prev = process.env.CAREER_OPS_ROOT;
+  process.env.CAREER_OPS_ROOT = '/nonexistent/car105-cover';
+  try {
+    assert.equal(readProfileCompensation('not-a-string'), null);
+  } finally {
+    if (prev === undefined) delete process.env.CAREER_OPS_ROOT; else process.env.CAREER_OPS_ROOT = prev;
+  }
+});
+
+test('readProfileCompensation: malformed YAML → null (no throw)', async () => {
+  const { readProfileCompensation } = await import('../server/lib/comp-compare.mjs');
+  assert.equal(readProfileCompensation('compensation: [this: is: not: yaml'), null);
+});
+
+test('readProfileCompensation: non-compensation YAML → null', async () => {
+  const { readProfileCompensation } = await import('../server/lib/comp-compare.mjs');
+  assert.equal(readProfileCompensation('candidate:\n  full_name: Test\n'), null);
+});
+
+test('buildCompensationBlock: kr (unmapped CCY) → explicit caveat, never an invented rate', async () => {
+  const { buildCompensationBlock } = await import('../server/lib/comp-compare.mjs');
+  const block = buildCompensationBlock(
+    'Engineer at Beta.\nSalary: 600 000 kr per year.\nGo, k8s.',
+    { minimum: 500000, currency: 'EUR', raw: '500 000', period: 'year' },
+  );
+  assert.match(block, /No reliable conversion/i, 'unmapped-CCY caveat present');
+  assert.doesNotMatch(block, /=\s*~?\s*\d[\d\s]*\s*(USD|EUR)/, 'no invented converted figure');
+});
+
+test('buildCompensationBlock: differing mapped currencies → indicative ≈-reference present', async () => {
+  const { buildCompensationBlock } = await import('../server/lib/comp-compare.mjs');
+  const block = buildCompensationBlock(
+    'Engineer at Beta.\nSalary: €80–100k.\nGo, k8s.',
+    { minimum: 9000000, currency: 'RUB', raw: '9 000 000', period: 'year' },
+  );
+  assert.match(block, /≈/, 'indicative static-table reference present');
+});
