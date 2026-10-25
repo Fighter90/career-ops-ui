@@ -328,6 +328,25 @@
 
 /* ───────────────────────── misc ───────────────────────── */
 .loading { padding: var(--space-7); text-align: center; color: var(--foggy); }
+/* CAR-112 — skeleton loading placeholders. Shimmer rows stand in for the
+ * board/table while its fetch is in flight (tracker, scan results, map
+ * shell); the wrapper keeps the polite localized «Loading…» announcement
+ * via aria-label (existing common.loading key — no new keys), the rows
+ * are aria-hidden decoration. An opacity pulse, not a moving gradient,
+ * and it stops entirely under prefers-reduced-motion. */
+.skeleton-block { padding: var(--space-5) var(--space-3); }
+.skeleton-row {
+  height: 14px; margin: 0 0 10px; border-radius: var(--radius);
+  background: var(--slate); animation: skeleton-shimmer 1.4s ease-in-out infinite;
+}
+.skeleton-row:last-child { margin-bottom: 0; }
+@keyframes skeleton-shimmer {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.45; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .skeleton-row { animation: none; opacity: 0.6; }
+}
 .empty {
   padding: var(--space-7);
   text-align: center;

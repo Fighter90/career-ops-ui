@@ -548,7 +548,8 @@ Router.register('scan', async () => {
   repostsPanel.addEventListener('toggle', async () => {
     if (!repostsPanel.open || repostsLoaded) return;
     repostsLoaded = true;
-    repostsBody.textContent = t('common.loading', 'Loading…');
+    // CAR-112 — shimmer rows instead of a bare «Loading…» text.
+    repostsBody.replaceChildren(window.Skeleton.block(4, t('common.loading', 'Loading…')));
     try {
       const d = await API.get('/api/scan/reposts');
       repostsBody.textContent = '';
@@ -586,6 +587,10 @@ Router.register('scan', async () => {
     }
   });
 
+  // CAR-112 — the first paint shows shimmer rows instead of an empty table
+  // while GET /api/scan-results is in flight; SR.render() replaces them when
+  // the data lands (or the CAR-93 error state on a failed first load).
+  resultsEl.replaceChildren(window.Skeleton.block(6, t('common.loading', 'Loading…')));
   // load results on first render
   refreshResults();
 
