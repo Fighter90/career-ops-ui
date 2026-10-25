@@ -11,6 +11,21 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.257.0] — 2026-10-25
+
+**Dos correcciones de la flota de agentes: el asistente de ayuda integrado entiende devanagari y tamil, y la página de uso muestra lo que Hermes cuesta de verdad.**
+
+### Corregido
+
+- **Recuperación del asistente de ayuda para hi/ta (CAR-103)**: la clase de palabra del tokenizador de palabras clave de docs-assistant era `[\p{L}\p{N}\u30fc]+` — sin marcas de combinación. Las matras del devanagari (ा ै ्…) y los signos vocálicos del tamil (ே ை ்…) partían las palabras en fragmentos; la regla de longitud descartaba los fragmentos cortos (una consulta en hindi coincidía con 0 secciones) y las palabras más largas quedaban decapitadas en basura que colisionaba con secciones no relacionadas. La clase conserva ahora `\p{M}`; la ruta de bigramas CJK queda intacta. hi «मैं स्कैन कैसे चलाऊं?» y ta «ஸ்கேன் எப்படி இயக்குவது?» recuperan las secciones correctas de los paquetes incluidos.
+- **Coste de uso para Hermes (CAR-106)**: `normalizeUsage()` colapsaba el uso del proveedor a `{in, out}` y descartaba en silencio el `cost` reportado por la pasarela — `#/usage` mostraba $0.0000 sobre 9.5 M de tokens de Hermes (su fila en la tabla de precios es 0/0). La forma del registro de uso gana un `cost?` opcional y retrocompatible; el agregador prefiere el coste reportado por el proveedor en cada registro y solo recurre a la estimación de la tabla de precios cuando falta; los valores basura o negativos se descartan, nunca se fabrican.
+
+### Notas
+
+- Ambas correcciones llegaron de la flota de agentes con evidencia rojo→verde (3 + 5 casos nuevos; 14/14 y 10/10 en verde; vecinos 78/78 y 61/61). Los primeros PR (#470/#471) llevaban una base de worktree obsoleta que entraba en conflicto con el v1.256.0 ya fusionado por squash — se sustituyeron por cherry-picks limpios (#472/#473).
+- A propósito no hecho: sin re-tarificación retroactiva de las líneas históricas de `data/llm-usage.jsonl` (no llevan campo de coste; solo se benefician los registros nuevos).
+- Tests 5713 (+8: docs-assistant ×3, usage ×5). No se toca ninguna fuente del escáner (registro 121 = 116 EN + 5 RU · 116 adaptadores); sin claves i18n.
+
 ## [1.256.0] — 2026-10-25
 
 **Calidad de los datos del tracker: el rol nunca se archiva como empresa, un tablero de ofertas nunca se archiva como empleador, las filas sin puntuación dejan de aparecer primero — y un endpoint one-shot rellena (backfill) las puntuaciones que faltan a partir de los propios informes.**

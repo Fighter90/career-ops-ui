@@ -2,6 +2,21 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.257.0] — 2026-10-25
+
+**Zwei Fixes aus der Agenten-Flotte: der Hilfe-Assistent in der App versteht Devanagari und Tamil, und die Nutzungsseite zeigt, was Hermes tatsächlich kostet.**
+
+### Behoben
+
+- **Abruf des Hilfe-Assistenten für hi/ta (CAR-103)**: die Wortklasse des Keyword-Tokenizers des Docs-Assistenten war `[\p{L}\p{N}\u30fc]+` — keine kombinierenden Zeichen. Jede Devanagari-Matra (ा ै ्…) und jedes tamilische Vokalzeichen (ே ை ்…) zerschnitt ein Wort in Fragmente; die Längenregel warf kurze Fragmente weg (eine Hindi-Anfrage matchte 0 Abschnitte), und längere Wörter wurden zu Müll enthauptet, der mit zusammenhangslosen Abschnitten kollidierte. Die Klasse behält jetzt `\p{M}`; der CJK-Bigram-Pfad bleibt unangetastet. hi «मैं स्कैन कैसे चलाऊं?» und ta «ஸ்கேன் எப்படி இயக்குவது?» holen die richtigen Abschnitte aus den ausgelieferten Bundles.
+- **Nutzungskosten für Hermes (CAR-106)**: `normalizeUsage()` presste die Provider-Nutzung auf `{in, out}` zusammen und warf den vom Gateway gemeldeten `cost`-Wert stillschweigend weg — `#/usage` zeigte $0.0000 über 9.5 M Hermes-Tokens (seine Preistabellen-Zeile ist 0/0). Die Form des Nutzungseintrags erhält ein optionales, abwärtskompatibles `cost?`; der Aggregator bevorzugt den vom Provider gemeldeten Kostenwert je Eintrag und greift nur bei Fehlen auf die Preistabellen-Schätzung zurück; fehlerhafte und negative Werte werden verworfen, nie erfunden.
+
+### Hinweise
+
+- Beide Fixes stammen aus der Agenten-Flotte mit Rot→Grün-Nachweisen (3 + 5 neue Fälle; 14/14 und 10/10 grün; Nachbarn 78/78 und 61/61). Die ersten PRs (#470/#471) trugen eine veraltete Worktree-Basis, die mit dem Squash-Merge von v1.256.0 kollidierte — ersetzt durch saubere Cherry-Picks (#472/#473).
+- Bewusst nicht getan: keine rückwirkende Neubepreisung historischer `data/llm-usage.jsonl`-Zeilen (sie tragen kein Kostenfeld; nur neue Einträge profitieren).
+- Tests 5713 (+8: docs-assistant ×3, usage ×5). Keine Scanner-Quellen angefasst (Registry 121 = 116 EN + 5 RU · 116 Adapter); keine i18n-Schlüssel.
+
 ## [1.256.0] — 2026-10-25
 
 **Tracker-Datenqualität: die Rolle wird nie als Firma abgelegt, ein Job-Board nie als Arbeitgeber, unbenotete Zeilen tauchen nicht mehr zuerst auf — und ein One-Shot-Endpunkt füllt fehlende Scores direkt aus den Reports selbst nach.**

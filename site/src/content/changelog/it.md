@@ -2,6 +2,21 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.257.0] — 2026-10-25
+
+**Due fix della flotta di agenti: l'assistente della guida in-app capisce devanagari e tamil, e la pagina usage mostra quanto costa davvero Hermes.**
+
+### Corretto
+
+- **Recupero dell'assistente della guida per hi/ta (CAR-103)**: la classe di caratteri di parola del tokenizer a keyword del docs-assistant era `[\p{L}\p{N}\u30fc]+` — senza segni combinanti. Ogni matra devanagari (ा ै ्…) e ogni segno vocalico tamil (ே ை ்…) spezzava una parola in frammenti; la regola sulla lunghezza scartava i frammenti corti (una query in hindi combaciava con 0 sezioni) e le parole più lunghe venivano decapitate in spazzatura che collimava con sezioni non correlate. La classe ora mantiene `\p{M}`; il percorso dei bigram CJK resta intatto. hi «मैं स्कैन कैसे चलाऊं?» e ta «ஸ்கேன் எப்படி இயக்குவது?» recuperano le sezioni giuste dai bundle distribuiti.
+- **Costo dell'uso per Hermes (CAR-106)**: `normalizeUsage()` collassava l'usage del provider a `{in, out}` e scartava silenziosamente il `cost` riportato dal gateway — `#/usage` mostrava $0.0000 su 9.5 M di token Hermes (la sua riga nella tabella dei prezzi è 0/0). La forma del record di usage guadagna un `cost?` opzionale e retrocompatibile; l'aggregatore preferisce, per ogni record, il costo riportato dal provider e ricade alla stima della tabella dei prezzi solo in sua assenza; i valori spazzatura/negativi vengono scartati, mai fabbricati.
+
+### Note
+
+- Entrambi i fix arrivano dalla flotta di agenti con evidenza test rosso→verde (3 + 5 nuovi casi; 14/14 e 10/10 verdi; i vicini 78/78 e 61/61). Le prime PR (#470/#471) portavano una base di worktree obsoleta che confliggeva con la v1.256.0 unita in squash — sostituite da cherry-pick puliti (#472/#473).
+- Non fatto deliberatamente: nessun re-pricing retroattivo delle righe storiche di `data/llm-usage.jsonl` (non portano un campo cost; ne beneficiano solo i nuovi record).
+- Test 5713 (+8: docs-assistant ×3, usage ×5). Nessuna fonte scanner toccata (registro 121 = 116 EN + 5 RU · 116 adattatori); nessuna chiave i18n.
+
 ## [1.256.0] — 2026-10-25
 
 **Qualità dei dati del tracker: il ruolo non viene mai registrato come azienda, un job board non viene mai registrato come datore di lavoro, le righe senza punteggio smettono di emergere per prime — e un endpoint one-shot recupera i punteggi mancanti direttamente dai report stessi.**

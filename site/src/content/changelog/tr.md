@@ -2,6 +2,21 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.257.0] — 2026-10-25
+
+**Ajan filosundan iki düzeltme: uygulama içi yardım asistanı Devanagari ve Tamil yazılarını anlıyor ve kullanım sayfası Hermes'in gerçekte neye mal olduğunu gösteriyor.**
+
+### Düzeltildi
+
+- **hi/ta için yardım asistanı getirimi (CAR-103)**: docs-assistant anahtar-sözcük dizgecinin kelime sınıfı `[\p{L}\p{N}\u30fc]+` idi — birleştirme işareti yoktu. Her Devanagari matrası (ा ै ्…) ve Tamil sesli işareti (ே ை ்…) bir kelimeyi parçalara bölüyordu; uzunluk kuralı kısa parçaları düşürüyordu (bir Hintçe sorgu 0 bölümle eşleşiyordu), daha uzun kelimeler ise başları kesilerek alakasız bölümlerle çakışan anlamsız artıklara dönüşüyordu. Sınıf artık `\p{M}`'i içeriyor; CJK bigram yoluna dokunulmadı. hi «मैं स्कैन कैसे चलाऊं?» ve ta «ஸ்கேன் எப்படி இயக்குவது?» sorguları dağıtılan paketlerden doğru bölümleri getiriyor.
+- **Hermes için kullanım maliyeti (CAR-106)**: `normalizeUsage()` sağlayıcı kullanımını `{in, out}`'a daraltıp ağ geçidinin bildirdiği `cost`'u sessizce düşürüyordu — `#/usage`, 9.5 M Hermes belirteci üzerinde $0.0000 gösteriyordu (fiyat tablosundaki satırı 0/0). Kullanım kaydı biçimi, geriye dönük uyumlu isteğe bağlı bir `cost?` kazanıyor; toplayıcı, kayıt başına sağlayıcının bildirdiği maliyeti yeğliyor ve yalnızca yokken fiyat tablosu tahminine dönüyor; çöp/negatif değerler düşürülüyor, asla uydurulmuyor.
+
+### Notlar
+
+- Her iki düzeltme de kırmızı→yeşil kanıtla (3 + 5 yeni test; 14/14 ve 10/10 yeşil; komşu süitler 78/78 ve 61/61) ajan filosundan geldi. İlk PR'ler (#470/#471), squash-merge edilmiş v1.256.0 ile çakışan bayat bir worktree tabanı taşıyordu — bunların yerine temiz cherry-pick'ler (#472/#473) geçti.
+- Bilinçli olarak yapılmayanlar: tarihsel `data/llm-usage.jsonl` satırlarının geriye dönük yeniden fiyatlandırması yok (bunlar maliyet alanı taşımıyor; yalnızca yeni kayıtlar yararlanıyor).
+- Test tabanı: 5713 (+8: docs-assistant ×3, usage ×5). Hiçbir tarayıcı kaynağına dokunulmadı (kayıt defteri 121 = 116 EN + 5 RU · 116 adaptör); i18n anahtarı yok.
+
 ## [1.256.0] — 2026-10-25
 
 **Takip verisi kalitesi: rol hiçbir zaman şirket olarak kaydedilmiyor, bir iş panosu hiçbir zaman işveren olarak kaydedilmiyor, puanlanmamış satırlar artık en önde belirmeyi bırakıyor — ve tek-seferlik bir uç nokta, eksik puanları raporların kendilerinden geri dolduruyor.**
