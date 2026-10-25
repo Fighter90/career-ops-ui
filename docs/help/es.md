@@ -237,9 +237,9 @@ final de la página conserva cada archivo previamente generado.
 
 ### C. Encontrar vacantes (~2 minutos por scan)
 
-**Paso 9 — Haz clic en `🌐 Scan` en el sidebar.** Confirma que
+**Paso 9 — Haz clic en `🌐 Búsqueda` en el sidebar.** Confirma que
 `portals.yml` lista los boards que te interesan (sección 5 de esta
-ayuda). Pulsa el botón **🌐 Scan now**. Un log SSE en vivo se va
+ayuda). Pulsa el botón **🌐 Buscar ahora**. Un log SSE en vivo se va
 mostrando mientras el scanner recorre Greenhouse / Ashby / Lever /
 Workable / SmartRecruiters / Workday (boards en inglés) y hh.ru / Habr
 Career (boards rusos, si están habilitados).
@@ -379,8 +379,8 @@ reiniciar el servidor.
    - **Gemini** — define `GEMINI_API_KEY` (aistudio.google.com/apikey), opcionalmente `GEMINI_MODEL` (default `gemini-3.6-flash`).
    - **OpenAI** — define `OPENAI_API_KEY` (platform.openai.com), opcionalmente `OPENAI_MODEL` (default `gpt-5-codex`).
    - **Qwen** — define `QWEN_API_KEY` (Alibaba Model Studio / DashScope, dashscope.console.aliyun.com), opcionalmente `QWEN_MODEL` (default `qwen-max`). Para el endpoint de China continental define `QWEN_BASE_URL` en el `.env` crudo.
-4. Haz clic en **Save**. Las claves se escriben en el `.env` del proyecto padre; el cambio surte efecto al instante — sin reiniciar el servidor.
-5. Verifica en `#/evaluate`: pega una URL/descripción de vacante y pulsa **⚡ Run live**. El encabezado del resultado muestra qué proveedor corrió (`anthropic` / `gemini` / `openai` / `qwen`). Sin ninguna clave definida → obtienes el prompt manual de copiar-pegar.
+4. Haz clic en **Guardar**. Las claves se escriben en el `.env` del proyecto padre; el cambio surte efecto al instante — sin reiniciar el servidor.
+5. Verifica en `#/evaluate`: pega una URL/descripción de vacante y pulsa **⚡ Ejecutar en vivo**. El encabezado del resultado muestra qué proveedor corrió (`anthropic` / `gemini` / `openai` / `qwen`). Sin ninguna clave definida → obtienes el prompt manual de copiar-pegar.
 
 Los secretos se enmascaran tras guardar y nunca se registran. Los campos de id de modelo (`*_MODEL`) no son secretos.
 
@@ -519,7 +519,7 @@ Tamaño máximo de body: 1 MB. Cualquier cosa más grande devuelve 413.
 - **sync-check** — ejecuta `cv-sync-check.mjs` en el proyecto padre.
   Marca inconsistencias: un proyecto listado en tu CV pero no en los
   arquetipos de `data/applications.md`, etc.
-- **📄 Generate PDF** — streamea `generate-pdf.mjs`. El output
+- **📄 Generar PDF** — streamea `generate-pdf.mjs`. El output
   aterriza en `output/*.pdf`. Requiere Playwright (la página Health
   muestra si está instalado en el `node_modules` del padre). Cuando
   termina la generación, el PDF **más reciente** se descarga
@@ -885,7 +885,7 @@ fingerprinting de tu instalación.
 
 ### Botones de ejecución
 
-- **▶ Doctor** ejecuta `node doctor.mjs` y muestra el output en un
+- **Ejecutar doctor** ejecuta `node doctor.mjs` y muestra el output en un
   modal.
 - **▶ Verify pipeline** ejecuta `node verify-pipeline.mjs`.
 
@@ -901,7 +901,7 @@ historia, y escribe los hits a `data/last-scan.json` y
 
 ### Scan de un clic (SPA)
 
-**🌐 Scan** ejecuta cada fuente habilitada en una sola pasada:
+**🌐 Buscar** ejecuta cada fuente habilitada en una sola pasada:
 
 - Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday
   (la pasada ATS) para cada empresa de `tracked_companies` con una
@@ -913,7 +913,7 @@ historia, y escribe los hits a `data/last-scan.json` y
 - API de hh.ru + HTML de Habr Career para cada query de
   `russian_portals`.
 
-**Dos fases en un clic (v1.29.2).** El único botón 🌐 Scan dispara TANTO el sweep ATS COMO el regional en un único stream SSE. En el log verás dos encabezados de fase, en orden:
+**Dos fases en un clic (v1.29.2).** El único botón 🌐 Buscar dispara TANTO el sweep ATS COMO el regional en un único stream SSE. En el log verás dos encabezados de fase, en orden:
 
 1. `▶ ATS scan (Greenhouse + Ashby + Lever)` — boards ATS EN.
 2. `▶ Regional scan (hh.ru + Habr Career)` — 5 fuentes RU del registry.
@@ -921,7 +921,7 @@ historia, y escribe los hits a `data/last-scan.json` y
 Cada fase termina con un resumen `✓ done · NEW=N`. Si solo ves la fase ATS, tu stand está en un build pre-v1.29.2 — actualiza. Antes de v1.29.2 el cliente SSE cerraba en el primer `done` y la fase regional se descartaba silenciosamente.
 
 El log SSE en vivo se va mostrando en el panel derecho mientras corre
-el scan. Haz clic en **Stop** (o simplemente navega fuera) para
+el scan. Haz clic en **Detener** (o simplemente navega fuera) para
 abortar — el servidor cancela los requests HTTPS en vuelo vía
 `AbortController`.
 
@@ -1077,9 +1077,9 @@ segundos.
 
 ### Botones arriba a la derecha
 
-- **⚡ Evaluate first** — abre la primera URL encolada en la página
+- **⚡ Evaluar primero** — abre la primera URL encolada en la página
   Evaluate, lista para puntuar.
-- **Scan** — vuelve al scanner si quieres más URLs.
+- **Búsqueda de vacantes** — vuelve al scanner si quieres más URLs.
 
 ---
 
@@ -1175,7 +1175,7 @@ La vista de reporte individual también tiene:
 
 ### Exportar un informe a PDF
 
-Abre un informe guardado y pulsa **📄 Generate PDF**. Ejecuta
+Abre un informe guardado y pulsa **📄 Generar PDF**. Ejecuta
 `generate-pdf.mjs` en el proyecto padre y escribe el archivo en
 `output/*.pdf` (requiere Playwright; la página Salud indica si está
 instalado). No se envía nada: revisa el PDF antes de adjuntarlo a una
@@ -1333,7 +1333,7 @@ retrospectivas de **Patterns**. Cada uno envuelve una plantilla
 
 Cada página tiene un pequeño formulario (los campos son específicos
 del modo), un botón **▶ Generate prompt** (manual), y — cuando hay
-una clave Anthropic o Gemini presente — un botón **⚡ Run live** que
+una clave Anthropic o Gemini presente — un botón **⚡ Ejecutar en vivo** que
 asciende a primary.
 
 Hacer clic en **▶ Generate prompt** devuelve el prompt ensamblado con
@@ -1341,7 +1341,7 @@ tus valores del formulario JSON-stringificados en un bloque
 `User-supplied context:`, seguido por la plantilla `modes/<slug>.md`
 verbatim. Copia y pega en tu LLM de elección.
 
-Hacer clic en **⚡ Run live** envía el mismo prompt a Anthropic (o
+Hacer clic en **⚡ Ejecutar en vivo** envía el mismo prompt a Anthropic (o
 Gemini), con `cv.md` + `profile.yml` + `_shared.md` inlineados vía
 `bundleProjectContext`. El resultado se renderiza en la página, es
 copiable, y descargable como `.md`.
@@ -1689,7 +1689,7 @@ Filtra por prefijo de acción (`pipeline.`, `cv.`, `evaluate`,
 | El texto de una fila del tracker rompe la tabla | Pipe en el nombre de empresa pre-v1.9.1 | Actualiza a v1.9.1+ — los pipes se escapan end-to-end (BF-1). |
 | `npm test` falla en clon fresco | Los tests asumen el layout del proyecto padre | Usa `CAREER_OPS_ROOT=$(mktemp -d)` y bootstrapea fixtures. |
 
-Para diagnóstico más profundo: ejecuta **▶ Doctor** en la página
+Para diagnóstico más profundo: ejecuta **Ejecutar doctor** en la página
 Health, copia el output, y busca el issue en el tracker en
 <https://github.com/Fighter90/career-ops-ui/issues>.
 
@@ -1896,7 +1896,7 @@ Recarga `#/scan` en el navegador. El dropdown del filtro de fuente recoge
 la nueva entrada automáticamente (única fuente de verdad vía
 [`GET /api/scan/sources`](../../server/lib/routes/scan.mjs) →
 [`registry.mjs`](../../server/lib/sources/registry.mjs)). El
-botón 🌐 Scan ahora incluye la nueva fuente en cada barrido regional.
+botón 🌐 Buscar ahora incluye la nueva fuente en cada barrido regional.
 
 ### Adapters de referencia (úsalos como espejo para nuevas fuentes)
 

@@ -237,9 +237,9 @@ career-ops-ui の `#/dashboard` と `#/tracker` は 4.0 以上の行を
 
 ### C. 求人を探す (スキャンあたり約 2 分)
 
-**ステップ 9 — サイドバーの `🌐 Scan` をクリックします。**
+**ステップ 9 — サイドバーの `🌐 検索` をクリックします。**
 `portals.yml` に関心のあるボードが列挙されていることを確認します
-(本ヘルプの第 5 章)。**🌐 Scan now** ボタンを押します。
+(本ヘルプの第 5 章)。**🌐 今すぐスキャン** ボタンを押します。
 スキャナーが Greenhouse / Ashby / Lever / Workable / SmartRecruiters
 / Workday (英語圏ボード) と、有効化されていれば hh.ru / Habr
 Career (ロシア圏ボード) を巡回する間、ライブ SSE ログがストリーム
@@ -375,8 +375,8 @@ Save 先は `interview-prep/<company>-<role>.md`。
    - **Gemini** — `GEMINI_API_KEY`(aistudio.google.com/apikey)を設定、任意で `GEMINI_MODEL`(既定 `gemini-3.6-flash`)。
    - **OpenAI** — `OPENAI_API_KEY`(platform.openai.com)を設定、任意で `OPENAI_MODEL`(既定 `gpt-5-codex`)。
    - **Qwen** — `QWEN_API_KEY`(Alibaba Model Studio / DashScope、dashscope.console.aliyun.com)を設定、任意で `QWEN_MODEL`(既定 `qwen-max`)。中国本土エンドポイントは raw `.env` で `QWEN_BASE_URL` を設定します。
-4. **Save** をクリックします。キーは親プロジェクトの `.env` に書き込まれます;変更は即時に反映されます — サーバ再起動は不要です。
-5. `#/evaluate` で検証します:求人の URL/説明を貼り付けて **⚡ Run live** を押します。結果ヘッダにどのプロバイダが実行されたか(`anthropic` / `gemini` / `openai` / `qwen`)が表示されます。どこにもキーが設定されていない場合 → 代わりにコピー&ペーストの手動プロンプトが得られます。
+4. **保存** をクリックします。キーは親プロジェクトの `.env` に書き込まれます;変更は即時に反映されます — サーバ再起動は不要です。
+5. `#/evaluate` で検証します:求人の URL/説明を貼り付けて **⚡ ライブ実行** を押します。結果ヘッダにどのプロバイダが実行されたか(`anthropic` / `gemini` / `openai` / `qwen`)が表示されます。どこにもキーが設定されていない場合 → 代わりにコピー&ペーストの手動プロンプトが得られます。
 
 シークレットは保存後にマスクされ、決してログ出力されません。モデル id フィールド(`*_MODEL`)はシークレットではありません。
 
@@ -514,7 +514,7 @@ Health ページは **Profile customized** チェックを表示し、
 - **sync-check** — 親プロジェクトで `cv-sync-check.mjs` を実行
   します。不整合をフラグ: CV に記載されているプロジェクトが
   `data/applications.md` の archetypes にない、など。
-- **📄 Generate PDF** — `generate-pdf.mjs` をストリーミングで
+- **📄 PDF を生成** — `generate-pdf.mjs` をストリーミングで
   実行します。出力先は `output/*.pdf`。Playwright が必要です
   (Health ページが親の `node_modules` でインストール済みかを
   表示します)。生成完了時に **最新の** PDF がデフォルトの
@@ -890,7 +890,7 @@ $EDITOR portals.yml
 
 ### 実行ボタン
 
-- **▶ Doctor** は `node doctor.mjs` を実行し、モーダルに出力を
+- **doctor を実行** は `node doctor.mjs` を実行し、モーダルに出力を
   表示します。
 - **▶ Verify pipeline** は `node verify-pipeline.mjs` を実行します。
 
@@ -906,7 +906,7 @@ $EDITOR portals.yml
 
 ### ワンクリックスキャン (SPA)
 
-**🌐 Scan** はすべての有効ソースを 1 回のスイープで実行します:
+**🌐 スキャン** はすべての有効ソースを 1 回のスイープで実行します:
 
 - Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday
   (ATS スイープ) を、認識可能な ATS URL を持つ `tracked_companies`
@@ -915,7 +915,7 @@ $EDITOR portals.yml
 - hh.ru API + Habr Career + Trudvsem + GetMatch + GeekJob を、`russian_portals` の各クエリに
   対して実行。
 
-**1 クリックで 2 フェーズ(v1.29.2)。** 単一の 🌐 Scan ボタンが ATS スイープと地域スイープの両方を、1 つの SSE ストリーム上で実行します。ログには 2 つのフェーズ見出しが順番に現れます:
+**1 クリックで 2 フェーズ(v1.29.2)。** 単一の 🌐 スキャン ボタンが ATS スイープと地域スイープの両方を、1 つの SSE ストリーム上で実行します。ログには 2 つのフェーズ見出しが順番に現れます:
 
 1. `▶ ATS scan (Greenhouse + Ashby + Lever)` — EN ATS ボード。
 2. `▶ Regional scan (hh.ru + Habr Career)` — レジストリの 5 つの RU ソース。
@@ -923,7 +923,7 @@ $EDITOR portals.yml
 各フェーズは `✓ done · NEW=N` のサマリで終わります。ATS フェーズしか見えない場合、stand は v1.29.2 より前のビルドです — アップグレードしてください。v1.29.2 より前は SSE クライアントが最初の `done` でクローズし、地域フェーズが静かに失われていました。
 
 ライブ SSE ログがスキャン中に右ペインへストリーム表示されます。
-**Stop** をクリック (または単に離脱) すると中断します — サーバは
+**停止** をクリック (または単に離脱) すると中断します — サーバは
 `AbortController` 経由で進行中の HTTPS リクエストをキャンセルします。
 
 ### 結果のフィルタリング
@@ -1086,9 +1086,9 @@ hh.ru は Habr Career と同じく、公開検索サイト（`hh.ru/search/vacan
 
 ### 右上ボタン
 
-- **⚡ Evaluate first** — キューの最初の URL を Evaluate ページで
+- **⚡ 先頭を評価** — キューの最初の URL を Evaluate ページで
   採点可能な状態で開きます。
-- **Scan** — さらに URL が欲しい場合にスキャナーへ戻ります。
+- **求人検索** — さらに URL が欲しい場合にスキャナーへ戻ります。
 
 ---
 
@@ -1180,7 +1180,7 @@ legitimacy フラグ、score (色分け: 緑 ≥ 4.0、黄 ≥ 3.0、それ未�
 
 ### レポートを PDF に書き出す
 
-保存済みのレポートを開き、**📄 Generate PDF** をクリックします。親プロジェクトで
+保存済みのレポートを開き、**📄 PDF を生成** をクリックします。親プロジェクトで
 `generate-pdf.mjs` を実行し、ファイルを `output/*.pdf` に書き込みます(Playwright
 が必要で、ヘルス(Health)ページで導入状況を確認できます)。どこにも送信されません。
 応募に添付する前に PDF を確認してください。
@@ -1336,14 +1336,14 @@ Evaluate と同じフォールバックチェーン:
 
 各ページは小さなフォーム (フィールドはモード固有)、**▶ Generate
 prompt** ボタン (手動)、そして — Anthropic または Gemini キーがあれば
-— プライマリに昇格する **⚡ Run live** ボタンを持ちます。
+— プライマリに昇格する **⚡ ライブ実行** ボタンを持ちます。
 
 **▶ Generate prompt** をクリックすると、フォーム値を JSON
 シリアライズした `User-supplied context:` ブロックに、その後に
 `modes/<slug>.md` テンプレートを逐語的に付けた組み立て済みプロンプトを
 返します。コピーして好みの LLM に貼り付けます。
 
-**⚡ Run live** をクリックすると同じプロンプトを Anthropic
+**⚡ ライブ実行** をクリックすると同じプロンプトを Anthropic
 (または Gemini) に送ります。`bundleProjectContext` 経由で `cv.md` +
 `profile.yml` + `_shared.md` をインライン化します。結果はページに
 描画され、コピー可能、`.md` としてダウンロード可能です。
@@ -1551,7 +1551,7 @@ career-ops の以下 2 つの機能に必須です:
 
 - **フォーム入力** (`/career-ops apply` の上記ステップ 3 —
   Playwright がブラウザを開き、フィールドラベルを読み、回答を提案)。
-- **PDF 生成** (`/career-ops pdf` と SPA の **📄 Generate PDF**
+- **PDF 生成** (`/career-ops pdf` と SPA の **📄 PDF を生成**
   ボタン: `#/cv` / `#/reports/:slug` / `#/evaluate` / `#/deep` /
   `#/interview-prep`)。
 
@@ -1679,7 +1679,7 @@ evaluate 実行、deep-research 実行、scan 実行、設定変更、モード
 | Tracker 行のテキストがテーブルを壊す | v1.9.1 以前で会社名にパイプ | v1.9.1 以上へ更新 — パイプはエンドツーエンドでエスケープされます (BF-1)。 |
 | 新規クローンで `npm test` が失敗 | テストが親プロジェクトレイアウトを仮定 | `CAREER_OPS_ROOT=$(mktemp -d)` を使ってフィクスチャをブートストラップ。 |
 
-より詳細な診断には: Health ページで **▶ Doctor** を実行し、出力を
+より詳細な診断には: Health ページで **doctor を実行** を実行し、出力を
 コピーし、issue トラッカー
 <https://github.com/Fighter90/career-ops-ui/issues> を検索して
 ください。

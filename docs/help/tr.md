@@ -238,9 +238,9 @@ altındaki liste, önceden oluşturulmuş her dosyayı saklar.
 
 ### C. Açık pozisyon bulma (tarama başına ~2 dakika)
 
-**Adım 9 — Kenar çubuğunda `🌐 Scan`e tıklayın.** `portals.yml`'nin
+**Adım 9 — Kenar çubuğunda `🌐 Tara`e tıklayın.** `portals.yml`'nin
 önem verdiğiniz kartları listelediğini doğrulayın (bu yardımın 5.
-bölümü). **🌐 Scan now** düğmesine basın. Tarayıcı Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday (İngilizce kartlar) ve hh.ru / Habr
+bölümü). **🌐 Şimdi tara** düğmesine basın. Tarayıcı Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday (İngilizce kartlar) ve hh.ru / Habr
 Career (etkinleştirilmişse Rusça kartlar) üzerinde ilerlerken canlı bir SSE günlüğü akar.
 
 **Adım 10 — Tarama bittiğinde sonuçları gözden geçirin.** Filtrelemek
@@ -414,8 +414,8 @@ Herhangi bir sekmedeki bir kaydetme anında yayılır — sunucu yeniden başlat
    - **Gemini** — `GEMINI_API_KEY` ayarlayın (aistudio.google.com/apikey), opsiyonel olarak `GEMINI_MODEL` (varsayılan `gemini-3.6-flash`).
    - **OpenAI** — `OPENAI_API_KEY` ayarlayın (platform.openai.com), opsiyonel olarak `OPENAI_MODEL` (varsayılan `gpt-5-codex`).
    - **Qwen** — `QWEN_API_KEY` ayarlayın (Alibaba Model Studio / DashScope, dashscope.console.aliyun.com), opsiyonel olarak `QWEN_MODEL` (varsayılan `qwen-max`). Anakara-CN uç noktası için ham `.env` içinde `QWEN_BASE_URL` ayarlayın.
-4. **Save**'e tıklayın. Anahtarlar üst projenin `.env` dosyasına yazılır; değişiklik anında geçerli olur — sunucu yeniden başlatması gerekmez.
-5. `#/evaluate` üzerinde doğrulayın: bir iş URL'si/açıklaması yapıştırın ve **⚡ Run live**'a basın. Sonuç başlığı hangi sağlayıcının çalıştığını gösterir (`anthropic` / `gemini` / `openai` / `qwen`). Hiçbir yerde anahtar ayarlı değil → bunun yerine kopyala-yapıştır elle promptu alırsınız.
+4. **Kaydet**'e tıklayın. Anahtarlar üst projenin `.env` dosyasına yazılır; değişiklik anında geçerli olur — sunucu yeniden başlatması gerekmez.
+5. `#/evaluate` üzerinde doğrulayın: bir iş URL'si/açıklaması yapıştırın ve **⚡ Canlı çalıştır**'a basın. Sonuç başlığı hangi sağlayıcının çalıştığını gösterir (`anthropic` / `gemini` / `openai` / `qwen`). Hiçbir yerde anahtar ayarlı değil → bunun yerine kopyala-yapıştır elle promptu alırsınız.
 
 Sırlar kaydedildikten sonra maskelenir ve asla günlüklenmez. Model-id alanları (`*_MODEL`) sır değildir.
 
@@ -576,7 +576,7 @@ Maksimum gövde boyutu: 1 MB. Daha büyük her şey 413 döndürür.
 - **sync-check** — üst projede `cv-sync-check.mjs`'yi çalıştırır.
   Tutarsızlıkları işaretler: CV'nizde listelenen ama
   `data/applications.md` archetype'larında olmayan bir proje, vb.
-- **📄 Generate PDF** — `generate-pdf.mjs`'yi akıtır. Çıktı
+- **📄 PDF Oluştur** — `generate-pdf.mjs`'yi akıtır. Çıktı
   `output/*.pdf`'e düşer. Playwright gerektirir (Health sayfası, üst
   projenin `node_modules`'ında kurulu olup olmadığını gösterir). Üretim
   bittiğinde, **en yeni** PDF varsayılan İndirilenler klasörünüze
@@ -1023,7 +1023,7 @@ Node sürümü yanıtta `"hidden"` ile değiştirilir.
 
 ### Çalıştırma düğmeleri
 
-- **▶ Doctor**, `node doctor.mjs` çalıştırır ve çıktıyı bir modalda gösterir.
+- **Doctor çalıştır**, `node doctor.mjs` çalıştırır ve çıktıyı bir modalda gösterir.
 - **▶ Verify pipeline**, `node verify-pipeline.mjs` çalıştırır.
 
 ---
@@ -1038,14 +1038,14 @@ yazar.
 
 ### Tek tıkla tarama (SPA)
 
-**🌐 Scan**, etkin her kaynağı tek bir taramada çalıştırır:
+**🌐 Tara**, etkin her kaynağı tek bir taramada çalıştırır:
 
 - `tracked_companies`'teki tanınabilir ATS URL'sine sahip her şirket için
   Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday (ATS taraması).
 - Birine katılan her `tracked_companies` girdisi için v1.75.0 toplayıcıları: RemoteOK / Remotive / Working Nomads (kart-geneli uzaktan beslemeler, `provider: <slug>`) ve IBM / Arbeitsagentur / Glints / Jobstreet · SEEK (yapılandırma odaklı, girdi başına `<provider>:` bloğu).
 - `russian_portals`'taki her sorgu için hh.ru API + Habr Career + Trudvsem + GetMatch + GeekJob.
 
-**İki aşama, tek tık (v1.29.2).** Tek 🌐 Scan düğmesi HEM ATS taramasını HEM DE bölgesel taramayı tek bir SSE akışında yürütür. Günlükte sırayla iki aşama başlığı görürsünüz:
+**İki aşama, tek tık (v1.29.2).** Tek 🌐 Tara düğmesi HEM ATS taramasını HEM DE bölgesel taramayı tek bir SSE akışında yürütür. Günlükte sırayla iki aşama başlığı görürsünüz:
 
 1. `▶ ATS scan (Greenhouse + Ashby + Lever)` — EN ATS kartları.
 2. `▶ Regional scan (hh.ru + Habr Career)` — kayıttan 5 RU kaynağı.
@@ -1053,7 +1053,7 @@ yazar.
 Her aşama bir `✓ done · NEW=N` özetiyle biter. Yalnızca ATS aşamasını görüyorsanız, kurulumunuz v1.29.2 öncesi bir yapıdadır — güncelleyin. v1.29.2 öncesinde SSE istemcisi ilk `done` olayında kapanırdı ve bölgesel aşama sessizce düşürülürdü (`tests/scan-stream-multi-phase.test.mjs` regresyon ağıdır).
 
 Tarama çalışırken canlı SSE günlüğü sağ bölmeye akar. Durdurmak için
-**Stop**'a tıklayın (ya da sadece başka yere gidin) — sunucu, uçuştaki
+**Durdur**'a tıklayın (ya da sadece başka yere gidin) — sunucu, uçuştaki
 HTTPS isteklerini `AbortController` aracılığıyla iptal eder.
 
 ### Sonuçları filtreleme
@@ -1219,9 +1219,9 @@ sektiremez. 3 atlamada sınırlı, 15 saniyelik zaman aşımı.
 
 ### Sağ üst düğmeler
 
-- **⚡ Evaluate first** — Evaluate sayfasında kuyruğa alınmış ilk URL'yi
+- **⚡ İlkini değerlendir** — Evaluate sayfasında kuyruğa alınmış ilk URL'yi
   açar, puanlamaya hazır.
-- **Scan** — daha fazla URL isterseniz tarayıcıya geri döner.
+- **İlan arama** — daha fazla URL isterseniz tarayıcıya geri döner.
 
 ---
 
@@ -1315,7 +1315,7 @@ Tek rapor görünümünde ayrıca şunlar vardır:
 
 ### Bir raporu PDF olarak dışa aktarma
 
-Kaydedilmiş bir raporu açın ve **📄 Generate PDF**'e tıklayın. Bu, üst
+Kaydedilmiş bir raporu açın ve **📄 PDF Oluştur**'e tıklayın. Bu, üst
 projede `generate-pdf.mjs` çalıştırır ve dosyayı `output/*.pdf` konumuna
 yazar (Playwright gerekir; Sağlık sayfası kurulu olup olmadığını gösterir).
 Hiçbir yere gönderilmez: bir başvuruya eklemeden önce PDF'i gözden geçirin.
@@ -1467,7 +1467,7 @@ görevlilerine **Outreach**, **Interview prep** tek-sayfalıkları ve
 
 Her sayfada küçük bir form (alanlar moda özeldir), bir **▶ Generate
 prompt** düğmesi (manuel) ve — bir Anthropic veya Gemini anahtarı
-mevcut olduğunda — birincil hale gelen bir **⚡ Run live** düğmesi
+mevcut olduğunda — birincil hale gelen bir **⚡ Canlı çalıştır** düğmesi
 bulunur.
 
 **▶ Generate prompt**'a tıklamak, form değerleriniz bir
@@ -1475,7 +1475,7 @@ bulunur.
 `modes/<slug>.md` şablonu izleyen şekilde birleştirilmiş promptu
 döndürür. Tercih ettiğiniz LLM'e kopyalayıp yapıştırın.
 
-**⚡ Run live**'a tıklamak aynı promptu Anthropic'e (veya Gemini'ye)
+**⚡ Canlı çalıştır**'a tıklamak aynı promptu Anthropic'e (veya Gemini'ye)
 gönderir, `cv.md` + `profile.yml` + `_shared.md`
 `bundleProjectContext` aracılığıyla satır içine alınmış olarak. Sonuç
 sayfada işlenir, kopyalanabilir ve `.md` olarak indirilebilir.
@@ -1689,7 +1689,7 @@ eşleştirin.
   Playwright tarayıcıyı açar, alan etiketlerini okur, yanıtlar önerir).
 - `/career-ops pdf` ve SPA'nın `#/cv` / `#/reports/:slug` /
   `#/evaluate` / `#/deep` / `#/interview-prep` üzerindeki
-  **📄 Generate PDF** düğmesi aracılığıyla **PDF üretimi**.
+  **📄 PDF Oluştur** düğmesi aracılığıyla **PDF üretimi**.
 
 **Playwright eksik olduğunda yedek:** başvuru akışı WebFetch'e geri döner
 (yalnızca-metin form önizlemesi, tıkla-doldur yok). PDF üretimi ise
@@ -1815,7 +1815,7 @@ vb.). Sayfa başına 25 satır; sunucu en fazla 500 en-son olay döndürür.
 | Tracker satırı metni tabloyu bozuyor | v1.9.1 öncesi şirket adında boru | v1.9.1+'ya güncelleyin — borular baştan sona kaçırılır (BF-1). |
 | Taze klonda `npm test` başarısız | Testler üst proje düzenini varsayıyor | `CAREER_OPS_ROOT=$(mktemp -d)` kullanın ve fikstürleri önyükleyin. |
 
-Daha derin tanılama için: Health sayfasında **▶ Doctor** çalıştırın,
+Daha derin tanılama için: Health sayfasında **Doctor çalıştır** çalıştırın,
 çıktıyı kopyalayın ve
 <https://github.com/Fighter90/career-ops-ui/issues> adresindeki sorun
 takipçisinde sorunu arayın.
@@ -2027,7 +2027,7 @@ Tarayıcıda `#/scan`'i yeniden yükleyin. Kaynak-filtresi açılır menüsü
 yeni girdiyi otomatik olarak alır (tek doğruluk kaynağı,
 [`GET /api/scan/sources`](../../server/lib/routes/scan.mjs) →
 [`registry.mjs`](../../server/lib/sources/registry.mjs) aracılığıyla).
-🌐 Scan düğmesi artık her bölgesel taramada yeni kaynağı içerir.
+🌐 Tara düğmesi artık her bölgesel taramada yeni kaynağı içerir.
 
 ### Referans adaptörleri (yeni kaynaklar için bunları örnek alın)
 
