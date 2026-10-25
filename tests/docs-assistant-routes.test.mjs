@@ -12,7 +12,7 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 let server; let baseUrl;
-let splitSections; let topSections; let buildAskPrompt; let resolveHelpFile;
+let splitSections; let topSections; let buildAskPrompt; let resolveHelpFile; let tokenize;
 
 before(async () => {
   // Scrub EVERY provider credential (any *_API_KEY, Ollama URL, provider
@@ -23,7 +23,7 @@ before(async () => {
   const root = mkdtempSync(join(tmpdir(), 'docs-asst-'));
   writeFileSync(join(root, 'cv.md'), '# CV\n');
   process.env.CAREER_OPS_ROOT = root;
-  ({ splitSections, topSections, buildAskPrompt, resolveHelpFile } = await import('../server/lib/routes/docs-assistant.mjs'));
+  ({ splitSections, topSections, buildAskPrompt, resolveHelpFile, tokenize } = await import('../server/lib/routes/docs-assistant.mjs'));
   const { createApp } = await import('../server/index.mjs');
   const app = createApp();
   await new Promise((r) => { server = app.listen(0, '127.0.0.1', () => { baseUrl = `http://127.0.0.1:${server.address().port}`; r(); }); });
@@ -101,6 +101,35 @@ test('topSections ranks the section whose title/body matches the question', () =
   ];
   const top = topSections(secs, 'how do I scan job portals?', 2);
   assert.equal(top[0].title, 'Scanning job portals');
+});
+
+// CAR-103: the word regex `[\p{L}\p{N}]` dropped combining marks (\p{M}) —
+// Devanagari matras and Tamil vowel signs split words into sub-3-codepoint
+// fragments, so a Hindi question matched 0 sections and a Tamil one matched
+// irrelevant ones.
+test('CAR-103: tokenize keeps combining marks (Devanagari matras, Tamil signs)', () => {
+  assert.deepEqual(tokenize('स्कैन'), ['स्कैन']);
+  assert.deepEqual(tokenize('தேடல்'), ['தேடல்']);
+  // Base forms still match inflected bodies through substring scoring.
+  assert.deepEqual(tokenize('पाइपलाइन'), ['पाइपलाइन']);
+});
+
+test('CAR-103: a Hindi question with matras finds its section', () => {
+  const secs = [
+    { title: 'स्कैन सेटिंग्स', body: '## स्कैन सेटिंग्स\nस्कैन को कॉन्फ़िगर करने का तरीका यहाँ है।\n' },
+    { title: 'Tracker', body: '## Tracker\nHow the tracker works.\n' },
+  ];
+  const picked = topSections(secs, 'मैं स्कैन सेटिंग्स कैसे बदलूं?');
+  assert.equal(picked[0].title, 'स्कैन सेटिंग्स');
+});
+
+test('CAR-103: a Tamil question with vowel signs finds its section', () => {
+  const secs = [
+    { title: 'தேடல் அமைப்புகள்', body: '## தேடல் அமைப்புகள்\nதேடலை வடிகட்டுவது எப்படி.\n' },
+    { title: 'Tracker', body: '## Tracker\nHow the tracker works.\n' },
+  ];
+  const picked = topSections(secs, 'தேடலை வடிகட்டுவது எப்படி?');
+  assert.equal(picked[0].title, 'தேடல் அமைப்புகள்');
 });
 
 test('buildAskPrompt grounds on the excerpts and forbids invention', () => {
