@@ -2,6 +2,29 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.259.0] — 2026-10-25
+
+**Die zweite Welle der Agenten-Flotte, sechs Fixes: Report-Daten sind serverseitig festgenagelt, der Map-Geocoder cacht und liest RU-Städte, die Hilfe ×18 zitiert lokalisierte Schaltflächenbeschriftungen, UI-Sätze mischen keine Sprachen mehr, Gehaltsvergleiche werden serverseitig berechnet — und das JS-Bundle kommt vorkomprimiert aus (Kaltstart 3.1 MB → 598 KB).**
+
+### Behoben
+
+- **Erfundene Report-Daten (CAR-101)**: der Auswertungs-Prompt nagelt das heutige Datum jetzt serverseitig fest («das **Date:**-Feld MUSS exakt <date> sein — wortgetreu übernehmen; niemals erfinden»), und `fixReportDate` schreibt ein abgedriftetes Datum an jeder Übernahmestelle auf heute zurück (Anthropic-Zweig, Gemini-Subprozess, OpenAI-kompatibler Schwanz, /api/deep, Auto-Pipeline) — mit Warnung + Aktivitätseintrag; eine Korrektur, nie eine Zurückweisung. 349/789 Prod-Reports trugen erfundene Daten; neue können es nicht mehr.
+- **Map-Geocoding (CAR-105)**: die kyrillischen Stadt-Zeichenketten aus hh.ru/Habr-Zeilen erreichen jetzt den Geocoder; ein persistenter, begrenzter Cache (`data/geocode-cache.json`, withFileLock) sorgt dafür, dass eine aufgelöste Stadt den Provider nie zweimal trifft; Geocode-Aufrufe sind pro Anfrage budgetiert, sodass sich die Map fortschreitend füllt, statt 13.9 s zu blockieren.
+- **Gemischtsprachige UI (CAR-108)**: 23 Leaks über Schlüssel hinweg in 17 von 19 Wörterbüchern behoben (85 Werte) — «все matching», «только remote», «Открыть Scan», der Funnel «Evaluated → Applied…» und mehr wurden zu vollständig lokalisierten Sätzen, die das eigene Produktvokabular der jeweiligen Sprache wiederverwenden. `i18n-no-latin-leaks` um die Fragment-Tabelle + Funnel-Probe erweitert (rot→grün).
+- **Währungs-Urteils-Kippung (CAR-109)**: der Gehaltsvergleich wird serverseitig in `comp-compare.mjs` berechnet und kanonisch eingebettet (`Candidate minimum: … per YEAR (raw: …)` vs. `JD offer: …`); Monatsbeträge ×12, k/к/тыс/萬 und Dezimalkomma-Formen werden vor dem Vergleich normalisiert; eine unsichere Umrechnung kann allein das Urteil nie kippen (der zh-TW-Fall «€80–100k ниже минимума» ist tot). Das Modell multipliziert nie.
+- **Hilfe ×18 Schaltflächenbeschriftungen (CAR-107)**: die lokalisierten Hilfe-Bundles zitierten englische Beschriftungen («⚡ Run live», «Save», «Scan now»), die die UI nicht mehr zeigt — 263 Ersetzungen über 18 Sprachen, aus den View-Quellen abgeleitet; der Docs-Assistent erbt den Fix.
+
+### Hinzugefügt
+
+- **Vorkomprimiertes Bundle + cachebarer Kaltstart (CAR-104)**: `make-bundle.mjs` erzeugt `bundle.js.br` (Brotli q11) + `.gz` zum Release-Zeitpunkt; eine Bundle-scoped-Middleware verhandelt br > gz mit `Vary: Accept-Encoding`, `public, max-age=300, must-revalidate` + ETag/304; frischegesichert (ein Begleiter liefert nie etwas Älteres als das Identitäts-Bundle), direkte Artifact-Abfragen antworten 404, CSP byte-identisch. Kaltstart: 3.1 MB → ~0.6 MB über die Leitung (−80%); wiederholte Besuche innerhalb von 5 Min übertragen ≈0 Bytes.
+
+### Hinweise
+
+- Alle Fixes stammen aus der Agenten-Flotte mit Rot→Grün-Nachweisen (13 + 28 + 1 + 30 + 7 neue Fälle über ihre Suiten) und wurden in Review-Runden nachgeschärft (CodeQL #579/#580/#584 im Code behoben — Stub-URLs über `new URL().host` geparst, eine tote Prompt-Zeichenkette gestrichen).
+- Die v1.258.0 Score-Backfill-Zahlen sind jetzt in CAR-129 vermerkt (`updated: 22`, `reportScoreless: 159`).
+- Bewusst nicht getan: keine rückwirkende Datenkorrektur für die 349 historischen Reports (ein Backfill wäre Owner-freigegebener Betrieb), keine Map-Cluster-Ansicht (CAR-125 bleibt hinter diesem Geocode-Fix in der Warteschlange).
+- Tests 5823 (+74). Keine Scanner-Quellen angefasst (Registry 121 = 116 EN + 5 RU · 116 Adapter); keine i18n-Schlüssel (CAR-108 ändert nur die Werte bestehender Schlüssel).
+
 ## [1.258.0] — 2026-10-25
 
 **Sechs Fixes aus der Agenten-Flotte in einem Zug: der #/scan-Zähler mischt keine Universen mehr, Deep Research verlangt Quellen, Formularfehler lassen das Feld aufleuchten, Ladezustände bekommen Skeletons und ein sofortiges h1, und Auswertungen cachen ihr 37k-Token-Prompt-Präfix.**
