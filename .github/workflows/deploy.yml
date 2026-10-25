@@ -424,6 +424,7 @@ jobs:
             # the rolled-back middleware. Removing it makes the shell fall back to
             # the restored individual tags, which always match the restored code.
             rm -f "$UI_DIR/public/js/bundle.js"
+            rm -f "$UI_DIR/public/js/bundle.js.br" "$UI_DIR/public/js/bundle.js.gz"
             install_deps rollback || echo "::error::npm ci failed during rollback"
             systemctl restart "$SERVICE" || echo "::error::restart failed during rollback"
             healthy skip || echo "::error::service still unhealthy after rollback"
@@ -454,6 +455,7 @@ jobs:
             echo "spa bundle: $(wc -c < "$UI_DIR/public/js/bundle.js") bytes"
           else
             rm -f "$UI_DIR/public/js/bundle.js"
+            rm -f "$UI_DIR/public/js/bundle.js.br" "$UI_DIR/public/js/bundle.js.gz"
             echo "::warning::make-bundle failed — serving individual scripts (same as NO_BUNDLE=1)"
           fi
           # V8's default heap on this 1 GB box (~240 MB) was exhausted by in-process
