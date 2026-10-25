@@ -17,9 +17,10 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.255.2** — **세 가지 수정: `#/scan` 렌더 크래시(카운트-게이트 재생성이 남긴 120개 배열 구멍이 모든 렌더에서 회사 분류기를 예외로 던짐), 눈먼 베트남어 언어 검사(라이브 QA는 vi에 대해 영어 불용어를 세고 있었습니다 — 이제 자체 테이블 사용), 그리고 zh-TW 요약 블록 유실(마무리 리마인더가 이제 `SCORE_SUMMARY`를 단순 번역 금지를 넘어 필수로 요구).**
+> **🆕 최신 릴리스 — v1.256.0** — **트래커 데이터 품질: 역할이 회사로 기록되는 일이 없어지고(`Senior Frontend Engineer - Grafana Labs`가 거꾸로 파싱됨 — 13행), 채용 보드가 고용주로 기록되는 일도 없어지며(hh.ru 행이 «hh»로 기록됨 — 120행; 키릴 추론 패턴들은 v1.248.4 이후 조용히 죽어 있었습니다 — ASCII `\b`), 점수 없는 행은 트래커 정렬에서 더 이상 맨 앞에 뜨지 않고, 새 일회성 엔드포인트가 리포트 자체에서 누락된 점수를 백필합니다.**
 >
-> **이전 버전 — v1.255.1** — **두 차례의 리뷰 수정 라운드: 베트남어 로캘에 대한 Opus 리뷰(한글 글리프 유출과 공백 포함 help URL 6개 — 이제 게이트로 보호), 그리고 CAR-91/92 수정의 2차 리뷰 — 평가 헤딩 경계(`## Q&A`는 더 이상 블록이 아님), 우크라이나어 숫자 리포트가 `### A.` 하위 섹션을 유지, 이월 스캔 행의 만료(에이징 아웃), gemini-synthesis 분모/legitimacy 파싱 수정.**
+> **이전 버전 — v1.255.2** — **세 가지 수정: `#/scan` 렌더 크래시(카운트-게이트 재생성이 남긴 120개 배열 구멍이 모든 렌더에서 회사 분류기를 예외로 던짐), 눈먼 베트남어 언어 검사(라이브 QA는 vi에 대해 영어 불용어를 세고 있었습니다 — 이제 자체 테이블 사용), 그리고 zh-TW 요약 블록 유실(마무리 리마인더가 이제 `SCORE_SUMMARY`를 단순 번역 금지를 넘어 필수로 요구).**
+
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

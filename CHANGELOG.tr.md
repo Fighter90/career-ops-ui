@@ -2,6 +2,27 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.256.0] — 2026-10-25
+
+**Takip verisi kalitesi: rol hiçbir zaman şirket olarak kaydedilmiyor, bir iş panosu hiçbir zaman işveren olarak kaydedilmiyor, puanlanmamış satırlar artık en önde belirmeyi bırakıyor — ve tek-seferlik bir uç nokta, eksik puanları raporların kendilerinden geri dolduruyor.**
+
+### Eklendi
+
+- **Puan geri-doldurması (CAR-129)**: `POST /api/tracker/backfill-scores`, bağlantılı raporu ayrıştırılabilir bir puan taşıyan satırların Puan hücresini dolduruyor (değerlendirilmiş 181 satırın raporu vardı ama puanı yoktu). Puanlı satırlara, açık sentinel'lere (`N/A`), raporsuz satırlara ve puansız raporlara asla dokunulmuyor; yalnızca Puan hücresi, dosya kilidi altında yeniden yazılıyor; puan biçimi yazım yerinde doğrulanıyor ve takipçinin `X.X/5` kuralına normalize ediliyor; çalıştırma idempotent ve `{ok, updated, missingReport, reportScoreless}` döndürüyor.
+
+### Düzeltildi
+
+- **Rol hiçbir zaman şirket değildir (CAR-128)**: `guessCompanyRole` tire-başlıklı satırın SOL tarafını şirket olarak ele alıyordu, oysa panolar her iki sıralamayı da yazıyor — «Senior Frontend Engineer - Grafana Labs» rolü ŞİRKET olarak kaydediyordu (13 satır: Grafana, CircleCI…). Artık kelime-sınırlı bir rol-anahtar sözcüğü sezgisi rol tarafını seçiyor ve bir istihdam türü asla işveren olmuyor («Senior Engineer - Remote (EU)», «Remote (EU)» kaydetmek yerine hiçbir şey kaydetmiyor).
+- **Bir iş panosu hiçbir zaman işveren değildir (CAR-127)**: alan-adı-slug geri dönüşü hh.ru satırlarını «hh» olarak kaydediyordu (120 satır). `hh`/`habr` slug'ları işveren-değil listesine katılıyor; cümle-içi işveren çıkarımı («в компании X», «X ищет») artık iş-panosu ana makineleri (hh.ru/kz/uz/by, habr.com) için de çalışıyor — sayfa metninin gerçek işvereni adlandırdığı yerde. Yolda kök neden de bulundu: o çıkarım desenlerindeki ASCII `\b`/`\w` Kiril alfabesiyle hiçbir zaman eşleşmiyordu — v1.248.4'ten beri sessizce ölü; Unicode lookbehind'ları ve `\p{L}` sınıfları onların yerini alıyor.
+- **Puanlanmamış satırlar sona sıralanıyor (CAR-129)**: takipçinin puan sıralaması bir `-1` sentinel'i kullanıyordu; böylece varsayılan artan sıralamayla her puanlanmamış satır her puanlıdan önce beliriyordu. Boş değerler artık her iki yönde de sona sıralanıyor (puan FİLTRESİ kendi `-1`'ini koruyor — "puanlanmamış bir ≥4 filtresine takılır" orada doğru semantiktir).
+
+### Notlar
+
+- Tarihsel satırlar bu sürümle TAŞINMIYOR: ayrıştırıcı düzeltmeleri yeni değerlendirmelere uygulanıyor; puanlar geri-doldurma uç noktası üzerinden geri kazanılabilirken, 120 «hh» işveren hücresi yeniden yazım değil yeniden değerlendirme gerektiriyor.
+- Bir opus-5-5 inceleme turu içine katıldı: çapasız «X ищет» deseni dağıtımdan önce atıldı (fiilden önceki herhangi bir büyük-harfli dizi işveren olarak kaydedilirdi — uydurma-yapmama invariatı), cümle-başı «В…» çapaları eklendi ve geri-doldurma yazıcısı hedef hücreyi yeniden denetliyor (manuel düzenlemelerden sonra yinelenen `#` satırları mevcut), elle-bozulmuş kısa bir satırın sütun sayısını koruyor ve ilk tablo-dışı satırda duruyor. Noktalı bir adın içindeki nokta («Сбер. IT»), «в компании» çapası için cümle noktasından ayırt edilemez — tutucu önek («Сбер») kaydediliyor; fiile-çapalı desen tam biçimi yakalıyor.
+- Bilinçli olarak yapılmayanlar: `tracker.js`'ten birim-test-edilebilir bir lib'ye karşılaştırıcı çıkarımı yok (kaynak-statik kapı kalıyor; CAR-129'da takip işi olarak not edildi), yol-süresi sütunu sona-sıralama değişikliği yok (önceden var olan `Infinity`-on-desc tuhaflığı), «hh» satırları için veri taşıması yok.
+- Test tabanı: 5705 (+10: `auto-pipeline-jd-gate` içinde 5 kimlik, 2 CAR-128, CAR-129 sıralama kapısı, düşmanca yol pinini de kapsayan 4 geri-doldurma — yerlerine konan v1.248.x örnekleri düşülünce). Hiçbir tarayıcı kaynağına dokunulmadı (kayıt defteri 121 = 116 EN + 5 RU · 116 adaptör); i18n anahtarı yok.
+
 ## [1.255.2] — 2026-10-24
 
 **Canlı regresyondan ve bir üretim çökme bildiriminden gelen üç kullanıcıya-görünür düzeltme: #/scan render çökmesi, kör Vietnamca dil denetimi ve yinelenen zh-TW özet-bloğu kaybı.**

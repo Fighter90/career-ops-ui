@@ -11,6 +11,27 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.256.0] — 2026-10-25
+
+**Qualité des données du tracker : le rôle n'est jamais enregistré comme l'entreprise, un job board n'est jamais enregistré comme l'employeur, les lignes sans score cessent de remonter en premier — et un endpoint one-shot comble les scores manquants depuis les rapports eux-mêmes.**
+
+### Ajouté
+
+- **Comblement des scores (CAR-129)** : `POST /api/tracker/backfill-scores` remplit la cellule Score des lignes dont le rapport lié porte un score analysable (181 lignes évaluées avaient un rapport mais aucun score). Les lignes déjà notées, les sentinelles explicites (`N/A`), les lignes sans rapport et les rapports sans score ne sont jamais touchés ; seule la cellule Score est réécrite, sous verrou de fichier ; la forme du score est validée au point d'écriture et normalisée vers la convention `X.X/5` du tracker ; l'exécution est idempotente et renvoie `{ok, updated, missingReport, reportScoreless}`.
+
+### Corrigé
+
+- **Le rôle n'est jamais l'entreprise (CAR-128)** : `guessCompanyRole` traitait le côté GAUCHE d'une ligne d'en-tête à tiret comme l'entreprise, mais les boards écrivent les deux ordres — « Senior Frontend Engineer - Grafana Labs » enregistrait le rôle COMME l'entreprise (13 lignes : Grafana, CircleCI…). Une heuristique de mots-clés de rôle à frontières de mots choisit désormais le côté du rôle, et un type d'emploi ne devient jamais l'employeur (« Senior Engineer - Remote (EU) » n'enregistre rien plutôt que « Remote (EU) »).
+- **Un job board n'est jamais l'employeur (CAR-127)** : le repli par slug de domaine enregistrait les lignes hh.ru comme « hh » (120 lignes). Les slugs `hh`/`habr` rejoignent la liste pas-un-employeur ; l'inférence d'employeur en cours de phrase (« в компании X », « X ищет ») s'exécute désormais aussi pour les hôtes de job boards (hh.ru/kz/uz/by, habr.com) — là où le texte de la page nomme le véritable employeur. Cause racine trouvée au passage : le `\b`/`\w` ASCII de ces motifs d'inférence ne matchait jamais le cyrillique du tout — mort silencieusement depuis la v1.248.4 ; des lookbehinds Unicode et des classes `\p{L}` les remplacent.
+- **Les lignes sans score se trient en dernier (CAR-129)** : le tri par score du tracker utilisait une sentinelle `-1`, si bien qu'avec le tri ascendant par défaut chaque ligne sans score remontait avant chaque ligne notée. Les valeurs nulles se trient désormais en dernier dans les deux sens (le FILTRE de score garde son `-1` — « une ligne sans score échoue à un filtre ≥4 » y est la sémantique correcte).
+
+### Notes
+
+- Les lignes historiques ne sont PAS migrées par cette version : les correctifs du parseur s'appliquent aux nouvelles évaluations ; les scores sont récupérables via l'endpoint de comblement, tandis que les 120 cellules employeur « hh » demandent une ré-évaluation, pas une réécriture.
+- Une ronde de revue opus-5-5 est fondue dans la version : le motif non ancré « X ищет » a été abandonné avant l'expédition (toute séquence capitalisée avant le verbe aurait été enregistrée comme employeur — l'invariant de non-fabrication), des ancres « В… » en tête de phrase ont été ajoutées, et le rédacteur du comblement revérifie la cellule cible (des lignes `#` dupliquées existent après des éditions manuelles), préserve le nombre de colonnes d'une ligne courte mal formée à la main et s'arrête à la première ligne hors tableau. Le point à l'intérieur d'un nom à point (« Сбер. IT ») est indiscernable d'un point de phrase pour l'ancre « в компании » — le préfixe conservateur (« Сбер ») est enregistré ; le motif ancré au verbe capture la forme complète.
+- Délibérément non fait : pas d'extraction du comparateur de `tracker.js` vers une lib testable unitairement (la porte source-statique reste ; noté dans CAR-129 comme follow-up), pas de changement nulls-last pour la colonne commute (bizarrerie préexistante de `Infinity` en ordre descendant), pas de migration de données pour les lignes « hh ».
+- Tests 5705 (+10 : 5 identity dans `auto-pipeline-jd-gate`, 2 CAR-128, la porte de tri CAR-129, 4 backfill dont l'épingle hostile-path — moins les cas v1.248.x remplacés). Aucune source du scanner touchée (registre 121 = 116 EN + 5 RU · 116 adaptateurs) ; aucune clé i18n.
+
 ## [1.255.2] — 2026-10-24
 
 **Trois correctifs visibles pour l'utilisateur, issus de la régression en direct et d'un rapport de crash en prod : le crash de rendu de #/scan, la vérification de langue vietnamienne aveugle et la perte récurrente du bloc de résumé en zh-TW.**

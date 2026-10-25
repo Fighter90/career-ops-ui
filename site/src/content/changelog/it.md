@@ -2,6 +2,27 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.256.0] — 2026-10-25
+
+**Qualità dei dati del tracker: il ruolo non viene mai registrato come azienda, un job board non viene mai registrato come datore di lavoro, le righe senza punteggio smettono di emergere per prime — e un endpoint one-shot recupera i punteggi mancanti direttamente dai report stessi.**
+
+### Aggiunto
+
+- **Backfill dei punteggi (CAR-129)**: `POST /api/tracker/backfill-scores` riempie la cella Score delle righe il cui report collegato porta un punteggio interpretabile (181 righe valutate avevano un report ma nessun punteggio). Le righe con punteggio, le sentinelle esplicite (`N/A`), le righe senza report e i report senza punteggio non vengono mai toccati; viene riscritta solo la cella Score, sotto file lock; la forma del punteggio è validata nel punto di scrittura e normalizzata alla convenzione `X.X/5` del tracker; l'esecuzione è idempotente e restituisce `{ok, updated, missingReport, reportScoreless}`.
+
+### Corretto
+
+- **Il ruolo non è mai l'azienda (CAR-128)**: `guessCompanyRole` trattava il lato SINISTRO di una riga di intestazione col trattino come l'azienda, ma i board scrivono entrambi gli ordini — «Senior Frontend Engineer - Grafana Labs» registrava il ruolo COME azienda (13 righe: Grafana, CircleCI…). Un'euristica sulle keyword di ruolo con confine di parola ora sceglie il lato del ruolo, e un tipo di impiego non diventa mai il datore di lavoro («Senior Engineer - Remote (EU)» non registra nulla invece di registrare «Remote (EU)»).
+- **Un job board non è mai il datore di lavoro (CAR-127)**: il fallback sullo slug di dominio registrava le righe hh.ru come «hh» (120 righe). Gli slug `hh`/`habr` entrano nell'elenco dei non-datori di lavoro; l'inferenza del datore di lavoro a metà frase («в компании X», «X ищет») ora gira anche per gli host dei job board (hh.ru/kz/uz/by, habr.com) — dove il testo della pagina nomina il vero datore di lavoro. Causa radice scoperta lungo la strada: i `\b`/`\w` ASCII di quei pattern di inferenza non hanno mai combaciato con il cirillico — silenziosamente morti dalla v1.248.4; lookbehind Unicode e classi `\p{L}` li sostituiscono.
+- **Le righe senza punteggio si ordinano per ultime (CAR-129)**: l'ordinamento per punteggio del tracker usava un valore sentinella `-1`, così con l'ordinamento ascendente predefinito ogni riga senza punteggio emergeva prima di ogni riga con punteggio. I null ora si ordinano per ultimi in entrambe le direzioni (il FILTRO sul punteggio mantiene il suo `-1` — «senza punteggio fallisce un filtro ≥4» è la semantica corretta in quel caso).
+
+### Note
+
+- Le righe storiche NON vengono migrate da questa release: le correzioni del parser si applicano alle nuove valutazioni; i punteggi sono recuperabili tramite l'endpoint di backfill, mentre le 120 celle del datore di lavoro «hh» richiedono una rivalutazione, non una riscrittura.
+- Un giro di revisione opus-5-5 è incorporato: il pattern non ancorato «X ищет» è stato scartato prima della spedizione (qualsiasi sequenza con iniziale maiuscola prima del verbo sarebbe stata registrata come datore di lavoro — l'invariante no-fabrication), aggiunti gli ancoraggi «В…» a inizio frase, e il writer del backfill ricontrolla la cella bersaglio (esistono righe `#` duplicate dopo modifiche manuali), mantiene il numero di colonne di una riga corta malformata a mano e si ferma alla prima riga non-tabella. Il punto dentro un nome puntato («Сбер. IT») è indistinguibile da un punto di frase per l'ancoraggio «в компании» — viene registrato il prefisso conservativo («Сбер»); il pattern ancorato al verbo cattura la forma completa.
+- Non fatto deliberatamente: nessuna estrazione del comparatore da `tracker.js` in una lib testabile con unit test (il gate source-static resta; annotato in CAR-129 come follow-up), nessuna modifica nulls-last per la colonna commute (quirk preesistente `Infinity`-on-desc), nessuna migrazione dati per le righe «hh».
+- Test 5705 (+10: 5 identity in `auto-pipeline-jd-gate`, 2 CAR-128, il gate dell'ordinamento CAR-129, 4 di backfill incluso il pin del percorso ostile — meno i casi v1.248.x sostituiti). Nessuna fonte scanner toccata (registro 121 = 116 EN + 5 RU · 116 adattatori); nessuna chiave i18n.
+
 ## [1.255.2] — 2026-10-24
 
 **Tre fix visibili all'utente dalla regressione live e da una segnalazione di crash in produzione: il crash del render di #/scan, il controllo linguistico cieco per il vietnamita e la perdita ricorrente del blocco summary in zh-TW.**

@@ -7,6 +7,27 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 ---
 
 
+## [1.256.0] — 2026-10-25
+
+**Tracker data quality: the role is never filed as the company, a job board is never filed as the employer, unscored rows stop surfacing first — and a one-shot endpoint backfills missing scores from the reports themselves.**
+
+### Added
+
+- **Score backfill (CAR-129)**: `POST /api/tracker/backfill-scores` fills the Score cell of rows whose linked report carries a parseable score (181 evaluated rows had a report but no score). Scored rows, explicit sentinels (`N/A`), report-less rows and scoreless reports are never touched; only the Score cell is rewritten, under the file lock; the score shape is validated at the write site and normalized to the tracker's `X.X/5` convention; the run is idempotent and returns `{ok, updated, missingReport, reportScoreless}`.
+
+### Fixed
+
+- **The role is never the company (CAR-128)**: `guessCompanyRole` treated the LEFT side of a dash header line as the company, but boards write both orders — «Senior Frontend Engineer - Grafana Labs» filed the role AS the company (13 rows: Grafana, CircleCI…). A word-bounded role-keyword heuristic now picks the role side, and an employment type never becomes the employer («Senior Engineer - Remote (EU)» files nothing rather than «Remote (EU)»).
+- **A job board is never the employer (CAR-127)**: the domain-slug fallback filed hh.ru rows as «hh» (120 rows). `hh`/`habr` slugs join the not-an-employer list; the mid-sentence employer inference («в компании X», «X ищет») now runs for job-board hosts (hh.ru/kz/uz/by, habr.com) too — where the page text names the real employer. Root cause found on the way: the ASCII `\b`/`\w` in those inference patterns never matched Cyrillic at all — silently dead since v1.248.4; Unicode lookbehinds and `\p{L}` classes replace them.
+- **Unscored rows sort last (CAR-129)**: the tracker's score sort used a `-1` sentinel, so with the default ascending sort every unscored row surfaced before every scored one. Nulls now sort last in both directions (the score FILTER keeps its `-1` — "unscored fails a ≥4 filter" is correct semantics there).
+
+### Notes
+
+- Historical rows are NOT migrated by this release: the parser fixes apply to new evaluations; scores are recoverable via the backfill endpoint, while the 120 «hh» employer cells need re-evaluation, not a rewrite.
+- An opus-5-5 review round is folded in: the unanchored «X ищет» pattern was dropped before shipping (any capitalised run before the verb would have been filed as an employer — the no-fabrication invariant), sentence-initial «В…» anchors added, and the backfill writer re-checks the target cell (duplicate `#` rows exist after manual edits), keeps a hand-malformed short row's column count, and stops at the first non-table line. The dot inside a dotted name («Сбер. IT») is indistinguishable from a sentence dot for the «в компании» anchor — the conservative prefix («Сбер») is filed; the verb-anchored pattern catches the full form.
+- Deliberately not done: no comparator extraction from `tracker.js` into a unit-testable lib (the source-static gate stays; noted in CAR-129 as follow-up), no commute-column nulls-last change (pre-existing `Infinity`-on-desc quirk), no data migration for the «hh» rows.
+- Tests 5705 (+10: 5 identity in `auto-pipeline-jd-gate`, 2 CAR-128, the CAR-129 sort gate, 4 backfill incl. the hostile-path pin — minus the replaced v1.248.x cases). No scanner sources touched (registry 121 = 116 EN + 5 RU · 116 adapters); no i18n keys.
+
 ## [1.255.2] — 2026-10-24
 
 **Three user-visible fixes from the live regression and a prod crash report: the #/scan render crash, the blind Vietnamese language check, and a recurring zh-TW summary-block loss.**

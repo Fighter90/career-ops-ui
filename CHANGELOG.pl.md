@@ -9,6 +9,27 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.256.0] — 2026-10-25
+
+**Jakość danych trackera: stanowisko nigdy nie ląduje w kolumnie firmy, tablica ofert nigdy nie ląduje w kolumnie pracodawcy, wiersze bez oceny przestają wysuwać się na czoło — a endpoint jednorazowego użycia uzupełnia brakujące oceny z samych raportów.**
+
+### Dodano
+
+- **Uzupełnianie ocen wstecz (CAR-129)**: `POST /api/tracker/backfill-scores` wypełnia komórkę Score wierszy, których podlinkowany raport niesie sparsowalną ocenę (181 ocenionych wierszy miało raport, ale nie miało oceny). Wiersze z oceną, jawne sentinele (`N/A`), wiersze bez raportu i raporty bez oceny nie są nigdy ruszane; przepisywana jest wyłącznie komórka Score, pod blokadą pliku; kształt oceny jest walidowany w miejscu zapisu i normalizowany do konwencji trackera `X.X/5`; przebieg jest idempotentny i zwraca `{ok, updated, missingReport, reportScoreless}`.
+
+### Naprawiono
+
+- **Stanowisko nigdy nie jest firmą (CAR-128)**: `guessCompanyRole` traktowało LEWĄ stronę linii nagłówka z myślnikiem jako firmę, ale tablice piszą obie kolejności — „Senior Frontend Engineer - Grafana Labs” lądowało jako stanowisko ZAPISANE jako firma (13 wierszy: Grafana, CircleCI…). Heurystyka słów kluczowych stanowiska z granicami słów wybiera teraz właściwą stronę, a typ zatrudnienia nigdy nie staje się pracodawcą (dla „Senior Engineer - Remote (EU)” nie zapisuje się niczego, zamiast „Remote (EU)”).
+- **Tablica ofert nigdy nie jest pracodawcą (CAR-127)**: fallback sluga domenowego zapisywał wiersze hh.ru jako „hh” (120 wierszy). Slugi `hh`/`habr` trafiają na listę „to nie pracodawca”; wnioskowanie o pracodawcy ze środka zdania („в компании X”, „X ищет”) uruchamia się teraz także dla hostów tablic ofert (hh.ru/kz/uz/by, habr.com) — tam, gdzie tekst strony nazywa prawdziwego pracodawcę. Po drodze znaleziono korzeń błędu: ASCII `\b`/`\w` w tych wzorcach wnioskowania nigdy nie łapały cyrylicy — martwe bez śladu od v1.248.4; zastępują je Unicode lookbehindy i klasy `\p{L}`.
+- **Wiersze bez oceny sortują się na końcu (CAR-129)**: sortowanie po ocenie w trackerze używało sentinelu `-1`, więc przy domyślnym sortowaniu rosnącym każdy wiersz bez oceny wysuwał się przed każdy oceniony. Teraz nulle lądują na końcu w obu kierunkach (FILTR po ocenie zachowuje swoje `-1` — „brak oceny nie przechodzi filtra ≥4” to tam poprawna semantyka).
+
+### Uwagi
+
+- Historyczne wiersze NIE są migrowane przez to wydanie: poprawki parsera dotyczą nowych ocen; oceny da się odzyskać endpointem backfill, natomiast 120 komórek pracodawcy „hh” wymaga ponownej oceny, a nie przepisania.
+- Wpleciono rundę recenzji opus-5-5: niezakotwiczony wzorzec „X ищет” wypadł przed wydaniem (dowolny ciąg wielką literą przed czasownikiem zostałby zapisany jako pracodawca — niezmiennik no-fabrication), dodano zakotwiczenia na początku zdania („В…”), a zapis backfill sprawdza ponownie komórkę docelową (po ręcznych edycjach istnieją zduplikowane wiersze z tym samym `#`), zachowuje liczbę kolumn ręcznie zniekształconego krótkiego wiersza i zatrzymuje się na pierwszej linii spoza tabeli. Kropka w nazwie z kropką („Сбер. IT”) jest nieodróżnialna od kropki zdaniowej dla zakotwiczenia „в компании” — zapisywany jest konserwatywny prefiks („Сбер”); wzorzec zakotwiczony czasownikiem łapie pełną formę.
+- Świadomie nie zrobiono: bez wydzielenia komparatora z `tracker.js` do testowalnej jednostkowo biblioteki (bramka source-static zostaje; odnotowane w CAR-129 jako follow-up), bez zmiany nulls-last dla kolumny dojazdów (istniejąca od dawna dziwność `Infinity` przy sortowaniu malejącym), bez migracji danych dla wierszy „hh”.
+- Testy 5705 (+10: 5 testów tożsamości w `auto-pipeline-jd-gate`, 2 CAR-128, bramka sortowania CAR-129, 4 backfill w tym przypięcie wrogiej ścieżki — minus zastąpione przypadki v1.248.x). Żadne źródło skanera nietknięte (rejestr 121 = 116 EN + 5 RU · 116 adapterów); brak kluczy i18n.
+
 ## [1.255.2] — 2026-10-24
 
 **Trzy poprawki widoczne dla użytkownika, z live regression i raportu o awarii na produkcji: awaria renderowania #/scan, ślepe sprawdzenie języka wietnamskiego i powtarzająca się utrata bloku podsumowania zh-TW.**

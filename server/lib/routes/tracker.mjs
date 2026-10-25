@@ -12,7 +12,7 @@
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { PATHS, path as projPath } from '../paths.mjs';
 import { parseApplications, today } from '../parsers.mjs';
-import { safeReadApps } from '../store.mjs';
+import { safeReadApps, safeListReports } from '../store.mjs';
 import { withFileLock } from '../file-lock.mjs';
 import { canonicalizeStatus, readCanonicalStates } from '../states.mjs';
 
@@ -153,6 +153,75 @@ export function registerTrackerRoutes(app) {
       mkdirSync(projPath('data'), { recursive: true });
       writeFileSync(PATHS.applications, updated);
       return { ok: true, num: nextNum };
+    });
+    res.json(result);
+  });
+
+  // CAR-129 (v1.256.0) — one-shot score backfill: rows carrying a report
+  // link but an empty score cell get the score parsed from that report's
+  // own header (store.safeListReports → parseReportHeader, mtime-cached).
+  // Everything else is read-only: scored rows, explicit sentinels (N/A),
+  // rows without a report link and reports without a parseable score are
+  // left untouched. Only the Score cell of a matched row is rewritten.
+  app.post('/api/tracker/backfill-scores', async (req, res) => {
+    const result = await withFileLock(PATHS.applications, async () => {
+      let content = '';
+      try { content = readFileSync(PATHS.applications, 'utf8'); } catch {
+        return { ok: true, updated: 0, missingReport: 0, reportScoreless: 0 };
+      }
+      const rows = parseApplications(content);
+      const byReport = new Map();
+      for (const rep of safeListReports()) {
+        byReport.set(String(rep.slug || ''), rep);
+        byReport.set(String(rep.file || ''), rep);
+      }
+      const updates = new Map();
+      let missingReport = 0;
+      let reportScoreless = 0;
+      for (const row of rows) {
+        const cellScore = String(row.score || '').trim();
+        if (cellScore && cellScore !== '—' && cellScore !== '-') continue; // scored, or an explicit sentinel
+        const slug = String(row.reportPath || '').replace(/^reports\//, '').replace(/\.md$/, '');
+        if (!slug) continue; // no report link at all
+        const rep = byReport.get(slug);
+        if (!rep) { missingReport += 1; continue; }
+        // Review round (opus r1 #5): only a bounded score shape reaches the
+        // table — never a free-form header line (compactScore already
+        // normalizes; this pins the contract at the write site).
+        if (rep.scoreNum == null || !/^\d+(?:[.,]\d+)?(?:\s*\/\s*5)?$/.test(String(rep.score).trim())) {
+          reportScoreless += 1;
+          continue;
+        }
+        updates.set(String(row.num), String(rep.score).trim());
+      }
+      const done = (updated) => ({ ok: true, updated, missingReport, reportScoreless });
+      if (!updates.size) return done(0);
+      const lines = content.split('\n');
+      const headerIdx = lines.findIndex((l) => /^\s*\|/.test(l));
+      if (headerIdx === -1) return done(0);
+      const headerCells = lines[headerIdx].split(/(?<!\\)\|/).map((c) => c.trim().toLowerCase());
+      const scoreCol = headerCells.indexOf('score');
+      if (scoreCol === -1) return done(0);
+      let applied = 0;
+      for (let i = headerIdx + 2; i < lines.length; i++) { // headerIdx+1 is the |---| separator
+        if (!/^\s*\|/.test(lines[i])) break; // review r1 #6: the tracker table ends at the first non-table line
+        const cells = lines[i].split(/(?<!\\)\|/);
+        const num = (cells[1] || '').trim();
+        if (!updates.has(num)) continue;
+        if (scoreCol >= cells.length) continue; // review r2: a hand-malformed short row must keep its column count
+        // Review r1 #3: re-check the TARGET cell before writing — a
+        // duplicate # after manual edits must never clobber a real score.
+        const current = (cells[scoreCol] || '').trim();
+        if (current && current !== '—' && current !== '-') continue;
+        // Review r2: the tracker convention is X[.X]/5 — a Machine-Summary
+        // `score: 4.2` (no fraction) is normalized at the write site.
+        const score = updates.get(num);
+        cells[scoreCol] = ` ${/\/\s*5$/.test(score) ? score : score + '/5'} `;
+        lines[i] = cells.join('|');
+        applied += 1;
+      }
+      if (applied) writeFileSync(PATHS.applications, lines.join('\n'));
+      return done(applied);
     });
     res.json(result);
   });

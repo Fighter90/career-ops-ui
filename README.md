@@ -14,14 +14,14 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 [![playwright](https://img.shields.io/badge/playwright-143%2F143-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.255.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.255.2)
+[![release](https://img.shields.io/badge/release-v1.256.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.256.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Latest release — v1.255.2** — **Three fixes: the `#/scan` render crash (120 array holes from the count-gate regeneration made the company classifier throw on every render), the blind Vietnamese language check (the live QA counted English stop words for vi — its own table now), and the zh-TW summary-block loss (the closing reminder now makes `SCORE_SUMMARY` mandatory, not just untranslated).**
+> **🆕 Latest release — v1.256.0** — **Tracker data quality: the role is never filed as the company (`Senior Frontend Engineer - Grafana Labs` parsed backwards — 13 rows), a job board is never filed as the employer (hh.ru rows filed as «hh» — 120 rows; the Cyrillic inference patterns had been silently dead since v1.248.4 — ASCII `\b`), unscored rows stop surfacing first in the tracker sort, and a new one-shot endpoint backfills missing scores from the reports themselves.**
 >
-> **Previous — v1.255.1** — **Two review fix-rounds: the Opus review of the Vietnamese locale (the Hangul glyph leak and six spaced help-URLs, now gated) and the second-pass review of the CAR-91/92 fixes — evaluation heading boundaries (`## Q&A` no longer a block), Ukrainian-numbered reports survive `### A.` subsections, carried scan rows age out, and the gemini-synthesis denominator/legitimacy parse is fixed.**
+> **Previous — v1.255.2** — **Three user-visible fixes from the live regression and a prod crash report: the `#/scan` render crash (120 array holes from the count-gate regeneration made the company classifier throw on every render), the blind Vietnamese language check (the live QA counted English stop words for vi — its own table now), and the zh-TW summary-block loss (the closing reminder now makes `SCORE_SUMMARY` mandatory, not just untranslated).**
 >
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
@@ -446,7 +446,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 5695 unit + 144 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.255.2)
+└─ tests/                    # 5705 unit + 144 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.256.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
