@@ -113,7 +113,10 @@ const CJK_RUN_RE = new RegExp(`^[${CJK}]+$`, 'u');
 
 export function tokenize(s) {
   const out = [];
-  for (const word of String(s || '').toLowerCase().match(/[\p{L}\p{N}\u30fc]+/gu) || []) {
+  // `\p{M}` keeps combining marks INSIDE their word — Devanagari matras and
+  // Tamil vowel signs split a word into <3-codepoint fragments otherwise, so
+  // hi queries matched 0 sections and ta ones matched irrelevant sections.
+  for (const word of String(s || '').toLowerCase().match(/[\p{L}\p{M}\p{N}\u30fc]+/gu) || []) {
     for (const run of word.match(RUN_RE) || []) {
       if (CJK_RUN_RE.test(run)) {
         for (let i = 0; i + 2 <= run.length; i += 1) out.push(run.slice(i, i + 2));
