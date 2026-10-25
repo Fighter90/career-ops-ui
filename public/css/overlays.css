@@ -344,9 +344,6 @@
   0%, 100% { opacity: 1; }
   50% { opacity: 0.45; }
 }
-@media (prefers-reduced-motion: reduce) {
-  .skeleton-row { animation: none; opacity: 0.6; }
-}
 .empty {
   padding: var(--space-7);
   text-align: center;
@@ -449,6 +446,10 @@
     transition-duration: 0.01ms !important;
     scroll-behavior: auto !important;
   }
+  /* CAR-112 — skeleton shimmer stops entirely; rows stay visible at a calm
+   * opacity (the pulse is decorative, the aria-label carries the loading
+   * state for screen readers). */
+  .skeleton-row { animation: none; opacity: 0.6; }
   /* scan loading stripe: no slide — show a calm full bar instead */
   .scan-progress__bar { left: 0; width: 100%; opacity: 0.65; }
 }
