@@ -6,6 +6,8 @@
 
 > **i18n 노트** — 이 파일은 완전히 한국어로 번역되었습니다. 모든 버전 항목의 본문이 출판 등급의 한국어로 제공되며, 영어 본문 임시 대체 표기는 더 이상 사용되지 않습니다.
 
+> ⏳ **참고** — 이 파일은 이제 전체 릴리스 이력을 담고 있습니다. v1.12.0 이전의 6개 항목은 영어 원문 그대로 수록되어 있습니다(번역 대기).
+
 ---
 
 
@@ -5363,6 +5365,235 @@ v1.11.0 / v1.11.1 / v1.10.0–v1.10.3 의 상세 항목은 [🇬🇧 영어 CHAN
 - **v1.10.2 — 2026-05-12** · CV multipart 415 거부 (v1.13.0 multer 까지의 임시 패치); PDF 생성 수정.
 - **v1.10.1 — 2026-05-09** · v1.10.0 릴리스 QA 회귀 실행의 중요 패치.
 - **v1.10.0 — 2026-05-08** · `#/profile` 편집기 + CV 업로드 UX (pandoc/pdftotext/passthrough), 8개 로케일 × 16개 H2 help 패리티, 언어 전환기.
+
+---
+
+## [1.11.1] — 2026-05-13
+
+Deep career-ops.org/docs integration — follow-up to v1.11.0. Where v1.11.0 added a summary block, v1.11.1 enriches the existing §5 Portals / §7 Scan / §14 Apply sections of every help bundle with the **full CLI flows** (commands verbatim, numbered apply steps, batch-evaluate runner, Playwright setup). The SPA's `#/reports` view gains a score-thresholds card so the documented `≥4.5 / 4.0-4.4 / 3.5-3.9 / <3.5` action table is visible inline.
+
+### 📝 Docs
+
+- **Help bundles (all 8 locales)** — three new subsections per bundle, translated per locale:
+  - **§5 Portals → `CLI flow`** — `cp templates/portals.example.yml portals.yml`; canonical schema for `title_filter` (positive / negative / seniority_boost), `tracked_companies` (name + careers_url required), `search_queries` (pre-built broader web searches).
+  - **§7 Scan → `CLI scan flow`** — Option A (`npm run scan` + `--dry-run` / `--company`) for Greenhouse/Ashby/Lever ATS, Option B (`/career-ops scan` inside any AI CLI) for non-API discovery. Output to `data/pipeline.md` + `data/scan-history.tsv`. Action-thresholds table.
+  - **§14 Apply → `Full CLI apply flow` + `Batch evaluate` + `Playwright setup`** — 8-step numbered apply flow (`/career-ops apply <company>` → Playwright opens browser → numbered draft answers → human reviews and clicks Submit → `Submitted.` flips tracker `Evaluated → Applied`). Batch runner via `./batch/batch-runner.sh` with `--parallel` / `--min-score` / `--retry-failed`. Playwright install via `npm install` + `npx playwright install chromium` + `claude mcp add playwright`.
+- All 8 bundles preserve the 16-H2 parity contract (`tests/help-ui.test.mjs::section-parity` stays green).
+
+### ✨ UI
+
+- **`#/reports`** — new collapsible card at the top of the list view with the canonical score → next-step table (`≥ 4.5 → /career-ops apply`, `4.0–4.4 → apply or /career-ops contacto`, `3.5–3.9 → /career-ops deep`, `< 3.5 → skip`). Sources the link out to `career-ops.org/docs/.../scan-job-portals`. 7 new i18n keys (`rep.thresholdsTitle`, `rep.thrAction`, `rep.thr45`, `rep.thr40`, `rep.thr35`, `rep.thrLow`, `rep.thresholdsSource`) across 8 locales.
+
+### 📋 QA
+
+- **`qa/claude-cowork-browser-test-prompt.md`** — appended **Scenario 17 (career-ops.org/docs coverage)** with 5 sub-assertions (front-matter in 8 locales, CLI-flow subsections in §5/§7/§14, README block in 8 locales, `#/apply` Playwright link, `#/reports` score-thresholds card) + **Scenario 18 (help bundle parity)** for the i18n parity regression.
+
+### Out of scope (deferred)
+
+| Item | Why |
+|---|---|
+| **Batch evaluate SPA page** | Canonical docs describe CLI-only flow; SPA equivalent = new view + ≥3 endpoints + fixtures. Multi-day phase. |
+| **F-018 full adapter-registry** | Still queued; label-only slice closed in v1.10.3. |
+| **Full multer pipeline** | v1.10.2 closed data-corruption hole via 415 envelope; full parser is its own phase. |
+
+### Test posture
+
+- **348 / 349** unit tests (1 pre-existing parent-data drift).
+- Coverage: **94.59 % line / 84.18 % branch**.
+- 20 / 20 smoke E2E · 23 / 23 comprehensive E2E · **28 / 28 Playwright**.
+
+### Docs
+
+- `docs/reviews/REVIEW-2026-05-13-v1.11.1.md` — session context + audit.
+- All 8 READMEs: release v1.11.0 → v1.11.1.
+- All 8 CHANGELOGs receive this entry.
+
+---
+
+## [1.11.0] — 2026-05-13
+
+career-ops.org docs integration — minor release because every change is additive (no API breakage, no data-shape changes, no SPA route renames). Closes the v1.10.3 PR-9 deferral.
+
+### 📝 Docs
+
+- **`docs/career-ops-canonical.md` (new)** — single canonical reference distilled from [career-ops.org/docs](https://career-ops.org/docs) and its 5 sub-guides (What is career-ops, Scan job portals, Apply for a job, Batch-evaluate offers, Set up Playwright). All locale help bundles + READMEs translate this file; when career-ops.org/docs changes, regenerate this file first.
+- **All 8 help bundles** (`docs/help/{en, ru, es, pt-BR, ko-KR, ja, zh-CN, zh-TW}.md`) gained a new front-matter `About career-ops` section just below the H1 intro: principles, key concepts (Mode / Archetype / Pipeline / Tracker / Report / Scan history), career-ops vs career-ops-ui distinction, action thresholds by score (≥ 4.5 / 4.0–4.4 / 3.5–3.9 / < 3.5), and links to all five canonical guides. H2 count preserved at 16 per locale (`tests/help-ui.test.mjs` parity stays green).
+- **All 8 READMEs** gained an `About career-ops` block before the install heading: same principles, score thresholds, and 5 canonical guide links. The `What's new in v1.10.x` history sections were removed from the README front page (CHANGELOG retains the full history).
+
+### ✨ UI improvements
+
+- **`#/apply`** — the info banner now explicitly surfaces the Playwright setup guide (`career-ops.org/docs/.../set-up-playwright`) and a link to the canonical Apply guide. New i18n keys `apply.playwrightHint` + `apply.docsLink` localized for 8 locales.
+
+### 🔧 Internal
+
+- README screenshot path stays at `public/images/screen_vacancy_found.png` (v1.10.1).
+- No new server routes, no schema changes, no new tests required (existing i18n + help parity tests cover the new content surface).
+- `tests/help-ui.test.mjs` `section-parity` test continues to pass — every locale has the same 16 H2 headings.
+
+### Audit (gaps deferred, NOT in this release)
+
+| Gap | Why deferred |
+|---|---|
+| **Batch evaluate SPA page** (`./batch/batch-runner.sh` flow) | The canonical docs describe a CLI-only batch loop (`batch/batch-input.tsv` → parallel runner → `batch/tracker-additions/`). A SPA equivalent needs a new view, three new endpoints, fixture data, and tests. Multi-day phase; documented in `docs/career-ops-canonical.md §4`. |
+| **Adapter-registry consolidation** (F-018 / full PR-1) | Still queued; `/api/stream/scan-en` + `/api/stream/scan-ru` remain. The label-only slice landed in v1.10.3. |
+| **Multer pipeline** (full PR-4) | v1.10.2 closed the data-corruption hole via a 415 envelope; the full multipart parser + ConversionError envelope refactor is its own phase. |
+
+### Test posture
+
+- **348 / 349** unit tests pass (1 pre-existing parent-data drift in `portals-dead.test.mjs`).
+- Coverage: **94.59 % line / 84.24 % branch**.
+- 20 / 20 smoke E2E · 23 / 23 comprehensive E2E · **28 / 28 Playwright**.
+
+### Docs
+
+- `docs/reviews/REVIEW-2026-05-13-v1.11.0.md` — session context + UI audit gap list.
+- All 8 READMEs: badge bumps (tests 349 → 348 — one test moved as audit cleanup, no functional change), release v1.10.3 → v1.11.0.
+- All 8 CHANGELOGs receive this entry.
+
+---
+
+## [1.10.3] — 2026-05-12
+
+Closes 7 of the 11 v1.10.0 QA findings (F-001, F-010 minimal, F-011 minimal, F-013, F-014, F-015, F-019). The remaining 4 (F-018 — full adapter-registry consolidation; PR-4 full multer pipeline; PR-7 follow-ups; PR-9 doc sweep across career-ops.org docs) are deferred to v1.11.0.
+
+### ✨ Features
+
+- **`feat(pdf): Generate-PDF on every long-form surface (F-015)`** — three new SSE endpoints (`GET /api/stream/pdf/report?slug=`, `GET /api/stream/pdf/deep?name=`, `POST /api/stream/pdf/inline { markdown }`) plus a shared `public/js/lib/pdf-generate.js` helper. The **📄 Generate PDF** button now appears on `#/reports/:slug`, `#/deep` (manual + live), `#/evaluate` (manual + live), and `#/interview-prep` (via the deep endpoint). Each kind reuses the v1.10.2 cv-markdown-to-print-HTML helper and lands the result under `output/<slug>-<TS>.pdf` so the existing auto-download flow takes over.
+- **`feat(config): regional config group (F-013)`** — `/api/config` now exposes `groups` (`core | runtime | regional`) and `regionalActive` (boolean computed from `portals.yml::russian_portals.sources`). The SPA renders the three groups as collapsible sections; **Regional sources** is auto-collapsed and only present when a regional source is configured.
+
+### 🐛 Bug fixes
+
+- **`fix(server): global Express error handler (F-019)`** — `PayloadTooLargeError` (e.g. an 11 MB upload to `/api/cv/import`) and `SyntaxError` from `express.json` now return JSON envelopes the SPA can localize (HTTP 413 / 400). Previously the default Express handler returned an HTML stack trace, which broke the SPA's `try { await res.json() }`.
+- **`fix(i18n): English tokens no longer leak into non-EN UI (F-001)`** — added localizations for `Pipeline`, `Deep research`, `Follow-up`, `Health`, `Outreach`, `Doctor`, `Quick scan` (the labels users saw in their UI language while the rest of the chrome was translated).
+- **`fix(scan): drop EN/RU framing from labels (F-010 minimum)`** — the `#/scan` summary line, two scan-done badges, and the source-filter labels now read "ATS adapters" + "Regional portals". The two SSE endpoints (`/api/stream/scan-en`, `/api/stream/scan-ru`) are retained as-is; full registry consolidation lives in PR-1 / v1.11.0.
+- **`fix(scan): Active-Companies counter auto-refreshes (F-011 minimum)`** — view dispatches a `scan:refresh` event after each `refreshResults()`; the counter re-derives "companies with hits in last scan" from the actual `/api/scan-results` payload instead of staying frozen at the view-mount snapshot.
+- **`docs(en-ru-framing): sweep across READMEs + help bundles (F-014)`** — `EN sweep` → `ATS sweep`, `RU sweep` → `regional sweep`, `EN scanner` → `ATS scanner`, `EN: Greenhouse / Ashby / Lever, RU: hh.ru + Habr Career` → `ATS adapters (Greenhouse / Ashby / Lever) + regional portals (hh.ru / Habr Career)`. Touches `README.md`, `README.ru.md`, `README.ja.md`, `README.ko-KR.md`, `docs/help/en.md`, `docs/help/es.md`, `docs/help/pt-BR.md`.
+
+### 🧪 Tests
+
+- New `tests/global-error-handler.test.mjs` (2 cases): malformed JSON → 400 JSON; 11 MB upload → 413 JSON.
+- New `tests/config-groups.test.mjs` (2 cases): `/api/config` exposes `groups`; `regionalActive` flips on when portals.yml gains a regional source.
+- New `tests/pdf-extra-routes.test.mjs` (5 cases): each of `/report`, `/deep`, `/inline` invokes `generate-pdf.mjs` with the documented three positional args; 404 on missing slug; 400 on empty inline markdown.
+- Total: **349 / 350** unit tests (1 pre-existing parent-data drift in `portals-dead.test.mjs`).
+- Coverage: 94.59 % line / 84.16 % branch.
+- 20 / 20 smoke E2E, 23 / 23 comprehensive E2E, **28 / 28 Playwright**.
+
+### 📝 Docs
+
+- `docs/reviews/REVIEW-2026-05-12-v1.10.3.md` — session context + scope-out list.
+- All 8 READMEs: badge bumps (tests 340 → 349, release v1.10.2 → v1.10.3), "What's new in v1.10.3" section per locale.
+- All 8 CHANGELOGs receive this entry.
+
+### Out of scope (deferred to v1.11.0)
+
+- **PR-1** — full locale-agnostic adapter registry (8 ATS-adapter files + new `/api/stream/scan?source=` consolidating the two existing endpoints + +14 new portals + scan-view rewrite). The label-only slice in this release closes F-010 / F-011 visually; the architectural refactor is a multi-day phase.
+- **PR-4** — multer-based CV import pipeline (replaces the v1.10.2 415 envelope with a real multipart parser + ConversionError envelope + dependency review).
+- **PR-9** — full career-ops.org docs integration: fetch [career-ops.org/docs](https://career-ops.org/docs) + the 4 sub-guides (scan-job-portals, apply-for-a-job, batch-evaluate-offers, set-up-playwright), translate into 7 non-EN locales, rewrite help bundles + READMEs accordingly, audit UI screens against the documented behavior.
+
+---
+
+## [1.10.2] — 2026-05-12
+
+Functional-regression patch. Two bugs discovered in v1.10.1 hand-testing closed; documentation surface expanded.
+
+### 🐛 Bug fixes
+
+- **`fix(cv): /api/cv/import rejects multipart/form-data with 415 (F-016 hardening)`** — any external client (curl `-F`, common HTTP clients) defaulting to `multipart/form-data` previously had its wire envelope (`--boundary…\r\nContent-Disposition: form-data; name="file"; filename="x"…`) stored as `cv.md` content. The SPA's actual path (`Content-Type: application/octet-stream` + `X-Filename`) was unaffected. Route now returns 415 with a hint pointing at the documented contract. Defense-in-depth: octet-stream bodies that sniff as multipart in their first 256 bytes also get 415. `cv.md` is never touched on a 415.
+- **`fix(pdf): /api/stream/pdf invokes generate-pdf.mjs with proper positional args`** — was calling the script with `[]`. The script printed its `Usage:` line and exited code 1 — SPA showed the green "PDF generated" toast but no file ever reached disk. The route now reads `cv.md`, renders it to an HTML file under `output/cv-input-<TIMESTAMP>.html` via an in-route markdown-to-print-HTML helper, then spawns `generate-pdf.mjs <input.html> <output.pdf> --format=a4`. Optional `?format=letter` query for US-letter output. When `cv.md` is missing, emits an `error` event + `done { code: 2 }` instead of a fake start frame.
+
+### 🧪 Tests
+
+- New `tests/cv-upload-multipart-reject.test.mjs` (5 cases): SPA happy path returns 200 with clean markdown; `multipart/form-data` → 415; octet-stream body that LOOKS like multipart → 415; empty body → 400; rejected request does NOT modify `cv.md`.
+- New `tests/pdf-stream-args.test.mjs` (3 cases): `start` event carries `<input.html> <output.pdf> --format=a4` with absolute paths and the HTML exists on disk; `?format=letter` switches the flag; missing `cv.md` emits the expected error frame.
+- Total: **340 unit tests** (was 318). One pre-existing failure in `portals-dead.test.mjs` remains parent-side data drift, unrelated to web-ui.
+- Coverage: 94.63 % line / 84.94 % branch.
+
+### 📝 Docs
+
+- New `docs/test-scenarios/` — 21 scenario files in English (index + per-page contracts):
+  - 01 smoke / health · 02 CV upload · 03 CV edit-save · 04 CV → PDF download
+  - 05 profile YAML · 06 config env · 07 scan · 08 pipeline
+  - 09 evaluate · 10 deep research · 11 modes · 12 apply checklist
+  - 13 tracker · 14 reports · 15 activity log · 16 interview prep · 17 JDs
+  - 18 i18n · 19 help center · 20 security · 21 full funnel
+- Each file documents: goal, preconditions, inputs, expected outputs, negative cases, test coverage (file + line range), and manual Playwright steps where applicable.
+- New `docs/reviews/REVIEW-2026-05-12-v1.10.2.md` — full session context, scope-out list, verification commands.
+- All 8 READMEs: badge bumps (tests 318 → 340, release v1.10.1 → v1.10.2) + "What's new in v1.10.2" section per locale.
+- All 8 CHANGELOGs receive this entry.
+
+### Out of scope (deferred to future GSD phases)
+
+PR-1 locale-agnostic adapter registry (still queued), PR-4 multer-based CV import with full conversion pipeline, PR-7 Generate-PDF buttons on reports / evaluate / deep / interview-prep, PR-8 config UI regrouping, PR-9 docs sweep, PR-10 button-by-button localization audit + jsdom CI gate, full Korean retranslation.
+
+---
+
+## [1.10.1] — 2026-05-09
+
+Critical-fixes patch driven by the v1.10.0 QA regression run (`qa/reports/00-FINAL-SUMMARY.md`).
+
+### 🛡️ Security
+
+- **`fix(security): tighten isValidJobUrl + add DNS-rebind defense (PR-3 / F-003)`** — `isValidJobUrl` now rejects RFC1918 (`10/8`, `172.16/12`, `192.168/16`), the full 127/8 loopback range, link-local `169.254/16` (incl. AWS IMDS), `0.0.0.0`, CGNAT `100.64/10`, and IPv6 ULA / link-local. New helper `isPrivateOrLoopbackHost()` is exported from `server/lib/security.mjs` and reused by `/api/pipeline/preview`, which now `dns.lookup`s the host on every redirect hop and rejects when the resolved address itself is private — defeats DNS-rebind. DNS-failure fails open (fetch reports the error) so test stubs / DNS-less sandboxes still work.
+
+### 🐛 Bug fixes
+
+- **`fix(activity): record only successful state changes (PR-5 / F-005)`** — middleware now early-returns on `res.statusCode >= 400`. Rejected pipeline / cv / tracker requests no longer pollute the audit feed.
+- **`fix(activity): add profile.save / config.save / cv.import event mappings (F-008)`** — successful `PUT /api/profile` and `POST /api/config` calls now appear in `/api/activity`.
+- **`fix(help): alias ko → ko-KR.md so Korean Help body is served (F-002)`** — the SPA sends bare BCP-47 codes (`ko`); the file on disk is `ko-KR.md`. Resolver now walks 4 candidates: exact, region-tag alias, language-only base, then `en.md`.
+- **`fix(llm): /api/evaluate honors mode:'manual' (F-009)`** — mirrors `/api/deep`. Manual-mode skips Anthropic / Gemini calls even when a key is set so users can copy the prompt into Claude Code without burning credits.
+- **`fix(api): DELETE /api/pipeline accepts ?url= AND body.url, returns 404 on miss (PR-6 / F-017)`** — was silently 200-on-miss with `?url=` only.
+
+### ✨ Features
+
+- **`feat(llm): locale propagation through every prompt (PR-2 / F-012)`** — new `resolveLocale(req)` picks a locale from `body.lang` → `body.locale` → `Accept-Language` → `'en'`. New `buildLocaleDirective(lang)` emits a one-line "Respond in X" header. `buildEvaluationPrompt`, `buildDeepPrompt`, `buildModePrompt` now accept and embed `lang`. SPA `API.call()` auto-attaches `Accept-Language` and merges `lang` into JSON bodies.
+- **`feat(scripts): post-qa-cleanup.mjs (PR-11)`** — replays the QA-regression cleanup checklist; `--apply` writes, default is dry-run, idempotent. Sweeps RFC1918 / `nip.io` / `test-cloud-*` URLs from `data/pipeline.md` and audits `cv.md` size.
+
+### 🧪 Tests
+
+- New `tests/critical-fixes.test.mjs` (15 cases) covering: F-002 ko alias resolution, F-009 manual-mode opt-out, PR-6 DELETE shape (body / 404 / 400), PR-3 helper unit tests for IPv4 + IPv6 + bracketed forms, PR-2 `resolveLocale` precedence + `buildLocaleDirective` + prompt-builder integration.
+- `tests/url-validation.test.mjs` extended with 5 new tests for RFC1918 / link-local / 0.0.0.0 / 127/8 / CGNAT / IPv6 ULA / link-local.
+- `tests/activity-log.test.mjs` test 8 updated to assert the new "no log on 4xx" contract.
+- Total: **318 unit tests** (was 298; one pre-existing failure in `portals-dead.test.mjs` is parent-side data drift in `templates/portals.example.yml`, unrelated to web-ui code).
+
+### 📝 Docs
+
+- New `docs/reviews/REVIEW-2026-05-09-v1.10.1.md` — full session context + scope-out list + verification commands.
+- All 8 READMEs: badge bumps (test count 298 → 318, release v1.10.0 → v1.10.1), screenshot path moved to `public/images/screen_vacancy_found.png`, "What's new in v1.10.1" section added per locale (English, Spanish, Portuguese, Korean, Japanese, Russian, Simplified Chinese, Traditional Chinese).
+- All 8 CHANGELOGs updated with this entry.
+
+### Out of scope (deferred to future GSD phases)
+
+PR-1 (locale-agnostic adapter registry, +14 portals, FE rewrite), PR-4 (multer-based CV import + ConversionError + global error handler), PR-7 (Generate-PDF buttons on reports / evaluate / deep / interview-prep), PR-8 (config UI regrouping), PR-9 (full README/docs/8-help-bundle EN-RU framing sweep), PR-10 (button-by-button localization audit + jsdom CI gate), full Korean help retranslation (the file exists; PR-only fixed runtime delivery).
+
+---
+
+## [1.10.0] — 2026-05-08
+
+CV import revamp + `#/config` tabs + canonical `#/profile` route.
+
+### ✨ Features
+
+- **`feat(cv): server-side import for .docx / .doc / .odt / .rtf / .pdf / .html / .txt / .md`** — new `POST /api/cv/import` endpoint converts an uploaded document (any common format) into markdown the editor can drop in. Office formats go via **pandoc**, PDF via **pdftotext** from Poppler. Result is sanitized through `stripDangerousMarkdown` (defense-in-depth XSS). Hard cap: 10 MB per upload. Frontend `📁 Upload CV` now accepts the full format set; pretty error toasts when a converter is missing on the host.
+- **`feat(cv): auto-download generated PDF when generate-pdf.mjs finishes`** — the streaming Generate-PDF flow now snapshots the latest PDF in the output dir, and on `done` triggers a browser download for the *new* file (no-op if the run produced no new artifact). The existing on-page list still shows every previous PDF.
+- **`feat(config): two-tab layout — API keys & runtime + Profile`** — `#/config` now has a tab strip. The first tab keeps the existing `.env` editor (API keys, models, scanner knobs). The new **Profile** tab is a direct YAML editor for `config/profile.yml`: `PUT /api/profile` validates the YAML (must be a mapping, must include `candidate`), stamps a canonical `# Career-Ops Profile Configuration` header if missing, and writes the file. Save propagates without restart.
+- **`feat(routes): canonical /#/profile route (was /#/settings)`** — sidebar now points at `#/profile`. The old `#/settings` hash still resolves through the router alias table, so existing bookmarks keep working. Internal route handler renamed; tests updated to reflect the new direction.
+
+### 🧪 Tests
+
+- New `tests/cv-import.test.mjs` (7 cases): `.md` / `.txt` passthrough, empty-body 400, unsupported-extension 422, oversized 413, HTML→markdown sanitization (skips when pandoc absent), PDF→text round-trip with a hand-crafted PDF (skips when poppler absent).
+- New `tests/profile-put.test.mjs` (7 cases): happy-path round-trip, header stamping, empty / invalid-YAML / non-object / missing-candidate 400s, oversized 413.
+- `tests/playwright-full-cycle.mjs` extended 14 → **16** subtests — adds CV-import via HTML and `PUT /api/profile` round-trip.
+- `tests/router.test.mjs` ALIAS regex flipped to assert the new `settings → profile` direction.
+
+### 📚 Docs
+
+- `docs/help/{en,ru}.md` — full updates to sections 2/3/4: new App-settings tabs, edit-via-config message on the read-only Profile page, full upload-format matrix on the CV section, PDF auto-download behaviour.
+- `docs/help/{es,pt-BR,ko-KR,ja,zh-CN,zh-TW}.md` — concise mirrors of the new content blocks; section count unchanged (16) so the parity test stays green.
+
+### 🔧 Internal
+
+- New `server/lib/cv-import.mjs` — single source of truth for the format → markdown conversion, with timeout + missing-converter detection that surfaces actionable hints rather than 500s.
+- `server/lib/routes/content.mjs` gains `POST /api/cv/import` and `PUT /api/profile` (binary-safe via `express.raw` for the upload, JSON for the YAML PUT).
 
 ---
 

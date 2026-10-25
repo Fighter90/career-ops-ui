@@ -13,15 +13,24 @@
  *
  * Wired into `npm run test:ci` so the next release can't ship with
  * silent locale drift.
+ *
+ * CAR-131 — release-count parity. The newest-entry check above only ever
+ * sees the TOP of each file: a locale seeded mid-history (de with a single
+ * entry at v1.85.0, ta at v1.245.0, vi at v1.255.0) stays partial forever —
+ * every release prepends one entry and nothing backfills the tail — while
+ * this gate keeps passing. The cvstart.org changelog pages render whatever
+ * the locale file holds, so de shipped with 252 of EN's 465 releases. The
+ * `## [` heading counts are now compared too; repair with
+ * scripts/backfill-changelog-locales.mjs.
  */
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { join, dirname } from 'node:path';
 
-const __dirname = dirname(fileURLToPath(import.meta.url));
-const REPO = join(__dirname, '..');
-
-const LOCALES = ['es', 'pt-BR', 'ko-KR', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi', 'ta', 'vi'];
+const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
+const { LOCALES, countReleases } = await import(
+  new URL('./changelog-parity.mjs', import.meta.url)
+);
 
 // The date is captured as well as the version. v1.229.0 shipped with the
 // EN heading corrected to the release date while all 16 locales kept the
@@ -67,4 +76,32 @@ if (lagging.length) {
   console.error('master is the source of truth.');
   process.exit(1);
 }
-console.log(`✓ CHANGELOG parity: all ${LOCALES.length} locales at v${en.version}${en.date ? ` (${en.date})` : ''}`);
+
+// CAR-131 — count parity. See the header note: the version check above is
+// blind to a missing tail, which is exactly how de/ta/vi reached the site
+// incomplete.
+const enCount = countReleases(readFileSync(join(REPO, 'CHANGELOG.md'), 'utf8'));
+const partial = [];
+for (const lang of LOCALES) {
+  const path = join(REPO, `CHANGELOG.${lang}.md`);
+  let n;
+  try {
+    n = countReleases(readFileSync(path, 'utf8'));
+  } catch {
+    partial.push(`CHANGELOG.${lang}.md — unreadable`);
+    continue;
+  }
+  if (n !== enCount) {
+    partial.push(`CHANGELOG.${lang}.md — ${n} of ${enCount} releases`);
+  }
+}
+if (partial.length) {
+  console.error('::error::CHANGELOG locale release-count drift (CAR-131):');
+  for (const l of partial) console.error('  ' + l);
+  console.error('');
+  console.error('Every locale must carry every release — the site renders');
+  console.error('whatever the locale file holds. Repair with:');
+  console.error('  node scripts/backfill-changelog-locales.mjs');
+  process.exit(1);
+}
+console.log(`✓ CHANGELOG parity: all ${LOCALES.length} locales at v${en.version}${en.date ? ` (${en.date})` : ''}, ${enCount} releases each`);
