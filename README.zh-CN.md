@@ -17,9 +17,9 @@ _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.256.0** — **追踪器数据质量：角色绝不会被记作公司（`Senior Frontend Engineer - Grafana Labs` 被反向解析 — 13 行），职位板绝不会被记作雇主（hh.ru 的行被记作 «hh» — 120 行；西里尔推断模式自 v1.248.4 起一直静默失效 — ASCII `\b`），无分数的行不再在追踪器排序中浮到最前，此外新增一个一次性端点，从报告本身回填缺失的分数。**
+> **🆕 最新版本 — v1.257.0** — **两项智能体集群修复：应用内帮助助手现已理解天城文与泰米尔文（分词器此前会丢弃组合标记 — 一条印地语查询匹配到 0 个章节，泰米尔语只匹配到碎片），且用量页面显示 Hermes 的真实成本（网关上报的成本此前被静默丢弃 — 9.5 M 个 token 显示 $0.0000）。**
 >
-> **上一版本 — v1.255.2** — **三项修复：`#/scan` 渲染崩溃（计数门槛再生留下的 120 个数组空洞使公司分类器在每次渲染时都抛出异常）、失效的越南语语言检查（线上 QA 此前为 vi 统计的是英文停用词 — 现已使用它自己的词表），以及 zh-TW 摘要块丢失（收尾提醒现在将 `SCORE_SUMMARY` 设为强制，而不只是不可翻译）。**
+> **上一版本 — v1.256.0** — **追踪器数据质量：角色绝不会被记作公司（`Senior Frontend Engineer - Grafana Labs` 被反向解析 — 13 行），职位板绝不会被记作雇主（hh.ru 的行被记作 «hh» — 120 行；西里尔推断模式自 v1.248.4 起一直静默失效 — ASCII `\b`），无分数的行不再在追踪器排序中浮到最前，此外新增一个一次性端点，从报告本身回填缺失的分数。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
