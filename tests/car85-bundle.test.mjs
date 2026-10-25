@@ -227,11 +227,12 @@ test('CLI: a missing script file fails loudly (exit 1, ENOENT on stderr)', async
 
 const REAL_HTML = readFileSync(join(REPO_ROOT, 'public', 'index.html'), 'utf8');
 
-test('real index.html: 91 script tags, 88 bundlable /js/ body scripts (regenerate when the shell changes)', () => {
+test('real index.html: 92 script tags, 89 bundlable /js/ body scripts (regenerate when the shell changes)', () => {
   const all = mod.scanScriptTags(REAL_HTML);
-  assert.equal(all.length, 91, 'total classic <script src> tags (88 /js/ body + 2 head + 1 leaflet)');
+  // CAR-118 — +1: /js/lib/report-ops.js (the #/reports pure-helper lib).
+  assert.equal(all.length, 92, 'total classic <script src> tags (89 /js/ body + 2 head + 1 leaflet)');
   const srcs = mod.extractBundleScripts(REAL_HTML);
-  assert.equal(srcs.length, 88);
+  assert.equal(srcs.length, 89);
   assert.equal(srcs[0], '/js/lib/locales/i18n-dict.en.js');
   assert.equal(srcs[srcs.length - 1], '/js/app.js');
   assert.ok(srcs.includes('/js/lib/i18n.js'));
