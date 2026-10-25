@@ -795,18 +795,39 @@ Router.register('scan', async () => {
       // last scan run. Updated after every refreshResults() via the
       // setLabel closure below. Falls back to the static tracked count
       // before the first scan completes.
+      // CAR-100 — the counter's two numbers must live in ONE universe.
+      // Rows arrive from every source a scan touched (an hh.ru / telegram
+      // run alone surfaces hundreds of employers no portals.yml entry
+      // names), so counting distinct row companies read 1554/90 on prod
+      // while the tooltip promises "configured in portals.yml". Pairing:
+      // numerator = distinct companies among rows the API-backed tracked
+      // scan itself fetched, matched against apiCompanies — the set the
+      // page already builds with isApiBackedCompany; denominator = those
+      // same API-backed enabled tracked companies. Row identity: the
+      // scanner stamps the portals entry name on every row it fetches
+      // (`_entry`; `company` on rows saved by older builds — the same
+      // `_entry ?? company` rule en-scanner's carry-over logic uses).
       function activeFromLastScan() {
         const rows = SR.getRows();
+        const tracked = new Set(
+          apiCompanies.map((co) => String((co && co.name) || '').toLowerCase()).filter(Boolean)
+        );
         const seen = new Set();
         for (const r of rows) {
-          const name = (r && (r.company || r.companyName));
-          if (name) seen.add(String(name).toLowerCase());
+          if (!r || typeof r !== 'object') continue;
+          const name = r._entry ?? (r.company || r.companyName);
+          if (!name) continue;
+          const lc = String(name).toLowerCase();
+          if (tracked.has(lc)) seen.add(lc);
         }
         return seen.size;
       }
       const labelN = () => {
         const fromScan = activeFromLastScan();
-        const n = fromScan > 0 ? fromScan : companies.length;
+        // CAR-100 — the pre-scan fallback reads the same universe as the
+        // denominator: companies.length also counts web-search-only entries
+        // and could even exceed apiCompanies.length (e.g. "104/90").
+        const n = fromScan > 0 ? fromScan : apiCompanies.length;
         return `${n}/${apiCompanies.length}`;
       };
       const setLabel = () => {
