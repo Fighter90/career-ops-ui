@@ -384,14 +384,14 @@ export function stripScoreSummary(text) {
 // prose — or a Data-freshness date in a deep brief — never matches. The
 // `{YYYY-MM-DD}` placeholder echo (the model copying the template literally)
 // is a non-date and is rewritten too.
-// CAR-144 — header-scoped: fixReportDate applies it only to the text before
-// the header/body boundary, so a `- Date: …` posting bullet in a Block F/G
-// body or a dated news item in a deep brief — user content — is never
-// rewritten. Global on purpose (rev-2): EVERY Date line inside the header
-// is corrected; the original bug was body rewrites, not multi-header
-// headers. Sole consumer is the .replace() in fixReportDate — never an
-// .exec loop or .matchAll, so the flags are safe here.
-const REPORT_DATE_LINE = /^[ \t]*(?:[-*][ \t]*)?(?:\*\*)?[ \t]*Date[ \t]*[:：][ \t]*(?:\*\*)?[ \t]*(\d{4}-\d{2}-\d{2}|\{YYYY-MM-DD\})[ \t]*(?:\*\*)?[ \t]*\r?$/gmi;
+// CAR-144 — header-scoped: fixReportDate applies it only to the header/body
+// boundary region, so a `- Date: …` posting bullet in a Block F/G body or a
+// dated news item in a deep brief — user content — is never rewritten.
+// First-match-only (r3, no `g` flag): a second REAL date in the header (a
+// posting date, an as-of date) survives, and the non-global regex carries
+// no last-match state for a future .test/.exec caller. Sole consumer is
+// the .replace() in fixReportDate.
+const REPORT_DATE_LINE = /^[ \t]*(?:[-*][ \t]*)?(?:\*\*)?[ \t]*Date[ \t]*[:：][ \t]*(?:\*\*)?[ \t]*(\d{4}-\d{2}-\d{2}|\{YYYY-MM-DD\})[ \t]*(?:\*\*)?[ \t]*\r?$/mi;
 
 /**
  * CAR-101 — belt-and-braces for the report header's **Date:** field. The
@@ -414,20 +414,35 @@ export function fixReportDate(text, today) {
     ? today
     : (() => { const d = new Date(); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}-${String(d.getDate()).padStart(2, '0')}`; })();
   let replaced = 0;
-  // CAR-144 — the header/body boundary is the first `## ` heading that
-  // follows the first non-heading, non-blank line; the correction never
-  // reaches past it (deep-brief Block bodies are content). The title line
-  // may itself be an H2 (`## Evaluation: …`) — a heading at the very top
-  // of the text is never the boundary (rev-2).
+  // CAR-144 r3 — title-aware header/body boundary; only the FIRST non-blank
+  // line can be a title (never a run of headings). If it is an `## ` H2,
+  // the header is that title plus its header-label lines, ending at the
+  // first body-structure line after it — the next `## ` heading or the
+  // first list bullet. Otherwise (an `# ` H1 title, the normal shape) the
+  // header is the preamble before the first `## ` heading, as before. The
+  // correction never reaches past the boundary: Block bodies and
+  // deep-brief dated items are content.
   const lines = src.split('\n');
-  let headerEnd = -1;
-  let seenContent = false;
+  let first = -1;
   for (let i = 0; i < lines.length; i++) {
-    if (!seenContent) {
-      if (lines[i].trim() !== '' && !lines[i].startsWith('## ')) seenContent = true;
-      continue;
+    if (lines[i].trim() !== '') { first = i; break; }
+  }
+  const offsetOf = (lineIdx) => lines.slice(0, lineIdx).join('\n').length + 1;
+  let headerEnd = -1;
+  if (first !== -1 && lines[first].startsWith('## ')) {
+    for (let i = first + 1; i < lines.length; i++) {
+      if (lines[i].startsWith('## ') || /^[ \t]*[-*][ \t]/.test(lines[i])) {
+        headerEnd = offsetOf(i);
+        break;
+      }
     }
-    if (lines[i].startsWith('## ')) { headerEnd = lines.slice(0, i).join('\n').length + 1; break; }
+  } else {
+    for (let i = 0; i < lines.length; i++) {
+      if (lines[i].startsWith('## ')) {
+        headerEnd = offsetOf(i);
+        break;
+      }
+    }
   }
   const header = headerEnd === -1 ? src : src.slice(0, headerEnd);
   const body = headerEnd === -1 ? '' : src.slice(headerEnd);

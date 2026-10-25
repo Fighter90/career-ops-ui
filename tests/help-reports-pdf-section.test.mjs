@@ -80,6 +80,16 @@ test('CAR-144: the PDF label resolver reads the dict it is given and fails loudl
   // Round-trips against the real labels (not synthetic ones a lookup cannot fail).
   assert.equal(generatePdfLabel(DICT, 'fr'), DICT['common.generatePdf'].fr, 'the fr label round-trips');
   assert.equal(generatePdfLabel(DICT, 'ko-KR'), DICT['common.generatePdf'].ko, 'the ko→ko-KR alias round-trips');
+  // CAR-144 r3 — one locale against a LITERAL expected string, independent
+  // of the dict lookup: a resolver alias bug cannot mask itself.
+  assert.equal(generatePdfLabel(DICT, 'fr'), 'Générer un PDF', 'the fr label is the literal «Générer un PDF»');
+  // CAR-144 r3 — the apostrophe contract, pinned synthetically: if a
+  // regex-scraping implementation (the old `[^']*` capture, truncated at
+  // the first `'`) ever returns, this fails where the real round-trips
+  // cannot — no current label contains an apostrophe.
+  const apostrophe = { 'common.generatePdf': { fr: "Générer l'aperçu PDF" } };
+  assert.equal(generatePdfLabel(apostrophe, 'fr'), "Générer l'aperçu PDF",
+    'a label containing an apostrophe is returned whole');
 });
 
 test('FIX-5: the docs-assistant retrieval surfaces Reports for a PDF-export question', () => {
