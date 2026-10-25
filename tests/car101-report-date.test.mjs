@@ -130,6 +130,35 @@ test('CAR-101: prose mentioning a date or the template never matches', () => {
   assert.equal(r.text, prose);
 });
 
+// CAR-144 — header scoping: only the report HEADER (the text before the
+// first `## ` heading) is subject to the correction. A bulleted `- Date: …`
+// posting bullet in a Block F/G legitimacy body — or a dated news item in a
+// deep brief — is user content; rewriting it would fabricate a fact.
+test('CAR-144: a bulleted Date: line inside a block body is never rewritten; the header date still is', () => {
+  const input = [
+    '# Evaluation: Acme — Engineer',
+    '',
+    '**Date:** 2026-01-15',
+    '**URL:** https://jobs.acme.example/42',
+    '',
+    '## Block F — Posting legitimacy',
+    'The listing was first posted on the board:',
+    '- Date: 2025-11-02',
+    '- Source: employer careers page',
+    '',
+    '## Block G — Verdict',
+    'Posted:',
+    'Date: 2024-02-03',
+    '',
+    'Apply.',
+  ].join('\n');
+  const r = fixReportDate(input, '2026-10-25');
+  assert.equal(r.replaced, 1, 'exactly one line — the header date — is corrected');
+  assert.ok(r.text.includes('**Date:** 2026-10-25'), 'header date corrected');
+  assert.ok(r.text.includes('- Date: 2025-11-02'), 'the bulleted posting date in a block body is untouched');
+  assert.ok(r.text.includes('Date: 2024-02-03'), 'a date-shaped line in a block body is untouched');
+});
+
 test('CAR-101: an invalid today argument falls back to the server date', () => {
   const r = fixReportDate('**Date:** 2026-01-15\n', 'not-a-date');
   assert.equal(r.replaced, 1);
