@@ -24,7 +24,7 @@ import { runActiveProvider, PROMPT_SIZE_SOFT_CAP } from '../llm-dispatch.mjs';
 import { runNodeScript } from '../runner.mjs';
 import { runAnthropic, hasAnthropicKey, hasGeminiKey } from '../anthropic.mjs';
 import { runGemini } from '../gemini.mjs';
-import { validateEvaluationReport, stripScoreSummary } from '../eval-validate.mjs';
+import { validateEvaluationReport, stripScoreSummary, fixReportDate } from '../eval-validate.mjs';
 // v1.248.8 (CAR-76) — the wrong-language report is surfaced as a warning on
 // /api/evaluate too (the auto-pipeline has had it since v1.248.7).
 import { languageOk } from '../../../scripts/remote-qa/lang-check.mjs';
@@ -284,6 +284,11 @@ export function registerLlmRoutes(app) {
       // v1.75.0 (#819) — flag malformed A–G / SCORE_SUMMARY shape as a non-fatal
       // warning so the user knows the report may be truncated/off-format.
       const warnings = [...ctxWarnings, ...evaluationWarnings(r)];
+      // CAR-101 — the header date is server-side knowledge: a model that
+      // ignored the prompt's pinned date gets its **Date:** line rewritten to
+      // today here (a correction with a warning, never a rejection).
+      const dated = fixReportDate(r.markdown, today());
+      if (dated.replaced) warnings.push(`report **Date:** corrected to ${today()}`);
       // v1.248.8 (CAR-76) — same language warning the auto-pipeline carries:
       // a drift (ta came back 2–22 % own-script on prod) must surface on
       // /api/evaluate as well, where remote-qa reads it.
@@ -291,7 +296,7 @@ export function registerLlmRoutes(app) {
         warnings.push(`report not in ${lang}`);
       }
       recordUsage('anthropic', r.usage);
-      return res.json({ mode: 'anthropic', prompt: promptText, markdown: stripScoreSummary(r.markdown), usage: r.usage, saved, ...(warnings.length ? { warnings } : {}) });
+      return res.json({ mode: 'anthropic', prompt: promptText, markdown: stripScoreSummary(dated.text), usage: r.usage, saved, ...(warnings.length ? { warnings } : {}) });
     }
 
     if (_provGate().wantGemini && hasGeminiKey()) {
@@ -316,7 +321,12 @@ export function registerLlmRoutes(app) {
         }
         recordUsage('gemini', parseSubprocessUsage(result.stdout));
         const stdout = result.stdout || '';
-        return res.json({ mode: 'gemini', prompt: promptText, saved, code: 0, stdout, markdown: stdout });
+        // CAR-101 — same header-date correction as the in-process branches:
+        // the subprocess report's **Date:** line is the model's, today's is
+        // the server's. stdout stays raw; markdown is what the client saves.
+        const dated = fixReportDate(stdout, today());
+        const dateWarnings = dated.replaced ? [`report **Date:** corrected to ${today()}`] : [];
+        return res.json({ mode: 'gemini', prompt: promptText, saved, code: 0, stdout, markdown: dated.text, ...(dateWarnings.length ? { warnings: dateWarnings } : {}) });
       } finally {
         unlinkQuiet(tmpFile);
       }
@@ -338,6 +348,9 @@ export function registerLlmRoutes(app) {
       if (r.error) return res.status(502).json({ mode: tp.mode, prompt: promptText, error: r.error, saved });
       // v1.75.0 (#819) — same shape guard for the OpenAI/Qwen/OpenRouter/GitHub tail.
       const warnings = [...ctxWarnings, ...evaluationWarnings(r)];
+      // CAR-101 — same header-date correction as the Anthropic branch.
+      const dated = fixReportDate(r.markdown, today());
+      if (dated.replaced) warnings.push(`report **Date:** corrected to ${today()}`);
       // v1.248.8 (CAR-76) — same language warning the auto-pipeline carries:
       // a drift (ta came back 2–22 % own-script on prod) must surface on
       // /api/evaluate as well, where remote-qa reads it.
@@ -345,7 +358,7 @@ export function registerLlmRoutes(app) {
         warnings.push(`report not in ${lang}`);
       }
       recordUsage(tp.mode, r.usage);
-      return res.json({ mode: tp.mode, prompt: promptText, markdown: stripScoreSummary(r.markdown), usage: r.usage, saved, ...(warnings.length ? { warnings } : {}) });
+      return res.json({ mode: tp.mode, prompt: promptText, markdown: stripScoreSummary(dated.text), usage: r.usage, saved, ...(warnings.length ? { warnings } : {}) });
     }
 
     return res.json({
@@ -436,15 +449,21 @@ export function registerLlmRoutes(app) {
       if (r.mode !== 'manual') {
         if (r.error) return res.status(502).json({ mode: r.mode, prompt, error: r.error });
         // A brief cut off at the token limit is still saved (it is useful),
-        // but the user is told it is incomplete.
-        const warnings = [...ctxWarnings, ...(r.truncated ? ['brief cut off at the output-token limit'] : [])];
+        // but the user is told it is incomplete. CAR-101 — a **Date:** line
+        // the model invented is rewritten to today before it is saved.
+        const dated = fixReportDate(r.markdown, today());
+        const warnings = [
+          ...ctxWarnings,
+          ...(r.truncated ? ['brief cut off at the output-token limit'] : []),
+          ...(dated.replaced ? [`brief **Date:** corrected to ${today()}`] : []),
+        ];
         let saved = null;
         if (r.markdown) {
           mkdirSync(PATHS.interviewPrepDir, { recursive: true });
           saved = freeDeepName(deepReportStem(company, role));
-          writeFileSync(projPath('interview-prep', saved), r.markdown);
+          writeFileSync(projPath('interview-prep', saved), dated.text);
         }
-        return res.json({ mode: r.mode, prompt, markdown: r.markdown, saved, code: 0, ...(warnings.length ? { warnings } : {}) });
+        return res.json({ mode: r.mode, prompt, markdown: dated.text, saved, code: 0, ...(warnings.length ? { warnings } : {}) });
       }
     }
 
