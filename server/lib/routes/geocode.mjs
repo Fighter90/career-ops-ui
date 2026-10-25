@@ -67,6 +67,12 @@ function budgetAllows() {
   return true;
 }
 
+/** Seconds until the budget window rolls over — the route's Retry-After (CAR-142). */
+function budgetRemainingSec() {
+  const windowMs = numEnv('GEOCODE_BUDGET_WINDOW_MS', BUDGET_WINDOW_DEFAULT);
+  return Math.max(1, Math.ceil((windowMs - (Date.now() - budgetSince)) / 1000));
+}
+
 // Longest raw `q` the route accepts; normalizeLocation keeps its first place.
 export const MAX_QUERY = 2000;
 // Locations that are not a place — answered without a request.
@@ -127,19 +133,73 @@ function scheduleSave() {
   saveTimer.unref?.();
 }
 
+/** The entries a flush persists (bounded — Map keeps insertion order, oldest first). */
+function persistableEntries() {
+  const max = numEnv('GEOCODE_CACHE_MAX', 20000);
+  return max > 0 && cache.size > max ? [...cache].slice(-max) : [...cache];
+}
+
 /** Persist the cache now (test hook; also the trailing edge of the debounce). */
 export async function _flushGeocodeCache() {
   if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; }
   if (!dirty || !cache) return;
-  dirty = false;
-  const max = numEnv('GEOCODE_CACHE_MAX', 20000);
-  const entries = max > 0 && cache.size > max ? [...cache].slice(-max) : [...cache];
   try {
     mkdirSync(dirname(cacheFile), { recursive: true });
     await withFileLock(cacheFile, () => {
-      writeFileSync(cacheFile, JSON.stringify(Object.fromEntries(entries)));
+      writeFileSync(cacheFile, JSON.stringify(Object.fromEntries(persistableEntries())));
     });
-  } catch { /* read-only install → memory cache only */ }
+    // CAR-142 — clear the flag only AFTER the write landed: a failed write
+    // (read-only install, transient ENOSPC) keeps the pending inserts, so a
+    // later flush (next insert, or the teardown hooks below) retries them.
+    dirty = false;
+  } catch { /* read-only install → memory cache only; dirty survives */ }
+}
+
+// CAR-142 — the debounced save above is unref'd, so a service restart used to
+// drop every insert flushed in the last GEOCODE_SAVE_MS. Flush on teardown:
+// `beforeExit` runs the normal async save while the loop is still draining,
+// `exit` makes one synchronous best-effort write (async work is not allowed
+// in `exit`), and SIGTERM/SIGINT flush then re-raise — node suppresses the
+// default termination while a signal listener is registered, so the re-raise
+// keeps the process dying on systemctl stop / Ctrl-C (skipped when another
+// handler owns the signal; that handler will exit() and the `exit` hook fires).
+function flushSyncBestEffort() {
+  if (!dirty || !cache) return;
+  try {
+    mkdirSync(dirname(cacheFile), { recursive: true });
+    writeFileSync(cacheFile, JSON.stringify(Object.fromEntries(persistableEntries())));
+  } catch { /* best effort — the process is exiting */ }
+}
+
+function onBeforeExit() { _flushGeocodeCache().catch(() => {}); }
+
+function signalFlush(signal) {
+  return () => {
+    _flushGeocodeCache().catch(() => {}).finally(() => {
+      if (process.listenerCount(signal) === 0) {
+        try { process.kill(process.pid, signal); } catch { /* already gone */ }
+      }
+    });
+  };
+}
+
+let exitHooksInstalled = false;
+
+function installExitHooks() {
+  if (exitHooksInstalled) return;
+  exitHooksInstalled = true;
+  process.on('beforeExit', onBeforeExit);
+  process.on('exit', flushSyncBestEffort);
+  process.once('SIGTERM', signalFlush('SIGTERM'));
+  process.once('SIGINT', signalFlush('SIGINT'));
+}
+
+installExitHooks();
+
+/** Test hook: the teardown handlers (invoke directly — no real events emitted). */
+export function _geocodeExitHooks() {
+  installExitHooks();
+  return { beforeExit: onBeforeExit, exit: flushSyncBestEffort, signal: signalFlush };
 }
 
 const MISS = { lat: null, lon: null };
@@ -148,10 +208,24 @@ const MIN_PLACE_RANK = 12;   // county/city and finer; state = 8, country = 4
 const SETTLEMENT = new Set(['city', 'town', 'village', 'municipality', 'suburb', 'borough']);
 const MAX_COMPANY_KM = 25;
 
+/** CAR-142 — bound the LIVE map (previously only the persisted copy was trimmed). */
+function trimInMemory(c) {
+  const max = numEnv('GEOCODE_CACHE_MAX', 20000);
+  while (max > 0 && c.size > max) c.delete(c.keys().next().value);
+}
+
 /** Rate-limited Nominatim search → raw jsonv2 hits. */
 async function search(q, limit, fetchImpl) {
   if (Date.now() < blockedUntil) throw new Error('nominatim backoff');
-  if (!budgetAllows()) throw new Error('geocode budget exhausted');
+  if (!budgetAllows()) {
+    // CAR-142 — a spent budget is "try later", not "provider down": the route
+    // turns this into 503 + Retry-After instead of a generic 502, so a cold
+    // map burst does not read as every row being permanently unlocatable.
+    const err = new Error('geocode budget exhausted');
+    err.code = 'GEOCODE_BUDGET';
+    err.retryAfter = budgetRemainingSec();
+    throw err;
+  }
   const wait = lastCall + GAP_MS - Date.now();
   if (wait > 0) await new Promise((r) => setTimeout(r, wait));
   lastCall = Date.now();
@@ -219,6 +293,7 @@ function cached(key, compute) {
   const run = queue.then(async () => {
     if (c.has(key)) return c.get(key);     // filled while we were queued
     c.set(key, await compute());
+    trimInMemory(c);                       // CAR-142 — bound the live map at insert time too
     scheduleSave();
     return c.get(key);
   });
@@ -285,7 +360,13 @@ export function registerGeocodeRoutes(app) {
     if (q.length > MAX_QUERY) return res.status(400).json({ error: 'q too long' });
     try {
       res.json(await geocode(q, {}, company));
-    } catch {
+    } catch (err) {
+      // CAR-142 — a spent budget is "try later": 503 + Retry-After for the
+      // remaining window, so the client can tell it from a provider failure.
+      if (err && err.code === 'GEOCODE_BUDGET') {
+        res.set('Retry-After', String(err.retryAfter || budgetRemainingSec()));
+        return res.status(503).json({ error: 'geocode budget exhausted', retryAfter: err.retryAfter });
+      }
       res.status(502).json({ error: 'geocoder unavailable' });
     }
   });

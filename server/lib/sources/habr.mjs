@@ -42,6 +42,42 @@ const MAX_PAGES = 50;
 const QUALIFICATION_CHIP =
   /^(?:junior|middle|senior|lead|intern|стаж[её]р|младший|средний|старший|ведущий)(?![\p{L}\p{N}])/iu;
 
+// CAR-142 — a meta chip that merely is not the remote marker or a
+// qualification is not necessarily a city: the relocation notice
+// («Возможна релокация») and employment types («Полный рабочий день»,
+// «Полная занятость», «Стажировка») sit in the same row, and a city-less
+// card used to wear the relocation text as its `location`. These chips are
+// never candidates.
+const RELOCATION_CHIP = /релок|reloc|переезд/i;
+const EMPLOYMENT_CHIP =
+  /рабоч(?:ий|их) (?:день|час)|час(?:а|ов) в день|день в неделю|занятость|график|стажировк|волонт[её]р|вахтов|проектная|оформлени|командировк/i;
+// Habr marks the real city structurally — it links the chip to the
+// city-filtered board (?city_id=…) and/or carries a location icon class
+// (the Cyrillic «с» in loсation is Habr's own). Preferred over chip order.
+const LOCATION_HINT = /city_id=|meta_lo[сc]ation|svg-icon-(?:lo[сc]ation|earth|map)/i;
+
+/**
+ * CAR-142 — pick the city chip from a card's meta row. Every chip keeps the
+ * markup BETWEEN it and the previous chip (its "lead"): the location link
+ * and icon class live there, so a structurally marked chip wins over an
+ * earlier chip that merely passes the text filters.
+ */
+function pickCityChip(metaBlock) {
+  const chips = [];
+  const re = /chip-with-icon__text">([^<]+)</g;
+  let m, end = 0;
+  while ((m = re.exec(metaBlock)) !== null) {
+    chips.push({ lead: metaBlock.slice(end, m.index), text: decodeEntities(m[1].trim()) });
+    end = m.index + m[0].length;
+  }
+  const isCity = (c) =>
+    c.text && c.text !== 'Можно удалённо'
+    && !QUALIFICATION_CHIP.test(c.text)
+    && !RELOCATION_CHIP.test(c.text)
+    && !EMPLOYMENT_CHIP.test(c.text);
+  return (chips.find((c) => isCity(c) && LOCATION_HINT.test(c.lead)) || chips.find(isCity) || {}).text || '';
+}
+
 export async function searchHabr(query, opts = {}) {
   const { onlyRemote = false, experience, sort = 'date', maxPages = MAX_PAGES, fetchImpl = fetch, signal } = opts;
 
@@ -119,13 +155,13 @@ export function parseHabrCards(html) {
     // of the country string 'Russia' (a country centroid is exactly what the
     // geocoder refuses, so every Habr row landed in the map's no-location
     // bucket). Skills chips live in their own section AFTER the meta row and
-    // are excluded by slicing at it; qualification levels are excluded by
-    // name (Unicode boundary — ASCII \b never matches Cyrillic).
+    // are excluded by slicing at it; qualification levels, relocation and
+    // employment-type chips are excluded by name, and a structurally marked
+    // city chip (?city_id= link / location icon) wins over chip order
+    // (CAR-142).
     const metaEnd = block.indexOf('vacancy-card__skills');
     const metaBlock = metaEnd === -1 ? block : block.slice(0, metaEnd);
-    const city = [...metaBlock.matchAll(/chip-with-icon__text">([^<]+)</g)]
-      .map((c) => decodeEntities(c[1].trim()))
-      .find((ch) => ch && ch !== 'Можно удалённо' && !QUALIFICATION_CHIP.test(ch)) || '';
+    const city = pickCityChip(metaBlock);
     out.push({
       id: id ? `habr-${id}` : `habr-${out.length}`,
       // Decode HTML entities BEFORE the title reaches title_filter and before
