@@ -45,6 +45,18 @@ window.API = (function () {
     }, _healthDelay);
   }
 
+  // CAR-130 — the start.sh command is local-DEV advice; on a deployed
+  // origin it reads as nonsense. Loopback keeps the dev command, anything
+  // else (deployed box, LAN host, unknown origin) gets the generic
+  // wording via the existing `conn.down` key (translated in every locale
+  // — no new i18n keys). Both the POST-error hint and the connection
+  // banner go through this check.
+  function isLoopbackOrigin() {
+    let origin = '';
+    try { origin = (window.location && window.location.origin) || ''; } catch { origin = ''; }
+    return /^https?:\/\/(localhost|127\.0\.0\.1|\[::1\])(:\d+)?\/?$/i.test(origin);
+  }
+
   function setConnectionState(lost, reason) {
     if (lost === connectionLost) return;
     connectionLost = lost;
@@ -62,8 +74,11 @@ window.API = (function () {
       const baseMsg = (window.I18n && window.I18n.t)
         ? window.I18n.t('conn.down', 'Server is not responding.')
         : 'Server is not responding.';
+      // CAR-130 — the `bash web-ui/bin/start.sh` suffix is local-dev
+      // advice only; a deployed origin just reports the outage.
+      const devSuffix = isLoopbackOrigin() ? ' · bash web-ui/bin/start.sh' : '';
       banner.querySelector('.conn-msg').textContent =
-        baseMsg + ' (' + (reason || 'fetch failed') + ') · bash web-ui/bin/start.sh';
+        baseMsg + ' (' + (reason || 'fetch failed') + ')' + devSuffix;
     } else {
       banner.hidden = true;
     }
@@ -115,11 +130,15 @@ window.API = (function () {
       // verbs/paths are never localized, same as the `HTTP NNN` status
       // surfaced on non-OK responses).
       const _t = (k, f) => (window.I18n && window.I18n.t) ? window.I18n.t(k, f) : f;
+      // CAR-130 — server-aware hint: loopback keeps the local dev command,
+      // a deployed origin gets the generic wording (see isLoopbackOrigin).
       const err = new Error(
         _t('api.netError', 'Network error') + ': '
         + (netErr.message || 'Failed to fetch')
         + ` (${method} ${path}) — `
-        + _t('api.netHint', 'the server may be down; run: bash web-ui/bin/start.sh'));
+        + (isLoopbackOrigin()
+          ? _t('api.netHint', 'the server may be down; run: bash web-ui/bin/start.sh')
+          : _t('conn.down', 'Server is not responding.')));
       err.network = true;
       throw err;
     }
