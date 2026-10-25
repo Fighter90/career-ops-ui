@@ -28,7 +28,7 @@ import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import {
   mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync,
-  existsSync, utimesSync, statSync,
+  existsSync, utimesSync, statSync, chmodSync, openSync, closeSync, renameSync,
 } from 'node:fs';
 import fs from 'node:fs';
 import { tmpdir } from 'node:os';
@@ -428,25 +428,68 @@ function expectedVersion(publicDir) {
     .slice(0, 12);
 }
 
-test('bundleVersionOf: content hash of the identity bundle, mtime fallback when unreadable', () => {
-  const root = makeScratch('car145-version');
+// (The old "bundleVersionOf: content hash … mtime fallback" unit test was
+// superseded by the CAR-145 r3 test below — null-stat contract, provenance
+// via bundleContentHash, and the 12-hex fallback are all covered there.)
+
+test('CAR-145 r3: bundleVersionOf — null stat → null; real stat → content hash; unreadable → fallback', () => {
+  const root = makeScratch('car145-r3-version');
   const pub = writeFixturePublic(root);
   writeFileSync(join(pub, 'js', 'bundle.js'), 'var CAR145 = 1;\n');
   const bundlePath = join(pub, 'js', 'bundle.js');
-  assert.equal(serverMod.bundleVersionOf(bundlePath, null), expectedVersion(pub));
+  const contentHashV = expectedVersion(pub); // computed BEFORE the file goes unreadable
+  // finding 6 — a null stat must not become a constant masquerading as a
+  // version ('undefined:undefined:undefined'): the shell then omits ?v= and
+  // the negotiation middleware treats the URL as unversioned.
+  assert.equal(serverMod.bundleVersionOf(bundlePath, null), null);
+  assert.equal(serverMod.bundleVersionOf(bundlePath, statSync(bundlePath)), contentHashV);
 
-  // Unreadable file (race with a rebuild): the stat identity keeps the URL
-  // changing when the file changes — and the value stays inside the documented
-  // 12-hex format (a raw mtimeMs.toString(16) can carry a fractional part,
-  // e.g. '18bcfe56800.4cccccccd', which is not a valid ?v= token).
-  const ghost = join(pub, 'js', 'bundle-gone.js');
-  const st = { size: 255, mtimeMs: 1700000000000.4, ino: 42 };
-  const fallback = serverMod.bundleVersionOf(ghost, st);
-  assert.match(fallback, /^[0-9a-f]{12}$/, 'fallback must be 12 hex chars');
-  assert.equal(fallback, createHash('sha256').update('255:1700000000000.4:42').digest('hex').slice(0, 12),
-    'fallback = sha256 of the stat identity');
-  assert.equal(serverMod.bundleVersionOf(ghost, st), fallback, 'deterministic for the same stat');
-  assert.match(serverMod.bundleVersionOf(ghost, null), /^[0-9a-f]{12}$/, 'null stat still yields 12 hex chars');
+  // finding 1 — provenance is observable: content hash vs stat fallback.
+  assert.equal(serverMod.bundleContentHash(bundlePath), contentHashV, 'readable → content hash');
+  chmodSync(bundlePath, 0o000);
+  try {
+    assert.equal(serverMod.bundleContentHash(bundlePath), null, 'unreadable → null (must never be cached)');
+    const fallback = serverMod.bundleVersionOf(bundlePath, statSync(bundlePath));
+    assert.match(fallback, /^[0-9a-f]{12}$/, 'fallback still 12 hex');
+    assert.notEqual(fallback, contentHashV, 'fallback is NOT the content hash');
+  } finally {
+    chmodSync(bundlePath, 0o644);
+  }
+  assert.equal(serverMod.bundleContentHash(bundlePath), contentHashV, 'readable again → content hash');
+});
+
+test('CAR-145 r3: bundleContentHashFromFd — the hash belongs to the fd, not the path (rename swap)', () => {
+  const root = makeScratch('car145-r3-fd');
+  const dir = join(root, 'fd');
+  mkdirSync(dir, { recursive: true });
+  const pathA = join(dir, 'file.js');
+  writeFileSync(pathA, 'AAA');
+  writeFileSync(join(dir, 'swap.js'), 'BBB');
+  const fd = openSync(pathA, 'r');
+  try {
+    const sizeA = statSync(pathA).size;
+    const h1 = serverMod.bundleContentHashFromFd(fd, sizeA);
+    assert.equal(h1, createHash('sha256').update('AAA').digest('hex').slice(0, 12));
+    // A rename-based build swaps the inode under the path mid-flight.
+    renameSync(join(dir, 'swap.js'), pathA);
+    assert.equal(readFileSync(pathA, 'utf8'), 'BBB', 'fixture: the path now holds other bytes');
+    assert.equal(serverMod.bundleContentHashFromFd(fd, sizeA), h1,
+      'the hash must keep belonging to the ORIGINAL inode behind this fd');
+  } finally {
+    closeSync(fd);
+  }
+});
+
+test('CAR-145 r3: the un-versioned bundle ETag is the content hash (rsync -p gap closed)', async () => {
+  const root = await buildFixtureBundle('car145-r3-etag');
+  const pub = join(root, 'public');
+  const { srv, port } = await bootNegotiation(pub);
+  try {
+    const res = await reqRaw(port, '/js/bundle.js', { headers: { 'accept-encoding': 'identity' } });
+    assert.equal(res.status, 200);
+    assert.equal(res.headers.etag, `W/"${expectedVersion(pub)}"`,
+      'ETag = W/"<content hash>" — a size+mtime ETag 304s through identical-stat rebuilds');
+  } finally { srv.close(); }
 });
 
 test('CAR-145: the served shell references the bundle with a content-hash query', async () => {
