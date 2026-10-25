@@ -15,7 +15,7 @@
 import express from 'express';
 import { fileURLToPath } from 'node:url';
 import { resolve, dirname } from 'node:path';
-import { readFileSync, statSync } from 'node:fs';
+import { readFileSync, statSync, createReadStream } from 'node:fs';
 import { PATHS, PROJECT_ROOT, PUBLIC_DIR, WEB_UI_ROOT } from './lib/paths.mjs';
 import { rewriteIndexHtml, BUNDLE_SRC } from '../scripts/make-bundle.mjs';
 import { activityMiddleware } from './lib/activity-log.mjs';
@@ -127,6 +127,104 @@ export function bundleHtmlMiddleware({ publicDir }) {
   };
 }
 
+// ──────────────── CAR-104 — precompressed bundle, served negotiated ────────────────
+// scripts/make-bundle.mjs writes bundle.js.br (brotli, max quality) and
+// bundle.js.gz (gzip 9) next to public/js/bundle.js at release time. The
+// ~3.1 MB identity file shipped UNCOMPRESSED and with Cache-Control: no-store,
+// so every cold visit re-paid the full transfer (~5.9 s on prod).
+//
+// This middleware owns GET/HEAD /js/bundle.js:
+//   - br preferred over gz, per the client's Accept-Encoding (an absent
+//     header means identity);
+//   - Content-Encoding + Vary: Accept-Encoding + exact Content-Length;
+//   - a weak ETag derived from the identity file — shared by every variant,
+//     so revalidation (If-None-Match → 304) stays cheap after max-age;
+//   - `public, max-age=300, must-revalidate`: the bundle is a STATIC NAME
+//     (no content hash), so a bounded, revalidating window is the safe
+//     policy. After a deploy a browser may reuse the old bundle for at most
+//     5 minutes and must revalidate after that — W-001's hours-long
+//     staleness cannot recur. Individual scripts keep express.static's
+//     no-store (the setHeaders on the static mount below).
+// Guard rails: a companion is used only when it exists, is non-empty, and is
+// at least as new as the identity bundle — an interrupted build or the
+// deploy's rollback path can leave stale artifacts on disk and they are
+// never served (identity falls back). The artifacts themselves are an
+// internal representation: a direct fetch of /js/bundle.js.br|gz is a 404.
+// No bundle file at all → express.static exactly as before (dev).
+const BUNDLE_ROUTE = '/js/bundle.js';
+const BUNDLE_VARIANTS = [
+  { enc: 'br', ext: '.br' },
+  { enc: 'gzip', ext: '.gz' },
+];
+const BUNDLE_CONTENT_TYPE = 'application/javascript; charset=UTF-8';
+const BUNDLE_CACHE_CONTROL = 'public, max-age=300, must-revalidate';
+
+/** Weak ETag in the same shape serve-static uses, from the identity stat. */
+function bundleETag(st) {
+  return `W/"${st.size.toString(16)}-${st.mtime.getTime().toString(16)}"`;
+}
+
+/** If-None-Match comparison — weak by RFC 7232 (W/ prefixes fold away). */
+function ifNoneMatchSatisfied(header, etag) {
+  if (!header) return false;
+  const bare = etag.replace(/^W\//, '');
+  return header.split(',').some((candidate) => candidate.trim().replace(/^W\//, '') === bare)
+    || header.trim() === '*';
+}
+
+export function bundleCompressionMiddleware({ publicDir }) {
+  const identityPath = resolve(publicDir, 'js', 'bundle.js');
+  const variants = BUNDLE_VARIANTS.map((v) => ({ ...v, path: `${identityPath}${v.ext}` }));
+  return function bundleCompression(req, res, next) {
+    if (req.method !== 'GET' && req.method !== 'HEAD') return next();
+    if (req.path !== BUNDLE_ROUTE) {
+      // The precompressed artifacts exist ONLY behind content negotiation.
+      if (req.path === `${BUNDLE_ROUTE}.br` || req.path === `${BUNDLE_ROUTE}.gz`) {
+        return res.status(404).type('text').send('Not Found');
+      }
+      return next();
+    }
+    let st;
+    try {
+      st = statSync(identityPath);
+    } catch {
+      return next(); // no bundle on disk → dev / rolled-back deploy
+    }
+    const etag = bundleETag(st);
+    res.setHeader('Vary', 'Accept-Encoding');
+    res.setHeader('ETag', etag);
+    res.setHeader('Cache-Control', BUNDLE_CACHE_CONTROL);
+    if (ifNoneMatchSatisfied(req.headers['if-none-match'], etag)) {
+      return res.status(304).end();
+    }
+    const accept = req.headers['accept-encoding'];
+    const negotiable = typeof accept === 'string' && accept.length > 0;
+    let chosen = null;
+    if (negotiable) {
+      const identityMs = st.mtime.getTime();
+      for (const v of variants) {
+        if (!req.acceptsEncodings(v.enc)) continue;
+        try {
+          const vs = statSync(v.path);
+          // Same-build freshness: an older companion is a stale artifact.
+          if (vs.size > 0 && vs.mtime.getTime() >= identityMs) {
+            chosen = { path: v.path, enc: v.enc, size: vs.size };
+            break;
+          }
+        } catch { /* companion absent (dev build) — try the next encoding */ }
+      }
+    }
+    res.setHeader('Content-Type', BUNDLE_CONTENT_TYPE);
+    if (chosen) res.setHeader('Content-Encoding', chosen.enc);
+    res.setHeader('Content-Length', String(chosen ? chosen.size : st.size));
+    if (req.method === 'HEAD') return res.end();
+    const stream = createReadStream(chosen ? chosen.path : identityPath);
+    stream.on('error', () => res.destroy());
+    res.on('close', () => stream.destroy());
+    stream.pipe(res);
+  };
+}
+
 export function createApp() {
   ensureRussianPortalsDefaults();
   // Express 4 ignores a rejected promise from an async handler; without this a
@@ -200,6 +298,11 @@ export function createApp() {
   // WEB_UI_ROOT/node_modules path 404'd and the map failed silently.
   // CAR-85 — must run BEFORE express.static so the bundled shell wins on "/".
   app.use(bundleHtmlMiddleware({ publicDir: PUBLIC_DIR }));
+  // CAR-104 — the precompressed bundle behind content negotiation (see the
+  // middleware's header for the full contract). Must run BEFORE express.static
+  // so the negotiated response wins; direct artifact fetches 404 here, and
+  // everything else falls through untouched.
+  app.use(bundleCompressionMiddleware({ publicDir: PUBLIC_DIR }));
   app.use('/vendor/leaflet', express.static(LEAFLET_DIST));
   app.use(express.static(PUBLIC_DIR, {
     setHeaders: (res, filePath) => {

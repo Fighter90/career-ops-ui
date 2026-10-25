@@ -144,3 +144,5 @@ site/.astro/
 
 # QA run outputs (were ignored by the old unanchored reports/ rule; keep them local)
 qa/reports/
+/public/js/bundle.js.br
+/public/js/bundle.js.gz
