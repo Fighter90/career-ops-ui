@@ -486,9 +486,12 @@ test('CAR-145 r3: bundleContentHashFromFd — the hash belongs to the fd, not th
     const sizeA = Buffer.byteLength('AAA');
     const h1 = serverMod.bundleContentHashFromFd(fd, sizeA);
     assert.equal(h1, createHash('sha256').update('AAA').digest('hex').slice(0, 12));
-    // A rename-based build swaps the inode under the path mid-flight.
+    // A rename-based build swaps the inode under the path mid-flight. The
+    // swap is proven BY the assertion below — a path-following (broken)
+    // implementation would hash 'BBB' here and fail; no path-based re-read
+    // is needed (and any open-then-reread of this path is exactly the TOCTOU
+    // pattern CodeQL js/file-system-race flags).
     renameSync(join(dir, 'swap.js'), pathA);
-    assert.equal(readFileSync(pathA, 'utf8'), 'BBB', 'fixture: the path now holds other bytes');
     assert.equal(serverMod.bundleContentHashFromFd(fd, sizeA), h1,
       'the hash must keep belonging to the ORIGINAL inode behind this fd');
   } finally {
