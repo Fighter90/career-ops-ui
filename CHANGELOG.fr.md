@@ -11,6 +11,21 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.257.0] — 2026-10-25
+
+**Deux correctifs de la flotte d'agents : l'assistant d'aide intégré comprend le devanagari et le tamoul, et la page d'utilisation affiche ce qu'Hermes coûte réellement.**
+
+### Corrigé
+
+- **Récupération de l'assistant d'aide pour hi/ta (CAR-103)** : la classe de mots du tokenizer de mots-clés du docs-assistant était `[\p{L}\p{N}\u30fc]+` — sans marques combinantes. Chaque matra devanagari (ा ै ्…) et chaque signe de voyelle tamoul (ே ை ்…) coupait un mot en fragments ; la règle de longueur écartait les fragments courts (une requête en hindi matchait 0 section) et les mots plus longs étaient décapités en charabia entrant en collision avec des sections sans rapport. La classe garde désormais `\p{M}` ; le chemin des bigrammes CJK est intact. hi «मैं स्कैन कैसे चलाऊं?» et ta «ஸ்கேன் எப்படி இயக்குவது?» retrouvent les bonnes sections dans les bundles livrés.
+- **Coût d'utilisation pour Hermes (CAR-106)** : `normalizeUsage()` réduisait l'utilisation du fournisseur à `{in, out}` et abandonnait silencieusement le `cost` rapporté par la passerelle — `#/usage` affichait $0.0000 pour 9.5 M de tokens Hermes (sa ligne de la table de tarification est 0/0). La forme de l'enregistrement d'utilisation gagne un `cost?` optionnel rétrocompatible ; l'agrégateur privilégie le coût rapporté par le fournisseur pour chaque enregistrement et ne retombe sur l'estimation de la table de tarification qu'en son absence ; les valeurs aberrantes ou négatives sont écartées, jamais fabriquées.
+
+### Notes
+
+- Les deux correctifs viennent de la flotte d'agents avec preuve rouge→vert (3 + 5 nouveaux cas ; 14/14 et 10/10 verts ; voisins 78/78 et 61/61). Les premières PR (#470/#471) portaient une base de worktree périmée qui entrait en conflit avec le squash-merge de la v1.256.0 — remplacées par des cherry-picks propres (#472/#473).
+- Délibérément non fait : pas de re-tarification rétroactive des lignes historiques de `data/llm-usage.jsonl` (elles ne portent pas de champ `cost` ; seuls les nouveaux enregistrements en bénéficient).
+- Tests 5713 (+8 : docs-assistant ×3, usage ×5). Aucune source du scanner touchée (registre 121 = 116 EN + 5 RU · 116 adaptateurs) ; aucune clé i18n.
+
 ## [1.256.0] — 2026-10-25
 
 **Qualité des données du tracker : le rôle n'est jamais enregistré comme l'entreprise, un job board n'est jamais enregistré comme l'employeur, les lignes sans score cessent de remonter en premier — et un endpoint one-shot comble les scores manquants depuis les rapports eux-mêmes.**
