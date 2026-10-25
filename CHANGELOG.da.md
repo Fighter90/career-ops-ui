@@ -9,6 +9,21 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 ---
 
 
+## [1.257.0] — 2026-10-25
+
+**To rettelser fra agentflåden: den indbyggede hjælpeassistent forstår devanagari og tamil, og forbrugssiden viser, hvad Hermes faktisk koster.**
+
+### Rettet
+
+- **Hjælpeassistentens genfinding for hi/ta (CAR-103)**: docs-assistentens nøgleords-tokenizer havde ordklassen `[\p{L}\p{N}\u30fc]+` — ingen kombinationstegn. Hver devanagari-matra (ा ै ्…) og hvert tamilske vokaltegn (ே ை ்…) klippede et ord op i fragmenter; længdereglen kasserede korte fragmenter (en hindi-forespørgsel matchede 0 sektioner), og længere ord blev halshugget til vrøvl, der kolliderede med urelaterede sektioner. Tegnklassen bevarer nu `\p{M}`; CJK-bigram-stien er urørt. hi «मैं स्कैन कैसे चलाऊं?» og ta «ஸ்கேன் எப்படி இயக்குவது?» finder nu de rigtige sektioner i de medfølgende bundles.
+- **Forbrugsomkostning for Hermes (CAR-106)**: `normalizeUsage()` sammenfoldede udbyderens forbrug til `{in, out}` og tabte stiltiende den fra gatewayen rapporterede `cost` — `#/usage` viste $0.0000 over 9.5 M Hermes-tokens (dens række i pristabellen er 0/0). Usage-postens form får et valgfrit, bagudkompatibelt `cost?`-felt; aggregatoren foretrækker den fra udbyderen rapporterede omkostning pr. post og falder først tilbage til pristabelens estimat, når den mangler; vrøvl og negative værdier kasseres, de opdigtes aldrig.
+
+### Noter
+
+- Begge rettelser kom fra agentflåden med rød→grøn evidens (3 + 5 nye cases; 14/14 og 10/10 grønne; nabotests 78/78 og 61/61). De første PR'er (#470/#471) bar en forældet worktree-base, der konflikterede med den squash-mergede v1.256.0 — erstattet af rene cherry-picks (#472/#473).
+- Bevidst ikke gjort: ingen retrosaktiv omprisering af historiske `data/llm-usage.jsonl`-linjer (de bærer intet cost-felt; kun nye poster har gavn af det).
+- Tests 5713 (+8: docs-assistant ×3, usage ×5). Ingen scannerkilder rørt (registry 121 = 116 EN + 5 RU · 116 adaptere); ingen i18n-nøgler.
+
 ## [1.256.0] — 2026-10-25
 
 **Tracker-datakvalitet: rollen bliver aldrig arkiveret som virksomheden, en jobtavle bliver aldrig arkiveret som arbejdsgiveren, uscorede rækker dukker ikke længere op først — og et one-shot-endpoint udfylder manglende scores fra rapporterne selv.**

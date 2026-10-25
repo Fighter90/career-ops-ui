@@ -6,6 +6,21 @@ Bản dịch: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.257.0] — 2026-10-25
+
+**Hai-bản-sửa-của-đội-agent: trợ-lý-docs trong-ứng giờ hiểu chữ-Devanagari và-tiếng-Tamil, và-trang-usage cho-thấy Hermes thực-tế tốn-bao-nhiêu.**
+
+### Đã sửa
+
+- **Truy-hồi-của-trợ-lý-docs cho hi/ta (CAR-103)**: lớp-ký-tự-từ của-bộ-tokenizer-từ-khóa docs-assistant là `[\p{L}\p{N}\u30fc]+` — không-có-dấu-kết-hợp. Mỗi-matra-Devanagari (ा ै ्…) và-mỗi-dấu-nguyên-âm-Tamil (ே ை ்…) cắt-một-từ thành-các-mảnh; quy-tắc-độ-dài bỏ-các-mảnh-ngắn (một-truy-vấn-tiếng-Hindi khớp 0 mục) và-các-từ-dài-hơn bị-chặt-đầu thành-rác va-chạm với-các-mục-không-liên-quan. Lớp-ký-tự giờ giữ `\p{M}`; đường-bigram-CJK không-bị-động-đến. Truy-vấn-hi «मैं स्कैन कैसे चलाऊं?» và-ta «ஸ்கேன் எப்படி இயக்குவது?» truy-hồi đúng-các-mục từ-các-bundle-đóng-gói-sẵn.
+- **Chi-phí-usage của-Hermes (CAR-106)**: `normalizeUsage()` gộp-usage-của-nhà-cung-cấp xuống `{in, out}` và-bỏ-lặng-lẽ trường-`cost` do-gateway-báo — `#/usage` hiện $0.0000 trên 9.5 M token Hermes (hàng-bảng-giá của-nó là 0/0). Hình-thạng-bản-ghi-usage có-thêm trường-tùy-chọn `cost?` tương-thích-ngược; bộ-tổng-hợp ưu-tiên chi-phí-do-nhà-cung-cấp-báo của-từng-bản-ghi và-chỉ-hạ-về-ước-tính-từ-bảng-giá khi-trường-vắng-mặt; các-giá-trị-rác/âm bị-bỏ, không-bao-giờ-bị-bịa.
+
+### Ghi chú
+
+- Cả-hai-bản-sửa đến-từ-đội-agent kèm-bằng-chứng-đỏ→xanh (3 + 5 case mới; 14/14 và-10/10 xanh; các-case-lân-cận 78/78 và-61/61). Các-PR-đầu (#470/#471) mang-một-base-worktree-lỗi-thời xung-đột với v1.256.0-vừa-được-squash-merge — bị-thay-thế bằng-các-cherry-pick-sạch (#472/#473).
+- Cố-ý-không-làm: không-tính-lại-giá-hồi-cố cho-các-dòng-`data/llm-usage.jsonl` lịch-sử (chúng-không-mang-trường-chi-phí; chỉ-các-bản-ghi-mới được-hưởng).
+- Kiểm-thử 5713 (+8: docs-assistant ×3, usage ×5). Không-chạm-nguồn-quét nào (registry 121 = 116 EN + 5 RU · 116 adapter); không-có-khóa-i18n nào.
+
 ## [1.256.0] — 2026-10-25
 
 **Chất-lượng-dữ-liệu-tracker: vị-trí không-bao-giờ-được-ghi thành-công-ty, một-bảng-việc-làm không-bao-giờ-được-ghi thành-nhà-tuyển-dụng, các-dòng-không-có-điểm ngừng-nổi-lên-đầu — và-một-endpoint-một-lần-chạy backfill các-điểm-còn-thiếu từ-chính-các-báo-cáo.**

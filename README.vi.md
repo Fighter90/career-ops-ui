@@ -12,14 +12,14 @@ _Giao diện không chính thức — không liên kết với career-ops / sant
 [![playwright](https://img.shields.io/badge/playwright-143%2F143-brightgreen)](#kiểm-thử)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#yêu-cầu)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.255.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.255.2)
+[![release](https://img.shields.io/badge/release-v1.257.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.257.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Bản phát hành mới nhất — v1.256.0** — **Chất-lượng-dữ-liệu-tracker: vị-trí không-bao-giờ-được-ghi thành-công-ty (`Senior Frontend Engineer - Grafana Labs` bị-parse-ngược — 13 dòng), một-bảng-việc-làm không-bao-giờ-được-ghi thành-nhà-tuyển-dụng (các-dòng-hh.ru bị-ghi là-"hh" — 120 dòng; các-mẫu-suy-diễn-chữ-Cyrillic đã-chết-lặng-lẽ từ-v1.248.4 — `\b`-ASCII), các-dòng-không-có-điểm ngừng-nổi-lên-đầu trong-sắp-xếp-tracker, và-một-endpoint-một-lần-chạy mới backfill các-điểm-còn-thiếu từ-chính-các-báo-cáo.**
+> **🆕 Bản phát hành mới nhất — v1.257.0** — **Hai-bản-sửa-của-đội-agent: trợ-lý-docs trong-ứng giờ hiểu chữ-Devanagari và-tiếng-Tamil (bộ-tokenizer đã-đánh-rơi các-dấu-kết-hợp — một-truy-vấn-tiếng-Hindi khớp 0 mục, Tamil khớp-các-mảnh), và-trang-usage cho-thấy Hermes thực-tế tốn-bao-nhiêu (chi-phí-do-gateway-báo đã-bị-bỏ-lặng-lẽ — $0.0000 trên 9.5 M token).**
 >
-> **Bản trước — v1.255.2** — **Ba-bản-sửa-thấy-được từ-rà-soát-trực-tiếp và-một-báo-cáo-sập-trên-máy-chủ-thật: sập-khi-render-`#/scan` (120-lỗ-mảng từ-việc-tái-sinh-cổng-đếm làm-bộ-phân-loại-công-ty ném-lỗi ở-mọi-lượt-render), kiểm-tra-ngôn-ngữ-tiếng-Việt-mù (QA-trực-tiếp đếm-stop-word-tiếng-Anh cho-vi — giờ có-bảng-riêng của-mình), và-việc-mất-khối-tóm-tắt-zh-TW (lời-nhắc-kết giờ ép `SCORE_SUMMARY` bắt-buộc, chứ-không-chỉ-phiên-dịch).**
+> **Bản trước — v1.256.0** — **Chất-lượng-dữ-liệu-tracker: vị-trí không-bao-giờ-được-ghi thành-công-ty (`Senior Frontend Engineer - Grafana Labs` bị-parse-ngược — 13 dòng), một-bảng-việc-làm không-bao-giờ-được-ghi thành-nhà-tuyển-dụng (các-dòng-hh.ru bị-ghi là-"hh" — 120 dòng; các-mẫu-suy-diễn-chữ-Cyrillic đã-chết-lặng-lẽ từ-v1.248.4 — `\b`-ASCII), các-dòng-không-có-điểm ngừng-nổi-lên-đầu trong-sắp-xếp-tracker, và-một-endpoint-một-lần-chạy mới backfill các-điểm-còn-thiếu từ-chính-các-báo-cáo.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

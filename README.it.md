@@ -12,14 +12,14 @@ _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-143%2F143-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.255.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.255.2)
+[![release](https://img.shields.io/badge/release-v1.257.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.257.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Ultima release — v1.256.0** — **Qualità dei dati del tracker: il ruolo non viene mai registrato come azienda (`Senior Frontend Engineer - Grafana Labs` analizzato al contrario — 13 righe), un job board non viene mai registrato come datore di lavoro (righe hh.ru registrate come «hh» — 120 righe; i pattern di inferenza cirillici erano silenziosamente morti dalla v1.248.4 — `\b` ASCII), le righe senza punteggio smettono di emergere per prime nell'ordinamento del tracker, e un nuovo endpoint one-shot recupera i punteggi mancanti direttamente dai report stessi.**
+> **🆕 Ultima release — v1.257.0** — **Due fix della flotta di agenti: l'assistente della guida in-app ora capisce devanagari e tamil (il tokenizer scartava i segni combinanti — una query in hindi combaciava con 0 sezioni, il tamil solo con frammenti), e la pagina usage mostra quanto costa davvero Hermes (il costo riportato dal gateway veniva scartato silenziosamente — $0.0000 su 9.5 M di token).**
 >
-> **Precedente — v1.255.2** — **Tre fix: il crash del render di `#/scan` (120 buchi nell'array dalla rigenerazione dei count-gate facevano lanciare un'eccezione al classificatore di aziende a ogni render), il controllo linguistico cieco per il vietnamita (la QA live contava le stop-word inglesi per il vi — ora ha la sua tabella) e la perdita del blocco summary in zh-TW (il promemoria di chiusura ora rende `SCORE_SUMMARY` obbligatorio, non semplicemente non tradotto).**
+> **Precedente — v1.256.0** — **Qualità dei dati del tracker: il ruolo non viene mai registrato come azienda (`Senior Frontend Engineer - Grafana Labs` analizzato al contrario — 13 righe), un job board non viene mai registrato come datore di lavoro (righe hh.ru registrate come «hh» — 120 righe; i pattern di inferenza cirillici erano silenziosamente morti dalla v1.248.4 — `\b` ASCII), le righe senza punteggio smettono di emergere per prime nell'ordinamento del tracker, e un nuovo endpoint one-shot recupera i punteggi mancanti direttamente dai report stessi.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

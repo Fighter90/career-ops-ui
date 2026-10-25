@@ -15,14 +15,14 @@ _Неофіційний інтерфейс — не пов'язаний із car
 [![playwright](https://img.shields.io/badge/playwright-143%2F143-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.255.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.255.2)
+[![release](https://img.shields.io/badge/release-v1.257.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.257.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Останній реліз — v1.256.0** — **Якість даних трекера: роль більше не записується як компанія (`Senior Frontend Engineer - Grafana Labs` парсився навпаки — 13 рядків), борд вакансій більше не записується як роботодавець (рядки hh.ru записувалися як «hh» — 120 рядків; кириличні патерни висновування мовчки мертві з v1.248.4 — ASCII `\b`), рядки без оцінки перестають спливати першими в сортуванні трекера, а новий одноразовий ендпоінт дозаповнює відсутні оцінки з самих звітів.**
+> **🆕 Останній реліз — v1.257.0** — **Два виправлення агентного флоту: вбудований помічник довідки тепер розуміє деванагарі та тамільську (токенізатор втрачав комбіновані знаки — запит хінді знаходив 0 секцій, тамільська — лише фрагменти), а сторінка `#/usage` показує фактичну вартість Hermes (передану шлюзом вартість мовчки втрачали — $0.0000 за 9.5 M токенів).**
 >
-> **Попередній реліз — v1.255.2** — **Три виправлення: збій рендеру `#/scan` (120 дірок у масиві від перегенерації count-гейтів змушували класифікатор компаній падати з винятком на кожному рендері), сліпа мовна перевірка в'єтнамської (live QA рахувала для vi англійські стоп-слова — тепер у неї власна таблиця) і втрата блоку summary zh-TW (закривний reminder тепер робить `SCORE_SUMMARY` обов'язковим, а не лише неперекладним).**
+> **Попередній реліз — v1.256.0** — **Якість даних трекера: роль більше не записується як компанія (`Senior Frontend Engineer - Grafana Labs` парсився навпаки — 13 рядків), борд вакансій більше не записується як роботодавець (рядки hh.ru записувалися як «hh» — 120 рядків; кириличні патерни висновування мовчки мертві з v1.248.4 — ASCII `\b`), рядки без оцінки перестають спливати першими в сортуванні трекера, а новий одноразовий ендпоінт дозаповнює відсутні оцінки з самих звітів.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

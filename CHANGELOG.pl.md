@@ -9,6 +9,21 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ---
 
 
+## [1.257.0] — 2026-10-25
+
+**Dwie poprawki od floty agentów: asystent pomocy w aplikacji rozumie dewanagari i tamilski, a strona użycia pokazuje, ile Hermes faktycznie kosztuje.**
+
+### Naprawiono
+
+- **Wyszukiwanie w asystencie pomocy dla hi/ta (CAR-103)**: klasa znaków słowa w tokenizatorze słów kluczowych docs-assistant była zdefiniowana jako `[\p{L}\p{N}\u30fc]+` — bez znaków łączących (combining marks). Każda matra dewanagari (ा ै ्…) i każdy tamilski znak samogłoskowy (ே ை ்…) rozbijały słowo na fragmenty; reguła długości wyrzucała krótkie fragmenty (zapytanie po hindi dopasowywało 0 sekcji), a dłuższe słowa dekapitowały się w śmieci kolidujące z niepowiązanymi sekcjami. Klasa zachowuje teraz `\p{M}`; ścieżka bigramów CJK pozostaje nietknięta. hi „मैं स्कैन कैसे चलाऊं?” i ta „ஸ்கேன் எப்படி இயக்குவது?” pobierają właściwe sekcje z dostarczonych pakietów.
+- **Koszt użycia u Hermesa (CAR-106)**: `normalizeUsage()` spłaszczało użycie dostawcy do `{in, out}` i po cichu gubiło raportowany przez bramkę `cost` — `#/usage` pokazywało $0.0000 przy 9.5 M tokenów Hermesa (jego wiersz w tabeli cen to 0/0). Kształt rekordu użycia zyskuje opcjonalne, wstecznie kompatybilne pole `cost?`; agregator preferuje na rekord koszt raportowany przez dostawcę i sięga po szacunek z tabeli cen tylko wtedy, gdy go brakuje; śmieciowe/ujemne wartości są odrzucane, nigdy nie są fabrykowane.
+
+### Uwagi
+
+- Obie poprawki pochodzą od floty agentów z dowodami czerwony→zielony (3 + 5 nowych przypadków; 14/14 i 10/10 zielonych; sąsiednie zestawy 78/78 i 61/61). Pierwsze PR-y (#470/#471) miały przestarzałą bazę worktree, która kolidowała ze squash-merged v1.256.0 — zastąpione czystymi cherry-pickami (#472/#473).
+- Świadomie nie zrobiono: bez wstecznej ponownej wyceny historycznych linii `data/llm-usage.jsonl` (nie niosą pola `cost`; korzystają tylko nowe rekordy).
+- Testy 5713 (+8: docs-assistant ×3, usage ×5). Żadne źródło skanera nietknięte (rejestr 121 = 116 EN + 5 RU · 116 adapterów); brak kluczy i18n.
+
 ## [1.256.0] — 2026-10-25
 
 **Jakość danych trackera: stanowisko nigdy nie ląduje w kolumnie firmy, tablica ofert nigdy nie ląduje w kolumnie pracodawcy, wiersze bez oceny przestają wysuwać się na czoło — a endpoint jednorazowego użycia uzupełnia brakujące oceny z samych raportów.**

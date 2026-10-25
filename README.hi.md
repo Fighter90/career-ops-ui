@@ -14,14 +14,14 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 [![playwright](https://img.shields.io/badge/playwright-143%2F143-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.255.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.255.2)
+[![release](https://img.shields.io/badge/release-v1.257.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.257.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.256.0** — **ट्रैकर डेटा गुणवत्ता: रोल कभी कंपनी के रूप में दर्ज नहीं होता (`Senior Frontend Engineer - Grafana Labs` उल्टा पार्स होता था — 13 पंक्तियाँ), जॉब बोर्ड कभी एम्प्लॉयर के रूप में दर्ज नहीं होता (hh.ru की पंक्तियाँ «hh» के रूप में दर्ज — 120 पंक्तियाँ; सिरिलिक इन्फ़रेंस पैटर्न v1.248.4 से चुपचाप निष्क्रिय थे — ASCII `\b`), ट्रैकर सॉर्ट में बिना स्कोर वाली पंक्तियाँ सबसे पहले सामने आना बंद कर देती हैं, और नया वन-शॉट एंडपॉइंट रिपोर्टों से ही गुम स्कोर बैकफ़िल कर देता है।**
+> **🆕 नवीनतम रिलीज़ — v1.257.0** — **दो एजेंट-फ़्लीट फ़िक्स: इन-ऐप हेल्प असिस्टेंट अब देवनागरी और तमिल समझता है (टोकनाइज़र संयुक्त चिह्न छोड़ देता था — हिन्दी क्वेरी 0 सेक्शन से मेल खाती थी, तमिल टुकड़ों पर), और यूसेज पेज दिखाता है कि Hermes की असल लागत क्या है (गेटवे-रिपोर्टेड लागत चुपचाप छोड़ दी जाती थी — 9.5 M टोकन पर $0.0000)।**
 >
-> **पिछला — v1.255.2** — **तीन फ़िक्स: `#/scan` रेंडर क्रैश (काउंट-गेट रीजेनरेशन से आए 120 ऐरे होल कंपनी क्लासिफ़ायर को हर रेंडर पर थ्रो करवाते थे), अंधी वियतनामी भाषा-जाँच (लाइव QA vi के लिए अंग्रेज़ी स्टॉप-वर्ड गिनता था — अब उसकी अपनी टेबल है), और zh-TW समरी-ब्लॉक की हानि (क्लोज़िंग रिमाइंडर अब `SCORE_SUMMARY` को अनिवार्य बनाता है, केवल अनूदित-न-होने से आगे)।**
+> **पिछला — v1.256.0** — **ट्रैकर डेटा गुणवत्ता: रोल कभी कंपनी के रूप में दर्ज नहीं होता (`Senior Frontend Engineer - Grafana Labs` उल्टा पार्स होता था — 13 पंक्तियाँ), जॉब बोर्ड कभी एम्प्लॉयर के रूप में दर्ज नहीं होता (hh.ru की पंक्तियाँ «hh» के रूप में दर्ज — 120 पंक्तियाँ; सिरिलिक इन्फ़रेंस पैटर्न v1.248.4 से चुपचाप निष्क्रिय थे — ASCII `\b`), ट्रैकर सॉर्ट में बिना स्कोर वाली पंक्तियाँ सबसे पहले सामने आना बंद कर देती हैं, और नया वन-शॉट एंडपॉइंट रिपोर्टों से ही गुम स्कोर बैकफ़िल कर देता है।**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

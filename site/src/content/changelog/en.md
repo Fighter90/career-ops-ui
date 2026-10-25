@@ -7,6 +7,21 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 ---
 
 
+## [1.257.0] — 2026-10-25
+
+**Two agent-fleet fixes: the in-app help assistant understands Devanagari and Tamil, and the usage page shows what Hermes actually costs.**
+
+### Fixed
+
+- **Help assistant retrieval for hi/ta (CAR-103)**: the docs-assistant keyword tokenizer's word class was `[\p{L}\p{N}\u30fc]+` — no combining marks. Every Devanagari matra (ा ै ्…) and Tamil vowel sign (ே ை ்…) cut a word into fragments; the length rule dropped short fragments (a Hindi query matched 0 sections) and longer words decapitated into garbage that collided with unrelated sections. The class keeps `\p{M}` now; the CJK bigram path is untouched. hi «मैं स्कैन कैसे चलाऊं?» and ta «ஸ்கேன் எப்படி இயக்குவது?» retrieve the right sections from the shipped bundles.
+- **Usage cost for Hermes (CAR-106)**: `normalizeUsage()` collapsed provider usage to `{in, out}` and silently dropped the gateway-reported `cost` — `#/usage` showed $0.0000 over 9.5 M Hermes tokens (its pricing-table row is 0/0). The usage record shape gains an optional backward-compatible `cost?`; the aggregator prefers the provider-reported cost per record and falls back to the pricing-table estimate only when absent; garbage/negative values are dropped, never fabricated.
+
+### Notes
+
+- Both fixes came from the agent fleet with red→green evidence (3 + 5 new cases; 14/14 and 10/10 green; neighbors 78/78 and 61/61). The first PRs (#470/#471) carried a stale worktree base that conflicted with the squash-merged v1.256.0 — superseded by clean cherry-picks (#472/#473).
+- Deliberately not done: no retroactive re-pricing of historical `data/llm-usage.jsonl` lines (they carry no cost field; only new records benefit).
+- Tests 5713 (+8: docs-assistant ×3, usage ×5). No scanner sources touched (registry 121 = 116 EN + 5 RU · 116 adapters); no i18n keys.
+
 ## [1.256.0] — 2026-10-25
 
 **Tracker data quality: the role is never filed as the company, a job board is never filed as the employer, unscored rows stop surfacing first — and a one-shot endpoint backfills missing scores from the reports themselves.**

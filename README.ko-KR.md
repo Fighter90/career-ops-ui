@@ -12,14 +12,14 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 [![playwright](https://img.shields.io/badge/playwright-143%2F143-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.255.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.255.2)
+[![release](https://img.shields.io/badge/release-v1.257.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.257.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.256.0** — **트래커 데이터 품질: 역할이 회사로 기록되는 일이 없어지고(`Senior Frontend Engineer - Grafana Labs`가 거꾸로 파싱됨 — 13행), 채용 보드가 고용주로 기록되는 일도 없어지며(hh.ru 행이 «hh»로 기록됨 — 120행; 키릴 추론 패턴들은 v1.248.4 이후 조용히 죽어 있었습니다 — ASCII `\b`), 점수 없는 행은 트래커 정렬에서 더 이상 맨 앞에 뜨지 않고, 새 일회성 엔드포인트가 리포트 자체에서 누락된 점수를 백필합니다.**
+> **🆕 최신 릴리스 — v1.257.0** — **에이전트 플릿 수정 두 건: 인앱 도움말 어시스턴트가 이제 데바나가리와 타밀 문자를 이해합니다(토크나이저가 결합 기호를 버렸습니다 — 힌디어 질의는 0개 섹션에 매칭, 타밀은 조각에 매칭), 그리고 사용량 페이지가 Hermes의 실제 비용을 보여줍니다(게이트웨이가 보고한 비용이 조용히 버려지고 있었습니다 — 9.5 M 토큰 동안 $0.0000).**
 >
-> **이전 버전 — v1.255.2** — **세 가지 수정: `#/scan` 렌더 크래시(카운트-게이트 재생성이 남긴 120개 배열 구멍이 모든 렌더에서 회사 분류기를 예외로 던짐), 눈먼 베트남어 언어 검사(라이브 QA는 vi에 대해 영어 불용어를 세고 있었습니다 — 이제 자체 테이블 사용), 그리고 zh-TW 요약 블록 유실(마무리 리마인더가 이제 `SCORE_SUMMARY`를 단순 번역 금지를 넘어 필수로 요구).**
+> **이전 버전 — v1.256.0** — **트래커 데이터 품질: 역할이 회사로 기록되는 일이 없어지고(`Senior Frontend Engineer - Grafana Labs`가 거꾸로 파싱됨 — 13행), 채용 보드가 고용주로 기록되는 일도 없어지며(hh.ru 행이 «hh»로 기록됨 — 120행; 키릴 추론 패턴들은 v1.248.4 이후 조용히 죽어 있었습니다 — ASCII `\b`), 점수 없는 행은 트래커 정렬에서 더 이상 맨 앞에 뜨지 않고, 새 일회성 엔드포인트가 리포트 자체에서 누락된 점수를 백필합니다.**
 
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>

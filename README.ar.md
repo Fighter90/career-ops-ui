@@ -15,14 +15,14 @@ _واجهة غير رسمية — لا علاقة لها بـ career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-143%2F143-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.255.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.255.2)
+[![release](https://img.shields.io/badge/release-v1.257.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.257.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 أحدث إصدار — v1.256.0** — **جودة بيانات المتتبّع: المسمّى الوظيفي لا يُسجَّل أبدًا بوصفه الشركة (`Senior Frontend Engineer - Grafana Labs` حُلَّل بالاتجاه المعاكس — 13 صفًا)، ولوحة الوظائف لا تُسجَّل أبدًا بوصفها جهة التوظيف (صفوف hh.ru سُجِّلت بوصفها «hh» — 120 صفًا؛ أنماط الاستدلال السيريلية كانت ميتة صامتةً منذ v1.248.4 — `\b` ASCII)، والصفوف بلا درجة تتوقف عن الظهور أولًا في ترتيب المتتبّع، ونقطة نهاية جديدة تُنفَّذ مرة واحدة تستكمل الدرجات الناقصة من التقارير نفسها.**
+> **🆕 أحدث إصدار — v1.257.0** — **إصلاحان من أسطول الوكلاء: مساعد المساعدة داخل التطبيق أصبح يفهم الديفاناغاري والتابية (كان محلّل الكلمات المفتاحية يُسقط علامات الدمج — استعلام هندي كان يطابق 0 أقسام، والتابية كانت تطابق شظايا)، وصفحة الاستخدام تُظهر ما يكلّفه Hermes فعلًا (كانت التكلفة التي يبلّغ عنها البوابة تُسقَط صامتةً — $0.0000 عبر 9.5 M من رموز Hermes).**
 >
-> **السابق — v1.255.2** — **ثلاثة إصلاحات: انهيار عرض `#/scan` (120 ثغرة مصفوفة من توليد بوابات العدّ جعلت مُصنِّف الشركة يرمي استثناءً عند كل عرض)، والفحص اللغوي الأعمى للفيتنامية (حسب فحص الجودة الحي كلمات توقف إنجليزية للـ vi — لها جدولها الخاص الآن)، وضياع كتلة الملخص في zh-TW (التذكير الختامي يجعل `SCORE_SUMMARY` إلزامية الآن، لا مجرد غير مترجمة).**
+> **السابق — v1.256.0** — **جودة بيانات المتتبّع: المسمّى الوظيفي لا يُسجَّل أبدًا بوصفه الشركة (`Senior Frontend Engineer - Grafana Labs` حُلَّل بالاتجاه المعاكس — 13 صفًا)، ولوحة الوظائف لا تُسجَّل أبدًا بوصفها جهة التوظيف (صفوف hh.ru سُجِّلت بوصفها «hh» — 120 صفًا؛ أنماط الاستدلال السيريلية كانت ميتة صامتةً منذ v1.248.4 — `\b` ASCII)، والصفوف بلا درجة تتوقف عن الظهور أولًا في ترتيب المتتبّع، ونقطة نهاية جديدة تُنفَّذ مرة واحدة تستكمل الدرجات الناقصة من التقارير نفسها.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

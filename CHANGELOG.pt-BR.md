@@ -9,6 +9,21 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 ---
 
 
+## [1.257.0] — 2026-10-25
+
+**Duas correções da frota de agentes: o assistente de ajuda do app entende devanágari e tâmil, e a página de uso mostra o que o Hermes realmente custa.**
+
+### Corrigido
+
+- **Recuperação do assistente de ajuda para hi/ta (CAR-103)**: a classe de palavras do tokenizador de palavras-chave do docs-assistant era `[\p{L}\p{N}\u30fc]+` — sem marcas combinantes. Cada matra de devanágari (ा ै ्…) e cada sinal vocálico tâmil (ே ை ்…) cortava uma palavra em fragmentos; a regra de comprimento descartava os fragmentos curtos (uma consulta em hindi casava com 0 seções) e as palavras mais longas eram decapitadas em lixo que colidia com seções não relacionadas. A classe agora mantém `\p{M}`; o caminho de bigramas CJK fica intocado. hi «मैं स्कैन कैसे चलाऊं?» e ta «ஸ்கேன் எப்படி இயக்குவது?» recuperam as seções certas dos bundles distribuídos.
+- **Custo de uso do Hermes (CAR-106)**: o `normalizeUsage()` colapsava o uso do provedor em `{in, out}` e descartava silenciosamente o `cost` reportado pelo gateway — `#/usage` mostrava $0.0000 em 9.5 M de tokens do Hermes (a linha dele na tabela de preços é 0/0). O formato do registro de uso ganha um `cost?` opcional, retrocompatível; o agregador prefere o custo reportado pelo provedor em cada registro e só recorre à estimativa da tabela de preços quando ele está ausente; valores de lixo/negativos são descartados, nunca fabricados.
+
+### Notas
+
+- Ambas as correções vieram da frota de agentes com evidência vermelho→verde (3 + 5 casos novos; 14/14 e 10/10 verdes; vizinhos 78/78 e 61/61). Os primeiros PRs (#470/#471) carregavam uma base de worktree desatualizada que conflitava com o v1.256.0 mesclado via squash — foram substituídos por cherry-picks limpos (#472/#473).
+- Deliberadamente não feito: nenhuma re-precificação retroativa das linhas históricas de `data/llm-usage.jsonl` (elas não carregam campo de custo; só os registros novos se beneficiam).
+- Testes 5713 (+8: docs-assistant ×3, usage ×5). Nenhuma fonte do scanner tocada (registro 121 = 116 EN + 5 RU · 116 adaptadores); nenhuma chave de i18n.
+
 ## [1.256.0] — 2026-10-25
 
 **Qualidade de dados do tracker: a função nunca é registrada como a empresa, um quadro de vagas nunca é registrado como o empregador, as linhas sem pontuação param de aparecer primeiro — e um endpoint de execução única preenche as pontuações faltantes a partir dos próprios relatórios.**

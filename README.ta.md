@@ -12,14 +12,14 @@ _அதிகாரப்பூர்வமற்ற இடைமுகம் �
 [![playwright](https://img.shields.io/badge/playwright-143%2F143-brightgreen)](#சோதனைகள்)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#தேவைகள்)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.255.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.255.2)
+[![release](https://img.shields.io/badge/release-v1.257.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.257.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 சமீபத்திய வெளியீடு — v1.256.0** — **ட்ராக்கர் தரவுத் தரம்: பாத்திரம் இனி நிறுவனமாகப் பதிவு செய்யப்படாது (`Senior Frontend Engineer - Grafana Labs` தலைகீழாகப் பார்ச் செய்யப்பட்டது — 13 வரிசைகள்), வேலை போர்டு இனி முதலாளியாகப் பதிவு செய்யப்படாது (hh.ru வரிசைகள் «hh» ஆகப் பதிவு — 120 வரிசைகள்; சிரிலிக் ஊக வடிவங்கள் v1.248.4 முதல் மௌனமாக இறந்திருந்தன — ASCII `\b`), மதிப்பெண்-இல்லாத வரிசைகள் ட்ராக்கர் வரிசைப்படுத்தலில் முதலில் மேலெழும்புவதை நிறுத்துகின்றன, மேலும் புதிய ஒரு-முறை endpoint விடுபட்ட மதிப்பெண்களை அறிக்கைகளிலிருந்தே நிரப்புகிறது.**
+> **🆕 சமீபத்திய வெளியீடு — v1.257.0** — **ஏஜெண்ட் கூட்டத்தின் இரண்டு திருத்தங்கள்: பயன்பாட்டின் உதவி அசிஸ்டண்ட் இப்போது தேவநாகரி மற்றும் தமிழைப் புரிகிறது (tokenizer இணைப்புக் குறிகளைக் கைவிட்டது — ஒரு ஹிந்தி வினாவுக்கு 0 பிரிவுகள், தமிழுக்குத் துண்டுகளே பொருந்தின), மேலும் usage பக்கம் Hermes உண்மையில் எவ்வளவு செலவாகிறது என்பதைக் காட்டுகிறது (கேட்வே அறிவித்த செலவு மௌனமாகக் கைவிடப்பட்டது — 9.5 M tokens மீது $0.0000).**
 >
-> **முந்தைய வெளியீடு — v1.255.2** — **மூன்று திருத்தங்கள்: `#/scan` ரெண்டர் செயலிழப்பு (எண்ணிக்கை-வாயில் மறுஉருவாக்கத்திலிருந்து வந்த 120 அணிவரிசை இடைவெளிகள் நிறுவன வகைப்படுத்தியை ஒவ்வொரு ரெண்டரிலும் எறியச் செய்தன), குருட்டு வியட்நாமிஸ் மொழி-சோதனை (நேரடி QA vi-க்கு ஆங்கில நிறுத்தச்-சொற்களை எண்ணியது — இப்போது அதற்கு அதன் சொந்த அட்டவணை உள்ளது), மற்றும் zh-TW சுருக்க-பிளாக் இழப்பு (முடிவுறுத்தல் நினைவூட்டல் இப்போது `SCORE_SUMMARY`-ஐ கட்டாயமாக்குகிறது, வெறும் மொழிபெயர்க்கப்படாமல்-இருப்பது மட்டுமல்ல).**
+> **முந்தைய வெளியீடு — v1.256.0** — **ட்ராக்கர் தரவுத் தரம்: பாத்திரம் இனி நிறுவனமாகப் பதிவு செய்யப்படாது (`Senior Frontend Engineer - Grafana Labs` தலைகீழாகப் பார்ச் செய்யப்பட்டது — 13 வரிசைகள்), வேலை போர்டு இனி முதலாளியாகப் பதிவு செய்யப்படாது (hh.ru வரிசைகள் «hh» ஆகப் பதிவு — 120 வரிசைகள்; சிரிலிக் ஊக வடிவங்கள் v1.248.4 முதல் மௌனமாக இறந்திருந்தன — ASCII `\b`), மதிப்பெண்-இல்லாத வரிசைகள் ட்ராக்கர் வரிசைப்படுத்தலில் முதலில் மேலெழும்புவதை நிறுத்துகின்றன, மேலும் புதிய ஒரு-முறை endpoint விடுபட்ட மதிப்பெண்களை அறிக்கைகளிலிருந்தே நிரப்புகிறது.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
