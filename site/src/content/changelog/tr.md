@@ -2,6 +2,29 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.259.0] — 2026-10-25
+
+**Ajan filosundan ikinci tren, altı düzeltme: rapor tarihleri sunucu tarafında sabitleniyor, harita coğrafi kodlayıcısı önbelleğe alıp RU şehirlerini okuyor, yardım ×18 yerelleştirilmiş düğme etiketlerini kullandırıyor, arayüz cümleleri dilleri karıştırmayı bırakıyor, maaş karşılaştırmaları sunucu tarafında hesaplanıyor — ve JS paketi önceden sıkıştırılmış dağıtılıyor (soğuk yükleme 3.1 MB → 598 KB).**
+
+### Düzeltildi
+
+- **Uydurulmuş rapor tarihleri (CAR-101)**: değerlendirme prompt'u bugünün tarihini artık sunucu tarafında sabitliyor («**Date:** alanı TAM OLARAK <date> OLMALIDIR — harfiyen kopyala; asla uydurma») ve `fixReportDate`, kaymış bir tarihi her kabul noktasında (Anthropic dalı, Gemini alt-süreci, OpenAI-uyumlu kuyruk, /api/deep, auto-pipeline) bugüne yeniden yazıyor — bir uyarı + etkinlik kaydıyla; bu bir düzeltmedir, asla bir ret değil. Üretimdeki 349/789 rapor uydurulmuş tarihler taşıyordu; yenileri taşıyamıyor.
+- **Harita coğrafi kodlaması (CAR-105)**: hh.ru/Habr satırlarının Kiril şehir dizgeleri artık coğrafi kodlayıcıya ulaşıyor; kalıcı ve sınırlı bir önbellek (`data/geocode-cache.json`, withFileLock), çözümlenmiş bir şehrin sağlayıcıya asla ikinci kez gitmemesini sağlıyor; coğrafi kodlama çağrıları istek başına bütçeleniyor, böylece harita 13.9 sn bloke olmak yerine aşamalı olarak doluyor.
+- **Karma-dilli arayüz (CAR-108)**: 19 sözlükten 17'sinde 23 anahtarlı sızıntı düzeltildi (85 değer) — «все matching», «только remote», «Открыть Scan», «Evaluated → Applied…» hunisi ve daha fazlası, her yerel ayarın kendi ürün sözcük dağarcığını yeniden kullanan eksiksiz yerelleştirilmiş cümlelere dönüştü. `i18n-no-latin-leaks`, parça tablosu + huni sondasıyla genişletildi (kırmızı→yeşil).
+- **Para birimi karar çevrilmesi (CAR-109)**: maaş karşılaştırması `comp-compare.mjs` içinde sunucu tarafında hesaplanıyor ve kanonik biçimde gömülüyor (`Candidate minimum: … per YEAR (raw: …)` karşısında `JD offer: …`); aylık ×12, k/к/тыс/萬 ve ondalık-virgül biçimleri karşılaştırmadan önce normalize ediliyor; belirsiz bir dönüştürme tek başına kararı asla çeviremez (zh-TW «€80–100k ниже минимума» vakası öldü). Model asla çarpma yapmıyor.
+- **Yardım ×18 düğme etiketleri (CAR-107)**: yerelleştirilmiş yardım paketleri, arayüzün artık göstermediği İngilizce etiketleri kullandırıyordu («⚡ Run live», «Save», «Scan now») — görünüm kaynaklarından eşlenen 18 yerel ayarda 263 değişiklik; docs-assistant düzeltmeyi devralıyor.
+
+### Eklendi
+
+- **Ön-sıkıştırılmış paket + önbelleklenebilir soğuk yükleme (CAR-104)**: `make-bundle.mjs`, sürüm anında `bundle.js.br` (brotli q11) + `.gz` üretiyor; paket-kapsamlı bir ara katman `Vary: Accept-Encoding`, `public, max-age=300, must-revalidate` + ETag/304 ile br > gz pazarlığı yapıyor; tazelik-korumalı (eş-dosyalar asla kimlik paketinden daha eski sürüm sunmaz), doğrudan artefakt çekimleri 404 veriyor, CSP bayt-aynı. Soğuk yükleme: 3.1 MB → ~0.6 MB tel (−%80); 5 dk içindeki tekrar ziyaretler ≈0 bayt aktarıyor.
+
+### Notlar
+
+- Altı düzeltmenin tamamı kırmızı→yeşil kanıtla (kendi süitlerinde 13 + 28 + 1 + 30 + 7 yeni vaka) ajan filosundan geldi ve inceleme turlarıyla cilalandı (CodeQL #579/#580/#584 kodda düzeltildi — stub URL'ler `new URL().host` ile ayrıştırılıyor, ölü bir prompt dizgesi düşüldü).
+- v1.258.0 puan geri-doldurması sayıları artık CAR-129'da kayıtlı (`updated: 22`, `reportScoreless: 159`).
+- Bilinçli olarak yapılmayanlar: 349 tarihsel rapor için geriye dönük tarih düzeltmesi yok (bir geri-doldurma sahibin onaylayacağı bir operasyon olurdu), harita küme görünümü yok (CAR-125 bu coğrafi kodlama düzeltmesinin arkasında kuyrukta kalıyor).
+- Test tabanı: 5823 (+74). Hiçbir tarayıcı kaynağına dokunulmadı (kayıt defteri 121 = 116 EN + 5 RU · 116 adaptör); i18n anahtarı yok (CAR-108 yalnızca mevcut anahtarların değerlerini düzenliyor).
+
 ## [1.258.0] — 2026-10-25
 
 **Ajan filosundan tek tren üzerinde altı düzeltme: #/scan şirket sayacı evrenleri karıştırmayı bırakıyor, derin araştırma kaynak talep ediyor, form hataları alanı aydınlatıyor, yükleme durumları iskeletler ve anında h1 kazanıyor ve değerlendirmeler 37k-belirteçlik prompt öneklerini önbelleğe alıyor.**

@@ -6,6 +6,29 @@ Bản dịch: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 
 ---
 
+## [1.259.0] — 2026-10-25
+
+**Đợt-phát-hành-thứ-hai-của-đội-agent, sáu-bản-sửa: ngày-báo-cáo được-ghim-phía-server, geocoder-bản-đồ cache và-đọc-các-thành-phố-RU, help ×18 trích-các-nhãn-nút-bút-đã-bản-dịch-hóa, các-câu-UI ngừng-trộn-ngôn-ngữ, các-lượt-so-sánh-lương được-tính-phía-server — và-bundle-JS được-phát-hành-sẵn-nén (tải-lạnh 3.1 MB → 598 KB).**
+
+### Đã sửa
+
+- **Ngày-báo-cáo-bịa (CAR-101)**: prompt-đánh-giá giờ ghim-ngày-hôm-nay-phía-server ("trường **Date:** PHẢI chính-xác là <date> — chép-nguyên-văn; không-bao-giờ-bịa"), và `fixReportDate` viết-lại-một-ngày-lệch thành-hôm-nay tại-mọi-điểm-chấp-nhận (nhánh-Anthropic, tiến-trình-con-Gemini, phần-đuôi-tương-thích-OpenAI, /api/deep, auto-pipeline) kèm-một-cảnh-báo + bản-ghi-hoạt-động — một-lượt-sửa-chữa, không-bao-giờ-là-một-lượt-từ-chối. 349/789 báo-cáo-trên-máy-chủ-thật mang-ngày-bịa; các-báo-cáo-mới không-thể-nữa.
+- **Geocoding-bản-đồ (CAR-105)**: các-chuỗi-thành-phố-Cyrillic của-các-dòng hh.ru/Habr giờ đến-được-bộ-geocoder; một-cache-có-giới-hạn-bền-vững (`data/geocode-cache.json`, withFileLock) nghĩa-là một-thành-phố-đã-giải-tỏa không-bao-giờ gọi-nhà-cung-cấp-lần-hai; các-lời-gọi-geocode được-phân-bổ-ngân-sách-theo-mỗi-yêu-cầu để-bản-đồ lấp-đầy-từng-bước thay-vì-chặn-13.9 s.
+- **UI-trộn-ngôn-ngữ (CAR-108)**: 23-rò-rỉ-theo-khóa được-sửa trên-17-trong-19-bộ-từ-điển (85-giá-trị) — «все matching», «только remote», «Открыть Scan», phễu-«Evaluated → Applied…» và-nhiều-hơn-nữa trở-thành-các-câu-đầy-đủ-đã-bản-dịch-hóa tái-sử-dụng-từ-vựng-sản-phẩm riêng-của-mỗi-locale. `i18n-no-latin-leaks` được-mở-rộng với-bảng-mảnh + probe-phễu (đỏ→xanh).
+- **Lật-phán-quyết-tiền-tệ (CAR-109)**: lượt-so-sánh-lương được-tính-phía-server trong `comp-compare.mjs` và-nhúng-theo-một-dạng-quy-chuẩn (`Candidate minimum: … per YEAR (raw: …)` so-với `JD offer: …`); dạng-hàng-tháng ×12, k/к/тыс/萬 và-dạng-dấu-phẩy-thập-phân được-chuẩn-hóa trước-khi-so-sánh; một-lượt-chuyển-đổi-không-chắc-chắn không-bao-giờ một-mình lật-phán-quyết (case-zh-TW «€80–100k ниже минимума» đã-chết). Mô-hình không-bao-giờ-tự-nhân.
+- **Nhãn-nút-bút help ×18 (CAR-107)**: các-bundle-help-đã-bản-dịch-hóa trích-các-nhãn-tiếng-Anh («⚡ Run live», «Save», «Scan now») mà-UI không-còn-hiển-thị — 263-lượt-thay-thế trên-18-locale được-ánh-xạ từ-mã-nguồn-các-view; trợ-lý-docs thừa-hưởng-bản-sửa-này.
+
+### Thêm mới
+
+- **Bundle-sẵn-nén + tải-lạnh-cache-được (CAR-104)**: `make-bundle.mjs` phát-sinh `bundle.js.br` (brotli q11) + `.gz` vào-lúc-phát-hành; một-middleware-phạm-vi-bundle đàm-phán br > gz với `Vary: Accept-Encoding`, `public, max-age=300, must-revalidate` + ETag/304; được-bảo-vệ-theo-độ-tươi (một-bản-đồng-hành không-bao-giờ phục-vụ thứ-cũ-hơn-bundle-identity), các-lượt-lấy-artifact-trực-tiếp trả-về-404, CSP-giống-hệt-byte. Tải-lạnh: 3.1 MB → ~0.6 MB trên-đường-truyền (−80%); các-lượt-ghé-thăm-lặp-lại trong-5-phút truyền ≈0 bytes.
+
+### Ghi chú
+
+- Tất-cả-các-bản-sửa đến-từ-đội-agent kèm-bằng-chứng-đỏ→xanh (13 + 28 + 1 + 30 + 7 case-mới trên-các-suite-của-chúng) và-được-rà-soát-làm-tròn (CodeQL #579/#580/#584 được-sửa trong-code — các-stub-URL được-parse qua `new URL().host`, một-chuỗi-prompt-chết đã-bị-loại-bỏ).
+- Các-con-số-backfill-điểm của-v1.258.0 giờ được-ghi trong-CAR-129 (`updated: 22`, `reportScoreless: 159`).
+- Cố-ý-không-làm: không-sửa-ngày-hồi-cố cho-349-báo-cáo-lịch-sử (một-backfill sẽ-là-thao-tác-được-chủ-sở-hữu-chấp-thuận), không-view-cụm-trên-bản-đồ (CAR-125 vẫn-xếp-hàng-phía-sau-bản-sửa-geocode này).
+- Kiểm-thử 5823 (+74). Không-chạm-nguồn-quét nào (registry 121 = 116 EN + 5 RU · 116 adapter); không-có-khóa-i18n nào (CAR-108 chỉ-sửa-giá-trị-của-các-khóa-hiện-có).
+
 ## [1.258.0] — 2026-10-25
 
 **Sáu-bản-sửa-của-đội-agent trong-một-đợt-phát-hành: bộ-đếm-công-ty của-#/scan ngừng-trộn-hai-vũ-trụ, nghiên-cứu-sâu đòi-buộc-nguồn-dẫn, lỗi-biểu-mẫu làm-sáng-cá-trường, các-trạng-thái-tải nhận-skeleton và-h1-tức-thời, và-các-lượt-đánh-giá cache phần-tiền-tố-prompt 37k-token của-chúng.**

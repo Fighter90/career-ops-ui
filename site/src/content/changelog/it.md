@@ -2,6 +2,29 @@
 
 > Questo changelog inizia dalla v1.85.0 — la versione in cui è stata aggiunta la localizzazione italiana. Per le versioni precedenti vedi [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.259.0] — 2026-10-25
+
+**Il secondo treno della flotta di agenti, sei fix: le date dei report sono fissate lato server, il geocoder della mappa mette in cache e legge le città RU, la guida ×18 cita le etichette dei pulsanti localizzate, le frasi della UI smettono di mescolare lingue, i confronti salariali sono calcolati lato server — e il bundle JS viene distribuito precompresso (caricamento a freddo 3.1 MB → 598 KB).**
+
+### Corretto
+
+- **Date dei report inventate (CAR-101)**: il prompt di valutazione ora fissa la data odierna lato server («il campo **Date:** DEVE essere esattamente <date> — copialo alla lettera; non inventare mai»), e `fixReportDate` riscrive una data deviata a oggi in ogni punto di accettazione (ramo Anthropic, subprocess Gemini, coda OpenAI-compatibile, /api/deep, auto-pipeline) con un warning + un record nell'activity log — una correzione, mai un rifiuto. 349/789 report in produzione portavano date inventate; quelle nuove non possono più.
+- **Geocodifica della mappa (CAR-105)**: le stringhe di città in cirillico delle righe hh.ru/Habr ora arrivano al geocoder; una cache persistente e limitata (`data/geocode-cache.json`, withFileLock) fa sì che una città già risolta non interroghi mai due volte il provider; le chiamate di geocodifica hanno un budget per richiesta, così la mappa si riempie progressivamente invece di bloccarsi per 13.9 s.
+- **UI in lingua mista (CAR-108)**: 23 perdite con chiave corrette su 17 dei 19 dizionari (85 valori) — «все matching», «только remote», «Открыть Scan», il funnel «Evaluated → Applied…» e altre voci sono diventate frasi localizzate complete che riusano il vocabolario di prodotto di ciascuna locale. `i18n-no-latin-leaks` esteso con la tabella dei frammenti + la sonda del funnel (rosso→verde).
+- **Capovolgimento del verdetto sulle valute (CAR-109)**: il confronto salariale è calcolato lato server in `comp-compare.mjs` e incorporato in forma canonica (`Candidate minimum: … per YEAR (raw: …)` vs `JD offer: …`); le forme mensili ×12, k/к/тыс/萬 e con virgola decimale si normalizzano prima del confronto; una conversione incerta non può mai da sola capovolgere il verdetto (il caso zh-TW «€80–100k ниже минимума» è morto). Il modello non moltiplica mai.
+- **Etichette dei pulsanti nella guida ×18 (CAR-107)**: i bundle di guida localizzati citavano etichette inglesi («⚡ Run live», «Save», «Scan now») che la UI non mostra più — 263 sostituzioni su 18 locale, mappate dai sorgenti delle viste; il docs-assistant eredita la correzione.
+
+### Aggiunto
+
+- **Bundle precompresso + caricamento a freddo cacheabile (CAR-104)**: `make-bundle.mjs` emette `bundle.js.br` (brotli q11) + `.gz` al momento della release; un middleware limitato al bundle negozia br > gz con `Vary: Accept-Encoding`, `public, max-age=300, must-revalidate` + ETag/304; con guardia di freschezza (le varianti compagne non vengono mai servite più vecchie del bundle identity), le richieste dirette degli artefatti rispondono 404, CSP byte-identico. Caricamento a freddo: 3.1 MB → ~0.6 MB in transito (−80%); le visite ripetute entro 5 min trasferiscono ≈0 byte.
+
+### Note
+
+- Tutti i fix arrivano dalla flotta di agenti con evidenza rosso→verde (13 + 28 + 1 + 30 + 7 nuovi casi nelle loro suite) e sono stati rifiniti in giri di revisione (CodeQL #579/#580/#584 corretti nel codice — gli URL degli stub parsati via `new URL().host`, una stringa morta del prompt eliminata).
+- I numeri del backfill dei punteggi della v1.258.0 sono ora annotati in CAR-129 (`updated: 22`, `reportScoreless: 159`).
+- Non fatto deliberatamente: nessuna correzione retroattiva delle date per i 349 report storici (un backfill sarebbe un'operazione da approvazione del proprietario), nessuna vista a cluster della mappa (CAR-125 resta in coda dietro questa correzione della geocodifica).
+- Test 5823 (+74). Nessuna fonte scanner toccata (registro 121 = 116 EN + 5 RU · 116 adattatori); nessuna chiave i18n (CAR-108 modifica solo i valori delle chiavi esistenti).
+
 ## [1.258.0] — 2026-10-25
 
 **Sei fix dalla flotta di agenti, un solo treno: il contatore aziende di #/scan smette di mescolare universi, la deep research esige fonti, gli errori dei moduli illuminano il campo, gli stati di caricamento ricevono skeleton e un h1 immediato, e le valutazioni mettono in cache il prefisso del prompt da 37k token.**

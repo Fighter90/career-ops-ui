@@ -11,6 +11,29 @@ Traducciones: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 ---
 
 
+## [1.259.0] — 2026-10-25
+
+**Segundo tren de la flota de agentes, seis correcciones: las fechas de los informes las fija el servidor, el geocodificador del mapa cachea y lee ciudades rusas (RU), la ayuda ×18 cita las etiquetas de botón localizadas, las frases de la interfaz dejan de mezclar idiomas, las comparaciones salariales se calculan en el servidor — y el bundle de JS se distribuye precomprimido (carga en frío 3.1 MB → 598 KB).**
+
+### Corregido
+
+- **Fechas de informe inventadas (CAR-101)**: el prompt de evaluación fija ahora la fecha de hoy del lado del servidor («el campo **Date:** DEBE ser exactamente <fecha> — cópiala verbatim; nunca la inventes»), y `fixReportDate` reescribe una fecha desviada a hoy en cada punto de aceptación (rama Anthropic, subproceso Gemini, cola compatible con OpenAI, /api/deep, auto-pipeline) con un aviso + registro de actividad — una corrección, nunca un rechazo. 349/789 informes en producción llevaban fechas inventadas; los nuevos ya no pueden.
+- **Geocodificación del mapa (CAR-105)**: las cadenas de ciudad en cirílico de las filas de hh.ru/Habr llegan ahora al geocodificador; una caché acotada y persistente (`data/geocode-cache.json`, withFileLock) hace que una ciudad ya resuelta nunca vuelva a golpear al proveedor; las llamadas de geocodificación llevan presupuesto por petición, así que el mapa se llena progresivamente en lugar de bloquearse 13.9 s.
+- **UI en idiomas mezclados (CAR-108)**: 23 fugas con clave corregidas en 17 de 19 diccionarios (85 valores) — «все matching», «только remote», «Открыть Scan», el embudo «Evaluated → Applied…» y más pasaron a ser frases localizadas completas que reutilizan el vocabulario de producto de cada idioma. `i18n-no-latin-leaks` ampliado con la tabla de fragmentos + la sonda del embudo (rojo→verde).
+- **Inversión del veredicto por divisa (CAR-109)**: la comparación salarial se calcula en el servidor en `comp-compare.mjs` y se incrusta de forma canónica (`Candidate minimum: … per YEAR (raw: …)` frente a `JD offer: …`); las formas mensuales ×12, k/к/тыс/萬 y con coma decimal se normalizan antes de comparar; una conversión incierta no puede por sí sola invertir el veredicto (el caso zh-TW «€80–100k ниже минимума» ha muerto). El modelo nunca multiplica.
+- **Etiquetas de botón en la ayuda ×18 (CAR-107)**: los paquetes de ayuda localizados citaban etiquetas en inglés («⚡ Run live», «Save», «Scan now») que la interfaz ya no muestra — 263 sustituciones en 18 idiomas, mapeadas desde los fuentes de las vistas; el docs-assistant hereda la corrección.
+
+### Añadido
+
+- **Bundle precomprimido + carga en frío cacheable (CAR-104)**: `make-bundle.mjs` emite `bundle.js.br` (brotli q11) + `.gz` en el momento del release; un middleware acotado al bundle negocia br > gz con `Vary: Accept-Encoding`, `public, max-age=300, must-revalidate` + ETag/304; con guarda de frescura (un compañero nunca se sirve más antiguo que el bundle de identidad), las peticiones directas de los artefactos devuelven 404, CSP byte a byte idéntica. Carga en frío: 3.1 MB → ~0.6 MB por el cable (−80%); las visitas repetidas dentro de los 5 minutos transfieren ≈0 bytes.
+
+### Notas
+
+- Todas las correcciones llegaron de la flota de agentes con evidencia rojo→verde (13 + 28 + 1 + 30 + 7 casos nuevos en sus suites) y pasaron rondas de revisión (CodeQL #579/#580/#584 corregidos en código — URLs stub parseadas vía `new URL().host`, una cadena muerta del prompt eliminada).
+- Las cifras del backfill de puntuaciones de v1.258.0 están ahora registradas en CAR-129 (`updated: 22`, `reportScoreless: 159`).
+- A propósito no hecho: sin corrección retroactiva de fechas para los 349 informes históricos (un backfill sería una operación de ops aprobada por el propietario), sin vista de clústeres en el mapa (CAR-125 sigue en cola detrás de esta corrección de geocodificación).
+- Tests 5823 (+74). No se toca ninguna fuente del escáner (registro 121 = 116 EN + 5 RU · 116 adaptadores); sin claves i18n (CAR-108 edita solo los valores de las claves existentes).
+
 ## [1.258.0] — 2026-10-25
 
 **Seis correcciones de la flota de agentes en un solo tren: el contador de empresas de #/scan deja de mezclar universos, la investigación a fondo exige fuentes, los errores de formulario iluminan el campo, los estados de carga ganan skeletons y un h1 instantáneo, y las evaluaciones cachean su prefijo de prompt de 37k tokens.**
