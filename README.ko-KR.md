@@ -17,9 +17,9 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.258.0** — **에이전트 플릿 수정 여섯 건: «활성 회사» 카운터가 두 우주를 섞는 것을 멈추고(1554/90), 심층 조사는 `[source: …]` 마커를 요구하고 모름을 인정하며, 실패한 폼 필드는 토스트-전용 오류 대신 밝게 표시되고, #/map과 #/tracker는 스켈레톤 로딩 행과 함께 h1을 즉시 렌더링하며, 모든 /api/evaluate는 ~37k 토큰 안정 접두사를 캐시합니다(첫 호출 이후 ≈10× 저렴).**
+> **🆕 최신 릴리스 — v1.259.0** — **에이전트 플릿 두 번째 트레인, 수정 여섯 건: 리포트 날짜는 서버에서 고정되고(지어낸 2026-01-xx는 이제 없음), 심층 조사 출처는 이전 릴리스에서 이미 착지했으며, 지도 지오코더는 캐시하며 RU 도시를 읽고(위치 없음 92% → 커버), 도움말 ×18은 현지화된 버튼 라벨을 인용하며, UI 문장은 언어 섞임을 멈추고(키가 지정된 누수 23건), 급여 비교는 하나의 정규 형태로 서버 측에서 계산됩니다(zh-TW 판정 뒤집힘은 이제 죽었습니다). 여기에 CAR-104: JS 번들이 이제 사전 압축되어 출시됩니다 — 콜드 로드 3.1 MB → 598 KB.**
 >
-> **이전 버전 — v1.257.0** — **에이전트 플릿 수정 두 건: 인앱 도움말 어시스턴트가 이제 데바나가리와 타밀 문자를 이해합니다(토크나이저가 결합 기호를 버렸습니다 — 힌디어 질의는 0개 섹션에 매칭, 타밀은 조각에 매칭), 그리고 사용량 페이지가 Hermes의 실제 비용을 보여줍니다(게이트웨이가 보고한 비용이 조용히 버려지고 있었습니다 — 9.5 M 토큰 동안 $0.0000).**
+> **이전 버전 — v1.258.0** — **에이전트 플릿 수정 여섯 건: «활성 회사» 카운터가 두 우주를 섞는 것을 멈추고(1554/90), 심층 조사는 `[source: …]` 마커를 요구하고 모름을 인정하며, 실패한 폼 필드는 토스트-전용 오류 대신 밝게 표시되고, #/map과 #/tracker는 스켈레톤 로딩 행과 함께 h1을 즉시 렌더링하며, 모든 /api/evaluate는 ~37k 토큰 안정 접두사를 캐시합니다(첫 호출 이후 ≈10× 저렴).**
 
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
