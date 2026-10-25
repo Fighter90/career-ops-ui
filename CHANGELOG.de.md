@@ -2,6 +2,25 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.258.0] — 2026-10-25
+
+**Sechs Fixes aus der Agenten-Flotte in einem Zug: der #/scan-Zähler mischt keine Universen mehr, Deep Research verlangt Quellen, Formularfehler lassen das Feld aufleuchten, Ladezustände bekommen Skeletons und ein sofortiges h1, und Auswertungen cachen ihr 37k-Token-Prompt-Präfix.**
+
+### Behoben
+
+- **#/scan-Zähler «Aktive Unternehmen» (CAR-100)**: der Zähler erfasste unterschiedliche Firmen über ALLE Ergebniszeilen hinweg (1554 auf Prod — allein hh.ru steuert Hunderte bei), während der Nenner die API-basierten verfolgten Unternehmen zählte (~90) — zwei Universen in einem Bruch. Variante (a): der Zähler erfasst jetzt Firmen unter den Zeilen, die der API-basierte verfolgte Scan selbst geholt hat (abgeglichen über `_entry ?? company`; hh.ru/telegram-Arbeitgeberzeilen fallen heraus); der Pre-Scan-Fallback wanderte in dasselbe Universum (er konnte «104/90» anzeigen).
+- **Deep-Research-Fabrikation (CAR-110)**: der Deep-Prompt trägt jetzt einen harten Vertrag — jede faktische Behauptung endet mit `[source: domain.com]` (nicht benennbar → nicht behaupten; ein erfundener Marker ist schlimmer als ein geschriebenes «unknown»), unbekannte Fakten werden als `unknown` notiert, und der Report MUSS mit einer `## Data freshness`-Sektion enden. Frische-Anker: das heutige UTC-Datum + eine optionale Firmen-`url` auf `POST /api/deep` (begrenzt, serverseitig nie abgerufen).
+- **Formularfehler heben das Feld hervor (CAR-130)**: ein fehlgeschlagener POST markiert das erste Formularfeld mit `aria-invalid` + `.is-error` und fokussiert es (WCAG 3.3.1); beim Bearbeiten wird die Markierung zurückgesetzt. Der Netzwerkfehler-Hinweis ist Deployment-bewusst — Loopback behält den Dev-Befehls-Hinweis, eine ausgelieferte Origin bekommt «Der Server antwortet nicht» statt des `bash web-ui/bin/start.md`-Rats (das Verbindungs-Banner hatte denselben Hardcode).
+- **Ladezustände (CAR-112)**: #/map und #/tracker rendern ihr h1 sofort (das Router-Fokus-Ziel existierte erst, nachdem die Daten angekommen waren), und ein gemeinsamer Skeleton-Helfer (`Skeleton.rows`, aria-hidden-Schimmerzeilen innerhalb einer `role="status"`-Region, die `common.loading` wiederverwendet) ersetzt den nackten Text «Wird geladen…» auf Tracker, Scan-Ergebnissen und der Map-Hülle; `prefers-reduced-motion` stoppt den Puls.
+- **Prompt-Caching für Auswertungen (CAR-111)**: `buildEvaluationPromptParts` teilt den ~37k-Token-Prompt in ein byte-stabiles Präfix (CV + Profil + Mode-Dateien + Anweisungen) und den JD-Schwanz; der Anthropic-Pfad sendet `[prefix + cache_control: ephemeral] + [JD]` — das Präfix wird bei jedem Aufruf nach dem ersten zum Cache-Lese-Tarif abgerechnet (≈10× günstiger). Ein fehlendes oder nicht übereinstimmendes Präfix fällt offen auf die byte-identische alte Anfrage zurück; die OpenAI-kompatible Kaskade bleibt unangetastet (serverseitiges Caching dort).
+
+### Hinweise
+
+- Alle sechs Fixes stammen aus der Agenten-Flotte, mit Rot→Grün-Nachweisen (5 + 7 + 7 + 7 + 8 neue Fälle) und Review-Runden; die ersten CAR-111-CodeQL-Alerts (#579/#580) wurden im Code behoben — der Test-Stub parst den URL-Host, statt Teilzeichenketten zu vergleichen, und eine tote Full-Prompt-Zeichenkette wurde gestrichen.
+- **Der Score-Backfill lief auf Prod** (v1.256.0-Endpunkt, vom Owner freigegeben): `updated: 22`, `missingReport: 0`, `reportScoreless: 159` — 159 unbenotete Zeilen zeigen auf Reports, deren Header dem Maschinenblock vorausgehen oder unparsebare Score-Formate tragen; wiederherstellbar nur durch Neuauswertung oder einen breiteren Parser-Durchlauf (in CAR-129 vermerkt).
+- Bewusst nicht getan: keine Nullen-zuletzt-Änderung an der Commute-Spalte (vorbestehender `Infinity`-bei-absteigend-Quirk), keine rückwirkende Neubepreisung alter Nutzungsdatensätze, keine `.is-error`-artige Hervorhebung für die Scan-Filterformulare (CAR-130 auf den gemeinsamen Mode-Page-Submit-Helfer + den api.js-Hinweis beschränkt).
+- Tests 5749 (+36). Keine Scanner-Quellen angefasst (Registry 121 = 116 EN + 5 RU · 116 Adapter); keine i18n-Schlüssel (der CAR-130-Hinweis nutzt `conn.down` wieder; die Skeleton-Region nutzt `common.loading` wieder).
+
 ## [1.257.0] — 2026-10-25
 
 **Zwei Fixes aus der Agenten-Flotte: der Hilfe-Assistent in der App versteht Devanagari und Tamil, und die Nutzungsseite zeigt, was Hermes tatsächlich kostet.**

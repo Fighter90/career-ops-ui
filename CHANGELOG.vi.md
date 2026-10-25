@@ -6,6 +6,25 @@ Bản dịch: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.258.0] — 2026-10-25
+
+**Sáu-bản-sửa-của-đội-agent trong-một-đợt-phát-hành: bộ-đếm-công-ty của-#/scan ngừng-trộn-hai-vũ-trụ, nghiên-cứu-sâu đòi-buộc-nguồn-dẫn, lỗi-biểu-mẫu làm-sáng-cá-trường, các-trạng-thái-tải nhận-skeleton và-h1-tức-thời, và-các-lượt-đánh-giá cache phần-tiền-tố-prompt 37k-token của-chúng.**
+
+### Đã sửa
+
+- **Bộ-đếm-«Công ty đang hoạt động» của-#/scan (CAR-100)**: tử-số đếm-các-công-ty-phân-biệt trên-TẤT-CẢ-các-dòng-kết-quả (1554 trên-máy-chủ-thật — riêng-hh.ru đã-đóng-góp-hàng-trăm) trong-khi-mẫu-số đếm-các-công-ty-tracked-có-hỗ-trợ-API (~90) — hai-vũ-trụ trong-một-phân-số. Phương-án-ghép-cặp-(a): tử-số giờ đếm-các-công-ty trong-các-dòng mà-lượt-quét-tracked-có-hỗ-trợ-API tự-nó đã-lấy-về (khớp bằng `_entry ?? company`; các-dòng-nhà-tuyển-dụng hh.ru/telegram rơi-ra ngoài); bộ-dự-phòng-trước-quét được-chuyển vào cùng-vũ-trụ (nó có-thể-hiện «104/90»).
+- **Bịa-đặt trong-nghiên-cứu-sâu (CAR-110)**: prompt-deep giờ mang-một-hợp-đồng-ràng-buộc-cứng — mọi-kiến-định-sự-thật kết-thúc bằng `[source: domain.com]` (không-nêu-được-tên → không-nói-ra; bịa-một-marker còn-tệ hơn-viết "unknown"), các-sự-thật không-rõ được-viết `unknown`, và-báo-cáo BẮT-BUỘC kết-thúc bằng-một-mục `## Data freshness`. Các-mỏ-neo-độ-mới: ngày-UTC-hôm-nay + một-trường-`url`-của-công-ty-tùy-chọn trên `POST /api/deep` (có-giới-hạn, không-bao-giờ được-lấy-về-phía-server).
+- **Lỗi-biểu-mẫu làm-sáng-cá-trường (CAR-130)**: một-POST-thất-bại đánh-dấu trường-biểu-mẫu-đầu-tiên `aria-invalid` + `.is-error` và-tập-trung vào-nó (WCAG 3.3.1); xóa-đi-khi-chỉnh-sửa. Gợi-ý-lỗi-mạng nhận-biết-hình-thức-triển-khai — loopback giữ-gợi-ý-lệnh-dev, một-origin-đã-triển-khai nhận-«Máy chủ không phản hồi» thay-vì-lời-khuyên `bash web-ui/bin/start.md` (banner-kết-nối cũng-mang-cùng-lời-khuyên-ghim-cứng ấy).
+- **Các-trạng-thái-tải (CAR-112)**: #/map và-#/tracker render-h1 của-chúng ngay-lập-tức (đích-tập-trung-của-router chỉ-tồn-tại sau-khi-dữ-liệu-đến) và-một-helper-skeleton-dùng-chung (`Skeleton.rows`, các-hàng-shimmer-aria-hidden bên-trong-một-vùng-`role="status"` tái-sử-dụng `common.loading`) thay-thế văn-bản-«Đang tải…»-trần-trụi trên-tracker, kết-quả-quét và-khung-map; `prefers-reduced-motion` dừng-hiệu-nhấp-nháy.
+- **Cache-prompt-của-trang-đánh-giá (CAR-111)**: `buildEvaluationPromptParts` tách prompt ~37k-token thành-một-phần-tiền-tố-bền-byte (CV + profile + các-tệp-mode + hướng-dẫn) và-phần-đuôi-JD; đường-Anthropic gửi `[prefix + cache_control: ephemeral] + [JD]` — phần-tiền-tố được-tính-tiền theo-mức-giá-đọc-cache (rẻ hơn ≈10×) ở-mọi-lời-gọi sau-lời-gọi-đầu-tiên. Phần-tiền-tố-thiếu/không-khớp fail-open về-yêu-cầu-cũ-giống-hệt-byte; cascade-tương-thích-OpenAI không-bị-động-đến (caching-phía-server ở-đó).
+
+### Ghi chú
+
+- Cả-sáu-bản-sửa đến-từ-đội-agent kèm-bằng-chứng-đỏ→xanh (5 + 7 + 7 + 7 + 8 case-mới) và-các-vòng-rà-soát; các-cảnh-báo-CodeQL-đầu-tiên của-CAR-111 (#579/#580) được-sửa-ngay-trong-code — stub-kiểm-thử parse-host-của-URL thay-vì-khớp-chuỗi-con, và-một-chuỗi-prompt-đầy-đủ-không-dùng-đến đã-bị-loại-bỏ.
+- **Backfill-điểm đã-chạy trên-máy-chủ-thật** (endpoint v1.256.0, được-chủ-sở-hữu-chấp-thuận): `updated: 22`, `missingReport: 0`, `reportScoreless: 159` — 159 dòng-không-có-điểm trỏ-về-các-báo-cáo mà-header ra-đời trước-khối-máy hoặc-mang-định-dạng-điểm-không-parse-được; chỉ-hồi-được bằng-đánh-giá-lại hoặc-một-lượt-parser-rộng-hơn (được-ghi trong-CAR-129).
+- Cố-ý-không-làm: không-đổi-nulls-last cho-cột-commute (một-quirk-`Infinity`-khi-giảm-dần có-từ-trước), không-tính-lại-giá-hồi-cố cho-các-dòng-usage cũ, không-highlight-kiểu-`.is-error` cho-các-biểu-mẫu-bộ-lọc-quét (CAR-130 giới-hạn ở-helper-submit-dùng-chung của-mode-page + gợi-ý-api.js).
+- Kiểm-thử 5749 (+36). Không-chạm-nguồn-quét nào (registry 121 = 116 EN + 5 RU · 116 adapter); không-có-khóa-i18n nào (gợi-ý CAR-130 tái-sử-dụng `conn.down`; vùng-skeleton tái-sử-dụng `common.loading`).
+
 ## [1.257.0] — 2026-10-25
 
 **Hai-bản-sửa-của-đội-agent: trợ-lý-docs trong-ứng giờ hiểu chữ-Devanagari và-tiếng-Tamil, và-trang-usage cho-thấy Hermes thực-tế tốn-bao-nhiêu.**
