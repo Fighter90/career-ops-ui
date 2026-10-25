@@ -371,6 +371,29 @@ test('CAR-143 r2: a bare $ falls back to the profile currency within the $-famil
   assert.match(block, /presumed/i);
 });
 
+test('CAR-143 r3: an unmappable $-code or a glued prefix symbol never presumes the profile currency', () => {
+  // EXPLICIT_CCY_RE used to miss NZD/MXN/TWD… — «MXN $900,000» against a USD
+  // profile presumed USD (≈17× off). Same for glued prefixes (C$, HK$, R$…).
+  const mxn = CC.buildCompensationBlock(
+    'Engineer at Mexico.\nSalary: MXN $900,000 per year.',
+    { low: 800000, high: null, currency: 'USD', period: 'year', raw: '800,000' },
+  );
+  assert.match(mxn, /900000 \$ per YEAR/);
+  assert.doesNotMatch(mxn, /900000 USD/); // no fabricated same-currency compare
+  assert.match(mxn, /No reliable conversion from \$ to USD/);
+  // an adjacent unmappable code blocks the fallback outright…
+  assert.equal(CC.parseMoneyFigures('MXN $900,000 per year', { symbolFallback: 'USD' })[0].currency, null);
+  // …while codes CCY_MAP recognizes without a rate resolve honestly (kr pattern)
+  assert.equal(CC.parseMoneyFigures('NZD $120k per year', { symbolFallback: 'USD' })[0].currency, 'NZD');
+  assert.equal(CC.parseMoneyFigures('HKD $250k per year', { symbolFallback: 'USD' })[0].currency, 'HKD');
+  // glued prefixes (C$/HK$/NZ$…) never fall back either — the figure keeps its
+  // value with no currency, and the block caveats instead of comparing
+  const glued = CC.parseMoneyFigures('Salary: C$120k per year', { symbolFallback: 'USD' });
+  assert.equal(glued[0].low, 120000);
+  assert.equal(glued[0].currency, null);
+  assert.equal(CC.parseMoneyFigures('Salary: HK$250k per month', { symbolFallback: 'USD' })[0].currency, null);
+});
+
 test('CAR-143 r2: the symbol fallback never guesses across families', () => {
   assert.equal(CC.parseMoneyFigures('$100k per year', { symbolFallback: 'EUR' })[0].currency, null);
   assert.equal(CC.parseMoneyFigures('¥4,000,000 per year', { symbolFallback: 'USD' })[0].currency, null);

@@ -36,19 +36,26 @@ const CCY_MAP = {
   USD: 'USD', EUR: 'EUR', GBP: 'GBP', CHF: 'CHF', RUB: 'RUB', RUR: 'RUB', UAH: 'UAH',
   PLN: 'PLN', CZK: 'CZK', SEK: 'SEK', NOK: 'NOK', DKK: 'DKK', INR: 'INR', BRL: 'BRL',
   SGD: 'SGD', AUD: 'AUD', CAD: 'CAD', CNY: 'CNY', RMB: 'CNY', JPY: 'JPY',
+  // Recognized as a code, NO FX rate (the kr pattern): an explicit «NZD $120k»
+  // resolves honestly and the block caveats the conversion instead of guessing.
+  NZD: 'NZD', HKD: 'HKD',
   'руб': 'RUB', 'руб.': 'RUB', 'рублей': 'RUB', 'рубля': 'RUB',
   'грн': 'UAH', 'грн.': 'UAH', 'zł': 'PLN', 'Kč': 'CZK',
 };
 const CCY_UNMAPPED = ['kr', '$', '¥']; // recognized as a currency token, no FX rate
 const AMBIGUOUS_SYMBOLS = new Set(['$', '¥']);
-// Codes that share a symbol with another currency. Only codes CCY_MAP can
-// resolve, only the $/¥-relevant ones, and case-sensitive — prose «cad»
-// (tools) / «usd» must not match. NZD/HKD live in SYMBOL_FAMILY for the
-// profile fallback but are not independently mappable here.
-const EXPLICIT_CCY_RE = /\b(USD|AUD|CAD|SGD|CNY|RMB|JPY)\b/;
+// EVERY code that shares a $/¥ symbol — adjacent presence BLOCKS the profile
+// fallback even when the code itself has no rate here (NZD $120k vs a USD
+// profile must stay a caveat, never «presumed USD», ≈17× off for MXN).
+// Case-sensitive: prose «cad» (tools) / «usd» must not match.
+const EXPLICIT_CCY_RE = /\b(USD|AUD|CAD|SGD|NZD|HKD|TWD|MXN|BRL|ARS|CLP|COP|CNY|RMB|JPY)\b/;
+// A letter glued to the symbol (C$, A$, S$, HK$, NZ$, MX$, R$…) is itself an
+// explicit — usually unmappable — currency marker: never fall back past it.
+const GLUED_SYMBOL_RE = /[A-Z]{1,3}\$$/;
 // A bare $ / ¥ may presume the PROFILE's currency, but only within its own
 // symbol family — never across («$150k» vs a USD minimum is the same figure;
-// «$150k» vs EUR stays unresolved; a ¥ is never read as USD).
+// «$150k» vs EUR stays unresolved; a ¥ is never read as USD). Every family
+// member resolves through CCY_MAP.
 const SYMBOL_FAMILY = {
   '$': new Set(['USD', 'AUD', 'CAD', 'SGD', 'NZD', 'HKD']),
   '¥': new Set(['JPY', 'CNY']),
@@ -225,14 +232,18 @@ export function parseMoneyFigures(text, opts = {}) {
         // «$100k AUD») — never the first code anywhere on the line
         // («$100k (vs USD 80k last year)» belongs to the other figure). The
         // \u0001 sentinel keeps a code from straddling the figure itself.
-        const adj = line.slice(Math.max(0, start - 6), start) + '\u0001' + line.slice(end, end + 6);
-        const explicit = EXPLICIT_CCY_RE.exec(adj);
+        const adjBefore = line.slice(Math.max(0, start - 6), start);
+        const adjAfter = line.slice(end, end + 6);
+        const explicit = EXPLICIT_CCY_RE.exec(adjBefore + '\u0001' + adjAfter);
+        // A glued prefix (C$, HK$, MX$…) is explicit-but-unmapped: resolve it
+        // to null and never fall back past it.
+        const glued = GLUED_SYMBOL_RE.test(adjBefore + curToken);
         if (explicit) {
-          currency = resolveCcy(explicit[1].toUpperCase());
-        } else if (symFallback != null && SYMBOL_FAMILY[curToken]?.has(symFallback)) {
-          // No explicit code: presume the profile's own currency, within the
-          // family only — and mark it, so the block can say the comparison
-          // rests on that presumption.
+          currency = resolveCcy(explicit[1].toUpperCase()); // null → caveat, never a guess
+        } else if (!glued && symFallback != null && SYMBOL_FAMILY[curToken]?.has(symFallback)) {
+          // No explicit code and no glued prefix: presume the profile's own
+          // currency, within the family only — and mark it, so the block can
+          // say the comparison rests on that presumption.
           currency = symFallback;
           currencyAssumed = true;
         }
