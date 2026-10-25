@@ -11,6 +11,7 @@
 import { existsSync, readFileSync } from 'node:fs';
 import { randomBytes, createHash } from 'node:crypto';
 import { PATHS, path as projPath } from './paths.mjs';
+import { buildCompensationBlock } from './comp-compare.mjs';
 
 // Locale code → English language name. Used by buildLocaleDirective so
 // every LLM call honors the user's UI locale (PR-2 / F-012). Codes match
@@ -466,6 +467,13 @@ ${scaffold('readFiles', lang)}
 Then output the full A-G evaluation per modes/oferta.md (Role Summary, CV Match, Risks, Compensation,
 Application Strategy, Verdict, Posting Legitimacy) and a 0-5 score.
 
+CAR-109 — Compensation rule: compare money like-for-like: annual against annual, and within ONE
+currency (convert only after both sides are annual). Resolve a monthly figure (×12) and a k/к/тыс/萬
+suffix (×1000 / ×10000) BEFORE comparing; read €80,5k as 80500 and 80,000 as 80000. If a currency
+conversion is uncertain, state both raw figures and reason from them — an uncertain conversion
+must NEVER by itself flip the verdict to "below minimum". When the prompt provides a
+COMPENSATION COMPARISON block with server-normalized figures, use those figures as stated.
+
 Start every block heading with its letter as modes/oferta.md does (\`## Block A — …\` to
 \`## Block G — …\`). If you translate the headings, keep the letter A–G in each one.
 The letter MUST be a LATIN capital (A B C D E F G) — never a letter of your own
@@ -485,7 +493,7 @@ LEGITIMACY: <High Confidence | Proceed with Caution | Suspicious>
   return { stable, volatile: evaluationPromptTail(jd, lang) };
 }
 
-/** The per-posting tail: fenced JD, heading skeleton, closing language reminder. */
+/** The per-posting tail: fenced JD, compensation block, heading skeleton, closing language reminder. */
 function evaluationPromptTail(jd, lang) {
   // v1.248.8 (CAR-74) — a ready-made heading skeleton for non-EN reports:
   // the model fills these instead of inventing its own numbering (the weak
@@ -494,8 +502,15 @@ function evaluationPromptTail(jd, lang) {
   const skeleton = lang && lang !== 'en' && localeName(lang)
     ? `\nYour report uses EXACTLY these seven headings, in this order — translate the title text, keep the Latin capital and the \`## \` prefix:\n\n## A) Role summary\n## B) CV match\n## C) Risks\n## D) Compensation\n## E) Application strategy\n## F) Posting legitimacy\n## G) Verdict\n`
     : '';
+  // CAR-109 — server-normalized canonical figures for the Block D salary
+  // comparison (both sides per YEAR, suffixes/periods/decimal commas already
+  // resolved; '' when neither the profile nor the posting states a figure).
+  // Lives in the volatile tail because it depends on this posting's text —
+  // the static like-for-like rule above is in the cached stable part.
+  const comp = buildCompensationBlock(jd);
+  const compSection = comp ? `\n${comp}\n` : '';
   return `${untrustedJd(jd)}
-${skeleton}${buildLanguageReminder(lang)}`;
+${compSection}${skeleton}${buildLanguageReminder(lang)}`;
 }
 
 /**
