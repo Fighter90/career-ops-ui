@@ -68,7 +68,7 @@ import { cleanLlmMarkdown } from '../llm-output.mjs';
 import { llmRateLimit } from '../rate-limit.mjs';
 import {
   bundleProjectContext,
-  buildEvaluationPrompt,
+  buildEvaluationPromptParts,
   buildDeepPrompt,
   buildModePrompt,
   buildApplyChecklist,
@@ -240,7 +240,12 @@ export function registerLlmRoutes(app) {
       saved = name;
     }
 
-    const promptText = buildEvaluationPrompt(jd, lang);
+    // CAR-111 — build the prompt once, as parts: `promptText` (stable +
+    // volatile, byte-identical to the pre-split prompt) is what manual mode
+    // echoes and error paths return; the Anthropic branch caches
+    // `ctx + stable` and leaves the volatile JD tail uncached.
+    const promptParts = buildEvaluationPromptParts(jd, lang);
+    const promptText = promptParts.stable + promptParts.volatile;
 
     // F-009 — explicit manual mode mirrors /api/deep. Lets the user opt
     // out of the live LLM call (and the Anthropic credit burn) even when
@@ -261,7 +266,10 @@ export function registerLlmRoutes(app) {
     if (_provGate().wantAnthropic && hasAnthropicKey()) {
       const ctxWarnings = [];
       const ctx = bundleProjectContext({ modeSlugs: ['_shared', 'oferta'], lang, warnings: ctxWarnings });
-      const fullPrompt = ctx + promptText;
+      // CAR-111 — cache the byte-stable prefix (context + instructions); only
+      // the JD block — whose fence tag is random per prompt — stays uncached.
+      const cachePrefix = ctx + promptParts.stable;
+      const fullPrompt = cachePrefix + promptParts.volatile;
       // BF-3 — bail fast when the assembled prompt would exceed the
       // soft cap. Otherwise we'd burn a multi-second roundtrip + tokens
       // before Anthropic complains about context size.
@@ -271,7 +279,7 @@ export function registerLlmRoutes(app) {
           details: [`assembled prompt is ${fullPrompt.length} bytes; soft cap is ${PROMPT_SIZE_SOFT_CAP}. Truncate the JD or shrink your CV.`],
         });
       }
-      const r = await runAnthropic(fullPrompt, { maxTokens: EVAL_MAX_TOKENS, timeoutMs: EVAL_TIMEOUT_MS });
+      const r = await runAnthropic(fullPrompt, { maxTokens: EVAL_MAX_TOKENS, timeoutMs: EVAL_TIMEOUT_MS, cachePrefix });
       if (r.error) return res.status(502).json({ mode: 'anthropic', prompt: promptText, error: r.error, saved });
       // v1.75.0 (#819) — flag malformed A–G / SCORE_SUMMARY shape as a non-fatal
       // warning so the user knows the report may be truncated/off-format.

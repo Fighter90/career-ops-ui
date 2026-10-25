@@ -37,7 +37,7 @@ import { PATHS, path as projPath } from '../paths.mjs';
 import { isValidJobUrl, sanitizeJobDescription } from '../security.mjs';
 import { runAnthropic, hasAnthropicKey } from '../anthropic.mjs';
 import { runNodeScript } from '../runner.mjs';
-import { bundleProjectContext, buildEvaluationPrompt, resolveLocale } from '../prompts.mjs';
+import { bundleProjectContext, buildEvaluationPrompt, buildEvaluationPromptParts, resolveLocale } from '../prompts.mjs';
 import { runActiveProvider, PROMPT_SIZE_SOFT_CAP } from '../llm-dispatch.mjs';
 import { recordUsage, parseSubprocessUsage } from '../llm-usage.mjs';
 import { evaluationWarnings, EVAL_MAX_TOKENS, GEMINI_EVAL_TIMEOUT_MS, geminiEvalArgs } from './llm.mjs';
@@ -676,7 +676,10 @@ export function registerAutoPipelineRoutes(app) {
     let evalMode = lockEvalMode;
     const warnings = [];
     try {
-      const promptText = buildEvaluationPrompt(jdText, lang);
+      // CAR-111 — parts, as /api/evaluate: the Anthropic branch caches
+      // ctx + stable and leaves the JD tail uncached. No manual echo here
+      // (auto-pipeline writes the report itself), so no full-prompt string.
+      const promptParts = buildEvaluationPromptParts(jdText, lang);
 
       if (evalMode === 'gemini') {
         // Explicit `mode: 'gemini'` keeps the oferta-tuned gemini-eval.mjs.
@@ -713,7 +716,10 @@ export function registerAutoPipelineRoutes(app) {
         markdown = synthesizeGeminiSummary(markdown, guess);
       } else {
         const ctx = bundleProjectContext({ modeSlugs: ['_shared', 'oferta'], lang, warnings });
-        const full = ctx + promptText;
+        // CAR-111 — cache the byte-stable prefix on the Anthropic path, the
+        // JD tail stays uncached (same split as /api/evaluate).
+        const cachePrefix = ctx + promptParts.stable;
+        const full = cachePrefix + promptParts.volatile;
         if (full.length > PROMPT_SIZE_SOFT_CAP) {
           step(2, 'failed', `prompt ${full.length} > ${PROMPT_SIZE_SOFT_CAP} cap`);
           return fail(2, 'prompt too large');
@@ -728,7 +734,7 @@ export function registerAutoPipelineRoutes(app) {
             step(2, 'failed', 'ANTHROPIC_API_KEY not set');
             return fail(2, 'no LLM key');
           }
-          r = await runAnthropic(full, runOpts);
+          r = await runAnthropic(full, { ...runOpts, cachePrefix });
           if (!r.error) recordUsage('anthropic', r.usage);
           r = { ...r, mode: 'anthropic' };
         } else {
