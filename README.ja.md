@@ -17,9 +17,9 @@ _非公式 UI — career-ops / santifer とは提携しておらず、承認も�
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.255.2** — **3つの修正: `#/scan`のレンダークラッシュ(カウントゲート再生成による120個の配列ホールが、企業クラシファイアを毎回のレンダリングでthrowさせていた)、ベトナム語の言語チェックが機能しない問題(ライブQAがviに対して英語のストップワードを数えていた — 現在は専用テーブルを所持)、そしてzh-TWのサマリーブロック欠落(締めのリマインダーが`SCORE_SUMMARY`を翻訳禁止だけでなく必須として扱うように)。**
+> **🆕 最新リリース — v1.256.0** — **トラッカーのデータ品質: 役職が企業として登録されることはなく(`Senior Frontend Engineer - Grafana Labs`は逆方向にパースされていました — 13行)、求人ボードが雇用主として登録されることもありません(hh.ruの行が«hh»として登録されていました — 120行。キリル文字の推論パターンはASCII`\b`のせいでv1.248.4以降静かに死んでいました)。スコアなしの行がトラッカーのソートで先頭に浮上するのは止まり、そして新しいワンショットエンドポイントがレポートそのものから欠落しているスコアをバックフィルします。**
 >
-> **前バージョン — v1.255.1** — **2つのレビュー修正ラウンド: ベトナム語ロケールへのOpusレビュー(ハングル字形のリークとスペース入りの6つのヘルプURL — 現在はゲートで保護)と、CAR-91/92修正のセカンドパスレビュー — 評価ヘディング境界(`## Q&A`はもはやブロックとして登録されない)、ウクライナ数字レポートは`### A.`サブセクションを生き残り、持ち越されたスキャン行はエージングアウトし、gemini-synthesisの分母/正当性パースが修正されました。**
+> **前バージョン — v1.255.2** — **3つの修正: `#/scan`のレンダークラッシュ(カウントゲート再生成による120個の配列ホールが、企業クラシファイアを毎回のレンダリングでthrowさせていた)、ベトナム語の言語チェックが機能しない問題(ライブQAがviに対して英語のストップワードを数えていた — 現在は専用テーブルを所持)、そしてzh-TWのサマリーブロック欠落(締めのリマインダーが`SCORE_SUMMARY`を翻訳禁止だけでなく必須として扱うように)。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
