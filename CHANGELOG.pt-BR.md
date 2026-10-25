@@ -9,6 +9,29 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 ---
 
 
+## [1.259.0] — 2026-10-25
+
+**Segundo trem da frota de agentes, seis correções: as datas dos relatórios são fixadas pelo servidor, o geocodificador do mapa faz cache e lê cidades cirílicas, a ajuda ×18 cita rótulos de botões localizados, as frases da UI param de misturar idiomas, as comparações salariais são calculadas no servidor — e o bundle JS passa a ser distribuído pré-comprimido (carregamento a frio 3.1 MB → 598 KB).**
+
+### Corrigido
+
+- **Datas de relatório inventadas (CAR-101)**: o prompt de avaliação agora fixa a data de hoje no servidor («the **Date:** field MUST be exactly <date> — copy verbatim; never invent») e o `fixReportDate` reescreve uma data desviada para hoje em todos os pontos de aceitação (ramo Anthropic, subprocesso Gemini, cauda compatível com OpenAI, /api/deep, auto-pipeline), com um aviso + registro de atividade — uma correção, nunca uma rejeição. 349/789 relatórios de produção tinham datas inventadas; os novos não podem.
+- **Geocodificação do mapa (CAR-105)**: as strings de cidades em cirílico das linhas do hh.ru/Habr agora chegam ao geocodificador; um cache limitado e persistente (`data/geocode-cache.json`, withFileLock) garante que uma cidade já resolvida nunca consulte o provedor duas vezes; as chamadas de geocodificação têm orçamento por requisição, então o mapa se preenche progressivamente em vez de travar por 13.9 s.
+- **UI misturando idiomas (CAR-108)**: 23 vazamentos por chave corrigidos em 17 dos 19 dicionários (85 valores) — «все matching», «только remote», «Открыть Scan», o funil «Evaluated → Applied…» e outros viraram frases integralmente localizadas reutilizando o vocabulário de produto de cada locale. `i18n-no-latin-leaks` ganhou a tabela de fragmentos + a sonda de funil (vermelho→verde).
+- **Virada de veredito por moeda (CAR-109)**: a comparação salarial é calculada no servidor em `comp-compare.mjs` e embutida de forma canônica (`Candidate minimum: … per YEAR (raw: …)` vs `JD offer: …`); formas mensais ×12, k/к/тыс/萬 e vírgula decimal são normalizadas antes da comparação; uma conversão incerta nunca pode, por si só, virar o veredito (o caso zh-TW «€80–100k ниже минимума» está morto). O modelo nunca multiplica.
+- **Rótulos de botões da ajuda ×18 (CAR-107)**: os bundles de ajuda localizados citavam rótulos em inglês («⚡ Run live», «Save», «Scan now») que a UI não exibe mais — 263 substituições em 18 locales, mapeadas a partir das fontes das views; o docs-assistant herda a correção.
+
+### Adicionado
+
+- **Bundle pré-comprimido + carregamento a frio com cache (CAR-104)**: o `make-bundle.mjs` emite `bundle.js.br` (brotli q11) + `.gz` no momento do release; um middleware com escopo no bundle negocia br > gz com `Vary: Accept-Encoding`, `public, max-age=300, must-revalidate` + ETag/304; com guarda de atualização (um artefato companheiro nunca é servido mais antigo que o bundle de identidade), buscas diretas por artefato retornam 404, CSP byte-idêntico. Carregamento a frio: 3.1 MB → ~0.6 MB na rede (−80%); visitas repetidas dentro de 5 min transferem ≈0 bytes.
+
+### Notas
+
+- Todas as correções vieram da frota de agentes com evidência vermelho→verde (13 + 28 + 1 + 30 + 7 casos novos em suas suítes) e passaram por rodadas de revisão (CodeQL #579/#580/#584 corrigidos no código — URLs de stub analisadas via `new URL().host`, uma string morta do prompt removida).
+- Os números do backfill de pontuações da v1.258.0 agora estão registrados no CAR-129 (`updated: 22`, `reportScoreless: 159`).
+- Deliberadamente não feito: nenhuma correção retroativa de datas para os 349 relatórios históricos (um backfill seria uma operação de ops aprovada pelo dono), nenhuma visão de clusters no mapa (o CAR-125 segue na fila atrás desta correção de geocodificação).
+- Testes 5823 (+74). Nenhuma fonte do scanner tocada (registro 121 = 116 EN + 5 RU · 116 adaptadores); nenhuma chave de i18n (o CAR-108 edita apenas os valores de chaves existentes).
+
 ## [1.258.0] — 2026-10-25
 
 **Seis correções da frota de agentes em um único trem: o contador de empresas do #/scan para de misturar universos, a pesquisa profunda passa a exigir fontes, erros de formulário acendem o próprio campo, estados de carregamento ganham skeleton e um h1 instantâneo, e as avaliações fazem cache do prefixo de prompt de 37k tokens.**

@@ -17,9 +17,9 @@ _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.258.0** — **agent 艦隊的六項修復：«活動公司» 計數器不再混合兩個世界（1554/90）、深度研究必須附上 `[source: …]` 標記並坦承未知、失敗的表單欄位會直接亮起而不只跳出 toast 錯誤、#/map 與 #/tracker 即時渲染 h1 並配備骨架載入列，且每次 /api/evaluate 都會快取約 37k-token 的穩定前綴（首次呼叫後 ≈10× 更便宜）。**
+> **🆕 最新版本 — v1.259.0** — **第二趟 agent 艦隊列車，六項修復：報告日期由伺服器端釘住（不再出現捏造的 2026-01-xx）、深度研究來源標記已提前落地、地圖地理編碼器快取並讀取俄語城市（92% 的無位置列 → 已覆蓋）、說明 ×18 引用本地化的按鈕標籤、UI 句子不再混雜語言（23 個鍵值洩漏），且薪資比較改以單一規範形式在伺服器端計算（zh-TW 的判決翻轉已死）。再加上 CAR-104：JS bundle 現在以預先壓縮形式出貨 — 冷載入 3.1 MB → 598 KB。**
 >
-> **前一版本 — v1.257.0** — **兩項 agent 艦隊修復：應用程式內的說明助理現在能理解天城文與坦米爾文（分詞器丟棄了組合記號 — 一則印地語查詢比對到 0 個章節，坦米爾文只比對到碎片），用量頁面也會顯示 Hermes 實際的成本（閘道器回報的成本被默默丟棄 — 9.5 M 個權杖顯示 $0.0000）。**
+> **前一版本 — v1.258.0** — **agent 艦隊的六項修復：«活動公司» 計數器不再混合兩個世界（1554/90）、深度研究必須附上 `[source: …]` 標記並坦承未知、失敗的表單欄位會直接亮起而不只跳出 toast 錯誤、#/map 與 #/tracker 即時渲染 h1 並配備骨架載入列，且每次 /api/evaluate 都會快取約 37k-token 的穩定前綴（首次呼叫後 ≈10× 更便宜）。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
