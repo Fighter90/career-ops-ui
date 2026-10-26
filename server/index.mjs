@@ -116,6 +116,12 @@ export function bundleContentHash(bundlePath) {
  * The hash belongs to the inode the fd points at, so a rename-based build
  * swapping the file under the path mid-flight cannot change the verdict
  * (r3, finding 3). Null when a read fails (never cached by callers).
+ *
+ * CAR-145 r3 (AI review) — the read must total EXACTLY `size` bytes: any
+ * short read (a truncation after the caller's fstat, a mid-read error) makes
+ * the bytes not what the size promised, so the result is null — never a
+ * valid-looking prefix hash a caller would cache or serve as THE content
+ * hash (the no-store path already handles null).
  */
 export function bundleContentHashFromFd(fd, size) {
   try {
@@ -123,10 +129,10 @@ export function bundleContentHashFromFd(fd, size) {
     let read = 0;
     while (read < size) {
       const n = readSync(fd, buf, read, size - read, read);
-      if (n <= 0) break;
+      if (n <= 0) return null; // short read/EOF — not every byte `size` promised
       read += n;
     }
-    return createHash('sha256').update(buf.subarray(0, read)).digest('hex').slice(0, 12);
+    return createHash('sha256').update(buf).digest('hex').slice(0, 12);
   } catch {
     return null;
   }

@@ -29,7 +29,7 @@ import { promisify } from 'node:util';
 import {
   mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync,
   existsSync, utimesSync, statSync, chmodSync, openSync, closeSync,
-  renameSync, readdirSync,
+  renameSync, readdirSync, fstatSync, ftruncateSync,
 } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve, dirname, join } from 'node:path';
@@ -157,6 +157,36 @@ test('CAR-145 r3: make-bundle temp names are DOT-prefixed (serve-static never se
     /`\.\$\{basename\(path\)\}\.tmp-\$\{process\.pid\}`/,
     'the atomic-write temp template must be .<basename>.tmp-<pid>',
   );
+});
+
+test('CAR-145 r3: writeBundle stages ALL artifacts to temps BEFORE any rename (one generation per swap)', () => {
+  // Structural gate — weak by TRACEABILITY rule 2 (the writer cannot be
+  // observed mid-flight deterministically): per-file atomic renames still
+  // allowed a MIXED generation on disk (identity = new, .br = old or missing)
+  // when the build died between renames. Phase 1 must materialize every
+  // artifact under a temp; only then may the swap renames run.
+  const src = readFileSync(MAKE_BUNDLE, 'utf8');
+  const fn = src.slice(src.indexOf('export function writeBundle'));
+  const stageIdentity = fn.indexOf('writeTempFile(outPath');
+  const stageBr = fn.indexOf('writeTempFile(`${outPath}.br`');
+  const stageGz = fn.indexOf('writeTempFile(`${outPath}.gz`');
+  assert.ok(stageIdentity !== -1, 'identity is staged to a temp via writeTempFile');
+  assert.ok(stageBr !== -1, 'the brotli companion is staged to a temp');
+  assert.ok(stageGz !== -1, 'the gzip companion is staged to a temp');
+  const firstRename = fn.indexOf('renameSync(');
+  assert.ok(
+    firstRename !== -1 && firstRename > stageIdentity && firstRename > stageBr && firstRename > stageGz,
+    'no rename may run before every artifact has a staged temp',
+  );
+  // Identity FIRST: the server's companion mtime-freshness guard skips a
+  // companion OLDER than the identity, so a crash residue of (new identity +
+  // old companions) is served consistently as identity — while the reverse
+  // order would leave (old identity + NEW companion), which the guard counts
+  // as fresh and would serve against the OLD identity's ETag.
+  const identityPush = fn.indexOf('staged.push({ tmp: writeTempFile(outPath');
+  const brPush = fn.indexOf('staged.push({ tmp: writeTempFile(`${outPath}.br`');
+  assert.ok(identityPush !== -1 && identityPush < brPush, 'identity is staged (and so renamed) first');
+  assert.match(fn, /for \(let i = 0; i < staged\.length; i\+\+\)/, 'the swap is one quick forward pass');
 });
 
 test('CLI: emits bundle.js.br and bundle.js.gz that decompress to the identity bundle', async () => {
@@ -494,6 +524,32 @@ test('CAR-145 r3: bundleContentHashFromFd — the hash belongs to the fd, not th
     renameSync(join(dir, 'swap.js'), pathA);
     assert.equal(serverMod.bundleContentHashFromFd(fd, sizeA), h1,
       'the hash must keep belonging to the ORIGINAL inode behind this fd');
+  } finally {
+    closeSync(fd);
+  }
+});
+
+test('CAR-145 r3: a short read (file truncated after the size was taken) → null, never a prefix hash', () => {
+  const root = makeScratch('car145-r3-shortread');
+  const pub = writeFixturePublic(root);
+  const bundlePath = join(pub, 'js', 'bundle.js');
+  writeFileSync(bundlePath, 'var CAR145_TRUNC = 1;\n');
+  // 'r+' (not 'r') — POSIX ftruncate on a read-only fd is EINVAL; the
+  // truncation must happen on the SAME fd/inode so no path re-lookup
+  // reintroduces the js/file-system-race pattern.
+  const fd = openSync(bundlePath, 'r+');
+  try {
+    // CodeQL js/file-system-race: the size comes from the FD (fstatSync), not
+    // from a path stat that could drift from the opened inode.
+    const st = fstatSync(fd);
+    // Control — the whole file reads to the content hash.
+    assert.match(serverMod.bundleContentHashFromFd(fd, st.size), /^[0-9a-f]{12}$/);
+    // Truncate AFTER the size was taken: the promised bytes are no longer all
+    // there. A prefix hash here would be valid-looking 12-hex and callers
+    // would cache/serve it as THE content hash — it must be null (the
+    // uncached no-store path).
+    ftruncateSync(fd, 4);
+    assert.equal(serverMod.bundleContentHashFromFd(fd, st.size), null);
   } finally {
     closeSync(fd);
   }
