@@ -122,29 +122,9 @@ function* walkJs(dir) {
 // CAR-125 followed the same protocol: its three map.list.* keys shipped
 // with the CAR125_PENDING allowlist, which was deleted when the ×19
 // dictionary fan-out landed (the CAR-125 review round).
-// CAR-124 (empty states) — the same protocol: the first-run example /
-// empty-state copy in funded/batch/apply/auto ships EN-fallback-first
-// (the `// CAR-124 i18n:` markers in the views); the ×19 dictionary
-// fan-out is a follow-up locale pass. Delete CAR124_PENDING when it lands.
-const CAR124_PENDING = new Set([
-  'v2empty.exampleTag', // Example
-  'v2empty.funded.emptyTitle', // Nothing discovered yet
-  'v2empty.funded.emptyBody', // Run discovery to scan public funding feeds…
-  'v2empty.batch.emptyTitle', // Start with a list of postings
-  'v2empty.batch.emptyBody', // Paste a bare URL list below (or type rows)…
-  'v2empty.batch.pasteList', // Paste URL list
-  'v2empty.batch.pasteAdded', // Added {n} rows — press Save
-  'v2empty.batch.pasteNone', // No http(s) URLs found on the clipboard
-  'v2empty.batch.pasteFail', // Clipboard unavailable — paste the list manually
-  'v2empty.batch.docsHint', // Step-by-step:
-  'v2empty.apply.emptyTitle', // Generate an application checklist
-  'v2empty.apply.emptyBody', // Paste a job posting URL above and run…
-  'v2empty.apply.pickReport', // pick an evaluated report
-  'v2empty.apply.reportsHint', // Starting from an evaluated report:
-  'v2empty.auto.tryExample', // Try an example URL
-  'v2empty.auto.hint', // One URL takes about {eta}. Nothing runs until you press Run…
-  'v2empty.auto.configHint', // Providers and the cadence timer are configured in
-]);
+// CAR-124 followed the same protocol: its 18 v2empty.* empty-state keys
+// shipped with the CAR124_PENDING allowlist, which was deleted when the
+// ×19 dictionary fan-out landed (the 2026-10-26 review round).
 
 test('i18n: every t(key) call in public/js/** maps to a DICT entry', () => {
   // Match both t('key') and t("key"). Captures the key string.
@@ -165,13 +145,7 @@ test('i18n: every t(key) call in public/js/** maps to a DICT entry', () => {
   const missing = [];
   for (const k of usedKeys) {
     if (DICT[k]) continue;
-    if (CAR124_PENDING.has(k)) continue; // CAR-124 empty states — ×19 fan-out pending
     missing.push(`${k}  (first seen in ${fileByKey.get(k)})`);
-  }
-  // stale-key self-check (the CAR-125 protocol): an allowlisted key that is
-  // no longer referenced anywhere must be dropped from the set, not rot.
-  for (const k of CAR124_PENDING) {
-    assert.ok(usedKeys.has(k), `${k} is in CAR124_PENDING but no longer referenced — drop it from the allowlist`);
   }
   if (missing.length) {
     console.error('Keys referenced via t(...) but missing from DICT:\n  ' + missing.join('\n  '));
