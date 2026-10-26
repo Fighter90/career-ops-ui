@@ -62,10 +62,22 @@ function __teardownActiveScanRunner() {
   }
 }
 
+// CAR-115 review r2 — the live filter debounce must not outlive the route:
+// a pending 250 ms timer firing after a hashchange would render into the
+// detached tree and replaceState('#/scan?…') over ANOTHER page's URL. The
+// view registers its timer handle here; the hashchange handler (and the
+// same-mount re-render path) cancels it.
+let __scanCommitTimerCancel = null;
+function __cancelScanCommitDebounce() {
+  if (typeof __scanCommitTimerCancel === 'function') __scanCommitTimerCancel();
+  __scanCommitTimerCancel = null;
+}
+
 // Cancel on every route change — the renderer always begins from a clean slate.
 window.addEventListener('hashchange', () => {
   __cancelActiveScanPoll();
   __teardownActiveScanRunner();
+  __cancelScanCommitDebounce();
   detachScanRefreshListeners();
   detachScanBodyListeners();
 });
@@ -132,6 +144,7 @@ Router.register('scan', async () => {
   // streaming into detached nodes and the poll writing into them. Tear
   // the runner down here as well — it is a no-op when none is running.
   __teardownActiveScanRunner();
+  __cancelScanCommitDebounce(); // a previous visit's pending filter timer dies here too
   const c = UI.el;
   const t = (k, f) => I18n.t(k, f);
   // CAR-115 — filter state lives in the URL (#/scan?q=…&src=…): parsed
@@ -141,10 +154,13 @@ Router.register('scan', async () => {
       const qs = (window.location.hash || '').split('?')[1] || '';
       if (!qs) return { params: null, sort: null };
       const p = new URLSearchParams(qs);
-      const sort = p.get('sort');
+      // Whitelist the sort keys the table actually offers — an unknown
+      // ?sort= must not silently become a title sort with all headers
+      // reading aria-sort=none.
+      const sortKey = ['title', 'seniority', 'salary'].includes(p.get('sort')) ? p.get('sort') : null;
       return {
         params: qs,
-        sort: sort ? { key: sort, dir: p.get('dir') === 'asc' ? 'asc' : 'desc' } : null,
+        sort: sortKey ? { key: sortKey, dir: p.get('dir') === 'asc' ? 'asc' : 'desc' } : null,
       };
     } catch { return { params: null, sort: null }; }
   })();
@@ -508,7 +524,7 @@ Router.register('scan', async () => {
     view,
     sort: urlState.sort,
     getDensity: () => density,
-    onSortChange: (key, dir) => { if (view.syncUrl) view.syncUrl({ sort: key, dir }); },
+    onSortChange: () => { if (view.syncUrl) view.syncUrl(); }, // getSort rides the URL mirror
     onFilterChange: () => { if (view.syncUrl) view.syncUrl(); },
     onQuickView: (r) => { if (view.openQuickView) view.openQuickView(r); },
     getLastResults: () => lastResults,
@@ -542,10 +558,24 @@ Router.register('scan', async () => {
   );
   // CAR-93 — Enter applies immediately; typing applies after a 250 ms
   // debounce (live filtering without a per-keystroke re-render storm).
-  function debounce(fn, ms) {
-    let h = null;
-    return () => { if (h) clearTimeout(h); h = setTimeout(() => { h = null; fn(); }, ms); };
+  // CAR-115 review r2 — the timer handle lives at VIEW scope: commit()
+  // (Enter) cancels a pending debounce (one render, not two), and the
+  // route teardown cancels it (a late commit must not render into a
+  // detached tree or rewrite another route's URL — see syncUrl's guard).
+  let commitTimer = null;
+  function commitDebounced() {
+    if (commitTimer) clearTimeout(commitTimer);
+    commitTimer = setTimeout(() => { commitTimer = null; commit(); }, 250);
   }
+  function commit() {
+    if (commitTimer) { clearTimeout(commitTimer); commitTimer = null; }
+    filtersApi.commitFilters();
+    syncFilterBar();
+  }
+  __scanCommitTimerCancel = () => {
+    if (commitTimer) { clearTimeout(commitTimer); commitTimer = null; }
+  };
+  view.syncUrl = (extra) => filtersApi.syncUrl(extra);
 
   // ── CAR-115 — the filter bar UI + presets (scan/filters.js factory) ───
   const filterBar = window.createScanFilterBar({
@@ -559,12 +589,8 @@ Router.register('scan', async () => {
   });
   const presetsWrap = filterBar.presetsWrap;
   function syncFilterBar() { filterBar.sync(); }
-  // One funnel for every live change: apply + mirror the URL + refresh the
-  // chip labels. Enter applies immediately; typing after a 250 ms debounce
-  // (live filtering without a per-keystroke re-render storm).
-  function commit() { filtersApi.commitFilters(); syncFilterBar(); }
-  const commitDebounced = debounce(commit, 250);
-  view.syncUrl = (extra) => filtersApi.syncUrl(extra);
+  // (commit / commitDebounced / view.syncUrl are defined above — the funnel
+  // needs the filter bar object, so it stays the single definition point.)
 
   // ── CAR-115 — quick view side panel (scan/runner.js factory) ──────────
   const quickView = window.createScanQuickView({ c, t, SR, view });

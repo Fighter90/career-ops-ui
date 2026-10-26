@@ -53,9 +53,12 @@ test('salary inputs carry no in-field placeholder (label is above)', () => {
 });
 
 test('filters apply LIVE: 250 ms debounce on text, immediate on change, Enter now', () => {
-  assert.match(SCAN, /function commit\(\)\s*\{\s*filtersApi\.commitFilters\(\);\s*syncFilterBar\(\);\s*\}/,
+  // The funnel cancels a pending debounce first (review r2: Enter during
+  // the 250 ms window = one render, not two; the route teardown cancels too).
+  assert.match(SCAN, /function commit\(\)\s*\{\s*if \(commitTimer\) \{ clearTimeout\(commitTimer\); commitTimer = null; \}\s*filtersApi\.commitFilters\(\);\s*syncFilterBar\(\);\s*\}/,
     'the single live-apply funnel');
-  assert.match(SCAN, /debounce\(commit, 250\)/, 'text inputs debounce at 250 ms');
+  assert.match(SCAN, /commitTimer = setTimeout\(\(\) => \{ commitTimer = null; commit\(\); \}, 250\)/,
+    'text inputs debounce at 250 ms');
   assert.match(SCAN, /el\.addEventListener\('input', \(\) => commitDebounced\(\)\)/,
     'text/number inputs apply on input');
   assert.match(SCAN, /if \(e\.key === 'Enter'\) \{ e\.preventDefault\(\); commit\(\); \}/,

@@ -192,12 +192,22 @@ window.ScanResults = (function () {
   let sortKey = (ctx.sort && ctx.sort.key) || null;
   let sortDir = (ctx.sort && ctx.sort.dir) || 'desc';
   // CAR-115 — density for the windowed render ('comfortable' | 'compact').
-  const density = (ctx.getDensity && ctx.getDensity()) || 'comfortable';
-  // CAR-115 — row-height model per density (titles/meta are single-line
-  // CSS ellipsized cells, so height is stable). The window re-measures the
+  // Re-derived on every render: the pagebar toggle flips the view's density
+  // and re-renders — a closure-frozen copy would keep the old row model.
+  let density = (ctx.getDensity && ctx.getDensity()) || 'comfortable';
+  // Row-height model per density (titles/meta are single-line CSS
+  // ellipsized cells, so height is stable). The window re-measures the
   // first rendered row and self-corrects on the first scroll.
-  const ROW_H = density === 'compact' ? 36 : 48;
+  let ROW_H = density === 'compact' ? 36 : 48;
   let measuredH = 0; // refined once real layout exists (first row offsetHeight)
+  function syncDensity() {
+    const next = (ctx.getDensity && ctx.getDensity()) || 'comfortable';
+    if (next !== density) {
+      density = next;
+      ROW_H = density === 'compact' ? 36 : 48;
+      measuredH = 0; // the old density's measurement is wrong for the new one
+    }
+  }
   const WIN_BUF = 6;   // rows rendered above + below the viewport
   const WIN_MIN = 40;  // corpora this small render whole — no windowing
   function windowRange(vp, total, rowH) {
@@ -215,7 +225,9 @@ window.ScanResults = (function () {
     if (key === 'seniority') {
       const s = senOf(r);
       const i = s ? SEN_ORDER.indexOf(s) : SEN_ORDER.length;
-      return i;
+      // Inverted so the DEFAULT desc direction reads senior-first and an
+      // unclassified title sorts last in both directions.
+      return SEN_ORDER.length - i;
     }
     if (key === 'date') { const d = Date.parse(r && r.date); return Number.isFinite(d) ? d : 0; }
     return String((r && r.title) || '').toLowerCase();
@@ -229,6 +241,11 @@ window.ScanResults = (function () {
       if (av > bv) return 1 * dir;
       return 0; // stable → ties keep the boost-first order
     });
+  }
+  // The URL mirror reads the live sort state so a filter commit never
+  // strips ?sort=/?dir= from a shared link (CAR-115 review r2).
+  function getSort() {
+    return sortKey ? { key: sortKey, dir: sortDir } : null;
   }
   // Literal-key label lookup: a concatenated dynamic key would read as an
   // unmapped key to the i18n-coverage gate, so every key here is a literal.
@@ -281,6 +298,7 @@ window.ScanResults = (function () {
     return [...enRows, ...ruRows];
   }
   function render() {
+    syncDensity(); // the pagebar density toggle may have flipped since last render
     // v1.243.0 — every re-render (facet-chip toggle, favorite star, filter
     // apply) wipes and rebuilds this whole subtree. Carry across what the
     // user was looking at: the focused chip (buildChipRow tags its chips
@@ -633,6 +651,9 @@ window.ScanResults = (function () {
       return c('tr', {
         className: 'scan-row v2-scan-rowbtn' + (r._boosted ? ' row-boosted' : '') + (freshUrls.has(r.url) ? ' v2-scan-isnew' : ''),
         tabindex: '0',
+        // The posting URL rides the row: quick-view close() re-resolves a
+        // replaced row by it (the windowed tbody can detach nodes mid-session).
+        'data-url': r.url || '',
         title: t('scan.v2.quickHint', 'Click to preview'),
         onClick: openQV,
         onKeydown: (e) => {
@@ -671,7 +692,6 @@ window.ScanResults = (function () {
     };
     const table = c('table', {
       className: 'tbl scan-tbl' + (density === 'compact' ? ' v2-scan-compact' : ''),
-      'aria-rowcount': String(allRows.length),
     }, [
       c('thead', null, c('tr', null, [
         c('th', { className: 'scan-col-star' }, '★'),
@@ -690,6 +710,11 @@ window.ScanResults = (function () {
       const rh = measuredH || ROW_H;
       const range = windowRange(viewport, rowNodes.length, rh);
       if (range[0] === curS && range[1] === curE) return;
+      // A repaint that re-attaches the focused row must hand focus back to
+      // it (the wipe below used to drop focus to <body> mid-scroll).
+      const act = (typeof document !== 'undefined' && document.activeElement) || null;
+      const focusRow = (act && typeof act.closest === 'function' && act.closest('tr.scan-row')) || null;
+      const focusIdx = focusRow ? rowNodes.indexOf(focusRow) : -1;
       curS = range[0]; curE = range[1];
       tbody.textContent = '';
       if (curS > 0) {
@@ -700,6 +725,9 @@ window.ScanResults = (function () {
       if (curE < rowNodes.length) {
         tbody.appendChild(c('tr', { className: 'v2-scan-pad', 'aria-hidden': 'true' },
           c('td', { colSpan: '4', style: { height: ((rowNodes.length - curE) * rh) + 'px' } }, '')));
+      }
+      if (focusIdx >= curS && focusIdx < curE && typeof rowNodes[focusIdx].focus === 'function') {
+        try { rowNodes[focusIdx].focus(); } catch { /* detached */ }
       }
     };
     paintWindow();
@@ -792,7 +820,7 @@ window.ScanResults = (function () {
     }
     return row;
   }
-    return { render: render, getRows: getRows };
+    return { render: render, getRows: getRows, getSort: getSort };
   }
 
   return { FALLBACK_SOURCES: FALLBACK_SOURCES, create: create, splitTitleCountry: splitTitleCountry, salaryHead: salaryHead };

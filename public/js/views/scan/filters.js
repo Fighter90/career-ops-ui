@@ -144,6 +144,11 @@
       if (s.tech.length) p.set('tech', s.tech.join(','));
       if (s.level.length) p.set('lvl', s.level.join(','));
       if (s.dynamic.length) p.set('kw', s.dynamic.join(','));
+      // The table sort lives in the SAME query — read from the live results
+      // subsystem so a filter commit never strips ?sort=/?dir= from a shared
+      // link. An explicit `extra` entry still wins.
+      const liveSort = deps.SR && typeof deps.SR.getSort === 'function' ? deps.SR.getSort() : null;
+      if (liveSort && liveSort.key) { p.set('sort', liveSort.key); p.set('dir', liveSort.dir); }
       if (extra) for (const [k, v] of Object.entries(extra)) {
         if (v != null && v !== '') p.set(k, String(v));
       }
@@ -152,10 +157,11 @@
     function syncUrl(extra) {
       try {
         if (typeof window === 'undefined' || !window.history || !window.location) return;
+        // A commit that fires after the user left #/scan (pending debounce,
+        // in-flight async) must not rewrite ANOTHER route's URL.
+        if (!String(window.location.hash || '').startsWith('#/scan')) return;
         const qs = urlFromFilters(extra);
-        const base = (window.location.hash || '#/scan').split('?')[0];
-        const next = base === '#/scan' ? base : '#/scan';
-        window.history.replaceState(null, '', next + (qs ? '?' + qs : ''));
+        window.history.replaceState(null, '', '#/scan' + (qs ? '?' + qs : ''));
       } catch { /* a sandboxed/history-less env just skips the mirror */ }
     }
 

@@ -48,8 +48,10 @@ function makeEl(docRef, layout = {}) {
       className: '', open: false, scrollTop: 0, scrollHeight: 0, dataset: {},
       hidden: false,
       // windowing inputs — per-factory layout defaults (the windowed render
-      // reads clientHeight off the viewport and offsetHeight off rows)
-      clientHeight: layout.clientHeight || 0, offsetHeight: layout.offsetHeight || 0,
+      // reads clientHeight off the viewport and offsetHeight off rows);
+      // getters so a density flip can move the row model mid-test
+      get clientHeight() { return layout.clientHeight || 0; },
+      get offsetHeight() { return layout.offsetHeight || 0; },
       _listeners: {},
       get classList() {
         const self = this;
@@ -118,10 +120,16 @@ function makeEl(docRef, layout = {}) {
 
 // ───────────────────────── 1. filters.js — URL state + active chips ─────────
 
-function bootFilters() {
+function bootFilters({ sort = null } = {}) {
   globalThis.document = { activeElement: null };
-  const fakeWindow = { UI: { confirm: async () => true, toast: () => {} }, ScanPrefs: { listSearches: () => [], saveSearch() {}, removeSearch() {} } };
-  new Function('window', FILTERS_SRC)(fakeWindow); // eslint-disable-line no-new-func
+  const urlCalls = [];
+  const win = {
+    UI: { confirm: async () => true, toast: () => {} },
+    ScanPrefs: { listSearches: () => [], saveSearch() {}, removeSearch() {} },
+    location: { hash: '#/scan' },
+    history: { replaceState: (a, b, url) => urlCalls.push(url) },
+  };
+  new Function('window', FILTERS_SRC)(win); // eslint-disable-line no-new-func
   const document = { activeElement: null };
   const el = makeEl(document);
   const mk = () => ({ value: '', checked: false, dataset: {} });
@@ -137,12 +145,12 @@ function bootFilters() {
     activeTech: new Set(), activeLevel: new Set(), activeDynamic: new Set(),
   };
   let renders = 0;
-  const api = fakeWindow.createScanFilters(refs, {
+  const api = win.createScanFilters(refs, {
     pager: { reset() {} },
-    SR: { render() { renders += 1; } },
+    SR: { render() { renders += 1; }, getSort: () => sort },
     t: (k, f) => f,
   });
-  return { api, refs, el, renders: () => renders };
+  return { api, refs, el, renders: () => renders, urlCalls, win };
 }
 
 test('CAR-115: filter state round-trips through the #/scan?… URL params', () => {
@@ -240,11 +248,13 @@ const ROWS = Array.from({ length: 120 }, (_, i) => ({
   salary: '', source: 'greenhouse', isRemote: false, date: '2026-10-01',
 }));
 
-function bootResults({ corpus = ROWS, viewportH = 0, rowH = 48 } = {}) {
+function bootResults({ corpus = ROWS, viewportH = 0, rowH = 48, getDensity = null } = {}) {
   const document = { activeElement: null };
   globalThis.document = document; // the eval'd view reads the bare global
-  const w = { UI: { el: makeEl(document, { clientHeight: viewportH, offsetHeight: rowH }) }, Skills: null };
+  const layout = { clientHeight: viewportH, offsetHeight: rowH }; // live — tests may retune it
+  const w = { UI: { el: makeEl(document, layout) }, Skills: null };
   new Function('window', readFileSync(resolve(ROOT, 'public/js/lib/skills.js'), 'utf8'))(w); // eslint-disable-line no-new-func
+  new Function('window', readFileSync(resolve(ROOT, 'public/js/lib/job-facets.js'), 'utf8'))(w); // eslint-disable-line no-new-func
   new Function('window', readFileSync(resolve(ROOT, 'public/js/lib/scan-results.js'), 'utf8'))(w); // eslint-disable-line no-new-func
   w.Countries = { countriesIn: () => [], rowInCountry: () => true };
   w.ScanPrefs = { listFavorites: () => [], isFavorite: () => false, toggleFavorite() {} };
@@ -269,11 +279,12 @@ function bootResults({ corpus = ROWS, viewportH = 0, rowH = 48 } = {}) {
     filterSalaryAny: input(''),
     activeTech: new Set(), activeLevel: new Set(), activeDynamic: new Set(),
     twoPagerData: null,
+    getDensity: getDensity || (() => 'comfortable'),
     getLastResults: () => ({ en: { when: '2026-10-01T10:00:00Z', fresh: [], filtered: corpus }, ru: null }),
     onSortChange: (k, d) => { lastSort = [k, d]; },
   };
   const SR = w.ScanResults.create(ctx);
-  return { SR, resultsEl, el, document, viewportH, rowH, lastSort: () => lastSort, ctx };
+  return { SR, resultsEl, el, document, viewportH, rowH, layout, lastSort: () => lastSort, ctx };
 }
 
 test('CAR-115: windowing — a tall viewport renders only visible rows + buffer + spacers', () => {
@@ -341,6 +352,114 @@ test('CAR-115: th sort keeps the aria-sort state machine (none → descending �
   assert.equal(th().getAttribute('aria-sort'), 'descending');
   btn.click();
   assert.equal(th().getAttribute('aria-sort'), 'ascending');
+});
+
+// ───────────────────────── 3b. density / sort-URL / focus (review r2) ────────
+
+test('CAR-115: the density toggle re-derives the row model mid-session', () => {
+  let mode = 'comfortable';
+  const env = bootResults({ viewportH: 480, rowH: 48, getDensity: () => mode });
+  env.SR.render();
+  const before = env.resultsEl.querySelectorAll('tr.scan-row').length;
+  assert.ok(!env.resultsEl.querySelector('table').className.includes('v2-scan-compact'),
+    'comfortable render carries no compact class');
+  mode = 'compact';
+  env.layout.offsetHeight = 36; // compact rows measure shorter — the view re-derives
+  env.SR.render();
+  assert.ok(env.resultsEl.querySelector('table').className.includes('v2-scan-compact'),
+    'the compact class lands on the table');
+  const after = env.resultsEl.querySelectorAll('tr.scan-row').length;
+  assert.ok(after > before, `compact rows-per-window grew: ${before} → ${after} (frozen ROW_H would stay at ${before})`);
+});
+
+test('CAR-115: the URL keeps the table sort across a filter commit', () => {
+  const { api, refs, urlCalls } = bootFilters({ sort: { key: 'salary', dir: 'desc' } });
+  refs.filterText.value = 'python';
+  api.commitFilters();
+  assert.ok(urlCalls.length >= 1, 'replaceState ran');
+  const p = new URLSearchParams(urlCalls[0]);
+  assert.equal(p.get('sort'), 'salary', 'sort survives the commit');
+  assert.equal(p.get('dir'), 'desc');
+});
+
+test('CAR-115: syncUrl never rewrites another route’s URL (late-commit guard)', () => {
+  const { api, refs, urlCalls, win } = bootFilters();
+  refs.filterText.value = 'python';
+  api.commitFilters();
+  assert.equal(urlCalls.length, 1);
+  win.location.hash = '#/tracker?x=1'; // the user navigated away
+  api.commitFilters(); // …but a debounce/late commit still fires
+  assert.equal(urlCalls.length, 1, 'a commit on another route does NOT touch the URL');
+});
+
+test('CAR-115: the debounced commit dies with the route (cancel + guard)', () => {
+  // Structural: scan.js view mount is not harness-able in isolation; the
+  // behavioural halves live in the filters/syncUrl tests above.
+  assert.match(SCAN_SRC, /commitTimer = null;\s*\}\s*\n\s*filtersApi\.commitFilters\(\);/,
+    'commit() cancels a pending debounce timer first (Enter during the window = one render)');
+  assert.match(SCAN_SRC, /function __cancelScanCommitDebounce\(\)/, 'a module cancel hook exists');
+  assert.match(SCAN_SRC, /__cancelScanCommitDebounce\(\);/, '…and the hashchange teardown calls it');
+  assert.match(FILTERS_SRC, /startsWith\('#\/scan'\)/, 'syncUrl is route-guarded');
+  assert.match(FILTERS_SRC, /replaceState\(null, '', '#\/scan'/, 'the destination is written directly (no dead same-hash ternary)');
+});
+
+test('CAR-115: a window move re-focuses the row the user was on', () => {
+  const env = bootResults({ viewportH: 480, rowH: 48 });
+  env.SR.render();
+  const vp = env.resultsEl.querySelector('.v2-scan-viewport');
+  const rows = env.resultsEl.querySelectorAll('tr.scan-row');
+  const row = rows[5];
+  assert.ok(row.getAttribute('data-url'), 'rows carry data-url (the focus re-resolution key)');
+  row.focus();
+  assert.equal(env.document.activeElement, row);
+  vp.scrollTop = 48 * 8; // window slides to start=2 — row 5 stays in range
+  (vp._listeners.scroll || []).at(-1)();
+  assert.equal(env.document.activeElement, row, 'the focused row kept focus across the repaint');
+  assert.ok(env.resultsEl.contains(env.document.activeElement), '…and is still attached to the table');
+});
+
+test('CAR-115: closing the quick view re-resolves a row the window replaced', () => {
+  const { view, panel, document } = bootQuickView();
+  const focal = {
+    focus() { document.activeElement = focal; },
+    getAttribute: (k) => (k === 'data-url' ? 'https://x/9' : null),
+  };
+  document.activeElement = focal;
+  const replacement = {
+    focus() { document.activeElement = replacement; },
+    getAttribute: (k) => (k === 'data-url' ? 'https://x/9' : null),
+  };
+  document.querySelectorAll = () => [replacement];
+  document.contains = (n) => n !== focal; // the opening row left the windowed tbody
+  view.openQuickView({ title: 'X', company: 'Y', url: 'https://x/9', salary: '' });
+  panel.keydown('Escape');
+  assert.equal(document.activeElement, replacement,
+    'close() re-resolved the same posting row from the live table');
+});
+
+test('CAR-115: seniority sort is senior-first (desc default), unknown last', () => {
+  const rows = [
+    { title: 'Junior Developer', company: 'x', url: 'https://x/1', salary: '' },
+    { title: 'Warehouse Coordinator', company: 'x', url: 'https://x/4', salary: '' },
+    { title: 'Lead Platform Engineer', company: 'x', url: 'https://x/2', salary: '' },
+    { title: 'Senior Backend Engineer', company: 'x', url: 'https://x/3', salary: '' },
+  ];
+  const env = bootResults({ corpus: rows });
+  env.SR.render();
+  const titles = () => env.resultsEl.querySelector('tbody').querySelectorAll('tr.scan-row')
+    .map((tr) => tr.querySelector('.scan-posting-title').textContent);
+  env.resultsEl.querySelectorAll('.v2-scan-sort')[1].click(); // seniority, default desc
+  assert.deepEqual(env.lastSort(), ['seniority', 'desc']);
+  assert.deepEqual(titles(), ['Lead Platform Engineer', 'Senior Backend Engineer', 'Junior Developer', 'Warehouse Coordinator'],
+    'desc = most senior first, unclassified last');
+  env.resultsEl.querySelectorAll('.v2-scan-sort')[1].click(); // flip to asc
+  assert.deepEqual(titles(), ['Warehouse Coordinator', 'Junior Developer', 'Senior Backend Engineer', 'Lead Platform Engineer'],
+    'asc reverses (still unclassified last)');
+});
+
+test('CAR-115: ?sort= is whitelisted and aria-rowcount is gone', () => {
+  assert.match(SCAN_SRC, /\['title',\s*'seniority',\s*'salary'\]/, 'sort keys are whitelisted');
+  assert.doesNotMatch(SCAN_SRC, /aria-rowcount/, 'a windowed table cannot promise a rowcount');
 });
 
 // ───────────────────────── 4. quick view (scan/runner.js) ────────────────────
@@ -435,7 +554,7 @@ test('CAR-115: the Active-companies toggle renders the grouped list (no Referenc
 // ───────────────────────── 5. static guards ──────────────────────────────────
 
 test('CAR-115: URL sync uses replaceState (no hashchange re-render loop)', () => {
-  assert.match(FILTERS_SRC, /history\.replaceState\(null, '', next \+ \(qs \? '\?' \+ qs : ''\)\)/);
+  assert.match(FILTERS_SRC, /history\.replaceState\(null, '', '#\/scan' \+ \(qs \? '\?' \+ qs : ''\)\)/);
   assert.doesNotMatch(FILTERS_SRC, /location\.hash\s*=/, 'never re-assign the hash (would re-render)');
 });
 

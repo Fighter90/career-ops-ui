@@ -334,6 +334,7 @@
     });
     let current = null;
     let lastFocus = null;
+    let lastFocusUrl = ''; // the opening row's data-url (re-resolution key)
     const closeBtn = c('button', {
       className: 'btn btn-ghost btn-sm v2-scan-qv-close', type: 'button',
       'aria-label': t('common.closeDialog', 'Close dialog'),
@@ -416,13 +417,32 @@
       backdrop.classList.add('is-open');
       panel.classList.add('is-open');
       lastFocus = document.activeElement;
+      lastFocusUrl = (lastFocus && typeof lastFocus.getAttribute === 'function')
+        ? (lastFocus.getAttribute('data-url') || '') : '';
       closeBtn.focus();
+    }
+    // The opening row may have left the windowed tbody while the panel was
+    // open (a scroll repaint replaced the nodes) — re-resolve it by URL.
+    function resolveFocusTarget() {
+      if (!lastFocus) return null;
+      const detached = (typeof lastFocus.isConnected === 'boolean')
+        ? !lastFocus.isConnected
+        : (typeof document !== 'undefined' && typeof document.contains === 'function' && !document.contains(lastFocus));
+      if (detached && lastFocusUrl && typeof document !== 'undefined' && typeof document.querySelectorAll === 'function') {
+        const rows = document.querySelectorAll('tr.scan-row[data-url]');
+        for (const r of (Array.isArray(rows) ? rows : Array.prototype.slice.call(rows))) {
+          if (r.getAttribute('data-url') === lastFocusUrl) return r;
+        }
+      }
+      return lastFocus;
     }
     function close() {
       panel.classList.remove('is-open');
       backdrop.classList.remove('is-open');
-      if (lastFocus && typeof lastFocus.focus === 'function') { try { lastFocus.focus(); } catch { /* detached */ } }
+      const target = resolveFocusTarget();
+      if (target && typeof target.focus === 'function') { try { target.focus(); } catch { /* detached */ } }
       lastFocus = null;
+      lastFocusUrl = '';
       current = null;
     }
     panel.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
