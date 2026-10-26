@@ -313,3 +313,123 @@ test('fetchResponse refuses a private host before any request (guard inside the 
   }
   assert.equal(calls, 0, 'the guard must fire before the request leaves');
 });
+
+// ── 7. fetchTextFollowSameHost: redirect target must keep the port ─────
+
+test('hh: a same-host redirect to a NON-default port is refused, not followed', async () => {
+  let calls = 0;
+  const fetchImpl = async () => {
+    calls += 1;
+    return {
+      ok: false, status: 302, url: 'https://hh.ru/search/vacancy?text=PHP',
+      headers: { get: (k) => (String(k).toLowerCase() === 'location'
+        ? 'https://hh.ru:8443/search/vacancy?text=PHP' : null) },
+      text: async () => '',
+    };
+  };
+  await assert.rejects(
+    () => hh.searchHH('PHP', { fetchImpl, maxPages: 1 }),
+    (err) => err.status === 302 && err.location === 'https://hh.ru:8443/search/vacancy?text=PHP',
+  );
+  assert.equal(calls, 1, 'the odd-port target is never fetched');
+});
+
+// ── 8. 3xx/non-ok response bodies are released (undici socket pin) ─────
+
+function bodyWithCancel() {
+  const calls = { cancel: 0 };
+  return {
+    calls,
+    body: { cancel: async () => { calls.cancel += 1; } },
+  };
+}
+
+test('fetchTextFollowSameHost cancels the body of a followed 3xx hop', async () => {
+  const first = bodyWithCancel();
+  const fetchImpl = async (u) => {
+    if (String(u).includes('page=0')) {
+      return {
+        ok: false, status: 302, url: String(u), body: first.body,
+        headers: { get: (k) => (String(k).toLowerCase() === 'location'
+          ? 'https://hh.ru/search/vacancy?text=PHP&page=1' : null) },
+        text: async () => '',
+      };
+    }
+    return { ok: true, status: 200, url: String(u), headers: { get: () => null }, text: async () => '<html></html>' };
+  };
+  const jobs = await hh.searchHH('PHP', { fetchImpl, maxPages: 2 });
+  assert.equal(jobs.length, 0, 'page 2 has no cards — but the redirect resolved');
+  assert.equal(first.calls.cancel, 1, 'the 302 hop body was cancelled, not left to GC');
+});
+
+test('fetchTextFollowSameHost cancels the body when a 3xx is REFUSED', async () => {
+  const refused = bodyWithCancel();
+  const fetchImpl = async () => ({
+    ok: false, status: 302, url: 'https://hh.ru/search/vacancy?text=PHP', body: refused.body,
+    headers: { get: (k) => (String(k).toLowerCase() === 'location'
+      ? 'https://evil.example/search/vacancy' : null) },
+    text: async () => '',
+  });
+  await assert.rejects(() => hh.searchHH('PHP', { fetchImpl, maxPages: 1 }), (e) => e.status === 302);
+  assert.equal(refused.calls.cancel, 1, 'the refused redirect body was cancelled');
+});
+
+// ── 9. guard refusals are tagged and never retried ─────────────────────
+
+test('guardResolvedHost tags its refusal (ssrfRefused)', async () => {
+  await assert.rejects(
+    () => httpJson.guardResolvedHost(globalThis.fetch, 'https://127.0.0.1:9/private'),
+    (e) => e.code === 'ECAREEROPS_BLOCKED_ADDRESS' && e.ssrfRefused === true,
+  );
+});
+
+test('fetchJsonWithRetry does NOT retry a guard refusal (deterministic SSRF)', async () => {
+  let calls = 0;
+  const refusal = Object.assign(new Error('Refusing to fetch x: literal non-public address'), {
+    code: 'ECAREEROPS_BLOCKED_ADDRESS', ssrfRefused: true,
+  });
+  const fetchImpl = async () => { calls += 1; throw refusal; };
+  await assert.rejects(
+    () => httpJson.fetchJsonWithRetry(fetchImpl, 'https://board.example/x', { retries: 3, retryDelayMs: 0 }),
+    (e) => e.ssrfRefused === true,
+  );
+  assert.equal(calls, 1, `a refusal is deterministic — 1 attempt, got ${calls}`);
+});
+
+test('fetchTextWithRetry does NOT retry a guard refusal, but DOES retry a 503', async () => {
+  let refusalCalls = 0;
+  const refusal = Object.assign(new Error('Refusing to fetch x: literal non-public address'), {
+    code: 'ECAREEROPS_BLOCKED_ADDRESS', ssrfRefused: true,
+  });
+  const refusingImpl = async () => { refusalCalls += 1; throw refusal; };
+  await assert.rejects(
+    () => httpJson.fetchTextWithRetry(refusingImpl, 'https://board.example/x', { retries: 3, retryDelayMs: 0 }),
+    (e) => e.ssrfRefused === true,
+  );
+  assert.equal(refusalCalls, 1, `no retries for a refusal — got ${refusalCalls}`);
+
+  let transientCalls = 0;
+  const transientImpl = async () => {
+    transientCalls += 1;
+    if (transientCalls < 3) { const e = new Error('HTTP 503 (x)'); e.status = 503; throw e; }
+    return { ok: true, status: 200, text: async () => 'ok' };
+  };
+  const text = await httpJson.fetchTextWithRetry(transientImpl, 'https://board.example/x', { retries: 3, retryDelayMs: 0 });
+  assert.equal(text, 'ok');
+  assert.equal(transientCalls, 3, 'a transient 503 is still retried');
+});
+
+// ── 10. workday: the non-JSON-200 CAPTCHA diagnostic is preserved ──────
+
+test('workday: a 200 CAPTCHA HTML page sets the non-JSON fallback reason (not "network:")', async () => {
+  // fetchJson wraps a non-JSON 200 (CAPTCHA HTML) as "non-JSON 2xx response
+  // from …" with no .status — the diagnostic must not be lost into the
+  // generic network branch.
+  const htmlFetch = async () => {
+    throw new Error('non-JSON 2xx response from https://x: Unexpected token <');
+  };
+  await workday.fetchWorkday('https://tenant.wd1.myworkdayjobs.com/wday/cxs/tenant/site/jobs', { fetchImpl: htmlFetch });
+  const fb = workday.getLastWorkdayFallback();
+  assert.ok(fb, 'a fallback was recorded');
+  assert.equal(fb.reason, 'non-JSON response (likely CAPTCHA HTML)');
+});

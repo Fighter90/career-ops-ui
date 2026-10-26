@@ -59,6 +59,10 @@ export async function guardResolvedHost(fetchImpl, url) {
     if (isPrivateOrLoopbackHost(bare)) {
       const err = new Error(`Refusing to fetch ${hostname}: literal non-public address ${bare}`);
       err.code = 'ECAREEROPS_BLOCKED_ADDRESS';
+      // FULL-R2 review: tagged so the retry helpers classify the refusal as
+      // deterministic — a blocked address is not a transient network error
+      // and must never be retried.
+      err.ssrfRefused = true;
       err.hostname = hostname;
       err.address = bare;
       throw err;
@@ -76,6 +80,7 @@ export async function guardResolvedHost(fetchImpl, url) {
   if (address) {
     const err = new Error(`Refusing to fetch ${hostname}: resolves to non-public address ${address}`);
     err.code = 'ECAREEROPS_BLOCKED_ADDRESS';
+    err.ssrfRefused = true;
     err.hostname = hostname;
     err.address = address;
     throw err;
@@ -336,9 +341,12 @@ export async function fetchJsonWithRetry(fetchImpl, url, opts = {}) {
       const redirectRefusal = status === undefined
         && err instanceof TypeError
         && err?.cause?.message === REDIRECT_REFUSAL_CAUSE_MESSAGE;
+      // A guard refusal is deterministic too — the address is blocked and
+      // retrying cannot un-block it (FULL-R2 review finding 9).
+      const ssrfRefusal = status === undefined && err?.ssrfRefused === true;
       // Transient = 429, any 5xx, or a network/timeout error (no HTTP status).
       // A permanent 4xx is not worth retrying — rethrow now.
-      const transient = !redirectRefusal
+      const transient = !redirectRefusal && !ssrfRefusal
         && (status === undefined || status === 429 || status >= 500);
       if (!transient || attempt === retries || signal?.aborted) throw err;
       // Exponential backoff + jitter, honouring a (clamped) Retry-After when the
@@ -420,6 +428,10 @@ export async function fetchTextFollowSameHost(fetchImpl, url, opts = {}) {
     });
     const location = res.headers?.get?.('location') ?? null;
     if (res.status >= 300 && res.status < 400) {
+      // Release the unread body BEFORE moving on: undici pins the socket until
+      // the body is consumed or cancelled, and a redirect hop (followed or
+      // refused) never reads it. FULL-R2 review finding 7.
+      await res.body?.cancel?.().catch(() => {});
       const err = new Error(`HTTP ${res.status} (${current})`);
       err.status = res.status;
       err.location = location;
@@ -428,7 +440,10 @@ export async function fetchTextFollowSameHost(fetchImpl, url, opts = {}) {
       if (location && hop < maxRedirects) {
         try { next = new URL(location, current); } catch { next = null; }
         const to = next ? next.hostname.toLowerCase() : '';
-        const sameHostAllowed = next && next.protocol === 'https:'
+        // Same HOST and same PORT: a redirect to https://hh.ru:8443/ keeps the
+        // name but changes the service — refused like an off-host hop.
+        const portAllowed = !next || next.port === '' || next.port === first.port;
+        const sameHostAllowed = next && portAllowed && next.protocol === 'https:'
           && (to === pinnedHost || (allowSubdomains && to.endsWith(`.${pinnedHost}`)));
         if (sameHostAllowed) {
           current = next.href;
@@ -438,6 +453,7 @@ export async function fetchTextFollowSameHost(fetchImpl, url, opts = {}) {
       throw err;
     }
     if (!res.ok) {
+      await res.body?.cancel?.().catch(() => {}); // never read → release the socket (finding 7)
       const err = new Error(`HTTP ${res.status} (${current})`);
       err.status = res.status;
       err.location = location;
@@ -475,7 +491,10 @@ export async function fetchTextWithRetry(fetchImpl, url, opts = {}) {
       const redirectRefusal = status === undefined
         && err instanceof TypeError
         && err?.cause?.message === REDIRECT_REFUSAL_CAUSE_MESSAGE;
-      const transient = !redirectRefusal
+      // A guard refusal is deterministic — never retried (FULL-R2 review
+      // finding 9).
+      const ssrfRefusal = status === undefined && err?.ssrfRefused === true;
+      const transient = !redirectRefusal && !ssrfRefusal
         && (status === undefined || status === 429 || status >= 500);
       if (!transient || attempt === retries || signal?.aborted) throw err;
       await delay(computeRetryDelayMs({ attempt, baseDelayMs: retryDelayMs, maxDelayMs, retryAfter: err?.retryAfter }), signal);

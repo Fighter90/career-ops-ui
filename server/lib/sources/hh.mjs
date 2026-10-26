@@ -119,6 +119,9 @@ export async function searchHH(query, opts = {}) {
         if (typeof e?.status !== 'number') throw e; // network-level: surface raw
         const err = new Error(`hh.ru: HTTP ${e.status}`);
         err.status = e.status;
+        // Keep the refused redirect target on the surfaced error — where the
+        // walk stopped matters for diagnosis (FULL-R2 review finding 6).
+        err.location = e.location ?? null;
         // 403 = anti-bot challenge; 451 = regional legal block (hh.ru started
         // serving 451 stubs to non-Russian IPs in July 2026). Both mean "this
         // network can't scan hh right now" — flag so the run disables the source.

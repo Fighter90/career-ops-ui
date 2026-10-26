@@ -348,14 +348,18 @@ export async function fetchWorkday(apiUrl, opts = {}) {
         console.error(`  ⚠ workday: page at offset ${offset} returned HTTP ${e.status} — keeping the ${jobs.length} postings collected so far`);
         break;
       }
-      // Network-level error (DNS, connect, timeout). Treat as fallback
-      // unless caller opted into strict mode.
+      // Status-less failure: a network error (DNS, connect, timeout) OR a 200
+      // that is not JSON — fetchJson wraps the latter as "non-JSON 2xx
+      // response from …" (a CAPTCHA gate serving HTML with 200, the shape the
+      // old res.json() catch reported verbatim). Restore that diagnostic so
+      // the fallback hint keeps pointing at the AI/Playwright scan.
+      const nonJson200 = typeof e?.message === 'string' && e.message.includes('non-JSON 2xx response');
       if (page === 0) {
         if (strict) throw e;
-        setFallback(apiUrl, `network: ${e.message}`);
+        setFallback(apiUrl, nonJson200 ? 'non-JSON response (likely CAPTCHA HTML)' : `network: ${e.message}`);
         return [];
       }
-      console.error(`  ⚠ workday: page at offset ${offset} failed (${e.message}) — keeping the ${jobs.length} postings collected so far`);
+      console.error(`  ⚠ workday: page at offset ${offset} ${nonJson200 ? 'was not JSON' : `failed (${e.message})`} — keeping the ${jobs.length} postings collected so far`);
       break;
     }
     // The Workday CXS response wraps job rows under `jobPostings` — the
