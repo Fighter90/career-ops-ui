@@ -9,6 +9,30 @@ Oversættelser: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/bl
 ---
 
 
+## [1.260.0] — 2026-10-26
+
+**Hærdningstoget fra anmeldelsesrunderne — otte merges (#491–#498) fra opus-5-5- og AI-gennemgangene over v1.259.0-flåden: lønsammenligningens normalisering, afgrænsning af rapportdatoer, geokoderobusthed, bundle cache-busting r2+r3 og deep overflow-retelsen — plus to UI-v2'er (pipeline og rapporter). Hver rettelse landede gennem en rød→grøn fix-forward.**
+
+### Rettet
+
+- **Lønsammenligningens normalisering (CAR-143 rev-2)**: periodemarkører genkendes kun tæt på det tal, de hører til — «6 month contract, $120k» annualiseres ikke længere ×12, og RU/ES-periodeformer, der kun optræder fastgjort til tallet («за месяц» ved tallet), vinder over tilfældige ord; `$`/`¥`-symbolfamilien genkendes, men mappes ikke, medmindre en eksplicit ISO-kode deler linjen (AUD/CA/SG-dollar behandles ikke længere som USD, og en ¥-RMB-form får en eksplicit advarsel i stedet for en ~20×-forkert JPY-konvertering); nøgne 19xx/20xx-tal er altid årstal; intervaltal arver partnerens periode; profilens `minimum` og `target_range` splejses aldrig sammen til ét interval.
+- **fixReportDate-afgrænsning (CAR-144 rev-2)**: den serverside-pinnede datorettelse gælder kun præamblen før den første `## `-overskrift (en rapport med H2-titel får en konservativ no-op — en forældet dato er acceptabel, en opdigtet er det ikke); inden for præamblen: en entydig kandidat rettes, ellers en entydig fed `**Date:**`, ellers intet (to fede eller to almindelige kandidater omskriver ingen). FIX-5-porten for PDF-mærkater læser nu den reelle samlede ordbog — et manglende locale kaster i stedet for stiltiende at bestå på en engelsk fallback.
+- **Habr-lokalitetschip + geokoderobusthed (CAR-142 rev-2)**: en Habr-meta-chip bliver kun til en by med strukturel evidens (et byfilter-link eller et lokalitetsikon) — omlokaliseringsnoter («Возможна релокация») og ansættelsestyper udgiver sig aldrig for at være lokaliteter; geocode-cachen overlever nu en genstart (flush ved `beforeExit`/`exit`/SIGTERM+SIGINT med re-raise, dirty-flaget ryddes først, når skrivningen er landet), nedlukningen er afgrænset (exit-loop-latch, generationstæller, recency-LRU), og et opbrugt geocode-budget svarer 503 + Retry-After i stedet for en generisk 502.
+- **Bundle cache-busting (CAR-145 r2+r3)**: skallen citerer `/js/bundle.js?v=<content-hash>` — immutable ved match, no-store ved mismatch — og dræber dermed det 5 minutter lange deploy-vindue, hvor en frisk skal kunne parre sig med en cachet, gammel bundle. Hash og stream deler én file descriptor (ingen splittede læsninger); en kort læsning svarer null frem for en stat-fallback-hash, der kunne forgifte en hel deploy; `make-bundle` skriver identiteten og .br/.gz-følgefilerne via en dot-præfikset temp-fil + rename, så et dræbt build hverken kan servere halvskrevne bytes eller lække sin temp-fil.
+- **Deep overflow (CAR-146)**: et gemt research-brief, hvis filnavn alene overstiger en telefons viewport, kan ikke længere skubbe `#/deep` ud over 390px — kortet capper ved sin række, titlen ombrydes, datoen holder sig på én linje; narrow-viewport-sweepen gennemløber nu `#/deep` med en over-lang seedet fixture (de to remote-QA-runders eneste fund — lukket).
+- **Pipeline v2-hærdning (CAR-116-gennemgang)**: sletninger bekræftes og kan fortrydes (med ærlig undo-tekst), ingen opdigtede host-virksomheder i kortene, FNV-1a-række-id'er, sande bulk-antal og en re-entrancy-guard på bulk-operationer.
+
+### Tilføjet
+
+- **Pipeline v2 (CAR-116)**: berigede kort, en grupperet visning og bulk-discard med undo; 17 nye `pipe.*`-nøgler leveret oversat i alle 19 ordbøger.
+- **Rapporter v2 (CAR-118)**: live-søgning med filtre for score-bånd/legitimitet/virksomhed/dato, sortérbare kolonneoverskrifter (`aria-sort`), en persisteret kortvisning med handlingsknapper per bånd, et klik-til-filter score-histogram og den forenede «Company — Role»-/«x.x/5»-rendering (`window.ReportOps`); 31 `rep2.*`-nøgler leveret oversat i alle 19 ordbøger.
+
+### Noter
+
+- Hver rettelse kom gennem en anmeldelsesrunde med rød→grøn evidens; de to AI-gennemgangs-HIGH-fund på den første bundle r2 (kort-læsningshashen, følgefilernes atomicitet) er lukket af r3, og CAR-143-/CAR-144-/CAR-142-runderne genverificerede hver især deres forgængers åbne fund.
+- Bevidst ikke gjort: kortets klyngevisning forbliver CAR-125 (i køen); serverside-gendannelse af pipeline-metadata er en separat ticket; ingen retrosaktive rettelser af indhold, der blev gemt under v1.259.0 før rev-2.
+- Tests 5988 (+165); browsersuiten 152 bestået / 0 fejlet / 1 opt-in-skip. Ingen scannerkilder rørt (registry 121 = 116 EN + 5 RU · 116 adaptere); de 48 nye i18n-nøgler landede med deres ×19-fan-out inde i selve feature-PR'erne.
+
 ## [1.259.0] — 2026-10-25
 
 **Det andet agentflåde-tog, seks rettelser: rapportdatoer pinnet på serversiden, kortgeokoderen cacher og læser russiske byer, hjælpen ×18 citerer lokaliserede knapmærkater, UI-sætninger blander ikke længere sprog, lønsammenligninger beregnes på serversiden — og JS-bundlen leveres prekomprimeret (kold indlæsning 3.1 MB → 598 KB).**
