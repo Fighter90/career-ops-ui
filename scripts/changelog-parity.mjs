@@ -25,27 +25,61 @@ const HEADING_RE =
   /^## \[(\d+\.\d+\.\d+)\][^\S\n]*(?:[-\u2013\u2014][^\S\n]*(\d{4}-\d{2}-\d{2}))?/;
 
 /**
- * Split a CHANGELOG markdown string into its preamble (everything before the
- * first `## [x.y.z]` heading) and its ordered release entries. Entry text is
- * byte-exact — it starts at the `## [` heading and runs to just before the
- * next one — so a caller can rebuild a file as
- * `preamble + entries.map((e) => e.text).join('')` without disturbing
- * anything it keeps.
+ * Split a CHANGELOG markdown string into its preamble and its ordered release
+ * entries. Entry text is byte-exact — it starts at the `## [` heading and runs
+ * to just before the next one — so a caller can rebuild a file as
+ * `preamble + entries.map((e) => e.text).join('')` without disturbing anything
+ * it keeps.
+ *
+ * The splitter is fence-aware: a `## [` line inside a ``` / ~~~ block is
+ * content, never a heading. `## [Unreleased]` (the Keep-a-Changelog prologue
+ * section) is tolerated before the first release — kept verbatim in the
+ * preamble, never counted. Anything else non-semver throws with the offending
+ * heading in the message; callers report the file name around it.
  */
 export function splitChangelog(md) {
-  const first = md.search(/^## \[/m);
-  const preamble = first === -1 ? md : md.slice(0, first);
-  const body = first === -1 ? '' : md.slice(first);
+  const prologue = [];
   const entries = [];
-  for (const text of body.split(/(?=^## \[)/m)) {
-    if (!text.trim()) continue;
-    const h = text.match(HEADING_RE);
-    if (!h) {
-      throw new Error(`unrecognised release heading: ${JSON.stringify(text.slice(0, 80))}`);
+  let current = null; // lines of the entry being accumulated (null = prologue)
+  let fence = null; // opening fence marker while inside a fenced block
+  for (const line of md.split('\n')) {
+    const f = line.match(/^\s{0,3}(`{3,}|~{3,})/);
+    if (f) {
+      if (!fence) fence = f[1];
+      else if (f[1][0] === fence[0] && f[1].length >= fence.length) fence = null;
+      (current ? current.lines : prologue).push(line);
+      continue;
     }
-    entries.push({ version: h[1], date: h[2] || null, text });
+    if (fence) {
+      (current ? current.lines : prologue).push(line);
+      continue;
+    }
+    const h = line.match(HEADING_RE);
+    if (h) {
+      current = { version: h[1], date: h[2] || null, lines: [line] };
+      entries.push(current);
+      continue;
+    }
+    if (/^## \[/.test(line)) {
+      const token = (line.slice(line.indexOf('[') + 1, line.indexOf(']')) || '').trim();
+      if (current === null && token.toLowerCase() === 'unreleased') {
+        prologue.push(line); // prologue section: preserved, never counted
+        continue;
+      }
+      throw new Error(
+        token.toLowerCase() === 'unreleased'
+          ? '## [Unreleased] appears after release entries — cannot classify it'
+          : `non-release heading ${JSON.stringify(line.slice(0, 60))} — only ## [X.Y.Z] and ## [Unreleased] are recognised`,
+      );
+    }
+    (current ? current.lines : prologue).push(line);
   }
-  return { preamble, entries };
+  return {
+    // The '\n' before the first entry heading belongs to the prologue (slice
+    // semantics) — re-attach it so preamble + entries rebuilds byte-exactly.
+    preamble: prologue.join('\n') + (entries.length && prologue.length ? '\n' : ''),
+    entries: entries.map(({ version, date, lines }) => ({ version, date, text: lines.join('\n') })),
+  };
 }
 
 export function countReleases(md) {
@@ -59,8 +93,9 @@ export function countReleases(md) {
  *                version; a rebuild would silently drop these, so callers
  *                must refuse to proceed);
  *   - ordered  — the locale's shared versions appear in the same relative
- *                order as EN (all current files do; a file rebuilt from a
- *                differently ordered one would scramble the history).
+ *                order as EN; a duplicated version fails this too, which is
+ *                why coverage — not counts — is what the gates enforce
+ *                (a typo plus a hole keeps the count).
  */
 export function auditCoverage(enEntries, localeEntries) {
   const enVersions = enEntries.map((e) => e.version);
@@ -84,7 +119,10 @@ export function auditCoverage(enEntries, localeEntries) {
  * truth even when a pending-translation note has been added.
  */
 export function englishRuns(enEntries, localeEntries) {
-  const bodyAfterHeading = (e) => e.text.slice(e.text.indexOf('\n')).trim();
+  const bodyAfterHeading = (e) => {
+    const i = e.text.indexOf('\n');
+    return i === -1 ? '' : e.text.slice(i).trim();
+  };
   const enBody = new Map(enEntries.map((e) => [e.version, bodyAfterHeading(e)]));
   const runs = [];
   let cur = null;

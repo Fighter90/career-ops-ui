@@ -10,24 +10,24 @@
  * the site faithfully published the incompleteness.
  *
  * Locked here, at both layers:
- *   - root:  every CHANGELOG.<locale>.md carries exactly the EN release count
- *            (the same gate scripts/check-changelog-parity.mjs enforces in
- *            test:ci — fixture-proven below to fail on the historical shape);
+ *   - root:  every CHANGELOG.<locale>.md carries exactly the EN release SET
+ *            (counts alone are not enough — a typo'd version plus one hole
+ *            keeps the count); the same gates scripts/check-changelog-parity.mjs
+ *            and site/scripts/sync-assets.mjs enforce;
  *   - site:  every committed mirror under site/src/content/changelog/ matches
  *            its root source, and sync-assets.mjs FAILS the build when a
- *            locale changelog is missing releases (the CAR-131 gate) and only
- *            WARNS on English-original runs (translation is out of scope for
- *            the build).
+ *            locale changelog is missing releases and only WARNS on
+ *            English-original runs (translation is out of scope for the build).
  *
- * CI-isolated: fixture runs use a mkdtemp site-shaped skeleton; the only
- * network access is sync-assets' best-effort GitHub stats, which it
- * try/catches. The complete-tree fixture is built and run once (shared
- * `before`) to bound that cost; the failing fixtures exit before reaching it.
+ * CI-isolated: fixtures live in mkdtemp skeletons (removed in `after`), the
+ * registry/env-config/README inputs are stubs, and sync-assets runs with
+ * SYNC_ASSETS_OFFLINE=1 so its best-effort GitHub-stats fetch never leaves the
+ * process (asserted via facts.json: stars/contributors stay null/[]).
  */
-import { test, before } from 'node:test';
+import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { spawnSync } from 'node:child_process';
-import { mkdtempSync, mkdirSync, writeFileSync, copyFileSync, readFileSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, copyFileSync, readFileSync, rmSync, readdirSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { join, resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -35,18 +35,29 @@ import { fileURLToPath } from 'node:url';
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const SYNC = join(ROOT, 'site', 'scripts', 'sync-assets.mjs');
 const CHECK_PARITY = join(ROOT, 'scripts', 'check-changelog-parity.mjs');
+const BACKFILL = join(ROOT, 'scripts', 'backfill-changelog-locales.mjs');
 
-let countReleases, splitChangelog, auditCoverage, englishRuns, LOCALES, completeRun;
+let splitChangelog, countReleases, auditCoverage, englishRuns, LOCALES;
+const fixtures = [];
 
 before(async () => {
-  ({ countReleases, splitChangelog, auditCoverage, englishRuns, LOCALES } = await import(
+  ({ splitChangelog, countReleases, auditCoverage, englishRuns, LOCALES } = await import(
     join(ROOT, 'scripts', 'changelog-parity.mjs')
   ));
-  // The complete-tree fixture run is shared: one process, one network window
-  // (sync-assets' best-effort GitHub stats); assertions split across tests.
-  // de carries all 5 entries with its oldest bodies EN-identical on purpose.
-  completeRun = run(join(fixtureRoot(), 'site', 'scripts', 'sync-assets.mjs'));
+  // The complete-tree fixture run is shared: one process, offline env, one
+  // captured result; assertions split across tests. de carries all 5 entries
+  // with its two OLDEST bodies EN-identical on purpose — the only locale in
+  // the fixture with untranslated history, so the WARN must name de and
+  // nothing else.
+  const dir = fixtureRoot({ enTails: { de: 2 } });
+  completeRun = { dir, result: run(join(dir, 'site', 'scripts', 'sync-assets.mjs')) };
 });
+
+after(() => {
+  for (const d of fixtures) rmSync(d, { recursive: true, force: true });
+});
+
+let completeRun;
 
 const rootCount = () => countReleases(readFileSync(join(ROOT, 'CHANGELOG.md'), 'utf8'));
 const localeCount = (lang) => countReleases(readFileSync(join(ROOT, `CHANGELOG.${lang}.md`), 'utf8'));
@@ -69,6 +80,43 @@ test('CAR-131 root: no locale has versions unknown to EN, and shared order match
   }
 });
 
+test('CAR-131 root: every CHANGELOG file on disk is registered in LOCALES (and vice versa)', () => {
+  const onDisk = readdirSync(ROOT)
+    .filter((f) => /^CHANGELOG(\.[A-Za-z-]+)?\.md$/.test(f))
+    .map((f) => (f === 'CHANGELOG.md' ? 'en' : f.replace(/^CHANGELOG\./, '').replace(/\.md$/, '')))
+    .sort();
+  assert.deepEqual(onDisk, ['en', ...LOCALES].sort());
+});
+
+test('CAR-131 root: a locale carrying EN-identical entries says so in its preamble', () => {
+  // The pending-translation note is the reader-visible contract for English
+  // history; a file that silently carries the English original (the original
+  // da symptom) must not exist.
+  for (const lang of LOCALES) {
+    const src = readFileSync(join(ROOT, `CHANGELOG.${lang}.md`), 'utf8');
+    const { preamble, entries } = splitChangelog(src);
+    const { identical } = englishRuns(splitChangelog(readFileSync(join(ROOT, 'CHANGELOG.md'), 'utf8')).entries, entries);
+    if (identical === 0) continue;
+    const quoted = preamble.split('\n').filter((l) => l.startsWith('>'));
+    assert.ok(quoted.length > 0, `${lang} carries ${identical} EN-identical entries but its preamble has no note`);
+  }
+});
+
+test('CAR-131 root: the six rewritten preambles no longer claim a start version', () => {
+  const oldClaims = {
+    de: 'Dieses Changelog beginnt bei',
+    hi: 'यह परिवर्तन-सूची v1.122.0 से शुरू होती है',
+    it: 'Questo changelog inizia dalla',
+    tr: "Bu changelog v1.85.0'dan başlar",
+    ta: 'இந்த மாற்றப் பதிவு v1.245.0-இல் தொடங்குகிறது',
+    vi: 'Nhật ký này bắt đầu từ v1.254.0',
+  };
+  for (const [lang, claim] of Object.entries(oldClaims)) {
+    const pre = readFileSync(join(ROOT, `CHANGELOG.${lang}.md`), 'utf8').split('\n## [')[0];
+    assert.ok(!pre.includes(claim), `${lang} preamble still claims a start version: ${claim}`);
+  }
+});
+
 test('CAR-131 site: every committed mirror carries the release count of its root source', () => {
   const mirrors = join(ROOT, 'site', 'src', 'content', 'changelog');
   const bad = [];
@@ -80,6 +128,40 @@ test('CAR-131 site: every committed mirror carries the release count of its root
     if (nMir !== nSrc) bad.push(`${lang}.md: mirror ${nMir} vs root ${nSrc}`);
   }
   assert.deepEqual(bad, [], `mirrors out of sync with root: ${bad.join(', ')}`);
+});
+
+// --- splitter contract ------------------------------------------------------
+
+test('splitChangelog: fenced blocks never count as releases', () => {
+  const md = [
+    '# Changelog', '',
+    '## [1.1.0] — 2026-01-02', '', 'Real entry.', '',
+    '```markdown', '## [9.9.9] — inside a fence', '```', '',
+    '## [1.0.0] — 2026-01-01', '', 'Oldest entry.', '',
+  ].join('\n');
+  const { entries } = splitChangelog(md);
+  assert.deepEqual(entries.map((e) => e.version), ['1.1.0', '1.0.0']);
+});
+
+test('splitChangelog: [Unreleased] is tolerated, never counted, and preserved in the preamble', () => {
+  const md = [
+    '# Changelog', '',
+    '## [Unreleased]', '', 'Nothing yet.', '',
+    '## [1.0.0] — 2026-01-01', '', 'Only release.', '',
+  ].join('\n');
+  const { preamble, entries } = splitChangelog(md);
+  assert.deepEqual(entries.map((e) => e.version), ['1.0.0']);
+  assert.match(preamble, /## \[Unreleased\]/);
+  // rebuild is lossless
+  assert.equal(preamble + entries.map((e) => e.text).join(''), md);
+});
+
+test('splitChangelog: a non-semver ## [ heading throws with the heading text', () => {
+  assert.throws(() => splitChangelog('# C\n\n## [Something Else] — 2026-01-01\n'), /Something Else/);
+});
+
+test('splitChangelog: [Unreleased] after a release is rejected (cannot classify)', () => {
+  assert.throws(() => splitChangelog('# C\n\n## [1.0.0] — 2026-01-01\n\nx\n\n## [Unreleased]\n'), /Unreleased/);
 });
 
 test('englishRuns: finds maximal byte-identical-to-EN runs (fixture)', () => {
@@ -105,6 +187,14 @@ test('englishRuns: finds maximal byte-identical-to-EN runs (fixture)', () => {
   assert.deepEqual(runs, [{ from: '1.1.0', to: '1.0.9', count: 2 }]);
 });
 
+test('englishRuns: a heading-only entry compares an empty body, not its last character', () => {
+  const mk = (v, body) => ({ version: v, date: null, text: `## [${v}]${body ? `\n\n${body}` : ''}` });
+  const en = [mk('1.0.0', 'body text')];
+  const loc = [mk('1.0.0')]; // heading-only: no newline at all
+  const { identical } = englishRuns(en, loc);
+  assert.equal(identical, 0, 'a bare heading must not equal a body-bearing entry');
+});
+
 // --- fixture machinery (site-shaped skeleton; mirrors tests/site-scripts.test.mjs) ---
 
 // Newest-first, like every real CHANGELOG: EN_ENTRIES[0] is the newest release.
@@ -114,13 +204,17 @@ const EN_ENTRIES = Array.from(
 );
 
 /**
- * A root tree with everything sync-assets reads. Every locale file defaults to
- * carrying all EN entries verbatim; `overrides` maps a locale to the number of
- * NEWEST entries it keeps — the historical seeding shape: recent entries
- * present, the older tail absent.
+ * A root tree with everything sync-assets reads. Locale files carry ALL EN
+ * entries by default with TRANSLATED bodies (so the WARN gate can prove it
+ * only fires where English history actually exists); `keep` maps a locale to
+ * the number of NEWEST entries it keeps (the historical seeding shape — older
+ * tail absent), `enTails` maps a locale to the number of OLDEST entries whose
+ * bodies stay EN-identical, `noEn` drops CHANGELOG.md, `extraFile` adds an
+ * unregistered changelog file.
  */
-function fixtureRoot(overrides = {}) {
+function fixtureRoot({ keep = {}, enTails = {}, noEn = false, extraFile = null } = {}) {
   const dir = mkdtempSync(join(tmpdir(), 'car131-'));
+  fixtures.push(dir);
   // sync-assets derives SITE from its own path (…/site/scripts) and ROOT as
   // its parent — so the copy must live at <fixture>/site/scripts/ for ROOT to
   // be the fixture root. The scripts it executes stay one level up, matching
@@ -130,6 +224,7 @@ function fixtureRoot(overrides = {}) {
   copyFileSync(SYNC, join(dir, 'site', 'scripts', 'sync-assets.mjs'));
   copyFileSync(join(ROOT, 'scripts', 'changelog-parity.mjs'), join(dir, 'scripts', 'changelog-parity.mjs'));
   copyFileSync(CHECK_PARITY, join(dir, 'scripts', 'check-changelog-parity.mjs'));
+  copyFileSync(BACKFILL, join(dir, 'scripts', 'backfill-changelog-locales.mjs'));
 
   mkdirSync(join(dir, 'images'), { recursive: true });
   writeFileSync(join(dir, 'images', 'dashboard-en.png'), 'png');
@@ -159,48 +254,181 @@ function fixtureRoot(overrides = {}) {
   );
   writeFileSync(join(dir, 'server', 'lib', 'env-config.mjs'), `export const AUTO_ORDER = ['anthropic', 'gemini'];\n`);
 
-  writeFileSync(join(dir, 'CHANGELOG.md'), `# Changelog\n\n${EN_ENTRIES.join('')}`);
+  if (!noEn) writeFileSync(join(dir, 'CHANGELOG.md'), `# Changelog\n\n${EN_ENTRIES.join('')}`);
   const locales = Object.fromEntries(LOCALES.map((l) => [l, EN_ENTRIES.length]));
-  Object.assign(locales, overrides);
-  for (const [lang, keep] of Object.entries(locales)) {
-    writeFileSync(join(dir, `CHANGELOG.${lang}.md`), `# Changelog (${lang})\n\n${EN_ENTRIES.slice(0, keep).join('')}`);
+  Object.assign(locales, keep);
+  for (const [lang, n] of Object.entries(locales)) {
+    // Oldest enTails[lang] entries keep the EN body; everything newer is
+    // translated (heading lines — versions and dates — are always identical).
+    const enIdenticalFrom = EN_ENTRIES.length - (enTails[lang] ?? 0);
+    const chunks = EN_ENTRIES.slice(0, n).map((text, i) =>
+      i >= enIdenticalFrom ? text : text.replace(/Entry (\d+) body from the English original\./, `Entry $1 body — ${lang} translation.`),
+    );
+    writeFileSync(join(dir, `CHANGELOG.${lang}.md`), `# Changelog (${lang})\n\n${chunks.join('')}`);
   }
+  if (extraFile) writeFileSync(join(dir, extraFile), '# Changelog (QQ)\n');
   return dir;
 }
 
-function run(scriptPath) {
+function run(scriptPath, dir) {
   // spawnSync, not execFileSync: execFileSync only surfaces stderr on failure,
-  // and the WARN-only assertion needs to read a successful run's stderr.
-  const r = spawnSync(process.execPath, [scriptPath], { encoding: 'utf8' });
+  // and the WARN-only assertions need a successful run's stderr.
+  // SYNC_ASSETS_OFFLINE=1 is the CI-isolation switch — the GitHub-stats fetch
+  // must never leave the process from a test.
+  const r = spawnSync(process.execPath, [scriptPath], {
+    encoding: 'utf8',
+    cwd: dir,
+    env: { ...process.env, SYNC_ASSETS_OFFLINE: '1' },
+  });
   return { status: r.status ?? 1, stdout: r.stdout ?? '', stderr: r.stderr ?? '' };
 }
 
+const syncIn = (dir) => run(join(dir, 'site', 'scripts', 'sync-assets.mjs'), dir);
+const parityIn = (dir) => run(join(dir, 'scripts', 'check-changelog-parity.mjs'), dir);
+const backfillIn = (dir) => run(join(dir, 'scripts', 'backfill-changelog-locales.mjs'), dir);
+
 test('CAR-131 gate: sync-assets FAILS when a locale changelog is missing releases', () => {
-  const dir = fixtureRoot({ de: 3, ta: 1 }); // newest-only seeds — the historical shape
-  const r = run(join(dir, 'site', 'scripts', 'sync-assets.mjs'));
+  const dir = fixtureRoot({ keep: { de: 3, ta: 1 } }); // newest-only seeds — the historical shape
+  const r = syncIn(dir);
   assert.notEqual(r.status, 0, 'sync-assets must fail on an incomplete locale changelog');
   assert.match(r.stderr, /CHANGELOG\.de\.md/);
   assert.match(r.stderr, /3 of 5/);
-  // The count gate — not the newest-version check — must be what trips: the
+  // The coverage gate — not the newest-version check — must be what trips: the
   // truncated file's newest entry still matches EN, exactly like the real
   // files that passed the old gate for months.
   assert.match(r.stderr, /backfill-changelog-locales/);
+  assert.doesNotMatch(r.stderr, /newest is/);
 });
 
 test('CAR-131 gate: check-changelog-parity FAILS on a count gap whose newest version matches', () => {
-  const dir = fixtureRoot({ de: 3 });
-  const r = run(join(dir, 'scripts', 'check-changelog-parity.mjs'));
+  const dir = fixtureRoot({ keep: { de: 3 } });
+  const r = parityIn(dir);
   assert.notEqual(r.status, 0, 'the test:ci gate must fail on the count gap');
-  assert.match(r.stderr, /CHANGELOG\.de\.md/);
+  // The CAR-131 count gate — not the G-012 newest-version check — is what trips.
+  assert.match(r.stderr, /release-count drift \(CAR-131\)/);
   assert.match(r.stderr, /3 of 5/);
+  assert.doesNotMatch(r.stderr, /parity drift \(G-012/);
+  assert.doesNotMatch(r.stderr, /newest is/);
+});
+
+test('CAR-131 gate: a typo\'d version plus one hole keeps the count but fails both gates', () => {
+  // The count is not the release SET: rename 1.3.0 → 9.9.9 (unknown), drop
+  // 1.1.0 (missing), duplicate 1.2.0 (order) — count unchanged at 5.
+  const corrupt = (dir) => {
+    const p = join(dir, 'CHANGELOG.de.md');
+    let src = readFileSync(p, 'utf8');
+    src = src.replace('## [1.3.0]', '## [9.9.9]');
+    src = src.replace(/## \[1\.1\.0\] — 2026-01-04\n\nEntry 1 body[^\n]*\n\n/, '');
+    src = src.replace(
+      /(## \[1\.2\.0\] — 2026-01-03\n\nEntry 2 body[^\n]*\n\n)/,
+      '$1$1',
+    );
+    writeFileSync(p, src);
+    return src;
+  };
+
+  let dir = fixtureRoot();
+  const src = corrupt(dir);
+  assert.equal(countReleases(src), 5, 'fixture must keep the count identical to EN');
+  let r = parityIn(dir);
+  assert.notEqual(r.status, 0, 'parity gate must fail on a same-count set corruption');
+  assert.match(r.stderr, /9\.9\.9/);
+  assert.match(r.stderr, /1\.1\.0/);
+  assert.match(r.stderr, /out of EN order/);
+
+  dir = fixtureRoot();
+  corrupt(dir);
+  r = syncIn(dir);
+  assert.notEqual(r.status, 0, 'sync-assets must fail on a same-count set corruption');
+  assert.match(r.stderr, /9\.9\.9/);
+  assert.match(r.stderr, /1\.1\.0/);
+});
+
+test('CAR-131 gate: a missing CHANGELOG.md fails readably, never as «N of 0»', () => {
+  let dir = fixtureRoot({ noEn: true });
+  let r = syncIn(dir);
+  assert.notEqual(r.status, 0);
+  assert.match(r.stderr, /CHANGELOG\.md is missing/);
+  assert.doesNotMatch(r.stderr, /of 0/);
+
+  dir = fixtureRoot({ noEn: true });
+  r = parityIn(dir);
+  assert.notEqual(r.status, 0);
+  assert.match(r.stderr, /CHANGELOG\.md/);
+  assert.doesNotMatch(r.stderr, /of 0/);
+});
+
+test('CAR-131 gate: an unregistered changelog file fails the release gate', () => {
+  const dir = fixtureRoot({ extraFile: 'CHANGELOG.qq.md' });
+  const r = parityIn(dir);
+  assert.notEqual(r.status, 0);
+  assert.match(r.stderr, /qq/);
+  assert.match(r.stderr, /LOCALES|registered|on disk/);
 });
 
 test('CAR-131 gate: complete tree builds clean (exit 0)', () => {
-  assert.equal(completeRun.status, 0, `sync-assets failed: ${completeRun.stderr}`);
+  assert.equal(completeRun.result.status, 0, `sync-assets failed: ${completeRun.result.stderr}`);
 });
 
-test('CAR-131 gate: English-identical runs produce a WARN, never a failure', () => {
-  assert.equal(completeRun.status, 0);
-  assert.match(completeRun.stderr, /WARN/);
-  assert.match(completeRun.stderr, /CHANGELOG\.de\.md/);
+test('CAR-131 gate: English-identical runs produce a WARN naming only the affected locale', () => {
+  const { result } = completeRun;
+  assert.equal(result.status, 0);
+  assert.match(result.stderr, /WARN/);
+  assert.match(result.stderr, /CHANGELOG\.de\.md carries 2 entries/);
+  assert.match(result.stderr, /v1\.1\.0\.\.v1\.0\.0/);
+  // Every other locale is fully translated in this fixture — none may warn.
+  assert.doesNotMatch(result.stderr, /CHANGELOG\.fr\.md/);
+  assert.doesNotMatch(result.stderr, /CHANGELOG\.es\.md/);
+});
+
+test('CAR-131 gate: SYNC_ASSETS_OFFLINE=1 keeps the build off the network', () => {
+  const facts = JSON.parse(readFileSync(join(completeRun.dir, 'site', 'src', 'generated', 'facts.json'), 'utf8'));
+  assert.equal(facts.stars, null, 'stars must stay null under SYNC_ASSETS_OFFLINE=1 even with network available');
+  assert.deepEqual(facts.contributors, []);
+});
+
+// --- backfill tool -----------------------------------------------------------
+
+test('backfill: a stored file without a trailing newline still joins cleanly', () => {
+  const dir = fixtureRoot({ keep: { de: 2 } });
+  // EOF-truncated shape: the last stored entry ends without ANY newline.
+  const p = join(dir, 'CHANGELOG.de.md');
+  writeFileSync(
+    p,
+    '# Changelog (de)\n\n## [1.4.0] — 2026-01-01\n\nEntry 4 body — de.\n\n## [1.3.0] — 2026-01-02\n\nEntry 3 body — de.',
+  );
+  const r = backfillIn(dir);
+  assert.equal(r.status, 0, `backfill failed: ${r.stderr}`);
+  const rebuilt = readFileSync(p, 'utf8');
+  assert.equal(countReleases(rebuilt), 5, 'every appended entry must stay a heading');
+  assert.match(rebuilt, /Entry 3 body — de\.\n\n## \[1\.2\.0\]/, 'appended entries need a blank-line seam');
+});
+
+test('backfill: adds the pending-translation note when the preamble has none', () => {
+  const dir = fixtureRoot({ keep: { es: 3 } });
+  const r = backfillIn(dir);
+  assert.equal(r.status, 0, `backfill failed: ${r.stderr}`);
+  const pre = readFileSync(join(dir, 'CHANGELOG.es.md'), 'utf8').split('\n## [')[0];
+  assert.match(pre, /⏳/);
+  // Idempotent: a second run adds nothing.
+  const r2 = backfillIn(dir);
+  assert.equal(r2.status, 0);
+  const pre2 = readFileSync(join(dir, 'CHANGELOG.es.md'), 'utf8').split('\n## [')[0];
+  assert.equal(pre2.split('⏳').length - 1, 1, 'the note must not duplicate on re-run');
+});
+
+test('backfill: keeps an existing hand-written note and warns on a start-version claim', () => {
+  const dir = fixtureRoot({ keep: { fr: 3 } });
+  const p = join(dir, 'CHANGELOG.fr.md');
+  writeFileSync(
+    p,
+    '# Journal des modifications\n\n> **Note** — Ce changelog commence à v1.61.0 ; pour l\'historique complet voir [🇬🇧 CHANGELOG.md](CHANGELOG.md).\n\n' +
+      EN_ENTRIES.slice(0, 3).map((t) => t.replace(/Entry (\d+) body from the English original\./, 'Entry $1 corps — fr.')).join(''),
+  );
+  const r = backfillIn(dir);
+  assert.equal(r.status, 0, `backfill failed: ${r.stderr}`);
+  const pre = readFileSync(p, 'utf8').split('\n## [')[0];
+  assert.match(pre, /⏳/, 'a pending note must be added');
+  assert.match(pre, /commence à v1\.61\.0/, 'the hand-written note must be preserved verbatim');
+  assert.match(r.stderr, /still announces a start version/);
 });

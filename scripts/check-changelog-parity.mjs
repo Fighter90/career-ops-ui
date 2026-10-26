@@ -1,4 +1,3 @@
-#!/usr/bin/env node
 /**
  * v1.25.0 (G-012) — CI gate against CHANGELOG locale drift.
  *
@@ -14,49 +13,76 @@
  * Wired into `npm run test:ci` so the next release can't ship with
  * silent locale drift.
  *
- * CAR-131 — release-count parity. The newest-entry check above only ever
- * sees the TOP of each file: a locale seeded mid-history (de with a single
- * entry at v1.85.0, ta at v1.245.0, vi at v1.255.0) stays partial forever —
- * every release prepends one entry and nothing backfills the tail — while
- * this gate keeps passing. The cvstart.org changelog pages render whatever
- * the locale file holds, so de shipped with 252 of EN's 465 releases. The
- * `## [` heading counts are now compared too; repair with
+ * CAR-131 — release-set parity. The newest-entry check above only ever sees
+ * the TOP of each file: a locale seeded mid-history (de with a single entry
+ * at v1.85.0, ta at v1.245.0, vi at v1.255.0) stays partial forever — every
+ * release prepends one entry and nothing backfills the tail — while this gate
+ * keeps passing. The cvstart.org changelog pages render whatever the locale
+ * file holds, so de shipped with 252 of EN's 465 releases. Each locale is now
+ * audited against the full EN release SET — missing versions, versions
+ * unknown to EN (a typo'd heading), and order/duplicate drift all fail;
+ * counts alone cannot see a same-count corruption. The file list itself is
+ * checked against the registered LOCALES, so a new CHANGELOG.<locale>.md
+ * cannot silently escape every check. Repair with
  * scripts/backfill-changelog-locales.mjs.
  */
-import { readFileSync } from 'node:fs';
+import { readFileSync, readdirSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
 import { join, dirname } from 'node:path';
 
 const REPO = join(dirname(fileURLToPath(import.meta.url)), '..');
-const { LOCALES, countReleases } = await import(
+const { LOCALES, splitChangelog, auditCoverage } = await import(
   new URL('./changelog-parity.mjs', import.meta.url)
 );
 
-// The date is captured as well as the version. v1.229.0 shipped with the
-// EN heading corrected to the release date while all 16 locales kept the
-// drafting date — this gate passed clean, because it only ever compared
-// versions. A date that differs per locale is the same drift class as a
-// version that does: it tells two readers two different things about when a
-// release became available.
-function newestEntry(path) {
-  const src = readFileSync(path, 'utf8');
-  const m = src.match(/^## \[(\d+\.\d+\.\d+)\][^\S\n]*(?:[-\u2013\u2014][^\S\n]*(\d{4}-\d{2}-\d{2}))?/m);
-  return m ? { version: m[1], date: m[2] || null } : null;
-}
-
-const en = newestEntry(join(REPO, 'CHANGELOG.md'));
-if (!en) {
-  console.error('::error::CHANGELOG.md has no `## [X.Y.Z]` heading — schema regression');
+// The gate list must match the files on disk, or a new changelog file
+// silently escapes every check below.
+const onDisk = readdirSync(REPO)
+  .filter((f) => /^CHANGELOG(\.[A-Za-z-]+)?\.md$/.test(f))
+  .map((f) => (f === 'CHANGELOG.md' ? 'en' : f.replace(/^CHANGELOG\./, '').replace(/\.md$/, '')))
+  .sort();
+const registered = ['en', ...LOCALES].sort();
+if (onDisk.join(',') !== registered.join(',')) {
+  console.error('::error::CHANGELOG file list drift:');
+  for (const f of onDisk.filter((x) => !registered.includes(x))) {
+    console.error(`  CHANGELOG${f === 'en' ? '' : `.${f}`}.md — on disk but not in LOCALES (scripts/changelog-parity.mjs)`);
+  }
+  for (const f of registered.filter((x) => !onDisk.includes(x))) {
+    console.error(`  CHANGELOG${f === 'en' ? '' : `.${f}`}.md — registered but no file on disk`);
+  }
   process.exit(1);
 }
 
+let enEntries;
+try {
+  enEntries = splitChangelog(readFileSync(join(REPO, 'CHANGELOG.md'), 'utf8')).entries;
+} catch (err) {
+  console.error(`::error::CHANGELOG.md — cannot read the release list: ${err.message}`);
+  process.exit(1);
+}
+if (!enEntries.length) {
+  console.error('::error::CHANGELOG.md has no `## [X.Y.Z]` heading — schema regression');
+  process.exit(1);
+}
+const en = { version: enEntries[0].version, date: enEntries[0].date };
+const enCount = enEntries.length;
+
 const lagging = [];
+const problems = [];
 for (const lang of LOCALES) {
-  const entry = newestEntry(join(REPO, `CHANGELOG.${lang}.md`));
-  if (!entry) {
+  const path = join(REPO, `CHANGELOG.${lang}.md`);
+  let entries;
+  try {
+    entries = splitChangelog(readFileSync(path, 'utf8')).entries;
+  } catch (err) {
+    problems.push(`CHANGELOG.${lang}.md — cannot read the release list: ${err.message}`);
+    continue;
+  }
+  if (!entries.length) {
     lagging.push(`CHANGELOG.${lang}.md — no version heading found`);
     continue;
   }
+  const entry = { version: entries[0].version, date: entries[0].date };
   if (entry.version !== en.version) {
     lagging.push(`CHANGELOG.${lang}.md — newest is ${entry.version}, EN is ${en.version}`);
     continue;
@@ -65,6 +91,21 @@ for (const lang of LOCALES) {
   // SHOULD differ, and reporting that too would bury the real fault.
   if (en.date && entry.date !== en.date) {
     lagging.push(`CHANGELOG.${lang}.md — v${entry.version} dated ${entry.date ?? '(none)'}, EN dated ${en.date}`);
+  }
+  // CAR-131 — the release SET, not just the count: a typo'd version plus a
+  // hole keeps the count identical.
+  const cov = auditCoverage(enEntries, entries);
+  if (cov.unknown.length) {
+    problems.push(`CHANGELOG.${lang}.md — versions unknown to EN: ${cov.unknown.join(', ')}`);
+  }
+  if (cov.missing.length) {
+    problems.push(
+      `CHANGELOG.${lang}.md — ${entries.length} of ${enCount} releases ` +
+        `(${cov.missing.length} missing, oldest v${cov.missing[cov.missing.length - 1]})`,
+    );
+  }
+  if (!cov.ordered) {
+    problems.push(`CHANGELOG.${lang}.md — shared entries out of EN order (duplicate or misplaced version)`);
   }
 }
 
@@ -77,27 +118,9 @@ if (lagging.length) {
   process.exit(1);
 }
 
-// CAR-131 — count parity. See the header note: the version check above is
-// blind to a missing tail, which is exactly how de/ta/vi reached the site
-// incomplete.
-const enCount = countReleases(readFileSync(join(REPO, 'CHANGELOG.md'), 'utf8'));
-const partial = [];
-for (const lang of LOCALES) {
-  const path = join(REPO, `CHANGELOG.${lang}.md`);
-  let n;
-  try {
-    n = countReleases(readFileSync(path, 'utf8'));
-  } catch {
-    partial.push(`CHANGELOG.${lang}.md — unreadable`);
-    continue;
-  }
-  if (n !== enCount) {
-    partial.push(`CHANGELOG.${lang}.md — ${n} of ${enCount} releases`);
-  }
-}
-if (partial.length) {
+if (problems.length) {
   console.error('::error::CHANGELOG locale release-count drift (CAR-131):');
-  for (const l of partial) console.error('  ' + l);
+  for (const l of problems) console.error('  ' + l);
   console.error('');
   console.error('Every locale must carry every release — the site renders');
   console.error('whatever the locale file holds. Repair with:');
