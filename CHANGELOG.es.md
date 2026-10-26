@@ -13,6 +13,30 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.260.0] — 2026-10-26
+
+**Tren de endurecimiento por revisión, ocho fusiones (#491–#498) de las rondas opus-5-5 y AI-review sobre la flota de v1.259.0: normalización salarial, fechas de informe acotadas al preámbulo, robustez del geocodificador, cache-busting del bundle r2+r3 y la corrección del desbordamiento de deep — más dos v2 de interfaz (pipeline, reports). Cada corrección aterrizó mediante un fix-forward rojo→verde.**
+
+### Corregido
+
+- **Normalización de la comparación salarial (CAR-143 rev-2)**: los marcadores de periodo se reconocen solo junto a la cifra a la que pertenecen — «6 month contract, $120k» ya no se anualiza ×12, y las formas de periodo RU/ES adosadas («за месяц» junto al número) ganan a las palabras incidentales; la familia de símbolos `$`/`¥` se reconoce pero queda sin mapear salvo que un código ISO explícito comparta la línea (los dólares AUD/CA/SG ya no se facturan como USD, y una forma ¥ RMB recibe un aviso explícito en lugar de una conversión a JPY desviada ~20×); los números desnudos 19xx/20xx son siempre años; las cifras de un rango heredan el periodo de su pareja; el `minimum` y el `target_range` del perfil nunca se empalman en un solo rango.
+- **Acotado de fixReportDate (CAR-144 rev-2)**: la corrección de fecha fijada por el servidor se aplica solo al preámbulo anterior al primer encabezado `## ` (un informe con título H2 recibe un no-op conservador — una fecha desfasada es aceptable, una inventada no); dentro del preámbulo: un candidato único se corrige; si no, un único `**Date:**` en negrita; si no, nada (dos candidatos en negrita o dos en texto claro no reescriben ninguno). La puerta FIX-5 de etiquetas PDF lee ahora el diccionario ensamblado real — si falta un idioma, lanza error en lugar de pasar en silencio con el fallback inglés.
+- **Chip de ubicación de Habr + robustez del geocodificador (CAR-142 rev-2)**: un chip meta de Habr se convierte en ciudad solo con evidencia estructural (un enlace de filtro de ciudad o un icono de ubicación) — los avisos de reubicación («Возможна релокация») y los tipos de empleo nunca se hacen pasar por ubicaciones; la caché del geocodificador sobrevive ahora a un reinicio (volcado en `beforeExit`/`exit`/SIGTERM+SIGINT con re-lanzamiento de la señal, la marca dirty se limpia solo cuando la escritura se ha asentado), el apagado es acotado (latch del bucle de salida, contador de generación, LRU por recencia) y un presupuesto de geocodificación agotado responde 503 + Retry-After en lugar de un 502 genérico.
+- **Cache-busting del bundle (CAR-145 r2+r3)**: el shell cita `/js/bundle.js?v=<content-hash>` — inmutable si coincide, no-store si no — matando la ventana de 5 minutos del despliegue en la que un shell recién servido se emparejaba con un bundle antiguo cacheado. El hash y el flujo comparten un único descriptor de archivo (sin lecturas rotas); una lectura corta responde null en lugar de un hash de fallback por stat que podía envenenar un despliegue entero; `make-bundle` escribe la identidad y los compañeros .br/.gz mediante un temporal con punto delante + rename, así que una build eliminada a mitad no puede servir bytes a medio escribir ni filtrar su archivo temporal.
+- **Desbordamiento de deep (CAR-146)**: un brief de investigación guardado cuyo nombre de archivo por sí solo excede el viewport de un teléfono ya no puede empujar `#/deep` más allá de 390px — la tarjeta se limita a su fila, el título se ajusta con salto de línea y la fecha permanece en una sola línea; el barrido de viewport estrecho recorre ahora `#/deep` con un fixture sembrado demasiado largo (el único hallazgo de las dos ejecuciones de remote-QA, cerrado).
+- **Endurecimiento del pipeline v2 (revisión de CAR-116)**: los borrados confirman y se pueden deshacer (con un texto de deshacer honesto), sin fabricación de la empresa anfitriona en las tarjetas, ids de fila FNV-1a, recuentos masivos verdaderos y una guarda de reentrada en las operaciones masivas.
+
+### Añadido
+
+- **Pipeline v2 (CAR-116)**: tarjetas enriquecidas, una vista agrupada y descarte masivo con deshacer; 17 claves `pipe.*` nuevas llegaron traducidas en los 19 diccionarios.
+- **Reports v2 (CAR-118)**: búsqueda en vivo con filtros por banda de puntuación/legitimidad/empresa/fecha, encabezados ordenables (`aria-sort`), una vista de tarjetas persistente con botones de acción por banda, un histograma de puntuaciones con clic-para-filtrar y el renderizado unificado «Company — Role» / «x.x/5» (`window.ReportOps`); 31 claves `rep2.*` llegaron traducidas en los 19 diccionarios.
+
+### Notas
+
+- Cada corrección pasó una ronda de revisión con evidencia rojo→verde; los dos hallazgos HIGH de AI-review sobre el primer bundle r2 (hash de lectura corta, atomicidad de los compañeros) quedan cerrados por r3, y las rondas de CAR-143/CAR-144/CAR-142 reverificaron cada una los hallazgos abiertos de su predecesora.
+- A propósito no hecho: la vista de clústeres del mapa sigue siendo CAR-125 (en cola); la restauración en el servidor de los metadatos del pipeline es un ticket aparte; sin correcciones retroactivas para el contenido guardado bajo los estados pre-rev-2 de v1.259.0.
+- Tests 5988 (+165); suite de navegador 152 pases / 0 fallos / 1 skip opcional. No se toca ninguna fuente del escáner (registro 121 = 116 EN + 5 RU · 116 adaptadores); las 48 claves i18n nuevas aterrizaron con su fan-out ×19 dentro de los propios PR de funcionalidad.
+
 ## [1.259.0] — 2026-10-25
 
 **Segundo tren de la flota de agentes, seis correcciones: las fechas de los informes las fija el servidor, el geocodificador del mapa cachea y lee ciudades rusas (RU), la ayuda ×18 cita las etiquetas de botón localizadas, las frases de la interfaz dejan de mezclar idiomas, las comparaciones salariales se calculan en el servidor — y el bundle de JS se distribuye precomprimido (carga en frío 3.1 MB → 598 KB).**

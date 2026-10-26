@@ -15,7 +15,7 @@
 import express from 'express';
 import { fileURLToPath } from 'node:url';
 import { resolve, dirname } from 'node:path';
-import { readFileSync, statSync, createReadStream } from 'node:fs';
+import { readFileSync, statSync, createReadStream, openSync, closeSync, fstatSync, readSync } from 'node:fs';
 import { createHash } from 'node:crypto';
 import { PATHS, PROJECT_ROOT, PUBLIC_DIR, WEB_UI_ROOT } from './lib/paths.mjs';
 import { rewriteIndexHtml, BUNDLE_SRC } from '../scripts/make-bundle.mjs';
@@ -83,6 +83,75 @@ export { isValidJobUrl, sanitizeJobDescription, stripDangerousMarkdown };
 // runs so health checks and scanner config see the real values.
 loadEnvFile(PATHS.envFile);
 
+/**
+ * CAR-145 — the cache-busting ?v= value the shell cites for the bundle URL.
+ * The bundle's UN-versioned URL is `public, max-age=300, must-revalidate`
+ * (CAR-104): without a versioned URL a deploy could serve a NEW no-store
+ * shell against a CACHED OLD bundle for up to 5 minutes. A short content
+ * hash of the identity bundle makes the versioned URL content-addressed (a
+ * matched ?v= may cache immutably); the negotiation middleware matches on
+ * the pathname, so the versioned URL reuses the same ETag/negotiation path.
+ *
+ * Provenance matters (CAR-145 r3): a hash derived from the STAT fallback —
+ * the file unreadable during a rebuild race — must never be cached, or the
+ * shell and the negotiation middleware can disagree on what ?v= means for a
+ * whole deploy (every cold load then gets no-store on ~3 MB). Callers use
+ * bundleContentHash() to tell the two apart and cache only content hashes.
+ * A null stat yields null so the shell omits ?v= entirely (r3, finding 6);
+ * the fallback itself is a sha256 of the stat identity — 12 hex, never a
+ * fractional token (r2, finding 2).
+ */
+
+/** The bundle's content hash, or null when the bytes cannot be read. */
+export function bundleContentHash(bundlePath) {
+  try {
+    return createHash('sha256').update(readFileSync(bundlePath)).digest('hex').slice(0, 12);
+  } catch {
+    return null;
+  }
+}
+
+/**
+ * Content hash straight from an OPEN fd — positioned reads, no path lookup.
+ * The hash belongs to the inode the fd points at, so a rename-based build
+ * swapping the file under the path mid-flight cannot change the verdict
+ * (r3, finding 3). Null when a read fails (never cached by callers).
+ *
+ * CAR-145 r3 (AI review) — the read must total EXACTLY `size` bytes: any
+ * short read (a truncation after the caller's fstat, a mid-read error) makes
+ * the bytes not what the size promised, so the result is null — never a
+ * valid-looking prefix hash a caller would cache or serve as THE content
+ * hash (the no-store path already handles null).
+ */
+export function bundleContentHashFromFd(fd, size) {
+  try {
+    const buf = Buffer.alloc(size);
+    let read = 0;
+    while (read < size) {
+      const n = readSync(fd, buf, read, size - read, read);
+      if (n <= 0) return null; // short read/EOF — not every byte `size` promised
+      read += n;
+    }
+    return createHash('sha256').update(buf).digest('hex').slice(0, 12);
+  } catch {
+    return null;
+  }
+}
+
+/** Stat-identity fallback hash — 12 hex, deterministic per stat. */
+function statVersionHash(st) {
+  return createHash('sha256')
+    .update(`${st.size}:${st.mtimeMs}:${st.ino}`)
+    .digest('hex')
+    .slice(0, 12);
+}
+
+/** The ?v= for the shell: content hash, stat fallback — or null (no ?v=). */
+export function bundleVersionOf(bundlePath, st) {
+  if (!st) return null;
+  return bundleContentHash(bundlePath) ?? statVersionHash(st);
+}
+
 // ──────────────── CAR-85 — release-time SPA bundle ────────────────
 // Prod cold load fetched ~89 classic <script src> tags 6-at-a-time over
 // HTTP/1.1 (~30 s). scripts/make-bundle.mjs (run by the deploy) concatenates
@@ -93,24 +162,6 @@ loadEnvFile(PATHS.envFile);
 // rewritten — the SPA is hash-routed, so "/" is the cold-load path; the
 // rare SPA fallback further down keeps serving the original shell.
 // CSP-safe by construction: same files, same order, one classic script.
-/**
- * CAR-145 — the cache-busting ?v= value the shell cites for the bundle URL.
- * The bundle is a STATIC NAME under `public, max-age=300` (CAR-104), so a
- * deploy could otherwise serve a NEW no-store shell against a CACHED OLD
- * bundle for up to 5 minutes. A short content hash of the identity bundle
- * makes the URL itself change on every rebuild; the negotiation middleware
- * matches on the pathname, so the versioned URL reuses the same
- * ETag/negotiation path. When the file cannot be read (a race with a
- * rebuild), the size-mtime pair of the stat keeps the URL still changing.
- */
-export function bundleVersionOf(bundlePath, st) {
-  try {
-    return createHash('sha256').update(readFileSync(bundlePath)).digest('hex').slice(0, 12);
-  } catch {
-    return `${st.size.toString(16)}-${st.mtimeMs.toString(16)}`;
-  }
-}
-
 export function bundleHtmlMiddleware({ publicDir }) {
   const disabled = process.env.NO_BUNDLE === '1';
   const indexHtmlPath = resolve(publicDir, 'index.html');
@@ -127,7 +178,12 @@ export function bundleHtmlMiddleware({ publicDir }) {
       const st = statSync(indexHtmlPath);
       const sb = statSync(bundlePath);
       bundleStat = sb;
-      key = `${st.size}:${st.mtimeMs}:${sb.size}:${sb.mtimeMs}`;
+      // CAR-145 r2 — size+mtimeMs alone miss the rsync -p / cp -p shape (same
+      // bytes length, mtime preserved by the copy): the cached shell would keep
+      // citing the OLD ?v= hash — the exact skew CAR-145 closes. ino/ctimeMs
+      // cannot survive a content rewrite (ctime bumps on any write; a
+      // rename-based build replaces the inode).
+      key = `${st.size}:${st.mtimeMs}:${sb.size}:${sb.mtimeMs}:${sb.ino}:${sb.ctimeMs}`;
     } catch {
       return next(); // no shell or no bundle → individual scripts
     }
@@ -136,9 +192,22 @@ export function bundleHtmlMiddleware({ publicDir }) {
         // CAR-145 — reference the bundle with a content-hash query so the
         // long-cache bundle URL changes on every rebuild: a fresh (no-store)
         // shell can then never point at a cached OLD bundle after a deploy.
-        const versionedSrc = `${BUNDLE_SRC}?v=${bundleVersionOf(bundlePath, bundleStat)}`;
+        // CAR-145 r3 (finding 1) — only a successfully READ content hash may
+        // be pinned into the cache; a stat-fallback shell is served once,
+        // uncached, so the next request re-reads and the two middlewares
+        // agree on what ?v= means.
+        const contentHash = bundleContentHash(bundlePath);
+        const version = contentHash ?? statVersionHash(bundleStat);
+        const versionedSrc = version ? `${BUNDLE_SRC}?v=${version}` : BUNDLE_SRC;
         const rewritten = rewriteIndexHtml(readFileSync(indexHtmlPath, 'utf8'), versionedSrc);
-        cache = { key, html: rewritten ? rewritten.html : null };
+        const html = rewritten ? rewritten.html : null;
+        if (!contentHash) {
+          if (!html) return next();
+          res.setHeader('Cache-Control', 'no-store');
+          res.type('html').send(html);
+          return;
+        }
+        cache = { key, html };
       } catch (err) {
         console.warn(`[bundle] shell rewrite failed, serving individual scripts: ${err.message}`);
         cache = { key, html: null };
@@ -164,11 +233,17 @@ export function bundleHtmlMiddleware({ publicDir }) {
 //   - Content-Encoding + Vary: Accept-Encoding + exact Content-Length;
 //   - a weak ETag derived from the identity file — shared by every variant,
 //     so revalidation (If-None-Match → 304) stays cheap after max-age;
-//   - `public, max-age=300, must-revalidate`: CAR-145 makes the SHELL cite
-//     the bundle as /js/bundle.js?v=<content-hash> (bundleHtmlMiddleware), so
-//     the URL changes on every rebuild and the bounded cache is safe — after
-//     a deploy a fresh shell can no longer pair with a cached OLD bundle.
-//     must-revalidate keeps the revalidation contract after max-age.
+//   - the cache policy is decided by the ?v= the request presents
+//     (CAR-145/CAR-145 r2): the SHELL cites /js/bundle.js?v=<content-hash>
+//     (bundleHtmlMiddleware), so the URL changes on every rebuild and a fresh
+//     shell can never pair with a cached OLD bundle.
+//       ?v= absent        → public, max-age=300, must-revalidate (the
+//                           bounded revalidating window; the pre-CAR-145 shape)
+//       ?v= current hash  → public, max-age=31536000, immutable (content-
+//                           addressed: the hash is the correctness guarantee)
+//       ?v= anything else → no-store (a rolling deploy's old instance could
+//                           otherwise pin NEW-URL→OLD-bytes into a shared
+//                           cache; the bytes still ship, uncacheable)
 //     Individual scripts keep express.static's no-store (the setHeaders on
 //     the static mount below). Matching is on the PATHNAME (req.path is
 //     query-free), so versioned URLs share this response path and the
@@ -186,10 +261,14 @@ const BUNDLE_VARIANTS = [
 ];
 const BUNDLE_CONTENT_TYPE = 'application/javascript; charset=UTF-8';
 const BUNDLE_CACHE_CONTROL = 'public, max-age=300, must-revalidate';
+// CAR-145 r2 — a ?v= that MATCHES the current hash is content-addressed: the
+// hash IS the correctness guarantee, so the URL may cache for a year.
+const BUNDLE_CACHE_CONTROL_IMMUTABLE = 'public, max-age=31536000, immutable';
 
-/** Weak ETag in the same shape serve-static uses, from the identity stat. */
-function bundleETag(st) {
-  return `W/"${st.size.toString(16)}-${st.mtime.getTime().toString(16)}"`;
+/** Weak ETag wrapper — the payload is the CONTENT hash (CAR-145 r3, finding 2:
+ * a size+mtime ETag 304s straight through an identical-stat rebuild). */
+function bundleETag(hash) {
+  return `W/"${hash}"`;
 }
 
 /** If-None-Match comparison — weak by RFC 7232 (W/ prefixes fold away). */
@@ -203,6 +282,11 @@ function ifNoneMatchSatisfied(header, etag) {
 export function bundleCompressionMiddleware({ publicDir }) {
   const identityPath = resolve(publicDir, 'js', 'bundle.js');
   const variants = BUNDLE_VARIANTS.map((v) => ({ ...v, path: `${identityPath}${v.ext}` }));
+  // CAR-145 r3 (finding 1) — the cache holds ONLY content hashes. A stat-
+  // fallback hash (unreadable during a rebuild race) is returned uncached, so
+  // the next request re-reads instead of pinning a version the shell will
+  // never cite.
+  let hashCache = null;
   return function bundleCompression(req, res, next) {
     if (req.method !== 'GET' && req.method !== 'HEAD') return next();
     if (req.path !== BUNDLE_ROUTE) {
@@ -212,17 +296,62 @@ export function bundleCompressionMiddleware({ publicDir }) {
       }
       return next();
     }
-    let st;
+    // CAR-145 r3 (finding 3) — ONE open drives the whole decision: fstat the
+    // fd, hash from the fd, and (for identity) stream from the SAME fd, so
+    // the ?v= verdict can never belong to a different file than the bytes
+    // served (rename-based builds swap the inode under the path mid-request;
+    // stat-then-reopen would earn immutable for foreign bytes).
+    let fd;
     try {
-      st = statSync(identityPath);
+      fd = openSync(identityPath, 'r');
     } catch {
       return next(); // no bundle on disk → dev / rolled-back deploy
     }
-    const etag = bundleETag(st);
+    let st;
+    try {
+      st = fstatSync(fd);
+    } catch {
+      closeSync(fd);
+      return next();
+    }
+    const statKey = `${st.size}:${st.mtimeMs}:${st.ino}:${st.ctimeMs}`;
+    let hash = hashCache && hashCache.key === statKey ? hashCache.hash : null;
+    if (hash == null) {
+      const contentHash = bundleContentHashFromFd(fd, st.size);
+      if (contentHash) {
+        hashCache = { key: statKey, hash: contentHash };
+        hash = contentHash;
+      } else {
+        hash = statVersionHash(st); // uncached fallback — re-read next request
+      }
+    }
+    // CAR-145 r2/r3 — the presented ?v= decides the cache policy:
+    //   - absent          → `public, max-age=300, must-revalidate` (the
+    //                       bounded revalidating window; the pre-CAR-145 URL
+    //                       shape keeps its cheap revalidation contract)
+    //   - current hash    → `public, max-age=31536000, immutable` — the URL is
+    //                       content-addressed, so a match can never go stale;
+    //                       correctness comes from the hash, not the window
+    //   - anything else   → `no-store`: during a rolling deploy an old
+    //                       instance can still hold the OLD bytes under a NEW
+    //                       ?v=; a cacheable answer would pin NEW-URL→
+    //                       OLD-bytes into a shared cache for max-age (cache
+    //                       poisoning that would defeat the buster). The bytes
+    //                       are still served — just uncacheable. (Chosen over
+    //                       a redirect so browsers mid-reload keep working.)
+    const presented = new URL(req.url, 'http://localhost').searchParams.get('v');
+    const etag = bundleETag(hash);
     res.setHeader('Vary', 'Accept-Encoding');
     res.setHeader('ETag', etag);
-    res.setHeader('Cache-Control', BUNDLE_CACHE_CONTROL);
+    if (presented === null) {
+      res.setHeader('Cache-Control', BUNDLE_CACHE_CONTROL);
+    } else if (presented === hash) {
+      res.setHeader('Cache-Control', BUNDLE_CACHE_CONTROL_IMMUTABLE);
+    } else {
+      res.setHeader('Cache-Control', 'no-store');
+    }
     if (ifNoneMatchSatisfied(req.headers['if-none-match'], etag)) {
+      closeSync(fd);
       return res.status(304).end();
     }
     const accept = req.headers['accept-encoding'];
@@ -245,8 +374,24 @@ export function bundleCompressionMiddleware({ publicDir }) {
     res.setHeader('Content-Type', BUNDLE_CONTENT_TYPE);
     if (chosen) res.setHeader('Content-Encoding', chosen.enc);
     res.setHeader('Content-Length', String(chosen ? chosen.size : st.size));
-    if (req.method === 'HEAD') return res.end();
-    const stream = createReadStream(chosen ? chosen.path : identityPath);
+    if (req.method === 'HEAD') {
+      closeSync(fd);
+      return res.end();
+    }
+    if (chosen) {
+      closeSync(fd); // the identity fd is not the file being streamed
+      const stream = createReadStream(chosen.path);
+      stream.on('error', () => res.destroy());
+      res.on('close', () => stream.destroy());
+      return stream.pipe(res);
+    }
+    if (st.size === 0) {
+      closeSync(fd);
+      return res.end();
+    }
+    // Identity: stream the hashed fd itself — positioned reads from offset 0,
+    // autoClose releases the fd at end/error/destroy.
+    const stream = createReadStream(null, { fd, autoClose: true, start: 0, end: st.size - 1 });
     stream.on('error', () => res.destroy());
     res.on('close', () => stream.destroy());
     stream.pipe(res);

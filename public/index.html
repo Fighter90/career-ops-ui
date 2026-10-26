@@ -22,6 +22,11 @@
     <link rel="stylesheet" href="/css/app.css" />
     <link rel="stylesheet" href="/css/components.css" />
     <link rel="stylesheet" href="/css/overlays.css" />
+    <!-- CAR-116 — #/pipeline v2 (enriched cards, groups, bulk + undo) -->
+    <link rel="stylesheet" href="/css/v2-pipeline.css" />
+    <!-- CAR-118 — #/reports v2 owns its stylesheet (loads after the base
+         cascade, before map.css; merge-trivial with any other v2 link). -->
+    <link rel="stylesheet" href="/css/v2-reports.css" />
     <link rel="stylesheet" href="/css/map.css" />
     <link rel="stylesheet" href="/vendor/leaflet/leaflet.css" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
@@ -365,6 +370,7 @@
     <script src="/js/lib/url-key.js"></script>
     <script src="/js/lib/job-facets.js"></script>
     <script src="/js/lib/tracker-stages.js"></script>
+    <script src="/js/lib/report-ops.js"></script>
     <script src="/js/lib/skeleton.js"></script>
     <script src="/js/lib/company-presentation.js"></script>
     <script src="/js/lib/followup-view.js"></script>
@@ -388,6 +394,8 @@
     <script src="/js/views/scan/runner.js"></script>
     <script src="/js/views/scan.js"></script>
     <script src="/js/views/portals.js"></script>
+    <!-- CAR-116 — pure helpers for the pipeline v2 view (loads before it) -->
+    <script src="/js/lib/pipeline-view.js"></script>
     <script src="/js/views/pipeline.js"></script>
     <script src="/vendor/leaflet/leaflet.js"></script>
     <script src="/js/views/map.js"></script>

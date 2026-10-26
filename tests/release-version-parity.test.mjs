@@ -41,8 +41,7 @@ test('package.json version matches the newest entry in every locale changelog', 
   }
 });
 
-test('README.md release badge matches package.json version', () => {
-  const s = readFileSync(join(ROOT, 'README.md'), 'utf8');
-  assert.match(s, new RegExp(`release-v${version.replace(/\\/g, '\\\\').replace(/\./g, '\\.')}-blue`),
-    'the README release badge must name the current version');
-});
+// Owner preference (2026-10-26, PROGRESS.md + memory release-ceremony-preference):
+// README release banners/badges are NO LONGER maintained — stale badges are
+// acceptable, so there is no badge assertion here anymore. The changelog
+// newest-entry parity above remains the release-version gate.

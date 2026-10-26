@@ -2,6 +2,30 @@
 
 > Dieses Changelog beginnt bei v1.85.0 — der Version, in der die deutsche Lokalisierung hinzugefügt wurde. Für frühere Versionen siehe [🇬🇧 CHANGELOG.md](https://github.com/Fighter90/career-ops-ui/blob/main/CHANGELOG.md).
 
+## [1.260.0] — 2026-10-26
+
+**Die Review-Härtungswelle, acht Merges (#491–#498) aus den opus-5-5- und AI-Review-Runden über die v1.259.0-Flotte: Gehaltsnormalisierung, Report-Datums-Scoping, Geocode-Robustheit, Bundle-Cache-Busting r2+r3, der Deep-Overflow-Fix — dazu zwei UI-v2s (Pipeline, Reports). Jeder Fix landete über einen Rot→Grün-Fix-Forward.**
+
+### Behoben
+
+- **Gehaltsvergleich-Normalisierung (CAR-143 rev-2)**: Periodenmarker werden nur nahe der Zahl erkannt, zu der sie gehören — «6 month contract, $120k» annualisiert nicht mehr ×12, und rein angehängte RU/ES-Periodenformen («за месяц» direkt neben der Zahl) schlagen beiläufige Wörter; die `$`/`¥`-Symbolfamilie wird erkannt, aber nicht zugeordnet, außer ein expliziter ISO-Code steht in derselben Zeile (AUD/CA/SG-Dollar werden nicht mehr als USD verrechnet, eine ¥-RMB-Form bekommt einen expliziten Vorbehalt statt einer ~20×-daneben-JPY-Umrechnung); nackte 19xx/20xx-Zahlen sind immer Jahre; Bereichszahlen erben die Periode des Partners; `minimum` und `target_range` aus dem Profil werden nie zu einem einzigen Bereich zusammengefügt.
+- **fixReportDate-Scoping (CAR-144 rev-2)**: die serverseitig festgenagelte Datumskorrektur greift nur in der Präambel vor der ersten `## `-Überschrift (ein Report mit H2-Titel bekommt ein konservatives No-op — ein veraltetes Datum ist akzeptabel, ein erfundenes nicht); innerhalb der Präambel: ein eindeutiger Kandidat wird korrigiert, sonst ein eindeutig fett gesetztes `**Date:**`, sonst nichts (zwei fette oder zwei schlichte Kandidaten werden nicht umgeschrieben). Das FIX-5-PDF-Label-Gate liest jetzt das real assemblierte Wörterbuch — eine fehlende Locale wirft einen Fehler, statt stillschweigend mit einem englischen Fallback zu bestehen.
+- **Habr-Location-Chip + Geocode-Robustheit (CAR-142 rev-2)**: ein Habr-Meta-Chip wird nur mit strukturellem Beleg zur Stadt (ein Städtefilter-Link oder ein Location-Icon) — Umzugshinweise («Возможна релокация») und Beschäftigungsarten geben sich nie als Orte aus; der Geocode-Cache überlebt jetzt einen Neustart (Flush bei `beforeExit`/`exit`/SIGTERM+SIGINT mit Re-Raise, das Dirty-Flag wird erst gelöscht, nachdem der Schreibvorgang gelandet ist), das Herunterfahren ist begrenzt (Exit-Loop-Latch, Generationszähler, Recency-LRU), und ein aufgebrauchtes Geocode-Budget antwortet mit 503 + Retry-After statt eines generischen 502.
+- **Bundle-Cache-Busting (CAR-145 r2+r3)**: die Shell referenziert `/js/bundle.js?v=<content-hash>` — immutable bei Treffer, no-store bei Abweichung — und eliminiert damit das 5-Minuten-Deploy-Fenster, in dem eine frische Shell auf ein gecachtes, altes Bundle traf. Hash und Stream teilen sich einen Datei-Deskriptor (keine zerrissenen Lesezugriffe); ein kurzer Lesezugriff antwortet mit null statt mit einem Stat-Fallback-Hash, der ein ganzes Deploy vergiften könnte; `make-bundle` schreibt das Identity-Bundle und die .br/.gz-Begleiter über ein gepunktetes Temp-File + Rename, sodass ein abgebrochener Build weder halb geschriebene Bytes ausliefern noch sein Temp-File hinterlassen kann.
+- **Deep-Overflow (CAR-146)**: ein gespeichertes Research-Briefing, dessen Dateiname allein einen Telefon-Viewport sprengt, kann `#/deep` nicht mehr über 390px hinausschieben — die Karte wird an ihrer Zeile begrenzt, der Titel bricht um, das Datum bleibt einzeilig; der Narrow-Viewport-Sweep geht `#/deep` jetzt mit einem überlangen Seeded-Fixture ab (der einzige Fund beider Remote-QA-Läufe, geschlossen).
+- **Pipeline-v2-Härtung (CAR-116-Review)**: Löschvorgänge bestätigen und lassen sich rückgängig machen (mit ehrlichem Undo-Text), keine Host-Company-Fabrikation in den Karten, FNV-1a-Zeilen-IDs, echte Bulk-Zählungen und ein Re-Entrancy-Guard auf Bulk-Operationen.
+
+### Hinzugefügt
+
+- **Pipeline v2 (CAR-116)**: angereicherte Karten, eine gruppierte Ansicht und Bulk-Discard mit Undo; 17 neue `pipe.*`-Schlüssel kamen in allen 19 Wörterbüchern übersetzt aus.
+- **Reports v2 (CAR-118)**: Live-Suche mit Filtern nach Score-Band/Legitimacy/Firma/Datum, sortierbare Kopfzeilen (`aria-sort`), eine persistente Kartenansicht mit Aktionsschaltflächen je Band, ein Klick-zum-Filtern-Score-Histogramm und das vereinheitlichte «Company — Role» / «x.x/5»-Rendering (`window.ReportOps`); 31 neue `rep2.*`-Schlüssel kamen in allen 19 Wörterbüchern übersetzt aus.
+
+### Hinweise
+
+- Jeder Fix kam durch eine Review-Runde mit Rot→Grün-Nachweisen; die beiden AI-Review-HIGH-Funde am ersten Bundle-r2 (Short-Read-Hash, Companion-Atomicität) schließt r3, und die CAR-143/CAR-144/CAR-142-Runden prüften jeweils die offenen Funde ihrer Vorgänger nach.
+- Bewusst nicht getan: die Map-Cluster-Ansicht bleibt CAR-125 (in der Warteschlange); die serverseitige Wiederherstellung von Pipeline-Metadaten ist ein eigenes Ticket; keine rückwirkenden Fixes für Inhalte, die unter den v1.259.0-Zuständen vor rev-2 gespeichert wurden.
+- Tests 5988 (+165); Browser-Suite 152 bestanden / 0 fehlgeschlagen / 1 Opt-in-Skip. Keine Scanner-Quellen angefasst (Registry 121 = 116 EN + 5 RU · 116 Adapter); die 48 neuen i18n-Schlüssel landeten mit ihrem ×19-Fan-out innerhalb der Feature-PRs selbst.
+
 ## [1.259.0] — 2026-10-25
 
 **Die zweite Welle der Agenten-Flotte, sechs Fixes: Report-Daten sind serverseitig festgenagelt, der Map-Geocoder cacht und liest RU-Städte, die Hilfe ×18 zitiert lokalisierte Schaltflächenbeschriftungen, UI-Sätze mischen keine Sprachen mehr, Gehaltsvergleiche werden serverseitig berechnet — und das JS-Bundle kommt vorkomprimiert aus (Kaltstart 3.1 MB → 598 KB).**

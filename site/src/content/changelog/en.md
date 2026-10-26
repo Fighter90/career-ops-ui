@@ -7,6 +7,30 @@ Translations: [🇪🇸 Español](https://github.com/Fighter90/career-ops-ui/blo
 ---
 
 
+## [1.260.0] — 2026-10-26
+
+**The review-hardening train, eight merges (#491–#498) from the opus-5-5 and AI-review rounds over the v1.259.0 fleet: salary normalization, report-date scoping, geocode robustness, bundle cache-busting r2+r3, the deep overflow fix — plus two UI v2s (pipeline, reports). Every fix landed through a red→green fix-forward.**
+
+### Fixed
+
+- **Salary comparison normalization (CAR-143 rev-2)**: period markers are recognized only near the figure they belong to — «6 month contract, $120k» no longer annualizes ×12, and attached-only RU/ES period forms («за месяц» next to the number) win over incidental words; the `$`/`¥` symbol family is recognized but unmapped unless an explicit ISO code shares the line (AUD/CA/SG dollars are no longer billed as USD, a ¥ RMB shape gets an explicit caveat instead of a ~20×-off JPY conversion); bare 19xx/20xx numbers are always years; range figures inherit the partner's period; the profile's `minimum` and `target_range` are never spliced into one range.
+- **fixReportDate scoping (CAR-144 rev-2)**: the server-pinned date correction applies only to the preamble before the first `## ` heading (an H2-title report gets a conservative no-op — a stale date is acceptable, a fabricated one is not); within the preamble: a unique candidate is corrected, else a unique bold `**Date:**`, else nothing (two bold or two plain candidates rewrite none). The FIX-5 PDF-label gate now reads the real assembled dict — a missing locale throws instead of silently passing on an English fallback.
+- **Habr location chip + geocode robustness (CAR-142 rev-2)**: a Habr meta chip becomes a city only with structural evidence (a city-filter link or a location icon) — relocation notices («Возможна релокация») and employment types never masquerade as locations; the geocode cache now survives a restart (flush on `beforeExit`/`exit`/SIGTERM+SIGINT with re-raise, the dirty flag cleared only after the write lands), shutdown is bounded (exit-loop latch, generation counter, recency LRU), and a spent geocode budget answers 503 + Retry-After instead of a generic 502.
+- **Bundle cache-busting (CAR-145 r2+r3)**: the shell cites `/js/bundle.js?v=<content-hash>` — immutable-on-match, no-store-on-mismatch — killing the 5-minute deploy window where a fresh shell paired with a cached old bundle. The hash and the stream share one file descriptor (no torn reads); a short read answers null rather than a stat-fallback hash that could poison a whole deploy; `make-bundle` writes the identity and the .br/.gz companions via a dot-prefixed temp + rename, so a killed build can neither serve half-written bytes nor leak its temp file.
+- **Deep overflow (CAR-146)**: a saved research brief whose filename alone exceeds a phone viewport can no longer push `#/deep` past 390px — the card caps at its row, the title wraps, the date stays on one line; the narrow-viewport sweep now walks `#/deep` with an over-long seeded fixture (the two remote-QA runs' only finding, closed).
+- **Pipeline v2 hardening (CAR-116 review)**: deletes confirm and undo (with honest undo copy), no host-company fabrication in cards, FNV-1a row ids, true bulk counts, and a re-entrancy guard on bulk operations.
+
+### Added
+
+- **Pipeline v2 (CAR-116)**: enriched cards, a grouped view, and bulk discard with undo; 17 new `pipe.*` keys shipped translated in all 19 dicts.
+- **Reports v2 (CAR-118)**: live search with score-band/legitimacy/company/date filters, sortable headers (`aria-sort`), a persisted card view with per-band action buttons, a click-to-filter score histogram, and the unified «Company — Role» / «x.x/5» rendering (`window.ReportOps`); 31 `rep2.*` keys shipped translated in all 19 dicts.
+
+### Notes
+
+- Every fix came through a review round with red→green evidence; the two AI-review HIGH findings on the first bundle r2 (short-read hash, companion atomicity) are closed by r3, and the CAR-143/CAR-144/CAR-142 rounds each re-verified their predecessor's open findings.
+- Deliberately not done: the map cluster view stays CAR-125 (queued); server-side pipeline metadata restore is a separate ticket; no retroactive fixes for content saved under the pre-rev-2 v1.259.0 states.
+- Tests 5988 (+165); browser suite 152 pass / 0 fail / 1 opt-in skip. No scanner sources touched (registry 121 = 116 EN + 5 RU · 116 adapters); the 48 new i18n keys landed with their ×19 fan-out inside the feature PRs themselves.
+
 ## [1.259.0] — 2026-10-25
 
 **The second agent-fleet train, six fixes: report dates are server-pinned, the map geocoder caches and reads RU cities, help ×18 cites localized button labels, UI sentences stop mixing languages, salary comparisons are computed server-side — and the JS bundle ships precompressed (cold load 3.1 MB → 598 KB).**

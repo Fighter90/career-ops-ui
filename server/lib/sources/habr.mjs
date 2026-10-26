@@ -51,6 +51,11 @@ const QUALIFICATION_CHIP =
 const RELOCATION_CHIP = /релок|reloc|переезд/i;
 const EMPLOYMENT_CHIP =
   /рабоч(?:ий|их) (?:день|час)|час(?:а|ов) в день|день в неделю|занятость|график|стажировк|волонт[её]р|вахтов|проектная|оформлени|командировк/i;
+// CAR-142 rev-3 #3 — «Опыт от 3 лет» passes every filter above but is an
+// experience REQUIREMENT, not a city: the chip-order fallback used to wear it
+// as `location` (a fabricated place). ASCII `\b` never bounds Cyrillic, so
+// the lookahead follows the QUALIFICATION_CHIP pattern.
+const EXPERIENCE_CHIP = /^опыт(?![\p{L}\p{N}])/iu;
 // Habr marks the real city structurally — it links the chip to the
 // city-filtered board (?city_id=…) and/or carries a location icon class
 // (the Cyrillic «с» in loсation is Habr's own). Preferred over chip order.
@@ -74,7 +79,8 @@ function pickCityChip(metaBlock) {
     c.text && c.text !== 'Можно удалённо'
     && !QUALIFICATION_CHIP.test(c.text)
     && !RELOCATION_CHIP.test(c.text)
-    && !EMPLOYMENT_CHIP.test(c.text);
+    && !EMPLOYMENT_CHIP.test(c.text)
+    && !EXPERIENCE_CHIP.test(c.text);
   return (chips.find((c) => isCity(c) && LOCATION_HINT.test(c.lead)) || chips.find(isCity) || {}).text || '';
 }
 
@@ -155,10 +161,10 @@ export function parseHabrCards(html) {
     // of the country string 'Russia' (a country centroid is exactly what the
     // geocoder refuses, so every Habr row landed in the map's no-location
     // bucket). Skills chips live in their own section AFTER the meta row and
-    // are excluded by slicing at it; qualification levels, relocation and
-    // employment-type chips are excluded by name, and a structurally marked
-    // city chip (?city_id= link / location icon) wins over chip order
-    // (CAR-142).
+    // are excluded by slicing at it; qualification levels, relocation,
+    // employment-type and experience chips are excluded by name, and a
+    // structurally marked city chip (?city_id= link / location icon) wins
+    // over chip order (CAR-142).
     const metaEnd = block.indexOf('vacancy-card__skills');
     const metaBlock = metaEnd === -1 ? block : block.slice(0, metaEnd);
     const city = pickCityChip(metaBlock);

@@ -21,7 +21,7 @@
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 
@@ -45,6 +45,11 @@ before(async () => {
 });
 
 after(() => {
+  // Tripwire: every test that touches the shared fixture must restore it.
+  // A bare rmSync here would poison --test-name-pattern re-runs of later
+  // tests (they read profile.yml from disk).
+  assert.ok(existsSync(resolve(ROOT, 'config', 'profile.yml')),
+    'shared config/profile.yml fixture must survive the whole suite');
   delete process.env.CAREER_OPS_ROOT;
   try { rmSync(ROOT, { recursive: true, force: true }); } catch {}
 });
@@ -127,6 +132,85 @@ test('CAR-143: bare numbers qualify only next to a salary keyword, not any perio
   assert.equal(ru[0].period, 'month');
 });
 
+test('CAR-143 r2: bare numbers need an attached period marker, not just a salary word', () => {
+  assert.equal(CC.parseMoneyFigures('Competitive pay, team of 5,000 engineers').length, 0);
+  assert.equal(CC.parseMoneyFigures('Compensation includes equity for 10,000 employees').length, 0);
+  // the keyword + attached-marker combination still parses
+  assert.equal(CC.parseMoneyFigures('Salary: 85,000 per year')[0].low, 85000);
+});
+
+test('CAR-143 r2: real sub-year salaries survive — the year guard is for plain 4-digit tokens only', () => {
+  const ru = CC.parseMoneyFigures('Зарплата: 2 000 в месяц');
+  assert.equal(ru.length, 1);
+  assert.equal(ru[0].period, 'month');
+  assert.equal(CC.annualLowHigh(ru[0]).low, 24000);
+  const comma = CC.parseMoneyFigures('Salary: 2,050 per month');
+  assert.equal(comma.length, 1);
+  assert.equal(comma[0].low, 2050);
+  assert.equal(comma[0].period, 'month');
+  // the profile's own fields are salary context by construction — a bare
+  // "2000" there is a real 2000, not a year
+  const prof = CC.readProfileCompensation('compensation:\n  minimum: "2000"\n');
+  assert.ok(prof, 'profile bare minimum parses');
+  assert.equal(prof.low, 2000);
+  assert.equal(prof.period, 'year');
+});
+
+test('CAR-143 r3: bare JD ranges keep both ends — the marker after the range covers its low end', () => {
+  // The first figure's clamped window ends at «–», its period was null, and
+  // the bare gate dropped it — only 95k survived as THE offer (overstated).
+  const en = CC.parseMoneyFigures('Salary: 85,000–95,000 per year');
+  assert.equal(en.length, 1);
+  assert.equal(en[0].low, 85000);
+  assert.equal(en[0].high, 95000);
+  assert.equal(en[0].period, 'year');
+  // same through a qualified partner: the € on the high end covers 4.000
+  const de = CC.parseMoneyFigures('Gehalt: 4.000–5.000 € pro Monat');
+  assert.equal(de.length, 1);
+  assert.equal(de[0].low, 4000);
+  assert.equal(de[0].high, 5000);
+  assert.equal(de[0].currency, 'EUR');
+  assert.equal(de[0].period, 'month');
+  const ann = CC.annualLowHigh(de[0]);
+  assert.equal(ann.low, 48000);
+  assert.equal(ann.high, 60000);
+  // word separators inherit too
+  const word = CC.parseMoneyFigures('Salary: 85,000 to 95,000 per year');
+  assert.equal(word.length, 1);
+  assert.equal(word[0].low, 85000);
+  assert.equal(word[0].high, 95000);
+  assert.equal(word[0].period, 'year');
+});
+
+test('CAR-143 r3: slashed and abbreviated RU period forms', () => {
+  const slash = CC.parseMoneyFigures('200 000 ₽/месяц');
+  assert.equal(slash[0].period, 'month');
+  assert.equal(CC.annualLowHigh(slash[0]).low, 2400000);
+  assert.equal(CC.parseMoneyFigures('Зарплата 3 000 € в мес.')[0].period, 'month');
+  assert.equal(CC.parseMoneyFigures('500 000 ₽/года')[0].period, 'year');
+  assert.equal(CC.parseMoneyFigures('200 000 ₽/мес')[0].period, 'month');
+});
+
+test('CAR-143 r3: the year guard spares after-attached markers, keeps before-side frames', () => {
+  // «2000 в месяц» / «1950 per month» are real salaries — the guard fired
+  // exactly when it should not.
+  assert.equal(CC.parseMoneyFigures('Зарплата: 2000 в месяц')[0].low, 2000);
+  assert.equal(CC.parseMoneyFigures('Salary: 1950 per month')[0].period, 'month');
+  // a before-side frame still wins: «monthly» + a plain year is a misread
+  assert.equal(CC.parseMoneyFigures('Salary monthly: 2019').length, 0);
+});
+
+test('CAR-143 r3: a before-window crosses sentence punctuation, not just distance', () => {
+  // «Monthly» sat 21 chars before the figure — outside the 16-char window the
+  // figure read annual (12× understated). Window 24 + punctuation clamp keeps
+  // both this and «Hourly staff welcome. $120k» correct.
+  const m = CC.parseMoneyFigures('Monthly gross salary: €4,000');
+  assert.equal(m[0].period, 'month');
+  assert.equal(CC.annualLowHigh(m[0]).low, 48000);
+  const a = CC.parseMoneyFigures('Annual base salary: $90k');
+  assert.equal(a[0].period, 'year');
+});
+
 test('CAR-143: a period noun elsewhere on the line does not make the figure monthly', () => {
   // «6 month contract» used to mark the $120k figure monthly → ×12 → 1,440,000.
   const f = CC.parseMoneyFigures('6 month contract, $120k');
@@ -155,6 +239,43 @@ test('CAR-143: an hourly figure is dropped, a same-line yearly figure survives',
   assert.equal(f.length, 1);
   assert.equal(f[0].period, 'year');
   assert.equal(f[0].low, 104000);
+});
+
+test('CAR-143 r2: a later figure\'s /yr cannot claim the earlier /hr figure (nearest marker wins)', () => {
+  // The $50 figure's after-window used to run into «$104k/yr» and YEAR was
+  // tested before HOUR, so $50 became a $50/YEAR offer.
+  const f = CC.parseMoneyFigures('$50/hr, $104k/yr');
+  assert.equal(f.length, 1);
+  assert.equal(f[0].low, 104000);
+  assert.equal(f[0].period, 'year');
+});
+
+test('CAR-143 r2: a distant before-side hourly word does not describe the figure', () => {
+  const f = CC.parseMoneyFigures('Hourly staff welcome. $120k');
+  assert.equal(f.length, 1);
+  assert.equal(f[0].period, null); // no marker attached to the figure — assumed per year
+});
+
+test('CAR-143 r2: bare RU/ES period nouns no longer mark an unrelated figure', () => {
+  // bare «мес» used to mark the ₽ figure monthly → ×12 → 2,400,000
+  const ru = CC.parseMoneyFigures('Контракт на 6 мес, 200 000 ₽');
+  assert.equal(ru.length, 1);
+  assert.equal(ru[0].period, null);
+  assert.equal(CC.annualLowHigh(ru[0]).low, 200000);
+  // attached forms still work
+  assert.equal(CC.parseMoneyFigures('200 000 ₽/мес')[0].period, 'month');
+  assert.equal(CC.parseMoneyFigures('Зарплата 200 000 в месяц')[0].period, 'month');
+  // bare «mes» in prose («el mes pasado») is not a marker either
+  const es = CC.parseMoneyFigures('el mes pasado, $90k');
+  assert.equal(es.length, 1);
+  assert.equal(es[0].period, null);
+  assert.equal(CC.parseMoneyFigures('$3,000/mes')[0].period, 'month');
+});
+
+test('CAR-143 r2: «manual» no longer reads as «anual» → year', () => {
+  const f = CC.parseMoneyFigures('manual QA role, $90k');
+  assert.equal(f.length, 1);
+  assert.equal(f[0].period, null);
 });
 
 // ── profile compensation ────────────────────────────────────────────────────
@@ -191,6 +312,20 @@ test('CAR-143: minimum and target_range are never spliced into one range', () =>
   assert.equal(prof.high, null); // was 90000 — spliced across the two fields
   assert.equal(prof.currency, 'EUR');
   assert.equal(prof.period, 'year');
+});
+
+test('CAR-143 r2: an unparseable minimum falls back to target_range', () => {
+  // "negotiable" parses to no figure — the old join recovered the range, the
+  // splice fix lost it; the fallback is back, with raw naming the real source.
+  const prof = CC.readProfileCompensation(
+    'compensation:\n  currency: EUR\n  minimum: "negotiable"\n  target_range: "90k–110k per year"\n',
+  );
+  assert.ok(prof, 'range fallback present');
+  assert.equal(prof.low, 90000);
+  assert.equal(prof.high, 110000);
+  assert.equal(prof.currency, 'EUR');
+  assert.equal(prof.period, 'year');
+  assert.equal(prof.raw, '90k–110k per year'); // the source actually used
 });
 
 test('a profile without a compensation block yields null', () => {
@@ -262,13 +397,90 @@ test('CAR-143: ¥30k/月 (RMB-shaped) is not converted at the JPY rate', () => {
   assert.match(block, /No reliable conversion from ¥ to EUR/);
 });
 
-test('CAR-143: an explicit code on the line disambiguates the symbol', () => {
+test('CAR-143 r2: an explicit code sits next to the figure — exact AUD→EUR reference', () => {
   const block = CC.buildCompensationBlock(
     'Engineer at Sydney.\nSalary: AUD $100k per year.',
     { low: 85000, high: null, currency: 'EUR', period: 'year', raw: '85,000' },
   );
   assert.match(block, /100000 AUD per YEAR/);
-  assert.match(block, /≈/); // AUD is a mapped code once explicit
+  assert.match(block, /100000 AUD vs 85000 EUR/);
+  // Pinned to the static table's exact value (AUD 0.66, EUR 1.08 →
+  // 100000 × 0.66 / 1.08 = 61111.11 → 61111) — a rounding or inversion
+  // regression in convertValue fails here instead of shipping a 17×-off
+  // "indicative" number. Update together with USD_PER.
+  assert.match(block, /≈\s*61111 EUR per year/);
+});
+
+test('CAR-143 r3: a CAD mention away from the figure never yields a CAD conversion', () => {
+  // Prose «CAD» (design tools) sits on its own line — not adjacent to the
+  // figure, so no CAD currency and no CAD→EUR rate may enter the block.
+  const block = CC.buildCompensationBlock(
+    'Engineer at Toronto.\nExperience with CAD tools.\nSalary: $100k per year.',
+    { low: 85000, high: null, currency: 'EUR', period: 'year', raw: '85,000' },
+  );
+  assert.doesNotMatch(block, /CAD/);
+  assert.match(block, /100000 \$ per YEAR/); // symbol kept, unresolved
+  assert.match(block, /No reliable conversion from \$ to EUR/);
+});
+
+test('CAR-143 r2: a code elsewhere in the line does not disambiguate the symbol', () => {
+  // prose «CAD» (tools) is not a currency marker for the figure
+  const f = CC.parseMoneyFigures('Experience with CAD tools, $90k per year');
+  assert.equal(f[0].currencyRaw, '$');
+  assert.equal(f[0].currency, null);
+  // no /i: a lowercase prose «usd» does not match either
+  assert.equal(CC.parseMoneyFigures('paid in usd, $90k per year')[0].currency, null);
+  // the first code on the line may belong to ANOTHER figure
+  const paren = CC.parseMoneyFigures('$100k (vs USD 80k last year)');
+  assert.equal(paren[0].currency, null);
+  assert.equal(paren[1].currency, 'USD'); // the coded figure resolves on its own
+});
+
+test('CAR-143 r2: a bare $ falls back to the profile currency within the $-family, with a caveat', () => {
+  // The most common case — a US posting vs a USD minimum — used to die as
+  // «No reliable conversion from $ to USD», dropping a same-currency compare.
+  const block = CC.buildCompensationBlock(
+    'Engineer at Gamma US.\nSalary: $150k per year.',
+    { low: 140000, high: null, currency: 'USD', period: 'year', raw: '140,000' },
+  );
+  assert.match(block, /150000 USD per YEAR/);
+  assert.match(block, /150000 USD vs 140000 USD/);
+  assert.match(block, /presumed/i);
+});
+
+test('CAR-143 r3: an unmappable $-code or a glued prefix symbol never presumes the profile currency', () => {
+  // EXPLICIT_CCY_RE used to miss NZD/MXN/TWD… — «MXN $900,000» against a USD
+  // profile presumed USD (≈17× off). Same for glued prefixes (C$, HK$, R$…).
+  const mxn = CC.buildCompensationBlock(
+    'Engineer at Mexico.\nSalary: MXN $900,000 per year.',
+    { low: 800000, high: null, currency: 'USD', period: 'year', raw: '800,000' },
+  );
+  assert.match(mxn, /900000 \$ per YEAR/);
+  assert.doesNotMatch(mxn, /900000 USD/); // no fabricated same-currency compare
+  assert.match(mxn, /No reliable conversion from \$ to USD/);
+  // an adjacent unmappable code blocks the fallback outright…
+  assert.equal(CC.parseMoneyFigures('MXN $900,000 per year', { symbolFallback: 'USD' })[0].currency, null);
+  // …while codes CCY_MAP recognizes without a rate resolve honestly (kr pattern)
+  assert.equal(CC.parseMoneyFigures('NZD $120k per year', { symbolFallback: 'USD' })[0].currency, 'NZD');
+  assert.equal(CC.parseMoneyFigures('HKD $250k per year', { symbolFallback: 'USD' })[0].currency, 'HKD');
+  // glued prefixes (C$/HK$/NZ$…) never fall back either — the figure keeps its
+  // value with no currency, and the block caveats instead of comparing
+  const glued = CC.parseMoneyFigures('Salary: C$120k per year', { symbolFallback: 'USD' });
+  assert.equal(glued[0].low, 120000);
+  assert.equal(glued[0].currency, null);
+  assert.equal(CC.parseMoneyFigures('Salary: HK$250k per month', { symbolFallback: 'USD' })[0].currency, null);
+});
+
+test('CAR-143 r2: the symbol fallback never guesses across families', () => {
+  assert.equal(CC.parseMoneyFigures('$100k per year', { symbolFallback: 'EUR' })[0].currency, null);
+  assert.equal(CC.parseMoneyFigures('¥4,000,000 per year', { symbolFallback: 'USD' })[0].currency, null);
+  const ok = CC.parseMoneyFigures('$100k per year', { symbolFallback: 'AUD' });
+  assert.equal(ok[0].currency, 'AUD');
+  assert.equal(ok[0].currencyAssumed, true);
+  // RMB resolves to CNY and sits in the ¥-family
+  const rmb = CC.parseMoneyFigures('¥30k/月', { symbolFallback: 'RMB' });
+  assert.equal(rmb[0].currency, 'CNY');
+  assert.equal(rmb[0].currencyAssumed, true);
 });
 
 test('unmappable conversion: raw annual figures + explicit caveat, no invented number', () => {
@@ -351,10 +563,16 @@ test('readProfileCompensation: missing profile file → null (no throw)', async 
   const { readProfileCompensation } = await import('../server/lib/comp-compare.mjs');
   // No argument → the PATHS.profile read branch actually runs. PATHS resolves
   // once at import (CAREER_OPS_ROOT in before()), so remove the file itself —
-  // 'not-a-string' never exercised the branch (it short-circuits as YAML), and
-  // setting CAREER_OPS_ROOT after import has no effect.
-  rmSync(resolve(ROOT, 'config', 'profile.yml'), { force: true });
-  assert.equal(readProfileCompensation(), null);
+  // and restore it afterwards: later tests and --test-only runs rely on the
+  // shared fixture.
+  const profPath = resolve(ROOT, 'config', 'profile.yml');
+  const original = readFileSync(profPath, 'utf8');
+  try {
+    rmSync(profPath);
+    assert.equal(readProfileCompensation(), null);
+  } finally {
+    writeFileSync(profPath, original);
+  }
 });
 
 test('readProfileCompensation: malformed YAML → null (no throw)', async () => {
@@ -403,6 +621,34 @@ test('readProfileCompensation: no argument reads the existing profile from PATHS
 
 test('readProfileCompensation: profile file missing → null (no throw)', async () => {
   const { readProfileCompensation } = await import('../server/lib/comp-compare.mjs');
-  rmSync(resolve(ROOT, 'config', 'profile.yml'));
-  assert.equal(readProfileCompensation(), null);
+  // Same contract as the earlier missing-file test: restore the shared
+  // fixture in finally, so later tests / --test-name-pattern re-runs still
+  // find it (the after() tripwire asserts this).
+  const profPath = resolve(ROOT, 'config', 'profile.yml');
+  const original = readFileSync(profPath, 'utf8');
+  try {
+    rmSync(profPath);
+    assert.equal(readProfileCompensation(), null);
+  } finally {
+    writeFileSync(profPath, original);
+  }
+});
+
+// ── CAR-143 r3: the marker regexes stay stateless across calls ───────────────
+// Weak structural gate (reads source shape, not behaviour — recorded as such
+// per TRACEABILITY): MONTH/YEAR/HOUR_RE are shared NON-global constants, and
+// the /g working copies live INSIDE periodOf, so no .exec() state survives a
+// call. A module-level shared /g regex is only safe while every consumer
+// resets lastIndex — one new call-site silently reintroduces cross-call drift.
+
+test('CAR-143 r3: marker constants are non-global; periodOf builds its own /g copies', async () => {
+  const { readFileSync: rf } = await import('node:fs');
+  const src = rf(new URL('../server/lib/comp-compare.mjs', import.meta.url), 'utf8');
+  // the shared constants carry no /g flag
+  for (const name of ['MONTH_RE', 'YEAR_RE', 'HOUR_RE']) {
+    assert.doesNotMatch(src, new RegExp(`const ${name} = [^\\n]*/[a-z]*g[a-z]*;`), `${name} must stay non-global`);
+  }
+  // no module-level _SCAN /g copies: periodOf constructs its working copies
+  assert.doesNotMatch(src, /_RE_SCAN = new RegExp/, 'no shared /g scan regexes at module scope');
+  assert.match(src, /new RegExp\(MONTH_RE\.source, 'gi'\)/, 'periodOf builds its month copy');
 });

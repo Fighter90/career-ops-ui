@@ -107,6 +107,15 @@ function* walkJs(dir) {
   }
 }
 
+// CAR-116 (#/pipeline v2) — new UI strings shipped with I18n.t + EN
+// fallbacks; the ×17 dictionary fan-out is a separate locale pass.
+// They are allowlisted HERE (not in the dicts) so the gate keeps
+// failing for any FUTURE ungated key. When the fan-out lands, delete
+// CAR-116 review round: the CAR116_PENDING coverage-gate allowlist is
+// GONE — all 17 new pipeline-v2 keys live in every locale dict like any
+// other key. A view may never ship EN-fallback-only strings again; the
+// hand-off comment in pipeline.js was removed with the fan-out.
+
 test('i18n: every t(key) call in public/js/** maps to a DICT entry', () => {
   // Match both t('key') and t("key"). Captures the key string.
   // Caveat: dynamic keys like t(`mode.${name}`) are not catchable
@@ -125,7 +134,8 @@ test('i18n: every t(key) call in public/js/** maps to a DICT entry', () => {
   }
   const missing = [];
   for (const k of usedKeys) {
-    if (!DICT[k]) missing.push(`${k}  (first seen in ${fileByKey.get(k)})`);
+    if (DICT[k]) continue;
+    missing.push(`${k}  (first seen in ${fileByKey.get(k)})`);
   }
   if (missing.length) {
     console.error('Keys referenced via t(...) but missing from DICT:\n  ' + missing.join('\n  '));

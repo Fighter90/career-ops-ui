@@ -106,8 +106,19 @@ test('CAR-142: relocation and employment chips next to a real city keep the city
 });
 
 test('CAR-142: a structurally marked city chip wins over an earlier plain chip', () => {
-  // «Оформление по ТК» passes every text filter but is no city; the linked
-  // (?city_id=…) chip is picked instead.
-  const [j] = parseHabrCards(card({ city: 'Пермь', linked: true, extra: 'Оформление по ТК' }));
+  // «Опыт от 3 лет» passes every text filter (no relocation/employment
+  // token, no qualification prefix) yet is no city — only the ?city_id=
+  // markup identifies the real one, so the structural hint must do the work
+  // here. Mutation check: deleting the structural preference fails this test.
+  const [j] = parseHabrCards(card({ city: 'Пермь', linked: true, extra: 'Опыт от 3 лет' }));
   assert.equal(j.location, 'Пермь');
+});
+
+test('CAR-142 r2 #3: a plain experience chip is not a location even without structural markup', () => {
+  // «Опыт от 3 лет» passes every earlier text filter, so the chip-order
+  // fallback used to wear it as `location` — a fabricated place. The
+  // experience-chip filter must reject it so the fallback lands on the city.
+  const [j] = parseHabrCards(card({ city: 'Пермь', linked: false, extra: 'Опыт от 3 лет' }));
+  assert.notEqual(j.location, 'Опыт от 3 лет', 'an experience chip is never a fabricated location');
+  assert.equal(j.location, 'Пермь', 'the chip-order fallback still finds the real city');
 });

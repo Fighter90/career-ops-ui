@@ -8,6 +8,30 @@ Tłumaczenia: [🇬🇧 English](https://github.com/Fighter90/career-ops-ui/blob
 
 ---
 
+## [1.260.0] — 2026-10-26
+
+**Pociąg utwardzania po recenzjach — osiem scalonych PR-ów (#491–#498) z rund opus-5-5 i recenzji AI nad flotą v1.259.0: normalizacja wynagrodzeń, zakres korekty dat raportów, odporność geokodowania, cache-busting pakietu r2+r3, poprawka przepełnienia deep — plus dwa interfejsy v2 (pipeline, raporty). Każda poprawka wylądowała na drodze czerwony→zielony fix-forward.**
+
+### Naprawiono
+
+- **Normalizacja porównywania wynagrodzeń (CAR-143 rev-2)**: znaczniki okresu są rozpoznawane tylko w pobliżu liczby, do której należą — „6 month contract, $120k” nie jest już annualizowana ×12, a formy okresu występujące wyłącznie w RU/ES („за месяц” tuż przy liczbie) wygrywają z przypadkowymi słowami; rodzina symboli `$`/`¥` jest rozpoznawana, lecz nie odwzorowana na walutę, chyba że ten sam wiersz zawiera jawny kod ISO (dolary AUD/CA/SG nie są już rozliczane jako USD, a kształt ¥ RMB dostaje jawne zastrzeżenie zamiast konwersji na JPY mijającej się ~20×); gołe liczby 19xx/20xx to zawsze lata; liczby zakresu dziedziczą okres partnera; `minimum` i `target_range` z profilu nigdy nie są sklejane w jeden zakres.
+- **Zakres działania fixReportDate (CAR-144 rev-2)**: korekta daty przypinanej po stronie serwera dotyczy wyłącznie preambuły przed pierwszym nagłówkiem `## ` (raport z tytułem H2 dostaje zachowawczy no-op — przestarzała data jest akceptowalna, zmyślona już nie); wewnątrz preambuły: unikalny kandydat zostaje skorygowany, w przeciwnym razie unikalny pogrubiony `**Date:**`, w przeciwnym razie nic (dwa pogrubione lub dwa zwykłe kandydatów nie przepisują żadnego). Bramka etykiet PDF FIX-5 czyta teraz rzeczywiście złożony słownik — brakująca wersja językowa rzuca wyjątek zamiast po cichu przechodzić na angielski fallback.
+- **Chip lokalizacji Habr + odporność geokodowania (CAR-142 rev-2)**: meta-chip Habr staje się miastem wyłącznie przy dowodzie strukturalnym (link filtra miasta lub ikona lokalizacji) — ogłoszenia o relokacji („Возможна релокация”) i typy zatrudnienia nigdy nie udają lokalizacji; cache geokodera przeżywa teraz restart (zrzut na `beforeExit`/`exit`/SIGTERM+SIGINT z ponownym podniesieniem sygnału, flaga dirty czyszczona dopiero po wylądowaniu zapisu), zamykanie jest ograniczone (zatrzask pętli wyjścia, licznik generacji, LRU wg świeżości), a wyczerpany budżet geokodowania odpowiada 503 + Retry-After zamiast generycznego 502.
+- **Cache-busting pakietu (CAR-145 r2+r3)**: powłoka przywołuje `/js/bundle.js?v=<content-hash>` — immutable przy dopasowaniu, no-store przy rozjeździe — likwidując 5-minutowe okno wdrożenia, w którym świeża powłoka spotykała się z cache’owanym starym pakietem. Hash i strumień współdzielą jeden deskryptor pliku (bez poszarpanych odczytów); skrócony odczyt odpowiada null zamiast awaryjnego hasha ze stat, który mógłby skazić całe wdrożenie; `make-bundle` zapisuje tożsamość i pliki towarzyszące .br/.gz przez tymczasowy plik z kropką + rename, więc zabity build ani nie serwuje półzapisanych bajtów, ani nie zostawia po sobie pliku tymczasowego.
+- **Przepełnienie deep (CAR-146)**: zapisany brief badawczy, którego sama nazwa pliku przekracza viewport telefonu, nie potrafi już wypchnąć `#/deep` poza 390px — karta zamyka się w swoim wierszu, tytuł łamie się, a data zostaje w jednej linii; przegląd wąskiego viewportu przechodzi teraz przez `#/deep` z zaseedowanym, przesadnie długim fixture (jedyne ustalenie dwóch przebiegów remote-QA, zamknięte).
+- **Utwardzenie pipeline v2 (recenzja CAR-116)**: usunięcia proszą o potwierdzenie i umożliwiają undo (z uczciwą treścią komunikatu undo), karty nie fabrykują firmy z hosta, identyfikatory wierszy opierają się na FNV-1a, liczniki operacji zbiorczych są prawdziwe, a operacje zbiorcze mają zabezpieczenie przed ponownym wejściem.
+
+### Dodano
+
+- **Pipeline v2 (CAR-116)**: wzbogacone karty, widok pogrupowany i zbiorcze odrzucanie z undo; 17 nowych kluczy `pipe.*` trafiło do wszystkich 19 słowników od razu przetłumaczonych.
+- **Raporty v2 (CAR-118)**: wyszukiwanie na żywo z filtrami przedziału oceny/wiarygodności/firmy/daty, sortowalne nagłówki (`aria-sort`), trwały widok kart z przyciskami akcji dla każdego przedziału, histogram ocen filtrujący po kliknięciu oraz zunifikowany rendering „Firma — Stanowisko” / „x.x/5” (`window.ReportOps`); 31 kluczy `rep2.*` trafiło do wszystkich 19 słowników od razu przetłumaczonych.
+
+### Uwagi
+
+- Każda poprawka przeszła rundę recenzji z dowodami czerwony→zielony; dwa ustalenia HIGH z recenzji AI dla pierwszego r2 pakietu (hash skróconego odczytu, atomowość plików towarzyszących) zamknął r3, a rundy CAR-143/CAR-144/CAR-142 każdorazowo ponownie zweryfikowały otwarte ustalenia swoich poprzedników.
+- Świadomie nie zrobiono: widok klastrów mapy pozostaje CAR-125 (w kolejce); przywracanie metadanych pipeline’u po stronie serwera to osobny ticket; brak wstecznych poprawek dla treści zapisanych w stanach sprzed rev-2 z v1.259.0.
+- Testy 5988 (+165); zestaw przeglądarkowy 152 zaliczone / 0 niepowodzeń / 1 opcjonalnie pominięty. Żadne źródło skanera nietknięte (rejestr 121 = 116 EN + 5 RU · 116 adapterów); 48 nowych kluczy i18n wylądowało ze swoim rozrzutem ×19 wewnątrz samych PR-ów z funkcjami.
+
 ## [1.259.0] — 2026-10-25
 
 **Drugi pociąg floty agentów, sześć poprawek: daty raportów są przypinane po stronie serwera, geokoder mapy cache'uje i rozpoznaje rosyjskie miasta, pomoc ×18 przywołuje zlokalizowane etykiety przycisków, zdania interfejsu przestają mieszać języki, porównania wynagrodzeń liczone są po stronie serwera — a pakiet JS dystrybuowany jest wstępnie skompresowany (zimne ładowanie 3.1 MB → 598 KB).**
