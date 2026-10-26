@@ -227,16 +227,24 @@ test('CLI: a missing script file fails loudly (exit 1, ENOENT on stderr)', async
 
 const REAL_HTML = readFileSync(join(REPO_ROOT, 'public', 'index.html'), 'utf8');
 
-test('real index.html: 93 script tags, 90 bundlable /js/ body scripts (regenerate when the shell changes)', () => {
+test('real index.html: 94 script tags, 91 bundlable /js/ body scripts (regenerate when the shell changes)', () => {
   const all = mod.scanScriptTags(REAL_HTML);
+  // CAR-119 — +1: /js/lib/llm-page-kit.js (the shared AI-page template lib).
   // CAR-118 — +1: /js/lib/report-ops.js (the #/reports pure-helper lib).
   // CAR-116 — +1: /js/lib/pipeline-view.js (the #/pipeline pure-helper lib).
-  assert.equal(all.length, 93, 'total classic <script src> tags (90 /js/ body + 2 head + 1 leaflet)');
+  assert.equal(all.length, 94, 'total classic <script src> tags (91 /js/ body + 2 head + 1 leaflet)');
   const srcs = mod.extractBundleScripts(REAL_HTML);
-  assert.equal(srcs.length, 90);
+  assert.equal(srcs.length, 91);
   assert.equal(srcs[0], '/js/lib/locales/i18n-dict.en.js');
   assert.equal(srcs[srcs.length - 1], '/js/app.js');
   assert.ok(srcs.includes('/js/lib/i18n.js'));
+  // CAR-119 — the llm-page-kit lib is an ordinary bundlable body script:
+  // document order puts it immediately after report-export.js (it wraps
+  // no view; views only touch window.LlmPageKit inside their renderers).
+  const rex = srcs.indexOf('/js/lib/report-export.js');
+  const kit = srcs.indexOf('/js/lib/llm-page-kit.js');
+  assert.ok(rex > -1 && kit > -1 && kit === rex + 1,
+    'llm-page-kit.js must load directly after report-export.js');
   // CAR-116 — the pipeline v2 lib is an ordinary bundlable body script:
   // document order puts it immediately before views/pipeline.js.
   const pv = srcs.indexOf('/js/lib/pipeline-view.js');

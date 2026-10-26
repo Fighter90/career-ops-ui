@@ -45,6 +45,7 @@ const TRACKER = read('public', 'js', 'views', 'tracker.js');
 const EVALUATE = read('public', 'js', 'views', 'evaluate.js');
 const STATS = read('public', 'js', 'views', 'stats.js');
 const SCAN = read('public', 'js', 'views', 'scan.js');
+const SCAN_FILTERS = read('public', 'js', 'views', 'scan', 'filters.js');
 const SCAN_RESULTS = read('public', 'js', 'lib', 'scan-results.js');
 const PIPELINE = read('public', 'js', 'views', 'pipeline.js');
 const USAGE = read('public', 'js', 'views', 'usage.js');
@@ -199,20 +200,17 @@ test('scan: blank facet values are skipped before a chip can render', () => {
   assert.match(SCAN_RESULTS, /role: 'button',\s*\n\s*tabindex: '0',/);
 });
 
-// ── 7 · saved-search Delete: red only while armed ───────────────────────────
-test('scan: Delete is a disabled ghost until a search is selected, then btn-danger', () => {
-  // Born disabled + neutral.
-  assert.match(SCAN, /const ssDelBtn = c\('button', \{ className: 'btn btn-ghost', type: 'button', disabled: true, onClick:/);
-  // The single arming switch: danger ⇔ armed; aria-disabled mirrors it.
-  assert.match(SCAN, /const armed = !!ssSelect\.value;/);
-  assert.match(SCAN, /ssDelBtn\.classList\.toggle\('btn-danger', armed\);/);
-  assert.match(SCAN, /ssDelBtn\.classList\.toggle\('btn-ghost', !armed\);/);
-  assert.match(SCAN, /ssDelBtn\.disabled = !armed;/);
-  assert.match(SCAN, /if \(armed\) ssDelBtn\.removeAttribute\('aria-disabled'\);\n\s*else ssDelBtn\.setAttribute\('aria-disabled', 'true'\);/);
-  // Every state change re-syncs: dropdown selection, save, delete.
-  assert.match(SCAN, /ssSelect\.addEventListener\('change', syncSsDelBtn\);/);
-  assert.match(SCAN, /refreshSavedSearches\(name\);\s*\n\s*syncSsDelBtn\(\);/);
-  assert.match(SCAN, /refreshSavedSearches\(''\);\s*\n\s*syncSsDelBtn\(\);/);
+// ── 7 · saved-search delete is confirm-gated (CAR-115 presets) ──────────────
+test('scan: deleting a preset (saved search) requires a danger confirm', () => {
+  // The presets live in views/scan/filters.js since CAR-115; the destructive
+  // affordance is the chip's inline ✕ and it must never delete on a single
+  // click — UI.confirm with danger: true stands between the click and the
+  // removal, and the dialog copy is localized.
+  assert.match(SCAN_FILTERS, /UI\.confirm\(/, 'the ✕ opens the confirm dialog');
+  assert.match(SCAN_FILTERS, /danger: true/, 'the dialog is marked destructive');
+  assert.match(SCAN_FILTERS, /ScanPrefs\.removeSearch\(/, 'only the confirmed path removes');
+  assert.ok(SCAN_FILTERS.indexOf('UI.confirm(') < SCAN_FILTERS.indexOf('ScanPrefs.removeSearch('),
+    'the confirm precedes the removal');
 });
 
 // ── 8 · profile EMAIL card at 1440 ──────────────────────────────────────────
@@ -294,17 +292,23 @@ test('map: the docs-fab never reaches the attribution at rest at 1440 and 390 (c
 
 // ── 11 · stats "?" help rides the tab strip ─────────────────────────────────
 test('stats: tabs are nowrap and the "?" sits end-aligned ON the strip (RTL-safe)', () => {
-  // Each tab keeps its label on one line — a long locale wraps the whole tab
-  // as a unit instead of breaking inside and dragging the "?" down.
-  assert.match(STATS, /borderBottom: '2px solid transparent', whiteSpace: 'nowrap' \} \}, def\.label\)/);
-  // The strip wrapper owns the border and carries BOTH the tablist and the
-  // hint row — the "?" is on the strip's line, not a line of its own below.
-  assert.match(STATS, /const tabStrip = c\('div', \{[\s\S]*?borderBottom: '1px solid var\(--line, #e5e7eb\)', margin: '4px 0 18px' \},\s*\n\s*\}, \[tabBar, hintRow\]\);/);
+  // CAR-120 — the strip is a one-line horizontal scroller (nine tabs never
+  // wrap onto a second row at 1280 px): the v2-stats-strip/scroller/tabbar
+  // classes own the nowrap + border + fade (overlays.css, end of cascade),
+  // and the scroller wraps ONLY the tablist — the "?" hint row is a sibling,
+  // so a scrolling tab row never carries the hint away.
+  assert.match(STATS, /const tabStrip = c\('div', \{\s*\n?\s*className: 'v2-stats-strip',[\s\S]*?\}, \[c\('div', \{ className: 'v2-stats-scroller' \}, tabBar\), hintRow\]\);/);
   assert.match(STATS, /root\.appendChild\(tabStrip\);/);
   assert.ok(!STATS.includes('root.appendChild(hintRow);'), 'the hint row must not mount as a sibling line under the tabs');
-  // End-aligned via the LOGICAL margin (mirrors under [dir="rtl"]); the old
-  // negative top margin (which visually detached it under the border) is gone.
-  assert.match(STATS, /hintRow = c\('div', \{ style: \{ display: 'flex', alignItems: 'center', gap: '2px', marginInlineStart: 'auto'/);
+  // Each tab keeps its label on one line — a long locale scrolls the row as a
+  // unit instead of breaking inside a label (nowrap moved to the CSS class).
+  assert.match(STATS, /className: 'tab-btn v2-stats-tab', type: 'button', role: 'tab'/);
+  // End-aligned: the hint sits AFTER the scroller in the strip's flex row, so
+  // it stays visible at the strip's end edge in LTR and RTL alike; the
+  // scroller's fade mask is symmetric and mirrors itself under [dir="rtl"].
+  assert.match(STATS, /hintRow = c\('div', \{ style: \{ display: 'flex', alignItems: 'center', gap: '2px', flex: '0 0 auto'/);
+  assert.match(STATS, /\[c\('div', \{ className: 'v2-stats-scroller' \}, tabBar\), hintRow\]/,
+    'hint row rides the strip line, after the scroller');
   assert.ok(!STATS.includes("margin: '-8px 0 14px'"), 'the stray-line negative margin is gone');
 });
 

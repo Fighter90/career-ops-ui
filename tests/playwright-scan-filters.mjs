@@ -1,11 +1,11 @@
 /**
  * Playwright interaction harness for the #/scan results table + filters.
  *
- * Purpose: a REGRESSION BASELINE for the scan.js results-subsystem refactor
- * (v1.132.0). It seeds a canned `data/last-scan.json` (so `GET /api/scan-results`
- * returns a known corpus without any network), loads `#/scan`, and drives every
- * client-side filter — asserting the exact visible row count each time. The
- * extraction of `renderResults`/`buildChipRow` into `window.ScanResults` MUST
+ * Purpose: the REGRESSION BASELINE for the #/scan results subsystem. It seeds
+ * a canned `data/last-scan.json` (so `GET /api/scan-results` returns a known
+ * corpus without any network), loads `#/scan`, and drives every client-side
+ * filter — asserting the exact visible row count each time. CAR-115 (the
+ * v2 filter bar: live popover chips, no Apply button, windowed table) must
  * keep every one of these assertions green.
  *
  * Opt-in (needs a browser binary; Playwright is the parent's dep, not ours):
@@ -93,9 +93,18 @@ async function openScan() {
   await page.waitForSelector('#scan-results table tbody tr', { timeout: 8000 });
   return { page, errors };
 }
-const rowCount = (page) => page.locator('#scan-results table tbody tr').count();
-// Apply a <select> value and let the synchronous re-render settle.
-async function pick(page, id, value) { await page.selectOption(id, value); await page.waitForTimeout(60); }
+const rowCount = (page) => page.locator('#scan-results table tbody tr:not(.v2-scan-pad)').count();
+// CAR-115 — the selects live inside popover chips: open the popover, then
+// pick. The popover stays open on change (multi-adjust), so Escape closes
+// it before the next pick — its keydown handler also refocuses the chip.
+async function pick(page, chipTitle, id, value) {
+  await page.click(`.v2-scan-chip-btn[title="${chipTitle}"]`);
+  await page.waitForSelector(`${id}`, { state: 'visible', timeout: 4000 });
+  await page.selectOption(id, value);
+  await page.keyboard.press('Escape');
+  await page.waitForSelector(`${id}`, { state: 'hidden', timeout: 4000 });
+  await page.waitForTimeout(60);
+}
 
 test('scan filters: baseline corpus renders all rows, no console errors', { skip: SKIP }, async () => {
   const { page, errors } = await openScan();
@@ -104,55 +113,67 @@ test('scan filters: baseline corpus renders all rows, no console errors', { skip
   await page.close();
 });
 
-test('scan filters: Source dropdown filters by adapter', { skip: SKIP }, async () => {
+test('scan filters: Source popover chip filters by adapter', { skip: SKIP }, async () => {
   const { page } = await openScan();
-  await pick(page, '#scan-filter-source', 'greenhouse');
+  await pick(page, 'Source', '#scan-filter-source', 'greenhouse');
   assert.equal(await rowCount(page), 2, 'greenhouse → Acme + Stark');
-  await pick(page, '#scan-filter-source', 'lever');
+  await pick(page, 'Source', '#scan-filter-source', 'lever');
   assert.equal(await rowCount(page), 2, 'lever → Globex + Wayne');
-  await pick(page, '#scan-filter-source', '');
+  await pick(page, 'Source', '#scan-filter-source', '');
   assert.equal(await rowCount(page), ROWS.length, 'cleared → all rows');
   await page.close();
 });
 
-test('scan filters: Seniority facet buckets by title', { skip: SKIP }, async () => {
+test('scan filters: Seniority popover chip buckets by title', { skip: SKIP }, async () => {
   const { page } = await openScan();
-  await pick(page, '#scan-filter-seniority', 'senior');
+  await pick(page, 'Seniority', '#scan-filter-seniority', 'senior');
   assert.equal(await rowCount(page), 2, 'senior → Senior Backend + Senior Data');
-  await pick(page, '#scan-filter-seniority', 'staff');
+  await pick(page, 'Seniority', '#scan-filter-seniority', 'staff');
   assert.equal(await rowCount(page), 1, 'staff → Staff Platform');
-  await pick(page, '#scan-filter-seniority', '');
+  await pick(page, 'Seniority', '#scan-filter-seniority', '');
   assert.equal(await rowCount(page), ROWS.length);
   await page.close();
 });
 
-test('scan filters: Remote work-type filter', { skip: SKIP }, async () => {
+test('scan filters: Remote work-type popover chip', { skip: SKIP }, async () => {
   const { page } = await openScan();
-  await pick(page, '#scan-filter-remote', 'remote');
+  await pick(page, 'Work type', '#scan-filter-remote', 'remote');
   assert.equal(await rowCount(page), 2, 'remote → Globex + Umbrella');
-  await pick(page, '#scan-filter-remote', '');
+  await pick(page, 'Work type', '#scan-filter-remote', '');
   assert.equal(await rowCount(page), ROWS.length);
   await page.close();
 });
 
-test('scan filters: "Posted within" age filter', { skip: SKIP }, async () => {
+test('scan filters: "Posted within" age popover chip', { skip: SKIP }, async () => {
   const { page } = await openScan();
-  await pick(page, '#scan-filter-age', '7');
+  await pick(page, 'Posted within', '#scan-filter-age', '7');
   assert.equal(await rowCount(page), 4, '≤7d → 2 today + 3d + 2d (10d, 40d dropped)');
-  await pick(page, '#scan-filter-age', '');
+  await pick(page, 'Posted within', '#scan-filter-age', '');
   assert.equal(await rowCount(page), ROWS.length);
   await page.close();
 });
 
-test('scan filters: text include + exclude (Apply-driven)', { skip: SKIP }, async () => {
+test('scan filters: live text search (Enter applies; -word excludes inline)', { skip: SKIP }, async () => {
   const { page } = await openScan();
   await page.fill('#scan-filter-text', 'data');
-  await page.click('#scan-apply');
+  await page.press('#scan-filter-text', 'Enter');
   await page.waitForTimeout(60);
   assert.equal(await rowCount(page), 2, 'include "data" → Data Scientist + Senior Data Engineer');
-  await page.fill('#scan-filter-text', '');
+  // inline exclusion without touching the Exclude field
+  await page.fill('#scan-filter-text', 'engineer, -senior');
+  await page.press('#scan-filter-text', 'Enter');
+  await page.waitForTimeout(60);
+  assert.equal(await rowCount(page), 2,
+    '"engineer, -senior" → Staff Platform + Engineering Manager ("engineering" contains "engineer")');
+  // Reset via the bar button clears everything
+  await page.click('.v2-scan-bar button:has-text("Reset")');
+  await page.waitForTimeout(60);
+  assert.equal(await rowCount(page), ROWS.length);
+  // exclude-field path still works (Advanced filters popover)
+  await page.click('.v2-scan-chip-btn[title="Advanced filters"]');
+  await page.waitForSelector('#scan-filter-exclude', { state: 'visible', timeout: 4000 });
   await page.fill('#scan-filter-exclude', 'manager');
-  await page.click('#scan-apply');
+  await page.press('#scan-filter-exclude', 'Enter');
   await page.waitForTimeout(60);
   assert.equal(await rowCount(page), ROWS.length - 1, 'exclude "manager" → drops Engineering Manager');
   await page.close();

@@ -1,0 +1,97 @@
+/* ═══ CAR-121 · #/portals v2 + calm #/health (v2-portals-*) ═══
+ *
+ * The UX-epic pattern (v2-pipeline.css, v2-reports.css): a feature owns its
+ * stylesheet outside the 800-LOC-gated base files. components.css sits at its
+ * 800-line hard limit, so this file is linked from the two CAR-121 views
+ * (portals.js / health.js inject it idempotently — index.html is a shared
+ * file across the parallel UX epics). Same-origin <link>, CSP style-src safe.
+ */
+
+/* Toolbar: debounced search + enabled-state filter over the 129 tracked
+ * companies. */
+.v2-portals-toolbar {
+  display: flex; flex-wrap: wrap; align-items: center;
+  gap: var(--space-2) var(--space-3);
+  margin: 0 0 var(--space-3);
+}
+.v2-portals-toolbar .input { flex: 1 1 220px; min-width: 0; }
+.v2-portals-toolbar .select { flex: 0 1 auto; width: auto; }
+
+/* ATS-vendor group headers ("Greenhouse 12"), Other last. */
+.v2-portals-group-h {
+  display: flex; align-items: center; gap: var(--space-2);
+  margin: var(--space-4) 0 var(--space-2);
+  font-size: 12px; font-weight: 700;
+  text-transform: uppercase; letter-spacing: .05em;
+  color: var(--foggy);
+}
+.v2-portals-group-h:first-child { margin-top: 0; }
+.v2-portals-count {
+  padding: 1px 8px; border-radius: var(--radius-pill);
+  background: var(--elev); color: var(--foggy);
+  font-size: 11px; font-weight: 600; font-variant-numeric: tabular-nums;
+}
+
+/* The enable/disable switch — a real checkbox painted as a pill toggle.
+ * The checked fill is a literal (not var(--go)): --go is a TEXT-role alias
+ * and the css-role-tokens gate forbids text tokens as fills. */
+.v2-portals-switch {
+  appearance: none; -webkit-appearance: none;
+  flex: 0 0 auto; width: 38px; height: 22px; margin: 0;
+  border-radius: var(--radius-pill);
+  background: var(--slate); border: 1px solid var(--line);
+  position: relative; cursor: pointer;
+  transition: background 120ms ease;
+}
+.v2-portals-switch::after {
+  content: ''; position: absolute; top: 2px; left: 2px;
+  width: 16px; height: 16px; border-radius: 50%;
+  background: var(--paper); box-shadow: var(--shadow-sm);
+  transition: transform 120ms ease;
+}
+.v2-portals-switch:checked { background: #2e7d32; border-color: transparent; }
+.v2-portals-switch:checked::after { transform: translateX(16px); }
+.v2-portals-switch:focus-visible { outline: 2px solid var(--ink); outline-offset: 2px; }
+.v2-portals-switch:disabled { opacity: .45; cursor: not-allowed; }
+[dir='rtl'] .v2-portals-switch::after { left: auto; right: 2px; }
+[dir='rtl'] .v2-portals-switch:checked::after { transform: translateX(-16px); }
+
+/* Undo bar — one per action, session-scoped, body-level (pipeline pattern).
+ * Motion is neutralized globally by the prefers-reduced-motion block in
+ * overlays.css (transition-duration 0.01ms !important). */
+.v2-portals-undo-bar {
+  position: fixed;
+  left: 50%;
+  bottom: calc(var(--space-4) + 8px);
+  transform: translateX(-50%);
+  z-index: var(--z-toast, 1000);
+  display: flex; align-items: center; gap: var(--space-2);
+  padding: var(--space-2) var(--space-3);
+  background: var(--paper);
+  color: var(--hof);
+  border: 1px solid var(--slate);
+  border-radius: var(--radius);
+  box-shadow: var(--shadow-lg);
+  max-width: min(560px, calc(100vw - 32px));
+}
+.v2-portals-undo-bar[hidden] { display: none; }
+.v2-portals-undo-msg { font-size: var(--font-size-sm, 14px); }
+
+/* Calm #/health: green success summary + collapsed optional section. */
+.v2-portals-health-ok {
+  display: flex; flex-wrap: wrap; align-items: baseline;
+  gap: var(--space-2) var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  margin: 0 0 var(--space-3);
+  border: 1px solid var(--go);
+  border-radius: var(--radius);
+  background: var(--beach);
+  color: var(--ink); font-weight: 600;
+}
+.v2-portals-optional { margin: var(--space-4) 0 0; }
+.v2-portals-optional > summary {
+  cursor: pointer; color: var(--foggy); font-size: 14px; font-weight: 600;
+  padding: var(--space-2) 0;
+}
+.v2-portals-optional > summary:hover { color: var(--ink); }
+.v2-portals-optional[open] > summary { margin-bottom: var(--space-2); }

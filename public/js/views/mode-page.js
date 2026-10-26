@@ -12,6 +12,13 @@
  *
  * Adding a new mode is one config entry + one i18n block, no per-mode
  * view file required.
+ *
+ * CAR-119 — the page renders through the shared LlmPageKit template
+ * (two-column form|result, progress/ETA/cancel run panel, tracker
+ * autofill picker). // CAR-119 i18n: this view adds NO dictionary keys of
+ * its own; the kit's `llm2.*` strings ship as I18n.t EN fallbacks inside
+ * public/js/lib/llm-page-kit.js (dictionaries intentionally not edited in
+ * this ticket — see the PR's i18n list).
  */
 (function () {
   // v1.22.0 (M-1) — each field carries a `hint` key that maps to a
@@ -216,6 +223,12 @@
     }
 
     const out = c('div');
+    // CAR-119 — the run/progress panel mounts above the result pane (its
+    // begin() paints synchronously on click, the ≤300 ms criterion).
+    const runHost = c('div');
+    // CAR-119 review #2 — the layout handle; begin() flips to the Result
+    // tab through it (assigned in the return block below).
+    let page = null;
     // CAR-94 (5) — cross-button single-flight + stale token, the same shape
     // as deep.js: "Generate prompt", "Run live" and the prompt card's
     // "Show result" all POST /api/mode/:slug; withSpinner disables only the
@@ -365,25 +378,38 @@
       if (inFlight) return; // CAR-94 (5) — one paid POST at a time for this view
       inFlight = true;
       const myToken = ++runToken;
-      out.innerHTML = `<div class="loading">${t('mode.generating', 'Generating…')}</div>`;
+      // v1.17.0 — serverSlug (if set) decouples the route hash from the
+      // parent modes/<slug>.md filename. Used for /#/batch-prompt →
+      // modes/batch.md.
+      const apiSlug = cfg.serverSlug || cfg.slug;
+      // CAR-119 — run:true is a real LLM call: it gets the shared progress
+      // panel (live elapsed/ETA + Cancel wired to an AbortSignal). The
+      // prompt-only POST (run:false) is a cheap local build — the plain
+      // loading line stays right for it.
+      const runCtrl = run
+        ? window.LlmPageKit.createRun({ etaSeconds: 150, onBegin: () => page.show('result') }).mount(runHost)
+        : null;
+      if (!run) out.innerHTML = `<div class="loading">${t('mode.generating', 'Generating…')}</div>`;
       try {
-        // v1.17.0 — serverSlug (if set) decouples the route hash from the
-        // parent modes/<slug>.md filename. Used for /#/batch-prompt →
-        // modes/batch.md.
-        const apiSlug = cfg.serverSlug || cfg.slug;
-        const r = await UI.withSpinner(btn, () => API.post('/api/mode/' + apiSlug, { ...payload(), run }));
+        const r = await UI.withSpinner(btn, () => (runCtrl
+          ? window.LlmPageKit.run({
+              run: runCtrl,
+              request: (signal) => window.LlmPageKit.postJSON('/api/mode/' + apiSlug, { ...payload(), run }, signal),
+            })
+          : API.post('/api/mode/' + apiSlug, { ...payload(), run })));
         if (myToken !== runToken) return; // a newer run owns `out`
+        if (runCtrl && (runCtrl.cancelled || runCtrl.signal.aborted)) return; // CAR-119 — a cancelled run paints nothing more
         const titleStr = `${t(cfg.titleKey)} — ${new Date().toLocaleString()}`;
-        if (r.markdown) {
+        if (r && r.markdown) {
           showResult(titleStr, r.markdown, cfg.slug);
         } else {
-          showPrompt(r.prompt, r.message, cfg.slug);
+          showPrompt(r && r.prompt, r && r.message, cfg.slug);
         }
       } catch (e) {
+        // CAR-119 review #4 — the kit's fail panel announces the failure;
+        // the CAR-130 field marking (pinned) stays the form-side surface.
         if (myToken !== runToken) return;
         markFormError();
-        out.innerHTML = '';
-        out.appendChild(c('div', { className: 'empty' }, e.message || String(e)));
       } finally {
         if (myToken === runToken) inFlight = false;
       }
@@ -525,9 +551,20 @@
       return box;
     })() : null;
 
+    // CAR-119 — autofill: modes that carry company/role fields get the
+    // tracker combobox; picking an application fills those inputs. Modes
+    // without either field (project / training / patterns / batch-prompt)
+    // render nothing.
+    const pickerTargets = cfg.fields.filter((f) => f.name === 'company' || f.name === 'role');
+    const picker = (window.LlmPageKit && pickerTargets.length)
+      ? window.LlmPageKit.jobPicker({
+          map: { company: 'company', role: 'role' },
+          fields,
+        })
+      : null;
+
     return c('div', null, [
       liveAnnounce,
-      deprecationBanner,
       // CAR-51 #1 (v1.247.0) — ONE time/cost pattern: ⏱ ETA + cost hint in a
       // meta line under the view title (was an orphan row inside the card).
       c('header', { className: 'page-header' }, [
@@ -539,12 +576,16 @@
             UI.providerCostHint(t)),
         ]),
       ]),
-      cadenceBoard,
-      c('div', { className: 'card' }, [
-        ...cfg.fields.map(field),
-        c('div', { className: 'flex gap-3' }, [manualBtn, runLiveBtn]),
-      ]),
-      c('div', { className: 'mt-5' }, out),
+      // CAR-119 — the shared AI-page template: form (sticky) | result,
+      // "Input / Result" tabs below 1280 px. begin() flips to the Result
+      // tab (review #2) so the run panel never paints into a hidden pane.
+      page = window.LlmPageKit.layout({
+        form: c('div', null, [deprecationBanner, cadenceBoard, picker, c('div', { className: 'card' }, [
+          ...cfg.fields.map(field),
+          c('div', { className: 'flex gap-3' }, [manualBtn, runLiveBtn]),
+        ])]),
+        result: c('div', null, [runHost, out]),
+      }).root,
     ]);
   }
 })();
