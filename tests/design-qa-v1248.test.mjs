@@ -45,6 +45,7 @@ const TRACKER = read('public', 'js', 'views', 'tracker.js');
 const EVALUATE = read('public', 'js', 'views', 'evaluate.js');
 const STATS = read('public', 'js', 'views', 'stats.js');
 const SCAN = read('public', 'js', 'views', 'scan.js');
+const SCAN_FILTERS = read('public', 'js', 'views', 'scan', 'filters.js');
 const SCAN_RESULTS = read('public', 'js', 'lib', 'scan-results.js');
 const PIPELINE = read('public', 'js', 'views', 'pipeline.js');
 const USAGE = read('public', 'js', 'views', 'usage.js');
@@ -199,20 +200,17 @@ test('scan: blank facet values are skipped before a chip can render', () => {
   assert.match(SCAN_RESULTS, /role: 'button',\s*\n\s*tabindex: '0',/);
 });
 
-// ── 7 · saved-search Delete: red only while armed ───────────────────────────
-test('scan: Delete is a disabled ghost until a search is selected, then btn-danger', () => {
-  // Born disabled + neutral.
-  assert.match(SCAN, /const ssDelBtn = c\('button', \{ className: 'btn btn-ghost', type: 'button', disabled: true, onClick:/);
-  // The single arming switch: danger ⇔ armed; aria-disabled mirrors it.
-  assert.match(SCAN, /const armed = !!ssSelect\.value;/);
-  assert.match(SCAN, /ssDelBtn\.classList\.toggle\('btn-danger', armed\);/);
-  assert.match(SCAN, /ssDelBtn\.classList\.toggle\('btn-ghost', !armed\);/);
-  assert.match(SCAN, /ssDelBtn\.disabled = !armed;/);
-  assert.match(SCAN, /if \(armed\) ssDelBtn\.removeAttribute\('aria-disabled'\);\n\s*else ssDelBtn\.setAttribute\('aria-disabled', 'true'\);/);
-  // Every state change re-syncs: dropdown selection, save, delete.
-  assert.match(SCAN, /ssSelect\.addEventListener\('change', syncSsDelBtn\);/);
-  assert.match(SCAN, /refreshSavedSearches\(name\);\s*\n\s*syncSsDelBtn\(\);/);
-  assert.match(SCAN, /refreshSavedSearches\(''\);\s*\n\s*syncSsDelBtn\(\);/);
+// ── 7 · saved-search delete is confirm-gated (CAR-115 presets) ──────────────
+test('scan: deleting a preset (saved search) requires a danger confirm', () => {
+  // The presets live in views/scan/filters.js since CAR-115; the destructive
+  // affordance is the chip's inline ✕ and it must never delete on a single
+  // click — UI.confirm with danger: true stands between the click and the
+  // removal, and the dialog copy is localized.
+  assert.match(SCAN_FILTERS, /UI\.confirm\(/, 'the ✕ opens the confirm dialog');
+  assert.match(SCAN_FILTERS, /danger: true/, 'the dialog is marked destructive');
+  assert.match(SCAN_FILTERS, /ScanPrefs\.removeSearch\(/, 'only the confirmed path removes');
+  assert.ok(SCAN_FILTERS.indexOf('UI.confirm(') < SCAN_FILTERS.indexOf('ScanPrefs.removeSearch('),
+    'the confirm precedes the removal');
 });
 
 // ── 8 · profile EMAIL card at 1440 ──────────────────────────────────────────

@@ -1,26 +1,19 @@
 // v1.244.0 — the #/scan results row was redesigned in place (row anatomy,
 // icons-with-names, title hygiene, meta line — spec
-// docs/sdd/specs/2026-10-06-scan-page-redesign.md §Implementation contract);
-// ~470 LOC, inside the 400–800 file-size-contract band.
+// docs/sdd/specs/2026-10-06-scan-page-redesign.md §Implementation contract).
+// CAR-115 added: sortable sticky header, windowed tbody (visible rows +
+// buffer + spacer rows), inline facet chips, active-filter bar, quick-view
+// row trigger, score colour bands, new-row highlight.
 /* window.ScanResults — the #/scan results-rendering subsystem, extracted from
  * public/js/views/scan.js (v1.132.0) to pay down the 800-LOC file-size-contract
  * debt. `create(ctx)` returns { render, getRows } closing over a context object
- * the view supplies (filter elements, active facet Sets, pager, twoPagerData,
- * and a lastResults getter). FALLBACK_SOURCES is the offline mirror of the
- * source registry (drift-gated by tests/scan-fallback-sources.test.mjs).
- * splitTitleCountry is the pure title-hygiene helper (unit-tested in
- * tests/scan-title-split.test.mjs). The whole subsystem is regression-guarded
- * in-browser by tests/playwright-scan-filters.mjs and the layout contract in
- * tests/scan-redesign-layout.test.mjs.
- */
+ * the view supplies. FALLBACK_SOURCES is the offline mirror of the source
+ * registry (drift-gated by tests/scan-fallback-sources.test.mjs). */
 window.ScanResults = (function () {
-  // NOT i18n keys, and deliberately so: every label here is the job board's own
-  // brand name — "Built In", "hh.ru", "4 Day Week", "a16z Speedrun". A brand
-  // reads the same in all 17 locales, and routing it through I18n.t() would
-  // invite 17 translations of a proper noun. These mirror `meta.label` from the
-  // server registry, which is English for the same reason; the drift between
-  // the two is what tests/scan-fallback-sources.test.mjs gates. Surrounding UI
-  // copy — the dropdown's own label, placeholder and empty state — IS localized.
+  // NOT i18n keys, and deliberately so: every label here is the job board's
+  // own brand name ("Built In", "hh.ru", …) — identical in all locales; the
+  // drift vs the server registry is what tests/scan-fallback-sources.test.mjs
+  // gates. Surrounding UI copy IS localized.
   const FALLBACK_SOURCES = [
     { value: '4dayweek', label: '4 Day Week' },
     { value: 'a16z-speedrun-talent', label: 'a16z Speedrun' },
@@ -145,21 +138,15 @@ window.ScanResults = (function () {
     { value: 'trudvsem', label: 'Trudvsem' },
   ];
 
-  // v1.244.0 (spec Scope 2) — title hygiene. Scanners concatenate a trailing
-  // "| Country | Remote" onto posting titles (the Grafana complaint row);
-  // the redesigned row shows the role on line 1 and folds country/work-type
-  // into the meta line. Unicode-aware (Cyrillic locales included): splits AT
-  // MOST ONE trailing "| <country> | <work-type>" pair, and only when the
+  // v1.244.0 (spec Scope 2) — title hygiene: splits AT MOST ONE trailing
+  // "| <country> | <work-type>" pair off a posting title, and only when the
   // tail reads as a BARE work-type marker (Remote / Гибрид / Удалённо / Офис
   // / Onsite…) optionally followed by a parenthetical. "Office Manager",
-  // "Remote Work Policy Lead", a single trailing pipe ("C++ | Rust
-  // Developer") and non-place middle segments ("| 2nd line support |") never
-  // split. Pure — unit-tested in tests/scan-title-split.test.mjs.
+  // "Remote Work Policy Lead" and non-place middles never split. Pure —
+  // unit-tested in tests/scan-title-split.test.mjs.
   const WORK_TAIL_RE = /^\s*(?:remote|hybrid|onsite|on-site|удал[её]нн\p{L}*|гибрид\p{L}*|офис\p{L}*|дистанц\p{L}*)\s*(?:\(|$)/iu;
-  // v1.244.2 — boards append a benefits blurb after the money range
-  // ("$224K – $263K • Offers Equity • … 401(k) …"). The visible cell keeps
-  // only the leading money chunk (up to the first •/· separator). Pure +
-  // exported for tests.
+  // v1.244.2 — salary cells keep only the leading money chunk (up to the
+  // first •/· separator); boards append a benefits blurb after it. Pure.
   function salaryHead(salary) {
     const raw = String(salary == null ? '' : salary);
     if (!raw) return '';
@@ -200,6 +187,49 @@ window.ScanResults = (function () {
     const t = ctx.t;
   const SEN_ORDER = (window.JobFacets && window.JobFacets.SENIORITY_ORDER) || ['lead', 'staff', 'senior', 'mid', 'junior', 'intern'];
   const senOf = (r) => (window.JobFacets ? window.JobFacets.seniorityFromTitle(r && r.title) : null);
+  // CAR-115 — column sort state (closure: survives re-renders within a view).
+  // Seeded from the URL (`sort`/`dir`), reported back through ctx.onSortChange.
+  let sortKey = (ctx.sort && ctx.sort.key) || null;
+  let sortDir = (ctx.sort && ctx.sort.dir) || 'desc';
+  // CAR-115 — density for the windowed render ('comfortable' | 'compact').
+  const density = (ctx.getDensity && ctx.getDensity()) || 'comfortable';
+  // CAR-115 — row-height model per density (titles/meta are single-line
+  // CSS ellipsized cells, so height is stable). The window re-measures the
+  // first rendered row and self-corrects on the first scroll.
+  const ROW_H = density === 'compact' ? 36 : 48;
+  let measuredH = 0; // refined once real layout exists (first row offsetHeight)
+  const WIN_BUF = 6;   // rows rendered above + below the viewport
+  const WIN_MIN = 40;  // corpora this small render whole — no windowing
+  function windowRange(vp, total, rowH) {
+    const vh = (vp && vp.clientHeight) || 0;
+    if (!vh || total <= WIN_MIN) return [0, total];
+    const start = Math.max(0, Math.floor((vp.scrollTop || 0) / rowH) - WIN_BUF);
+    const count = Math.ceil(vh / rowH) + WIN_BUF * 2;
+    return [start, Math.min(total, start + count)];
+  }
+  function sortValue(r, key) {
+    if (key === 'salary') {
+      const pr = window.Skills && window.Skills.parseSalaryRange ? window.Skills.parseSalaryRange(r && r.salary) : null;
+      return pr ? pr.min : -1;
+    }
+    if (key === 'seniority') {
+      const s = senOf(r);
+      const i = s ? SEN_ORDER.indexOf(s) : SEN_ORDER.length;
+      return i;
+    }
+    if (key === 'date') { const d = Date.parse(r && r.date); return Number.isFinite(d) ? d : 0; }
+    return String((r && r.title) || '').toLowerCase();
+  }
+  function applyUserSort(arr) {
+    if (!sortKey) return; // default: boost-first scan order (pinned contract)
+    const dir = sortDir === 'asc' ? 1 : -1;
+    arr.sort((a, b) => {
+      const av = sortValue(a, sortKey); const bv = sortValue(b, sortKey);
+      if (av < bv) return -1 * dir;
+      if (av > bv) return 1 * dir;
+      return 0; // stable → ties keep the boost-first order
+    });
+  }
   // Literal-key label lookup: a concatenated dynamic key would read as an
   // unmapped key to the i18n-coverage gate, so every key here is a literal.
   const senLabel = (s) => ({
@@ -253,11 +283,12 @@ window.ScanResults = (function () {
   function render() {
     // v1.243.0 — every re-render (facet-chip toggle, favorite star, filter
     // apply) wipes and rebuilds this whole subtree. Carry across what the
-    // user was looking at: the Advanced-disclosure open state and the
-    // focused chip (buildChipRow tags its chips with data-chip), so a
-    // toggle doesn't collapse the panel or drop keyboard focus.
-    const prevDetails = ctx.resultsEl.querySelector('details.scan-advanced');
-    const prevOpen = prevDetails ? prevDetails.open : false;
+    // user was looking at: the focused chip (buildChipRow tags its chips
+    // with data-chip), so a toggle doesn't drop keyboard focus — and, for
+    // CAR-115, the windowed viewport's scroll position, so a star toggle
+    // mid-list doesn't jump the table back to the top.
+    const prevViewport = ctx.resultsEl.querySelector('.v2-scan-viewport');
+    const prevScroll = prevViewport ? prevViewport.scrollTop : 0;
     const active = document.activeElement;
     const prevFocusChip = (active && typeof active.getAttribute === 'function' &&
       active.classList && active.classList.contains('chip') &&
@@ -295,15 +326,24 @@ window.ScanResults = (function () {
     ]);
     ctx.resultsEl.appendChild(summary);
 
+    // CAR-115 — the active-filter chip bar (✕ per engaged filter + Reset all)
+    // lives at the top of the results so the current filter state is always
+    // visible next to the count it produced. Skipped when the filter API is
+    // not wired (unit-test harnesses drive SR without the view).
+    const F = ctx.view && ctx.view.filtersApi;
+    if (F) {
+      ctx.resultsEl.appendChild(F.buildActiveBar(c, () => { ctx.pager.reset(); render(); ctx.onFilterChange && ctx.onFilterChange(); }));
+    }
+
     if (!allRows.length) {
       ctx.resultsEl.appendChild(c('div', { className: 'empty' }, t('scan.noResults')));
       return;
     }
 
-    // ── Chip facets (skills + level + dynamic keywords) ──
-    // Dynamic keywords adapt to whatever roles the user actually scanned —
-    // gives meaningful chips even for non-engineering profiles (marketing,
-    // design, finance, …) where the hardcoded TECH_GROUPS would be empty.
+    // ── Chip facets (skills + level + dynamic keywords) — CAR-115: inline
+    // live filters above the table (the "Advanced filters" disclosure is
+    // gone). Dynamic keywords adapt to the scanned corpus, so non-
+    // engineering profiles get meaningful chips too.
     const facets = window.Skills.computeFacets(allRows);
     // Filter dynamic keywords by script — non-Russian UI shouldn't show
     // Cyrillic-only tokens like "разработчик" leaking from Habr data.
@@ -312,27 +352,17 @@ window.ScanResults = (function () {
     const script = (lang === 'ru' || lang === 'uk') ? 'all' : 'latin';
     const dynKeywords = window.Skills.extractDynamicKeywords(allRows, { limit: 20, script });
     const dynCounts = Object.fromEntries(dynKeywords);
-    // v1.55.6 — UX-4: the stack / level / dynamic facet chips are a
-    // secondary refinement — collapse them behind the same "Advanced
-    // filters" disclosure so a fresh result set leads with the table,
-    // not a wall of chips. The body keeps the original flex-column.
-    // v1.243.0 — the previous disclosure's open state is restored, so a
-    // chip toggle inside it doesn't collapse it.
-    const chipsContainer = c('details', { className: 'mb-3 scan-advanced', open: prevOpen ? '' : null });
-    chipsContainer.appendChild(c('summary', null, t('scan.advancedFilters', 'Advanced filters')));
-    const chipsBody = c('div', { style: { display: 'flex', flexDirection: 'column', gap: '8px', marginTop: '8px' } });
+    const chipsBody = c('div', { className: 'v2-scan-facets' });
     if (Object.keys(facets.tech).length) chipsBody.appendChild(buildChipRow(t('scan.chip.stack'), facets.tech, ctx.activeTech));
     if (Object.keys(facets.level).length) chipsBody.appendChild(buildChipRow(t('scan.chip.level'), facets.level, ctx.activeLevel));
     if (dynKeywords.length) chipsBody.appendChild(buildChipRow(t('scan.chip.dynamic', 'Keywords'), dynCounts, ctx.activeDynamic));
-    // Only surface the cluster when there is at least one chip row.
     if (chipsBody.childNodes.length) {
-      chipsContainer.appendChild(chipsBody);
-      ctx.resultsEl.appendChild(chipsContainer);
+      ctx.resultsEl.appendChild(chipsBody);
       // The rebuild replaced the node the user was interacting with — put
       // the focus back on the same chip (a keyboard toggle used to drop
       // focus to <body> mid-navigation).
       if (prevFocusChip) {
-        const chip = [...chipsContainer.querySelectorAll('.chip')]
+        const chip = [...chipsBody.querySelectorAll('.chip')]
           .find((n) => n.getAttribute('data-chip') === prevFocusChip);
         if (chip) chip.focus();
       }
@@ -341,8 +371,13 @@ window.ScanResults = (function () {
     // ── Now apply ALL filters (text/remote/source + chips) ──
     const q = (ctx.filterText.value || '').toLowerCase().trim();
     // Comma-separated OR for include ("roles to find"), and exclude terms.
-    const qTerms = q ? q.split(',').map((s) => s.trim()).filter(Boolean) : [];
-    const exTerms = (ctx.filterExclude.value || '').toLowerCase().split(',').map((s) => s.trim()).filter(Boolean);
+    // CAR-115 — the search box also takes inline exclusions: a comma token
+    // starting with "-" ("-java, python") excludes instead of includes, so
+    // the single filter-bar search covers both directions.
+    const qTokens = q ? q.split(',').map((s) => s.trim()).filter(Boolean) : [];
+    const qTerms = qTokens.filter((s) => !s.startsWith('-'));
+    const inlineEx = qTokens.filter((s) => s.startsWith('-')).map((s) => s.slice(1)).filter(Boolean);
+    const exTerms = (ctx.filterExclude.value || '').toLowerCase().split(',').map((s) => s.trim()).filter(Boolean).concat(inlineEx);
     const fr = ctx.filterRemote.value;
     const fs = ctx.filterSource.value;
     const fc = ctx.filterCountry.value; // v1.78.0 — country code or '' (all)
@@ -373,7 +408,13 @@ window.ScanResults = (function () {
         const t0 = Date.parse(r.date);
         if (Number.isFinite(t0) && t0 < ageCutoff) return false;
       }
-      if (!window.Skills.salaryInRange(r, salMin, salMax)) return false;
+      // CAR-115 — "include without salary": salary-less rows stay visible
+      // while bounds are set, but rows WITH pay must still overlap the range.
+      const salAny = !!(ctx.filterSalaryAny && ctx.filterSalaryAny.checked);
+      if (salAny) {
+        const hasPay = window.Skills.parseSalaryRange ? !!window.Skills.parseSalaryRange(r && r.salary) : true;
+        if (hasPay && !window.Skills.salaryInRange(r, salMin, salMax)) return false;
+      } else if (!window.Skills.salaryInRange(r, salMin, salMax)) return false;
       if (!window.Skills.rowMatches(r, ctx.activeTech, ctx.activeLevel)) return false;
       if (ctx.activeDynamic.size) {
         let any = false;
@@ -398,8 +439,19 @@ window.ScanResults = (function () {
       const bb = b && b._boosted ? 1 : 0;
       return bb - ab;
     });
+    // CAR-115 — an explicit user sort (th click, URL ?sort=) re-orders the
+    // boost-first partition; ties stay stable so the default order survives.
+    applyUserSort(sortedAll);
     const sorted = ctx.pager.slice(sortedAll);
-    const tbody = c('tbody', null, sorted.map((r) => {
+    // CAR-115 — rows newly surfaced by the last scan get a one-time
+    // fade/slide highlight (fresh = the run's `fresh` set, not every row).
+    const freshUrls = new Set();
+    for (const region of [ctx.getLastResults().en, ctx.getLastResults().ru]) {
+      for (const r of ((region && region.fresh) || [])) if (r && r.url) freshUrls.add(r.url);
+    }
+    // CAR-115 — the row nodes are built ONCE and kept in `rowNodes`; the
+    // windowed tbody below attaches only the visible slice of them.
+    const rowNodes = sorted.map((r) => {
       const wt = r.workplaceType || (r.isRemote ? 'Remote' : 'Onsite');
       // v1.244.0 — signal-icon rail (spec AC2 / §Implementation contract):
       // boost, title-fit, fit-score, trust and reloc render as compact
@@ -456,8 +508,11 @@ window.ScanResults = (function () {
             fit.matched.length ? '✓ ' + fit.matched.map((x) => x.label).join(', ') : '',
             fit.violated.length ? '✗ ' + fit.violated.map((x) => x.label).join(', ') : '',
           ].filter(Boolean).join(' · ');
+          // CAR-115 — colour-scale badge: score bands colour the ◎ icon
+          // (green / amber / red) so a scan of the column reads at a glance.
+          const bandCls = fit.score >= 70 ? ' v2-scan-score-hi' : fit.score >= 40 ? ' v2-scan-score-mid' : ' v2-scan-score-lo';
           signals.push(c('span', {
-            className: 'scan-icon scan-icon--score', role: 'img',
+            className: 'scan-icon scan-icon--score' + bandCls, role: 'img',
             'aria-label': t('scan.scoreIcon', 'Fit score').replace('{score}', String(fit.score)),
             title: t('scan.fitTip', 'Fit to what you want') + (tip ? ' · ' + tip : ''),
           }, '◎ ' + fit.score));
@@ -502,14 +557,9 @@ window.ScanResults = (function () {
       const titleEl = safeUrl
         ? c('a', { className: 'scan-posting-title', href: safeUrl, target: '_blank', rel: 'noopener', title: fullTitle }, titleText)
         : c('span', { className: 'scan-posting-title', title: fullTitle }, titleText);
-      // Meta line 2 — company · location · source · date · work-type (the
-      // company/location/type/source/age columns folded into one bounded
-      // line; the aux detail that stays a column is seniority + salary). One
-      // text node keeps the row inside the DOM node budget; the whole string
-      // is the truncation tooltip and the container announces itself with
-      // t('scan.postedMeta'). A row with a parseable date shows the fresh
-      // "Nd"/today form; the full ISO date was already the freshCell title
-      // and now rides in the same tooltip via the raw parts when present.
+      // Meta line 2 — company · location · source · date · work-type folded
+      // into one bounded text node (whole string = the truncation tooltip;
+      // the container announces itself with t('scan.postedMeta')).
       const days = window.JobFacets ? window.JobFacets.daysSince(r.date) : null;
       const freshText = days == null ? '' : (days <= 0 ? t('scan.freshToday', 'today') : days + t('scan.dSuffix', 'd'));
       const metaText = [
@@ -572,24 +622,99 @@ window.ScanResults = (function () {
           },
           title: salaryText,
         }, salaryText));
-      return c('tr', { className: 'scan-row' + (r._boosted ? ' row-boosted' : '') }, [
+      // CAR-115 — quick view: the row opens the side panel (click; Enter/
+      // Space on the focused row) except on nested controls (star, link) —
+      // the same guard the #/pipeline rows use. <tr> keeps table semantics.
+      const openQV = (e) => {
+        const tgt = e && e.target;
+        if (tgt && tgt !== e.currentTarget && typeof tgt.closest === 'function' && tgt.closest('a,button')) return;
+        if (ctx.onQuickView) ctx.onQuickView(r);
+      };
+      return c('tr', {
+        className: 'scan-row v2-scan-rowbtn' + (r._boosted ? ' row-boosted' : '') + (freshUrls.has(r.url) ? ' v2-scan-isnew' : ''),
+        tabindex: '0',
+        title: t('scan.v2.quickHint', 'Click to preview'),
+        onClick: openQV,
+        onKeydown: (e) => {
+          if (e.target !== e.currentTarget) return;
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); if (ctx.onQuickView) ctx.onQuickView(r); }
+        },
+      }, [
         starCell,
         postingCell,
         senCell,
         salaryCell,
       ]);
-    }));
-    ctx.resultsEl.appendChild(c('div', { className: 'table-wrap' },
-      c('table', { className: 'tbl scan-tbl' }, [
-        c('thead', null, c('tr', null, [
-          c('th', { className: 'scan-col-star' }, '★'),
-          c('th', null, t('scan.col.role')),
-          c('th', { className: 'scan-col-aux scan-col-sen' }, t('scan.col.seniority', 'Seniority')),
-          c('th', { className: 'scan-col-aux scan-col-salary' }, t('scan.col.salary')),
-        ])),
-        tbody,
-      ])
-    ));
+    });
+    // CAR-115 — sticky sortable header + windowed body: only the rows in
+    // (viewport + buffer) attach; spacer rows keep the scrollbar honest.
+    // Small corpora (≤ WIN_MIN) render whole; row nodes are built once, so
+    // a window move is a cheap re-attach.
+    const tbody = c('tbody'); // window-filled by paintWindow below
+    const viewport = c('div', { className: 'table-wrap v2-scan-viewport' });
+    const sortBtn = (label, key, extraCls) => {
+      const active = sortKey === key;
+      return c('th', {
+        className: extraCls || '',
+        'aria-sort': active ? (sortDir === 'asc' ? 'ascending' : 'descending') : 'none',
+      }, c('button', {
+        type: 'button', className: 'v2-scan-sort',
+        'aria-label': t('scan.v2.sortBy', 'Sort by') + ' ' + label,
+        title: t('scan.v2.sortBy', 'Sort by') + ' ' + label,
+        onClick: () => {
+          if (sortKey === key) sortDir = (sortDir === 'asc' ? 'desc' : 'asc');
+          else { sortKey = key; sortDir = (key === 'title' ? 'asc' : 'desc'); }
+          if (ctx.onSortChange) ctx.onSortChange(sortKey, sortDir);
+          render();
+        },
+      }, [label, c('span', { className: 'v2-scan-sort-ind', 'aria-hidden': 'true' }, active ? (sortDir === 'asc' ? '▴' : '▾') : '↕')]));
+    };
+    const table = c('table', {
+      className: 'tbl scan-tbl' + (density === 'compact' ? ' v2-scan-compact' : ''),
+      'aria-rowcount': String(allRows.length),
+    }, [
+      c('thead', null, c('tr', null, [
+        c('th', { className: 'scan-col-star' }, '★'),
+        sortBtn(t('scan.col.role'), 'title'),
+        sortBtn(t('scan.col.seniority', 'Seniority'), 'seniority', 'scan-col-aux scan-col-sen'),
+        sortBtn(t('scan.col.salary'), 'salary', 'scan-col-aux scan-col-salary'),
+      ])),
+      tbody,
+    ]);
+    viewport.appendChild(table);
+    ctx.resultsEl.appendChild(viewport);
+    // Window paint: attach [start,end) of the pre-built nodes plus spacer
+    // rows sized to the off-screen remainder.
+    let curS = -1, curE = -1;
+    const paintWindow = () => {
+      const rh = measuredH || ROW_H;
+      const range = windowRange(viewport, rowNodes.length, rh);
+      if (range[0] === curS && range[1] === curE) return;
+      curS = range[0]; curE = range[1];
+      tbody.textContent = '';
+      if (curS > 0) {
+        tbody.appendChild(c('tr', { className: 'v2-scan-pad', 'aria-hidden': 'true' },
+          c('td', { colSpan: '4', style: { height: (curS * rh) + 'px' } }, '')));
+      }
+      for (let i = curS; i < curE; i++) tbody.appendChild(rowNodes[i]);
+      if (curE < rowNodes.length) {
+        tbody.appendChild(c('tr', { className: 'v2-scan-pad', 'aria-hidden': 'true' },
+          c('td', { colSpan: '4', style: { height: ((rowNodes.length - curE) * rh) + 'px' } }, '')));
+      }
+    };
+    paintWindow();
+    // Self-correct the row-height model once real layout exists (the first
+    // rendered row's offsetHeight); the scroll handler reuses it.
+    const firstRow = tbody.querySelector('tr.scan-row');
+    if (firstRow && typeof firstRow.offsetHeight === 'number' && firstRow.offsetHeight > 10) {
+      measuredH = firstRow.offsetHeight;
+      paintWindow();
+    }
+    if (typeof viewport.addEventListener === 'function') {
+      viewport.addEventListener('scroll', () => paintWindow(), { passive: true });
+    }
+    if (prevScroll) viewport.scrollTop = prevScroll;
+    paintWindow();
     // v1.30.0 — paginator replaces the v1.12-v1.29.x "first 200 of N"
     // hint. With everything on one page controls() renders just the
     // "N items" summary (never null — see UI.paginate), so small result

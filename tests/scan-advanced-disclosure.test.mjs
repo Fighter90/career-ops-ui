@@ -1,62 +1,79 @@
 /**
- * v1.68.0 — #/scan filter panel rework. The v1.55.6 "Advanced filters"
- * <details> disclosure that hid Scope/Source was reversed by user request:
- * every result filter is now a labelled `.field` (label ABOVE the control),
- * laid out in one `.scan-filters` panel with an explicit **Apply** + **Reset**
- * and an on-page usage hint. The salary range is strict — once a bound is set,
- * jobs with no listed salary are hidden (window.Skills.salaryInRange).
+ * CAR-115 — #/scan filter system rework (successor of the v1.68.0 panel and
+ * the v1.55.6/v1.244.2 disclosures).
  *
- * The post-scan facet-chip cluster (stack/level/keyword) stays a collapsible
- * <details> (scan-advanced) — that's a separate refinement, not a filter box.
+ * The ONE filter system is now a live chip bar: a search input (with inline
+ * "-word" exclusions), popover chips for Work type / Salary / Source /
+ * Country / Seniority / Freshness / More, saved searches as preset chips and
+ * inline facet chips above the table. There is NO Apply button (acceptance:
+ * filtering applies as you type/select — text debounced 250 ms, selects
+ * immediately, Enter at once) and no "Advanced filters" disclosure.
  *
- * scan.js is browser-only → asserted statically.
+ * scan.js is browser-only → asserted statically via the concatenated
+ * scan-view source (tests/helpers/scan-src.mjs).
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';
-import { dirname } from 'node:path';
+import { dirname, resolve } from 'node:path';
 import { loadAppCss } from './helpers/css.mjs';
 import { loadScanSrc } from './helpers/scan-src.mjs';
 
-const __d = dirname(fileURLToPath(import.meta.url));
 const SCAN = loadScanSrc();
 const CSS = loadAppCss();
+const SCAN_RESULTS_SRC = readFileSync(
+  resolve(dirname(fileURLToPath(import.meta.url)), '..', 'public', 'js', 'lib', 'scan-results.js'),
+  'utf8');
 
-test('a labelled .scan-filters panel exists (label-above-field, a11y-associated)', () => {
-  assert.match(SCAN, /className: 'scan-filters'/, 'scan.js must build a .scan-filters panel');
-  assert.match(SCAN, /const field =/, 'a field() helper must exist');
-  // field() WRAPS the control in a <label> (implicit association → the control
-  // gets an accessible name without id wiring). The caption text sits above it.
-  assert.match(SCAN, /c\('label', \{ className: 'field scan-field' \}/,
-    'field() must wrap the control in a <label class="field scan-field">');
+test('the live filter bar exists (one system, role=group, localized label)', () => {
+  assert.match(SCAN, /className: 'v2-scan-bar'/, 'scan.js must build the .v2-scan-bar');
+  assert.match(SCAN, /'aria-label': t\('scan\.filtersGroup', 'Result filters'\)/,
+    'the bar keeps the localized group label');
+  // The old two-system furniture is gone for good.
+  assert.doesNotMatch(SCAN, /id:\s*'scan-apply'/, 'no Apply button (live filtering)');
+  assert.doesNotMatch(SCAN, /className: 'scan-filters'$/, 'no .scan-filters mega-panel');
+  assert.doesNotMatch(SCAN, /className: 'scan-filters__saved'/, 'no saved-searches sub-card');
 });
 
-test('every result filter is rendered through the labelled field() helper', () => {
-  for (const ctrl of ['filterText', 'filterRemote', 'filterSalaryMin', 'filterSalaryMax', 'filterSource', 'filterScope']) {
+test('every popover control is a labelled field() (label-above-control, a11y)', () => {
+  assert.match(SCAN, /const field =/, 'a field() helper must exist');
+  assert.match(SCAN, /c\('label', \{ className: 'field scan-field' \}/,
+    'field() must wrap the control in a <label class="field scan-field">');
+  for (const ctrl of ['filterRemote', 'filterSalaryMin', 'filterSalaryMax', 'filterSource', 'filterScope']) {
     assert.match(SCAN, new RegExp(`field\\(t\\('scan\\.[A-Za-z]+'[^)]*\\),\\s*${ctrl}\\)`),
       `${ctrl} must be wrapped in a labelled field()`);
   }
 });
 
 test('salary inputs carry no in-field placeholder (label is above)', () => {
-  // The salaryFrom/To strings must not be used as input placeholders anymore.
   assert.doesNotMatch(SCAN, /placeholder: t\('scan\.salary(From|To)'/,
     'salary labels must be above the field, not a placeholder');
 });
 
-test('Apply + Reset buttons drive the filters (not live-on-input)', () => {
-  assert.match(SCAN, /function applyFilters\(\)/, 'applyFilters() must exist');
-  assert.match(SCAN, /function resetFilters\(\)/, 'resetFilters() must exist');
-  assert.match(SCAN, /t\('scan\.applyFilters'/, 'Apply button label via scan.applyFilters');
-  assert.match(SCAN, /t\('scan\.resetFilters'/, 'Reset button label via scan.resetFilters');
-  // The old live render-on-every-input wiring must be gone.
+test('filters apply LIVE: 250 ms debounce on text, immediate on change, Enter now', () => {
+  assert.match(SCAN, /function commit\(\)\s*\{\s*filtersApi\.commitFilters\(\);\s*syncFilterBar\(\);\s*\}/,
+    'the single live-apply funnel');
+  assert.match(SCAN, /debounce\(commit, 250\)/, 'text inputs debounce at 250 ms');
+  assert.match(SCAN, /el\.addEventListener\('input', \(\) => commitDebounced\(\)\)/,
+    'text/number inputs apply on input');
+  assert.match(SCAN, /if \(e\.key === 'Enter'\) \{ e\.preventDefault\(\); commit\(\); \}/,
+    'Enter applies immediately (keyboard parity)');
+  assert.match(SCAN, /el\.addEventListener\('change', \(\) => \{/, 'selects apply on change');
+  // The old "no live re-render" guard is inverted by CAR-115 — the specific
+  // wiring the v1.68.0 test banned must stay absent, but live input applies.
   assert.doesNotMatch(SCAN, /\[filterText, filterRemote, filterSalaryMin, filterSalaryMax, filterSource, filterScope\]\.forEach\(\(el\) => el\.addEventListener\('input'/,
-    'filters must no longer re-render live on every input');
+    'the old all-fields live wiring is not back');
 });
 
-test('an on-page usage hint explains the filters', () => {
-  assert.match(SCAN, /scan-filters__hint/, '.scan-filters__hint paragraph must exist');
-  assert.match(SCAN, /t\('scan\.filtersHint'/, 'hint text via scan.filtersHint');
+test('a Reset affordance exists (bar button + active-bar Reset all)', () => {
+  assert.match(SCAN, /t\('scan\.resetFilters'/, 'Reset via scan.resetFilters');
+  assert.match(SCAN, /t\('scan\.v2\.resetAll', 'Reset all'\)/, 'active-bar Reset all chip');
+});
+
+test('the search box takes inline "-word" exclusions', () => {
+  assert.match(SCAN_RESULTS_SRC, /s\.startsWith\('-'\)/,
+    'the predicate splits leading-dash tokens into exclusions');
 });
 
 test('salary range is applied strictly via window.Skills.salaryInRange', () => {
@@ -64,14 +81,21 @@ test('salary range is applied strictly via window.Skills.salaryInRange', () => {
     'the result predicate must gate rows through salaryInRange');
 });
 
-test('post-scan facet chips remain a collapsible <details> (scan-advanced)', () => {
-  assert.match(SCAN, /chipsContainer = c\('details'/, 'the facet chip cluster stays a <details>');
-  assert.match(SCAN, /scan-advanced/, 'facet disclosure keeps the .scan-advanced hook');
-  assert.match(SCAN, /t\('scan\.advancedFilters'/, 'facet summary via scan.advancedFilters');
+test('facet chips render inline (no Advanced disclosure) and keep their a11y wiring', () => {
+  assert.match(SCAN, /v2-scan-facets/, 'the inline facet chip container');
+  assert.doesNotMatch(SCAN, /details\.scan-advanced/, 'the disclosure is gone');
+  assert.doesNotMatch(SCAN, /chipsContainer = c\('details'/, 'no <details> cluster');
+  // keyboard-operable chips (the scan-chip-a11y suite re-checks the builder)
+  assert.match(SCAN, /role: 'button'/, 'chips keep button semantics');
 });
 
-test('.scan-filters + .scan-advanced CSS exist', () => {
-  assert.match(CSS, /\.scan-filters\b/, '.scan-filters layout CSS must exist');
-  assert.match(CSS, /\.scan-filters__hint\b/, '.scan-filters__hint CSS must exist');
-  assert.match(CSS, /\.scan-advanced\b/, '.scan-advanced CSS must still exist');
+test('filter-bar + facet CSS exist (v2 additions live in app.css)', () => {
+  assert.match(CSS, /\.v2-scan-bar\b/, '.v2-scan-bar layout CSS must exist');
+  assert.match(CSS, /\.v2-scan-pop\b/, '.v2-scan-pop popover CSS must exist');
+  assert.match(CSS, /\.v2-scan-active\b/, '.v2-scan-active chip CSS must exist');
+  assert.match(CSS, /\.v2-scan-presets\b/, '.v2-scan-presets CSS must exist');
+  assert.match(CSS, /\.v2-scan-facets\b/, '.v2-scan-facets CSS must exist');
+  // Legacy chrome CSS stays (launcher/terminal/pager untouched by CAR-115).
+  assert.match(CSS, /\.scan-filters\b/, 'legacy .scan-filters CSS stays (components.css)');
+  assert.match(CSS, /\.scan-advanced\b/, 'legacy .scan-advanced CSS stays (components.css)');
 });
