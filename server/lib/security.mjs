@@ -305,7 +305,6 @@ const SCHEME_CONTEXT_RES = [
   new RegExp(`\\bcontent\\s*=\\s*(?:"[^"]*?|'[^']*?|[^\\s>]*?)\\burl\\s*=\\s*(?:["'][ \\t\\r\\n]*)?(${SCHEME_RE})`, 'gi'),
 ];
 const HANDLER_RE = /([\s/"'])(on[a-z]+)(\s*=)/gi;
-const OPENER_ESCAPE_RE = /<(?=[\s/]*(?:script|iframe|object|embed|style|form|svg)\b)/gi;
 // Entity variant: OPENERS only. An encoded closer (`&lt;/script&gt;`) is
 // inert on its own — and when it completes a real opener, the mapped cut
 // above removes the whole span — so re-escaping it would only make the

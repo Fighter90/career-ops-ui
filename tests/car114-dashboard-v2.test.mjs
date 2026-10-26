@@ -30,7 +30,7 @@
  *      /api/status/providers (the hero chip was the duplicate).
  *
  * dashboard.js is browser-only → asserted statically (dashboard-hero.test.mjs
- * style). CSS asserted on the appended overlays.css tail.
+ * style). CSS asserted on the view-owned v2-dash.css file.
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -42,7 +42,6 @@ import { legacyDictText, I18N_LANGS } from './helpers/i18n-vm.mjs';
 
 const __d = dirname(fileURLToPath(import.meta.url));
 const DASH = readFileSync(resolve(__d, '..', 'public', 'js', 'views', 'dashboard.js'), 'utf8');
-const OVERLAYS = readFileSync(resolve(__d, '..', 'public', 'css', 'overlays.css'), 'utf8');
 const DASH_CSS = readFileSync(resolve(__d, '..', 'public', 'css', 'v2-dash.css'), 'utf8');
 const STAGES_SRC = readFileSync(resolve(__d, '..', 'public', 'js', 'lib', 'tracker-stages.js'), 'utf8');
 

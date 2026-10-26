@@ -455,7 +455,7 @@ window.LlmPageKit = (function () {
       list.replaceChildren();
       if (failed) {
         list.appendChild(el('p', { className: 'llm2hist__empty', role: 'alert' },
-          t('common.error', 'Error') + ': ' + ((failed && failed.message) || t('common.error', 'Error'))));
+          t('common.error', 'Error') + ': ' + (failed.message || t('common.error', 'Error'))));
         return;
       }
       if (!entries.length) {

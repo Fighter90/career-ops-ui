@@ -33,9 +33,8 @@
   // the union on window.NavV2 — the public API is unaffected.
   const {
     defaultState, serializeState, loadState, isGroupOpen, toggleGroup,
-    pin, unpin, moveFav, trackVisit, pruneState, fuzzyMatch, fuzzyFilter,
+    pin, unpin, moveFav, trackVisit, pruneState, fuzzyFilter,
     buildPaletteItems, formatEvalUrl, looksLikeUrl,
-    STATIC_GROUP_IDS, RECENT_CAP, FAV_CAP,
   } = window.NavV2Core;
   const STORE_KEY = 'career-ops-ui:nav-v2';
   const PALETTE_MAX = 30; // DOM budget: never paint more options than this
