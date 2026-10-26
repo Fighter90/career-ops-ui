@@ -13,9 +13,7 @@ Router.register('tracker', async () => {
   if (shell) {
     shell.replaceChildren(
       c('header', { className: 'page-header' }, [
-        c('div', null, [
-          HelpHint.title(t('track.title'), 'help.hint.tracker'),
-        ]),
+        HelpHint.title(t('track.title'), 'help.hint.tracker'),
       ]),
       window.Skeleton.block(8, t('common.loading', 'Loading…')),
     );
@@ -41,6 +39,10 @@ Router.register('tracker', async () => {
     return (commute.byNum || {})[r.num] || (key && (commute.byUrl || {})[key]) || null;
   };
   const hasCommute = Boolean(commute?.available);
+  // CAR-117 — status moves write through the EXISTING per-row outcome relay
+  // (POST /api/outcome). When the parent script is missing, the first failed
+  // write flips this off and the board re-renders read-only with a hint.
+  let movesReady = true;
 
   const filterScore = c('select', { className: 'select', style: { maxWidth: '180px' } }, [
     c('option', { value: '' }, t('track.anyScore')),
@@ -112,7 +114,7 @@ Router.register('tracker', async () => {
           // funnel-chip toggle behaviour).
           activeStage = (activeStage === stageValue) ? '' : stageValue;
           pager.reset();
-          applyFilters();
+          refreshView();
           // renderTabs() (called from applyFilters) tears down and rebuilds every
           // tab button, so the one that was just clicked — and had focus — is
           // gone. Restore focus to the now-active tab so keyboard users stay on
@@ -140,6 +142,11 @@ Router.register('tracker', async () => {
   // auto-clamps when the filter narrows the list so the user can't land on an
   // empty page after typing in the search.
   const pager = UI.paginate({ pageSize: 25, onChange: () => applyFilters() });
+
+  // ── CAR-117 · view mode (table | kanban) ──────────────────────────────────
+  // The table stays the DEFAULT (least surprise; the browser suites pin it).
+  // The mode state, its persistence and the toggle buttons live in the lib
+  // factory (createViewToggle); the view only reacts to changes.
 
   function filtered() {
     const out = [];
@@ -189,6 +196,36 @@ Router.register('tracker', async () => {
     });
   }
 
+  // ── CAR-117 · undo, move flow, bulk selection (lib controllers) ───────────
+  // tracker.js sits against the 800-LOC contract, so the stateful controllers
+  // live in lib/tracker-stages.js and are wired together here. The undo bar
+  // mounts itself once at body level (singleton shell, like the pipeline bar).
+  const undoCtl = TS ? TS.createUndoController({ t, statusLabel, onRestored: () => refreshView() }) : null;
+  const moveFlow = TS ? TS.createMoveFlow({
+    t,
+    stages: STAGES,
+    fold,
+    statusLabel,
+    isReady: () => movesReady,
+    onMovesOff: () => { movesReady = false; }, // the parent recorder is absent — degrade to read-only
+    onProgress: (d, n) => { if (bulk) bulk.progress(d + '/' + n); },
+    onUndoable: (moves, target) => { if (undoCtl) undoCtl.push(moves, target); },
+    onDone: () => {
+      if (bulk) { bulk.reset(); bulk.progress(''); }
+      refreshView();
+    },
+  }) : null;
+  const bulk = TS ? TS.createBulkBar({
+    t,
+    stages: STAGES,
+    statusLabel,
+    fold,
+    onPick: (movable, target) => moveFlow.open(movable, target),
+    onChanged: () => refreshView(),
+  }) : null;
+  // Created before the first applyFilters() below reads its mode (TDZ).
+  const viewToggle = TS.createViewToggle({ t, onChange: () => applyViewMode() });
+
   function applyFilters() {
     renderTabs(); // whole-history counts; reflects the active stage tab
     const all = sorted(filtered());
@@ -202,17 +239,23 @@ Router.register('tracker', async () => {
         // WS2 #26 — distinguish first-run (no data at all) from a filter that
         // excluded everything; the former gets an actionable CTA.
         const emptyCell = rows.length === 0
-          ? c('td', { colspan: hasCommute ? 11 : 9, style: { textAlign: 'center', padding: '40px', color: 'var(--foggy)' } }, [
+          ? c('td', { colspan: hasCommute ? 12 : 10, style: { textAlign: 'center', padding: '40px', color: 'var(--foggy)' } }, [
               c('strong', null, t('track.emptyTitle', 'No applications yet')),
               c('p', { style: { margin: '8px 0 0' } }, t('track.emptyBody', 'Run the pipeline or evaluate a JD to populate this tracker.')),
               c('a', { href: '#/pipeline', className: 'btn btn-primary btn-sm', style: { marginTop: '12px' } }, t('track.emptyCta', 'Open pipeline')),
             ])
-          : c('td', { colspan: hasCommute ? 11 : 9, style: { textAlign: 'center', padding: '40px', color: 'var(--foggy)' } }, t('track.noMatch'));
+          : c('td', { colspan: hasCommute ? 12 : 10, style: { textAlign: 'center', padding: '40px', color: 'var(--foggy)' } }, t('track.noMatch'));
         tbody.appendChild(c('tr', null, emptyCell));
         return;
       }
       for (const r of page) tbody.appendChild(row(r));
     });
+    if (bulk) {
+      bulk.setRows(rows);
+      bulk.setPage(page);
+      bulk.syncSelAll();
+      bulk.el.hidden = bulk.size() === 0 || viewToggle.mode() !== 'table';
+    }
     withFocusPreserved(pgWrap, () => {
       pgWrap.innerHTML = '';
       if (all.length === 0) return;
@@ -251,8 +294,10 @@ Router.register('tracker', async () => {
     return th;
   }
   // Resetting the pager when filter inputs change keeps page-1 sticky.
+  // CAR-117 — filters drive BOTH hosts, so refreshView() re-renders whichever
+  // view is active.
   ;[filterScore, filterText, filterCommute, showUnknown].forEach((el) =>
-    el.addEventListener('input', () => { pager.reset(); applyFilters(); })
+    el.addEventListener('input', () => { pager.reset(); refreshView(); })
   );
   ;[filterCommute, showUnknown].forEach((el) => el.addEventListener('input', () => {
     MapPrefs?.saveCommute({ maxMinutes: filterCommute.value ? Number(filterCommute.value) : null, showUnknown: showUnknown.checked });
@@ -266,13 +311,16 @@ Router.register('tracker', async () => {
     return c('td', { className: 'commute-cell' + (over ? ' is-over' : ''), title: detail },
       (over ? '⚠ ' : '') + cm.min + ' min');
   }
+  function scoreCls(v) {
+    return (window.ScoreTone && window.ScoreTone.scoreClass)
+      ? window.ScoreTone.scoreClass(v)
+      : (v >= 4 ? 'score-high' : v >= 3 ? 'score-mid' : 'score-low');
+  }
   function row(r) {
     // v1.128.0 — finer 4-tier tone (>=4.2/3.8/3.0) with a
     // letter-grade fallback, via the shared ScoreTone helper. Falls back to the
     // old coarse split only if the helper script somehow didn't load.
-    const scoreCls = (window.ScoreTone && window.ScoreTone.scoreClass)
-      ? window.ScoreTone.scoreClass(r.scoreNum ?? r.score)
-      : (r.scoreNum >= 4 ? 'score-high' : r.scoreNum >= 3 ? 'score-mid' : 'score-low');
+    const score = scoreCls(r.scoreNum ?? r.score);
     // v1.131.0 — CRM company cell: a brand logo (favicon of the company's own
     // domain, derived from the name) when the user has enabled logos; otherwise
     // just the name. CompanyLogo.badge returns null when the pref is off, so
@@ -294,31 +342,34 @@ Router.register('tracker', async () => {
       ? c('span', { style: { display: 'inline-flex', alignItems: 'center', gap: '8px' } }, [logo, c('span', null, companyLabel)])
       : companyLabel;
     return c('tr', null, [
+      c('td', null, bulk ? bulk.checkCell(r) : null),
       c('td', null, r.num || ''),
-      c('td', null, r.date || ''),
+      // CAR-117 grid fix — the date is a single line in every locale
+      // («2026-/08-25» used to wrap), tabular so digits align down the column.
+      c('td', { className: 'v2-track-nowrap', style: { fontVariantNumeric: 'tabular-nums' } }, r.date || ''),
       c('td', null, companyCell),
       c('td', null, r.role || ''),
       hasCommute ? c('td', null, commuteOf(r)?.location || r.location || '—') : null,
       hasCommute ? commuteCell(commuteOf(r)) : null,
-      c('td', null, c('span', { className: 'score-pill ' + scoreCls }, r.score || '—')),
+      c('td', { className: 'v2-track-nowrap' }, c('span', { className: 'score-pill ' + score }, r.score || '—')),
       // Status badge + (for ATS postings) a lazy "still live?" check. The
       // affordance is null for non-ATS rows, so most rows are unchanged.
       // v1.248.2 — the badge CAPTION is the localized canonical label (the raw
       // status is folded through the server alias map first, so "contratado"
       // shows as "Hired"/«Нанят»); trackerStatusClass + every comparison
       // still read the canonical value.
-      c('td', null, [
+      c('td', { className: 'v2-track-nowrap' }, [
         c('span', { className: 'badge ' + trackerStatusClass(r.status) }, statusLabel(fold(r.status))),
-        livenessAffordance(r.url, r.num),
+        TS ? TS.livenessAffordance(r.url, r.num) : null,
       ]),
       // G-006 (v1.15.0) — Legitimacy column. Mirrors the badge tint used on
       // /#/reports cards. Empty string when the source row had no Legitimacy
       // column (graceful degrade for pre-v1.15 trackers).
-      c('td', null, r.legitimacy
+      c('td', { className: 'v2-track-nowrap' }, r.legitimacy
         ? c('span', { className: 'badge ' + legitimacyClass(r.legitimacy) }, r.legitimacy)
         : c('span', { style: { color: 'var(--foggy)' } }, '—')),
-      c('td', null, r.pdfReady ? '✓' : '—'),
-      c('td', null, [
+      c('td', { className: 'v2-track-nowrap' }, r.pdfReady ? '✓' : '—'),
+      c('td', { className: 'v2-track-nowrap' }, [
         r.reportPath ? c('button', {
           className: 'btn btn-ghost btn-sm',
           // CAR-93 — row-scoped identity for the focus restore: the
@@ -338,11 +389,54 @@ Router.register('tracker', async () => {
           'aria-label': t('track.outcome.record', 'Record outcome') + (r.company ? ' — ' + r.company : ''),
           onClick: () => openOutcomeModal(r, c, t),
         }, t('track.outcome.btn', 'Outcome')),
-      ]),
+      ].filter(Boolean)),
     ]);
   }
 
   applyFilters();
+
+  // ── CAR-117 · the two hosts ────────────────────────────────────────────────
+  const kanbanHost = c('div', { className: 'mb-3' });
+
+  function renderKanban() {
+    const visible = sorted(filtered());
+    withFocusPreserved(kanbanHost, () => {
+      kanbanHost.textContent = '';
+      if (!visible.length) {
+        kanbanHost.appendChild(c('div', {
+          className: 'card mb-3',
+          style: { textAlign: 'center', padding: '40px', color: 'var(--foggy)' },
+        }, rows.length === 0
+          ? t('track.emptyTitle', 'No applications yet')
+          : t('track.noMatch')));
+        return;
+      }
+      kanbanHost.appendChild(TS.kanbanBoard({
+        rows: visible,
+        stages: STAGES,
+        fold,
+        statusLabel,
+        scoreClass: (v) => scoreCls(v),
+        movesReady,
+        t,
+        onMove: (picked, presetTo) => moveFlow.open(picked, presetTo),
+      }));
+    });
+  }
+
+  function refreshView() {
+    applyFilters();
+    if (viewToggle.mode() === 'kanban') renderKanban();
+  }
+
+  function applyViewMode() {
+    const tableActive = viewToggle.mode() === 'table';
+    tableWrap.style.display = tableActive ? '' : 'none';
+    pgWrap.style.display = tableActive ? '' : 'none';
+    kanbanHost.style.display = tableActive ? 'none' : '';
+    if (!tableActive) renderKanban();
+    if (bulk) bulk.el.hidden = bulk.size() === 0 || tableActive;
+  }
 
   // v1.118.0 — parent v1.18.0 parity: job-landed celebration. When any row
   // reaches the canonical 'Hired' state, greet it above the board — static
@@ -356,6 +450,57 @@ Router.register('tracker', async () => {
       c('span', null, ` ${hiredCount} × ${statusLabel('Hired')} · ${t('track.hiredNote', 'The search that ends well.')}`),
     ])
     : null;
+
+  // CAR-117 grid fix — bounded height + sticky thead: the header stays visible
+  // while the body scrolls (the stylesheet already gives th an opaque
+  // background). Widths stabilize the grid through the colgroup below.
+  const tableWrap = c('div', {
+    className: 'table-wrap',
+    style: { maxHeight: 'min(72vh, 760px)', overflow: 'auto' },
+  }, c('table', { className: 'tbl' }, [
+    c('colgroup', null, (hasCommute
+      ? ['36px', '56px', '104px', '', '', '', '88px', '72px', '118px', '132px', '60px', '170px']
+      : ['36px', '56px', '104px', '', '', '72px', '118px', '132px', '60px', '170px']
+    ).map((wd) => (wd ? c('col', { style: { width: wd } }) : c('col')))),
+    c('thead', null, c('tr', null, [
+      c('th', { scope: 'col' }, bulk ? bulk.selAll : null),
+      c('th', { scope: 'col' }, '#'),
+      sortableTh(t('track.col.date'), 'date'),
+      c('th', { scope: 'col' }, t('scan.col.company')),
+      c('th', { scope: 'col' }, t('scan.col.role')),
+      hasCommute ? c('th', { scope: 'col' }, t('commute.col.place', 'Location')) : null,
+      hasCommute ? sortableTh(t('commute.col.time', 'Drive'), 'commute') : null,
+      sortableTh(t('track.col.score', 'Score'), 'score'),
+      sortableTh(t('track.col.status'), 'status'),
+      c('th', { scope: 'col' }, [
+        t('track.col.legitimacy', 'Legitimacy'),
+        ' ',
+        // U-11 (v1.58.31) — header gets a localized info chip explaining the
+        // "High / Caution / Suspicious" scale that sets each row's badge.
+        // tabindex=0 + role=img + aria-label so it's reachable by keyboard +
+        // screen reader.
+        c('span', {
+          className: 'th-info',
+          tabIndex: 0,
+          role: 'img',
+          title: t('track.col.legitimacy.help', 'Confidence that the posting is real (High / Caution / Suspicious).'),
+          'aria-label': t('track.col.legitimacy.help', 'Confidence that the posting is real (High / Caution / Suspicious).'),
+        }, 'ⓘ'),
+      ]),
+      c('th', { scope: 'col' }, t('track.col.pdf', 'PDF')),
+      c('th', { scope: 'col' }, t('track.col.actions', 'Actions')),
+    ].filter(Boolean))),
+    tbody,
+  ]));
+  // Sticky thead, applied once here so every header keeps its pinned markup
+  // shape above (the '#' th's exact source form is locked by tests).
+  for (const th of tableWrap.querySelectorAll('thead th')) {
+    th.style.position = 'sticky';
+    th.style.top = '0';
+    th.style.zIndex = '2';
+  }
+
+  applyViewMode();
 
   return c('div', null, [
     hiredBanner,
@@ -390,153 +535,24 @@ Router.register('tracker', async () => {
 
     c('div', { className: 'card mb-3' }, [
       tabBar,
-      c('div', { className: 'flex gap-3', style: { flexWrap: 'wrap' } }, [
+      c('div', { className: 'flex gap-3', style: { flexWrap: 'wrap', alignItems: 'center' } }, [
         filterScore, hasCommute ? filterCommute : null, hasCommute ? unknownLabel : null, filterText,
+        viewToggle,
       ].filter(Boolean)),
     ]),
 
-    companyHistoryCard(rows, c, t),
+    bulk ? bulk.el : null,
+    TS ? TS.companyHistoryCard(rows, c, t) : null,
 
-    c('div', { className: 'table-wrap' },
-      c('table', { className: 'tbl' }, [
-        c('thead', null, c('tr', null, [
-          c('th', { scope: 'col' }, '#'),
-          sortableTh(t('track.col.date'), 'date'),
-          c('th', { scope: 'col' }, t('scan.col.company')),
-          c('th', { scope: 'col' }, t('scan.col.role')),
-          hasCommute ? c('th', { scope: 'col' }, t('commute.col.place', 'Location')) : null,
-          hasCommute ? sortableTh(t('commute.col.time', 'Drive'), 'commute') : null,
-          sortableTh(t('track.col.score', 'Score'), 'score'),
-          sortableTh(t('track.col.status'), 'status'),
-          c('th', { scope: 'col' }, [
-            t('track.col.legitimacy', 'Legitimacy'),
-            ' ',
-            // U-11 (v1.58.31) — header gets a localized info chip explaining the
-            // "High / Caution / Suspicious" scale that sets each row's badge.
-            // tabindex=0 + role=img + aria-label so it's reachable by keyboard +
-            // screen reader.
-            c('span', {
-              className: 'th-info',
-              tabIndex: 0,
-              role: 'img',
-              title: t('track.col.legitimacy.help', 'Confidence that the posting is real (High / Caution / Suspicious).'),
-              'aria-label': t('track.col.legitimacy.help', 'Confidence that the posting is real (High / Caution / Suspicious).'),
-            }, 'ⓘ'),
-          ]),
-          c('th', { scope: 'col' }, t('track.col.pdf', 'PDF')),
-          c('th', { scope: 'col' }, t('track.col.actions', 'Actions')),
-        ])),
-        tbody,
-      ])
-    ),
+    tableWrap,
+    kanbanHost,
     pgWrap,
-  ]);
+  ].filter(Boolean));
 });
-
-// v1.190.0 — "Company history" evidence panel. Read-only lookup over
-// GET /api/stats/company-history?company= (a zero-token relay of the parent's
-// company-history.mjs) — per-company responsiveness (has this company ever
-// replied to you?) and posting churn (does the same role keep getting reposted?),
-// joined from your tracker + follow-ups + scan history. Returns null on an empty
-// tracker so nothing renders when there is nothing to look up.
-function companyHistoryCard(rows, c, t) {
-  const companies = [...new Set(
-    (Array.isArray(rows) ? rows : []).map((r) => (r && r.company ? String(r.company).trim() : '')).filter(Boolean),
-  )].sort((a, b) => a.localeCompare(b));
-  if (!companies.length) return null;
-
-  const sel = c('select', { className: 'select', style: { maxWidth: '280px' }, 'aria-label': t('scan.col.company', 'Company') },
-    companies.map((name) => c('option', { value: name }, name)));
-  const btn = c('button', { className: 'btn btn-primary', type: 'button' }, t('track.histLookup', 'Look up'));
-  const out = c('div', { style: { marginTop: '12px' } });
-
-  btn.addEventListener('click', async () => {
-    const company = sel.value;
-    if (!company) return;
-    btn.disabled = true;
-    out.textContent = '';
-    out.appendChild(c('div', { className: 'loading' }, t('track.histLoading', 'Reading the evidence…')));
-    try {
-      const res = await API.get('/api/stats/company-history?company=' + encodeURIComponent(company));
-      out.textContent = '';
-      if (!res || res.available === false) {
-        out.appendChild(c('p', { style: { color: 'var(--foggy)' } },
-          t('track.histUnavailable', 'Company history is unavailable here — the parent career-ops company-history script was not found.')));
-        return;
-      }
-      out.appendChild(companyHistoryEvidence(res, c, t));
-    } catch (err) {
-      out.textContent = '';
-      out.appendChild(c('p', { style: { color: 'var(--danger, #d9534f)' } },
-        (err && err.message) || t('track.histFailed', 'Could not load company history')));
-    } finally {
-      btn.disabled = false;
-    }
-  });
-
-  return c('div', { className: 'card mb-3' }, [
-    c('h2', { style: { fontSize: '15px', margin: '0 0 4px' } }, t('track.histTitle', 'Company history')),
-    c('p', { style: { fontSize: '12px', color: 'var(--foggy)', margin: '0 0 10px' } },
-      t('track.histHelp', 'Per-company evidence — how responsive a company has been to you, and whether the same role keeps getting reposted. Read-only; joins your tracker, follow-ups, and scan history.')),
-    c('div', { style: { display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center' } }, [sel, btn]),
-    out,
-  ]);
-}
-
-// Render one company card ({ company, responsiveness:{label,facts}, postingChurn:{label,clusters}, explanations }).
-// Called only with a truthy card (the caller already returned on !res / available:false), so no card-null guard.
-function companyHistoryEvidence(card, c, t) {
-  const resp = card.responsiveness || {};
-  const churn = card.postingChurn || {};
-  const RESP = {
-    'silent-on-you': [t('track.histSilent', 'Silent on you'), 'badge badge-warn'],
-    mixed: [t('track.histMixed', 'Mixed'), 'badge badge-info'],
-    'responded-before': [t('track.histResponded', 'Responded before'), 'badge badge-ok'],
-    'no-history': [t('track.histNoHistory', 'No history yet'), 'badge'],
-  };
-  const CHURN = {
-    'reposts-detected': [t('track.histReposts', 'Reposts detected'), 'badge badge-warn'],
-    'none-detected': [t('track.histNoReposts', 'No reposts'), 'badge'],
-    'no-scan-data': [t('track.histNoScan', 'No scan data'), 'badge'],
-  };
-  const r = RESP[resp.label] || RESP['no-history'];
-  const ch = CHURN[churn.label] || CHURN['no-scan-data'];
-  const facts = Array.isArray(resp.facts) ? resp.facts : [];
-  const silent = facts.filter((f) => f && 'silentDays' in f);
-  const clusters = Array.isArray(churn.clusters) ? churn.clusters : [];
-
-  const kids = [
-    c('div', { style: { display: 'flex', gap: '8px', flexWrap: 'wrap', alignItems: 'center', margin: '0 0 8px' } }, [
-      c('strong', null, String(card.company || '—')),
-      c('span', { className: r[1] }, r[0]),
-      c('span', { className: ch[1] }, ch[0]),
-    ]),
-  ];
-  if (silent.length) {
-    kids.push(c('p', { style: { fontSize: '13px', margin: '0 0 6px' } },
-      t('track.histSilentCount', '{n} application(s) silent past your follow-up window:').replace('{n}', String(silent.length))));
-    const ul = c('ul', { style: { margin: '0 0 8px', paddingLeft: '18px' } });
-    for (const f of silent) {
-      ul.appendChild(c('li', { style: { fontSize: '13px' } },
-        `#${String(f.num)} · ${String(f.appliedDate || '')} · ${t('track.histDaysSilent', '{n}d silent').replace('{n}', String(f.silentDays))} · ${t('track.histFollowups', '{n} follow-ups').replace('{n}', String(f.followupsSent || 0))}`));
-    }
-    kids.push(ul);
-  }
-  if (clusters.length) {
-    kids.push(c('p', { style: { fontSize: '13px', margin: '0 0 6px' } },
-      t('track.histRepostCount', '{n} role(s) reposted:').replace('{n}', String(clusters.length))));
-    const ul = c('ul', { style: { margin: '0 0 8px', paddingLeft: '18px' } });
-    for (const cl of clusters) {
-      ul.appendChild(c('li', { style: { fontSize: '13px' } },
-        `${String(cl.role || '')} · ${String(cl.repostCount || 0)}× · ${String(cl.daysSpan || 0)}d · ${t('track.histLastSeen', 'last {d}').replace('{d}', String(cl.lastSeen || ''))}`));
-    }
-    kids.push(ul);
-  }
-  for (const e of (Array.isArray(card.explanations) ? card.explanations : [])) {
-    kids.push(c('p', { style: { fontSize: '12px', color: 'var(--foggy)', margin: '0' } }, String(e)));
-  }
-  return c('div', { className: 'card', style: { padding: '12px', marginTop: '4px' } }, kids);
-}
+// v1.190.0 — "Company history" and the liveness affordance moved to
+// lib/tracker-stages.js (CAR-117 split: tracker.js was over the 800-LOC
+// contract; the two panels are self-contained and travel with the board
+// engine they now serve).
 
 async function runFix(btn, path, t) {
   // WS2 #9 — normalize/dedup/merge REWRITE the parent data/applications.md in
@@ -557,78 +573,6 @@ async function runFix(btn, path, t) {
   } catch (e) {
     UI.toast((e && e.message) || 'tracker error', 'error');
   }
-}
-
-// --- Liveness badge (#/tracker) --------------------------------------------
-// A zero-token "still live?" check for ATS-hosted postings. The client mirrors
-// the server's ATS host/path recognition (server/lib/liveness-api.mjs) so the
-// affordance only appears for URLs the GET /api/liveness endpoint can actually
-// resolve — Greenhouse / Lever / Ashby / Workday / SmartRecruiters posting URLs.
-
-function isAtsPostingUrl(raw) {
-  let u;
-  try { u = new URL(raw); } catch { return false; }
-  if (u.protocol !== 'https:') return false;
-  const h = u.hostname;
-  const p = u.pathname;
-  // Greenhouse: boards[.eu].greenhouse.io/{board}/jobs/{numericId}
-  if (/(^|\.)greenhouse\.io$/.test(h) && /^\/[^/]+\/jobs\/\d+\/?$/.test(p)) return true;
-  // Lever: jobs[.eu].lever.co/{slug}/{id}
-  if (/^jobs\.(?:eu\.)?lever\.co$/.test(h) && /^\/[^/]+\/[^/?#]+\/?$/.test(p)) return true;
-  // Ashby: jobs.ashbyhq.com/{org}/{jobId}[/application]
-  if (h === 'jobs.ashbyhq.com' && /^\/[^/]+\/[^/]+(?:\/application)?\/?$/.test(p)) return true;
-  // Workday: {tenant}.{wd?}.myworkdayjobs.com[/xx-XX]/{site}/job/{jobPath}
-  if (/\.myworkdayjobs\.com$/.test(h) && /\/job\//.test(p)) return true;
-  // SmartRecruiters: jobs.smartrecruiters.com/{company}/{numericId}[-slug]
-  if (h === 'jobs.smartrecruiters.com' && /^\/[^/]+\/\d+/.test(p)) return true;
-  return false;
-}
-
-// Returns a small lazy "still live?" control for an ATS posting URL, or null
-// for any row whose URL is not a recognizable ATS posting. CSP-safe DOM only.
-// `rowKey` (the tracker #) scopes the focus-restore marker to this row (CAR-93).
-function livenessAffordance(url, rowKey) {
-  const c = UI.el;
-  const t = (k, f) => I18n.t(k, f);
-  if (!url || !isAtsPostingUrl(url)) return null;
-
-  const wrap = c('span', { className: 'liveness-wrap', style: { marginLeft: '6px' } });
-  const pill = (labelKey, fallback, cls, reason) => c('span', {
-    className: 'badge ' + cls,
-    title: reason || '',
-  }, t(labelKey, fallback));
-
-  const btn = c('button', {
-    className: 'btn btn-ghost btn-sm',
-    type: 'button',
-    style: { padding: '0 8px', fontSize: '11px' },
-    'data-key': String(rowKey ?? ''),
-    'aria-label': t('track.liveCheckAria', 'Check whether this job posting is still live'),
-    title: t('track.liveCheckAria', 'Check whether this job posting is still live'),
-  }, t('track.liveCheck', 'Still live?'));
-
-  btn.addEventListener('click', async () => {
-    btn.disabled = true;
-    btn.textContent = t('track.liveChecking', 'Checking…');
-    try {
-      const res = await API.get('/api/liveness?url=' + encodeURIComponent(url));
-      const status = (res && res.result) || 'uncertain';
-      wrap.textContent = '';
-      if (status === 'live') {
-        wrap.appendChild(pill('track.liveLive', 'Live', 'badge-ok', res && res.reason));
-      } else if (status === 'expired') {
-        wrap.appendChild(pill('track.liveExpired', 'Expired', 'badge-bad', res && res.reason));
-      } else {
-        wrap.appendChild(pill('track.liveUncertain', 'Unknown', 'badge-warn', res && res.reason));
-      }
-    } catch (e) {
-      wrap.textContent = '';
-      wrap.appendChild(pill('track.liveUncertain', 'Unknown', 'badge-warn', (e && e.message) || ''));
-    }
-  });
-
-  wrap.appendChild(btn);
-  return wrap;
 }
 
 // CAR-93 — renamed from statusClass: dashboard.js declares the SAME name as
