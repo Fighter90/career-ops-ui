@@ -6,6 +6,30 @@ Bản dịch: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.260.0] — 2026-10-26
+
+**Đợt-gia-cố-sau-rà-soát, tám-lượt-merge (#491–#498) từ-các-vòng-rà-soát-opus-5-5 và-rà-soát-AI trên-đội-agent-v1.259.0: chuẩn-hóa-lương, giới-hạn-phạm-vi-ngày-báo-cáo, độ-bền-geocode, bust-cache-bundle r2+r3, bản-sửa-tràn-#/deep — cùng-hai-lượt-UI-v2 (pipeline, reports). Mọi-bản-sửa đều-đổ-bộ qua-một-fix-forward-đỏ→xanh.**
+
+### Đã sửa
+
+- **Chuẩn-hóa-lượt-so-sánh-lương (CAR-143 rev-2)**: các-dấu-chu-kỳ chỉ-được-nhận-diện khi-đứng-sát-con-số mà-chúng-thuộc-về — «6 month contract, $120k» không-còn-bị-nhân-×12-quy-năm, và-các-dạng-chu-kỳ-chỉ-gắn-sát của-RU/ES («за месяц» đứng-cạnh-con-số) thắng-mọi-từ-đi-ngang-không-liên-quan; họ-ký-hiệu `$`/`¥` được-nhận-diện nhưng không-được-ánh-xạ trừ-khi-một-mã-ISO-tường-minh cùng-đứng-trên-dòng (đô-la AUD/CA/SG không-còn-bị-tính-thành-USD, dạng-¥-RMB nhận-một-lưu-ý-tường-minh thay-vì-một-lượt-đổi-JPY-lệch-tới-hơn-20×); các-con-số-trần 19xx/20xx luôn-là-năm; các-con-số-trong-khoảng thừa-hưởng-chu-kỳ-của-vế-kia; `minimum` và `target_range` của-profile không-bao-giờ-được-nối-thành-một-khoảng.
+- **Giới-hạn-phạm-vi-của-`fixReportDate` (CAR-144 rev-2)**: lượt-sửa-ngày-ghim-phía-server chỉ-áp-dụng cho-phần-mở-đầu trước-tiêu-đề-`## `-đầu-tiên (một-báo-cáo mở-đầu-ngay-bằng-tiêu-đề-H2 nhận-no-op-bảo-thủ — ngày-cũ chấp-nhận-được, ngày-bịa thì-không); trong-phần-mở-đầu: một-ứng-viên-duy-nhất được-sửa, nếu-không-thì-một-`**Date:**`-in-đậm-duy-nhất, nếu-không-thì-không-sửa-gì-cả (hai-ứng-viên-in-đậm hoặc-hai-ứng-viên-trần viết-lại-không-cái nào). Cổng-nhãn-PDF của-FIX-5 giờ đọc-bộ-từ-điển-lắp-ráp-thật — một-locale-thiếu ném-lỗi thay-vì-lặng-lẽ-đỗ trên-fallback-tiếng-Anh.
+- **Chip-vị-trí-Habr + độ-bền-geocode (CAR-142 rev-2)**: một-chip-meta-Habr chỉ-trở-thành-một-thành-phố khi-có-bằng-chứng-cấu-trúc (một-liên-kết-bộ-lọc-thành-phố hoặc-một-biểu-tượng-vị-trí) — thông-báo-chuyển-địa («Возможна релокация») và-các-loại-hình-việc-làm không-bao-giờ-giả-mạo-thành-vị-trí; cache-geocode giờ sống-sót qua-lần-khởi-động-lại (flush tại `beforeExit`/`exit`/SIGTERM+SIGINT kèm-gửi-lại-tín-hiệu, cờ-dirty chỉ-được-xóa sau-khi-lượt-ghi-hoàn-tất), tắt-máy-có-giới-hạn (chốt-vòng-thoát, bộ-đếm-thế-hệ, LRU-theo-mức-mới), và-một-ngân-sách-geocode-đã-cạn trả-lời 503 + Retry-After thay-vì-502-chung-chung.
+- **Bust-cache-bundle (CAR-145 r2+r3)**: shell-trang dẫn `/js/bundle.js?v=<content-hash>` — bất-biến-khi-khớp, no-store-khi-lệch — giết-cửa-sổ-5-phút của-lượt-triển-khai, nơi-một-shell-mới đi-cặp-với-một-bundle-cũ-được-cache. Hash và-luồng-đọc dùng-chung-một-bộ-mô-tả-tệp (không-có-lượt-đọc-bị-vỡ-nửa-giữa); một-lượt-đọc-ngắn trả-lời null thay-vì-một-hash-dự-phòng-từ-stat mà-có-thể-đầu-độc-cả-một-lượt-triển-khai; `make-bundle` viết-identity cùng-các-bản-đồng-hành-.br/.gz qua-một-tệp-tạm-đầu-chấm + rename, nên-một-build-bị-giết không-thể-phục-vụ-byte-viết-dở cũng-như-không-thể-rò-tệp-tạm của-nó.
+- **Tràn-#/deep (CAR-146)**: một-bản-tóm-tắt-nghiên-cứu-sâu-đã-lưu mà-chỉ-riêng-tên-tệp đã-vượt-khung-hình-điện-thoại không-còn-đẩy-`#/deep` vượt-390px — thẻ-chặn-tại-dòng-của-nó, tiêu-đề-xuống-dòng, ngày-giữ-một-dòng; lượt-quét-khung-hình-hẹp giờ đi-qua-`#/deep` với-một-fixture-quá-dài-được-gieo-sẵn (phát-hiện-duy-nhất của-hai-lượt-chạy-remote-QA, đã-đóng).
+- **Gia-cố-Pipeline-v2 (CAR-116 review)**: xóa-có-xác-nhận và-hoàn-tác-được (kèm-lời-văn-hoàn-tác-trung-thực), không-bịa-nhà-tuyển-dụng trong-các-thẻ, id-dòng-FNV-1a, số-đếm-hàng-loạt-thật, và-một-chốt-chống-tái-vào trên-các-thao-tác-hàng-loạt.
+
+### Thêm mới
+
+- **Pipeline v2 (CAR-116)**: các-thẻ-phong-phú-hơn, một-view-nhóm, và-loại-bỏ-hàng-loạt-kèm-hoàn-tác; 17-khóa-`pipe.*`-mới đổ-bộ-kèm-bản-dịch-sẵn trên-cả-19-bộ-từ-điển.
+- **Reports v2 (CAR-118)**: tìm-kiếm-trực-tiếp với-các-bộ-lọc-dải-điểm/tính-hợp-lệ/công-ty/ngày, các-header-sắp-xếp-được (`aria-sort`), một-view-thẻ-lưu-được-trạng-thái với-các-nút-hành-động-theo-dải, một-biểu-đồ-điểm-bấm-để-lọc, và-lượt-render-thống-nhất «Company — Role» / «x.x/5» (`window.ReportOps`); 31-khóa-`rep2.*`-mới đổ-bộ-kèm-bản-dịch-sẵn trên-cả-19-bộ-từ-điển.
+
+### Ghi chú
+
+- Mọi-bản-sửa đến-qua-một-vòng-rà-soát kèm-bằng-chứng-đỏ→xanh; hai-phát-hiện-HIGH của-rà-soát-AI trên-r2-bundle-đầu-tiên (hash-đọc-ngắn, tính-nguyên-tử-các-bản-đồng-hành) được-đóng bởi-r3, và-các-vòng-CAR-143/CAR-144/CAR-142 mỗi-vòng đều-tái-xác-minh-các-phát-hiện-còn-mở của-vòng-tiền-nhiệm.
+- Cố-ý-không-làm: view-cụm-bản-đồ vẫn-ở-CAR-125 (đang-xếp-hàng); khôi-phục-metadata-pipeline-phía-server là-một-ticket-riêng; không-bản-sửa-hồi-cố nào cho-nội-dung-đã-lưu dưới-các-trạng-thái-v1.259.0-trước-rev-2.
+- Kiểm-thử 5988 (+165). Trình-duyệt 152 đỗ / 0 trượt / 1 bỏ-qua-tùy-chọn. Không-chạm-nguồn-quét nào (registry 121 = 116 EN + 5 RU · 116 adapter); 48-khóa-i18n-mới đổ-bộ cùng-lượt-fan-out-×19 của-chúng ngay-trong-chính-các-PR-tính-năng.
+
 ## [1.259.0] — 2026-10-25
 
 **Đợt-phát-hành-thứ-hai-của-đội-agent, sáu-bản-sửa: ngày-báo-cáo được-ghim-phía-server, geocoder-bản-đồ cache và-đọc-các-thành-phố-RU, help ×18 trích-các-nhãn-nút-bút-đã-bản-dịch-hóa, các-câu-UI ngừng-trộn-ngôn-ngữ, các-lượt-so-sánh-lương được-tính-phía-server — và-bundle-JS được-phát-hành-sẵn-nén (tải-lạnh 3.1 MB → 598 KB).**
