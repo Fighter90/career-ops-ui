@@ -81,7 +81,7 @@ function makeEl(docRef, layout = {}) {
         for (const fn of Array.isArray(ls) ? ls : [ls]) fn(ev);
       },
       click() { this._fire('click', { target: this, currentTarget: this, stopPropagation() {} }); },
-      keydown(k) { this._fire('keydown', { key: k, preventDefault() {}, target: this, currentTarget: this }); },
+      keydown(k, extra) { this._fire('keydown', { key: k, preventDefault() {}, target: this, currentTarget: this, ...extra }); },
       contains(other) { let found = false; walk(this, (n) => { if (n === other) found = true; }); return found; },
       querySelector(sel) { return this.querySelectorAll(sel)[0] || null; },
       querySelectorAll(sel) {
@@ -474,6 +474,9 @@ function bootQuickView() {
     API: { post: async () => ({ ok: true, deduped: false }) },
     Router: { go: (h) => { w.__nav = h; } },
   };
+  // salaryHead lives in scan-results (loaded with skills like bootResults)
+  new Function('window', readFileSync(resolve(ROOT, 'public/js/lib/skills.js'), 'utf8'))(w); // eslint-disable-line no-new-func
+  new Function('window', readFileSync(resolve(ROOT, 'public/js/lib/scan-results.js'), 'utf8'))(w); // eslint-disable-line no-new-func
   new Function('window', RUNNER_SRC)(w); // eslint-disable-line no-new-func
   const view = {};
   const pair = w.createScanQuickView({ c: w.UI.el, t: (k, f) => f, SR: { render() {} }, view });
@@ -549,6 +552,48 @@ test('CAR-115: the Active-companies toggle renders the grouped list (no Referenc
   panel.setApiCompanies([{ name: 'Webb' }]);
   toggle.click(); toggle.click(); // collapse + expand → rerender again
   assert.match(list.textContent, /Webb/, 'the reclassified set drives the groups');
+});
+
+test('CAR-115: the quick view traps Tab and keeps only the salary head', () => {
+  const { view, panel, document } = bootQuickView();
+  view.openQuickView({
+    title: 'X', company: 'Y', url: 'https://x/2',
+    salary: '$224K – $263K • Offers Equity • 401(k) match',
+  });
+  // salary keeps only the money chunk — the benefits blurb never shows
+  const salaryEl = panel.querySelectorAll('.v2-scan-qv-salary')[0];
+  assert.equal(salaryEl.textContent, '$224K – $263K');
+  // Focus trap: open() focused the close button; Tab walks the panel and
+  // wraps at both ends (the same contract as the shared modal).
+  const closeBtn = panel.querySelectorAll('button').find((b) => b.className.includes('v2-scan-qv-close'));
+  assert.equal(document.activeElement, closeBtn, 'open() focuses the close button');
+  panel.keydown('Tab');
+  assert.equal(document.activeElement, panel.querySelectorAll('.v2-scan-qv-desc')[0],
+    'Tab moves to the scrollable description');
+  panel.keydown('Tab');
+  const actionBtns = panel.querySelectorAll('.v2-scan-qv-actions')[0].querySelectorAll('button');
+  assert.equal(document.activeElement, actionBtns[0], 'Tab moves into the actions');
+  // wrap: from the last focusable (the posting link) back to the close button
+  const link = panel.querySelector('a');
+  document.activeElement = link;
+  panel.keydown('Tab');
+  assert.equal(document.activeElement, closeBtn, 'Tab wraps to the close button');
+  // Shift+Tab from the first focusable wraps to the last
+  document.activeElement = closeBtn;
+  panel.keydown('Tab', { shiftKey: true });
+  assert.equal(document.activeElement, link, 'Shift+Tab wraps backwards to the last focusable');
+});
+
+test('CAR-115: the Tab trap skips disabled actions (unsafe URL)', () => {
+  const { view, panel, document } = bootQuickView();
+  view.openQuickView({ title: 'X', company: 'Y', url: 'javascript:alert(1)', salary: '' });
+  const descEl = panel.querySelectorAll('.v2-scan-qv-desc')[0];
+  document.activeElement = descEl;
+  panel.keydown('Tab');
+  const actionBtns = panel.querySelectorAll('.v2-scan-qv-actions')[0].querySelectorAll('button');
+  // Evaluate and To-pipeline are disabled for a non-http(s) URL — the trap
+  // skips both and lands on the star toggle.
+  assert.equal(document.activeElement, actionBtns[2], 'disabled Evaluate/To-pipeline are skipped');
 });
 
 // ───────────────────────── 5. static guards ──────────────────────────────────

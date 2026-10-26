@@ -335,6 +335,10 @@
     let current = null;
     let lastFocus = null;
     let lastFocusUrl = ''; // the opening row's data-url (re-resolution key)
+    // The benefits blurb never shows: the salary cell keeps the money chunk
+    // (the same head the table column uses — ScanResults.salaryHead).
+    const salaryHead = (s) => (window.ScanResults && typeof window.ScanResults.salaryHead === 'function')
+      ? window.ScanResults.salaryHead(s) : String(s || '');
     const closeBtn = c('button', {
       className: 'btn btn-ghost btn-sm v2-scan-qv-close', type: 'button',
       'aria-label': t('common.closeDialog', 'Close dialog'),
@@ -397,8 +401,9 @@
       const fresh = days == null ? '' : (days <= 0 ? t('scan.freshToday', 'today') : days + t('scan.dSuffix', 'd'));
       titleEl.textContent = r.title || r.company || '—';
       metaEl.textContent = [r.company, r.location, r.source, fresh, wt].filter(Boolean).join(' · ');
-      salaryEl.textContent = r.salary || '';
-      salaryEl.hidden = !r.salary;
+      const salaryText = salaryHead(r.salary || '');
+      salaryEl.textContent = salaryText;
+      salaryEl.hidden = !salaryText;
       // Descriptions arrive as plain text (server-capped); rendered as a
       // text node — the panel never touches innerHTML with data.
       descEl.textContent = String(r.description || '').slice(0, 4000)
@@ -445,7 +450,21 @@
       lastFocusUrl = '';
       current = null;
     }
-    panel.addEventListener('keydown', (e) => { if (e.key === 'Escape') close(); });
+    panel.addEventListener('keydown', (e) => {
+      if (e.key === 'Escape') { close(); return; }
+      if (e.key !== 'Tab') return;
+      // Focus trap (the shared modal's contract): Tab/Shift+Tab cycle inside
+      // the dialog; hidden and disabled controls are skipped.
+      const focusables = [closeBtn, descEl, evalBtn, pipeBtn, starBtn, linkBtn]
+        .filter((el) => !el.hidden && el.getAttribute('disabled') == null);
+      if (!focusables.length) return;
+      const idx = focusables.indexOf(document.activeElement);
+      e.preventDefault();
+      const next = e.shiftKey
+        ? (idx <= 0 ? focusables.length - 1 : idx - 1)
+        : (idx === -1 || idx === focusables.length - 1 ? 0 : idx + 1);
+      focusables[next].focus();
+    });
     backdrop.addEventListener('click', () => close());
     if (view) view.openQuickView = open;
     return [backdrop, panel];
