@@ -10,6 +10,30 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.260.0] — 2026-10-26
+
+**Le train de consolidation par revue, huit fusions (#491–#498) issues des rondes opus-5-5 et AI-review menées sur la flotte de la v1.259.0 : normalisation des salaires, cadrage des dates de rapport, robustesse du géocodage, cache-busting du bundle r2+r3, le correctif du débordement de #/deep — plus deux refontes v2 de l'interface (pipeline, rapports). Chaque correctif a atterri en fix-forward avec preuve rouge→vert.**
+
+### Corrigé
+
+- **Normalisation de la comparaison des salaires (CAR-143 rev-2)** : les marqueurs de période ne sont reconnus qu'à proximité du chiffre auquel ils se rattachent — «6 month contract, $120k» n'est plus annualisé ×12, et les formes de période RU/ES accolées au chiffre («за месяц» juste à côté du nombre) l'emportent sur des mots fortuits ; la famille de symboles `$`/`¥` est reconnue mais laissée sans mappage tant qu'aucun code ISO explicite ne partage la ligne (les dollars AUD/CA/SG ne sont plus facturés comme des USD, une forme ¥ RMB reçoit une réserve explicite au lieu d'une conversion JPY décalée de ~20×) ; les nombres nus 19xx/20xx sont toujours des années ; les chiffres d'une fourchette héritent de la période de leur voisin ; le `minimum` et le `target_range` du profil ne sont jamais recollés en une seule fourchette.
+- **Cadrage de `fixReportDate` (CAR-144 rev-2)** : la correction de date épinglée côté serveur ne s'applique qu'au préambule qui précède le premier en-tête `## ` (un rapport dont le titre est un H2 reçoit un no-op conservateur — une date périmée est acceptable, une date fabriquée non) ; dans le préambule : un candidat unique est corrigé, sinon un `**Date:**` unique en gras, sinon rien (deux candidats en gras ou deux candidats simples ne réécrivent rien). Le garde-fou des libellés PDF de FIX-5 lit désormais le vrai dictionnaire assemblé — une locale manquante lève une erreur au lieu de passer en silence sur un repli anglais.
+- **Puce de lieu Habr + robustesse du géocodage (CAR-142 rev-2)** : une puce méta Habr ne devient une ville qu'avec une preuve structurelle (un lien de filtre par ville ou une icône de lieu) — les mentions de mobilité («Возможна релокация») et les types d'emploi ne se déguisent jamais en lieux ; le cache de géocodage survit désormais à un redémarrage (flush sur `beforeExit`/`exit`/SIGTERM+SIGINT avec re-raise du signal, drapeau dirty effacé seulement une fois l'écriture posée), l'arrêt est borné (verrou de boucle d'exit, compteur de génération, LRU par récence), et un budget de géocodage épuisé répond 503 + Retry-After au lieu d'un 502 générique.
+- **Cache-busting du bundle (CAR-145 r2+r3)** : le shell référence `/js/bundle.js?v=<content-hash>` — immutable en cas de correspondance, no-store en cas de divergence — tuant la fenêtre de déploiement de 5 minutes où un shell frais s'associait à un ancien bundle en cache. Le hash et le flux partagent un seul descripteur de fichier (aucune lecture déchirée) ; une lecture courte répond null plutôt qu'un hash de repli via stat qui pourrait empoisonner tout un déploiement ; `make-bundle` écrit l'identité et les compagnons .br/.gz via un temporaire préfixé d'un point + rename, si bien qu'un build tué ne peut ni servir des octets à moitié écrits ni laisser fuiter son fichier temporaire.
+- **Débordement de #/deep (CAR-146)** : un brief de recherche sauvegardé dont le seul nom de fichier dépasse la largeur d'un téléphone ne peut plus pousser `#/deep` au-delà de 390px — la carte se borne à sa ligne, le titre passe à la ligne, la date tient sur une seule ; le balayage des fenêtres étroites parcourt désormais `#/deep` avec un fixture semé volontairement sur-long (l'unique constat des deux passages remote-QA, clos).
+- **Consolidation du pipeline v2 (revue CAR-116)** : les suppressions demandent confirmation et s'annulent (avec un libellé d'annulation honnête), aucune fabrication d'entreprise hôte dans les cartes, ids de ligne FNV-1a, compteurs en masse véridiques, et un garde anti-réentrance sur les opérations en masse.
+
+### Ajouté
+
+- **Pipeline v2 (CAR-116)** : cartes enrichies, vue groupée et rejet en masse avec annulation ; 17 nouvelles clés `pipe.*` livrées traduites dans les 19 dictionnaires.
+- **Rapports v2 (CAR-118)** : recherche en direct avec filtres par tranche de score/légitimité/entreprise/date, en-têtes triables (`aria-sort`), vue en cartes persistée avec boutons d'action par tranche, histogramme de scores cliquable pour filtrer, et rendu unifié «Company — Role» / «x.x/5» (`window.ReportOps`) ; 31 clés `rep2.*` livrées traduites dans les 19 dictionnaires.
+
+### Notes
+
+- Chaque correctif est passé par une ronde de revue avec preuve rouge→vert ; les deux constats HIGH de l'AI-review sur le premier r2 du bundle (hash de lecture courte, atomicité des compagnons) sont clos par le r3, et les rondes CAR-143/CAR-144/CAR-142 ont chacune revérifié les constats ouverts de leur prédécesseur.
+- Délibérément non fait : la vue en clusters de la carte reste CAR-125 (en file) ; la restauration côté serveur des métadonnées du pipeline est un ticket séparé ; pas de corrections rétroactives pour le contenu sauvegardé sous les états pré-rev-2 de la v1.259.0.
+- Tests 5988 (+165). Suite navigateur : 152 réussis / 0 échec / 1 saut de test optionnel. Aucune source du scanner touchée (registre 121 = 116 EN + 5 RU · 116 adaptateurs) ; les 48 nouvelles clés i18n ont atterri avec leur fan-out ×19 au sein même des PR de fonctionnalités.
+
 ## [1.259.0] — 2026-10-25
 
 **Deuxième train de la flotte d'agents, six correctifs : les dates des rapports sont épinglées côté serveur, le géocodeur de la carte met en cache et lit les villes russes, l'aide ×18 cite les libellés de boutons localisés, les phrases de l'interface cessent de mélanger les langues, les comparaisons de salaires sont calculées côté serveur — et le bundle JS est livré précompressé (chargement à froid 3.1 MB → 598 KB).**
