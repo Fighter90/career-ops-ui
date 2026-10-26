@@ -28,7 +28,8 @@ import { execFile } from 'node:child_process';
 import { promisify } from 'node:util';
 import {
   mkdtempSync, mkdirSync, writeFileSync, readFileSync, rmSync,
-  existsSync, utimesSync,
+  existsSync, utimesSync, statSync, chmodSync, openSync, closeSync,
+  renameSync, readdirSync,
 } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve, dirname, join } from 'node:path';
@@ -144,6 +145,20 @@ before(async () => {
 
 // ─────────────── make-bundle emits the precompressed siblings ───────────────
 
+test('CAR-145 r3: make-bundle temp names are DOT-prefixed (serve-static never serves dotfiles)', () => {
+  // Structural gate — weak by TRACEABILITY rule 2 (greps the source, does not
+  // run the writer): a SIGKILL between the temp write and the rename leaves
+  // the temp file on disk, and a bare `bundle.js.tmp-<pid>` would be SERVED by
+  // express.static for as long as it lingers; a dot-prefixed name hits
+  // serve-static's dotfiles default and is never served.
+  const src = readFileSync(MAKE_BUNDLE, 'utf8');
+  assert.match(
+    src,
+    /`\.\$\{basename\(path\)\}\.tmp-\$\{process\.pid\}`/,
+    'the atomic-write temp template must be .<basename>.tmp-<pid>',
+  );
+});
+
 test('CLI: emits bundle.js.br and bundle.js.gz that decompress to the identity bundle', async () => {
   const root = await buildFixtureBundle('cli-artifacts');
   const js = join(root, 'public', 'js');
@@ -172,6 +187,26 @@ test('writeBundle reports the compressed sizes alongside the identity size', () 
   assert.equal(out.count, 3);
   assert.ok(out.bytes > 0 && out.brBytes > 0 && out.gzBytes > 0, 'brBytes/gzBytes reported');
   assert.ok(out.brBytes < out.bytes, 'brotli must actually shrink the bundle');
+});
+
+test('CAR-145 r2: the build writes ATOMICALLY — a fresh inode per rebuild, no temp leftovers', async () => {
+  // The server hashes AND streams this file concurrently with builds; an
+  // in-place write would let a reader observe torn bytes. Renaming a fully
+  // written temp file over the target means the published inode is never
+  // mutated — pinning the inode change pins that contract.
+  const root = makeScratch('write-bundle-atomic');
+  writeFixturePublic(root, { content: 'var CAR145_A1 = 1;' });
+  await execFileP(process.execPath, [MAKE_BUNDLE, '--root', root]);
+  const js = join(root, 'public', 'js');
+  const ino1 = statSync(join(js, 'bundle.js')).ino;
+  assert.equal(readdirSync(js).filter((f) => /\.tmp-/.test(f)).length, 0, 'no temp files left behind');
+
+  writeFixturePublic(root, { content: 'var CAR145_A2 = 2;' });
+  await execFileP(process.execPath, [MAKE_BUNDLE, '--root', root]);
+  const ino2 = statSync(join(js, 'bundle.js')).ino;
+  assert.notEqual(ino1, ino2, 'a rebuild must publish a NEW inode (temp + rename), never rewrite in place');
+  assert.equal(readdirSync(js).filter((f) => /\.tmp-/.test(f)).length, 0, 'no temp files left behind');
+  assert.ok(readFileSync(join(js, 'bundle.js')).includes('CAR145_A2'), 'the renamed file is the new build');
 });
 
 // ─────────────── negotiation over the real wiring order ───────────────
@@ -407,18 +442,73 @@ function expectedVersion(publicDir) {
     .slice(0, 12);
 }
 
-test('bundleVersionOf: content hash of the identity bundle, mtime fallback when unreadable', () => {
-  const root = makeScratch('car145-version');
+// (The old "bundleVersionOf: content hash … mtime fallback" unit test was
+// superseded by the CAR-145 r3 test below — null-stat contract, provenance
+// via bundleContentHash, and the 12-hex fallback are all covered there.)
+
+test('CAR-145 r3: bundleVersionOf — null stat → null; real stat → content hash; unreadable → fallback', () => {
+  const root = makeScratch('car145-r3-version');
   const pub = writeFixturePublic(root);
   writeFileSync(join(pub, 'js', 'bundle.js'), 'var CAR145 = 1;\n');
   const bundlePath = join(pub, 'js', 'bundle.js');
-  assert.equal(serverMod.bundleVersionOf(bundlePath, null), expectedVersion(pub));
+  const contentHashV = expectedVersion(pub); // computed BEFORE the file goes unreadable
+  // finding 6 — a null stat must not become a constant masquerading as a
+  // version ('undefined:undefined:undefined'): the shell then omits ?v= and
+  // the negotiation middleware treats the URL as unversioned.
+  assert.equal(serverMod.bundleVersionOf(bundlePath, null), null);
+  assert.equal(serverMod.bundleVersionOf(bundlePath, statSync(bundlePath)), contentHashV);
 
-  // Unreadable file (race with a rebuild): the stat of ANY file keeps the URL
-  // changing when the file changes — no crash, no empty version.
-  const ghost = join(pub, 'js', 'bundle-gone.js');
-  const st = { size: 255, mtimeMs: 1700000000000 };
-  assert.equal(serverMod.bundleVersionOf(ghost, st), 'ff-18bcfe56800');
+  // finding 1 — provenance is observable: content hash vs stat fallback.
+  assert.equal(serverMod.bundleContentHash(bundlePath), contentHashV, 'readable → content hash');
+  chmodSync(bundlePath, 0o000);
+  try {
+    assert.equal(serverMod.bundleContentHash(bundlePath), null, 'unreadable → null (must never be cached)');
+    const fallback = serverMod.bundleVersionOf(bundlePath, statSync(bundlePath));
+    assert.match(fallback, /^[0-9a-f]{12}$/, 'fallback still 12 hex');
+    assert.notEqual(fallback, contentHashV, 'fallback is NOT the content hash');
+  } finally {
+    chmodSync(bundlePath, 0o644);
+  }
+  assert.equal(serverMod.bundleContentHash(bundlePath), contentHashV, 'readable again → content hash');
+});
+
+test('CAR-145 r3: bundleContentHashFromFd — the hash belongs to the fd, not the path (rename swap)', () => {
+  const root = makeScratch('car145-r3-fd');
+  const dir = join(root, 'fd');
+  mkdirSync(dir, { recursive: true });
+  const pathA = join(dir, 'file.js');
+  writeFileSync(pathA, 'AAA');
+  writeFileSync(join(dir, 'swap.js'), 'BBB');
+  const fd = openSync(pathA, 'r');
+  try {
+    // CodeQL js/file-system-race: no stat-then-use — the size of the opened
+    // inode is statically known from the fixture content ('AAA').
+    const sizeA = Buffer.byteLength('AAA');
+    const h1 = serverMod.bundleContentHashFromFd(fd, sizeA);
+    assert.equal(h1, createHash('sha256').update('AAA').digest('hex').slice(0, 12));
+    // A rename-based build swaps the inode under the path mid-flight. The
+    // swap is proven BY the assertion below — a path-following (broken)
+    // implementation would hash 'BBB' here and fail; no path-based re-read
+    // is needed (and any open-then-reread of this path is exactly the TOCTOU
+    // pattern CodeQL js/file-system-race flags).
+    renameSync(join(dir, 'swap.js'), pathA);
+    assert.equal(serverMod.bundleContentHashFromFd(fd, sizeA), h1,
+      'the hash must keep belonging to the ORIGINAL inode behind this fd');
+  } finally {
+    closeSync(fd);
+  }
+});
+
+test('CAR-145 r3: the un-versioned bundle ETag is the content hash (rsync -p gap closed)', async () => {
+  const root = await buildFixtureBundle('car145-r3-etag');
+  const pub = join(root, 'public');
+  const { srv, port } = await bootNegotiation(pub);
+  try {
+    const res = await reqRaw(port, '/js/bundle.js', { headers: { 'accept-encoding': 'identity' } });
+    assert.equal(res.status, 200);
+    assert.equal(res.headers.etag, `W/"${expectedVersion(pub)}"`,
+      'ETag = W/"<content hash>" — a size+mtime ETag 304s through identical-stat rebuilds');
+  } finally { srv.close(); }
 });
 
 test('CAR-145: the served shell references the bundle with a content-hash query', async () => {
@@ -433,39 +523,58 @@ test('CAR-145: the served shell references the bundle with a content-hash query'
     assert.equal(res.headers.get('cache-control'), 'no-store', 'shell stays always-revalidate');
     assert.match(
       body,
-      new RegExp(`<script src="/js/bundle.js\\?v=${expectedVersion(pub)}"></script>`),
+      new RegExp(`<script src="/js/bundle\\.js\\?v=${expectedVersion(pub)}"></script>`),
       'the ?v= hash must be the sha256 of the served identity bundle',
     );
     assert.doesNotMatch(body, /<script src="\/js\/bundle\.js"><\/script>/, 'un-versioned tag is gone');
   } finally { srv.close(); }
 });
 
-test('CAR-145: after a rebuild the shell cites the NEW hash (the deploy skew window is closed)', async () => {
+test('CAR-145: ONE server, after a same-size same-mtime rebuild, cites the NEW hash (cache invalidation)', async () => {
   const root = await buildFixtureBundle('car145-skew', { content: 'var CAR145_V1 = 1;' });
   const pub = join(root, 'public');
-  const srv1 = await listen(shellApp(pub));
-  let first;
+  const bundlePath = join(pub, 'js', 'bundle.js');
+  // ONE app/server — the middleware's shell cache must invalidate across the
+  // rebuild; two shellApp() calls would give the second one a fresh cache and
+  // prove nothing about invalidation.
+  const srv = await listen(shellApp(pub));
   try {
-    first = await fetch(`http://127.0.0.1:${srv1.address().port}/`).then((r) => r.text());
-  } finally { srv1.close(); }
-  const v1 = expectedVersion(pub);
-  assert.match(first, new RegExp(`src="/js/bundle.js\\?v=${v1}"`));
+    // Pin the mtime BEFORE the first fetch so the cached shell key carries the
+    // pinned value (pinning only after would change the key by itself and
+    // invalidate the cache for the wrong reason).
+    const pinned = new Date(1700000000000);
+    utimesSync(bundlePath, pinned, pinned);
+    const st1 = statSync(bundlePath);
+    assert.equal(st1.mtimeMs, 1700000000000, 'fixture: pinned mtime is exact');
+    const before = await fetch(`http://127.0.0.1:${srv.address().port}/`).then((r) => r.text());
+    const v1 = expectedVersion(pub);
+    assert.match(before, new RegExp(`src="/js/bundle\\.js\\?v=${v1}"`));
 
-  // A deploy lands: same paths, new bundle bytes (the shipped make-bundle
-  // replaces the file in place; the shell middleware re-derives on change).
-  writeFixturePublic(root, { content: 'var CAR145_V2 = 2;' });
-  await execFileP(process.execPath, [MAKE_BUNDLE, '--root', root]);
-  const v2 = expectedVersion(pub);
-  assert.notEqual(v1, v2, 'different content must mean a different version');
+    // A deploy lands with the rsync -p / cp -p shape: SAME byte length and the
+    // old mtime restored — size:mtimeMs alone cannot tell the rebuild happened,
+    // only the inode identity (ino/ctimeMs) still can.
+    // Rewrite ONLY the bundle's variable input — touching index.html would
+    // change the other half of the shell cache key and prove nothing. V2 is
+    // derived from the file the build actually consumed (equal length by
+    // construction), not from re-typing the fixture layout (r3, finding 7).
+    const firstV1 = readFileSync(join(pub, 'js', 'first.js'), 'utf8');
+    const firstV2 = firstV1.replace('CAR145_V1 = 1', 'CAR145_V2 = 2');
+    assert.notEqual(firstV2, firstV1, 'fixture: the replacement must have matched');
+    assert.equal(firstV2.length, firstV1.length, 'fixture: same byte length');
+    writeFileSync(join(pub, 'js', 'first.js'), firstV2);
+    await execFileP(process.execPath, [MAKE_BUNDLE, '--root', root]);
+    utimesSync(bundlePath, pinned, pinned);
+    const st2 = statSync(bundlePath);
+    assert.equal(st2.size, st1.size, 'fixture: same byte length');
+    assert.equal(st2.mtimeMs, st1.mtimeMs, 'fixture: mtime restored exactly');
+    const v2 = expectedVersion(pub);
+    assert.notEqual(v1, v2, 'different content must mean a different version');
 
-  const srv2 = await listen(shellApp(pub));
-  const port = srv2.address().port;
-  try {
-    const second = await fetch(`http://127.0.0.1:${port}/`).then((r) => r.text());
-    assert.match(second, new RegExp(`src="/js/bundle.js\\?v=${v2}"`),
-      'the fresh shell must point at the new bundle URL — never the cached old one');
-    assert.ok(!second.includes(`?v=${v1}`), 'the old versioned URL must disappear from the shell');
-  } finally { srv2.close(); }
+    const after = await fetch(`http://127.0.0.1:${srv.address().port}/`).then((r) => r.text());
+    assert.match(after, new RegExp(`src="/js/bundle\\.js\\?v=${v2}"`),
+      'the served shell must point at the new bundle URL — never the cached old one');
+    assert.ok(!after.includes(`?v=${v1}`), 'the old versioned URL must disappear from the shell');
+  } finally { srv.close(); }
 });
 
 test('CAR-145: the versioned URL is served by negotiation (pathname-only matching)', async () => {
@@ -480,14 +589,42 @@ test('CAR-145: the versioned URL is served by negotiation (pathname-only matchin
     assert.equal(res.headers['content-encoding'], 'br');
     assert.equal(Number(res.headers['content-length']), readFileSync(join(pub, 'js', 'bundle.js.br')).length);
     assert.deepEqual(brotliDecompressSync(res.body), readFileSync(join(pub, 'js', 'bundle.js')));
+    // CAR-145 r2 — a ?v= that MATCHES the current hash is content-addressed:
+    // correctness comes from the hash, so the cache policy can be immutable.
+    assert.equal(
+      res.headers['cache-control'],
+      'public, max-age=31536000, immutable',
+      'matching ?v= → immutable (the hash is the correctness guarantee)',
+    );
   } finally { srv.close(); }
 });
 
-test('CAR-145: ETag/304 revalidation keeps working for the same ?v= value', async () => {
-  const root = await buildFixtureBundle('car145-304-versioned');
-  const { srv, port } = await bootNegotiation(join(root, 'public'));
+test('CAR-145: a MISMATCHED ?v= is served but marked no-store (rolling-deploy cache poisoning closed)', async () => {
+  const root = await buildFixtureBundle('car145-mismatch-nostore');
+  const pub = join(root, 'public');
+  const { srv, port } = await bootNegotiation(pub);
   try {
-    const url = '/js/bundle.js?v=deadbeefdead';
+    // During a rolling deploy an old instance can still hold the OLD bundle
+    // under a NEW instance's ?v= — if that answer were cacheable, a shared
+    // cache would pin NEW-URL→OLD-bytes for max-age and defeat the buster.
+    const res = await reqRaw(port, '/js/bundle.js?v=deadbeefdead', {
+      headers: { 'accept-encoding': 'identity' },
+    });
+    assert.equal(res.status, 200, 'the bytes are still served');
+    assert.equal(res.headers['cache-control'], 'no-store', '…but uncacheable');
+    assert.deepEqual(res.body, readFileSync(join(pub, 'js', 'bundle.js')), 'current bytes, not the claimed version');
+    // Empty / garbage v= values are mismatches too.
+    const empty = await reqRaw(port, '/js/bundle.js?v=', { headers: { 'accept-encoding': 'identity' } });
+    assert.equal(empty.headers['cache-control'], 'no-store');
+  } finally { srv.close(); }
+});
+
+test('CAR-145: ETag/304 revalidation keeps working for the CURRENT ?v= value', async () => {
+  const root = await buildFixtureBundle('car145-304-versioned');
+  const pub = join(root, 'public');
+  const { srv, port } = await bootNegotiation(pub);
+  try {
+    const url = `/js/bundle.js?v=${expectedVersion(pub)}`;
     const first = await reqRaw(port, url, { headers: { 'accept-encoding': 'br' } });
     assert.equal(first.status, 200);
     assert.ok(first.headers.etag, 'versioned response carries an ETag');
