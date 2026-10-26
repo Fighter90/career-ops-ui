@@ -92,13 +92,11 @@ const FIG_RE = new RegExp(
 // Unicode endings use negative lookahead instead of `\b` — JS word boundaries
 // are ASCII-only and never matched Cyrillic (a known web-ui pitfall). The
 // constants stay NON-global (a shared /g regex makes any .test() stateful);
-// periodOf builds its own /g working copies.
+// periodOf constructs its own /g working copies per call, so no .exec()
+// state survives between figures or calls.
 const MONTH_RE = /per\s+month|\/\s*month|\/\s*mo\b|monthly|pro\s+Monat|monatlich|mensal|mensual|al\s+mes|por\s+mes|\/\s*m[eę]s\b|par\s+mois|mensuel|в\s+мес(?:яц|\.)?(?![а-яё])|за\s+месяц|\/\s*мес(?:яц[аеу]?|\.)?(?![а-яё])|月給|月薪|每月|\/月|aylık/i;
 const YEAR_RE = /per\s+(?:year|annum)|p\.\s?a\.|\/\s*(?:year|yr|annum|a[ñn]o|ano)|\bannum\b|(?<![a-z])annual(?:ly)?|yearly|pro\s+Jahr|j[aä]hrlich|(?<![a-z])anual|al\s+a[ñn]o|por\s+a[ñn]o|por\s+ano|par\s+an|annuel|в\s+год|за\s+год|\/\s*год(?:а|у)?(?![а-яё])|年薪|年給|每年|\/年|年俸|yıllık/i;
 const HOUR_RE = /per\s+hour|\/\s*hour\b|\/\s*hr\b|hourly|в\s+час|за\s+час|st[üu]ndlich|pro\s+Stunde|par\s+heure|\bhora\b|時給|saatlık/i;
-const MONTH_RE_SCAN = new RegExp(MONTH_RE.source, 'gi');
-const YEAR_RE_SCAN = new RegExp(YEAR_RE.source, 'gi');
-const HOUR_RE_SCAN = new RegExp(HOUR_RE.source, 'gi');
 // A figure and its neighbour separated by this are ONE range — the marker
 // after the range covers both ends («85,000–95,000 per year», «4.000–5.000 €
 // pro Monat», «85,000 to 95,000 per year»).
@@ -163,6 +161,9 @@ function periodOf(line, start, end, prevEnd, nextStart) {
   const after = line.slice(end, Math.min(nextStart, end + AFTER_WINDOW));
   const before = clampBefore(line.slice(Math.max(prevEnd, start - BEFORE_WINDOW), start));
   const cands = [];
+  const yearG = new RegExp(YEAR_RE.source, 'gi');
+  const monthG = new RegExp(MONTH_RE.source, 'gi');
+  const hourG = new RegExp(HOUR_RE.source, 'gi');
   const scan = (re, period, s, isBefore) => {
     re.lastIndex = 0;
     for (let m = re.exec(s); m; m = re.exec(s)) {
@@ -173,12 +174,12 @@ function periodOf(line, start, end, prevEnd, nextStart) {
       });
     }
   };
-  scan(YEAR_RE_SCAN, 'year', after, false);
-  scan(MONTH_RE_SCAN, 'month', after, false);
-  scan(HOUR_RE_SCAN, 'hour', after, false);
-  scan(HOUR_RE_SCAN, 'hour', before, true);
-  scan(YEAR_RE_SCAN, 'year', before, true);
-  scan(MONTH_RE_SCAN, 'month', before, true);
+  scan(yearG, 'year', after, false);
+  scan(monthG, 'month', after, false);
+  scan(hourG, 'hour', after, false);
+  scan(hourG, 'hour', before, true);
+  scan(yearG, 'year', before, true);
+  scan(monthG, 'month', before, true);
   cands.sort((a, b) => a.dist - b.dist || a.side - b.side);
   return cands.length ? cands[0] : null;
 }

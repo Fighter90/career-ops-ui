@@ -21,7 +21,7 @@
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, rmSync, readFileSync, existsSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 
@@ -45,6 +45,11 @@ before(async () => {
 });
 
 after(() => {
+  // Tripwire: every test that touches the shared fixture must restore it.
+  // A bare rmSync here would poison --test-name-pattern re-runs of later
+  // tests (they read profile.yml from disk).
+  assert.ok(existsSync(resolve(ROOT, 'config', 'profile.yml')),
+    'shared config/profile.yml fixture must survive the whole suite');
   delete process.env.CAREER_OPS_ROOT;
   try { rmSync(ROOT, { recursive: true, force: true }); } catch {}
 });
@@ -600,6 +605,34 @@ test('readProfileCompensation: no argument reads the existing profile from PATHS
 
 test('readProfileCompensation: profile file missing → null (no throw)', async () => {
   const { readProfileCompensation } = await import('../server/lib/comp-compare.mjs');
-  rmSync(resolve(ROOT, 'config', 'profile.yml'));
-  assert.equal(readProfileCompensation(), null);
+  // Same contract as the earlier missing-file test: restore the shared
+  // fixture in finally, so later tests / --test-name-pattern re-runs still
+  // find it (the after() tripwire asserts this).
+  const profPath = resolve(ROOT, 'config', 'profile.yml');
+  const original = readFileSync(profPath, 'utf8');
+  try {
+    rmSync(profPath);
+    assert.equal(readProfileCompensation(), null);
+  } finally {
+    writeFileSync(profPath, original);
+  }
+});
+
+// ── CAR-143 r3: the marker regexes stay stateless across calls ───────────────
+// Weak structural gate (reads source shape, not behaviour — recorded as such
+// per TRACEABILITY): MONTH/YEAR/HOUR_RE are shared NON-global constants, and
+// the /g working copies live INSIDE periodOf, so no .exec() state survives a
+// call. A module-level shared /g regex is only safe while every consumer
+// resets lastIndex — one new call-site silently reintroduces cross-call drift.
+
+test('CAR-143 r3: marker constants are non-global; periodOf builds its own /g copies', async () => {
+  const { readFileSync: rf } = await import('node:fs');
+  const src = rf(new URL('../server/lib/comp-compare.mjs', import.meta.url), 'utf8');
+  // the shared constants carry no /g flag
+  for (const name of ['MONTH_RE', 'YEAR_RE', 'HOUR_RE']) {
+    assert.doesNotMatch(src, new RegExp(`const ${name} = [^\\n]*/[a-z]*g[a-z]*;`), `${name} must stay non-global`);
+  }
+  // no module-level _SCAN /g copies: periodOf constructs its working copies
+  assert.doesNotMatch(src, /_RE_SCAN = new RegExp/, 'no shared /g scan regexes at module scope');
+  assert.match(src, /new RegExp\(MONTH_RE\.source, 'gi'\)/, 'periodOf builds its month copy');
 });
