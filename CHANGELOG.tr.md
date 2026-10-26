@@ -2,6 +2,30 @@
 
 > Bu changelog v1.85.0'dan başlar — Türkçe yerelleştirmenin eklendiği sürüm. Önceki sürümler için bkz. [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.260.0] — 2026-10-26
+
+**İncelemeyle sertleştirme treni, v1.259.0 filosunun opus-5-5 ve AI-inceleme turlarından sekiz birleştirmesi (#491–#498): maaş normalizasyonu, rapor-tarihi kapsamı, coğrafi kodlama sağlamlığı, paket önbellek-kırmama r2+r3, derin taşma düzeltmesi — artı iki arayüz v2'si (pipeline, reports). Her düzeltme kırmızı→yeşil fix-forward ile indi.**
+
+### Düzeltildi
+
+- **Maaş karşılaştırma normalizasyonu (CAR-143 rev-2)**: dönem işaretçileri yalnızca ait oldukları rakamın yakınında tanınıyor — «6 month contract, $120k» artık ×12 ile yıllıklaştırılmıyor; yalnızca sayıya ekli RU/ES dönem biçimleri («за месяц» rakamın hemen yanında) tesadüfi sözcükleri geçiyor; `$`/`¥` simge ailesi tanınıyor ama satırda açık bir ISO kodu yoksa eşlemesiz kalıyor (AUD/CA/SG dollar'lar artık USD olarak faturalandırılmıyor; bir ¥ RMB biçimi ~20×-sapmış JPY dönüşümü yerine açık bir uyarı taşıyor); çıplak 19xx/20xx sayıları her zaman yıldır; aralık rakamları ortağın dönemini devralıyor; profilin `minimum` ve `target_range` değerleri asla tek bir aralıkta birleştirilmiyor.
+- **fixReportDate kapsamı (CAR-144 rev-2)**: sunucuda sabitlenen tarih düzeltmesi yalnızca ilk `## ` başlığından önceki ön-bölüme uygulanıyor (H2 başlıklı bir rapor temkinli bir no-op kazanıyor — bayat bir tarih kabul edilebilir, uydurulmuş olan değildir); ön-bölüm içinde: tek bir aday varsa o düzeltilir, değilse tek bir kalın `**Date:**` düzeltilir, o da yoksa hiçbir şey yapılmaz (iki kalın ya da iki düz aday hiçbirini yeniden yazmaz). FIX-5 PDF-etiket kapısı artık gerçek birleştirilmiş sözlüğü okuyor — eksik bir yerel ayar, İngilizce geri dönüşün üzerinden sessizce geçmek yerine hata veriyor.
+- **Habr konum çipi + coğrafi kodlama sağlamlığı (CAR-142 rev-2)**: bir Habr meta çipi ancak yapısal kanıtla (bir şehir-filtresi bağlantısı ya da bir konum simgesi) şehre dönüşüyor — taşınma bildirimleri («Возможна релокация») ve istihdam türleri asla konum kılığına girmiyor; coğrafi kodlama önbelleği artık yeniden başlatmayı aşıyor (`beforeExit`/`exit`/SIGTERM+SIGINT üzerinde yeniden fırlatmayla akıtma, kirli bayrak yalnızca yazma yere indikten sonra temizleniyor); kapatma sınırlı (çıkış-döngüsü mandalı, nesil sayacı, tazelik LRU); tükenmiş bir coğrafi kodlama bütçesi genel bir 502 yerine 503 + Retry-After yanıtlıyor.
+- **Paket önbellek-kırmama (CAR-145 r2+r3)**: kabuk `/js/bundle.js?v=<content-hash>` adresini gösteriyor — eşleşmede immutable, uyuşmazlıkta no-store — taze bir kabuğun önbelleğe alınmış eski bir paketle eşleştiği 5 dakikalık dağıtım penceresini ortadan kaldırıyor. Karma ve akış tek dosya tanıtıcısını paylaşıyor (yırtık okuma yok); kısa bir okuma, bütün bir dağıtımı zehirleyebilecek bir stat-geri-dönüş karması yerine null döndürüyor; `make-bundle`, kimliği ve .br/.gz eş-dosyalarını nokta-önekli bir geçici dosya + yeniden adlandırma yoluyla yazıyor — böylece öldürülen bir derleme ne yarım yazılmış bayt sunabilir ne de geçici dosyasını sızdırabilir.
+- **Derin sayfa taşması (CAR-146)**: dosya adı tek başına bir telefonun dar ekranını aşan kayıtlı bir araştırma özeti `#/deep` sayfasını artık 390px ötesine itemiyor — kart kendi satırında sınırlanıyor, başlık sarılıyor, tarih tek satırda kalıyor; dar-görüntü-alanı taraması artık aşırı uzun tohumlanmış bir fikstürle `#/deep` üzerinden de yürüyor (iki uzak-QA çalışmasının tek bulgusu, kapatıldı).
+- **Pipeline v2 sertleştirmesi (CAR-116 incelemesi)**: silmeler onaylıyor ve geri alınıyor (dürüst geri-alma metniyle), kartlarda ana-makineden şirket uydurması yok, FNV-1a satır kimlikleri, gerçek toplu sayımlar ve toplu işlemler üzerinde bir yeniden-giriş koruması.
+
+### Eklendi
+
+- **Pipeline v2 (CAR-116)**: zenginleştirilmiş kartlar, gruplanmış bir görünüm ve geri almaya izin veren toplu ıskarta; 17 yeni `pipe.*` anahtarı 19 sözlüğün tamamında çevrilmiş olarak indi.
+- **Reports v2 (CAR-118)**: puan-bandı/meşruiyet/şirket/tarih filtreleriyle canlı arama, sıralanabilir başlıklar (`aria-sort`), bant başına eylem düğmeleri taşıyan kalıcı bir kart görünümü, tıkla-filtrele puan histogramı ve birleşik «Company — Role» / «x.x/5» render'ı (`window.ReportOps`); 31 `rep2.*` anahtarı 19 sözlüğün tamamında çevrilmiş olarak indi.
+
+### Notlar
+
+- Her düzeltme, kırmızı→yeşil kanıt taşıyan bir inceleme turundan geçti; ilk paket r2 üzerindeki iki AI-inceleme YÜKSEK bulgusu (kısa-okuma karması, eş-dosya atomikliği) r3 ile kapandı ve CAR-143/CAR-144/CAR-142 turlarının her biri öncülünün açık bulgularını yeniden doğruladı.
+- Bilinçli olarak yapılmayanlar: harita küme görünümü CAR-125 olarak kalıyor (kuyrukta); sunucu-taraflı pipeline meta verisi geri yüklemesi ayrı bir bilet; rev-2 öncesi v1.259.0 durumları altında kaydedilen içerik için geriye dönük düzeltme yok.
+- Test tabanı: 5988 (+165); tarayıcı süiti 152 geçti / 0 başarısız / 1 seçime bağlı atlama. Hiçbir tarayıcı kaynağına dokunulmadı (kayıt defteri 121 = 116 EN + 5 RU · 116 adaptör); 48 yeni i18n anahtarı, ×19 fan-out ile birlikte özellik PR'lerinin kendileri içinde indi.
+
 ## [1.259.0] — 2026-10-25
 
 **Ajan filosundan ikinci tren, altı düzeltme: rapor tarihleri sunucu tarafında sabitleniyor, harita coğrafi kodlayıcısı önbelleğe alıp RU şehirlerini okuyor, yardım ×18 yerelleştirilmiş düğme etiketlerini kullandırıyor, arayüz cümleleri dilleri karıştırmayı bırakıyor, maaş karşılaştırmaları sunucu tarafında hesaplanıyor — ve JS paketi önceden sıkıştırılmış dağıtılıyor (soğuk yükleme 3.1 MB → 598 KB).**
