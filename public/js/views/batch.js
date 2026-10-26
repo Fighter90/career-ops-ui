@@ -37,6 +37,57 @@ Router.register('batch', async () => {
     ]);
   }
 
+  // CAR-124 — first-run empty state. Until a TSV exists, the editor card is
+  // preceded by an explanation + a decorative example row + the two real
+  // first steps (paste a URL list, open the guide). The example is static,
+  // aria-hidden sample data — it is never written to the file or sent
+  // anywhere; the user's own paste/typing is the only editor input.
+  // // CAR-124 i18n: 'v2empty.exampleTag', 'v2empty.batch.emptyTitle',
+  // 'v2empty.batch.emptyBody', 'v2empty.batch.pasteList', 'v2empty.batch.pasteAdded',
+  // 'v2empty.batch.pasteNone', 'v2empty.batch.pasteFail', 'v2empty.batch.docsHint'
+  // — EN fallbacks only, pending the locale fan-out.
+  const hasInput = (state.raw || '').trim() !== '';
+
+  function buildBatchExample() {
+    return c('div', { className: 'v2-empty-example', 'aria-hidden': 'true' }, [
+      c('span', { className: 'v2-empty-example__tag' }, t('v2empty.exampleTag', 'Example')),
+      c('div', {
+        style: {
+          display: 'flex', alignItems: 'center', gap: '12px',
+          fontFamily: 'ui-monospace, monospace', fontSize: '12.5px',
+          whiteSpace: 'nowrap', overflow: 'hidden',
+        },
+      }, [
+        c('span', null, '1'),
+        c('span', { style: { color: 'var(--accent, #4c8bf5)' } }, 'https://jobs.example.com/abc'),
+        c('span', null, 'LinkedIn'),
+        c('span', null, '—'),
+      ]),
+    ]);
+  }
+
+  async function pasteUrlList() {
+    let text = '';
+    try {
+      text = await navigator.clipboard.readText();
+    } catch {
+      UI.toast(t('v2empty.batch.pasteFail', 'Clipboard unavailable — paste the list into the editor manually'), 'error');
+      return;
+    }
+    const urls = String(text).split(/\r?\n/).map((l) => l.trim())
+      .filter((l) => /^https?:\/\//i.test(l));
+    if (!urls.length) {
+      UI.toast(t('v2empty.batch.pasteNone', 'No http(s) URLs found on the clipboard'), 'error');
+      return;
+    }
+    const existing = textarea.value.replace(/\s+$/, '');
+    const startId = existing ? existing.split(/\r?\n/).filter((l) => l.trim()).length + 1 : 1;
+    const rows = urls.map((u, i) => `${startId + i}\t${u}\t\t`);
+    textarea.value = (existing ? existing + '\n' : '') + rows.join('\n') + '\n';
+    textarea.focus();
+    UI.toast(t('v2empty.batch.pasteAdded', 'Added {n} rows — press Save').replace('{n}', String(urls.length)), 'success');
+  }
+
   // ── editor ──
   // v1.20.0 — WCAG 1.3.1 / 3.3.2: TSV textarea + run-control inputs
   // associated with hint paragraphs via aria-describedby.
@@ -253,6 +304,28 @@ Router.register('batch', async () => {
       c('strong', null, '⚠ ' + t('batch.noRunnerTitle', 'batch/batch-runner.sh not found')),
       c('p', { style: { margin: '6px 0 0', fontSize: '14px' } },
         t('batch.noRunnerBody', 'The runner lives in the parent career-ops project. Ensure batch/batch-runner.sh exists and is executable (chmod +x).')),
+    ]) : null,
+    // CAR-124 — first-run empty state (only while no TSV exists yet).
+    !hasInput ? c('div', { className: 'card mb-3' }, [
+      buildBatchExample(),
+      c('p', { style: { fontWeight: '600', margin: '12px 0 4px' } },
+        t('v2empty.batch.emptyTitle', 'Start with a list of postings')),
+      c('p', { style: { color: 'var(--foggy)', fontSize: '13px', margin: '0' } },
+        t('v2empty.batch.emptyBody', 'Paste a bare URL list below (or type rows), press Save, then Run — every posting is evaluated against your CV and profile in one pass.')),
+      c('p', { style: { color: 'var(--foggy)', fontSize: '12px', margin: '8px 0 0' } },
+        t('batch.inputHint', 'Tab-separated: id<TAB>url<TAB>source<TAB>notes (one row per JD)')),
+      c('div', { className: 'flex gap-3 mt-3', style: { flexWrap: 'wrap', alignItems: 'center' } }, [
+        c('button', { className: 'btn', type: 'button', onClick: () => pasteUrlList() },
+          '📋 ' + t('v2empty.batch.pasteList', 'Paste URL list')),
+        c('span', { style: { color: 'var(--foggy)', fontSize: '13px' } }, [
+          t('v2empty.batch.docsHint', 'Step-by-step: '),
+          c('a', {
+            href: 'https://career-ops.org/docs/introduction/guides/batch-evaluate-offers',
+            style: { overflowWrap: 'anywhere' },
+            target: '_blank', rel: 'noopener noreferrer',
+          }, 'career-ops.org/docs/.../batch-evaluate-offers'),
+        ]),
+      ]),
     ]) : null,
     // Editor pane
     c('div', { className: 'card mb-3' }, [

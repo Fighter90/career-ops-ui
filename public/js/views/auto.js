@@ -27,6 +27,11 @@ Router.register('auto', async () => {
   const t = (k, f) => I18n.t(k, f);
   const params = new URLSearchParams(window.location.hash.split('?')[1] || '');
 
+  // CAR-124 — the sample URL the page itself advertises (same constant feeds
+  // the placeholder and the "try an example" affordance). Filling the input
+  // is all it does — the run still waits for the explicit Run click (CAR-20).
+  const EXAMPLE_URL = 'https://job-boards.greenhouse.io/anthropic/jobs/4567';
+
   const STEPS = [
     { key: 'validate', i18nKey: 'auto.step.validate', label: 'Validating URL' },
     { key: 'fetch',    i18nKey: 'auto.step.fetch',    label: 'Fetching job description' },
@@ -40,7 +45,7 @@ Router.register('auto', async () => {
     id: 'auto-url',
     className: 'input',
     type: 'url',
-    placeholder: 'https://job-boards.greenhouse.io/anthropic/jobs/4567',
+    placeholder: EXAMPLE_URL,
     style: { width: '100%' },
     value: params.get('url') || '',
   });
@@ -113,6 +118,33 @@ Router.register('auto', async () => {
       (detail ? ` (${detail})` : '');
   }
 
+  // CAR-124 — first-run example + the practical notes the ticket asks for:
+  // a "try this example" affordance that pre-fills the URL input (no run),
+  // the per-URL timer restated next to the actions, and the pointer to
+  // App settings for providers/cadence. Hidden once a run starts.
+  // // CAR-124 i18n: 'v2empty.auto.tryExample', 'v2empty.auto.hint',
+  // 'v2empty.auto.configHint' — EN fallbacks only, pending the locale fan-out.
+  const exampleBtn = c('button', {
+    className: 'btn btn-ghost btn-sm', type: 'button',
+    title: t('v2empty.auto.tryExample', 'Fill the field with an example URL — nothing runs until you press Run'),
+    onClick: () => { urlInput.value = EXAMPLE_URL; urlInput.focus(); },
+  }, t('v2empty.auto.tryExample', 'Try an example URL'));
+  const emptyEl = c('div', { className: 'v2-empty-example' }, [
+    c('span', { className: 'v2-empty-example__tag' }, t('v2empty.exampleTag', 'Example')),
+    c('div', { className: 'flex gap-3', style: { flexWrap: 'wrap', alignItems: 'center' } }, [
+      c('code', { style: { fontSize: '12.5px', overflowWrap: 'anywhere' } }, EXAMPLE_URL),
+      exampleBtn,
+    ]),
+    c('p', { style: { color: 'var(--foggy)', fontSize: '12.5px', margin: '10px 0 0' } },
+      t('v2empty.auto.hint', 'One URL takes about {eta}. Nothing runs until you press Run — the button above only fills the field.')
+        .replace('{eta}', t('auto.eta', '~1–2 min'))),
+    c('p', { style: { color: 'var(--foggy)', fontSize: '12.5px', margin: '4px 0 0' } }, [
+      t('v2empty.auto.configHint', 'Providers and the cadence timer are configured in '),
+      c('a', { href: '#/config' }, t('nav.config', 'App settings')),
+      '.',
+    ]),
+  ]);
+
   function showResult(data) {
     resultEl.innerHTML = '';
     resultEl.style.display = '';
@@ -180,6 +212,7 @@ Router.register('auto', async () => {
     runBtn.textContent = '⏳ ' + t('auto.running', 'Running…');
     stepState.forEach((s) => { s.status = 'pending'; s.detail = ''; });
     stepperEl.style.display = '';
+    emptyEl.style.display = 'none'; // CAR-124 — the example yields to the real run
     resultEl.style.display = 'none';
     renderStepper();
 
@@ -264,6 +297,7 @@ Router.register('auto', async () => {
       ]),
       liveRegion,
       stepperEl,
+      emptyEl,
     ]),
     resultEl,
   ]);

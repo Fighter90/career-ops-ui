@@ -185,6 +185,48 @@ Router.register('apply', async () => {
     }
   }
 
+  // CAR-124 — first-run empty state: what this page produces, a decorative
+  // sample checklist (static, aria-hidden, tagged), and the real first step —
+  // pick an evaluated posting from the reports list. Painted into `out` on
+  // mount; run() replaces it with the real checklist card.
+  // // CAR-124 i18n: 'v2empty.exampleTag', 'v2empty.apply.emptyTitle',
+  // 'v2empty.apply.emptyBody', 'v2empty.apply.pickReport', 'v2empty.apply.reportsHint'
+  // — EN fallbacks only, pending the locale fan-out.
+  function buildApplyExample() {
+    const ghostRow = (text) => c('div', {
+      className: 'v2-empty-check',
+      style: { display: 'flex', alignItems: 'center', gap: '8px', padding: '3px 0', fontSize: '13px' },
+    }, [
+      c('span', {
+        className: 'v2-empty-check__box', 'aria-hidden': 'true',
+        style: { flex: '0 0 auto', width: '14px', height: '14px', border: '1.5px solid var(--slate, #ebebeb)', borderRadius: '4px' },
+      }),
+      c('span', null, text),
+    ]);
+    return c('div', { className: 'v2-empty-example', 'aria-hidden': 'true' }, [
+      c('span', { className: 'v2-empty-example__tag' }, t('v2empty.exampleTag', 'Example')),
+      ghostRow('Tailor the CV to the posting'),
+      ghostRow('Write the cover letter'),
+      ghostRow('Fill the application form'),
+      ghostRow('Schedule the follow-up'),
+    ]);
+  }
+  function paintApplyEmpty() {
+    out.textContent = '';
+    out.appendChild(c('div', null, [
+      c('p', { style: { fontWeight: '600', margin: '0 0 4px' } },
+        t('v2empty.apply.emptyTitle', 'Generate an application checklist')),
+      c('p', { style: { color: 'var(--foggy)', fontSize: '13px', margin: '0' } },
+        t('v2empty.apply.emptyBody', 'Paste a job posting URL above and run — you get a step-by-step checklist for this application. It works best for a posting you already evaluated.')),
+      buildApplyExample(),
+      c('p', { style: { margin: '12px 0 0', fontSize: '14px' } }, [
+        t('v2empty.apply.reportsHint', 'Starting from an evaluated report: '),
+        c('a', { href: '#/reports' }, t('v2empty.apply.pickReport', 'pick an evaluated report')),
+      ]),
+    ]));
+  }
+  paintApplyEmpty();
+
   return c('div', null, [
     c('header', { className: 'page-header' }, [
       c('div', null, [

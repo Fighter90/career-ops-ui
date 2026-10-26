@@ -30,6 +30,33 @@ Router.register('funded', async () => {
     style: { fontSize: '11px', fontWeight: '600', padding: '2px 8px', borderRadius: '999px', color, background: bg, whiteSpace: 'nowrap' },
   }, text);
 
+  // CAR-124 — first-run example: a decorative sample card that shows what a
+  // discovery result looks like (name, round/amount/score chips, source line).
+  // Static, aria-hidden, clearly tagged — never sent to any API; the single
+  // /api/company-funded call below only fires on a real Discover click.
+  // // CAR-124 i18n: 'v2empty.exampleTag', 'v2empty.funded.emptyTitle',
+  // 'v2empty.funded.emptyBody' — EN fallbacks only, pending the locale fan-out.
+  function buildFundedExample() {
+    const box = c('div', { className: 'v2-empty-example', 'aria-hidden': 'true' }, [
+      c('span', { className: 'v2-empty-example__tag' }, t('v2empty.exampleTag', 'Example')),
+      c('div', { style: { display: 'flex', alignItems: 'center', gap: '8px', margin: '0 0 8px' } },
+        c('span', { style: { fontWeight: '700', fontSize: '14px' } }, 'Acme Robotics')),
+      c('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '6px', margin: '0 0 8px' } }, [
+        chip('Series B', 'var(--rausch-text)', 'rgba(255,56,92,.14)'),
+        chip('$40M', 'var(--ink)', 'var(--panel-2, rgba(0,0,0,.06))'),
+        chip(`${t('funded.score', 'Score')} 7`, 'var(--kazan-text)', 'rgba(6,101,7,.12)'),
+      ]),
+      c('p', { style: { fontSize: '11px', margin: '0' } }, 'TechCrunch · 2026-10-01'),
+    ]);
+    return c('div', null, [
+      c('p', { style: { fontWeight: '600', margin: '0 0 4px' } },
+        t('v2empty.funded.emptyTitle', 'Nothing discovered yet')),
+      c('p', { style: { color: 'var(--foggy)', fontSize: '13px', margin: '0' } },
+        t('v2empty.funded.emptyBody', 'Run discovery to scan public funding feeds — recently funded companies appear here as review cards like the one below.')),
+      box,
+    ]);
+  }
+
   const root = c('div');
   root.appendChild(HelpHint.title(t('funded.title', 'Funded companies'), 'help.hint.funded'));
   root.appendChild(c('p', { className: 'page-subtitle' },
@@ -43,6 +70,9 @@ Router.register('funded', async () => {
   // down (same server-side hand-off as the POST pages).
   // // CAR-119 i18n: no new dictionary keys — the kit's `llm2.*` strings
   // ship as I18n.t EN fallbacks inside public/js/lib/llm-page-kit.js.
+  // CAR-124 — the result column opens on the first-run example (emptyHost);
+  // a run replaces it with the shared run panel + real results.
+  const emptyHost = c('div', null, buildFundedExample());
   const runHost = c('div');
   const out = c('div');
   const page = window.LlmPageKit.layout({
@@ -51,12 +81,13 @@ Router.register('funded', async () => {
       c('p', { style: { color: 'var(--foggy)', fontSize: '12px', margin: '12px 0 0' } },
         t('funded.note', 'Reads public funding feeds live — nothing is saved. Always verify a company independently before acting.')),
     ]),
-    result: c('div', null, [runHost, out]),
+    result: c('div', null, [emptyHost, runHost, out]),
   });
   root.appendChild(page.root);
 
-  btn.addEventListener('click', async () => {
+  async function runDiscovery() {
     btn.disabled = true;
+    emptyHost.style.display = 'none';
     out.textContent = '';
     // CAR-119 — the shared run panel paints synchronously (the ≤300 ms
     // criterion); Cancel marks the run cancelled and the result is discarded.
@@ -171,7 +202,14 @@ Router.register('funded', async () => {
     } finally {
       btn.disabled = false;
     }
-  });
+  }
+
+  btn.addEventListener('click', () => runDiscovery());
+  // CAR-124 — the example card's own CTA runs the same flow.
+  emptyHost.appendChild(c('button', {
+    className: 'btn btn-primary mt-3', type: 'button',
+    onClick: () => runDiscovery(),
+  }, '🔍 ' + t('funded.discover', 'Discover')));
 
   return root;
 });
