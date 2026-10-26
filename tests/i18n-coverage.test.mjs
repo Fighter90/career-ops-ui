@@ -111,17 +111,10 @@ function* walkJs(dir) {
 // fallbacks; the ×17 dictionary fan-out is a separate locale pass.
 // They are allowlisted HERE (not in the dicts) so the gate keeps
 // failing for any FUTURE ungated key. When the fan-out lands, delete
-// this set — the keys then live in every locale file like all others.
-// Source of truth for the list: the `CAR-116 i18n:` comment at the top
-// of public/js/views/pipeline.js.
-const CAR116_PENDING = new Set([
-  'pipe.viewGrouped', 'pipe.viewFlat', 'pipe.hideTracked',
-  'pipe.selectOne', 'pipe.selectGroup', 'pipe.selectAllShown',
-  'pipe.clearSelection', 'pipe.bulkRemove', 'pipe.selectedCount',
-  'pipe.removing', 'pipe.bulkCancel', 'pipe.undo', 'pipe.undoDismiss',
-  'pipe.undone', 'pipe.evaluateSelected', 'pipe.showMore',
-  'pipe.evaluatedBadge',
-]);
+// CAR-116 review round: the CAR116_PENDING coverage-gate allowlist is
+// GONE — all 17 new pipeline-v2 keys live in every locale dict like any
+// other key. A view may never ship EN-fallback-only strings again; the
+// hand-off comment in pipeline.js was removed with the fan-out.
 
 test('i18n: every t(key) call in public/js/** maps to a DICT entry', () => {
   // Match both t('key') and t("key"). Captures the key string.
@@ -142,7 +135,6 @@ test('i18n: every t(key) call in public/js/** maps to a DICT entry', () => {
   const missing = [];
   for (const k of usedKeys) {
     if (DICT[k]) continue;
-    if (CAR116_PENDING.has(k)) continue; // CAR-116 fan-out pending
     missing.push(`${k}  (first seen in ${fileByKey.get(k)})`);
   }
   if (missing.length) {
@@ -150,16 +142,4 @@ test('i18n: every t(key) call in public/js/** maps to a DICT entry', () => {
   }
   assert.equal(missing.length, 0,
     `${missing.length} undefined i18n keys leak through inline EN fallbacks`);
-});
-
-test('i18n: the CAR-116 pending set stays minimal (every key really used)', () => {
-  const callRx = /\bt\(\s*['"]([a-zA-Z0-9_.\-]+)['"]/g;
-  const used = new Set();
-  for (const file of walkJs(VIEWS_DIR)) {
-    const src = readFileSync(file, 'utf8');
-    for (const m of src.matchAll(callRx)) used.add(m[1]);
-  }
-  const stale = Array.from(CAR116_PENDING).filter((k) => !used.has(k));
-  assert.deepEqual(stale, [],
-    'drop allowlisted keys that are no longer referenced (fan-out landed or string removed)');
 });

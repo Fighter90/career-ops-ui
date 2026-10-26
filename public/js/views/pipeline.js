@@ -4,14 +4,8 @@
 // in place by the pipeline-view test contracts). A follow-up should
 // extract the grouped/bulk/undo subsystem the way scan.js extracted
 // scan/runner.js. The pure helpers already live in lib/pipeline-view.js.
-// CAR-116 i18n: new keys below use I18n.t + EN fallback only (dict fan-out
-// is a separate locale pass; they are allowlisted in
-// tests/i18n-coverage.test.mjs::CAR116_PENDING until then):
-// pipe.viewGrouped, pipe.viewFlat, pipe.hideTracked, pipe.selectOne,
-// pipe.selectGroup, pipe.selectAllShown, pipe.clearSelection,
-// pipe.bulkRemove, pipe.selectedCount, pipe.removing, pipe.bulkCancel,
-// pipe.undo, pipe.undoDismiss, pipe.undone, pipe.evaluateSelected,
-// pipe.showMore, pipe.evaluatedBadge.
+// CAR-116 review round: the new pipe.* keys are fanned out to all 19
+// locale dicts (the temporary coverage allowlist is gone).
 Router.register('pipeline', async () => {
   const c = UI.el;
   const t = (k, f) => I18n.t(k, f);

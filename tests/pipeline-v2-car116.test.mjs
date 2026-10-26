@@ -23,6 +23,7 @@ const PIPE = readFileSync(R('public', 'js', 'views', 'pipeline.js'), 'utf8');
 const LIB = readFileSync(R('public', 'js', 'lib', 'pipeline-view.js'), 'utf8');
 const CSS = readFileSync(R('public', 'css', 'v2-pipeline.css'), 'utf8');
 const HTML = readFileSync(R('public', 'index.html'), 'utf8');
+const EN_DICT = readFileSync(R('public', 'js', 'lib', 'locales', 'i18n-dict.en.js'), 'utf8');
 
 // ── enrichment: existing endpoints only ──────────────────────────────
 
@@ -180,12 +181,17 @@ test('v2-pipeline.css: exists, token-based, ≤ 800-LOC contract, RTL/motion-saf
 
 // ── i18n discipline ──────────────────────────────────────────────────
 
-test('CAR-116 strings: I18n.t + EN fallback only, with the hand-off comment', () => {
-  assert.match(PIPE, /CAR-116 i18n:/, 'the locale fan-out hand-off list is declared');
+test('CAR-116 strings: I18n.t + EN fallback, fanned out to every locale dict', () => {
+  // The review round removed the CAR116_PENDING coverage allowlist —
+  // the hand-off comment must be gone and the keys must live in the
+  // dicts like every other key.
+  assert.doesNotMatch(PIPE, /CAR116_PENDING/, 'no allowlist reference left in the view');
   const keys = Array.from(PIPE.matchAll(/t\('(pipe\.[A-Za-z]+)',\s*'[^']*'\)/g), (m) => m[1]);
   assert.ok(keys.length >= 15, `new fallback-keyed strings present (${keys.length})`);
   for (const k of ['pipe.viewGrouped', 'pipe.viewFlat', 'pipe.hideTracked', 'pipe.undo',
     'pipe.bulkRemove', 'pipe.showMore', 'pipe.evaluatedBadge']) {
     assert.ok(keys.includes(k), `missing new key ${k}`);
+    assert.match(EN_DICT, new RegExp(`'${k.replace(/\./g, '\\.')}'`),
+      `${k} must exist in the en locale table`);
   }
 });
