@@ -93,12 +93,13 @@ function companyFromTitle(title) {
 
 /**
  * SSRF guard on the ONE source whose URL is fully user/config-controlled:
- * the feed URL comes straight from `portals.yml`, so unlike every other
- * source (whose adapter builds the URL from a pinned slug) an
- * `http://169.254.169.254/…` or `http://127.0.0.1:4317/api/…` entry would be
- * fetched as-is and its body parsed back into the UI. HTTPS-only, hostname
- * required, and private/loopback/link-local hosts refused BEFORE any request
- * leaves. Exported for tests.
+ * the feed URL comes straight from `portals.yml`, so an entry pointing at
+ * `169.254.169.254` or `127.0.0.1` would be fetched as-is and its body parsed
+ * back into the UI. FULL-R2 review revision: the SCHEME is not the threat —
+ * plain-http feeds are legitimate and the config is operator-owned — so both
+ * http: and https: pass. What is refused, BEFORE any request leaves, is a
+ * private/loopback/link-local host (string-level here, resolve-time again in
+ * the guarded transport below). Exported for tests.
  * @param {string} url
  * @returns {string}
  */
@@ -109,8 +110,13 @@ export function assertRssFeedUrl(url) {
   } catch {
     throw new Error(`rss: invalid feed URL: ${url}`);
   }
-  if (parsed.protocol !== 'https:') throw new Error(`rss: feed URL must use HTTPS: ${url}`);
+  if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') {
+    throw new Error(`rss: feed URL must use HTTP(S): ${url}`);
+  }
   if (!parsed.hostname) throw new Error(`rss: feed URL has no hostname: ${url}`);
+  // Bracketed IPv6 literals arrive with the brackets on (.hostname) —
+  // isPrivateOrLoopbackHost strips them and classifies ::1, ::ffff:127.0.0.1,
+  // fd00::/8 unique-local and fe80::/10 link-local as private.
   if (isPrivateOrLoopbackHost(parsed.hostname)) {
     throw new Error(`rss: refusing private/loopback feed host: ${parsed.hostname}`);
   }

@@ -37,7 +37,7 @@
  * Used by the consider adapter (server/lib/portals/adapters/consider.mjs).
  */
 import { createHash } from 'node:crypto';
-import { fetchJson, fetchResponse, guardResolvedHost, BROWSER_LIKE_USER_AGENT } from '../http-json.mjs';
+import { fetchJson, fetchResponse, BROWSER_LIKE_USER_AGENT } from '../http-json.mjs';
 import { requireArray, requireContainer } from './_shape.mjs';
 
 // Budget for the anonymous GET that seeds the session cookie and csrfToken.
@@ -65,14 +65,13 @@ async function acquireCsrfHandshake(origin, fetchImpl, signal) {
     else signal.addEventListener('abort', onAbort, { once: true });
   }
   try {
-    // Same DNS-rebinding defence the JSON/text helpers run: on the REAL
-    // network path the origin's hostname is resolved and refused if it points
-    // at a private/loopback address (a no-op for an injected test transport).
-    await guardResolvedHost(fetchImpl, `${origin}/jobs`);
-    // The guarded transport (FULL-R2): `fetchResponse` throws on a non-2xx —
-    // the handshake treats any such failure as "no cookie" below, exactly as
-    // the old `!res.ok` check did — and `redirect:'error'` blocks every
-    // redirect, so a 3xx to a private/metadata IP cannot slip past the
+    // The guarded transport (FULL-R2): `fetchResponse` runs the same
+    // DNS-rebinding guard the JSON/text helpers run — on the REAL network
+    // path the origin's hostname is resolved and refused if it points at a
+    // private/loopback address (a no-op for an injected test transport) — and
+    // it throws on a non-2xx, which the catch below degrades to the cookieless
+    // shape, exactly as the old `!res.ok` check did. `redirect:'error'` blocks
+    // every redirect, so a 3xx to a private/metadata IP cannot slip past the
     // resolveOrigin() host pin.
     const res = await fetchResponse(fetchImpl, `${origin}/jobs`, {
       headers: { 'user-agent': BROWSER_LIKE_USER_AGENT, accept: 'text/html,*/*' },

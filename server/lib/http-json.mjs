@@ -238,6 +238,10 @@ const NULL_BODY_STATUSES = new Set([204, 205, 304]);
  */
 export async function fetchResponse(fetchImpl, url, opts = {}) {
   const { method = 'GET', headers = {}, body, signal, redirect = 'error' } = opts;
+  // FULL-R2 review: the guard belongs at the chokepoint like the siblings —
+  // a no-op for an injected test transport, and the resolve-time private/
+  // loopback refusal on the real network path.
+  await guardResolvedHost(fetchImpl, url);
   const res = await fetchImpl(url, { method, headers: withPinnedEncoding(headers), body, signal, redirect });
   if (!res.ok) {
     const err = new Error(`HTTP ${res.status} (${url})`);

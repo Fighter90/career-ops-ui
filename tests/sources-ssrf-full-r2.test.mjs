@@ -21,6 +21,8 @@ const remoteok = await import('../server/lib/sources/remoteok.mjs');
 const remotive = await import('../server/lib/sources/remotive.mjs');
 const workday = await import('../server/lib/sources/workday.mjs');
 const hh = await import('../server/lib/sources/hh.mjs');
+const consider = await import('../server/lib/sources/consider.mjs');
+const httpJson = await import('../server/lib/http-json.mjs');
 
 const RSS_XML = `<?xml version="1.0"?>
 <rss version="2.0"><channel>
@@ -35,11 +37,23 @@ test('rss: assertRssFeedUrl accepts a public https feed', () => {
   assert.equal(rss.assertRssFeedUrl('https://example.com/feed.xml'), 'https://example.com/feed.xml');
 });
 
-test('rss: plain HTTP feed is refused', () => {
-  assert.throws(() => rss.assertRssFeedUrl('http://example.com/feed.xml'), /HTTPS/);
+test('rss: plain HTTP feeds are accepted (FULL-R2 review: the scheme is not the threat — the private host is)', () => {
+  assert.equal(rss.assertRssFeedUrl('http://example.com/feed.xml'), 'http://example.com/feed.xml');
+  assert.equal(rss.assertRssFeedUrl('http://feeds.example.org/jobs.rss'), 'http://feeds.example.org/jobs.rss');
 });
 
-test('rss: private / loopback / link-local feed hosts are refused', () => {
+test('rss: an http feed is fetched through the guarded transport', async () => {
+  const seen = [];
+  const fetchImpl = async (url, init) => {
+    seen.push({ url, init });
+    return { ok: true, status: 200, text: async () => RSS_XML };
+  };
+  const jobs = await rss.fetchRss('http://example.com/feed.xml', { fetchImpl });
+  assert.equal(jobs.length, 1);
+  assert.equal(seen[0].init.redirect, 'error');
+});
+
+test('rss: private / loopback / link-local feed hosts are refused (http or https)', () => {
   for (const url of [
     'https://127.0.0.1:4317/api/health',
     'https://169.254.169.254/latest/meta-data/',
@@ -47,6 +61,11 @@ test('rss: private / loopback / link-local feed hosts are refused', () => {
     'https://192.168.1.10/feed.xml',
     'https://localhost/feed.xml',
     'https://[::1]/feed.xml',
+    'https://[fd00::1]/feed.xml',
+    'https://[::ffff:127.0.0.1]/feed.xml',
+    'https://[fe80::1]/feed.xml',
+    'http://169.254.169.254/latest/meta-data/',
+    'http://10.9.8.7/feed.xml',
   ]) {
     assert.throws(() => rss.assertRssFeedUrl(url), /private|loopback|non-public/i, url);
   }
@@ -57,7 +76,7 @@ test('rss: the guard fires before any request is made', async () => {
   const fetchImpl = async () => { calls += 1; return { ok: true, text: async () => RSS_XML }; };
   await assert.rejects(
     () => rss.fetchRss('http://169.254.169.254/latest/meta-data/', { fetchImpl }),
-    /HTTPS/,
+    /private|loopback/i,
   );
   assert.equal(calls, 0, 'no request may leave for a guarded URL');
 });
@@ -86,8 +105,17 @@ test('remoteok: an off-host https mirror is refused before any fetch', async () 
   assert.equal(calls, 0);
 });
 
+test('remoteok: a subdomain mirror of the board itself is accepted (REMOTEOK_HOST_RE)', async () => {
+  const fetchImpl = async (url) => ({ ok: true, status: 200, json: async () => [
+    { id: 7, position: 'Dev', url: 'https://remoteok.com/remote-jobs/7', company: 'A', location: 'Worldwide', date: 'x' },
+  ] });
+  const jobs = await remoteok.fetchRemoteOk('https://api.remoteok.com/api', { fetchImpl });
+  assert.equal(jobs.length, 1, 'api.remoteok.com is a legitimate subdomain mirror');
+});
+
 test('remoteok: a lookalike mirror host is refused', () => {
   assert.throws(() => remoteok.assertRemoteOkUrl('https://remoteok.com.evil.com/api'), /untrusted hostname/);
+  assert.throws(() => remoteok.assertRemoteOkUrl('https://evilremoteok.com/api'), /untrusted hostname/);
 });
 
 test('remoteok: the pinned board host still works', async () => {
@@ -243,4 +271,45 @@ test('hh: a redirect OFF hh.ru is refused, not followed', async () => {
     return true;
   });
   assert.equal(calls, 1, 'the off-host target is never fetched');
+});
+
+// ── 5. consider: a failed handshake degrades to the cookieless shape ───
+
+test('consider: a 503 handshake degrades to the cookieless shape, never throws', async () => {
+  let postCalls = 0;
+  const fetchImpl = async (url, init = {}) => {
+    if (String(url).endsWith('/jobs')) {
+      return { ok: false, status: 503, headers: { get: () => null }, text: async () => '' };
+    }
+    postCalls += 1; // the search POST still goes out (412 is a cleaner signal than a silent skip)
+    return { ok: false, status: 412, headers: { get: () => null }, json: async () => ({}) };
+  };
+  // A throw here would abort the whole scan for one dead handshake — the
+  // contract is: no cookie → still attempt the POST.
+  await assert.rejects(
+    () => consider.fetchConsider(null, { fetchImpl, company: { careers_url: 'https://jobs.example.com/jobs', consider_board: 'wingman' } }),
+    /HTTP (412|503)/,
+    'the POST attempt itself may fail loudly, but the handshake must not throw first',
+  );
+  assert.equal(postCalls, 1, 'the search POST was still attempted without a cookie');
+});
+
+// ── 6. fetchResponse: the DNS-rebinding guard runs inside the helper ───
+
+test('fetchResponse refuses a private host before any request (guard inside the helper)', async () => {
+  let calls = 0;
+  const real = globalThis.fetch;
+  // The guard runs only when the REAL global fetch is the transport; swap in
+  // a counting wrapper so the guard's identity check passes while any actual
+  // request stays observable (and must never happen).
+  globalThis.fetch = async (...a) => { calls += 1; return real(...a); };
+  try {
+    await assert.rejects(
+      () => httpJson.fetchResponse(globalThis.fetch, 'https://127.0.0.1:9/private'),
+      (e) => e.code === 'ECAREEROPS_BLOCKED_ADDRESS',
+    );
+  } finally {
+    globalThis.fetch = real;
+  }
+  assert.equal(calls, 0, 'the guard must fire before the request leaves');
 });

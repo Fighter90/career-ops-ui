@@ -54,6 +54,7 @@ import { decodeEntities } from '../html-entities.mjs';
 import { htmlToText } from '../html-to-text.mjs';
 import {
   fetchText,
+  fetchRawResponse,
   delay,
   computeRetryDelayMs,
   REDIRECT_REFUSAL_CAUSE_MESSAGE,
@@ -598,7 +599,10 @@ async function enrichFromDetails(rows, { fetchImpl, signal, detailDelayMs, retri
       throw err;
     }
     requests++;
-    return fetchImpl(url, fetchOpts);
+    // The guarded raw-Response transport (FULL-R2 lint): the retry helper
+    // needs a Response, and the request must still pass the DNS-rebinding
+    // guard like every other zoho-recruit request.
+    return fetchRawResponse(fetchImpl, url, fetchOpts);
   };
 
   for (let i = 0; i < rows.length; i++) {
