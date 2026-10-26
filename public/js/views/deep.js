@@ -366,6 +366,10 @@ Router.register('deep', async () => {
     // CAR-119 — the shared AI-page template: form (sticky) | result,
     // "Input / Result" tabs below 1280 px.
     window.LlmPageKit.layout({
+      // CAR-146 (browser contract) — the saved-research archive stays in the
+      // FORM column: it is browse input, not a run result, and the result
+      // pane is tab-hidden below 1280 px (burying the saved cards there
+      // regressed the narrow-viewport sweep).
       form: c('div', null, [picker, c('div', { className: 'card' }, [
         c('div', { className: 'row' }, [
           c('div', { className: 'field' }, [c('label', { htmlFor: 'deep-company' }, t('deep.companyLbl')), company]),
@@ -385,8 +389,8 @@ Router.register('deep', async () => {
           ? null
           : c('p', { style: { color: 'var(--foggy)', fontSize: '13px', marginTop: '8px' } },
             t('deep.tipManual', 'Tip: set ANTHROPIC_API_KEY (or GEMINI_API_KEY) in .env to run research live in the browser. Without it, the prompt is generated for you to paste into Claude Code.')),
-      ])]),
-      result: c('div', null, [runHost, out, c('div', { className: 'mt-5' }, archive)]),
+      ]), archive]),
+      result: c('div', null, [runHost, out]),
     }).root,
   ]);
 });
