@@ -294,17 +294,23 @@ test('map: the docs-fab never reaches the attribution at rest at 1440 and 390 (c
 
 // ── 11 · stats "?" help rides the tab strip ─────────────────────────────────
 test('stats: tabs are nowrap and the "?" sits end-aligned ON the strip (RTL-safe)', () => {
-  // Each tab keeps its label on one line — a long locale wraps the whole tab
-  // as a unit instead of breaking inside and dragging the "?" down.
-  assert.match(STATS, /borderBottom: '2px solid transparent', whiteSpace: 'nowrap' \} \}, def\.label\)/);
-  // The strip wrapper owns the border and carries BOTH the tablist and the
-  // hint row — the "?" is on the strip's line, not a line of its own below.
-  assert.match(STATS, /const tabStrip = c\('div', \{[\s\S]*?borderBottom: '1px solid var\(--line, #e5e7eb\)', margin: '4px 0 18px' \},\s*\n\s*\}, \[tabBar, hintRow\]\);/);
+  // CAR-120 — the strip is a one-line horizontal scroller (nine tabs never
+  // wrap onto a second row at 1280 px): the v2-stats-strip/scroller/tabbar
+  // classes own the nowrap + border + fade (overlays.css, end of cascade),
+  // and the scroller wraps ONLY the tablist — the "?" hint row is a sibling,
+  // so a scrolling tab row never carries the hint away.
+  assert.match(STATS, /const tabStrip = c\('div', \{\s*\n?\s*className: 'v2-stats-strip',[\s\S]*?\}, \[c\('div', \{ className: 'v2-stats-scroller' \}, tabBar\), hintRow\]\);/);
   assert.match(STATS, /root\.appendChild\(tabStrip\);/);
   assert.ok(!STATS.includes('root.appendChild(hintRow);'), 'the hint row must not mount as a sibling line under the tabs');
-  // End-aligned via the LOGICAL margin (mirrors under [dir="rtl"]); the old
-  // negative top margin (which visually detached it under the border) is gone.
-  assert.match(STATS, /hintRow = c\('div', \{ style: \{ display: 'flex', alignItems: 'center', gap: '2px', marginInlineStart: 'auto'/);
+  // Each tab keeps its label on one line — a long locale scrolls the row as a
+  // unit instead of breaking inside a label (nowrap moved to the CSS class).
+  assert.match(STATS, /className: 'tab-btn v2-stats-tab', type: 'button', role: 'tab'/);
+  // End-aligned: the hint sits AFTER the scroller in the strip's flex row, so
+  // it stays visible at the strip's end edge in LTR and RTL alike; the
+  // scroller's fade mask is symmetric and mirrors itself under [dir="rtl"].
+  assert.match(STATS, /hintRow = c\('div', \{ style: \{ display: 'flex', alignItems: 'center', gap: '2px', flex: '0 0 auto'/);
+  assert.match(STATS, /\[c\('div', \{ className: 'v2-stats-scroller' \}, tabBar\), hintRow\]/,
+    'hint row rides the strip line, after the scroller');
   assert.ok(!STATS.includes("margin: '-8px 0 14px'"), 'the stray-line negative margin is gone');
 });
 

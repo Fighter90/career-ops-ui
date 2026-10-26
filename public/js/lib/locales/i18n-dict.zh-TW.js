@@ -47,6 +47,10 @@ window.__I18N_DICT_ZH_TW = {
   'map.legend.exact': "📍 公司地址，否則為地點中心",
   'map.exact': "公司地址",
   'map.more': "更多",
+  // CAR-125 — the bounds-synced side list.
+  'map.list.title': "視野內的職缺",
+  'map.list.empty': "視野內沒有職缺——拖曳地圖或縮小比例尺。",
+  'map.list.more': "個更多職缺",
   'map.postings': "個職缺",
   'map.layerTracker': "追蹤",
   'map.noLocation': "無地點",
@@ -1611,4 +1615,22 @@ window.__I18N_DICT_ZH_TW = {
   'rep2.actResearch': "先研究公司",
   'rep2.actLow': "沒有特別原因則跳過",
   'rep2.histogramLabel': "分數分布 — 點選直條即可篩選",
+
+  /* CAR-120 — #/stats Overview tab (feat/car120-stats-v2). EN parity is
+     locked by tests/i18n-coverage + tests/stats-overview-car120; the ovDay_*
+     forms are picked by Intl.PluralRules in views/stats.js. */
+  'stats.tabOverview': "總覽",
+  'stats.ovVacanciesBySource': "各來源職缺",
+  'stats.ovPostingsByWeek': "每週職缺",
+  'stats.ovSalaryByGrade': "各級別薪資中位數",
+  'stats.ovStageVelocity': "階段間隔天數",
+  'stats.ovClickHintScan': "點擊柱條可在掃描中開啟這些職缺",
+  'stats.ovVelocityEmpty': "尚無足夠回覆 — 收到回覆後會顯示中位數天數。",
+  'stats.hint.overview': "根據追蹤器與最近掃描真實資料繪製的圖表 — 狀態漏斗、評分、薪資、來源。不使用 AI。",
+  'stats.ovDay_zero': "{n}天",
+  'stats.ovDay_one': "{n}天",
+  'stats.ovDay_two': "{n}天",
+  'stats.ovDay_few': "{n}天",
+  'stats.ovDay_many': "{n}天",
+  'stats.ovDay_other': "{n}天",
 };

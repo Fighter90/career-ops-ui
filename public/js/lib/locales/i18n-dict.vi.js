@@ -47,6 +47,10 @@ window.__I18N_DICT_VI = {
   'map.legend.exact': "📍 địa chỉ công ty, nếu không thì trung tâm địa điểm",
   'map.exact': "Địa chỉ công ty",
   'map.more': "thêm",
+  // CAR-125 — the bounds-synced side list.
+  'map.list.title': "Công việc trong khung nhìn",
+  'map.list.empty': "Không có gì trong khung nhìn — hãy di chuyển bản đồ hoặc thu nhỏ.",
+  'map.list.more': "khác trong khung nhìn",
   'map.postings': "tin tuyển dụng",
   'map.layerTracker': "Trình theo dõi",
   'map.noLocation': "Không có địa điểm",
@@ -1584,4 +1588,22 @@ window.__I18N_DICT_VI = {
   'rep2.actResearch': "Tìm hiểu công ty trước",
   'rep2.actLow': "Bỏ qua trừ khi có lý do cá nhân",
   'rep2.histogramLabel': "Phân bố điểm — bấm vào cột để lọc",
+
+  /* CAR-120 — #/stats Overview tab (feat/car120-stats-v2). EN parity is
+     locked by tests/i18n-coverage + tests/stats-overview-car120; the ovDay_*
+     forms are picked by Intl.PluralRules in views/stats.js. */
+  'stats.tabOverview': "Tổng quan",
+  'stats.ovVacanciesBySource': "Việc làm theo nguồn",
+  'stats.ovPostingsByWeek': "Việc làm theo tuần",
+  'stats.ovSalaryByGrade': "Lương trung vị theo cấp bậc",
+  'stats.ovStageVelocity': "Thời gian giữa các giai đoạn",
+  'stats.ovClickHintScan': "Bấm vào một cột để mở các việc làm đó trong Tìm kiếm",
+  'stats.ovVelocityEmpty': "Chưa đủ phản hồi — số ngày trung vị sẽ hiện khi có phản hồi.",
+  'stats.hint.overview': "Biểu đồ từ dữ liệu thật của tracker và lần quét gần nhất — phễu trạng thái, điểm, lương, nguồn. Không dùng AI.",
+  'stats.ovDay_zero': "{n} ngày",
+  'stats.ovDay_one': "{n} ngày",
+  'stats.ovDay_two': "{n} ngày",
+  'stats.ovDay_few': "{n} ngày",
+  'stats.ovDay_many': "{n} ngày",
+  'stats.ovDay_other': "{n} ngày",
 };

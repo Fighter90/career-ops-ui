@@ -47,6 +47,10 @@ window.__I18N_DICT_FR = {
   'map.legend.exact': "📍 adresse de l'entreprise, sinon centre du lieu",
   'map.exact': "Adresse de l'entreprise",
   'map.more': "de plus",
+  // CAR-125 — the bounds-synced side list.
+  'map.list.title': "Offres dans la zone",
+  'map.list.empty': "Rien dans la zone : déplacez la carte ou dézoomez.",
+  'map.list.more': "de plus dans la zone",
   'map.postings': "offres",
   'map.layerTracker': "Suivi",
   'map.noLocation': "Sans lieu",
@@ -1609,4 +1613,22 @@ window.__I18N_DICT_FR = {
   'rep2.actResearch': "Étudiez d'abord l'entreprise",
   'rep2.actLow': "Passez, sauf raison personnelle",
   'rep2.histogramLabel': "Distribution des scores — cliquez une colonne pour filtrer",
+
+  /* CAR-120 — #/stats Overview tab (feat/car120-stats-v2). EN parity is
+     locked by tests/i18n-coverage + tests/stats-overview-car120; the ovDay_*
+     forms are picked by Intl.PluralRules in views/stats.js. */
+  'stats.tabOverview': "Vue d'ensemble",
+  'stats.ovVacanciesBySource': "Offres par source",
+  'stats.ovPostingsByWeek': "Offres par semaine",
+  'stats.ovSalaryByGrade': "Salaire médian par niveau",
+  'stats.ovStageVelocity': "Délai entre les étapes",
+  'stats.ovClickHintScan': "Cliquez sur une barre pour ouvrir ces offres dans la recherche",
+  'stats.ovVelocityEmpty': "Pas encore assez de réponses — les jours médians apparaîtront au fil des réponses.",
+  'stats.hint.overview': "Graphiques issus de vos données réelles (suivi et dernier scan) — entonnoir des statuts, scores, salaires, sources. Sans IA.",
+  'stats.ovDay_zero': "{n} jour",
+  'stats.ovDay_one': "{n} jour",
+  'stats.ovDay_two': "{n} jours",
+  'stats.ovDay_few': "{n} jours",
+  'stats.ovDay_many': "{n} jours",
+  'stats.ovDay_other': "{n} jours",
 };

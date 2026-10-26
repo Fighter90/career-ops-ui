@@ -46,6 +46,10 @@ window.__I18N_DICT_UK = {
   'map.legend.exact': "📍 адреса компанії, інакше центр населеного пункту",
   'map.exact': "Адреса компанії",
   'map.more': "ще",
+  // CAR-125 — the bounds-synced side list.
+  'map.list.title': "Вакансії в кадрі",
+  'map.list.empty': "У кадрі порожньо — посуньте карту або зменште масштаб.",
+  'map.list.more': "ще в кадрі",
   'map.postings': "вакансій",
   'map.layerTracker': "Трекер",
   'map.noLocation': "Без локації",
@@ -1609,4 +1613,22 @@ window.__I18N_DICT_UK = {
   'rep2.actResearch': "Спершу вивчити компанію",
   'rep2.actLow': "Пропустіть, якщо немає персональної причини",
   'rep2.histogramLabel': "Розподіл оцінок — натисніть стовпець для фільтра",
+
+  /* CAR-120 — #/stats Overview tab (feat/car120-stats-v2). EN parity is
+     locked by tests/i18n-coverage + tests/stats-overview-car120; the ovDay_*
+     forms are picked by Intl.PluralRules in views/stats.js. */
+  'stats.tabOverview': "Огляд",
+  'stats.ovVacanciesBySource': "Вакансії за джерелами",
+  'stats.ovPostingsByWeek': "Вакансії за тижнями",
+  'stats.ovSalaryByGrade': "Медіанна зарплата за грейдами",
+  'stats.ovStageVelocity': "Час між етапами",
+  'stats.ovClickHintScan': "Натисніть на стовпчик, щоб відкрити ці вакансії в Пошуку",
+  'stats.ovVelocityEmpty': "Ще недостатньо відповідей — медіанні дні з'являться в міру їх надходження.",
+  'stats.hint.overview': "Графіки з реальних даних трекера й останнього скана — воронка статусів, оцінки, зарплати, джерела. Без ШІ.",
+  'stats.ovDay_zero': "{n} днів",
+  'stats.ovDay_one': "{n} день",
+  'stats.ovDay_two': "{n} дні",
+  'stats.ovDay_few': "{n} дні",
+  'stats.ovDay_many': "{n} днів",
+  'stats.ovDay_other': "{n} дня",
 };

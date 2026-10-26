@@ -46,6 +46,10 @@ window.__I18N_DICT_DA = {
   'map.legend.exact': "📍 virksomhedens adresse, ellers stedets centrum",
   'map.exact': "Virksomhedens adresse",
   'map.more': "flere",
+  // CAR-125 — the bounds-synced side list.
+  'map.list.title': "Jobs i visningen",
+  'map.list.empty': "Intet i visningen — flyt kortet eller zoom ud.",
+  'map.list.more': "flere i visningen",
   'map.postings': "stillinger",
   'map.layerTracker': "Tracker",
   'map.noLocation': "Uden sted",
@@ -1609,4 +1613,22 @@ window.__I18N_DICT_DA = {
   'rep2.actResearch': "Undersøg virksomheden først",
   'rep2.actLow': "Spring over, medmindre personlig grund",
   'rep2.histogramLabel': "Scorefordeling — klik på en søjle for at filtrere",
+
+  /* CAR-120 — #/stats Overview tab (feat/car120-stats-v2). EN parity is
+     locked by tests/i18n-coverage + tests/stats-overview-car120; the ovDay_*
+     forms are picked by Intl.PluralRules in views/stats.js. */
+  'stats.tabOverview': "Oversigt",
+  'stats.ovVacanciesBySource': "Stillinger efter kilde",
+  'stats.ovPostingsByWeek': "Stillinger pr. uge",
+  'stats.ovSalaryByGrade': "Mediansløn efter niveau",
+  'stats.ovStageVelocity': "Tid mellem trin",
+  'stats.ovClickHintScan': "Klik på en søjle for at åbne stillingerne i søgningen",
+  'stats.ovVelocityEmpty': "Endnu ikke nok svar — mediansdage vises, efterhånden som der kommer svar.",
+  'stats.hint.overview': "Diagrammer bygget på rigtige data fra din tracker og seneste scan — status-tragten, scores, løn, kilder. Ingen AI.",
+  'stats.ovDay_zero': "{n} dage",
+  'stats.ovDay_one': "{n} dag",
+  'stats.ovDay_two': "{n} dage",
+  'stats.ovDay_few': "{n} dage",
+  'stats.ovDay_many': "{n} dage",
+  'stats.ovDay_other': "{n} dage",
 };
