@@ -123,3 +123,68 @@ body.job-map-active .docs-fab { display: none; }
   .job-map .leaflet-control-zoom { display: none; }
   .job-map .leaflet-control-attribution { margin-bottom: calc(var(--map-sheet-h, 0px) + env(safe-area-inset-bottom)); transition: margin-bottom .18s ease; }
 }
+
+/* ============================================================
+   CAR-125 (map v2) — clusters, side list, filter chips.
+   Append-only block: every selector is v2-map-prefixed.
+   ============================================================ */
+
+/* Filter chips — specialization (from the settings) + score bands.
+   One chip row instead of the old select-in-a-sheet: applied
+   immediately, active state visible at a glance, like #/scan. */
+.v2-map-chiprow { display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: center; padding-bottom: 8px; }
+.v2-map-chipset { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; min-width: 0; }
+.v2-map-chip { min-height: 30px; padding: 3px 12px; border: 1px solid var(--slate); border-radius: 999px; background: var(--paper); color: var(--hof); font: 600 12.5px/1.2 Inter, sans-serif; cursor: pointer; transition: background .12s ease, border-color .12s ease, color .12s ease; }
+.v2-map-chip:hover { border-color: var(--hof); }
+.v2-map-chip.is-active { background: var(--hof); border-color: var(--hof); color: var(--paper); }
+.v2-map-chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+/* Layout: the map and the bounds-synced side list share one row on
+   desktop; the list matches the map's own height formula. */
+.v2-map-layout { display: flex; gap: 12px; align-items: stretch; }
+.v2-map-layout .job-map-wrap { flex: 1 1 auto; min-width: 0; }
+.v2-map-list { display: flex; flex-direction: column; flex: 0 0 320px; min-height: 360px; max-height: calc(100vh - 390px); border: 1px solid var(--slate); border-radius: 12px; background: var(--paper); color: var(--hof); overflow: hidden; }
+.v2-map-list-head { display: flex; flex: none; align-items: center; gap: 8px; padding: 10px 12px; border-bottom: 1px solid var(--slate); font-size: 13px; }
+.v2-map-list-head strong { flex: 1; }
+.v2-map-list-count { color: var(--foggy); font-weight: 700; font-variant-numeric: tabular-nums; }
+.v2-map-list-rows { margin: 0; padding: 0; list-style: none; flex: 1; overflow: auto; }
+.v2-map-row { display: block; width: 100%; padding: 9px 12px; border: 0; border-bottom: 1px solid color-mix(in srgb, var(--slate) 55%, transparent); background: transparent; color: inherit; text-align: inherit; font: inherit; cursor: pointer; }
+.v2-map-row:hover, .v2-map-row:focus-visible { background: color-mix(in srgb, var(--hof) 7%, transparent); outline: none; }
+.v2-map-row-main { display: block; font-size: 13px; font-weight: 600; line-height: 1.35; overflow-wrap: anywhere; }
+.v2-map-row-meta { display: block; margin-top: 2px; color: var(--foggy); font-size: 12px; overflow-wrap: anywhere; }
+.v2-map-list-empty { padding: 18px 14px; color: var(--foggy); font-size: 13px; }
+.v2-map-list-more { padding: 9px 12px; color: var(--foggy); font-size: 12px; list-style: none; }
+.v2-map-list-close, .v2-map-list-toggle { display: none; }
+/* The keyboard/hover path onto the map: one highlight primitive for the
+   drawn marker (an SVG path for singletons, a div for clusters). */
+.v2-map-marker-hot { filter: drop-shadow(0 0 6px color-mix(in srgb, var(--map-score-top) 85%, transparent)) drop-shadow(0 0 2px color-mix(in srgb, var(--map-score-top) 60%, transparent)); }
+
+/* The «Without a location: N» click-through to #/scan. */
+.v2-map-noloc { display: inline-flex; align-items: center; min-height: 28px; margin-top: 4px; padding: 2px 10px; border: 1px solid var(--slate); border-radius: 999px; background: transparent; color: var(--foggy); font-size: 12px; font-weight: 600; cursor: pointer; }
+.v2-map-noloc:hover { border-color: var(--hof); color: var(--hof); }
+.v2-map-noloc:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+.v2-map-noloc[hidden] { display: none; }
+
+/* Cluster expansion — a quick scale-in while Leaflet animates the zoom
+   itself; disabled for reduced-motion users. */
+@keyframes v2-map-cluster-in { from { transform: scale(.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.v2-map-cluster { animation: v2-map-cluster-in 160ms ease-out; }
+.v2-map-cluster--m { box-shadow: 0 2px 8px rgba(0, 0, 0, .4); }
+.v2-map-cluster--l { box-shadow: 0 3px 11px rgba(0, 0, 0, .48); }
+@media (prefers-reduced-motion: reduce) {
+  .v2-map-cluster { animation: none; }
+}
+
+@media (max-width: 900px) {
+  /* Chips scroll horizontally instead of eating map height. */
+  .v2-map-chiprow { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 6px; scrollbar-width: none; }
+  .v2-map-chipset { flex-wrap: nowrap; }
+  .v2-map-chip { flex: 0 0 auto; white-space: nowrap; min-height: 36px; }
+  /* The list becomes a bottom sheet over the full-screen map. */
+  .v2-map-layout { position: relative; flex: 1; min-height: 0; flex-direction: column; }
+  .v2-map-list { position: absolute; z-index: var(--z-map-sheet); right: 8px; bottom: calc(8px + env(safe-area-inset-bottom)); left: 8px; flex: none; display: none; min-height: 0; max-height: 52dvh; border-radius: 18px; box-shadow: 0 -8px 30px rgba(0, 0, 0, .25); }
+  .v2-map-list.is-open { display: flex; }
+  .v2-map-list-toggle { position: absolute; z-index: var(--z-map-control); left: 12px; bottom: calc(14px + env(safe-area-inset-bottom)); display: inline-flex; min-height: 44px; }
+  .v2-map-list-close { position: absolute; z-index: var(--z-map-control); top: 8px; right: 10px; display: grid; width: 44px; height: 44px; padding: 0; place-items: center; border: 0; background: transparent; color: var(--hof); font-size: 28px; cursor: pointer; }
+  .v2-map-noloc { min-height: 36px; }
+}

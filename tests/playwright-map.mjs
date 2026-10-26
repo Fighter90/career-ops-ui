@@ -148,6 +148,31 @@ test('mobile marker tap opens a peek before navigation and keeps the map usable'
   } finally { await mobile.close(); }
 });
 
+// CAR-125 — on phones the side list is a bottom sheet over the full-screen map.
+test('map: the mobile list toggle opens the bottom-sheet list', { skip: SKIP }, async () => {
+  const mobile = await browser.newContext({ viewport: { width: 390, height: 844 }, hasTouch: true, isMobile: true });
+  await mobile.route('**/api/geocode?**', (route) =>
+    route.fulfill({ contentType: 'application/json', body: JSON.stringify({ lat: 50, lon: 0, exact: false }) }));
+  await mobile.route('https://tile.openstreetmap.org/**', (route) => route.abort());
+  const page = await mobile.newPage();
+  try {
+    await page.goto(baseUrl + '/#/map');
+    await placesLocated(page);
+    const toggle = page.locator('.v2-map-list-toggle');
+    await toggle.waitFor({ timeout: 10000 });
+    assert.equal(await page.locator('.v2-map-list').isVisible(), false, 'the list starts closed on phones');
+    await toggle.click();
+    await page.waitForSelector('.v2-map-list.is-open', { timeout: 5000 });
+    await page.locator('.v2-map-row').first().waitFor({ timeout: 5000 });
+    assert.equal(await page.locator('.v2-map-row').count(), 2, 'both in-bounds jobs are listed');
+    const box = await page.locator('.v2-map-list').boundingBox();
+    assert.ok(box && box.y + box.height <= 844 + 1, `the sheet stays inside the viewport (${JSON.stringify(box)})`);
+    await page.keyboard.press('Tab'); // focus lands inside the sheet (close button first)
+    await page.locator('.v2-map-list-close').click();
+    assert.equal(await page.locator('.v2-map-list.is-open').count(), 0, 'the close button dismisses the sheet');
+  } finally { await mobile.close(); }
+});
+
 // v1.248.3 — the docs FAB (fixed, bottom-right) must not cover the Leaflet
 // attribution: the OSM licence requires it visible. ALL FOUR CORNERS of the
 // attribution rect are probed with elementFromPoint — a single-centre check
@@ -177,24 +202,46 @@ test('map: the Leaflet attribution is fully visible (all 4 corners unobstructed)
 });
 
 // v1.250.0 — the job locator + the text search (the toolbar above the map).
-test('map: the specialization select (from settings) filters the map', { skip: SKIP }, async () => {
+// CAR-125 — the select became a chip row; same settings-driven matcher.
+test('map: the specialization chips (from settings) filter the map', { skip: SKIP }, async () => {
   const page = await context.newPage();
   try {
     await page.goto(baseUrl + '/#/map');
     await placesLocated(page);
-    const sel = page.locator('.job-map-spec-select');
-    await sel.waitFor({ timeout: 10000 });
-    const options = await sel.locator('option').allInnerTexts();
-    assert.ok(options.some((o) => o.includes('Platform Engineer')), 'the settings\' role is an option: ' + JSON.stringify(options));
-    assert.ok(options.some((o) => o.includes('SRE')), 'SRE listed');
+    const chips = page.locator('.v2-map-chip[data-spec]');
+    await chips.first().waitFor({ timeout: 10000 });
+    const labels = await chips.allInnerTexts();
+    assert.ok(labels.some((o) => o.includes('Platform Engineer')), 'the settings\' role is a chip: ' + JSON.stringify(labels));
+    assert.ok(labels.some((o) => o.includes('SRE')), 'SRE listed');
     // «Platform Engineer» keeps only Acme's posting (Globex is an SRE).
-    await sel.selectOption({ label: 'Platform Engineer' });
+    await page.locator('.v2-map-chip[data-spec="Platform Engineer"]').click();
     await page.waitForFunction(() => /^1 \/ 2 mapped/.test(document.querySelector('.job-map-status-chip')?.textContent || ''),
       null, { timeout: 10000 });
+    assert.equal(await page.locator('.v2-map-chip[data-spec="Platform Engineer"]').getAttribute('aria-pressed'), 'true',
+      'the active chip is exposed to assistive tech');
     // All specializations → everything back.
-    await sel.selectOption({ index: 0 });
+    await page.locator('.v2-map-chip.v2-map-chip-any').click();
     await page.waitForFunction(() => /^2 \/ 2 mapped/.test(document.querySelector('.job-map-status-chip')?.textContent || ''),
       null, { timeout: 10000 });
+  } finally { await page.close(); }
+});
+
+// CAR-125 — the bounds-synced side list.
+test('map: the side list follows the visible bounds and highlights its marker', { skip: SKIP }, async () => {
+  const page = await context.newPage();
+  try {
+    await page.goto(baseUrl + '/#/map');
+    await placesLocated(page);
+    await page.locator('.v2-map-row').first().waitFor({ timeout: 10000 });
+    const count = await page.locator('.v2-map-list-count').innerText();
+    assert.equal(Number(count), 2, 'both located jobs are inside the fitted bounds');
+    // A row names its job (the fixture pins Acme/Platform Engineer).
+    const text = await page.locator('.v2-map-row').first().innerText();
+    assert.match(text, /Platform Engineer/, 'rows name the role');
+    // Hover highlights the drawn marker (list ↔ map synchronisation).
+    await page.locator('.v2-map-row').first().hover();
+    const hot = await page.evaluate(() => document.querySelectorAll('.v2-map-marker-hot').length);
+    assert.equal(hot, 1, 'hovering a row highlights exactly its marker');
   } finally { await page.close(); }
 });
 
@@ -207,10 +254,10 @@ test('map: the search narrows the map and persists across reload', { skip: SKIP 
     await box.waitFor({ timeout: 10000 });
     await box.fill('Acme');
     // The chip is «visible / total mapped» — filtering narrows the visible
-    // half; the locator's options narrow with it (syncJobSelect).
+    // half; the specialization chips are settings-driven and do not narrow.
     await page.waitForFunction(() => /^1 \/ 2 mapped/.test(document.querySelector('.job-map-status-chip')?.textContent || ''),
       null, { timeout: 10000 });
-    assert.equal(await page.locator('.job-map-spec-select option').count(), 3, 'the specialization options are settings-driven — the search does not narrow them');
+    assert.equal(await page.locator('.v2-map-chip[data-spec]').count(), 2, 'the specialization chips are settings-driven — the search does not narrow them');
     await page.reload();
     await placesLocated(page);
     assert.equal(await page.locator('.job-map-search').inputValue(), 'Acme', 'the query persists');
@@ -219,6 +266,6 @@ test('map: the search narrows the map and persists across reload', { skip: SKIP 
     await page.locator('.job-map-search').fill('');
     await page.waitForFunction(() => /^2 \/ 2 mapped/.test(document.querySelector('.job-map-status-chip')?.textContent || ''),
       null, { timeout: 10000 });
-    assert.equal(await page.locator('.job-map-spec-select option').count(), 3, 'clearing restores both jobs');
+    assert.equal(await page.locator('.v2-map-chip[data-spec]').count(), 2, 'clearing restores both jobs');
   } finally { await page.close(); }
 });
