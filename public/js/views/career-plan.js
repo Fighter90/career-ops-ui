@@ -9,6 +9,13 @@
  * (config/career-plan.md) with PUT, and export it to Markdown / PDF / clipboard.
  * The plan is forward-looking guidance grounded in the user's materials — it
  * never fabricates facts about their history.
+ *
+ * CAR-119 — the page renders through the shared LlmPageKit template:
+ * two-column form|result and a progress/ETA/Cancel run panel over the
+ * generate POST (AbortSignal-wired). No company/role fields → no tracker
+ * autofill; no save/list endpoint → no history drawer (documented hand-off).
+ * // CAR-119 i18n: no new dictionary keys — the kit's `llm2.*` strings ship
+ * as I18n.t EN fallbacks inside public/js/lib/llm-page-kit.js.
  */
 // CAR-20 (v1.243.0) — the generated/edited plan used to vanish on any
 // in-place re-render (language switch → Router.render(); the guard
@@ -56,16 +63,21 @@ Router.register('career-plan', async () => {
   focus.setAttribute('aria-label', t('plan.focusPh', 'Optional emphasis'));
   focus.placeholder = t('plan.focusPh', 'Optional emphasis — e.g. move into management, go remote, switch to Go…');
   const genBtn = c('button', { className: 'btn btn-primary', type: 'button' }, t('plan.generate', 'Generate plan'));
+  // CAR-119 — run/progress host for the generate POST.
+  const runHost = c('div');
 
-  root.appendChild(c('div', { style: { display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'flex-end', margin: '16px 0' } }, [
-    c('label', { style: { display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '12px', color: 'var(--foggy)' } }, [t('plan.horizon', 'Horizon'), horizon]),
-    c('label', { style: { display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '12px', color: 'var(--foggy)', flex: '1 1 260px' } }, [t('plan.focus', 'Focus (optional)'), focus]),
-    genBtn,
-    // P4-ETA (v1.170.0) — honest duration hint next to a long AI generation
-    // (career-plan ~40 s observed), mirroring the #/auto ETA pattern.
-    c('span', { className: 'eta-hint', title: t('common.etaTitle', 'Typical generation time') },
-      '⏱ ' + t('common.eta', '~{n}s').replace('{n}', '40')),
-  ]));
+  const formCol = c('div', null, [
+    c('div', { style: { display: 'flex', gap: '12px', flexWrap: 'wrap', alignItems: 'flex-end', margin: '16px 0' } }, [
+      c('label', { style: { display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '12px', color: 'var(--foggy)' } }, [t('plan.horizon', 'Horizon'), horizon]),
+      c('label', { style: { display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '12px', color: 'var(--foggy)', flex: '1 1 260px' } }, [t('plan.focus', 'Focus (optional)'), focus]),
+      genBtn,
+      // P4-ETA (v1.170.0) — honest duration hint next to a long AI generation
+      // (career-plan ~40 s observed), mirroring the #/auto ETA pattern.
+      c('span', { className: 'eta-hint', title: t('common.etaTitle', 'Typical generation time') },
+        '⏱ ' + t('common.eta', '~{n}s').replace('{n}', '40')),
+    ]),
+  ]);
+  const resultCol = c('div', null, [runHost]);
 
   // ── editable plan + actions ──
   const editor = c('textarea', { className: 'input', rows: '22', 'data-i18n-placeholder': 'plan.editorPh', style: { width: '100%', fontFamily: 'inherit' } });
@@ -100,21 +112,29 @@ Router.register('career-plan', async () => {
   editor.addEventListener('input', syncExportEnabled);
   syncExportEnabled();
 
-  root.appendChild(c('div', { className: 'card', style: { padding: '16px', margin: '0 0 12px' } }, [
+  root.appendChild(window.LlmPageKit.layout({ form: formCol, result: resultCol }).root);
+
+  resultCol.appendChild(c('div', { className: 'card', style: { padding: '16px', margin: '0 0 12px' } }, [
     editor,
     c('div', { className: 'plan-actions', style: { display: 'flex', gap: '10px', flexWrap: 'wrap', alignItems: 'center', marginTop: '10px' } },
       [saveBtn, previewBtn, exportBar]),
   ]));
-  root.appendChild(preview);
-  root.appendChild(c('p', { style: { color: 'var(--foggy)', fontSize: '12px', margin: '10px 0 0' } },
+  resultCol.appendChild(preview);
+  resultCol.appendChild(c('p', { style: { color: 'var(--foggy)', fontSize: '12px', margin: '10px 0 0' } },
     t('plan.privacyNote', 'Saved to your parent project’s user layer (config/career-plan.md) — never overwritten by updates, and only ever sent inside the LLM prompts you run.')));
 
   genBtn.addEventListener('click', async () => {
     genBtn.disabled = true;
-    const prev = genBtn.textContent;
-    genBtn.textContent = t('plan.generating', 'Generating…');
+    // CAR-119 — the shared run panel (live elapsed/ETA + Cancel) rides the
+    // result column while the plan generates.
+    const runCtrl = window.LlmPageKit.createRun({ etaSeconds: 40 }).mount(runHost);
     try {
-      const res = await API.post('/api/career-plan/generate', { run: true, horizon: horizon.value, focus: focus.value, lang: (I18n.getLang && I18n.getLang()) || 'en' });
+      const res = await window.LlmPageKit.run({
+        run: runCtrl,
+        request: (signal) => window.LlmPageKit.postJSON('/api/career-plan/generate',
+          { run: true, horizon: horizon.value, focus: focus.value }, signal),
+      });
+      if (runCtrl.cancelled || runCtrl.signal.aborted) return; // a cancelled run paints nothing more
       if (res && res.markdown) {
         editor.value = res.markdown;
         // CAR-20 — a generated plan is unsaved: track it in the module
@@ -140,7 +160,7 @@ Router.register('career-plan', async () => {
       }
     } catch (err) {
       UI.toast((err && err.message) || t('plan.generateFailed', 'Could not generate the plan'), 'error');
-    } finally { genBtn.disabled = false; genBtn.textContent = prev; }
+    } finally { genBtn.disabled = false; }
   });
 
   saveBtn.addEventListener('click', async () => {

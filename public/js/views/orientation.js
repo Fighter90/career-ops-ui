@@ -8,6 +8,13 @@
  * working-style tendencies, and development moves. It is an AI reflection of how
  * the CV reads — NOT a psychometric test — and it never fabricates measured
  * scores. Export the profile to Markdown / PDF / clipboard.
+ *
+ * CAR-119 — the page renders through the shared LlmPageKit template:
+ * two-column form|result and a progress/ETA/Cancel run panel over the
+ * generate POST (AbortSignal-wired). No form fields → no tracker autofill;
+ * nothing is saved → no history drawer (the profile is export-only by design).
+ * // CAR-119 i18n: no new dictionary keys — the kit's `llm2.*` strings ship
+ * as I18n.t EN fallbacks inside public/js/lib/llm-page-kit.js.
  */
 Router.register('orientation', async () => {
   const c = UI.el;
@@ -18,6 +25,8 @@ Router.register('orientation', async () => {
   // lives inside the box until a result replaces it.
   const genBtn = c('button', { className: 'btn btn-primary', type: 'button' }, t('orient.generate', 'Generate profile'));
   const out = c('div');
+  // CAR-119 — run/progress host for the generate POST.
+  const runHost = c('div');
   // CAR-94 (7) — the button used to live INSIDE the content every attempt
   // replaced (emptyState.replaceChildren): the catch path left the spinner
   // forever and the retry button was gone with it, and success left no way
@@ -43,18 +52,29 @@ Router.register('orientation', async () => {
   root.appendChild(UI.pageMeta(t,
     c('span', { className: 'eta-hint', title: t('common.etaTitle', 'Typical generation time') },
       '⏱ ' + t('common.eta', '~{n}s').replace('{n}', '30'))));
-  root.appendChild(emptyState);
-  root.appendChild(out);
+  // CAR-119 — the shared AI-page template: form (sticky) | result,
+  // "Input / Result" tabs below 1280 px.
+  root.appendChild(window.LlmPageKit.layout({
+    form: emptyState,
+    result: c('div', null, [runHost, out]),
+  }).root);
   root.appendChild(c('p', { style: { color: 'var(--foggy)', fontSize: '12px', margin: '12px 0 0' } },
     t('orient.note', 'This reads your CV, profile, two-pager, and memory note — it never invents facts and never reports measured test scores. Nothing is saved; export it if you want to keep it.')));
 
   let currentMd = '';
   genBtn.addEventListener('click', async () => {
     genBtn.disabled = true;
+    // CAR-119 — the shared run panel (live elapsed/ETA + Cancel) rides the
+    // result column while the profile generates.
+    const runCtrl = window.LlmPageKit.createRun({ etaSeconds: 30 }).mount(runHost);
     showStatus(c('div', { className: 'loading' }, t('orient.running', 'Generating your profile…')));
     out.innerHTML = ''; // a re-run replaces the previous profile instead of appending below it
     try {
-      const res = await API.post('/api/orientation/generate', { run: true, lang: (I18n.getLang && I18n.getLang()) || 'en' });
+      const res = await window.LlmPageKit.run({
+        run: runCtrl,
+        request: (signal) => window.LlmPageKit.postJSON('/api/orientation/generate', { run: true }, signal),
+      });
+      if (runCtrl.cancelled || runCtrl.signal.aborted) { showStatus(); return; }
       showStatus(); // CAR-94 (7) — the box shrinks to the reload button
       if (res && res.markdown) {
         currentMd = res.markdown;

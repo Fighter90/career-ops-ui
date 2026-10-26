@@ -118,6 +118,26 @@ Router.register('two-pager', async () => {
   root.appendChild(actions);
   // First deliberate edit re-enables Save (input events bubble to root).
   if (loadErr) root.addEventListener('input', () => { saveBtn.disabled = false; });
+
+  // CAR-119 — the shared AI-page template: the editor is the form column;
+  // the result column carries the run panel + a LIVE preview (the modal
+  // preview stays for the export flow). The layout lands between the failed-
+  // load banner and the actions row — the actions still belong to the editor.
+  // // CAR-119 i18n: no new dictionary keys — the kit's `llm2.*` strings ship
+  // as I18n.t EN fallbacks inside public/js/lib/llm-page-kit.js.
+  const runHost = c('div');
+  const previewPane = c('div');
+  function renderLivePreview() {
+    previewPane.replaceChildren(c('div', { className: 'card md', html: UI.md(buildMarkdown()), style: { padding: '16px' } }));
+  }
+  const twoPagerPage = window.LlmPageKit.layout({
+    form: c('div', null, [whoField.wrap, grid, envField.wrap]),
+    result: c('div', null, [runHost, previewPane]),
+  });
+  root.insertBefore(twoPagerPage.root, actions);
+  root.addEventListener('input', renderLivePreview);
+  renderLivePreview();
+
   root.appendChild(c('p', { style: { color: 'var(--foggy)', fontSize: '12px', margin: '0 0 24px' } },
     t('twoPager.privacyNote', 'Stored in your parent project’s user layer (config/two-pager.yml) — never sent anywhere except the LLM prompts you run.')));
 
@@ -207,11 +227,18 @@ Router.register('two-pager', async () => {
   draftBtn.addEventListener('click', async () => {
     draftBtn.disabled = true;
     draftBtn.textContent = t('twoPager.aiFilling', '✨ Filling…');
+    // CAR-119 — the shared run panel (live elapsed/ETA + Cancel) rides the
+    // result column while the fill runs.
+    const runCtrl = window.LlmPageKit.createRun({ etaSeconds: 20 }).mount(runHost);
     try {
       // Ask the server to run it live; it falls back to a manual prompt when no
       // provider is configured. Auto-fill only ever populates editable fields —
       // the user still reviews and clicks Save.
-      const res = await API.post('/api/two-pager/draft', { run: true, lang: (I18n.getLang && I18n.getLang()) || 'en' });
+      const res = await window.LlmPageKit.run({
+        run: runCtrl,
+        request: (signal) => window.LlmPageKit.postJSON('/api/two-pager/draft', { run: true }, signal),
+      });
+      if (runCtrl.cancelled || runCtrl.signal.aborted) return; // a cancelled run paints nothing more
       if (res && res.fields) {
         applyFields(res.fields);
         // v1.243.0 (views-3) — an AI fill is also a deliberate edit: re-enable

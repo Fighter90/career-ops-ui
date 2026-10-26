@@ -8,6 +8,14 @@
  * providers. Steering + preferences only — never new factual claims (those live
  * in the CV / profile / two-pager). A "suggest from my data" helper drafts
  * behavioural bullets from the tracker for the user to review.
+ *
+ * CAR-119 — the page renders through the shared LlmPageKit template:
+ * two-column form|result, and the ✨ suggestion renders into the result
+ * column (with a copy action) under a progress/ETA/Cancel run panel instead
+ * of a modal. No company/role fields → no tracker autofill; the note is a
+ * single document (PUT), not a session store → no history drawer.
+ * // CAR-119 i18n: no new dictionary keys — the kit's `llm2.*` strings ship
+ * as I18n.t EN fallbacks inside public/js/lib/llm-page-kit.js.
  */
 Router.register('memory', async () => {
   const c = UI.el;
@@ -45,6 +53,10 @@ Router.register('memory', async () => {
 
   const saveBtn = c('button', { className: 'btn btn-primary', type: 'button' }, t('mem.save', 'Save memory'));
   const suggestBtn = c('button', { className: 'btn btn-ghost', type: 'button' }, t('mem.suggest', '✨ Suggest from my data'));
+  // CAR-119 — run/progress host + the suggestion output lands in the
+  // result column (the old modal is replaced by the template's result pane).
+  const runHost = c('div');
+  const suggestionOut = c('div');
 
   saveBtn.addEventListener('click', async () => {
     saveBtn.disabled = true;
@@ -58,25 +70,46 @@ Router.register('memory', async () => {
 
   suggestBtn.addEventListener('click', async () => {
     suggestBtn.disabled = true;
+    // CAR-119 — shared run panel; the prompt result renders into the result
+    // column instead of a modal.
+    const runCtrl = window.LlmPageKit.createRun({ etaSeconds: 15 }).mount(runHost);
+    suggestionOut.textContent = '';
     try {
-      const { prompt } = await API.post('/api/memory/suggest', { lang: (I18n.getLang && I18n.getLang()) || 'en' });
-      const body = c('div', null, [
+      const { prompt } = await window.LlmPageKit.run({
+        run: runCtrl,
+        request: (signal) => window.LlmPageKit.postJSON('/api/memory/suggest', {}, signal),
+      });
+      if (runCtrl.cancelled || runCtrl.signal.aborted) return; // a cancelled run paints nothing more
+      suggestionOut.appendChild(c('div', { className: 'card', style: { padding: '16px' } }, [
         c('p', { style: { margin: '0 0 10px', color: 'var(--foggy)' } },
           t('mem.suggestHelp', 'Run this in any LLM, review the behavioural bullets it proposes, then paste an edited version into your memory note above. It reads your tracker — it never invents facts.')),
         c('textarea', { className: 'input', rows: '16', readonly: 'readonly', style: { width: '100%', fontFamily: 'monospace', fontSize: '12px' } }, prompt),
-      ]);
-      UI.modal(t('mem.suggest', '✨ Suggest from my data'), body);
+        c('div', { style: { marginTop: '10px' } }, [
+          c('button', {
+            className: 'btn btn-ghost btn-sm', type: 'button',
+            onClick: async (e) => {
+              try { await navigator.clipboard.writeText(prompt || ''); UI.toast(t('eval.copied', 'Copied'), 'success'); }
+              catch { UI.toast(t('auto.copyFail', 'Copy failed — select the text and copy manually.'), 'error'); e.currentTarget.blur(); }
+            },
+          }, '📋 ' + t('eval.copy', 'Copy')),
+        ]),
+      ]));
     } catch (err) {
       UI.toast((err && err.message) || t('mem.suggestFailed', 'Could not build a suggestion'), 'error');
     } finally { suggestBtn.disabled = false; }
   });
 
-  root.appendChild(c('div', { className: 'card', style: { padding: '16px', margin: '12px 0' } }, [
-    ta,
-    c('div', { style: { display: 'flex', gap: '10px', flexWrap: 'wrap', marginTop: '10px' } }, [saveBtn, suggestBtn]),
-  ]));
-  root.appendChild(c('p', { style: { color: 'var(--foggy)', fontSize: '12px', margin: '0' } },
-    t('mem.privacyNote', 'Stored in your parent project’s user layer (config/memory.md) — never overwritten by updates, and only ever sent inside the LLM prompts you run.')));
+  root.appendChild(window.LlmPageKit.layout({
+    form: c('div', null, [
+      c('div', { className: 'card', style: { padding: '16px', margin: '12px 0' } }, [
+        ta,
+        c('div', { style: { display: 'flex', gap: '10px', flexWrap: 'wrap', marginTop: '10px' } }, [saveBtn, suggestBtn]),
+      ]),
+      c('p', { style: { color: 'var(--foggy)', fontSize: '12px', margin: '0' } },
+        t('mem.privacyNote', 'Stored in your parent project’s user layer (config/memory.md) — never overwritten by updates, and only ever sent inside the LLM prompts you run.')),
+    ]),
+    result: c('div', null, [runHost, suggestionOut]),
+  }).root);
 
   return root;
 });

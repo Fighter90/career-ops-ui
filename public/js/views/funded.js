@@ -36,19 +36,37 @@ Router.register('funded', async () => {
     t('funded.subtitle', 'Recently funded companies to review as fresh targets — discovered from public funding news (TechCrunch, PR Newswire, The Guardian, Hacker News). A starting list for manual review, never an endorsement.')));
 
   const btn = c('button', { className: 'btn btn-primary', type: 'button' }, t('funded.discover', 'Discover'));
-  root.appendChild(c('div', { style: { margin: '16px 0' } }, btn));
-
+  // CAR-119 — the shared AI-page template: intro + Discover (sticky form
+  // column) | results, with the shared run panel while discovery runs.
+  // Cancel discards the result — the discovery GET is a parent relay and
+  // API.get carries no AbortSignal, so the transport itself is not torn
+  // down (same server-side hand-off as the POST pages).
+  // // CAR-119 i18n: no new dictionary keys — the kit's `llm2.*` strings
+  // ship as I18n.t EN fallbacks inside public/js/lib/llm-page-kit.js.
+  const runHost = c('div');
   const out = c('div');
-  root.appendChild(out);
-  root.appendChild(c('p', { style: { color: 'var(--foggy)', fontSize: '12px', margin: '12px 0 0' } },
-    t('funded.note', 'Reads public funding feeds live — nothing is saved. Always verify a company independently before acting.')));
+  const page = window.LlmPageKit.layout({
+    form: c('div', null, [
+      c('div', { style: { margin: '16px 0' } }, btn),
+      c('p', { style: { color: 'var(--foggy)', fontSize: '12px', margin: '12px 0 0' } },
+        t('funded.note', 'Reads public funding feeds live — nothing is saved. Always verify a company independently before acting.')),
+    ]),
+    result: c('div', null, [runHost, out]),
+  });
+  root.appendChild(page.root);
 
   btn.addEventListener('click', async () => {
     btn.disabled = true;
     out.textContent = '';
-    out.appendChild(c('div', { className: 'loading' }, t('funded.loading', 'Scanning funding feeds…')));
+    // CAR-119 — the shared run panel paints synchronously (the ≤300 ms
+    // criterion); Cancel marks the run cancelled and the result is discarded.
+    const runCtrl = window.LlmPageKit.createRun({ etaSeconds: 20 }).mount(runHost);
     try {
-      const res = await API.get('/api/company-funded');
+      const res = await window.LlmPageKit.run({
+        run: runCtrl,
+        request: () => API.get('/api/company-funded'),
+      });
+      if (runCtrl.cancelled || runCtrl.signal.aborted) return; // a cancelled run paints nothing more
       out.textContent = '';
       if (!res || res.available === false) {
         // CAR-21 (v1.243.0) — reason-aware: 'script-not-found' keeps the
