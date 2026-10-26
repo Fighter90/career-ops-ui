@@ -261,6 +261,18 @@
   }
 
   function activeRouteId() {
+    // Resolve through the router when it is up: it owns the alias table
+    // (#/settings → profile, #/outreach → contacto), and the auto-open
+    // must follow the RESOLVED route or the aliased hash leaves the
+    // item's group closed. Registry-miss (404 hashes) → null.
+    if (window.Router && typeof Router.current === 'function') {
+      try {
+        const { name, rawName } = Router.current();
+        if (name && registryById(name)) return name;
+        if (rawName && registryById(rawName)) return rawName;
+        return null;
+      } catch { /* not booted yet — fall through to the hash */ }
+    }
     const hash = window.location.hash || '';
     if (!hash.startsWith('#/')) return null;
     const name = hash.slice(2).split('?')[0].replace(/\/+$/, '');
@@ -771,6 +783,11 @@
     document.addEventListener('keydown', onGlobalKeydown);
     window.addEventListener('hashchange', onHashChange);
     onHashChange(); // first paint: track the landing route + auto-open its group
+    // router.js executes AFTER this lib, so the boot call above resolved
+    // the landing hash without the alias table — and no hashchange event
+    // ever fires for the initial load. Re-resolve once the window is fully
+    // loaded (all classic scripts, Router included, have run).
+    window.addEventListener('load', onHashChange);
   }
 
   // ── exports (pure core + a few wiring handles for tests/debug) ──

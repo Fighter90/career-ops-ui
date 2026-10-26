@@ -189,6 +189,25 @@ test('P5: favorites pin, persist, reorder, unpin — keyboard-operable buttons',
   await context.close();
 });
 
+test('P9: aliased hashes (#/settings) auto-open the item\u2019s group', { skip: SKIP }, async () => {
+  const { context, page } = await newPage();
+  // #/settings resolves through the router's alias table to the Profile
+  // route (setup group) — the auto-open must follow the RESOLVED route,
+  // or the aliased hash leaves the highlighted item hidden.
+  await page.goto(`${baseUrl}/#/settings`);
+  await page.waitForSelector('[data-nav-group="setup"] .nav-v2-toggle');
+  assert.equal(await page.getAttribute('[data-nav-group="setup"] .nav-v2-toggle', 'aria-expanded'), 'true',
+    'the aliased route\u2019s group auto-opens');
+  assert.ok(await page.locator('.nav-item[data-route="profile"].active').isVisible(),
+    'the aliased route\u2019s nav item is visible and highlighted');
+  // the outreach alias resolves to the contacto route (networking group)
+  await page.goto(`${baseUrl}/#/outreach`);
+  await page.waitForSelector('[data-nav-group="networking"] .nav-v2-toggle');
+  assert.equal(await page.getAttribute('[data-nav-group="networking"] .nav-v2-toggle', 'aria-expanded'), 'true',
+    'the outreach→contacto alias opens the networking group');
+  await context.close();
+});
+
 test('P6: group collapse persists; explicit closed wins; untouched groups follow the route', { skip: SKIP }, async () => {
   const { context, page } = await newPage();
   // P8 folded in at the very first paint: fresh profile → ≤ 12 visible entries

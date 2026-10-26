@@ -292,14 +292,24 @@ async function run() {
   });
 
   // ─── Search Ctrl+K ─────────────────────────
-  await step('Search: Ctrl+K focuses global search', async () => {
+  // CAR-122 — the command palette is the main Cmd/Ctrl+K entry (it loads
+  // before app.js and stopImmediatePropagation()s the chord; app.js's
+  // search.focus binding is the no-nav-v2 fallback). The deliberate
+  // red→green: the chord must open the PALETTE and focus its input.
+  await step('Palette: Ctrl+K opens the command palette, Escape closes', async () => {
     await goRoute(`#/dashboard`);
     await page.locator('body').focus();
     await page.keyboard.down('Control');
     await page.keyboard.press('k');
     await page.keyboard.up('Control');
-    const isFocused = await page.evaluate(() => document.activeElement?.id === 'global-search');
-    if (!isFocused) throw new Error('search input did not receive focus');
+    await page.waitForSelector('.nav-v2-palette', { state: 'visible', timeout: 4000 });
+    const paletteFocused = await page.evaluate(() => document.activeElement?.className === 'nav-v2-input');
+    if (!paletteFocused) throw new Error('palette input did not receive focus');
+    await page.keyboard.press('Escape');
+    await page.waitForFunction(() => {
+      const o = document.querySelector('.nav-v2-overlay');
+      return o && o.hidden;
+    }, { timeout: 3000 });
   });
 
   // ─── Search clears on route change (FIX-M4) ─────────────────────────
