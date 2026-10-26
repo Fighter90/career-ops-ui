@@ -233,7 +233,14 @@ test('v2-pipeline.css: exists, token-based, ≤ 800-LOC contract, RTL/motion-saf
     'no hardcoded hex colors — tokens only, so dark theme follows');
   assert.match(CSS, /direction: ltr/, 'URLs stay LTR in RTL locales');
   assert.match(CSS, /prefers-reduced-motion: reduce/);
-  assert.match(CSS, /inset-inline-start/, 'logical (RTL-mirrorable) positioning');
+  // CAR-116 review: the undo bar centers PHYSICALLY (left: 50% +
+  // translateX(-50%)) — the old inset-inline-start: 50% mirrored to
+  // right: 50% in RTL while the transform kept pulling LEFT, pushing
+  // the bar off-screen in RTL locales.
+  const undoBar = CSS.slice(CSS.indexOf('.v2-undo-bar {'), CSS.indexOf('.v2-undo-bar[hidden]'));
+  assert.match(undoBar, /left: 50%/, 'physical left anchor');
+  assert.match(undoBar, /transform: translateX\(-50%\)/, '…+ the matching transform (direction-agnostic)');
+  assert.doesNotMatch(undoBar, /inset-inline-start/, 'no logical anchor that un-mirrors the transform');
   assert.match(CSS, /max-width: 720px/, 'narrow-viewport stacking');
 });
 

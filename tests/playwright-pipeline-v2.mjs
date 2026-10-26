@@ -5,18 +5,21 @@
  *       + a report header — the EXISTING /api payloads);
  *   F2  a row checkbox selects → the bulk bar appears; group checkbox
  *       selects the whole group;
- *   F3  single delete: NO confirm dialog, the undo bar appears, Undo
- *       re-adds the URL through POST /api/pipeline;
+ *   F3  single delete: confirm modal (review round) → undo bar → Undo
+ *       re-adds the URL through POST /api/pipeline; Cancel deletes
+ *       nothing;
  *   F4  bulk discard: confirm modal → sequential DELETEs with progress
  *       → undo bar → Undo restores the batch;
  *   F5  hide-already-evaluated (default ON) hides the tracked entry;
- *   F6  flat (compact) view still renders the legacy rows.
+ *   F6  flat (compact) view still renders the legacy rows;
+ *   F7  collapsing a group hands focus to the toggle in the NEW DOM;
+ *   F8  the bulk confirm states the TRUE count (stale selections are
+ *       pruned when the filters change).
  *
  * Runs against the same CI-isolated fixture shape as
  * playwright-car93-spa.mjs (mkdtemp CAREER_OPS_ROOT, 127.0.0.1 bind).
- * Not yet wired into `npm run test:e2e:browser` (package.json is outside
- * this task's file ownership) — run standalone:
- *   node --test tests/playwright-pipeline-v2.mjs
+ * Wired into `npm run test:e2e:browser` (package.json, CAR-116 review
+ * round); standalone: node --test tests/playwright-pipeline-v2.mjs
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
@@ -34,7 +37,6 @@ const context = {};
 
 before(async () => {
   if (SKIP) return;
-  const { execFileSync } = await import('node:child_process');
   chromium = chromium || (await import('playwright')).chromium;
   dir = mkdtempSync(resolve(tmpdir(), 'pw-pipe-v2-'));
   mkdirSync(resolve(dir, 'config'), { recursive: true });
@@ -101,8 +103,12 @@ test('CAR-116 F1: grouped view default; cards carry role/company/score/badge', {
   // remaining lever.co entry is enriched from its report header; the
   // untracked habr entry (fenced pipeline = no company cells) falls
   // back to its host group — the documented no-data fallback.
-  const labels = await page.locator('.v2-group-label').allTextContents();
-  assert.ok(labels.includes('Acme') && labels.includes('career.habr.com'), `groups: ${labels}`);
+  const labels = (await page.locator('.v2-group-label').allTextContents()).sort();
+  // CAR-116 review (CodeQL js/incomplete-url-substring-sanitization):
+  // exact array equality on the fixture-controlled labels — no substring
+  // probing of URL text.
+  assert.deepEqual(labels, ['Acme', 'career.habr.com'],
+    `exactly two groups: the report-enriched Acme + the host-fallback habr board, got: ${labels}`);
   const first = page.locator('.pipeline-row.v2-row').first();
   const title = await first.locator('.v2-row-title').textContent();
   assert.match(title, /Platform Engineer — Acme|Acme/, `enriched title, got: ${title}`);
@@ -138,7 +144,7 @@ test('CAR-116 F2: row + group checkboxes drive the bulk bar', { skip: SKIP }, as
   assert.match(glbl, /^Select all in group: /, 'group checkbox is labelled');
   await groupBox.check();
   assert.match(await bar.textContent(), /selected/);
-  await page.locator('button', { hasText: 'Clear selection' }).click();
+  await page.getByRole('button', { name: 'Clear selection', exact: true }).click();
   assert.ok(await bar.isHidden(), 'clear empties the selection');
 });
 
@@ -180,12 +186,12 @@ test('CAR-116 F4: bulk discard — confirm → progress → undo restores the ba
   const page = await open();
   await page.waitForSelector('.v2-group');
   // select ALL shown (2 entries: tracker row is hidden)
-  await page.locator('.v2-toolbar button', { hasText: 'Select all shown' }).click();
+  await page.getByRole('button', { name: 'Select all shown', exact: true }).click();
   // CAR-116 review — the bulk bar is part of the flow: assert it is up.
   const bar = page.locator('.v2-bulkbar');
   assert.ok(await bar.isVisible(), 'bulk bar visible once the selection is non-empty');
   assert.match(await bar.textContent(), /2\s*selected/);
-  await page.locator('button', { hasText: 'Remove selected' }).click();
+  await page.getByRole('button', { name: '✕ Remove selected (2)', exact: true }).click();
   // focus-trapped UI.confirm modal — confirm the danger action
   await page.waitForSelector('#modal:not([hidden])', { timeout: 3000 });
   await page.locator('#modal button.btn-danger, #modal .btn-danger').first().click();
@@ -205,7 +211,7 @@ test('CAR-116 F8: the bulk confirm states the TRUE count — stale selections ar
   const page = await open();
   await page.waitForSelector('.v2-group');
   // select both shown rows, then filter one of them away
-  await page.locator('.v2-toolbar button', { hasText: 'Select all shown' }).click();
+  await page.getByRole('button', { name: 'Select all shown', exact: true }).click();
   const bar = page.locator('.v2-bulkbar');
   assert.match(await bar.textContent(), /2\s*selected/);
   await page.fill('#pipe-filter', 'lever');
@@ -215,7 +221,7 @@ test('CAR-116 F8: the bulk confirm states the TRUE count — stale selections ar
     return bar && bar.textContent.trim().startsWith('1');
   }, null, { timeout: 3000 });
   assert.match(await bar.textContent(), /1\s*selected/, 'pruned to what is still shown');
-  await page.locator('button', { hasText: 'Remove selected' }).click();
+  await page.getByRole('button', { name: '✕ Remove selected (1)', exact: true }).click();
   await page.waitForSelector('#modal:not([hidden])', { timeout: 3000 });
   const modalText = await page.locator('#modal').textContent();
   assert.match(modalText, /\(1\)/, 'the confirm states the true remaining count');
@@ -254,12 +260,12 @@ test('CAR-116 F7: collapsing a group hands focus to the toggle IN THE NEW DOM', 
 
 test('CAR-116 F6: the compact (flat) view keeps the legacy rows', { skip: SKIP }, async () => {
   const page = await open();
-  await page.locator('.v2-toolbar button', { hasText: 'Compact list' }).click();
+  await page.getByRole('button', { name: 'Compact list', exact: true }).click();
   await page.waitForSelector('#pipeline-list .pipeline-row');
   const rows = await page.locator('#pipeline-list .pipeline-row').count();
   assert.equal(rows, 2, 'hide-tracked still applies in flat view');
   const aria = await page.locator('#pipeline-list .pipeline-row button').first().getAttribute('aria-label');
   assert.match(aria, /^Evaluate: /, 'legacy disambiguated labels kept');
-  await page.locator('.v2-toolbar button', { hasText: 'Grouped' }).click();
+  await page.getByRole('button', { name: 'Grouped', exact: true }).click();
   await page.waitForSelector('.v2-group');
 });

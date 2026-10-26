@@ -243,9 +243,13 @@
 }
 
 /* ── undo bar (session discard undo; body-level, like the toast) ── */
+/* CAR-116 review — centered PHYSICALLY: left: 50% + translateX(-50%)
+   is direction-agnostic. inset-inline-start: 50% mirrors to right: 50%
+   in RTL while the transform keeps pulling left, pushing the bar
+   off-screen in RTL locales. */
 .v2-undo-bar {
   position: fixed;
-  inset-inline-start: 50%;
+  left: 50%;
   bottom: calc(var(--space-4) + 8px);
   transform: translateX(-50%);
   z-index: var(--z-toast, 1000);
