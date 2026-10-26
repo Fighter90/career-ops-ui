@@ -2,7 +2,108 @@
 Router.register('health', async () => {
   const c = UI.el;
   const t = (k, f) => I18n.t(k, f);
-  const data = await API.get('/api/health');
+
+  // CAR-121 — the view owns its stylesheet (public/css/v2-portals.css, the
+  // v2-pipeline.css pattern): components.css sits at its 800-LOC gate limit
+  // and index.html is shared across the parallel UX epics, so the link is
+  // injected here instead, idempotently. Same-origin link — CSP-safe.
+  if (!document.getElementById('v2-portals-css')) {
+    document.head.appendChild(c('link', {
+      id: 'v2-portals-css', rel: 'stylesheet', href: '/css/v2-portals.css',
+    }));
+  }
+
+  const [data, providers] = await Promise.all([
+    API.get('/api/health'),
+    // CAR-121 — the success summary names the active provider; a failed
+    // provider read must not take the whole page down.
+    API.get('/api/status/providers').catch(() => null),
+  ]);
+
+  // CAR-121 — the flat card run put ~8 required checks next to ~20 optional
+  // provider keys with orange "OPTIONAL" badges: a working Hermes setup read
+  // like an outage. Required checks stay prominent; the optional ones (ok or
+  // merely unset) collapse into one <details> section, and orange is reserved
+  // for real (required) failures.
+  const checks = Array.isArray(data.checks) ? data.checks : [];
+  const requiredChecks = checks.filter((ch) => ch.required !== false);
+  const optionalChecks = checks.filter((ch) => ch.required === false);
+  const requiredBad = requiredChecks.filter((ch) => !ch.ok);
+  const optionalMissing = optionalChecks.filter((ch) => !ch.ok).length;
+
+  // UX-A13 (v1.58.59) — actionable "Fix" CTA on failing rows. The
+  // 21 rows previously showed status only; the user had to guess
+  // where to go to fix `Profile customized` / `ANTHROPIC_API_KEY` /
+  // etc. This map links failing/optional checks to the right config
+  // tab. Unmapped failures (e.g. parent project structural ones the
+  // user can't fix from the UI) stay action-less to avoid leading the
+  // user to a dead end.
+  const FIX_TARGETS = {
+    'Profile customized':         '#/config?tab=profile',
+    'config/profile.yml':         '#/config?tab=profile',
+    'cv.md':                      '#/cv',
+    'portals.yml':                '#/portals',
+    'data/applications.md':       '#/tracker',
+  };
+  function resolveFixUrl(ch) {
+    if (ch.ok) return null;
+    if (FIX_TARGETS[ch.name]) return FIX_TARGETS[ch.name];
+    if (/_API_KEY$/.test(ch.name)) return '#/config?tab=api-keys';
+    if (/^LLM_PROVIDER/.test(ch.name)) return '#/config?tab=api-keys';
+    return null;
+  }
+
+  // WS2 #36 — a flat run of generic divs gave SR users no name↔status
+  // relationship. Render as a list; the badge carries an aria-label
+  // pairing the check name with its pass/fail state.
+  // CAR-121 — one shared row renderer for BOTH sections, so every row
+  // (required and optional) keeps the same value line, badge and Fix → hint.
+  function checkRow(ch) {
+    let badgeClass, badgeText;
+    if (ch.ok) {
+      badgeClass = 'badge-ok'; badgeText = t('health.badgeOk');
+    } else if (ch.required === false) {
+      // A merely-unset optional key is not a problem — neutral badge.
+      badgeClass = 'badge'; badgeText = t('health.badgeOptional');
+    } else {
+      badgeClass = 'badge-bad'; badgeText = t('health.badgeFail');
+    }
+    const fixUrl = resolveFixUrl(ch);
+    return c('li', { className: 'card' }, [
+      c('div', { className: 'flex-between health-check-row' }, [
+        c('div', null, [
+          c('div', { className: 'metric-label' }, ch.name),
+          // CAR-56 #4 (v1.247.0) — was word-break: break-all, which cut
+          // ordinary words mid-letter («"Run" butt ons)»). overflow-wrap:
+          // anywhere still folds a pathological long token (a URL) but
+          // leaves normal words whole.
+          ch.value && c('div', { style: { fontSize: '13px', color: 'var(--foggy)', marginTop: '6px', overflowWrap: 'anywhere' } }, ch.value),
+        ]),
+        c('div', { className: 'flex gap-3', style: { alignItems: 'center' } }, [
+          fixUrl ? c('a', {
+            className: 'btn btn-ghost btn-sm health-fix',
+            href: fixUrl,
+            'aria-label': t('health.fixAria', 'Fix this') + ': ' + ch.name,
+          }, t('health.fix', 'Fix →')) : null,
+          c('span', { className: 'badge ' + badgeClass, 'aria-label': ch.name + ': ' + badgeText }, badgeText),
+        ]),
+      ]),
+    ]);
+  }
+
+  // CAR-121 — the green summary renders ONLY when every required check
+  // passes; failures keep the page honest (the red rows below are the summary).
+  const allRequiredOk = requiredBad.length === 0;
+  let providerSummary = null;
+  if (providers && providers.activeProvider) {
+    providerSummary = providers.activeModel
+      ? t('health.activeProvider', 'Active provider: {provider} ({model})')
+        .replace('{provider}', providers.activeProvider).replace('{model}', providers.activeModel)
+      : t('health.activeProviderNoModel', 'Active provider: {provider}')
+        .replace('{provider}', providers.activeProvider);
+  }
+
+  const optionalListStyle = { listStyle: 'none', margin: '10px 0 0', padding: 0 };
 
   return c('div', null, [
     c('header', { className: 'page-header' }, [
@@ -52,68 +153,27 @@ Router.register('health', async () => {
       ]),
     ]),
 
-    // UX-A13 (v1.58.59) — actionable "Fix" CTA on failing rows. The
-    // 21 rows previously showed status only; the user had to guess
-    // where to go to fix `Profile customized` / `ANTHROPIC_API_KEY` /
-    // etc. This map links failing/optional checks to the right config
-    // tab. Unmapped failures (e.g. parent project structural ones the
-    // user can't fix from the UI) stay action-less to avoid leading the
-    // user to a dead end.
-    // WS2 #36 — a flat run of generic divs gave SR users no name↔status
-    // relationship. Render as a list; the badge carries an aria-label
-    // pairing the check name with its pass/fail state.
+    allRequiredOk ? c('div', { className: 'v2-portals-health-ok', role: 'status' }, [
+      '✓ ' + t('health.allOk', 'All required checks pass'),
+      providerSummary ? c('span', { style: { fontWeight: '400', color: 'var(--foggy)' } }, '· ' + providerSummary) : null,
+    ]) : null,
+
+    // Required checks — prominent, uncollapsed.
     c('ul', { className: 'card-row', role: 'list', style: { listStyle: 'none', margin: 0, padding: 0 } },
-      data.checks.map((ch) => {
-        let badgeClass, badgeText;
-        if (ch.ok) {
-          badgeClass = 'badge-ok'; badgeText = t('health.badgeOk');
-        } else if (ch.required === false) {
-          badgeClass = 'badge-warn'; badgeText = t('health.badgeOptional');
-        } else {
-          badgeClass = 'badge-bad'; badgeText = t('health.badgeFail');
-        }
-        // Map failing/optional rows to their config tab. Key match is
-        // exact on `ch.name` plus a tolerant substring fallback for
-        // *_API_KEY variants. CAR-21 (v1.243.0): the keys MUST be the
-        // exact names server/lib/routes/health.mjs pushes — 'cv.md
-        // non-empty' and 'portals.yml present' matched nothing, so those
-        // two rows silently lost their Fix link. 'portals.yml' now aims
-        // at the real #/portals view (the old '#/config?tab=portals'
-        // hash matches no tab and landed on API keys).
-        const FIX_TARGETS = {
-          'Profile customized':         '#/config?tab=profile',
-          'config/profile.yml':         '#/config?tab=profile',
-          'cv.md':                      '#/cv',
-          'portals.yml':                '#/portals',
-          'data/applications.md':       '#/tracker',
-        };
-        let fixUrl = null;
-        if (!ch.ok) {
-          if (FIX_TARGETS[ch.name]) fixUrl = FIX_TARGETS[ch.name];
-          else if (/_API_KEY$/.test(ch.name)) fixUrl = '#/config?tab=api-keys';
-          else if (/^LLM_PROVIDER/.test(ch.name)) fixUrl = '#/config?tab=api-keys';
-        }
-        return c('li', { className: 'card' }, [
-          c('div', { className: 'flex-between health-check-row' }, [
-            c('div', null, [
-              c('div', { className: 'metric-label' }, ch.name),
-              // CAR-56 #4 (v1.247.0) — was word-break: break-all, which cut
-              // ordinary words mid-letter («"Run" butt ons)»). overflow-wrap:
-              // anywhere still folds a pathological long token (a URL) but
-              // leaves normal words whole.
-              ch.value && c('div', { style: { fontSize: '13px', color: 'var(--foggy)', marginTop: '6px', overflowWrap: 'anywhere' } }, ch.value),
-            ]),
-            c('div', { className: 'flex gap-3', style: { alignItems: 'center' } }, [
-              fixUrl ? c('a', {
-                className: 'btn btn-ghost btn-sm health-fix',
-                href: fixUrl,
-                'aria-label': t('health.fixAria', 'Fix this') + ': ' + ch.name,
-              }, t('health.fix', 'Fix →')) : null,
-              c('span', { className: 'badge ' + badgeClass, 'aria-label': ch.name + ': ' + badgeText }, badgeText),
-            ]),
-          ]),
-        ]);
-      })
+      requiredChecks.map(checkRow)
     ),
+
+    // CAR-121 — optional keys (provider keys, deps, directories) collapse
+    // into one quiet section: <summary> carries the accessible name, so no
+    // extra aria wiring is needed. Collapsed content stays in the DOM.
+    c('details', { className: 'v2-portals-optional' }, [
+      c('summary', null, optionalMissing > 0
+        ? t('health.optionalCollapsed', '{count} optional checks not configured (optional)')
+          .replace('{count}', String(optionalMissing))
+        : t('health.optionalOk', 'Optional checks — all configured')),
+      c('ul', { className: 'card-row', role: 'list', style: optionalListStyle },
+        optionalChecks.map(checkRow)
+      ),
+    ]),
   ]);
 });

@@ -9,10 +9,137 @@
  * direction: type a company name, probe Greenhouse/Ashby/Lever for a live board,
  * and add the one you want to the watched list. Read-only until you click "Add".
  * (v1.99.0 · discover added later)
+ *
+ * CAR-121 — the 129-company list became unusable at scale: a debounced search
+ * (name / domain substring), an enabled/disabled filter, grouping by ATS
+ * vendor, and enable/disable as a real switch with an UNDO bar (the pipeline
+ * undo pattern — one body-level bar per action, LIFO, re-applied through the
+ * SAME POST /api/portals/toggle write path).
+ *
+ * CAR-121 i18n (pending ×19 dict fan-out; allowlisted in
+ * tests/i18n-coverage.test.mjs as CAR121_PENDING — delete the allowlist when
+ * the fan-out lands): portals.search, portals.filterAll,
+ * portals.filterEnabled, portals.filterDisabled, portals.groupOther,
+ * portals.noMatch, portals.undoEnabled, portals.undoDisabled.
  */
+
+// ── CAR-121 · pure helpers (no DOM / closure deps — vm-extractable) ──
+
+/** Host needle → vendor label. Order = match precedence (specific first). */
+const ATS_VENDORS = [
+  ['greenhouse.io', 'Greenhouse'],
+  ['ashbyhq.com', 'Ashby'],
+  ['lever.co', 'Lever'],
+  ['workable.com', 'Workable'],
+  ['smartrecruiters.com', 'SmartRecruiters'],
+  ['myworkdayjobs.com', 'Workday'],
+  ['myworkdaysite.com', 'Workday'],
+  ['recruitee.com', 'Recruitee'],
+  ['personio', 'Personio'],
+  ['teamtailor', 'Teamtailor'],
+  ['rippling.com', 'Rippling'],
+  ['gem.com', 'Gem'],
+  ['jazzhr.com', 'JazzHR'],
+  ['breezy.hr', 'Breezy HR'],
+  ['pinpoint', 'Pinpoint'],
+  ['jobvite.com', 'Jobvite'],
+  ['successfactors', 'SAP SuccessFactors'],
+  ['csod.com', 'Cornerstone'],
+  ['taleo.net', 'Taleo'],
+  ['eightfold.ai', 'Eightfold'],
+  ['avature.net', 'Avature'],
+  ['phenom.com', 'Phenom'],
+  ['radancy', 'Radancy'],
+  ['icims.com', 'iCIMS'],
+  ['bamboohr.com', 'BambooHR'],
+  ['paylocity.com', 'Paylocity'],
+  ['comeet', 'Comeet'],
+  ['hh.ru', 'hh.ru'],
+  ['habr.com', 'Habr Career'],
+];
+
+/** portals.yml `provider:` slug → the same vendor label the host match yields. */
+const PROVIDER_LABELS = {
+  greenhouse: 'Greenhouse',
+  ashby: 'Ashby',
+  lever: 'Lever',
+  workable: 'Workable',
+  smartrecruiters: 'SmartRecruiters',
+  workday: 'Workday',
+  recruitee: 'Recruitee',
+  personio: 'Personio',
+  teamtailor: 'Teamtailor',
+  rippling: 'Rippling',
+  gem: 'Gem',
+  jazzhr: 'JazzHR',
+  breezy: 'Breezy HR',
+  pinpoint: 'Pinpoint',
+  jobvite: 'Jobvite',
+  successfactors: 'SAP SuccessFactors',
+  eightfold: 'Eightfold',
+  phenom: 'Phenom',
+  icims: 'iCIMS',
+  bamboohr: 'BambooHR',
+  paylocity: 'Paylocity',
+  comeet: 'Comeet',
+  hh: 'hh.ru',
+  habr: 'Habr Career',
+};
+
+/** ATS vendor for a tracked company, or null → the "Other" group. */
+function vendorOf(co) {
+  const url = String((co && co.careers_url) || '');
+  const hostMatch = url.match(/^https?:\/\/([^/?#]+)/i);
+  const host = (hostMatch ? hostMatch[1] : url).toLowerCase();
+  for (const pair of ATS_VENDORS) {
+    if (host.indexOf(pair[0]) !== -1) return pair[1];
+  }
+  const prov = String((co && co.provider) || '').trim().toLowerCase();
+  if (prov && Object.prototype.hasOwnProperty.call(PROVIDER_LABELS, prov)) {
+    return PROVIDER_LABELS[prov];
+  }
+  return null;
+}
+
+/** Case-insensitive name/domain substring match (empty query matches all). */
+function matchPortal(co, q) {
+  const needle = String(q || '').trim().toLowerCase();
+  if (!needle) return true;
+  return String(co.name || '').toLowerCase().indexOf(needle) !== -1
+    || String(co.careers_url || '').toLowerCase().indexOf(needle) !== -1;
+}
+
+/** Enabled-state filter: 'all' | 'on' | 'off' (undefined counts as watched). */
+function matchState(co, f) {
+  if (f === 'on') return co.enabled !== false;
+  if (f === 'off') return co.enabled === false;
+  return true;
+}
+
+/** Within-group order: dead (after a check) → enabled → by name. */
+function sortGroup(items, health) {
+  return items.slice().sort((a, b) => {
+    const ha = health[a.careers_url]; const hb = health[b.careers_url];
+    const da = ha && !ha.ok ? 0 : (a.enabled !== false ? 1 : 2);
+    const db = hb && !hb.ok ? 0 : (b.enabled !== false ? 1 : 2);
+    if (da !== db) return da - db;
+    return String(a.name || '').localeCompare(String(b.name || ''));
+  });
+}
+
 Router.register('portals', async () => {
   const c = UI.el;
   const t = (k, f) => I18n.t(k, f);
+
+  // CAR-121 — the view owns its stylesheet (public/css/v2-portals.css, the
+  // v2-pipeline.css pattern): components.css sits at its 800-LOC gate limit
+  // and index.html is shared across the parallel UX epics, so the link is
+  // injected here instead, idempotently. Same-origin link — CSP-safe.
+  if (!document.getElementById('v2-portals-css')) {
+    document.head.appendChild(c('link', {
+      id: 'v2-portals-css', rel: 'stylesheet', href: '/css/v2-portals.css',
+    }));
+  }
 
   const root = c('div');
   root.appendChild(c('h1', { className: 'page-title' }, t('portals.title', 'Portals')));
@@ -20,6 +147,11 @@ Router.register('portals', async () => {
     t('portals.subtitle', 'The companies the scanner watches for new roles (portals.yml). Run a health check to catch ATS slugs that have quietly broken — a 404 means that company silently disappears from every future scan.')));
 
   let companies = [];
+  // health results keyed by careers_url (filled by the check)
+  let health = {};
+  // CAR-121 — the alive/dead line from the last check survives toggles;
+  // while it is set, the counts line does not overwrite it.
+  let checkSummaryText = null;
 
   // ── Discover ATS board ──────────────────────────────────────────────
   const discInput = c('input', {
@@ -43,16 +175,147 @@ Router.register('portals', async () => {
   ]);
   root.appendChild(discCard);
 
-  // ── Health check + tracked list ─────────────────────────────────────
+  // ── Health check ────────────────────────────────────────────────────
   const checkBtn = c('button', { className: 'btn btn-primary', type: 'button' }, t('portals.check', 'Check portal health'));
   const summary = c('span', { style: { marginLeft: '12px', color: 'var(--foggy)', fontSize: '13px' } });
   root.appendChild(c('div', { style: { display: 'flex', alignItems: 'center', flexWrap: 'wrap', margin: '16px 0' } }, [checkBtn, summary]));
 
+  // ── CAR-121 · search + enabled-state filter (debounced) ─────────────
+  let query = '';
+  let stateFilter = 'all';
+  let searchTimer = 0;
+  const searchInput = c('input', {
+    type: 'search',
+    className: 'input',
+    placeholder: t('portals.search', 'Search by name or domain…'),
+    'aria-label': t('portals.search', 'Search by name or domain…'),
+    style: { flex: '1 1 220px', minWidth: '180px' },
+  });
+  const filterSelect = c('select', {
+    className: 'select',
+    'aria-label': t('portals.filterAll', 'All portals'),
+    style: { flex: '0 1 auto', width: 'auto' },
+  }, [
+    c('option', { value: 'all' }, t('portals.filterAll', 'All portals')),
+    c('option', { value: 'on' }, t('portals.filterEnabled', 'Enabled only')),
+    c('option', { value: 'off' }, t('portals.filterDisabled', 'Disabled only')),
+  ]);
+  searchInput.addEventListener('input', () => {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => {
+      query = searchInput.value.trim();
+      renderList();
+    }, 250);
+  });
+  filterSelect.addEventListener('change', () => {
+    stateFilter = filterSelect.value;
+    renderList();
+  });
+  const toolbar = c('div', { className: 'v2-portals-toolbar' }, [searchInput, filterSelect]);
+  root.appendChild(toolbar);
+
   const listWrap = c('div');
   root.appendChild(listWrap);
 
-  // health results keyed by careers_url (filled by the check)
-  let health = {};
+  // ── CAR-121 · undo (session-scoped, body-level bar — pipeline pattern)
+  const undoStack = []; // [{ next, items: [{ careers_url, prev }] }]
+  let undoTimer = 0;
+
+  function undoBar() {
+    let bar = document.getElementById('portals-undo-bar');
+    if (!bar) {
+      bar = c('div', {
+        id: 'portals-undo-bar',
+        className: 'v2-portals-undo-bar',
+        role: 'status',
+        'aria-live': 'polite',
+      });
+      document.body.appendChild(bar);
+    }
+    return bar;
+  }
+
+  function showUndoBar(next, count) {
+    const bar = undoBar();
+    bar.replaceChildren(
+      c('span', { className: 'v2-portals-undo-msg' },
+        (next
+          ? t('portals.undoEnabled', 'Enabled: {count}')
+          : t('portals.undoDisabled', 'Disabled: {count}')).replace('{count}', String(count))),
+      c('button', {
+        type: 'button',
+        id: 'portals-undo-btn',
+        className: 'btn btn-primary btn-sm',
+        onClick: () => { undoLast(); },
+      }, t('pipe.undo', 'Undo')),
+      c('button', {
+        type: 'button',
+        className: 'btn btn-ghost btn-sm',
+        onClick: () => { hideUndoBar(); },
+      }, t('pipe.undoDismiss', 'Dismiss')),
+    );
+    bar.hidden = false;
+    clearTimeout(undoTimer);
+    undoTimer = setTimeout(() => { bar.hidden = true; }, 8000);
+  }
+
+  function hideUndoBar() {
+    const bar = document.getElementById('portals-undo-bar');
+    if (bar) bar.hidden = true;
+    clearTimeout(undoTimer);
+  }
+
+  // Re-apply the recorded pre-toggle states through the SAME write path
+  // (POST /api/portals/toggle); the server write is idempotent per state.
+  async function undoLast() {
+    const action = undoStack.pop() || null;
+    hideUndoBar();
+    if (!action) return;
+    let failed = 0;
+    for (const item of action.items) {
+      try {
+        await API.post('/api/portals/toggle', { careers_url: item.careers_url, enabled: item.prev });
+        const co = companies.find((x) => x.careers_url === item.careers_url);
+        if (co) co.enabled = item.prev;
+      } catch { failed += 1; }
+    }
+    if (failed) {
+      UI.toast(t('portals.toggleFailed', 'Could not update the portal'), 'error');
+    } else {
+      UI.toast(action.items.some((x) => x.prev !== false)
+        ? t('portals.enabledToast', 'Portal enabled — the scanner will watch it')
+        : t('portals.disabledToast', 'Portal disabled — the scanner will skip it'), 'success');
+    }
+    updateSummary();
+    renderList();
+  }
+
+  async function applyToggle(company, input, next) {
+    input.disabled = true;
+    try {
+      await API.post('/api/portals/toggle', { careers_url: company.careers_url, enabled: next });
+      undoStack.push({ next, items: [{ careers_url: company.careers_url, prev: !next }] });
+      company.enabled = next;
+      UI.toast(next
+        ? t('portals.enabledToast', 'Portal enabled — the scanner will watch it')
+        : t('portals.disabledToast', 'Portal disabled — the scanner will skip it'), 'success');
+      updateSummary();
+      renderList();
+      showUndoBar(next, 1);
+    } catch (err) {
+      // revert the switch; the row is re-rendered only on success
+      input.checked = !next;
+      input.disabled = false;
+      UI.toast((err && err.message) || t('portals.toggleFailed', 'Could not update the portal'), 'error');
+    }
+  }
+
+  function updateSummary() {
+    if (checkSummaryText) { summary.textContent = checkSummaryText; return; }
+    const enabled = companies.filter((x) => x.enabled !== false).length;
+    summary.textContent = t('portals.counts', '{total} companies · {enabled} enabled')
+      .replace('{total}', String(companies.length)).replace('{enabled}', String(enabled));
+  }
 
   function row(company) {
     const h = health[company.careers_url];
@@ -80,31 +343,26 @@ Router.register('portals', async () => {
     // `enabled` may be an un-normalized field (undefined = watched, like the
     // scanner's `!== false`), so treat anything but an explicit false as ON.
     const isOn = company.enabled !== false;
-    const toggleBtn = c('button', {
-      className: 'btn btn-ghost btn-sm', type: 'button',
+    // CAR-121 — a real switch (checkbox painted as a pill toggle) instead of
+    // the Enable/Disable button; undo lives in the bar, not in a confirm().
+    const toggleInput = c('input', {
+      type: 'checkbox',
+      className: 'v2-portals-switch',
+      role: 'switch',
+      checked: isOn,
+      disabled: !canToggle,
       // CAR-21 (v1.243.0) — every row used to announce the bare same
       // "Disable"/"Enable": with 45 tracked portals a screen-reader user
       // heard 45 identical buttons. Name the portal too (same
       // disambiguation the pipeline row actions got in F-V54-B).
       'aria-label': (isOn ? t('portals.disable', 'Disable') : t('portals.enable', 'Enable'))
         + ': ' + (company.name || company.careers_url),
-    }, isOn ? t('portals.disable', 'Disable') : t('portals.enable', 'Enable'));
-    if (!canToggle) toggleBtn.disabled = true;
-    else toggleBtn.addEventListener('click', async () => {
-      const next = !isOn;
-      toggleBtn.disabled = true;
-      try {
-        await API.post('/api/portals/toggle', { careers_url: company.careers_url, enabled: next });
-        company.enabled = next;
-        UI.toast(next
-          ? t('portals.enabledToast', 'Portal enabled — the scanner will watch it')
-          : t('portals.disabledToast', 'Portal disabled — the scanner will skip it'), 'success');
-        renderList(companies);
-      } catch (err) {
-        UI.toast((err && err.message) || t('portals.toggleFailed', 'Could not update the portal'), 'error');
-        toggleBtn.disabled = false;
-      }
     });
+    if (canToggle) {
+      toggleInput.addEventListener('change', () => {
+        applyToggle(company, toggleInput, toggleInput.checked);
+      });
+    }
     return c('div', {
       className: 'card',
       style: { display: 'flex', alignItems: 'center', gap: '12px', padding: '10px 14px', margin: '0 0 6px', flexWrap: 'wrap' },
@@ -113,24 +371,41 @@ Router.register('portals', async () => {
       ...meta,
       link,
       badge,
-      toggleBtn,
+      toggleInput,
     ]);
   }
 
-  function renderList(list) {
+  function renderList() {
     listWrap.textContent = '';
-    if (!list.length) {
+    if (!companies.length) {
       listWrap.appendChild(c('p', { style: { color: 'var(--foggy)' } }, t('portals.empty', 'No companies are tracked yet. Add tracked_companies to portals.yml.')));
       return;
     }
-    // dead first (after a check), then enabled, then disabled
-    const sorted = list.slice().sort((a, b) => {
-      const ha = health[a.careers_url]; const hb = health[b.careers_url];
-      const da = ha && !ha.ok ? 0 : (a.enabled ? 1 : 2);
-      const db = hb && !hb.ok ? 0 : (b.enabled ? 1 : 2);
-      return da - db;
+    const vis = companies.filter((co) => matchState(co, stateFilter) && matchPortal(co, query));
+    if (!vis.length) {
+      listWrap.appendChild(c('p', { style: { color: 'var(--foggy)' } }, t('portals.noMatch', 'No portals match the current search or filter.')));
+      return;
+    }
+    const otherLabel = t('portals.groupOther', 'Other');
+    const groups = new Map();
+    for (const co of vis) {
+      const label = vendorOf(co) || otherLabel;
+      if (!groups.has(label)) groups.set(label, []);
+      groups.get(label).push(co);
+    }
+    const labels = Array.from(groups.keys()).sort((a, b) => {
+      if (a === otherLabel) return 1;
+      if (b === otherLabel) return -1;
+      return a.localeCompare(b);
     });
-    sorted.forEach((co) => listWrap.appendChild(row(co)));
+    for (const label of labels) {
+      const items = sortGroup(groups.get(label), health);
+      listWrap.appendChild(c('h3', { className: 'v2-portals-group-h' }, [
+        label,
+        c('span', { className: 'v2-portals-count' }, String(items.length)),
+      ]));
+      items.forEach((co) => listWrap.appendChild(row(co)));
+    }
   }
 
   // Load (or reload) the tracked companies from portals.yml and re-render.
@@ -144,10 +419,8 @@ Router.register('portals', async () => {
         provider: typeof co.provider === 'string' ? co.provider : '',
         enabled: co.enabled !== false,
       })).filter((co) => co.name || co.careers_url);
-      const enabled = companies.filter((x) => x.enabled).length;
-      summary.textContent = t('portals.counts', '{total} companies · {enabled} enabled')
-        .replace('{total}', String(companies.length)).replace('{enabled}', String(enabled));
-      renderList(companies);
+      updateSummary();
+      renderList();
     } catch (err) {
       companies = [];
       listWrap.textContent = '';
@@ -240,10 +513,11 @@ Router.register('portals', async () => {
       health = {};
       (r.results || []).forEach((res) => { health[res.url] = res; });
       const alive = (r.probed || 0) - (r.dead || 0);
-      summary.textContent = t('portals.result', '{alive}/{probed} alive · {dead} dead')
+      checkSummaryText = t('portals.result', '{alive}/{probed} alive · {dead} dead')
         .replace('{alive}', String(alive)).replace('{probed}', String(r.probed || 0)).replace('{dead}', String(r.dead || 0));
       summary.style.color = (r.dead > 0) ? 'var(--danger, #d9534f)' : 'var(--go, #2e7d32)';
-      renderList(companies);
+      updateSummary();
+      renderList();
     } catch (err) {
       UI.toast((err && err.message) || t('portals.checkFailed', 'Health check failed'), 'error');
     } finally {
