@@ -115,6 +115,11 @@ function* walkJs(dir) {
 // in all 19 dicts with their fan-out (no pending allowlist), and the gate
 // below now also sees `tt(`-style helper calls so a local alias can never
 // hide a key from it again.
+// CAR-121 followed the same route: its 16 keys landed in all 19 dicts in
+// the same PR (opus review finding 1), so no pending allowlist exists.
+// CAR-125 followed the same protocol: its three map.list.* keys shipped
+// with the CAR125_PENDING allowlist, which was deleted when the ×19
+// dictionary fan-out landed (the CAR-125 review round).
 
 test('i18n: every t(key) call in public/js/** maps to a DICT entry', () => {
   // Match both t('key') and t("key"). Captures the key string.
