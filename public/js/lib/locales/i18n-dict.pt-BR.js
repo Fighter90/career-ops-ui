@@ -1609,4 +1609,22 @@ window.__I18N_DICT_PT_BR = {
   'rep2.actResearch': "Pesquise a empresa antes",
   'rep2.actLow': "Desconsidere, salvo motivo pessoal",
   'rep2.histogramLabel': "Distribuição de pontuações — clique numa coluna para filtrar",
+
+  /* CAR-120 — #/stats Overview tab (feat/car120-stats-v2). EN parity is
+     locked by tests/i18n-coverage + tests/stats-overview-car120; the ovDay_*
+     forms are picked by Intl.PluralRules in views/stats.js. */
+  'stats.tabOverview': "Visão geral",
+  'stats.ovVacanciesBySource': "Vagas por fonte",
+  'stats.ovPostingsByWeek': "Vagas por semana",
+  'stats.ovSalaryByGrade': "Salário mediano por nível",
+  'stats.ovStageVelocity': "Tempo entre etapas",
+  'stats.ovClickHintScan': "Clique numa barra para abrir essas vagas na Busca",
+  'stats.ovVelocityEmpty': "Ainda sem respostas suficientes — os dias medianos aparecem conforme as respostas chegam.",
+  'stats.hint.overview': "Gráficos com dados reais do seu pipeline e da última busca — funil de status, pontuações, salários e fontes. Sem IA.",
+  'stats.ovDay_zero': "{n} dias",
+  'stats.ovDay_one': "{n} dia",
+  'stats.ovDay_two': "{n} dias",
+  'stats.ovDay_few': "{n} dias",
+  'stats.ovDay_many': "{n} dias",
+  'stats.ovDay_other': "{n} dias",
 };

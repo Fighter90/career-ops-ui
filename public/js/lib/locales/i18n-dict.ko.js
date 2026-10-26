@@ -1610,4 +1610,22 @@ window.__I18N_DICT_KO = {
   'rep2.actResearch': "먼저 회사 조사하기",
   'rep2.actLow': "개인적인 이유가 없다면 건너뛰기",
   'rep2.histogramLabel': "점수 분포 — 열을 눌러 필터링",
+
+  /* CAR-120 — #/stats Overview tab (feat/car120-stats-v2). EN parity is
+     locked by tests/i18n-coverage + tests/stats-overview-car120; the ovDay_*
+     forms are picked by Intl.PluralRules in views/stats.js. */
+  'stats.tabOverview': "개요",
+  'stats.ovVacanciesBySource': "출처별 공고",
+  'stats.ovPostingsByWeek': "주별 공고",
+  'stats.ovSalaryByGrade': "등급별 중간 연봉",
+  'stats.ovStageVelocity': "단계 간 소요 시간",
+  'stats.ovClickHintScan': "막대를 클릭하면 검색에서 해당 공고가 열립니다",
+  'stats.ovVelocityEmpty': "아직 회신이 부족합니다 — 회신이 올 때마다 중간 소요일이 표시됩니다.",
+  'stats.hint.overview': "트래커와 최근 스캔의 실제 데이터로 만든 차트입니다 — 상태 퍼널, 점수, 연봉, 출처. AI 개입 없음.",
+  'stats.ovDay_zero': "{n}일",
+  'stats.ovDay_one': "{n}일",
+  'stats.ovDay_two': "{n}일",
+  'stats.ovDay_few': "{n}일",
+  'stats.ovDay_many': "{n}일",
+  'stats.ovDay_other': "{n}일",
 };

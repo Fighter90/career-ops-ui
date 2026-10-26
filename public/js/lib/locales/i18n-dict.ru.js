@@ -1610,4 +1610,22 @@ window.__I18N_DICT_RU = {
   'rep2.actResearch': "Сначала изучить компанию",
   'rep2.actLow': "Пропустите, если нет персональной причины",
   'rep2.histogramLabel': "Распределение оценок — нажмите на столбец для фильтра",
+
+  /* CAR-120 — #/stats Overview tab (feat/car120-stats-v2). EN parity is
+     locked by tests/i18n-coverage + tests/stats-overview-car120; the ovDay_*
+     forms are picked by Intl.PluralRules in views/stats.js. */
+  'stats.tabOverview': "Обзор",
+  'stats.ovVacanciesBySource': "Вакансии по источникам",
+  'stats.ovPostingsByWeek': "Вакансии по неделям",
+  'stats.ovSalaryByGrade': "Медианная зарплата по грейдам",
+  'stats.ovStageVelocity': "Время между этапами",
+  'stats.ovClickHintScan': "Нажмите на столбец, чтобы открыть эти вакансии в Поиске",
+  'stats.ovVelocityEmpty': "Пока мало ответов — медианные дни появятся по мере поступления ответов.",
+  'stats.hint.overview': "Графики из реальных данных трекера и последнего скана — воронка статусов, оценки, зарплаты, источники. Без ИИ.",
+  'stats.ovDay_zero': "{n} дней",
+  'stats.ovDay_one': "{n} день",
+  'stats.ovDay_two': "{n} дня",
+  'stats.ovDay_few': "{n} дня",
+  'stats.ovDay_many': "{n} дней",
+  'stats.ovDay_other': "{n} дн.",
 };

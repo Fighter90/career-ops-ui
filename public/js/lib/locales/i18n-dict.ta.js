@@ -1596,4 +1596,22 @@ window.__I18N_DICT_TA = {
   'rep2.actResearch': "முதலில் நிறுவனத்தை ஆராயுங்கள்",
   'rep2.actLow': "தனிப்பட்ட காரணம் இருந்தால் மட்டும் முன்னேறுங்கள்",
   'rep2.histogramLabel': "மதிப்பெண் பரவல் — வடிகட்ட ஒரு நெடுவரிசையைக் சொடுக்கவும்",
+
+  /* CAR-120 — #/stats Overview tab (feat/car120-stats-v2). EN parity is
+     locked by tests/i18n-coverage + tests/stats-overview-car120; the ovDay_*
+     forms are picked by Intl.PluralRules in views/stats.js. */
+  'stats.tabOverview': "மேலோட்டம்",
+  'stats.ovVacanciesBySource': "மூலம் வாரியான வேலைவாய்ப்புகள்",
+  'stats.ovPostingsByWeek': "வாரம் வாரியாக வேலைவாய்ப்புகள்",
+  'stats.ovSalaryByGrade': "நிலை வாரியான மத்தியநிலை சம்பளம்",
+  'stats.ovStageVelocity': "நிலைகளுக்கு இடையேயான நேரம்",
+  'stats.ovClickHintScan': "ஒரு பட்டியைக் கிளிக் செய்தால் அந்த வேலைவாய்ப்புகள் தேடலில் திறக்கும்",
+  'stats.ovVelocityEmpty': "இன்னும் போதுமான பதில்கள் இல்லை — பதில்கள் வரும்போது மத்தியநிலை நாட்கள் தோன்றும்.",
+  'stats.hint.overview': "டிராக்கர் மற்றும் சமீபத்திய ஸ்கேனின் உண்மைத் தரவிலிருந்து வரையப்பட்ட விளக்கப்படங்கள் — நிலை ஃபனல், மதிப்பெண்கள், சம்பளம், மூலங்கள். AI இல்லை.",
+  'stats.ovDay_zero': "{n} நாட்கள்",
+  'stats.ovDay_one': "{n} நாள்",
+  'stats.ovDay_two': "{n} நாட்கள்",
+  'stats.ovDay_few': "{n} நாட்கள்",
+  'stats.ovDay_many': "{n} நாட்கள்",
+  'stats.ovDay_other': "{n} நாட்கள்",
 };
