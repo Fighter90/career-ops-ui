@@ -136,6 +136,7 @@ Router.register('cv-studio', async () => {
     try {
       const res = await window.LlmPageKit.run({
         run: runCtrl,
+        intro: t('cvs.rewriting', 'Rewriting in your voice…'),
         request: (signal) => window.LlmPageKit.postJSON('/api/cv-studio/humanize', { text, run: true }, signal),
       });
       if (runCtrl.cancelled || runCtrl.signal.aborted) return; // a cancelled run paints nothing more
@@ -177,6 +178,7 @@ Router.register('cv-studio', async () => {
     try {
       const res = await window.LlmPageKit.run({
         run: runCtrl,
+        intro: t('cvs.tailoring', 'Tailoring and running the checklist gate…'),
         request: (signal) => window.LlmPageKit.postJSON('/api/cv-studio/tailor', { jd, headline: headIn.value.trim(), run: true }, signal),
       });
       if (runCtrl.cancelled || runCtrl.signal.aborted) return; // a cancelled run paints nothing more
@@ -228,6 +230,7 @@ Router.register('cv-studio', async () => {
     try {
       const res = await window.LlmPageKit.run({
         run: runCtrl,
+        intro: t('cvs.adding', 'Reading the source and drafting grounded bullets…'),
         request: (signal) => window.LlmPageKit.postJSON('/api/cv-studio/add-entry', { url, text, run: true }, signal),
       });
       if (runCtrl.cancelled || runCtrl.signal.aborted) return; // a cancelled run paints nothing more

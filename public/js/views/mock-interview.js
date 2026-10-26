@@ -102,6 +102,7 @@ Router.register('mock-interview', async () => {
     try {
       const res = await window.LlmPageKit.run({
         run: runCtrl,
+        intro: t('mock.thinking', 'Interviewer is thinking…'),
         request: (signal) => window.LlmPageKit.postJSON('/api/mock-interview/turn', { role: session.role, company: session.company, jd: session.jd, history, run: true }, signal),
       });
       if (epoch !== sessionEpoch) return; // stale turn — a newer session superseded it
@@ -179,9 +180,16 @@ Router.register('mock-interview', async () => {
 
   // ── saved sessions ──
   // CAR-119 — the hand-rolled list became the kit's history drawer (same
-  // endpoints and confirm-gated delete; card UI with date + View/Delete).
+  // endpoints; the drawer's labels reuse this view's already-translated
+  // strings, so no dictionary change).
   const saved = window.LlmPageKit.historyDrawer({
     title: t('mock.savedTitle', 'Saved sessions'),
+    labels: {
+      view: t('mock.view', 'View'),
+      del: t('mock.delete', 'Delete'),
+      confirm: t('mock.confirmDelete', 'Delete this saved session?'),
+      empty: t('mock.savedEmpty', 'No saved sessions yet — finish an interview and click “Save transcript”.'),
+    },
     load: async () => {
       try {
         const { sessions } = await API.get('/api/mock-interview/sessions');

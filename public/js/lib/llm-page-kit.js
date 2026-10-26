@@ -299,15 +299,18 @@ window.LlmPageKit = (function () {
   }
 
   /**
-   * run({ run, request, onDone }) — convenience wiring:
-   *   run.begin(); try { const res = await request(run.signal); if still
-   *   current → run.finish(); onDone(res); } catch (e) { run.fail(e); }
+   * run({ run, request, onDone, intro }) — convenience wiring:
+   *   run.begin(); if intro → logged as the first line (the view's own
+   *   localized "what is happening" message, e.g. net.building); then
+   *   request(signal) → finish + onDone; failures paint + rethrow; an
+   *   aborted run resolves silently (the cancelled panel already shows).
    * `request` receives the AbortSignal and returns a promise (usually
    * LlmPageKit.postJSON(path, body, signal) or API.post for the
    * not-yet-cancellable endpoints).
    */
-  async function run({ run: ctrl, request, onDone }) {
+  async function run({ run: ctrl, request, onDone, intro }) {
     if (!ctrl.begin()) return undefined;
+    if (intro) ctrl.log(intro);
     try {
       const res = await request(ctrl.signal);
       ctrl.finish();
@@ -383,22 +386,33 @@ window.LlmPageKit = (function () {
   // ── history drawer (views that already own a save endpoint) ─────────────
 
   /**
-   * historyDrawer({ title, load, onView, onDelete }) → { el, refresh }
+   * historyDrawer({ title, load, onView, onDelete, labels }) → { el, refresh }
    *   load()     — async → [{ name, mtime? }] (the view's list endpoint)
    *   onView(s)  — opens the entry (the view's own fetch/modal)
    *   onDelete(s)— performs the delete (the view's own endpoint)
+   *   labels     — optional overrides so views reuse their ALREADY-TRANSLATED
+   *                strings instead of the kit's EN fallbacks:
+   *                { view, del, confirm, empty, refresh, deleted }
    * Delete goes through UI.confirm (focus-trapped, keyboard-reachable).
    * True undo is not possible without a server restore endpoint — the
    * confirm dialog says so.
    */
-  function historyDrawer({ title, load, onView, onDelete }) {
+  function historyDrawer({ title, load, onView, onDelete, labels = {} } = {}) {
+    const L = {
+      view: labels.view ?? t('llm2.historyView', 'View'),
+      del: labels.del ?? t('llm2.historyDelete', 'Delete'),
+      confirm: labels.confirm ?? t('llm2.historyConfirmDelete', 'Delete "{name}"? This cannot be undone.'),
+      empty: labels.empty ?? t('llm2.historyEmpty', 'Nothing saved yet.'),
+      refresh: labels.refresh ?? t('llm2.refresh', 'Refresh'),
+      deleted: labels.deleted ?? t('llm2.historyDeleted', 'Deleted'),
+    };
     const list = el('div', { className: 'llm2hist__list' });
     const drawer = el('div', { className: 'llm2hist' }, [
       el('div', { className: 'llm2hist__head' }, [
         el('h2', { className: 'llm2hist__title' }, title || t('llm2.history', 'History')),
         el('button', {
           type: 'button', className: 'btn btn-ghost btn-sm', onClick: () => refresh(),
-        }, '↻ ' + t('llm2.refresh', 'Refresh')),
+        }, '↻ ' + L.refresh),
       ]),
       list,
     ]);
@@ -414,7 +428,7 @@ window.LlmPageKit = (function () {
         return;
       }
       if (!entries.length) {
-        list.appendChild(el('p', { className: 'llm2hist__empty' }, t('llm2.historyEmpty', 'Nothing saved yet.')));
+        list.appendChild(el('p', { className: 'llm2hist__empty' }, L.empty));
         return;
       }
       for (const s of entries) {
@@ -425,23 +439,19 @@ window.LlmPageKit = (function () {
           iso ? el('time', { className: 'llm2hist__date', datetime: iso }, dateLabel) : null,
           el('span', { className: 'llm2hist__actions' }, [
             typeof onView === 'function'
-              ? el('button', { type: 'button', className: 'btn btn-ghost btn-sm', onClick: () => onView(s) },
-                t('llm2.historyView', 'View'))
+              ? el('button', { type: 'button', className: 'btn btn-ghost btn-sm', onClick: () => onView(s) }, L.view)
               : null,
             typeof onDelete === 'function'
               ? el('button', {
-                  type: 'button', className: 'btn btn-ghost btn-sm', 'aria-label': t('llm2.historyDelete', 'Delete'),
+                  type: 'button', className: 'btn btn-ghost btn-sm', 'aria-label': L.del,
                   onClick: async (e) => {
                     const name = String((s && s.name) || '');
-                    const ok = await UI.confirm(
-                      t('llm2.historyDelete', 'Delete'),
-                      t('llm2.historyConfirmDelete', 'Delete "{name}"? This cannot be undone.').replace('{name}', name),
-                      { danger: true },
-                    );
+                    const message = String(L.confirm).replace('{name}', name);
+                    const ok = await UI.confirm(L.del, message, { danger: true });
                     if (!ok) return;
                     try {
                       await onDelete(s);
-                      UI.toast(t('llm2.historyDeleted', 'Deleted') + ' · ' + name, 'success');
+                      UI.toast(L.deleted + ' · ' + name, 'success');
                       refresh();
                     } catch (err) {
                       UI.toast((err && err.message) || t('common.error', 'Error'), 'error');

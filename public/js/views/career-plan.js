@@ -131,6 +131,7 @@ Router.register('career-plan', async () => {
     try {
       const res = await window.LlmPageKit.run({
         run: runCtrl,
+        intro: t('plan.generating', 'Generating…'),
         request: (signal) => window.LlmPageKit.postJSON('/api/career-plan/generate',
           { run: true, horizon: horizon.value, focus: focus.value }, signal),
       });

@@ -64,6 +64,7 @@ Router.register('funded', async () => {
     try {
       const res = await window.LlmPageKit.run({
         run: runCtrl,
+        intro: t('funded.loading', 'Scanning funding feeds…'),
         request: () => API.get('/api/company-funded'),
       });
       if (runCtrl.cancelled || runCtrl.signal.aborted) return; // a cancelled run paints nothing more

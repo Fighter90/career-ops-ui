@@ -261,6 +261,7 @@ Router.register('stats', async () => {
       try {
         const res = await window.LlmPageKit.run({
           run: runCtrl,
+          intro: t('stats.marketRunning', 'Generating market report…'),
           request: (signal) => window.LlmPageKit.postJSON('/api/stats/market',
             { run: true, region: region.value, currency: curSel.value }, signal),
         });

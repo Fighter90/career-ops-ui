@@ -78,6 +78,7 @@ Router.register('networking', async () => {
     try {
       const res = await window.LlmPageKit.run({
         run: runCtrl,
+        intro: t('net.building', 'Researching and drafting…'),
         request: (signal) => window.LlmPageKit.postJSON('/api/networking/plan',
           { company, role: current.role, jd: jdInput.value.trim(), run: true }, signal),
       });
@@ -122,9 +123,16 @@ Router.register('networking', async () => {
 
   // ── saved plans ──
   // CAR-119 — the hand-rolled list became the kit's history drawer (same
-  // endpoints and confirm-gated delete; card UI with date + View/Delete).
+  // endpoints; the drawer's labels reuse this view's already-translated
+  // strings, so no dictionary change).
   const saved = window.LlmPageKit.historyDrawer({
     title: t('net.savedTitle', 'Saved plans'),
+    labels: {
+      view: t('net.view', 'View'),
+      del: t('net.delete', 'Delete'),
+      confirm: t('net.confirmDelete', 'Delete this saved plan?'),
+      empty: t('net.savedEmpty', 'No saved plans yet — build one and click “Save plan”.'),
+    },
     load: async () => {
       try {
         const { plans } = await API.get('/api/networking/plans');
