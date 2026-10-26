@@ -144,12 +144,16 @@ Router.register('health', async () => {
     ]));
   }
 
-  return c('div', null, [
-    c('header', { className: 'page-header' }, [
-      c('div', null, [
-        c('h1', { className: 'page-title' }, t('health.title')),
-        c('p', { className: 'page-subtitle' }, `career-ops-ui v${data.version}`),
-      ]),
+  // FULL-R5 (review 1) — the guarded body[] tree IS the tree. The return
+  // used to hand-duplicate the summary/required-list/<details> blocks and
+  // ignore checksOk, so a malformed payload rendered empty cards with no
+  // alert — the CAR-121 "never read as all-clear" contract was advertised
+  // but never shipped. One tree, built once above.
+  const header = c('header', { className: 'page-header' }, [
+    c('div', null, [
+      c('h1', { className: 'page-title' }, t('health.title')),
+      data && data.version ? c('p', { className: 'page-subtitle' }, `career-ops-ui v${data.version}`) : null,
+    ]),
       c('div', { className: 'flex gap-3' }, [
         // CAR-21 (v1.243.0) — both run buttons were async handlers without a
         // catch: a failed run rejected unhandled, the "Running…" toast stayed
@@ -190,29 +194,7 @@ Router.register('health', async () => {
           }
         }}, t('health.verify')),
       ]),
-    ]),
-
-    allRequiredOk ? c('div', { className: 'v2-portals-health-ok', role: 'status' }, [
-      '✓ ' + t('health.allOk', 'All required checks pass'),
-      providerSummary ? c('span', { style: { fontWeight: '400', color: 'var(--foggy)' } }, '· ' + providerSummary) : null,
-    ]) : null,
-
-    // Required checks — prominent, uncollapsed.
-    c('ul', { className: 'card-row', role: 'list', style: { listStyle: 'none', margin: 0, padding: 0 } },
-      requiredChecks.map(checkRow)
-    ),
-
-    // CAR-121 — optional keys (provider keys, deps, directories) collapse
-    // into one quiet section: <summary> carries the accessible name, so no
-    // extra aria wiring is needed. Collapsed content stays in the DOM.
-    c('details', { className: 'v2-portals-optional' }, [
-      c('summary', null, optionalMissing > 0
-        ? t('health.optionalCollapsed', '{count} optional checks not configured (optional)')
-          .replace('{count}', String(optionalMissing))
-        : t('health.optionalOk', 'Optional checks — all configured')),
-      c('ul', { className: 'card-row', role: 'list', style: optionalListStyle },
-        optionalChecks.map(checkRow)
-      ),
-    ]),
   ]);
+
+  return c('div', null, [header, ...body]);
 });
