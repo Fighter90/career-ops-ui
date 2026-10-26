@@ -115,6 +115,8 @@ function* walkJs(dir) {
 // GONE — all 17 new pipeline-v2 keys live in every locale dict like any
 // other key. A view may never ship EN-fallback-only strings again; the
 // hand-off comment in pipeline.js was removed with the fan-out.
+// CAR-121 followed the same route: its 16 keys landed in all 19 dicts in
+// the same PR (opus review finding 1), so no pending allowlist exists.
 // CAR-125 followed the same protocol: its three map.list.* keys shipped
 // with the CAR125_PENDING allowlist, which was deleted when the ×19
 // dictionary fan-out landed (the CAR-125 review round).
