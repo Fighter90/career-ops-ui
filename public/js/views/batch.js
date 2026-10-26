@@ -22,6 +22,39 @@
 let batchRunning = false;
 let batchStream = null;
 
+// CAR-124 review f5/f6 — the paste pipeline's pure halves live at module
+// scope as function declarations (classic script → window-visible), so
+// tests/car124-empty-states.test.mjs can drive them in a vm without a
+// browser: parsePastedUrls takes ONLY the first whitespace-free token of
+// each line (a pasted spreadsheet row like "https://a.com<TAB>Foo<TAB>Bar"
+// must not leak its tabs into the url cell that Save writes to
+// batch-input.tsv), validates the token with new URL() + http(s), and
+// dedupes; nextBatchId scans the first TSV column for numeric ids so a
+// header row, comments or non-contiguous ids (1,2,7) never collide.
+// // CAR-124 i18n: the v2empty.* strings live in all 19 locale dicts
+// (the ×19 fan-out landed; the CAR124_PENDING allowlist is gone).
+function parsePastedUrls(text) {
+  const seen = new Set();
+  const out = [];
+  for (const rawLine of String(text || '').split(/\r?\n/)) {
+    const tok = rawLine.trim().split(/\s+/)[0] || '';
+    let u;
+    try { u = new URL(tok); } catch { continue; }
+    if (u.protocol !== 'http:' && u.protocol !== 'https:') continue;
+    if (seen.has(tok)) continue;
+    seen.add(tok);
+    out.push(tok);
+  }
+  return out;
+}
+
+function nextBatchId(existingRaw) {
+  const ids = String(existingRaw || '').split(/\r?\n/)
+    .map((line) => parseInt(line.split('\t')[0], 10))
+    .filter((n) => Number.isInteger(n) && n > 0);
+  return Math.max(0, ...ids) + 1;
+}
+
 Router.register('batch', async () => {
   const c = UI.el;
   const t = (k, f) => I18n.t(k, f);
@@ -35,6 +68,89 @@ Router.register('batch', async () => {
         HelpHint.title(t('batch.title', 'Batch evaluate'), 'help.hint.batch')),
       c('div', { className: 'empty' }, (e && e.message) || 'failed to load'),
     ]);
+  }
+
+  // CAR-124 — first-run empty state. Until a TSV exists, the editor card is
+  // preceded by an explanation + a decorative example row + the two real
+  // first steps (paste a URL list, open the guide). The example is static,
+  // aria-hidden sample data — it is never written to the file or sent
+  // anywhere; the user's own paste/typing is the only editor input. The card
+  // is created once and hides itself as soon as the editor holds content
+  // (review f8: an empty state is a first-RUN state, not a permanent one).
+  // // CAR-124 i18n: the v2empty.batch.* / v2empty.exampleTag strings live
+  // in all 19 locale dicts (the ×19 fan-out landed; CAR124_PENDING is gone).
+  const hasInput = (state.raw || '').trim() !== '';
+
+  function buildBatchExample() {
+    return c('div', { className: 'v2-empty-example', 'aria-hidden': 'true' }, [
+      c('span', { className: 'v2-empty-example__tag' }, t('v2empty.exampleTag', 'Example')),
+      c('div', {
+        style: {
+          display: 'flex', alignItems: 'center', gap: '12px',
+          fontFamily: 'ui-monospace, monospace', fontSize: '12.5px',
+          whiteSpace: 'nowrap', overflow: 'hidden',
+        },
+      }, [
+        c('span', null, '1'),
+        c('span', { style: { color: 'var(--accent, #4c8bf5)' } }, 'https://jobs.example.com/abc'),
+        c('span', null, 'LinkedIn'),
+        c('span', null, '—'),
+      ]),
+    ]);
+  }
+
+  // The card exists from the first render (so syncEmptyCard has a stable
+  // handle); with a saved TSV it starts hidden — review f8.
+  const emptyCard = c('div', { className: 'card mb-3' }, [
+    buildBatchExample(),
+    c('p', { style: { fontWeight: '600', margin: '12px 0 4px' } },
+      t('v2empty.batch.emptyTitle', 'Start with a list of postings')),
+    c('p', { style: { color: 'var(--foggy)', fontSize: '13px', margin: '0' } },
+      t('v2empty.batch.emptyBody', 'Paste a bare URL list below (or type rows), press Save, then Run — every posting is evaluated against your CV and profile in one pass.')),
+    c('p', { style: { color: 'var(--foggy)', fontSize: '12px', margin: '8px 0 0' } },
+      t('batch.inputHint', 'Tab-separated: id<TAB>url<TAB>source<TAB>notes (one row per JD)')),
+    c('div', { className: 'flex gap-3 mt-3', style: { flexWrap: 'wrap', alignItems: 'center' } }, [
+      c('button', { className: 'btn', type: 'button', onClick: () => pasteUrlList() },
+        '📋 ' + t('v2empty.batch.pasteList', 'Paste URL list')),
+      c('span', { style: { color: 'var(--foggy)', fontSize: '13px' } }, [
+        t('v2empty.batch.docsHint', 'Step-by-step: '),
+        c('a', {
+          href: 'https://career-ops.org/docs/introduction/guides/batch-evaluate-offers',
+          style: { overflowWrap: 'anywhere' },
+          target: '_blank', rel: 'noopener noreferrer',
+        }, 'career-ops.org/docs/.../batch-evaluate-offers'),
+      ]),
+    ]),
+  ]);
+  emptyCard.style.display = hasInput ? 'none' : '';
+
+  async function pasteUrlList() {
+    let text = '';
+    try {
+      text = await navigator.clipboard.readText();
+    } catch {
+      UI.toast(t('v2empty.batch.pasteFail', 'Clipboard unavailable — paste the list into the editor manually'), 'error');
+      return;
+    }
+    // review f5 — only the first whitespace-free token of each line survives
+    // (a pasted spreadsheet row "https://a.com<TAB>Foo<TAB>Bar" must not leak
+    // its tabs into the url cell Save writes to batch-input.tsv), validated
+    // http(s) via new URL() and deduped; anything already in the editor is
+    // never re-added.
+    const existing = textarea.value.replace(/\s+$/, '');
+    const urls = parsePastedUrls(text).filter((u) => !existing.includes(u));
+    if (!urls.length) {
+      UI.toast(t('v2empty.batch.pasteNone', 'No new http(s) URLs found on the clipboard'), 'error');
+      return;
+    }
+    const startId = nextBatchId(existing); // review f6 — max existing numeric id + 1 (header rows / comments / gaps like 1,2,7 never collide)
+    const rows = urls.map((u, i) => `${startId + i}\t${u}\t\t`);
+    textarea.value = (existing ? existing + '\n' : '') + rows.join('\n') + '\n';
+    // review f7 — programmatic assignment fires no input event; announce the
+    // change so the editor contract (and the empty-card sync below) sees it.
+    textarea.dispatchEvent(new Event('input', { bubbles: true }));
+    textarea.focus();
+    UI.toast(t('v2empty.batch.pasteAdded', 'Added {n} rows — press Save').replace('{n}', String(urls.length)), 'success');
   }
 
   // ── editor ──
@@ -56,6 +172,16 @@ Router.register('batch', async () => {
   });
   textarea.value = state.raw || '';
 
+  // CAR-124 review f8 — the empty-state card is a first-RUN state: hide it as
+  // soon as the editor holds content (typing, a native Ctrl+V, or the
+  // programmatic paste's dispatched input event) and after a successful
+  // save. One named implementation shared by both trigger paths.
+  function syncEmptyCard() {
+    if (!emptyCard) return;
+    emptyCard.style.display = textarea.value.trim() ? 'none' : '';
+  }
+  textarea.addEventListener('input', syncEmptyCard);
+
   // CAR-20 (v1.243.0) — the row count sat in a one-shot inline span fed
   // from the INITIAL state, so it went stale the moment the user saved a
   // new TSV (or a run/merge refreshed `state`). Dedicated renderer, fed
@@ -73,6 +199,7 @@ Router.register('batch', async () => {
       UI.toast(t('batch.saved', 'Saved') + ` · ${r.rows} ${t('batch.rows', 'rows')}`, 'success');
       state = await API.get('/api/batch');
       renderRowsCount();
+      syncEmptyCard(); // review f8 — a saved (non-empty) file ends the empty state
     } catch (e) {
       UI.toast((e && e.message) || 'save failed', 'error');
     }
@@ -254,6 +381,9 @@ Router.register('batch', async () => {
       c('p', { style: { margin: '6px 0 0', fontSize: '14px' } },
         t('batch.noRunnerBody', 'The runner lives in the parent career-ops project. Ensure batch/batch-runner.sh exists and is executable (chmod +x).')),
     ]) : null,
+    // CAR-124 — first-run empty state (visible only while no TSV exists;
+    // syncEmptyCard hides it the moment the editor holds content).
+    emptyCard,
     // Editor pane
     c('div', { className: 'card mb-3' }, [
       c('h2', { className: 'section-title' }, t('batch.inputTitle', 'batch/batch-input.tsv')),

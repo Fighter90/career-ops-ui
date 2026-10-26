@@ -27,6 +27,15 @@ Router.register('auto', async () => {
   const t = (k, f) => I18n.t(k, f);
   const params = new URLSearchParams(window.location.hash.split('?')[1] || '');
 
+  // CAR-124 — the sample URL the page itself advertises (same constant feeds
+  // the placeholder and the "try an example" affordance). A deliberately
+  // NON-real host (example.com is IETF-reserved) — review f3: a real company's
+  // ATS with an invented id would fabricate a posting and burn a paid run.
+  // Filling the input is all the affordance does — and only into an EMPTY
+  // field (review f4: never overwrite the user's own URL, incl. ?url= deep
+  // links); the run still waits for the explicit Run click (CAR-20).
+  const EXAMPLE_URL = 'https://jobs.example.com/senior-backend-engineer/4567';
+
   const STEPS = [
     { key: 'validate', i18nKey: 'auto.step.validate', label: 'Validating URL' },
     { key: 'fetch',    i18nKey: 'auto.step.fetch',    label: 'Fetching job description' },
@@ -40,7 +49,7 @@ Router.register('auto', async () => {
     id: 'auto-url',
     className: 'input',
     type: 'url',
-    placeholder: 'https://job-boards.greenhouse.io/anthropic/jobs/4567',
+    placeholder: EXAMPLE_URL,
     style: { width: '100%' },
     value: params.get('url') || '',
   });
@@ -113,6 +122,42 @@ Router.register('auto', async () => {
       (detail ? ` (${detail})` : '');
   }
 
+  // CAR-124 — first-run example + the practical notes the ticket asks for:
+  // a "try this example" affordance that pre-fills an EMPTY URL input (no
+  // run, never overwriting the user's own paste — review f4), the per-URL
+  // timer restated next to the actions, and the pointer to App settings for
+  // providers/cadence. Hidden once a run starts; skipped entirely for a
+  // `?url=` deep link, where the field arrives filled and the example is
+  // noise.
+  // // CAR-124 i18n: the v2empty.* strings live in all 19 locale dicts
+  // (the ×19 fan-out landed; the CAR124_PENDING allowlist is gone).
+  const exampleBtn = c('button', {
+    className: 'btn btn-ghost btn-sm', type: 'button',
+    title: t('v2empty.auto.tryExampleTitle', 'Fill the field with an example URL — nothing runs until you press Run'),
+    onClick: () => {
+      if (urlInput.value.trim()) return; // review f4 — a filled field is never overwritten
+      urlInput.value = EXAMPLE_URL;
+      urlInput.focus();
+    },
+  }, t('v2empty.auto.tryExample', 'Try an example URL'));
+  const emptyEl = params.get('url') // review f4 — deep links pre-fill the field; the example block is noise there
+    ? c('div')
+    : c('div', { className: 'v2-empty-example' }, [
+      c('span', { className: 'v2-empty-example__tag' }, t('v2empty.exampleTag', 'Example')),
+      c('div', { className: 'flex gap-3', style: { flexWrap: 'wrap', alignItems: 'center' } }, [
+        c('code', { style: { fontSize: '12.5px', overflowWrap: 'anywhere' } }, EXAMPLE_URL),
+        exampleBtn,
+      ]),
+      c('p', { style: { color: 'var(--foggy)', fontSize: '12.5px', margin: '10px 0 0' } },
+        t('v2empty.auto.hint', 'One URL takes about {eta}. Nothing runs until you press Run — the button above only fills an empty field.')
+          .replace('{eta}', t('auto.eta', '~1–2 min'))),
+      c('p', { style: { color: 'var(--foggy)', fontSize: '12.5px', margin: '4px 0 0' } }, [
+        t('v2empty.auto.configHint', 'Providers and the cadence timer are configured in '),
+        c('a', { href: '#/config' }, t('nav.config', 'App settings')),
+        '.',
+      ]),
+    ]);
+
   function showResult(data) {
     resultEl.innerHTML = '';
     resultEl.style.display = '';
@@ -180,6 +225,7 @@ Router.register('auto', async () => {
     runBtn.textContent = '⏳ ' + t('auto.running', 'Running…');
     stepState.forEach((s) => { s.status = 'pending'; s.detail = ''; });
     stepperEl.style.display = '';
+    emptyEl.style.display = 'none'; // CAR-124 — the example yields to the real run
     resultEl.style.display = 'none';
     renderStepper();
 
@@ -264,6 +310,7 @@ Router.register('auto', async () => {
       ]),
       liveRegion,
       stepperEl,
+      emptyEl,
     ]),
     resultEl,
   ]);

@@ -717,7 +717,6 @@
 .usage-hud--collapsed .usage-hud__chev { transform: rotate(-90deg); }
 .usage-hud--collapsed { padding-bottom: 10px; }
 .usage-hud__bodywrap[hidden] { display: none; }
-
 .usage-hud__meter { margin: 0 0 10px; }
 .usage-hud__meter:last-child { margin-bottom: 0; }
 .usage-hud__meterhead { display: flex; justify-content: space-between; align-items: baseline; margin: 0 0 5px; }
@@ -745,7 +744,6 @@
 .metric-card { transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition); }
 .metric-card:hover { transform: translateY(-2px); box-shadow: var(--shadow-md); border-color: var(--rausch); }
 .metric-value { font-variant-numeric: tabular-nums; }
-
 .card:hover { transform: translateY(-1px); }
 
 .btn-primary, .btn-dark, .btn-danger { box-shadow: 0 1px 2px rgba(0, 0, 0, .10); }
@@ -784,7 +782,6 @@ a:focus-visible, .chip:focus-visible { box-shadow: 0 0 0 4px rgba(255, 56, 92, .
    order at equal specificity. */
 .btn.is-loading .btn-ico { display: none; }
 .btn.is-loading::before { content: "⏳"; line-height: 1; }
-
 .v2-stats-strip { display: flex; align-items: stretch; gap: 4px; flex-wrap: nowrap; border-bottom: 1px solid var(--line, #e5e7eb); margin: 4px 0 18px; }
 .v2-stats-scroller { flex: 1 1 auto; min-width: 0; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: thin; scrollbar-color: var(--slate, #c9ced6) transparent; padding: 0 12px; -webkit-mask-image: linear-gradient(to right, transparent 0, #000 12px, #000 calc(100% - 12px), transparent 100%); mask-image: linear-gradient(to right, transparent 0, #000 12px, #000 calc(100% - 12px), transparent 100%); }
 .v2-stats-tabbar { display: flex; gap: 6px; flex-wrap: nowrap; }
@@ -797,3 +794,6 @@ a:focus-visible, .chip:focus-visible { box-shadow: 0 0 0 4px rgba(255, 56, 92, .
 .v2-stats-anim { animation: v2-stats-rise 300ms ease-out both; }
 @media (prefers-reduced-motion: reduce) { .v2-stats-anim { animation: none; } }
 .v2-stats-bar { cursor: pointer; } .v2-stats-bar:focus-visible { outline: 2px solid var(--accent, #4c8bf5); outline-offset: 2px; }
+/* CAR-124 — empty-state example previews (#/funded, #/batch, #/apply, #/auto): a dashed, muted container + an "EXAMPLE" tag. Everything inside is decorative sample data (aria-hidden="true") — it must never read as live data. */
+.v2-empty-example { position: relative; border: 1.5px dashed var(--slate, #c9ced6); border-radius: 12px; padding: 18px 14px 12px; margin: 14px 0 0; color: var(--foggy, #717171); }
+.v2-empty-example__tag { position: absolute; top: -10px; inset-inline-start: 12px; background: var(--paper, #ffffff); border: 1px solid var(--slate, #ebebeb); border-radius: 999px; color: var(--foggy, #717171); font-size: 10.5px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; padding: 1px 8px; }
