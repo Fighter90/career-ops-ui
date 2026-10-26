@@ -15,9 +15,10 @@ interface Props {
 }
 const { locale, pageNo = 1 } = Astro.props;
 
-// Entries are synced per page (`<lang>-p<NN>.md`, newest first, 50 releases
-// per page) by scripts/sync-assets.mjs from the repo's CHANGELOG.md (en) /
-// CHANGELOG.<locale>.md; the month archive comes from changelog-index.json.
+// Entries are synced per page (`<lang>-p<NN>.md`, newest first, weight-capped
+// by markdown bytes) by scripts/sync-assets.mjs from the repo's CHANGELOG.md
+// (en) / CHANGELOG.<locale>.md; the month archive comes from
+// changelog-index.json.
 const lang = locale.file.toLowerCase();
 const entries = await getCollection('changelog');
 const entry = entries.find((e) => e.id.toLowerCase() === `${lang}-p${String(pageNo).padStart(2, '0')}`);
@@ -73,7 +74,7 @@ const jsonLd = {
   jsonLd={jsonLd}
   canonicalPath={pageHref(pageNo)}
 >
-  <Header locale={locale} page="changelog" subpath={pageNo > 1 ? `${pageNo}/` : ''} />
+  <Header locale={locale} page="changelog" />
   <main id="main" class="container-site pt-24 pb-20 md:pt-28">
     <nav class="mb-6 text-sm text-ink-soft" aria-label="Breadcrumb">
       <a href={localeHome(locale)} class="hover:underline">{t(locale, 'help.home')}</a>
@@ -126,7 +127,7 @@ const jsonLd = {
 
       {/* Pagination — numbered pages, newest first. */}
       {pageCount > 1 && (
-        <nav class="mt-10 flex flex-wrap items-center justify-center gap-2" aria-label={t(locale, 'changelog.page').replace('{n}', '')}>
+        <nav class="mt-10 flex flex-wrap items-center justify-center gap-2" aria-label={t(locale, 'changelog.pagination')}>
           {Array.from({ length: pageCount }, (_, i) => i + 1).map((n) => (
             <a
               href={pageHref(n)}

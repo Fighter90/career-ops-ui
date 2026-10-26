@@ -238,6 +238,7 @@
   "changelog.lead": "Każda istotna zmiana, wydanie po wydaniu. Ten sam plik jest dostępny w repozytorium i przetłumaczony na wszystkie 18 języków.",
   "changelog.archive": "Archiwum wg miesięcy",
   "changelog.page": "Strona {n}",
+  "changelog.pagination": "Strony dziennika zmian",
   "changelog.releases": "wydań: {n}",
   "footer.createdBy": "Autor:",
   "footer.license": "Licencja MIT",

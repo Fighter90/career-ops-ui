@@ -238,6 +238,7 @@
   "changelog.lead": "Кожна значуща зміна, реліз за релізом. Той самий файл постачається в репозиторії та перекладений усіма 18 мовами.",
   "changelog.archive": "Архів за місяцями",
   "changelog.page": "Сторінка {n}",
+  "changelog.pagination": "Сторінки журналу",
   "changelog.releases": "релізів: {n}",
   "footer.createdBy": "Автор:",
   "footer.license": "Ліцензія MIT",
