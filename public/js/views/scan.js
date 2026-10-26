@@ -416,6 +416,7 @@ Router.register('scan', async () => {
   // then the live poll + terminal `done` refill it with the new run's results.
   function resetResultsCache() {
     lastResults = { en: null, ru: null };
+    if (window.Countries && window.Countries.resetCache) window.Countries.resetCache(); // FULL-R5
     SR.render();
   }
   // Render the rich table of last-scan results
@@ -442,6 +443,8 @@ Router.register('scan', async () => {
       const next = await API.get('/api/scan-results');
       if (mySeq !== refreshSeq) return; // a newer refresh owns the table now
       lastResults = next;
+      // FULL-R5 — the location strings changed; drop the countries memo.
+      if (window.Countries && window.Countries.resetCache) window.Countries.resetCache();
       resultsEverLoaded = true;
     } catch (e) {
       if (mySeq !== refreshSeq) return;
