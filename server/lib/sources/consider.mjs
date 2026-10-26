@@ -37,7 +37,7 @@
  * Used by the consider adapter (server/lib/portals/adapters/consider.mjs).
  */
 import { createHash } from 'node:crypto';
-import { fetchJson, guardResolvedHost, BROWSER_LIKE_USER_AGENT } from '../http-json.mjs';
+import { fetchJson, fetchResponse, guardResolvedHost, BROWSER_LIKE_USER_AGENT } from '../http-json.mjs';
 import { requireArray, requireContainer } from './_shape.mjs';
 
 // Budget for the anonymous GET that seeds the session cookie and csrfToken.
@@ -69,14 +69,16 @@ async function acquireCsrfHandshake(origin, fetchImpl, signal) {
     // network path the origin's hostname is resolved and refused if it points
     // at a private/loopback address (a no-op for an injected test transport).
     await guardResolvedHost(fetchImpl, `${origin}/jobs`);
-    // redirect:'error' blocks every redirect — a redirect to a private/metadata
-    // IP would otherwise slip past the resolveOrigin() host pin.
-    const res = await fetchImpl(`${origin}/jobs`, {
+    // The guarded transport (FULL-R2): `fetchResponse` throws on a non-2xx —
+    // the handshake treats any such failure as "no cookie" below, exactly as
+    // the old `!res.ok` check did — and `redirect:'error'` blocks every
+    // redirect, so a 3xx to a private/metadata IP cannot slip past the
+    // resolveOrigin() host pin.
+    const res = await fetchResponse(fetchImpl, `${origin}/jobs`, {
       headers: { 'user-agent': BROWSER_LIKE_USER_AGENT, accept: 'text/html,*/*' },
       redirect: 'error',
       signal: controller.signal,
     });
-    if (!res.ok) return { cookie: null, csrfToken: null };
     const html = await res.text();
     // getSetCookie() keeps each Set-Cookie as its own string (Node ≥18.14).
     const setCookies = typeof res.headers.getSetCookie === 'function'

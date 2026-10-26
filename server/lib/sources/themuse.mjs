@@ -8,6 +8,8 @@
  *
  * Used by the themuse adapter (server/lib/portals/adapters/themuse.mjs).
  */
+import { fetchJson, labeledHttpError } from '../http-json.mjs';
+
 const UA = 'career-ops-web-ui/1.0';
 const TRUSTED_HOST = 'www.themuse.com';
 
@@ -126,21 +128,10 @@ export async function fetchTheMuse(feedUrl = FEED_BASE, opts = {}) {
     // already collected (they used to be discarded with the whole fetch).
     let json;
     try {
-      const res = await fetchImpl(pageUrl.toString(), {
+      json = await fetchJson(fetchImpl, pageUrl.toString(), {
         signal,
-        redirect: 'error',
         headers: { 'User-Agent': UA, Accept: 'application/json' },
-      });
-      if (!res.ok) {
-        if (page === 0) {
-          const err = new Error(`The Muse: HTTP ${res.status} (${pageUrl})`);
-          err.status = res.status;
-          throw err;
-        }
-        // Non-fatal on subsequent pages — keep partials, stop pagination
-        break;
-      }
-      json = await res.json();
+      }).catch((e) => { throw labeledHttpError(e, 'The Muse'); });
     } catch (err) {
       if (page === 0) throw err;
       console.error(`  ⚠ themuse: page ${page} failed (${err.message}) — keeping the ${allResults.length} postings collected so far`);

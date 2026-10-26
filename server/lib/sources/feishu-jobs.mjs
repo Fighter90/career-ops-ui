@@ -21,7 +21,7 @@
  *
  * Ported from parent career-ops v1.31.0 (`providers/feishu-jobs.mjs`).
  */
-import { fetchJson, MACOS_BROWSER_LIKE_USER_AGENT } from '../http-json.mjs';
+import { fetchJson, MACOS_BROWSER_LIKE_USER_AGENT, delay } from '../http-json.mjs';
 import { safeEncodeURIComponent } from './_safe-url.mjs';
 
 export const meta = {
@@ -126,10 +126,11 @@ export function buildFeishuUrl(company = {}) {
   return `${origin}/api/v1/search/job/posts`;
 }
 
-const sleep = (ms, signal) => new Promise((resolve) => {
-  const t = setTimeout(resolve, ms);
-  signal?.addEventListener?.('abort', () => { clearTimeout(t); resolve(undefined); }, { once: true });
-});
+// The shared abort-aware delay (FULL-R2): the local helper added an `abort`
+// listener to the scan-wide signal on every page and never removed it when the
+// timer fired first — up to pages × keywords of listeners on one signal. The
+// shared one removes its listener on completion.
+const sleep = delay;
 
 /**
  * Fetch + normalize one Feishu Jobs tenant.

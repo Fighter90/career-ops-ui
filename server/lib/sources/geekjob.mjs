@@ -14,6 +14,7 @@
  * after the first live run.
  */
 import { decodeEntities } from '../html-entities.mjs';
+import { fetchTextFollowSameHost } from '../http-json.mjs';
 
 const GEEKJOB_BASE = 'https://geekjob.ru';
 const UA =
@@ -37,17 +38,21 @@ export async function searchGeekJob(query, opts = {}) {
   const params = new URLSearchParams({ qs: query });
   if (onlyRemote) params.set('remote', '1');
 
-  const res = await fetchImpl(`${GEEKJOB_BASE}/?${params}`, {
-    signal,
-    headers: { 'User-Agent': UA, Accept: 'text/html' },
-  });
-
-  if (!res.ok) {
-    const err = new Error(`GeekJob: HTTP ${res.status}`);
-    err.status = res.status;
+  // Guarded transport, manual same-host redirects: a 3xx is followed only
+  // when its Location stays on geekjob.ru over https — an off-host redirect
+  // is refused, never fetched (FULL-R2).
+  let html;
+  try {
+    ({ text: html } = await fetchTextFollowSameHost(fetchImpl, `${GEEKJOB_BASE}/?${params}`, {
+      signal,
+      headers: { 'User-Agent': UA, Accept: 'text/html' },
+    }));
+  } catch (e) {
+    if (typeof e?.status !== 'number') throw e; // network-level: surface raw
+    const err = new Error(`GeekJob: HTTP ${e.status}`);
+    err.status = e.status;
     throw err;
   }
-  const html = await res.text();
   const out = parseGeekJobCards(html);
   return onlyRemote ? out.filter((j) => j.isRemote) : out;
 }

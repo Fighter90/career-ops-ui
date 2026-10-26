@@ -19,7 +19,7 @@ test('happy path: returns normalized jobs from CXS response', async () => {
     json: async () => ({
       jobPostings: [
         { title: 'Senior Backend', externalPath: '/job/abc', locationsText: 'Remote', bulletFields: ['Backend','REQ-1'], postedOn: '2026-05-01' },
-        { title: 'Staff Engineer', externalPath: 'https://example.com/job/def', locationsText: 'San Francisco', bulletFields: ['Engineering','REQ-2'], postedOn: '2026-05-02' },
+        { title: 'Staff Engineer', externalPath: '/job/def', locationsText: 'San Francisco', bulletFields: ['Engineering','REQ-2'], postedOn: '2026-05-02' },
       ],
     }),
   });
@@ -28,8 +28,9 @@ test('happy path: returns normalized jobs from CXS response', async () => {
   assert.equal(jobs[0].title, 'Senior Backend');
   assert.equal(jobs[0].source, 'workday');
   assert.equal(jobs[0].url, 'https://example.wd5.myworkdayjobs.com/job/abc');
-  // absolute path stays absolute
-  assert.equal(jobs[1].url, 'https://example.com/job/def');
+  // FULL-R2: a tenant-supplied absolute externalPath is accepted only on the
+  // tenant origin — an off-host (or plain-http) value is dropped to ''.
+  assert.equal(jobs[1].url, 'https://example.wd5.myworkdayjobs.com/job/def');
 });
 
 test('CAPTCHA (403) → returns [] (no throw) + sets lastWorkdayFallback', async () => {

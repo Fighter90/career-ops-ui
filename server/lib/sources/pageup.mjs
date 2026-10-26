@@ -14,7 +14,7 @@
  */
 import { decodeEntities } from '../html-entities.mjs';
 import { htmlToText } from '../html-to-text.mjs';
-import { BROWSER_LIKE_USER_AGENT } from '../http-json.mjs';
+import { BROWSER_LIKE_USER_AGENT, fetchText, labeledHttpError, delay } from '../http-json.mjs';
 
 const UA = BROWSER_LIKE_USER_AGENT;
 
@@ -210,7 +210,10 @@ export function parsePageupListing(html, cfg, companyName) {
   return { valid: true, linkCount, hasMore, jobs };
 }
 
-const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
+// The shared abort-aware delay: a courtesy pause between pages must not hold
+// a scan open after the client disconnects (the local version ignored the
+// signal entirely — FULL-R2).
+const sleep = delay;
 
 /**
  * Fetch + normalize the PageUp listing for one tenant (paginated).
@@ -235,15 +238,14 @@ export async function fetchPageup(endpoint, opts = {}) {
   // Why pagination stopped. Only 'cap' earns the truncation flag.
   let truncated = false;
   for (let page = 1; page <= maxPages; page++) {
-    if (page > 1 && delayMs > 0) await sleep(delayMs);
+    if (page > 1 && delayMs > 0) await sleep(delayMs, signal);
     if (signal?.aborted) break;
-    let res;
+    let html;
     try {
-      res = await fetchImpl(listingUrl(cfg, page), {
+      html = await fetchText(fetchImpl, listingUrl(cfg, page), {
         signal,
-        redirect: 'error',
         headers: { 'User-Agent': UA, Accept: 'text/html' },
-      });
+      }).catch((e) => { throw labeledHttpError(e, 'pageup'); });
     } catch (err) {
       // The first page failing means there is no board to report on.
       if (page === 1) throw err;
@@ -251,13 +253,6 @@ export async function fetchPageup(endpoint, opts = {}) {
       truncated = truncated || page === maxPages;
       break;
     }
-    if (!res.ok) {
-      const err = new Error(`pageup: HTTP ${res.status} (${listingUrl(cfg, page)})`);
-      err.status = res.status;
-      if (page === 1) throw err;
-      break;
-    }
-    const html = await res.text();
     const parsed = parsePageupListing(html, cfg, String(entry.name ?? ''));
     if (!parsed.valid) {
       // On the first page there is nothing to salvage; later, keep the pages

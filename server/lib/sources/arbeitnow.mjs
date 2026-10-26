@@ -15,6 +15,8 @@
  *   { data: [ { slug, company_name, title, description, remote, url, tags,
  *               job_types, location, created_at } ], links, meta }
  */
+import { fetchJson, labeledHttpError } from '../http-json.mjs';
+
 const UA = 'career-ops-web-ui/1.0';
 const TRUSTED_HOST = 'www.arbeitnow.com';
 
@@ -123,17 +125,10 @@ function normalize(j) {
 export async function fetchArbeitnow(feedUrl = FEED_URL, opts = {}) {
   const { fetchImpl = fetch, signal } = opts;
   assertArbeitnowUrl(feedUrl);
-  const res = await fetchImpl(feedUrl, {
+  const json = await fetchJson(fetchImpl, feedUrl, {
     signal,
-    redirect: 'error',
     headers: { 'User-Agent': UA, Accept: 'application/json' },
-  });
-  if (!res.ok) {
-    const err = new Error(`Arbeitnow: HTTP ${res.status} (${feedUrl})`);
-    err.status = res.status;
-    throw err;
-  }
-  const json = await res.json();
+  }).catch((e) => { throw labeledHttpError(e, 'Arbeitnow'); });
   if (!json || !Array.isArray(json.data)) {
     throw new Error(
       `Arbeitnow: unexpected API response — expected { data: [...] }, got keys: [${json ? Object.keys(json).join(', ') : 'null'}]`,

@@ -22,7 +22,7 @@
  * Ported from parent career-ops v1.31.0 (`providers/mokahr.mjs`).
  */
 import { createDecipheriv } from 'node:crypto';
-import { fetchJson, BROWSER_LIKE_USER_AGENT } from '../http-json.mjs';
+import { fetchJson, BROWSER_LIKE_USER_AGENT, delay } from '../http-json.mjs';
 import { htmlToText } from '../html-to-text.mjs';
 import { safeEncodeURIComponent } from './_safe-url.mjs';
 
@@ -175,10 +175,11 @@ export function buildMokaHrUrl(company = {}) {
   return tenant.apiUrl;
 }
 
-const sleep = (ms, signal) => new Promise((resolve) => {
-  const t = setTimeout(resolve, ms);
-  signal?.addEventListener?.('abort', () => { clearTimeout(t); resolve(undefined); }, { once: true });
-});
+// The shared abort-aware delay (FULL-R2): the local helper added an `abort`
+// listener to the scan-wide signal on every page and never removed it when the
+// timer fired first — up to pages × keywords of listeners on one signal. The
+// shared one removes its listener on completion.
+const sleep = delay;
 
 /**
  * Fetch + normalize one MokaHR tenant.

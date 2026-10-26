@@ -9,14 +9,17 @@
  * object (skipped). All postings are remote, so `isRemote` is always true and
  * the en-scanner's title_filter / location_filter gate the rows afterwards.
  *
- * Phase-2 URL pinning (v1.242.0 sources-6): the feed URL is server-fetched, so
- * it must be https on a real host (an explicit `api:`/`remoteok:` mirror stays
- * allowed — same model as phenom's branded tenants). Every job `url` is
- * display-only but flows into scan history and generated documents, so it is
- * pinned to https on the exact remoteok.com host; anything else is dropped.
+ * Phase-2 URL pinning (v1.242.0 sources-6); FULL-R2 tightened the feed guard:
+ * the feed URL must be https on the pinned remoteok.com host (a subdomain
+ * mirror of the board itself stays allowed — an arbitrary https host does
+ * not). Every job `url` is display-only but flows into scan history and
+ * generated documents, so it is pinned to https on the exact remoteok.com
+ * host; anything else is dropped.
  *
  * Used by the remoteok adapter (server/lib/portals/adapters/remoteok.mjs).
  */
+import { fetchJson, labeledHttpError } from '../http-json.mjs';
+
 const UA = 'career-ops-web-ui/1.0';
 
 export const FEED_URL = 'https://remoteok.com/api';
@@ -33,9 +36,11 @@ export const meta = {
 };
 
 /**
- * Guard on the feed URL (the one server-fetched request): HTTPS + a real
- * hostname. The mirror override stays usable; the job-url pin below carries
- * the exact-host rule.
+ * Guard on the feed URL (the one server-fetched request): HTTPS on the pinned
+ * board host — `remoteok.com` itself or a subdomain (FULL-R2: the old guard
+ * accepted ANY https host, so an `api:` override pointing at an internal or
+ * lookalike host was fetched with no resolve-time private-address check — a
+ * live SSRF). The job-url pin below carries the exact-host rule for links.
  * @param {string} url
  */
 export function assertRemoteOkUrl(url) {
@@ -46,7 +51,9 @@ export function assertRemoteOkUrl(url) {
     throw new Error(`remoteok: invalid URL: ${url}`);
   }
   if (parsed.protocol !== 'https:') throw new Error(`remoteok: URL must use HTTPS: ${url}`);
-  if (!parsed.hostname) throw new Error(`remoteok: URL has no hostname: ${url}`);
+  if (!REMOTEOK_HOST_RE.test(parsed.hostname)) {
+    throw new Error(`remoteok: untrusted hostname "${parsed.hostname}" — must be on remoteok.com`);
+  }
   return url;
 }
 
@@ -77,18 +84,13 @@ function djb2(str) {
 export async function fetchRemoteOk(feedUrl = FEED_URL, opts = {}) {
   const { fetchImpl = fetch, signal } = opts;
   assertRemoteOkUrl(feedUrl);
-  // redirect:'error' closes the SSRF-via-redirect vector.
-  const res = await fetchImpl(feedUrl, {
+  // The guarded transport: redirect:'error' closes the SSRF-via-redirect
+  // vector, and on the real network path the host is resolved and refused if
+  // it points at a private/loopback address.
+  const data = await fetchJson(fetchImpl, feedUrl, {
     signal,
-    redirect: 'error',
     headers: { 'User-Agent': UA, Accept: 'application/json' },
-  });
-  if (!res.ok) {
-    const err = new Error(`RemoteOK: HTTP ${res.status} (${feedUrl})`);
-    err.status = res.status;
-    throw err;
-  }
-  const data = await res.json();
+  }).catch((e) => { throw labeledHttpError(e, 'RemoteOK'); });
   if (!Array.isArray(data)) {
     throw new Error(`RemoteOK: unexpected API response — expected a JSON array, got ${data === null ? 'null' : typeof data}`);
   }

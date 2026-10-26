@@ -20,6 +20,8 @@
  */
 import { requireArray } from './_shape.mjs';
 
+import { fetchJson, labeledHttpError } from '../http-json.mjs';
+
 const UA = 'career-ops-web-ui/1.0';
 
 export const FEED_URL = 'https://landing.jobs/api/v1/jobs';
@@ -184,17 +186,11 @@ export async function fetchLandingjobs(feedUrl = FEED_URL, opts = {}) {
     const url = buildFeedPageUrl(feedUrl, page * PAGE_SIZE);
     let rows;
     try {
-      const res = await fetchImpl(url, {
+      const rowsJson = await fetchJson(fetchImpl, url, {
         signal,
-        redirect: 'error',
         headers: { 'User-Agent': UA, Accept: 'application/json' },
-      });
-      if (!res.ok) {
-        const err = new Error(`landingjobs: HTTP ${res.status} (${url})`);
-        err.status = res.status;
-        throw err;
-      }
-      rows = requireArray(await res.json(), 'Landing.jobs jobs');
+      }).catch((e) => { throw labeledHttpError(e, 'landingjobs'); });
+      rows = requireArray(rowsJson, 'Landing.jobs jobs');
     } catch (err) {
       // Nothing collected yet means the endpoint is wrong — surface it. After
       // a success, a later failure is a partial result worth keeping.

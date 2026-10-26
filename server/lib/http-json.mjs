@@ -347,6 +347,165 @@ export async function fetchJsonWithRetry(fetchImpl, url, opts = {}) {
 }
 
 /**
+ * Re-label an HTTP error thrown by {@link fetchJson}/{@link fetchText} with a
+ * source's own prefix (`Trudvsem: HTTP 503 (url)`), keeping `.status`,
+ * `.retryAfter` and `.location`. A non-HTTP error (network failure, a non-JSON
+ * 200) passes through UNCHANGED — callers branch on `.status`, and the shape
+ * guards label their own failures.
+ *
+ * The port to the guarded transport must not change what a scan log or a
+ * quarantine reason says, so every ported call site wraps its fetch in
+ * `.catch((e) => { throw labeledHttpError(e, 'Label', url); })`.
+ *
+ * @param {unknown} err
+ * @param {string} label the source's message prefix, e.g. `'Trudvsem'`
+ * @returns {unknown} the relabelled error, or `err` untouched
+ */
+export function labeledHttpError(err, label) {
+  if (!err || typeof err.status !== 'number') return err;
+  const relabelled = new Error(`${label}: ${err.message}`);
+  relabelled.status = err.status;
+  relabelled.retryAfter = err.retryAfter;
+  relabelled.location = err.location;
+  return relabelled;
+}
+
+/**
+ * Text-over-fetch page loader that follows only SAME-HOST redirects — the
+ * manual-redirect contract for the HTML-scraping sources (hh.ru, Habr Career,
+ * GeekJob, GetMatch). Node's default `redirect: 'follow'` would bounce a
+ * request to ANY host the upstream names (a compromised or misbehaving board
+ * can point it at an internal target), while a bare `redirect: 'error'` would
+ * break the boards that legitimately redirect (hh.ru 302s a regional Russian
+ * IP to `sochi.hh.ru`, `spb.hh.ru`, …).
+ *
+ * Each hop is `redirect: 'manual'` and re-guarded by {@link guardResolvedHost},
+ * so the redirect target is resolved and refused if it points at a private /
+ * loopback address — a 3xx cannot smuggle the request past the DNS-rebinding
+ * defence. Redirect budget is small and absolute: a loop throws, it never
+ * spins.
+ *
+ * A refused redirect throws like the siblings (Error with `.status` and
+ * `.location`), so a caller can tell a redirect it chose not to follow from a
+ * plain HTTP failure — hh.ru reads the Location to detect its VPN-check
+ * interstitial without ever leaving hh.ru.
+ *
+ * GET-only by design: the scraper sources never POST through a redirect.
+ *
+ * @param {typeof fetch} fetchImpl
+ * @param {string} url
+ * @param {{ headers?: Record<string,string>, signal?: AbortSignal,
+ *           maxRedirects?: number, allowSubdomains?: boolean }} [opts]
+ * @returns {Promise<{ status: number, url: string, text: string }>} the final
+ *   hop's status, final URL (`res.url` on a real fetch), and body text.
+ */
+export async function fetchTextFollowSameHost(fetchImpl, url, opts = {}) {
+  const { headers = {}, signal, maxRedirects = 3, allowSubdomains = false } = opts;
+  const first = new URL(url);
+  // Pinned to the FIRST hop's host: `hh.ru → sochi.hh.ru → hh.ru` stays inside
+  // the pin either way, while `hh.ru → evil.com` can never launder itself into
+  // an allowed name two hops later.
+  const pinnedHost = first.hostname.toLowerCase();
+  let current = first.href;
+  for (let hop = 0; ; hop += 1) {
+    await guardResolvedHost(fetchImpl, current);
+    const res = await fetchImpl(current, {
+      signal,
+      redirect: 'manual',
+      headers: withPinnedEncoding(headers),
+    });
+    const location = res.headers?.get?.('location') ?? null;
+    if (res.status >= 300 && res.status < 400) {
+      const err = new Error(`HTTP ${res.status} (${current})`);
+      err.status = res.status;
+      err.location = location;
+      err.retryAfter = res.headers?.get?.('retry-after') ?? null;
+      let next = null;
+      if (location && hop < maxRedirects) {
+        try { next = new URL(location, current); } catch { next = null; }
+        const to = next ? next.hostname.toLowerCase() : '';
+        const sameHostAllowed = next && next.protocol === 'https:'
+          && (to === pinnedHost || (allowSubdomains && to.endsWith(`.${pinnedHost}`)));
+        if (sameHostAllowed) {
+          current = next.href;
+          continue;
+        }
+      }
+      throw err;
+    }
+    if (!res.ok) {
+      const err = new Error(`HTTP ${res.status} (${current})`);
+      err.status = res.status;
+      err.location = location;
+      err.retryAfter = res.headers?.get?.('retry-after') ?? null;
+      throw err;
+    }
+    return { status: res.status, url: res.url || current, text: await res.text() };
+  }
+}
+
+/**
+ * Retrying sibling of {@link fetchText} for the text-scraping sources that
+ * paginate HTML pages (same transient-only policy as {@link fetchJsonWithRetry}:
+ * HTTP 429, HTTP ≥ 500, and status-less network errors; a refused redirect is
+ * deterministic and never retried; a permanent 4xx rethrows immediately).
+ * Exists so new adapters stop copy-pasting per-source retry loops (the
+ * copy-pasted helpers drift — FULL-R2 follow-up).
+ *
+ * @param {typeof fetch} fetchImpl
+ * @param {string} url
+ * @param {{ method?: string, headers?: Record<string,string>, body?: string,
+ *           signal?: AbortSignal, redirect?: 'error'|'follow'|'manual',
+ *           retries?: number, retryDelayMs?: number, maxDelayMs?: number }} [opts]
+ * @returns {Promise<string>}
+ */
+export async function fetchTextWithRetry(fetchImpl, url, opts = {}) {
+  const { retries = 2, retryDelayMs = 500, maxDelayMs = 8000, signal, ...rest } = opts;
+  let lastErr;
+  for (let attempt = 0; attempt <= retries; attempt += 1) {
+    try {
+      return await fetchText(fetchImpl, url, { ...rest, signal });
+    } catch (err) {
+      lastErr = err;
+      const status = err && typeof err.status === 'number' ? err.status : undefined;
+      const redirectRefusal = status === undefined
+        && err instanceof TypeError
+        && err?.cause?.message === REDIRECT_REFUSAL_CAUSE_MESSAGE;
+      const transient = !redirectRefusal
+        && (status === undefined || status === 429 || status >= 500);
+      if (!transient || attempt === retries || signal?.aborted) throw err;
+      await delay(computeRetryDelayMs({ attempt, baseDelayMs: retryDelayMs, maxDelayMs, retryAfter: err?.retryAfter }), signal);
+    }
+  }
+  throw lastErr;
+}
+
+/**
+ * Guarded raw-Response sibling for the two sources that must see what the
+ * shaped helpers hide: a redirect response itself (`redirect: 'manual'` —
+ * workday's dead-board confirmation reads the Location header) or a body
+ * under ANY status (the same check reads maintenance markers off an error
+ * page, and peoplesoft's cookie-jar walker steps redirect-by-redirect). The
+ * transport is the chokepoint, not the caller: {@link guardResolvedHost}
+ * runs here on the real network path, so a per-hop request still cannot be
+ * aimed at a private/loopback address.
+ *
+ * The Response is returned UNTOUCHED — the caller owns every status, header
+ * and body read, exactly as with a raw `fetchImpl` call, minus the bypass.
+ *
+ * @param {typeof fetch} fetchImpl
+ * @param {string} url
+ * @param {{ method?: string, headers?: Record<string,string>, body?: string,
+ *           signal?: AbortSignal, redirect?: 'error'|'follow'|'manual' }} [opts]
+ * @returns {Promise<Response>}
+ */
+export async function fetchRawResponse(fetchImpl, url, opts = {}) {
+  const { method = 'GET', headers = {}, body, signal, redirect = 'error' } = opts;
+  await guardResolvedHost(fetchImpl, url);
+  return fetchImpl(url, { method, headers: withPinnedEncoding(headers), body, signal, redirect });
+}
+
+/**
  * Abort-aware delay. Resolves after `ms`, or immediately if `signal` is (or
  * becomes) aborted — so a courtesy rate-limit pause between pagination pages
  * can't hold a scan open after the client disconnects.

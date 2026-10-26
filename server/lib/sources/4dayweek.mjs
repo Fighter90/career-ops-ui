@@ -14,6 +14,8 @@
  * Used by the 4dayweek adapter (server/lib/portals/adapters/4dayweek.mjs).
  */
 
+import { fetchJson, labeledHttpError } from '../http-json.mjs';
+
 const UA = 'career-ops-web-ui/1.0';
 const TRUSTED_HOST = '4dayweek.io';
 const DEFAULT_MAX_PAGES = 3;
@@ -149,17 +151,10 @@ export async function fetch4DayWeek(feedUrl = FEED_BASE, opts = {}) {
 
     let json;
     try {
-      const res = await fetchImpl(url, {
+      json = await fetchJson(fetchImpl, url, {
         signal,
-        redirect: 'error',
         headers: { 'User-Agent': UA, Accept: 'application/json' },
-      });
-      if (!res.ok) {
-        const err = new Error(`4dayweek: HTTP ${res.status} (${url})`);
-        err.status = res.status;
-        throw err;
-      }
-      json = await res.json();
+      }).catch((e) => { throw labeledHttpError(e, '4dayweek'); });
     } catch (err) {
       // Phase-2: page-1 failure is fatal; a later-page failure (HTTP or
       // unparseable JSON) keeps the partials and logs.

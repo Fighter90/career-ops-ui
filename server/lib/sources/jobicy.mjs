@@ -14,6 +14,8 @@
  */
 import { requireArray, requireContainer } from './_shape.mjs';
 
+import { fetchJson, labeledHttpError } from '../http-json.mjs';
+
 const UA = 'career-ops-web-ui/1.0';
 
 export const FEED_URL = 'https://jobicy.com/api/v2/remote-jobs?count=50';
@@ -61,17 +63,11 @@ function resolveMaxPages(company, opts) {
 
 /** One feed request: host-pinned, redirect-refusing, non-2xx → Error with .status. */
 async function fetchOne(fetchImpl, url, signal) {
-  const res = await fetchImpl(url, {
+  return fetchJson(fetchImpl, url, {
     signal,
-    redirect: 'error',
     headers: { 'User-Agent': UA, Accept: 'application/json' },
+  }).catch((e) => { throw labeledHttpError(e, 'Jobicy');
   });
-  if (!res.ok) {
-    const err = new Error(`Jobicy: HTTP ${res.status} (${url})`);
-    err.status = res.status;
-    throw err;
-  }
-  return res.json();
 }
 
 /**

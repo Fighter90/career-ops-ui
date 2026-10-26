@@ -7,13 +7,16 @@
  * en-scanner's title_filter can gate on the configured titles — the feed's
  * own ?search= is a narrow substring match that misses e.g. "ML Engineer".
  *
- * Phase-2 URL pinning (v1.242.0 sources-6): the feed URL must be https on a
- * real host (an explicit `api:`/`remotive:` mirror stays allowed — same model
- * as phenom's branded tenants), and every job `url` is pinned to https on the
- * exact remotive.com host; anything else is dropped.
+ * Phase-2 URL pinning (v1.242.0 sources-6); FULL-R2 tightened the feed guard:
+ * the feed URL must be https on the pinned remotive.com host (a subdomain
+ * mirror of the board itself stays allowed — an arbitrary https host does
+ * not), and every job `url` is pinned to https on the exact remotive.com
+ * host; anything else is dropped.
  *
  * Used by the remotive adapter (server/lib/portals/adapters/remotive.mjs).
  */
+import { fetchJson, labeledHttpError } from '../http-json.mjs';
+
 const UA = 'career-ops-web-ui/1.0';
 
 export const FEED_URL = 'https://remotive.com/api/remote-jobs';
@@ -28,9 +31,11 @@ export const meta = {
 };
 
 /**
- * Guard on the feed URL (the one server-fetched request): HTTPS + a real
- * hostname. The mirror override stays usable; the job-url pin below carries
- * the exact-host rule.
+ * Guard on the feed URL (the one server-fetched request): HTTPS on the pinned
+ * board host — `remotive.com` itself or a subdomain (FULL-R2: the old guard
+ * accepted ANY https host, so an `api:`/`remotive:` mirror override pointing
+ * at an internal or lookalike host was fetched with no private-address check
+ * — a live SSRF). The job-url pin below carries the exact-host rule for links.
  * @param {string} url
  */
 export function assertRemotiveUrl(url) {
@@ -41,7 +46,9 @@ export function assertRemotiveUrl(url) {
     throw new Error(`remotive: invalid URL: ${url}`);
   }
   if (parsed.protocol !== 'https:') throw new Error(`remotive: URL must use HTTPS: ${url}`);
-  if (!parsed.hostname) throw new Error(`remotive: URL has no hostname: ${url}`);
+  if (!REMOTIVE_HOST_RE.test(parsed.hostname)) {
+    throw new Error(`remotive: untrusted hostname "${parsed.hostname}" — must be on remotive.com`);
+  }
   return url;
 }
 
@@ -65,17 +72,10 @@ function isTrustedJobUrl(value) {
 export async function fetchRemotive(feedUrl = FEED_URL, opts = {}) {
   const { fetchImpl = fetch, signal } = opts;
   assertRemotiveUrl(feedUrl);
-  const res = await fetchImpl(feedUrl, {
+  const json = await fetchJson(fetchImpl, feedUrl, {
     signal,
-    redirect: 'error',
     headers: { 'User-Agent': UA, Accept: 'application/json' },
-  });
-  if (!res.ok) {
-    const err = new Error(`Remotive: HTTP ${res.status} (${feedUrl})`);
-    err.status = res.status;
-    throw err;
-  }
-  const json = await res.json();
+  }).catch((e) => { throw labeledHttpError(e, 'Remotive'); });
   if (!json || !Array.isArray(json.jobs)) {
     throw new Error(`Remotive: unexpected API response — expected { jobs: [...] }, got keys: [${json ? Object.keys(json).join(', ') : 'null'}]`);
   }
