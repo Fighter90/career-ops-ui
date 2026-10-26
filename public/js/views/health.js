@@ -154,46 +154,46 @@ Router.register('health', async () => {
       c('h1', { className: 'page-title' }, t('health.title')),
       data && data.version ? c('p', { className: 'page-subtitle' }, `career-ops-ui v${data.version}`) : null,
     ]),
-      c('div', { className: 'flex gap-3' }, [
-        // CAR-21 (v1.243.0) — both run buttons were async handlers without a
-        // catch: a failed run rejected unhandled, the "Running…" toast stayed
-        // up, and nothing told the user. Wrapped + surfaced; the progress
-        // toast is cleared on the failure path too.
-        c('button', { className: 'btn btn-ghost', onClick: async (e) => {
-          UI.toast(t('health.runningDoctor', 'Running doctor.mjs…'));
-          try {
-            const r = await UI.withSpinner(e.currentTarget, () => API.post('/api/run/doctor'));
-            // QA BUG-007: clear the progress toast so it can't linger over
-            // the result modal. QA BUG-008: the title reuses the button's
-            // localized label so its casing always matches the button.
-            UI.dismissToast();
-            UI.modal(t('health.runDoctor'), UI.el('pre', { className: 'console' }, (r.stdout || '') + (r.stderr ? '\n' + r.stderr : '')));
-          } catch (err) {
-            UI.dismissToast();
-            UI.toast((err && err.message) || t('common.error', 'Error'), 'error');
-          }
-        }}, t('health.runDoctor')),
-        c('button', { className: 'btn btn-ghost', onClick: async (e) => {
-          UI.toast(t('health.runningVerify', 'Running verify-pipeline.mjs…'));
-          try {
-            const r = await UI.withSpinner(e.currentTarget, () => API.post('/api/run/verify'));
-            UI.dismissToast();
-            // U-7 (v1.58.27) — verify-pipeline.mjs prints
-            // `==================================================` ASCII
-            // dividers between sections. In a fixed-width 14px font the
-            // 50-char run pushes the modal body wider than the rest of
-            // the SPA needs. Strip lines that are entirely ≥10 `=` chars
-            // before rendering; the remaining whitespace already
-            // separates sections visually.
-            const stripped = ((r.stdout || '') + (r.stderr ? '\n' + r.stderr : ''))
-              .replace(/^={10,}$/gm, '');
-            UI.modal(t('health.verify'), UI.el('pre', { className: 'console' }, stripped));
-          } catch (err) {
-            UI.dismissToast();
-            UI.toast((err && err.message) || t('common.error', 'Error'), 'error');
-          }
-        }}, t('health.verify')),
-      ]),
+    c('div', { className: 'flex gap-3' }, [
+      // CAR-21 (v1.243.0) — both run buttons were async handlers without a
+      // catch: a failed run rejected unhandled, the "Running…" toast stayed
+      // up, and nothing told the user. Wrapped + surfaced; the progress
+      // toast is cleared on the failure path too.
+      c('button', { className: 'btn btn-ghost', onClick: async (e) => {
+        UI.toast(t('health.runningDoctor', 'Running doctor.mjs…'));
+        try {
+          const r = await UI.withSpinner(e.currentTarget, () => API.post('/api/run/doctor'));
+          // QA BUG-007: clear the progress toast so it can't linger over
+          // the result modal. QA BUG-008: the title reuses the button's
+          // localized label so its casing always matches the button.
+          UI.dismissToast();
+          UI.modal(t('health.runDoctor'), UI.el('pre', { className: 'console' }, (r.stdout || '') + (r.stderr ? '\n' + r.stderr : '')));
+        } catch (err) {
+          UI.dismissToast();
+          UI.toast((err && err.message) || t('common.error', 'Error'), 'error');
+        }
+      }}, t('health.runDoctor')),
+      c('button', { className: 'btn btn-ghost', onClick: async (e) => {
+        UI.toast(t('health.runningVerify', 'Running verify-pipeline.mjs…'));
+        try {
+          const r = await UI.withSpinner(e.currentTarget, () => API.post('/api/run/verify'));
+          UI.dismissToast();
+          // U-7 (v1.58.27) — verify-pipeline.mjs prints
+          // `==================================================` ASCII
+          // dividers between sections. In a fixed-width 14px font the
+          // 50-char run pushes the modal body wider than the rest of
+          // the SPA needs. Strip lines that are entirely ≥10 `=` chars
+          // before rendering; the remaining whitespace already
+          // separates sections visually.
+          const stripped = ((r.stdout || '') + (r.stderr ? '\n' + r.stderr : ''))
+            .replace(/^={10,}$/gm, '');
+          UI.modal(t('health.verify'), UI.el('pre', { className: 'console' }, stripped));
+        } catch (err) {
+          UI.dismissToast();
+          UI.toast((err && err.message) || t('common.error', 'Error'), 'error');
+        }
+      }}, t('health.verify')),
+    ]),
   ]);
 
   return c('div', null, [header, ...body]);

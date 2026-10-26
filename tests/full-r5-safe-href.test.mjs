@@ -95,6 +95,14 @@ test('portals.js gates careers_url row links', () => {
   assert.ok(PORTALS.includes('UI.safeHref('), 'portals.js must call UI.safeHref');
   assert.ok(!/href: company\.careers_url\b/.test(PORTALS), 'company row href must not use the raw careers_url');
   assert.ok(!/href: res\.careers_url\b/.test(PORTALS), 'discovered-board href must not use the raw careers_url');
+  // FULL-R5 review r2 (finding 9) — a non-http careers_url must still RENDER
+  // (as plain text), not vanish: both link sites keep a span fallback.
+  const companyRowBlock = PORTALS.slice(PORTALS.indexOf('const link = company.careers_url'));
+  assert.match(companyRowBlock, /: c\('span'/,
+    'the company-row link must fall back to a span for a non-http careers_url');
+  const discoveredBlock = PORTALS.slice(PORTALS.indexOf('UI.safeHref(res.careers_url)'));
+  assert.match(discoveredBlock, /: c\('span'/,
+    'the discovered-board link must fall back to a span for a non-http careers_url');
 });
 
 test('already-gated views keep their own gates (no double-gating regressions)', () => {

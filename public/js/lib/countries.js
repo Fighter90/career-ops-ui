@@ -232,7 +232,10 @@
     if (typeof location !== 'string') return null;
     const hit = detectCache.get(location);
     if (hit !== undefined) return hit;
-    const result = detectCountryUncached(location);
+    // FULL-R5 review r2 (finding 8) — cached results are frozen: a caller
+    // that decorates the returned object (a count, a tag) used to poison
+    // every later lookup of the same location string.
+    const result = Object.freeze(detectCountryUncached(location));
     if (detectCache.size >= DETECT_CACHE_CAP) detectCache.clear();
     detectCache.set(location, result);
     return result;
