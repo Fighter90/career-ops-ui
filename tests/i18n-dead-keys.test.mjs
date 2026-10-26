@@ -55,6 +55,18 @@ for (const m of sources.matchAll(/\+\s*['"`]((?:[\w-]+\.)+)['"`]/g)) DYN_PREFIXE
 // only sees `'x.' +` concatenation, so collect `` `x.${ `` too.
 for (const m of sources.matchAll(/['"`]([a-zA-Z][\w-]*(?:\.[\w-]+)+)\.\$\{/g)) DYN_PREFIXES.add(m[1] + '.');
 
+// Keys whose OWNING VIEW deleted its last reference in the same epic that
+// cannot edit the dictionaries (the ×19 locale fan-out is a separate owner's
+// change). Registered here, per this file's header contract, until the
+// fan-out removes them from every locale file — then delete the entry too.
+// CAR-114: dash.provider.live was referenced only by dashboard.js's hero
+// provider chip, removed by the provider-badge de-dup (the global header
+// badge in app.js owns provider status now; dash.provider.manual survives —
+// routes/llm.mjs still references it).
+const PENDING_REMOVAL = new Set([
+  'dash.provider.live', // CAR-114 — remove ×19 with the locale fan-out
+]);
+
 test('the dictionary has zero dead keys (every key is referenced or an alias)', () => {
   const dict = loadAssembledDict();
   const aliases = new Set();
@@ -68,6 +80,7 @@ test('the dictionary has zero dead keys (every key is referenced or an alias)', 
     const re = new RegExp("['\"`]" + key.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + "['\"`]");
     if (re.test(sources)) continue;
     if ([...DYN_PREFIXES].some((p) => key.startsWith(p))) continue;
+    if (PENDING_REMOVAL.has(key)) continue;
     dead.push(key);
   }
   assert.deepEqual(dead, [],

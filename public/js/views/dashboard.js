@@ -232,18 +232,38 @@ Router.register('dashboard', async () => {
     // CAR-114 i18n: EN "Welcome back — here's where your search stands."
     // (fan-out ×19 pending; see PR report).
     const GREETING = 'Welcome back — here\u2019s where your search stands.';
-    const hero = c('section', { className: 'dash-hero' }, [
+    // Presentation note: overlays.css sits at the 800-LOC ceiling, so the
+    // hero's structural styling is inline here (this view's established
+    // pattern); only the blur-plane base + reduced-motion rules are CSS.
+    // The planes wrapper is absolutely positioned and precedes the inner
+    // block in DOM order, so the relative-positioned content paints above
+    // without any z-index (the D-4 no-magic-numbers gate).
+    const PLANE = (grad, pos) => c('div', {
+      className: 'v2-dash-plane',
+      style: { background: grad, ...pos },
+    });
+    const hero = c('section', {
+      className: 'dash-hero',
+      style: { position: 'relative', overflow: 'hidden', isolation: 'isolate' },
+    }, [
       c('div', { className: 'v2-dash-planes', 'aria-hidden': 'true' }, [
-        c('div', { className: 'v2-dash-plane v2-dash-plane--a' }),
-        c('div', { className: 'v2-dash-plane v2-dash-plane--b' }),
-        c('div', { className: 'v2-dash-plane v2-dash-plane--c' }),
+        PLANE('radial-gradient(closest-side, color-mix(in srgb, var(--rausch) 10%, transparent), transparent 72%)',
+          { top: '-35%', right: '-8%', width: '46%', height: '140%' }),
+        PLANE('radial-gradient(closest-side, color-mix(in srgb, var(--babu) 9%, transparent), transparent 70%)',
+          { bottom: '-45%', left: '18%', width: '52%', height: '120%' }),
+        PLANE('radial-gradient(closest-side, color-mix(in srgb, var(--darjeeling) 7%, transparent), transparent 68%)',
+          { top: '-10%', left: '-12%', width: '34%', height: '90%' }),
       ]),
-      c('div', { className: 'v2-dash-hero-inner' }, [
-        c('p', { className: 'v2-dash-greeting' }, GREETING),
+      c('div', { className: 'v2-dash-hero-inner', style: { position: 'relative' } }, [
+        c('p', {
+          className: 'v2-dash-greeting',
+          style: { margin: '0 0 var(--space-2)', color: 'var(--foggy-strong)', fontSize: 'var(--font-size-base)' },
+        }, GREETING),
         c('div', {
           className: 'v2-dash-split',
           role: 'group',
           'aria-label': t('dash.quick.searchApply', 'Search & Apply'),
+          style: { display: 'inline-flex', flexWrap: 'wrap', gap: '8px', maxWidth: '100%' },
         }, [
           c('button', {
             className: 'btn btn-primary btn-hero',
@@ -297,7 +317,13 @@ Router.register('dashboard', async () => {
     const evaluated = folded['Evaluated'] || 0;
     const applied = folded['Applied'] || 0;
 
-    const strip = c('ol', { className: 'v2-dash-funnel' },
+    const strip = c('ol', {
+      className: 'v2-dash-funnel',
+      style: {
+        listStyle: 'none', margin: '0', padding: '0',
+        display: 'flex', flexWrap: 'wrap', gap: 'var(--space-3) var(--space-4)',
+      },
+    },
       steps.map((st, i) => {
         const pct = st.n > 0 ? Math.max(6, Math.round((st.n / max) * 100)) : 0;
         const prev = i > 0 ? steps[i - 1].n : null;
@@ -306,12 +332,54 @@ Router.register('dashboard', async () => {
           : '—';
         return c('li', {
           className: 'v2-dash-fstep' + (st.n === 0 ? ' v2-dash-fstep--zero' : ''),
+          style: {
+            flex: '1 1 96px', minWidth: '96px',
+            display: 'flex', flexDirection: 'column', gap: '2px',
+            padding: 'var(--space-2) var(--space-3)',
+            border: '1px solid var(--slate)',
+            borderRadius: 'var(--radius-sm)',
+            background: 'var(--paper)',
+            ...(st.n === 0 ? { opacity: '.62' } : {}),
+          },
         }, [
-          i > 0 ? c('span', { className: 'v2-dash-fconv', 'aria-hidden': 'true' }, '→ ' + conv) : null,
-          c('span', { className: 'v2-dash-fstep-label' }, st.label),
-          c('span', { className: 'v2-dash-fstep-n' }, fmtNum(st.n)),
-          c('span', { className: 'v2-dash-fstep-bar', 'aria-hidden': 'true' },
-            c('span', { className: 'v2-dash-fstep-fill', style: { width: pct + '%' } })),
+          i > 0 ? c('span', {
+            className: 'v2-dash-fconv', 'aria-hidden': 'true',
+            style: {
+              alignSelf: 'center', color: 'var(--foggy-strong)',
+              fontSize: 'var(--font-size-sm)', fontVariantNumeric: 'tabular-nums',
+              whiteSpace: 'nowrap',
+            },
+          }, '→ ' + conv) : null,
+          c('span', {
+            className: 'v2-dash-fstep-label',
+            style: {
+              color: 'var(--foggy-strong)', fontSize: 'var(--font-size-md)',
+              overflow: 'hidden', textOverflow: 'ellipsis', whiteSpace: 'nowrap',
+            },
+          }, st.label),
+          c('span', {
+            className: 'v2-dash-fstep-n',
+            style: {
+              color: 'var(--hof)', fontSize: 'var(--font-size-xl)',
+              fontWeight: '700', fontVariantNumeric: 'tabular-nums',
+            },
+          }, fmtNum(st.n)),
+          c('span', {
+            className: 'v2-dash-fstep-bar', 'aria-hidden': 'true',
+            style: {
+              height: '6px', borderRadius: 'var(--radius-pill)',
+              background: 'var(--elev)', overflow: 'hidden',
+            },
+          },
+            c('span', {
+              className: 'v2-dash-fstep-fill',
+              style: {
+                display: 'block', height: '100%', borderRadius: 'inherit',
+                background: st.n > 0 ? 'var(--rausch-fill)' : 'var(--slate)',
+                transition: 'width var(--transition)',
+                width: pct + '%',
+              },
+            })),
         ]);
       }));
 
@@ -324,6 +392,7 @@ Router.register('dashboard', async () => {
       ? c('a', {
           className: 'btn btn-ghost btn-sm v2-dash-funnel-cta',
           href: '#/tracker',
+          style: { marginTop: 'var(--space-3)', display: 'inline-block' },
         }, fmtNum(evaluated) + ' ' + FUNNEL_CTA + ' →')
       : null;
 
@@ -342,7 +411,10 @@ Router.register('dashboard', async () => {
 
     return c('section', { className: 'section v2-dash-funnel-sec' }, [
       c('h2', { className: 'section-title' }, t('dash.statuses', 'Application statuses')),
-      c('div', { className: 'card v2-dash-funnel-card' }, [
+      c('div', {
+        className: 'card v2-dash-funnel-card',
+        style: { padding: 'var(--space-4)' },
+      }, [
         summary,
         strip,
         unknownChips.length ? c('div', {

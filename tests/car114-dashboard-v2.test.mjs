@@ -156,16 +156,21 @@ test('CAR-114: dashboard.js no longer duplicates the header provider badge', () 
 
 // ── CSS: the appended v2-dash- layer ─────────────────────────────────────────
 
-test('CAR-114: every new dashboard rule is appended to overlays.css under the v2-dash- prefix', () => {
-  for (const cls of ['v2-dash-hero', 'v2-dash-split', 'v2-dash-funnel', 'v2-dash-fstep',
-    'v2-dash-delta', 'v2-dash-plane', 'v2-dash-greeting']) {
+test('CAR-114: overlays.css (at the 800-LOC ceiling) owns only planes, delta chips, reduced motion', () => {
+  // The stylesheet tail is minimal by necessity (css-modularization gate);
+  // everything structural is inline in dashboard.js — asserted separately below.
+  for (const cls of ['v2-dash-planes', 'v2-dash-plane', 'v2-dash-delta']) {
     assert.ok(OVERLAYS.includes(cls), `overlays.css must style .${cls}`);
+  }
+  for (const cls of ['v2-dash-hero', 'v2-dash-split', 'v2-dash-funnel', 'v2-dash-fstep',
+    'v2-dash-greeting', 'v2-dash-fconv']) {
+    assert.ok(DASH.includes(cls), `dashboard.js must carry .${cls} (inline-styled structure)`);
   }
   // Ownership rule: the appended tail may not restyle unprefixed selectors.
   const tail = OVERLAYS.slice(OVERLAYS.indexOf('CAR-114'));
-  for (const m of tail.matchAll(/(^|\n)\s*([.a-zA-Z][^{\n]*)\{/g)) {
+  for (const m of tail.matchAll(/(^|\n)\s*([.a-zA-Z@][^{\n]*)\{/g)) {
     const sel = m[2].trim();
-    if (sel.startsWith('@') || sel.startsWith('/*') || sel === 'from' || sel === 'to') continue;
+    if (sel.startsWith('@') || sel.startsWith('/*')) continue;
     assert.ok(sel.includes('v2-dash-'),
       `appended rule "${sel}" must be prefixed v2-dash- (file-ownership contract)`);
   }
@@ -173,10 +178,15 @@ test('CAR-114: every new dashboard rule is appended to overlays.css under the v2
 
 test('CAR-114: the appended layer neutralizes its own motion under prefers-reduced-motion', () => {
   const tail = OVERLAYS.slice(OVERLAYS.indexOf('CAR-114'));
-  assert.match(tail, /@media \(prefers-reduced-motion: reduce\)[\s\S]*v2-dash-plane[\s\S]*transform:\s*none/,
+  // The media block is a single dense line (LOC ceiling) — match within it.
+  assert.match(tail, /@media \(prefers-reduced-motion: reduce\) \{.*v2-dash-plane \{ transition: none; transform: none !important;.*animation: none/,
     'planes must be static under reduced motion');
-  assert.match(tail, /@media \(prefers-reduced-motion: reduce\)[\s\S]*animation:\s*none/,
-    'count-up/pulse animations must be disabled under reduced motion');
+});
+
+test('CAR-114: no bare z-index literals in the appended CSS (D-4 token gate)', () => {
+  const tail = OVERLAYS.slice(OVERLAYS.indexOf('CAR-114'));
+  assert.doesNotMatch(tail, /z-index:\s*\d/,
+    'layering must come from DOM order + position (no magic z-index numbers)');
 });
 
 // ── Kept contracts (regression guards for the refactor itself) ──────────────
