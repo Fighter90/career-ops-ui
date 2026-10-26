@@ -16,16 +16,22 @@ interface Props {
 
 const { locale, page, title, description, jsonLd, canonicalPath } = Astro.props;
 const SITE = 'https://cvstart.org';
-const canonical = `${SITE}${canonicalPath ?? localePath(locale, page)}`;
+const defaultPath = localePath(locale, page);
+const canonical = `${SITE}${canonicalPath ?? defaultPath}`;
+// hreflang clusters must be reciprocal: a pagination page (/changelog/3/)
+// self-canonicalises while its alternates would point at the locale INDEX
+// pages — a non-reciprocal set search engines ignore. Sub-pages therefore
+// omit the alternates entirely (canonical + sitemap coverage remain).
+const isSubPage = canonicalPath !== undefined && canonicalPath !== defaultPath;
 const ogImage = `${SITE}/og-default.png`;
 ---
 
 <meta name="description" content={description} />
 <link rel="canonical" href={canonical} />
 
-{/* hreflang alternates ×16 + x-default → EN */}
-{LOCALES.map((l) => <link rel="alternate" hreflang={l.code} href={`${SITE}${localePath(l, page)}`} />)}
-<link rel="alternate" hreflang="x-default" href={`${SITE}${localePath(LOCALES[0], page)}`} />
+{/* hreflang alternates ×16 + x-default → EN (index pages only) */}
+{!isSubPage && LOCALES.map((l) => <link rel="alternate" hreflang={l.code} href={`${SITE}${localePath(l, page)}`} />)}
+{!isSubPage && <link rel="alternate" hreflang="x-default" href={`${SITE}${localePath(LOCALES[0], page)}`} />}
 
 <link rel="icon" href="/favicon.ico" sizes="32x32" />
 <link rel="icon" href="/favicon-32.png" type="image/png" sizes="32x32" />

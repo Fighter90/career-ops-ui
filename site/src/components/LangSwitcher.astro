@@ -5,11 +5,8 @@ import Icon from './Icon.astro';
 interface Props {
   locale: Locale;
   page: Page;
-  /** Extra path appended after the locale prefix (e.g. '3/' for a paginated
-   *  changelog page); '' keeps the plain locale page. */
-  subpath?: string;
 }
-const { locale, page, subpath = '' } = Astro.props;
+const { locale, page } = Astro.props;
 ---
 
 <details class="lang-switcher relative">
@@ -32,7 +29,7 @@ const { locale, page, subpath = '' } = Astro.props;
       <li>
         <a
           role="option"
-          href={localePath(l, page) + subpath}
+          href={localePath(l, page)}
           hreflang={l.code}
           lang={l.code}
           data-code={l.code}
