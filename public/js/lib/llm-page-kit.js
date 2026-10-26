@@ -148,6 +148,10 @@ window.LlmPageKit = (function () {
       tabbar.children[1].setAttribute('aria-selected', String(!formActive));
     }
     const root = el('div', { className: 'llm2' }, [tabbar, formPane, resultPane]);
+    // CAR-119 — mobile starts on the Input tab (the Result pane is hidden
+    // until its tab is clicked); the ≥1280 px CSS overrides [hidden] so the
+    // desktop layout always shows both columns.
+    show('form');
     return { root, show, formPane, resultPane };
   }
 

@@ -20,6 +20,10 @@
 .llm2__tabs { display: none; }
 
 @media (min-width: 1280px) {
+  /* Both columns always show on desktop — author display beats the UA
+     [hidden] { display:none } that the mobile tab state sets. */
+  .llm2__form,
+  .llm2__result { display: block; }
   .llm2__form {
     position: sticky;
     top: var(--llm2-form-top);
