@@ -29,6 +29,7 @@
  * Used by the thehub adapter (server/lib/portals/adapters/thehub.mjs).
  */
 
+import { fetchJson, labeledHttpError } from '../http-json.mjs';
 import { safeEncodeURIComponent } from './_safe-url.mjs';
 
 const UA = 'career-ops-web-ui/1.0';
@@ -172,14 +173,9 @@ export async function fetchTheHub(feedUrl = FEED_BASE, opts = {}) {
 
     let json;
     try {
-      // redirect:'error' refuses server-side redirects (SSRF guard).
-      const res = await fetchImpl(pageUrl, { signal, redirect: 'error', headers });
-      if (!res.ok) {
-        const err = new Error(`TheHub: HTTP ${res.status} (${pageUrl})`);
-        err.status = res.status;
-        throw err;
-      }
-      json = await res.json();
+      // The guarded transport refuses server-side redirects (SSRF guard).
+      json = await fetchJson(fetchImpl, pageUrl, { signal, headers })
+        .catch((e) => { throw labeledHttpError(e, 'TheHub'); });
     } catch (err) {
       // First request fails → dead board, surface it. Later page fails after
       // ≥1 success → keep the partials already collected.

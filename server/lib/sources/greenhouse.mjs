@@ -9,6 +9,7 @@
  * board passed that filter blind.
  */
 import { htmlToText } from '../html-to-text.mjs';
+import { fetchJson, labeledHttpError } from '../http-json.mjs';
 import { requireArray, requireContainer } from './_shape.mjs';
 
 const UA = 'career-ops-web-ui/1.0';
@@ -135,13 +136,10 @@ function hasHttpsJobUrl(j) {
 export async function fetchGreenhouse(apiUrl, opts = {}) {
   const { fetchImpl = fetch, signal } = opts; // REVIEW-B3
   assertGreenhouseUrl(apiUrl);
-  const res = await fetchImpl(withContent(apiUrl), { signal, redirect: 'error', headers: { 'User-Agent': UA, Accept: 'application/json' } });
-  if (!res.ok) {
-    const err = new Error(`Greenhouse: HTTP ${res.status} (${apiUrl})`);
-    err.status = res.status;
-    throw err;
-  }
-  const data = await res.json();
+  const data = await fetchJson(fetchImpl, withContent(apiUrl), {
+    signal,
+    headers: { 'User-Agent': UA, Accept: 'application/json' },
+  }).catch((e) => { throw labeledHttpError(e, 'Greenhouse'); });
   // Phase-2: a 200 without the jobs container is a broken/changed board, not
   // an empty one — say so instead of reading it as [] and "succeeding".
   requireContainer(data, 'Greenhouse board', 'jobs');
@@ -155,8 +153,13 @@ export async function fetchGreenhouse(apiUrl, opts = {}) {
     // host, so the enrichment request stays pinned to the boards-api host.
     if (officesUrl) {
       try {
-        const or = await fetchImpl(officesUrl, { signal, redirect: 'error', headers: { 'User-Agent': UA, Accept: 'application/json' } });
-        if (or.ok) officeMap = buildOfficeMap(await or.json());
+        // Same guarded transport as the /jobs request above — the enrichment
+        // request stays pinned to the boards-api host and never follows a 3xx.
+        const officesJson = await fetchJson(fetchImpl, officesUrl, {
+          signal,
+          headers: { 'User-Agent': UA, Accept: 'application/json' },
+        });
+        officeMap = buildOfficeMap(officesJson);
       } catch {
         // Best-effort: a scan must never fail because the secondary lookup did.
         officeMap = null;

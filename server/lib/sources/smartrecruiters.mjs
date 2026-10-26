@@ -10,6 +10,8 @@
  * value past that and the title_filter culls hard anyway.
  */
 import { requireArray, requireObject } from './_shape.mjs';
+import { fetchJson, labeledHttpError } from '../http-json.mjs';
+
 const UA = 'career-ops-web-ui/1.0';
 const PAGE_SIZE = 100;
 const MAX_PAGES = 30;        // 3000 jobs hard ceiling
@@ -69,21 +71,17 @@ export async function fetchSmartRecruiters(apiUrl, opts = {}) {
     let content;
     let envelopeTotal;
     try {
-      const res = await fetchImpl(url, {
-        signal,
-        redirect: 'error',
-        headers: { 'User-Agent': UA, Accept: 'application/json' },
-      });
-      if (!res.ok) {
-        const err = new Error(`SmartRecruiters: HTTP ${res.status} (${url})`);
-        err.status = res.status;
-        throw err;
-      }
       // Shape contract (Phase 2): a 200 without the documented
       // { content: [...] } envelope THROWS — it must never read as an
       // empty board (that is how an envelope change ships for months as
       // "0 postings").
-      const data = requireObject(await res.json(), 'SmartRecruiters postings');
+      const data = requireObject(
+        await fetchJson(fetchImpl, url, {
+          signal,
+          headers: { 'User-Agent': UA, Accept: 'application/json' },
+        }).catch((e) => { throw labeledHttpError(e, 'SmartRecruiters'); }),
+        'SmartRecruiters postings',
+      );
       content = requireArray(data.content, 'SmartRecruiters postings content');
       if (typeof data.totalFound === 'number') envelopeTotal = data.totalFound;
     } catch (err) {

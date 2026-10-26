@@ -17,6 +17,8 @@
  */
 import { requireObject, requireArray } from './_shape.mjs';
 
+import { fetchJson, labeledHttpError } from '../http-json.mjs';
+
 const UA = 'career-ops-web-ui/1.0';
 
 export const API_URL = 'https://nofluffjobs.com/api/search/posting';
@@ -181,23 +183,19 @@ export async function fetchNoFluffJobs(apiUrl = API_URL, opts = {}) {
     let postings;
     let totalPages;
     try {
-      const res = await fetchImpl(buildRequestUrl(apiUrl, pageTo), {
-        method: 'POST',
-        signal,
-        redirect: 'error',
-        headers: {
-          'User-Agent': UA,
-          Accept: 'application/json',
-          'Content-Type': 'application/infiniteSearch+json',
-        },
-        body: JSON.stringify(buildBody()),
-      });
-      if (!res.ok) {
-        const err = new Error(`NoFluffJobs: HTTP ${res.status} (${apiUrl})`);
-        err.status = res.status;
-        throw err;
-      }
-      const json = requireObject(await res.json(), 'NoFluffJobs search');
+      const json = requireObject(
+        await fetchJson(fetchImpl, buildRequestUrl(apiUrl, pageTo), {
+          method: 'POST',
+          signal,
+          headers: {
+            'User-Agent': UA,
+            Accept: 'application/json',
+            'Content-Type': 'application/infiniteSearch+json',
+          },
+          body: JSON.stringify(buildBody()),
+        }).catch((e) => { throw labeledHttpError(e, 'NoFluffJobs'); }),
+        'NoFluffJobs search',
+      );
       postings = requireArray(json.postings, 'NoFluffJobs postings');
       totalPages = Number(json.totalPages || 0);
     } catch (err) {

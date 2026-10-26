@@ -3,6 +3,7 @@
  *   GET https://api.ashbyhq.com/posting-api/job-board/<slug>?includeCompensation=true
  */
 import { DESCRIPTION_CAP } from '../html-to-text.mjs';
+import { fetchJson, labeledHttpError } from '../http-json.mjs';
 import { requireContainer, requireArray } from './_shape.mjs';
 
 const UA = 'career-ops-web-ui/1.0';
@@ -59,13 +60,10 @@ export async function fetchAshby(apiUrl, opts = {}) {
   const { fetchImpl = fetch, signal } = opts; // REVIEW-B3
   assertAshbyUrl(apiUrl);
   // redirect:'error' — never follow a 3xx off api.ashbyhq.com (SSRF; parent #4080).
-  const res = await fetchImpl(apiUrl, { signal, redirect: 'error', headers: { 'User-Agent': UA, Accept: 'application/json' } });
-  if (!res.ok) {
-    const err = new Error(`Ashby: HTTP ${res.status} (${apiUrl})`);
-    err.status = res.status;
-    throw err;
-  }
-  const data = await res.json();
+  const data = await fetchJson(fetchImpl, apiUrl, {
+    signal,
+    headers: { 'User-Agent': UA, Accept: 'application/json' },
+  }).catch((e) => { throw labeledHttpError(e, 'Ashby'); });
   // Phase-2: a 200 without the documented {jobs:[...]} envelope is a shape
   // change (challenge page, API retirement) — throw instead of the old
   // `(data.jobs || [])` that read it as a healthy-but-empty board. Rows whose

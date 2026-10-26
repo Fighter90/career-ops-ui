@@ -9,6 +9,7 @@
  */
 
 import { decodeEntities } from '../html-entities.mjs';
+import { fetchTextFollowSameHost } from '../http-json.mjs';
 
 const HABR_BASE = 'https://career.habr.com';
 
@@ -95,22 +96,29 @@ export async function searchHabr(query, opts = {}) {
     if (onlyRemote) params.set('remote', '1');
     if (experience) params.set('qid', experience);
 
-    const res = await fetchImpl(`${HABR_BASE}/vacancies?${params}`, {
-      signal, // REVIEW-B3: propagate client-disconnect
-      headers: { 'User-Agent': UA, Accept: 'text/html' },
-    });
-    if (!res.ok) {
+    // Guarded transport with the manual same-host redirect contract: a 3xx is
+    // followed only when its Location stays on career.habr.com over https
+    // (each hop re-guarded), and an off-host redirect is refused — Node's
+    // default 'follow' would bounce the request to any host upstream names.
+    let pageHtml;
+    try {
+      ({ text: pageHtml } = await fetchTextFollowSameHost(fetchImpl, `${HABR_BASE}/vacancies?${params}`, {
+        signal,
+        headers: { 'User-Agent': UA, Accept: 'text/html' },
+      }));
+    } catch (e) {
       // Page 1 failing = source down → surface it; a later page is non-fatal.
       if (page === 1) {
-        const err = new Error(`Habr Career: HTTP ${res.status}`);
-        err.status = res.status;
+        if (typeof e?.status !== 'number') throw e; // network-level: surface raw
+        const err = new Error(`Habr Career: HTTP ${e.status}`);
+        err.status = e.status;
         throw err;
       }
       break;
     }
 
     let added = 0;
-    for (const job of parseHabrCards(await res.text())) {
+    for (const job of parseHabrCards(pageHtml)) {
       const key = job.url || job.id;
       if (seen.has(key)) continue;
       seen.add(key);

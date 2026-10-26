@@ -51,7 +51,7 @@
  * Used by the peoplesoft adapter (server/lib/portals/adapters/peoplesoft.mjs).
  */
 import { promises as dns } from 'node:dns';
-import { BROWSER_LIKE_USER_AGENT, withPinnedEncoding, computeRetryDelayMs, delay } from '../http-json.mjs';
+import { BROWSER_LIKE_USER_AGENT, withPinnedEncoding, computeRetryDelayMs, delay, fetchRawResponse } from '../http-json.mjs';
 import { decodeEntities } from '../html-entities.mjs';
 import { htmlToText, DESCRIPTION_CAP } from '../html-to-text.mjs';
 import { isPrivateOrLoopbackHost } from '../security.mjs';
@@ -506,7 +506,11 @@ async function requestWithSession(session, method, url, body) {
       ...(cookie ? { Cookie: cookie } : {}),
     });
     const res = await withRetry(async () => {
-      const r = await fetchImpl(currentUrl, {
+      // The guarded raw-Response transport (FULL-R2): this walker must see a
+      // 3xx ITSELF (redirect:'manual', Location handled one hop at a time),
+      // so the shaped helpers can't be used — fetchRawResponse keeps the
+      // DNS-rebinding guard on every attempt instead.
+      const r = await fetchRawResponse(fetchImpl, currentUrl, {
         method: currentMethod,
         headers,
         body: currentMethod === 'GET' ? undefined : currentBody,

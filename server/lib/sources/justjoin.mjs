@@ -20,6 +20,8 @@
  */
 import { requireObject, requireArray } from './_shape.mjs';
 
+import { fetchJson, labeledHttpError } from '../http-json.mjs';
+
 const UA = 'career-ops-web-ui/1.0';
 
 export const API_URL = 'https://justjoin.it/api/candidate-api/offers';
@@ -111,17 +113,11 @@ export async function fetchJustJoin(apiUrl = API_URL, opts = {}) {
     let offers;
     let nextCursor;
     try {
-      const res = await fetchImpl(url, {
+      const offersJson = await fetchJson(fetchImpl, url, {
         signal,
-        redirect: 'error',
         headers: { 'User-Agent': UA, Accept: 'application/json' },
-      });
-      if (!res.ok) {
-        const err = new Error(`JustJoin: HTTP ${res.status} (${url})`);
-        err.status = res.status;
-        throw err;
-      }
-      ({ offers, nextCursor } = parseJustJoinResponse(await res.json()));
+      }).catch((e) => { throw labeledHttpError(e, 'JustJoin'); });
+      ({ offers, nextCursor } = parseJustJoinResponse(offersJson));
     } catch (err) {
       // Nothing collected yet means the endpoint is wrong — surface it. After
       // a success, a later failure is a partial result worth keeping.

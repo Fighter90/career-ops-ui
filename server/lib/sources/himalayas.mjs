@@ -14,6 +14,8 @@
  */
 import { requireArray, requireContainer } from './_shape.mjs';
 
+import { fetchJson, labeledHttpError } from '../http-json.mjs';
+
 const UA = 'career-ops-web-ui/1.0';
 const TRUSTED_HOST = 'himalayas.app';
 
@@ -62,17 +64,11 @@ function resolveMaxPages(company, opts) {
 
 /** One feed request: SSRF-pinned, redirect-refusing, non-2xx → Error with .status. */
 async function fetchOne(fetchImpl, url, signal) {
-  const res = await fetchImpl(url, {
+  return fetchJson(fetchImpl, url, {
     signal,
-    redirect: 'error',
     headers: { 'User-Agent': UA, Accept: 'application/json' },
+  }).catch((e) => { throw labeledHttpError(e, 'Himalayas');
   });
-  if (!res.ok) {
-    const err = new Error(`Himalayas: HTTP ${res.status} (${url})`);
-    err.status = res.status;
-    throw err;
-  }
-  return res.json();
 }
 
 /**

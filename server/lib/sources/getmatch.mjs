@@ -19,6 +19,7 @@
  * exported so it can be tuned independently with new fixtures.
  */
 import { decodeEntities } from '../html-entities.mjs';
+import { fetchTextFollowSameHost } from '../http-json.mjs';
 
 const GETMATCH_BASE = 'https://getmatch.ru';
 const UA =
@@ -43,17 +44,21 @@ export async function searchGetMatch(query, opts = {}) {
   const params = new URLSearchParams({ q: query });
   if (onlyRemote) params.set('format', 'remote');
 
-  const res = await fetchImpl(`${GETMATCH_BASE}/vacancies?${params}`, {
-    signal,
-    headers: { 'User-Agent': UA, Accept: 'text/html' },
-  });
-
-  if (!res.ok) {
-    const err = new Error(`GetMatch: HTTP ${res.status}`);
-    err.status = res.status;
+  // Guarded transport, manual same-host redirects: a 3xx is followed only
+  // when its Location stays on getmatch.ru over https — an off-host redirect
+  // is refused, never fetched (FULL-R2).
+  let html;
+  try {
+    ({ text: html } = await fetchTextFollowSameHost(fetchImpl, `${GETMATCH_BASE}/vacancies?${params}`, {
+      signal,
+      headers: { 'User-Agent': UA, Accept: 'text/html' },
+    }));
+  } catch (e) {
+    if (typeof e?.status !== 'number') throw e; // network-level: surface raw
+    const err = new Error(`GetMatch: HTTP ${e.status}`);
+    err.status = e.status;
     throw err;
   }
-  const html = await res.text();
   const out = parseGetMatchCards(html);
   return onlyRemote ? out.filter((j) => j.isRemote) : out;
 }

@@ -48,6 +48,7 @@
 import { htmlToText } from '../html-to-text.mjs';
 import {
   fetchText,
+  fetchRawResponse,
   delay,
   computeRetryDelayMs,
   REDIRECT_REFUSAL_CAUSE_MESSAGE,
@@ -334,7 +335,10 @@ export async function fetchBwi(endpoint, opts = {}) {
       throw err;
     }
     requests++;
-    return fetchImpl(url, fetchOpts);
+    // The guarded raw-Response transport (FULL-R2 lint): the retry helper
+    // needs a Response, and the request must still pass the DNS-rebinding
+    // guard like every other bwi request.
+    return fetchRawResponse(fetchImpl, url, fetchOpts);
   };
 
   for (const job of jobs) {

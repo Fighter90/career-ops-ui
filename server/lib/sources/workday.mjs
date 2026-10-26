@@ -37,7 +37,7 @@
  * for a CAPTCHA-gated Workday board, fall back to the AI scan
  * (`/career-ops scan`) which drives a real browser via Playwright.
  */
-import { BROWSER_LIKE_USER_AGENT } from '../http-json.mjs';
+import { BROWSER_LIKE_USER_AGENT, fetchJson, fetchRawResponse, labeledHttpError } from '../http-json.mjs';
 import { requireContainer, requireArray } from './_shape.mjs';
 
 const PAGE_LIMIT = 100;
@@ -150,6 +150,29 @@ function isMyWorkdaySiteHost(hostname) {
 }
 
 /**
+ * Host pin on the ONE per-tenant endpoint a scanner request actually touches:
+ * HTTPS on `*.myworkdayjobs.com` or `*.myworkdaysite.com` (FULL-R2 — every
+ * other per-tenant source asserts its hosts; here a single adapter regression
+ * used to turn the browser-header POST into an SSRF). Exported for tests.
+ * @param {string} url
+ * @returns {string}
+ */
+export function assertWorkdayUrl(url) {
+  let parsed;
+  try {
+    parsed = new URL(url);
+  } catch {
+    throw new Error(`workday: invalid URL: ${url}`);
+  }
+  if (parsed.protocol !== 'https:') throw new Error(`workday: URL must use HTTPS: ${url}`);
+  const host = parsed.hostname.toLowerCase();
+  if (!host.endsWith('.myworkdayjobs.com') && !isMyWorkdaySiteHost(host)) {
+    throw new Error(`workday: untrusted hostname "${parsed.hostname}" — must be on *.myworkdayjobs.com or *.myworkdaysite.com`);
+  }
+  return url;
+}
+
+/**
  * The public careers page for a CXS endpoint:
  *   https://<t>.wdN.myworkdayjobs.com/wday/cxs/<t>/<site>/jobs → https://<t>.wdN.myworkdayjobs.com/<site>
  *   https://<i>.myworkdaysite.com/wday/cxs/<t>/<site>/jobs     → https://<i>.myworkdaysite.com/recruiting/<t>/<site>
@@ -198,8 +221,16 @@ export function jobBaseFromApi(apiUrl) {
 async function confirmDeadViaCareersPage(apiUrl, { fetchImpl, signal }) {
   const careersUrl = careersPageFromApi(apiUrl);
   if (!careersUrl) return false;
+  // Defence-in-depth: the careers URL derives from the (already asserted)
+  // apiUrl, but this fetch carries browser headers — pin it like the main
+  // request (FULL-R2).
   try {
-    const res = await fetchImpl(careersUrl, {
+    assertWorkdayUrl(careersUrl);
+  } catch {
+    return false;
+  }
+  try {
+    const res = await fetchRawResponse(fetchImpl, careersUrl, {
       method: 'GET',
       signal,
       redirect: 'manual',
@@ -229,6 +260,10 @@ function setFallback(apiUrl, reason) {
 
 export async function fetchWorkday(apiUrl, opts = {}) {
   const { fetchImpl = fetch, signal, strict = false, resolveMultiLocation = true } = opts;
+  // Host pin FIRST (FULL-R2): a per-tenant endpoint is the one URL an adapter
+  // regression could aim anywhere — assert it before the browser-header POST
+  // (or anything else) leaves.
+  assertWorkdayUrl(apiUrl);
   // Some tenants front their CXS API with Cloudflare bot management (seen
   // live upstream: geico) that 500s requests missing ordinary browser
   // headers. A real Chrome UA + accept-language + matching origin/referer
@@ -262,9 +297,9 @@ export async function fetchWorkday(apiUrl, opts = {}) {
   // LATER page keeps the pages already collected and logs.
   for (let page = 0; page < MAX_PAGES; page++) {
     const offset = page * PAGE_LIMIT;
-    let res;
+    let data;
     try {
-      res = await fetchImpl(apiUrl, {
+      data = await fetchJson(fetchImpl, apiUrl, {
         method: 'POST',
         signal,
         // Never follow a 3xx: a server-side redirect could point the request at a
@@ -277,64 +312,54 @@ export async function fetchWorkday(apiUrl, opts = {}) {
           offset,
           searchText: '',
         }),
-      });
+      }).catch((e) => { throw labeledHttpError(e, 'Workday'); });
     } catch (e) {
-      // Network-level error (DNS, connect, timeout). Treat as fallback
-      // unless caller opted into strict mode.
-      if (page === 0) {
-        if (strict) throw e;
-        setFallback(apiUrl, `network: ${e.message}`);
-        return [];
-      }
-      console.error(`  ⚠ workday: page at offset ${offset} failed (${e.message}) — keeping the ${jobs.length} postings collected so far`);
-      break;
-    }
-    if (!res.ok) {
-      // A real 404/410 is permanent (board removed / tenant retired), not a
-      // CAPTCHA blip: throw with the status intact so the scanner's 404/410
-      // quarantine treats the board as dead. The old graceful [] made
-      // quarantine unreachable — a dead board read as healthy-but-empty.
-      if (res.status === 404 || res.status === 410) {
-        const err = new Error(`Workday: HTTP ${res.status} (${apiUrl})`);
-        err.status = res.status;
-        throw err;
-      }
-      // 4xx / 5xx — CAPTCHA / tenant gone / WAF / etc. Graceful fallback.
-      // A 422/401/403 alone is ambiguous (identical body for a dead board and a
-      // WAF blip), so spend one careers-page fetch on Workday's own dead-board
-      // signals before calling it dead (parent #4467).
-      const confirmedDead = CONFIRMED_DEAD_API_STATUSES.has(res.status) && page === 0
-        && await confirmDeadViaCareersPage(apiUrl, { fetchImpl, signal });
-      const reason = confirmedDead
-        ? `HTTP ${res.status} — confirmed dead (Workday maintenance/outage page)`
-        : `HTTP ${res.status}`;
-      if (page === 0) {
-        if (strict) {
-          const err = new Error(`Workday: ${reason} (${apiUrl})`);
-          // Relabel a confirmed-dead board as a synthetic 404 so the scanner's
-          // 404/410 quarantine (scan-quarantine.mjs) picks it up.
-          err.status = confirmedDead ? 404 : res.status;
-          err.fallback = true;
+      if (e && typeof e.status === 'number') {
+        // A real 404/410 is permanent (board removed / tenant retired), not a
+        // CAPTCHA blip: throw with the status intact so the scanner's 404/410
+        // quarantine treats the board as dead. The old graceful [] made
+        // quarantine unreachable — a dead board read as healthy-but-empty.
+        if (e.status === 404 || e.status === 410) {
+          const err = new Error(`Workday: HTTP ${e.status} (${apiUrl})`);
+          err.status = e.status;
           throw err;
         }
-        setFallback(apiUrl, reason);
-        return [];
+        // 4xx / 5xx — CAPTCHA / tenant gone / WAF / etc. Graceful fallback.
+        // A 422/401/403 alone is ambiguous (identical body for a dead board and a
+        // WAF blip), so spend one careers-page fetch on Workday's own dead-board
+        // signals before calling it dead (parent #4467).
+        const confirmedDead = CONFIRMED_DEAD_API_STATUSES.has(e.status) && page === 0
+          && await confirmDeadViaCareersPage(apiUrl, { fetchImpl, signal });
+        const reason = confirmedDead
+          ? `HTTP ${e.status} — confirmed dead (Workday maintenance/outage page)`
+          : `HTTP ${e.status}`;
+        if (page === 0) {
+          if (strict) {
+            const err = new Error(`Workday: ${reason} (${apiUrl})`);
+            // Relabel a confirmed-dead board as a synthetic 404 so the scanner's
+            // 404/410 quarantine (scan-quarantine.mjs) picks it up.
+            err.status = confirmedDead ? 404 : e.status;
+            err.fallback = true;
+            throw err;
+          }
+          setFallback(apiUrl, reason);
+          return [];
+        }
+        console.error(`  ⚠ workday: page at offset ${offset} returned HTTP ${e.status} — keeping the ${jobs.length} postings collected so far`);
+        break;
       }
-      console.error(`  ⚠ workday: page at offset ${offset} returned HTTP ${res.status} — keeping the ${jobs.length} postings collected so far`);
-      break;
-    }
-    // Some CAPTCHA gates serve HTML with 200; detect by trying to parse
-    // as JSON and bailing softly on parse error.
-    let data;
-    try {
-      data = await res.json();
-    } catch (e) {
+      // Status-less failure: a network error (DNS, connect, timeout) OR a 200
+      // that is not JSON — fetchJson wraps the latter as "non-JSON 2xx
+      // response from …" (a CAPTCHA gate serving HTML with 200, the shape the
+      // old res.json() catch reported verbatim). Restore that diagnostic so
+      // the fallback hint keeps pointing at the AI/Playwright scan.
+      const nonJson200 = typeof e?.message === 'string' && e.message.includes('non-JSON 2xx response');
       if (page === 0) {
         if (strict) throw e;
-        setFallback(apiUrl, 'non-JSON response (likely CAPTCHA HTML)');
+        setFallback(apiUrl, nonJson200 ? 'non-JSON response (likely CAPTCHA HTML)' : `network: ${e.message}`);
         return [];
       }
-      console.error(`  ⚠ workday: page at offset ${offset} was not JSON — keeping the ${jobs.length} postings collected so far`);
+      console.error(`  ⚠ workday: page at offset ${offset} ${nonJson200 ? 'was not JSON' : `failed (${e.message})`} — keeping the ${jobs.length} postings collected so far`);
       break;
     }
     // The Workday CXS response wraps job rows under `jobPostings` — the
@@ -387,13 +412,20 @@ async function resolvePlaceholders(jobs, raw, apiUrl, { fetchImpl, signal, heade
     if (state.spent >= MAX_DETAIL_REQUESTS) break;
     if (!isMultiLocationPlaceholder(jobs[i].location)) continue;
     const path = raw[i] && raw[i].externalPath;
-    if (typeof path !== 'string' || !path) continue;
+    // Detail GETs are relative-path-only (FULL-R2): the cxsBase concatenation
+    // never turns a tenant-supplied absolute/protocol-relative value into an
+    // off-host request.
+    if (typeof path !== 'string' || !path.startsWith('/')) continue;
     state.spent += 1;
     let detail;
     try {
-      const res = await fetchImpl(`${cxsBase}${path}`, { method: 'GET', signal, redirect: 'error', headers: detailHeaders });
-      if (!res.ok) continue;
-      detail = await res.json();
+      detail = await fetchJson(fetchImpl, `${cxsBase}${path}`, {
+        method: 'GET',
+        signal,
+        redirect: 'error',
+        headers: detailHeaders,
+      }).catch(() => null);
+      if (!detail) continue; // a non-ok or transient detail failure must not fail the board
     } catch {
       continue; // a transient detail failure must not fail the board
     }
@@ -408,9 +440,32 @@ async function resolvePlaceholders(jobs, raw, apiUrl, { fetchImpl, signal, heade
   }
 }
 
+/**
+ * The posting URL from a tenant-supplied `externalPath` (FULL-R2): a relative
+ * path on the tenant base is the normal shape, and an ABSOLUTE path is
+ * accepted only when it is already https on the tenant origin — a hostile or
+ * misbehaving tenant could otherwise inject `http://` or off-host links into
+ * the dedup key, the UI and the liveness checks. Anything else is dropped to
+ * '' (a posting without a usable URL is filtered downstream, the same as the
+ * other sources' untrusted-link handling).
+ * @param {unknown} path the row's `externalPath`
+ * @param {string} base the tenant job base (jobBaseFromApi)
+ * @returns {string}
+ */
+function safeJobUrlFromPath(path, base) {
+  if (typeof path !== 'string' || path === '') return '';
+  if (path.startsWith('/')) return base + path;
+  try {
+    const parsed = new URL(path);
+    if (parsed.protocol === 'https:' && parsed.origin === new URL(base).origin) {
+      return parsed.href;
+    }
+  } catch { /* not an absolute URL either → drop */ }
+  return '';
+}
+
 function normalize(j, base) {
-  const path = j.externalPath || '';
-  const url = path.startsWith('http') ? path : (base + path);
+  const url = safeJobUrlFromPath(j.externalPath, base);
   const loc = j.locationsText || j.bulletFields?.[0] || '';
   const isRemote = /remote|anywhere/i.test(loc) || /\bremote\b/i.test(j.title || '');
   const hybrid = /hybrid/i.test(loc);

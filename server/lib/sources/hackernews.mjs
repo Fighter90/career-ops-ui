@@ -23,6 +23,8 @@
  */
 import { decodeEntities } from '../html-entities.mjs';
 
+import { fetchJson, labeledHttpError } from '../http-json.mjs';
+
 const UA = 'career-ops-web-ui/1.0';
 
 export const SEARCH_URL =
@@ -146,15 +148,10 @@ export async function fetchHackerNews(_url, opts = {}) {
 
   // Step 1 — find the latest monthly hiring thread.
   assertHnUrl(SEARCH_URL);
-  const searchRes = await fetchImpl(SEARCH_URL, {
+  const searchJson = await fetchJson(fetchImpl, SEARCH_URL, {
     signal,
-    redirect: 'error',
     headers: { 'User-Agent': UA, Accept: 'application/json' },
-  });
-  if (!searchRes.ok) {
-    throw new Error(`hackernews: search HTTP ${searchRes.status}`);
-  }
-  const searchJson = await searchRes.json();
+  }).catch((e) => { throw labeledHttpError(e, 'hackernews: search'); });
   const threadId = findHiringThreadId(searchJson);
   if (!threadId) {
     // The parent career-ops source throws here: a search that names no
@@ -167,15 +164,11 @@ export async function fetchHackerNews(_url, opts = {}) {
   // Step 2 — fetch the thread item.
   const itemUrl = `${ITEMS_BASE}${threadId}`;
   assertHnUrl(itemUrl);
-  const itemRes = await fetchImpl(itemUrl, {
+  const itemJson = await fetchJson(fetchImpl, itemUrl, {
     signal,
-    redirect: 'error',
     headers: { 'User-Agent': UA, Accept: 'application/json' },
-  });
-  if (!itemRes.ok) {
-    throw new Error(`hackernews: items HTTP ${itemRes.status} for thread ${threadId}`);
-  }
-  const item = await itemRes.json();
+  }).catch((e) => { throw labeledHttpError(e, `hackernews: items (thread ${threadId})`); });
+  const item = itemJson;
   if (!item || !Array.isArray(item.children)) {
     // Same contract: an item without its children array is a broken thread
     // payload, not a thread with zero comments.

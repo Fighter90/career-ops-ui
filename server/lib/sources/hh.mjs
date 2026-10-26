@@ -18,6 +18,7 @@
  * (intentionally not pulling in cheerio/JSDOM to keep deps minimal).
  */
 import { decodeEntities } from '../html-entities.mjs';
+import { fetchTextFollowSameHost } from '../http-json.mjs';
 
 const HH_SITE = 'https://hh.ru/search/vacancy';
 
@@ -77,51 +78,81 @@ export async function searchHH(query, opts = {}) {
     });
     if (onlyRemote) params.set('schedule', 'remote');
 
-    const res = await fetchImpl(`${HH_SITE}?${params}`, {
-      signal,
-      headers: {
-        'User-Agent': UA,
-        'Accept-Language': 'ru-RU,ru;q=0.9',
-        Accept: 'text/html',
-      },
-    });
+    // FULL-R2: the guarded transport with the manual same-host redirect
+    // contract. Node's default 'follow' would bounce the request to ANY host
+    // the upstream names; here a 3xx is followed only when its Location stays
+    // on *.hh.ru over https (hh.ru legitimately redirects a regional Russian
+    // IP to sochi.hh.ru / spb.hh.ru / …), each hop re-guarded, and an
+    // off-host redirect is refused (thrown with .status/.location, never
+    // fetched). maxRedirects=2 because the result window walk paginates via
+    // &page= — every hop is a fresh search request, not a redirect chain.
+    let finalUrl = `${HH_SITE}?${params}`;
+    let pageHtml = '';
+    try {
+      ({ url: finalUrl, text: pageHtml } = await fetchTextFollowSameHost(fetchImpl, `${HH_SITE}?${params}`, {
+        signal,
+        allowSubdomains: true,
+        maxRedirects: 2,
+        headers: {
+          'User-Agent': UA,
+          'Accept-Language': 'ru-RU,ru;q=0.9',
+          Accept: 'text/html',
+        },
+      }));
+    } catch (e) {
+      // The refusal itself can BE the vpncheck: a redirect whose Location
+      // names the interstitial must fail page 0 with the geo-block flag even
+      // though the interstitial was never fetched.
+      const location = e?.location || '';
+      if (/\/vpnche{1,2}ck/.test(location)) {
+        if (page === 0) {
+          const err = new Error(
+            `hh.ru: VPN-check interstitial (HTTP ${e.status}) — network flagged as VPN/proxy`,
+          );
+          err.status = e.status;
+          err.geoBlocked = true;
+          throw err;
+        }
+        break;
+      }
+      if (page === 0) {
+        if (typeof e?.status !== 'number') throw e; // network-level: surface raw
+        const err = new Error(`hh.ru: HTTP ${e.status}`);
+        err.status = e.status;
+        // Keep the refused redirect target on the surfaced error — where the
+        // walk stopped matters for diagnosis (FULL-R2 review finding 6).
+        err.location = e.location ?? null;
+        // 403 = anti-bot challenge; 451 = regional legal block (hh.ru started
+        // serving 451 stubs to non-Russian IPs in July 2026). Both mean "this
+        // network can't scan hh right now" — flag so the run disables the source.
+        err.geoBlocked = e.status === 403 || e.status === 451;
+        throw err;
+      }
+      break;
+    }
 
     // hh.ru 302-redirects networks it flags as VPN/proxy (datacenter egress
     // IPs) to an interstitial at /vpncheeck ("VPN мешает работе сайта").
-    // fetch follows the redirect and the stub can answer HTTP 200 with zero
-    // vacancy cards — without this check the scan silently reports 0 hits.
-    // Detect it via the response's final URL and treat it like the geo-block:
-    // fail page 0 loudly so the run disables hh with an honest hint.
-    // (`/vpncheck` included in case hh fixes the typo in the route.)
-    if (/\/vpnche{1,2}ck/.test(res.url || '')) {
+    // Under the manual same-host contract the interstitial (itself on hh.ru)
+    // is followed and its FINAL url names it — without this check the scan
+    // silently reports 0 hits. Detect it via the response's final URL and
+    // treat it like the geo-block: fail page 0 loudly so the run disables hh
+    // with an honest hint. (`/vpncheck` included in case hh fixes the typo
+    // in the route.)
+    if (/\/vpnche{1,2}ck/.test(finalUrl || '')) {
       if (page === 0) {
         const err = new Error(
-          `hh.ru: VPN-check interstitial (HTTP ${res.status}) — network flagged as VPN/proxy`,
+          `hh.ru: VPN-check interstitial (HTTP 200) — network flagged as VPN/proxy`,
         );
-        err.status = res.status;
+        err.status = 200;
         err.geoBlocked = true;
         throw err;
       }
       break;
     }
 
-    if (!res.ok) {
-      // Page 0 failing = the source is down/blocked → surface it. A later
-      // page failing is non-fatal: keep what we already collected.
-      if (page === 0) {
-        const err = new Error(`hh.ru: HTTP ${res.status}`);
-        err.status = res.status;
-        // 403 = anti-bot challenge; 451 = regional legal block (hh.ru started
-        // serving 451 stubs to non-Russian IPs in July 2026). Both mean "this
-        // network can't scan hh right now" — flag so the run disables the source.
-        err.geoBlocked = res.status === 403 || res.status === 451;
-        throw err;
-      }
-      break;
-    }
-
     let added = 0;
-    for (const job of parseHhCards(await res.text())) {
+    for (const job of parseHhCards(pageHtml)) {
       if (seen.has(job.id)) continue;
       seen.add(job.id);
       out.push(job);

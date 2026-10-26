@@ -9,6 +9,8 @@
  * Used by the workingnomads adapter
  * (server/lib/portals/adapters/workingnomads.mjs).
  */
+import { fetchJson, labeledHttpError } from '../http-json.mjs';
+
 const UA = 'career-ops-web-ui/1.0';
 
 export const FEED_URL = 'https://www.workingnomads.com/api/exposed_jobs/';
@@ -78,17 +80,10 @@ function toIsoDateUtc(value) {
 export async function fetchWorkingNomads(feedUrl = FEED_URL, opts = {}) {
   const { fetchImpl = fetch, signal } = opts;
   assertWorkingNomadsUrl(feedUrl);
-  const res = await fetchImpl(feedUrl, {
+  const data = await fetchJson(fetchImpl, feedUrl, {
     signal,
-    redirect: 'error',
     headers: { 'User-Agent': UA, Accept: 'application/json' },
-  });
-  if (!res.ok) {
-    const err = new Error(`Working Nomads: HTTP ${res.status} (${feedUrl})`);
-    err.status = res.status;
-    throw err;
-  }
-  const data = await res.json();
+  }).catch((e) => { throw labeledHttpError(e, 'Working Nomads'); });
   if (!Array.isArray(data)) {
     throw new Error(`Working Nomads: unexpected API response — expected a JSON array, got ${data === null ? 'null' : typeof data}`);
   }

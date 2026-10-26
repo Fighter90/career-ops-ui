@@ -12,6 +12,8 @@
  */
 import { requireArray } from './_shape.mjs';
 
+import { fetchJson, labeledHttpError } from '../http-json.mjs';
+
 const UA = 'career-ops-web-ui/1.0';
 
 // Exact hosts — no suffix/substring match (clever.com contains 'lever.co').
@@ -48,17 +50,10 @@ export function assertLeverUrl(url) {
 export async function fetchLever(apiUrl, opts = {}) {
   const { fetchImpl = fetch, signal } = opts; // REVIEW-B3
   assertLeverUrl(apiUrl);
-  const res = await fetchImpl(apiUrl, {
+  const data = await fetchJson(fetchImpl, apiUrl, {
     signal,
-    redirect: 'error',
     headers: { 'User-Agent': UA, Accept: 'application/json' },
-  });
-  if (!res.ok) {
-    const err = new Error(`Lever: HTTP ${res.status} (${apiUrl})`);
-    err.status = res.status;
-    throw err;
-  }
-  const data = await res.json();
+  }).catch((e) => { throw labeledHttpError(e, 'Lever'); });
   // lever returns either an array directly OR { ... data: [] } — anything else
   // is a wrong-shape 200 and throws rather than reading as an empty board.
   const list = Array.isArray(data) ? data : requireArray(data?.data, 'Lever postings');

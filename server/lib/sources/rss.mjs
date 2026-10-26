@@ -8,6 +8,8 @@
  * Used by the rss adapter (server/lib/portals/adapters/rss.mjs).
  */
 import { decodeEntities } from '../html-entities.mjs';
+import { fetchText, labeledHttpError } from '../http-json.mjs';
+import { isPrivateOrLoopbackHost } from '../security.mjs';
 
 const UA = 'career-ops-web-ui/1.0';
 
@@ -90,7 +92,45 @@ function companyFromTitle(title) {
 // ── main export ──────────────────────────────────────────────────────
 
 /**
+ * SSRF guard on the ONE source whose URL is fully user/config-controlled:
+ * the feed URL comes straight from `portals.yml`, so an entry pointing at
+ * `169.254.169.254` or `127.0.0.1` would be fetched as-is and its body parsed
+ * back into the UI. FULL-R2 review revision: the SCHEME is not the threat —
+ * plain-http feeds are legitimate and the config is operator-owned — so both
+ * http: and https: pass. What is refused, BEFORE any request leaves, is a
+ * private/loopback/link-local host (string-level here, resolve-time again in
+ * the guarded transport below). Exported for tests.
+ * @param {string} url
+ * @returns {string}
+ */
+export function assertRssFeedUrl(url) {
+  let parsed;
+  try {
+    parsed = new URL(url);
+  } catch {
+    throw new Error(`rss: invalid feed URL: ${url}`);
+  }
+  if (parsed.protocol !== 'https:' && parsed.protocol !== 'http:') {
+    throw new Error(`rss: feed URL must use HTTP(S): ${url}`);
+  }
+  if (!parsed.hostname) throw new Error(`rss: feed URL has no hostname: ${url}`);
+  // Bracketed IPv6 literals arrive with the brackets on (.hostname) —
+  // isPrivateOrLoopbackHost strips them and classifies ::1, ::ffff:127.0.0.1,
+  // fd00::/8 unique-local and fe80::/10 link-local as private.
+  if (isPrivateOrLoopbackHost(parsed.hostname)) {
+    throw new Error(`rss: refusing private/loopback feed host: ${parsed.hostname}`);
+  }
+  return url;
+}
+
+/**
  * Fetch an RSS feed and return a normalized job array.
+ *
+ * Fetched through the shared guarded transport (`fetchText`), so the
+ * DNS-rebinding guard resolves the feed host on the real network path and
+ * refuses a record pointing at a private/loopback/cloud-metadata address —
+ * the string-level {@link assertRssFeedUrl} check above is the first gate,
+ * the resolve-time one is the second.
  *
  * @param {string} feedUrl
  * @param {{ fetchImpl?: Function, signal?: AbortSignal }} [opts]
@@ -98,20 +138,15 @@ function companyFromTitle(title) {
  */
 export async function fetchRss(feedUrl, opts = {}) {
   const { fetchImpl = fetch, signal } = opts;
+  assertRssFeedUrl(feedUrl);
 
-  const res = await fetchImpl(feedUrl, {
+  const xml = await fetchText(fetchImpl, feedUrl, {
     signal,
     redirect: 'error',
     headers: { 'User-Agent': UA, Accept: 'application/rss+xml, application/xml, text/xml, */*' },
+  }).catch((e) => {
+    throw labeledHttpError(e, 'RSS');
   });
-
-  if (!res.ok) {
-    const err = new Error(`RSS: HTTP ${res.status} (${feedUrl})`);
-    err.status = res.status;
-    throw err;
-  }
-
-  const xml = await res.text();
 
   // Extract the feed hostname as a last-resort company name
   let feedHostname = '';

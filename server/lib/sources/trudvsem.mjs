@@ -17,6 +17,7 @@
 
 import { safeEncodeURIComponent } from './_safe-url.mjs';
 import { requireContainer, requireArray } from './_shape.mjs';
+import { fetchJson, labeledHttpError } from '../http-json.mjs';
 
 const TRUDVSEM_API = 'https://opendata.trudvsem.ru/api/v1/vacancies';
 const UA =
@@ -64,18 +65,10 @@ export async function searchTrudvsem(query, opts = {}) {
     let data = null;
     let list;
     try {
-      const res = await fetchImpl(`${TRUDVSEM_API}?${params}`, {
+      data = await fetchJson(fetchImpl, `${TRUDVSEM_API}?${params}`, {
         signal,
-        // Never follow a server-side redirect (SSRF guard).
-        redirect: 'error',
         headers: { 'User-Agent': UA, Accept: 'application/json' },
-      });
-      if (!res.ok) {
-        const err = new Error(`Trudvsem: HTTP ${res.status}`);
-        err.status = res.status;
-        throw err;
-      }
-      data = await res.json();
+      }).catch((e) => { throw labeledHttpError(e, 'Trudvsem'); });
       // The documented envelope is REQUIRED: a 200 without
       // results.vacancies is the API stopping its shape, not an empty page.
       requireContainer(data, 'Trudvsem', 'results.vacancies');
