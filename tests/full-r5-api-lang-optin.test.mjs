@@ -102,12 +102,17 @@ test('behavioural: { lang: true } opts the body in; explicit body.lang still win
 });
 
 test('static: the LLM-bound call sites opt in explicitly', () => {
+  // CAR-119 (merged while this branch was in flight) moved the LIVE sites of
+  // deep/mode-page/cv-studio onto the shared LlmPageKit.postJSON transport,
+  // which carries lang by contract (its 12 AI-view consumers are all
+  // LLM-bound). The gate therefore accepts either form per site: an explicit
+  // `{ lang: true }` on API.post, or the LlmPageKit transport.
   const cases = [
     ['public/js/views/evaluate.js', /API\.post\('\/api\/evaluate',[\s\S]{0,200}?\{ lang: true \}\)/, 1],
-    ['public/js/views/deep.js', /API\.post\('\/api\/deep',[\s\S]{0,200}?\{ lang: true \}\)/, 2],
-    ['public/js/views/mode-page.js', /API\.post\('\/api\/mode\/' \+ apiSlug,[\s\S]{0,200}?\{ lang: true \}\)/, 1],
+    ['public/js/views/deep.js', /API\.post\('\/api\/deep',[\s\S]{0,200}?\{ lang: true \}\)|LlmPageKit\.postJSON\('\/api\/deep'/, 2],
+    ['public/js/views/mode-page.js', /API\.post\('\/api\/mode\/' \+ apiSlug,[\s\S]{0,200}?\{ lang: true \}\)|LlmPageKit\.postJSON\('\/api\/mode\/' \+ apiSlug/, 2],
     ['public/js/views/apply.js', /API\.post\('\/api\/apply-helper',[\s\S]{0,200}?\{ lang: true \}\)/, 1],
-    ['public/js/views/cv-studio.js', /API\.post\('\/api\/cv-studio\//, 4],
+    ['public/js/views/cv-studio.js', /API\.post\('\/api\/cv-studio\/[\w-]*'[\s\S]{0,200}?\{ lang: true \}\)|LlmPageKit\.postJSON\('\/api\/cv-studio\//, 4],
   ];
   for (const [file, re, min] of cases) {
     const src = read(file);
@@ -115,12 +120,18 @@ test('static: the LLM-bound call sites opt in explicitly', () => {
     assert.ok(hits >= min, `${file}: expected ≥${min} opt-in call site(s), got ${hits}`);
   }
   // cv-studio: all four POSTs (humanize/tailor/add-entry/verify-facts) are
-  // LLM-bound and must each carry the opt-in third argument.
+  // LLM-bound and must each carry lang (explicit opt-in or the LlmPageKit
+  // transport).
   const studio = read('public/js/views/cv-studio.js');
-  for (const ep of ['humanize', 'tailor', 'add-entry', 'verify-facts']) {
-    assert.match(studio, new RegExp(`API\\.post\\('/api/cv-studio/${ep}',[\\s\\S]{0,200}?\\{ lang: true \\}\\)`),
-      `cv-studio ${ep} must opt in`);
+  for (const ep of ['humanize', 'tailor', 'add-entry']) {
+    assert.match(studio, new RegExp(`LlmPageKit\\.postJSON\\('/api/cv-studio/${ep}'`),
+      `cv-studio ${ep} must ride the lang-carrying LlmPageKit transport`);
   }
+  assert.match(studio, /API\.post\('\/api\/cv-studio\/verify-facts',[\s\S]{0,200}?\{ lang: true \}\)/,
+    'cv-studio verify-facts must opt in');
+  // The LlmPageKit transport itself injects lang (contract check).
+  const kit = read('public/js/lib/llm-page-kit.js');
+  assert.match(kit, /\{\s*\.\.\.body,\s*lang\s*\}/, 'LlmPageKit.postJSON must keep carrying lang');
 });
 
 test('static: the write endpoints stay untouched (no opt-in, no lang)', () => {

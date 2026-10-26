@@ -10,6 +10,11 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
+import { spawnSync } from 'node:child_process';
+import { mkdtempSync, writeFileSync, rmSync, existsSync, chmodSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { checkWikiBanners, registryCounters } from '../scripts/wiki-banner-check.mjs';
 
 // EN shape
@@ -79,4 +84,64 @@ test('registryCounters reads live repo counters (routes dir + CHANGELOG locales)
   const { routes, locales } = registryCounters();
   assert.ok(routes >= 39, `route modules counted from server/lib/routes: ${routes}`);
   assert.equal(locales, 19, '19 UI locales = 18 CHANGELOG.{loc}.md + EN');
+});
+
+// --- FULL-R3: the clone-prep half must never delete an existing directory ---
+// The live clone half is driven as a subprocess against temp dirs. A fake `git`
+// shim goes first on PATH so the red shape (and the allowed empty-dir clone)
+// never touches the network and always terminates deterministically.
+
+const SCRIPT = fileURLToPath(new URL('../scripts/wiki-banner-check.mjs', import.meta.url));
+
+function fakeGitShim(t) {
+  const dir = mkdtempSync(join(tmpdir(), 'fullr3-fakegit-'));
+  t.after(() => rmSync(dir, { recursive: true, force: true }));
+  const shim = join(dir, 'git');
+  // `git clone -q <url> <dest>` — record the call, create an EMPTY dest (no
+  // Home.md), so the script's post-clone page read is deterministic.
+  writeFileSync(shim, '#!/bin/sh\ncase "$1" in\n  clone) mkdir -p "$4" 2>/dev/null || true ;;\nesac\necho "FAKE-GIT $*"\n');
+  chmodSync(shim, 0o755);
+  return dir;
+}
+
+function runScript(t, args) {
+  const { status, stdout, stderr } = spawnSync(process.execPath, [SCRIPT, ...args], {
+    encoding: 'utf8',
+    env: { ...process.env, PATH: `${fakeGitShim(t)}:${process.env.PATH}` },
+  });
+  return { status, stdout, stderr, combined: `${stdout}${stderr}` };
+}
+
+test('FULL-R3: a --wiki path that already exists with content is REFUSED — the sentinel file survives and nothing was cloned', (t) => {
+  const dir = mkdtempSync(join(tmpdir(), 'fullr3-sentinel-'));
+  t.after(() => rmSync(dir, { recursive: true, force: true }));
+  const sentinel = join(dir, 'precious.txt');
+  writeFileSync(sentinel, 'irreplaceable user data');
+  const { status, combined, stdout } = runScript(t, ['--wiki', dir]);
+  assert.equal(existsSync(sentinel), true, 'the sentinel must survive — the script deleted the --wiki directory');
+  assert.match(combined, /already exists and is not empty/, 'a clear refusal must be printed');
+  assert.match(combined, /nothing was deleted/);
+  assert.ok(status !== 0, `the refusal must exit non-zero (got ${status})`);
+  assert.doesNotMatch(stdout, /FAKE-GIT clone/, 'no git clone may be attempted once the path is refused');
+});
+
+test('FULL-R3: an existing EMPTY directory stays an acceptable clone target — clone is attempted, no refusal', (t) => {
+  const dir = mkdtempSync(join(tmpdir(), 'fullr3-empty-'));
+  t.after(() => rmSync(dir, { recursive: true, force: true }));
+  const { status, combined } = runScript(t, ['--wiki', dir]);
+  assert.doesNotMatch(combined, /already exists and is not empty/, 'an empty directory must not be refused');
+  assert.match(combined, /FAKE-GIT clone/, 'the clone was attempted into the empty directory');
+  assert.ok(existsSync(dir), 'the directory still exists after the run');
+  assert.ok(status !== 0, 'no Home*.md pages in the shimmed checkout → the gate reports a problem');
+});
+
+test('FULL-R3: --check-only against a missing checkout still exits 2 without touching the filesystem', (t) => {
+  const dir = mkdtempSync(join(tmpdir(), 'fullr3-checkonly-'));
+  t.after(() => rmSync(dir, { recursive: true, force: true }));
+  const sentinel = join(dir, 'precious.txt');
+  writeFileSync(sentinel, 'irreplaceable user data');
+  const { status, combined } = runScript(t, ['--wiki', dir, '--check-only']);
+  assert.match(combined, /--check-only forbids cloning/);
+  assert.equal(existsSync(sentinel), true, 'the sentinel must survive');
+  assert.equal(status, 2);
 });
