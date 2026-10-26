@@ -1,12 +1,13 @@
 /**
- * CAR-151 — lossless pipeline undo (client contract).
+ * CAR-151 — lossless pipeline undo (client contract, review round 2).
  *
  * The view cannot capture a raw line before delete: GET /api/pipeline
- * answers only `urls`. The fix rides the DELETE response — the server
- * answers with the removed RAW line(s) — and the view keeps them for the
- * undo: undoLast() replays them through POST /api/pipeline/restore
- * (byte-faithful, checklist cells included) and falls back to the bare
- * POST /api/pipeline re-add only for URLs with no captured line.
+ * answers only `urls`. The fix rides the DELETE response — the server now
+ * answers with an opaque restoreToken whose RAW line(s) live server-side —
+ * and the view keeps the TOKEN for the undo: undoLast() replays tokens
+ * through POST /api/pipeline/restore and falls back to the bare
+ * POST /api/pipeline re-add for URLs with no token, for unknown tokens,
+ * or when the restore call itself fails (never a silent loss).
  *
  * Browser-only view → asserted statically, the pipeline-v2-car116 style.
  * CI-isolated: reads source text, no fs writes, no network.
@@ -21,24 +22,56 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const R = (...p) => resolve(__dirname, '..', ...p);
 const PIPE = readFileSync(R('public', 'js', 'views', 'pipeline.js'), 'utf8');
 
-test('the remover captures the DELETE response lines into the session map', () => {
+test('the remover captures the DELETE restoreToken into the session map', () => {
   const at = PIPE.indexOf('async function removeFromPipeline');
   const body = PIPE.slice(at, PIPE.indexOf('function urlRow', at));
-  assert.match(body, /r\.lines/, 'the DELETE response lines are read');
-  assert.match(body, /deletedLines\.set\(url, lines\)/, 'kept for the undo');
+  assert.match(body, /r\.restoreToken/, 'the DELETE response token is read');
+  assert.doesNotMatch(body, /r\.lines/, 'no client-side content carriage (review r2)');
+  assert.match(body, /deletedLines\.set\(url, token\)/, 'kept for the undo');
   assert.match(body, /deletedLines\.delete\(url\)/,
-    'a line-less removal (nothing to restore losslessly) clears stale captures');
+    'a token-less removal clears stale captures');
 });
 
-test('undo replays captured lines through the restore endpoint', () => {
+test('undo replays tokens through the restore endpoint', () => {
   const at = PIPE.indexOf('async function undoLast');
   const body = PIPE.slice(at, PIPE.indexOf('function shortHost', at));
-  assert.match(body, /API\.post\('\/api\/pipeline\/restore', \{ lines \}\)/,
-    'the captured RAW lines go to POST /api/pipeline/restore');
+  assert.match(body, /API\.post\('\/api\/pipeline\/restore', \{ tokens \}\)/,
+    'the captured tokens go to POST /api/pipeline/restore');
   assert.match(body, /restored \+= \(r && r\.restored\) \|\| 0/,
     'the server count is what is celebrated, not an assumption');
   assert.match(body, /API\.post\('\/api\/pipeline', \{ url: u \}\)/,
-    'URLs with no captured line fall back to the existing bare add path');
+    'URLs with no captured token fall back to the existing bare add path');
+});
+
+test('an unknown token or a failed restore never loses the URL silently (finding 5)', () => {
+  const at = PIPE.indexOf('async function undoLast');
+  const body = PIPE.slice(at, PIPE.indexOf('function shortHost', at));
+  // unknown tokens (restart / eviction) → bare fallback
+  assert.match(body, /Array\.isArray\(r\.unknown\)[\s\S]*?bare\.push/, 'unknown tokens fall back');
+  // restore POST exception → the toast AND the bare fallback
+  assert.match(body, /catch \(err\)[\s\S]*?UI\.toast[\s\S]*?bare\.push\(\.\.\.tokenUrls\)/,
+    'a failed restore toasts AND falls back to the bare re-add');
+});
+
+test('undo prunes the consumed map entries (finding 7)', () => {
+  const at = PIPE.indexOf('async function undoLast');
+  const body = PIPE.slice(at, PIPE.indexOf('function shortHost', at));
+  assert.match(body, /for \(const u of batch\) deletedLines\.delete\(u\)/,
+    'tokens are consumed by the undo — the map never grows without bound');
+});
+
+test('the remover result is only ever checked by truthiness (finding 6)', () => {
+  // every call site (row button, preview pane, bulk loop) must treat the
+  // return (token | true | null) as a plain success flag
+  assert.doesNotMatch(PIPE, /removeFromPipeline\([^)]*\)\s*===\s*(true|false)/,
+    'no === true/false comparisons');
+  assert.doesNotMatch(PIPE, /===\s*(true|false)\s*===?\s*[^;]*removeFromPipeline/, 'no reversed equality either');
+  const sites = [...PIPE.matchAll(/removeFromPipeline\(/g)].map((m) => m.index);
+  assert.ok(sites.length >= 4, `helper + ≥3 call sites, found ${sites.length}`);
+  for (const at of sites) {
+    const handler = PIPE.slice(Math.max(0, at - 160), PIPE.indexOf(';', at) + 1);
+    assert.doesNotMatch(handler, /===\s*(true|false)/, 'truthiness only, near ' + at);
+  }
 });
 
 test('the undo queue is still the bounded session queue (lib unchanged)', () => {
