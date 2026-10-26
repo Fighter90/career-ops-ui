@@ -1616,4 +1616,22 @@ window.__I18N_DICT_EN = {
   'rep2.actResearch': "Research the company first",
   'rep2.actLow': "Skip unless there is a personal reason",
   'rep2.histogramLabel': "Score distribution — click a column to filter",
+
+  /* CAR-120 — #/stats Overview tab (feat/car120-stats-v2). EN parity is
+     locked by tests/i18n-coverage + tests/stats-overview-car120; the ovDay_*
+     forms are picked by Intl.PluralRules in views/stats.js. */
+  'stats.tabOverview': "Overview",
+  'stats.ovVacanciesBySource': "Vacancies by source",
+  'stats.ovPostingsByWeek': "Postings by week",
+  'stats.ovSalaryByGrade': "Median salary by grade",
+  'stats.ovStageVelocity': "Time between stages",
+  'stats.ovClickHintScan': "Click a bar to open those postings in Scan",
+  'stats.ovVelocityEmpty': "Not enough replies yet — median days appear as responses come in.",
+  'stats.hint.overview': "Real-data charts built from your tracker and the latest scan — status funnel, scores, salaries, sources. No AI involved.",
+  'stats.ovDay_zero': "{n} days",
+  'stats.ovDay_one': "{n} day",
+  'stats.ovDay_two': "{n} days",
+  'stats.ovDay_few': "{n} days",
+  'stats.ovDay_many': "{n} days",
+  'stats.ovDay_other': "{n} days",
 };

@@ -1621,4 +1621,22 @@ window.__I18N_DICT_HI = {
   'rep2.actResearch': "पहले कंपनी पर शोध करें",
   'rep2.actLow': "व्यक्तिगत कारण होने पर ही आगे बढ़ें",
   'rep2.histogramLabel': "स्कोर वितरण — फ़िल्टर के लिए कॉलम पर क्लिक करें",
+
+  /* CAR-120 — #/stats Overview tab (feat/car120-stats-v2). EN parity is
+     locked by tests/i18n-coverage + tests/stats-overview-car120; the ovDay_*
+     forms are picked by Intl.PluralRules in views/stats.js. */
+  'stats.tabOverview': "अवलोकन",
+  'stats.ovVacanciesBySource': "स्रोत के अनुसार नौकरियाँ",
+  'stats.ovPostingsByWeek': "सप्ताह के अनुसार नौकरियाँ",
+  'stats.ovSalaryByGrade': "ग्रेड के अनुसार मध्यिका वेतन",
+  'stats.ovStageVelocity': "चरणों के बीच का समय",
+  'stats.ovClickHintScan': "किसी बार पर क्लिक करें — वे नौकरियाँ खोज में खुलेंगी",
+  'stats.ovVelocityEmpty': "अभी पर्याप्त उत्तर नहीं — उत्तर आने पर मध्यिका दिन दिखेंगे।",
+  'stats.hint.overview': "आपके ट्रैकर और नवीनतम स्कैन के वास्तविक आँकड़ों से बने चार्ट — स्थिति फ़नल, स्कोर, वेतन, स्रोत। AI शामिल नहीं।",
+  'stats.ovDay_zero': "{n} दिन",
+  'stats.ovDay_one': "{n} दिन",
+  'stats.ovDay_two': "{n} दिन",
+  'stats.ovDay_few': "{n} दिन",
+  'stats.ovDay_many': "{n} दिन",
+  'stats.ovDay_other': "{n} दिन",
 };

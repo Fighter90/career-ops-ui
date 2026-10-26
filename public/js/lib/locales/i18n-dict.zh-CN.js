@@ -1610,4 +1610,22 @@ window.__I18N_DICT_ZH_CN = {
   'rep2.actResearch': "先调研公司",
   'rep2.actLow': "没有特别原因则跳过",
   'rep2.histogramLabel': "分数分布 — 点击柱形筛选",
+
+  /* CAR-120 — #/stats Overview tab (feat/car120-stats-v2). EN parity is
+     locked by tests/i18n-coverage + tests/stats-overview-car120; the ovDay_*
+     forms are picked by Intl.PluralRules in views/stats.js. */
+  'stats.tabOverview': "概览",
+  'stats.ovVacanciesBySource': "各来源职位",
+  'stats.ovPostingsByWeek': "每周职位",
+  'stats.ovSalaryByGrade': "各级别薪资中位数",
+  'stats.ovStageVelocity': "阶段间隔时间",
+  'stats.ovClickHintScan': "点击柱条可在扫描中打开这些职位",
+  'stats.ovVelocityEmpty': "暂无足够回复 — 收到回复后会显示中位数天数。",
+  'stats.hint.overview': "基于追踪器与最近扫描真实数据的图表 — 状态漏斗、评分、薪资、来源。不使用 AI。",
+  'stats.ovDay_zero': "{n}天",
+  'stats.ovDay_one': "{n}天",
+  'stats.ovDay_two': "{n}天",
+  'stats.ovDay_few': "{n}天",
+  'stats.ovDay_many': "{n}天",
+  'stats.ovDay_other': "{n}天",
 };

@@ -93,8 +93,7 @@ Router.register('stats', async () => {
     svg.setAttribute('viewBox', `0 0 ${labelW + barW + 80} ${rows.length * rowH + 8}`);
     svg.setAttribute('role', 'img');
     // CAR-120 — the accessible summary rides the role="img" node.
-    if (o.ariaLabel) svg.setAttribute('aria-label', o.ariaLabel);
-    // v1.243.0 (views-3) — RTL pages set dir="rtl" on <html>; SVG <text>
+    if (o.ariaLabel) svg.setAttribute('aria-label', o.ariaLabel);    // v1.243.0 (views-3) — RTL pages set dir="rtl" on <html>; SVG <text>
     // inherits CSS `direction`, which mirrored the bar labels and value
     // captions into unreadable ordering (labels hugged the wrong edge,
     // values overlapped the bars). Charts are LTR compositions — pin the
@@ -108,12 +107,25 @@ Router.register('stats', async () => {
       // optional click-to-filter hit the whole row (label + bar + value).
       const g = document.createElementNS(SVGNS, 'g');
       const fullLabel = String(r.label || '');
+      const tipText = `${fullLabel}: ${valueFmt ? valueFmt(r.value) : r.value}`;
       const tip = document.createElementNS(SVGNS, 'title');
-      tip.textContent = `${fullLabel}: ${valueFmt ? valueFmt(r.value) : r.value}`;
+      tip.textContent = tipText;
       g.appendChild(tip);
       if (typeof o.onItemClick === 'function') {
+        // CAR-120 (Opus r2) — a mouse-only click on a role="img" chart is
+        // invisible to keyboards and screen readers. role="group" on the svg
+        // keeps the bars in the accessibility tree; each bar becomes a
+        // named, tab-reachable link activated by Enter/Space as well.
+        svg.setAttribute('role', 'group');
         g.setAttribute('class', 'v2-stats-bar');
-        g.addEventListener('click', () => { try { o.onItemClick(r); } catch { /* noop */ } });
+        g.setAttribute('role', 'link');
+        g.setAttribute('tabindex', '0');
+        g.setAttribute('aria-label', tipText);
+        const activate = () => { try { o.onItemClick(r); } catch { /* noop */ } };
+        g.addEventListener('click', activate);
+        g.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); activate(); }
+        });
       }
       const label = document.createElementNS(SVGNS, 'text');
       label.setAttribute('x', '0'); label.setAttribute('y', String(y + rowH / 2 + 4));
@@ -192,8 +204,9 @@ Router.register('stats', async () => {
   const panel = c('div');
   const tabDefs = [
     // CAR-120 — the Overview: real-data charts (tracker + scan + funnel
-    // relay), zero LLM, first thing the page shows.
-    { id: 'overview', label: t('stats.tabOverview', 'Overview'), render: renderOverview },
+    // relay), zero LLM, first thing the page shows. The hint key shipped with
+    // the ×19 dict fan-out (Opus r2 finding 8 — no keyless tab).
+    { id: 'overview', label: t('stats.tabOverview', 'Overview'), hint: 'stats.hint.overview', render: renderOverview },
     { id: 'pipeline', label: t('stats.tabPipeline', 'My pipeline'), hint: 'stats.hint.pipeline', render: renderPipeline },
     { id: 'trend', label: t('stats.tabTrend', 'Target-role trend'), hint: 'stats.hint.trend', render: renderTrend },
     // funnel calibration vs benchmarks + waiting list + stage velocity,
@@ -254,6 +267,13 @@ Router.register('stats', async () => {
       // (the strip classes live in overlays.css, last in the cascade).
       b.setAttribute('aria-selected', k === id ? 'true' : 'false');
     });
+    // CAR-120 (Opus r2) — the Market tab is LAST in a horizontal scroller;
+    // a deep-linked or programmatic activation must reveal it, not leave it
+    // off-screen. `nearest` never scrolls the PAGE, only the strip.
+    const activeBtn = btns[id];
+    if (activeBtn && typeof activeBtn.scrollIntoView === 'function') {
+      try { activeBtn.scrollIntoView({ block: 'nearest', inline: 'nearest' }); } catch { /* noop */ }
+    }
     // refresh the active-tab caption + its help hint.
     // CAR-55 #1 (v1.247.0) — the caption used to repeat the active tab's
     // label right under the tab strip it mirrored; only the "?" help hint
@@ -326,13 +346,36 @@ Router.register('stats', async () => {
     };
     const hint = (txt) => c('p', { style: { color: 'var(--foggy)', fontSize: '12px', margin: '10px 0 0' } }, txt);
 
-    // KPI row — the same numbers the detail tabs expand below.
+    // Opus r2 (finding 5) — the hint only promises a click that exists: it
+    // renders when (and only when) a clickable chart actually rendered.
+    let clickableRendered = false;
+
+    // CAR-120 — localized stage labels for the velocity hops: the canonical
+    // names go through the same track.status.* keys the #/tracker board uses
+    // (composed in a variable so the static t()-scan sees no phantom key).
+    const stageLabel = (s) => {
+      const k = 'track.status.' + String(s || '').toLowerCase();
+      return t(k, s || '');
+    };
+    // Days pluralized via Intl.PluralRules into per-form keys (stats.ovDay_*,
+    // {n} replaced by hand — the established track.histDaysSilent pattern).
+    const plural = (typeof Intl !== 'undefined' && Intl.PluralRules) ? new Intl.PluralRules(loc) : null;
+    const daysFmt = (n) => {
+      const cat = plural ? plural.select(n) : 'other';
+      const k = 'stats.ovDay_' + cat;
+      const tpl = t(k, '') || t('stats.ovDay_other', '{n} days');
+      return tpl.replace('{n}', String(n));
+    };
+    const velFmt = (v) => daysFmt(v);
+
+    // KPI row — the same numbers the detail tabs expand below. Opus r2
+    // (finding 9): ONE shared distinct-companies fold, so the Overview KPI
+    // and the Pipeline KPI can never disagree about "Companies".
     const scoredN = rows.filter((r) => scoreVal(r.score) != null).length;
-    const companiesN = new Set(rows.map((r) => (r.company || '').trim().toLowerCase()).filter(Boolean)).size;
     wrap.appendChild(c('div', { className: 'stat-cards', style: { display: 'flex', gap: '12px', flexWrap: 'wrap', margin: '0 0 16px' } }, [
       statCard(rows.length, t('stats.pipeTotal', 'Total tracked')),
       statCard(scoredN, t('stats.pipeScored', 'With a score')),
-      statCard(companiesN, t('stats.pipeCompaniesN', 'Companies')),
+      statCard(distinctCompanies(rows), t('stats.pipeCompaniesN', 'Companies')),
       statCard(jobs.length, t('stats.totalJobs', 'Total postings')),
     ]));
 
@@ -351,6 +394,7 @@ Router.register('stats', async () => {
       // 3. Top companies — click a bar to see that company's postings in #/scan.
       addChart(t('stats.pipeCompanies', 'Top companies'), topCountItems(rows, 'company', 12),
         undefined, { onItemClick: (r) => scanFilter(r.label) });
+      clickableRendered = true;
     }
 
     // ── scan-snapshot-derived charts ──
@@ -391,16 +435,30 @@ Router.register('stats', async () => {
 
     // 8. Time between stages — from the zero-token funnel relay (median days
     // per hop; right-censored rows excluded by the parent script itself).
-    const vel = (funnelRes && funnelRes.available === true && funnelRes.velocity) ? velocityItems(funnelRes.velocity) : [];
-    if (vel.length) {
-      const sec = section(t('stats.ovStageVelocity', 'Time between stages'), c('div', null, [
-        barChart(vel, (v) => `${v} ${t('stats.ovDays', 'days')}`, {
-          ariaLabel: chartAria(t('stats.ovStageVelocity', 'Time between stages'), vel, (v) => `${v} ${t('stats.ovDays', 'days')}`),
-        }),
-        hint(t('stats.funnelVelocityNote', '0-day same-day entries are excluded from the medians; "still waiting" rows are right-censored (not yet counted).')),
-      ]));
-      sec.classList.add('v2-stats-anim');
-      wrap.appendChild(sec);
+    // Opus r2 (finding 6): available:false (relay absent) and
+    // available:true-but-empty (relay present, nothing uncensored yet) are
+    // DIFFERENT states with different messages.
+    if (funnelRes && funnelRes.available === true) {
+      const vel = velocityItems(funnelRes.velocity).map((v) => ({
+        label: `${stageLabel(v.from)} → ${stageLabel(v.to)}`,
+        value: v.value,
+      }));
+      if (vel.length) {
+        const sec = section(t('stats.ovStageVelocity', 'Time between stages'), c('div', null, [
+          barChart(vel, velFmt, {
+            ariaLabel: chartAria(t('stats.ovStageVelocity', 'Time between stages'), vel, velFmt),
+          }),
+          hint(t('stats.funnelVelocityNote', '0-day same-day entries are excluded from the medians; "still waiting" rows are right-censored (not yet counted).')),
+        ]));
+        sec.classList.add('v2-stats-anim');
+        wrap.appendChild(sec);
+      } else {
+        const sec = section(t('stats.ovStageVelocity', 'Time between stages'),
+          c('p', { style: { color: 'var(--foggy)' } },
+            t('stats.ovVelocityEmpty', 'Not enough replies yet — median days appear as responses come in.')));
+        sec.classList.add('v2-stats-anim');
+        wrap.appendChild(sec);
+      }
     } else {
       const sec = section(t('stats.ovStageVelocity', 'Time between stages'),
         c('p', { style: { color: 'var(--foggy)' } },
@@ -413,8 +471,8 @@ Router.register('stats', async () => {
       wrap.appendChild(c('div', { style: { margin: '8px 0 0' } }, emptyState(
         t('stats.noScan', 'No scan data yet. Run a scan first, then come back for the stats.'),
         t('stats.goScan', 'Run a scan'), '#/scan')));
-    } else {
-      wrap.appendChild(hint(t('stats.ovClickHint', 'Click a bar to filter') + ' — #/scan'));
+    } else if (clickableRendered) {
+      wrap.appendChild(hint(t('stats.ovClickHintScan', 'Click a bar to open those postings in Scan')));
     }
     return wrap;
   }
@@ -493,10 +551,13 @@ Router.register('stats', async () => {
         t('stats.goEvaluate', 'Open Evaluate'), '#/evaluate');
     }
     const wrap = c('div');
+    // Opus r2 (finding 9) — the Companies KPI uses the SAME shared fold as
+    // the Overview (distinctCompanies: trim + case-fold), so the two tabs
+    // can never show different numbers for the same label.
     wrap.appendChild(c('div', { className: 'stat-cards', style: { display: 'flex', gap: '12px', flexWrap: 'wrap', margin: '0 0 16px' } }, [
       statCard(rows.length, t('stats.pipeTotal', 'Total tracked')),
       statCard(rows.filter((r) => scoreVal(r.score) != null).length, t('stats.pipeScored', 'With a score')),
-      statCard(new Set(rows.map((r) => (r.company || '').toLowerCase()).filter(Boolean)).size, t('stats.pipeCompaniesN', 'Companies')),
+      statCard(distinctCompanies(rows), t('stats.pipeCompaniesN', 'Companies')),
     ]));
 
     // Score distribution (buckets 0–1 … 4–5). CAR-120 — the bucketing moved
@@ -1180,6 +1241,16 @@ function scoreVal(raw) {
   return Number.isFinite(n) ? n : null;
 }
 
+// Opus r2 (finding 9) — ONE shared distinct-companies fold (trim + case-fold)
+// for the Overview KPI and the Pipeline KPI, so the same label can never
+// carry two different numbers. (The Pipeline tab previously folded case but
+// not whitespace — this helper is now the single definition.)
+function distinctCompanies(rows) {
+  return new Set((Array.isArray(rows) ? rows : [])
+    .map((r) => String((r && r.company) || '').trim().toLowerCase())
+    .filter(Boolean)).size;
+}
+
 // Tracker scores → the five 0–1 … 4–5 buckets. Unparseable/absent scores
 // drop out (never invented into a bucket).
 function scoreBuckets(rows) {
@@ -1287,7 +1358,12 @@ function gradeSalaryItems(jobs, deps) {
     if (!g) continue;
     const sal = parse(j && j.salary);
     if (!sal) continue;
-    const mid = Math.round(((sal.minUsd || 0) + (sal.maxUsd || 0)) / 2);
+    // Opus r2 (finding 2) — a one-sided range («from $120k» → only minUsd)
+    // must never become ((min + 0) / 2) = a fabricated half-median. Use the
+    // midpoint only when BOTH ends exist; otherwise the one end we have.
+    const lo = sal.minUsd;
+    const hi = sal.maxUsd;
+    const mid = (lo && hi) ? Math.round((lo + hi) / 2) : Math.round(lo || hi);
     if (!Number.isFinite(mid) || mid <= 0) continue;
     if (!byGrade.has(g)) byGrade.set(g, []);
     byGrade.get(g).push(mid);
@@ -1302,13 +1378,14 @@ function gradeSalaryItems(jobs, deps) {
     });
 }
 
-// The funnel relay's stage hops → median-days bars. Hops without a median
-// (nothing uncensored yet) drop out.
+// The funnel relay's stage hops → {from, to, value} (median days). Labels
+// are localized by the VIEW (track.status.* stage keys) — the helper never
+// bakes in raw English. Hops without a median (nothing uncensored yet) drop.
 function velocityItems(velocity) {
   const v = velocity || {};
   return [v.appliedToResponded, v.respondedToInterview, v.interviewToOffer, v.appliedToRejected]
-    .filter((h) => h && h && h.median != null)
-    .map((h) => ({ label: `${h.from} → ${h.to}`, value: h.median }));
+    .filter((h) => h && h.median != null)
+    .map((h) => ({ from: h.from, to: h.to, value: h.median }));
 }
 
 // L-FOCUS (v1.243.0) — identical copy of tracker.js's withFocusPreserved:

@@ -1609,4 +1609,22 @@ window.__I18N_DICT_DE = {
   'rep2.actResearch': "Zuerst das Unternehmen recherchieren",
   'rep2.actLow': "Überspringen, außer mit persönlichem Grund",
   'rep2.histogramLabel': "Score-Verteilung — Spalte anklicken zum Filtern",
+
+  /* CAR-120 — #/stats Overview tab (feat/car120-stats-v2). EN parity is
+     locked by tests/i18n-coverage + tests/stats-overview-car120; the ovDay_*
+     forms are picked by Intl.PluralRules in views/stats.js. */
+  'stats.tabOverview': "Übersicht",
+  'stats.ovVacanciesBySource': "Stellen nach Quelle",
+  'stats.ovPostingsByWeek': "Stellen pro Woche",
+  'stats.ovSalaryByGrade': "Mediangehalt nach Level",
+  'stats.ovStageVelocity': "Zeit zwischen den Phasen",
+  'stats.ovClickHintScan': "Klick auf einen Balken öffnet diese Stellen in der Suche",
+  'stats.ovVelocityEmpty': "Noch nicht genug Antworten — die Mediantage erscheinen, sobald Antworten eingehen.",
+  'stats.hint.overview': "Diagramme aus echten Daten deiner Tracker-Aktivität und des letzten Scans — Status-Trichter, Scores, Gehälter, Quellen. Ohne KI.",
+  'stats.ovDay_zero': "{n} Tage",
+  'stats.ovDay_one': "{n} Tag",
+  'stats.ovDay_two': "{n} Tage",
+  'stats.ovDay_few': "{n} Tage",
+  'stats.ovDay_many': "{n} Tage",
+  'stats.ovDay_other': "{n} Tage",
 };

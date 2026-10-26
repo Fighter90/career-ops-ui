@@ -796,4 +796,4 @@ a:focus-visible, .chip:focus-visible { box-shadow: 0 0 0 4px rgba(255, 56, 92, .
 @keyframes v2-stats-rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
 .v2-stats-anim { animation: v2-stats-rise 300ms ease-out both; }
 @media (prefers-reduced-motion: reduce) { .v2-stats-anim { animation: none; } }
-.v2-stats-bar { cursor: pointer; }
+.v2-stats-bar { cursor: pointer; } .v2-stats-bar:focus-visible { outline: 2px solid var(--accent, #4c8bf5); outline-offset: 2px; }
