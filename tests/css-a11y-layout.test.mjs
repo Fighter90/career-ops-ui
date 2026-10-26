@@ -169,6 +169,8 @@ test('no hard-coded English aria-labels remain where an i18n key exists', () => 
   //   - #sidebar-toggle aria-label="Toggle menu" — no key exists;
   //   - .modal-close aria-label="Close dialog" — no key exists ("fab.close" is
   //     the docs-FAB's own string, "notif.closeAria" is drawer-specific).
+  // CAR-122's nav.v2.palette landed in all 19 dicts with the feature, so no
+  // pending set exists here (CAR-116/CAR-125 protocol, completed round).
   const dict = readFileSync(resolve(ROOT, 'public', 'js', 'lib', 'locales', 'i18n-dict.en.js'), 'utf8');
   for (const m of HTML.matchAll(/data-i18n-aria-label="([^"]+)"/g)) {
     assert.match(dict, new RegExp(`['"]${m[1].replace(/\\/g, '\\\\').replace(/\./g, '\\.')}['"]`),

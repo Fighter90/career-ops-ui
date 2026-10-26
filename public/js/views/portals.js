@@ -389,8 +389,15 @@ Router.register('portals', async () => {
       badge = c('span', { className: 'badge', style: { color: 'var(--foggy)' } }, t('portals.enabled', 'watched'));
     }
     const meta = [company.provider ? c('span', { style: { color: 'var(--foggy)', fontSize: '12px' } }, company.provider) : null];
+    // FULL-R5 — careers_url comes from portals.yml (user-edited) — only a
+    // real http(s) URL becomes the link. Review r2 (finding 9): a non-http
+    // value still RENDERS as plain text — it must not vanish from the row.
+    const strippedUrl = String(company.careers_url || '').replace(/^https?:\/\//, '').slice(0, 60);
+    const safeCareersUrl = UI.safeHref(company.careers_url);
     const link = company.careers_url
-      ? c('a', { href: company.careers_url, target: '_blank', rel: 'noopener noreferrer', style: { fontSize: '12px', color: 'var(--foggy)' } }, company.careers_url.replace(/^https?:\/\//, '').slice(0, 60))
+      ? (safeCareersUrl
+        ? c('a', { href: safeCareersUrl, target: '_blank', rel: 'noopener noreferrer', style: { fontSize: '12px', color: 'var(--foggy)' } }, strippedUrl)
+        : c('span', { style: { fontSize: '12px', color: 'var(--foggy)' } }, strippedUrl))
       : null;
     // v1.144.0 — enable/disable toggle (writes portals.yml; the scanner skips
     // disabled companies via `c.enabled !== false`). Keyed by careers_url, so a
@@ -514,8 +521,9 @@ Router.register('portals', async () => {
       style: { display: 'flex', alignItems: 'center', gap: '12px', padding: '8px 12px', margin: '6px 0 0', flexWrap: 'wrap' },
     }, [
       c('strong', { style: { textTransform: 'capitalize' } }, res.label || res.vendor),
-      c('a', { href: res.careers_url, target: '_blank', rel: 'noopener noreferrer', style: { flex: '1 1 200px', fontSize: '12px', color: 'var(--foggy)' } },
-        String(res.careers_url || '').replace(/^https?:\/\//, '')),
+      // FULL-R5 — only a real http(s) URL becomes the link.
+      (UI.safeHref(res.careers_url) ? c('a', { href: UI.safeHref(res.careers_url), target: '_blank', rel: 'noopener noreferrer', style: { flex: '1 1 200px', fontSize: '12px', color: 'var(--foggy)' } },
+        String(res.careers_url || '').replace(/^https?:\/\//, '')) : c('span', { style: { flex: '1 1 200px', fontSize: '12px', color: 'var(--foggy)' } }, String(res.careers_url || '').replace(/^https?:\/\//, ''))),
       c('span', { className: 'badge', style: { color: 'var(--go, #2e7d32)' } },
         t('portals.discoverJobs', '{count} open roles').replace('{count}', String(res.jobCount || 0))),
       addBtn,

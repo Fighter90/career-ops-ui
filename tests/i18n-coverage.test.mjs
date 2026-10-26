@@ -122,6 +122,9 @@ function* walkJs(dir) {
 // CAR-125 followed the same protocol: its three map.list.* keys shipped
 // with the CAR125_PENDING allowlist, which was deleted when the ×19
 // dictionary fan-out landed (the CAR-125 review round).
+// CAR-122 followed it too: its 11 sidebar-v2 keys (nav.group.favorites +
+// nav.v2.*) landed in all 19 dicts in the same PR (opus review finding 1),
+// so no pending allowlist exists here either.
 // CAR-124 followed the same protocol: its 18 v2empty.* empty-state keys
 // shipped with the CAR124_PENDING allowlist, which was deleted when the
 // ×19 dictionary fan-out landed (the 2026-10-26 review round).

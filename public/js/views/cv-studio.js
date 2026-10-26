@@ -383,7 +383,7 @@ Router.register('cv-studio', async () => {
     const pending = c('div', { className: 'loading', style: { color: 'var(--foggy)' } }, t('cvs.vfChecking', 'Checking every claim against your CV…'));
     vfOut.appendChild(pending);
     try {
-      const res = await API.post('/api/cv-studio/verify-facts', { text });
+      const res = await API.post('/api/cv-studio/verify-facts', { text }, { lang: true });
       pending.remove();
       if (!res || res.available === false) {
         vfOut.appendChild(c('p', { style: { color: 'var(--foggy)' } },
