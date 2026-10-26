@@ -8,6 +8,14 @@
  * guide doesn't cover it). It never reads your CV/profile/tracker — it's about
  * how to use the app, not about you. Live with an LLM key; no key → a
  * copy-paste prompt. CSP-safe: UI.el + addEventListener, UI.md render boundary.
+ *
+ * CAR-119 — the page renders through the shared LlmPageKit template:
+ * two-column input|chat, and every answer runs under a progress/ETA/Cancel
+ * run panel (AbortSignal-wired) instead of a static "Searching…" bubble.
+ * No tracker autofill (a question is free text); the chat is not persisted →
+ * no history drawer.
+ * // CAR-119 i18n: no new dictionary keys — the kit's `llm2.*` strings ship
+ * as I18n.t EN fallbacks inside public/js/lib/llm-page-kit.js.
  */
 Router.register('docs-assistant', async () => {
   const c = UI.el;
@@ -19,7 +27,8 @@ Router.register('docs-assistant', async () => {
     t('docs.subtitle', 'Ask how to use anything in the app. Answers come only from the in-app help guide in your language — nothing about your CV or job search is read.')));
 
   const log = c('div', { className: 'chat-log', style: { display: 'flex', flexDirection: 'column', gap: '12px', margin: '0 0 16px' } });
-  root.appendChild(log);
+  // CAR-119 — run/progress host for the ask POST.
+  const runHost = c('div');
 
   // Suggested starter questions (localized; each just prefills + sends).
   const starters = [
@@ -41,7 +50,13 @@ Router.register('docs-assistant', async () => {
   const bar = c('div', { style: { display: 'flex', gap: '8px' } }, [
     c('div', { style: { flex: '1' } }, input), askBtn,
   ]);
-  root.appendChild(bar);
+  // CAR-119 — the shared AI-page template: input (sticky) | chat,
+  // "Input / Result" tabs below 1280 px.
+  const page = window.LlmPageKit.layout({
+    form: c('div', null, [chips, bar]),
+    result: c('div', null, [runHost, log]),
+  });
+  root.appendChild(page.root);
 
   function bubble(kind, node) {
     const mine = kind === 'me';
@@ -58,20 +73,26 @@ Router.register('docs-assistant', async () => {
     input.value = '';
     log.appendChild(bubble('me', c('span', null, question)));
     askBtn.disabled = true;
-    const pending = bubble('bot', c('span', { className: 'loading', style: { color: 'var(--foggy)' } }, t('docs.thinking', 'Searching the guide…')));
-    log.appendChild(pending);
-    pending.scrollIntoView({ block: 'end' });
+    // CAR-119 — the shared run panel (live elapsed/ETA + Cancel) replaces
+    // the static "Searching the guide…" bubble.
+    const runCtrl = window.LlmPageKit.createRun({ etaSeconds: 20, onBegin: () => page.show('result') }).mount(runHost);
     try {
-      const res = await API.post('/api/docs-assistant/ask', { question, run: true, lang: (I18n.getLang && I18n.getLang()) || 'en' });
-      pending.remove();
-      if (res.answer) {
+      const res = await window.LlmPageKit.run({
+        run: runCtrl,
+        // CAR-119 review #4 — the error lands as a chat bubble (the chat's
+        // own surface); the kit stays silent.
+        failPaint: false,
+        request: (signal) => window.LlmPageKit.postJSON('/api/docs-assistant/ask', { question, run: true }, signal),
+      });
+      if (runCtrl.cancelled || runCtrl.signal.aborted) return; // a cancelled run paints nothing more
+      if (res && res.answer) {
         const parts = [c('div', { className: 'md', html: UI.md(res.answer) })];
         if (Array.isArray(res.sections) && res.sections.length) {
           parts.push(c('div', { style: { marginTop: '8px', fontSize: '11px', color: 'var(--foggy)' } },
             `${t('docs.fromSections', 'From')}: ${res.sections.join(' · ')}`));
         }
         log.appendChild(bubble('bot', c('div', null, parts)));
-      } else if (res.prompt) {
+      } else if (res && res.prompt) {
         // No key: hand over the grounded prompt to run anywhere.
         const body = c('div', null, [
           c('p', { style: { margin: '0 0 10px', color: 'var(--foggy)' } }, t('docs.manualHelp', 'No LLM key is set. Copy this prompt (it already contains the relevant help sections) into any assistant to get your answer.')),
@@ -81,7 +102,6 @@ Router.register('docs-assistant', async () => {
         log.appendChild(bubble('bot', c('span', { style: { color: 'var(--foggy)' } }, t('docs.manualBubble', 'No API key set — I opened a ready-to-run prompt you can paste into any assistant.'))));
       }
     } catch (err) {
-      pending.remove();
       log.appendChild(bubble('bot', c('span', { style: { color: 'var(--danger, #d9534f)' } }, (err && err.message) || t('docs.failed', 'Could not answer that'))));
     } finally {
       askBtn.disabled = false;

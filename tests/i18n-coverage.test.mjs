@@ -111,6 +111,8 @@ function* walkJs(dir) {
 // GONE — all 17 new pipeline-v2 keys live in every locale dict like any
 // other key. A view may never ship EN-fallback-only strings again; the
 // hand-off comment in pipeline.js was removed with the fan-out.
+// CAR-119 — the review round fanned the 19 `llm2.*` kit strings out to all
+// 19 dicts (real translations), so NO exemption exists here again.
 // CAR-115 review round: same rule enforced — the 23 scan-v2 keys landed
 // in all 19 dicts with their fan-out (no pending allowlist), and the gate
 // below now also sees `tt(`-style helper calls so a local alias can never
