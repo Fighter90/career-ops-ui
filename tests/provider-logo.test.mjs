@@ -74,7 +74,9 @@ test('index.html loads provider-logo.js after provider-status.js', () => {
 });
 
 test('v1.218.0 — active/result provider surfaces render a ProviderLogo tile', () => {
-  for (const f of ['dashboard.js', 'config.js', 'evaluate.js']) {
+  // CAR-114 removed dashboard.js's hero provider chip (the global header
+  // badge in app.js owns provider status) — the remaining surfaces pin here.
+  for (const f of ['config.js', 'evaluate.js']) {
     const src = R('public', 'js', 'views', f);
     assert.match(src, /window\.ProviderLogo(?:\s*&&\s*[^\n]*)?\.el\(/,
       `${f} must render the active/result provider's monogram via ProviderLogo.el`);
@@ -90,10 +92,11 @@ test('v1.218.0 — active/result provider surfaces render a ProviderLogo tile', 
 });
 
 test('v1.218.0 — no stale ≤5-entry provider NAME map or hardcoded "/ 7" in the chrome', () => {
-  // The dashboard chip + config summary + eval result must resolve the friendly
+  // The config summary + eval result must resolve the friendly
   // name via the shared ProviderStatus.label (18 providers), not a local map
-  // that silently mislabels the newer providers.
-  for (const f of ['dashboard.js', 'config.js', 'evaluate.js']) {
+  // that silently mislabels the newer providers. (dashboard.js's chip was
+  // removed by CAR-114 — the header badge carries the name now.)
+  for (const f of ['config.js', 'evaluate.js']) {
     const src = R('public', 'js', 'views', f);
     assert.ok(!/const NAME = \{ anthropic: 'Anthropic', gemini: 'Gemini', openai: 'OpenAI', qwen: 'Qwen', openrouter: 'OpenRouter' \}/.test(src),
       `${f} still has the stale 5-entry provider NAME map`);
