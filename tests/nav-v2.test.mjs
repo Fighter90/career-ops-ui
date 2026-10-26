@@ -70,17 +70,27 @@ test('loadState: garbage, wrong shapes and prototype keys fall back safely', () 
   assert.deepEqual(V.loadState(null), V.defaultState());
   assert.deepEqual(V.loadState('not json'), V.defaultState());
   assert.deepEqual(V.loadState('42'), V.defaultState());
-  const s = V.loadState(JSON.stringify({
-    collapsed: { analytics: 'closed', junk: 'whatever', __proto__: 'open' },
-    favs: ['scan', 42, '', 'tracker'],
-    recent: 'nope',
-  }));
-  assert.deepEqual(s.collapsed, { analytics: 'closed' }, 'only open/closed values survive');
+  // Raw JSON so "__proto__" is a real OWN property inside parsed.collapsed
+  // (an object literal would set the prototype instead — its own CodeQL
+  // class, js/invalid-prototype-value).
+  const s = V.loadState('{"collapsed":{"analytics":"closed","junk":"whatever","__proto__":"open"},"favs":["scan",42,"","tracker"],"recent":"nope"}');
+  assert.deepEqual(s.collapsed, { analytics: 'closed' },
+    'only literal static-group ids survive, whatever the blob carries');
   assert.deepEqual(s.favs, ['scan', 'tracker'], 'non-string ids dropped');
   assert.deepEqual(s.recent, []);
-  // JSON.parse cannot set the prototype, but the sanitizer must still skip it
-  const evil = V.loadState('{"collapsed":{"constructor":"open"},"favs":null}');
+  // constructor/prototype shapes are ignored the same structural way
+  const evil = V.loadState('{"collapsed":{"constructor":"open","prototype":"closed","__proto__":"open"},"favs":null}');
   assert.deepEqual(evil.collapsed, {});
+  // an id that is not a static group is dropped even when well-formed
+  const ghost = V.loadState('{"collapsed":{"notagroup":"open"}}');
+  assert.deepEqual(ghost.collapsed, {});
+});
+
+test('STATIC_GROUP_IDS: the literal allowlist matches the index.html sections', () => {
+  const htmlGroups = (HTML.match(/data-nav-group="([a-z]+)"/g) || [])
+    .map((m) => m.replace(/data-nav-group="|"/g, ''));
+  assert.deepEqual(V.STATIC_GROUP_IDS, htmlGroups,
+    'the loadState allowlist and the shell must not drift');
 });
 
 test('serializeState/loadState round-trip', () => {

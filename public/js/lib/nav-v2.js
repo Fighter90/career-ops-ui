@@ -40,6 +40,17 @@
   //                the active route). All mutators are value-style: they
   //                return a NEW state and never touch their input.
 
+  // The seven static group ids — the literal allowlist that makes the
+  // persisted state structurally safe: `loadState` iterates THIS array and
+  // looks each id up in the parsed JSON, so a remote string never becomes
+  // a property name (the v1.233.2 KNOWN_KEYS pattern; CodeQL: no
+  // remote-property-injection sink). Drift-locked to the index.html
+  // `data-nav-group` sections by tests/nav-v2.test.mjs.
+  const STATIC_GROUP_IDS = [
+    'sourcing', 'decision', 'application', 'networking',
+    'analytics', 'growth', 'setup',
+  ];
+
   function defaultState() {
     return { collapsed: {}, favs: [], recent: [] };
   }
@@ -58,14 +69,16 @@
     let parsed;
     try { parsed = JSON.parse(raw); } catch { return base; }
     if (!parsed || typeof parsed !== 'object') return base;
+    // Structural safety: the ONLY property names ever written are the
+    // literals in STATIC_GROUP_IDS — anything else in the persisted blob
+    // (including __proto__/constructor/prototype shapes) is ignored.
+    const parsedCollapsed = (parsed.collapsed && typeof parsed.collapsed === 'object')
+      ? parsed.collapsed
+      : {};
     const collapsed = {};
-    if (parsed.collapsed && typeof parsed.collapsed === 'object') {
-      for (const k of Object.keys(parsed.collapsed)) {
-        // same prototype-pollution discipline as the server sanitizers
-        if (k === '__proto__' || k === 'constructor' || k === 'prototype') continue;
-        const v = parsed.collapsed[k];
-        if (v === 'open' || v === 'closed') collapsed[k] = v;
-      }
+    for (const gid of STATIC_GROUP_IDS) {
+      const v = parsedCollapsed[gid];
+      if (v === 'open' || v === 'closed') collapsed[gid] = v;
     }
     const strArr = (v, cap) => (Array.isArray(v)
       ? v.filter((x) => typeof x === 'string' && x).slice(0, cap)
@@ -88,6 +101,7 @@
    *  auto-opened active group pins it closed). Defaults to the
    *  no-active-context reading. */
   function toggleGroup(state, groupId, effectiveOpen) {
+    if (STATIC_GROUP_IDS.indexOf(groupId) === -1) return state; // literal allowlist
     const open = (effectiveOpen === undefined)
       ? isGroupOpen(state, groupId, null)
       : !!effectiveOpen;
@@ -764,6 +778,7 @@
     // pure
     defaultState, serializeState, loadState, isGroupOpen, toggleGroup,
     pin, unpin, moveFav, trackVisit, fuzzyMatch, fuzzyFilter, buildPaletteItems,
+    STATIC_GROUP_IDS,
     RECENT_CAP, FAV_CAP,
     // wiring (no-ops outside a real DOM)
     init, openPalette, closePalette, isPaletteOpen,
