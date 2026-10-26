@@ -381,10 +381,12 @@ Router.register('pipeline', async () => {
     const head = c('div', { className: 'flex-between mb-3', style: { flexWrap: 'wrap', gap: '8px' } }, [
       c('div', { style: { minWidth: 0, flex: 1 } }, [
         c('strong', null, shortHost(activeUrl)),
-        c('a', {
-          href: activeUrl, target: '_blank', rel: 'noopener',
+        // FULL-R5 — only a real http(s) URL becomes a link target / window.open
+        // argument (pipeline.md rows come from third-party feeds).
+        UI.safeHref(activeUrl) ? c('a', {
+          href: UI.safeHref(activeUrl), target: '_blank', rel: 'noopener',
           style: { display: 'block', fontSize: '13px', color: 'var(--foggy)', wordBreak: 'break-all', marginTop: '4px' },
-        }, activeUrl),
+        }, activeUrl) : c('span', { style: { display: 'block', fontSize: '13px', color: 'var(--foggy)', wordBreak: 'break-all', marginTop: '4px' } }, activeUrl),
       ]),
       c('div', { className: 'flex gap-3' }, [
         c('button', {
@@ -393,7 +395,7 @@ Router.register('pipeline', async () => {
         }, '▶ ' + t('pipe.evaluateBtn')),
         c('button', {
           className: 'btn btn-ghost btn-sm',
-          onClick: () => window.open(activeUrl, '_blank', 'noopener'),
+          onClick: () => { const u = UI.safeHref(activeUrl); if (u) window.open(u, '_blank', 'noopener'); },
         }, '↗ ' + t('pipe.openTab', 'Open')),
         c('button', {
           className: 'btn btn-ghost btn-sm',
@@ -536,14 +538,15 @@ Router.register('pipeline', async () => {
         // can locate the row by URL. stopPropagation prevents the row's
         // selectUrl handler from firing when the link is clicked
         // directly — middle-click / Cmd-click open in a new tab as
-        // expected.
-        c('a', {
-          href: url,
+        // expected. FULL-R5 — only a real http(s) URL becomes the href;
+        // anything else stays plain text.
+        (UI.safeHref(url) ? c('a', {
+          href: UI.safeHref(url),
           target: '_blank',
           rel: 'noopener',
           onClick: (e) => e.stopPropagation(),
           style: { display: 'block', fontSize: '12px', color: 'var(--foggy)', wordBreak: 'break-all', marginTop: '2px', textDecoration: 'none' },
-        }, url),
+        }, url) : c('span', { onClick: (e) => e.stopPropagation(), style: { display: 'block', fontSize: '12px', color: 'var(--foggy)', wordBreak: 'break-all', marginTop: '2px' } }, url)),
       ]),
       // F-V54-B (v1.54.4) — these row actions were icon-only (▶ / ✕)
       // with only a `title`. `title` is not a reliable accessible name
@@ -767,13 +770,14 @@ Router.register('pipeline', async () => {
       box,
       c('div', { className: 'v2-row-main' }, [
         c('div', { className: 'v2-row-title' }, titleText),
-        c('a', {
-          href: url,
+        // FULL-R5 — only a real http(s) URL becomes the href.
+        (UI.safeHref(url) ? c('a', {
+          href: UI.safeHref(url),
           target: '_blank',
           rel: 'noopener',
           onClick: (ev) => ev.stopPropagation(),
           className: 'v2-row-url',
-        }, url),
+        }, url) : c('span', { onClick: (ev) => ev.stopPropagation(), className: 'v2-row-url' }, url)),
         chips.length ? c('div', { className: 'v2-row-chips' }, chips) : null,
       ]),
       c('div', { className: 'flex gap-1' }, [

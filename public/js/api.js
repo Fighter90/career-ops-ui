@@ -103,25 +103,32 @@ window.API = (function () {
     } catch { return 'en'; }
   }
 
-  async function call(method, path, body) {
+  // FULL-R5 (review 3) — `lang` is OPT-IN. call(method, path, body, opts)
+  // sends the body VERBATIM unless the caller passes { lang: true }; the
+  // Accept-Language header (always set below) remains the locale fallback
+  // server-side (prompts.mjs resolveLocale), so LLM routes resolve the UI
+  // locale either way. Write endpoints (POST /api/config, PUT /api/profile,
+  // PUT /api/cv, PUT /api/two-pager, PUT /api/batch, …) no longer receive a
+  // stray `lang` key they had to defensively delete.
+  async function call(method, path, body, opts) {
     const lang = currentLang();
-    const opts = {
+    const req = {
       method,
       headers: { Accept: 'application/json', 'Accept-Language': lang },
     };
     if (body !== undefined) {
-      opts.headers['Content-Type'] = 'application/json';
-      // Auto-attach lang to LLM-bound mutations so server-side
-      // resolveLocale() picks the SPA's UI locale (PR-2 / F-012).
-      // Read-only requests (GET) skip this; non-object bodies are sent verbatim.
-      const augmented = (body && typeof body === 'object' && !Array.isArray(body) && body.lang === undefined)
+      req.headers['Content-Type'] = 'application/json';
+      // Attach lang to the body ONLY where a view opted in ({ lang: true }) —
+      // the LLM-bound mutations (evaluate / deep / mode / apply-helper /
+      // cv-studio / …) that server-side resolveLocale() reads it from.
+      const augmented = (opts && opts.lang === true && body && typeof body === 'object' && !Array.isArray(body) && body.lang === undefined)
         ? { ...body, lang }
         : body;
-      opts.body = JSON.stringify(augmented);
+      req.body = JSON.stringify(augmented);
     }
     let res;
     try {
-      res = await fetch(path, opts);
+      res = await fetch(path, req);
     } catch (netErr) {
       setConnectionState(true, netErr.message || 'network error');
       // v1.57.1 — say WHAT failed and WHERE. v1.58.0 (AI-review rule 3):
@@ -201,9 +208,9 @@ window.API = (function () {
 
   return {
     get: (p) => call('GET', p),
-    post: (p, b) => call('POST', p, b),
-    put: (p, b) => call('PUT', p, b),
-    patch: (p, b) => call('PATCH', p, b),
+    post: (p, b, o) => call('POST', p, b, o),
+    put: (p, b, o) => call('PUT', p, b, o),
+    patch: (p, b, o) => call('PATCH', p, b, o),
     del: (p) => call('DELETE', p),
 
     // text helpers
@@ -300,6 +307,21 @@ window.API = (function () {
       const reader = res.body.getReader();
       const dec = new TextDecoder();
       let buf = '';
+      // One SSE frame (block between blank lines) → onEvent. Extracted so
+      // the end-of-stream flush below can process the final frame too.
+      const emit = (p) => {
+        const evMatch = p.match(/^event:\s*([\w-]+)/m);
+        // v1.22.0 (L-4) — per SSE spec, an event may carry multiple `data:`
+        // lines; the consumer concatenates them with "\n".
+        const dataLines = [];
+        for (const line of p.split('\n')) {
+          const m = line.match(/^data:\s?(.*)$/);
+          if (m) dataLines.push(m[1]);
+        }
+        if (!evMatch || !dataLines.length) return;
+        let data; try { data = JSON.parse(dataLines.join('\n')); } catch { data = {}; }
+        onEvent(evMatch[1], data);
+      };
       for (;;) {
         let chunk;
         try { chunk = await reader.read(); } catch { return; } // aborted mid-stream
@@ -307,18 +329,16 @@ window.API = (function () {
         if (done) break;
         buf += dec.decode(value, { stream: true });
         const parts = buf.split('\n\n'); buf = parts.pop();
-        for (const p of parts) {
-          const evMatch = p.match(/^event:\s*([\w-]+)/m);
-          const dataLines = [];
-          for (const line of p.split('\n')) {
-            const m = line.match(/^data:\s?(.*)$/);
-            if (m) dataLines.push(m[1]);
-          }
-          if (!evMatch || !dataLines.length) continue;
-          let data; try { data = JSON.parse(dataLines.join('\n')); } catch { data = {}; }
-          onEvent(evMatch[1], data);
-        }
+        for (const p of parts) emit(p);
       }
+      // FULL-R5 — stream end: flush the decoder and the trailing buffer. A
+      // server that writes the terminal frame WITHOUT a trailing blank line
+      // (or whose last chunk is split mid-JSON) used to leave that frame in
+      // `buf` unprocessed — consumers rendered NOTHING (no result, no
+      // error). Contract moved here from auto-pipeline's private copy so
+      // every postStream consumer gets it.
+      buf += dec.decode();
+      if (buf.trim()) emit(buf);
     },
   };
 })();
@@ -929,5 +949,18 @@ window.UI = (function () {
     }, nodes.filter(Boolean));
   }
 
-  return { toast, dismissToast, modal, closeModal, confirm, el, escapeHtml, md, withSpinner, paginate, providerCostHint, pageMeta, getToastHistory, onToast, clearToastHistory, dismissToastHistory };
+  // FULL-R5 (review 2) — ONE shared gate for scraped / LLM-sourced URLs
+  // that would otherwise go straight into href or window.open
+  // (pipeline.md rows come from third-party feeds, report URLs from the
+  // model, careers_url from portals.yml). http/https only; everything
+  // else returns null so the caller renders plain text instead of a
+  // link. dashboard.js / scan-results.js already gate inline — they keep
+  // their own checks; new sites use this.
+  function safeHref(u) {
+    if (typeof u !== 'string') return null;
+    const s = u.trim();
+    return /^https?:\/\//i.test(s) ? s : null;
+  }
+
+  return { toast, dismissToast, modal, closeModal, confirm, el, escapeHtml, md, withSpinner, paginate, providerCostHint, pageMeta, getToastHistory, onToast, clearToastHistory, dismissToastHistory, safeHref };
 })();
