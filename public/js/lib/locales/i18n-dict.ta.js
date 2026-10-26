@@ -54,6 +54,10 @@ window.__I18N_DICT_TA = {
   'map.legend.exact': "📍 நிறுவன முகவரி, இல்லையெனில் இடத்தின் மையம்",
   'map.exact': "நிறுவன முகவரி",
   'map.more': "மேலும்",
+  // CAR-125 — the bounds-synced side list.
+  'map.list.title': "காட்சியில் உள்ள வேலைகள்",
+  'map.list.empty': "காட்சியில் எதுவும் இல்லை — வரைபடத்தை நகர்த்தவும் அல்லது பெரிதாக்கவும்.",
+  'map.list.more': "மேலும் காட்சியில்",
   'map.postings': "பதவிகள்",
   'map.layerTracker': "ட்ரேக்கர்",
   'map.noLocation': "இடமின்றி",

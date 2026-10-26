@@ -47,6 +47,10 @@ window.__I18N_DICT_RU = {
   'map.legend.exact': "📍 адрес компании, иначе центр населённого пункта",
   'map.exact': "Адрес компании",
   'map.more': "ещё",
+  // CAR-125 — the bounds-synced side list.
+  'map.list.title': "Вакансии в кадре",
+  'map.list.empty': "В кадре пусто — сдвиньте карту или уменьшите масштаб.",
+  'map.list.more': "ещё в кадре",
   'map.postings': "вакансий",
   'map.layerTracker': "Трекер",
   'map.noLocation': "Без локации",

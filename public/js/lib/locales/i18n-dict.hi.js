@@ -47,6 +47,10 @@ window.__I18N_DICT_HI = {
   'map.legend.exact': "📍 कंपनी का पता, वरना स्थान का केंद्र",
   'map.exact': "कंपनी का पता",
   'map.more': "और",
+  // CAR-125 — the bounds-synced side list.
+  'map.list.title': "दृश्य में नौकरियाँ",
+  'map.list.empty': "दृश्य में कुछ नहीं — नक्शा खिसकाएँ या ज़ूम आउट करें।",
+  'map.list.more': "और दृश्य में",
   'map.postings': "नौकरियाँ",
   'map.layerTracker': "ट्रैकर",
   'map.noLocation': "बिना स्थान",

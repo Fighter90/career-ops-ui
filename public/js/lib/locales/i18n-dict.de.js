@@ -47,6 +47,10 @@ window.__I18N_DICT_DE = {
   'map.legend.exact': "📍 Firmenadresse, sonst Ortsmitte",
   'map.exact': "Firmenadresse",
   'map.more': "weitere",
+  // CAR-125 — the bounds-synced side list.
+  'map.list.title': "Jobs im Kartenausschnitt",
+  'map.list.empty': "Nichts im Blick — Karte verschieben oder herauszoomen.",
+  'map.list.more': "weitere im Blick",
   'map.postings': "Stellen",
   'map.layerTracker': "Tracker",
   'map.noLocation': "Ohne Ort",

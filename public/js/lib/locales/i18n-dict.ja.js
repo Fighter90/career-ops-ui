@@ -47,6 +47,10 @@ window.__I18N_DICT_JA = {
   'map.legend.exact': "📍 企業の住所、なければ地域の中心",
   'map.exact': "企業の住所",
   'map.more': "件以上",
+  // CAR-125 — the bounds-synced side list.
+  'map.list.title': "表示範囲の求人",
+  'map.list.empty': "表示範囲には何もありません — 地図を動かすか、縮小してください。",
+  'map.list.more': "件以上を表示",
   'map.postings': "件の求人",
   'map.layerTracker': "トラッカー",
   'map.noLocation': "所在地なし",

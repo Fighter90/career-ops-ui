@@ -47,6 +47,10 @@ window.__I18N_DICT_TR = {
   'map.legend.exact': "📍 şirket adresi, yoksa yer merkezi",
   'map.exact': "Şirket adresi",
   'map.more': "daha",
+  // CAR-125 — the bounds-synced side list.
+  'map.list.title': "Görünümdeki işler",
+  'map.list.empty': "Görünümde bir şey yok — haritayı kaydırın veya uzaklaştırın.",
+  'map.list.more': "görünümde daha fazla",
   'map.postings': "ilan",
   'map.layerTracker': "Takip",
   'map.noLocation': "Konumsuz",
