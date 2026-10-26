@@ -230,15 +230,27 @@ test('CAR-93 F5: choosing "Use the default" on OPENROUTER_MODEL sticks after the
 const LISTENER_PROBE = `
   window.__pc = 0;
   window.__pcRm = 0;
-  const origAdd = document.addEventListener.bind(document);
-  const origRm = document.removeEventListener.bind(document);
+  window.__sc = 0;
+  window.__scRm = 0;
+  const origAddD = document.addEventListener.bind(document);
+  const origRmD = document.removeEventListener.bind(document);
   document.addEventListener = function (type, fn, opts) {
     if (type === 'providers-changed') window.__pc++;
-    return origAdd(type, fn, opts);
+    return origAddD(type, fn, opts);
   };
   document.removeEventListener = function (type, fn, opts) {
     if (type === 'providers-changed') window.__pcRm++;
-    return origRm(type, fn, opts);
+    return origRmD(type, fn, opts);
+  };
+  const origAddW = window.addEventListener.bind(window);
+  const origRmW = window.removeEventListener.bind(window);
+  window.addEventListener = function (type, fn, opts) {
+    if (type === 'scroll') window.__sc++;
+    return origAddW(type, fn, opts);
+  };
+  window.removeEventListener = function (type, fn, opts) {
+    if (type === 'scroll') window.__scRm++;
+    return origRmW(type, fn, opts);
   };
 `;
 
@@ -258,7 +270,13 @@ test('CAR-93 F6: three config Saves leave exactly one live providers-changed lis
   await page.close();
 });
 
-test('CAR-93 F6: three dashboard Refreshes leave exactly one live providers-changed listener', { skip: SKIP }, async () => {
+test('CAR-114 F6: three dashboard Refreshes leave exactly one live scroll listener (no per-visit stack)', { skip: SKIP }, async () => {
+  // Was: the hero provider chip's providers-changed listener (removed by the
+  // CAR-114 provider de-dup — app.js's header badge owns provider status and
+  // mounts ONCE per page load, never per visit). The per-visit listener the
+  // dashboard now owns is the parallax hero's window 'scroll' listener, torn
+  // down by __dashV2Cleanup before each re-mount — the same no-stacking
+  // invariant, new owner.
   const page = await newPage();
   await page.addInitScript(LISTENER_PROBE);
   await page.goto(baseUrl + '/#/dashboard');
@@ -267,9 +285,13 @@ test('CAR-93 F6: three dashboard Refreshes leave exactly one live providers-chan
     await page.click('[data-test="dash-refresh"]');
     await page.waitForTimeout(350);
   }
-  const [added, removed] = await page.evaluate(() => [window.__pc, window.__pcRm]);
+  const [added, removed] = await page.evaluate(() => [window.__sc, window.__scRm]);
   assert.equal(added - removed, 1,
-    `live providers-changed listeners after 3 refreshes: ${added - removed} (added ${added}, removed ${removed})`);
+    `live scroll listeners after 3 refreshes: ${added - removed} (added ${added}, removed ${removed})`);
+  // The de-dup contract: the dashboard itself must never re-add a
+  // providers-changed listener (the header badge owns that channel).
+  const pc = await page.evaluate(() => window.__pc);
+  assert.equal(pc, 0, 'dashboard must not register providers-changed listeners (header owns them)');
   await page.close();
 });
 

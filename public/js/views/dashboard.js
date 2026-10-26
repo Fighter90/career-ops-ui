@@ -392,7 +392,14 @@ Router.register('dashboard', async () => {
       ? c('a', {
           className: 'btn btn-ghost btn-sm v2-dash-funnel-cta',
           href: '#/tracker',
-          style: { marginTop: 'var(--space-3)', display: 'inline-block' },
+          // maxWidth + normal wrapping keep the long CTA inside a 375px phone
+          // viewport (playwright-smoke overflow sweep).
+          style: {
+            marginTop: 'var(--space-3)',
+            maxWidth: '100%',
+            whiteSpace: 'normal',
+            textAlign: 'left',
+          },
         }, fmtNum(evaluated) + ' ' + FUNNEL_CTA + ' →')
       : null;
 
