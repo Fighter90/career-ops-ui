@@ -9,6 +9,7 @@
     "dev": "astro dev",
     "prebuild": "node scripts/sync-assets.mjs && node scripts/check-i18n.mjs && node scripts/generate-og.mjs",
     "build": "astro build",
+    "postbuild": "node scripts/check-dist.mjs",
     "preview": "astro preview",
     "check": "astro check"
   },
