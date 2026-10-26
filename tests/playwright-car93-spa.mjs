@@ -270,28 +270,32 @@ test('CAR-93 F6: three config Saves leave exactly one live providers-changed lis
   await page.close();
 });
 
-test('CAR-114 F6: three dashboard Refreshes leave exactly one live scroll listener (no per-visit stack)', { skip: SKIP }, async () => {
+test('CAR-114 F6: three dashboard Refreshes stack no new listeners (deltas across refreshes)', { skip: SKIP }, async () => {
   // Was: the hero provider chip's providers-changed listener (removed by the
   // CAR-114 provider de-dup — app.js's header badge owns provider status and
   // mounts ONCE per page load, never per visit). The per-visit listener the
-  // dashboard now owns is the parallax hero's window 'scroll' listener, torn
-  // down by __dashV2Cleanup before each re-mount — the same no-stacking
-  // invariant, new owner.
+  // dashboard now owns is the parallax hero's window 'scroll' listener,
+  // torn down by __dashV2Cleanup before each re-mount.
+  // Finding 8 — assert DELTAS from a snapshot taken after the FIRST paint,
+  // never absolute counts: app-level listeners (and future ones) must not
+  // break the probe, and "exactly 1" could mask a 2-vs-2 leak.
   const page = await newPage();
   await page.addInitScript(LISTENER_PROBE);
   await page.goto(baseUrl + '/#/dashboard');
   await page.waitForSelector('[data-test="dash-refresh"]', { timeout: 10000 });
+  await page.waitForTimeout(250); // let the view's own mounts settle
+  const base = await page.evaluate(() => [window.__sc, window.__scRm, window.__pc, window.__pcRm]);
   for (let i = 0; i < 3; i++) {
     await page.click('[data-test="dash-refresh"]');
     await page.waitForTimeout(350);
   }
-  const [added, removed] = await page.evaluate(() => [window.__sc, window.__scRm]);
-  assert.equal(added - removed, 1,
-    `live scroll listeners after 3 refreshes: ${added - removed} (added ${added}, removed ${removed})`);
-  // The de-dup contract: the dashboard itself must never re-add a
-  // providers-changed listener (the header badge owns that channel).
-  const pc = await page.evaluate(() => window.__pc);
-  assert.equal(pc, 0, 'dashboard must not register providers-changed listeners (header owns them)');
+  const now = await page.evaluate(() => [window.__sc, window.__scRm, window.__pc, window.__pcRm]);
+  const liveScrollDelta = (now[0] - now[1]) - (base[0] - base[1]);
+  assert.equal(liveScrollDelta, 0,
+    `live scroll listeners drifted across 3 refreshes: base ${base.slice(0, 2)} → now ${now.slice(0, 2)}`);
+  assert.equal(now[2] - base[2], 0,
+    `providers-changed adds drifted: base ${base[2]} → now ${now[2]} (dashboard must not register any)`);
+  assert.equal(now[3] - base[3], 0, 'providers-changed removals drifted');
   await page.close();
 });
 

@@ -502,7 +502,6 @@ window.__I18N_DICT_IT = {
   'dash.system.liveEvals': "Valutazioni live",
   'dash.system.ready': "pronto",
   'dash.system.manual': "manuale",
-  'dash.provider.live': "Valutazioni live",
   'dash.provider.manual': "Modalità prompt manuale (nessuna chiave API impostata)",
   'cv.unsavedConfirm': "Hai modifiche al CV non salvate. Vuoi uscire comunque?",
   'health.fix': "Correggi →",
@@ -1609,4 +1608,8 @@ window.__I18N_DICT_IT = {
   'rep2.actResearch': "Prima studia lazienda",
   'rep2.actLow': "Salta, salvo motivo personale",
   'rep2.histogramLabel': "Distribuzione dei punteggi — clicca una colonna per filtrare",
+  'dash.greeting': "Bentornato — ecco lo stato della tua ricerca.",
+  'dash.funnel.cta': "valutate · non ancora inviate — rivedi quelle con il punteggio più alto",
+  'dash.funnel.summary': "Imbuto degli stati: {n} candidature nelle fasi della pipeline.",
+  'dash.trend.hint': "rispetto alla visita precedente",
 };

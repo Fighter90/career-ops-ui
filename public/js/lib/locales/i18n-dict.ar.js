@@ -501,7 +501,6 @@ window.__I18N_DICT_AR = {
   'dash.system.liveEvals': "تقييمات مباشرة",
   'dash.system.ready': "جاهز",
   'dash.system.manual': "يدوي",
-  'dash.provider.live': "تقييمات مباشرة",
   'dash.provider.manual': "وضع الأمر اليدوي (لا مفتاح API)",
   'cv.unsavedConfirm': "لديك تغييرات غير محفوظة في CV. الخروج على أي حال؟",
   'health.fix': "إصلاح ←",
@@ -1609,4 +1608,8 @@ window.__I18N_DICT_AR = {
   'rep2.actResearch': "ادرس الشركة أولاً",
   'rep2.actLow': "تخطَّ ما لم يكن هناك سبب شخصي",
   'rep2.histogramLabel': "توزيع النتائج — انقر عموداً للتصفية",
+  'dash.greeting': "مرحبًا بعودتك — هكذا تسير عملية بحثك.",
+  'dash.funnel.cta': "تم تقييمها · لم تُرسل بعد — راجع الأعلى تقييمًا",
+  'dash.funnel.summary': "قمع الحالات: {n} طلبًا عبر مراحل المسار.",
+  'dash.trend.hint': "مقارنة بزيارتك السابقة",
 };

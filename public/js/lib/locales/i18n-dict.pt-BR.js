@@ -502,7 +502,6 @@ window.__I18N_DICT_PT_BR = {
   'dash.system.liveEvals': "Evals ao vivo",
   'dash.system.ready': "pronto",
   'dash.system.manual': "manual",
-  'dash.provider.live': "Avaliações ao vivo",
   'dash.provider.manual': "Modo manual (sem chave API)",
   'cv.unsavedConfirm': "Você tem alterações de CV não salvas. Sair mesmo assim?",
   'health.fix': "Corrigir →",
@@ -1609,4 +1608,8 @@ window.__I18N_DICT_PT_BR = {
   'rep2.actResearch': "Pesquise a empresa antes",
   'rep2.actLow': "Desconsidere, salvo motivo pessoal",
   'rep2.histogramLabel': "Distribuição de pontuações — clique numa coluna para filtrar",
+  'dash.greeting': "Bem-vindo de volta — é assim que está a sua busca.",
+  'dash.funnel.cta': "avaliadas · ainda não enviadas — revise as mais bem pontuadas",
+  'dash.funnel.summary': "Funil de status: {n} candidaturas nas etapas do pipeline.",
+  'dash.trend.hint': "vs. sua visita anterior",
 };

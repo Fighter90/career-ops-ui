@@ -501,7 +501,6 @@ window.__I18N_DICT_UK = {
   'dash.system.liveEvals': "Живі оцінки",
   'dash.system.ready': "готово",
   'dash.system.manual': "вручну",
-  'dash.provider.live': "Live-оцінки",
   'dash.provider.manual': "Ручний режим промптів (API-ключ не встановлено)",
   'cv.unsavedConfirm': "У вас є незбережені зміни CV. Все одно покинути?",
   'health.fix': "Виправити →",
@@ -1609,4 +1608,8 @@ window.__I18N_DICT_UK = {
   'rep2.actResearch': "Спершу вивчити компанію",
   'rep2.actLow': "Пропустіть, якщо немає персональної причини",
   'rep2.histogramLabel': "Розподіл оцінок — натисніть стовпець для фільтра",
+  'dash.greeting': "З поверненням — ось як просувається ваш пошук.",
+  'dash.funnel.cta': "оцінено · ще не надіслано — перегляньте найкращі за балом",
+  'dash.funnel.summary': "Воронка статусів: {n} заявок на етапах конвеєра.",
+  'dash.trend.hint': "до попереднього візиту",
 };

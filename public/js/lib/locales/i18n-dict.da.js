@@ -501,7 +501,6 @@ window.__I18N_DICT_DA = {
   'dash.system.liveEvals': "Live-evals",
   'dash.system.ready': "klar",
   'dash.system.manual': "manuel",
-  'dash.provider.live': "Live-vurderinger",
   'dash.provider.manual': "Manuel prompt-tilstand (ingen API-nøgle sat)",
   'cv.unsavedConfirm': "Du har ikke-gemte CV-ændringer. Forlad alligevel?",
   'health.fix': "Ret →",
@@ -1609,4 +1608,8 @@ window.__I18N_DICT_DA = {
   'rep2.actResearch': "Undersøg virksomheden først",
   'rep2.actLow': "Spring over, medmindre personlig grund",
   'rep2.histogramLabel': "Scorefordeling — klik på en søjle for at filtrere",
+  'dash.greeting': "Velkommen tilbage — sådan står det til med din jobsøgning.",
+  'dash.funnel.cta': "vurderede · endnu ikke sendte — se de bedst scorede",
+  'dash.funnel.summary': "Statustragt: {n} ansøgninger i pipeline-trinene.",
+  'dash.trend.hint': "vs. dit forrige besøg",
 };

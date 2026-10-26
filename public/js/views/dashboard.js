@@ -23,7 +23,12 @@ function countUp(el, target, fmt) {
   function frame(now) {
     const p = Math.min(1, (now - t0) / DUR);
     const eased = 1 - Math.pow(1 - p, 3);
-    el.textContent = fmt(target * eased);
+    // Finding 2 — an integer target must never show an animated fraction
+    // ("179.82"); only fractional metrics (avgScore) keep decimals.
+    const v = Number.isInteger(target)
+      ? Math.round(target * eased)
+      : +(target * eased).toFixed(2);
+    el.textContent = fmt(v);
     if (p < 1) requestAnimationFrame(frame);
   }
   requestAnimationFrame(frame);
@@ -34,6 +39,19 @@ function countUp(el, target, fmt) {
 // snapshot of the PREVIOUS dashboard load. First visit ⇒ no snapshot ⇒ the
 // tiles render with NO trend rather than a fake one.
 const DASH_SNAP_KEY = 'career-ops-ui:dash-snapshot';
+// Finding 4 — the baseline must survive Refresh: rolling the snapshot on
+// EVERY render overwrites it seconds after it was read, so deltas would
+// almost never appear. The stored snapshot only rolls when it is older
+// than the window (12 h) — one visit's deltas compare against the last
+// distinct visit, not against the last refresh.
+const DASH_SNAP_ROLL_MS = 12 * 60 * 60 * 1000;
+function snapshotShouldRoll(prevTs, now) {
+  if (typeof prevTs !== 'number' || !isFinite(prevTs)) return true;
+  return (now - prevTs) >= DASH_SNAP_ROLL_MS;
+}
+// Finding 12 — sub-epsilon deltas are noise (an avgScore drift of 0.01 is
+// not a trend); suppressed entirely instead of colouring red/green.
+const DASH_METRIC_EPS = { avgScore: 0.05 };
 function trendDelta(key, value) {
   if (typeof value !== 'number') return null;
   try {
@@ -42,21 +60,29 @@ function trendDelta(key, value) {
     const prev = JSON.parse(raw);
     const p = prev && prev[key];
     if (typeof p !== 'number' || p === value) return null;
-    return +(value - p).toFixed(2);
+    const d = +(value - p).toFixed(2);
+    if (Math.abs(d) < (DASH_METRIC_EPS[key] || 0)) return null;
+    return d;
   } catch { return null; }
 }
 
-// CAR-114 i18n: EN "vs your previous visit" — trend-chip tooltip
-// (fan-out ×19 pending; see PR report).
+// CAR-114 i18n — the trend-chip tooltip resolves at render time (the
+// module-level helpers run before I18n.t is baked anywhere).
 const DASH_TREND_HINT = 'vs your previous visit';
 
-function deltaChip(d) {
+function deltaChip(d, key) {
   const c = UI.el;
   if (d == null) return null;
   const up = d > 0;
+  // Finding 12 — per-metric polarity: a growing pending inbox is backlog,
+  // not progress; the tone follows the metric, the arrow follows the sign.
+  const POLARITY = { applications: 1, reports: 1, avgScore: 1, pipeline: -1 };
+  const good = (up === ((POLARITY[key] ?? 1) > 0));
+  const hint = (window.I18n && window.I18n.t)
+    ? window.I18n.t('dash.trend.hint', DASH_TREND_HINT) : DASH_TREND_HINT;
   return c('span', {
-    className: 'v2-dash-delta ' + (up ? 'v2-dash-delta--up' : 'v2-dash-delta--down'),
-    title: DASH_TREND_HINT,
+    className: 'v2-dash-delta ' + (good ? 'v2-dash-delta--up' : 'v2-dash-delta--down'),
+    title: hint,
   }, (up ? '▲ +' : '▼ −') + fmtNum(Math.abs(d)));
 }
 
@@ -71,12 +97,138 @@ function metric(label, value, sub, cls, numericSub, delta) {
   return c('div', { className: 'card metric-card' }, [
     c('div', { className: 'metric-label' }, label),
     valEl,
-    deltaChip(delta),
+    delta, // prebuilt chip (deltaChip(trendDelta(key, v), key)) or null
     // CAR-58 (v1.246.0) — a numeric unit ("/ 5.0") is a bidi composition: in an
     // RTL locale it rendered "5.0 /". Isolate it LTR (prose subs pass no flag).
     c('div', { className: 'metric-sub', ...(numericSub ? { dir: 'ltr' } : {}) }, sub),
   ]);
 }
+
+// ── CAR-114 — parallax hero planes ────────────────────────────────────────
+// 2–3 glass planes drift ≤ 16 px against pointer position / page scroll.
+// prefers-reduced-motion ⇒ NO listeners are attached and the planes stay
+// static (the CSS layer neutralizes transitions too). Listeners are scoped
+// to the route lifetime via the module-scoped __dashV2Cleanup handle
+// (CAR-93 discipline — Refresh re-renders must never stack them).
+// Finding 5 — the frame reads the LATEST target from closure vars (no
+// dropped pointer updates, no swallowed leave-reset), the pointer and
+// scroll components are tracked separately (scroll never zeroes the
+// pointer drift), and detach cancels a pending frame.
+// Finding 6 — the previous visit's cleanup runs BEFORE any early return,
+// so a mid-session reduced-motion flip cannot leave stale listeners.
+function mountParallax(hero) {
+  if (typeof __dashV2Cleanup === 'function') __dashV2Cleanup();
+  __dashV2Cleanup = null;
+  const reduced = window.matchMedia
+    && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (reduced) return;
+  const planes = hero.querySelectorAll('.v2-dash-plane');
+  if (!planes.length) return;
+  let raf = 0;
+  let px = 0; // pointer drift, x (−16..16)
+  let py = 0; // pointer drift, y
+  let sy = 0; // scroll drift, y (0..16) — independent of the pointer pair
+  const clamp = (v) => Math.max(-16, Math.min(16, v));
+  const frame = () => {
+    raf = 0;
+    const dx = clamp(px);
+    const dy = clamp(py + sy);
+    planes.forEach((p, i) => {
+      const depth = (i + 1) * 4; // 4 / 8 / 12 px of depth per plane
+      p.style.transform = 'translate3d(' + clamp(dx * depth / 16) + 'px,'
+        + clamp(dy * depth / 16) + 'px,0)';
+    });
+  };
+  const schedule = () => { if (!raf) raf = requestAnimationFrame(frame); };
+  const onPointer = (e) => {
+    const r = hero.getBoundingClientRect();
+    px = ((e.clientX - r.left) / r.width - 0.5) * 16;
+    py = ((e.clientY - r.top) / r.height - 0.5) * 16;
+    schedule();
+  };
+  const onLeave = () => { px = 0; py = 0; schedule(); };
+  const onScroll = () => { sy = Math.min(16, window.scrollY / 40); schedule(); };
+  hero.addEventListener('pointermove', onPointer);
+  hero.addEventListener('pointerleave', onLeave);
+  window.addEventListener('scroll', onScroll, { passive: true });
+  // M-1 / CAR-93 — tear down on route change AND before the next mount
+  // (Refresh re-renders with NO hashchange).
+  const detach = () => {
+    hero.removeEventListener('pointermove', onPointer);
+    hero.removeEventListener('pointerleave', onLeave);
+    window.removeEventListener('scroll', onScroll);
+    window.removeEventListener('hashchange', onHash);
+    if (raf) { cancelAnimationFrame(raf); raf = 0; } // finding 5
+  };
+  const onHash = () => {
+    if (!location.hash.startsWith('#/dashboard')) detach();
+  };
+  window.addEventListener('hashchange', onHash);
+  __dashV2Cleanup = detach;
+}
+
+// ── CAR-114 — status funnel math (pure; vm-testable) ────────────────────────
+// Finding 3 — byStatus is a CURRENT-STATE map, not cumulative: the pending
+// inbox ("Pipeline") is a separate universe from the tracker, and chaining
+// conversions through terminal stages (Rejected / Discarded / SKIP) is
+// meaningless. The forward path is the canonical stage order minus the
+// terminal stages; `reached` at step k sums the forward stages k..end (a
+// row in Interview has implicitly passed Evaluated/Applied/Responded);
+// conversions compare consecutive reached counts and are NEVER rendered
+// on the inbox step or on terminal steps. Folding still goes through the
+// server's canonical map — nothing is hardcoded that the server owns.
+function funnelCompute(byStatus, stages, aliases) {
+  const fold = (s) => (typeof window !== 'undefined' && window.TrackerStages)
+    ? window.TrackerStages.foldStatus(s, aliases) : String(s || '');
+  const folded = {};
+  for (const [s, n] of Object.entries(byStatus || {})) {
+    const k = fold(s);
+    folded[k] = (folded[k] || 0) + n;
+  }
+  // Finding 11 — when the stage map is unavailable the fold returns raw
+  // keys; count lookups must stay case-insensitive so the stall CTA still
+  // sees "evaluated" as Evaluated.
+  const lookup = (name) => {
+    if (folded[name] != null) return folded[name];
+    const low = String(name || '').toLowerCase();
+    for (const [k, v] of Object.entries(folded)) {
+      if (k.toLowerCase() === low) return v;
+    }
+    return 0;
+  };
+  const all = (stages || []).map((s) => String(s));
+  const forward = all.filter((s) => !DASH_TERMINAL_STAGES.has(s));
+  const reached = forward.map((s, i) =>
+    forward.slice(i).reduce((acc, x) => acc + (folded[x] || 0), 0));
+  const steps = forward.map((s, i) => ({
+    key: s,
+    n: folded[s] || 0,
+    reached: reached[i],
+    conv: (i > 0 && reached[i - 1] > 0)
+      ? Math.round((reached[i] / reached[i - 1]) * 100) + '%'
+      : null,
+    terminal: false,
+  })).concat(all.filter((s) => DASH_TERMINAL_STAGES.has(s)).map((s) => ({
+    key: s, n: folded[s] || 0, reached: null, conv: null, terminal: true,
+  })));
+  const total = Object.values(folded).reduce((a, b) => a + b, 0);
+  return {
+    steps,
+    // Finding 11 — a fresh install (every count 0) gets the shared empty
+    // state, not a wall of zero tiles.
+    isEmpty: total === 0,
+    evaluated: lookup('Evaluated'),
+    applied: lookup('Applied'),
+    unknown: Object.entries(folded)
+      .filter(([k, n]) => n > 0 && !all.includes(k))
+      .map(([k, n]) => ({ label: k, n })),
+  };
+}
+
+// Terminal-negative stages branch OFF the forward path (finding 3). The
+// labels come from the server's canonical vocabulary; if a future server
+// renames them they degrade into forward stages — never into errors.
+const DASH_TERMINAL_STAGES = new Set(['Rejected', 'Discarded', 'SKIP']);
 
 // CAR-93 — dashboard Refresh re-runs the route via Router.render() WITHOUT
 // a hashchange, so per-visit window listeners stacked one set per re-render.
@@ -108,8 +260,13 @@ Router.register('dashboard', async () => {
 
   // Persist the snapshot for the NEXT visit's trend deltas (called at the
   // very end of the route, after this visit's deltas were computed).
+  // Finding 4 — a snapshot younger than the roll window stays: Refresh (and
+  // re-visits within the window) must not destroy the baseline it just read.
   function saveSnapshot() {
     try {
+      let prev = null;
+      try { prev = JSON.parse(localStorage.getItem(DASH_SNAP_KEY) || 'null'); } catch { /* corrupt → roll */ }
+      if (!snapshotShouldRoll(prev && prev.ts, Date.now())) return;
       localStorage.setItem(DASH_SNAP_KEY, JSON.stringify({
         ts: Date.now(),
         applications: data.counts.applications,
@@ -160,57 +317,6 @@ Router.register('dashboard', async () => {
     ]);
   }
 
-  // ── CAR-114 — parallax hero planes ────────────────────────────────────────
-  // 2–3 glass planes drift ≤ 16 px against pointer position / page scroll.
-  // prefers-reduced-motion ⇒ NO listeners are attached and the planes stay
-  // static (the CSS layer neutralizes transitions too). Listeners are scoped
-  // to the route lifetime via the module-scoped __dashV2Cleanup handle
-  // (CAR-93 discipline — Refresh re-renders must never stack them).
-  function mountParallax(hero) {
-    const reduced = window.matchMedia
-      && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    if (reduced) return;
-    const planes = hero.querySelectorAll('.v2-dash-plane');
-    if (!planes.length) return;
-    let raf = 0;
-    const clamp = (v) => Math.max(-16, Math.min(16, v));
-    const apply = (dx, dy) => {
-      if (raf) return;
-      raf = requestAnimationFrame(() => {
-        raf = 0;
-        planes.forEach((p, i) => {
-          const depth = (i + 1) * 4; // 4 / 8 / 12 px of depth per plane
-          p.style.transform = 'translate3d(' + clamp(dx * depth / 16) + 'px,'
-            + clamp(dy * depth / 16) + 'px,0)';
-        });
-      });
-    };
-    const onPointer = (e) => {
-      const r = hero.getBoundingClientRect();
-      apply(((e.clientX - r.left) / r.width - 0.5) * 16,
-        ((e.clientY - r.top) / r.height - 0.5) * 16);
-    };
-    const onLeave = () => apply(0, 0);
-    const onScroll = () => apply(0, Math.min(16, window.scrollY / 40));
-    hero.addEventListener('pointermove', onPointer);
-    hero.addEventListener('pointerleave', onLeave);
-    window.addEventListener('scroll', onScroll, { passive: true });
-    // M-1 / CAR-93 — tear down on route change AND before the next mount
-    // (Refresh re-renders with NO hashchange).
-    if (typeof __dashV2Cleanup === 'function') __dashV2Cleanup();
-    const detach = () => {
-      hero.removeEventListener('pointermove', onPointer);
-      hero.removeEventListener('pointerleave', onLeave);
-      window.removeEventListener('scroll', onScroll);
-      window.removeEventListener('hashchange', onHash);
-    };
-    const onHash = () => {
-      if (!location.hash.startsWith('#/dashboard')) detach();
-    };
-    window.addEventListener('hashchange', onHash);
-    __dashV2Cleanup = detach;
-  }
-
   // ── CAR-114 — hero: ONE primary CTA (split control), greeting, focal hint ─
   // v1.55.5 shipped two identical red hero buttons — the UX review (CAR-114)
   // called the hierarchy out: nothing read as primary. The split control keeps
@@ -229,9 +335,7 @@ Router.register('dashboard', async () => {
         ])
       : c('div', { className: 'dash-hero-focal dash-hero-focal--empty' },
           t('dash.heroNoEval', 'No evaluations yet — paste a job URL to get your first report.'));
-    // CAR-114 i18n: EN "Welcome back — here's where your search stands."
-    // (fan-out ×19 pending; see PR report).
-    const GREETING = 'Welcome back — here\u2019s where your search stands.';
+    const GREETING = t('dash.greeting', 'Welcome back — here\u2019s where your search stands.');
     // Presentation note: overlays.css sits at the 800-LOC ceiling, so the
     // hero's structural styling is inline here (this view's established
     // pattern); only the blur-plane base + reduced-motion rules are CSS.
@@ -265,9 +369,11 @@ Router.register('dashboard', async () => {
           'aria-label': t('dash.quick.searchApply', 'Search & Apply'),
           style: { display: 'inline-flex', flexWrap: 'wrap', gap: '8px', maxWidth: '100%' },
         }, [
+          // Finding 10 — aria-current means "current item in a set", not
+          // "the primary action"; the visual weight + DOM order carry the
+          // emphasis, no ARIA state is asserted.
           c('button', {
             className: 'btn btn-primary btn-hero',
-            'aria-current': 'true',
             onClick: () => Router.go('/scan'),
           }, '🌐 ' + t('dash.scanNow', 'Scan now')),
           c('button', {
@@ -293,16 +399,7 @@ Router.register('dashboard', async () => {
   function funnelSection() {
     const stages = (stagesInfo && Array.isArray(stagesInfo.stages)) ? stagesInfo.stages : [];
     const aliases = (stagesInfo && stagesInfo.aliases) || {};
-    const fold = (s) => (window.TrackerStages
-      ? TrackerStages.foldStatus(s, aliases) : String(s || ''));
-
-    // Fold byStatus into canonical stage counts; anything that folds outside
-    // the canonical set stays visible as a raw chip (data never disappears).
-    const folded = {};
-    for (const [s, n] of Object.entries(data.byStatus || {})) {
-      const k = fold(s);
-      folded[k] = (folded[k] || 0) + n;
-    }
+    const fc = funnelCompute(data.byStatus, stages, aliases);
 
     // Localized display label — same composition as #/tracker (the canonical
     // value stays canonical everywhere it is DATA).
@@ -311,11 +408,11 @@ Router.register('dashboard', async () => {
       return t(key, s || '');
     };
 
-    const steps = [{ label: t('nav.pipeline', 'Pipeline'), n: data.counts.pipeline || 0 }]
-      .concat(stages.map((s) => ({ label: statusLabel(s), n: folded[s] || 0 })));
+    // The inbox ("Pipeline") is its own universe, not funnel step 0
+    // (finding 3) — it carries NO conversion chip.
+    const steps = [{ label: t('nav.pipeline', 'Pipeline'), n: data.counts.pipeline || 0, conv: null, inbox: true }]
+      .concat(fc.steps.map((st) => ({ ...st, label: statusLabel(st.key) })));
     const max = Math.max(1, ...steps.map((s) => s.n));
-    const evaluated = folded['Evaluated'] || 0;
-    const applied = folded['Applied'] || 0;
 
     const strip = c('ol', {
       className: 'v2-dash-funnel',
@@ -324,12 +421,8 @@ Router.register('dashboard', async () => {
         display: 'flex', flexWrap: 'wrap', gap: 'var(--space-3) var(--space-4)',
       },
     },
-      steps.map((st, i) => {
+      steps.map((st) => {
         const pct = st.n > 0 ? Math.max(6, Math.round((st.n / max) * 100)) : 0;
-        const prev = i > 0 ? steps[i - 1].n : null;
-        const conv = (prev != null && prev > 0 && st.n > 0)
-          ? Math.round((st.n / prev) * 100) + '%'
-          : '—';
         return c('li', {
           className: 'v2-dash-fstep' + (st.n === 0 ? ' v2-dash-fstep--zero' : ''),
           style: {
@@ -342,14 +435,14 @@ Router.register('dashboard', async () => {
             ...(st.n === 0 ? { opacity: '.62' } : {}),
           },
         }, [
-          i > 0 ? c('span', {
+          st.conv != null ? c('span', {
             className: 'v2-dash-fconv', 'aria-hidden': 'true',
             style: {
               alignSelf: 'center', color: 'var(--foggy-strong)',
               fontSize: 'var(--font-size-sm)', fontVariantNumeric: 'tabular-nums',
               whiteSpace: 'nowrap',
             },
-          }, '→ ' + conv) : null,
+          }, '→ ' + st.conv) : null,
           c('span', {
             className: 'v2-dash-fstep-label',
             style: {
@@ -385,10 +478,7 @@ Router.register('dashboard', async () => {
 
     // The one action the funnel should trigger when the process stalls after
     // evaluation (the review's exact scenario).
-    // CAR-114 i18n: EN "evaluated · not applied yet — review the top-scored"
-    // (fan-out ×19 pending; see PR report).
-    const FUNNEL_CTA = 'evaluated · not applied yet — review the top-scored';
-    const funnelCta = (evaluated > 0 && applied === 0)
+    const funnelCta = (fc.evaluated > 0 && fc.applied === 0)
       ? c('a', {
           className: 'btn btn-ghost btn-sm v2-dash-funnel-cta',
           href: '#/tracker',
@@ -400,21 +490,18 @@ Router.register('dashboard', async () => {
             whiteSpace: 'normal',
             textAlign: 'left',
           },
-        }, fmtNum(evaluated) + ' ' + FUNNEL_CTA + ' →')
+        }, fmtNum(fc.evaluated) + ' ' + t('dash.funnel.cta', 'evaluated · not applied yet — review the top-scored') + ' →')
       : null;
 
     // Screen-reader summary (the strip itself is spatial/decorative).
-    // CAR-114 i18n: EN "Status funnel: N applications across the pipeline stages."
-    const FUNNEL_SUMMARY = 'Status funnel: {n} applications across the pipeline stages.';
     const summary = c('p', { className: 'visually-hidden' },
-      FUNNEL_SUMMARY.replace('{n}', fmtNum(data.counts.applications)));
+      t('dash.funnel.summary', 'Status funnel: {n} applications across the pipeline stages.')
+        .replace('{n}', fmtNum(data.counts.applications)));
 
     // Raw statuses that folded outside the canonical set stay as chips —
     // never silently dropped by the fold.
-    const known = new Set(stages);
-    const unknownChips = Object.entries(folded)
-      .filter(([k, n]) => n > 0 && !known.has(k))
-      .map(([s, n]) => c('div', { className: 'dash-chip ' + statusClass(s) }, `${s} · ${n}`));
+    const unknownChips = fc.unknown.map((u) =>
+      c('div', { className: 'dash-chip ' + statusClass(u.label) }, `${u.label} · ${u.n}`));
 
     return c('section', { className: 'section v2-dash-funnel-sec' }, [
       c('h2', { className: 'section-title' }, t('dash.statuses', 'Application statuses')),
@@ -423,7 +510,11 @@ Router.register('dashboard', async () => {
         style: { padding: 'var(--space-4)' },
       }, [
         summary,
-        strip,
+        // Finding 11 — a fresh install shows the shared empty state, not a
+        // wall of zero tiles.
+        fc.isEmpty
+          ? c('div', { className: 'empty' }, t('common.empty', 'Nothing here yet'))
+          : strip,
         unknownChips.length ? c('div', {
           className: 'flex gap-3',
           style: { flexWrap: 'wrap', marginTop: '10px' },
@@ -518,13 +609,13 @@ Router.register('dashboard', async () => {
     // ── 4 metric cards — Intl separators, count-up, trend delta ──────────
     c('div', { className: 'card-row' }, [
       metric(t('dash.apps'), data.counts.applications, t('dash.tracker'),
-        '', false, trendDelta('applications', data.counts.applications)),
+        '', false, deltaChip(trendDelta('applications', data.counts.applications), 'applications')),
       metric(t('dash.pipeline'), data.counts.pipeline, t('dash.pending'),
-        '', false, trendDelta('pipeline', data.counts.pipeline)),
+        '', false, deltaChip(trendDelta('pipeline', data.counts.pipeline), 'pipeline')),
       metric(t('dash.reports'), data.counts.reports, t('dash.generated'),
-        '', false, trendDelta('reports', data.counts.reports)),
+        '', false, deltaChip(trendDelta('reports', data.counts.reports), 'reports')),
       metric(t('dash.avgScore'), data.avgScore ?? '—', '/ 5.0', scoreClass(data.avgScore), true,
-        trendDelta('avgScore', data.avgScore)),
+        deltaChip(trendDelta('avgScore', data.avgScore), 'avgScore')),
     ]),
 
     // ── Quick actions (every sidebar item, grouped by purpose) ────────────

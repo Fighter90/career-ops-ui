@@ -502,7 +502,6 @@ window.__I18N_DICT_TR = {
   'dash.system.liveEvals': "Canlı değerlendirmeler",
   'dash.system.ready': "hazır",
   'dash.system.manual': "manuel",
-  'dash.provider.live': "Canlı değerlendirmeler",
   'dash.provider.manual': "Manuel prompt modu (API anahtarı ayarlı değil)",
   'cv.unsavedConfirm': "Kaydedilmemiş CV değişiklikleriniz var. Yine de ayrılmak istiyor musunuz?",
   'health.fix': "Düzelt →",
@@ -1611,4 +1610,8 @@ window.__I18N_DICT_TR = {
   'rep2.actResearch': "Önce şirketi araştır",
   'rep2.actLow': "Kişisel bir neden yoksa atla",
   'rep2.histogramLabel': "Puan dağılımı — filtrelemek için bir sütuna tıklayın",
+  'dash.greeting': "Tekrar hoş geldiniz — iş arayışınızın durumu böyle.",
+  'dash.funnel.cta': "değerlendirildi · henüz gönderilmedi — en yüksek puanlıları inceleyin",
+  'dash.funnel.summary': "Durum hunisi: {n} başvuru boru hattı aşamalarında.",
+  'dash.trend.hint': "önceki ziyarete göre",
 };

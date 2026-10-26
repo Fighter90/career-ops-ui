@@ -501,7 +501,6 @@ window.__I18N_DICT_PL = {
   'dash.system.liveEvals': "Ewaluacje na żywo",
   'dash.system.ready': "gotowe",
   'dash.system.manual': "ręcznie",
-  'dash.provider.live': "Oceny na żywo",
   'dash.provider.manual': "Tryb ręcznego promptu (brak klucza API)",
   'cv.unsavedConfirm': "Masz niezapisane zmiany CV. Opuścić mimo to?",
   'health.fix': "Napraw →",
@@ -1609,4 +1608,8 @@ window.__I18N_DICT_PL = {
   'rep2.actResearch': "Najpierw zbadaj firmę",
   'rep2.actLow': "Pomiń, chyba że masz osobisty powód",
   'rep2.histogramLabel': "Rozkład ocen — kliknij kolumnę, aby filtrować",
+  'dash.greeting': "Witaj ponownie — tak wygląda Twoje poszukiwanie pracy.",
+  'dash.funnel.cta': "ocenionych · jeszcze nie wysłane — przejrzyj najlepiej ocenione",
+  'dash.funnel.summary': "Lejek statusów: {n} aplikacji w etapach potoku.",
+  'dash.trend.hint': "względem poprzedniej wizyty",
 };

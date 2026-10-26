@@ -502,7 +502,6 @@ window.__I18N_DICT_JA = {
   'dash.system.liveEvals': "ライブ評価",
   'dash.system.ready': "準備完了",
   'dash.system.manual': "手動",
-  'dash.provider.live': "ライブ評価",
   'dash.provider.manual': "手動プロンプトモード (API キー未設定)",
   'cv.unsavedConfirm': "保存されていない CV の変更があります。それでも移動しますか?",
   'health.fix': "修正 →",
@@ -1610,4 +1609,8 @@ window.__I18N_DICT_JA = {
   'rep2.actResearch': "まず企業をリサーチ",
   'rep2.actLow': "個人的な理由がなければ見送り",
   'rep2.histogramLabel': "スコア分布 — 列をクリックで絞り込み",
+  'dash.greeting': "おかえりなさい — 就活の現状はこんな感じです。",
+  'dash.funnel.cta': "件評価済み · まだ未応募 — 高スコアから確認しましょう",
+  'dash.funnel.summary': "ステータスファネル: パイプラインの各段階にある応募は {n} 件です。",
+  'dash.trend.hint': "前回の訪問比",
 };

@@ -502,7 +502,6 @@ window.__I18N_DICT_FR = {
   'dash.system.liveEvals': "Évals en direct",
   'dash.system.ready': "prêt",
   'dash.system.manual': "manuel",
-  'dash.provider.live': "Évaluations en direct",
   'dash.provider.manual': "Mode de saisie manuelle (aucune clé API définie)",
   'cv.unsavedConfirm': "Vous avez des modifications non sauvegardées dans votre CV. Quitter quand même ?",
   'health.fix': "Corriger →",
@@ -1609,4 +1608,8 @@ window.__I18N_DICT_FR = {
   'rep2.actResearch': "Étudiez d'abord l'entreprise",
   'rep2.actLow': "Passez, sauf raison personnelle",
   'rep2.histogramLabel': "Distribution des scores — cliquez une colonne pour filtrer",
+  'dash.greeting': "Bon retour — voici où en est votre recherche.",
+  'dash.funnel.cta': "évaluées · pas encore envoyées — examinez les mieux notées",
+  'dash.funnel.summary': "Tunnel des statuts : {n} candidatures dans les étapes du pipeline.",
+  'dash.trend.hint': "vs votre visite précédente",
 };

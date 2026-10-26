@@ -496,7 +496,6 @@ window.__I18N_DICT_VI = {
   'dash.system.liveEvals': "Đánh giá trực tiếp",
   'dash.system.ready': "sẵn sàng",
   'dash.system.manual': "thủ công",
-  'dash.provider.live': "Đánh giá trực tiếp",
   'dash.provider.manual': "Chế độ prompt thủ công (chưa đặt khóa API)",
   'cv.unsavedConfirm': "Bạn có thay đổi CV chưa lưu. Vẫn rời đi?",
   'health.fix': "Sửa →",
@@ -1584,4 +1583,8 @@ window.__I18N_DICT_VI = {
   'rep2.actResearch': "Tìm hiểu công ty trước",
   'rep2.actLow': "Bỏ qua trừ khi có lý do cá nhân",
   'rep2.histogramLabel': "Phân bố điểm — bấm vào cột để lọc",
+  'dash.greeting': "Chào mừng trở lại — đây là tình hình tìm việc của bạn.",
+  'dash.funnel.cta': "đã đánh giá · chưa gửi — xem các hồ sơ điểm cao nhất",
+  'dash.funnel.summary': "Phễu trạng thái: {n} hồ sơ ở các giai đoạn pipeline.",
+  'dash.trend.hint': "so với lần xem trước",
 };

@@ -502,7 +502,6 @@ window.__I18N_DICT_KO = {
   'dash.system.liveEvals': "라이브 평가",
   'dash.system.ready': "준비됨",
   'dash.system.manual': "수동",
-  'dash.provider.live': "실시간 평가",
   'dash.provider.manual': "수동 프롬프트 모드 (API 키 없음)",
   'cv.unsavedConfirm': "저장되지 않은 CV 변경 사항이 있습니다. 정말 나가시겠습니까?",
   'health.fix': "수정 →",
@@ -1610,4 +1609,8 @@ window.__I18N_DICT_KO = {
   'rep2.actResearch': "먼저 회사 조사하기",
   'rep2.actLow': "개인적인 이유가 없다면 건너뛰기",
   'rep2.histogramLabel': "점수 분포 — 열을 눌러 필터링",
+  'dash.greeting': "다시 오셨네요 — 취업 활동 현황입니다.",
+  'dash.funnel.cta': "건 평가됨 · 아직 미지원 — 상위 점수 항목부터 검토하세요",
+  'dash.funnel.summary': "상태 퍼널: 파이프라인 단계에 걸친 지원 {n}건.",
+  'dash.trend.hint': "이전 방문 대비",
 };

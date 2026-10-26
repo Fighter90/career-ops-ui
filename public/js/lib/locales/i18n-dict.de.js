@@ -502,7 +502,6 @@ window.__I18N_DICT_DE = {
   'dash.system.liveEvals': "Live-Evals",
   'dash.system.ready': "bereit",
   'dash.system.manual': "manuell",
-  'dash.provider.live': "Live-Bewertungen",
   'dash.provider.manual': "Manueller Prompt-Modus (kein API-Schlüssel gesetzt)",
   'cv.unsavedConfirm': "Sie haben ungespeicherte CV-Änderungen. Trotzdem verlassen?",
   'health.fix': "Beheben →",
@@ -1609,4 +1608,8 @@ window.__I18N_DICT_DE = {
   'rep2.actResearch': "Zuerst das Unternehmen recherchieren",
   'rep2.actLow': "Überspringen, außer mit persönlichem Grund",
   'rep2.histogramLabel': "Score-Verteilung — Spalte anklicken zum Filtern",
+  'dash.greeting': "Willkommen zurück — so steht es um deine Suche.",
+  'dash.funnel.cta': "bewertet · noch nicht gesendet — die besten Bewertungen ansehen",
+  'dash.funnel.summary': "Status-Trichter: {n} Bewerbungen in den Pipeline-Phasen.",
+  'dash.trend.hint': "gegenüber deinem letzten Besuch",
 };
