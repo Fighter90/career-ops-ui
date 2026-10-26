@@ -525,9 +525,9 @@ test('new CAR-120 strings ship with EN fallbacks (and in all 19 dicts — see th
     ['stats.ovClickHintScan', 'Click a bar to open those postings in Scan'],
     ['stats.ovVelocityEmpty', 'Not enough replies yet'],
   ];
+  // Plain substring checks — no dynamic RegExp, nothing to escape.
   for (const [k, en] of pairs) {
-    assert.match(STATS, new RegExp(`t\\('${k.replace(/\./g, '\\.')}', '${en.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`),
-      `${k} must carry its EN fallback inline`);
+    assert.ok(STATS.includes(`t('${k}', '${en}`), `${k} must carry its EN fallback inline`);
   }
   // reused localized grade labels come from the existing scan facet keys
   assert.match(STATS, /scan\.sen\.\$\{g\}|'scan\.sen\.' \+ g/, 'grade axis labels reuse scan.sen.*');
