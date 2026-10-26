@@ -150,8 +150,10 @@ test('f5+f7+f8 batch: a pasted spreadsheet row lands as clean TSV rows, hides th
   ]);
   assert.equal(saveResp.status(), 200, 'the save round-trips');
   const stored = await page.evaluate(async () => (await (await fetch('/api/batch')).json()).raw);
-  assert.ok(stored.includes('https://pw-a.example/j/1') && stored.includes('https://pw-b.example/j/2'),
-    'the pasted rows reached batch-input.tsv');
+  // regex literals, not substring .includes of a URL (CodeQL
+  // js/incomplete-url-substring-sanitization flags the latter even in tests)
+  assert.match(stored, /https:\/\/pw-a\.example\/j\/1/, 'row for pw-a reached batch-input.tsv');
+  assert.match(stored, /https:\/\/pw-b\.example\/j\/2/, 'row for pw-b reached batch-input.tsv');
   assert.match(stored, /(^|\n)2\thttps:\/\/pw-b\.example\/j\/2\t\t(\n|$)/m,
     'no tab leaked into the url cell of the stored file');
   await page.close();

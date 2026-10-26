@@ -144,7 +144,8 @@ test('CAR-124 batch: the paste pipeline is hardened (review f5/f6/f7)', () => {
     'clipboard tokens are parsed/validated/deduped and nothing already in the editor is re-added');
   assert.match(BATCH, /const startId = nextBatchId\(existing\)/, 'ids continue from the max existing numeric id');
   const guide = 'https://career-ops.org/docs/introduction/guides/batch-evaluate-offers';
-  assert.ok((BATCH.match(new RegExp(guide.replace(/[./]/g, '\\$&'), 'g')) || []).length >= 2,
+  // split-count, not a dynamically built RegExp (CodeQL js/regex alerts)
+  assert.ok(BATCH.split(guide).length - 1 >= 2,
     'the guide URL appears in the subtitle AND the empty state');
 });
 
