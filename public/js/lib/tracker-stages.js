@@ -849,6 +849,15 @@ window.TrackerStages = (function () {
           || opts.t('track.moveFailed', '{n} row(s) could not be moved').replace('{n}', String(res.failed)), 'error');
         if (!opts.isReady() && opts.onDone) opts.onDone();
       }
+      // Focus management: the modal that ran the move just closed, dropping
+      // focus to <body>. Return it to the first moved row's Move control so a
+      // keyboard user stays on the board instead of falling off it. Only
+      // steals focus when nothing else already holds it.
+      try {
+        const num = String((moves[0] && moves[0].row && moves[0].row.num) ?? '');
+        const btn = num ? document.querySelector('.v2-track-board .v2-track-move[data-key="' + (window.CSS && CSS.escape ? CSS.escape(num) : num) + '"]') : null;
+        if (btn && document.activeElement === document.body) btn.focus();
+      } catch { /* detached board */ }
     }
     return { open };
   }
