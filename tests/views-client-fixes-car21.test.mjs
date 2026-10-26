@@ -113,7 +113,10 @@ test('pipeline: selectUrl has a latest-wins token', () => {
 
 // ─────────────── 5 · pipeline.js + health.js async clicks ────────────
 
-test('pipeline: both delete handlers wrap their awaits and toast failures', () => {
+test('pipeline: the shared delete helper wraps its await and toasts failures', () => {
+  // CAR-116 — the row button, the preview pane and the bulk loop all
+  // funnel through ONE removeFromPipeline() call site (the bulk loop
+  // calls it per URL instead of re-opening a second API.del site).
   let sites = 0;
   for (const m of PIPE.matchAll(/API\.del\('\/api\/pipeline/g)) {
     sites += 1;
@@ -123,7 +126,10 @@ test('pipeline: both delete handlers wrap their awaits and toast failures', () =
     assert.ok(after.includes('catch (err)'), `delete site ${sites}: caught`);
     assert.ok(after.includes('UI.toast'), `delete site ${sites}: failure surfaced`);
   }
-  assert.equal(sites, 2, 'two delete call sites (preview pane + row)');
+  assert.equal(sites, 1, 'one shared removeFromPipeline call site');
+  // every consumer path routes through the helper
+  const consumers = PIPE.match(/removeFromPipeline\(/g) || [];
+  assert.ok(consumers.length >= 4, `helper + ≥3 call sites, found ${consumers.length}`);
 });
 
 test('health: doctor/verify buttons catch failures, toast, and clear the progress toast', () => {

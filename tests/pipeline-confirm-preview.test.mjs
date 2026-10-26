@@ -24,14 +24,30 @@ test('#8: no native confirm() left anywhere in pipeline.js', () => {
     'pipeline.js still calls native confirm()');
 });
 
-test('#8: all three actions go through focus-trapped UI.confirm()', () => {
+test('#8: destructive + nav actions go through focus-trapped UI.confirm()', () => {
   const calls = PIPE.match(/await UI\.confirm\(/g) || [];
-  assert.ok(calls.length >= 3, `expected ≥3 UI.confirm sites, found ${calls.length}`);
-  // the two deletes are danger:true; evaluate-all is danger:false
-  assert.ok((PIPE.match(/danger:\s*true/g) || []).length >= 2, 'both deletes danger:true');
+  // CAR-116 review round — the single-row deletes REGAINED their confirm
+  // (an undo bar is not a substitute for a danger dialog at 30k rows).
+  // Confirm sites: preview-pane delete, flat row delete, grouped card
+  // delete, the BULK discard (danger) and evaluate-first (nav).
+  assert.ok(calls.length >= 5, `expected ≥5 UI.confirm sites, found ${calls.length}`);
+  // the bulk discard is danger:true; evaluate-first is danger:false
+  assert.ok((PIPE.match(/danger:\s*true/g) || []).length >= 4, 'all delete confirms are danger:true');
   assert.match(PIPE, /danger:\s*false/);
-  assert.match(PIPE, /t\('pipe\.confirmDelTitle'/);
+  assert.match(PIPE, /t\('pipe\.confirmDelTitle'/, 'deletes reuse the remove-from-pipeline title');
   assert.match(PIPE, /t\('pipe\.evaluateAllTitle'/);
+});
+
+test('#8b (CAR-116 review): single-row deletes confirm, then undo ONLY on success', () => {
+  // the row + preview-pane delete paths confirm, funnel through
+  // removeFromPipeline (which swallows errors and returns a boolean),
+  // and push the undo batch only when the boolean says it happened —
+  // the old shape pushed undo even when the DELETE failed.
+  const row = PIPE.slice(PIPE.indexOf('function urlRow'), PIPE.indexOf('// Virtualization state'));
+  assert.match(row, /await UI\.confirm\(/, 'flat row delete confirms');
+  assert.match(row, /if \(!removed\) return;/, 'a failed DELETE must not push undo');
+  assert.match(PIPE, /pushUndo\(\[url\]\);\s*\n\s*showUndoBar\(1\);/,
+    'single deletes push a one-URL undo batch after success');
 });
 
 test('#22: previewPane is a labelled polite live region', () => {
