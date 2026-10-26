@@ -25,7 +25,8 @@ Router.register('health', async () => {
   // like an outage. Required checks stay prominent; the optional ones (ok or
   // merely unset) collapse into one <details> section, and orange is reserved
   // for real (required) failures.
-  const checks = Array.isArray(data.checks) ? data.checks : [];
+  const checksOk = Array.isArray(data.checks);
+  const checks = checksOk ? data.checks : [];
   const requiredChecks = checks.filter((ch) => ch.required !== false);
   const optionalChecks = checks.filter((ch) => ch.required === false);
   const requiredBad = requiredChecks.filter((ch) => !ch.ok);
@@ -91,19 +92,57 @@ Router.register('health', async () => {
     ]);
   }
 
-  // CAR-121 — the green summary renders ONLY when every required check
-  // passes; failures keep the page honest (the red rows below are the summary).
-  const allRequiredOk = requiredBad.length === 0;
+  // CAR-121 — the green summary renders ONLY when the payload is well-formed,
+  // the required list is non-empty, and nothing required is failing: an
+  // empty/malformed payload trivially has zero failures and must never read
+  // as "all clear" (review finding 6). Failures keep the page honest (the
+  // red rows below are the summary).
+  const allRequiredOk = checksOk
+    && requiredChecks.length > 0
+    && requiredBad.length === 0;
   let providerSummary = null;
   if (providers && providers.activeProvider) {
+    // function replacers (review finding 10): provider/model come from
+    // config/env — a value like "$&" must not act as a replace pattern.
     providerSummary = providers.activeModel
       ? t('health.activeProvider', 'Active provider: {provider} ({model})')
-        .replace('{provider}', providers.activeProvider).replace('{model}', providers.activeModel)
+        .replace('{provider}', () => providers.activeProvider)
+        .replace('{model}', () => providers.activeModel)
       : t('health.activeProviderNoModel', 'Active provider: {provider}')
-        .replace('{provider}', providers.activeProvider);
+        .replace('{provider}', () => providers.activeProvider);
   }
 
   const optionalListStyle = { listStyle: 'none', margin: '10px 0 0', padding: 0 };
+
+  const body = [];
+  if (!checksOk) {
+    // malformed payload → an explicit, announced error state (never green).
+    body.push(c('div', { className: 'empty', role: 'alert', style: { marginTop: '16px' } },
+      t('health.checksUnavailable', 'Health data is unavailable or malformed — run the doctor and reload.')));
+  } else {
+    body.push(allRequiredOk ? c('div', { className: 'v2-portals-health-ok', role: 'status' }, [
+      '✓ ' + t('health.allOk', 'All required checks pass'),
+      providerSummary ? c('span', { style: { fontWeight: '400', color: 'var(--foggy)' } }, '· ' + providerSummary) : null,
+    ]) : null);
+
+    // Required checks — prominent, uncollapsed.
+    body.push(c('ul', { className: 'card-row', role: 'list', style: { listStyle: 'none', margin: 0, padding: 0 } },
+      requiredChecks.map(checkRow)
+    ));
+
+    // CAR-121 — optional keys (provider keys, deps, directories) collapse
+    // into one quiet section: <summary> carries the accessible name, so no
+    // extra aria wiring is needed. Collapsed content stays in the DOM.
+    body.push(c('details', { className: 'v2-portals-optional' }, [
+      c('summary', null, optionalMissing > 0
+        ? t('health.optionalCollapsed', '{count} optional checks not configured (optional)')
+          .replace('{count}', String(optionalMissing))
+        : t('health.optionalOk', 'Optional checks — all configured')),
+      c('ul', { className: 'card-row', role: 'list', style: optionalListStyle },
+        optionalChecks.map(checkRow)
+      ),
+    ]));
+  }
 
   return c('div', null, [
     c('header', { className: 'page-header' }, [

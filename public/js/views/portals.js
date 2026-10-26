@@ -16,11 +16,13 @@
  * undo pattern — one body-level bar per action, LIFO, re-applied through the
  * SAME POST /api/portals/toggle write path).
  *
- * CAR-121 i18n (pending ×19 dict fan-out; allowlisted in
- * tests/i18n-coverage.test.mjs as CAR121_PENDING — delete the allowlist when
- * the fan-out lands): portals.search, portals.filterAll,
- * portals.filterEnabled, portals.filterDisabled, portals.groupOther,
- * portals.noMatch, portals.undoEnabled, portals.undoDisabled.
+ * CAR-121 i18n: all 16 new keys (portals.search/filterLabel/filterAll/
+ * filterEnabled/filterDisabled/groupOther/noMatch/watch/undoEnabled/
+ * undoDisabled + health.allOk/activeProvider/activeProviderNoModel/
+ * optionalCollapsed/optionalOk/checksUnavailable) live in all 19 locale
+ * dicts — no pending allowlist. Reused keys: pipe.undo, pipe.undoDismiss,
+ * portals.enable/disable/enabledToast/disabledToast/toggleFailed, the
+ * portals.* discover set, health.badge* / health.fix*.
  */
 
 // ── CAR-121 · pure helpers (no DOM / closure deps — vm-extractable) ──
@@ -86,13 +88,33 @@ const PROVIDER_LABELS = {
   habr: 'Habr Career',
 };
 
-/** ATS vendor for a tracked company, or null → the "Other" group. */
+/** Host of a careers_url: scheme-agnostic, path / userinfo / port stripped. */
+function hostOfCareerUrl(url) {
+  let rest = String(url || '').trim().toLowerCase();
+  rest = rest.replace(/^[a-z][a-z0-9+.-]*:\/\//, ''); // scheme, if any
+  rest = rest.split(/[/?#]/, 1)[0];                   // drop path / query / fragment
+  const at = rest.lastIndexOf('@');                   // userinfo
+  if (at !== -1) rest = rest.slice(at + 1);
+  return rest.replace(/:\d+$/, '');                   // port
+}
+
+/** ATS vendor for a tracked company, or null → the "Other" group.
+ * Matching is boundary-anchored: `clever.com` is NOT lever.co, `xhh.ru` is
+ * NOT hh.ru — a needle must be the whole host or a dotted suffix of it
+ * (dotted needles), or sit on its own label (bare tokens: acme.personio.de). */
 function vendorOf(co) {
-  const url = String((co && co.careers_url) || '');
-  const hostMatch = url.match(/^https?:\/\/([^/?#]+)/i);
-  const host = (hostMatch ? hostMatch[1] : url).toLowerCase();
-  for (const pair of ATS_VENDORS) {
-    if (host.indexOf(pair[0]) !== -1) return pair[1];
+  const host = hostOfCareerUrl(co && co.careers_url);
+  if (host) {
+    for (const pair of ATS_VENDORS) {
+      const needle = pair[0];
+      if (needle.indexOf('.') !== -1) {
+        if (host === needle || host.endsWith('.' + needle)) return pair[1];
+      } else {
+        // bare token (personio, teamtailor, …) on a label boundary
+        const esc = needle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        if (new RegExp('(^|\\.)' + esc + '\\.').test(host)) return pair[1];
+      }
+    }
   }
   const prov = String((co && co.provider) || '').trim().toLowerCase();
   if (prov && Object.prototype.hasOwnProperty.call(PROVIDER_LABELS, prov)) {
@@ -125,6 +147,60 @@ function sortGroup(items, health) {
     if (da !== db) return da - db;
     return String(a.name || '').localeCompare(String(b.name || ''));
   });
+}
+
+// ── CAR-121 · undo bar lifecycle (file-scope singleton) ──
+// The bar is a body-level element that outlives any single view mount, so
+// its hide-timer and teardown live here, not in the Router.register closure:
+// any route change hides it (one page-level hashchange hook), and Undo on a
+// detached view is refused by the view's isConnected guard (review finding 3).
+let portalsUndoTimer = 0;
+
+function hidePortalsUndoBar() {
+  const bar = document.getElementById('portals-undo-bar');
+  if (bar) bar.hidden = true;
+  clearTimeout(portalsUndoTimer);
+}
+
+function showPortalsUndoBar(next, count, onUndo) {
+  const t = (k, f) => I18n.t(k, f);
+  let bar = document.getElementById('portals-undo-bar');
+  if (!bar) {
+    bar = UI.el('div', {
+      id: 'portals-undo-bar',
+      className: 'v2-portals-undo-bar',
+      role: 'status',
+      'aria-live': 'polite',
+    });
+    document.body.appendChild(bar);
+  }
+  bar.replaceChildren(
+    UI.el('span', { className: 'v2-portals-undo-msg' },
+      (next
+        ? t('portals.undoEnabled', 'Enabled: {count}')
+        : t('portals.undoDisabled', 'Disabled: {count}')).replace('{count}', String(count))),
+    UI.el('button', {
+      type: 'button',
+      id: 'portals-undo-btn',
+      className: 'btn btn-primary btn-sm',
+      onClick: () => { onUndo(); },
+    }, t('pipe.undo', 'Undo')),
+    UI.el('button', {
+      type: 'button',
+      className: 'btn btn-ghost btn-sm',
+      onClick: () => { hidePortalsUndoBar(); },
+    }, t('pipe.undoDismiss', 'Dismiss')),
+  );
+  bar.hidden = false;
+  clearTimeout(portalsUndoTimer);
+  portalsUndoTimer = setTimeout(() => { bar.hidden = true; }, 8000);
+}
+
+let portalsUndoNavHook = false;
+function installPortalsUndoNavHook() {
+  if (portalsUndoNavHook) return; // once per page — a per-mount listener would leak
+  portalsUndoNavHook = true;
+  window.addEventListener('hashchange', hidePortalsUndoBar);
 }
 
 Router.register('portals', async () => {
@@ -193,7 +269,9 @@ Router.register('portals', async () => {
   });
   const filterSelect = c('select', {
     className: 'select',
-    'aria-label': t('portals.filterAll', 'All portals'),
+    // the select is labelled by a dedicated verb, not by its first OPTION
+    // (review finding 9 — it otherwise read "All portals, Disabled only")
+    'aria-label': t('portals.filterLabel', 'Show'),
     style: { flex: '0 1 auto', width: 'auto' },
   }, [
     c('option', { value: 'all' }, t('portals.filterAll', 'All portals')),
@@ -219,95 +297,68 @@ Router.register('portals', async () => {
 
   // ── CAR-121 · undo (session-scoped, body-level bar — pipeline pattern)
   const undoStack = []; // [{ next, items: [{ careers_url, prev }] }]
-  let undoTimer = 0;
+  // one write per portal at a time (review finding 5): a flip while its POST
+  // is in flight would race the re-render and record a stale undo state.
+  const pendingToggles = new Set();
 
-  function undoBar() {
-    let bar = document.getElementById('portals-undo-bar');
-    if (!bar) {
-      bar = c('div', {
-        id: 'portals-undo-bar',
-        className: 'v2-portals-undo-bar',
-        role: 'status',
-        'aria-live': 'polite',
-      });
-      document.body.appendChild(bar);
-    }
-    return bar;
-  }
-
-  function showUndoBar(next, count) {
-    const bar = undoBar();
-    bar.replaceChildren(
-      c('span', { className: 'v2-portals-undo-msg' },
-        (next
-          ? t('portals.undoEnabled', 'Enabled: {count}')
-          : t('portals.undoDisabled', 'Disabled: {count}')).replace('{count}', String(count))),
-      c('button', {
-        type: 'button',
-        id: 'portals-undo-btn',
-        className: 'btn btn-primary btn-sm',
-        onClick: () => { undoLast(); },
-      }, t('pipe.undo', 'Undo')),
-      c('button', {
-        type: 'button',
-        className: 'btn btn-ghost btn-sm',
-        onClick: () => { hideUndoBar(); },
-      }, t('pipe.undoDismiss', 'Dismiss')),
-    );
-    bar.hidden = false;
-    clearTimeout(undoTimer);
-    undoTimer = setTimeout(() => { bar.hidden = true; }, 8000);
-  }
-
-  function hideUndoBar() {
-    const bar = document.getElementById('portals-undo-bar');
-    if (bar) bar.hidden = true;
-    clearTimeout(undoTimer);
-  }
+  installPortalsUndoNavHook();
 
   // Re-apply the recorded pre-toggle states through the SAME write path
   // (POST /api/portals/toggle); the server write is idempotent per state.
   async function undoLast() {
-    const action = undoStack.pop() || null;
-    hideUndoBar();
-    if (!action) return;
-    let failed = 0;
+    // A detached view must never write — navigation already hid the bar;
+    // this guard is the belt to that hook's braces (review finding 3).
+    if (!root.isConnected) { hidePortalsUndoBar(); return; }
+    // Pop only after success (review finding 4): a failed undo must stay
+    // undoable, and a PARTIAL failure keeps its remaining items on the stack.
+    const action = undoStack[undoStack.length - 1] || null;
+    if (!action) { hidePortalsUndoBar(); return; }
+    const remaining = [];
     for (const item of action.items) {
       try {
         await API.post('/api/portals/toggle', { careers_url: item.careers_url, enabled: item.prev });
         const co = companies.find((x) => x.careers_url === item.careers_url);
         if (co) co.enabled = item.prev;
-      } catch { failed += 1; }
-    }
-    if (failed) {
-      UI.toast(t('portals.toggleFailed', 'Could not update the portal'), 'error');
-    } else {
-      UI.toast(action.items.some((x) => x.prev !== false)
-        ? t('portals.enabledToast', 'Portal enabled — the scanner will watch it')
-        : t('portals.disabledToast', 'Portal disabled — the scanner will skip it'), 'success');
+      } catch {
+        remaining.push(item);
+      }
     }
     updateSummary();
     renderList();
+    if (remaining.length) {
+      action.items = remaining; // trimmed in place — still the stack top
+      showPortalsUndoBar(remaining.some((x) => x.prev !== false), remaining.length, undoLast);
+      return;
+    }
+    undoStack.pop();
+    hidePortalsUndoBar();
+    UI.toast(action.items.some((x) => x.prev !== false)
+      ? t('portals.enabledToast', 'Portal enabled — the scanner will watch it')
+      : t('portals.disabledToast', 'Portal disabled — the scanner will skip it'), 'success');
   }
 
-  async function applyToggle(company, input, next) {
-    input.disabled = true;
+  async function applyToggle(company, next) {
+    const url = company.careers_url;
+    if (!url || pendingToggles.has(url)) return; // re-entry / in-flight guard
+    pendingToggles.add(url);
+    renderList(); // repaint now: the in-flight row renders its switch disabled
+    let ok = false;
     try {
-      await API.post('/api/portals/toggle', { careers_url: company.careers_url, enabled: next });
-      undoStack.push({ next, items: [{ careers_url: company.careers_url, prev: !next }] });
+      await API.post('/api/portals/toggle', { careers_url: url, enabled: next });
+      undoStack.push({ next, items: [{ careers_url: url, prev: !next }] });
       company.enabled = next;
+      ok = true;
       UI.toast(next
         ? t('portals.enabledToast', 'Portal enabled — the scanner will watch it')
         : t('portals.disabledToast', 'Portal disabled — the scanner will skip it'), 'success');
+    } catch (err) {
+      UI.toast((err && err.message) || t('portals.toggleFailed', 'Could not update the portal'), 'error');
+    } finally {
+      pendingToggles.delete(url);
       updateSummary();
       renderList();
-      showUndoBar(next, 1);
-    } catch (err) {
-      // revert the switch; the row is re-rendered only on success
-      input.checked = !next;
-      input.disabled = false;
-      UI.toast((err && err.message) || t('portals.toggleFailed', 'Could not update the portal'), 'error');
     }
+    if (ok) showPortalsUndoBar(next, 1, undoLast);
   }
 
   function updateSummary() {
@@ -350,17 +401,17 @@ Router.register('portals', async () => {
       className: 'v2-portals-switch',
       role: 'switch',
       checked: isOn,
-      disabled: !canToggle,
-      // CAR-21 (v1.243.0) — every row used to announce the bare same
-      // "Disable"/"Enable": with 45 tracked portals a screen-reader user
-      // heard 45 identical buttons. Name the portal too (same
-      // disambiguation the pipeline row actions got in F-V54-B).
-      'aria-label': (isOn ? t('portals.disable', 'Disable') : t('portals.enable', 'Enable'))
+      disabled: !canToggle || pendingToggles.has(company.careers_url),
+      // CAR-21 (v1.243.0) + review finding 8 — the accessible name is
+      // STABLE ("Watch: <company>"); the ON/OFF state is announced by the
+      // switch itself via :checked. The old name embedded the action, so
+      // SRs read "Disable: Acme, switch, on".
+      'aria-label': t('portals.watch', 'Watch')
         + ': ' + (company.name || company.careers_url),
     });
     if (canToggle) {
       toggleInput.addEventListener('change', () => {
-        applyToggle(company, toggleInput, toggleInput.checked);
+        applyToggle(company, toggleInput.checked);
       });
     }
     return c('div', {
@@ -419,6 +470,10 @@ Router.register('portals', async () => {
         provider: typeof co.provider === 'string' ? co.provider : '',
         enabled: co.enabled !== false,
       })).filter((co) => co.name || co.careers_url);
+      // a fresh read invalidates the last probe's alive/dead line (review
+      // finding 7): new rows were never probed, so the counts come back.
+      checkSummaryText = null;
+      summary.style.color = '';
       updateSummary();
       renderList();
     } catch (err) {

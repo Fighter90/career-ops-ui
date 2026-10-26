@@ -67,10 +67,11 @@ function loadPortalsHelpers() {
   runInContext([
     extractConst(PORTALS, 'ATS_VENDORS'),
     extractConst(PORTALS, 'PROVIDER_LABELS'),
+    extractFn(PORTALS, 'hostOfCareerUrl'),
     extractFn(PORTALS, 'vendorOf'),
     extractFn(PORTALS, 'matchPortal'),
     extractFn(PORTALS, 'matchState'),
-    'globalThis.__h = { vendorOf, matchPortal, matchState };',
+    'globalThis.__h = { vendorOf, matchPortal, matchState, hostOfCareerUrl };',
   ].join('\n'), ctx);
   return ctx.__h;
 }
@@ -99,6 +100,9 @@ test('portals: an enabled-state filter (all / enabled / disabled)', () => {
   assert.match(PORTALS, /t\('portals\.filterAll',/);
   assert.match(PORTALS, /t\('portals\.filterEnabled',/);
   assert.match(PORTALS, /t\('portals\.filterDisabled',/);
+  // the select is labelled by a DEDICATED label, not its first option
+  // (review finding 9 — "All portals, Disabled only").
+  assert.match(PORTALS, /'aria-label':\s*t\('portals\.filterLabel', 'Show'\)/);
   const { matchState } = loadPortalsHelpers();
   const on = { enabled: true }; const off = { enabled: false }; const unset = {};
   assert.equal(matchState(on, 'all') && matchState(off, 'all') && matchState(unset, 'all'), true);
@@ -112,7 +116,7 @@ test('portals: an enabled-state filter (all / enabled / disabled)', () => {
 // ─────────────────── #/portals · ATS grouping ───────────────────
 
 test('portals: vendorOf derives the ATS vendor from the careers_url host', () => {
-  const { vendorOf } = loadPortalsHelpers();
+  const { vendorOf, hostOfCareerUrl } = loadPortalsHelpers();
   assert.equal(vendorOf({ careers_url: 'https://boards.greenhouse.io/stripe' }), 'Greenhouse');
   assert.equal(vendorOf({ careers_url: 'https://jobs.eu.lever.co/acme' }), 'Lever');
   assert.equal(vendorOf({ careers_url: 'https://jobs.ashbyhq.com/x' }), 'Ashby');
@@ -127,6 +131,30 @@ test('portals: vendorOf derives the ATS vendor from the careers_url host', () =>
   assert.equal(vendorOf(null), null);
 });
 
+test('portals: vendorOf matches on domain BOUNDARIES (review finding 2)', () => {
+  const { vendorOf, hostOfCareerUrl } = loadPortalsHelpers();
+  // unanchored indexOf would misgroup these…
+  assert.equal(vendorOf({ careers_url: 'https://clever.com/careers' }), null,
+    'clever.com contains "lever" but is not lever.co');
+  assert.equal(vendorOf({ careers_url: 'https://xhh.ru/x' }), null,
+    'xhh.ru contains "hh.ru" but is not hh.ru');
+  assert.equal(vendorOf({ careers_url: 'https://xpersonio.de/x' }), null,
+    'a bare token never matches inside a label');
+  // …while real subdomains and scheme-less / credentialed forms still group.
+  assert.equal(vendorOf({ careers_url: 'https://acme.personio.de/x' }), 'Personio');
+  assert.equal(vendorOf({ careers_url: 'https://jobs.teamtailor.com/acme' }), 'Teamtailor');
+  assert.equal(vendorOf({ careers_url: 'https://career.hh.ru/employer/1' }), 'hh.ru');
+  assert.equal(vendorOf({ careers_url: 'greenhouse.io/stripe' }), 'Greenhouse',
+    'scheme-less URLs still parse the host (path dropped)');
+  assert.equal(vendorOf({ careers_url: 'https://u:p@boards.greenhouse.io:8443/x' }), 'Greenhouse',
+    'userinfo and port are stripped before matching');
+  // host parse itself: scheme-less, pathful, credentialed, ported.
+  assert.equal(hostOfCareerUrl('HTTPS://Boards.Greenhouse.IO/stripe'), 'boards.greenhouse.io');
+  assert.equal(hostOfCareerUrl('greenhouse.io/stripe/jobs?q=1#x'), 'greenhouse.io');
+  assert.equal(hostOfCareerUrl('user@hh.ru:8080/x'), 'hh.ru');
+  assert.equal(hostOfCareerUrl(''), '');
+});
+
 test('portals: rows render grouped by ATS vendor, "Other" last, with per-group counts', () => {
   assert.match(PORTALS, /v2-portals-group-h/, 'group header class');
   assert.match(PORTALS, /v2-portals-count/, 'per-group count badge');
@@ -137,7 +165,7 @@ test('portals: rows render grouped by ATS vendor, "Other" last, with per-group c
   assert.match(seg, /localeCompare/, 'groups sort alphabetically');
   assert.match(seg, /=== otherLabel\) return 1/, 'Other sorts last');
   // dead-first / enabled-first ordering survives INSIDE each group.
-  const { sortGroup } = (() => {
+  const { __sg: sortGroup } = (() => {
     const ctx = createContext({});
     runInContext(extractFn(PORTALS, 'sortGroup') + '\nglobalThis.__sg = sortGroup;', ctx);
     return ctx;
@@ -159,20 +187,25 @@ test('portals: an empty search result says so (not the "not tracked yet" text)',
 
 // ─────────────────── #/portals · switch + undo ───────────────────
 
-test('portals: enable/disable is a real switch (checkbox role=switch) that names its portal', () => {
+test('portals: the switch names its portal with a STABLE accessible name', () => {
   assert.match(PORTALS, /type: 'checkbox'/, 'a real checkbox input');
   assert.match(PORTALS, /role: 'switch'/, 'switch semantics');
-  // The CAR-21 contract stays: the control announces Disable/Enable + the company.
-  assert.match(PORTALS, /'aria-label':\s*\(isOn \? t\('portals\.disable', 'Disable'\) : t\('portals\.enable', 'Enable'\)\)/);
-  assert.match(PORTALS, /\+ ': ' \+ \(company\.name \|\| company\.careers_url\)/);
+  // Review finding 8 — the old name EMBEDDED the action ("Disable: Acme"),
+  // so a screen reader read "Disable: Acme, switch, on" — contradictory,
+  // and the name changed with state. The name is now the stable verb;
+  // state is announced by the switch itself (checked property).
+  assert.match(PORTALS, /'aria-label':\s*t\('portals\.watch', 'Watch'\)/,
+    'stable name — does not flip with the state');
+  assert.doesNotMatch(PORTALS, /'aria-label':\s*\(isOn \? t\('portals\.disable'/,
+    'the state-conditional name is gone');
+  assert.match(PORTALS, /\+ ': ' \+ \(company\.name \|\| company\.careers_url\)/,
+    '…disambiguated by the company (CAR-21 contract)');
 });
 
 test('portals: toggles are undoable through the same POST /api/portals/toggle write path', () => {
   // one undo bar per action, LIFO, session-scoped, body-level (pipeline pattern).
   assert.match(PORTALS, /const undoStack = \[\];/, 'LIFO undo stack');
   assert.match(PORTALS, /id: 'portals-undo-bar'/, 'single body-level bar');
-  assert.match(PORTALS, /role: 'status'/, 'announced politely');
-  assert.match(PORTALS, /'aria-live': 'polite'/);
   assert.match(PORTALS, /setTimeout\(\(\) => \{ bar\.hidden = true; \}, 8000\)/, 'auto-hides');
   assert.match(PORTALS, /t\('pipe\.undo', 'Undo'\)/, 'Undo button (existing key)');
   assert.match(PORTALS, /t\('pipe\.undoDismiss', 'Dismiss'\)/, 'Dismiss button (existing key)');
@@ -184,6 +217,73 @@ test('portals: toggles are undoable through the same POST /api/portals/toggle wr
   assert.match(PORTALS, /prev: !next/, 'the pre-toggle state is recorded');
 });
 
+test('portals: the undo bar does not survive navigation (review finding 3)', () => {
+  // One page-level hook: any route change hides the bar.
+  assert.match(PORTALS, /addEventListener\('hashchange', hidePortalsUndoBar\)/,
+    'a hashchange hook hides the bar on navigation');
+  const hideAt = PORTALS.indexOf('function hidePortalsUndoBar');
+  assert.ok(hideAt > -1, 'hide helper exists');
+  const hide = PORTALS.slice(hideAt, PORTALS.indexOf('}', PORTALS.indexOf('clearTimeout', hideAt)) + 1);
+  assert.match(hide, /\.hidden = true/, 'hides the bar');
+  assert.match(hide, /clearTimeout\(portalsUndoTimer\)/, 'stops the auto-hide timer');
+  // Belt to the braces: Undo on a DETACHED view refuses to write.
+  const undoAt = PORTALS.indexOf('async function undoLast');
+  const guardAt = PORTALS.indexOf('if (!root.isConnected)', undoAt);
+  assert.ok(guardAt > undoAt, 'undoLast guards on a connected view');
+  const seg = PORTALS.slice(guardAt, guardAt + 80);
+  assert.match(seg, /hidePortalsUndoBar\(\); return;/, 'the guard hides and bails');
+});
+
+test('portals: undo pops only after success — a failed undo stays undoable (review finding 4)', () => {
+  const undoAt = PORTALS.indexOf('async function undoLast');
+  const undoEnd = PORTALS.indexOf('async function applyToggle', undoAt);
+  const undo = PORTALS.slice(undoAt, undoEnd);
+  // no blind pop: the stack is only popped when NOTHING failed
+  assert.ok(undo.indexOf('undoStack.pop()') > -1, 'the stack is popped on the success path');
+  const popAt = undo.indexOf('undoStack.pop()');
+  const loopAt = undo.indexOf('for (const item of action.items)');
+  assert.ok(popAt > loopAt, 'the pop happens AFTER the retry loop, not before it');
+  assert.match(undo, /remaining\.push\(item\)/, 'failed items are collected');
+  assert.match(undo, /action\.items = remaining/, 'the action keeps only the failed items (stays on the stack)');
+  assert.match(undo, /showPortalsUndoBar\(/, 'the bar is re-shown for the remaining items');
+});
+
+test('portals: one write per portal at a time (review finding 5)', () => {
+  assert.match(PORTALS, /const pendingToggles = new Set\(\);/, 'pending set exists');
+  const fnAt = PORTALS.indexOf('async function applyToggle');
+  const fnEnd = PORTALS.indexOf('function updateSummary', fnAt);
+  const fn = PORTALS.slice(fnAt, fnEnd);
+  const reentry = fn.indexOf('pendingToggles.has(url)');
+  const add = fn.indexOf('pendingToggles.add(url)');
+  const post = fn.indexOf("API.post('/api/portals/toggle'");
+  assert.ok(reentry > -1 && add > reentry && post > add,
+    're-entry guard → mark pending → then POST');
+  assert.match(fn, /renderList\(\);[\s\S]*?let ok = false;/,
+    'repaints immediately so the in-flight row renders disabled');
+  const finallyAt = fn.indexOf('} finally {');
+  assert.ok(finallyAt > -1, 'the pending mark is released in finally');
+  const fin = fn.slice(finallyAt);
+  assert.match(fin, /pendingToggles\.delete\(url\)/, 'pending cleared on both paths');
+  // rows render in-flight switches disabled (no double writes via re-render).
+  assert.match(PORTALS, /disabled: !canToggle \|\| pendingToggles\.has\(company\.careers_url\)/,
+    'pending rows render with a disabled switch');
+});
+
+test('portals: the undo bar is announced as a status region (scoped, review finding 11)', () => {
+  // the /role: 'status'/ canary used to match ANY markup in the file —
+  // scope it to the bar builder itself.
+  const showSrc = extractFn(PORTALS, 'showPortalsUndoBar');
+  assert.match(showSrc, /role: 'status'/, 'the bar is announced politely');
+  assert.match(showSrc, /'aria-live': 'polite'/);
+});
+
+test('portals: a fresh load clears the stale health-check line (review finding 7)', () => {
+  const loadAt = PORTALS.indexOf('async function loadCompanies');
+  const seg = PORTALS.slice(loadAt, PORTALS.indexOf('const norm', loadAt));
+  assert.match(seg, /checkSummaryText = null;/, 'the alive/dead line does not survive a reload');
+  assert.match(seg, /summary\.style\.color = '';/, 'its colour is reset too');
+});
+
 // ─────────────────────────── #/health v2 ───────────────────────────
 
 test('health: the active provider is fetched and only the success case shows the green summary', () => {
@@ -191,11 +291,28 @@ test('health: the active provider is fetched and only the success case shows the
   assert.match(HEALTH, /\.catch\(\(\) => null\)/, 'provider fetch failure degrades quietly');
   assert.match(HEALTH, /t\('health\.allOk',/, 'success summary is keyed');
   assert.match(HEALTH, /t\('health\.activeProvider'/, 'active-provider line is keyed');
-  // the banner renders ONLY when every required check passes.
-  const bannerAt = HEALTH.indexOf("t('health.allOk'");
-  const gateAt = HEALTH.indexOf('requiredBad.length === 0');
-  assert.ok(gateAt > -1, 'required-failure gate exists');
-  assert.ok(bannerAt > gateAt, 'the banner is built after (behind) the gate');
+  // Review finding 11 — assert the GATE structurally: the banner node is
+  // BUILT under the allRequiredOk ternary, not merely "later in the file".
+  assert.match(HEALTH,
+    /const allRequiredOk = checksOk\s*&& requiredChecks\.length > 0\s*&& requiredBad\.length === 0;/,
+    'the gate requires a non-empty required list (an empty/malformed payload is not success)');
+  assert.match(HEALTH, /allRequiredOk \? c\('div', \{ className: 'v2-portals-health-ok'/,
+    'the banner renders only under the gate');
+  // Review finding 10 — provider/model are config/env-derived; a value like
+  // "$&" must never be interpreted as a replace pattern.
+  assert.match(HEALTH, /\.replace\('\{provider\}', \(\) => providers\.activeProvider\)/);
+  assert.match(HEALTH, /\.replace\('\{model\}', \(\) => providers\.activeModel\)/);
+  assert.doesNotMatch(HEALTH, /\.replace\('\{provider\}', providers\./,
+    'no bare-value replacer for provider');
+});
+
+test('health: a missing/malformed checks payload is an explicit error, never a green page (review finding 6)', () => {
+  assert.match(HEALTH, /const checksOk = Array\.isArray\(data\.checks\)/, 'payload shape is checked');
+  assert.match(HEALTH, /t\('health\.checksUnavailable',/, 'the error state is keyed');
+  const errAt = HEALTH.indexOf("t('health.checksUnavailable'");
+  const errBlock = HEALTH.slice(Math.max(0, errAt - 300), errAt + 200);
+  assert.match(errBlock, /!checksOk/, 'the error state renders only when the payload is malformed');
+  assert.match(errBlock, /role: 'alert'/, 'the error state is announced');
 });
 
 test('health: required checks stay prominent, optional ones collapse into <details>', () => {
