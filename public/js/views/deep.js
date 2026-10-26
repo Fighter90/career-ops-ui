@@ -1,4 +1,12 @@
 /* global Router, API, UI, I18n, HelpHint */
+/**
+ * #/deep — Deep company research.
+ * CAR-119 — the page renders through the shared LlmPageKit template:
+ * two-column form|result, a progress/ETA/Cancel run panel over POST /api/deep
+ * (AbortSignal-wired), and a tracker autofill combobox for company/role.
+ * // CAR-119 i18n: no new dictionary keys here — the kit's `llm2.*` strings
+ * ship as I18n.t EN fallbacks inside public/js/lib/llm-page-kit.js.
+ */
 Router.register('deep', async () => {
   const c = UI.el;
   const t = (k, f) => I18n.t(k, f);
@@ -7,6 +15,12 @@ Router.register('deep', async () => {
   const role = c('input', { className: 'input', id: 'deep-role', placeholder: t('deep.roleExample') });
   const out = c('div');
   const archive = c('div');
+  // CAR-119 — run/progress panel host (result column) + tracker autofill.
+  const runHost = c('div');
+  const picker = window.LlmPageKit.jobPicker({
+    map: { company: 'company', role: 'role' },
+    fields: { company, role },
+  });
   let liveAvailable = false;
   let liveEngine = '';
   // CAR-94 (5) — cross-button single-flight + stale token. "Run live",
@@ -274,15 +288,22 @@ Router.register('deep', async () => {
     if (inFlight) return; // CAR-94 (5) — one paid POST at a time for this view
     inFlight = true;
     const myToken = ++runToken;
-    out.innerHTML = `<div class="loading">${t('deep.generating')}</div>`;
+    // CAR-119 — the shared run panel: paints synchronously, live elapsed/ETA,
+    // Cancel aborts the request (the result is discarded; full server-side
+    // cancellation stays a server hand-off).
+    const runCtrl = window.LlmPageKit.createRun({ etaSeconds: 180 }).mount(runHost);
     try {
-      const r = await UI.withSpinner(btn, () => API.post('/api/deep', {
-        company: company.value.trim(),
-        role: role.value.trim() || undefined,
-        run: true,
+      const r = await UI.withSpinner(btn, () => window.LlmPageKit.run({
+        run: runCtrl,
+        request: (signal) => window.LlmPageKit.postJSON('/api/deep', {
+          company: company.value.trim(),
+          role: role.value.trim() || undefined,
+          run: true,
+        }, signal),
       }));
       if (myToken !== runToken) return; // a newer run owns `out`
-      if (r.markdown) {
+      if (runCtrl.cancelled || runCtrl.signal.aborted) return; // a cancelled run paints nothing more
+      if (r && r.markdown) {
         showResult(`${company.value.trim()}${role.value.trim() ? ' — ' + role.value.trim() : ''}`, r.markdown, { saved: r.saved });
         loadArchive();
       } else {
@@ -342,28 +363,30 @@ Router.register('deep', async () => {
         pageMeta,
       ]),
     ]),
-    c('div', { className: 'card' }, [
-      c('div', { className: 'row' }, [
-        c('div', { className: 'field' }, [c('label', { htmlFor: 'deep-company' }, t('deep.companyLbl')), company]),
-        c('div', { className: 'field' }, [c('label', { htmlFor: 'deep-role' }, t('deep.roleLbl')), role]),
-      ]),
-      c('div', { className: 'flex gap-3' }, [
+    // CAR-119 — the shared AI-page template: form (sticky) | result,
+    // "Input / Result" tabs below 1280 px.
+    window.LlmPageKit.layout({
+      form: c('div', null, [picker, c('div', { className: 'card' }, [
+        c('div', { className: 'row' }, [
+          c('div', { className: 'field' }, [c('label', { htmlFor: 'deep-company' }, t('deep.companyLbl')), company]),
+          c('div', { className: 'field' }, [c('label', { htmlFor: 'deep-role' }, t('deep.roleLbl')), role]),
+        ]),
+        c('div', { className: 'flex gap-3' }, [
+          liveAvailable
+            ? c('button', {
+                className: 'btn btn-primary',
+                title: liveEngine, // engine name kept as hover tooltip; the label stays clean
+                onClick: (e) => runLive(e.currentTarget),
+              }, '⚡ ' + t('deep.runLive', 'Run live'))
+            : null,
+          c('button', { className: 'btn btn-ghost', onClick: (e) => runManual(e.currentTarget) }, liveAvailable ? t('deep.copyPrompt', 'Copy prompt') : t('deep.run')),
+        ]),
         liveAvailable
-          ? c('button', {
-              className: 'btn btn-primary',
-              title: liveEngine, // engine name kept as hover tooltip; the label stays clean
-              onClick: (e) => runLive(e.currentTarget),
-            }, '⚡ ' + t('deep.runLive', 'Run live'))
-          : null,
-        c('button', { className: 'btn btn-ghost', onClick: (e) => runManual(e.currentTarget) }, liveAvailable ? t('deep.copyPrompt', 'Copy prompt') : t('deep.run')),
-      ]),
-      liveAvailable
-        ? null
-        : c('p', { style: { color: 'var(--foggy)', fontSize: '13px', marginTop: '8px' } },
-          t('deep.tipManual', 'Tip: set ANTHROPIC_API_KEY (or GEMINI_API_KEY) in .env to run research live in the browser. Without it, the prompt is generated for you to paste into Claude Code.')),
-    ]),
-
-    c('div', { className: 'mt-5' }, archive),
-    c('div', { className: 'mt-5' }, out),
+          ? null
+          : c('p', { style: { color: 'var(--foggy)', fontSize: '13px', marginTop: '8px' } },
+            t('deep.tipManual', 'Tip: set ANTHROPIC_API_KEY (or GEMINI_API_KEY) in .env to run research live in the browser. Without it, the prompt is generated for you to paste into Claude Code.')),
+      ])]),
+      result: c('div', null, [runHost, out, c('div', { className: 'mt-5' }, archive)]),
+    }).root,
   ]);
 });
