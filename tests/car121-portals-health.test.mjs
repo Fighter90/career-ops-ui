@@ -116,7 +116,7 @@ test('portals: an enabled-state filter (all / enabled / disabled)', () => {
 // ─────────────────── #/portals · ATS grouping ───────────────────
 
 test('portals: vendorOf derives the ATS vendor from the careers_url host', () => {
-  const { vendorOf, hostOfCareerUrl } = loadPortalsHelpers();
+  const { vendorOf } = loadPortalsHelpers();
   assert.equal(vendorOf({ careers_url: 'https://boards.greenhouse.io/stripe' }), 'Greenhouse');
   assert.equal(vendorOf({ careers_url: 'https://jobs.eu.lever.co/acme' }), 'Lever');
   assert.equal(vendorOf({ careers_url: 'https://jobs.ashbyhq.com/x' }), 'Ashby');
@@ -153,6 +153,10 @@ test('portals: vendorOf matches on domain BOUNDARIES (review finding 2)', () => 
   assert.equal(hostOfCareerUrl('greenhouse.io/stripe/jobs?q=1#x'), 'greenhouse.io');
   assert.equal(hostOfCareerUrl('user@hh.ru:8080/x'), 'hh.ru');
   assert.equal(hostOfCareerUrl(''), '');
+  // the matcher stays RegExp-free: a dynamic `new RegExp` on the needle table
+  // re-taints every entry with CodeQL js/missing-regexp-anchor (19 highs).
+  const vendorSrc = extractFn(PORTALS, 'vendorOf');
+  assert.doesNotMatch(vendorSrc, /new RegExp/, 'label matching is string-ops only');
 });
 
 test('portals: rows render grouped by ATS vendor, "Other" last, with per-group counts', () => {

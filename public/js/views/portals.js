@@ -105,14 +105,19 @@ function hostOfCareerUrl(url) {
 function vendorOf(co) {
   const host = hostOfCareerUrl(co && co.careers_url);
   if (host) {
+    // Label-boundary matching, string ops only (no RegExp): CodeQL's
+    // missing-regexp-anchor otherwise taints every table entry, and the
+    // semantics are identical — a dotted needle must be the whole host or
+    // a dotted suffix of it; a bare token must appear as a complete label
+    // with at least one label after it (acme.personio.de, not xpersonio.de).
+    const labels = host.split('.');
     for (const pair of ATS_VENDORS) {
       const needle = pair[0];
       if (needle.indexOf('.') !== -1) {
         if (host === needle || host.endsWith('.' + needle)) return pair[1];
       } else {
-        // bare token (personio, teamtailor, …) on a label boundary
-        const esc = needle.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        if (new RegExp('(^|\\.)' + esc + '\\.').test(host)) return pair[1];
+        const idx = labels.indexOf(needle);
+        if (idx !== -1 && idx < labels.length - 1) return pair[1];
       }
     }
   }
