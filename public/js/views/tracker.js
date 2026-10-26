@@ -346,30 +346,30 @@ Router.register('tracker', async () => {
       c('td', null, r.num || ''),
       // CAR-117 grid fix — the date is a single line in every locale
       // («2026-/08-25» used to wrap), tabular so digits align down the column.
-      c('td', { className: 'v2-track-nowrap', style: { fontVariantNumeric: 'tabular-nums' } }, r.date || ''),
+      c('td', { className: 'v2-track-nowrap', style: { whiteSpace: 'nowrap', fontVariantNumeric: 'tabular-nums' } }, r.date || ''),
       c('td', null, companyCell),
       c('td', null, r.role || ''),
       hasCommute ? c('td', null, commuteOf(r)?.location || r.location || '—') : null,
       hasCommute ? commuteCell(commuteOf(r)) : null,
-      c('td', { className: 'v2-track-nowrap' }, c('span', { className: 'score-pill ' + score }, r.score || '—')),
+      c('td', { className: 'v2-track-nowrap', style: { whiteSpace: 'nowrap' } }, c('span', { className: 'score-pill ' + score }, r.score || '—')),
       // Status badge + (for ATS postings) a lazy "still live?" check. The
       // affordance is null for non-ATS rows, so most rows are unchanged.
       // v1.248.2 — the badge CAPTION is the localized canonical label (the raw
       // status is folded through the server alias map first, so "contratado"
       // shows as "Hired"/«Нанят»); trackerStatusClass + every comparison
       // still read the canonical value.
-      c('td', { className: 'v2-track-nowrap' }, [
+      c('td', { className: 'v2-track-nowrap', style: { whiteSpace: 'nowrap' } }, [
         c('span', { className: 'badge ' + trackerStatusClass(r.status) }, statusLabel(fold(r.status))),
         TS ? TS.livenessAffordance(r.url, r.num) : null,
       ]),
       // G-006 (v1.15.0) — Legitimacy column. Mirrors the badge tint used on
       // /#/reports cards. Empty string when the source row had no Legitimacy
       // column (graceful degrade for pre-v1.15 trackers).
-      c('td', { className: 'v2-track-nowrap' }, r.legitimacy
+      c('td', { className: 'v2-track-nowrap', style: { whiteSpace: 'nowrap' } }, r.legitimacy
         ? c('span', { className: 'badge ' + legitimacyClass(r.legitimacy) }, r.legitimacy)
         : c('span', { style: { color: 'var(--foggy)' } }, '—')),
-      c('td', { className: 'v2-track-nowrap' }, r.pdfReady ? '✓' : '—'),
-      c('td', { className: 'v2-track-nowrap' }, [
+      c('td', { className: 'v2-track-nowrap', style: { whiteSpace: 'nowrap' } }, r.pdfReady ? '✓' : '—'),
+      c('td', { className: 'v2-track-nowrap', style: { whiteSpace: 'nowrap' } }, [
         r.reportPath ? c('button', {
           className: 'btn btn-ghost btn-sm',
           // CAR-93 — row-scoped identity for the focus restore: the
@@ -537,7 +537,7 @@ Router.register('tracker', async () => {
       tabBar,
       c('div', { className: 'flex gap-3', style: { flexWrap: 'wrap', alignItems: 'center' } }, [
         filterScore, hasCommute ? filterCommute : null, hasCommute ? unknownLabel : null, filterText,
-        viewToggle,
+        viewToggle ? viewToggle.el : null,
       ].filter(Boolean)),
     ]),
 

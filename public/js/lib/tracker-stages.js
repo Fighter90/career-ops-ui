@@ -294,6 +294,13 @@ window.TrackerStages = (function () {
       return;
     }
 
+    // Localized stage label via a composed key. The key is built in a
+    // variable first so the static t('…') coverage scan sees no phantom
+    // 'track.status.' literal (same trick as the view's statusLabel).
+    const sl = (s) => {
+      const k = 'track.status.' + String(s == null ? '' : s).toLowerCase();
+      return t(k, s || '');
+    };
     const note = typeof opts.note === 'string' ? opts.note : '';
     const target = (opts.presetTo && isWritableState(opts.presetTo)) ? opts.presetTo : null;
 
@@ -305,7 +312,7 @@ window.TrackerStages = (function () {
         className: 'select',
         'aria-label': t('track.moveTargetAria', 'Target status'),
         style: { maxWidth: '260px' },
-      }, targets.map((s) => c('option', { value: s }, opts.t('track.status.' + String(s).toLowerCase(), s))));
+      }, targets.map((s) => c('option', { value: s }, sl(s))));
       const first = opts.rows[0];
       const initial = targets.find((s) => fold(first.status) !== s);
       sel.value = (initial || targets[0]);
@@ -347,8 +354,8 @@ window.TrackerStages = (function () {
         .replace('{num}', String(m.row.num ?? '?'))
         .replace('{company}', m.row.company || '—')
         .replace('{role}', m.row.role || '—')
-        .replace('{from}', t('track.status.' + String(m.from).toLowerCase(), m.from || '—'))
-        .replace('{to}', t('track.status.' + String(target).toLowerCase(), target)))));
+        .replace('{from}', sl(m.from))
+        .replace('{to}', sl(target)))));
 
     const applyBtn = c('button', {
       className: 'btn ' + (destructive ? 'btn-danger' : 'btn-primary'),
@@ -358,19 +365,19 @@ window.TrackerStages = (function () {
     const body = c('div', { style: { display: 'grid', gap: '10px', minWidth: '320px' } }, [
       c('strong', null, t('track.movePreviewTitle', 'Preview — {n} row(s) to {state}')
         .replace('{n}', String(moves.length))
-        .replace('{state}', t('track.status.' + String(target).toLowerCase(), target))),
+        .replace('{state}', sl(target))),
       list,
       nonUndoable.length
         ? c('p', { style: { fontSize: '12.5px', color: 'var(--foggy)', margin: 0 } },
           t('track.moveNoUndo', 'Moves out of {state} cannot be undone automatically — the status writer only records outcomes.')
-            .replace('{state}', t('track.status.' + String(nonUndoable[0].from).toLowerCase(), nonUndoable[0].from)))
+            .replace('{state}', sl(nonUndoable[0].from)))
         : null,
       note ? c('p', { style: { fontSize: '12.5px', color: 'var(--foggy)', margin: 0 } }, t('track.moveNote', 'Note (optional, appended to each row)') + ': ' + note) : null,
       c('div', { style: { display: 'flex', gap: '8px', justifyContent: 'flex-end' } }, [
         c('button', {
           className: 'btn btn-ghost', type: 'button',
           onClick: () => openMoveDialog({ ...opts, presetTo: null, note }),
-        }, t('common.back', 'Back')),
+        }, t('track.moveBack', 'Back')),
         applyBtn,
       ]),
     ].filter(Boolean));
