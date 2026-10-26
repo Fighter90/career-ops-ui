@@ -3,8 +3,10 @@
  * class at the trust boundary. stripDangerousMarkdown() strips well-formed
  * dangerous tags and `<tag …>` openers that carry a closing `>`. A *truncated*
  * opener with no `>` at all (a payload ending in `<script`, `<iframe`, …) used
- * to survive verbatim; it must now be neutralized by escaping its `<`, so the
- * OUTPUT provably contains no live `<script`/`<iframe`/… substring.
+ * to survive verbatim; it must now be neutralized by escaping its `<` to
+ * `&amp;lt;` (FULL-R4 re-review: the old `&lt;` output single-decoded straight
+ * back to a live tag, and re-saving rewrote the file a second time), so the
+ * OUTPUT provably contains no `<` that decodes to `<script`/`<iframe`/….
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -20,8 +22,9 @@ test('truncated dangerous openers (no closing >) leave no live <tag substring', 
       const out = stripDangerousMarkdown(payload);
       assert.ok(!new RegExp(`<\\s*${tag}\\b`, 'i').test(out),
         `output still contains a live <${tag} for input ${JSON.stringify(payload)}: ${JSON.stringify(out)}`);
-      // The `<` must have been escaped, not silently dropped — content preserved.
-      assert.match(out, new RegExp(`&lt;\\s*${tag}`, 'i'));
+      // The `<` must have been escaped to `&amp;lt;` (not dropped, and not
+      // the re-decodable `&lt;`) — content preserved, re-save stable.
+      assert.match(out, new RegExp(`&amp;lt;\\s*${tag}`, 'i'));
     }
   }
 });
@@ -29,7 +32,7 @@ test('truncated dangerous openers (no closing >) leave no live <tag substring', 
 test('truncated dangerous CLOSER (</script with no >) is neutralized too', () => {
   const out = stripDangerousMarkdown('alert()</script');
   assert.ok(!/<\s*\/\s*script\b/i.test(out));
-  assert.match(out, /&lt;\/script/i);
+  assert.match(out, /&amp;lt;\/script/i);
 });
 
 test('well-formed dangerous tags are still fully REMOVED (not escaped)', () => {

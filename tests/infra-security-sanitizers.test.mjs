@@ -45,14 +45,15 @@ test('paired removal keeps the old semantics', () => {
   // first closer after the opener wins (lazy), text between pairs survives
   assert.equal(f('<style>p{}</style>keep<style>q{}</style>'), 'keep');
   // nested reveal: the revealed opener is stripped, the stray closer escaped
-  assert.equal(f('<scr<script></script>ipt>alert(1)</script>'), 'alert(1)&lt;/script>');
+  assert.equal(f('<scr<script></script>ipt>alert(1)</script>'), 'alert(1)&amp;lt;/script>');
   // `<scripts>` is not a script tag (word boundary)
   assert.match(f('<scripts>ok</scripts>'), /ok/);
   // opener without closer: the opener alone goes, the text stays
   assert.equal(f('hi <iframe src=x> there'), 'hi  there');
   assert.equal(f('a<embed src=x/>b'), 'ab');
-  // truncated opener with no `>` is escaped by the final belt
-  assert.equal(f('tail <script'), 'tail &lt;script');
+  // truncated opener with no `>` is escaped by the final belt (`&amp;lt;`
+  // — the old `&lt;` output decoded straight back to a live tag)
+  assert.equal(f('tail <script'), 'tail &amp;lt;script');
   // ordinary markdown is untouched
   const md = '# CV\n\n- **Role** at Co (2020–2024)\n- a < b > c\n';
   assert.equal(f(md), md);
