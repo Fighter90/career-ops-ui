@@ -89,10 +89,16 @@ test('map renders when reached via the nav (hashchange), and again on return', {
   try {
     await page.goto(baseUrl + '/#/dashboard');
     await page.waitForSelector('#content h1');
+    // CAR-122 — the sidebar folds into collapsible groups: reach Map in the
+    // two deliberate actions the spec guarantees (open the group, click the
+    // item). Cmd/Ctrl+K → "map" → Enter is the one-action alternative.
+    await page.click('[data-nav-group="sourcing"] .nav-v2-toggle');
     await page.click('.nav-item[data-route="map"]');
     await placesLocated(page);
     await page.click('.nav-item[data-route="dashboard"]');
     await page.waitForFunction(() => !document.getElementById('job-map'));
+    // the explicit Sourcing open from the first toggle persists, so the
+    // item is directly clickable again
     await page.click('.nav-item[data-route="map"]');
     await placesLocated(page);
     assert.equal(await page.locator('#job-map').count(), 1);

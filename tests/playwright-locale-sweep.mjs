@@ -24,6 +24,7 @@ import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 import { createRequire } from 'node:module';
 import { I18N_LANGS, loadAssembledDict } from './helpers/i18n-vm.mjs';
+import { seedNavOpenGroups } from './helpers/nav-seed.mjs';
 
 const require = createRequire(import.meta.url);
 
@@ -92,6 +93,10 @@ for (const lang of I18N_LANGS) {
     await context.addInitScript(([key, value]) => {
       try { window.localStorage.setItem(key, value); } catch { /* private mode */ }
     }, [STORAGE_KEY, lang]);
+    // CAR-122 — the sweep only reads sidebar labels (nav.dashboard is
+    // standalone-visible), but the seed keeps every v2 group open so any
+    // future per-locale sidebar interaction survives the collapsed default.
+    await seedNavOpenGroups(context);
     const page = await context.newPage();
     const consoleErrors = [];
     page.on('console', (msg) => { if (msg.type() === 'error') consoleErrors.push(msg.text()); });
