@@ -23,184 +23,22 @@
  * CSP-safe by construction: createElement/textContent/setAttribute only —
  * raw HTML assignment is never used, nor inline handlers, nor third-party
  * deps. The pure core (state machine + fuzzy matcher + palette assembly)
- * (state machine + fuzzy matcher + palette assembly) is exported on
- * window.NavV2 and unit-tested in tests/nav-v2.test.mjs.
+ * is exported on window.NavV2 and unit-tested in tests/nav-v2.test.mjs.
  */
 (function () {
   'use strict';
 
+  // The pure core lives in nav-v2-core.js (≤800-LOC split); destructure
+  // it so every internal call site below stays unchanged, and re-export
+  // the union on window.NavV2 — the public API is unaffected.
+  const {
+    defaultState, serializeState, loadState, isGroupOpen, toggleGroup,
+    pin, unpin, moveFav, trackVisit, pruneState, fuzzyMatch, fuzzyFilter,
+    buildPaletteItems, formatEvalUrl, looksLikeUrl,
+    STATIC_GROUP_IDS, RECENT_CAP, FAV_CAP,
+  } = window.NavV2Core;
   const STORE_KEY = 'career-ops-ui:nav-v2';
-  const RECENT_CAP = 5;
-  const FAV_CAP = 12;
   const PALETTE_MAX = 30; // DOM budget: never paint more options than this
-
-  // ─────────────────────────── pure core ───────────────────────────
-  // State shape: { collapsed: {groupId: 'open'|'closed'}, favs: [routeId],
-  //                recent: [routeId] }. Absent group key = "auto" (follows
-  //                the active route). All mutators are value-style: they
-  //                return a NEW state and never touch their input.
-
-  // The seven static group ids — the literal allowlist that makes the
-  // persisted state structurally safe: `loadState` iterates THIS array and
-  // looks each id up in the parsed JSON, so a remote string never becomes
-  // a property name (the v1.233.2 KNOWN_KEYS pattern; CodeQL: no
-  // remote-property-injection sink). Drift-locked to the index.html
-  // `data-nav-group` sections by tests/nav-v2.test.mjs.
-  const STATIC_GROUP_IDS = [
-    'sourcing', 'decision', 'application', 'networking',
-    'analytics', 'growth', 'setup',
-  ];
-
-  function defaultState() {
-    return { collapsed: {}, favs: [], recent: [] };
-  }
-
-  function serializeState(state) {
-    return JSON.stringify({
-      collapsed: state.collapsed || {},
-      favs: (state.favs || []).slice(0, FAV_CAP),
-      recent: (state.recent || []).slice(0, RECENT_CAP),
-    });
-  }
-
-  function loadState(raw) {
-    const base = defaultState();
-    if (typeof raw !== 'string' || !raw) return base;
-    let parsed;
-    try { parsed = JSON.parse(raw); } catch { return base; }
-    if (!parsed || typeof parsed !== 'object') return base;
-    // Structural safety: the ONLY property names ever written are the
-    // literals in STATIC_GROUP_IDS — anything else in the persisted blob
-    // (including __proto__/constructor/prototype shapes) is ignored.
-    const parsedCollapsed = (parsed.collapsed && typeof parsed.collapsed === 'object')
-      ? parsed.collapsed
-      : {};
-    const collapsed = {};
-    for (const gid of STATIC_GROUP_IDS) {
-      const v = parsedCollapsed[gid];
-      if (v === 'open' || v === 'closed') collapsed[gid] = v;
-    }
-    const strArr = (v, cap) => (Array.isArray(v)
-      ? v.filter((x) => typeof x === 'string' && x).slice(0, cap)
-      : []);
-    return { collapsed, favs: strArr(parsed.favs, FAV_CAP), recent: strArr(parsed.recent, RECENT_CAP) };
-  }
-
-  /** A group is open when: the user pinned it open ('open'), OR the user
-   *  never touched it and it owns the active route, OR touched-'closed'
-   *  is absent and… never. Explicit always beats auto. */
-  function isGroupOpen(state, groupId, activeGroupId) {
-    const v = state.collapsed[groupId];
-    if (v === 'open') return true;
-    if (v === 'closed') return false;
-    return groupId === activeGroupId;
-  }
-
-  /** Toggle: `effectiveOpen` is the group's VISIBLE state (the wiring
-   *  passes isGroupOpen(state, id, activeGroupId) so closing an
-   *  auto-opened active group pins it closed). Defaults to the
-   *  no-active-context reading. */
-  function toggleGroup(state, groupId, effectiveOpen) {
-    if (STATIC_GROUP_IDS.indexOf(groupId) === -1) return state; // literal allowlist
-    const open = (effectiveOpen === undefined)
-      ? isGroupOpen(state, groupId, null)
-      : !!effectiveOpen;
-    const collapsed = Object.assign({}, state.collapsed);
-    collapsed[groupId] = open ? 'closed' : 'open';
-    return Object.assign({}, state, { collapsed });
-  }
-
-  function pin(state, id) {
-    if (state.favs.indexOf(id) !== -1 || state.favs.length >= FAV_CAP) return state;
-    return Object.assign({}, state, { favs: state.favs.concat(id) });
-  }
-
-  function unpin(state, id) {
-    if (state.favs.indexOf(id) === -1) return state;
-    return Object.assign({}, state, { favs: state.favs.filter((f) => f !== id) });
-  }
-
-  function moveFav(state, id, delta) {
-    const i = state.favs.indexOf(id);
-    const j = i + delta;
-    if (i === -1 || j < 0 || j >= state.favs.length) return state;
-    const favs = state.favs.slice();
-    favs.splice(j, 0, favs.splice(i, 1)[0]);
-    return Object.assign({}, state, { favs });
-  }
-
-  function trackVisit(state, id) {
-    const recent = state.recent.filter((r) => r !== id);
-    recent.unshift(id);
-    return Object.assign({}, state, { recent: recent.slice(0, RECENT_CAP) });
-  }
-
-  /** Subsequence match with a light score. Returns {score} or null.
-   *  Signals: consecutive runs (the strongest discriminator), word starts
-   *  (space - / _ .), camelCase humps (checked on the ORIGINAL casing),
-   *  first-letter prefix. No length penalty — a deep-but-plain match must
-   *  not outrank a shallow scattered one. */
-  function fuzzyMatch(query, text) {
-    if (!query) return { score: 0 };
-    const q = String(query).toLowerCase();
-    const t = String(text).toLowerCase();
-    let qi = 0;
-    let score = 0;
-    let run = 0;
-    for (let ti = 0; ti < t.length && qi < q.length; ti++) {
-      if (t[ti] !== q[qi]) { run = 0; continue; }
-      run += 1;
-      score += 8 + run * 8;
-      if (ti === 0) score += 12;
-      else {
-        const prev = t[ti - 1];
-        if (prev === ' ' || prev === '-' || prev === '/' || prev === '_' || prev === '.') score += 10;
-        else if (text[ti] !== String.prototype.toLowerCase.call(text[ti])) score += 6;
-      }
-      qi += 1;
-    }
-    if (qi < q.length) return null;
-    return { score };
-  }
-
-  /** Filter + rank. Empty query → input order (a copy). Title is the primary
-   *  signal; group label and keywords count at 0.6×. Ties keep input order. */
-  function fuzzyFilter(query, items) {
-    if (!query) return items.slice();
-    const scored = [];
-    for (let i = 0; i < items.length; i++) {
-      const it = items[i];
-      let best = fuzzyMatch(query, it.title);
-      best = best ? { score: best.score } : null;
-      const extras = [it.group].concat(it.keywords || []);
-      for (const extra of extras) {
-        if (!extra) continue;
-        const m = fuzzyMatch(query, extra);
-        if (m && (!best || m.score * 0.6 > best.score)) best = { score: m.score * 0.6 };
-      }
-      if (best) scored.push({ i, score: best.score });
-    }
-    scored.sort((a, b) => b.score - a.score || a.i - b.i);
-    return scored.map((s) => items[s.i]);
-  }
-
-  /** Palette order: favorites (★) → recents → actions → everything else. */
-  function buildPaletteItems(routes, actions, state, t) {
-    const byId = new Map(routes.map((r) => [r.id, r]));
-    const items = [];
-    const seen = new Set();
-    const pushRoute = (r, extra) => {
-      if (!r || seen.has(r.id)) return;
-      seen.add(r.id);
-      items.push(Object.assign({}, r, { kind: 'route', title: t(r.titleKey, r.fallback) }, extra || {}));
-    };
-    for (const id of state.favs) pushRoute(byId.get(id), { fav: true });
-    for (const id of state.recent) pushRoute(byId.get(id), { recent: true });
-    for (const a of actions) items.push(Object.assign({ kind: 'action' }, a));
-    for (const r of routes) pushRoute(r);
-    return items;
-  }
-
   // ─────────────────────────── wiring ───────────────────────────
 
   let state = defaultState();
@@ -275,7 +113,10 @@
     }
     const hash = window.location.hash || '';
     if (!hash.startsWith('#/')) return null;
-    const name = hash.slice(2).split('?')[0].replace(/\/+$/, '');
+    // Path + query shapes: '#/reports/12' → 'reports', '#/scan?x=1' →
+    // 'scan' — a parameterised sub-route must resolve to its owning
+    // section, not null.
+    const name = hash.slice(2).split(/[?/]/)[0].replace(/\/+$/, '');
     return registryById(name) ? name : null;
   }
 
@@ -431,11 +272,15 @@
   }
 
   function renderDynamicGroups() {
-    // keyboard users: re-rendering must not strand or jump focus — if a
-    // favorites row held it (↑/↓/✕ press), put it back on the same row.
+    // keyboard users: re-rendering must not strand or jump focus. Capture
+    // WHERE focus was BEFORE the rows are cleared — after unpinning the
+    // focused row the element is gone, and `document.activeElement` has
+    // already fallen back to body, so containment checks on it are dead.
     const prev = document.activeElement;
+    const prevInFav = !!(prev && favSection && favSection.contains(prev));
     const prevRow = (prev && prev.closest) ? prev.closest('[data-nav-fav]') : null;
-    const focusId = prevRow ? prevRow.getAttribute('data-nav-fav') : null;
+    const prevId = prevRow ? prevRow.getAttribute('data-nav-fav') : null;
+    const prevIndex = prevRow ? Number(prevRow.getAttribute('data-nav-index')) : -1;
 
     const favItems = favSection.querySelector('.nav-v2-items');
     favItems.textContent = '';
@@ -457,12 +302,28 @@
       if (r) recItems.appendChild(recentRow(r));
     });
 
-    if (focusId) {
-      const again = favItems.querySelector('[data-nav-fav="' + focusId + '"] a, [data-nav-fav="' + focusId + '"] button');
+    // 1) the same row survived (↑/↓ reorder, star press) → restore there
+    if (prevId && state.favs.indexOf(prevId) !== -1) {
+      const again = favItems.querySelector('[data-nav-fav="' + prevId + '"] a, [data-nav-fav="' + prevId + '"] button');
       if (again) { again.focus(); return; }
     }
-    const active = document.activeElement;
-    if (active && !favSection.contains(active) && !recentSection.contains(active)) return;
+    // 2) the focused row was UNPINNED: land on the row that took its
+    //    position (the next favorite slid up), else the last row, else
+    //    the route's static star when it is on screen. Never strand the
+    //    user on body while a valid target exists.
+    if (prevInFav && prevId && state.favs.indexOf(prevId) === -1) {
+      const rows = favItems.querySelectorAll('[data-nav-fav]');
+      const target = rows.length ? rows[Math.min(prevIndex, rows.length - 1)] : null;
+      if (target) {
+        const c = target.querySelector('a, button');
+        if (c) { c.focus(); return; }
+      }
+      const star = document.querySelector('.nav-v2-row[data-route-row="' + prevId + '"] .nav-v2-star');
+      if (star && star.offsetParent !== null) { star.focus(); return; }
+      return; // no valid target (last favorite gone, its group closed)
+    }
+    // 3) focus was elsewhere → leave it alone
+    if (prev && !favSection.contains(prev) && !recentSection.contains(prev)) return;
     const firstBtn = (state.favs.length ? favSection : recentSection).querySelector('a, button');
     if (firstBtn) firstBtn.focus();
   }
@@ -534,18 +395,12 @@
     }
     return actions;
   }
-
-  /** A pasted URL becomes a first-class action (auto-pipeline pre-fill). */
-  function looksLikeUrl(q) {
-    return /^https?:\/\/\S+$/i.test((q || '').trim());
-  }
-
   function urlAction(query) {
     const url = query.trim();
     return {
       id: 'action-url',
       kind: 'action', // pushed raw around buildPaletteItems — carry the kind
-      title: t('nav.v2.evalUrl', 'Auto-pipeline: {url}').replace('{url}', url),
+      title: formatEvalUrl(t('nav.v2.evalUrl', 'Auto-pipeline: {url}'), url),
       keywords: ['url', 'evaluate', 'pipeline'],
       run: () => {
         if (window.Router && typeof Router.go === 'function') Router.go('/auto?url=' + encodeURIComponent(url));
@@ -610,7 +465,7 @@
       else if (e.key === 'Tab') { e.preventDefault(); } // single-focusable dialog → trap
     });
 
-    palette = { overlay, root, input, list, empty };
+    palette = { overlay, root, input, list, empty, hint };
   }
 
   function visibleOptions(query) {
@@ -650,6 +505,9 @@
       }
       li.addEventListener('click', () => { activeIdx = i; chooseActive(); });
       li.addEventListener('mousemove', () => setActive(i));
+      // machine-readable target for tests (and any future hint UI): the
+      // exact hash this option navigates to
+      li.setAttribute('data-href', item.href || '');
       palette.list.appendChild(li);
     });
     syncActive();
@@ -720,6 +578,18 @@
     return !!(palette && !palette.overlay.hidden);
   }
 
+  /** Re-sync the palette's static chrome (built once at first open) after
+   *  a language switch. The dynamic option labels rebuild per render. */
+  function syncPaletteChrome() {
+    if (!palette) return;
+    const label = t('nav.v2.palette', 'Command menu');
+    palette.root.setAttribute('aria-label', label);
+    palette.list.setAttribute('aria-label', label);
+    palette.input.setAttribute('placeholder', t('nav.v2.paletteLabel', 'Jump to…'));
+    palette.empty.textContent = t('nav.v2.noResults', 'Nothing found');
+    palette.hint.textContent = t('nav.v2.hint', '↑↓ navigate · Enter open · Esc close');
+  }
+
   /** Document-level chord handler. Registered BEFORE app.js's legacy
    *  binding (script order), so stopImmediatePropagation() makes the
    *  palette the main Cmd/Ctrl+K entry. */
@@ -752,6 +622,11 @@
 
     state = loadState(readStore());
     registry = collectRegistry(navEl);
+    // Drop favorites/recents ids that no longer resolve (renamed or
+    // removed routes) so they cannot keep an empty Favorites header
+    // visible or consume cap slots forever.
+    const pruned = pruneState(state, registryById);
+    if (pruned !== state) { state = pruned; writeStore(); }
 
     groupEls = new Map();
     navEl.querySelectorAll('section[data-nav-group]').forEach((section) => {
@@ -788,18 +663,23 @@
     // ever fires for the initial load. Re-resolve once the window is fully
     // loaded (all classic scripts, Router included, have run).
     window.addEventListener('load', onHashChange);
+    // Language switch: the DOM data-i18n labels re-apply themselves, but
+    // the star aria-labels/titles and the palette chrome are built in JS —
+    // re-sync them (and any open option list, for the localized group
+    // labels) through the i18n subscriber hook.
+    if (window.I18n && typeof I18n.onChange === 'function') {
+      I18n.onChange(() => {
+        syncStars();
+        syncPaletteChrome();
+        if (isPaletteOpen()) renderOptions(palette.input.value);
+      });
+    }
   }
 
-  // ── exports (pure core + a few wiring handles for tests/debug) ──
-  window.NavV2 = {
-    // pure
-    defaultState, serializeState, loadState, isGroupOpen, toggleGroup,
-    pin, unpin, moveFav, trackVisit, fuzzyMatch, fuzzyFilter, buildPaletteItems,
-    STATIC_GROUP_IDS,
-    RECENT_CAP, FAV_CAP,
-    // wiring (no-ops outside a real DOM)
+  // ── exports (the union of the pure core + the wiring handles) ──
+  window.NavV2 = Object.assign({}, window.NavV2Core, {
     init, openPalette, closePalette, isPaletteOpen,
-  };
+  });
 
   if (typeof document !== 'undefined' && document.querySelector('.nav')) init();
 })();

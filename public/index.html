@@ -459,11 +459,14 @@
     <script src="/js/lib/auto-pipeline.js"></script>
     <script src="/js/lib/modes-form.js"></script>
     <script src="/js/lib/help-hint.js"></script>
-    <!-- CAR-122 — sidebar v2 lib (groups/favorites/palette). MUST load
-         BEFORE router.js/app.js: its document-level Cmd/Ctrl+K handler
+    <!-- CAR-122 — sidebar v2 libs: the pure core (state machine, fuzzy
+         matcher, palette assembly — unit-testable with no DOM) loads
+         first, then the wiring half. nav-v2.js MUST load BEFORE
+         router.js/app.js: its document-level Cmd/Ctrl+K handler
          registers first and stopImmediatePropagation()s the chord, making
          the palette the main entry while app.js's legacy search-focus
          binding stays as the no-nav-v2 fallback. -->
+    <script src="/js/lib/nav-v2-core.js"></script>
     <script src="/js/lib/nav-v2.js"></script>
     <script src="/js/router.js"></script>
     <script src="/js/views/dashboard.js"></script>

@@ -112,10 +112,15 @@ test('P2: fuzzy filter + arrow navigation + Enter navigates', { skip: SKIP }, as
   assert.equal(await page.getAttribute('.nav-v2-input', 'aria-activedescendant'), secondId,
     'ArrowDown moves aria-activedescendant');
   assert.equal(await page.locator('.nav-v2-opt').nth(1).getAttribute('aria-selected'), 'true');
-  // Enter follows through
+  // Enter follows through to the EXACT route of the option that is active
+  // right now (read back from the option's data-href — the assertion must
+  // be able to fail: the hash starts as #/dashboard, not #/…)
+  const expectedHash = await page.getAttribute(`#${secondId}`, 'data-href');
+  assert.match(String(expectedHash), /^#\//, 'the active option carries its target route');
   await page.keyboard.press('Enter');
-  await page.waitForFunction(() => window.location.hash.startsWith('#/'));
-  assert.match(await page.evaluate(() => window.location.hash), /#\//);
+  await page.waitForFunction((exp) => window.location.hash === exp, String(expectedHash), { timeout: 5000 });
+  assert.equal(await page.evaluate(() => window.location.hash), expectedHash,
+    'Enter navigates to the active option\u2019s exact route');
   assert.equal(await page.locator('.nav-v2-overlay').isVisible().catch(() => false), false,
     'choosing an option closes the palette');
   await context.close();
@@ -205,6 +210,99 @@ test('P9: aliased hashes (#/settings) auto-open the item\u2019s group', { skip: 
   await page.waitForSelector('[data-nav-group="networking"] .nav-v2-toggle');
   assert.equal(await page.getAttribute('[data-nav-group="networking"] .nav-v2-toggle', 'aria-expanded'), 'true',
     'the outreach→contacto alias opens the networking group');
+  await context.close();
+});
+
+test('P10: parameterised and query hash shapes resolve to the owning group', { skip: SKIP }, async () => {
+  const { context, page } = await newPage();
+  // sub-route: '#/reports/12' → the reports entry (analytics) owns it
+  await page.goto(`${baseUrl}/#/reports/12`);
+  await page.waitForSelector('[data-nav-group="analytics"] .nav-v2-toggle');
+  assert.equal(await page.getAttribute('[data-nav-group="analytics"] .nav-v2-toggle', 'aria-expanded'), 'true',
+    'a parameterised sub-route opens its owning group');
+  assert.ok(await page.locator('.nav-item[data-route="reports"].active').isVisible(),
+    'the owning item is highlighted for a sub-route hash');
+  // the visit is tracked under the ROUTE id, not the full path
+  const store = await page.evaluate(() => JSON.parse(localStorage.getItem('career-ops-ui:nav-v2') || '{}'));
+  assert.ok(store.recent.includes('reports'), 'the sub-route visit is tracked as "reports"');
+  assert.ok(!store.recent.some((r) => String(r).includes('/')), 'no full path leaks into the store');
+  // query shape: '#/tracker?x=1' → tracker (application group)
+  await page.goto(`${baseUrl}/#/tracker?x=1`);
+  await page.waitForSelector('[data-nav-group="application"] .nav-v2-toggle');
+  assert.equal(await page.getAttribute('[data-nav-group="application"] .nav-v2-toggle', 'aria-expanded'), 'true',
+    'a query-shaped hash opens its owning group');
+  await context.close();
+});
+
+test('P11: unpinning the focused row hands focus to its neighbor, never to body', { skip: SKIP }, async () => {
+  const { context, page } = await newPage();
+  await page.goto(`${baseUrl}/#/scan`);
+  await page.waitForSelector('[data-route-row="scan"] .nav-v2-star', { state: 'visible' });
+  await page.click('[data-route-row="scan"] .nav-v2-star');
+  await page.goto(`${baseUrl}/#/reports`);
+  await page.waitForSelector('[data-route-row="reports"] .nav-v2-star', { state: 'visible' });
+  await page.click('[data-route-row="reports"] .nav-v2-star');
+  await page.waitForFunction(() => document.querySelectorAll('[data-nav-group="__favs"] [data-nav-fav]').length === 2);
+  // focus the ✕ of the FIRST row (scan) and remove it → focus lands on the
+  // row that slid into position 0 (reports), not on body
+  await page.focus('[data-nav-fav="scan"] .nav-v2-unpin');
+  await page.click('[data-nav-fav="scan"] .nav-v2-unpin');
+  await page.waitForFunction(() => document.querySelectorAll('[data-nav-group="__favs"] [data-nav-fav]').length === 1);
+  const focusId = await page.evaluate(() => document.activeElement?.closest('[data-nav-fav]')?.getAttribute('data-nav-fav') || null);
+  assert.equal(focusId, 'reports', 'focus moves to the surviving neighbor row');
+  // last-favorite removal: the ✕ of the last row → focus lands on the
+  // route's static star (visible — we are ON #/reports)
+  await page.focus('[data-nav-fav="reports"] .nav-v2-unpin');
+  await page.click('[data-nav-fav="reports"] .nav-v2-unpin');
+  await page.waitForFunction(() => document.querySelectorAll('[data-nav-group="__favs"] [data-nav-fav]').length === 0);
+  const focusIsStaticStar = await page.evaluate(() =>
+    document.activeElement?.classList?.contains('nav-v2-star') || false);
+  assert.equal(focusIsStaticStar, true, 'focus lands on the route\u2019s static star');
+  await context.close();
+});
+
+test('P12: stale favorites ids are pruned at boot (no ghost, no empty header)', { skip: SKIP }, async () => {
+  const { context, page } = await newPage();
+  await context.addInitScript(() => {
+    try {
+      window.localStorage.setItem('career-ops-ui:nav-v2',
+        JSON.stringify({ collapsed: {}, favs: ['ghost-route'], recent: ['phantom-route'] }));
+    } catch { /* private mode */ }
+  });
+  await page.goto(`${baseUrl}/#/dashboard`);
+  await page.waitForSelector('#nav-v2-launch');
+  await page.waitForTimeout(120); // boot prune + render
+  assert.equal(await page.$$eval('[data-nav-group="__favs"] [data-nav-fav]', (rows) => rows.length), 0,
+    'the unresolvable favorite renders no row');
+  assert.equal(await page.getAttribute('[data-nav-group="__favs"]', 'hidden'), '',
+    'an empty-after-prune Favorites group is hidden, not an empty header');
+  const store = JSON.parse(await page.evaluate(() => localStorage.getItem('career-ops-ui:nav-v2')));
+  assert.deepEqual(store.favs, [], 'the stale id is pruned from the persisted store');
+  await context.close();
+});
+
+test('P13: a language switch re-translates star labels and palette chrome', { skip: SKIP }, async () => {
+  const { context, page } = await newPage();
+  await page.goto(`${baseUrl}/#/scan`);
+  await page.waitForSelector('[data-route-row="scan"] .nav-v2-star', { state: 'visible' });
+  await page.click('[data-route-row="scan"] .nav-v2-star'); // pin → aria-pressed=true
+  await page.waitForSelector('[data-nav-group="__favs"]:not([hidden])');
+  const dict = (await import('./helpers/i18n-vm.mjs')).loadAssembledDict();
+  const ruUnpin = dict['nav.v2.unpin'].ru;
+  const ruPlaceholder = dict['nav.v2.paletteLabel'].ru;
+  // switch the SPA language through the REAL UI path (the footer select):
+  // app.js's handler runs I18n.setLang → onChange subscribers + applyI18n
+  await page.selectOption('#lang-select', 'ru');
+  await page.waitForTimeout(150);
+  const starLabel = await page.getAttribute('[data-route-row="scan"] .nav-v2-star', 'aria-label');
+  assert.equal(starLabel, ruUnpin, `the star aria-label re-translates to "${ruUnpin}" after the switch`);
+  // palette chrome (built once at first open) follows the switch too
+  await page.keyboard.press('Control+k');
+  await page.waitForSelector('.nav-v2-palette', { state: 'visible' });
+  const placeholder = await page.getAttribute('.nav-v2-input', 'placeholder');
+  assert.equal(placeholder, ruPlaceholder, 'the palette placeholder re-translates');
+  const hint = await page.locator('.nav-v2-palette-hint').textContent();
+  assert.match(String(hint), /Esc/, 'the palette hint is present after the switch');
   await context.close();
 });
 

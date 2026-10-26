@@ -227,15 +227,16 @@ test('CLI: a missing script file fails loudly (exit 1, ENOENT on stderr)', async
 
 const REAL_HTML = readFileSync(join(REPO_ROOT, 'public', 'index.html'), 'utf8');
 
-test('real index.html: 95 script tags, 92 bundlable /js/ body scripts (regenerate when the shell changes)', () => {
+test('real index.html: 96 script tags, 93 bundlable /js/ body scripts (regenerate when the shell changes)', () => {
   const all = mod.scanScriptTags(REAL_HTML);
   // CAR-119 — +1: /js/lib/llm-page-kit.js (the shared AI-page template lib).
   // CAR-118 — +1: /js/lib/report-ops.js (the #/reports pure-helper lib).
   // CAR-116 — +1: /js/lib/pipeline-view.js (the #/pipeline pure-helper lib).
-  // CAR-122 — +1: /js/lib/nav-v2.js (the sidebar-v2 pure-helper lib).
-  assert.equal(all.length, 95, 'total classic <script src> tags (92 /js/ body + 2 head + 1 leaflet)');
+  // CAR-122 — +2: /js/lib/nav-v2-core.js (the pure half, ≤800-LOC split)
+  //           + /js/lib/nav-v2.js (the wiring half).
+  assert.equal(all.length, 96, 'total classic <script src> tags (93 /js/ body + 2 head + 1 leaflet)');
   const srcs = mod.extractBundleScripts(REAL_HTML);
-  assert.equal(srcs.length, 92);
+  assert.equal(srcs.length, 93);
   assert.equal(srcs[0], '/js/lib/locales/i18n-dict.en.js');
   assert.equal(srcs[srcs.length - 1], '/js/app.js');
   assert.ok(srcs.includes('/js/lib/i18n.js'));
@@ -255,10 +256,11 @@ test('real index.html: 95 script tags, 92 bundlable /js/ body scripts (regenerat
   // CAR-122 — nav-v2.js must load BEFORE router.js: its document-level
   // Cmd/Ctrl+K handler registers ahead of app.js's legacy binding (the
   // stopImmediatePropagation interception contract).
+  const nvc = srcs.indexOf('/js/lib/nav-v2-core.js');
   const nv = srcs.indexOf('/js/lib/nav-v2.js');
   const router = srcs.indexOf('/js/router.js');
-  assert.ok(nv > -1 && router > -1 && nv === router - 1,
-    'nav-v2.js must load directly before the router');
+  assert.ok(nvc > -1 && nv === nvc + 1 && router === nv + 1,
+    'nav-v2-core.js → nav-v2.js → router.js must stay adjacent');
   for (const mustStay of ['/js/lib/theme-bootstrap.js', '/js/lib/logbuf.js', '/vendor/leaflet/leaflet.js']) {
     assert.ok(!srcs.includes(mustStay), `${mustStay} must stay individual`);
   }

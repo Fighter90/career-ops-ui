@@ -28,18 +28,21 @@ const __dirname = dirname(fileURLToPath(import.meta.url));
 const R = (...p) => resolve(__dirname, '..', ...p);
 
 const SRC = readFileSync(R('public', 'js', 'lib', 'nav-v2.js'), 'utf8');
+const CORE_SRC = readFileSync(R('public', 'js', 'lib', 'nav-v2-core.js'), 'utf8');
 const HTML = readFileSync(R('public', 'index.html'), 'utf8');
 const CSS = readFileSync(R('public', 'css', 'v2-nav.css'), 'utf8');
 
-// ── execute the lib with a stub window (no document → pure exports only) ──
+// ── execute core + wiring with a stub window (no document → pure exports only) ──
 const win = {};
+new Function('window', CORE_SRC)(win); // eslint-disable-line no-new-func
 new Function('window', SRC)(win); // eslint-disable-line no-new-func
 const V = win.NavV2;
 test('the lib exports the pure core on window.NavV2', () => {
   assert.ok(V, 'window.NavV2 missing');
   for (const fn of ['defaultState', 'serializeState', 'loadState', 'isGroupOpen',
-    'toggleGroup', 'pin', 'unpin', 'moveFav', 'trackVisit', 'fuzzyMatch',
-    'fuzzyFilter', 'buildPaletteItems']) {
+    'toggleGroup', 'pin', 'unpin', 'moveFav', 'trackVisit', 'pruneState',
+    'fuzzyMatch', 'fuzzyFilter', 'buildPaletteItems', 'formatEvalUrl',
+    'looksLikeUrl']) {
     assert.equal(typeof V[fn], 'function', `NavV2.${fn} missing`);
   }
 });
@@ -132,6 +135,56 @@ test('recents: newest first, deduped, capped at 5', () => {
   assert.deepEqual(revisited.recent, ['c', 'f', 'e', 'd', 'b'], 'revisit moves to front, no dupes');
 });
 
+test('recents: re-visiting the current head is a no-op (same ref — no store write)', () => {
+  const s = V.defaultState();
+  const once = V.trackVisit(s, 'a');
+  assert.equal(V.trackVisit(once, 'a'), once, 'head re-visit returns the SAME state');
+  assert.notEqual(V.trackVisit(once, 'b'), once, 'a different route still produces a new state');
+});
+
+test('pruneState: stale favorites/recents ids drop; clean state returned by reference', () => {
+  const byId = (id) => ({ scan: 1, tracker: 1 }.hasOwnProperty(id) ? {} : null);
+  const stale = { collapsed: {}, favs: ['scan', 'ghost', 'tracker'], recent: ['phantom', 'scan'] };
+  const pruned = V.pruneState(stale, byId);
+  assert.deepEqual(pruned.favs, ['scan', 'tracker'], 'stale favorite dropped');
+  assert.deepEqual(pruned.recent, ['scan'], 'stale recent dropped');
+  const clean = { collapsed: {}, favs: ['scan'], recent: ['scan'] };
+  assert.equal(V.pruneState(clean, byId), clean, 'nothing stale → same ref (no store write)');
+});
+
+test('formatEvalUrl: $ sequences in the URL stay literal (no replace-pattern expansion)', () => {
+  const out = V.formatEvalUrl('Auto-pipeline: {url}', 'https://x.test/?q=$&v=$`w=$\'z=$$');
+  assert.equal(out, 'Auto-pipeline: https://x.test/?q=$&v=$`w=$\'z=$$',
+    'the URL is inserted verbatim — no $&, $`, $\' or $$ expansion');
+});
+
+test('fuzzyMatch: per-char lowering keeps indexes aligned on length-changing folds (İ)', () => {
+  // 'İ'.toLowerCase() is TWO code units — a whole-string toLowerCase would
+  // misalign every later index onto the wrong original characters.
+  const m = V.fuzzyMatch('ix', 'İX');
+  assert.ok(m, 'İ lowers to i (first unit) and X matches at its TRUE index');
+  const scattered = V.fuzzyMatch('px', 'İpx'); // 'x' after the folded char
+  assert.ok(scattered, 'matches after a length-changing fold still resolve');
+  // camelCase hump detection stays intact for normal text
+  assert.ok(V.fuzzyMatch('b', 'fooBar').score > 0);
+});
+
+test('buildPaletteItems: group carries the LOCALIZED label for fuzzy matching', () => {
+  const routes = [{
+    id: 'scan', href: '#/scan', group: 'sourcing',
+    titleKey: 'nav.scan', fallback: 'Scan',
+    groupKey: 'nav.group.sourcing', groupFallback: 'Sourcing',
+  }];
+  const ru = (k, f) => (k === 'nav.group.sourcing' ? 'Поиск' : f);
+  const items = V.buildPaletteItems(routes, [], V.defaultState(), ru);
+  assert.equal(items[0].group, 'Поиск', 'group is the translated label');
+  const hits = V.fuzzyFilter('поиск', items);
+  assert.equal(hits.length, 1, 'a ru query matches the translated group name');
+  // fixtures WITHOUT a groupKey keep their literal group (id-less label)
+  const plain = V.buildPaletteItems([{ id: 'x', href: '#/x', group: 'Setup' }], [], V.defaultState(), ident);
+  assert.equal(plain[0].group, 'Setup');
+});
+
 // ── fuzzy matcher ────────────────────────────────────────────────────────
 
 test('fuzzyMatch: subsequence or null, case-insensitive', () => {
@@ -217,12 +270,22 @@ test('index.html: v2-nav.css links after v2-reports.css and before map.css', () 
     `cascade order broken: pipeline=${iPipe} reports=${iRep} nav=${iNav} map=${iMap}`);
 });
 
-test('index.html: nav-v2.js loads before router.js (Cmd+K interception contract)', () => {
+test('index.html: nav-v2-core.js loads before nav-v2.js, which loads before router.js', () => {
+  const iCore = HTML.indexOf('/js/lib/nav-v2-core.js');
   const iLib = HTML.indexOf('/js/lib/nav-v2.js');
   const iRouter = HTML.indexOf('/js/router.js');
   const iApp = HTML.indexOf('/js/app.js');
-  assert.ok(iLib > -1 && iRouter > iLib && iApp > iRouter,
-    'nav-v2.js must precede router.js and app.js');
+  assert.ok(iCore > -1 && iLib > iCore, 'the core must precede the wiring lib');
+  assert.ok(iRouter > iLib && iApp > iRouter, 'nav-v2.js must precede router.js and app.js');
+});
+
+test('both halves respect the ≤800-LOC contract and stay CSP-safe', () => {
+  for (const [name, src] of [['nav-v2-core.js', CORE_SRC], ['nav-v2.js', SRC]]) {
+    assert.doesNotMatch(src, /innerHTML/, `${name}: no raw HTML assignment`);
+    assert.doesNotMatch(src, /\son[a-z]+=/, `${name}: no inline handler assignments`);
+    const lines = src.split('\n').length;
+    assert.ok(lines <= 800, `${name} is ${lines} lines — over the 800-LOC hard limit`);
+  }
 });
 
 test('index.html: all 38 nav items kept with data-route + data-i18n labels', () => {
@@ -249,12 +312,8 @@ test('the palette launch button exists with dialog semantics', () => {
   assert.match(HTML, /data-i18n-aria-label="nav\.v2\.palette"/);
 });
 
-test('nav-v2.js is CSP-safe: no innerHTML, no inline handlers, bounded lines', () => {
-  assert.doesNotMatch(SRC, /innerHTML/, 'no innerHTML anywhere in the lib');
-  assert.doesNotMatch(SRC, /\son[a-z]+=/, 'no inline handler assignments');
+test('nav-v2.js keeps its wiring-only CSP gates', () => {
   assert.doesNotMatch(SRC, /document\.write/, 'no document.write');
-  const lines = SRC.split('\n').length;
-  assert.ok(lines <= 800, `nav-v2.js is ${lines} lines — over the 800-LOC hard limit`);
 });
 
 test('v2-nav.css: token-based (no hex), ≤ 800 LOC, motion-safe, RTL-mirrored', () => {
