@@ -8,6 +8,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { legacyDictText, loadAssembledDict } from './helpers/i18n-vm.mjs';
+import { loadScanSrc } from './helpers/scan-src.mjs';
 import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -944,7 +945,9 @@ test('U-7 (v1.58.27): verify-pipeline modal strips `==========` ASCII dividers',
 });
 
 test('U-6 (v1.58.26): scan Active-companies chip exposes localized tooltip + aria-label', () => {
-  const scan = read('public', 'js', 'views', 'scan.js');
+  // CAR-115 moved the companies panel to views/scan/runner.js — read the
+  // concatenated scan view so the contract stays file-agnostic.
+  const scan = loadScanSrc();
   // toggleBtn must declare both title and aria-label so sighted users
   // get a hover tooltip and screen-reader users get the same text.
   assert.match(scan, /title:\s*t\('scan\.activeCo\.help'/,

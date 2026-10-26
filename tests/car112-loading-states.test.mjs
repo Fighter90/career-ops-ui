@@ -25,6 +25,7 @@ import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { loadScanSrc } from './helpers/scan-src.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const R = (...p) => resolve(ROOT, ...p);
@@ -112,14 +113,16 @@ test('CAR-112: skeleton helper unit — rows clamp, aria-hidden, block carries a
 // --- 3 · wired into the three views -----------------------------------------
 
 test('CAR-112: tracker + scan + map render skeleton rows instead of a bare Loading text', () => {
+  const SCAN_ALL = loadScanSrc();
   for (const [name, src] of [['tracker', TRACKER], ['map', MAP], ['scan', SCAN]]) {
     assert.match(src, /Skeleton\.block\(/, `${name} view must use the shared skeleton helper`);
   }
   // scan seeds BOTH surfaces that used to show text/nothing:
-  // the initial results table and the lazy reposts panel.
+  // the initial results table and the lazy reposts panel. CAR-115 moved the
+  // reposts panel to views/scan/runner.js — read the concatenated view.
   assert.match(SCAN, /resultsEl\.replaceChildren\(\s*window\.Skeleton\.block\(/);
-  assert.match(SCAN, /repostsBody\.replaceChildren\(\s*window\.Skeleton\.block\(/);
-  assert.ok(!/repostsBody\.textContent = t\('common\.loading'/.test(SCAN),
+  assert.match(SCAN_ALL, /repostsBody\.replaceChildren\(\s*window\.Skeleton\.block\(/);
+  assert.ok(!/repostsBody\.textContent = t\('common\.loading'/.test(SCAN_ALL),
     'the reposts panel must not paint a bare Loading text anymore');
   // Call sites reuse EXISTING keys only.
   assert.match(TRACKER, /Skeleton\.block\(8, t\('common\.loading', 'Loading…'\)\)/);

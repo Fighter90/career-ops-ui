@@ -47,14 +47,16 @@ test('.scan-filters__footer spans the grid and separates hint (left) from action
   assert.match(css.slice(j, css.indexOf('}', j) + 1), /justify-content:\s*flex-end/, 'actions right-aligned');
 });
 
-test('saved searches render as one bordered sub-card inside the filter grid', () => {
+test('saved searches render as preset chips above the table (CAR-115)', () => {
   const css = loadAppCss();
-  const i = css.indexOf('.scan-filters__saved {');
-  assert.ok(i >= 0, '.scan-filters__saved has a rule block');
+  const i = css.indexOf('.v2-scan-presets {');
+  assert.ok(i >= 0, '.v2-scan-presets has a rule block');
   const block = css.slice(i, css.indexOf('}', i) + 1);
-  assert.match(block, /grid-column:\s*1\s*\/\s*-1/, 'saved-search sub-card spans the grid');
-  assert.match(block, /border:/, 'sub-card is bordered');
-  assert.match(scanJs, /className:\s*'scan-filters__saved'/, 'scan.js renders the saved sub-card in the grid');
+  assert.match(block, /flex-wrap:\s*wrap/, 'preset chips wrap');
+  assert.match(scanJs, /presetsWrap/, 'scan.js mounts the presets wrap');
+  // The v1.244.2 sub-card is gone from the DOM (CSS stays in components.css).
+  assert.doesNotMatch(scanJs, /className:\s*'scan-filters__saved'/,
+    'the saved-searches sub-card is replaced by preset chips');
 });
 
 test('scan chrome keeps the small-caps label + 40px control system', () => {
@@ -67,12 +69,12 @@ test('scan chrome keeps the small-caps label + 40px control system', () => {
   assert.match(scanJs, /className:\s*'scan-terminal'/, 'console strip keeps its chrome hook');
 });
 
-test('scan.js drops the old hidden-label alignment hack in the actions row', () => {
-  // The redesign removed the visibility:hidden placeholder <label> and the inner
-  // flex wrapper; the buttons are now direct children of .scan-filters__actions.
+test('the filter bar is the actions row (no Apply; Reset lives in the bar)', () => {
+  const all = scanJs + readFileSync(resolve(ROOT, 'public/js/views/scan/filters.js'), 'utf8');
   assert.doesNotMatch(scanJs, /scan-filters__actions[\s\S]{0,120}visibility:\s*'hidden'/,
     'no hidden placeholder label left inside the actions row');
-  assert.match(scanJs, /className:\s*'scan-filters__actions'\s*\}\s*,\s*\[applyBtn,\s*resetBtn\]/,
-    'actions row holds applyBtn + resetBtn directly');
+  assert.doesNotMatch(scanJs, /\[applyBtn,\s*resetBtn\]/,
+    'the Apply/Reset action pair is gone — filtering is live, Reset is a bar button');
+  assert.match(all, /t\('scan\.resetFilters', 'Reset'\)/, 'Reset keeps its localized label');
 });
 
