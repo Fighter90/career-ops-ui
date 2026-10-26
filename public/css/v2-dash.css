@@ -1,0 +1,13 @@
+/* CAR-114 — dashboard v2 stylesheet tail. The base cascade (app/components/
+   overlays) sits at its 800-LOC ceiling, so the view owns this file (the
+   established v2-*.css pattern). Only what REQUIRES a stylesheet lives here
+   (blur-plane base, trend chips, the reduced-motion neutralizer); all
+   structural styling is inline in dashboard.js (that view's established
+   pattern). Selectors stay v2-dash-. */
+
+.v2-dash-planes { position: absolute; inset: 0; pointer-events: none; }
+.v2-dash-plane { position: absolute; border-radius: var(--radius-lg); filter: blur(2px); opacity: .55; will-change: transform; transition: transform 320ms cubic-bezier(.2,.8,.2,1); }
+.v2-dash-delta { display: inline-flex; align-items: center; align-self: flex-start; padding: 1px 8px; border-radius: var(--radius-pill); font-size: var(--font-size-sm); font-weight: 600; font-variant-numeric: tabular-nums; }
+.v2-dash-delta--up { color: var(--kazan-text); background: color-mix(in srgb, var(--kazan) 12%, transparent); }
+.v2-dash-delta--down { color: var(--rausch-text); background: color-mix(in srgb, var(--rausch) 10%, transparent); }
+@media (prefers-reduced-motion: reduce) { .v2-dash-plane { transition: none; transform: none !important; } .v2-dash-delta { animation: none; transition: none; } }

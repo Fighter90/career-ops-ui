@@ -9,7 +9,7 @@
  * reduced to same-weight chips).
  *
  * This suite pins the v2 contract for public/js/views/dashboard.js + the
- * appended `v2-dash-` rules in public/css/overlays.css:
+ * `v2-dash-` rules in the view-owned public/css/v2-dash.css:
  *
  *   1. ONE primary CTA — a split control (primary scan segment + ghost
  *      paste-URL segment), aria-current on the primary, the old twin
@@ -43,6 +43,7 @@ import { legacyDictText, I18N_LANGS } from './helpers/i18n-vm.mjs';
 const __d = dirname(fileURLToPath(import.meta.url));
 const DASH = readFileSync(resolve(__d, '..', 'public', 'js', 'views', 'dashboard.js'), 'utf8');
 const OVERLAYS = readFileSync(resolve(__d, '..', 'public', 'css', 'overlays.css'), 'utf8');
+const DASH_CSS = readFileSync(resolve(__d, '..', 'public', 'css', 'v2-dash.css'), 'utf8');
 const STAGES_SRC = readFileSync(resolve(__d, '..', 'public', 'js', 'lib', 'tracker-stages.js'), 'utf8');
 
 // Finding 7 — slice ONE function body by brace counting so ordering
@@ -224,18 +225,18 @@ test('CAR-114: dashboard.js no longer duplicates the header provider badge', () 
 
 // ── CSS: the appended v2-dash- layer ─────────────────────────────────────────
 
-test('CAR-114: overlays.css (at the 800-LOC ceiling) owns only planes, delta chips, reduced motion', () => {
+test('CAR-114: the view-owned v2-dash.css owns only planes, delta chips, reduced motion', () => {
   // The stylesheet tail is minimal by necessity (css-modularization gate);
   // everything structural is inline in dashboard.js — asserted separately below.
   for (const cls of ['v2-dash-planes', 'v2-dash-plane', 'v2-dash-delta']) {
-    assert.ok(OVERLAYS.includes(cls), `overlays.css must style .${cls}`);
+    assert.ok(DASH_CSS.includes(cls), `v2-dash.css must style .${cls}`);
   }
   for (const cls of ['v2-dash-hero', 'v2-dash-split', 'v2-dash-funnel', 'v2-dash-fstep',
     'v2-dash-greeting', 'v2-dash-fconv']) {
     assert.ok(DASH.includes(cls), `dashboard.js must carry .${cls} (inline-styled structure)`);
   }
   // Finding 9 — the validator sees INSIDE the one-line @media block too.
-  const tail = OVERLAYS.slice(OVERLAYS.indexOf('CAR-114'));
+  const tail = DASH_CSS;
   const sels = v2TailSelectors(tail);
   assert.ok(sels.length >= 5, `the validator must find the nested selectors (found ${sels.length})`);
   assert.ok(sels.includes('.v2-dash-plane') && sels.includes('.v2-dash-delta'),
@@ -254,14 +255,14 @@ test('CAR-114: the ownership validator catches violations inside @media (self-pr
 });
 
 test('CAR-114: the appended layer neutralizes its own motion under prefers-reduced-motion', () => {
-  const tail = OVERLAYS.slice(OVERLAYS.indexOf('CAR-114'));
+  const tail = DASH_CSS;
   // The media block is a single dense line (LOC ceiling) — match within it.
   assert.match(tail, /@media \(prefers-reduced-motion: reduce\) \{.*v2-dash-plane \{ transition: none; transform: none !important;.*animation: none/,
     'planes must be static under reduced motion');
 });
 
 test('CAR-114: no bare z-index literals in the appended CSS (D-4 token gate)', () => {
-  const tail = OVERLAYS.slice(OVERLAYS.indexOf('CAR-114'));
+  const tail = DASH_CSS;
   assert.doesNotMatch(tail, /z-index:\s*\d/,
     'layering must come from DOM order + position (no magic z-index numbers)');
 });
