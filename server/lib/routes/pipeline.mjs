@@ -3,10 +3,11 @@
  *
  *   GET    /api/pipeline             → { urls: string[] }
  *   POST   /api/pipeline { url }     → append (URL gated by isValidJobUrl)
- *   POST   /api/pipeline/restore     → reinsert RAW line(s) losslessly
- *                                     ({ lines } — the CAR-151 undo path)
+ *   POST   /api/pipeline/restore     → { tokens } → reinsert the lines a
+ *                                     previous DELETE stored (CAR-151 undo)
  *   GET    /api/pipeline/preview?url → stripped HTML snippet (≤ 8 KB)
- *   DELETE /api/pipeline?url=…       → remove ({ ok, removed, url, lines })
+ *   DELETE /api/pipeline?url=…       → remove ({ ok, removed, url,
+ *                                     restoreToken })
  *
  * The preview endpoint walks redirects manually, revalidating each
  * Location through isValidJobUrl (REVIEW-B1). Cap: 3 hops, 15 s timeout,
@@ -14,6 +15,7 @@
  * loopback, file://, IP literals, etc.
  */
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { randomUUID } from 'node:crypto';
 import { PATHS, path as projPath } from '../paths.mjs';
 import { parsePipeline, addPipelineUrl, removePipelineUrlExtract, restorePipelineLines } from '../parsers.mjs';
 import { isValidJobUrl } from '../security.mjs';
@@ -23,10 +25,26 @@ import { withFileLock } from '../file-lock.mjs';
 
 const PREVIEW_TIMEOUT_MS = 15_000;
 const PREVIEW_MAX_BODY_BYTES = 8000;
-// CAR-151 — an undo batch replays one restore call; a bulk discard of a
-// very large queue still fits with room to spare (the 5 MB JSON body cap
-// is the real ceiling).
-const RESTORE_MAX_LINES = 5000;
+// CAR-151 review r2 — the undo round-trip carries opaque TOKENS, not
+// content: the client never sends pipeline lines, so /api/pipeline/restore
+// has no content-injection surface. 10 000 tokens ≈ a 360 KB request.
+const RESTORE_MAX_TOKENS = 10_000;
+// The removed lines live in-process, keyed by the unguessable token, FIFO-
+// evicted. Undo is a seconds-scale interaction: a server restart (or
+// eviction after a very large sweep) between delete and undo simply makes
+// the token unknown — the client falls back to the bare re-add — and the
+// URL itself is never lost.
+const RESTORE_STORE_CAP = 5000;
+const restoreTokens = new Map(); // token → removed raw lines
+
+function rememberRestoreToken(lines) {
+  const token = randomUUID();
+  restoreTokens.set(token, lines);
+  while (restoreTokens.size > RESTORE_STORE_CAP) {
+    restoreTokens.delete(restoreTokens.keys().next().value);
+  }
+  return token;
+}
 
 export function registerPipelineRoutes(app) {
   app.get('/api/pipeline', (_req, res) => {
@@ -67,24 +85,22 @@ export function registerPipelineRoutes(app) {
     res.json(result);
   });
 
-  // CAR-151 — lossless undo. The client replays the raw pipeline line(s) a
-  // DELETE answered with (a checklist row's `| company | title | …` cells
-  // included); restorePipelineLines reinserts them under the same lock,
-  // deduping on the canonical URL key so a URL re-added meanwhile is
-  // skipped, not duplicated. http(s) tokens go through the same
-  // isValidJobUrl gate as the add path; `local:` references (a legal
-  // pipeline row the scanners write) skip it. Structurally invalid lines
-  // (multi-line, fence-breaking, token-less, oversized) are refused with a
-  // count — never written.
+  // CAR-151 — lossless undo, round 2: the client replays the opaque
+  // restoreToken(s) a DELETE answered with; the RAW lines they key live
+  // server-side, so no client-supplied content is ever written here.
+  // restorePipelineLines reinserts them under the same lock, deduping on
+  // the canonical URL key so a URL re-added meanwhile is skipped, not
+  // duplicated (and the same token twice is a no-op). Unknown tokens
+  // (restart, store eviction, or a fabricated value) are REPORTED, never
+  // written — the client falls back to the bare re-add for those URLs.
   app.post('/api/pipeline/restore', async (req, res) => {
-    const lines = req.body?.lines;
-    if (!Array.isArray(lines)) {
-      return res.status(400).json({ error: 'lines required (array of raw pipeline lines)' });
+    const tokens = req.body?.tokens;
+    if (!Array.isArray(tokens)) {
+      return res.status(400).json({ error: 'tokens required (array of restore tokens from DELETE)' });
     }
-    if (lines.length > RESTORE_MAX_LINES) {
-      return res.status(400).json({ error: `too many lines (max ${RESTORE_MAX_LINES})` });
+    if (tokens.length > RESTORE_MAX_TOKENS) {
+      return res.status(400).json({ error: `too many tokens (max ${RESTORE_MAX_TOKENS})` });
     }
-    const validate = (u) => (/^local:/i.test(u) ? true : isValidJobUrl(u));
     const result = await withFileLock(PATHS.pipeline, async () => {
       let content = '';
       try {
@@ -92,12 +108,21 @@ export function registerPipelineRoutes(app) {
       } catch {
         content = '';
       }
-      const r = restorePipelineLines(content, lines, { validate });
+      const unknown = [];
+      const lines = [];
+      for (const tok of tokens) {
+        const stored = typeof tok === 'string' ? restoreTokens.get(tok) : null;
+        if (stored) lines.push(...stored);
+        else unknown.push(String(tok));
+      }
+      const r = lines.length
+        ? restorePipelineLines(content, lines)
+        : { updated: content, restored: 0, deduped: 0, refused: 0 };
       if (r.restored > 0) {
         mkdirSync(projPath('data'), { recursive: true });
         writeFileSync(PATHS.pipeline, r.updated);
       }
-      return { ok: true, restored: r.restored, deduped: r.deduped, refused: r.refused, urls: parsePipeline(r.updated) };
+      return { ok: true, restored: r.restored, deduped: r.deduped, unknown, urls: parsePipeline(r.updated) };
     });
     res.json(result);
   });
@@ -171,15 +196,20 @@ export function registerPipelineRoutes(app) {
       }
       // removePipelineUrlExtract drops only the matching lines, returns the
       // text untouched when nothing matched (→ 404 then, not a fake
-      // { removed: 1 }) — and hands back the RAW dropped lines so the
-      // client's undo can reinsert them losslessly (CAR-151).
+      // { removed: 1 }) — and hands back the RAW dropped lines, which stay
+      // SERVER-SIDE under an opaque restoreToken so the client's undo can
+      // reinsert them content-faithfully (CAR-151 review r2: the client
+      // never sends content). `removed` counts the raw lines dropped — a
+      // URL listed twice takes both (this used to be a parse-length diff,
+      // the same number in every real case).
       const { updated, removedLines } = removePipelineUrlExtract(content, url);
       if (updated === content) {
         return { _status: 404, body: { error: 'url not found in pipeline', url } };
       }
       const removed = removedLines.length;
+      const restoreToken = rememberRestoreToken(removedLines);
       writeFileSync(PATHS.pipeline, updated);
-      return { _status: 200, body: { ok: true, removed, url, lines: removedLines } };
+      return { _status: 200, body: { ok: true, removed, url, restoreToken } };
     });
     res.status(outcome._status).json(outcome.body);
   });

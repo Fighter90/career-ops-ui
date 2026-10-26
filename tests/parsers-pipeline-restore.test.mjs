@@ -3,9 +3,12 @@
  *
  * removePipelineUrlExtract is removePipelineUrl's lossless twin: same
  * matching, same updated text, plus the RAW lines that were dropped.
- * restorePipelineLines puts them back byte-faithfully — a checklist row's
- * `| company | title | location | notes` cells survive an undo, which the
- * bare addPipelineUrl re-add loses (the defect CAR-116 shipped with).
+ * restorePipelineLines puts them back content-faithfully — a checklist
+ * row's `| company | title | location | notes` cells survive an undo,
+ * which the bare addPipelineUrl re-add loses (the defect CAR-116 shipped
+ * with). Review round 2: origin-driven format choice, the removal
+ * tokenizer shared with restore, no column-separator re-introduction,
+ * one splice per batch.
  *
  * CI-isolated: pure string functions, no fs, no network.
  */
@@ -56,6 +59,7 @@ test('removePipelineUrlExtract returns the raw fenced line with its comp cell', 
   assert.deepEqual(removedLines, ['https://a.example/1 | 100k EUR']);
   assert.equal(updated, '# Pipeline\n\n```\nhttps://b.example/2 | 200k EUR\n```\n');
 });
+
 test('removePipelineUrlExtract: nothing matched -> text and lines untouched', () => {
   const { updated, removedLines } = removePipelineUrlExtract(CHECKLIST, 'https://zzz.example/');
   assert.equal(updated, CHECKLIST);
@@ -70,8 +74,12 @@ test('removePipelineUrl is the string twin of removePipelineUrlExtract', () => {
 });
 
 // ── restorePipelineLines: the lossless undo ──
+// Content-faithful, not byte-faithful: a row's cells (and a fenced line's
+// comp cell) come back exactly, but the row re-inserts at the END of the
+// Pending section / fence — not necessarily its old position — and stray
+// leading/trailing whitespace is trimmed on the way.
 
-test('restore round-trips a checklist row byte-faithfully', () => {
+test('restore round-trips the LAST row whole (the boundary case: file identical)', () => {
   const { removedLines } = removePipelineUrlExtract(CHECKLIST, 'https://www.arbeitsagentur.de/jobsuche/jobdetail/1-S');
   const r = restorePipelineLines(CHECKLIST.replace(ROW + '\n', ''), removedLines);
   assert.equal(r.restored, 1);
@@ -80,7 +88,24 @@ test('restore round-trips a checklist row byte-faithfully', () => {
   assert.equal(r.updated, CHECKLIST, 'delete + undo = the original file');
 });
 
-test('restore round-trips a fenced line byte-faithfully', () => {
+test('restore keeps every cell of a MIDDLE row (cells, not whole-file equality)', () => {
+  // delete the FIRST pending row (a middle-of-section row), restore, and
+  // check the CELLS — the row comes back at the end of Pending.
+  const { updated, removedLines } = removePipelineUrlExtract(CHECKLIST, 'local:jds/linkedin-4473300731.md');
+  const r = restorePipelineLines(updated, removedLines);
+  assert.equal(r.restored, 1);
+  const row = parsePipelineRows(r.updated).find((e) => e.url === 'local:jds/linkedin-4473300731.md');
+  assert.deepEqual(row, {
+    url: 'local:jds/linkedin-4473300731.md',
+    company: 'Jobster',
+    title: 'Director Engineering',
+    location: 'Heidelberg',
+    href: 'https://www.linkedin.com/jobs/view/4473300731',
+  });
+  assert.notEqual(r.updated, CHECKLIST, 'the row moved to the end of Pending — position is not preserved');
+});
+
+test('restore round-trips a fenced line content-faithfully (last-in-fence case)', () => {
   const { updated, removedLines } = removePipelineUrlExtract(FENCED, 'https://a.example/1');
   const r = restorePipelineLines(updated, removedLines);
   assert.equal(r.restored, 1);
@@ -96,13 +121,6 @@ test('restore appends at the end of ## Pending, after rows added meanwhile', () 
   const pending = r.updated.split('## Processed')[0];
   assert.ok(pending.indexOf('- [ ] https://boards.example.com/jobs/42') < pending.indexOf(ROW),
     'the restored row lands after the meanwhile-added one');
-  assert.deepEqual(parsePipelineRows(r.updated).find((e) => e.url === 'https://www.arbeitsagentur.de/jobsuche/jobdetail/1-S'), {
-    url: 'https://www.arbeitsagentur.de/jobsuche/jobdetail/1-S',
-    company: 'Acme GmbH',
-    title: 'Head of Platform',
-    location: 'Stuttgart',
-    href: 'https://www.arbeitsagentur.de/jobsuche/jobdetail/1-S',
-  });
 });
 
 test('restore dedups on the canonical URL key (pending or processed)', () => {
@@ -148,7 +166,21 @@ test('restore refuses junk lines without writing anything', () => {
   assert.equal(r.updated, CHECKLIST);
 });
 
-test('restore honours the injected validator (route-level isValidJobUrl)', () => {
+test('a URL token with whitespace is refused — the key must be one parsePipeline computes', () => {
+  // `url extra words` would otherwise become a space-containing key that
+  // diverges from lineUrl/parsePipeline (review finding 4).
+  const r = restorePipelineLines('# Pipeline\n\n```\n```\n', ['https://a.example/1 extra words']);
+  assert.equal(r.restored, 0);
+  assert.equal(r.refused, 1);
+});
+
+test('a [x]-prefixed line restores under its bare URL key (same tokenizer as removal)', () => {
+  const r = restorePipelineLines('# Pipeline\n\n```\nhttps://a.example/1\n```\n', ['- [x] https://a.example/1 | Done Inc']);
+  assert.equal(r.deduped, 1, 'keyed as the bare URL, like parsePipeline reads it');
+  assert.equal(r.restored, 0);
+});
+
+test('restore honours the injected validator (for callers restoring untrusted content)', () => {
   const r = restorePipelineLines(CHECKLIST, ['https://127.0.0.1:4317/jobs/1 | local'], {
     validate: (u) => /^local:/i.test(u) ? false : !/127\.0\.0\.1/.test(u),
   });
@@ -165,11 +197,65 @@ test('restore accepts local: references by default (a legal pipeline row)', () =
 
 test('restore converts a fenced line to the checklist contract after a format switch', () => {
   // comp rides as a labeled `note:` segment — the parent reads checklist
-  // columns positionally, so a bare 2nd cell would be taken for the company.
+  // columns positionally, so a bare 2nd column would be taken for the company.
   const checklistFile = CHECKLIST.replace(ROW + '\n', '');
   const r = restorePipelineLines(checklistFile, ['https://boards.example.com/jobs/43 | 90k EUR']);
   assert.equal(r.restored, 1);
   assert.match(r.updated, /^- \[ \] https:\/\/boards\.example\.com\/jobs\/43 \| note: comp 90k EUR$/m);
+});
+
+test('a multi-cell fenced line never shifts the checklist columns (finding 2)', () => {
+  // `url | a | b` must not turn `a` into the company and `b` into the title:
+  // the trailing cells collapse into ONE sanitized note segment (no `|`
+  // separators that could read as columns).
+  const checklistFile = CHECKLIST.replace(ROW + '\n', '');
+  const r = restorePipelineLines(checklistFile, ['https://boards.example.com/jobs/44 | Acme GmbH | Head of Platform']);
+  assert.equal(r.restored, 1);
+  const row = parsePipelineRows(r.updated).find((e) => e.url === 'https://boards.example.com/jobs/44');
+  assert.equal(row.title, '', 'no shift into the title cell');
+  assert.match(row.company, /^note: comp /, 'the extra cells ride the labeled note segment…');
+  assert.ok(row.company.includes('Acme GmbH') && row.company.includes('Head of Platform'),
+    '…with both fragments preserved (separators collapsed)');
+});
+
+test('checklist-origin lines restore as checklist rows even when the file no longer shows it (finding 3)', () => {
+  // a headingless checklist whose ONLY row was deleted: the post-delete file
+  // no longer looks like a checklist, but the removed line does — the cells
+  // must not be lost to a fenced skeleton.
+  const { updated, removedLines } = removePipelineUrlExtract('- [ ] https://a.example/1 | Acme GmbH | Head of Platform | Stuttgart\n', 'https://a.example/1');
+  assert.equal(updated, '');
+  const r = restorePipelineLines(updated, removedLines);
+  assert.equal(r.restored, 1);
+  assert.match(r.updated, /^- \[ \] https:\/\/a\.example\/1 \| Acme GmbH \| Head of Platform \| Stuttgart$/m,
+    'checklist row shape preserved (no fence)');
+  const row = parsePipelineRows(r.updated)[0];
+  assert.equal(row.company, 'Acme GmbH');
+  assert.equal(row.title, 'Head of Platform');
+  assert.equal(row.location, 'Stuttgart');
+});
+
+test('a fenced file stays fenced even when the removed lines are checklist-shaped', () => {
+  // the origin rule never splices a Pending section into a fenced file
+  const r = restorePipelineLines(FENCED, ['- [ ] https://c.example/3 | Acme']);
+  assert.equal(r.restored, 1);
+  assert.ok(!r.updated.includes('## Pending'), 'no invented checklist section');
+  assert.ok(r.updated.includes('```'));
+  assert.doesNotMatch(r.updated, /^- \[ \] /m);
+});
+
+test('a batch inserts in ONE splice (one Pending section, all rows inside)', () => {
+  const r = restorePipelineLines(CHECKLIST.replace(ROW + '\n', ''), [
+    'https://c.example/3 | C GmbH',
+    '- [ ] https://d.example/4 | D Ltd | Dev | Berlin',
+    ROW,
+  ]);
+  assert.equal(r.restored, 3);
+  assert.equal(r.refused, 0);
+  const pending = r.updated.split('## Processed')[0];
+  for (const u of ['https://c.example/3', 'https://d.example/4', 'https://www.arbeitsagentur.de/jobsuche/jobdetail/1-S']) {
+    assert.match(pending, new RegExp(`^- \\[ \\] ${u.replace(/\./g, '\\.')}`, 'm'), `${u} under Pending`);
+  }
+  assert.equal((r.updated.match(/^## Pending$/gm) || []).length, 1, 'exactly one Pending section');
 });
 
 test('restore converts a checklist row to the fenced shape after a format switch', () => {

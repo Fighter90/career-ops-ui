@@ -1,11 +1,16 @@
 /**
  * CAR-151 — lossless pipeline undo (route contract).
  *
- *   DELETE /api/pipeline?url=…  now answers with `lines` — the RAW removed
- *   pipeline line(s) — so the client's undo can put back what it deleted.
- *   POST   /api/pipeline/restore { lines } reinserts those lines
- *   byte-faithfully (checklist cells included) under withFileLock, deduping
- *   on the canonical URL key and refusing structurally invalid lines.
+ * Review round 2 (finding 1, PREFERRED design): the removed RAW lines are
+ * kept SERVER-SIDE under an opaque restoreToken that DELETE returns. The
+ * client never sends content — POST /api/pipeline/restore takes
+ * { tokens: [...] } and reinserts the stored lines content-faithfully
+ * (checklist cells included) under withFileLock, deduping on the canonical
+ * URL key. Unknown tokens (server restart / store eviction) are reported,
+ * never written. The token store is in-process and bounded: undo is a
+ * seconds-scale interaction, and a restart between delete and undo
+ * degrades to the client's bare re-add fallback — never to data loss (the
+ * URL itself is still known to the caller).
  *
  * CI-isolated: mkdtemp CAREER_OPS_ROOT with cv.md, no network, 127.0.0.1.
  */
@@ -54,103 +59,154 @@ const post = (path, body) => fetch(baseUrl + path, {
   method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify(body),
 });
 
-// ── DELETE answers with the removed raw lines ──
+// ── DELETE answers an opaque restore token (never content to the client) ──
 
-test('DELETE answers `lines` with the raw fenced line (comp cell intact)', async () => {
-  writeFileSync(pipe(), '# Pipeline\n\n```\nhttps://a.example/1 | 100k EUR\nhttps://b.example/2 | 200k EUR\n```\n');
+test('DELETE answers a restoreToken; the raw lines stay server-side', async () => {
+  writeFileSync(pipe(), '# Pipeline\n\n```\nhttps://b.example/2 | 200k EUR\nhttps://a.example/1 | 100k EUR\n```\n');
   const r = await del('/api/pipeline?url=' + encodeURIComponent('https://a.example/1'));
   assert.equal(r.status, 200);
   const body = await r.json();
   assert.equal(body.ok, true);
   assert.equal(body.removed, 1);
-  assert.deepEqual(body.lines, ['https://a.example/1 | 100k EUR']);
+  assert.equal(typeof body.restoreToken, 'string');
+  assert.match(body.restoreToken, /^[0-9a-f-]{36}$/, 'an opaque UUID, not content');
+  assert.equal(Array.isArray(body.lines), false, 'the client is not the content carrier');
   assert.equal(readFileSync(pipe(), 'utf8'), '# Pipeline\n\n```\nhttps://b.example/2 | 200k EUR\n```\n');
 });
 
-test('DELETE answers `lines` with the raw checklist row (all cells intact)', async () => {
+test('DELETE on a checklist row hands out a token too; removed counts raw lines', async () => {
   writeFileSync(pipe(), CHECKLIST);
-  const r = await del('/api/pipeline?url=' + encodeURIComponent('https://www.arbeitsagentur.de/jobsuche/jobdetail/1-S'));
-  assert.equal(r.status, 200);
-  assert.deepEqual((await r.json()).lines, [ROW]);
+  const body = await (await del('/api/pipeline?url=' + encodeURIComponent('https://www.arbeitsagentur.de/jobsuche/jobdetail/1-S'))).json();
+  assert.equal(body.removed, 1);
+  assert.match(body.restoreToken, /^[0-9a-f-]{36}$/);
 });
 
-test('DELETE 404 stays honest (no lines, file untouched)', async () => {
+test('a duplicated row takes both lines under ONE token (removed = raw lines)', async () => {
+  writeFileSync(pipe(), '# Pipeline\n\n```\nhttps://a.example/1\nhttps://a.example/1\n```\n');
+  const body = await (await del('/api/pipeline?url=' + encodeURIComponent('https://a.example/1'))).json();
+  assert.equal(body.removed, 2, 'both raw lines');
+  assert.match(body.restoreToken, /^[0-9a-f-]{36}$/);
+});
+
+test('DELETE 404 stays honest (no token, file untouched)', async () => {
   writeFileSync(pipe(), CHECKLIST);
   const r = await del('/api/pipeline?url=' + encodeURIComponent('https://zzz.example/'));
   assert.equal(r.status, 404);
   const body = await r.json();
-  assert.equal(Array.isArray(body.lines), false);
+  assert.equal(body.restoreToken, undefined);
   assert.equal(readFileSync(pipe(), 'utf8'), CHECKLIST);
 });
 
-// ── POST /api/pipeline/restore ──
+// ── POST /api/pipeline/restore { tokens } ──
 
-test('restore round-trips a checklist row byte-faithfully (delete → undo)', async () => {
+test('restore by token round-trips a checklist row content-faithfully', async () => {
   writeFileSync(pipe(), CHECKLIST);
-  const d = await (await del('/api/pipeline?url=' + encodeURIComponent('https://www.arbeitsagentur.de/jobsuche/jobdetail/1-S'))).json();
-  const r = await post('/api/pipeline/restore', { lines: d.lines });
+  const { restoreToken } = await (await del('/api/pipeline?url=' + encodeURIComponent('https://www.arbeitsagentur.de/jobsuche/jobdetail/1-S'))).json();
+  const r = await post('/api/pipeline/restore', { tokens: [restoreToken] });
   assert.equal(r.status, 200);
   const body = await r.json();
   assert.equal(body.restored, 1);
   assert.equal(body.deduped, 0);
-  assert.equal(body.refused, 0);
-  assert.equal(readFileSync(pipe(), 'utf8'), CHECKLIST, 'the file is exactly what it was before the delete');
+  assert.deepEqual(body.unknown, []);
+  // the deleted row was last in Pending, so the file is exactly what it was
+  assert.equal(readFileSync(pipe(), 'utf8'), CHECKLIST);
+});
+
+test('restore keeps every cell of a MIDDLE row (cells, not whole-file equality)', async () => {
+  writeFileSync(pipe(), CHECKLIST);
+  const { restoreToken } = await (await del('/api/pipeline?url=' + encodeURIComponent('https://www.arbeitsagentur.de/jobsuche/jobdetail/1-S'))).json();
+  await post('/api/pipeline/restore', { tokens: [restoreToken] });
+  const { parsePipelineRows } = await import('../server/lib/parsers.mjs');
+  const row = parsePipelineRows(readFileSync(pipe(), 'utf8'))
+    .find((e) => e.url === 'https://www.arbeitsagentur.de/jobsuche/jobdetail/1-S');
+  assert.deepEqual(row, {
+    url: 'https://www.arbeitsagentur.de/jobsuche/jobdetail/1-S',
+    company: 'Acme GmbH',
+    title: 'Head of Platform',
+    location: 'Stuttgart',
+    href: 'https://www.arbeitsagentur.de/jobsuche/jobdetail/1-S',
+  });
+});
+
+test('restore is idempotent: the same token again dedups (lines are back)', async () => {
+  writeFileSync(pipe(), '# Pipeline\n\n```\nhttps://a.example/1 | 100k\n```\n');
+  const { restoreToken } = await (await del('/api/pipeline?url=' + encodeURIComponent('https://a.example/1'))).json();
+  const first = await (await post('/api/pipeline/restore', { tokens: [restoreToken] })).json();
+  assert.equal(first.restored, 1);
+  const second = await (await post('/api/pipeline/restore', { tokens: [restoreToken] })).json();
+  assert.equal(second.restored, 0);
+  assert.equal(second.deduped, 1);
+  assert.equal((readFileSync(pipe(), 'utf8').match(/a\.example\/1/g) || []).length, 1);
 });
 
 test('restore dedups a URL re-added meanwhile (canonical key)', async () => {
   writeFileSync(pipe(), '# Pipeline\n\n```\nhttps://a.example/1 | 100k\n```\n');
-  const d = await (await del('/api/pipeline?url=' + encodeURIComponent('https://a.example/1'))).json();
-  // the user re-adds the URL by hand (with a tracking param) before undoing
+  const { restoreToken } = await (await del('/api/pipeline?url=' + encodeURIComponent('https://a.example/1'))).json();
   await post('/api/pipeline', { url: 'https://a.example/1?utm_source=x' });
-  const body = await (await post('/api/pipeline/restore', { lines: d.lines })).json();
+  const body = await (await post('/api/pipeline/restore', { tokens: [restoreToken] })).json();
   assert.equal(body.restored, 0);
   assert.equal(body.deduped, 1);
   assert.equal((readFileSync(pipe(), 'utf8').match(/a\.example\/1/g) || []).length, 1,
     'the re-added line stays alone; the old comp cell is not duplicated in');
 });
 
-test('restore refuses junk lines and leaves the file untouched', async () => {
+test('unknown tokens are reported, never written; client content is not accepted', async () => {
   writeFileSync(pipe(), CHECKLIST);
   const before = readFileSync(pipe(), 'utf8');
-  const r = await post('/api/pipeline/restore', { lines: ['nope', 'https://x.example/1\nhttps://y.example/2', '```', 42] });
+  const r = await post('/api/pipeline/restore', { tokens: ['not-a-token', 42] });
   assert.equal(r.status, 200);
   const body = await r.json();
   assert.equal(body.restored, 0);
-  assert.equal(body.refused, 4);
+  assert.deepEqual(body.unknown, ['not-a-token', '42']);
+  assert.equal(readFileSync(pipe(), 'utf8'), before);
+  // finding 1 — the old content-carrying shape is gone: `lines` is not a
+  // restore input, so an injected "row" is just an unknown token.
+  const smuggle = await (await post('/api/pipeline/restore', {
+    tokens: [],
+    lines: ['- [ ] https://x.example/1 | injected | cells'],
+  })).json();
+  assert.equal(smuggle.restored, 0);
   assert.equal(readFileSync(pipe(), 'utf8'), before);
 });
 
-test('restore gates http(s) tokens through isValidJobUrl; local: skips it', async () => {
-  writeFileSync(pipe(), '# Pipeline\n\n```\n```\n');
-  const bad = await (await post('/api/pipeline/restore', { lines: ['http://127.0.0.1:4317/jobs/1 | loopback'] })).json();
-  assert.equal(bad.restored, 0);
-  assert.equal(bad.refused, 1);
-  const good = await (await post('/api/pipeline/restore', { lines: ['local:jds/linkedin-4473300731.md | Jobster'] })).json();
-  assert.equal(good.restored, 1);
-  assert.deepEqual(good.urls, ['local:jds/linkedin-4473300731.md']);
+test('a mixed batch restores the known tokens and reports the unknown ones', async () => {
+  writeFileSync(pipe(), '# Pipeline\n\n```\nhttps://keep.example/1\n```\n');
+  const delBody = await (await del('/api/pipeline?url=' + encodeURIComponent('https://keep.example/1'))).json();
+  // a second, unrelated URL queued then removed — its token is valid too
+  writeFileSync(pipe(), '# Pipeline\n\n```\nhttps://gone.example/2\n```\n');
+  const gone = await (await del('/api/pipeline?url=' + encodeURIComponent('https://gone.example/2'))).json();
+  writeFileSync(pipe(), '# Pipeline\n\n```\nhttps://keep.example/1\n```\n');
+  // keep.example/1 is present again (the fixture re-added it), so its
+  // restore dedups; only gone.example/2 comes back.
+  const body = await (await post('/api/pipeline/restore', { tokens: [delBody.restoreToken, 'stale', gone.restoreToken] })).json();
+  assert.equal(body.restored, 1);
+  assert.equal(body.deduped, 1);
+  assert.deepEqual(body.unknown, ['stale']);
+  assert.equal(readFileSync(pipe(), 'utf8'), '# Pipeline\n\n```\nhttps://keep.example/1\nhttps://gone.example/2\n```\n');
 });
 
-test('restore 400s honestly on a missing / non-array / oversized lines body', async () => {
+test('server-originated content needs no URL gate: a local: line restores as-is', async () => {
+  writeFileSync(pipe(), CHECKLIST);
+  const { restoreToken } = await (await del('/api/pipeline?url=' + encodeURIComponent('local:jds/linkedin-4473300731.md'))).json();
+  const body = await (await post('/api/pipeline/restore', { tokens: [restoreToken] })).json();
+  assert.equal(body.restored, 1);
+  assert.match(readFileSync(pipe(), 'utf8'), /local:jds\/linkedin-4473300731\.md \| Jobster \| Director Engineering \| Heidelberg/);
+});
+
+test('restore 400s honestly on a missing / non-array / oversized tokens body', async () => {
   assert.equal((await post('/api/pipeline/restore', {})).status, 400);
-  assert.equal((await post('/api/pipeline/restore', { lines: 'https://a.example/1' })).status, 400);
-  assert.equal((await post('/api/pipeline/restore', { lines: Array.from({ length: 5001 }, (_, i) => `https://a.example/${i}`) })).status, 400);
+  assert.equal((await post('/api/pipeline/restore', { tokens: 'x' })).status, 400);
+  assert.equal((await post('/api/pipeline/restore', { tokens: Array.from({ length: 10001 }, () => 't') })).status, 400);
   const body = await (await post('/api/pipeline/restore', {})).json();
-  assert.match(body.error, /lines/);
+  assert.match(body.error, /tokens/);
 });
 
 test('restore onto a missing pipeline.md creates it (fenced skeleton)', async () => {
   rmSync(pipe(), { force: true });
-  const body = await (await post('/api/pipeline/restore', { lines: ['https://a.example/1'] })).json();
+  writeFileSync(pipe(), '# Pipeline\n\n```\nhttps://a.example/1\n```\n');
+  const { restoreToken } = await (await del('/api/pipeline?url=' + encodeURIComponent('https://a.example/1'))).json();
+  rmSync(pipe(), { force: true });
+  const body = await (await post('/api/pipeline/restore', { tokens: [restoreToken] })).json();
   assert.equal(body.restored, 1);
   assert.equal(readFileSync(pipe(), 'utf8'), '# Pipeline — Pending URLs\n\nDrop job URLs (one per line) here.\n\n```\nhttps://a.example/1\n```\n');
-});
-
-test('restore of a mixed batch restores the good lines and counts the refused', async () => {
-  writeFileSync(pipe(), '# Pipeline\n\n```\nhttps://keep.example/1\n```\n');
-  const body = await (await post('/api/pipeline/restore', {
-    lines: ['https://add.example/2 | 100k', 'garbage'],
-  })).json();
-  assert.equal(body.restored, 1);
-  assert.equal(body.refused, 1);
-  assert.equal(readFileSync(pipe(), 'utf8'), '# Pipeline\n\n```\nhttps://keep.example/1\nhttps://add.example/2 | 100k\n```\n');
 });
