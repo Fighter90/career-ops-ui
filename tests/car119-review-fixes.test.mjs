@@ -183,7 +183,10 @@ function makeHarness({ fetchImpl, api = {}, confirmAnswer = true } = {}) {
         for (const fn of this._listeners) fn();
       }
     },
-    (fn, ms) => setTimeout(fn, Math.min(ms, 5)), () => {}, w.UI, w.I18n,
+    // Inert timers: the kit's tick loop self-reschedules; a live timer here
+    // would keep node --test's event loop open after the tests finish. No
+    // test asserts ticking, so the handles are simply never created.
+    () => 0, () => {}, w.UI, w.I18n,
   );
   return { w, doc, toasts, routes };
 }
