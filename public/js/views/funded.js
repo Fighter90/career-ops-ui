@@ -34,8 +34,8 @@ Router.register('funded', async () => {
   // discovery result looks like (name, round/amount/score chips, source line).
   // Static, aria-hidden, clearly tagged — never sent to any API; the single
   // /api/company-funded call below only fires on a real Discover click.
-  // // CAR-124 i18n: 'v2empty.exampleTag', 'v2empty.funded.emptyTitle',
-  // 'v2empty.funded.emptyBody' — EN fallbacks only, pending the locale fan-out.
+  // // CAR-124 i18n: the v2empty.funded.* / v2empty.exampleTag strings live
+  // in all 19 locale dicts (the ×19 fan-out landed; CAR124_PENDING is gone).
   function buildFundedExample() {
     const box = c('div', { className: 'v2-empty-example', 'aria-hidden': 'true' }, [
       c('span', { className: 'v2-empty-example__tag' }, t('v2empty.exampleTag', 'Example')),

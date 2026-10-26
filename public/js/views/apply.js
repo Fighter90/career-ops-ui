@@ -189,9 +189,8 @@ Router.register('apply', async () => {
   // sample checklist (static, aria-hidden, tagged), and the real first step —
   // pick an evaluated posting from the reports list. Painted into `out` on
   // mount; run() replaces it with the real checklist card.
-  // // CAR-124 i18n: 'v2empty.exampleTag', 'v2empty.apply.emptyTitle',
-  // 'v2empty.apply.emptyBody', 'v2empty.apply.pickReport', 'v2empty.apply.reportsHint'
-  // — EN fallbacks only, pending the locale fan-out.
+  // // CAR-124 i18n: the v2empty.apply.* / v2empty.exampleTag strings live
+  // in all 19 locale dicts (the ×19 fan-out landed; CAR124_PENDING is gone).
   function buildApplyExample() {
     const ghostRow = (text) => c('div', {
       className: 'v2-empty-check',
