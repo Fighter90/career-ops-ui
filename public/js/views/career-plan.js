@@ -112,7 +112,8 @@ Router.register('career-plan', async () => {
   editor.addEventListener('input', syncExportEnabled);
   syncExportEnabled();
 
-  root.appendChild(window.LlmPageKit.layout({ form: formCol, result: resultCol }).root);
+  const page = window.LlmPageKit.layout({ form: formCol, result: resultCol });
+  root.appendChild(page.root);
 
   resultCol.appendChild(c('div', { className: 'card', style: { padding: '16px', margin: '0 0 12px' } }, [
     editor,
@@ -127,7 +128,7 @@ Router.register('career-plan', async () => {
     genBtn.disabled = true;
     // CAR-119 — the shared run panel (live elapsed/ETA + Cancel) rides the
     // result column while the plan generates.
-    const runCtrl = window.LlmPageKit.createRun({ etaSeconds: 40 }).mount(runHost);
+    const runCtrl = window.LlmPageKit.createRun({ etaSeconds: 40, onBegin: () => page.show('result') }).mount(runHost);
     try {
       const res = await window.LlmPageKit.run({
         run: runCtrl,
@@ -159,8 +160,8 @@ Router.register('career-plan', async () => {
         ]);
         UI.modal(t('plan.generate', 'Generate plan'), body);
       }
-    } catch (err) {
-      UI.toast((err && err.message) || t('plan.generateFailed', 'Could not generate the plan'), 'error');
+    } catch {
+      // CAR-119 review #4 — the kit's fail panel announces the failure.
     } finally { genBtn.disabled = false; }
   });
 

@@ -55,10 +55,11 @@ Router.register('networking', async () => {
     ]),
   ]);
   const output = c('div', { style: { margin: '0 0 18px' } });
-  root.appendChild(window.LlmPageKit.layout({
+  const page = window.LlmPageKit.layout({
     form: c('div', null, [picker, setup]),
     result: c('div', null, [runHost, output]),
-  }).root);
+  });
+  root.appendChild(page.root);
 
   function field(label, el) {
     return c('label', { style: { display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '12px', color: 'var(--foggy)' } }, [label, el]);
@@ -74,7 +75,7 @@ Router.register('networking', async () => {
     buildBtn.disabled = true;
     // CAR-119 — the shared run panel replaces the static "Researching…" line:
     // synchronous paint, live elapsed/ETA, Cancel aborts the POST.
-    const runCtrl = window.LlmPageKit.createRun({ etaSeconds: 30 }).mount(runHost);
+    const runCtrl = window.LlmPageKit.createRun({ etaSeconds: 30, onBegin: () => page.show('result') }).mount(runHost);
     try {
       const res = await window.LlmPageKit.run({
         run: runCtrl,
@@ -89,8 +90,9 @@ Router.register('networking', async () => {
       } else {
         showManualPrompt(res && res.prompt);
       }
-    } catch (err) {
-      UI.toast((err && err.message) || t('net.buildFailed', 'Could not build the plan'), 'error');
+    } catch {
+      // CAR-119 review #4 — the kit's llm2run--fail panel (role=alert, right
+      // above the output) is the single announcement; the toast is gone.
     } finally { buildBtn.disabled = false; }
   });
 
@@ -134,10 +136,10 @@ Router.register('networking', async () => {
       empty: t('net.savedEmpty', 'No saved plans yet — build one and click “Save plan”.'),
     },
     load: async () => {
-      try {
-        const { plans } = await API.get('/api/networking/plans');
-        return plans || [];
-      } catch { return []; }
+      // review #12 — errors propagate to the drawer's role=alert state;
+      // swallowing here would read a failure as "nothing saved yet".
+      const { plans } = await API.get('/api/networking/plans');
+      return plans || [];
     },
     onView: async (s) => {
       try {

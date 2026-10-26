@@ -60,10 +60,13 @@ Router.register('funded', async () => {
     out.textContent = '';
     // CAR-119 — the shared run panel paints synchronously (the ≤300 ms
     // criterion); Cancel marks the run cancelled and the result is discarded.
-    const runCtrl = window.LlmPageKit.createRun({ etaSeconds: 20 }).mount(runHost);
+    const runCtrl = window.LlmPageKit.createRun({ etaSeconds: 20, onBegin: () => page.show('result') }).mount(runHost);
     try {
       const res = await window.LlmPageKit.run({
         run: runCtrl,
+        // CAR-119 review #4 — the results region paints the failure
+        // (reason-aware surface); the kit stays silent.
+        failPaint: false,
         intro: t('funded.loading', 'Scanning funding feeds…'),
         request: () => API.get('/api/company-funded'),
       });

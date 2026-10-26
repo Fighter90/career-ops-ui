@@ -173,7 +173,7 @@ window.LlmPageKit = (function () {
    *   .active          — true between begin() and finish/fail/cancel.
    * The view mounts it with .mount(container) right after creating it.
    */
-  function createRun({ stages, etaSeconds } = {}) {
+  function createRun({ stages, etaSeconds, onBegin } = {}) {
     const stageList = Array.isArray(stages) ? stages.slice() : [];
     const eta = Math.max(0, Number(etaSeconds) || 0);
     const ctrl = new AbortController();
@@ -207,10 +207,19 @@ window.LlmPageKit = (function () {
     }
 
     function begin() {
-      if (active) return false; // one run panel at a time (views keep their own single-flight too)
+      // One run per controller (CAR-119 review #5/#6): a cancelled or
+      // aborted controller is SPENT — begin refuses, and the view (which
+      // creates a fresh controller per click) starts a clean run. Refusing
+      // here is what keeps "cancel → accidental re-begin" from firing a
+      // request on a dead signal that would abort silently.
+      if (active || cancelled || ctrl.signal.aborted) return false;
       cancelled = false;
       active = true;
       startedAt = Date.now();
+      // CAR-119 review #2 — let the page reveal the result pane BEFORE the
+      // panel paints (below 1280 px the result column starts tab-hidden;
+      // without this the whole run would render into a hidden pane).
+      if (typeof onBegin === 'function') { try { onBegin(); } catch { /* view decision */ } }
       panel = el('div', { className: 'llm2run', role: 'status' }, [
         el('div', { className: 'llm2run__head' }, [
           el('span', { className: 'llm2run__state' }, t('llm2.progressRunning', 'Working…')),
@@ -236,6 +245,9 @@ window.LlmPageKit = (function () {
         }),
       ].filter(Boolean));
       stageEls = Array.from(panel.querySelectorAll('.llm2run__stage'));
+      // CAR-119 review #4 — never pile states up: a stale cancelled/failed
+      // panel from an earlier run in this host is replaced, not stacked.
+      if (host) host.replaceChildren();
       if (host) host.appendChild(panel);
       tick();
       // a11y — the user asked for work; announce where the progress lives.
@@ -262,16 +274,24 @@ window.LlmPageKit = (function () {
       teardownPanel();
     }
 
-    function fail(err) {
+    function fail(err, paint) {
       if (!active) return;
       const message = (err && err.message) || String(err || t('common.error', 'Error'));
-      if (cancelled || (ctrl.signal.aborted && !cancelled)) {
-        // abort() already painted the cancelled state — never paint a
+      // CAR-119 review #12 — the condition collapses to one question: did
+      // the USER cancel? An aborted signal is always the cancel path here
+      // (the kit owns the only AbortController).
+      if (cancelled || ctrl.signal.aborted) {
+        // cancel() already painted the cancelled state — never paint a
         // phantom error over it.
         teardownPanel();
         return;
       }
       teardownPanel();
+      // CAR-119 review #4 — views with their own failure surface (the chat
+      // bubble, the pinned empty-state box, the output region) pass
+      // paint === false and announce the failure themselves; no double
+      // role=alert.
+      if (paint === false) return;
       if (host) {
         host.appendChild(el('div', { className: 'llm2run llm2run--fail', role: 'alert' }, [
           el('span', null, t('common.error', 'Error') + ': ' + message),
@@ -303,16 +323,18 @@ window.LlmPageKit = (function () {
   }
 
   /**
-   * run({ run, request, onDone, intro }) — convenience wiring:
+   * run({ run, request, onDone, intro, failPaint }) — convenience wiring:
    *   run.begin(); if intro → logged as the first line (the view's own
    *   localized "what is happening" message, e.g. net.building); then
-   *   request(signal) → finish + onDone; failures paint + rethrow; an
-   *   aborted run resolves silently (the cancelled panel already shows).
+   *   request(signal) → finish + onDone; failures paint the kit's error
+   *   panel (pass failPaint:false when the view announces the failure in
+   *   its own surface) and rethrow for the view; an aborted run resolves
+   *   silently (the cancelled panel already shows).
    * `request` receives the AbortSignal and returns a promise (usually
    * LlmPageKit.postJSON(path, body, signal) or API.post for the
    * not-yet-cancellable endpoints).
    */
-  async function run({ run: ctrl, request, onDone, intro }) {
+  async function run({ run: ctrl, request, onDone, intro, failPaint }) {
     if (!ctrl.begin()) return undefined;
     if (intro) ctrl.log(intro);
     try {
@@ -321,7 +343,7 @@ window.LlmPageKit = (function () {
       if (typeof onDone === 'function') onDone(res);
       return res;
     } catch (e) {
-      ctrl.fail(e);
+      ctrl.fail(e, failPaint);
       if (ctrl.cancelled || (e && e.aborted) || (ctrl.signal && ctrl.signal.aborted)) return undefined;
       throw e;
     }

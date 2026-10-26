@@ -54,10 +54,11 @@ Router.register('orientation', async () => {
       '⏱ ' + t('common.eta', '~{n}s').replace('{n}', '30'))));
   // CAR-119 — the shared AI-page template: form (sticky) | result,
   // "Input / Result" tabs below 1280 px.
-  root.appendChild(window.LlmPageKit.layout({
+  const page = window.LlmPageKit.layout({
     form: emptyState,
     result: c('div', null, [runHost, out]),
-  }).root);
+  });
+  root.appendChild(page.root);
   root.appendChild(c('p', { style: { color: 'var(--foggy)', fontSize: '12px', margin: '12px 0 0' } },
     t('orient.note', 'This reads your CV, profile, two-pager, and memory note — it never invents facts and never reports measured test scores. Nothing is saved; export it if you want to keep it.')));
 
@@ -66,12 +67,15 @@ Router.register('orientation', async () => {
     genBtn.disabled = true;
     // CAR-119 — the shared run panel (live elapsed/ETA + Cancel) rides the
     // result column while the profile generates.
-    const runCtrl = window.LlmPageKit.createRun({ etaSeconds: 30 }).mount(runHost);
+    const runCtrl = window.LlmPageKit.createRun({ etaSeconds: 30, onBegin: () => page.show('result') }).mount(runHost);
     showStatus(c('div', { className: 'loading' }, t('orient.running', 'Generating your profile…')));
     out.innerHTML = ''; // a re-run replaces the previous profile instead of appending below it
     try {
       const res = await window.LlmPageKit.run({
         run: runCtrl,
+        // CAR-119 review #4 — the empty-state box (pinned CAR-94.7 surface)
+        // announces the failure; the kit stays silent.
+        failPaint: false,
         request: (signal) => window.LlmPageKit.postJSON('/api/orientation/generate', { run: true }, signal),
       });
       if (runCtrl.cancelled || runCtrl.signal.aborted) { showStatus(); return; }

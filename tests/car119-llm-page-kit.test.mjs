@@ -99,6 +99,13 @@ function makeEl(tag) {
 }
 function makeText(s) { const n = makeEl('#text'); n.textContent = String(s); return n; }
 
+/** Recursive text of a stub subtree (text nodes concatenated). */
+function textOf(node) {
+  if (!node) return '';
+  if (node.tagName === '#TEXT') return String(node.textContent || '');
+  return (node.children || []).map(textOf).join('');
+}
+
 const doc = {
   createElement: (tag) => makeEl(tag),
   createTextNode: (s) => makeText(s),
@@ -253,7 +260,7 @@ test('CAR-119: cancel aborts the signal and paints the honest cancelled state; a
   assert.equal(host.children.length, 1, 'no phantom error painted over the cancelled state');
 });
 
-test('CAR-119: fail paints an error panel with the server message', () => {
+test('CAR-119: fail paints an error panel with the server message (real text assertion)', () => {
   const { LlmPageKit } = loadKit();
   const host = doc.createElement('div');
   const ctrl = LlmPageKit.createRun({}).mount(host);
@@ -262,7 +269,34 @@ test('CAR-119: fail paints an error panel with the server message', () => {
   assert.equal(ctrl.active, false);
   assert.equal(host.children.length, 1);
   assert.ok(host.children[0].className.includes('llm2run--fail'));
-  assert.ok(JSON.stringify(host.children[0].children.some?.call ? true : true));
+  assert.ok(textOf(host.children[0]).includes('boom'), 'the server message reaches the panel text');
+});
+
+test('CAR-119: fail with paint=false leaves the announcement to the view (no double role=alert)', () => {
+  const { LlmPageKit } = loadKit();
+  const host = doc.createElement('div');
+  const ctrl = LlmPageKit.createRun({}).mount(host);
+  ctrl.begin();
+  ctrl.fail(new Error('view announces this'), false);
+  assert.equal(ctrl.active, false);
+  assert.equal(host.children.length, 0, 'the kit painted nothing');
+});
+
+// ── review #4 — states never pile up in one host ─────────────────────────
+
+test('CAR-119: a new run on the same host replaces the stale cancelled panel (fresh controller per click)', () => {
+  const { LlmPageKit } = loadKit();
+  const host = doc.createElement('div');
+  const first = LlmPageKit.createRun({}).mount(host);
+  first.begin();
+  first.cancel(); // cancelled panel painted into host
+  assert.equal(host.children.length, 1);
+  // The view creates a FRESH controller per click — that new run must
+  // REPLACE the stale state panel, not stack below it.
+  const second = LlmPageKit.createRun({}).mount(host);
+  assert.equal(second.begin(), true, 'a fresh controller begins normally after another was cancelled');
+  assert.equal(host.children.length, 1, 'begin() cleared the stale panel');
+  assert.ok(!host.children[0].className.includes('--cancelled'), 'the live panel replaced the stale one');
 });
 
 // ── transport ─────────────────────────────────────────────────────────────
@@ -333,15 +367,48 @@ test('CAR-119: run() on a rejected request paints the failure and rethrows for t
   assert.ok(host.children[0].className.includes('llm2run--fail'));
 });
 
-test('CAR-119: run() with an already-cancelled run returns silently (no throw, no error panel)', async () => {
+test('CAR-119: begin() after cancel REFUSES — the spent controller never fires a silent request', async () => {
+  // Review #5/#6 — a cancelled controller is spent: re-beginning it used to
+  // "succeed" and fire a fetch on an aborted signal, which aborted silently
+  // and made the run vanish. The refusal is observable: the request spy is
+  // never called and the host keeps exactly the one cancelled panel.
   const { LlmPageKit } = loadKit();
   const host = doc.createElement('div');
   const ctrl = LlmPageKit.createRun({}).mount(host);
   ctrl.begin();
   ctrl.cancel();
-  const out = await LlmPageKit.run({ run: ctrl, request: async () => { throw new Error('late'); } });
+  let calls = 0;
+  const out = await LlmPageKit.run({ run: ctrl, request: async () => { calls++; return {}; } });
   assert.equal(out, undefined);
+  assert.equal(calls, 0, 'the request spy was never called');
+  assert.equal(host.children.length, 1, 'exactly the cancelled panel remains');
   assert.ok(host.children[0].className.includes('llm2run--cancelled'));
+});
+
+// ── review #2 — begin() reveals the result pane via onBegin ──────────────
+
+test('CAR-119: onBegin fires before the panel paints so the view can show the result tab', () => {
+  const { LlmPageKit } = loadKit();
+  const form = doc.createElement('div');
+  const result = doc.createElement('div');
+  const page = LlmPageKit.layout({ form, result });
+  // Below 1280 px the layout starts on the Input tab: the result pane is
+  // hidden until a run begins.
+  assert.equal(page.resultPane.hidden, true, 'initial state hides the result pane (mobile tab start)');
+
+  const host = doc.createElement('div');
+  page.resultPane.appendChild(host);
+  const order = [];
+  const ctrl = LlmPageKit.createRun({
+    onBegin: () => { order.push('onBegin'); page.show('result'); },
+  }).mount(host);
+  const painted = [];
+  const origAppend = host.appendChild.bind(host);
+  host.appendChild = (n) => { painted.push('paint'); return origAppend(n); };
+  ctrl.begin();
+  assert.deepEqual(order, ['onBegin'], 'onBegin ran');
+  assert.equal(page.resultPane.hidden, false, 'the result pane is VISIBLE when the run panel paints');
+  assert.equal(painted.length, 1, 'the panel painted into the (now visible) pane');
 });
 
 // ── job picker ────────────────────────────────────────────────────────────

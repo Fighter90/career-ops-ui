@@ -226,6 +226,9 @@
     // CAR-119 — the run/progress panel mounts above the result pane (its
     // begin() paints synchronously on click, the ≤300 ms criterion).
     const runHost = c('div');
+    // CAR-119 review #2 — the layout handle; begin() flips to the Result
+    // tab through it (assigned in the return block below).
+    let page = null;
     // CAR-94 (5) — cross-button single-flight + stale token, the same shape
     // as deep.js: "Generate prompt", "Run live" and the prompt card's
     // "Show result" all POST /api/mode/:slug; withSpinner disables only the
@@ -384,7 +387,7 @@
       // prompt-only POST (run:false) is a cheap local build — the plain
       // loading line stays right for it.
       const runCtrl = run
-        ? window.LlmPageKit.createRun({ etaSeconds: 150 }).mount(runHost)
+        ? window.LlmPageKit.createRun({ etaSeconds: 150, onBegin: () => page.show('result') }).mount(runHost)
         : null;
       if (!run) out.innerHTML = `<div class="loading">${t('mode.generating', 'Generating…')}</div>`;
       try {
@@ -403,10 +406,10 @@
           showPrompt(r && r.prompt, r && r.message, cfg.slug);
         }
       } catch (e) {
+        // CAR-119 review #4 — the kit's fail panel announces the failure;
+        // the CAR-130 field marking (pinned) stays the form-side surface.
         if (myToken !== runToken) return;
         markFormError();
-        out.innerHTML = '';
-        out.appendChild(c('div', { className: 'empty' }, e.message || String(e)));
       } finally {
         if (myToken === runToken) inFlight = false;
       }
@@ -574,8 +577,9 @@
         ]),
       ]),
       // CAR-119 — the shared AI-page template: form (sticky) | result,
-      // "Input / Result" tabs below 1280 px.
-      window.LlmPageKit.layout({
+      // "Input / Result" tabs below 1280 px. begin() flips to the Result
+      // tab (review #2) so the run panel never paints into a hidden pane.
+      page = window.LlmPageKit.layout({
         form: c('div', null, [deprecationBanner, cadenceBoard, picker, c('div', { className: 'card' }, [
           ...cfg.fields.map(field),
           c('div', { className: 'flex gap-3' }, [manualBtn, runLiveBtn]),

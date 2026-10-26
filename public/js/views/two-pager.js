@@ -135,7 +135,14 @@ Router.register('two-pager', async () => {
     result: c('div', null, [runHost, previewPane]),
   });
   root.insertBefore(twoPagerPage.root, actions);
-  root.addEventListener('input', renderLivePreview);
+  // Review #10 — programmatic .value (AI fill) fires no input event, so
+  // the fill path re-renders explicitly; typing debounces at ~150 ms so a
+  // full buildMarkdown+UI.md pass does not run on every keystroke.
+  let previewTimer = null;
+  root.addEventListener('input', () => {
+    if (previewTimer) clearTimeout(previewTimer);
+    previewTimer = setTimeout(renderLivePreview, 150);
+  });
   renderLivePreview();
 
   root.appendChild(c('p', { style: { color: 'var(--foggy)', fontSize: '12px', margin: '0 0 24px' } },
@@ -229,7 +236,7 @@ Router.register('two-pager', async () => {
     draftBtn.textContent = t('twoPager.aiFilling', '✨ Filling…');
     // CAR-119 — the shared run panel (live elapsed/ETA + Cancel) rides the
     // result column while the fill runs.
-    const runCtrl = window.LlmPageKit.createRun({ etaSeconds: 20 }).mount(runHost);
+    const runCtrl = window.LlmPageKit.createRun({ etaSeconds: 20, onBegin: () => twoPagerPage.show('result') }).mount(runHost);
     try {
       // Ask the server to run it live; it falls back to a manual prompt when no
       // provider is configured. Auto-fill only ever populates editable fields —
@@ -241,6 +248,7 @@ Router.register('two-pager', async () => {
       if (runCtrl.cancelled || runCtrl.signal.aborted) return; // a cancelled run paints nothing more
       if (res && res.fields) {
         applyFields(res.fields);
+        renderLivePreview(); // review #10 — programmatic fills fire no input event
         // v1.243.0 (views-3) — an AI fill is also a deliberate edit: re-enable
         // Save even after a failed initial load (it fills on-screen content).
         if (loadErr) saveBtn.disabled = false;
@@ -248,8 +256,8 @@ Router.register('two-pager', async () => {
       } else if (res && res.prompt) {
         showManualPrompt(res.prompt);
       }
-    } catch (err) {
-      UI.toast((err && err.message) || t('twoPager.aiFillFailed', 'Could not draft the two-pager'), 'error');
+    } catch {
+      // CAR-119 review #4 — the kit's fail panel announces the failure.
     } finally {
       draftBtn.disabled = false;
       draftBtn.textContent = t('twoPager.aiFill', '✨ AI fill assistant');

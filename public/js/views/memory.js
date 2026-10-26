@@ -72,14 +72,17 @@ Router.register('memory', async () => {
     suggestBtn.disabled = true;
     // CAR-119 — shared run panel; the prompt result renders into the result
     // column instead of a modal.
-    const runCtrl = window.LlmPageKit.createRun({ etaSeconds: 15 }).mount(runHost);
+    const runCtrl = window.LlmPageKit.createRun({ etaSeconds: 15, onBegin: () => page.show('result') }).mount(runHost);
     suggestionOut.textContent = '';
     try {
-      const { prompt } = await window.LlmPageKit.run({
+      // Review #1 — assign-then-guard-then-read: run() resolves UNDEFINED on
+      // cancel; destructuring before the guard threw a phantom TypeError.
+      const res = await window.LlmPageKit.run({
         run: runCtrl,
         request: (signal) => window.LlmPageKit.postJSON('/api/memory/suggest', {}, signal),
       });
       if (runCtrl.cancelled || runCtrl.signal.aborted) return; // a cancelled run paints nothing more
+      const prompt = res && res.prompt;
       suggestionOut.appendChild(c('div', { className: 'card', style: { padding: '16px' } }, [
         c('p', { style: { margin: '0 0 10px', color: 'var(--foggy)' } },
           t('mem.suggestHelp', 'Run this in any LLM, review the behavioural bullets it proposes, then paste an edited version into your memory note above. It reads your tracker — it never invents facts.')),
@@ -94,12 +97,12 @@ Router.register('memory', async () => {
           }, '📋 ' + t('eval.copy', 'Copy')),
         ]),
       ]));
-    } catch (err) {
-      UI.toast((err && err.message) || t('mem.suggestFailed', 'Could not build a suggestion'), 'error');
+    } catch {
+      // CAR-119 review #4 — the kit's fail panel announces the failure.
     } finally { suggestBtn.disabled = false; }
   });
 
-  root.appendChild(window.LlmPageKit.layout({
+  const page = window.LlmPageKit.layout({
     form: c('div', null, [
       c('div', { className: 'card', style: { padding: '16px', margin: '12px 0' } }, [
         ta,
@@ -109,7 +112,8 @@ Router.register('memory', async () => {
         t('mem.privacyNote', 'Stored in your parent project’s user layer (config/memory.md) — never overwritten by updates, and only ever sent inside the LLM prompts you run.')),
     ]),
     result: c('div', null, [runHost, suggestionOut]),
-  }).root);
+  });
+  root.appendChild(page.root);
 
   return root;
 });

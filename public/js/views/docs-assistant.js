@@ -52,10 +52,11 @@ Router.register('docs-assistant', async () => {
   ]);
   // CAR-119 — the shared AI-page template: input (sticky) | chat,
   // "Input / Result" tabs below 1280 px.
-  root.appendChild(window.LlmPageKit.layout({
+  const page = window.LlmPageKit.layout({
     form: c('div', null, [chips, bar]),
     result: c('div', null, [runHost, log]),
-  }).root);
+  });
+  root.appendChild(page.root);
 
   function bubble(kind, node) {
     const mine = kind === 'me';
@@ -74,10 +75,13 @@ Router.register('docs-assistant', async () => {
     askBtn.disabled = true;
     // CAR-119 — the shared run panel (live elapsed/ETA + Cancel) replaces
     // the static "Searching the guide…" bubble.
-    const runCtrl = window.LlmPageKit.createRun({ etaSeconds: 20 }).mount(runHost);
+    const runCtrl = window.LlmPageKit.createRun({ etaSeconds: 20, onBegin: () => page.show('result') }).mount(runHost);
     try {
       const res = await window.LlmPageKit.run({
         run: runCtrl,
+        // CAR-119 review #4 — the error lands as a chat bubble (the chat's
+        // own surface); the kit stays silent.
+        failPaint: false,
         request: (signal) => window.LlmPageKit.postJSON('/api/docs-assistant/ask', { question, run: true }, signal),
       });
       if (runCtrl.cancelled || runCtrl.signal.aborted) return; // a cancelled run paints nothing more

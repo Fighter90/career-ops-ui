@@ -248,19 +248,23 @@ Router.register('stats', async () => {
     // // CAR-119 i18n: no new dictionary keys — the kit's `llm2.*` strings
     // ship as I18n.t EN fallbacks inside public/js/lib/llm-page-kit.js.
     const runHost = c('div');
-    wrap.appendChild(window.LlmPageKit.layout({
+    const page = window.LlmPageKit.layout({
       form: controls,
       result: c('div', null, [runHost, out]),
-    }).root);
+    });
+    wrap.appendChild(page.root);
 
     let currentMd = '';
     genBtn.addEventListener('click', async () => {
       genBtn.disabled = true;
       out.textContent = '';
-      const runCtrl = window.LlmPageKit.createRun({ etaSeconds: 150 }).mount(runHost);
+      const runCtrl = window.LlmPageKit.createRun({ etaSeconds: 150, onBegin: () => page.show('result') }).mount(runHost);
       try {
         const res = await window.LlmPageKit.run({
           run: runCtrl,
+          // CAR-119 review #4 — the report region paints the failure (its own
+          // surface, with the export context); the kit stays silent.
+          failPaint: false,
           intro: t('stats.marketRunning', 'Generating market report…'),
           request: (signal) => window.LlmPageKit.postJSON('/api/stats/market',
             { run: true, region: region.value, currency: curSel.value }, signal),

@@ -291,7 +291,7 @@ Router.register('deep', async () => {
     // CAR-119 — the shared run panel: paints synchronously, live elapsed/ETA,
     // Cancel aborts the request (the result is discarded; full server-side
     // cancellation stays a server hand-off).
-    const runCtrl = window.LlmPageKit.createRun({ etaSeconds: 180 }).mount(runHost);
+    const runCtrl = window.LlmPageKit.createRun({ etaSeconds: 180, onBegin: () => page.show('result') }).mount(runHost);
     try {
       const r = await UI.withSpinner(btn, () => window.LlmPageKit.run({
         run: runCtrl,
@@ -315,9 +315,9 @@ Router.register('deep', async () => {
         showPrompt(r.prompt, r.message || t('deep.geminiNoOutput', 'Gemini returned no output. Showing the prompt — paste it into Claude Code instead.'));
       }
     } catch (e) {
+      // CAR-119 review #4 — the kit's llm2run--fail panel (role=alert, in
+      // runHost right above) is the single announcement; no second paint.
       if (myToken !== runToken) return;
-      out.innerHTML = '';
-      out.appendChild(c('div', { className: 'empty' }, e.message));
     } finally {
       if (myToken === runToken) inFlight = false;
     }
@@ -355,6 +355,37 @@ Router.register('deep', async () => {
     UI.providerCostHint(t),
   );
 
+  // CAR-119 — the shared AI-page template: form (sticky) | result,
+  // "Input / Result" tabs below 1280 px. begin() flips to the Result tab
+  // (review #2) so the run panel is never painted into a hidden pane.
+  const page = window.LlmPageKit.layout({
+    // CAR-146 (browser contract) — the saved-research archive stays in the
+    // FORM column: it is browse input, not a run result, and the result
+    // pane is tab-hidden below 1280 px (burying the saved cards there
+    // regressed the narrow-viewport sweep).
+    form: c('div', null, [picker, c('div', { className: 'card' }, [
+      c('div', { className: 'row' }, [
+        c('div', { className: 'field' }, [c('label', { htmlFor: 'deep-company' }, t('deep.companyLbl')), company]),
+        c('div', { className: 'field' }, [c('label', { htmlFor: 'deep-role' }, t('deep.roleLbl')), role]),
+      ]),
+      c('div', { className: 'flex gap-3' }, [
+        liveAvailable
+          ? c('button', {
+              className: 'btn btn-primary',
+              title: liveEngine, // engine name kept as hover tooltip; the label stays clean
+              onClick: (e) => runLive(e.currentTarget),
+            }, '⚡ ' + t('deep.runLive', 'Run live'))
+          : null,
+        c('button', { className: 'btn btn-ghost', onClick: (e) => runManual(e.currentTarget) }, liveAvailable ? t('deep.copyPrompt', 'Copy prompt') : t('deep.run')),
+      ]),
+      liveAvailable
+        ? null
+        : c('p', { style: { color: 'var(--foggy)', fontSize: '13px', marginTop: '8px' } },
+          t('deep.tipManual', 'Tip: set ANTHROPIC_API_KEY (or GEMINI_API_KEY) in .env to run research live in the browser. Without it, the prompt is generated for you to paste into Claude Code.')),
+    ]), archive]),
+    result: c('div', null, [runHost, out]),
+  });
+
   return c('div', null, [
     c('header', { className: 'page-header' }, [
       c('div', null, [
@@ -363,34 +394,6 @@ Router.register('deep', async () => {
         pageMeta,
       ]),
     ]),
-    // CAR-119 — the shared AI-page template: form (sticky) | result,
-    // "Input / Result" tabs below 1280 px.
-    window.LlmPageKit.layout({
-      // CAR-146 (browser contract) — the saved-research archive stays in the
-      // FORM column: it is browse input, not a run result, and the result
-      // pane is tab-hidden below 1280 px (burying the saved cards there
-      // regressed the narrow-viewport sweep).
-      form: c('div', null, [picker, c('div', { className: 'card' }, [
-        c('div', { className: 'row' }, [
-          c('div', { className: 'field' }, [c('label', { htmlFor: 'deep-company' }, t('deep.companyLbl')), company]),
-          c('div', { className: 'field' }, [c('label', { htmlFor: 'deep-role' }, t('deep.roleLbl')), role]),
-        ]),
-        c('div', { className: 'flex gap-3' }, [
-          liveAvailable
-            ? c('button', {
-                className: 'btn btn-primary',
-                title: liveEngine, // engine name kept as hover tooltip; the label stays clean
-                onClick: (e) => runLive(e.currentTarget),
-              }, '⚡ ' + t('deep.runLive', 'Run live'))
-            : null,
-          c('button', { className: 'btn btn-ghost', onClick: (e) => runManual(e.currentTarget) }, liveAvailable ? t('deep.copyPrompt', 'Copy prompt') : t('deep.run')),
-        ]),
-        liveAvailable
-          ? null
-          : c('p', { style: { color: 'var(--foggy)', fontSize: '13px', marginTop: '8px' } },
-            t('deep.tipManual', 'Tip: set ANTHROPIC_API_KEY (or GEMINI_API_KEY) in .env to run research live in the browser. Without it, the prompt is generated for you to paste into Claude Code.')),
-      ]), archive]),
-      result: c('div', null, [runHost, out]),
-    }).root,
+    page.root,
   ]);
 });

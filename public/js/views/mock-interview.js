@@ -47,10 +47,11 @@ Router.register('mock-interview', async () => {
     c('div', null, startBtn),
   ]);
   const convo = c('div', { style: { display: 'none', margin: '0 0 16px' } });
-  root.appendChild(window.LlmPageKit.layout({
+  const page = window.LlmPageKit.layout({
     form: c('div', null, [picker, setup]),
     result: c('div', null, [runHost, convo]),
-  }).root);
+  });
+  root.appendChild(page.root);
 
   function field(label, el) {
     return c('label', { style: { display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '12px', color: 'var(--foggy)' } }, [label, el]);
@@ -98,7 +99,13 @@ Router.register('mock-interview', async () => {
     sendBtn.disabled = true; startBtn.disabled = true;
     // CAR-119 — the shared run panel (progress/ETA/Cancel) replaces the
     // static thinking bubble; Cancel drops the turn like a stale one.
-    const runCtrl = window.LlmPageKit.createRun({ etaSeconds: 30 }).mount(runHost);
+    const runCtrl = window.LlmPageKit.createRun({ etaSeconds: 30, onBegin: () => page.show('result') }).mount(runHost);
+    // Review #9 — remember the candidate turn this request answers, so a
+    // CANCEL can put it back where it came from (a cancelled turn must not
+    // leave two consecutive candidate entries in the transcript).
+    const pendingCandidate = (history.length && history[history.length - 1].speaker === 'candidate')
+      ? history[history.length - 1]
+      : null;
     try {
       const res = await window.LlmPageKit.run({
         run: runCtrl,
@@ -106,7 +113,18 @@ Router.register('mock-interview', async () => {
         request: (signal) => window.LlmPageKit.postJSON('/api/mock-interview/turn', { role: session.role, company: session.company, jd: session.jd, history, run: true }, signal),
       });
       if (epoch !== sessionEpoch) return; // stale turn — a newer session superseded it
-      if (runCtrl.cancelled || runCtrl.signal.aborted) return; // a cancelled turn paints nothing more
+      if (runCtrl.cancelled || runCtrl.signal.aborted) {
+        // Review #9 — restore the cancelled turn: pop the pending candidate
+        // entry and put its text back into the answer box so the user can
+        // re-send it (the transcript never holds two candidate turns).
+        if (pendingCandidate && history[history.length - 1] === pendingCandidate) {
+          history.pop();
+          // the bubble leaves the thread with the transcript entry
+          if (thread.lastChild) thread.removeChild(thread.lastChild);
+          answerBox.value = pendingCandidate.text;
+        }
+        return;
+      }
       if (res && res.markdown) {
         history.push({ speaker: 'interviewer', text: res.markdown });
         thread.appendChild(bubble('interviewer', res.markdown));
@@ -114,9 +132,9 @@ Router.register('mock-interview', async () => {
         // No provider key → show the copy-paste prompt honestly in a modal.
         showManualPrompt(res && res.prompt);
       }
-    } catch (err) {
+    } catch {
+      // CAR-119 review #4 — the kit's fail panel announces the failure.
       if (epoch !== sessionEpoch) return;
-      UI.toast((err && err.message) || t('mock.turnFailed', 'Could not get the next turn'), 'error');
     } finally {
       if (epoch === sessionEpoch) {
         sendBtn.disabled = false; startBtn.disabled = false;
@@ -191,10 +209,9 @@ Router.register('mock-interview', async () => {
       empty: t('mock.savedEmpty', 'No saved sessions yet — finish an interview and click “Save transcript”.'),
     },
     load: async () => {
-      try {
-        const { sessions } = await API.get('/api/mock-interview/sessions');
-        return sessions || [];
-      } catch { return []; }
+      // review #12 — errors propagate to the drawer's role=alert state.
+      const { sessions } = await API.get('/api/mock-interview/sessions');
+      return sessions || [];
     },
     onView: async (s) => {
       try {
