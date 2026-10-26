@@ -285,6 +285,14 @@ Router.register('pipeline', async () => {
   // the global-search quick-add) cannot swallow a pending undo.
   const undoQueue = PV ? PV.createUndoQueue(5) : null;
   let undoTimer = 0;
+  // CAR-151 — url → the opaque restoreToken its DELETE returned (this
+  // session only; the RAW line(s) stay server-side — the client never
+  // carries content). undoLast() replays tokens through
+  // POST /api/pipeline/restore so the checklist metadata
+  // (company/title/location/notes) survives; a URL with no token — removed
+  // by another surface, or after a server restart — falls back to the bare
+  // re-add. Entries are pruned as the undo consumes them.
+  const deletedLines = new Map();
 
   function pushUndo(urls) {
     if (undoQueue) undoQueue.push(urls);
@@ -337,15 +345,48 @@ Router.register('pipeline', async () => {
     if (btn) btn.focus();
   }
 
-  // Re-add the last discarded batch through the existing add path
-  // (POST /api/pipeline), sequentially; the server dedup makes this
-  // idempotent if the user re-added some URLs by hand meanwhile.
+  // CAR-151 — lossless undo. URLs deleted this session carry the opaque
+  // restoreToken their DELETE returned (the raw line(s) live server-side),
+  // so the checklist cells (company/title/location/notes) come back
+  // exactly through POST /api/pipeline/restore; the server dedups on the
+  // canonical URL key, which keeps the restore idempotent if the user
+  // re-added some URLs by hand meanwhile. A URL with no token falls back
+  // to the existing bare add path (POST /api/pipeline) — and so does a
+  // token the server no longer knows (restart / store eviction) or a
+  // restore call that failed outright: the undo may lose the METADATA in
+  // those cases, never the URL itself.
   async function undoLast() {
     const batch = undoQueue ? undoQueue.pop() : null;
     hideUndoBar();
     if (!batch || !batch.length) return;
-    let restored = 0;
+    const tokens = [];
+    const tokenUrls = [];
+    const bare = [];
     for (const u of batch) {
+      const token = deletedLines.get(u);
+      if (token) { tokens.push(token); tokenUrls.push(u); }
+      else bare.push(u);
+    }
+    let restored = 0;
+    if (tokens.length) {
+      try {
+        const r = await API.post('/api/pipeline/restore', { tokens });
+        restored += (r && r.restored) || 0;
+        // Tokens the server no longer knows (restart, eviction) — re-add
+        // those URLs the plain way instead of dropping them.
+        const unknown = (r && Array.isArray(r.unknown)) ? r.unknown : [];
+        if (unknown.length) {
+          const unknownSet = new Set(unknown);
+          tokenUrls.forEach((u, i) => { if (unknownSet.has(tokens[i])) bare.push(u); });
+        }
+      } catch (err) {
+        // The restore call itself failed — toast AND re-add the URLs bare,
+        // so a broken restore can never silently lose them.
+        UI.toast((err && err.message) || t('common.error', 'Error'), 'error');
+        bare.push(...tokenUrls);
+      }
+    }
+    for (const u of bare) {
       try {
         await API.post('/api/pipeline', { url: u });
         restored += 1;
@@ -353,10 +394,9 @@ Router.register('pipeline', async () => {
         UI.toast((err && err.message) || t('common.error', 'Error'), 'error');
       }
     }
-    // CAR-116 review — only celebrate what actually came back. Known
-    // metadata loss: the re-add restores the bare URL; any comp/notes
-    // once attached to the pipeline line are NOT preserved (a server
-    // side round-trip of pipeline metadata is a separate ticket).
+    // The tokens were consumed by this undo (client-side entries are dead).
+    for (const u of batch) deletedLines.delete(u);
+    // CAR-116 review — only celebrate what actually came back.
     if (restored > 0) UI.toast(t('pipe.undone', 'Restored to the pipeline'), 'success');
     if (Router.current().name === 'pipeline') Router.render();
   }
@@ -481,15 +521,21 @@ Router.register('pipeline', async () => {
 
   // CAR-116 — the ONE delete call site. Row button, preview pane and the
   // bulk loop all funnel through here: a wrapped await, a failure toast,
-  // and preview-state cleanup. Returns true when the URL was removed.
+  // and preview-state cleanup. Returns the restoreToken (CAR-151 — kept
+  // in deletedLines for the lossless undo), true when the delete succeeded
+  // without a token, or null when the DELETE failed. Call sites check
+  // TRUTHINESS only.
   async function removeFromPipeline(url) {
     try {
-      await API.del('/api/pipeline?url=' + encodeURIComponent(url));
+      const r = await API.del('/api/pipeline?url=' + encodeURIComponent(url));
       if (activeUrl === url) { activeUrl = null; previewBody = ''; previewError = ''; }
-      return true;
+      const token = (r && typeof r.restoreToken === 'string') ? r.restoreToken : '';
+      if (token) deletedLines.set(url, token);
+      else deletedLines.delete(url);
+      return token || true;
     } catch (err) {
       UI.toast((err && err.message) || t('common.error', 'Error'), 'error');
-      return false;
+      return null;
     }
   }
 

@@ -16,9 +16,17 @@
  *
  * Idempotent: safe to run repeatedly (predev/prebuild hooks + CI).
  */
-import { cpSync, mkdirSync, readFileSync, readdirSync, writeFileSync, existsSync } from 'node:fs';
+import { cpSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync, existsSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import {
+  PAGE_BYTES,
+  PAGE_MAX_RELEASES,
+  buildMonthIndex,
+  chunkByWeight,
+  splitReleases,
+  stripLeadingH1,
+} from './lib/changelog-split.mjs';
 
 const SITE = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const ROOT = resolve(SITE, '..');
@@ -69,16 +77,30 @@ function rewriteLinks(md) {
   });
 }
 
+// The site page supplies its own <h1> (HelpArticle.astro); the guide's title
+// line would render a second one (CAR-132 — exactly one h1 per page).
+// stripLeadingH1 comes from scripts/lib/changelog-split.mjs (behavior-tested).
+
 for (const f of helpFiles) {
   const md = readFileSync(join(helpSrc, f), 'utf8');
-  writeFileSync(join(helpDst, f), rewriteLinks(md));
+  writeFileSync(join(helpDst, f), rewriteLinks(stripLeadingH1(md)));
 }
 console.log(`[sync-assets] ${helpFiles.length} help guides -> src/content/help/`);
 
-// --- 3b. changelogs (v1.121.0 — /changelog/ pages, one per locale) -----------
-// CHANGELOG.md -> en.md, CHANGELOG.<lang>.md -> <lang>.md, matching the help
-// collection's locale.file naming so the page component resolves entries the
-// same way. Same relative-link rewrite, but against the repo root.
+// --- 3b. changelogs (CAR-131 gates + CAR-132 paginated mirrors) --------------
+// CHANGELOG.md -> en, CHANGELOG.<lang>.md -> <lang>. The full history used to
+// render as ONE ~1 MB page; it is now split into weight-capped pages
+// (`<lang>-p<NN>.md`, newest first) plus a month index
+// (src/generated/changelog-index.json) the page component renders as static
+// links — every release stays ≤2 clicks from /changelog/.
+//
+// Pages are capped by MARKDOWN BYTES, not release count: entries vary from a
+// paragraph (patch releases) to several KB (trains), and CJK/Devanagari
+// locales carry ~2× the bytes per release. 100 KB of md ≈ ≤190 KB of built
+// HTML at the worst observed expansion (1.9×) — comfortably under the
+// 250 KB/page gate in scripts/check-dist.mjs. (PAGE_BYTES /
+// PAGE_MAX_RELEASES live in scripts/lib/changelog-split.mjs.)
+const { pathToFileURL } = await import('node:url');
 const clDst = join(SITE, 'src', 'content', 'changelog');
 mkdirSync(clDst, { recursive: true });
 const GH_ROOT_BASE = `${REPO_URL}/blob/main/`;
@@ -88,14 +110,124 @@ function rewriteRootLinks(md) {
     return `](${abs})`;
   });
 }
+
+// splitReleases / chunkByWeight / buildMonthIndex come from
+// scripts/lib/changelog-split.mjs (behavior-tested by
+// tests/site-changelog-split.test.mjs): Keep-a-Changelog `## [Unreleased]`
+// becomes a page-1 pseudo-release, fence closers must match their opening
+// marker, undated epilogues fold into the preceding chunk, and the month
+// index records pages [first, last] across chunk boundaries.
+
+const clIndex = {}; // lang -> { pages, months: [{ ym, page, lastPage, count }] }
 const clFiles = readdirSync(ROOT).filter((f) => /^CHANGELOG(\.[A-Za-z-]+)?\.md$/.test(f));
 if (clFiles.length < 18) fail(`expected >=18 CHANGELOG files, found ${clFiles.length}`);
+
+const { countReleases, splitChangelog, auditCoverage, englishRuns } = await import(
+  pathToFileURL(join(ROOT, 'scripts', 'changelog-parity.mjs')).href
+);
+const clSources = new Map();
 for (const f of clFiles) {
   const lang = f === 'CHANGELOG.md' ? 'en' : f.replace(/^CHANGELOG\./, '').replace(/\.md$/, '');
-  const md = readFileSync(join(ROOT, f), 'utf8');
-  writeFileSync(join(clDst, `${lang}.md`), rewriteRootLinks(md));
+  let parsed;
+  try {
+    parsed = splitChangelog(readFileSync(join(ROOT, f), 'utf8'));
+  } catch (err) {
+    fail(`${f} — cannot parse the release list: ${err.message}`);
+  }
+  clSources.set(lang, { file: f, entries: parsed.entries });
 }
-console.log(`[sync-assets] ${clFiles.length} changelogs -> src/content/changelog/`);
+
+// CAR-131 gate (hard): every locale changelog must carry the EN release SET —
+// counts alone cannot see a typo'd version plus a hole (same count, different
+// set). The locale files were seeded mid-history and the release train
+// prepends one entry per release, so a seeded-once-partial file stayed
+// partial forever — de reached cvstart.org with 252 of 465 releases while the
+// old parity gate (newest heading only) passed clean. Fail the build instead
+// of shipping a page whose release set depends on when the locale was added.
+if (!clSources.has('en')) {
+  fail('CHANGELOG.md is missing — it is the EN master the changelog gates compare against');
+}
+const enEntries = clSources.get('en').entries;
+const enReleases = enEntries.length;
+for (const [lang, { file, entries }] of clSources) {
+  if (lang === 'en') continue;
+  // Report every coverage problem for the locale in ONE failure, not
+  // first-fail-exit — a typo'd version plus a hole must surface together.
+  const cov = auditCoverage(enEntries, entries);
+  const problems = [];
+  if (cov.unknown.length) {
+    problems.push(`versions unknown to EN: ${cov.unknown.join(', ')} (typo'd or invented release headings)`);
+  }
+  if (cov.missing.length) {
+    problems.push(
+      `${entries.length} of ${enReleases} releases (${cov.missing.length} missing, ` +
+        `oldest v${cov.missing[cov.missing.length - 1]})`,
+    );
+  }
+  if (!cov.ordered) {
+    problems.push('shared entries out of EN order (duplicate or misplaced version)');
+  }
+  if (problems.length) {
+    fail(
+      `${file} — ${problems.join('; ')} — every locale must carry every release ` +
+        `(the changelog pages render whatever is here). ` +
+        `Backfill: node scripts/backfill-changelog-locales.mjs`,
+    );
+  }
+}
+
+// The sync owns this directory — clear stale files from previous formats
+// (recursive: a stray subdirectory must not EISDIR the prebuild). CAR-131's
+// full-history mirrors (<lang>.md) were superseded by the pages here; the
+// directory is regenerated, never hand-merged.
+rmSync(clDst, { recursive: true, force: true });
+mkdirSync(clDst, { recursive: true });
+
+for (const [lang, { file, entries }] of clSources) {
+  const releases = splitReleases(readFileSync(join(ROOT, file), 'utf8'), { lang, fail });
+  const chunks = chunkByWeight(releases);
+  clIndex[lang] = { pages: chunks.length, months: buildMonthIndex(chunks) };
+  chunks.forEach((chunk, p) => {
+    const body = chunk.map((r) => r.lines.join('\n')).join('\n');
+    writeFileSync(join(clDst, `${lang}-p${String(p + 1).padStart(2, '0')}.md`), rewriteRootLinks(`${body.trimStart()}\n`));
+  });
+  // Delivery tripwire (CAR-131, adapted to pagination): the pages on disk
+  // must carry the same release count as their source — a partial write, an
+  // encoding surprise or a future rewriteRootLinks regression shows up here,
+  // never on the page. countReleases (the parity parser) referees OUR output,
+  // so the two parsers cross-check each other.
+  let writtenReleases = 0;
+  for (let p = 1; p <= chunks.length; p += 1) {
+    writtenReleases += countReleases(readFileSync(join(clDst, `${lang}-p${String(p).padStart(2, '0')}.md`), 'utf8'));
+  }
+  if (writtenReleases !== entries.length) {
+    fail(
+      `changelog pages ${lang}-p*.md carry ${writtenReleases} releases but ` +
+        `${file} has ${entries.length} — the split lost content`,
+    );
+  }
+}
+const genDir2 = join(SITE, 'src', 'generated');
+mkdirSync(genDir2, { recursive: true });
+writeFileSync(join(genDir2, 'changelog-index.json'), JSON.stringify(clIndex, null, 2) + '\n');
+console.log(`[sync-assets] ${clFiles.length} changelogs -> src/content/changelog/ (${PAGE_BYTES / 1024} KB md/page) + changelog-index.json`);
+
+// CAR-131 diagnostic (WARN only, never a failure): entries byte-identical to
+// the EN original. Backfilled history ships in English on purpose (translation
+// is a locale-agent job, out of the build's scope), but the reader-visible
+// state must stay reported, not silently normalised.
+for (const [lang, { file, entries }] of clSources) {
+  if (lang === 'en') continue;
+  const { identical, runs } = englishRuns(enEntries, entries);
+  if (identical > 0) {
+    const longest = runs.reduce((a, b) => (b.count > a.count ? b : a));
+    console.warn(
+      `[sync-assets] WARN (non-blocking): ${file} carries ${identical} entries ` +
+        `byte-identical to the English original in ${runs.length} run(s), longest ` +
+        `v${longest.from}..v${longest.to} — translation pending`,
+    );
+  }
+}
 
 // --- 3c. license (v1.121.0 — /license/ page) ---------------------------------
 // LICENSE is canonical English legal text; every locale renders it verbatim.
@@ -109,7 +241,6 @@ console.log('[sync-assets] LICENSE -> src/generated/license.txt');
 // --- 3d. scan sources (v1.125.0 — the landing "Job sources" section) ---------
 // Imported straight from the live registry so the section can never drift
 // from the app: value + label + region for every adapter.
-const { pathToFileURL } = await import('node:url');
 const registry = await import(
   pathToFileURL(join(ROOT, 'server', 'lib', 'sources', 'registry.mjs')).href
 );
@@ -151,10 +282,23 @@ if (scanSources.length !== adapters) {
   );
 }
 
-// Test count: parse the README badge (kept current by the release process).
-const readme = readFileSync(join(ROOT, 'README.md'), 'utf8');
-const testsMatch = readme.match(/badge\/tests-(\d+)%20passed/);
-const tests = testsMatch ? Number(testsMatch[1]) : null;
+// Test count: the README badge is no longer maintained (owner decision,
+// 2026-10-26 — stale badges are acceptable there), so read the count from
+// docs/sdd/CONVENTIONS.md's "Current count as of **vX**: **N**" line, which
+// the release train updates every release. The badge stays as a fallback;
+// when neither parses (or the file is absent — e.g. a site-only checkout),
+// `tests` is null and the landing hides the stat instead of shipping a stale
+// number.
+let convMatch = null;
+const conventionsPath = join(ROOT, 'docs', 'sdd', 'CONVENTIONS.md');
+if (existsSync(conventionsPath)) {
+  convMatch = readFileSync(conventionsPath, 'utf8').match(/Current count as of \*\*v[\d.]+\*\*: \*\*(\d+)\*\*/);
+}
+const readmePath = join(ROOT, 'README.md');
+const testsMatch = existsSync(readmePath)
+  ? readFileSync(readmePath, 'utf8').match(/badge\/tests-(\d+)%20passed/)
+  : null;
+const tests = convMatch ? Number(convMatch[1]) : testsMatch ? Number(testsMatch[1]) : null;
 
 // LLM providers: the canonical auto-order roster in env-config.mjs (v1.216.0 —
 // the dispatch gate became map-driven, so we count the authoritative AUTO_ORDER
@@ -170,6 +314,10 @@ const providers = providerSet.size;
 // refreshed client-side (site.js) so it never goes stale between deploys.
 // CI passes GITHUB_TOKEN so shared-runner IPs don't hit the anonymous
 // rate limit; locally the unauthenticated call is fine.
+// SYNC_ASSETS_OFFLINE=1 skips both calls entirely — for air-gapped builds
+// and CI-isolated tests; the landing hides both blocks on null/[] as before.
+const OFFLINE = process.env.SYNC_ASSETS_OFFLINE === '1';
+if (OFFLINE) console.log('[sync-assets] SYNC_ASSETS_OFFLINE=1 — skipping GitHub stats');
 async function ghJson(path) {
   const headers = { accept: 'application/vnd.github+json' };
   if (process.env.GITHUB_TOKEN) headers.authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
@@ -182,31 +330,35 @@ async function ghJson(path) {
 }
 
 let stars = null;
-try {
-  const data = await ghJson('/repos/Fighter90/career-ops-ui');
-  if (typeof data.stargazers_count === 'number') stars = data.stargazers_count;
-} catch {
-  /* offline / rate-limited -> header falls back to a plain "GitHub" button */
+if (!OFFLINE) {
+  try {
+    const data = await ghJson('/repos/Fighter90/career-ops-ui');
+    if (typeof data.stargazers_count === 'number') stars = data.stargazers_count;
+  } catch {
+    /* offline / rate-limited -> header falls back to a plain "GitHub" button */
+  }
 }
 
 // Contributors — humans only (bots add noise), top 24 by contribution count.
 // Empty array on failure: the landing then hides the block; the weekly
 // scheduled Pages rebuild (deploy-pages.yml) restores it on the next pass.
 let contributors = [];
-try {
-  const data = await ghJson('/repos/Fighter90/career-ops-ui/contributors?per_page=24');
-  if (Array.isArray(data)) {
-    contributors = data
-      .filter((c) => c && c.type !== 'Bot' && !/\[bot\]$/i.test(c.login || ''))
-      .map((c) => ({
-        login: c.login,
-        avatar_url: c.avatar_url,
-        html_url: c.html_url,
-        contributions: c.contributions,
-      }));
+if (!OFFLINE) {
+  try {
+    const data = await ghJson('/repos/Fighter90/career-ops-ui/contributors?per_page=24');
+    if (Array.isArray(data)) {
+      contributors = data
+        .filter((c) => c && c.type !== 'Bot' && !/\[bot\]$/i.test(c.login || ''))
+        .map((c) => ({
+          login: c.login,
+          avatar_url: c.avatar_url,
+          html_url: c.html_url,
+          contributions: c.contributions,
+        }));
+    }
+  } catch {
+    /* best effort — see above */
   }
-} catch {
-  /* best effort — see above */
 }
 
 const facts = {

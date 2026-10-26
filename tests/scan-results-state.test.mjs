@@ -172,27 +172,30 @@ function hrefs(root) {
 before(() => {});
 
 // ───────────────────────── chip toggle state ─────────────────────────
+// CAR-115 — the facet chips are part of the ONE filter system now: they
+// render INLINE above the table (the old "Advanced filters" disclosure is
+// gone) and keep every state guarantee across the rebuild.
 
-test('toggling a chip keeps the Advanced disclosure open (was: collapsed)', () => {
+test('facet chips render inline (no Advanced disclosure) and survive a re-render', () => {
   const env = makeEnv('ru');
   env.SR.render();
-  const details = env.resultsEl.querySelector('details.scan-advanced');
-  assert.ok(details, 'advanced disclosure rendered');
-  details.open = true; // the user expanded it
-  const chip = details.querySelectorAll('.chip').find((n) => n.getAttribute('data-chip') === 'разработчик');
-  assert.ok(chip, 'cyrillic keyword chip rendered');
+  assert.ok(!env.resultsEl.querySelector('details.scan-advanced'),
+    'the disclosure is gone — chips are primary live filters now');
+  const before = env.resultsEl.querySelectorAll('.chip').map((n) => n.getAttribute('data-chip'));
+  assert.ok(before.includes('разработчик'), 'cyrillic keyword chip rendered');
+  const chip = env.resultsEl.querySelectorAll('.chip').find((n) => n.getAttribute('data-chip') === 'разработчик');
   chip.click(); // toggle → re-render
-  const after = env.resultsEl.querySelector('details.scan-advanced');
-  assert.ok(after, 'disclosure re-rendered');
-  assert.equal(after.open, true, 'open state carried across the re-render');
+  const after = env.resultsEl.querySelectorAll('.chip').map((n) => n.getAttribute('data-chip'));
+  if (process.env.DBG) console.log('before:', before, 'after:', after);
+  assert.deepEqual(after.filter(Boolean), before.filter(Boolean), 'the same chip set re-renders (nothing lost)');
+  assert.equal(env.resultsEl.querySelectorAll('.chip').find((n) => n.getAttribute('data-chip') === 'разработчик').getAttribute('aria-pressed'), 'true',
+    'the toggled chip is pressed after the rebuild');
 });
 
 test('toggling a chip restores keyboard focus to the same chip (was: dropped to body)', () => {
   const env = makeEnv('ru');
   env.SR.render();
-  const details = env.resultsEl.querySelector('details.scan-advanced');
-  details.open = true;
-  const chip = details.querySelectorAll('.chip').find((n) => n.getAttribute('data-chip') === 'разработчик');
+  const chip = env.resultsEl.querySelectorAll('.chip').find((n) => n.getAttribute('data-chip') === 'разработчик');
   env.document.activeElement = chip;
   chip.click();
   const focused = env.document.activeElement;
@@ -233,7 +236,7 @@ test('chips keep their button semantics and Enter/Space toggles (regression guar
   assert.equal(chip.getAttribute('tabindex'), '0');
   chip.keydown('Enter'); // toggle via keyboard → re-render + pager reset
   assert.equal(env.pager.page, 0, 'keyboard toggle drove the same toggle() path');
-  assert.ok(env.resultsEl.querySelector('details.scan-advanced'), 'render survived');
+  assert.ok(env.resultsEl.querySelectorAll('.chip').length > 0, 'render survived');
 });
 
 // ───────────────────────── locale handling ─────────────────────────

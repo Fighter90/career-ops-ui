@@ -27,6 +27,11 @@
     <!-- CAR-118 — #/reports v2 owns its stylesheet (loads after the base
          cascade, before map.css; merge-trivial with any other v2 link). -->
     <link rel="stylesheet" href="/css/v2-reports.css" />
+    <!-- CAR-119 — the shared AI-tool page template (12 LLM views via
+         js/lib/llm-page-kit.js) owns its stylesheet; merge-trivial with
+         any other v2 link. -->
+    <link rel="stylesheet" href="/css/v2-llm.css" />
+    <link rel="stylesheet" href="/css/v2-dash.css" />
     <link rel="stylesheet" href="/css/map.css" />
     <link rel="stylesheet" href="/vendor/leaflet/leaflet.css" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
@@ -382,6 +387,7 @@
     <script src="/js/lib/scan-results.js"></script>
     <script src="/js/lib/pdf-generate.js"></script>
     <script src="/js/lib/report-export.js"></script>
+    <script src="/js/lib/llm-page-kit.js"></script>
     <script src="/js/lib/bug-report.js"></script>
     <script src="/js/lib/docs-fab.js"></script>
     <script src="/js/lib/usage-hud.js"></script>

@@ -206,13 +206,17 @@ test('dashboard: the Pipeline tile accent ring is hover/focus-only (no resting t
 });
 
 // ── 8 · scan Delete affordance ──────────────────────────────────────────────
-// v1.248.2 refinement: the destructive affordance stays, but only while a
-// saved search is selected (armed); unselected it is a disabled neutral
-// ghost. Full contract in tests/design-qa-v1248.test.mjs.
-test('scan: the saved-search Delete button wears the destructive .btn-danger when armed', () => {
-  const src = read('public', 'js', 'views', 'scan.js');
-  assert.match(src, /className: 'btn btn-ghost', type: 'button', disabled: true, onClick: \(\) => \{\s*\n\s*const name = ssSelect\.value;/);
-  assert.match(src, /classList\.toggle\('btn-danger', armed\)/);
+// CAR-115: saved searches are preset chips; the destructive affordance is the
+// chip's inline ✕, which is CONFIRM-GATED (UI.confirm, danger) — a saved
+// search is never deleted on a single stray click. The localized label and
+// the confirm dialog carry t('scan.deleteSearch').
+test('scan: deleting a saved search is confirm-gated and localized', () => {
+  const src = [
+    read('public', 'js', 'views', 'scan.js'),
+    read('public', 'js', 'views', 'scan', 'filters.js'),
+  ].join('\n');
+  assert.match(src, /UI\.confirm\(/, 'delete goes through the focus-trapped confirm dialog');
+  assert.match(src, /danger: true/, 'the confirm dialog is marked destructive');
   assert.match(src, /t\('scan\.deleteSearch', 'Delete'\)/);
 });
 

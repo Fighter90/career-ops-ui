@@ -1,12 +1,14 @@
 ---
 import Icon from './Icon.astro';
+import { formatNumber, type Locale } from '../i18n/locales';
 import facts from '../generated/facts.json';
 
 interface Props {
   label: string;
   class?: string;
+  locale: Locale;
 }
-const { label, class: className = '' } = Astro.props;
+const { label, class: className = '', locale } = Astro.props;
 // Star count snapshot from BUILD time (scripts/sync-assets.mjs); site.js
 // live-refreshes every [data-gh-stars] from the GitHub API on page load, so
 // the badge auto-updates between deploys. With no build value AND no client
@@ -23,6 +25,6 @@ const stars = typeof facts.stars === 'number' ? facts.stars : null;
     hidden={stars === null}
   >
     <Icon name="star" class="h-3.5 w-3.5" />
-    <span class="font-mono text-xs" data-gh-stars>{stars !== null ? stars.toLocaleString('en-US') : ''}</span>
+    <span class="font-mono text-xs" data-gh-stars>{stars !== null ? formatNumber(locale, stars) : ''}</span>
   </span>
 </a>

@@ -8,6 +8,7 @@
 import test from 'node:test';
 import assert from 'node:assert/strict';
 import { legacyDictText, loadAssembledDict } from './helpers/i18n-vm.mjs';
+import { loadScanSrc } from './helpers/scan-src.mjs';
 import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
@@ -310,36 +311,23 @@ test('UX-A4 (v1.70.0): .lang-select meets WCAG 2.5.8 minimum touch-target (≥ 2
     '.lang-select must be full-width so long locale labels do not clip');
 });
 
-test('UX-A3 (v1.58.55): dashboard renders an active-provider chip wired to /api/status/providers', () => {
+test('CAR-114: dashboard de-duplicated the provider badge — the global header owns provider status', () => {
+  // The v1.255.2 UX review flagged the duplicate: the header badge
+  // ("Live eval: <provider>") is rendered on EVERY page by app.js's
+  // onboarding banner, and the dashboard hero mounted a second chip
+  // fetching the same endpoint. CAR-114 removed the hero chip; the
+  // header badge is the single provider surface (badge + tooltip there).
   const dash = read('public', 'js', 'views', 'dashboard.js');
-  assert.match(dash, /function providerChip\(\)/,
-    'dashboard.js must define providerChip() helper');
-  assert.match(dash, /\/api\/status\/providers/,
-    'providerChip must fetch /api/status/providers (existing endpoint)');
-  assert.match(dash, /dash-chip--provider/, 'chip must carry .dash-chip--provider class');
-  assert.match(dash, /document\.addEventListener\('providers-changed', refresh\)/,
-    'chip must re-render on providers-changed event (#/config save dispatches it)');
-  assert.match(dash, /document\.addEventListener\('visibilitychange', onVisibility\)/,
-    'chip must re-render on tab refocus (cross-tab provider switch)');
-  // M-1 discipline: listeners must self-detach when leaving #/dashboard.
-  // CAR-93 — Router.render() re-entry (Refresh) has NO hashchange, so the
-  // cleanup is additionally invoked at the top of the next chip mount via
-  // the module-scoped handle; the hashchange detach remains for leaving
-  // the route.
-  assert.match(dash, /window\.addEventListener\('hashchange', onChipHashChange\)/,
-    'chip must register a hashchange cleanup so listeners do not stack');
-  assert.match(dash, /document\.removeEventListener\('providers-changed', refresh\)/,
-    'cleanup must remove providers-changed listener');
-  assert.match(dash, /if \(typeof __dashChipCleanup === 'function'\) __dashChipCleanup\(\)/,
-    'a re-render must detach the previous visit\u2019s pair first');
-  // i18n keys present in 8 locales.
-  const dict = legacyDictText();
-  for (const key of ['dash.provider.live', 'dash.provider.manual']) {
-    assert.ok(dict.includes(`'${key}'`), `i18n-dict.js must define '${key}'`);
-  }
-  // CSS rule present.
-  const css = loadAppCss();
-  assert.match(css, /\.dash-chip--provider\s*\{/, 'app.css must define .dash-chip--provider');
+  assert.ok(!/providerChip/.test(dash),
+    'the hero providerChip helper must be gone (CAR-114 de-dup)');
+  assert.ok(!/\/api\/status\/providers/.test(dash),
+    'dashboard.js must not fetch /api/status/providers — app.js\u2019s header badge owns it');
+  // The header badge keeps resolving the provider on every page.
+  const app = read('public', 'js', 'app.js');
+  assert.match(app, /\/api\/status\/providers/,
+    'app.js keeps the global header badge fetch');
+  assert.match(app, /ProviderStatus\.label\(st\.activeProvider\)/,
+    'the header badge resolves the friendly name via ProviderStatus.label');
 });
 
 test('UX-A1 (v1.58.54): showResult prepends a brief-warning when ≥3 canonical H2s are missing', () => {
@@ -944,7 +932,9 @@ test('U-7 (v1.58.27): verify-pipeline modal strips `==========` ASCII dividers',
 });
 
 test('U-6 (v1.58.26): scan Active-companies chip exposes localized tooltip + aria-label', () => {
-  const scan = read('public', 'js', 'views', 'scan.js');
+  // CAR-115 moved the companies panel to views/scan/runner.js — read the
+  // concatenated scan view so the contract stays file-agnostic.
+  const scan = loadScanSrc();
   // toggleBtn must declare both title and aria-label so sighted users
   // get a hover tooltip and screen-reader users get the same text.
   assert.match(scan, /title:\s*t\('scan\.activeCo\.help'/,

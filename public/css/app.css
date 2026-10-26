@@ -26,19 +26,11 @@
   min-width: 44px; min-height: 44px;
   display: inline-flex; align-items: center;
 }
-.skip-link:focus {
-  top: 0;
-  outline: 3px solid #ff385c;
-  outline-offset: 2px;
-}
+.skip-link:focus { top: 0; outline: 3px solid #ff385c; outline-offset: 2px; }
 
-/* WCAG 2.4.7 — visible focus indicators. Every interactive element
-   gets a clearly visible focus ring. The :focus-visible pseudo-class
-   keeps mouse-click focus rings off but keyboard-Tab focus rings on. */
-*:focus-visible {
-  outline: 2px solid var(--rausch, #ff385c);
-  outline-offset: 2px;
-}
+/* WCAG 2.4.7 — visible focus indicators. Every interactive element gets a clearly visible
+   focus ring; :focus-visible keeps mouse-click rings off but keyboard-Tab rings on. */
+*:focus-visible { outline: 2px solid var(--rausch, #ff385c); outline-offset: 2px; }
 /* Managed route-change focus (see public/js/router.js): on every
    client navigation the destination view's heading is given
    tabindex="-1" and .focus()'d so screen readers announce the new
@@ -49,15 +41,10 @@
    for these programmatic targets only; genuine keyboard focus on real
    controls keeps *:focus-visible. WAI-ARIA APG managed-focus pattern. */
 [tabindex="-1"]:focus,
-[tabindex="-1"]:focus-visible {
-  outline: none;
-}
+[tabindex="-1"]:focus-visible { outline: none; }
 /* Modal close × needs higher-contrast focus since it sits on the
    modal-header background. */
-.modal-close:focus-visible {
-  outline: 3px solid var(--rausch, #ff385c);
-  outline-offset: 2px;
-}
+.modal-close:focus-visible { outline: 3px solid var(--rausch, #ff385c); outline-offset: 2px; }
 
 /* ───────────────────────── design tokens — light theme (default) ───────────────────────── */
 :root {
@@ -222,9 +209,7 @@
   justify-content: center;
   transition: background var(--transition), border-color var(--transition);
 }
-.theme-toggle:hover {
-  border-color: var(--hof);
-}
+.theme-toggle:hover { border-color: var(--hof); }
 
 * { box-sizing: border-box; }
 
@@ -279,6 +264,7 @@ input, textarea, select {
      bottom on tall windows because the inner column is min-h-full. */
   overflow-y: auto;
   overflow-x: hidden;
+  scrollbar-width: thin; scrollbar-color: var(--slate) transparent;
 }
 /* Hint scrollbar when needed but stay quiet on Macs that hide it. */
 .sidebar::-webkit-scrollbar { width: 8px; }
@@ -287,32 +273,16 @@ input, textarea, select {
   border-radius: 4px;
 }
 .sidebar::-webkit-scrollbar-thumb:hover { background: var(--foggy); }
-.sidebar { scrollbar-width: thin; scrollbar-color: var(--slate) transparent; }
 
 /* Hamburger button — visible only on small screens */
 .sidebar-toggle {
-  display: none;
-  background: transparent;
-  border: 1px solid var(--slate);
-  border-radius: var(--radius);
-  width: 40px;
-  height: 40px;
-  font-size: 20px;
-  line-height: 1;
-  cursor: pointer;
-  color: var(--hof);
-  flex-shrink: 0;
+  display: none; background: transparent; border: 1px solid var(--slate); border-radius: var(--radius);
+  width: 40px; height: 40px; font-size: 20px; line-height: 1; cursor: pointer; color: var(--hof); flex-shrink: 0;
 }
 .sidebar-toggle:active { transform: scale(.95); }
 
 /* Dim everything-but-sidebar when open on mobile */
-.sidebar-backdrop {
-  display: none;
-  position: fixed;
-  inset: 0;
-  background: rgba(0,0,0,.4);
-  z-index: calc(var(--z-sidebar) - 1);
-}
+.sidebar-backdrop { display: none; position: fixed; inset: 0; background: rgba(0,0,0,.4); z-index: calc(var(--z-sidebar) - 1); }
 body.sidebar-open .sidebar-backdrop { display: block; }
 
 /* Mobile breakpoint — anything narrower than a typical iPad portrait. */
@@ -376,13 +346,7 @@ body.sidebar-open .sidebar-backdrop { display: block; }
   }
 }
 
-.logo {
-  display: flex;
-  align-items: center;
-  gap: var(--space-3);
-  padding: 0 var(--space-3);
-  text-decoration: none !important;
-}
+.logo { display: flex; align-items: center; gap: var(--space-3); padding: 0 var(--space-3); text-decoration: none !important; }
 .logo-mark {
   display: inline-flex;
   width: 36px;
@@ -400,20 +364,12 @@ body.sidebar-open .sidebar-backdrop { display: block; }
   object-fit: cover;
   overflow: hidden;
 }
-.logo-text {
-  font-weight: 700;
-  font-size: 17px;
-  color: var(--hof);
-}
+.logo-text { font-weight: 700; font-size: 17px; color: var(--hof); }
 
 .nav { display: flex; flex-direction: column; gap: 2px; }
 .nav-group {
-  margin: 14px 12px 4px;
-  font-size: var(--font-size-xs);
-  font-weight: 700;
-  letter-spacing: 0.06em;
-  text-transform: uppercase;
-  color: var(--foggy);
+  margin: 14px 12px 4px; font-size: var(--font-size-xs); font-weight: 700;
+  letter-spacing: 0.06em; text-transform: uppercase; color: var(--foggy);
 }
 .nav-group:first-of-type { margin-top: 18px; }
 .nav-item {
@@ -434,10 +390,7 @@ body.sidebar-open .sidebar-backdrop { display: block; }
   text-decoration: none !important;
 }
 .nav-item:hover { background: var(--beach); }
-.nav-item.active {
-  background: var(--hof);
-  color: var(--paper);
-}
+.nav-item.active { background: var(--hof); color: var(--paper); }
 .nav-ico {
   display: inline-flex;
   width: 22px;
@@ -466,11 +419,7 @@ body.sidebar-open .sidebar-backdrop { display: block; }
 .sidebar-footer .manifesto-link:hover { color: var(--ink); text-decoration: underline; }
 
 /* ───────────────────────── main ───────────────────────── */
-.main {
-  margin-left: var(--sidebar-w);
-  min-height: 100vh;
-  background: var(--paper);
-}
+.main { margin-left: var(--sidebar-w); min-height: 100vh; background: var(--paper); }
 
 .topbar {
   position: sticky;
@@ -502,10 +451,7 @@ body.sidebar-open .sidebar-backdrop { display: block; }
   align-items: center;
   transition: box-shadow var(--transition), border-color var(--transition);
 }
-.searchbar:focus-within {
-  box-shadow: var(--shadow-md);
-  border-color: var(--hof);
-}
+.searchbar:focus-within { box-shadow: var(--shadow-md); border-color: var(--hof); }
 .searchbar input {
   flex: 1;
   border: none;
@@ -576,11 +522,7 @@ body.sidebar-open .sidebar-backdrop { display: block; }
 }
 .btn-primary:hover { filter: brightness(0.92); }
 
-.btn-ghost {
-  background: transparent;
-  color: var(--hof);
-  border: 1px solid var(--slate);
-}
+.btn-ghost { background: transparent; color: var(--hof); border: 1px solid var(--slate); }
 .btn-ghost:hover { background: var(--beach); border-color: var(--hof); }
 
 .btn-dark {
@@ -622,7 +564,6 @@ body.sidebar-open .sidebar-backdrop { display: block; }
    table-row controls (Edit / Delete / etc.) but keep min-height ≥ 32 px
    plus 8 px row spacing so the effective spaced target stays ≥ 44 px. */
 .btn-sm { padding: 6px 12px; font-size: var(--font-size-md); min-height: 32px; }
-.btn-block { width: 100%; }
 
 /* M-4 (v1.58.11) — saved-research / saved-prep card: structural flex `gap`
    so the title↔date space can't collapse (`software-engineer-generaltoday`).
@@ -752,13 +693,9 @@ label:has(> input[type="radio"]) {
 
 /* ───────────────────────── content shell ───────────────────────── */
 .content {
-  /* CAR-49 (v1.246.0) — the extra bottom padding keeps the last interactive
-     element of every page clear of the fixed chat FAB (56px + 24px offset) at
-     scroll-end: Portals Disable buttons, Reports score pills, the two-pager
-     input and the map attribution are no longer occluded at rest. */
-  padding: var(--space-7) var(--space-6) calc(var(--space-7) + 88px);
-  max-width: 1280px;
-  margin: 0 auto;
+  /* CAR-49 (v1.246.0) — the extra bottom padding keeps the last interactive element of every
+     page clear of the fixed chat FAB (56px + 24px offset) at scroll-end. */
+  padding: var(--space-7) var(--space-6) calc(var(--space-7) + 88px); max-width: 1280px; margin: 0 auto;
 }
 
 .page-header {
@@ -784,7 +721,6 @@ label:has(> input[type="radio"]) {
   font-size: var(--font-size-base);
   overflow-wrap: anywhere;
 }
-.page-header h1 + p { overflow-wrap: anywhere; }
 /* CAR-51 #1 (v1.247.0) — the ONE time/cost meta line: ⏱ ETA chip + cost hint
    under the view title on every advisor view (UI.pageMeta). */
 .page-meta {
@@ -794,5 +730,58 @@ label:has(> input[type="radio"]) {
 /* U-14 (v1.58.33) — safety-net rule for any page that uses raw <h1>+<p>
    without the .page-subtitle class. Mirrors the canonical spacing so
    future page-header authors don't have to remember the class name. */
-.page-header h1 + p { margin-block-start: var(--space-2); color: var(--foggy); }
+.page-header h1 + p { margin-block-start: var(--space-2); color: var(--foggy); overflow-wrap: anywhere; }
 
+
+/* ───────────── CAR-115 — #/scan v2: live filter chips, windowed results, quick view ───────────── */
+.v2-scan-bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 0 0 10px; }
+.v2-scan-bar .input { flex: 1 1 200px; min-width: 160px; max-width: 340px; min-height: 36px; }
+.v2-scan-anchor { position: relative; display: inline-flex; }
+.v2-scan-chip-btn { cursor: pointer; white-space: nowrap; }
+.v2-scan-chip-btn.is-on { border-color: var(--rausch); color: var(--rausch-text); }
+.v2-scan-chip-btn.is-on::before { content: '● '; font-size: 9px; vertical-align: 2px; }
+.v2-scan-chip-val { font-weight: 700; }
+.v2-scan-pop { position: absolute; top: calc(100% + 6px); inset-inline-start: 0; z-index: var(--z-popover); min-width: 270px; max-width: min(92vw, 360px); background: var(--paper); border: 1px solid var(--slate); border-radius: var(--radius); box-shadow: var(--shadow-lg); padding: 12px; display: flex; flex-direction: column; gap: 10px; }
+.v2-scan-pop[hidden] { display: none; }
+.v2-scan-pop .field-hint { margin: 0; font-size: var(--font-size-sm); color: var(--foggy); }
+.v2-scan-check { display: flex; align-items: center; gap: 8px; min-height: 32px; cursor: pointer; }
+@media (max-width: 900px) { .v2-scan-pop { position: fixed; top: auto; inset-inline: 12px; min-width: 0; max-width: none; } }
+.v2-scan-active { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; margin: 0 0 8px; }
+.v2-scan-active:empty { display: none; }
+.v2-scan-x { border: 0; background: transparent; color: inherit; font: inherit; cursor: pointer; padding: 0 2px; line-height: 1; }
+.v2-scan-x:hover { color: var(--rausch-text); }
+.v2-scan-presets-wrap:not(:empty) { margin: 0 0 10px; }
+.v2-scan-presets { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+.v2-scan-preset { display: inline-flex; align-items: center; gap: 2px; }
+.v2-scan-preset > span[role='button'] { cursor: pointer; }
+.v2-scan-preset-name { max-width: 220px; min-height: 32px; }
+.v2-scan-facets { display: flex; flex-direction: column; gap: 8px; margin: 0 0 10px; }
+.v2-scan-facets:empty { display: none; }
+.table-wrap.v2-scan-viewport { max-height: 65vh; overflow: auto; overscroll-behavior: contain; }
+table.scan-tbl thead th { position: sticky; top: 0; z-index: var(--z-topbar); }
+.v2-scan-sort { display: flex; width: 100%; align-items: center; gap: 4px; background: none; border: 0; color: inherit; font: inherit; font-weight: 700; text-align: start; cursor: pointer; padding: 0; }
+.v2-scan-sort:hover { color: var(--hof); }
+.v2-scan-sort-ind { font-size: 10px; opacity: .7; }
+table.scan-tbl.v2-scan-compact th, table.scan-tbl.v2-scan-compact td { padding-top: 3px; padding-bottom: 3px; }
+table.scan-tbl tr.v2-scan-pad > td { padding: 0; border-bottom: 0; background: transparent; }
+tr.v2-scan-rowbtn { cursor: pointer; }
+tr.v2-scan-rowbtn:hover .scan-posting-title { text-decoration: underline; }
+tr.v2-scan-isnew > td { animation: v2scan-in 150ms ease-out; }
+@keyframes v2scan-in { from { opacity: 0; transform: translateY(4px); } }
+.scan-icon--score.v2-scan-score-hi { color: var(--kazan-text, var(--kazan)); font-weight: 700; }
+.scan-icon--score.v2-scan-score-mid { color: var(--darjeeling-text, var(--darjeeling)); }
+.scan-icon--score.v2-scan-score-lo { color: var(--rausch-text, var(--rausch)); }
+.scan-terminal:not(.v2-scan-log-open) .console { max-height: 2.4em; overflow: hidden; }
+.v2-scan-logbtn { flex: 0 0 auto; margin-inline-start: auto; color: #8b949e; }
+.v2-scan-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.35); z-index: var(--z-modal); opacity: 0; visibility: hidden; transition: opacity 200ms ease, visibility 200ms; }
+.v2-scan-backdrop.is-open { opacity: 1; visibility: visible; }
+.v2-scan-panel { position: fixed; top: 0; inset-inline-end: 0; bottom: 0; width: min(440px, 94vw); background: var(--paper); border-inline-start: 1px solid var(--slate); box-shadow: var(--shadow-lg); z-index: calc(var(--z-modal) + 1); padding: 20px; overflow-y: auto; transform: translateX(102%); visibility: hidden; transition: transform 200ms ease, visibility 200ms; }
+[dir='rtl'] .v2-scan-panel { transform: translateX(-102%); }
+.v2-scan-panel.is-open { transform: none; visibility: visible; }
+.v2-scan-qv-title { margin: 0 24px 6px 0; font-size: var(--font-size-lg); overflow-wrap: anywhere; }
+.v2-scan-qv-meta { margin: 0 0 10px; font-size: var(--font-size-md); }
+.v2-scan-qv-salary { margin: 0 0 10px; font-weight: 600; }
+.v2-scan-qv-desc { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 14px; line-height: 1.5; max-height: 46vh; overflow-y: auto; border-top: 1px solid var(--slate); padding-top: 10px; margin: 0 0 14px; }
+.v2-scan-qv-actions { display: flex; flex-wrap: wrap; gap: 8px; }
+.v2-scan-qv-close { position: absolute; top: 12px; inset-inline-end: 12px; }
+.v2-scan-density { min-height: 32px; }

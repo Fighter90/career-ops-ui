@@ -147,18 +147,32 @@ test('CAR-93 F2: Enter on a row\u2019s nested ▶ button evaluates (not re-selec
 });
 
 // ── F3 — saved-search restore keeps country/seniority ───────────────────────
+// CAR-115: saved searches are PRESET CHIPS now (the select/input/Save/Delete
+// sub-card is gone). The regression is the same: restoring a search whose
+// country/seniority options are painted from the not-yet-loaded corpus must
+// still land (the dataset.want stash contract).
 
-test('CAR-93 F3: a saved search restored before the corpus loads keeps country + seniority', { skip: SKIP }, async () => {
+test('CAR-93 F3: a saved preset restored before the corpus loads keeps country + seniority', { skip: SKIP }, async () => {
   const page = await newPage();
   await openScan(page);
   const code = await page.$eval('#scan-filter-country', (el) => (el.options[1] ? el.options[1].value : ''));
   assert.ok(code, 'country options painted from the corpus');
+  // Country + Seniority live in popover chips — open, pick.
+  await page.click('.v2-scan-chip-btn[title="Country"]');
+  await page.waitForSelector('#scan-filter-country', { state: 'visible' });
   await page.selectOption('#scan-filter-country', code);
+  await page.click('.v2-scan-chip-btn[title="Seniority"]');
+  await page.waitForSelector('#scan-filter-seniority', { state: 'visible' });
   await page.selectOption('#scan-filter-seniority', 'senior');
-  await page.waitForTimeout(80);
-  await page.fill('input[placeholder="Name this search…"]', 'de-senior');
-  await page.locator('button:has-text("Save search")').click();
   await page.waitForTimeout(120);
+  // Save current as a preset: the ＋ chip reveals the name field + Save.
+  await page.click('.v2-scan-preset-add');
+  await page.fill('.v2-scan-preset-name', 'de-senior');
+  await page.click('.v2-scan-presets button:has-text("Save search")');
+  await page.waitForSelector('.v2-scan-preset:has-text("de-senior")', { timeout: 8000 });
+  // Clear the live filters so the restore visibly re-applies them.
+  await page.click('.v2-scan-bar button:has-text("Reset")');
+  await page.waitForTimeout(80);
   // Restore it on a visit where /api/scan-results is still in flight —
   // the country/seniority options do not exist yet at setFilterState time.
   await page.route('**/api/scan-results', async (route) => {
@@ -166,11 +180,8 @@ test('CAR-93 F3: a saved search restored before the corpus loads keeps country +
     await route.continue();
   });
   await page.goto(baseUrl + '/#/scan');
-  await page.waitForFunction(
-    () => [...document.querySelectorAll('select[aria-label="Saved searches"] option')]
-      .some((o) => o.value === 'de-senior'),
-    null, { timeout: 8000 });
-  await page.selectOption('select[aria-label="Saved searches"]', 'de-senior');
+  await page.waitForSelector('.v2-scan-preset:has-text("de-senior")', { timeout: 8000 });
+  await page.click('[data-chip="preset-de-senior"]');
   await page.waitForSelector('#scan-results table tbody tr', { timeout: 10000 });
   await page.waitForTimeout(150);
   const country = await page.$eval('#scan-filter-country', (el) => el.value);
@@ -193,6 +204,9 @@ test('CAR-93 F4: the live source-dropdown repaint preserves the selected source'
   });
   await page.goto(baseUrl + '/#/scan');
   await page.waitForSelector('#scan-results table tbody tr', { timeout: 10000 });
+  // CAR-115 — the source select lives inside its popover chip.
+  await page.click('.v2-scan-chip-btn[title="Source"]');
+  await page.waitForSelector('#scan-filter-source', { state: 'visible' });
   await page.selectOption('#scan-filter-source', 'greenhouse');
   await page.waitForTimeout(900); // let the delayed registry repaint land
   const v = await page.$eval('#scan-filter-source', (el) => el.value);
@@ -230,15 +244,27 @@ test('CAR-93 F5: choosing "Use the default" on OPENROUTER_MODEL sticks after the
 const LISTENER_PROBE = `
   window.__pc = 0;
   window.__pcRm = 0;
-  const origAdd = document.addEventListener.bind(document);
-  const origRm = document.removeEventListener.bind(document);
+  window.__sc = 0;
+  window.__scRm = 0;
+  const origAddD = document.addEventListener.bind(document);
+  const origRmD = document.removeEventListener.bind(document);
   document.addEventListener = function (type, fn, opts) {
     if (type === 'providers-changed') window.__pc++;
-    return origAdd(type, fn, opts);
+    return origAddD(type, fn, opts);
   };
   document.removeEventListener = function (type, fn, opts) {
     if (type === 'providers-changed') window.__pcRm++;
-    return origRm(type, fn, opts);
+    return origRmD(type, fn, opts);
+  };
+  const origAddW = window.addEventListener.bind(window);
+  const origRmW = window.removeEventListener.bind(window);
+  window.addEventListener = function (type, fn, opts) {
+    if (type === 'scroll') window.__sc++;
+    return origAddW(type, fn, opts);
+  };
+  window.removeEventListener = function (type, fn, opts) {
+    if (type === 'scroll') window.__scRm++;
+    return origRmW(type, fn, opts);
   };
 `;
 
@@ -258,18 +284,32 @@ test('CAR-93 F6: three config Saves leave exactly one live providers-changed lis
   await page.close();
 });
 
-test('CAR-93 F6: three dashboard Refreshes leave exactly one live providers-changed listener', { skip: SKIP }, async () => {
+test('CAR-114 F6: three dashboard Refreshes stack no new listeners (deltas across refreshes)', { skip: SKIP }, async () => {
+  // Was: the hero provider chip's providers-changed listener (removed by the
+  // CAR-114 provider de-dup — app.js's header badge owns provider status and
+  // mounts ONCE per page load, never per visit). The per-visit listener the
+  // dashboard now owns is the parallax hero's window 'scroll' listener,
+  // torn down by __dashV2Cleanup before each re-mount.
+  // Finding 8 — assert DELTAS from a snapshot taken after the FIRST paint,
+  // never absolute counts: app-level listeners (and future ones) must not
+  // break the probe, and "exactly 1" could mask a 2-vs-2 leak.
   const page = await newPage();
   await page.addInitScript(LISTENER_PROBE);
   await page.goto(baseUrl + '/#/dashboard');
   await page.waitForSelector('[data-test="dash-refresh"]', { timeout: 10000 });
+  await page.waitForTimeout(250); // let the view's own mounts settle
+  const base = await page.evaluate(() => [window.__sc, window.__scRm, window.__pc, window.__pcRm]);
   for (let i = 0; i < 3; i++) {
     await page.click('[data-test="dash-refresh"]');
     await page.waitForTimeout(350);
   }
-  const [added, removed] = await page.evaluate(() => [window.__pc, window.__pcRm]);
-  assert.equal(added - removed, 1,
-    `live providers-changed listeners after 3 refreshes: ${added - removed} (added ${added}, removed ${removed})`);
+  const now = await page.evaluate(() => [window.__sc, window.__scRm, window.__pc, window.__pcRm]);
+  const liveScrollDelta = (now[0] - now[1]) - (base[0] - base[1]);
+  assert.equal(liveScrollDelta, 0,
+    `live scroll listeners drifted across 3 refreshes: base ${base.slice(0, 2)} → now ${now.slice(0, 2)}`);
+  assert.equal(now[2] - base[2], 0,
+    `providers-changed adds drifted: base ${base[2]} → now ${now[2]} (dashboard must not register any)`);
+  assert.equal(now[3] - base[3], 0, 'providers-changed removals drifted');
   await page.close();
 });
 

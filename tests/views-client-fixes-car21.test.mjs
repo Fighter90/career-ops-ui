@@ -227,9 +227,14 @@ test('pipeline: rows are keyboard-operable buttons and the selection repaints', 
     'focus is restored to the (re-rendered) active row');
 });
 
-test('portals: toggle buttons announce WHICH portal they toggle', () => {
-  assert.match(PORTALS, /'aria-label':\s*\(isOn \? t\('portals\.disable', 'Disable'\) : t\('portals\.enable', 'Enable'\)\)/,
-    'the label is built from the state');
+test('portals: the switch announces WHICH portal it watches, with a stable name', () => {
+  // CAR-121 review — the name used to EMBED the action ("Disable: Acme"),
+  // so a screen reader read "Disable: Acme, switch, on": contradictory, and
+  // the name flipped with the state. The name is now the stable verb
+  // "Watch: <company>"; the state is announced by the switch's checked
+  // property. Deliberate update of the v1.243.0 (CAR-21) canary shape.
+  assert.match(PORTALS, /'aria-label':\s*t\('portals\.watch', 'Watch'\)/,
+    'the label is built from the stable verb');
   assert.match(PORTALS, /\+ ': ' \+ \(company\.name \|\| company\.careers_url\)/,
     '…and disambiguated by the company');
 });

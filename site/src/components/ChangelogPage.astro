@@ -4,28 +4,60 @@ import Base from '../layouts/Base.astro';
 import Header from './Header.astro';
 import Footer from './Footer.astro';
 import Icon from './Icon.astro';
-import { localeHome, t, type Locale } from '../i18n/locales';
+import { formatNumber, localeHome, localePath, t, type Locale } from '../i18n/locales';
 import facts from '../generated/facts.json';
+import clIndex from '../generated/changelog-index.json';
 
 interface Props {
   locale: Locale;
+  /** 1-based changelog page; 1 (default) is the newest releases + month archive. */
+  pageNo?: number;
 }
-const { locale } = Astro.props;
+const { locale, pageNo = 1 } = Astro.props;
 
-// Entries are synced from the repo's CHANGELOG.md (en) / CHANGELOG.<locale>.md
-// by scripts/sync-assets.mjs; ids follow the help collection's convention.
+// Entries are synced per page (`<lang>-p<NN>.md`, newest first, weight-capped
+// by markdown bytes) by scripts/sync-assets.mjs from the repo's CHANGELOG.md
+// (en) / CHANGELOG.<locale>.md; the month archive comes from
+// changelog-index.json.
+const lang = locale.file.toLowerCase();
 const entries = await getCollection('changelog');
-const entry = entries.find((e) => e.id.toLowerCase() === locale.file.toLowerCase());
-if (!entry) throw new Error(`[changelog] no synced changelog for locale "${locale.code}" (${locale.file}.md)`);
+const entry = entries.find((e) => e.id.toLowerCase() === `${lang}-p${String(pageNo).padStart(2, '0')}`);
+if (!entry) throw new Error(`[changelog] no synced page ${pageNo} for locale "${locale.code}" (${locale.file}.md)`);
 const { Content } = await render(entry);
+
+const index = clIndex[locale.file];
+if (!index) throw new Error(`[changelog] no changelog-index.json entry for "${locale.file}"`);
+const pageCount = index.pages;
+
+// Static links: /changelog/ + /changelog/<page>/ — every release ≤2 clicks away.
+const clBase = localePath(locale, 'changelog');
+const pageHref = (n: number) => (n === 1 ? clBase : `${clBase}${n}/`);
+
+// Month archive grouped by year, newest first (already in encounter order).
+const monthFmt = new Intl.DateTimeFormat(locale.code, { month: 'long', year: 'numeric' });
+const years: { year: string; months: { ym: string; page: number; count: number }[] }[] = [];
+for (const m of index.months) {
+  const year = m.ym.slice(0, 4);
+  let group = years[years.length - 1];
+  if (!group || group.year !== year) {
+    group = { year, months: [] };
+    years.push(group);
+  }
+  group.months.push(m);
+}
+const monthLabel = (ym: string) => monthFmt.format(new Date(Date.UTC(Number(ym.slice(0, 4)), Number(ym.slice(5, 7)) - 1, 1)));
 
 const sourceUrl = locale.file === 'en'
   ? `${facts.repoUrl}/blob/main/CHANGELOG.md`
   : `${facts.repoUrl}/blob/main/CHANGELOG.${locale.file}.md`;
+const pageTitle = pageNo === 1
+  ? t(locale, 'meta.changelogTitle')
+  : `${t(locale, 'meta.changelogTitle')} · ${t(locale, 'changelog.page').replace('{n}', String(pageNo))}`;
+const pageLabel = (n: number) => t(locale, 'changelog.page').replace('{n}', String(n));
 const jsonLd = {
   '@context': 'https://schema.org',
   '@type': 'TechArticle',
-  headline: t(locale, 'meta.changelogTitle'),
+  headline: pageTitle,
   description: t(locale, 'meta.changelogDesc'),
   inLanguage: locale.code,
   isAccessibleForFree: true,
@@ -37,16 +69,23 @@ const jsonLd = {
 <Base
   locale={locale}
   page="changelog"
-  title={t(locale, 'meta.changelogTitle')}
+  title={pageTitle}
   description={t(locale, 'meta.changelogDesc')}
   jsonLd={jsonLd}
+  canonicalPath={pageHref(pageNo)}
 >
   <Header locale={locale} page="changelog" />
   <main id="main" class="container-site pt-24 pb-20 md:pt-28">
     <nav class="mb-6 text-sm text-ink-soft" aria-label="Breadcrumb">
       <a href={localeHome(locale)} class="hover:underline">{t(locale, 'help.home')}</a>
       <span class="mx-1.5 text-ink-faint">/</span>
-      <span aria-current="page">{t(locale, 'changelog.title')}</span>
+      <a href={clBase} class="hover:underline">{t(locale, 'changelog.title')}</a>
+      {pageNo > 1 && (
+        <>
+          <span class="mx-1.5 text-ink-faint">/</span>
+          <span aria-current="page">{pageLabel(pageNo)}</span>
+        </>
+      )}
     </nav>
     <article class="mx-auto max-w-3xl">
       <div class="mb-8 flex flex-wrap items-center justify-between gap-4">
@@ -57,9 +96,55 @@ const jsonLd = {
         </a>
       </div>
       <p class="mb-8 text-ink-soft">{t(locale, 'changelog.lead')}</p>
+
+      {/* Month archive (page 1 only) — static links into the paginated pages. */}
+      {pageNo === 1 && (
+        <nav class="mb-10 rounded-[16px] border border-line bg-paper-alt p-5" aria-label={t(locale, 'changelog.archive')}>
+          <h2 class="mb-3 text-sm font-bold uppercase tracking-wide text-ink-faint">{t(locale, 'changelog.archive')}</h2>
+          {years.map((group) => (
+            <div class="mb-3 last:mb-0">
+              <p class="mb-1 font-mono text-sm font-bold">{group.year}</p>
+              <ul class="flex flex-wrap gap-x-5 gap-y-1">
+                {group.months.map((m) => (
+                  <li class="text-sm">
+                    <a href={pageHref(m.page)} class="text-ink-soft hover:text-ink hover:underline">
+                      {monthLabel(m.ym)}
+                    </a>
+                    <span class="ms-1.5 text-xs text-ink-faint">
+                      {t(locale, 'changelog.releases').replace('{n}', formatNumber(locale, m.count))}
+                    </span>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
+        </nav>
+      )}
+
       <div class="prose-help">
         <Content />
       </div>
+
+      {/* Pagination — numbered pages, newest first. */}
+      {pageCount > 1 && (
+        <nav class="mt-10 flex flex-wrap items-center justify-center gap-2" aria-label={t(locale, 'changelog.pagination')}>
+          {Array.from({ length: pageCount }, (_, i) => i + 1).map((n) => (
+            <a
+              href={pageHref(n)}
+              aria-label={pageLabel(n)}
+              aria-current={n === pageNo ? 'page' : undefined}
+              class:list={[
+                'rounded-full border px-3.5 py-1.5 text-sm font-semibold',
+                n === pageNo
+                  ? 'border-transparent bg-ink text-paper'
+                  : 'border-line text-ink-soft hover:bg-paper-alt hover:text-ink',
+              ]}
+            >
+              {formatNumber(locale, n)}
+            </a>
+          ))}
+        </nav>
+      )}
     </article>
   </main>
   <Footer locale={locale} page="changelog" />

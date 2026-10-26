@@ -1,5 +1,5 @@
 ---
-import { t, type Locale } from '../i18n/locales';
+import { formatNumber, t, type Locale } from '../i18n/locales';
 import facts from '../generated/facts.json';
 
 interface Props {
@@ -15,7 +15,7 @@ const items = [
   t(locale, 'stats.langs').replace('{n}', String(facts.locales)),
   t(locale, 'stats.adapters').replace('{n}', String(adaptersRounded)),
   t(locale, 'stats.providers').replace('{n}', String(facts.providers)),
-  ...(testsRounded ? [t(locale, 'stats.tests').replace('{n}', testsRounded.toLocaleString('en-US'))] : []),
+  ...(testsRounded ? [t(locale, 'stats.tests').replace('{n}', formatNumber(locale, testsRounded))] : []),
   t(locale, 'stats.local'),
 ];
 ---
