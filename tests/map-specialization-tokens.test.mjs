@@ -12,9 +12,10 @@
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, statSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
-import { resolve } from 'node:path';
+import { dirname, resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
 import { createRequire } from 'node:module';
 const require = createRequire(import.meta.url);
@@ -44,6 +45,32 @@ const POSTINGS = [
 const ROLES = ['Senior PHP Developer', 'Go Developer', 'Platform Engineer', 'Software Engineer'];
 
 const SKIP_TOKENS = resolvePlaywright() === null;
+const REPO = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+
+// Triage 2026-10-26 — the whole file failed 5/5 on clean checkouts with
+// `TimeoutError` on `#job-map.leaflet-container`: index.html loads Leaflet
+// from `/vendor/leaflet/leaflet.js`, which the server resolves from
+// node_modules first and from the COMMITTED public/vendor/leaflet copy as
+// the fallback. On a checkout without a resolvable node_modules/leaflet and
+// without the (then untracked) vendored copy, `window.L` stayed undefined,
+// map.js bailed before mounting the container, and every wait timed out.
+// The vendored dist is committed now; this guard keeps it from silently
+// disappearing again (it is plain fs — runs even when Playwright is absent).
+test('the vendored Leaflet dist is committed — the map cannot boot without it', () => {
+  for (const rel of ['leaflet.js', 'leaflet.css', 'images/marker-icon.png', 'images/layers.png']) {
+    const p = resolve(REPO, 'public', 'vendor', 'leaflet', rel);
+    let size = 0;
+    try { size = statSync(p).size; } catch { /* missing */ }
+    assert.ok(size > 0,
+      `public/vendor/leaflet/${rel} is missing (${size} bytes) — index.html loads it `
+      + `unconditionally and it is the only Leaflet source on clean checkouts. `
+      + `Restore: cp node_modules/leaflet/dist/{leaflet.js,leaflet.css} public/vendor/leaflet/ `
+      + `&& cp -R node_modules/leaflet/dist/images public/vendor/leaflet/ (or run npm ci).`);
+  }
+  const html = readFileSync(resolve(REPO, 'public', 'index.html'), 'utf8');
+  assert.match(html, /src="\/vendor\/leaflet\/leaflet\.js"/, 'index.html loads the vendored Leaflet');
+  assert.match(html, /href="\/vendor\/leaflet\/leaflet\.css"/, 'index.html loads the vendored Leaflet CSS');
+});
 before(async () => {
   if (SKIP_TOKENS) return;
   process.env.CAREER_OPS_ROOT = ROOT;
