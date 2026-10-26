@@ -130,6 +130,14 @@ let saveGen = 0;             // bumped on every insert (CAR-142 rev-2 — dirty 
 function scheduleSave() {
   dirty = true;
   saveGen++;
+  // CAR-142 rev-3 #8 — new data re-arms the beforeExit hook: the latch only
+  // covers the last FAILED attempt (a failing flush must not loop the exit
+  // sequence), so fresh inserts always get a fresh flush attempt.
+  beforeExitFlushed = false;
+  // CAR-142 rev-3 #4 — lazy install at the FIRST insert: a script that merely
+  // imports the module installs nothing, but any consumer that actually has
+  // something to lose (routes, CLI builders) keeps the teardown flush.
+  installExitHooks();
   if (saveTimer) return;
   saveTimer = setTimeout(() => { _flushGeocodeCache().catch(() => {}); }, numEnv('GEOCODE_SAVE_MS', 2000));
   saveTimer.unref?.();
@@ -140,6 +148,26 @@ function persistableEntries() {
   const max = numEnv('GEOCODE_CACHE_MAX', 20000);
   return max > 0 && cache.size > max ? [...cache].slice(-max) : [...cache];
 }
+
+// CAR-142 rev-3 #6 — flushes are serialized through this chain: every
+// snapshot is taken at the flush's own turn, so a write can never land
+// BEHIND a newer full-file write. (withFileLock serialises the writes
+// themselves, but the snapshots were taken before the wait — the ordering
+// used to lean on that chain's FIFO internals; now it is structural.)
+let flushChain = Promise.resolve();
+
+/** Persist the cache now (test hook; also the trailing edge of the debounce). */
+export function _flushGeocodeCache() {
+  const run = flushChain.then(() => flushGeocodeCacheNow());
+  flushChain = run.catch(() => {});
+  return run;
+}
+
+// CAR-142 rev-3 #5 — >0 while a flush is inside its withFileLock critical
+// section. The signal hook never re-raises a shutdown while a write is in
+// flight: the process would die between the lock acquisition and the release
+// and strand the file mid-write (a torn cache file).
+let lockWrites = 0;
 
 /**
  * Persist the cache now (test hook; also the trailing edge of the debounce).
@@ -152,7 +180,7 @@ function persistableEntries() {
  * next flush persists it instead of the trailing debounce seeing a clean flag
  * and skipping the value.
  */
-export async function _flushGeocodeCache() {
+async function flushGeocodeCacheNow() {
   if (saveTimer) { clearTimeout(saveTimer); saveTimer = null; }
   if (!dirty || !cache) return;
   const g = saveGen;
@@ -160,7 +188,12 @@ export async function _flushGeocodeCache() {
   try {
     mkdirSync(dirname(cacheFile), { recursive: true });
     await withFileLock(cacheFile, () => {
-      writeFileSync(cacheFile, JSON.stringify(Object.fromEntries(entries)));
+      lockWrites++;
+      try {
+        writeFileSync(cacheFile, JSON.stringify(Object.fromEntries(entries)));
+      } finally {
+        lockWrites--;
+      }
     });
     if (saveGen === g) dirty = false;
   } catch { /* read-only install → memory cache only; dirty survives */ }
@@ -182,11 +215,13 @@ function flushSyncBestEffort() {
   } catch { /* best effort — the process is exiting */ }
 }
 
-// CAR-142 rev-2 — beforeExit runs ONCE. A flush that keeps failing
-// (EACCES/ENOSPC, a lock that never acquires) schedules new async work on
-// every fire, which refills the event loop so beforeExit fires again — the
-// process would never exit naturally. Anything still dirty is the sync
-// `exit` hook's job.
+// CAR-142 rev-2 — beforeExit latches after a FAILED flush. A flush that keeps
+// failing (EACCES/ENOSPC, a lock that never acquires) schedules new async work
+// on every fire, which refills the event loop so beforeExit fires again — the
+// process would never exit naturally. Anything still dirty is the sync `exit`
+// hook's job. CAR-142 rev-3 #8 — the latch covers only the LAST attempt:
+// scheduleSave() clears it, so new data always gets a fresh flush attempt and
+// a long-lived process never skips a later teardown permanently.
 let beforeExitFlushed = false;
 
 function onBeforeExit() {
@@ -208,7 +243,15 @@ function signalFlush(signal) {
       const t = setTimeout(resolve, numEnv('GEOCODE_FLUSH_EXIT_MS', FLUSH_EXIT_BUDGET_MS));
       t.unref?.();
     });
-    Promise.race([done, budget]).then(() => {
+    // CAR-142 rev-3 #2 — the race promise is RETURNED, so a caller (tests, any
+    // wrapper) can wait out the re-raise DECISION instead of racing it:
+    // asserting or restoring state before it settles is exactly the bug class
+    // this hook exists to prevent.
+    return Promise.race([done, budget]).then(async () => {
+      // CAR-142 rev-3 #5 — never re-raise with a write in flight: the process
+      // would die between the lock acquisition and the release and leave the
+      // cache file torn. Finish the write, then terminate.
+      if (lockWrites > 0) await done;
       if (process.listenerCount(signal) === 0) {
         try { process.kill(process.pid, signal); } catch { /* already gone */ }
       }
@@ -218,9 +261,9 @@ function signalFlush(signal) {
 
 let exitHooksInstalled = false;
 
-// CAR-142 rev-2 — hooks install at ROUTE REGISTRATION, not at module load: a
-// script that merely imports the route module must not inherit process-level
-// signal and exit handlers.
+// CAR-142 rev-3 #4 — nothing installs at MODULE LOAD; the hooks arrive with
+// the first scheduleSave() (below) or with route registration — whichever
+// happens first for this consumer.
 function installExitHooks() {
   if (exitHooksInstalled) return;
   exitHooksInstalled = true;
@@ -328,11 +371,10 @@ function km(a, b) {
 
 /**
  * Recency refresh on a hit (CAR-142 rev-2): re-insert the key so the
- * insertion-ordered trim keeps hot keys. Deliberately NOT persisted (no
- * scheduleSave — geocode is read-heavy and the debounce exists to avoid a
- * write per lookup): the persisted order stays flush-time insert order and
- * recency restarts on reload. The bounded live map is the invariant, not the
- * exact order on disk.
+ * insertion-ordered trim keeps hot keys. No scheduleSave — geocode is
+ * read-heavy and the debounce exists to avoid a write per lookup; but the
+ * reorder itself IS durable: persistableEntries() spreads the live map at
+ * flush time, so the next flush persists the recency order too (rev-3 #9).
  */
 function touch(c, key) {
   const v = c.get(key);
@@ -408,7 +450,7 @@ export function _resetGeocode(seed = null, file = cacheFile) {
 }
 
 export function registerGeocodeRoutes(app) {
-  installExitHooks();          // CAR-142 rev-2 — teardown flush belongs to the running server
+  installExitHooks();          // rev-3 #4 — routes install eagerly; non-route consumers install lazily via scheduleSave()
   app.get('/api/geocode', async (req, res) => {
     // A long multi-location cell is trimmed to its first place, not refused;
     // only an absurd query (not a posting's location) is a 400.
@@ -422,7 +464,8 @@ export function registerGeocodeRoutes(app) {
       // answer 503 + Retry-After so the client can tell them from a provider
       // failure. The value is computed once: header and body always agree.
       if (err && (err.code === 'GEOCODE_BUDGET' || err.code === 'GEOCODE_BACKOFF')) {
-        const retryAfter = err.retryAfter || 60;
+        // retryAfterSec() is always ≥ 1 — no fallback needed (rev-3 #10).
+        const retryAfter = err.retryAfter;
         res.set('Retry-After', String(retryAfter));
         return res.status(503).json({
           error: err.code === 'GEOCODE_BUDGET' ? 'geocode budget exhausted' : 'nominatim backoff',

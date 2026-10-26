@@ -38,6 +38,15 @@
  *  12. a hit refreshes recency (hot keys survive the trim) and a disk-loaded
  *      map is trimmed at load, and
  *  13. the Nominatim backoff window answers 503 + Retry-After too.
+ *
+ * CAR-142 rev-3 (opus review of PR #497) adds:
+ *  14. teardown hooks install lazily on the FIRST scheduleSave — import
+ *      alone installs nothing, but non-route consumers keep the exit flush,
+ *  15. the beforeExit latch covers only the last FAILED attempt: new data
+ *      (scheduleSave) re-arms the hook,
+ *  16. the signal hook returns its race promise and the tests await it, so
+ *      re-raise assertions are never vacuous and never race the restore,
+ *     and the sole-owner test restores every SIGTERM handler it stripped.
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
@@ -134,6 +143,29 @@ function mockFetch() {
   return f;
 }
 const noFetch = () => { throw new Error('network used'); };
+
+// CAR-142 rev-3 #4 — runs FIRST: nothing else in this file has inserted yet,
+// so the install-delta observed here is caused by this test's own insert.
+test('rev-3: teardown hooks install lazily on the first insert — no routes involved', async () => {
+  const sigBefore = process.listeners('SIGTERM');
+  const intBefore = process.listeners('SIGINT');
+  const beforeExitBefore = process.listeners('beforeExit');
+  process.env.GEOCODE_SAVE_MS = '600000';    // ONLY the hook can persist within the window
+  try {
+    mod._resetGeocode({}, file);
+    const f = mockFetch();
+    await mod.geocode('Липецк', { fetch: f });       // first scheduleSave
+    const isnew = (before) => (sig) => process.listeners(sig).filter((l) => !before.includes(l));
+    assert.equal(isnew(sigBefore)('SIGTERM').length, 1, 'the SIGTERM hook arrives with the first insert');
+    assert.equal(isnew(intBefore)('SIGINT').length, 1, 'the SIGINT hook arrives with the first insert');
+    const beAdded = process.listeners('beforeExit').filter((l) => !beforeExitBefore.includes(l));
+    assert.equal(beAdded.length, 1, 'the beforeExit hook arrives with the first insert');
+    beAdded[0]();                              // invoke the now-installed hook directly
+    assert.ok(await waitForFile(file, 'липецк'), 'the lazily installed hook flushes');
+  } finally {
+    delete process.env.GEOCODE_SAVE_MS;
+  }
+});
 
 test('a Cyrillic city geocodes via the provider and lands in the persistent cache', async () => {
   mod._resetGeocode({}, file);
@@ -260,11 +292,16 @@ test('CAR-142 rev-2: an insert landing during a flush stays pending — the next
     await mod.geocode('Рязань', { fetch: f });
     const { withFileLock } = await import('../server/lib/file-lock.mjs');
     let release;
+    let acquiredResolve;
+    const acquired = new Promise((r) => { acquiredResolve = r; });
     const held = new Promise((r) => { release = r; });
-    void withFileLock(file, async () => { await held; });   // stall the flush's write
+    const holder = withFileLock(file, async () => { acquiredResolve(); await held; });
+    await acquired;                          // rev-3 #7 — the lock IS held before the flush starts
     const flushP = mod._flushGeocodeCache(); // snapshot taken at entry, waits on the lock
+    await sleep(0);                          // the snapshot microtask has run before the insert
     await mod.geocode('Липецк', { fetch: f });               // insert DURING the flush
     release();
+    await holder;
     await flushP;
     const mid = JSON.parse(readFileSync(file, 'utf8'));
     assert.ok(mid['рязань'], 'flush A persisted its entry-time snapshot');
@@ -290,23 +327,31 @@ test("CAR-142: the beforeExit hook flushes the unref'd debounce's pending insert
   }
 });
 
-test('CAR-142 rev-2: the beforeExit hook runs ONCE — a failing flush cannot loop the process', async () => {
+test('CAR-142 rev-3: the beforeExit latch covers a failing flush; new data re-arms the hook', async () => {
+  const dir2 = mkdtempSync(join(tmpdir(), 'geocode-latch-'));
   process.env.GEOCODE_SAVE_MS = '600000';
   try {
-    mod._resetGeocode({}, file);
+    const occupied = join(dir2, 'occupied');
+    mkdirSync(occupied);                     // the cache path IS a directory → EISDIR (portable)
+    mod._resetGeocode({}, occupied);
     const f = mockFetch();
     await mod.geocode('Пенза', { fetch: f });
-    mod._geocodeExitHooks().beforeExit();    // 1st: flushes, latches
-    assert.ok(await waitForFile(file, 'пенза'), 'the first call flushed');
-    await mod.geocode('Киров', { fetch: f });                // dirty again, debounce 600 s away
-    mod._geocodeExitHooks().beforeExit();    // 2nd: latched → no rescheduling
-    await sleep(150);
-    let stored = JSON.parse(readFileSync(file, 'utf8'));
-    assert.ok(!stored['киров'], 'the second call is a no-op — the process can exit naturally');
-    mod._geocodeExitHooks().exit();          // remaining dirty state is the exit hook's job
-    stored = JSON.parse(readFileSync(file, 'utf8'));
-    assert.ok(stored['киров'], 'the sync exit hook persists what beforeExit left behind');
+    const hooks = mod._geocodeExitHooks();
+    hooks.beforeExit();                      // 1st: the flush FAILS (EISDIR) → latched
+    await sleep(100);                        // let the failed attempt land
+    hooks.beforeExit();                      // latched → no retry, no rescheduled work
+    rmSync(occupied, { recursive: true });   // repair the target
+    writeFileSync(occupied, '{}');
+    await sleep(100);
+    let stored = JSON.parse(readFileSync(occupied, 'utf8'));
+    assert.ok(!stored['пенза'], 'a latched hook did not retry the write behind the loop\'s back');
+    await mod.geocode('Киров', { fetch: f }); // new data → scheduleSave re-arms the hook (rev-3 #8)
+    hooks.beforeExit();
+    assert.ok(await waitForFile(occupied, 'киров'), 'new data re-arms the hook — it flushes again');
+    stored = JSON.parse(readFileSync(occupied, 'utf8'));
+    assert.ok(stored['пенза'], 'the re-armed flush persists everything still pending');
   } finally {
+    rmSync(dir2, { recursive: true, force: true });
     delete process.env.GEOCODE_SAVE_MS;
   }
 });
@@ -326,7 +371,7 @@ test('CAR-142: the exit hook makes one synchronous best-effort write', async () 
   }
 });
 
-test('CAR-142 rev-2: the SIGTERM hook flushes and skips the re-raise while another listener owns the signal', async () => {
+test('CAR-142 rev-3: the SIGTERM hook flushes and skips the re-raise while another listener owns the signal', async () => {
   process.env.GEOCODE_SAVE_MS = '600000';    // ONLY the hook can persist within the window
   const { calls, restore } = stubKill();
   const noop = () => {};                     // another handler owns termination
@@ -335,7 +380,10 @@ test('CAR-142 rev-2: the SIGTERM hook flushes and skips the re-raise while anoth
     mod._resetGeocode({}, file);
     const f = mockFetch();
     await mod.geocode('Тольятти', { fetch: f });
-    mod._geocodeExitHooks().signal('SIGTERM')();
+    const raced = mod._geocodeExitHooks().signal('SIGTERM')();
+    assert.ok(raced && typeof raced.then === 'function',
+      'the hook returns its race promise (rev-3 #2) — waiting it out is not optional');
+    await raced;                             // the re-raise DECISION has settled before any assert/restore
     assert.ok(await waitForFile(file, 'тольятти'), 'SIGTERM flushed the pending insert');
     assert.deepEqual(calls, [], 'no re-raise while another listener owns the signal');
   } finally {
@@ -345,21 +393,21 @@ test('CAR-142 rev-2: the SIGTERM hook flushes and skips the re-raise while anoth
   }
 });
 
-test('CAR-142 rev-2: sole SIGTERM owner — the hook re-raises so default termination survives', async () => {
+test('CAR-142 rev-3: sole SIGTERM owner — the hook re-raises so default termination survives', async () => {
+  const saved = process.listeners('SIGTERM');      // rev-3 #1 — restore EVERY handler we strip
   const { calls, restore } = stubKill();
-  process.removeAllListeners('SIGTERM');     // own the signal: listenerCount must reach 0
   try {
+    process.removeAllListeners('SIGTERM');   // own the signal: listenerCount must reach 0
     mod._resetGeocode({}, file);
-    mod._geocodeExitHooks().signal('SIGTERM')();
-    // The re-raise fires in a .then() AFTER this handler returns — let it land
-    // while the stub is still active, or the real process.kill self-delivers
-    // and the test child dies.
-    await sleep(50);
+    await mod._geocodeExitHooks().signal('SIGTERM')();   // awaiting the race: the re-raise has fired
     assert.deepEqual(calls, [[process.pid, 'SIGTERM']],
       'the re-raise preserves the default termination on systemctl stop / Ctrl-C');
   } finally {
+    for (const l of saved) process.on('SIGTERM', l);     // re-add each saved handler
     restore();
   }
+  assert.equal(process.listenerCount('SIGTERM'), saved.length,
+    'the test leaves the process exactly as it found it (rev-3 #1)');
 });
 
 test('over HTTP the Nominatim backoff window answers 503 + Retry-After too', async () => {
