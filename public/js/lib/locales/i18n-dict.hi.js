@@ -455,6 +455,7 @@ window.__I18N_DICT_HI = {
   'auto.step.pdf': "अनुकूलित PDF बनाई जा रही है",
   'auto.step.tracker': "ट्रैकर में जोड़ा जा रहा है",
   'auto.invalidUrl': "अमान्य URL",
+  'auto.superseded': "निरस्त — एक नया रन अनुरोधित है",
   'auto.done': "ऑटो-पाइपलाइन पूर्ण",
   'auto.score': "स्कोर",
   'auto.legit': "वैध",

@@ -454,6 +454,7 @@ window.__I18N_DICT_EN = {
   'auto.step.pdf': "Generating tailored PDF",
   'auto.step.tracker': "Adding to tracker",
   'auto.invalidUrl': "invalid URL",
+  'auto.superseded': "Superseded — a newer run was requested",
   'auto.done': "Auto-pipeline complete",
   'auto.score': "Score",
   'auto.legit': "Legit",

@@ -454,6 +454,7 @@ window.__I18N_DICT_IT = {
   'auto.step.pdf': "Generazione del PDF su misura",
   'auto.step.tracker': "Aggiunta al tracker",
   'auto.invalidUrl': "URL non valido",
+  'auto.superseded': "Sostituito — è stata richiesta un’esecuzione più recente",
   'auto.done': "Auto-pipeline completata",
   'auto.score': "Punteggio",
   'auto.legit': "Legittimo",

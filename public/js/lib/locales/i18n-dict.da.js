@@ -453,6 +453,7 @@ window.__I18N_DICT_DA = {
   'auto.step.pdf': "Genererer tilpasset PDF",
   'auto.step.tracker': "Tilføjer til tracker",
   'auto.invalidUrl': "ugyldig URL",
+  'auto.superseded': "Erstattet — en nyere kørsel blev anmodet",
   'auto.done': "Auto-pipeline gennemført",
   'auto.score': "Score",
   'auto.legit': "Legit",

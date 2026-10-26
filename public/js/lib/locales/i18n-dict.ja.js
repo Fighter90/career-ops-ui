@@ -454,6 +454,7 @@ window.__I18N_DICT_JA = {
   'auto.step.pdf': "テーラード PDF を生成",
   'auto.step.tracker': "トラッカーに追加",
   'auto.invalidUrl': "無効な URL",
+  'auto.superseded': "置き換えられました — 新しい実行がリクエストされました",
   'auto.done': "自動パイプライン完了",
   'auto.score': "スコア",
   'auto.legit': "信頼性",

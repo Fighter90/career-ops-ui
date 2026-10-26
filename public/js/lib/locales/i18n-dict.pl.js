@@ -453,6 +453,7 @@ window.__I18N_DICT_PL = {
   'auto.step.pdf': "Generowanie dopasowanego PDF",
   'auto.step.tracker': "Dodawanie do trackera",
   'auto.invalidUrl': "nieprawidłowy URL",
+  'auto.superseded': "Zastąpiono — żądanie nowszego uruchomienia",
   'auto.done': "Auto-pipeline zakończony",
   'auto.score': "Wynik",
   'auto.legit': "Legit",

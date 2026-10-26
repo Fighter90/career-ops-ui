@@ -459,6 +459,7 @@ window.__I18N_DICT_TA = {
   'auto.step.pdf': "பொருத்தமான PDF உருவாக்குகிறது",
   'auto.step.tracker': "ட்ரேக்கரில் சேர்க்கிறது",
   'auto.invalidUrl': "தவறான URL",
+  'auto.superseded': "இடமாற்றம் — புதிய இயக்கம் கோரப்பட்டது",
   'auto.done': "Auto-pipeline முடிந்தது",
   'auto.score': "மதிப்பெண்",
   'auto.legit': "நம்பகம்",

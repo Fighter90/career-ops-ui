@@ -9197,6 +9197,27 @@
     "ta": "தவறான URL",
     "vi": "URL không hợp lệ"
   },
+  "auto.superseded": {
+    "en": "Superseded — a newer run was requested",
+    "es": "Reemplazado: se solicitó una ejecución más reciente",
+    "pt-BR": "Substituído — uma execução mais recente foi solicitada",
+    "ko": "대체됨 — 최신 실행이 요청되었습니다",
+    "ja": "置き換えられました — 新しい実行がリクエストされました",
+    "ru": "Заменено — запрошен более новый запуск",
+    "zh-CN": "已被取代 — 已请求新的运行",
+    "zh-TW": "已被取代 — 已要求新的執行",
+    "fr": "Remplacé — une exécution plus récente a été demandée",
+    "pl": "Zastąpiono — żądanie nowszego uruchomienia",
+    "uk": "Замінено — надійшов запит на новіший запуск",
+    "da": "Erstattet — en nyere kørsel blev anmodet",
+    "ar": "تم الاستبدال — تم طلب تشغيل أحدث",
+    "de": "Ersetzt — ein neuerer Lauf wurde angefordert",
+    "it": "Sostituito — è stata richiesta un’esecuzione più recente",
+    "tr": "Yerine yenisi geçti — daha yeni bir çalıştırma istendi",
+    "hi": "निरस्त — एक नया रन अनुरोधित है",
+    "ta": "இடமாற்றம் — புதிய இயக்கம் கோரப்பட்டது",
+    "vi": "Đã thay thế — một lượt chạy mới đã được yêu cầu"
+  },
   "auto.done": {
     "en": "Auto-pipeline complete",
     "es": "Auto-pipeline completado",

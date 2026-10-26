@@ -454,6 +454,7 @@ window.__I18N_DICT_TR = {
   'auto.step.pdf': "Size özel PDF oluşturuluyor",
   'auto.step.tracker': "Takip tablosuna ekleniyor",
   'auto.invalidUrl': "geçersiz URL",
+  'auto.superseded': "Yerine yenisi geçti — daha yeni bir çalıştırma istendi",
   'auto.done': "Otomatik-pipeline tamamlandı",
   'auto.score': "Puan",
   'auto.legit': "Güvenilir",

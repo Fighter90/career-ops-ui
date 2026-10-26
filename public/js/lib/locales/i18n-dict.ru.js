@@ -454,6 +454,7 @@ window.__I18N_DICT_RU = {
   'auto.step.pdf': "Генерируем кастомный PDF",
   'auto.step.tracker': "Добавляем в трекер",
   'auto.invalidUrl': "невалидный URL",
+  'auto.superseded': "Заменено — запрошен более новый запуск",
   'auto.done': "Auto-pipeline завершён",
   'auto.score': "Score",
   'auto.legit': "Легитимно",
