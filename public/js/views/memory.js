@@ -79,6 +79,7 @@ Router.register('memory', async () => {
       // cancel; destructuring before the guard threw a phantom TypeError.
       const res = await window.LlmPageKit.run({
         run: runCtrl,
+        failText: t('mem.suggestFailed', 'Could not build a suggestion'),
         request: (signal) => window.LlmPageKit.postJSON('/api/memory/suggest', {}, signal),
       });
       if (runCtrl.cancelled || runCtrl.signal.aborted) return; // a cancelled run paints nothing more

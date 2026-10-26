@@ -243,6 +243,7 @@ Router.register('two-pager', async () => {
       // the user still reviews and clicks Save.
       const res = await window.LlmPageKit.run({
         run: runCtrl,
+        failText: t('twoPager.aiFillFailed', 'Could not draft the two-pager'),
         request: (signal) => window.LlmPageKit.postJSON('/api/two-pager/draft', { run: true }, signal),
       });
       if (runCtrl.cancelled || runCtrl.signal.aborted) return; // a cancelled run paints nothing more

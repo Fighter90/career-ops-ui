@@ -274,9 +274,10 @@ window.LlmPageKit = (function () {
       teardownPanel();
     }
 
-    function fail(err, paint) {
+    function fail(err, paint, failText) {
       if (!active) return;
       const message = (err && err.message) || String(err || t('common.error', 'Error'));
+      const lead = (typeof failText === 'string' && failText.trim()) || t('common.error', 'Error');
       // CAR-119 review #12 — the condition collapses to one question: did
       // the USER cancel? An aborted signal is always the cancel path here
       // (the kit owns the only AbortController).
@@ -294,7 +295,7 @@ window.LlmPageKit = (function () {
       if (paint === false) return;
       if (host) {
         host.appendChild(el('div', { className: 'llm2run llm2run--fail', role: 'alert' }, [
-          el('span', null, t('common.error', 'Error') + ': ' + message),
+          el('span', null, lead + ': ' + message),
         ]));
       }
     }
@@ -323,7 +324,7 @@ window.LlmPageKit = (function () {
   }
 
   /**
-   * run({ run, request, onDone, intro, failPaint }) — convenience wiring:
+   * run({ run, request, onDone, intro, failPaint, failText }) — wiring:
    *   run.begin(); if intro → logged as the first line (the view's own
    *   localized "what is happening" message, e.g. net.building); then
    *   request(signal) → finish + onDone; failures paint the kit's error
@@ -334,7 +335,7 @@ window.LlmPageKit = (function () {
    * LlmPageKit.postJSON(path, body, signal) or API.post for the
    * not-yet-cancellable endpoints).
    */
-  async function run({ run: ctrl, request, onDone, intro, failPaint }) {
+  async function run({ run: ctrl, request, onDone, intro, failPaint, failText }) {
     if (!ctrl.begin()) return undefined;
     if (intro) ctrl.log(intro);
     try {
@@ -343,7 +344,7 @@ window.LlmPageKit = (function () {
       if (typeof onDone === 'function') onDone(res);
       return res;
     } catch (e) {
-      ctrl.fail(e, failPaint);
+      ctrl.fail(e, failPaint, failText);
       if (ctrl.cancelled || (e && e.aborted) || (ctrl.signal && ctrl.signal.aborted)) return undefined;
       throw e;
     }

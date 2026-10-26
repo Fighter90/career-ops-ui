@@ -109,6 +109,7 @@ Router.register('mock-interview', async () => {
     try {
       const res = await window.LlmPageKit.run({
         run: runCtrl,
+        failText: t('mock.turnFailed', 'Could not get the next turn'),
         intro: t('mock.thinking', 'Interviewer is thinking…'),
         request: (signal) => window.LlmPageKit.postJSON('/api/mock-interview/turn', { role: session.role, company: session.company, jd: session.jd, history, run: true }, signal),
       });

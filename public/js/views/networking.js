@@ -79,6 +79,7 @@ Router.register('networking', async () => {
     try {
       const res = await window.LlmPageKit.run({
         run: runCtrl,
+        failText: t('net.buildFailed', 'Could not build the plan'),
         intro: t('net.building', 'Researching and drafting…'),
         request: (signal) => window.LlmPageKit.postJSON('/api/networking/plan',
           { company, role: current.role, jd: jdInput.value.trim(), run: true }, signal),
