@@ -454,6 +454,7 @@ window.__I18N_DICT_KO = {
   'auto.step.pdf': "맞춤 PDF 생성",
   'auto.step.tracker': "트래커에 추가",
   'auto.invalidUrl': "잘못된 URL",
+  'auto.superseded': "대체됨 — 최신 실행이 요청되었습니다",
   'auto.done': "자동 파이프라인 완료",
   'auto.score': "점수",
   'auto.legit': "신뢰도",

@@ -1,23 +1,27 @@
 /**
- * FULL-R5 (review 5) — the auto-pipeline reopen race + the shared
- * API.postStream transport.
+ * FULL-R5 (review 5 + review-round-2 findings 1/2/5/6/7) — auto-pipeline
+ * lifecycle: the reopen race, the shared API.postStream transport, and the
+ * abort contract end to end.
  *
- * Pre-fix race: closing modal A fires UI.modal's onClose → currentAbort
- * aborts the in-flight run, but `running` only clears in the async finally.
- * Reopening immediately (Cmd+K autoStart's setTimeout(0)) hit
- * `if (running) return` SILENTLY — the fresh modal was inert: no run, no
- * message, nothing.
+ * Round 1 fix: a start landing on an in-flight run queues (module-scope run
+ * promise) instead of silently returning.
  *
- * Contract under test (behavioural, real api.js transport + stubbed fetch):
- *   1. start → modal close (abort) → reopen → start again SETTLES: the
- *      second run actually executes (fetch is called twice) and its result
- *      card renders in the new modal — never a silent return;
- *   2. a run in flight still serializes: a queued start waits for the
- *      in-flight run's settlement instead of racing it;
- *   3. the transport is API.postStream (Accept-Language header rides the
- *      request; the private SSE-parser copy is gone).
+ * Round 2 contracts:
+ *   F1 [high] a queued start carries its OWN AbortController; closing the
+ *      modal cancels the queued run too — a cancelled waiter must never
+ *      wake into a fresh PAID run with no visible modal (silent spend,
+ *      reverses CAR-94.6).
+ *   F2 a superseded queued start renders an explicit «Superseded» state,
+ *      never a silent inert modal.
+ *   F5 the abort contract is real: the signal reaches fetch, the stub
+ *      reader rejects on abort, and a closed modal's result root stays
+ *      empty; API.postStream receives abort.signal.
+ *   F6 frames buffered after close do not paint into the detached modal.
+ *   F7 a transport-level non-OK response renders the old step-0
+ *      «HTTP nnn» state, not a generic network failure.
  *
- * No network, no server: fetch is a ReadableStream-shaped stub.
+ * No network, no server: fetch is a ReadableStream-shaped stub that honours
+ * opts.signal.
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -46,16 +50,21 @@ function mkEl(tag) {
 
 /**
  * Builds an env whose API is the REAL api.js postStream over a scripted
- * fetch. `script` = array of { frames, release } consumed in fetch order;
- * a stream whose `release` promise is unresolved blocks reader.read() —
- * simulating an in-flight run until the test releases it.
+ * fetch. Each queued spec = one fetch: { frames, release, ok, status }.
+ * A stream whose `release` promise is unresolved blocks reader.read() —
+ * simulating an in-flight run until the test releases it. The reader
+ * REJECTS when the request signal aborts (real fetch behaviour, F5).
  */
 function makeEnv() {
   const fetchCalls = [];
   const streams = [];
   const makeFetch = () => async (path, opts) => {
-    const spec = streams.shift() || { frames: [], release: Promise.resolve() };
+    const spec = streams.shift() || { frames: [], release: Promise.resolve(), ok: true };
+    spec.signal = opts.signal || null;
     fetchCalls.push({ path, opts, spec });
+    if (spec.ok === false) {
+      return { ok: false, status: spec.status || 502, text: async () => '' };
+    }
     const enc = new TextEncoder();
     let i = 0;
     return {
@@ -64,6 +73,11 @@ function makeEnv() {
         getReader: () => ({
           read: async () => {
             await spec.release;
+            if (spec.signal && spec.signal.aborted) {
+              const e = new Error('The user aborted a request.');
+              e.name = 'AbortError';
+              throw e;
+            }
             return i < spec.frames.length
               ? { done: false, value: enc.encode(spec.frames[i++]) }
               : { done: true };
@@ -151,6 +165,8 @@ function collectStrings(node, acc = []) {
 const DONE_FRAMES = ['event: done\ndata: {"score":4.5,"company":"Acme","role":"Engineer","slug":"acme-engineer","trackerNum":42}\n\n'];
 async function settle(ms = 25) { await new Promise((r) => setTimeout(r, ms)); }
 
+// ── round 1 contract (kept): reopen after a close-aborted run settles ─────
+
 test('FULL-R5: close-abort → reopen → start again SETTLES (no silent return, second run executes)', async () => {
   const env = makeEnv();
   // Run 1: a stream that stays in flight until the test releases it.
@@ -167,7 +183,7 @@ test('FULL-R5: close-abort → reopen → start again SETTLES (no silent return,
   env.modals[0].onClose && env.modals[0].onClose();
   release1(); // the aborted stream settles (postStream returns silently)
 
-  // 3. reopen + autoStart — pre-fix this hit `if (running) return` silently.
+  // 3. reopen + autoStart — a fresh user-triggered start must run.
   env.streams.push({ frames: DONE_FRAMES, release: Promise.resolve() });
   env.open({ prefillUrl: 'https://jobs.example.com/2', autoStart: true });
   await settle(60);
@@ -183,6 +199,153 @@ test('FULL-R5: close-abort → reopen → start again SETTLES (no silent return,
   assert.equal(run2.opts.body, JSON.stringify({ url: 'https://jobs.example.com/2', lang: 'en' }),
     'run 2 posts its own URL through the shared transport (lang rides along)');
 });
+
+// ── F1a [high]: a queued start whose modal CLOSES must never run ──────────
+
+test('F1a: queued start + its modal closed → NO second fetch (cancelled waiter never spends)', async () => {
+  const env = makeEnv();
+  // Run 1 streams, blocked.
+  let release1;
+  env.streams.push({ frames: DONE_FRAMES, release: new Promise((r) => { release1 = r; }) });
+
+  env.open({ prefillUrl: 'https://jobs.example.com/1', autoStart: true });
+  await settle();
+  assert.equal(env.fetchCalls.length, 1);
+
+  // Modal B opens while A streams → B's start queues behind run 1.
+  env.open({ prefillUrl: 'https://jobs.example.com/2', autoStart: true });
+  await settle();
+  assert.equal(env.fetchCalls.length, 1, 'B must be queued, not running');
+
+  // The user closes B — the queued run must be cancelled with the modal.
+  env.modals[1].onClose && env.modals[1].onClose();
+
+  // Run 1 settles. Pre-fix the cancelled waiter woke into a fresh PAID run
+  // (fetch #2, report, tracker row) with no visible modal and no cancel.
+  release1();
+  await settle(80);
+
+  assert.equal(env.fetchCalls.length, 1,
+    'a queued start whose modal closed must NEVER fire (silent spend = CAR-94.6 regression)');
+  // B's modal must not show a result either.
+  const text = collectStrings(roots(env.modals[1]).result).join(' | ');
+  assert.doesNotMatch(text, /Auto-pipeline complete/, 'no phantom result in the closed modal');
+});
+
+// ── F1b: a queued start behind an ABORTED in-flight run runs ONCE, visibly ─
+
+test('F1b: second Cmd+K while A streams → A aborts, B runs exactly once with visible progress', async () => {
+  const env = makeEnv();
+  let release1;
+  env.streams.push({ frames: DONE_FRAMES, release: new Promise((r) => { release1 = r; }) });
+
+  env.open({ prefillUrl: 'https://jobs.example.com/1', autoStart: true });
+  await settle();
+
+  // Opening B replaces A (the real UI.modal fires A's onClose → aborts A).
+  env.modals[0].onClose && env.modals[0].onClose();
+  // B's run 2 stream (consumed when B's queued start fires after settle).
+  env.streams.push({ frames: DONE_FRAMES, release: Promise.resolve() });
+  env.open({ prefillUrl: 'https://jobs.example.com/2', autoStart: true });
+  await settle();
+  assert.equal(env.fetchCalls.length, 1, 'B queues behind the still-settling run 1');
+
+  release1();
+  await settle(80);
+  assert.equal(env.fetchCalls.length, 2, 'B runs exactly once after run 1 settles');
+  const runs = env.fetchCalls.filter((c) => c.opts.body.includes('jobs.example.com/2'));
+  assert.equal(runs.length, 1, 'no double-fire of the queued URL');
+  const text = collectStrings(roots(env.modals[1]).result).join(' | ');
+  assert.match(text, /Auto-pipeline complete/, 'B\'s modal shows the run it paid for');
+});
+
+// ── F2: a superseded queued start renders an explicit state ───────────────
+
+test('F2: a superseded queued start renders «Superseded» — never a silent inert modal', async () => {
+  const env = makeEnv();
+  let release1;
+  env.streams.push({ frames: DONE_FRAMES, release: new Promise((r) => { release1 = r; }) });
+
+  env.open({ prefillUrl: 'https://jobs.example.com/1', autoStart: true });
+  await settle();
+
+  // B queues while A streams. (The env's UI.modal does not auto-fire the
+  // previous onClose, so B's modal is still the visible one when C
+  // supersedes it — exactly the state where silence would strand the user.)
+  env.open({ prefillUrl: 'https://jobs.example.com/2', autoStart: true });
+  await settle();
+  // C supersedes B's queued start.
+  env.streams.push({ frames: DONE_FRAMES, release: Promise.resolve() }); // C's run 2
+  env.open({ prefillUrl: 'https://jobs.example.com/3', autoStart: true });
+  await settle();
+  assert.equal(env.fetchCalls.length, 1, 'still only run 1');
+
+  release1();
+  await settle(80);
+
+  // B: superseded → explicit state in its timeline.
+  const bRoots = roots(env.modals[1]);
+  const bTimeline = collectStrings(bRoots.timeline).join(' | ');
+  assert.match(bTimeline, /Superseded/, 'B\'s timeline must announce the supersede');
+  const bText = collectStrings(bRoots.result).join(' | ');
+  assert.doesNotMatch(bText, /Auto-pipeline complete/, 'B must not render a result');
+  // C: runs.
+  assert.equal(env.fetchCalls.length, 2, 'C (the newest queued start) runs');
+  const text = collectStrings(roots(env.modals[2]).result).join(' | ');
+  assert.match(text, /Auto-pipeline complete/, 'C renders its result');
+});
+
+// ── F5: the abort contract is real — the signal reaches fetch ─────────────
+
+test('F5: onClose aborts the signal that postStream passed to fetch; the closed modal paints nothing', async () => {
+  const env = makeEnv();
+  let release1;
+  env.streams.push({ frames: DONE_FRAMES, release: new Promise((r) => { release1 = r; }) });
+
+  env.open({ prefillUrl: 'https://jobs.example.com/1', autoStart: true });
+  await settle();
+  const sentSignal = env.fetchCalls[0].opts.signal;
+  assert.ok(sentSignal, 'the request must carry an AbortSignal (not undefined)');
+  assert.equal(sentSignal.aborted, false, 'the signal starts live');
+
+  env.modals[0].onClose && env.modals[0].onClose();
+  assert.equal(sentSignal.aborted, true, 'onClose must abort the exact signal fetch received');
+
+  release1();
+  await settle(60);
+  // The modal closed before any terminal frame — nothing may render.
+  const { result } = roots(env.modals[0]);
+  assert.equal(result.children.length, 0, 'the closed modal\'s result root stays empty');
+  assert.equal(env.fetchCalls.length, 1, 'no follow-up fetch');
+});
+
+test('F5 static: postStream receives abort.signal; onEvent is abort-guarded', () => {
+  assert.match(AP_SRC, /API\.postStream\([^)]*abort\.signal\)/,
+    'the transport call must pass abort.signal');
+  const onEventBlock = AP_SRC.slice(AP_SRC.indexOf('const onEvent'), AP_SRC.indexOf('try {', AP_SRC.indexOf('const onEvent')));
+  assert.match(onEventBlock, /if \(abort\.signal\.aborted\) return;/,
+    'onEvent must drop frames after the modal closed (F6)');
+});
+
+// ── F7: transport-level HTTP errors keep the step-0 «HTTP nnn» rendering ──
+
+test('F7: a non-OK response renders step 0 failed with the HTTP status, not a generic network card', async () => {
+  const env = makeEnv();
+  env.streams.push({ ok: false, status: 502, frames: [], release: Promise.resolve() });
+  env.open({ prefillUrl: 'https://jobs.example.com/1', autoStart: true });
+  await settle(60);
+
+  const { timeline, result } = roots(env.modals[0]);
+  const tl = collectStrings(timeline).join(' | ');
+  assert.match(tl, /HTTP 502/, 'the timeline step must carry the HTTP status');
+  const res = collectStrings(result).join(' | ');
+  assert.doesNotMatch(res, /network error/, 'no generic network failure card for a clean HTTP error');
+  const startBtn = env.created.find((e) => e.tagName === 'button' && collectStrings(e).join('').includes('Run auto-pipeline'));
+  assert.ok(startBtn, 'start button exists');
+  assert.equal(startBtn.disabled, false, 'controls re-enabled');
+});
+
+// ── round 1 serialization contract (kept) ──────────────────────────────────
 
 test('FULL-R5: a start while a run is in flight waits for it, then runs once', async () => {
   const env = makeEnv();
@@ -219,8 +382,9 @@ test('FULL-R5: the transport is API.postStream — Accept-Language rides the req
 test('static: the private SSE parser copy is gone from auto-pipeline.js', () => {
   assert.ok(!AP_SRC.includes('getReader'), 'the lib must not carry its own reader loop');
   assert.ok(AP_SRC.includes('API.postStream'), 'the lib must drain through API.postStream');
-  // Abort-on-close contract (CAR-94.6) survives the migration.
+  // Abort-on-close contract (CAR-94.6 + F1) survives the migration.
   assert.match(AP_SRC, /let currentAbort = null;/, 'the module-scope abort handle stays');
+  assert.match(AP_SRC, /let pendingAbort = null;/, 'a queued start has its own module-scope controller (F1)');
   assert.match(AP_SRC, /abort\.signal/, 'the signal must reach the transport');
   assert.match(AP_SRC, /renderError\('network'/, 'a silent stream end still lands in a terminal error');
 });

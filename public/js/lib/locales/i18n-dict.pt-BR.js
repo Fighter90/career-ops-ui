@@ -454,6 +454,7 @@ window.__I18N_DICT_PT_BR = {
   'auto.step.pdf': "Gerando PDF personalizado",
   'auto.step.tracker': "Adicionando ao tracker",
   'auto.invalidUrl': "URL inválida",
+  'auto.superseded': "Substituído — uma execução mais recente foi solicitada",
   'auto.done': "Auto-pipeline concluído",
   'auto.score': "Score",
   'auto.legit': "Legit",

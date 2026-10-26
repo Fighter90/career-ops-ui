@@ -448,6 +448,7 @@ window.__I18N_DICT_VI = {
   'auto.step.pdf': "Đang tạo PDF điều chỉnh",
   'auto.step.tracker': "Đang thêm vào tracker",
   'auto.invalidUrl': "URL không hợp lệ",
+  'auto.superseded': "Đã thay thế — một lượt chạy mới đã được yêu cầu",
   'auto.done': "Auto-pipeline hoàn tất",
   'auto.score': "Điểm",
   'auto.legit': "Xác thực",

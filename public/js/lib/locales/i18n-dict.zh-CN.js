@@ -454,6 +454,7 @@ window.__I18N_DICT_ZH_CN = {
   'auto.step.pdf': "生成定制 PDF",
   'auto.step.tracker': "添加到跟踪器",
   'auto.invalidUrl': "无效 URL",
+  'auto.superseded': "已被取代 — 已请求新的运行",
   'auto.done': "自动管道完成",
   'auto.score': "评分",
   'auto.legit': "可信度",

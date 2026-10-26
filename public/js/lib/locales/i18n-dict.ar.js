@@ -453,6 +453,7 @@ window.__I18N_DICT_AR = {
   'auto.step.pdf': "إنشاء PDF مخصص",
   'auto.step.tracker': "الإضافة إلى المتتبع",
   'auto.invalidUrl': "رابط غير صالح",
+  'auto.superseded': "تم الاستبدال — تم طلب تشغيل أحدث",
   'auto.done': "اكتمل الخط التلقائي",
   'auto.score': "النتيجة",
   'auto.legit': "مصداقية",

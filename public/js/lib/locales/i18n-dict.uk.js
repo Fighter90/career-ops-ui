@@ -453,6 +453,7 @@ window.__I18N_DICT_UK = {
   'auto.step.pdf': "Генерація адаптованого PDF",
   'auto.step.tracker': "Додавання до трекера",
   'auto.invalidUrl': "недійсний URL",
+  'auto.superseded': "Замінено — надійшов запит на новіший запуск",
   'auto.done': "Auto-pipeline завершено",
   'auto.score': "Оцінка",
   'auto.legit': "Легіт",

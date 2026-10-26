@@ -204,26 +204,35 @@ test('CAR-94.5: mode-page submit checks the same single-flight + stale-token sha
 test('CAR-94.6 + FULL-R5: auto-pipeline single-flight + abort live at module scope, modal close aborts, silent stream end renders an error, a queued start waits instead of silently returning', () => {
   const iifeIdx = AUTO_PIPE.indexOf('(function () {');
   const openIdx = AUTO_PIPE.indexOf('function open(opts)');
-  const runIdx = AUTO_PIPE.indexOf('let running = false;');
+  // FULL-R5 review r2 (finding 10) — `runPromise` IS the guard; the old
+  // write-only `running` flag is gone.
+  const runIdx = AUTO_PIPE.indexOf('let runPromise = null;');
   const abortIdx = AUTO_PIPE.indexOf('let currentAbort = null;');
-  const promiseIdx = AUTO_PIPE.indexOf('let runPromise = null;');
-  assert.ok(runIdx > iifeIdx && runIdx < openIdx, 'the running flag must outlive one modal instance');
+  const pendingIdx = AUTO_PIPE.indexOf('let pendingAbort = null;');
+  assert.ok(runIdx > iifeIdx && runIdx < openIdx, 'the run promise must outlive one modal instance');
   assert.ok(abortIdx > iifeIdx && abortIdx < openIdx, 'the abort handle must outlive one modal instance');
-  assert.ok(promiseIdx > iifeIdx && promiseIdx < openIdx,
-    'the run PROMISE must outlive one modal instance (FULL-R5 reopen race)');
+  assert.ok(pendingIdx > iifeIdx && pendingIdx < openIdx,
+    'the queued start\u2019s controller must outlive one modal instance (review r2 F1)');
+  assert.ok(!/let running = false;/.test(AUTO_PIPE),
+    'the write-only `running` flag must stay removed (review r2 finding 10)');
 
   const start = sliceFn(AUTO_PIPE, 'async function start(url)');
   assert.match(start, /if \(runPromise\)/,
     'a start landing on an in-flight run must await its settlement, not silently return (FULL-R5)');
-  assert.match(start, /pendingStart/,
-    'at most ONE start queues behind the in-flight run, latest URL wins');
-  assert.match(AUTO_PIPE, /abort\.signal/, 'the fetch must carry the abort signal');
+  assert.match(start, /pendingAbort/, 'the queued start carries its own module-scope controller');
+  assert.match(start, /abort\.signal\.aborted|!modalOpen/,
+    'a cancelled waiter must never run (review r2 F1)');
+  assert.match(AUTO_PIPE, /currentAbort\.signal|abort\.signal/, 'the fetch must carry the abort signal');
   assert.match(AUTO_PIPE, /if \(!terminal && !abort\.signal\.aborted\) renderError\('network'/,
     'a stream that ends without done/error must land in a terminal error state, not run forever');
 
   const open = sliceFn(AUTO_PIPE, 'function open(opts)');
-  assert.match(open, /if \(currentAbort\) \{\s*try \{\s*currentAbort\.abort\(\);/,
-    'closing the modal must abort the in-flight run');
+  assert.match(open, /modalOpen = false;/,
+    'closing the modal must mark it closed (review r2 F1)');
+  assert.match(open, /for \(const ctl of \[currentAbort, pendingAbort\]\)/,
+    'closing the modal must abort the in-flight run AND a queued start (review r2 F1)');
+  assert.match(open, /pendingAbort\.abort\(\)/,
+    'closing the modal must abort a queued start too (review r2 F1)');
   assert.match(AUTO_PIPE, /renderError\('network', e\.message \|\| 'network error'\)/,
     'the aborted run itself must not paint a phantom error over a fresh modal');
 });

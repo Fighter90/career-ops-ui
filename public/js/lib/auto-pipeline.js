@@ -39,22 +39,25 @@
   // server-side (server/lib/routes/auto-pipeline.mjs). Client only
   // renders what the SSE `done` event reports.
 
-  // CAR-94 (6) — module-scope single-flight + abort handle. They must
+  // CAR-94 (6) — module-scope single-flight + abort handles. They must
   // outlive one modal instance: closing the modal used to leave the paid
   // run streaming (handlers wrote into detached DOM), and reopening let a
   // SECOND paid run start while the first was still in flight. The abort
   // also stops the spend server-side (the route threads the client
   // disconnect into the provider call).
   // FULL-R5 (review 5) — the run promise itself lives at module scope:
-  // closing modal A aborts its run, but `running` cleared only in the async
-  // finally, so the reopen's autoStart setTimeout(0) hit `if (running)
-  // return` SILENTLY and left the fresh modal inert. A start landing on an
-  // in-flight run now awaits its settlement (at most ONE queued start,
-  // latest URL wins) instead of silently dropping.
-  let running = false;
-  let currentAbort = null;
+  // closing modal A aborts its run, but the flag cleared only in the async
+  // finally, so the reopen's autoStart setTimeout(0) hit a silent return
+  // and left the fresh modal inert. A start landing on an in-flight run
+  // now awaits its settlement instead of silently dropping.
+  // FULL-R5 review r2 (finding 1 [high]) — the queued start gets its OWN
+  // module-scope AbortController BEFORE waiting, and the close hook aborts
+  // it too: a queued start whose modal closes must never wake into a fresh
+  // PAID run (silent spend, report, tracker row — the CAR-94.6 refusal
+  // reversed through the back door).
+  let currentAbort = null;   // the in-flight run's controller
+  let pendingAbort = null;   // the queued start's controller (at most one)
   let runPromise = null;
-  let pendingStart = null;
 
   function urlIsValid(url) {
     if (typeof url !== 'string') return false;
@@ -83,6 +86,12 @@
 
     let state = { url: '', score: null, legitimacy: '', company: '', role: '', slug: '', reportPath: '', trackerNum: '' };
     const stepState = STEPS.map(() => ({ status: 'pending', detail: '', startedAt: null, finishedAt: null }));
+    // FULL-R5 review r2 (finding 1) — whether THIS modal is still the one
+    // the user sees. Opening another modal replaces this one (UI.modal
+    // fires the previous onClose); a queued start whose modal is gone must
+    // never run, and one that is superseded while still visible must say
+    // so (finding 2) instead of sitting inert.
+    let modalOpen = true;
 
     const urlInput = c('input', {
       className: 'input',
@@ -139,14 +148,32 @@
     // settlement instead of silently returning (the reopen race above).
     async function start(url) {
       if (runPromise) {
-        pendingStart = url; // at most one queued start; latest wins
+        // FULL-R5 review r2 (finding 1) — the queued start carries its OWN
+        // AbortController BEFORE waiting, registered at module scope so the
+        // close hook can cancel it. At most one queued start; a newer one
+        // supersedes (aborts) the older waiter.
+        if (pendingAbort) { try { pendingAbort.abort(); } catch { /* already aborted */ } }
+        const queued = new AbortController();
+        pendingAbort = queued;
         while (runPromise) {
           try { await runPromise; } catch { /* the owning start renders its own error */ }
         }
-        if (pendingStart !== url) return; // a newer queued start owns the slot
-        pendingStart = null;
+        if (pendingAbort === queued) pendingAbort = null;
+        // FULL-R5 review r2 (finding 1) — a cancelled waiter never runs:
+        // neither a closed modal (silent spend with nothing on screen) nor
+        // a disconnected modal body may reach the paid endpoint.
+        const modalConnected = modalBodyEl.isConnected !== false;
+        if (queued.signal.aborted || !modalOpen || !modalConnected) {
+          // FULL-R5 review r2 (finding 2) — superseded while still visible:
+          // say so explicitly instead of stranding an inert modal.
+          if (modalOpen && modalConnected) {
+            timelineRoot.style.display = '';
+            resultRoot.style.display = 'none';
+            setStep(0, 'failed', t('auto.superseded', 'Superseded — a newer run was requested'));
+          }
+          return;
+        }
       }
-      running = true;
       currentAbort = new AbortController();
       const abort = currentAbort;
       const p = run(url, abort);
@@ -155,7 +182,6 @@
         await p;
       } finally {
         if (runPromise === p) runPromise = null;
-        running = false;
         if (currentAbort === abort) currentAbort = null;
       }
     }
@@ -182,6 +208,9 @@
 
       let terminal = false;
       const onEvent = (ev, data) => {
+        // FULL-R5 review r2 (finding 6) — frames already buffered when the
+        // modal closed must not paint into the detached DOM.
+        if (abort.signal.aborted) return;
         switch (ev) {
           case 'start':
             // already rendered the empty timeline; nothing to do.
@@ -202,6 +231,14 @@
             break;
           case 'error':
             terminal = true;
+            // FULL-R5 review r2 (finding 7) — a transport-level non-OK
+            // response (postStream's { step: 0, status } shape) keeps the
+            // pre-migration step-0 «HTTP nnn» rendering; a stream error
+            // FRAME (step + message, no status) renders the failure card.
+            if (data && typeof data.status === 'number') {
+              setStep(data.step || 0, 'failed', 'HTTP ' + data.status);
+              break;
+            }
             renderError(data.step, data.message);
             break;
         }
@@ -260,19 +297,25 @@
 
     // CAR-94 (6) — the close hook (Esc / backdrop / ×) aborts the in-flight
     // run: the SSE fetch carries currentAbort's signal, so the request — and
-    // the server-side spend — stop with the modal. FULL-R5 — a start that
-    // lands while that abort unwinds awaits its settlement (module-scope
-    // runPromise) instead of silently returning, so a reopened modal always
-    // runs.
-    UI.modal(t('auto.title', '✨ Auto-pipeline a URL'), c('div', null, [
+    // the server-side spend — stop with the modal.
+    // FULL-R5 review r2 (finding 1) — it aborts a QUEUED start's controller
+    // too (pendingAbort): a queued run may not outlive its modal as a
+    // silent paid spend. A start that lands while the abort unwinds still
+    // awaits settlement (module-scope runPromise) — a FRESH, visible modal
+    // opening after this close runs normally.
+    const modalBodyEl = c('div', null, [
       c('p', { style: { color: 'var(--foggy)' } },
         t('auto.intro', "Paste a job URL — we'll fetch the JD, evaluate it against your CV, save a report, and add a row to your tracker.")),
       c('div', { className: 'flex gap-3 mt-3' }, [urlInput, startBtn]),
       timelineRoot,
       resultRoot,
-    ]), () => {
-      if (currentAbort) {
-        try { currentAbort.abort(); } catch { /* already closed */ }
+    ]);
+    UI.modal(t('auto.title', '✨ Auto-pipeline a URL'), modalBodyEl, () => {
+      modalOpen = false;
+      for (const ctl of [currentAbort, pendingAbort]) {
+        if (ctl) {
+          try { ctl.abort(); } catch { /* already closed */ }
+        }
       }
     });
 
