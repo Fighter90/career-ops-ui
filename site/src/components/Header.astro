@@ -7,8 +7,10 @@ import Icon from './Icon.astro';
 interface Props {
   locale: Locale;
   page: Page;
+  /** Forwarded to the language switcher (paginated sub-pages keep their page). */
+  subpath?: string;
 }
-const { locale, page } = Astro.props;
+const { locale, page, subpath = '' } = Astro.props;
 const home = localeHome(locale);
 // Section anchors live on the landing page; from /help they link back home.
 const anchor = (id: string) => (page === '' ? `#${id}` : `${home}#${id}`);
@@ -49,10 +51,10 @@ const NAV = [
 
     <div class="flex items-center gap-2">
       <div class="hidden md:block">
-        <LangSwitcher locale={locale} page={page} />
+        <LangSwitcher locale={locale} page={page} subpath={subpath} />
       </div>
       <div class="hidden sm:block">
-        <GitHubButton label={t(locale, 'header.github')} />
+        <GitHubButton locale={locale} label={t(locale, 'header.github')} />
       </div>
       <a href={anchor('get-started')} class="btn-primary shrink-0 whitespace-nowrap !px-5 !py-2 text-sm">{t(locale, 'header.cta')}</a>
       <button
@@ -79,8 +81,8 @@ const NAV = [
         </a>
       ))}
       <div class="mt-4 flex flex-wrap items-center gap-3 px-4">
-        <LangSwitcher locale={locale} page={page} />
-        <GitHubButton label={t(locale, 'header.github')} />
+        <LangSwitcher locale={locale} page={page} subpath={subpath} />
+        <GitHubButton locale={locale} label={t(locale, 'header.github')} />
       </div>
     </nav>
   </div>

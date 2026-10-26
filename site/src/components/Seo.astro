@@ -8,11 +8,15 @@ interface Props {
   title: string;
   description: string;
   jsonLd?: Record<string, unknown>;
+  /** Override for the canonical/og:url path (e.g. a changelog pagination page);
+   *  defaults to the locale page path. hreflang alternates always point at the
+   *  locale index page. */
+  canonicalPath?: string;
 }
 
-const { locale, page, title, description, jsonLd } = Astro.props;
+const { locale, page, title, description, jsonLd, canonicalPath } = Astro.props;
 const SITE = 'https://cvstart.org';
-const canonical = `${SITE}${localePath(locale, page)}`;
+const canonical = `${SITE}${canonicalPath ?? localePath(locale, page)}`;
 const ogImage = `${SITE}/og-default.png`;
 ---
 

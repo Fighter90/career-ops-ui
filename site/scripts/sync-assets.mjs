@@ -16,7 +16,7 @@
  *
  * Idempotent: safe to run repeatedly (predev/prebuild hooks + CI).
  */
-import { cpSync, mkdirSync, readFileSync, readdirSync, writeFileSync, existsSync } from 'node:fs';
+import { cpSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync, existsSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -69,16 +69,32 @@ function rewriteLinks(md) {
   });
 }
 
+// The site page supplies its own <h1> (HelpArticle.astro); the guide's title
+// line would render a second one (CAR-132 — exactly one h1 per page).
+function stripLeadingH1(md) {
+  return md.replace(/^#[ \t]+[^\n]*\n+/, '');
+}
+
 for (const f of helpFiles) {
   const md = readFileSync(join(helpSrc, f), 'utf8');
-  writeFileSync(join(helpDst, f), rewriteLinks(md));
+  writeFileSync(join(helpDst, f), rewriteLinks(stripLeadingH1(md)));
 }
 console.log(`[sync-assets] ${helpFiles.length} help guides -> src/content/help/`);
 
-// --- 3b. changelogs (v1.121.0 — /changelog/ pages, one per locale) -----------
-// CHANGELOG.md -> en.md, CHANGELOG.<lang>.md -> <lang>.md, matching the help
-// collection's locale.file naming so the page component resolves entries the
-// same way. Same relative-link rewrite, but against the repo root.
+// --- 3b. changelogs (CAR-132 — paginated per-locale changelog) ---------------
+// CHANGELOG.md -> en, CHANGELOG.<lang>.md -> <lang>. The full history used to
+// render as ONE ~1 MB page; it is now split into weight-capped pages
+// (`<lang>-p<NN>.md`, newest first) plus a month index
+// (src/generated/changelog-index.json) the page component renders as static
+// links — every release stays ≤2 clicks from /changelog/.
+//
+// Pages are capped by MARKDOWN BYTES, not release count: entries vary from a
+// paragraph (patch releases) to several KB (trains), and CJK/Devanagari
+// locales carry ~2× the bytes per release. 100 KB of md ≈ ≤190 KB of built
+// HTML at the worst observed expansion (1.9×) — comfortably under the
+// 250 KB/page gate in scripts/check-dist.mjs.
+const PAGE_BYTES = 100 * 1024;
+const PAGE_MAX_RELEASES = 80; // secondary cap so tiny releases still paginate
 const clDst = join(SITE, 'src', 'content', 'changelog');
 mkdirSync(clDst, { recursive: true });
 const GH_ROOT_BASE = `${REPO_URL}/blob/main/`;
@@ -88,14 +104,85 @@ function rewriteRootLinks(md) {
     return `](${abs})`;
   });
 }
+
+// Release sections start at a top-level `## [<version>] — YYYY-MM-DD` line.
+// Fenced code blocks (test transcripts in older entries) are skipped so a
+// `##` line inside them is never mistaken for a section boundary. The
+// translated changelogs carry UNDATED top-level "## Older versions" summary
+// sections (es/fr/ko) — those fold into the PRECEDING release's chunk, so
+// the site renders the file in its exact order and nothing disappears; an
+// undated H2 BEFORE the first release is a parse drift and fails loudly.
+const RELEASE_HEADING_RE = /^##\s+\[[^\]]+\]\s*[—–-]\s*(\d{4})-(\d{2})-\d{2}/;
+
+function splitReleases(md, lang) {
+  const releases = [];
+  let current = null;
+  let inFence = false;
+  for (const line of md.split('\n')) {
+    if (/^\s*(```|~~~)/.test(line)) inFence = !inFence;
+    if (!inFence && /^##\s/.test(line) && RELEASE_HEADING_RE.test(line)) {
+      // The heading line itself is the release's rendered title — keep it.
+      current = [line];
+      releases.push({ ym: line.match(RELEASE_HEADING_RE).slice(1).join('-'), lines: current });
+      continue;
+    }
+    if (current === null) {
+      if (!inFence && /^##\s/.test(line)) {
+        fail(`[${lang}] changelog has a top-level "## " section without a parsable "[version] — YYYY-MM-DD" date before the first release: "${line.slice(0, 80)}" — it would silently vanish from the site`);
+      }
+      continue; // preamble (title + intro + translation links) — dropped on purpose
+    }
+    current.push(line);
+  }
+  return releases;
+}
+
+const clIndex = {}; // lang -> { pages, months: [{ ym, page, count }] }
 const clFiles = readdirSync(ROOT).filter((f) => /^CHANGELOG(\.[A-Za-z-]+)?\.md$/.test(f));
 if (clFiles.length < 18) fail(`expected >=18 CHANGELOG files, found ${clFiles.length}`);
+// The sync owns this directory — clear stale files from previous formats.
+for (const stale of readdirSync(clDst)) rmSync(join(clDst, stale));
+
+function chunkByWeight(releases) {
+  const pages = [];
+  let cur = [];
+  let bytes = 0;
+  for (const r of releases) {
+    const size = Buffer.byteLength(r.lines.join('\n'), 'utf8');
+    if (cur.length > 0 && (bytes + size > PAGE_BYTES || cur.length >= PAGE_MAX_RELEASES)) {
+      pages.push(cur);
+      cur = [];
+      bytes = 0;
+    }
+    cur.push(r);
+    bytes += size;
+  }
+  if (cur.length > 0) pages.push(cur);
+  return pages;
+}
+
 for (const f of clFiles) {
   const lang = f === 'CHANGELOG.md' ? 'en' : f.replace(/^CHANGELOG\./, '').replace(/\.md$/, '');
-  const md = readFileSync(join(ROOT, f), 'utf8');
-  writeFileSync(join(clDst, `${lang}.md`), rewriteRootLinks(md));
+  const releases = splitReleases(readFileSync(join(ROOT, f), 'utf8'), lang);
+  const chunks = chunkByWeight(releases);
+  const months = [];
+  chunks.forEach((chunk, p) => {
+    for (const r of chunk) {
+      const last = months[months.length - 1];
+      if (last && last.ym === r.ym) last.count += 1;
+      else months.push({ ym: r.ym, page: p + 1, count: 1 });
+    }
+  });
+  clIndex[lang] = { pages: chunks.length, months };
+  chunks.forEach((chunk, p) => {
+    const body = chunk.map((r) => r.lines.join('\n')).join('\n');
+    writeFileSync(join(clDst, `${lang}-p${String(p + 1).padStart(2, '0')}.md`), rewriteRootLinks(`${body.trimStart()}\n`));
+  });
 }
-console.log(`[sync-assets] ${clFiles.length} changelogs -> src/content/changelog/`);
+const genDir2 = join(SITE, 'src', 'generated');
+mkdirSync(genDir2, { recursive: true });
+writeFileSync(join(genDir2, 'changelog-index.json'), JSON.stringify(clIndex, null, 2) + '\n');
+console.log(`[sync-assets] ${clFiles.length} changelogs -> src/content/changelog/ (${PAGE_BYTES / 1024} KB md/page) + changelog-index.json`);
 
 // --- 3c. license (v1.121.0 — /license/ page) ---------------------------------
 // LICENSE is canonical English legal text; every locale renders it verbatim.
@@ -151,10 +238,17 @@ if (scanSources.length !== adapters) {
   );
 }
 
-// Test count: parse the README badge (kept current by the release process).
+// Test count: the README badge is no longer maintained (owner decision,
+// 2026-10-26 — stale badges are acceptable there), so read the count from
+// docs/sdd/CONVENTIONS.md's "Current count as of **vX**: **N**" line, which
+// the release train updates every release. The badge stays as a fallback;
+// when neither parses, `tests` is null and the landing hides the stat
+// instead of shipping a stale number.
+const conventions = readFileSync(join(ROOT, 'docs', 'sdd', 'CONVENTIONS.md'), 'utf8');
+const convMatch = conventions.match(/Current count as of \*\*v[\d.]+\*\*: \*\*(\d+)\*\*/);
 const readme = readFileSync(join(ROOT, 'README.md'), 'utf8');
 const testsMatch = readme.match(/badge\/tests-(\d+)%20passed/);
-const tests = testsMatch ? Number(testsMatch[1]) : null;
+const tests = convMatch ? Number(convMatch[1]) : testsMatch ? Number(testsMatch[1]) : null;
 
 // LLM providers: the canonical auto-order roster in env-config.mjs (v1.216.0 —
 // the dispatch gate became map-driven, so we count the authoritative AUTO_ORDER

@@ -1,0 +1,19 @@
+---
+import ChangelogPage from '../../components/ChangelogPage.astro';
+import { DEFAULT_LOCALE } from '../../i18n/locales';
+import clIndex from '../../generated/changelog-index.json';
+
+// Changelog pagination pages for the default locale (en) — /changelog/<n>/,
+// n ≥ 2; /changelog/ itself is pages/changelog.astro. Page counts come from
+// the sync (prebuild) via changelog-index.json.
+export function getStaticPaths() {
+  return Array.from({ length: Math.max(0, clIndex.en.pages - 1) }, (_, i) => ({
+    params: { page: String(i + 2) },
+    props: { pageNo: i + 2 },
+  }));
+}
+
+const { pageNo } = Astro.props;
+---
+
+<ChangelogPage locale={DEFAULT_LOCALE} pageNo={pageNo} />

@@ -1,0 +1,21 @@
+---
+import ChangelogPage from '../../../components/ChangelogPage.astro';
+import { LOCALES } from '../../../i18n/locales';
+import clIndex from '../../../generated/changelog-index.json';
+
+// Changelog pagination pages for the 18 prefixed locales — /<slug>/changelog/<n>/
+// (n ≥ 2); the locale index is [locale]/changelog.astro. Page counts come from
+// the sync (prebuild) via changelog-index.json.
+export function getStaticPaths() {
+  return LOCALES.filter((l) => l.slug !== '').flatMap((l) =>
+    Array.from({ length: Math.max(0, (clIndex[l.file]?.pages ?? 1) - 1) }, (_, i) => ({
+      params: { locale: l.slug, page: String(i + 2) },
+      props: { locale: l, pageNo: i + 2 },
+    })),
+  );
+}
+
+const { locale, pageNo } = Astro.props;
+---
+
+<ChangelogPage locale={locale} pageNo={pageNo} />
