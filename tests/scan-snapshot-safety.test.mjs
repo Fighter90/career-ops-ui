@@ -239,9 +239,11 @@ test('RU: a failed source (hh 451) keeps its rows while trudvsem is replaced', a
   }
 });
 
-test('saveLastScan: a file holding JSON `null` (or an array) is treated as empty, not a crash', () => {
+test('saveLastScan: a file holding JSON `null` (or an array) is treated as empty, not a crash', async () => {
   writeFileSync(lastScanPath(), 'null');
-  saveLastScan({ kind: 'en', fresh: [], filtered: [row('A', 1)], errors: [] });
+  // FULL-R1 (finding 2) — saveLastScan now wraps its read-modify-write in
+  // withFileLock, so it is async; every call site must await it.
+  await saveLastScan({ kind: 'en', fresh: [], filtered: [row('A', 1)], errors: [] });
   assert.equal(readSnap().en.filtered.length, 1);
   writeFileSync(lastScanPath(), '[]');
   assert.deepEqual(loadLastScan(), { en: null, ru: null });
@@ -249,23 +251,23 @@ test('saveLastScan: a file holding JSON `null` (or an array) is treated as empty
   assert.deepEqual(loadLastScan(), { en: null, ru: null }, 'loadLastScan never returns null');
 });
 
-test('saveLastScan: merge with no previous snapshot just saves the payload', () => {
-  saveLastScan({ kind: 'en', fresh: [row('A', 1)], filtered: [row('A', 1)], errors: [] }, { mergeCompanies: ['A'] });
+test('saveLastScan: merge with no previous snapshot just saves the payload', async () => {
+  await saveLastScan({ kind: 'en', fresh: [row('A', 1)], filtered: [row('A', 1)], errors: [] }, { mergeCompanies: ['A'] });
   assert.equal(readSnap().en.filtered.length, 1);
 });
 
-test('saveLastScan: merge drops non-object junk rows and dedups by canonical URL', () => {
+test('saveLastScan: merge drops non-object junk rows and dedups by canonical URL', async () => {
   writeFileSync(lastScanPath(), JSON.stringify({
     en: { kind: 'en', fresh: 'junk', filtered: [null, 7, { company: 'B', url: 'https://example.com/x?utm_source=a' }, row('B', 2)] },
   }));
-  saveLastScan({ kind: 'en', fresh: [], filtered: [{ company: 'A', url: 'https://example.com/x' }], errors: [] }, { mergeCompanies: ['A'] });
+  await saveLastScan({ kind: 'en', fresh: [], filtered: [{ company: 'A', url: 'https://example.com/x' }], errors: [] }, { mergeCompanies: ['A'] });
   const snap = readSnap().en;
   assert.deepEqual(snap.filtered.map((j) => j.url).sort(), ['https://example.com/B/2', 'https://example.com/x']);
   assert.deepEqual(snap.fresh, []);
 });
 
-test('saveLastScan: atomic — no temp file is left next to last-scan.json', () => {
-  saveLastScan({ kind: 'ru', fresh: [], filtered: [], errors: [] });
+test('saveLastScan: atomic — no temp file is left next to last-scan.json', async () => {
+  await saveLastScan({ kind: 'ru', fresh: [], filtered: [], errors: [] });
   const leftovers = readdirSync(resolve(dir, 'data')).filter((f) => f.endsWith('.tmp'));
   assert.deepEqual(leftovers, []);
   assert.ok(existsSync(lastScanPath()));

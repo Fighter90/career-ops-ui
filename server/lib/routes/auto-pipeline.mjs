@@ -462,62 +462,74 @@ function buildSlug(company, role) {
 // «## Rejected» section below it (the timer greps bare URLs in the fence),
 // annotated with a short reason. Idempotent: re-rejecting the same URL
 // never duplicates the mark.
-function markPipelineRejected(url, reason) {
+//
+// FULL-R1 (finding 2) — this is a read-modify-write of the SAME file
+// routes/pipeline.mjs's POST/DELETE/restore already serialize through
+// withFileLock(PATHS.pipeline, …): the hourly scan timer appending a fresh
+// URL while a user rejects an entry here (or vice versa) used to race —
+// whichever write landed last silently clobbered the other's update.
+// Sharing PATHS.pipeline as the lock key (not a second `projPath(...)` call
+// building the same string independently) wraps the WHOLE transaction —
+// the read, the recompute, the write — not just the final write, which is
+// what actually closes the race (a lock only around writeFileSync would
+// still let two callers both read the pre-update content).
+async function markPipelineRejected(url, reason) {
   const short = String(reason || 'rejected').slice(0, 80);
   try {
-    const file = projPath('data', 'pipeline.md');
-    let src = readFileSync(file, 'utf8');
-    if (!src.includes(url)) return false;
-    const lines = src.split('\n');
-    const fence = lines.indexOf('```');
-    const close = lines.indexOf('```', fence + 1);
-    const inFence = fence !== -1 && close !== -1
-      ? lines.findIndex((l, i) => i > fence && i < close && l.trim() === url.trim()) !== -1
-      : false;
-    if (inFence) {
-      const out = [];
-      let f = false;
-      let dropped = false;
-      for (const l of lines) {
-        if (/^```/.test(l)) { out.push(l); f = !f; continue; }
-        // Drop exactly ONE matching line: if the same URL was queued twice,
-        // one rejection must not silently consume the second copy.
-        if (f && !dropped && l.trim() === url.trim()) { dropped = true; continue; }
-        out.push(l);
-      }
-      src = out.join('\n');
-    }
-    {
-      // Defense-in-depth: a line is the record's boundary in pipeline.md, so
-      // control characters are stripped from both interpolated pieces (WHATWG
-      // URL parsing already drops \n\r\t, but the guarantee is made explicit
-      // here rather than delegated to the URL parser).
-      const safeUrl = String(url || '').replace(/[\u0000-\u001f\u007f]+/g, ' ').trim();
-      const safeReason = short.replace(/[\u0000-\u001f\u007f]+/g, ' ').trim();
-      const line = `- ${safeUrl} — rejected: ${safeReason} (${today()})`;
-      // v1.248.6 — a section exists? Append INTO it; only the first rejection
-      // creates the header. Every rejection appends ITS line (per the owner's
-      // contract: two rejections in a row → one header, two lines). Re-fire
-      // safety is structural, not counted here: a rejected URL leaves the
-      // fence, and the timer only takes bare URLs from the fence — a manual
-      // UI re-run of the same URL is the one path that can append twice, and
-      // that repetition reflects reality (the entry WAS declined twice).
-      const arr = src.split('\n');
-      const secAt = arr.findIndex((l) => /^## Rejected\s*$/i.test(l.trim()));
-      if (secAt !== -1) {
-        let end = arr.length;
-        for (let k = secAt + 1; k < arr.length; k++) {
-          if (/^##\s/.test(arr[k].trim())) { end = k; break; }
+    return await withFileLock(PATHS.pipeline, async () => {
+      let src = readFileSync(PATHS.pipeline, 'utf8');
+      if (!src.includes(url)) return false;
+      const lines = src.split('\n');
+      const fence = lines.indexOf('```');
+      const close = lines.indexOf('```', fence + 1);
+      const inFence = fence !== -1 && close !== -1
+        ? lines.findIndex((l, i) => i > fence && i < close && l.trim() === url.trim()) !== -1
+        : false;
+      if (inFence) {
+        const out = [];
+        let f = false;
+        let dropped = false;
+        for (const l of lines) {
+          if (/^```/.test(l)) { out.push(l); f = !f; continue; }
+          // Drop exactly ONE matching line: if the same URL was queued twice,
+          // one rejection must not silently consume the second copy.
+          if (f && !dropped && l.trim() === url.trim()) { dropped = true; continue; }
+          out.push(l);
         }
-        while (end > secAt + 1 && arr[end - 1].trim() === '') end--;
-        arr.splice(end, 0, line);
-        src = arr.join('\n');
-      } else {
-        src = src.replace(/\s*$/, '') + `\n\n## Rejected\n\n${line}\n`;
+        src = out.join('\n');
       }
-    }
-    writeFileSync(file, src);
-    return true;
+      {
+        // Defense-in-depth: a line is the record's boundary in pipeline.md, so
+        // control characters are stripped from both interpolated pieces (WHATWG
+        // URL parsing already drops \n\r\t, but the guarantee is made explicit
+        // here rather than delegated to the URL parser).
+        const safeUrl = String(url || '').replace(/[\u0000-\u001f\u007f]+/g, ' ').trim();
+        const safeReason = short.replace(/[\u0000-\u001f\u007f]+/g, ' ').trim();
+        const line = `- ${safeUrl} — rejected: ${safeReason} (${today()})`;
+        // v1.248.6 — a section exists? Append INTO it; only the first rejection
+        // creates the header. Every rejection appends ITS line (per the owner's
+        // contract: two rejections in a row → one header, two lines). Re-fire
+        // safety is structural, not counted here: a rejected URL leaves the
+        // fence, and the timer only takes bare URLs from the fence — a manual
+        // UI re-run of the same URL is the one path that can append twice, and
+        // that repetition reflects reality (the entry WAS declined twice).
+        const arr = src.split('\n');
+        const secAt = arr.findIndex((l) => /^## Rejected\s*$/i.test(l.trim()));
+        if (secAt !== -1) {
+          let end = arr.length;
+          for (let k = secAt + 1; k < arr.length; k++) {
+            if (/^##\s/.test(arr[k].trim())) { end = k; break; }
+          }
+          while (end > secAt + 1 && arr[end - 1].trim() === '') end--;
+          arr.splice(end, 0, line);
+          src = arr.join('\n');
+        } else {
+          src = src.replace(/\s*$/, '') + `\n\n## Rejected\n\n${line}\n`;
+        }
+      }
+      writeFileSync(PATHS.pipeline, src);
+      return true;
+    });
   } catch { /* pipeline.md not writable — the timer will retry; never crash the SSE */ }
   return false;
 }
@@ -613,7 +625,7 @@ export function registerAutoPipelineRoutes(app) {
       if (rootRejection) {
         const logHost = (() => { try { return new URL(url).hostname; } catch { return '[unparsable URL]'; } })();
         logActivity({ action: 'auto-pipeline.evaluation.rejected', target: logHost, detail: 'domain root — not a job posting' });
-        markPipelineRejected(url, 'domain root — not a job posting');
+        await markPipelineRejected(url, 'domain root — not a job posting');
         step(1, 'failed', 'domain root — not a job posting');
         return fail(1, 'domain root — not a job posting', { rejected: true });
       }
@@ -632,7 +644,7 @@ export function registerAutoPipelineRoutes(app) {
         // server-side timer skips the entry; plain fetch failures (404 etc.)
         // keep the bare error shape.
         const extra = result.rejected ? { rejected: true } : {};
-        if (result.rejected) markPipelineRejected(url, result.error);
+        if (result.rejected) await markPipelineRejected(url, result.error);
         return fail(1, result.error || 'fetch failed', extra);
       }
       jdText = sanitizeJobDescription(result.text);
@@ -659,7 +671,7 @@ export function registerAutoPipelineRoutes(app) {
     if (!guess.company && !guess.roleHint) {
       const logHost = (() => { try { return new URL(url).hostname; } catch { return '[unparsable URL]'; } })();
       logActivity({ action: 'auto-pipeline.evaluation.rejected', target: logHost, detail: 'no company/role hints' });
-      markPipelineRejected(url, 'no company/role hints');
+      await markPipelineRejected(url, 'no company/role hints');
       step(1, 'failed', 'no company/role hints — entry skipped before the LLM call');
       return fail(1, 'no company/role hints — entry skipped before the LLM call', { rejected: true });
     }
@@ -790,7 +802,7 @@ export function registerAutoPipelineRoutes(app) {
         // Host only — the entry URL is user-supplied and CI logs are public.
         const logHost = (() => { try { return new URL(url).hostname; } catch { return '[unparsable URL]'; } })();
         logActivity({ action: 'auto-pipeline.evaluation.rejected', target: logHost, detail: reason });
-        markPipelineRejected(url, reason);
+        await markPipelineRejected(url, reason);
         step(2, 'failed', `evaluation incomplete: ${reason}`);
         return fail(2, `evaluation incomplete: ${reason}`, { rejected: true });
       }
@@ -860,7 +872,7 @@ export function registerAutoPipelineRoutes(app) {
     const role = reportRole || cleanRoleLine(guess.role);
     if (!guess.company || !role) {
       logActivity({ action: 'auto-pipeline.evaluation.rejected', target: guess.company || 'unknown', detail: 'company/role not identifiable after evaluation' });
-      markPipelineRejected(url, 'company/role not identifiable');
+      await markPipelineRejected(url, 'company/role not identifiable');
       step(3, 'failed', 'company/role not identifiable for this entry');
       return fail(3, 'company/role not identifiable for this entry', { rejected: true });
     }

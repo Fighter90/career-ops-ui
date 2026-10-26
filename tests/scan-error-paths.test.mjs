@@ -202,10 +202,12 @@ test('EN: companyName filter tolerates a nameless entry', async () => {
   assert.ok(seen.every((u) => u.includes('/acme/')));
 });
 
-test('saveLastScan merge: payload without fresh/filtered arrays and rows without url', () => {
+test('saveLastScan merge: payload without fresh/filtered arrays and rows without url', async () => {
   const p = resolve(dir, 'data', 'last-scan.json');
   writeFileSync(p, JSON.stringify({ en: { kind: 'en', filtered: [{ company: 'Keep', url: 'not-a-url' }] } }));
-  mods.en.saveLastScan({ kind: 'en', errors: [] }, { mergeCompanies: [null, 'X'] });
+  // FULL-R1 (finding 2) — saveLastScan now serializes its read-modify-write
+  // through withFileLock, so it is async; the call site must await it.
+  await mods.en.saveLastScan({ kind: 'en', errors: [] }, { mergeCompanies: [null, 'X'] });
   const snap = JSON.parse(readFileSync(p, 'utf8')).en;
   assert.deepEqual(snap.filtered, [{ company: 'Keep', url: 'not-a-url' }]);
   assert.deepEqual(snap.fresh, []);
