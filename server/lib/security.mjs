@@ -205,21 +205,24 @@ export function sanitizeJobDescription(input) {
  * Defense-in-depth — the client-side renderer also escapes everything,
  * but neutralizing the file at rest protects any consumer that bypasses
  * the renderer (e.g. raw `cat cv.md`, third-party tools, future endpoints).
+ *
+ * FULL-R4: the strip must never CORRUPT ordinary prose. Two rules make
+ * that hold:
+ *   - Dangerous schemes are renamed to the inert `data-blocked:` only in
+ *     real link/attribute contexts (markdown inline link `](…)`, markdown
+ *     reference definition `[ref]: …`, `href=`/`src=` attributes) — never
+ *     on bare prose, so «JavaScript: React, Node» survives a save.
+ *   - Entities are NOT decoded in place (the old in-place decoder
+ *     permanently rewrote `R&amp;D` → `R&D`, `&lt;T&gt;` → `<T>`,
+ *     `&#36;` → `$`). Detection runs on a decoded scratch copy and the
+ *     cut is made back in the original text, so prose entities survive
+ *     byte-identical while an encoded `<script>` payload is still found
+ *     and removed.
  */
 export function stripDangerousMarkdown(text) {
   if (!text) return '';
   let s = String(text).replace(/\x00/g, '');
-  // v1.22.0 (M-4) — entity-normalize before applying the strip regex.
-  // The pre-v1.22 implementation missed:
-  //   &lt;script&gt;…&lt;/script&gt;     — entity-encoded tags
-  //   java&#115;cript:                 — entity-encoded scheme letter
-  //   ja&#x76;ascript:                — hex-entity-encoded scheme letter
-  //   <img src="data:image/svg+xml,<svg onload=…>">  — nested SVG vector
-  // Decoding numeric / named entities first lets the same regex pass
-  // catch the decoded payload. The result is rewritten with HTML entities
-  // re-escaped for `<`, `>`, `&` so the output is still safe to embed.
-  s = decodeHtmlEntities(s);
-  // Apply the strip pass repeatedly until the string stops changing (bounded).
+  // Apply the edit pass repeatedly until the string stops changing (bounded).
   // A single pass can REVEAL a new match — e.g. `<scr<script></script>ipt>` or a
   // nested `<sty<style></style>le>` — so run to a fixed point (CodeQL
   // incomplete-multi-character-sanitization). The end-tag patterns use `[^>]*>`
@@ -227,7 +230,7 @@ export function stripDangerousMarkdown(text) {
   // (CodeQL bad-tag-filter).
   let prev;
   let passes = 0;
-  do { prev = s; s = stripDangerousOnce(s); } while (s !== prev && ++passes < 8);
+  do { prev = s; s = applyDangerousEdits(s); } while (s !== prev && ++passes < 8);
   // Final belt (v1.111.0): the loop removes well-formed dangerous tags AND
   // `<tag …>` openers that carry a closing `>`. What can still survive is a
   // *truncated* opener with no `>` at all — e.g. a payload ending in `<script`
@@ -252,31 +255,181 @@ export function stripDangerousMarkdown(text) {
   return s;
 }
 
-/** One strip pass over the known dangerous tags/attributes/schemes. */
-function stripDangerousOnce(s) {
-  // Tag removal is done by scanning, not by `<script\b[\s\S]*?<\/script[^>]*>`
-  // style regexes: a backtracking engine retries that lazy span from EVERY
-  // opener, so a run of unclosed `<script ` was quadratic (160 KB = 27 s of
-  // blocked event loop through /api/cv/import). Same matches, linear time.
-  s = stripPairedTag(s, 'script');
-  s = stripPairedTag(s, 'iframe');
-  s = stripPairedTag(s, 'object');
-  s = stripOpeners(s, /<embed\b/gi);
-  s = stripPairedTag(s, 'style');
-  s = stripPairedTag(s, 'form');
-  s = stripPairedTag(s, 'svg');
-  // Unclosed / dangling opener of an executable/embedding tag (no closing tag
-  // in the input) — strip the opener so a later consumer can't complete it.
-  s = stripOpeners(s, /<(?:script|iframe|object|style|form|svg)\b/gi);
-  // Event-handler attributes are renamed, not deleted: deleting a multi-
-  // character match can splice the leftovers into a new `on…=` (incomplete
-  // multi-character sanitization), while `data-blocked=` (the event name
-  // dropped too) is inert and cannot re-form a handler, so one pass is complete.
-  return s
-    .replace(/([\s/"'])on[a-z]+(\s*=)/gi, '$1data-blocked$2')
-    .replace(/javascript\s*:/gi, '')
-    .replace(/vbscript\s*:/gi, '')
-    .replace(/data\s*:\s*text\/html/gi, '');
+const DANGEROUS_TAGS = ['script', 'iframe', 'object', 'style', 'form', 'svg'];
+
+// Scheme alternation shared by the three link/attribute contexts. Dangerous
+// schemes are RENAMED to the inert `data-blocked:` (not deleted) — same
+// rename-not-delete reasoning as the `on…=` handlers below.
+const SCHEME_RE = '(?:javascript|vbscript)\\s*:|data\\s*:\\s*text\\/html';
+// In every pattern the SCHEME is the LAST capture group, so the span to
+// rename is always `[matchEnd - schemeLength, matchEnd)`.
+const SCHEME_CONTEXT_RES = [
+  new RegExp(`\\]\\(\\s*(${SCHEME_RE})`, 'gi'),                          // [x](javascript:…)
+  new RegExp(`^([ \\t]*\\[[^\\]\\n]*\\]:[ \\t]*)(${SCHEME_RE})`, 'gim'), // [ref]: javascript:…
+  new RegExp(`\\b(href|src)(\\s*=\\s*["']?\\s*)(${SCHEME_RE})`, 'gi'),   // href="javascript:…"
+];
+const HANDLER_RE = /([\s/"'])(on[a-z]+)(\s*=)/gi;
+const OPENER_ESCAPE_RE = /<(?=[\s/]*(?:script|iframe|object|embed|style|form|svg)\b)/gi;
+// Entity variant: OPENERS only. An encoded closer (`&lt;/script&gt;`) is
+// inert on its own — and when it completes a real opener, the mapped cut
+// above removes the whole span — so re-escaping it would only make the
+// stored text drift on every re-save (`&lt;` → `&amp;lt;`).
+const ENTITY_OPENER_ESCAPE_RE = /<(?=[\s]*(?:script|iframe|object|embed|style|form|svg)\b)/gi;
+const ENTITY_RE = /&(?:#[xX]([0-9a-fA-F]+)|#([0-9]+)|(lt|gt|quot|amp));/gi;
+
+/**
+ * One edit pass — the steps run SEQUENTIALLY on the evolving string (the
+ * old pass semantics): a cut can REVEAL a construct for a later step in
+ * the same pass (`<scr<script></script>ipt>` — the paired cut reveals
+ * `<script>`, which the dangling-opener step then removes). Detection for
+ * every step runs on a decoded scratch view of the CURRENT string and the
+ * edit is cut/renamed back in the original, so prose entities survive.
+ * The decode is cached: a step that edits nothing leaves `s` unchanged,
+ * so the following step reuses it (typically one decode per pass).
+ */
+function applyDangerousEdits(s0) {
+  let s = s0;
+  let cacheSrc = null;
+  let cache = null;
+  const decoded = () => {
+    if (s !== cacheSrc) { cache = decodeForDetection(s); cacheSrc = s; }
+    return cache;
+  };
+  const apply = (spans) => {
+    s = applySpans(s, spans, cache.srcStart, cache.srcEnd);
+  };
+  // Tag removal is scanned, not matched with `<tag\b[\s\S]*?<\/tag[^>]*>`
+  // regexes: a backtracking engine retries that lazy span from EVERY
+  // opener, so a run of unclosed `<script ` was quadratic (160 KB = 27 s
+  // of blocked event loop through /api/cv/import). Same matches, linear
+  // time. Each opener pairs with the FIRST closer after it (lazy); when
+  // an opener has no closer, no later opener can have one either.
+  for (const tag of DANGEROUS_TAGS) {
+    const spans = pairedTagSpans(decoded().text, tag);
+    if (spans.length) apply(spans);
+  }
+  let spans = openerSpans(decoded().text, /<embed\b/gi);
+  if (spans.length) apply(spans);
+  // Unclosed / dangling opener of an executable/embedding tag (no closing
+  // tag in the input) — cut the opener so a later consumer can't complete it.
+  spans = openerSpans(decoded().text, /<(?:script|iframe|object|style|form|svg)\b/gi);
+  if (spans.length) apply(spans);
+  spans = schemeSpans(decoded().text);
+  if (spans.length) apply(spans);
+  spans = handlerSpans(decoded().text);
+  if (spans.length) apply(spans);
+  const { srcStart, srcEnd } = decoded();
+  if (srcStart) {
+    spans = entityBeltSpans(cache.text, srcStart, srcEnd);
+    if (spans.length) apply(spans);
+  }
+  return s;
+}
+
+/**
+ * Cut/rename spans — `[start, end, replacement]` on the decoded text,
+ * replacement `null` meaning "cut the span entirely" — sorted by start
+ * (longest first at a tie), overlaps dropped, applied left to right.
+ * Mapping is monotone (a decoded unit never maps backwards), so spans
+ * disjoint on the decoded text stay disjoint in the original.
+ */
+function applySpans(s, spans, srcStart, srcEnd) {
+  if (spans.length === 0) return s;
+  const edits = spans
+    .map(([a, b, rep]) => ({
+      start: srcStart ? srcStart[a] : a,
+      end: srcStart ? srcEnd[b - 1] : b,
+      rep,
+    }))
+    .sort((x, y) => x.start - y.start || (y.end - y.start) - (x.end - x.start));
+  let out = '';
+  let pos = 0;
+  for (const e of edits) {
+    if (e.start < pos) continue; // overlaps an edit already applied
+    out += s.slice(pos, e.start);
+    if (e.rep !== null) out += e.rep;
+    pos = e.end;
+  }
+  return out + s.slice(pos);
+}
+
+/** Paired `<tag …>…</tag …>` spans on the decoded text. */
+function pairedTagSpans(d, tag) {
+  const open = new RegExp(`<${tag}\\b`, 'gi');
+  const close = new RegExp(`<\\/${tag}`, 'gi');
+  const spans = [];
+  let pos = 0;
+  for (;;) {
+    open.lastIndex = pos;
+    const o = open.exec(d);
+    if (!o) break;
+    const end = closerEnd(d, close, o.index + o[0].length, false);
+    if (end === -1) break;
+    spans.push([o.index, end, null]);
+    pos = end;
+  }
+  return spans;
+}
+
+/** Each `opener … >` (what `<opener[^>]*>` removes), as spans, linear time. */
+function openerSpans(d, opener) {
+  const spans = [];
+  opener.lastIndex = 0;
+  for (let m = opener.exec(d); m; m = opener.exec(d)) {
+    const gt = d.indexOf('>', m.index + m[0].length);
+    if (gt === -1) break; // no `>` after this opener — none after any later one either
+    spans.push([m.index, gt + 1, null]);
+    opener.lastIndex = gt + 1;
+  }
+  return spans;
+}
+
+/** Dangerous schemes in link/attribute contexts → `data-blocked:` spans. */
+function schemeSpans(d) {
+  const spans = [];
+  for (const re of SCHEME_CONTEXT_RES) {
+    re.lastIndex = 0;
+    for (let m = re.exec(d); m; m = re.exec(d)) {
+      const end = m.index + m[0].length;
+      spans.push([end - m[m.length - 1].length, end, 'data-blocked:']);
+    }
+  }
+  return spans;
+}
+
+/**
+ * Event-handler attributes are renamed, not deleted: deleting a multi-
+ * character match can splice the leftovers into a new `on…=` (incomplete
+ * multi-character sanitization), while `data-blocked=` (the event name
+ * dropped too) is inert and cannot re-form a handler.
+ */
+function handlerSpans(d) {
+  const spans = [];
+  HANDLER_RE.lastIndex = 0;
+  for (let m = HANDLER_RE.exec(d); m; m = HANDLER_RE.exec(d)) {
+    const start = m.index + m[1].length;
+    spans.push([start, start + m[2].length, 'data-blocked']);
+  }
+  return spans;
+}
+
+/**
+ * The literal-`<` belt at the end of stripDangerousMarkdown only sees raw
+ * text. A `<` that exists only AFTER entity decoding (`&lt;script src=…`
+ * with no `&gt;`) would survive it and come back to life under a naive
+ * single decode — so re-escape its ENTITY source here (`&lt;` →
+ * `&amp;lt;`). A cut span covering the same `<` wins (applySpans drops the
+ * overlap), so live tags are still removed whole.
+ */
+function entityBeltSpans(d, srcStart, srcEnd) {
+  const spans = [];
+  ENTITY_OPENER_ESCAPE_RE.lastIndex = 0;
+  for (let m = ENTITY_OPENER_ESCAPE_RE.exec(d); m; m = ENTITY_OPENER_ESCAPE_RE.exec(d)) {
+    const i = m.index;
+    if (srcEnd[i] - srcStart[i] === 1) continue; // literal `<` — the raw belt owns it
+    spans.push([i, i + 1, '&amp;lt;']);
+  }
+  return spans;
 }
 
 /**
@@ -321,46 +474,62 @@ function closerEnd(s, close, from, strict) {
   return -1;
 }
 
-/** Remove each `opener … >` (what `<opener[^>]*>` removes), in linear time. */
-function stripOpeners(s, opener) {
-  let out = '';
+/**
+ * Decode entities into a SCRATCH copy used ONLY for detection (FULL-R4 —
+ * the old decoder rewrote the stored text in place, permanently mangling
+ * `R&amp;D` → `R&D` on every save). Returns the decoded text plus, for
+ * every UTF-16 unit of it, the `[start, end)` range in the ORIGINAL it
+ * was produced from: plain characters map 1:1, every character of an
+ * entity maps to the whole `&…;` span. When `s` holds no `&` the maps
+ * are `null` and the decoded text IS `s` (fast path — indices are
+ * already original coordinates).
+ *
+ * Same entity set and single-decode semantics as the old in-place
+ * decoder: the six XSS-rewriting forms only (`&lt;` `&gt;` `&quot;`
+ * `&amp;` `&#NNN;` `&#xHH;`) — decoding every named entity would rewrite
+ * `&copy;` and other non-XSS sequences, changing unrelated text. A scan
+ * consumes each entity once and never re-scans its output, so `&amp;lt;`
+ * yields the literal TEXT `&lt;` (not `<`) — exactly what the old
+ * replace-chain's `&amp;`-last ordering produced. Invalid numeric
+ * entities are dropped, as before.
+ */
+function decodeForDetection(s) {
+  if (!s.includes('&')) return { text: s, srcStart: null, srcEnd: null };
+  const chars = [];
+  const starts = [];
+  const ends = [];
   let pos = 0;
-  opener.lastIndex = 0;
-  for (let m = opener.exec(s); m; m = opener.exec(s)) {
-    const gt = s.indexOf('>', m.index + m[0].length);
-    if (gt === -1) break; // no `>` after this opener — none after any later one either
-    out += s.slice(pos, m.index);
-    pos = gt + 1;
-    opener.lastIndex = pos;
+  ENTITY_RE.lastIndex = 0;
+  for (let m = ENTITY_RE.exec(s); m; m = ENTITY_RE.exec(s)) {
+    for (let i = pos; i < m.index; i += 1) { // plain run before the entity
+      chars.push(s[i]); starts.push(i); ends.push(i + 1);
+    }
+    const dec = decodedEntity(m);
+    for (let k = 0; k < dec.length; k += 1) { // per UTF-16 unit (astral chars are 2)
+      chars.push(dec[k]); starts.push(m.index); ends.push(m.index + m[0].length);
+    }
+    pos = m.index + m[0].length;
   }
-  return pos === 0 ? s : out + s.slice(pos);
+  for (let i = pos; i < s.length; i += 1) {
+    chars.push(s[i]); starts.push(i); ends.push(i + 1);
+  }
+  return { text: chars.join(''), srcStart: starts, srcEnd: ends };
 }
 
-/**
- * Minimal HTML entity decoder used as a pre-pass by stripDangerousMarkdown.
- * Decodes:
- *   - numeric decimal entities `&#NNN;`
- *   - numeric hex entities `&#xHH;`
- *   - the four named entities that matter for XSS rewriting: `&lt;`,
- *     `&gt;`, `&amp;`, `&quot;`
- *
- * We deliberately do NOT decode every named entity — that would expand
- * `&copy;` to `©` and other non-XSS sequences in stored CVs, which
- * would change unrelated text. The four above are sufficient to defeat
- * the bypass class observed in the audit.
- */
-function decodeHtmlEntities(s) {
-  return s
-    .replace(/&#x([0-9a-f]+);/gi, (_, hex) => {
-      const code = parseInt(hex, 16);
-      return Number.isFinite(code) && code > 0 && code < 0x10ffff ? String.fromCodePoint(code) : '';
-    })
-    .replace(/&#(\d+);/g, (_, dec) => {
-      const code = parseInt(dec, 10);
-      return Number.isFinite(code) && code > 0 && code < 0x10ffff ? String.fromCodePoint(code) : '';
-    })
-    .replace(/&lt;/gi, '<')
-    .replace(/&gt;/gi, '>')
-    .replace(/&quot;/gi, '"')
-    .replace(/&amp;/gi, '&');
+/** Decoded text of one entity match ('' for an invalid numeric, as before). */
+function decodedEntity(m) {
+  if (m[1] !== undefined) {
+    const code = parseInt(m[1], 16);
+    return Number.isFinite(code) && code > 0 && code < 0x10ffff ? String.fromCodePoint(code) : '';
+  }
+  if (m[2] !== undefined) {
+    const code = parseInt(m[2], 10);
+    return Number.isFinite(code) && code > 0 && code < 0x10ffff ? String.fromCodePoint(code) : '';
+  }
+  switch (m[3].toLowerCase()) { // named forms match case-insensitively
+    case 'lt': return '<';
+    case 'gt': return '>';
+    case 'quot': return '"';
+    default: return '&'; // amp
+  }
 }
