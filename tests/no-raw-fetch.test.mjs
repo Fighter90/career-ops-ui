@@ -26,6 +26,13 @@ const ALLOWED = new Set([
   'cv.js',              // binary import upload
   'report-export.js',   // blob download
   'pdf-generate.js',    // blob download
+  // CAR-119 — the shared AI-page kit's postJSON transport: the one raw
+  // fetch that carries an AbortSignal (API.call has no signal parameter and
+  // api.js is not in CAR-119's file set). It replicates API.call's
+  // conventions (Accept-Language, auto-lang body, error shaping) and is the
+  // single fetch call site in the kit; hoisting signal support into
+  // API.call lets this entry be deleted.
+  'llm-page-kit.js',
 ]);
 
 function jsFiles(dir) {

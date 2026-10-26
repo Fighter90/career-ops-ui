@@ -501,17 +501,34 @@ Router.register('stats', async () => {
         '⏱ ' + t('stats.marketEta', '~2–4 min')),
     ]);
     const out = c('div');
-    wrap.appendChild(controls);
-    wrap.appendChild(out);
+    // CAR-119 — the market tab renders through the shared AI-page template:
+    // controls (sticky form column) | report, with the shared run panel
+    // (live elapsed/ETA + Cancel wired to an AbortSignal over the POST).
+    // // CAR-119 i18n: no new dictionary keys — the kit's `llm2.*` strings
+    // ship as I18n.t EN fallbacks inside public/js/lib/llm-page-kit.js.
+    const runHost = c('div');
+    const page = window.LlmPageKit.layout({
+      form: controls,
+      result: c('div', null, [runHost, out]),
+    });
+    wrap.appendChild(page.root);
 
     let currentMd = '';
     genBtn.addEventListener('click', async () => {
       genBtn.disabled = true;
       out.textContent = '';
-      out.appendChild(c('div', { className: 'loading' }, t('stats.marketRunning', 'Generating market report…')));
+      const runCtrl = window.LlmPageKit.createRun({ etaSeconds: 150, onBegin: () => page.show('result') }).mount(runHost);
       try {
-        const res = await API.post('/api/stats/market', { run: true, region: region.value, currency: curSel.value, lang: (I18n.getLang && I18n.getLang()) || 'en' });
-        out.textContent = '';
+        const res = await window.LlmPageKit.run({
+          run: runCtrl,
+          // CAR-119 review #4 — the report region paints the failure (its own
+          // surface, with the export context); the kit stays silent.
+          failPaint: false,
+          intro: t('stats.marketRunning', 'Generating market report…'),
+          request: (signal) => window.LlmPageKit.postJSON('/api/stats/market',
+            { run: true, region: region.value, currency: curSel.value }, signal),
+        });
+        if (runCtrl.cancelled || runCtrl.signal.aborted) return; // a cancelled run paints nothing more
         if (res && res.markdown) {
           currentMd = res.markdown;
           const title = () => `${t('stats.marketTitle', 'AI market report')}${region.value ? ' — ' + region.value : ''}`;
