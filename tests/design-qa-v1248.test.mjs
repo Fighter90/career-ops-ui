@@ -44,7 +44,6 @@ const OVERLAYS = read('public', 'css', 'overlays.css');
 const TRACKER = read('public', 'js', 'views', 'tracker.js');
 const EVALUATE = read('public', 'js', 'views', 'evaluate.js');
 const STATS = read('public', 'js', 'views', 'stats.js');
-const SCAN = read('public', 'js', 'views', 'scan.js');
 const SCAN_FILTERS = read('public', 'js', 'views', 'scan', 'filters.js');
 const SCAN_RESULTS = read('public', 'js', 'lib', 'scan-results.js');
 const PIPELINE = read('public', 'js', 'views', 'pipeline.js');

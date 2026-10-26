@@ -21,7 +21,6 @@ import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import {
   PAGE_BYTES,
-  PAGE_MAX_RELEASES,
   buildMonthIndex,
   chunkByWeight,
   splitReleases,

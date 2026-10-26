@@ -555,7 +555,6 @@ repostsPanel.addEventListener('toggle', async () => {
     let apiCompanies = fctx.apiCompanies || [];
     const setApiCompanies = (list) => { apiCompanies = list || []; };
     const portalsErr = fctx.portalsErr;
-    const addRefreshListener = fctx.addRefreshListener;
       // Companies list — collapsed by default, expand on click, with a
     // search filter + visual grouping by API support. 87 entries flat
     // is overwhelming; this lets the user dive in only when needed.

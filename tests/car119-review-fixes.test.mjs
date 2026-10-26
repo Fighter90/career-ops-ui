@@ -118,11 +118,6 @@ function textOf(node) {
   if (node.tagName === '#TEXT') return String(node.textContent || '');
   return (node.children || []).map(textOf).join('');
 }
-function textById(node, id) {
-  const hit = node.querySelectorAll('#' + id)[0];
-  return hit ? textOf(hit) : '';
-}
-
 /** A window stub with UI.el/I18n/Router capture + the REAL kit loaded. */
 function makeHarness({ fetchImpl, api = {}, confirmAnswer = true } = {}) {
   const doc = { createElement: (t) => makeEl(t), createTextNode: (s) => makeText(s) };
