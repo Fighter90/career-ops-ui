@@ -79,6 +79,7 @@ console.log(`[sync-assets] ${helpFiles.length} help guides -> src/content/help/`
 // CHANGELOG.md -> en.md, CHANGELOG.<lang>.md -> <lang>.md, matching the help
 // collection's locale.file naming so the page component resolves entries the
 // same way. Same relative-link rewrite, but against the repo root.
+const { pathToFileURL } = await import('node:url');
 const clDst = join(SITE, 'src', 'content', 'changelog');
 mkdirSync(clDst, { recursive: true });
 const GH_ROOT_BASE = `${REPO_URL}/blob/main/`;
@@ -90,12 +91,93 @@ function rewriteRootLinks(md) {
 }
 const clFiles = readdirSync(ROOT).filter((f) => /^CHANGELOG(\.[A-Za-z-]+)?\.md$/.test(f));
 if (clFiles.length < 18) fail(`expected >=18 CHANGELOG files, found ${clFiles.length}`);
+const { countReleases, splitChangelog, auditCoverage, englishRuns } = await import(
+  pathToFileURL(join(ROOT, 'scripts', 'changelog-parity.mjs')).href
+);
+const clSources = new Map();
 for (const f of clFiles) {
   const lang = f === 'CHANGELOG.md' ? 'en' : f.replace(/^CHANGELOG\./, '').replace(/\.md$/, '');
-  const md = readFileSync(join(ROOT, f), 'utf8');
-  writeFileSync(join(clDst, `${lang}.md`), rewriteRootLinks(md));
+  let parsed;
+  try {
+    parsed = splitChangelog(readFileSync(join(ROOT, f), 'utf8'));
+  } catch (err) {
+    fail(`${f} — cannot parse the release list: ${err.message}`);
+  }
+  clSources.set(lang, { file: f, entries: parsed.entries });
+}
+
+// CAR-131 gate (hard): every locale changelog must carry the EN release SET —
+// counts alone cannot see a typo'd version plus a hole (same count, different
+// set). The locale files were seeded mid-history and the release train
+// prepends one entry per release, so a seeded-once-partial file stayed
+// partial forever — de reached cvstart.org with 252 of 465 releases while the
+// old parity gate (newest heading only) passed clean. Fail the build instead
+// of shipping a page whose release set depends on when the locale was added.
+if (!clSources.has('en')) {
+  fail('CHANGELOG.md is missing — it is the EN master the changelog gates compare against');
+}
+const enEntries = clSources.get('en').entries;
+const enReleases = enEntries.length;
+for (const [lang, { file, entries }] of clSources) {
+  if (lang === 'en') continue;
+  // Report every coverage problem for the locale in ONE failure, not
+  // first-fail-exit — a typo'd version plus a hole must surface together.
+  const cov = auditCoverage(enEntries, entries);
+  const problems = [];
+  if (cov.unknown.length) {
+    problems.push(`versions unknown to EN: ${cov.unknown.join(', ')} (typo'd or invented release headings)`);
+  }
+  if (cov.missing.length) {
+    problems.push(
+      `${entries.length} of ${enReleases} releases (${cov.missing.length} missing, ` +
+        `oldest v${cov.missing[cov.missing.length - 1]})`,
+    );
+  }
+  if (!cov.ordered) {
+    problems.push('shared entries out of EN order (duplicate or misplaced version)');
+  }
+  if (problems.length) {
+    fail(
+      `${file} — ${problems.join('; ')} — every locale must carry every release ` +
+        `(the changelog pages render whatever is here). ` +
+        `Backfill: node scripts/backfill-changelog-locales.mjs`,
+    );
+  }
+}
+
+for (const [lang, { file, entries }] of clSources) {
+  const md = join(ROOT, file);
+  const out = join(clDst, `${lang}.md`);
+  writeFileSync(out, rewriteRootLinks(readFileSync(md, 'utf8')));
+  // Delivery tripwire: the mirror on disk must carry the same release count
+  // as its source — a partial write, an encoding surprise or a future
+  // rewriteRootLinks regression shows up here, never on the page.
+  const written = readFileSync(out, 'utf8');
+  if (countReleases(written) !== entries.length) {
+    fail(
+      `changelog mirror ${lang}.md carries ${countReleases(written)} releases but ` +
+        `${file} has ${entries.length} — the copy lost content`,
+    );
+  }
 }
 console.log(`[sync-assets] ${clFiles.length} changelogs -> src/content/changelog/`);
+
+// CAR-131 diagnostic (WARN only, never a failure): entries byte-identical to
+// the EN original. Backfilled history ships in English on purpose (translation
+// is a locale-agent job, out of the build's scope), but the reader-visible
+// state must stay reported, not silently normalised.
+for (const [lang, { file, entries }] of clSources) {
+  if (lang === 'en') continue;
+  const { identical, runs } = englishRuns(enEntries, entries);
+  if (identical > 0) {
+    const longest = runs.reduce((a, b) => (b.count > a.count ? b : a));
+    console.warn(
+      `[sync-assets] WARN (non-blocking): ${file} carries ${identical} entries ` +
+        `byte-identical to the English original in ${runs.length} run(s), longest ` +
+        `v${longest.from}..v${longest.to} — translation pending`,
+    );
+  }
+}
 
 // --- 3c. license (v1.121.0 — /license/ page) ---------------------------------
 // LICENSE is canonical English legal text; every locale renders it verbatim.
@@ -109,7 +191,6 @@ console.log('[sync-assets] LICENSE -> src/generated/license.txt');
 // --- 3d. scan sources (v1.125.0 — the landing "Job sources" section) ---------
 // Imported straight from the live registry so the section can never drift
 // from the app: value + label + region for every adapter.
-const { pathToFileURL } = await import('node:url');
 const registry = await import(
   pathToFileURL(join(ROOT, 'server', 'lib', 'sources', 'registry.mjs')).href
 );
@@ -170,6 +251,10 @@ const providers = providerSet.size;
 // refreshed client-side (site.js) so it never goes stale between deploys.
 // CI passes GITHUB_TOKEN so shared-runner IPs don't hit the anonymous
 // rate limit; locally the unauthenticated call is fine.
+// SYNC_ASSETS_OFFLINE=1 skips both calls entirely — for air-gapped builds
+// and CI-isolated tests; the landing hides both blocks on null/[] as before.
+const OFFLINE = process.env.SYNC_ASSETS_OFFLINE === '1';
+if (OFFLINE) console.log('[sync-assets] SYNC_ASSETS_OFFLINE=1 — skipping GitHub stats');
 async function ghJson(path) {
   const headers = { accept: 'application/vnd.github+json' };
   if (process.env.GITHUB_TOKEN) headers.authorization = `Bearer ${process.env.GITHUB_TOKEN}`;
@@ -182,31 +267,35 @@ async function ghJson(path) {
 }
 
 let stars = null;
-try {
-  const data = await ghJson('/repos/Fighter90/career-ops-ui');
-  if (typeof data.stargazers_count === 'number') stars = data.stargazers_count;
-} catch {
-  /* offline / rate-limited -> header falls back to a plain "GitHub" button */
+if (!OFFLINE) {
+  try {
+    const data = await ghJson('/repos/Fighter90/career-ops-ui');
+    if (typeof data.stargazers_count === 'number') stars = data.stargazers_count;
+  } catch {
+    /* offline / rate-limited -> header falls back to a plain "GitHub" button */
+  }
 }
 
 // Contributors — humans only (bots add noise), top 24 by contribution count.
 // Empty array on failure: the landing then hides the block; the weekly
 // scheduled Pages rebuild (deploy-pages.yml) restores it on the next pass.
 let contributors = [];
-try {
-  const data = await ghJson('/repos/Fighter90/career-ops-ui/contributors?per_page=24');
-  if (Array.isArray(data)) {
-    contributors = data
-      .filter((c) => c && c.type !== 'Bot' && !/\[bot\]$/i.test(c.login || ''))
-      .map((c) => ({
-        login: c.login,
-        avatar_url: c.avatar_url,
-        html_url: c.html_url,
-        contributions: c.contributions,
-      }));
+if (!OFFLINE) {
+  try {
+    const data = await ghJson('/repos/Fighter90/career-ops-ui/contributors?per_page=24');
+    if (Array.isArray(data)) {
+      contributors = data
+        .filter((c) => c && c.type !== 'Bot' && !/\[bot\]$/i.test(c.login || ''))
+        .map((c) => ({
+          login: c.login,
+          avatar_url: c.avatar_url,
+          html_url: c.html_url,
+          contributions: c.contributions,
+        }));
+    }
+  } catch {
+    /* best effort — see above */
   }
-} catch {
-  /* best effort — see above */
 }
 
 const facts = {

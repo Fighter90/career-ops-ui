@@ -47,6 +47,10 @@ window.__I18N_DICT_TR = {
   'map.legend.exact': "📍 şirket adresi, yoksa yer merkezi",
   'map.exact': "Şirket adresi",
   'map.more': "daha",
+  // CAR-125 — the bounds-synced side list.
+  'map.list.title': "Görünümdeki işler",
+  'map.list.empty': "Görünümde bir şey yok — haritayı kaydırın veya uzaklaştırın.",
+  'map.list.more': "görünümde daha fazla",
   'map.postings': "ilan",
   'map.layerTracker': "Takip",
   'map.noLocation': "Konumsuz",
@@ -1625,4 +1629,22 @@ window.__I18N_DICT_TR = {
   'rep2.actResearch': "Önce şirketi araştır",
   'rep2.actLow': "Kişisel bir neden yoksa atla",
   'rep2.histogramLabel': "Puan dağılımı — filtrelemek için bir sütuna tıklayın",
+
+  /* CAR-120 — #/stats Overview tab (feat/car120-stats-v2). EN parity is
+     locked by tests/i18n-coverage + tests/stats-overview-car120; the ovDay_*
+     forms are picked by Intl.PluralRules in views/stats.js. */
+  'stats.tabOverview': "Genel bakış",
+  'stats.ovVacanciesBySource': "Kaynağa göre ilanlar",
+  'stats.ovPostingsByWeek': "Haftalara göre ilanlar",
+  'stats.ovSalaryByGrade': "Seviyeye göre medyan maaş",
+  'stats.ovStageVelocity': "Aşamalar arası süre",
+  'stats.ovClickHintScan': "Bir çubuğa tıklayın; bu ilanlar Tarama'da açılır",
+  'stats.ovVelocityEmpty': "Henüz yeterli yanıt yok — yanıtlar geldikçe medyan günler görünür.",
+  'stats.hint.overview': "İzleyici ve son taramanın gerçek verilerinden grafikler — durum hunisi, puanlar, maaşlar, kaynaklar. AI yok.",
+  'stats.ovDay_zero': "{n} gün",
+  'stats.ovDay_one': "{n} gün",
+  'stats.ovDay_two': "{n} gün",
+  'stats.ovDay_few': "{n} gün",
+  'stats.ovDay_many': "{n} gün",
+  'stats.ovDay_other': "{n} gün",
 };

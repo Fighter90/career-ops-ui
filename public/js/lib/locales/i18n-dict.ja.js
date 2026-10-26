@@ -47,6 +47,10 @@ window.__I18N_DICT_JA = {
   'map.legend.exact': "📍 企業の住所、なければ地域の中心",
   'map.exact': "企業の住所",
   'map.more': "件以上",
+  // CAR-125 — the bounds-synced side list.
+  'map.list.title': "表示範囲の求人",
+  'map.list.empty': "表示範囲には何もありません — 地図を動かすか、縮小してください。",
+  'map.list.more': "件以上を表示",
   'map.postings': "件の求人",
   'map.layerTracker': "トラッカー",
   'map.noLocation': "所在地なし",
@@ -1624,4 +1628,22 @@ window.__I18N_DICT_JA = {
   'rep2.actResearch': "まず企業をリサーチ",
   'rep2.actLow': "個人的な理由がなければ見送り",
   'rep2.histogramLabel': "スコア分布 — 列をクリックで絞り込み",
+
+  /* CAR-120 — #/stats Overview tab (feat/car120-stats-v2). EN parity is
+     locked by tests/i18n-coverage + tests/stats-overview-car120; the ovDay_*
+     forms are picked by Intl.PluralRules in views/stats.js. */
+  'stats.tabOverview': "概要",
+  'stats.ovVacanciesBySource': "ソース別の求人",
+  'stats.ovPostingsByWeek': "週別の求人",
+  'stats.ovSalaryByGrade': "グレード別の中央値給与",
+  'stats.ovStageVelocity': "段階間の所要日数",
+  'stats.ovClickHintScan': "バーをクリックするとスキャンで該当求人を開きます",
+  'stats.ovVelocityEmpty': "まだ返信が足りません — 返信が届き次第、中央値の日数が表示されます。",
+  'stats.hint.overview': "トラッカーと最新スキャンの実データから作ったチャート — ステータスファネル、スコア、給与、ソース。AIは使いません。",
+  'stats.ovDay_zero': "{n}日",
+  'stats.ovDay_one': "{n}日",
+  'stats.ovDay_two': "{n}日",
+  'stats.ovDay_few': "{n}日",
+  'stats.ovDay_many': "{n}日",
+  'stats.ovDay_other': "{n}日",
 };

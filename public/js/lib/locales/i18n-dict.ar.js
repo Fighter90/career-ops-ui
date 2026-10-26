@@ -46,6 +46,10 @@ window.__I18N_DICT_AR = {
   'map.legend.exact': "📍 عنوان الشركة، وإلا مركز المكان",
   'map.exact': "عنوان الشركة",
   'map.more': "أخرى",
+  // CAR-125 — the bounds-synced side list.
+  'map.list.title': "الوظائف في نطاق العرض",
+  'map.list.empty': "لا شيء في نطاق العرض — حرِّك الخريطة أو صغِّرها.",
+  'map.list.more': "وظائف أخرى في النطاق",
   'map.postings': "وظائف",
   'map.layerTracker': "المتابعة",
   'map.noLocation': "بدون موقع",
@@ -1623,4 +1627,22 @@ window.__I18N_DICT_AR = {
   'rep2.actResearch': "ادرس الشركة أولاً",
   'rep2.actLow': "تخطَّ ما لم يكن هناك سبب شخصي",
   'rep2.histogramLabel': "توزيع النتائج — انقر عموداً للتصفية",
+
+  /* CAR-120 — #/stats Overview tab (feat/car120-stats-v2). EN parity is
+     locked by tests/i18n-coverage + tests/stats-overview-car120; the ovDay_*
+     forms are picked by Intl.PluralRules in views/stats.js. */
+  'stats.tabOverview': "نظرة عامة",
+  'stats.ovVacanciesBySource': "الوظائف حسب المصدر",
+  'stats.ovPostingsByWeek': "الوظائف أسبوعيًا",
+  'stats.ovSalaryByGrade': "الراتب الوسيط حسب المستوى",
+  'stats.ovStageVelocity': "الوقت بين المراحل",
+  'stats.ovClickHintScan': "انقر على عمود لفتح هذه الوظائف في البحث",
+  'stats.ovVelocityEmpty': "لا توجد ردود كافية بعد — ستظهر الأيام الوسيطة مع وصول الردود.",
+  'stats.hint.overview': "رسوم بيانية من بياناتك الحقيقية (المتتبع وآخر مسح) — قمع الحالات، الدرجات، الرواتب، المصادر. بدون ذكاء اصطناعي.",
+  'stats.ovDay_zero': "{n} يوم",
+  'stats.ovDay_one': "{n} يوم",
+  'stats.ovDay_two': "{n} يومان",
+  'stats.ovDay_few': "{n} أيام",
+  'stats.ovDay_many': "{n} يومًا",
+  'stats.ovDay_other': "{n} يوم",
 };

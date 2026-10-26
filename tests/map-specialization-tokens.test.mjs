@@ -82,9 +82,13 @@ after(async () => {
 });
 
 async function chipAfterSpec(page, role) {
-  const sel = page.locator('.job-map-spec-select');
-  await sel.waitFor({ timeout: 10000 });
-  await sel.selectOption(role === null ? { index: 0 } : { label: role }).catch((e) => { throw new Error('selectOption: ' + e.message.split('\n')[0]); });
+  // CAR-125 — the specialization select became a chip row; the same token
+  // matcher drives it, so the expected counts are unchanged.
+  const chip = role === null
+    ? page.locator('.v2-map-chip.v2-map-chip-any')
+    : page.locator('.v2-map-chip[data-spec]').filter({ hasText: role });
+  await page.locator('.v2-map-chip').first().waitFor({ timeout: 10000 });
+  await chip.click().catch((e) => { throw new Error('chip click: ' + e.message.split('\n')[0]); });
   const want = role === null ? '8 / 8' : role === 'Senior PHP Developer' ? '2 / 8'
     : role === 'Go Developer' ? '1 / 8'
     : role === 'Platform Engineer' ? '1 / 8'
@@ -97,8 +101,8 @@ async function chipAfterSpec(page, role) {
   } catch (e) {
     const got = await page.evaluate(() => ({
       chip: document.querySelector('.job-map-status-chip')?.textContent || '(none)',
-      sel: document.querySelector('.job-map-spec-select')?.value || '(none)',
-      selOptions: [...document.querySelectorAll('.job-map-spec-select option')].map((o) => o.textContent),
+      active: [...document.querySelectorAll('.v2-map-chip.is-active')].map((o) => o.textContent),
+      options: [...document.querySelectorAll('.v2-map-chip[data-spec]')].map((o) => o.textContent),
     }));
     e.message += ` — want "${want}", got ${JSON.stringify(got)}`;
     throw e;
