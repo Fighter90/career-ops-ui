@@ -147,18 +147,32 @@ test('CAR-93 F2: Enter on a row\u2019s nested ▶ button evaluates (not re-selec
 });
 
 // ── F3 — saved-search restore keeps country/seniority ───────────────────────
+// CAR-115: saved searches are PRESET CHIPS now (the select/input/Save/Delete
+// sub-card is gone). The regression is the same: restoring a search whose
+// country/seniority options are painted from the not-yet-loaded corpus must
+// still land (the dataset.want stash contract).
 
-test('CAR-93 F3: a saved search restored before the corpus loads keeps country + seniority', { skip: SKIP }, async () => {
+test('CAR-93 F3: a saved preset restored before the corpus loads keeps country + seniority', { skip: SKIP }, async () => {
   const page = await newPage();
   await openScan(page);
   const code = await page.$eval('#scan-filter-country', (el) => (el.options[1] ? el.options[1].value : ''));
   assert.ok(code, 'country options painted from the corpus');
+  // Country + Seniority live in popover chips — open, pick.
+  await page.click('.v2-scan-chip-btn[title="Country"]');
+  await page.waitForSelector('#scan-filter-country', { state: 'visible' });
   await page.selectOption('#scan-filter-country', code);
+  await page.click('.v2-scan-chip-btn[title="Seniority"]');
+  await page.waitForSelector('#scan-filter-seniority', { state: 'visible' });
   await page.selectOption('#scan-filter-seniority', 'senior');
-  await page.waitForTimeout(80);
-  await page.fill('input[placeholder="Name this search…"]', 'de-senior');
-  await page.locator('button:has-text("Save search")').click();
   await page.waitForTimeout(120);
+  // Save current as a preset: the ＋ chip reveals the name field + Save.
+  await page.click('.v2-scan-preset-add');
+  await page.fill('.v2-scan-preset-name', 'de-senior');
+  await page.click('.v2-scan-presets button:has-text("Save search")');
+  await page.waitForSelector('.v2-scan-preset:has-text("de-senior")', { timeout: 8000 });
+  // Clear the live filters so the restore visibly re-applies them.
+  await page.click('.v2-scan-bar button:has-text("Reset")');
+  await page.waitForTimeout(80);
   // Restore it on a visit where /api/scan-results is still in flight —
   // the country/seniority options do not exist yet at setFilterState time.
   await page.route('**/api/scan-results', async (route) => {
@@ -166,11 +180,8 @@ test('CAR-93 F3: a saved search restored before the corpus loads keeps country +
     await route.continue();
   });
   await page.goto(baseUrl + '/#/scan');
-  await page.waitForFunction(
-    () => [...document.querySelectorAll('select[aria-label="Saved searches"] option')]
-      .some((o) => o.value === 'de-senior'),
-    null, { timeout: 8000 });
-  await page.selectOption('select[aria-label="Saved searches"]', 'de-senior');
+  await page.waitForSelector('.v2-scan-preset:has-text("de-senior")', { timeout: 8000 });
+  await page.click('[data-chip="preset-de-senior"]');
   await page.waitForSelector('#scan-results table tbody tr', { timeout: 10000 });
   await page.waitForTimeout(150);
   const country = await page.$eval('#scan-filter-country', (el) => el.value);
@@ -193,6 +204,9 @@ test('CAR-93 F4: the live source-dropdown repaint preserves the selected source'
   });
   await page.goto(baseUrl + '/#/scan');
   await page.waitForSelector('#scan-results table tbody tr', { timeout: 10000 });
+  // CAR-115 — the source select lives inside its popover chip.
+  await page.click('.v2-scan-chip-btn[title="Source"]');
+  await page.waitForSelector('#scan-filter-source', { state: 'visible' });
   await page.selectOption('#scan-filter-source', 'greenhouse');
   await page.waitForTimeout(900); // let the delayed registry repaint land
   const v = await page.$eval('#scan-filter-source', (el) => el.value);

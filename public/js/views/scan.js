@@ -30,6 +30,19 @@ function addScanRefreshListener(fn) {
   document.body.addEventListener('scan:refresh', fn);
   __scanRefreshListeners.add(fn);
 }
+// CAR-115 — same tracked-subscription pattern for the filter bar's
+// outside-click/Escape handlers (any event type on body).
+const __scanBodyListeners = new Set();
+function addScanBodyListener(type, fn) {
+  document.body.addEventListener(type, fn);
+  __scanBodyListeners.add([type, fn]);
+}
+function detachScanBodyListeners() {
+  for (const [type, fn] of __scanBodyListeners) {
+    try { document.body.removeEventListener(type, fn); } catch { /* stub env */ }
+  }
+  __scanBodyListeners.clear();
+}
 function detachScanRefreshListeners() {
   for (const fn of __scanRefreshListeners) document.body.removeEventListener('scan:refresh', fn);
   __scanRefreshListeners.clear();
@@ -49,11 +62,24 @@ function __teardownActiveScanRunner() {
   }
 }
 
+// CAR-115 review r2 — the live filter debounce must not outlive the route:
+// a pending 250 ms timer firing after a hashchange would render into the
+// detached tree and replaceState('#/scan?…') over ANOTHER page's URL. The
+// view registers its timer handle here; the hashchange handler (and the
+// same-mount re-render path) cancels it.
+let __scanCommitTimerCancel = null;
+function __cancelScanCommitDebounce() {
+  if (typeof __scanCommitTimerCancel === 'function') __scanCommitTimerCancel();
+  __scanCommitTimerCancel = null;
+}
+
 // Cancel on every route change — the renderer always begins from a clean slate.
 window.addEventListener('hashchange', () => {
   __cancelActiveScanPoll();
   __teardownActiveScanRunner();
+  __cancelScanCommitDebounce();
   detachScanRefreshListeners();
+  detachScanBodyListeners();
 });
 
 // v1.244.0 — UI.paginate pins pageSize at creation, but the #/scan page-size
@@ -111,14 +137,41 @@ Router.register('scan', async () => {
   // Clean up any stale poll/listeners from a previous /scan visit.
   __cancelActiveScanPoll();
   detachScanRefreshListeners();
+  detachScanBodyListeners();
   // CAR-93 — the stale runner used to be torn down ONLY on hashchange, so
   // a same-hash re-render (a locale switch calls Router.render() with no
   // hashchange; Save-like re-entries too) left the old EventSource
   // streaming into detached nodes and the poll writing into them. Tear
   // the runner down here as well — it is a no-op when none is running.
   __teardownActiveScanRunner();
+  __cancelScanCommitDebounce(); // a previous visit's pending filter timer dies here too
   const c = UI.el;
   const t = (k, f) => I18n.t(k, f);
+  // CAR-115 — filter state lives in the URL (#/scan?q=…&src=…): parsed
+  // BEFORE anything renders, mirrored back on every live apply.
+  const urlState = (() => {
+    try {
+      const qs = (window.location.hash || '').split('?')[1] || '';
+      if (!qs) return { params: null, sort: null };
+      const p = new URLSearchParams(qs);
+      // Whitelist the sort keys the table actually offers — an unknown
+      // ?sort= must not silently become a title sort with all headers
+      // reading aria-sort=none.
+      const sortKey = ['title', 'seniority', 'salary'].includes(p.get('sort')) ? p.get('sort') : null;
+      return {
+        params: qs,
+        sort: sortKey ? { key: sortKey, dir: p.get('dir') === 'asc' ? 'asc' : 'desc' } : null,
+      };
+    } catch { return { params: null, sort: null }; }
+  })();
+  // CAR-115 — density (row height) for the windowed results table,
+  // persisted like the other scan prefs. Mutable: the pagebar toggle flips it.
+  let density = (() => {
+    try { return localStorage.getItem('career-ops-ui:scan:density') === 'compact' ? 'compact' : 'comfortable'; }
+    catch { return 'comfortable'; }
+  })();
+  // Late-bound view services the results subsystem calls back into.
+  const view = {};
   let portalsData = null;
   let portalsErr = null;
   try {
@@ -152,9 +205,23 @@ Router.register('scan', async () => {
   // v1.244.2 — refined console strip: the pre lives inside a .scan-terminal
   // wrapper that owns the dark-slate chrome + status dot. The wrapper's
   // data-state (idle/running/done/error) is driven by scan/runner.js.
+  // CAR-115 — compact status bar: the log is COLLAPSED by default (dot +
+  // one visible line); the Log button expands it (acceptance: the terminal
+  // no longer spends a full-width band; log on click).
+  const logBtn = c('button', {
+    className: 'btn btn-ghost btn-sm v2-scan-logbtn', type: 'button',
+    'aria-expanded': 'false', 'aria-controls': 'scan-console',
+    'aria-label': t('scan.v2.log', 'Toggle scan log'),
+    title: t('scan.v2.log', 'Toggle scan log'),
+    onClick: () => {
+      const open = terminalEl.classList.toggle('v2-scan-log-open');
+      logBtn.setAttribute('aria-expanded', String(open));
+    },
+  }, '▤ ' + t('scan.v2.log', 'Log'));
   const terminalEl = c('div', { className: 'scan-terminal', 'data-state': 'idle' }, [
     c('span', { className: 'scan-terminal__dot', 'aria-hidden': 'true' }),
     consoleEl,
+    logBtn,
   ]);
   // (#5) assertive region for terminal announcements (done / failed /
   // stopped) — visually hidden, separate from the polite log stream.
@@ -190,8 +257,10 @@ Router.register('scan', async () => {
   const filterText = c('input', { className: 'input', id: 'scan-filter-text', placeholder: t('scan.filterText') });
   // v1.109.0 — "Exclude" keywords: comma-separated terms; a row is hidden if its
   // company/title/location contains ANY of them. Pairs with the include search
-  // (which now treats commas as OR — "roles to find").
-  const filterExclude = c('input', { className: 'input', id: 'scan-filter-exclude', placeholder: t('scan.filterExclude', 'Exclude words (comma-separated)…') });
+  // (which now treats commas as OR — "roles to find"). CAR-115 — the main
+  // search also takes inline "-word" exclusions; this field stays for
+  // multi-term exclusion lists in the More-filters popover.
+  const filterExclude = c('input', { className: 'input', id: 'scan-filter-exclude', placeholder: t('scan.filterExclude', 'Exclude words (comma-separated)…'), 'aria-label': t('scan.filterExclude', 'Exclude words (comma-separated)…') });
   // v1.78.1 — consume a one-shot search term handed off from the top-bar global
   // search (Enter on a non-URL query → #/scan with this box pre-filled). The
   // initial SR.render() below reads filterText.value, so the first paint is
@@ -209,8 +278,9 @@ Router.register('scan', async () => {
   ]);
   // v1.67.0 — salary от/до range. Numbers only; bounds are currency-agnostic
   // (see window.Skills.parseSalaryRange). v1.68.0 — when a bound is set, jobs
-  // with no listed salary are dropped (window.Skills.salaryInRange). Labels
-  // render ABOVE each input (the .field wrapper), so no in-field placeholder.
+  // with no listed salary are dropped (window.Skills.salaryInRange). CAR-115 —
+  // the Salary popover adds a "include without salary" toggle that restores
+  // salary-less rows while bounds are set. No in-field placeholders.
   const filterSalaryMin = c('input', {
     type: 'number', inputmode: 'numeric', min: '0', step: '1000',
     className: 'input', id: 'scan-filter-salary-min', 'aria-label': t('scan.salaryFrom', 'Salary from'),
@@ -219,6 +289,7 @@ Router.register('scan', async () => {
     type: 'number', inputmode: 'numeric', min: '0', step: '1000',
     className: 'input', id: 'scan-filter-salary-max', 'aria-label': t('scan.salaryTo', 'Salary to'),
   });
+  const filterSalaryAny = c('input', { type: 'checkbox', id: 'scan-filter-salary-any' });
   // v1.29.0 — source dropdown is now dynamic. We fetch the canonical
   // list from `GET /api/scan/sources` (backed by
   // `server/lib/sources/registry.mjs`) so adding a new adapter = one
@@ -270,6 +341,7 @@ Router.register('scan', async () => {
         if (changed) {
           apiCompanies = companies.filter((co) => isApiBackedCompany(co, adapterIdSet));
           paintCompanyOptions();
+          setApiCompanies(apiCompanies); // CAR-115 — panel mirror follows
         }
       }
     } catch {}
@@ -417,16 +489,44 @@ Router.register('scan', async () => {
     const n = parseInt(pageSizeSelect.value, 10);
     if (Number.isFinite(n) && n > 0) { pager.setPageSize(n); SR.render(); }
   });
-  const scanPagebar = c('div', { className: 'scan-pagebar' }, [pageSizeSelect]);
+  // CAR-115 — density toggle (compact/comfortable row height). The label
+  // names the mode it will SWITCH TO (aria-pressed carries the state).
+  const densityBtn = c('button', {
+    className: 'btn btn-ghost btn-sm v2-scan-density', type: 'button',
+    onClick: () => {
+      density = density === 'compact' ? 'comfortable' : 'compact';
+      densityBtn.textContent = '≡ ' + (density === 'compact'
+        ? t('scan.v2.comfortable', 'Comfortable')
+        : t('scan.v2.compact', 'Compact'));
+      densityBtn.setAttribute('aria-pressed', String(density === 'compact'));
+      densityBtn.setAttribute('aria-label', t('scan.v2.density', 'Row density') + ': ' + density);
+      try { localStorage.setItem('career-ops-ui:scan:density', density); } catch { /* private mode */ }
+      SR.render();
+    },
+  });
+  densityBtn.textContent = '≡ ' + (density === 'compact' ? t('scan.v2.compact', 'Compact') : t('scan.v2.comfortable', 'Comfortable'));
+  densityBtn.setAttribute('aria-pressed', String(density === 'compact'));
+  densityBtn.setAttribute('aria-label', t('scan.v2.density', 'Row density') + ': ' + density);
+  const scanPagebar = c('div', { className: 'scan-pagebar' }, [densityBtn, pageSizeSelect]);
   // v1.132.0 — the results-rendering subsystem was extracted to
   // public/js/lib/scan-results.js (file-size-contract split). It closes over
   // this context; lastResults is passed as a getter because refreshResults()
   // reassigns it. FALLBACK_SOURCES also moved there (window.ScanResults).
+  // CAR-115 — the ctx carries the URL-seeded sort, the density model and the
+  // late-bound `view` services (filter API / quick view / URL sync); the
+  // on* callbacks delegate so creation order never matters.
   const SR = window.ScanResults.create({
     resultsEl, t,
     filterScope, filterText, filterExclude, filterRemote, filterSource,
     filterCountry, filterSeniority, filterAge, favOnly, filterSalaryMin, filterSalaryMax,
+    filterSalaryAny,
     activeTech, activeLevel, activeDynamic, pager, twoPagerData,
+    view,
+    sort: urlState.sort,
+    getDensity: () => density,
+    onSortChange: () => { if (view.syncUrl) view.syncUrl(); }, // getSort rides the URL mirror
+    onFilterChange: () => { if (view.syncUrl) view.syncUrl(); },
+    onQuickView: (r) => { if (view.openQuickView) view.openQuickView(r); },
     getLastResults: () => lastResults,
   });
 
@@ -443,149 +543,84 @@ Router.register('scan', async () => {
   // teardown can close an in-flight EventSource when the user navigates away.
   __activeScanRunner = runner;
 
-  // v1.68.0 — filters are now Apply-driven (was live-on-input). The user asked
-  // for an explicit "Apply" so the salary range visibly re-filters the results.
-  // The filter state machine (apply/reset + saved-search serialization) lives in
-  // public/js/views/scan/filters.js (file-size split).
-  const { applyFilters, resetFilters, getFilterState, setFilterState } = window.createScanFilters(
+  // v1.68.0 was Apply-driven; CAR-115 makes filtering LIVE again (the
+  // acceptance contract: no Apply button, < 50 ms on a 3.6k-row corpus).
+  // The filter state machine (URL sync + active chips + presets) lives in
+  // public/js/views/scan/filters.js.
+  const filtersApi = window.createScanFilters(
     {
       filterText, filterExclude, filterRemote, filterSalaryMin, filterSalaryMax,
       filterSource, filterCountry, filterSeniority, filterScope, filterAge, favOnly,
+      filterSalaryAny,
       activeTech, activeLevel, activeDynamic,
     },
-    { pager, SR },
+    { pager, SR, view, t },
   );
-  // Enter in any text/number field applies (keyboard parity with the button).
-  ;[filterText, filterExclude, filterSalaryMin, filterSalaryMax].forEach((el) =>
-    el.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); applyFilters(); } }));
-  // Selects/checkboxes feel broken if they need a second click, so they apply on change.
-  ;[filterRemote, filterSource, filterCountry, filterSeniority, filterScope, filterAge, favOnly].forEach((el) =>
+  // CAR-93 — Enter applies immediately; typing applies after a 250 ms
+  // debounce (live filtering without a per-keystroke re-render storm).
+  // CAR-115 review r2 — the timer handle lives at VIEW scope: commit()
+  // (Enter) cancels a pending debounce (one render, not two), and the
+  // route teardown cancels it (a late commit must not render into a
+  // detached tree or rewrite another route's URL — see syncUrl's guard).
+  let commitTimer = null;
+  function commitDebounced() {
+    if (commitTimer) clearTimeout(commitTimer);
+    commitTimer = setTimeout(() => { commitTimer = null; commit(); }, 250);
+  }
+  function commit() {
+    if (commitTimer) { clearTimeout(commitTimer); commitTimer = null; }
+    filtersApi.commitFilters();
+    syncFilterBar();
+  }
+  __scanCommitTimerCancel = () => {
+    if (commitTimer) { clearTimeout(commitTimer); commitTimer = null; }
+  };
+  view.syncUrl = (extra) => filtersApi.syncUrl(extra);
+
+  // ── CAR-115 — the filter bar UI + presets (scan/filters.js factory) ───
+  const filterBar = window.createScanFilterBar({
+    c, t, refs: {
+      filterText, filterExclude, filterRemote, filterSalaryMin, filterSalaryMax,
+      filterSource, filterCountry, filterSeniority, filterScope, filterAge, favOnly,
+      filterSalaryAny,
+    },
+    api: filtersApi,
+    addBodyListener: addScanBodyListener,
+  });
+  const presetsWrap = filterBar.presetsWrap;
+  function syncFilterBar() { filterBar.sync(); }
+  // (commit / commitDebounced / view.syncUrl are defined above — the funnel
+  // needs the filter bar object, so it stays the single definition point.)
+
+  // ── CAR-115 — quick view side panel (scan/runner.js factory) ──────────
+  const quickView = window.createScanQuickView({ c, t, SR, view });
+
+  // Selects/checkboxes apply immediately (and void any pending saved-search
+  // stash — CAR-93); text/number inputs go through the debounced commit;
+  // Enter applies at once.
+  ;[filterRemote, filterSource, filterCountry, filterSeniority, filterScope, filterAge].forEach((el) =>
     el.addEventListener('change', () => {
       // CAR-93 — a manual change on a dynamically-painted select voids any
       // pending saved-search stash (dataset.want), so the next repaint
       // cannot resurrect an option the user just moved away from.
       if (el.dataset && 'want' in el.dataset) delete el.dataset.want;
-      applyFilters();
+      commit();
     }));
-
-  // v1.80.0 — saved-searches bar (localStorage via window.ScanPrefs).
-  // v1.244.2 — rendered INSIDE .scan-filters as the bordered sub-card
-  // (.scan-filters__saved); widths/heights owned by the chrome CSS.
-  const ssSelect = c('select', { className: 'select', 'aria-label': t('scan.savedSearches', 'Saved searches') },
-    [c('option', { value: '' }, t('scan.savedNone', 'Saved searches…'))]);
-  const ssName = c('input', { className: 'input', placeholder: t('scan.savedName', 'Name this search…') });
-  function refreshSavedSearches(selected) {
-    while (ssSelect.children.length > 1) ssSelect.removeChild(ssSelect.lastChild);
-    for (const s of window.ScanPrefs.listSearches()) ssSelect.appendChild(c('option', { value: s.name }, s.name));
-    if (selected != null) ssSelect.value = selected;
-  }
-  refreshSavedSearches();
-  ssSelect.addEventListener('change', () => {
-    const name = ssSelect.value;
-    if (!name) return;
-    const s = window.ScanPrefs.getSearch(name);
-    if (s) setFilterState(s.filters);
+  ;[filterText, filterExclude, filterSalaryMin, filterSalaryMax].forEach((el) => {
+    el.addEventListener('input', () => commitDebounced());
+    el.addEventListener('keydown', (e) => { if (e.key === 'Enter') { e.preventDefault(); commit(); } });
   });
-  const ssSaveBtn = c('button', { className: 'btn btn-ghost', type: 'button', onClick: () => {
-    const name = (ssName.value || '').trim();
-    if (!name) { UI.toast(t('scan.savedNeedName', 'Enter a name to save the search'), 'error'); return; }
-    window.ScanPrefs.saveSearch(name, getFilterState());
-    ssName.value = '';
-    refreshSavedSearches(name);
-    syncSsDelBtn();
-    UI.toast(t('scan.savedOk', 'Search saved'), 'success');
-  } }, '💾 ' + t('scan.saveSearch', 'Save search'));
-  // CAR-50 #3 (v1.247.0) + v1.248.2 (QA) — Delete is destructive, but the red
-  // fill only makes sense when there is something selected to delete: with a
-  // saved search chosen the button wears .btn-danger (the same affordance the
-  // scan Stop button gets while running); with NO selection it is a disabled
-  // neutral ghost, so a full-red button never invites a click that has nothing
-  // to delete. v1.247.0 made it red unconditionally — the QA pass flagged that.
-  const ssDelBtn = c('button', { className: 'btn btn-ghost', type: 'button', disabled: true, onClick: () => {
-    const name = ssSelect.value;
-    if (!name) return;
-    window.ScanPrefs.removeSearch(name);
-    refreshSavedSearches('');
-    syncSsDelBtn();
-    UI.toast(t('scan.savedDeleted', 'Search deleted'), 'success');
-  } }, '🗑 ' + t('scan.deleteSearch', 'Delete'));
-  // Red only while a saved search is actually selected; the [aria-disabled]
-  // mirror keeps AT consistent with the disabled state.
-  function syncSsDelBtn() {
-    const armed = !!ssSelect.value;
-    ssDelBtn.classList.toggle('btn-danger', armed);
-    ssDelBtn.classList.toggle('btn-ghost', !armed);
-    ssDelBtn.disabled = !armed;
-    if (armed) ssDelBtn.removeAttribute('aria-disabled');
-    else ssDelBtn.setAttribute('aria-disabled', 'true');
+  filterSalaryAny.addEventListener('change', commit);
+  favOnly.addEventListener('change', commit);
+
+  // Restore a shared #/scan?… URL on load (filters + sort), before the
+  // first render reads the filter elements.
+  if (urlState.params) {
+    const restored = filtersApi.filtersFromUrl(window.location.hash || '');
+    if (restored) filtersApi.setFilterState(restored);
   }
-  ssSelect.addEventListener('change', syncSsDelBtn);
-  syncSsDelBtn();
-  const applyBtn = c('button', { className: 'btn btn-primary', type: 'button', id: 'scan-apply', onClick: applyFilters }, t('scan.applyFilters', 'Apply'));
-  const resetBtn = c('button', { className: 'btn btn-ghost', type: 'button', onClick: resetFilters }, t('scan.resetFilters', 'Reset'));
-  // Labelled field: the control is WRAPPED in a <label> (implicit association
-  // → accessible name for SR users, no id wiring needed). .field is a flex
-  // column so the caption text sits ABOVE the control.
-  const field = (labelText, el) => c('label', { className: 'field scan-field' }, [c('span', { className: 'scan-field__label' }, labelText), el]);
+  syncFilterBar();
 
-
-  // v1.83.0 — repost / ghost-posting detector.
-  // A collapsed panel that lazy-loads GET /api/scan/reposts on first open:
-  // company+role clusters re-listed under different URLs within a window =
-  // likely stale / ghost postings. CSP-safe (addEventListener, no innerHTML).
-  // v1.244.2 — styled disclosure header (.reposts-summary) carries a subtle
-  // cluster-count badge, filled in once the lazy fetch lands.
-  const repostsCount = c('span', { className: 'reposts-badge', hidden: '' });
-  const repostsBody = c('div', { className: 'reposts-body' });
-  const repostsPanel = c('details', { className: 'card mb-3 reposts' }, [
-    c('summary', { className: 'reposts-summary' }, [
-      c('span', null, '🔁 ' + t('scan.reposts.title', 'Reposted / ghost roles')),
-      repostsCount,
-    ]),
-    repostsBody,
-  ]);
-  let repostsLoaded = false;
-  repostsPanel.addEventListener('toggle', async () => {
-    if (!repostsPanel.open || repostsLoaded) return;
-    repostsLoaded = true;
-    // CAR-112 — shimmer rows instead of a bare «Loading…» text.
-    repostsBody.replaceChildren(window.Skeleton.block(4, t('common.loading', 'Loading…')));
-    try {
-      const d = await API.get('/api/scan/reposts');
-      repostsBody.textContent = '';
-      const clusters = Array.isArray(d.clusters) ? d.clusters : [];
-      // v1.244.2 — subtle count badge in the disclosure header.
-      if (clusters.length > 0) {
-        repostsCount.textContent = String(clusters.length);
-        repostsCount.hidden = false;
-      }
-      if (clusters.length === 0) {
-        repostsBody.appendChild(c('p', { className: 'muted' },
-          t('scan.reposts.empty', 'No reposted roles detected in scan history.')));
-        return;
-      }
-      repostsBody.appendChild(c('p', { className: 'muted' },
-        t('scan.reposts.intro', 'Roles re-listed under different URLs (possible stale / ghost postings):')));
-      repostsBody.appendChild(c('table', { className: 'tbl' }, [
-        c('thead', null, c('tr', null, [
-          c('th', null, t('scan.reposts.company', 'Company')),
-          c('th', null, t('scan.reposts.role', 'Role')),
-          c('th', null, t('scan.reposts.count', 'Reposts')),
-          c('th', null, t('scan.reposts.span', 'Span')),
-          c('th', null, t('scan.reposts.range', 'First → Last')),
-        ])),
-        c('tbody', null, clusters.map((cl) => c('tr', null, [
-          c('td', null, cl.company || ''),
-          c('td', null, cl.role || ''),
-          c('td', null, String(cl.repostCount || 0)),
-          c('td', null, (cl.daysSpan || 0) + 'd'),
-          c('td', null, (cl.firstSeen || '') + ' → ' + (cl.lastSeen || '')),
-        ]))),
-      ]));
-    } catch {
-      repostsBody.textContent = t('common.error', 'Error');
-    }
-  });
 
   // CAR-112 — the first paint shows shimmer rows instead of an empty table
   // while GET /api/scan-results is in flight; SR.render() replaces them when
@@ -593,6 +628,26 @@ Router.register('scan', async () => {
   resultsEl.replaceChildren(window.Skeleton.block(6, t('common.loading', 'Loading…')));
   // load results on first render
   refreshResults();
+
+  // CAR-115 extraction — page-level panels moved to scan/runner.js; scan.js
+  // keeps the literal tracked subscriptions the lifecycle test pins.
+  const repostsPanel = window.createRepostsPanel({ c, t });
+  const companiesPanel = window.createScanCompaniesPanel({
+    c, t,
+    companies,
+    apiCompanies,
+    SR,
+    portalsErr,
+    addRefreshListener: addScanRefreshListener,
+    onFilterByName: (name) => {
+      filterText.value = name;
+      commit();
+      filterText.scrollIntoView({ behavior: 'smooth', block: 'center' });
+    },
+  });
+  const { setLabel, refreshWorkdayChip, setApiCompanies, el: companiesSection } = companiesPanel;
+  addScanRefreshListener(setLabel);
+  addScanRefreshListener(refreshWorkdayChip);
 
   return c('div', null, [
     c('header', { className: 'page-header' }, [
@@ -650,273 +705,23 @@ Router.register('scan', async () => {
 
     c('section', { className: 'section' }, [
       c('h2', { className: 'section-title', style: { marginTop: 0 } }, t('scan.results')),
-      // v1.244.2 — the whole filter panel is one grid: the saved-searches
-      // row is a bordered sub-card spanning the top (grouped with the
-      // filters it configures), each filter is a small-caps label above a
-      // 40px full-width control, and the footer row keeps the hint LEFT
-      // and [Apply] primary + [Reset] ghost RIGHT on one baseline.
-      c('div', { className: 'scan-filters', role: 'group', 'aria-label': t('scan.filtersGroup', 'Result filters') }, [
-        c('div', { className: 'scan-filters__saved', role: 'group', 'aria-label': t('scan.savedSearches', 'Saved searches') },
-          [ssSelect, ssName, ssSaveBtn, ssDelBtn]),
-        field(t('scan.lblSearch', 'Search'), filterText),
-        field(t('scan.lblExclude', 'Exclude'), filterExclude),
-        field(t('scan.lblType', 'Work type'), filterRemote),
-        field(t('scan.salaryFrom', 'Salary from'), filterSalaryMin),
-        field(t('scan.salaryTo', 'Salary to'), filterSalaryMax),
-        field(t('scan.lblSource', 'Source'), filterSource),
-        field(t('scan.lblCountry', 'Country'), filterCountry),
-        field(t('scan.lblSeniority', 'Seniority'), filterSeniority),
-        field(t('scan.lblAge', 'Posted within'), filterAge),
-        field(t('scan.lblScope', 'Scope'), filterScope),
-        // v1.80.0 — ⭐ favorites-only toggle (labelled checkbox field).
-        c('label', { className: 'field scan-field', htmlFor: 'fav-only' }, [
-          c('span', { className: 'scan-field__label' }, t('scan.favOnly', '★ Favorites')),
-          c('span', { className: 'scan-checkline' }, [
-            favOnly,
-            c('span', { className: 'scan-checkline__hint' }, t('scan.favOnlyHint', 'starred only')),
-          ]),
-        ]),
-        // v1.148.0 — separated actions row. v1.244.2 — the footer spans the
-        // grid with the hint on the left and the buttons right on ONE
-        // baseline (.scan-filters__footer).
-        c('div', { className: 'scan-filters__footer' }, [
-          c('p', { className: 'field-hint scan-filters__hint' }, t('scan.filtersHint',
-            'Fill any boxes and press Apply. Salary from/to keeps only jobs whose pay overlaps your range — jobs with no listed salary are hidden once you set a salary. Amounts are compared as plain numbers (currency is ignored).')),
-          c('div', { className: 'scan-filters__actions' }, [applyBtn, resetBtn]),
-        ]),
-      ]),
-      // v1.244.0 — rows-per-page for the results pager (AC3); sits just
-      // above the table, outside the re-rendered #scan-results subtree.
+      // CAR-115 — ONE filter system: the live chip bar (search + popover
+      // filters, applied as you type/select — built by the filters.js
+      // factory) + saved-search preset chips. The old .scan-filters grid +
+      // Apply button is gone (acceptance: no Apply button; live chips).
+      filterBar.barEl,
+      presetsWrap,
+      // v1.244.0 — rows-per-page for the results pager (AC3) + the CAR-115
+      // density toggle; both sit above the table, outside the re-rendered
+      // #scan-results subtree.
       scanPagebar,
       resultsEl,
     ]),
 
-    (() => {
-      // Companies list — collapsed by default, expand on click, with a
-      // search filter + visual grouping by API support. 87 entries flat
-      // is overwhelming; this lets the user dive in only when needed.
-      const list = c('div', {
-        className: 'flex',
-        style: { flexWrap: 'wrap', gap: '8px', marginTop: '12px' },
-      });
-      const filterIn = c('input', {
-        className: 'input',
-        placeholder: t('scan.companiesFilter', 'Filter companies…'),
-        style: { maxWidth: '320px', marginTop: '12px', display: 'none' },
-      });
-      let expanded = false;
-      let query = '';
+    // CAR-115 — quick-view side panel + backdrop (fixed, one instance;
+    // the factory returns the [backdrop, panel] pair — spread it in).
+    ...quickView,
 
-      function rerender() {
-        list.innerHTML = '';
-        const q = query.trim().toLowerCase();
-        const matched = q
-          ? companies.filter((co) => (co.name || '').toLowerCase().includes(q))
-          : companies;
-        // Group: API-backed first, websearch-only second.
-        const apiSet = new Set(apiCompanies);
-        const apis = matched.filter((co) => apiSet.has(co));
-        const others = matched.filter((co) => !apiSet.has(co));
-        // Each company tag is a flex-row of two buttons:
-        //   1. Name button — clicking it pre-fills the results-table
-        //      filter with the company name (so the user immediately
-        //      sees that company's hits in the table above).
-        //   2. ↗ link button — only shown when careers_url is set;
-        //      opens the careers page in a new tab.
-        const tag = (co, hasApi) => {
-          const name = co.name || co;
-          const careersUrl = co.careers_url || co.careersUrl || (co._api && co._api.url);
-          const wrap = c('span', {
-            className: 'tag',
-            style: {
-              fontSize: '13px',
-              background: hasApi ? 'rgba(0,138,5,.10)' : 'var(--beach)',
-              color: hasApi ? 'var(--kazan)' : 'var(--foggy)',
-              padding: '4px 6px',
-              display: 'inline-flex',
-              alignItems: 'center',
-              gap: '4px',
-            },
-          });
-          const filterBtn = c('button', {
-            type: 'button',
-            title: t('scan.tagClickToFilter', 'Click to filter results by this company'),
-            style: {
-              background: 'transparent',
-              border: 'none',
-              color: 'inherit',
-              font: 'inherit',
-              padding: '2px 4px',
-              cursor: 'pointer',
-            },
-            onClick: () => {
-              filterText.value = name;
-              applyFilters();
-              filterText.scrollIntoView({ behavior: 'smooth', block: 'center' });
-            },
-          }, (hasApi ? '✓ ' : '○ ') + name);
-          wrap.appendChild(filterBtn);
-          if (careersUrl) {
-            const link = c('a', {
-              href: careersUrl,
-              target: '_blank',
-              rel: 'noopener noreferrer',
-              title: t('scan.tagOpenCareers', 'Open careers page in a new tab'),
-              style: {
-                textDecoration: 'none',
-                color: 'inherit',
-                opacity: 0.7,
-                padding: '0 2px',
-              },
-            }, '↗');
-            wrap.appendChild(link);
-          }
-          return wrap;
-        };
-        if (apis.length) {
-          const head = c('div', {
-            style: { width: '100%', fontSize: '12px', fontWeight: 600,
-              textTransform: 'uppercase', letterSpacing: '.04em',
-              color: 'var(--kazan)' },
-          }, '✓ ' + t('scan.apiBacked', 'Direct API') + ` · ${apis.length}`);
-          list.appendChild(head);
-          apis.forEach((co) => list.appendChild(tag(co, true)));
-        }
-        if (others.length) {
-          const head = c('div', {
-            style: { width: '100%', fontSize: '12px', fontWeight: 600,
-              textTransform: 'uppercase', letterSpacing: '.04em',
-              color: 'var(--foggy)', marginTop: apis.length ? '12px' : 0 },
-          }, '○ ' + t('scan.websearchBacked', 'Web-search only') + ` · ${others.length}`);
-          list.appendChild(head);
-          others.forEach((co) => list.appendChild(tag(co, false)));
-        }
-        if (matched.length === 0) {
-          list.appendChild(c('div', { style: { color: 'var(--foggy)' } }, t('common.empty', 'No results')));
-        }
-      }
-
-      // F-011: count companies that produced at least one hit in the
-      // last scan run. Updated after every refreshResults() via the
-      // setLabel closure below. Falls back to the static tracked count
-      // before the first scan completes.
-      // CAR-100 — the counter's two numbers must live in ONE universe.
-      // Rows arrive from every source a scan touched (an hh.ru / telegram
-      // run alone surfaces hundreds of employers no portals.yml entry
-      // names), so counting distinct row companies read 1554/90 on prod
-      // while the tooltip promises "configured in portals.yml". Pairing:
-      // numerator = distinct companies among rows the API-backed tracked
-      // scan itself fetched, matched against apiCompanies — the set the
-      // page already builds with isApiBackedCompany; denominator = those
-      // same API-backed enabled tracked companies. Row identity: the
-      // scanner stamps the portals entry name on every row it fetches
-      // (`_entry`; `company` on rows saved by older builds — the same
-      // `_entry ?? company` rule en-scanner's carry-over logic uses).
-      function activeFromLastScan() {
-        const rows = SR.getRows();
-        const tracked = new Set(
-          apiCompanies.map((co) => String((co && co.name) || '').toLowerCase()).filter(Boolean)
-        );
-        const seen = new Set();
-        for (const r of rows) {
-          if (!r || typeof r !== 'object') continue;
-          const name = r._entry ?? (r.company || r.companyName);
-          if (!name) continue;
-          const lc = String(name).toLowerCase();
-          if (tracked.has(lc)) seen.add(lc);
-        }
-        return seen.size;
-      }
-      const labelN = () => {
-        const fromScan = activeFromLastScan();
-        // CAR-100 — the pre-scan fallback reads the same universe as the
-        // denominator: companies.length also counts web-search-only entries
-        // and could even exceed apiCompanies.length (e.g. "104/90").
-        const n = fromScan > 0 ? fromScan : apiCompanies.length;
-        return `${n}/${apiCompanies.length}`;
-      };
-      const setLabel = () => {
-        toggleBtn.textContent = (expanded ? '▾ ' : '▸ ') + t('scan.activeCo') + ` ${labelN()}`;
-      };
-      const toggleBtn = c('button', {
-        className: 'btn btn-ghost btn-sm',
-        // U-6 (v1.58.26) — the chip read `✦ Active companies 96/80` —
-        // unclear what 96 vs 80 stood for. `title` is a hover tooltip
-        // (and screen-reader-fallback) explaining: N = companies
-        // currently surfacing results; M = companies configured in
-        // portals.yml. Localized via the new `scan.activeCo.help` key.
-        title: t('scan.activeCo.help', 'Active: companies currently surfacing results. Total: configured in portals.yml.'),
-        'aria-label': t('scan.activeCo.help', 'Active: companies currently surfacing results. Total: configured in portals.yml.'),
-        onClick: () => {
-          expanded = !expanded;
-          list.style.display = expanded ? '' : 'none';
-          filterIn.style.display = expanded ? '' : 'none';
-          setLabel();
-          if (expanded) rerender();
-        },
-      }, '▸ ' + t('scan.activeCo') + ` ${labelN()}`);
-      // Hook into the existing refreshResults() flow without restructuring
-      // the closure: every SR.render() call invalidates this counter,
-      // and SR.render() is itself called from refreshResults() right
-      // after the new /api/scan-results comes back. Re-stamp the label
-      // every time the SSE done event fires by listening to a custom
-      // event the page dispatches on body. v1.243.0 (views-3) — routed
-      // through the tracked helper so the listener is detached on route
-      // change (it used to accumulate one handler per #/scan visit).
-      addScanRefreshListener(setLabel);
-
-      filterIn.addEventListener('input', (e) => {
-        query = e.target.value;
-        rerender();
-      });
-      list.style.display = 'none';
-
-      // v1.17.0 — render a 🔒 chip when the server reports the most
-      // recent Workday fetch fell back (CAPTCHA / 4xx / non-JSON HTML).
-      // The /api/scan-results endpoint exposes workdayFallback as part
-      // of the latest snapshot. Empty when no fallback has occurred.
-      const wdFallback = c('div', {
-        id: 'workday-fallback-chip',
-        style: { display: 'none', marginBottom: '12px', padding: '8px 12px',
-          background: 'rgba(244, 173, 47, .12)', borderLeft: '3px solid var(--warn, #f4ad2f)',
-          borderRadius: '4px', fontSize: '13px' },
-      });
-      // Hook into the same refresh dispatch as Active Companies counter.
-      // Reads workdayFallback from /api/scan-results when it lands.
-      function refreshWorkdayChip() {
-        API.get('/api/scan-results').then((d) => {
-          const wf = d && d.workdayFallback;
-          if (!wf || !wf.apiUrl) {
-            wdFallback.style.display = 'none';
-            return;
-          }
-          const tenant = (wf.apiUrl.match(/https?:\/\/([^./]+)\./) || [, 'unknown'])[1];
-          wdFallback.innerHTML = '';
-          wdFallback.appendChild(c('strong', null, '🔒 ' + t('scan.workdayBlocked', 'Workday tenant blocked')));
-          wdFallback.appendChild(c('span', { style: { marginLeft: '8px', color: 'var(--foggy)' } },
-            `${tenant} · ${wf.reason} · ` + t('scan.workdayFallbackHint',
-              'fallback: use /career-ops scan (Playwright) for this tenant')));
-          wdFallback.style.display = '';
-        }).catch(() => { /* network blip — chip stays hidden */ });
-      }
-      // v1.243.0 (views-3) — tracked subscription (detached on route change);
-      // see addScanRefreshListener above.
-      addScanRefreshListener(refreshWorkdayChip);
-      // Initial check on page load so users who navigate to /#/scan after
-      // a prior session's blocked Workday see the chip immediately.
-      refreshWorkdayChip();
-
-      return c('div', { className: 'card mt-5' }, [
-        wdFallback,
-        portalsErr
-          ? c('div', { className: 'empty' }, [
-              c('strong', null, t('scan.failedPortals')),
-              c('p', { style: { color: 'var(--foggy)', marginTop: '8px' } }, portalsErr.message),
-            ])
-          : companies.length === 0
-          ? c('div', { className: 'empty' }, t('scan.allDisabled'))
-          : c('div', null, [toggleBtn, filterIn, list]),
-      ]);
-    })(),
+    companiesSection,
   ]);
 });

@@ -107,23 +107,28 @@ function* walkJs(dir) {
   }
 }
 
-// CAR-116 (#/pipeline v2) — new UI strings shipped with I18n.t + EN
-// fallbacks; the ×17 dictionary fan-out is a separate locale pass.
-// They are allowlisted HERE (not in the dicts) so the gate keeps
-// failing for any FUTURE ungated key. When the fan-out lands, delete
 // CAR-116 review round: the CAR116_PENDING coverage-gate allowlist is
 // GONE — all 17 new pipeline-v2 keys live in every locale dict like any
 // other key. A view may never ship EN-fallback-only strings again; the
 // hand-off comment in pipeline.js was removed with the fan-out.
 // CAR-119 — the review round fanned the 19 `llm2.*` kit strings out to all
 // 19 dicts (real translations), so NO exemption exists here again.
+// CAR-115 review round: same rule enforced — the 23 scan-v2 keys landed
+// in all 19 dicts with their fan-out (no pending allowlist), and the gate
+// below now also sees `tt(`-style helper calls so a local alias can never
+// hide a key from it again.
+// CAR-121 followed the same route: its 16 keys landed in all 19 dicts in
+// the same PR (opus review finding 1), so no pending allowlist exists.
+// CAR-125 followed the same protocol: its three map.list.* keys shipped
+// with the CAR125_PENDING allowlist, which was deleted when the ×19
+// dictionary fan-out landed (the CAR-125 review round).
 
 test('i18n: every t(key) call in public/js/** maps to a DICT entry', () => {
   // Match both t('key') and t("key"). Captures the key string.
   // Caveat: dynamic keys like t(`mode.${name}`) are not catchable
   //         statically and are skipped — view authors must ensure
   //         the template expansions are covered.
-  const callRx = /\bt\(\s*['"]([a-zA-Z0-9_.\-]+)['"]/g;
+  const callRx = /\bt{1,2}\(\s*['"]([a-zA-Z0-9_.\-]+)['"]/g;
   const usedKeys = new Set();
   const fileByKey = new Map();
   for (const file of walkJs(VIEWS_DIR)) {

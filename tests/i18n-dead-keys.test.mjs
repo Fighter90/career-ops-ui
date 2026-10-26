@@ -54,6 +54,9 @@ for (const m of sources.matchAll(/\+\s*['"`]((?:[\w-]+\.)+)['"`]/g)) DYN_PREFIXE
 // Template-literal prefixes: t(`diag.section.${k}`) — the prefix scan above
 // only sees `'x.' +` concatenation, so collect `` `x.${ `` too.
 for (const m of sources.matchAll(/['"`]([a-zA-Z][\w-]*(?:\.[\w-]+)+)\.\$\{/g)) DYN_PREFIXES.add(m[1] + '.');
+// CAR-115 review round: the CAR115_DEAD_PENDING allowance is GONE —
+// scan.applyFilters / scan.filtersHint were removed from all 19 locale
+// files together with the Apply button they labelled.
 
 test('the dictionary has zero dead keys (every key is referenced or an alias)', () => {
   const dict = loadAssembledDict();
