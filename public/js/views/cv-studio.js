@@ -8,6 +8,15 @@
  *   3. Make it human — LLM rewrite of a pasted chunk in the user's own voice,
  *      grounded server-side in voice-dna.md + writing-samples/ (never invents
  *      facts). Runs live with a key, or hands back a copy-paste prompt.
+ *
+ * CAR-119 — every live generation (humanize / tailor / add-entry) runs under
+ * the shared LlmPageKit run panel: synchronous progress paint, live
+ * elapsed/ETA, and Cancel wired to an AbortSignal over the POST.
+ * Deliberate template deviation (documented in the PR): CV Studio is a
+ * five-tool toolbox, so the kit's two-column form|result split does not
+ * apply — the run/progress/cancel component does, per tool.
+ * // CAR-119 i18n: no new dictionary keys — the kit's `llm2.*` strings ship
+ * as I18n.t EN fallbacks inside public/js/lib/llm-page-kit.js.
  */
 Router.register('cv-studio', async () => {
   const c = UI.el;
@@ -116,34 +125,37 @@ Router.register('cv-studio', async () => {
   humanIn.placeholder = t('cvs.humanPh', 'Paste a stiff line or paragraph from your CV to rewrite in your voice…');
   const humanBtn = c('button', { className: 'btn btn-primary', type: 'button' }, t('cvs.humanize', '✨ Make it human'));
   const humanOut = c('div', { style: { marginTop: '10px' } });
+  // CAR-119 — run/progress host for the humanize POST.
+  const humanRun = c('div');
   humanBtn.addEventListener('click', async () => {
     const text = humanIn.value.trim();
     if (text.length < 20) { UI.toast(t('cvs.needText', 'Paste at least ~20 characters'), 'error'); return; }
     humanBtn.disabled = true;
     humanOut.textContent = '';
-    const pending = c('div', { className: 'loading', style: { color: 'var(--foggy)' } }, t('cvs.rewriting', 'Rewriting in your voice…'));
-    humanOut.appendChild(pending);
+    const runCtrl = window.LlmPageKit.createRun({ etaSeconds: 30 }).mount(humanRun);
     try {
-      const res = await API.post('/api/cv-studio/humanize', { text, run: true });
-      pending.remove();
-      if (res.markdown) {
+      const res = await window.LlmPageKit.run({
+        run: runCtrl,
+        request: (signal) => window.LlmPageKit.postJSON('/api/cv-studio/humanize', { text, run: true }, signal),
+      });
+      if (runCtrl.cancelled || runCtrl.signal.aborted) return; // a cancelled run paints nothing more
+      if (res && res.markdown) {
         humanOut.appendChild(c('div', { className: 'card', style: { padding: '12px' } }, c('div', { className: 'md', html: UI.md(res.markdown) })));
       } else {
         const body = c('div', null, [
           c('p', { style: { margin: '0 0 10px', color: 'var(--foggy)' } }, t('cvs.humanManualHelp', 'No LLM key is set. Copy this prompt into any LLM, then paste the rewrite back into your CV.')),
-          c('textarea', { className: 'input', rows: '16', readonly: 'readonly', style: { width: '100%', fontFamily: 'monospace', fontSize: '12px' } }, res.prompt),
+          c('textarea', { className: 'input', rows: '16', readonly: 'readonly', style: { width: '100%', fontFamily: 'monospace', fontSize: '12px' } }, res && res.prompt),
         ]);
         UI.modal(t('cvs.humanize', '✨ Make it human'), body);
       }
     } catch (err) {
-      pending.remove();
       UI.toast((err && err.message) || t('cvs.humanFailed', 'Could not rewrite the text'), 'error');
     } finally { humanBtn.disabled = false; }
   });
   root.appendChild(c('div', { className: 'card', style: { padding: '16px', margin: '0 0 8px' } }, [
     c('h2', { style: { fontSize: '15px', margin: '0 0 4px' } }, t('cvs.humanTitle', 'Make it human')),
     c('p', { style: { fontSize: '12px', color: 'var(--foggy)', margin: '0 0 10px' } }, t('cvs.humanHelp', 'Rewrite generic AI phrasing in your own voice — grounded in your voice-dna and writing samples. It never invents facts.')),
-    humanIn, c('div', { style: { marginTop: '8px' } }, humanBtn), humanOut,
+    humanIn, c('div', { style: { marginTop: '8px' } }, humanBtn), humanRun, humanOut,
   ]));
 
   // ── 4. Tailor to a job — résumé + cover letter with a checklist gate ──
@@ -153,18 +165,22 @@ Router.register('cv-studio', async () => {
   headIn.placeholder = t('cvs.tailorHeadPh', 'Optional: target role / headline (e.g. "Senior Backend Engineer")');
   const tailorBtn = c('button', { className: 'btn btn-primary', type: 'button' }, t('cvs.tailorBtn', '🎯 Tailor résumé + cover letter'));
   const tailorOut = c('div', { style: { marginTop: '10px' } });
+  // CAR-119 — run/progress host for the tailor POST.
+  const tailorRun = c('div');
 
   tailorBtn.addEventListener('click', async () => {
     const jd = jdIn.value.trim();
     if (jd.length < 40) { UI.toast(t('cvs.tailorNeedJd', 'Paste the job description (~40+ characters) first'), 'error'); return; }
     tailorBtn.disabled = true;
     tailorOut.textContent = '';
-    const pending = c('div', { className: 'loading', style: { color: 'var(--foggy)' } }, t('cvs.tailoring', 'Tailoring and running the checklist gate…'));
-    tailorOut.appendChild(pending);
+    const runCtrl = window.LlmPageKit.createRun({ etaSeconds: 60 }).mount(tailorRun);
     try {
-      const res = await API.post('/api/cv-studio/tailor', { jd, headline: headIn.value.trim(), run: true });
-      pending.remove();
-      if (res.markdown) {
+      const res = await window.LlmPageKit.run({
+        run: runCtrl,
+        request: (signal) => window.LlmPageKit.postJSON('/api/cv-studio/tailor', { jd, headline: headIn.value.trim(), run: true }, signal),
+      });
+      if (runCtrl.cancelled || runCtrl.signal.aborted) return; // a cancelled run paints nothing more
+      if (res && res.markdown) {
         const md = res.markdown;
         const card = c('div', { className: 'card', style: { padding: '12px' } }, [
           c('div', { className: 'md', html: UI.md(md) }),
@@ -174,12 +190,11 @@ Router.register('cv-studio', async () => {
       } else {
         const body = c('div', null, [
           c('p', { style: { margin: '0 0 10px', color: 'var(--foggy)' } }, t('cvs.tailorManualHelp', 'No LLM key is set. Copy this prompt into any LLM, then paste the tailored résumé + cover letter back.')),
-          c('textarea', { className: 'input', rows: '16', readonly: 'readonly', style: { width: '100%', fontFamily: 'monospace', fontSize: '12px' } }, res.prompt),
+          c('textarea', { className: 'input', rows: '16', readonly: 'readonly', style: { width: '100%', fontFamily: 'monospace', fontSize: '12px' } }, res && res.prompt),
         ]);
         UI.modal(t('cvs.tailorBtn', '🎯 Tailor résumé + cover letter'), body);
       }
     } catch (err) {
-      pending.remove();
       UI.toast((err && err.message) || t('cvs.tailorFailed', 'Could not tailor the application'), 'error');
     } finally { tailorBtn.disabled = false; }
   });
@@ -187,7 +202,7 @@ Router.register('cv-studio', async () => {
   root.appendChild(c('div', { className: 'card', style: { padding: '16px', margin: '18px 0 8px' } }, [
     c('h2', { style: { fontSize: '15px', margin: '0 0 4px' } }, t('cvs.tailorTitle', 'Tailor to a job')),
     c('p', { style: { fontSize: '12px', color: 'var(--foggy)', margin: '0 0 10px' } }, t('cvs.tailorHelp', 'Paste a job description and get a résumé tailored to it plus a matching cover letter — run through a recruiter-grade checklist gate (errors block, warnings advise). Grounded only in your own CV, profile, and two-pager; it never fabricates.')),
-    jdIn, headIn, c('div', { style: { marginTop: '8px' } }, tailorBtn), tailorOut,
+    jdIn, headIn, c('div', { style: { marginTop: '8px' } }, tailorBtn), tailorRun, tailorOut,
   ]));
 
   // ── 5. Add to CV (v1.117.0) ──
@@ -200,6 +215,8 @@ Router.register('cv-studio', async () => {
   addTextIn.placeholder = t('cvs.addTextPh', '…or paste the project/publication description here');
   const addBtn = c('button', { className: 'btn btn-primary', type: 'button' }, t('cvs.addBtn', '➕ Suggest CV bullets'));
   const addOut = c('div', { style: { marginTop: '10px' } });
+  // CAR-119 — run/progress host for the add-entry POST.
+  const addRun = c('div');
 
   addBtn.addEventListener('click', async () => {
     const url = addUrlIn.value.trim();
@@ -207,12 +224,14 @@ Router.register('cv-studio', async () => {
     if (!url && text.length < 80) { UI.toast(t('cvs.addNeedSrc', 'Give a URL or paste ~80+ characters of source text first'), 'error'); return; }
     addBtn.disabled = true;
     addOut.textContent = '';
-    const pending = c('div', { className: 'loading', style: { color: 'var(--foggy)' } }, t('cvs.adding', 'Reading the source and drafting grounded bullets…'));
-    addOut.appendChild(pending);
+    const runCtrl = window.LlmPageKit.createRun({ etaSeconds: 40 }).mount(addRun);
     try {
-      const res = await API.post('/api/cv-studio/add-entry', { url, text, run: true });
-      pending.remove();
-      if (res.markdown) {
+      const res = await window.LlmPageKit.run({
+        run: runCtrl,
+        request: (signal) => window.LlmPageKit.postJSON('/api/cv-studio/add-entry', { url, text, run: true }, signal),
+      });
+      if (runCtrl.cancelled || runCtrl.signal.aborted) return; // a cancelled run paints nothing more
+      if (res && res.markdown) {
         addOut.appendChild(c('div', { className: 'card', style: { padding: '12px' } }, [
           c('div', { className: 'md', html: UI.md(res.markdown) }),
           c('p', { style: { fontSize: '12px', color: 'var(--foggy)', margin: '10px 0 0' } },
@@ -221,11 +240,10 @@ Router.register('cv-studio', async () => {
       } else {
         UI.modal(t('cvs.addTitle', 'Add to CV'), c('div', null, [
           c('p', { style: { margin: '0 0 10px', color: 'var(--foggy)' } }, t('cvs.addManualHelp', 'No LLM key is set. Copy this prompt into any LLM, then review the bullets it returns.')),
-          c('textarea', { className: 'input', rows: '16', readonly: 'readonly', style: { width: '100%', fontFamily: 'monospace', fontSize: '12px' } }, res.prompt),
+          c('textarea', { className: 'input', rows: '16', readonly: 'readonly', style: { width: '100%', fontFamily: 'monospace', fontSize: '12px' } }, res && res.prompt),
         ]));
       }
     } catch (err) {
-      pending.remove();
       UI.toast((err && err.message) || t('cvs.addFailed', 'Could not draft bullets from that source'), 'error');
     } finally { addBtn.disabled = false; }
   });
@@ -233,7 +251,7 @@ Router.register('cv-studio', async () => {
   root.appendChild(c('div', { className: 'card', style: { padding: '16px', margin: '18px 0 8px' } }, [
     c('h2', { style: { fontSize: '15px', margin: '0 0 4px' } }, t('cvs.addTitle', 'Add to CV')),
     c('p', { style: { fontSize: '12px', color: 'var(--foggy)', margin: '0 0 10px' } }, t('cvs.addHelp', 'Point at a project, publication, or portfolio page (URL or pasted text) and get ATS-ready bullet points grounded ONLY in that source — never invented. You review and paste them into your CV yourself; nothing is written automatically.')),
-    addUrlIn, addTextIn, c('div', { style: { marginTop: '8px' } }, addBtn), addOut,
+    addUrlIn, addTextIn, c('div', { style: { marginTop: '8px' } }, addBtn), addRun, addOut,
   ]));
 
   // ── 6. Skill gap vs a saved JD ──
