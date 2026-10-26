@@ -446,32 +446,197 @@ export function addPipelineUrl(text, url, opts = {}) {
 }
 
 /**
- * Remove a URL from pipeline.md.
+ * CAR-151 — removePipelineUrl's lossless twin: the same matching, the same
+ * updated text, plus the RAW lines that were dropped, so an undo can put
+ * them back content-faithfully (the bare addPipelineUrl re-add loses a
+ * checklist row's `| company | title | …` cells).
  */
-export function removePipelineUrl(text, url) {
+export function removePipelineUrlExtract(text, url) {
   // Only a URL token can name a pipeline row — never drop a comment line.
-  if (!text || typeof url !== 'string' || !(url.startsWith('http') || url.startsWith('local:'))) return text;
+  if (!text || typeof url !== 'string' || !(url.startsWith('http') || url.startsWith('local:'))) {
+    return { updated: text, removedLines: [] };
+  }
+  const removedLines = [];
   if (isChecklistPipeline(text)) {
-    return text
+    const updated = text
       .split('\n')
-      .filter((l) => !(UNCHECKED_ROW.test(l.trim()) && lineUrl(l) === url))
+      .filter((l) => {
+        if (UNCHECKED_ROW.test(l.trim()) && lineUrl(l) === url) { removedLines.push(l); return false; }
+        return true;
+      })
       .join('\n');
+    return { updated, removedLines };
   }
   // Drop only the matching raw lines — other rows keep their `| comp` column
-  // and any non-URL line survives. Returns `text` unchanged when nothing
-  // matched, so callers can detect a no-op with `updated === text`.
+  // and any non-URL line survives. `updated === text` ⇔ nothing matched
+  // (a filter that removes nothing rejoins to the identical string), so
+  // callers can detect a no-op without consulting removedLines.
   const dropMatching = (block) => block
     .split('\n')
-    .filter((l) => lineUrl(l) !== url)
+    .filter((l) => {
+      if (lineUrl(l) === url) { removedLines.push(l); return false; }
+      return true;
+    })
     .join('\n');
   const fenceMatch = text.match(/```([\s\S]*?)```/);
   if (fenceMatch) {
     const inner = dropMatching(fenceMatch[1]);
-    if (inner === fenceMatch[1]) return text;
-    return text.replace(/```[\s\S]*?```/, () => '```' + inner + '```');
+    if (inner === fenceMatch[1]) return { updated: text, removedLines: [] };
+    return { updated: text.replace(/```[\s\S]*?```/, () => '```' + inner + '```'), removedLines };
   }
   const updated = dropMatching(text);
-  return updated === text ? text : updated;
+  return updated === text ? { updated: text, removedLines: [] } : { updated, removedLines };
+}
+
+/**
+ * Remove a URL from pipeline.md.
+ */
+export function removePipelineUrl(text, url) {
+  return removePipelineUrlExtract(text, url).updated;
+}
+
+/** Any `- [ ]` / `- [x]` row prefix (checklist pipeline rows). */
+const ANY_CHECK_ROW = /^-\s+\[[ xX]\]\s+/;
+
+/**
+ * The URL token of a pipeline line in either written form. Finding 4
+ * (review r2): the SAME tokenizer the removal path uses — lineUrl, after
+ * stripping either check-row prefix — so a dedup key computed here is
+ * always a key parsePipeline would compute too.
+ */
+function pipelineRowUrl(line) {
+  return lineUrl(line.replace(ANY_CHECK_ROW, ''));
+}
+
+/**
+ * Adapt a raw line to the checklist row shape. A line that already IS an
+ * unchecked row is used verbatim — the content-faithful path. Anything
+ * else (a fenced `url | comp` line restored after a format switch) is
+ * converted the way addPipelineUrl writes compensation — a labeled
+ * `note: comp` segment — so the parent reading columns positionally never
+ * takes a trailing cell for the company or title. The cells join with `; `
+ * (review finding 2): no `|` separators that could re-introduce columns.
+ */
+function toChecklistRow(line) {
+  if (UNCHECKED_ROW.test(line)) return line;
+  const cells = line.replace(ANY_CHECK_ROW, '').split(/\s+\|\s+/).map((s) => s.trim());
+  const comp = sanitizePipelineComp(cells.slice(1).join('; '));
+  return `- [ ] ${cells[0]}${comp ? ` | note: comp ${comp}` : ''}`;
+}
+
+/**
+ * Append raw lines to a fenced / bare-URL pipeline, in the same shapes
+ * addPipelineUrl writes (in-fence append, bare append, fenced skeleton) —
+ * ONE splice for the whole batch.
+ */
+function addRawPipelineLines(text, lines) {
+  const block = lines.join('\n');
+  const fenceMatch = text.match(/```([\s\S]*?)```/);
+  if (fenceMatch) {
+    const inner = fenceMatch[1].trimEnd();
+    // Replacer FUNCTION: a replacement string would expand `$&` / `$'` /
+    // `$$` inside the lines and corrupt the file (same trap addPipelineUrl
+    // documents).
+    return text.replace(/```[\s\S]*?```/, () => '```' + inner + '\n' + block + '\n```');
+  }
+  const hasLines = text.split('\n').some((l) => {
+    const u = lineUrl(l);
+    return u.startsWith('http') || u.startsWith('local:');
+  });
+  // trimEnd(), not /\s+$/ — linear on large files (review finding 9).
+  if (hasLines) return text.trimEnd() + '\n' + block + '\n';
+  return (
+    (text || '# Pipeline — Pending URLs\n\nDrop job URLs (one per line) here.\n\n') +
+    '```\n' +
+    block +
+    '\n```\n'
+  );
+}
+
+/**
+ * CAR-151 — lossless undo. Reinsert RAW pipeline lines exactly as
+ * removePipelineUrlExtract returned them, so a checklist row's cells
+ * (`- [ ] url | company | title | location | notes…`) survive an undo —
+ * which the bare addPipelineUrl re-add loses.
+ *
+ * CONTENT-faithful, not byte-faithful (review finding 10): the cells come
+ * back exactly, but rows re-insert at the END of the Pending section /
+ * fence (not their old position) and stray indentation is trimmed.
+ *
+ * Per line: a single line whose URL token (lineUrl — the removal
+ * tokenizer, review finding 4) is an http(s)/`local:` URL WITHOUT
+ * whitespace, no fence-breaking ```, at most 2000 chars; anything else is
+ * refused — counted, never written. A line whose canonical URL key is
+ * already present (pending OR processed) is skipped as a dup, mirroring
+ * addPipelineUrl, so an undo stays idempotent when the URL was re-added
+ * meanwhile. Duplicates WITHIN the batch are not collapsed: removing a
+ * duplicated row took both lines, undo puts both back.
+ *
+ * Format choice (review finding 3): decided from the file first, but a
+ * checklist-shaped removed line forces the checklist path when the file
+ * itself no longer shows it (e.g. the deleted row was the only
+ * `- [ ]` feature) — a fence still wins, so a Pending section is never
+ * spliced into a fenced file.
+ *
+ * The whole batch inserts in ONE splice (review finding 11) — no
+ * per-line full-file rewrites.
+ *
+ * Optional `opts.validate` overrides the row-token gate (for callers
+ * restoring UNTRUSTED content; the route feeds back the server's own
+ * stored lines and passes no validator). Returns
+ * { updated, restored, deduped, refused }.
+ */
+export function restorePipelineLines(text, lines, opts = {}) {
+  const validate = typeof opts.validate === 'function'
+    ? opts.validate
+    : (s) => /^(https?:\/\/|local:)/i.test(s);
+  const base = typeof text === 'string' ? text : '';
+  const incoming = Array.isArray(lines) ? lines : [];
+  const checklist = isChecklistPipeline(base)
+    || (!base.includes('```') && incoming.some((l) => typeof l === 'string' && UNCHECKED_ROW.test(l.trim())));
+  // Dedup keys of the file BEFORE this restore — anything re-added between
+  // the delete and the undo must not be duplicated by it. Covers the fence
+  // lines and, in checklist mode (no fence by definition), the processed
+  // `[x]` rows too.
+  const known = new Set();
+  const fenceMatch = base.match(/```([\s\S]*?)```/);
+  const block = fenceMatch ? fenceMatch[1] : base;
+  for (const l of block.split('\n')) {
+    const u = pipelineRowUrl(l.trim());
+    if (u.startsWith('http') || u.startsWith('local:')) known.add(normalizeUrl(u) || u);
+  }
+
+  const rows = [];
+  let restored = 0;
+  let deduped = 0;
+  let refused = 0;
+  for (const raw of incoming) {
+    const line = typeof raw === 'string' ? raw.trim() : '';
+    // Row/fence-injection guards: one line, one token, no fence breaker.
+    if (!line || /[\r\n]/.test(line) || line.includes('```') || line.length > 2000) {
+      refused += 1;
+      continue;
+    }
+    const token = pipelineRowUrl(line);
+    if (!token || /\s/.test(token)
+      || !(token.startsWith('http') || token.startsWith('local:'))
+      || !validate(token)) {
+      refused += 1;
+      continue;
+    }
+    if (known.has(normalizeUrl(token) || token)) {
+      deduped += 1;
+      continue;
+    }
+    rows.push(checklist ? toChecklistRow(line) : line.replace(ANY_CHECK_ROW, '').trim());
+    restored += 1;
+  }
+  // One splice for the whole batch: addChecklistRow splices its argument
+  // verbatim before the next heading, so the joined rows are one insert.
+  const updated = rows.length
+    ? (checklist ? addChecklistRow(base, rows.join('\n')) : addRawPipelineLines(base, rows))
+    : base;
+  return { updated, restored, deduped, refused };
 }
 
 /**

@@ -27,10 +27,11 @@
  *   node scripts/wiki-banner-check.mjs --check-only   (offline: no clone)
  *
  * Exit 0 = every Home page matches; exit 1 = mismatches listed; exit 2 =
- * wiki checkout absent under --check-only.
+ * wiki checkout absent under --check-only, or a refusal to clone into an
+ * existing non-empty --wiki path (FULL-R3: a typoed --wiki is never wiped).
  */
 
-import { readdirSync, existsSync, readFileSync, rmSync } from 'node:fs';
+import { readdirSync, existsSync, readFileSync } from 'node:fs';
 import { join, resolve } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { fileURLToPath } from 'node:url';
@@ -97,7 +98,13 @@ async function main() {
       process.exit(2);
     }
     console.error(`cloning wiki into ${wikiDir} …`);
-    rmSync(wikiDir, { recursive: true, force: true });
+    // FULL-R3: a typoed --wiki (~/code, .) must never be wiped to make room
+    // for the clone. The target must not exist, or be an empty directory —
+    // an existing non-empty path is refused, never rmSync'd.
+    if (existsSync(wikiDir) && readdirSync(wikiDir).length > 0) {
+      console.error(`refusing: ${wikiDir} already exists and is not empty — the --wiki clone target must not exist (or be an empty directory); nothing was deleted`);
+      process.exit(2);
+    }
     execFileSync('git', ['clone', '-q', 'https://github.com/Fighter90/career-ops-ui.wiki', wikiDir], { stdio: 'inherit' });
   }
 
