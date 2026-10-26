@@ -19,6 +19,14 @@
 import { cpSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync, existsSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import {
+  PAGE_BYTES,
+  PAGE_MAX_RELEASES,
+  buildMonthIndex,
+  chunkByWeight,
+  splitReleases,
+  stripLeadingH1,
+} from './lib/changelog-split.mjs';
 
 const SITE = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const ROOT = resolve(SITE, '..');
@@ -71,9 +79,7 @@ function rewriteLinks(md) {
 
 // The site page supplies its own <h1> (HelpArticle.astro); the guide's title
 // line would render a second one (CAR-132 — exactly one h1 per page).
-function stripLeadingH1(md) {
-  return md.replace(/^#[ \t]+[^\n]*\n+/, '');
-}
+// stripLeadingH1 comes from scripts/lib/changelog-split.mjs (behavior-tested).
 
 for (const f of helpFiles) {
   const md = readFileSync(join(helpSrc, f), 'utf8');
@@ -92,9 +98,8 @@ console.log(`[sync-assets] ${helpFiles.length} help guides -> src/content/help/`
 // paragraph (patch releases) to several KB (trains), and CJK/Devanagari
 // locales carry ~2× the bytes per release. 100 KB of md ≈ ≤190 KB of built
 // HTML at the worst observed expansion (1.9×) — comfortably under the
-// 250 KB/page gate in scripts/check-dist.mjs.
-const PAGE_BYTES = 100 * 1024;
-const PAGE_MAX_RELEASES = 80; // secondary cap so tiny releases still paginate
+// 250 KB/page gate in scripts/check-dist.mjs. (PAGE_BYTES /
+// PAGE_MAX_RELEASES live in scripts/lib/changelog-split.mjs.)
 const clDst = join(SITE, 'src', 'content', 'changelog');
 mkdirSync(clDst, { recursive: true });
 const GH_ROOT_BASE = `${REPO_URL}/blob/main/`;
@@ -105,75 +110,26 @@ function rewriteRootLinks(md) {
   });
 }
 
-// Release sections start at a top-level `## [<version>] — YYYY-MM-DD` line.
-// Fenced code blocks (test transcripts in older entries) are skipped so a
-// `##` line inside them is never mistaken for a section boundary. The
-// translated changelogs carry UNDATED top-level "## Older versions" summary
-// sections (es/fr/ko) — those fold into the PRECEDING release's chunk, so
-// the site renders the file in its exact order and nothing disappears; an
-// undated H2 BEFORE the first release is a parse drift and fails loudly.
-const RELEASE_HEADING_RE = /^##\s+\[[^\]]+\]\s*[—–-]\s*(\d{4})-(\d{2})-\d{2}/;
+// splitReleases / chunkByWeight / buildMonthIndex come from
+// scripts/lib/changelog-split.mjs (behavior-tested by
+// tests/site-changelog-split.test.mjs): Keep-a-Changelog `## [Unreleased]`
+// becomes a page-1 pseudo-release, fence closers must match their opening
+// marker, undated epilogues fold into the preceding chunk, and the month
+// index records pages [first, last] across chunk boundaries.
 
-function splitReleases(md, lang) {
-  const releases = [];
-  let current = null;
-  let inFence = false;
-  for (const line of md.split('\n')) {
-    if (/^\s*(```|~~~)/.test(line)) inFence = !inFence;
-    if (!inFence && /^##\s/.test(line) && RELEASE_HEADING_RE.test(line)) {
-      // The heading line itself is the release's rendered title — keep it.
-      current = [line];
-      releases.push({ ym: line.match(RELEASE_HEADING_RE).slice(1).join('-'), lines: current });
-      continue;
-    }
-    if (current === null) {
-      if (!inFence && /^##\s/.test(line)) {
-        fail(`[${lang}] changelog has a top-level "## " section without a parsable "[version] — YYYY-MM-DD" date before the first release: "${line.slice(0, 80)}" — it would silently vanish from the site`);
-      }
-      continue; // preamble (title + intro + translation links) — dropped on purpose
-    }
-    current.push(line);
-  }
-  return releases;
-}
-
-const clIndex = {}; // lang -> { pages, months: [{ ym, page, count }] }
+const clIndex = {}; // lang -> { pages, months: [{ ym, page, lastPage, count }] }
 const clFiles = readdirSync(ROOT).filter((f) => /^CHANGELOG(\.[A-Za-z-]+)?\.md$/.test(f));
 if (clFiles.length < 18) fail(`expected >=18 CHANGELOG files, found ${clFiles.length}`);
-// The sync owns this directory — clear stale files from previous formats.
-for (const stale of readdirSync(clDst)) rmSync(join(clDst, stale));
-
-function chunkByWeight(releases) {
-  const pages = [];
-  let cur = [];
-  let bytes = 0;
-  for (const r of releases) {
-    const size = Buffer.byteLength(r.lines.join('\n'), 'utf8');
-    if (cur.length > 0 && (bytes + size > PAGE_BYTES || cur.length >= PAGE_MAX_RELEASES)) {
-      pages.push(cur);
-      cur = [];
-      bytes = 0;
-    }
-    cur.push(r);
-    bytes += size;
-  }
-  if (cur.length > 0) pages.push(cur);
-  return pages;
-}
+// The sync owns this directory — clear stale files from previous formats
+// (recursive: a stray subdirectory must not EISDIR the prebuild).
+rmSync(clDst, { recursive: true, force: true });
+mkdirSync(clDst, { recursive: true });
 
 for (const f of clFiles) {
   const lang = f === 'CHANGELOG.md' ? 'en' : f.replace(/^CHANGELOG\./, '').replace(/\.md$/, '');
-  const releases = splitReleases(readFileSync(join(ROOT, f), 'utf8'), lang);
+  const releases = splitReleases(readFileSync(join(ROOT, f), 'utf8'), { lang, fail });
   const chunks = chunkByWeight(releases);
-  const months = [];
-  chunks.forEach((chunk, p) => {
-    for (const r of chunk) {
-      const last = months[months.length - 1];
-      if (last && last.ym === r.ym) last.count += 1;
-      else months.push({ ym: r.ym, page: p + 1, count: 1 });
-    }
-  });
-  clIndex[lang] = { pages: chunks.length, months };
+  clIndex[lang] = { pages: chunks.length, months: buildMonthIndex(chunks) };
   chunks.forEach((chunk, p) => {
     const body = chunk.map((r) => r.lines.join('\n')).join('\n');
     writeFileSync(join(clDst, `${lang}-p${String(p + 1).padStart(2, '0')}.md`), rewriteRootLinks(`${body.trimStart()}\n`));
@@ -242,12 +198,18 @@ if (scanSources.length !== adapters) {
 // 2026-10-26 — stale badges are acceptable there), so read the count from
 // docs/sdd/CONVENTIONS.md's "Current count as of **vX**: **N**" line, which
 // the release train updates every release. The badge stays as a fallback;
-// when neither parses, `tests` is null and the landing hides the stat
-// instead of shipping a stale number.
-const conventions = readFileSync(join(ROOT, 'docs', 'sdd', 'CONVENTIONS.md'), 'utf8');
-const convMatch = conventions.match(/Current count as of \*\*v[\d.]+\*\*: \*\*(\d+)\*\*/);
-const readme = readFileSync(join(ROOT, 'README.md'), 'utf8');
-const testsMatch = readme.match(/badge\/tests-(\d+)%20passed/);
+// when neither parses (or the file is absent — e.g. a site-only checkout),
+// `tests` is null and the landing hides the stat instead of shipping a stale
+// number.
+let convMatch = null;
+const conventionsPath = join(ROOT, 'docs', 'sdd', 'CONVENTIONS.md');
+if (existsSync(conventionsPath)) {
+  convMatch = readFileSync(conventionsPath, 'utf8').match(/Current count as of \*\*v[\d.]+\*\*: \*\*(\d+)\*\*/);
+}
+const readmePath = join(ROOT, 'README.md');
+const testsMatch = existsSync(readmePath)
+  ? readFileSync(readmePath, 'utf8').match(/badge\/tests-(\d+)%20passed/)
+  : null;
 const tests = convMatch ? Number(convMatch[1]) : testsMatch ? Number(testsMatch[1]) : null;
 
 // LLM providers: the canonical auto-order roster in env-config.mjs (v1.216.0 —
