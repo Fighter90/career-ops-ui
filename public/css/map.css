@@ -140,10 +140,13 @@ body.job-map-active .docs-fab { display: none; }
 .v2-map-chip:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
 
 /* Layout: the map and the bounds-synced side list share one row on
-   desktop; the list matches the map's own height formula. */
+   desktop; the list matches the map's own height formula. Review f9:
+   the basis is shrinkable (`0 1`) with a 260px floor — at 901–1100px
+   the list narrows first and the map keeps ~600px+ (the rigid
+   `flex: 0 0 320px` squeezed the map to ~500px). */
 .v2-map-layout { display: flex; gap: 12px; align-items: stretch; }
 .v2-map-layout .job-map-wrap { flex: 1 1 auto; min-width: 0; }
-.v2-map-list { display: flex; flex-direction: column; flex: 0 0 320px; min-height: 360px; max-height: calc(100vh - 390px); border: 1px solid var(--slate); border-radius: 12px; background: var(--paper); color: var(--hof); overflow: hidden; }
+.v2-map-list { display: flex; flex-direction: column; flex: 0 1 320px; min-width: 260px; min-height: 360px; max-height: calc(100vh - 390px); border: 1px solid var(--slate); border-radius: 12px; background: var(--paper); color: var(--hof); overflow: hidden; }
 .v2-map-list-head { display: flex; flex: none; align-items: center; gap: 8px; padding: 10px 12px; border-bottom: 1px solid var(--slate); font-size: 13px; }
 .v2-map-list-head strong { flex: 1; }
 .v2-map-list-count { color: var(--foggy); font-weight: 700; font-variant-numeric: tabular-nums; }

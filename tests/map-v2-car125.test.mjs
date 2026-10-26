@@ -50,10 +50,12 @@ const CLUSTER = (() => {
   const ctx = vm.createContext({ Math });
   vm.runInContext(sliceFn(MAP, 'function clusterRadius'), ctx);
   vm.runInContext(sliceFn(MAP, 'function clusterTier'), ctx);
+  vm.runInContext(sliceFn(MAP, 'function spiral'), ctx);
   vm.runInContext(sliceFn(MAP, 'function clusterMarkers'), ctx);
   return {
     radius: vm.runInContext('clusterRadius', ctx),
     tier: vm.runInContext('clusterTier', ctx),
+    spiral: vm.runInContext('spiral', ctx),
     markers: vm.runInContext('clusterMarkers', ctx),
   };
 })();
@@ -132,8 +134,77 @@ test('CAR-125: the view drives clustering from zoom level and redraws per zoom',
     'one pure call site; high zoom keeps singletons separable, low zoom clusters harder');
   assert.match(MAP, /map\.on\('zoomend overlayadd overlayremove', render\);/,
     'clusters re-form per zoom level');
-  assert.match(MAP, /const r = 16 \* Math\.sqrt\(i\);/,
-    'the same-coordinate spiral clears the widest singleton pair (2×12px + pad)');
+  assert.match(MAP, /const r = 30 \* Math\.sqrt\(i\);/,
+    'the same-coordinate spiral clears BOTH the pass-1 solo distance and the widest singleton pair');
+});
+
+// CAR-125 review f1 — spiral(1) used to sit at 16px: inside soloPx (23/26),
+// so two jobs sharing one geocoded place centre (the common fallback) stayed
+// one cluster at EVERY zoom and only the best was ever reachable.
+test('CAR-125 review f1: n postings at one coordinate spread into n markers', () => {
+  for (const soloPx of [23, 26]) {
+    for (const n of [2, 5, 12]) {
+      const pts = Array.from({ length: n }, (_, i) => {
+        const [dx, dy] = CLUSTER.spiral(i);
+        return pt(500 + dx, 500 + dy, { rank: n - i });
+      });
+      pts.sort((a, b) => b.rank - a.rank);
+      const groups = CLUSTER.markers(pts, { soloPx });
+      assert.equal(groups.length, n,
+        `${n} same-coordinate postings must never merge (soloPx ${soloPx})`);
+      for (let i = 0; i < groups.length; i++) {
+        for (let j = i + 1; j < groups.length; j++) {
+          const d = Math.hypot(groups[i].px.x - groups[j].px.x, groups[i].px.y - groups[j].px.y);
+          assert.ok(d > 12 + 12 + 4, `spread siblings ${d.toFixed(1)}px apart must clear the widest singleton pair`);
+        }
+      }
+    }
+  }
+});
+
+// CAR-125 review f2 — the old `guard < 100` sweep cap silently exited with
+// overlaps on viewports needing >100 folds, and truncated the guarantee.
+test('CAR-125 review f2: a dense 500-point viewport folds to zero overlapping pairs', () => {
+  const pts = [];
+  // A tight 22px lattice (inside every merge threshold) plus a jitter ring.
+  for (let gx = 0; gx < 25; gx++) {
+    for (let gy = 0; gy < 20; gy++) pts.push(pt(gx * 22, gy * 22, { filled: (gx + gy) % 4 === 0, rank: gx * gy }));
+  }
+  for (let i = 0; i < 100; i++) pts.push(pt(600 + i * 17, 500 + (i % 11) * 21, { rank: 10_000 + i }));
+  pts.sort((a, b) => b.rank - a.rank);
+  for (const soloPx of [23, 26]) {
+    const groups = CLUSTER.markers(pts, { soloPx });
+    assert.equal(groups.reduce((s, g) => s + g.members.length, 0), pts.length);
+    for (let i = 0; i < groups.length; i++) {
+      for (let j = i + 1; j < groups.length; j++) {
+        const a = groups[i]; const b = groups[j];
+        const d = Math.hypot(a.px.x - b.px.x, a.px.y - b.px.y);
+        const need = drawnRadius(a) + drawnRadius(b) + 4;
+        assert.ok(d > need, `fold cap left markers ${d.toFixed(1)}px apart (need > ${need}) at soloPx ${soloPx}`);
+      }
+    }
+  }
+});
+
+// CAR-125 review f5 — pass-2 concat put a pending-ring job first in folded
+// groups, so the cluster drew an EVALUATED posting with pending styling.
+test('CAR-125 review f5: folds keep rank order and re-anchor on the best member', () => {
+  // Big low-ranked pending crowd + a high-ranked evaluated singleton 20px
+  // away — they conflict (18 + 12 + 4 > 20) and must fold.
+  const pts = [
+    pt(0, 0, { filled: false, rank: 1 }),
+    pt(24, 0, { filled: false, rank: 0 }),
+    pt(20, 0, { filled: true, rank: 500 }),
+  ];
+  pts.sort((a, b) => b.rank - a.rank);
+  const groups = CLUSTER.markers(pts, { soloPx: 26 });
+  assert.equal(groups.length, 1, 'the conflicting trio folds into one cluster');
+  const g = groups[0];
+  assert.equal(g.members.length, 3);
+  assert.equal(g.members[0].filled, true, 'the evaluated posting stays the cluster best');
+  assert.equal(g.members[0].rank, 500);
+  assert.equal(g.px.x, g.members[0].px.x, 'the anchor rides the best member position');
+  assert.equal(g.px.y, g.members[0].px.y);
 });
 
 test('CAR-125: the side list is synchronised with the visible bounds', () => {
@@ -143,6 +214,16 @@ test('CAR-125: the side list is synchronised with the visible bounds', () => {
     'list membership is a pure bounds check over already-loaded points (no refetch)');
   assert.match(MAP, /const LIST_CAP = \d+;/, 'the list is capped, not unbounded');
   assert.match(MAP, /b\.rank - a\.rank/, 'the list is sorted best-first');
+});
+
+// CAR-125 review f3 — the old signature (`length|firstLatLon|lastLatLon`)
+// served STALE rows: same-sized same-place sets under different filters
+// left it unchanged, so the list showed the PREVIOUS filter's jobs.
+test('CAR-125 review f3: the rebuild memo compares point identity, not geometry', () => {
+  assert.match(MAP, /p\.tid \?\?= \+\+tidSeq/, 'every point carries a stable identity token');
+  assert.match(MAP, /lastListIds && lastListIds\.length === ids\.length\s*&&\s*ids\.every\(\(id, i\) => lastListIds\[i\] === id\)/,
+    'the memo is an ordered identity comparison');
+  assert.doesNotMatch(MAP, /lat\.toFixed\(4\)/, 'the geometry signature is gone');
 });
 
 test('CAR-125: the side list is the keyboard-accessible path (a11y)', () => {
@@ -164,6 +245,21 @@ test('CAR-125: filter chips replace the select (single filter system)', () => {
   assert.match(MAP, /target_roles/, 'specialization chips still come from the settings');
   assert.doesNotMatch(MAP, /job-map-spec-select/, 'the select is gone, not duplicated');
   assert.match(MAP, /\(\(profile \|\| \{\}\)\.summary \|\| \{\}\)\.target_roles/, 'fed from /api/profile summary');
+});
+
+// CAR-125 review f6 — a stale/tampered localStorage value (`"3.5"`, NaN)
+// used to seed minScore: a silent filter with no active chip, and NaN
+// comparisons are always false. Only the shipped bands may pass.
+test('CAR-125 review f6: minScore only accepts the shipped score bands', () => {
+  assert.match(MAP, /let minScore = mapPrefs\.scoreMin == null \? null\n\s*: SCORE_BANDS\.includes\(Number\(mapPrefs\.scoreMin\)\) \? Number\(mapPrefs\.scoreMin\) : null;/,
+    'band whitelist at the single init site');
+});
+
+// CAR-125 review f7 — «+N more» rendered FIRST (before the rows).
+test('CAR-125 review f7: the «+N more» row closes the list, it does not open it', () => {
+  assert.match(MAP, /listRows\.replaceChildren\(\.\.\.inView\.slice\(0, LIST_CAP\)\.map\(rowFor\), listMore\)/,
+    'rows first, the more-row last');
+  assert.doesNotMatch(MAP, /replaceChildren\(listMore, \.\.\./, 'the old leading position is gone');
 });
 
 test('CAR-125: "Without a location" is clickable and leads to scan', () => {
@@ -188,4 +284,12 @@ test('CAR-125: map.css gains the v2 surface (append-only, v2-map-prefixed)', () 
     'on phones the list is a bottom sheet over the full-screen map');
   assert.match(CSS, /@media \(max-width: 900px\) \{[\s\S]*\.v2-map-list-toggle \{[^}]*display: inline-flex/,
     'the mobile list toggle is a real control');
+});
+
+// CAR-125 review f9 — `flex: 0 0 320px` squeezed the map to ~500px at
+// 901–1100px. The list must shrink first, with a floor.
+test('CAR-125 review f9: the side list yields width to the map before the floor', () => {
+  assert.match(CSS, /\.v2-map-list \{[^}]*flex: 0 1 320px;[^}]*min-width: 260px;/,
+    'shrinkable basis + a 260px floor keeps the map ≥ ~600px at 901px');
+  assert.doesNotMatch(CSS, /\.v2-map-list \{[^}]*flex: 0 0 320px;/, 'the rigid basis is gone');
 });

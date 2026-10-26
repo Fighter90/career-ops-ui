@@ -103,13 +103,14 @@
   }
 
   // Golden-angle spiral, in pixels so the spread is the same at every zoom.
-  // CAR-125: the base radius grew 11 → 16 so same-coordinate siblings are
-  // ≥ ~36px apart — wider than the two widest singleton markers (12px
-  // each) plus the conflict pad, so a spread never re-merges.
+  // CAR-125 review f1: the base radius must clear the pass-1 solo distance
+  // (26px) AND the widest singleton pair (2×12px + pad = 28px) — at 30px two
+  // postings sharing one geocoded place centre (the common fallback) are
+  // never re-merged, so both stay reachable at every zoom.
   function spiral(i) {
     if (i === 0) return [0, 0];
     const a = i * 2.39996;
-    const r = 16 * Math.sqrt(i);
+    const r = 30 * Math.sqrt(i);
     return [r * Math.cos(a), r * Math.sin(a)];
   }
 
@@ -152,13 +153,17 @@
    * the CURRENT zoom) so no two drawn markers overlap, at any zoom.
    *
    * Pass 1 — greedy place-or-join: a point joins the first group of the
-   * SAME KIND whose anchor is within `soloPx` (anchors never move, so the
-   * evaluated/pending separation survives whenever geometry allows).
-   * Pass 2 — conflict resolution: while any two groups' anchors sit closer
-   * than the sum of their drawn radii + pad, the smaller group folds into
-   * the larger. The loop terminates stable, which IS the guarantee: every
-   * returned anchor is pairwise farther from every other than
-   * radius(a) + radius(b) + pad.
+   * SAME KIND whose anchor is within `soloPx` (anchors never move here, so
+   * the evaluated/pending separation survives whenever geometry allows).
+   * Pass 2 — conflict resolution, sweeps bounded by points.length: each
+   * sweep folds EVERY conflicting pair (the smaller group into the larger,
+   * whose anchor then re-anchors on its best member). Total folds ≤ n−1
+   * (each fold removes one group), so a bound of n sweeps can never
+   * truncate while a conflict remains — the loop exits only when no pair
+   * of anchors sits closer than radius(a) + radius(b) + pad. That exit
+   * condition IS the no-overlap guarantee; the CAR-125 review f2 cap
+   * (`guard < 100`) that could leave overlaps on a dense city viewport is
+   * gone.
    *
    * Pure: no Leaflet, no DOM — dist/radius are plain Math over px.
    */
@@ -173,20 +178,25 @@
       if (hit) hit.members.push(p);
       else groups.push({ px: { x: p.px.x, y: p.px.y }, kind: p.filled, members: [p] });
     }
-    for (let merged = true, guard = 0; merged && guard < 100; guard++) {
-      merged = false;
-      for (let i = 0; i < groups.length && !merged; i++) {
+    for (let sweep = 0; sweep <= points.length; sweep++) {
+      let merged = false;
+      for (let i = 0; i < groups.length; i++) {
         for (let j = i + 1; j < groups.length; j++) {
           const a = groups[i]; const b = groups[j];
           if (dist(a, b) > radiusOf(a.members.length) + radiusOf(b.members.length) + pad) continue;
           const big = a.members.length >= b.members.length ? a : b;
           const small = big === a ? b : a;
-          big.members = big.members.concat(small.members);
+          // f5: the folded members re-sort best-first and the anchor rides
+          // the best member's position, so the cluster always represents
+          // (colour, label, ring/fill, peek) its highest-ranked posting.
+          big.members = big.members.concat(small.members).sort((x, y) => y.rank - x.rank);
+          big.px = { x: big.members[0].px.x, y: big.members[0].px.y };
           groups.splice(groups.indexOf(small), 1);
           merged = true;
-          break;
+          j = i; // re-scan the slot: `big` grew, neighbours may now conflict
         }
       }
+      if (!merged) break;
     }
     return groups;
   }
@@ -359,11 +369,8 @@
     // refetch). Desktop: a panel beside the map. Phone: a bottom sheet over
     // the full-screen map, opened by the floating toggle — the keyboard-
     // accessible path to every marker, clusters included.
-    // CAR-125 i18n (EN fallbacks shipped; ×19 dict fan-out pending, gated by
-    // CAR125_PENDING in tests/i18n-coverage.test.mjs):
-    //   map.list.title 'Jobs in view'
-    //   map.list.empty 'Nothing in view — pan the map or zoom out.'
-    //   map.list.more  'more in view'
+    // i18n: map.list.title / map.list.empty / map.list.more live in all 19
+    // locale dicts (the fan-out landed with the review round).
     const listCount = c('span', { className: 'v2-map-list-count' }, '0');
     const listRows = c('ol', { className: 'v2-map-list-rows' }, []);
     const listEmpty = c('p', { className: 'v2-map-list-empty', hidden: true }, t('map.list.empty', 'Nothing in view — pan the map or zoom out.'));
@@ -423,7 +430,11 @@
       // config/profile.yml → target_roles.primary (loaded from /api/profile).
       let specialization = '';
       // CAR-125 — the chip-driven score band (was the sheet's select).
-      let minScore = mapPrefs.scoreMin == null ? null : Number(mapPrefs.scoreMin);
+      // Review f6: only the shipped bands pass — a stale or tampered
+      // localStorage value ("3.5", NaN) must not seed a silent filter that
+      // no chip reflects.
+      let minScore = mapPrefs.scoreMin == null ? null
+        : SCORE_BANDS.includes(Number(mapPrefs.scoreMin)) ? Number(mapPrefs.scoreMin) : null;
       let specKeywords = {}; // specialization name -> its token list
       // v1.251.1 — seniority and generic job nouns never single-handedly
       // match a specialization: «Senior PHP Developer» matched «Senior Java
@@ -457,14 +468,16 @@
           // own wording.
         }
         // CAR-125 — the specialization chips: one chip per configured role
-        // plus the «All» reset chip. aria-pressed carries the state; the
-        // click handlers bind below, after paintChips exists.
+        // plus the «All» reset chip (always rendered — review f8). With no
+        // roles configured (or /api/profile failed) the All chip would be a
+        // dead control, so the whole group hides instead.
         specChips.replaceChildren(
           c('button', { className: 'v2-map-chip v2-map-chip-any', type: 'button', 'aria-pressed': 'true' },
             t('map.filter.specAny', 'All specializations')),
           ...Object.keys(specKeywords).map((name) =>
             c('button', { className: 'v2-map-chip', type: 'button', 'aria-pressed': 'false', 'data-spec': name }, name)),
         );
+        specChips.hidden = !Object.keys(specKeywords).length;
       }
       const tiles = jobs.tiles || {};
       // CAR-57 (v1.247.0) — theme-aware basemap. If the server has a
@@ -646,7 +659,8 @@
       const markerByPoint = new Map();
       const markerElByPoint = new Map();
       let ranked = []; // every passing point, best-first (the list filters it by bounds)
-      let lastListSig = null; // syncList's skip-rebuild memo
+      let tidSeq = 0; // review f3 — stable per-point identity for the list memo
+      let lastListIds = null; // review f3 — the ordered identities last drawn
       function register(m, members) {
         const el = (m.getElement ? m.getElement() : null) || m._path || null;
         for (const p of members) {
@@ -725,20 +739,20 @@
           inView = ranked.filter((p) => b.contains([p.lat, p.lon]));
         } catch { return; } // the map is already disposed
         // The geocode storm calls update() (→ here) per lookup; rebuilding
-        // ≤200 rows on every tick is waste. Membership only grows while
-        // lookups land, so length + the sorted first/last rows are a cheap
-        // "did the visible set change" memo (filters and pans change both).
-        const sig = inView.length + '|'
-          + (inView.length ? inView[0].lat.toFixed(4) + ',' + inView[0].lon.toFixed(4) : '-')
-          + '|'
-          + (inView.length ? inView[inView.length - 1].lat.toFixed(4) + ',' + inView[inView.length - 1].lon.toFixed(4) : '-');
-        if (sig === lastListSig) return;
-        lastListSig = sig;
+        // ≤200 rows on every tick is waste. The memo is the ordered point
+        // IDENTITY (review f3): the old geometry signature (length + first/
+        // last lat/lon) stayed unchanged when two same-sized sets shared a
+        // place centre, so the list kept showing the PREVIOUS filter's jobs.
+        const ids = inView.map((p) => (p.tid ??= ++tidSeq));
+        const same = lastListIds && lastListIds.length === ids.length
+          && ids.every((id, i) => lastListIds[i] === id);
+        if (same) return;
+        lastListIds = ids;
         listCount.textContent = String(inView.length);
         listEmpty.hidden = inView.length > 0;
         listMore.hidden = inView.length <= LIST_CAP;
         if (inView.length > LIST_CAP) listMore.textContent = '+' + (inView.length - LIST_CAP) + ' ' + t('map.list.more', 'more in view');
-        listRows.replaceChildren(listMore, ...inView.slice(0, LIST_CAP).map(rowFor));
+        listRows.replaceChildren(...inView.slice(0, LIST_CAP).map(rowFor), listMore);
       }
       listToggle.addEventListener('click', () => {
         const opening = !listPanel.classList.contains('is-open');
