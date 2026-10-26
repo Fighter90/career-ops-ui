@@ -45,8 +45,16 @@
   // SECOND paid run start while the first was still in flight. The abort
   // also stops the spend server-side (the route threads the client
   // disconnect into the provider call).
+  // FULL-R5 (review 5) — the run promise itself lives at module scope:
+  // closing modal A aborts its run, but `running` cleared only in the async
+  // finally, so the reopen's autoStart setTimeout(0) hit `if (running)
+  // return` SILENTLY and left the fresh modal inert. A start landing on an
+  // in-flight run now awaits its settlement (at most ONE queued start,
+  // latest URL wins) instead of silently dropping.
   let running = false;
   let currentAbort = null;
+  let runPromise = null;
+  let pendingStart = null;
 
   function urlIsValid(url) {
     if (typeof url !== 'string') return false;
@@ -123,12 +131,39 @@
       renderTimeline();
     }
 
-    // v1.16.0 — orchestration now runs server-side via POST /api/auto-pipeline
-    // SSE. Client only drains the event stream and updates UI state.
+    // v1.16.0 — orchestration runs server-side via POST /api/auto-pipeline.
+    // FULL-R5 (review 5) — the drain is the shared API.postStream transport
+    // (Accept-Language header, one well-formed error contract, multi-line
+    // `data:` join, AbortSignal), replacing this file's private SSE-parser
+    // copy, and a start landing on an in-flight run WAITS for its
+    // settlement instead of silently returning (the reopen race above).
     async function start(url) {
-      if (running) return; // CAR-94 (6) — one paid run at a time across modals
+      if (runPromise) {
+        pendingStart = url; // at most one queued start; latest wins
+        while (runPromise) {
+          try { await runPromise; } catch { /* the owning start renders its own error */ }
+        }
+        if (pendingStart !== url) return; // a newer queued start owns the slot
+        pendingStart = null;
+      }
       running = true;
       currentAbort = new AbortController();
+      const abort = currentAbort;
+      const p = run(url, abort);
+      runPromise = p;
+      try {
+        await p;
+      } finally {
+        if (runPromise === p) runPromise = null;
+        running = false;
+        if (currentAbort === abort) currentAbort = null;
+      }
+    }
+
+    // One run against its own AbortController. Per-modal DOM (timeline,
+    // buttons) is touched here; the single-flight bookkeeping stays in
+    // start().
+    async function run(url, abort) {
       timelineRoot.style.display = '';
       resultRoot.style.display = 'none';
       startBtn.disabled = true;
@@ -142,93 +177,49 @@
         setStep(0, 'running');
         setStep(0, 'failed', t('auto.invalidUrl', 'invalid URL'));
         startBtn.disabled = false; urlInput.disabled = false;
-        running = false; currentAbort = null;
         return;
       }
 
+      let terminal = false;
+      const onEvent = (ev, data) => {
+        switch (ev) {
+          case 'start':
+            // already rendered the empty timeline; nothing to do.
+            break;
+          case 'step':
+            setStep(data.i, data.status, data.detail || '');
+            break;
+          case 'done':
+            state.score = data.score;
+            state.legitimacy = data.legitimacy || '';
+            state.company = data.company || '';
+            state.role = data.role || '';
+            state.slug = data.slug || '';
+            state.reportPath = data.reportPath || '';
+            state.trackerNum = data.trackerNum || '';
+            terminal = true;
+            renderResult();
+            break;
+          case 'error':
+            terminal = true;
+            renderError(data.step, data.message);
+            break;
+        }
+      };
       try {
-        const lang = (I18n && I18n.getLang && I18n.getLang()) || 'en';
-        const resp = await fetch('/api/auto-pipeline', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ url, lang }),
-          signal: currentAbort.signal, // CAR-94 (6) — modal close aborts the run
-        });
-        if (!resp.ok || !resp.body) {
-          setStep(0, 'failed', 'HTTP ' + resp.status);
-          startBtn.disabled = false; urlInput.disabled = false;
-          return;
-        }
-        const reader = resp.body.getReader();
-        const dec = new TextDecoder();
-        let buf = '';
-        let terminal = false;
-        // One SSE frame (block between blank lines) → state update. Extracted
-        // so the end-of-stream flush below can process the final frame too.
-        const handleFrame = (p) => {
-          const evMatch = p.match(/^event:\s*([\w-]+)/m);
-          // v1.22.0 (L-4) — per SSE spec, an event may carry multiple
-          // `data:` lines; the consumer concatenates them with "\n".
-          // Today the server sends single-line JSON, so the old
-          // single-match worked — but it would silently drop the
-          // 2nd+ line of any multi-line payload. Join all `data:`
-          // lines for the event block before parsing.
-          const dataLines = [];
-          for (const line of p.split('\n')) {
-            const m = line.match(/^data:\s?(.*)$/);
-            if (m) dataLines.push(m[1]);
-          }
-          if (!evMatch || dataLines.length === 0) return;
-          const dataRaw = dataLines.join('\n');
-          let data; try { data = JSON.parse(dataRaw); } catch { data = {}; }
-          switch (evMatch[1]) {
-            case 'start':
-              // already rendered the empty timeline; nothing to do.
-              break;
-            case 'step':
-              setStep(data.i, data.status, data.detail || '');
-              break;
-            case 'done':
-              state.score = data.score;
-              state.legitimacy = data.legitimacy || '';
-              state.company = data.company || '';
-              state.role = data.role || '';
-              state.slug = data.slug || '';
-              state.reportPath = data.reportPath || '';
-              state.trackerNum = data.trackerNum || '';
-              terminal = true;
-              renderResult();
-              break;
-            case 'error':
-              terminal = true;
-              renderError(data.step, data.message);
-              break;
-          }
-        };
-        while (!terminal) {
-          const { value, done } = await reader.read();
-          if (done) break;
-          buf += dec.decode(value, { stream: true });
-          const parts = buf.split('\n\n'); buf = parts.pop();
-          for (const p of parts) handleFrame(p);
-        }
-        // Stream end: flush the decoder and the trailing buffer. A server
-        // that writes the terminal frame without a trailing blank line (or
-        // whose last chunk is split mid-JSON) used to leave that frame
-        // unprocessed — the modal rendered NOTHING (no result, no error).
-        buf += dec.decode();
-        if (buf.trim()) handleFrame(buf);
+        // CAR-94 (6) — modal close aborts the run: the signal stops the
+        // drain AND the server-side spend (the route threads the client
+        // disconnect into the provider call).
+        await API.postStream('/api/auto-pipeline', { url }, onEvent, abort.signal);
         // CAR-94 (6) — a stream that ends WITHOUT a done/error frame used to
         // leave the timeline on "running" forever with a disabled button and
         // no explanation. Any non-aborted end must land in a terminal state.
-        if (!terminal && !currentAbort.signal.aborted) renderError('network', t('common.error', 'Error'));
+        if (!terminal && !abort.signal.aborted) renderError('network', t('common.error', 'Error'));
       } catch (e) {
         // CAR-94 (6) — a deliberate modal-close abort paints nothing: the
         // modal is gone and a fresh one must open clean.
-        if (!currentAbort.signal.aborted) renderError('network', e.message || 'network error');
+        if (!abort.signal.aborted) renderError('network', e.message || 'network error');
       } finally {
-        running = false;
-        currentAbort = null;
         startBtn.disabled = false; urlInput.disabled = false;
       }
     }
@@ -269,8 +260,10 @@
 
     // CAR-94 (6) — the close hook (Esc / backdrop / ×) aborts the in-flight
     // run: the SSE fetch carries currentAbort's signal, so the request — and
-    // the server-side spend — stop with the modal. The module-scope running
-    // flag then frees the next open() to start a fresh run.
+    // the server-side spend — stop with the modal. FULL-R5 — a start that
+    // lands while that abort unwinds awaits its settlement (module-scope
+    // runPromise) instead of silently returning, so a reopened modal always
+    // runs.
     UI.modal(t('auto.title', '✨ Auto-pipeline a URL'), c('div', null, [
       c('p', { style: { color: 'var(--foggy)' } },
         t('auto.intro', "Paste a job URL — we'll fetch the JD, evaluate it against your CV, save a report, and add a row to your tracker.")),

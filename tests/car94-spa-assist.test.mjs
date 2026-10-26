@@ -201,18 +201,24 @@ test('CAR-94.5: mode-page submit checks the same single-flight + stale-token sha
 
 // ── 6 — auto-pipeline: module single-flight, abort on close, silent end ─────
 
-test('CAR-94.6: auto-pipeline single-flight + abort live at module scope, modal close aborts, silent stream end renders an error', () => {
+test('CAR-94.6 + FULL-R5: auto-pipeline single-flight + abort live at module scope, modal close aborts, silent stream end renders an error, a queued start waits instead of silently returning', () => {
   const iifeIdx = AUTO_PIPE.indexOf('(function () {');
   const openIdx = AUTO_PIPE.indexOf('function open(opts)');
   const runIdx = AUTO_PIPE.indexOf('let running = false;');
   const abortIdx = AUTO_PIPE.indexOf('let currentAbort = null;');
+  const promiseIdx = AUTO_PIPE.indexOf('let runPromise = null;');
   assert.ok(runIdx > iifeIdx && runIdx < openIdx, 'the running flag must outlive one modal instance');
   assert.ok(abortIdx > iifeIdx && abortIdx < openIdx, 'the abort handle must outlive one modal instance');
+  assert.ok(promiseIdx > iifeIdx && promiseIdx < openIdx,
+    'the run PROMISE must outlive one modal instance (FULL-R5 reopen race)');
 
   const start = sliceFn(AUTO_PIPE, 'async function start(url)');
-  assert.match(start, /if \(running\) return;/, 'a second paid run must be refused while one streams');
-  assert.match(start, /signal: currentAbort\.signal/, 'the fetch must carry the abort signal');
-  assert.match(start, /if \(!terminal && !currentAbort\.signal\.aborted\) renderError\('network'/,
+  assert.match(start, /if \(runPromise\)/,
+    'a start landing on an in-flight run must await its settlement, not silently return (FULL-R5)');
+  assert.match(start, /pendingStart/,
+    'at most ONE start queues behind the in-flight run, latest URL wins');
+  assert.match(AUTO_PIPE, /abort\.signal/, 'the fetch must carry the abort signal');
+  assert.match(AUTO_PIPE, /if \(!terminal && !abort\.signal\.aborted\) renderError\('network'/,
     'a stream that ends without done/error must land in a terminal error state, not run forever');
 
   const open = sliceFn(AUTO_PIPE, 'function open(opts)');

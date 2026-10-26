@@ -1,14 +1,19 @@
 /**
- * CAR-18 / client-libs-1 [M] — auto-pipeline SSE drain must flush the final
- * buffered frame when the stream ends.
+ * CAR-18 / client-libs-1 + FULL-R5 — the SSE terminal-frame flush lives in
+ * the SHARED transport (API.postStream), and auto-pipeline drains through
+ * it.
  *
- * Pre-fix `start()` looped `reader.read()` and split on '\n\n', keeping the
- * tail in `buf`. A server that writes the terminal frame WITHOUT a trailing
- * blank line (or whose last chunk is split mid-JSON) ends the stream with
- * that frame still unprocessed → the modal renders NOTHING: no result card,
- * no error, buttons re-enabled into a dead-end.
+ * Pre-fix auto-pipeline looped `reader.read()` over its own private parser
+ * and kept the tail in `buf`. A server that writes the terminal frame
+ * WITHOUT a trailing blank line (or whose last chunk is split mid-JSON)
+ * ended the stream with that frame unprocessed → the modal rendered
+ * NOTHING: no result card, no error, buttons re-enabled into a dead-end.
+ * The flush was added to auto-pipeline's private copy in CAR-18; FULL-R5
+ * migrates the lib onto API.postStream and moves the flush into the shared
+ * transport so every consumer gets it.
  *
- * Contract under test:
+ * Contract under test (through the REAL api.js postStream over a stubbed
+ * fetch — no network, no server):
  *   1. A `done` frame that arrives without a trailing '\n\n' is processed on
  *      stream end → the result card renders (company/score/tracker links).
  *   2. A `done` frame SPLIT across two reads is processed too (decode +
@@ -21,8 +26,7 @@
  *      the controls.
  *
  * auto-pipeline.js is a browser classic script → loaded with a synthetic
- * UI (same pattern as tests/countries.test.mjs); the SSE transport is an
- * injected ReadableStream-shaped fetch stub — no network, no server.
+ * UI + the real api.js (whose postStream is the transport under test).
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -31,6 +35,7 @@ import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const API_SRC = readFileSync(resolve(ROOT, 'public/js/api.js'), 'utf8');
 const SRC = readFileSync(resolve(ROOT, 'public/js/lib/auto-pipeline.js'), 'utf8');
 
 function mkEl(tag) {
@@ -44,9 +49,11 @@ function mkEl(tag) {
     disabled: false,
     innerHTML: '',
     textContent: '',
+    attrs: {},
     _handlers: {},
     appendChild(ch) { this.children.push(ch); return ch; },
     addEventListener(type, fn) { this._handlers[type] = fn; },
+    setAttribute(k, v) { this.attrs[k] = v; },
     click() { this._handlers.click && this._handlers.click({ preventDefault() {}, stopPropagation() {} }); },
   };
 }
@@ -58,47 +65,58 @@ function makeEnv(frames) {
     created.push(e);
     for (const [k, v] of Object.entries(attrs || {})) {
       if (k === 'style') Object.assign(e.style, v);
+      else if (k === 'className') e.className = v;
       else if (k === 'onClick') e.addEventListener('click', v);
-      else e[k] = v;
+      else if (v !== false && v != null) e.setAttribute(k, v);
     }
     const kids = children == null ? [] : (Array.isArray(children) ? children : [children]);
     for (const kid of kids) if (kid) e.children.push(kid);
     return e;
   };
   let modalBody = null;
-  const env = {
-    w: {
-      UI: {
-        el,
-        modal: (title, body) => { modalBody = body; return { close() {} }; },
-      },
-      API: {},
-      I18n: { t: (k, f) => (f === undefined ? k : f), getLang: () => 'en' },
-      fetch: async () => {
-        const enc = new TextEncoder();
-        let i = 0;
-        return {
-          ok: true,
-          body: {
-            getReader: () => ({
-              read: async () => (i < frames.length
-                ? { done: false, value: enc.encode(frames[i++]) }
-                : { done: true }),
-            }),
-          },
-        };
-      },
+
+  // The real api.js, loaded over a ReadableStream-shaped fetch stub.
+  const enc = new TextEncoder();
+  let i = 0;
+  const fetchImpl = async () => ({
+    ok: true,
+    body: {
+      getReader: () => ({
+        read: async () => (i < frames.length
+          ? { done: false, value: enc.encode(frames[i++]) }
+          : { done: true }),
+      }),
     },
-    created,
+  });
+  const doc = {
+    title: '',
+    addEventListener() {}, removeEventListener() {},
+    getElementById: () => null,
+    createElement: (tag) => mkEl(tag),
+    querySelectorAll: () => [],
+    execCommand: () => true,
+  };
+  const w = { location: { hash: '#/' }, addEventListener() {} };
+  const setTimeoutNoop = () => 0;
+  // eslint-disable-next-line no-new-func
+  new Function('window', 'document', 'fetch', 'EventSource', 'MutationObserver', 'setTimeout', 'clearTimeout', API_SRC)(
+    w, doc, fetchImpl, function () { this.close = () => {}; }, function () { this.disconnect = () => {}; },
+    setTimeoutNoop, setTimeoutNoop,
+  );
+  w.I18n = { t: (k, f) => (f === undefined ? k : f), getLang: () => 'en' };
+
+  // auto-pipeline realm — the real lib over the real API.postStream.
+  const apW = {
+    UI: { el, modal: (title, body) => { modalBody = body; return { close() {} }; } },
+    API: w.API,
+    I18n: w.I18n,
   };
   // eslint-disable-next-line no-new-func
   new Function('window', 'console', 'UI', 'API', 'I18n', 'fetch', SRC)(
-    env.w, { warn() {}, error() {} },
-    env.w.UI, env.w.API, env.w.I18n, env.w.fetch,
+    apW, { warn() {}, error() {} }, apW.UI, apW.API, apW.I18n, fetchImpl,
   );
-  env.w.AutoPipeline.open({ prefillUrl: 'https://jobs.example.com/123', autoStart: true });
-  env.modalBody = () => modalBody;
-  return env;
+  apW.AutoPipeline.open({ prefillUrl: 'https://jobs.example.com/123', autoStart: true });
+  return { created, modalBody: () => modalBody };
 }
 
 // The modal body is [intro <p>, controls <div>, timelineRoot, resultRoot].
