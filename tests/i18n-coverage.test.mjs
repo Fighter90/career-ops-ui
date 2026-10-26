@@ -122,23 +122,9 @@ function* walkJs(dir) {
 // CAR-125 followed the same protocol: its three map.list.* keys shipped
 // with the CAR125_PENDING allowlist, which was deleted when the ×19
 // dictionary fan-out landed (the CAR-125 review round).
-// CAR-122 (sidebar v2) — the same protocol, round three: the launch
-// button, palette chrome and favorites controls ship EN-fallback-first
-// (public/js/lib/nav-v2.js); the ×19 dictionary fan-out is a follow-up
-// locale pass. Delete CAR122_PENDING when it lands.
-const CAR122_PENDING = new Set([
-  'nav.group.favorites', // Favorites
-  'nav.v2.palette', // Command menu (dialog aria-label)
-  'nav.v2.paletteLabel', // Jump to… (launch button + input placeholder)
-  'nav.v2.recent', // Recent
-  'nav.v2.pin', // Pin to favorites
-  'nav.v2.unpin', // Remove from favorites
-  'nav.v2.moveUp', // Move up
-  'nav.v2.moveDown', // Move down
-  'nav.v2.noResults', // Nothing found
-  'nav.v2.hint', // ↑↓ navigate · Enter open · Esc close
-  'nav.v2.evalUrl', // Auto-pipeline: {url}
-]);
+// CAR-122 followed it too: its 11 sidebar-v2 keys (nav.group.favorites +
+// nav.v2.*) landed in all 19 dicts in the same PR (opus review finding 1),
+// so no pending allowlist exists here either.
 
 test('i18n: every t(key) call in public/js/** maps to a DICT entry', () => {
   // Match both t('key') and t("key"). Captures the key string.
@@ -159,7 +145,6 @@ test('i18n: every t(key) call in public/js/** maps to a DICT entry', () => {
   const missing = [];
   for (const k of usedKeys) {
     if (DICT[k]) continue;
-    if (CAR122_PENDING.has(k)) continue; // CAR-122 sidebar v2 — fan-out pending
     missing.push(`${k}  (first seen in ${fileByKey.get(k)})`);
   }
   if (missing.length) {
