@@ -1,0 +1,209 @@
+/* v2-llm.css — CAR-119, the shared template for the 12 AI-tool pages.
+   Consumed through public/js/lib/llm-page-kit.js (.llm2* classes only —
+   nothing here may restyle existing view classes). Tokens come from
+   app.css; the single new token this sheet owns is --llm2-form-top. */
+
+:root {
+  --llm2-form-top: 76px; /* below the sticky topbar */
+}
+
+/* ── two-column layout ─────────────────────────────────────────────────── */
+
+.llm2 {
+  display: grid;
+  grid-template-columns: minmax(300px, 5fr) 7fr;
+  gap: 24px;
+  align-items: start;
+}
+
+/* Mobile tab bar: hidden on the two-column desktop layout. */
+.llm2__tabs { display: none; }
+
+@media (min-width: 1280px) {
+  .llm2__form {
+    position: sticky;
+    top: var(--llm2-form-top);
+    max-height: calc(100vh - var(--llm2-form-top) - 16px);
+    overflow-y: auto;
+  }
+}
+
+@media (max-width: 1279.98px) {
+  .llm2 {
+    grid-template-columns: 1fr;
+    gap: 12px;
+  }
+  .llm2__tabs {
+    display: flex;
+    gap: 6px;
+    margin: 0 0 4px;
+    border-bottom: 1px solid var(--line, rgba(0, 0, 0, 0.12));
+  }
+  .llm2__tab {
+    appearance: none;
+    background: none;
+    border: none;
+    border-bottom: 2px solid transparent;
+    padding: 8px 12px;
+    font: inherit;
+    font-weight: 600;
+    color: var(--foggy, #6b7280);
+    cursor: pointer;
+  }
+  .llm2__tab.is-active {
+    color: var(--ink, inherit);
+    border-bottom-color: var(--accent, #4c8bf5);
+  }
+}
+
+/* ── run panel: progress / ETA / cancel / log ──────────────────────────── */
+
+.llm2run {
+  border: 1px solid var(--line, rgba(0, 0, 0, 0.12));
+  border-radius: 12px;
+  padding: 12px 14px;
+  margin: 12px 0;
+  background: var(--panel, #fff);
+}
+
+.llm2run__head {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  flex-wrap: wrap;
+}
+
+.llm2run__state { font-weight: 600; }
+.llm2run__eta {
+  color: var(--foggy, #6b7280);
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.llm2run__cancel { margin-inline-start: auto; }
+
+/* Indeterminate progress bar — shimmer; disabled under reduced motion. */
+.llm2run__bar {
+  height: 6px;
+  border-radius: 999px;
+  overflow: hidden;
+  background: var(--panel-2, rgba(0, 0, 0, 0.06));
+  margin: 10px 0 8px;
+}
+.llm2run__bar-fill {
+  display: block;
+  height: 100%;
+  width: 34%;
+  border-radius: 999px;
+  background: var(--accent, #4c8bf5);
+  animation: llm2-slide 1.2s var(--ease-out, ease-in-out) infinite;
+}
+@keyframes llm2-slide {
+  from { transform: translateX(-110%); }
+  to { transform: translateX(320%); }
+}
+@media (prefers-reduced-motion: reduce) {
+  .llm2run__bar-fill { animation: none; width: 100%; opacity: 0.35; }
+}
+
+.llm2run__stages {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+  margin: 2px 0 6px;
+}
+.llm2run__stage {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+  color: var(--foggy, #6b7280);
+}
+.llm2run__stage-dot { font-size: 9px; line-height: 1; }
+.llm2run__stage.is-active { color: var(--ink, inherit); font-weight: 600; }
+.llm2run__stage.is-active .llm2run__stage-dot { color: var(--accent, #4c8bf5); }
+.llm2run__stage.is-done { color: var(--foggy, #6b7280); }
+.llm2run__stage.is-done .llm2run__stage-dot { color: var(--ok, #2e7d32); }
+
+.llm2run__log {
+  margin-top: 6px;
+  padding: 8px 10px;
+  max-height: 180px;
+  overflow-y: auto;
+  border-radius: 8px;
+  background: var(--panel-2, rgba(0, 0, 0, 0.04));
+  font-size: 12px;
+  color: var(--foggy, #6b7280);
+}
+.llm2run__log:focus { outline: 2px solid var(--accent, #4c8bf5); outline-offset: 1px; }
+.llm2run__logline { padding: 1px 0; }
+
+.llm2run--fail,
+.llm2run--cancelled {
+  color: var(--danger, #d9534f);
+}
+.llm2run--cancelled { color: var(--foggy, #6b7280); }
+
+/* ── autofill picker ───────────────────────────────────────────────────── */
+
+.llm2pick { padding: 10px 12px; margin: 0 0 12px; }
+.llm2pick__title {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--foggy, #6b7280);
+}
+.llm2pick__empty {
+  margin: 0;
+  font-size: 12px;
+  color: var(--foggy, #6b7280);
+}
+
+/* ── history drawer ────────────────────────────────────────────────────── */
+
+.llm2hist { margin: 18px 0; }
+.llm2hist__head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin: 0 0 8px;
+}
+.llm2hist__title { font-size: 15px; margin: 0; }
+.llm2hist__list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.llm2hist__card {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 12px;
+  border: 1px solid var(--line, rgba(0, 0, 0, 0.12));
+  border-radius: 10px;
+  background: var(--panel, #fff);
+}
+.llm2hist__name {
+  font-size: 13px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.llm2hist__date {
+  font-size: 11px;
+  color: var(--foggy, #6b7280);
+  white-space: nowrap;
+  font-variant-numeric: tabular-nums;
+}
+.llm2hist__actions {
+  display: flex;
+  gap: 6px;
+  margin-inline-start: auto;
+}
+.llm2hist__empty {
+  margin: 0;
+  font-size: 13px;
+  color: var(--foggy, #6b7280);
+}
