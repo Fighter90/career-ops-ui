@@ -171,7 +171,7 @@ test('CAR-124 auto: a try-the-example affordance fills an EMPTY field only, with
   // posting attributed to it, and a Run on it fails validation, not money.
   assert.match(AUTO, /const EXAMPLE_URL = 'https:\/\/jobs\.example\.com\//,
     'the sample URL uses the reserved example.com host');
-  assert.doesNotMatch(AUTO, /greenhouse\.io\/anthropic/, 'no real company board in the sample');
+  assert.ok(!AUTO.includes('greenhouse.io/anthropic'), 'no real company board in the sample');
   const uses = (AUTO.match(/EXAMPLE_URL/g) || []).length;
   assert.ok(uses >= 3, `the constant feeds the placeholder AND the example button (found ${uses})`);
   // review f4 — the user's own input (incl. ?url= deep links) is never overwritten
