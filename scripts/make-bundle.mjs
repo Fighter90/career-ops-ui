@@ -150,11 +150,11 @@ export function collectScripts(root) {
 }
 
 /**
- * CAR-145 r2 — write via a fully written temp file + rename: the published
+ * CAR-145 r2 — publish through a fully written temp + a rename: the published
  * inode is never mutated in place, so a concurrent reader (the server hashes
- * AND streams this file) can never observe torn bytes.
+ * AND streams these files) can never observe torn bytes.
  *
- * POSIX-only (CAR-145 r3, finding 4): renameSync over an existing open file
+ * POSIX-only (CAR-145 r3, finding 4): the rename over an existing open file
  * throws EPERM/EBUSY on Windows — this build runs in the release workflow on
  * Linux; no retry machinery is added for that.
  *
@@ -163,16 +163,15 @@ export function collectScripts(root) {
  * leaves the temp file on disk, and serve-static's dotfiles default never
  * serves a dotfile — a bare `bundle.js.tmp-<pid>` would be publicly served
  * for as long as it lingers.
+ *
+ * CAR-145 r3 (AI review) — this helper is only PHASE 1 (materialize a temp);
+ * writeBundle renames every staged temp in one quick succession, so the
+ * identity + both companions always swap as ONE generation.
  */
-function atomicWriteFileSync(path, data) {
+function writeTempFile(path, data) {
   const tmp = join(dirname(path), `.${basename(path)}.tmp-${process.pid}`);
-  try {
-    writeFileSync(tmp, data);
-    renameSync(tmp, path);
-  } catch (err) {
-    rmSync(tmp, { force: true });
-    throw err;
-  }
+  writeFileSync(tmp, data);
+  return tmp;
 }
 
 /** Build + write public/js/bundle.js (+ its .br/.gz companions). Returns { count, bytes, outPath, brBytes, gzBytes }. */
@@ -181,35 +180,67 @@ export function writeBundle(root) {
   const bundle = buildBundleHtml(scripts);
   const outPath = resolve(root, 'public', 'js', 'bundle.js');
   mkdirSync(dirname(outPath), { recursive: true });
-  // CAR-104 — stale precompressed artifacts go BEFORE the identity write, so
-  // an interrupted build can never pair a new bundle with an old companion
-  // (the server also defends this with an mtime freshness check).
-  rmSync(`${outPath}.br`, { force: true });
-  rmSync(`${outPath}.gz`, { force: true });
-  atomicWriteFileSync(outPath, bundle);
   const bundleBuf = Buffer.from(bundle, 'utf8');
+
+  // Phase 1 — materialize EVERY artifact under a DOT-prefixed temp BEFORE any
+  // rename, so a build that dies mid-flight leaves the PREVIOUS generation
+  // complete on disk. (The per-file atomic write this replaces was atomic per
+  // FILE but not per BUILD: dying between renames stranded a new identity
+  // beside old or missing companions — a mixed generation.) A companion whose
+  // compression fails stays best-effort: it is simply not staged, and its
+  // stale predecessor is dropped below (the server falls back to identity
+  // when a file is absent).
+  const staged = [];
+  const discardStaged = () => { for (const s of staged) rmSync(s.tmp, { force: true }); };
   let brBytes = null;
   let gzBytes = null;
-  // Compression is best-effort per companion: a failure here must not cost
-  // the whole bundle — the server falls back to identity when a file is absent.
   try {
-    const br = brotliCompressSync(bundleBuf, {
-      params: {
-        [zlibConstants.BROTLI_PARAM_QUALITY]: 11, // max — the default today, pinned explicitly
-        [zlibConstants.BROTLI_PARAM_SIZE_HINT]: bundleBuf.length,
-      },
-    });
-    atomicWriteFileSync(`${outPath}.br`, br);
-    brBytes = br.length;
+    staged.push({ tmp: writeTempFile(outPath, bundleBuf), dest: outPath });
+    try {
+      const br = brotliCompressSync(bundleBuf, {
+        params: {
+          [zlibConstants.BROTLI_PARAM_QUALITY]: 11, // max — the default today, pinned explicitly
+          [zlibConstants.BROTLI_PARAM_SIZE_HINT]: bundleBuf.length,
+        },
+      });
+      staged.push({ tmp: writeTempFile(`${outPath}.br`, br), dest: `${outPath}.br` });
+      brBytes = br.length;
+    } catch (err) {
+      console.warn(`make-bundle: brotli companion skipped (${err.message}) — serving identity only`);
+    }
+    try {
+      const gz = gzipSync(bundleBuf, { level: 9 });
+      staged.push({ tmp: writeTempFile(`${outPath}.gz`, gz), dest: `${outPath}.gz` });
+      gzBytes = gz.length;
+    } catch (err) {
+      console.warn(`make-bundle: gzip companion skipped (${err.message}) — serving identity only`);
+    }
   } catch (err) {
-    console.warn(`make-bundle: brotli companion skipped (${err.message}) — serving identity only`);
+    discardStaged(); // previous generation untouched
+    throw err;
   }
-  try {
-    const gz = gzipSync(bundleBuf, { level: 9 });
-    atomicWriteFileSync(`${outPath}.gz`, gz);
-    gzBytes = gz.length;
-  } catch (err) {
-    console.warn(`make-bundle: gzip companion skipped (${err.message}) — serving identity only`);
+  // A companion this build could not produce must not survive from the
+  // previous generation beside a NEW identity — drop it before the swap.
+  for (const ext of ['.br', '.gz']) {
+    if (!staged.some((s) => s.dest === `${outPath}${ext}`)) {
+      rmSync(`${outPath}${ext}`, { force: true });
+    }
+  }
+  // Phase 2 — every temp exists: swap the generation in one quick succession,
+  // IDENTITY FIRST. The server serves a companion only when its mtime is at
+  // least the identity's, so a crash residue of (new identity + old
+  // companions) is guard-skipped and served consistently as identity — while
+  // the reverse order would leave (old identity + NEW companion), which the
+  // guard counts as fresh and would serve against the OLD identity's ETag.
+  // A failure here discards the remaining temps and rethrows: whatever the
+  // residue, readers always see one consistent generation.
+  for (let i = 0; i < staged.length; i++) {
+    try {
+      renameSync(staged[i].tmp, staged[i].dest);
+    } catch (err) {
+      for (let j = i; j < staged.length; j++) rmSync(staged[j].tmp, { force: true });
+      throw err;
+    }
   }
   return { count: scripts.length, bytes: bundleBuf.length, outPath, brBytes, gzBytes };
 }
