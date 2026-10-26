@@ -66,16 +66,34 @@ window.PipelineView = (function () {
    * reads "Company — Role"; a bare title reads "Role — Company". The
    * company name may itself contain dashes, so only SPACE-surrounded
    * dashes split, and only the outermost pair is interpreted.
+   *
+   * CAR-116 review: the label is only stripped for the KNOWN localized
+   * report-title labels — any short "Word:" prefix used to win, so a
+   * colon INSIDE a title («Senior Frontend Engineer: Grafana Labs»)
+   * silently became a label. Mirrors the server's H1_LABEL_WORDS table
+   * (server/lib/routes/auto-pipeline.mjs) — keep the two lists in sync;
+   * tests/pipeline-view-lib.test.mjs drift-gates them.
    */
+  const TITLE_LABELS = [
+    'Evaluation', 'Оценка вакансии', 'Оценка', 'Оцінка вакансії', 'Оцінка',
+    'Evaluación', 'Avaliação', 'Évaluation', 'Bewertung', 'Valutazione',
+    'Ocena', 'Değerlendirme', '評価', '평가', '评估', '評估', 'Evaluering',
+    'تقييم', 'मूल्यांकन', 'மதிப்பீடு',
+  ].sort((a, b) => b.length - a.length);
+  const escRe = (s) => String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+
   function splitReportTitle(title) {
     const t = String(title || '').trim();
     if (!t) return { company: '', role: '' };
     let body = t;
     let labelled = false;
-    const colon = t.indexOf(':');
-    if (colon > 0 && colon <= 24) {
-      body = t.slice(colon + 1).trim();
-      labelled = true;
+    for (const label of TITLE_LABELS) {
+      const m = t.match(new RegExp('^' + escRe(label) + '[ \\t]*[:：][ \\t]*(.+)$', 'i'));
+      if (m) {
+        body = m[1].trim();
+        labelled = true;
+        break;
+      }
     }
     const parts = body.split(/\s+[—–-]\s+/).map((s) => s.trim()).filter(Boolean);
     if (parts.length >= 2) {
@@ -185,15 +203,29 @@ window.PipelineView = (function () {
    * Group entries by company (fallback: host). A board whose tracked
    * rows carry a company while its fresh rows do not must NOT split in
    * two, so entries without a company fold into the company already
-   * mapped to their host (habr 672 evaluated «Хабр» + habr 673 fresh →
-   * ONE «Хабр» group). Groups come back sorted biggest-first so the
-   * bulk-cleanup path reaches the noisiest board immediately; ties
-   * break alphabetically.
+   * mapped to their host — but ONLY when every company-bearing entry on
+   * that host names the SAME company. A shared ATS host (jobs.lever.co)
+   * hosts many tenants, so with two or more companies on one host the
+   * un-enriched rows group under the host label instead of being lent
+   * to whichever tenant was parsed last. Groups come back sorted
+   * biggest-first so the bulk-cleanup path reaches the noisiest board
+   * immediately; ties break alphabetically.
    */
   function groupEntries(entries) {
-    const hostCompany = new Map();
+    // host → company → vote count; unanimous only.
+    const hostVotes = new Map();
     for (const e of entries || []) {
-      if (e.company && e.host) hostCompany.set(e.host, e.company);
+      if (!e.company || !e.host) continue;
+      let votes = hostVotes.get(e.host);
+      if (!votes) {
+        votes = new Map();
+        hostVotes.set(e.host, votes);
+      }
+      votes.set(e.company, (votes.get(e.company) || 0) + 1);
+    }
+    const hostCompany = new Map();
+    for (const [host, votes] of hostVotes) {
+      if (votes.size === 1) hostCompany.set(host, votes.keys().next().value);
     }
     const map = new Map();
     for (const e of entries || []) {
@@ -208,6 +240,22 @@ window.PipelineView = (function () {
     }
     return Array.from(map.values()).sort((a, b) =>
       b.entries.length - a.entries.length || a.label.localeCompare(b.label));
+  }
+
+  /**
+   * DOM id for a group's collapsible body. FNV-1a → base36: the old
+   * character-class sanitizer collapsed every non-Latin group key
+   * (Cyrillic/CJK) to the same all-underscores string, so three
+   * different groups shared one aria-controls id.
+   */
+  function groupBodyId(key) {
+    const s = String(key);
+    let h = 0x811c9dc5;
+    for (let i = 0; i < s.length; i++) {
+      h ^= s.charCodeAt(i);
+      h = Math.imul(h, 0x01000193);
+    }
+    return 'v2-grp-' + (h >>> 0).toString(36);
   }
 
   /** Bounded LIFO of discarded URL batches (session memory only). */
@@ -237,12 +285,14 @@ window.PipelineView = (function () {
     normKey,
     parseScore,
     hostOf,
+    TITLE_LABELS,
     splitReportTitle,
     buildEnrichment,
     enrichEntries,
     matchesQuery,
     filterEntries,
     groupEntries,
+    groupBodyId,
     createUndoQueue,
   };
 })();

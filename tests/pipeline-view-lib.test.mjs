@@ -214,6 +214,88 @@ test('groupEntries: hostless rows fold into the company mapped to their host', (
   assert.equal(mixed.length, 2);
 });
 
+test('groupEntries: two companies sharing one host never lend it to the un-enriched', () => {
+  // jobs.lever.co is a SHARED ATS host: Acme and Globex both live there.
+  // The un-enriched third row must group under the HOST label — folding it
+  // into either tenant would put one company's board into another's group.
+  const entries = PV.enrichEntries([
+    'https://jobs.lever.co/acme/1',
+    'https://jobs.lever.co/globex/2',
+    'https://jobs.lever.co/fresh/3',
+  ], PV.buildEnrichment({
+    trackerRows: [
+      { url: 'https://jobs.lever.co/acme/1', company: 'Acme', role: 'A' },
+      { url: 'https://jobs.lever.co/globex/2', company: 'Globex', role: 'B' },
+    ],
+  }));
+  const groups = PV.groupEntries(entries);
+  const labels = groups.map((g) => g.label).sort();
+  assert.deepEqual(labels, ['Acme', 'Globex', 'jobs.lever.co'],
+    `host group for the un-enriched row, got: ${labels}`);
+  const hostGroup = groups.find((g) => g.label === 'jobs.lever.co');
+  assert.equal(hostGroup.entries.length, 1);
+  assert.equal(hostGroup.entries[0].url, 'https://jobs.lever.co/fresh/3');
+});
+
+// ── groupBodyId (FNV-1a — the ASCII sanitizer collapsed non-Latin keys) ──
+
+test('groupBodyId: non-Latin group keys get distinct, stable IDs', () => {
+  const keys = ['яндекс', 'хабр', 'яндекс вакансии', '評価', 'оценка'];
+  const ids = keys.map((k) => PV.groupBodyId(k));
+  assert.equal(new Set(ids).size, ids.length,
+    `three Cyrillic groups must not collapse to one DOM id, got: ${ids}`);
+  for (const id of ids) assert.match(id, /^v2-grp-[0-9a-z]+$/, 'CSS/JS-safe id charset');
+  assert.equal(PV.groupBodyId('яндекс'), PV.groupBodyId('яндекс'), 'stable');
+  // Latin keys still work
+  assert.match(PV.groupBodyId('acme'), /^v2-grp-[0-9a-z]+$/);
+});
+
+// ── splitReportTitle: only KNOWN labels strip a leading "Label:" ─────
+
+test('splitReportTitle: a colon is a label separator only for KNOWN report labels', () => {
+  // colon INSIDE the title — "Senior Frontend Engineer" is not a label,
+  // so the bare "Role — Company" reading applies and the colon survives
+  // inside the role side (the old any-prefix strip LOST the role head).
+  assert.deepEqual(
+    PV.splitReportTitle('Senior Frontend Engineer: Payments — Grafana Labs'),
+    { company: 'Grafana Labs', role: 'Senior Frontend Engineer: Payments' });
+  // no dash either → the whole title is one part; the colon stays put
+  assert.deepEqual(
+    PV.splitReportTitle('Senior Frontend Engineer: Grafana Labs'),
+    { company: 'Senior Frontend Engineer: Grafana Labs', role: '' });
+  assert.deepEqual(
+    PV.splitReportTitle('Platform Engineer - Payments: Core'),
+    { company: 'Payments: Core', role: 'Platform Engineer' });
+  // an unknown short prefix is NOT a label either
+  assert.deepEqual(
+    PV.splitReportTitle('Re: Something — Else'),
+    { company: 'Else', role: 'Re: Something' });
+});
+
+test('splitReportTitle: known localized labels still strip (longest first, case-insensitive)', () => {
+  assert.deepEqual(
+    PV.splitReportTitle('Оценка вакансии: Яндекс — Инженер'),
+    { company: 'Яндекс', role: 'Инженер' });
+  assert.deepEqual(
+    PV.splitReportTitle('evaluation: Stripe — Senior Backend Engineer'),
+    { company: 'Stripe', role: 'Senior Backend Engineer' },
+    'label matching is case-insensitive');
+  assert.deepEqual(
+    PV.splitReportTitle('評価：楽天 — エンジニア'),
+    { company: '楽天', role: 'エンジニア' },
+    'full-width colon accepted');
+});
+
+test('TITLE_LABELS mirror the server H1_LABEL_WORDS table (drift gate)', () => {
+  const srv = readFileSync(resolve(ROOT, 'server', 'lib', 'routes', 'auto-pipeline.mjs'), 'utf8');
+  const m = srv.match(/const H1_LABEL_WORDS = \[([\s\S]*?)\]\.sort/);
+  assert.ok(m, 'the server table must exist');
+  const serverWords = Array.from(m[1].matchAll(/'([^']+)'/g), (x) => x[1]).sort();
+  assert.ok(serverWords.length >= 15, 'sanity: the server table is populated');
+  assert.deepEqual(PV.TITLE_LABELS.slice().sort(), serverWords,
+    'the client label set must mirror the server table exactly (keep both in sync)');
+});
+
 // ── createUndoQueue ──────────────────────────────────────────────────
 
 test('createUndoQueue: LIFO, bounded, copies batches, empty pops null', () => {

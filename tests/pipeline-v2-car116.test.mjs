@@ -126,6 +126,29 @@ test('undo bar: body-level (survives re-render), keyboard-reachable, POST re-add
     'bounded session queue');
 });
 
+// ── single delete: confirm → removal → undo ONLY on success ─────────
+
+test('all three single-delete sites confirm first and report success only on success', () => {
+  // CAR-116 review: removeFromPipeline() swallows errors and returns a
+  // boolean, so every UI call site must (a) confirm before deleting,
+  // (b) check the boolean instead of relying on the dead try/catch, and
+  // (c) push undo ONLY when the removal actually happened.
+  const sites = [
+    ['preview pane', PIPE.indexOf('removeFromPipeline(activeUrl)')],
+    ['flat row', PIPE.indexOf('removeFromPipeline(url)', PIPE.indexOf('function urlRow'))],
+    ['grouped card', PIPE.indexOf('removeFromPipeline(url)', PIPE.indexOf('function entryCard'))],
+  ];
+  for (const [name, at] of sites) {
+    assert.ok(at > -1, `${name} delete site exists`);
+    const handler = PIPE.slice(PIPE.lastIndexOf('onClick', at), PIPE.indexOf('},', at));
+    assert.match(handler, /await UI\.confirm\(/, `${name}: confirm dialog first`);
+    assert.match(handler, /removeFromPipeline\(/, `${name}: through the shared remover`);
+    assert.match(handler, /if \(!removed\) return;/,
+      `${name}: a failed DELETE must not push undo or celebrate`);
+    assert.match(handler, /pushUndo\(\[/, `${name}: undo queued after success`);
+  }
+});
+
 // ── shell wiring ─────────────────────────────────────────────────────
 
 test('index.html loads the stylesheet after the three app sheets, lib before the view', () => {

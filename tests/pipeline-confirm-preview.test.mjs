@@ -26,24 +26,28 @@ test('#8: no native confirm() left anywhere in pipeline.js', () => {
 
 test('#8: destructive + nav actions go through focus-trapped UI.confirm()', () => {
   const calls = PIPE.match(/await UI\.confirm\(/g) || [];
-  // CAR-116 — the single-row delete lost its confirm ON PURPOSE: it is
-  // now immediate with an undo bar (the epic's ask). The confirm sites
-  // that remain are the BULK discard (danger) and evaluate-first (nav).
-  assert.ok(calls.length >= 2, `expected ≥2 UI.confirm sites, found ${calls.length}`);
+  // CAR-116 review round — the single-row deletes REGAINED their confirm
+  // (an undo bar is not a substitute for a danger dialog at 30k rows).
+  // Confirm sites: preview-pane delete, flat row delete, grouped card
+  // delete, the BULK discard (danger) and evaluate-first (nav).
+  assert.ok(calls.length >= 5, `expected ≥5 UI.confirm sites, found ${calls.length}`);
   // the bulk discard is danger:true; evaluate-first is danger:false
-  assert.ok((PIPE.match(/danger:\s*true/g) || []).length >= 1, 'bulk discard danger:true');
+  assert.ok((PIPE.match(/danger:\s*true/g) || []).length >= 4, 'all delete confirms are danger:true');
   assert.match(PIPE, /danger:\s*false/);
-  assert.match(PIPE, /t\('pipe\.confirmDelTitle'/, 'bulk discard reuses the remove-from-pipeline title');
+  assert.match(PIPE, /t\('pipe\.confirmDelTitle'/, 'deletes reuse the remove-from-pipeline title');
   assert.match(PIPE, /t\('pipe\.evaluateAllTitle'/);
 });
 
-test('#8b (CAR-116): single-row deletes do NOT confirm — they push undo', () => {
-  // the row + preview-pane delete paths must not open a confirm modal;
-  // they funnel through removeFromPipeline and show the undo bar.
+test('#8b (CAR-116 review): single-row deletes confirm, then undo ONLY on success', () => {
+  // the row + preview-pane delete paths confirm, funnel through
+  // removeFromPipeline (which swallows errors and returns a boolean),
+  // and push the undo batch only when the boolean says it happened —
+  // the old shape pushed undo even when the DELETE failed.
   const row = PIPE.slice(PIPE.indexOf('function urlRow'), PIPE.indexOf('// Virtualization state'));
-  assert.ok(!/UI\.confirm/.test(row), 'flat row delete must not confirm');
+  assert.match(row, /await UI\.confirm\(/, 'flat row delete confirms');
+  assert.match(row, /if \(!removed\) return;/, 'a failed DELETE must not push undo');
   assert.match(PIPE, /pushUndo\(\[url\]\);\s*\n\s*showUndoBar\(1\);/,
-    'single deletes push a one-URL undo batch');
+    'single deletes push a one-URL undo batch after success');
 });
 
 test('#22: previewPane is a labelled polite live region', () => {

@@ -374,17 +374,22 @@ Router.register('pipeline', async () => {
           className: 'btn btn-ghost btn-sm',
           style: { color: 'var(--rausch-text)' },
           onClick: async (e) => {
-            // CAR-116 — single removal is confirm-less and undoable
-            // (the undo bar replaces the old confirm dialog).
-            try {
-              await UI.withSpinner(e.currentTarget,
-                () => removeFromPipeline(activeUrl));
-              activeUrl = null;
-              await refresh();
-              focusUndoButton();
-            } catch (err) {
-              UI.toast((err && err.message) || t('common.error', 'Error'), 'error');
-            }
+            // CAR-116 review — confirmed single removal: the shared
+            // remover swallows the error and returns a boolean, so the
+            // undo bar only appears when the DELETE actually happened.
+            const ok = await UI.confirm(
+              t('pipe.confirmDelTitle', 'Remove from pipeline?'),
+              t('pipe.confirmDel', 'Delete URL from pipeline?'),
+              { danger: true, confirmLabel: t('common.delete', 'Delete'), cancelLabel: t('common.cancel', 'Cancel') });
+            if (!ok) return;
+            const removed = await UI.withSpinner(e.currentTarget,
+              () => removeFromPipeline(activeUrl));
+            if (!removed) return; // the remover already toasted the failure
+            pushUndo([activeUrl]);
+            activeUrl = null;
+            showUndoBar(1);
+            await refresh();
+            focusUndoButton();
           },
         }, '✕ ' + t('common.delete', 'Delete')),
       ]),
@@ -534,18 +539,21 @@ Router.register('pipeline', async () => {
           'aria-label': t('common.delete', 'Delete') + ': ' + shortUrl(url),
           onClick: async (e) => {
             e.stopPropagation();
-            // CAR-116 — confirm-less + undoable, like the grouped card.
-            try {
-              await UI.withSpinner(e.currentTarget,
-                () => removeFromPipeline(url));
-              selected.delete(url);
-              pushUndo([url]);
-              showUndoBar(1);
-              await refresh();
-              focusUndoButton();
-            } catch (err) {
-              UI.toast((err && err.message) || t('common.error', 'Error'), 'error');
-            }
+            // CAR-116 review — confirmed + undoable: undo is queued only
+            // when the shared remover reports success (it toasts failures).
+            const ok = await UI.confirm(
+              t('pipe.confirmDelTitle', 'Remove from pipeline?'),
+              t('pipe.confirmDel', 'Delete URL from pipeline?'),
+              { danger: true, confirmLabel: t('common.delete', 'Delete'), cancelLabel: t('common.cancel', 'Cancel') });
+            if (!ok) return;
+            const removed = await UI.withSpinner(e.currentTarget,
+              () => removeFromPipeline(url));
+            if (!removed) return;
+            selected.delete(url);
+            pushUndo([url]);
+            showUndoBar(1);
+            await refresh();
+            focusUndoButton();
           },
         }, '✕'),
       ]),
@@ -650,7 +658,11 @@ Router.register('pipeline', async () => {
   }
 
   function groupBodyId(key) {
-    return 'v2-grp-' + String(key).replace(/[^a-zA-Z0-9_-]+/g, '_').slice(0, 48);
+    // CAR-116 review — moved to the lib (PipelineView.groupBodyId,
+    // FNV-1a): the local character-class sanitizer collapsed non-Latin
+    // group keys to one shared id. Grouped mode only renders with the
+    // lib present, so the direct call is safe.
+    return PV.groupBodyId(key);
   }
 
   function toggleGroup(g) {
@@ -747,19 +759,21 @@ Router.register('pipeline', async () => {
           'aria-label': rowActionLabel('delete', url),
           onClick: async (ev) => {
             ev.stopPropagation();
-            // CAR-116 — confirm-less + undoable (undo bar instead of
-            // the old confirm dialog).
-            try {
-              await UI.withSpinner(ev.currentTarget,
-                () => removeFromPipeline(url));
-              selected.delete(url);
-              pushUndo([url]);
-              showUndoBar(1);
-              await refresh();
-              focusUndoButton();
-            } catch (err) {
-              UI.toast((err && err.message) || t('common.error', 'Error'), 'error');
-            }
+            // CAR-116 review — confirmed + undoable: undo is queued only
+            // when the shared remover reports success (it toasts failures).
+            const ok = await UI.confirm(
+              t('pipe.confirmDelTitle', 'Remove from pipeline?'),
+              t('pipe.confirmDel', 'Delete URL from pipeline?'),
+              { danger: true, confirmLabel: t('common.delete', 'Delete'), cancelLabel: t('common.cancel', 'Cancel') });
+            if (!ok) return;
+            const removed = await UI.withSpinner(ev.currentTarget,
+              () => removeFromPipeline(url));
+            if (!removed) return;
+            selected.delete(url);
+            pushUndo([url]);
+            showUndoBar(1);
+            await refresh();
+            focusUndoButton();
           },
         }, '✕ ' + t('common.delete', 'Delete')),
       ]),
