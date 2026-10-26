@@ -361,13 +361,14 @@ export async function fetchJsonWithRetry(fetchImpl, url, opts = {}) {
 /**
  * Re-label an HTTP error thrown by {@link fetchJson}/{@link fetchText} with a
  * source's own prefix (`Trudvsem: HTTP 503 (url)`), keeping `.status`,
- * `.retryAfter` and `.location`. A non-HTTP error (network failure, a non-JSON
- * 200) passes through UNCHANGED — callers branch on `.status`, and the shape
- * guards label their own failures.
+ * `.retryAfter` and `.location` and chaining the original error as `cause`.
+ * A non-HTTP error (network failure, a non-JSON 200) passes through
+ * UNCHANGED — callers branch on `.status`, and the shape guards label their
+ * own failures.
  *
  * The port to the guarded transport must not change what a scan log or a
  * quarantine reason says, so every ported call site wraps its fetch in
- * `.catch((e) => { throw labeledHttpError(e, 'Label', url); })`.
+ * `.catch((e) => { throw labeledHttpError(e, 'Label'); })`.
  *
  * @param {unknown} err
  * @param {string} label the source's message prefix, e.g. `'Trudvsem'`
@@ -375,7 +376,7 @@ export async function fetchJsonWithRetry(fetchImpl, url, opts = {}) {
  */
 export function labeledHttpError(err, label) {
   if (!err || typeof err.status !== 'number') return err;
-  const relabelled = new Error(`${label}: ${err.message}`);
+  const relabelled = new Error(`${label}: ${err.message}`, { cause: err });
   relabelled.status = err.status;
   relabelled.retryAfter = err.retryAfter;
   relabelled.location = err.location;

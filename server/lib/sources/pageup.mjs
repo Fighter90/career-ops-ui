@@ -249,8 +249,10 @@ export async function fetchPageup(endpoint, opts = {}) {
     } catch (err) {
       // The first page failing means there is no board to report on.
       if (page === 1) throw err;
-      // Later pages: keep what was already collected.
-      truncated = truncated || page === maxPages;
+      // Later pages: keep what was already collected. Only a NETWORK failure
+      // at the cap earns the truncation flag — an HTTP error stop is not a
+      // cap truncation (the pre-port contract; FULL-R2 review finding 12).
+      truncated = truncated || (typeof err?.status !== 'number' && page === maxPages);
       break;
     }
     const parsed = parsePageupListing(html, cfg, String(entry.name ?? ''));

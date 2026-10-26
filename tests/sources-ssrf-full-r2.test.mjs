@@ -210,14 +210,17 @@ test('hh: a 302 to the vpncheck interstitial fails page 0 with geoBlocked (follo
     () => hh.searchHH('PHP', { fetchImpl, maxPages: 1 }),
     (err) => err.geoBlocked === true && /vpn/i.test(err.message),
   );
-  assert.ok(calls.length >= 1, 'the interstitial was reached via the redirect');
+  // Exactly the two designed hops: the search URL, then the interstitial the
+  // same-host redirect resolved to (the geo-block fires on its final URL).
+  assert.equal(calls.length, 2, `expected search hop + interstitial hop, got: ${calls.join(' → ')}`);
+  assert.ok(/\/vpnche{1,2}ck/.test(calls[1]), `the second hop is the interstitial (got ${calls[1]})`);
   for (const u of calls) {
     const host = new URL(u).hostname;
     assert.ok(host === 'hh.ru' || host.endsWith('.hh.ru'), `every fetch stayed on hh.ru (got ${host})`);
   }
 });
 
-test('hh: a Location-named vpncheck redirect is detected even when never followed (budget refusal)', async () => {
+test('hh: an over-budget vpncheck redirect is refused, and the refused Location still triggers the geo-block', async () => {
   let calls = 0;
   const fetchImpl = async () => {
     calls += 1;
@@ -232,7 +235,9 @@ test('hh: a Location-named vpncheck redirect is detected even when never followe
     () => hh.searchHH('PHP', { fetchImpl, maxPages: 1 }),
     (err) => err.geoBlocked === true && /vpn/i.test(err.message),
   );
-  assert.ok(calls <= 4, `the redirect budget bounds the walk (got ${calls} calls)`);
+  // maxRedirects=2: hop 0 and hop 1 follow, hop 2 exhausts the budget and the
+  // LAST Location (naming the interstitial) is detected WITHOUT a fourth fetch.
+  assert.equal(calls, 3, `the redirect budget bounds the walk exactly (got ${calls} calls)`);
 });
 
 test('hh: a regional *.hh.ru redirect resolves to the regional page', async () => {
@@ -432,4 +437,27 @@ test('workday: a 200 CAPTCHA HTML page sets the non-JSON fallback reason (not "n
   const fb = workday.getLastWorkdayFallback();
   assert.ok(fb, 'a fallback was recorded');
   assert.equal(fb.reason, 'non-JSON response (likely CAPTCHA HTML)');
+});
+
+// ── 11. pageup: an HTTP error stop is not a cap truncation (old contract) ──
+
+const pageup = await import('../server/lib/sources/pageup.mjs');
+
+test('pageup: a later-page HTTP failure at the page cap does NOT set pageupTruncated', async () => {
+  // The real listing shape: a #search-results-content tbody + a .job-link row.
+  const good = '<html><body><table><tbody id="search-results-content">'
+    + '<tr><td><a class="job-link" href="/932/cw/en/job/100/senior-engineer">Senior Engineer</a></td></tr>'
+    + '</tbody></table><a class="more-link" href="/932/cw/en/listing/?page=2">More Jobs</a></body></html>';
+  let calls = 0;
+  const fetchImpl = async () => {
+    calls += 1;
+    if (calls === 1) return { ok: true, status: 200, text: async () => good };
+    return { ok: false, status: 503, text: async () => '' };
+  };
+  const jobs = await pageup.fetchPageup('https://careers.pageuppeople.com/932/cw/en/listing/', {
+    fetchImpl, delayMs: 0, company: { name: 'Acme', max_pages: 2 },
+  });
+  assert.equal(calls, 2);
+  assert.equal(jobs.length, 1, 'page-1 jobs kept');
+  assert.equal(jobs.pageupTruncated, undefined, 'an HTTP error stop is not a cap truncation');
 });
