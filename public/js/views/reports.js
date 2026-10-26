@@ -24,7 +24,7 @@ Router.register('reports', async (params) => {
         ]),
         c('div', { className: 'flex gap-3' }, [
           c('button', { className: 'btn btn-ghost', onClick: () => Router.go('/reports') }, t('rep.allReports')),
-          r.url && c('a', { className: 'btn btn-ghost', href: r.url, target: '_blank', rel: 'noopener' }, t('rep.openJd')),
+          r.url && UI.safeHref(r.url) && c('a', { className: 'btn btn-ghost', href: UI.safeHref(r.url), target: '_blank', rel: 'noopener' }, t('rep.openJd')), // FULL-R5 — report URLs are LLM-written; only http(s) links
           c('button', {
             className: 'btn btn-primary',
             onClick: (e) => window.PdfGenerate.run({ kind: 'report', slug, button: e.currentTarget }),

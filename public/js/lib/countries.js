@@ -126,15 +126,45 @@
     'cape town': 'za', johannesburg: 'za',
   };
 
-  // Match a lowercased alias as a whole word/phrase (so "us" won't match
-  // "Austin" and "uk" won't match "Paducah").
+  // FULL-R5 (review 4) — the alias/city patterns are compiled ONCE at module
+  // load. detectCountry runs several times per row on every SR.render()
+  // (countriesIn, rowInCountry, splitTitleCountry's isPlace, FitScore,
+  // RoleStats); constructing ~200 alias + ~150 city RegExps per call made a
+  // chip toggle on a 5k-row scan compile millions of regexes (~6.7 s per 5k
+  // cached calls). detectCountry itself is memoized by input string in a
+  // bounded map (location strings are immutable inputs — a memo never goes
+  // stale; the bound keeps memory flat), and resetCache() lets the scan
+  // view drop the memo when lastResults changes.
+  const DOTTED = Symbol('dotted'); // dotted aliases (u.s.) fall back to substring
+
+  function compile(alias) {
+    if (/[.]/.test(alias)) return DOTTED;
+    // Escape regex specials in the alias, then word-boundary it (so "us"
+    // won't match "Austin" and "uk" won't match "Paducah").
+    const esc = alias.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+    return new RegExp(`(^|[^\\p{L}])${esc}([^\\p{L}]|$)`, 'u');
+  }
+  const ALIAS_RES = new Map();
+  for (const c of COUNTRIES) {
+    for (const a of c.aliases) ALIAS_RES.set(a, compile(a));
+  }
+  const CITY_RES = new Map();
+  for (const city of Object.keys(CITIES)) CITY_RES.set(city, compile(city));
+
+  // Match a lowercased alias as a whole word/phrase against the
+  // precompiled table (unchanged semantics — one shared RegExp per alias
+  // instead of a fresh one per call).
   function aliasHit(haystack, alias) {
     if (!alias) return false;
-    // Escape regex specials in the alias, then word-boundary it. For aliases
-    // ending in a dot (e.g. "u.s.") fall back to substring.
-    if (/[.]/.test(alias)) return haystack.includes(alias);
-    const esc = alias.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-    return new RegExp(`(^|[^\\p{L}])${esc}([^\\p{L}]|$)`, 'u').test(haystack);
+    const re = ALIAS_RES.get(alias) ?? compile(alias);
+    if (re === DOTTED) return haystack.includes(alias);
+    return re.test(haystack);
+  }
+
+  function cityHit(haystack, city) {
+    const re = CITY_RES.get(city) ?? compile(city);
+    if (re === DOTTED) return haystack.includes(city);
+    return re.test(haystack);
   }
 
   // Sub-national geography that CONTAINS a country-name substring but is NOT
@@ -147,9 +177,13 @@
 
   /**
    * Best-effort country for a free-text location. Returns {code,name,flag} or null.
+   * Memoized by input string (FULL-R5) — location strings repeat heavily
+   * across renders, and the result for a given string never changes.
    * @param {string} location
    */
-  function detectCountry(location) {
+  const DETECT_CACHE_CAP = 4096;
+  const detectCache = new Map();
+  function detectCountryUncached(location) {
     if (typeof location !== 'string') return null;
     const s = location.toLowerCase().trim();
     if (!s) return null;
@@ -187,13 +221,27 @@
     if (bestByCountry.size > 1) return null;
     // 3) a known city token
     for (const city of Object.keys(CITIES)) {
-      if (aliasHit(guarded, city)) {
+      if (cityHit(guarded, city)) {
         const c = BY_CODE[CITIES[city]];
         if (c) return { code: c.code, name: c.name, flag: c.flag };
       }
     }
     return null;
   }
+  function detectCountry(location) {
+    if (typeof location !== 'string') return null;
+    const hit = detectCache.get(location);
+    if (hit !== undefined) return hit;
+    // FULL-R5 review r2 (finding 8) — cached results are frozen: a caller
+    // that decorates the returned object (a count, a tag) used to poison
+    // every later lookup of the same location string.
+    const result = Object.freeze(detectCountryUncached(location));
+    if (detectCache.size >= DETECT_CACHE_CAP) detectCache.clear();
+    detectCache.set(location, result);
+    return result;
+  }
+  /** Drop the memo (the scan view calls this when lastResults changes). */
+  function resetCache() { detectCache.clear(); }
 
   /**
    * Distinct countries present across a set of job rows, sorted by name.
@@ -219,5 +267,5 @@
     return !!c && c.code === code;
   }
 
-  window.Countries = { COUNTRIES, detectCountry, countriesIn, rowInCountry, flagFor: (code) => (BY_CODE[code] || {}).flag || '' };
+  window.Countries = { COUNTRIES, detectCountry, countriesIn, rowInCountry, flagFor: (code) => (BY_CODE[code] || {}).flag || '', resetCache };
 })();

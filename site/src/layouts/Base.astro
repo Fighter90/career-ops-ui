@@ -11,9 +11,10 @@ interface Props {
   title: string;
   description: string;
   jsonLd?: Record<string, unknown>;
+  canonicalPath?: string;
 }
 
-const { locale, page, title, description, jsonLd } = Astro.props;
+const { locale, page, title, description, jsonLd, canonicalPath } = Astro.props;
 
 // Compact locale registry for the client (language banner).
 const clientLocales = LOCALES.map((l) => ({
@@ -31,7 +32,7 @@ const clientLocales = LOCALES.map((l) => ({
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
     <title>{title}</title>
-    <Seo locale={locale} page={page} title={title} description={description} jsonLd={jsonLd} />
+    <Seo locale={locale} page={page} title={title} description={description} jsonLd={jsonLd} canonicalPath={canonicalPath} />
     <script is:inline>
       // Progressive enhancement flag — CSS only hides reveal/tab content when
       // JS is actually available. Everything is readable without JS.

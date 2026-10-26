@@ -72,7 +72,10 @@ test('reports: threshold band cells are LTR-isolated ("≥ 4.5" / "< 3.5" must n
 
 test('dashboard: the avg-score metric unit ("/ 5.0") renders LTR-isolated', () => {
   const src = read('public', 'js', 'views', 'dashboard.js');
-  assert.match(src, /metric\(t\('dash\.avgScore'\), data\.avgScore \?\? '—', '\/ 5\.0', scoreClass\(data\.avgScore\), true\)/);
+  // CAR-114 added an optional 6th arg (the trend delta chip) to metric();
+  // the pinned shape is unchanged apart from that trailing arg (`true)` or
+  // `true,\n <delta expr>)` — the LTR-isolation contract below is the point.
+  assert.match(src, /metric\(t\('dash\.avgScore'\), data\.avgScore \?\? '—', '\/ 5\.0', scoreClass\(data\.avgScore\), true[,)]/);
   assert.match(src, /numericSub \? \{ dir: 'ltr' \} : \{\}/);
 });
 

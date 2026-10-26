@@ -333,7 +333,7 @@ Router.register('deep', async () => {
       const r = await UI.withSpinner(btn, () => API.post('/api/deep', {
         company: company.value.trim(),
         role: role.value.trim() || undefined,
-      }));
+      }, { lang: true }));
       if (myToken !== runToken) return;
       showPrompt(r.prompt, r.message);
     } catch (e) {

@@ -52,7 +52,7 @@ const NAV = [
         <LangSwitcher locale={locale} page={page} />
       </div>
       <div class="hidden sm:block">
-        <GitHubButton label={t(locale, 'header.github')} />
+        <GitHubButton locale={locale} label={t(locale, 'header.github')} />
       </div>
       <a href={anchor('get-started')} class="btn-primary shrink-0 whitespace-nowrap !px-5 !py-2 text-sm">{t(locale, 'header.cta')}</a>
       <button
@@ -80,7 +80,7 @@ const NAV = [
       ))}
       <div class="mt-4 flex flex-wrap items-center gap-3 px-4">
         <LangSwitcher locale={locale} page={page} />
-        <GitHubButton label={t(locale, 'header.github')} />
+        <GitHubButton locale={locale} label={t(locale, 'header.github')} />
       </div>
     </nav>
   </div>

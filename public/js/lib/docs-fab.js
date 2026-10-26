@@ -92,8 +92,8 @@
     pending.scrollIntoView({ block: 'end' });
     try {
       // CAR-94 (11) — thread the UI language explicitly like the other AI
-      // endpoints (API.post also auto-augments object bodies with lang; the
-      // explicit field keeps the contract visible at the call site).
+      // endpoints (body.lang is opt-in since FULL-R5; the explicit field
+      // keeps the contract visible at the call site).
       var res = await API.post('/api/docs-assistant/ask', {
         question: question,
         run: true,

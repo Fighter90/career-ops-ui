@@ -59,6 +59,20 @@ export function localeHome(l: Locale): string {
   return l.slug === '' ? '/' : `/${l.slug}/`;
 }
 
+// Intl.NumberFormat per locale (CAR-132 — numbers in the page's own language:
+// "5,900" en / "5 900" ru / "۵٬۹۰۰" ar), cached — this runs at build time.
+const nfCache = new Map<string, Intl.NumberFormat>();
+
+/** Format a number in the locale's own conventions (never hardcoded en-US). */
+export function formatNumber(l: Locale, n: number): string {
+  let nf = nfCache.get(l.code);
+  if (!nf) {
+    nf = new Intl.NumberFormat(l.code);
+    nfCache.set(l.code, nf);
+  }
+  return nf.format(n);
+}
+
 /** Site pages: '' is the landing, everything else is a subpage slug. */
 export type Page = '' | 'help' | 'methodology' | 'license' | 'changelog';
 

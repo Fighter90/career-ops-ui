@@ -396,7 +396,7 @@
               run: runCtrl,
               request: (signal) => window.LlmPageKit.postJSON('/api/mode/' + apiSlug, { ...payload(), run }, signal),
             })
-          : API.post('/api/mode/' + apiSlug, { ...payload(), run })));
+          : API.post('/api/mode/' + apiSlug, { ...payload(), run }, { lang: true })));
         if (myToken !== runToken) return; // a newer run owns `out`
         if (runCtrl && (runCtrl.cancelled || runCtrl.signal.aborted)) return; // CAR-119 — a cancelled run paints nothing more
         const titleStr = `${t(cfg.titleKey)} — ${new Date().toLocaleString()}`;

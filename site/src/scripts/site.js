@@ -202,7 +202,7 @@ if ('IntersectionObserver' in window && !reduced) {
     .then((data) => {
       const stars = data && typeof data.stargazers_count === 'number' ? data.stargazers_count : null;
       if (stars === null) return;
-      const text = stars.toLocaleString('en-US');
+      const text = new Intl.NumberFormat(document.documentElement.lang || undefined).format(stars);
       for (const el of counters) {
         el.textContent = text;
         const badge = el.closest('[data-gh-stars-badge]');
