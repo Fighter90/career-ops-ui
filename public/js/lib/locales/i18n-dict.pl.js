@@ -46,6 +46,10 @@ window.__I18N_DICT_PL = {
   'map.legend.exact': "📍 adres firmy, w przeciwnym razie środek miejscowości",
   'map.exact': "Adres firmy",
   'map.more': "więcej",
+  // CAR-125 — the bounds-synced side list.
+  'map.list.title': "Oferty w widoku",
+  'map.list.empty': "Nic w widoku — przesuń mapę lub oddal widok.",
+  'map.list.more': "więcej w widoku",
   'map.postings': "ofert",
   'map.layerTracker': "Tracker",
   'map.noLocation': "Bez lokalizacji",

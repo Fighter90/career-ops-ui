@@ -46,6 +46,10 @@ window.__I18N_DICT_AR = {
   'map.legend.exact': "📍 عنوان الشركة، وإلا مركز المكان",
   'map.exact': "عنوان الشركة",
   'map.more': "أخرى",
+  // CAR-125 — the bounds-synced side list.
+  'map.list.title': "الوظائف في نطاق العرض",
+  'map.list.empty': "لا شيء في نطاق العرض — حرِّك الخريطة أو صغِّرها.",
+  'map.list.more': "وظائف أخرى في النطاق",
   'map.postings': "وظائف",
   'map.layerTracker': "المتابعة",
   'map.noLocation': "بدون موقع",

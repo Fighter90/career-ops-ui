@@ -47,6 +47,10 @@ window.__I18N_DICT_VI = {
   'map.legend.exact': "📍 địa chỉ công ty, nếu không thì trung tâm địa điểm",
   'map.exact': "Địa chỉ công ty",
   'map.more': "thêm",
+  // CAR-125 — the bounds-synced side list.
+  'map.list.title': "Công việc trong khung nhìn",
+  'map.list.empty': "Không có gì trong khung nhìn — hãy di chuyển bản đồ hoặc thu nhỏ.",
+  'map.list.more': "khác trong khung nhìn",
   'map.postings': "tin tuyển dụng",
   'map.layerTracker': "Trình theo dõi",
   'map.noLocation': "Không có địa điểm",

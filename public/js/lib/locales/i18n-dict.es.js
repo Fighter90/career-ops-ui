@@ -47,6 +47,10 @@ window.__I18N_DICT_ES = {
   'map.legend.exact': "📍 dirección de la empresa; si no, centro del lugar",
   'map.exact': "Dirección de la empresa",
   'map.more': "más",
+  // CAR-125 — the bounds-synced side list.
+  'map.list.title': "Empleos en pantalla",
+  'map.list.empty': "Nada a la vista: mueve el mapa o aleja el zoom.",
+  'map.list.more': "más en pantalla",
   'map.postings': "ofertas",
   'map.layerTracker': "Seguimiento",
   'map.noLocation': "Sin ubicación",

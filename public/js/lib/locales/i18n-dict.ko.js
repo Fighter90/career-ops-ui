@@ -47,6 +47,10 @@ window.__I18N_DICT_KO = {
   'map.legend.exact': "📍 회사 주소, 없으면 지역 중심",
   'map.exact': "회사 주소",
   'map.more': "개 더",
+  // CAR-125 — the bounds-synced side list.
+  'map.list.title': "범위 내 채용공고",
+  'map.list.empty': "범위에 아무것도 없습니다 — 지도를 움직이거나 축소하세요.",
+  'map.list.more': "개 더 표시",
   'map.postings': "개 공고",
   'map.layerTracker': "트래커",
   'map.noLocation': "위치 없음",

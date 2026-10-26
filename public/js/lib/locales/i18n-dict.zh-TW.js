@@ -47,6 +47,10 @@ window.__I18N_DICT_ZH_TW = {
   'map.legend.exact': "📍 公司地址，否則為地點中心",
   'map.exact': "公司地址",
   'map.more': "更多",
+  // CAR-125 — the bounds-synced side list.
+  'map.list.title': "視野內的職缺",
+  'map.list.empty': "視野內沒有職缺——拖曳地圖或縮小比例尺。",
+  'map.list.more': "個更多職缺",
   'map.postings': "個職缺",
   'map.layerTracker': "追蹤",
   'map.noLocation': "無地點",

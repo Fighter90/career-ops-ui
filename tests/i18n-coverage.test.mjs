@@ -115,18 +115,9 @@ function* walkJs(dir) {
 // GONE — all 17 new pipeline-v2 keys live in every locale dict like any
 // other key. A view may never ship EN-fallback-only strings again; the
 // hand-off comment in pipeline.js was removed with the fan-out.
-
-// CAR-125 (#/map v2) — new UI strings shipped with I18n.t + EN fallbacks;
-// the ×19 dictionary fan-out is a separate locale pass (the same protocol
-// CAR-116 used). Allowlisted HERE, not in the dicts, so the gate keeps
-// failing for any FUTURE ungated key. When the fan-out lands, delete this
-// block — the stale-key self-check below holds the list to exactly the
-// keys map.js still references.
-const CAR125_PENDING = new Set([
-  'map.list.title',   // Jobs in view
-  'map.list.empty',   // Nothing in view — pan the map or zoom out.
-  'map.list.more',    // more in view
-]);
+// CAR-125 followed the same protocol: its three map.list.* keys shipped
+// with the CAR125_PENDING allowlist, which was deleted when the ×19
+// dictionary fan-out landed (the CAR-125 review round).
 
 test('i18n: every t(key) call in public/js/** maps to a DICT entry', () => {
   // Match both t('key') and t("key"). Captures the key string.
@@ -146,7 +137,7 @@ test('i18n: every t(key) call in public/js/** maps to a DICT entry', () => {
   }
   const missing = [];
   for (const k of usedKeys) {
-    if (DICT[k] || CAR125_PENDING.has(k)) continue;
+    if (DICT[k]) continue;
     missing.push(`${k}  (first seen in ${fileByKey.get(k)})`);
   }
   if (missing.length) {
@@ -154,9 +145,4 @@ test('i18n: every t(key) call in public/js/** maps to a DICT entry', () => {
   }
   assert.equal(missing.length, 0,
     `${missing.length} undefined i18n keys leak through inline EN fallbacks`);
-  // The pending-fanout allowlist must never rot: every key in it has to
-  // still be referenced by a view, or the list is lying about pending work.
-  for (const k of CAR125_PENDING) {
-    assert.ok(usedKeys.has(k), `CAR125_PENDING key ${k} is no longer referenced — remove it from the allowlist`);
-  }
 });

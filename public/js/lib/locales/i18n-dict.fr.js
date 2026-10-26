@@ -47,6 +47,10 @@ window.__I18N_DICT_FR = {
   'map.legend.exact': "📍 adresse de l'entreprise, sinon centre du lieu",
   'map.exact': "Adresse de l'entreprise",
   'map.more': "de plus",
+  // CAR-125 — the bounds-synced side list.
+  'map.list.title': "Offres dans la zone",
+  'map.list.empty': "Rien dans la zone : déplacez la carte ou dézoomez.",
+  'map.list.more': "de plus dans la zone",
   'map.postings': "offres",
   'map.layerTracker': "Suivi",
   'map.noLocation': "Sans lieu",

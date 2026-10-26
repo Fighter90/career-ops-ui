@@ -46,6 +46,10 @@ window.__I18N_DICT_UK = {
   'map.legend.exact': "📍 адреса компанії, інакше центр населеного пункту",
   'map.exact': "Адреса компанії",
   'map.more': "ще",
+  // CAR-125 — the bounds-synced side list.
+  'map.list.title': "Вакансії в кадрі",
+  'map.list.empty': "У кадрі порожньо — посуньте карту або зменште масштаб.",
+  'map.list.more': "ще в кадрі",
   'map.postings': "вакансій",
   'map.layerTracker': "Трекер",
   'map.noLocation': "Без локації",
