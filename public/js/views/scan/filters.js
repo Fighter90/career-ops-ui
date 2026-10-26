@@ -283,6 +283,7 @@
         },
       }, '💾 ' + tt('scan.saveSearch', 'Save search'));
       saveBtn.hidden = true;
+      nameIn.hidden = true; // opens from the "＋ Save current" chip
       const addChip = c('span', {
         className: 'chip v2-scan-preset-add',
         role: 'button', tabindex: '0', 'data-chip': 'preset-add',

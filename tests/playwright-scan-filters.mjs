@@ -95,11 +95,14 @@ async function openScan() {
 }
 const rowCount = (page) => page.locator('#scan-results table tbody tr:not(.v2-scan-pad)').count();
 // CAR-115 — the selects live inside popover chips: open the popover, then
-// pick. The change event applies the filter live (no Apply button).
+// pick. The popover stays open on change (multi-adjust), so Escape closes
+// it before the next pick — its keydown handler also refocuses the chip.
 async function pick(page, chipTitle, id, value) {
   await page.click(`.v2-scan-chip-btn[title="${chipTitle}"]`);
   await page.waitForSelector(`${id}`, { state: 'visible', timeout: 4000 });
   await page.selectOption(id, value);
+  await page.keyboard.press('Escape');
+  await page.waitForSelector(`${id}`, { state: 'hidden', timeout: 4000 });
   await page.waitForTimeout(60);
 }
 
@@ -166,8 +169,8 @@ test('scan filters: live text search (Enter applies; -word excludes inline)', { 
   await page.click('.v2-scan-bar button:has-text("Reset")');
   await page.waitForTimeout(60);
   assert.equal(await rowCount(page), ROWS.length);
-  // exclude-field path still works (More filters popover)
-  await page.click('.v2-scan-chip-btn[title="More filters"]');
+  // exclude-field path still works (Advanced filters popover)
+  await page.click('.v2-scan-chip-btn[title="Advanced filters"]');
   await page.waitForSelector('#scan-filter-exclude', { state: 'visible', timeout: 4000 });
   await page.fill('#scan-filter-exclude', 'manager');
   await page.press('#scan-filter-exclude', 'Enter');

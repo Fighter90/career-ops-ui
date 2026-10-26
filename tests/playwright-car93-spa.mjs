@@ -181,7 +181,7 @@ test('CAR-93 F3: a saved preset restored before the corpus loads keeps country +
   });
   await page.goto(baseUrl + '/#/scan');
   await page.waitForSelector('.v2-scan-preset:has-text("de-senior")', { timeout: 8000 });
-  await page.click('.v2-scan-preset:has-text("de-senior")');
+  await page.click('[data-chip="preset-de-senior"]');
   await page.waitForSelector('#scan-results table tbody tr', { timeout: 10000 });
   await page.waitForTimeout(150);
   const country = await page.$eval('#scan-filter-country', (el) => el.value);
