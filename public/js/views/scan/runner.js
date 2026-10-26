@@ -336,9 +336,9 @@
     let lastFocus = null;
     const closeBtn = c('button', {
       className: 'btn btn-ghost btn-sm v2-scan-qv-close', type: 'button',
-      'aria-label': t('common.close', 'Close'),
+      'aria-label': t('common.closeDialog', 'Close dialog'),
       onClick: () => close(),
-    }, '✕ ' + t('common.close', 'Close'));
+    }, '✕ ' + t('common.closeDialog', 'Close dialog'));
     const titleEl = c('h2', { className: 'v2-scan-qv-title' });
     const metaEl = c('p', { className: 'muted v2-scan-qv-meta' });
     const salaryEl = c('p', { className: 'v2-scan-qv-salary' });
@@ -357,12 +357,17 @@
     });
     const evalBtn = c('button', {
       className: 'btn btn-primary btn-sm', type: 'button',
-      onClick: () => { if (current && window.Router) window.Router.go('/evaluate?url=' + encodeURIComponent(current.url)); },
+      onClick: () => {
+        // The disabled attribute alone cannot stop a programmatic click —
+        // the handler re-checks the safe-URL gate (CAR-115 test contract).
+        if (!current || !/^https?:\/\//i.test(current.url || '')) return;
+        if (window.Router) window.Router.go('/evaluate?url=' + encodeURIComponent(current.url));
+      },
     }, t('scan.v2.evaluate', 'Evaluate'));
     const pipeBtn = c('button', {
       className: 'btn btn-ghost btn-sm', type: 'button',
       onClick: async () => {
-        if (!current) return;
+        if (!current || !/^https?:\/\//i.test(current.url || '')) return;
         try {
           const r = await window.API.post('/api/pipeline', { url: current.url });
           window.UI.toast(r && r.deduped

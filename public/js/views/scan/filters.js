@@ -229,6 +229,12 @@
       const tt = t2 || t;
       const bar = c('div', { className: 'v2-scan-presets', role: 'group', 'aria-label': tt('scan.savedSearches', 'Saved searches') });
       const searches = (window.ScanPrefs && window.ScanPrefs.listSearches()) || [];
+      if (!searches.length) {
+        // Reuses the old select's placeholder key — the empty state reads
+        // the same in both shapes (CAR-115 keeps the dict untouched).
+        bar.appendChild(c('span', { className: 'chip v2-scan-preset-empty' },
+          tt('scan.savedNone', 'Saved searches…')));
+      }
       for (const s of searches) {
         const chip = c('span', { className: 'chip v2-scan-preset' }, [
           c('span', {
@@ -250,6 +256,7 @@
                 { danger: true, confirmLabel: tt('scan.deleteSearch', 'Delete') });
               if (!ok) return;
               window.ScanPrefs.removeSearch(s.name);
+              window.UI.toast(tt('scan.savedDeleted', 'Search deleted'), 'success');
               if (opts && opts.onChange) opts.onChange();
             },
             onKeydown: (e) => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); e.target.click(); } },
@@ -372,7 +379,7 @@
     const popSalary = chipPop(t('scan.col.salary'), [
       field(t('scan.salaryFrom', 'Salary from'), filterSalaryMin),
       field(t('scan.salaryTo', 'Salary to'), filterSalaryMax),
-      c('label', { className: 'scan-checkline v2-scan-check', htmlFor: 'scan-filter-salary-any' }, [
+      c('label', { className: 'scan-checkline v2-scan-check' }, [
         salaryAny,
         c('span', null, t('scan.v2.includeNoSalary', 'Include jobs without salary')),
       ]),
@@ -386,11 +393,12 @@
       field(t('scan.lblAge', 'Posted within'), filterAge),
       field(t('scan.lblScope', 'Scope'), filterScope),
     ]);
-    const popMore = chipPop(t('scan.v2.moreFilters', 'More filters'), [
+    const popMore = chipPop(t('scan.advancedFilters', 'Advanced filters'), [
       field(t('scan.lblExclude', 'Exclude'), filterExclude),
-      c('label', { className: 'scan-checkline v2-scan-check', htmlFor: 'fav-only' }, [
+      c('label', { className: 'scan-checkline v2-scan-check' }, [
         favOnly,
         c('span', null, t('scan.favOnly', '★ Favorites')),
+        c('span', { className: 'scan-checkline__hint' }, t('scan.favOnlyHint', 'starred only')),
       ]),
       c('p', { className: 'field-hint' }, t('scan.v2.moreHint',
         'Tip: "-word" inside the search box excludes; commas separate OR terms.')),

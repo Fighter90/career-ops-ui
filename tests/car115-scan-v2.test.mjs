@@ -70,6 +70,7 @@ function makeEl(docRef, layout = {}) {
       replaceChildren(...nodes) { this.children.length = 0; for (const n of nodes) this.appendChild(n); },
       removeChild(ch) { const i = this.children.indexOf(ch); if (i >= 0) this.children.splice(i, 1); },
       setAttribute(k, v) { this.attrs[k] = String(v); if (k === 'class') this.className = String(v); if (k === 'hidden') this.hidden = true; if (k === 'value') this.value = String(v); },
+      removeAttribute(k) { delete this.attrs[k]; if (k === 'hidden') this.hidden = false; },
       getAttribute(k) { return (k in this.attrs) ? this.attrs[k] : null; },
       focus() { docRef.activeElement = this; },
       _fire(type, ev) {

@@ -679,21 +679,11 @@ Router.register('scan', async () => {
 
     c('section', { className: 'section' }, [
       c('h2', { className: 'section-title', style: { marginTop: 0 } }, t('scan.results')),
-      // CAR-115 — ONE filter system: a live chip bar (search + popover
-      // filters, applied as you type/select) + saved-search preset chips.
-      // The old .scan-filters grid + Apply button is gone (acceptance:
-      // no Apply button; live filter chips).
-      c('div', { className: 'v2-scan-bar', role: 'group', 'aria-label': t('scan.filtersGroup', 'Result filters') }, [
-        filterText,
-        popFormat.anchor,
-        popSalary.anchor,
-        popSource.anchor,
-        popCountry.anchor,
-        popGrade.anchor,
-        popFresh.anchor,
-        popMore.anchor,
-        resetBtn,
-      ]),
+      // CAR-115 — ONE filter system: the live chip bar (search + popover
+      // filters, applied as you type/select — built by the filters.js
+      // factory) + saved-search preset chips. The old .scan-filters grid +
+      // Apply button is gone (acceptance: no Apply button; live chips).
+      filterBar.barEl,
       presetsWrap,
       // v1.244.0 — rows-per-page for the results pager (AC3) + the CAR-115
       // density toggle; both sit above the table, outside the re-rendered
@@ -702,8 +692,9 @@ Router.register('scan', async () => {
       resultsEl,
     ]),
 
-    // CAR-115 — quick-view side panel + backdrop (fixed, one instance).
-    quickView,
+    // CAR-115 — quick-view side panel + backdrop (fixed, one instance;
+    // the factory returns the [backdrop, panel] pair — spread it in).
+    ...quickView,
 
     companiesSection,
   ]);
