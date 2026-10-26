@@ -280,7 +280,7 @@ Router.register('deep', async () => {
         company: company.value.trim(),
         role: role.value.trim() || undefined,
         run: true,
-      }));
+      }, { lang: true }));
       if (myToken !== runToken) return; // a newer run owns `out`
       if (r.markdown) {
         showResult(`${company.value.trim()}${role.value.trim() ? ' — ' + role.value.trim() : ''}`, r.markdown, { saved: r.saved });
@@ -312,7 +312,7 @@ Router.register('deep', async () => {
       const r = await UI.withSpinner(btn, () => API.post('/api/deep', {
         company: company.value.trim(),
         role: role.value.trim() || undefined,
-      }));
+      }, { lang: true }));
       if (myToken !== runToken) return;
       showPrompt(r.prompt, r.message);
     } catch (e) {

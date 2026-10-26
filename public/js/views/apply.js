@@ -159,7 +159,7 @@ Router.register('apply', async () => {
     runBtn.disabled = true;
     out.innerHTML = `<div class="loading">…</div>`;
     try {
-      const r = await API.post('/api/apply-helper', { url: urlVal, jd: jdVal });
+      const r = await API.post('/api/apply-helper', { url: urlVal, jd: jdVal }, { lang: true });
       // UX-D-D (v1.58.46) — substitute {company}-{role} placeholders
       // before parsing so item 5 reads as `interview-prep/anthropic-senior-backend-engineer.md`
       // instead of the literal `{company}-{role}.md`.

@@ -124,7 +124,7 @@ Router.register('cv-studio', async () => {
     const pending = c('div', { className: 'loading', style: { color: 'var(--foggy)' } }, t('cvs.rewriting', 'Rewriting in your voice…'));
     humanOut.appendChild(pending);
     try {
-      const res = await API.post('/api/cv-studio/humanize', { text, run: true });
+      const res = await API.post('/api/cv-studio/humanize', { text, run: true }, { lang: true });
       pending.remove();
       if (res.markdown) {
         humanOut.appendChild(c('div', { className: 'card', style: { padding: '12px' } }, c('div', { className: 'md', html: UI.md(res.markdown) })));
@@ -162,7 +162,7 @@ Router.register('cv-studio', async () => {
     const pending = c('div', { className: 'loading', style: { color: 'var(--foggy)' } }, t('cvs.tailoring', 'Tailoring and running the checklist gate…'));
     tailorOut.appendChild(pending);
     try {
-      const res = await API.post('/api/cv-studio/tailor', { jd, headline: headIn.value.trim(), run: true });
+      const res = await API.post('/api/cv-studio/tailor', { jd, headline: headIn.value.trim(), run: true }, { lang: true });
       pending.remove();
       if (res.markdown) {
         const md = res.markdown;
@@ -210,7 +210,7 @@ Router.register('cv-studio', async () => {
     const pending = c('div', { className: 'loading', style: { color: 'var(--foggy)' } }, t('cvs.adding', 'Reading the source and drafting grounded bullets…'));
     addOut.appendChild(pending);
     try {
-      const res = await API.post('/api/cv-studio/add-entry', { url, text, run: true });
+      const res = await API.post('/api/cv-studio/add-entry', { url, text, run: true }, { lang: true });
       pending.remove();
       if (res.markdown) {
         addOut.appendChild(c('div', { className: 'card', style: { padding: '12px' } }, [
@@ -362,7 +362,7 @@ Router.register('cv-studio', async () => {
     const pending = c('div', { className: 'loading', style: { color: 'var(--foggy)' } }, t('cvs.vfChecking', 'Checking every claim against your CV…'));
     vfOut.appendChild(pending);
     try {
-      const res = await API.post('/api/cv-studio/verify-facts', { text });
+      const res = await API.post('/api/cv-studio/verify-facts', { text }, { lang: true });
       pending.remove();
       if (!res || res.available === false) {
         vfOut.appendChild(c('p', { style: { color: 'var(--foggy)' } },

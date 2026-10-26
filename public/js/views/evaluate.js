@@ -43,7 +43,7 @@ Router.register('evaluate', async () => {
     }
     out.innerHTML = `<div class="loading">${t('eval.evaluating')}</div>`;
     try {
-      const r = await API.post('/api/evaluate', { jd, save: saveJd.checked });
+      const r = await API.post('/api/evaluate', { jd, save: saveJd.checked }, { lang: true });
       renderResult(r);
     } catch (e) {
       out.innerHTML = '';

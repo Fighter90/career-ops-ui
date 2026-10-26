@@ -371,7 +371,7 @@
         // parent modes/<slug>.md filename. Used for /#/batch-prompt →
         // modes/batch.md.
         const apiSlug = cfg.serverSlug || cfg.slug;
-        const r = await UI.withSpinner(btn, () => API.post('/api/mode/' + apiSlug, { ...payload(), run }));
+        const r = await UI.withSpinner(btn, () => API.post('/api/mode/' + apiSlug, { ...payload(), run }, { lang: true }));
         if (myToken !== runToken) return; // a newer run owns `out`
         const titleStr = `${t(cfg.titleKey)} — ${new Date().toLocaleString()}`;
         if (r.markdown) {
