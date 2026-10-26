@@ -285,6 +285,13 @@ Router.register('pipeline', async () => {
   // the global-search quick-add) cannot swallow a pending undo.
   const undoQueue = PV ? PV.createUndoQueue(5) : null;
   let undoTimer = 0;
+  // CAR-151 — url → the RAW pipeline line(s) its DELETE removed (this
+  // session only; the server answers DELETE with `lines`). undoLast()
+  // replays them through POST /api/pipeline/restore so the checklist
+  // metadata (company/title/location/notes) survives; a URL with no
+  // captured line — removed by another surface, or before the lines were
+  // captured — falls back to the bare re-add.
+  const deletedLines = new Map();
 
   function pushUndo(urls) {
     if (undoQueue) undoQueue.push(urls);
@@ -337,15 +344,34 @@ Router.register('pipeline', async () => {
     if (btn) btn.focus();
   }
 
-  // Re-add the last discarded batch through the existing add path
-  // (POST /api/pipeline), sequentially; the server dedup makes this
-  // idempotent if the user re-added some URLs by hand meanwhile.
+  // CAR-151 — lossless undo. URLs deleted this session carry their
+  // ORIGINAL raw pipeline line(s) (captured from the DELETE response), so
+  // the checklist cells (company/title/location/notes) come back exactly
+  // through POST /api/pipeline/restore; the server dedups on the canonical
+  // URL key, which keeps the restore idempotent if the user re-added some
+  // URLs by hand meanwhile. URLs with no captured line fall back to the
+  // existing bare add path (POST /api/pipeline).
   async function undoLast() {
     const batch = undoQueue ? undoQueue.pop() : null;
     hideUndoBar();
     if (!batch || !batch.length) return;
-    let restored = 0;
+    const lines = [];
+    const bare = [];
     for (const u of batch) {
+      const captured = deletedLines.get(u);
+      if (captured && captured.length) lines.push(...captured);
+      else bare.push(u);
+    }
+    let restored = 0;
+    if (lines.length) {
+      try {
+        const r = await API.post('/api/pipeline/restore', { lines });
+        restored += (r && r.restored) || 0;
+      } catch (err) {
+        UI.toast((err && err.message) || t('common.error', 'Error'), 'error');
+      }
+    }
+    for (const u of bare) {
       try {
         await API.post('/api/pipeline', { url: u });
         restored += 1;
@@ -353,10 +379,7 @@ Router.register('pipeline', async () => {
         UI.toast((err && err.message) || t('common.error', 'Error'), 'error');
       }
     }
-    // CAR-116 review — only celebrate what actually came back. Known
-    // metadata loss: the re-add restores the bare URL; any comp/notes
-    // once attached to the pipeline line are NOT preserved (a server
-    // side round-trip of pipeline metadata is a separate ticket).
+    // CAR-116 review — only celebrate what actually came back.
     if (restored > 0) UI.toast(t('pipe.undone', 'Restored to the pipeline'), 'success');
     if (Router.current().name === 'pipeline') Router.render();
   }
@@ -481,15 +504,20 @@ Router.register('pipeline', async () => {
 
   // CAR-116 — the ONE delete call site. Row button, preview pane and the
   // bulk loop all funnel through here: a wrapped await, a failure toast,
-  // and preview-state cleanup. Returns true when the URL was removed.
+  // and preview-state cleanup. Returns the removed RAW line(s) (CAR-151 —
+  // kept in deletedLines for the lossless undo) or null when the DELETE
+  // failed.
   async function removeFromPipeline(url) {
     try {
-      await API.del('/api/pipeline?url=' + encodeURIComponent(url));
+      const r = await API.del('/api/pipeline?url=' + encodeURIComponent(url));
       if (activeUrl === url) { activeUrl = null; previewBody = ''; previewError = ''; }
-      return true;
+      const lines = (r && Array.isArray(r.lines)) ? r.lines.filter((l) => typeof l === 'string') : [];
+      if (lines.length) deletedLines.set(url, lines);
+      else deletedLines.delete(url);
+      return lines;
     } catch (err) {
       UI.toast((err && err.message) || t('common.error', 'Error'), 'error');
-      return false;
+      return null;
     }
   }
 

@@ -3,8 +3,10 @@
  *
  *   GET    /api/pipeline             → { urls: string[] }
  *   POST   /api/pipeline { url }     → append (URL gated by isValidJobUrl)
+ *   POST   /api/pipeline/restore     → reinsert RAW line(s) losslessly
+ *                                     ({ lines } — the CAR-151 undo path)
  *   GET    /api/pipeline/preview?url → stripped HTML snippet (≤ 8 KB)
- *   DELETE /api/pipeline?url=…       → remove
+ *   DELETE /api/pipeline?url=…       → remove ({ ok, removed, url, lines })
  *
  * The preview endpoint walks redirects manually, revalidating each
  * Location through isValidJobUrl (REVIEW-B1). Cap: 3 hops, 15 s timeout,
@@ -13,7 +15,7 @@
  */
 import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
 import { PATHS, path as projPath } from '../paths.mjs';
-import { parsePipeline, addPipelineUrl, removePipelineUrl } from '../parsers.mjs';
+import { parsePipeline, addPipelineUrl, removePipelineUrlExtract, restorePipelineLines } from '../parsers.mjs';
 import { isValidJobUrl } from '../security.mjs';
 import { safeReadPipeline } from '../store.mjs';
 import { safeGet } from '../safe-fetch.mjs';
@@ -21,6 +23,10 @@ import { withFileLock } from '../file-lock.mjs';
 
 const PREVIEW_TIMEOUT_MS = 15_000;
 const PREVIEW_MAX_BODY_BYTES = 8000;
+// CAR-151 — an undo batch replays one restore call; a bulk discard of a
+// very large queue still fits with room to spare (the 5 MB JSON body cap
+// is the real ceiling).
+const RESTORE_MAX_LINES = 5000;
 
 export function registerPipelineRoutes(app) {
   app.get('/api/pipeline', (_req, res) => {
@@ -57,6 +63,41 @@ export function registerPipelineRoutes(app) {
         writeFileSync(PATHS.pipeline, updated);
       }
       return { ok: true, deduped, urls: parsePipeline(updated) };
+    });
+    res.json(result);
+  });
+
+  // CAR-151 — lossless undo. The client replays the raw pipeline line(s) a
+  // DELETE answered with (a checklist row's `| company | title | …` cells
+  // included); restorePipelineLines reinserts them under the same lock,
+  // deduping on the canonical URL key so a URL re-added meanwhile is
+  // skipped, not duplicated. http(s) tokens go through the same
+  // isValidJobUrl gate as the add path; `local:` references (a legal
+  // pipeline row the scanners write) skip it. Structurally invalid lines
+  // (multi-line, fence-breaking, token-less, oversized) are refused with a
+  // count — never written.
+  app.post('/api/pipeline/restore', async (req, res) => {
+    const lines = req.body?.lines;
+    if (!Array.isArray(lines)) {
+      return res.status(400).json({ error: 'lines required (array of raw pipeline lines)' });
+    }
+    if (lines.length > RESTORE_MAX_LINES) {
+      return res.status(400).json({ error: `too many lines (max ${RESTORE_MAX_LINES})` });
+    }
+    const validate = (u) => (/^local:/i.test(u) ? true : isValidJobUrl(u));
+    const result = await withFileLock(PATHS.pipeline, async () => {
+      let content = '';
+      try {
+        content = readFileSync(PATHS.pipeline, 'utf8');
+      } catch {
+        content = '';
+      }
+      const r = restorePipelineLines(content, lines, { validate });
+      if (r.restored > 0) {
+        mkdirSync(projPath('data'), { recursive: true });
+        writeFileSync(PATHS.pipeline, r.updated);
+      }
+      return { ok: true, restored: r.restored, deduped: r.deduped, refused: r.refused, urls: parsePipeline(r.updated) };
     });
     res.json(result);
   });
@@ -128,16 +169,17 @@ export function registerPipelineRoutes(app) {
       } catch {
         return { _status: 404, body: { error: 'pipeline not found' } };
       }
-      // removePipelineUrl drops only the matching lines and returns the text
-      // untouched when nothing matched — answer 404 then instead of a fake
-      // { removed: 1 } (a bare-URL file used to be left as is).
-      const updated = removePipelineUrl(content, url);
+      // removePipelineUrlExtract drops only the matching lines, returns the
+      // text untouched when nothing matched (→ 404 then, not a fake
+      // { removed: 1 }) — and hands back the RAW dropped lines so the
+      // client's undo can reinsert them losslessly (CAR-151).
+      const { updated, removedLines } = removePipelineUrlExtract(content, url);
       if (updated === content) {
         return { _status: 404, body: { error: 'url not found in pipeline', url } };
       }
-      const removed = parsePipeline(content).length - parsePipeline(updated).length;
+      const removed = removedLines.length;
       writeFileSync(PATHS.pipeline, updated);
-      return { _status: 200, body: { ok: true, removed, url } };
+      return { _status: 200, body: { ok: true, removed, url, lines: removedLines } };
     });
     res.status(outcome._status).json(outcome.body);
   });
