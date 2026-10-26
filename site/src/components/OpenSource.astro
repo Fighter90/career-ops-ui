@@ -1,5 +1,5 @@
 ---
-import { t, type Locale } from '../i18n/locales';
+import { formatNumber, t, type Locale } from '../i18n/locales';
 import Icon from './Icon.astro';
 import Contributors from './Contributors.astro';
 import facts from '../generated/facts.json';
@@ -37,7 +37,7 @@ const CLONE = 'git clone https://github.com/Fighter90/career-ops-ui.git web-ui';
         </span>
         <h3 class="mb-1 font-bold">{t(locale, 'open.version')}</h3>
         <p class="mb-3 font-mono text-[0.92rem] text-white/60">
-          v{facts.version}{facts.tests ? ` · ${facts.tests.toLocaleString('en-US')} ${t(locale, 'open.tests')}` : ''}
+          v{facts.version}{facts.tests ? ` · ${formatNumber(locale, facts.tests)} ${t(locale, 'open.tests')}` : ''}
         </p>
         <a href={`${facts.repoUrl}/releases`} rel="noopener" class="text-sm font-semibold underline underline-offset-2">
           Releases →

@@ -200,10 +200,25 @@ body {
   border-bottom: 1px solid transparent;
 }
 .site-header.scrolled {
-  background: rgba(255, 255, 255, 0.8);
-  backdrop-filter: blur(12px);
-  -webkit-backdrop-filter: blur(12px);
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
   border-bottom-color: var(--color-line);
+}
+/* Without backdrop-filter support the translucent fill would let content show
+   through — fall back to an opaque header. */
+@supports not ((backdrop-filter: blur(4px)) or (-webkit-backdrop-filter: blur(4px))) {
+  .site-header.scrolled {
+    background: var(--color-paper);
+  }
+}
+/* Users who ask for reduced transparency get the solid header, no blur. */
+@media (prefers-reduced-transparency: reduce) {
+  .site-header.scrolled {
+    background: var(--color-paper);
+    backdrop-filter: none;
+    -webkit-backdrop-filter: none;
+  }
 }
 
 /* Mobile fullscreen menu */
