@@ -9,6 +9,7 @@
  */
 import { chromium } from 'playwright';
 import { realConsoleErrors } from './helpers/console-noise.mjs';
+import { seedNavOpenGroups } from './helpers/nav-seed.mjs';
 import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { tmpdir } from 'node:os';
@@ -96,6 +97,10 @@ async function run() {
     viewport: { width: 1440, height: 900 },
     locale: 'en-US',
   });
+  // CAR-122 — the Profile step waits for the sidebar item to be visible +
+  // .active; seed every v2 group open so the wait never depends on the
+  // active-route auto-open.
+  await seedNavOpenGroups(context);
   const page = await context.newPage();
   globalThis.__e2e_page = page;
 
