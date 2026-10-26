@@ -196,20 +196,19 @@ Router.register('tracker', async () => {
     });
   }
 
-  // ── CAR-117 · undo, move flow, bulk selection (lib controllers) ───────────
+  // ── CAR-117 · move flow + bulk selection (lib controllers) ────────────────
   // tracker.js sits against the 800-LOC contract, so the stateful controllers
-  // live in lib/tracker-stages.js and are wired together here. The undo bar
-  // mounts itself once at body level (singleton shell, like the pipeline bar).
-  const undoCtl = TS ? TS.createUndoController({ t, statusLabel, onRestored: () => refreshView() }) : null;
+  // live in lib/tracker-stages.js and are wired together here. There is NO
+  // undo (r2 #1 — the outcome writer is append-only; an outcome-write revert
+  // would fabricate candidate history).
   const moveFlow = TS ? TS.createMoveFlow({
     t,
     stages: STAGES,
     fold,
     statusLabel,
     isReady: () => movesReady,
-    onMovesOff: () => { movesReady = false; }, // the parent recorder is absent — degrade to read-only
+    onMovesOff: () => { movesReady = false; }, // structured 422-no-code: the parent recorder is absent
     onProgress: (d, n) => { if (bulk) bulk.progress(d + '/' + n); },
-    onUndoable: (moves, target) => { if (undoCtl) undoCtl.push(moves, target); },
     onDone: () => {
       if (bulk) { bulk.reset(); bulk.progress(''); }
       refreshView();
@@ -223,8 +222,12 @@ Router.register('tracker', async () => {
     onPick: (movable, target) => moveFlow.open(movable, target),
     onChanged: () => refreshView(),
   }) : null;
+  // r2 #5 — guarded like its siblings: a tracker-stages load failure must not
+  // throw the whole route; mode() reads go through the null-safe accessor
+  // below (default: table).
   // Created before the first applyFilters() below reads its mode (TDZ).
-  const viewToggle = TS.createViewToggle({ t, onChange: () => applyViewMode() });
+  const viewToggle = TS ? TS.createViewToggle({ t, onChange: () => applyViewMode() }) : null;
+  const viewModeNow = () => (viewToggle ? viewToggle.mode() : 'table');
 
   function applyFilters() {
     renderTabs(); // whole-history counts; reflects the active stage tab
@@ -254,7 +257,7 @@ Router.register('tracker', async () => {
       bulk.setRows(rows);
       bulk.setPage(page);
       bulk.syncSelAll();
-      bulk.el.hidden = bulk.size() === 0 || viewToggle.mode() !== 'table';
+      bulk.el.hidden = bulk.size() === 0 || viewModeNow() !== 'table';
     }
     withFocusPreserved(pgWrap, () => {
       pgWrap.innerHTML = '';
@@ -426,11 +429,11 @@ Router.register('tracker', async () => {
 
   function refreshView() {
     applyFilters();
-    if (viewToggle.mode() === 'kanban') renderKanban();
+    if (viewModeNow() === 'kanban') renderKanban();
   }
 
   function applyViewMode() {
-    const tableActive = viewToggle.mode() === 'table';
+    const tableActive = viewModeNow() === 'table';
     tableWrap.style.display = tableActive ? '' : 'none';
     pgWrap.style.display = tableActive ? '' : 'none';
     kanbanHost.style.display = tableActive ? 'none' : '';

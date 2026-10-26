@@ -13,13 +13,14 @@
  * 2. The CAR-117 move engine — status changes go through the EXISTING per-row
  *    write mechanism the view already uses: the outcome relay
  *    (POST /api/outcome → parent outcome.mjs → set-status.mjs). No invented
- *    endpoints. Its outcome types cover exactly five canonical states, so
- *    those are the only move targets; every other column is read-only in the
- *    kanban and every move is previewed before it is written. Moves that left
- *    a non-writable state are warned about in the preview (they cannot be
- *    undone — the outcome writer records outcomes, it does not set pipeline
- *    states); the BACKLOG's upstream per-row set-status route port would
- *    lift that restriction.
+ *    endpoints. Its outcome types cover exactly four canonical states (r2 #3:
+ *    Discarded is excluded — no_response/offer_declined would fabricate
+ *    company behaviour), so those are the only move targets; every other
+ *    column is read-only in the kanban and every move is previewed before it
+ *    is written. There is NO undo (r2 #1): the writer is append-only, so an
+ *    outcome-write "revert" would fabricate candidate history — the preview's
+ *    journal note points at the row's Outcome button instead, and a real undo
+ *    waits for the BACKLOG's set-status relay port.
  *
  * DOM-touching code uses UI.el/textContent only (CSP: no inline script, no
  * raw HTML injection). The view helpers moved here from tracker.js (company
@@ -69,15 +70,18 @@ window.TrackerStages = (function () {
   // so a server stage that matches a key is move-targetable and anything else
   // degrades to read-only. A state missing from this map can only be reached
   // by the pipeline/CLI flows — the kanban renders it but refuses drops.
+  //
+  // TODO(Discarded): deliberately NOT a move target (r2 review #3). The
+  // outcome writer has no candidate-initiated discard type — `no_response`
+  // would fabricate "company ghosted me" (feeding company-history's
+  // silent-on-you) and `offer_declined` would fabricate an offer. Until the
+  // parent ships an honest type, Discarded is reachable only through the
+  // row's Outcome button, where the user picks the semantics themselves.
   const MOVES = {
     Interview: 'interview_progress',
     Offer: 'offer_received',
     Hired: 'hired',
     Rejected: 'rejected',
-    // Generic discard (states.yml: "Discarded by candidate or offer closed").
-    // The outcome default note would claim "ghosted"; the move dialog carries
-    // an optional note field so the user can qualify it (e.g. offer declined).
-    Discarded: 'no_response',
   };
 
   function isWritableState(s) {
@@ -90,29 +94,6 @@ window.TrackerStages = (function () {
   function writableStates(stages) {
     const list = (Array.isArray(stages) && stages.length) ? stages : Object.keys(MOVES);
     return list.filter(isWritableState);
-  }
-
-  // Bounded LIFO of executed move batches (session memory only) — the same
-  // shape contract as the pipeline v2 undo queue, scoped to this view.
-  function createUndoQueue(limit) {
-    const cap = Math.max(1, limit || 5);
-    const stack = [];
-    return {
-      push(batch) {
-        if (!batch || !batch.length) return;
-        stack.push(batch.slice());
-        if (stack.length > cap) stack.shift();
-      },
-      pop() {
-        return stack.pop() || null;
-      },
-      peek() {
-        return stack.length ? stack[stack.length - 1] : null;
-      },
-      get size() {
-        return stack.length;
-      },
-    };
   }
 
   // ── CAR-117 · kanban board ────────────────────────────────────────────────
@@ -191,6 +172,7 @@ window.TrackerStages = (function () {
         const over = '1px solid var(--hof)';
         const rest = '1px solid var(--slate)';
         host.addEventListener('dragover', (e) => {
+          if (!isWritableState(stage)) return; // r2 #12 — re-checked in-handler
           if (dragNum == null) return;
           const row = byNum(ctx.rows, dragNum);
           if (!row) return;
@@ -205,6 +187,7 @@ window.TrackerStages = (function () {
           host.style.border = rest;
         });
         host.addEventListener('drop', (e) => {
+          if (!isWritableState(stage)) return; // r2 #12 — re-checked in-handler
           e.preventDefault();
           host.style.border = rest;
           const num = dragNum != null ? dragNum : Number(e.dataTransfer && e.dataTransfer.getData('text/plain'));
@@ -345,8 +328,10 @@ window.TrackerStages = (function () {
       UI.toast(t('track.moveNoop', 'Selected rows are already in that status'));
       return;
     }
-    const destructive = (target === 'Rejected' || target === 'Discarded');
-    const nonUndoable = moves.filter((m) => !isWritableState(m.from));
+    // Destructive = the write records a company verdict (Rejected). With
+    // Discarded out of MOVES (r2 #3) this is the only remaining destructive
+    // target; UI.confirm still gates it.
+    const destructive = (target === 'Rejected');
     const list = c('ul', {
       style: { margin: '0', paddingLeft: '18px', maxHeight: '240px', overflowY: 'auto', fontSize: '13px' },
     }, moves.map((m) => c('li', { style: { margin: '2px 0' } },
@@ -367,11 +352,11 @@ window.TrackerStages = (function () {
         .replace('{n}', String(moves.length))
         .replace('{state}', sl(target))),
       list,
-      nonUndoable.length
-        ? c('p', { style: { fontSize: '12.5px', color: 'var(--foggy)', margin: 0 } },
-          t('track.moveNoUndo', 'Moves out of {state} cannot be undone automatically — the status writer only records outcomes.')
-            .replace('{state}', sl(nonUndoable[0].from)))
-        : null,
+      // Honest cost note, ALWAYS (r2 #1): the writer is append-only, so no
+      // move presents itself as undoable — the row's Outcome button is the
+      // way to record a different result afterwards.
+      c('p', { style: { fontSize: '12.5px', color: 'var(--foggy)', margin: 0 } },
+        t('track.moveJournal', 'Each move records an entry in the outcome journal and rewrites data/applications.md. To change a status back, use the row\'s Outcome button.')),
       note ? c('p', { style: { fontSize: '12.5px', color: 'var(--foggy)', margin: 0 } }, t('track.moveNote', 'Note (optional, appended to each row)') + ': ' + note) : null,
       c('div', { style: { display: 'flex', gap: '8px', justifyContent: 'flex-end' } }, [
         c('button', {
@@ -383,6 +368,9 @@ window.TrackerStages = (function () {
     ].filter(Boolean));
 
     applyBtn.addEventListener('click', async () => {
+      // r2 #8 — single-shot: disable FIRST so a second click can never
+      // duplicate the outcome writes. (A cancel re-opens a fresh dialog.)
+      applyBtn.disabled = true;
       const run = async () => {
         UI.closeModal();
         const res = await applyMoves({ moves, note, onProgress: opts.onProgress });
@@ -408,10 +396,19 @@ window.TrackerStages = (function () {
 
   // Sequential per-row writes through the EXISTING outcome relay. set-status
   // takes the shared tracker lock, so parallel spawns would only contend.
+  // Result: { done, failed, firstError, applied, movesOff } where `applied`
+  // holds ONLY the moves whose write succeeded (r2 #2) and `movesOff` is the
+  // STRUCTURED unavailable-writer signal (r2 #7): the relay answers HTTP 422
+  // WITHOUT a CLI code only when the parent script itself is missing —
+  // handled CLI failures (no matching row, ambiguous company…) are 400s with
+  // a `code`, and script-error/timeout 422s carry codes too — so a bad
+  // selector can never permanently degrade the board.
   async function applyMoves(opts) {
     let done = 0;
     let failed = 0;
     let firstError = '';
+    let movesOff = false;
+    const applied = [];
     for (const m of opts.moves) {
       try {
         const res = await API.post('/api/outcome', {
@@ -422,73 +419,18 @@ window.TrackerStages = (function () {
         });
         if (!res || res.ok === false) throw new Error((res && res.error) || 'outcome failed');
         m.row.status = m.to;
+        applied.push(m);
         done += 1;
-      } catch (e) {
+      } catch (err) {
         failed += 1;
-        if (!firstError) firstError = (e && e.message) || 'outcome failed';
+        if (!firstError) firstError = (err && err.message) || 'outcome failed';
+        // Structured degrade only: 422 + no CLI code = the writer is absent.
+        const data = err && err.data;
+        if (err && err.status === 422 && (!data || !data.code)) movesOff = true;
       }
       if (opts.onProgress) opts.onProgress(done + failed, opts.moves.length);
     }
-    return { done, failed, firstError };
-  }
-
-  // ── CAR-117 · undo bar (session-scoped, body-level, pipeline-v2 shape) ────
-  // deps: { t, onUndo } — onUndo is invoked with no args; the owner re-reads
-  // the queue. The SHELL element is a singleton (#tracker-undo-bar, created
-  // once and reused across view visits, exactly like the pipeline bar); the
-  // buttons are rebuilt on every show so they always close over the CURRENT
-  // controller. Returns { el, show, hide, busy, focusUndo }.
-  function createUndoBar(deps) {
-    const c = UI.el;
-    const t = deps.t;
-    let timer = 0;
-    let btn = null;
-    let undoCb = deps.onUndo;
-    let el = null;
-    try { el = document.getElementById('tracker-undo-bar'); } catch { el = null; }
-    if (!el) {
-      el = c('div', { id: 'tracker-undo-bar', className: 'v2-undo-bar', hidden: 'hidden' });
-      document.body.appendChild(el);
-    }
-    function hide() {
-      clearTimeout(timer);
-      el.hidden = true;
-    }
-    function build(msg) {
-      el.textContent = '';
-      const label = c('span', { className: 'v2-undo-msg' }, msg);
-      btn = c('button', {
-        id: 'tracker-undo-btn',
-        type: 'button',
-        className: 'btn btn-ghost btn-sm',
-        onClick: () => { if (undoCb) undoCb(); },
-      }, t('track.undoBtn', 'Undo'));
-      const dismiss = c('button', {
-        type: 'button',
-        className: 'btn btn-ghost btn-sm',
-        'aria-label': t('track.undoDismiss', 'Dismiss'),
-        onClick: hide,
-      }, '✕');
-      el.appendChild(label);
-      el.appendChild(btn);
-      el.appendChild(dismiss);
-    }
-    function show(n, stateLabel) {
-      build(t('track.undoMsg', 'Moved {n} row(s) to {state}')
-        .replace('{n}', String(n)).replace('{state}', stateLabel));
-      el.hidden = false;
-      clearTimeout(timer);
-      timer = setTimeout(hide, 8000);
-    }
-    function busy(b) {
-      if (!btn) return;
-      btn.disabled = Boolean(b);
-      btn.textContent = b ? t('track.undoBusy', 'Undoing…') : t('track.undoBtn', 'Undo');
-    }
-    function focusUndo() {
-      if (btn) { try { btn.focus(); } catch { /* detached */ } }
-    }
-    return { el, show, hide, busy, focusUndo };
+    return { done, failed, firstError, applied, movesOff };
   }
 
   // ── view helpers moved from tracker.js (CAR-117 split; unchanged logic) ───
@@ -725,7 +667,10 @@ window.TrackerStages = (function () {
     let pageRows = [];
     const byNum = new Map();
 
-    const count = c('strong', { className: 'v2-bulk-count', style: { fontVariantNumeric: 'tabular-nums' } }, '0');
+    // r2 #11 — the count renders the FULL localized sentence with {n}
+    // replaced (never a stripped placeholder next to a bare number: locales
+    // where {n} is not leading would read broken).
+    const count = c('strong', { className: 'v2-bulk-count', style: { fontVariantNumeric: 'tabular-nums' } }, t('track.bulkSelected', '{n} selected').replace('{n}', '0'));
     const progress = c('span', { role: 'status', 'aria-live': 'polite', className: 'v2-bulk-progress' });
     const target = c('select', {
       className: 'select',
@@ -752,7 +697,7 @@ window.TrackerStages = (function () {
     const bar = c('div', {
       className: 'v2-bulkbar mb-3', hidden: 'hidden',
       role: 'group', 'aria-label': t('track.bulkMove', 'Move'),
-    }, [count, c('span', null, t('track.bulkSelected', '{n} selected').replace('{n}', '')), target, moveBtn, progress, clearBtn]);
+    }, [count, target, moveBtn, progress, clearBtn]);
 
     const selAll = c('input', {
       type: 'checkbox',
@@ -763,6 +708,7 @@ window.TrackerStages = (function () {
         if (selAll.checked) selection.add(String(r.num));
         else selection.delete(String(r.num));
       }
+      sync(); // r2 #6 — the bar must reflect the select-all immediately
       if (opts.onChanged) opts.onChanged();
     });
 
@@ -785,7 +731,7 @@ window.TrackerStages = (function () {
     }
 
     function sync() {
-      count.textContent = String(selection.size);
+      count.textContent = t('track.bulkSelected', '{n} selected').replace('{n}', String(selection.size));
       bar.hidden = selection.size === 0;
     }
 
@@ -809,9 +755,10 @@ window.TrackerStages = (function () {
   }
 
   // Move flow: opens the previewed move dialog and owns the post-write
-  // bookkeeping (toasts, undo push, read-only degradation).
+  // bookkeeping (toasts, read-only degradation). No undo exists (r2 #1 — the
+  // outcome writer is append-only; see the undo note at applyMoves).
   // opts: { t, stages, fold, statusLabel, isReady(), onMovesOff(),
-  //         onProgress(done, total), onUndoable(moves, target), onDone() }
+  //         onProgress(done, total), onDone() }
   function createMoveFlow(opts) {
     function open(rows, presetTo) {
       openMoveDialog({
@@ -826,8 +773,8 @@ window.TrackerStages = (function () {
       });
     }
     function applied(res, moves, target) {
-      if (res.firstError && /outcome\.mjs/.test(res.firstError) && opts.onMovesOff) {
-        opts.onMovesOff(); // the parent recorder is absent — degrade to read-only
+      if (res.movesOff && opts.onMovesOff) {
+        opts.onMovesOff(); // structured 422-no-code: the parent recorder is absent
       }
       if (res.done) {
         if (res.failed) {
@@ -839,10 +786,6 @@ window.TrackerStages = (function () {
             .replace('{state}', opts.statusLabel(target)),
           res.failed ? 'error' : 'success',
         );
-        // Undo is offered only when every executed move LEFT a state the
-        // outcome writer can re-record; moves out of pipeline-managed columns
-        // were already warned about in the preview.
-        if (moves.every((m) => isWritableState(m.from)) && opts.onUndoable) opts.onUndoable(moves, target);
         if (opts.onDone) opts.onDone();
       } else if (res.failed) {
         UI.toast(res.firstError
@@ -862,46 +805,6 @@ window.TrackerStages = (function () {
     return { open };
   }
 
-  // Undo controller: bounded LIFO of executed batches + the body-level bar.
-  // opts: { t, statusLabel, onRestored() }
-  function createUndoController(opts) {
-    const queue = createUndoQueue(5);
-    const bar = createUndoBar({ t: opts.t, onUndo: () => undo() });
-    async function undo() {
-      const batch = queue.pop();
-      bar.hide();
-      if (!batch || !batch.length) return;
-      bar.busy(true);
-      bar.el.hidden = false;
-      let done = 0;
-      let failed = 0;
-      for (const m of batch) {
-        try {
-          const res = await API.post('/api/outcome', {
-            selector: String(m.row.num ?? ''),
-            type: MOVES[m.from],
-            role: m.row.role || '',
-          });
-          if (!res || res.ok === false) throw new Error('undo failed');
-          m.row.status = m.from;
-          done += 1;
-        } catch { failed += 1; }
-      }
-      bar.busy(false);
-      bar.hide();
-      UI.toast(failed
-        ? opts.t('track.undoFail', '{n} row(s) could not be restored').replace('{n}', String(failed))
-        : opts.t('track.undoDone', 'Restored {n} row(s)').replace('{n}', String(done)),
-      failed ? 'error' : 'success');
-      if (opts.onRestored) opts.onRestored();
-    }
-    function push(moves, target) {
-      queue.push(moves);
-      bar.show(moves.length, opts.statusLabel(target));
-      bar.focusUndo();
-    }
-    return { push, undo, bar };
-  }
 
   return {
     norm: norm,
@@ -910,15 +813,12 @@ window.TrackerStages = (function () {
     MOVES: MOVES,
     isWritableState: isWritableState,
     writableStates: writableStates,
-    createUndoQueue: createUndoQueue,
     kanbanBoard: kanbanBoard,
     openMoveDialog: openMoveDialog,
     applyMoves: applyMoves,
-    createUndoBar: createUndoBar,
     createViewToggle: createViewToggle,
     createBulkBar: createBulkBar,
     createMoveFlow: createMoveFlow,
-    createUndoController: createUndoController,
     companyHistoryCard: companyHistoryCard,
     companyHistoryEvidence: companyHistoryEvidence,
     isAtsPostingUrl: isAtsPostingUrl,

@@ -1,8 +1,10 @@
 /**
  * CAR-117 — #/tracker v2 browser gates: the status kanban (drag&drop +
- * keyboard Move), the previewed outcome-relay write path, the undo bar,
- * the destructive UI.confirm gate, and the table-grid fix — the parts
- * that only exist in a real DOM.
+ * keyboard Move), the previewed outcome-relay write path, the destructive
+ * UI.confirm gate, the moves-off degradation, and the table-grid fix — the
+ * parts that only exist in a real DOM. There is NO undo (r2 #1: the outcome
+ * writer is append-only — a "revert" would fabricate history); the first
+ * test pins the undo bar staying deleted.
  *
  * Two interaction notes for the next editor:
  *   - Headless Chromium does not start native HTML5 DnD from synthetic mouse
@@ -170,23 +172,18 @@ test('CAR-117: kanban renders labelled columns, writable + read-only kinds, and 
 
 // ── keyboard move → preview → write → undo ───────────────────────────────────
 
-test('CAR-117: keyboard move previews, writes through /api/outcome, and undo restores', { skip: SKIP }, async () => {
+test('CAR-117: keyboard move previews, writes through /api/outcome; NO undo exists (r2 #1)', { skip: SKIP }, async () => {
   const page = await newPage();
   await openTracker(page);
   await openKanban(page);
   await column(page, 'Interview').locator('.v2-track-move').first().click();
   await moveViaDialog(page, 'Offer');
-  // success toast + the card changed columns + the undo bar is up
-  await page.waitForSelector('#toast .toast-msg', { timeout: 10000 });
-  assert.match(await page.locator('#toast .toast-msg').first().textContent(), /Moved 1 row\(s\) to Offer/);
-  await page.waitForSelector('#tracker-undo-bar:not([hidden])', { timeout: 5000 });
-  assert.match(await page.locator('#tracker-undo-bar .v2-undo-msg').textContent(), /Moved 1 row\(s\) to Offer/);
+  // success toast + the card changed columns
+  await page.waitForFunction(() => document.querySelector('#toast .toast-msg')?.textContent?.includes('Moved 1 row(s) to Offer'), { timeout: 10000 });
   assert.equal(await column(page, 'Offer').locator('.v2-track-card', { hasText: 'Alpha' }).count(), 1);
-  // undo puts it back (waitForFunction: the move toast may still be up when
-  // the click lands, so wait on the TEXT, not on the toast node)
-  await page.locator('#tracker-undo-btn').click();
-  await page.waitForFunction(() => document.querySelector('#toast .toast-msg')?.textContent?.includes('Restored 1 row(s)'), { timeout: 10000 });
-  assert.equal(await column(page, 'Interview').locator('.v2-track-card', { hasText: 'Alpha' }).count(), 1);
+  // the undo bar stays DELETED: the outcome writer only appends, so nothing
+  // in this UI may present itself as undo (r2 #1).
+  assert.equal(await page.locator('#tracker-undo-bar').count(), 0);
   await page.close();
 });
 
@@ -227,43 +224,50 @@ test('CAR-117: a move to Rejected passes UI.confirm before anything is written',
 
 test('CAR-117: a failing outcome writer degrades to a read-only board without crashing', { skip: SKIP }, async () => {
   const page = await newPage();
+  // r2 #9 — the pageerror listener is registered BEFORE anything fails.
+  const errors = [];
+  page.on('pageerror', (e) => errors.push(String(e)));
+  // 422 WITHOUT a CLI code = the structured unavailable-writer signal the
+  // client keys the degradation on (handled CLI failures answer 400 + code).
   await page.route('**/api/outcome', (route) => route.fulfill({ status: 422, body: JSON.stringify({ error: 'outcome.mjs not found in the parent project' }) }));
   await openTracker(page);
   await openKanban(page);
   await column(page, 'Applied').locator('.v2-track-move').first().click();
   await moveViaDialog(page, 'Interview');
-  // The raw relay error IS the degradation signal (the route answers 422
-  // "outcome.mjs not found…"); wait on its text, the toast may not exist yet.
+  // The raw relay error surfaces (the toast may not exist yet → wait on text).
   await page.waitForFunction(() => document.querySelector('#toast')?.textContent?.includes('outcome.mjs not found'), { timeout: 10000 });
-  // the board re-rendered read-only: cards intact, no crash
   assert.equal(await page.locator('.v2-track-card').count(), 4);
-  const errors = [];
-  page.on('pageerror', (e) => errors.push(String(e)));
-  await page.waitForTimeout(150);
-  assert.deepEqual(errors, []);
+  // The board is genuinely read-only now: pressing Move explains, and a drop
+  // onto a writable column opens NO preview modal.
+  await column(page, 'Applied').locator('.v2-track-move').first().click();
+  await page.waitForFunction(() => document.querySelector('#toast')?.textContent?.includes('Status moves are unavailable'), { timeout: 10000 });
+  await dragCard(page, 'Beta', 'Interview');
+  await page.waitForTimeout(400);
+  // visibility-scoped: closeModal keeps the last dialog's nodes in the hidden
+  // #modal, so a bare count would count stale children.
+  assert.equal(await page.locator('#modal ul li:visible').count(), 0, 'no write path after degradation');
+  assert.deepEqual(errors, [], 'no uncaught errors: ' + errors.join(' | '));
   await page.close();
 });
 
 // ── bulk ─────────────────────────────────────────────────────────────────────
 
-test('CAR-117: bulk selection feeds the same preview and moves every selected row', { skip: SKIP }, async () => {
+test('CAR-117: select-all feeds the bulk bar and the preview moves every selected row', { skip: SKIP }, async () => {
   const page = await newPage();
   await openTracker(page);
-  // rows 1 (Alpha/Interview) and 4 (Delta/Offer) — both ends writable, so the
-  // batch is undoable and the undo bar must appear.
-  await page.locator('tbody tr', { hasText: 'Alpha' }).locator('input[type="checkbox"]').check();
-  await page.locator('tbody tr', { hasText: 'Delta' }).locator('input[type="checkbox"]').check();
+  // r2 #6 — the HEADER select-all (not per-row checkboxes): the bar must
+  // reflect the selection immediately, count rendered as the full localized
+  // sentence (r2 #11).
+  await page.locator('table.tbl thead input[type="checkbox"]').check();
   await page.waitForSelector('.v2-bulkbar:not([hidden])', { timeout: 5000 });
-  assert.equal(await page.locator('.v2-bulk-count').textContent(), '2');
+  assert.match(await page.locator('.v2-bulk-count').textContent(), /\b4\b/);
   await page.selectOption('.v2-bulkbar select', 'Hired');
   await page.locator('.v2-bulkbar button', { hasText: 'Move' }).first().click();
   await page.waitForSelector('#modal ul li', { timeout: 5000 });
-  assert.equal(await page.locator('#modal ul li').count(), 2);
-  await page.locator('#modal button', { hasText: /^Move 2$/ }).click();
-  await page.waitForSelector('#toast .toast-msg', { timeout: 15000 });
-  assert.match(await page.locator('#toast .toast-msg').first().textContent(), /Moved 2 row\(s\) to Hired/);
-  // the undo bar offers to restore both
-  await page.waitForSelector('#tracker-undo-bar:not([hidden])', { timeout: 5000 });
-  assert.match(await page.locator('#tracker-undo-bar .v2-undo-msg').textContent(), /Moved 2 row\(s\) to Hired/);
+  assert.equal(await page.locator('#modal ul li').count(), 4);
+  await page.locator('#modal button', { hasText: /^Move 4$/ }).click();
+  await page.waitForFunction(() => document.querySelector('#toast .toast-msg')?.textContent?.includes('Moved 4 row(s) to Hired'), { timeout: 15000 });
+  // no undo bar exists to offer a restore (r2 #1)
+  assert.equal(await page.locator('#tracker-undo-bar').count(), 0);
   await page.close();
 });
