@@ -15,7 +15,7 @@
  *     fallback), so LLM routes keep resolving the locale either way;
  *   • the LLM-bound call sites opt back in explicitly.
  */
-import { test } from 'node:test';
+import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
 import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
@@ -157,10 +157,72 @@ test('static: the write endpoints stay untouched (no opt-in, no lang)', () => {
     const around = src.slice(idx, idx + 200);
     assert.ok(!around.includes('lang: true'), `${file} ${marker} must not opt in to lang`);
   }
+  // (Review r2 finding 4) — the LLM routes that resolve the locale are
+  // covered server-side below: Accept-Language keeps working with a
+  // lang-less body, and an explicit body.lang keeps priority.
 });
 
 test('static: the api.js comment states the opt-in contract', () => {
   assert.match(API_SRC, /lang: true/, 'the opt-in flag must be documented in api.js');
   assert.ok(!/Auto-attach lang to LLM-bound mutations/.test(API_SRC),
     'the stale "auto-attach" comment must go');
+});
+
+// ── FULL-R5 review r2 (finding 4) — the server keeps resolving the locale ──
+//
+// body.lang is now opt-in, so every LLM route that resolves the UI locale
+// MUST keep working from the Accept-Language header (prompts.mjs
+// resolveLocale's fallback, sent by call()/postStream on every request).
+// Pinned here on /api/two-pager/draft — an LLM route whose client passes
+// lang explicitly, i.e. exactly the case a future "lang-less client" call
+// must not regress.
+
+let langServer; let langBaseUrl;
+before(async () => {
+  const { mkdtempSync, mkdirSync, writeFileSync } = await import('node:fs');
+  const { tmpdir } = await import('node:os');
+  const root = mkdtempSync(resolve(tmpdir(), 'fullr5-lang-'));
+  mkdirSync(resolve(root, 'config'), { recursive: true });
+  mkdirSync(resolve(root, 'data'), { recursive: true });
+  mkdirSync(resolve(root, 'modes'), { recursive: true });
+  writeFileSync(resolve(root, 'cv.md'), '# Jane Dev\nSenior Backend Engineer.\n');
+  writeFileSync(resolve(root, 'config', 'profile.yml'), 'candidate:\n  full_name: Jane\n');
+  writeFileSync(resolve(root, 'portals.yml'), 'tracked_companies: []\n');
+  process.env.CAREER_OPS_ROOT = root;
+  const { createApp } = await import('../server/index.mjs');
+  const app = createApp();
+  await new Promise((r) => {
+    langServer = app.listen(0, '127.0.0.1', () => {
+      langBaseUrl = `http://127.0.0.1:${langServer.address().port}`;
+      r();
+    });
+  });
+});
+after(() => {
+  delete process.env.CAREER_OPS_ROOT;
+  return new Promise((r) => langServer.close(r));
+});
+
+test('server: /api/two-pager/draft resolves the locale from Accept-Language when body.lang is absent', async () => {
+  const res = await fetch(`${langBaseUrl}/api/two-pager/draft`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', 'Accept-Language': 'ru' },
+    body: JSON.stringify({ run: false }), // deliberately NO lang key (the new contract)
+  });
+  assert.equal(res.status, 200);
+  const data = await res.json();
+  assert.equal(data.mode, 'manual');
+  assert.match(data.prompt, /Respond in Russian \(locale: ru\)/,
+    'the locale directive must come from the Accept-Language header');
+});
+
+test('server: body.lang still wins over the header where a client opts in', async () => {
+  const res = await fetch(`${langBaseUrl}/api/two-pager/draft`, {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', 'Accept-Language': 'ru' },
+    body: JSON.stringify({ run: false, lang: 'ja' }),
+  });
+  const data = await res.json();
+  assert.match(data.prompt, /Respond in Japanese \(locale: ja\)/,
+    'an explicit body.lang (the opt-in sites) keeps priority');
 });

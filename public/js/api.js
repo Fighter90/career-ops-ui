@@ -309,7 +309,15 @@ window.API = (function () {
       let buf = '';
       // One SSE frame (block between blank lines) → onEvent. Extracted so
       // the end-of-stream flush below can process the final frame too.
-      const emit = (p) => {
+      // FULL-R5 review r2 (finding 3) — `strict` (the flush path): a frame
+      // that fails JSON.parse is DROPPED, not delivered as `{}`. Emitting a
+      // truncated `data: {"score":4.` as a real event made consumers render
+      // a fabricated empty success («complete», undefined fields); the
+      // consumer's no-terminal-frame path renders the error instead. Mid-
+      // stream frames keep the non-strict fallback: a JSON.parse failure
+      // there is almost always a frame SPLIT across chunks, completed by
+      // the next read.
+      const emit = (p, strict) => {
         const evMatch = p.match(/^event:\s*([\w-]+)/m);
         // v1.22.0 (L-4) — per SSE spec, an event may carry multiple `data:`
         // lines; the consumer concatenates them with "\n".
@@ -319,7 +327,11 @@ window.API = (function () {
           if (m) dataLines.push(m[1]);
         }
         if (!evMatch || !dataLines.length) return;
-        let data; try { data = JSON.parse(dataLines.join('\n')); } catch { data = {}; }
+        let data;
+        try { data = JSON.parse(dataLines.join('\n')); } catch {
+          if (strict) return;
+          data = {};
+        }
         onEvent(evMatch[1], data);
       };
       for (;;) {
@@ -336,9 +348,10 @@ window.API = (function () {
       // (or whose last chunk is split mid-JSON) used to leave that frame in
       // `buf` unprocessed — consumers rendered NOTHING (no result, no
       // error). Contract moved here from auto-pipeline's private copy so
-      // every postStream consumer gets it.
+      // every postStream consumer gets it. Strict: a frame still truncated
+      // at true end-of-stream is garbage, never an event (finding 3).
       buf += dec.decode();
-      if (buf.trim()) emit(buf);
+      if (buf.trim()) emit(buf, true);
     },
   };
 })();

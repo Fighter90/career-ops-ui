@@ -172,6 +172,27 @@ test('a final unterminated `error` frame renders the failure card', async () => 
   assert.match(collectStrings(result).join(' | '), /playwright missing/, 'error frame must be flushed and rendered');
 });
 
+// FULL-R5 review r2 (finding 3) — the flush must not emit a TRUNCATED frame
+// as a real event: JSON.parse fails, data becomes {}, and auto-pipeline
+// renders «complete» with undefined score/company/trackerNum — a fabricated
+// empty success. A cut frame is dropped on the flush path; the consumer's
+// no-terminal-frame path renders the error instead.
+test('a flush frame cut mid-JSON is DROPPED — no phantom done event, error path renders', async () => {
+  const env = makeEnv([
+    'event: start\ndata: {}\n\n',
+    'event: step\ndata: {"i":0,"status":"done"}\n\n',
+    'event: done\ndata: {"score":4.',
+  ]);
+  await settle();
+  const { result, timeline } = roots(env);
+  const text = collectStrings(result).join(' | ');
+  assert.doesNotMatch(text, /Auto-pipeline complete/, 'a truncated frame must not fabricate a result card');
+  assert.match(text, /Auto-pipeline failed/, 'the no-terminal-frame path renders the error instead');
+  // No step may sit on "running" forever either.
+  const tl = collectStrings(timeline).join(' | ');
+  assert.doesNotMatch(tl, /\[…\]/, 'no step stays on running');
+});
+
 test('a stream that ends without any terminal frame renders the error card (no invented result) and re-enables controls', async () => {
   const env = makeEnv([
     'event: start\ndata: {}\n\n',
