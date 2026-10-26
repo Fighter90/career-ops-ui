@@ -174,7 +174,11 @@ test('CAR-115: filter state round-trips through the #/scan?… URL params', () =
   assert.equal(restored.favOnly, true);
   assert.deepEqual(restored.tech, ['php']);
   assert.deepEqual(restored.dynamic, ['разработчик']);
-  assert.deepEqual(restored.__extra, undefined);
+  // sort/dir ride the same query but are NOT filter state: a filters-only
+  // parse must ignore them (they belong to the results table, not the bar).
+  assert.ok(!('sort' in restored) && !('dir' in restored), 'filtersFromUrl ignores sort/dir');
+  assert.equal(api.filtersFromUrl('#/scan?sort=salary&dir=desc'), null,
+    'sort-only params are not filter state (no accidental applies)');
   // sort rides the SAME query (written by the caller, read back here)
   const p = new URLSearchParams(qs);
   assert.equal(p.get('sort'), 'salary');
@@ -314,7 +318,6 @@ test('CAR-115: salary sort re-orders the boost-first partition (desc → richest
     { title: 'C', company: 'x', salary: '90k', url: 'https://x/3' },
   ];
   const env = bootResults({ corpus: rows });
-  env.ctx.onSortChange && null;
   // drive through the real th button
   env.SR.render();
   const sortBtns = env.resultsEl.querySelectorAll('.v2-scan-sort');
@@ -392,6 +395,41 @@ test('CAR-115: quick view actions — Evaluate navigates, ★ toggles, unsafe UR
   const link = safe.panel.querySelector('a');
   assert.equal(link.attrs.href, 'https://x/2');
   assert.equal(link.attrs.rel, 'noopener');
+});
+
+// ───────────────────────── 6. companies panel (scan/runner.js) ───────────────
+
+function bootCompaniesPanel() {
+  const document = { activeElement: null };
+  globalThis.document = document;
+  const w = {
+    UI: { el: makeEl(document), toast() {} },
+    API: { get: async () => ({}) },
+    ScanResults: { getRows: () => [] },
+    I18n: { getLang: () => 'en' },
+  };
+  globalThis.API = w.API; // the runner reads the bare global (browser global)
+  new Function('window', RUNNER_SRC)(w); // eslint-disable-line no-new-func
+  const companies = [{ name: 'Acme', careers_url: 'https://acme.jobs' }, { name: 'Webb' }];
+  const panel = w.createScanCompaniesPanel({
+    c: w.UI.el, t: (k, f) => f, companies, apiCompanies: [companies[0]],
+    SR: { getRows: () => [] }, addRefreshListener() {}, onFilterByName() {},
+  });
+  return { w, panel, companies };
+}
+
+test('CAR-115: the Active-companies toggle renders the grouped list (no ReferenceError)', () => {
+  const { panel } = bootCompaniesPanel();
+  const toggle = panel.el.querySelectorAll('button')[0];
+  toggle.click(); // expanded → rerender() — used to throw on getApiCompanies()
+  const list = panel.el.querySelectorAll('.flex')[0];
+  assert.ok(list.children.length > 0, 'the list rendered tags');
+  assert.match(list.textContent, /Acme/, 'the API-backed company is listed');
+  assert.match(list.textContent, /Direct API/, 'the API group header renders');
+  // the mirror stays the grouping source after a registry reclassification
+  panel.setApiCompanies([{ name: 'Webb' }]);
+  toggle.click(); toggle.click(); // collapse + expand → rerender again
+  assert.match(list.textContent, /Webb/, 'the reclassified set drives the groups');
 });
 
 // ───────────────────────── 5. static guards ──────────────────────────────────

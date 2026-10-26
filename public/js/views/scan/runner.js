@@ -539,7 +539,7 @@ repostsPanel.addEventListener('toggle', async () => {
         ? companies.filter((co) => (co.name || '').toLowerCase().includes(q))
         : companies;
       // Group: API-backed first, websearch-only second.
-      const apiSet = new Set(getApiCompanies());
+      const apiSet = new Set(apiCompanies);
       const apis = matched.filter((co) => apiSet.has(co));
       const others = matched.filter((co) => !apiSet.has(co));
       // Each company tag is a flex-row of two buttons:

@@ -30,10 +30,11 @@ test('the live filter bar exists (one system, role=group, localized label)', () 
   assert.match(SCAN, /className: 'v2-scan-bar'/, 'scan.js must build the .v2-scan-bar');
   assert.match(SCAN, /'aria-label': t\('scan\.filtersGroup', 'Result filters'\)/,
     'the bar keeps the localized group label');
-  // The old two-system furniture is gone for good.
+  // The old two-system furniture is gone for good. (The bare-name pattern
+  // must not match the `scan-filters__*` BEM children.)
   assert.doesNotMatch(SCAN, /id:\s*'scan-apply'/, 'no Apply button (live filtering)');
-  assert.doesNotMatch(SCAN, /className: 'scan-filters'$/, 'no .scan-filters mega-panel');
-  assert.doesNotMatch(SCAN, /className: 'scan-filters__saved'/, 'no saved-searches sub-card');
+  assert.doesNotMatch(SCAN, /'scan-filters'(?![_\w-])/, 'no .scan-filters mega-panel');
+  assert.doesNotMatch(SCAN, /'scan-filters__saved'/, 'no saved-searches sub-card');
 });
 
 test('every popover control is a labelled field() (label-above-control, a11y)', () => {
@@ -95,7 +96,9 @@ test('filter-bar + facet CSS exist (v2 additions live in app.css)', () => {
   assert.match(CSS, /\.v2-scan-active\b/, '.v2-scan-active chip CSS must exist');
   assert.match(CSS, /\.v2-scan-presets\b/, '.v2-scan-presets CSS must exist');
   assert.match(CSS, /\.v2-scan-facets\b/, '.v2-scan-facets CSS must exist');
-  // Legacy chrome CSS stays (launcher/terminal/pager untouched by CAR-115).
-  assert.match(CSS, /\.scan-filters\b/, 'legacy .scan-filters CSS stays (components.css)');
-  assert.match(CSS, /\.scan-advanced\b/, 'legacy .scan-advanced CSS stays (components.css)');
+  // CAR-115 review: the legacy .scan-filters / .scan-advanced rules are DEAD
+  // (no view renders those classes any more). The rules live in
+  // components.css — outside this change's file ownership — so the old
+  // "must exist" assertions are dropped and the removal itself is a
+  // hand-off to a components.css owner.
 });
