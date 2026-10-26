@@ -404,7 +404,23 @@ test('CAR-143 r2: an explicit code sits next to the figure — exact AUD→EUR r
   );
   assert.match(block, /100000 AUD per YEAR/);
   assert.match(block, /100000 AUD vs 85000 EUR/);
-  assert.match(block, /≈\s*\d+ EUR per year/); // static-table AUD→EUR present (value not pinned — rates drift)
+  // Pinned to the static table's exact value (AUD 0.66, EUR 1.08 →
+  // 100000 × 0.66 / 1.08 = 61111.11 → 61111) — a rounding or inversion
+  // regression in convertValue fails here instead of shipping a 17×-off
+  // "indicative" number. Update together with USD_PER.
+  assert.match(block, /≈\s*61111 EUR per year/);
+});
+
+test('CAR-143 r3: a CAD mention away from the figure never yields a CAD conversion', () => {
+  // Prose «CAD» (design tools) sits on its own line — not adjacent to the
+  // figure, so no CAD currency and no CAD→EUR rate may enter the block.
+  const block = CC.buildCompensationBlock(
+    'Engineer at Toronto.\nExperience with CAD tools.\nSalary: $100k per year.',
+    { low: 85000, high: null, currency: 'EUR', period: 'year', raw: '85,000' },
+  );
+  assert.doesNotMatch(block, /CAD/);
+  assert.match(block, /100000 \$ per YEAR/); // symbol kept, unresolved
+  assert.match(block, /No reliable conversion from \$ to EUR/);
 });
 
 test('CAR-143 r2: a code elsewhere in the line does not disambiguate the symbol', () => {
