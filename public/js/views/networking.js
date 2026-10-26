@@ -7,6 +7,13 @@
  * realistic intro path, and tailored outreach drafts — grounded server-side in
  * the user's CV / profile / two-pager. Runs live with a provider key, or hands
  * back a copy-paste prompt. Finished plans save to the user layer (networking/).
+ *
+ * CAR-119 — the page renders through the shared LlmPageKit template:
+ * two-column form|result, a progress/ETA/Cancel run panel over the plan POST,
+ * tracker autofill for company/role, and the saved-plans list as a kit
+ * history drawer (same endpoints, card UI + confirm-gated delete).
+ * // CAR-119 i18n: no new dictionary keys — the kit's `llm2.*` strings ship
+ * as I18n.t EN fallbacks inside public/js/lib/llm-page-kit.js.
  */
 Router.register('networking', async () => {
   const c = UI.el;
@@ -30,6 +37,12 @@ Router.register('networking', async () => {
   jdInput.setAttribute('aria-label', jdInput.placeholder);
 
   const buildBtn = c('button', { className: 'btn btn-primary', type: 'button' }, t('net.build', 'Build plan'));
+  // CAR-119 — run/progress host + tracker autofill (company/role fields).
+  const runHost = c('div');
+  const picker = window.LlmPageKit.jobPicker({
+    map: { company: 'company', role: 'role' },
+    fields: { company: companyInput, role: roleInput },
+  });
   const setup = c('div', { className: 'card', style: { padding: '16px', margin: '12px 0 18px', display: 'grid', gap: '10px' } }, [
     field(t('net.companyLabel', 'Company'), companyInput),
     field(t('net.roleLabel', 'Role'), roleInput),
@@ -41,14 +54,15 @@ Router.register('networking', async () => {
         '⏱ ' + t('common.eta', '~{n}s').replace('{n}', '30')),
     ]),
   ]);
-  root.appendChild(setup);
+  const output = c('div', { style: { margin: '0 0 18px' } });
+  root.appendChild(window.LlmPageKit.layout({
+    form: c('div', null, [picker, setup]),
+    result: c('div', null, [runHost, output]),
+  }).root);
 
   function field(label, el) {
     return c('label', { style: { display: 'flex', flexDirection: 'column', gap: '4px', fontSize: '12px', color: 'var(--foggy)' } }, [label, el]);
   }
-
-  const output = c('div', { style: { margin: '0 0 18px' } });
-  root.appendChild(output);
 
   let current = { company: '', role: '', markdown: '' };
 
@@ -58,19 +72,23 @@ Router.register('networking', async () => {
     current = { company, role: roleInput.value.trim(), markdown: '' };
     output.textContent = '';
     buildBtn.disabled = true;
-    const pending = c('div', { className: 'loading', style: { color: 'var(--foggy)' } }, t('net.building', 'Researching and drafting…'));
-    output.appendChild(pending);
+    // CAR-119 — the shared run panel replaces the static "Researching…" line:
+    // synchronous paint, live elapsed/ETA, Cancel aborts the POST.
+    const runCtrl = window.LlmPageKit.createRun({ etaSeconds: 30 }).mount(runHost);
     try {
-      const res = await API.post('/api/networking/plan', { company, role: current.role, jd: jdInput.value.trim(), run: true, lang: (I18n.getLang && I18n.getLang()) || 'en' });
-      pending.remove();
-      if (res.markdown) {
+      const res = await window.LlmPageKit.run({
+        run: runCtrl,
+        request: (signal) => window.LlmPageKit.postJSON('/api/networking/plan',
+          { company, role: current.role, jd: jdInput.value.trim(), run: true }, signal),
+      });
+      if (runCtrl.cancelled || runCtrl.signal.aborted) return; // a cancelled run paints nothing more
+      if (res && res.markdown) {
         current.markdown = res.markdown;
         renderPlan(res.markdown);
       } else {
-        showManualPrompt(res.prompt);
+        showManualPrompt(res && res.prompt);
       }
     } catch (err) {
-      pending.remove();
       UI.toast((err && err.message) || t('net.buildFailed', 'Could not build the plan'), 'error');
     } finally { buildBtn.disabled = false; }
   });
@@ -82,7 +100,7 @@ Router.register('networking', async () => {
       try {
         const { name } = await API.post('/api/networking/save', { company: current.company, role: current.role, plan: markdown });
         UI.toast(t('net.saved', 'Plan saved') + ' · ' + name, 'success');
-        loadPlans();
+        refreshPlans();
       } catch (err) {
         UI.toast((err && err.message) || t('net.saveFailed', 'Could not save the plan'), 'error');
       } finally { saveBtn.disabled = false; }
@@ -103,41 +121,31 @@ Router.register('networking', async () => {
   }
 
   // ── saved plans ──
-  const savedWrap = c('div');
-  root.appendChild(c('h2', { style: { fontSize: '15px', margin: '18px 0 8px' } }, t('net.savedTitle', 'Saved plans')));
-  root.appendChild(savedWrap);
-
-  async function loadPlans() {
-    savedWrap.textContent = '';
-    let plans = [];
-    try { ({ plans } = await API.get('/api/networking/plans')); } catch { plans = []; }
-    if (!plans || !plans.length) {
-      savedWrap.appendChild(c('p', { style: { color: 'var(--foggy)' } }, t('net.savedEmpty', 'No saved plans yet — build one and click “Save plan”.')));
-      return;
-    }
-    const list = c('ul', { style: { listStyle: 'none', padding: '0', margin: '0', display: 'flex', flexDirection: 'column', gap: '6px' } },
-      plans.map((s) => {
-        const open = c('button', { className: 'btn btn-ghost btn-sm', type: 'button' }, t('net.view', 'View'));
-        open.addEventListener('click', async () => {
-          try {
-            const { markdown } = await API.get(`/api/networking/plans/${encodeURIComponent(s.name)}`);
-            UI.modal(s.name, c('div', { className: 'md', html: UI.md(markdown) }));
-          } catch (err) { UI.toast((err && err.message) || 'Error', 'error'); }
-        });
-        const del = c('button', { className: 'btn btn-ghost btn-sm', type: 'button', 'aria-label': t('net.delete', 'Delete') }, '🗑');
-        del.addEventListener('click', async () => {
-          if (!(await UI.confirm(t('net.delete', 'Delete'), t('net.confirmDelete', 'Delete this saved plan?'), { danger: true }))) return;
-          try { await API.del(`/api/networking/plans/${encodeURIComponent(s.name)}`); loadPlans(); }
-          catch (err) { UI.toast((err && err.message) || 'Error', 'error'); }
-        });
-        return c('li', { className: 'card', style: { padding: '8px 12px', display: 'flex', alignItems: 'center', gap: '10px', justifyContent: 'space-between' } }, [
-          c('span', { style: { fontSize: '13px' } }, s.name),
-          c('span', { style: { display: 'flex', gap: '6px' } }, [open, del]),
-        ]);
-      }));
-    savedWrap.appendChild(list);
-  }
-  await loadPlans();
+  // CAR-119 — the hand-rolled list became the kit's history drawer (same
+  // endpoints and confirm-gated delete; card UI with date + View/Delete).
+  const saved = window.LlmPageKit.historyDrawer({
+    title: t('net.savedTitle', 'Saved plans'),
+    load: async () => {
+      try {
+        const { plans } = await API.get('/api/networking/plans');
+        return plans || [];
+      } catch { return []; }
+    },
+    onView: async (s) => {
+      try {
+        const { markdown } = await API.get(`/api/networking/plans/${encodeURIComponent(s.name)}`);
+        UI.modal(s.name, c('div', { className: 'md', html: UI.md(markdown) }));
+      } catch (err) { UI.toast((err && err.message) || t('common.error', 'Error'), 'error'); }
+    },
+    onDelete: async (s) => {
+      await API.del(`/api/networking/plans/${encodeURIComponent(s.name)}`);
+    },
+  });
+  root.appendChild(saved.el);
+  // renderPlan refreshes the drawer after a successful save (the old
+  // loadPlans() call site).
+  const refreshPlans = saved.refresh;
+  await refreshPlans();
 
   return root;
 });
