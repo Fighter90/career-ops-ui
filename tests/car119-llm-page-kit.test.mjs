@@ -496,6 +496,27 @@ test('CAR-119: historyDrawer renders cards and gates delete behind confirm; fail
   assert.ok(empty.el.querySelector('.llm2hist__empty'));
 });
 
+// ── review #11 — layout ids are per-instance ─────────────────────────────
+
+test('CAR-119 #11: two mounted layouts never share element ids', () => {
+  const { LlmPageKit } = loadKit();
+  const a = LlmPageKit.layout({ form: doc.createElement('div'), result: doc.createElement('div') });
+  const b = LlmPageKit.layout({ form: doc.createElement('div'), result: doc.createElement('div') });
+  const ids = (page) => {
+    const out = new Set();
+    const walk = (n) => {
+      if (n.attrs && n.attrs.id) out.add(n.attrs.id);
+      for (const c of n.children || []) if (typeof c !== 'string') walk(c);
+    };
+    walk(page.root);
+    return out;
+  };
+  const aIds = ids(a);
+  const bIds = ids(b);
+  assert.ok(aIds.size >= 4, 'tab/tabpanel ids exist');
+  for (const id of aIds) assert.equal(bIds.has(id), false, `duplicate id across layouts: ${id}`);
+});
+
 // ── the auto-start guard (v1.248.2 bug class) ─────────────────────────────
 
 test('CAR-119: the kit never auto-starts — no URL/hash reads, fetch only inside postJSON, no Router', () => {

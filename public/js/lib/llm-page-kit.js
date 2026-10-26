@@ -122,20 +122,24 @@ window.LlmPageKit = (function () {
    *   show('form'|'result') — mobile-tab pane switch; on desktop both show.
    */
   function layout({ form, result }) {
+    // CAR-119 review #11 — per-instance id suffix (same discipline as
+    // jobPicker's listId): two layouts in one document (router transitions,
+    // tabbed pages) must never produce duplicate ids.
+    const uid = 'llm2-' + Math.random().toString(36).slice(2, 8);
     const tabbar = el('div', { className: 'llm2__tabs', role: 'tablist', 'aria-label': t('llm2.tabsLabel', 'AI tool panels') }, [
       el('button', {
-        type: 'button', className: 'llm2__tab is-active', role: 'tab', id: 'llm2-tab-form',
-        'aria-selected': 'true', 'aria-controls': 'llm2-pane-form',
+        type: 'button', className: 'llm2__tab is-active', role: 'tab', id: uid + '-tab-form',
+        'aria-selected': 'true', 'aria-controls': uid + '-pane-form',
         onClick: () => show('form'),
       }, t('llm2.tabForm', 'Input')),
       el('button', {
-        type: 'button', className: 'llm2__tab', role: 'tab', id: 'llm2-tab-result',
-        'aria-selected': 'false', 'aria-controls': 'llm2-pane-result',
+        type: 'button', className: 'llm2__tab', role: 'tab', id: uid + '-tab-result',
+        'aria-selected': 'false', 'aria-controls': uid + '-pane-result',
         onClick: () => show('result'),
       }, t('llm2.tabResult', 'Result')),
     ]);
-    const formPane = el('div', { className: 'llm2__form', role: 'tabpanel', id: 'llm2-pane-form', 'aria-labelledby': 'llm2-tab-form' }, [form]);
-    const resultPane = el('div', { className: 'llm2__result', role: 'tabpanel', id: 'llm2-pane-result', 'aria-labelledby': 'llm2-tab-result' }, [result]);
+    const formPane = el('div', { className: 'llm2__form', role: 'tabpanel', id: uid + '-pane-form', 'aria-labelledby': uid + '-tab-form' }, [form]);
+    const resultPane = el('div', { className: 'llm2__result', role: 'tabpanel', id: uid + '-pane-result', 'aria-labelledby': uid + '-tab-result' }, [result]);
 
     function show(name) {
       const formActive = name !== 'result';
