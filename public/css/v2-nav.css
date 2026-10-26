@@ -1,0 +1,258 @@
+/**
+ * CAR-122 — sidebar v2 (collapsible groups · favorites · recents · Cmd+K
+ * palette). Loads after the base three sheets and the v2 view sheets;
+ * every rule scopes under .nav-v2 / .nav-v2-* names so the cascade
+ * override stays surgical. Token-based only (no hex — the v2 CSS
+ * discipline from v2-pipeline.css), theme-aware via the alias tokens,
+ * RTL via logical properties + a chevron mirror, and every animation
+ * collapses under `prefers-reduced-motion: reduce`.
+ */
+
+/* ── 1. the launch button (palette entry point) ─────────────────────── */
+
+.nav-v2-launch {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: var(--space-3) 12px var(--space-2);
+  padding: 9px 12px;
+  min-height: 36px;
+  box-sizing: border-box;
+  width: calc(100% - 24px);
+  border: 1px solid var(--slate);
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--foggy);
+  font-size: var(--font-size-sm);
+  font-weight: 500;
+  cursor: pointer;
+  text-align: start;
+  transition: background var(--transition), border-color var(--transition), color var(--transition);
+}
+.nav-v2-launch:hover { background: var(--beach); border-color: var(--foggy); color: var(--ink); }
+.nav-v2-launch .nav-v2-kbd {
+  margin-inline-start: auto;
+  font-family: inherit;
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--foggy);
+  border: 1px solid var(--slate);
+  border-radius: 6px;
+  padding: 1px 6px;
+}
+
+/* ── 2. collapsible groups ──────────────────────────────────────────── */
+
+.nav-v2-toggle {
+  display: flex;
+  align-items: center;
+  gap: var(--space-2);
+  margin: 14px 12px 4px;
+  padding: 4px 6px;
+  min-height: 28px;
+  box-sizing: border-box;
+  width: calc(100% - 24px);
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--foggy);
+  font-size: var(--font-size-xs);
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  cursor: pointer;
+  text-align: start;
+  transition: background var(--transition), color var(--transition);
+}
+.nav-v2-toggle:hover { background: var(--beach); color: var(--ink); }
+.nav-v2-chev {
+  display: inline-flex;
+  font-size: 10px;
+  transition: transform var(--transition);
+}
+.nav-v2-toggle[aria-expanded="true"] .nav-v2-chev { transform: rotate(90deg); }
+[dir="rtl"] .nav-v2-toggle[aria-expanded="false"] .nav-v2-chev { transform: rotate(180deg); }
+[dir="rtl"] .nav-v2-toggle[aria-expanded="true"] .nav-v2-chev { transform: rotate(270deg); }
+
+.nav-v2-items[hidden] { display: none; }
+
+/* ── 3. item rows + favorites controls ──────────────────────────────── */
+
+.nav-v2-row { display: flex; align-items: stretch; margin: 0 8px; }
+.nav-v2-row .nav-item { flex: 1 1 auto; min-width: 0; }
+.nav-v2-row .nav-item,
+.nav-v2-row-link {
+  position: relative;
+  overflow: hidden;
+}
+/* CAR-122 spec item 7 — animated active indicator (slide-in 150 ms). */
+.nav-v2-row .nav-item.active::before {
+  content: '';
+  position: absolute;
+  inset-block: 9px;
+  inset-inline-start: 3px;
+  width: 3px;
+  border-radius: 2px;
+  background: currentColor;
+  animation: navv2-active-in 150ms cubic-bezier(.2, .8, .2, 1);
+}
+@keyframes navv2-active-in {
+  from { transform: translateY(60%); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.nav-v2-mini {
+  flex: 0 0 auto;
+  align-self: center;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 26px;
+  height: 26px;
+  margin-inline-start: 2px;
+  border: 0;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--foggy);
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  opacity: 0;
+  transition: opacity var(--transition), background var(--transition), color var(--transition);
+}
+.nav-v2-row:hover .nav-v2-mini,
+.nav-v2-row:focus-within .nav-v2-mini { opacity: 1; }
+.nav-v2-row .nav-v2-mini.is-pinned { opacity: 1; color: var(--hof); }
+.nav-v2-mini:hover { background: var(--beach); color: var(--ink); }
+.nav-v2-mini:focus-visible { opacity: 1; outline: 2px solid var(--foggy); outline-offset: 1px; }
+
+/* favorites / recents rows mirror .nav-item without BEING nav items
+   (the router's .nav-item[data-route] highlight must stay unique). */
+.nav-v2-row-link {
+  flex: 1 1 auto;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 12px 14px;
+  min-height: 44px;
+  box-sizing: border-box;
+  border-radius: var(--radius);
+  color: var(--hof);
+  font-weight: 500;
+  font-size: 14.5px;
+  text-decoration: none !important;
+  transition: background var(--transition), color var(--transition);
+}
+.nav-v2-row-link:hover { background: var(--beach); }
+.nav-v2-fav-row .nav-v2-row-link,
+.nav-v2-recent-row .nav-v2-row-link { font-size: 14px; }
+
+/* ── 4. the command palette ─────────────────────────────────────────── */
+
+.nav-v2-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-modal);
+  background: rgba(0, 0, 0, 0.35);
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 12vh var(--space-4) var(--space-4);
+}
+.nav-v2-overlay[hidden] { display: none; }
+
+.nav-v2-palette {
+  width: min(560px, 100%);
+  max-height: 70vh;
+  display: flex;
+  flex-direction: column;
+  background: var(--paper);
+  border: 1px solid var(--slate);
+  border-radius: 12px;
+  box-shadow: 0 12px 40px rgba(0, 0, 0, 0.18);
+  overflow: hidden;
+  animation: navv2-palette-in 150ms cubic-bezier(.2, .8, .2, 1);
+}
+@keyframes navv2-palette-in {
+  from { transform: translateY(-6px); opacity: 0; }
+  to { transform: translateY(0); opacity: 1; }
+}
+
+.nav-v2-input {
+  flex: 0 0 auto;
+  border: 0;
+  border-bottom: 1px solid var(--slate);
+  border-radius: 0;
+  padding: 14px 16px;
+  font-size: 16px;
+  background: transparent;
+  color: var(--ink);
+  width: 100%;
+  box-sizing: border-box;
+}
+.nav-v2-input:focus { outline: none; box-shadow: none; }
+
+.nav-v2-palette-list {
+  flex: 1 1 auto;
+  overflow-y: auto;
+  margin: 0;
+  padding: var(--space-2);
+  list-style: none;
+}
+.nav-v2-opt {
+  display: flex;
+  align-items: center;
+  gap: var(--space-3);
+  padding: 10px 12px;
+  border-radius: var(--radius);
+  color: var(--ink);
+  font-size: 14.5px;
+  cursor: pointer;
+}
+.nav-v2-opt.is-active { background: var(--hof); color: var(--paper); }
+.nav-v2-opt-mark {
+  display: inline-flex;
+  width: 20px;
+  justify-content: center;
+  opacity: 0.85;
+  flex: 0 0 auto;
+}
+.nav-v2-opt-title {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.nav-v2-opt-group {
+  flex: 0 0 auto;
+  font-size: var(--font-size-xs);
+  color: var(--foggy);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+.nav-v2-opt.is-active .nav-v2-opt-group { color: var(--paper); opacity: 0.75; }
+.nav-v2-opt-action .nav-v2-opt-mark { color: var(--ink); }
+
+.nav-v2-empty {
+  padding: var(--space-5);
+  text-align: center;
+  color: var(--foggy);
+  font-size: var(--font-size-sm);
+}
+.nav-v2-palette-hint {
+  flex: 0 0 auto;
+  padding: 8px 16px;
+  border-top: 1px solid var(--slate);
+  color: var(--foggy);
+  font-size: 11.5px;
+}
+
+/* ── 5. motion + responsive ─────────────────────────────────────────── */
+
+@media (prefers-reduced-motion: reduce) {
+  .nav-v2-row .nav-item.active::before,
+  .nav-v2-palette { animation: none; }
+  .nav-v2-chev { transition: none; }
+}

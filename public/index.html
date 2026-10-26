@@ -31,6 +31,10 @@
          js/lib/llm-page-kit.js) owns its stylesheet; merge-trivial with
          any other v2 link. -->
     <link rel="stylesheet" href="/css/v2-llm.css" />
+    <!-- CAR-122 — sidebar v2 (collapsible groups · favorites · Cmd+K
+         palette) owns its stylesheet; loads after the base three and the
+         v2 view sheets — cascade override lives in the file. -->
+    <link rel="stylesheet" href="/css/v2-nav.css" />
     <link rel="stylesheet" href="/css/map.css" />
     <link rel="stylesheet" href="/vendor/leaflet/leaflet.css" />
     <link rel="icon" type="image/x-icon" href="/favicon.ico" />
@@ -56,135 +60,197 @@
         <span class="logo-text">career-ops-ui</span>
       </a>
 
+      <!-- CAR-122 — sidebar v2: the 38 flat entries became 7 collapsible
+           groups (state persisted by js/lib/nav-v2.js in
+           `career-ops-ui:nav-v2`) + a Favorites/Recents pair rendered
+           dynamically at the top + the Cmd/Ctrl+K command palette.
+           Every <a class="nav-item"> below is byte-identical to the
+           pre-v2 markup — the router's .nav-item[data-route] highlight
+           contract and the locale-sweep sidebar pins are untouched. -->
       <nav class="nav">
+        <button class="nav-v2-launch" id="nav-v2-launch" type="button" aria-haspopup="dialog" data-i18n-aria-label="nav.v2.palette" aria-label="Command menu">
+          <span aria-hidden="true">⌘</span>
+          <span data-i18n="nav.v2.paletteLabel">Jump to…</span>
+          <kbd class="nav-v2-kbd" aria-hidden="true">⌘K</kbd>
+        </button>
+
         <a class="nav-item" href="#/dashboard" data-route="dashboard">
           <span class="nav-ico">◆</span> <span data-i18n="nav.dashboard">Dashboard</span>
         </a>
 
-        <div class="nav-group" data-i18n="nav.group.sourcing">Sourcing</div>
-        <a class="nav-item" href="#/scan" data-route="scan">
-          <span class="nav-ico">◇</span> <span data-i18n="nav.scan">Scan</span>
-        </a>
-        <a class="nav-item" href="#/pipeline" data-route="pipeline">
-          <span class="nav-ico">▤</span> <span data-i18n="nav.pipeline">Pipeline</span>
-        </a>
-        <a class="nav-item" href="#/map" data-route="map">
-          <span class="nav-ico">⌖</span> <span data-i18n="nav.map">Map</span>
-        </a>
-        <a class="nav-item" href="#/auto" data-route="auto">
-          <span class="nav-ico">✨</span> <span data-i18n="nav.auto">Auto-pipeline</span>
-        </a>
-        <a class="nav-item" href="#/funded" data-route="funded">
-          <span class="nav-ico">💰</span> <span data-i18n="nav.funded">Funded companies</span>
-        </a>
+        <section class="nav-v2-group" data-nav-group="sourcing">
+          <button class="nav-v2-toggle" type="button" aria-expanded="true" aria-controls="nav-v2-items-sourcing">
+            <span class="nav-v2-chev" aria-hidden="true">▸</span>
+            <span data-i18n="nav.group.sourcing">Sourcing</span>
+          </button>
+          <div class="nav-v2-items" id="nav-v2-items-sourcing">
+            <a class="nav-item" href="#/scan" data-route="scan">
+              <span class="nav-ico">◇</span> <span data-i18n="nav.scan">Scan</span>
+            </a>
+            <a class="nav-item" href="#/pipeline" data-route="pipeline">
+              <span class="nav-ico">▤</span> <span data-i18n="nav.pipeline">Pipeline</span>
+            </a>
+            <a class="nav-item" href="#/map" data-route="map">
+              <span class="nav-ico">⌖</span> <span data-i18n="nav.map">Map</span>
+            </a>
+            <a class="nav-item" href="#/auto" data-route="auto">
+              <span class="nav-ico">✨</span> <span data-i18n="nav.auto">Auto-pipeline</span>
+            </a>
+            <a class="nav-item" href="#/funded" data-route="funded">
+              <span class="nav-ico">💰</span> <span data-i18n="nav.funded">Funded companies</span>
+            </a>
+          </div>
+        </section>
 
-        <div class="nav-group" data-i18n="nav.group.decision">Decision</div>
-        <a class="nav-item" href="#/evaluate" data-route="evaluate">
-          <span class="nav-ico">▷</span> <span data-i18n="nav.evaluate">Evaluate</span>
-        </a>
-        <a class="nav-item" href="#/batch" data-route="batch">
-          <span class="nav-ico">⇶</span> <span data-i18n="nav.batch">Batch evaluate</span>
-        </a>
-        <a class="nav-item" href="#/deep" data-route="deep">
-          <span class="nav-ico">⌕</span> <span data-i18n="nav.deep">Deep research</span>
-        </a>
-        <a class="nav-item" href="#/networking" data-route="networking">
-          <span class="nav-ico">🤝</span> <span data-i18n="nav.networking">Networking</span>
-        </a>
-        <a class="nav-item" href="#/project" data-route="project">
-          <span class="nav-ico">✦</span> <span data-i18n="nav.project">Project</span>
-        </a>
-        <a class="nav-item" href="#/training" data-route="training">
-          <span class="nav-ico">▣</span> <span data-i18n="nav.training">Training</span>
-        </a>
+        <section class="nav-v2-group" data-nav-group="decision">
+          <button class="nav-v2-toggle" type="button" aria-expanded="true" aria-controls="nav-v2-items-decision">
+            <span class="nav-v2-chev" aria-hidden="true">▸</span>
+            <span data-i18n="nav.group.decision">Decision</span>
+          </button>
+          <div class="nav-v2-items" id="nav-v2-items-decision">
+            <a class="nav-item" href="#/evaluate" data-route="evaluate">
+              <span class="nav-ico">▷</span> <span data-i18n="nav.evaluate">Evaluate</span>
+            </a>
+            <a class="nav-item" href="#/batch" data-route="batch">
+              <span class="nav-ico">⇶</span> <span data-i18n="nav.batch">Batch evaluate</span>
+            </a>
+            <a class="nav-item" href="#/deep" data-route="deep">
+              <span class="nav-ico">⌕</span> <span data-i18n="nav.deep">Deep research</span>
+            </a>
+            <a class="nav-item" href="#/networking" data-route="networking">
+              <span class="nav-ico">🤝</span> <span data-i18n="nav.networking">Networking</span>
+            </a>
+            <a class="nav-item" href="#/project" data-route="project">
+              <span class="nav-ico">✦</span> <span data-i18n="nav.project">Project</span>
+            </a>
+            <a class="nav-item" href="#/training" data-route="training">
+              <span class="nav-ico">▣</span> <span data-i18n="nav.training">Training</span>
+            </a>
+          </div>
+        </section>
 
-        <div class="nav-group" data-i18n="nav.group.application">Application</div>
-        <a class="nav-item" href="#/apply" data-route="apply">
-          <span class="nav-ico">→</span> <span data-i18n="nav.apply">Apply checklist</span>
-        </a>
-        <a class="nav-item" href="#/cover" data-route="cover">
-          <span class="nav-ico">✍</span> <span data-i18n="nav.cover">Cover letter</span>
-        </a>
-        <a class="nav-item" href="#/tracker" data-route="tracker">
-          <span class="nav-ico">≡</span> <span data-i18n="nav.tracker">Tracker</span>
-        </a>
-        <a class="nav-item" href="#/followup" data-route="followup">
-          <span class="nav-ico">↻</span> <span data-i18n="nav.followup">Follow-up</span>
-        </a>
+        <section class="nav-v2-group" data-nav-group="application">
+          <button class="nav-v2-toggle" type="button" aria-expanded="true" aria-controls="nav-v2-items-application">
+            <span class="nav-v2-chev" aria-hidden="true">▸</span>
+            <span data-i18n="nav.group.application">Application</span>
+          </button>
+          <div class="nav-v2-items" id="nav-v2-items-application">
+            <a class="nav-item" href="#/apply" data-route="apply">
+              <span class="nav-ico">→</span> <span data-i18n="nav.apply">Apply checklist</span>
+            </a>
+            <a class="nav-item" href="#/cover" data-route="cover">
+              <span class="nav-ico">✍</span> <span data-i18n="nav.cover">Cover letter</span>
+            </a>
+            <a class="nav-item" href="#/tracker" data-route="tracker">
+              <span class="nav-ico">≡</span> <span data-i18n="nav.tracker">Tracker</span>
+            </a>
+            <a class="nav-item" href="#/followup" data-route="followup">
+              <span class="nav-ico">↻</span> <span data-i18n="nav.followup">Follow-up</span>
+            </a>
+          </div>
+        </section>
 
-        <div class="nav-group" data-i18n="nav.group.networking">Networking</div>
-        <a class="nav-item" href="#/contacto" data-route="contacto">
-          <span class="nav-ico">✉</span> <span data-i18n="nav.contacto">Outreach</span>
-        </a>
-        <a class="nav-item" href="#/interview-prep" data-route="interview-prep">
-          <span class="nav-ico">★</span> <span data-i18n="nav.interviewPrep">Interview prep</span>
-        </a>
-        <a class="nav-item" href="#/mock-interview" data-route="mock-interview">
-          <span class="nav-ico">🎤</span> <span data-i18n="nav.mockInterview">Mock interview</span>
-        </a>
+        <section class="nav-v2-group" data-nav-group="networking">
+          <button class="nav-v2-toggle" type="button" aria-expanded="true" aria-controls="nav-v2-items-networking">
+            <span class="nav-v2-chev" aria-hidden="true">▸</span>
+            <span data-i18n="nav.group.networking">Networking</span>
+          </button>
+          <div class="nav-v2-items" id="nav-v2-items-networking">
+            <a class="nav-item" href="#/contacto" data-route="contacto">
+              <span class="nav-ico">✉</span> <span data-i18n="nav.contacto">Outreach</span>
+            </a>
+            <a class="nav-item" href="#/interview-prep" data-route="interview-prep">
+              <span class="nav-ico">★</span> <span data-i18n="nav.interviewPrep">Interview prep</span>
+            </a>
+            <a class="nav-item" href="#/mock-interview" data-route="mock-interview">
+              <span class="nav-ico">🎤</span> <span data-i18n="nav.mockInterview">Mock interview</span>
+            </a>
+          </div>
+        </section>
 
-        <div class="nav-group" data-i18n="nav.group.analytics">Analytics</div>
-        <a class="nav-item" href="#/stats" data-route="stats">
-          <span class="nav-ico">📊</span> <span data-i18n="nav.stats">Target-role stats</span>
-        </a>
-        <a class="nav-item" href="#/interview-digest" data-route="interview-digest">
-          <span class="nav-ico">📅</span> <span data-i18n="nav.interviewDigest">Interview digest</span>
-        </a>
-        <a class="nav-item" href="#/patterns" data-route="patterns">
-          <span class="nav-ico">▩</span> <span data-i18n="nav.patterns">Patterns</span>
-        </a>
-        <a class="nav-item" href="#/assessments" data-route="assessments">
-          <span class="nav-ico">🧪</span> <span data-i18n="nav.assessments">Skills log</span>
-        </a>
-        <a class="nav-item" href="#/reports" data-route="reports">
-          <span class="nav-ico">▦</span> <span data-i18n="nav.reports">Reports</span>
-        </a>
-        <a class="nav-item" href="#/activity" data-route="activity">
-          <span class="nav-ico">⌚</span> <span data-i18n="nav.activity">Activity</span>
-        </a>
+        <section class="nav-v2-group" data-nav-group="analytics">
+          <button class="nav-v2-toggle" type="button" aria-expanded="true" aria-controls="nav-v2-items-analytics">
+            <span class="nav-v2-chev" aria-hidden="true">▸</span>
+            <span data-i18n="nav.group.analytics">Analytics</span>
+          </button>
+          <div class="nav-v2-items" id="nav-v2-items-analytics">
+            <a class="nav-item" href="#/stats" data-route="stats">
+              <span class="nav-ico">📊</span> <span data-i18n="nav.stats">Target-role stats</span>
+            </a>
+            <a class="nav-item" href="#/interview-digest" data-route="interview-digest">
+              <span class="nav-ico">📅</span> <span data-i18n="nav.interviewDigest">Interview digest</span>
+            </a>
+            <a class="nav-item" href="#/patterns" data-route="patterns">
+              <span class="nav-ico">▩</span> <span data-i18n="nav.patterns">Patterns</span>
+            </a>
+            <a class="nav-item" href="#/assessments" data-route="assessments">
+              <span class="nav-ico">🧪</span> <span data-i18n="nav.assessments">Skills log</span>
+            </a>
+            <a class="nav-item" href="#/reports" data-route="reports">
+              <span class="nav-ico">▦</span> <span data-i18n="nav.reports">Reports</span>
+            </a>
+            <a class="nav-item" href="#/activity" data-route="activity">
+              <span class="nav-ico">⌚</span> <span data-i18n="nav.activity">Activity</span>
+            </a>
+          </div>
+        </section>
 
-        <div class="nav-group" data-i18n="nav.group.growth">Growth</div>
-        <a class="nav-item" href="#/career-plan" data-route="career-plan">
-          <span class="nav-ico">🧭</span> <span data-i18n="nav.careerPlan">Career plan</span>
-        </a>
-        <a class="nav-item" href="#/orientation" data-route="orientation">
-          <span class="nav-ico">🧩</span> <span data-i18n="nav.orientation">Career orientation</span>
-        </a>
+        <section class="nav-v2-group" data-nav-group="growth">
+          <button class="nav-v2-toggle" type="button" aria-expanded="true" aria-controls="nav-v2-items-growth">
+            <span class="nav-v2-chev" aria-hidden="true">▸</span>
+            <span data-i18n="nav.group.growth">Growth</span>
+          </button>
+          <div class="nav-v2-items" id="nav-v2-items-growth">
+            <a class="nav-item" href="#/career-plan" data-route="career-plan">
+              <span class="nav-ico">🧭</span> <span data-i18n="nav.careerPlan">Career plan</span>
+            </a>
+            <a class="nav-item" href="#/orientation" data-route="orientation">
+              <span class="nav-ico">🧩</span> <span data-i18n="nav.orientation">Career orientation</span>
+            </a>
+          </div>
+        </section>
 
-        <div class="nav-group" data-i18n="nav.group.setup">Setup</div>
-        <a class="nav-item" href="#/cv" data-route="cv">
-          <span class="nav-ico">✎</span> <span data-i18n="nav.cv">CV</span>
-        </a>
-        <a class="nav-item" href="#/cv-studio" data-route="cv-studio">
-          <span class="nav-ico">🎨</span> <span data-i18n="nav.cvStudio">CV Studio</span>
-        </a>
-        <a class="nav-item" href="#/memory" data-route="memory">
-          <span class="nav-ico">🧠</span> <span data-i18n="nav.memory">Memory</span>
-        </a>
-        <a class="nav-item" href="#/profile" data-route="profile">
-          <span class="nav-ico">⚙</span> <span data-i18n="nav.profile">Profile</span>
-        </a>
-        <a class="nav-item" href="#/two-pager" data-route="two-pager">
-          <span class="nav-ico">🎯</span> <span data-i18n="nav.twoPager">Two-pager</span>
-        </a>
-        <a class="nav-item" href="#/config" data-route="config">
-          <span class="nav-ico">⚒</span> <span data-i18n="nav.config">App settings</span>
-        </a>
-        <a class="nav-item" href="#/portals" data-route="portals">
-          <span class="nav-ico">⛩</span> <span data-i18n="nav.portals">Portals</span>
-        </a>
-        <a class="nav-item" href="#/health" data-route="health">
-          <span class="nav-ico">❤</span> <span data-i18n="nav.health">Health</span>
-        </a>
-        <a class="nav-item" href="#/usage" data-route="usage">
-          <span class="nav-ico">💳</span> <span data-i18n="nav.usage">AI usage</span>
-        </a>
-        <a class="nav-item" href="#/help" data-route="help">
-          <span class="nav-ico">?</span> <span data-i18n="nav.help">Help</span>
-        </a>
-        <a class="nav-item" href="#/docs-assistant" data-route="docs-assistant">
-          <span class="nav-ico">💬</span> <span data-i18n="nav.docsAssistant">Ask the docs</span>
-        </a>
+        <section class="nav-v2-group" data-nav-group="setup">
+          <button class="nav-v2-toggle" type="button" aria-expanded="true" aria-controls="nav-v2-items-setup">
+            <span class="nav-v2-chev" aria-hidden="true">▸</span>
+            <span data-i18n="nav.group.setup">Setup</span>
+          </button>
+          <div class="nav-v2-items" id="nav-v2-items-setup">
+            <a class="nav-item" href="#/cv" data-route="cv">
+              <span class="nav-ico">✎</span> <span data-i18n="nav.cv">CV</span>
+            </a>
+            <a class="nav-item" href="#/cv-studio" data-route="cv-studio">
+              <span class="nav-ico">🎨</span> <span data-i18n="nav.cvStudio">CV Studio</span>
+            </a>
+            <a class="nav-item" href="#/memory" data-route="memory">
+              <span class="nav-ico">🧠</span> <span data-i18n="nav.memory">Memory</span>
+            </a>
+            <a class="nav-item" href="#/profile" data-route="profile">
+              <span class="nav-ico">⚙</span> <span data-i18n="nav.profile">Profile</span>
+            </a>
+            <a class="nav-item" href="#/two-pager" data-route="two-pager">
+              <span class="nav-ico">🎯</span> <span data-i18n="nav.twoPager">Two-pager</span>
+            </a>
+            <a class="nav-item" href="#/config" data-route="config">
+              <span class="nav-ico">⚒</span> <span data-i18n="nav.config">App settings</span>
+            </a>
+            <a class="nav-item" href="#/portals" data-route="portals">
+              <span class="nav-ico">⛩</span> <span data-i18n="nav.portals">Portals</span>
+            </a>
+            <a class="nav-item" href="#/health" data-route="health">
+              <span class="nav-ico">❤</span> <span data-i18n="nav.health">Health</span>
+            </a>
+            <a class="nav-item" href="#/usage" data-route="usage">
+              <span class="nav-ico">💳</span> <span data-i18n="nav.usage">AI usage</span>
+            </a>
+            <a class="nav-item" href="#/help" data-route="help">
+              <span class="nav-ico">?</span> <span data-i18n="nav.help">Help</span>
+            </a>
+            <a class="nav-item" href="#/docs-assistant" data-route="docs-assistant">
+              <span class="nav-ico">💬</span> <span data-i18n="nav.docsAssistant">Ask the docs</span>
+            </a>
+          </div>
+        </section>
       </nav>
 
       <div class="sidebar-footer">
@@ -393,6 +459,12 @@
     <script src="/js/lib/auto-pipeline.js"></script>
     <script src="/js/lib/modes-form.js"></script>
     <script src="/js/lib/help-hint.js"></script>
+    <!-- CAR-122 — sidebar v2 lib (groups/favorites/palette). MUST load
+         BEFORE router.js/app.js: its document-level Cmd/Ctrl+K handler
+         registers first and stopImmediatePropagation()s the chord, making
+         the palette the main entry while app.js's legacy search-focus
+         binding stays as the no-nav-v2 fallback. -->
+    <script src="/js/lib/nav-v2.js"></script>
     <script src="/js/router.js"></script>
     <script src="/js/views/dashboard.js"></script>
     <script src="/js/views/scan/filters.js"></script>
