@@ -120,6 +120,7 @@ Router.register('pipeline', async () => {
       expanded.clear();
       groupBudget.clear();
       autoExpandDone = false;
+      pruneSelection(new Set(currentFiltered().map((e) => e.url)));
       renderAll();
     },
   });
@@ -162,6 +163,7 @@ Router.register('pipeline', async () => {
     hidden: '',
   });
   let bulkCancelFlag = false;
+  let bulkRunning = false; // CAR-116 review — no concurrent bulk runs
 
   function paintBulkBar() {
     const n = selected.size;
@@ -175,6 +177,7 @@ Router.register('pipeline', async () => {
       c('button', {
         type: 'button',
         className: 'btn btn-danger btn-sm',
+        disabled: bulkRunning ? '' : null,
         onClick: () => { bulkRemove(); },
       }, '✕ ' + t('pipe.bulkRemove', 'Remove selected') + ` (${n})`),
       c('button', {
@@ -209,7 +212,13 @@ Router.register('pipeline', async () => {
   // steps; abandoned when the user leaves #/pipeline. Nothing here
   // submits applications — it only empties the queue.
   async function bulkRemove() {
-    const urls = Array.from(selected);
+    if (bulkRunning) return; // review: a second click never double-runs
+    // CAR-116 review — the removal set is what is SELECTED and actually
+    // SHOWN right now: a stale selection (filtered away, hidden by the
+    // lens, or deleted elsewhere) must not inflate the confirm count
+    // and must never delete invisible rows.
+    const shown = new Set(currentFiltered().map((e) => e.url));
+    const urls = Array.from(selected).filter((u) => shown.has(u));
     if (!urls.length) return;
     const ok = await UI.confirm(
       t('pipe.confirmDelTitle', 'Remove from pipeline?'),
@@ -217,22 +226,38 @@ Router.register('pipeline', async () => {
       { danger: true, confirmLabel: t('common.delete', 'Delete'), cancelLabel: t('common.cancel', 'Cancel') });
     if (!ok) return;
     bulkCancelFlag = false;
-    const removed = [];
-    for (let i = 0; i < urls.length; i++) {
-      if (bulkCancelFlag || Router.current().name !== 'pipeline') break;
-      setProgress(i, urls.length);
-      if (await removeFromPipeline(urls[i])) removed.push(urls[i]);
+    bulkRunning = true;
+    try {
+      const removed = [];
+      for (let i = 0; i < urls.length; i++) {
+        if (bulkCancelFlag || Router.current().name !== 'pipeline') break;
+        setProgress(i, urls.length);
+        if (await removeFromPipeline(urls[i])) removed.push(urls[i]);
+      }
+      setProgress(removed.length, urls.length);
+      if (removed.length) {
+        pushUndo(removed);
+        await refresh(); // refresh() prunes the removed URLs from the selection
+        showUndoBar(removed.length);
+        focusUndoButton();
+      } else {
+        paintBulkBar();
+      }
+    } finally {
+      bulkRunning = false;
+      paintBulkBar(); // re-enable the disabled Remove button on every path
     }
-    setProgress(removed.length, urls.length);
-    if (removed.length) {
-      pushUndo(removed);
-      selected.clear();
-      await refresh();
-      showUndoBar(removed.length);
-      focusUndoButton();
-    } else {
-      paintBulkBar();
+  }
+
+  // CAR-116 review — the selection only ever covers URLs the current
+  // view can act on: drop entries a filter, the hide-tracked lens or an
+  // external delete has removed, then repaint the bulk bar once.
+  function pruneSelection(liveUrls) {
+    if (!selected.size) return;
+    for (const u of Array.from(selected)) {
+      if (!liveUrls.has(u)) selected.delete(u);
     }
+    paintBulkBar();
   }
 
   function toggleSelect(url, on) {
@@ -319,14 +344,20 @@ Router.register('pipeline', async () => {
     const batch = undoQueue ? undoQueue.pop() : null;
     hideUndoBar();
     if (!batch || !batch.length) return;
+    let restored = 0;
     for (const u of batch) {
       try {
         await API.post('/api/pipeline', { url: u });
+        restored += 1;
       } catch (err) {
         UI.toast((err && err.message) || t('common.error', 'Error'), 'error');
       }
     }
-    UI.toast(t('pipe.undone', 'Restored to the pipeline'), 'success');
+    // CAR-116 review — only celebrate what actually came back. Known
+    // metadata loss: the re-add restores the bare URL; any comp/notes
+    // once attached to the pipeline line are NOT preserved (a server
+    // side round-trip of pipeline metadata is a separate ticket).
+    if (restored > 0) UI.toast(t('pipe.undone', 'Restored to the pipeline'), 'success');
     if (Router.current().name === 'pipeline') Router.render();
   }
 
@@ -661,22 +692,27 @@ Router.register('pipeline', async () => {
 
   function toggleGroup(g) {
     const open = expanded.has(g.key);
+    let refocusToggle = false;
     if (open) {
       // CAR-116 a11y — collapsing removes the body from the DOM; if
       // focus sat inside it, hand focus back to the group toggle so a
-      // keyboard user is never dropped on <body>.
+      // keyboard user is never dropped on <body>. The review round
+      // moved the hand-off AFTER renderGroups(): the old code focused
+      // the PRE-render toggle, which replaceChildren() then destroyed
+      // (focus silently fell to <body>).
       const body = document.getElementById(groupBodyId(g.key));
-      if (body && body.contains(document.activeElement)) {
-        const btn = groupsHost.querySelector(
-          `[aria-controls="${groupBodyId(g.key)}"]`);
-        if (btn) btn.focus();
-      }
+      if (body && body.contains(document.activeElement)) refocusToggle = true;
       expanded.delete(g.key);
     } else {
       expanded.add(g.key);
       if (!groupBudget.has(g.key)) groupBudget.set(g.key, GROUP_WINDOW);
     }
     renderGroups();
+    if (refocusToggle) {
+      const btn = groupsHost.querySelector(
+        `[aria-controls="${groupBodyId(g.key)}"]`);
+      if (btn) btn.focus();
+    }
   }
 
   // CAR-116 — enriched card for the grouped view. Keeps the legacy
@@ -785,7 +821,15 @@ Router.register('pipeline', async () => {
       'aria-label': t('pipe.selectGroup', 'Select all in group') + ': ' + g.label,
       onClick: (ev) => ev.stopPropagation(),
       onChange: (ev) => {
-        for (const e of g.entries) toggleSelect(e.url, ev.target.checked);
+        // CAR-116 review — mutate `selected` directly and repaint ONCE:
+        // routing each entry through the per-row toggler rebuilt the
+        // bulk bar once per entry (O(n) replaceChildren on a 500-row
+        // group).
+        for (const e of g.entries) {
+          if (ev.target.checked) selected.add(e.url);
+          else selected.delete(e.url);
+        }
+        paintBulkBar();
         renderGroups();
       },
     });
@@ -891,6 +935,9 @@ Router.register('pipeline', async () => {
     allUrls = fresh.urls || [];
     trackerRows = (tr && tr.rows) || [];
     rebuildEntries();
+    // CAR-116 review — URLs that left the queue (deleted here or in
+    // another tab) must not survive in the selection as ghosts.
+    pruneSelection(new Set(entries.map((e) => e.url)));
     renderAll();
     paintOverview();
   }
@@ -913,6 +960,7 @@ Router.register('pipeline', async () => {
 
   filterInput.addEventListener('input', (e) => {
     filterQuery = e.target.value;
+    pruneSelection(new Set(currentFiltered().map((en) => en.url)));
     if (viewMode === 'grouped') { groupPager.reset(); renderAll(); }
     else renderList();
   });

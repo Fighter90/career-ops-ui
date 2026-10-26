@@ -142,7 +142,7 @@ test('CAR-116 F2: row + group checkboxes drive the bulk bar', { skip: SKIP }, as
   assert.ok(await bar.isHidden(), 'clear empties the selection');
 });
 
-test('CAR-116 F3: single delete — no confirm, undo bar, Undo restores', { skip: SKIP }, async () => {
+test('CAR-116 F3: single delete — confirm modal, undo bar, Undo restores', { skip: SKIP }, async () => {
   const page = await open();
   await page.waitForSelector('.pipeline-row.v2-row');
   let dialogs = 0;
@@ -151,16 +151,27 @@ test('CAR-116 F3: single delete — no confirm, undo bar, Undo restores', { skip
   const del = row.locator('button.pipeline-row-delete');
   const lbl = await del.getAttribute('aria-label');
   assert.match(lbl, /^Delete: /, 'delete button is labelled');
+  // CAR-116 review — single deletes confirm again (danger modal). The
+  // count check below also proves a CANCELLED confirm deletes nothing.
   await del.click();
+  await page.waitForSelector('#modal:not([hidden])', { timeout: 3000 });
+  await page.locator('#modal button.btn-danger, #modal .btn-danger').first().click();
   await page.waitForSelector('#pipeline-undo-bar', { state: 'visible' });
-  assert.equal(dialogs, 0, 'no confirm dialog on single delete');
+  assert.equal(dialogs, 0, 'UI.confirm is the DOM modal, never a native dialog');
   const count = await page.evaluate(async () => (await (await fetch('/api/pipeline')).json()).urls.length);
   assert.equal(count, 2, 'one shown URL removed; the hidden tracked one + its group neighbour remain');
+  // cancel path: the modal's Cancel keeps the queue untouched
+  await row.locator('button.pipeline-row-delete').click();
+  await page.waitForSelector('#modal:not([hidden])', { timeout: 3000 });
+  await page.locator('#modal button.btn-ghost, #modal .btn-cancel').first().click();
+  await page.waitForSelector('#modal', { state: 'hidden', timeout: 3000 });
+  const afterCancel = await page.evaluate(async () => (await (await fetch('/api/pipeline')).json()).urls.length);
+  assert.equal(afterCancel, 2, 'a cancelled confirm removes nothing');
   await page.locator('#pipeline-undo-btn').click();
   await page.waitForFunction(async () => {
     const r = await fetch('/api/pipeline');
     return (await r.json()).urls.length === 3;
-  }, null, { timeout: 5000 }).catch(() => {});
+  }, null, { timeout: 5000 });
   const restored = await page.evaluate(async () => (await (await fetch('/api/pipeline')).json()).urls.length);
   assert.equal(restored, 3, 'Undo re-added the deleted URL');
 });
@@ -170,7 +181,10 @@ test('CAR-116 F4: bulk discard — confirm → progress → undo restores the ba
   await page.waitForSelector('.v2-group');
   // select ALL shown (2 entries: tracker row is hidden)
   await page.locator('.v2-toolbar button', { hasText: 'Select all shown' }).click();
+  // CAR-116 review — the bulk bar is part of the flow: assert it is up.
   const bar = page.locator('.v2-bulkbar');
+  assert.ok(await bar.isVisible(), 'bulk bar visible once the selection is non-empty');
+  assert.match(await bar.textContent(), /2\s*selected/);
   await page.locator('button', { hasText: 'Remove selected' }).click();
   // focus-trapped UI.confirm modal — confirm the danger action
   await page.waitForSelector('#modal:not([hidden])', { timeout: 3000 });
@@ -182,9 +196,60 @@ test('CAR-116 F4: bulk discard — confirm → progress → undo restores the ba
   await page.waitForFunction(async () => {
     const r = await fetch('/api/pipeline');
     return (await r.json()).urls.length === 3;
-  }, null, { timeout: 5000 }).catch(() => {});
+  }, null, { timeout: 5000 });
   const restored = await page.evaluate(async () => (await (await fetch('/api/pipeline')).json()).urls.length);
   assert.equal(restored, 3, 'bulk Undo restored the batch');
+});
+
+test('CAR-116 F8: the bulk confirm states the TRUE count — stale selections are pruned', { skip: SKIP }, async () => {
+  const page = await open();
+  await page.waitForSelector('.v2-group');
+  // select both shown rows, then filter one of them away
+  await page.locator('.v2-toolbar button', { hasText: 'Select all shown' }).click();
+  const bar = page.locator('.v2-bulkbar');
+  assert.match(await bar.textContent(), /2\s*selected/);
+  await page.fill('#pipe-filter', 'lever');
+  // the habr row no longer matches → the selection prunes to 1
+  await page.waitForFunction(() => {
+    const bar = document.querySelector('.v2-bulk-count');
+    return bar && bar.textContent.trim().startsWith('1');
+  }, null, { timeout: 3000 });
+  assert.match(await bar.textContent(), /1\s*selected/, 'pruned to what is still shown');
+  await page.locator('button', { hasText: 'Remove selected' }).click();
+  await page.waitForSelector('#modal:not([hidden])', { timeout: 3000 });
+  const modalText = await page.locator('#modal').textContent();
+  assert.match(modalText, /\(1\)/, 'the confirm states the true remaining count');
+  await page.locator('#modal button.btn-danger, #modal .btn-danger').first().click();
+  await page.waitForSelector('#pipeline-undo-bar', { state: 'visible', timeout: 8000 });
+  const left = await page.evaluate(async () => (await (await fetch('/api/pipeline')).json()).urls.length);
+  assert.equal(left, 2, 'only the ONE shown selected URL was removed');
+  // self-clean: the later flows expect the seeded 3-URL pipeline
+  await page.locator('#pipeline-undo-btn').click();
+  await page.waitForFunction(async () => {
+    const r = await fetch('/api/pipeline');
+    return (await r.json()).urls.length === 3;
+  }, null, { timeout: 5000 });
+});
+
+test('CAR-116 F7: collapsing a group hands focus to the toggle IN THE NEW DOM', { skip: SKIP }, async () => {
+  const page = await open();
+  await page.waitForSelector('.v2-group');
+  // small queue → auto-expanded at mount; move focus INTO the body, then
+  // collapse programmatically (a mouse click moves focus to the toggle
+  // first, which is NOT the a11y path this guards — a keyboard/AT user
+  // activates while focus sits on the row link inside the body).
+  const group = page.locator('.v2-group').first();
+  await group.locator('.v2-row-url').first().focus();
+  await page.evaluate(() => {
+    document.querySelector('.v2-group .v2-group-toggle').click();
+  });
+  await page.waitForFunction(() => {
+    const el = document.activeElement;
+    return !!el && el.className.indexOf('v2-group-toggle') !== -1;
+  }, null, { timeout: 3000 });
+  const expandedAttr = await page.evaluate(() =>
+    document.activeElement.getAttribute('aria-expanded'));
+  assert.equal(expandedAttr, 'false', 'focus is on the live (collapsed) toggle, not the destroyed node');
 });
 
 test('CAR-116 F6: the compact (flat) view keeps the legacy rows', { skip: SKIP }, async () => {

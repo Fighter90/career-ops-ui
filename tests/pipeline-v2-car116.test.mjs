@@ -73,12 +73,20 @@ test('groups collapse; the count is announced; volume is bounded', () => {
 });
 
 test('focus management on group collapse (a11y)', () => {
+  // CAR-116 review: the grep-only assertion (btn.focus() somewhere in
+  // toggleGroup) passed while the focus landed on the PRE-render toggle
+  // that replaceChildren() immediately destroyed. The behavioural
+  // contract — focus ends on the toggle in the NEW DOM — lives in
+  // tests/playwright-pipeline-v2.mjs (F7). Here we only pin the shape:
+  // the re-query happens AFTER renderGroups() inside toggleGroup.
   const at = PIPE.indexOf('function toggleGroup');
   const body = PIPE.slice(at, PIPE.indexOf('function groupBlock', at));
   assert.match(body, /body\.contains\(document\.activeElement\)/,
     'collapse detects focus inside the vanishing body');
-  assert.match(body, /btn\.focus\(\)/,
-    '…and hands focus back to the group toggle');
+  const renderAt = body.indexOf('renderGroups();');
+  const refocusAt = body.indexOf('`[aria-controls=');
+  assert.ok(renderAt > -1 && refocusAt > renderAt,
+    'the toggle is re-queried in the NEW DOM, after the repaint');
 });
 
 test('hide-already-evaluated defaults ON and filters both views', () => {
@@ -113,6 +121,56 @@ test('bulk discard: confirm → sequential per-entry DELETE → progress → und
     'cancels on button AND on leaving #/pipeline');
   // nothing submits applications — only pipeline deletes happen
   assert.doesNotMatch(body, /api\/tracker|applications|auto-pipeline/);
+});
+
+test('bulk discard: the confirm states the TRUE count (selected ∩ shown)', () => {
+  const at = PIPE.indexOf('async function bulkRemove');
+  const body = PIPE.slice(at, PIPE.indexOf('function toggleSelect', at));
+  assert.match(body, /currentFiltered\(\)/,
+    'the removal set is intersected with what is actually shown');
+  assert.match(body, /shown\.has\(u\)/,
+    'stale selections (filtered out / deleted elsewhere) never reach the confirm');
+});
+
+test('selection is pruned when the filters change or the queue refreshes', () => {
+  assert.match(PIPE, /function pruneSelection\(/, 'the pruner exists');
+  const filterAt = PIPE.indexOf('filterInput.addEventListener');
+  const filterBody = PIPE.slice(filterAt, filterAt + 400);
+  assert.match(filterBody, /pruneSelection\(/, 'filter input prunes');
+  const hideAt = PIPE.indexOf("const hideTracked = c('input'");
+  const hideBody = PIPE.slice(hideAt, PIPE.indexOf('const hideTrackedLabel', hideAt));
+  assert.match(hideBody, /pruneSelection\(/, 'the hide-tracked lens prunes');
+  const refreshAt = PIPE.indexOf('async function refresh');
+  const refreshBody = PIPE.slice(refreshAt, PIPE.indexOf('function rebuildEntries', refreshAt));
+  assert.match(refreshBody, /pruneSelection\(/, 'refresh prunes');
+});
+
+test('bulk remove is re-entrancy guarded (bulkRunning + disabled button)', () => {
+  const at = PIPE.indexOf('async function bulkRemove');
+  const body = PIPE.slice(at, PIPE.indexOf('function toggleSelect', at));
+  assert.match(body, /if \(bulkRunning\) return;/, 'second concurrent run is a no-op');
+  assert.match(body, /bulkRunning = true;/);
+  assert.match(body, /finally \{[\s\S]*?bulkRunning = false;/, 'the guard releases on every path');
+  assert.match(PIPE, /disabled: bulkRunning/, 'the Remove button disables while running');
+});
+
+test('undo re-add counts successes; the success toast only fires when >0', () => {
+  const at = PIPE.indexOf('async function undoLast');
+  const body = PIPE.slice(at, PIPE.indexOf('function shortHost', at));
+  assert.match(body, /restored \+= 1/, 'successes are counted, not assumed');
+  assert.match(body, /if \(restored > 0\)/, 'no success toast on a fully failed undo');
+});
+
+test('group checkbox repaints once, not once per entry', () => {
+  const at = PIPE.indexOf('function groupBlock');
+  const body = PIPE.slice(at, PIPE.indexOf('function currentFiltered', at));
+  const handler = body.slice(body.indexOf('onChange:'), body.indexOf('if (someSel'));
+  assert.ok(!handler.includes('toggleSelect('),
+    'mutates selected directly — no O(n) toggleSelect chain');
+  assert.equal((handler.match(/paintBulkBar\(\)/g) || []).length, 1,
+    'exactly one bulk-bar paint');
+  assert.equal((handler.match(/renderGroups\(\)/g) || []).length, 1,
+    'exactly one group repaint');
 });
 
 // ── undo: session-scoped, through the existing add path ─────────────
