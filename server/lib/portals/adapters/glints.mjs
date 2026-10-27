@@ -7,6 +7,11 @@
  * source reads from `opts.company`.
  */
 import { fetchGlints, DEFAULT_API } from '../../sources/glints.mjs';
+import { pinnedOverride } from '../../sources/_override.mjs';
+
+// Exact-host match — mirrors the source's ALLOWED_GLINTS_HOSTS assert so an
+// override the adapter accepts is never rejected by the fetch-time guard.
+const GLINTS_HOST_RE = /^(?:www\.glints\.com|glints\.com|glints\.id)$/i;
 
 export const glintsAdapter = {
   id: 'glints',
@@ -14,13 +19,10 @@ export const glintsAdapter = {
   matches(company) {
     return !!company && typeof company === 'object' && company.provider === 'glints';
   },
-  // `string | null` contract: a non-string api falls back to the canonical
-  // endpoint; garbage input never throws.
+  // The override is pinned to the allowlist (FULL-M3): an off-host or
+  // non-https value falls back to the canonical endpoint; garbage never throws.
   buildEndpoint(company) {
-    const api = company && typeof company === 'object' && typeof company.api === 'string'
-      ? company.api
-      : '';
-    return api || DEFAULT_API;
+    return pinnedOverride(company?.api, GLINTS_HOST_RE) || DEFAULT_API;
   },
   fetch: fetchGlints,
 };

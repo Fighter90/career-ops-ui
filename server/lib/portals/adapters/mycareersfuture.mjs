@@ -16,9 +16,14 @@
  *       enabled: true
  */
 import { fetchMyCareersFuture, API_URL } from '../../sources/mycareersfuture.mjs';
+import { pinnedOverride } from '../../sources/_override.mjs';
 
 /** true when `careers_url`/`api:` points at mycareersfuture.gov.sg over HTTPS. */
 const MCF_HOST_RE = /(^|\.)mycareersfuture\.gov\.sg$/i;
+
+// Endpoint-override pin — the exact API host, mirroring the source's
+// assertApiUrl so an override the adapter accepts is never rejected later.
+const MCF_API_HOST_RE = /^api\.mycareersfuture\.gov\.sg$/i;
 
 function isMcfHost(company) {
   const raw = String(company.api || company.careers_url || '').trim();
@@ -40,8 +45,9 @@ export const mycareersfutureAdapter = {
   },
   buildEndpoint(company) {
     // Fixed national search endpoint; `api:` may override for a mirror/test,
-    // still host-pinned by the source's assertApiUrl.
-    return company.api || API_URL;
+    // pinned to the API host here (FULL-M3) as well as by the source's
+    // assertApiUrl.
+    return pinnedOverride(company.api, MCF_API_HOST_RE) || API_URL;
   },
   fetch: fetchMyCareersFuture,
 };

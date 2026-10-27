@@ -7,6 +7,10 @@
  * from `opts.company`.
  */
 import { fetchVdab, API_URL } from '../../sources/vdab.mjs';
+import { pinnedOverride } from '../../sources/_override.mjs';
+
+// Exact host match — mirrors the source's assertVdabUrl.
+const VDAB_HOST_RE = /^www\.vdab\.be$/i;
 
 export const vdabAdapter = {
   id: 'vdab',
@@ -15,7 +19,7 @@ export const vdabAdapter = {
     return company.provider === 'vdab';
   },
   buildEndpoint(company) {
-    return company.api || API_URL;
+    return pinnedOverride(company.api, VDAB_HOST_RE) || API_URL;
   },
   fetch: fetchVdab,
 };

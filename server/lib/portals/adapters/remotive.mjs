@@ -11,7 +11,8 @@
  *       provider: remotive
  *       enabled: true
  */
-import { fetchRemotive, FEED_URL } from '../../sources/remotive.mjs';
+import { fetchRemotive, FEED_URL, REMOTIVE_HOST_RE } from '../../sources/remotive.mjs';
+import { pinnedOverride } from '../../sources/_override.mjs';
 
 export const remotiveAdapter = {
   id: 'remotive',
@@ -20,7 +21,9 @@ export const remotiveAdapter = {
     return company.provider === 'remotive';
   },
   buildEndpoint(company) {
-    return company.remotive || company.api || FEED_URL;
+    return pinnedOverride(company.remotive, REMOTIVE_HOST_RE)
+      || pinnedOverride(company.api, REMOTIVE_HOST_RE)
+      || FEED_URL;
   },
   fetch: fetchRemotive,
 };

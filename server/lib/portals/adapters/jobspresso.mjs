@@ -12,6 +12,10 @@
  *       enabled: true
  */
 import { fetchJobspresso, FEED_URL } from '../../sources/jobspresso.mjs';
+import { pinnedOverride } from '../../sources/_override.mjs';
+
+// Exact host match — mirrors the source's assertJobspressoUrl.
+const JOBSPRESSO_HOST_RE = /^jobspresso\.co$/i;
 
 export const jobspressoAdapter = {
   id: 'jobspresso',
@@ -19,16 +23,12 @@ export const jobspressoAdapter = {
   matches(company) {
     return !!company && typeof company === 'object' && company.provider === 'jobspresso';
   },
-  // `string | null` contract: a non-string api falls back to the canonical
-  // feed; garbage input never throws.
+  // The override is pinned to jobspresso.co (FULL-M3): an off-host or
+  // non-https value falls back to the canonical feed; garbage never throws.
   buildEndpoint(company) {
-    const api = company && typeof company === 'object' && typeof company.api === 'string'
-      ? company.api
-      : '';
-    const override = company && typeof company === 'object' && typeof company.jobspresso === 'string'
-      ? company.jobspresso
-      : '';
-    return override || api || FEED_URL;
+    return pinnedOverride(company?.jobspresso, JOBSPRESSO_HOST_RE)
+      || pinnedOverride(company?.api, JOBSPRESSO_HOST_RE)
+      || FEED_URL;
   },
   fetch: fetchJobspresso,
 };

@@ -12,6 +12,10 @@
  *       enabled: true
  */
 import { fetchArbeitnow, FEED_URL } from '../../sources/arbeitnow.mjs';
+import { pinnedOverride } from '../../sources/_override.mjs';
+
+// Exact host match — mirrors the source's assertArbeitnowUrl.
+const ARBEITNOW_HOST_RE = /^www\.arbeitnow\.com$/i;
 
 export const arbeitnowAdapter = {
   id: 'arbeitnow',
@@ -19,16 +23,12 @@ export const arbeitnowAdapter = {
   matches(company) {
     return !!company && typeof company === 'object' && company.provider === 'arbeitnow';
   },
-  // `string | null` contract: a non-string api falls back to the canonical
-  // feed; garbage input never throws.
+  // The override is pinned to www.arbeitnow.com (FULL-M3): an off-host or
+  // non-https value falls back to the canonical feed; garbage never throws.
   buildEndpoint(company) {
-    const api = company && typeof company === 'object' && typeof company.api === 'string'
-      ? company.api
-      : '';
-    const override = company && typeof company === 'object' && typeof company.arbeitnow === 'string'
-      ? company.arbeitnow
-      : '';
-    return override || api || FEED_URL;
+    return pinnedOverride(company?.arbeitnow, ARBEITNOW_HOST_RE)
+      || pinnedOverride(company?.api, ARBEITNOW_HOST_RE)
+      || FEED_URL;
   },
   fetch: fetchArbeitnow,
 };

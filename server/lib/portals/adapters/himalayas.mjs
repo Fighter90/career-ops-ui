@@ -12,6 +12,10 @@
  *       enabled: true
  */
 import { fetchHimalayas, FEED_URL } from '../../sources/himalayas.mjs';
+import { pinnedOverride } from '../../sources/_override.mjs';
+
+// Exact host match — mirrors the source's assertHimalayasUrl.
+const HIMALAYAS_HOST_RE = /^himalayas\.app$/i;
 
 export const himalayasAdapter = {
   id: 'himalayas',
@@ -19,16 +23,12 @@ export const himalayasAdapter = {
   matches(company) {
     return !!company && typeof company === 'object' && company.provider === 'himalayas';
   },
-  // `string | null` contract: a non-string api falls back to the canonical
-  // feed; garbage input never throws.
+  // The override is pinned to himalayas.app (FULL-M3): an off-host or
+  // non-https value falls back to the canonical feed; garbage never throws.
   buildEndpoint(company) {
-    const api = company && typeof company === 'object' && typeof company.api === 'string'
-      ? company.api
-      : '';
-    const override = company && typeof company === 'object' && typeof company.himalayas === 'string'
-      ? company.himalayas
-      : '';
-    return override || api || FEED_URL;
+    return pinnedOverride(company?.himalayas, HIMALAYAS_HOST_RE)
+      || pinnedOverride(company?.api, HIMALAYAS_HOST_RE)
+      || FEED_URL;
   },
   fetch: fetchHimalayas,
 };

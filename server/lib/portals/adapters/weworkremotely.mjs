@@ -12,6 +12,10 @@
  *       enabled: true
  */
 import { fetchWeWorkRemotely, FEED_URL } from '../../sources/weworkremotely.mjs';
+import { pinnedOverride } from '../../sources/_override.mjs';
+
+// Exact host match — mirrors the source's assertWwrUrl.
+const WEWORKREMOTELY_HOST_RE = /^weworkremotely\.com$/i;
 
 export const weworkremotelyAdapter = {
   id: 'weworkremotely',
@@ -20,7 +24,9 @@ export const weworkremotelyAdapter = {
     return company.provider === 'weworkremotely';
   },
   buildEndpoint(company) {
-    return company.weworkremotely || company.api || FEED_URL;
+    return pinnedOverride(company.weworkremotely, WEWORKREMOTELY_HOST_RE)
+      || pinnedOverride(company.api, WEWORKREMOTELY_HOST_RE)
+      || FEED_URL;
   },
   fetch: fetchWeWorkRemotely,
 };

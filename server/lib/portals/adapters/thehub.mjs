@@ -12,6 +12,11 @@
  *       enabled: true
  */
 import { fetchTheHub, FEED_BASE } from '../../sources/thehub.mjs';
+import { pinnedOverride } from '../../sources/_override.mjs';
+
+// Exact host match — mirrors the source's assertTheHubUrl so an override the
+// adapter accepts can never be rejected later by the fetch-time guard.
+const THEHUB_HOST_RE = /^thehub\.io$/i;
 
 export const thehubAdapter = {
   id: 'thehub',
@@ -20,7 +25,9 @@ export const thehubAdapter = {
     return company.provider === 'thehub';
   },
   buildEndpoint(company) {
-    return company.thehub || company.api || FEED_BASE;
+    return pinnedOverride(company.thehub, THEHUB_HOST_RE)
+      || pinnedOverride(company.api, THEHUB_HOST_RE)
+      || FEED_BASE;
   },
   fetch: fetchTheHub,
 };

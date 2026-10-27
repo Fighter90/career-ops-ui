@@ -6,7 +6,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { fetchRemoteOk } from '../server/lib/sources/remoteok.mjs';
+import { fetchRemoteOk, FEED_URL as FEED_URL_REMOTEOK } from '../server/lib/sources/remoteok.mjs';
 import { fetchRemotive } from '../server/lib/sources/remotive.mjs';
 import { fetchWorkingNomads } from '../server/lib/sources/workingnomads.mjs';
 import { remoteokAdapter } from '../server/lib/portals/adapters/remoteok.mjs';
@@ -148,10 +148,16 @@ test('adapters: match only on explicit provider field, never careers_url', () =>
   }
 });
 
-test('adapters: api override wins over default feed url', () => {
+test('adapters: an on-host api override wins over the default feed url; off-host is refused', () => {
+  // FULL-M3: the override is pinned to remoteok.com — an off-host "mirror"
+  // falls back to the canonical feed instead of reaching the fetch slot.
+  assert.equal(
+    remoteokAdapter.buildEndpoint({ provider: 'remoteok', remoteok: 'https://remoteok.com/mirror/api' }),
+    'https://remoteok.com/mirror/api',
+  );
   assert.equal(
     remoteokAdapter.buildEndpoint({ provider: 'remoteok', remoteok: 'https://mirror/api' }),
-    'https://mirror/api',
+    FEED_URL_REMOTEOK,
   );
 });
 
