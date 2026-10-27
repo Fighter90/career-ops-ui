@@ -37,6 +37,26 @@ import { isPrivateOrLoopbackHost, isValidJobUrl } from './security.mjs';
 
 const MAX_REDIRECTS = 3;
 
+/**
+ * FULL-M6a — credential-bearing caller headers. These are aimed at the
+ * origin the caller addressed; a redirect (even a per-hop-validated one)
+ * must not deliver them to a different origin.
+ */
+const CREDENTIAL_HEADERS = new Set(['authorization', 'cookie']);
+
+/**
+ * Drop credential headers from a caller-supplied header object
+ * (case-insensitive). Non-credential headers pass through untouched.
+ */
+function stripCredentialHeaders(headers) {
+  const out = {};
+  for (const [k, v] of Object.entries(headers || {})) {
+    if (CREDENTIAL_HEADERS.has(k.toLowerCase())) continue;
+    out[k] = v;
+  }
+  return out;
+}
+
 // ─── Test-only transport hook ─────────────────────────────────────
 //
 // Tests need to exercise the redirect / size-cap / status-mapping
@@ -67,6 +87,16 @@ export function _setLookup(fn) {
   const prev = _lookupOverride;
   _lookupOverride = fn || null;
   return () => { _lookupOverride = prev; };
+}
+
+/**
+ * FULL-M6b — test hook: the real node:http transport, exposed so a suite
+ * can drive it against a 127.0.0.1 test server (resolvePinned refuses
+ * loopback, so safeGet itself can never reach one). Never used in
+ * production paths.
+ */
+export function _defaultTransport() {
+  return defaultTransport(...arguments);
 }
 
 /**
@@ -103,6 +133,9 @@ async function resolvePinned(hostname) {
 function defaultTransport(url, pinned, opts = {}) {
   const lib = url.protocol === 'https:' ? https : http;
   return new Promise((resolve, reject) => {
+    // FULL-M6b — declared before the response callback closes over it, so
+    // every settle path below can detach the abort listener.
+    let detachAbort = () => {};
     const req = lib.request({
       // Pin the connection to the pre-validated address. Setting both
       // `host` and `hostname` here side-steps lib's own lookup.
@@ -131,6 +164,7 @@ function defaultTransport(url, pinned, opts = {}) {
       const settle = () => {
         if (settled) return;
         settled = true;
+        detachAbort();
         resolve({
           status: res.statusCode || 0,
           headers: res.headers,
@@ -150,19 +184,31 @@ function defaultTransport(url, pinned, opts = {}) {
         }
       });
       res.on('end', settle);
-      res.on('error', (err) => { if (!settled) reject(err); });
+      res.on('error', (err) => { detachAbort(); if (!settled) reject(err); });
     });
     if (opts.signal) {
+      // FULL-M6 review — the error listener MUST be registered before any
+      // destroy(): on a pre-aborted signal the old code destroyed the request
+      // and returned before `req.on('error')` existed — Node emits 'error'
+      // asynchronously with no listener → uncaughtException → process crash
+      // (reviewer reproduced). Also detach on the abort path itself.
+      req.on('error', (err) => { detachAbort(); reject(err); });
       if (opts.signal.aborted) {
         req.destroy(new Error('aborted'));
         return reject(new Error('aborted'));
       }
-      opts.signal.addEventListener('abort', () => {
+      const onAbort = () => {
         req.destroy(new Error('aborted'));
         reject(new Error('aborted'));
-      }, { once: true });
+      };
+      opts.signal.addEventListener('abort', onAbort, { once: true });
+      // FULL-M6b — `{ once: true }` only removes the listener when it FIRES;
+      // a signal that never aborts kept one listener per request forever (the
+      // redirect loop shares one signal across hops → per-hop pile-up).
+      detachAbort = () => opts.signal.removeEventListener('abort', onAbort);
+    } else {
+      req.on('error', (err) => { detachAbort(); reject(err); });
     }
-    req.on('error', reject);
     req.end();
   });
 }
@@ -216,19 +262,24 @@ export async function safeGet(urlString, opts = {}) {
 async function _safeGetInner(urlString, opts, signal) {
   let current = urlString;
   let hops = 0;
+  // FULL-M6a — credentials ride only the origin the caller addressed.
+  const origin0 = new URL(urlString).origin;
   while (true) {
     const u = new URL(current);
     if (!['http:', 'https:'].includes(u.protocol)) {
       throw new Error(`unsupported protocol: ${u.protocol}`);
     }
     const pinned = await resolvePinned(u.hostname);
+    const callerHeaders = u.origin === origin0
+      ? (opts.headers || {})
+      : stripCredentialHeaders(opts.headers);
     const res = await _transport(u, pinned, {
       signal,
       maxBytes: opts.maxBytes,
       headers: {
         'User-Agent': opts.userAgent || 'career-ops-ui/1.20.1',
         Accept: 'text/html,application/xhtml+xml,text/plain',
-        ...(opts.headers || {}),
+        ...callerHeaders,
       },
     });
     const isRedirect = res.status >= 300 && res.status < 400 && res.location;
