@@ -54,6 +54,13 @@ function killWithEscalation(child, graceMs = KILL_GRACE_MS) {
  * web-ui still races a web-ui write — the OS lock covers only the parent
  * scripts that opt in, and this in-process lock covers only spawns
  * web-ui itself makes.
+ *
+ * FULL-M1 review F2 — SCOPE: TRACKER_MUTATING covers TRACKER-scoped
+ * mutations (data/applications.md + data/follow-ups.md) only. Other
+ * shared-file spawners stay outside by design: POST /api/run/reconcile
+ * (rewrites data/pipeline.md — the pipeline fence has its own
+ * FULL-R1 lock contract) and assessments.mjs's assessment-log.mjs
+ * (append-only TSV). Do not assume this roster is "all parent scripts".
  */
 export const TRACKER_MUTATING = new Map([
   ['merge-tracker.mjs', 'applications'],

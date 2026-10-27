@@ -70,19 +70,35 @@ test('a TRACKER_MUTATING script name in a route file is only ever a runTrackedSc
   }
 });
 
-test('routes that spawn outcome.mjs / followup-seed.mjs have not backslid to bare runNodeScript', () => {
+test('routes that spawn outcome.mjs / followup-seed.mjs have not backslid past runTrackedScript', () => {
   for (const [file, script] of [
     ['server/lib/routes/outcome.mjs', 'outcome.mjs'],
     ['server/lib/routes/followup.mjs', 'followup-seed.mjs'],
   ]) {
     const src = readFileSync(resolve(ROOT, file), 'utf8');
     // These routes are a documented FULL-M1 hand-off (files outside this
-    // change's ownership): the roster is waiting in TRACKER_MUTATING. The
-    // gate only forbids the worst shape — hardcoding the script name into
-    // a bare runNodeScript call — and goes red the moment the owner does
-    // the real fix only if they bypass the helper to do it.
-    const bare = new RegExp(`runNodeScript\\(\\s*['"]${script}`);
-    assert.doesNotMatch(src, bare,
+    // change's ownership): the roster entry is waiting in TRACKER_MUTATING.
+    // FULL-M1 review F1: the spawn reaches runNodeScript through a const
+    // (runNodeScript(SCRIPT) with `const SCRIPT = 'outcome.mjs'`), so a
+    // literal-only regex is VACUOUS here — bind the const name to its
+    // literal and forbid BOTH shapes: the script must appear only as a
+    // registry-eligible const, never inline in a bare runNodeScript call.
+    const constName = new RegExp(`const\\s+(\\w+)\\s*=\\s*['"]${script}['"]`).exec(src)?.[1];
+    const inline = new RegExp(`runNodeScript\\(\\s*['"]${script}`);
+    assert.equal(inline.test(src), false,
       `${file}: spawn ${script} through runTrackedScript (TRACKER_MUTATING) so it holds its shared-file lock`);
+    if (constName) {
+      // The const exists and feeds exactly the (future) runTrackedScript
+      // call — a bare runNodeScript(CONST) call is the same backslide.
+      const bareConst = new RegExp(`runNodeScript\\(\\s*${constName}\\b`);
+      assert.equal(bareConst.test(src), false,
+        `${file}: runNodeScript(${constName}) bypasses runTrackedScript — the shared-file lock would be lost`);
+    } else {
+      // No const binding: the script name must appear exactly once, inside
+      // a runTrackedScript call (the already-fixed shape).
+      const occurrences = src.split(`'${script}'`).length - 1;
+      assert.ok(occurrences <= 1,
+        `${file}: '${script}' appears ${occurrences}× — expected at most one runTrackedScript binding`);
+    }
   }
 });
