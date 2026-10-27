@@ -8,6 +8,21 @@ bir girdiye veya iş akışının bir aşamasına karşılık gelir. İlk
 çalıştırmada baştan sona okuyun; daha sonra belirli bir bölüme yardım
 kenar çubuğundaki içindekiler tablosu üzerinden geçin.
 
+> **Gezinme (v2 kabuğu).** Kenar çubuğu katlanabilir gruplar hâlinde
+> düzenlenmiştir — **Sourcing**, **Decision**, **Application**,
+> **Networking**, **Analytics**, **Setup** (`nav.group.*`) — bir bölüme
+> girdiğinizde açılır ve bıraktığınız yerde kalır. Herhangi bir sayfaya
+> yıldız verip **Favorites** altına sabitleyin ve her yerden herhangi
+> bir sayfaya bulanık-eşleşmeli atlama için **Cmd/Ctrl+K**'ya basın
+> (veya kenar çubuğunun tepesindeki **Command menu** düğmesi,
+> `nav.v2.palette`). Her sayfa başlığını anında gösterir ve veriler
+> yüklenirken gri parıltı satırlarıyla dolar, böylece gezinme hiçbir
+> zaman boş hissettirmez. Ve hiçbir sayfa sizi çıplak bir boşlukla
+> karşılamaz: başlangıçta boş olan dört sayfa — **Auto-pipeline**,
+> **Apply checklist**, **Batch** ve **Funded companies** — işlenmiş
+> bir örnek ve onları dolduran tek eylemi gösterir
+> (`v2empty.exampleTag`).
+
 > **Hedef kitle:** bu arayüzü bir `career-ops`
 > kopyasının içine bırakıp `bash bin/start.sh` komutunu çalıştıran
 > herkes. Önceden career-ops bilgisine sahip olduğunuz varsayılmaz.
@@ -326,35 +341,54 @@ inceleyin — minimum kabul rakamınız tam orada.
 → Reports → Deep research → Apply checklist → Outreach → Tracker
 → Follow-up → Interview prep → Activity log`
 
-İşte bu kadar. 21 adım, düğme düğme, sıfırdan teklife.
+Kenar çubuğu aynı sayfaları aşamalara göre gruplar (**Sourcing** →
+**Decision** → **Application** → …), böylece iş akışı sırası ile menü
+sırası aynı kalır; listeyi gözden geçirmek yerine üç harf yazmayı
+tercih ederseniz **Cmd/Ctrl+K** **Command menu**'yü açar
+(`nav.v2.palette`). İşte bu kadar. 21 adım, düğme düğme, sıfırdan
+teklife.
 
 ### Tek tıkla Auto-pipeline (`#/auto`) — 21 adımlık kısayol
 
 Yalnızca belirli bir ilanı hızlıca puanlamak istiyorsanız, elle
 gezintiyi atlayın. **Kenar çubuğu → ✨ Auto-pipeline** (veya
 panodaki ✨ düğmesi) özel bir ekran açar: iş URL'sini yapıştırın,
-**Enter**'a basın ya da **▶ Run full pipeline**'a tıklayın, sunucu
-tüm zinciri tek bir gözlemlenebilir geçişte çalıştırsın:
+**Enter**'a basın ya da **Otomatik-pipeline'ı çalıştır**'a tıklayın
+(`auto.run`), sunucu tüm zinciri tek bir gözlemlenebilir geçişte
+çalıştırır:
 
-1. **URL doğrulanıyor** — SSRF'ye karşı güvenli kontrol
-   (`isValidJobUrl`); loopback / `file:` / özel IP'ler / betik
-   karakterlerini reddeder.
-2. **İş tanımı getiriliyor** — `safeGet` (DNS'e sabitlenmiş,
-   yönlendirme yeniden doğrulamalı) iş tanımını çeker + temizler.
-3. **CV'nize karşı değerlendiriliyor** — Anthropic (tercih edilen) →
-   Gemini yedeği → anahtar yoksa elle-prompt.
-4. **Rapor kaydediliyor** — başlıkta puan + meşruiyet ile birlikte
-   `reports/<slug>.md` yazar.
-5. **Tracker'a ekleniyor** — `data/applications.md`'ye bir satır ekler.
+1. **URL doğrulanıyor** (`auto.step.validate`) — SSRF'ye karşı
+   güvenli kontrol (`isValidJobUrl`); loopback / `file:` / özel
+   IP'ler / betik karakterlerini reddeder.
+2. **İş tanımı getiriliyor** (`auto.step.fetch`) — `safeGet`
+   (DNS'e sabitlenmiş, yönlendirme yeniden doğrulamalı) iş tanımını
+   çeker + temizler.
+3. **CV'nize göre değerlendiriliyor** (`auto.step.evaluate`) —
+   Anthropic (tercih edilen) → Gemini yedeği → anahtar yoksa
+   elle-prompt.
+4. **Rapor kaydediliyor** (`auto.step.report`) — başlıkta puan +
+   meşruiyet ile birlikte `reports/<slug>.md` yazar.
+5. **Takip tablosuna ekleniyor** (`auto.step.tracker`) —
+   `data/applications.md`'ye bir satır ekler.
 
 Canlı geri bildirim dikey bir **adım göstergesidir** (her adım
-çalışıyor → tamamlandı / başarısız olarak yanar). Aktif adımda
-`aria-current` bulunan sıralı bir listedir ve nazik bir ekran-okuyucu
-canlı bölgesi her geçişi duyurur. Başarıda sonuç kartı doğrudan
-kaydedilen rapora (**View report · N/5**) ve **tracker**'a derin bağlantı
-verir. Başarısız bir adım mesajıyla birlikte kırmızı işaretlenir ve
-düğme yeniden etkinleşir; böylece URL'yi düzeltip sayfayı yeniden
-yüklemeden tekrar deneyebilirsiniz.
+çalışıyor → tamamlandı / başarısız olarak yanar; `aria-current` aktif
+olanı işaretler ve nazik bir ekran-okuyucu canlı bölgesi her geçişi
+duyurur). Başarıda sonuç kartı doğrudan kaydedilen rapora
+(**Raporu görüntüle**, `auto.viewReport`) ve **takip tablosuna**
+(`auto.viewTracker`) derin bağlantı verir. Başarısız bir adım
+mesajıyla birlikte kırmızı işaretlenir ve düğme yeniden etkinleşir;
+böylece URL'yi düzeltip sayfayı yeniden yüklemeden tekrar
+deneyebilirsiniz. Bir çalıştırma sürerken yenisini başlatmak güvenlidir:
+eski çalıştırma, bayat bir yanıta iki kez harcama yapmak yerine
+kendini **Yerine yenisi geçti — daha yeni bir çalıştırma istendi**
+olarak işaretler (`auto.superseded`).
+
+Boş sayfa tek alanı hakkında dürüsttür: bir **Örnek** etiketi ve bir
+**Örnek bir URL dene** düğmesi (`v2empty.auto.tryExample`) girdiyi
+örnek bir ilanla doldurur — **Çalıştır'a basana kadar hiçbir şey
+çalışmaz** (`v2empty.auto.hint`), dolayısıyla keşfetmenin maliyeti
+yoktur.
 
 **API anahtarı yok mu?** Pipeline **elle modda** çalışır: 3–5.
 adımlar daralır ve yapıştırmaya hazır bir prompt kartı alırsınız (Claude
@@ -1034,7 +1068,7 @@ Tarayıcı, etkin her kartı gezer, geçmişinize karşı çiftleme-önlemesi
 yapar ve isabetleri `data/last-scan.json` ile `data/pipeline.md`'ye
 yazar.
 
-**Ara + Hariç tut.** Ara kutusu virgülleri VEYA olarak ele alır ("bulunacak roller"); yeni Hariç tut alanı virgülle ayrılmış bir kelimeyle eşleşen satırları gizler. İkisi de aramalarınızla kaydedilir.
+**Arama + Hariç tutma.** **Arama** kutusu "bulunacak roller" filtreinizdir — **virgülle ayrılmış** bir ya da daha fazla terim yazın ve **herhangi** biriyle eşleşen (VEYA) bir satır görünür; baştaki bir `-kelime` o terimi **hariç tutar** (`scan.v2.moreHint`). Ayrı **Hariç tut** kutusu (`scan.lblExclude`) bütün terimler için aynı şeyi yapar: şirketi / rolü / konumu içinde geçen satırları **gizleyen** virgülle ayrılmış sözcükler (ör. `senior, staff, java` hariç tut). İkisi de, uzaktan / kaynak / ülke / yayın-tarihi / maaş filtreleriyle birlikte kayıtlı aramalarınız tarafından hatırlanır.
 
 ### Tek tıkla tarama (SPA)
 
@@ -1059,6 +1093,35 @@ HTTPS isteklerini `AbortController` aracılığıyla iptal eder.
 ### Sonuçları filtreleme
 
 Günlüğün altında, sonuç tablosu `data/last-scan.json`'dan satırları işler.
+Tablo yüklenirken (ve her yenilemede) boş bir bölme yerine gri parıltı
+satırları görürsünüz ve sayfa başlığı ilk karede yerindedir — yavaş bir
+tarama hiçbir zaman ölü bir sayfa gibi okunmaz.
+
+v2 sonuç çerçevesi kontrolleri keşfedilebilir tutar:
+
+- **Etkin filtreler** (`scan.v2.activeFilters`) — ayarladığınız her
+  filtre tablonun üzerinde kaldırılabilir bir çip olarak görünür;
+  yalnızca birini düşürmek için çipteki **✕**'e tıklayın
+  (**Filtreyi kaldır**, `scan.v2.removeFilter`) ya da tamamını temizlemek
+  için **Tümünü sıfırla**'yı kullanın (`scan.v2.resetAll`).
+- **Şuna göre sırala** (`scan.v2.sortBy`) — ona göre sıralamak için bir
+  sütun başlığına (şirket, rol, maaş, yaş) tıklayın; yönü çevirmek için
+  yeniden tıklayın.
+- **Hızlı görünüm** (`scan.v2.quickView`) — sayfadan ayrılmadan ilanın
+  açıklamasını satır içinde açmak için bir satıra tıklayın
+  (**Açıklama**, `scan.v2.description`); kayıtlı gövdesi olmayan ilanlar
+  boş bir kart göstermek yerine bunu söyler (`scan.v2.noDescription`).
+- **Satır yoğunluğu** (`scan.v2.density`) — **Sıkı** / **Rahat**
+  (`scan.v2.compact` / `scan.v2.comfortable`) satır yükseklikleri
+  arasında geçiş yapın; seçim tarayıcı başına hatırlanır.
+- **Günlük** (`scan.v2.log`) — tabloya tam genişliği vermek için akış
+  tarama günlüğünü daraltın/genişletin.
+
+Her satır kendi eylemlerini taşır: **Değerlendir** (`scan.v2.evaluate`)
+doğrudan o ilanın puanlı bir değerlendirmesine atlar, **Pipeline'e**
+(`scan.v2.toPipeline`) URL'yi kuyruğa alır (zaten kuyruktaysa bir bildirim,
+`scan.v2.pipelineDup`), **İşi aç ↗** (`scan.v2.openPosting`) kariyer
+sayfasını yeni bir sekmede açar ve ☆ yıldızı favoriye çevirir.
 
 > **v1.76.0 — sonuç sınırı yok.** Önceki yapılar bölge başına en fazla 2000
 > eşleşen satır (`MAX_STORED_RESULTS`) saklardı ve büyük bir taramanın
@@ -1081,15 +1144,24 @@ Günlüğün altında, sonuç tablosu `data/last-scan.json`'dan satırları işl
 > slug'lar günlüğü doldurmayı bırakır. `portals.yml`'de
 > `scan_quarantine: false` ile devre dışı bırakın.
 
-Filtreler:
+Filtreler (her zaman görünür: arama, hariç tutma, tür, kaynak, ülke;
+geri kalan her şey **Gelişmiş filtreler** arkasındadır,
+`scan.advancedFilters` — panelin tamamı **Sonuç filtreleri** altında
+gruplanır, `scan.filtersGroup`):
 
 - **Serbest metin** — başlık / şirkete karşı alt dize eşleşmesi.
-- **Source** açılır menüsü — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Teamtailor / Trudvsem / We Work Remotely / Workable / Workday / Working Nomads (`GET /api/scan/sources`'tan otomatik doldurulur).
+- **Source** açılır menüsü — kaydın bildiği her kaynak (şu anda 121:
+  116 EN + 5 RU, varsayılan **All sources**). `GET /api/scan/sources`
+  kaynağından canlı olarak otomatik doldurulur, böylece yeni bırakılan
+  bir adaptör uygulama değişikliği olmadan burada belirir — liste
+  asla sabit kodlanmaz.
 - **Remote / Hybrid / Onsite** açılır menüsü.
-- **Country** açılır menüsü (v1.78.0) — mevcut sonuçlar boyunca tespit edilen ülkelerden doldurulan bir coğrafya filtresi, her biri bayrak emojisi ve bir sayımla gösterilir (ör. `🇩🇪 Germany (12)`). Yalnızca o ülkeye bağlı rolleri tutmak için birini seçin. Tespit, bir ilanın serbest-metin konumunu (ülke adları/takma adları + ~100 büyük iş piyasası şehri) bir ülkeye eşler; muhafazakârdır ve asla tahmin etmez, böylece konumu çözülemeyen bir ilan — ya da saf bir "Remote" ilanı — **All countries** altında kalır. Ülkeye bağlı *ve* uzaktan roller bulmak için çalışma-türü açılır menüsüyle birleştirin.
-- **Posted within** açılır menüsü (v1.80.0) — istemci tarafı bir yaş filtresi (Last 24 hours / 7 days / 30 days). `pubDate`'i daha eski olan satırlar gizlenir; **listelenmiş tarihi olmayan satırlar geçer** (eksik veri cezalandırılmaz).
-- **★ Favorites** (v1.80.0) — bir işi yıldızlamak için herhangi bir satırdaki ☆'a tıklayın (URL'ye göre `localStorage`'da saklanır); yalnızca yıldızlı satırları göstermek için filtre panelinde **★ Favorites**'ı işaretleyin. Yıldızlar taramalar ve yeniden yüklemeler boyunca korunur.
-- **Saved searches** (v1.80.0) — filtrelerin üstündeki çubuk: mevcut filtre kümesini adlandırın ve **💾 Save** yapın, ardından açılır menüden yeniden uygulayın veya **🗑 Delete** ile silin. `localStorage`'da saklanır; bozuk/düzenlenmiş bir değer temizce boşa sıfırlanır.
+- **Country** açılır menüsü — mevcut sonuçlar boyunca tespit edilen ülkelerden doldurulan bir coğrafya filtresi, her biri bayrak emojisi ve bir sayımla gösterilir (ör. `🇩🇪 Germany (12)`). Yalnızca o ülkeye bağlı rolleri tutmak için birini seçin. Tespit, bir ilanın serbest-metin konumunu (ülke adları/takma adları + ~100 büyük iş piyasası şehri) bir ülkeye eşler; muhafazakârdır ve asla tahmin etmez, böylece konumu çözülemeyen bir ilan — ya da saf bir "Remote" ilanı — **All countries** altında kalır. Ülkeye bağlı *ve* uzaktan roller bulmak için çalışma-türü açılır menüsüyle birleştirin.
+- **Posted within** açılır menüsü — istemci tarafı bir yaş filtresi (Last 24 hours / 7 days / 30 days). `pubDate`'i daha eski olan satırlar gizlenir; **listelenmiş tarihi olmayan satırlar geçer** (eksik veri cezalandırılmaz).
+- **Maaş (alt sınır) / Maaş (üst sınır)** (`scan.salaryFrom` / `scan.salaryTo`) — iş metninden ayrıştırılan tutarlarla karşılaştırılan düz-sayı sınırlar (para birimi yok sayılır, `scan.v2.salaryHint`); maaş filtresinin hiç sayı belirtmeyen satırları düşürmesini durdurmak için **Maaşsız işleri dahil et**'i işaretleyin (`scan.v2.includeNoSalary`).
+- **Seviye** açılır menüsü (`scan.lblSeniority`) — Lead / Staff / Senior / Mid / Junior / Intern, başlıktan tespit edilir.
+- **★ Favoriler** — bir işi yıldızlamak için herhangi bir satırdaki ☆'a tıklayın (URL'ye göre `localStorage`'da saklanır); yalnızca yıldızlı satırları göstermek için filtre panelinde **★ Favoriler**'i işaretleyin (`scan.favOnly`). Yıldızlar taramalar ve yeniden yüklemeler boyunca korunur.
+- **Kaydedilmiş aramalar** (`scan.savedSearches`) — mevcut filtre kümesini adlandırın ve **Aramayı kaydet** yapın (`scan.saveSearch`), ardından listeden yeniden uygulayın; kayıtlı aramalar tek tıkla yüklenir (`scan.v2.loadSearch`) ve birini silmek önce sorar (`scan.v2.deleteSearchConfirm`). `localStorage`'da saklanır; bozuk/düzenlenmiş bir değer temizce boşa sıfırlanır.
 - **Stack chips** (PHP / Go / Backend / Senior / …) — `Skills.detectTech`
   ve `Skills.detectLevel` tarafından satır başına otomatik-tespit edilir.
   Çoklu-seçim kesişimi — `PHP + Senior` seçmek HER İKİSİNE sahip
