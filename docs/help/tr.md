@@ -1173,11 +1173,21 @@ gruplanır, `scan.filtersGroup`):
 
 ### Active Companies kartı
 
-`portals.yml`'deki her şirketi tarama durumuyla listeleyen
-daraltılabilir bir kart:
+`portals.yml`'deki her şirketi özetleyen, **Aktif şirketler**
+(`scan.activeCo`) başlıklı ve canlı bir `N/M` sayacıyla gelen
+daraltılabilir bir kart — *N*, son taramada gerçekten sonuç veren
+şirketlerdir, *M* ise şu anda etkin olan API destekli şirketler; böylece
+her iki sayı da her zaman aynı evreni tanımlar (yalnızca Rusya
+panolarından oluşan bir koşu, payı ATS paydasının üzerine
+şişiremez). Araç ipucu aynı şeyi sade bir dille söyler
+(`scan.activeCo.help`). Liste iki gruba ayrılır:
 
-- ✓ yeşil etiket — doğrudan API desteği (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday).
-- ○ gri etiket — web-arama promptuna geri dönüş (API eşleşmesi yok).
+- ✓ **Doğrudan API** (`scan.apiBacked`) — pano, kendi genel ATS
+  API'sinden doğrudan çekilir (116 EN adaptöründen biri; Greenhouse /
+  Ashby / Lever / Workable / SmartRecruiters / Workday'den uzun
+  kuyruğa kadar).
+- ○ **Yalnızca web araması** (`scan.websearchBacked`) — URL ile
+  eşleşen adaptör yoktur; onu CLI'nin yapay zekâ taraması karşılar.
 
 **Şirket adına tıklayın** → yukarıdaki sonuç filtresini o adla doldurur.
 **↗ simgesine tıklayın** → şirketin `careers_url`'sini yeni bir sekmede açar.
@@ -1251,19 +1261,25 @@ Doğru *görünen* bir ağdan bile hh.ru, çıkış IP'sini VPN/proxy olarak iş
 Değerlendirilmeyi bekleyen URL'lerin gelen kutusu. `data/pipeline.md`'de
 bulunur.
 
-**Genel bakış şeridi.** Üstteki kompakt bir şerit pipeline'ınızı bir bakışta gösterir — gelen kutusunda kaç URL, kaçı izleniyor ve Applied/Responded/Interview/Offer sayıları, her biri izleyiciye bağlanır.
+**Genel bakış şeridi.** Üstteki kompakt bir şerit pipeline'ınızı bir
+bakışta gösterir — **gelen kutusunda** kaç URL var (`pipe.ovInbox`),
+kaçı **izleniyor** (`pipe.ovTracked`) ve takipçinizden gelen
+**Applied / Responded / Interview / Offer** sayıları. Her çip doğrudan
+`#/tracker`'a bağlanır (durum çipleri onu filtrelenmiş olarak açar).
+Takipçi okunamazsa şerit yalnızca gelen kutusu sayacına düşer.
 
 ### URL ekleme
 
 Üç yol:
 
-- Girdiye bir URL yazın / yapıştırın + **+ Add**'e tıklayın.
-- **Üst çubuk global aramasını** kullanın (rozeti **Enter** okur):
-  herhangi bir `http(s)://…` bağlantısı yapıştırın ve auto-pipeline'ı
-  açmak için **Enter**'a basın; başka herhangi bir metin yazın ve
-  **Enter**, o terim önceden doldurulmuş olarak `#/scan`'e atlar
-  (v1.78.1). Ctrl/Cmd+K, tarayıcının izin verdiği yerde kutuyu hâlâ
-  odaklar. Marka **logosu** panoya döner.
+- Girdiye bir URL yazın / yapıştırın + **URL ekle**'ye tıklayın
+  (`pipe.add`).
+- **Komut menüsünü** açın: **Cmd/Ctrl+K** (veya kenar çubuğundaki
+  **Komut menüsü** düğmesi, `nav.v2.palette`), herhangi bir
+  `http(s)://…` bağlantısı yapıştırın; menü **Otomatik-pipeline:
+  {url}**'yi önerir (`nav.v2.evalUrl`) — Enter, tüm zinciri üzerinde
+  çalıştırır. Başka herhangi bir metin + Enter, o terim önceden
+  doldurulmuş olarak `#/scan`'e atlar.
 - Bir Tarama çalıştırın (yukarıya bakın) — yeni isabetler otomatik
   olarak pipeline'a gider.
 
@@ -1286,13 +1302,56 @@ sektiremez. 3 atlamada sınırlı, 15 saniyelik zaman aşımı.
 
 ### Satır eylemleri
 
-- **▶** — URL önceden doldurulmuş olarak `#/evaluate?url=…`'e atlar.
-- **✕** — URL'yi `data/pipeline.md`'den kaldırır.
+- **▶** (`pipe.evaluateBtn`) — URL önceden doldurulmuş olarak
+  `#/evaluate?url=…`'e atlar.
+- **✕** — URL'yi `data/pipeline.md`'den kaldırır (önce sorar,
+  `pipe.confirmDel`).
+
+**Gruplu görünüm, toplu ayıklama, kayıpsız geri alma.** Bir taramadan
+sonra büyük bir gelen kutusunu temizlemek, sayfanın v2'sinin asıl
+parçasıdır:
+
+- **Gruplu** (`pipe.viewGrouped`) / **Kompakt liste** (`pipe.viewFlat`)
+  — araç çubuğu, düz bir liste ile şirkete göre gruplanmış bir pano
+  arasında geçiş yapar: aynı işverenin ilanları tek bir açılır
+  öğenin altında toplanır (en büyük grup önce), böylece gürültülü bir
+  pano gerisini gömmeye devam etmez. Bilinmeyen şirketler kendi
+  ana bilgisayarları altında toplanır — ancak paylaşılan bir ATS ana
+  bilgisayarı (diyelim ki `jobs.lever.co`) bir şirket adını yalnızca o
+  ana bilgisayardaki *tüm* şirket adlı girdiler hemfikir olduğunda
+  ödünç alır.
+- **Değerlendirilenleri gizle** (`pipe.hideTracked`) — varsayılan
+  olarak açıktır; ilanın zaten takipçi satırına sahip olan girdiler
+  görünümden (ve toplu seçimden) düşer, böylece yalnızca taze işe
+  işlem yaparsınız.
+- Herhangi bir satırı **Seçin** (`pipe.selectOne`) veya **Gösterilenlerin
+  tümünü seçin** (`pipe.selectAllShown`) — seçim her zaman geçerli
+  filtreleri izler, asla görünmez satırları değil. Seçim çubuğu sayıyı
+  gösterir (`pipe.selectedCount`) ve **✕ Seçilenleri kaldır (N)**
+  (`pipe.bulkRemove`) artı **Seçilen ilki değerlendir**
+  (`pipe.evaluateSelected`) sunar — toplu kaldırma, satır satır
+  değil tüm küme için bir kez onay ister.
+
+Hiçbir şey yanlışlıkla kaybolmaz: her kaldırma — tek veya toplu —
+opak bir geri yükleme jetonu döndürür ve sayfanın altındaki bir çubuk
+(**Silindi: N**, `pipe.deleted`) **Geri al** (`pipe.undo`) /
+**Kapat** (`pipe.undoDismiss`) sunar. Kaldırmalar beş yığına kadar
+birikir (en eskisi atılır); **Geri al**, en yenisini jetonlarını
+`POST /api/pipeline/restore`'a göndererek geri getirir; bu uç nokta
+birebir özgün satırları yeniden ekler (kontrol listesi üst verisi dâhil
+— hiçbir şey yeniden türetilmez veya yeniden eklenmez) ve
+**Pipeline'a geri eklendi** ile onaylar (`pipe.undone`). Çubuk,
+sayfanın kendi işaretlemesinin dışına tutturulmuştur, böylece bir
+yeniden oluşturma (gezinti, hızlı ekleme akışı) bekleyen bir geri
+almayı yutamaz; sunucu bir jetonu artık tanımıyorsa (yeniden başlatma),
+o URL düz yoldan yeniden eklenir, kaybolmaz.
 
 ### Sağ üst düğmeler
 
-- **⚡ İlkini değerlendir** — Evaluate sayfasında kuyruğa alınmış ilk URL'yi
-  açar, puanlamaya hazır.
+- **⚡ İlkini değerlendir** (`pipe.evaluateAll`) — Evaluate sayfasında
+  kuyruğa alınmış ilk URL'yi açar, puanlamaya hazır (önce onaylar;
+  çünkü koşuyu hangi ilan üzerinde harcayacağınıza karar veren
+  budur).
 - **İlan arama** — daha fazla URL isterseniz tarayıcıya geri döner.
 
 ---
@@ -1373,12 +1432,46 @@ geri gelin. Tam akış:
 
 ## 10. Reports (`#/reports`)
 
-Kaydedilen her değerlendirmeye göz atın. Kartlar başlık, tarih,
-meşruiyet bayrağı ve puan gösterir (renk kodlu: yeşil ≥ 4.0, sarı ≥ 3.0,
-altında kırmızı).
+Kaydedilen her değerlendirmeye göz atın. Sayfa **Kartlar** görünümüyle
+açılır (`rep2.viewCards`) — rapor başına bir kart: görünen başlığı,
+tarihi, meşruiyet rozeti ve renk kodlu bir puan hapı (yeşil ≥ 4.0,
+sarı ≥ 3.0, altı kırmızı; başlıkta ayrıştırılabilir bir puan
+yokken sönük bir «Puan algılanmadı» hapı) — ve satırları taradığınızda
+yoğun bir **Tablo** görünümüne dönebilirsiniz (`rep2.viewTable`). Her
+kart ve tablo satırı, puan aralığına uygun **önerilen sonraki adımı**
+da adlandırır: **Hemen başvur — çok uygun** (`rep2.actApply`),
+**Başvur veya önce bir kişi bul** (`rep2.actContact`), **Önce şirketi
+araştır** (`rep2.actResearch`) veya **Kişisel bir neden yoksa atla**
+(`rep2.actLow`) — her biri doğru sayfaya giden doğrudan bir
+bağlantıdır. Puanı olmayan bir kart, raporun kendisine işaret eden bir
+araç ipucuyla sönük **Puan algılanmadı** hapını gösterir
+(`rep.scoreUnparsed`).
 
-Tam markdown'ı okumak için bir karta tıklayın. Sayfalama: sayfa başına
-12; kontroller altta.
+**Doğru raporu bulmak.** Listenin üstünde bir filtre satırı bulunur ve
+her şey birbiriyle kurgulanır:
+
+- **Raporlarda ara** (`rep2.searchLabel`) — her raporun şirketi,
+  pozisyonu ve görünen başlığına karşı serbest metin.
+- **Şirket** (`rep2.companyLabel`) — açılır menüden bir işveren seçin.
+- **Puan aralığı** (`rep2.bandLabel`) — **Yüksek (4.5+)** / **İyi
+  (4.0+)** / **Orta (3.5+)** / **3,5 altı** (`rep2.bandHigh` …
+  `rep2.bandLow`), artı ayrıştırılabilir puanı olmayan raporlar için
+  bir kova.
+- **Başlangıç tarihi / Bitiş tarihi** (`rep2.dateFrom` /
+  `rep2.dateTo`) — listeyi bir döneme sınırlar.
+- **Sırala** (`rep2.sortLabel`) — **Tarih** / **Puan** / **Şirket**
+  (`rep2.sortDate` …), artan veya azalan (`rep2.sortDirAsc` /
+  `rep2.sortDirDesc`).
+- **Puan dağılımı histogramı** (`rep2.histogramLabel`) — o aralığa
+  filtrelemek için bir sütuna tıklayın ve hattınızın şeklini bir
+  bakışta görün.
+- **Filtreleri sıfırla** (`rep2.reset`) her şeyi temizler; hiçbir şey
+  eşleşmediğinde boş bir ızgara yerine sayfa bunu söyler
+  (`rep2.noMatches`).
+
+Tam markdown'ı okumak için bir karta (veya tablo satırına)
+tıklayın. Sayfalama: sayfa başına 20, kontroller altta; her filtre
+değişikliği sizi 1. sayfaya geri alır.
 
 Tek rapor görünümünde ayrıca şunlar vardır:
 
@@ -1407,6 +1500,23 @@ GitHub-Flavored Markdown tablosu olarak bulunur.
 `Hired` (v1.118.0) mutlu son durumudur — teklif kabul edildi. Takipçi bunu kutlama rozetiyle işaretler ve «iş bulundu» banner'ıyla karşılar.
 
 **Aşama-sekmesi panosu (v1.131.0).** Tablonun üstünde bir **aşama-sekmesi şeridi** huni boyunca gezinmenizi sağlar: bir **Tümü** sekmesi artı her kanonik durum için bir sekme, her biri canlı bir tüm-geçmiş sayısı gösterir — **sıfır sayılı aşamalar dahil**, böylece tüm hat her zaman tek bakışta görünür. Bir aşamaya tıklamak tabloyu ona filtreler; tekrar tıklamak **Tümü**'ne döner. Sekmeler (ve sayıların yerelleştirilmiş/eski durum takma adlarını katlaması) `GET /api/tracker/stages`'ten gelir, bu da sunucunun kullandığı aynı `templates/states.yml`'i okur — böylece sekme kümesi, sayfada sabit kodlanmış bir liste olmadan üst projenin durum sözlüğüyle otomatik olarak senkronize kalır. Search, puan filtresi, sıralanabilir sütunlar ve satır başına rapor/PDF/meşruiyet değişmeden kalır; logolar etkinleştirildiğinde her satırın şirketi bir marka işareti gösterir.
+
+**Kanban görünümü (v2).** Aynı pano, sürükle-bırak bir **kanban** olarak
+da okunur: kanonik durum başına bir sütun (pano başlığı *Duruma göre
+başvurular* olarak duyurulur, `track.kanbanBoardAria`), başvuru başına
+bir kart. Bir kartı başka bir sütuna sürükleyin — ya da odağa alıp
+**Taşı**'ya basın — ve değişiklik **hiçbir şey yazılmadan önce önizlenir**
+(`track.kanbanMoveHint`); onaylanan bir taşıma, sonuç günlüğüne bir kayıt
+ekler ve `data/applications.md` dosyasını yeniden yazar, kart bunu size
+söyler (`track.moveJournal`) — bir durumu geri çevirmek için satırdaki
+**Sonuç** düğmesini kullanın. Pipeline'ın kendisinin yönettiği sütunlar
+(ve semantiğini yalnızca sizin seçebildiğiniz `Discarded`) salt okunur
+işlenir (`track.kanbanReadOnly`) ve bırakmaları reddeder. Üst projenin
+sonuç kaydedicisi eksikse durum taşımaları dürüst bir notla devre dışı
+bırakılır (`track.kanbanMovesOff`). Pano yüklenirken uygulamanın geri
+kalanıyla aynı iskelet satırlarını gösterir ve boş bir pano **Başvuru
+yok** der (`track.kanbanEmpty`) ve pipeline'a işaret eder
+(`track.emptyBody`).
 
 Durum beyaz listesi sunucu tarafında zorlanır; bir `POST /api/tracker`'da
 başka herhangi bir şey göndermek `Evaluated`'a varsayılır. Kanonik
