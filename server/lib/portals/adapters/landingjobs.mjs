@@ -12,6 +12,10 @@
  *       enabled: true
  */
 import { fetchLandingjobs, FEED_URL } from '../../sources/landingjobs.mjs';
+import { pinnedOverride } from '../../sources/_override.mjs';
+
+// Exact host match — mirrors the source's assertLandingjobsUrl.
+const LANDINGJOBS_HOST_RE = /^landing\.jobs$/i;
 
 export const landingjobsAdapter = {
   id: 'landingjobs',
@@ -20,7 +24,9 @@ export const landingjobsAdapter = {
     return c.provider === 'landingjobs';
   },
   buildEndpoint(c) {
-    return c.landingjobs || c.api || FEED_URL;
+    return pinnedOverride(c.landingjobs, LANDINGJOBS_HOST_RE)
+      || pinnedOverride(c.api, LANDINGJOBS_HOST_RE)
+      || FEED_URL;
   },
   fetch: fetchLandingjobs,
 };

@@ -24,6 +24,7 @@
 import { createDecipheriv } from 'node:crypto';
 import { fetchJson, BROWSER_LIKE_USER_AGENT, delay } from '../http-json.mjs';
 import { htmlToText } from '../html-to-text.mjs';
+import { requireArray } from './_shape.mjs';
 import { safeEncodeURIComponent } from './_safe-url.mjs';
 
 export const meta = {
@@ -254,6 +255,11 @@ export async function fetchMokaHr(_url, opts = {}) {
         return [...seen.values()];
       }
 
+      // Page-1 shape guard (FULL-M3): a plaintext 200 whose payload carries no
+      // data.jobs array is a dead API reading as "0 postings", not an empty
+      // tenant. (The envelope/decrypt guards above already throw for their own
+      // shapes; later pages keep the partials.)
+      if (!succeededOnce) requireArray(decrypted?.data?.jobs, 'MokaHR data.jobs');
       succeededOnce = true;
       const jobs = parseMokaHrJobs(decrypted, companyName, tenant.baseUrl);
       for (const job of jobs) if (!seen.has(job.url)) seen.set(job.url, job);

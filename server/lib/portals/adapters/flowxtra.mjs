@@ -13,6 +13,10 @@
  *       enabled: true
  */
 import { fetchFlowxtra, JOBS_ENDPOINT } from '../../sources/flowxtra.mjs';
+import { pinnedOverride } from '../../sources/_override.mjs';
+
+// Exact host match — mirrors the source's assertFlowxtraUrl (endpoint host).
+const FLOWXTRA_HOST_RE = /^app\.flowxtra\.com$/i;
 
 export const flowxtraAdapter = {
   id: 'flowxtra',
@@ -20,16 +24,12 @@ export const flowxtraAdapter = {
   matches(company) {
     return !!company && typeof company === 'object' && company.provider === 'flowxtra';
   },
-  // `string | null` contract: a non-string api falls back to the canonical
-  // endpoint; garbage input never throws.
+  // The override is pinned to app.flowxtra.com (FULL-M3): an off-host or
+  // non-https value falls back to the canonical endpoint; garbage never throws.
   buildEndpoint(company) {
-    const api = company && typeof company === 'object' && typeof company.api === 'string'
-      ? company.api
-      : '';
-    const override = company && typeof company === 'object' && typeof company.flowxtra === 'string'
-      ? company.flowxtra
-      : '';
-    return override || api || JOBS_ENDPOINT;
+    return pinnedOverride(company?.flowxtra, FLOWXTRA_HOST_RE)
+      || pinnedOverride(company?.api, FLOWXTRA_HOST_RE)
+      || JOBS_ENDPOINT;
   },
   fetch: fetchFlowxtra,
 };

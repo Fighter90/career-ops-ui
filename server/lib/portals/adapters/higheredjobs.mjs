@@ -14,6 +14,10 @@
  *       enabled: true
  */
 import { fetchHigherEdJobs, feedUrlFor } from '../../sources/higheredjobs.mjs';
+import { pinnedOverride } from '../../sources/_override.mjs';
+
+// Exact host match — mirrors the source's assertHejUrl.
+const HIGHEREDJOBS_HOST_RE = /^www\.higheredjobs\.com$/i;
 
 export const higheredjobsAdapter = {
   id: 'higheredjobs',
@@ -21,17 +25,13 @@ export const higheredjobsAdapter = {
   matches(company) {
     return !!company && typeof company === 'object' && company.provider === 'higheredjobs';
   },
-  // `string | null` contract: a non-string api falls back to the category
-  // feed; garbage input never throws.
+  // The override is pinned to www.higheredjobs.com (FULL-M3): an off-host or
+  // non-https value falls back to the category feed; garbage never throws.
   buildEndpoint(company) {
-    const api = company && typeof company === 'object' && typeof company.api === 'string'
-      ? company.api
-      : '';
-    const override = company && typeof company === 'object' && typeof company.higheredjobs === 'string'
-      ? company.higheredjobs
-      : '';
     const catId = company && typeof company === 'object' ? company.cat_id : undefined;
-    return override || api || feedUrlFor(catId);
+    return pinnedOverride(company?.higheredjobs, HIGHEREDJOBS_HOST_RE)
+      || pinnedOverride(company?.api, HIGHEREDJOBS_HOST_RE)
+      || feedUrlFor(catId);
   },
   fetch: fetchHigherEdJobs,
 };

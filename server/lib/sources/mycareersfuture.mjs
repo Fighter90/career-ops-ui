@@ -36,6 +36,7 @@
  */
 import { fetchJsonWithRetry } from '../http-json.mjs';
 import { PATHS } from '../paths.mjs';
+import { requireArray } from './_shape.mjs';
 import { existsSync, readFileSync } from 'node:fs';
 // NOTE: `js-yaml` is loaded lazily inside resolveProfileKeywords (below), NOT at
 // module top level. The registry enumerates every source with a bare `import()`
@@ -249,7 +250,13 @@ export async function fetchMyCareersFuture(endpoint = API_URL, opts = {}) {
         redirect: 'error',
         signal,
       });
-      const results = Array.isArray(json && json.results) ? json.results : [];
+      // Page-1 shape guard (FULL-M3): a 200 without a results array is a dead
+      // API reading as "0 postings", not an empty search — the per-keyword
+      // catch records it, and every keyword failing still throws below. Later
+      // pages keep the partials.
+      const results = page === 0
+        ? requireArray(json?.results, 'MyCareersFuture results')
+        : (Array.isArray(json && json.results) ? json.results : []);
       out.push(...results);
       if (results.length < size) break; // short page → done
     }

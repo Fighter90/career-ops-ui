@@ -20,6 +20,7 @@
  * Used by the glints adapter (server/lib/portals/adapters/glints.mjs).
  */
 import { fetchJson, delay, BROWSER_LIKE_USER_AGENT } from '../http-json.mjs';
+import { requireArray } from './_shape.mjs';
 
 export const DEFAULT_API = 'https://glints.com/api/graphql';
 const DEFAULT_COUNTRY = 'ID';
@@ -217,9 +218,15 @@ export async function fetchGlints(apiUrl = DEFAULT_API, opts = {}) {
       break;
     }
 
+    // The two known envelope variants: `opportunities` IS the array, or it is
+    // a container with `.data`. Page 1 (FULL-M3): a container without a data
+    // array is a dead API reading as "0 postings", not an empty board — it
+    // throws. Later pages keep the partials.
     const data = Array.isArray(opportunities)
       ? opportunities
-      : (Array.isArray(opportunities.data) ? opportunities.data : []);
+      : (page === 0
+        ? requireArray(opportunities.data, 'Glints opportunities.data')
+        : (Array.isArray(opportunities.data) ? opportunities.data : []));
     if (typeof opportunities.totalCount === 'number') totalCount = opportunities.totalCount;
     if (data.length === 0) break;
 

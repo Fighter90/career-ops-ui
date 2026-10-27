@@ -12,6 +12,10 @@
  *       enabled: true
  */
 import { fetch4DayWeek, FEED_BASE } from '../../sources/4dayweek.mjs';
+import { pinnedOverride } from '../../sources/_override.mjs';
+
+// Exact host match — mirrors the source's assert4DayWeekUrl.
+const FOUR_DAY_WEEK_HOST_RE = /^4dayweek\.io$/i;
 
 export const fourDayWeekAdapter = {
   id: '4dayweek',
@@ -19,15 +23,13 @@ export const fourDayWeekAdapter = {
   matches(company) {
     return !!company && typeof company === 'object' && company.provider === '4dayweek';
   },
-  // `string | null` contract: a non-string api (a misconfigured entry) falls
-  // back to the canonical feed; garbage input never throws.
+  // The override is pinned to 4dayweek.io (FULL-M3): an off-host or non-https
+  // value (a misconfigured entry) falls back to the canonical feed; garbage
+  // input never throws.
   buildEndpoint(company) {
-    const api = company && typeof company === 'object' && typeof company.api === 'string'
-      ? company.api
-      : '';
-    return company && typeof company === 'object' && typeof company['4dayweek'] === 'string' && company['4dayweek']
-      ? company['4dayweek']
-      : api || FEED_BASE;
+    return pinnedOverride(company?.['4dayweek'], FOUR_DAY_WEEK_HOST_RE)
+      || pinnedOverride(company?.api, FOUR_DAY_WEEK_HOST_RE)
+      || FEED_BASE;
   },
   fetch: fetch4DayWeek,
 };

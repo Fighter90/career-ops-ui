@@ -12,6 +12,10 @@
  *       enabled: true
  */
 import { fetchTheMuse, FEED_BASE } from '../../sources/themuse.mjs';
+import { pinnedOverride } from '../../sources/_override.mjs';
+
+// Exact host match — mirrors the source's assertTheMuseUrl.
+const THEMUSE_HOST_RE = /^www\.themuse\.com$/i;
 
 export const themuseAdapter = {
   id: 'themuse',
@@ -20,7 +24,9 @@ export const themuseAdapter = {
     return company.provider === 'themuse';
   },
   buildEndpoint(company) {
-    return company.themuse || company.api || FEED_BASE;
+    return pinnedOverride(company.themuse, THEMUSE_HOST_RE)
+      || pinnedOverride(company.api, THEMUSE_HOST_RE)
+      || FEED_BASE;
   },
   fetch: fetchTheMuse,
 };

@@ -12,6 +12,10 @@
  *       enabled: true
  */
 import { fetchJobicy, FEED_URL } from '../../sources/jobicy.mjs';
+import { pinnedOverride } from '../../sources/_override.mjs';
+
+// Exact host match — mirrors the source's assertJobicyUrl (both hosts allowed).
+const JOBICY_HOST_RE = /^(?:www\.)?jobicy\.com$/i;
 
 export const jobicyAdapter = {
   id: 'jobicy',
@@ -19,16 +23,12 @@ export const jobicyAdapter = {
   matches(company) {
     return !!company && typeof company === 'object' && company.provider === 'jobicy';
   },
-  // `string | null` contract: a non-string api falls back to the canonical
-  // feed; garbage input never throws.
+  // The override is pinned to jobicy.com (FULL-M3): an off-host or non-https
+  // value falls back to the canonical feed; garbage never throws.
   buildEndpoint(company) {
-    const api = company && typeof company === 'object' && typeof company.api === 'string'
-      ? company.api
-      : '';
-    const override = company && typeof company === 'object' && typeof company.jobicy === 'string'
-      ? company.jobicy
-      : '';
-    return override || api || FEED_URL;
+    return pinnedOverride(company?.jobicy, JOBICY_HOST_RE)
+      || pinnedOverride(company?.api, JOBICY_HOST_RE)
+      || FEED_URL;
   },
   fetch: fetchJobicy,
 };

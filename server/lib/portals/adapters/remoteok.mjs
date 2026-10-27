@@ -13,7 +13,8 @@
  *       provider: remoteok
  *       enabled: true
  */
-import { fetchRemoteOk, FEED_URL } from '../../sources/remoteok.mjs';
+import { fetchRemoteOk, FEED_URL, REMOTEOK_HOST_RE } from '../../sources/remoteok.mjs';
+import { pinnedOverride } from '../../sources/_override.mjs';
 
 export const remoteokAdapter = {
   id: 'remoteok',
@@ -22,7 +23,9 @@ export const remoteokAdapter = {
     return company.provider === 'remoteok';
   },
   buildEndpoint(company) {
-    return company.remoteok || company.api || FEED_URL;
+    return pinnedOverride(company.remoteok, REMOTEOK_HOST_RE)
+      || pinnedOverride(company.api, REMOTEOK_HOST_RE)
+      || FEED_URL;
   },
   fetch: fetchRemoteOk,
 };

@@ -18,6 +18,10 @@
  *       enabled: true
  */
 import { fetchWttj, ENV_URL } from '../../sources/wttj.mjs';
+import { pinnedOverride } from '../../sources/_override.mjs';
+
+// Exact host match — mirrors the source's assertHost(envUrl, ENV_HOST).
+const WTTJ_ENV_HOST_RE = /^www\.welcometothejungle\.com$/i;
 
 export const wttjAdapter = {
   id: 'wttj',
@@ -27,7 +31,7 @@ export const wttjAdapter = {
     return company.provider === 'wttj';
   },
   buildEndpoint(company) {
-    return company.api || ENV_URL;
+    return pinnedOverride(company.api, WTTJ_ENV_HOST_RE) || ENV_URL;
   },
   fetch: fetchWttj,
 };
