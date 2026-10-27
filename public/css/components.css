@@ -186,7 +186,7 @@
   font: inherit;
   color: inherit;
   box-shadow: var(--shadow-1);
-  transition: transform 0.08s ease, box-shadow 0.08s ease, border-color 0.08s ease;
+  transition: transform var(--transition), box-shadow var(--transition), border-color var(--transition);
 }
 .qa-tile:hover {
   transform: translateY(-2px); box-shadow: var(--shadow-2); border-color: var(--rausch);
@@ -534,7 +534,7 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
   background: transparent;
   border: 0;
   cursor: help;
-  transition: color .12s ease;
+  transition: color var(--transition);
 }
 .help-hint::before {
   content: '';
@@ -544,7 +544,7 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
   border: 1px solid var(--line);
   border-radius: 50%;
   background: transparent;
-  transition: border-color .12s ease, background .12s ease;
+  transition: border-color var(--transition), background var(--transition);
 }
 [dir="rtl"] .help-hint { margin: 0 3px 0 0; }
 /* CAR-23 — the filled "?" chip needs the AA pair too (white on --rausch: 3.52/2.94). */

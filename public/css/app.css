@@ -21,7 +21,7 @@
   position: absolute; top: -100px; left: 8px; z-index: var(--z-skiplink);
   padding: 12px 20px; background: #222; color: #fff; font-weight: 600;
   text-decoration: none; border-radius: 0 0 8px 8px;
-  transition: top 120ms ease-out;
+  transition: top var(--transition);
   /* WCAG 2.5.5 target-size: 44×44 minimum for touch interactions. */
   min-width: 44px; min-height: 44px;
   display: inline-flex; align-items: center;
@@ -138,6 +138,15 @@
   --ink: var(--hof);
   --card: var(--paper);
   --border: var(--slate);
+  /* CAR-123 R3 — `--accent` was referenced by the v2-stats / v2-llm / map rules
+     but never defined: with a fallback it was a frozen #4c8bf5 that never
+     followed the theme; without one (map.css focus rings) it rendered nothing.
+     Aliased to the brand accent — the same token as every other focus ring
+     (*:focus-visible above) and active indicator — so it follows the theme
+     like the v1.137.0 aliases. AA (WCAG 1.4.11 non-text: every use is an
+     outline / border / indicator / dot, never body text): light #ff385c on
+     #ffffff = 3.52:1, dark #ff5e7e on #161a22 = 5.94:1 (tests/css-token-drift). */
+  --accent: var(--rausch);
   color-scheme: light;
 }
 
@@ -289,7 +298,7 @@ body.sidebar-open .sidebar-backdrop { display: block; }
 @media (max-width: 900px) {
   .sidebar {
     transform: translateX(-100%);
-    transition: transform .25s ease, visibility .25s ease;
+    transition: transform var(--transition), visibility var(--transition);
     box-shadow: 0 0 24px rgba(0,0,0,.18);
     /* CAR-23 v1.243.0 — transform alone left ~40 invisible tab stops; visibility fixes it. */
     visibility: hidden;
@@ -773,9 +782,9 @@ tr.v2-scan-isnew > td { animation: v2scan-in 150ms ease-out; }
 .scan-icon--score.v2-scan-score-lo { color: var(--rausch-text, var(--rausch)); }
 .scan-terminal:not(.v2-scan-log-open) .console { max-height: 2.4em; overflow: hidden; }
 .v2-scan-logbtn { flex: 0 0 auto; margin-inline-start: auto; color: #8b949e; }
-.v2-scan-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.35); z-index: var(--z-modal); opacity: 0; visibility: hidden; transition: opacity 200ms ease, visibility 200ms; }
+.v2-scan-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.35); z-index: var(--z-modal); opacity: 0; visibility: hidden; transition: opacity var(--transition), visibility var(--transition); }
 .v2-scan-backdrop.is-open { opacity: 1; visibility: visible; }
-.v2-scan-panel { position: fixed; top: 0; inset-inline-end: 0; bottom: 0; width: min(440px, 94vw); background: var(--paper); border-inline-start: 1px solid var(--slate); box-shadow: var(--shadow-lg); z-index: calc(var(--z-modal) + 1); padding: 20px; overflow-y: auto; transform: translateX(102%); visibility: hidden; transition: transform 200ms ease, visibility 200ms; }
+.v2-scan-panel { position: fixed; top: 0; inset-inline-end: 0; bottom: 0; width: min(440px, 94vw); background: var(--paper); border-inline-start: 1px solid var(--slate); box-shadow: var(--shadow-lg); z-index: calc(var(--z-modal) + 1); padding: 20px; overflow-y: auto; transform: translateX(102%); visibility: hidden; transition: transform var(--transition), visibility var(--transition); }
 [dir='rtl'] .v2-scan-panel { transform: translateX(-102%); }
 .v2-scan-panel.is-open { transform: none; visibility: visible; }
 .v2-scan-qv-title { margin: 0 24px 6px 0; font-size: var(--font-size-lg); overflow-wrap: anywhere; }
