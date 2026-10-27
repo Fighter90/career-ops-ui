@@ -11,16 +11,22 @@
  *       guard shipped in FULL-R2 (#514, `fetchTextFollowSameHost`) refuses
  *       it — these cases keep it refused.
  *
+ *   (c) the shared `delay(ms, signal)` contract: the abort listener is
+ *       DETACHED once the wait settles (no pile-up on a scan-wide signal),
+ *       and pageup honours the scan signal during its inter-page pause.
+ *       Regression lock for the FULL-R2 local-sleep removal (#514).
+ *
  * CI-isolated: injected transports, injected DNS hooks, no network.
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { safeGet, _setTransport, _setLookup } from '../server/lib/safe-fetch.mjs';
-import { fetchTextFollowSameHost } from '../server/lib/http-json.mjs';
+import { delay, fetchTextFollowSameHost } from '../server/lib/http-json.mjs';
 import { searchHabr } from '../server/lib/sources/habr.mjs';
 import { searchHH } from '../server/lib/sources/hh.mjs';
 import { searchGeekJob } from '../server/lib/sources/geekjob.mjs';
 import { searchGetMatch } from '../server/lib/sources/getmatch.mjs';
+import { fetchPageup } from '../server/lib/sources/pageup.mjs';
 
 // ─── safe-fetch scaffolding (mirrors tests/ssrf-redirect-rebind.test.mjs) ──
 
@@ -150,4 +156,69 @@ test('fetchTextFollowSameHost: a private-address redirect target is refused (hel
     (err) => err.status === 302 && err.location === 'http://10.0.0.5/x',
   );
   assert.equal(calls, 1);
+});
+
+// ─── (c) shared delay(ms, signal) + pageup pause ──────────────────────────
+
+/** Minimal AbortSignal-shaped recorder: delay() only touches these members. */
+function recordingSignal() {
+  const calls = [];
+  return {
+    calls,
+    aborted: false,
+    addEventListener(_type, fn) { calls.push(['add', fn]); },
+    removeEventListener(_type, fn) { calls.push(['remove', fn]); },
+    fire() { this.aborted = true; this.calls[0]?.[1]?.(); },
+  };
+}
+
+test('delay: the abort listener is detached after the wait settles naturally (no leak)', async () => {
+  const sig = recordingSignal();
+  await delay(15, sig);
+  assert.equal(sig.calls.filter(([k]) => k === 'add').length, 1, 'exactly one listener is added');
+  assert.equal(sig.calls.filter(([k]) => k === 'remove').length, 1, 'the listener is removed on settle');
+  assert.equal(sig.calls[0][1], sig.calls[1][1], 'the SAME listener that was added is removed');
+});
+
+test('delay: the abort listener is detached after an abort too', async () => {
+  const sig = recordingSignal();
+  const p = delay(5000, sig);
+  setTimeout(() => sig.fire(), 10);
+  const t0 = Date.now();
+  await p;
+  assert.ok(Date.now() - t0 < 1000, 'resolves promptly on abort');
+  assert.equal(sig.calls.filter(([k]) => k === 'remove').length, 1, 'the listener is removed on abort');
+});
+
+test('delay: no listener is attached when the signal is already aborted', async () => {
+  const sig = recordingSignal();
+  sig.aborted = true;
+  await delay(5000, sig);
+  assert.equal(sig.calls.length, 0, 'a pre-aborted wait must not register anything');
+});
+
+test('pageup: aborting during the inter-page pause stops the walk promptly (signal honoured)', async () => {
+  const listingHtml = (anchors, opts = {}) => {
+    const rows = anchors.map((title, i) =>
+      `<tr><td><a class="job-link" href="/932/cw/en/job/${100 + i}/${title.toLowerCase().replace(/\s+/g, '-')}">${title}</a></td></tr>`);
+    const more = opts.more ? '<a class="more-link" href="/932/cw/en/listing/?page=2">More Jobs</a>' : '';
+    return `<html><body><table><tbody id="search-results-content">${rows.join('')}${more}</tbody></table></body></html>`;
+  };
+  const fetchedPages = [];
+  const fetchImpl = async (u) => {
+    fetchedPages.push(String(u));
+    return { ok: true, status: 200, headers: { get: () => null }, text: async () => listingHtml(['Engineer One', 'Engineer Two'], { more: true }) };
+  };
+  const ac = new AbortController();
+  setTimeout(() => ac.abort(), 30); // mid-pause (the pause itself is 5s)
+  const t0 = Date.now();
+  const jobs = await fetchPageup('https://careers.pageuppeople.com/932/cw/en/listing/', {
+    fetchImpl,
+    signal: ac.signal,
+    delayMs: 5000,
+    company: { name: 'Acme', max_pages: 3 },
+  });
+  assert.ok(Date.now() - t0 < 2000, `must stop during the pause, took ${Date.now() - t0}ms`);
+  assert.equal(jobs.length, 2, 'page-1 rows are kept');
+  assert.equal(fetchedPages.length, 1, 'page 2 is never fetched after the abort');
 });
