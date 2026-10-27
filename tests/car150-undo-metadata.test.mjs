@@ -121,8 +121,8 @@ test('comp control chars / pipes / newlines collapse; the cell is capped', async
   const r = await post('/api/pipeline', { url: 'https://h.example/8', comp: 'a\r\nb|c\t=x' });
   assert.equal(r.status, 200);
   const line = readFileSync(pipe(), 'utf8').split('\n').find((l) => l.includes('h.example/8'));
-  assert.equal(line, 'https://h.example/8 | a b c \'=x',
-    'one line, one cell, formula-lead neutralized');
+  assert.equal(line, 'https://h.example/8 | a b c =x',
+    'one line, one cell (the formula-LEAD quote is pinned by the next test — a mid-cell = is not a formula)');
   const long = 'x'.repeat(300);
   writeFileSync(pipe(), '# Pipeline\n\n```\n```\n');
   await post('/api/pipeline', { url: 'https://i.example/9', comp: long });
@@ -175,7 +175,7 @@ test('restore still dedups when the fallback re-added the URL meanwhile (with co
   assert.equal(rb.deduped, 1);
   const text = readFileSync(pipe(), 'utf8');
   assert.equal((text.match(/m\.example\/13/g) || []).length, 1, 'no duplicate row');
-  assert.match(text, /\| 77k$/, 'the re-added comp survives, the token copy skipped');
+  assert.match(text, /\| 77k$/m, 'the re-added comp survives, the token copy skipped');
 });
 
 // ── the view's fallback contract (browser-only → source-static) ──

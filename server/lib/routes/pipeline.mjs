@@ -2,12 +2,14 @@
  * Pipeline routes — inbox of pending JD URLs + server-side preview proxy.
  *
  *   GET    /api/pipeline             → { urls: string[] }
- *   POST   /api/pipeline { url }     → append (URL gated by isValidJobUrl)
+ *   POST   /api/pipeline { url, comp? } → append (URL gated by
+ *                                     isValidJobUrl; optional comp column,
+ *                                     CAR-150's undo-fallback re-add)
  *   POST   /api/pipeline/restore     → { tokens } → reinsert the lines a
  *                                     previous DELETE stored (CAR-151 undo)
  *   GET    /api/pipeline/preview?url → stripped HTML snippet (≤ 8 KB)
  *   DELETE /api/pipeline?url=…       → remove ({ ok, removed, url,
- *                                     restoreToken })
+ *                                     restoreToken, comp })
  *
  * The preview endpoint walks redirects manually, revalidating each
  * Location through isValidJobUrl (REVIEW-B1). Cap: 3 hops, 15 s timeout,
@@ -17,7 +19,7 @@
 import { readFileSync, mkdirSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
 import { PATHS, path as projPath } from '../paths.mjs';
-import { parsePipeline, addPipelineUrl, removePipelineUrlExtract, restorePipelineLines } from '../parsers.mjs';
+import { parsePipeline, addPipelineUrl, removePipelineUrlExtract, restorePipelineLines, pipelineLineComp } from '../parsers.mjs';
 import { isValidJobUrl } from '../security.mjs';
 import { safeReadPipeline } from '../store.mjs';
 import { safeGet } from '../safe-fetch.mjs';
@@ -60,6 +62,19 @@ export function registerPipelineRoutes(app) {
       // by design — that was an explicit product requirement.)
       return res.status(400).json({ error: "That doesn't look like a valid job posting URL — it must start with http:// or https:// and contain no script or template characters." });
     }
+    // CAR-150 — optional compensation column for the undo's bare re-add
+    // fallback (an unknown restoreToken degrades the lossless restore to
+    // this path, and the comp column used to die here). Absent → the
+    // behavior is byte-identical for every existing caller;
+    // addPipelineUrl re-sanitizes (cap, formula neutralization, column
+    // injection collapse).
+    const rawComp = req.body?.comp;
+    if (rawComp !== undefined && typeof rawComp !== 'string') {
+      return res.status(400).json({ error: 'comp must be a string when present' });
+    }
+    const comp = typeof rawComp === 'string'
+      ? rawComp.replace(/[\u0000-\u001f\u007f]/g, ' ').trim().slice(0, 200)
+      : '';
     // v1.20.1 (H-6) — same read-modify-write race as tracker.mjs. Two
     // concurrent POST /api/pipeline with distinct URLs would both read
     // the same content, both compute their own append, and the later
@@ -72,7 +87,7 @@ export function registerPipelineRoutes(app) {
       } catch {
         content = '';
       }
-      const updated = addPipelineUrl(content, url);
+      const updated = addPipelineUrl(content, url, comp ? { comp } : {});
       // addPipelineUrl dedups on the canonical URL and against processed
       // rows, so "nothing written" is the only honest dedup signal.
       const deduped = updated === content;
@@ -208,8 +223,14 @@ export function registerPipelineRoutes(app) {
       }
       const removed = removedLines.length;
       const restoreToken = rememberRestoreToken(removedLines);
+      // CAR-150 — the fallback re-add needs the compensation column: the
+      // token path restores the raw lines byte-for-byte, but an unknown
+      // token (restart / store eviction) degrades to the bare re-add,
+      // and GET /api/pipeline never carried the column. The sanitized
+      // cell of the FIRST removed line rides the answer ('' when none).
+      const comp = removedLines.length ? pipelineLineComp(removedLines[0]) : '';
       atomicWrite(PATHS.pipeline, updated);
-      return { _status: 200, body: { ok: true, removed, url, restoreToken } };
+      return { _status: 200, body: { ok: true, removed, url, restoreToken, comp } };
     });
     res.status(outcome._status).json(outcome.body);
   });
