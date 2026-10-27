@@ -37,7 +37,9 @@ const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS']);
 // looks at the path only (a `?x=/api/run` query must neither trip nor hide it).
 // /api/geocode is a GET with an outbound side effect (Nominatim calls under the
 // user's IP, a growing cache) — a cross-site <img> must not drive it.
-const ACTING_GET = /^\/api\/(?:stream|run|geocode)(?:\/|$|\?)/i;
+// Exported (FULL-R1 review r1): the static coverage gate imports THIS regex, so
+// narrowing it silently cannot pass CI while registered routes stay uncovered.
+export const ACTING_GET = /^\/api\/(?:stream|run|geocode)(?:\/|$|\?)/i;
 
 /** Lower-cased hostname of a `Host` value or URL host, without port or brackets. */
 export function hostnameOf(hostHeader) {

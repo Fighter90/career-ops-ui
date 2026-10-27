@@ -38,11 +38,11 @@ function findRegisteredGets() {
   return out;
 }
 
-// Mirrors request-guard.mjs's ACTING_GET exactly — a copy, not an import,
-// so a change to the regex in request-guard.mjs without a matching change
-// here is itself a visible diff in review, and this test still proves the
-// REGISTERED ROUTES are the ones the regex is meant to cover.
-const ACTING_GET = /^\/api\/(?:stream|run|geocode)(?:\/|$|\?)/i;
+// FULL-R1 review r1 — gate the REAL regex, not a copy: the copy let a
+// guard-side narrowing of ACTING_GET pass CI silently while registered
+// routes lost coverage. The export in request-guard.mjs is now the single
+// source; this test proves REGISTERED ROUTES are the ones it covers.
+import { ACTING_GET } from '../server/lib/request-guard.mjs';
 
 test('every app.get() under /api/stream, /api/run or /api/geocode matches ACTING_GET', () => {
   const gets = findRegisteredGets();

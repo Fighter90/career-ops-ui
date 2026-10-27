@@ -62,14 +62,21 @@ test('static gate — every pipeline.md writer goes through atomicWrite', () => 
     'server/lib/en-scanner.mjs',
     'server/lib/ru-scanner.mjs',
   ];
+  // FULL-R1 review r1 — both spellings matter: `projPath('data','pipeline.md')`
+  // is exactly the shape markPipelineRejected used before this branch, so a
+  // partial revert reintroducing it must fail here, not only the
+  // PATHS.pipeline spelling. The positive check pins a real call-site per
+  // file (a comment mentioning atomicWrite no longer satisfies it).
+  const BARE_PIPELINE_WRITE = /writeFileSync\(\s*(?:PATHS\.pipeline|projPath\(\s*'data',\s*'pipeline\.md')/i;
+  const ATOMIC_CALL_SITE = /atomicWrite\(\s*(?:PATHS\.pipeline|LAST_SCAN_PATH)\b/;
   for (const rel of writers) {
     const src = readFileSync(resolve(ROOT, rel), 'utf8');
     assert.ok(
-      src.includes('atomicWrite'),
-      `${rel} must call atomicWrite for its pipeline.md write (FULL-R1 part 3)`,
+      ATOMIC_CALL_SITE.test(src),
+      `${rel} must call atomicWrite(PATHS.pipeline|LAST_SCAN_PATH, …) for its shared-file write (FULL-R1 part 3)`,
     );
     assert.ok(
-      !/writeFileSync\(\s*PATHS\.pipeline\b/.test(src),
+      !BARE_PIPELINE_WRITE.test(src),
       `${rel} still writes pipeline.md with a bare writeFileSync — a mid-write crash truncates the file (FULL-R1 part 3)`,
     );
   }
