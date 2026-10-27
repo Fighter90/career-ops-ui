@@ -10,7 +10,7 @@
  *
  * Reads the same portals.yml as scan.mjs.
  */
-import { readFileSync, existsSync, writeFileSync, appendFileSync, mkdirSync, renameSync } from 'node:fs';
+import { readFileSync, existsSync, appendFileSync, mkdirSync } from 'node:fs';
 import yaml from 'js-yaml';
 import { PATHS } from './paths.mjs';
 import { addPipelineUrl } from './parsers.mjs';
@@ -20,7 +20,7 @@ import { buildLocationFilter, buildContentFilter, buildTitleFilter, cleanStringL
 import { buildTrustValidator } from './trust-validator.mjs';
 import { buildTierFilter } from './classify-tier.mjs';
 import { loadQuarantine, isQuarantined, quarantineAdd, pruneQuarantine, saveQuarantine, isPermanentFailure, RETRY_AFTER_DAYS } from './scan-quarantine.mjs';
-import { withFileLock } from './file-lock.mjs';
+import { withFileLock, atomicWrite } from './file-lock.mjs';
 import { makeTimeoutFetch } from './fetch-timeout.mjs';
 import { loadReApplyWindows, buildCooldownFilter } from './cooldown.mjs';
 import { fetchGreenhouse } from './sources/greenhouse.mjs';
@@ -471,7 +471,7 @@ async function appendToPipeline(jobs) {
     // (`url | <salary>`); web-ui jobs already carry a display salary string.
     for (const j of jobs) updated = addPipelineUrl(updated, normalizeScanUrl(j.url), { comp: j.salary });
     mkdirSync(PATHS.pipeline.replace(/\/[^/]+$/, ''), { recursive: true });
-    writeFileSync(PATHS.pipeline, updated);
+    atomicWrite(PATHS.pipeline, updated);
   });
 }
 function appendToHistory(jobs) {
@@ -657,9 +657,7 @@ export async function saveLastScan(payload, opts = {}) {
         ? keepFailedSourcesSnapshot(old, payload, opts.keepSources, { bySource: opts.bySource, carriedCheck: opts.carriedCheck })
         : payload;
     mkdirSync(LAST_SCAN_PATH.replace(/\/[^/]+$/, ''), { recursive: true });
-    const tmp = `${LAST_SCAN_PATH}.${process.pid}.tmp`;
-    writeFileSync(tmp, JSON.stringify(prev, null, 2));
-    renameSync(tmp, LAST_SCAN_PATH);
+    atomicWrite(LAST_SCAN_PATH, JSON.stringify(prev, null, 2));
   });
 }
 

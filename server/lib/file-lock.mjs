@@ -31,6 +31,9 @@
  * the server were horizontally scaled, which is a v2.x topic).
  */
 
+import { writeFileSync, renameSync, unlinkSync } from 'node:fs';
+import { dirname, join, basename } from 'node:path';
+
 const LOCKS = new Map(); // path → tail promise
 
 /**
@@ -60,6 +63,38 @@ export async function withFileLock(path, fn) {
       // Cheap check above is best-effort; the real cleanup happens when
       // the next caller arrives and sees the empty slot.
     }
+  }
+}
+
+/**
+ * FULL-R1 (finding 2, part 3) — temp-then-rename write for the shared
+ * data files (pipeline.md, last-scan.json, …). A plain
+ * `writeFileSync(target)` opens the target with 'w' — truncating it —
+ * and only then writes, so a crash mid-write (OOM kill, ENOSPC, any
+ * throw) leaves a truncated file behind. Writing a same-directory temp
+ * (same filesystem ⇒ rename stays atomic) and renaming it into place
+ * means readers see either the whole old file or the whole new one,
+ * never a partial write. The temp carries a pid + random suffix and is
+ * unlinked on ANY failure so no litter accumulates.
+ *
+ * Pair it with `withFileLock` for read-modify-write surfaces: the lock
+ * closes the lost-update race between writers, atomicWrite closes the
+ * torn-file race between a writer and every reader.
+ *
+ * @param {string} filePath — absolute target path
+ * @param {string|Buffer} data — full new content
+ */
+export function atomicWrite(filePath, data) {
+  const tmp = join(
+    dirname(filePath),
+    `.${basename(filePath)}.${process.pid}.${Date.now().toString(36)}${Math.random().toString(36).slice(2, 8)}.tmp`,
+  );
+  try {
+    writeFileSync(tmp, data);
+    renameSync(tmp, filePath);
+  } catch (err) {
+    try { unlinkSync(tmp); } catch { /* temp never created or already gone */ }
+    throw err;
   }
 }
 

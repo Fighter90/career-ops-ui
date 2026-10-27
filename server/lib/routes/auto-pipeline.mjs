@@ -50,7 +50,7 @@ import { languageOk } from '../../../scripts/remote-qa/lang-check.mjs';
 import { parseApplications, today } from '../parsers.mjs';
 import { logActivity } from '../activity-log.mjs';
 import { safeGet } from '../safe-fetch.mjs';
-import { withFileLock } from '../file-lock.mjs';
+import { withFileLock, atomicWrite } from '../file-lock.mjs';
 import { llmRateLimit } from '../rate-limit.mjs';
 
 const FETCH_TIMEOUT_MS = 30_000;
@@ -527,7 +527,7 @@ async function markPipelineRejected(url, reason) {
           src = src.replace(/\s*$/, '') + `\n\n## Rejected\n\n${line}\n`;
         }
       }
-      writeFileSync(PATHS.pipeline, src);
+      atomicWrite(PATHS.pipeline, src);
       return true;
     });
   } catch { /* pipeline.md not writable — the timer will retry; never crash the SSE */ }

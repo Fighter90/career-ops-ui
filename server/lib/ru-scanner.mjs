@@ -17,7 +17,7 @@
  * source = one entry in the registry + one new adapter file. The
  * dispatcher loop below uses `RU_DISPATCH` to map config-key → adapter.
  */
-import { readFileSync, existsSync, appendFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { readFileSync, existsSync, appendFileSync, mkdirSync } from 'node:fs';
 import yaml from 'js-yaml';
 import { PATHS } from './paths.mjs';
 import { searchHH } from './sources/hh.mjs';
@@ -31,7 +31,7 @@ import { sanitizeTsvField, normalizeScanUrl } from './scan-sanitize.mjs';
 import { normalizeUrl } from './url-key.mjs';
 import { makeTimeoutFetch } from './fetch-timeout.mjs';
 import { saveLastScan, snapshotKeepReason, loadSeenUrls as loadSeenUrlsShared } from './en-scanner.mjs';
-import { withFileLock } from './file-lock.mjs';
+import { withFileLock, atomicWrite } from './file-lock.mjs';
 import { buildLocationFilter, buildContentFilter, compileKeyword, compileKeywordList, foldAccents, cleanStringList } from './location-filter.mjs';
 import { buildTierFilter } from './classify-tier.mjs';
 import { buildTrustValidator } from './trust-validator.mjs';
@@ -442,7 +442,7 @@ async function appendToPipeline(jobs) {
     // v1.75.0 (#1098) — see en-scanner: normalize external URLs before write.
     for (const j of jobs) updated = addPipelineUrl(updated, normalizeScanUrl(j.url));
     mkdirSync(PATHS.pipeline.replace(/\/[^/]+$/, ''), { recursive: true });
-    writeFileSync(PATHS.pipeline, updated);
+    atomicWrite(PATHS.pipeline, updated);
   });
 }
 

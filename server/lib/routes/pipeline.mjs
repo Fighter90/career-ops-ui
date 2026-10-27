@@ -14,14 +14,14 @@
  * 8 KB body. SSRF surface is bounded by isValidJobUrl which rejects
  * loopback, file://, IP literals, etc.
  */
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { readFileSync, mkdirSync } from 'node:fs';
 import { randomUUID } from 'node:crypto';
 import { PATHS, path as projPath } from '../paths.mjs';
 import { parsePipeline, addPipelineUrl, removePipelineUrlExtract, restorePipelineLines } from '../parsers.mjs';
 import { isValidJobUrl } from '../security.mjs';
 import { safeReadPipeline } from '../store.mjs';
 import { safeGet } from '../safe-fetch.mjs';
-import { withFileLock } from '../file-lock.mjs';
+import { withFileLock, atomicWrite } from '../file-lock.mjs';
 
 const PREVIEW_TIMEOUT_MS = 15_000;
 const PREVIEW_MAX_BODY_BYTES = 8000;
@@ -78,7 +78,7 @@ export function registerPipelineRoutes(app) {
       const deduped = updated === content;
       if (!deduped) {
         mkdirSync(projPath('data'), { recursive: true });
-        writeFileSync(PATHS.pipeline, updated);
+        atomicWrite(PATHS.pipeline, updated);
       }
       return { ok: true, deduped, urls: parsePipeline(updated) };
     });
@@ -120,7 +120,7 @@ export function registerPipelineRoutes(app) {
         : { updated: content, restored: 0, deduped: 0, refused: 0 };
       if (r.restored > 0) {
         mkdirSync(projPath('data'), { recursive: true });
-        writeFileSync(PATHS.pipeline, r.updated);
+        atomicWrite(PATHS.pipeline, r.updated);
       }
       return { ok: true, restored: r.restored, deduped: r.deduped, unknown, urls: parsePipeline(r.updated) };
     });
@@ -208,7 +208,7 @@ export function registerPipelineRoutes(app) {
       }
       const removed = removedLines.length;
       const restoreToken = rememberRestoreToken(removedLines);
-      writeFileSync(PATHS.pipeline, updated);
+      atomicWrite(PATHS.pipeline, updated);
       return { _status: 200, body: { ok: true, removed, url, restoreToken } };
     });
     res.status(outcome._status).json(outcome.body);
