@@ -6,6 +6,43 @@
 
 ---
 
+## [1.261.0] — 2026-10-28
+
+**முழு-மறுஆய்வு அலை முழுமையானது (எல்லா HIGH + MEDIUM கண்டறிதல்களும் இறங்கின), உரிமையாளர் தெரிவித்த மொழி-மாற்றத் திருத்தம், மதிப்பீட்டு-தரத் திருத்தங்கள், help ×18 fan-out, cvstart.org landing v2 — மேலும் அந்த அலையை ஆவணப்படுத்தும் 4 SDD/OpenSpec specs. ஒவ்வொரு திருத்தமும் சிவப்பு→பச்சை fix-forward மற்றும் GLM-5.3-Flash fresh-context மறுஆய்வு வழியாகவே இறங்கியது.**
+
+### பாதுகாப்பு
+
+- **FULL-R1 — CSRF acting-GET காவல் + பூட்டப்பட்ட atomic பைப்லைன் எழுத்துகள் (#519)**: `/api/stream/*`, `/api/run/*`, `/api/geocode` மீது `Sec-Fetch-Site`/Origin/Referer காவல் (export செய்யப்பட்ட `ACTING_GET`, static coverage gate); `data/pipeline.md` / `data/last-scan.json` read-modify-write ஒவ்வொன்றும் `withFileLock` + புதிய `atomicWrite`-இன் கீழ் (அதே அடைவில் temp → rename → தோல்வியில் unlink).
+- **FULL-R2 — ஸ்கேனர் மூலங்களில் SSRF கொத்து (#514)**: rss.mjs https+private-reject; ~25 raw-`fetchImpl` ஸ்கேனர் மூலங்கள் → காவலிடப்பட்ட transports; mirrors நங்கூரமிடப்பட்டன; habr/hh/geekjob/getmatch-க்கு redirect சரிபார்ப்பு; பகிர்ந்த `delay(ms, signal)`.
+- **FULL-R4 — stripDangerousMarkdown உரை சிதைவு (#513/#518)**: scheme நீக்கங்கள் link/attribute சூழல்களில் மட்டுமே; entities கண்டறிதல்-மட்டும் நகலில் decode செய்யப்படுகின்றன («JavaScript: React, Node» மற்றும் «R&amp;D» உயிர் பிழைக்கின்றன).
+- **FULL-M2 — transport கடினப்படுத்தல் (#520)**: `safeGet` அழைப்பவரின் signal-உடன் `timeoutMs`-ஐ மதிக்கிறது (bridge controller); DNS பிழையில் `guardResolvedHost` CLOSED ஆகத் தோல்வியுறுகிறது. #525 cross-origin redirects-இல் credential-header நீக்கம், ஒவ்வொரு settle path-இலும் transport-listener detach, மற்றும் முன்கூட்டியே abort ஆன signal-இன் crash திருத்தத்தைச் சேர்க்கிறது.
+- **FULL-M4 — logo/batch (#523)**: logo எல்லா path-இலும் magic bytes-ஐப் பின் செய்கிறது (பொய் சொல்லும் ஒரு `image/png` SVG-ஐச் சுமக்க முடியாது), store நேரத்தில் content-type-ஐ `image/*`-ஆக வரம்பிடுகிறது, தனியார் cache + nosniff; batch: `--parallel` 1–8-ஆக வரம்பிடப்பட்டது, `--min-score` சரிபார்க்கப்பட்டது, BATCH_BUSY single-flight, config/batch மாற்றங்கள் மீது `llmRateLimit`.
+
+### சேர்க்கப்பட்டது
+
+- **CAR-147 — locale-உணர்வுள்ள மதிப்பீட்டு உச்சவரம்பு (#524)**: `evalTimeoutMs(lang)` — ta/hi 300 s-க்குப் பதிலாக 480 s பெறுகின்றன (Indic எழுத்துமுறை ஒரு எழுத்தரைக்குப் பல tokens-ஆக tokenize ஆகிறது; பழைய சுவர் 502 + காலி அறிக்கையைத் தந்தது); remote-QA client 540 s காத்திருக்கிறது.
+- **CAR-133 — cvstart.org landing v2 (#532)**: reduced-motion காவல் கொண்ட parallax hero, scan→evaluate→tracker ஓட்டத்தின் தெளிவாக விளக்கப்பட்ட SIMULATED டெமோ, நேரடியாகச் சரிபார்க்கப்பட்ட எண்ணிக்கைகளுடன் scroll-reveal பகுதிகள், CAR-140 screenshot placeholder இடங்கள்.
+- **CAR-135 — UI v2-க்காக மறுஎழுதப்பட்ட help, ×18 fan-out நிறைவு (#533, #540, #541, #542)**: எல்லா 19 help கோப்புகளும் v2 shell-ஐ விவரிக்கின்றன (மடிக்கக்கூடிய பக்கப்பட்டி, Cmd/Ctrl+K கட்டளை மெனு, skeletons, உதாரணம்+செயல் காலி நிலைகள், scan v2 chrome, குழுவாக்கிய பைப்லைன்+செயல்தவிர், reports v2, kanban); UI labels தங்கள் i18n விசைகளை மேற்கோள் காட்டுகின்றன; 121-ஸ்கேனர் மூலங்கள் வாக்கியம் registry-இலிருந்தே உருவாகிறது.
+- **Specs (SDD/OpenSpec) (#535)**: oct27 wave-two backfill + மூன்று முன்நோக்கு specs (help fan-out, எழுத்து hand-offs, மொழி-மாற்ற மாறாநிலைகள்).
+
+### சரி செய்யப்பட்டது
+
+- **மொழி மாற்றம் இனி #/scan-ஐ காலியாக்குவதில்லை (#534)** — உரிமையாளர் தெரிவித்தது: view-சார்ந்த scan நிலை (முடிவுகள், facet chips) இப்போது module-level; 4 s தாமதித்த refetch கொண்ட behavioral Playwright harness (பழைய வடிவில் சிவப்பு).
+- **CAR-148/149 — ru அறிக்கைகளில் «missing Block G» (#530)**: prompt மூன்று ஒத்துப்போகாத A–G வரைபடங்களைக் கற்பித்தது; skeleton + பட்டியல் + உதாரணம் இப்போது oferta.md-உடன் ஒத்துப்போகின்றன (G = Posting Legitimacy); behavioral drift gate.
+- **CAR-150 — பைப்லைன் செயல்தவிர் comp metadata-ஐ வைத்திருக்கிறது (#537)**: DELETE `comp`-ஐப் பதிலளிக்கிறது, POST gated விருப்பத்தேர்வு `comp`-ஐ ஏற்கிறது, view எல்லா fallback கிளைகள் வழியாகவும் `{token, comp}`-ஐச் சுமக்கிறது.
+- **FULL-M3 — இறந்த ஸ்கேனர் மூலங்கள் நேர்மையான பலகைகளை அறிவிக்கின்றன (#522)**: getro/mycareersfuture/meituan/mokahr/glints சிதைந்த page-1-இல் throw செய்கின்றன (இறந்த ஒரு API இனி «ஆரோக்கியமானது, 0 பதவிகள்» எனப் படிக்கப்படுவதில்லை); `pinnedOverride` 18 அடாப்டர்களின் `company.api` overrides-ஐ நங்கூரமிடுகிறது.
+- **FULL-M5 — ஒரே provider cascade (#521)**: routes/llm.mjs `runActiveProvider` வழியாக (+`cachePrefix`, signal); Gemini-subprocess தலையீடு; response contracts byte-அளவில் ஒரே மாதிரி.
+- **FULL-M1 — பகிர்ந்த கோப்பு எழுத்துகள் பூட்டப்பட்டன (#526, #539)**: `runTrackedScript` + `TRACKER_MUTATING` பட்டியல்; outcome/followup spawns பூட்டை வைத்திருக்கின்றன; tracker.mjs `atomicWrite` வழியாக எழுதுகிறது; PUT saves பூட்டப்பட்ட+atomic.
+- **FULL-M6 — server + client ஒருங்கிணைப்பு (#531, #536, #525)**: dotenv null-proto + `__proto__` நிராகரிப்பு; isPrivateOrLoopback NAT64/6to4/benchmark/reserved; env-config mtime cache; file-lock உண்மையான slot GC; safeGet timeout+signal; DNS காவல் fail-closed; SSE ×4 → `API.postStream`; focus/labels/status libs; clipboard awaited; dashboard Hired tint.
+- **R3 — CSS token திசைதிரிபு (#527)**: `--accent` தீர்க்கப்பட்டது (வரைபட focus rings மௌனமாக இறந்திருந்தன); 11 off-token durations ஒன்றிணைக்கப்பட்டன; drift gate.
+- **R4 — loading தாமதிப்பவை (#538)**: assessments/mode-page/pipeline preview CAR-112 skeletons-ஐ render செய்கின்றன.
+- **CodeQL + CI batch (#517, #539 திருத்தம்)**: பயனற்ற imports, ACTING_GET காவல் உண்மையான regex-ஐ import செய்கிறது, lifecycle slice மறு-நங்கூரமிடப்பட்டது.
+
+### குறிப்புகள்
+
+- வேண்டுமென்றே செய்யப்படாதவை: connect-time DNS நங்கூரமிடல் (undici தேவை — deps-க்கு வெளியே, ஆவணப்படுத்தப்பட்ட எஞ்சத்தை); CAR-140 screenshots (deploy செய்யப்பட்ட v2 UI தேவை); CAR-137/138/141 (அடுத்த docs pass); `js/missing-rate-limiting` CodeQL வகுப்பு ஆவணப்படுத்தப்பட்ட ஒரு false positive (custom limiter கணக்கில் எடுத்துக்கொள்ளப்படவில்லை).
+- Help ×18 fan-out: es/de wave-1 intro குறிப்பையும் Active Companies card delta-வையும் தவிர்த்தன (de தனது சொந்த intro-ஐ இறக்கியது; es ஒரு ஒற்றை-வரி பின்தொடர்தலைப் பெறுகிறது).
+
 ## [1.260.0] — 2026-10-26
 
 **மறுஆய்வு-கடினப்படுத்தல் ரயில்: v1.259.0 ஏஜெண்ட் கூட்டத்தின் மீது நடைபெற்ற opus-5-5 மற்றும் AI-மறுஆய்வு சுற்றுகளிலிருந்து எட்டு merges (#491–#498) — சம்பள இயல்பாக்கம், அறிக்கை-தேதி வரம்பிடல், geocode உறுதித்தன்மை, bundle cache-busting r2+r3, deep overflow திருத்தம் — மேலும் இரண்டு UI v2s (pipeline, reports). ஒவ்வொரு திருத்தமும் சிவப்பு→பச்சை fix-forward மூலமாகவே இறங்கியது.**

@@ -2,6 +2,43 @@
 
 > Questo changelog contiene ora la cronologia completa delle versioni. Le voci pubblicate prima della localizzazione italiana (v1.85.0) compaiono sotto nell'originale inglese — traduzione in attesa; il riferimento resta [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.261.0] — 2026-10-28
+
+**L'onda della revisione completa della v1.261.0 è chiusa (tutti i finding HIGH + MEDIUM atterrati), il fix del cambio lingua segnalato dal proprietario, fix di qualità delle valutazioni, fan-out della guida ×18, la landing v2 di cvstart.org — più 4 specifiche SDD/OpenSpec che documentano l'onda. Ogni fix è atterrato tramite un fix-forward rosso→verde e una revisione GLM-5.3-Flash a contesto fresco.**
+
+### Sicurezza
+
+- **FULL-R1 — gate CSRF sugli acting-GET + scritture della pipeline atomiche e sotto lock (#519)**: gate `Sec-Fetch-Site`/Origin/Referer su `/api/stream/*`, `/api/run/*`, `/api/geocode` (`ACTING_GET` esportato, gate statico di copertura); ogni lettura-modifica-scrittura di `data/pipeline.md` / `data/last-scan.json` sotto `withFileLock` + il nuovo `atomicWrite` (temporaneo nella stessa directory → rename → unlink al fallimento).
+- **FULL-R2 — cluster SSRF nelle fonti (#514)**: rss.mjs https+private-reject; ~25 fonti con `fetchImpl` nudo → transport protetti; mirror fissati sull'host; validazione dei redirect per habr/hh/geekjob/getmatch; `delay(ms, signal)` condiviso.
+- **FULL-R4 — corruzione della prosa in stripDangerousMarkdown (#513/#518)**: la rimozione degli scheme avviene solo nei contesti di link/attributo; le entità vengono decodificate in una copia usata solo per il rilevamento («JavaScript: React, Node» e «R&amp;D» sopravvivono).
+- **FULL-M2 — irrobustimento dei transport (#520)**: `safeGet` onora `timeoutMs` insieme al signal del chiamante (bridge controller); `guardResolvedHost` fallisce CLOSED su errore DNS. #525 aggiunge la rimozione degli header di credenziali sui redirect cross-origin, il distacco dei listener dei transport su ogni percorso di conclusione e la correzione di un crash con signal pre-abortito.
+- **FULL-M4 — logo/batch (#523)**: il logo fissa i magic bytes su OGNI percorso (un `image/png` bugiardo non può trasportare SVG), limita il content-type a `image/*` al momento dello store, cache privata + nosniff; batch: `--parallel` limitato a 1–8, `--min-score` validato, BATCH_BUSY single-flight, `llmRateLimit` sulle mutazioni di config/batch.
+
+### Aggiunto
+
+- **CAR-147 — tetto di valutazione consapevole della locale (#524)**: `evalTimeoutMs(lang)` — ta/hi ricevono 480 s invece di 300 s (le scritture indiche tokenizzano più token per sillaba; il vecchio limite produceva 502 + report vuoto); il client remote-QA attende 540 s.
+- **CAR-133 — landing v2 di cvstart.org (#532)**: hero a parallasse vincolato a reduced-motion, una demo SIMULATA chiaramente etichettata del flusso scan→evaluate→tracker, sezioni a reveal allo scroll con conteggi verificati sul vivo, slot segnaposto per gli screenshot di CAR-140.
+- **CAR-135 — guida riscritta per la UI v2, fan-out ×18 completo (#533, #540, #541, #542)**: tutti i 19 file di guida descrivono la shell v2 (nav richiudibile, palette Cmd/Ctrl+K, skeleton, empty state di esempio+azione, chrome della scan v2, pipeline raggruppata+undo, reports v2, kanban); le etichette della UI citano le loro chiavi i18n; la frase delle 121 fonti vive dal registro.
+- **Specifiche (SDD/OpenSpec) (#535)**: backfill della wave-two dell'oct27 + tre specifiche in avanti che documentano l'onda v1.261.0 (fan-out della guida, hand-off delle scritture, invarianti del cambio lingua).
+
+### Corretto
+
+- **Il cambio lingua non svuota più #/scan (#534)** — segnalato dal proprietario: lo stato di scansione locale alla vista (risultati, chip dei facet) ora è a livello di modulo; harness Playwright comportamentale con un refetch ritardato di 4 s (rosso sulla vecchia forma).
+- **CAR-148/149 — report ru «Block G mancante» (#530)**: il prompt insegnava tre mappe A–G incoerenti; skeleton + elenco + esempio ora concordano con oferta.md (G = Posting Legitimacy); gate di deriva comportamentale.
+- **CAR-150 — l'undo della pipeline conserva i metadati comp (#537)**: DELETE risponde con `comp`, POST accetta un `comp` opzionale con gate, la vista trasporta `{token, comp}` attraverso tutti i rami di fallback.
+- **FULL-M3 — le fonti morte riferiscono bacheche oneste (#522)**: getro/mycareersfuture/meituan/mokahr/glints lanciano un'eccezione su una pagina-1 malformata (un'API morta non si legge più come «sana, 0 offerte»); `pinnedOverride` fissa gli override `company.api` di 18 adattatori.
+- **FULL-M5 — un'unica cascata di provider (#521)**: routes/llm.mjs passa per `runActiveProvider` (+`cachePrefix`, signal); intercettazione del subprocess Gemini; contratti di risposta identici al byte.
+- **FULL-M1 — scritture dei file condivisi sotto lock (#526, #539)**: `runTrackedScript` + roster `TRACKER_MUTATING`; gli spawn di outcome/followup tengono il lock; tracker.mjs scrive via `atomicWrite`; i salvataggi PUT sono locked+atomic.
+- **FULL-M6 — consolidamento server + client (#531, #536, #525)**: dotenv con prototipo nullo + rifiuto di `__proto__`; isPrivateOrLoopback copre NAT64/6to4/benchmark/reserved; cache mtime di env-config; GC reale degli slot di file-lock; safeGet timeout+signal; guardia DNS fail-closed; SSE ×4 → `API.postStream`; librerie focus/label/status; clipboard attesa; tinta Hired nella dashboard.
+- **R3 — deriva dei token CSS (#527)**: `--accent` risolto (i focus ring della mappa erano silenziosamente morti); 11 durate fuori dai token ripiegate; gate di deriva.
+- **R4 — ritardatari del caricamento (#538)**: assessments/mode-page/pipeline preview rendono gli skeleton di CAR-112.
+- **Batch CodeQL + CI (#517, fix #539)**: import inutilizzati, il gate ACTING_GET importa la regex vera, slice del lifecycle ri-ancorata.
+
+### Note
+
+- Non fatto deliberatamente: il pinning DNS al connect (richiede undici — fuori dalle dipendenze, residuo documentato); gli screenshot di CAR-140 (richiedono la UI v2 distribuita); CAR-137/138/141 (prossima passata di docs); la classe CodeQL `js/missing-rate-limiting` è un falso positivo documentato (il limiter custom non viene accreditato).
+- Fan-out della guida ×18: la wave-1 di es/de ha saltato la nota d'introduzione e il delta della card Active Companies (de ha fatto atterrare la sua introduzione; es riceve un follow-up di una riga).
+
 ## [1.260.0] — 2026-10-26
 
 **Il treno di irrobustimento delle revisioni — otto merge (#491–#498) dai giri di revisione opus-5-5 e AI sopra la flotta della v1.259.0: normalizzazione dei confronti salariali, perimetro delle date dei report, robustezza della geocodifica, cache-busting del bundle r2+r3, la correzione dell'overflow della deep research — più due UI v2 (pipeline, report). Ogni fix è atterrato tramite un fix-forward rosso→verde.**

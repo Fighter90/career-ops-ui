@@ -9,6 +9,43 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 ---
 
 
+## [1.261.0] — 2026-10-28
+
+**A onda de revisão completa da v1.261.0 está concluída (todos os achados HIGH + MEDIUM pousados), a correção do alternador de idiomas reportada pelo dono, correções de qualidade de avaliação, fan-out da ajuda ×18, a landing v2 do cvstart.org — mais 4 specs SDD/OpenSpec documentando a onda. Toda correção pousou por um fix-forward vermelho→verde e uma revisão de contexto-fresco GLM-5.3-Flash.**
+
+### Segurança
+
+- **FULL-R1 — portão CSRF para acting-GET + escritas atômicas e travadas do pipeline (#519)**: portão `Sec-Fetch-Site`/Origin/Referer sobre `/api/stream/*`, `/api/run/*`, `/api/geocode` (`ACTING_GET` exportado, portão estático de cobertura); toda leitura-modificação-escrita em `data/pipeline.md` / `data/last-scan.json` sob `withFileLock` + o novo `atomicWrite` (temp no mesmo diretório → rename → unlink em caso de falha).
+- **FULL-R2 — cluster SSRF nas fontes (#514)**: rss.mjs https + rejeição de endereços privados; ~25 fontes com `fetchImpl` cru → transportes guardados; mirrors com host fixado; validação de redirect para habr/hh/geekjob/getmatch; `delay(ms, signal)` compartilhado.
+- **FULL-R4 — corrupção de prosa no stripDangerousMarkdown (#513/#518)**: remoções de esquema apenas em contextos de link/atributo; entidades decodificadas em uma cópia só de detecção («JavaScript: React, Node» e «R&amp;D» sobrevivem).
+- **FULL-M2 — hardening de transporte (#520)**: `safeGet` honra `timeoutMs` com o signal do chamador (controlador da ponte); `guardResolvedHost` falha FECHADO em erro de DNS. #525 acrescenta remoção de cabeçalhos de credencial em redirects cross-origin, desacoplamento do listener de transporte em todo caminho de encerramento e uma correção de crash com signal pré-abortado.
+- **FULL-M4 — logo/batch (#523)**: o logo fixa magic bytes em TODOS os caminhos (um `image/png` mentiroso não pode carregar SVG), limita o content-type a `image/*` no momento de armazenar, cache privado + nosniff; batch: `--parallel` limitado a 1–8, `--min-score` validado, BATCH_BUSY single-flight, `llmRateLimit` em mutações de config/batch.
+
+### Adicionado
+
+- **CAR-147 — teto de avaliação sensível ao locale (#524)**: `evalTimeoutMs(lang)` — ta/hi recebem 480 s em vez de 300 s (escritas indo-arianas tokenizam vários tokens por sílaba; a parede antiga produzia 502 + relatório vazio); o cliente do remote-QA espera 540 s.
+- **CAR-133 — landing v2 do cvstart.org (#532)**: hero com parallax gated por reduced-motion, uma demo SIMULADA claramente rotulada do fluxo scan→evaluate→tracker, seções com scroll-reveal e contagens verificadas ao vivo, slots de placeholder de screenshot do CAR-140.
+- **CAR-135 — ajuda reescrita para a UI v2, fan-out ×18 completo (#533, #540, #541, #542)**: os 19 arquivos de ajuda descrevem o shell v2 (nav colapsável, paleta Cmd/Ctrl+K, skeletons, estados vazios de exemplo+ação, chrome do scan v2, pipeline agrupado+desfazer, relatórios v2, kanban); os rótulos da UI citam suas chaves de i18n; a frase das 121 fontes vive a partir do registro.
+- **Specs (SDD/OpenSpec) (#535)**: backfill da wave-two de 27 de outubro + três specs prospectivas documentando a onda v1.261.0 (fan-out da ajuda, hand-offs de escrita, invariantes do alternador de idiomas).
+
+### Corrigido
+
+- **Alternar idioma não apaga mais o #/scan (#534)** — reportado pelo dono: o estado local de scan da view (resultados, chips de facetas) agora é module-level; harness Playwright comportamental com refetch atrasado em 4 s (vermelho no formato antigo).
+- **CAR-148/149 — relatórios RU «Block G ausente» (#530)**: o prompt ensinava três mapas A–G inconsistentes; skeleton + lista + exemplo agora concordam com o oferta.md (G = Posting Legitimacy); portão de drift comportamental.
+- **CAR-150 — desfazer do pipeline preserva metadados de comp (#537)**: DELETE responde `comp`, POST aceita `comp` opcional gated, a view carrega `{token, comp}` por todos os ramos de fallback.
+- **FULL-M3 — fontes mortas reportam quadros honestos (#522)**: getro/mycareersfuture/meituan/mokahr/glints lançam erro em page-1 malformada (uma API morta não lê mais como «saudável, 0 vagas»); `pinnedOverride` fixa os overrides `company.api` de 18 adaptadores.
+- **FULL-M5 — uma única cascata de provedor (#521)**: routes/llm.mjs via `runActiveProvider` (+`cachePrefix`, signal); interceptação no subprocesso Gemini; contratos de resposta byte-idênticos.
+- **FULL-M1 — escritas em arquivos compartilhados travadas (#526, #539)**: `runTrackedScript` + roster `TRACKER_MUTATING`; os spawns de outcome/followup seguram a trava; tracker.mjs escreve via `atomicWrite`; o PUT salva travado+atômico.
+- **FULL-M6 — consolidação servidor + cliente (#531, #536, #525)**: dotenv com protótipo nulo + recusa de `__proto__`; isPrivateOrLoopback cobre NAT64/6to4/benchmark/reservados; cache mtime do env-config; GC real de slots no file-lock; safeGet timeout+signal; guarda de DNS fail-closed; SSE ×4 → `API.postStream`; libs de foco/rótulos/status; clipboard aguardado; tint Hired no dashboard.
+- **R3 — drift de tokens CSS (#527)**: `--accent` resolvido (os anéis de foco do mapa estavam silenciosamente mortos); 11 durações fora dos tokens absorvidas; portão de drift.
+- **R4 — carregamentos atrasados (#538)**: assessments/mode-page/preview do pipeline renderizam skeletons do CAR-112.
+- **Lote CodeQL + CI (#517, correção #539)**: imports não usados, o portão ACTING_GET importa a regex real, fatia de lifecycle re-ancorada.
+
+### Notas
+
+- Deliberadamente não feito: pinning de DNS no momento da conexão (precisa de undici — fora das dependências, residual documentado); screenshots do CAR-140 (precisam da UI v2 implantada); CAR-137/138/141 (próxima passada de docs); a classe `js/missing-rate-limiting` do CodeQL é um falso positivo documentado (limiter customizado não creditado).
+- Fan-out da ajuda ×18: a wave-1 de es/de pulou a nota de introdução e o delta do card Active Companies (de pousou a própria introdução; es recebe um follow-up de uma linha).
+
 ## [1.260.0] — 2026-10-26
 
 **O trem de hardening por revisão: oito merges (#491–#498) das rodadas de revisão opus-5-5 e de IA sobre a frota da v1.259.0 — normalização salarial, escopo das datas de relatório, robustez do geocódigo, cache-busting do bundle r2+r3 e a correção de overflow do deep research — mais duas UIs v2 (pipeline, relatórios). Toda correção pousou por um fix-forward vermelho→verde.**

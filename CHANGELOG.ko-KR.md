@@ -11,6 +11,43 @@
 ---
 
 
+## [1.261.0] — 2026-10-28
+
+**전면 리뷰 물결 완료(HIGH + MEDIUM 발견 전부 반영), 소유자가 보고한 언어 전환 수정, 평가 품질 수정, 도움말 ×18 팬아웃, cvstart.org 랜딩 v2 — 그리고 이 물결을 기록하는 SDD/OpenSpec 스펙 4건. 모든 수정은 적-녹(red→green) fix-forward와 새 컨텍스트 GLM-5.3-Flash 리뷰를 거쳐 반영되었습니다.**
+
+### 보안
+
+- **FULL-R1 — CSRF acting-GET 게이트 + 잠긴 원자적 파이프라인 쓰기 (#519)**: `/api/stream/*`, `/api/run/*`, `/api/geocode`에 `Sec-Fetch-Site`/Origin/Referer 게이트(내보낸 `ACTING_GET`, 정적 커버리지 게이트); `data/pipeline.md` / `data/last-scan.json`의 모든 읽기-수정-쓰기가 `withFileLock` + 새 `atomicWrite`(같은 디렉터리 임시 파일 → rename → 실패 시 unlink) 아래에서 이루어집니다.
+- **FULL-R2 — 소스의 SSRF 클러스터 (#514)**: rss.mjs https + 사설 주소 거부; 날 `fetchImpl` 소스 ~25개 → 가드된 전송 계층; 미러 고정; habr/hh/geekjob/getmatch의 리디렉션 검증; 공유 `delay(ms, signal)`.
+- **FULL-R4 — stripDangerousMarkdown 산문 훼손 (#513/#518)**: 스킴 제거는 이제 링크/속성 컨텍스트에서만; 엔티티는 감지 전용 복사본에서 디코딩됩니다(«JavaScript: React, Node»와 «R&amp;D»는 살아남습니다).
+- **FULL-M2 — 전송 계층 강화 (#520)**: `safeGet`은 호출자의 signal과 함께 `timeoutMs`를 존중합니다(브리지 컨트롤러); `guardResolvedHost`는 DNS 오류에서 fail-closed로 실패합니다. #525는 cross-origin 리디렉션에서 자격증명 헤더 제거, 모든 종료 경로에서의 전송-리스너 분리, 그리고 이미 중단된 signal에서의 크래시 수정을 더합니다.
+- **FULL-M4 — 로고/배치 (#523)**: 로고는 모든 경로에서 magic bytes를 고정합니다(거짓말하는 `image/png`는 SVG를 실어 나를 수 없습니다), 저장 시점에 content-type을 `image/*`로 제한하고, 사설 캐시 + nosniff; batch: `--parallel`은 1–8로 제한, `--min-score`는 검증, BATCH_BUSY single-flight, config/batch 변경에는 `llmRateLimit`.
+
+### 추가
+
+- **CAR-147 — 로케일 인식 평가 상한 (#524)**: `evalTimeoutMs(lang)` — ta/hi는 300 s 대신 480 s를 받습니다(인도계 문자는 음절당 여러 토큰으로 토큰화됩니다; 기존 상한선은 502 + 빈 리포트를 낳았습니다); remote-QA 클라이언트는 540 s를 기다립니다.
+- **CAR-133 — cvstart.org 랜딩 v2 (#532)**: reduced-motion으로 게이트된 패럴랙스 히어로, scan→evaluate→tracker 흐름의 명확히 표시된 SIMULATED 데모, 실시간 검증된 카운트가 있는 scroll-reveal 섹션, CAR-140 스크린샷 자리표시자 슬롯.
+- **CAR-135 — UI v2를 위한 도움말 재작성, ×18 팬아웃 완료 (#533, #540, #541, #542)**: 19개 도움말 파일 전부가 v2 셸을 설명합니다(접을 수 있는 nav, Cmd/Ctrl+K 팔레트, 스켈레톤, 예시+액션 빈 상태, scan v2 인터페이스, 파이프라인 그룹화+되돌리기, 리포트 v2, 칸반); UI 라벨은 자신의 i18n 키를 인용합니다; 121-소스 문장은 레지스트리에서 직접 삽니다.
+- **스펙 (SDD/OpenSpec) (#535)**: 10월 27일 wave-two 백필 + 향후 작업을 위한 스펙 세 개(도움말 팬아웃, 쓰기 핸드오프, 언어 전환 불변식).
+
+### 수정
+
+- **언어 전환이 #/scan을 더 이상 텅 비우지 않습니다 (#534)** — 소유자 보고: 뷰-로컬 스캔 상태(결과, 패싯 칩)는 이제 모듈 수준입니다; 4 s 지연 재페치를 갖춘 동작 Playwright 하니스(이전 모양에서 적색).
+- **CAR-148/149 — ru 리포트 «Block G 누락» (#530)**: 프롬프트는 서로 일치하지 않는 세 개의 A–G 맵을 가르치고 있었습니다; 스켈레톤 + 목록 + 예시가 이제 oferta.md와 일치합니다(G = Posting Legitimacy); 동작 드리프트 게이트.
+- **CAR-150 — 파이프라인 되돌리기가 comp 메타데이터를 유지 (#537)**: DELETE는 `comp`로 답하고, POST는 게이트된 선택적 `comp`를 받아들이며, 뷰는 모든 폴백 분기를 통해 `{token, comp}`를 운반합니다.
+- **FULL-M3 — 죽은 소스가 정직한 보드를 보고 (#522)**: getro/mycareersfuture/meituan/mokahr/glints는 형식이 어긋난 page-1에서 throw합니다(죽은 API가 더 이상 «건강함, 공고 0개»로 읽히지 않습니다); `pinnedOverride`는 18개 어댑터의 `company.api` 오버라이드를 고정합니다.
+- **FULL-M5 — 단일 제공자 캐스케이드 (#521)**: routes/llm.mjs가 `runActiveProvider`를 거칩니다(+`cachePrefix`, signal); Gemini 서브프로세스 가로채기; 응답 계약은 바이트-동일합니다.
+- **FULL-M1 — 공유 파일 쓰기 잠김 (#526, #539)**: `runTrackedScript` + `TRACKER_MUTATING` 명부; outcome/followup 스폰은 잠금을 보유합니다; tracker.mjs는 `atomicWrite`로 씁니다; PUT 저장은 잠김+원자적으로 이루어집니다.
+- **FULL-M6 — 서버 + 클라이언트 통합 (#531, #536, #525)**: dotenv null-프로토타입 객체 + `__proto__` 키 거부; isPrivateOrLoopback이 NAT64/6to4/benchmark/예약 대역을 커버; env-config mtime 캐시; file-lock 실제 슬롯 GC; safeGet timeout+signal; DNS 가드 fail-closed; SSE ×4 → `API.postStream`; 포커스/라벨/상태 라이브러리; clipboard 쓰기 await 처리; 대시보드 Hired 색조.
+- **R3 — CSS 토큰 드리프트 (#527)**: `--accent` 해결(지도 포커스 링이 조용히 죽어 있었습니다); 토큰 밖 duration 11개 흡수; 드리프트 게이트.
+- **R4 — 로딩 잔여 항목 (#538)**: assessments/mode-page/파이프라인 미리보기가 CAR-112 스켈레톤을 렌더링합니다.
+- **CodeQL + CI 일괄 처리 (#517, #539 수정)**: 쓰이지 않는 임포트 정리, ACTING_GET 게이트가 실제 정규식을 임포트하도록 수정, 라이프사이클 슬라이스 재고정.
+
+### 참고
+
+- 의도적으로 하지 않은 것: 연결 시점 DNS 고정(undici 필요 — 의존성 밖, 잔여분은 문서화됨); CAR-140 스크린샷(배포된 v2 UI 필요); CAR-137/138/141(다음 문서 차례); `js/missing-rate-limiting` CodeQL 클래스는 문서화된 거짓 양성입니다(커스텀 리미터가 인정받지 못함).
+- 도움말 ×18 팬아웃: es/de wave-1이 안내 노트와 Active Companies 카드 델타를 건너뛰었습니다(de는 자체 안내를 반영했고, es는 한 줄 후속을 받습니다).
+
 ## [1.260.0] — 2026-10-26
 
 **리뷰 강화 트레인 — v1.259.0 플릿에 대한 opus-5-5 및 AI-리뷰 라운드에서 나온 여덟 개의 머지(#491–#498): 급여 정규화, 리포트 날짜 범위 한정, 지오코드 견고성, 번들 캐시 버스팅 r2+r3, deep 오버플로 수정 — 그리고 두 개의 UI v2(파이프라인, 리포트). 모든 수정은 적-녹(red→green) fix-forward로 출시되었습니다.**

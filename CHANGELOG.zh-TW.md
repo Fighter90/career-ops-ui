@@ -9,6 +9,43 @@
 ---
 
 
+## [1.261.0] — 2026-10-28
+
+**完整評審浪潮收官（所有 HIGH + MEDIUM 發現全數落地）、擁有者回報的語言切換修復、評估品質修復、說明 ×18 展開、cvstart.org 落地頁 v2 — 另有 4 份記錄這波浪潮的 SDD/OpenSpec 規格。每一項修復都以紅→綠的 fix-forward 與一次 GLM-5.3-Flash 全新上下文評審落地。**
+
+### 安全
+
+- **FULL-R1 — CSRF acting-GET 閘門 + 上鎖的原子 pipeline 寫入（#519）**：`/api/stream/*`、`/api/run/*`、`/api/geocode` 上的 `Sec-Fetch-Site`/Origin/Referer 閘門（匯出 `ACTING_GET`、靜態覆蓋閘門）；`data/pipeline.md` / `data/last-scan.json` 的每一處讀取-修改-寫入都在 `withFileLock` 底下，搭配新的 `atomicWrite`（同目錄暫存檔 → rename → 失敗即 unlink）。
+- **FULL-R2 — 來源中的 SSRF 叢集（#514）**：rss.mjs 改為 https 並拒絕私有位址；約 25 個裸 `fetchImpl` 來源改走受守衛的傳輸層；鏡射來源釘選主機；habr/hh/geekjob/getmatch 加入重新導向驗證；共用的 `delay(ms, signal)`。
+- **FULL-R4 — stripDangerousMarkdown 的散文損毀（#513/#518）**：scheme 剝除只在連結／屬性語境執行；實體解碼改在僅供偵測的副本上進行（«JavaScript: React, Node» 與 «R&amp;D» 得以存活）。
+- **FULL-M2 — 傳輸層強化（#520）**：`safeGet` 遵循 `timeoutMs` 並接受呼叫端的 signal（bridge 控制器）；`guardResolvedHost` 在 DNS 錯誤時 fail-CLOSED。#525 再補上跨來源重新導向時剝除憑證標頭、每一條 settle 路徑都卸除傳輸監聽器，以及預先中止 signal 的當機修復。
+- **FULL-M4 — logo/batch（#523）**：logo 在每一條路徑上都釘住 magic bytes（謊報的 `image/png` 不再能攜帶 SVG）、在儲存時把 content-type 收斂到 `image/*`、私有快取 + nosniff；batch：`--parallel` 收斂到 1–8、`--min-score` 經過驗證、BATCH_BUSY single-flight、config/batch 的變更加上 `llmRateLimit`。
+
+### 新增
+
+- **CAR-147 — 語系感知的評估上限（#524）**：`evalTimeoutMs(lang)` — ta/hi 改為 480 秒而非 300 秒（印度系文字每個音節會切成多個 token；舊的時限只會產出 502 與空報告）；remote-QA 客戶端等待 540 秒。
+- **CAR-133 — cvstart.org 落地頁 v2（#532）**：受 reduced-motion 節制的視差 hero、一個明確標示為「模擬」的 scan→evaluate→tracker 流程展示、帶即時驗證計數的 scroll-reveal 區塊、CAR-140 截圖預留位。
+- **CAR-135 — 為 UI v2 重寫說明，×18 展開完成（#533、#540、#541、#542）**：全部 19 份說明檔描述 v2 外殼（可收合導覽、Cmd/Ctrl+K 面板、骨架、範例+動作的空狀態、scan v2 介面、pipeline 分組+復原、reports v2、看板）；UI 標籤引用各自的 i18n 鍵；121 個來源的句子直接取自註冊表。
+- **SDD/OpenSpec 規格（#535）**：oct27 wave-two 補記 + 三份前瞻規格（說明展開、寫入交接、語言切換不變量）。
+
+### 修復
+
+- **語言切換不再清空 #/scan（#534）** — 擁有者回報：檢視本地的掃描狀態（結果、facet 晶片）現在是 module-level；行為面的 Playwright 測試附 4 秒延遲重新抓取（在舊結構上呈紅）。
+- **CAR-148/149 — ru 報告 «缺少 Block G»（#530）**：提示曾教了三份互相矛盾的 A–G 映射；骨架 + 清單 + 範例現在與 oferta.md 一致（G = Posting Legitimacy）；行為漂移閘門。
+- **CAR-150 — pipeline 復原保留 comp 中繼資料（#537）**：DELETE 回應 `comp`、POST 接受受閘門管控的選用 `comp`，檢視在所有回退分支中都攜帶 `{token, comp}`。
+- **FULL-M3 — 死來源回報誠實的看板（#522）**：getro/mycareersfuture/meituan/mokahr/glints 在格式錯誤的 page-1 上直接拋出（死的 API 不再被讀成 «健康，0 個職缺»）；`pinnedOverride` 釘住 18 個配接器的 `company.api` 覆寫。
+- **FULL-M5 — 單一供應方串接（#521）**：routes/llm.mjs 改走 `runActiveProvider`（+`cachePrefix`、signal）；Gemini 子程序攔截；回應契約逐位元組相同。
+- **FULL-M1 — 共用檔案寫入上鎖（#526、#539）**：`runTrackedScript` + `TRACKER_MUTATING` 名單；outcome/followup 的 spawn 持有鎖；tracker.mjs 經 `atomicWrite` 寫入；PUT 儲存改為鎖定+原子。
+- **FULL-M6 — 伺服器 + 客戶端整合（#531、#536、#525）**：dotenv 空值原型 + 拒絕 `__proto__`；isPrivateOrLoopback 涵蓋 NAT64/6to4/benchmark/保留位址；env-config mtime 快取；file-lock 真正的槽位 GC；safeGet timeout+signal；DNS 守衛 fail-closed；SSE ×4 → `API.postStream`；焦點／標籤／狀態共用程式庫；clipboard 改為等待完成；儀表板 Hired 著色。
+- **R3 — CSS token 漂移（#527）**：`--accent` 已解析（地圖焦點環一直默默失效）；11 個偏離 token 的時長收編；漂移閘門。
+- **R4 — 載入遺漏（#538）**：assessments/mode-page/pipeline 預覽改渲染 CAR-112 骨架。
+- **CodeQL + CI 批次（#517、#539 修復）**：未使用的 import、ACTING_GET 閘門改為 import 真正的正則、lifecycle 切片重新錨定。
+
+### 備註
+
+- 刻意不做：連線當下的 DNS 釘選（需要 undici — 不在相依之內，殘餘風險已記錄）；CAR-140 截圖（需要已部署的 v2 UI）；CAR-137/138/141（下一輪文件）；`js/missing-rate-limiting` 這一 CodeQL 類別是已記錄的誤報（自訂 limiter 未被採計）。
+- 說明 ×18 展開：es/de 的 wave-1 跳過了導論註記與活動公司卡片的差異（de 已補上自己的導論；es 會以一行後續跟進）。
+
 ## [1.260.0] — 2026-10-26
 
 **評審強化列車，八次合併（#491–#498）落在 v1.259.0 艦隊之上，出自 opus-5-5 與 AI 評審輪：薪資正規化、報告日期範圍限定、地理編碼穩健性、bundle 快取破壞 r2+r3、deep 溢位修復 — 外加兩個 UI v2（pipeline、reports）。每一項修復都以紅→綠的 fix-forward 落地。**

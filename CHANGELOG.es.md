@@ -13,6 +13,43 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.261.0] — 2026-10-28
+
+**Ola de revisión completa cerrada (aterrizaron todos los hallazgos HIGH + MEDIUM), la corrección del cambio de idioma reportada por el propietario, correcciones de calidad de la evaluación, fan-out de help ×18, la landing v2 de cvstart.org — más 4 specs SDD/OpenSpec que documentan la ola. Cada corrección aterrizó mediante un fix-forward rojo→verde y una revisión GLM-5.3-Flash con contexto fresco.**
+
+### Seguridad
+
+- **FULL-R1 — puerta CSRF para acting-GET + escrituras atómicas del pipeline bajo bloqueo (#519)**: puerta `Sec-Fetch-Site`/Origin/Referer en `/api/stream/*`, `/api/run/*`, `/api/geocode` (`ACTING_GET` exportado, puerta de cobertura estática); toda lectura-modificación-escritura de `data/pipeline.md` / `data/last-scan.json` bajo `withFileLock` + el nuevo `atomicWrite` (temporal en el mismo directorio → rename → unlink en caso de fallo).
+- **FULL-R2 — clúster SSRF en las fuentes (#514)**: rss.mjs con https + rechazo de privadas; ~25 fuentes con `fetchImpl` desnudo → transportes protegidos; mirrors fijados; validación de redirecciones para habr/hh/geekjob/getmatch; `delay(ms, signal)` compartido.
+- **FULL-R4 — corrupción de prosa en stripDangerousMarkdown (#513/#518)**: el borrado de esquemas ocurre solo en contextos de enlace/atributo; las entidades se descodifican en una copia de solo detección («JavaScript: React, Node» y «R&amp;D» sobreviven).
+- **FULL-M2 — endurecimiento del transporte (#520)**: `safeGet` honra `timeoutMs` junto a la señal del llamador (controlador puente); `guardResolvedHost` falla CERRADO ante un error de DNS. #525 añade el borrado de cabeceras de credenciales en redirecciones cross-origin, el desacoplamiento del listener del transporte en cada ruta de asentamiento y la corrección de un crash con señal pre-abortada.
+- **FULL-M4 — logo/batch (#523)**: el logo fija los magic bytes en TODAS las rutas (un `image/png` mentiroso no puede llevar un SVG), acota el content-type a `image/*` al almacenar, caché privada + nosniff; batch: `--parallel` acotado a 1–8, `--min-score` validado, BATCH_BUSY en single-flight, `llmRateLimit` en las mutaciones de config/batch.
+
+### Añadido
+
+- **CAR-147 — techo de evaluación consciente del idioma (#524)**: `evalTimeoutMs(lang)` — ta/hi obtienen 480 s en lugar de 300 s (las escrituras índicas tokenizan varios tokens por sílaba; el muro anterior producía 502 + un informe vacío); el cliente de remote-QA espera 540 s.
+- **CAR-133 — landing v2 de cvstart.org (#532)**: hero parallax con puerta de reduced-motion, una demo SIMULADA claramente etiquetada del flujo scan→evaluate→tracker, secciones scroll-reveal con recuentos verificados en vivo, huecos placeholder para las capturas de CAR-140.
+- **CAR-135 — help reescrito para la UI v2, fan-out ×18 completo (#533, #540, #541, #542)**: los 19 archivos de help describen el shell v2 (nav plegable, paleta Cmd/Ctrl+K, skeletons, estados vacíos de ejemplo+acción, chrome del scan v2, pipeline agrupado+undo, reports v2, kanban); las etiquetas de la UI citan sus claves i18n; la frase de las 121 fuentes se genera en vivo desde el registro.
+- **Specs (SDD/OpenSpec) (#535)**: backfill de la wave-two del oct27 + tres specs prospectivas (fan-out de help, hand-offs de escritura, invariantes del cambio de idioma).
+
+### Corregido
+
+- **El cambio de idioma ya no deja #/scan en blanco (#534)** — reportado por el propietario: el estado de escaneo local de la vista (resultados, chips de facetas) es ahora a nivel de módulo; harness conductual de Playwright con un refetch retrasado 4 s (rojo en la forma antigua).
+- **CAR-148/149 — los informes ru con «missing Block G» (#530)**: el prompt enseñaba tres mapas A–G incoherentes entre sí; esqueleto + lista + ejemplo concuerdan ahora con oferta.md (G = Posting Legitimacy); puerta de deriva conductual.
+- **CAR-150 — el undo del pipeline conserva los metadatos de comp (#537)**: DELETE responde `comp`, POST acepta un `comp` opcional con puerta, la vista arrastra `{token, comp}` por todas las ramas de fallback.
+- **FULL-M3 — fuentes muertas informando tableros honestos (#522)**: getro/mycareersfuture/meituan/mokahr/glints lanzan error ante una page-1 malformada (una API muerta ya no se lee como «saludable, 0 vacantes»); `pinnedOverride` fija los overrides de `company.api` de 18 adaptadores.
+- **FULL-M5 — una sola cascada de proveedores (#521)**: routes/llm.mjs pasa por `runActiveProvider` (+`cachePrefix`, señal); intercepción del subprocess de Gemini; contratos de respuesta byte-idénticos.
+- **FULL-M1 — escrituras de archivos compartidos bajo bloqueo (#526, #539)**: `runTrackedScript` + roster `TRACKER_MUTATING`; los spawns de outcome/followup retienen el bloqueo; tracker.mjs escribe vía `atomicWrite`; los PUT guardan con bloqueo+atomicidad.
+- **FULL-M6 — consolidación de servidor + cliente (#531, #536, #525)**: dotenv con prototipo nulo + rechazo de `__proto__`; isPrivateOrLoopback cubre NAT64/6to4/benchmark/reserved; caché mtime en env-config; GC real de slots en file-lock; safeGet con timeout+señal; guarda DNS fail-closed; SSE ×4 → `API.postStream`; libs de focus/labels/status; clipboard con await; tinte Hired en el dashboard.
+- **R3 — deriva de tokens CSS (#527)**: `--accent` resuelto (los anillos de foco del mapa estaban muertos en silencio); 11 duraciones fuera de token plegadas; puerta de deriva.
+- **R4 — rezagados de la carga (#538)**: assessments/mode-page/pipeline preview renderizan los skeletons de CAR-112.
+- **Lote de CodeQL + CI (#517, fix #539)**: imports sin usar, la puerta ACTING_GET importa la regex real, slice de lifecycle re-anclado.
+
+### Notas
+
+- A propósito no hecho: el pinning de DNS en el momento de la conexión (requiere undici — fuera de las dependencias, residual documentado); las capturas de CAR-140 (necesitan la UI v2 desplegada); CAR-137/138/141 (próxima pasada de docs); la clase `js/missing-rate-limiting` de CodeQL es un falso positivo documentado (el limitador propio no recibe crédito).
+- Fan-out de help ×18: la wave-1 de es/de se saltó la nota de intro y el delta de la tarjeta Active Companies (de aterrizó su propia intro; es recibe un seguimiento de una línea).
+
 ## [1.260.0] — 2026-10-26
 
 **Tren de endurecimiento por revisión, ocho fusiones (#491–#498) de las rondas opus-5-5 y AI-review sobre la flota de v1.259.0: normalización salarial, fechas de informe acotadas al preámbulo, robustez del geocodificador, cache-busting del bundle r2+r3 y la corrección del desbordamiento de deep — más dos v2 de interfaz (pipeline, reports). Cada corrección aterrizó mediante un fix-forward rojo→verde.**
