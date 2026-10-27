@@ -40,7 +40,7 @@ import { runNodeScript } from '../runner.mjs';
 import { bundleProjectContext, buildEvaluationPrompt, buildEvaluationPromptParts, resolveLocale } from '../prompts.mjs';
 import { runActiveProvider, PROMPT_SIZE_SOFT_CAP } from '../llm-dispatch.mjs';
 import { recordUsage, parseSubprocessUsage } from '../llm-usage.mjs';
-import { evaluationWarnings, EVAL_MAX_TOKENS, GEMINI_EVAL_TIMEOUT_MS, geminiEvalArgs } from './llm.mjs';
+import { evaluationWarnings, EVAL_MAX_TOKENS, evalTimeoutMs, geminiEvalArgs } from './llm.mjs';
 import { providerOrder } from '../env-config.mjs';
 import { stripDangerousMarkdown } from '../security.mjs';
 import { stripScoreSummary, validateEvaluationReport, cutRepeatedBlockHeadings, extractSummaryScore, extractBodyScore, fixReportDate } from '../eval-validate.mjs';
@@ -55,7 +55,6 @@ import { llmRateLimit } from '../rate-limit.mjs';
 
 const FETCH_TIMEOUT_MS = 30_000;
 const FETCH_MAX_BODY_BYTES = 64 * 1024;
-const EVAL_TIMEOUT_MS = 300_000;       // 5 min — a full A–G report took up to 136 s on prod
 // v1.248.2 — an evaluate of a real posting clears 1 KB of sanitized text; the
 // old 50-char floor was passed by any boilerplate (cookie banners, placeholder
 // pages like the example.com QA entries that leaked into the prod pipeline).
@@ -707,7 +706,7 @@ export function registerAutoPipelineRoutes(app) {
           // CAR-92 (round 2, review finding 3): `signal` wires the route's
           // disconnect controller into the runner's kill plumbing — without
           // it a hung-up client still burned up to 300 s of Gemini spend.
-          r = await runNodeScript('gemini-eval.mjs', geminiEvalArgs(tmp, { lang }), { timeoutMs: GEMINI_EVAL_TIMEOUT_MS, signal: ctrl.signal });
+          r = await runNodeScript('gemini-eval.mjs', geminiEvalArgs(tmp, { lang }), { timeoutMs: evalTimeoutMs(lang), signal: ctrl.signal });
         } finally {
           try { unlinkSync(tmp); } catch { /* already gone */ }
         }
@@ -738,7 +737,7 @@ export function registerAutoPipelineRoutes(app) {
         }
         // 16384, as /api/evaluate: a CJK A–G report plus SCORE_SUMMARY outgrew 8192.
         // `signal` (CAR-92): a client disconnect aborts the upstream call.
-        const runOpts = { maxTokens: EVAL_MAX_TOKENS, timeoutMs: EVAL_TIMEOUT_MS, signal: ctrl.signal };
+        const runOpts = { maxTokens: EVAL_MAX_TOKENS, timeoutMs: evalTimeoutMs(lang), signal: ctrl.signal };
         let r;
         if (evalMode === 'anthropic') {
           // Explicit `mode: 'anthropic'` pins the provider.

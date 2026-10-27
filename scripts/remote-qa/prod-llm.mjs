@@ -72,7 +72,7 @@ async function llmStep(page, locale, step, path, trigger) {
     await pace();
     const t0 = Date.now();
     const [resp] = await Promise.all([
-      page.waitForResponse((r) => new URL(r.url()).pathname === path && r.request().method() === 'POST', { timeout: 360_000 }), // > the server's 300 s evaluation timeout
+      page.waitForResponse((r) => new URL(r.url()).pathname === path && r.request().method() === 'POST', { timeout: 540_000 }), // must exceed the largest per-locale eval timeout (CAR-147: 480 s for token-dense ta/hi)
       trigger(),
     ]);
     const ms = Date.now() - t0;
