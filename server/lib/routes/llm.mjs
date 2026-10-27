@@ -13,17 +13,23 @@
  *   GET  /api/interview-prep/:name     → read one
  *   DELETE /api/interview-prep/:name   → unlink one
  *
- * P-7: /api/evaluate now reaches Anthropic in addition to Gemini. The
- * routing rule mirrors /api/deep — Anthropic is preferred when both keys
- * are present. Fallback chain: Anthropic → Gemini → manual.
+ * P-7: /api/evaluate reaches Anthropic in addition to Gemini (better
+ * long-form structured output for oferta-style A-G evaluations).
+ * FULL-M5: provider CHOICE is decided once, in `llm-dispatch.mjs`
+ * (`resolveProvider`) — this route intercepts the Gemini evaluation
+ * subprocess through that shared gate and runs the Anthropic / tail
+ * branches through `runActiveProvider` with a client-disconnect abort
+ * signal. Fallback chain: Anthropic → Gemini → tail → manual.
  */
 import { readFileSync, writeFileSync, readdirSync, statSync, existsSync, mkdirSync, unlinkSync } from 'node:fs';
 import { PATHS, path as projPath } from '../paths.mjs';
 import { today } from '../parsers.mjs';
-import { runActiveProvider, PROMPT_SIZE_SOFT_CAP } from '../llm-dispatch.mjs';
+// FULL-M5 — the cascade is shared: resolveProvider() is the ONE gate (the
+// Gemini subprocess below intercepts through it) and every live run goes
+// through runActiveProvider with a client-abort signal.
+import { runActiveProvider, providerAvailable, resolveProvider, PROMPT_SIZE_SOFT_CAP } from '../llm-dispatch.mjs';
 import { runNodeScript } from '../runner.mjs';
 import { runAnthropic, hasAnthropicKey, hasGeminiKey } from '../anthropic.mjs';
-import { runGemini } from '../gemini.mjs';
 import { validateEvaluationReport, stripScoreSummary, fixReportDate } from '../eval-validate.mjs';
 // v1.248.8 (CAR-76) — the wrong-language report is surfaced as a warning on
 // /api/evaluate too (the auto-pipeline has had it since v1.248.7).
@@ -55,13 +61,6 @@ function modeWarnings(ctxWarnings, r) {
   if (r.truncated) warnings.push('answer cut off at the output-token limit');
   return warnings;
 }
-import { runOpenAI, runQwen, runOpenRouter, runGitHubModels, runHermes, hasOpenAIKey, hasQwenKey, hasOpenRouterKey, hasGitHubModelsKey, hasHermesKey } from '../openai.mjs';
-// v1.216.0 — 9 more OpenAI-compatible providers. Kept as a SECOND import from the
-// same module so the v1.55.0 line above stays byte-stable for provider-selector.test.mjs.
-import { runDeepSeek, runZai, runKimi, runMiniMax, runMistral, runGrok, runTogether, runFireworks, runOllama, hasDeepSeekKey, hasZaiKey, hasKimiKey, hasMiniMaxKey, hasMistralKey, hasGrokKey, hasTogetherKey, hasFireworksKey, hasOllamaKey } from '../openai.mjs';
-// v1.217.0 — Ark pair (BytePlus + Volcengine), OpenAI-compatible Chat Completions.
-import { runArk, runArkCn, hasArkKey, hasArkCnKey } from '../openai.mjs';
-import { providerOrder, AUTO_ORDER } from '../env-config.mjs';
 import { recordUsage, parseSubprocessUsage } from '../llm-usage.mjs';
 import { sanitizeJobDescription, sanitizePathName } from '../security.mjs';
 import { cleanLlmMarkdown } from '../llm-output.mjs';
@@ -117,91 +116,23 @@ function freeDeepName(stem) {
   return name;
 }
 
-// v1.39.0 (WS8.2) — honor LLM_PROVIDER. auto → the full order; claude →
-// Anthropic only; gemini → Gemini only; etc.
-// v1.157.0 — a *forced* provider whose key isn't set no longer dead-ends at the
-// manual-prompt path when OTHER providers are configured: it falls back to the
-// auto order among the configured keys. A user who ran `init` with Claude Code
-// gets `LLM_PROVIDER=claude`; adding only, say, OPENROUTER_API_KEY should still
-// run live. (If the forced provider DOES have a key, it stays forced.) This
-// mirrors env-config.mjs::selectActiveProvider so the "⚡ Run live" affordance
-// the SPA shows can never contradict what the dispatch actually does.
-function _hasKeyFor(p) {
-  return (p === 'anthropic' && hasAnthropicKey())
-    || (p === 'gemini' && hasGeminiKey())
-    || (p === 'openai' && hasOpenAIKey())
-    || (p === 'qwen' && hasQwenKey())
-    || (p === 'openrouter' && hasOpenRouterKey())
-    || (p === 'github' && hasGitHubModelsKey())
-    || (p === 'hermes' && hasHermesKey())
-    || (p === 'deepseek' && hasDeepSeekKey())
-    || (p === 'zai' && hasZaiKey())
-    || (p === 'kimi' && hasKimiKey())
-    || (p === 'minimax' && hasMiniMaxKey())
-    || (p === 'mistral' && hasMistralKey())
-    || (p === 'grok' && hasGrokKey())
-    || (p === 'together' && hasTogetherKey())
-    || (p === 'fireworks' && hasFireworksKey())
-    || (p === 'ollama' && hasOllamaKey())
-    || (p === 'ark' && hasArkKey())
-    || (p === 'arkcn' && hasArkCnKey());
-}
-// True when ANY configured provider key is present (drives the manual-fallback copy).
-function _anyProviderKey() {
-  return AUTO_ORDER.some((p) => _hasKeyFor(p));
-}
-function _provGate() {
-  let o = providerOrder();
-  if (o.length === 1 && !_hasKeyFor(o[0])) {
-    o = AUTO_ORDER;
-  }
-  return {
-    wantAnthropic: o.includes('anthropic'), wantGemini: o.includes('gemini'),
-    wantOpenAI: o.includes('openai'), wantQwen: o.includes('qwen'),
-    wantOpenRouter: o.includes('openrouter'), wantGitHub: o.includes('github'),
-    wantHermes: o.includes('hermes'),
-    wantDeepSeek: o.includes('deepseek'), wantZai: o.includes('zai'), wantKimi: o.includes('kimi'),
-    wantMiniMax: o.includes('minimax'), wantMistral: o.includes('mistral'), wantGrok: o.includes('grok'),
-    wantTogether: o.includes('together'), wantFireworks: o.includes('fireworks'), wantOllama: o.includes('ollama'),
-    wantArk: o.includes('ark'), wantArkCn: o.includes('arkcn'),
-  };
-}
+// v1.39.0 (WS8.2) — LLM_PROVIDER is honoured by the SHARED cascade
+// (llm-dispatch.mjs): auto → the full order; claude → Anthropic only; gemini →
+// Gemini only; etc. v1.157.0 — a *forced* provider whose key isn't set falls
+// back to the auto order among the configured keys, so a user who ran `init`
+// with Claude Code and later added only, say, OPENROUTER_API_KEY still runs
+// live. FULL-M5 — the local copy of those rules (the _provGate/_tailProvider
+// pair) is deleted; resolveProvider() below is the single gate.
 
-// v1.55.0 — the "works via OR" tail. OpenAI & Qwen are in-process
-// HTTPS clients (like Anthropic) with no parent filesystem, so the
-// same bundled context must be inlined. Consulted AFTER the existing
-// Anthropic (inline) and Gemini (subprocess) branches so the auto
-// preference Anthropic→Gemini→OpenAI→Qwen is preserved; an explicit
-// LLM_PROVIDER=openai|qwen makes only that one `want*`. Returns the
-// first keyed provider in tail order, or null.
-function _tailProvider() {
-  const g = _provGate();
-  if (g.wantOpenAI && hasOpenAIKey()) return { mode: 'openai', run: runOpenAI };
-  if (g.wantQwen && hasQwenKey()) return { mode: 'qwen', run: runQwen };
-  // v1.57.0 — OpenRouter is last in the auto tail (a single key fronts
-  // every major model), so an existing Anthropic/Gemini/OpenAI/Qwen
-  // setup is never silently re-routed through it.
-  if (g.wantOpenRouter && hasOpenRouterKey()) return { mode: 'openrouter', run: runOpenRouter };
-  // v1.74.0 — GitHub Models (Copilot) is in the auto tail.
-  if (g.wantGitHub && hasGitHubModelsKey()) return { mode: 'github', run: runGitHubModels };
-  // v1.151.0 — Hermes (local OpenAI-compatible API Server) is last: you opt in
-  // by running `hermes gateway`, so it never silently re-routes an existing setup.
-  if (g.wantHermes && hasHermesKey()) return { mode: 'hermes', run: runHermes };
-  // v1.216.0 — the extended OpenAI-compatible roster. Each is opt-in via its own
-  // key (ollama via OLLAMA_BASE_URL), so an existing setup is never re-routed.
-  if (g.wantDeepSeek && hasDeepSeekKey()) return { mode: 'deepseek', run: runDeepSeek };
-  if (g.wantZai && hasZaiKey()) return { mode: 'zai', run: runZai };
-  if (g.wantKimi && hasKimiKey()) return { mode: 'kimi', run: runKimi };
-  if (g.wantMiniMax && hasMiniMaxKey()) return { mode: 'minimax', run: runMiniMax };
-  if (g.wantMistral && hasMistralKey()) return { mode: 'mistral', run: runMistral };
-  if (g.wantGrok && hasGrokKey()) return { mode: 'grok', run: runGrok };
-  if (g.wantTogether && hasTogetherKey()) return { mode: 'together', run: runTogether };
-  if (g.wantFireworks && hasFireworksKey()) return { mode: 'fireworks', run: runFireworks };
-  if (g.wantOllama && hasOllamaKey()) return { mode: 'ollama', run: runOllama };
-  // v1.217.0 — Ark pair, last (regional/opt-in).
-  if (g.wantArk && hasArkKey()) return { mode: 'ark', run: runArk };
-  if (g.wantArkCn && hasArkCnKey()) return { mode: 'arkcn', run: runArkCn };
-  return null;
+/**
+ * FULL-M5 — abort the in-flight provider call when the client hangs up.
+ * Wired ONCE per request; `close` also fires after a normal response, where
+ * the abort is a harmless no-op (the provider call has already resolved).
+ */
+function clientAbort(res) {
+  const controller = new AbortController();
+  res.on('close', () => controller.abort());
+  return controller;
 }
 
 // Generic mode endpoints — kept narrow on purpose. Modes that have a
@@ -259,47 +190,15 @@ export function registerLlmRoutes(app) {
       });
     }
 
-    // P-7 — Anthropic parity. Prefer Anthropic over Gemini when both keys
-    // present (better long-form structured output for oferta-style A-G
-    // evaluations). REVIEW-A1 inlining: bundle cv + profile + _shared +
-    // oferta so the model has the files the prompt references.
-    if (_provGate().wantAnthropic && hasAnthropicKey()) {
-      const ctxWarnings = [];
-      const ctx = bundleProjectContext({ modeSlugs: ['_shared', 'oferta'], lang, warnings: ctxWarnings });
-      // CAR-111 — cache the byte-stable prefix (context + instructions); only
-      // the JD block — whose fence tag is random per prompt — stays uncached.
-      const cachePrefix = ctx + promptParts.stable;
-      const fullPrompt = cachePrefix + promptParts.volatile;
-      // BF-3 — bail fast when the assembled prompt would exceed the
-      // soft cap. Otherwise we'd burn a multi-second roundtrip + tokens
-      // before Anthropic complains about context size.
-      if (fullPrompt.length > PROMPT_SIZE_SOFT_CAP) {
-        return res.status(413).json({
-          error: 'prompt too large',
-          details: [`assembled prompt is ${fullPrompt.length} bytes; soft cap is ${PROMPT_SIZE_SOFT_CAP}. Truncate the JD or shrink your CV.`],
-        });
-      }
-      const r = await runAnthropic(fullPrompt, { maxTokens: EVAL_MAX_TOKENS, timeoutMs: EVAL_TIMEOUT_MS, cachePrefix });
-      if (r.error) return res.status(502).json({ mode: 'anthropic', prompt: promptText, error: r.error, saved });
-      // v1.75.0 (#819) — flag malformed A–G / SCORE_SUMMARY shape as a non-fatal
-      // warning so the user knows the report may be truncated/off-format.
-      const warnings = [...ctxWarnings, ...evaluationWarnings(r)];
-      // CAR-101 — the header date is server-side knowledge: a model that
-      // ignored the prompt's pinned date gets its **Date:** line rewritten to
-      // today here (a correction with a warning, never a rejection).
-      const dated = fixReportDate(r.markdown, today());
-      if (dated.replaced) warnings.push(`report **Date:** corrected to ${today()}`);
-      // v1.248.8 (CAR-76) — same language warning the auto-pipeline carries:
-      // a drift (ta came back 2–22 % own-script on prod) must surface on
-      // /api/evaluate as well, where remote-qa reads it.
-      if (lang && lang !== 'en' && r.markdown && !languageOk(r.markdown, lang)) {
-        warnings.push(`report not in ${lang}`);
-      }
-      recordUsage('anthropic', r.usage);
-      return res.json({ mode: 'anthropic', prompt: promptText, markdown: stripScoreSummary(dated.text), usage: r.usage, saved, ...(warnings.length ? { warnings } : {}) });
-    }
+    // P-7 — Anthropic parity. FULL-M5: the cascade is resolved ONCE via the
+    // shared gate (llm-dispatch.mjs::resolveProvider). The Gemini branch is
+    // the CAR-92 gemini-eval.mjs subprocess (NOT a runGemini call), so it is
+    // intercepted before the cascade runs; the Anthropic + tail branches then
+    // go through runActiveProvider with a client-disconnect abort signal —
+    // a hung-up browser no longer burns the rest of a 300 s generation.
+    const chosen = resolveProvider();
 
-    if (_provGate().wantGemini && hasGeminiKey()) {
+    if (chosen && chosen.mode === 'gemini') {
       // Use the existing gemini-eval.mjs pipe interface — it reads the
       // CV from disk itself (it's a standalone Node script), so no
       // bundleProjectContext needed here. --no-save: the script otherwise
@@ -332,23 +231,41 @@ export function registerLlmRoutes(app) {
       }
     }
 
-    // v1.55.0 — OpenAI / Qwen tail (same inlined context as Anthropic).
-    const tp = _tailProvider();
-    if (tp) {
+    if (chosen) {
+      // REVIEW-A1 inlining: bundle cv + profile + _shared + oferta so the
+      // model has the files the prompt references. CAR-111 — build the prompt
+      // once, as parts: the byte-stable prefix (context + instructions) is
+      // what Anthropic caches; only the volatile JD tail — whose fence tag is
+      // random per prompt — stays uncached. `ctx + stable + volatile` is
+      // byte-identical to the tail providers' old `ctx + promptText`.
+      const controller = clientAbort(res);
       const ctxWarnings = [];
       const ctx = bundleProjectContext({ modeSlugs: ['_shared', 'oferta'], lang, warnings: ctxWarnings });
-      const fullPrompt = ctx + promptText;
+      const cachePrefix = ctx + promptParts.stable;
+      const fullPrompt = cachePrefix + promptParts.volatile;
+      // BF-3 — bail fast when the assembled prompt would exceed the
+      // soft cap. Otherwise we'd burn a multi-second roundtrip + tokens
+      // before the provider complains about context size.
       if (fullPrompt.length > PROMPT_SIZE_SOFT_CAP) {
         return res.status(413).json({
           error: 'prompt too large',
           details: [`assembled prompt is ${fullPrompt.length} bytes; soft cap is ${PROMPT_SIZE_SOFT_CAP}. Truncate the JD or shrink your CV.`],
         });
       }
-      const r = await tp.run(fullPrompt, { maxTokens: EVAL_MAX_TOKENS, timeoutMs: EVAL_TIMEOUT_MS });
-      if (r.error) return res.status(502).json({ mode: tp.mode, prompt: promptText, error: r.error, saved });
-      // v1.75.0 (#819) — same shape guard for the OpenAI/Qwen/OpenRouter/GitHub tail.
+      const r = await runActiveProvider(fullPrompt, {
+        maxTokens: EVAL_MAX_TOKENS,
+        timeoutMs: EVAL_TIMEOUT_MS,
+        cachePrefix,
+        signal: controller.signal,
+      });
+      if (controller.signal.aborted) return; // client hung up mid-generation
+      if (r.error) return res.status(502).json({ mode: r.mode, prompt: promptText, error: r.error, saved });
+      // v1.75.0 (#819) — flag malformed A–G / SCORE_SUMMARY shape as a non-fatal
+      // warning so the user knows the report may be truncated/off-format.
       const warnings = [...ctxWarnings, ...evaluationWarnings(r)];
-      // CAR-101 — same header-date correction as the Anthropic branch.
+      // CAR-101 — the header date is server-side knowledge: a model that
+      // ignored the prompt's pinned date gets its **Date:** line rewritten to
+      // today here (a correction with a warning, never a rejection).
       const dated = fixReportDate(r.markdown, today());
       if (dated.replaced) warnings.push(`report **Date:** corrected to ${today()}`);
       // v1.248.8 (CAR-76) — same language warning the auto-pipeline carries:
@@ -357,8 +274,7 @@ export function registerLlmRoutes(app) {
       if (lang && lang !== 'en' && r.markdown && !languageOk(r.markdown, lang)) {
         warnings.push(`report not in ${lang}`);
       }
-      recordUsage(tp.mode, r.usage);
-      return res.json({ mode: tp.mode, prompt: promptText, markdown: stripScoreSummary(dated.text), usage: r.usage, saved, ...(warnings.length ? { warnings } : {}) });
+      return res.json({ mode: r.mode, prompt: promptText, markdown: stripScoreSummary(dated.text), usage: r.usage, saved, ...(warnings.length ? { warnings } : {}) });
     }
 
     return res.json({
@@ -381,7 +297,9 @@ export function registerLlmRoutes(app) {
     writeFileSync(tmp, SMOKE_JD);
     try {
       // A smoke test must not file a report + tracker row for the fixture JD.
-      const result = await runNodeScript('gemini-eval.mjs', ['--file', tmp, '--no-save'], { timeoutMs: 30_000 });
+      // FULL-M5 — the args come from the ONE shared subprocess contract
+      // (geminiEvalArgs: --lang first, --no-save for a smoke run).
+      const result = await runNodeScript('gemini-eval.mjs', geminiEvalArgs(tmp), { timeoutMs: 30_000 });
       const sample = (result.stdout || '').slice(0, 200);
       const ok = result.code === 0 && sample.length > 0;
       res.json({ ok, code: result.code, sampleLength: (result.stdout || '').length, sample });
@@ -437,9 +355,13 @@ export function registerLlmRoutes(app) {
       // provider and records usage. CAR-92: `lang` leads the bundled context
       // (the directive after ~150 KB of English context lost to it), and the
       // prompt itself now closes with the language reminder (prompts.mjs).
+      // FULL-M5 — the abort signal reaches the provider when the client
+      // hangs up mid-research.
+      const controller = clientAbort(res);
       const ctxWarnings = [];
       const ctx = bundleProjectContext({ modeSlugs: ['_shared', 'deep'], headless: true, warnings: ctxWarnings, lang });
-      const r = await runActiveProvider(ctx + prompt, { maxTokens: 8192, sizeCap: PROMPT_SIZE_SOFT_CAP });
+      const r = await runActiveProvider(ctx + prompt, { maxTokens: 8192, sizeCap: PROMPT_SIZE_SOFT_CAP, signal: controller.signal });
+      if (controller.signal.aborted) return; // client hung up mid-generation
       if (r.mode === 'too-large') {
         return res.status(413).json({
           error: 'prompt too large',
@@ -470,7 +392,7 @@ export function registerLlmRoutes(app) {
     res.json({
       mode: 'manual',
       prompt: manualPrompt,
-      message: _anyProviderKey()
+      message: providerAvailable()
         ? 'Set { run: true } to execute via your configured provider, or copy the prompt into Claude Code.'
         : 'No API key set. Paste this into Claude Code for full deep research with WebFetch.',
     });
@@ -529,13 +451,19 @@ export function registerLlmRoutes(app) {
     const prompt = buildModePrompt(template, slug, context, lang);
 
     if (context.run) {
-      // CAR-92 — `lang` leads the bundled context and a cut-off answer is
-      // surfaced as a warning on every provider branch. buildModePrompt
-      // already opens with the locale directive and closes with the reminder.
-      if (_provGate().wantAnthropic && hasAnthropicKey()) {
-        // REVIEW-A1 — buildModePrompt already inlines modes/<slug>.md;
-        // here we add cv.md + profile.yml + modes/_shared.md so Anthropic
-        // has the same context that Claude Code would read locally.
+      // FULL-M5 — the shared cascade (llm-dispatch) decides the provider and
+      // records usage; a client disconnect aborts the in-flight call. When no
+      // provider is chosen the request falls through to the manual response
+      // WITHOUT bundling context, exactly as the old per-provider branches did.
+      const chosen = resolveProvider();
+      if (chosen) {
+        // CAR-92 — `lang` leads the bundled context and a cut-off answer is
+        // surfaced as a warning on every provider branch. buildModePrompt
+        // already opens with the locale directive and closes with the reminder.
+        // REVIEW-A1 — buildModePrompt already inlines modes/<slug>.md; here we
+        // add cv.md + profile.yml + modes/_shared.md so the provider has the
+        // same context that Claude Code would read locally.
+        const controller = clientAbort(res);
         const ctxWarnings = [];
         const ctx = bundleProjectContext({ modeSlugs: ['_shared'], lang, warnings: ctxWarnings });
         const fullPrompt = ctx + prompt;
@@ -545,56 +473,18 @@ export function registerLlmRoutes(app) {
             details: [`assembled prompt is ${fullPrompt.length} bytes; soft cap is ${PROMPT_SIZE_SOFT_CAP}.`],
           });
         }
-        const r = await runAnthropic(fullPrompt);
-        if (r.error) return res.status(502).json({ mode: 'anthropic', slug, prompt, error: r.error });
-        recordUsage('anthropic', r.usage);
+        const r = await runActiveProvider(fullPrompt, { signal: controller.signal });
+        if (controller.signal.aborted) return; // client hung up mid-generation
+        if (r.error) return res.status(502).json({ mode: r.mode, slug, prompt, error: r.error });
         const warnings = modeWarnings(ctxWarnings, r);
-        return res.json({ mode: 'anthropic', slug, prompt, markdown: r.markdown, usage: r.usage, ...(warnings.length ? { warnings } : {}) });
-      }
-      if (_provGate().wantGemini && hasGeminiKey()) {
-        // v1.73.0 — use the generic Gemini client with the real mode prompt
-        // (cv.md + profile.yml inlined via bundleProjectContext), NOT the
-        // oferta-only gemini-eval.mjs which would mis-evaluate the prompt as
-        // a JD. Now matches the Anthropic / OpenAI-compatible branches.
-        const ctxWarnings = [];
-        const ctx = bundleProjectContext({ modeSlugs: ['_shared'], lang, warnings: ctxWarnings });
-        const fullPrompt = ctx + prompt;
-        if (fullPrompt.length > PROMPT_SIZE_SOFT_CAP) {
-          return res.status(413).json({
-            error: 'prompt too large',
-            details: [`assembled prompt is ${fullPrompt.length} bytes; soft cap is ${PROMPT_SIZE_SOFT_CAP}.`],
-          });
-        }
-        const r = await runGemini(fullPrompt);
-        if (r.error) return res.status(502).json({ mode: 'gemini', slug, prompt, error: r.error });
-        recordUsage('gemini', r.usage);
-        const warnings = modeWarnings(ctxWarnings, r);
-        return res.json({ mode: 'gemini', slug, prompt, markdown: r.markdown, usage: r.usage, ...(warnings.length ? { warnings } : {}) });
-      }
-      // v1.55.0 — OpenAI / Qwen tail (in-process, inline _shared ctx).
-      const tp = _tailProvider();
-      if (tp) {
-        const ctxWarnings = [];
-        const ctx = bundleProjectContext({ modeSlugs: ['_shared'], lang, warnings: ctxWarnings });
-        const fullPrompt = ctx + prompt;
-        if (fullPrompt.length > PROMPT_SIZE_SOFT_CAP) {
-          return res.status(413).json({
-            error: 'prompt too large',
-            details: [`assembled prompt is ${fullPrompt.length} bytes; soft cap is ${PROMPT_SIZE_SOFT_CAP}.`],
-          });
-        }
-        const r = await tp.run(fullPrompt);
-        if (r.error) return res.status(502).json({ mode: tp.mode, slug, prompt, error: r.error });
-        recordUsage(tp.mode, r.usage);
-        const warnings = modeWarnings(ctxWarnings, r);
-        return res.json({ mode: tp.mode, slug, prompt, markdown: r.markdown, usage: r.usage, ...(warnings.length ? { warnings } : {}) });
+        return res.json({ mode: r.mode, slug, prompt, markdown: r.markdown, usage: r.usage, ...(warnings.length ? { warnings } : {}) });
       }
     }
     res.json({
       mode: 'manual',
       slug,
       prompt,
-      message: _anyProviderKey()
+      message: providerAvailable()
         ? 'Set { run: true } to execute via your configured provider, or copy this prompt into Claude Code.'
         : 'No API key set. Copy this prompt into Claude Code (it has WebFetch/WebSearch).',
     });

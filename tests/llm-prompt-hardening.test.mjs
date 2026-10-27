@@ -285,7 +285,10 @@ test('evaluation routes pass the language to the context and a 300 s timeout to 
     for (const c of calls) assert.match(c, /\blang\b/, c);
     assert.match(src, /EVAL_TIMEOUT_MS = 300_000/);
   }
-  assert.equal((llm.match(/maxTokens: EVAL_MAX_TOKENS, timeoutMs: EVAL_TIMEOUT_MS/g) || []).length, 2);
+  // FULL-M5 — the two per-provider evaluate branches (Anthropic + tail) merged
+  // into ONE runActiveProvider call site; it still carries both knobs.
+  assert.equal((llm.match(/maxTokens: EVAL_MAX_TOKENS/g) || []).length, 1);
+  assert.match(llm, /maxTokens: EVAL_MAX_TOKENS,\s*timeoutMs: EVAL_TIMEOUT_MS,/);
 });
 
 test('the language reminder keeps quotes and names in English but nothing else (hi code-switching)', () => {
