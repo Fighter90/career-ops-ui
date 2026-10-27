@@ -96,8 +96,14 @@ test('CAR-118: a11y — search labelled, histogram buttons pressed-state, open-r
   assert.match(SRC, /const hiddenLabel = \(id, key, fallback\)/, 'the label factory renders label[htmlFor]');
   assert.match(SRC, /aria-pressed/, 'histogram/filter chips expose pressed state');
   assert.match(SRC, /role: 'link'/, 'rows/cards stay keyboard-operable links');
-  assert.match(SRC, /getAttribute\('data-key'\) \|\| el\.getAttribute\('aria-label'\)/,
+  // FULL-M6 — the focus-preservation helper is consolidated into
+  // lib/focus-preserve.js; the CAR-93 marker contract lives there and the
+  // view delegates to it.
+  assert.match(R('public/js/lib/focus-preserve.js'),
+    /getAttribute\('data-key'\) \|\| el\.getAttribute\('aria-label'\)/,
     'focus-preservation marker keyed on data-key/aria-label (CAR-93 pin)');
+  assert.match(SRC, /FocusPreserved\.withFocusPreserved\(/,
+    'the reports view delegates to the shared focus helper');
 });
 
 test('CAR-118: card view ships badge chips (legitimacy + PDF) and a per-band action button', () => {

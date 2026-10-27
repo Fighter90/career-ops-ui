@@ -743,7 +743,7 @@ Router.register('stats', async () => {
       // L-FOCUS (v1.243.0) — draw() re-attaches the metric/dimension <select>s
       // (clearing `charts` detaches them, which drops focus to <body>);
       // restore it once the same nodes are back in the tree.
-      withFocusPreserved(charts, () => {
+      FocusPreserved.withFocusPreserved(charts, () => {
         charts.textContent = '';
         charts.appendChild(customChart());
       });
@@ -1405,33 +1405,7 @@ function velocityItems(velocity) {
     .map((h) => ({ from: h.from, to: h.to, value: h.median }));
 }
 
-// L-FOCUS (v1.243.0) — identical copy of tracker.js's withFocusPreserved:
-// a rebuild that replaces the node a keyboard user is on drops focus to
-// <body>. Kept file-local (lib/ is shared and outside this change's file
-// set); tracker.js, reports.js and stats.js each carry the same copy.
-// CAR-93 — marker keyed on data-key/aria-label (see tracker.js); the three
-// copies stay byte-identical.
-function withFocusPreserved(container, mutate) {
-  const markOf = (el) => el.tagName + '|' + el.className + '|'
-    + ((el.getAttribute && (el.getAttribute('data-key') || el.getAttribute('aria-label'))) || '')
-    + '|' + (el.textContent || '');
-  let marker = null;
-  try {
-    const doc = container.ownerDocument || document;
-    const active = doc.activeElement;
-    if (active && active !== container && container.contains(active)) {
-      marker = markOf(active);
-    }
-  } catch { marker = null; }
-  mutate();
-  if (!marker) return;
-  const sel = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
-  let candidates = [];
-  try { candidates = Array.from(container.querySelectorAll(sel)); } catch { return; }
-  for (const el of candidates) {
-    if (markOf(el) === marker) {
-      try { el.focus(); } catch { /* detached node */ }
-      return;
-    }
-  }
-}
+// L-FOCUS (v1.243.0) — a rebuild that replaces the node a keyboard user is
+// on drops focus to <body>. FULL-M6 — the three byte-identical view copies
+// (tracker/reports/stats) are consolidated into the shared
+// lib/focus-preserve.js helper.

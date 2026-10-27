@@ -7,26 +7,79 @@ interface Props {
 }
 const { locale } = Astro.props;
 
-// Every number is read from the repo at build time (src/generated/facts.json).
+// VERIFIED 2026-10-27 (CAR-133, worktree feat/car133-landing-v2 @ origin/main 1f8231d):
+//   node -e "import('./server/lib/sources/registry.mjs').then(m=>console.log(m.SOURCES.length))"
+//     → SOURCES 121 (116 EN + 5 RU)
+//   node -e "import('./server/lib/portals/registry.mjs').then(m=>console.log(m.ALL_ADAPTERS.length))"
+//     → ALL_ADAPTERS 116
+//   npm test → # pass 6347 / # tests 6353 (6 skipped, 0 fail)
+//     (facts.tests reads the release-pinned count from docs/sdd/CONVENTIONS.md; the
+//      tile shows it rounded down to the nearest hundred with a "+" suffix, so a
+//      between-release lag always understates, never overstates.)
+//   locales → 19 entries in site/src/i18n/locales.ts
+// Every number below comes from src/generated/facts.json (written from the live
+// registry at build time) — nothing on the page is typed by hand.
+
+// Exact, build-time registry-derived counts. The sources total (121) is the
+// public-facing count (116 EN-board adapters + 5 RU readers — see CONTEXT.md);
+// facts.adapters (116 files on disk) is the technical count and stays in the
+// verified comment above, not in the marketing band.
+const sources = facts.sources.length;
+// The tests tile keeps the "+" convention: floor to the nearest hundred so a
+// release-pinned count can never overstate the live suite.
 const testsRounded = facts.tests ? Math.floor(facts.tests / 100) * 100 : null;
-const adaptersRounded = Math.floor(facts.adapters / 5) * 5;
-const items = [
-  t(locale, 'stats.mit'),
-  t(locale, 'stats.langs').replace('{n}', String(facts.locales)),
-  t(locale, 'stats.adapters').replace('{n}', String(adaptersRounded)),
-  t(locale, 'stats.providers').replace('{n}', String(facts.providers)),
-  ...(testsRounded ? [t(locale, 'stats.tests').replace('{n}', formatNumber(locale, testsRounded))] : []),
-  t(locale, 'stats.local'),
+
+type Tile = { value: string; label: string; count?: number; suffix?: string };
+
+const tiles: Tile[] = [
+  {
+    value: String(sources),
+    count: sources,
+    label: t(locale, 'stats.t.sources'),
+  },
+  ...(testsRounded
+    ? [
+        {
+          value: `${formatNumber(locale, testsRounded)}+`,
+          count: testsRounded,
+          suffix: '+',
+          label: t(locale, 'stats.t.tests'),
+        },
+      ]
+    : []),
+  {
+    value: String(facts.locales),
+    count: facts.locales,
+    label: t(locale, 'stats.t.langs'),
+  },
+  {
+    value: String(facts.providers),
+    count: facts.providers,
+    label: t(locale, 'stats.t.providers'),
+  },
+  { value: 'MIT', label: t(locale, 'stats.t.license') },
+  { value: '100%', label: t(locale, 'stats.t.local') },
 ];
 ---
 
-<section class="border-y border-line bg-paper-alt py-6">
-  <ul class="container-site flex flex-wrap items-center justify-center gap-x-8 gap-y-2">
-    {items.map((item) => (
-      <li class="flex items-center gap-2 text-sm font-semibold text-ink-soft">
-        <span class="h-1.5 w-1.5 rounded-full bg-[color:var(--color-rausch)]" aria-hidden="true"></span>
-        {item}
-      </li>
-    ))}
-  </ul>
+<!-- CAR-133: the numbers band replaced the old one-line stats strip — animated
+     count-up on reveal (motion-safe), staggered, with the license +
+     self-hosted stance as first-class tiles. -->
+<section class="border-y border-line bg-paper-alt py-12">
+  <div class="container-site">
+    <ul class="grid grid-cols-2 gap-x-6 gap-y-8 sm:grid-cols-3 lg:grid-cols-6">
+      {tiles.map((tile, i) => (
+        <li class={`num-tile reveal reveal-d${(i % 6) + 1}`}>
+          <span
+            class="num-value"
+            dir="ltr"
+            data-count={tile.count !== undefined ? String(tile.count) : undefined}
+            data-suffix={tile.suffix}
+          >{tile.value}</span>
+          <span class="num-label">{tile.label}</span>
+        </li>
+      ))}
+    </ul>
+    <p class="num-note reveal">{t(locale, 'stats.note')}</p>
+  </div>
 </section>

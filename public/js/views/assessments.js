@@ -121,7 +121,9 @@ Router.register('assessments', async () => {
 
   async function loadList() {
     listWrap.textContent = '';
-    listWrap.appendChild(c('div', { className: 'loading' }, t('asmt.loading', 'Loading…')));
+    // CAR-113 R4 — CAR-112 shimmer rows instead of a bare text line; the
+    // section's own loading key stays the aria-label (keeps the dict key alive).
+    listWrap.appendChild(window.Skeleton.block(6, t('asmt.loading', 'Loading…')));
     let res;
     try {
       res = await API.get('/api/assessments');

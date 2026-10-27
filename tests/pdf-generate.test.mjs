@@ -72,6 +72,51 @@ function makeEnv({ pdfLists, fetchImpl } = {}) {
         for (const [ev, data] of win.__streamEvents || []) onEvent(ev, data);
         return { close() {} };
       },
+      // FULL-M6 — pdf-generate now rides the shared POST-SSE transport
+      // instead of its private fetch drain, so the stub carries a minimal
+      // postStream backed by the SAME injected fetchImpl the old tests
+      // drive (same wire contract as public/js/api.js: frames split on a
+      // blank line, JSON data, trailing-buffer flush at stream end).
+      postStream: async (path, body, onEvent) => {
+        let res;
+        try {
+          res = await fetchImpl({ method: 'POST' });
+        } catch (netErr) {
+          onEvent('error', { message: (netErr && netErr.message) || 'network error' });
+          return;
+        }
+        if (!res.ok || !res.body) {
+          onEvent('error', { message: 'HTTP ' + res.status });
+          return;
+        }
+        const reader = res.body.getReader();
+        const dec = new TextDecoder();
+        let buf = '';
+        const emit = (p, strict) => {
+          const evMatch = p.match(/^event:\s*([\w-]+)/m);
+          const dataLines = [];
+          for (const line of p.split('\n')) {
+            const m = line.match(/^data:\s?(.*)$/);
+            if (m) dataLines.push(m[1]);
+          }
+          if (!evMatch || !dataLines.length) return;
+          let data;
+          try { data = JSON.parse(dataLines.join('\n')); } catch {
+            if (strict) return;
+            data = {};
+          }
+          onEvent(evMatch[1], data);
+        };
+        for (;;) {
+          const { value, done } = await reader.read();
+          if (done) break;
+          buf += dec.decode(value, { stream: true });
+          const parts = buf.split('\n\n'); buf = parts.pop();
+          for (const p of parts) emit(p);
+        }
+        buf += dec.decode();
+        if (buf.trim()) emit(buf, true);
+      },
     },
   };
   const env = { win, dom, toasts, btn, modalNode: () => modalNode };
