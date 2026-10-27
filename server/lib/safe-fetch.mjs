@@ -37,6 +37,26 @@ import { isPrivateOrLoopbackHost, isValidJobUrl } from './security.mjs';
 
 const MAX_REDIRECTS = 3;
 
+/**
+ * FULL-M6a — credential-bearing caller headers. These are aimed at the
+ * origin the caller addressed; a redirect (even a per-hop-validated one)
+ * must not deliver them to a different origin.
+ */
+const CREDENTIAL_HEADERS = new Set(['authorization', 'cookie']);
+
+/**
+ * Drop credential headers from a caller-supplied header object
+ * (case-insensitive). Non-credential headers pass through untouched.
+ */
+function stripCredentialHeaders(headers) {
+  const out = {};
+  for (const [k, v] of Object.entries(headers || {})) {
+    if (CREDENTIAL_HEADERS.has(k.toLowerCase())) continue;
+    out[k] = v;
+  }
+  return out;
+}
+
 // ─── Test-only transport hook ─────────────────────────────────────
 //
 // Tests need to exercise the redirect / size-cap / status-mapping
@@ -216,19 +236,24 @@ export async function safeGet(urlString, opts = {}) {
 async function _safeGetInner(urlString, opts, signal) {
   let current = urlString;
   let hops = 0;
+  // FULL-M6a — credentials ride only the origin the caller addressed.
+  const origin0 = new URL(urlString).origin;
   while (true) {
     const u = new URL(current);
     if (!['http:', 'https:'].includes(u.protocol)) {
       throw new Error(`unsupported protocol: ${u.protocol}`);
     }
     const pinned = await resolvePinned(u.hostname);
+    const callerHeaders = u.origin === origin0
+      ? (opts.headers || {})
+      : stripCredentialHeaders(opts.headers);
     const res = await _transport(u, pinned, {
       signal,
       maxBytes: opts.maxBytes,
       headers: {
         'User-Agent': opts.userAgent || 'career-ops-ui/1.20.1',
         Accept: 'text/html,application/xhtml+xml,text/plain',
-        ...(opts.headers || {}),
+        ...callerHeaders,
       },
     });
     const isRedirect = res.status >= 300 && res.status < 400 && res.location;
