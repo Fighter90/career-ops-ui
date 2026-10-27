@@ -17,6 +17,10 @@
         "type": "remote",
         "url": "https://mcp.linear.app/mcp"
       }
+    },
+    "lovable": {
+      "type": "remote",
+      "url": "https://mcp.lovable.dev"
     }
   }
 }
