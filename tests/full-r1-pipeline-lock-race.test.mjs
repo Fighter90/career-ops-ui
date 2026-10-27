@@ -30,6 +30,13 @@ import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 import { withFileLock, _resetLocks } from '../server/lib/file-lock.mjs';
 
+// FULL-R1 CodeQL — host+pathname compare, not substring containment on a URL
+// literal (js/incomplete-url-substring-sanitization), and strictly stronger:
+// an unrelated URL that merely CONTAINS the token now fails.
+function hasExactUrl(raw, host, path) {
+  try { const p = new URL(raw); return p.host === host && p.pathname === path; } catch { return false; }
+}
+
 let dir, PATHS, runEnScan, runRuScan, saveLastScan, parsePipeline, addPipelineUrl, createApp, server, baseUrl;
 
 const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -114,11 +121,11 @@ test('en-scanner appendToPipeline (via runEnScan) does not lose a concurrent loc
   const content = readFileSync(PATHS.pipeline, 'utf8');
   const urls = parsePipeline(content);
   assert.ok(
-    urls.includes('https://example.com/locked-writer'),
+    urls.some((u) => hasExactUrl(u, 'example.com', '/locked-writer')),
     `the concurrent locked writer's URL must survive the scanner's append — got: ${JSON.stringify(urls)}`,
   );
   assert.ok(
-    urls.some((u) => u.includes('job-boards.greenhouse.io/ghco/jobs/1')),
+    urls.some((u) => hasExactUrl(u, 'job-boards.greenhouse.io', '/ghco/jobs/1')),
     `the scanner's fresh URL must survive the concurrent locked write — got: ${JSON.stringify(urls)}`,
   );
 });
@@ -154,11 +161,11 @@ test('ru-scanner appendToPipeline does not lose a concurrent locked pipeline.md 
   const content = readFileSync(PATHS.pipeline, 'utf8');
   const urls = parsePipeline(content);
   assert.ok(
-    urls.includes('https://example.com/ru-locked-writer'),
+    urls.some((u) => hasExactUrl(u, 'example.com', '/ru-locked-writer')),
     `the concurrent locked writer's URL must survive the RU scanner's run — got: ${JSON.stringify(urls)}`,
   );
   assert.ok(
-    urls.some((u) => u.includes('hh.ru/vacancy/9001')),
+    urls.some((u) => hasExactUrl(u, 'hh.ru', '/vacancy/9001')),
     `the RU scanner's own fresh URL must survive the concurrent locked write — got: ${JSON.stringify(urls)}`,
   );
 });
@@ -180,8 +187,9 @@ test('markPipelineRejected (auto-pipeline) does not lose, and is not lost by, a 
   await Promise.all([locked, post]);
 
   const content = readFileSync(PATHS.pipeline, 'utf8');
-  assert.ok(
-    content.includes('https://example.com/reject-race-writer'),
+  assert.match(
+    content,
+    /https:\/\/example\.com\/reject-race-writer/,
     `the concurrent locked writer's URL must survive markPipelineRejected — got:\n${content}`,
   );
   assert.match(
