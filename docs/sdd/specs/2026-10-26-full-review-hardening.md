@@ -1,6 +1,6 @@
 # SPEC — full-review hardening (FULL-R1…R5, FULL-M2…M5)
 
-- **Status:** In progress (backfilled mid-wave 2026-10-27 — the HIGHs, medium
+- **Status:** Done (all items landed 2026-10-27 — see `2026-10-27-oct27-wave-two.md` for the final mapping) In progress (backfilled mid-wave 2026-10-27 — the HIGHs, medium
   clusters M2–M5 and FULL-M6's safe-fetch half are merged; FULL-M1, FULL-M6's client
   halves and CAR-150 are in flight on named branches. Spec-first was violated here
   too: the review corpus and the first fixes landed before this file — it is written
