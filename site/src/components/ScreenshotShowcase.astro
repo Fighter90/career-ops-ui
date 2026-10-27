@@ -1,14 +1,22 @@
 ---
-import { Picture } from 'astro:assets';
 import { t, type Locale } from '../i18n/locales';
-import { screenshotFor } from '../lib/screenshots';
-import WatchButton from './WatchButton.astro';
+import ScreenshotSlot from './ScreenshotSlot.astro';
 
 interface Props {
   locale: Locale;
 }
 const { locale } = Astro.props;
-const shot = screenshotFor(locale.file);
+
+// CAR-133: every capture this section used to show (dashboard-*.png,
+// v1.245.0) predates the v2 pipeline (CAR-116), tracker kanban (CAR-117)
+// and reports v2 (CAR-118) shipped in v1.260.0 — showing it would
+// misrepresent the current product. Each v2 screen gets a tab and a
+// clearly-marked placeholder slot until CAR-140 captures fresh ones.
+const TABS = ['dashboard', 'scan', 'pipeline', 'tracker', 'reports'].map((name) => ({
+  name,
+  label: t(locale, `showcase.tab${name[0].toUpperCase()}${name.slice(1)}`),
+}));
+const id = 'shots';
 const captions = [1, 2, 3].map((i) => ({
   title: t(locale, `showcase.c${i}.title`),
   desc: t(locale, `showcase.c${i}.desc`),
@@ -22,20 +30,40 @@ const captions = [1, 2, 3].map((i) => ({
       <p class="text-lg text-ink-soft">{t(locale, 'showcase.sub')}</p>
     </div>
 
-    <div class="reveal overflow-hidden rounded-[24px] border border-line shadow-[var(--shadow-hover)]">
-      <Picture
-        src={shot}
-        alt={t(locale, 'showcase.alt')}
-        formats={['avif', 'webp']}
-        widths={[640, 960, 1440]}
-        sizes="(max-width: 1200px) 94vw, 1160px"
-        loading="lazy"
-        class="block h-auto w-full"
-      />
-    </div>
+    <!-- Reuses the generic [data-install] tab engine from site.js (role=tab,
+         arrow keys, aria-selected) — no new client JS. -->
+    <div class="reveal" data-install id={id}>
+      <div class="shots-tablist needs-js" role="tablist" aria-label={t(locale, 'a11y.shotTabs')}>
+        {TABS.map((tab, i) => (
+          <button
+            type="button"
+            role="tab"
+            id={`tab-${id}-${tab.name}`}
+            aria-controls={`panel-${id}-${tab.name}`}
+            aria-selected={i === 0 ? 'true' : 'false'}
+            data-tab={tab.name}
+            class="install-tab shots-tab border-b-2 border-transparent px-4 py-2 text-sm font-semibold text-ink-soft transition hover:text-ink"
+          >
+            {tab.label}
+          </button>
+        ))}
+      </div>
 
-    <div class="reveal mt-6 flex justify-center">
-      <WatchButton locale={locale} class="btn-secondary" />
+      {TABS.map((tab, i) => (
+        <div
+          class="install-panel shots-panel"
+          role="tabpanel"
+          id={`panel-${id}-${tab.name}`}
+          aria-labelledby={`tab-${id}-${tab.name}`}
+          data-panel={tab.name}
+          hidden={i !== 0}
+        >
+          <ScreenshotSlot
+            label={tab.label}
+            note={t(locale, 'showcase.placeholder')}
+          />
+        </div>
+      ))}
     </div>
 
     <ul class="mt-8 grid gap-6 sm:grid-cols-3">
