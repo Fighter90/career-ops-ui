@@ -109,26 +109,23 @@ test('init buildUpdates: no keys → only LLM_PROVIDER (auto)', () => {
   assert.deepEqual(buildUpdates({ provider: '' }), { LLM_PROVIDER: 'auto' });
 });
 
-test('llm.mjs keeps the 4 Anthropic/Gemini gates + the v1.55.0 OpenAI/Qwen tail; /api/deep uses the shared dispatch', () => {
+test('llm.mjs delegates the cascade to llm-dispatch (FULL-M5): one gate, no local copy', () => {
   const src = require_src();
-  const ag = (src.match(/_provGate\(\)\.want(Anthropic|Gemini) && has(Anthropic|Gemini)Key\(\)/g) || []);
-  // v1.241.0 — /api/deep moved onto runActiveProvider (usage + truncation
-  // warnings), so its two inline gates are gone; evaluate + mode keep theirs.
-  assert.equal(ag.length, 4, `expected 4 Anthropic/Gemini gated sites (evaluate + mode), got ${ag.length}`);
-  assert.match(src, /await runActiveProvider\(/, '/api/deep must go through llm-dispatch');
-  // v1.55.0 — the OR tail: _tailProvider() consulted at the 3 eval
-  // sites (evaluate / deep / mode) after Anthropic+Gemini.
-  assert.match(src, /function _tailProvider\(\)/, '_tailProvider helper missing');
-  assert.match(src, /wantOpenAI: o\.includes\('openai'\), wantQwen: o\.includes\('qwen'\)/,
-    '_provGate must expose wantOpenAI/wantQwen');
-  assert.equal((src.match(/_tailProvider\(\)/g) || []).length >= 3, true,
-    'tail provider must be wired at the evaluate + mode sites (+ its definition)');
-  assert.match(src, /import \{ runOpenAI, runQwen, runOpenRouter, runGitHubModels, runHermes, hasOpenAIKey, hasQwenKey, hasOpenRouterKey, hasGitHubModelsKey, hasHermesKey \} from '\.\.\/openai\.mjs'/);
-  // v1.57.0 — OpenRouter in the auto tail; v1.151.0 — Hermes is now the last entry.
-  assert.match(src, /g\.wantOpenRouter && hasOpenRouterKey\(\)/,
-    '_tailProvider must consult OpenRouter');
-  assert.match(src, /g\.wantHermes && hasHermesKey\(\)/,
-    '_tailProvider must consult Hermes last');
+  // FULL-M5 — the local cascade re-implementation is deleted; provider choice
+  // is decided in exactly ONE place (llm-dispatch.mjs::resolveProvider).
+  // (v1.241.0 moved /api/deep onto runActiveProvider; v1.241.0-era evaluate +
+  // mode kept their own _provGate/_tailProvider copy — that copy is gone now.)
+  assert.ok(!/function _provGate\b/.test(src), 'local _provGate must be deleted — one gate lives in llm-dispatch.mjs');
+  assert.ok(!/function _tailProvider\b/.test(src), 'local _tailProvider must be deleted');
+  assert.ok(!/function _hasKeyFor\b/.test(src), 'local _hasKeyFor must be deleted');
+  assert.ok(!/function _anyProviderKey\b/.test(src), 'local _anyProviderKey must be deleted (use providerAvailable)');
+  assert.ok(!src.includes("from '../openai.mjs'"), 'llm.mjs must not import provider runners — the dispatch owns the roster');
+  assert.ok(!src.includes('providerOrder'), 'llm.mjs must not re-derive provider order');
+  // Delegation: the evaluate Gemini subprocess intercepts through the SHARED
+  // gate; every live run goes through runActiveProvider (evaluate + deep + mode).
+  assert.match(src, /resolveProvider\(\)/, 'the Gemini subprocess must be intercepted via the shared resolveProvider gate');
+  assert.equal((src.match(/await runActiveProvider\(/g) || []).length, 3,
+    'evaluate + deep + mode must each run through the shared cascade');
 });
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';

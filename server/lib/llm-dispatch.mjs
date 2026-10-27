@@ -4,9 +4,11 @@
  * The provider cascade (Anthropic → Gemini → OpenAI → Qwen → OpenRouter →
  * GitHub Models → manual) was previously inlined per-endpoint in
  * `routes/llm.mjs`. New live-LLM features (mock interview, …) need the exact
- * same cascade, so it lives here as one well-bounded unit. `routes/llm.mjs`
- * keeps its own copy for now (adopting this is a separate refactor); this
- * module is the single source of truth for any NEW live-LLM route.
+ * same cascade, so it lives here as one well-bounded unit. FULL-M5 —
+ * `routes/llm.mjs` now delegates to it too: `resolveProvider()` is the ONE
+ * gate (provider choice is decided exactly once) and every live run goes
+ * through `runActiveProvider`, which forwards a route-level abort `signal`
+ * (CAR-92) and an Anthropic `cachePrefix` (CAR-111) to the chosen runner.
  *
  * Honesty contract: the same soft size-cap and manual fallback the rest of
  * the app uses. No provider key ⇒ `{ mode: 'manual' }` and the caller returns
@@ -28,10 +30,9 @@ import { recordUsage } from './llm-usage.mjs';
 export const PROMPT_SIZE_SOFT_CAP = 256 * 1024;
 
 // v1.157.0 — a forced provider whose key isn't set falls back to the auto order
-// among the configured keys (mirrors env-config.mjs::selectActiveProvider +
-// routes/llm.mjs::_provGate), so a stale `LLM_PROVIDER=claude` never dead-ends a
-// user whose only key is e.g. OpenRouter. A forced provider that DOES have a key
-// stays forced.
+// among the configured keys (mirrors env-config.mjs::selectActiveProvider), so
+// a stale `LLM_PROVIDER=claude` never dead-ends a user whose only key is e.g.
+// OpenRouter. A forced provider that DOES have a key stays forced.
 // slug → key-presence probe. One table, reused by _hasKeyFor / tailProvider /
 // providerAvailable so a new provider is added in exactly one place here.
 const HAS_KEY = {
@@ -78,10 +79,27 @@ export function providerAvailable() {
 }
 
 /**
+ * FULL-M5 — the cascade's pick WITHOUT running it: `{ mode, run }` or `null`
+ * when no provider is available. The ONE place provider choice is decided;
+ * `runActiveProvider` resolves through it and `routes/llm.mjs` consults it to
+ * intercept the Gemini evaluation subprocess (a CAR-92 gemini-eval.mjs run,
+ * not a `runGemini` call) before the cascade would pick Gemini.
+ */
+export function resolveProvider() {
+  const g = gate();
+  if (g.wantAnthropic && hasAnthropicKey()) return { mode: 'anthropic', run: runAnthropic };
+  if (g.wantGemini && hasGeminiKey()) return { mode: 'gemini', run: runGemini };
+  return tailProvider(g);
+}
+
+/**
  * Run `fullPrompt` through the active provider cascade.
  *
- * @param {{ sizeCap?: number, maxTokens?: number, timeoutMs?: number }} [opts]
- *   `maxTokens` / `timeoutMs` are forwarded to the provider runner.
+ * @param {{ sizeCap?: number, maxTokens?: number, timeoutMs?: number, signal?: AbortSignal, cachePrefix?: string }} [opts]
+ *   `maxTokens` / `timeoutMs` / `signal` are forwarded to the provider runner.
+ *   `cachePrefix` (CAR-111) is forwarded ONLY to Anthropic — prompt caching is
+ *   an Anthropic Messages-path feature; the OpenAI-compatible tail providers
+ *   cache server-side automatically and are deliberately unchanged.
  * @returns one of:
  *   { mode, markdown, usage, truncated }   — success (`truncated`: the answer
  *                                            was cut off at the token limit)
@@ -90,28 +108,22 @@ export function providerAvailable() {
  *                                            returns the copy-paste prompt)
  *   { mode: 'too-large', size, cap }       — prompt exceeds the soft cap
  */
-export async function runActiveProvider(fullPrompt, { sizeCap = PROMPT_SIZE_SOFT_CAP, maxTokens, timeoutMs, signal } = {}) {
+export async function runActiveProvider(fullPrompt, { sizeCap = PROMPT_SIZE_SOFT_CAP, maxTokens, timeoutMs, signal, cachePrefix } = {}) {
   if (typeof fullPrompt !== 'string' || !fullPrompt) return { mode: 'manual' };
   if (fullPrompt.length > sizeCap) return { mode: 'too-large', size: fullPrompt.length, cap: sizeCap };
 
+  const chosen = resolveProvider();
+  if (!chosen) return { mode: 'manual' };
   const runOpts = {};
   if (maxTokens) runOpts.maxTokens = maxTokens;
   if (timeoutMs) runOpts.timeoutMs = timeoutMs;
   // CAR-92 — a route-level abort (the SSE client hung up) must reach the
   // provider request, not die at the dispatch boundary.
   if (signal) runOpts.signal = signal;
-  const g = gate();
-  let mode = null;
-  let run = null;
-  if (g.wantAnthropic && hasAnthropicKey()) { mode = 'anthropic'; run = runAnthropic; }
-  else if (g.wantGemini && hasGeminiKey()) { mode = 'gemini'; run = runGemini; }
-  else {
-    const tp = tailProvider(g);
-    if (tp) { mode = tp.mode; run = tp.run; }
-  }
-  if (!run) return { mode: 'manual' };
-  const r = await run(fullPrompt, runOpts);
-  if (r.error) return { mode, error: r.error };
-  recordUsage(mode, r.usage);
-  return { mode, markdown: r.markdown, usage: r.usage, truncated: !!r.truncated };
+  // CAR-111 — see the opts doc: the cache breakpoint is Anthropic-only.
+  if (cachePrefix && chosen.mode === 'anthropic') runOpts.cachePrefix = cachePrefix;
+  const r = await chosen.run(fullPrompt, runOpts);
+  if (r.error) return { mode: chosen.mode, error: r.error };
+  recordUsage(chosen.mode, r.usage);
+  return { mode: chosen.mode, markdown: r.markdown, usage: r.usage, truncated: !!r.truncated };
 }
