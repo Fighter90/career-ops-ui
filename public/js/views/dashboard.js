@@ -501,7 +501,7 @@ Router.register('dashboard', async () => {
     // Raw statuses that folded outside the canonical set stay as chips —
     // never silently dropped by the fold.
     const unknownChips = fc.unknown.map((u) =>
-      c('div', { className: 'dash-chip ' + statusClass(u.label) }, `${u.label} · ${u.n}`));
+      c('div', { className: 'dash-chip ' + StatusClass.of(u.label) }, `${u.label} · ${u.n}`));
 
     return c('section', { className: 'section v2-dash-funnel-sec' }, [
       c('h2', { className: 'section-title' }, t('dash.statuses', 'Application statuses')),
@@ -717,7 +717,7 @@ function recentTable(rows, scoreClass) {
       c('td', null,
         c('span', { className: 'score-pill ' + scoreClass(r.scoreNum) }, r.score || '—')
       ),
-      c('td', null, c('span', { className: 'badge ' + statusClass(r.status) }, r.status || '')),
+      c('td', null, c('span', { className: 'badge ' + StatusClass.of(r.status) }, r.status || '')),
       c('td', null, r.date || ''),
     ]))
   );
@@ -786,11 +786,6 @@ function systemStatusCard(h, t) {
   ]);
 }
 
-function statusClass(s) {
-  s = (s || '').toLowerCase();
-  if (s.includes('offer')) return 'badge-ok';
-  if (s.includes('reject') || s.includes('discard')) return 'badge-bad';
-  if (s.includes('interview') || s.includes('respond')) return 'badge-info';
-  if (s.includes('skip')) return 'badge-warn';
-  return '';
-}
+// FULL-M6 — the view-local classifier (diverged from the tracker copy: no
+// Hired branch, so Hired rows lost the celebratory tint here) is
+// consolidated into lib/status-class.js.

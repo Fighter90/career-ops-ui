@@ -7,6 +7,20 @@ buổi phỏng vấn trong tay. Mỗi đề mục `##` bên dưới tương ứn
 trên thanh bên hoặc một giai đoạn của quy trình. Đọc từ trên xuống trong
 lần chạy đầu; sau đó nhảy tới mục cụ thể qua mục lục ở thanh bên trợ giúp.
 
+> **Di chuyển quanh ứng dụng (vỏ v2).** Thanh bên được tổ chức thành
+> các nhóm thu gọn được — **Sourcing**, **Decision**, **Application**,
+> **Networking**, **Analytics**, **Setup** (`nav.group.*`) — mở ra khi
+> bạn ghé một mục và giữ nguyên vị trí bạn để lại. Gắn sao bất kỳ trang
+> nào để ghim nó dưới **Favorites**, và bấm **Cmd/Ctrl+K** (hoặc nút
+> **Command menu** ở đỉnh thanh bên, `nav.v2.palette`) để nhảy mờ tới
+> bất kỳ trang nào từ bất cứ đâu. Mọi trang hiện tiêu đề ngay lập tức
+> và lấp đầy các hàng lấp lánh xám trong lúc dữ liệu tải, nên việc
+> điều hướng không bao giờ trông trống rỗng. Và không trang nào chào
+> bạn bằng một khoảng trống trơ trọi: bốn trang khởi đầu rỗng —
+> **Auto-pipeline**, **Apply checklist**, **Batch**, và **Funded
+> companies** — hiện một ví dụ mẫu cộng đúng một hành động làm đầy
+> chúng (`v2empty.exampleTag`).
+
 > **Đối tượng:** bất kỳ ai vừa thả UI này vào một bản `career-ops`
 > và chạy `bash bin/start.sh`. Không cần biết trước gì về career-ops.
 
@@ -312,32 +326,49 @@ tối thiểu của bạn nằm ngay đó.
 → Reports → Deep research → Apply checklist → Outreach → Tracker
 → Follow-up → Interview prep → Activity log`
 
-Vậy thôi. 21 bước, theo từng nút, từ số không tới có offer.
+Thanh bên nhóm các trang này theo giai đoạn (**Sourcing** →
+**Decision** → **Application** → …), nên thứ tự quy trình và thứ tự
+menu luôn khớp nhau; **Cmd/Ctrl+K** mở **Command menu**
+(`nav.v2.palette`) nếu bạn thích gõ ba chữ cái hơn là dò mắt qua
+danh sách. Vậy thôi. 21 bước, theo từng nút, từ số không tới có offer.
 
 ### Auto-pipeline một-cú-bấm (`#/auto`) — lối tắt của 21 bước
 
 Nếu bạn chỉ muốn chấm nhanh một tin cụ thể, bỏ qua walkthrough
 thủ công. **Thanh bên → ✨ Auto-pipeline** (hoặc nút ✨ trên
 Dashboard) mở một màn hình riêng: dán URL việc làm, bấm **Enter**
-hay bấm **▶ Run full pipeline**, và máy chủ chạy toàn chuỗi
+hay bấm **Run auto-pipeline** (`auto.run`), và máy chủ chạy toàn chuỗi
 trong một lượt quan sát được:
 
-1. **Đang xác thực URL** — kiểm tra an-toàn-SSRF (`isValidJobUrl`); từ chối
+1. **Đang xác thực URL** (`auto.step.validate`) — kiểm tra
+   an-toàn-SSRF (`isValidJobUrl`); từ chối
    loopback / `file:` / IP riêng / ký tự script.
-2. **Đang tải mô tả công việc** — `safeGet` (ghim-DNS, xác thực lại redirect) tải + làm sạch JD.
-3. **Đang đánh giá với CV của bạn** — Anthropic (ưu tiên) → Gemini
+2. **Đang tải mô tả công việc** (`auto.step.fetch`) — `safeGet`
+   (ghim-DNS, xác thực lại redirect) tải + làm sạch JD.
+3. **Đang đánh giá với CV của bạn** (`auto.step.evaluate`) —
+   Anthropic (ưu tiên) → Gemini
    dự phòng → prompt-thủ-công nếu không có khóa.
-4. **Đang lưu báo cáo** — ghi `reports/<slug>.md` với điểm +
-   độ chính đáng ở phần đầu.
-5. **Đang thêm vào tracker** — nối một dòng vào `data/applications.md`.
+4. **Đang lưu báo cáo** (`auto.step.report`) — ghi `reports/<slug>.md`
+   với điểm + độ chính đáng ở phần đầu.
+5. **Đang thêm vào tracker** (`auto.step.tracker`) — nối một dòng vào
+   `data/applications.md`.
 
 Phản hồi trực tiếp là một **stepper** dọc (từng bước sáng lên
-running → done / failed). Nó là danh sách có thứ tự với `aria-current`
-trên bước đang chạy và một live-region lịch sự cho trình đọc màn hình
-thông báo mọi chuyển tiếp. Thành công thì thẻ kết quả dẫn thẳng tới
-báo cáo đã lưu (**View report · N/5**) và **tracker**. Bước thất bại
-được đánh dấu đỏ kèm thông điệp và nút được bật lại để bạn
-sửa URL và thử lại mà không cần tải lại trang.
+running → done / failed; `aria-current` đánh dấu bước đang chạy và
+một live-region lịch sự cho trình đọc màn hình thông báo mọi chuyển
+tiếp). Thành công thì thẻ kết quả dẫn thẳng tới báo cáo đã lưu
+(**View report**, `auto.viewReport`) và **tracker**
+(`auto.viewTracker`). Bước thất bại được đánh dấu đỏ kèm thông điệp
+và nút được bật lại để bạn sửa URL và thử lại mà không cần tải lại
+trang. Khởi chạy một lượt mới trong khi lượt cũ vẫn đang chạy là an
+toàn: lượt cũ tự đánh dấu **Superseded — a newer run was requested**
+(`auto.superseded`) thay vì tiêu tiền gấp đôi cho một câu trả lời
+quá hạn.
+
+Trang rỗng thành thật với trường duy nhất của nó: một thẻ
+**Example** và nút **Try an example URL** (`v2empty.auto.tryExample`)
+điền vào ô nhập một tin tuyển dụng mẫu — **không gì chạy cho tới khi
+bạn bấm Run** (`v2empty.auto.hint`), nên việc khám phá không tốn gì.
 
 **Chưa có khóa API?** Pipeline chạy ở **chế độ thủ công**: các bước 3–5
 thu gọn và bạn nhận một thẻ prompt sẵn-sàn-dán (sao chép vào Claude
@@ -1011,8 +1042,36 @@ các yêu cầu HTTPS đang bay qua `AbortController`.
 ### Lọc kết quả
 
 Dưới nhật ký, bảng kết quả render các dòng từ `data/last scan.json`.
+Trong lúc bảng tải (và mỗi lần làm mới) bạn thấy các hàng lấp lánh xám
+thay vì một khung trống, và tiêu đề trang có mặt từ khung hình đầu
+tiên — một lượt quét chậm không bao giờ đọc như một trang chết.
 
-**Search + Exclude (v1.109.0).** Ô **Search** là bộ lọc "vị trí cần tìm" của bạn — gõ một hay nhiều thuật từ **phân tách bằng phẩy** và một dòng hiện ra nếu khớp **bất kỳ** cái nào (HOẶC). Ô **Exclude** mới làm điều ngược lại: các từ phân tách bằng phẩy **ẩn** mọi dòng mà công ty / vị trí / địa điểm của nó chứa chúng (vd exclude `senior, staff, java`). Cả hai được các truy vấn đã lưu của bạn ghi nhớ cùng với các bộ lọc remote / nguồn / quốc gia / đăng trong / lương.
+Chrome kết quả v2 giữ mọi nút điều khiển luôn dễ tìm thấy:
+
+- **Active filters** (`scan.v2.activeFilters`) — mọi bộ lọc bạn đặt
+  hiện dưới dạng một chip gỡ-được phía trên bảng; bấm **✕** trên một
+  chip (**Remove filter**, `scan.v2.removeFilter`) để bỏ đúng cái đó,
+  hoặc **Reset all** (`scan.v2.resetAll`) để xóa sạch cả loạt.
+- **Sort by** (`scan.v2.sortBy`) — bấm một tiêu đề cột (công ty,
+  vị trí, lương, tuổi) để sắp theo nó; bấm lần nữa để đảo chiều.
+- **Quick view** (`scan.v2.quickView`) — bấm một dòng để mở rộng mô
+  tả tin tuyển dụng ngay tại chỗ (**Description**, `scan.v2.description`)
+  mà không rời trang; các tin không có nội dung đã thu ghi điều đó
+  (`scan.v2.noDescription`) thay vì hiện một thẻ trống.
+- **Row density** (`scan.v2.density`) — chuyển **Compact** /
+  **Comfortable** (`scan.v2.compact` / `scan.v2.comfortable`) giữa các
+  độ cao dòng; lựa chọn được ghi nhớ theo từng trình duyệt.
+- **Log** (`scan.v2.log`) — thu gọn/mở rộng nhật ký quét streaming để
+  nhường bảng toàn bộ bề rộng.
+
+Mỗi dòng mang theo các hành động riêng: **Evaluate**
+(`scan.v2.evaluate`) nhảy thẳng vào một lượt đánh giá có điểm cho tin
+đó, **To pipeline** (`scan.v2.toPipeline`) xếp hàng URL (kèm toast
+đã-xếp-hàng, `scan.v2.pipelineDup`), **Open posting ↗**
+(`scan.v2.openPosting`) mở trang tuyển dụng trong tab mới, và ☆ gắn
+một mục yêu thích.
+
+**Search + Exclude.** Ô **Search** là bộ lọc "vị trí cần tìm" của bạn — gõ một hay nhiều thuật từ **phân tách bằng phẩy** và một dòng hiện ra nếu khớp **bất kỳ** cái nào (HOẶC); một tiền tố `-word` **loại trừ** thuật từ đó (`scan.v2.moreHint`). Ô **Exclude** riêng biệt (`scan.lblExclude`) làm điều tương tự cho cả thuật từ: các từ phân tách bằng phẩy **ẩn** mọi dòng mà công ty / vị trí / địa điểm của nó chứa chúng (vd exclude `senior, staff, java`). Cả hai được các truy vấn đã lưu của bạn ghi nhớ cùng với các bộ lọc remote / nguồn / quốc gia / đăng trong / lương.
 
 > **v1.76.0 — bỏ cap kết quả.** Các bản trước lưu tối đa 2000 dòng khớp
 > mỗi vùng (`MAX_STORED_RESULTS`), âm thầm giấu phần đuôi của một lượt quét lớn.
@@ -1032,15 +1091,28 @@ Dưới nhật ký, bảng kết quả render các dòng từ `data/last scan.js
 > sau 14 ngày), nên các slug chết ngừng spam nhật ký. Tắt bằng
 > `scan_quarantine: false` trong `portals.yml`.
 
-Các bộ lọc:
+Các bộ lọc (luôn hiển thị: search, exclude, loại hình, nguồn, quốc
+gia; phần còn lại nằm sau **Advanced filters**, `scan.advancedFilters`
+— toàn khung được nhóm dưới **Result filters**, `scan.filtersGroup`):
 
 - **Văn bản tự do** — so khớp chuỗi con với tiêu đề / công ty.
-- **Nguồn** dropdown — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Teamtailor / Trudvsem / We Work Remotely / Workable / Workday / Working Nomads (tự làm đầy từ `GET /api/scan/sources`).
+- **Nguồn** dropdown — mọi nguồn registry biết (121 vào lúc này:
+  116 EN + 5 RU, **All sources** theo mặc định). Nó được làm đầy trực
+  tiếp từ `GET /api/scan/sources`, nên một adapter mới thả vào xuất
+  hiện ở đây mà không cần thay đổi ứng dụng nào — danh sách không bao
+  giờ bị hardcode.
 - **Remote / Hybrid / Onsite** dropdown.
-- **Quốc gia** dropdown (v1.78.0) — một bộ lọc địa lý làm đầy từ các quốc gia được phát hiện trong kết quả hiện tại, mỗi quốc gia kèm emoji cờ và số đếm (vd `🇩🇪 Germany (12)`). Chọn một quốc gia để chỉ giữ các vị trí gắn với quốc gia đó. Việc nhận diện ánh xạ địa điểm văn bản tự do của một tin (tên quốc gia/bí danh + ~100 thành phố thị trường việc làm lớn) về một quốc gia; nó thận trọng và không bao giờ đoán, nên một tin có địa điểm không phân giải được — hay tin thuần "Remote" — ở lại dưới **All countries**. Kết hợp với dropdown loại hình làm việc để tìm các vị trí gắn quốc gia *và* remote.
-- **Posted within** dropdown (v1.80.0) — bộ lọc tuổi phía client (24 giờ qua / 7 ngày / 30 ngày). Dòng có `pubDate` cũ hơn bị ẩn; dòng **không có ngày vẫn đi qua** (thiếu dữ liệu không bị phạt).
-- **★ Yêu thích** (v1.80.0) — bấm ☆ ở bất kỳ dòng nào để gắn sao một việc (lưu trong `localStorage` theo URL); tích **★ Yêu thích** trong khung lọc để chỉ hiện dòng đã gắn sao. Sao sống sót qua các lần quét và tải lại.
-- **Truy vấn đã lưu** (v1.80.0) — thanh phía trên các bộ lọc: đặt tên cho bộ lọc hiện tại và **💾 Save**, rồi áp dụng lại từ dropdown hay **🗑 Delete** nó. Lưu trong `localStorage`; giá trị hỏng/bị sửa đặt lại sạch về rỗng.
+- **Quốc gia** dropdown — một bộ lọc địa lý làm đầy từ các quốc gia được phát hiện trong kết quả hiện tại, mỗi quốc gia kèm emoji cờ và số đếm (vd `🇩🇪 Germany (12)`). Chọn một quốc gia để chỉ giữ các vị trí gắn với quốc gia đó. Việc nhận diện ánh xạ địa điểm văn bản tự do của một tin (tên quốc gia/bí danh + ~100 thành phố thị trường việc làm lớn) về một quốc gia; nó thận trọng và không bao giờ đoán, nên một tin có địa điểm không phân giải được — hay tin thuần "Remote" — ở lại dưới **All countries**. Kết hợp với dropdown loại hình làm việc để tìm các vị trí gắn quốc gia *và* remote.
+- **Posted within** dropdown — bộ lọc tuổi phía client (24 giờ qua / 7 ngày / 30 ngày). Dòng có `pubDate` cũ hơn bị ẩn; dòng **không có ngày vẫn đi qua** (thiếu dữ liệu không bị phạt).
+- **Lương từ / Lương tới** (`scan.salaryFrom` / `scan.salaryTo`) —
+  giới hạn số thuần so với các khoản tiền được phân tích từ văn bản
+  tin tuyển dụng (bỏ qua đơn vị tiền, `scan.v2.salaryHint`); tích
+  **Include jobs without salary** (`scan.v2.includeNoSalary`) để bộ
+  lọc lương không bỏ đi các dòng không trích bất kỳ con số nào.
+- **Seniority** dropdown (`scan.lblSeniority`) — Lead / Staff / Senior
+  / Mid / Junior / Intern, nhận diện từ tiêu đề.
+- **★ Yêu thích** — bấm ☆ ở bất kỳ dòng nào để gắn sao một việc (lưu trong `localStorage` theo URL); tích **★ Yêu thích** (`scan.favOnly`) trong khung lọc để chỉ hiện dòng đã gắn sao. Sao sống sót qua các lần quét và tải lại.
+- **Truy vấn đã lưu** (`scan.savedSearches`) — đặt tên cho bộ lọc hiện tại và **Save search** (`scan.saveSearch`), rồi áp dụng lại từ danh sách; truy vấn đã lưu được nạp lại chỉ với một cú bấm (`scan.v2.loadSearch`) và việc xóa một cái hỏi trước (`scan.v2.deleteSearchConfirm`). Lưu trong `localStorage`; giá trị hỏng/bị sửa đặt lại sạch về rỗng.
 - **Chip công nghệ** (PHP / Go / Backend / Senior / …) — tự phát hiện
   theo từng dòng bởi `Skills.detectTech` và `Skills.detectLevel`. Chọn nhiều
   dạng giao — chọn `PHP + Senior` hiện các dòng có CẢ HAI.
@@ -1051,11 +1123,20 @@ Các bộ lọc:
 
 ### Thẻ Active Companies
 
-Một thẻ thu gọn được liệt kê mọi công ty trong `portals.yml` cùng
-trạng thái quét:
+Một thẻ thu gọn tóm lược mọi công ty trong `portals.yml`, mở đầu bằng
+**Active companies** (`scan.activeCo`) với bộ đếm trực tiếp `N/M` —
+*N* là số công ty thực sự trả về kết quả trong lần quét gần nhất, *M*
+là số công ty có-hỗ-trợ-API đang bật, nên cả hai con số luôn mô tả
+cùng một tập hợp (một lượt chỉ-quét-bảng-Nga không thể đẩy tử số vượt
+qua mẫu số ATS). Tooltip nói điều tương tự bằng lời thường
+(`scan.activeCo.help`). Danh sách được chia thành hai nhóm:
 
-- ✓ thẻ xanh — hỗ trợ API trực tiếp (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday).
-- ○ thẻ xám — quay về prompt tìm kiếm web (không khớp API).
+- ✓ **Direct API** (`scan.apiBacked`) — bảng được lấy trực tiếp từ API
+  ATS công khai của nó (một trong 116 adapter EN, từ Greenhouse /
+  Ashby / Lever / Workable / SmartRecruiters / Workday xuống phần đuôi
+  dài).
+- ○ **Web-search only** (`scan.websearchBacked`) — không adapter nào
+  khớp URL, nên lượt quét AI của CLI lo phần đó thay thế.
 
 **Bấm tên công ty** → điền bộ lọc kết quả phía trên bằng tên đó. **Bấm biểu tượng ↗** → mở `careers_url`
 của công ty trong tab mới.
@@ -1126,17 +1207,19 @@ Ngay cả từ một mạng *có vẻ* đúng, hh.ru có thể gắn cờ IP đ�
 
 Hộp vào các URL chờ đánh giá. Nằm trong `data/pipeline.md`.
 
-**Dải tổng quan (v1.109.0).** Ở đầu trang, một dải gọn cho bạn thấy pipeline qua một cái nhìn — bao nhiêu URL **trong hộp vào**, bao nhiêu dòng **đang theo dõi**, và các con số cho **Applied / Responded / Interview / Offer** lấy từ tracker. Mỗi chip dẫn thẳng tới `#/tracker` (các chip trạng thái mở nó ở dạng đã lọc). Nó suy giảm xuống chỉ số đếm hộp vào nếu không đọc được tracker.
+**Dải tổng quan.** Ở đầu trang, một dải gọn cho bạn thấy pipeline qua một cái nhìn — bao nhiêu URL **trong hộp vào** (`pipe.ovInbox`), bao nhiêu dòng **đang theo dõi** (`pipe.ovTracked`), và các con số cho **Applied / Responded / Interview / Offer** lấy từ tracker. Mỗi chip dẫn thẳng tới `#/tracker` (các chip trạng thái mở nó ở dạng đã lọc). Nó suy giảm xuống chỉ số đếm hộp vào nếu không đọc được tracker.
 
 ### Thêm URL
 
 Ba cách:
 
-- Gõ / dán một URL vào ô nhập + bấm **+ Add**.
-- Dùng **ô tìm kiếm toàn cục trên thanh trên** (huy hiệu của nó ghi **Enter**): dán bất kỳ liên kết `http(s)://…` và bấm **Enter** để mở auto pipeline;
-  gõ văn bản khác và **Enter** nhảy tới `#/scan` với thuật từ đó
-  điền sẵn (v1.78.1). Ctrl/Cmd+K vẫn trỏ focus vào ô nơi
-  trình duyệt cho phép. **Logo** thương hiệu quay về dashboard.
+- Gõ / dán một URL vào ô nhập + bấm **Add URL** (`pipe.add`).
+- Dùng **command palette**: **Cmd/Ctrl+K** (hoặc nút **Command menu**
+  trên thanh bên, `nav.v2.palette`), dán bất kỳ liên kết
+  `http(s)://…`, và palette đưa ra **Auto-pipeline: {url}**
+  (`nav.v2.evalUrl`) — Enter chạy toàn chuỗi trên liên kết đó. Gõ văn
+  bản khác và bấm Enter nhảy tới `#/scan` với thuật từ đó
+  điền sẵn.
 - Chạy một lượt Scan (xem trên) — các kết quả mới tự đổ vào
   pipeline.
 
@@ -1158,13 +1241,49 @@ thêm một lần, nên một bảng ác ý không thể ném bạn về loopbac
 
 ### Thao tác trên dòng
 
-- **▶** — nhảy tới `#/evaluate?url=…` với URL điền sẵn.
-- **✕** — xóa URL khỏi `data/pipeline.md`.
+- **▶** (`pipe.evaluateBtn`) — nhảy tới `#/evaluate?url=…` với URL điền sẵn.
+- **✕** — xóa URL khỏi `data/pipeline.md` (hỏi trước, `pipe.confirmDel`).
+
+**Xem nhóm, loại hàng loạt, hoàn tác không-mất-dữ-liệu.** Dọn dẹp một
+hộp vào lớn sau một lượt quét là tâm điểm v2 của trang này:
+
+- **Grouped** (`pipe.viewGrouped`) / **Compact list** (`pipe.viewFlat`)
+  — thanh công cụ chuyển qua lại giữa danh sách phẳng và một bảng
+  nhóm-theo-công-ty: các tin từ cùng một nhà tuyển dụng thu vào dưới
+  một mục mở-rộng (nhóm lớn nhất trước), nên một bảng ồn ào không còn
+  vùi lấp phần còn lại. Các công ty không-rõ nhóm dưới host của chúng
+  — nhưng một host ATS dùng chung (ví dụ `jobs.lever.co`) chỉ mượn tên
+  một công ty khi *mọi* mục có-công-ty trên host đó cùng đồng thuận.
+- **Hide already evaluated** (`pipe.hideTracked`) — bật theo mặc định;
+  các mục mà tin của nó đã có dòng tracker rơi khỏi khung xem (và khỏi
+  vùng chọn hàng loạt) nên bạn chỉ bao giờ thao tác trên việc còn mới.
+- **Select** (`pipe.selectOne`) bất kỳ dòng nào, hay **Select all
+  shown** (`pipe.selectAllShown`) — vùng chọn luôn bám theo các bộ lọc
+  hiện tại, không bao giờ các dòng vô hình. Thanh vùng chọn hiện số
+  đếm (`pipe.selectedCount`) và đưa ra **✕ Remove selected (N)**
+  (`pipe.bulkRemove`) cộng với **Evaluate first selected**
+  (`pipe.evaluateSelected`) — xóa hàng loạt xác nhận một lần cho cả
+  bộ, không phải từng dòng.
+
+Không gì bị mất do sơ suất: mỗi lần xóa — đơn hay hàng loạt — trả về
+một token hoàn tác mờ-đục, và một thanh ở đáy trang (**Deleted:
+N**, `pipe.deleted`) đưa ra **Undo** (`pipe.undo`) / **Dismiss**
+(`pipe.undoDismiss`). Các lần xóa xếp chồng tới năm lô (lô cũ nhất bị
+bỏ); **Undo** hoàn tác lô gần nhất bằng cách gửi các token của nó tới
+`POST /api/pipeline/restore`, vốn chèn lại đúng các dòng gốc nguyên
+vẹn (bao gồm metadata checklist — không gì được suy-dự-lại hay
+thêm-lại) và xác nhận bằng **Restored to the pipeline**
+(`pipe.undone`). Thanh được gắn bên ngoài markup riêng của trang, nên
+một lần re-render (điều hướng, luồng thêm-nhanh) không thể nuốt mất
+một lệnh hoàn tác đang chờ; nếu máy chủ không còn
+nhớ một token (khởi động lại), URL đó được thêm lại theo cách thông
+thường thay vì bị bỏ rơi.
 
 ### Các nút trên phải
 
-- **⚡ Đánh giá đầu tiên** — mở URL đầu tiên trong hàng đợi trên trang
-  Evaluate, sẵn sàng chấm điểm.
+- **⚡ Đánh giá đầu tiên** (`pipe.evaluateAll`) — mở URL đầu tiên
+  trong hàng đợi trên trang Evaluate, sẵn sàng chấm điểm (hỏi xác nhận
+  trước, vì nó quyết định bạn sẽ tiêu một lượt chạy vào tin nào).
 - **Tìm kiếm việc làm** — quay về scanner nếu bạn muốn thêm URL.
 
 ---
@@ -1241,11 +1360,46 @@ kết quả. Toàn bộ luồng:
 
 ## 10. Báo cáo (`#/reports`)
 
-Duyệt mọi đánh giá đã lưu. Các thẻ hiện tiêu đề, ngày, cờ
-độ chính đáng, và điểm (màu mã hóa: xanh ≥ 4.0, vàng ≥ 3.0, đỏ dưới mức).
+Duyệt mọi đánh giá đã lưu. Trang mở trên khung xem **Cards**
+(`rep2.viewCards`) — mỗi báo cáo một thẻ: tiêu đề hiển thị, ngày,
+huy hiệu độ chính đáng và một pill điểm màu-mã-hóa (xanh ≥ 4.0, vàng
+≥ 3.0, đỏ dưới mức, kèm một pill mờ "Score not detected" khi phần đầu
+không mang điểm phân-tích-được) — và có thể lật sang khung xem **Table**
+trù mật (`rep2.viewTable`) khi bạn muốn dò theo dòng thay vì thẻ. Mỗi
+thẻ và mỗi dòng bảng còn nêu **bước tiếp theo đề xuất** cho dải điểm
+của nó: **Apply now — top fit** (`rep2.actApply`), **Apply, or find a
+warm contact first** (`rep2.actContact`), **Research the company
+first** (`rep2.actResearch`), hay **Skip unless there is a personal
+reason** (`rep2.actLow`) — mỗi cái là một liên kết thẳng tới đúng trang
+cần đến. Một thẻ không có điểm hiện pill mờ **Score not detected**
+(`rep.scoreUnparsed`) với tooltip trỏ về chính báo cáo.
 
-Bấm một thẻ để đọc toàn bộ markdown. Phân trang: 12 mỗi trang;
-nút điều khiển ở dưới.
+**Tìm đúng báo cáo.** Một hàng bộ lọc nằm phía trên danh sách, và mọi
+thứ kết hợp với nhau:
+
+- **Search reports** (`rep2.searchLabel`) — văn bản tự do so khớp với
+  công ty, vị trí và tiêu đề hiển thị của từng báo cáo.
+- **Company** (`rep2.companyLabel`) — chọn một nhà tuyển dụng từ
+  dropdown.
+- **Score band** (`rep2.bandLabel`) — **High (4.5+)** / **Good (4.0+)**
+  / **Mid (3.5+)** / **Below 3.5** (`rep2.bandHigh` … `rep2.bandLow`),
+  cộng thêm một ô cho các báo cáo có phần đầu không mang điểm
+  phân-tích-được.
+- **From date / To date** (`rep2.dateFrom` / `rep2.dateTo`) — giới
+  hạn danh sách trong một khoảng thời gian.
+- **Sort by** (`rep2.sortLabel`) — **Date** / **Score** / **Company**
+  (`rep2.sortDate` …), tăng dần hay giảm dần (`rep2.sortDirAsc` /
+  `rep2.sortDirDesc`).
+- Một **biểu đồ phân bố điểm** (`rep2.histogramLabel`) — bấm một cột
+  để lọc về dải đó và nhìn rõ hình dáng pipeline của bạn trong một
+  cái nhìn.
+- **Reset filters** (`rep2.reset`) xóa sạch mọi thứ; khi không có gì
+  khớp, trang nói điều đó (`rep2.noMatches`) thay vì hiện một lưới
+  trống.
+
+Bấm một thẻ (hay dòng bảng) để đọc toàn bộ markdown. Phân trang:
+20 mỗi trang, nút điều khiển ở dưới; mọi thay đổi bộ lọc kéo bạn
+về trang 1.
 
 Chế độ xem báo cáo đơn còn có:
 
@@ -1275,6 +1429,23 @@ bảng GitHub Flavored Markdown.
 `Hired` (v1.118.0) là trạng thái hạnh phúc cuối cùng — offer đã được chấp nhận. Tracker đánh dấu nó bằng một huy hiệu ăn mừng và chào đón bằng một banner đã có việc.
 
 **Bảng tab giai đoạn (v1.131.0).** Phía trên bảng, một **dải tab giai đoạn** cho bạn đi bộ phễu: một tab **All** cộng một tab cho mỗi trạng thái chính thức, mỗi tab hiện số đếm toàn lịch sử trực tiếp — **bao gồm cả giai đoạn số đếm bằng-0**, nên toàn bộ pipeline luôn hiện rõ trong một cái nhìn. Bấm một giai đoạn để lọc bảng về nó; bấm lần nữa để quay về **All**. Các tab (và cách số đếm gộp các bí danh trạng thái đã bản địa hóa/legacy) đến từ `GET /api/tracker/stages`, vốn đọc cùng `templates/states.yml` máy chủ dùng — nên bộ tab luôn đồng bộ với từ vựng trạng thái của dự án gốc một cách tự động, không có danh sách hardcode nào trên trang. Search, bộ lọc điểm, các cột sắp xếp được và report/PDF/legitimacy từng dòng không đổi; khi bật logo, công ty của mỗi dòng hiện một dấu thương hiệu.
+
+**Kanban view (v2).** Cùng bảng đó còn đọc được dưới dạng **kanban**
+kéo-thả: mỗi trạng thái chính thức một cột (tiêu đề bảng được công bố
+là *Applications by status*, `track.kanbanBoardAria`), mỗi đơn một
+thẻ. Kéo một thẻ sang cột khác — hoặc focus nó và bấm **Move** — và
+thay đổi được **xem trước trước khi bất cứ thứ gì được ghi** 
+(`track.kanbanMoveHint`); một lần di chuyển đã xác nhận ghi một mục
+vào nhật ký kết quả và viết lại `data/applications.md`, và thẻ cho
+bạn biết điều đó (`track.moveJournal`) — để đổi trạng thái ngược lại,
+dùng nút **Outcome** của dòng. Các cột mà pipeline tự quản lý (và
+`Discarded`, vốn chỉ bạn mới có thể quyết ý nghĩa của nó) hiển thị
+chỉ-đọc (`track.kanbanReadOnly`) và từ chối thả vào. Nếu trình ghi
+kết quả của dự án gốc vắng mặt, việc di chuyển trạng thái bị tắt kèm
+một ghi chú thành thật (`track.kanbanMovesOff`). Trong lúc bảng tải,
+nó hiện cùng các hàng lấp lánh với phần còn lại của ứng dụng, và một
+bảng rỗng nói **No applications** (`track.kanbanEmpty`) kèm chỉ dẫn
+về pipeline (`track.emptyBody`).
 
 Danh sách trạng thái cho phép được ép phía máy chủ; gửi thứ gì khác trong
 `POST /api/tracker` sẽ mặc định về `Evaluated`. Chuyển tiếp
@@ -1432,7 +1603,12 @@ vốn dùng Playwright trong dự án gốc.
 ### Chế độ danh mục SPA (`#/apply`)
 
 Danh mục của SPA dành cho những ai thích tự điền form
-mà không gọi Playwright. Nó bao gồm:
+mà không gọi Playwright. Một trang rỗng không để bạn phải đoán mò:
+nó hiện **Generate an application checklist** với một ví dụ mẫu
+(`v2empty.apply.emptyTitle` / `v2empty.apply.emptyBody`) và, nếu bạn
+đã đánh giá tin này rồi, một lối tắt tới việc **pick an evaluated
+report** (`v2empty.apply.pickReport`) để danh mục khởi đầu từ dữ liệu
+của chính báo cáo đó. Nó bao gồm:
 
 0. Chạy `/career-ops apply <url>` trong Claude Code để đọc form qua
    Playwright (bỏ qua bước này nếu bạn điền tay).
@@ -1531,7 +1707,13 @@ Theo dõi trạng thái toàn bộ pipeline của bạn, bất kể điểm vị
 
 Khi bạn có 10+ JD cần chấm cùng lúc (việc dùng `#/evaluate` của SPA
 từng cái một là bất khả thi với lượng đó), dùng batch runner
-từ CLI.
+từ CLI. Trang `#/batch` đón bạn với cùng sự thành thật: trạng thái
+rỗng của nó hiện **Start with a list of postings**
+(`v2empty.batch.emptyTitle`) và một trợ lý **Paste URL list**
+(`v2empty.batch.pasteList`) nhấc các URL http(s) trần từ clipboard
+của bạn thẳng vào ô nhập (`v2empty.batch.pasteAdded`), nên việc dựng
+các dòng tương-đương `batch input.tsv` chỉ tốn vài giây trước khi bạn
+xuống CLI runner.
 
 **Tệp đầu vào — `batch/batch input.tsv`** (phân tách bằng tab):
 
@@ -1748,7 +1930,7 @@ kết quả, và tìm trên trình theo dõi issue tại
 career-ops-ui coi mỗi bảng việc làm là một **adapter** — một tệp đơn dưới
 [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) biết
 cách lấy + chuẩn hóa kết quả của một bảng. Hiện tại
-`server/lib/sources/` registry cung cấp **121** adapter — **116 bảng tiếng Anh + 5 bảng tiếng Nga**. Bộ tiếng Anh trải khắp các ATS lớn (Greenhouse / Ashby / Lever /
+`server/lib/sources/` registry cung cấp **121** nguồn — **116 bảng tiếng Anh + 5 bảng tiếng Nga**. Bộ tiếng Anh trải khắp các ATS lớn (Greenhouse / Ashby / Lever /
 Workable / SmartRecruiters / Workday), các aggregator toàn bảng chọn bằng
 `provider:` tường minh (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board,
 Amazon, …), và các ATS theo tenant tự phát hiện từ host `careers_url` hay

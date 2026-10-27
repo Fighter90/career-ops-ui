@@ -50,19 +50,21 @@ export async function withFileLock(path, fn) {
   let release;
   const next = new Promise((r) => { release = r; });
   // Make the next caller wait on `next` instead of `prev`.
-  LOCKS.set(path, prev.then(() => next).catch(() => {}));
+  const tail = prev.then(() => next).catch(() => {});
+  LOCKS.set(path, tail);
   // Wait for our turn.
   await prev.catch(() => {}); // a prior critical section throwing shouldn't break our chain
   try {
     return await fn();
   } finally {
     release();
-    // GC: if no one's waiting on us anymore, drop the entry to keep the
-    // Map from growing unboundedly across the process lifetime.
-    if (LOCKS.get(path) === prev.then(() => next).catch(() => {})) {
-      // Cheap check above is best-effort; the real cleanup happens when
-      // the next caller arrives and sees the empty slot.
-    }
+    // FULL-M6 (CAR-165) — real GC: once the stored tail settles, drop the
+    // entry so the Map does not grow unboundedly across the process lifetime.
+    // A caller that queued while the tail was pending has already REPLACED the
+    // entry, so the identity check skips deletion — only the truly-last
+    // holder clears the slot. (The old check here compared freshly built
+    // promise chains and could never match; it was dead code.)
+    tail.then(() => { if (LOCKS.get(path) === tail) LOCKS.delete(path); });
   }
 }
 
@@ -105,4 +107,13 @@ export function atomicWrite(filePath, data) {
  */
 export function _resetLocks() {
   LOCKS.clear();
+}
+
+/**
+ * Test-only — number of live lock slots. `withFileLock`'s GC drops an entry
+ * once its tail settles with no caller queued behind it, so this reads 0 in a
+ * settled process (guarded by tests/file-lock-gc).
+ */
+export function _pendingLocks() {
+  return LOCKS.size;
 }

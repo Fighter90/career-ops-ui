@@ -858,6 +858,37 @@ window.UI = (function () {
     }
   }
 
+  // FULL-M6 — the cost-hint lifecycle registry: ONE shared MutationObserver
+  // for every mounted hint (see providerCostHint below). Each mounted hint
+  // registers { node, ac, connectedOnce }; the sweep drops entries whose
+  // node the router has discarded (aborting that hint's document listeners
+  // — the CAR-18 self-cleanup) and disconnects the shared observer when the
+  // registry drains. A node is only dropped once it HAS been connected:
+  // between hint creation and the view's appendChild any body mutation
+  // would otherwise kill the listeners before first use (review finding 8).
+  const costHints = new Set();
+  let costHintObserver = null;
+  function sweepCostHints() {
+    for (const entry of [...costHints]) {
+      if (entry.node.isConnected) {
+        entry.connectedOnce = true;
+        continue;
+      }
+      if (!entry.connectedOnce) continue; // not mounted yet — leave it alone
+      costHints.delete(entry);
+      try { entry.ac.abort(); } catch { /* already dead */ }
+    }
+    if (!costHints.size && costHintObserver) {
+      costHintObserver.disconnect();
+      costHintObserver = null;
+    }
+  }
+  function ensureCostHintSweep() {
+    if (costHintObserver) return;
+    costHintObserver = new MutationObserver(sweepCostHints);
+    costHintObserver.observe(document.body, { childList: true, subtree: true });
+  }
+
   // v1.56.0 — UX-10: an honest "what will ⚡ Run live cost?" hint,
   // shared by #/auto, #/evaluate, #/deep and #/<mode>. Reuses
   // GET /api/status/providers (v1.55.3). Returns a node that fills
@@ -937,13 +968,20 @@ window.UI = (function () {
     // no destroy hook and the call sites are view-owned, so the helper cleans
     // up after itself: once a DOM mutation leaves the node disconnected, the
     // observer aborts the controller, which removes both listeners in one go.
+    // FULL-M6 — the body watch is ONE shared MutationObserver for every
+    // mounted hint (was: one observer per call, each on the whole body
+    // subtree, so every toast/console/HUD repaint ran every live observer).
+    // Each hint registers here; the sweep drops disconnected entries and
+    // disconnects the shared observer when the registry drains. A node is
+    // only cleaned once it HAS been connected: the router appends it after
+    // this function returns, and a mutation landing in that window must not
+    // abort the listeners before first use (review finding 8).
     const ac = new AbortController();
     document.addEventListener('visibilitychange', onVisibility, { signal: ac.signal });
     document.addEventListener('providers-changed', refreshCostLine, { signal: ac.signal });
-    const lifecycle = new MutationObserver(() => {
-      if (!node.isConnected) { lifecycle.disconnect(); ac.abort(); }
-    });
-    lifecycle.observe(document.body, { childList: true, subtree: true });
+    const entry = { node, ac, connectedOnce: node.isConnected };
+    costHints.add(entry);
+    ensureCostHintSweep();
     return node;
   }
 

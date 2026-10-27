@@ -56,42 +56,13 @@ window.PdfGenerate = (function () {
     throw new Error('PdfGenerate: unknown kind ' + opts.kind);
   }
 
-  /**
-   * Parse an SSE stream from a ReadableStream (used for POST inline).
-   * Calls onEvent(event, data) for each frame.
-   */
-  async function streamPostSse(url, body, onEvent) {
-    const res = await fetch(url, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json', Accept: 'text/event-stream' },
-      body: JSON.stringify(body),
-    });
-    if (!res.ok || !res.body) {
-      onEvent('error', { message: `HTTP ${res.status}` });
-      return;
-    }
-    const reader = res.body.getReader();
-    const decoder = new TextDecoder();
-    let buf = '';
-    while (true) {
-      const { value, done } = await reader.read();
-      if (done) break;
-      buf += decoder.decode(value, { stream: true });
-      const frames = buf.split('\n\n');
-      buf = frames.pop();
-      for (const frame of frames) {
-        let ev = null, data = null;
-        for (const l of frame.split('\n')) {
-          if (l.startsWith('event: ')) ev = l.slice(7).trim();
-          if (l.startsWith('data: ')) data = l.slice(6);
-        }
-        if (ev && data) {
-          try { onEvent(ev, JSON.parse(data)); } catch { onEvent(ev, data); }
-          if (ev === 'done' || ev === 'error') return;
-        }
-      }
-    }
-  }
+  // FULL-M6 — the hand-rolled POST-SSE drain (private fetch + manual frame
+  // splitting, the last of the four copied SSE parsers) is gone: the
+  // inline kind rides the shared API.postStream transport (FULL-R5), which
+  // adds the Accept-Language header, the lang body key and the one-
+  // well-formed-{message} error contract every other POST-SSE consumer
+  // gets. A stream that ends without a terminal frame stays the caller's
+  // to detect (postStream resolves normally — the fail() below covers it).
 
   async function run(opts) {
     const btn = opts.button;
@@ -167,7 +138,7 @@ window.PdfGenerate = (function () {
       if (ep.method === 'GET') {
         API.stream(ep.url, onEvent);
       } else {
-        await streamPostSse(ep.url, ep.body, onEvent);
+        await API.postStream(ep.url, ep.body, onEvent);
         // Stream ended without a terminal done/error frame (server crash,
         // proxy cut): that is a failure too — never leave Generate disabled.
         fail('connection lost');

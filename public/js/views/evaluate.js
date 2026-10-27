@@ -60,9 +60,12 @@ Router.register('evaluate', async () => {
         c('p', { className: 'field-hint' }, t('eval.copyHint')),
         c('pre', { className: 'console' }, r.prompt),
         c('div', { className: 'flex gap-3 mt-3' }, [
-          c('button', { className: 'btn btn-primary', onClick: () => {
-            navigator.clipboard.writeText(r.prompt);
-            UI.toast(t('eval.copied'), 'success');
+          c('button', { className: 'btn btn-primary', onClick: async () => {
+            // FULL-M6 (deep.js CAR-20 pattern) — writeText is async and can
+            // reject (permission denied, non-secure context); the
+            // fire-and-forget call still toasted "Copied" on failure.
+            try { await navigator.clipboard.writeText(r.prompt); UI.toast(t('eval.copied'), 'success'); }
+            catch { UI.toast(t('auto.copyFail', 'Copy failed — select the text and copy manually.'), 'error'); }
           }}, t('eval.copy')),
           c('button', {
             className: 'btn btn-ghost',

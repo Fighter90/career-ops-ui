@@ -495,6 +495,28 @@ export function removePipelineUrl(text, url) {
   return removePipelineUrlExtract(text, url).updated;
 }
 
+/**
+ * CAR-150 — the compensation cell of a raw pipeline line, so the undo's
+ * BARE re-add fallback can restore the column the token path preserves
+ * byte-for-byte (the DELETE answer carries it; GET /api/pipeline only
+ * ever answered bare URLs). A fenced/bare line's trailing cells ARE the
+ * comp column (the v1.84.0 written shape is exactly `url | comp`); a
+ * checklist row's cells are company/title/location — only its labeled
+ * `note: comp …` segment is compensation, never the other cells.
+ * Returns '' when the line carries none (or the input isn't a line).
+ */
+export function pipelineLineComp(line) {
+  if (typeof line !== 'string') return '';
+  const trimmed = line.trim();
+  const isCheckRow = UNCHECKED_ROW.test(trimmed);
+  const cells = trimmed.replace(UNCHECKED_ROW, '').split(/\s+\|\s+/).map((s) => s.trim());
+  if (isCheckRow) {
+    const note = cells.find((c) => /^note: comp /.test(c));
+    return note ? sanitizePipelineComp(note.replace(/^note: comp /, '')) : '';
+  }
+  return sanitizePipelineComp(cells.slice(1).join(' | '));
+}
+
 /** Any `- [ ]` / `- [x]` row prefix (checklist pipeline rows). */
 const ANY_CHECK_ROW = /^-\s+\[[ xX]\]\s+/;
 

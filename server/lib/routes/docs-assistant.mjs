@@ -170,6 +170,8 @@ export function buildAskPrompt(picked, question, lang) {
     'does not seem to cover it and point them to the closest relevant section —',
     'do NOT invent features, routes, or settings. Be concise and practical; when',
     'useful, name the section you drew from.',
+    'When a section covers a specific page (its title contains a `#/route`),',
+    'include a markdown link like [Open the Scan page](#/scan).',
     lang && lang !== 'en' ? `Answer in the user's language (${lang}).` : '',
     '',
     '<help_excerpts>',
