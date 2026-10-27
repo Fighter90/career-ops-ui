@@ -211,8 +211,11 @@ test('a11y regression guard: pinned table semantics survive the rewrite', () => 
   // wholesale move of the table out of tracker.js).
   assert.match(TRK, /function sortableTh\(label, key\)/);
   assert.match(TRK, /sortableTh\(t\('track\.col\.date'\), 'date'\)/);
-  assert.match(TRK, /function trackerStatusClass\(/);
-  assert.match(TRK, /function withFocusPreserved\(/);
+  // FULL-M6 — both helpers moved to shared libs; the tracker keeps the
+  // trackerStatusClass call-site name and delegates focus preservation.
+  assert.match(TRK, /trackerStatusClass\(r\.status\)/);
+  assert.match(TRK, /const trackerStatusClass = \(s\) => StatusClass\.of\(s\);/);
+  assert.match(TRK, /FocusPreserved\.withFocusPreserved\(/);
   assert.match(TRK, /function openOutcomeModal\(/);
 });
 
