@@ -14,6 +14,7 @@ import { readFileSync, existsSync, mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { homedir } from 'node:os';
 import { PATHS } from '../paths.mjs';
+import { withFileLock } from '../file-lock.mjs';
 import yaml from 'js-yaml';
 import {
   KNOWN_KEYS,
@@ -85,7 +86,7 @@ export function registerConfigRoutes(app) {
     });
   });
 
-  app.post('/api/config', (req, res) => {
+  app.post('/api/config', async (req, res) => {
     // v1.57.2 — the SPA's API client (public/js/api.js) auto-attaches a
     // `lang` field to EVERY JSON POST body so LLM-bound routes can pick
     // up the UI locale. /api/config is NOT an LLM route and `lang` is
@@ -127,7 +128,13 @@ export function registerConfigRoutes(app) {
     // an unhandled rejection bubbling to the default Express handler.
     let written;
     try {
-      written = updateEnvFile(PATHS.envFile, safe);
+      // FULL-M1 — .env is read by the parent CLI on every run and rewritten
+      // here from a request body: the read→rewrite inside updateEnvFile
+      // runs under the file lock so two concurrent Saves can't interleave.
+      // (The write itself stays a direct fd write inside env-config.mjs —
+      // its 0600 mode-on-create contract moves with it if .env ever gains
+      // temp-then-rename; that file is outside this change's ownership.)
+      written = await withFileLock(PATHS.envFile, () => updateEnvFile(PATHS.envFile, safe));
     } catch (e) {
       return res.status(500).json({
         error: 'failed to write parent .env',

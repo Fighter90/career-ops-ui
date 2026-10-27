@@ -13,9 +13,10 @@
  * is a thin streaming wrapper.
  */
 import { spawn } from 'node:child_process';
-import { existsSync, readFileSync, writeFileSync, mkdirSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, mkdirSync, readdirSync, statSync } from 'node:fs';
 import { PATHS } from '../paths.mjs';
 import { runTrackedScript } from '../runner.mjs';
+import { withFileLock, atomicWrite } from '../file-lock.mjs';
 import { llmRateLimit } from '../rate-limit.mjs';
 
 const TSV_MAX_BYTES = 1024 * 1024; // 1 MB — generous for ~10k JD URLs.
@@ -99,7 +100,7 @@ export function registerBatchRoutes(app) {
   // llmRateLimit: this persists a request body into batch-input.tsv that the
   // runner later evaluates — same per-IP token bucket as the stream route
   // (no-op on loopback; gates HOST=0.0.0.0 setups). Mirrors assessments.mjs.
-  app.put('/api/batch', llmRateLimit, (req, res) => {
+  app.put('/api/batch', llmRateLimit, async (req, res) => {
     const raw = (req.body?.raw ?? '').toString();
     if (raw.length > TSV_MAX_BYTES) {
       return res.status(413).json({ error: 'batch input too large', limit: TSV_MAX_BYTES });
@@ -115,7 +116,10 @@ export function registerBatchRoutes(app) {
       });
     }
     mkdirSync(PATHS.batchDir, { recursive: true });
-    writeFileSync(PATHS.batchInput, raw);
+    // FULL-M1 — batch-input.tsv is read by the batch-runner subprocess the
+    // stream route spawns: land it through atomicWrite under the file lock
+    // so a stream start can never read a torn file.
+    await withFileLock(PATHS.batchInput, () => atomicWrite(PATHS.batchInput, raw));
     res.json({ ok: true, bytes: raw.length, rows: rows.length });
   });
 

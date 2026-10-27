@@ -18,10 +18,10 @@
  *
  * The only write is `config/memory.md` on an explicit Save.
  */
-import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { existsSync, readFileSync, mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { PATHS } from '../paths.mjs';
-import { withFileLock } from '../file-lock.mjs';
+import { withFileLock, atomicWrite } from '../file-lock.mjs';
 import { llmRateLimit } from '../rate-limit.mjs';
 import { stripDangerousMarkdown } from '../security.mjs';
 import { resolveLocale, buildLocaleDirective } from '../prompts.mjs';
@@ -63,7 +63,9 @@ export function registerMemoryRoutes(app) {
     try {
       await withFileLock(PATHS.memory, async () => {
         mkdirSync(dirname(PATHS.memory), { recursive: true });
-        writeFileSync(PATHS.memory, markdown);
+        // FULL-M1 — atomicWrite: a crash mid-save leaves the old note
+        // intact instead of a truncated file (the lock alone doesn't).
+        atomicWrite(PATHS.memory, markdown);
       });
     } catch {
       return res.status(500).json({ error: 'failed to save memory' });
