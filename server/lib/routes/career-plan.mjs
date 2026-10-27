@@ -14,10 +14,10 @@
  * recommends and structures, and must not fabricate facts about their history.
  * The only write is `config/career-plan.md` on an explicit Save.
  */
-import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { existsSync, readFileSync, mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { PATHS } from '../paths.mjs';
-import { withFileLock } from '../file-lock.mjs';
+import { withFileLock, atomicWrite } from '../file-lock.mjs';
 import { bundleProjectContext, resolveLocale, buildLocaleDirective } from '../prompts.mjs';
 import { cleanLlmMarkdown } from '../llm-output.mjs';
 import { llmRateLimit } from '../rate-limit.mjs';
@@ -94,7 +94,9 @@ export function registerCareerPlanRoutes(app) {
     try {
       await withFileLock(PATHS.careerPlan, async () => {
         mkdirSync(dirname(PATHS.careerPlan), { recursive: true });
-        writeFileSync(PATHS.careerPlan, markdown);
+        // FULL-M1 — atomicWrite: a crash mid-save leaves the old plan
+        // intact instead of a truncated file (the lock alone doesn't).
+        atomicWrite(PATHS.careerPlan, markdown);
       });
     } catch {
       return res.status(500).json({ error: 'failed to save career plan' });

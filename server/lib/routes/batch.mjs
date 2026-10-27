@@ -13,9 +13,10 @@
  * is a thin streaming wrapper.
  */
 import { spawn } from 'node:child_process';
-import { existsSync, readFileSync, writeFileSync, mkdirSync, readdirSync, statSync } from 'node:fs';
+import { existsSync, readFileSync, mkdirSync, readdirSync, statSync } from 'node:fs';
 import { PATHS } from '../paths.mjs';
-import { runNodeScript } from '../runner.mjs';
+import { runTrackedScript } from '../runner.mjs';
+import { withFileLock, atomicWrite } from '../file-lock.mjs';
 import { llmRateLimit } from '../rate-limit.mjs';
 
 const TSV_MAX_BYTES = 1024 * 1024; // 1 MB — generous for ~10k JD URLs.
@@ -99,7 +100,7 @@ export function registerBatchRoutes(app) {
   // llmRateLimit: this persists a request body into batch-input.tsv that the
   // runner later evaluates — same per-IP token bucket as the stream route
   // (no-op on loopback; gates HOST=0.0.0.0 setups). Mirrors assessments.mjs.
-  app.put('/api/batch', llmRateLimit, (req, res) => {
+  app.put('/api/batch', llmRateLimit, async (req, res) => {
     const raw = (req.body?.raw ?? '').toString();
     if (raw.length > TSV_MAX_BYTES) {
       return res.status(413).json({ error: 'batch input too large', limit: TSV_MAX_BYTES });
@@ -115,7 +116,10 @@ export function registerBatchRoutes(app) {
       });
     }
     mkdirSync(PATHS.batchDir, { recursive: true });
-    writeFileSync(PATHS.batchInput, raw);
+    // FULL-M1 — batch-input.tsv is read by the batch-runner subprocess the
+    // stream route spawns: land it through atomicWrite under the file lock
+    // so a stream start can never read a torn file.
+    await withFileLock(PATHS.batchInput, () => atomicWrite(PATHS.batchInput, raw));
     res.json({ ok: true, bytes: raw.length, rows: rows.length });
   });
 
@@ -123,6 +127,14 @@ export function registerBatchRoutes(app) {
   // llmRateLimit: batch-runner fans out N parallel real LLM evaluations —
   // the most expensive operation the app exposes. Loopback is exempt
   // (the limiter no-ops there), so this only gates HOST=0.0.0.0 setups.
+  //
+  // FULL-M1 residual — batch-runner.sh runs merge-tracker.mjs ITSELF at the
+  // end of a run (its own merge_tracker() step). Holding the tracker file
+  // lock around the whole stream (up to BATCH_LIMITS.maxRuntimeMs) would
+  // block every UI tracker edit for the batch duration — the cure is worse
+  // than the disease — so the end-of-batch merge stays unlocked: the race
+  // window is the few seconds of that final merge, the batch itself is
+  // single-flight (BATCH_BUSY below), and the app is single-user.
   app.get('/api/stream/batch', llmRateLimit, (req, res) => {
     // ── query validation, BEFORE the SSE headers go out (plain 400) ──
     // --parallel: junk falls back to 1 (legacy behavior); a real number is
@@ -273,7 +285,11 @@ export function registerBatchRoutes(app) {
     const args = [];
     if (req.body?.dryRun) args.push('--dry-run');
     try {
-      const r = await runNodeScript('merge-tracker.mjs', args, { timeoutMs: 60_000 });
+      // FULL-M1 — merge-tracker.mjs rewrites data/applications.md: the
+      // spawn holds the tracker file lock (runTrackedScript) so it
+      // serializes with web-ui's own tracker writers and with the
+      // buffered /api/run/merge runner.
+      const r = await runTrackedScript('merge-tracker.mjs', args, { timeoutMs: 60_000 });
       res.json(r);
     } catch (e) {
       res.status(500).json({ ok: false, error: e.message });

@@ -16,11 +16,11 @@
  * The only write is `config/two-pager.yml` on an explicit Save — same
  * write-through contract as PUT /api/cv.
  */
-import { existsSync, readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { existsSync, readFileSync, mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 import yaml from 'js-yaml';
 import { PATHS } from '../paths.mjs';
-import { withFileLock } from '../file-lock.mjs';
+import { withFileLock, atomicWrite } from '../file-lock.mjs';
 import { bundleProjectContext, resolveLocale, buildLocaleDirective } from '../prompts.mjs';
 import { llmRateLimit } from '../rate-limit.mjs';
 import { runActiveProvider, providerAvailable } from '../llm-dispatch.mjs';
@@ -90,7 +90,9 @@ export function registerTwoPagerRoutes(app) {
     try {
       await withFileLock(PATHS.twoPager, async () => {
         mkdirSync(dirname(PATHS.twoPager), { recursive: true });
-        writeFileSync(PATHS.twoPager, yaml.dump(clean, { lineWidth: 100 }));
+        // FULL-M1 — atomicWrite: a crash mid-save leaves the old two-pager
+        // intact instead of a truncated file (the lock alone doesn't).
+        atomicWrite(PATHS.twoPager, yaml.dump(clean, { lineWidth: 100 }));
       });
     } catch {
       return res.status(500).json({ error: 'failed to save two-pager' });
