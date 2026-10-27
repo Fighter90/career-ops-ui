@@ -15,7 +15,10 @@
  */
 import { test, beforeEach, afterEach } from 'node:test';
 import assert from 'node:assert/strict';
-import { safeGet, _setTransport, _setLookup } from '../server/lib/safe-fetch.mjs';
+import http from 'node:http';
+import { once } from 'node:events';
+import { getEventListeners } from 'node:events';
+import { safeGet, _setTransport, _setLookup, _defaultTransport } from '../server/lib/safe-fetch.mjs';
 
 let restoreTransport = null;
 let restoreLookup = null;
@@ -108,4 +111,109 @@ test('FULL-M6a: a same-origin redirect hop keeps caller headers verbatim', async
     'same-origin hops keep the caller headers untouched');
   assert.equal(seen[1].headers.Cookie, 'session=abc123');
   assert.equal(seen[1].headers['X-Custom-Trace'], 'keep-me');
+});
+
+// ─── FULL-M6b: the transport's abort listener must not pile up ────────────
+//
+// `defaultTransport` added one 'abort' listener per request with
+// `{ once: true }` — removed only when it FIRES. A signal that never
+// aborts kept every listener: the redirect loop calls the transport once
+// per hop with the SAME signal, so an N-hop chain left N lingering
+// listeners (each holding closures over a settled request). FULL-M6b
+// pins the contract: exactly one add per request, one remove on settle,
+// zero listeners left afterwards.
+
+/** An AbortSignal that records add/remove while staying fully functional. */
+function recordingSignal() {
+  const ac = new AbortController();
+  const added = [];
+  const removed = [];
+  const origAdd = ac.signal.addEventListener.bind(ac.signal);
+  const origRemove = ac.signal.removeEventListener.bind(ac.signal);
+  ac.signal.addEventListener = (type, fn, opts) => { added.push(fn); return origAdd(type, fn, opts); };
+  ac.signal.removeEventListener = (type, fn, opts) => { removed.push(fn); return origRemove(type, fn, opts); };
+  return { signal: ac.signal, abort: () => ac.abort(), added, removed };
+}
+
+/** CI-isolated loopback server: 127.0.0.1 bind, ephemeral port, no external net. */
+async function startServer(handler) {
+  const server = http.createServer(handler);
+  server.listen(0, '127.0.0.1');
+  await once(server, 'listening');
+  return server;
+}
+
+const localPinned = (port) => ({ address: '127.0.0.1', family: 4 });
+const localUrl = (port, path) => `http://127.0.0.1:${port}${path}`;
+
+test('FULL-M6b: the abort listener is detached after the request settles', async () => {
+  const server = await startServer((req, res) => { res.end('ok'); });
+  try {
+    const rec = recordingSignal();
+    const res = await _defaultTransport(
+      new URL(localUrl(server.address().port, '/')),
+      localPinned(),
+      { signal: rec.signal },
+    );
+    assert.equal(res.status, 200);
+    assert.equal(rec.added.length, 1, 'exactly one abort listener is added');
+    assert.equal(rec.removed.length, 1, 'the listener is removed on settle');
+    assert.equal(rec.added[0], rec.removed[0], 'the SAME listener that was added is removed');
+    assert.equal(getEventListeners(rec.signal).length, 0, 'no listener lingers on the signal');
+  } finally { server.close(); }
+});
+
+test('FULL-M6b: two hops on one signal (the redirect-loop call pattern) leave zero listeners', async () => {
+  const server = await startServer((req, res) => {
+    if (req.url === '/hop1') {
+      res.writeHead(302, { location: '/hop2' });
+      res.end();
+      return;
+    }
+    res.end('done');
+  });
+  try {
+    const rec = recordingSignal();
+    const port = server.address().port;
+    // Mirror _safeGetInner's loop: sequential transport calls, SAME signal.
+    const first = await _defaultTransport(new URL(localUrl(port, '/hop1')), localPinned(), { signal: rec.signal });
+    assert.equal(first.status, 302);
+    const second = await _defaultTransport(new URL(localUrl(port, first.location)), localPinned(), { signal: rec.signal });
+    assert.equal(second.status, 200);
+    assert.equal(rec.added.length, 2, 'one listener per hop');
+    assert.equal(rec.removed.length, 2, 'each hop detaches its own listener');
+    assert.equal(getEventListeners(rec.signal).length, 0,
+      'the redirect loop must not pile listeners up on a shared signal');
+  } finally { server.close(); }
+});
+
+test('FULL-M6b: the listener is detached when the request errors (connection refused)', async () => {
+  // Reserve an ephemeral port, then close it so connecting fails fast on loopback.
+  const server = await startServer(() => {});
+  const port = server.address().port;
+  await new Promise((resolve) => server.close(resolve));
+  const rec = recordingSignal();
+  await assert.rejects(
+    () => _defaultTransport(new URL(localUrl(port, '/')), localPinned(), { signal: rec.signal }),
+  );
+  assert.equal(rec.added.length, 1);
+  assert.equal(rec.removed.length, 1, 'the listener is removed on the error path too');
+  assert.equal(getEventListeners(rec.signal).length, 0);
+});
+
+test('FULL-M6b: an abort mid-request still rejects and leaves zero listeners (contract lock)', async () => {
+  const server = await startServer(() => {/* never responds */});
+  try {
+    const rec = recordingSignal();
+    const settled = _defaultTransport(
+      new URL(localUrl(server.address().port, '/')),
+      localPinned(),
+      { signal: rec.signal },
+    );
+    setTimeout(() => rec.abort(), 30);
+    await assert.rejects(() => settled, /aborted/);
+    // { once: true } removes the fired listener at runtime — the pre-fix
+    // code passed this one; it stays to pin that the fix does not regress it.
+    assert.equal(getEventListeners(rec.signal).length, 0);
+  } finally { server.close(); }
 });

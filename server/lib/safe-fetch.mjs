@@ -90,6 +90,16 @@ export function _setLookup(fn) {
 }
 
 /**
+ * FULL-M6b — test hook: the real node:http transport, exposed so a suite
+ * can drive it against a 127.0.0.1 test server (resolvePinned refuses
+ * loopback, so safeGet itself can never reach one). Never used in
+ * production paths.
+ */
+export function _defaultTransport() {
+  return defaultTransport(...arguments);
+}
+
+/**
  * Resolve hostname → address pair (v4 preferred for compatibility) and
  * reject if it points into private/loopback space.
  * Fail-CLOSED on lookup error: an error here is either a typo, a stub,
@@ -123,6 +133,9 @@ async function resolvePinned(hostname) {
 function defaultTransport(url, pinned, opts = {}) {
   const lib = url.protocol === 'https:' ? https : http;
   return new Promise((resolve, reject) => {
+    // FULL-M6b — declared before the response callback closes over it, so
+    // every settle path below can detach the abort listener.
+    let detachAbort = () => {};
     const req = lib.request({
       // Pin the connection to the pre-validated address. Setting both
       // `host` and `hostname` here side-steps lib's own lookup.
@@ -151,6 +164,7 @@ function defaultTransport(url, pinned, opts = {}) {
       const settle = () => {
         if (settled) return;
         settled = true;
+        detachAbort();
         resolve({
           status: res.statusCode || 0,
           headers: res.headers,
@@ -170,19 +184,24 @@ function defaultTransport(url, pinned, opts = {}) {
         }
       });
       res.on('end', settle);
-      res.on('error', (err) => { if (!settled) reject(err); });
+      res.on('error', (err) => { detachAbort(); if (!settled) reject(err); });
     });
     if (opts.signal) {
       if (opts.signal.aborted) {
         req.destroy(new Error('aborted'));
         return reject(new Error('aborted'));
       }
-      opts.signal.addEventListener('abort', () => {
+      const onAbort = () => {
         req.destroy(new Error('aborted'));
         reject(new Error('aborted'));
-      }, { once: true });
+      };
+      opts.signal.addEventListener('abort', onAbort, { once: true });
+      // FULL-M6b — `{ once: true }` only removes the listener when it FIRES;
+      // a signal that never aborts kept one listener per request forever (the
+      // redirect loop shares one signal across hops → per-hop pile-up).
+      detachAbort = () => opts.signal.removeEventListener('abort', onAbort);
     }
-    req.on('error', reject);
+    req.on('error', (err) => { detachAbort(); reject(err); });
     req.end();
   });
 }
