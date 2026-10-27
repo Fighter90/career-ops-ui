@@ -1,0 +1,56 @@
+---
+/**
+ * CAR-133 — the simulated demo: fake job rows flow through the three
+ * product stages (scan → evaluate → track). Pure CSS animation, no JS,
+ * no network: every row, score and status below is hardcoded fake data.
+ *
+ * Honesty contract: the panel is always labelled «Simulated demo» and the
+ * whole figure is aria-hidden — it is an illustration of the flow, never a
+ * live product view or a screenshot. All motion lives behind
+ * `@media (prefers-reduced-motion: no-preference)` in global.css; without
+ * it the panel renders the static end-state (one row per stage).
+ */
+import { t, type Locale } from '../i18n/locales';
+
+interface Props {
+  locale: Locale;
+  id?: string;
+}
+const { locale, id = 'hero-demo' } = Astro.props;
+
+// Fake data — deliberately generic, obviously not real postings.
+const ROWS = [
+  { title: 'Senior Frontend Engineer', src: 'greenhouse', score: '4.6', status: 'Applied', d: '0s' },
+  { title: 'DevOps Engineer', src: 'lever', score: '4.1', status: 'Evaluated', d: '-4s' },
+  { title: 'Data Engineer', src: 'ashby', score: '3.4', status: 'Evaluated', d: '-8s' },
+];
+---
+
+<div class="demo" id={id} dir="ltr">
+  <span class="demo-badge">{t(locale, 'demo.badge')}</span>
+
+  <div class="demo-lanes" aria-hidden="true">
+    <div class="demo-lane demo-lane-scan">
+      <span class="demo-lane-head"><span class="demo-dot demo-dot-scan"></span>{t(locale, 'demo.stageScan')}</span>
+    </div>
+    <span class="demo-arrow" aria-hidden="true">→</span>
+    <div class="demo-lane demo-lane-eval">
+      <span class="demo-lane-head"><span class="demo-dot demo-dot-eval"></span>{t(locale, 'demo.stageEval')}</span>
+    </div>
+    <span class="demo-arrow" aria-hidden="true">→</span>
+    <div class="demo-lane demo-lane-track">
+      <span class="demo-lane-head"><span class="demo-dot demo-dot-track"></span>{t(locale, 'demo.stageTrack')}</span>
+    </div>
+
+    {ROWS.map((r, i) => (
+      <div class={`demo-row demo-row-${i + 1}`} style={`--demo-delay:${r.d}`}>
+        <span class="demo-row-title">{r.title}</span>
+        <span class="demo-row-src">{r.src}</span>
+        <span class="demo-score">{r.score}</span>
+        <span class="demo-chip">{r.status}</span>
+      </div>
+    ))}
+  </div>
+
+  <p class="demo-note">{t(locale, 'demo.note')}</p>
+</div>

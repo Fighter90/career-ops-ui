@@ -351,21 +351,23 @@ Router.register('pipeline', async () => {
   // exactly through POST /api/pipeline/restore; the server dedups on the
   // canonical URL key, which keeps the restore idempotent if the user
   // re-added some URLs by hand meanwhile. A URL with no token falls back
-  // to the existing bare add path (POST /api/pipeline) — and so does a
-  // token the server no longer knows (restart / store eviction) or a
-  // restore call that failed outright: the undo may lose the METADATA in
-  // those cases, never the URL itself.
+  // to the bare add path (POST /api/pipeline) — and so does a token the
+  // server no longer knows (restart / store eviction) or a restore call
+  // that failed outright. CAR-150 — the DELETE answer also carried the
+  // comp column, so every fallback re-add restores it; the undo may lose
+  // the remaining checklist METADATA in those cases, never the URL or
+  // the compensation itself.
   async function undoLast() {
     const batch = undoQueue ? undoQueue.pop() : null;
     hideUndoBar();
     if (!batch || !batch.length) return;
     const tokens = [];
     const tokenUrls = [];
-    const bare = [];
+    const bare = []; // CAR-150 — { url, comp }: the fallback re-adds
     for (const u of batch) {
-      const token = deletedLines.get(u);
-      if (token) { tokens.push(token); tokenUrls.push(u); }
-      else bare.push(u);
+      const rec = deletedLines.get(u);
+      if (rec && rec.token) { tokens.push(rec.token); tokenUrls.push(u); }
+      else bare.push({ url: u, comp: (rec && rec.comp) || '' });
     }
     let restored = 0;
     if (tokens.length) {
@@ -377,18 +379,31 @@ Router.register('pipeline', async () => {
         const unknown = (r && Array.isArray(r.unknown)) ? r.unknown : [];
         if (unknown.length) {
           const unknownSet = new Set(unknown);
-          tokenUrls.forEach((u, i) => { if (unknownSet.has(tokens[i])) bare.push(u); });
+          tokenUrls.forEach((u, i) => {
+            if (unknownSet.has(tokens[i])) {
+              const rec = deletedLines.get(u);
+              bare.push({ url: u, comp: (rec && rec.comp) || '' });
+            }
+          });
         }
       } catch (err) {
         // The restore call itself failed — toast AND re-add the URLs bare,
         // so a broken restore can never silently lose them.
         UI.toast((err && err.message) || t('common.error', 'Error'), 'error');
-        bare.push(...tokenUrls);
+        tokenUrls.forEach((u) => {
+          const rec = deletedLines.get(u);
+          bare.push({ url: u, comp: (rec && rec.comp) || '' });
+        });
       }
     }
-    for (const u of bare) {
+    for (const b of bare) {
       try {
-        await API.post('/api/pipeline', { url: u });
+        // CAR-150 — the comp column rides the fallback when the DELETE
+        // handed it over; a comp-less body stays byte-identical for the
+        // plain add path.
+        const body = { url: b.url };
+        if (b.comp) body.comp = b.comp;
+        await API.post('/api/pipeline', body);
         restored += 1;
       } catch (err) {
         UI.toast((err && err.message) || t('common.error', 'Error'), 'error');
@@ -464,7 +479,8 @@ Router.register('pipeline', async () => {
     previewPane.appendChild(head);
 
     if (previewLoading) {
-      previewPane.appendChild(c('div', { className: 'loading' }, t('pipe.previewLoading', 'Loading preview…')));
+      // CAR-113 R4 — CAR-112 shimmer rows instead of a bare text line.
+    previewPane.appendChild(window.Skeleton.block(4, t('pipe.previewLoading', 'Loading preview…')));
       return;
     }
     if (previewError) {
@@ -532,7 +548,13 @@ Router.register('pipeline', async () => {
       const r = await API.del('/api/pipeline?url=' + encodeURIComponent(url));
       if (activeUrl === url) { activeUrl = null; previewBody = ''; previewError = ''; }
       const token = (r && typeof r.restoreToken === 'string') ? r.restoreToken : '';
-      if (token) deletedLines.set(url, token);
+      // CAR-150 — the DELETE answer also carries the comp column so the
+      // undo's bare re-add fallback can restore it: the token path keeps
+      // the raw lines byte-for-byte, but an unknown token (restart /
+      // eviction) or a failed restore degrades to this POST, which used
+      // to drop the column.
+      const comp = (r && typeof r.comp === 'string') ? r.comp : '';
+      if (token || comp) deletedLines.set(url, { token, comp });
       else deletedLines.delete(url);
       return token || true;
     } catch (err) {

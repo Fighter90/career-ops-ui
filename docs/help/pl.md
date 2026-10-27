@@ -8,6 +8,22 @@ nagłówek `##` odpowiada pozycji na pasku bocznym lub fazie workflow.
 Przy pierwszym uruchomieniu czytaj od góry do dołu; później przeskakuj
 do konkretnej sekcji za pomocą spisu treści w pasku bocznym pomocy.
 
+> **Poruszanie się (powłoka v2).** Pasek boczny jest zorganizowany w
+> zwijane grupy — **Pozyskiwanie**, **Decyzja**, **Aplikacja**,
+> **Networking**, **Analityka**, **Konfiguracja** (`nav.group.*`) —
+> które otwierają się przy wejściu do sekcji i zostają tam, gdzie je
+> zostawiono. Oznacz dowolną stronę gwiazdką, aby przypiąć ją w
+> **Ulubionych**, i naciskaj **Cmd/Ctrl+K** (albo przycisk **Menu
+> poleceń** na górze paska bocznego, `nav.v2.palette`), aby z
+> dowolnego miejsca rozmytym wyszukiwaniem przeskoczyć do dowolnej
+> strony. Każda strona natychmiast pokazuje swój tytuł, a w trakcie
+> ładowania danych wypełnia się szarymi migoczącymi wierszami, więc
+> nawigacja nigdy nie wydaje się pusta. Żadna strona nie wita też
+> gołą pustką: cztery, które zaczynają od zera — **Auto-pipeline**,
+> **Lista kontrolna aplikowania**, **Partia** i **Finansowane
+> firmy** — pokazują przykładowe wypełnienie oraz jedno działanie,
+> które je uruchamia (`v2empty.exampleTag`).
+
 > **Odbiorcy:** każdy, kto właśnie umieścił ten interfejs w katalogu
 > `career-ops` i uruchomił `bash bin/start.sh`. Nie zakładamy żadnej
 > wcześniejszej znajomości career-ops.
@@ -312,33 +328,50 @@ numer akceptacji jest tam podany.
 → Reports → Deep research → Apply checklist → Outreach → Tracker
 → Follow-up → Interview prep → Activity log`
 
-Tyle. 21 kroków, przycisk po przycisku, od zera do oferty.
+Pasek boczny grupuje te same strony według faz (**Pozyskiwanie** →
+**Decyzja** → **Aplikacja** → …), więc kolejność workflow i kolejność
+w menu pozostają zgodne; **Cmd/Ctrl+K** otwiera **Menu poleceń**
+(`nav.v2.palette`), jeśli wolisz wpisać trzy litery niż skanować listę
+wzrokiem. Tyle. 21 kroków, przycisk po przycisku, od zera do oferty.
 
 ### Automatyczny pipeline jednym kliknięciem (`#/auto`) — skrót 21 kroków
 
 Jeśli chcesz szybko ocenić jedną konkretną ofertę, pomiń ręczny
 przewodnik. **Pasek boczny → ✨ Auto-pipeline** (lub przycisk ✨ na
 Dashboardzie) otwiera dedykowany ekran: wklej URL oferty, naciśnij **Enter**
-lub kliknij **▶ Run full pipeline**, a serwer uruchamia cały łańcuch
-w jednym obserwowalnym przebiegu:
+lub kliknij **Uruchom auto-pipeline** (`auto.run`), a serwer uruchamia
+cały łańcuch w jednym obserwowalnym przebiegu:
 
-1. **Walidacja URL** — bezpieczne sprawdzenie SSRF (`isValidJobUrl`); odrzuca
-   loopback / `file:` / prywatne IP / znaki skryptowe.
-2. **Pobieranie opisu stanowiska** — `safeGet` (DNS-pinned, redirect-
-   revalidated) pobiera i usuwa niebezpieczne elementy z JD.
-3. **Ocena względem Twojego CV** — Anthropic (preferowany) → Gemini
-   fallback → ręczny prompt jeśli brak klucza.
-4. **Zapisywanie raportu** — zapisuje `reports/<slug>.md` z wynikiem +
-   wiarygodnością w nagłówku.
-5. **Dodawanie do trackera** — dopisuje wiersz do `data/applications.md`.
+1. **Walidacja URL** (`auto.step.validate`) — bezpieczne sprawdzenie SSRF
+   (`isValidJobUrl`); odrzuca loopback / `file:` / prywatne IP / znaki
+   skryptowe.
+2. **Pobieranie opisu stanowiska** (`auto.step.fetch`) — `safeGet`
+   (DNS-pinned, redirect-revalidated) pobiera i usuwa niebezpieczne
+   elementy z JD.
+3. **Ocena względem Twojego CV** (`auto.step.evaluate`) — Anthropic
+   (preferowany) → Gemini fallback → ręczny prompt jeśli brak klucza.
+4. **Zapisywanie raportu** (`auto.step.report`) — zapisuje
+   `reports/<slug>.md` z wynikiem + wiarygodnością w nagłówku.
+5. **Dodawanie do trackera** (`auto.step.tracker`) — dopisuje wiersz do
+   `data/applications.md`.
 
 Informacja zwrotna na żywo to pionowy **stepper** (każdy krok świeci
-running → done / failed). Jest to lista uporządkowana z `aria-current`
-na aktywnym kroku i grzecznym regionem na żywo dla czytników ekranu ogłaszającym
-każde przejście. Po sukcesie karta wynikowa prowadzi bezpośrednio do
-zapisanego raportu (**View report · N/5**) i **trackera**. Nieudany
-krok jest oznaczony na czerwono z wiadomością, a przycisk ponownie się aktywuje, żebyś
-mógł poprawić URL i spróbować ponownie bez przeładowania.
+running → done / failed; `aria-current` oznacza aktywny krok, a grzeczny
+region na żywo dla czytników ekranu ogłasza każde przejście). Po sukcesie
+karta wynikowa prowadzi bezpośrednio do zapisanego raportu (**Zobacz
+raport**, `auto.viewReport`) i **trackera** (`auto.viewTracker`). Nieudany
+krok jest oznaczony na czerwono z wiadomością, a przycisk ponownie się
+aktywuje, żebyś mógł poprawić URL i spróbować ponownie bez przeładowania.
+Uruchomienie nowego przebiegu, gdy poprzedni jeszcze trwa, jest bezpieczne:
+starszy przebieg oznacza się jako **Zastąpiono — żądanie nowszego
+uruchomienia** (`auto.superseded`) zamiast podwójnie płacić za przestarzałą
+odpowiedź.
+
+Pusta strona jest szczera co do swojego jedynego pola: znacznik
+**Przykład** i przycisk **Wypróbuj przykładowy URL**
+(`v2empty.auto.tryExample`) wypełniają pole przykładową ofertą —
+**nic nie uruchamia się, dopóki nie naciśniesz Uruchom**
+(`v2empty.auto.hint`), więc eksploracja nic nie kosztuje.
 
 **Brak klucza API?** Pipeline działa w **trybie ręcznym**: kroki 3–5
 zwijają się i dostajesz gotową kartę z promptem do skopiowania (wklej do Claude
@@ -935,7 +968,7 @@ Skaner przeszukuje każdy włączony portal, deduplikuje względem Twojej
 historii i zapisuje trafienia do `data/last-scan.json` i
 `data/pipeline.md`.
 
-**Szukaj + Wyklucz.** Pole Szukaj traktuje przecinki jako LUB („role do znalezienia"); nowe pole Wyklucz ukrywa wiersze pasujące do któregokolwiek słowa po przecinku. Oba zapisują się z Twoimi wyszukiwaniami.
+**Szukaj + Wyklucz.** Pole **Szukaj** to filtr „role do znalezienia" — wpisz jeden lub więcej terminów **rozdzielonych przecinkami**, a wiersz pojawi się, gdy pasuje do **któregokolwiek** z nich (LUB); wiodące `-słowo` **wyklucza** ten termin (`scan.v2.moreHint`). Osobne pole **Wyklucz** (`scan.lblExclude`) robi to samo dla całych terminów: słowa po przecinku, które **ukrywają** każdy wiersz, którego firma / rola / lokalizacja je zawiera (np. wyklucz `senior, staff, java`). Oba są zapamiętywane wraz z Twoimi zapisanymi wyszukiwaniami, obok filtrów zdalny / źródło / kraj / opublikowane-w-ciągu / wynagrodzenie.
 
 ### Skan jednym kliknięciem (SPA)
 

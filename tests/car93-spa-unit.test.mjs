@@ -404,18 +404,29 @@ test('CAR-93 F9: auto.js streams through window.API, never a bare fetch', () => 
   assert.match(APIJS, /postStream\(/, 'api.js ships the POST-SSE transport');
 });
 
-test('CAR-93 F11: tracker.js owns its classifier (no global statusClass collision)', () => {
-  assert.ok(!/^function statusClass\(/m.test(TRACKER), 'the top-level statusClass is renamed');
-  assert.match(TRACKER, /function trackerStatusClass\(/);
-  assert.match(TRACKER, /trackerStatusClass\(r\.status\)/, 'the call site follows the rename');
-  assert.match(DASH, /function statusClass\(/, 'dashboard keeps its own copy');
+test('CAR-93 F11: the status classifier is single-source (no global collision, no divergence)', () => {
+  // FULL-M6 — both copies are consolidated into lib/status-class.js. The
+  // CAR-93 invariant (no top-level `function statusClass` in a classic
+  // script, so the window binding can't be stolen) is preserved by the
+  // namespaced lib; the dashboard copy's missing Hired branch is gone.
+  assert.ok(!/^function statusClass\(/m.test(TRACKER), 'no top-level statusClass in tracker');
+  assert.ok(!/^function statusClass\(/m.test(DASH), 'no top-level statusClass in dashboard');
+  assert.match(TRACKER, /trackerStatusClass\(r\.status\)/, 'the tracker call site keeps its name');
+  assert.match(TRACKER, /StatusClass\.of\(/, 'tracker rides the shared classifier');
+  assert.match(DASH, /StatusClass\.of\(/, 'dashboard rides the shared classifier');
+  const lib = R('public/js/lib/status-class.js');
+  assert.match(lib, /badge-hired/, 'the shared classifier keeps the Hired tint');
 });
 
 test('CAR-93 F12: focus-preservation markers key on data-key/aria-label, not text alone', () => {
+  // FULL-M6 — the three view copies are consolidated into lib/focus-preserve.js;
+  // the marker contract lives there now (views delegate via FocusPreserved.*).
+  const lib = R('public/js/lib/focus-preserve.js');
+  assert.match(lib, /getAttribute\('data-key'\) \|\| el\.getAttribute\('aria-label'\)/,
+    'the shared marker must prefer data-key/aria-label over identical text');
   for (const f of ['public/js/views/tracker.js', 'public/js/views/stats.js', 'public/js/views/reports.js']) {
-    const src = R(f);
-    assert.match(src, /getAttribute\('data-key'\) \|\| (el\.)?getAttribute\('aria-label'\)/,
-      f + ': marker must prefer data-key/aria-label over identical text');
+    assert.match(R(f), /FocusPreserved\.withFocusPreserved\(/,
+      f + ' must delegate to the shared helper');
   }
   assert.match(TRACKER, /'data-key': String\(r\.num/, 'tracker row action buttons carry data-key');
 });

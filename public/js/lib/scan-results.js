@@ -404,6 +404,11 @@ window.ScanResults = (function () {
     const ageCutoff = Number.isFinite(fa) && fa > 0 ? Date.now() - fa * 86400000 : null;
     // v1.80.0 — favorites-only: snapshot the starred set once per render.
     const favSet = ctx.favOnly.checked ? new Set(window.ScanPrefs.listFavorites()) : null;
+    // FULL-M6 — the ⭐ column reads the SAME one-parse-per-render snapshot
+    // (was: ScanPrefs.isFavorite per row = a localStorage read + JSON.parse
+    // per row, ~50 parses on every render). toggleFavorite re-renders, so
+    // the snapshot is never stale by more than the click it reacts to.
+    const starredSet = new Set(window.ScanPrefs.listFavorites());
     const salMin = parseInt(ctx.filterSalaryMin.value, 10);
     const salMax = parseInt(ctx.filterSalaryMax.value, 10);
     const rows = allRows.filter((r) => {
@@ -603,8 +608,9 @@ window.ScanResults = (function () {
         metaEl,
       ]);
       // v1.80.0 — ⭐ favorite toggle (localStorage, by URL). Re-renders so the
-      // "favorites only" filter reflects the change immediately.
-      const starred = window.ScanPrefs.isFavorite(r.url);
+      // "favorites only" filter reflects the change immediately. FULL-M6 —
+      // starred membership comes from the render-scoped snapshot above.
+      const starred = starredSet.has(r.url);
       const starCell = c('td', { className: 'scan-cell-star' },
         c('button', {
           type: 'button',

@@ -27,7 +27,7 @@
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { PROJECT_ROOT } from '../paths.mjs';
-import { runNodeScript } from '../runner.mjs';
+import { runNodeScript, runTrackedScript } from '../runner.mjs';
 import { llmRateLimit } from '../rate-limit.mjs';
 import { parseJsonStdout, isEmptyTrackerError, sanitizeDetail } from '../parent-relay.mjs';
 
@@ -88,7 +88,9 @@ export function registerFollowupRoutes(app) {
     }
     if (body.force === true) args.push('--force');
     args.push('--json');
-    const r = await runNodeScript(SEED_SCRIPT, args, { timeoutMs: RUN_TIMEOUT_MS });
+    // FULL-M1 hand-off — followup-seed writes follow-ups.md: the spawn
+    // holds its lock (TRACKER_MUTATING → followUps).
+    const r = await runTrackedScript(SEED_SCRIPT, args, { timeoutMs: RUN_TIMEOUT_MS });
     const data = parseJsonStdout(r.stdout);
     if (r.code !== 0) {
       res.status(422).json({

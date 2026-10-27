@@ -23,6 +23,9 @@ import { fileURLToPath } from 'node:url';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const w = {};
+// FULL-M6 — the H1 label table lives in lib/report-labels.js; report-ops
+// reads it from there (index.html loads the lib before the view lib).
+new Function('window', readFileSync(resolve(ROOT, 'public/js/lib/report-labels.js'), 'utf8'))(w); // eslint-disable-line no-new-func
 new Function('window', readFileSync(resolve(ROOT, 'public/js/lib/report-ops.js'), 'utf8'))(w); // eslint-disable-line no-new-func
 const RO = w.ReportOps;
 

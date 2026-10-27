@@ -378,3 +378,352 @@ html.js .hero-seq-3 { animation-delay: 160ms; }
 .skip-link:focus {
   top: 0.5rem;
 }
+
+/* ---------------------------------------------------------------------------
+ * CAR-133 — landing v2: hero parallax, simulated demo, screenshot slots,
+ * numbers band, staggered reveals.
+ *
+ * Motion contract (the whole point of this block's structure): the DEFAULT
+ * rendering is the static end-state. Every animation/parallax rule lives
+ * inside `@media (prefers-reduced-motion: no-preference)` (parallax adds
+ * the fine-pointer guard) — under reduce or with JS off, nothing moves.
+ * ------------------------------------------------------------------------ */
+
+/* Hero decorative blobs (base = static, invisible-noop without transforms) */
+.hero-blob {
+  position: absolute;
+  z-index: 0;
+  width: 420px;
+  height: 420px;
+  border-radius: 9999px;
+  filter: blur(72px);
+  opacity: 0.5;
+  pointer-events: none;
+}
+.hero-blob-1 {
+  top: -80px;
+  inset-inline-start: -100px;
+  background: radial-gradient(circle, rgba(255, 56, 92, 0.28), transparent 70%);
+}
+.hero-blob-2 {
+  bottom: -60px;
+  inset-inline-end: -80px;
+  width: 360px;
+  height: 360px;
+  background: radial-gradient(circle, rgba(0, 166, 153, 0.22), transparent 70%);
+}
+
+/* Parallax — JS only sets --plx; applied strictly here. */
+@media (prefers-reduced-motion: no-preference) and (hover: hover) and (pointer: fine) {
+  html.js [data-parallax] {
+    transform: translateY(var(--plx, 0px));
+    will-change: transform;
+  }
+}
+
+/* ---------------------------------------------------- simulated demo panel */
+.demo {
+  position: relative;
+  /* top padding reserves the badge row — the lane heads must never
+     collide with the «Simulated demo» chip */
+  padding: 46px 16px 14px;
+  background: linear-gradient(180deg, var(--color-paper) 0%, var(--color-paper-alt) 100%);
+}
+.demo-badge {
+  position: absolute;
+  top: 11px;
+  inset-inline-end: 12px;
+  z-index: 2;
+  border-radius: 9999px;
+  background: var(--color-rausch-deep); /* white on #c41e3d ≈ 6:1, AA */
+  color: #ffffff;
+  padding: 4px 10px;
+  font-size: 0.7rem;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+}
+.demo-lanes {
+  position: relative;
+  display: grid;
+  grid-template-columns: 1fr auto 1.25fr auto 1fr;
+  gap: 8px;
+  min-height: 236px;
+}
+.demo-lane {
+  position: relative;
+  border: 1px solid var(--color-line);
+  border-radius: 12px;
+  background: var(--color-paper-alt);
+  padding: 40px 8px 10px;
+}
+.demo-lane-head {
+  position: absolute;
+  top: 10px;
+  inset-inline-start: 10px;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.03em;
+  color: var(--color-ink-soft);
+  white-space: nowrap;
+}
+.demo-dot {
+  width: 7px;
+  height: 7px;
+  border-radius: 9999px;
+}
+.demo-dot-scan { background: var(--color-rausch); }
+.demo-dot-eval { background: var(--color-warn); }
+.demo-dot-track { background: var(--color-ok); }
+.demo-arrow {
+  align-self: center;
+  color: var(--color-ink-faint); /* decorative glyph, aria-hidden */
+  font-size: 1rem;
+}
+.demo-row {
+  position: absolute;
+  top: 58px;
+  z-index: 1;
+  width: 152px;
+  padding: 9px 11px 12px;
+  border: 1px solid var(--color-line);
+  border-radius: 12px;
+  background: var(--color-paper);
+  box-shadow: var(--shadow-rest);
+}
+.demo-row-1 { inset-inline-start: 4%; }
+.demo-row-2 { inset-inline-start: 40%; }
+.demo-row-3 { inset-inline-start: 72.5%; }
+.demo-row-title {
+  display: block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  line-height: 1.25;
+  color: var(--color-ink);
+}
+.demo-row-src {
+  display: inline-block;
+  margin-top: 5px;
+  border-radius: 9999px;
+  background: var(--color-paper-alt);
+  border: 1px solid var(--color-line);
+  padding: 1px 7px;
+  font-family: var(--font-mono);
+  font-size: 0.62rem;
+  color: var(--color-ink-soft);
+}
+.demo-score {
+  position: absolute;
+  top: -9px;
+  inset-inline-end: -9px;
+  border-radius: 9999px;
+  border: 1.5px solid currentColor;
+  background: var(--color-paper);
+  padding: 1px 7px;
+  font-size: 0.68rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
+}
+.demo-row-1 .demo-score { color: var(--color-ok); }
+.demo-row-2 .demo-score { color: var(--color-warn); }
+.demo-row-3 .demo-score { color: var(--color-ink-soft); }
+.demo-chip {
+  position: absolute;
+  bottom: -10px;
+  inset-inline-start: 10px;
+  border-radius: 9999px;
+  border: 1px solid var(--color-line-strong);
+  background: var(--color-paper);
+  padding: 2px 8px;
+  font-size: 0.62rem;
+  font-weight: 700;
+  color: var(--color-ink-soft);
+}
+.demo-note {
+  margin-top: 12px;
+  font-size: 0.72rem;
+  color: var(--color-ink-soft);
+}
+
+/* Static composition: score visible once evaluated, chip once tracked. */
+.demo-score,
+.demo-chip {
+  opacity: 0;
+  transform: scale(0.85);
+}
+.demo-row-2 .demo-score,
+.demo-row-3 .demo-score,
+.demo-row-3 .demo-chip {
+  opacity: 1;
+  transform: none;
+}
+
+/* Motion layer — the ONLY place the demo animates. Rows share one 13.5s
+   flow (scan → evaluate → track → fade), staggered 4.5s apart via
+   --demo-delay (negative = mid-flow on load). Children keep the same
+   duration/delay so score and status pop in sync with the row's lane. */
+@media (prefers-reduced-motion: no-preference) {
+  html.js .demo-row {
+    inset-inline-start: 4%; /* keyframes own `left` from here on */
+    animation: demo-flow 13.5s linear infinite;
+    animation-delay: var(--demo-delay, 0s);
+  }
+  html.js .demo-row .demo-score {
+    opacity: 1;
+    transform: none;
+    animation: demo-score-pop 13.5s linear infinite;
+    animation-delay: var(--demo-delay, 0s);
+  }
+  html.js .demo-row .demo-chip {
+    opacity: 1;
+    transform: none;
+    animation: demo-chip-pop 13.5s linear infinite;
+    animation-delay: var(--demo-delay, 0s);
+  }
+  /* Narrow screens travel a tighter path (see demo-flow-sm). */
+  @media (max-width: 640px) {
+    html.js .demo-row {
+      animation-name: demo-flow-sm;
+    }
+  }
+}
+@keyframes demo-flow {
+  0% { left: 4%; opacity: 0; }
+  4% { opacity: 1; }
+  20% { left: 4%; }
+  30% { left: 40%; }
+  44% { left: 40%; }
+  54% { left: 72.5%; }
+  90% { left: 72.5%; opacity: 1; }
+  100% { left: 72.5%; opacity: 0; }
+}
+@keyframes demo-score-pop {
+  0%, 27% { opacity: 0; transform: scale(0.6); }
+  34% { opacity: 1; transform: scale(1); }
+  90% { opacity: 1; transform: scale(1); }
+  95%, 100% { opacity: 0; transform: scale(0.9); }
+}
+@keyframes demo-chip-pop {
+  0%, 52% { opacity: 0; transform: scale(0.7); }
+  59% { opacity: 1; transform: scale(1); }
+  90% { opacity: 1; transform: scale(1); }
+  95%, 100% { opacity: 0; transform: scale(0.9); }
+}
+/* Compact phones: the board would clip a 152px row at 72.5% — narrower
+   rows on tighter lane anchors, and a second keyframe set (keyframes are
+   global, so the switch happens by animation-name, not redefinition). */
+@media (max-width: 640px) {
+  .demo { padding: 42px 12px 12px; }
+  .demo-lanes { min-height: 196px; grid-template-columns: 1fr 1.15fr 1fr; gap: 6px; }
+  .demo-lane-head { font-size: 0.5rem; inset-inline-start: 6px; letter-spacing: 0; }
+  .demo-row { width: 98px; padding: 6px 8px 10px; top: 46px; }
+  .demo-row-title { font-size: 0.6rem; }
+  .demo-row-src { font-size: 0.56rem; margin-top: 3px; }
+  .demo-score { font-size: 0.6rem; top: -8px; inset-inline-end: -6px; }
+  .demo-chip { font-size: 0.56rem; inset-inline-start: 6px; }
+  .demo-row-2 { inset-inline-start: 36%; }
+  .demo-row-3 { inset-inline-start: 66.5%; }
+  .demo-arrow { display: none; }
+}
+@keyframes demo-flow-sm {
+  0% { left: 4%; opacity: 0; }
+  4% { opacity: 1; }
+  20% { left: 4%; }
+  30% { left: 36%; }
+  44% { left: 36%; }
+  54% { left: 66.5%; }
+  90% { left: 66.5%; opacity: 1; }
+  100% { left: 66.5%; opacity: 0; }
+}
+
+/* ------------------------------------------------- screenshot placeholder */
+.shot-slot {
+  display: flex;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  border: 1.5px dashed var(--color-line-strong);
+  border-radius: 12px;
+  background: repeating-linear-gradient(
+    -45deg,
+    var(--color-paper-alt) 0 14px,
+    var(--color-paper) 14px 28px
+  );
+}
+.shot-slot-inner {
+  padding: 24px;
+  text-align: center;
+}
+.shot-slot-icon {
+  margin-inline: auto;
+  margin-bottom: 10px;
+  color: var(--color-ink-faint);
+}
+.shot-slot-label {
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--color-ink);
+}
+.shot-slot-note {
+  margin-top: 4px;
+  font-size: 0.84rem;
+  color: var(--color-ink-soft);
+}
+
+/* Light-theme tab bar for the screenshot switcher (the dark-terminal
+   .install-tab selected style is overridden by this later rule). */
+.shots-tablist {
+  display: flex;
+  gap: 2px;
+  overflow-x: auto;
+  border-bottom: 1px solid var(--color-line);
+}
+.shots-tab {
+  white-space: nowrap;
+}
+.shots-tab[aria-selected='true'] {
+  color: var(--color-ink);
+  border-bottom-color: var(--color-rausch);
+}
+.shots-panel {
+  margin-top: 18px;
+}
+
+/* -------------------------------------------------------- numbers band */
+.num-tile {
+  display: flex;
+  flex-direction: column;
+  gap: 2px;
+}
+.num-value {
+  font-size: clamp(1.9rem, 3.2vw, 2.6rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  color: var(--color-ink);
+  font-variant-numeric: tabular-nums;
+}
+.num-label {
+  font-size: 0.9rem;
+  font-weight: 600;
+  color: var(--color-ink-soft);
+}
+.num-note {
+  margin-top: 1.4rem;
+  max-width: 64ch;
+  font-size: 0.84rem;
+  color: var(--color-ink-soft);
+}
+
+/* Staggered reveal (cards in a row cascade in). Gated: without motion
+   preference every .reveal is already forced visible by the reduce block. */
+@media (prefers-reduced-motion: no-preference) {
+  html.js .reveal-d2 { transition-delay: 60ms; }
+  html.js .reveal-d3 { transition-delay: 120ms; }
+  html.js .reveal-d4 { transition-delay: 180ms; }
+  html.js .reveal-d5 { transition-delay: 240ms; }
+  html.js .reveal-d6 { transition-delay: 300ms; }
+}

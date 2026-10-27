@@ -9,6 +9,22 @@ Workflows. Lesen Sie beim ersten Start von oben nach unten; springen Sie
 später über das Inhaltsverzeichnis in der Hilfe-Seitenleiste zu einem
 bestimmten Abschnitt.
 
+> **Orientierung (die v2-Oberfläche).** Die Seitenleiste ist in
+> aufklappbare Gruppen gegliedert — **Beschaffung**, **Entscheidung**,
+> **Bewerbung**, **Networking**, **Analysen**, **Einrichtung**
+> (`nav.group.*`) — die sich öffnen, wenn Sie einen Abschnitt besuchen,
+> und genau dort bleiben, wo Sie sie verlassen haben. Vergeben Sie für
+> eine Seite einen Stern, um sie unter **Favoriten** anzuheften, und
+> drücken Sie **Cmd/Ctrl+K** (oder die Schaltfläche **Befehlsmenü** oben
+> in der Seitenleiste, `nav.v2.palette`), um von überall per unscharfer
+> Suche zu jeder Seite zu springen. Jede Seite zeigt ihren Titel sofort
+> und füllt graue Schimmer-Zeilen ein, während die Daten laden — die
+> Navigation wirkt nie leer. Und keine Seite begrüßt Sie mit einer
+> kahlen Fläche: Die vier, die leer starten — **Auto-Pipeline**,
+> **Bewerbungs-Checkliste**, **Batch** und **Finanzierte Unternehmen** —
+> zeigen ein durchgerechnetes Beispiel plus die eine Aktion, die sie
+> füllt (`v2empty.exampleTag`).
+
 > **Zielgruppe:** alle, die diese UI gerade in einem `career-ops`-
 > Checkout abgelegt und `bash bin/start.sh` ausgeführt haben. Es werden
 > keine Vorkenntnisse zu career-ops vorausgesetzt.
@@ -337,36 +353,54 @@ Bewertungsreports erneut an — Ihre Mindestannahmezahl steht genau dort.
 → Reports → Deep research → Apply checklist → Outreach → Tracker
 → Follow-up → Interview prep → Activity log`
 
-Das war's. 21 Schritte, Schaltfläche für Schaltfläche, von null bis zum
-Angebot.
+Die Seitenleiste gruppiert dieselben Seiten nach Phase (**Beschaffung** →
+**Entscheidung** → **Bewerbung** → …), sodass Workflow-Reihenfolge und
+Menü-Reihenfolge übereinstimmen; **Cmd/Ctrl+K** öffnet das
+**Befehlsmenü** (`nav.v2.palette`), falls Sie lieber drei Buchstaben
+tippen möchten, statt die Liste zu überfliegen. Das war's. 21 Schritte,
+Schaltfläche für Schaltfläche, von null bis zum Angebot.
 
 ### Auto-pipeline mit einem Klick (`#/auto`) — die Abkürzung für die 21 Schritte
 
 Wenn Sie nur eine bestimmte Ausschreibung schnell bewerten möchten,
-überspringen Sie die manuelle Anleitung. **Seitenleiste → ✨ Auto-pipeline**
+überspringen Sie die manuelle Anleitung. **Seitenleiste → ✨ Auto-Pipeline**
 (oder die ✨-Schaltfläche im Dashboard) öffnet einen eigenen Bildschirm:
 Fügen Sie die Stellen-URL ein, drücken Sie **Enter** oder klicken Sie auf
-**▶ Run full pipeline**, und der Server führt die gesamte Kette in einem
-beobachtbaren Durchlauf aus:
+**Auto-Pipeline ausführen** (`auto.run`), und der Server führt die gesamte
+Kette in einem beobachtbaren Durchlauf aus:
 
-1. **Validating URL** — SSRF-sichere Prüfung (`isValidJobUrl`); lehnt
-   Loopback / `file:` / private IPs / Skript-Zeichen ab.
-2. **Fetching job description** — `safeGet` (DNS-fixiert, umleitungs-
-   neu-validiert) zieht + bereinigt die JD.
-3. **Evaluating against your CV** — Anthropic (bevorzugt) → Gemini-
-   Fallback → manueller Prompt, falls kein Schlüssel.
-4. **Saving report** — schreibt `reports/<slug>.md` mit Score +
-   Legitimität im Header.
-5. **Adding to tracker** — hängt eine Zeile an `data/applications.md` an.
+1. **URL wird validiert** (`auto.step.validate`) — SSRF-sichere Prüfung
+   (`isValidJobUrl`); lehnt Loopback / `file:` / private IPs /
+   Skript-Zeichen ab.
+2. **Stellenbeschreibung wird abgerufen** (`auto.step.fetch`) —
+   `safeGet` (DNS-fixiert, umleitungs-neu-validiert) zieht + bereinigt
+   die JD.
+3. **Bewertung gegen Ihren CV** (`auto.step.evaluate`) — Anthropic
+   (bevorzugt) → Gemini-Fallback → manueller Prompt, falls kein
+   Schlüssel.
+4. **Bericht wird gespeichert** (`auto.step.report`) — schreibt
+   `reports/<slug>.md` mit Score + Legitimität im Header.
+5. **Wird zum Tracker hinzugefügt** (`auto.step.tracker`) — hängt eine
+   Zeile an `data/applications.md` an.
 
 Das Live-Feedback ist ein vertikaler **Stepper** (jeder Schritt leuchtet
-laufend → fertig / fehlgeschlagen auf). Es ist eine geordnete Liste mit
-`aria-current` auf dem aktiven Schritt und einem höflichen
-Screenreader-Live-Bereich, der jeden Übergang ansagt. Bei Erfolg verlinkt
-die Ergebniskarte direkt zum gespeicherten Report (**View report · N/5**)
-und zum **tracker**. Ein fehlgeschlagener Schritt wird rot mit seiner
-Meldung markiert, und die Schaltfläche wird wieder aktiviert, sodass Sie
-die URL korrigieren und ohne Neuladen erneut versuchen können.
+laufend → fertig / fehlgeschlagen auf; `aria-current` markiert den
+aktiven Schritt, und ein höflicher Screenreader-Live-Bereich sagt jeden
+Übergang an). Bei Erfolg verlinkt die Ergebniskarte direkt zum
+gespeicherten Report (**Bericht anzeigen**, `auto.viewReport`) und zum
+**Tracker** (`auto.viewTracker`). Ein fehlgeschlagener Schritt wird rot
+mit seiner Meldung markiert, und die Schaltfläche wird wieder
+aktiviert, sodass Sie die URL korrigieren und ohne Neuladen erneut
+versuchen können. Einen neuen Lauf zu starten, während einer noch läuft,
+ist gefahrlos: Der ältere Lauf markiert sich selbst als **Ersetzt — ein
+neuerer Lauf wurde angefordert** (`auto.superseded`), statt bei einer
+veralteten Antwort doppelt zu zahlen.
+
+Die leere Seite ist ehrlich bezüglich ihres einzigen Felds: Ein
+**Beispiel**-Tag und die Schaltfläche **Beispiel-URL ausprobieren**
+(`v2empty.auto.tryExample`) füllen die Eingabe mit einer
+Beispiel-Ausschreibung — **nichts läuft, bis Sie auf Ausführen
+drücken** (`v2empty.auto.hint`), sodass Erkunden nichts kostet.
 
 **Kein API-Schlüssel?** Die Pipeline läuft im **manuellen Modus**: Die
 Schritte 3–5 werden zusammengeklappt, und Sie erhalten eine
@@ -1087,6 +1121,48 @@ Klicken Sie auf **Stopp** (oder navigieren Sie einfach weg), um abzubrechen
 
 Unter dem Log rendert die Ergebnistabelle Zeilen aus
 `data/last-scan.json`.
+Während die Tabelle lädt (und bei jeder Aktualisierung) sehen Sie graue
+Schimmer-Zeilen statt einer leeren Fläche, und der Seitentitel steht vom
+ersten Frame an — ein langsamer Scan wirkt nie wie eine tote Seite.
+
+Die v2-Ergebnisoberfläche hält die Bedienelemente auffindbar:
+
+- **Aktive Filter** (`scan.v2.activeFilters`) — jeder gesetzte Filter
+  erscheint als entfernbare Chip oberhalb der Tabelle; klicken Sie auf
+  das **✕** einer Chip (**Filter entfernen**, `scan.v2.removeFilter`),
+  um genau diesen fallen zu lassen, oder auf **Alle zurücksetzen**
+  (`scan.v2.resetAll`), um alle zu leeren.
+- **Sortieren nach** (`scan.v2.sortBy`) — klicken Sie auf eine
+  Spaltenüberschrift (Unternehmen, Rolle, Gehalt, Alter), um danach zu
+  sortieren; nochmals klicken kehrt die Richtung um.
+- **Schnellansicht** (`scan.v2.quickView`) — klicken Sie auf eine Zeile,
+  um ihre Stellenbeschreibung direkt inline einzublenden
+  (**Beschreibung**, `scan.v2.description`), ohne die Seite zu
+  verlassen; Stellen ohne erfassten Text sagen das
+  (`scan.v2.noDescription`), statt eine leere Karte zu zeigen.
+- **Zeilendichte** (`scan.v2.density`) — schaltet zwischen **Kompakt** /
+  **Komfortabel** (`scan.v2.compact` / `scan.v2.comfortable`)
+  Zeilenhöhen um; die Wahl wird pro Browser gemerkt.
+- **Protokoll** (`scan.v2.log`) — klappt das Streaming-Scan-Log zu bzw.
+  auf, um der Tabelle die volle Breite zu geben.
+
+Jede Zeile führt ihre eigenen Aktionen mit: **Bewerten**
+(`scan.v2.evaluate`) springt direkt in eine bewertete Auswertung dieser
+Stelle, **In die Pipeline** (`scan.v2.toPipeline`) reiht die URL ein
+(mit einem Bereits-eingereiht-Hinweis, `scan.v2.pipelineDup`),
+**Stelle öffnen ↗** (`scan.v2.openPosting`) öffnet die Karriereseite in
+einem neuen Tab, und der ☆-Stern schaltet einen Favoriten um.
+
+**Search + Exclude.** Das **Search**-Feld ist Ihr „Rollen-gefunden“-
+Filter — tippen Sie einen oder mehrere Begriffe **durch Kommas
+getrennt**, und eine Zeile erscheint, wenn sie **einen** davon trifft
+(ODER); ein führendes `-wort` **schließt** diesen Begriff aus
+(`scan.v2.moreHint`). Das separate **Exclude**-Feld (`scan.lblExclude`)
+tut dasselbe für ganze Begriffe: kommagetrennte Wörter, die jede Zeile
+**ausblenden**, deren Unternehmen / Rolle / Standort sie enthält
+(z. B. `senior, staff, java` ausschließen). Beide werden zusammen mit
+den Remote-/Source-/Country-/Posted-within-/Gehaltsfiltern in Ihren
+gespeicherten Suchen gemerkt.
 
 > **v1.76.0 — keine Ergebnisobergrenze.** Frühere Builds speicherten höchstens
 > 2000 passende Zeilen pro Region (`MAX_STORED_RESULTS`) und versteckten
@@ -1109,16 +1185,36 @@ Unter dem Log rendert die Ergebnistabelle Zeilen aus
 > sodass tote Slugs aufhören, das Log zuzuspammen. Deaktivieren mit
 > `scan_quarantine: false` in `portals.yml`.
 
-Filter:
+Filter (immer sichtbar: Search, Exclude, Typ, Source, Country;
+alles andere liegt hinter **Erweiterte Filter**, `scan.advancedFilters`
+— das gesamte Panel ist unter **Ergebnisfilter**,
+`scan.filtersGroup`, gruppiert):
 
 - **Freitext** — Teilzeichenketten-Übereinstimmung gegen Titel /
   Unternehmen.
-- **Source**-Dropdown — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Teamtailor / Trudvsem / We Work Remotely / Workable / Workday / Working Nomads (automatisch aus `GET /api/scan/sources` befüllt).
+- **Source**-Dropdown — jede Quelle, die die Registry kennt (aktuell
+  121: 116 EN + 5 RU, standardmäßig **All sources**). Sie wird live aus
+  `GET /api/scan/sources` befüllt, sodass ein neu abgelegter Adapter
+  ohne App-Änderung hier erscheint — die Liste ist nie hartcodiert.
 - **Remote / Hybrid / Onsite**-Dropdown.
-- **Country**-Dropdown (v1.78.0) — ein Geografie-Filter, befüllt aus den Ländern, die in den aktuellen Ergebnissen erkannt wurden, jeweils mit seinem Flaggen-Emoji und einer Anzahl angezeigt (z. B. `🇩🇪 Germany (12)`). Wählen Sie eines aus, um nur an dieses Land gebundene Rollen zu behalten. Die Erkennung ordnet den Freitext-Standort einer Ausschreibung (Ländernamen/-aliase + ~100 große Job-Markt-Städte) einem Land zu; sie ist konservativ und rät nie, sodass eine Ausschreibung, deren Standort nicht aufgelöst werden kann — oder eine reine „Remote"-Anzeige — unter **All countries** bleibt. Kombinieren Sie es mit dem Arbeitsart-Dropdown, um länderbezogene *und* Remote-Rollen zu finden.
-- **Posted within**-Dropdown (v1.80.0) — ein clientseitiger Altersfilter (Last 24 hours / 7 days / 30 days). Zeilen, deren `pubDate` älter ist, werden ausgeblendet; Zeilen mit **keinem aufgeführten Datum passen** (fehlende Daten werden nicht bestraft).
-- **★ Favorites** (v1.80.0) — klicken Sie auf das ☆ in einer beliebigen Zeile, um eine Stelle zu markieren (in `localStorage` nach URL gespeichert); haken Sie **★ Favorites** im Filterbereich an, um nur markierte Zeilen anzuzeigen. Sterne überleben Scans und Neuladen.
-- **Saved searches** (v1.80.0) — die Leiste über den Filtern: Benennen Sie den aktuellen Filtersatz und **💾 Save**, dann wenden Sie ihn erneut aus dem Dropdown an oder **🗑 Delete**. In `localStorage` gespeichert; ein beschädigter/bearbeiteter Wert wird sauber auf leer zurückgesetzt.
+- **Country**-Dropdown — ein Geografie-Filter, befüllt aus den Ländern, die in den aktuellen Ergebnissen erkannt wurden, jeweils mit seinem Flaggen-Emoji und einer Anzahl angezeigt (z. B. `🇩🇪 Germany (12)`). Wählen Sie eines aus, um nur an dieses Land gebundene Rollen zu behalten. Die Erkennung ordnet den Freitext-Standort einer Ausschreibung (Ländernamen/-aliase + ~100 große Job-Markt-Städte) einem Land zu; sie ist konservativ und rät nie, sodass eine Ausschreibung, deren Standort nicht aufgelöst werden kann — oder eine reine „Remote"-Anzeige — unter **All countries** bleibt. Kombinieren Sie es mit dem Arbeitsart-Dropdown, um länderbezogene *und* Remote-Rollen zu finden.
+- **Posted within**-Dropdown — ein clientseitiger Altersfilter (Last 24 hours / 7 days / 30 days). Zeilen, deren `pubDate` älter ist, werden ausgeblendet; Zeilen mit **keinem aufgeführten Datum passen** (fehlende Daten werden nicht bestraft).
+- **Gehalt ab / Gehalt bis** (`scan.salaryFrom` / `scan.salaryTo`) —
+  schlichte Zahlen-Grenzen, verglichen gegen Beträge, die aus dem
+  Stellentext geparst wurden (Währung ignoriert, `scan.v2.salaryHint`);
+  haken Sie **Stellen ohne Gehalt einbeziehen**
+  (`scan.v2.includeNoSalary`) an, damit der Gehaltsfilter Zeilen, die
+  gar keine Zahl nennen, nicht fallen lässt.
+- **Level**-Dropdown (`scan.lblSeniority`) — Lead / Staff / Senior /
+  Mid / Junior / Intern, aus dem Titel erkannt.
+- **★ Favoriten** — klicken Sie auf das ☆ in einer beliebigen Zeile, um eine Stelle zu markieren (in `localStorage` nach URL gespeichert); haken Sie **★ Favoriten** (`scan.favOnly`) im Filterbereich an, um nur markierte Zeilen anzuzeigen. Sterne überleben Scans und Neuladen.
+- **Gespeicherte Suchen** (`scan.savedSearches`) — benennen Sie den
+  aktuellen Filtersatz und **Suche speichern** (`scan.saveSearch`),
+  dann wenden Sie ihn erneut aus der Liste an; gespeicherte Suchen
+  laden mit einem einzigen Klick (`scan.v2.loadSearch`), und das
+  Löschen einer Suche fragt vorher nach
+  (`scan.v2.deleteSearchConfirm`). In `localStorage` gespeichert; ein
+  beschädigter/bearbeiteter Wert wird sauber auf leer zurückgesetzt.
 - **Stack-Chips** (PHP / Go / Backend / Senior / …) — automatisch pro Zeile
   erkannt von `Skills.detectTech` und `Skills.detectLevel`.
   Mehrfachauswahl-Schnittmenge — die Auswahl von `PHP + Senior` zeigt

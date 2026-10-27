@@ -11,6 +11,14 @@
  */
 import { readFileSync, existsSync } from 'node:fs';
 
+/**
+ * Prototype-pollution key names — the same guard class as routes/content.mjs
+ * `setArray`/`setDotted`. A `.env` line `constructor=…` can never be a
+ * legitimate variable, and assigning `__proto__` on a plain object silently
+ * hits the Object.prototype setter instead of creating a key.
+ */
+export const UNSAFE_ENV_KEY = (k) => k === '__proto__' || k === 'constructor' || k === 'prototype';
+
 export function loadEnvFile(path) {
   if (!path || !existsSync(path)) return { loaded: 0 };
   let text;
@@ -22,7 +30,8 @@ export function loadEnvFile(path) {
   let loaded = 0;
   for (const raw of text.split(/\r?\n/)) {
     const entry = parseEnvLine(raw);
-    if (entry && process.env[entry.key] === undefined) {
+    if (!entry || UNSAFE_ENV_KEY(entry.key)) continue;
+    if (process.env[entry.key] === undefined) {
       process.env[entry.key] = entry.value;
       loaded++;
     }

@@ -1,22 +1,26 @@
 ---
-import { Picture } from 'astro:assets';
-import { t, type Locale } from '../i18n/locales';
-import { screenshotFor } from '../lib/screenshots';
+import { localeHome, t, type Locale } from '../i18n/locales';
 import InstallTabs from './InstallTabs.astro';
 import Icon from './Icon.astro';
 import WatchButton from './WatchButton.astro';
+import DemoPanel from './DemoPanel.astro';
 import facts from '../generated/facts.json';
 
 interface Props {
   locale: Locale;
 }
 const { locale } = Astro.props;
-const shot = screenshotFor(locale.file);
 const adaptersRounded = Math.floor(facts.adapters / 5) * 5; // honest, registry-derived count
 ---
 
 <section class="relative overflow-hidden pt-28 pb-16 md:pt-36 md:pb-24">
-  <div class="container-site grid items-center gap-12 lg:grid-cols-2">
+  <!-- CAR-133 parallax layers: decorative blobs + the demo frame drift at
+       different rates on scroll. JS only sets --plx; CSS applies it strictly
+       inside `prefers-reduced-motion: no-preference` + fine pointer. -->
+  <div class="hero-blob hero-blob-1" aria-hidden="true" data-parallax="0.16"></div>
+  <div class="hero-blob hero-blob-2" aria-hidden="true" data-parallax="0.26"></div>
+
+  <div class="container-site relative grid items-center gap-12 lg:grid-cols-2">
     <div class="min-w-0 max-w-xl">
       <div class="hero-seq hero-seq-1">
         <div class="mb-6 flex flex-wrap gap-2">
@@ -42,6 +46,10 @@ const adaptersRounded = Math.floor(facts.adapters / 5) * 5; // honest, registry-
             {t(locale, 'hero.ctaGithub')}
             <Icon name="arrow-right" class="mirror-rtl h-4 w-4" />
           </a>
+          <a href={`${localeHome(locale)}help/`} class="btn-ghost">
+            <Icon name="book-open" class="h-4 w-4" />
+            {t(locale, 'hero.ctaDocs')}
+          </a>
           <p class="text-sm text-ink-soft">{t(locale, 'hero.fineprint')}</p>
         </div>
         <div class="mt-6">
@@ -50,7 +58,12 @@ const adaptersRounded = Math.floor(facts.adapters / 5) * 5; // honest, registry-
       </div>
     </div>
 
-    <div class="hero-seq hero-seq-3 relative min-w-0 lg:-me-16" role="img" aria-label={t(locale, 'a11y.browserFrame')}>
+    <div
+      class="hero-visual hero-seq hero-seq-3 relative min-w-0 lg:-me-16"
+      role="img"
+      aria-label={t(locale, 'demo.a11y')}
+      data-parallax="0.05"
+    >
       <div class="rotate-[0.6deg] overflow-hidden rounded-[16px] border border-line bg-paper shadow-[0_24px_60px_rgba(0,0,0,0.16)]">
         <div class="flex items-center gap-2 border-b border-line bg-paper-alt px-4 py-2.5" dir="ltr">
           <span class="h-3 w-3 rounded-full bg-[#ff5f57]"></span>
@@ -60,16 +73,7 @@ const adaptersRounded = Math.floor(facts.adapters / 5) * 5; // honest, registry-
             127.0.0.1:4317
           </span>
         </div>
-        <Picture
-          src={shot}
-          alt={t(locale, 'hero.alt')}
-          formats={['avif', 'webp']}
-          widths={[640, 960, 1440]}
-          sizes="(max-width: 1024px) 92vw, 640px"
-          loading="eager"
-          fetchpriority="high"
-          class="block h-auto w-full"
-        />
+        <DemoPanel locale={locale} id="hero-demo" />
       </div>
       <div class="mt-5 flex justify-center">
         <WatchButton locale={locale} class="btn-primary" />

@@ -213,3 +213,81 @@ if ('IntersectionObserver' in window && !reduced) {
       /* offline / rate-limited — keep the build-time snapshot */
     });
 })();
+
+/* ----------------------------------------------- CAR-133: hero parallax */
+/* Decorative drift for [data-parallax] layers (blobs + demo frame). The JS
+ * only writes the --plx custom property; global.css applies it strictly
+ * inside prefers-reduced-motion: no-preference + fine pointer, so this is
+ * a double gate. rAF-throttled, passive, stops caring past the hero. */
+(() => {
+  const els = document.querySelectorAll('[data-parallax]');
+  if (!els.length) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!window.matchMedia('(hover: hover) and (pointer: fine)').matches) return;
+  let ticking = false;
+  const update = () => {
+    ticking = false;
+    const y = window.scrollY;
+    if (y > window.innerHeight * 1.5) return; // hero long gone — skip the math
+    for (const el of els) {
+      const factor = parseFloat(el.dataset.parallax || '0.08') || 0.08;
+      el.style.setProperty('--plx', `${(-y * factor).toFixed(1)}px`);
+    }
+  };
+  window.addEventListener(
+    'scroll',
+    () => {
+      if (!ticking) {
+        ticking = true;
+        requestAnimationFrame(update);
+      }
+    },
+    { passive: true }
+  );
+  update();
+})();
+
+/* ---------------------------------------- CAR-133: numbers band count-up */
+/* Markup carries the FINAL value (so no-JS and reduced-motion readers see
+   the real number); with motion allowed the tile counts up once when it
+   enters the viewport. */
+(() => {
+  const els = document.querySelectorAll('[data-count]');
+  if (!els.length) return;
+  if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  if (!('IntersectionObserver' in window)) return;
+  let fmt;
+  try {
+    fmt = new Intl.NumberFormat(document.documentElement.lang || undefined);
+  } catch {
+    fmt = new Intl.NumberFormat('en');
+  }
+  const run = (el) => {
+    const to = parseInt(el.dataset.count, 10);
+    if (!Number.isFinite(to) || to <= 0) return;
+    const suffix = el.dataset.suffix || '';
+    const DUR = 900;
+    const t0 = performance.now();
+    const step = (t) => {
+      const p = Math.min((t - t0) / DUR, 1);
+      const eased = 1 - Math.pow(1 - p, 3);
+      el.textContent = fmt.format(Math.round(to * eased)) + suffix;
+      if (p < 1) requestAnimationFrame(step);
+    };
+    requestAnimationFrame(step);
+  };
+  const io = new IntersectionObserver(
+    (entries) => {
+      for (const en of entries) {
+        if (!en.isIntersecting) continue;
+        io.unobserve(en.target);
+        run(en.target);
+      }
+    },
+    { threshold: 0.6 }
+  );
+  for (const el of els) {
+    el.textContent = fmt.format(0) + (el.dataset.suffix || ''); // zeroed only when we will animate
+    io.observe(el);
+  }
+})();

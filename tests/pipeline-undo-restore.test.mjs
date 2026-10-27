@@ -27,7 +27,9 @@ test('the remover captures the DELETE restoreToken into the session map', () => 
   const body = PIPE.slice(at, PIPE.indexOf('function urlRow', at));
   assert.match(body, /r\.restoreToken/, 'the DELETE response token is read');
   assert.doesNotMatch(body, /r\.lines/, 'no client-side content carriage (review r2)');
-  assert.match(body, /deletedLines\.set\(url, token\)/, 'kept for the undo');
+  // CAR-150 — the comp column rides the capture too, for the undo's bare
+  // re-add fallback when the token goes unknown (restart / eviction).
+  assert.match(body, /deletedLines\.set\(url, \{ token, comp \}\)/, 'kept for the undo');
   assert.match(body, /deletedLines\.delete\(url\)/,
     'a token-less removal clears stale captures');
 });
@@ -39,8 +41,8 @@ test('undo replays tokens through the restore endpoint', () => {
     'the captured tokens go to POST /api/pipeline/restore');
   assert.match(body, /restored \+= \(r && r\.restored\) \|\| 0/,
     'the server count is what is celebrated, not an assumption');
-  assert.match(body, /API\.post\('\/api\/pipeline', \{ url: u \}\)/,
-    'URLs with no captured token fall back to the existing bare add path');
+  assert.match(body, /API\.post\('\/api\/pipeline', body\)/,
+    'URLs with no captured token fall back to the bare add path (CAR-150 — the comp column rides in body when the DELETE handed it over)');
 });
 
 test('an unknown token or a failed restore never loses the URL silently (finding 5)', () => {
@@ -48,8 +50,9 @@ test('an unknown token or a failed restore never loses the URL silently (finding
   const body = PIPE.slice(at, PIPE.indexOf('function shortHost', at));
   // unknown tokens (restart / eviction) → bare fallback
   assert.match(body, /Array\.isArray\(r\.unknown\)[\s\S]*?bare\.push/, 'unknown tokens fall back');
-  // restore POST exception → the toast AND the bare fallback
-  assert.match(body, /catch \(err\)[\s\S]*?UI\.toast[\s\S]*?bare\.push\(\.\.\.tokenUrls\)/,
+  // restore POST exception → the toast AND the bare fallback (CAR-150 —
+  // the fallback re-add carries the captured comp, never a silent loss)
+  assert.match(body, /catch \(err\)[\s\S]*?UI\.toast[\s\S]*?bare\.push\(\{ url: u, comp:/,
     'a failed restore toasts AND falls back to the bare re-add');
 });
 

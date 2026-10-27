@@ -292,9 +292,12 @@
       const actions = [
         c('button', {
           className: 'btn btn-ghost btn-sm',
-          onClick: () => {
-            navigator.clipboard.writeText(markdown);
-            UI.toast(t('eval.copied', 'Copied'), 'success');
+          // FULL-M6 (deep.js CAR-20 pattern) — writeText awaited: a rejected
+          // write (permission denied, non-secure context) must not toast
+          // the success message.
+          onClick: async () => {
+            try { await navigator.clipboard.writeText(markdown); UI.toast(t('eval.copied', 'Copied'), 'success'); }
+            catch { UI.toast(t('auto.copyFail', 'Copy failed — select the text and copy manually.'), 'error'); }
           },
         }, '📋 ' + t('eval.copy', 'Copy')),
         c('button', {
@@ -351,9 +354,11 @@
         c('div', { className: 'flex gap-3 mt-3' }, [
           c('button', {
             className: 'btn btn-primary',
-            onClick: () => {
-              navigator.clipboard.writeText(prompt);
-              UI.toast(t('eval.copied', 'Copied'), 'success');
+            // FULL-M6 (deep.js CAR-20 pattern) — writeText awaited with a
+            // real failure path.
+            onClick: async () => {
+              try { await navigator.clipboard.writeText(prompt); UI.toast(t('eval.copied', 'Copied'), 'success'); }
+              catch { UI.toast(t('auto.copyFail', 'Copy failed — select the text and copy manually.'), 'error'); }
             },
           }, '📋 ' + t('eval.copy', 'Copy prompt')),
           // Re-submits with run:true so the user can hit it after
@@ -389,7 +394,10 @@
       const runCtrl = run
         ? window.LlmPageKit.createRun({ etaSeconds: 150, onBegin: () => page.show('result') }).mount(runHost)
         : null;
-      if (!run) out.innerHTML = `<div class="loading">${t('mode.generating', 'Generating…')}</div>`;
+      if (!run) {
+        // CAR-113 R4 — shimmer block; the localized label rides aria-label.
+        out.replaceChildren(window.Skeleton.block(5, t('mode.generating', 'Generating…')));
+      }
       try {
         const r = await UI.withSpinner(btn, () => (runCtrl
           ? window.LlmPageKit.run({
