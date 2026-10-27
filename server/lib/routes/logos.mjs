@@ -48,16 +48,24 @@ export function isPlausibleDomain(d) {
 }
 
 // A minimal image-magic sniff so we never serve HTML error pages as an "image".
+// Raster formats only — SVG is active content (script, foreignObject) and this
+// proxy serves same-origin bytes, so an SVG payload is refused no matter what
+// it declares or looks like (FULL-M4).
+const RASTER_CT_RE = /^image\/(png|gif|jpe?g|webp|bmp|x-icon|vnd\.microsoft\.icon)$/i;
+
 function looksLikeImage(buf, contentType) {
-  if (contentType && /^image\//i.test(contentType)) return true;
+  if (contentType) {
+    if (/svg/i.test(String(contentType))) return false;
+    // A known raster content-type passes; any other image/* subtype must win
+    // the magic-byte sniff below instead of being trusted on the header alone.
+    if (RASTER_CT_RE.test(String(contentType))) return true;
+  }
   if (!buf || buf.length < 4) return false;
   const b = buf;
   if (b[0] === 0x00 && b[1] === 0x00 && (b[2] === 0x01 || b[2] === 0x02)) return true; // .ico
   if (b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4e && b[3] === 0x47) return true;    // PNG
   if (b[0] === 0x47 && b[1] === 0x49 && b[2] === 0x46) return true;                     // GIF
   if (b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff) return true;                     // JPEG
-  const head = b.slice(0, 64).toString('utf8').toLowerCase();
-  if (head.includes('<svg')) return true;                                              // SVG
   return false;
 }
 
@@ -100,15 +108,25 @@ export function registerLogoRoutes(app) {
     if (cached) {
       if (cached.miss) return res.status(404).end();
       res.setHeader('Content-Type', cached.contentType);
-      res.setHeader('Cache-Control', 'public, max-age=86400');
+      res.setHeader('X-Content-Type-Options', 'nosniff');
+      // private, never public: these are per-domain proxied bytes served from
+      // the app origin; a shared cache must not store them (FULL-M4).
+      res.setHeader('Cache-Control', 'private, max-age=86400');
       return res.end(cached.buf);
     }
 
     const got = await _fetcher(domain);
-    if (!got) { cacheSet(domain, { miss: true }); return res.status(404).end(); }
+    // Serving-boundary re-check (FULL-M4): the fetcher is injectable and is
+    // the only thing standing between an upstream payload and same-origin
+    // bytes, so the route refuses anything that is not a raster image.
+    if (!got || !looksLikeImage(got.buf, got.contentType)) {
+      cacheSet(domain, { miss: true });
+      return res.status(404).end();
+    }
     cacheSet(domain, { buf: got.buf, contentType: got.contentType });
     res.setHeader('Content-Type', got.contentType);
-    res.setHeader('Cache-Control', 'public, max-age=86400');
+    res.setHeader('X-Content-Type-Options', 'nosniff');
+    res.setHeader('Cache-Control', 'private, max-age=86400');
     return res.end(got.buf);
   });
 }
