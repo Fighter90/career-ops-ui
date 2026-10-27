@@ -10,7 +10,7 @@
  *
  * Reads the same portals.yml as scan.mjs.
  */
-import { readFileSync, existsSync, writeFileSync, appendFileSync, mkdirSync, renameSync } from 'node:fs';
+import { readFileSync, existsSync, appendFileSync, mkdirSync } from 'node:fs';
 import yaml from 'js-yaml';
 import { PATHS } from './paths.mjs';
 import { addPipelineUrl } from './parsers.mjs';
@@ -20,6 +20,7 @@ import { buildLocationFilter, buildContentFilter, buildTitleFilter, cleanStringL
 import { buildTrustValidator } from './trust-validator.mjs';
 import { buildTierFilter } from './classify-tier.mjs';
 import { loadQuarantine, isQuarantined, quarantineAdd, pruneQuarantine, saveQuarantine, isPermanentFailure, RETRY_AFTER_DAYS } from './scan-quarantine.mjs';
+import { withFileLock, atomicWrite } from './file-lock.mjs';
 import { makeTimeoutFetch } from './fetch-timeout.mjs';
 import { loadReApplyWindows, buildCooldownFilter } from './cooldown.mjs';
 import { fetchGreenhouse } from './sources/greenhouse.mjs';
@@ -399,7 +400,7 @@ export async function runEnScan(opts = {}) {
 
   if (writeFiles) {
     if (fresh.length) {
-      appendToPipeline(fresh);
+      await appendToPipeline(fresh);
       appendToHistory(fresh);
       log('stdout', `→ Appended ${fresh.length} URLs to data/pipeline.md`);
     }
@@ -428,7 +429,7 @@ export async function runEnScan(opts = {}) {
         : (failedCompanies.size
           ? { keepSources: [...failedCompanies], carriedCheck: (j) => passes(j) && !cooldownFilter(j).skip }
           : {});
-      saveLastScan({
+      await saveLastScan({
         kind: 'en',
         when: new Date().toISOString(),
         fresh,
@@ -453,17 +454,25 @@ export async function runEnScan(opts = {}) {
   };
 }
 
-function appendToPipeline(jobs) {
-  let content = '';
-  try { content = readFileSync(PATHS.pipeline, 'utf8'); } catch {}
-  let updated = content;
-  // v1.75.0 (#1098) — normalize external URLs (drop smuggled whitespace/newlines)
-  // before they reach the fenced pipeline list.
-  // v1.84.0 (#1017) — persist compensation as an optional trailing column
-  // (`url | <salary>`); web-ui jobs already carry a display salary string.
-  for (const j of jobs) updated = addPipelineUrl(updated, normalizeScanUrl(j.url), { comp: j.salary });
-  mkdirSync(PATHS.pipeline.replace(/\/[^/]+$/, ''), { recursive: true });
-  writeFileSync(PATHS.pipeline, updated);
+// FULL-R1 (finding 2) — the scanner's own append raced routes/pipeline.mjs's
+// withFileLock(PATHS.pipeline)-protected POST/DELETE/restore (and, until
+// the same change, auto-pipeline's markPipelineRejected): the hourly timer
+// finishing a scan while a user added or rejected a URL could silently
+// drop one side's update. Sharing the SAME lock key here serializes every
+// pipeline.md read-modify-write regardless of which writer runs it.
+async function appendToPipeline(jobs) {
+  await withFileLock(PATHS.pipeline, async () => {
+    let content = '';
+    try { content = readFileSync(PATHS.pipeline, 'utf8'); } catch {}
+    let updated = content;
+    // v1.75.0 (#1098) — normalize external URLs (drop smuggled whitespace/newlines)
+    // before they reach the fenced pipeline list.
+    // v1.84.0 (#1017) — persist compensation as an optional trailing column
+    // (`url | <salary>`); web-ui jobs already carry a display salary string.
+    for (const j of jobs) updated = addPipelineUrl(updated, normalizeScanUrl(j.url), { comp: j.salary });
+    mkdirSync(PATHS.pipeline.replace(/\/[^/]+$/, ''), { recursive: true });
+    atomicWrite(PATHS.pipeline, updated);
+  });
 }
 function appendToHistory(jobs) {
   mkdirSync(PATHS.scanHistory.replace(/\/[^/]+$/, ''), { recursive: true });
@@ -631,18 +640,25 @@ function keepFailedSourcesSnapshot(old, payload, failed, opts = {}) {
  *   bySource       — keepSources match on `source` (RU) instead of the entry stamp
  *   carriedCheck   — re-run the current filters on carried rows (see keepFailedSourcesSnapshot)
  */
-export function saveLastScan(payload, opts = {}) {
-  const prev = readLastScanFile();
-  const old = prev[payload.kind];
-  prev[payload.kind] = Array.isArray(opts.mergeCompanies) && old && typeof old === 'object'
-    ? mergeSnapshot(old, payload, opts.mergeCompanies)
-    : Array.isArray(opts.keepSources) && opts.keepSources.length && old && typeof old === 'object'
-      ? keepFailedSourcesSnapshot(old, payload, opts.keepSources, { bySource: opts.bySource, carriedCheck: opts.carriedCheck })
-      : payload;
-  mkdirSync(LAST_SCAN_PATH.replace(/\/[^/]+$/, ''), { recursive: true });
-  const tmp = `${LAST_SCAN_PATH}.${process.pid}.tmp`;
-  writeFileSync(tmp, JSON.stringify(prev, null, 2));
-  renameSync(tmp, LAST_SCAN_PATH);
+export async function saveLastScan(payload, opts = {}) {
+  // FULL-R1 (finding 2) — this is a read-modify-write (read the whole file,
+  // merge/replace ONE kind, write the whole file back), so the lock must
+  // wrap the ENTIRE transaction, not just the final write: two snapshot
+  // writers (today: EN then RU sequentially within one scan request,
+  // guarded by routes/scan.mjs's single-flight slot; a future caller might
+  // not be) must never both read the pre-update file and then each write
+  // back a version missing the other's kind.
+  await withFileLock(LAST_SCAN_PATH, async () => {
+    const prev = readLastScanFile();
+    const old = prev[payload.kind];
+    prev[payload.kind] = Array.isArray(opts.mergeCompanies) && old && typeof old === 'object'
+      ? mergeSnapshot(old, payload, opts.mergeCompanies)
+      : Array.isArray(opts.keepSources) && opts.keepSources.length && old && typeof old === 'object'
+        ? keepFailedSourcesSnapshot(old, payload, opts.keepSources, { bySource: opts.bySource, carriedCheck: opts.carriedCheck })
+        : payload;
+    mkdirSync(LAST_SCAN_PATH.replace(/\/[^/]+$/, ''), { recursive: true });
+    atomicWrite(LAST_SCAN_PATH, JSON.stringify(prev, null, 2));
+  });
 }
 
 export function loadLastScan() {

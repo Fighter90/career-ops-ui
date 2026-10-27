@@ -17,7 +17,7 @@
  * source = one entry in the registry + one new adapter file. The
  * dispatcher loop below uses `RU_DISPATCH` to map config-key → adapter.
  */
-import { readFileSync, existsSync, appendFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { readFileSync, existsSync, appendFileSync, mkdirSync } from 'node:fs';
 import yaml from 'js-yaml';
 import { PATHS } from './paths.mjs';
 import { searchHH } from './sources/hh.mjs';
@@ -31,6 +31,7 @@ import { sanitizeTsvField, normalizeScanUrl } from './scan-sanitize.mjs';
 import { normalizeUrl } from './url-key.mjs';
 import { makeTimeoutFetch } from './fetch-timeout.mjs';
 import { saveLastScan, snapshotKeepReason, loadSeenUrls as loadSeenUrlsShared } from './en-scanner.mjs';
+import { withFileLock, atomicWrite } from './file-lock.mjs';
 import { buildLocationFilter, buildContentFilter, compileKeyword, compileKeywordList, foldAccents, cleanStringList } from './location-filter.mjs';
 import { buildTierFilter } from './classify-tier.mjs';
 import { buildTrustValidator } from './trust-validator.mjs';
@@ -331,7 +332,7 @@ export async function runRuScan(opts = {}) {
 
   if (writeFiles) {
     if (fresh.length) {
-      appendToPipeline(fresh);
+      await appendToPipeline(fresh);
       appendToHistory(fresh);
       log('stdout', `→ Appended ${fresh.length} URLs to data/pipeline.md`);
     }
@@ -351,7 +352,7 @@ export async function runRuScan(opts = {}) {
       const failedSources = Object.keys(sourceFailures)
         .map((k) => RU_DISPATCH[k]?.snapSource)
         .filter(Boolean);
-      saveLastScan({
+      await saveLastScan({
         kind: 'ru',
         when: new Date().toISOString(),
         fresh,
@@ -427,16 +428,22 @@ async function runQuery(query, cfg, fetchImpl, errors, sourceFailures, hhDisable
   return out;
 }
 
-function appendToPipeline(jobs) {
-  let content = '';
-  try {
-    content = readFileSync(PATHS.pipeline, 'utf8');
-  } catch {}
-  let updated = content;
-  // v1.75.0 (#1098) — see en-scanner: normalize external URLs before write.
-  for (const j of jobs) updated = addPipelineUrl(updated, normalizeScanUrl(j.url));
-  mkdirSync(PATHS.pipeline.replace(/\/[^/]+$/, ''), { recursive: true });
-  writeFileSync(PATHS.pipeline, updated);
+// FULL-R1 (finding 2) — same shared-lock fix as en-scanner.mjs's twin: this
+// read-modify-write of pipeline.md must serialize against
+// routes/pipeline.mjs's POST/DELETE/restore and auto-pipeline's
+// markPipelineRejected, which already hold withFileLock(PATHS.pipeline).
+async function appendToPipeline(jobs) {
+  await withFileLock(PATHS.pipeline, async () => {
+    let content = '';
+    try {
+      content = readFileSync(PATHS.pipeline, 'utf8');
+    } catch {}
+    let updated = content;
+    // v1.75.0 (#1098) — see en-scanner: normalize external URLs before write.
+    for (const j of jobs) updated = addPipelineUrl(updated, normalizeScanUrl(j.url));
+    mkdirSync(PATHS.pipeline.replace(/\/[^/]+$/, ''), { recursive: true });
+    atomicWrite(PATHS.pipeline, updated);
+  });
 }
 
 function appendToHistory(jobs) {

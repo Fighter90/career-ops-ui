@@ -21,8 +21,13 @@
  * Origin: for every state-changing method, and for the GET routes that act
  * (`/api/stream/*`, `/api/run/*`), a present `Origin` must name this server
  * (same host as the request, or an allowed host) and a present
- * `Sec-Fetch-Site` must not be `cross-site`. Requests carrying neither header
- * (curl, the CLI, server-side tests) pass.
+ * `Sec-Fetch-Site` must not be `cross-site`. Requests carrying NEITHER
+ * header fall back to `Referer` (same same-origin-or-allowed-host
+ * discipline): an old browser's cross-site `<img src=".../api/stream/
+ * batch">` sends no Fetch-Metadata header and, per spec, no `Origin` on a
+ * simple GET either — but still carries a Referer under the default
+ * Referrer-Policy. Only a request with NONE of the three (curl, the CLI,
+ * server-side tests) stays trusted.
  */
 import { isIP } from 'node:net';
 
@@ -32,7 +37,9 @@ const SAFE_METHODS = new Set(['GET', 'HEAD', 'OPTIONS']);
 // looks at the path only (a `?x=/api/run` query must neither trip nor hide it).
 // /api/geocode is a GET with an outbound side effect (Nominatim calls under the
 // user's IP, a growing cache) — a cross-site <img> must not drive it.
-const ACTING_GET = /^\/api\/(?:stream|run|geocode)(?:\/|$|\?)/i;
+// Exported (FULL-R1 review r1): the static coverage gate imports THIS regex, so
+// narrowing it silently cannot pass CI while registered routes stay uncovered.
+export const ACTING_GET = /^\/api\/(?:stream|run|geocode)(?:\/|$|\?)/i;
 
 /** Lower-cased hostname of a `Host` value or URL host, without port or brackets. */
 export function hostnameOf(hostHeader) {
@@ -77,28 +84,58 @@ export function isAllowedHost(hostHeader, policy) {
   return policy.names.has(name);
 }
 
-/** Does the request's Origin / Sec-Fetch-Site make it cross-site? */
+/**
+ * Does `headerHost` (the `host` of a parsed Origin/Referer URL) count as
+ * this server, for the purposes of the cross-site check? Same discipline
+ * either way: the EXACT host:port this request was addressed to, or — only
+ * behind a proxy that rewrites Host — an operator-listed ALLOWED_HOSTS
+ * entry. The Host allowlist's OWN rules (any IP literal, the implicit
+ * localhost / bind host) must NOT be reused here: they would make
+ * `http://198.51.100.7`, or another app on `http://127.0.0.1:<other
+ * port>`, count as ours.
+ */
+function isSameOriginHost(headerHost, req, policy) {
+  if (headerHost === String(req.headers.host || '').toLowerCase()) return true;
+  if (policy.matchAll) return true;
+  return policy.explicit.has(hostnameOf(headerHost));
+}
+
+/**
+ * FULL-R1 fallback — Referer, used ONLY when the request carries neither
+ * Sec-Fetch-Site nor Origin (an old browser's cross-site `<img>`/`<script>`
+ * subresource request sends no Fetch-Metadata header and no Origin on a
+ * simple GET, but still a Referer under the default Referrer-Policy). No
+ * Referer either keeps today's trusted-tool behaviour (curl, the CLI,
+ * server-side tests).
+ */
+function isCrossSiteReferer(req, policy) {
+  const referer = req.headers.referer ?? req.headers.referrer;
+  if (referer === undefined || referer === '') return false;
+  let refHost;
+  try { refHost = new URL(referer).host.toLowerCase(); } catch { return true; }
+  return !isSameOriginHost(refHost, req, policy);
+}
+
+/** Does the request's Origin / Sec-Fetch-Site / Referer make it cross-site? */
 export function isCrossSite(req, policy) {
   const site = String(req.headers['sec-fetch-site'] || '').toLowerCase();
   if (site === 'cross-site') return true;
   const origin = req.headers.origin;
-  // `same-site` is NOT same-origin: any other port on this host (another local
-  // dev server, a tool's web UI) is same-site with 127.0.0.1:<port>. Such a
-  // request with no Origin to compare — an `<img src=…/api/run/x>` — is refused;
-  // the SPA's own requests are `same-origin`.
-  if (origin === undefined || origin === '') return site === 'same-site';
+  if (origin === undefined || origin === '') {
+    // `same-site` is NOT same-origin: any other port on this host (another
+    // local dev server, a tool's web UI) is same-site with
+    // 127.0.0.1:<port>. Such a request with no Origin to compare is refused.
+    if (site === 'same-site') return true;
+    // An explicit same-origin/none Fetch-Metadata value is itself the
+    // trusted signal — no need to fall back to Referer.
+    if (site) return false;
+    // Neither header present — fall back to Referer (FULL-R1).
+    return isCrossSiteReferer(req, policy);
+  }
   if (origin === 'null') return true;
   let originHost;
   try { originHost = new URL(origin).host.toLowerCase(); } catch { return true; }
-  // Same origin = the exact host:port this request was addressed to. The Host
-  // allowlist's own rules ("any IP literal", the implicit localhost / bind host)
-  // must NOT be reused here: they would make `Origin: http://198.51.100.7`, or
-  // another app on http://127.0.0.1:<other port>, count as ours.
-  if (originHost === String(req.headers.host || '').toLowerCase()) return false;
-  if (policy.matchAll) return false;
-  // Behind a proxy that rewrites Host, the operator-listed public name is the
-  // one thing an Origin may differ by.
-  return !policy.explicit.has(hostnameOf(originHost));
+  return !isSameOriginHost(originHost, req, policy);
 }
 
 export function requestGuard(config = {}) {
