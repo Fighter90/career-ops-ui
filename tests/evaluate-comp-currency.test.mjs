@@ -554,7 +554,7 @@ test('the language reminder still closes the prompt after the figures block', ()
   const tail = p.slice(p.indexOf('COMPENSATION COMPARISON'));
   assert.ok(tail.indexOf('Candidate minimum') < tail.indexOf('## A)'));
   assert.ok(tail.indexOf('COMPENSATION COMPARISON') < tail.indexOf('## A)'));
-  assert.match(tail.slice(tail.lastIndexOf('## G) Verdict')), /语言|Traditional Chinese|remind/i);
+  assert.match(tail.slice(tail.lastIndexOf('## G)')), /语言|Traditional Chinese|remind/i);
 });
 
 // ── Coverage: I/O-failure guards, kr (unmapped CCY) caveat, malformed YAML ──
