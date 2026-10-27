@@ -9,11 +9,11 @@
  * and reportSlug are sanitized. The Markdown table is bootstrapped on
  * first write.
  */
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { readFileSync, mkdirSync } from 'node:fs';
 import { PATHS, path as projPath } from '../paths.mjs';
 import { parseApplications, today } from '../parsers.mjs';
 import { safeReadApps, safeListReports } from '../store.mjs';
-import { withFileLock } from '../file-lock.mjs';
+import { withFileLock, atomicWrite } from '../file-lock.mjs';
 import { canonicalizeStatus, readCanonicalStates } from '../states.mjs';
 
 // v1.128.0 — the canonical status vocabulary is no
@@ -151,7 +151,9 @@ export function registerTrackerRoutes(app) {
         updated = content.replace(/\n*$/, '\n') + row + '\n';
       }
       mkdirSync(projPath('data'), { recursive: true });
-      writeFileSync(PATHS.applications, updated);
+      // FULL-M1 hand-off (review F3) — lock ≠ crash safety: the write goes
+      // through temp-then-rename like every other shared-file writer.
+      atomicWrite(PATHS.applications, updated);
       return { ok: true, num: nextNum };
     });
     res.json(result);
@@ -220,7 +222,7 @@ export function registerTrackerRoutes(app) {
         lines[i] = cells.join('|');
         applied += 1;
       }
-      if (applied) writeFileSync(PATHS.applications, lines.join('\n'));
+      if (applied) atomicWrite(PATHS.applications, lines.join('\n'));
       return done(applied);
     });
     res.json(result);
