@@ -8,6 +8,19 @@ sidebar entry or a phase of the workflow. Read top-to-bottom on first
 run; jump to a specific section later via the table of contents in the
 help sidebar.
 
+> **Getting around (the v2 shell).** The sidebar is organized into
+> collapsible groups — **Sourcing**, **Decision**, **Application**,
+> **Networking**, **Analytics**, **Setup** (`nav.group.*`) — that open
+> when you visit a section and stay where you left them. Star any page
+> to pin it under **Favorites**, and press **Cmd/Ctrl+K** (or the
+> **Command menu** button at the top of the sidebar, `nav.v2.palette`)
+> to fuzzy-jump to any page from anywhere. Every page shows its title
+> instantly and fills in grey shimmer rows while data loads, so
+> navigation never feels blank. And no page greets you with a bare
+> void: the four that start empty — **Auto-pipeline**, **Apply
+> checklist**, **Batch**, and **Funded companies** — show a worked
+> example plus the one action that fills them (`v2empty.exampleTag`).
+
 > **Audience:** anyone who just dropped this UI inside a `career-ops`
 > checkout and ran `bash bin/start.sh`. No prior career-ops knowledge
 > assumed.
@@ -318,33 +331,47 @@ acceptance number is right there.
 → Reports → Deep research → Apply checklist → Outreach → Tracker
 → Follow-up → Interview prep → Activity log`
 
-That's it. 21 steps, button-by-button, from zero to offer.
+The sidebar groups these same pages by phase (**Sourcing** →
+**Decision** → **Application** → …), so the workflow order and the
+menu order stay the same; **Cmd/Ctrl+K** opens the **Command menu**
+(`nav.v2.palette`) if you'd rather type three letters than scan the
+list. That's it. 21 steps, button-by-button, from zero to offer.
 
 ### One-click Auto-pipeline (`#/auto`) — the 21-step shortcut
 
 If you just want to score one specific posting fast, skip the manual
 walkthrough. **Sidebar → ✨ Auto-pipeline** (or the ✨ button on the
 Dashboard) opens a dedicated screen: paste the job URL, press **Enter**
-or click **▶ Run full pipeline**, and the server runs the whole chain
-in one observable pass:
+or click **Run auto-pipeline** (`auto.run`), and the server runs the
+whole chain in one observable pass:
 
-1. **Validating URL** — SSRF-safe check (`isValidJobUrl`); rejects
-   loopback / `file:` / private IPs / script chars.
-2. **Fetching job description** — `safeGet` (DNS-pinned, redirect-
-   revalidated) pulls + sanitizes the JD.
-3. **Evaluating against your CV** — Anthropic (preferred) → Gemini
-   fallback → manual-prompt if no key.
-4. **Saving report** — writes `reports/<slug>.md` with score +
-   legitimacy in the header.
-5. **Adding to tracker** — appends a row to `data/applications.md`.
+1. **Validating URL** (`auto.step.validate`) — SSRF-safe check
+   (`isValidJobUrl`); rejects loopback / `file:` / private IPs /
+   script chars.
+2. **Fetching job description** (`auto.step.fetch`) — `safeGet`
+   (DNS-pinned, redirect-revalidated) pulls + sanitizes the JD.
+3. **Evaluating against your CV** (`auto.step.evaluate`) — Anthropic
+   (preferred) → Gemini fallback → manual-prompt if no key.
+4. **Saving report** (`auto.step.report`) — writes `reports/<slug>.md`
+   with score + legitimacy in the header.
+5. **Adding to tracker** (`auto.step.tracker`) — appends a row to
+   `data/applications.md`.
 
 Live feedback is a vertical **stepper** (each step lights up
-running → done / failed). It is an ordered list with `aria-current`
-on the active step and a polite screen-reader live-region announcing
-every transition. On success the result card deep-links straight to
-the saved report (**View report · N/5**) and the **tracker**. A failed
-step is marked red with its message and the button re-enables so you
-can fix the URL and retry without reloading.
+running → done / failed; `aria-current` marks the active one and a
+polite screen-reader live-region announces every transition). On
+success the result card deep-links straight to the saved report
+(**View report**, `auto.viewReport`) and the **tracker**
+(`auto.viewTracker`). A failed step is marked red with its message and
+the button re-enables so you can fix the URL and retry without
+reloading. Starting a new run while one is still going is safe: the
+older run marks itself **Superseded — a newer run was requested**
+(`auto.superseded`) instead of double-spending on a stale answer.
+
+The empty page is honest about its one field: an **Example** tag and a
+**Try an example URL** button (`v2empty.auto.tryExample`) fill the
+input with a sample posting — **nothing runs until you press Run**
+(`v2empty.auto.hint`), so exploring costs nothing.
 
 **No API key?** The pipeline runs in **manual mode**: steps 3–5
 collapse and you get a ready-to-paste prompt card (copy into Claude
@@ -1027,8 +1054,36 @@ in-flight HTTPS requests via `AbortController`.
 ### Filtering results
 
 Below the log, the results table renders rows from `data/last-scan.json`.
+While the table loads (and on every refresh) you see grey shimmer rows
+instead of a blank pane, and the page title is there from the first
+frame — a slow scan never reads as a dead page.
 
-**Search + Exclude (v1.109.0).** The **Search** box is your "roles to find" filter — type one or more terms **separated by commas** and a row shows if it matches **any** of them (OR). The new **Exclude** box does the opposite: comma-separated words that **hide** any row whose company / role / location contains them (e.g. exclude `senior, staff, java`). Both are remembered by your saved searches alongside the remote / source / country / posted-within / salary filters.
+The v2 results chrome keeps the controls discoverable:
+
+- **Active filters** (`scan.v2.activeFilters`) — every filter you set
+  shows as a removable chip above the table; click the **✕** on a chip
+  (**Remove filter**, `scan.v2.removeFilter`) to drop just that one, or
+  **Reset all** (`scan.v2.resetAll`) to clear the lot.
+- **Sort by** (`scan.v2.sortBy`) — click a column heading (company,
+  role, salary, age) to sort by it; click again to flip direction.
+- **Quick view** (`scan.v2.quickView`) — click a row to expand its
+  posting description inline (**Description**, `scan.v2.description`)
+  without leaving the page; postings with no captured body say so
+  (`scan.v2.noDescription`) instead of showing a blank card.
+- **Row density** (`scan.v2.density`) — toggle **Compact** /
+  **Comfortable** (`scan.v2.compact` / `scan.v2.comfortable`) row
+  heights; the choice is remembered per browser.
+- **Log** (`scan.v2.log`) — collapse/expand the streaming scan log to
+  give the table the full width.
+
+Every row carries its own actions: **Evaluate** (`scan.v2.evaluate`)
+jumps straight into a scored evaluation of that posting, **To
+pipeline** (`scan.v2.toPipeline`) queues the URL (with an
+already-queued toast, `scan.v2.pipelineDup`), **Open posting ↗**
+(`scan.v2.openPosting`) opens the careers page in a new tab, and the
+☆ star toggles a favorite.
+
+**Search + Exclude.** The **Search** box is your "roles to find" filter — type one or more terms **separated by commas** and a row shows if it matches **any** of them (OR); a leading `-word` **excludes** that term (`scan.v2.moreHint`). The separate **Exclude** box (`scan.lblExclude`) does the same for whole terms: comma-separated words that **hide** any row whose company / role / location contains them (e.g. exclude `senior, staff, java`). Both are remembered by your saved searches alongside the remote / source / country / posted-within / salary filters.
 
 > **v1.76.0 — no result cap.** Earlier builds stored at most 2000 matching rows
 > per region (`MAX_STORED_RESULTS`), silently hiding the tail of a large sweep.
@@ -1048,15 +1103,23 @@ Below the log, the results table renders rows from `data/last-scan.json`.
 > after 14 days), so dead slugs stop spamming the log. Disable with
 > `scan_quarantine: false` in `portals.yml`.
 
-Filters:
+Filters (always visible: search, exclude, type, source, country;
+everything else sits behind **Advanced filters**, `scan.advancedFilters` —
+the whole panel is grouped under **Result filters**, `scan.filtersGroup`):
 
 - **Free text** — substring match against title / company.
-- **Source** dropdown — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Teamtailor / Trudvsem / We Work Remotely / Workable / Workday / Working Nomads (auto-populated from `GET /api/scan/sources`).
+- **Source** dropdown — every source the registry knows (121 at the
+  moment: 116 EN + 5 RU, **All sources** by default). It is
+  auto-populated live from `GET /api/scan/sources`, so a newly dropped
+  adapter appears here without any app change — the list is never
+  hard-coded.
 - **Remote / Hybrid / Onsite** dropdown.
-- **Country** dropdown (v1.78.0) — a geography filter populated from the countries detected across the current results, each shown with its flag emoji and a count (e.g. `🇩🇪 Germany (12)`). Pick one to keep only roles tied to that country. Detection maps a posting's free-text location (country names/aliases + ~100 major job-market cities) to a country; it's conservative and never guesses, so a posting whose location can't be resolved — or a pure "Remote" listing — stays under **All countries**. Combine it with the work-type dropdown to find country-bound *and* remote roles.
-- **Posted within** dropdown (v1.80.0) — a client-side age filter (Last 24 hours / 7 days / 30 days). Rows whose `pubDate` is older are hidden; rows with **no listed date pass** (missing data isn't penalized).
-- **★ Favorites** (v1.80.0) — click the ☆ in any row to star a job (stored in `localStorage` by URL); tick **★ Favorites** in the filter panel to show only starred rows. Stars survive scans and reloads.
-- **Saved searches** (v1.80.0) — the bar above the filters: name the current filter set and **💾 Save**, then re-apply it from the dropdown or **🗑 Delete** it. Stored in `localStorage`; a corrupt/edited value resets cleanly to empty.
+- **Country** dropdown — a geography filter populated from the countries detected across the current results, each shown with its flag emoji and a count (e.g. `🇩🇪 Germany (12)`). Pick one to keep only roles tied to that country. Detection maps a posting's free-text location (country names/aliases + ~100 major job-market cities) to a country; it's conservative and never guesses, so a posting whose location can't be resolved — or a pure "Remote" listing — stays under **All countries**. Combine it with the work-type dropdown to find country-bound *and* remote roles.
+- **Posted within** dropdown — a client-side age filter (Last 24 hours / 7 days / 30 days). Rows whose `pubDate` is older are hidden; rows with **no listed date pass** (missing data isn't penalized).
+- **Salary from / Salary to** (`scan.salaryFrom` / `scan.salaryTo`) — plain-number bounds compared against amounts parsed from the posting text (currency ignored, `scan.v2.salaryHint`); tick **Include jobs without salary** (`scan.v2.includeNoSalary`) to stop the salary filter from dropping rows that quote no number at all.
+- **Seniority** dropdown (`scan.lblSeniority`) — Lead / Staff / Senior / Mid / Junior / Intern, detected from the title.
+- **★ Favorites** — click the ☆ in any row to star a job (stored in `localStorage` by URL); tick **★ Favorites** (`scan.favOnly`) in the filter panel to show only starred rows. Stars survive scans and reloads.
+- **Saved searches** (`scan.savedSearches`) — name the current filter set and **Save search** (`scan.saveSearch`), then re-apply it from the list; saved searches are loaded with a single click (`scan.v2.loadSearch`) and deleting one asks first (`scan.v2.deleteSearchConfirm`). Stored in `localStorage`; a corrupt/edited value resets cleanly to empty.
 - **Stack chips** (PHP / Go / Backend / Senior / …) — auto-detected
   per row by `Skills.detectTech` and `Skills.detectLevel`. Multi-select
   intersection — selecting `PHP + Senior` shows rows that have BOTH.
@@ -1067,11 +1130,20 @@ Filters:
 
 ### Active Companies card
 
-A collapsible card listing every company in `portals.yml` with its
-scan status:
+A collapsible card summarising every company in `portals.yml`, headed
+**Active companies** (`scan.activeCo`) with a live `N/M` counter —
+*N* is the companies that actually surfaced results in the last scan,
+*M* the API-backed companies currently enabled, so both numbers always
+describe the same universe (a Russian-boards-only run can't inflate
+the numerator past the ATS denominator). The tooltip says the same in
+plain words (`scan.activeCo.help`). The list is split into two groups:
 
-- ✓ green tag — direct API support (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday).
-- ○ gray tag — fallback to web-search prompt (no API match).
+- ✓ **Direct API** (`scan.apiBacked`) — the board is fetched directly
+  from its public ATS API (one of the 116 EN adapters, from Greenhouse
+  / Ashby / Lever / Workable / SmartRecruiters / Workday down to the
+  long tail).
+- ○ **Web-search only** (`scan.websearchBacked`) — no adapter matches
+  the URL, so the CLI's AI scan covers it instead.
 
 **Click the company name** → fills the results filter above with that
 name. **Click the ↗ icon** → opens the company's `careers_url` in a
@@ -1143,18 +1215,19 @@ Even from a network that *looks* right, hh.ru may flag the egress IP as a VPN/pr
 
 Inbox of URLs waiting to be evaluated. Lives in `data/pipeline.md`.
 
-**Overview strip (v1.109.0).** At the top of the page a compact strip shows your pipeline at a glance — how many URLs are **in inbox**, how many rows are **tracked**, and the counts for **Applied / Responded / Interview / Offer** pulled from your tracker. Each chip links straight to `#/tracker` (the status chips open it filtered). It degrades to just the inbox count if the tracker can't be read.
+**Overview strip.** At the top of the page a compact strip shows your pipeline at a glance — how many URLs are **in inbox** (`pipe.ovInbox`), how many rows are **tracked** (`pipe.ovTracked`), and the counts for **Applied / Responded / Interview / Offer** pulled from your tracker. Each chip links straight to `#/tracker` (the status chips open it filtered). It degrades to just the inbox count if the tracker can't be read.
 
 ### Adding URLs
 
 Three ways:
 
-- Type / paste a URL into the input + click **+ Add**.
-- Use the **top-bar global search** (its badge reads **Enter**): paste
-  any `http(s)://…` link and press **Enter** to open the auto-pipeline;
-  type any other text and **Enter** jumps to `#/scan` with that term
-  pre-filled (v1.78.1). Ctrl/Cmd+K still focuses the box where the
-  browser allows it. The brand **logo** returns to the dashboard.
+- Type / paste a URL into the input + click **Add URL** (`pipe.add`).
+- Use the **command palette**: **Cmd/Ctrl+K** (or the sidebar's
+  **Command menu** button, `nav.v2.palette`), paste any
+  `http(s)://…` link, and the palette offers **Auto-pipeline: {url}**
+  (`nav.v2.evalUrl`) — Enter runs the whole chain on it. Typing any
+  other text and pressing Enter jumps to `#/scan` with that term
+  pre-filled.
 - Run a Scan (see above) — fresh hits go to the pipeline
   automatically.
 
@@ -1176,13 +1249,49 @@ again, so a hostile board can't bounce you to loopback / private IP
 
 ### Row actions
 
-- **▶** — jumps to `#/evaluate?url=…` with the URL pre-filled.
-- **✕** — removes the URL from `data/pipeline.md`.
+- **▶** (`pipe.evaluateBtn`) — jumps to `#/evaluate?url=…` with the URL pre-filled.
+- **✕** — removes the URL from `data/pipeline.md` (asks first, `pipe.confirmDel`).
+
+**Grouped view, bulk discard, lossless undo.** Cleaning out a big
+inbox after a scan is the page's v2 centrepiece:
+
+- **Grouped** (`pipe.viewGrouped`) / **Compact list** (`pipe.viewFlat`)
+  — the toolbar toggles between a flat list and a company-grouped
+  board: postings from the same employer collapse under one disclosure
+  (biggest group first), so one noisy board no longer buries the rest.
+  Unknown companies group under their host — but a shared ATS host
+  (say `jobs.lever.co`) only borrows a company name when *every*
+  company-bearing entry on that host agrees on it.
+- **Hide already evaluated** (`pipe.hideTracked`) — on by default;
+  entries whose posting already has a tracker row drop out of the
+  view (and out of bulk selection) so you only ever act on fresh work.
+- **Select** (`pipe.selectOne`) any rows, or **Select all shown**
+  (`pipe.selectAllShown`) — selection always follows the current
+  filters, never invisible rows. The selection bar shows the count
+  (`pipe.selectedCount`) and offers **✕ Remove selected (N)**
+  (`pipe.bulkRemove`) plus **Evaluate first selected**
+  (`pipe.evaluateSelected`) — bulk removal confirms once for the whole
+  set, not per row.
+
+Nothing is lost by mistake: every removal — single or bulk — returns
+an opaque restore token, and a bar at the bottom of the page (**Deleted:
+N**, `pipe.deleted`) offers **Undo** (`pipe.undo`) / **Dismiss**
+(`pipe.undoDismiss`). Removals stack up to five batches (oldest
+dropped); **Undo** restores the most recent one by sending its tokens
+to `POST /api/pipeline/restore`, which reinserts the exact original
+lines (checklist metadata included — nothing is re-derived or
+re-added) and confirms with **Restored to the pipeline**
+(`pipe.undone`). The bar is attached outside the page's own markup,
+so a re-render (navigation, the quick-add flow) can't swallow a
+pending undo; if the server no longer
+knows a token (restart), that URL is re-added the plain way rather
+than dropped.
 
 ### Top-right buttons
 
-- **⚡ Evaluate first** — opens the first queued URL on the Evaluate
-  page, ready to score.
+- **⚡ Evaluate first** (`pipe.evaluateAll`) — opens the first queued
+  URL on the Evaluate page, ready to score (confirms first, since it
+  decides which posting you'll spend a run on).
 - **Scan** — back to the scanner if you want more URLs.
 
 ---
@@ -1260,11 +1369,45 @@ results. Full flow:
 
 ## 10. Reports (`#/reports`)
 
-Browse every saved evaluation. Cards show title, date, legitimacy
-flag, and score (color-coded: green ≥ 4.0, yellow ≥ 3.0, red below).
+Browse every saved evaluation. The page opens on a **Cards** view
+(`rep2.viewCards`) — one card per report: its display title, date,
+legitimacy badge and a colour-coded score pill (green ≥ 4.0, yellow
+≥ 3.0, red below, with a muted "Score not detected" pill when the
+header carries no parseable score) — and can flip to a dense **Table**
+view (`rep2.viewTable`) when you want to scan rows instead. Every card
+and table row also names the **suggested next step** for its score
+band: **Apply now — top fit** (`rep2.actApply`), **Apply, or find a
+warm contact first** (`rep2.actContact`), **Research the company
+first** (`rep2.actResearch`), or **Skip unless there is a personal
+reason** (`rep2.actLow`) — each one a link straight to the right page.
+A card with no score shows the muted **Score not detected** pill
+(`rep.scoreUnparsed`) with a tooltip pointing at the report itself.
 
-Click a card to read the full markdown. Pagination: 12 per page;
-controls at the bottom.
+**Finding the right report.** A filter row sits above the list, and
+everything composes:
+
+- **Search reports** (`rep2.searchLabel`) — free text matched against
+  each report's company, role and display title.
+- **Company** (`rep2.companyLabel`) — pick one employer from the
+  dropdown.
+- **Score band** (`rep2.bandLabel`) — **High (4.5+)** / **Good (4.0+)**
+  / **Mid (3.5+)** / **Below 3.5** (`rep2.bandHigh` … `rep2.bandLow`),
+  plus a bucket for reports whose header carries no parseable score.
+- **From date / To date** (`rep2.dateFrom` / `rep2.dateTo`) — bound
+  the list to a period.
+- **Sort by** (`rep2.sortLabel`) — **Date** / **Score** / **Company**
+  (`rep2.sortDate` …), ascending or descending (`rep2.sortDirAsc` /
+  `rep2.sortDirDesc`).
+- A **score-distribution histogram** (`rep2.histogramLabel`) — click a
+  column to filter to that band and see the shape of your pipeline at
+  a glance.
+- **Reset filters** (`rep2.reset`) clears everything; when nothing
+  matches, the page says so (`rep2.noMatches`) instead of showing a
+  blank grid.
+
+Click a card (or table row) to read the full markdown. Pagination:
+20 per page, controls at the bottom; every filter change snaps you
+back to page 1.
 
 The single-report view also has:
 
@@ -1294,6 +1437,8 @@ GitHub-Flavored Markdown table.
 `Hired` (v1.118.0) is the terminal happy state — the offer was accepted. The tracker marks it with a celebratory badge and greets it with a job-landed banner.
 
 **Stage-tab board (v1.131.0).** Above the table a **stage-tab strip** lets you walk the funnel: an **All** tab plus one tab per canonical status, each showing a live whole-history count — **including zero-count stages**, so the full pipeline is always visible at a glance. Click a stage to filter the table to it; click it again to return to **All**. The tabs (and the counts' folding of localized/legacy status aliases) come from `GET /api/tracker/stages`, which reads the same `templates/states.yml` the server uses — so the tab set stays in sync with the parent's status vocabulary automatically, with no hardcoded list on the page. Search, the score filter, sortable columns and per-row report/PDF/legitimacy are unchanged; with logos enabled, each row's company shows a brand mark.
+
+**Kanban view (v2).** The same board also reads as a drag-and-drop **kanban**: one column per canonical status (board title announced as *Applications by status*, `track.kanbanBoardAria`), a card per application. Drag a card to another column — or focus it and press **Move** — and the change is **previewed before anything is written** (`track.kanbanMoveHint`); a committed move records an entry in the outcome journal and rewrites `data/applications.md`, and the card tells you so (`track.moveJournal`) — to change a status back, use the row's **Outcome** button. Columns the pipeline manages on its own (and `Discarded`, whose semantics only you can pick) render read-only (`track.kanbanReadOnly`) and refuse drops. If the parent's outcome recorder is missing, status moves are disabled with an honest note (`track.kanbanMovesOff`). While the board loads it shows the same shimmer rows as the rest of the app, and an empty board says **No applications** (`track.kanbanEmpty`) with a pointer at the pipeline (`track.emptyBody`).
 
 The status whitelist is enforced server-side; sending anything else in
 a `POST /api/tracker` defaults to `Evaluated`. The canonical
@@ -1453,7 +1598,12 @@ which uses Playwright in the parent project.
 ### SPA checklist mode (`#/apply`)
 
 The SPA's checklist is for users who prefer to fill the form by hand
-without invoking Playwright. It covers:
+without invoking Playwright. An empty page doesn't leave you guessing:
+it shows **Generate an application checklist** with a worked example
+(`v2empty.apply.emptyTitle` / `v2empty.apply.emptyBody`) and, if you
+already evaluated the posting, a shortcut to **pick an evaluated
+report** (`v2empty.apply.pickReport`) so the checklist starts from
+that report's data. It covers:
 
 0. Run `/career-ops apply <url>` in Claude Code to read the form via
    Playwright (skip this step if you're filling by hand).
@@ -1554,7 +1704,13 @@ Monitor your entire pipeline's status, regardless of role score.
 
 When you've got 10+ JDs to score at once (the SPA's one-at-a-time
 `#/evaluate` is impractical for that volume), use the batch runner
-from the CLI.
+from the CLI. The `#/batch` page meets you with the same honesty: its
+empty state shows **Start with a list of postings**
+(`v2empty.batch.emptyTitle`) and a **Paste URL list** helper
+(`v2empty.batch.pasteList`) that lifts bare http(s) URLs off your
+clipboard straight into the input (`v2empty.batch.pasteAdded`), so
+building `batch-input.tsv`-equivalent rows takes seconds before you
+drop to the CLI runner.
 
 **Input file — `batch/batch-input.tsv`** (tab-separated):
 
@@ -1775,7 +1931,7 @@ output, and search the issue tracker on
 career-ops-ui treats each job board as an **adapter** — a single file under
 [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) that knows
 how to fetch + normalize one board's results. Currently the
-`server/lib/sources/` registry ships **121** adapters — **116 English + 5 Russian**
+`server/lib/sources/` registry ships **121** sources — **116 English + 5 Russian**
 boards. The English set spans the major ATSes (Greenhouse / Ashby / Lever /
 Workable / SmartRecruiters / Workday), board-wide aggregators selected by an
 explicit `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board,
