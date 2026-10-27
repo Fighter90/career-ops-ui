@@ -26,7 +26,7 @@ const BASE_URL = process.env.CAREER_OPS_UI_URL || 'http://127.0.0.1:4317';
 // UI locale id → file suffix (ko ↔ ko-KR, as for the dashboard screenshots).
 const LOCALE_TO_FILE = {
   en: 'en', ru: 'ru', es: 'es', 'pt-BR': 'pt-BR', ko: 'ko-KR', ja: 'ja', 'zh-CN': 'zh-CN',
-  'zh-TW': 'zh-TW', fr: 'fr', pl: 'pl', uk: 'uk', da: 'da', ar: 'ar', de: 'de', it: 'it', tr: 'tr', hi: 'hi', ta: 'ta',
+  'zh-TW': 'zh-TW', fr: 'fr', pl: 'pl', uk: 'uk', da: 'da', ar: 'ar', de: 'de', it: 'it', tr: 'tr', hi: 'hi', ta: 'ta', vi: 'vi',
 };
 const HAND_MADE = new Set(['en', 'ru']);
 const only = (process.env.ONLY || '').split(',').map((s) => s.trim()).filter(Boolean);
