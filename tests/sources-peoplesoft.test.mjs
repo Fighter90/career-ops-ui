@@ -36,6 +36,7 @@ import {
   MAX_REDIRECTS,
 } from '../server/lib/sources/peoplesoft.mjs';
 import { peoplesoftAdapter } from '../server/lib/portals/adapters/peoplesoft.mjs';
+import { _setGuardLookup } from '../server/lib/http-json.mjs';
 
 const ORIGIN = 'https://recruit.exampleu.ca';
 const SEARCH_URL = `${ORIGIN}/psc/exu1/EMPLOYEE/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_SCHJOB_FL&Action=U&FOCUS=Applicant&SiteId=1`;
@@ -849,6 +850,11 @@ test('fetch: rejects a non-HTTPS / non-PeopleSoft endpoint before any request', 
 
 test('fetch: default transport (no fetchImpl) is globalThis.fetch — same-origin redirect followed, off-origin refused', async () => {
   const realFetch = globalThis.fetch;
+  // FULL-M2 closed the guard's fail-open on resolver errors, so the stub
+  // hosts this test drives (recruit.exampleu.ca) must RESOLVE for the guard:
+  // hand it a public answer via the _setGuardLookup hook — the test's subject
+  // is redirect handling, not DNS.
+  const undoLookup = _setGuardLookup(async () => [{ address: '93.184.216.34', family: 4 }]);
   try {
     let calls = 0;
     globalThis.fetch = async () => {
@@ -870,6 +876,7 @@ test('fetch: default transport (no fetchImpl) is globalThis.fetch — same-origi
     assert.equal(calls, 1);
   } finally {
     globalThis.fetch = realFetch;
+    undoLookup();
   }
 });
 
