@@ -124,7 +124,9 @@ test('pipeline: the shared delete helper wraps its await and toasts failures', (
     // CAR-150 — the DELETE answer now also captures the comp column for the
     // undo's bare re-add fallback, so the guarded body grew (measured ~750
     // chars to the catch); the window follows (health's comparable window is 900).
-    const after = PIPE.slice(m.index, m.index + 800);
+    // CAR-137 — the catch now carries the specific err.pipeline.undo fallback
+    // (+ its explanatory comment), measuring 852 chars to the toast; widen.
+    const after = PIPE.slice(m.index, m.index + 950);
     assert.ok(before.includes('try {'), `delete site ${sites}: awaits wrapped in try`);
     assert.ok(after.includes('catch (err)'), `delete site ${sites}: caught`);
     assert.ok(after.includes('UI.toast'), `delete site ${sites}: failure surfaced`);
