@@ -26,14 +26,32 @@ import { isIP } from 'node:net';
 import { isPrivateOrLoopbackHost } from './security.mjs';
 
 /**
+ * Test-only resolver hook (mirrors safe-fetch.mjs `_setLookup`): a suite can
+ * force resolver outcomes without touching real DNS. fn: async (hostname,
+ * opts) => answers-array. Production callers never touch this hook.
+ */
+let _guardLookupOverride = null;
+export function _setGuardLookup(fn) {
+  const prev = _guardLookupOverride;
+  _guardLookupOverride = fn || null;
+  return () => { _guardLookupOverride = prev; };
+}
+
+/**
  * DNS-rebinding guard for the scanner fetch path. Runs ONLY when the real
  * global `fetch` is the transport — a test's injected `fetchImpl` supplies the
  * response itself, and its URL is often a stub host that would not resolve, so
  * validating there would break the mocked suites for no security gain.
  *
- * Fail-open on a resolver error: a hostname that will not resolve cannot be
- * connected to either, so the subsequent `fetch` surfaces the real failure —
- * blocking here would only turn a connect error into a confusing one.
+ * Fail-open on a resolver error USED to be the stance (v1.221.0): "a hostname
+ * that will not resolve cannot be connected to either". FULL-M2 closes it:
+ * a hostile resolver wins the TOCTOU race exactly by FAILING the guard's
+ * lookup and answering a private address on fetch's own second lookup — the
+ * one bypass this resolve-time check exists to close. A resolver error here
+ * is a stub, an outage, or an attack; none of them should be silently
+ * proceeded past (safe-fetch.mjs' resolvePinned has failed closed for the
+ * same reason since v1.20.1). The refusal is tagged `ssrfRefused` so the
+ * retry helpers classify it deterministic and never burn the retry budget.
  *
  * CAR-90: an IPv6 LITERAL must never reach the resolver. `new URL(u).hostname`
  * keeps the brackets (`[::1]`), `dns.lookup` throws ENOTFOUND on the bracketed
@@ -71,8 +89,18 @@ export async function guardResolvedHost(fetchImpl, url) {
   }
   let answers;
   try {
-    answers = await dns.lookup(bare, { all: true, verbatim: true });
-  } catch { return; }
+    answers = _guardLookupOverride
+      ? await _guardLookupOverride(bare, { all: true, verbatim: true })
+      : await dns.lookup(bare, { all: true, verbatim: true });
+  } catch (e) {
+    // FULL-M2: fail CLOSED on a resolver error (see the header comment) —
+    // a resolve failure is never a pass.
+    const err = new Error(`Refusing to fetch ${hostname}: DNS lookup failed (${e?.code || e?.message || 'unknown'})`);
+    err.code = 'ECAREEROPS_BLOCKED_DNS';
+    err.ssrfRefused = true;
+    err.hostname = hostname;
+    throw err;
+  }
   // Every answer, not just the first: the connection may use any of them, so a
   // record set that mixes a public and a private address is refused.
   const list = Array.isArray(answers) ? answers : [answers];
