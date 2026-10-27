@@ -479,7 +479,8 @@ Router.register('pipeline', async () => {
     previewPane.appendChild(head);
 
     if (previewLoading) {
-      previewPane.appendChild(c('div', { className: 'loading' }, t('pipe.previewLoading', 'Loading preview…')));
+      // CAR-113 R4 — CAR-112 shimmer rows instead of a bare text line.
+    previewPane.appendChild(window.Skeleton.block(4, t('pipe.previewLoading', 'Loading preview…')));
       return;
     }
     if (previewError) {
