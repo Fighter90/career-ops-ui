@@ -394,7 +394,10 @@
       const runCtrl = run
         ? window.LlmPageKit.createRun({ etaSeconds: 150, onBegin: () => page.show('result') }).mount(runHost)
         : null;
-      if (!run) out.innerHTML = `<div class="loading">${t('mode.generating', 'Generating…')}</div>`;
+      if (!run) {
+        // CAR-113 R4 — shimmer block; the localized label rides aria-label.
+        out.replaceChildren(window.Skeleton.block(5, t('mode.generating', 'Generating…')));
+      }
       try {
         const r = await UI.withSpinner(btn, () => (runCtrl
           ? window.LlmPageKit.run({
