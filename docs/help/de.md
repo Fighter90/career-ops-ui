@@ -1227,11 +1227,22 @@ alles andere liegt hinter **Erweiterte Filter**, `scan.advancedFilters`
 
 ### Active Companies-Karte
 
-Eine ausklappbare Karte, die jedes Unternehmen in `portals.yml` mit
-seinem Scan-Status auflistet:
+Eine ausklappbare Karte, die jedes Unternehmen in `portals.yml`
+zusammenfasst, überschrieben mit **Aktive Unternehmen**
+(`scan.activeCo`) und einem Live-`N/M`-Zähler — *N* sind die
+Unternehmen, die im letzten Scan tatsächlich Ergebnisse geliefert
+haben, *M* die aktuell aktivierten API-gestützten Unternehmen, sodass
+beide Zahlen stets dasselbe Universum beschreiben (ein Lauf nur über
+russische Boards kann den Zähler nicht über den ATS-Nenner aufblähen).
+Der Tooltip sagt dasselbe in schlichten Worten
+(`scan.activeCo.help`). Die Liste ist in zwei Gruppen geteilt:
 
-- ✓ grünes Tag — direkte API-Unterstützung (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday).
-- ○ graues Tag — Fallback auf Web-Search-Prompt (keine API-Übereinstimmung).
+- ✓ **Direkte API** (`scan.apiBacked`) — das Board wird direkt aus
+  seiner öffentlichen ATS-API geholt (einer der 116 EN-Adapter, von
+  Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday
+  bis zum langen Schwanz).
+- ○ **Nur Websuche** (`scan.websearchBacked`) — kein Adapter passt zur
+  URL, daher übernimmt sie der KI-Scan des CLI.
 
 **Klicken Sie auf den Unternehmensnamen** → füllt den obigen
 Ergebnisfilter mit diesem Namen. **Klicken Sie auf das ↗-Symbol** →
@@ -1307,21 +1318,27 @@ Selbst aus einem Netzwerk, das *richtig aussieht*, kann hh.ru die Egress-IP als 
 Posteingang von URLs, die auf ihre Bewertung warten. Liegt in
 `data/pipeline.md`.
 
-**Überblicksstreifen.** Ein kompakter Streifen oben zeigt deine Pipeline auf einen Blick — wie viele URLs im Eingang, wie viele verfolgt und die Applied/Responded/Interview/Offer-Zahlen, jede verlinkt auf den Tracker.
+**Überblicksstreifen.** Ein kompakter Streifen oben zeigt deine Pipeline
+auf einen Blick — wie viele URLs **im Eingang** sind (`pipe.ovInbox`),
+wie viele **verfolgt** werden (`pipe.ovTracked`) und die
+**Applied / Responded / Interview / Offer**-Zahlen aus deinem Tracker.
+Jede Chip verlinkt direkt auf `#/tracker` (die Status-Chips öffnen es
+gefiltert). Er schrumpft auf den bloßen Eingangs-Zähler, wenn der
+Tracker nicht lesbar ist.
 
 ### URLs hinzufügen
 
 Drei Wege:
 
 - Tippen / fügen Sie eine URL in die Eingabe ein + klicken Sie auf
-  **+ Add**.
-- Verwenden Sie die **globale Suche in der oberen Leiste** (ihr Abzeichen
-  liest **Enter**): Fügen Sie einen beliebigen `http(s)://…`-Link ein und
-  drücken Sie **Enter**, um die Auto-pipeline zu öffnen; tippen Sie einen
-  beliebigen anderen Text, und **Enter** springt zu `#/scan` mit diesem
-  Begriff vorausgefüllt (v1.78.1). Ctrl/Cmd+K fokussiert weiterhin das
-  Feld, wo der Browser es erlaubt. Das Marken-**Logo** kehrt zum Dashboard
-  zurück.
+  **URL hinzufügen** (`pipe.add`).
+- Öffnen Sie das **Befehlsmenü**: **Cmd/Ctrl+K** (oder die
+  Schaltfläche **Befehlsmenü** in der Seitenleiste,
+  `nav.v2.palette`), fügen Sie einen beliebigen `http(s)://…`-Link
+  ein, und das Menü bietet **Auto-Pipeline: {url}**
+  (`nav.v2.evalUrl`) an — Enter führt die gesamte Kette darauf aus.
+  Jeder andere Text + Enter springt zu `#/scan` mit diesem Begriff
+  vorausgefüllt.
 - Führen Sie einen Scan aus (siehe oben) — frische Treffer gehen
   automatisch in die Pipeline.
 
@@ -1344,13 +1361,60 @@ Timeout.
 
 ### Zeilenaktionen
 
-- **▶** — springt zu `#/evaluate?url=…` mit der URL vorausgefüllt.
-- **✕** — entfernt die URL aus `data/pipeline.md`.
+- **▶** (`pipe.evaluateBtn`) — springt zu `#/evaluate?url=…` mit der
+  URL vorausgefüllt.
+- **✕** — entfernt die URL aus `data/pipeline.md` (fragt zuerst,
+  `pipe.confirmDel`).
+
+**Gruppierte Ansicht, Massenlöschung, verlustfreies Rückgängigmachen.**
+Das Aufräumen eines großen Postfachs nach einem Scan ist die
+v2-Herzstück der Seite:
+
+- **Gruppiert** (`pipe.viewGrouped`) / **Kompaktliste**
+  (`pipe.viewFlat`) — die Werkzeugleiste schaltet zwischen einer
+  flachen Liste und einem nach Unternehmen gruppierten Board um:
+  Ausschreibungen desselben Arbeitgebers klappen unter einem
+  aufklappbaren Eintrag zusammen (größte Gruppe zuerst), sodass ein
+  lautstarkes Board den Rest nicht mehr begräbt. Unbekannte
+  Unternehmen gruppieren sich unter ihrem Host — aber ein gemeinsam
+  genutzter ATS-Host (etwa `jobs.lever.co`) leiht sich einen
+  Unternehmensnamen nur aus, wenn *alle* unternehmensführenden
+  Einträge dieses Hosts sich einig sind.
+- **Bereits bewertete ausblenden** (`pipe.hideTracked`) —
+  standardmäßig aktiv; Einträge, deren Ausschreibung bereits eine
+  Tracker-Zeile hat, fallen aus der Ansicht (und aus der
+  Massenauswahl), sodass Sie nur über frische Arbeit entscheiden.
+- **Auswählen** (`pipe.selectOne`) beliebiger Zeilen oder **Alle
+  angezeigten auswählen** (`pipe.selectAllShown`) — die Auswahl folgt
+  stets den aktuellen Filtern, nie unsichtbaren Zeilen. Die
+  Auswahlleiste zeigt die Anzahl (`pipe.selectedCount`) und bietet
+  **✕ Auswahl entfernen (N)** (`pipe.bulkRemove`) sowie **Erste
+  Auswahl bewerten** (`pipe.evaluateSelected`) an — die
+  Massenentfernung bestätigt einmal für den ganzen Satz, nicht pro
+  Zeile.
+
+Nichts geht versehentlich verloren: Jede Entfernung — einzeln oder in
+Masse — liefert ein opakes Wiederherstellungs-Token, und eine Leiste
+am unteren Rand der Seite (**Gelöscht: N**, `pipe.deleted`) bietet
+**Rückgängig** (`pipe.undo`) / **Schließen** (`pipe.undoDismiss`) an.
+Entfernungen stapeln sich bis zu fünf Chargen (die älteste fällt weg);
+**Rückgängig** stellt die jüngste wieder her, indem es ihre Tokens an
+`POST /api/pipeline/restore` sendet, das die exakten ursprünglichen
+Zeilen wieder einfügt (Checklist-Metadaten inklusive — nichts wird neu
+abgeleitet oder neu hinzugefügt) und mit **Zur Pipeline
+wiederhergestellt** (`pipe.undone`) bestätigt. Die Leiste hängt
+außerhalb des eigenen Markups der Seite, sodass ein Re-Render
+(Navigation, der Schnell-Hinzufügen-Fluss) ein ausstehendes
+Rückgängigmachen nicht verschlucken kann; kennt der Server ein Token
+nicht mehr (Neustart), wird diese URL auf dem einfachen Weg neu
+hinzugefügt, statt verloren zu gehen.
 
 ### Schaltflächen oben rechts
 
-- **⚡ Erste bewerten** — öffnet die erste eingereihte URL auf der
-  Evaluate-Seite, bereit zur Bewertung.
+- **⚡ Erste bewerten** (`pipe.evaluateAll`) — öffnet die erste
+  eingereihte URL auf der Evaluate-Seite, bereit zur Bewertung
+  (bestätigt zuerst, da es entscheidet, für welche Ausschreibung Sie
+  einen Lauf ausgeben).
 - **Stellensuche** — zurück zum Scanner, wenn Sie mehr URLs möchten.
 
 ---
@@ -1434,12 +1498,49 @@ Ergebnisse zu `#/reports` / `#/tracker` zurück. Vollständiger Ablauf:
 
 ## 10. Reports (`#/reports`)
 
-Durchsuchen Sie jede gespeicherte Bewertung. Karten zeigen Titel, Datum,
-Legitimitäts-Flag und Score (farbcodiert: grün ≥ 4.0, gelb ≥ 3.0, rot
-darunter).
+Durchsuchen Sie jede gespeicherte Bewertung. Die Seite öffnet sich in
+einer **Karten**-Ansicht (`rep2.viewCards`) — eine Karte pro Bericht:
+ihr Anzeigetitel, Datum, Legitimitäts-Badge und eine farbcodierte
+Score-Pille (grün ≥ 4.0, gelb ≥ 3.0, rot darunter, mit einer
+gedämpften „Score nicht erkannt“-Pille, wenn der Header keinen
+parsebaren Score trägt) — und kann in eine dichte
+**Tabellen**-Ansicht (`rep2.viewTable`) umschalten, wenn Sie lieber
+Zeilen überfliegen. Jede Karte und Tabellenzeile nennt zudem den
+**vorgeschlagenen nächsten Schritt** für ihre Score-Bande: **Jetzt
+bewerben — sehr gute Passung** (`rep2.actApply`), **Bewerben oder
+zuerst einen Kontakt finden** (`rep2.actContact`), **Zuerst das
+Unternehmen recherchieren** (`rep2.actResearch`) oder
+**Überspringen, außer mit persönlichem Grund** (`rep2.actLow`) —
+jeder davon ein Link direkt zur richtigen Seite. Eine Karte ohne
+Score zeigt die gedämpfte **Score nicht erkannt**-Pille
+(`rep.scoreUnparsed`) mit einem Tooltip, der auf den Bericht selbst
+verweist.
 
-Klicken Sie auf eine Karte, um das vollständige Markdown zu lesen.
-Paginierung: 12 pro Seite; Steuerelemente am unteren Rand.
+**Den richtigen Bericht finden.** Eine Filterzeile sitzt über der
+Liste, und alles kombiniert sich:
+
+- **Berichte durchsuchen** (`rep2.searchLabel`) — Freitext gegen
+  Unternehmen, Rolle und Anzeigetitel jedes Berichts.
+- **Unternehmen** (`rep2.companyLabel`) — wählen Sie einen Arbeitgeber
+  aus dem Dropdown.
+- **Score-Bereich** (`rep2.bandLabel`) — **Hoch (4.5+)** / **Gut
+  (4.0+)** / **Mittel (3.5+)** / **Unter 3,5** (`rep2.bandHigh` …
+  `rep2.bandLow`), plus ein Kübel für Berichte ohne parsebaren Score.
+- **Von Datum / Bis Datum** (`rep2.dateFrom` / `rep2.dateTo`) —
+  grenzen die Liste auf einen Zeitraum ein.
+- **Sortieren nach** (`rep2.sortLabel`) — **Datum** / **Score** /
+  **Unternehmen** (`rep2.sortDate` …), aufsteigend oder absteigend
+  (`rep2.sortDirAsc` / `rep2.sortDirDesc`).
+- Ein **Score-Verteilungs-Histogramm** (`rep2.histogramLabel`) —
+  klicken Sie auf eine Spalte, um auf diese Bande zu filtern und die
+  Form Ihrer Pipeline auf einen Blick zu sehen.
+- **Filter zurücksetzen** (`rep2.reset`) leert alles; wenn nichts
+  passt, sagt die Seite es (`rep2.noMatches`), statt ein leeres Raster
+  zu zeigen.
+
+Klicken Sie auf eine Karte (oder Tabellenzeile), um das vollständige
+Markdown zu lesen. Paginierung: 20 pro Seite, Steuerelemente am
+unteren Rand; jede Filteränderung bringt Sie zurück auf Seite 1.
 
 Die Einzelreport-Ansicht hat auch:
 
@@ -1470,6 +1571,26 @@ GitHub-Flavored-Markdown-Tabelle.
 `Hired` (v1.118.0) ist der glückliche Endzustand — das Angebot wurde angenommen. Der Tracker markiert ihn mit einem feierlichen Badge und begrüßt ihn mit einem „Job gelandet”-Banner.
 
 **Stage-Tab-Board (v1.131.0).** Oberhalb der Tabelle lässt Sie eine **Stage-Tab-Leiste** durch den Funnel wandern: ein **Alle**-Tab plus ein Tab pro kanonischem Status, jeweils mit einer live berechneten Gesamtverlaufs-Anzahl — **einschließlich Stufen mit null Treffern**, sodass die gesamte Pipeline stets auf einen Blick sichtbar ist. Klicken Sie auf eine Stufe, um die Tabelle darauf zu filtern; klicken Sie erneut, um zu **Alle** zurückzukehren. Die Tabs (und die Faltung lokalisierter/veralteter Status-Aliase in den Zählungen) stammen aus `GET /api/tracker/stages`, das dieselbe `templates/states.yml` liest, die auch der Server verwendet — sodass die Tab-Menge automatisch mit dem Status-Vokabular des Elternprojekts synchron bleibt, ohne hartcodierte Liste auf der Seite. Suche, der Score-Filter, sortierbare Spalten und die Report-/PDF-/Legitimitäts-Hinweise pro Zeile bleiben unverändert; bei aktivierten Logos zeigt jede Firmenzeile eine Marke.
+
+**Kanban-Ansicht (v2).** Dasselbe Board liest sich auch als
+Drag-and-Drop-**Kanban**: eine Spalte pro kanonischem Status
+(Board-Titel angekündigt als *Bewerbungen nach Status*,
+`track.kanbanBoardAria`), eine Karte pro Bewerbung. Ziehen Sie eine
+Karte in eine andere Spalte — oder fokussieren Sie sie und drücken
+Sie **Verschieben** — und die Änderung wird **angezeigt, bevor etwas
+geschrieben wird** (`track.kanbanMoveHint`); eine bestätigte
+Verschiebung schreibt einen Eintrag ins Ergebnistagebuch und
+überschreibt `data/applications.md`, und die Karte sagt es Ihnen
+(`track.moveJournal`) — um einen Status zurückzuändern, nutzen Sie
+die **Ergebnis**-Schaltfläche der Zeile. Spalten, die die Pipeline
+selbst verwaltet (und `Discarded`, dessen Semantik nur Sie wählen
+können), rendern schreibgeschützt (`track.kanbanReadOnly`) und weisen
+Drops ab. Fehlt der Ergebnis-Recorder des Elternprojekts, sind
+Statuswechsel mit einer ehrlichen Notiz deaktiviert
+(`track.kanbanMovesOff`). Während das Board lädt, zeigt es dieselben
+Schimmer-Zeilen wie der Rest der App, und ein leeres Board sagt
+**Keine Bewerbungen** (`track.kanbanEmpty`) mit einem Verweis auf die
+Pipeline (`track.emptyBody`).
 
 Die Status-Whitelist wird serverseitig durchgesetzt; das Senden von etwas
 anderem in einem `POST /api/tracker` fällt auf `Evaluated` zurück. Der
