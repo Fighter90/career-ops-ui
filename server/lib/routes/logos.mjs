@@ -51,21 +51,22 @@ export function isPlausibleDomain(d) {
 // Raster formats only — SVG is active content (script, foreignObject) and this
 // proxy serves same-origin bytes, so an SVG payload is refused no matter what
 // it declares or looks like (FULL-M4).
-const RASTER_CT_RE = /^image\/(png|gif|jpe?g|webp|bmp|x-icon|vnd\.microsoft\.icon)$/i;
-
 function looksLikeImage(buf, contentType) {
-  if (contentType) {
-    if (/svg/i.test(String(contentType))) return false;
-    // A known raster content-type passes; any other image/* subtype must win
-    // the magic-byte sniff below instead of being trusted on the header alone.
-    if (RASTER_CT_RE.test(String(contentType))) return true;
-  }
+  if (contentType && /svg/i.test(String(contentType))) return false;
+  // FULL-M4 review r1 — the header is NEVER trusted on its own: a lying
+  // `image/png` carried SVG bytes past the old early-return. Every payload
+  // must win the magic-byte sniff; the route clamps a lying non-image
+  // content-type at store time, so the header only ever ADDS refusals.
   if (!buf || buf.length < 4) return false;
   const b = buf;
   if (b[0] === 0x00 && b[1] === 0x00 && (b[2] === 0x01 || b[2] === 0x02)) return true; // .ico
   if (b[0] === 0x89 && b[1] === 0x50 && b[2] === 0x4e && b[3] === 0x47) return true;    // PNG
   if (b[0] === 0x47 && b[1] === 0x49 && b[2] === 0x46) return true;                     // GIF
   if (b[0] === 0xff && b[1] === 0xd8 && b[2] === 0xff) return true;                     // JPEG
+  if (b.length >= 12 &&
+      b[0] === 0x52 && b[1] === 0x49 && b[2] === 0x46 && b[3] === 0x46 &&
+      b[8] === 0x57 && b[9] === 0x45 && b[10] === 0x42 && b[11] === 0x50) return true;  // RIFF···WEBP
+  if (b[0] === 0x42 && b[1] === 0x4d) return true;                                      // BM (BMP)
   return false;
 }
 
@@ -123,8 +124,13 @@ export function registerLogoRoutes(app) {
       cacheSet(domain, { miss: true });
       return res.status(404).end();
     }
-    cacheSet(domain, { buf: got.buf, contentType: got.contentType });
-    res.setHeader('Content-Type', got.contentType);
+    // FULL-M4 review r1 — clamp the content-type AT STORE TIME (mirrors
+    // fetchFavicon's normalization): a lying `text/html` from the fetcher
+    // must never be served or cached as HTML — nosniff does not block HTML
+    // rendering on navigation, and the cache-hit path would re-serve it.
+    const ct = /^image\//i.test(String(got.contentType || '')) ? String(got.contentType) : 'image/x-icon';
+    cacheSet(domain, { buf: got.buf, contentType: ct });
+    res.setHeader('Content-Type', ct);
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('Cache-Control', 'private, max-age=86400');
     return res.end(got.buf);

@@ -10,7 +10,7 @@
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync, chmodSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, chmodSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 
@@ -39,9 +39,6 @@ before(async () => {
   writeFileSync(resolve(dir, 'modes', 'oferta.md'), 'oferta\n');
   // Stub runner: echoes args, exits 0 — the SSE `start` frame carries args.
   const runner = resolve(dir, 'batch', 'batch-runner.sh');
-  writeFileSync(runner, '#!/usr/bin/env bash\necho "stub args: $@" >&2\nexit 0\n');
-  chmodSync(runner, 0o755);
-  // Stub runner: echoes args, exits 0 — the SSE `start` frame carries args.
   writeFileSync(runner, '#!/usr/bin/env bash\necho "stub args: $@" >&2\nexit 0\n');
   chmodSync(runner, 0o755);
   process.env.CAREER_OPS_ROOT = dir;
@@ -115,6 +112,61 @@ test('GET /api/logo serves the same headers on a cache hit', async () => {
   assert.match(cc, /private/);
   assert.doesNotMatch(cc, /public/);
   assert.equal(r2.headers.get('x-content-type-options'), 'nosniff');
+});
+
+// FULL-M4 review r1 — the header alone must never admit a payload.
+
+test('a lying image/png header with an SVG body is refused', async () => {
+  _setFaviconFetcher(async () => ({ buf: SVG, contentType: 'image/png' }));
+  const r = await fetch(`${baseUrl}/api/logo?domain=liar.example`);
+  assert.equal(r.status, 404, 'the magic-byte sniff must win over a lying raster header');
+});
+
+test('a refused SVG is negative-cached (refusal happens before the cache)', async () => {
+  let calls = 0;
+  _setFaviconFetcher(async () => { calls++; return { buf: SVG, contentType: 'image/svg+xml' }; });
+  const r1 = await fetch(`${baseUrl}/api/logo?domain=negcache.example`);
+  const r2 = await fetch(`${baseUrl}/api/logo?domain=negcache.example`);
+  assert.equal(r1.status, 404);
+  assert.equal(r2.status, 404, 'the second request must 404 from the negative cache');
+  assert.equal(calls, 1, 'the fetcher must run exactly once');
+});
+
+test('a lying text/html content-type is clamped to image/* at store time (fresh and cached)', async () => {
+  _setFaviconFetcher(async () => ({ buf: PNG, contentType: 'text/html' }));
+  const r1 = await fetch(`${baseUrl}/api/logo?domain=clamp.example`);
+  assert.equal(r1.status, 200);
+  assert.match(r1.headers.get('content-type') || '', /^image\//, 'HTML must never be served from the logo proxy');
+  const r2 = await fetch(`${baseUrl}/api/logo?domain=clamp.example`);
+  assert.match(r2.headers.get('content-type') || '', /^image\//, 'the clamp must hold on the cache-hit path too');
+});
+
+// FULL-M4 review r1 — the single-flight slot must survive a client disconnect.
+
+test('a client disconnect releases the single-flight slot', async () => {
+  const runner = resolve(process.env.CAREER_OPS_ROOT, 'batch', 'batch-runner.sh');
+  const orig = readFileSync(runner, 'utf8');
+  writeFileSync(runner, '#!/usr/bin/env bash\nsleep 5\nexit 0\n');
+  chmodSync(runner, 0o755);
+  try {
+    const ctrl = new AbortController();
+    const p = fetch(`${baseUrl}/api/stream/batch`, { signal: ctrl.signal });
+    await new Promise((r) => setTimeout(r, 200));
+    ctrl.abort();
+    await p.catch(() => {});
+    // res close → SIGTERM → child close → slot release. Poll instead of a
+    // fixed sleep so a slow CI box cannot flake; if the slot were leaked,
+    // the next run's stream would carry BATCH_BUSY and no start frame.
+    let args = null;
+    for (let i = 0; i < 30 && !args; i++) {
+      await new Promise((r) => setTimeout(r, 200));
+      try { args = await getStartArgs(''); } catch { /* still busy */ }
+    }
+    assert.ok(Array.isArray(args), 'the next batch run must not be BATCH_BUSY after a disconnect');
+  } finally {
+    writeFileSync(runner, orig);
+    chmodSync(runner, 0o755);
+  }
 });
 
 // ── /api/stream/batch: --parallel clamp ───────────────────────────────────

@@ -208,12 +208,21 @@ export function registerBatchRoutes(app) {
     // v1.22.0 (L-2) — --noprofile --norc skips ~/.bashrc / ~/.bash_profile
     // so a hostile or broken rc file in CAREER_OPS_ROOT cannot influence
     // the runner. Defense-in-depth; the runner script itself is trusted.
-    const child = spawn('bash', ['--noprofile', '--norc', PATHS.batchRunner, ...args], {
-      cwd: PATHS.root,
-      env: { ...process.env },
-      // Own process group (setsid), so the workers can be signalled with it.
-      detached: GROUP_KILL,
-    });
+    // FULL-M4 review r1 — a synchronous spawn throw between the slot claim
+    // and handler registration would leak the single-flight slot; release
+    // it and rethrow (mirrors scan.mjs's guard).
+    let child;
+    try {
+      child = spawn('bash', ['--noprofile', '--norc', PATHS.batchRunner, ...args], {
+        cwd: PATHS.root,
+        env: { ...process.env },
+        // Own process group (setsid), so the workers can be signalled with it.
+        detached: GROUP_KILL,
+      });
+    } catch (err) {
+      activeBatch = null;
+      throw err;
+    }
     const handleChunk = (stream, chunk) => {
       for (const line of chunk.toString().split('\n')) {
         if (!line) continue;
