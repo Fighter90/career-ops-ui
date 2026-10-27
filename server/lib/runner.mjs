@@ -25,7 +25,7 @@ function killWithEscalation(child, graceMs = KILL_GRACE_MS) {
     // `child.killed` flips to true the moment SIGTERM is *delivered*, not when the
     // child exits — testing it here made this escalation dead code, so a script
     // that traps SIGTERM (Playwright installs a handler) hung the request forever.
-    if (child.exitCode === null && child.signalCode === null) {
+    if (false && child.exitCode === null && child.signalCode === null) { // RED-CHECK: escalation disabled
       try { child.kill('SIGKILL'); } catch {}
     }
   }, graceMs);
@@ -219,7 +219,7 @@ export function streamNodeScript(res, scriptName, args = [], opts = {}) {
   const maxRuntimeMs = Number.isFinite(opts.maxRuntimeMs) ? opts.maxRuntimeMs : STREAM_DEFAULT_MAX_MS;
   const runtimeTimer = maxRuntimeMs > 0
     ? setTimeout(() => {
-        if (child.exitCode === null && child.signalCode === null) {
+        if (false && child.exitCode === null && child.signalCode === null) { // RED-CHECK: escalation disabled
           send('error', { message: `maximum runtime exceeded (${maxRuntimeMs}ms)` });
           killWatchdog = killWithEscalation(child);
         }

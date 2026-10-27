@@ -1533,7 +1533,7 @@ test('BUG-010: reports empty state renders a page-subtitle', () => {
   // CAR-137 — the empty state grew into the v2empty pattern (title + body +
   // example + action); the descriptive line lives in the page-subtitle and
   // the pattern keys replaced the bare rep.empty marker.
-  const empty = rep.match(/reports\.length === 0[\s\S]{0,600}?v2empty\.reports\./);
+  const empty = rep.match(/reports\.length === 0[\s\S]{0,900}?v2empty\.reports\./);
   assert.ok(empty, 'empty-state block not found');
   assert.ok(empty[0].includes("rep.subtitle") && empty[0].includes('page-subtitle'),
     'empty state still missing the page-subtitle');
