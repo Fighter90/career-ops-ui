@@ -8,7 +8,7 @@
  * rewritten, everything else passes through unchanged.
  */
 import { readFileSync, existsSync, openSync, fchmodSync, writeSync, closeSync } from 'node:fs';
-import { parseEnvLine } from './dotenv.mjs';
+import { parseEnvLine, UNSAFE_ENV_KEY } from './dotenv.mjs';
 import { isPrivateOrLoopbackHost } from './security.mjs';
 
 /**
@@ -193,11 +193,13 @@ export const SECRET_KEYS = new Set([
  * dotenv-compatible rules in parseEnvLine (comments, `export`, quotes).
  */
 export function parseEnv(text) {
-  const out = {};
+  // Null prototype: a parsed .env is data, and `__proto__` must be an ordinary
+  // (here: refused) key rather than the Object.prototype setter.
+  const out = Object.create(null);
   if (!text) return out;
   for (const raw of text.split(/\r?\n/)) {
     const entry = parseEnvLine(raw);
-    if (entry) out[entry.key] = entry.value;
+    if (entry && !UNSAFE_ENV_KEY(entry.key)) out[entry.key] = entry.value;
   }
   return out;
 }

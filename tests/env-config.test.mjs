@@ -30,12 +30,14 @@ test('parseEnv: comments + blanks ignored', () => {
 
 test('parseEnv: malformed lines skipped', () => {
   const out = parseEnv('NO_EQUALS\n=just-equals\nGOOD=x\n');
-  assert.deepEqual(out, { GOOD: 'x' });
+  const expected = Object.create(null); // parseEnv returns a null-prototype object
+  expected.GOOD = 'x';
+  assert.deepEqual(out, expected);
 });
 
 test('parseEnv: empty input → {}', () => {
-  assert.deepEqual(parseEnv(''), {});
-  assert.deepEqual(parseEnv(null), {});
+  assert.deepEqual(parseEnv(''), Object.create(null));
+  assert.deepEqual(parseEnv(null), Object.create(null));
 });
 
 // ────────────────────── maskSecret ──────────────────────
