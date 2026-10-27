@@ -485,9 +485,9 @@ conversion is uncertain, state both raw figures and reason from them — an unce
 must NEVER by itself flip the verdict to "below minimum". When the prompt provides a
 COMPENSATION COMPARISON block with server-normalized figures, use those figures as stated.
 
-Start every block heading with its letter, in the exact skeleton shape below
-(\`## A) …\` through \`## G) …\` — matching modes/oferta.md's block order). If
-you translate the heading titles, keep the letter A–G in each one.
+Start every block heading with its letter, letter first, in the exact shape the
+seven-heading skeleton below uses (A through G, matching modes/oferta.md's block
+order). If you translate the heading titles, keep the letter A–G in each one.
 The letter MUST be a LATIN capital (A B C D E F G) — never a letter of your own
 alphabet's numbering (for a Ukrainian report: А Б В Г Д Є Ж; for Russian: А Б В …).
 
