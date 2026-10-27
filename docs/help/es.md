@@ -8,6 +8,22 @@ corresponde a una entrada del sidebar o a una fase del workflow. Lee
 de arriba a abajo en el primer arranque; después salta a la sección
 concreta vía el índice del sidebar de ayuda.
 
+> **Cómo orientarte (la shell v2).** El sidebar está organizado en
+> grupos colapsables — **Búsqueda**, **Decisión**, **Aplicación**,
+> **Networking**, **Analítica**, **Configuración** (`nav.group.*`) —
+> que se abren cuando visitas una sección y se quedan donde los
+> dejaste. Marca con una ☆ cualquier página para fijarla bajo
+> **Favoritos**, y pulsa **Cmd/Ctrl+K** (o el botón **Menú de
+> comandos** en la parte superior del sidebar, `nav.v2.palette`) para
+> saltar por búsqueda difusa a cualquier página desde cualquier
+> lugar. Cada página muestra su título al instante y rellena filas
+> grises con brillo mientras cargan los datos, así que la navegación
+> nunca se siente vacía. Y ninguna página te recibe con un vacío
+> total: las cuatro que empiezan vacías — **Auto-pipeline**,
+> **Checklist de aplicación**, **Batch** y **Empresas financiadas** —
+> muestran un ejemplo resuelto más la única acción que las llena
+> (`v2empty.exampleTag`).
+
 > **Audiencia:** cualquiera que acaba de poner este UI dentro de un
 > checkout de `career-ops` y ejecutó `bash bin/start.sh`. No se asume
 > conocimiento previo de career-ops.
@@ -328,7 +344,12 @@ tu número mínimo de aceptación está justo ahí.
 → Reports → Deep research → Apply checklist → Outreach → Tracker
 → Follow-up → Interview prep → Activity log`
 
-Eso es todo. 21 pasos, botón-por-botón, de cero a oferta.
+El sidebar agrupa estas mismas páginas por fase (**Búsqueda** →
+**Decisión** → **Aplicación** → …), así que el orden del workflow y
+el orden del menú coinciden; **Cmd/Ctrl+K** abre el **Menú de
+comandos** (`nav.v2.palette`) si prefieres teclear tres letras antes
+que rastrear la lista. Eso es todo. 21 pasos, botón-por-botón, de
+cero a oferta.
 
 ### Auto-pipeline de un clic (`#/auto`) — el atajo de 21 pasos
 
@@ -1009,12 +1030,22 @@ el panel completo se agrupa bajo **Filtros de resultados**,
 
 ### Tarjeta Active Companies
 
-Una tarjeta colapsable listando cada empresa de `portals.yml` con su
-estado de scan:
+Una tarjeta colapsable que resume cada empresa de `portals.yml`,
+encabezada por **Empresas activas** (`scan.activeCo`) con un contador
+en vivo `N/M` — *N* son las empresas que de hecho devolvieron
+resultados en el último scan, *M* las empresas con API habilitadas
+ahora, de modo que ambos números siempre describen el mismo universo
+(una pasada solo de boards rusos no puede inflar el numerador por
+encima del denominador de ATS). El tooltip lo dice con las mismas
+palabras simples (`scan.activeCo.help`). La lista se divide en dos
+grupos:
 
-- Tag verde ✓ — soporte API directo (Greenhouse / Ashby / Lever /
-  Workable / SmartRecruiters / Workday).
-- Tag gris ○ — fallback a prompt web-search (sin match de API).
+- ✓ **API directa** (`scan.apiBacked`) — el board se obtiene
+  directamente de su API ATS pública (uno de los 116 adapters EN,
+  desde Greenhouse / Ashby / Lever / Workable / SmartRecruiters /
+  Workday hasta la cola larga).
+- ○ **Solo web-search** (`scan.websearchBacked`) — ningún adapter
+  coincide con la URL, así que la cubre el scan con IA del CLI.
 
 **Haz clic en el nombre de la empresa** → rellena el filtro de
 resultados arriba con ese nombre. **Haz clic en el icono ↗** → abre

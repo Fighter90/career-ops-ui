@@ -216,6 +216,16 @@ Some `server/lib` modules are **hand-mirrors of parent `career-ops` modules** an
 
 When porting a parent change here, frame CHANGELOG/README as a **new feature** (never "ported/parity"); provenance stays only in the commit body + this file. See the memory note *changelog-readme-new-feature-framing* (centralized here on purpose — the map is engineering context, kept out of product/CHANGELOG surfaces, not concealed).
 
+## Agent fleet policy (owner directive, 2026-10-28)
+
+Держать **10–15 субагентов параллельно** на длинных волнах: задачи нарезаются
+по файловой принадлежности (один агент — непересекающийся набор файлов),
+каждому выдаётся worktree + ветка + red→green + гейты + «NO PR» (интеграция —
+оркестратор). При упоре в лимиты — очередь тройками, ворктри сирот
+сохраняются и перезапускаются резюме-агентом. Результаты каждого агента —
+SHA + гейты в отчёте; интеграция оркестратором в один PR на волну.
+
+
 ## Realizations / hard-won notes (v1.57–v1.97)
 
 - **I18N-SPLIT (v1.60.0) — per-locale dictionary.** Translations live ONLY in `public/js/lib/locales/i18n-dict.<lang>.js` (12 files) + `i18n-dict.aliases.js`; `i18n-dict.js` is an assembler that rebuilds `window.__I18N_DICT` — it stores nothing. Three traps: (1) **vm-realm deepEqual** — objects assembled inside `node:vm` have a foreign `Object.prototype`, so `deepStrictEqual` vs a JSON snapshot throws "same structure but not reference-equal"; round-trip `JSON.parse(JSON.stringify(x))` first. (2) **Load order is load-bearing** — all 13 locale `<script>`s must precede `i18n-dict.js`, which must precede `i18n.js` (locked by `tests/i18n-locale-files.test.mjs`). (3) **A "passing" CI step can be a no-op** — the `ci.yml` inline i18n check validated an *empty* dict for ~37 releases after the v1.23 split (it loaded only `i18n.js`); now it loads the full chain + a `keys < 600` floor. Node tests load the dict via `tests/helpers/i18n-vm.mjs` (`loadAssembledDict` / `loadI18n` / `legacyDictText` / `allLocaleSource`).
