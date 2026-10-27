@@ -256,7 +256,13 @@ test('classifier wiring: classification runs off the registry payload, not a hos
 });
 
 // ── 4. refreshResults latest-wins + keep-the-table-on-failure ──────────────
-const RR_START = SCAN.indexOf('let refreshSeq = 0;');
+// Language-switch survival moved the state declarations (refreshSeq,
+// lastResults, …) to module level — anchoring on the DECLARATION would now
+// slice from the module top (swallowing resetResultsCache's deliberate
+// reset). Anchor on the function itself; the module-level shape is gated by
+// tests/scan-lang-switch-state.test.mjs.
+const fnIdx = SCAN.indexOf('async function refreshResults');
+const RR_START = fnIdx;
 const RR_END = SCAN.indexOf('// v1.30.0 — replaces the hardcoded');
 assert.ok(RR_START >= 0 && RR_END > RR_START, 'refreshResults slice bounds');
 const REFRESH = SCAN.slice(RR_START, RR_END);
