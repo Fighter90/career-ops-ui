@@ -29,7 +29,7 @@
 import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { PROJECT_ROOT } from '../paths.mjs';
-import { runNodeScript } from '../runner.mjs';
+import { runTrackedScript } from '../runner.mjs';
 import { llmRateLimit } from '../rate-limit.mjs';
 import { parseJsonStdout, sanitizeDetail } from '../parent-relay.mjs';
 
@@ -118,7 +118,10 @@ export function registerOutcomeRoutes(app) {
     if (dryRun) args.push('--dry-run');
     args.push('--json');
 
-    const r = await runNodeScript(SCRIPT, args, { timeoutMs: RUN_TIMEOUT_MS });
+    // FULL-M1 hand-off — outcome.mjs mutates the tracker: the spawn holds
+    // the applications.md lock (TRACKER_MUTATING), serializing with
+    // web-ui's own tracker writers.
+    const r = await runTrackedScript(SCRIPT, args, { timeoutMs: RUN_TIMEOUT_MS });
     const data = parseJsonStdout(r.stdout);
 
     if (r.code !== 0 || !data) {
