@@ -10,6 +10,12 @@ const { locale } = Astro.props;
 const adaptersRounded = Math.floor(facts.adapters / 5) * 5;
 const sub = (s: string) =>
   s
+    // CAR-138 — exact source breakdown (facts.json is generated from the live
+    // registry, so the numbers can never drift from the app). Locales still on
+    // the older ~{adapters} wording keep rounding via adaptersRounded below.
+    .replace('{sources}', String(facts.adapters))
+    .replace('{sourcesEn}', String(facts.adaptersEn))
+    .replace('{sourcesRu}', String(facts.adaptersRu))
     .replace('{adapters}', String(adaptersRounded))
     .replace('{providers}', String(facts.providers))
     .replace('{n}', String(facts.locales));
