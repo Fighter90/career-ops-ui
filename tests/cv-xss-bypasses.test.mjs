@@ -164,3 +164,46 @@ test('a harmless whitespace-prefixed tag is still NOT escaped', () => {
   const out = stripDangerousMarkdown('< b>hi</b>');
   assert.ok(out.includes('< b>'), `< b> was over-escaped: ${out}`);
 });
+
+// ─── FULL-R4: ordinary prose must survive a save (no data corruption) ───
+// The pre-R4 sanitizer stripped dangerous schemes on the WHOLE document and
+// decoded entities IN PLACE, corrupting ordinary CV text on every save:
+// «JavaScript: React, Node» lost its leading word, `R&amp;D` was permanently
+// rewritten to `R&D`, `&lt;T&gt;` became `<T>`, `&#36;` became `$`. The fix
+// (commit 6c59479d) renames schemes only in link/attribute contexts and runs
+// detection on a decoded scratch copy while cutting from the original. These
+// cases are regression-locking: they were RED against the pre-R4 sanitizer
+// and lock the "never corrupt prose" half of the contract here, next to the
+// XSS half the rest of this file pins.
+
+test('keeps the word JavaScript in a plain skills line (prose colon)', () => {
+  const line = 'JavaScript: React, Node';
+  assert.equal(stripDangerousMarkdown(line), line);
+});
+
+test('keeps «JavaScript: 5 yrs» intact', () => {
+  const line = 'JavaScript: 5 yrs';
+  assert.equal(stripDangerousMarkdown(line), line);
+});
+
+test('R&amp;D survives verbatim (no in-place entity decode)', () => {
+  const line = 'Skills: R&amp;D, mentoring';
+  assert.equal(stripDangerousMarkdown(line), line);
+});
+
+test('&lt;T&gt; survives verbatim (no in-place entity decode)', () => {
+  const line = 'Generics: &lt;T&gt; everywhere';
+  assert.equal(stripDangerousMarkdown(line), line);
+});
+
+test('numeric entity &#36; survives verbatim (no in-place entity decode)', () => {
+  const line = 'Salary: &#36;100K';
+  assert.equal(stripDangerousMarkdown(line), line);
+});
+
+test('prose survives even when a real payload is stripped from the same document', () => {
+  const doc = 'Skills: JavaScript: React — R&amp;D\n\n<script>alert(1)</script>\n';
+  const out = stripDangerousMarkdown(doc);
+  assert.match(out, /Skills: JavaScript: React — R&amp;D/, `prose corrupted: ${out}`);
+  assert.ok(!/<script/i.test(out), `payload survived: ${out}`);
+});
