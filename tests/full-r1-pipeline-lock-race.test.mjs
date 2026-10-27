@@ -187,19 +187,27 @@ test('markPipelineRejected (auto-pipeline) does not lose, and is not lost by, a 
   await Promise.all([locked, post]);
 
   const content = readFileSync(PATHS.pipeline, 'utf8');
-  assert.match(
-    content,
-    /https:\/\/example\.com\/reject-race-writer/,
-    `the concurrent locked writer's URL must survive markPipelineRejected — got:\n${content}`,
+  // FULL-R1 CodeQL — no URL-shaped regex/substring on file content: parse the
+  // Rejected section's `- URL — rejected:` lines and compare host+pathname
+  // structurally (strictly stronger than a substring that matches any host
+  // carrying the token).
+  const rejectedAt = content.search(/^## Rejected/m);
+  assert.ok(rejectedAt !== -1, `a ## Rejected section must exist — got:\n${content}`);
+  const rejectedUrls = [...content.slice(rejectedAt).matchAll(/^- (\S+) — rejected:/gm)].map((m) => m[1]);
+  assert.ok(
+    rejectedUrls.some((u) => hasExactUrl(u, 'job-boards.greenhouse.io', '/')),
+    `the rejected URL must be moved into the ## Rejected section — got: ${JSON.stringify(rejectedUrls)}`,
   );
-  assert.match(
-    content,
-    /## Rejected[\s\S]*job-boards\.greenhouse\.io/,
-    `the rejected URL must be moved into the ## Rejected section — got:\n${content}`,
+  assert.ok(
+    rejectedUrls.every((u) => !hasExactUrl(u, 'example.com', '/reject-race-writer')),
+    `the locked writer's URL must survive markPipelineRejected unrejected — got: ${JSON.stringify(rejectedUrls)}`,
   );
   // And it must have left the fence — the timer must not re-pick it up.
   const fenceUrls = parsePipeline(content);
-  assert.ok(!fenceUrls.includes(rejectUrl), `the rejected URL must leave the fence — got: ${JSON.stringify(fenceUrls)}`);
+  assert.ok(
+    fenceUrls.every((u) => !hasExactUrl(u, 'job-boards.greenhouse.io', '/')),
+    `the rejected URL must leave the fence — got: ${JSON.stringify(fenceUrls)}`,
+  );
 });
 
 test('saveLastScan does not lose a concurrent locked last-scan.json write', async () => {
