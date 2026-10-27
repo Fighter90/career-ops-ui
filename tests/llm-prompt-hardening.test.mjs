@@ -276,19 +276,24 @@ test('bundleProjectContext states the output language BEFORE the inlined files (
   assert.ok(P.bundleProjectContext({ modeSlugs: ['oferta'], lang: 'en' }).startsWith('<project_context>'));
 });
 
-test('evaluation routes pass the language to the context and a 300 s timeout to the provider', () => {
+test('evaluation routes pass the language to the context and a locale-aware timeout to the provider', () => {
   const llm = readFileSync(new URL('../server/lib/routes/llm.mjs', import.meta.url), 'utf8');
   const ap = readFileSync(new URL('../server/lib/routes/auto-pipeline.mjs', import.meta.url), 'utf8');
   for (const src of [llm, ap]) {
     const calls = src.match(/bundleProjectContext\(\{ modeSlugs: \['_shared', 'oferta'\][^)]*\)/g) || [];
     assert.ok(calls.length >= 1);
     for (const c of calls) assert.match(c, /\blang\b/, c);
-    assert.match(src, /EVAL_TIMEOUT_MS = 300_000/);
   }
+  // CAR-147 — the evaluate ceiling is a pure function of the locale: EN keeps
+  // the 300 s base (EVAL_TIMEOUT_MS), token-dense ta/hi get 480 s, and BOTH
+  // files thread evalTimeoutMs(lang) into their provider/subprocess call sites.
+  assert.match(llm, /EVAL_TIMEOUT_MS = 300_000/);
+  assert.match(llm, /export function evalTimeoutMs\(lang\)/);
+  assert.match(ap, /evalTimeoutMs\(lang\)/);
   // FULL-M5 — the two per-provider evaluate branches (Anthropic + tail) merged
   // into ONE runActiveProvider call site; it still carries both knobs.
   assert.equal((llm.match(/maxTokens: EVAL_MAX_TOKENS/g) || []).length, 1);
-  assert.match(llm, /maxTokens: EVAL_MAX_TOKENS,\s*timeoutMs: EVAL_TIMEOUT_MS,/);
+  assert.match(llm, /maxTokens: EVAL_MAX_TOKENS,\s*timeoutMs: evalTimeoutMs\(lang\),/);
 });
 
 test('the language reminder keeps quotes and names in English but nothing else (hi code-switching)', () => {

@@ -42,6 +42,19 @@ export const EVAL_MAX_TOKENS = 16384;
 // A full A–G report with a ~190 KB context took 88–136 s on prod and one
 // locale passed 180 s (the provider default) — 2026-10-07 QA.
 export const EVAL_TIMEOUT_MS = 300_000;
+// CAR-147 — the evaluate ceiling is locale-aware. Tamil/Hindi are not slower
+// on input (the prompt ≈ EN and the context prefix is prompt-cached): they are
+// output-token-dense — Indic scripts tokenize at several tokens per syllable —
+// so the same buffered 16384-token A–G report sits at/past the 300 s wall
+// (ta on prod: HTTP 502 after exactly 300 s, empty report). EN and unknown
+// locales keep EVAL_TIMEOUT_MS; token-dense locales get 480 s. Pure function
+// of the locale string; GEMINI_EVAL_TIMEOUT_MS below stays the EN baseline.
+const EVAL_TIMEOUT_TOKEN_DENSE_MS = 480_000;
+const TOKEN_DENSE_EVAL_LOCALES = new Set(['ta', 'hi']);
+export function evalTimeoutMs(lang) {
+  const base = String(lang || 'en').trim().toLowerCase().split('-')[0];
+  return TOKEN_DENSE_EVAL_LOCALES.has(base) ? EVAL_TIMEOUT_TOKEN_DENSE_MS : EVAL_TIMEOUT_MS;
+}
 
 /** Shape warnings for an evaluation, with a cut-off answer named as such. */
 export function evaluationWarnings(r) {
@@ -88,8 +101,9 @@ function unlinkQuiet(file) {
 //   · `--lang <locale>` FIRST — the script skips unknown `--` flags but would
 //     glue the bare VALUE onto the positional JD text; `--file` (later)
 //     replaces the text, so an unknown `--lang` stays harmless either way.
-//   · the 300 s EVAL_TIMEOUT_MS (a real evaluation ran 136 s; the old 120 s
-//     evaluate-side timeout killed live runs).
+//   · the locale-aware evalTimeoutMs(lang) ceiling (300 s; 480 s for the
+//     token-dense ta/hi, CAR-147 — a real EN evaluation ran 136 s; the old
+//     120 s evaluate-side timeout killed live runs).
 //   · a non-zero exit is the CALLER's failure path; stderr stays on the
 //     server (it can echo provider errors) and never reaches the client.
 //   · usage is parsed from stdout best-effort (parseSubprocessUsage) and
@@ -211,7 +225,7 @@ export function registerLlmRoutes(app) {
       writeFileSync(tmpFile, jd);
       try {
         const args = geminiEvalArgs(tmpFile, { save: !!save, lang });
-        const result = await runNodeScript('gemini-eval.mjs', args, { timeoutMs: GEMINI_EVAL_TIMEOUT_MS });
+        const result = await runNodeScript('gemini-eval.mjs', args, { timeoutMs: evalTimeoutMs(lang) });
         if (result.code !== 0) {
           // Server log gets a bounded stderr excerpt (provider errors live
           // there); the client gets the exit code, never the raw output.
@@ -254,7 +268,7 @@ export function registerLlmRoutes(app) {
       }
       const r = await runActiveProvider(fullPrompt, {
         maxTokens: EVAL_MAX_TOKENS,
-        timeoutMs: EVAL_TIMEOUT_MS,
+        timeoutMs: evalTimeoutMs(lang),
         cachePrefix,
         signal: controller.signal,
       });
