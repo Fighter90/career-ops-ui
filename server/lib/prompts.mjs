@@ -475,8 +475,8 @@ ${scaffold('readFiles', lang)}
   • modes/_shared.md
   • modes/oferta.md
 
-Then output the full A-G evaluation per modes/oferta.md (Role Summary, CV Match, Risks, Compensation,
-Application Strategy, Verdict, Posting Legitimacy) and a 0-5 score.
+Then output the full A-G evaluation per modes/oferta.md (Role Summary, Match with CV, Level and Strategy,
+Comp and Demand, Customization Plan, Interview Plan, Posting Legitimacy) and a 0-5 score.
 
 CAR-109 — Compensation rule: compare money like-for-like: annual against annual, and within ONE
 currency (convert only after both sides are annual). Resolve a monthly figure (×12) and a k/к/тыс/萬
@@ -513,8 +513,14 @@ function evaluationPromptTail(jd, lang) {
   // the model fills these instead of inventing its own numbering (the weak
   // locales dropped D–G under the hard language mandate). The Latin letter
   // is what the validator reads; the title text is the model's to translate.
+  // CAR-148 — the order and titles are modes/oferta.md's own block list
+  // (its compact mirror: A Role Summary … F Interview Plan, G Posting
+  // Legitimacy LAST; the verdict is the report's `## Verdict (lead)`
+  // section, never a lettered block). One A–G map everywhere: this
+  // skeleton, the stable list above and the reminder example agree —
+  // tests/prompt-skeleton-drift.test.mjs gates the drift.
   const skeleton = lang && lang !== 'en' && localeName(lang)
-    ? `\nYour report uses EXACTLY these seven headings, in this order — translate the title text, keep the Latin capital and the \`## \` prefix:\n\n## A) Role summary\n## B) CV match\n## C) Risks\n## D) Compensation\n## E) Application strategy\n## F) Posting legitimacy\n## G) Verdict\n`
+    ? `\nYour report uses EXACTLY these seven headings, in this order — translate the title text, keep the Latin capital and the \`## \` prefix:\n\n## A) Role Summary\n## B) Match with CV\n## C) Level and Strategy\n## D) Comp and Demand\n## E) Customization Plan\n## F) Interview Plan\n## G) Posting Legitimacy\n`
     : '';
   // CAR-109 — server-normalized canonical figures for the Block D salary
   // comparison (both sides per YEAR, suffixes/periods/decimal commas already
@@ -583,7 +589,7 @@ export function buildLanguageReminder(lang) {
   const name = localeName(lang);
   return `\nWrite the whole report in ${name} (locale: ${lang}) — every sentence, bullet and table cell, in ${name}'s own script. The files and the JD above are in English; that does not change the output language. Company, product and technology names may stay as they are, and so may text quoted word for word from the CV or the JD (keep it in quotation marks). Everything else — including ordinary words such as role, team, design, production, critical — is written in ${name}, not left in English.\n`
     + 'Two parts of the format are machine-read and must NOT be translated: '
-    + 'every block heading KEEPS its Latin capital letter A–G and starts with it (for example `## <translated word> A — <translated title>`; never А Б В or any other native numbering), '
+    + 'every block heading KEEPS its Latin capital letter A–G and starts with it (for example `## A) <translated title>`; never А Б В or any other native numbering), '
     + 'and the report MUST END with the ---SCORE_SUMMARY--- … ---END_SUMMARY--- block — markers and keys in English, exactly as shown above. '
     + 'The block is mandatory in every report: a report that omits it is invalid, whatever the language.\n'
     + `Once more, briefly: the whole report below is written in ${name}, tables included.\n`;
