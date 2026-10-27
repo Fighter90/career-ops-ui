@@ -2,6 +2,43 @@
 
 > Bu changelog artık tüm sürüm geçmişini içerir. Türkçe yerelleştirmenin eklenmesinden (v1.85.0) önce yayınlanan girdiler aşağıda İngilizce özgün hâliyle yer alır — çeviri bekliyor; asıl kaynak [🇬🇧 CHANGELOG.md](CHANGELOG.md)'dir.
 
+## [1.261.0] — 2026-10-28
+
+**Tam inceleme dalgası 1.261.0 ile tamamlandı (tüm YÜKSEK + ORTA bulgular indi), sahibin bildirdiği dil değişimi düzeltmesi, değerlendirme-kalitesi düzeltmeleri, yardım ×18 fan-out'u, cvstart.org landing v2 — artı dalgayı belgeleyen 4 SDD/OpenSpec şartnamesi. Her düzeltme red→green fix-forward ve bir GLM-5.3-Flash taze-bağlam incelemesinden geçti.**
+
+### Güvenlik
+
+- **FULL-R1 — CSRF acting-GET kapısı + kilitli atomik pipeline yazıları (#519)**: `/api/stream/*`, `/api/run/*`, `/api/geocode` üzerinde `Sec-Fetch-Site`/Origin/Referer kapısı (dışa aktarılan `ACTING_GET`, statik kapsam kapısı); her `data/pipeline.md` / `data/last-scan.json` oku-değiştir-yaz'ı `withFileLock` + yeni `atomicWrite` altında (aynı dizinde geçici dosya → rename → başarısızlıkta unlink).
+- **FULL-R2 — kaynaklarda SSRF kümesi (#514)**: rss.mjs https+özel-adres reddi; ~25 çıplak-`fetchImpl` kaynağı korumalı taşıma katmanlarına geçirildi; aynalar sabitlendi; habr/hh/geekjob/getmatch için yönlendirme doğrulaması; paylaşılan `delay(ms, signal)`.
+- **FULL-R4 — stripDangerousMarkdown düzyazı bozulması (#513/#518)**: şema temizliği artık yalnızca bağlantı/öznitelik bağlamlarında çalışıyor; varlıklar yalnızca saptama amaçlı bir kopyada çözülüyor («JavaScript: React, Node» ve «R&amp;D» artık sağ kalıyor).
+- **FULL-M2 — taşıma katmanı sertleştirmesi (#520)**: `safeGet`, köprü denetleyicisinin sinyaliyle birlikte `timeoutMs`'e uyuyor; `guardResolvedHost` DNS hatasında fail-closed davranıyor. #525, çapraz-köken yönlendirmelerde kimlik-bilgisi başlıklarının soyulmasını, her sonuçlanma yolunda taşıma-dinleyicisi ayrılmasını ve önceden-iptal edilmiş bir sinyalin çökmesini düzeltiyor.
+- **FULL-M4 — logo/batch (#523)**: logo HER yolda magic byte sabitliyor (yalan söyleyen bir `image/png` SVG taşıyamıyor), depolama anında content-type'ı `image/*` ile sınırlıyor, özel önbellek + nosniff; batch: `--parallel` 1–8 aralığına kırpılıyor, `--min-score` doğrulanıyor, BATCH_BUSY tek-uçuş, config/batch mutasyonlarında `llmRateLimit`.
+
+### Eklendi
+
+- **CAR-147 — yerel ayar duyarlı değerlendirme tavanı (#524)**: `evalTimeoutMs(lang)` — ta/hi, 300 s yerine 480 s alıyor (Hint yazı sistemleri hece başına birkaç belirteç tokenize ediyor; eski sert süre sınırı 502 + boş rapor üretiyordu); remote-QA istemcisi 540 s bekliyor.
+- **CAR-133 — cvstart.org landing v2 (#532)**: reduced-motion ile kapılanan paralaks hero, scan→evaluate→tracker akışının açıkça SIMULATED etiketli bir demosu, canlı-doğrulanmış sayımlarla scroll-reveal bölümleri, CAR-140 ekran-görüntüsü yer tutucu yuvaları.
+- **CAR-135 — arayüz v2 için yardım yeniden yazıldı, ×18 fan-out tamamlandı (#533, #540, #541, #542)**: 19 yardım dosyasının tamamı v2 kabuğunu anlatıyor (katlanabilir gezinme, Cmd/Ctrl+K komut paleti, iskeletler, örnek+eylemli boş durumlar, scan v2 kabuğu, pipeline gruplu+geri alma, reports v2, kanban); arayüz etiketleri kendi i18n anahtarlarını aktarıyor; 121-kaynak cümlesi kayıt defterinden üretiliyor.
+- **Şartnameler (SDD/OpenSpec) (#535)**: oct27 wave-two geri-doldurması + üç ileriye dönük şartname (yardım fan-out'u, yazma devirleri, dil değişimi değişmezleri).
+
+### Düzeltildi
+
+- **Dil değişimi artık #/scan'i boş bırakmıyor (#534)** — sahibin bildirdiği: görünüme-yerel tarama durumu (sonuçlar, facet çipleri) artık modül düzeyinde; 4 s gecikmeli yeniden-getirme ile davranışsal bir Playwright düzeneği (eski biçimde kırmızı).
+- **CAR-148/149 — ru raporları «Block G eksik» diyor (#530)**: prompt, birbiriyle tutarsız üç farklı A–G eşlemesi öğretiyordu; iskelet + liste + örnek artık oferta.md ile uyuşuyor (G = Posting Legitimacy); davranışsal sapma kapısı.
+- **CAR-150 — pipeline geri alması comp meta verisini koruyor (#537)**: DELETE `comp` yanıtlıyor, POST kapılı isteğe bağlı bir `comp` kabul ediyor, görünüm `{token, comp}`'u tüm geri-dönüş dallarında taşıyor.
+- **FULL-M3 — ölü kaynaklar dürüst paneller raporluyor (#522)**: getro/mycareersfuture/meituan/mokahr/glints bozuk bir 1. sayfada hata fırlatıyor (ölü bir API artık «sağlıklı, 0 iş» gibi okunmuyor); `pinnedOverride`, 18 adaptörün `company.api` geçersiz kılmalarını sabitliyor.
+- **FULL-M5 — tek sağlayıcı basamağı (#521)**: routes/llm.mjs `runActiveProvider` üzerinden yürüyor (+`cachePrefix`, sinyal); Gemini alt-süreç müdahalesi; yanıt sözleşmeleri bayt-aynı.
+- **FULL-M1 — paylaşılan-dosya yazıları kilitli (#526, #539)**: `runTrackedScript` + `TRACKER_MUTATING` kadrosu; outcome/followup alt-süreçleri kilidi tutuyor; tracker.mjs `atomicWrite` ile yazıyor; PUT kayıtları kilitli+atomik.
+- **FULL-M6 — sunucu + istemci konsolidasyonu (#531, #536, #525)**: dotenv null-prototip + `__proto__` reddi; isPrivateOrLoopback NAT64/6to4/benchmark/rezerve; env-config mtime önbelleği; file-lock gerçek yuva GC; safeGet timeout+signal; DNS koruması fail-closed; SSE ×4 → `API.postStream`; odak/etiket/durum kütüphaneleri; clipboard yazımı artık bekleniyor; dashboard Hired tonu.
+- **R3 — CSS belirteç sapması (#527)**: `--accent` çözümlendi (harita odak halkaları sessizce ölüydü); 11 belirteç-dışı süre belirteç tablosuna katlandı; sapma kapısı.
+- **R4 — yüklemede geride kalanlar (#538)**: assessments/mode-page/pipeline önizlemesi CAR-112 iskeletlerini render ediyor.
+- **CodeQL + CI paketi (#517, #539 düzeltmesi)**: kullanılmayan import'lar; ACTING_GET kapısı gerçek regex'i import ediyor; yaşam-döngüsü dilimi yeniden çapalandı.
+
+### Notlar
+
+- Bilinçli olarak yapılmayanlar: bağlantı-anı DNS sabitlemesi (undici gerektiriyor — bağımlılıkların dışında, belgelenmiş kalıntı risk); CAR-140 ekran görüntüleri (dağıtılmış v2 arayüzünü gerektiriyor); CAR-137/138/141 (bir sonraki belge geçişi); `js/missing-rate-limiting` CodeQL sınıfı belgelenmiş bir yanlış-pozitiftir (özel limiter kredilendirilmiyor).
+- Yardım ×18 fan-out: es/de wave-1, giriş notunu ve Aktif Şirketler kartı deltasını atladı (de kendi girişini indirdi; es tek satırlık bir takip düzeltmesi alıyor).
+
 ## [1.260.0] — 2026-10-26
 
 **İncelemeyle sertleştirme treni, v1.259.0 filosunun opus-5-5 ve AI-inceleme turlarından sekiz birleştirmesi (#491–#498): maaş normalizasyonu, rapor-tarihi kapsamı, coğrafi kodlama sağlamlığı, paket önbellek-kırmama r2+r3, derin taşma düzeltmesi — artı iki arayüz v2'si (pipeline, reports). Her düzeltme kırmızı→yeşil fix-forward ile indi.**

@@ -6,6 +6,45 @@ Bản dịch: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.261.0] — 2026-10-28
+
+**Đợt-rà-soát-toàn-diện đã-hoàn-tất (mọi-phát-hiện-HIGH-và-MEDIUM đều-đổ-bộ), bản-sửa-chuyển-ngôn-ngữ được-chủ-sở-hữu-báo-cáo, các-bản-sửa-chất-lượng-đánh-giá, lượt-fan-out help ×18, trang-landing-v2-của-cvstart.org — cùng-4-spec-SDD/OpenSpec ghi-lại-đợt-này. Mọi-bản-sửa đều-đổ-bộ qua-một-fix-forward-đỏ→xanh và-một-vòng-rà-soát-ngữ-cảnh-mới của-GLM-5.3-Flash.**
+
+### Bảo mật
+
+- **FULL-R1 — cổng-CSRF-cho-các-acting-GET + khóa-các-lượt-ghi-pipeline-nguyên-tử (#519)**: cổng-`Sec-Fetch-Site`/Origin/Referer trên-`/api/stream/*`, `/api/run/*`, `/api/geocode` (xuất-khẩu-`ACTING_GET`, cổng-phủ-tĩnh); mọi-lượt-read-modify-write trên-`data/pipeline.md` / `data/last-scan.json` chạy-dưới-`withFileLock` + `atomicWrite`-mới (tệp-tạm-cùng-thư-mục → rename → unlink-khi-thất-bại).
+- **FULL-R2 — cụm-SSRF-trong-các-nguồn-quét (#514)**: rss.mjs ép-https và-từ-chối-địa-chỉ-private; ~25-nguồn-gọi-`fetchImpl`-trực-tiếp → các-transport-được-bảo-vệ; các-mirror được-ghim; xác-thực-chuyển-hướng cho-habr/hh/geekjob/getmatch; `delay(ms, signal)`-dùng-chung.
+- **FULL-R4 — làm-hỏng-văn-bản-của-`stripDangerousMarkdown` (#513/#518)**: việc-lược-scheme chỉ-diễn-ra trong-ngữ-cảnh-liên-kết/thuộc-tính; các-entity được-giải-mã trên-một-bản-sao-chỉ-dùng-cho-việc-phát-hiện («JavaScript: React, Node» và-«R&amp;D» sống-sót).
+- **FULL-M2 — gia-cố-transport (#520)**: `safeGet` tôn-trọng-`timeoutMs` kèm-signal-của-bên-gọi (bộ-điều-khiển-bridge); `guardResolvedHost` thất-bại-về-CHẾ-ĐỘ-ĐÓNG khi-lỗi-DNS. #525 bổ-sung: lược-bỏ-các-header-credential trên-các-redirect-liên-origin, gỡ-listener-transport trên-mọi-đường-settle, và-một-bản-sửa-sập-do-signal-đã-bị-hủy-từ-trước.
+- **FULL-M4 — logo/batch (#523)**: logo ghim-magic-bytes trên-MỌI-đường-dẫn (một-`image/png`-nói-dối không-thể-giấu-SVG-bên-trong), kẹp-content-type-về-`image/*` ngay-tại-lúc-lưu, cache-riêng + nosniff; batch: `--parallel` bị-kẹp-trong-khoảng-1–8, `--min-score` được-xác-thực, BATCH_BUSY single-flight, `llmRateLimit` trên-các-lượt-sửa-config/batch.
+
+### Thêm mới
+
+- **CAR-147 — trần-thời-gian-đánh-giá-theo-locale (#524)**: `evalTimeoutMs(lang)` — ta/hi nhận-480 s thay-vì-300 s (các-chữ-Indic tokenize-ra-vài-token-trên-mỗi-âm-tiết; bức-tường-cũ sinh-502 + báo-cáo-rỗng); client-remote-QA chờ-540 s.
+- **CAR-133 — landing-v2-trên-cvstart.org (#532)**: hero-parallax-được-cổng-bởi-reduced-motion, một-demo-SIMULATED-dán-nhãn-rõ-ràng cho-luồng-scan→evaluate→tracker, các-mục-scroll-reveal với-các-số-đếm-được-xác-minh-trực-tiếp, các-slot-dành-sẵn-cho-ảnh-chụp-màn-hình-CAR-140.
+- **CAR-135 — help viết-lại cho-UI-v2, lượt-fan-out ×18 hoàn-tất (#533, #540, #541, #542)**: cả-19-tệp-help mô-tả-shell-v2 (nav-gập-được, palette-Cmd/Ctrl+K, skeleton, các-trạng-thái-rỗng-ví-dụ+hành-động, chrome-quét-v2, pipeline-nhóm+hoàn-tác, reports-v2, kanban); các-nhãn-UI trích-khóa-i18n của-chúng; câu-121-nguồn-quét sống-từ-registry.
+- **Các-spec (SDD/OpenSpec) (#535)**: backfill-đợt-hai-oct27 + ba-spec-tiếp-nối (fan-out-help, các-bàn-giao-lượt-ghi, các-bất-biến-chuyển-ngôn-ngữ).
+
+### Đã sửa
+
+- **Chuyển-ngôn-ngữ không-còn-làm-trống-#/scan (#534)** — được-chủ-sở-hữu-báo-cáo: trạng-thái-quét-cấp-view (kết-quả, chip-bộ-lọc) giờ-nằm-ở-cấp-module; một-harness-Playwright-hành-vi với-một-lượt-lấy-lại-trễ-4 s (đỏ-trên-hình-thạng-cũ).
+- **CAR-148/149 — báo-cáo-ru «thiếu-Block G» (#530)**: prompt đã-dạy-ba-bản-đồ-A–G-mâu-thuẫn-nhau; skeleton + danh-sách + ví-dụ giờ khớp-với-oferta.md (G = Posting Legitimacy); cổng-phát-hiện-lệch-hành-vi.
+- **CAR-150 — hoàn-tác-pipeline giữ-metadata-comp (#537)**: DELETE trả-lời `comp`, POST chấp-nhận `comp`-tùy-chọn-có-cổng, view mang-`{token, comp}` qua-mọi-nhánh-fallback.
+- **FULL-M3 — các-nguồn-chết báo-bảng-trung-thực (#522)**: getro/mycareersfuture/meituan/mokahr/glints ném-lỗi trên-trang-1-dạng-sai (một-API-chết không-còn-đọc-như-«khỏe-mạnh, 0-việc-làm»); `pinnedOverride` ghim-các-override-`company.api` của-18-adapter.
+- **FULL-M5 — một-cascade-nhà-cung-cấp-duy-nhất (#521)**: routes/llm.mjs đi-qua-`runActiveProvider` (+`cachePrefix`, signal); chặn-đón-tiến-trình-con-Gemini; các-hợp-đồng-phản-hồi giống-hệt-byte.
+- **FULL-M1 — các-lượt-ghi-tệp-dùng-chung được-khóa (#526, #539)**: `runTrackedScript` + danh-sách-`TRACKER_MUTATING`; các-lượt-spawn-outcome/followup giữ-khóa; tracker.mjs ghi-qua-`atomicWrite`; các-lượt-lưu-PUT khóa+nguyên-tử.
+- **FULL-M6 — hợp-nhất-server + client (#531, #536, #525)**: dotenv-null-proto + từ-chối-`__proto__`; isPrivateOrLoopback nhận-thêm-NAT64/6to4/benchmark/reserved; cache-mtime-cho-env-config; GC-slot-thật-cho-file-lock; safeGet-timeout+signal; cổng-DNS fail-closed; SSE ×4 → `API.postStream`; các-lib-focus/nhãn/trạng-thái; clipboard được-await; tông-màu-Hired-trên-dashboard.
+- **R3 — lệch-token-CSS (#527)**: `--accent` được-giải-quyết (các-vòng-focus-của-bản-đồ đã-chết-lặng-lẽ); 11-thời-lượng-lệch-token được-gộp; cổng-phát-hiện-lệch.
+- **R4 — các-nơi-còn-trễ-khi-tải (#538)**: preview-của-assessments/mode-page/pipeline render-skeleton-CAR-112.
+- **Đợt-CodeQL + CI (#517, bản-sửa-#539)**: các-import-không-dùng, cổng-ACTING_GET import-biểu-thức-chính-thức, đoạn-lifecycle được-đặt-neo-lại.
+
+### Ghi chú
+
+- Cố-ý-không-làm trong-v1.261.0: ghim-DNS-tại-lúc-kết-nối (cần-undici — nằm-ngoài-deps, được-ghi-là-phần-dư-lại); các-ảnh-chụp-màn-hình-CAR-140 (cần-UI-v2-đã-triển-khai); CAR-137/138/141 (lượt-docs-kế-tiếp); lớp-`js/missing-rate-limiting` của-CodeQL là-một-false-positive-đã-được-ghi-chép (bộ-giới-hạn-tùy-chỉnh không-được-công-nhận).
+- Fan-out-help ×18 của-v1.261.0: đợt-1-es/de bỏ-sót-lời-chú-mở-đầu và-một-delta-của-thẻ-«Công ty đang hoạt động» (de đã-tự-đổ-bộ-phần-mở-đầu-của-mình; es nhận-một-tiếp-nối-một-dòng).
+
+---
+
 ## [1.260.0] — 2026-10-26
 
 **Đợt-gia-cố-sau-rà-soát, tám-lượt-merge (#491–#498) từ-các-vòng-rà-soát-opus-5-5 và-rà-soát-AI trên-đội-agent-v1.259.0: chuẩn-hóa-lương, giới-hạn-phạm-vi-ngày-báo-cáo, độ-bền-geocode, bust-cache-bundle r2+r3, bản-sửa-tràn-#/deep — cùng-hai-lượt-UI-v2 (pipeline, reports). Mọi-bản-sửa đều-đổ-bộ qua-một-fix-forward-đỏ→xanh.**

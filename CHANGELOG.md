@@ -7,6 +7,45 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 ---
 
 
+## [1.261.0] — 2026-10-28
+
+**The full-review wave complete (all HIGH + MEDIUM findings landed), the owner-reported language-switch fix, eval-quality fixes, help ×18 fan-out, the cvstart.org landing v2 — plus 4 SDD/OpenSpec specs documenting the wave. Every fix landed through a red→green fix-forward and a GLM-5.3-Flash fresh-context review.**
+
+### Security
+
+- **FULL-R1 — CSRF acting-GET gate + locked atomic pipeline writes (#519)**: `Sec-Fetch-Site`/Origin/Referer gate on `/api/stream/*`, `/api/run/*`, `/api/geocode` (exported `ACTING_GET`, static coverage gate); every `data/pipeline.md` / `data/last-scan.json` read-modify-write under `withFileLock` + new `atomicWrite` (same-directory temp → rename → unlink-on-failure).
+- **FULL-R2 — SSRF cluster in sources (#514)**: rss.mjs https+private-reject; ~25 raw-`fetchImpl` sources → guarded transports; mirrors pinned; redirect validation for habr/hh/geekjob/getmatch; shared `delay(ms, signal)`.
+- **FULL-R4 — stripDangerousMarkdown prose corruption (#513/#518)**: scheme strips only in link/attribute contexts; entities decoded into a detection-only copy («JavaScript: React, Node» and «R&amp;D» survive).
+- **FULL-M2 — transport hardening (#520)**: `safeGet` honours `timeoutMs` with a caller signal (bridge controller); `guardResolvedHost` fails CLOSED on DNS error. #525 adds credential-header stripping on cross-origin redirects, transport-listener detach on every settle path, and a pre-aborted-signal crash fix.
+- **FULL-M4 — logo/batch (#523)**: logo pins magic bytes on EVERY path (a lying `image/png` can't carry SVG), clamps content-type to `image/*` at store time, private cache + nosniff; batch: `--parallel` clamped 1–8, `--min-score` validated, BATCH_BUSY single-flight, `llmRateLimit` on config/batch mutations.
+
+### Added
+
+- **CAR-147 — locale-aware evaluation ceiling (#524)**: `evalTimeoutMs(lang)` — ta/hi get 480 s instead of 300 s (Indic scripts tokenize several tokens per syllable; the old wall produced 502 + empty report); remote-QA client waits 540 s.
+- **CAR-133 — cvstart.org landing v2 (#532)**: reduced-motion-gated parallax hero, a clearly-labelled SIMULATED demo of the scan→evaluate→tracker flow, scroll-reveal sections with live-verified counts, CAR-140 screenshot placeholder slots.
+- **CAR-135 — help rewritten for UI v2, ×18 fan-out complete (#533, #540, #541, #542)**: all 19 help files describe the v2 shell (collapsible nav, Cmd/Ctrl+K palette, skeletons, example+action empty states, scan v2 chrome, pipeline grouped+undo, reports v2, kanban); UI labels cite their i18n keys; 121-sources sentence lives from the registry.
+- **Specs (SDD/OpenSpec) (#535)**: oct27 wave-two backfill + three forward specs (help fan-out, write hand-offs, language-switch invariants).
+
+### Fixed
+
+- **Language switch no longer blanks #/scan (#534)** — owner-reported: view-local scan state (results, facet chips) is now module-level; behavioral Playwright harness with a 4 s delayed refetch (red on the old shape).
+- **CAR-148/149 — ru reports «missing Block G» (#530)**: the prompt taught three inconsistent A–G maps; skeleton + list + example now agree with oferta.md (G = Posting Legitimacy); behavioral drift gate.
+- **CAR-150 — pipeline undo keeps comp metadata (#537)**: DELETE answers `comp`, POST accepts gated optional `comp`, the view carries `{token, comp}` through all fallback branches.
+- **FULL-M3 — dead sources reporting honest boards (#522)**: getro/mycareersfuture/meituan/mokahr/glints throw on malformed page-1 (a dead API no longer reads as «healthy, 0 jobs»); `pinnedOverride` pins 18 adapters' `company.api` overrides.
+- **FULL-M5 — one provider cascade (#521)**: routes/llm.mjs through `runActiveProvider` (+`cachePrefix`, signal); Gemini-subprocess interception; response contracts byte-identical.
+- **FULL-M1 — shared-file writes locked (#526, #539)**: `runTrackedScript` + `TRACKER_MUTATING` roster; outcome/followup spawns hold the lock; tracker.mjs writes via `atomicWrite`; PUT saves locked+atomic.
+- **FULL-M6 — server + client consolidation (#531, #536, #525)**: dotenv null-proto + `__proto__` refusal; isPrivateOrLoopback NAT64/6to4/benchmark/reserved; env-config mtime cache; file-lock real slot GC; safeGet timeout+signal; DNS guard fail-closed; SSE ×4 → `API.postStream`; focus/labels/status libs; clipboard awaited; dashboard Hired tint.
+- **R3 — CSS token drift (#527)**: `--accent` resolved (map focus rings were silently dead); 11 off-token durations folded; drift gate.
+- **R4 — loading stragglers (#538)**: assessments/mode-page/pipeline preview render CAR-112 skeletons.
+- **CodeQL + CI batch (#517, #539 fix)**: unused imports, the ACTING_GET gate imports the real regex, lifecycle slice re-anchored.
+
+### Notes
+
+- Deliberately not done: connect-time DNS pinning (needs undici — out of deps, documented residual); CAR-140 screenshots (need the deployed v2 UI); CAR-137/138/141 (next docs pass); the `js/missing-rate-limiting` CodeQL class is a documented false positive (custom limiter not credited).
+- Help ×18 fan-out: es/de wave-1 skipped the intro note and Active Companies card delta (de landed its own intro; es gets a one-line follow-up).
+
+---
+
 ## [1.260.0] — 2026-10-26
 
 **The review-hardening train, eight merges (#491–#498) from the opus-5-5 and AI-review rounds over the v1.259.0 fleet: salary normalization, report-date scoping, geocode robustness, bundle cache-busting r2+r3, the deep overflow fix — plus two UI v2s (pipeline, reports). Every fix landed through a red→green fix-forward.**

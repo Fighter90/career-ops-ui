@@ -9,6 +9,43 @@
 ---
 
 
+## [1.261.0] — 2026-10-28
+
+**v1.261.0のフルレビューの波が完了(すべてのHIGH + MEDIUM指摘が着地)、オーナー報告の言語切り替え修正、評価品質の修正、ヘルプ×18 fan-out、cvstart.orgランディングv2 — さらにこの波を記録する4つのSDD/OpenSpecスペック。すべての修正は、赤→緑のfix-forwardとGLM-5.3-Flashによるフレッシュコンテキストレビューを通って着地しました。**
+
+### セキュリティ
+
+- **FULL-R1 — CSRF acting-GETゲート + ロック付きアトミックなパイプライン書き込み(#519)**: `/api/stream/*`、`/api/run/*`、`/api/geocode`に`Sec-Fetch-Site`/Origin/Refererゲート(エクスポートされた`ACTING_GET`、静的カバレッジゲート)。`data/pipeline.md` / `data/last-scan.json`のすべての読み-変更-書き込みが`withFileLock` + 新しい`atomicWrite`の下に入ります(同一ディレクトリのテンポラリ → リネーム → 失敗時のunlink)。
+- **FULL-R2 — ソースにおけるSSRFクラスタ(#514)**: rss.mjsはhttps + プライベートアドレス拒否に; 素の`fetchImpl`の約25ソース → ガード付きトランスポートへ; ミラーをピン留め; habr/hh/geekjob/getmatchのリダイレクト検証; 共有の`delay(ms, signal)`。
+- **FULL-R4 — stripDangerousMarkdownによる文章の破壊(#513/#518)**: スキーム除外はリンク/属性コンテキストでのみ実行; エンティティは検出専用のコピーへデコード(«JavaScript: React, Node»と«R&amp;D»は生き残ります)。
+- **FULL-M2 — トランスポートのハードニング(#520)**: `safeGet`は呼び出し元のシグナルと共に`timeoutMs`を尊重します(ブリッジコントローラ); `guardResolvedHost`はDNSエラーでfail-closedします。#525は、クロスオリジンリダイレクトでのクレデンシャルヘッダー除去、すべてのsettleパスでのトランスポートリスナーのdetach、事前中断済みシグナルでのクラッシュ修正を追加します。
+- **FULL-M4 — ロゴ/バッチ(#523)**: ロゴはすべてのパスでマジックバイトを検証し(偽の`image/png`がSVGを運ぶことはできません)、保存時にcontent-typeを`image/*`へ制限、プライベートキャッシュ + nosniff; バッチ: `--parallel`は1–8へクランプ、`--min-score`を検証、BATCH_BUSYのsingle-flight、config/batchミューテーションへの`llmRateLimit`。
+
+### 追加
+
+- **CAR-147 — ロケール対応の評価タイムアウト上限(#524)**: `evalTimeoutMs(lang)` — ta/hiは300秒の代わりに480秒を得ます(インド系文字は音節ごとに複数トークンへトークン化されるため、旧上限では502 + 空レポートが出ていました); remote-QAクライアントは540秒待ちます。
+- **CAR-133 — cvstart.orgランディングv2(#532)**: reduced-motionでゲートされたパララックスヒーロー、scan→evaluate→trackerフローの明確にラベル付けされたSIMULATEDデモ、ライブ検証済みカウント付きのスクロールリビールセクション、CAR-140スクリーンショットのプレースホルダースロット。
+- **CAR-135 — UI v2向けにヘルプを書き直し、×18 fan-out完了(#533, #540, #541, #542)**: 19のヘルプファイルすべてがv2シェルを説明します(折りたたみ可能なナビ、Cmd/Ctrl+Kパレット、スケルトン、例+アクション付きの空状態、スキャンv2クローム、パイプラインのグループ化+undo、レポートv2、カンバン); UIラベルは自分のi18nキーを引用します; 121ソースの文はレジストリから供給されます。
+- **スペック(SDD/OpenSpec)(#535)**: 10月27日のwave-twoバックフィル + v1.261.0の波を記録する3つの先行スペック(ヘルプfan-out、書き込みハンドオフ、言語切り替えの不変条件)。
+
+### 修正
+
+- **言語切り替えが#/scanを空白化しなくなる(#534)** — オーナー報告: ビューのローカルスキャン状態(結果、ファセットチップ)はモジュールレベルになりました; 4秒の遅延リフェッチ付きの振る舞いPlaywrightハーネス(旧形状では赤)。
+- **CAR-148/149 — ruレポートの«Block Gの欠落»(#530)**: プロンプトは3つの矛盾するA–Gマップを教えていました; スケルトン + リスト + 例がoferta.mdと一致するようになりました(G = Posting Legitimacy); 振る舞いドリフトゲート。
+- **CAR-150 — パイプラインのundoがcompメタデータを保持(#537)**: DELETEは`comp`を返答し、POSTはゲート付きオプショナルの`comp`を受け入れ、ビューはすべてのフォールバック分岐で`{token, comp}`を運びます。
+- **FULL-M3 — 死んだソースが正直なボードを報告(#522)**: getro/mycareersfuture/meituan/mokahr/glintsは不正なページ1でthrowします(死んだAPIがもはや«健全、0件»と読めることはありません); `pinnedOverride`が18のアダプタの`company.api`オーバーライドをピン留めします。
+- **FULL-M5 — 1つのプロバイダカスケード(#521)**: routes/llm.mjsが`runActiveProvider`経由に(+`cachePrefix`、シグナル); Geminiサブプロセスのインターセプト; レスポンス契約はバイト同一。
+- **FULL-M1 — 共有ファイル書き込みのロック(#526, #539)**: `runTrackedScript` + `TRACKER_MUTATING`ロスター; outcome/followupのspawnはロックを保持します; tracker.mjsは`atomicWrite`経由で書き込みます; PUTの保存はロック+アトミック。
+- **FULL-M6 — サーバー + クライアントの統合(#531, #536, #525)**: dotenvのnullプロトタイプ + `__proto__`拒否; isPrivateOrLoopbackのNAT64/6to4/benchmark/reserved対応; env-configのmtimeキャッシュ; file-lockの実スロットGC; safeGetのtimeout+signal; DNSガードのfail-closed; SSE ×4 → `API.postStream`; フォーカス/ラベル/ステータスlib; クリップボードのawait; ダッシュボードのHired着色。
+- **R3 — CSSトークンのドリフト(#527)**: `--accent`を解決(マップのフォーカスリングは静かに死んでいました); トークン外のduration 11件を吸収; ドリフトゲート。
+- **R4 — ローディングの取り残し(#538)**: assessments/mode-page/パイプラインプレビューがCAR-112のスケルトンを描画します。
+- **CodeQL + CIバッチ(#517、#539修正)**: 未使用インポート、ACTING_GETゲートが実際の正規表現をインポート、ライフサイクルスライスの再アンカー。
+
+### メモ
+
+- 意図的に見送ったもの: 接続時のDNSピン留め(undiciが必要 — 依存の外、文書化済みの残存); CAR-140のスクリーンショット(デプロイ済みのv2 UIが必要); CAR-137/138/141(次のドキュメントパス); `js/missing-rate-limiting`のCodeQLクラスは文書化された誤検知(カスタムリミッタはクレジットされません)。
+- ヘルプ×18 fan-out: es/deのwave-1はイントロノートとActive Companiesカードの差分をスキップしました(deは自身のイントロを着地済み; esは1行のフォローアップを受け取ります)。
+
 ## [1.260.0] — 2026-10-26
 
 **レビューハードニングの列車 — v1.259.0のフリートへのopus-5-5とAIレビューラウンドからの8つのマージ(#491–#498): 給与の正規化、レポート日付のスコープ、ジオコードの堅牢化、バンドルのキャッシュバスティング r2+r3、ディープのオーバーフロー修正 — さらに2つのUI v2(パイプライン、レポート)。すべての修正は赤→緑のfix-forwardで着地しました。**

@@ -2,6 +2,43 @@
 
 > Dieses Changelog enthält die vollständige Versionsgeschichte. Einträge, die vor der deutschen Lokalisierung (v1.85.0) veröffentlicht wurden, stehen unten im englischen Original — Übersetzung ausstehend; maßgeblich bleibt [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.261.0] — 2026-10-28
+
+**Die Full-Review-Welle ist abgeschlossen (alle HIGH- und MEDIUM-Funde gelandet), der vom Owner gemeldete Sprachwechsel-Fix, Fixes zur Auswertungsqualität, das Hilfe-×18-Fan-out, das cvstart.org-Landing v2 — dazu 4 SDD/OpenSpec-Specs, die die Welle dokumentieren. Jeder Fix landete über einen Rot→Grün-Fix-Forward und ein GLM-5.3-Flash-Review mit frischem Kontext.**
+
+### Sicherheit
+
+- **FULL-R1 — CSRF-acting-GET-Gate + gesperrte atomare Pipeline-Schreibvorgänge (#519)**: `Sec-Fetch-Site`/Origin/Referer-Gate auf `/api/stream/*`, `/api/run/*`, `/api/geocode` (exportiertes `ACTING_GET`, statisches Coverage-Gate); jeder Read-Modify-Write-Zugriff auf `data/pipeline.md` / `data/last-scan.json` unter `withFileLock` + dem neuen `atomicWrite` (Temp-Datei im selben Verzeichnis → Rename → Unlink bei Fehlschlag).
+- **FULL-R2 — SSRF-Cluster in den Quellen (#514)**: rss.mjs mit https + Private-Reject; ~25 rohe `fetchImpl`-Quellen → abgesicherte Transports; Mirrors festgenagelt; Redirect-Validierung für habr/hh/geekjob/getmatch; gemeinsames `delay(ms, signal)`.
+- **FULL-R4 — Prosa-Korruption in stripDangerousMarkdown (#513/#518)**: Schema-Strips nur in Link-/Attribut-Kontexten; Entities werden erst in einer Kopie dekodiert, die nur der Erkennung dient («JavaScript: React, Node» und «R&amp;D» überleben).
+- **FULL-M2 — Transport-Härtung (#520)**: `safeGet` honoriert `timeoutMs` mit dem Signal des Aufrufers (Bridge-Controller); `guardResolvedHost` fällt bei einem DNS-Fehler CLOSED. #525 ergänzt das Entfernen von Credential-Headern bei Cross-Origin-Redirects, das Abkoppeln des Transport-Listeners auf jedem Settle-Pfad und einen Crash-Fix für vorab abgebrochene Signale.
+- **FULL-M4 — Logo/Batch (#523)**: der Logo-Code nagelt die Magic Bytes auf JEDEM Pfad fest (ein falsch deklariertes `image/png` kann kein SVG tragen), klemmt den Content-Type beim Speichern auf `image/*`, privater Cache + nosniff; Batch: `--parallel` auf 1–8 begrenzt, `--min-score` validiert, BATCH_BUSY als single-flight, `llmRateLimit` auf Config-/Batch-Mutationen.
+
+### Hinzugefügt
+
+- **CAR-147 — sprachabhängiges Auswertungs-Zeitlimit (#524)**: `evalTimeoutMs(lang)` — ta/hi bekommen 480 s statt 300 s (indische Schriften tokenisieren mehrere Tokens pro Silbe; die alte Wand erzeugte 502 + einen leeren Report); der Remote-QA-Client wartet 540 s.
+- **CAR-133 — cvstart.org-Landing v2 (#532)**: Parallax-Hero hinter einem reduced-motion-Gate, eine klar als SIMULIERT gekennzeichnete Demo des scan→evaluate→tracker-Flows, Scroll-Reveal-Sektionen mit live verifizierten Zählern, Platzhalter-Slots für die CAR-140-Screenshots.
+- **CAR-135 — Hilfe für die UI v2 neu geschrieben, ×18-Fan-out komplett (#533, #540, #541, #542)**: alle 19 Hilfe-Dateien beschreiben die v2-Shell (einklappbare Nav, Cmd/Ctrl+K-Palette, Skeletons, Beispiel+Aktion-Leerzustände, Scan-v2-Chrome, gruppierte Pipeline mit Undo, Reports v2, Kanban); die UI-Beschriftungen zitieren ihre i18n-Schlüssel; der Satz zu den 121 Quellen wird aus der Registry erzeugt.
+- **Specs (SDD/OpenSpec) (#535)**: Backfill der Wave-two vom 27.10. + drei vorausschauende Specs (Hilfe-Fan-out, Write-Hand-offs, Sprachwechsel-Invarianten).
+
+### Behoben
+
+- **Der Sprachwechsel leert #/scan nicht mehr (#534)** — vom Owner gemeldet: der view-lokale Scan-Zustand (Ergebnisse, Facet-Chips) liegt jetzt auf Modulebene; ein verhaltensbasierter Playwright-Harness mit um 4 s verzögertem Re-Fetch (rot auf der alten Form).
+- **CAR-148/149 — RU-Reports «fehlender Block G» (#530)**: der Prompt lehrte drei inkonsistente A–G-Zuordnungen; Skeleton + Liste + Beispiel stimmen jetzt mit oferta.md überein (G = Posting Legitimacy); verhaltensbasiertes Drift-Gate.
+- **CAR-150 — Pipeline-Undo behält Comp-Metadaten (#537)**: DELETE antwortet mit `comp`, POST akzeptiert ein optionales `comp` hinter einem Gate, die View trägt `{token, comp}` durch alle Fallback-Zweige.
+- **FULL-M3 — tote Quellen melden ehrliche Boards (#522)**: getro/mycareersfuture/meituan/mokahr/glints werfen bei einer malformed page-1 (eine tote API liest sich nicht mehr als «gesund, 0 Jobs»); `pinnedOverride` nagelt die `company.api`-Overrides von 18 Adaptern fest.
+- **FULL-M5 — eine einzige Provider-Kaskade (#521)**: routes/llm.mjs läuft über `runActiveProvider` (+`cachePrefix`, Signal); Abfangen im Gemini-Subprozess; Antwortverträge byte-identisch.
+- **FULL-M1 — Schreibvorgänge auf gemeinsamen Dateien gesperrt (#526, #539)**: `runTrackedScript` + das `TRACKER_MUTATING`-Roster; outcome/followup-Spawns halten die Sperre; tracker.mjs schreibt via `atomicWrite`; PUT speichert gesperrt+atomar.
+- **FULL-M6 — Server- + Client-Konsolidierung (#531, #536, #525)**: dotenv mit Null-Prototyp + `__proto__`-Verweigerung; isPrivateOrLoopback deckt NAT64/6to4/Benchmark/reservierte Bereiche ab; env-config-mtime-Cache; echter Slot-GC im file-lock; safeGet timeout+signal; DNS-Guard fail-closed; SSE ×4 → `API.postStream`; Fokus-/Label-/Status-Libs; Clipboard wird abgewartet; Hired-Tönung im Dashboard.
+- **R3 — CSS-Token-Drift (#527)**: `--accent` aufgelöst (die Map-Fokusringe waren still tot); 11 token-fremde Dauern eingefaltet; Drift-Gate.
+- **R4 — Nachzügler beim Laden (#538)**: assessments/mode-page/Pipeline-Preview rendern die CAR-112-Skeletons.
+- **CodeQL- + CI-Batch (#517, Fix #539)**: ungenutzte Imports, das ACTING_GET-Gate importiert die echte Regex, der Lifecycle-Slice neu verankert.
+
+### Hinweise
+
+- Bewusst nicht getan: DNS-Pinning zur Verbindungszeit (braucht undici — liegt außerhalb der Abhängigkeiten, dokumentiertes Residuum); die CAR-140-Screenshots (brauchen die ausgelieferte v2-UI); CAR-137/138/141 (nächster Docs-Durchlauf); die `js/missing-rate-limiting`-CodeQL-Klasse ist ein dokumentierter False Positive (der eigene Limiter wird nicht angerechnet).
+- Hilfe-×18-Fan-out: die es/de-Wave-1 ließ die Intro-Notiz und das Active-Companies-Karten-Delta aus (de landete sein eigenes Intro; es bekommt ein Einzeilen-Follow-up).
+
 ## [1.260.0] — 2026-10-26
 
 **Die Review-Härtungswelle, acht Merges (#491–#498) aus den opus-5-5- und AI-Review-Runden über die v1.259.0-Flotte: Gehaltsnormalisierung, Report-Datums-Scoping, Geocode-Robustheit, Bundle-Cache-Busting r2+r3, der Deep-Overflow-Fix — dazu zwei UI-v2s (Pipeline, Reports). Jeder Fix landete über einen Rot→Grün-Fix-Forward.**

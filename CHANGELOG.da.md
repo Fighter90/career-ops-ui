@@ -9,6 +9,43 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 ---
 
 
+## [1.261.0] — 2026-10-28
+
+**Anmeldelsesbølgen er fuldført (alle HIGH + MEDIUM-fund er landet), den ejer-rapporterede sprogskift-retelse, rettelser af evalueringskvaliteten, hjælp ×18-fan-out, cvstart.org-landingssiden v2 — plus 4 SDD/OpenSpec-specs, der dokumenterer bølgen. Hver rettelse landede gennem en rød→grøn fix-forward og en GLM-5.3-Flash-gennemgang i frisk kontekst.**
+
+### Sikkerhed
+
+- **FULL-R1 — CSRF-gate for acting-GET + låste, atomiske pipeline-skrivninger (#519)**: `Sec-Fetch-Site`-/Origin-/Referer-gate på `/api/stream/*`, `/api/run/*`, `/api/geocode` (eksporteret `ACTING_GET`, statisk coverage-gate); hver read-modify-write af `data/pipeline.md` / `data/last-scan.json` under `withFileLock` + den nye `atomicWrite` (temp-fil i samme mappe → rename → unlink ved fejl).
+- **FULL-R2 — SSRF-klynge i kilderne (#514)**: rss.mjs https + afvisning af private adresser; ~25 kilder med rå `fetchImpl` → transportlag under guard; pinnede mirrors; redirect-validering for habr/hh/geekjob/getmatch; delt `delay(ms, signal)`.
+- **FULL-R4 — prosakorruption i stripDangerousMarkdown (#513/#518)**: scheme-fjernelse sker kun i link-/attributkontekst; entities dekodes kun ind i en detektionskopi («JavaScript: React, Node» og «R&amp;D» overlever).
+- **FULL-M2 — transporthærdning (#520)**: `safeGet` respekterer `timeoutMs` med kalderens signal (bridge-controlleren); `guardResolvedHost` fejler LUKKET ved DNS-fejl. #525 tilføjer fjernelse af credential-headere ved cross-origin-redirects, detach af transportlytteren på alle afslutningsstier og en rettelse af crasjet med forudafbrudt signal.
+- **FULL-M4 — logo/batch (#523)**: logoet pinner magic bytes på ALLE stier (et `image/png`, der lyver, kan ikke bære SVG), tvinger content-typen til `image/*` ved lagring, privat cache + nosniff; batch: `--parallel` begrænset til 1–8, `--min-score` valideret, BATCH_BUSY single-flight, `llmRateLimit` på config-/batch-mutationer.
+
+### Tilføjet
+
+- **CAR-147 — evalueringsloft pr. locale (#524)**: `evalTimeoutMs(lang)` — ta/hi får 480 s i stedet for 300 s (Indic-skrifter tokeniseres til flere tokens per stavelse; den gamle tidsgrænse gav 502 + tom rapport); remote-QA-klienten venter 540 s.
+- **CAR-133 — cvstart.org-landingssiden v2 (#532)**: parallax-hero bag reduced-motion-gaten, en tydeligt mærket SIMULERET demo af scan→evaluate→tracker-flowet, scroll-reveal-sektioner med live-verificerede tællinger, pladsholdere til CAR-140-skærmbilleder.
+- **CAR-135 — hjælpen omskrevet til UI v2, fan-out ×18 fuldført (#533, #540, #541, #542)**: alle 19 hjælpefiler beskriver v2-skallen (sammenklappelig navigation, Cmd/Ctrl+K-palette, skeletter, tomme tilstande med eksempel+handling, scan v2-chrome, pipeline grupperet+undo, rapporter v2, kanban); UI-mærkater citerer deres i18n-nøgler; sætningen om de 121 kilder genereres ud fra registryet.
+- **Specs (SDD/OpenSpec) (#535)**: backfill af wave-two fra 27. okt + tre fremadrettede specs (hjælpens fan-out, skrive-hand-offs, sprogskift-invarianter).
+
+### Rettet
+
+- **Sprogskift tømmer ikke længere #/scan (#534)** — rapporteret af ejeren: view-lokal scan-tilstand (resultater, facet-chips) er nu på modulniveau; adfærdsmæssig Playwright-harness med en 4 s forsinket refetch (rød på den gamle form).
+- **CAR-148/149 — ru-rapporter «mangler Block G» (#530)**: prompten lærte tre inkonsistente A–G-kortlægninger; skeleton + liste + eksempel stemmer nu med oferta.md (G = Posting Legitimacy); adfærdsmæssig drift-gate.
+- **CAR-150 — pipeline-undo bevarer comp-metadata (#537)**: DELETE svarer med `comp`, POST accepterer en gated valgfri `comp`, viewet bærer `{token, comp}` gennem alle fallback-grene.
+- **FULL-M3 — døde kilder rapporterer ærlige tavler (#522)**: getro/mycareersfuture/meituan/mokahr/glints kaster på en side 1 med forkert form (en død API læses ikke længere som «sund, 0 jobs»); `pinnedOverride` pinner 18 adapteres `company.api`-overrides.
+- **FULL-M5 — én udbyderkaskade (#521)**: routes/llm.mjs gennem `runActiveProvider` (+`cachePrefix`, signal); interception i Gemini-subprocessen; svarkontrakterne byte-identiske.
+- **FULL-M1 — skrivninger til delte filer under lås (#526, #539)**: `runTrackedScript` + `TRACKER_MUTATING`-rosteren; outcome/followup-spawns holder låsen; tracker.mjs skriver via `atomicWrite`; PUT gemmer låst+atomisk.
+- **FULL-M6 — server- og klientkonsolidering (#531, #536, #525)**: dotenv med null-prototype + `__proto__`-afvisning; `isPrivateOrLoopback` dækker NAT64/6to4/benchmark/reserverede; mtime-cache i env-config; reel slot-GC i file-lock; `safeGet` timeout+signal; DNS-guard fail-closed; SSE ×4 → `API.postStream`; fokus-/mærkat-/status-libs; clipboard-skrivninger afventes; Hired-toning i dashboardet.
+- **R3 — CSS-token-drift (#527)**: `--accent` løst (kortets fokus-ringe var stiltiende døde); 11 varigheder uden for tokens foldet ind; drift-gate.
+- **R4 — indlæsningsefterslæbere (#538)**: assessments/mode-page/pipeline-preview renderer CAR-112-skeletter.
+- **CodeQL + CI-batch (#517, rettelse #539)**: ubrugte imports, ACTING_GET-gaten importerer den rigtige regex, lifecycle-slice genforankret.
+
+### Noter
+
+- Bevidst ikke gjort: DNS-pinning ved forbindelsesoprettelse (kræver undici — uden for deps, dokumenteret rest); CAR-140-skærmbilleder (kræver den deployerede v2-UI); CAR-137/138/141 (næste docs-runde); `js/missing-rate-limiting`-klassen fra CodeQL er et dokumenteret falsk positivt (den selvbyggede limiter krediteres ikke).
+- Hjælp ×18-fan-out: es/de wave-1 sprang intro-noten og deltaet på Active Companies-kortet over (de landede selv sin intro; es får en ét-linjes opfølgning).
+
 ## [1.260.0] — 2026-10-26
 
 **Hærdningstoget fra anmeldelsesrunderne — otte merges (#491–#498) fra opus-5-5- og AI-gennemgangene over v1.259.0-flåden: lønsammenligningens normalisering, afgrænsning af rapportdatoer, geokoderobusthed, bundle cache-busting r2+r3 og deep overflow-retelsen — plus to UI-v2'er (pipeline og rapporter). Hver rettelse landede gennem en rød→grøn fix-forward.**

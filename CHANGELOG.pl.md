@@ -10,6 +10,43 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.261.0] — 2026-10-28
+
+**Pociąg pełnego przeglądu zakończony (wszystkie ustalenia HIGH + MEDIUM wylądowały w v1.261.0), poprawka przełączania języka zgłoszona przez właściciela, poprawki jakości ewaluacji, fan-out pomocy ×18, landing cvstart.org v2 — plus 4 specyfikacje SDD/OpenSpec dokumentujące pociąg. Każda poprawka przeszła red→green fix-forward oraz recenzję GLM-5.3-Flash w świeżym kontekście.**
+
+### Bezpieczeństwo
+
+- **FULL-R1 — bramka CSRF na acting-GET + zablokowane atomowe zapisy pipeline’u (#519)**: bramka `Sec-Fetch-Site`/Origin/Referer na `/api/stream/*`, `/api/run/*`, `/api/geocode` (wyeksportowane `ACTING_GET`, statyczna bramka pokrycia); każde odczytaj–modyfikuj–zapisz dla `data/pipeline.md` / `data/last-scan.json` pod `withFileLock` + nowe `atomicWrite` (plik tymczasowy w tym samym katalogu → rename → unlink przy porażce).
+- **FULL-R2 — klaster SSRF w źródłach (#514)**: rss.mjs — https + odrzucanie adresów prywatnych; ~25 źródeł na gołym `fetchImpl` → strzeżone transporty; mirrory przypięte; walidacja przekierowań dla habr/hh/geekjob/getmatch; współdzielone `delay(ms, signal)`.
+- **FULL-R4 — uszkadzanie prozy w stripDangerousMarkdown (#513/#518)**: wycinanie schematów tylko w kontekstach linków/atrybutów; encje dekodowane do kopii używanej wyłącznie do wykrywania („JavaScript: React, Node” i „R&amp;D” przeżywają).
+- **FULL-M2 — utwardzenie transportu (#520)**: `safeGet` honoruje `timeoutMs` razem z sygnałem wywołującego (bridge controller); `guardResolvedHost` przy błędzie DNS zawodzi fail-closed. #525 dodaje zrzucanie nagłówków poświadczeń przy przekierowaniach cross-origin, odczepianie transportowego słuchacza na każdej ścieżce domknięcia oraz poprawkę awarii przy sygnale przerwanym z wyprzedzeniem.
+- **FULL-M4 — logo/batch (#523)**: logo przypina magic bytes na KAŻDEJ ścieżce (kłamliwy `image/png` nie uniesie SVG), content-type zawężany do `image/*` w chwili zapisu, prywatny cache + nosniff; batch: `--parallel` zawężone do 1–8, `--min-score` walidowane, BATCH_BUSY single-flight, `llmRateLimit` na mutacjach config/batch.
+
+### Dodano
+
+- **CAR-147 — limit ewaluacji świadomy języka (#524)**: `evalTimeoutMs(lang)` — ta/hi dostają 480 s zamiast 300 s (skrypty indyjskie tokenizują kilka tokenów na sylabę; stara ściana dawała 502 + pusty raport); klient remote-QA czeka 540 s.
+- **CAR-133 — landing cvstart.org v2 (#532)**: paralaktyczny hero za bramką reduced-motion, wyraźnie opisane SYMULOWANE demo przepływu scan→evaluate→tracker, sekcje scroll-reveal z liczbami zweryfikowanymi na żywo, sloty-zagłuszki pod zrzuty ekranu CAR-140.
+- **CAR-135 — pomoc przepisana pod UI v2, fan-out ×18 ukończony (#533, #540, #541, #542)**: wszystkie 19 plików pomocy opisuje powłokę v2 (zwijana nawigacja, paleta Cmd/Ctrl+K, szkielety, puste stany example+action, chrome skanu v2, pipeline z grupowaniem i undo, raporty v2, kanban); etykiety interfejsu cytują swoje klucze i18n; zdanie o 121 źródłach żyje z rejestru.
+- **Specyfikacje (SDD/OpenSpec) (#535)**: backfill fali drugiej za oct27 + trzy specyfikacje naprzód, dokumentujące falę v1.261.0 (fan-out pomocy, przekazania zapisów, niezmienniki przełączania języka).
+
+### Naprawiono
+
+- **Przełącznik języka nie wyczerpuje już #/scan (#534)** — zgłoszone przez właściciela: stan skanu lokalny dla widoku (wyniki, chipy fasetów) żyje teraz na poziomie modułu; behawioralny harness Playwright z opóźnionym o 4 s refetchem (red na starym kształcie).
+- **CAR-148/149 — raporty ru „missing Block G” (#530)**: prompt uczył trzech niespójnych map A–G; szkielet + lista + przykład są teraz zgodne z oferta.md (G = Posting Legitimacy); behawioralna bramka dryfu.
+- **CAR-150 — undo w pipeline zachowuje metadane comp (#537)**: DELETE odpowiada `comp`, POST przyjmuje bramkowane opcjonalne `comp`, widok przenosi `{token, comp}` przez wszystkie gałęzie fallback.
+- **FULL-M3 — martwe źródła raportują uczciwe tablice (#522)**: getro/mycareersfuture/meituan/mokahr/glints rzucają przy zniekształconej stronie 1 (martwe API nie czyta się już jako „healthy, 0 jobs”); `pinnedOverride` przypina nadpisania `company.api` w 18 adapterach.
+- **FULL-M5 — jedna kaskada dostawców (#521)**: routes/llm.mjs przez `runActiveProvider` (+`cachePrefix`, sygnał); przechwyt podprocesu Gemini; kontrakty odpowiedzi bajt w bajt identyczne.
+- **FULL-M1 — zapisy współdzielonych plików pod blokadą (#526, #539)**: `runTrackedScript` + roster `TRACKER_MUTATING`; wywołania outcome/followup trzymają blokadę; tracker.mjs zapisuje przez `atomicWrite`; zapisy PUT locked+atomic.
+- **FULL-M6 — konsolidacja serwera i klienta (#531, #536, #525)**: dotenv z prototypem null + odmowa `__proto__`; isPrivateOrLoopback rozpoznaje NAT64/6to4/benchmark/reserved; cache mtime w env-config; prawdziwe GC slotów w file-lock; safeGet timeout+sygnał; strażnik DNS fail-closed; SSE ×4 → `API.postStream`; biblioteki fokusu/etykiet/statusów; clipboard z await; podbarwienie Hired na dashboardzie.
+- **R3 — dryf tokenów CSS (#527)**: `--accent` rozwiązany (pierścienie fokusu mapy były po cichu martwe); 11 czasów trwania poza tokenami zwinniętych; bramka dryfu.
+- **R4 — zaległości stanów ładowania (#538)**: podgląd assessments/mode-page/pipeline renderuje szkielety CAR-112.
+- **Partia CodeQL + CI (#517, poprawka w #539)**: nieużywane importy, bramka ACTING_GET importuje prawdziwe wyrażenie regularne, wycinek lifecycle zakotwiczony na nowo.
+
+### Uwagi
+
+- Świadomie nie zrobiono: przypinanie DNS w chwili połączenia (wymaga undici — poza zależnościami; pozostałość udokumentowana); zrzuty ekranu CAR-140 (wymagają wdrożonego UI v2); CAR-137/138/141 (następna tura dokumentacji); klasa CodeQL `js/missing-rate-limiting` to udokumentowany fałszywy pozytyw (własny limiter nie jest kredytowany).
+- Fan-out pomocy ×18: es/de w fali 1 pominęły notkę wprowadzającą i deltę karty Active Companies (de wylądowało własne wprowadzenie; es dostaje follow-up o jednej linii).
+
 ## [1.260.0] — 2026-10-26
 
 **Pociąg utwardzania po recenzjach — osiem scalonych PR-ów (#491–#498) z rund opus-5-5 i recenzji AI nad flotą v1.259.0: normalizacja wynagrodzeń, zakres korekty dat raportów, odporność geokodowania, cache-busting pakietu r2+r3, poprawka przepełnienia deep — plus dwa interfejsy v2 (pipeline, raporty). Każda poprawka wylądowała na drodze czerwony→zielony fix-forward.**
