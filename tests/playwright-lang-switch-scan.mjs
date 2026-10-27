@@ -16,7 +16,6 @@
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { BENIGN_CONSOLE } from './helpers/console-noise.mjs';
 import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';

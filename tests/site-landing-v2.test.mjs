@@ -144,9 +144,6 @@ test('the CAR-133 keyframes exist and are only referenced from motion-gated cont
   // The static (default) demo composition must not animate — the composed
   // end-state is what reduced-motion and no-JS readers get.
   const start = CSS.indexOf('.demo-score,');
-  const end = CSS.indexOf(NO_PREF) > start
-    ? CSS.indexOf('html.js .demo-row', start)
-    : CSS.length;
   const staticBlock = CSS.slice(start, CSS.indexOf('@media', start));
   assert.ok(staticBlock.includes('.demo-row-3 .demo-chip'), 'static demo composition lost');
   assert.doesNotMatch(staticBlock, /animation:/, 'static demo rules must not animate');
