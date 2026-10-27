@@ -190,7 +190,8 @@ test('safeGet caps redirect chain at 3 hops', async () => {
 // but never honored: only opts.signal was wired into the transport, so
 // a hanging origin held the socket open forever. These tests pin the
 // contract: no caller signal + timeoutMs → the whole call aborts once
-// the budget is spent; a caller-provided signal owns cancellation.
+// the budget is spent; FULL-M2 (a) — a caller signal no longer DROPS
+// the deadline, the two combine, and the caller's own abort still wins.
 
 test('safeGet aborts a hanging origin when timeoutMs is set and no signal given', async () => {
   dnsAnswers = [{ address: '93.184.216.34', family: 4 }];
@@ -220,7 +221,7 @@ test('safeGet without timeoutMs and without signal passes no signal to the trans
   assert.equal(signalSeen, undefined);
 });
 
-test('safeGet lets a caller-provided signal own cancellation (timeoutMs ignored)', async () => {
+test('safeGet: a caller-provided signal aborts even alongside a big timeoutMs (FULL-M2a: the two combine)', async () => {
   dnsAnswers = [{ address: '93.184.216.34', family: 4 }];
   const ac = new AbortController();
   restoreTransport = _setTransport((url, pinned, opts) => new Promise((resolve, reject) => {
@@ -228,8 +229,9 @@ test('safeGet lets a caller-provided signal own cancellation (timeoutMs ignored)
     setTimeout(() => ac.abort(), 50);
   }));
   await assert.rejects(
-    // Huge timeoutMs — if it were honored INSTEAD of the caller signal,
-    // this test would hang far past the caller's 50ms abort.
+    // The caller aborts at 50ms — well inside the 60s budget — and its abort
+    // must win. (Since FULL-M2a the deadline is combined rather than dropped:
+    // tests/full-m2-transport.test.mjs pins the tar-pit side of that.)
     () => safeGet('https://example.com/', { signal: ac.signal, timeoutMs: 60000 }),
     /aborted/
   );

@@ -176,22 +176,40 @@ function defaultTransport(url, pinned, opts = {}) {
  * @returns {Promise<{ status: number, text: string, finalUrl: string }>}
  */
 export async function safeGet(urlString, opts = {}) {
-  // `timeoutMs` bounds the WHOLE call (every hop of the redirect chain) when
-  // the caller doesn't manage its own AbortSignal. Node's http.request has no
-  // default socket timeout, so without this a hanging origin holds the
-  // request open forever. When a caller passes its own `signal`, that signal
-  // owns cancellation and `timeoutMs` is ignored.
+  // `timeoutMs` bounds the WHOLE call (every hop of the redirect chain). Node's
+  // http.request has no default socket timeout, so without this a hanging
+  // origin holds the request open forever. FULL-M2 (a): when the caller ALSO
+  // passes its own `signal`, the two are COMBINED — the deadline is no longer
+  // dropped, so a tar-pit origin cannot out-wait a caller that only wanted
+  // cancel-ability. The caller's abort still wins (same reason propagates), and
+  // an already-aborted caller signal passes through unchanged.
   let timer = null;
+  // Detaches the caller-signal bridge on settle, so a long-lived scan signal
+  // does not accumulate one listener per safeGet call.
+  let detachCaller = () => {};
   let signal = opts.signal;
   if (!signal && Number.isFinite(opts.timeoutMs) && opts.timeoutMs > 0) {
     const ac = new AbortController();
     timer = setTimeout(() => ac.abort(), opts.timeoutMs);
+    signal = ac.signal;
+  } else if (signal && !signal.aborted && Number.isFinite(opts.timeoutMs) && opts.timeoutMs > 0) {
+    const caller = signal;
+    const ac = new AbortController();
+    const onCallerAbort = () => {
+      try { ac.abort(caller.reason); } catch { ac.abort(); }
+    };
+    caller.addEventListener('abort', onCallerAbort, { once: true });
+    detachCaller = () => caller.removeEventListener('abort', onCallerAbort);
+    timer = setTimeout(() => {
+      ac.abort(new DOMException(`safeGet timed out after ${opts.timeoutMs}ms`, 'TimeoutError'));
+    }, opts.timeoutMs);
     signal = ac.signal;
   }
   try {
     return await _safeGetInner(urlString, opts, signal);
   } finally {
     if (timer) clearTimeout(timer);
+    detachCaller();
   }
 }
 

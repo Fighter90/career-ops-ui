@@ -9,7 +9,7 @@
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { fetchJson, fetchText, guardResolvedHost } from '../server/lib/http-json.mjs';
+import { fetchJson, fetchText, guardResolvedHost, _setGuardLookup } from '../server/lib/http-json.mjs';
 
 test('real fetch to a loopback host is blocked before connecting', async () => {
   await assert.rejects(
@@ -73,4 +73,32 @@ test('a public IPv6 literal passes the guard without a DNS round-trip', async ()
   // 2606:4700:4700::1111 is a public Cloudflare resolver address; a literal
   // needs no resolution, so the guard must return (never throw) for it.
   await guardResolvedHost(globalThis.fetch, 'http://[2606:4700:4700::1111]/x');
+});
+
+// ─── FULL-M2 — the guard must fail CLOSED on a resolver error ───────
+// `catch { return; }` let a hostile resolver WIN the TOCTOU race by failing
+// the GUARD's lookup and answering a private address on fetch's own second
+// lookup — the one bypass the resolve-time check exists to close. A resolver
+// error here is either a stub, an outage, or an attack; safe-fetch.mjs'
+// resolvePinned already fails closed for the same reason.
+
+test('a resolver error fails the guard CLOSED (hostile-resolver TOCTOU, FULL-M2)', async () => {
+  const undoLookup = _setGuardLookup(async () => {
+    const err = new Error('getaddrinfo EAI_AGAIN hostile.example');
+    err.code = 'EAI_AGAIN';
+    throw err;
+  });
+  try {
+    await assert.rejects(
+      () => guardResolvedHost(globalThis.fetch, 'https://hostile.example/search'),
+      (e) => e.code === 'ECAREEROPS_BLOCKED_DNS' && e.ssrfRefused === true && e.hostname === 'hostile.example',
+    );
+  } finally { undoLookup(); }
+});
+
+test('the guard still passes a public hostname through the injected resolver', async () => {
+  const undoLookup = _setGuardLookup(async () => [{ address: '93.184.216.34', family: 4 }]);
+  try {
+    await guardResolvedHost(globalThis.fetch, 'https://public.example/search');
+  } finally { undoLookup(); }
 });
