@@ -361,7 +361,7 @@ Router.register('reports', async (params) => {
     const hist = ReportOps.scoreHistogram(reports);
     const entries = ReportOps.BANDS.map((b) => [b.id, hist[b.id] || 0]);
     const max = Math.max(1, ...entries.map(([, n]) => n));
-    withFocusPreserved(histogramWrap, () => {
+    FocusPreserved.withFocusPreserved(histogramWrap, () => {
       histogramWrap.innerHTML = '';
       for (const [id, n] of entries) {
         const label = bandLabel(id);
@@ -445,36 +445,10 @@ Router.register('reports', async (params) => {
     ]),
   ]);
 
-  // L-FOCUS (v1.243.0) — identical copy of tracker.js's withFocusPreserved:
-  // render() replaces the focused row / .pg-btn and focus fell to <body>.
-  // Kept file-local (lib/ is shared and outside this change's file set);
-  // tracker.js, reports.js and stats.js each carry the same copy.
-  // CAR-93 — marker keyed on data-key/aria-label (see tracker.js); the
-  // three copies stay byte-identical.
-  function withFocusPreserved(container, mutate) {
-    const markOf = (el) => el.tagName + '|' + el.className + '|'
-      + ((el.getAttribute && (el.getAttribute('data-key') || el.getAttribute('aria-label'))) || '')
-      + '|' + (el.textContent || '');
-    let marker = null;
-    try {
-      const doc = container.ownerDocument || document;
-      const active = doc.activeElement;
-      if (active && active !== container && container.contains(active)) {
-        marker = markOf(active);
-      }
-    } catch { marker = null; }
-    mutate();
-    if (!marker) return;
-    const sel = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
-    let candidates = [];
-    try { candidates = Array.from(container.querySelectorAll(sel)); } catch { return; }
-    for (const el of candidates) {
-      if (markOf(el) === marker) {
-        try { el.focus(); } catch { /* detached node */ }
-        return;
-      }
-    }
-  }
+  // L-FOCUS (v1.243.0) — render() replaces the focused row / .pg-btn and
+  // focus fell to <body>. FULL-M6 — the three byte-identical view copies
+  // (tracker/reports/stats) are consolidated into the shared
+  // lib/focus-preserve.js helper.
 
   // ── state funnel ──────────────────────────────────────────────────────────
   // Every control change flows through applyState: merge → persist →
@@ -518,7 +492,7 @@ Router.register('reports', async (params) => {
     // L-FOCUS — restore focus across the rebuild (paginator page change
     // was a keyboard dead-end: the clicked .pg-btn was destroyed
     // mid-click). The table path keeps the exact pinned shape.
-    withFocusPreserved(tbody, () => {
+    FocusPreserved.withFocusPreserved(tbody, () => {
       tbody.innerHTML = '';
       if (state.view !== 'cards') {
         if (list.length === 0) {
@@ -527,7 +501,7 @@ Router.register('reports', async (params) => {
         } else page.forEach((rep) => tbody.appendChild(makeRow(rep)));
       }
     });
-    withFocusPreserved(cardsWrap, () => {
+    FocusPreserved.withFocusPreserved(cardsWrap, () => {
       cardsWrap.innerHTML = '';
       if (state.view === 'cards') {
         if (list.length === 0) {
@@ -536,7 +510,7 @@ Router.register('reports', async (params) => {
         } else page.forEach((rep) => cardsWrap.appendChild(makeCard(rep)));
       }
     });
-    withFocusPreserved(pgWrap, () => {
+    FocusPreserved.withFocusPreserved(pgWrap, () => {
       pgWrap.innerHTML = '';
       pgWrap.appendChild(pager.controls(page.length, list.length));
     });

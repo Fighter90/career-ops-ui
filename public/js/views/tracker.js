@@ -235,8 +235,8 @@ Router.register('tracker', async () => {
     const page = pager.slice(all);
     // L-FOCUS (v1.243.0) — this rebuild replaces the nodes a keyboard user is
     // on (a row's Report/Outcome button, a .pg-btn), dropping focus to <body>.
-    // Restore it (see withFocusPreserved below).
-    withFocusPreserved(tbody, () => {
+    // Restore it (see lib/focus-preserve.js).
+    FocusPreserved.withFocusPreserved(tbody, () => {
       tbody.innerHTML = '';
       if (all.length === 0) {
         // WS2 #26 — distinguish first-run (no data at all) from a filter that
@@ -259,7 +259,7 @@ Router.register('tracker', async () => {
       bulk.syncSelAll();
       bulk.el.hidden = bulk.size() === 0 || viewModeNow() !== 'table';
     }
-    withFocusPreserved(pgWrap, () => {
+    FocusPreserved.withFocusPreserved(pgWrap, () => {
       pgWrap.innerHTML = '';
       if (all.length === 0) return;
       pgWrap.appendChild(pager.controls(page.length, all.length));
@@ -403,7 +403,7 @@ Router.register('tracker', async () => {
 
   function renderKanban() {
     const visible = sorted(filtered());
-    withFocusPreserved(kanbanHost, () => {
+    FocusPreserved.withFocusPreserved(kanbanHost, () => {
       kanbanHost.textContent = '';
       if (!visible.length) {
         kanbanHost.appendChild(c('div', {
@@ -578,22 +578,14 @@ async function runFix(btn, path, t) {
   }
 }
 
-// CAR-93 — renamed from statusClass: dashboard.js declares the SAME name as
-// a top-level function in a sibling classic script, so the window binding
+// CAR-93 — the classifier used to be declared in both tracker.js and
+// dashboard.js as a top-level `statusClass`, so the window binding
 // belonged to whichever file loaded last and one view's badges silently
-// followed the other's classifier (the dashboard copy has no Hired branch —
-// a re-order would have cost tracker its badge-hired). Distinct names keep
-// each view's classifier its own.
-function trackerStatusClass(s) {
-  s = (s || '').toLowerCase();
-  // v1.118.0 — parent v1.18.0 parity: Hired (job landed) gets the celebratory tint.
-  if (s.includes('hired')) return 'badge-hired';
-  if (s.includes('offer')) return 'badge-ok';
-  if (s.includes('reject') || s.includes('discard')) return 'badge-bad';
-  if (s.includes('interview') || s.includes('respond')) return 'badge-info';
-  if (s.includes('skip')) return 'badge-warn';
-  return '';
-}
+// followed the other's classifier. FULL-M6 — the two copies are
+// consolidated into lib/status-class.js (namespaced, so the collision
+// stays impossible) and the dashboard copy's missing Hired branch is gone
+// with the copy itself.
+const trackerStatusClass = (s) => StatusClass.of(s);
 
 // G-006 (v1.15.0) — tint Legitimacy badges the same way /#/reports does.
 // High / verified / strong → ok. Medium / caution / partial → warn.
@@ -612,40 +604,8 @@ function legitimacyClass(s) {
 
 // L-FOCUS (v1.243.0) — a rebuild that replaces the node a keyboard user is on
 // (a paginator button, a row button, a <select>) drops focus to <body>.
-// Snapshot the focused element among the container's focusable descendants,
-// let `mutate()` rebuild, then restore focus to the matching node (matched by
-// the same control). No-op when focus is outside the container. Kept
-// file-local: lib/ is shared and outside this change's file set; tracker.js,
-// reports.js and stats.js each carry this same copy.
-// CAR-93 — the marker was tag|class|text, which is IDENTICAL for the same
-// control on every row (the Outcome/Report buttons, the Still-live button),
-// so focus jumped to row 1. The marker now keys on data-key (row-scoped
-// controls carry one) or aria-label before falling back to the text — and
-// all three copies stay byte-identical.
-function withFocusPreserved(container, mutate) {
-  const markOf = (el) => el.tagName + '|' + el.className + '|'
-    + ((el.getAttribute && (el.getAttribute('data-key') || el.getAttribute('aria-label'))) || '')
-    + '|' + (el.textContent || '');
-  let marker = null;
-  try {
-    const doc = container.ownerDocument || document;
-    const active = doc.activeElement;
-    if (active && active !== container && container.contains(active)) {
-      marker = markOf(active);
-    }
-  } catch { marker = null; }
-  mutate();
-  if (!marker) return;
-  const sel = 'a[href], button:not([disabled]), input:not([disabled]), select:not([disabled]), textarea:not([disabled]), [tabindex]:not([tabindex="-1"])';
-  let candidates = [];
-  try { candidates = Array.from(container.querySelectorAll(sel)); } catch { return; }
-  for (const el of candidates) {
-    if (markOf(el) === marker) {
-      try { el.focus(); } catch { /* detached node */ }
-      return;
-    }
-  }
-}
+// FULL-M6 — the three byte-identical view copies (tracker/reports/stats) are
+// consolidated into the shared lib/focus-preserve.js helper.
 
 // CAR-36 (v1.243.0 regression run) — the "Record outcome" modal is a child of
 // the app-chrome #modal node, NOT of the #content subtree the router replaces

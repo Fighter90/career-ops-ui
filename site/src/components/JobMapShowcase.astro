@@ -1,19 +1,16 @@
 ---
-import { Picture } from 'astro:assets';
 import { t, type Locale } from '../i18n/locales';
-import { jobMapShotFor } from '../lib/screenshots';
+import ScreenshotSlot from './ScreenshotSlot.astro';
 
 interface Props {
   locale: Locale;
 }
 const { locale } = Astro.props;
-// Synced from images/job-map-<locale>.png by scripts/sync-assets.mjs (same file
-// keys as the dashboard shots, e.g. ko-KR); a missing one falls back to the
-// English shot. The ImageMetadata typing lives in lib/screenshots.ts — a bare
-// `import type … from 'astro'` here fails `astro check` (site/ has no
-// tsconfig, so moduleResolution is node10 and the exports-map-only 'astro'
-// package does not resolve — Pages run 37674890622).
-const shot = jobMapShotFor(locale.file);
+// CAR-133: the job-map captures on disk (en/ru hand-made 2026-10-07, the rest
+// scripted around v1.249.0) predate the dark map tiles (v1.247.0), the
+// commute/relevance controls (v1.249.0) and the specialization select
+// (v1.251.0) — the section renders a labelled placeholder until CAR-140
+// captures the current map. map.alt stays the slot's accessible name.
 const captions = [1, 2, 3].map((i) => ({
   title: t(locale, `map.c${i}.title`),
   desc: t(locale, `map.c${i}.desc`),
@@ -29,15 +26,7 @@ const captions = [1, 2, 3].map((i) => ({
     </div>
 
     <div class="reveal overflow-hidden rounded-[24px] border border-line shadow-[var(--shadow-hover)]">
-      <Picture
-        src={shot}
-        alt={t(locale, 'map.alt')}
-        formats={['avif', 'webp']}
-        widths={[640, 960, 1440]}
-        sizes="(max-width: 1200px) 94vw, 1160px"
-        loading="lazy"
-        class="block h-auto w-full"
-      />
+      <ScreenshotSlot label={t(locale, 'map.alt')} note={t(locale, 'map.placeholder')} />
     </div>
 
     <ul class="mt-8 grid gap-6 sm:grid-cols-3">

@@ -76,22 +76,20 @@ test('routes that spawn outcome.mjs / followup-seed.mjs have not backslid to a b
     ['server/lib/routes/followup.mjs', 'followup-seed.mjs'],
   ]) {
     const src = readFileSync(resolve(ROOT, file), 'utf8');
-    // These routes are a documented FULL-M1 hand-off (files outside this
-    // change's ownership): the roster entry is waiting in TRACKER_MUTATING,
-    // and the routes still call runNodeScript(SCRIPT) through a const —
-    // the CURRENT, accepted shape. FULL-M1 review F1: a literal-only regex
-    // here is vacuous, but so is asserting the fixed state before the
-    // hand-off lands. This gate therefore pins the INTERIM contract:
-    // (a) no INLINE literal in a runNodeScript call (the worst shape), and
-    // (b) exactly ONE const binding of the script name — a second copy
-    // would be a spawn the roster cannot see. When the hand-off commit
-    // repoints these to runTrackedScript, flip (b) to forbid the bare
-    // runNodeScript(CONST) shape.
+    // FULL-M1 hand-off LANDED: the routes call runTrackedScript through a
+    // const. The gate now forbids BOTH backslide shapes — an inline literal
+    // in a runNodeScript call AND a bare runNodeScript(CONST) — either one
+    // would spawn without the shared-file lock.
     const inline = new RegExp(`runNodeScript\\(\\s*['"]${script}`);
     assert.equal(inline.test(src), false,
       `${file}: spawn ${script} through runTrackedScript (TRACKER_MUTATING) so it holds its shared-file lock`);
-    const occurrences = src.split(`'${script}'`).length - 1;
-    assert.ok(occurrences <= 1,
-      `${file}: '${script}' appears ${occurrences}× — expected at most one const binding the roster can wrap`);
+    const constName = new RegExp(`const\\s+(\\w+)\\s*=\\s*['"]${script}['"]`).exec(src)?.[1];
+    if (constName) {
+      const bareConst = new RegExp(`runNodeScript\\(\\s*${constName}\\b`);
+      assert.equal(bareConst.test(src), false,
+        `${file}: runNodeScript(${constName}) bypasses runTrackedScript — the shared-file lock would be lost`);
+      assert.ok(new RegExp(`runTrackedScript\\(\\s*${constName}\\b`).test(src),
+        `${file}: ${constName} must be spawned through runTrackedScript`);
+    }
   }
 });

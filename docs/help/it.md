@@ -9,6 +9,21 @@ flusso di lavoro. Alla prima esecuzione leggila dall'alto verso il
 basso; in seguito passa a una sezione specifica tramite l'indice nella
 barra laterale della guida.
 
+> **Come orientarsi (la shell v2).** La barra laterale è organizzata in
+> gruppi richiudibili — **Sourcing**, **Decision**, **Application**,
+> **Networking**, **Analytics**, **Setup** (`nav.group.*`) — che si
+> aprono quando entri in una sezione e restano dove li hai lasciati.
+> stellina su qualsiasi pagina per fissarla nei **Preferiti**, e
+> **Cmd/Ctrl+K** (o il pulsante **Menu dei comandi** in cima alla
+> barra laterale, `nav.v2.palette`) per saltare con ricerca fuzzy a
+> qualsiasi pagina da qualsiasi punto. Ogni pagina mostra il titolo
+> all'istante e riempie righe grigie con shimmer mentre i dati
+> caricano — la navigazione non appare mai vuota. E nessuna pagina ti
+> accoglie con un vuoto nudo: le quattro che partono vuote —
+> **Auto-pipeline**, **Checklist di candidatura**, **Batch** e
+> **Funded companies** — mostrano un esempio svolto più l'unica azione
+> che le riempie (`v2empty.exampleTag`).
+
 > **Destinatari:** chiunque abbia appena inserito questa UI dentro un
 > checkout di `career-ops` ed eseguito `bash bin/start.sh`. Non si
 > presuppone alcuna conoscenza pregressa di career-ops.
@@ -324,33 +339,47 @@ minimo di accettazione è proprio lì.
 → Reports → Deep research → Apply checklist → Outreach → Tracker
 → Follow-up → Interview prep → Activity log`
 
-Tutto qui. 21 passi, pulsante per pulsante, da zero all'offerta.
+La barra laterale raggruppa queste stesse pagine per fase
+(**Sourcing** → **Decision** → **Application** → …), così l'ordine del
+workflow e l'ordine del menu coincidono sempre; **Cmd/Ctrl+K** apre il
+**Menu dei comandi** (`nav.v2.palette`) se preferisci digitare tre
+lettere anziché cercare nella lista. Tutto qui. 21 passi, pulsante per
+pulsante, da zero all'offerta.
 
 ### Auto-pipeline con un clic (`#/auto`) — la scorciatoia in 21 passi
 
 Se vuoi solo valutare in fretta un'offerta specifica, salta la guida
 manuale. **Barra laterale → ✨ Auto-pipeline** (o il pulsante ✨ sulla
 Dashboard) apre una schermata dedicata: incolla l'URL del lavoro, premi **Enter**
-o fai clic su **▶ Run full pipeline**, e il server esegue l'intera catena
+o fai clic su **Esegui auto-pipeline** (`auto.run`), e il server esegue l'intera catena
 in un'unica passata osservabile:
 
-1. **Validating URL** — controllo SSRF-safe (`isValidJobUrl`); rifiuta
+1. **Validazione URL** (`auto.step.validate`) — controllo SSRF-safe (`isValidJobUrl`); rifiuta
    loopback / `file:` / IP privati / caratteri di script.
-2. **Fetching job description** — `safeGet` (con DNS bloccato, reindirizzamenti
+2. **Recupero descrizione** (`auto.step.fetch`) — `safeGet` (con DNS bloccato, reindirizzamenti
    rivalidati) scarica + sanifica la JD.
-3. **Evaluating against your CV** — Anthropic (preferito) → ripiego
+3. **Valutazione sul tuo CV** (`auto.step.evaluate`) — Anthropic (preferito) → ripiego
    su Gemini → prompt manuale se non c'è chiave.
-4. **Saving report** — scrive `reports/<slug>.md` con punteggio +
+4. **Salvataggio report** (`auto.step.report`) — scrive `reports/<slug>.md` con punteggio +
    legittimità nell'intestazione.
-5. **Adding to tracker** — accoda una riga a `data/applications.md`.
+5. **Aggiunta al tracker** (`auto.step.tracker`) — accoda una riga a `data/applications.md`.
 
 Il feedback in tempo reale è uno **stepper** verticale (ogni passo si
-illumina in corso → fatto / fallito). È un elenco ordinato con `aria-current`
-sul passo attivo e una live-region educata per screen reader che annuncia
-ogni transizione. In caso di successo la card del risultato porta direttamente
-al rapporto salvato (**View report · N/5**) e al **tracker**. Un passo
+illumina in corso → fatto / fallito; `aria-current` segna il passo attivo e
+una live-region educata per screen reader annuncia ogni transizione). In
+caso di successo la card del risultato porta direttamente al rapporto
+salvato (**View report**, `auto.viewReport`) e al **tracker**
+(`auto.viewTracker`). Un passo
 fallito è marcato in rosso con il suo messaggio e il pulsante si riabilita così
-puoi correggere l'URL e riprovare senza ricaricare.
+puoi correggere l'URL e riprovare senza ricaricare. Avviare una nuova passata
+mentre una è ancora in corso è sicuro: la più vecchia si marca **Sostituito —
+è stata richiesta una passata più recente** (`auto.superseded`) invece di
+spendere due volte su una risposta stantia.
+
+La pagina vuota è onesta sul suo unico campo: l'etichetta **Esempio** e il
+pulsante **Incolla URL di esempio** (`v2empty.auto.tryExample`) riempiono
+l'input con un'offerta campione — **non parte nulla finché non premi
+Esegui** (`v2empty.auto.hint`), così guardare non costa nulla.
 
 **Nessuna chiave API?** La pipeline gira in **modalità manuale**: i passi 3–5
 si comprimono e ottieni una card di prompt pronta da incollare (copia in Claude
@@ -1055,15 +1084,62 @@ Sotto il log, la tabella dei risultati rende le righe da `data/last-scan.json`.
 > dopo 14 giorni), così gli slug morti smettono di intasare il log. Disabilita con
 > `scan_quarantine: false` in `portals.yml`.
 
-Filtri:
+Mentre la tabella carica (e a ogni refresh) vedi righe grigie con shimmer
+invece di un pannello vuoto, e il titolo di pagina c'è dal primo frame —
+una scansione lenta non sembra mai una pagina morta.
+
+Il chrome v2 dei risultati tiene i controlli a vista:
+
+- **Filtri attivi** (`scan.v2.activeFilters`) — ogni filtro applicato
+  appare come chip rimovibile sopra la tabella; clic sulla **✕** di una
+  chip (**Rimuovi filtro**, `scan.v2.removeFilter`) per togliere solo
+  quella, o **Azzera tutto** (`scan.v2.resetAll`) per pulire tutto.
+- **Ordina per** (`scan.v2.sortBy`) — clic su un'intestazione di colonna
+  (azienda, ruolo, stipendio, età) per ordinare; di nuovo per invertire.
+- **Vista rapida** (`scan.v2.quickView`) — clic su una riga per espandere
+  la descrizione inline (**Descrizione**, `scan.v2.description`) senza
+  uscire dalla pagina; gli annunci senza corpo catturato lo dichiarano
+  (`scan.v2.noDescription`) invece di mostrare una card vuota.
+- **Densità riga** (`scan.v2.density`) — alterna **Compatto** /
+  **Comodo** (`scan.v2.compact` / `scan.v2.comfortable`); la scelta si
+  ricorda per browser.
+- **Log** (`scan.v2.log`) — collassa/espande il log di scansione in
+  streaming per dare la larghezza piena alla tabella.
+
+Ogni riga porta le proprie azioni: **Valuta** (`scan.v2.evaluate`) salta
+diritto a una valutazione punteggiata di quell'annuncio, **Al
+pipeline** (`scan.v2.toPipeline`) accoda l'URL (con toast di già-in-coda,
+`scan.v2.pipelineDup`), **Apri annuncio ↗** (`scan.v2.openPosting`) apre
+la pagina carriere in una nuova scheda, e la ☆ segna nei preferiti.
+
+**Ricerca + Escludi.** La casella **Ricerca** è il tuo filtro «ruoli da
+trovare» — digita uno o più termini **separati da virgole** e una riga
+appare se coincide con **uno qualsiasi** (OR); un `-parola` iniziale
+**esclude** quel termine (`scan.v2.moreHint`). La casella separata
+**Escludi** (`scan.lblExclude`) fa lo stesso per termini interi: parole
+separate da virgole che **nascondono** qualsiasi riga la cui azienda /
+ruolo / sede li contiene (es. escludi `senior, staff, java`). Entrambe
+si ricordano nelle tue ricerche salvate insieme ai filtri remoto /
+sorgente / paese / età / stipendio.
+
+Filtri (sempre visibili: ricerca, escludi, tipo, sorgente, paese;
+tutto il resto vive dietro **Filtri avanzati**, `scan.advancedFilters` —
+l'intero pannello è raggruppato sotto **Filtri dei risultati**,
+`scan.filtersGroup`):
 
 - **Testo libero** — corrispondenza di sottostringa contro titolo / azienda.
-- Menu a tendina **Source** — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Teamtailor / Trudvsem / We Work Remotely / Workable / Workday / Working Nomads (popolato automaticamente da `GET /api/scan/sources`).
+- Menu a tendina **Source** — tutte le sorgenti che il registro conosce
+  (121 al momento: 116 EN + 5 RU, **All sources** predefinito). È
+  popolato in tempo reale da `GET /api/scan/sources`, così un adapter
+  appena rilasciato appare qui senza cambiare l'app — la lista non è
+  mai cablata a mano.
 - Menu a tendina **Remote / Hybrid / Onsite**.
-- Menu a tendina **Country** (v1.78.0) — un filtro geografico popolato dai paesi rilevati nei risultati correnti, ciascuno mostrato con la sua emoji bandiera e un conteggio (es. `🇩🇪 Germany (12)`). Scegline uno per mantenere solo i ruoli legati a quel paese. Il rilevamento mappa la location in testo libero di un'offerta (nomi/alias di paesi + ~100 principali città del mercato del lavoro) a un paese; è conservativo e non indovina mai, così un'offerta la cui location non può essere risolta — o un annuncio puramente "Remote" — resta sotto **All countries**. Combinalo con il menu a tendina del tipo di lavoro per trovare ruoli legati a un paese *e* remoti.
-- Menu a tendina **Posted within** (v1.80.0) — un filtro sull'età lato client (Last 24 hours / 7 days / 30 days). Le righe la cui `pubDate` è più vecchia vengono nascoste; le righe **senza data indicata passano** (i dati mancanti non sono penalizzati).
-- **★ Favorites** (v1.80.0) — fai clic sulla ☆ in qualsiasi riga per aggiungere un lavoro ai preferiti (memorizzato in `localStorage` per URL); spunta **★ Favorites** nel pannello dei filtri per mostrare solo le righe con stella. Le stelle sopravvivono a scansioni e ricaricamenti.
-- **Saved searches** (v1.80.0) — la barra sopra i filtri: dai un nome al set di filtri corrente e **💾 Save**, poi ri-applicalo dal menu a tendina o **🗑 Delete**. Memorizzato in `localStorage`; un valore corrotto/modificato si azzera in modo pulito a vuoto.
+- Menu a tendina **Country** — un filtro geografico popolato dai paesi rilevati nei risultati correnti, ciascuno mostrato con la sua emoji bandiera e un conteggio (es. `🇩🇪 Germany (12)`). Scegline uno per mantenere solo i ruoli legati a quel paese. Il rilevamento mappa la location in testo libero di un'offerta (nomi/alias di paesi + ~100 principali città del mercato del lavoro) a un paese; è conservativo e non indovina mai, così un'offerta la cui location non può essere risolta — o un annuncio puramente "Remote" — resta sotto **All countries**. Combinalo con il menu a tendina del tipo di lavoro per trovare ruoli legati a un paese *e* remoti.
+- Menu a tendina **Posted within** — un filtro sull'età lato client (Last 24 hours / 7 days / 30 days). Le righe la cui `pubDate` è più vecchia vengono nascoste; le righe **senza data indicata passano** (i dati mancanti non sono penalizzati).
+- **Stipendio da / Stipendio a** (`scan.salaryFrom` / `scan.salaryTo`) — limiti numerici semplici confrontati con gli importi analizzati dal testo dell'annuncio (la valuta si ignora, `scan.v2.salaryHint`); spunta **Includi lavori senza stipendio** (`scan.v2.includeNoSalary`) per evitare che il filtro stipendio scarti le righe senza cifre.
+- **Seniority** menu a tendina (`scan.lblSeniority`) — Lead / Staff / Senior / Mid / Junior / Intern, rilevato dal titolo.
+- **★ Favorites** — fai clic sulla ☆ in qualsiasi riga per aggiungere un lavoro ai preferiti (memorizzato in `localStorage` per URL); spunta **★ Favorites** (`scan.favOnly`) nel pannello dei filtri per mostrare solo le righe con stella. Le stelle sopravvivono a scansioni e ricaricamenti.
+- **Saved searches** (`scan.savedSearches`) — dai un nome al set di filtri corrente e **Salva ricerca** (`scan.saveSearch`); le salvate si caricano con un clic (`scan.v2.loadSearch`) ed eliminarne una chiede conferma (`scan.v2.deleteSearchConfirm`). Memorizzato in `localStorage`; un valore corrotto/modificato si azzera in modo pulito a vuoto.
 - **Stack chip** (PHP / Go / Backend / Senior / …) — rilevati automaticamente
   per riga da `Skills.detectTech` e `Skills.detectLevel`. Intersezione a selezione
   multipla — selezionare `PHP + Senior` mostra le righe che hanno ENTRAMBI.
@@ -1150,18 +1226,18 @@ Anche da una rete che *sembra* corretta, hh.ru può considerare l'IP di uscita u
 
 Casella di posta di URL in attesa di essere valutati. Vive in `data/pipeline.md`.
 
-**Striscia di panoramica.** Una striscia compatta in alto mostra la pipeline a colpo d'occhio — quante URL in arrivo, quante tracciate e i conteggi Applied/Responded/Interview/Offer, ciascuno collega al tracker.
+**Striscia di panoramica.** Una striscia compatta in alto mostra la pipeline a colpo d'occhio — quante URL **nella casella** (`pipe.ovInbox`), quante **tracciate** (`pipe.ovTracked`) e i conteggi **Applied / Responded / Interview / Offer** dal tracker. Ogni chip collega diretto a `#/tracker` (le chip di stato lo aprono filtrato). Degrada al solo conteggio della casella se il tracker non si può leggere.
 
 ### Aggiungere URL
 
 Tre modi:
 
-- Digita / incolla un URL nell'input + fai clic su **+ Add**.
-- Usa la **ricerca globale della barra superiore** (il suo badge riporta **Enter**): incolla
-  qualsiasi link `http(s)://…` e premi **Enter** per aprire l'auto-pipeline;
-  digita qualsiasi altro testo e **Enter** salta a `#/scan` con quel termine
-  pre-compilato (v1.78.1). Ctrl/Cmd+K mette comunque il focus sul box dove il
-  browser lo consente. Il **logo** del brand riporta alla dashboard.
+- Digita / incolla un URL nell'input + fai clic su **Aggiungi URL** (`pipe.add`).
+- Usa il **menu dei comandi**: **Cmd/Ctrl+K** (o il pulsante **Menu dei
+  comandi** della barra laterale, `nav.v2.palette`), incolla qualsiasi link
+  `http(s)://…` e il menu offre **Auto-pipeline: {url}**
+  (`nav.v2.evalUrl`) — Enter esegue l'intera catena su di esso. Qualsiasi
+  altro testo + Enter salta a `#/scan` con quel termine pre-compilato.
 - Esegui una Scan (vedi sopra) — i risultati freschi vanno alla pipeline
   automaticamente.
 
@@ -1183,13 +1259,50 @@ così un board ostile non può rimbalzarti su loopback / IP privato
 
 ### Azioni di riga
 
-- **▶** — salta a `#/evaluate?url=…` con l'URL pre-compilato.
-- **✕** — rimuove l'URL da `data/pipeline.md`.
+- **▶** (`pipe.evaluateBtn`) — salta a `#/evaluate?url=…` con l'URL pre-compilato.
+- **✕** — rimuove l'URL da `data/pipeline.md` (chiede prima, `pipe.confirmDel`).
+
+**Vista raggruppata, scarto in blocco, undo senza perdite.** Svuotare
+una casella piena dopo una scansione è il pezzo centrale v2 della
+pagina:
+
+- **Raggruppata** (`pipe.viewGrouped`) / **Elenco compatto**
+  (`pipe.viewFlat`) — la barra alterna tra elenco piatto e una bacheca
+  raggruppata per azienda: gli annunci dello stesso datore collassano
+  sotto un solo disclosable (il gruppo più grande prima), così una
+  board rumorosa non seppellisce le altre. Le aziende sconosciute si
+  raggruppano per host — ma un host ATS condiviso (diciamo
+  `jobs.lever.co`) prende in prestito un nome azienda solo quando
+  *tutte* le voci con azienda su quell'host concordano.
+- **Nascondi già valutate** (`pipe.hideTracked`) — attivo per default;
+  gli annunci che hanno già una riga nel tracker escono dalla vista (e
+  dalla selezione in blocco) così agisci solo su lavoro fresco.
+- **Seleziona** (`pipe.selectOne`) le righe, o **Seleziona le visibili**
+  (`pipe.selectAllShown`) — la selezione segue sempre i filtri
+  correnti, mai righe invisibili. La barra mostra il conteggio
+  (`pipe.selectedCount`) e offre **✕ Rimuovi selezionate (N)**
+  (`pipe.bulkRemove`) più **Valuta la prima selezionata**
+  (`pipe.evaluateSelected`) — la rimozione in blocco conferma una volta
+  per l'intero set, non per riga.
+
+Nulla si perde per errore: ogni rimozione — singola o in blocco —
+restituisce un token di ripristino opaco, e una barra in fondo alla
+pagina (**Eliminate: N**, `pipe.deleted`) offre **Annulla**
+(`pipe.undo`) / **Ignora** (`pipe.undoDismiss`). Le rimozioni si
+impilano fino a cinque lotti (il più vecchio si scarta); **Annulla**
+reinserisce il più recente inviando i suoi token a
+`POST /api/pipeline/restore`, che reinsertisce le righe originali
+esatte (metadati del checklist inclusi — nulla è ri-derivato o
+ri-aggiunto) e conferma con **Ripristinato nel pipeline**
+(`pipe.undone`). La barra vive fuori dal markup della pagina, così un
+re-render (navigazione, il flusso di aggiunta rapida) non può inghiottire
+un undo in sospeso; se il server non riconosce più un token (riavvio),
+quell'URL si ri-aggiunge nel modo semplice invece di perdersi.
 
 ### Pulsanti in alto a destra
 
-- **⚡ Valuta il primo** — apre il primo URL in coda sulla pagina Evaluate,
-  pronto per il punteggio.
+- **⚡ Valuta il primo** (`pipe.evaluateAll`) — apre il primo URL in coda sulla pagina Evaluate,
+  pronto per il punteggio (conferma prima, perché decide su quale annuncio spenderai la passata).
 - **Ricerca offerte di lavoro** — torna allo scanner se vuoi più URL.
 
 ---
@@ -1266,10 +1379,44 @@ notte, poi torna a `#/reports` / `#/tracker` per i risultati. Flusso completo:
 
 ## 10. Reports (`#/reports`)
 
-Sfoglia ogni valutazione salvata. Le card mostrano titolo, data, flag di
-legittimità, e punteggio (codificato per colore: verde ≥ 4.0, giallo ≥ 3.0, rosso sotto).
+Sfoglia ogni valutazione salvata. La pagina apre su una vista a
+**Card** (`rep2.viewCards`) — una card per report: titolo visualizzato,
+data, badge di legittimità e pill di punteggio a colori (verde ≥ 4.0,
+giallo ≥ 3.0, rosso sotto, con una pill muta «Punteggio non rilevato»
+quando l'intestazione non porta un punteggio analizzabile) — e può
+passare a una vista densa a **Tabella** (`rep2.viewTable`) quando vuoi
+scorrere righe. Ogni card e riga di tabella nomina anche il **passo
+successivo suggerito** per la sua banda di punteggio: **Candidati ora —
+massimo affinità** (`rep2.actApply`), **Candidati, o trova prima un
+contatto caldo** (`rep2.actContact`), **Prima studia l'azienda**
+(`rep2.actResearch`), o **Salta salvo motivo personale** (`rep2.actLow`)
+— ciascuno un link diretto alla pagina giusta. Una card senza
+punteggio mostra la pill muta **Punteggio non rilevato**
+(`rep.scoreUnparsed`) con tooltip verso il report stesso.
 
-Fai clic su una card per leggere il markdown completo. Paginazione: 12 per pagina;
+**Trovare il report giusto.** Una riga di filtri siede sopra la lista e
+tutto si compone:
+
+- **Cerca report** (`rep2.searchLabel`) — testo libero confrontato con
+  azienda, ruolo e titolo visualizzato di ogni report.
+- **Azienda** (`rep2.companyLabel`) — scegli un datore dal menu.
+- **Banda di punteggio** (`rep2.bandLabel`) — **Alta (4.5+)** / **Buona
+  (4.0+)** / **Media (3.5+)** / **Sotto 3.5** (`rep2.bandHigh` …
+  `rep2.bandLow`), più un secchio per i report senza punteggio
+  analizzabile.
+- **Data da / Data a** (`rep2.dateFrom` / `rep2.dateTo`) — lega la
+  lista a un periodo.
+- **Ordina per** (`rep2.sortLabel`) — **Data** / **Punteggio** /
+  **Azienda** (`rep2.sortDate` …), crescente o decrescente
+  (`rep2.sortDirAsc` / `rep2.sortDirDesc`).
+- Un **istogramma della distribuzione dei punteggi**
+  (`rep2.histogramLabel`) — clic su una colonna per filtrare a quella
+  banda e vedere la forma del tuo pipeline a colpo d'occhio.
+- **Azzera filtri** (`rep2.reset`) pulisce tutto; quando nulla
+  coincide, la pagina lo dice (`rep2.noMatches`) invece di mostrare una
+  griglia vuota.
+
+Fai clic su una card per leggere il markdown completo. Paginazione: 20 per pagina;
 controlli in fondo.
 
 La vista del singolo rapporto ha anche:
@@ -1299,6 +1446,25 @@ tabella GitHub-Flavored Markdown.
 `Hired` (v1.118.0) è lo stato finale felice — l'offerta è stata accettata. Il tracker lo contrassegna con un badge celebrativo e lo accoglie con un banner «lavoro ottenuto».
 
 **Bacheca a schede di stadio (v1.131.0).** Sopra la tabella una **striscia di schede di stadio** permette di percorrere il funnel: una scheda **Tutti** più una scheda per ogni stato canonico, ciascuna con un conteggio live sull'intera cronologia — **incluse le fasi a conteggio zero**, così l'intera pipeline è sempre visibile a colpo d'occhio. Clicca su uno stadio per filtrare la tabella su di esso; clicca di nuovo per tornare a **Tutti**. Le schede (e la fusione degli alias di stato localizzati/legacy nei conteggi) provengono da `GET /api/tracker/stages`, che legge lo stesso `templates/states.yml` usato dal server — così l'insieme delle schede resta automaticamente sincronizzato col vocabolario di stato del padre, senza alcuna lista hardcoded nella pagina. La ricerca, il filtro per punteggio, le colonne ordinabili e le funzioni per riga di report/PDF/legittimità restano invariate; con i loghi abilitati, l'azienda di ogni riga mostra un marchio del brand.
+
+**Vista kanban (v2).** La stessa bacheca si legge anche come un
+**kanban** trascina-e-rilascia: una colonna per stato canonico (titolo
+della bacheca annunciato come *Applications by status*,
+`track.kanbanBoardAria`), una card per candidatura. Trascina una card
+su un'altra colonna — o focalizzala e premi **Sposta** — e il
+cambiamento viene **anteprimato prima che qualsiasi cosa venga
+scritta** (`track.kanbanMoveHint`); uno spostamento confermato registra
+una voce nel diario degli outcome e riscrive `data/applications.md`, e
+la card te lo dice (`track.moveJournal`) — per riportare uno stato
+indietro, usa il pulsante **Outcome** della riga. Le colonne che il
+pipeline gestisce da sé (e `Discarded`, la cui semantica scelghi solo
+tu) si renderizzano in sola lettura (`track.kanbanReadOnly`) e
+rifiutano i drop. Se il registratore di outcome del padre manca, gli
+spostamenti si disabilitano con una nota onesta
+(`track.kanbanMovesOff`). Mentre la bacheca carica mostra le stesse
+righe con shimmer del resto dell'app, e una bacheca vuota dice **Nessuna
+candidatura** (`track.kanbanEmpty`) con un puntatore al pipeline
+(`track.emptyBody`).
 
 La whitelist degli stati è imposta lato server; inviare qualcos'altro in
 un `POST /api/tracker` fa il default a `Evaluated`. La transizione canonica
@@ -1559,7 +1725,11 @@ Monitora lo stato dell'intera pipeline, indipendentemente dal punteggio del ruol
 
 Quando hai 10+ JD da valutare in una volta (la `#/evaluate` a una alla volta
 della SPA è impraticabile per quel volume), usa il batch runner
-dalla CLI.
+dalla CLI. La pagina `#/batch` ti accoglie con la stessa onestà: il suo
+stato vuoto mostra **Inizia con un elenco di annunci**
+(`v2empty.batch.emptyTitle`) e un assistente **Incolla elenco URL**
+(`v2empty.batch.pasteList`) che solleva gli URL http(s) dagli appunti
+diretto nell'input (`v2empty.batch.pasteAdded`), così
 
 **File di input — `batch/batch-input.tsv`** (separato da tab):
 
@@ -1776,7 +1946,7 @@ output, e cerca la issue nel tracker su
 
 ## 17. Come aggiungere una nuova sorgente di portale di lavoro
 
-career-ops-ui tratta ogni job board come un **adattatore** — un singolo file sotto [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) che sa come recuperare + normalizzare i risultati di un board. Attualmente il registro `server/lib/sources/` include **121** adattatori — **116 inglesi + 5 russi**. L'insieme inglese copre i principali ATS (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), gli aggregatori a livello di board selezionati da un `provider:` esplicito (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …) e gli ATS per-tenant auto-rilevati da un host `careers_url` o da un URL `api:` esplicito (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **L'elenco completo non va mai contato a mano qui — viene auto-rilevato da `server/lib/sources/` e mostrato in tempo reale nel menu a tendina Source di `#/scan`.** Vedi §5 per lo YAML e `docs/portals-examples.md` per le voci da copia-incolla.
+career-ops-ui tratta ogni job board come un **adattatore** — un singolo file sotto [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) che sa come recuperare + normalizzare i risultati di un board. Attualmente il registro `server/lib/sources/` include **121** sorgenti — **116 inglesi + 5 russi**. L'insieme inglese copre i principali ATS (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), gli aggregatori a livello di board selezionati da un `provider:` esplicito (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …) e gli ATS per-tenant auto-rilevati da un host `careers_url` o da un URL `api:` esplicito (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **L'elenco completo non va mai contato a mano qui — viene auto-rilevato da `server/lib/sources/` e mostrato in tempo reale nel menu a tendina Source di `#/scan`.** Vedi §5 per lo YAML e `docs/portals-examples.md` per le voci da copia-incolla.
 
 > **v1.69.0 (P-14) — auto-discovery drop-in.** Aggiungere una 12ª sorgente è ora
 > un **puro drop di file**. Il registro

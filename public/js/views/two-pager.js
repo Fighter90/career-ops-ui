@@ -72,11 +72,17 @@ Router.register('two-pager', async () => {
     { key: 'non_negotiables', labelKey: 'twoPager.nonNegotiables', labelFb: 'Non-negotiables', hintKey: 'twoPager.nonNegotiablesHint', hintFb: 'Boundaries — location, remote, comp floor…', tone: 'pos' },
   ];
 
+  // FULL-M6 — chip add/remove fires no native input event, so the debounced
+  // live preview never re-ran after one (type → pause past the debounce →
+  // press Enter: the preview stayed on the pre-chip content until the next
+  // keystroke or AI fill). The editors call schedulePreviewRender (hoisted
+  // below) on every mutation, so chip edits ride the SAME 150 ms debounce
+  // as typing.
   const editors = {};
   const getters = {};
   const grid = c('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px', margin: '0 0 18px' } });
   for (const spec of lists) {
-    const editor = tagEditor(Array.isArray(data[spec.key]) ? data[spec.key] : [], spec, t, c);
+    const editor = tagEditor(Array.isArray(data[spec.key]) ? data[spec.key] : [], spec, t, c, () => schedulePreviewRender());
     editors[spec.key] = editor;
     getters[spec.key] = editor.get;
     grid.appendChild(editor.node);
@@ -138,11 +144,14 @@ Router.register('two-pager', async () => {
   // Review #10 — programmatic .value (AI fill) fires no input event, so
   // the fill path re-renders explicitly; typing debounces at ~150 ms so a
   // full buildMarkdown+UI.md pass does not run on every keystroke.
+  // FULL-M6 — the debounce is exposed as a named scheduler so chip add/
+  // remove (no native input event) rides the same path.
   let previewTimer = null;
-  root.addEventListener('input', () => {
+  function schedulePreviewRender() {
     if (previewTimer) clearTimeout(previewTimer);
     previewTimer = setTimeout(renderLivePreview, 150);
-  });
+  }
+  root.addEventListener('input', schedulePreviewRender);
   renderLivePreview();
 
   root.appendChild(c('p', { style: { color: 'var(--foggy)', fontSize: '12px', margin: '0 0 24px' } },
@@ -272,8 +281,12 @@ Router.register('two-pager', async () => {
  * A small chip-list editor: type + Enter (or comma) to add a tag, click × to
  * remove. Returns { node, get } where get() yields the current string[].
  * CSP-safe: all handlers via addEventListener, no inline markup from input.
+ * `onChange` (optional, FULL-M6) fires after every add/remove — a chip
+ * mutation fires no native input event, so the caller's debounced live
+ * preview needs the explicit notify.
  */
-function tagEditor(initial, spec, t, c) {
+function tagEditor(initial, spec, t, c, onChange) {
+  const notify = () => { if (typeof onChange === 'function') onChange(); };
   const chips = c('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '6px', margin: '0 0 8px' } });
   const items = [];
   const toneColor = spec.tone === 'neg' ? 'var(--danger, #d9534f)' : 'var(--accent, #4c8bf5)';
@@ -282,6 +295,7 @@ function tagEditor(initial, spec, t, c) {
     const value = String(text || '').trim();
     if (!value || items.includes(value)) return;
     items.push(value);
+    notify();
     const chip = c('span', {
       className: 'chip',
       style: { display: 'inline-flex', alignItems: 'center', gap: '6px', padding: '3px 8px', borderRadius: '12px', fontSize: '13px', background: 'var(--panel-2, #eef1f6)', border: `1px solid ${toneColor}` },
@@ -296,6 +310,7 @@ function tagEditor(initial, spec, t, c) {
       const i = items.indexOf(value);
       if (i > -1) items.splice(i, 1);
       chip.remove();
+      notify();
     });
     chips.appendChild(chip);
   }
@@ -325,6 +340,7 @@ function tagEditor(initial, spec, t, c) {
     items.length = 0;
     while (chips.firstChild) chips.removeChild(chips.firstChild);
     (Array.isArray(newItems) ? newItems : []).forEach(addChip);
+    notify();
   }
 
   return { node, get: () => items.slice(), set };

@@ -7,6 +7,20 @@
 단계에 대응합니다. 처음 실행 시에는 위에서 아래로 읽고, 이후에는
 도움말 사이드바의 목차로 특정 섹션에 바로 이동하십시오.
 
+> **둘러보기 (v2 셸).** 사이드바는 접을 수 있는 그룹 — **소싱**,
+> **결정**, **지원**, **네트워킹**, **분석**, **설정**
+> (`nav.group.*`) — 으로 구성되어 있습니다. 그룹은 섹션을 방문하면
+> 열리고 마지막으로 둔 상태를 유지합니다. 아무 페이지나 별표를 눌러
+> **즐겨찾기**에 고정하고, **Cmd/Ctrl+K**를 누르거나 (또는 사이드바
+> 상단의 **명령 메뉴** 버튼, `nav.v2.palette`) 어디서든 원하는 페이지로
+> 퍼지 점프하세요. 모든 페이지는 제목을 즉시 표시하고 데이터를
+> 로드하는 동안 회색 shimmer 행을 채워 넣으므로 탐색이 텅 빈
+> 느낌을 주지 않습니다. 그리고 어떤 페이지도 맨바닥으로 맞이하지
+> 않습니다: 처음부터 비어 있는 네 페이지 — **자동 파이프라인**,
+> **지원 체크리스트**, **배치**, **펀딩받은 회사** — 는 해결된
+> 예시와 그것을 채우는 한 가지 액션을 보여줍니다
+> (`v2empty.exampleTag`).
+
 > **대상 독자:** 이 UI를 `career-ops` 체크아웃 안에 두고 방금
 > `bash bin/start.sh`를 실행한 분. career-ops에 대한 사전 지식은
 > 가정하지 않습니다.
@@ -314,19 +328,27 @@ design / behavioral / coding)에 맞는 타깃 준비물을 생성합니다.
 Evaluate → Reports → Deep research → Apply checklist → Outreach
 → Tracker → Follow-up → Interview prep → Activity log`
 
-이상입니다. 21단계, 버튼별, 0에서 오퍼까지.
+사이드바는 이 동일한 페이지들을 단계별로 묶어 놓았습니다
+(**소싱** → **결정** → **지원** → …), 따라서 워크플로 순서와
+메뉴 순서가 항상 같습니다. 목록을 훑어보는 대신 세 글자를
+치고 싶다면 **Cmd/Ctrl+K**로 **명령 메뉴**(`nav.v2.palette`)를
+여세요. 이상입니다. 21단계, 버튼별, 0에서 오퍼까지.
 
 ### 원클릭 Auto-pipeline (`#/auto`) — 21단계 단축
 
-특정 공고만 빠르게 평가하려면 수동 절차를 건너뛰세요. **사이드바 → ✨ Auto-pipeline**(또는 대시보드 ✨ 버튼): URL 붙여넣고 **Enter** 또는 **▶ 전체 파이프라인 실행** — 서버가 전체 체인을 한 번에 관찰 가능하게 실행:
+특정 공고만 빠르게 평가하려면 수동 절차를 건너뛰세요. **사이드바 → ✨ Auto-pipeline**(또는 대시보드 ✨ 버튼): URL 붙여넣고 **Enter** 또는 **자동 파이프라인 실행**(`auto.run`) 클릭 — 서버가 전체 체인을 한 번에 관찰 가능하게 실행:
 
-1. **URL 검증** — SSRF 안전 검사(`isValidJobUrl`).
-2. **JD 가져오기** — `safeGet`(DNS 고정)로 다운로드 + 정제.
-3. **CV 대조 평가** — Anthropic → Gemini → 키 없으면 수동 프롬프트.
-4. **리포트 저장** — `reports/<slug>.md` 작성(점수 + 신뢰도).
-5. **트래커 추가** — `data/applications.md`에 행 추가.
+1. **URL 검증** (`auto.step.validate`) — SSRF 안전 검사(`isValidJobUrl`); loopback / `file:` / 사설 IP / 스크립트 문자를 거부합니다.
+2. **채용 공고 가져오기** (`auto.step.fetch`) — `safeGet`(DNS 고정, 리디렉션 재검증)으로 다운로드 + 정제.
+3. **CV와 비교 평가** (`auto.step.evaluate`) — Anthropic(선호) → Gemini 폴백 → 키 없으면 수동 프롬프트.
+4. **리포트 저장** (`auto.step.report`) — 헤더에 점수 + 신뢰도를 담아 `reports/<slug>.md` 작성.
+5. **트래커에 추가** (`auto.step.tracker`) — `data/applications.md`에 행 추가.
 
-피드백은 세로 **스테퍼**(순서 목록, 활성 단계에 `aria-current`, 스크린리더 라이브 영역). 완료 시 카드가 리포트(**리포트 보기 · N/5**)와 **트래커**로 딥링크. 실패 단계는 표시되고 버튼이 재활성화되어 새로고침 없이 재시도. **API 키 없음?** 수동 모드: 3–5단계 접힘 + 복사용 프롬프트. 링크 가능: `#/auto?url=<enc>&go=1` 자동 시작.
+피드백은 세로 **스테퍼** (각 단계가 running → done / failed로 켜집니다; `aria-current`가 활성 단계를 표시하고 스크린리더 라이브 영역이 모든 전환을 알립니다). 성공 시 결과 카드가 저장된 리포트(**리포트 보기**, `auto.viewReport`)와 **트래커**(`auto.viewTracker`)로 딥링크. 실패 단계는 메시지와 함께 빨간색으로 표시되고 버튼이 재활성화되어 새로고침 없이 URL을 고치고 재시도할 수 있습니다. 실행이 진행 중인 동안 새 실행을 시작해도 안전합니다: 이전 실행은 낡은 답에 비용을 이중으로 쓰는 대신 **대체됨 — 최신 실행이 요청되었습니다**(`auto.superseded`)로 스스로 표시됩니다.
+
+빈 페이지는 자신의 유일한 필드에 대해 정직합니다: **예시** 태그와 **예시 URL 사용해 보기** 버튼(`v2empty.auto.tryExample`)이 입력란을 샘플 공고로 채웁니다 — **실행을 누를 때까지 아무것도 실행되지 않습니다**(`v2empty.auto.hint`), 따라서 둘러보는 데 비용이 들지 않습니다.
+
+**API 키 없음?** 수동 모드: 3–5단계 접힘 + 복사용 프롬프트. 링크 가능: `#/auto?url=<enc>&go=1` 자동 시작.
 > **CLI (v1.38.0).** 한 명령이 전체 체인: `career-ops-ui setup`. 동사: `career-ops-ui doctor`(env/키/툴링 점검 — Health와 동일 엔진; 필수 실패 시 exit 1), `career-ops-ui run`, `career-ops-ui init`(공급자+키 마법사, v1.39.0).
 > **공급자 (v1.39.0).** API-keys 탭에 `LLM_PROVIDER` select(`auto`=Anthropic→Gemini · `claude` · `gemini`) 및 `OPENAI_API_KEY` 필드(Codex/OpenCode CLI 측) 추가. `career-ops-ui init`이 대화형 마법사.
 >
@@ -904,7 +926,44 @@ hits를 `data/last-scan.json`과 `data/pipeline.md`에 기록합니다.
 ### 결과 필터링
 
 로그 아래에서 결과 테이블이 `data/last-scan.json`의 행을
-렌더링합니다.
+렌더링합니다. 테이블이 로드되는 동안(그리고 매 새로고침마다) 빈
+패널 대신 회색 shimmer 행이 보이고, 페이지 제목은 첫 프레임부터
+있습니다 — 느린 스캔이 죽은 페이지로 읽히는 일은 없습니다.
+
+v2 결과 크롬은 컨트롤을 눈에 보이게 유지합니다:
+
+- **활성 필터** (`scan.v2.activeFilters`) — 설정한 모든 필터가
+  테이블 위에 제거 가능한 칩으로 표시됩니다; 칩의 **✕**
+  (**필터 제거**, `scan.v2.removeFilter`)를 클릭해 그 하나만
+  없애거나, **모두 초기화**(`scan.v2.resetAll`)로 한꺼번에
+  지울 수 있습니다.
+- **정렬 기준** (`scan.v2.sortBy`) — 컬럼 헤딩(회사, 롤, 급여,
+  경과)을 클릭해 정렬; 다시 클릭하면 방향이 뒤집힙니다.
+- **빠른 보기** (`scan.v2.quickView`) — 행을 클릭하면 페이지를
+  떠나지 않고 공고 설명이 인라인으로 펼쳐집니다 (**설명**,
+  `scan.v2.description`); 본문이 캡처되지 않은 공고는 빈 카드 대신
+  그렇게 말합니다 (`scan.v2.noDescription`).
+- **행 밀도** (`scan.v2.density`) — **컴팩트** / **넓게**
+  (`scan.v2.compact` / `scan.v2.comfortable`) 행 높이를
+  전환합니다; 선택은 브라우저별로 기억됩니다.
+- **로그** (`scan.v2.log`) — 스트리밍 스캔 로그를 접거나 펼쳐
+  테이블에 전체 폭을 줍니다.
+
+모든 행은 자체 액션을 가집니다: **평가** (`scan.v2.evaluate`)는
+그 공고의 채점 평가로 바로 이동하고, **파이프라인에 추가**
+(`scan.v2.toPipeline`)는 URL을 큐잉합니다 (이미 큐에 있으면
+토스트, `scan.v2.pipelineDup`), **채용 공고 열기 ↗**
+(`scan.v2.openPosting`)는 채용 페이지를 새 탭에서 열고, ☆ 별표는
+즐겨찾기를 토글합니다.
+
+**검색 + 제외.** **검색** 상자는 "찾을 역할" 필터입니다 — 용어를
+하나 이상 **쉼표로 구분**해 입력하면 그 중 **하나라도** 일치하는
+행이 표시됩니다 (OR); 앞에 붙은 `-단어`는 그 용어를 **제외**합니다
+(`scan.v2.moreHint`). 별도의 **제외** 상자(`scan.lblExclude`)는
+통째 용어에 대해 같은 일을 합니다: 쉼표로 구분된 단어와 일치하는
+행 — 회사 / 롤 / 위치에 그 단어를 포함하는 행 — 을 **숨깁니다**
+(예: `senior, staff, java` 제외). 둘 다 원격 / 소스 / 국가 /
+기간 / 급여 필터와 함께 저장된 검색에 저장됩니다.
 
 > **v1.78.1 — 실시간 자동 새로고침.** 이제 결과 테이블이 스캔이
 > 진행되는 동안 자동으로 갱신되며, 스캔이 끝난 직후 한 번 더
@@ -918,15 +977,19 @@ hits를 `data/last-scan.json`과 `data/pipeline.md`에 기록합니다.
 > 14일 후 재시도). 따라서 죽은 슬러그가 더 이상 로그를 어지럽히지 않습니다.
 > `portals.yml`에서 `scan_quarantine: false`로 비활성화할 수 있습니다.
 
-필터:
+필터 (항상 보임: 검색, 제외, 유형, 소스, 국가; 나머지는 전부
+**고급 필터**, `scan.advancedFilters` 뒤에 있습니다 — 패널 전체는
+**결과 필터**, `scan.filtersGroup` 아래에 묶여 있습니다):
 
 - **자유 텍스트** — 제목/회사에 대한 부분 문자열 일치.
-- **Source** 드롭다운 — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Teamtailor / Trudvsem / We Work Remotely / Workable / Workday / Working Nomads(`GET /api/scan/sources`에서 자동 생성).
+- **Source** 드롭다운 — 레지스트리가 아는 모든 소스 (현재 121: 116 EN + 5 RU, 기본값 **All sources**). `GET /api/scan/sources`에서 실시간으로 자동 생성되므로, 새로 드롭된 어댑터가 앱 변경 없이 여기에 나타납니다 — 목록은 결코 하드코딩되지 않습니다.
 - **Remote / Hybrid / Onsite** 드롭다운.
-- **Country** 드롭다운 (v1.78.0) — 현재 결과에서 감지된 국가들로 채워지는 지리 필터로, 각 항목은 국기 이모지와 개수와 함께 표시됩니다(예: `🇩🇪 Germany (12)`). 하나를 선택하면 그 국가에 묶인 역할만 남습니다. 감지는 공고의 자유 텍스트 위치(국가명/별칭 + ~100개 주요 채용 시장 도시)를 국가로 매핑합니다. 보수적이며 결코 추측하지 않으므로, 위치를 확인할 수 없는 공고 — 또는 순수 "Remote" 공고 — 는 **All countries** 아래에 남습니다. 근무 형태 드롭다운과 결합하면 국가에 묶인 역할*과* 원격 역할을 모두 찾을 수 있습니다.
-- **Posted within** 드롭다운 (v1.80.0) — 클라이언트 측 기간 필터(Last 24 hours / 7 days / 30 days). `pubDate`가 더 오래된 행은 숨겨집니다. **날짜가 없는 행은 통과**합니다(누락된 데이터에는 불이익이 없음).
-- **★ Favorites** (v1.80.0) — 행의 ☆를 클릭하면 채용을 즐겨찾기에 추가합니다(URL 기준으로 `localStorage`에 저장). 필터 패널에서 **★ Favorites**를 체크하면 즐겨찾기한 행만 표시됩니다. 즐겨찾기는 스캔과 새로고침을 거쳐도 유지됩니다.
-- **Saved searches** (v1.80.0) — 필터 위의 바: 현재 필터 세트에 이름을 붙여 **💾 Save**한 다음, 드롭다운에서 다시 적용하거나 **🗑 Delete**할 수 있습니다. `localStorage`에 저장되며, 손상되거나 편집된 값은 깔끔하게 빈 상태로 초기화됩니다.
+- **Country** 드롭다운 — 현재 결과에서 감지된 국가들로 채워지는 지리 필터로, 각 항목은 국기 이모지와 개수와 함께 표시됩니다(예: `🇩🇪 Germany (12)`). 하나를 선택하면 그 국가에 묶인 역할만 남습니다. 감지는 공고의 자유 텍스트 위치(국가명/별칭 + ~100개 주요 채용 시장 도시)를 국가로 매핑합니다. 보수적이며 결코 추측하지 않으므로, 위치를 확인할 수 없는 공고 — 또는 순수 "Remote" 공고 — 는 **All countries** 아래에 남습니다. 근무 형태 드롭다운과 결합하면 국가에 묶인 역할*과* 원격 역할을 모두 찾을 수 있습니다.
+- **Posted within** 드롭다운 — 클라이언트 측 기간 필터(Last 24 hours / 7 days / 30 days). `pubDate`가 더 오래된 행은 숨겨집니다. **날짜가 없는 행은 통과**합니다(누락된 데이터에는 불이익이 없음).
+- **급여 최소 / 급여 최대** (`scan.salaryFrom` / `scan.salaryTo`) — 공고 본문에서 추출한 금액과 비교되는 단순 숫자 경계입니다(통화 무시, `scan.v2.salaryHint`); **무급 채용 포함**(`scan.v2.includeNoSalary`)을 체크하면 아무 숫자도 언급하지 않는 행이 급여 필터에 걸려 사라지지 않습니다.
+- **레벨** 드롭다운 (`scan.lblSeniority`) — Lead / Staff / Senior / Mid / Junior / Intern, 제목에서 감지합니다.
+- **★ 즐겨찾기** — 행의 ☆를 클릭하면 채용을 즐겨찾기에 추가합니다(URL 기준으로 `localStorage`에 저장). 필터 패널에서 **★ 즐겨찾기**(`scan.favOnly`)를 체크하면 즐겨찾기한 행만 표시됩니다. 즐겨찾기는 스캔과 새로고침을 거쳐도 유지됩니다.
+- **저장된 검색** (`scan.savedSearches`) — 현재 필터 세트에 이름을 붙여 **검색 저장**(`scan.saveSearch`)한 다음, 목록에서 다시 적용하세요; 저장된 검색은 한 번의 클릭으로 불러올 수 있고(`scan.v2.loadSearch`) 삭제는 먼저 묻습니다(`scan.v2.deleteSearchConfirm`). `localStorage`에 저장되며, 손상되거나 편집된 값은 깔끔하게 빈 상태로 초기화됩니다.
 - **스택 칩** (PHP / Go / Backend / Senior / …) — 각 행에 대해
   `Skills.detectTech`와 `Skills.detectLevel`이 자동 감지합니다.
   다중 선택은 교집합 — `PHP + Senior` 선택 시 두 가지 모두 가진
@@ -938,12 +1001,21 @@ hits를 `data/last-scan.json`과 `data/pipeline.md`에 기록합니다.
 
 ### Active Companies 카드
 
-`portals.yml`의 모든 회사를 스캔 상태와 함께 보여주는 접이식
-카드:
+`portals.yml`의 모든 회사를 요약하는 접이식 카드로, **활성
+회사**(`scan.activeCo`)라는 제목과 실시간 `N/M` 카운터가
+붙어 있습니다 — *N*은 마지막 스캔에서 실제로 결과를 낸 회사
+수, *M*은 현재 활성화된 API 지원 회사 수이므로 두 숫자는 항상
+같은 우주를 말합니다 (러시아 보드만 돌린 실행이 ATS 분모를
+넘어 분자를 부풀릴 수 없습니다). 툴팁도 평이한 말로 같은
+내용을 담고 있습니다 (`scan.activeCo.help`). 목록은 두 그룹으로
+나뉩니다:
 
-- ✓ 초록 태그 — 직접 API 지원 (Greenhouse / Ashby / Lever /
-  Workable / SmartRecruiters / Workday).
-- ○ 회색 태그 — 웹 검색 프롬프트 폴백 (API 매칭 없음).
+- ✓ **API 직접** (`scan.apiBacked`) — 보드가 공개 ATS API에서
+  직접 가져옵니다 (Greenhouse / Ashby / Lever / Workable /
+  SmartRecruiters / Workday부터 롱테일까지, 116개 EN 어댑터 중
+  하나).
+- ○ **웹 검색만** (`scan.websearchBacked`) — URL에 매칭되는
+  어댑터가 없어, 대신 CLI의 AI 스캔이 커버합니다.
 
 **회사 이름 클릭** → 위 결과 필터에 그 이름이 채워집니다.
 **↗ 아이콘 클릭** → 회사의 `careers_url`을 새 탭에서 엽니다.
@@ -1016,19 +1088,19 @@ hh.ru는 Habr Career와 같은 방식으로 공개 검색 웹사이트(`hh.ru/se
 
 평가 대기 URL의 inbox. `data/pipeline.md`에 존재합니다.
 
-**개요 스트립.** 상단의 컴팩트 스트립이 파이프라인을 한눈에 — 받은함 URL 수, 추적 수, Applied/Responded/Interview/Offer 수를 보여주며 각각 트래커로 연결됩니다.
+**개요 스트립.** 상단의 컴팩트 스트립이 파이프라인을 한눈에 보여줍니다 — **받은함**(`pipe.ovInbox`)에 있는 URL 수, **추적 중**(`pipe.ovTracked`)인 행 수, 그리고 트래커에서 가져온 **Applied / Responded / Interview / Offer** 카운트. 각 칩은 `#/tracker`로 바로 연결됩니다 (상태 칩은 필터가 적용된 채로 엽니다). 트래커를 읽을 수 없으면 받은함 카운트만으로 축소됩니다.
 
 ### URL 추가
 
 세 가지 방법:
 
-- 입력란에 URL을 입력/붙여넣고 **+ Add** 클릭.
-- **상단 바의 전역 검색**(배지에 **Enter**라고 표시됨)을 사용하세요:
-  `http(s)://…` 링크를 붙여넣고 **Enter**를 누르면 auto-pipeline이
-  열립니다. 다른 텍스트를 입력하고 **Enter**를 누르면 그 검색어가
-  미리 채워진 채로 `#/scan`으로 이동합니다(v1.78.1). 브라우저가
-  허용하는 곳에서는 Ctrl/Cmd+K로 여전히 검색창에 포커스됩니다.
-  브랜드 **로고**는 대시보드로 돌아갑니다.
+- 입력란에 URL을 입력/붙여넣고 **URL 추가**(`pipe.add`) 클릭.
+- **명령 메뉴**를 사용하세요: **Cmd/Ctrl+K** (또는 사이드바의
+  **명령 메뉴** 버튼, `nav.v2.palette`)에서 `http(s)://…` 링크를
+  붙여넣으면 메뉴가 **자동 파이프라인: {url}**(`nav.v2.evalUrl`)을
+  제안합니다 — Enter를 누르면 그 URL에 대해 전체 체인이
+  실행됩니다. 다른 텍스트를 입력하고 Enter를 누르면 그 검색어가
+  미리 채워진 채로 `#/scan`으로 이동합니다.
 - Scan 실행 (위 참조) — 새 hits가 자동으로 pipeline에 들어갑니다.
 
 모든 URL은 서버 측에서 `isValidJobUrl()`을 통과합니다. Loopback
@@ -1049,13 +1121,49 @@ ATS 보드는 CORS 헤더를 보내지 않으므로 브라우저가 직접 가�
 
 ### 행 액션
 
-- **▶** — URL이 미리 채워진 채로 `#/evaluate?url=…`로 이동.
-- **✕** — `data/pipeline.md`에서 URL 제거.
+- **▶** (`pipe.evaluateBtn`) — URL이 미리 채워진 채로 `#/evaluate?url=…`로 이동.
+- **✕** — `data/pipeline.md`에서 URL 제거 (먼저 묻습니다, `pipe.confirmDel`).
+
+**그룹 보기, 일괄 삭제, 손실 없는 실행 취소.** 스캔 뒤 큰 받은함을
+치우는 것이 이 페이지의 v2 백미입니다:
+
+- **그룹 보기** (`pipe.viewGrouped`) / **간단 목록**
+  (`pipe.viewFlat`) — 툴바가 평면 목록과 회사별 그룹 보드 사이를
+  전환합니다: 같은 고용주의 공고가 하나의 디스클로저 아래로
+  접힙니다 (가장 큰 그룹 먼저), 그래서 시끄러운 보드 하나가
+  나머지를 묻어 버리지 않습니다. 알 수 없는 회사는 호스트
+  아래로 그룹화됩니다 — 하지만 공유 ATS 호스트(예: `jobs.lever.co`)
+  는 그 호스트의 회사를 가진 항목 *전부*가 같은 이름에 동의할
+  때만 회사 이름을 빌려 씁니다.
+- **평가한 항목 숨기기** (`pipe.hideTracked`) — 기본 켜짐;
+  공고에 이미 트래커 행이 있는 항목은 뷰에서 (그리고 일괄 선택에서)
+  빠져나가 새 작업에만 손을 대게 됩니다.
+- 행을 **선택**(`pipe.selectOne`)하거나, **표시된 항목 모두
+  선택**(`pipe.selectAllShown`) — 선택은 항상 현재 필터를 따르며
+  보이지 않는 행은 절대 포함하지 않습니다. 선택 바는 개수를
+  보여주고 (`pipe.selectedCount`) **✕ 선택 항목 삭제 (N)**
+  (`pipe.bulkRemove`)와 **선택 항목 중 첫 번째 평가**
+  (`pipe.evaluateSelected`)를 제공합니다 — 일괄 삭제는 행마다가
+  아니라 전체 세트에 대해 한 번만 확인합니다.
+
+실수로 잃어버리는 것은 없습니다: 모든 삭제 — 개별이든 일괄이든 —
+불투명한 복원 토큰을 돌려주고, 페이지 하단의 바 (**삭제됨: N**,
+`pipe.deleted`)가 **실행 취소**(`pipe.undo`) / **닫기**
+(`pipe.undoDismiss`)를 제공합니다. 삭제는 최대 다섯 배치까지
+쌓입니다 (가장 오래된 것부터 버려짐); **실행 취소**는 가장 최근
+배치의 토큰을 `POST /api/pipeline/restore`로 보내 원래 줄을 그대로
+다시 삽입합니다 (체크리스트 메타데이터 포함 — 아무것도 재유도되거나
+재추가되지 않음) 그리고 **파이프라인으로 복원됨**(`pipe.undone`)으로
+확인합니다. 이 바는 페이지 자체 마크업 밖에 붙어 있으므로, 재렌더
+(내비게이션, 빠른 추가 흐름)가 대기 중인 실행 취소를 삼킬 수
+없습니다; 서버가 토큰을 더 이상 모르면 (재시작) 그 URL은 버려지는
+대신 평이한 방식으로 다시 추가됩니다.
 
 ### 오른쪽 상단 버튼
 
-- **⚡ 첫 항목 평가** — Evaluate 페이지에서 큐 첫 번째 URL을
-  열어 채점 준비.
+- **⚡ 첫 항목 평가** (`pipe.evaluateAll`) — Evaluate 페이지에서 큐
+  첫 번째 URL을 열어 채점 준비 (먼저 확인합니다 — 어느 공고에
+  실행을 쓸지 결정하기 때문입니다).
 - **채용 공고 검색** — 더 많은 URL이 필요하면 스캐너로 돌아가기.
 
 ---
@@ -1131,12 +1239,43 @@ pipeline에 10개 이상 URL이 큐잉되었다면 JD별 클릭은 비현실적�
 
 ## 10. 보고서 (`#/reports`)
 
-저장된 모든 평가를 탐색합니다. 카드에는 제목, 날짜, legitimacy
-플래그, score (색상 코드: 초록 ≥ 4.0, 노랑 ≥ 3.0, 빨강 그 아래)가
-표시됩니다.
+저장된 모든 평가를 탐색합니다. 페이지는 **카드** 뷰(`rep2.viewCards`)로
+열립니다 — 리포트당 카드 하나: 표시 제목, 날짜, legitimacy 배지,
+색상 코드 점수 필 (초록 ≥ 4.0, 노랑 ≥ 3.0, 빨강 그 아래; 헤더에
+파싱 가능한 점수가 없으면 흐린 "점수 감지 안 됨" 필) — 그리고 행을
+훑어 읽고 싶을 때는 촘촘한 **표** 뷰(`rep2.viewTable`)로 전환할 수
+있습니다. 모든 카드와 표 행은 점수 구간에 맞는 **제안 다음 단계**도
+이름붙입니다: **지금 지원 — 적합도 높음** (`rep2.actApply`), **지원하거나
+먼저 인맥 찾기** (`rep2.actContact`), **먼저 회사 조사하기**
+(`rep2.actResearch`), 또는 **개인적인 이유가 없다면 건너뛰기**
+(`rep2.actLow`) — 각각 올바른 페이지로 바로 가는 링크입니다. 점수가
+없는 카드는 리포트 자체를 가리키는 툴팁과 함께 흐린 **점수 감지 안
+됨** 필(`rep.scoreUnparsed`)을 보여줍니다.
 
-카드를 클릭하면 전체 마크다운을 읽을 수 있습니다. 페이지네이션:
-페이지당 12개, 하단에 컨트롤.
+**올바른 리포트 찾기.** 목록 위에 필터 행이 있고, 전부 조합됩니다:
+
+- **보고서 검색** (`rep2.searchLabel`) — 각 리포트의 회사, 롤,
+  표시 제목에 대해 일치하는 자유 텍스트.
+- **회사** (`rep2.companyLabel`) — 드롭다운에서 고용주 하나를
+  선택합니다.
+- **점수 구간** (`rep2.bandLabel`) — **높음 (4.5+)** / **좋음
+  (4.0+)** / **보통 (3.5+)** / **3.5 미만** (`rep2.bandHigh` …
+  `rep2.bandLow`), 그리고 파싱 가능한 점수가 없는 리포트용
+  버킷 하나 더.
+- **시작일 / 종료일** (`rep2.dateFrom` / `rep2.dateTo`) — 목록을
+  기간으로 묶습니다.
+- **정렬 기준** (`rep2.sortLabel`) — **날짜** / **점수** /
+  **회사** (`rep2.sortDate` …), 오름차순 또는 내림차순
+  (`rep2.sortDirAsc` / `rep2.sortDirDesc`).
+- **점수 분포 히스토그램** (`rep2.histogramLabel`) — 열을 클릭하면
+  그 구간으로 필터링되어 파이프라인의 모양을 한눈에 봅니다.
+- **필터 초기화** (`rep2.reset`)는 전부 지웁니다; 아무것도
+  일치하지 않으면 빈 그리드 대신 페이지가 그렇게 말합니다
+  (`rep2.noMatches`).
+
+카드(또는 표 행)를 클릭하면 전체 마크다운을 읽을 수 있습니다.
+페이지네이션: 페이지당 20개, 하단에 컨트롤; 필터가 바뀔 때마다
+1페이지로 돌아갑니다.
 
 단일 보고서 뷰에는 다음도 있습니다:
 
@@ -1165,6 +1304,22 @@ Markdown 테이블로 존재합니다.
 `Hired`(v1.118.0)는 행복한 최종 상태입니다 — 오퍼를 수락했다는 뜻입니다. 트래커는 축하 배지로 표시하고 취업 성공 배너로 맞이합니다.
 
 **스테이지 탭 보드(v1.131.0).** 테이블 위에 **스테이지 탭 스트립**이 있어 퍼널을 따라 이동할 수 있습니다: **All** 탭과 정규 상태별 탭 하나씩, 각각 실시간 전체 이력 카운트를 표시합니다 — **카운트 0인 스테이지도 포함**되어 전체 파이프라인이 한눈에 항상 보입니다. 스테이지를 클릭하면 테이블이 그 스테이지로 필터링되고, 다시 클릭하면 **All**로 돌아갑니다. 탭(그리고 카운트의 지역화된/레거시 상태 별칭 폴딩)은 `GET /api/tracker/stages`에서 오며, 이는 서버가 사용하는 것과 동일한 `templates/states.yml`을 읽습니다 — 따라서 탭 구성은 페이지에 하드코딩된 목록 없이 상위의 상태 어휘와 자동으로 동기화된 상태를 유지합니다. 검색, 점수 필터, 정렬 가능한 컬럼, 행별 리포트/PDF/적법성은 변경되지 않으며, 로고가 활성화된 경우 각 행의 회사에 브랜드 마크가 표시됩니다.
+
+**칸반 뷰 (v2).** 같은 보드는 드래그 앤 드롭 **칸반**으로도 읽힙니다: 정규 상태당 한 열 (보드 제목은 *상태별 지원 현황*으로
+읽어 줍니다, `track.kanbanBoardAria`), 지원당 카드 한 장. 카드를
+다른 열로 끌거나 — 또는 포커스를 두고 **이동**을 누르거나 — 하면
+변경 사항은 **아무것도 기록되기 전에 미리 표시됩니다**
+(`track.kanbanMoveHint`); 확정된 이동은 결과 저널에 항목을 기록하고
+`data/applications.md`를 다시 쓰며, 카드가 그 사실을 알려줍니다
+(`track.moveJournal`) — 상태를 되돌리려면 해당 행의 **결과**
+버튼을 사용하세요. 파이프라인이 스스로 관리하는 열들 (그리고
+의미를 오직 여러분만 고를 수 있는 `Discarded`)은 읽기 전용으로
+렌더링되고 (`track.kanbanReadOnly`) 드롭을 거부합니다. 상위의 결과
+기록기가 없으면 상태 이동은 정직한 노트와 함께 비활성화됩니다
+(`track.kanbanMovesOff`). 보드가 로드되는 동안 앱의 다른 부분과
+같은 shimmer 행을 보여주고, 빈 보드는 파이프라인을 가리키는
+안내와 함께 **지원 없음**(`track.kanbanEmpty`)이라고 말합니다
+(`track.emptyBody`).
 
 상태 허용 목록은 서버 측에서 강제됩니다. `POST /api/tracker`에서
 다른 값을 보내면 `Evaluated`로 기본 설정됩니다. 정식
@@ -1327,7 +1482,12 @@ Evaluate와 동일한 폴백 체인:
 ### SPA 체크리스트 모드 (`#/apply`)
 
 SPA의 체크리스트는 Playwright를 호출하지 않고 손으로 폼을 채우려는
-사용자를 위한 것입니다. 다음을 다룹니다:
+사용자를 위한 것입니다. 빈 페이지는 추측하게 두지 않습니다:
+해결된 예시와 함께 **지원 체크리스트 생성**을 보여주고
+(`v2empty.apply.emptyTitle` / `v2empty.apply.emptyBody`), 공고를
+이미 평가했다면 체크리스트가 그 리포트의 데이터에서 시작하도록
+**평가된 리포트 선택**으로 가는 지름길을 제공합니다
+(`v2empty.apply.pickReport`). 다음을 다룹니다:
 
 0. Claude Code에서 `/career-ops apply <url>`를 실행해 Playwright로
    폼을 읽기 (손으로 채울 거면 이 단계 생략).
@@ -1426,6 +1586,12 @@ SPA의 체크리스트는 Playwright를 호출하지 않고 손으로 폼을 채
 
 한 번에 채점할 JD가 10개 이상이라면 (SPA의 일대일 `#/evaluate`는
 그 볼륨에 비현실적입니다) CLI의 배치 러너를 사용하십시오.
+`#/batch` 페이지도 같은 정직함으로 맞이합니다: 빈 상태는 **채용
+공고 목록으로 시작하세요**(`v2empty.batch.emptyTitle`)와
+**URL 목록 붙여넣기** 도우미(`v2empty.batch.pasteList`)를 보여줍니다
+— 클립보드에서 맨 http(s) URL을 골라 입력란으로 바로 올립니다
+(`v2empty.batch.pasteAdded`), 그래서 CLI 러너로 내려가기 전에
+`batch-input.tsv`에 상응하는 행을 만드는 데 몇 초면 충분합니다.
 
 **입력 파일 — `batch/batch-input.tsv`** (탭 구분):
 
@@ -1639,7 +1805,7 @@ deep research 실행, scan 실행, 설정 변경, 모드 실행.
 
 ## 17. 새 채용 포털 소스를 추가하는 방법
 
-career-ops-ui는 각 채용 사이트를 **어댑터**로 취급합니다 — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 아래의 단일 파일이 한 사이트의 결과를 가져오고 정규화하는 방법을 알고 있습니다. 현재 `server/lib/sources/` 레지스트리는 **121**개의 어댑터를 포함합니다 — **영문 116개 + 러시아어 5개** 보드. 영문 세트는 주요 ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), 명시적 `provider:`로 선택되는 보드 전체 애그리게이터(RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), 그리고 `careers_url` 호스트 또는 명시적 `api:` URL에서 자동 감지되는 테넌트별 ATS(BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …)를 아우릅니다. **전체 목록은 여기서 손으로 셀 필요가 전혀 없습니다 — `server/lib/sources/`에서 자동으로 검색되어 `#/scan`의 Source 드롭다운에 실시간으로 표시됩니다.** YAML은 §5, 복사·붙여넣기 항목은 `docs/portals-examples.md`를 참조하세요.
+career-ops-ui는 각 채용 사이트를 **어댑터**로 취급합니다 — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 아래의 단일 파일이 한 사이트의 결과를 가져오고 정규화하는 방법을 알고 있습니다. 현재 `server/lib/sources/` 레지스트리는 **121**개의 소스를 포함합니다 — **영문 116개 + 러시아어 5개** 보드. 영문 세트는 주요 ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), 명시적 `provider:`로 선택되는 보드 전체 애그리게이터(RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), 그리고 `careers_url` 호스트 또는 명시적 `api:` URL에서 자동 감지되는 테넌트별 ATS(BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …)를 아우릅니다. **전체 목록은 여기서 손으로 셀 필요가 전혀 없습니다 — `server/lib/sources/`에서 자동으로 검색되어 `#/scan`의 Source 드롭다운에 실시간으로 표시됩니다.** YAML은 §5, 복사·붙여넣기 항목은 `docs/portals-examples.md`를 참조하세요.
 
 > **v1.69.0 (P-14) — 드롭인 자동 검색.** 12번째 소스 추가는 이제
 > **순수 파일 드롭**입니다. 레지스트리

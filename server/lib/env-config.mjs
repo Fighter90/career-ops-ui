@@ -7,8 +7,8 @@
  * Preserves existing comments and ordering; only the keys we touch are
  * rewritten, everything else passes through unchanged.
  */
-import { readFileSync, existsSync, openSync, fchmodSync, writeSync, closeSync } from 'node:fs';
-import { parseEnvLine } from './dotenv.mjs';
+import { readFileSync, existsSync, openSync, fstatSync, fchmodSync, writeSync, closeSync } from 'node:fs';
+import { parseEnvLine, UNSAFE_ENV_KEY } from './dotenv.mjs';
 import { isPrivateOrLoopbackHost } from './security.mjs';
 
 /**
@@ -193,14 +193,33 @@ export const SECRET_KEYS = new Set([
  * dotenv-compatible rules in parseEnvLine (comments, `export`, quotes).
  */
 export function parseEnv(text) {
-  const out = {};
+  // Null prototype: a parsed .env is data, and `__proto__` must be an ordinary
+  // (here: refused) key rather than the Object.prototype setter.
+  const out = Object.create(null);
   if (!text) return out;
   for (const raw of text.split(/\r?\n/)) {
     const entry = parseEnvLine(raw);
-    if (entry) out[entry.key] = entry.value;
+    if (entry && !UNSAFE_ENV_KEY(entry.key)) out[entry.key] = entry.value;
   }
   return out;
 }
+
+/**
+ * FULL-M6 (CAR-165) — parsed .env cache, invalidated on any change of mtime or
+ * size (the house pattern from store.mjs's reportCache). Every provider-key
+ * lookup (`has{Anthropic,Gemini,…}Key`, /api/health, /api/status/providers,
+ * each eval dispatch) falls through to effectiveEnv when process.env misses,
+ * and each of those calls used to open + read + re-parse the whole file.
+ * One descriptor serves both the stat and the read, so the entry cached for
+ * this mtime/size is the content that was actually read.
+ */
+const envFileCache = new Map(); // absolute path → { mtimeMs, size, parsed }
+export const __envFileCache = {
+  hits: 0,
+  misses: 0,
+  get size() { return envFileCache.size; },
+  reset() { envFileCache.clear(); this.hits = 0; this.misses = 0; },
+};
 
 /**
  * v1.54.9 — effective value of an env key for runtime LLM routing.
@@ -225,12 +244,27 @@ export function parseEnv(text) {
 export function effectiveEnv(key, envFilePath) {
   const live = process.env[key];
   if (live !== undefined && live !== '') return live;
-  try {
-    if (envFilePath && existsSync(envFilePath)) {
-      const v = parseEnv(readFileSync(envFilePath, 'utf8'))[key];
-      if (v !== undefined && v !== '') return v;
-    }
-  } catch { /* unreadable .env → treat as unset */ }
+  if (envFilePath) {
+    try {
+      let fd;
+      try {
+        fd = openSync(envFilePath, 'r');
+        const stat = fstatSync(fd);
+        let hit = envFileCache.get(envFilePath);
+        if (hit && hit.mtimeMs === stat.mtimeMs && hit.size === stat.size) {
+          __envFileCache.hits++;
+        } else {
+          __envFileCache.misses++;
+          hit = { mtimeMs: stat.mtimeMs, size: stat.size, parsed: parseEnv(readFileSync(fd, 'utf8')) };
+          envFileCache.set(envFilePath, hit);
+        }
+        const v = hit.parsed[key];
+        if (v !== undefined && v !== '') return v;
+      } finally {
+        if (fd !== undefined) closeSync(fd);
+      }
+    } catch { /* unreadable .env → treat as unset */ }
+  }
   return undefined;
 }
 

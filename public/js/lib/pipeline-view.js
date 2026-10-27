@@ -74,12 +74,12 @@ window.PipelineView = (function () {
    * (server/lib/routes/auto-pipeline.mjs) — keep the two lists in sync;
    * tests/pipeline-view-lib.test.mjs drift-gates them.
    */
-  const TITLE_LABELS = [
-    'Evaluation', 'Оценка вакансии', 'Оценка', 'Оцінка вакансії', 'Оцінка',
-    'Evaluación', 'Avaliação', 'Évaluation', 'Bewertung', 'Valutazione',
-    'Ocena', 'Değerlendirme', '評価', '평가', '评估', '評估', 'Evaluering',
-    'تقييم', 'मूल्यांकन', 'மதிப்பீடு',
-  ].sort((a, b) => b.length - a.length);
+  // The localized H1 prose labels — the ONE client copy lives in
+  // lib/report-labels.js (FULL-M6; was a literal TITLE_LABELS table here).
+  // Mirrors the server's H1_LABEL_WORDS table
+  // (server/lib/routes/auto-pipeline.mjs); drift-gated by
+  // tests/m6-wave1-consolidations.test.mjs.
+  const TITLE_LABELS = window.ReportLabels.H1_LABEL_WORDS;
   const escRe = (s) => String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
 
   function splitReportTitle(title) {

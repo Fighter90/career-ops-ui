@@ -8,6 +8,21 @@ post i sidebjælken eller en fase i arbejdsgangen. Læs oppefra og ned ved førs
 kørsel; spring til en bestemt sektion senere via indholdsfortegnelsen i
 hjælpe-sidebjælken.
 
+> **Sådan finder du rundt (v2-skallen).** Sidebjælken er organiseret i
+> sammenklappelige grupper — **Sourcing**, **Beslutning**, **Ansøgning**,
+> **Netværk**, **Analyse**, **Opsætning** (`nav.group.*`) — som folder
+> sig ud, når du besøger en sektion, og bliver der, hvor du lod dem.
+> Giv en side en stjerne for at fastgøre den under **Favoritter**, og
+> tryk **Cmd/Ctrl+K** (eller **Kommandomenu**-knappen øverst i
+> sidebjælken, `nav.v2.palette`) for at springe med fuzzy-søgning til
+> enhver side hvorfra som helst. Hver side viser sin titel med det
+> samme og udfylder grå shimmer-rækker, mens dataene indlæses, så
+> navigationen aldrig føles tom. Og ingen side byder dig velkommen med
+> en bar tomhed: de fire, der starter tomme — **Auto-pipeline**,
+> **Ansøgningstjekliste**, **Batch** og **Funded companies** — viser et
+> gennemarbejdet eksempel plus den ene handling, der fylder dem
+> (`v2empty.exampleTag`).
+
 > **Målgruppe:** alle, der lige har lagt denne UI ind i et `career-ops`-
 > checkout og kørt `bash bin/start.sh`. Ingen forudgående career-ops-viden
 > antages.
@@ -318,33 +333,48 @@ accepttal står lige der.
 → Reports → Deep research → Apply checklist → Outreach → Tracker
 → Follow-up → Interview prep → Activity log`
 
-Det var det. 21 trin, knap-for-knap, fra nul til tilbud.
+Sidebjælken grupperer de samme sider efter fase (**Sourcing** →
+**Beslutning** → **Ansøgning** → …), så arbejdsgangens rækkefølge og
+menuens rækkefølge altid er ens; **Cmd/Ctrl+K** åbner
+**Kommandomenuen** (`nav.v2.palette`), hvis du hellere vil taste tre
+bogstaver end at skanne listen. Det var det. 21 trin, knap-for-knap,
+fra nul til tilbud.
 
 ### Auto-pipeline med ét klik (`#/auto`) — genvejen på 21 trin
 
 Hvis du bare vil score ét specifikt opslag hurtigt, så spring den manuelle
 gennemgang over. **Sidebjælke → ✨ Auto-pipeline** (eller ✨-knappen på
 Dashboardet) åbner en dedikeret skærm: indsæt job-URL'en, tryk på **Enter**
-eller klik på **▶ Kør fuld pipeline**, og serveren kører hele kæden
+eller klik på **Kør auto-pipeline** (`auto.run`), og serveren kører hele kæden
 i ét observerbart gennemløb:
 
-1. **Validerer URL** — SSRF-sikkert tjek (`isValidJobUrl`); afviser
-   loopback / `file:` / private IP'er / script-tegn.
-2. **Henter jobbeskrivelse** — `safeGet` (DNS-pinned, redirect-
-   revalideret) trækker + saniterer JD'en.
-3. **Evaluerer mod dit CV** — Anthropic (foretrukket) → Gemini
-   fallback → manuel prompt hvis ingen nøgle.
-4. **Gemmer rapport** — skriver `reports/<slug>.md` med score +
-   legitimitet i headeren.
-5. **Tilføjer til tracker** — føjer en række til `data/applications.md`.
+1. **Validerer URL** (`auto.step.validate`) — SSRF-sikkert tjek
+   (`isValidJobUrl`); afviser loopback / `file:` / private IP'er /
+   script-tegn.
+2. **Henter jobbeskrivelse** (`auto.step.fetch`) — `safeGet`
+   (DNS-pinned, redirect-revalideret) trækker + saniterer JD'en.
+3. **Vurderer mod dit CV** (`auto.step.evaluate`) — Anthropic
+   (foretrukket) → Gemini fallback → manuel prompt hvis ingen nøgle.
+4. **Gemmer rapport** (`auto.step.report`) — skriver `reports/<slug>.md`
+   med score + legitimitet i headeren.
+5. **Tilføjer til tracker** (`auto.step.tracker`) — føjer en række til
+   `data/applications.md`.
 
 Live feedback er en lodret **stepper** (hvert trin lyser op
-running → done / failed). Det er en ordnet liste med `aria-current`
-på det aktive trin og et høfligt skærmlæser live-område, der annoncerer
-hver overgang. Ved succes deep-linker resultatkortet direkte til den
-gemte rapport (**Vis rapport · N/5**) og **trackeren**. Et fejlet
-trin markeres rødt med sin besked, og knappen genaktiveres, så du
-kan rette URL'en og prøve igen uden at genindlæse.
+running → done / failed; `aria-current` markerer det aktive trin, og et
+høfligt skærmlæser live-område annoncerer hver overgang). Ved succes
+deep-linker resultatkortet direkte til den gemte rapport (**Vis
+rapport**, `auto.viewReport`) og **trackeren** (`auto.viewTracker`). Et
+fejlet trin markeres rødt med sin besked, og knappen genaktiveres, så du
+kan rette URL'en og prøve igen uden at genindlæse. At starte et nyt
+gennemløb, mens ét stadig kører, er sikkert: det ældre gennemløb markerer
+sig selv **Erstattet — en nyere kørsel blev anmodet** (`auto.superseded`)
+i stedet for at bruge dobbelt på et forældet svar.
+
+Den tomme side er ærlig omkring sit eneste felt: et **Eksempel**-tag og en
+**Prøv en eksempel-URL**-knap (`v2empty.auto.tryExample`) fylder inputfeltet
+med et eksempelopslag — **intet kører, før du trykker Kør**
+(`v2empty.auto.hint`), så at kigge koster ingenting.
 
 **Ingen API-nøgle?** Pipeline kører i **manuel tilstand**: trin 3–5
 kollapser, og du får et klar-til-indsæt promptkort (kopier ind i Claude
@@ -983,8 +1013,6 @@ Scanneren gennemgår hvert aktiveret board, deduplikerer mod din
 historik og skriver hits ind i `data/last-scan.json` og
 `data/pipeline.md`.
 
-**Søg + Udeluk.** Søg-feltet behandler kommaer som ELLER ("roller at finde"); det nye Udeluk-felt skjuler rækker, der matcher et kommasepareret ord. Begge gemmes med dine søgninger.
-
 ### Scan med ét klik (SPA)
 
 **🌐 Scan** kører hver aktiveret kilde i ét enkelt sweep:
@@ -1008,6 +1036,45 @@ in-flight HTTPS-anmodninger via `AbortController`.
 ### Filtrering af resultater
 
 Under loggen gengiver resultattabellen rækker fra `data/last-scan.json`.
+Mens tabellen indlæses (og ved hver opdatering) ser du grå
+shimmer-rækker i stedet for en tom rude, og sidetitlen er der fra første
+billede — en langsom scanning ligner aldrig en død side.
+
+V2-resultatchromen holder styringerne synlige:
+
+- **Aktive filtre** (`scan.v2.activeFilters`) — hvert filter, du sætter,
+  vises som en fjernbar chip over tabellen; klik på **✕** på en chip
+  (**Fjern filter**, `scan.v2.removeFilter`) for at droppe lige netop
+  den, eller **Nulstil alle** (`scan.v2.resetAll`) for at rydde dem alle.
+- **Sortér efter** (`scan.v2.sortBy`) — klik på en kolonneoverskrift
+  (virksomhed, rolle, løn, alder) for at sortere efter den; klik igen
+  for at vende retningen.
+- **Hurtig visning** (`scan.v2.quickView`) — klik på en række for at
+  folle dens opslagsbeskrivelse ud på stedet (**Beskrivelse**,
+  `scan.v2.description`) uden at forlade siden; opslag uden gemt
+  brødtekst siger det (`scan.v2.noDescription`) i stedet for at vise et
+  tomt kort.
+- **Rækketæthed** (`scan.v2.density`) — skift mellem **Kompakt** /
+  **Komfortabel** (`scan.v2.compact` / `scan.v2.comfortable`)
+  rækkehøjder; valget huskes pr. browser.
+- **Log** (`scan.v2.log`) — kollaps/udfold den streamende scan-log for
+  at give tabellen hele bredden.
+
+Hver række har sine egne handlinger: **Vurdér** (`scan.v2.evaluate`)
+springer direkte til en scoret vurdering af det opslag, **Til pipeline**
+(`scan.v2.toPipeline`) sætter URL'en i kø (med en allerede-i-kø-toast,
+`scan.v2.pipelineDup`), **Åbn job ↗** (`scan.v2.openPosting`) åbner
+karrieresiden i en ny fane, og stjernen ☆ skifter favoritmarkeringen.
+
+**Søg + Udeluk.** Søgefeltet er dit «roller at finde»-filter — tast ét
+eller flere termer **adskilt af kommaer**, og en række vises, hvis den
+matcher **nogen** af dem (ELLER); et indledende `-ord` **ekskluderer**
+det pågældende term (`scan.v2.moreHint`). Det separate **Udeluk**-felt
+(`scan.lblExclude`) gør det samme for hele termer: kommaseparerede ord,
+der **skjuler** enhver række, hvis virksomhed / rolle / lokation
+indeholder dem (f.eks. udeluk `senior, staff, java`). Begge huskes af
+dine gemte søgninger sammen med filtrene fjernarbejde / kilde / land /
+alder / løn.
 
 > **v1.76.0 — ingen resultatgrænse.** Tidligere builds lagrede højst 2000 matchende rækker
 > per region (`MAX_STORED_RESULTS`), og skjulte stille halen af et stort sweep.
@@ -1025,15 +1092,32 @@ Under loggen gengiver resultattabellen rækker fra `data/last-scan.json`.
 > efter 14 dage), så døde slugs holder op med at spamme loggen. Deaktivér med
 > `scan_quarantine: false` i `portals.yml`.
 
-Filtre:
+Filtre (altid synlige: søgning, udeluk, type, kilde, land; alt andet
+ligger bag **Avancerede filtre**, `scan.advancedFilters` — hele panelet
+er grupperet under **Resultatfiltre**, `scan.filtersGroup`):
 
 - **Fritekst** — delstreng-match mod titel / virksomhed.
-- **Source**-dropdown — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Teamtailor / Trudvsem / We Work Remotely / Workable / Workday / Working Nomads (auto-udfyldt fra `GET /api/scan/sources`).
+- **Source**-dropdown — alle kilder, som registreringen kender (121 i
+  øjeblikket: 116 EN + 5 RU, **All sources** som standard). Den fyldes
+  live fra `GET /api/scan/sources`, så en nydroppet adapter dukker op
+  her uden nogen app-ændring — listen er aldrig hårdkodet.
 - **Remote / Hybrid / Onsite**-dropdown.
-- **Country**-dropdown (v1.78.0) — et geografifilter, der udfyldes fra de lande, der er registreret på tværs af de aktuelle resultater, hvert vist med sit flag-emoji og et antal (f.eks. `🇩🇪 Germany (12)`). Vælg ét for kun at beholde roller knyttet til det land. Registreringen mapper et opslags fritekst-lokation (landenavne/aliasser + ~100 store jobmarkedsbyer) til et land; den er konservativ og gætter aldrig, så et opslag, hvis lokation ikke kan opløses — eller et rent "Remote"-opslag — forbliver under **All countries**. Kombinér det med arbejdstype-dropdownen for at finde både landebundne *og* fjernroller.
-- **Posted within**-dropdown (v1.80.0) — et aldersfilter på klientsiden (Sidste 24 timer / 7 dage / 30 dage). Rækker, hvis `pubDate` er ældre, skjules; rækker med **ingen angivet dato består** (manglende data straffes ikke).
-- **★ Favoritter** (v1.80.0) — klik på ☆ i en vilkårlig række for at markere et job med stjerne (gemt i `localStorage` efter URL); sæt flueben i **★ Favoritter** i filterpanelet for kun at vise stjernemarkerede rækker. Stjerner overlever scanninger og genindlæsninger.
-- **Gemte søgninger** (v1.80.0) — linjen over filtrene: navngiv det aktuelle filtersæt og **💾 Gem**, anvend det derefter igen fra dropdownen eller **🗑 Slet** det. Gemt i `localStorage`; en korrupt/redigeret værdi nulstilles rent til tom.
+- **Country**-dropdown — et geografifilter, der udfyldes fra de lande, der er registreret på tværs af de aktuelle resultater, hvert vist med sit flag-emoji og et antal (f.eks. `🇩🇪 Germany (12)`). Vælg ét for kun at beholde roller knyttet til det land. Registreringen mapper et opslags fritekst-lokation (landenavne/aliasser + ~100 store jobmarkedsbyer) til et land; den er konservativ og gætter aldrig, så et opslag, hvis lokation ikke kan opløses — eller et rent "Remote"-opslag — forbliver under **All countries**. Kombinér det med arbejdstype-dropdownen for at finde både landebundne *og* fjernroller.
+- **Posted within**-dropdown — et aldersfilter på klientsiden (Sidste 24 timer / 7 dage / 30 dage). Rækker, hvis `pubDate` er ældre, skjules; rækker med **ingen angivet dato består** (manglende data straffes ikke).
+- **Løn fra / Løn til** (`scan.salaryFrom` / `scan.salaryTo`) — rene
+  talgrænser sammenlignet med beløb, der er parset fra opslagsteksten
+  (valuta ignoreres, `scan.v2.salaryHint`); sæt flueben i **Medtag job
+  uden løn** (`scan.v2.includeNoSalary`), så lønfilteret ikke dropper
+  rækker, der slet ikke nævner et tal.
+- **Niveau**-dropdown (`scan.lblSeniority`) — Lead / Staff / Senior /
+  Mid / Junior / Intern, detekteret fra titlen.
+- **★ Favoritter** — klik på ☆ i en vilkårlig række for at markere et job med stjerne (gemt i `localStorage` efter URL); sæt flueben i **★ Favoritter** (`scan.favOnly`) i filterpanelet for kun at vise stjernemarkerede rækker. Stjerner overlever scanninger og genindlæsninger.
+- **Gemte søgninger** (`scan.savedSearches`) — navngiv det aktuelle
+  filtersæt og **Gem søgning** (`scan.saveSearch`), og genanvend det
+  derefter fra listen; gemte søgninger indlæses med ét klik
+  (`scan.v2.loadSearch`), og sletning spørger først
+  (`scan.v2.deleteSearchConfirm`). Gemt i `localStorage`; en
+  korrupt/redigeret værdi nulstilles rent til tom.
 - **Stack-chips** (PHP / Go / Backend / Senior / …) — auto-detekteret
   per række af `Skills.detectTech` og `Skills.detectLevel`. Multi-select
   intersektion — at vælge `PHP + Senior` viser rækker, der har BEGGE.
@@ -1044,11 +1128,20 @@ Filtre:
 
 ### Active Companies-kort
 
-Et sammenfoldeligt kort, der lister hver virksomhed i `portals.yml` med dens
-scan-status:
+Et sammenfoldeligt kort, der opsummerer hver virksomhed i `portals.yml`,
+med overskriften **Aktive virksomheder** (`scan.activeCo`) og en live
+`N/M`-tæller — *N* er virksomhederne, der faktisk viste resultater i den
+sidste scanning, *M* de API-understøttede virksomheder, der er aktiveret
+lige nu, så begge tal altid beskriver samme univers (et run kun med
+russiske boards kan ikke puste tælleren op over ATS-nævneren).
+Værktøjstippet siger det samme i almindelige ord (`scan.activeCo.help`).
+Listen er opdelt i to grupper:
 
-- ✓ grøn tag — direkte API-understøttelse (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday).
-- ○ grå tag — fallback til web-søgnings-prompt (intet API-match).
+- ✓ **Direkte API** (`scan.apiBacked`) — boardet hentes direkte fra dets
+  offentlige ATS-API (én af de 116 EN-adaptere, fra Greenhouse / Ashby /
+  Lever / Workable / SmartRecruiters / Workday og ned ad den lange hale).
+- ○ **Kun websøgning** (`scan.websearchBacked`) — ingen adapter matcher
+  URL'en, så CLI'ens AI-scan dækker den i stedet.
 
 **Klik på virksomhedsnavnet** → udfylder resultatfilteret ovenfor med det
 navn. **Klik på ↗-ikonet** → åbner virksomhedens `careers_url` i en
@@ -1120,14 +1213,19 @@ Selv fra et netværk, der *ser* rigtigt ud, kan hh.ru markere egress-IP'en som V
 
 Indbakke af URL'er, der venter på at blive evalueret. Lever i `data/pipeline.md`.
 
-**Overbliksstribe.** En kompakt stribe øverst viser din pipeline med ét blik — hvor mange URL'er i indbakken, hvor mange sporet og Applied/Responded/Interview/Offer-antal, hver linker til trackeren.
+**Overbliksstribe.** En kompakt stribe øverst viser din pipeline med ét blik — hvor mange URL'er er **i indbakken** (`pipe.ovInbox`), hvor mange rækker er **sporet** (`pipe.ovTracked`) og antallene for **Applied / Responded / Interview / Offer** trukket fra din tracker. Hver chip linker direkte til `#/tracker` (status-chips åbner den filtreret). Den degraderer til blot indbakke-antallet, hvis trackeren ikke kan læses.
 
 ### Tilføjelse af URL'er
 
 Tre måder:
 
-- Skriv / indsæt en URL i inputtet + klik på **+ Tilføj**.
-- Brug den **globale søgning i topbjælken** (dens badge viser **Enter**): indsæt et hvilket som helst `http(s)://…`-link og tryk på **Enter** for at åbne auto-pipelinen; skriv en hvilken som helst anden tekst, og **Enter** springer til `#/scan` med det udtryk forudfyldt (v1.78.1). Ctrl/Cmd+K fokuserer stadig feltet, hvor browseren tillader det. Brand-**logoet** vender tilbage til dashboardet.
+- Skriv / indsæt en URL i inputtet + klik på **Tilføj URL** (`pipe.add`).
+- Brug **kommandomenuen**: **Cmd/Ctrl+K** (eller sidebjælkens
+  **Kommandomenu**-knap, `nav.v2.palette`), indsæt et hvilket som helst
+  `http(s)://…`-link, og menuen tilbyder **Auto-pipeline: {url}**
+  (`nav.v2.evalUrl`) — Enter kører hele kæden på det. Taster du vilkårlig
+  anden tekst og trykker Enter, springes der til `#/scan` med det udtryk
+  forudfyldt.
 - Kør en Scan (se ovenfor) — friske hits går til pipeline
   automatisk.
 
@@ -1149,13 +1247,50 @@ igen, så et fjendtligt board ikke kan sende dig til loopback / privat IP
 
 ### Rækkehandlinger
 
-- **▶** — springer til `#/evaluate?url=…` med URL'en for-udfyldt.
-- **✕** — fjerner URL'en fra `data/pipeline.md`.
+- **▶** (`pipe.evaluateBtn`) — springer til `#/evaluate?url=…` med URL'en for-udfyldt.
+- **✕** — fjerner URL'en fra `data/pipeline.md` (spørger først,
+  `pipe.confirmDel`).
+
+**Grupperet visning, bulk-sletning, tabsfri fortryd.** At rydde en stor
+indbakke efter en scanning er sidens v2-centrum:
+
+- **Grupperet** (`pipe.viewGrouped`) / **Kompakt liste** (`pipe.viewFlat`)
+  — værktøjsbjælken skifter mellem en flad liste og et
+  virksomhedsgrupperet board: opslag fra samme arbejdsgiver kollapser
+  under én udfolder (største gruppe først), så ét støjende board ikke
+  begraver resten. Ukendte virksomheder grupperes under deres host — men
+  en delt ATS-host (sig `jobs.lever.co`) låner kun et virksomhedsnavn,
+  når *alle* virksomhedsbærende poster på den host er enige.
+- **Skjul allerede vurderede** (`pipe.hideTracked`) — slået til som
+  standard; poster, hvis opslag allerede har en tracker-række, forsvinder
+  ud af visningen (og ud af bulk-markeringen), så du kun nogensinde
+  handler på friskt arbejde.
+- **Vælg** (`pipe.selectOne`) vilkårlige rækker, eller **Vælg alle
+  viste** (`pipe.selectAllShown`) — markeringen følger altid de aktuelle
+  filtre, aldrig usynlige rækker. Markeringsbjælken viser antallet
+  (`pipe.selectedCount`) og tilbyder **✕ Fjern valgte (N)**
+  (`pipe.bulkRemove`) plus **Vurdér den første valgte**
+  (`pipe.evaluateSelected`) — bulk-sletning bekræftes én gang for hele
+  sættet, ikke pr. række.
+
+Intet går tabt ved en fejl: hver sletning — enkeltvis eller i bulk —
+returnerer et uigennemsigtigt gendannelsestoken, og en bjælke i bunden af
+siden (**Slettet: N**, `pipe.deleted`) tilbyder **Fortryd** (`pipe.undo`)
+/ **Luk** (`pipe.undoDismiss`). Sletninger stables op til fem batcher
+(ældste droppes); **Fortryd** gendanner den nyeste ved at sende dens
+tokens til `POST /api/pipeline/restore`, som gensindsætter de nøjagtige
+originale linjer (checklist-metadata inkluderet — intet udledes eller
+tilføjes igen) og bekræfter med **Gendannet i pipelinen**
+(`pipe.undone`). Bjælken hænger uden for sidens egen markup, så en
+re-gengivelse (navigation, quick-add-flowet) ikke kan synke en ventende
+fortrydelse; hvis serveren ikke længere kender et token (genstart),
+gen-tilføjes den URL på den simple måde i stedet for at blive droppet.
 
 ### Knapper øverst til højre
 
-- **⚡ Evaluér første** — åbner den første køsatte URL på Evaluate-
-  siden, klar til at score.
+- **⚡ Vurdér den første** (`pipe.evaluateAll`) — åbner den første køsatte URL på Evaluate-
+  siden, klar til at score (bekræfter først, da den afgør, hvilket opslag
+  du bruger en kørsel på).
 - **Jobsøgning** — tilbage til scanneren, hvis du vil have flere URL'er.
 
 ---
@@ -1233,11 +1368,45 @@ resultaterne. Fuldt flow:
 
 ## 10. Reports (`#/reports`)
 
-Gennemse hver gemt evaluering. Kort viser titel, dato, legitimitets-
-flag og score (farvekodet: grøn ≥ 4.0, gul ≥ 3.0, rød under).
+Gennemse hver gemt evaluering. Siden åbner i en **Kort**-visning
+(`rep2.viewCards`) — ét kort per rapport: dets visningstitel, dato,
+legitimitetsbadge og en farvekodet score-pille (grøn ≥ 4.0, gul ≥ 3.0,
+rød under, med en dæmpet «Score ikke fundet»-pille, når headeren ikke
+bærer en parserbar score) — og kan skifte til en tæt **Tabel**-visning
+(`rep2.viewTable`), når du hellere vil skanne rækker. Hvert kort og hver
+tabellrække nævner også det **foreslåede næste trin** for sit
+scoreinterval: **Søg nu — godt match** (`rep2.actApply`), **Søg, eller
+find først en kontakt** (`rep2.actContact`), **Undersøg virksomheden
+først** (`rep2.actResearch`) eller **Spring over, medmindre personlig
+grund** (`rep2.actLow`) — hver især et link direkte til den rigtige
+side. Et kort uden score viser den dæmpede **Score ikke fundet**-pille
+(`rep.scoreUnparsed`) med et værktøjstip, der peger på selve rapporten.
 
-Klik på et kort for at læse den fulde markdown. Paginering: 12 per side;
-kontroller nederst.
+**Find den rigtige rapport.** En filterrække sidder over listen, og alt
+kombineres:
+
+- **Søg rapporter** (`rep2.searchLabel`) — fritekst matchet mod hver
+  rapports virksomhed, rolle og visningstitel.
+- **Virksomhed** (`rep2.companyLabel`) — vælg én arbejdsgiver fra
+  dropdownen.
+- **Scoreinterval** (`rep2.bandLabel`) — **Høj (4.5+)** / **God (4.0+)**
+  / **Mellem (3.5+)** / **Under 3,5** (`rep2.bandHigh` …
+  `rep2.bandLow`), plus en spand til rapporter, hvis header ikke bærer
+  en parserbar score.
+- **Fra dato / Til dato** (`rep2.dateFrom` / `rep2.dateTo`) — afgræns
+  listen til en periode.
+- **Sortér efter** (`rep2.sortLabel`) — **Dato** / **Score** /
+  **Virksomhed** (`rep2.sortDate` …), stigende eller faldende
+  (`rep2.sortDirAsc` / `rep2.sortDirDesc`).
+- Et **scorefordelingshistogram** (`rep2.histogramLabel`) — klik på en
+  søjle for at filtrere til det interval og se din pipelines form med
+  ét blik.
+- **Nulstil filtre** (`rep2.reset`) rydder alt; når intet matcher,
+  siger siden det (`rep2.noMatches`) i stedet for at vise et tomt gitter.
+
+Klik på et kort (eller en tabellrække) for at læse den fulde markdown.
+Paginering: 20 per side; kontroller nederst; hver filterændring snapper
+dig tilbage til side 1.
 
 Enkelt-rapport-visningen har også:
 
@@ -1266,6 +1435,23 @@ GitHub-Flavored Markdown-tabel.
 `Hired` (v1.118.0) er den lykkelige slutstatus — tilbuddet blev accepteret. Trackeren markerer den med et festligt badge og byder den velkommen med et «jobbet er i hus»-banner.
 
 **Fanebladstavle for stadier (v1.131.0).** Over tabellen lader en **fanebladsstrimmel** dig gå gennem tragten: en **Alle**-fane plus én fane pr. kanonisk status, hver med et live optalt tal for hele historikken — **inklusive nul-tælling-stadier**, så hele pipelinen altid er synlig på et øjekast. Klik på et stadie for at filtrere tabellen til det; klik på det igen for at vende tilbage til **Alle**. Fanerne (og tællingernes foldning af lokaliserede/legacy statusaliasser) kommer fra `GET /api/tracker/stages`, som læser den samme `templates/states.yml`, som serveren bruger — så fanesættet automatisk holder sig synkront med forælderens statusordforråd, uden en hardkodet liste på siden. Søgning, score-filtret, sorterbare kolonner og de rækkevise rapport-/PDF-/legitimitets-muligheder er uændret; med logoer aktiveret viser hver rækkes firma et brandmærke.
+
+**Kanban-visning (v2).** Det samme board kan også læses som et
+træk-og-slip-**kanban**: én kolonne pr. kanonisk status (boardtitlen
+annonceret som *Ansøgninger efter status*, `track.kanbanBoardAria`), ét
+kort per ansøgning. Træk et kort til en anden kolonne — eller fokusér det
+og tryk **Flyt** — og ændringen **forhåndsvises, før noget skrives**
+(`track.kanbanMoveHint`); et bekræftet flyt registrerer en post i
+resultatjournalen og omskriver `data/applications.md`, og kortet fortæller
+dig det (`track.moveJournal`) — for at skifte en status tilbage bruges
+rækkens **Resultat**-knap. Kolonner, som pipelinen selv styrer (og
+`Discarded`, hvis semantik kun du kan vælge), renderes skrivebeskyttede
+(`track.kanbanReadOnly`) og afviser drops. Hvis forældreprojektets
+resultatoptager mangler, deaktiveres statusflyt med en ærlig note
+(`track.kanbanMovesOff`). Mens boardet indlæses, viser det de samme
+shimmer-rækker som resten af appen, og et tomt board siger **Ingen
+ansøgninger** (`track.kanbanEmpty`) med en henvisning til pipelinen
+(`track.emptyBody`).
 
 Status-whitelisten håndhæves server-side; at sende noget andet i
 en `POST /api/tracker` defaulter til `Evaluated`. Den kanoniske
@@ -1425,7 +1611,12 @@ som bruger Playwright i det overordnede projekt.
 ### SPA-tjeklistetilstand (`#/apply`)
 
 SPA'ens tjekliste er til brugere, der foretrækker at udfylde formularen i hånden
-uden at invokere Playwright. Den dækker:
+uden at invokere Playwright. En tom side lader dig ikke gætte: den viser
+**Generer en ansøgnings-checkliste** med et gennemarbejdet eksempel
+(`v2empty.apply.emptyTitle` / `v2empty.apply.emptyBody`) og, hvis du
+allerede har vurderet opslaget, en genvej til at **vælge en vurderet
+rapport** (`v2empty.apply.pickReport`), så tjeklisten starter fra den
+rapports data. Den dækker:
 
 0. Kør `/career-ops apply <url>` i Claude Code for at læse formularen via
    Playwright (spring dette trin over, hvis du udfylder i hånden).
@@ -1526,7 +1717,13 @@ Overvåg hele din pipelines status, uanset rolle-score.
 
 Når du har 10+ JD'er at score på én gang (SPA'ens en-ad-gangen
 `#/evaluate` er upraktisk til den volumen), brug batch-runneren
-fra CLI'en.
+fra CLI'en. Siden `#/batch` møder dig med samme ærlighed: dens tomme
+tilstand viser **Start med en liste over stillinger**
+(`v2empty.batch.emptyTitle`) og en **Indsæt URL-liste**-hjælper
+(`v2empty.batch.pasteList`), der løfter rene http(s)-URL'er fra dit
+udklipsholder direkte ind i inputfeltet (`v2empty.batch.pasteAdded`), så
+opbygningen af rækker svarende til `batch-input.tsv` tager sekunder, før
+du skifter til CLI-runneren.
 
 **Inputfil — `batch/batch-input.tsv`** (tab-separeret):
 
@@ -1744,7 +1941,7 @@ outputtet, og søg i issue-trackeren på
 
 ## 17. Sådan tilføjer du en ny jobportal-kilde
 
-career-ops-ui behandler hvert jobboard som en **adapter** — en enkelt fil under [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), der ved, hvordan man henter + normaliserer ét boards resultater. I dag leverer `server/lib/sources/`-registreringen **121** adaptere — **116 engelske + 5 russiske** boards. Det engelske sæt spænder over de store ATS'er (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), board-brede aggregatorer valgt af en eksplicit `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …) og per-tenant-ATS'er auto-detekteret fra en `careers_url`-host eller en eksplicit `api:`-URL (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **Den komplette liste behøver aldrig at blive talt manuelt her — den auto-opdages fra `server/lib/sources/` og vises live i Source-dropdownen på `#/scan`.** Se §5 for YAML'en og `docs/portals-examples.md` for copy-paste-poster.
+career-ops-ui behandler hvert jobboard som en **adapter** — en enkelt fil under [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), der ved, hvordan man henter + normaliserer ét boards resultater. I dag leverer `server/lib/sources/`-registreringen **121** kilder — **116 engelske + 5 russiske** boards. Det engelske sæt spænder over de store ATS'er (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), board-brede aggregatorer valgt af en eksplicit `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …) og per-tenant-ATS'er auto-detekteret fra en `careers_url`-host eller en eksplicit `api:`-URL (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **Den komplette liste behøver aldrig at blive talt manuelt her — den auto-opdages fra `server/lib/sources/` og vises live i Source-dropdownen på `#/scan`.** Se §5 for YAML'en og `docs/portals-examples.md` for copy-paste-poster.
 
 > **v1.69.0 (P-14) — drop-in auto-discovery.** At tilføje en 12. kilde er nu
 > et **rent fil-drop**. Registreringen

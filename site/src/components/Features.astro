@@ -45,7 +45,7 @@ const CARDS = [
         title = sub(title).replace(/\{n\}/g, nValue);
         desc = sub(desc).replace(/\{n\}/g, nValue);
         return (
-          <li class="card reveal">
+          <li class={`card reveal reveal-d${(c.n % 4) + 1}`}>
             <span class="icon-chip mb-4"><Icon name={c.icon} class="h-5 w-5" /></span>
             <h3 class="mb-2 text-[1.05rem] font-bold">{title}</h3>
             <p class="text-[0.92rem] leading-6 text-ink-soft">{desc}</p>
