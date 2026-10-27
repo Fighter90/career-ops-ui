@@ -313,9 +313,17 @@ export function registerContentRoutes(app) {
             return { status: 409, body: { error: 'existing profile.yml is not valid YAML — fix it via the Raw YAML editor before using the field form' } };
           }
         }
-        for (const [path, value] of Object.entries(incoming)) setDotted(base, path, value);
-        for (const [path, value] of Object.entries(incomingArrays)) {
-          setArray(base, path, value, PROFILE_ARRAY_SPECS[path]);
+        // Iterate the module-level allowlists, not the request-derived maps:
+        // the 400 gates above already restrict incoming keys to these paths,
+        // but a request-derived string must never sit in the property-name
+        // position (CodeQL #667/#668 — same shape as the v1.233.2 config.mjs
+        // alerts). Leaves are independent, so the write order is irrelevant;
+        // behaviour is identical.
+        for (const path of PROFILE_FIELD_PATHS) {
+          if (Object.hasOwn(incoming, path)) setDotted(base, path, incoming[path]);
+        }
+        for (const path of Object.keys(PROFILE_ARRAY_SPECS)) {
+          if (Object.hasOwn(incomingArrays, path)) setArray(base, path, incomingArrays[path], PROFILE_ARRAY_SPECS[path]);
         }
         // Same identity gate as the raw path.
         const okCandidate = base.candidate && typeof base.candidate === 'object'

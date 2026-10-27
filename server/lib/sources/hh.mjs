@@ -86,7 +86,10 @@ export async function searchHH(query, opts = {}) {
     // off-host redirect is refused (thrown with .status/.location, never
     // fetched). maxRedirects=2 because the result window walk paginates via
     // &page= — every hop is a fresh search request, not a redirect chain.
-    let finalUrl = `${HH_SITE}?${params}`;
+    // Initialised by the destructuring below; the only read is `finalUrl || ''`
+    // (a same-host 3xx chain always yields a final URL, and the catch paths
+    // throw or break before reaching it).
+    let finalUrl;
     let pageHtml = '';
     try {
       ({ url: finalUrl, text: pageHtml } = await fetchTextFollowSameHost(fetchImpl, `${HH_SITE}?${params}`, {
