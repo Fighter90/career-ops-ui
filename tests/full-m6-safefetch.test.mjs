@@ -146,6 +146,18 @@ async function startServer(handler) {
 const localPinned = (port) => ({ address: '127.0.0.1', family: 4 });
 const localUrl = (port, path) => `http://127.0.0.1:${port}${path}`;
 
+// FULL-M6 review — a PRE-aborted signal used to destroy the request before
+// the error listener existed: Node emits 'error' asynchronously with no
+// listener → uncaughtException → process crash. It must reject cleanly.
+test('FULL-M6: a pre-aborted signal rejects without an uncaught exception', async () => {
+  const ctrl = new AbortController();
+  ctrl.abort();
+  await assert.rejects(
+    () => _defaultTransport(new URL('http://127.0.0.1:1/x'), localPinned(), { signal: ctrl.signal }),
+    /aborted/,
+  );
+});
+
 test('FULL-M6b: the abort listener is detached after the request settles', async () => {
   const server = await startServer((req, res) => { res.end('ok'); });
   try {

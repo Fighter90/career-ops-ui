@@ -187,6 +187,12 @@ function defaultTransport(url, pinned, opts = {}) {
       res.on('error', (err) => { detachAbort(); if (!settled) reject(err); });
     });
     if (opts.signal) {
+      // FULL-M6 review — the error listener MUST be registered before any
+      // destroy(): on a pre-aborted signal the old code destroyed the request
+      // and returned before `req.on('error')` existed — Node emits 'error'
+      // asynchronously with no listener → uncaughtException → process crash
+      // (reviewer reproduced). Also detach on the abort path itself.
+      req.on('error', (err) => { detachAbort(); reject(err); });
       if (opts.signal.aborted) {
         req.destroy(new Error('aborted'));
         return reject(new Error('aborted'));
@@ -200,8 +206,9 @@ function defaultTransport(url, pinned, opts = {}) {
       // a signal that never aborts kept one listener per request forever (the
       // redirect loop shares one signal across hops → per-hop pile-up).
       detachAbort = () => opts.signal.removeEventListener('abort', onAbort);
+    } else {
+      req.on('error', (err) => { detachAbort(); reject(err); });
     }
-    req.on('error', (err) => { detachAbort(); reject(err); });
     req.end();
   });
 }
