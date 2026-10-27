@@ -968,8 +968,6 @@ Skaner przeszukuje każdy włączony portal, deduplikuje względem Twojej
 historii i zapisuje trafienia do `data/last-scan.json` i
 `data/pipeline.md`.
 
-**Szukaj + Wyklucz.** Pole **Szukaj** to filtr „role do znalezienia" — wpisz jeden lub więcej terminów **rozdzielonych przecinkami**, a wiersz pojawi się, gdy pasuje do **któregokolwiek** z nich (LUB); wiodące `-słowo` **wyklucza** ten termin (`scan.v2.moreHint`). Osobne pole **Wyklucz** (`scan.lblExclude`) robi to samo dla całych terminów: słowa po przecinku, które **ukrywają** każdy wiersz, którego firma / rola / lokalizacja je zawiera (np. wyklucz `senior, staff, java`). Oba są zapamiętywane wraz z Twoimi zapisanymi wyszukiwaniami, obok filtrów zdalny / źródło / kraj / opublikowane-w-ciągu / wynagrodzenie.
-
 ### Skan jednym kliknięciem (SPA)
 
 **🌐 Skanuj** uruchamia każde włączone źródło w jednym przebiegu:
@@ -994,19 +992,73 @@ Log SSE na żywo streamuje do prawego panelu podczas skanowania. Kliknij
 
 Poniżej logu tabela wyników renderuje wiersze z `data/last-scan.json`.
 
+W czasie ładowania tabeli (i przy każdym odświeżeniu) widzisz szare
+migające wiersze zamiast pustego panelu, a tytuł strony jest na
+miejscu od pierwszej klatki — wolne skanowanie nigdy nie wygląda na
+martwą stronę.
+
+Chrome v2 wyników utrzymuje sterowanie w zasięgu wzroku:
+
+- **Aktywne filtry** (`scan.v2.activeFilters`) — każdy ustawiony
+  filtr pokazuje się jako usuwalny chip nad tabelą; kliknij **✕**
+  na chipie (**Usuń filtr**, `scan.v2.removeFilter`), aby upuścić
+  tylko ten, albo **Zresetuj wszystko** (`scan.v2.resetAll`), aby
+  wyczyścić wszystkie.
+- **Sortuj według** (`scan.v2.sortBy`) — kliknij nagłówek kolumny
+  (firma, stanowisko, wynagrodzenie, wiek), aby sortować; kliknij
+  ponownie, aby odwrócić kierunek.
+- **Szybki podgląd** (`scan.v2.quickView`) — kliknij wiersz, aby
+  rozwinąć opis oferty inline (**Opis**, `scan.v2.description`) bez
+  opuszczania strony; oferty bez zapisanego ciała same o tym mówią
+  (`scan.v2.noDescription`) zamiast pokazywać pustą kartę.
+- **Gęstość wierszy** (`scan.v2.density`) — przełącza wysokości
+  wierszy **Kompaktowo** / **Komfortowo** (`scan.v2.compact` /
+  `scan.v2.comfortable`); wybór jest zapamiętywany per przeglądarka.
+- **Dziennik** (`scan.v2.log`) — zwija/rozwija dziennik skanowania
+  strumieniowego, aby dać tabeli pełną szerokość.
+
+Każdy wiersz ma własne akcje: **Oceń** (`scan.v2.evaluate`) przechodzi
+prosto do punktowanej oceny tej oferty, **Do pipeline**
+(`scan.v2.toPipeline`) kolejkuje URL (z toastem „już w pipeline",
+`scan.v2.pipelineDup`), **Otwórz ofertę ↗** (`scan.v2.openPosting`)
+otwiera stronę kariery w nowej karcie, a gwiazdka ☆ przełącza
+ulubione.
+
+**Szukaj + Wyklucz.** Pole **Szukaj** to filtr „role do znalezienia" — wpisz jeden lub więcej terminów **rozdzielonych przecinkami**, a wiersz pojawi się, gdy pasuje do **któregokolwiek** z nich (LUB); wiodące `-słowo` **wyklucza** ten termin (`scan.v2.moreHint`). Osobne pole **Wyklucz** (`scan.lblExclude`) robi to samo dla całych terminów: słowa po przecinku, które **ukrywają** każdy wiersz, którego firma / rola / lokalizacja je zawiera (np. wyklucz `senior, staff, java`). Oba są zapamiętywane wraz z Twoimi zapisanymi wyszukiwaniami, obok filtrów zdalny / źródło / kraj / opublikowane-w-ciągu / wynagrodzenie.
+
 > **v1.78.1 — odświeżanie na żywo.** Tabela wyników aktualizuje się teraz automatycznie podczas trwania skanowania i jeszcze raz tuż po jego zakończeniu — bez ręcznego przeładowania ani przełączania strony.
 
 > **v1.80.0 — Max per source i kwarantanna źródeł.** Pole **Max per source** obok przycisku Skanuj ogranicza, ile ofert wnosi każdy portal (puste/0 = bez limitu, wartość domyślna) — przydatne, gdy jeden ogromny portal w przeciwnym razie zdominowałby wyniki. Osobno każde źródło zwracające trwały **404 / 410** jest zapisywane do `data/scan-quarantine.json` i pomijane w kolejnych skanach (samonaprawa: ponawiane po 14 dniach), więc martwe slugi przestają zaśmiecać log. Wyłącz to przez `scan_quarantine: false` w `portals.yml`.
 
-Filtry:
+Filtry (zawsze widoczne: szukaj, wyklucz, typ, źródło, kraj; cała
+reszta mieszka za **Filtrami zaawansowanymi**, `scan.advancedFilters` —
+cały panel jest pogrupowany pod **Filtry wyników**,
+`scan.filtersGroup`):
 
 - **Tekst wolny** — dopasowanie podciągu względem tytułu / firmy.
-- Menu rozwijane **Source** — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Teamtailor / Trudvsem / We Work Remotely / Workable / Workday / Working Nomads (auto-wypełniane z `GET /api/scan/sources`).
+- Menu rozwijane **Source** — wszystkie źródła, które zna rejestr
+  (obecnie 121 źródeł: 116 EN + 5 RU, domyślnie **All sources**).
+  Wypełnia się na żywo z `GET /api/scan/sources`, więc świeżo
+  dodany adapter pojawia się tu bez zmiany w aplikacji — lista
+  nigdy nie jest zaszyta na sztywno.
 - Menu rozwijane **Remote / Hybrid / Onsite**.
-- Menu rozwijane **Country** (v1.78.0) — filtr geograficzny zasilany krajami wykrytymi w bieżących wynikach, każdy pokazany z emoji flagi i licznikiem (np. `🇩🇪 Germany (12)`). Wybierz jeden, aby zachować tylko role powiązane z tym krajem. Wykrywanie mapuje swobodny tekst lokalizacji oferty (nazwy krajów/aliasy + ~100 dużych miast rynku pracy) na kraj; jest zachowawcze i nigdy nie zgaduje, więc oferta, której lokalizacji nie da się rozwiązać — lub czysto „Remote” — pozostaje pod **All countries**. Połącz go z menu rozwijanym typu pracy, aby znaleźć role powiązane z krajem *oraz* zdalne.
-- Menu rozwijane **Posted within** (v1.80.0) — filtr wieku po stronie klienta (Last 24 hours / 7 days / 30 days). Wiersze, których `pubDate` jest starszy, są ukrywane; wiersze **bez podanej daty przechodzą** (brak danych nie jest karany).
-- **★ Ulubione** (v1.80.0) — kliknij ☆ w dowolnym wierszu, aby oznaczyć ofertę gwiazdką (przechowywaną w `localStorage` według URL); zaznacz **★ Ulubione** w panelu filtrów, aby pokazać tylko wiersze oznaczone gwiazdką. Gwiazdki przetrwają skany i przeładowania.
-- **Zapisane wyszukiwania** (v1.80.0) — pasek nad filtrami: nazwij bieżący zestaw filtrów i **💾 Zapisz**, a potem zastosuj go ponownie z menu rozwijanego lub **🗑 Usuń**. Przechowywane w `localStorage`; uszkodzona/zmodyfikowana wartość czysto resetuje się do pustej.
+- Menu rozwijane **Country** — filtr geograficzny zasilany krajami wykrytymi w bieżących wynikach, każdy pokazany z emoji flagi i licznikiem (np. `🇩🇪 Germany (12)`). Wybierz jeden, aby zachować tylko role powiązane z tym krajem. Wykrywanie mapuje swobodny tekst lokalizacji oferty (nazwy krajów/aliasy + ~100 dużych miast rynku pracy) na kraj; jest zachowawcze i nigdy nie zgaduje, więc oferta, której lokalizacji nie da się rozwiązać — lub czysto „Remote” — pozostaje pod **All countries**. Połącz go z menu rozwijanym typu pracy, aby znaleźć role powiązane z krajem *oraz* zdalne.
+- Menu rozwijane **Posted within** — filtr wieku po stronie klienta (Last 24 hours / 7 days / 30 days). Wiersze, których `pubDate` jest starszy, są ukrywane; wiersze **bez podanej daty przechodzą** (brak danych nie jest karany).
+- **Wynagrodzenie od / Wynagrodzenie do** (`scan.salaryFrom` /
+  `scan.salaryTo`) — proste granice liczbowe porównywane z kwotami
+  sparsowanymi z treści oferty (waluta ignorowana,
+  `scan.v2.salaryHint`); zaznacz **Uwzględnij oferty bez pensji**
+  (`scan.v2.includeNoSalary`), aby filtr wynagrodzenia nie gubił
+  wierszy, które w ogóle nie podają żadnej liczby.
+- Menu rozwijane **Poziom** (`scan.lblSeniority`) — Lead / Staff /
+  Senior / Mid / Junior / Intern, wykrywane z tytułu.
+- **★ Ulubione** — kliknij ☆ w dowolnym wierszu, aby oznaczyć ofertę gwiazdką (przechowywaną w `localStorage` według URL); zaznacz **★ Ulubione** (`scan.favOnly`) w panelu filtrów, aby pokazać tylko wiersze oznaczone gwiazdką. Gwiazdki przetrwają skany i przeładowania.
+- **Zapisane wyszukiwania** (`scan.savedSearches`) — nazwij bieżący
+  zestaw filtrów i **Zapisz** (`scan.saveSearch`), a potem zastosuj
+  go ponownie z listy; zapisane wyszukiwania wczytują się jednym
+  kliknięciem (`scan.v2.loadSearch`), a usunięcie jednego najpierw
+  pyta (`scan.v2.deleteSearchConfirm`). Przechowywane w `localStorage`;
+  uszkodzona/zmodyfikowana wartość czysto resetuje się do pustej.
 - **Chipy stack** (PHP / Go / Backend / Senior / …) — auto-wykrywane
   na wiersz przez `Skills.detectTech` i `Skills.detectLevel`. Wielokrotny wybór
   z przecięciem — wybranie `PHP + Senior` pokazuje wiersze mające OBA.
@@ -1017,11 +1069,21 @@ Filtry:
 
 ### Karta aktywnych firm
 
-Składana karta listująca każdą firmę w `portals.yml` z jej
-statusem skanowania:
+Składana karta, która podsumowuje każdą firmę w `portals.yml`, z
+nagłówkiem **Aktywne firmy** (`scan.activeCo`) i żywym licznikiem
+`N/M` — *N* to firmy, które faktycznie zwróciły wyniki w ostatnim
+skanowaniu, *M* — firmy z API obecnie włączone, tak że obie liczby
+zawsze opisują ten sam wszechświat (przebieg tylko po rosyjskich
+portalach nie może nadmuchać licznika ponad mianownik ATS). Podpowiedź
+mówi to samo prostymi słowami (`scan.activeCo.help`). Lista dzieli
+się na dwie grupy:
 
-- ✓ zielony tag — bezpośrednie wsparcie API (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday).
-- ○ szary tag — fallback do promptu wyszukiwania webowego (brak dopasowania API).
+- ✓ **Bezpośrednie API** (`scan.apiBacked`) — portal jest pobierany
+  wprost z jego publicznego API ATS (jeden z 116 adapterów EN, od
+  Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday
+  po długi ogon).
+- ○ **Tylko wyszukiwanie** (`scan.websearchBacked`) — żaden adapter
+  nie pasuje do URL, więc pokrywa go skan z AI w CLI.
 
 **Kliknij nazwę firmy** → wypełnia filtr wyników powyżej tą
 nazwą. **Kliknij ikonę ↗** → otwiera `careers_url` firmy w nowej zakładce.
@@ -1092,14 +1154,24 @@ Nawet z sieci, która *wygląda* poprawnie, hh.ru może uznać IP wyjściowe za 
 
 Skrzynka odbiorcza adresów URL oczekujących na ocenę. Przechowywana w `data/pipeline.md`.
 
-**Pasek przeglądu.** Zwarty pasek u góry pokazuje pipeline na pierwszy rzut oka — ile URL w skrzynce, ile śledzonych i liczby Applied/Responded/Interview/Offer, każda linkuje do trackera.
+**Pasek przeglądu.** Zwarty pasek u góry pokazuje pipeline na pierwszy
+rzut oka — ile URL jest **w skrzynce** (`pipe.ovInbox`), ile **śledzonych**
+(`pipe.ovTracked`) oraz liczby **Applied / Responded / Interview / Offer**
+zebrane z trackera. Każdy chip prowadzi prosto do `#/tracker` (chipy
+statusów otwierają go przefiltrowany). Pasek degraduje się do samego
+licznika skrzynki, gdy trackera nie da się odczytać.
 
 ### Dodawanie adresów URL
 
 Trzy sposoby:
 
-- Wpisz / wklej URL do inputu + kliknij **+ Add**.
-- Użyj **globalnego wyszukiwania na górnym pasku** (jego plakietka pokazuje **Enter**): wklej dowolny link `http(s)://…` i naciśnij **Enter**, aby otworzyć auto-pipeline; wpisz dowolny inny tekst, a **Enter** przeniesie do `#/scan` ze wstępnie wypełnionym tym hasłem (v1.78.1). Ctrl/Cmd+K nadal ustawia fokus na polu tam, gdzie pozwala na to przeglądarka. Logo marki wraca do pulpitu.
+- Wpisz / wklej URL do inputu + kliknij **Dodaj URL** (`pipe.add`).
+- Użyj **menu poleceń**: **Cmd/Ctrl+K** (lub przycisk **Menu poleceń**
+  na pasku bocznym, `nav.v2.palette`), wklej dowolny link
+  `http(s)://…`, a menu zaproponuje **Auto-pipeline: {url}**
+  (`nav.v2.evalUrl`) — Enter uruchamia na nim cały łańcuch. Dowolny
+  inny tekst + Enter przenosi do `#/scan` ze wstępnie wypełnionym
+  tym hasłem.
 - Uruchom Scan (patrz wyżej) — nowe trafienia trafiają do pipeline
   automatycznie.
 
@@ -1121,13 +1193,53 @@ ponownie, więc wrogie forum nie może odbić Cię do loopbacku / prywatnego IP
 
 ### Akcje wierszy
 
-- **▶** — skacze do `#/evaluate?url=…` z URL wstępnie wypełnionym.
-- **✕** — usuwa URL z `data/pipeline.md`.
+- **▶** (`pipe.evaluateBtn`) — skacze do `#/evaluate?url=…` z URL
+  wstępnie wypełnionym.
+- **✕** — usuwa URL z `data/pipeline.md` (najpierw pyta,
+  `pipe.confirmDel`).
+
+**Widok grupowany, usuwanie zbiorcze, cofanie bez strat.** Sprzątanie
+dużej skrzynki po skanowaniu to centralny element v2 tej strony:
+
+- **Grupuj** (`pipe.viewGrouped`) / **Lista kompaktowa**
+  (`pipe.viewFlat`) — pasek narzędzi przełącza między płaską listą a
+  tablicą pogrupowaną po firmach: ogłoszenia tego samego pracodawcy
+  zwijają się pod jednym elementem rozwijanym (największa grupa
+  pierwsza), więc głośny portal nie zakopuje już reszty. Nieznane
+  firmy grupują się pod swoim hostem — ale współdzielony host ATS
+  (powiedzmy `jobs.lever.co`) pożycza nazwę firmy tylko wtedy, gdy
+  *wszystkie* wpisy z nazwą firmy na tym hoście są zgodne.
+- **Ukryj już ocenione** (`pipe.hideTracked`) — domyślnie włączone;
+  wpisy, których ogłoszenie ma już wiersz w trackerze, znikają z
+  widoku (i z wyboru zbiorczego), więc działasz tylko na świeżej
+  pracy.
+- **Zaznacz** (`pipe.selectOne`) dowolne wiersze albo **Zaznacz
+  wszystkie widoczne** (`pipe.selectAllShown`) — wybór zawsze podąża
+  za bieżącymi filtrami, nigdy za niewidocznymi wierszami. Pasek
+  wyboru pokazuje liczbę (`pipe.selectedCount`) i oferuje **✕ Usuń
+  zaznaczone (N)** (`pipe.bulkRemove`) plus **Oceń pierwszy
+  zaznaczony** (`pipe.evaluateSelected`) — usuwanie zbiorcze pyta o
+  potwierdzenie raz dla całego zestawu, nie dla każdego wiersza.
+
+Niczego nie da się stracić przez pomyłkę: każde usunięcie — pojedyncze
+czy zbiorcze — zwraca nieprzejrzysty token przywracania, a pasek u dołu
+strony (**Usunięto: N**, `pipe.deleted`) oferuje **Cofnij**
+(`pipe.undo`) / **Zamknij** (`pipe.undoDismiss`). Usunięcia układają
+się w stos do pięciu partii (najstarsza wypada); **Cofnij** przywraca
+najnowszą, wysyłając jej tokeny do `POST /api/pipeline/restore`, który
+wpisuje z powrotem dokładnie oryginalne wiersze (metadane checklisty
+włącznie — nic nie jest wyprowadzane na nowo ani dodawane ponownie) i
+potwierdza komunikatem **Przywrócono do pipeline’u** (`pipe.undone`).
+Pasek jest przypięty poza własnym znacznikiem strony, więc ponowne
+renderowanie (nawigacja, szybkie dodawanie) nie może połknąć
+oczekującego cofnięcia; jeśli serwer już nie zna tokena (restart), ten
+URL jest dodawany ponownie zwykłą drogą, a nie tracony.
 
 ### Przyciski w prawym górnym rogu
 
-- **⚡ Oceń pierwszy** — otwiera pierwszy kolejkowany URL na stronie Evaluate,
-  gotowy do oceniania.
+- **⚡ Oceń pierwszy** (`pipe.evaluateAll`) — otwiera pierwszy
+  kolejkowany URL na stronie Evaluate, gotowy do oceniania (najpierw
+  pyta, bo to on decyduje, na którym ogłoszeniu wydasz przebieg).
 - **Wyszukiwanie ofert** — powrót do skanera jeśli chcesz więcej URL-i.
 
 ---
@@ -1204,11 +1316,48 @@ potem wróć do `#/reports` / `#/tracker` po wyniki. Pełny przepływ:
 
 ## 10. Raporty (`#/reports`)
 
-Przeglądaj każdą zapisaną ocenę. Karty pokazują tytuł, datę, flagę
-wiarygodności i wynik (kolorowany: zielony ≥ 4.0, żółty ≥ 3.0, czerwony poniżej).
+Przeglądaj każdą zapisaną ocenę. Strona otwiera się w widoku **Kart**
+(`rep2.viewCards`) — jedna karta na raport: jego tytuł wyświetlany,
+data, odznaka wiarygodności i kolorowana pigułka wyniku (zielona ≥ 4.0,
+żółta ≥ 3.0, czerwona poniżej, z przygaszoną pigułką „Nie wykryto
+wyniku", gdy nagłówek nie zawiera sparsowalnego wyniku) — i może
+przełączyć się na gęsty widok **Tabeli** (`rep2.viewTable`), gdy
+wygodniej ci przeglądać wiersze. Każda karta i wiersz tabeli podają
+też **sugerowany następny krok** dla swojego przedziału wyniku:
+**Aplikuj od razu — wysokie dopasowanie** (`rep2.actApply`), **Aplikuj
+lub najpierw znajdź kontakt** (`rep2.actContact`), **Najpierw zbadaj
+firmę** (`rep2.actResearch`) albo **Pomiń, chyba że masz osobisty
+powód** (`rep2.actLow`) — każdy z nich to odnośnik prosto do właściwej
+strony. Karta bez wyniku pokazuje przygaszoną pigułkę **Nie wykryto
+wyniku** (`rep.scoreUnparsed`) z podpowiedzią prowadzącą do samego
+raportu.
 
-Kliknij kartę, aby przeczytać pełny Markdown. Paginacja: 12 na stronę;
-kontrolki na dole.
+**Znalezienie właściwego raportu.** Nad listą stoi rząd filtrów i
+wszystko się komponuje:
+
+- **Szukaj raportów** (`rep2.searchLabel`) — swobodny tekst porównywany
+  z firmą, stanowiskiem i tytułem każdego raportu.
+- **Firma** (`rep2.companyLabel`) — wybierz pracodawcę z menu
+  rozwijanego.
+- **Przedział oceny** (`rep2.bandLabel`) — **Wysoka (4.5+)** /
+  **Dobra (4.0+)** / **Średnia (3.5+)** / **Poniżej 3,5**
+  (`rep2.bandHigh` … `rep2.bandLow`), plus kubeł dla raportów bez
+  sparsowalnego wyniku.
+- **Od / Do** (`rep2.dateFrom` / `rep2.dateTo`) — zawiązują listę do
+  okresu.
+- **Sortuj według** (`rep2.sortLabel`) — **Data** / **Wynik** /
+  **Firma** (`rep2.sortDate` …), rosnąco lub malejąco
+  (`rep2.sortDirAsc` / `rep2.sortDirDesc`).
+- **Histogram rozkładu ocen** (`rep2.histogramLabel`) — kliknij
+  kolumnę, aby przefiltrować do tego przedziału i zobaczyć kształt
+  swojego pipeline'u na pierwszy rzut oka.
+- **Wyczyść filtry** (`rep2.reset`) czyści wszystko; gdy nic nie
+  pasuje, strona to mówi (`rep2.noMatches`) zamiast pokazywać pustą
+  siatkę.
+
+Kliknij kartę (lub wiersz tabeli), aby przeczytać pełny Markdown.
+Paginacja: 20 na stronę, kontrolki na dole; każda zmiana filtra
+przywraca cię na stronę 1.
 
 Widok jednego raportu zawiera też:
 
@@ -1237,6 +1386,24 @@ tabela GitHub-Flavored Markdown.
 `Hired` (v1.118.0) to szczęśliwy stan końcowy — oferta została przyjęta. Tracker oznacza go świąteczną odznaką i wita banerem „praca zdobyta”.
 
 **Tablica zakładek etapów (v1.131.0).** Nad tabelą **pasek zakładek etapów** pozwala przejść przez cały lejek: zakładka **Wszystkie** plus jedna zakładka na każdy kanoniczny status, każda pokazuje na żywo liczbę z całej historii — **w tym etapy z zerową liczbą**, dzięki czemu cały pipeline jest zawsze widoczny na pierwszy rzut oka. Kliknij etap, aby przefiltrować do niego tabelę; kliknij ponownie, aby wrócić do **Wszystkie**. Zakładki (oraz składanie zlokalizowanych/starszych aliasów statusów w liczbach) pochodzą z `GET /api/tracker/stages`, która czyta ten sam plik `templates/states.yml`, którego używa serwer — dzięki czemu zestaw zakładek pozostaje automatycznie zsynchronizowany ze słownictwem statusów rodzica, bez zakodowanej na sztywno listy na stronie. Wyszukiwanie, filtr wyniku, sortowalne kolumny oraz raport/PDF/legalność w każdym wierszu pozostają bez zmian; a przy włączonym pokazywaniu logo, firma w każdym wierszu pokazuje znak marki.
+
+**Widok kanban (v2).** Ta sama tablica czyta się też jako **kanban** z
+przeciąganiem i upuszczaniem: jedna kolumna na każdy kanoniczny status
+(tytuł tablicy ogłaszany jako *Aplikacje według statusu*,
+`track.kanbanBoardAria`), jedna karta na aplikację. Przeciągnij kartę
+do innej kolumny — albo ustaw na niej fokus i naciśnij **Przenieś** —
+a zmiana jest **pokazywana, zanim cokolwiek zostanie zapisane**
+(`track.kanbanMoveHint`); potwierdzona zmiana zapisuje wpis w
+dzienniku wyników i przepisuje `data/applications.md`, a karta mówi ci
+o tym (`track.moveJournal`) — aby zmienić status z powrotem, użyj
+przycisku **wyniku** w wierszu. Kolumny zarządzane same przez siebie
+przez pipeline (i `Discarded`, którego semantykę wybierasz tylko ty)
+renderują się tylko do odczytu (`track.kanbanReadOnly`) i odrzucają
+upuszczenia. Gdy rejestratora wyników rodzica brakuje, zmiany statusu
+są wyłączone z uczciwą notą (`track.kanbanMovesOff`). Podczas
+ładowania tablica pokazuje te same migające wiersze co reszta
+aplikacji, a pusta tablica mówi **Brak aplikacji** (`track.kanbanEmpty`)
+z wskazówką na pipeline (`track.emptyBody`).
 
 Biała lista statusów jest egzekwowana po stronie serwera; wysłanie czegokolwiek innego w
 `POST /api/tracker` domyślnie ustawia `Evaluated`. Kanoniczne
