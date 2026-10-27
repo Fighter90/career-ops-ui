@@ -1755,4 +1755,11 @@ window.__I18N_DICT_PL = {
   'v2empty.auto.tryExampleTitle': "Wypełnia pole przykładowym URL — nic nie uruchamia się, dopóki nie naciśniesz Uruchom",
   'v2empty.auto.hint': "Jeden URL zajmuje około {eta}. Nic nie uruchamia się, dopóki nie naciśniesz Uruchom — przycisk powyżej wypełnia tylko puste pole.",
   'v2empty.auto.configHint': "Dostawców i harmonogram skanowania skonfigurujesz w ",
+
+  // CAR-137 — specific error texts (see tests/car137-err-keys.test.mjs)
+  'err.evaluate.failed': "Ocena nie powiodła się — sprawdź klucz dostawcy w #/config lub spróbuj ponownie.",
+  'err.auto.noTerminal': "Strumień pipeline zakończył się bez wyniku — serwer mógł uruchomić się ponownie w trakcie działania. Uruchom adres URL jeszcze raz.",
+  'err.scan.pipelineAdd': "Nie udało się dodać tej oferty do pipeline — spróbuj ponownie za chwilę.",
+  'err.scan.repostsLoad': "Nie udało się wczytać grup ponowień — otwórz ten panel ponownie, aby spróbować jeszcze raz.",
+  'err.pipeline.undo': "Nie udało się cofnąć — wpis pozostał bez zmian.",
 };

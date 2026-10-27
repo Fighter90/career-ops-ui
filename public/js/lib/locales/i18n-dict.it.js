@@ -1755,4 +1755,11 @@ window.__I18N_DICT_IT = {
   'v2empty.auto.tryExampleTitle': "Compila il campo con un URL di esempio — nulla viene eseguito finché non premi Esegui",
   'v2empty.auto.hint': "Un URL richiede circa {eta}. Nulla viene eseguito finché non premi Esegui — il pulsante sopra compila solo un campo vuoto.",
   'v2empty.auto.configHint': "Provider e timer di cadenza si configurano in ",
+
+  // CAR-137 — specific error texts (see tests/car137-err-keys.test.mjs)
+  'err.evaluate.failed': "Valutazione non riuscita — controlla una chiave del fornitore in #/config, oppure riprova.",
+  'err.auto.noTerminal': "Lo stream della pipeline è terminato senza risultato — il server potrebbe essersi riavviato durante l'esecuzione. Esegui di nuovo l'URL.",
+  'err.scan.pipelineAdd': "Impossibile aggiungere questa offerta alla pipeline — riprova tra poco.",
+  'err.scan.repostsLoad': "Impossibile caricare i gruppi di ripubblicazioni — riapri questo pannello per riprovare.",
+  'err.pipeline.undo': "Impossibile completare il ripristino — la voce è rimasta invariata.",
 };

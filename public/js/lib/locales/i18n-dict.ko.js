@@ -1756,4 +1756,11 @@ window.__I18N_DICT_KO = {
   'v2empty.auto.tryExampleTitle': "필드에 예시 URL을 채웁니다 — 실행을 누를 때까지 아무것도 실행되지 않습니다",
   'v2empty.auto.hint': "URL 하나에 약 {eta} 소요. 실행을 누를 때까지 아무것도 실행되지 않습니다 — 위 버튼은 빈 필드를 채울 뿐입니다.",
   'v2empty.auto.configHint': "공급자와 주기 타이머는 다음에서 설정합니다: ",
+
+  // CAR-137 — specific error texts (see tests/car137-err-keys.test.mjs)
+  'err.evaluate.failed': "평가에 실패했습니다 — #/config 에서 제공자 키를 확인하거나 다시 시도하세요.",
+  'err.auto.noTerminal': "파이프라인 스트림이 결과 없이 종료되었습니다 — 실행 중에 서버가 재시작했을 수 있습니다. URL 을 다시 실행하세요.",
+  'err.scan.pipelineAdd': "이 공고를 파이프라인에 추가하지 못했습니다 — 잠시 후 다시 시도하세요.",
+  'err.scan.repostsLoad': "재게시 클러스터를 불러오지 못했습니다 — 이 패널을 다시 열어 재시도하세요.",
+  'err.pipeline.undo': "실행 취소를 완료하지 못했습니다 — 항목은 변경되지 않은 상태로 유지됩니다.",
 };

@@ -1755,4 +1755,11 @@ window.__I18N_DICT_DA = {
   'v2empty.auto.tryExampleTitle': "Udfylder feltet med en eksempel-URL — intet kører, før du trykker Kør",
   'v2empty.auto.hint': "Én URL tager ca. {eta}. Intet kører, før du trykker Kør — knappen ovenfor udfylder kun et tomt felt.",
   'v2empty.auto.configHint': "Udbydere og kadence-timeren indstilles under ",
+
+  // CAR-137 — specific error texts (see tests/car137-err-keys.test.mjs)
+  'err.evaluate.failed': "Vurderingen mislykkedes — tjek en udbydernøgle under #/config, eller prøv igen.",
+  'err.auto.noTerminal': "Pipeline-streamen sluttede uden resultat — serveren kan være blevet genstartet midt i kørslen. Kør URL'en igen.",
+  'err.scan.pipelineAdd': "Kunne ikke tilføje dette opslag til pipelinen — prøv igen om et øjeblik.",
+  'err.scan.repostsLoad': "Kunne ikke indlæse genopslagsklynger — genåbn dette panel for at prøve igen.",
+  'err.pipeline.undo': "Kunne ikke fuldføre fortrydelsen — posten er uændret.",
 };

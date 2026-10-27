@@ -558,7 +558,8 @@ Router.register('pipeline', async () => {
       else deletedLines.delete(url);
       return token || true;
     } catch (err) {
-      UI.toast((err && err.message) || t('common.error', 'Error'), 'error');
+      // CAR-137 — say what did NOT happen (the discard failed, entry intact).
+      UI.toast((err && err.message) || t('err.pipeline.undo', 'Could not complete the undo — the entry was left unchanged.'), 'error');
       return null;
     }
   }

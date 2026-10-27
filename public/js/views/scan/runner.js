@@ -379,7 +379,8 @@
             ? t('scan.v2.pipelineDup', 'Already in the pipeline')
             : t('scan.v2.pipelineAdded', 'Added to the pipeline'), 'success');
         } catch (e) {
-          window.UI.toast((e && e.message) || t('common.error', 'Error'), 'error');
+          // CAR-137 — name the failure instead of a bare "Error".
+          window.UI.toast((e && e.message) || t('err.scan.pipelineAdd', 'Could not add this posting to the pipeline — try again in a moment.'), 'error');
         }
       },
     }, t('scan.v2.toPipeline', 'To pipeline'));
@@ -531,7 +532,8 @@ repostsPanel.addEventListener('toggle', async () => {
       ]))),
     ]));
   } catch {
-    repostsBody.textContent = t('common.error', 'Error');
+    // CAR-137 — name the failure instead of a bare "Error".
+    repostsBody.textContent = t('err.scan.repostsLoad', 'Could not load repost clusters — reopen this panel to retry.');
   }
 });
 

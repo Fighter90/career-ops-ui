@@ -1757,4 +1757,11 @@ window.__I18N_DICT_ZH_TW = {
   'v2empty.auto.tryExampleTitle': "以範例 URL 填入欄位 — 在你按下執行之前不會執行任何動作",
   'v2empty.auto.hint': "一個 URL 大約需要 {eta}。在你按下執行之前不會執行任何動作 — 上面的按鈕只負責填入空欄位。",
   'v2empty.auto.configHint': "供應商與掃描週期計時器在以下位置設定: ",
+
+  // CAR-137 — specific error texts (see tests/car137-err-keys.test.mjs)
+  'err.evaluate.failed': "評估失敗 — 請在 #/config 檢查服務商金鑰，或重新執行。",
+  'err.auto.noTerminal': "流水線資料流在沒有結果的情況下結束 — 伺服器可能在執行途中重新啟動了。請重新執行該 URL。",
+  'err.scan.pipelineAdd': "無法將該職缺加入流水線 — 請稍後再試。",
+  'err.scan.repostsLoad': "無法載入重複刊登分組 — 請重新開啟此面板重試。",
+  'err.pipeline.undo': "復原未能完成 — 項目保持不變。",
 };

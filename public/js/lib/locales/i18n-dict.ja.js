@@ -1756,4 +1756,11 @@ window.__I18N_DICT_JA = {
   'v2empty.auto.tryExampleTitle': "フィールドにサンプルURLを入力します — 「実行」を押すまで何も実行されません",
   'v2empty.auto.hint': "1 URL あたり約 {eta}。「実行」を押すまで何も実行されません — 上のボタンは空のフィールドを埋めるだけです。",
   'v2empty.auto.configHint': "プロバイダーと定期実行タイマーは次で設定します: ",
+
+  // CAR-137 — specific error texts (see tests/car137-err-keys.test.mjs)
+  'err.evaluate.failed': "評価に失敗しました — #/config でプロバイダーキーを確認するか、もう一度実行してください。",
+  'err.auto.noTerminal': "パイプラインのストリームが結果なしで終了しました — 実行中にサーバーが再起動した可能性があります。URL をもう一度実行してください。",
+  'err.scan.pipelineAdd': "この求人をパイプラインに追加できませんでした — しばらくしてからもう一度お試しください。",
+  'err.scan.repostsLoad': "再掲載クラスタを読み込めませんでした — このパネルを開き直して再試行してください。",
+  'err.pipeline.undo': "元に戻す操作を完了できませんでした — 項目は変更されずにそのままです。",
 };

@@ -1756,4 +1756,11 @@ window.__I18N_DICT_ES = {
   'v2empty.auto.tryExampleTitle': "Rellena el campo con una URL de ejemplo — nada se ejecuta hasta que pulses Ejecutar",
   'v2empty.auto.hint': "Una URL lleva unos {eta}. Nada se ejecuta hasta que pulses Ejecutar: el botón de arriba solo rellena un campo vacío.",
   'v2empty.auto.configHint': "Los proveedores y el temporizador de cadencia se configuran en ",
+
+  // CAR-137 — specific error texts (see tests/car137-err-keys.test.mjs)
+  'err.evaluate.failed': "La evaluación falló — revisa una clave de proveedor en #/config, o vuelve a intentarlo.",
+  'err.auto.noTerminal': "El flujo de la pipeline terminó sin resultado — puede que el servidor se haya reiniciado a mitad de la ejecución. Procesa la URL de nuevo.",
+  'err.scan.pipelineAdd': "No se pudo añadir esta vacante a la pipeline — inténtalo de nuevo en un momento.",
+  'err.scan.repostsLoad': "No se pudieron cargar los grupos de reposteos — vuelve a abrir este panel para reintentarlo.",
+  'err.pipeline.undo': "No se pudo completar la acción de deshacer — la entrada quedó sin cambios.",
 };

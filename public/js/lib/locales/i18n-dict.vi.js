@@ -1730,4 +1730,11 @@ window.__I18N_DICT_VI = {
   'v2empty.auto.tryExampleTitle': "Điền vào trường một URL mẫu — không chạy gì cho đến khi bạn nhấn Chạy",
   'v2empty.auto.hint': "Một URL mất khoảng {eta}. Không chạy gì cho đến khi bạn nhấn Chạy — nút ở trên chỉ điền vào một trường trống.",
   'v2empty.auto.configHint': "Nhà cung cấp và bộ hẹn giờ chu kỳ được cấu hình trong ",
+
+  // CAR-137 — specific error texts (see tests/car137-err-keys.test.mjs)
+  'err.evaluate.failed': "Đánh giá thất bại — hãy kiểm tra khóa nhà cung cấp trong #/config, hoặc chạy lại.",
+  'err.auto.noTerminal': "Luồng pipeline kết thúc mà không có kết quả — máy chủ có thể đã khởi động lại giữa chừng. Hãy chạy lại URL.",
+  'err.scan.pipelineAdd': "Không thể thêm tin này vào pipeline — hãy thử lại sau một lúc.",
+  'err.scan.repostsLoad': "Không thể tải các cụm đăng lại — hãy mở lại bảng này để thử lại.",
+  'err.pipeline.undo': "Không thể hoàn tác — mục vẫn giữ nguyên không đổi.",
 };

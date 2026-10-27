@@ -1755,4 +1755,11 @@ window.__I18N_DICT_FR = {
   'v2empty.auto.tryExampleTitle': "Remplit le champ avec une URL d'exemple — rien ne s'exécute avant d'avoir cliqué sur Exécuter",
   'v2empty.auto.hint': "Une URL prend environ {eta}. Rien ne s'exécute avant d'avoir cliqué sur Exécuter — le bouton ci-dessus ne remplit qu'un champ vide.",
   'v2empty.auto.configHint': "Les fournisseurs et le programmateur de cadence se règlent dans ",
+
+  // CAR-137 — specific error texts (see tests/car137-err-keys.test.mjs)
+  'err.evaluate.failed': "L'évaluation a échoué — vérifiez une clé de fournisseur dans #/config, ou réessayez.",
+  'err.auto.noTerminal': "Le flux de la pipeline s'est terminé sans résultat — le serveur a peut-être redémarré en cours d'exécution. Relancez l'URL.",
+  'err.scan.pipelineAdd': "Impossible d'ajouter cette offre à la pipeline — réessayez dans un instant.",
+  'err.scan.repostsLoad': "Impossible de charger les groupes de reposts — rouvrez ce panneau pour réessayer.",
+  'err.pipeline.undo': "Impossible de terminer la restauration — l'entrée est restée inchangée.",
 };

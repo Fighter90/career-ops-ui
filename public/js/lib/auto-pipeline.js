@@ -251,7 +251,8 @@
         // CAR-94 (6) — a stream that ends WITHOUT a done/error frame used to
         // leave the timeline on "running" forever with a disabled button and
         // no explanation. Any non-aborted end must land in a terminal state.
-        if (!terminal && !abort.signal.aborted) renderError('network', t('common.error', 'Error'));
+        // CAR-137 — say WHY the stream ended without a result, not just "Error".
+        if (!terminal && !abort.signal.aborted) renderError('network', t('err.auto.noTerminal', 'The pipeline stream ended without a result — the server may have restarted mid-run. Run the URL again.'));
       } catch (e) {
         // CAR-94 (6) — a deliberate modal-close abort paints nothing: the
         // modal is gone and a fresh one must open clean.

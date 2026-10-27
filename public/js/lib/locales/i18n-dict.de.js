@@ -1755,4 +1755,11 @@ window.__I18N_DICT_DE = {
   'v2empty.auto.tryExampleTitle': "Füllt das Feld mit einer Beispiel-URL — nichts läuft, bis Sie auf Ausführen klicken",
   'v2empty.auto.hint': "Eine URL dauert etwa {eta}. Nichts läuft, bis Sie auf Ausführen klicken — die Schaltfläche oben füllt nur ein leeres Feld.",
   'v2empty.auto.configHint': "Anbieter und Cadence-Timer werden konfiguriert unter ",
+
+  // CAR-137 — specific error texts (see tests/car137-err-keys.test.mjs)
+  'err.evaluate.failed': "Die Bewertung ist fehlgeschlagen — prüfen Sie einen Anbieter-Schlüssel unter #/config, oder versuchen Sie es erneut.",
+  'err.auto.noTerminal': "Der Pipeline-Stream endete ohne Ergebnis — der Server wurde möglicherweise mitten in der Ausführung neu gestartet. Führen Sie die URL erneut aus.",
+  'err.scan.pipelineAdd': "Diese Stelle konnte nicht zur Pipeline hinzugefügt werden — versuchen Sie es gleich noch einmal.",
+  'err.scan.repostsLoad': "Gruppen wiederholt ausgeschriebener Rollen konnten nicht geladen werden — öffnen Sie dieses Panel erneut, um es erneut zu versuchen.",
+  'err.pipeline.undo': "Das Rückgängigmachen konnte nicht abgeschlossen werden — der Eintrag blieb unverändert.",
 };

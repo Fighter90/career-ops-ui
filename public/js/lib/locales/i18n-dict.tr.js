@@ -1757,4 +1757,11 @@ window.__I18N_DICT_TR = {
   'v2empty.auto.tryExampleTitle': "Alana örnek bir URL doldurur — Çalıştır'a basana kadar hiçbir şey çalışmaz",
   'v2empty.auto.hint': "Bir URL yaklaşık {eta} sürer. Çalıştır'a basana kadar hiçbir şey çalışmaz — yukarıdaki düğme yalnızca boş bir alanı doldurur.",
   'v2empty.auto.configHint': "Sağlayıcılar ve periyodiklik zamanlayıcısı şurada ayarlanır: ",
+
+  // CAR-137 — specific error texts (see tests/car137-err-keys.test.mjs)
+  'err.evaluate.failed': "Değerlendirme başarısız oldu — #/config bölümünde bir sağlayıcı anahtarı kontrol edin veya yeniden deneyin.",
+  'err.auto.noTerminal': "Pipeline akışı sonuç olmadan sona erdi — sunucu işlem sırasında yeniden başlamış olabilir. URL'yi yeniden çalıştırın.",
+  'err.scan.pipelineAdd': "Bu ilan Pipeline'e eklenemedi — birazdan yeniden deneyin.",
+  'err.scan.repostsLoad': "Yeniden yayın kümeleri yüklenemedi — yeniden denemek için bu paneli yeniden açın.",
+  'err.pipeline.undo': "Geri alma tamamlanamadı — kayıt değişmedi.",
 };
