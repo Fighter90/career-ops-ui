@@ -1,4 +1,6 @@
 /* global Router, API, UI, I18n, TrackerStages */
+// CAR-137 i18n: the v2empty.dash.* empty-state strings live in all 19
+// locale dicts (the ×19 fan-out landed in the same change).
 
 // ── CAR-114 shared helpers (module scope — used by the route AND by the
 //    module-level metric() renderer; browser-only, CSP-safe DOM only) ────────
@@ -708,7 +710,26 @@ function recentTable(rows, scoreClass) {
   const c = UI.el;
   const t = (k, f) => window.I18n.t(k, f);
   if (!rows.length) {
-    return c('div', { className: 'empty' }, t('common.empty'));
+    // CAR-137 — the v2empty pattern (CAR-124) in the tile: explanation +
+    // a tagged, decorative example row + the real first step.
+    return c('div', { className: 'empty' }, [
+      c('p', { style: { fontWeight: 600, margin: '0 0 4px' } },
+        t('v2empty.dash.recentTitle', 'No applications yet')),
+      c('p', { style: { color: 'var(--foggy)', fontSize: '13px', margin: '0 0 12px' } },
+        t('v2empty.dash.recentBody', 'Evaluations you track become application rows with scores and statuses, like the one below.')),
+      c('div', { className: 'v2-empty-example', 'aria-hidden': 'true' }, [
+        c('span', { className: 'v2-empty-example__tag' }, t('v2empty.exampleTag', 'Example')),
+        c('div', { style: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px', fontSize: '13px' } }, [
+          c('span', { style: { fontWeight: '700' } }, 'Acme Robotics'),
+          c('span', { style: { color: 'var(--foggy)' } }, 'Senior Backend Engineer'),
+          c('span', { className: 'score-pill score-good' }, '4.5/5'),
+          c('span', { style: { color: 'var(--foggy)' } }, '2026-10-01'),
+        ]),
+      ]),
+      c('p', { style: { margin: '12px 0 0' } },
+        c('a', { className: 'btn btn-ghost btn-sm', href: '#/scan' },
+          '🌐 ' + t('scan.btnRun', 'Scan'))),
+    ]);
   }
   const tbody = c('tbody', null,
     rows.map((r) => c('tr', null, [
@@ -735,7 +756,21 @@ function pipelineCard(urls) {
   const c = UI.el;
   const t = (k, f) => window.I18n.t(k, f);
   if (!urls.length) {
-    return c('div', { className: 'empty' }, t('pipe.empty'));
+    // CAR-137 — the v2empty pattern (CAR-124) in the tile: explanation +
+    // a tagged, decorative example line + the real first step.
+    return c('div', { className: 'empty' }, [
+      c('p', { style: { fontWeight: 600, margin: '0 0 4px' } },
+        t('v2empty.dash.pipelineTitle', 'The pipeline inbox is empty')),
+      c('p', { style: { color: 'var(--foggy)', fontSize: '13px', margin: '0 0 12px' } },
+        t('v2empty.dash.pipelineBody', 'Paste a posting URL into the pipeline — it waits in the inbox until you evaluate it, like the line below.')),
+      c('div', { className: 'v2-empty-example', 'aria-hidden': 'true' }, [
+        c('span', { className: 'v2-empty-example__tag' }, t('v2empty.exampleTag', 'Example')),
+        c('div', { style: { fontSize: '12px', overflowWrap: 'anywhere' } }, 'https://boards.greenhouse.io/acme/jobs/12345'),
+      ]),
+      c('p', { style: { margin: '12px 0 0' } },
+        c('a', { className: 'btn btn-ghost btn-sm', href: '#/pipeline' },
+          '📥 ' + t('nav.pipeline', 'Pipeline'))),
+    ]);
   }
   // CAR-20 (v1.243.0) — pipeline.md rows may be `local:jds/<file>`
   // references (parsePipeline deliberately passes them through). They

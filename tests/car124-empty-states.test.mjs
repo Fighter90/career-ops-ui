@@ -33,6 +33,15 @@ const FUNDED = read('public', 'js', 'views', 'funded.js');
 const BATCH = read('public', 'js', 'views', 'batch.js');
 const APPLY = read('public', 'js', 'views', 'apply.js');
 const AUTO = read('public', 'js', 'views', 'auto.js');
+// CAR-137 — the v2empty family grew to five more views; its keys ride the
+// same ×19 fan-out contract, so the parity/orphan checks below see them.
+const CAR137_FILES = [
+  read('public', 'js', 'views', 'reports.js'),
+  read('public', 'js', 'views', 'usage.js'),
+  read('public', 'js', 'views', 'portals.js'),
+  read('public', 'js', 'views', 'activity.js'),
+  read('public', 'js', 'views', 'dashboard.js'),
+];
 const OVERLAYS = read('public', 'css', 'overlays.css');
 
 // ─── shared example-preview component ───
@@ -205,7 +214,7 @@ test('CAR-124 f1: every v2empty.* key referenced by a view is translated in all 
   // every referenced key exists ×19 — and no orphan v2empty key lingers in a dict
   const DICT = loadAssembledDict();
   const used = new Set();
-  for (const src of [FUNDED, BATCH, APPLY, AUTO]) {
+  for (const src of [FUNDED, BATCH, APPLY, AUTO, ...CAR137_FILES]) {
     for (const m of src.matchAll(/t\('(v2empty\.[a-zA-Z.]+)'/g)) used.add(m[1]);
   }
   assert.ok(used.size >= 18, `expected the 18 CAR-124 keys, found ${used.size}`);
@@ -227,8 +236,16 @@ test('CAR-124 f1: every v2empty.* key referenced by a view is translated in all 
 });
 
 test('CAR-124: every v2empty.* call goes through I18n.t with a non-empty EN fallback, marked for the fan-out', () => {
-  for (const [name, src] of [['funded.js', FUNDED], ['batch.js', BATCH], ['apply.js', APPLY], ['auto.js', AUTO]]) {
-    assert.ok(src.includes('// CAR-124 i18n:'), `${name}: carries the i18n marker`);
+  const ALL = [
+    ['funded.js', FUNDED], ['batch.js', BATCH], ['apply.js', APPLY], ['auto.js', AUTO],
+    ['reports.js', CAR137_FILES[0]], ['usage.js', CAR137_FILES[1]],
+    ['portals.js', CAR137_FILES[2]], ['activity.js', CAR137_FILES[3]],
+    ['dashboard.js', CAR137_FILES[4]],
+  ];
+  for (const [name, src] of ALL) {
+    // CAR-124 (or its successor round) stamps each file with the i18n marker
+    assert.ok(src.includes('// CAR-124 i18n:') || src.includes('// CAR-137 i18n:'),
+      `${name}: carries the i18n marker`);
     // review f11 — capture may be empty; the ASSERTION is what requires text
     for (const m of src.matchAll(/t\('(v2empty\.[a-zA-Z.]+)'\s*,\s*'([^']*)'/g)) {
       assert.ok(m[2].trim().length > 0, `${name}: ${m[1]} has a non-empty EN fallback`);

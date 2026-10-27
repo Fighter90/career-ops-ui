@@ -7,6 +7,8 @@
  * USD cost over 24h / 7d / 30d / all-time. The dollar figure comes from the
  * editable price table (server/lib/llm-pricing.mjs) — approximate, not billed.
  */
+// CAR-137 i18n: the v2empty.usage.* empty-state strings live in all 19
+// locale dicts (the ×19 fan-out landed in the same change).
 Router.register('usage', async () => {
   const c = UI.el;
   const t = (k, f) => I18n.t(k, f);
@@ -26,8 +28,26 @@ Router.register('usage', async () => {
   }
 
   if (!data.totalCalls) {
-    root.appendChild(c('div', { className: 'empty' },
-      c('p', null, t('usage.empty', 'No AI generations recorded yet. Run an evaluation, report, or chat with a provider key set, and usage will appear here.'))));
+    // CAR-137 — the v2empty pattern (CAR-124): explanation + a tagged,
+    // decorative example + the real first step (add a provider key).
+    root.appendChild(c('div', { className: 'empty' }, [
+      c('p', { style: { fontWeight: 600, margin: '0 0 4px' } },
+        t('v2empty.usage.emptyTitle', 'No usage recorded yet')),
+      c('p', { style: { color: 'var(--foggy)', fontSize: '13px', margin: '0 0 12px' } },
+        t('v2empty.usage.emptyBody', 'Run an evaluation, a report, or a chat with a provider key set — token totals per provider appear here like the row below.')),
+      c('div', { className: 'v2-empty-example', 'aria-hidden': 'true' }, [
+        c('span', { className: 'v2-empty-example__tag' }, t('v2empty.exampleTag', 'Example')),
+        c('div', { style: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px', fontSize: '13px' } }, [
+          c('span', { style: { fontWeight: '700' } }, 'Anthropic'),
+          c('span', { style: { color: 'var(--foggy)' } }, '12 calls'),
+          c('span', { style: { color: 'var(--foggy)' } }, '1.2M in · 30K out'),
+          c('span', { style: { fontVariantNumeric: 'tabular-nums', fontWeight: '600' } }, '$3.45'),
+        ]),
+      ]),
+      c('p', { style: { margin: '12px 0 0' } },
+        c('a', { className: 'btn btn-primary', href: '#/config' },
+          '🔑 ' + t('v2empty.usage.openConfig', 'Add a provider key'))),
+    ]));
     return root;
   }
 
