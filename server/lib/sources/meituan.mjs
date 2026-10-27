@@ -31,6 +31,7 @@
  * Used by the meituan adapter (server/lib/portals/adapters/meituan.mjs).
  */
 import { fetchJson, delay } from '../http-json.mjs';
+import { requireArray } from './_shape.mjs';
 import { safeEncodeURIComponent } from './_safe-url.mjs';
 
 const API_HOST = 'zhaopin.meituan.com';
@@ -188,6 +189,11 @@ export async function fetchMeituan(apiUrl = DEFAULT_API, opts = {}) {
           console.error(`  ⚠ meituan: keyword "${keyword}" page ${pageNo} failed (${err.message}) — keeping the ${seen.size} jobs collected so far`);
           return [...seen.values()];
         }
+        // Page-1 shape guard (FULL-M3): a 200 without a data.list array is a
+        // dead API reading as "0 postings", not an empty keyword — it throws
+        // instead of paying the empty-page retries. parseMeituanResponse stays
+        // tolerant for later pages (partials are kept, not discarded).
+        if (!succeededOnce) requireArray(json?.data?.list, 'Meituan data.list');
         const parsed = parseMeituanResponse(json, companyName);
         succeededOnce = true;
         if (parsed.total) total = parsed.total;

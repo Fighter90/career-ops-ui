@@ -41,6 +41,7 @@
 import { fetchJson } from '../http-json.mjs';
 import { safeGet } from '../safe-fetch.mjs';
 import { withTimeout } from '../fetch-timeout.mjs';
+import { requireArray } from './_shape.mjs';
 
 export const API_BASE = 'https://api.getro.com/api/v2/collections';
 const TRUSTED_HOST = 'api.getro.com';
@@ -429,8 +430,13 @@ export async function fetchGetro(endpoint, opts = {}) {
     }
     succeededOnce = true;
 
+    // Page-1 shape guard (FULL-M3): a 200 without a results.jobs array is a
+    // dead API reading as "0 postings", not an empty board. Later pages keep
+    // the partials (same idiom as the catch below).
     const results = json?.results || {};
-    const jobs = Array.isArray(results.jobs) ? results.jobs : [];
+    const jobs = page === 0
+      ? requireArray(results.jobs, 'Getro results.jobs')
+      : (Array.isArray(results.jobs) ? results.jobs : []);
     if (typeof results.count === 'number') total = results.count;
     if (jobs.length === 0) break;
 
