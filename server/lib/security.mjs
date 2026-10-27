@@ -45,7 +45,11 @@ export function isPubliclyExposed() {
  *   - Link-local 169.254/16 — the AWS IMDS endpoint 169.254.169.254 lives here
  *   - 0.0.0.0 (any-address alias)
  *   - CGNAT 100.64/10
+ *   - Benchmark 198.18/15 (RFC 2544)
+ *   - Reserved 240/4 (RFC 1112, incl. the 255.255.255.255 broadcast)
  *   - IPv6 loopback ::1, unspecified ::, ULA fc00::/7, link-local fe80::/10
+ *   - NAT64 64:ff9b::/96 — classified by its embedded IPv4 host (RFC 6052)
+ *   - 6to4 2002::/16 — classified by its embedded IPv4 host (RFC 3056)
  *   - localhost / *.localhost suffix
  * Used both by isValidJobUrl (string-level) and by the preview proxy
  * after DNS resolution to defeat DNS-rebinding (PR-3).
@@ -69,9 +73,18 @@ export function isPrivateOrLoopbackHost(host) {
     if (a === 192 && b === 168) return true;
     if (a === 169 && b === 254) return true;
     if (a === 100 && b >= 64 && b <= 127) return true;
+    if (a === 198 && b >= 18 && b <= 19) return true; // RFC 2544 benchmark
+    if (a >= 240) return true; // RFC 1112 reserved, incl. 255.255.255.255 broadcast
     return false;
   }
   if (h.includes(':')) {
+    // Canonicalize any valid IPv6 literal (fully expanded, compressed, or
+    // dotted-tail) to the URL parser's lowercase compressed form, so the
+    // prefix checks below see exactly one spelling of each address —
+    // `64:ff9b:0:0:0:0:7f00:1` and `64:ff9b::7f00:1` are the same host.
+    try {
+      h = new URL(`http://[${h}]/`).hostname.replace(/^\[|\]$/g, '');
+    } catch { /* not a valid IPv6 literal → the checks below return false */ }
     // IPv4-mapped (::ffff:a.b.c.d) and IPv4-compatible (::a.b.c.d) addresses
     // reach the embedded IPv4 host, so classify them by that host. Parent
     // providers/_ip-guard.mjs does the same (#4079 follow-up).
@@ -88,6 +101,26 @@ export function isPrivateOrLoopbackHost(host) {
     if (h === '::1' || h === '::') return true;
     if (/^fc[0-9a-f]{2}:/.test(h) || /^fd[0-9a-f]{2}:/.test(h)) return true;
     if (/^fe[89ab][0-9a-f]:/.test(h)) return true;
+    // NAT64 64:ff9b::/96 (RFC 6052) — the last 32 bits are the embedded IPv4
+    // host, so the translated address inherits that host's classification.
+    // Both printed forms arrive: the URL parser normalizes to hex, raw config
+    // may carry the dotted-tail syntax.
+    const nat64 = /^64:ff9b::(?:(\d{1,3}\.\d{1,3}\.\d{1,3}\.\d{1,3})|([0-9a-f]{1,4}):([0-9a-f]{1,4}))$/.exec(h);
+    if (nat64) {
+      if (nat64[1]) return isPrivateOrLoopbackHost(nat64[1]);
+      const high = Number.parseInt(nat64[2], 16);
+      const low = Number.parseInt(nat64[3], 16);
+      return isPrivateOrLoopbackHost(`${high >> 8}.${high & 0xff}.${low >> 8}.${low & 0xff}`);
+    }
+    // 6to4 2002::/16 (RFC 3056) — the embedded IPv4 sits in the next two
+    // hextets; a trailing-zero hextet may be compressed away (`2002:7f00::`
+    // embeds 127.0.0.0). A public embedded host stays public.
+    const six4 = /^2002:([0-9a-f]{1,4})(?::([0-9a-f]{1,4}))?(?::|$)/.exec(h);
+    if (six4) {
+      const high = Number.parseInt(six4[1], 16);
+      const low = six4[2] ? Number.parseInt(six4[2], 16) : 0;
+      return isPrivateOrLoopbackHost(`${high >> 8}.${high & 0xff}.${low >> 8}.${low & 0xff}`);
+    }
     return false;
   }
   return false;
