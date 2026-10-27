@@ -182,58 +182,33 @@ Vietnamese README/mode (#4729/#4727).
 
 ---
 
-## Full project review (opus-5-5, 2026-10-26) — open fixes
+## Full project review (opus-5-5, 2026-10-26) — LANDED 2026-10-27
 
 Four domain reviews over the entire source. Raw reports + consolidated registry:
 `docs/reviews/full/` (CONSOLIDATED.md is the index; ~57 findings: 7 high, ~25 medium).
-Linear sync was rate-limited at filing time — these BACKLOG rows ARE the tracking until synced.
+All five high findings and mediums M2–M5 are **landed on `main`** — rows deleted here per the
+header rule (each item → its merge PR):
 
-- **[H] FULL-R1 — CSRF on state-changing GET SSE + unlocked pipeline.md writes.**
-  `/api/stream/batch|scan|pdf` open to cross-site requests with cached basic-auth (silent LLM
-  spend + file writes) — gate every `/api/stream/*` on `Sec-Fetch-Site`/Origin.
-  `markPipelineRejected` (routes/auto-pipeline.mjs) AND scanner `appendToPipeline`/`saveLastScan`
-  write `data/pipeline.md` without `withFileLock` — async + lock + temp-then-rename, await all
-  call-sites. Files: server/index.mjs, routes/auto-pipeline.mjs, en-scanner/ru-scanner/
-  scan-quarantine. **Base on feat/car151-pipeline-restore after #508 merges (same file cluster).**
-  Evidence: routes-review-draft.md findings 1-2, server-core-review-full.md finding 1.
-- **[H] FULL-R2 — SSRF cluster in sources.** `rss.mjs` fetches a config-supplied URL with no
-  https/private-IP check via raw `fetchImpl` (IMDS/loopback reachable). ~25 sources call raw
-  `fetchImpl` bypassing the DNS-rebinding guard; remoteok/remotive accept any https "mirror".
-  Fix: rss → https + private-reject + guarded transport; port raw-fetchImpl → fetchJson/fetchText;
-  pin mirrors; lint test: `await fetchImpl(` in sources/*.mjs outside http-json fails.
-  Plus mediums 4-5: redirect validation (habr/hh/geekjob/getmatch), assertWorkdayUrl + relative
-  externalPath, shared `delay(ms, signal)` (feishu/mokahr listener leak, pageup ignores signal).
-- **[H] FULL-R3 — wiki-banner-check `rmSync(wikiDir, {recursive,force})` on the `--wiki` path
-  when Home.md is missing.** A typo wipes an arbitrary directory. Only clone into a
-  non-existent/empty path; never rm an existing path. Test the refusal.
-- **[H] FULL-R4 — `stripDangerousMarkdown` corrupts ordinary CV text.** The `javascript:` scheme
-  strip deletes the WORD from skill lines («JavaScript: React, Node» → « React, Node»);
-  entity decode permanently rewrites «R&amp;D»→«R&D», «&lt;T&gt;»→«<T>». The XSS protection
-  duplicates UI.md (escape-first); the data corruption hits every prompt and export.
-  Fix: scheme strips only in link/attribute contexts; detect on a decoded copy, cut from the
-  original; leave prose entities untouched. Regression tests: «JavaScript: 5 yrs», «R&amp;D».
-- **[H] FULL-R5 + client mediums — health.js dead malformed-guard (the CAR-121 contract never
-  shipped: return the guarded `body[]` tree, delete the duplicate); shared `UI.safeHref` for
-  pipeline/reports/portals hrefs (dashboard/scan already gate); api.js `lang` injection → opt-in
-  for LLM paths only; countries.js ~350 regexes per call → precompile + bounded memo;
-  auto-pipeline reopen race → await settlement + API.postStream.
+| Item | PR | What landed |
+|---|---|---|
+| FULL-R2 — SSRF cluster in sources | #514 | guarded transports everywhere (rss https+private-reject, raw `fetchImpl` → fetchJson/fetchText, pinned mirrors, redirect validation, shared `delay(ms, signal)`) |
+| FULL-R3 — wiki-banner-check rmSync | #511 | never deletes an existing directory; refusal tested |
+| FULL-R4 — stripDangerousMarkdown prose corruption | #513 + #518 | fix (scheme strips in link/attr contexts only, detect-on-decoded-copy) + regression tests («JavaScript: 5 yrs», «R&amp;D») |
+| FULL-R5 — health guard + client mediums | #515 | health.js guarded `body[]` tree, shared `UI.safeHref`, api.js `lang` opt-in for LLM paths, countries.js precompiled+memo, auto-pipeline reopen race (`auto.superseded` key ×19) |
+| FULL-R1 — CSRF acting-GET + unlocked pipeline writes | #519 | CAR-158: `Sec-Fetch-Site`/Origin gate on acting GETs; `markPipelineRejected`/`appendToPipeline`/`saveLastScan` under `withFileLock` + temp-then-rename |
+| FULL-M2 — transport hardening | #520 | CAR-168: safeGet timeout+signal combine, DNS guard fail-closed |
+| FULL-M3 — shape gaps + unpinned overrides | #522 | CAR-166: page-1 `_shape.mjs` guards (getro/mycareersfuture/meituan/mokahr/glints), shared `pinnedOverride` at `company.api` call-sites |
+| FULL-M4 — logo + batch | #523 | CAR-163: logo magic-byte pin on every path + private cache + nosniff; batch single-flight + `--parallel`/`--min-score` validation |
+| FULL-M5 — provider cascade consolidation | #521 | CAR-167: one cascade via `resolveProvider()` in llm-dispatch, `res.on('close')` abort — client disconnect no longer burns tokens |
+| CAR-147 — eval timeout on token-dense locales | #524 | 480 s evaluation ceiling (ta 502-timeout dead) |
+
+Still open (rows kept):
+
 - **[M] FULL-M1 — server shared-file writes without lock/atomicity:** tracker-mutating parent
   scripts (runners/batch/outcome/followup) outside `withFileLock(PATHS.applications)`;
   `PUT /api/cv|profile|modes|config` plain writeFileSync — reuse the portals.mjs
   lock+temp-rename helper. Tracker-mutating script list in one TRACKER_MUTATING set.
-- **[M] FULL-M2 — transport hardening:** `safeGet` drops `timeoutMs` when a caller signal is set
-  (tar-pit stall); `guardResolvedHost` is check-not-pin and fails open on DNS error — connect-time
-  pinned lookup or safe-fetch transport for GET; redirects followed unpinned in
-  habr/hh/geekjob/getmatch; workday endpoint + externalPath unpinned; `fetchResponse` skips the guard.
-- **[M] FULL-M3 — shape gaps + unpinned overrides:** getro/mycareersfuture/meituan/mokahr/glints
-  read malformed 200s as empty boards (dead API = «healthy, 0 jobs») — `_shape.mjs` on page 1;
-  ~18 adapters pass `company.api` unvalidated → shared `pinnedOverride(raw, HOST_RE)`.
-- **[M] FULL-M4 — logo + batch:** `/api/logo` relays attacker-chosen SVG from the app origin with
-  `Cache-Control: public` → magic-byte pin, nosniff, private cache; batch `--parallel` unbounded,
-  `--min-score` unvalidated, no single-run guard (BATCH_BUSY like scan.mjs).
-- **[M] FULL-M5 — provider cascade consolidation:** routes/llm.mjs re-implements the cascade
-  without abort signals (tokens burn after client disconnect) → route through `runActiveProvider`
-  (+cachePrefix+signal), wire res.on('close'), delete the local gate, `geminiEvalArgs` in test-gemini.
+  **In flight:** `fix/m1-wave1` (pushed to origin).
 - **[M] FULL-M6 — client consolidation:** SSE parser ×4 → API.postStream; withFocusPreserved ×3;
   H1-label tables ×3 (drift-gate the server copy); statusClass divergence; evaluate/mode-page
   unawaited clipboard (false «Copied»); two-pager stale preview after AI fill + debounce;
@@ -241,3 +216,5 @@ Linear sync was rate-limited at filing time — these BACKLOG rows ARE the track
   Object.create(null); safe-fetch redirect header leak + abort-listener pile-up;
   isPrivateOrLoopback missing NAT64/6to4/198.18/240.0.0.0/4; env-config mtime cache;
   providerCostHint observers on body; countries favorites per-row parse.
+  **In flight:** `fix/m6-wave1` (client) + `fix/m6s-wave1` (server) — local only,
+  not yet pushed; `fix/sf-wave1` (safe-fetch slice) — pushed to origin.
