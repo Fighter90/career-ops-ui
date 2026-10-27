@@ -19,16 +19,12 @@
 window.ReportOps = (function () {
   'use strict';
 
-  // The localized H1 prose labels the server strips (H1_LABEL_WORDS in
-  // routes/auto-pipeline.mjs, longest-first). Kept in sync by convention —
-  // a label that reaches the client unstripped only degrades to the raw
-  // title fallback, never to a wrong split.
-  const H1_LABEL_WORDS = [
-    'Evaluation', 'Оценка вакансии', 'Оценка', 'Оцінка вакансії', 'Оцінка',
-    'Evaluación', 'Avaliação', 'Évaluation', 'Bewertung', 'Valutazione',
-    'Ocena', 'Değerlendirme', '評価', '평가', '评估', '評估', 'Evaluering',
-    'تقييم', 'मूल्यांकन', 'மதிப்பீடு',
-  ].sort((a, b) => b.length - a.length);
+  // The localized H1 prose labels the server strips — the ONE client copy
+  // lives in lib/report-labels.js (FULL-M6; was a literal table here, kept
+  // in sync by convention). Drift-gated against the server table
+  // (H1_LABEL_WORDS in routes/auto-pipeline.mjs) by
+  // tests/m6-wave1-consolidations.test.mjs.
+  const H1_LABEL_WORDS = window.ReportLabels.H1_LABEL_WORDS;
 
   const escapeRe = (s) => String(s).replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
   const LABEL_RE = new RegExp(

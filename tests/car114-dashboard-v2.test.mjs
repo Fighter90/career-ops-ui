@@ -272,7 +272,10 @@ test('CAR-114: kept contracts — refresh, QA counts, pipeline guard, statusClas
   assert.match(DASH, /data-test':\s*'dash-refresh'/, 'the header Refresh keeps its test hook');
   assert.match(DASH, /QA_COUNTS/, 'quick-action live counts kept');
   assert.match(DASH, /function pipelineCard\(urls\)/, 'the pipeline card (http-only anchors) kept');
-  assert.match(DASH, /function statusClass\(/, 'statusClass stays (CAR-93 F11)');
+  // FULL-M6 — statusClass is consolidated into lib/status-class.js; the
+  // dashboard reads the shared classifier (and gains the Hired branch the
+  // old local copy lacked).
+  assert.match(DASH, /StatusClass\.of\(/, 'statusClass rides the shared lib (FULL-M6)');
   assert.match(DASH, /t\('dash\.lastEval'/, 'the focal last-evaluation hint stays');
   assert.match(DASH, /t\('dash\.heroNoEval'/, 'the cold-start hint stays');
   assert.match(DASH, /metric\(t\('dash\.avgScore'\), data\.avgScore \?\? '—', '\/ 5\.0', scoreClass\(data\.avgScore\), true[,)]/,

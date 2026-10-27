@@ -26,6 +26,9 @@ import { dirname, resolve } from 'node:path';
 
 const __d = dirname(fileURLToPath(import.meta.url));
 const TRACKER = readFileSync(resolve(__d, '..', 'public', 'js', 'views', 'tracker.js'), 'utf8');
+// FULL-M6 — withFocusPreserved is consolidated into lib/focus-preserve.js;
+// the behavioural slice comes from there (the views delegate).
+const FOCUS_LIB = readFileSync(resolve(__d, '..', 'public', 'js', 'lib', 'focus-preserve.js'), 'utf8');
 
 /** Slice a top-level `function name(…) {…}` out of a view (brace-counted). */
 function sliceFn(src, startMarker) {
@@ -137,7 +140,7 @@ test('legitimacyClass: caution verdicts tint warn even though they contain "proc
 // Minimal fake DOM surface: enough for the marker snapshot + re-find walk.
 
 /** Extract just the function text so all three copies can be compared. */
-const trackerFocusFn = sliceFn(TRACKER, 'function withFocusPreserved');
+const trackerFocusFn = sliceFn(FOCUS_LIB, 'function withFocusPreserved');
 
 function focusableEl(tag, className, text) {
   const el = {
@@ -232,12 +235,12 @@ test('L-FOCUS wiring: all three views rebuild under focus preservation', () => {
   // stats.js: the re-attached metric/dimension selects are wrapped.
   assert.match(stats, /withFocusPreserved\(charts, \(\) => \{[\s\S]*?charts\.textContent = '';[\s\S]*?charts\.appendChild\(customChart\(\)\);/);
 
-  // The three copies are textually identical — a drift guard (they may not
-  // share a lib/ file in this change's file set, but they must not diverge).
-  // Compared indentation-insensitively: tracker/stats carry the top-level
-  // copy, reports.js nests its copy in the view closure.
-  const fnOf = (src) => sliceFn(src, 'function withFocusPreserved')
-    .split('\n').map((l) => l.trim()).join('\n');
-  assert.equal(fnOf(TRACKER), fnOf(reports), 'tracker.js and reports.js copies must be identical');
-  assert.equal(fnOf(TRACKER), fnOf(stats), 'tracker.js and stats.js copies must be identical');
+  // FULL-M6 — the three view copies are ONE shared lib implementation now;
+  // the drift guard becomes: the lib carries the helper, the views delegate.
+  assert.match(FOCUS_LIB, /function withFocusPreserved\(/,
+    'the single implementation lives in lib/focus-preserve.js');
+  for (const [name, src] of [['tracker.js', TRACKER], ['reports.js', reports], ['stats.js', stats]]) {
+    assert.doesNotMatch(src, /function withFocusPreserved\(/, name + ' carries no local copy');
+    assert.match(src, /FocusPreserved\.withFocusPreserved\(/, name + ' delegates to the lib');
+  }
 });
