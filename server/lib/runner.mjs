@@ -3,7 +3,8 @@
  * Provides both buffered (run) and streaming (stream via SSE) modes.
  */
 import { spawn } from 'node:child_process';
-import { PROJECT_ROOT } from './paths.mjs';
+import { PROJECT_ROOT, PATHS } from './paths.mjs';
+import { withFileLock } from './file-lock.mjs';
 
 // Grace period after SIGTERM before we escalate to SIGKILL. Long enough
 // for a well-behaved script to flush stdout and exit, short enough that
@@ -38,6 +39,52 @@ function killWithEscalation(child, graceMs = KILL_GRACE_MS) {
  * SIGTERM, then escalate to SIGKILL after KILL_GRACE_MS. The promise
  * always resolves — never hangs.
  */
+/**
+ * FULL-M1 — the one roster of parent scripts that rewrite a shared data
+ * file, mapped to the PATHS key of the file each one writes. The parent
+ * tree is read-only for web-ui, so a spawned script cannot take
+ * `withFileLock` itself — the lock has to wrap the SPAWN in the route.
+ * Only merge-tracker.mjs / set-status.mjs take the parent's own OS-level
+ * tracker lock (and followup-seed.mjs a follow-ups-scoped one);
+ * dedup-tracker.mjs and normalize-statuses.mjs take nothing, and none of
+ * them can serialize against web-ui's in-process tracker writers without
+ * sharing this lock chain.
+ *
+ * Accepted residual (single-user app): a tracker write from a CLI outside
+ * web-ui still races a web-ui write — the OS lock covers only the parent
+ * scripts that opt in, and this in-process lock covers only spawns
+ * web-ui itself makes.
+ */
+export const TRACKER_MUTATING = new Map([
+  ['merge-tracker.mjs', 'applications'],
+  ['dedup-tracker.mjs', 'applications'],
+  ['normalize-statuses.mjs', 'applications'],
+  ['set-status.mjs', 'applications'],
+  ['outcome.mjs', 'applications'],
+  ['followup-seed.mjs', 'followUps'],
+]);
+
+/**
+ * Run a parent script; when it is in TRACKER_MUTATING, hold the lock for
+ * the shared file it mutates around the WHOLE spawn, so two
+ * web-ui-triggered mutations — and a spawn racing web-ui's own in-process
+ * tracker writers — serialize on the same lock chain. Everything else
+ * passes through to runNodeScript unchanged.
+ *
+ * @template T
+ * @param {string} scriptName — parent script, e.g. 'merge-tracker.mjs'
+ * @param {string[]} args
+ * @param {object} [opts] — forwarded to the runner (timeoutMs, signal, env)
+ * @param {(scriptName: string, args: string[], opts: object) => Promise<T>} [runner]
+ *   — injectable for tests; defaults to runNodeScript
+ * @returns {Promise<T>}
+ */
+export function runTrackedScript(scriptName, args = [], opts = {}, runner = runNodeScript) {
+  const fileKey = TRACKER_MUTATING.get(scriptName);
+  if (!fileKey || !PATHS[fileKey]) return runner(scriptName, args, opts);
+  return withFileLock(PATHS[fileKey], () => runner(scriptName, args, opts));
+}
+
 export function runNodeScript(scriptName, args = [], opts = {}) {
   return new Promise((resolve) => {
     let child;

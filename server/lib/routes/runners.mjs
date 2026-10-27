@@ -18,7 +18,7 @@
 import { existsSync, readdirSync, statSync, readFileSync, writeFileSync, mkdirSync, unlink } from 'node:fs';
 import { randomBytes } from 'node:crypto';
 import { PATHS, path as projPath } from '../paths.mjs';
-import { runNodeScript, streamNodeScript } from '../runner.mjs';
+import { runTrackedScript, streamNodeScript } from '../runner.mjs';
 import { sanitizePathName } from '../security.mjs';
 import { sanitizeDetail } from '../parent-relay.mjs';
 
@@ -146,7 +146,11 @@ export function registerRunnerRoutes(app) {
 
   for (const def of BUFFERED) {
     app.post(def.route, async (_req, res) => {
-      const result = await runNodeScript(def.script, [], { timeoutMs: 60_000 });
+      // FULL-M1 — merge/dedup/normalize are in TRACKER_MUTATING (they
+      // rewrite data/applications.md): the spawn holds the tracker file
+      // lock so it serializes with web-ui's own tracker writers. Read-only
+      // runners (doctor/verify/sync-check/reconcile) pass through unwrapped.
+      const result = await runTrackedScript(def.script, [], { timeoutMs: 60_000 });
       // stderr of a crashed script carries absolute-path stack frames.
       res.json({ ...result, stderr: result.stderr ? sanitizeDetail(result.stderr) : '' });
     });

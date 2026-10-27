@@ -15,7 +15,7 @@
 import { spawn } from 'node:child_process';
 import { existsSync, readFileSync, writeFileSync, mkdirSync, readdirSync, statSync } from 'node:fs';
 import { PATHS } from '../paths.mjs';
-import { runNodeScript } from '../runner.mjs';
+import { runTrackedScript } from '../runner.mjs';
 import { llmRateLimit } from '../rate-limit.mjs';
 
 const TSV_MAX_BYTES = 1024 * 1024; // 1 MB — generous for ~10k JD URLs.
@@ -123,6 +123,14 @@ export function registerBatchRoutes(app) {
   // llmRateLimit: batch-runner fans out N parallel real LLM evaluations —
   // the most expensive operation the app exposes. Loopback is exempt
   // (the limiter no-ops there), so this only gates HOST=0.0.0.0 setups.
+  //
+  // FULL-M1 residual — batch-runner.sh runs merge-tracker.mjs ITSELF at the
+  // end of a run (its own merge_tracker() step). Holding the tracker file
+  // lock around the whole stream (up to BATCH_LIMITS.maxRuntimeMs) would
+  // block every UI tracker edit for the batch duration — the cure is worse
+  // than the disease — so the end-of-batch merge stays unlocked: the race
+  // window is the few seconds of that final merge, the batch itself is
+  // single-flight (BATCH_BUSY below), and the app is single-user.
   app.get('/api/stream/batch', llmRateLimit, (req, res) => {
     // ── query validation, BEFORE the SSE headers go out (plain 400) ──
     // --parallel: junk falls back to 1 (legacy behavior); a real number is
@@ -273,7 +281,11 @@ export function registerBatchRoutes(app) {
     const args = [];
     if (req.body?.dryRun) args.push('--dry-run');
     try {
-      const r = await runNodeScript('merge-tracker.mjs', args, { timeoutMs: 60_000 });
+      // FULL-M1 — merge-tracker.mjs rewrites data/applications.md: the
+      // spawn holds the tracker file lock (runTrackedScript) so it
+      // serializes with web-ui's own tracker writers and with the
+      // buffered /api/run/merge runner.
+      const r = await runTrackedScript('merge-tracker.mjs', args, { timeoutMs: 60_000 });
       res.json(r);
     } catch (e) {
       res.status(500).json({ ok: false, error: e.message });
