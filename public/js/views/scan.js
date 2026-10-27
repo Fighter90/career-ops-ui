@@ -8,6 +8,20 @@ let __activeScanPollHandle = null;
 // off `#/scan` in the 300 ms window between an `event: done` and the
 // final refreshResults() used to leak the timer + the toast.
 let __activeScanDoneTimeout = null;
+// Language-switch survival: I18n.onChange re-renders the CURRENT view, and
+// everything declared inside render() is recreated — including the loaded
+// results corpus and the user's filter-chip selections. A language switch
+// therefore blanked #/scan (the heavy /api/scan-results round-trip re-ran
+// from scratch, leaving a seconds-long empty page on data-heavy instances)
+// and reset the facet chips. These live at module level so a re-render
+// repaints the already-loaded corpus instantly; refreshResults() still
+// refreshes in the background as before.
+let lastResults = { en: null, ru: null };
+let refreshSeq = 0;
+let resultsEverLoaded = false;
+const activeTech = new Set();
+const activeLevel = new Set();
+const activeDynamic = new Set();
 function __cancelActiveScanPoll() {
   if (__activeScanPollHandle) {
     clearInterval(__activeScanPollHandle);
@@ -419,24 +433,20 @@ Router.register('scan', async () => {
     if (window.Countries && window.Countries.resetCache) window.Countries.resetCache(); // FULL-R5
     SR.render();
   }
-  // Render the rich table of last-scan results
-  let lastResults = { en: null, ru: null };
+  // Render the rich table of last-scan results — state is MODULE-level
+  // (language-switch survival, see the top of this file), so a re-render
+  // from I18n.onChange repaints what is already loaded.
   // Active chip selections (multi-select, intersection across categories)
-  const activeTech = new Set();
-  const activeLevel = new Set();
-  const activeDynamic = new Set();
 
   // v1.243.0 (views-3) — latest-wins: the 2.5s live poll and the done/error
   // refreshes overlap, and a slow response landing AFTER a newer one used to
   // overwrite its fresher rows; worse, a failed GET wiped the table to
   // {en:null,ru:null}. Sequence every call; a stale or failed response leaves
   // the last good table (and the last good labels) untouched.
-  let refreshSeq = 0;
   // CAR-93 — a failed FIRST load used to leave #scan-results blank (and a
   // failure after resetResultsCache() rendered as "No results"), both
   // indistinguishable from a broken page. resultsEverLoaded separates
   // "nothing yet" (error state + Retry) from "had data" (keep the table).
-  let resultsEverLoaded = false;
   async function refreshResults() {
     const mySeq = ++refreshSeq;
     try {
