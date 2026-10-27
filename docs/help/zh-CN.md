@@ -6,6 +6,18 @@
 应侧边栏条目或工作流的一个阶段。首次运行请自上而下通读;之后通过帮
 助侧边栏的目录跳转到具体小节。
 
+> **如何在 v2 外壳中导航。** 侧边栏按可折叠的分组组织 —
+> **寻源**、**决策**、**申请**、**人脉**、**分析**、**设置**
+> (`nav.group.*`) — 访问某个分区时它会自动展开,并保持你离开时的
+> 状态。点击任意页面的 ☆ 可将其固定在**收藏夹**下;按
+> **Cmd/Ctrl+K**(或侧边栏顶部的**命令菜单**按钮,`nav.v2.palette`)
+> 即可从任何位置模糊跳转到任意页面。每个页面都会立即显示标题,并在
+> 数据加载期间填入灰色的加载占位行,导航永远不会是一片空白。没有
+> 哪个页面会以光秃秃的空状态迎接你:四个初始为空的页面 —
+> **Auto-pipeline**、**Apply checklist**、**Batch** 和 **Funded
+> companies** — 会展示一个示例,外加填满它的那一个操作
+> (`v2empty.exampleTag`)。
+
 > **适用对象:** 任何刚把这套 UI 放进 `career-ops` checkout 目录、运
 > 行了 `bash bin/start.sh` 的人。不假设你已了解 career-ops。
 
@@ -289,19 +301,40 @@ LinkedIn / 邮件消息。把开场白个性化(嵌入一条来自深度调研�
 → Reports → Deep research → Apply checklist → Outreach → Tracker
 → Follow-up → Interview prep → Activity log`
 
-就是这样。21 步,按钮接按钮,从零到 offer。
+侧边栏按阶段(**寻源** → **决策** → **申请** → …)组织这些相同的
+页面,因此工作流顺序与菜单顺序保持一致;如果你更愿意敲三个字母而不
+是在列表里逐条查找,**Cmd/Ctrl+K** 可以打开**命令菜单**
+(`nav.v2.palette`)。就是这样。21 步,按钮接按钮,从零到 offer。
 
 ### 一键 Auto-pipeline(`#/auto`)—— 21 步捷径
 
-只想快速给某个职位打分?跳过手动流程。**侧栏 → ✨ Auto-pipeline**(或 Dashboard 的 ✨ 按钮):粘贴 URL,按 **Enter** 或 **▶ 运行完整流水线** —— 服务端一趟可观察地跑完整条链:
+只想快速给某个职位打分?跳过手动流程。**侧栏 → ✨ Auto-pipeline**(或 Dashboard 的 ✨ 按钮):粘贴 URL,按 **Enter** 或点击**运行自动管道**(`auto.run`)—— 服务端一趟可观察地跑完整条链:
 
-1. **校验 URL** —— SSRF 安全检查(`isValidJobUrl`)。
-2. **抓取 JD** —— `safeGet`(DNS 固定)下载 + 清洗。
-3. **对照 CV 评估** —— Anthropic → Gemini → 无 key 则手动 prompt。
-4. **保存报告** —— 写入 `reports/<slug>.md`(分数 + 可信度)。
-5. **加入跟踪器** —— 向 `data/applications.md` 追加一行。
+1. **校验 URL**(`auto.step.validate`)—— SSRF 安全检查
+   (`isValidJobUrl`);拒绝 loopback / `file:` / 私网 IP / 脚本字符。
+2. **获取职位描述**(`auto.step.fetch`)—— `safeGet`(DNS 固定、
+   重定向逐跳复验)下载 + 清洗 JD。
+3. **对照 CV 评估**(`auto.step.evaluate`)—— Anthropic(优先)→
+   Gemini 后备 → 无 key 则手动 prompt。
+4. **保存报告**(`auto.step.report`)—— 写入 `reports/<slug>.md`,
+   头部带分数 + 可信度。
+5. **添加到跟踪器**(`auto.step.tracker`)—— 向
+   `data/applications.md` 追加一行。
 
-反馈是纵向 **stepper**(有序列表,活动步骤带 `aria-current`,屏幕阅读器实时区域)。完成后卡片深链到报告(**查看报告 · N/5**)与 **跟踪器**。失败步骤标红,按钮重新启用,无需刷新即可重试。**无 API key?** 手动模式:3–5 步折叠,给出可复制 prompt。可链接:`#/auto?url=<enc>&go=1` 自动开始。
+反馈是纵向 **stepper**(每一步点亮 running → done / failed;
+`aria-current` 标记活动步骤,屏幕阅读器的实时区域会播报每次状态
+变化)。成功后,结果卡片直接深链到已保存的报告(**查看报告**,
+`auto.viewReport`)与**跟踪器**(`auto.viewTracker`)。失败步骤标红
+并显示其消息,按钮重新启用,无需刷新即可修正 URL 重试。在上一次运
+行尚未结束时再启动新的一次是安全的:旧运行会把自己标记为**已被取
+代 — 已请求新的运行**(`auto.superseded`),而不会在过期的答案上重
+复消耗。
+
+空页面对自己的唯一一个输入框毫不遮掩:**示例**标签与**试一试示例
+URL** 按钮(`v2empty.auto.tryExample`)会用一条示例职位填入输入框
+—— **在你按下运行之前不会执行任何操作**(`v2empty.auto.hint`),随
+便看看不花一分钱。**无 API key?** 手动模式:3–5 步折叠,给出可复
+制 prompt。可链接:`#/auto?url=<enc>&go=1` 自动开始。
 > **CLI(v1.38.0)。** 一条命令完成整链:`career-ops-ui setup`。动词:`career-ops-ui doctor`(env/密钥/工具检查 —— 与 Health 同引擎;必需项失败 exit 1)、`career-ops-ui run`、`career-ops-ui init`(供应商+密钥向导,v1.39.0)。
 
 
@@ -828,7 +861,13 @@ $EDITOR portals.yml
 扫描器爬取所有启用的版面,与历史记录去重,把命中写入
 `data/last-scan.json` 与 `data/pipeline.md`。
 
-**搜索 + 排除。** 搜索框把逗号视为或("要找的职位");新增排除字段隐藏匹配任一逗号分隔词的行。两者都随你的搜索保存。
+**搜索 + 排除。** **搜索**框是你的「要找的职位」过滤器 — 输入一个或
+多个**以逗号分隔**的词,只要匹配其中**任意**一个,行就会出现(OR);
+行首的 `-词` 会**排除**该词(`scan.v2.moreHint`)。单独的**排除**框
+(`scan.lblExclude`)对完整词条做同样的事:逗号分隔的词会**隐藏**所
+有公司 / 职位 / 地点包含它们的行(例如排除 `senior, staff, java`)。
+两者都会随你的已保存搜索一起记住,与远程 / 来源 / 国家 / 发布时间 /
+薪资过滤器并列。
 
 ### 一键扫描(SPA)
 
@@ -854,6 +893,31 @@ $EDITOR portals.yml
 ### 过滤结果
 
 日志下方,结果表渲染 `data/last-scan.json` 中的行。
+表格加载时(以及每次刷新时)你看到的是灰色的加载占位行而不是空
+白面板,页面标题从第一帧就在 —— 缓慢的扫描不会被误读成死页面。
+
+v2 结果区让所有控件都看得见:
+
+- **当前筛选**(`scan.v2.activeFilters`)— 你设置的每个筛选都会以
+  可移除 chip 的形式显示在表格上方;点击 chip 上的 **✕**(**移除筛
+  选**,`scan.v2.removeFilter`)只去掉这一项,或**全部重置**
+  (`scan.v2.resetAll`)一次清空。
+- **排序方式**(`scan.v2.sortBy`)— 点击列标题(公司、职位、薪资、
+  年龄)按其排序;再点一次反向。
+- **快速查看**(`scan.v2.quickView`)— 点击一行即可就地展开其职位描
+  述(**职位描述**,`scan.v2.description`),无需离开页面;没有保存
+  正文的职位会如实说明(`scan.v2.noDescription`)而不是展示一张空白
+  卡片。
+- **行密度**(`scan.v2.density`)— 在**紧凑** / **宽松**
+  (`scan.v2.compact` / `scan.v2.comfortable`)行高之间切换;选择按浏
+  览器记住。
+- **日志**(`scan.v2.log`)— 折叠/展开实时扫描日志,把完整宽度让给
+  表格。
+
+每一行都带自己的操作:**评估**(`scan.v2.evaluate`)直接跳到对该职
+位的评分评估,**加入流水线**(`scan.v2.toPipeline`)将 URL 排队(已
+排队时会提示,`scan.v2.pipelineDup`),**打开职位 ↗**
+(`scan.v2.openPosting`)在新标签页打开招聘页面,☆ 则切换收藏。
 
 > **v1.78.1 — 实时自动刷新。** 现在结果表会在扫描运行期间自动更新,
 > 并在扫描结束后再更新一次 —— 无需手动重新加载或切换页面。
@@ -864,15 +928,21 @@ $EDITOR portals.yml
 > `data/scan-quarantine.json` 并在后续扫描中跳过(自愈:14 天后重试),从而让失效的
 > slug 不再刷屏日志。在 `portals.yml` 中设置 `scan_quarantine: false` 即可禁用。
 
-过滤器:
+过滤器(始终可见:搜索、排除、类型、来源、国家;其余都在**高级筛
+选**后面,`scan.advancedFilters` — 整个面板归在**结果筛选**组下,
+`scan.filtersGroup`):
 
 - **自由文本** — 对 title / company 做子串匹配。
-- **Source** 下拉 — Arbeitsagentur / Ashby / BambooHR / Breezy HR / Comeet / GeekJob / Glints / Greenhouse / GetMatch / Habr Career / hh.ru / IBM / Jobstreet · SEEK / Lever / Personio / Recruitee / RemoteOK / Remotive / RSS / SmartRecruiters / SolidJobs / Teamtailor / Trudvsem / We Work Remotely / Workable / Workday / Working Nomads(从 `GET /api/scan/sources` 自动填充)。
+- **Source** 下拉 — 注册表已知的全部来源(当前 121:116 EN + 5 RU,
+  默认为**全部来源**)。它从 `GET /api/scan/sources` 实时自动填充,
+  因此新放入的 adapter 无需改动应用就会出现在这里 — 列表从不硬编码。
 - **Remote / Hybrid / Onsite** 下拉。
-- **Country** 下拉(v1.78.0)— 一个地理筛选，根据当前结果中检测到的国家填充，每个国家都带有其国旗 emoji 和计数(例如 `🇩🇪 Germany (12)`)。选择一个即可只保留与该国家相关的职位。检测会将职位的自由文本地点(国家名称/别名 + 约 100 个主要就业市场城市)映射到某个国家；它很保守，绝不臆测，因此地点无法解析的职位 —— 或纯粹的 "Remote" 列表 —— 仍归在 **All countries** 下。将其与工作方式下拉框结合，即可同时找到与国家绑定的职位*和*远程职位。
-- **Posted within** 下拉(v1.80.0)— 一个客户端时效筛选(最近 24 小时 / 7 天 / 30 天)。`pubDate` 更早的行会被隐藏；**没有列出日期的行会通过**(缺失数据不受惩罚)。
-- **★ Favorites**(v1.80.0)— 点击任意行中的 ☆ 即可收藏一个职位(按 URL 存入 `localStorage`);在筛选面板中勾选 **★ Favorites** 即可只显示已收藏的行。收藏会在扫描和重新加载后保留。
-- **Saved searches**(v1.80.0)— 筛选器上方的栏:为当前筛选集合命名并 **💾 Save**,然后从下拉中重新应用它,或 **🗑 Delete** 删除它。存入 `localStorage`;损坏/被编辑的值会干净地重置为空。
+- **Country** 下拉 — 一个地理筛选,根据当前结果中检测到的国家填充,每个国家都带有其国旗 emoji 和计数(例如 `🇩🇪 Germany (12)`)。选择一个即可只保留与该国家相关的职位。检测会将职位的自由文本地点(国家名称/别名 + 约 100 个主要就业市场城市)映射到某个国家;它很保守,绝不臆测,因此地点无法解析的职位 —— 或纯粹的 "Remote" 列表 —— 仍归在 **All countries** 下。将其与工作方式下拉框结合,即可同时找到与国家绑定的职位*和*远程职位。
+- **Posted within** 下拉 — 一个客户端时效筛选(最近 24 小时 / 7 天 / 30 天)。`pubDate` 更早的行会被隐藏;**没有列出日期的行会通过**(缺失数据不受惩罚)。
+- **薪资下限 / 薪资上限**(`scan.salaryFrom` / `scan.salaryTo`)— 与从职位文本解析出的金额比较的纯数字界限(忽略货币,`scan.v2.salaryHint`);勾选**包含无薪职位**(`scan.v2.includeNoSalary`)可避免薪资过滤器丢弃完全没有报价数字的行。
+- **级别** 下拉(`scan.lblSeniority`)— Lead / Staff / Senior / Mid / Junior / Intern,从标题中检测。
+- **★ 收藏** — 点击任意行中的 ☆ 即可收藏一个职位(按 URL 存入 `localStorage`);在筛选面板中勾选 **★ 收藏**(`scan.favOnly`)即可只显示已收藏的行。收藏会在扫描和重新加载后保留。
+- **已保存搜索**(`scan.savedSearches`)— 为当前筛选集合命名并**保存搜索**(`scan.saveSearch`);已保存的搜索一键加载(`scan.v2.loadSearch`),删除前会先确认(`scan.v2.deleteSearchConfirm`)。存入 `localStorage`;损坏/被编辑的值会干净地重置为空。
 - **技术栈标签**(PHP / Go / Backend / Senior / …)— 每行由
   `Skills.detectTech` 与 `Skills.detectLevel` 自动检测。多选交集 —
   选中 `PHP + Senior` 显示同时具有这两个标签的行。
@@ -882,11 +952,18 @@ $EDITOR portals.yml
 
 ### Active Companies 卡片
 
-可折叠卡片,列出 `portals.yml` 中每家公司的扫描状态:
+可折叠卡片,汇总 `portals.yml` 中的每家公司,标题为**活动公司**
+(`scan.activeCo`),并带一个实时的 `N/M` 计数 — *N* 是上一次扫描中
+真正出现结果的公司数,*M* 是当前启用的 API 支持公司数,因此两个数字
+始终描述同一个全集(仅俄语版面的一次运行不可能让分子超过 ATS 分母)。
+工具提示用平实的语言说同一件事(`scan.activeCo.help`)。列表分成两
+组:
 
-- ✓ 绿色标签 — 直接 API 支持(Greenhouse / Ashby / Lever /
-  Workable / SmartRecruiters / Workday)。
-- ○ 灰色标签 — 回落到网络搜索提示(无 API 匹配)。
+- ✓ **直接 API**(`scan.apiBacked`)— 该版面直接从其公共 ATS API
+  抓取(116 个 EN adapter 之一,从 Greenhouse / Ashby / Lever /
+  Workable / SmartRecruiters / Workday 一直到长尾)。
+- ○ **仅 web 搜索**(`scan.websearchBacked`)— 没有 adapter 匹配该
+  URL,改由 CLI 的 AI 扫描覆盖。
 
 **点击公司名** → 自动把该名称填入上方结果过滤器。**点击 ↗ 图标**
 → 在新标签页打开该公司的 `careers_url`。
@@ -957,18 +1034,21 @@ hh.ru 通过读取其公开搜索页面（`hh.ru/search/vacancy`）来扫描,与
 
 等待评估的 URL 收件箱。文件位于 `data/pipeline.md`。
 
-**概览条。** 顶部紧凑概览条一眼展示流水线——收件箱有多少 URL、跟踪多少,以及 Applied/Responded/Interview/Offer 计数,各自链接到跟踪器。
+**概览条。** 顶部紧凑概览条一眼展示流水线 — 有多少 URL **在收件箱**
+(`pipe.ovInbox`),**已跟踪**多少行(`pipe.ovTracked`),
+以及来自跟踪器的 **Applied / Responded / Interview / Offer** 计数。
+每个 chip 直接链接到 `#/tracker`(状态 chip 打开时已带过滤)。若跟踪
+器不可读,则退化为仅显示收件箱计数。
 
 ### 添加 URL
 
 三种方式:
 
-- 在输入框输入/粘贴 URL,然后点击 **+ Add**。
-- 使用**顶栏全局搜索**(其徽标显示 **Enter**):粘贴任意
-  `http(s)://…` 链接并按 **Enter** 即可打开 auto-pipeline;输入
-  其他文本并按 **Enter** 则跳转到 `#/scan` 并预先填好该词
-  (v1.78.1)。在浏览器允许的地方,Ctrl/Cmd+K 仍可聚焦搜索框。
-  品牌 **徽标** 会返回仪表盘。
+- 在输入框输入/粘贴 URL,然后点击**添加 URL**(`pipe.add`)。
+- 使用**命令菜单**:**Cmd/Ctrl+K**(或侧边栏的**命令菜单**按钮,
+  `nav.v2.palette`),粘贴任意 `http(s)://…` 链接,菜单会提供
+  **自动流水线：{url}**(`nav.v2.evalUrl`)— 按 Enter 即对它跑完整
+  条链。输入其他文本并按 Enter,则跳转到 `#/scan` 并预先填好该词。
 - 运行一次 Scan(见上文)— 新命中会自动进入 pipeline。
 
 每个 URL 都会在服务器端经过 `isValidJobUrl()`。Loopback
@@ -987,13 +1067,41 @@ HTML 标签,返回最多 8 KB 纯文本。
 
 ### 行操作
 
-- **▶** — 跳转到 `#/evaluate?url=…`,URL 预填好。
-- **✕** — 把 URL 从 `data/pipeline.md` 中移除。
+- **▶**(`pipe.evaluateBtn`)— 跳转到 `#/evaluate?url=…`,URL 预填好。
+- **✕** — 把 URL 从 `data/pipeline.md` 中移除(先询问,`pipe.confirmDel`)。
+
+**分组视图、批量丢弃、无损撤销。** 扫描后清理一个大收件箱是该页面
+的 v2 核心能力:
+
+- **分组**(`pipe.viewGrouped`)/ **紧凑列表**(`pipe.viewFlat`)—
+  工具栏在扁平列表与按公司分组的看板之间切换:同一雇主的职位折叠在
+  一个可展开项下(最大的组在前),一个嘈杂的版面不再淹没其他内容。
+  未知公司按其 host 分组 — 但共享的 ATS host(比如 `jobs.lever.co`)
+  只有在该 host 上*所有*含公司的条目都一致时才会借用公司名。
+- **隐藏已评估**(`pipe.hideTracked`)— 默认开启;已有跟踪行的职位
+  会从视图(以及批量选择)中消失,你只会对新鲜的工作采取行动。
+- **选择**(`pipe.selectOne`)任意行,或**全选所显示项**
+  (`pipe.selectAllShown`)— 选择始终跟随当前过滤器,绝不包含不可见
+  行。选择栏显示计数(`pipe.selectedCount`),并提供 **✕ 删除所选项
+  (N)**(`pipe.bulkRemove`)与**评估第一个所选项**
+  (`pipe.evaluateSelected`)— 批量删除对整个集合确认一次,而不是逐
+  行确认。
+
+没有什么会误删:每次移除 — 单条或批量 — 都会返回一个不透明的恢复
+token,页面底部的一条横条(**已删除：N**,`pipe.deleted`)提供**撤
+销**(`pipe.undo`)/ **关闭**(`pipe.undoDismiss`)。移除最多堆叠五
+批(最旧的被丢弃);**撤销**把最近一批的 token 发送到
+`POST /api/pipeline/restore`,后者按原样重新插入原始行(checklist
+元数据也在 — 不会重新推导或重新添加),并确认**已恢复到
+Pipeline**(`pipe.undone`)。横条挂在页面自身标记之外,因此重新渲染
+(导航、快速添加流程)不会吞掉待处理的撤销;如果服务器已不再认识某
+个 token(重启),该 URL 会以普通方式重新添加,而不是被丢弃。
 
 ### 右上角按钮
 
-- **⚡ 评估第一个** — 把第一个排队 URL 直接在 Evaluate 页面打
-  开,准备评分。
+- **⚡ 评估第一个**(`pipe.evaluateAll`)— 把第一个排队 URL 直接在
+  Evaluate 页面打开,准备评分(先确认,因为它决定了你这次运行要把
+  机会花在哪个职位上)。
 - **职位搜索** — 想要更多 URL 时,返回扫描器。
 
 ---
@@ -1065,10 +1173,37 @@ URL 时,逐条点击就不现实了 — 跳转到第 14 节的 **Batch evaluate*
 
 ## 10. 报告(`#/reports`)
 
-浏览所有已保存的评估。卡片显示标题、日期、合法性标志,以及 score
-(色彩编码: 绿色 ≥ 4.0,黄色 ≥ 3.0,红色低于此)。
+浏览所有已保存的评估。页面以**卡片**视图打开(`rep2.viewCards`)—
+每份报告一张卡片:显示标题、日期、合法性徽章,以及按色彩编码的分数
+胶囊(绿色 ≥ 4.0,黄色 ≥ 3.0,红色低于此;头部没有可解析分数时显示
+一枚灰色的「未检测到评分」胶囊)— 并可切换到密集的**表格**视图
+(`rep2.viewTable`)。每张卡片和表格行还会为所属分数区间标注**建议
+的下一步**:**立即投递 — 高匹配**(`rep2.actApply`)、**投递,或先找
+人内推**(`rep2.actContact`)、**先调研公司**(`rep2.actResearch`)、
+**没有特别原因则跳过**(`rep2.actLow`)— 每一个都是直达正确页面的链
+接。没有分数的卡片显示灰色的**未检测到评分**胶囊(`rep.scoreUnparsed`),
+工具提示指向报告本身。
 
-点击卡片查看完整 markdown。分页: 每页 12 条;控件在底部。
+**找到正确的那份报告。** 列表上方有一排过滤器,且全部可以组合:
+
+- **搜索报告**(`rep2.searchLabel`)— 自由文本,匹配每份报告的公司、
+  职位与显示标题。
+- **公司**(`rep2.companyLabel`)— 从下拉中挑选一个雇主。
+- **分数区间**(`rep2.bandLabel`)— **高 (4.5+)** / **良好 (4.0+)**
+  / **中等 (3.5+)** / **低于 3.5**(`rep2.bandHigh` …
+  `rep2.bandLow`),外加一个收纳头部无可解析分数报告的桶。
+- **起始日期 / 截止日期**(`rep2.dateFrom` / `rep2.dateTo`)— 把列表
+  限定在一个时间段。
+- **排序方式**(`rep2.sortLabel`)— **日期** / **分数** / **公司**
+  (`rep2.sortDate` …),升序或降序(`rep2.sortDirAsc` /
+  `rep2.sortDirDesc`)。
+- 一个**分数分布直方图**(`rep2.histogramLabel`)— 点击某一列即过滤
+  到该区间,一眼看清 pipeline 的形状。
+- **重置筛选**(`rep2.reset`)清空一切;当没有任何匹配时,页面会如
+  实说明(`rep2.noMatches`)而不是展示一片空白网格。
+
+点击卡片(或表格行)查看完整 markdown。分页: 每页 20 条;控件在底
+部;每次改动过滤器都会把你带回第 1 页。
 
 单报告视图还提供:
 
@@ -1096,6 +1231,19 @@ CRM。每次申请一行;以 GitHub-Flavored Markdown 表的形式存于
 `Hired`(v1.118.0)是圆满的最终状态 — offer 已被接受。跟踪器用庆祝徽章标记它,并以「拿到工作」横幅相迎。
 
 **阶段标签看板(v1.131.0)。** 表格上方的**阶段标签条**可以让你逐步走查漏斗:一个 **All** 标签加上每个规范状态各一个标签,每个都显示实时的全历史计数 — **包括零计数阶段**,以便整个流水线始终一览无余。点击某个阶段可将表格过滤到该阶段;再次点击则回到 **All**。这些标签(以及计数对本地化/旧版状态别名的折叠)来自 `GET /api/tracker/stages`,该接口读取服务器所使用的同一份 `templates/states.yml` — 因此标签集合会自动与父项目的状态词汇保持同步,页面上没有任何硬编码列表。搜索、分数过滤器、可排序列以及逐行的报告/PDF/合规性功能均保持不变;启用徽标后,每行的公司会显示品牌标识。
+
+**看板视图(v2)。** 同一个看板也能以拖拽式 **kanban** 的形式阅读:
+每个规范状态一列(看板标题播报为*按状态查看申请*,
+`track.kanbanBoardAria`),每条申请一张卡片。把卡片拖到另一列 — 或
+聚焦它并按**移动** — 变更会**在写入前先预览**(`track.kanbanMoveHint`);
+一次已提交的移动会在结果日志中记录一条并重写 `data/applications.md`,
+卡片会告诉你这一点(`track.moveJournal`)— 要把状态改回去,使用该行
+的**结果**按钮。流水线自行管理的列(以及 `Discarded`,其语义只有你
+能选择)以只读方式渲染(`track.kanbanReadOnly`)并拒绝拖放。如果父
+项目的结果记录器缺失,状态移动会被禁用并给出诚实的提示
+(`track.kanbanMovesOff`)。看板加载时显示与应用其他部分相同的
+加载占位行,空看板会显示**暂无申请**(`track.kanbanEmpty`)并指
+向 pipeline(`track.emptyBody`)。
 
 状态白名单由服务器端强制;在 `POST /api/tracker` 中发送其他值都会回
 退到 `Evaluated`。在 `/career-ops apply` 末尾确认 `Submitted.` 时,
@@ -1245,7 +1393,12 @@ Evaluate、`deep` → Deep research)以及父项目仅在 Claude Code 内支
 
 ### SPA 清单模式(`#/apply`)
 
-SPA 清单适合不想调用 Playwright、希望手工填表的用户。覆盖:
+SPA 清单适合不想调用 Playwright、希望手工填表的用户。空页面不会让你
+瞎猜:它会展示**生成求职清单**与一个示例
+(`v2empty.apply.emptyTitle` / `v2empty.apply.emptyBody`),并且,如
+果你已评估过该职位,还会提供**选择一份已评估的报告**
+(`v2empty.apply.pickReport`)的捷径,让清单从那份报告的数据出发。覆
+盖:
 
 0. 在 Claude Code 中运行 `/career-ops apply <url>`,让 Playwright 读
    取表单(如果手工填,跳过此步)。
@@ -1337,7 +1490,11 @@ SPA 清单适合不想调用 Playwright、希望手工填表的用户。覆盖:
 ### Batch evaluate([batch-evaluate-offers](https://career-ops.org/docs/introduction/guides/batch-evaluate-offers))
 
 当你一次性要给 10 个以上 JD 评分时(SPA 的逐条 `#/evaluate` 对此规
-模不实际),使用 CLI 端的批量运行器。
+模不实际),使用 CLI 端的批量运行器。`#/batch` 页面以同样的坦诚迎接
+你:它的空状态显示**从职位列表开始**(`v2empty.batch.emptyTitle`)
+和**粘贴 URL 列表**助手(`v2empty.batch.pasteList`),后者把剪贴板
+里的裸 http(s) URL 直接提进输入框(`v2empty.batch.pasteAdded`),因
+此在你转入 CLI 运行器之前,搭建等效 `batch-input.tsv` 的行只需几秒。
 
 **输入文件 — `batch/batch-input.tsv`**(制表符分隔):
 
@@ -1545,7 +1702,7 @@ tracker 写入、CV 保存、JD 保存、evaluate 运行、deep-research 运
 
 ## 17. 如何添加新的招聘门户来源
 
-career-ops-ui 将每个招聘站点视为一个 **adapter** — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 下的单一文件,知道如何获取并规范化某个站点的结果。目前,`server/lib/sources/` 注册表自带 **121** 个 adapter —— **116 个英文 + 5 个俄文**板块。英文集合涵盖主流 ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday)、由显式 `provider:` 选择的全板块聚合器(RemoteOK、Remotive、We Work Remotely、NoDesk、Get on Board、Amazon、…),以及从 `careers_url` 主机或显式 `api:` URL 自动检测的按租户 ATS(BambooHR、Personio、Recruitee、Teamtailor、Avature、SAP SuccessFactors、…)。**完整列表永远无需在此手工统计 —— 它会从 `server/lib/sources/` 自动发现,并在 `#/scan` 的 Source 下拉框中实时显示。** YAML 见 §5,可复制粘贴的条目见 `docs/portals-examples.md`。
+career-ops-ui 将每个招聘站点视为一个 **adapter** — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 下的单一文件,知道如何获取并规范化某个站点的结果。目前,`server/lib/sources/` 注册表自带 **121** 个来源 —— **116 个英文 + 5 个俄文**板块。英文集合涵盖主流 ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday)、由显式 `provider:` 选择的全板块聚合器(RemoteOK、Remotive、We Work Remotely、NoDesk、Get on Board、Amazon、…),以及从 `careers_url` 主机或显式 `api:` URL 自动检测的按租户 ATS(BambooHR、Personio、Recruitee、Teamtailor、Avature、SAP SuccessFactors、…)。**完整列表永远无需在此手工统计 —— 它会从 `server/lib/sources/` 自动发现,并在 `#/scan` 的 Source 下拉框中实时显示。** YAML 见 §5,可复制粘贴的条目见 `docs/portals-examples.md`。
 
 > **v1.69.0 (P-14) — 即插即用自动发现。** 添加第 12 个来源现在是**纯粹的文件投放**。注册表
 > ([`server/lib/sources/registry.mjs`](../../server/lib/sources/registry.mjs))
