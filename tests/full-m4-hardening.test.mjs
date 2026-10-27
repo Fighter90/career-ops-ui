@@ -1,13 +1,12 @@
 /**
- * FULL-M4 (part 1) — /api/logo hardening.
+ * FULL-M4 (part 2) — /api/stream/batch hardening. Part 1 (logo) lives above.
  *
- *   /api/logo relayed attacker-chosen SVG from the app origin with
- *   `Cache-Control: public` and no nosniff; an SVG is active content
- *   (scripts, foreignObject) served same-origin, so it must be refused
- *   outright, and proxied per-domain bytes must be `private` + nosniff.
+ *   /api/stream/batch forwarded `?parallel=500` verbatim (500 concurrent
+ *   billed LLM workers), forwarded any `?minScore=` string to the runner,
+ *   and allowed two runs at once (double spend + tracker-write races).
  *
- * CI-isolated: mkdtemp root with cv.md, injected favicon fetcher,
- * 127.0.0.1 bind, no network.
+ * CI-isolated: mkdtemp root with cv.md, stub runner, 127.0.0.1 bind,
+ * no network, no live LLM.
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
@@ -40,6 +39,9 @@ before(async () => {
   writeFileSync(resolve(dir, 'modes', 'oferta.md'), 'oferta\n');
   // Stub runner: echoes args, exits 0 — the SSE `start` frame carries args.
   const runner = resolve(dir, 'batch', 'batch-runner.sh');
+  writeFileSync(runner, '#!/usr/bin/env bash\necho "stub args: $@" >&2\nexit 0\n');
+  chmodSync(runner, 0o755);
+  // Stub runner: echoes args, exits 0 — the SSE `start` frame carries args.
   writeFileSync(runner, '#!/usr/bin/env bash\necho "stub args: $@" >&2\nexit 0\n');
   chmodSync(runner, 0o755);
   process.env.CAREER_OPS_ROOT = dir;
@@ -115,3 +117,63 @@ test('GET /api/logo serves the same headers on a cache hit', async () => {
   assert.equal(r2.headers.get('x-content-type-options'), 'nosniff');
 });
 
+// ── /api/stream/batch: --parallel clamp ───────────────────────────────────
+
+test('parallel=500 is clamped to BATCH_LIMITS.maxParallel', async () => {
+  const args = await getStartArgs('parallel=500');
+  const idx = args.indexOf('--parallel');
+  assert.notStrictEqual(idx, -1);
+  assert.equal(args[idx + 1], String(BATCH_LIMITS.maxParallel), `args: ${JSON.stringify(args)}`);
+  assert.ok(BATCH_LIMITS.maxParallel >= 1 && BATCH_LIMITS.maxParallel <= 8, 'cap must stay in the sane 1–8 band documented in batch.mjs');
+});
+
+test('parallel=abc still falls back to 1 (legacy behavior preserved)', async () => {
+  const args = await getStartArgs('parallel=abc');
+  assert.deepEqual(args.slice(args.indexOf('--parallel'), args.indexOf('--parallel') + 2), ['--parallel', '1']);
+});
+
+// ── /api/stream/batch: --min-score validation ─────────────────────────────
+
+test('minScore=abc is a 400 before the SSE stream opens', async () => {
+  const r = await fetch(`${baseUrl}/api/stream/batch?minScore=abc`);
+  assert.equal(r.status, 400);
+  const body = await r.json();
+  assert.match(body.error, /minScore/);
+});
+
+test('minScore=99 is a 400 (above the 1–5 tracker score scale)', async () => {
+  const r = await fetch(`${baseUrl}/api/stream/batch?minScore=99`);
+  assert.equal(r.status, 400);
+});
+
+test('minScore=0.5 is a 400 (below the validated band)', async () => {
+  const r = await fetch(`${baseUrl}/api/stream/batch?minScore=0.5`);
+  assert.equal(r.status, 400);
+});
+
+test('minScore=4.0 passes through byte-identical (happy path preserved)', async () => {
+  const args = await getStartArgs('minScore=4.0');
+  assert.deepEqual(args.slice(args.indexOf('--min-score'), args.indexOf('--min-score') + 2), ['--min-score', '4.0']);
+});
+
+// ── /api/stream/batch: single-flight (BATCH_BUSY) ─────────────────────────
+
+test('a second batch run while one is active gets BATCH_BUSY and runs nothing', async () => {
+  __batchSlot.claim();
+  try {
+    const evs = await events('/api/stream/batch?dryRun=1');
+    assert.ok(evs.some((e) => e.ev === 'error' && e.data.code === 'BATCH_BUSY'), JSON.stringify(evs));
+    assert.match(evs.find((e) => e.ev === 'error').data.message, /already running/);
+    assert.ok(!evs.some((e) => e.ev === 'start'), 'no runner may spawn while another run holds the slot');
+    assert.ok(evs.some((e) => e.ev === 'done'), 'the stream still closes cleanly');
+  } finally {
+    __batchSlot.release();
+  }
+});
+
+test('the slot is free after release — the next batch runs and frees the slot', async () => {
+  const evs = await events('/api/stream/batch?dryRun=1');
+  assert.ok(evs.some((e) => e.ev === 'start'), JSON.stringify(evs));
+  assert.ok(evs.some((e) => e.ev === 'done'));
+  assert.equal(__batchSlot.active, null, 'slot released when the runner exits');
+});

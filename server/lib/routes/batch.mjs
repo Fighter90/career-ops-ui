@@ -28,8 +28,25 @@ const TSV_MAX_BYTES = 1024 * 1024; // 1 MB — generous for ~10k JD URLs.
 export const BATCH_LIMITS = {
   maxRuntimeMs: 4 * 60 * 60 * 1000,
   killGraceMs: 5_000,
+  // FULL-M4 — each --parallel unit is one more real concurrent LLM
+  // evaluation. The UI offers 1–3; the server clamps anything above 8 so a
+  // crafted ?parallel=500 cannot fan out 500 billed workers.
+  maxParallel: 8,
 };
 const GROUP_KILL = process.platform !== 'win32';
+
+// One batch run at a time per process (mirror of the scan single-flight
+// slot). Two concurrent runs double the LLM spend and race on the
+// batch/tracker-additions writes; a second request gets an SSE `error` with
+// code BATCH_BUSY instead of a second runner.
+let activeBatch = null; // { startedAt } while a run streams
+
+/** Test hook: claim / release the slot without running a batch. */
+export const __batchSlot = {
+  get active() { return activeBatch; },
+  claim() { activeBatch = { startedAt: new Date().toISOString() }; },
+  release() { activeBatch = null; },
+};
 
 /** Signal the runner's whole process group (POSIX), else the child itself. */
 function signalRun(child, signal) {
@@ -104,6 +121,28 @@ export function registerBatchRoutes(app) {
   // the most expensive operation the app exposes. Loopback is exempt
   // (the limiter no-ops there), so this only gates HOST=0.0.0.0 setups.
   app.get('/api/stream/batch', llmRateLimit, (req, res) => {
+    // ── query validation, BEFORE the SSE headers go out (plain 400) ──
+    // --parallel: junk falls back to 1 (legacy behavior); a real number is
+    // clamped into 1..BATCH_LIMITS.maxParallel (FULL-M4).
+    let parallel = 1;
+    if (req.query.parallel) {
+      const n = parseInt(req.query.parallel, 10);
+      if (Number.isInteger(n) && n >= 1) parallel = Math.min(n, BATCH_LIMITS.maxParallel);
+    }
+    // --min-score: a number on the tracker score scale (1–5). Unlike the
+    // cosmetic flags below (silently dropped when out of range), a bogus
+    // threshold is rejected: silently dropping it would evaluate rows the
+    // user asked to skip, and silently clamping it would move the user's
+    // own quality gate. The validated string is passed through verbatim.
+    let minScore = null;
+    if (req.query.minScore) {
+      const s = String(req.query.minScore).trim();
+      const n = Number(s);
+      if (!Number.isFinite(n) || n < 1 || n > 5) {
+        return res.status(400).json({ error: 'invalid minScore: expected a number 1–5 (tracker score scale)' });
+      }
+      minScore = s;
+    }
     res.writeHead(200, {
       'Content-Type': 'text/event-stream',
       'Cache-Control': 'no-cache',
@@ -121,10 +160,20 @@ export function registerBatchRoutes(app) {
       send('done', { code: 2 });
       return res.end();
     }
+    if (activeBatch) {
+      send('error', {
+        code: 'BATCH_BUSY',
+        message: `a batch run is already running (started ${activeBatch.startedAt}); wait for it to finish`,
+        startedAt: activeBatch.startedAt,
+      });
+      send('done', { code: 2 });
+      return res.end();
+    }
+    activeBatch = { startedAt: new Date().toISOString() };
     const args = [];
     if (req.query.dryRun === '1') args.push('--dry-run');
-    if (req.query.parallel) args.push('--parallel', String(parseInt(req.query.parallel, 10) || 1));
-    if (req.query.minScore) args.push('--min-score', String(req.query.minScore));
+    if (req.query.parallel) args.push('--parallel', String(parallel));
+    if (minScore !== null) args.push('--min-score', minScore);
     if (req.query.retry === '1') args.push('--retry-failed');
     // v1.28.0 — canonical batch-runner.sh flag (default 2). Only meaningful
     // when --retry-failed is also set; we silently drop out-of-range values
@@ -193,11 +242,13 @@ export function registerBatchRoutes(app) {
     });
     child.on('close', (code) => {
       clearTimeout(runtimeTimer);
+      activeBatch = null;
       send('done', { code, additions: listAdditions().length });
       res.end();
     });
     child.on('error', (err) => {
       clearTimeout(runtimeTimer);
+      activeBatch = null;
       send('error', { message: err.message });
       res.end();
     });
