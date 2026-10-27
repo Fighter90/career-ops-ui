@@ -47,6 +47,13 @@ const DSK = 'sk-fakedeepseek0123456789abcdefghijkl';
 
 let server; let baseUrl; let ROOT;
 const realFetch = globalThis.fetch;
+
+// FULL-M5 CodeQL — host equality via the URL parser, never substring
+// containment on a URL literal (js/incomplete-url-substring-sanitization):
+// a decoy URL carrying the host as a substring must not match.
+function hostIs(u, host) {
+  try { return new URL(String(u)).host === host; } catch { return false; }
+}
 const saved = {};
 
 before(async () => {
@@ -91,16 +98,16 @@ function mockProviders() {
   const calls = [];
   globalThis.fetch = async (u, o = {}) => {
     const s = String(u);
-    if (s.includes('api.anthropic.com')) {
+    if (hostIs(s, 'api.anthropic.com')) {
       calls.push({ host: 'anthropic', signal: o.signal || null });
       return json({ content: [{ type: 'text', text: '# anthropic brief' }], stop_reason: 'end_turn', usage: { input_tokens: 3, output_tokens: 2 } });
     }
-    if (s.includes('generativelanguage.googleapis.com')) {
+    if (hostIs(s, 'generativelanguage.googleapis.com')) {
       calls.push({ host: 'gemini', signal: o.signal || null });
       return json({ candidates: [{ content: { parts: [{ text: '# gemini brief' }] } }], usageMetadata: { promptTokenCount: 3, candidatesTokenCount: 2 } });
     }
     for (const [host, name] of [['api.openai.com', 'openai'], ['api.deepseek.com', 'deepseek'], ['127.0.0.1:8642', 'hermes']]) {
-      if (s.includes(host)) {
+      if (hostIs(s, host)) {
         calls.push({ host: name, signal: o.signal || null });
         return json({ choices: [{ message: { content: `# ${name} brief` }, finish_reason: 'stop' }], usage: { prompt_tokens: 3, completion_tokens: 2 } });
       }
@@ -134,7 +141,7 @@ const geminiCalls = () => {
 /** Hang until the injected signal aborts; record whether a signal ever came. */
 function hangUntilAborted(recorder) {
   globalThis.fetch = async (u, o = {}) => {
-    if (!String(u).includes('api.anthropic.com')) return realFetch(u, o);
+    if (!hostIs(u, 'api.anthropic.com')) return realFetch(u, o);
     const sig = o.signal || null;
     const entry = { hasSignal: !!sig, abortedAtStart: !!sig?.aborted, abortObserved: null };
     recorder.push(entry);
@@ -267,7 +274,7 @@ test('FULL-M5 contract: evaluate success/error and mode shapes are unchanged', a
   let calls = [];
   process.env.OPENAI_API_KEY = OAI;
   globalThis.fetch = async (u, o = {}) => {
-    if (!String(u).includes('api.openai.com')) return realFetch(u, o);
+    if (!hostIs(u, 'api.openai.com')) return realFetch(u, o);
     calls.push('openai');
     return json({ choices: [{ message: { content: GOOD_EVAL }, finish_reason: 'stop' }], usage: { prompt_tokens: 3, completion_tokens: 2 } });
   };
@@ -278,7 +285,7 @@ test('FULL-M5 contract: evaluate success/error and mode shapes are unchanged', a
   assert.equal(ev.body.saved, null);
   assert.equal(ev.body.warnings, undefined, 'a well-formed report must carry no warnings key');
 
-  globalThis.fetch = async (u, o = {}) => (String(u).includes('api.openai.com')
+  globalThis.fetch = async (u, o = {}) => (hostIs(u, 'api.openai.com')
     ? json({ choices: [{ message: { content: '' }, finish_reason: 'stop' }] })
     : realFetch(u, o));
   const err = await post('/api/evaluate', { jd: JD });
@@ -288,7 +295,7 @@ test('FULL-M5 contract: evaluate success/error and mode shapes are unchanged', a
 
   process.env.ANTHROPIC_API_KEY = ANT;
   globalThis.fetch = async (u, o = {}) => {
-    if (!String(u).includes('api.anthropic.com')) return realFetch(u, o);
+    if (!hostIs(u, 'api.anthropic.com')) return realFetch(u, o);
     calls.push('anthropic');
     return json({ content: [{ type: 'text', text: '# cover brief' }], stop_reason: 'end_turn', usage: { input_tokens: 3, output_tokens: 2 } });
   };
