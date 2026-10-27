@@ -3969,7 +3969,7 @@
     "vi": "Hỏi cách dùng bất cứ tính năng nào của ứng dụng. Câu trả lời chỉ lấy từ hướng dẫn trong ứng dụng bằng ngôn ngữ của bạn — không đọc gì về CV hay việc tìm việc của bạn."
   },
   "docs.q1": {
-    "en": "How do I scan job portals?",
+    "en": "How do I run a scan and filter the results?",
     "es": "¿Cómo escaneo portales de empleo?",
     "pt-BR": "Como escaneio portais de vagas?",
     "ko": "채용 포털은 어떻게 스캔하나요?",
@@ -3990,7 +3990,7 @@
     "vi": "Làm cách nào để quét các cổng việc làm?"
   },
   "docs.q2": {
-    "en": "How does the two-pager fit score work?",
+    "en": "How does the pipeline work? What happens to evaluated jobs?",
     "es": "¿Cómo funciona la puntuación de ajuste del two-pager?",
     "pt-BR": "Como funciona a pontuação de aderência do two-pager?",
     "ko": "투페이저 적합도 점수는 어떻게 작동하나요?",
@@ -4011,7 +4011,7 @@
     "vi": "Điểm khớp hai-trang hoạt động thế nào?"
   },
   "docs.q3": {
-    "en": "How do I export a report to PDF?",
+    "en": "How do I run the auto-pipeline end to end?",
     "es": "¿Cómo exporto un informe a PDF?",
     "pt-BR": "Como exporto um relatório para PDF?",
     "ko": "리포트를 PDF로 어떻게 내보내나요?",
