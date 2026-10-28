@@ -60,6 +60,14 @@
   }
 }
 
+/* Reference-question chips (docs-assistant v2) carry long sentence labels;
+   .btn's global white-space:nowrap + flex-shrink:0 makes each one an
+   unbreakable 420px flex item at a 390px phone viewport — the widest
+   offender of the mobile-390 sweep (flex-wrap cannot split a lone
+   unshrinkable item). Let these chips shrink and wrap; short labels
+   (Cancel / View / Refresh) are pixel-identical. */
+.llm2__form .btn.btn-ghost.btn-sm { white-space: normal; flex-shrink: 1; }
+
 /* ── run panel: progress / ETA / cancel / log ──────────────────────────── */
 
 .llm2run {
