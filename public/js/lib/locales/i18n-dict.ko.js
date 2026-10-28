@@ -1146,6 +1146,9 @@ window.__I18N_DICT_KO = {
   // ── CV Studio (Epic 21 / v1.92.0) ──
   'nav.cvStudio': "CV 스튜디오",
   'cvs.title': "CV 스튜디오",
+  'cvs.undo': "실행 취소",
+  'cvs.undoHint': "이전 CV 스튜디오 결과를 복원합니다.",
+  'cvs.unsavedConfirm': "CV 스튜디오에 저장되지 않은 작업이 있습니다. 정말 나가시겠습니까?",
   'cvs.vfTitle': "CV 사실 확인",
   'cvs.vfHelp': "맞춤 CV나 커버레터를 붙여넣어 모든 수치와 주장을 실제 CV·프로필·two-pager와 대조합니다. 출처에 없던 숫자와 주장을 잡아냅니다. LLM 없음 — 아무것도 저장하지 않고 제안만.",
   'cvs.vfPlaceholder': "생성된 CV나 커버레터를 여기에 붙여넣어 실제 CV와 대조하세요…",

@@ -17,7 +17,49 @@
  * apply — the run/progress/cancel component does, per tool.
  * // CAR-119 i18n: no new dictionary keys — the kit's `llm2.*` strings ship
  * as I18n.t EN fallbacks inside public/js/lib/llm-page-kit.js.
+ *
+ * CAR-179 — two upstream CV-Studio concepts ported onto this toolbox page
+ * (upstream #6183 "undo the last CV Studio edit" + #6182 "keep the last CV
+ * Studio edit when you leave"; their React studio edits a tailored CV in
+ * place, our equivalent of "the last edit" is the pasted tool input plus
+ * the finished LLM result the next run would overwrite):
+ *   - an Undo stack — every result-panel overwrite first pushes a
+ *     repaintable snapshot onto one shared bounded stack; the Undo button
+ *     and a Cmd/Ctrl+Z hotkey pop it back (the hotkey steps aside inside
+ *     text fields, where the field's native undo owns the keystroke, and
+ *     matches e.code too — the CAR-172 non-QWERTY lesson);
+ *   - a leave-guard — dirty state is probed LIVE at event time, a
+ *     hashchange confirm (decline rewinds the hash) plus a beforeunload
+ *     veto protect the work, and a module-level restore buffer brings it
+ *     back on the next render (guard Cancel rewind, language switch —
+ *     Router.render() fires no hashchange — and confirmed leaves).
+ *     Nothing on this page is server-persisted, so a restore buffer is
+ *     the honest port of upstream's keepalive flush.
+ * CAR-179 i18n: three new `cvs.*` keys (`cvs.undo`, `cvs.undoHint`,
+ * `cvs.unsavedConfirm`) ship as EN fallbacks — pending the ×19 dict
+ * fan-out, so the dictionaries themselves are untouched here.
  */
+
+// CAR-179 — module-level state shared by every render of this route (a
+// classic script executes once, so these bindings outlive individual
+// Router.render() calls):
+//   - cvsRestoreBuffer  the studio's transient work — tool inputs plus the
+//     exact repaintable payload of every result panel — captured as it
+//     changes and consumed by the next render, so the guard's Cancel
+//     rewind, a language switch (Router.render(), no hashchange) and a
+//     confirmed leave no longer throw a pasted JD or a finished LLM run
+//     away.
+//   - cvsRouteHash      current hash with any ?query stripped — the
+//     leave-guard compares EXACTLY ('#/cv' shares the first segment).
+//   - cvsViewDetach     detaches the active instance's beforeunload /
+//     hashchange / undo-hotkey listeners; the next render drops the
+//     previous instance's set first (the cv.js CAR-20 lifecycle).
+let cvsRestoreBuffer = null;
+const cvsRouteHash = () => (window.location.hash || '').split('?')[0];
+let cvsViewDetach = null;
+// Upstream parity: a 30-entry bounded history.
+const CVS_UNDO_LIMIT = 30;
+
 Router.register('cv-studio', async () => {
   const c = UI.el;
   const t = (k, f) => I18n.t(k, f);
@@ -26,6 +68,32 @@ Router.register('cv-studio', async () => {
   root.appendChild(HelpHint.title(t('cvs.title', 'CV Studio'), 'help.hint.cvStudio'));
   root.appendChild(c('p', { className: 'page-subtitle' },
     t('cvs.subtitle', 'Diagnose your CV, mask it for safe sharing, and rewrite stiff lines in your own voice — grounded only in what you actually wrote.')));
+
+  // ── Undo the last studio edit (CAR-179, upstream #6183) ──
+  // The humanize / tailor / add-entry runs overwrite their result panels in
+  // place, and the previous result — often a finished LLM run that is saved
+  // nowhere — used to be unrecoverable. Every overwrite first pushes a
+  // repaintable snapshot onto one shared bounded stack (repaintXxx below);
+  // the Undo button and a Cmd/Ctrl+Z hotkey pop it back.
+  const undoStack = [];
+  const undoBtn = c('button', {
+    className: 'btn btn-ghost btn-sm', type: 'button', disabled: 'disabled',
+    title: t('cvs.undoHint', 'Restore the previous CV Studio result.'),
+    'aria-label': t('cvs.undoHint', 'Restore the previous CV Studio result.'),
+  }, t('cvs.undo', 'Undo'));
+  const pushUndo = (repaint) => {
+    undoStack.push(repaint);
+    if (undoStack.length > CVS_UNDO_LIMIT) undoStack.shift();
+    undoBtn.disabled = false;
+  };
+  const runUndo = () => {
+    const repaint = undoStack.pop();
+    if (!repaint) { undoBtn.disabled = true; return; }
+    repaint();
+    undoBtn.disabled = undoStack.length === 0;
+  };
+  undoBtn.addEventListener('click', runUndo);
+  root.appendChild(c('div', { style: { margin: '0 0 14px' } }, [undoBtn]));
 
   // (Discriminated result object — CodeQL js/trivial-conditional clean.)
   const cvLoad = await API.get('/api/cv')
@@ -124,13 +192,17 @@ Router.register('cv-studio', async () => {
   const humanIn = c('textarea', { className: 'input', rows: '5', 'data-i18n-placeholder': 'cvs.humanPh' });
   humanIn.placeholder = t('cvs.humanPh', 'Paste a stiff line or paragraph from your CV to rewrite in your voice…');
   const humanBtn = c('button', { className: 'btn btn-primary', type: 'button' }, t('cvs.humanize', '✨ Make it human'));
-  const humanOut = c('div', { style: { marginTop: '10px' } });
+  const humanOut = c('div', { style: { marginTop: '10px' }, 'data-studio-panel': 'human' });
   // CAR-119 — run/progress host for the humanize POST.
   const humanRun = c('div');
   humanBtn.addEventListener('click', async () => {
     const text = humanIn.value.trim();
     if (text.length < 20) { UI.toast(t('cvs.needText', 'Paste at least ~20 characters'), 'error'); return; }
     humanBtn.disabled = true;
+    // CAR-179 — snapshot the current result before the run overwrites it.
+    const prevHuman = humanLive;
+    pushUndo(() => repaintHuman(prevHuman));
+    humanLive = null;
     humanOut.textContent = '';
     const runCtrl = window.LlmPageKit.createRun({ etaSeconds: 30 }).mount(humanRun);
     try {
@@ -141,7 +213,9 @@ Router.register('cv-studio', async () => {
       });
       if (runCtrl.cancelled || runCtrl.signal.aborted) return; // a cancelled run paints nothing more
       if (res && res.markdown) {
-        humanOut.appendChild(c('div', { className: 'card', style: { padding: '12px' } }, c('div', { className: 'md', html: UI.md(res.markdown) })));
+        humanLive = res.markdown;
+        paintHumanResult(res.markdown);
+        rememberStudioState();
       } else {
         const body = c('div', null, [
           c('p', { style: { margin: '0 0 10px', color: 'var(--foggy)' } }, t('cvs.humanManualHelp', 'No LLM key is set. Copy this prompt into any LLM, then paste the rewrite back into your CV.')),
@@ -173,6 +247,10 @@ Router.register('cv-studio', async () => {
     const jd = jdIn.value.trim();
     if (jd.length < 40) { UI.toast(t('cvs.tailorNeedJd', 'Paste the job description (~40+ characters) first'), 'error'); return; }
     tailorBtn.disabled = true;
+    // CAR-179 — snapshot the current result before the run overwrites it.
+    const prevTailor = tailorLive;
+    pushUndo(() => repaintTailor(prevTailor));
+    tailorLive = null;
     tailorOut.textContent = '';
     const runCtrl = window.LlmPageKit.createRun({ etaSeconds: 60 }).mount(tailorRun);
     try {
@@ -183,12 +261,9 @@ Router.register('cv-studio', async () => {
       });
       if (runCtrl.cancelled || runCtrl.signal.aborted) return; // a cancelled run paints nothing more
       if (res && res.markdown) {
-        const md = res.markdown;
-        const card = c('div', { className: 'card', style: { padding: '12px' } }, [
-          c('div', { className: 'md', html: UI.md(md) }),
-          window.ReportExport ? ReportExport.actionsBar(() => md, () => t('cvs.tailorFileTitle', 'Tailored application'), t) : null,
-        ]);
-        tailorOut.appendChild(card);
+        tailorLive = res.markdown;
+        paintTailorResult(res.markdown);
+        rememberStudioState();
       } else {
         const body = c('div', null, [
           c('p', { style: { margin: '0 0 10px', color: 'var(--foggy)' } }, t('cvs.tailorManualHelp', 'No LLM key is set. Copy this prompt into any LLM, then paste the tailored résumé + cover letter back.')),
@@ -225,6 +300,10 @@ Router.register('cv-studio', async () => {
     const text = addTextIn.value.trim();
     if (!url && text.length < 80) { UI.toast(t('cvs.addNeedSrc', 'Give a URL or paste ~80+ characters of source text first'), 'error'); return; }
     addBtn.disabled = true;
+    // CAR-179 — snapshot the current result before the run overwrites it.
+    const prevAdd = addLive;
+    pushUndo(() => repaintAdd(prevAdd));
+    addLive = null;
     addOut.textContent = '';
     const runCtrl = window.LlmPageKit.createRun({ etaSeconds: 40 }).mount(addRun);
     try {
@@ -235,11 +314,9 @@ Router.register('cv-studio', async () => {
       });
       if (runCtrl.cancelled || runCtrl.signal.aborted) return; // a cancelled run paints nothing more
       if (res && res.markdown) {
-        addOut.appendChild(c('div', { className: 'card', style: { padding: '12px' } }, [
-          c('div', { className: 'md', html: UI.md(res.markdown) }),
-          c('p', { style: { fontSize: '12px', color: 'var(--foggy)', margin: '10px 0 0' } },
-            t('cvs.addReview', 'Review these suggestions and paste what you accept into the CV editor — nothing was saved automatically.')),
-        ]));
+        addLive = res.markdown;
+        paintAddResult(res.markdown);
+        rememberStudioState();
       } else {
         UI.modal(t('cvs.addTitle', 'Add to CV'), c('div', null, [
           c('p', { style: { margin: '0 0 10px', color: 'var(--foggy)' } }, t('cvs.addManualHelp', 'No LLM key is set. Copy this prompt into any LLM, then review the bullets it returns.')),
@@ -390,29 +467,9 @@ Router.register('cv-studio', async () => {
           t('cvs.vfUnavailable', 'Fact-check needs the parent career-ops project (verify-cv-facts.mjs) next to this app.')));
         return;
       }
-      const VERDICT = {
-        pass: [t('cvs.vfPass', 'Grounded — every claim traces to your CV, profile, or two-pager.'), 'badge badge-ok'],
-        warn: [t('cvs.vfWarn', 'Advisory — soft phrases worth a second look.'), 'badge badge-warn'],
-        block: [t('cvs.vfBlock', 'Unsupported claims — fix these before you send it.'), 'badge badge-bad'],
-      };
-      const v = VERDICT[res.verdict] || VERDICT.block;
-      const chips = (label, items, tone) => {
-        const list = Array.isArray(items) ? items : [];
-        if (!list.length) return null;
-        return c('div', { style: { margin: '0 0 10px' } }, [
-          c('strong', { style: { color: tone } }, `${label} (${list.length})`),
-          c('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '6px' } },
-            list.map((s) => c('span', { className: 'chip' },
-              String(s && typeof s === 'object' ? `${s.kind || ''}: ${s.value || ''}` : s)))),
-        ]);
-      };
-      vfOut.appendChild(c('div', { className: 'card', style: { padding: '12px' } }, [
-        c('div', { style: { margin: '0 0 8px' } }, c('span', { className: v[1] }, v[0])),
-        chips(t('cvs.vfInvented', 'Metric-like claims not in your sources'), res.invented, 'var(--danger, #d9534f)'),
-        chips(t('cvs.vfUnsupported', 'Facts not in your sources'), res.unsupportedFacts, 'var(--danger, #d9534f)'),
-        chips(t('cvs.vfForbidden', 'Forbidden phrases'), res.forbidden, 'var(--danger, #d9534f)'),
-        chips(t('cvs.vfWarnings', 'Advisory phrases'), res.warnings, 'var(--foggy)'),
-      ].filter(Boolean)));
+      vfLive = res;
+      paintVfResult(res);
+      rememberStudioState();
     } catch (err) {
       pending.remove();
       UI.toast((err && err.message) || t('cvs.vfFailed', 'Could not fact-check the text'), 'error');
@@ -425,6 +482,166 @@ Router.register('cv-studio', async () => {
       t('cvs.vfHelp', 'Paste a tailored CV or cover letter and check every asserted metric and fact against your real CV, profile, and two-pager. Catches numbers and claims that were not in your sources. Zero-LLM — nothing is written, suggestions only.')),
     vfIn, c('div', { style: { marginTop: '8px' } }, vfBtn), vfOut,
   ]));
+
+  // ── Keep the studio's work when you leave (CAR-179, upstream #6182) ──
+  // Paint helpers first (hoisted declarations — the run handlers above and
+  // the restore below share one path per panel, so an undo snapshot
+  // repaints exactly what the run painted).
+  function paintHumanResult(markdown) {
+    humanOut.appendChild(c('div', { className: 'card', style: { padding: '12px' } },
+      c('div', { className: 'md', html: UI.md(markdown) })));
+  }
+  function paintTailorResult(markdown) {
+    tailorOut.appendChild(c('div', { className: 'card', style: { padding: '12px' } }, [
+      c('div', { className: 'md', html: UI.md(markdown) }),
+      window.ReportExport ? ReportExport.actionsBar(() => markdown, () => t('cvs.tailorFileTitle', 'Tailored application'), t) : null,
+    ].filter(Boolean)));
+  }
+  function paintAddResult(markdown) {
+    addOut.appendChild(c('div', { className: 'card', style: { padding: '12px' } }, [
+      c('div', { className: 'md', html: UI.md(markdown) }),
+      c('p', { style: { fontSize: '12px', color: 'var(--foggy)', margin: '10px 0 0' } },
+        t('cvs.addReview', 'Review these suggestions and paste what you accept into the CV editor — nothing was saved automatically.')),
+    ]));
+  }
+  function paintVfResult(res) {
+    const VERDICT = {
+      pass: [t('cvs.vfPass', 'Grounded — every claim traces to your CV, profile, or two-pager.'), 'badge badge-ok'],
+      warn: [t('cvs.vfWarn', 'Advisory — soft phrases worth a second look.'), 'badge badge-warn'],
+      block: [t('cvs.vfBlock', 'Unsupported claims — fix these before you send it.'), 'badge badge-bad'],
+    };
+    const v = VERDICT[res.verdict] || VERDICT.block;
+    const chips = (label, items, tone) => {
+      const list = Array.isArray(items) ? items : [];
+      if (!list.length) return null;
+      return c('div', { style: { margin: '0 0 10px' } }, [
+        c('strong', { style: { color: tone } }, `${label} (${list.length})`),
+        c('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '6px' } },
+          list.map((s) => c('span', { className: 'chip' },
+            String(s && typeof s === 'object' ? `${s.kind || ''}: ${s.value || ''}` : s)))),
+      ]);
+    };
+    vfOut.appendChild(c('div', { className: 'card', style: { padding: '12px' } }, [
+      c('div', { style: { margin: '0 0 8px' } }, c('span', { className: v[1] }, v[0])),
+      chips(t('cvs.vfInvented', 'Metric-like claims not in your sources'), res.invented, 'var(--danger, #d9534f)'),
+      chips(t('cvs.vfUnsupported', 'Facts not in your sources'), res.unsupportedFacts, 'var(--danger, #d9534f)'),
+      chips(t('cvs.vfForbidden', 'Forbidden phrases'), res.forbidden, 'var(--danger, #d9534f)'),
+      chips(t('cvs.vfWarnings', 'Advisory phrases'), res.warnings, 'var(--foggy)'),
+    ].filter(Boolean)));
+  }
+  // An undo snapshot re-runs the panel's own paint path after clearing it.
+  // The fact-check verdict is deliberately NOT undoable — it is zero-LLM
+  // and re-runnable in place — it only joins the dirty probe and buffer.
+  function repaintHuman(markdown) {
+    humanLive = markdown;
+    humanOut.textContent = '';
+    if (markdown != null) paintHumanResult(markdown);
+    rememberStudioState();
+  }
+  function repaintTailor(markdown) {
+    tailorLive = markdown;
+    tailorOut.textContent = '';
+    if (markdown != null) paintTailorResult(markdown);
+    rememberStudioState();
+  }
+  function repaintAdd(markdown) {
+    addLive = markdown;
+    addOut.textContent = '';
+    if (markdown != null) paintAddResult(markdown);
+    rememberStudioState();
+  }
+
+  // The exact repaintable payload each result panel currently shows
+  // (markdown for the three LLM tools, the verdict object for the
+  // fact-check). Declared before the restore below consumes them; the run
+  // handlers' closures read them at click time.
+  let humanLive = null;
+  let tailorLive = null;
+  let addLive = null;
+  let vfLive = null;
+
+  // Restore buffer — written on every input event and after every
+  // paint/undo, consumed by the next render of this route.
+  const rememberStudioState = () => {
+    cvsRestoreBuffer = {
+      humanIn: humanIn.value,
+      jdIn: jdIn.value,
+      addUrlIn: addUrlIn.value,
+      addTextIn: addTextIn.value,
+      vfIn: vfIn.value,
+      human: humanLive,
+      tailor: tailorLive,
+      add: addLive,
+      vf: vfLive,
+    };
+  };
+  [humanIn, jdIn, addUrlIn, addTextIn, vfIn].forEach((inp) => inp.addEventListener('input', rememberStudioState));
+
+  // Upstream guards e.key === 'z'; the CAR-172 lesson adds the e.code
+  // chord so a non-QWERTY layout (Cmd+Я) still reaches the studio undo.
+  const isUndoChord = (e) => (e.key === 'z' || e.code === 'KeyZ') && !e.shiftKey && !!(e.metaKey || e.ctrlKey);
+  const onStudioUndoHotkey = (e) => {
+    if (!isUndoChord(e)) return;
+    const tgt = e.target;
+    if (tgt && (tgt.tagName === 'TEXTAREA' || tgt.tagName === 'INPUT' || tgt.isContentEditable)) return;
+    if (typeof e.preventDefault === 'function') e.preventDefault();
+    runUndo();
+  };
+  window.addEventListener('keydown', onStudioUndoHotkey);
+
+  // ── Keep the studio's work when you leave (CAR-179, upstream #6182) ──
+  if (cvsRestoreBuffer) {
+    const b = cvsRestoreBuffer;
+    humanIn.value = b.humanIn || '';
+    jdIn.value = b.jdIn || '';
+    addUrlIn.value = b.addUrlIn || '';
+    addTextIn.value = b.addTextIn || '';
+    vfIn.value = b.vfIn || '';
+    if (b.human) { humanLive = b.human; paintHumanResult(b.human); }
+    if (b.tailor) { tailorLive = b.tailor; paintTailorResult(b.tailor); }
+    if (b.add) { addLive = b.add; paintAddResult(b.add); }
+    if (b.vf) { vfLive = b.vf; paintVfResult(b.vf); }
+  }
+
+  // Dirty is probed LIVE at event time (UX-A10: never a flag an async
+  // handler may have missed): any typed input or any painted result.
+  const isStudioDirty = () => !!(humanIn.value.trim() || jdIn.value.trim() || addUrlIn.value.trim()
+    || addTextIn.value.trim() || vfIn.value.trim() || humanLive || tailorLive || addLive || vfLive);
+
+  const onStudioBeforeUnload = (e) => {
+    if (!isStudioDirty()) return;
+    e.preventDefault();
+    e.returnValue = '';
+  };
+  const detachStudioView = () => {
+    window.removeEventListener('beforeunload', onStudioBeforeUnload);
+    window.removeEventListener('hashchange', onStudioHashChange);
+    window.removeEventListener('keydown', onStudioUndoHotkey);
+    if (cvsViewDetach === detachStudioView) cvsViewDetach = null;
+  };
+  const onStudioHashChange = () => {
+    if (cvsRouteHash() === '#/cv-studio') return;
+    if (!isStudioDirty()) { detachStudioView(); return; }
+    const ok = window.confirm(t('cvs.unsavedConfirm', 'You have unsaved CV Studio work. Leave anyway?'));
+    if (!ok) {
+      // The hash already changed by the time hashchange fires — rewind to
+      // keep the user on the page (preventDefault is a no-op on
+      // hashchange). Detach first: the re-rendered view registers its own
+      // set, and the restore buffer brings the work back.
+      detachStudioView();
+      window.location.hash = '#/cv-studio';
+      return;
+    }
+    // Leaving confirmed — the buffer keeps the work for the next visit.
+    rememberStudioState();
+    detachStudioView();
+  };
+  // Single-instance lifecycle (cv.js CAR-20): drop the previous render's
+  // listeners before registering this instance's set.
+  if (cvsViewDetach) cvsViewDetach();
+  cvsViewDetach = detachStudioView;
+  window.addEventListener('beforeunload', onStudioBeforeUnload);
+  window.addEventListener('hashchange', onStudioHashChange);
 
   return root;
 });

@@ -1146,6 +1146,9 @@ window.__I18N_DICT_ES = {
   // ── CV Studio (Epic 21 / v1.92.0) ──
   'nav.cvStudio': "CV Studio",
   'cvs.title': "CV Studio",
+  'cvs.undo': "Deshacer",
+  'cvs.undoHint': "Restaurar el resultado anterior de CV Studio.",
+  'cvs.unsavedConfirm': "Tienes trabajo sin guardar en CV Studio. ¿Salir de todos modos?",
   'cvs.vfTitle': "Verifica los datos de tu CV",
   'cvs.vfHelp': "Pega un CV o carta adaptados y comprueba cada métrica y dato afirmado contra tu CV, perfil y two-pager reales. Detecta números y afirmaciones que no estaban en tus fuentes. Sin LLM — no se escribe nada, solo sugerencias.",
   'cvs.vfPlaceholder': "Pega aquí el CV o la carta generados para verificarlos contra tu CV real…",

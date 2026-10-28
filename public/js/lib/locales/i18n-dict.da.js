@@ -1145,6 +1145,9 @@ window.__I18N_DICT_DA = {
   // ── CV Studio (Epic 21 / v1.92.0) ──
   'nav.cvStudio': "CV Studio",
   'cvs.title': "CV Studio",
+  'cvs.undo': "Fortryd",
+  'cvs.undoHint': "Gendan det forrige CV Studio-resultat.",
+  'cvs.unsavedConfirm': "Du har ikke-gemt CV Studio-arbejde. Forlad alligevel?",
   'cvs.vfTitle': "Faktatjek dit CV",
   'cvs.vfHelp': "Indsæt et tilpasset CV eller følgebrev og tjek hver påstået måling og faktum mod dit rigtige CV, profil og two-pager. Fanger tal og påstande, der ikke var i dine kilder. Ingen LLM — intet gemmes, kun forslag.",
   'cvs.vfPlaceholder': "Indsæt det genererede CV eller følgebrev her for at tjekke det mod dit rigtige CV…",

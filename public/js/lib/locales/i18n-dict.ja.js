@@ -1146,6 +1146,9 @@ window.__I18N_DICT_JA = {
   // ── CV Studio (Epic 21 / v1.92.0) ──
   'nav.cvStudio': "CVスタジオ",
   'cvs.title': "CVスタジオ",
+  'cvs.undo': "元に戻す",
+  'cvs.undoHint': "前回のCVスタジオの結果を復元します。",
+  'cvs.unsavedConfirm': "CVスタジオに保存されていない作業があります。それでも移動しますか?",
   'cvs.vfTitle': "CV のファクトチェック",
   'cvs.vfHelp': "調整済みの CV やカバーレターを貼り付け、主張された数値や事実を実際の CV・プロフィール・two-pager と照合します。出典になかった数字や主張を検出。LLM 不使用 — 何も保存せず、提案のみ。",
   'cvs.vfPlaceholder': "生成された CV やカバーレターをここに貼り付けて実際の CV と照合…",

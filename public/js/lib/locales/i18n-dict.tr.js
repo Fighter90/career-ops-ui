@@ -1146,6 +1146,9 @@ window.__I18N_DICT_TR = {
   // ── CV Studio (Epic 21 / v1.92.0) ──
   'nav.cvStudio': "CV Stüdyosu",
   'cvs.title': "CV Stüdyosu",
+  'cvs.undo': "Geri al",
+  'cvs.undoHint': "Önceki CV Stüdyosu sonucunu geri yükleyin.",
+  'cvs.unsavedConfirm': "CV Stüdyosu'nda kaydedilmemiş çalışmanız var. Yine de ayrılmak istiyor musunuz?",
   'cvs.vfTitle': "CV'nizin gerçeklerini denetleyin",
   'cvs.vfHelp': "Uyarlanmış bir CV veya ön yazı yapıştırın ve öne sürülen her metriği ve olguyu gerçek CV, profil ve two-pager'ınızla karşılaştırın. Kaynaklarınızda olmayan sayı ve iddiaları yakalar. LLM yok — hiçbir şey yazılmaz, yalnızca öneri.",
   'cvs.vfPlaceholder': "Üretilen CV veya ön yazıyı gerçek CV'nizle denetlemek için buraya yapıştırın…",
