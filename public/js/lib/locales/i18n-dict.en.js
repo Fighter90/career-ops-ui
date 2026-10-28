@@ -1248,6 +1248,9 @@ window.__I18N_DICT_EN = {
   // ── CV Studio (Epic 21 / v1.92.0) ──
   'nav.cvStudio': "CV Studio",
   'cvs.title': "CV Studio",
+  'cvs.undo': "Undo",
+  'cvs.undoHint': "Restore the previous CV Studio result.",
+  'cvs.unsavedConfirm': "You have unsaved CV Studio work. Leave anyway?",
   'cvs.vfTitle': "Fact-check your CV",
   'cvs.vfHelp': "Paste a tailored CV or cover letter and check every asserted metric and fact against your real CV, profile, and two-pager. Catches numbers and claims that were not in your sources. Zero-LLM — nothing is written, suggestions only.",
   'cvs.vfPlaceholder': "Paste the generated CV or cover letter here to fact-check it against your real CV…",

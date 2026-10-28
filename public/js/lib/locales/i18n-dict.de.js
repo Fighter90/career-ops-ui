@@ -1146,6 +1146,9 @@ window.__I18N_DICT_DE = {
   // ── CV Studio (Epic 21 / v1.92.0) ──
   'nav.cvStudio': "CV Studio",
   'cvs.title': "CV Studio",
+  'cvs.undo': "Rückgängig",
+  'cvs.undoHint': "Das vorherige Ergebnis in CV Studio wiederherstellen.",
+  'cvs.unsavedConfirm': "Sie haben nicht gespeicherte Arbeiten in CV Studio. Trotzdem verlassen?",
   'cvs.vfTitle': "Fakten im Lebenslauf prüfen",
   'cvs.vfHelp': "Füge einen angepassten Lebenslauf oder ein Anschreiben ein und prüfe jede behauptete Kennzahl und Tatsache gegen deinen echten Lebenslauf, dein Profil und den Two-Pager. Findet Zahlen und Aussagen, die nicht in deinen Quellen standen. Kein LLM — nichts wird geschrieben, nur Vorschläge.",
   'cvs.vfPlaceholder': "Füge hier den generierten Lebenslauf oder das Anschreiben ein, um es gegen deinen echten Lebenslauf zu prüfen…",

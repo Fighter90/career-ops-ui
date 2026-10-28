@@ -1146,6 +1146,9 @@ window.__I18N_DICT_ZH_TW = {
   // ── CV Studio (Epic 21 / v1.92.0) ──
   'nav.cvStudio': "CV 工作室",
   'cvs.title': "CV 工作室",
+  'cvs.undo': "復原",
+  'cvs.undoHint': "還原上一個 CV 工作室的結果。",
+  'cvs.unsavedConfirm': "CV 工作室中有未儲存的工作。仍要離開嗎?",
   'cvs.vfTitle': "核對你的履歷事實",
   'cvs.vfHelp': "貼上一份適配的履歷或求職信，將其中每個斷言的指標和事實與你真實的履歷、檔案和 two-pager 逐一核對。抓出來源中不存在的數字與主張。零 LLM——不寫入任何內容，僅為建議。",
   'cvs.vfPlaceholder': "把產生的履歷或求職信貼到這裡，與你真實的履歷核對…",
