@@ -24,17 +24,12 @@
 .callout { background: var(--callout-bg, var(--elev)); border-color: var(--callout-border, var(--slate)); color: var(--callout-text, var(--hof)); }
 /* CAR-58 #4 (v1.247.0) — `:not(.btn)`: the hero banner's CTA is a .btn-primary anchor, and this rule (0,2,1) outranked .btn-primary's white — dark amber on crimson. Text links keep the per-theme link color. */
 .callout a:not(.btn) { color: var(--callout-link, var(--rausch-text)); text-decoration: underline; }
-.callout--info { --callout-bg: #eef5ff; --callout-border: #9bb6e0; --callout-text: #1f3b6e; --callout-link: #1d4e89; }
-[data-theme="dark"] .callout--info { --callout-bg: #1d2434; --callout-border: #3d5a86; --callout-text: #c9d9f2; --callout-link: #8ab4f8; }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]):not([data-theme="dark"]) .callout--info { --callout-bg: #1d2434; --callout-border: #3d5a86; --callout-text: #c9d9f2; --callout-link: #8ab4f8; }
-}
-/* CAR-58 #4 (v1.247.0) — yellow warning banners (config / batch / dashboard hero): same token contract as --info; dark swaps to a warm dark surface. */
-.callout--warn { --callout-bg: #fff8e6; --callout-border: #f0c674; --callout-text: #6b5200; --callout-link: #8a6300; }
-[data-theme="dark"] .callout--warn { --callout-bg: #2b2413; --callout-border: #6e5a1e; --callout-text: #ecd9a0; --callout-link: #f0c674; }
-@media (prefers-color-scheme: dark) {
-  :root:not([data-theme="light"]):not([data-theme="dark"]) .callout--warn { --callout-bg: #2b2413; --callout-border: #6e5a1e; --callout-text: #ecd9a0; --callout-link: #f0c674; }
-}
+/* Phase-2 v3 — callout families ride the cv3 info/warn soft/ink pairs. The cv3
+   vars are theme-aware, so ONE rule per family replaces the old light+dark+system
+   triple; contrast ink-on-soft: info 6.22/8.10:1, warn 5.76/8.52:1 (light/dark). */
+.callout--info { --callout-bg: var(--cv3-info-soft); --callout-border: var(--cv3-info); --callout-text: var(--cv3-info-ink); --callout-link: var(--cv3-info-ink); }
+/* CAR-58 #4 (v1.247.0) — yellow warning banners (config / batch / dashboard hero): same token contract as --info. */
+.callout--warn { --callout-bg: var(--cv3-warn-soft); --callout-border: var(--cv3-warn); --callout-text: var(--cv3-warn-ink); --callout-link: var(--cv3-warn-ink); }
 
 .card-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-4); }
 /* PROFILE-1 — `anywhere`, not `break-word`: only `anywhere` counts toward min-content, which is what bursts the track (tests/playwright-card-overflow.mjs). */
@@ -89,14 +84,16 @@
   transition: color var(--transition), border-color var(--transition);
 }
 .tracker-tab:hover { color: var(--hof); }
-/* CAR-23 v1.243.0 — TEXT from AA-tuned --rausch-text (raw --rausch on --paper: 3.52/2.94); underline stays decorative. */
+/* Phase-2 v3 — the active tab is ACCENT semantics: text from --accent-soft-ink
+   (on --paper 8.38/8.63:1 light/dark), underline rides the accent --rausch.
+   (rausch-text is the danger ink now — red text on a blue underline would clash.) */
 .tracker-tab.is-active {
-  color: var(--rausch-text); border-bottom-color: var(--rausch);
+  color: var(--accent-soft-ink); border-bottom-color: var(--rausch);
 }
 .tracker-tab-n {
   color: var(--foggy); font-weight: 500; font-variant-numeric: tabular-nums;
 }
-.tracker-tab.is-active .tracker-tab-n { color: var(--rausch-text); }
+.tracker-tab.is-active .tracker-tab-n { color: var(--accent-soft-ink); }
 
 /* v1.58.21 (U-1) — removed `.cv-breadcrumb` (was v1.56.0 UX-9 chip).
    #/cv now uses the standard `.page-title` + `.page-subtitle` pair
@@ -245,12 +242,15 @@
      the numbers in logical order in every locale (same as dir="ltr" markup). */
   direction: ltr; unicode-bidi: isolate;
 }
-.score-high { background: rgba(0,138,5,.16); color: var(--kazan-text); }
-.score-mid { background: rgba(255,180,0,.18); color: var(--darjeeling-text); }
+/* Phase-2 v3 — score chips paint the cv3 band ink/wash pairs (app.css --band-*):
+   ink on its own wash ≥6.1:1 light / ≥7.2:1 dark. high=A(green), mid=D(warm),
+   low=G(red); the neutral 3.0–3.8 tone rides the cv3 neutral pair. */
+.score-high { background: var(--band-a-bg); color: var(--band-a-ink); }
+.score-mid { background: var(--band-d-bg); color: var(--band-d-ink); }
 /* v1.128.0 (parent web/ port #3) — the neutral fourth tone (3.0–3.8): a
    passing-but-unremarkable score, distinct from the warn-yellow of 3.8–4.2. */
-.score-muted { background: rgba(120,120,128,.14); color: var(--foggy); }
-.score-low { background: rgba(255,56,92,.13); color: var(--rausch-text); }
+.score-muted { background: var(--cv3-neutral-soft); color: var(--cv3-neutral-ink); }
+.score-low { background: var(--band-g-bg); color: var(--band-g-ink); }
 /* v1.22.0 (M-3) — WCAG 1.4.1 "use of color". Prefix a redundant glyph
  * so the high/mid/low tier is legible without perceiving hue. The
  * glyph uses ::before so existing render sites don't need to change.
@@ -337,13 +337,13 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
 .input:focus-visible,
 .textarea:focus-visible,
 .select:focus-visible {
-  outline: 2px solid var(--rausch, #ff385c);
+  outline: 2px solid var(--accent-c, var(--rausch, #ff385c));
   outline-offset: 0;
-  box-shadow: 0 0 0 3px rgba(255, 56, 92, 0.18);
-  border-color: var(--rausch, #ff385c);
+  box-shadow: 0 0 0 3px color-mix(in srgb, var(--accent-c, var(--rausch, #ff385c)) 18%, transparent);
+  border-color: var(--accent-c, var(--rausch, #ff385c));
 }
 .searchbar input:focus-visible {
-  outline: 2px solid var(--rausch, #ff385c);
+  outline: 2px solid var(--accent-c, var(--rausch, #ff385c));
   outline-offset: 2px;
 }
 .textarea { resize: vertical; min-height: 140px; font-family: ui-monospace, 'SF Mono', Menlo, monospace; line-height: 1.5; }

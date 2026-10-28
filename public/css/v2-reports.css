@@ -293,10 +293,12 @@
 
 /* ── score pills: the missing 4th band (components.css is append-only for
    other owners; the good band colour is defined here where the view that
-   introduced it lives). Cascade: this file loads after components.css. ──── */
+   introduced it lives). Phase-2 v3: rides the cv3 band-b ink/wash pair
+   (ink on wash 6.37:1 light / 8.52:1 dark). Cascade: this file loads after
+   components.css. ──── */
 .score-pill.score-good {
-  background: rgba(0, 138, 5, .10);
-  color: var(--kazan-text);
+  background: var(--band-b-bg);
+  color: var(--band-b-ink);
 }
 
 /* ── legend ─────────────────────────────────────────────────────────────── */
