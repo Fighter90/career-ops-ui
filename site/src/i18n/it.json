@@ -167,7 +167,7 @@
   "faq.q7": "Quali job board può scansionare?",
   "faq.a7": "~{adapters} adattatori: Greenhouse, Ashby, Lever, Workable, SmartRecruiters, Workday, Recruitee, Teamtailor, board di lavoro remoto e fonti russe (hh.ru, Habr Career, GetMatch e altre). Le board nuove sono semplici file adattatore drop-in.",
   "faq.q8": "Quali lingue supporta?",
-  "faq.a8": "{n}: inglese, spagnolo, francese, portoghese (BR), coreano, giapponese, russo, cinese (semplificato e tradizionale), polacco, ucraino, danese, arabo (RTL), tedesco, italiano, turco, hindi e tamil — inclusa la guida utente completa.",
+  "faq.a8": "{n}: inglese, spagnolo, francese, portoghese (BR), coreano, giapponese, russo, cinese (semplificato e tradizionale), polacco, ucraino, danese, arabo (RTL), tedesco, italiano, turco, hindi, tamil e vietnamita — inclusa la guida utente completa.",
   "faq.q9": "Posso contribuire?",
   "faq.a9": "Sì — issue, pull request e traduzioni sono benvenute. Parti dalla guida per contribuire su GitHub.",
   "faq.q10": "È affiliato a career-ops?",
@@ -225,7 +225,7 @@
   "license.lead": "career-ops-ui è libero e open source con licenza MIT. Il testo canonico in inglese qui sotto è la versione legalmente vincolante; il titolare del copyright è Sergei Emelianov (Fighter90) e i contributori di career-ops-ui.",
   "license.notice": "Componenti di terze parti e ciò che la licenza copre e non copre: NOTICE.md",
   "changelog.title": "Changelog",
-  "changelog.lead": "Ogni cambiamento rilevante, release dopo release. Lo stesso file è distribuito nel repository ed è tradotto in tutte le 18 lingue.",
+  "changelog.lead": "Ogni cambiamento rilevante, release dopo release. Lo stesso file è distribuito nel repository ed è tradotto in tutte le {n} lingue.",
   "changelog.archive": "Archivio per mese",
   "changelog.page": "Pagina {n}",
   "changelog.pagination": "Pagine del changelog",
@@ -263,5 +263,5 @@
   "stats.t.providers": "Provider AI",
   "stats.t.license": "Licenza",
   "stats.t.local": "in locale",
-  "stats.note": "121 fonti = 116 adattatori di job board in inglese + 5 board in russo. I numeri vengono letti dal registro live durante la compilazione del sito — mai digitati a mano."
+  "stats.note": "{sources} fonti = {en} adattatori di job board in inglese + {ru} board in russo. I numeri vengono letti dal registro live durante la compilazione del sito — mai digitati a mano."
 }

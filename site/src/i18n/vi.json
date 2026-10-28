@@ -222,7 +222,7 @@
   "license.lead": "career-ops-ui miễn phí và mã nguồn mở theo giấy phép MIT. Văn bản tiếng Anh chính thức bên dưới là phiên bản có giá trị pháp lý; chủ sở hữu bản quyền là Sergei Emelianov (Fighter90) và các cộng tác viên career-ops-ui.",
   "license.notice": "Các thành phần bên thứ ba và những gì giấy phép có và không bao phủ: NOTICE.md",
   "changelog.title": "Nhật ký thay đổi",
-  "changelog.lead": "Mọi thay đổi đáng chú ý, theo từng bản phát hành. Cùng một tệp đi kèm repository và được dịch sang cả 19 ngôn ngữ.",
+  "changelog.lead": "Mọi thay đổi đáng chú ý, theo từng bản phát hành. Cùng một tệp đi kèm repository và được dịch sang cả {n} ngôn ngữ.",
   "changelog.archive": "Lưu trữ theo tháng",
   "changelog.page": "Trang {n}",
   "changelog.pagination": "Trang nhật ký thay đổi",
@@ -263,5 +263,5 @@
   "stats.t.providers": "Nhà cung cấp AI",
   "stats.t.license": "Giấy phép",
   "stats.t.local": "cục bộ",
-  "stats.note": "121 nguồn = 116 adapter cho các bảng việc làm tiếng Anh + 5 bảng tiếng Nga. Các con số được đọc từ registry trực tiếp khi build trang — không bao giờ nhập tay."
+  "stats.note": "{sources} nguồn = {en} adapter cho các bảng việc làm tiếng Anh + {ru} bảng tiếng Nga. Các con số được đọc từ registry trực tiếp khi build trang — không bao giờ nhập tay."
 }

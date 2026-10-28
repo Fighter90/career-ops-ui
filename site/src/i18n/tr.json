@@ -167,7 +167,7 @@
   "faq.q7": "Hangi iş panolarını tarayabilir?",
   "faq.a7": "~{adapters} adaptör: Greenhouse, Ashby, Lever, Workable, SmartRecruiters, Workday, Recruitee, Teamtailor, uzaktan çalışma panoları ve Rus kaynakları (hh.ru, Habr Career, GetMatch ve dahası). Yeni panolar, bırak-çalışsın adaptör dosyalarıdır.",
   "faq.q8": "Hangi dilleri destekliyor?",
-  "faq.a8": "{n}: İngilizce, İspanyolca, Fransızca, Portekizce (BR), Korece, Japonca, Rusça, Çince (basitleştirilmiş ve geleneksel), Lehçe, Ukraynaca, Danca, Arapça (RTL), Almanca, İtalyanca, Türkçe, Hintçe ve Tamilce — eksiksiz kullanıcı kılavuzu dahil.",
+  "faq.a8": "{n}: İngilizce, İspanyolca, Fransızca, Portekizce (BR), Korece, Japonca, Rusça, Çince (basitleştirilmiş ve geleneksel), Lehçe, Ukraynaca, Danca, Arapça (RTL), Almanca, İtalyanca, Türkçe, Hintçe, Tamilce ve Vietnamca — eksiksiz kullanıcı kılavuzu dahil.",
   "faq.q9": "Katkıda bulunabilir miyim?",
   "faq.a9": "Evet — issue'lar, pull request'ler ve çeviriler memnuniyetle karşılanır. GitHub'daki katkı kılavuzuyla başlayın.",
   "faq.q10": "career-ops ile bağlantılı mı?",
@@ -225,7 +225,7 @@
   "license.lead": "career-ops-ui, MIT lisansı altında özgür ve açık kaynaktır. Aşağıdaki resmi İngilizce metin yasal olarak bağlayıcı sürümdür; telif hakkı sahibi Sergei Emelianov (Fighter90) ve career-ops-ui katkıda bulunanlarıdır.",
   "license.notice": "Üçüncü taraf bileşenler ve lisansın kapsadığı/kapsamadığı hususlar: NOTICE.md",
   "changelog.title": "Değişiklik günlüğü",
-  "changelog.lead": "Her önemli değişiklik, sürüm sürüm. Aynı dosya depoda yer alır ve 18 dilin tümüne çevrilmiştir.",
+  "changelog.lead": "Her önemli değişiklik, sürüm sürüm. Aynı dosya depoda yer alır ve {n} dilin tümüne çevrilmiştir.",
   "changelog.archive": "Aylara göre arşiv",
   "changelog.page": "Sayfa {n}",
   "changelog.pagination": "Değişiklik günlüğü sayfaları",
@@ -263,5 +263,5 @@
   "stats.t.providers": "Yapay zekâ sağlayıcıları",
   "stats.t.license": "Lisans",
   "stats.t.local": "yerel",
-  "stats.note": "121 kaynak = 116 İngilizce iş panosu adaptörü + 5 Rusça pano. Sayılar site derlenirken canlı kayıttan okunur — asla elle yazılmaz."
+  "stats.note": "{sources} kaynak = {en} İngilizce iş panosu adaptörü + {ru} Rusça pano. Sayılar site derlenirken canlı kayıttan okunur — asla elle yazılmaz."
 }

@@ -167,7 +167,7 @@
   "faq.q7": "Welche Jobbörsen kann es scannen?",
   "faq.a7": "~{adapters} Adapter: Greenhouse, Ashby, Lever, Workable, SmartRecruiters, Workday, Recruitee, Teamtailor, Remote-Work-Börsen und russische Quellen (hh.ru, Habr Career, GetMatch und mehr). Neue Börsen sind einfache Drop-in-Adapterdateien.",
   "faq.q8": "Welche Sprachen werden unterstützt?",
-  "faq.a8": "{n}: Englisch, Spanisch, Französisch, Portugiesisch (BR), Koreanisch, Japanisch, Russisch, Chinesisch (vereinfacht und traditionell), Polnisch, Ukrainisch, Dänisch, Arabisch (RTL), Deutsch, Italienisch, Türkisch, Hindi und Tamil — inklusive vollständigem Handbuch.",
+  "faq.a8": "{n}: Englisch, Spanisch, Französisch, Portugiesisch (BR), Koreanisch, Japanisch, Russisch, Chinesisch (vereinfacht und traditionell), Polnisch, Ukrainisch, Dänisch, Arabisch (RTL), Deutsch, Italienisch, Türkisch, Hindi, Tamil und Vietnamesisch — inklusive vollständigem Handbuch.",
   "faq.q9": "Kann ich beitragen?",
   "faq.a9": "Ja — Issues, Pull Requests und Übersetzungen sind willkommen. Starte mit dem Contributing-Guide auf GitHub.",
   "faq.q10": "Ist das Projekt mit career-ops verbunden?",
@@ -225,7 +225,7 @@
   "license.lead": "career-ops-ui ist frei und Open Source unter der MIT-Lizenz. Der kanonische englische Text unten ist die rechtlich bindende Fassung; Urheberrechtsinhaber sind Sergei Emelianov (Fighter90) und die career-ops-ui-Mitwirkenden.",
   "license.notice": "Drittanbieter-Komponenten und was die Lizenz abdeckt und nicht abdeckt: NOTICE.md",
   "changelog.title": "Changelog",
-  "changelog.lead": "Jede nennenswerte Änderung, Release für Release. Dieselbe Datei liegt im Repository und ist in alle 18 Sprachen übersetzt.",
+  "changelog.lead": "Jede nennenswerte Änderung, Release für Release. Dieselbe Datei liegt im Repository und ist in alle {n} Sprachen übersetzt.",
   "changelog.archive": "Archiv nach Monaten",
   "changelog.page": "Seite {n}",
   "changelog.pagination": "Changelog-Seiten",
@@ -263,5 +263,5 @@
   "stats.t.providers": "KI-Anbieter",
   "stats.t.license": "Lizenz",
   "stats.t.local": "lokal",
-  "stats.note": "121 Quellen = 116 Adapter für englischsprachige Jobbörsen + 5 russischsprachige Börsen. Die Zahlen werden beim Build der Website aus der Live-Registry gelesen — nie von Hand eingetragen."
+  "stats.note": "{sources} Quellen = {en} Adapter für englischsprachige Jobbörsen + {ru} russischsprachige Börsen. Die Zahlen werden beim Build der Website aus der Live-Registry gelesen — nie von Hand eingetragen."
 }

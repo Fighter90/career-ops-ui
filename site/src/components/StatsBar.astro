@@ -28,6 +28,12 @@ const sources = facts.sources.length;
 // The tests tile keeps the "+" convention: floor to the nearest hundred so a
 // release-pinned count can never overstate the live suite.
 const testsRounded = facts.tests ? Math.floor(facts.tests / 100) * 100 : null;
+// CAR-138: stats.note carries {sources}/{en}/{ru} placeholders instead of
+// typed numbers — a registry change updates the note at build, never by hand.
+const note = t(locale, 'stats.note')
+  .replace('{sources}', String(sources))
+  .replace('{en}', String(facts.adaptersEn))
+  .replace('{ru}', String(facts.adaptersRu));
 
 type Tile = { value: string; label: string; count?: number; suffix?: string };
 
@@ -80,6 +86,6 @@ const tiles: Tile[] = [
         </li>
       ))}
     </ul>
-    <p class="num-note reveal">{t(locale, 'stats.note')}</p>
+    <p class="num-note reveal">{note}</p>
   </div>
 </section>

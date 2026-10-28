@@ -284,10 +284,42 @@ test('the numbers band derives every count from facts.json (never a literal)', (
   assert.match(stats, /facts\.tests/, 'tests tile must come from facts');
   assert.match(stats, /facts\.locales/, 'locales tile must come from facts');
   assert.match(stats, /VERIFIED 2026-10-27/, 'the verification-date comment must stay');
+  // CAR-138: the registry note below the band is placeholder-substituted too —
+  // a typed 121/116/5 in any dictionary is exactly the drift the band forbids.
+  assert.match(stats, /replace\('\{sources\}'/, 'stats.note must substitute {sources}');
+  assert.match(stats, /facts\.adaptersEn/, 'the EN-adapter count must come from facts');
+  assert.match(stats, /facts\.adaptersRu/, 'the RU-board count must come from facts');
   // No hardcoded count in the rendered markup (the verified comment lives in
   // the frontmatter; digits there are fine).
   const markup = stats.slice(stats.indexOf('---', 4) + 3);
   assert.doesNotMatch(markup, /\b12[01]\b/, 'rendered markup must not hardcode the sources count');
+});
+
+test('CAR-138 — site page facts derive from facts.json, never typed by hand', () => {
+  const VI = {
+    en: 'Vietnamese', ru: 'вьетнамский', ar: 'الفيتنامية', da: 'vietnamesisk',
+    de: 'Vietnamesisch', es: 'vietnamita', fr: 'vietnamien', hi: 'वियतनामी',
+    it: 'vietnamita', ja: 'ベトナム語', ko: '베트남어', pl: 'wietnamski',
+    'pt-BR': 'vietnamita', ta: 'வியட்நாமீஸ்', tr: 'Vietnamca', uk: "в'єтнамська",
+    vi: 'Tiếng Việt', 'zh-CN': '越南语', 'zh-TW': '越南文',
+  };
+  assert.equal(Object.keys(VI).length, SITE_LOCALES.length, 'the Vietnamese word map must cover every site locale');
+  for (const code of SITE_LOCALES) {
+    const dict = JSON.parse(readFileSync(resolve(SITE, 'src', 'i18n', `${code}.json`), 'utf8'));
+    // stats.note: placeholders only — no typed counts left in any locale
+    assert.doesNotMatch(dict['stats.note'], /\d/, `${code}.stats.note must not carry typed counts`);
+    assert.ok(dict['stats.note'].includes('{sources}') && dict['stats.note'].includes('{en}') && dict['stats.note'].includes('{ru}'),
+      `${code}.stats.note must carry the {sources}/{en}/{ru} placeholders`);
+    // changelog.lead: the language count is a placeholder
+    assert.doesNotMatch(dict['changelog.lead'], /18|19/, `${code}.changelog.lead must not carry a typed language count`);
+    assert.ok(dict['changelog.lead'].includes('{n}'), `${code}.changelog.lead must carry {n}`);
+    // faq.a8: the enumerated language list must include Vietnamese (v1.255.0)
+    assert.ok(dict['faq.a8'].includes(VI[code]), `${code}.faq.a8 must list Vietnamese`);
+  }
+  // the substitution sites actually consume facts
+  const changelogPage = readFileSync(resolve(SITE, 'src', 'components', 'ChangelogPage.astro'), 'utf8');
+  assert.match(changelogPage, /replace\('\{n\}', String\(facts\.locales\)\)/,
+    'changelog.lead must substitute {n} from facts.locales');
 });
 
 test('the landing screenshot keys exist in all 19 site locale dictionaries', () => {

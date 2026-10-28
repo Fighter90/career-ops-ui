@@ -167,7 +167,7 @@
   "faq.q7": "Quais portais de vagas ele consegue varrer?",
   "faq.a7": "~{adapters} adaptadores: Greenhouse, Ashby, Lever, Workable, SmartRecruiters, Workday, Recruitee, Teamtailor, portais de trabalho remoto e fontes russas (hh.ru, Habr Career, GetMatch e mais). Portais novos são arquivos adaptadores drop-in.",
   "faq.q8": "Quais idiomas ele suporta?",
-  "faq.a8": "{n}: inglês, espanhol, francês, português (BR), coreano, japonês, russo, chinês (simplificado e tradicional), polonês, ucraniano, dinamarquês, árabe (RTL), alemão, italiano, turco, hindi e tâmil — incluindo o guia do usuário completo.",
+  "faq.a8": "{n}: inglês, espanhol, francês, português (BR), coreano, japonês, russo, chinês (simplificado e tradicional), polonês, ucraniano, dinamarquês, árabe (RTL), alemão, italiano, turco, hindi, tâmil e vietnamita — incluindo o guia do usuário completo.",
   "faq.q9": "Posso contribuir?",
   "faq.a9": "Sim — issues, pull requests e traduções são bem-vindos. Comece pelo guia de contribuição no GitHub.",
   "faq.q10": "É afiliado ao career-ops?",
@@ -225,7 +225,7 @@
   "license.lead": "O career-ops-ui é gratuito e open source sob a licença MIT. O texto canônico em inglês abaixo é a versão juridicamente vinculante; o titular dos direitos autorais é Sergei Emelianov (Fighter90) e os contribuidores do career-ops-ui.",
   "license.notice": "Componentes de terceiros e o que a licença cobre e não cobre: NOTICE.md",
   "changelog.title": "Changelog",
-  "changelog.lead": "Todas as mudanças relevantes, versão por versão. O mesmo arquivo é publicado no repositório e traduzido nos 18 idiomas.",
+  "changelog.lead": "Todas as mudanças relevantes, versão por versão. O mesmo arquivo é publicado no repositório e traduzido nos {n} idiomas.",
   "changelog.archive": "Arquivo por mês",
   "changelog.page": "Página {n}",
   "changelog.pagination": "Páginas do registro",
@@ -263,5 +263,5 @@
   "stats.t.providers": "Provedores de IA",
   "stats.t.license": "Licença",
   "stats.t.local": "local",
-  "stats.note": "121 fontes = 116 adaptadores de portais em inglês + 5 portais em russo. Os números são lidos do registro ativo quando o site é compilado — nunca digitados à mão."
+  "stats.note": "{sources} fontes = {en} adaptadores de portais em inglês + {ru} portais em russo. Os números são lidos do registro ativo quando o site é compilado — nunca digitados à mão."
 }

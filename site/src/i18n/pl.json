@@ -167,7 +167,7 @@
   "faq.q7": "Jakie portale z ofertami potrafi skanować?",
   "faq.a7": "~{adapters} adapterów: Greenhouse, Ashby, Lever, Workable, SmartRecruiters, Workday, Recruitee, Teamtailor, portale pracy zdalnej i rosyjskie źródła (hh.ru, Habr Career, GetMatch i inne). Nowe portale to zwykłe pliki adapterów typu drop-in.",
   "faq.q8": "Jakie języki obsługuje?",
-  "faq.a8": "{n}: angielski, hiszpański, francuski, portugalski (BR), koreański, japoński, rosyjski, chiński (uproszczony i tradycyjny), polski, ukraiński, duński, arabski (RTL), niemiecki, włoski, turecki, hindi i tamilski — łącznie z pełnym podręcznikiem.",
+  "faq.a8": "{n}: angielski, hiszpański, francuski, portugalski (BR), koreański, japoński, rosyjski, chiński (uproszczony i tradycyjny), polski, ukraiński, duński, arabski (RTL), niemiecki, włoski, turecki, hindi, tamilski i wietnamski — łącznie z pełnym podręcznikiem.",
   "faq.q9": "Czy mogę współtworzyć projekt?",
   "faq.a9": "Tak — issues, pull requesty i tłumaczenia są mile widziane. Zacznij od przewodnika współtwórcy na GitHubie.",
   "faq.q10": "Czy projekt jest powiązany z career-ops?",
@@ -225,7 +225,7 @@
   "license.lead": "career-ops-ui jest darmowy i otwartoźródłowy na licencji MIT. Poniższy kanoniczny tekst w języku angielskim jest wersją prawnie wiążącą; posiadaczem praw autorskich jest Sergei Emelianov (Fighter90) oraz współtwórcy career-ops-ui.",
   "license.notice": "Komponenty zewnętrzne oraz to, co licencja obejmuje, a czego nie: NOTICE.md",
   "changelog.title": "Dziennik zmian",
-  "changelog.lead": "Każda istotna zmiana, wydanie po wydaniu. Ten sam plik jest dostępny w repozytorium i przetłumaczony na wszystkie 18 języków.",
+  "changelog.lead": "Każda istotna zmiana, wydanie po wydaniu. Ten sam plik jest dostępny w repozytorium i przetłumaczony na wszystkie {n} języków.",
   "changelog.archive": "Archiwum wg miesięcy",
   "changelog.page": "Strona {n}",
   "changelog.pagination": "Strony dziennika zmian",
@@ -263,5 +263,5 @@
   "stats.t.providers": "Dostawcy AI",
   "stats.t.license": "Licencja",
   "stats.t.local": "lokalnie",
-  "stats.note": "121 źródeł = 116 adapterów anglojęzycznych portali z ofertami + 5 rosyjskojęzycznych portali. Liczby są odczytywane z żywego rejestru podczas budowania strony — nigdy nie wpisywane ręcznie."
+  "stats.note": "{sources} źródeł = {en} adapterów anglojęzycznych portali z ofertami + {ru} rosyjskojęzycznych portali. Liczby są odczytywane z żywego rejestru podczas budowania strony — nigdy nie wpisywane ręcznie."
 }

@@ -167,7 +167,7 @@
   "faq.q7": "Hvilke jobportaler kan den scanne?",
   "faq.a7": "~{adapters} adaptere: Greenhouse, Ashby, Lever, Workable, SmartRecruiters, Workday, Recruitee, Teamtailor, portaler for fjernarbejde og russiske kilder (hh.ru, Habr Career, GetMatch m.fl.). Nye portaler er simple drop-in-adapterfiler.",
   "faq.q8": "Hvilke sprog understøttes?",
-  "faq.a8": "{n}: engelsk, spansk, fransk, portugisisk (BR), koreansk, japansk, russisk, kinesisk (forenklet og traditionelt), polsk, ukrainsk, dansk, arabisk (RTL), tysk, italiensk, tyrkisk, hindi og tamilsk — inklusive den fulde brugervejledning.",
+  "faq.a8": "{n}: engelsk, spansk, fransk, portugisisk (BR), koreansk, japansk, russisk, kinesisk (forenklet og traditionelt), polsk, ukrainsk, dansk, arabisk (RTL), tysk, italiensk, tyrkisk, hindi, tamilsk og vietnamesisk — inklusive den fulde brugervejledning.",
   "faq.q9": "Kan jeg bidrage?",
   "faq.a9": "Ja — issues, pull requests og oversættelser er velkomne. Start med bidragsguiden på GitHub.",
   "faq.q10": "Er det tilknyttet career-ops?",
@@ -225,7 +225,7 @@
   "license.lead": "career-ops-ui er gratis og open source under MIT-licensen. Den kanoniske engelske tekst nedenfor er den juridisk bindende version; ophavsretsindehaveren er Sergei Emelianov (Fighter90) og career-ops-ui-bidragyderne.",
   "license.notice": "Tredjepartskomponenter, og hvad licensen dækker og ikke dækker: NOTICE.md",
   "changelog.title": "Changelog",
-  "changelog.lead": "Hver væsentlig ændring, udgivelse for udgivelse. Samme fil findes i repository'et og er oversat til alle 18 sprog.",
+  "changelog.lead": "Hver væsentlig ændring, udgivelse for udgivelse. Samme fil findes i repository'et og er oversat til alle {n} sprog.",
   "changelog.archive": "Arkiv efter måned",
   "changelog.page": "Side {n}",
   "changelog.pagination": "Ændringslog-sider",
@@ -263,5 +263,5 @@
   "stats.t.providers": "AI-udbydere",
   "stats.t.license": "Licens",
   "stats.t.local": "lokal",
-  "stats.note": "121 kilder = 116 adapters til engelsksprogede jobportaler + 5 russisksprogede portaler. Tallene læses fra det levende register, når sitet bygges — de tastes aldrig i hånden."
+  "stats.note": "{sources} kilder = {en} adapters til engelsksprogede jobportaler + {ru} russisksprogede portaler. Tallene læses fra det levende register, når sitet bygges — de tastes aldrig i hånden."
 }

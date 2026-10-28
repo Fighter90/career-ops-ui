@@ -167,7 +167,7 @@
   "faq.q7": "它能搜尋哪些求職平台?",
   "faq.a7": "約 {adapters} 個轉接器:Greenhouse、Ashby、Lever、Workable、SmartRecruiters、Workday、Recruitee、Teamtailor、遠端工作平台,以及俄羅斯來源(hh.ru、Habr Career、GetMatch 等)。新平台只需放入一個轉接器檔案。",
   "faq.q8": "支援哪些語言?",
-  "faq.a8": "{n} 種:英文、西班牙文、法文、葡萄牙文(巴西)、韓文、日文、俄文、中文(簡體與繁體)、波蘭文、烏克蘭文、丹麥文、阿拉伯文(RTL)、德文、義大利文、土耳其文、印地文與坦米爾文 — 包含完整使用者指南。",
+  "faq.a8": "{n} 種:英文、西班牙文、法文、葡萄牙文(巴西)、韓文、日文、俄文、中文(簡體與繁體)、波蘭文、烏克蘭文、丹麥文、阿拉伯文(RTL)、德文、義大利文、土耳其文、印地文、坦米爾文與越南文 — 包含完整使用者指南。",
   "faq.q9": "我可以參與貢獻嗎?",
   "faq.a9": "可以 — 歡迎 issue、pull request 與翻譯。從 GitHub 上的貢獻指南開始。",
   "faq.q10": "它與 career-ops 有官方關聯嗎?",
@@ -225,7 +225,7 @@
   "license.lead": "career-ops-ui 是採用 MIT 授權的免費開源軟體。以下的英文正式文本才是具法律效力的版本;著作權所有人為 Sergei Emelianov(Fighter90)及 career-ops-ui 的貢獻者。",
   "license.notice": "第三方元件，以及授權涵蓋與不涵蓋的範圍:NOTICE.md",
   "changelog.title": "更新日誌",
-  "changelog.lead": "每一項重大變更，逐版記錄。同一份檔案隨儲存庫發布，並已翻譯為全部 18 種語言。",
+  "changelog.lead": "每一項重大變更，逐版記錄。同一份檔案隨儲存庫發布，並已翻譯為全部 {n} 種語言。",
   "changelog.archive": "按月歸檔",
   "changelog.page": "第 {n} 頁",
   "changelog.pagination": "更新日誌頁碼",
@@ -263,5 +263,5 @@
   "stats.t.providers": "AI 供應商",
   "stats.t.license": "授權",
   "stats.t.local": "本機執行",
-  "stats.note": "121 個來源 = 116 個英文求職平台轉接器 + 5 個俄文平台。數字在網站建置時從即時登錄表讀取——絕非手工填寫。"
+  "stats.note": "{sources} 個來源 = {en} 個英文求職平台轉接器 + {ru} 個俄文平台。數字在網站建置時從即時登錄表讀取——絕非手工填寫。"
 }

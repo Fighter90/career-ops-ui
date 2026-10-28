@@ -167,7 +167,7 @@
   "faq.q7": "它能搜索哪些招聘平台?",
   "faq.a7": "约 {adapters} 个适配器:Greenhouse、Ashby、Lever、Workable、SmartRecruiters、Workday、Recruitee、Teamtailor、远程工作平台,以及俄罗斯来源(hh.ru、Habr Career、GetMatch 等)。新平台只需放入一个适配器文件。",
   "faq.q8": "支持哪些语言?",
-  "faq.a8": "{n} 种:英语、西班牙语、法语、葡萄牙语(巴西)、韩语、日语、俄语、中文(简体和繁体)、波兰语、乌克兰语、丹麦语、阿拉伯语(RTL)、德语、意大利语、土耳其语、印地语和泰米尔语 — 包括完整用户指南。",
+  "faq.a8": "{n} 种:英语、西班牙语、法语、葡萄牙语(巴西)、韩语、日语、俄语、中文(简体和繁体)、波兰语、乌克兰语、丹麦语、阿拉伯语(RTL)、德语、意大利语、土耳其语、印地语、泰米尔语和越南语 — 包括完整用户指南。",
   "faq.q9": "我可以参与贡献吗?",
   "faq.a9": "可以 — 欢迎 issue、pull request 和翻译。从 GitHub 上的贡献指南开始。",
   "faq.q10": "它和 career-ops 是官方关联吗?",
@@ -225,7 +225,7 @@
   "license.lead": "career-ops-ui 是基于 MIT 许可证的免费开源软件。以下英文原文是具有法律效力的权威版本；版权持有者为 Sergei Emelianov（Fighter90）及 career-ops-ui 的贡献者们。",
   "license.notice": "第三方组件，以及该许可证覆盖与不覆盖的范围：见 NOTICE.md",
   "changelog.title": "更新日志",
-  "changelog.lead": "按发布版本记录的每一项重要变更。同一份文件同时收录在代码仓库中，并被翻译为全部 18 种语言。",
+  "changelog.lead": "按发布版本记录的每一项重要变更。同一份文件同时收录在代码仓库中，并被翻译为全部 {n} 种语言。",
   "changelog.archive": "按月归档",
   "changelog.page": "第 {n} 页",
   "changelog.pagination": "更新日志页码",
@@ -263,5 +263,5 @@
   "stats.t.providers": "AI 服务商",
   "stats.t.license": "许可证",
   "stats.t.local": "本地运行",
-  "stats.note": "121 个来源 = 116 个英文招聘平台适配器 + 5 个俄文平台。数字在网站构建时从实时注册表读取——绝非手工填写。"
+  "stats.note": "{sources} 个来源 = {en} 个英文招聘平台适配器 + {ru} 个俄文平台。数字在网站构建时从实时注册表读取——绝非手工填写。"
 }
