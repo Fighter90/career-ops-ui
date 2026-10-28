@@ -167,7 +167,7 @@
   "faq.q7": "Quels job boards peut-il scanner ?",
   "faq.a7": "~{adapters} adaptateurs : Greenhouse, Ashby, Lever, Workable, SmartRecruiters, Workday, Recruitee, Teamtailor, des boards de télétravail et des sources russes (hh.ru, Habr Career, GetMatch et plus). Un nouveau board, c'est un simple fichier adaptateur à déposer.",
   "faq.q8": "Quelles langues sont prises en charge ?",
-  "faq.a8": "{n} : anglais, espagnol, français, portugais (BR), coréen, japonais, russe, chinois (simplifié et traditionnel), polonais, ukrainien, danois, arabe (RTL), allemand, italien, turc, hindi et tamoul — guide utilisateur complet inclus.",
+  "faq.a8": "{n} : anglais, espagnol, français, portugais (BR), coréen, japonais, russe, chinois (simplifié et traditionnel), polonais, ukrainien, danois, arabe (RTL), allemand, italien, turc, hindi, tamoul et vietnamien — guide utilisateur complet inclus.",
   "faq.q9": "Puis-je contribuer ?",
   "faq.a9": "Oui — issues, pull requests et traductions sont les bienvenus. Commencez par le guide de contribution sur GitHub.",
   "faq.q10": "Est-ce affilié à career-ops ?",
@@ -225,7 +225,7 @@
   "license.lead": "career-ops-ui est libre et open source sous licence MIT. Le texte canonique en anglais ci-dessous fait foi juridiquement ; le titulaire des droits d'auteur est Sergei Emelianov (Fighter90) ainsi que les contributeurs de career-ops-ui.",
   "license.notice": "Composants tiers et ce que la licence couvre ou non : NOTICE.md",
   "changelog.title": "Changelog",
-  "changelog.lead": "Chaque changement notable, version par version. Le même fichier est publié dans le dépôt et traduit dans les 18 langues.",
+  "changelog.lead": "Chaque changement notable, version par version. Le même fichier est publié dans le dépôt et traduit dans les {n} langues.",
   "changelog.archive": "Archive par mois",
   "changelog.page": "Page {n}",
   "changelog.pagination": "Pages du journal",
@@ -263,5 +263,5 @@
   "stats.t.providers": "Fournisseurs d'IA",
   "stats.t.license": "Licence",
   "stats.t.local": "en local",
-  "stats.note": "121 sources = 116 adaptateurs de job boards anglophones + 5 boards russophones. Les chiffres sont lus depuis le registre en direct lors de la compilation du site — jamais saisis à la main."
+  "stats.note": "{sources} sources = {en} adaptateurs de job boards anglophones + {ru} boards russophones. Les chiffres sont lus depuis le registre en direct lors de la compilation du site — jamais saisis à la main."
 }

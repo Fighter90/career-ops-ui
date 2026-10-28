@@ -223,7 +223,7 @@
   "license.lead": "career-ops-ui is free and open source under the MIT license. The canonical English text below is the legally binding version; the copyright holder is Sergei Emelianov (Fighter90) and the career-ops-ui contributors.",
   "license.notice": "Third-party components and what the license does and does not cover: NOTICE.md",
   "changelog.title": "Changelog",
-  "changelog.lead": "Every notable change, release by release. The same file ships in the repository and is translated into all 19 languages.",
+  "changelog.lead": "Every notable change, release by release. The same file ships in the repository and is translated into all {n} languages.",
   "changelog.archive": "Archive by month",
   "changelog.page": "Page {n}",
   "changelog.pagination": "Changelog pages",
@@ -263,5 +263,5 @@
   "stats.t.providers": "AI providers",
   "stats.t.license": "License",
   "stats.t.local": "Local-first",
-  "stats.note": "121 sources = 116 English board adapters + 5 Russian boards. Counts are read from the live registry when the site builds — never typed by hand."
+  "stats.note": "{sources} sources = {en} English board adapters + {ru} Russian boards. Counts are read from the live registry when the site builds — never typed by hand."
 }

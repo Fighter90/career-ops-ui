@@ -20,6 +20,9 @@ const { locale, pageNo = 1 } = Astro.props;
 // (en) / CHANGELOG.<locale>.md; the month archive comes from
 // changelog-index.json.
 const lang = locale.file.toLowerCase();
+// CAR-138: the lead carries {n} (locale count) instead of a typed number —
+// a new UI locale updates the sentence at build, never by hand.
+const lead = t(locale, 'changelog.lead').replace('{n}', String(facts.locales));
 const entries = await getCollection('changelog');
 const entry = entries.find((e) => e.id.toLowerCase() === `${lang}-p${String(pageNo).padStart(2, '0')}`);
 if (!entry) throw new Error(`[changelog] no synced page ${pageNo} for locale "${locale.code}" (${locale.file}.md)`);
@@ -95,7 +98,7 @@ const jsonLd = {
           GitHub
         </a>
       </div>
-      <p class="mb-8 text-ink-soft">{t(locale, 'changelog.lead')}</p>
+      <p class="mb-8 text-ink-soft">{lead}</p>
 
       {/* Month archive (page 1 only) — static links into the paginated pages. */}
       {pageNo === 1 && (
