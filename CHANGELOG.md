@@ -7,6 +7,32 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 ---
 
 
+## [1.261.1] — 2026-10-28
+
+**The prod-QA client patch: a P1 crash fix for `#/two-pager`, Ctrl+K working on non-QWERTY layouts, the 390px mobile wave (docs-assistant overflow, map chip overlap, a 39-route harness), CAR-137 completion (specific errors, v2empty ×5, hints ×13 + mode pages) and CAR-140 landing real v2 screenshots everywhere.**
+
+### Fixed
+
+- **two-pager TDZ (CAR-170, P1, #554)**: `Cannot access 'previewTimer' before initialization` — the saved-tags editor fired `onChange` during construction for every restored chip while the construction loop sat lexically above `let previewTimer`, so the whole `#/two-pager` render crashed (no h1, ×19 locales). The scheduler + binding now live above the loop; a behavioral test executes the real view module — the exact prod error before the fix, a rendered page after — plus a lexical-order drift gate.
+- **Ctrl+K on non-QWERTY layouts (CAR-172, #554)**: both chord handlers matched only `e.key` — on a Russian layout the chord arrives as `key='л' code='KeyK'` and did nothing. Matched by `e.code === 'KeyK'` in nav-v2.js and app.js; reproduced in a real browser with a synthetic 'л'/KeyK chord. The CAR-122 contract is restated (see Notes).
+- **docs-assistant 390px overflow (CAR-172, #554)**: the CAR-136 starter chips were `.btn` (nowrap, `flex-shrink: 0`) — one unbreakable 418px item pushed `#/docs-assistant` 56px past a 390px viewport; the CAR-146 shrink pattern (in v2-llm.css, the 800-LOC CSS gates untouched) brings it to 0.
+- **Map chip overlap @390 (#552)**: on a 390px viewport the map meta chips overlapped the CTA row (map.css).
+- **CAR-137 — specific errors + v2empty ×5 (#550)**: five generic error fallbacks ('Error' / 'failed') became specific actionable keys — evaluate POST failure, auto-pipeline stream without a terminal event, scan→pipeline add, repost-clusters load, pipeline undo; the last five flat empty states (`#/reports`, `#/usage`, `#/portals`, `#/activity`, `#/dashboard`) join the CAR-124 v2empty pattern (explanation + tagged aria-hidden example + pre-wired action; 15 new `v2empty.*` keys, four dead one-line keys removed) — all ×19 dicts, snapshot regenerated.
+- **CAR-137 — HelpHint ×13 + mode-page kit (#550)**: the contextual «?» hint now sits on every remaining page H1 (pipeline, reports, dashboard, cv, portals, usage, activity, assessments, map, health, docs-assistant, settings) and on the 8 mode pages via the kit (each MODES cfg carries a `hintKey`, rendered through `HelpHint.title`).
+
+### Added
+
+- **Mobile-390 harness (#552)**: a Playwright sweep of every SPA route (31 canonical + 8 mode pages = 39 hashes) at 390×844 with a seeded corpus — per-route horizontal-overflow check (scrollWidth vs clientWidth, 1px tolerance, names the widest offender) plus a CTA-hit check (no sticky bar/drawer/FAB covers a primary CTA); opt-in, graceful skip without a browser binary, network-free.
+- **Fresh v2 captures ×48 (CAR-140 phase A, #551)**: real v2-UI screenshots from a seeded CI-isolated fixture — dashboard ×19 + job-map ×19 (job-map-ta first appearance, job-map-vi new) + scan/pipeline/tracker/reports × en/ru — feeding README, help and the landing.
+- **cvstart.org real screenshots (CAR-140 phase B, #553)**: the CAR-140 placeholder slots are gone — the landing shows the actual v2 captures (job-map showcase + screenshot rows, ×19 landing locales).
+- **CAR-137 hints (#550)**: 21 new translated keys ×19 (`help.hint.*` ×20 + the mode-page `hintKey`s) — every page now explains itself in-place.
+
+### Notes
+
+- **Ctrl+K contract (CAR-122)**: the chord opens the **command palette** — it does NOT focus the search box directly; search is focused from the palette. The v1.261.0 QA checklist line «Ctrl+K фокусит поиск» is superseded; the v1.261.1 QA prompt carries the updated check.
+- **CodeQL real-fixes (#547)**: 4 alerts closed (content.mjs literal-key iteration made structural, lint sweep) — landed post-release on v1.261.0 main before this patch; listed here for completeness.
+- Tests 6582 (+51); browser suite 171–172 pass / 0 fail / 1 opt-in skip; the mobile-390 harness runs standalone (`node tests/playwright-mobile-390.mjs`). No scanner sources touched (registry 121 = 116 EN + 5 RU · 116 adapters).
+
 ## [1.261.0] — 2026-10-28
 
 **The full-review wave complete (all HIGH + MEDIUM findings landed), the owner-reported language-switch fix, eval-quality fixes, help ×18 fan-out, the cvstart.org landing v2 — plus 4 SDD/OpenSpec specs documenting the wave. Every fix landed through a red→green fix-forward and a GLM-5.3-Flash fresh-context review.**
