@@ -94,7 +94,7 @@ Router.register('activity', async () => {
       c('td', { style: { wordBreak: 'break-all', maxWidth: '480px' } }, evt.target || c('span', { style: { color: 'var(--foggy)' } }, '—')),
       c('td', null, [
         c('span', { className: 'badge ' + cls }, dot),
-        evt.detail ? c('span', { style: { marginLeft: '8px', color: 'var(--foggy)', fontSize: '13px' } }, evt.detail) : null,
+        evt.detail ? c('span', { style: { marginInlineStart: '8px', color: 'var(--foggy)', fontSize: '13px' } }, evt.detail) : null,
       ]),
     ]);
   }
@@ -158,7 +158,7 @@ Router.register('activity', async () => {
       empty.hidden = true; // the "no activity" empty state would lie here
       loadError.replaceChildren(
         c('strong', null, t('common.error', 'Error')),
-        c('span', { style: { marginLeft: '8px', color: 'var(--foggy)' } },
+        c('span', { style: { marginInlineStart: '8px', color: 'var(--foggy)' } },
           String((err && err.message) || '')),
       );
       loadError.hidden = false;

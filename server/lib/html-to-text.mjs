@@ -64,17 +64,23 @@ function stripMarkup(content) {
  * the content_filter matches against — substring matching over raw HTML misses
  * keywords split by a tag and pads matches into attribute soup.
  *
+ * `opts.cap` lifts both bounds for trusted, same-process input whose full
+ * length matters (e.g. the QA help-render gate scans a ~140 KB plain-text
+ * help bundle): `cap: Infinity` skips the input slice and the output cap.
+ * The default keeps scan payloads bounded exactly as before.
+ *
  * Exported for tests.
  * @param {unknown} content
+ * @param {{ cap?: number }} [opts]
  * @returns {string}
  */
-export function htmlToText(content) {
+export function htmlToText(content, { cap = DESCRIPTION_CAP } = {}) {
   if (typeof content !== 'string' || !content) return '';
   // Strip literal markup BEFORE decoding: quote entities inside a quoted
   // attribute are data, and decoding them first would turn them into false
   // delimiters. The second strip handles entity-escaped tags revealed by the
   // first decode; the final decode retains the double-decode behavior.
-  const decoded = decodeEntities(stripMarkup(content.slice(0, INPUT_CAP)));
+  const decoded = decodeEntities(stripMarkup(cap === Infinity ? content : content.slice(0, INPUT_CAP)));
   // Each decode is followed by a strip, so double-encoded active markup cannot
   // become the final plain-text output. A trailing incomplete opener has no
   // closing `>` for stripMarkup() to consume — `safe &lt;img src=x onerror=1`
@@ -86,5 +92,5 @@ export function htmlToText(content) {
     .replace(/<(?=\/?[a-z!?])/gi, '')
     .replace(/\s+/g, ' ')
     .trim()
-    .slice(0, DESCRIPTION_CAP);
+    .slice(0, cap);
 }

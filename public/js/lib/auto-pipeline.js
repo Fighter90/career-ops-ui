@@ -265,7 +265,7 @@
     function renderError(step, message) {
       resultRoot.innerHTML = '';
       resultRoot.style.display = '';
-      resultRoot.appendChild(c('div', { className: 'card mt-3', style: { borderLeft: '3px solid var(--error, #c93030)' } }, [
+      resultRoot.appendChild(c('div', { className: 'card mt-3', style: { borderInlineStart: '3px solid var(--error, #c93030)' } }, [
         c('strong', null, '⚠ ' + t('auto.failed', 'Auto-pipeline failed') + ` (${step})`),
         c('p', { style: { margin: '8px 0 0', fontSize: '14px' } }, message),
       ]));

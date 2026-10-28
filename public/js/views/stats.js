@@ -865,7 +865,7 @@ Router.register('stats', async () => {
     ]));
     const recs = Array.isArray(d.recommendations) ? d.recommendations.slice(0, 10) : [];
     if (recs.length) {
-      wrap.appendChild(section(t('stats.patRecs', 'Recommendations'), c('ul', { style: { margin: '0', paddingLeft: '20px' } },
+      wrap.appendChild(section(t('stats.patRecs', 'Recommendations'), c('ul', { style: { margin: '0', paddingInlineStart: '20px' } },
         recs.map((r) => c('li', { style: { margin: '0 0 8px' } }, [
           c('strong', null, String(r.action || '')),
           c('div', { style: { color: 'var(--foggy)', fontSize: '13px' } }, String(r.reasoning || '')),
@@ -875,7 +875,7 @@ Router.register('stats', async () => {
     const vendors = Array.isArray(va.breakdown) ? va.breakdown : [];
     if (vendors.length) {
       const head = c('tr', null, [t('stats.patVendor', 'ATS vendor'), t('stats.patApps', 'Applications'), t('stats.patAdvanced', 'Advanced'), t('stats.patRate', 'Advance rate')]
-        .map((h) => c('th', { style: { textAlign: 'left' } }, h)));
+        .map((h) => c('th', { style: { textAlign: 'start' } }, h)));
       const rows = vendors.map((v) => c('tr', null, [
         c('td', null, String(v.vendor || '')),
         c('td', { style: { fontVariantNumeric: 'tabular-nums' } }, String(v.total ?? 0)),
@@ -981,7 +981,7 @@ Router.register('stats', async () => {
           t('stats.sgCompanyRole', 'Company · role'), t('stats.sgDesired', 'Desired'),
           t('stats.sgAdvertised', 'Advertised'), t('stats.sgActual', 'Actual'),
           t('stats.sgGap', 'Advertised → actual'),
-        ].map((h) => c('th', { style: { textAlign: 'left' } }, h)));
+        ].map((h) => c('th', { style: { textAlign: 'start' } }, h)));
         const cell = (v) => c('td', { style: { fontVariantNumeric: 'tabular-nums' } }, v);
         const rows = apps.map((a) => c('tr', null, [
           c('td', null, [a.company, a.role].filter(Boolean).join(' · ') || `#${a.num || ''}`),
@@ -1057,7 +1057,7 @@ Router.register('stats', async () => {
           chip(t('stats.funnelWindow', 'Typical reply window (days)'), win),
           chip(t('stats.funnelBeyond', 'Beyond the window'), beyond.length),
         ]),
-        beyond.length ? c('ul', { style: { margin: '10px 0 0', paddingLeft: '18px', fontSize: '13px' } },
+        beyond.length ? c('ul', { style: { margin: '10px 0 0', paddingInlineStart: '18px', fontSize: '13px' } },
           beyond.slice(0, 15).map((it) => c('li', null,
             `#${it.num} ${it.company || ''} — ${it.elapsedDays != null ? it.elapsedDays + 'd' : '—'}`))) : null,
       ].filter(Boolean));
@@ -1067,10 +1067,10 @@ Router.register('stats', async () => {
     // Velocity — median/p75 days per forward stage hop.
     const v = d.velocity || null;
     if (v) {
-      const thL = { textAlign: 'left', padding: '5px 8px', color: 'var(--foggy)', fontWeight: '600', fontSize: '12px', borderBottom: '1px solid var(--line)' };
-      const thR = { ...thL, textAlign: 'right' };
+      const thL = { textAlign: 'start', padding: '5px 8px', color: 'var(--foggy)', fontWeight: '600', fontSize: '12px', borderBottom: '1px solid var(--line)' };
+      const thR = { ...thL, textAlign: 'end' };
       const tdL = { padding: '5px 8px', fontSize: '13px', borderBottom: '1px solid var(--line)' };
-      const tdR = { ...tdL, textAlign: 'right', fontVariantNumeric: 'tabular-nums' };
+      const tdR = { ...tdL, textAlign: 'end', fontVariantNumeric: 'tabular-nums' };
       const hops = ['appliedToResponded', 'respondedToInterview', 'interviewToOffer', 'appliedToRejected']
         .map((k) => v[k]).filter(Boolean);
       // UI.el does not coerce numbers → always hand it a string child.
@@ -1131,10 +1131,10 @@ Router.register('stats', async () => {
       return wrap;
     }
     const TIER = { Critical: 'badge badge-bad', High: 'badge badge-warn', Medium: 'badge badge-info', Low: 'badge' };
-    const thL = { textAlign: 'left', padding: '5px 8px', color: 'var(--foggy)', fontWeight: '600', fontSize: '12px', borderBottom: '1px solid var(--line)' };
-    const thR = { ...thL, textAlign: 'right' };
+    const thL = { textAlign: 'start', padding: '5px 8px', color: 'var(--foggy)', fontWeight: '600', fontSize: '12px', borderBottom: '1px solid var(--line)' };
+    const thR = { ...thL, textAlign: 'end' };
     const tdL = { padding: '5px 8px', fontSize: '13px', borderBottom: '1px solid var(--line)' };
-    const tdR = { ...tdL, textAlign: 'right', fontVariantNumeric: 'tabular-nums' };
+    const tdR = { ...tdL, textAlign: 'end', fontVariantNumeric: 'tabular-nums' };
     const rows = gaps.map((g) => c('tr', null, [
       c('td', { style: tdL }, c('span', { className: TIER[g.tier] || 'badge' }, String(g.tier || '—'))),
       c('td', { style: tdL }, String(g.skill || '')),

@@ -1,0 +1,221 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   tokens-v3.css — Lovable token sheet, ported PASSIVE (phase 1/3 of the
+   Lovable design integration). Namespace `--cv3-*` ONLY: nothing in app.css,
+   components.css, overlays.css, the v2 sheets or the SPA reads these yet, so
+   this file changes no rendering — app.css stays the authority until phase 2
+   rewires the call sites. Loaded LAST of the app sheets (after map.css,
+   before the leaflet vendor CSS) so the phase-2 cascade override wins.
+
+   MAPPING cv3 → the current app.css token it is destined to replace (phase 2):
+
+     --cv3-surface-0   → --beach          (canvas)
+     --cv3-surface-1   → --paper          (card / panel)
+     --cv3-surface-2   → --elev           (raised surface, D-3)
+     --cv3-surface-3   → (no current token — new pressed/active surface state)
+     --cv3-ink         → --hof            (primary text)
+     --cv3-ink-2       → --foggy-strong   (AA secondary text)
+     --cv3-ink-3       → --foggy          (muted text)
+     --cv3-line        → --slate          (hairline)
+     --cv3-line-strong → (no current token — new emphasized hairline)
+     --cv3-accent-*    → --rausch family  (REPLACEMENT: the Lovable primary
+                         action is blue 250–252hue; coral stays live in
+                         app.css until the owner rules — this sheet ships the
+                         Lovable default, flipping back is a 5-line edit here)
+     --cv3-ok-*        → --kazan family   (success)
+     --cv3-warn-*      → --darjeeling family (warning)
+     --cv3-danger-*    → --rausch-text / --rausch-dark (danger)
+     --cv3-info-*      → (no current token — new informational family)
+     --cv3-neutral-*   → (no current token — new neutral-chip family)
+     --cv3-band-{a..g}-{ink,bg} → (no current token — the score A–G chips
+                         are painted from ad-hoc classes today)
+     --cv3-shadow-1/2  → --shadow-sm / --shadow-md (2 levels, not 3; dark mode
+                         swaps blur for a 1px light hairline ring + deep soft
+                         shadow — elevation by outline, not by glow)
+     --cv3-radius-3/4  → --radius-sm / --radius (8/12px); 4/6px are new fine
+                         steps, pill matches --radius-pill
+     --cv3-motion      → --transition     (120ms vs 180ms — snappier house feel)
+     --cv3-fs-*        → --font-size-*    (same 11–28 ramp + a 32px display step)
+     --cv3-row-h / --cv3-control-h → (no current tokens — data-table density)
+
+   DELIBERATE DIVERGENCES from the Lovable concept (owner-visible):
+     • Geist / Geist Mono → Inter / system mono. No new font dependency; the
+       swap is a later, opt-in decision (CSP already pins Google Fonts Inter).
+     • Accent = Lovable blue, not the current coral --rausch (see mapping).
+
+   Contrast notes from the Lovable concept (light, on surface-1): ink 15.8:1,
+   ink-2 8.6:1, ink-3 5.0:1; dark ink-3 5.2:1 — WCAG AA (1.4.3) or better.
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+/* ── light theme (default) + theme-invariant scales ──────────────────────── */
+:root {
+  /* surfaces — app background → card → raised → pressed */
+  --cv3-surface-0: oklch(0.985 0.002 250);
+  --cv3-surface-1: oklch(1 0 0);
+  --cv3-surface-2: oklch(0.972 0.003 250);
+  --cv3-surface-3: oklch(0.945 0.006 250);
+  /* ink — primary / secondary / muted text */
+  --cv3-ink: oklch(0.22 0.015 255);
+  --cv3-ink-2: oklch(0.42 0.01 255);
+  --cv3-ink-3: oklch(0.53 0.012 255);
+  /* lines — hairline / emphasized hairline */
+  --cv3-line: oklch(0.925 0.005 250);
+  --cv3-line-strong: oklch(0.86 0.008 250);
+  /* accent (Lovable blue) — fill / hover / text-on-fill / soft wash / ink-on-soft */
+  --cv3-accent: oklch(0.5 0.16 252);
+  --cv3-accent-hover: oklch(0.45 0.16 252);
+  --cv3-accent-ink: oklch(1 0 0);
+  --cv3-accent-soft: oklch(0.95 0.03 252);
+  --cv3-accent-soft-ink: oklch(0.42 0.15 252);
+  /* semantic — success */
+  --cv3-ok: oklch(0.5 0.12 155);
+  --cv3-ok-soft: oklch(0.93 0.06 155);
+  --cv3-ok-ink: oklch(0.42 0.11 155);
+  /* semantic — warning */
+  --cv3-warn: oklch(0.6 0.13 70);
+  --cv3-warn-soft: oklch(0.94 0.06 70);
+  --cv3-warn-ink: oklch(0.47 0.11 65);
+  /* semantic — danger */
+  --cv3-danger: oklch(0.53 0.19 25);
+  --cv3-danger-soft: oklch(0.94 0.045 25);
+  --cv3-danger-ink: oklch(0.47 0.17 25);
+  /* semantic — info */
+  --cv3-info: oklch(0.55 0.11 245);
+  --cv3-info-soft: oklch(0.94 0.04 245);
+  --cv3-info-ink: oklch(0.45 0.11 250);
+  /* semantic — neutral chip */
+  --cv3-neutral: oklch(0.55 0.01 255);
+  --cv3-neutral-soft: oklch(0.95 0.004 255);
+  --cv3-neutral-ink: oklch(0.45 0.015 255);
+  /* score bands A–G — ink + wash pairs (chip text on chip fill) */
+  --cv3-band-a-ink: oklch(0.42 0.11 155); --cv3-band-a-bg: oklch(0.93 0.06 155);
+  --cv3-band-b-ink: oklch(0.43 0.1 175);  --cv3-band-b-bg: oklch(0.94 0.045 175);
+  --cv3-band-c-ink: oklch(0.43 0.09 215); --cv3-band-c-bg: oklch(0.94 0.035 215);
+  --cv3-band-d-ink: oklch(0.44 0.08 95);  --cv3-band-d-bg: oklch(0.95 0.06 98);
+  --cv3-band-e-ink: oklch(0.47 0.11 65);  --cv3-band-e-bg: oklch(0.94 0.06 70);
+  --cv3-band-f-ink: oklch(0.47 0.14 45);  --cv3-band-f-bg: oklch(0.94 0.045 45);
+  --cv3-band-g-ink: oklch(0.47 0.17 25);  --cv3-band-g-bg: oklch(0.94 0.035 25);
+  /* elevation — hairline edge + soft shadow (shadow-2 = raised, 24px blur) */
+  --cv3-shadow-1: 0 1px 0 oklch(0.2 0.02 255 / 0.04), 0 1px 2px oklch(0.2 0.02 255 / 0.06);
+  --cv3-shadow-2: 0 1px 0 oklch(0.2 0.02 255 / 0.04), 0 12px 24px oklch(0.2 0.02 255 / 0.1);
+  /* managed focus — surface ring + accent ring (box-shadow, WCAG 2.4.7) */
+  --cv3-focus: 0 0 0 2px var(--cv3-surface-1), 0 0 0 4px var(--cv3-accent);
+  /* density — data-table rows + form controls */
+  --cv3-row-h: 32px;
+  --cv3-control-h: 30px;
+  /* radius ramp — fine 4/6 steps + the familiar 8/12 + pill */
+  --cv3-radius-1: 4px;
+  --cv3-radius-2: 6px;
+  --cv3-radius-3: 8px;
+  --cv3-radius-4: 12px;
+  --cv3-radius-pill: 999px;
+  /* motion — faster than --transition by design */
+  --cv3-motion: 120ms cubic-bezier(.2, 0, 0, 1);
+  /* typography — Inter (deliberate divergence: Lovable names Geist) */
+  --cv3-font-sans: 'Inter', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  --cv3-font-mono: ui-monospace, 'SF Mono', SFMono-Regular, Menlo, Consolas, monospace;
+  --cv3-fs-xs: 11px;
+  --cv3-fs-sm: 12px;
+  --cv3-fs-md: 13px;
+  --cv3-fs-base: 15px;
+  --cv3-fs-lg: 18px;
+  --cv3-fs-xl: 22px;
+  --cv3-fs-2xl: 28px;
+  --cv3-fs-3xl: 32px;
+  --cv3-lh-tight: 1.2;
+  --cv3-lh-ui: 1.45;
+  --cv3-tracking-tight: -0.01em;
+  --cv3-tracking-display: -0.02em;
+  --cv3-numeric: tabular-nums;
+  color-scheme: light;
+}
+
+/* ── dark theme (explicit toggle; SPA writes data-theme="dark" on <html>) ── */
+[data-theme="dark"] {
+  --cv3-surface-0: oklch(0.17 0.008 255);
+  --cv3-surface-1: oklch(0.205 0.009 255);
+  --cv3-surface-2: oklch(0.24 0.01 255);
+  --cv3-surface-3: oklch(0.28 0.012 255);
+  --cv3-ink: oklch(0.95 0.004 250);
+  --cv3-ink-2: oklch(0.8 0.006 252);
+  --cv3-ink-3: oklch(0.68 0.008 252);
+  --cv3-line: oklch(0.28 0.01 255);
+  --cv3-line-strong: oklch(0.35 0.012 255);
+  --cv3-accent: oklch(0.72 0.13 250);
+  --cv3-accent-hover: oklch(0.78 0.13 250);
+  --cv3-accent-ink: oklch(0.18 0.03 255);
+  --cv3-accent-soft: oklch(0.3 0.06 252);
+  --cv3-accent-soft-ink: oklch(0.85 0.08 250);
+  --cv3-ok: oklch(0.72 0.12 155);
+  --cv3-ok-soft: oklch(0.3 0.06 155);
+  --cv3-ok-ink: oklch(0.85 0.09 155);
+  --cv3-warn: oklch(0.78 0.13 70);
+  --cv3-warn-soft: oklch(0.32 0.06 70);
+  --cv3-warn-ink: oklch(0.87 0.09 70);
+  --cv3-danger: oklch(0.68 0.17 25);
+  --cv3-danger-soft: oklch(0.3 0.07 25);
+  --cv3-danger-ink: oklch(0.85 0.1 25);
+  --cv3-info: oklch(0.72 0.11 245);
+  --cv3-info-soft: oklch(0.3 0.05 245);
+  --cv3-info-ink: oklch(0.83 0.08 245);
+  --cv3-neutral: oklch(0.7 0.01 255);
+  --cv3-neutral-soft: oklch(0.3 0.01 255);
+  --cv3-neutral-ink: oklch(0.8 0.008 255);
+  --cv3-band-a-ink: oklch(0.85 0.13 155); --cv3-band-a-bg: oklch(0.3 0.06 155);
+  --cv3-band-b-ink: oklch(0.84 0.11 175); --cv3-band-b-bg: oklch(0.3 0.05 175);
+  --cv3-band-c-ink: oklch(0.84 0.1 215);  --cv3-band-c-bg: oklch(0.31 0.04 215);
+  --cv3-band-d-ink: oklch(0.86 0.09 95);  --cv3-band-d-bg: oklch(0.32 0.06 98);
+  --cv3-band-e-ink: oklch(0.86 0.12 65);  --cv3-band-e-bg: oklch(0.31 0.06 70);
+  --cv3-band-f-ink: oklch(0.86 0.14 45);  --cv3-band-f-bg: oklch(0.31 0.05 45);
+  --cv3-band-g-ink: oklch(0.86 0.16 25);  --cv3-band-g-bg: oklch(0.3 0.04 25);
+  /* dark elevation: 1px light hairline ring + deep soft shadow */
+  --cv3-shadow-1: 0 0 0 1px oklch(1 0 0 / 0.03), 0 12px 32px -8px oklch(0 0 0 / 0.6);
+  --cv3-shadow-2: 0 0 0 1px oklch(1 0 0 / 0.05), 0 12px 32px -8px oklch(0 0 0 / 0.6);
+  --cv3-focus: 0 0 0 2px var(--cv3-surface-1), 0 0 0 4px var(--cv3-accent);
+  color-scheme: dark;
+}
+
+/* ── prefers-color-scheme fallback (no explicit toggle chosen) ───────────── */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) {
+    --cv3-surface-0: oklch(0.17 0.008 255);
+    --cv3-surface-1: oklch(0.205 0.009 255);
+    --cv3-surface-2: oklch(0.24 0.01 255);
+    --cv3-surface-3: oklch(0.28 0.012 255);
+    --cv3-ink: oklch(0.95 0.004 250);
+    --cv3-ink-2: oklch(0.8 0.006 252);
+    --cv3-ink-3: oklch(0.68 0.008 252);
+    --cv3-line: oklch(0.28 0.01 255);
+    --cv3-line-strong: oklch(0.35 0.012 255);
+    --cv3-accent: oklch(0.72 0.13 250);
+    --cv3-accent-hover: oklch(0.78 0.13 250);
+    --cv3-accent-ink: oklch(0.18 0.03 255);
+    --cv3-accent-soft: oklch(0.3 0.06 252);
+    --cv3-accent-soft-ink: oklch(0.85 0.08 250);
+    --cv3-ok: oklch(0.72 0.12 155);
+    --cv3-ok-soft: oklch(0.3 0.06 155);
+    --cv3-ok-ink: oklch(0.85 0.09 155);
+    --cv3-warn: oklch(0.78 0.13 70);
+    --cv3-warn-soft: oklch(0.32 0.06 70);
+    --cv3-warn-ink: oklch(0.87 0.09 70);
+    --cv3-danger: oklch(0.68 0.17 25);
+    --cv3-danger-soft: oklch(0.3 0.07 25);
+    --cv3-danger-ink: oklch(0.85 0.1 25);
+    --cv3-info: oklch(0.72 0.11 245);
+    --cv3-info-soft: oklch(0.3 0.05 245);
+    --cv3-info-ink: oklch(0.83 0.08 245);
+    --cv3-neutral: oklch(0.7 0.01 255);
+    --cv3-neutral-soft: oklch(0.3 0.01 255);
+    --cv3-neutral-ink: oklch(0.8 0.008 255);
+    --cv3-band-a-ink: oklch(0.85 0.13 155); --cv3-band-a-bg: oklch(0.3 0.06 155);
+    --cv3-band-b-ink: oklch(0.84 0.11 175); --cv3-band-b-bg: oklch(0.3 0.05 175);
+    --cv3-band-c-ink: oklch(0.84 0.1 215);  --cv3-band-c-bg: oklch(0.31 0.04 215);
+    --cv3-band-d-ink: oklch(0.86 0.09 95);  --cv3-band-d-bg: oklch(0.32 0.06 98);
+    --cv3-band-e-ink: oklch(0.86 0.12 65);  --cv3-band-e-bg: oklch(0.31 0.06 70);
+    --cv3-band-f-ink: oklch(0.86 0.14 45);  --cv3-band-f-bg: oklch(0.31 0.05 45);
+    --cv3-band-g-ink: oklch(0.86 0.16 25);  --cv3-band-g-bg: oklch(0.3 0.04 25);
+    --cv3-shadow-1: 0 0 0 1px oklch(1 0 0 / 0.03), 0 12px 32px -8px oklch(0 0 0 / 0.6);
+    --cv3-shadow-2: 0 0 0 1px oklch(1 0 0 / 0.05), 0 12px 32px -8px oklch(0 0 0 / 0.6);
+    --cv3-focus: 0 0 0 2px var(--cv3-surface-1), 0 0 0 4px var(--cv3-accent);
+    color-scheme: dark;
+  }
+}

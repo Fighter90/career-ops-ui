@@ -1042,21 +1042,12 @@ billede — en langsom scanning ligner aldrig en død side.
 
 V2-resultatchromen holder styringerne synlige:
 
-- **Aktive filtre** (`scan.v2.activeFilters`) — hvert filter, du sætter,
-  vises som en fjernbar chip over tabellen; klik på **✕** på en chip
-  (**Fjern filter**, `scan.v2.removeFilter`) for at droppe lige netop
-  den, eller **Nulstil alle** (`scan.v2.resetAll`) for at rydde dem alle.
+- **Aktive filtre** (`scan.v2.activeFilters`) — hvert filter, du sætter, vises som en fjernbar chip over tabellen; klik på **✕** på en chip (**Fjern filter**, `scan.v2.removeFilter`) for at droppe lige netop den, eller **Nulstil alle** (`scan.v2.resetAll`) for at rydde dem alle.
 - **Sortér efter** (`scan.v2.sortBy`) — klik på en kolonneoverskrift
   (virksomhed, rolle, løn, alder) for at sortere efter den; klik igen
   for at vende retningen.
-- **Hurtig visning** (`scan.v2.quickView`) — klik på en række for at
-  folle dens opslagsbeskrivelse ud på stedet (**Beskrivelse**,
-  `scan.v2.description`) uden at forlade siden; opslag uden gemt
-  brødtekst siger det (`scan.v2.noDescription`) i stedet for at vise et
-  tomt kort.
-- **Rækketæthed** (`scan.v2.density`) — skift mellem **Kompakt** /
-  **Komfortabel** (`scan.v2.compact` / `scan.v2.comfortable`)
-  rækkehøjder; valget huskes pr. browser.
+- **Hurtig visning** (`scan.v2.quickView`) — klik på en række for at folle dens opslagsbeskrivelse ud på stedet (**Beskrivelse**, `scan.v2.description`) uden at forlade siden; opslag uden gemt brødtekst siger det (`scan.v2.noDescription`) i stedet for at vise et tomt kort.
+- **Rækketæthed** (`scan.v2.density`) — skift mellem **Kompakt** / **Komfortabel** (`scan.v2.compact` / `scan.v2.comfortable`) rækkehøjder; valget huskes pr. browser.
 - **Log** (`scan.v2.log`) — kollaps/udfold den streamende scan-log for
   at give tabellen hele bredden.
 
@@ -1104,20 +1095,11 @@ er grupperet under **Resultatfiltre**, `scan.filtersGroup`):
 - **Remote / Hybrid / Onsite**-dropdown.
 - **Country**-dropdown — et geografifilter, der udfyldes fra de lande, der er registreret på tværs af de aktuelle resultater, hvert vist med sit flag-emoji og et antal (f.eks. `🇩🇪 Germany (12)`). Vælg ét for kun at beholde roller knyttet til det land. Registreringen mapper et opslags fritekst-lokation (landenavne/aliasser + ~100 store jobmarkedsbyer) til et land; den er konservativ og gætter aldrig, så et opslag, hvis lokation ikke kan opløses — eller et rent "Remote"-opslag — forbliver under **All countries**. Kombinér det med arbejdstype-dropdownen for at finde både landebundne *og* fjernroller.
 - **Posted within**-dropdown — et aldersfilter på klientsiden (Sidste 24 timer / 7 dage / 30 dage). Rækker, hvis `pubDate` er ældre, skjules; rækker med **ingen angivet dato består** (manglende data straffes ikke).
-- **Løn fra / Løn til** (`scan.salaryFrom` / `scan.salaryTo`) — rene
-  talgrænser sammenlignet med beløb, der er parset fra opslagsteksten
-  (valuta ignoreres, `scan.v2.salaryHint`); sæt flueben i **Medtag job
-  uden løn** (`scan.v2.includeNoSalary`), så lønfilteret ikke dropper
-  rækker, der slet ikke nævner et tal.
+- **Løn fra / Løn til** (`scan.salaryFrom` / `scan.salaryTo`) — rene talgrænser sammenlignet med beløb, der er parset fra opslagsteksten (valuta ignoreres, `scan.v2.salaryHint`); sæt flueben i **Medtag job uden løn** (`scan.v2.includeNoSalary`), så lønfilteret ikke dropper rækker, der slet ikke nævner et tal.
 - **Niveau**-dropdown (`scan.lblSeniority`) — Lead / Staff / Senior /
   Mid / Junior / Intern, detekteret fra titlen.
 - **★ Favoritter** — klik på ☆ i en vilkårlig række for at markere et job med stjerne (gemt i `localStorage` efter URL); sæt flueben i **★ Favoritter** (`scan.favOnly`) i filterpanelet for kun at vise stjernemarkerede rækker. Stjerner overlever scanninger og genindlæsninger.
-- **Gemte søgninger** (`scan.savedSearches`) — navngiv det aktuelle
-  filtersæt og **Gem søgning** (`scan.saveSearch`), og genanvend det
-  derefter fra listen; gemte søgninger indlæses med ét klik
-  (`scan.v2.loadSearch`), og sletning spørger først
-  (`scan.v2.deleteSearchConfirm`). Gemt i `localStorage`; en
-  korrupt/redigeret værdi nulstilles rent til tom.
+- **Gemte søgninger** (`scan.savedSearches`) — navngiv det aktuelle filtersæt og **Gem søgning** (`scan.saveSearch`), og genanvend det derefter fra listen; gemte søgninger indlæses med ét klik (`scan.v2.loadSearch`), og sletning spørger først (`scan.v2.deleteSearchConfirm`). Gemt i `localStorage`; en korrupt/redigeret værdi nulstilles rent til tom.
 - **Stack-chips** (PHP / Go / Backend / Senior / …) — auto-detekteret
   per række af `Skills.detectTech` og `Skills.detectLevel`. Multi-select
   intersektion — at vælge `PHP + Senior` viser rækker, der har BEGGE.
@@ -1220,12 +1202,7 @@ Indbakke af URL'er, der venter på at blive evalueret. Lever i `data/pipeline.md
 Tre måder:
 
 - Skriv / indsæt en URL i inputtet + klik på **Tilføj URL** (`pipe.add`).
-- Brug **kommandomenuen**: **Cmd/Ctrl+K** (eller sidebjælkens
-  **Kommandomenu**-knap, `nav.v2.palette`), indsæt et hvilket som helst
-  `http(s)://…`-link, og menuen tilbyder **Auto-pipeline: {url}**
-  (`nav.v2.evalUrl`) — Enter kører hele kæden på det. Taster du vilkårlig
-  anden tekst og trykker Enter, springes der til `#/scan` med det udtryk
-  forudfyldt.
+- Brug **kommandomenuen**: **Cmd/Ctrl+K** (eller sidebjælkens **Kommandomenu**-knap, `nav.v2.palette`), indsæt et hvilket som helst `http(s)://…`-link, og menuen tilbyder **Auto-pipeline: {url}** (`nav.v2.evalUrl`) — Enter kører hele kæden på det. Taster du vilkårlig anden tekst og trykker Enter, springes der til `#/scan` med det udtryk forudfyldt.
 - Kør en Scan (se ovenfor) — friske hits går til pipeline
   automatisk.
 
@@ -1248,8 +1225,7 @@ igen, så et fjendtligt board ikke kan sende dig til loopback / privat IP
 ### Rækkehandlinger
 
 - **▶** (`pipe.evaluateBtn`) — springer til `#/evaluate?url=…` med URL'en for-udfyldt.
-- **✕** — fjerner URL'en fra `data/pipeline.md` (spørger først,
-  `pipe.confirmDel`).
+- **✕** — fjerner URL'en fra `data/pipeline.md` (spørger først, `pipe.confirmDel`).
 
 **Grupperet visning, bulk-sletning, tabsfri fortryd.** At rydde en stor
 indbakke efter en scanning er sidens v2-centrum:
@@ -1265,13 +1241,7 @@ indbakke efter en scanning er sidens v2-centrum:
   standard; poster, hvis opslag allerede har en tracker-række, forsvinder
   ud af visningen (og ud af bulk-markeringen), så du kun nogensinde
   handler på friskt arbejde.
-- **Vælg** (`pipe.selectOne`) vilkårlige rækker, eller **Vælg alle
-  viste** (`pipe.selectAllShown`) — markeringen følger altid de aktuelle
-  filtre, aldrig usynlige rækker. Markeringsbjælken viser antallet
-  (`pipe.selectedCount`) og tilbyder **✕ Fjern valgte (N)**
-  (`pipe.bulkRemove`) plus **Vurdér den første valgte**
-  (`pipe.evaluateSelected`) — bulk-sletning bekræftes én gang for hele
-  sættet, ikke pr. række.
+- **Vælg** (`pipe.selectOne`) vilkårlige rækker, eller **Vælg alle viste** (`pipe.selectAllShown`) — markeringen følger altid de aktuelle filtre, aldrig usynlige rækker. Markeringsbjælken viser antallet (`pipe.selectedCount`) og tilbyder **✕ Fjern valgte (N)** (`pipe.bulkRemove`) plus **Vurdér den første valgte** (`pipe.evaluateSelected`) — bulk-sletning bekræftes én gang for hele sættet, ikke pr. række.
 
 Intet går tabt ved en fejl: hver sletning — enkeltvis eller i bulk —
 returnerer et uigennemsigtigt gendannelsestoken, og en bjælke i bunden af
@@ -1389,20 +1359,14 @@ kombineres:
   rapports virksomhed, rolle og visningstitel.
 - **Virksomhed** (`rep2.companyLabel`) — vælg én arbejdsgiver fra
   dropdownen.
-- **Scoreinterval** (`rep2.bandLabel`) — **Høj (4.5+)** / **God (4.0+)**
-  / **Mellem (3.5+)** / **Under 3,5** (`rep2.bandHigh` …
-  `rep2.bandLow`), plus en spand til rapporter, hvis header ikke bærer
-  en parserbar score.
+- **Scoreinterval** (`rep2.bandLabel`) — **Høj (4.5+)** / **God (4.0+)** / **Mellem (3.5+)** / **Under 3,5** (`rep2.bandHigh` … `rep2.bandLow`), plus en spand til rapporter, hvis header ikke bærer en parserbar score.
 - **Fra dato / Til dato** (`rep2.dateFrom` / `rep2.dateTo`) — afgræns
   listen til en periode.
-- **Sortér efter** (`rep2.sortLabel`) — **Dato** / **Score** /
-  **Virksomhed** (`rep2.sortDate` …), stigende eller faldende
-  (`rep2.sortDirAsc` / `rep2.sortDirDesc`).
+- **Sortér efter** (`rep2.sortLabel`) — **Dato** / **Score** / **Virksomhed** (`rep2.sortDate` …), stigende eller faldende (`rep2.sortDirAsc` / `rep2.sortDirDesc`).
 - Et **scorefordelingshistogram** (`rep2.histogramLabel`) — klik på en
   søjle for at filtrere til det interval og se din pipelines form med
   ét blik.
-- **Nulstil filtre** (`rep2.reset`) rydder alt; når intet matcher,
-  siger siden det (`rep2.noMatches`) i stedet for at vise et tomt gitter.
+- **Nulstil filtre** (`rep2.reset`) rydder alt; når intet matcher, siger siden det (`rep2.noMatches`) i stedet for at vise et tomt gitter.
 
 Klik på et kort (eller en tabellrække) for at læse den fulde markdown.
 Paginering: 20 per side; kontroller nederst; hver filterændring snapper

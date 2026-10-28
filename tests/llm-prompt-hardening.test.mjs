@@ -287,13 +287,17 @@ test('evaluation routes pass the language to the context and a locale-aware time
   // CAR-147 — the evaluate ceiling is a pure function of the locale: EN keeps
   // the 300 s base (EVAL_TIMEOUT_MS), token-dense ta/hi get 480 s, and BOTH
   // files thread evalTimeoutMs(lang) into their provider/subprocess call sites.
+  // CAR-174 — same contract for the output-token budget: evalMaxTokens(lang)
+  // (16384 base, 32768 token-dense) at every in-process call site.
   assert.match(llm, /EVAL_TIMEOUT_MS = 300_000/);
   assert.match(llm, /export function evalTimeoutMs\(lang\)/);
+  assert.match(llm, /export function evalMaxTokens\(lang\)/);
   assert.match(ap, /evalTimeoutMs\(lang\)/);
+  assert.match(ap, /evalMaxTokens\(lang\)/);
   // FULL-M5 — the two per-provider evaluate branches (Anthropic + tail) merged
   // into ONE runActiveProvider call site; it still carries both knobs.
-  assert.equal((llm.match(/maxTokens: EVAL_MAX_TOKENS/g) || []).length, 1);
-  assert.match(llm, /maxTokens: EVAL_MAX_TOKENS,\s*timeoutMs: evalTimeoutMs\(lang\),/);
+  assert.equal((llm.match(/maxTokens: evalMaxTokens\(lang\)/g) || []).length, 1);
+  assert.match(llm, /maxTokens: evalMaxTokens\(lang\),\s*timeoutMs: evalTimeoutMs\(lang\),/);
 });
 
 test('the language reminder keeps quotes and names in English but nothing else (hi code-switching)', () => {

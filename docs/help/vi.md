@@ -1048,19 +1048,11 @@ tiên — một lượt quét chậm không bao giờ đọc như một trang ch
 
 Chrome kết quả v2 giữ mọi nút điều khiển luôn dễ tìm thấy:
 
-- **Active filters** (`scan.v2.activeFilters`) — mọi bộ lọc bạn đặt
-  hiện dưới dạng một chip gỡ-được phía trên bảng; bấm **✕** trên một
-  chip (**Remove filter**, `scan.v2.removeFilter`) để bỏ đúng cái đó,
-  hoặc **Reset all** (`scan.v2.resetAll`) để xóa sạch cả loạt.
+- **Active filters** (`scan.v2.activeFilters`) — mọi bộ lọc bạn đặt hiện dưới dạng một chip gỡ-được phía trên bảng; bấm **✕** trên một chip (**Remove filter**, `scan.v2.removeFilter`) để bỏ đúng cái đó, hoặc **Reset all** (`scan.v2.resetAll`) để xóa sạch cả loạt.
 - **Sort by** (`scan.v2.sortBy`) — bấm một tiêu đề cột (công ty,
   vị trí, lương, tuổi) để sắp theo nó; bấm lần nữa để đảo chiều.
-- **Quick view** (`scan.v2.quickView`) — bấm một dòng để mở rộng mô
-  tả tin tuyển dụng ngay tại chỗ (**Description**, `scan.v2.description`)
-  mà không rời trang; các tin không có nội dung đã thu ghi điều đó
-  (`scan.v2.noDescription`) thay vì hiện một thẻ trống.
-- **Row density** (`scan.v2.density`) — chuyển **Compact** /
-  **Comfortable** (`scan.v2.compact` / `scan.v2.comfortable`) giữa các
-  độ cao dòng; lựa chọn được ghi nhớ theo từng trình duyệt.
+- **Quick view** (`scan.v2.quickView`) — bấm một dòng để mở rộng mô tả tin tuyển dụng ngay tại chỗ (**Description**, `scan.v2.description`) mà không rời trang; các tin không có nội dung đã thu ghi điều đó (`scan.v2.noDescription`) thay vì hiện một thẻ trống.
+- **Row density** (`scan.v2.density`) — chuyển **Compact** / **Comfortable** (`scan.v2.compact` / `scan.v2.comfortable`) giữa các độ cao dòng; lựa chọn được ghi nhớ theo từng trình duyệt.
 - **Log** (`scan.v2.log`) — thu gọn/mở rộng nhật ký quét streaming để
   nhường bảng toàn bộ bề rộng.
 
@@ -1104,11 +1096,7 @@ gia; phần còn lại nằm sau **Advanced filters**, `scan.advancedFilters`
 - **Remote / Hybrid / Onsite** dropdown.
 - **Quốc gia** dropdown — một bộ lọc địa lý làm đầy từ các quốc gia được phát hiện trong kết quả hiện tại, mỗi quốc gia kèm emoji cờ và số đếm (vd `🇩🇪 Germany (12)`). Chọn một quốc gia để chỉ giữ các vị trí gắn với quốc gia đó. Việc nhận diện ánh xạ địa điểm văn bản tự do của một tin (tên quốc gia/bí danh + ~100 thành phố thị trường việc làm lớn) về một quốc gia; nó thận trọng và không bao giờ đoán, nên một tin có địa điểm không phân giải được — hay tin thuần "Remote" — ở lại dưới **All countries**. Kết hợp với dropdown loại hình làm việc để tìm các vị trí gắn quốc gia *và* remote.
 - **Posted within** dropdown — bộ lọc tuổi phía client (24 giờ qua / 7 ngày / 30 ngày). Dòng có `pubDate` cũ hơn bị ẩn; dòng **không có ngày vẫn đi qua** (thiếu dữ liệu không bị phạt).
-- **Lương từ / Lương tới** (`scan.salaryFrom` / `scan.salaryTo`) —
-  giới hạn số thuần so với các khoản tiền được phân tích từ văn bản
-  tin tuyển dụng (bỏ qua đơn vị tiền, `scan.v2.salaryHint`); tích
-  **Include jobs without salary** (`scan.v2.includeNoSalary`) để bộ
-  lọc lương không bỏ đi các dòng không trích bất kỳ con số nào.
+- **Lương từ / Lương tới** (`scan.salaryFrom` / `scan.salaryTo`) — giới hạn số thuần so với các khoản tiền được phân tích từ văn bản tin tuyển dụng (bỏ qua đơn vị tiền, `scan.v2.salaryHint`); tích **Include jobs without salary** (`scan.v2.includeNoSalary`) để bộ lọc lương không bỏ đi các dòng không trích bất kỳ con số nào.
 - **Seniority** dropdown (`scan.lblSeniority`) — Lead / Staff / Senior
   / Mid / Junior / Intern, nhận diện từ tiêu đề.
 - **★ Yêu thích** — bấm ☆ ở bất kỳ dòng nào để gắn sao một việc (lưu trong `localStorage` theo URL); tích **★ Yêu thích** (`scan.favOnly`) trong khung lọc để chỉ hiện dòng đã gắn sao. Sao sống sót qua các lần quét và tải lại.
@@ -1214,12 +1202,7 @@ Hộp vào các URL chờ đánh giá. Nằm trong `data/pipeline.md`.
 Ba cách:
 
 - Gõ / dán một URL vào ô nhập + bấm **Add URL** (`pipe.add`).
-- Dùng **command palette**: **Cmd/Ctrl+K** (hoặc nút **Command menu**
-  trên thanh bên, `nav.v2.palette`), dán bất kỳ liên kết
-  `http(s)://…`, và palette đưa ra **Auto-pipeline: {url}**
-  (`nav.v2.evalUrl`) — Enter chạy toàn chuỗi trên liên kết đó. Gõ văn
-  bản khác và bấm Enter nhảy tới `#/scan` với thuật từ đó
-  điền sẵn.
+- Dùng **command palette**: **Cmd/Ctrl+K** (hoặc nút **Command menu** trên thanh bên, `nav.v2.palette`), dán bất kỳ liên kết `http(s)://…`, và palette đưa ra **Auto-pipeline: {url}** (`nav.v2.evalUrl`) — Enter chạy toàn chuỗi trên liên kết đó. Gõ văn bản khác và bấm Enter nhảy tới `#/scan` với thuật từ đó điền sẵn.
 - Chạy một lượt Scan (xem trên) — các kết quả mới tự đổ vào
   pipeline.
 
@@ -1257,13 +1240,7 @@ hộp vào lớn sau một lượt quét là tâm điểm v2 của trang này:
 - **Hide already evaluated** (`pipe.hideTracked`) — bật theo mặc định;
   các mục mà tin của nó đã có dòng tracker rơi khỏi khung xem (và khỏi
   vùng chọn hàng loạt) nên bạn chỉ bao giờ thao tác trên việc còn mới.
-- **Select** (`pipe.selectOne`) bất kỳ dòng nào, hay **Select all
-  shown** (`pipe.selectAllShown`) — vùng chọn luôn bám theo các bộ lọc
-  hiện tại, không bao giờ các dòng vô hình. Thanh vùng chọn hiện số
-  đếm (`pipe.selectedCount`) và đưa ra **✕ Remove selected (N)**
-  (`pipe.bulkRemove`) cộng với **Evaluate first selected**
-  (`pipe.evaluateSelected`) — xóa hàng loạt xác nhận một lần cho cả
-  bộ, không phải từng dòng.
+- **Select** (`pipe.selectOne`) bất kỳ dòng nào, hay **Select all shown** (`pipe.selectAllShown`) — vùng chọn luôn bám theo các bộ lọc hiện tại, không bao giờ các dòng vô hình. Thanh vùng chọn hiện số đếm (`pipe.selectedCount`) và đưa ra **✕ Remove selected (N)** (`pipe.bulkRemove`) cộng với **Evaluate first selected** (`pipe.evaluateSelected`) — xóa hàng loạt xác nhận một lần cho cả bộ, không phải từng dòng.
 
 Không gì bị mất do sơ suất: mỗi lần xóa — đơn hay hàng loạt — trả về
 một token hoàn tác mờ-đục, và một thanh ở đáy trang (**Deleted:
@@ -1381,21 +1358,14 @@ thứ kết hợp với nhau:
   công ty, vị trí và tiêu đề hiển thị của từng báo cáo.
 - **Company** (`rep2.companyLabel`) — chọn một nhà tuyển dụng từ
   dropdown.
-- **Score band** (`rep2.bandLabel`) — **High (4.5+)** / **Good (4.0+)**
-  / **Mid (3.5+)** / **Below 3.5** (`rep2.bandHigh` … `rep2.bandLow`),
-  cộng thêm một ô cho các báo cáo có phần đầu không mang điểm
-  phân-tích-được.
+- **Score band** (`rep2.bandLabel`) — **High (4.5+)** / **Good (4.0+)** / **Mid (3.5+)** / **Below 3.5** (`rep2.bandHigh` … `rep2.bandLow`), cộng thêm một ô cho các báo cáo có phần đầu không mang điểm phân-tích-được.
 - **From date / To date** (`rep2.dateFrom` / `rep2.dateTo`) — giới
   hạn danh sách trong một khoảng thời gian.
-- **Sort by** (`rep2.sortLabel`) — **Date** / **Score** / **Company**
-  (`rep2.sortDate` …), tăng dần hay giảm dần (`rep2.sortDirAsc` /
-  `rep2.sortDirDesc`).
+- **Sort by** (`rep2.sortLabel`) — **Date** / **Score** / **Company** (`rep2.sortDate` …), tăng dần hay giảm dần (`rep2.sortDirAsc` / `rep2.sortDirDesc`).
 - Một **biểu đồ phân bố điểm** (`rep2.histogramLabel`) — bấm một cột
   để lọc về dải đó và nhìn rõ hình dáng pipeline của bạn trong một
   cái nhìn.
-- **Reset filters** (`rep2.reset`) xóa sạch mọi thứ; khi không có gì
-  khớp, trang nói điều đó (`rep2.noMatches`) thay vì hiện một lưới
-  trống.
+- **Reset filters** (`rep2.reset`) xóa sạch mọi thứ; khi không có gì khớp, trang nói điều đó (`rep2.noMatches`) thay vì hiện một lưới trống.
 
 Bấm một thẻ (hay dòng bảng) để đọc toàn bộ markdown. Phân trang:
 20 mỗi trang, nút điều khiển ở dưới; mọi thay đổi bộ lọc kéo bạn

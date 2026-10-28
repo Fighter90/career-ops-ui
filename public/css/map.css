@@ -55,8 +55,30 @@
 .job-marker-best { filter: drop-shadow(0 0 5px color-mix(in srgb, var(--map-score-top) 72%, transparent)); }
 .job-cluster { box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 50%; background: var(--c); color: #fff; border: 2px solid #fff; font: 700 11px/1 Inter, sans-serif; box-shadow: 0 1px 4px rgba(0,0,0,.35); cursor: pointer; }
 .job-cluster.ring { background: #fff; color: var(--c); border: 3px solid var(--c); }
-.job-cluster-best { font-size: 11px; }
+.job-cluster-best { font-size: 11px; white-space: nowrap; }
 .job-cluster-count { font-size: 9px; opacity: .86; }
+/* Browser sweep P2 — dark-theme cluster bubbles. The score palette is tuned
+   for dark tiles, so the theme-blind fills inverted the relationship: a dark
+   ring read its teal number on a white fill (1.83:1) and filled tiles put
+   white numbers on bright teal at the same ratio. Dark rings sit on the
+   --paper surface with the score colour for the number and border; dark
+   filled tiles keep the score fill and flip the number to --paper ink.
+   Computed on the dark palette: top #53d3c4 9.5:1, good #3fa99b 6.1:1,
+   mid #718f8a 5.0:1, none #7b8885 4.7:1 — the lowest colour
+   (--map-score-low #566563) cannot reach 4.5:1 against any dark surface in
+   either direction, so data-dim clusters take white-on-tile (filled,
+   6.1:1) or a --hof-lifted mix (ring, 6.4:1) instead. Light theme keeps the
+   white fill its own palette is tuned for. */
+[data-theme="dark"] .job-cluster { color: var(--paper); }
+[data-theme="dark"] .job-cluster.ring { background: var(--paper); color: var(--c); }
+[data-theme="dark"] .job-cluster[data-dim] { color: #fff; }
+[data-theme="dark"] .job-cluster.ring[data-dim] { color: color-mix(in srgb, var(--c) 60%, var(--hof)); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .job-cluster { color: var(--paper); }
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .job-cluster.ring { background: var(--paper); color: var(--c); }
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .job-cluster[data-dim] { color: #fff; }
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .job-cluster.ring[data-dim] { color: color-mix(in srgb, var(--c) 60%, var(--hof)); }
+}
 .job-map-home { display: grid; place-items: center; border: 2px solid var(--paper); border-radius: 50%; background: var(--hof); color: var(--paper); font-size: 19px; box-shadow: 0 1px 5px rgba(0,0,0,.36); }
 .commute-cell { white-space: nowrap; }
 .commute-cell.is-unknown { color: var(--foggy); }
@@ -101,8 +123,8 @@ body.job-map-active .docs-fab { display: none; }
   .job-map-toolbar .job-map-spec-select, .job-map-toolbar .job-map-search { flex: 1 1 0; min-width: 0; min-height: 38px; }
   .job-map-wrap { flex: 1; gap: 0; overflow: hidden; }
   .job-map { width: 100%; height: 100%; min-height: 0; border: 0; border-radius: 0; }
-  .job-map-status-chip { position: absolute; z-index: var(--z-map-control); top: 12px; left: 12px; display: block; min-height: 38px; padding: 9px 12px; border: 1px solid var(--slate); border-radius: 999px; background: color-mix(in srgb, var(--paper) 92%, transparent); color: var(--hof); font-size: 12px; font-weight: 700; box-shadow: var(--shadow-sm); backdrop-filter: blur(8px); }
-  .job-map-filter-button { position: absolute; z-index: var(--z-map-control); right: 12px; bottom: calc(14px + env(safe-area-inset-bottom)); display: inline-flex; min-height: 44px; }
+  .job-map-status-chip { position: absolute; z-index: var(--z-map-control); top: 12px; inset-inline-start: 12px; display: block; min-height: 38px; padding: 9px 12px; border: 1px solid var(--slate); border-radius: 999px; background: color-mix(in srgb, var(--paper) 92%, transparent); color: var(--hof); font-size: 12px; font-weight: 700; box-shadow: var(--shadow-sm); backdrop-filter: blur(8px); }
+  .job-map-filter-button { position: absolute; z-index: var(--z-map-control); inset-inline-end: 12px; bottom: calc(14px + env(safe-area-inset-bottom)); display: inline-flex; min-height: 44px; }
   .job-map-sheet { position: absolute; z-index: var(--z-map-sheet); right: 8px; bottom: calc(8px + env(safe-area-inset-bottom)); left: 8px; display: none; max-height: 58dvh; padding: 18px 16px calc(16px + env(safe-area-inset-bottom)); overflow: auto; border-radius: 18px; box-shadow: 0 -8px 30px rgba(0,0,0,.25); }
   .job-map-sheet.is-open { display: block; }
   .job-map-sheet::before { content: ""; display: block; width: 40px; height: 4px; margin: -8px auto 12px; border-radius: 4px; background: var(--slate); }
@@ -114,9 +136,10 @@ body.job-map-active .docs-fab { display: none; }
   .job-map-legend-inline { padding-top: 4px; white-space: normal; }
   .job-map-filter-actions { display: flex; gap: 8px; margin-top: 14px; }
   .job-map-filter-actions .btn { min-height: 44px; flex: 1; }
-  .job-map-sheet-close { position: absolute; z-index: var(--z-map-control); top: 8px; right: 10px; display: grid; width: 44px; height: 44px; padding: 0; place-items: center; border: 0; background: transparent; color: var(--hof); font-size: 28px; cursor: pointer; }
+  .job-map-sheet-close { position: absolute; z-index: var(--z-map-control); top: 8px; inset-inline-end: 10px; display: grid; width: 44px; height: 44px; padding: 0; place-items: center; border: 0; background: transparent; color: var(--hof); font-size: 28px; cursor: pointer; }
   .job-map-peek:not([hidden]) { display: block; }
-  .job-map-peek-card { display: flex; min-height: 94px; flex-direction: column; justify-content: center; gap: 7px; padding: 12px 44px 4px 2px; outline: none; cursor: pointer; }
+  /* padding-inline-end reserves the sheet-close button's corner (it mirrors with the sheet) */
+  .job-map-peek-card { display: flex; min-height: 94px; flex-direction: column; justify-content: center; gap: 7px; padding-block: 12px 4px; padding-inline: 2px 44px; outline: none; cursor: pointer; }
   .job-map-peek-card strong { font-size: 16px; line-height: 1.35; }
   .job-map-peek-card span { color: var(--foggy); font-size: 13px; }
   .job-map-peek-card:focus-visible { border-radius: 8px; box-shadow: inset 0 0 0 2px var(--accent); }
@@ -193,7 +216,7 @@ body.job-map-active .docs-fab { display: none; }
   .v2-map-layout { position: relative; flex: 1; min-height: 0; flex-direction: column; }
   .v2-map-list { position: absolute; z-index: var(--z-map-sheet); right: 8px; bottom: calc(8px + env(safe-area-inset-bottom)); left: 8px; flex: none; display: none; min-height: 0; max-height: 52dvh; border-radius: 18px; box-shadow: 0 -8px 30px rgba(0, 0, 0, .25); }
   .v2-map-list.is-open { display: flex; }
-  .v2-map-list-toggle { position: absolute; z-index: var(--z-map-control); left: 12px; bottom: calc(14px + env(safe-area-inset-bottom)); display: inline-flex; min-height: 44px; }
-  .v2-map-list-close { position: absolute; z-index: var(--z-map-control); top: 8px; right: 10px; display: grid; width: 44px; height: 44px; padding: 0; place-items: center; border: 0; background: transparent; color: var(--hof); font-size: 28px; cursor: pointer; }
+  .v2-map-list-toggle { position: absolute; z-index: var(--z-map-control); inset-inline-start: 12px; bottom: calc(14px + env(safe-area-inset-bottom)); display: inline-flex; min-height: 44px; }
+  .v2-map-list-close { position: absolute; z-index: var(--z-map-control); top: 8px; inset-inline-end: 10px; display: grid; width: 44px; height: 44px; padding: 0; place-items: center; border: 0; background: transparent; color: var(--hof); font-size: 28px; cursor: pointer; }
   .v2-map-noloc { min-height: 36px; }
 }

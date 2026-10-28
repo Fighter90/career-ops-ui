@@ -31,8 +31,9 @@ test('usage-hud is CSP-safe: no inline on* handlers, uses addEventListener', () 
 test('usage-hud is pinned to the sidebar bottom (fixed, full sidebar width) and the sidebar box ends above it', () => {
   assert.match(SRC, /document\.body\.appendChild/);
   const css = loadAppCss();
-  // Fixed to the bottom-left, sidebar-width, on top of the sidebar.
-  assert.match(css, /\.usage-hud\s*\{[^}]*position:\s*fixed[^}]*left:\s*0[^}]*bottom:\s*0/);
+  // Fixed to the bottom inline-start edge (bottom-left in LTR, bottom-right
+  // in RTL via the same logical property), sidebar-width, on top of the sidebar.
+  assert.match(css, /\.usage-hud\s*\{[^}]*position:\s*fixed[^}]*inset-inline-start:\s*0[^}]*bottom:\s*0/);
   assert.match(css, /\.usage-hud\s*\{[^}]*width:\s*var\(--sidebar-w\)/);
   // JS publishes the HUD height (+8 clearance) via a CSS custom property, never
   // clobbering inline padding; the sidebar's fixed box ENDS above the HUD
@@ -92,7 +93,10 @@ test('usage-hud collapse state persists (localStorage) and body respects [hidden
 
 test('usage-hud mirrors to the sidebar bottom-right edge in RTL', () => {
   const css = loadAppCss();
-  assert.match(css, /\[dir="rtl"\]\s*\.usage-hud\s*\{[^}]*right:\s*0/);
+  // v1.261.x RTL deep sweep: the HUD pins itself via inset-inline-start
+  // (left in LTR, right in RTL) — no [dir="rtl"] positional override.
+  assert.match(css, /\.usage-hud\s*\{[^}]*inset-inline-start:\s*0/);
+  assert.doesNotMatch(css, /\[dir="rtl"\]\s*\.usage-hud\s*\{/);
 });
 
 test('HUD backs off exponentially while /api/usage is failing (SPA-M3)', () => {

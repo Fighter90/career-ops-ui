@@ -1064,7 +1064,7 @@ Router.register('pipeline', async () => {
     const TS = window.TrackerStages;
     const counts = (TS && STAGES.length && !trackerLoadFailed) ? TS.stageCounts(trackerRows, STAGES, ALIASES) : {};
     overview.replaceChildren(
-      c('strong', { style: { marginRight: '2px' } }, t('pipe.title', 'Pipeline') + ':'),
+      c('strong', { style: { marginInlineEnd: '2px' } }, t('pipe.title', 'Pipeline') + ':'),
       ovChip(allUrls.length, t('pipe.ovInbox', 'in inbox'), '/pipeline'),
       // CAR-93 — a failed tracker read renders "—", never a fake "0".
       ovChip(trackerLoadFailed ? '—' : trackerRows.length, t('pipe.ovTracked', 'tracked'), '/tracker'),

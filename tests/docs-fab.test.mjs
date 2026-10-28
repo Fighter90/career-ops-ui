@@ -69,5 +69,10 @@ test('docs-fab panel respects [hidden] with an explicit display:none override (v
 
 test('docs-fab launcher mirrors to bottom-left in RTL', () => {
   const css = loadAppCss();
-  assert.match(css, /\[dir="rtl"\][^{]*\.docs-fab[^{]*\{[^}]*left:\s*24px/);
+  // v1.261.x RTL deep sweep: the launcher/panel pin themselves to the
+  // trailing edge via inset-inline-end — the mirror is the property, no
+  // [dir="rtl"] positional override exists any more.
+  assert.match(css, /\.docs-fab \{[^}]*inset-inline-end:\s*24px/);
+  assert.match(css, /\.docs-fab__panel \{[^}]*inset-inline-end:\s*24px/);
+  assert.doesNotMatch(css, /\[dir="rtl"\][^{]*\.docs-fab(?!__bubble)[^{]*\{[^}]*(left|right):/);
 });

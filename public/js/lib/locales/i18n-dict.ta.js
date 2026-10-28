@@ -389,7 +389,7 @@ window.__I18N_DICT_TA = {
   'top.themeToggle': "தீமை மாற்று",
   'top.langhint': "Enter — தேடு",
   'top.langLabel': "மொழி",
-  'footer.manifesto': "The CareerOps Manifesto",
+  'footer.manifesto': "CareerOps மேனிஃபெஸ்டோ",
   'footer.patterns': "📘 Agentic Coding Design Patterns",
   'footer.patternsUrl': "https://mokevnin.github.io/agentic-coding-design-patterns/en/",
   'common.loading': "ஏற்றுகிறது…",

@@ -18,7 +18,7 @@
    viewport. Lets keyboard users bypass the persistent sidebar +
    topbar to land directly on the content. */
 .skip-link {
-  position: absolute; top: -100px; left: 8px; z-index: var(--z-skiplink);
+  position: absolute; top: -100px; inset-inline-start: 8px; z-index: var(--z-skiplink);
   padding: 12px 20px; background: #222; color: #fff; font-weight: 600;
   text-decoration: none; border-radius: 0 0 8px 8px;
   transition: top var(--transition);
@@ -259,9 +259,12 @@ input, textarea, select {
 /* ───────────────────────── sidebar ───────────────────────── */
 .sidebar {
   position: fixed;
-  top: 0; left: 0; bottom: 0;
+  /* Logical edges: the rail sits at the inline-start edge and its divider
+   * faces the content (inline-end) — the whole rail mirrors under [dir="rtl"]
+   * with no duplicate mirror rules (RTL deep sweep, v1.261.x). */
+  top: 0; bottom: 0; inset-inline-start: 0;
   width: var(--sidebar-w);
-  border-right: 1px solid var(--slate);
+  border-inline-end: 1px solid var(--slate);
   background: var(--paper);
   padding: var(--space-5) var(--space-3);
   display: flex;
@@ -308,7 +311,7 @@ body.sidebar-open .sidebar-backdrop { display: block; }
     visibility: visible;
   }
   .sidebar-toggle { display: inline-flex; align-items: center; justify-content: center; }
-  .main { margin-left: 0 !important; padding-left: 12px; padding-right: 12px; }
+  .main { margin-inline-start: 0 !important; padding-left: 12px; padding-right: 12px; }
   /* ONE row: [☰ · search · 🔔 🌙 🩺 ⚡], actions icon-only. v1.208.2: at ~565-640px
      long RU labels made `space-between` distribute NEGATIVE space (bell on the pill).
      Cannot recur: every action is a fixed 36px square (`flex: 0 0 auto`), the searchbar
@@ -428,7 +431,7 @@ body.sidebar-open .sidebar-backdrop { display: block; }
 .sidebar-footer .manifesto-link:hover { color: var(--ink); text-decoration: underline; }
 
 /* ───────────────────────── main ───────────────────────── */
-.main { margin-left: var(--sidebar-w); min-height: 100vh; background: var(--paper); }
+.main { margin-inline-start: var(--sidebar-w); min-height: 100vh; background: var(--paper); }
 
 .topbar {
   position: sticky;
@@ -474,7 +477,7 @@ body.sidebar-open .sidebar-backdrop { display: block; }
    interactive, never selected; matches the token vocabulary. */
 .kbd-shortcut {
   flex: 0 0 auto;
-  margin-left: 8px;
+  margin-inline-start: 8px;
   font: 11px/1 ui-monospace, SFMono-Regular, Menlo, monospace;
   color: var(--foggy);
   background: var(--bg-subtle, rgba(0, 0, 0, .04));
@@ -605,7 +608,7 @@ body.sidebar-open .sidebar-backdrop { display: block; }
   padding: 12px 16px;
   border-radius: 8px;
   background: var(--warn-bg, #fff7e6);
-  border-left: 3px solid var(--warn-border, #f0a020);
+  border-inline-start: 3px solid var(--warn-border, #f0a020);
   color: var(--warn-fg, #663d00);
   font-size: 0.92em;
   line-height: 1.5;

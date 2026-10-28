@@ -40,7 +40,7 @@ import { runNodeScript } from '../runner.mjs';
 import { bundleProjectContext, buildEvaluationPrompt, buildEvaluationPromptParts, resolveLocale } from '../prompts.mjs';
 import { runActiveProvider, PROMPT_SIZE_SOFT_CAP } from '../llm-dispatch.mjs';
 import { recordUsage, parseSubprocessUsage } from '../llm-usage.mjs';
-import { evaluationWarnings, EVAL_MAX_TOKENS, evalTimeoutMs, geminiEvalArgs } from './llm.mjs';
+import { evaluationWarnings, evalMaxTokens, evalTimeoutMs, geminiEvalArgs } from './llm.mjs';
 import { providerOrder } from '../env-config.mjs';
 import { stripDangerousMarkdown } from '../security.mjs';
 import { stripScoreSummary, validateEvaluationReport, cutRepeatedBlockHeadings, extractSummaryScore, extractBodyScore, fixReportDate } from '../eval-validate.mjs';
@@ -735,9 +735,10 @@ export function registerAutoPipelineRoutes(app) {
           step(2, 'failed', `prompt ${full.length} > ${PROMPT_SIZE_SOFT_CAP} cap`);
           return fail(2, 'prompt too large');
         }
-        // 16384, as /api/evaluate: a CJK A–G report plus SCORE_SUMMARY outgrew 8192.
+        // 16384 (32768 for the token-dense locales, CAR-174), as /api/evaluate:
+        // a CJK A–G report plus SCORE_SUMMARY outgrew 8192.
         // `signal` (CAR-92): a client disconnect aborts the upstream call.
-        const runOpts = { maxTokens: EVAL_MAX_TOKENS, timeoutMs: evalTimeoutMs(lang), signal: ctrl.signal };
+        const runOpts = { maxTokens: evalMaxTokens(lang), timeoutMs: evalTimeoutMs(lang), signal: ctrl.signal };
         let r;
         if (evalMode === 'anthropic') {
           // Explicit `mode: 'anthropic'` pins the provider.

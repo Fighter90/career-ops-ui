@@ -41,7 +41,9 @@ export async function runAnthropic(prompt, opts = {}) {
     return { markdown: '', usage: null, error: 'ANTHROPIC_API_KEY not set' };
   }
   const model = opts.model || envKey('ANTHROPIC_MODEL') || 'claude-sonnet-4-6';
-  const maxTokens = Math.min(Math.max(opts.maxTokens || 8192, 256), 16384);
+  // The clamp is a sanity ceiling, not an API limit; 32768 so the token-dense
+  // locales' evaluate budget (evalMaxTokens, CAR-174) survives the forwarding.
+  const maxTokens = Math.min(Math.max(opts.maxTokens || 8192, 256), 32768);
   const timeoutMs = opts.timeoutMs || 180_000;
   const fetchImpl = opts.fetchImpl || fetch;
 

@@ -127,7 +127,7 @@ Router.register('evaluate', async () => {
         warnings.length ? c('div', {
           className: 'badge badge-warn',
           role: 'status',
-          style: { display: 'block', marginBottom: '12px', whiteSpace: 'normal', lineHeight: '1.5', textAlign: 'left' },
+          style: { display: 'block', marginBottom: '12px', whiteSpace: 'normal', lineHeight: '1.5', textAlign: 'start' },
         }, warnings.map((w) => c('div', { style: { margin: '2px 0' } }, '⚠ ' + w))) : null,
         (r.markdown || r.stdout) && c('div', { className: 'md', html: UI.md(r.markdown || r.stdout) }),
         r.stderr && c('details', null, [

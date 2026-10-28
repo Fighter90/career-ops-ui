@@ -417,12 +417,12 @@ test('UX-A5-r4 (v1.59.9): scroll-spy is initial-paint-eager (synchronous compute
   // CSS rule has paint declarations (the regression report cited one
   // previous cycle where `.toc-current` was attached but a later CSS
   // rule reset border-left). Assert the rule has both color AND a
-  // visible border-left declaration.
+  // visible border-inline-start declaration (logical — mirrors in RTL).
   const css = loadAppCss();
   assert.match(css, /\.help-toc\s+a\.toc-current\s*\{[^}]*color:\s*var\(--rausch/,
     '.help-toc a.toc-current must paint color from --rausch');
-  assert.match(css, /\.help-toc\s+a\.toc-current\s*\{[^}]*border-left:\s*\d+px\s+solid\s+var\(--rausch/,
-    '.help-toc a.toc-current must paint a visible border-left from --rausch');
+  assert.match(css, /\.help-toc\s+a\.toc-current\s*\{[^}]*border-inline-start:\s*\d+px\s+solid\s+var\(--rausch/,
+    '.help-toc a.toc-current must paint a visible border-inline-start from --rausch');
 });
 
 test('UX-A5-r3 (v1.59.8): help.js TOC scroll-spy uses a plain scroll listener (NOT IntersectionObserver)', () => {
