@@ -640,7 +640,7 @@ career-ops лучше всего работает **постоянно вклю�
 
 Интерфейс поддерживает **19 локалей** — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `fr`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`, `ta`, `vi`. С **v1.60.0 (I18N-SPLIT)** переводы хранятся **по одному файлу на язык** в [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, плоская таблица `ключ → строка` — плюс общий `i18n-dict.aliases.js`. [`i18n-dict.js`](public/js/lib/i18n-dict.js) собирает их в `window.__I18N_DICT`; [`i18n.js`](public/js/lib/i18n.js) разрешает `t('ключ', 'fallback')`. Без сборки и без fetch — переводчик правит один файл языка.
 
-**Добавить или изменить строку:** добавьте один и тот же ключ во все 18 файлов локалей (паритет проверяется тестами), используйте через `data-i18n="scan.newButton"` или `t('scan.newButton')` и запустите `npm test`.
+**Добавить или изменить строку:** добавьте один и тот же ключ во все 19 файлов локалей (паритет проверяется тестами), используйте через `data-i18n="scan.newButton"` или `t('scan.newButton')` и запустите `npm test`.
 
 ```js
 // public/js/lib/locales/i18n-dict.en.js   →   'scan.newButton': 'Run scan',
