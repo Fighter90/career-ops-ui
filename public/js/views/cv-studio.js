@@ -589,5 +589,59 @@ Router.register('cv-studio', async () => {
   };
   window.addEventListener('keydown', onStudioUndoHotkey);
 
+  // ── Keep the studio's work when you leave (CAR-179, upstream #6182) ──
+  if (cvsRestoreBuffer) {
+    const b = cvsRestoreBuffer;
+    humanIn.value = b.humanIn || '';
+    jdIn.value = b.jdIn || '';
+    addUrlIn.value = b.addUrlIn || '';
+    addTextIn.value = b.addTextIn || '';
+    vfIn.value = b.vfIn || '';
+    if (b.human) { humanLive = b.human; paintHumanResult(b.human); }
+    if (b.tailor) { tailorLive = b.tailor; paintTailorResult(b.tailor); }
+    if (b.add) { addLive = b.add; paintAddResult(b.add); }
+    if (b.vf) { vfLive = b.vf; paintVfResult(b.vf); }
+  }
+
+  // Dirty is probed LIVE at event time (UX-A10: never a flag an async
+  // handler may have missed): any typed input or any painted result.
+  const isStudioDirty = () => !!(humanIn.value.trim() || jdIn.value.trim() || addUrlIn.value.trim()
+    || addTextIn.value.trim() || vfIn.value.trim() || humanLive || tailorLive || addLive || vfLive);
+
+  const onStudioBeforeUnload = (e) => {
+    if (!isStudioDirty()) return;
+    e.preventDefault();
+    e.returnValue = '';
+  };
+  const detachStudioView = () => {
+    window.removeEventListener('beforeunload', onStudioBeforeUnload);
+    window.removeEventListener('hashchange', onStudioHashChange);
+    window.removeEventListener('keydown', onStudioUndoHotkey);
+    if (cvsViewDetach === detachStudioView) cvsViewDetach = null;
+  };
+  const onStudioHashChange = () => {
+    if (cvsRouteHash() === '#/cv-studio') return;
+    if (!isStudioDirty()) { detachStudioView(); return; }
+    const ok = window.confirm(t('cvs.unsavedConfirm', 'You have unsaved CV Studio work. Leave anyway?'));
+    if (!ok) {
+      // The hash already changed by the time hashchange fires — rewind to
+      // keep the user on the page (preventDefault is a no-op on
+      // hashchange). Detach first: the re-rendered view registers its own
+      // set, and the restore buffer brings the work back.
+      detachStudioView();
+      window.location.hash = '#/cv-studio';
+      return;
+    }
+    // Leaving confirmed — the buffer keeps the work for the next visit.
+    rememberStudioState();
+    detachStudioView();
+  };
+  // Single-instance lifecycle (cv.js CAR-20): drop the previous render's
+  // listeners before registering this instance's set.
+  if (cvsViewDetach) cvsViewDetach();
+  cvsViewDetach = detachStudioView;
+  window.addEventListener('beforeunload', onStudioBeforeUnload);
+  window.addEventListener('hashchange', onStudioHashChange);
+
   return root;
 });

@@ -14,8 +14,9 @@
  *   2. Cmd/Ctrl+Z pops the stack outside text fields and steps aside
  *      inside them (native undo owns the keystroke there); matched on
  *      e.code too, so a non-QWERTY layout (CAR-172 lesson) works.
- * (The leave-guard gates live in the CAR-179 guard commit of the same
- * branch and extend this file.)
+ *   3. Leaving with dirty studio state triggers the guard: a confirm on
+ *      hashchange (decline rewinds the hash), a beforeunload veto, and a
+ *      restore buffer that re-renders with the work intact.
  *
  * CI-isolated: stubbed DOM/API, no server, no network, no parent project.
  */
@@ -270,4 +271,102 @@ test('cvstudio undo hotkey: Cmd/Ctrl+Z pops the stack only outside text fields',
   assert.equal(textOf(humanOutPanel(root)).trim(), '', 'the code-based chord pops the initial empty snapshot too');
   assert.deepEqual(events, ['pd', 'pd4'], 'the code-based chord is consumed too');
   assert.equal(win.location.hash, '#/cv-studio');
+});
+
+// ── 3. Leaving with dirty state triggers the guard ──────────────────────
+
+test('cvstudio guard: a clean leave never prompts', async () => {
+  const { handler, win, fire } = loadStudioRoute({});
+  await handler();
+  win.location.hash = '#/scan';
+  fire('hashchange', {});
+  assert.equal(win.confirmCalls.length, 0, 'no confirm without studio work');
+  assert.equal(win.location.hash, '#/scan', 'clean leave proceeds');
+});
+
+test('cvstudio guard: leaving with typed input asks, declining rewinds the hash', async () => {
+  const { handler, win, fire } = loadStudioRoute({});
+  const root = await handler();
+
+  const humanIn = findTextarea(root, 'cvs.humanPh');
+  humanIn.value = 'half-pasted work the user would lose';
+  (humanIn._listeners.input || []).forEach((fn) => fn({}));
+  humanIn.value = 'half-pasted work the user would lose';
+
+  win.confirmAnswer = false; // decline
+  win.location.hash = '#/scan';
+  fire('hashchange', {});
+  assert.equal(win.confirmCalls.length, 1, 'the dirty leave must ask once');
+  assert.match(win.confirmCalls[0], /CV Studio/, 'the confirm names this page');
+  assert.equal(win.location.hash, '#/cv-studio', 'declining rewinds to the studio route');
+});
+
+test('cvstudio guard: confirming the leave keeps the work for the next render', async () => {
+  const { handler, win, fire } = loadStudioRoute({ humanize: ['SAVED-RESULT'] });
+  const root = await handler();
+
+  const jdIn = findTextarea(root, 'cvs.tailorJdPh');
+  jdIn.value = 'A job description worth 60 seconds of tailoring.';
+  (jdIn._listeners.input || []).forEach((fn) => fn({}));
+  const humanIn = findTextarea(root, 'cvs.humanPh');
+  humanIn.value = 'A stiff CV sentence that is definitely long enough to pass.';
+  (humanIn._listeners.input || []).forEach((fn) => fn({}));
+  await click(findButton(root, (txt) => txt.includes('Make it human')));
+
+  win.confirmAnswer = true; // leave anyway
+  win.location.hash = '#/scan';
+  fire('hashchange', {});
+  assert.equal(win.confirmCalls.length, 1, 'the dirty leave must ask once');
+  assert.equal(win.location.hash, '#/scan', 'confirming lets the navigation stand');
+
+  // Language switch / back-navigation re-renders the route in place.
+  win.location.hash = '#/cv-studio';
+  const root2 = await handler();
+  const jdIn2 = findTextarea(root2, 'cvs.tailorJdPh');
+  assert.equal(jdIn2.value, 'A job description worth 60 seconds of tailoring.', 'typed JD survives');
+  assert.match(textOf(humanOutPanel(root2)), /SAVED-RESULT/, 'the finished result is repainted');
+});
+
+test('cvstudio guard: beforeunload vetoes leaving with dirty state only', async () => {
+  const { handler, win, fire } = loadStudioRoute({});
+  const root = await handler();
+
+  const clean = { prevented: false, returnValue: undefined, preventDefault() { this.prevented = true; } };
+  fire('beforeunload', clean);
+  assert.equal(clean.prevented, false, 'clean unload is never vetoed');
+
+  const vfIn = findTextarea(root, 'cvs.vfPlaceholder');
+  vfIn.value = 'a fact-check paste in flight';
+  (vfIn._listeners.input || []).forEach((fn) => fn({}));
+  const dirty = { prevented: false, returnValue: undefined, preventDefault() { this.prevented = true; } };
+  fire('beforeunload', dirty);
+  assert.equal(dirty.prevented, true, 'dirty unload is vetoed');
+  assert.equal(dirty.returnValue, '', 'the veto carries the browser-required returnValue');
+});
+
+test('cvstudio guard: a finished result alone (no typed input) is dirty too', async () => {
+  const { handler, win, fire } = loadStudioRoute({ humanize: ['ONLY-RESULT'] });
+  const root = await handler();
+  const humanIn = findTextarea(root, 'cvs.humanPh');
+  humanIn.value = 'A stiff CV sentence that is definitely long enough to pass.';
+  await click(findButton(root, (txt) => txt.includes('Make it human')));
+  // Clear the input afterwards: the painted result must keep the page dirty.
+  humanIn.value = '';
+  (humanIn._listeners.input || []).forEach((fn) => fn({}));
+
+  win.location.hash = '#/scan';
+  fire('hashchange', {});
+  assert.equal(win.confirmCalls.length, 1, 'a finished LLM run alone must arm the guard');
+});
+
+test('cvstudio guard: the add-entry URL field also counts as studio work', async () => {
+  const { handler, win, fire } = loadStudioRoute({});
+  const root = await handler();
+  const addUrlIn = findInput(root, 'cvs.addUrlPh');
+  addUrlIn.value = 'https://example.com/my-project';
+  (addUrlIn._listeners.input || []).forEach((fn) => fn({}));
+
+  win.location.hash = '#/scan';
+  fire('hashchange', {});
+  assert.equal(win.confirmCalls.length, 1, 'a pasted source URL arms the guard');
 });
