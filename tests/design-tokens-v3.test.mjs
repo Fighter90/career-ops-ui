@@ -122,7 +122,7 @@ test('declaration-only — the only blocks are the three theme blocks under one 
   const allowed = [LIGHT_SEL, DARK_SEL, SYSTEM_SEL];
   assert.deepEqual([...new Set(heads)].sort(), [...allowed].sort(),
     'the sheet must not style any selector — token declarations only');
-  assert.equal((src.match(new RegExp(MEDIA_SEL.replace(/([()])/g, '\\$1'), 'g')) || []).length, 1,
+  assert.equal((src.match(new RegExp(MEDIA_SEL.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'g')) || []).length, 1,
     'exactly one prefers-color-scheme wrapper');
   assert.doesNotMatch(src, /@(?!media)[a-zA-Z-]+/, 'no other at-rules (@keyframes, @supports, …)');
 });
@@ -145,7 +145,7 @@ test('the two dark blocks carry identical values (no half-dark drift)', () => {
 test('theme-invariant scales are declared exactly once (on :root)', () => {
   const src = css();
   for (const t of THEME_INVARIANT) {
-    const n = (src.match(new RegExp(t.replace(/-/g, '\\-') + '\\s*:', 'g')) || []).length;
+    const n = (src.match(new RegExp(t.replace(/[.*+?^${}()|[\]\\]/g, '\\$&') + '\\s*:', 'g')) || []).length;
     assert.equal(n, 1, `${t} must be declared exactly once (theme-invariant), found ${n}`);
   }
   const light = LIGHT();
