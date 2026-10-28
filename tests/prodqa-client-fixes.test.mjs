@@ -145,7 +145,6 @@ test('prodqa 1: previewTimer is declared lexically ABOVE its first invocation', 
     'construction (saved chips), and a hoisted function body still hits the let-TDZ');
 });
 
-
 // ── 2. Ctrl/Cmd+K ────────────────────────────────────────────────────────
 
 test('prodqa 2: both Ctrl+K handlers are registered at document level, never view-scoped', () => {
@@ -179,3 +178,26 @@ test('prodqa 2: the chord matches e.code (KeyK), so it works on non-QWERTY layou
     'app.js legacy fallback must accept e.code === \'KeyK\'');
 });
 
+// ── 3. docs-assistant 390px overflow ─────────────────────────────────────
+
+test('prodqa 3: both docs-assistant chip rows carry .docs-chip-row', () => {
+  const src = read('public', 'js', 'views', 'docs-assistant.js');
+  const rows = src.match(/className: 'docs-chip-row'/g) || [];
+  assert.equal(rows.length, 2,
+    'the starter-question row and the route-link row (both added by #546) are chip rows');
+});
+
+test('prodqa 3: .docs-chip-row .btn wraps and shrinks (the CAR-146 pattern)', () => {
+  // v2-llm.css owns the rule: components.css/app.css sit within a few lines
+  // of the 800-LOC hard cap, and the chips are content of the kit's form
+  // column on an AI page (docs-assistant). Scoped to a class only that view
+  // emits, so the sheet's "no restyling existing view classes" holds.
+  const css = read('public', 'css', 'v2-llm.css');
+  const at = css.indexOf('.docs-chip-row .btn {');
+  assert.ok(at > -1, 'the scoped rule exists in v2-llm.css');
+  const block = css.slice(at, css.indexOf('}', at));
+  assert.match(block, /white-space:\s*normal/, 'buttons wrap instead of nowrap');
+  assert.match(block, /overflow-wrap:\s*anywhere/, 'long tokens break (CAR-146 token)');
+  assert.match(block, /min-width:\s*0/, 'the flex content-based minimum is zeroed');
+  assert.match(block, /flex:\s*0 1 auto/, 'the chip may shrink (overrides .btn flex-shrink: 0)');
+});

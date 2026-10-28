@@ -9,6 +9,23 @@
 
 /* ── two-column layout ─────────────────────────────────────────────────── */
 
+/* prod-QA run 40602310441 (#546 regression) — docs-assistant starter and
+   route chips. This sheet owns the kit pages' content styling; the rule is
+   scoped to a hook only docs-assistant emits (the header's "no restyling
+   existing view classes" is honored — no other view has .docs-chip-row).
+   The chips are `.btn`s: `white-space: nowrap` + `flex-shrink: 0` (app.css)
+   made one long localized starter question ("How does the pipeline work?
+   …", en) a non-shrinkable 418px flex item inside the flex-wrap row —
+   +56px horizontal overflow at 390px. Inside these rows the chips wrap
+   instead (the CAR-146 shrink pattern: zero the content minimum, allow
+   wrapping). */
+.docs-chip-row .btn {
+  white-space: normal;
+  overflow-wrap: anywhere;
+  min-width: 0;
+  flex: 0 1 auto;
+}
+
 .llm2 {
   display: grid;
   grid-template-columns: minmax(300px, 5fr) 7fr;
