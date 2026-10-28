@@ -24,7 +24,7 @@
      readable instead of being clipped to one line. */
   white-space: normal; overflow-wrap: anywhere;
   max-height: 50vh; overflow-y: auto;
-  animation: slide-in 200ms ease-out;
+  animation: slide-in 200ms var(--ease-out);
 }
 /* CAR-23 — variant fills AA with the inherited --paper text in BOTH themes. */
 .toast.error { background: var(--rausch-fill); color: #fff; } /* v3 phase 2: the theme-INVARIANT danger red keeps literal WHITE text in both themes (5.80:1); the inherited --paper would go near-black in dark (3.01:1) — same pattern as the banner .btn-dark chip */
@@ -36,7 +36,7 @@
    canary. Existing --err token only — no new colors. */
 .input.is-error, .textarea.is-error, .select.is-error {
   border-color: var(--err);
-  box-shadow: 0 0 0 3px rgba(255, 56, 92, 0.18);
+  box-shadow: 0 0 0 3px var(--danger-soft); /* v3 phase 3 — theme-aware danger wash (was a coral rgba) */
 }
 /* U-4 (v1.58.24) — collapsible technical detail inside the toast. The
    human sentence stays at the top; the "(METHOD /path · HTTP NNN)"
@@ -140,7 +140,7 @@
   position: fixed; top: 0; bottom: 0; inset-inline-end: 0; width: min(380px, 92vw);
   background: var(--paper, #fff); border-inline-start: 1px solid var(--slate, #ddd);
   box-shadow: -8px 0 24px rgba(0,0,0,.1); z-index: var(--z-drawer);
-  display: flex; flex-direction: column; animation: notif-slide-in 200ms ease-out;
+  display: flex; flex-direction: column; animation: notif-slide-in 200ms var(--ease-out);
 }
 /* The slide-in shadow is physical: it must fall AWAY from the content edge,
  * so it flips sign under [dir="rtl"] (the drawer docks to the left there). */
@@ -441,13 +441,12 @@
 }
 .tab-btn:hover { background: var(--beach); }
 .tab-btn.is-active {
-  /* Was a solid --rausch fill with #fff text — only ~2.94:1 on the brighter
-     dark-mode pink (below WCAG AA). Now the readable tinted-badge pattern:
-     a low-alpha rausch wash + the AA-tuned --rausch-text + a rausch border,
-     legible in both themes (mirrors .badge-bad). */
-  background: rgba(255, 56, 92, .16);
+  /* v3 phase 3 — was a solid --rausch fill, then a low-alpha coral wash: active tabs are
+     ACCENT semantics now (mirrors .tracker-tab.is-active since phase 2 — ink on its wash
+     8.38/8.63:1 light/dark), not the danger-red text the old rausch wash implied. */
+  background: var(--accent-soft);
   border-color: var(--rausch);
-  color: var(--rausch-text);
+  color: var(--accent-soft-ink);
   font-weight: 700;
 }
 
@@ -715,12 +714,13 @@
 .btn-primary, .btn-dark, .btn-danger { box-shadow: 0 1px 2px rgba(0, 0, 0, .10); }
 .btn-primary:hover, .btn-dark:hover, .btn-danger:hover { transform: translateY(-1px); box-shadow: 0 4px 12px rgba(0, 0, 0, .16); }
 
-/* Soft coral halo behind the crisp 2px keyboard ring on interactive controls
+/* Soft accent halo behind the crisp 2px keyboard ring on interactive controls
    ONLY — deliberately NOT a global `*:focus-visible` (that re-paints the
    spurious ring on managed-focus route <h1>s; the v1.58.x lesson). Inputs
-   already carry their own halo at higher specificity. */
+   already carry their own halo at higher specificity. v3 phase 3 — the wash
+   follows the theme (was the literal coral rgba). */
 .btn:focus-visible, .qa-tile:focus-visible, .nav-item:focus-visible,
-a:focus-visible, .chip:focus-visible { box-shadow: 0 0 0 4px rgba(255, 56, 92, .12); }
+a:focus-visible, .chip:focus-visible { box-shadow: 0 0 0 4px var(--accent-soft); }
 
 @media (prefers-reduced-motion: reduce) {
   .metric-card, .card, .btn-primary, .btn-dark, .btn-danger { transition: none; }
@@ -757,7 +757,7 @@ a:focus-visible, .chip:focus-visible { box-shadow: 0 0 0 4px rgba(255, 56, 92, .
 .v2-stats-tab:focus-visible { outline: 2px solid var(--accent, #4c8bf5); outline-offset: -2px; }
 .v2-stats-tabsep { flex: 0 0 auto; width: 1px; align-self: stretch; margin: 8px 6px; background: var(--line, #e5e7eb); }
 @keyframes v2-stats-rise { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
-.v2-stats-anim { animation: v2-stats-rise 300ms ease-out both; }
+.v2-stats-anim { animation: v2-stats-rise 300ms var(--ease-out) both; }
 @media (prefers-reduced-motion: reduce) { .v2-stats-anim { animation: none; } }
 .v2-stats-bar { cursor: pointer; } .v2-stats-bar:focus-visible { outline: 2px solid var(--accent, #4c8bf5); outline-offset: 2px; }
 /* CAR-124 — empty-state example previews (#/funded, #/batch, #/apply, #/auto): a dashed, muted container + an "EXAMPLE" tag. Everything inside is decorative sample data (aria-hidden="true") — it must never read as live data. */

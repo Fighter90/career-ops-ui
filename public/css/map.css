@@ -194,7 +194,7 @@ body.job-map-active .docs-fab { display: none; }
 /* Cluster expansion — a quick scale-in while Leaflet animates the zoom
    itself; disabled for reduced-motion users. */
 @keyframes v2-map-cluster-in { from { transform: scale(.6); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-.v2-map-cluster { animation: v2-map-cluster-in 160ms ease-out; }
+.v2-map-cluster { animation: v2-map-cluster-in 160ms var(--ease-out); }
 .v2-map-cluster--m { box-shadow: 0 2px 8px rgba(0, 0, 0, .4); }
 .v2-map-cluster--l { box-shadow: 0 3px 11px rgba(0, 0, 0, .48); }
 @media (prefers-reduced-motion: reduce) {

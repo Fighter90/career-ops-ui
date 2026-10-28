@@ -24,12 +24,12 @@
 .callout { background: var(--callout-bg, var(--elev)); border-color: var(--callout-border, var(--slate)); color: var(--callout-text, var(--hof)); }
 /* CAR-58 #4 (v1.247.0) — `:not(.btn)`: the hero banner's CTA is a .btn-primary anchor, and this rule (0,2,1) outranked .btn-primary's white — dark amber on crimson. Text links keep the per-theme link color. */
 .callout a:not(.btn) { color: var(--callout-link, var(--rausch-text)); text-decoration: underline; }
-/* Phase-2 v3 — callout families ride the cv3 info/warn soft/ink pairs. The cv3
-   vars are theme-aware, so ONE rule per family replaces the old light+dark+system
-   triple; contrast ink-on-soft: info 6.22/8.10:1, warn 5.76/8.52:1 (light/dark). */
+/* Phase-2 v3 — callout families ride the cv3 soft/ink pairs (one theme-aware rule per family replaces the old light+dark+system triple; contrast ink-on-soft: info 6.22/8.10:1, warn 5.76/8.52:1, ok/danger like the band pairs ≥6:1). */
 .callout--info { --callout-bg: var(--cv3-info-soft); --callout-border: var(--cv3-info); --callout-text: var(--cv3-info-ink); --callout-link: var(--cv3-info-ink); }
 /* CAR-58 #4 (v1.247.0) — yellow warning banners (config / batch / dashboard hero): same token contract as --info. */
 .callout--warn { --callout-bg: var(--cv3-warn-soft); --callout-border: var(--cv3-warn); --callout-text: var(--cv3-warn-ink); --callout-link: var(--cv3-warn-ink); }
+.callout--ok { --callout-bg: var(--cv3-ok-soft); --callout-border: var(--cv3-ok); --callout-text: var(--cv3-ok-ink); --callout-link: var(--cv3-ok-ink); } /* v3 phase 3 — ok/danger on the same contract (contrast gated in css-a11y-contrast) */
+.callout--danger { --callout-bg: var(--cv3-danger-soft); --callout-border: var(--cv3-danger); --callout-text: var(--cv3-danger-ink); --callout-link: var(--cv3-danger-ink); }
 
 .card-row { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: var(--space-4); }
 /* PROFILE-1 — `anywhere`, not `break-word`: only `anywhere` counts toward min-content, which is what bursts the track (tests/playwright-card-overflow.mjs). */
@@ -45,7 +45,7 @@
 .dash-hero {
   display: flex; flex-direction: column; gap: 12px; padding: 20px 24px; margin-bottom: var(--space-4);
   border: 1px solid var(--border, rgba(0,0,0,.08)); border-radius: 14px;
-  background: linear-gradient(135deg, rgba(255,56,92,.06) 0%, rgba(255,56,92,.02) 100%);
+  background: linear-gradient(135deg, var(--accent-soft) 0%, transparent 100%); /* v3 phase 3 — was a coral rgba gradient */
 }
 .dash-hero-cta { display: flex; gap: 12px; flex-wrap: wrap; }
 .btn-hero { font-size: 16px; font-weight: 700; padding: 14px 22px; border-radius: 12px; }
@@ -222,7 +222,7 @@
 .badge { display: inline-flex; align-items: center; padding: 4px 10px; border-radius: var(--radius-pill); font-size: var(--font-size-sm); font-weight: 600; background: var(--beach); color: var(--hof); }
 .badge-ok { background: rgba(0,138,5,.12); color: var(--kazan-text); }
 .badge-warn { background: rgba(255,180,0,.18); color: var(--darjeeling-text); }
-.badge-bad { background: rgba(255,56,92,.13); color: var(--rausch-text); }
+.badge-bad { background: var(--danger-soft); color: var(--rausch-text); } /* v3 phase 3 — wash was rgba(255,56,92,.13) */
 .badge-info { background: rgba(0,166,153,.13); color: var(--babu-text); }
 /* v1.118.0 — parent v1.18.0 parity: canonical 'Hired' state (job landed). */
 .badge-hired { background: rgba(0,138,5,.2); color: var(--kazan-text); box-shadow: inset 0 0 0 1px rgba(0,138,5,.35); }
@@ -283,7 +283,8 @@ table.tbl {
   width: 100%; border-collapse: collapse; background: var(--paper);
 }
 table.tbl th, table.tbl td {
-  padding: 14px 16px; text-align: start; border-bottom: 1px solid var(--slate); font-size: 14px;
+  /* v3 phase 3 — data density: ≈32px rows (1.45em = the body line-height). */
+  padding: calc((var(--cv3-row-h) - 1.45em - 1px) / 2) 16px; text-align: start; border-bottom: 1px solid var(--slate); font-size: 14px;
 }
 table.tbl th {
   background: var(--beach); font-weight: 600; color: var(--foggy);
@@ -294,8 +295,7 @@ table.tbl tr:hover td { background: var(--beach); }
 /* v1.13.0 — boosted rows get a subtle accent strip, scannable in dark mode. */
 table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch); }
 
-/* v1.180.0 — #/reports list is a table in its own scroll wrapper: rounded
-   border kept, 4 columns scroll instead of breaking titles per character. */
+/* v1.180.0 — #/reports list is a table in its own scroll wrapper (4 columns scroll, not per-character breaks). */
 .reports-scroll {
   border: 1px solid var(--slate); border-radius: var(--radius-lg); overflow-x: auto;
 }
@@ -436,10 +436,9 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
   display: inline-flex;
   align-items: center;
   gap: 4px;
-  /* WCAG 2.5.8 (v1.20.0): ≥28×28px chip + 8px gap = spaced-target AA
-     (previous 5px+11px landed ~22×50px). */
-  min-height: 28px;
-  padding: 6px 12px;
+  /* WCAG 2.5.8 (v3 phase 3): 24px chip + the 8px .chip-row gap = the spaced-target AA minimum (was 28px, v1.20.0). */
+  min-height: 24px;
+  padding: 2px 10px;
   border-radius: var(--radius-pill);
   border: 1px solid var(--slate);
   background: var(--paper);
@@ -467,7 +466,7 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
   color: var(--rausch-text); /* CAR-23: AA text variant (raw --rausch was 3.52/2.94) */
   font-weight: 600;
 }
-.chip.clear:hover { background: rgba(255,56,92,.08); }
+.chip.clear:hover { background: var(--danger-soft); } /* v3 phase 3 — was rgba(255,56,92,.08) */
 
 /* ───────────────────────── connection banner ───────────────────────── */
 /* CAR-23 v1.243.0 — was sticky (painted over the topbar once scrolled); now a
@@ -741,7 +740,7 @@ a.scan-posting-title:hover, a.scan-posting-title:focus-visible { text-decoration
 .scan-terminal[data-state='running'] .scan-terminal__dot { background: var(--rausch); animation: scan-dot 1.2s ease-in-out infinite; }
 .scan-terminal[data-state='done'] .scan-terminal__dot { background: var(--kazan); }
 .scan-terminal[data-state='error'] .scan-terminal__dot { background: var(--rausch-dark); }
-@keyframes scan-dot { 50% { box-shadow: 0 0 0 5px rgba(255,56,92,.18); } }
+@keyframes scan-dot { 50% { box-shadow: 0 0 0 5px var(--accent-soft); } } /* v3 phase 3 — halo was rgba(255,56,92,.18) */
 /* 3 · Reposts disclosure — proper card header: chevron caret, hover,
  * count badge; inner table shares the results-table cell rhythm. */
 .reposts { padding: 0; overflow: hidden; }
@@ -767,7 +766,7 @@ a.scan-posting-title:hover, a.scan-posting-title:focus-visible { text-decoration
 }
 .reposts-body { padding: 2px 20px 20px; max-height: 460px; overflow: auto; }
 .reposts-body .tbl th { position: sticky; top: 0; } /* positioned ⇒ paints above the row backgrounds */
-.reposts-body .tbl th, .reposts-body .tbl td { padding: 10px 12px; font-size: 13.5px; }
+.reposts-body .tbl th, .reposts-body .tbl td { padding: calc((var(--cv3-row-h) - 1.45em - 1px) / 2) 12px; font-size: 13.5px; } /* v3 phase 3 — same row density */
 /* 4 · Filter grid — uniform responsive cells; saved searches = one bordered
  * sub-card spanning the top; footer = hint LEFT, [Apply]+[Reset] RIGHT on
  * one baseline above a hairline. */

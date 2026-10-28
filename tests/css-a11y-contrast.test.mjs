@@ -161,6 +161,13 @@ const PAIRS = [
   // v3 phase 2 — callout families on the cv3 soft/ink pairs
   ['callout--info text', 'var(--cv3-info-ink)', 'var(--cv3-info-soft)', AA],
   ['callout--warn text', 'var(--cv3-warn-ink)', 'var(--cv3-warn-soft)', AA],
+  // v3 phase 3 — the ok/danger callout contract (future-use) on the same pairs
+  ['callout--ok text', 'var(--cv3-ok-ink)', 'var(--cv3-ok-soft)', AA],
+  ['callout--danger text', 'var(--cv3-danger-ink)', 'var(--cv3-danger-soft)', AA],
+  // v3 phase 3 — the danger wash consumers (badge-bad keeps the AA danger ink)
+  ['.badge-bad text', 'var(--rausch-text)', 'var(--danger-soft)', AA],
+  // v3 phase 3 — active tabs are ACCENT semantics like their phase-2 siblings
+  ['.tab-btn.is-active text', 'var(--accent-soft-ink)', 'var(--accent-soft)', AA],
   // v3 phase 2 — scan-error banner on the closed --rose* hand-off
   ['scan-error-banner text', 'var(--rose-ink)', 'var(--rose)', AA],
   // v3 phase 2 — .brief-warning on the closed --warn-* hand-off
@@ -267,6 +274,24 @@ test('danger-red text on --paper paints --rausch-text; ACTIVE states paint the a
     const block = rule(sel);
     assert.match(block, /color:\s*var\(--accent-soft-ink\)/, `${sel} must paint text from --accent-soft-ink (active = accent family)`);
   }
+});
+
+test('the phase-3 consumers paint the cv3 pairs they are contrast-gated on (source binding)', () => {
+  // .badge-bad washes --danger-soft under the AA danger ink
+  const bad = rule('\\.badge-bad');
+  assert.match(bad, /background:\s*var\(--danger-soft\)/, '.badge-bad must wash --danger-soft');
+  assert.match(bad, /color:\s*var\(--rausch-text\)/, '.badge-bad text stays --rausch-text (danger ink)');
+  // active tabs joined the accent pair
+  const tab = rule('\\.tab-btn\\.is-active');
+  assert.match(tab, /background:\s*var\(--accent-soft\)/, '.tab-btn.is-active must wash --accent-soft');
+  assert.match(tab, /color:\s*var\(--accent-soft-ink\)/, '.tab-btn.is-active text must paint --accent-soft-ink');
+  // the ok/danger callout contract rides the same soft/ink pairs as --info/--warn
+  const ok = rule('\\.callout--ok');
+  assert.match(ok, /--callout-bg:\s*var\(--cv3-ok-soft\)/);
+  assert.match(ok, /--callout-text:\s*var\(--cv3-ok-ink\)/);
+  const danger = rule('\\.callout--danger');
+  assert.match(danger, /--callout-bg:\s*var\(--cv3-danger-soft\)/);
+  assert.match(danger, /--callout-text:\s*var\(--cv3-danger-ink\)/);
 });
 
 test('.btn-danger gradient is built from the theme-invariant --rausch-fill; .btn-primary is flat accent', () => {

@@ -22,9 +22,10 @@ test('primary/dark/danger buttons gained a resting shadow + hover lift', () => {
 
 test('the focus halo is scoped to interactive controls — NOT a global *:focus-visible box-shadow', () => {
   // Guard the v1.58.x lesson: a global *:focus-visible box-shadow re-paints the
-  // spurious ring on managed-focus route <h1>s.
+  // spurious ring on managed-focus route <h1>s. v3 phase 3 — the halo washes
+  // var(--accent-soft) (theme-aware; the literal coral rgba is retired).
   assert.doesNotMatch(CSS, /\*:focus-visible\s*\{[^}]*box-shadow/);
-  assert.match(CSS, /\.btn:focus-visible,[\s\S]*?box-shadow:\s*0 0 0 4px rgba\(255, 56, 92/);
+  assert.match(CSS, /\.btn:focus-visible,[\s\S]*?box-shadow:\s*0 0 0 4px var\(--accent-soft\)/);
 });
 
 test('the polish respects prefers-reduced-motion', () => {

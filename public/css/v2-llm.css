@@ -124,7 +124,7 @@
   width: 34%;
   border-radius: 999px;
   background: var(--accent, #4c8bf5);
-  animation: llm2-slide 1.2s var(--ease-out, ease-in-out) infinite;
+  animation: llm2-slide 1.2s var(--ease-out) infinite;
 }
 @keyframes llm2-slide {
   from { transform: translateX(-110%); }
