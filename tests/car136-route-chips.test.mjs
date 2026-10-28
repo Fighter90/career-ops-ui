@@ -239,7 +239,7 @@ test('CAR-136 T4: manual-prompt mode shows the same chips above the copy-paste p
     prompt: 'PROMPT TEXT',
     sections: ['11. Tracker (`#/tracker`)'],
   });
-  const root = await ask(routes);
+  await ask(routes);
   assert.equal(modals.length, 1, 'the manual prompt modal opened');
   const body = modals[0].body;
   // The chip row is the FIRST node of the modal body, above the textarea.

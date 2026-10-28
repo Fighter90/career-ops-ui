@@ -286,12 +286,12 @@ Router.register('two-pager', async () => {
  * A small chip-list editor: type + Enter (or comma) to add a tag, click × to
  * remove. Returns { node, get } where get() yields the current string[].
  * CSP-safe: all handlers via addEventListener, no inline markup from input.
- * `onChange` (optional, FULL-M6) fires after every add/remove — a chip
+ * `onChange` (FULL-M6) fires after every add/remove — a chip
  * mutation fires no native input event, so the caller's debounced live
  * preview needs the explicit notify.
  */
 function tagEditor(initial, spec, t, c, onChange) {
-  const notify = () => { if (typeof onChange === 'function') onChange(); };
+  const notify = () => onChange();
   const chips = c('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '6px', margin: '0 0 8px' } });
   const items = [];
   const toneColor = spec.tone === 'neg' ? 'var(--danger, #d9534f)' : 'var(--accent, #4c8bf5)';
