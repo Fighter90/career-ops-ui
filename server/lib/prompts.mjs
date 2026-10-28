@@ -508,7 +508,29 @@ LEGITIMACY: <High Confidence | Proceed with Caution | Suspicious>
   return { stable, volatile: evaluationPromptTail(jd, lang) };
 }
 
-/** The per-posting tail: fenced JD, compensation block, heading skeleton, closing language reminder. */
+/**
+ * CAR-174 — output-volume budget for the token-dense evaluation locales (the
+ * same locales evalMaxTokens/evalTimeoutMs widen). Tamil generation is
+ * unstable in volume (prod: 11k → 17k → 32k chars, the last run cut at the
+ * token ceiling with Block B–G and the summary missing) — a hard budget keeps
+ * one A–G report inside a single generation even at the wider ceiling. The
+ * counts are stated in the report language so they bind like the mode role
+ * lines above do; '' for every other locale — EN is calibrated, no budget.
+ */
+const EVAL_VOLUME_BUDGETS = {
+  ta: 'அளவு வரம்பு (கட்டாயம்): ஒவ்வொரு A–G பிரிவும் அதிகபட்சம் 5 வாக்கியங்கள்; மொத்த அறிக்கை அதிகபட்சம் 900 சொற்கள். சுருக்கமான, சான்றுகள் அடிப்படையிலான நடையைப் பின்பற்றுங்கள் — நீண்ட விரிவான விளக்கங்களைத் தவிர்க்கவும். ---SCORE_SUMMARY--- பகுதி இந்த வரம்பில் அடங்காது.',
+};
+
+/** The volume-budget line for a token-dense locale; '' elsewhere. */
+function evalVolumeBudget(lang) {
+  const base = String(lang || 'en').trim().toLowerCase().split('-')[0];
+  return (Object.prototype.hasOwnProperty.call(EVAL_VOLUME_BUDGETS, base)
+    && typeof EVAL_VOLUME_BUDGETS[base] === 'string') ? EVAL_VOLUME_BUDGETS[base] : '';
+}
+
+/**
+ * The per-posting tail: fenced JD, compensation block, heading skeleton, closing language reminder.
+ */
 function evaluationPromptTail(jd, lang) {
   // v1.248.8 (CAR-74) — a ready-made heading skeleton for non-EN reports:
   // the model fills these instead of inventing its own numbering (the weak
@@ -530,8 +552,12 @@ function evaluationPromptTail(jd, lang) {
   // the static like-for-like rule above is in the cached stable part.
   const comp = buildCompensationBlock(jd);
   const compSection = comp ? `\n${comp}\n` : '';
+  // CAR-174 — the volume budget rides the tail right before the language
+  // reminder, which must stay the prompt's LAST instruction (CAR-92).
+  const budget = evalVolumeBudget(lang);
+  const budgetSection = budget ? `\n${budget}\n` : '';
   return `${untrustedJd(jd)}
-${compSection}${skeleton}${buildLanguageReminder(lang)}`;
+${compSection}${skeleton}${budgetSection}${buildLanguageReminder(lang)}`;
 }
 
 /**

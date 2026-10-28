@@ -309,14 +309,14 @@ test('4xx / 5xx / malformed → error, no markdown', async () => {
   assert.match(r.error, /HTTP 500/);
 });
 
-test('clamps max_tokens into [256, 16384]; timeout → "timeout"', async () => {
+test('clamps max_tokens into [256, 32768] (CAR-174 ceiling); timeout → "timeout"', async () => {
   let body;
   const cap = async (_u, o) => { body = JSON.parse(o.body); return okChat('ok'); };
   // api.openai.com names the limit max_completion_tokens (v1.241.0).
   await runOpenAI('hi', { apiKey: 'sk', fetchImpl: cap, maxTokens: 1 });
   assert.equal(body.max_completion_tokens, 256);
   await runOpenAI('hi', { apiKey: 'sk', fetchImpl: cap, maxTokens: 1e6 });
-  assert.equal(body.max_completion_tokens, 16384);
+  assert.equal(body.max_completion_tokens, 32768);
   await runQwen('hi', { apiKey: 'sk', fetchImpl: cap, maxTokens: 1 });
   assert.equal(body.max_tokens, 256);
   const hang = (_u, o) => new Promise((_, rej) =>
