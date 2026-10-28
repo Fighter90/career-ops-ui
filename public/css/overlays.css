@@ -8,11 +8,12 @@
 /* ───────────────────────── toast ───────────────────────── */
 .toast {
   position: fixed;
-  right: var(--space-5);
-  /* DES-1: clear the bottom-right docs FAB (60px + 24px offset) so a toast
-     never lands under the launcher and truncates. The FAB mirrors to the
-     left in RTL while the toast stays right, so this only ever adds a small
-     bottom gap there — harmless. */
+  /* Logical edge: inline-end (right in LTR, left in RTL) — clears the docs
+   * FAB in BOTH directions since the FAB mirrors the same way. */
+  inset-inline-end: var(--space-5);
+  /* DES-1: clear the docs FAB (60px + 24px offset) so a toast never lands
+     under the launcher and truncates. Both mirror together (inline-end),
+     so the toast always sits one FAB-height above it in BOTH directions. */
   bottom: calc(var(--space-5) + 60px + var(--space-3));
   background: var(--hof);
   /* CAR-23 — `white` on dark's near-white --hof was 1.10:1; --paper flips with the theme. */
@@ -61,7 +62,7 @@
 /* U-11 (v1.58.31) — header info chip used in the Tracker Legitimacy
    column. Keyboard-reachable via tabIndex=0 + focus-visible ring;
    role=img + aria-label carry the explanation text to screen readers. */
-.th-info { display: inline-block; margin-left: 2px; cursor: help; font-size: .85em; color: var(--foggy, #999); }
+.th-info { display: inline-block; margin-inline-start: 2px; cursor: help; font-size: .85em; color: var(--foggy, #999); }
 .th-info:focus-visible { outline: 2px solid var(--rausch, #ff385c); outline-offset: 2px; border-radius: 2px; }
 
 /* U-12 (v1.58.32) — Help TOC filter input. The KO/JA placeholders
@@ -96,8 +97,8 @@
 
 .help-toc a.toc-current {
   color: var(--rausch-text); /* CAR-23: AA text variant */
-  font-weight: 600; border-left: 3px solid var(--rausch, #ff385c);
-  padding-left: 8px; margin-left: -11px; /* keeps the link-row geometry aligned */
+  font-weight: 600; border-inline-start: 3px solid var(--rausch, #ff385c);
+  padding-inline-start: 8px; margin-inline-start: -11px; /* keeps the link-row geometry aligned */
 }
 
 /* U-15 (v1.58.33) — CV Save button dirty-state. When the editor has
@@ -119,7 +120,7 @@
 .notif-bell:focus-visible { outline: 2px solid var(--rausch, #ff385c); outline-offset: 2px; }
 .notif-badge {
   position: absolute;
-  top: -4px; right: -4px;
+  top: -4px; inset-inline-end: -4px;
   /* CAR-23 — same white-on-rausch defect class: --rausch-dark/--paper pair (4.57/4.95). */
   background: var(--rausch-dark, #ff385c);
   color: var(--paper);
@@ -136,11 +137,14 @@
    restore the expected hiding behaviour. */
 .notif-badge[hidden] { display: none; }
 .notif-drawer {
-  position: fixed; top: 0; right: 0; bottom: 0; width: min(380px, 92vw);
-  background: var(--paper, #fff); border-left: 1px solid var(--slate, #ddd);
+  position: fixed; top: 0; bottom: 0; inset-inline-end: 0; width: min(380px, 92vw);
+  background: var(--paper, #fff); border-inline-start: 1px solid var(--slate, #ddd);
   box-shadow: -8px 0 24px rgba(0,0,0,.1); z-index: var(--z-drawer);
   display: flex; flex-direction: column; animation: notif-slide-in 200ms ease-out;
 }
+/* The slide-in shadow is physical: it must fall AWAY from the content edge,
+ * so it flips sign under [dir="rtl"] (the drawer docks to the left there). */
+[dir="rtl"] .notif-drawer { box-shadow: 8px 0 24px rgba(0,0,0,.1); }
 /* v1.58.35 — explicit `[hidden]` override. The `.notif-drawer`
    `display: flex` above shadowed the UA `[hidden] { display: none }`
    rule (same author-level specificity, last rule wins), so the
@@ -185,7 +189,7 @@
 .notif-drawer__report-bug[hidden] { display: none; }
 .notif-item { position: relative; }
 .notif-item__dismiss {
-  position: absolute; top: 6px; right: 8px;
+  position: absolute; top: 6px; inset-inline-end: 8px;
   background: transparent; border: none; font-size: 14px; line-height: 1;
   width: 20px; height: 20px; padding: 0; cursor: pointer; color: var(--foggy, #999); opacity: 0.6;
 }
@@ -214,11 +218,11 @@
 .notif-drawer__empty { margin: 24px; color: var(--foggy, #999); font-size: var(--font-size-md); text-align: center; }
 .notif-item {
   display: flex; flex-direction: column; gap: 4px;
-  padding: 10px 12px; border-radius: 6px; border-left: 3px solid var(--slate, #ddd);
+  padding: 10px 12px; border-radius: 6px; border-inline-start: 3px solid var(--slate, #ddd);
   margin-bottom: 8px; background: var(--beach, #fafafa);
 }
-.notif-item--error   { border-left-color: var(--rausch, #ff385c); }
-.notif-item--success { border-left-color: var(--kazan, #00a699); }
+.notif-item--error   { border-inline-start-color: var(--rausch, #ff385c); }
+.notif-item--success { border-inline-start-color: var(--kazan, #00a699); }
 .notif-item > time { font-size: var(--font-size-xs); color: var(--foggy, #999); }
 .notif-item__msg { margin: 0; font-size: var(--font-size-md); }
 .notif-item__detail { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: var(--font-size-xs); color: var(--foggy, #999); background: transparent; }
@@ -292,7 +296,7 @@
   color: var(--rose-ink, #8a2b2b);
   margin-bottom: var(--space-3);
 }
-.scan-error-banner .btn { margin-left: var(--space-3); }
+.scan-error-banner .btn { margin-inline-start: var(--space-3); }
 
 /* v1.63.0/1.63.1 — progress bar + caption shown while a scan is in flight. */
 .scan-progress-wrap { margin: var(--space-2, 8px) 0; }
@@ -378,7 +382,7 @@
    intact, and wrap it below on narrow cards. */
 .health-check-row { flex-wrap: wrap; align-items: flex-start; gap: var(--space-2) var(--space-3); }
 .health-check-row > :first-child { min-width: 0; flex: 1 1 140px; }
-.health-check-row > :last-child { flex: 0 0 auto; margin-left: auto; }
+.health-check-row > :last-child { flex: 0 0 auto; margin-inline-start: auto; }
 .health-check-row .metric-label { overflow-wrap: anywhere; }
 .health-fix { white-space: nowrap; }
 .gap-1 { gap: var(--space-2); }
@@ -468,68 +472,30 @@
 
    i18n.js sets <html dir="rtl"> for RTL locales. The dir attribute alone
    gives correct text alignment, bidi reordering, and list/marker sides for
-   prose. This block mirrors the physical-direction chrome that the layout
-   assumes is on the left/right so the whole shell flips coherently. Scoped
-   under [dir="rtl"] so LTR locales are byte-for-byte unaffected.
+   prose. The chrome itself is built on LOGICAL properties (inset-inline-*,
+   border-inline-*, margin-inline-*, text-align: start/end) so it mirrors
+   with no mirror rules at all. This block keeps only what logical
+   properties cannot express: physical transforms, box-shadow directions,
+   and border-radius mirroring. Scoped under [dir="rtl"] so LTR locales
+   are byte-for-byte unaffected.
    ──────────────────────────────────────────────────────────────────────── */
 
-/* Sidebar pinned to the right; its divider moves to the left edge. */
-[dir="rtl"] .sidebar {
-  left: auto;
-  right: 0;
-  border-right: 0;
-  border-left: 1px solid var(--slate);
-}
-/* Main content clears the sidebar on the right instead of the left. */
-[dir="rtl"] .main {
-  margin-left: 0;
-  margin-right: var(--sidebar-w);
-}
+/* Markdown content: tables, blockquotes, and prose align to the reading
+   start (the base rules are `text-align: start` / logical borders — no
+   override needed). One physical leftover that still needs the mirror:
+   the boosted-row accent strip is an inset box-shadow (no logical form),
+   so its side flips by hand. */
+[dir="rtl"] table.tbl tr.row-boosted td:first-child { box-shadow: inset -3px 0 0 var(--rausch); }
 
-/* CAR-23 v1.243.0 — the old `[dir="rtl"] .sidebar-toggle` / `.notif-drawer__close` rules are GONE (flex children, never positioned). */
-
-/* Notifications drawer slides in from / docks to the left. */
-[dir="rtl"] .notif-drawer {
-  right: auto;
-  left: 0;
-  border-left: 0;
-  border-right: 1px solid var(--slate, #ddd);
-}
-[dir="rtl"] .notif-item,
-[dir="rtl"] .notif-item--error,
-[dir="rtl"] .notif-item--success {
-  border-left: 0;
-}
-[dir="rtl"] .notif-item { border-right: 3px solid var(--slate, #ddd); }
-[dir="rtl"] .notif-item--error   { border-right-color: var(--rausch, #ff385c); }
-[dir="rtl"] .notif-item--success { border-right-color: var(--kazan, #00a699); }
-[dir="rtl"] .notif-badge { right: auto; left: -4px; }
-
-/* Markdown content: tables, blockquotes, and prose align to the right. */
-[dir="rtl"] .md th, [dir="rtl"] .md td { text-align: right; }
-/* CAR-23 v1.243.0 — data tables mirror too (`.tbl` hardcoded left), the toc rail
-   flips to the right edge, and the score glyph margin mirrors. */
-[dir="rtl"] table.tbl th, [dir="rtl"] table.tbl td { text-align: right; }
-[dir="rtl"] .help-toc a.toc-current { border-left: 0; border-right: 3px solid var(--rausch, #ff385c); padding-left: 0; padding-right: 8px; margin-left: 0; margin-right: -11px; }
-[dir="rtl"] .score-high::before, [dir="rtl"] .score-mid::before, [dir="rtl"] .score-low::before { margin-right: 0; margin-left: 6px; }
-[dir="rtl"] .md blockquote {
-  border-left: 0;
-  border-right: 3px solid var(--rausch);
-  padding-left: 0;
-  padding-right: var(--space-4);
-}
-
-/* Mirror the small physical margins used as inline spacing. */
-[dir="rtl"] .th-info { margin-left: 0; margin-right: 2px; }
-[dir="rtl"] .health-check-row > :last-child { margin-left: 0; margin-right: auto; }
-[dir="rtl"] .scan-error-banner .btn { margin-left: 0; margin-right: var(--space-3); }
+/* CAR-23 v1.243.0 — the old `[dir="rtl"] .sidebar-toggle` / `.notif-drawer__close` rules are GONE (flex children, never positioned).
+   The drawer / item / badge mirror rules are GONE too (v1.261.x RTL deep sweep):
+   the base rules use inset-inline-end / border-inline-start, so they mirror themselves. */
 
 /* Off-canvas sidebar slides from the right on mobile. CAR-23 v1.243.0 — breakpoint aligned
    with the LTR mobile layout (900, not 768): 769-900 showed the sidebar ON TOP of content. */
 @media (max-width: 900px) {
   [dir="rtl"] .sidebar { transform: translateX(100%); }
   [dir="rtl"] body.sidebar-open .sidebar { transform: translateX(0); }
-  [dir="rtl"] .main { margin-left: 0 !important; margin-right: 0 !important; }
 }
 
 /* Ask-the-docs floating assistant (docs-fab.js, v1.113.0): a gradient chat
@@ -564,8 +530,9 @@
 
 .docs-fab {
   /* CAR-23 — the fixed launcher was z:1150, ABOVE the aria-modal dialog (z:200): with
-     a modal open it stayed visible and took focus over the dialog. Capped below it. */
-  position: fixed; right: 24px; bottom: 24px; z-index: calc(var(--z-modal) - 1);
+     a modal open it stayed visible and took focus over the dialog. Capped below it.
+     Logical edge: bottom-end corner (bottom-right in LTR, bottom-left in RTL). */
+  position: fixed; inset-inline-end: 24px; bottom: 24px; z-index: calc(var(--z-modal) - 1);
   width: 60px; height: 60px; border: none; border-radius: 50%;
   background: var(--fab-grad); color: #fff; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
@@ -577,7 +544,7 @@
 .docs-fab:focus-visible { outline: 3px solid var(--fab-accent); outline-offset: 3px; }
 
 .docs-fab__panel {
-  position: fixed; right: 24px; bottom: 96px; z-index: calc(var(--z-modal) - 1); /* below the dialog, same cap as the launcher */
+  position: fixed; inset-inline-end: 24px; bottom: 96px; z-index: calc(var(--z-modal) - 1); /* below the dialog, same cap as the launcher */
   width: 380px; max-width: calc(100% - 40px);
   height: 560px; max-height: calc(100vh - 130px);
   display: flex; flex-direction: column;
@@ -648,15 +615,13 @@
 .docs-fab__send:disabled { opacity: .55; cursor: default; transform: none; }
 .docs-fab__send:focus-visible { outline: 2px solid var(--fab-accent); outline-offset: 2px; }
 
-/* RTL — mirror to the bottom-left corner. */
-[dir="rtl"] .docs-fab,
-[dir="rtl"] .docs-fab__panel { right: auto; left: 24px; }
+/* RTL — the launcher/panel mirror themselves via the logical
+   inset-inline-end; only the bubble radii stay physical. */
 [dir="rtl"] .docs-fab__bubble--bot { border-bottom-left-radius: 14px; border-bottom-right-radius: 5px; }
 [dir="rtl"] .docs-fab__bubble--me { border-bottom-right-radius: 14px; border-bottom-left-radius: 5px; }
 
 @media (max-width: 480px) {
   .docs-fab__panel { right: 12px; left: 12px; width: auto; bottom: 88px; height: auto; max-height: calc(100vh - 120px); }
-  [dir="rtl"] .docs-fab__panel { right: 12px; left: 12px; }
 }
 @media (prefers-reduced-motion: reduce) {
   .docs-fab, .docs-fab__send, .docs-fab__chip { transition: none; }
@@ -691,18 +656,17 @@
    line. Paints inside the sidebar's stacking context (below the HUD's z), and
    pointer-events: none keeps it from blocking the last visible link. */
 .sidebar::after {
-  content: ''; position: fixed; left: 0;
+  content: ''; position: fixed; inset-inline-start: 0;
   bottom: max(0px, calc(var(--usage-hud-pad, 0px) - 8px));
   width: var(--sidebar-w); height: 22px;
   background: linear-gradient(to bottom, transparent, var(--paper));
   pointer-events: none;
 }
-[dir="rtl"] .sidebar::after { left: auto; right: 0; }
 .usage-hud {
-  position: fixed; left: 0; bottom: 0; z-index: var(--z-hud);
+  position: fixed; inset-inline-start: 0; bottom: 0; z-index: var(--z-hud);
   width: var(--sidebar-w); max-width: 100%;
   background: var(--paper); color: var(--hof, #222);
-  border-top: 1px solid var(--slate); border-right: 1px solid var(--slate);
+  border-top: 1px solid var(--slate); border-inline-end: 1px solid var(--slate);
   padding: 10px var(--space-3, 12px); font-size: var(--font-size-md);
 }
 .usage-hud__head {
@@ -712,7 +676,7 @@
 }
 .usage-hud__head:focus-visible { outline: 2px solid var(--hud-bar); outline-offset: 2px; border-radius: 6px; }
 .usage-hud__ic { display: inline-flex; color: var(--foggy, #888); }
-.usage-hud__title { text-transform: uppercase; letter-spacing: .08em; font-size: var(--font-size-xs); font-weight: 700; flex: 1; text-align: left; }
+.usage-hud__title { text-transform: uppercase; letter-spacing: .08em; font-size: var(--font-size-xs); font-weight: 700; flex: 1; text-align: start; }
 .usage-hud__chev { transition: transform var(--transition, .18s ease); font-size: var(--font-size-sm); }
 .usage-hud--collapsed .usage-hud__chev { transform: rotate(-90deg); }
 .usage-hud--collapsed { padding-bottom: 10px; }
@@ -727,9 +691,6 @@
 .usage-hud__empty { font-size: var(--font-size-sm); color: var(--foggy, #888); line-height: 1.5; }
 .usage-hud__footer { display: flex; justify-content: space-between; align-items: center; margin-top: 10px; padding-top: 8px; border-top: 1px solid var(--hud-border); font-size: var(--font-size-xs); color: var(--foggy, #888); }
 .usage-hud__footcost { font-weight: 700; color: var(--hof, #333); font-variant-numeric: tabular-nums; }
-
-[dir="rtl"] .usage-hud { left: auto; right: 0; border-right: none; border-left: 1px solid var(--slate); }
-[dir="rtl"] .usage-hud__title { text-align: right; }
 
 /* Hidden on mobile — a pinned corner card would cover scarce screen space;
    the full usage view lives at #/usage. */

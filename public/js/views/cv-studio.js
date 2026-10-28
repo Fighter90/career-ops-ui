@@ -322,7 +322,7 @@ Router.register('cv-studio', async () => {
           list.length
             ? c('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '6px', marginTop: '6px' } },
               list.map((s) => c('span', { className: 'chip' }, String(s))))
-            : c('span', { style: { color: 'var(--foggy)', marginLeft: '6px' } }, t('cvs.gapNone', 'none')),
+            : c('span', { style: { color: 'var(--foggy)', marginInlineStart: '6px' } }, t('cvs.gapNone', 'none')),
         ]);
       };
       gapOut.appendChild(c('div', { className: 'card', style: { padding: '12px' } }, [

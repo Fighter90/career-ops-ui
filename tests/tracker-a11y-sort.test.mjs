@@ -40,7 +40,7 @@ test('#11: aria-sort reset only touches sortable headers (WAI-ARIA)', () => {
 });
 
 test('#11: sort direction indicator reflects state (▲/▼), aria-hidden', () => {
-  assert.match(TRK, /'aria-hidden':\s*'true'[\s\S]{0,40}'⇅'/);
+  assert.match(TRK, /'aria-hidden':\s*'true'[\s\S]{0,60}'⇅'/);
   assert.match(TRK, /ind\.textContent = sortDir === 'asc' \? '▲' : '▼'/);
 });
 

@@ -734,7 +734,7 @@ repostsPanel.addEventListener('toggle', async () => {
     const wdFallback = c('div', {
       id: 'workday-fallback-chip',
       style: { display: 'none', marginBottom: '12px', padding: '8px 12px',
-        background: 'rgba(244, 173, 47, .12)', borderLeft: '3px solid var(--warn, #f4ad2f)',
+        background: 'rgba(244, 173, 47, .12)', borderInlineStart: '3px solid var(--warn, #f4ad2f)',
         borderRadius: '4px', fontSize: '13px' },
     });
     // Hook into the same refresh dispatch as Active Companies counter.
@@ -749,7 +749,7 @@ repostsPanel.addEventListener('toggle', async () => {
         const tenant = (wf.apiUrl.match(/https?:\/\/([^./]+)\./) || [, 'unknown'])[1];
         wdFallback.innerHTML = '';
         wdFallback.appendChild(c('strong', null, '🔒 ' + t('scan.workdayBlocked', 'Workday tenant blocked')));
-        wdFallback.appendChild(c('span', { style: { marginLeft: '8px', color: 'var(--foggy)' } },
+        wdFallback.appendChild(c('span', { style: { marginInlineStart: '8px', color: 'var(--foggy)' } },
           `${tenant} · ${wf.reason} · ` + t('scan.workdayFallbackHint',
             'fallback: use /career-ops scan (Playwright) for this tenant')));
         wdFallback.style.display = '';

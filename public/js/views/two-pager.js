@@ -127,7 +127,7 @@ Router.register('two-pager', async () => {
       style: { padding: '10px 14px', margin: '0 0 12px', borderColor: 'var(--danger, #d9534f)' },
     }, [
       c('strong', null, t('common.error', 'Error')),
-      c('span', { style: { marginLeft: '8px', color: 'var(--foggy)' } },
+      c('span', { style: { marginInlineStart: '8px', color: 'var(--foggy)' } },
         String((loadErr && loadErr.message) || '')),
     ]));
   }

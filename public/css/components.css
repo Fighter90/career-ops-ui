@@ -182,7 +182,7 @@
   border: 1px solid var(--line);
   border-radius: var(--radius);
   cursor: pointer;
-  text-align: left;
+  text-align: start;
   font: inherit;
   color: inherit;
   box-shadow: var(--shadow-1);
@@ -261,7 +261,7 @@
 .score-mid::before,
 .score-low::before {
   display: inline-block;
-  margin-right: 6px;
+  margin-inline-end: 6px;
   font-weight: 700;
 }
 .score-high::before { content: '✓'; }
@@ -283,7 +283,7 @@ table.tbl {
   width: 100%; border-collapse: collapse; background: var(--paper);
 }
 table.tbl th, table.tbl td {
-  padding: 14px 16px; text-align: left; border-bottom: 1px solid var(--slate); font-size: 14px;
+  padding: 14px 16px; text-align: start; border-bottom: 1px solid var(--slate); font-size: 14px;
 }
 table.tbl th {
   background: var(--beach); font-weight: 600; color: var(--foggy);
@@ -383,7 +383,7 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
 /* A markdown table is its own scroll container (display:block + overflow-x)
    so wide tables scroll inside the article on a phone; desktop unchanged. */
 .md table { display: block; width: 100%; max-width: 100%; overflow-x: auto; border-collapse: collapse; margin: var(--space-3) 0; }
-.md th, .md td { padding: 8px 12px; border: 1px solid var(--slate); font-size: 13.5px; text-align: left; }
+.md th, .md td { padding: 8px 12px; border: 1px solid var(--slate); font-size: 13.5px; text-align: start; }
 .md th { background: var(--beach); }
 .md code { background: var(--beach); padding: 2px 6px; border-radius: 6px; font-size: var(--font-size-md); }
 /* CAR-57 #2 (v1.247.0) — inline code is a directional island: LTR + isolate keeps the token whole in RTL, nowrap bans mid-token wraps, long values scroll in place. */
@@ -394,7 +394,7 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
 .md pre { background: #111; color: #c5e6c5; padding: var(--space-4); border-radius: var(--radius); overflow-x: auto; }
 .md pre code { background: transparent; color: inherit; padding: 0; }
 .md a { color: var(--rausch-text); } /* CAR-23: AA on --paper in both themes (raw --rausch was 3.52/2.94) */
-.md blockquote { border-left: 3px solid var(--rausch); padding-left: var(--space-4); color: var(--foggy); margin: var(--space-3) 0; }
+.md blockquote { border-inline-start: 3px solid var(--rausch); padding-inline-start: var(--space-4); color: var(--foggy); margin: var(--space-3) 0; }
 
 /* ───────────────────────── language switcher ───────────────────────── */
 .lang-switcher { padding-bottom: 8px; }
@@ -430,7 +430,7 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
   color: var(--foggy);
   text-transform: uppercase;
   letter-spacing: 0.4px;
-  margin-right: 4px;
+  margin-inline-end: 4px;
 }
 .chip {
   display: inline-flex;
@@ -510,7 +510,7 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
 .conn-msg::before {
   content: '⚠ ';
   font-weight: 700;
-  margin-right: 4px;
+  margin-inline-end: 4px;
 }
 
 /* v1.139.0 — HelpHint: `?` affordance + theme-aware popover, CSP-safe,
@@ -796,4 +796,4 @@ a.scan-posting-title:hover, a.scan-posting-title:focus-visible { text-decoration
 .scan-filters__hint { margin: 0; max-width: 72ch; }
 /* CAR-49 (v1.246.0) — the machine slug tail shown after a localized activity
    ACTION label (dynamic families keep the identifier traceable). */
-.activity-raw-slug { margin-left: 6px; font-size: 11px; color: var(--foggy); }
+.activity-raw-slug { margin-inline-start: 6px; font-size: 11px; color: var(--foggy); }
