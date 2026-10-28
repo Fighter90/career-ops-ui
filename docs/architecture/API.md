@@ -1,5 +1,7 @@
 # API Reference — career-ops-ui
 
+> **Актуально на v1.261.2: 39 route-модулей (`server/lib/routes/*.mjs`, по одному `register*Routes(app)` на файл в `server/index.mjs`), ~119 endpoint-регистраций.** Полный актуальный перечень — `grep 'Routes(app)' server/index.mjs`; детали каждого эндпоинта (валидация, формат тела) — в самом `server/lib/routes/<topic>.mjs`. Разделы ниже описывают стабильное ядро API и могут отставать от кода в деталях новых модулей (map, geocode, liveness, funded, outcome, assessments, cv-sync, cv-studio, usage, followup, discover-ats и др. — см. их заголовочные комментарии).
+
 > Complete inventory of the routes exposed by `server/index.mjs`. Source of truth is the code; this doc is the contract. If a PR adds, removes, or changes a route, this doc updates in the same PR.
 
 All paths are prefixed with `http://127.0.0.1:4317` (default). Body / query types are described informally; see the route handler for exact validation.
@@ -287,7 +289,7 @@ Queries: `dryRun=1` (skip writes to `data/scan-history.tsv` + `data/last-scan.js
 
 ### `GET /api/scan/sources` → `{ sources: [{ value, label, region, configKey? }, ...] }` *(v1.29.0)*
 
-Canonical source registry, served from `server/lib/sources/registry.mjs`. Returns **109 entries** (104 EN-region incl. RSS + 5 RU) — the list auto-grows as adapters are added. The `#/scan` source-filter dropdown fetches this on mount and rebuilds its `<option>` list dynamically. **Since v1.69.0 (P-14)** the registry auto-discovers adapters: dropping a `<slug>.mjs` with an `export const meta = { value, label, region, configKey? }` block into `server/lib/sources/` adds it here automatically — no registry edit. `Cache-Control: max-age=60`.
+Canonical source registry, served from `server/lib/sources/registry.mjs`. Returns **121 entries** (116 EN-region incl. RSS + 5 RU) — the list auto-grows as adapters are added. The `#/scan` source-filter dropdown fetches this on mount and rebuilds its `<option>` list dynamically. **Since v1.69.0 (P-14)** the registry auto-discovers adapters: dropping a `<slug>.mjs` with an `export const meta = { value, label, region, configKey? }` block into `server/lib/sources/` adds it here automatically — no registry edit (`_`-prefixed helper files are skipped). `Cache-Control: max-age=60`.
 
 ### `GET /api/scan/regional/config` → `{ sources, area, per_page, only_remote, queries }`
 

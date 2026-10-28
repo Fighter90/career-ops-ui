@@ -2,35 +2,55 @@
 
 > Per-file purpose for `server/`. Pair with `OVERVIEW.md` (top-level) and `API.md` (route reference).
 
-## `server/index.mjs` (~130 LOC — pure orchestrator after P-2 phase 2)
+## `server/index.mjs` (~645 LOC — pure orchestrator)
 
-The Express app factory `createApp()`. **P-2 phase 2** (v1.9.0, May 2026) finished the split — every route topic now lives in `server/lib/routes/<topic>.mjs`. `index.mjs` is now: middleware (security headers + activity log + static), 32 `register<Topic>Routes(app)` calls, and the SPA catch-all. No inline route handlers remain.
+The Express app factory `createApp()`. Every route topic lives in `server/lib/routes/<topic>.mjs`. `index.mjs` is: middleware (request guard, security headers, body parsing, activity log, static files), **39 `register<Topic>Routes(app)` calls** (one per route module, grouped by surface), and the SPA catch-all. No inline route handlers remain.
 
-Route module manifest (alphabetical):
+## Route modules (`server/lib/routes/` — 39 files)
 
-```
-Security headers
-Activity log middleware
-App config (parent .env)
-Help
-Activity log routes
-Health & Dashboard
-Tracker
-Pipeline
-Reports
-JDs
-CV
-Profile
-Portals
-Modes (templates)
-Script runners (buffered / SSE)
-Output PDFs
-RU/EN portal scanners (in-process)
-Evaluate
-Deep research
-Interview-prep archive
-Generic mode prompts
-```
+One module per topic, each exporting `register<Topic>Routes(app)`. Endpoints per file (source of truth: the code):
+
+| Module | Endpoints |
+|---|---|
+| `activity.mjs` | GET `/api/activity` |
+| `assessments.mjs` | GET/POST `/api/assessments` |
+| `auto-pipeline.mjs` | POST `/api/auto-pipeline` (SSE) |
+| `batch.mjs` | GET/PUT `/api/batch`, GET `/api/stream/batch` (SSE), POST `/api/batch/merge` |
+| `career-plan.mjs` | GET/PUT `/api/career-plan`, POST `/api/career-plan/generate` |
+| `cli-detect.mjs` | GET `/api/cli-detect` |
+| `config.mjs` | GET/POST `/api/config` (parent `.env` round-trip) |
+| `content.mjs` | GET/PUT `/api/cv`, GET/PUT `/api/profile`, GET `/api/portals`, GET `/api/modes`, GET/PUT `/api/modes/_profile`, GET `/api/modes/:name` |
+| `cv-studio.mjs` | POST `/api/cv-studio/{humanize,tailor,add-entry,verify-facts}` |
+| `cv-sync.mjs` | GET `/api/cv-sync-check` |
+| `discover-ats.mjs` | POST `/api/portals/discover`, POST `/api/portals/track` |
+| `docs-assistant.mjs` | POST `/api/docs-assistant/ask` |
+| `export.mjs` | POST `/api/export/docx` |
+| `followup.mjs` | GET `/api/followup`, POST `/api/followup/seed` |
+| `funded.mjs` | GET `/api/company-funded` |
+| `geocode.mjs` | GET `/api/geocode` (Nominatim proxy, rate-limited, `.cache/geocode.json`) |
+| `health.mjs` | GET `/api/ping`, GET `/api/health`, GET `/api/status/providers`, GET `/api/dashboard` |
+| `help.mjs` | GET `/api/help/:lang` |
+| `interview.mjs` | POST `/api/mock-interview/{turn,save}`, GET/DELETE `/api/mock-interview/sessions[/:name]`, GET `/api/interview/weekly-digest` |
+| `jds.mjs` | GET/POST `/api/jds`, GET/DELETE `/api/jds/:name`, GET `/api/jds/:name/{skill-gap,reuse}` |
+| `liveness.mjs` | GET `/api/liveness` |
+| `llm.mjs` | POST `/api/evaluate`, POST `/api/evaluate/test-{gemini,anthropic}`, POST `/api/deep`, GET/DELETE `/api/interview-prep[/:name]`, POST `/api/mode/:slug`, POST `/api/apply-helper` |
+| `logos.mjs` | GET `/api/logo` |
+| `map.mjs` | GET `/api/map/jobs`, GET `/api/commute` |
+| `market.mjs` | POST `/api/stats/market` |
+| `memory.mjs` | GET/PUT `/api/memory`, POST `/api/memory/suggest` |
+| `networking.mjs` | POST `/api/networking/{plan,save}`, GET/DELETE `/api/networking/plans[/:name]` |
+| `openrouter.mjs` | GET `/api/openrouter/models` |
+| `orientation.mjs` | POST `/api/orientation/generate` |
+| `outcome.mjs` | POST `/api/outcome` |
+| `pipeline.mjs` | GET/POST/DELETE `/api/pipeline`, POST `/api/pipeline/restore`, GET `/api/pipeline/preview` |
+| `portals.mjs` | POST `/api/portals/toggle`, POST `/api/portals/health` |
+| `reports.mjs` | GET/POST `/api/reports`, GET `/api/reports/:slug` |
+| `runners.mjs` | GET `/api/runners` (buffered action index), buffered `/api/run/*`, streaming GET `/api/stream/{scan-parent,liveness,pdf,pdf/report,pdf/deep}`, POST `/api/stream/pdf/inline`, GET `/api/output/pdfs[/:name]` |
+| `scan.mjs` | GET `/api/stream/scan` (SSE), GET `/api/scan/regional/config`, GET `/api/scan/sources`, GET `/api/scan/reposts`, GET `/api/scan-results` |
+| `stats.mjs` | POST `/api/stats/snapshot`, GET `/api/stats/{trend,patterns,lifetime,salary-gap,funnel,company-history,upskill,rejection-latency}` |
+| `tracker.mjs` | GET `/api/tracker`, GET `/api/tracker/stages`, POST `/api/tracker`, POST `/api/tracker/backfill-scores` |
+| `two-pager.mjs` | GET/PUT `/api/two-pager`, POST `/api/two-pager/draft` |
+| `usage.mjs` | GET `/api/usage` |
 
 Top-level helpers (defined as inline functions, used by multiple route handlers):
 
@@ -47,6 +67,54 @@ Top-level helpers (defined as inline functions, used by multiple route handlers)
 | `checkProfileCustomized()` | Heuristic: is `profile.yml` still the placeholder shipped by career-ops? |
 
 ## `server/lib/`
+
+### Helpers inventory (51 modules)
+
+Modules with a detailed section below are marked ●. The rest in one line:
+
+| Module | Purpose |
+|---|---|
+| `paths.mjs` ● | Parent-project path resolution (single source of truth). |
+| `parsers.mjs` ● | Markdown table parsers + slug helpers. |
+| `runner.mjs` ● | Buffered / SSE Node-script spawning in the parent. |
+| `ru-scanner.mjs` ● / `en-scanner.mjs` ● | In-process RU (5 sources) / EN (adapter-driven) sweeps. |
+| `security.mjs` ● | Project-wide sanitizers + SSRF/host checks. |
+| `safe-fetch.mjs` ● | DNS-rebind-safe GET (preview, auto-pipeline JD fetch). |
+| `file-lock.mjs` ● | Per-path async mutex for read-modify-write. |
+| `rate-limit.mjs` ● | LLM-route limiter (no-op on loopback). |
+| `prompts.mjs` ● | LLM payload builders (`bundleProjectContext`, …). |
+| `store.mjs` ● | Defensive readers + first-boot portals bootstrap. |
+| `http-json.mjs` | Shared scanner transport (`fetchJson`/`fetchText`): pinned Accept-Encoding, DNS-guard, UA, retry-friendly read-only `.location`/`.retryAfter`. |
+| `fetch-timeout.mjs` | `makeTimeoutFetch` — timeout + DNS-rebind guard combined (FULL-M2). |
+| `http-timeouts.mjs` | Keep-alive/proxy-safe timeout constants. |
+| `request-guard.mjs` | Host/Origin allowlist + `Sec-Fetch-Site` acting-GET gate (CAR-158). |
+| `async-safety.mjs` | Async route wrappers so a rejected handler is a 500, not a process crash. |
+| `env-config.mjs` ● | `.env` round-trip + `providerOrder`/`AUTO_ORDER` (18 providers). |
+| `dotenv.mjs` | Minimal `.env` loader. |
+| `activity-log.mjs` | State-changing-request journal → `data/activity.jsonl` (secret-redacting). |
+| `llm-dispatch.mjs` ● | The one provider-choice point (`runActiveProvider`, 18-provider cascade). |
+| `llm-output.mjs` | `cleanLlmMarkdown` — strips echoed tool/agent scaffolding. |
+| `llm-usage.mjs` / `llm-pricing.mjs` | Token/cost journal (`data/llm-usage.jsonl`) + per-provider price table. |
+| `anthropic.mjs` ● / `gemini.mjs` / `openai.mjs` | Provider clients (Anthropic Messages; Gemini `generateContent`; the shared OpenAI-compatible core + catalogue). |
+| `eval-validate.mjs` | Report validation: A–G blocks, SCORE_SUMMARY, locale checks (abjad/Cyrillic letters accepted). |
+| `liveness-core.mjs` / `liveness-api.mjs` | Posting "still live?" classification (hard/soft expired tiers); API-first liveness. |
+| `classify-tier.mjs` | Seniority tier classifier (scan filter). |
+| `role-matcher.mjs` | Fuzzy role matching + level extraction (repost detection). |
+| `detect-reposts.mjs` | Scan-history repost clustering. |
+| `url-key.mjs` / `text-key.mjs` | Canonical posting-URL dedup keys; Unicode text keys. |
+| `scan-quarantine.mjs` / `scan-sanitize.mjs` / `cooldown.mjs` / `location-filter.mjs` | Scan hygiene: permanent-failure quarantine, TSV field sanitization, re-apply cooldown, location allow/block tiers. |
+| `title-fit.mjs` | Zero-token title-fit chip scoring. |
+| `comp-compare.mjs` | Canonical server-side salary comparison (CAR-109). |
+| `commute.mjs` | Commute projection for `#/map` + tracker lens. |
+| `discover-ats.mjs` | Company name → Greenhouse/Ashby/Lever board resolver. |
+| `trust-validator.mjs` | Job trust score + flags annotation (never drops a job). |
+| `html-to-text.mjs` / `html-entities.mjs` | Quote-aware HTML→text stripping; named-entity decoding. |
+| `help-markdown.mjs` | GitHub-only block stripping for served help markdown. |
+| `states.mjs` | Canonical tracker status vocabulary (reads `templates/states.yml` live, ships a fallback). |
+| `config-field-domains.mjs` | `#/config` dropdown domains (provider model lists). |
+| `parent-relay.mjs` | Read-only shell-out to parent JSON scripts (stats/jds/followup relays). |
+| `cv-import.mjs` | CV file upload parsing (multer-backed). |
+| `docx.mjs` | Dependency-free `.docx` writer (`/api/export/docx`). |
 
 ### `paths.mjs` (60 LOC)
 
@@ -242,9 +310,19 @@ Backs `/api/config`.
 
 ## Cross-cutting concerns
 
-### Security headers
+### Security headers & request guard
 
-Always-on baseline: `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: same-origin`. CSP attached only when `HOST` is non-loopback (loopback exposure is trusted; LAN exposure adds the CSP layer to mitigate XSS-via-LAN-attacker scenarios). The CSP excludes `'unsafe-inline'` from `script-src` — every event handler in the SPA is `addEventListener`.
+Always-on baseline: `X-Content-Type-Options: nosniff`, `X-Frame-Options: DENY`, `Referrer-Policy: same-origin`. **CSP is unconditional since v1.58.4 (NEW-1)** — it used to be layered on only for non-loopback binds, which left `/` and `/api/health` CSP-less on `127.0.0.1`; defence-in-depth no longer depends on the bind address. The CSP excludes `'unsafe-inline'` from `script-src` — every event handler in the SPA is `addEventListener`.
+
+The request guard (`request-guard.mjs`) enforces a `Host` allowlist + same-origin checks on acting requests (writes and acting GETs via `Sec-Fetch-Site`/`Origin`, CAR-158); `ALLOWED_HOSTS` extends it beyond loopback. Async route handlers are wrapped (`async-safety.mjs`) so a rejected promise answers a JSON 500 instead of crashing the process.
+
+### Outbound transport envelope
+
+All outbound HTTP funnels through a small set of transports — never bare `globalThis.fetch` in scanner/source code:
+
+- **`safe-fetch.mjs::safeGet`** — user-supplied URL fetches (`/api/pipeline/preview`, auto-pipeline JD fetch): one DNS resolution, private/loopback rejection, IP-pinned TCP connect, per-hop redirect revalidation, body cap. Fail-CLOSED.
+- **`http-json.mjs` (`fetchJson`/`fetchText`)** — the scanner/source transport: pinned `Accept-Encoding`, browser-like UA, DNS-rebind guard on the real fetch path (moved inside `makeTimeoutFetch`, FULL-M2), read-only `.location` / `.retryAfter` on non-ok. Sources take an injected `fetchImpl` for tests; a structural guard fails CI if a source calls `fetch` directly.
+- **`fetch-timeout.mjs::makeTimeoutFetch`** — timeout + guard combined; ~25 sources inject it directly, which is why the guard lives inside it.
 
 ### Body parsing limits
 
