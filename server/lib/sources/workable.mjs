@@ -229,7 +229,7 @@ export function parseWorkableWidget(payload) {
   const body = requireObject(payload, 'Workable widget');
   const rows = requireArray(body.jobs, 'Workable widget jobs');
   const jobs = [];
-  /** @type {Map<string, {job: object, locations: Set<string>}>} */
+  /** @type {Map<string, {job: object, locations: Set<string>, tele: boolean}>} */
   const byUrl = new Map();
   for (const raw of rows) {
     const title = typeof raw?.title === 'string' ? raw.title.trim() : '';
@@ -241,12 +241,16 @@ export function parseWorkableWidget(payload) {
     if (!url) continue;
 
     const loc = rawLocation(raw);
+    // Same truthiness as the empty-place fallback in normalize. Any sibling
+    // can carry the flag; the folded posting says Remote once (upstream #6140).
+    const tele = Boolean(raw?.telecommuting);
     const merged = byUrl.get(url);
     if (merged) {
       // Fanned-out sibling of a posting already emitted: it contributes its
-      // location and nothing else. Empty locations add nothing; a repeated one
-      // collapses, so the cell never says "Romania · Romania".
+      // location and the telecommuting flag. Empty locations add nothing; a
+      // repeated one collapses, so the cell never says "Romania · Romania".
       if (loc) merged.locations.add(loc);
+      if (tele) merged.tele = true;
       continue;
     }
 
@@ -255,13 +259,21 @@ export function parseWorkableWidget(payload) {
     // Seeded from the EMITTED location, not rawLocation: normalize falls back
     // to "Remote" when the entry names no place, and that fallback must not be
     // lost when the final join rewrites the cell below.
-    byUrl.set(url, { job, locations: new Set(job.location ? [job.location] : []) });
+    byUrl.set(url, { job, locations: new Set(job.location ? [job.location] : []), tele });
   }
 
   // A Set iterates in insertion order, so the joined cell follows payload order
   // and a single-location posting re-joins to the exact string it already had.
-  for (const { job, locations } of byUrl.values()) {
-    job.location = [...locations].join(LOCATION_SEPARATOR);
+  // Remote is appended once, after the join, and only when no place already
+  // says it — an empty-place row already contributed the word "Remote".
+  for (const { job, locations, tele } of byUrl.values()) {
+    let location = [...locations].join(LOCATION_SEPARATOR);
+    if (tele && !/remote/i.test(location)) {
+      location = location ? `${location}${LOCATION_SEPARATOR}Remote` : 'Remote';
+      job.isRemote = true;
+      job.workplaceType = 'Remote';
+    }
+    job.location = location;
   }
   return jobs;
 }
@@ -285,20 +297,28 @@ function toIsoDateUtc(value) {
 }
 
 /**
- * The "<city>, <state>, <country>" cell for ONE widget entry — the shape
- * location_filter matches on, matching the markdown feed's rendering so the
- * filter behaves identically across both paths (parent wording, adapted).
- * Used both by normalize() and by the multi-country fold in
- * parseWorkableWidget, so a sibling contributes exactly the string the first
- * entry would have rendered.
+ * The "<city>, <country>" cell for ONE widget entry — the shape location_filter
+ * matches on, matching the markdown feed's rendering so the filter behaves
+ * identically across both paths (parent wording, adapted). Used both by
+ * normalize() and by the multi-country fold in parseWorkableWidget, so a
+ * sibling contributes exactly the string the first entry would have rendered.
+ *
+ * State is the place only when the city is blank (upstream #6140): a state
+ * with no city (Queensland, Oregon) otherwise collapses to the country. When a
+ * city is set, the state stays off the string — adding it would rewrite
+ * history keys that already stored "city, country".
  * @param {any} j
  * @returns {string} '' when the entry names no place
  */
 function rawLocation(j) {
-  return [j.city, j.state, j.country]
-    .filter((v) => typeof v === 'string' && v.trim())
-    .map((v) => v.trim())
-    .join(', ');
+  const city = typeof j?.city === 'string' ? j.city.trim() : '';
+  const state = typeof j?.state === 'string' ? j.state.trim() : '';
+  const country = typeof j?.country === 'string' ? j.country.trim() : '';
+  const parts = [];
+  if (city) parts.push(city);
+  else if (state) parts.push(state);
+  if (country) parts.push(country);
+  return parts.join(', ');
 }
 
 function normalize(j, url) {

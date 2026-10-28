@@ -59,6 +59,11 @@ export const MAX_PAGES = 20;
 // place that merely contains a digit and the word ("100 Locations Plaza").
 const MULTI_LOCATION_PLACEHOLDER_RE = /^\s*\d+\s+locations?\s*$/i;
 
+// The " · Remote" withFullyRemote appends. Both the placeholder check and the
+// detail enrichment read it with this one pattern so they agree on spacing
+// (upstream #6143).
+const REMOTE_SUFFIX_RE = /\s*·\s*remote\s*$/i;
+
 // How many detail GETs one entry may spend resolving placeholders. The
 // enrichment is one extra GET per placeholder posting, and a 2,000-posting
 // tenant at the measured rate would add ~1,000 requests — a different kind of
@@ -72,7 +77,22 @@ export const MAX_DETAIL_REQUESTS = 200;
  * @returns {boolean}
  */
 export function isMultiLocationPlaceholder(location) {
-  return typeof location === 'string' && MULTI_LOCATION_PLACEHOLDER_RE.test(location);
+  if (typeof location !== 'string') return false;
+  // A fully-remote count is still a count. The marker is appended before this
+  // check; leave it on and the detail GET never runs.
+  const bare = location.replace(REMOTE_SUFFIX_RE, '');
+  return MULTI_LOCATION_PLACEHOLDER_RE.test(bare);
+}
+
+/** Keep the list endpoint's "Fully Remote" on the location string.
+ *  Partially Remote is hybrid and stays the city. A place that already says
+ *  remote is not doubled.
+ *  @param {string} location
+ *  @param {unknown} remoteType */
+function withFullyRemote(location, remoteType) {
+  const fully = typeof remoteType === 'string' && remoteType.trim().toLowerCase() === 'fully remote';
+  if (!fully || /remote/i.test(location)) return location;
+  return location ? `${location} · Remote` : 'Remote';
 }
 
 /**
@@ -431,8 +451,13 @@ async function resolvePlaceholders(jobs, raw, apiUrl, { fetchImpl, signal, heade
     }
     const places = locationsFromDetail(detail);
     if (places === '') continue;
+    // The list row may already say "5 Locations · Remote". Replacing it with
+    // the city would drop the only signal a Remote allow-list sees (upstream
+    // #6143).
+    const wasFullyRemote = REMOTE_SUFFIX_RE.test(jobs[i].location);
     jobs[i].location = places;
-    const isRemote = /remote|anywhere/i.test(places) || /\bremote\b/i.test(jobs[i].title || '');
+    if (wasFullyRemote && !/remote/i.test(places)) jobs[i].location = `${places} · Remote`;
+    const isRemote = /remote|anywhere/i.test(jobs[i].location) || /\bremote\b/i.test(jobs[i].title || '');
     jobs[i].isRemote = isRemote;
     jobs[i].workplaceType = isRemote ? 'Remote' : (/hybrid/i.test(places) ? 'Hybrid' : 'Onsite');
     const started = dateFromDetail(detail);
@@ -466,7 +491,10 @@ function safeJobUrlFromPath(path, base) {
 
 function normalize(j, base) {
   const url = safeJobUrlFromPath(j.externalPath, base);
-  const loc = j.locationsText || j.bulletFields?.[0] || '';
+  // remoteType is a workplace flag, not a place: "Fully Remote" + a city must
+  // still say Remote or a Remote allow-list drops it (upstream #6143). The
+  // raw flag is never copied onto the job row.
+  const loc = withFullyRemote(j.locationsText || j.bulletFields?.[0] || '', j.remoteType);
   const isRemote = /remote|anywhere/i.test(loc) || /\bremote\b/i.test(j.title || '');
   const hybrid = /hybrid/i.test(loc);
   return {

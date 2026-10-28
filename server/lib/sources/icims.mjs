@@ -141,8 +141,12 @@ export function parseIcimsSearchPage(html, origin, companyName = '') {
     seen.add(id);
     // `field-label` is one token in a themed class list, not reliably the last
     // one; the lookarounds keep it a whole token so a longer hyphenated class
-    // (`field-label-inline`) doesn't count as a match.
-    const location = card.match(/<span\b[^>]*class=["'][^"']*(?<![\w-])field-label(?![\w-])[^"']*["'][^>]*>\s*Location\s*<\/span>\s*<span\b[^>]*>\s*([\s\S]*?)<\/span>/);
+    // (`field-label-inline`) doesn't count as a match. The label text has to
+    // START with the word Location: tenants suffix it ("Location : Country",
+    // "Location : City") and put the value in the next span, so requiring the
+    // span to contain only "Location" left those boards blank (upstream
+    // #6130). "Locations" does not match — the word boundary stops it.
+    const location = card.match(/<span\b[^>]*class=["'][^"']*(?<![\w-])field-label(?![\w-])[^"']*["'][^>]*>\s*Location\b[^<]*<\/span>\s*<span\b[^>]*>\s*([\s\S]*?)<\/span>/);
     jobs.push({
       id: `icims-${id}`,
       title: decodeEntities(title[1].replace(/\s+/g, ' ').trim()),

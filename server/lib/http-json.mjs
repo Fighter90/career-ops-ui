@@ -329,6 +329,26 @@ export function computeRetryDelayMs({ attempt, baseDelayMs, maxDelayMs, retryAft
 }
 
 /**
+ * Whether a failed request is the scan fetch timeout itself. The scanners
+ * inject `makeTimeoutFetch` as their `fetchImpl`: every request gets a hard
+ * deadline that aborts the combined signal with a `TimeoutError`, and fetch
+ * rejects with that abort reason. A request that already ran for its WHOLE
+ * timeout fails the same way on a retry and would spend that budget again on
+ * a board that is still hung (upstream #6132; measured there at ~94s for one
+ * Ashby board at 30s × 3). An upstream watchdog / client-disconnect abort is
+ * a different signal — an `AbortError` on an already-aborted caller signal,
+ * which the retry loop stops for via `signal?.aborted` — and a fast
+ * transport error (DNS, reset) never trips this timer, so it still retries.
+ * A status the server actually sent wins over the flag (checked first).
+ * @param {unknown} err
+ * @returns {boolean}
+ */
+export function spentRequestTimeout(err) {
+  return err != null && typeof err === 'object'
+    && err.name === 'TimeoutError' && typeof err.status !== 'number';
+}
+
+/**
  * Retrying sibling of {@link fetchJson} for feeds that paginate into the
  * hundreds of pages, where a single transient upstream blip mid-sweep used to
  * abort the whole provider and return nothing. Retries ONLY transient failures —
@@ -372,9 +392,12 @@ export async function fetchJsonWithRetry(fetchImpl, url, opts = {}) {
       // A guard refusal is deterministic too — the address is blocked and
       // retrying cannot un-block it (FULL-R2 review finding 9).
       const ssrfRefusal = status === undefined && err?.ssrfRefused === true;
+      // A request that already spent its whole timeout is not worth the same
+      // budget again (upstream #6132).
+      const spentTimeout = spentRequestTimeout(err);
       // Transient = 429, any 5xx, or a network/timeout error (no HTTP status).
       // A permanent 4xx is not worth retrying — rethrow now.
-      const transient = !redirectRefusal && !ssrfRefusal
+      const transient = !redirectRefusal && !ssrfRefusal && !spentTimeout
         && (status === undefined || status === 429 || status >= 500);
       if (!transient || attempt === retries || signal?.aborted) throw err;
       // Exponential backoff + jitter, honouring a (clamped) Retry-After when the
@@ -523,7 +546,9 @@ export async function fetchTextWithRetry(fetchImpl, url, opts = {}) {
       // A guard refusal is deterministic — never retried (FULL-R2 review
       // finding 9).
       const ssrfRefusal = status === undefined && err?.ssrfRefused === true;
-      const transient = !redirectRefusal && !ssrfRefusal
+      // Same spent-timeout rule as fetchJsonWithRetry (upstream #6132).
+      const spentTimeout = spentRequestTimeout(err);
+      const transient = !redirectRefusal && !ssrfRefusal && !spentTimeout
         && (status === undefined || status === 429 || status >= 500);
       if (!transient || attempt === retries || signal?.aborted) throw err;
       await delay(computeRetryDelayMs({ attempt, baseDelayMs: retryDelayMs, maxDelayMs, retryAfter: err?.retryAfter }), signal);

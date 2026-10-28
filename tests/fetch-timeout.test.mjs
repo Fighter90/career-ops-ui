@@ -75,3 +75,26 @@ test('makeTimeoutFetch: passes through a fast response and clears the timer', as
   const res = await tFetch('https://example.test/ok');
   assert.equal(res.status, 200);
 });
+
+// ── a spent timeout is not retried (upstream #6132, composed) ────────────────
+// The scanners inject makeTimeoutFetch as their fetchImpl. When the deadline
+// fires, the retry helpers in http-json.mjs must NOT re-run the request: one
+// hung board used to cost three full timeouts (about 94s upstream for Ashby's
+// 30s budget × 2 retries).
+test('fetchJsonWithRetry(makeTimeoutFetch(hung)) makes exactly ONE attempt', async () => {
+  const { fetchJsonWithRetry } = await import('../server/lib/http-json.mjs');
+  let attempts = 0;
+  // Base fetch that only settles when its signal aborts — a stalled upstream.
+  const stalledFetch = (_url, { signal } = {}) =>
+    new Promise((_resolve, reject) => {
+      signal?.addEventListener('abort', () => { attempts += 1; reject(signal.reason || new Error('aborted')); }, { once: true });
+    });
+  const t0 = Date.now();
+  await assert.rejects(
+    () => fetchJsonWithRetry(makeTimeoutFetch(stalledFetch, 60), 'https://example.test/jobs', { retries: 2, retryDelayMs: 5, maxDelayMs: 5 }),
+    (err) => err?.name === 'TimeoutError',
+  );
+  const ms = Date.now() - t0;
+  assert.equal(attempts, 1, 'one attempt — a retry would spend the same budget again');
+  assert.ok(ms < 2000, `must fail fast on the first deadline, took ${ms}ms`);
+});
