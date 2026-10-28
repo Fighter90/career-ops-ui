@@ -60,6 +60,10 @@ export async function fetchLever(apiUrl, opts = {}) {
   return list.map(normalize);
 }
 
+// Same word edges as the parent's location compiler, so "Remotely in Europe"
+// does not count as already saying Remote (upstream #6138).
+const REMOTE_WORD_RE = /(?<![\p{L}\p{M}\p{N}])remote(?![\p{L}\p{M}\p{N}])/iu;
+
 function normalize(j) {
   const cats = j.categories || {};
   // Lever puts a SINGLE primary city in `location` and exposes the full set on
@@ -74,6 +78,13 @@ function normalize(j) {
   for (const l of [primary, ...allLocs]) {
     if (l && !merged.some((m) => m.toLowerCase() === l.toLowerCase())) merged.push(l);
   }
+  // workplaceType is a top-level posting flag (remote | hybrid | onsite), not
+  // a location. A remote role whose city is "London" never contains the word
+  // Remote, so a filter that allows Remote drops it. Hybrid stays city-only:
+  // the office is still the place. Append once, and skip when a segment
+  // already says remote ("Remote — Europe") (upstream #6138).
+  const remote = typeof j.workplaceType === 'string' && j.workplaceType.trim().toLowerCase() === 'remote';
+  if (remote && !merged.some((m) => REMOTE_WORD_RE.test(m))) merged.push('Remote');
   const location = merged.join(' · ');
   const isRemote = /remote|anywhere/i.test(location);
   const isHybrid = /hybrid/i.test(primary);

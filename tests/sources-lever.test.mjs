@@ -9,6 +9,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import { fetchLever, assertLeverUrl } from '../server/lib/sources/lever.mjs';
+import { buildLocationFilter } from '../server/lib/location-filter.mjs';
 
 const fake = (jobs) => async () => ({ ok: true, status: 200, json: async () => jobs });
 
@@ -47,7 +48,51 @@ test('lever: primary only (no allLocations) is unchanged', async () => {
 });
 
 // ---------------------------------------------------------------------------
-// v1.242.0 — SSRF pin + workplaceType
+// workplaceType = remote (upstream #6138)
+// ---------------------------------------------------------------------------
+
+// workplaceType is a TOP-LEVEL posting flag (remote | hybrid | onsite), not a
+// location. categories.location is the city only, so a remote London posting
+// looked onsite to a location filter that allows "Remote". Hybrid stays
+// city-only: the office is still the place. A location that already says
+// remote (word-bounded — "Remotely in Europe" does not count) is not doubled.
+test('lever: Remote is appended when workplaceType is remote and no place already says it', async () => {
+  const fake = (jobs) => async () => ({ ok: true, status: 200, json: async () => jobs });
+  const rows = await fetchLever('https://api.lever.co/v0/postings/acme', {
+    fetchImpl: fake([
+      { id: 'r1', text: 'Ops Lead', hostedUrl: 'https://jobs.lever.co/acme/r1', categories: { location: 'Oslo' }, workplaceType: 'remote' },
+      { id: 'r2', text: 'Ops Lead', hostedUrl: 'https://jobs.lever.co/acme/r2', categories: { location: 'Oslo' }, workplaceType: 'hybrid' },
+      { id: 'r3', text: 'Ops Lead', hostedUrl: 'https://jobs.lever.co/acme/r3', categories: { location: 'Remote — Europe' }, workplaceType: 'remote' },
+      { id: 'r4', text: 'Ops Lead', hostedUrl: 'https://jobs.lever.co/acme/r4', categories: { location: 'Bend, OR', allLocations: ['Bend, OR', 'Oslo'] }, workplaceType: 'Remote' },
+      { id: 'r5', text: 'Ops Lead', hostedUrl: 'https://jobs.lever.co/acme/r5', categories: { location: 'Oslo' }, workplaceType: 'onsite' },
+      { id: 'r6', text: 'Ops Lead', hostedUrl: 'https://jobs.lever.co/acme/r6', categories: { location: 'Oslo' }, workplaceType: '  remote  ' },
+      { id: 'r7', text: 'Ops Lead', hostedUrl: 'https://jobs.lever.co/acme/r7', categories: {}, workplaceType: 'remote' },
+      { id: 'r8', text: 'Ops Lead', hostedUrl: 'https://jobs.lever.co/acme/r8', categories: { location: 'Remotely in Europe' }, workplaceType: 'remote' },
+    ]),
+  });
+  const locs = rows.map((r) => r.location);
+  assert.deepEqual(locs, [
+    'Oslo · Remote',
+    'Oslo',                        // hybrid — the office is still the place
+    'Remote — Europe',             // already says remote — not doubled
+    'Bend, OR · Oslo · Remote',    // padded flag matched case-insensitively
+    'Oslo',                        // onsite
+    'Oslo · Remote',               // padded flag
+    'Remote',                      // no place at all
+    'Remotely in Europe · Remote', // word boundary: "Remotely" is not "remote"
+  ]);
+  assert.equal(rows[0].isRemote, true);
+  assert.equal(rows[0].workplaceType, 'Remote');
+  assert.equal(rows[1].isRemote, false);
+});
+
+// The point of the fix: ask the real consumer, not a reimplementation of it.
+test('lever: the appended Remote survives a location filter that allows it and drops the city-only cell', () => {
+  const allowRemote = buildLocationFilter({ allow: ['remote'] });
+  assert.equal(allowRemote('London'), false, 'precondition: the city-only cell was dropped');
+  assert.equal(allowRemote('London · Remote'), true, 'the marked cell passes');
+});
+
 // ---------------------------------------------------------------------------
 
 test('assertLeverUrl: accepts the pinned API hosts over HTTPS', () => {
