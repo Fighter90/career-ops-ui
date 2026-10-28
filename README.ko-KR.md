@@ -262,7 +262,7 @@ http://127.0.0.1:4317 를 엽니다. Pipeline 카운터가 `0 대기 중` 으로
 | **Profile**      | `config/profile.yml` + archetypes의 읽기 전용 뷰 — UI 친화적인 요약 화면입니다.                                         |
 | **App settings** | 부모 `.env` 키를 UI 내부에서 편집합니다: `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, 모델 오버라이드, port / host. 시크릿은 읽을 때 마스킹됩니다. |
 | **Health**       | 모든 setup 체크를 OK / OPTIONAL / FAIL 배지로 보여 주며, `doctor.mjs`와 `verify-pipeline.mjs` 실행 버튼을 제공합니다.           |
-| **Help**         | 인앱 마크다운 사용자 가이드(`/#/help`). 지원되는 18개 언어(en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta)로 현지화되어 있습니다. |
+| **Help**         | 인앱 마크다운 사용자 가이드(`/#/help`). 지원되는 19개 언어(en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta / vi)로 현지화되어 있습니다. |
 | **Activity log** | 상태를 변경하는 모든 요청(writes, runs, scans)에 대한 감사 추적. 시크릿은 redact 처리됩니다. |
 | **알림** 🔔 *(v1.58.34 / v1.58.35)* | 상단바 벨 + 빨간 안 읽음 배지. 클릭 → 우측 드로어가 최근 50 개의 토스트(탭별/세션별) 표시 — 성공 / 오류 / 정보-진행, 각 항목에 현지화된 시각·메시지·필요 시 `(METHOD /path · HTTP NNN)` 후미가 `<details>` 안에 포함. 도움말 **§18** 가 모든 카테고리 설명. 드로어는 **벨 클릭에서만** 열림(키보드 Enter / Space 포함); ×, Esc, 또는 벨 재클릭으로 닫힘. |
 
@@ -406,7 +406,7 @@ career-ops-ui/
    ├─ url-validation.test.mjs    # SSRF 거부 스윕 (FIX-M3 + M6 + M7)
    ├─ cv-xss.test.mjs        # stripDangerousMarkdown 라운드트립 (entity-aware, v1.22.0)
    ├─ jd-sanitize.test.mjs   # sanitizeJobDescription
-   ├─ help.test.mjs / help-ui.test.mjs    # 18개 로케일 i18n 패리티
+   ├─ help.test.mjs / help-ui.test.mjs    # 19개 로케일 i18n 패리티
    ├─ playwright-smoke.mjs   # 22개 브라우저 플로우
    └─ e2e{,-comprehensive}.mjs   # 전체 Playwright 워크스루
 ```
@@ -622,7 +622,7 @@ production-readiness 평가(배포 게이트, 리스크 등록부, 보류된 작
 
 career-ops는 **항상 켜져 있을 때** 가장 좋습니다 — 자는 동안 스캔하고, 어느 브라우저에서든 접근 가능합니다. 전체 스택을 작은 서버에 올리려면 — 부모 **career-ops** 파이프라인, 이 **career-ops-ui** 뷰어, 그리고 AI를 실행하는 **엔진**(Claude Code CLI를 통한 **Claude 구독**, 로컬 **Hermes** 게이트웨이, 또는 제공자 API 키) — VPS(Node ≥ 18)를 프로비저닝하고, 부모 + 이 저장소를 설치하고, 엔진을 고르고, **인증이 있는 HTTPS 리버스 프록시** 뒤에 뷰어를 노출하되 보안 불변식(CSP, SSRF 가드, XSS 경계, 로그에 비밀 없음)을 그대로 유지합니다.
 
-📖 인앱 **도움말 §31**("클라우드에서 전체 스택 실행")이 18개 언어로 단계별로 안내합니다; 운영자 체크리스트는 [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), [클라우드 배포 위키 페이지](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment)에 참조 표가 있습니다.
+📖 인앱 **도움말 §31**("클라우드에서 전체 스택 실행")이 19개 언어로 단계별로 안내합니다; 운영자 체크리스트는 [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), [클라우드 배포 위키 페이지](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment)에 참조 표가 있습니다.
 
 ---
 
@@ -639,9 +639,9 @@ career-ops는 **항상 켜져 있을 때** 가장 좋습니다 — 자는 동안
 
 ## 현지화 (Localization)
 
-UI는 **18개 언어**를 제공합니다 — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `fr`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`, `ta`. **v1.60.0 (I18N-SPLIT)**부터 번역은 [`public/js/lib/locales/`](public/js/lib/locales/) 아래 **언어당 한 파일**(`i18n-dict.<lang>.js`, 평면 `키 → 문자열` 테이블) + 공용 `i18n-dict.aliases.js`에 있습니다. [`i18n-dict.js`](public/js/lib/i18n-dict.js)가 이를 `window.__I18N_DICT`로 조립하고, [`i18n.js`](public/js/lib/i18n.js)가 `t('키', 'fallback')`을 해석합니다. 빌드·fetch 없음 — 번역가는 단일 언어 파일만 편집합니다.
+UI는 **19개 언어**를 제공합니다 — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `fr`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`, `ta`, `vi`. **v1.60.0 (I18N-SPLIT)**부터 번역은 [`public/js/lib/locales/`](public/js/lib/locales/) 아래 **언어당 한 파일**(`i18n-dict.<lang>.js`, 평면 `키 → 문자열` 테이블) + 공용 `i18n-dict.aliases.js`에 있습니다. [`i18n-dict.js`](public/js/lib/i18n-dict.js)가 이를 `window.__I18N_DICT`로 조립하고, [`i18n.js`](public/js/lib/i18n.js)가 `t('키', 'fallback')`을 해석합니다. 빌드·fetch 없음 — 번역가는 단일 언어 파일만 편집합니다.
 
-**문자열 추가/수정:** 동일한 키를 18개 언어 파일 모두에 추가하고(파리티는 테스트로 강제), `data-i18n="scan.newButton"` 또는 `t('scan.newButton')`로 사용한 뒤 `npm test`를 실행하세요.
+**문자열 추가/수정:** 동일한 키를 19개 언어 파일 모두에 추가하고(파리티는 테스트로 강제), `data-i18n="scan.newButton"` 또는 `t('scan.newButton')`로 사용한 뒤 `npm test`를 실행하세요.
 
 ```js
 // public/js/lib/locales/i18n-dict.en.js   →   'scan.newButton': 'Run scan',

@@ -261,7 +261,7 @@ npm start
 | **Profile**      | `config/profile.yml` + archetypes 的只读视图 —— 面向 UI 的友好摘要。                                                                    |
 | **App settings** | UI 内编辑父项目 `.env` 配置:`ANTHROPIC_API_KEY`、`GEMINI_API_KEY`、模型覆盖、端口 / 主机。读取时密钥被遮蔽。                            |
 | **Health**       | 全部启动检查以 OK / OPTIONAL / FAIL 徽章呈现 + 一键运行 `doctor.mjs` 与 `verify-pipeline.mjs`。                                          |
-| **Help**         | 应用内 Markdown 用户手册(`/#/help`),覆盖全部 18 种语言(en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta)。                          |
+| **Help**         | 应用内 Markdown 用户手册(`/#/help`),覆盖全部 19 种语言(en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta / vi)。                          |
 | **Activity log** | 所有写入、运行、扫描等状态变更请求的审计日志。密钥已脱敏。                                                                              |
 | **通知** 🔔 *(v1.58.34 / v1.58.35)* | 顶栏铃铛 + 红色未读徽章。点击 → 右侧抽屉展示最近 50 条 toast(按标签页/会话)— 成功 / 错误 / 信息-进度,每条带本地时间、消息,及在需要时把 `(METHOD /path · HTTP NNN)` 后缀放入 `<details>`。帮助 **§18** 描述每个类别。抽屉**仅在点击铃铛时打开**(或键盘 Enter / Space);通过 ×、Esc 或再次点击铃铛关闭。|
 
@@ -405,7 +405,7 @@ career-ops-ui/
    ├─ url-validation.test.mjs    # SSRF 拒绝扫描(FIX-M3 + M6 + M7)
    ├─ cv-xss.test.mjs        # stripDangerousMarkdown 往返(entity-aware)
    ├─ jd-sanitize.test.mjs   # sanitizeJobDescription
-   ├─ help.test.mjs / help-ui.test.mjs    # 18 种语言下的 i18n 对等性
+   ├─ help.test.mjs / help-ui.test.mjs    # 19 种语言下的 i18n 对等性
    ├─ playwright-smoke.mjs   # 22 个浏览器流程(CV 保存、tracker、pipeline、evaluate、config 等)
    └─ e2e{,-comprehensive}.mjs   # 完整 Playwright walkthrough
 ```
@@ -620,7 +620,7 @@ Claude Code 中现有的 `/career-ops apply` Playwright 表单填写流程,仍�
 
 career-ops **常开** 时最佳 —— 在你睡觉时扫描,可从任何浏览器访问。要把整个技术栈放到一台小型服务器上 —— 父级 **career-ops** 流水线、此 **career-ops-ui** 查看器,以及运行 AI 的**引擎**(通过 Claude Code CLI 的 **Claude 订阅**、本地 **Hermes** 网关,或提供方 API 密钥)—— 开通一台 VPS(Node ≥ 18),安装父项目 + 本仓库,选择引擎,并将查看器置于**带认证的 HTTPS 反向代理**之后,同时保持安全不变式(CSP、SSRF 防护、XSS 边界、日志不含机密)完好。
 
-📖 应用内**帮助 §31**(“在云端运行整个技术栈”)以 18 种语言逐步讲解;运维清单见 [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md),[云部署 wiki 页面](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) 提供参考表格。
+📖 应用内**帮助 §31**(“在云端运行整个技术栈”)以 19 种语言逐步讲解;运维清单见 [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md),[云部署 wiki 页面](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) 提供参考表格。
 
 ---
 
@@ -637,9 +637,9 @@ career-ops **常开** 时最佳 —— 在你睡觉时扫描,可从任何浏览�
 
 ## 本地化(Localization)
 
-界面提供 **18 种语言** — `en`、`es`、`pt-BR`、`ko`、`ja`、`ru`、`zh-CN`、`zh-TW`、`fr`、`pl`、`uk`、`da`、`ar`、`de`、`it`、`tr`、`hi`、`ta`。自 **v1.60.0 (I18N-SPLIT)** 起,翻译以**每种语言一个文件**存放在 [`public/js/lib/locales/`](public/js/lib/locales/) —— `i18n-dict.<lang>.js`(扁平的 `键 → 字符串` 表)外加共享的 `i18n-dict.aliases.js`。[`i18n-dict.js`](public/js/lib/i18n-dict.js) 将它们装配为 `window.__I18N_DICT`;[`i18n.js`](public/js/lib/i18n.js) 负责解析 `t('键', 'fallback')`。无构建、无 fetch —— 译者只需编辑单个语言文件。
+界面提供 **19 种语言** — `en`、`es`、`pt-BR`、`ko`、`ja`、`ru`、`zh-CN`、`zh-TW`、`fr`、`pl`、`uk`、`da`、`ar`、`de`、`it`、`tr`、`hi`、`ta`、`vi`。自 **v1.60.0 (I18N-SPLIT)** 起,翻译以**每种语言一个文件**存放在 [`public/js/lib/locales/`](public/js/lib/locales/) —— `i18n-dict.<lang>.js`(扁平的 `键 → 字符串` 表)外加共享的 `i18n-dict.aliases.js`。[`i18n-dict.js`](public/js/lib/i18n-dict.js) 将它们装配为 `window.__I18N_DICT`;[`i18n.js`](public/js/lib/i18n.js) 负责解析 `t('键', 'fallback')`。无构建、无 fetch —— 译者只需编辑单个语言文件。
 
-**新增或修改文案:** 将同一个键加入全部 18 个语言文件(由测试强制保证一致性),通过 `data-i18n="scan.newButton"` 或 `t('scan.newButton')` 使用,然后运行 `npm test`。
+**新增或修改文案:** 将同一个键加入全部 19 个语言文件(由测试强制保证一致性),通过 `data-i18n="scan.newButton"` 或 `t('scan.newButton')` 使用,然后运行 `npm test`。
 
 ```js
 // public/js/lib/locales/i18n-dict.en.js   →   'scan.newButton': 'Run scan',

@@ -261,7 +261,7 @@ npm start
 | **Профиль**      | Доступная только для чтения витрина `config/profile.yml` и архетипов — компактная сводка для UI. |
 | **App settings** | Встроенный редактор ключей из родительского `.env`: `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, переопределение моделей, порт и хост. Секреты маскируются при чтении. |
 | **Health**       | Все проверки конфигурации в виде badge OK / OPTIONAL / FAIL и кнопки для запуска `doctor.mjs` и `verify-pipeline.mjs`. |
-| **Help**         | Встроенное руководство пользователя в Markdown (`/#/help`), переведённое на все 18 поддерживаемых языков (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta). |
+| **Help**         | Встроенное руководство пользователя в Markdown (`/#/help`), переведённое на все 19 поддерживаемых языков (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta / vi). |
 | **Журнал активности** | Аудит-журнал всех изменяющих состояние запросов (writes, runs, scans). Секреты редактируются. |
 | **Уведомления** 🔔 *(v1.58.34 / v1.58.35)* | Колокольчик в верхней панели с красным badge непрочитанных. Клик → правый drawer показывает последние 50 toast (per-tab, per-session) — Success / Error / Info-progress, у каждой локальное время, текст и, если есть, технический хвост `(METHOD /path · HTTP NNN)` в `<details>`. Справка **§18** документирует каждую категорию. Drawer открывается **только** по клику на колокольчик (или клавиатура Enter / Space); закрывается ×, Esc или повторным кликом по колокольчику. |
 
@@ -405,7 +405,7 @@ career-ops-ui/
    ├─ url-validation.test.mjs    # SSRF-reject sweep (FIX-M3 + M6 + M7)
    ├─ cv-xss.test.mjs        # round-trip stripDangerousMarkdown (включая entity-aware кейсы)
    ├─ jd-sanitize.test.mjs   # sanitizeJobDescription
-   ├─ help.test.mjs / help-ui.test.mjs    # паритет i18n по всем 18 локалям
+   ├─ help.test.mjs / help-ui.test.mjs    # паритет i18n по всем 19 локалям
    ├─ playwright-smoke.mjs   # 22 browser-сценария (CV save, tracker, pipeline, evaluate, config и т. д.)
    └─ e2e{,-comprehensive}.mjs   # полный Playwright-walkthrough
 ```
@@ -621,7 +621,7 @@ russian_portals:
 
 career-ops лучше всего работает **постоянно включённым** — сканирует, пока вы спите, доступен из любого браузера. Чтобы разместить весь стек на небольшом сервере — родительский пайплайн **career-ops**, этот вьюер **career-ops-ui** и **движок**, выполняющий ИИ (ваша **подписка Claude** через CLI Claude Code, локальный **Hermes**-шлюз или ключи API провайдеров) — поднимите VPS (Node ≥ 18), установите родителя + этот репозиторий, выберите движок и выставьте вьюер за **HTTPS обратным прокси с аутентификацией**, сохранив инварианты безопасности (CSP, SSRF-guard, граница XSS, никаких секретов в логах).
 
-📖 Встроенная **Справка §31** («Запуск всего стека в облаке») проводит по шагам на всех 18 языках; чек-лист оператора — [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), а на [вики-странице облачного развёртывания](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) есть справочные таблицы.
+📖 Встроенная **Справка §31** («Запуск всего стека в облаке») проводит по шагам на всех 19 языках; чек-лист оператора — [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), а на [вики-странице облачного развёртывания](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) есть справочные таблицы.
 
 ---
 
@@ -638,7 +638,7 @@ career-ops лучше всего работает **постоянно вклю�
 
 ## Локализация
 
-Интерфейс поддерживает **18 локалей** — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `fr`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`, `ta`. С **v1.60.0 (I18N-SPLIT)** переводы хранятся **по одному файлу на язык** в [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, плоская таблица `ключ → строка` — плюс общий `i18n-dict.aliases.js`. [`i18n-dict.js`](public/js/lib/i18n-dict.js) собирает их в `window.__I18N_DICT`; [`i18n.js`](public/js/lib/i18n.js) разрешает `t('ключ', 'fallback')`. Без сборки и без fetch — переводчик правит один файл языка.
+Интерфейс поддерживает **19 локалей** — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `fr`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`, `ta`, `vi`. С **v1.60.0 (I18N-SPLIT)** переводы хранятся **по одному файлу на язык** в [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, плоская таблица `ключ → строка` — плюс общий `i18n-dict.aliases.js`. [`i18n-dict.js`](public/js/lib/i18n-dict.js) собирает их в `window.__I18N_DICT`; [`i18n.js`](public/js/lib/i18n.js) разрешает `t('ключ', 'fallback')`. Без сборки и без fetch — переводчик правит один файл языка.
 
 **Добавить или изменить строку:** добавьте один и тот же ключ во все 18 файлов локалей (паритет проверяется тестами), используйте через `data-i18n="scan.newButton"` или `t('scan.newButton')` и запустите `npm test`.
 

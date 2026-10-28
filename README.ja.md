@@ -261,7 +261,7 @@ http://127.0.0.1:4317 を開きます。Pipeline カウンタが `0 件待機中
 | **Profile**      | `config/profile.yml` とアーキタイプの読み取り専用ビュー。UI フレンドリーなサマリーを表示します。 |
 | **App settings** | 親 `.env` キー用の UI 内エディタ。`ANTHROPIC_API_KEY`、`GEMINI_API_KEY`、モデルのオーバーライド、ポートとホストを編集できます。シークレットは読み取り時にマスクされます。 |
 | **Health**       | すべてのセットアップチェックを OK / OPTIONAL / FAIL バッジで表示し、`doctor.mjs` と `verify-pipeline.mjs` を実行するボタンを備えます。 |
-| **Help**         | アプリ内 Markdown ユーザーガイド(`/#/help`)。サポート対象の 18 言語すべてにローカライズ済みです(en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta)。 |
+| **Help**         | アプリ内 Markdown ユーザーガイド(`/#/help`)。サポート対象の 19 言語すべてにローカライズ済みです(en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta / vi)。 |
 | **Activity log** | すべての状態変更リクエスト(書き込み・実行・スキャン)の監査証跡。シークレットはマスク済みです。 |
 | **通知** 🔔 *(v1.58.34 / v1.58.35)* | トップバーのベル + 赤い未読バッジ。クリック → 右ドロワーが最新 50 件のトースト(タブ単位/セッション単位)を表示 — 成功 / エラー / 情報-進行、それぞれにローカル時刻・メッセージ・必要に応じて `(METHOD /path · HTTP NNN)` 末尾を `<details>` で表示。ヘルプ **§18** が各カテゴリを説明。ドロワーは **ベルのクリック時にのみ** 開く(キーボード Enter / Space 含む)。× / Esc / ベル再クリックで閉じる。|
 
@@ -623,7 +623,7 @@ production-readiness アセスメント(デプロイメントゲート、リス�
 
 career-ops は **常時稼働** が最適です — 就寝中もスキャンし、どのブラウザからも到達できます。スタック全体を小さなサーバーに載せるには — 親の **career-ops** パイプライン、この **career-ops-ui** ビューアー、そして AI を動かす **エンジン**(Claude Code CLI 経由の **Claude サブスクリプション**、ローカルの **Hermes** ゲートウェイ、またはプロバイダー API キー)—— VPS(Node ≥ 18)を用意し、親 + このリポジトリを入れ、エンジンを選び、**認証付き HTTPS リバースプロキシ** の背後にビューアーを公開しつつ、セキュリティ不変条件(CSP、SSRF ガード、XSS 境界、ログに秘密を残さない)を保ちます。
 
-📖 アプリ内 **ヘルプ §31**(「スタック全体をクラウドで動かす」)が 18 言語で手順を案内します。運用チェックリストは [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md)、[クラウドデプロイの Wiki ページ](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) に参照テーブルがあります。
+📖 アプリ内 **ヘルプ §31**(「スタック全体をクラウドで動かす」)が 19 言語で手順を案内します。運用チェックリストは [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md)、[クラウドデプロイの Wiki ページ](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) に参照テーブルがあります。
 
 ---
 
@@ -640,7 +640,7 @@ career-ops は **常時稼働** が最適です — 就寝中もスキャンし�
 
 ## ローカライズ (Localization)
 
-UI は **18 言語** を提供します — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `fr`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`, `ta`。**v1.60.0 (I18N-SPLIT)** 以降、翻訳は [`public/js/lib/locales/`](public/js/lib/locales/) 配下の **言語ごとに 1 ファイル**（`i18n-dict.<lang>.js`、フラットな `キー → 文字列` テーブル）と共通の `i18n-dict.aliases.js` にあります。[`i18n-dict.js`](public/js/lib/i18n-dict.js) がそれらを `window.__I18N_DICT` に組み立て、[`i18n.js`](public/js/lib/i18n.js) が `t('キー', 'fallback')` を解決します。ビルドも fetch もなし — 翻訳者は 1 つの言語ファイルだけを編集します。
+UI は **19 言語** を提供します — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `fr`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`, `ta`, `vi`。**v1.60.0 (I18N-SPLIT)** 以降、翻訳は [`public/js/lib/locales/`](public/js/lib/locales/) 配下の **言語ごとに 1 ファイル**（`i18n-dict.<lang>.js`、フラットな `キー → 文字列` テーブル）と共通の `i18n-dict.aliases.js` にあります。[`i18n-dict.js`](public/js/lib/i18n-dict.js) がそれらを `window.__I18N_DICT` に組み立て、[`i18n.js`](public/js/lib/i18n.js) が `t('キー', 'fallback')` を解決します。ビルドも fetch もなし — 翻訳者は 1 つの言語ファイルだけを編集します。
 
 **文字列の追加・変更:** 同じキーを 18 個の言語ファイルすべてに追加し（パリティはテストで強制）、`data-i18n="scan.newButton"` または `t('scan.newButton')` で使い、`npm test` を実行します。
 

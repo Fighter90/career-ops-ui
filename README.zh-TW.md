@@ -261,7 +261,7 @@ npm start
 | **Profile**      | `config/profile.yml` + archetypes 的唯讀檢視 — UI 友善摘要。                                                          |
 | **App settings** | UI 內建編輯器,可編輯父專案 `.env` 中的金鑰:`ANTHROPIC_API_KEY`、`GEMINI_API_KEY`、模型 override、port / host。讀取時 secrets 會被遮罩。 |
 | **Health**       | 所有 setup 檢查以 OK / OPTIONAL / FAIL 徽章呈現 + 用於執行 `doctor.mjs` 與 `verify-pipeline.mjs` 的按鈕。              |
-| **Help**         | 應用程式內的 Markdown 使用指南(`/#/help`),已本地化為所有 18 種支援語言(en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta)。 |
+| **Help**         | 應用程式內的 Markdown 使用指南(`/#/help`),已本地化為所有 19 種支援語言(en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta / vi)。 |
 | **Activity log** | 每一筆會改變狀態的請求(寫入、執行、掃描)的稽核軌跡。secrets 會被遮蔽。 |
 | **通知** 🔔 *(v1.58.34 / v1.58.35)* | 頂列鈴鐺 + 紅色未讀徽章。點擊 → 右側抽屜展示最近 50 條 toast(按分頁/作業階段)— 成功 / 錯誤 / 資訊-進度,每條帶本地時間、訊息,及在需要時把 `(METHOD /path · HTTP NNN)` 後綴放入 `<details>`。說明 **§18** 描述每個類別。抽屜**僅在點擊鈴鐺時開啟**(或鍵盤 Enter / Space);透過 ×、Esc 或再次點擊鈴鐺關閉。|
 
@@ -623,7 +623,7 @@ Claude Code 中既有的 `/career-ops apply` Playwright 表單填寫流程,仍�
 
 career-ops **常開** 時最佳 —— 在你睡覺時掃描,可從任何瀏覽器存取。要把整個技術棧放到一台小型伺服器上 —— 父級 **career-ops** 流水線、此 **career-ops-ui** 檢視器,以及執行 AI 的**引擎**(透過 Claude Code CLI 的 **Claude 訂閱**、本機 **Hermes** 閘道,或供應方 API 金鑰)—— 開通一台 VPS(Node ≥ 18),安裝父專案 + 本儲存庫,選擇引擎,並將檢視器置於**帶認證的 HTTPS 反向代理**之後,同時保持安全不變式(CSP、SSRF 防護、XSS 邊界、日誌不含機密)完好。
 
-📖 應用內**說明 §31**(「在雲端執行整個技術棧」)以 18 種語言逐步講解;維運清單見 [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md),[雲端部署 wiki 頁面](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) 提供參考表格。
+📖 應用內**說明 §31**(「在雲端執行整個技術棧」)以 19 種語言逐步講解;維運清單見 [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md),[雲端部署 wiki 頁面](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) 提供參考表格。
 
 ---
 
@@ -640,7 +640,7 @@ career-ops **常開** 時最佳 —— 在你睡覺時掃描,可從任何瀏覽�
 
 ## 在地化(Localization)
 
-介面提供 **18 種語言** — `en`、`es`、`pt-BR`、`ko`、`ja`、`ru`、`zh-CN`、`zh-TW`、`fr`、`pl`、`uk`、`da`、`ar`、`de`、`it`、`tr`、`hi`、`ta`。自 **v1.60.0 (I18N-SPLIT)** 起,翻譯以**每種語言一個檔案**存放於 [`public/js/lib/locales/`](public/js/lib/locales/) —— `i18n-dict.<lang>.js`(扁平的 `鍵 → 字串` 表)外加共用的 `i18n-dict.aliases.js`。[`i18n-dict.js`](public/js/lib/i18n-dict.js) 將它們組裝為 `window.__I18N_DICT`;[`i18n.js`](public/js/lib/i18n.js) 負責解析 `t('鍵', 'fallback')`。無建置、無 fetch —— 譯者只需編輯單一語言檔案。
+介面提供 **19 種語言** — `en`、`es`、`pt-BR`、`ko`、`ja`、`ru`、`zh-CN`、`zh-TW`、`fr`、`pl`、`uk`、`da`、`ar`、`de`、`it`、`tr`、`hi`、`ta`、`vi`。自 **v1.60.0 (I18N-SPLIT)** 起,翻譯以**每種語言一個檔案**存放於 [`public/js/lib/locales/`](public/js/lib/locales/) —— `i18n-dict.<lang>.js`(扁平的 `鍵 → 字串` 表)外加共用的 `i18n-dict.aliases.js`。[`i18n-dict.js`](public/js/lib/i18n-dict.js) 將它們組裝為 `window.__I18N_DICT`;[`i18n.js`](public/js/lib/i18n.js) 負責解析 `t('鍵', 'fallback')`。無建置、無 fetch —— 譯者只需編輯單一語言檔案。
 
 **新增或修改文案:** 將同一個鍵加入全部 16 個語言檔案(由測試強制保證一致性),透過 `data-i18n="scan.newButton"` 或 `t('scan.newButton')` 使用,然後執行 `npm test`。
 

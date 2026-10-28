@@ -261,7 +261,7 @@ Abra http://127.0.0.1:4317. O contador de Pipeline deve mostrar `0 pendentes`.
 | **Profile**      | Visão somente leitura de `config/profile.yml` + arquétipos — resumo amigável para a UI.                            |
 | **App settings** | Editor in-UI para chaves do `.env` do projeto pai: `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, overrides de modelo, port / host. Segredos mascarados na leitura. |
 | **Health**       | Todos os checks de setup em badges OK / OPTIONAL / FAIL + botões para rodar `doctor.mjs` e `verify-pipeline.mjs`.   |
-| **Help**         | Guia do usuário em Markdown dentro do app (`/#/help`), localizado nos 18 idiomas suportados (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta). |
+| **Help**         | Guia do usuário em Markdown dentro do app (`/#/help`), localizado nos 19 idiomas suportados (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta / vi). |
 | **Activity log** | Trilha de auditoria de cada request que altera estado (escritas, runs, scans). Segredos redigidos. |
 | **Notificações** 🔔 *(v1.58.34 / v1.58.35)* | Sino na barra superior com badge vermelho de não lidos. Clique → drawer direito com as últimas 50 toasts (por aba, por sessão) — Sucesso / Erro / Info-progresso, cada uma com hora local, mensagem e, se aplicável, postfix `(MÉTODO /caminho · HTTP NNN)` em `<details>`. A ajuda **§18** documenta cada categoria. O drawer abre **somente** ao clicar no sino (ou Enter / Space); fecha via ×, Esc, ou novo clique. |
 
@@ -621,7 +621,7 @@ Para a avaliação de production-readiness (deployment gates, registro de riscos
 
 O career-ops rende melhor **sempre ligado** — rastreando enquanto você dorme, acessível de qualquer navegador. Para colocar todo o stack num servidor pequeno — o pipeline pai **career-ops**, este visualizador **career-ops-ui**, e o **motor** que roda a IA (sua **assinatura Claude** via CLI do Claude Code, um **Hermes** local, ou chaves de API) — provisione um VPS (Node ≥ 18), instale o pai + este repo, escolha seu motor, e exponha o visualizador atrás de um **proxy reverso HTTPS com autenticação** mantendo intactas as invariantes de segurança (CSP, guard SSRF, limite XSS, sem segredos em logs).
 
-📖 A **Ajuda §31** no app ("Rodar todo o stack na nuvem") mostra o passo a passo nos 18 idiomas; o checklist do operador é [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), e a [página wiki de deploy na nuvem](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) tem as tabelas de referência.
+📖 A **Ajuda §31** no app ("Rodar todo o stack na nuvem") mostra o passo a passo nos 19 idiomas; o checklist do operador é [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), e a [página wiki de deploy na nuvem](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) tem as tabelas de referência.
 
 ---
 
@@ -638,7 +638,7 @@ O career-ops rende melhor **sempre ligado** — rastreando enquanto você dorme,
 
 ## Localização
 
-A interface inclui **18 idiomas** — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `fr`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`, `ta`. Desde a **v1.60.0 (I18N-SPLIT)** as traduções ficam **um arquivo por idioma** em [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, uma tabela plana `chave → texto` — mais `i18n-dict.aliases.js`. [`i18n-dict.js`](public/js/lib/i18n-dict.js) os monta em `window.__I18N_DICT`; [`i18n.js`](public/js/lib/i18n.js) resolve `t('chave', 'fallback')`. Sem build, sem fetch — o tradutor edita um único arquivo de idioma.
+A interface inclui **19 idiomas** — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `fr`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`, `ta`, `vi`. Desde a **v1.60.0 (I18N-SPLIT)** as traduções ficam **um arquivo por idioma** em [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, uma tabela plana `chave → texto` — mais `i18n-dict.aliases.js`. [`i18n-dict.js`](public/js/lib/i18n-dict.js) os monta em `window.__I18N_DICT`; [`i18n.js`](public/js/lib/i18n.js) resolve `t('chave', 'fallback')`. Sem build, sem fetch — o tradutor edita um único arquivo de idioma.
 
 **Adicionar ou alterar um texto:** adicione a mesma chave aos 18 arquivos de idioma (a paridade é garantida por testes), use-a com `data-i18n="scan.newButton"` ou `t('scan.newButton')`, e rode `npm test`.
 

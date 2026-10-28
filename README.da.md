@@ -294,7 +294,7 @@ npm start
 | **Profile**      | Skrivebeskyttet visning af `config/profile.yml` + arketyper — UI-venligt resumé.                                         |
 | **App settings** | In-UI-editor til den overordnede `.env`'s nøgler: `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, model-overrides, port / vært. Hemmeligheder maskeres ved læsning. |
 | **Health**       | Alle opsætningstjek i OK / OPTIONAL / FAIL-badges + knapper til at køre `doctor.mjs` og `verify-pipeline.mjs`.           |
-| **Help**         | In-app Markdown-brugervejledning (`/#/help`), lokaliseret til alle 18 understøttede sprog (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta). |
+| **Help**         | In-app Markdown-brugervejledning (`/#/help`), lokaliseret til alle 19 understøttede sprog (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta / vi). |
 | **Activity log** | Revisionsspor af hver tilstandsændrende forespørgsel (writes, runs, scans). Hemmeligheder redigeret. |
 | **Notifications** 🔔 *(v1.58.34 / v1.58.35)* | Klokke i topbjælken med rødt ulæst-badge. Klik for at glide en skuffe ind, der oplister de seneste 50 toasts (pr. fane, pr. session) — Success / Error / Info-progress, hver med et lokaliseret tidsstempel, den menneskelige besked og ethvert `(METHOD /path · HTTP NNN)`-postfiks gemt i en `<details>`. Hjælp **§18** dokumenterer hver kategori. Skuffen åbner **kun** ved klik på klokken (eller tastatur Enter / Space); lukkes via ×, Esc eller ved at klikke på klokken igen. |
 
@@ -431,7 +431,7 @@ career-ops-ui/
    ├─ url-validation.test.mjs    # SSRF reject sweep (FIX-M3 + M6 + M7)
    ├─ cv-xss.test.mjs        # stripDangerousMarkdown round-trip
    ├─ jd-sanitize.test.mjs   # sanitizeJobDescription
-   ├─ help.test.mjs / help-ui.test.mjs    # i18n parity across all 18 locales
+   ├─ help.test.mjs / help-ui.test.mjs    # i18n parity across all 19 locales
    ├─ playwright-smoke.mjs   # 22 browser flows (CV save, tracker, pipeline, evaluate, config, etc.)
    └─ e2e{,-comprehensive}.mjs   # full Playwright walkthrough
 ```
@@ -556,7 +556,7 @@ Når `run: true` er sat på `/api/deep` eller `/api/mode/:slug`, foretrækker se
 npm test                       # 5116 unit/integration tests
 npm run test:e2e               # 21 smoke e2e (boots own server)
 npm run test:e2e:full          # 23 comprehensive e2e
-npm run test:e2e:browser       # 118 Playwright browser (smoke + full-cycle + forms + locale-sweep ×18 + theme)
+npm run test:e2e:browser       # 118 Playwright browser (smoke + full-cycle + forms + locale-sweep ×19 + theme)
 npm run test:coverage          # same as `npm test` plus V8 coverage
 ```
 
@@ -645,7 +645,7 @@ For vurderingen af produktionsparathed (deployment-gates, risikoregister, udskud
 
 career-ops er bedst **altid tændt** — scanner mens du sover, tilgængelig fra enhver browser. For at lægge hele stakken på en lille server — det overordnede **career-ops**-pipeline, denne **career-ops-ui**-fremviser, og **motoren** der kører AI’en (dit **Claude-abonnement** via Claude Code-CLI’en, en lokal **Hermes**-gateway, eller provider-API-nøgler) — klargør en VPS (Node ≥ 18), installer forælderen + dette repo, vælg din motor, og eksponer fremviseren bag en **HTTPS reverse proxy med autentificering**, mens sikkerhedsinvarianterne (CSP, SSRF-guard, XSS-grænse, ingen hemmeligheder i logs) forbliver intakte.
 
-📖 Den indbyggede **Hjælp §31** ("Kør hele stakken i skyen") gennemgår det trin for trin på alle 18 sprog; operatør-tjeklisten er [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), og [wiki-siden om sky-deployment](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) har opslagstabellerne.
+📖 Den indbyggede **Hjælp §31** ("Kør hele stakken i skyen") gennemgår det trin for trin på alle 19 sprog; operatør-tjeklisten er [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), og [wiki-siden om sky-deployment](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) har opslagstabellerne.
 
 ---
 
@@ -662,14 +662,14 @@ career-ops er bedst **altid tændt** — scanner mens du sover, tilgængelig fra
 
 ## Lokalisering
 
-UI'en leverer **18 lokaliteter** — `en`, `es`, `fr`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`, `ta`. Siden **v1.60.0 (I18N-SPLIT)** ligger oversættelser **én fil pr. lokalitet** under [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, hver en flad `key → string`-tabel — plus en delt `i18n-dict.aliases.js`. [`i18n-dict.js`](public/js/lib/i18n-dict.js) samler dem til `window.__I18N_DICT`; [`i18n.js`](public/js/lib/i18n.js) løser `t('key', 'fallback')`. Intet build-trin, ingen runtime-fetch — en oversætter redigerer en enkelt sprogfil isoleret.
+UI'en leverer **19 lokaliteter** — `en`, `es`, `fr`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`, `ta`, `vi`. Siden **v1.60.0 (I18N-SPLIT)** ligger oversættelser **én fil pr. lokalitet** under [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, hver en flad `key → string`-tabel — plus en delt `i18n-dict.aliases.js`. [`i18n-dict.js`](public/js/lib/i18n-dict.js) samler dem til `window.__I18N_DICT`; [`i18n.js`](public/js/lib/i18n.js) løser `t('key', 'fallback')`. Intet build-trin, ingen runtime-fetch — en oversætter redigerer en enkelt sprogfil isoleret.
 
 **Tilføj eller ændr en streng:**
 
 ```js
 // public/js/lib/locales/i18n-dict.en.js   →   'scan.newButton': 'Run scan',
 // public/js/lib/locales/i18n-dict.es.js   →   'scan.newButton': 'Ejecutar búsqueda',
-// …add the same key to all 18 locale files (parity is gated)
+// …add the same key to all 19 locale files (parity is gated)
 ```
 
 Brug den derefter via `data-i18n="scan.newButton"` i markup eller `t('scan.newButton')` i JS, og kør `npm test`. For at tilføje et helt nyt sprog skal du registrere det i `i18n.js` (`LANGS` + `detect()`), assembleren, `index.html` og det lokalitetstællende værktøj.

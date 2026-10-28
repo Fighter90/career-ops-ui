@@ -261,7 +261,7 @@ Abre http://127.0.0.1:4317. El contador de Pipeline debe mostrar `0 pendientes`.
 | **Profile**      | Vista de solo lectura de `config/profile.yml` + arquetipos — resumen adaptado a la UI.                             |
 | **App settings** | Editor in-UI para las claves del `.env` padre: `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, overrides de modelo, puerto / host. Los secretos van enmascarados al leer. |
 | **Health**       | Todas las comprobaciones de instalación como badges OK / OPTIONAL / FAIL + botones para ejecutar `doctor.mjs` y `verify-pipeline.mjs`. |
-| **Help**         | Guía de usuario en Markdown dentro de la app (`/#/help`), localizada para los 18 idiomas soportados (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta). |
+| **Help**         | Guía de usuario en Markdown dentro de la app (`/#/help`), localizada para los 19 idiomas soportados (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta / vi). |
 | **Activity log** | Rastro de auditoría de cada request que cambia estado (escrituras, ejecuciones, escaneos). Secretos redactados. |
 | **Notificaciones** 🔔 *(v1.58.34 / v1.58.35)* | Campana superior con badge rojo de no leídos. Click → drawer derecho con las últimas 50 toasts (por pestaña, por sesión) — Éxito / Error / Info-progreso, cada una con hora local, mensaje y, si aplica, postfix `(MÉTODO /ruta · HTTP NNN)` en `<details>`. La ayuda **§18** documenta cada categoría. El drawer se abre **solo** al hacer clic en la campana (o Enter / Space); se cierra con ×, Esc, o haciendo clic de nuevo. |
 
@@ -405,7 +405,7 @@ career-ops-ui/
    ├─ url-validation.test.mjs    # barrido de rechazo SSRF (FIX-M3 + M6 + M7)
    ├─ cv-xss.test.mjs        # round-trip de stripDangerousMarkdown con decodificación de entidades (v1.22.0 M-4)
    ├─ jd-sanitize.test.mjs   # sanitizeJobDescription
-   ├─ help.test.mjs / help-ui.test.mjs    # paridad i18n en los 18 locales
+   ├─ help.test.mjs / help-ui.test.mjs    # paridad i18n en los 19 locales
    ├─ playwright-smoke.mjs   # 22 flujos de navegador (CV save, tracker, pipeline, evaluate, config, etc.)
    └─ e2e{,-comprehensive}.mjs   # walkthrough Playwright completo
 ```
@@ -620,7 +620,7 @@ Para la evaluación de production-readiness (gates de despliegue, registro de ri
 
 career-ops rinde mejor **siempre encendido** — rastreando mientras duermes, accesible desde cualquier navegador. Para poner todo el stack en un servidor pequeño — el pipeline padre **career-ops**, este visor **career-ops-ui**, y el **motor** que ejecuta la IA (tu **suscripción de Claude** vía el CLI de Claude Code, un **Hermes** local, o claves de API) — aprovisiona un VPS (Node ≥ 18), instala el padre + este repo, elige tu motor, y expón el visor tras un **proxy inverso HTTPS con autenticación** manteniendo intactas las invariantes de seguridad (CSP, guard SSRF, límite XSS, sin secretos en logs).
 
-📖 La **Ayuda §31** integrada ("Ejecutar todo el stack en la nube") lo explica paso a paso en los 18 idiomas; la checklist del operador es [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), y la [página wiki de despliegue en la nube](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) tiene las tablas de referencia.
+📖 La **Ayuda §31** integrada ("Ejecutar todo el stack en la nube") lo explica paso a paso en los 19 idiomas; la checklist del operador es [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), y la [página wiki de despliegue en la nube](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) tiene las tablas de referencia.
 
 ---
 
@@ -637,7 +637,7 @@ career-ops rinde mejor **siempre encendido** — rastreando mientras duermes, ac
 
 ## Localización
 
-La interfaz incluye **18 idiomas** — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `fr`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`, `ta`. Desde **v1.60.0 (I18N-SPLIT)** las traducciones viven **un archivo por idioma** en [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, una tabla plana `clave → texto` — más `i18n-dict.aliases.js`. [`i18n-dict.js`](public/js/lib/i18n-dict.js) los ensambla en `window.__I18N_DICT`; [`i18n.js`](public/js/lib/i18n.js) resuelve `t('clave', 'fallback')`. Sin paso de compilación ni fetch — el traductor edita un solo archivo de idioma.
+La interfaz incluye **19 idiomas** — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `fr`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`, `ta`, `vi`. Desde **v1.60.0 (I18N-SPLIT)** las traducciones viven **un archivo por idioma** en [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, una tabla plana `clave → texto` — más `i18n-dict.aliases.js`. [`i18n-dict.js`](public/js/lib/i18n-dict.js) los ensambla en `window.__I18N_DICT`; [`i18n.js`](public/js/lib/i18n.js) resuelve `t('clave', 'fallback')`. Sin paso de compilación ni fetch — el traductor edita un solo archivo de idioma.
 
 **Añadir o cambiar un texto:** añade la misma clave a los 18 archivos de idioma (la paridad está protegida por tests), úsala con `data-i18n="scan.newButton"` o `t('scan.newButton')`, y ejecuta `npm test`.
 

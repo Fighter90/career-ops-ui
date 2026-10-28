@@ -196,10 +196,10 @@ web-ui/
 │   ├── index.html          # குறியீடு-மட்டும் SPA shell (bundler இல்லை)
 │   └── js/
 │       ├── app.js          # தொடக்கம், lang switcher, theme
-│       ├── lib/            # i18n (18 மொழிகள்), api, ui, format
+│       ├── lib/            # i18n (19 மொழிகள்), api, ui, format
 │       └── views/          # ஒரு பக்கத்திற்கு ஒரு பார்வை
 ├── tests/                  # 5695 unit (baseline @ v1.255.2) — node --test, கணினி முழுவதும் CI-isolated
-└── docs/                   # உதவி வழிகாட்டிகள் ×18, LOCALIZATION, SDD
+└── docs/                   # உதவி வழிகாட்டிகள் ×19, LOCALIZATION, SDD
 ```
 
 ### ஏன் build இல்லை
@@ -287,7 +287,7 @@ Nous Research-இன் Hermes ஒரு திறந்த தன்னிய�
 
 ## Localizing
 
-இடைமுகம் **18 மொழிகளில்** வருகிறது (English, Español, Français, Português, 한국어, 日本語, Русский, 简体中文, 繁體中文, Polski, Українська, Dansk, العربية, Deutsch, Italiano, Türkçe, हिन्दी, தமிழ்). பக்கப்பட்டியின் அடிக்குறிப்பில் உள்ள `<select>` இல் மொழியை மாற்றவும்; தேர்வு உலாவிக்கு நினைவில் இருக்கும். புதிய மொழியைச் சேர்க்கும் படிப்படியான வழிகாட்டி [`docs/LOCALIZATION.md`](docs/LOCALIZATION.md) இல் உள்ளது.
+இடைமுகம் **19 மொழிகளில்** வருகிறது (English, Español, Français, Português, 한국어, 日本語, Русский, 简体中文, 繁體中文, Polski, Українська, Dansk, العربية, Deutsch, Italiano, Türkçe, हिन्दी, தமிழ், Tiếng Việt). பக்கப்பட்டியின் அடிக்குறிப்பில் உள்ள `<select>` இல் மொழியை மாற்றவும்; தேர்வு உலாவிக்கு நினைவில் இருக்கும். புதிய மொழியைச் சேர்க்கும் படிப்படியான வழிகாட்டி [`docs/LOCALIZATION.md`](docs/LOCALIZATION.md) இல் உள்ளது.
 
 ## 📘 இந்த repository எப்படி agents மூலம் கட்டப்படுகிறது
 
