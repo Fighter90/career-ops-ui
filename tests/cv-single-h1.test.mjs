@@ -50,8 +50,11 @@ test('page-title <h1> is still the single top-level heading source', () => {
   // the H1 is back to the standard `.page-title` style with a visible
   // `.page-subtitle` paragraph like every other page. F-V54-A invariant
   // unchanged: still exactly ONE <h1>, still the page title.
-  assert.match(CV, /c\('h1',\s*\{\s*className:\s*'page-title'\s*\},\s*t\('cv\.title'\)\)/);
-  assert.equal((CV.match(/c\('h1'/g) || []).length, 1, 'cv.js builds exactly one <h1>');
+  // CAR-137 — the page-title <h1> is now built via HelpHint.title() (title
+  // span + the `?` affordance); the single-h1 contract moves with it.
+  assert.match(CV, /HelpHint\.title\(\s*t\('cv\.title'\)\s*,\s*'help\.hint\.cvEditor'\)/,
+    'cv.js builds its page H1 via HelpHint.title bound to help.hint.cvEditor');
+  assert.doesNotMatch(CV, /c\('h1'/, 'no bare c(\'h1\') constructions remain');
 });
 
 // Slice `const cvMd = (src) => UI.md(src || '')…;` out of cv.js and

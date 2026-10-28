@@ -1,4 +1,4 @@
-/* global Router, API, UI, I18n */
+/* global Router, API, UI, I18n, HelpHint */
 // Route is now `profile` (was `settings` until v1.10.0). The router
 // aliases the old `settings` hash so existing bookmarks keep working.
 Router.register('profile', async () => {
@@ -9,7 +9,7 @@ Router.register('profile', async () => {
 
   if (!profile) {
     return c('div', null, [
-      c('header', { className: 'page-header' }, [c('div', null, [c('h1', { className: 'page-title' }, t('set.title'))])]),
+      c('header', { className: 'page-header' }, [c('div', null, [HelpHint.title(t('set.title'), 'help.hint.settings')])]),
       c('div', { className: 'empty' }, t('set.notFound')),
     ]);
   }
@@ -53,7 +53,7 @@ Router.register('profile', async () => {
   return c('div', null, [
     c('header', { className: 'page-header' }, [
       c('div', null, [
-        c('h1', { className: 'page-title' }, t('set.title')),
+        HelpHint.title(t('set.title'), 'help.hint.settings'),
         c('p', { className: 'page-subtitle' }, t('set.subtitle')),
       ]),
     ]),

@@ -388,8 +388,13 @@ test('CAR-20 [H] cv.js executed: decline-leave restores edits, confirm-leave dis
   };
   const routes = {};
   const Router = { register(n, f) { routes[n] = f; }, render() {}, go() {}, current: () => ({ name: 'cv', rawName: 'cv', params: [] }) };
-  new Function('window', 'document', 'Router', 'API', 'UI', 'I18n', 'location', 'navigator', CV)(
-    windowStub, documentStub, Router, API, UI, I18n, location,
+  const HelpHint = {
+    title: (text) => UI.el('h1', { className: 'page-title' }, [UI.el('span', null, text)]),
+    icon: () => UI.el('button', { className: 'help-hint', type: 'button' }, '?'),
+    close() {},
+  };
+  new Function('window', 'document', 'Router', 'API', 'UI', 'I18n', 'HelpHint', 'location', 'navigator', CV)(
+    windowStub, documentStub, Router, API, UI, I18n, HelpHint, location,
     { clipboard: { writeText: async () => {} } });
   assert.ok(routes.cv, 'cv route registered');
 

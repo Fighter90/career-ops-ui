@@ -1,4 +1,4 @@
-/* global Router, API, UI, I18n, TrackerStages */
+/* global Router, API, UI, I18n, HelpHint, TrackerStages */
 // CAR-137 i18n: the v2empty.dash.* empty-state strings live in all 19
 // locale dicts (the ×19 fan-out landed in the same change).
 
@@ -561,7 +561,7 @@ Router.register('dashboard', async () => {
     profileFixtureBanner(),
     c('header', { className: 'page-header' }, [
       c('div', null, [
-        c('h1', { className: 'page-title' }, t('dash.title')),
+        HelpHint.title(t('dash.title'), 'help.hint.dashboard'),
         c('p', { className: 'page-subtitle' }, t('dash.subtitle')),
       ]),
       // U-5 (v1.58.25) — removed the header 'Open Pipeline' button.

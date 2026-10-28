@@ -119,6 +119,13 @@ function makeHarness(response) {
     md: (s) => String(s || ''),
   };
   w.API = { get: async () => ({}), post: async () => ({}), put: async () => ({}), del: async () => ({}) };
+  // CAR-137 — the docs-assistant H1 is built via HelpHint.title(); give the
+  // harness the same inert stand-in the browser lib's shape provides.
+  w.HelpHint = {
+    title: (text) => w.UI.el('h1', { className: 'page-title' }, [w.UI.el('span', null, text)]),
+    icon: () => w.UI.el('button', { className: 'help-hint', type: 'button' }, '?'),
+    close() {},
+  };
   w.LlmPageKit = {
     layout: ({ form, result }) => ({ root: w.UI.el('div', null, [form, result]), show() {} }),
     // the real kit's mount(container) returns the run api (llm-page-kit.js:194),
@@ -131,8 +138,8 @@ function makeHarness(response) {
     postJSON: async () => response,
   };
   // eslint-disable-next-line no-new-func
-  new Function('window', 'document', 'Router', 'API', 'UI', 'I18n', VIEW)(
-    w, doc, w.Router, w.API, w.UI, w.I18n,
+  new Function('window', 'document', 'Router', 'API', 'UI', 'I18n', 'HelpHint', VIEW)(
+    w, doc, w.Router, w.API, w.UI, w.I18n, w.HelpHint,
   );
   return { w, routes, went, modals, toasts };
 }

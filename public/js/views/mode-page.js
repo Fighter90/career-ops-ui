@@ -1,4 +1,4 @@
-/* global Router, API, UI, I18n */
+/* global Router, API, UI, I18n, HelpHint */
 /**
  * Generic factory for the seven modes that share the same UX shape:
  *   form fields → POST /api/mode/:slug → Markdown output with Copy /
@@ -32,6 +32,7 @@
       slug: 'project',
       titleKey: 'project.title',
       subtitleKey: 'project.subtitle',
+      hintKey: 'help.hint.modeProject',
       fields: [
         { name: 'idea',        type: 'textarea', i18n: { label: 'project.ideaLbl', placeholder: 'project.ideaPh', hint: 'project.ideaHint' }, required: true, rows: 6 },
         { name: 'targetRole',  type: 'input',    i18n: { label: 'project.roleLbl', placeholder: 'project.rolePh', hint: 'project.roleHint' } },
@@ -41,6 +42,7 @@
       slug: 'training',
       titleKey: 'training.title',
       subtitleKey: 'training.subtitle',
+      hintKey: 'help.hint.modeTraining',
       fields: [
         { name: 'course',  type: 'input',    i18n: { label: 'training.courseLbl', placeholder: 'training.coursePh', hint: 'training.courseHint' }, required: true },
         { name: 'goals',   type: 'textarea', i18n: { label: 'training.goalsLbl', placeholder: 'training.goalsPh', hint: 'training.goalsHint' }, rows: 4 },
@@ -50,6 +52,7 @@
       slug: 'followup',
       titleKey: 'followup.title',
       subtitleKey: 'followup.subtitle',
+      hintKey: 'help.hint.modeFollowup',
       fields: [
         { name: 'company', type: 'input',    i18n: { label: 'followup.companyLbl', placeholder: 'followup.companyPh', hint: 'followup.companyHint' }, required: true },
         { name: 'role',    type: 'input',    i18n: { label: 'followup.roleLbl', placeholder: 'followup.rolePh', hint: 'followup.roleHint' }, required: true },
@@ -77,6 +80,7 @@
       serverSlug: 'batch',
       titleKey: 'batch.title',
       subtitleKey: 'batch.subtitle',
+      hintKey: 'help.hint.modeBatch',
       deprecation: 'batch-prompt.deprecated',
       fields: [
         { name: 'urls',    type: 'textarea', i18n: { label: 'batch.urlsLbl', placeholder: 'batch.urlsPh', hint: 'batch.urlsHint' }, required: true, rows: 8 },
@@ -87,6 +91,7 @@
       slug: 'contacto',
       titleKey: 'contacto.title',
       subtitleKey: 'contacto.subtitle',
+      hintKey: 'help.hint.modeContacto',
       fields: [
         { name: 'recipient', type: 'input',    i18n: { label: 'contacto.recipientLbl', placeholder: 'contacto.recipientPh', hint: 'contacto.recipientHint' }, required: true },
         { name: 'company',   type: 'input',    i18n: { label: 'contacto.companyLbl', placeholder: 'contacto.companyPh', hint: 'contacto.companyHint' }, required: true },
@@ -102,6 +107,7 @@
       slug: 'cover',
       titleKey: 'cover.title',
       subtitleKey: 'cover.subtitle',
+      hintKey: 'help.hint.modeCover',
       fields: [
         { name: 'jd',       type: 'textarea', i18n: { label: 'cover.jdLbl', placeholder: 'cover.jdPh', hint: 'cover.jdHint' }, required: true, rows: 8 },
         { name: 'company',  type: 'input',    i18n: { label: 'cover.companyLbl', placeholder: 'cover.companyPh', hint: 'cover.companyHint' }, required: true },
@@ -113,6 +119,7 @@
       slug: 'interview-prep',
       titleKey: 'interviewPrep.title',
       subtitleKey: 'interviewPrep.subtitle',
+      hintKey: 'help.hint.modeInterviewPrep',
       fields: [
         { name: 'company', type: 'input',    i18n: { label: 'interviewPrep.companyLbl', placeholder: 'interviewPrep.companyPh', hint: 'interviewPrep.companyHint' }, required: true },
         { name: 'role',    type: 'input',    i18n: { label: 'interviewPrep.roleLbl', placeholder: 'interviewPrep.rolePh', hint: 'interviewPrep.roleHint' }, required: true },
@@ -123,6 +130,7 @@
       slug: 'patterns',
       titleKey: 'patterns.title',
       subtitleKey: 'patterns.subtitle',
+      hintKey: 'help.hint.modePatterns',
       fields: [
         { name: 'window', type: 'input',    i18n: { label: 'patterns.windowLbl', placeholder: 'patterns.windowPh', hint: 'patterns.windowHint' } },
         { name: 'focus',  type: 'textarea', i18n: { label: 'patterns.focusLbl', placeholder: 'patterns.focusPh', hint: 'patterns.focusHint' }, rows: 4 },
@@ -577,7 +585,7 @@
       // meta line under the view title (was an orphan row inside the card).
       c('header', { className: 'page-header' }, [
         c('div', null, [
-          c('h1', { className: 'page-title' }, t(cfg.titleKey)),
+          HelpHint.title(t(cfg.titleKey), cfg.hintKey),
           c('p', { className: 'page-subtitle' }, t(cfg.subtitleKey)),
           UI.pageMeta(t,
             c('span', { className: 'advisor-eta' }, '⏱ ' + t('advisor.eta', '~2–4 min')),

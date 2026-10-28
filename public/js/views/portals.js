@@ -1,4 +1,4 @@
-/* global Router, API, UI, I18n */
+/* global Router, API, UI, I18n, HelpHint */
 /**
  * #/portals — the companies the scanner watches (parent `portals.yml`
  * `tracked_companies:`) + an on-demand liveness check + "Discover ATS board".
@@ -225,7 +225,7 @@ Router.register('portals', async () => {
   }
 
   const root = c('div');
-  root.appendChild(c('h1', { className: 'page-title' }, t('portals.title', 'Portals')));
+  root.appendChild(HelpHint.title(t('portals.title', 'Portals'), 'help.hint.portals'));
   root.appendChild(c('p', { className: 'page-subtitle' },
     t('portals.subtitle', 'The companies the scanner watches for new roles (portals.yml). Run a health check to catch ATS slugs that have quietly broken — a 404 means that company silently disappears from every future scan.')));
 
