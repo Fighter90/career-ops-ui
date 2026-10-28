@@ -43,16 +43,17 @@ test('apply: the info banner is a theme-aware callout, not inline light-theme co
   assert.doesNotMatch(src, /#1f3b6e/);
 });
 
-test('callout--info defines per-theme surface/text/link colors (light + explicit dark + system dark)', () => {
-  assert.match(COMPONENTS, /\.callout--info\s*\{[^}]*--callout-bg:\s*#eef5ff/);
-  assert.match(COMPONENTS, /\[data-theme="dark"\]\s*\.callout--info\s*\{[^}]*--callout-bg:\s*#1d2434[^}]*--callout-link:\s*#8ab4f8/);
+test('callout--info rides the cv3 info pair in ONE theme-following rule (v3 phase 2)', () => {
+  // v3 phase 2 — the cv3 vars are theme-aware, so the per-theme light+dark+system
+  // triple collapsed into a single rule; the ink-on-soft contrast is gated in
+  // tests/css-a11y-contrast.test.mjs (6.22:1 light / 8.10:1 dark).
+  assert.match(COMPONENTS, /\.callout--info\s*\{[^}]*--callout-bg:\s*var\(--cv3-info-soft\)/);
+  assert.match(COMPONENTS, /\.callout--info\s*\{[^}]*--callout-text:\s*var\(--cv3-info-ink\)[^}]*--callout-link:\s*var\(--cv3-info-ink\)/);
+  assert.doesNotMatch(COMPONENTS, /--callout-bg:\s*#[0-9a-f]{6}/i, 'callout surfaces must not re-hardcode hex values');
   // The callout link reads the per-theme link variable instead of the global a color.
   // v1.247.0 — `:not(.btn)` keeps the banner's .btn-primary CTA white (the raw
   // rule outranked .btn-primary and left dark amber text on a crimson fill).
   assert.match(COMPONENTS, /\.callout a:not\(\.btn\)\s*\{[^}]*var\(--callout-link/);
-  // The system-dark fallback mirrors the strict three-part guard the dark
-  // tokens use in app.css (explicit light wins over a dark OS setting).
-  assert.match(COMPONENTS, /@media \(prefers-color-scheme: dark\)\s*\{\s*:root:not\(\[data-theme="light"\]\):not\(\[data-theme="dark"\]\)\s*\.callout--info/);
 });
 
 // ── 2 · RTL bidi numeric isolation ──────────────────────────────────────────

@@ -18,10 +18,13 @@ const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const HARD_LIMIT = 800; // docs/sdd/CONVENTIONS.md file-size contract
 
 test('the app stylesheets exist and are each within the 800-LOC hard limit', () => {
-  assert.deepEqual(APP_CSS_FILES, ['app.css', 'components.css', 'overlays.css', 'map.css']);
+  // tokens-v3.css (v3 design phase 2, loaded last) rides the cascade order but is
+  // data-only (the 400-LOC sheet limit lives in tests/design-tokens-v3.test.mjs).
+  assert.deepEqual(APP_CSS_FILES, ['app.css', 'components.css', 'overlays.css', 'map.css', 'tokens-v3.css']);
   for (const f of APP_CSS_FILES) {
     const lines = readFileSync(resolve(ROOT, 'public', 'css', f), 'utf8').split('\n').length;
-    assert.ok(lines <= HARD_LIMIT, `public/css/${f} is ${lines} lines — over the ${HARD_LIMIT}-LOC hard limit; split it`);
+    const limit = f === 'tokens-v3.css' ? 400 : HARD_LIMIT;
+    assert.ok(lines <= limit, `public/css/${f} is ${lines} lines — over the ${limit}-LOC hard limit; split it`);
   }
 });
 

@@ -23,8 +23,9 @@ test('D-3: --elev (raised surface) is a distinct value from --slate (hairline)',
   const slateL = light.match(/--slate:\s*(#[0-9a-fA-F]{3,6})/)[1].toLowerCase();
   assert.notEqual(elevL, slateL, 'light --elev must differ from the --slate hairline');
 
-  // Dark blocks: every dark --slate: #2a2f3a is paired with a distinct --elev.
-  const darkElev = [...CSS.matchAll(/--slate:\s*#2a2f3a;\s*\n\s*--elev:\s*(#[0-9a-fA-F]{3,6})/g)];
+  // Dark blocks: every dark --slate: #2a2f3a is paired with a distinct --elev
+  // (the packed v3 dark blocks share one line — `\s*` spans the separator).
+  const darkElev = [...CSS.matchAll(/--slate:\s*#2a2f3a;\s*--elev:\s*(#[0-9a-fA-F]{3,6})/g)];
   assert.ok(darkElev.length >= 2, 'both dark blocks define --elev next to --slate');
   for (const m of darkElev) {
     assert.notEqual(m[1].toLowerCase(), '#2a2f3a', 'dark --elev must differ from dark --slate');

@@ -17,8 +17,11 @@ import { fileURLToPath } from 'node:url';
 
 const CSS_DIR = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..', 'public', 'css');
 
-/** The app stylesheets, in index.html `<link>` (cascade) order. */
-export const APP_CSS_FILES = ['app.css', 'components.css', 'overlays.css', 'map.css'];
+/** The app stylesheets, in index.html `<link>` (cascade) order. tokens-v3.css
+ *  joined LAST (v3 design phase 2): app.css token values are now `var(--cv3-*)`
+ *  indirections, so any test that resolves token values needs the sheet in the
+ *  concatenation — same reason it loads last for the browser cascade. */
+export const APP_CSS_FILES = ['app.css', 'components.css', 'overlays.css', 'map.css', 'tokens-v3.css'];
 
 /** Concatenated CSS of all app stylesheets, in load order. */
 export function loadAppCss() {

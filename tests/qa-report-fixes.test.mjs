@@ -1168,12 +1168,15 @@ test('I-2 (v1.58.17): formatRelative uses Intl.RelativeTimeFormat with the activ
     'formatRelative must fall back to Intl.DateTimeFormat(locale, { dateStyle: "medium" })');
 });
 
-test('v1.58.16: btn-primary/btn-danger hover no longer flickers (gradient stays, filter dims)', () => {
+test('v1.58.16: btn-danger hover no longer flickers; btn-primary hover is a clean solid swap (v3)', () => {
   // Pre-fix the default background was a gradient and the :hover state
   // replaced it with a solid colour. CSS can't smoothly transition
   // gradient ↔ solid, so the 180ms transition snapped and the user
-  // perceived a brief flash. The new rule keeps the gradient on hover
-  // and dims via `filter: brightness(...)`, which interpolates cleanly.
+  // perceived a brief flash. The fix kept the DANGER gradient on hover
+  // and dimmed via `filter: brightness(...)`, which interpolates cleanly.
+  // v3 phase 2 — .btn-primary left the gradient family entirely (flat accent,
+  // Lovable-style), so its hover is a solid→solid background swap, which
+  // interpolates cleanly too; only the gradient-bearing .btn-danger needs filter.
   const css = loadAppCss();
   // Pre-fix solid-background hover must be gone:
   assert.ok(
@@ -1184,11 +1187,14 @@ test('v1.58.16: btn-primary/btn-danger hover no longer flickers (gradient stays,
     !/\.btn-danger:hover\s*\{\s*background:\s*var\(--rausch-dark\)/.test(css),
     "'.btn-danger:hover' must not swap the gradient for a solid background"
   );
-  // New filter-based hover must be present on both:
-  assert.match(css, /\.btn-primary:hover\s*\{[^}]*filter:\s*brightness\(/,
-    "'.btn-primary:hover' must dim via filter: brightness()");
+  // .btn-danger dims via filter (gradient can't interpolate):
   assert.match(css, /\.btn-danger:hover\s*\{[^}]*filter:\s*brightness\(/,
     "'.btn-danger:hover' must dim via filter: brightness()");
+  // .btn-primary rides the accent family with a solid hover fill:
+  assert.match(css, /\.btn-primary\s*\{[^}]*background:\s*var\(--accent-c\)/,
+    "'.btn-primary' must paint the flat accent fill");
+  assert.match(css, /\.btn-primary:hover\s*\{[^}]*background:\s*var\(--accent-hover\)/,
+    "'.btn-primary:hover' must swap to the accent hover fill (solid→solid interpolates)");
   // And `filter` must be in `.btn`'s transition list so the dim animates.
   // (v1.243.0: the standalone duplicate `.btn { transition: … }` re-declaration
   // was folded into the base `.btn` rule to hold the 800-LOC file contract —
@@ -1441,22 +1447,24 @@ test('M-1 (v1.58.9): form fields get a visible :focus-visible ring (WCAG 2.4.7)'
   // visible keyboard-only ring at higher specificity than the form-base.
   const css = loadAppCss();
   // The new rule must declare a visible outline on input/textarea/select focus-visible.
+  // v3 phase 2 — the ring (and its color-mix halo) paint the pure accent.
   assert.match(
     css,
-    /\.input:focus-visible,\s*\n\s*\.textarea:focus-visible,\s*\n\s*\.select:focus-visible\s*\{[^}]*outline:\s*2px solid var\(--rausch[^)]*\)/m,
-    'form-field :focus-visible must declare a 2px solid var(--rausch) outline'
+    /\.input:focus-visible,\s*\n\s*\.textarea:focus-visible,\s*\n\s*\.select:focus-visible\s*\{[^}]*outline:\s*2px solid var\(--accent-c[^)]*\)/m,
+    'form-field :focus-visible must declare a 2px solid var(--accent-c) outline'
   );
   // The searchbar input override (the global ⌘K/Ctrl K search) must also have a focus ring.
   assert.match(
     css,
-    /\.searchbar input:focus-visible\s*\{[^}]*outline:\s*2px solid var\(--rausch[^)]*\)/m,
-    'searchbar input :focus-visible must declare a 2px solid var(--rausch) outline'
+    /\.searchbar input:focus-visible\s*\{[^}]*outline:\s*2px solid var\(--accent-c[^)]*\)/m,
+    'searchbar input :focus-visible must declare a 2px solid var(--accent-c) outline'
   );
   // The pre-existing global *:focus-visible ring must still be in place
   // (regression-lock the WCAG 2.4.7 invariant the new rules build on).
+  // v3 phase 2 — the ring paints the pure accent (--accent-c first in the chain).
   assert.match(
     css,
-    /\*:focus-visible\s*\{[^}]*outline:\s*2px solid var\(--rausch[^)]*\)/m,
+    /\*:focus-visible\s*\{[^}]*outline:\s*2px solid var\(--accent-c[^)]*\)/m,
     'global *:focus-visible ring must remain in place'
   );
 });
