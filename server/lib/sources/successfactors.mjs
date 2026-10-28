@@ -200,8 +200,12 @@ export function parseSuccessfactors(html, { jobBase, fallbackCompany = '' } = {}
 
     // Anchor on id="…-section-city-value"> — the value div. The sibling label
     // span references the same id, so a looser match would swallow the label.
+    // The jobs API can render the value with a trailing comma ("Bend, OR,
+    // USA," — upstream #6139); clean() is shared with titles, which may
+    // legitimately end in a comma, so the artifact comma comes off the
+    // location cell only. Interior commas and a postal code stay.
     const cityM = block.match(/id="[^"]*-section-city-value">([\s\S]*?)<\/div>/);
-    const location = cityM ? clean(cityM[1]) : cityFromSlug(path, title);
+    const location = cityM ? clean(cityM[1]).replace(/,+$/, '').trim() : cityFromSlug(path, title);
 
     seen.add(id);
     out.push({

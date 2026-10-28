@@ -99,6 +99,29 @@ test('parseSuccessfactors: tiles → jobs, drops title-less/url-less/off-host', 
   assert.equal(b.url, 'https://jobs.zf.com/job/Munich-Data-Scientist-BY-67890/1002/');
 });
 
+// The jobs API can render the city value with a trailing comma
+// ("Bend, OR, USA," — upstream #6139, CSB lineage). clean() is shared with
+// titles, which may legitimately end in a comma, so the artifact comma comes
+// off the location cell only. Interior commas and a postal code stay.
+test('parseSuccessfactors: a trailing comma on the rendered city comes off; a title comma stays', () => {
+  const html = `
+<ul>
+  <li class="job-tile job-id-2001">
+    <a class="jobTitle-link" href="#" data-url="/job/Bend-Ops-Lead-OR-24601/2001/">Ops Lead,</a>
+    <div id="job-2001-section-city-value">Bend, OR, USA,</div>
+  </li>
+  <li class="job-tile job-id-2002">
+    <a class="jobTitle-link" href="#" data-url="/job/Oslo-Platform-Engineer-NO-2002/2002/">Platform Engineer</a>
+    <div id="job-2002-section-city-value">Oslo, NOR, 0150</div>
+  </li>
+</ul>`;
+  const jobs = parseSuccessfactors(html, { jobBase: JOB_BASE, fallbackCompany: 'Acme' });
+  assert.equal(jobs.length, 2);
+  assert.equal(jobs[0].location, 'Bend, OR, USA', 'the artifact comma is stripped');
+  assert.equal(jobs[0].title, 'Ops Lead,', 'a title may legitimately end in a comma — untouched');
+  assert.equal(jobs[1].location, 'Oslo, NOR, 0150', 'interior commas and a postal code stay');
+});
+
 test('parseSuccessfactors: bad inputs → []', () => {
   assert.deepEqual(parseSuccessfactors('', { jobBase: JOB_BASE }), []);
   assert.deepEqual(parseSuccessfactors(HTML, {}), []); // no jobBase
