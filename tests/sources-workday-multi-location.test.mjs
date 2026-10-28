@@ -167,3 +167,76 @@ test('enrichment is skipped entirely when the caller opts out', async () => {
   assert.equal(job.location, '3 Locations');
   assert.deepEqual(detailUrls, []);
 });
+
+// ── remoteType "Fully Remote" (upstream #6143) ───────────────────────────────
+// The list endpoint's remoteType is a workplace flag, not a place. "Fully
+// Remote" with a city must still say Remote, or a Remote allow-list drops it.
+// "Partially Remote" is hybrid and stays city-only. A "N Locations" count that
+// is also fully remote must stay a placeholder so the detail GET still runs,
+// and the resolved places must keep the Remote marker.
+
+test('a "Fully Remote" count with the Remote marker is still a placeholder; a real place with it is not', () => {
+  // The marker is appended by the list mapping; the predicate must strip it
+  // before testing, or the detail GET never runs for the counted+remote rows.
+  for (const yes of ['5 Locations · Remote', '3 Locations · Remote', '5 Locations· Remote']) {
+    assert.equal(isMultiLocationPlaceholder(yes), true, `${JSON.stringify(yes)} is still a count`);
+  }
+  for (const no of ['USA - Austin, TX · Remote', '100 Locations Plaza · Remote', 'Remote']) {
+    assert.equal(isMultiLocationPlaceholder(no), false, `${JSON.stringify(no)} is a real value`);
+  }
+});
+
+test('remoteType Fully Remote is kept on the location; Partially Remote stays the city', async () => {
+  const mk = (extra) => transport({
+    jobs: [{
+      title: 'Ops Lead', externalPath: '/job/Bend/Ops-Lead_R9',
+      postedOn: 'Posted Today', locationsText: 'Bend, OR', ...extra,
+    }],
+  });
+  const locOf = async (extra) => (await fetchWorkday(API, { fetchImpl: mk(extra).impl }))[0];
+
+  const fully = await locOf({ remoteType: 'Fully Remote' });
+  assert.equal(fully.location, 'Bend, OR · Remote');
+  assert.equal(fully.isRemote, true, 'the marker must drive isRemote too');
+  assert.equal(fully.workplaceType, 'Remote');
+  assert.equal('remoteType' in fully, false, 'the raw flag must not leak into the job row');
+
+  const partial = await locOf({ remoteType: 'Partially Remote' });
+  assert.equal(partial.location, 'Bend, OR', 'hybrid is not remote — the city stays alone');
+  assert.equal(partial.isRemote, false);
+
+  const inPerson = await locOf({ remoteType: 'In Person' });
+  assert.equal(inPerson.location, 'Bend, OR');
+
+  const already = await locOf({ locationsText: 'Remote', remoteType: 'Fully Remote' });
+  assert.equal(already.location, 'Remote', 'a place that already says remote is not doubled');
+
+  const padded = await locOf({ remoteType: '  fully remote  ' });
+  assert.equal(padded.location, 'Bend, OR · Remote', 'the flag is matched space/case-insensitively');
+
+  const absent = await locOf({});
+  assert.equal(absent.location, 'Bend, OR', 'no flag — the city stays as-is');
+});
+
+test('a fully-remote count placeholder still resolves via the detail GET and keeps the Remote marker', async () => {
+  const { impl, detailUrls } = transport({
+    jobs: [row('Ops Lead', '5 Locations', '/job/Bend/Ops-Lead_R9'), { ...row('Ops Lead', '5 Locations', '/job/Bend/Ops-Lead_R9'), remoteType: 'Fully Remote' }],
+    details: { '/job/Bend/Ops-Lead_R9': { jobPostingInfo: { location: 'Bend, OR', additionalLocations: [] } } },
+  });
+  const jobs = await fetchWorkday(API, { fetchImpl: impl });
+  assert.deepEqual(detailUrls.map((u) => new URL(u).pathname),
+    ['/wday/cxs/acme/careers/job/Bend/Ops-Lead_R9', '/wday/cxs/acme/careers/job/Bend/Ops-Lead_R9'],
+    'the remote-marked count must still be treated as a placeholder (one detail GET each)');
+  assert.equal(jobs[0].location, 'Bend, OR', 'no flag — the resolved places stand alone');
+  assert.equal(jobs[1].location, 'Bend, OR · Remote', 'the resolved city keeps the Remote marker');
+  assert.equal(jobs[1].isRemote, true);
+});
+
+test('a tight-spaced remote marker ("5 Locations· Remote") survives resolution too', async () => {
+  const { impl } = transport({
+    jobs: [{ ...row('Ops Lead', '5 Locations· Remote', '/job/Bend/Ops-Lead_R10'), remoteType: 'Fully Remote' }],
+    details: { '/job/Bend/Ops-Lead_R10': { jobPostingInfo: { location: 'Bend, OR', additionalLocations: [] } } },
+  });
+  const [job] = await fetchWorkday(API, { fetchImpl: impl });
+  assert.equal(job.location, 'Bend, OR · Remote');
+});
