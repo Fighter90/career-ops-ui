@@ -176,6 +176,38 @@ test('resolveTenantOrigin: api over careers_url; https + *.icims.com only', () =
   assert.equal(resolveTenantOrigin({}), null);
 });
 
+// ── labels that START with the word Location (upstream #6130) ───────────────
+
+// Some tenants suffix the label ("Location : Country") and put the value in
+// the next span, including a leading newline. A second "Location : Location"
+// field lives in a <dt> with its value in a later <dd>, not the next span —
+// the header value is the one a scan should show. "Locations" is a different
+// word and must not win.
+test('icims: a suffixed Location label yields the next span, not a later dd', () => {
+  const html = `<ul><li class="iCIMS_JobCardItem"><div class="row">
+    <div class="col-xs-6 header left"><span class="sr-only field-label">Location : Country</span><span >
+Oslo</span></div>
+    <div class="col-xs-12 title"><a href="${ORIGIN}/jobs/5151/bridge-engineer/job" class="iCIMS_Anchor"><h3>Bridge Engineer</h3></a></div>
+    <div class="col-xs-12 additionalFields">
+      <dt class="iCIMS_JobHeaderField"><span class="sr-only field-label">Location : Location</span></dt>
+      <dd class="iCIMS_JobHeaderData"><span >OSL-</span></dd>
+    </div>
+  </div></li></ul>`;
+  const [j] = parseIcimsSearchPage(html, ORIGIN, 'acmefreight');
+  assert.equal(j?.title, 'Bridge Engineer');
+  assert.equal(j?.location, 'Oslo', `got ${JSON.stringify(j?.location)}`);
+});
+
+test('icims: "Locations" does not satisfy a label that starts with Location', () => {
+  const html = `<ul><li class="iCIMS_JobCardItem"><div class="row">
+    <div class="col-xs-6 header left"><span class="field-label">Locations</span><span >Not A Place</span></div>
+    <div class="col-xs-6 header left"><span class="field-label">Location : City</span><span >Bend, OR</span></div>
+    <div class="col-xs-12 title"><a href="${ORIGIN}/jobs/5152/city-role/job" class="iCIMS_Anchor"><h3>City Role</h3></a></div>
+  </div></li></ul>`;
+  const [j] = parseIcimsSearchPage(html, ORIGIN, 'acmefreight');
+  assert.equal(j?.location, 'Bend, OR', `got ${JSON.stringify(j?.location)}`);
+});
+
 // ── fetchIcims: pagination (CI-isolated fake fetchImpl) ─────────────────────
 const mkCard = (id, title) => `<li class="iCIMS_JobCardItem"><div class="row">
 <div class="col-xs-6 header left"><span class="sr-only field-label">Location</span><span >US-TX-Austin</span></div>
