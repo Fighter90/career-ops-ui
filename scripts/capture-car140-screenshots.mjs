@@ -39,7 +39,7 @@
  *   images/ru/scan-ru.png  images/ru/pipeline-ru.png  images/ru/tracker-ru.png  images/ru/reports-ru.png
  */
 import { chromium } from 'playwright';
-import { mkdirSync, mkdtempSync, rmSync, writeFileSync } from 'node:fs';
+import { mkdirSync, mkdtempSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { fileURLToPath } from 'node:url';
 import path from 'node:path';
