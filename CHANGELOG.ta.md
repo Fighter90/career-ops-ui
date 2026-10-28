@@ -6,6 +6,32 @@
 
 ---
 
+## [1.261.1] — 2026-10-28
+
+**prod-QA client patch: `#/two-pager`-இல் ஒரு P1 crash திருத்தம், non-QWERTY விசைப்பலகைகளில் Ctrl+K வேலை செய்தல், 390px mobile அலை (docs-assistant overflow, map chip overlap, 39-route harness), CAR-137 நிறைவு (specific errors, v2empty ×5, hints ×13 + mode pages) மற்றும் CAR-140 எங்கும் உண்மையான v2 screenshots இறக்குதல்.**
+
+### சரி செய்யப்பட்டது
+
+- **two-pager TDZ (CAR-170, P1, #554)**: `Cannot access 'previewTimer' before initialization` — saved-tags editor ஒவ்வொரு மீட்டெடுக்கப்பட்ட chip-க்கும் construction-இன் போது `onChange`-ஐ இயக்கியது, அதே நேரத்தில் construction loop lexically `let previewTimer`-க்கு மேலே அமர்ந்திருந்தது, எனவே முழு `#/two-pager` render சிதைந்தது (h1 இல்லை, ×19 locales). scheduler + binding இப்போது loop-க்கு மேலே வாழ்கின்றன; behavioral test உண்மையான view module-ஐ இயக்குகிறது — திருத்தத்திற்கு முன் சரியான prod பிழை, அதன் பிறகு render ஆன பக்கம் — மேலும் ஒரு lexical-order drift gate.
+- **non-QWERTY விசைப்பலகைகளில் Ctrl+K (CAR-172, #554)**: இரு chord handlers-உம் `e.key`-ஐ மட்டுமே பொருத்தின — ரஷ்ய layout-இல் chord `key='л' code='KeyK'` ஆக வருகிறது, எதுவும் செய்யவில்லை. nav-v2.js மற்றும் app.js-இல் `e.code === 'KeyK'` மூலம் பொருத்தப்பட்டது; synthetic 'л'/KeyK chord உடன் உண்மையான browser-இல் மீண்டும் உருவாக்கப்பட்டது. CAR-122 contract மீண்டும் வலியுறுத்தப்பட்டது (குறிப்புகளைப் பார்க்கவும்).
+- **docs-assistant 390px overflow (CAR-172, #554)**: CAR-136 starter chips `.btn` ஆக இருந்தன (nowrap, `flex-shrink: 0`) — ஒரு உடையாத 418px item `#/docs-assistant`-ஐ 390px viewport-ஐத் தாண்டி 56px தள்ளியது; CAR-146 shrink pattern (v2-llm.css-இல், 800-LOC CSS gates தொடப்படவில்லை) அதை 0-ஆகக் கொண்டு வருகிறது.
+- **Map chip overlap @390 (#552)**: 390px viewport-இல் map meta chips CTA row-உடன் மேலுட்டின (map.css).
+- **CAR-137 — specific errors + v2empty ×5 (#550)**: ஐந்து பொதுவான பிழை fallbacks ('Error' / 'failed') specific actionable விசைகள் ஆயின — evaluate POST தோல்வி, terminal event இல்லாத auto-pipeline stream, scan→pipeline add, repost-clusters load, pipeline undo; கடைசி ஐந்து flat காலி நிலைகளும் (`#/reports`, `#/usage`, `#/portals`, `#/activity`, `#/dashboard`) CAR-124 v2empty pattern-இல் சேர்கின்றன (விளக்கம் + tag செய்யப்பட்ட aria-hidden உதாரணம் + pre-wired செயல்; 15 புதிய `v2empty.*` விசைகள், நான்கு இறந்த one-line விசைகள் நீக்கப்பட்டன) — எல்லாம் ×19 dicts, snapshot மீண்டும் உருவாக்கப்பட்டது.
+- **CAR-137 — HelpHint ×13 + mode-page kit (#550)**: சூழல் «?» hint இப்போது மீதமுள்ள ஒவ்வொரு பக்க H1-இலும் (pipeline, reports, dashboard, cv, portals, usage, activity, assessments, map, health, docs-assistant, settings) kit வழியாக 8 mode pages-இலும் அமர்கிறது (ஒவ்வொரு MODES cfg-உம் `hintKey` சுமக்கிறது, `HelpHint.title` வழியாக render ஆகிறது).
+
+### சேர்க்கப்பட்டது
+
+- **Mobile-390 harness (#552)**: seeded corpus உடன் 390×844-இல் ஒவ்வொரு SPA route மீதும் ஒரு Playwright sweep (31 canonical + 8 mode pages = 39 hashes) — per-route horizontal-overflow check (scrollWidth vs clientWidth, 1px சகிப்புத்தன்மை, மிக அகலமான குற்றவாளியைப் பெயரிடுகிறது) மற்றும் ஒரு CTA-hit check (எந்த sticky bar/drawer/FAB-உம் ஒரு primary CTA-ஐ மறைக்காது); opt-in, browser binary இல்லாதபோது நாகரீகமான skip, network-free.
+- **புதிய v2 captures ×48 (CAR-140 phase A, #551)**: seeded CI-isolated fixture-இலிருந்து உண்மையான v2-UI screenshots — dashboard ×19 + job-map ×19 (job-map-ta முதல் தோற்றம், job-map-vi புதியது) + scan/pipeline/tracker/reports × en/ru — README, help மற்றும் landing-ஐ ஊட்டுகின்றன.
+- **cvstart.org உண்மையான screenshots (CAR-140 phase B, #553)**: CAR-140 placeholder இடங்கள் மறைந்தன — landing உண்மையான v2 captures-ஐக் காட்டுகிறது (job-map showcase + screenshot rows, ×19 landing locales).
+- **CAR-137 hints (#550)**: 21 புதிய மொழிபெயர்க்கப்பட்ட விசைகள் ×19 (`help.hint.*` ×20 + mode-page `hintKey`s) — இப்போது ஒவ்வொரு பக்கமும் தன்னிடத்திலேயே தன்னை விளக்குகிறது.
+
+### குறிப்புகள்
+
+- **Ctrl+K contract (CAR-122)**: chord **command palette**-ஐத் திறக்கிறது — search box-ஐ நேரடியாக focus செய்வதில்லை; search palette-இலிருந்து focus பெறுகிறது. v1.261.0 QA checklist வரி «Ctrl+K фокусит поиск» மாற்றப்பட்டது; v1.261.1 QA prompt புதுக்கப்பட்ட check-ஐ சுமக்கிறது.
+- **CodeQL real-fixes (#547)**: 4 alerts மூடப்பட்டன (content.mjs literal-key iteration கட்டமைப்பு ரீதியாக்கப்பட்டது, lint sweep) — இந்த patch-க்கு முன் v1.261.0 main-இல் post-release ஆக இறங்கியது; முழுமைக்காக இங்கே பட்டியலிடப்பட்டது.
+- சோதனை தளம்: 6582 (+51); browser suite 171–172 pass / 0 fail / 1 opt-in skip; mobile-390 harness standalone ஆக இயங்குகிறது (`node tests/playwright-mobile-390.mjs`). எந்த ஸ்கேனர் மூலமும் தொடப்படவில்லை (பதிவேடு 121 = 116 EN + 5 RU · 116 அடாப்டர்கள்).
+
 ## [1.261.0] — 2026-10-28
 
 **முழு-மறுஆய்வு அலை முழுமையானது (எல்லா HIGH + MEDIUM கண்டறிதல்களும் இறங்கின), உரிமையாளர் தெரிவித்த மொழி-மாற்றத் திருத்தம், மதிப்பீட்டு-தரத் திருத்தங்கள், help ×18 fan-out, cvstart.org landing v2 — மேலும் அந்த அலையை ஆவணப்படுத்தும் 4 SDD/OpenSpec specs. ஒவ்வொரு திருத்தமும் சிவப்பு→பச்சை fix-forward மற்றும் GLM-5.3-Flash fresh-context மறுஆய்வு வழியாகவே இறங்கியது.**
