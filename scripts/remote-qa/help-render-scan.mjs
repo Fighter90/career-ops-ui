@@ -16,60 +16,75 @@
  */
 import { readFileSync, readdirSync } from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 import { stripGithubOnlyBlocks } from '../../server/lib/help-markdown.mjs';
+import { htmlToText } from '../../server/lib/html-to-text.mjs';
 import { loadMd } from '../../tests/helpers/ui-md.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const HELP_DIR = join(ROOT, 'docs', 'help');
 
-const KEYS = [...readFileSync(join(ROOT, 'public/js/lib/locales/i18n-dict.en.js'), 'utf8')
-  .matchAll(/^\s*'([a-zA-Z0-9_-]+(?:\.[a-zA-Z0-9_-]+)+)':/gm)].map((m) => m[1]);
-
-const md = loadMd();
-
-// Minimal DOM-enough extraction: the renderer emits well-formed tags by
-// construction, so regex-based removal of code/pre/script/style + tag
-// stripping is exact for key detection. A detached DOM clone has no layout,
-// so innerText falls back to textContent — tags contribute nothing, which
-// is precisely "remove every tag" (prod-regression.mjs's own fallback).
-
 // Minimal DOM-enough parsing: the rendered help is flat HTML (headings,
-// paragraphs, lists, tables, blockquotes). We only need element-boundary
-// awareness for code/pre/script/style removal and text extraction, so a
-// regex-based extractor over the renderer's own output is exact enough —
-// the renderer emits well-formed tags by construction.
-function stripAndExtract(html) {
-  const cleaned = html
-    .replace(/<(pre|script|style)\b[\s\S]*?<\/\1>/gi, '')
-    .replace(/<code\b[\s\S]*?<\/code>/gi, '');
-  return cleaned
-    .replace(/<[^>]+>/g, '') // detached clone ⇒ textContent: tags contribute nothing
-    .replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&')
-    .replace(/&quot;/g, '"').replace(/&#39;/g, "'");
+// paragraphs, lists, tables, blockquotes) and the renderer emits well-formed
+// tag pairs by construction, so splitting on the paired boundary tags is an
+// exact block removal — the even-index segments are the between-block text,
+// the odd indexes are block interiors. <pre>/<script>/<style> are dropped
+// first so a nested <code> inside them cannot leak its body, then standalone
+// <code> spans go. No hand-rolled entity handling anywhere: keys are ASCII
+// without &/</>, so entity decoding cannot change what the substring search
+// finds; the remaining tags are stripped by the scanner's own quote-aware
+// htmlToText pipeline, uncapped — a bundle's plain text is ~50–140 KB and the
+// gate must see all of it.
+const H1_BOUNDARY_RE = /<\/?h1\b[^>]*>/gi;
+const BLOCK_BOUNDARY_RE = /<\/?(?:pre|script|style)\b[^>]*>/gi;
+const CODE_BOUNDARY_RE = /<\/?code\b[^>]*>/gi;
+
+/**
+ * The checker's view of a rendered help page: plain text outside code/pre/
+ * script/style blocks. Shared with tests/help-rendered-keys.test.mjs — one
+ * implementation, two consumers.
+ * @param {string} html
+ * @param {{ dropH1?: boolean }} [opts] — the help view strips the doc's own
+ *   <h1> title before scanning; the CLI keeps it (its bundles carry none).
+ * @returns {string}
+ */
+export function renderedTextOutsideCode(html, { dropH1 = false } = {}) {
+  let body = html;
+  if (dropH1) body = body.split(H1_BOUNDARY_RE).filter((_, i) => i % 2 === 0).join('');
+  body = body.split(BLOCK_BOUNDARY_RE).filter((_, i) => i % 2 === 0).join('');
+  body = body.split(CODE_BOUNDARY_RE).filter((_, i) => i % 2 === 0).join('');
+  return htmlToText(body, { cap: Infinity });
 }
 
-const only = process.argv.slice(2);
-const files = readdirSync(HELP_DIR).filter((f) => f.endsWith('.md'))
-  .filter((f) => !only.length || only.some((l) => f.replace(/\.md$/, '').split('-')[0] === l));
+function main() {
+  const KEYS = [...readFileSync(join(ROOT, 'public/js/lib/locales/i18n-dict.en.js'), 'utf8')
+    .matchAll(/^\s*'([a-zA-Z0-9_-]+(?:\.[a-zA-Z0-9_-]+)+)':/gm)].map((m) => m[1]);
 
-let total = 0;
-for (const f of files.sort()) {
-  const raw = readFileSync(join(HELP_DIR, f), 'utf8');
-  const text = stripAndExtract(md(stripGithubOnlyBlocks(raw)));
-  const hits = [];
-  for (const k of KEYS) {
-    let idx = text.indexOf(k);
-    while (idx !== -1) {
-      hits.push({ key: k, ctx: text.slice(Math.max(0, idx - 60), idx + k.length + 60) });
-      total += 1;
-      idx = text.indexOf(k, idx + k.length);
+  const md = loadMd();
+  const only = process.argv.slice(2);
+  const files = readdirSync(HELP_DIR).filter((f) => f.endsWith('.md'))
+    .filter((f) => !only.length || only.some((l) => f.replace(/\.md$/, '').split('-')[0] === l));
+
+  let total = 0;
+  for (const f of files.sort()) {
+    const raw = readFileSync(join(HELP_DIR, f), 'utf8');
+    const text = renderedTextOutsideCode(md(stripGithubOnlyBlocks(raw)));
+    const hits = [];
+    for (const k of KEYS) {
+      let idx = text.indexOf(k);
+      while (idx !== -1) {
+        hits.push({ key: k, ctx: text.slice(Math.max(0, idx - 60), idx + k.length + 60) });
+        total += 1;
+        idx = text.indexOf(k, idx + k.length);
+      }
+    }
+    if (hits.length) {
+      console.log(`\n=== ${f}: ${hits.length} leak(s) ===`);
+      for (const h of hits) console.log(`  [${h.key}] …${h.ctx.replace(/\n/g, '⏎')}…`);
     }
   }
-  if (hits.length) {
-    console.log(`\n=== ${f}: ${hits.length} leak(s) ===`);
-    for (const h of hits) console.log(`  [${h.key}] …${h.ctx.replace(/\n/g, '⏎')}…`);
-  }
+  console.log(total ? `\nTOTAL: ${total} leaked key occurrence(s)` : '\nCLEAN: 0 leaked keys');
+  process.exit(total ? 1 : 0);
 }
-console.log(total ? `\nTOTAL: ${total} leaked key occurrence(s)` : '\nCLEAN: 0 leaked keys');
-process.exit(total ? 1 : 0);
+
+if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) main();

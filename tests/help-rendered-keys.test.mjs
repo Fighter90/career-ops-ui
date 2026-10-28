@@ -34,7 +34,9 @@ import { readFileSync, readdirSync } from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { stripGithubOnlyBlocks } from '../server/lib/help-markdown.mjs';
+import { htmlToText } from '../server/lib/html-to-text.mjs';
 import { loadMd } from './helpers/ui-md.mjs';
+import { renderedTextOutsideCode } from '../scripts/remote-qa/help-render-scan.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
 const HELP_DIR = resolve(__dirname, '..', 'docs', 'help');
@@ -46,27 +48,21 @@ const KEYS = [...readFileSync(resolve(__dirname, '..', 'public/js/lib/locales/i1
 const md = loadMd(); // self-probing: fails loudly if the api.js extraction mis-slices
 
 /**
- * Reproduce the checker's view of a rendered help page: element-free text
- * (a detached clone has no layout, so innerText falls back to textContent —
- * tags contribute nothing) after code/pre/script/style are removed, plus the
+ * Reproduce the checker's view of a rendered help page via the shared
+ * renderedTextOutsideCode() (one implementation with the CLI scan), plus the
  * TOC strings the help view derives from the <h2> headings.
  */
 function checkerText(markdown) {
   const html = md(stripGithubOnlyBlocks(markdown));
-  const body = html
-    .replace(/<h1>[\s\S]*?<\/h1>/gi, '') // views/help.js strips the doc's own title
-    .replace(/<(pre|script|style)\b[\s\S]*?<\/\1>/gi, '')
-    .replace(/<code\b[\s\S]*?<\/code>/gi, '');
-  // TOC: h2 textContent with the backtick/bold/italic fences dropped —
-  // exactly the `plain` transform views/help.js applies to TOC labels.
+  const body = renderedTextOutsideCode(html, { dropH1: true }); // views/help.js strips the doc's own title
+  // TOC: h2 text with the backtick/bold/italic fences dropped — exactly the
+  // `plain` transform views/help.js applies to TOC labels. Code-span text
+  // stays visible here (the TOC shows a cited key as plain text), so this is
+  // the one place a key inside a heading still leaks.
   const toc = [...html.matchAll(/<h2>([\s\S]*?)<\/h2>/gi)]
-    .map((m) => m[1].replace(/<[^>]+>/g, '').replace(/`([^`]+)`/g, '$1'))
+    .map((m) => htmlToText(m[1]).replace(/`([^`]+)`/g, '$1'))
     .join('\n');
-  return (body + '\n' + toc)
-    .replace(/<[^>]+>/g, '')
-    .replace(/&lt;/g, '<').replace(/&gt;/g, '>')
-    .replace(/&quot;/g, '"').replace(/&#39;/g, "'")
-    .replace(/&amp;/g, '&');
+  return body + '\n' + toc;
 }
 
 const files = readdirSync(HELP_DIR).filter((f) => f.endsWith('.md')).sort();
@@ -86,4 +82,29 @@ test('help-rendered-keys: every bundle cites keys only inside code spans (prod r
   }
   assert.equal(failures.length, 0,
     `raw i18n keys visible outside code spans (the prod raw-i18n-key finding):\n${failures.join('\n')}`);
+});
+
+// Positive control: the shared extractor must keep seeing the WHOLE text.
+// A bundle's plain text is ~50–140 KB — if the extraction ever regresses to a
+// capped pipeline (htmlToText's default DESCRIPTION_CAP is 4000) this fails
+// before the main gate silently stops scanning the tail of every bundle.
+test('help-rendered-keys: renderedTextOutsideCode removes code blocks structurally and is uncapped', () => {
+  const html = [
+    '<p>intro scan.title visible</p>',
+    '<pre><code>pre.scan.title.hidden</code></pre>',
+    '<code>code.scan.title.hidden</code>',
+    '<script>script.scan.title.hidden</script>',
+    '<h1>h1.scan.title.hidden</h1>',
+    `<p>${'x'.repeat(5000)}</p>`,
+    '<p>tail scan.title past-cap</p>',
+  ].join('');
+  const text = renderedTextOutsideCode(html);
+  assert.ok(text.includes('intro scan.title visible'), 'text outside code blocks kept');
+  assert.ok(text.includes('past-cap'), 'text past 4000 chars still scanned (uncapped pipeline)');
+  assert.ok(!text.includes('pre.scan.title'), '<pre> interior removed (nested <code> included)');
+  assert.ok(!text.includes('code.scan.title'), '<code> span removed');
+  assert.ok(!text.includes('script.scan.title'), '<script> block removed');
+  assert.ok(text.includes('h1.scan.title'), 'h1 kept by default (CLI view)');
+  assert.ok(!renderedTextOutsideCode(html, { dropH1: true }).includes('h1.scan.title'),
+    'dropH1 removes the title block (checker view)');
 });
