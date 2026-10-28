@@ -27,7 +27,7 @@
   animation: slide-in 200ms ease-out;
 }
 /* CAR-23 — variant fills AA with the inherited --paper text in BOTH themes. */
-.toast.error { background: var(--rausch-dark); }
+.toast.error { background: var(--rausch-fill); color: #fff; } /* v3 phase 2: the theme-INVARIANT danger red keeps literal WHITE text in both themes (5.80:1); the inherited --paper would go near-black in dark (3.01:1) — same pattern as the banner .btn-dark chip */
 .toast.success { background: var(--kazan); }
 /* CAR-130 — failed-POST field marking (the shared mode-page submit helper):
    the control the error focuses also gets a visible invalid state (WCAG
@@ -289,11 +289,16 @@
 }
 
 /* v1.46.0 — scan SSE error banner (#24); inline style promoted to a
-   token-based rule, same convention as .modal-msg above. */
+   token-based rule, same convention as .modal-msg above.
+   Phase-2 v3 — the --rose* hand-off closed on the cv3 danger pair:
+   ink on soft wash 6.03:1 light / 8.31:1 dark (was a light-only fallback). */
+:root {
+  --rose: var(--cv3-danger-soft); --rose-border: var(--cv3-danger); --rose-ink: var(--cv3-danger-ink);
+}
 .scan-error-banner {
-  background: var(--rose, #fdeaea);
-  border-color: var(--rose-border, #e0a0a0);
-  color: var(--rose-ink, #8a2b2b);
+  background: var(--rose);
+  border-color: var(--rose-border);
+  color: var(--rose-ink);
   margin-bottom: var(--space-3);
 }
 .scan-error-banner .btn { margin-inline-start: var(--space-3); }

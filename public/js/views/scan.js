@@ -430,6 +430,11 @@ Router.register('scan', async () => {
   // then the live poll + terminal `done` refill it with the new run's results.
   function resetResultsCache() {
     lastResults = { en: null, ru: null };
+    // #534 review f3 — re-arm the first-load flag: after a reset (a new scan
+    // wiping the cache) a LATE FAILED refresh must reach the CAR-93 error
+    // state (Retry) instead of silently leaving a skeleton/partial render
+    // on screen forever.
+    resultsEverLoaded = false;
     if (window.Countries && window.Countries.resetCache) window.Countries.resetCache(); // FULL-R5
     SR.render();
   }
@@ -638,7 +643,17 @@ Router.register('scan', async () => {
   // CAR-112 — the first paint shows shimmer rows instead of an empty table
   // while GET /api/scan-results is in flight; SR.render() replaces them when
   // the data lands (or the CAR-93 error state on a failed first load).
-  resultsEl.replaceChildren(window.Skeleton.block(6, t('common.loading', 'Loading…')));
+  // #534 review f1 — this tail also runs on every same-route re-render
+  // (a language switch: I18n.onChange → Router.render()). When module state
+  // already holds a loaded corpus, repaint it SYNCHRONOUSLY here (labels,
+  // chips and badges re-render in the new locale) and let refreshResults()
+  // update it in the background — an unconditional skeleton would sit over
+  // a full cache for the whole round-trip on a data-heavy instance.
+  if (resultsEverLoaded) {
+    SR.render();
+  } else {
+    resultsEl.replaceChildren(window.Skeleton.block(6, t('common.loading', 'Loading…')));
+  }
   // load results on first render
   refreshResults();
 
