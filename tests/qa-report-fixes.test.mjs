@@ -1073,13 +1073,15 @@ test('U-1 (v1.58.21): #/cv has a proper page-header H1 + subtitle (no `.cv-bread
   // Pre-fix chip class is gone:
   assert.ok(!/className:\s*'page-title cv-breadcrumb'/.test(cv),
     "'.cv-breadcrumb' chip class must be removed");
-  // New H1 + subtitle pair:
-  assert.match(cv, /c\('h1',\s*\{\s*className:\s*'page-title'\s*\},\s*t\('cv\.title'\)\)/,
-    "cv.js must render <h1 class=\"page-title\">{t('cv.title')}</h1>");
+  // New H1 + subtitle pair — the H1 carries the CAR-137 `?` affordance
+  // (HelpHint.title), the subtitle paragraph is unchanged:
+  assert.match(cv, /HelpHint\.title\(\s*t\('cv\.title'\)\s*,\s*'help\.hint\.cvEditor'\)/,
+    "cv.js must render its page H1 via HelpHint.title({t('cv.title')}, 'help.hint.cvEditor')");
   assert.match(cv, /c\('p',\s*\{\s*className:\s*'page-subtitle'\s*\},\s*t\('cv\.subtitle'\)\)/,
     "cv.js must render <p class=\"page-subtitle\">{t('cv.subtitle')}</p>");
-  // Single-H1 invariant still holds — cv.js has exactly one h1 occurrence in the header.
-  const h1Count = (cv.match(/c\('h1'/g) || []).length;
+  // Single-H1 invariant still holds — HelpHint.title is the only h1 builder
+  // in cv.js (it returns exactly one <h1 class="page-title">).
+  const h1Count = (cv.match(/HelpHint\.title\(/g) || []).length;
   assert.equal(h1Count, 1, `cv.js must declare exactly one <h1>, got ${h1Count}`);
 });
 

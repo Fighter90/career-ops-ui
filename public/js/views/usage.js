@@ -1,4 +1,4 @@
-/* global Router, API, UI, I18n */
+/* global Router, API, UI, I18n, HelpHint */
 /**
  * #/usage — LLM usage & estimated cost (v1.105.0).
  *
@@ -16,7 +16,7 @@ Router.register('usage', async () => {
   const money = (n) => '$' + (Number(n) || 0).toFixed(Number(n) < 1 ? 4 : 2);
 
   const root = c('div');
-  root.appendChild(c('h1', { className: 'page-title' }, t('usage.title', 'AI usage & cost')));
+  root.appendChild(HelpHint.title(t('usage.title', 'AI usage & cost'), 'help.hint.usage'));
   root.appendChild(c('p', { className: 'page-subtitle' },
     t('usage.subtitle', 'Tokens spent on live AI generations, per provider. The USD figure is an estimate from an editable price table — not a bill.')));
 

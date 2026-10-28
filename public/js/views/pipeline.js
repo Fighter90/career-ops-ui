@@ -1,4 +1,4 @@
-/* global Router, API, UI, I18n, PipelineView */
+/* global Router, API, UI, I18n, HelpHint, PipelineView */
 // TODO: split by concern — the v2 grouped view (CAR-116) grew this file
 // past the 800-LOC hard target (the flat-view legacy block is pinned
 // in place by the pipeline-view test contracts). A follow-up should
@@ -1104,7 +1104,7 @@ Router.register('pipeline', async () => {
   return c('div', null, [
     c('header', { className: 'page-header' }, [
       c('div', null, [
-        c('h1', { className: 'page-title' }, t('pipe.title')),
+        HelpHint.title(t('pipe.title'), 'help.hint.pipeline'),
         c('p', { className: 'page-subtitle' }, t('pipe.subtitle')),
       ]),
       c('div', { className: 'flex gap-3' }, [

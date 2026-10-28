@@ -1,4 +1,4 @@
-/* global Router, API, UI, I18n, ReportOps */
+/* global Router, API, UI, I18n, HelpHint, ReportOps */
 // The rep2.* keys below (CAR-118 #/reports v2) are translated in all 19
 // locale dicts (public/js/lib/locales/i18n-dict.<lang>.js) and enforced by
 // tests/i18n-coverage.test.mjs. The old rep.thr45/40/35 keys are no longer
@@ -47,7 +47,7 @@ Router.register('reports', async (params) => {
     return c('div', null, [
       c('header', { className: 'page-header' }, [
         c('div', null, [
-          c('h1', { className: 'page-title' }, t('rep.title')),
+          HelpHint.title(t('rep.title'), 'help.hint.reports'),
           // QA BUG-010 — the populated list view has a subtitle; the
           // empty state was the only page missing the descriptive line.
           c('p', { className: 'page-subtitle' },
@@ -543,7 +543,7 @@ Router.register('reports', async (params) => {
   return c('div', null, [
     c('header', { className: 'page-header' }, [
       c('div', null, [
-        c('h1', { className: 'page-title' }, t('rep.title')),
+        HelpHint.title(t('rep.title'), 'help.hint.reports'),
         c('p', { className: 'page-subtitle' }, `${reports.length} ${t('rep.inDir')} reports/`),
       ]),
       countEl,

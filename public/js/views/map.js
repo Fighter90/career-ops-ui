@@ -1,4 +1,4 @@
-/* global Router, API, UI, I18n, L, MapPrefs, PostingUrlKey */
+/* global Router, API, UI, I18n, HelpHint, L, MapPrefs, PostingUrlKey */
 /**
  * #/map — scan results, pending pipeline and tracked applications on an
  * OpenStreetMap map.
@@ -219,7 +219,7 @@
         c('div', null, [
           c('header', { className: 'page-header' }, [
             c('div', null, [
-              c('h1', { className: 'page-title' }, t('map.title', 'Job map')),
+              HelpHint.title(t('map.title', 'Job map'), 'help.hint.map'),
             ]),
           ]),
           window.Skeleton.block(6, t('common.loading', 'Loading…')),
@@ -397,7 +397,7 @@
     const page = c('div', { className: 'job-map-page' }, [
       c('header', { className: 'page-header' }, [
         c('div', null, [
-          c('h1', { className: 'page-title' }, t('map.title', 'Job map')),
+          HelpHint.title(t('map.title', 'Job map'), 'help.hint.map'),
           status,
           noLocBtn,
         ]),

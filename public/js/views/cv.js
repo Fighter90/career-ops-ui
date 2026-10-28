@@ -1,4 +1,4 @@
-/* global Router, API, UI, I18n */
+/* global Router, API, UI, I18n, HelpHint */
 // CAR-20 (v1.243.0) — module-level dirty state, shared by every render
 // of this route (a classic script executes once, so these bindings
 // outlive individual Router.render() calls):
@@ -219,7 +219,7 @@ Router.register('cv', async () => {
         // invariant still holds (F-V54-A: cvMd shifts the user's own
         // `# Name` heading to <h2>, so this stays the page's only H1).
         // We just stop styling it as a chip.
-        c('h1', { className: 'page-title' }, t('cv.title')),
+        HelpHint.title(t('cv.title'), 'help.hint.cvEditor'),
         c('p', { className: 'page-subtitle' }, t('cv.subtitle')),
       ]),
       c('div', { className: 'flex gap-3' }, [

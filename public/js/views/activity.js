@@ -1,4 +1,4 @@
-/* global Router, API, UI, I18n */
+/* global Router, API, UI, I18n, HelpHint */
 // CAR-137 i18n: the v2empty.activity.* empty-state strings live in all 19
 // locale dicts (the ×19 fan-out landed in the same change).
 Router.register('activity', async () => {
@@ -188,7 +188,7 @@ Router.register('activity', async () => {
   return c('div', null, [
     c('header', { className: 'page-header' }, [
       c('div', null, [
-        c('h1', { className: 'page-title' }, t('activity.title')),
+        HelpHint.title(t('activity.title'), 'help.hint.activity'),
         c('p', { className: 'page-subtitle' }, t('activity.subtitle')),
       ]),
       c('div', { className: 'flex gap-3' }, [
