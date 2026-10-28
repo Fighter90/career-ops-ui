@@ -86,7 +86,7 @@ Router.register('mock-interview', async () => {
       style: {
         padding: '12px 14px', maxWidth: '90%', alignSelf: mine ? 'flex-end' : 'flex-start',
         background: mine ? 'var(--panel-2, #eef1f6)' : 'var(--panel, #fff)',
-        borderLeft: mine ? 'none' : '3px solid var(--accent, #4c8bf5)',
+        borderInlineStart: mine ? 'none' : '3px solid var(--accent, #4c8bf5)',
       },
     }, [
       c('div', { style: { fontSize: '11px', fontWeight: '700', color: 'var(--foggy)', margin: '0 0 4px', textTransform: 'uppercase', letterSpacing: '0.04em' } }, who),

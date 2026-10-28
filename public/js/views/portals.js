@@ -260,7 +260,7 @@ Router.register('portals', async () => {
 
   // ── Health check ────────────────────────────────────────────────────
   const checkBtn = c('button', { className: 'btn btn-primary', type: 'button' }, t('portals.check', 'Check portal health'));
-  const summary = c('span', { style: { marginLeft: '12px', color: 'var(--foggy)', fontSize: '13px' } });
+  const summary = c('span', { style: { marginInlineStart: '12px', color: 'var(--foggy)', fontSize: '13px' } });
   root.appendChild(c('div', { style: { display: 'flex', alignItems: 'center', flexWrap: 'wrap', margin: '16px 0' } }, [checkBtn, summary]));
 
   // ── CAR-121 · search + enabled-state filter (debounced) ─────────────

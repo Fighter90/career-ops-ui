@@ -112,7 +112,7 @@ Router.register('assessments', async () => {
     if (a.threshold != null) bits.push(`/ ${a.threshold}%`);
     if (bits.length) meta.appendChild(document.createTextNode(bits.join(' ')));
     if (a.staleNote) {
-      meta.appendChild(c('span', { className: 'badge badge-warn', style: { marginLeft: bits.length ? '8px' : '0' } },
+      meta.appendChild(c('span', { className: 'badge badge-warn', style: { marginInlineStart: bits.length ? '8px' : '0' } },
         `${t('asmt.stale', 'stale')}: ${String(a.staleNote)}`));
     }
     return c('li', { className: 'card', style: { padding: '8px 12px', display: 'flex', flexDirection: 'column', gap: '2px' } },

@@ -62,9 +62,13 @@ test('score pills are directionally isolated (CAR-58: "1.5 / 5" must not flip in
 
 test('reports: threshold band cells are LTR-isolated ("≥ 4.5" / "< 3.5" must not mirror)', () => {
   const src = read('public', 'js', 'views', 'reports.js');
-  assert.match(src, /tdNum = \{ padding: '4px 8px', fontWeight: 600, direction: 'ltr', unicodeBidi: 'isolate' \}/);
-  // All four band cells use the isolated style.
-  assert.equal(src.match(/\{ style: tdNum \}/g)?.length, 4, 'four threshold cells use tdNum');
+  // v1.261.x RTL deep sweep: the isolation lives on an inner span (ltrNum),
+  // NOT on the <td> — a cell with its own direction re-anchors
+  // text-align: start to the physical left, breaking column alignment in RTL.
+  assert.match(src, /tdNum = \{ padding: '4px 8px', fontWeight: 600 \}/);
+  assert.match(src, /ltrNum = \(s\) => c\('span', \{ style: \{ direction: 'ltr', unicodeBidi: 'isolate' \} \}, s\)/);
+  // All four band cells use the isolated wrapper.
+  assert.equal(src.match(/\{ style: tdNum \}, ltrNum\(/g)?.length, 4, 'four threshold cells use tdNum + ltrNum');
   for (const band of ["'≥ 4.5'", "'4.0 – 4.4'", "'3.5 – 3.9'", "'< 3.5'"]) {
     assert.ok(src.includes(band), `band ${band} still present`);
   }

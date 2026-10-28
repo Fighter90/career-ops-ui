@@ -490,7 +490,7 @@ Router.register('dashboard', async () => {
             marginTop: 'var(--space-3)',
             maxWidth: '100%',
             whiteSpace: 'normal',
-            textAlign: 'left',
+            textAlign: 'start',
           },
         }, fmtNum(fc.evaluated) + ' ' + t('dash.funnel.cta', 'evaluated · not applied yet — review the top-scored') + ' →')
       : null;
@@ -811,7 +811,7 @@ function systemStatusCard(h, t) {
       tag(t('dash.system.required', 'Required'), `${reqOk}/${req.length}`, reqOk === req.length),
       tag(t('dash.system.warnings', 'Warnings'), String(h.warnings || 0), (h.warnings || 0) === 0),
       tag(t('dash.system.liveEvals', 'Live evals'), liveReady ? t('dash.system.ready', 'ready') : t('dash.system.manual', 'manual'), liveReady),
-      c('div', { style: { marginLeft: 'auto' } },
+      c('div', { style: { marginInlineStart: 'auto' } },
         c('button', {
           className: 'btn btn-ghost btn-sm',
           onClick: () => window.Router.go('/health'),

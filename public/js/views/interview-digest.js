@@ -95,7 +95,7 @@ Router.register('interview-digest', async () => {
         const cl = c('div');
         for (const rc of recur) {
           if (!rc) continue;
-          cl.appendChild(c('span', { className: 'badge badge-info', style: { marginRight: '6px' } },
+          cl.appendChild(c('span', { className: 'badge badge-info', style: { marginInlineEnd: '6px' } },
             `${String(rc.tag || '')} (${rc.count || 0}×)`));
         }
         out.appendChild(cl);
