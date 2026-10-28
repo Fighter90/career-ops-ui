@@ -13,6 +13,9 @@
  * /api/evaluate cascade, both gemini-eval.mjs subprocess sites, the
  * auto-pipeline evaluation) passes `timeoutMs: evalTimeoutMs(<locale>)`,
  * never the bare constant. mode/deep/smoke paths are out of scope.
+ * CAR-174 extends the same contract to the OUTPUT-TOKEN budget: every
+ * in-process site passes `maxTokens: evalMaxTokens(<locale>)` (16384 base,
+ * 32768 for the token-dense locales).
  *
  * CI-isolated: mkdtemp CAREER_OPS_ROOT with cv.md; no network, no keys.
  */
@@ -67,12 +70,12 @@ test('evalTimeoutMs is a pure function of the lang string', () => {
   assert.equal(evalTimeoutMs('en'), evalTimeoutMs('en'));
 });
 
-test('source-static: the merged /api/evaluate cascade passes evalTimeoutMs(lang)', () => {
+test('source-static: the merged /api/evaluate cascade carries both locale-aware knobs (CAR-147 timeout, CAR-174 tokens)', () => {
   const llm = readFileSync(LLM_SRC, 'utf8');
-  assert.equal((llm.match(/maxTokens: EVAL_MAX_TOKENS/g) || []).length, 1);
-  assert.match(llm, /maxTokens: EVAL_MAX_TOKENS,\s*timeoutMs: evalTimeoutMs\(lang\),/);
-  // and never reverts to the bare constant at that site
-  assert.doesNotMatch(llm, /maxTokens: EVAL_MAX_TOKENS,\s*timeoutMs: EVAL_TIMEOUT_MS,/);
+  assert.equal((llm.match(/maxTokens: evalMaxTokens\(lang\)/g) || []).length, 1);
+  assert.match(llm, /maxTokens: evalMaxTokens\(lang\),\s*timeoutMs: evalTimeoutMs\(lang\),/);
+  // and never reverts to a bare constant at that site (base or dense value)
+  assert.doesNotMatch(llm, /maxTokens: (?:EVAL_MAX_TOKENS|16384|32768)\b/);
 });
 
 test('source-static: the evaluate gemini-eval subprocess passes evalTimeoutMs(lang)', () => {
@@ -80,10 +83,12 @@ test('source-static: the evaluate gemini-eval subprocess passes evalTimeoutMs(la
   assert.match(llm, /runNodeScript\('gemini-eval\.mjs', args, \{ timeoutMs: evalTimeoutMs\(lang\) \}\)/);
 });
 
-test('source-static: the auto-pipeline evaluation (cascade + subprocess) passes evalTimeoutMs(lang)', () => {
+test('source-static: the auto-pipeline evaluation (cascade + subprocess) carries the locale-aware knobs', () => {
   const ap = readFileSync(AUTO_SRC, 'utf8');
-  assert.match(ap, /maxTokens: EVAL_MAX_TOKENS, timeoutMs: evalTimeoutMs\(lang\), signal: ctrl\.signal/);
+  assert.match(ap, /maxTokens: evalMaxTokens\(lang\), timeoutMs: evalTimeoutMs\(lang\), signal: ctrl\.signal/);
   assert.match(ap, /timeoutMs: evalTimeoutMs\(lang\), signal: ctrl\.signal \}\)/);
   // the cloned 300_000 wall is gone — a future call site must use evalTimeoutMs
   assert.doesNotMatch(ap, /const EVAL_TIMEOUT_MS = 300_000/);
+  // and never a bare maxTokens constant/literal at the call site (CAR-174)
+  assert.doesNotMatch(ap, /maxTokens: (?:EVAL_MAX_TOKENS|16384|32768)\b/);
 });

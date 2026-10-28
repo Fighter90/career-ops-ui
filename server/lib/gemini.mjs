@@ -34,7 +34,9 @@ export async function runGemini(prompt, opts = {}) {
   const apiKey = opts.apiKey || envKey('GEMINI_API_KEY');
   if (!apiKey) return { markdown: '', usage: null, error: 'Gemini key not set' };
   const model = opts.model || envKey('GEMINI_MODEL') || 'gemini-3.6-flash';
-  const maxTokens = Math.min(Math.max(opts.maxTokens || 8192, 256), 16384);
+  // The clamp is a sanity ceiling, not an API limit; 32768 so the token-dense
+  // locales' evaluate budget (evalMaxTokens, CAR-174) survives the forwarding.
+  const maxTokens = Math.min(Math.max(opts.maxTokens || 8192, 256), 32768);
   const timeoutMs = opts.timeoutMs || 180_000;
   const fetchImpl = opts.fetchImpl || fetch;
   const url = `${GEMINI_BASE}/${encodeURIComponent(model)}:generateContent`;

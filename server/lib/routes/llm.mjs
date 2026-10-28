@@ -55,6 +55,19 @@ export function evalTimeoutMs(lang) {
   const base = String(lang || 'en').trim().toLowerCase().split('-')[0];
   return TOKEN_DENSE_EVAL_LOCALES.has(base) ? EVAL_TIMEOUT_TOKEN_DENSE_MS : EVAL_TIMEOUT_MS;
 }
+// CAR-174 — the output-token ceiling is locale-aware for the same reason the
+// wall-clock above is (remote-QA v1.261.1: a ta evaluation ran 268 s and came
+// back 32 032 characters cut at the 16384 ceiling — Block B–G and the
+// SCORE_SUMMARY missing; ta volume history 11k → 17k → 32k chars). CAR-147
+// lifted the clock; this lifts the budget the ta run actually hit. EN and
+// unknown locales keep EVAL_MAX_TOKENS; token-dense locales get 32768. Pure
+// function of the locale string; the provider SDKs' clamps were raised to the
+// same ceiling so the value survives the forwarding (anthropic/openai/gemini).
+const EVAL_MAX_TOKENS_TOKEN_DENSE = 32768;
+export function evalMaxTokens(lang) {
+  const base = String(lang || 'en').trim().toLowerCase().split('-')[0];
+  return TOKEN_DENSE_EVAL_LOCALES.has(base) ? EVAL_MAX_TOKENS_TOKEN_DENSE : EVAL_MAX_TOKENS;
+}
 
 /** Shape warnings for an evaluation, with a cut-off answer named as such. */
 export function evaluationWarnings(r) {
@@ -267,7 +280,7 @@ export function registerLlmRoutes(app) {
         });
       }
       const r = await runActiveProvider(fullPrompt, {
-        maxTokens: EVAL_MAX_TOKENS,
+        maxTokens: evalMaxTokens(lang),
         timeoutMs: evalTimeoutMs(lang),
         cachePrefix,
         signal: controller.signal,

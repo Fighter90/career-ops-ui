@@ -92,7 +92,7 @@ test('runAnthropic: 5xx → error', async () => {
   assert.match(r.error, /overloaded|HTTP 5/);
 });
 
-test('runAnthropic: clamps maxTokens into [256, 16384]', async () => {
+test('runAnthropic: clamps maxTokens into [256, 32768] (CAR-174 ceiling)', async () => {
   let body;
   const fakeFetch = async (_url, opts) => {
     body = JSON.parse(opts.body);
@@ -101,7 +101,7 @@ test('runAnthropic: clamps maxTokens into [256, 16384]', async () => {
   await runAnthropic('hi', { apiKey: 'sk', fetchImpl: fakeFetch, maxTokens: 10 });
   assert.equal(body.max_tokens, 256, 'lower clamp');
   await runAnthropic('hi', { apiKey: 'sk', fetchImpl: fakeFetch, maxTokens: 99999 });
-  assert.equal(body.max_tokens, 16384, 'upper clamp');
+  assert.equal(body.max_tokens, 32768, 'upper clamp');
 });
 
 test('runAnthropic: timeout returns "timeout" error', async () => {
