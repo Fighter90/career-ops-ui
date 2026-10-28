@@ -75,9 +75,19 @@ Router.register('two-pager', async () => {
   // FULL-M6 — chip add/remove fires no native input event, so the debounced
   // live preview never re-ran after one (type → pause past the debounce →
   // press Enter: the preview stayed on the pre-chip content until the next
-  // keystroke or AI fill). The editors call schedulePreviewRender (hoisted
-  // below) on every mutation, so chip edits ride the SAME 150 ms debounce
-  // as typing.
+  // keystroke or AI fill). The editors call schedulePreviewRender on every
+  // mutation, so chip edits ride the SAME 150 ms debounce as typing.
+  // prod-QA (CAR-170) — tagEditor notifies during CONSTRUCTION for every
+  // saved chip, so the scheduler — and the `previewTimer` its body reads —
+  // must exist before the editors are built: hoisting the FUNCTION did not
+  // hoist the let-BINDING, and a saved two-pager with at least one tag
+  // threw `ReferenceError: Cannot access 'previewTimer' before
+  // initialization`, killing the whole route render.
+  let previewTimer = null;
+  function schedulePreviewRender() {
+    if (previewTimer) clearTimeout(previewTimer);
+    previewTimer = setTimeout(renderLivePreview, 150);
+  }
   const editors = {};
   const getters = {};
   const grid = c('div', { style: { display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))', gap: '16px', margin: '0 0 18px' } });
@@ -144,13 +154,8 @@ Router.register('two-pager', async () => {
   // Review #10 — programmatic .value (AI fill) fires no input event, so
   // the fill path re-renders explicitly; typing debounces at ~150 ms so a
   // full buildMarkdown+UI.md pass does not run on every keystroke.
-  // FULL-M6 — the debounce is exposed as a named scheduler so chip add/
-  // remove (no native input event) rides the same path.
-  let previewTimer = null;
-  function schedulePreviewRender() {
-    if (previewTimer) clearTimeout(previewTimer);
-    previewTimer = setTimeout(renderLivePreview, 150);
-  }
+  // (The scheduler is declared above the editor construction — the editors
+  // fire it while being built.)
   root.addEventListener('input', schedulePreviewRender);
   renderLivePreview();
 

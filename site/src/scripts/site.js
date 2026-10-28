@@ -93,20 +93,56 @@ for (const widget of document.querySelectorAll('[data-install]')) {
 }
 
 /* ------------------------------------------------------------ copy buttons */
+/* CAR-141: the async Clipboard API is refused in headless browsers,
+ * permission-denied contexts and insecure origins — the old early-return
+ * left the click SILENT there (the "копирование без обратной связи"
+ * finding). A rejection now falls back to the hidden-textarea + execCommand
+ * path, and both success paths share one announce (icon swap + aria-live).
+ * On a genuine double failure nothing claims success — a false "Copied"
+ * with an empty clipboard is worse than silence. */
 const live = document.getElementById('copy-live');
-for (const btn of document.querySelectorAll('[data-copy]')) {
-  btn.addEventListener('click', async () => {
-    try {
-      await navigator.clipboard.writeText(btn.dataset.copy);
-    } catch {
-      return;
-    }
-    btn.classList.add('copied'); // icon swap is class-driven in global.css
-    if (live) live.textContent = btn.dataset.copiedLabel || 'Copied';
+const revertTimers = new WeakMap();
+const showCopied = (btn) => {
+  btn.classList.add('copied'); // icon swap is class-driven in global.css
+  if (live) live.textContent = btn.dataset.copiedLabel || 'Copied';
+  clearTimeout(revertTimers.get(btn)); // re-click resets, never stacks
+  revertTimers.set(
+    btn,
     setTimeout(() => {
       btn.classList.remove('copied');
       if (live) live.textContent = '';
-    }, 1500);
+    }, 1500)
+  );
+};
+// Deprecated, but the only clipboard path left where the async API is
+// unavailable; it reports whether the copy actually happened.
+const legacyCopy = (text) => {
+  const ta = document.createElement('textarea');
+  ta.value = text;
+  ta.setAttribute('readonly', '');
+  ta.style.position = 'absolute';
+  ta.style.left = '-9999px';
+  document.body.appendChild(ta);
+  ta.select();
+  let ok = false;
+  try {
+    ok = Boolean(document.execCommand && document.execCommand('copy'));
+  } catch {
+    ok = false;
+  }
+  ta.remove();
+  return ok;
+};
+for (const btn of document.querySelectorAll('[data-copy]')) {
+  btn.addEventListener('click', async () => {
+    let ok = false;
+    try {
+      await navigator.clipboard.writeText(btn.dataset.copy);
+      ok = true;
+    } catch {
+      ok = legacyCopy(btn.dataset.copy);
+    }
+    if (ok) showCopied(btn);
   });
 }
 

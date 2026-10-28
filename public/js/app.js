@@ -482,7 +482,9 @@ I18n.onChange(() => {
 
   // ctrl+k
   document.addEventListener('keydown', (e) => {
-    if ((e.ctrlKey || e.metaKey) && e.key === 'k') {
+    // e.code keeps the chord alive on non-QWERTY layouts (RU: key='л',
+    // code='KeyK') — nav-v2's palette handler carries the same guard.
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K' || e.code === 'KeyK')) {
       e.preventDefault();
       search.focus();
     }

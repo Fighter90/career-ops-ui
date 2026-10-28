@@ -1109,7 +1109,7 @@ test('footer hint reads "Enter — <verb>" in every locale (no ⌘K/Ctrl+K)', ()
   assert.doesNotMatch(app, /isMac\s*\?\s*'⌘K'\s*:\s*'Ctrl\+K'/,
     'no ⌘K/Ctrl+K branch should remain for the footer hint');
   // The Cmd/Ctrl+K focus keybinding itself is intentionally kept (a bonus).
-  assert.match(app, /\(\s*e\.ctrlKey\s*\|\|\s*e\.metaKey\s*\)\s*&&\s*e\.key === 'k'/,
+  assert.match(app, /\(\s*e\.ctrlKey\s*\|\|\s*e\.metaKey\s*\)\s*&&\s*\(e\.key === 'k' \|\| e\.key === 'K' \|\| e\.code === 'KeyK'\)/,
     'Cmd/Ctrl+K focus keybinding must remain');
 });
 
