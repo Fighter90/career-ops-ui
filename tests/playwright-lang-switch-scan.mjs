@@ -82,13 +82,14 @@ after(async () => {
     const consoleErrors = [];
     page.on('pageerror', (e) => consoleErrors.push(String(e).slice(0, 120)));
     // The owner-visible blank came from the /api/scan-results round-trip
-    // being SLOW on a data-heavy instance. Emulate it: every refetch waits
-    // 3 s, so the OLD render-local-state code sits blank past the assertion
-    // window while the module-state fix paints instantly.
+    // being SLOW on a data-heavy instance. Emulate it (#534 review f2: the
+    // harness must DISCRIMINATE a synchronous repaint from a fast refetch —
+    // hold every POST-SWITCH refetch for 10 s, far past the ~4.7 s assertion
+    // window; the FIRST load stays fast so the seeded corpus paints).
     let resultsGets = 0;
     await page.route('**/api/scan-results*', async (route) => {
       resultsGets++;
-      await new Promise((r) => setTimeout(r, 4000));
+      if (resultsGets > 1) await new Promise((r) => setTimeout(r, 10000));
       await route.continue();
     });
     await page.goto(`${baseUrl}/#/scan`, { waitUntil: 'domcontentloaded' });
@@ -103,16 +104,21 @@ after(async () => {
     await page.waitForTimeout(1500);
 
     const text = await page.evaluate(() => document.body.innerText);
-    // THE discriminator: while the (3 s-delayed) refetch is still in flight,
-    // module-level state must have ALREADY painted the ru results area.
-    // The old render()-local state sat blank here — red.
+    // THE discriminator (findings 1+2): while the (10 s-held) refetch is in
+    // flight, the render tail must have ALREADY repainted the results area
+    // from module state — ru labels in the summary badges AND no loading
+    // skeleton over the live cache. The pre-fix tail painted the skeleton
+    // here and sat on it until the refetch landed.
+    const resultsText = await page.evaluate(() => (document.getElementById('scan-results') || {}).innerText || '');
     await page.waitForFunction(
       () => /подходящие|СТЕК|Подходящие/.test((document.getElementById('scan-results') || {}).innerText || ''),
       null,
       { timeout: 3200 },
     ).catch(() => {
-      throw new Error(`results area must paint from module state while the 4 s refetch is in flight — the old render()-local state sat blank here. resultsHead: ${JSON.stringify((page.evaluate(() => (document.getElementById('scan-results') || {}).innerText || '').then ? '' : ''))}`);
+      throw new Error(`#534 f1: results area must repaint synchronously from module state while the 10 s refetch is in flight — got: ${JSON.stringify(resultsText.slice(0, 160))}`);
     });
+    assert.doesNotMatch(resultsText, /Загрузка|Loading/,
+      `#534 f1: the CAR-112 skeleton must not sit over the cached corpus during the held refetch — got: ${JSON.stringify(resultsText.slice(0, 160))}`);
     const facts = await page.evaluate(async () => {
       const api = await fetch('/api/scan-results').then((r) => r.json());
       return {
