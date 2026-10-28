@@ -191,12 +191,12 @@ function collectDefined() {
  * New undefined tokens FAIL; entries whose token became defined FAIL (remove).
  *
  * v3 phase 2 closed the COLOR hand-offs: --bg-subtle, --warn-* (app.css) and
- * --rose* (overlays.css) resolve to the cv3 semantic values. --ease-out stays
- * (an easing token, owned with the v2-llm motion pass).
+ * --rose* (overlays.css) resolve to the cv3 semantic values. v3 phase 3 closed
+ * the last one: --ease-out is declared in the app.css token block (the bare
+ * cv3 motion curve) and every animation easing consumes it. The list is EMPTY
+ * by design — a new hand-off must carry a reason.
  */
-const TOKEN_HANDOFF = [
-  { token: 'ease-out', files: ['v2-llm.css'], why: 'hand-off: llm2run slide easing read with an ease-in-out fallback; naming a token whose shipped value is ease-in-out needs the v2-llm owner' },
-];
+const TOKEN_HANDOFF = [];
 
 test('(b) every var(--x) referenced in any stylesheet resolves (token block or runtime)', () => {
   const ref = collectReferenced();

@@ -102,11 +102,9 @@
   --sidebar-w: 256px;
   --topbar-h: 80px;
   --transition: 180ms cubic-bezier(.2, .8, .2, 1);
-  /* D-4 (v1.171.0) — type scale (base = Inter 15px) and z-index layers. The
-     ramp names the sizes the components already use so they can migrate
-     incrementally; the z-index layers name every stacking context (values
-     preserved, so the stacking order is byte-identical). z-index is
-     theme-invariant → defined here only. */
+  --ease-out: cubic-bezier(.2, 0, 0, 1); /* v3 phase 3 — the bare cv3 house curve; --cv3-motion couples it with 120ms */
+  /* D-4 (v1.171.0) — type scale (base = Inter 15px) + z-index layers: the ramp
+     names existing sizes; z-index is theme-invariant → defined here only. */
   --font-size-xs: 11px;
   --font-size-sm: 12px;
   --font-size-md: 13px;
@@ -160,6 +158,7 @@
   /* CAR-123 R3 hand-offs closed on the cv3 sheet (phase 2): the subtle wash and
      the .brief-warning warn pair resolve theme-aware via the cv3 soft/ink values. */
   --bg-subtle: var(--cv3-surface-2);
+  --danger-soft: var(--cv3-danger-soft); /* v3 phase 3 — the danger wash (ink side: --rausch-text) */
   --warn-bg: var(--cv3-warn-soft); --warn-border: var(--cv3-warn); --warn-fg: var(--cv3-warn-ink);
   /* Phase-2 v3 — score-band chip pairs for components.css score-* / v2-reports
      score-good (ink on its wash ≥4.5:1 in both themes; the sheet keeps the full A–G set). */
@@ -502,20 +501,19 @@ body.sidebar-open .sidebar-backdrop { display: block; }
   align-items: center;
   justify-content: center;
   gap: var(--space-2);
-  padding: 10px 20px;
+  /* v3 phase 3 — control density: block padding derives from --cv3-control-h (30px ≥ WCAG 2.5.8's 24px). */
+  padding: calc((var(--cv3-control-h) - 1.2em - 2px) / 2) 20px;
   border-radius: var(--radius);
   font-weight: 600;
   font-size: 14px;
   line-height: 1.2;
   border: 1px solid transparent;
-  /* v1.58.16 — `filter` rides the SAME transition as background/border/transform:
-     filled buttons dim on hover via filter because a gradient↔solid swap can't interpolate. */
+  /* v1.58.16 — `filter` rides the SAME transition: a gradient↔solid swap can't interpolate. */
   transition: background var(--transition), border-color var(--transition), transform var(--transition), filter var(--transition);
   white-space: nowrap;
-  /* v1.26.1 (WCAG-2.5.5) — restore the 44px floor the line-431 comment references
-   * (lost between v1.18 and v1.26; header buttons measured 39-41px). flex-shrink: 0
-   * keeps parent rows from squashing the button below its min-height. */
-  min-height: 44px;
+  /* v3 phase 3 (was the v1.26.1 44px 2.5.5 floor) — flex-shrink: 0 keeps parent
+   * rows from squashing the button below its min-height. */
+  min-height: var(--cv3-control-h);
   box-sizing: border-box;
   flex-shrink: 0;
 }
@@ -571,11 +569,10 @@ body.sidebar-open .sidebar-backdrop { display: block; }
   align-self: center;
 }
 
-/* WCAG 2.5.5 / 2.5.8 — touch target size. Default buttons inherit
-   `min-height: 44px` from .btn. Small buttons relax this for dense
-   table-row controls (Edit / Delete / etc.) but keep min-height ≥ 32 px
-   plus 8 px row spacing so the effective spaced target stays ≥ 44 px. */
-.btn-sm { padding: 6px 12px; font-size: var(--font-size-md); min-height: 32px; }
+/* WCAG 2.5.5 / 2.5.8 — touch target size. v3 phase 3: buttons inherit the 30px
+   control floor from .btn (var(--cv3-control-h), ≥ 2.5.8's 24px); .btn-sm keeps
+   the same floor with a smaller footprint for dense table-row controls. */
+.btn-sm { padding: 6px 12px; font-size: var(--font-size-md); min-height: var(--cv3-control-h); }
 
 /* M-4 (v1.58.11) — saved-research / saved-prep card: structural flex `gap`
    so the title↔date space can't collapse (`software-engineer-generaltoday`).
@@ -778,7 +775,7 @@ table.scan-tbl.v2-scan-compact th, table.scan-tbl.v2-scan-compact td { padding-t
 table.scan-tbl tr.v2-scan-pad > td { padding: 0; border-bottom: 0; background: transparent; }
 tr.v2-scan-rowbtn { cursor: pointer; }
 tr.v2-scan-rowbtn:hover .scan-posting-title { text-decoration: underline; }
-tr.v2-scan-isnew > td { animation: v2scan-in 150ms ease-out; }
+tr.v2-scan-isnew > td { animation: v2scan-in 150ms var(--ease-out); }
 @keyframes v2scan-in { from { opacity: 0; transform: translateY(4px); } }
 .scan-icon--score.v2-scan-score-hi { color: var(--kazan-text, var(--kazan)); font-weight: 700; }
 .scan-icon--score.v2-scan-score-mid { color: var(--darjeeling-text, var(--darjeeling)); }

@@ -1,24 +1,26 @@
 /**
- * v1.26.1 (WCAG-2.5.5) — `.btn:not(.btn-sm)` must render ≥ 44 × 44 px.
+ * v3 phase 3 (density) — `.btn` block size rides the cv3 control token.
  *
- * Static CSS canary that asserts the `.btn` rule in app.css carries the
- * `min-height: 44px` declaration. v1.26.0 was missing this declaration
- * (a stale comment at line 427-430 claimed it was there, but the rule
- * itself was bare) — live measurement on every public route showed
- * header buttons rendering at 39-41 px, violating WCAG 2.5.5.
+ * Static CSS canary. v1.26.1 pinned a literal `min-height: 44px` (WCAG 2.5.5);
+ * the Lovable density decision (v3 phase 3) retires that floor: `.btn` now
+ * carries `min-height: var(--cv3-control-h)` — 30px in tokens-v3.css, above
+ * the WCAG 2.5.8 AA minimum (24×24 CSS px), with `.btn-hero` and the topbar
+ * controls keeping their own (larger) sizing. This canary pins the TOKEN
+ * contract so the density can never silently regress to a magic number, and
+ * cross-checks the sheet value so "30px" stays pinned somewhere static.
  *
- * Browser-level proof lives in `tests/playwright-smoke.mjs` /
- * `playwright-full-cycle.mjs` (those measure `getBoundingClientRect`
- * across every route). This unit canary gives a fast, no-browser
- * regression net: a future patch can't remove the floor again without
- * tripping the test.
- *
- * Why static-CSS over browser-only: pure parse, runs in < 50 ms,
- * doesn't need a stand. The browser test covers DOM-level proof.
+ * Browser-level layout guards live in `tests/playwright-smoke.mjs`
+ * (overflow + topbar overlap) and `tests/playwright-mobile-390.mjs`. This
+ * unit canary is the fast, no-browser regression net.
  */
 import test from 'node:test';
 import assert from 'node:assert/strict';
+import { readFileSync } from 'node:fs';
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
 import { loadAppCss } from './helpers/css.mjs';
+
+const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 
 function readBlock(src, selector) {
   // Find the FIRST `<selector> {` block (block-start is line with the
@@ -38,12 +40,18 @@ function readBlock(src, selector) {
   return null;
 }
 
-test('.btn rule carries min-height: 44px (WCAG 2.5.5 floor)', () => {
+test('.btn block size rides the cv3 control token (30px, ≥ the WCAG 2.5.8 floor)', () => {
   const src = loadAppCss();
   const block = readBlock(src, '.btn');
   assert.ok(block, '.btn rule not found in app.css');
-  assert.match(block, /min-height:\s*44px/i,
-    `.btn block is missing min-height: 44px — WCAG 2.5.5 regression. Block:\n${block}`);
+  assert.match(block, /min-height:\s*var\(--cv3-control-h\)/i,
+    `.btn block must carry min-height: var(--cv3-control-h) — density regression. Block:\n${block}`);
+  assert.doesNotMatch(block, /min-height:\s*44px/i, 'the retired 44px literal must not return');
+  // the token's sheet value is pinned somewhere static: 30px ≥ the 24px AA floor
+  const tokens = readFileSync(resolve(ROOT, 'public', 'css', 'tokens-v3.css'), 'utf8');
+  const m = tokens.match(/--cv3-control-h:\s*(\d+)px/);
+  assert.ok(m, 'tokens-v3.css must declare --cv3-control-h');
+  assert.ok(Number(m[1]) >= 24, `--cv3-control-h must stay ≥ 24px (WCAG 2.5.8), got ${m[1]}px`);
 });
 
 test('.btn rule carries flex-shrink: 0 (anti-squash under parent flex)', () => {
@@ -57,28 +65,27 @@ test('.btn rule carries flex-shrink: 0 (anti-squash under parent flex)', () => {
     '.btn block missing flex-shrink: 0 — header rows can squash buttons under flex layout');
 });
 
-test('.btn-sm keeps the relaxed 32 px floor (small-control exception)', () => {
-  // The spaced-target exception (WCAG 2.5.5 + 2.5.8) allows < 44 px
-  // when the control has ≥ 8 px clearance. v1.20.0 added a `.btn-sm`
-  // class for dense table-row controls (Edit / Delete) with
-  // min-height: 32 px. The v1.26.1 fix on `.btn` must NOT regress this
-  // — small buttons keep their floor.
+test('.btn-sm follows the same control token (small-control exception, source order intact)', () => {
+  // v1.20.0 added `.btn-sm` for dense table-row controls (Edit / Delete); with
+  // the density token both sizes resolve to the same 30px floor — `.btn-sm`
+  // differs by padding/font, and the explicit declaration keeps that contract
+  // even if `.btn` changes again.
   const src = loadAppCss();
   const block = readBlock(src, '.btn-sm');
   assert.ok(block, '.btn-sm rule not found');
-  assert.match(block, /min-height:\s*32px/,
-    '.btn-sm regressed — small-control floor changed');
+  assert.match(block, /min-height:\s*var\(--cv3-control-h\)/,
+    '.btn-sm regressed — must carry the control token');
 });
 
-test('.btn-sm has its own min-height (does NOT inherit .btn 44 px)', () => {
+test('.btn-sm has its own min-height (declared AFTER .btn in source order)', () => {
   // Because CSS source order matters: `.btn-sm` is defined AFTER `.btn`,
-  // and `min-height: 32px` overrides the cascaded 44 px from `.btn`.
-  // Verify this stays true even with the v1.26.1 update.
+  // and its explicit `min-height` declaration overrides the cascaded one.
+  // Verify this stays true even with the density update.
   const src = loadAppCss();
   // Find the source-order position of each rule.
   const btnIdx = src.indexOf('\n.btn {');
   const smIdx = src.indexOf('\n.btn-sm');
   assert.ok(btnIdx !== -1 && smIdx !== -1, 'both rules must be present');
   assert.ok(smIdx > btnIdx,
-    '.btn-sm must come AFTER .btn in source order so the 32 px override applies');
+    '.btn-sm must come AFTER .btn in source order so its override applies');
 });
