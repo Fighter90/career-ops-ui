@@ -214,7 +214,7 @@ test('host pool: companies on different hosts run in parallel (12 in flight, hos
 
 test('host pool: snapshot rows deterministic — portals order, not completion order', async () => {
   writePortals(dir, portalsMixed6());
-  const { fetch, m } = makeTimedFetch({ delayFor: (url) => delayForCompany(idxFromSlug(slugOf(url))) });
+  const { fetch } = makeTimedFetch({ delayFor: (url) => delayForCompany(idxFromSlug(slugOf(url))) });
   const result = await runEnScan({ writeFiles: true, fetchImpl: fetch, onLog: () => {} });
 
   assert.equal(result.counts.raw, 6);
