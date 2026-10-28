@@ -181,7 +181,13 @@ body.job-map-active .docs-fab { display: none; }
 @media (max-width: 900px) {
   /* Chips scroll horizontally instead of eating map height. */
   .v2-map-chiprow { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 6px; scrollbar-width: none; }
-  .v2-map-chipset { flex-wrap: nowrap; }
+  /* The chipset itself must not shrink: with the desktop min-width:0 it
+     collapsed to a fraction of the row while its nowrap chips kept their
+     intrinsic width and painted OVER the sibling chipset — «All scores»
+     started at x189 inside a spec chip ending at x330 (mobile-390 sweep,
+     CTA elementFromPoint hit the wrong chip). Content-sized chipsets turn
+     the row into the one scrollable strip CAR-125 intended. */
+  .v2-map-chipset { flex: 0 0 auto; flex-wrap: nowrap; }
   .v2-map-chip { flex: 0 0 auto; white-space: nowrap; min-height: 36px; }
   /* The list becomes a bottom sheet over the full-screen map. */
   .v2-map-layout { position: relative; flex: 1; min-height: 0; flex-direction: column; }
