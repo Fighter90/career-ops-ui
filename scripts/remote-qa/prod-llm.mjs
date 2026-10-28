@@ -29,6 +29,7 @@ import { createRequire } from 'node:module';
 import { makeRedactor } from './redact.mjs';
 import { languageOk, describe, headingSkeleton, splitWarnings } from './lang-check.mjs';
 import { discoverLocales, requireNonEmpty, httpCredentialsFor } from './targets.mjs';
+import { collectErrTexts, evalOutTokens, scanSummaryBlock, summaryCell, mdEscape } from './summary-parts.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const require = createRequire(ROOT + '/package.json');
@@ -131,8 +132,11 @@ if (process.env.SCAN !== '0') {
     const phases = [...text.matchAll(/✓ (ATS|Regional) done · NEW=(\d+)/g)].map((m) => `${m[1]} NEW=${m[2]}`);
     const failed = [...text.matchAll(/✗ (\w+) error/g)].map((m) => m[1]);
     const errLines = await page.locator('#scan-console span.err').count();
+    // CAR-175 — name the failures: up to 10 span.err texts, redacted before
+    // the 160-char cut (the makeRedactor contract), not just a count.
+    const errTexts = collectErrTexts(await page.locator('#scan-console span.err').allInnerTexts(), redact);
     const after = await page.locator('#scan-results table tbody tr').count().catch(() => 0);
-    scan = { secs: Math.round((Date.now() - t0) / 1000), phases, failed, errLines, before, after, busyWaits };
+    scan = { secs: Math.round((Date.now() - t0) / 1000), phases, failed, errLines, errTexts, before, after, busyWaits };
     if (!phases.some((p) => p.startsWith('ATS'))) add('en', 'scan', 'ATS phase did not report done');
     if (!phases.some((p) => p.startsWith('Regional'))) add('en', 'scan', 'Regional phase did not report done');
     for (const f of failed) add('en', 'scan', `${f} phase ended in error`);
@@ -196,7 +200,11 @@ for (const locale of LOCALES) {
     // v1.251.1 — shape is judged ONLY by the block/summary codes; the
     // language drift lives in its own flag and its own table column.
     const { shape: shapeCodes } = splitWarnings(e.body.warnings);
+    // CAR-175 — surface the provider's own output-token counter when the
+    // response carries a usage object (in-process providers do; the Gemini
+    // subprocess does not → nothing is printed, never "tok ?").
     row.eval = { status: e.status, mode: e.body.mode, ms: e.ms, len: md.length,
+      outTok: evalOutTokens(e.body.usage),
       shape: shapeCodes.length === 0, warnings: (e.body.warnings || []).map(String), lang: languageOk(md, locale) };
     if (e.status !== 200) add(locale, 'evaluate', `HTTP ${e.status} ${e.body.error || ''}`);
     else if (!e.body.mode || e.body.mode === 'manual') add(locale, 'evaluate', `no live provider (mode=${e.body.mode})`);
@@ -222,14 +230,13 @@ for (const locale of LOCALES) {
 }
 await browser.close();
 
-const md = (v) => String(v).replace(/\\/g, '\\\\').replace(/\|/g, '\\|').replace(/[\r\n]+/g, ' ');
-const cell = (x) => (x ? `${x.status} · ${x.mode || '-'} · ${Math.round(x.ms / 1000)}s · ${x.len} ch · ${x.lang ? 'lang ✓' : 'lang ✗'}${'shape' in x ? (x.shape ? ' · A–G ✓' : ' · A–G ✗') : ''}` : '—');
+const md = mdEscape; // table-cell escaping lives in summary-parts.mjs (unit-tested)
 const lines = [
   '## Live LLM regression', '',
-  scan ? `**Scan (#/scan, all sources):** ${scan.secs}s${scan.busyWaits ? ` (waited ${scan.busyWaits} min for a scan already running)` : ''} · ${scan.phases.join(' · ') || 'no phase finished'}${scan.failed.length ? ' · failed: ' + scan.failed.join(',') : ''} · stderr lines ${scan.errLines} · result rows ${scan.before} → ${scan.after}` : '_Scan skipped (SCAN=0)._', '',
+  scan ? scanSummaryBlock(scan) : '_Scan skipped (SCAN=0)._', '',
   `${rows.length} locales × (docs assistant + evaluate, driven through the UI).`, '',
   '| locale | docs assistant | evaluate (save=false) | warnings |', '|---|---|---|---|',
-  ...rows.map((r) => `| ${md(r.locale)} | ${md(cell(r.docs))} | ${md(cell(r.eval))} | ${(r.eval && r.eval.warnings || []).map(md).join('<br>') || '—'} |`), '',
+  ...rows.map((r) => `| ${md(r.locale)} | ${md(summaryCell(r.docs))} | ${md(summaryCell(r.eval))} | ${(r.eval && r.eval.warnings || []).map(md).join('<br>') || '—'} |`), '',
   findings.length ? '| locale | step | finding |\n|---|---|---|\n' + findings.map((f) => `| ${md(f.locale)} | ${md(f.step)} | ${md(f.msg)} |`).join('\n') : '**No findings.**',
 ];
 console.log(redact(lines.join('\n')));
