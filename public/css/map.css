@@ -55,8 +55,30 @@
 .job-marker-best { filter: drop-shadow(0 0 5px color-mix(in srgb, var(--map-score-top) 72%, transparent)); }
 .job-cluster { box-sizing: border-box; display: flex; flex-direction: column; align-items: center; justify-content: center; border-radius: 50%; background: var(--c); color: #fff; border: 2px solid #fff; font: 700 11px/1 Inter, sans-serif; box-shadow: 0 1px 4px rgba(0,0,0,.35); cursor: pointer; }
 .job-cluster.ring { background: #fff; color: var(--c); border: 3px solid var(--c); }
-.job-cluster-best { font-size: 11px; }
+.job-cluster-best { font-size: 11px; white-space: nowrap; }
 .job-cluster-count { font-size: 9px; opacity: .86; }
+/* Browser sweep P2 — dark-theme cluster bubbles. The score palette is tuned
+   for dark tiles, so the theme-blind fills inverted the relationship: a dark
+   ring read its teal number on a white fill (1.83:1) and filled tiles put
+   white numbers on bright teal at the same ratio. Dark rings sit on the
+   --paper surface with the score colour for the number and border; dark
+   filled tiles keep the score fill and flip the number to --paper ink.
+   Computed on the dark palette: top #53d3c4 9.5:1, good #3fa99b 6.1:1,
+   mid #718f8a 5.0:1, none #7b8885 4.7:1 — the lowest colour
+   (--map-score-low #566563) cannot reach 4.5:1 against any dark surface in
+   either direction, so data-dim clusters take white-on-tile (filled,
+   6.1:1) or a --hof-lifted mix (ring, 6.4:1) instead. Light theme keeps the
+   white fill its own palette is tuned for. */
+[data-theme="dark"] .job-cluster { color: var(--paper); }
+[data-theme="dark"] .job-cluster.ring { background: var(--paper); color: var(--c); }
+[data-theme="dark"] .job-cluster[data-dim] { color: #fff; }
+[data-theme="dark"] .job-cluster.ring[data-dim] { color: color-mix(in srgb, var(--c) 60%, var(--hof)); }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .job-cluster { color: var(--paper); }
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .job-cluster.ring { background: var(--paper); color: var(--c); }
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .job-cluster[data-dim] { color: #fff; }
+  :root:not([data-theme="light"]):not([data-theme="dark"]) .job-cluster.ring[data-dim] { color: color-mix(in srgb, var(--c) 60%, var(--hof)); }
+}
 .job-map-home { display: grid; place-items: center; border: 2px solid var(--paper); border-radius: 50%; background: var(--hof); color: var(--paper); font-size: 19px; box-shadow: 0 1px 5px rgba(0,0,0,.36); }
 .commute-cell { white-space: nowrap; }
 .commute-cell.is-unknown { color: var(--foggy); }

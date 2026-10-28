@@ -604,6 +604,25 @@
         const bestLabel = best.evaluated && best.scoreNum != null ? best.scoreNum.toFixed(1)
           : best.label.replace(/^.*:\s*/, '').replace(/^◎\s*/, '') || '–';
         el.append(c('span', { className: 'job-cluster-best' }, bestLabel), c('span', { className: 'job-cluster-count' }, String(n)));
+        // Browser sweep P2 — the palette's lowest colour (--map-score-low)
+        // cannot reach 4.5:1 as cluster text on any dark surface; map.css
+        // flips data-dim clusters to its white/lifted variants.
+        if (best.tone === 'bad' || best.fitBand === 'weak') el.setAttribute('data-dim', '');
+        // Browser sweep P3 — a word label («related») is wider than the
+        // circle's content box, so the bubble read «elated». Numbers — the
+        // common case — fit at 11px; shrink word labels half a pixel per
+        // check (offsetWidth ignores the scale-in animation) until the label
+        // fits the box. 6px floor: below it the label is unreadable anyway
+        // and the tooltip carries the full text.
+        requestAnimationFrame(() => {
+          if (!el.isConnected) return;
+          const lab = el.querySelector('.job-cluster-best');
+          let px = 11;
+          while (px > 6 && lab.offsetWidth > el.clientWidth) {
+            px -= 0.5;
+            lab.style.fontSize = px + 'px';
+          }
+        });
         const m = L.marker(at, { icon: L.divIcon({ html: el, className: '', iconSize: [size, size] }), keyboard: false });
         const shown = members.slice(0, 8).map((p) => [p.label, p.company, p.title].filter(Boolean).join(' · '));
         if (n > shown.length) shown.push('+' + (n - shown.length) + ' ' + t('map.more', 'more'));
