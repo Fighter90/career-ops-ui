@@ -9,6 +9,32 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 ---
 
 
+## [1.261.1] — 2026-10-28
+
+**Prod-QA-klientpatchen: en P1-crashrettelse af `#/two-pager`, Ctrl+K, der virker på ikke-QWERTY-layouts, 390px-mobilbølgen (docs-assistant-overflow, kortchip-overlap, et 39-rute-harness), CAR-137-fuldførelsen (specifikke fejl, v2empty ×5, hints ×13 + mode-sider) og CAR-140, der lander ægte v2-skærmbilleder overalt.**
+
+### Rettet
+
+- **two-pager TDZ (CAR-170, P1, #554)**: `Cannot access 'previewTimer' before initialization` — editoren for gemte tags udløste `onChange` under konstruktionen for hver gendannet chip, mens konstruktionsløkken lå leksikalsk over `let previewTimer`, så hele `#/two-pager`-renderingen crashede (ingen h1, ×19 locales). Scheduleren + bindingen ligger nu over løkken; en adfærdstest eksekverer det rigtige view-modul — den præcise prod-fejl før rettelsen, en renderet side efter — plus en drift-gate for leksikalsk rækkefølge.
+- **Ctrl+K på ikke-QWERTY-layouts (CAR-172, #554)**: begge chord-handlere matchede kun `e.key` — på et russisk layout ankommer akkorden som `key='л' code='KeyK'` og gjorde ingenting. Matches nu på `e.code === 'KeyK'` i nav-v2.js og app.js; reproduceret i en rigtig browser med en syntetisk 'л'/KeyK-akkord. CAR-122-kontrakten er gengivet (se Noter).
+- **docs-assistant 390px-overflow (CAR-172, #554)**: CAR-136-startchipsene var `.btn` (nowrap, `flex-shrink: 0`) — ét ubrydeligt 418px-element skubbede `#/docs-assistant` 56px forbi en 390px-viewport; CAR-146-skrumpmønstret (i v2-llm.css, de 800-LOC-CSS-gates uberørte) bringer det ned på 0.
+- **Kortchip-overlap @390 (#552)**: på en 390px-viewport overlappede kortets meta-chips CTA-rækken (map.css).
+- **CAR-137 — specifikke fejl + v2empty ×5 (#550)**: fem generiske fejl-fallbacks ('Error' / 'failed') blev til specifikke handlingsrettede nøgler — evaluate POST-fejl, auto-pipeline-stream uden terminal event, scan→pipeline-tilføjelse, indlæsning af repost-klynger, pipeline-undo; de sidste fem flade tomme tilstande (`#/reports`, `#/usage`, `#/portals`, `#/activity`, `#/dashboard`) slutter sig til CAR-124 v2empty-mønstret (forklaring + mærket aria-hidden-eksempel + forudkoblet handling; 15 nye `v2empty.*`-nøgler, fire døde ét-linjes-nøgler fjernet) — alt sammen ×19 ordbøger, snapshot regenereret.
+- **CAR-137 — HelpHint ×13 + mode-side-sættet (#550)**: den kontekstuelle «?»-hint sidder nu på alle resterende side-H1'er (pipeline, reports, dashboard, cv, portals, usage, activity, assessments, map, health, docs-assistant, settings) og på de 8 mode-sider via sættet (hver MODES-cfg bærer en `hintKey`, renderet gennem `HelpHint.title`).
+
+### Tilføjet
+
+- **Mobile-390-harness (#552)**: en Playwright-sweep af hver SPA-rute (31 kanoniske + 8 mode-sider = 39 hashes) ved 390×844 med et seeded korpus — per-rute-kontrol af vandret overflow (scrollWidth vs clientWidth, 1px-tolerance, nævner den bredeste synder) plus en CTA-hit-kontrol (ingen sticky bar/drawer/FAB dækker en primær CTA); opt-in, graceful skip uden browser-binær, netværksfri.
+- **Friske v2-captures ×48 (CAR-140 fase A, #551)**: ægte v2-UI-skærmbilleder fra et seeded, CI-isoleret fixture — dashboard ×19 + job-map ×19 (job-map-ta første gang, job-map-vi ny) + scan/pipeline/tracker/reports × en/ru — som føder README, hjælpen og landingssiden.
+- **cvstart.org med ægte skærmbilleder (CAR-140 fase B, #553)**: CAR-140-pladsholder-pladserne er væk — landingssiden viser de faktiske v2-captures (job-map-showcase + skærmbilled-rækker, ×19 landingsside-locales).
+- **CAR-137-hints (#550)**: 21 nye oversatte nøgler ×19 (`help.hint.*` ×20 + mode-sidernes `hintKey`'er) — hver side forklarer nu sig selv på stedet.
+
+### Noter
+
+- **Ctrl+K-kontrakten (CAR-122)**: akkorden åbner **kommandopaletten** — den fokuserer IKKE søgefeltet direkte; søgningen fokuseres fra paletten. Linjen «Ctrl+K фокусит поиск» i v1.261.0-QA-tjeklisten er erstattet; QA-prompten til v1.261.1 bærer den opdaterede kontrol.
+- **CodeQL-rigtige rettelser (#547)**: 4 alerts lukket (content.mjs literal-key-iteration gjort strukturel, lint-sweep) — landet efter udgivelsen på v1.261.0 main før denne patch; nævnt her for fuldstændighedens skyld.
+- Tests 6582 (+51); browsersuiten 171–172 bestået / 0 fejlet / 1 opt-in-skip; mobile-390-harnessen kører selvstændigt (`node tests/playwright-mobile-390.mjs`). Ingen scannerkilder rørt (registry 121 = 116 EN + 5 RU · 116 adaptere).
+
 ## [1.261.0] — 2026-10-28
 
 **Anmeldelsesbølgen er fuldført (alle HIGH + MEDIUM-fund er landet), den ejer-rapporterede sprogskift-retelse, rettelser af evalueringskvaliteten, hjælp ×18-fan-out, cvstart.org-landingssiden v2 — plus 4 SDD/OpenSpec-specs, der dokumenterer bølgen. Hver rettelse landede gennem en rød→grøn fix-forward og en GLM-5.3-Flash-gennemgang i frisk kontekst.**
