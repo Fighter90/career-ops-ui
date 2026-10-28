@@ -64,7 +64,6 @@ const WIDTH = 1280;
 const HEIGHT = 800;
 const MIRROR_TOLERANCE_PX = 2;  // chrome X-mirror slack (sub-pixel + borders)
 const OVERFLOW_TOLERANCE_PX = 1; // sub-pixel rounding slack on scrollWidth
-const CLIP_TOLERANCE_PX = 2;    // hidden-edge text overflow slack
 
 // Every registered SPA route (Router.register call-sites) plus the 8 mode
 // pages mode-page.js registers — same list as playwright-mobile-390.mjs.
@@ -79,12 +78,6 @@ const ROUTES = [
   'interview-prep', 'patterns',
 ];
 
-// Fixed / layout-defining chrome whose X position must mirror in RTL.
-// `.toast` is measured through a probe (the real toast only exists after a
-// user action); everything else must be present in the rendered route.
-const KEY_SELECTORS = [
-  '.sidebar', '.main', 'header.topbar', '.docs-fab', '.usage-hud',
-];
 
 let server, baseUrl, browser;
 
