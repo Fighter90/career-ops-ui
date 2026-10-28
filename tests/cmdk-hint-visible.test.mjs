@@ -52,8 +52,8 @@ test('app.js: platform-aware setter fills the badge from dataset', () => {
 test('app.js: the existing Cmd/Ctrl+K keybinding is intact (no regression)', () => {
   assert.match(
     APP,
-    /\(\s*e\.ctrlKey\s*\|\|\s*e\.metaKey\s*\)\s*&&\s*e\.key === 'k'/,
-    'Ctrl/Cmd+K handler must remain',
+    /\(\s*e\.ctrlKey\s*\|\|\s*e\.metaKey\s*\)\s*&&\s*\(e\.key === 'k' \|\| e\.key === 'K' \|\| e\.code === 'KeyK'\)/,
+    'Ctrl/Cmd+K handler must remain (e.code keeps it alive on non-QWERTY layouts)',
   );
   assert.match(APP, /search\.focus\(\)/, 'Cmd/Ctrl+K must still focus the search input');
 });

@@ -43,7 +43,7 @@ Router.register('docs-assistant', async () => {
     t('docs.q2', 'How does the two-pager fit score work?'),
     t('docs.q3', 'How do I export a report to PDF?'),
   ];
-  const chips = c('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '8px', margin: '0 0 12px' } },
+  const chips = c('div', { className: 'docs-chip-row', style: { display: 'flex', flexWrap: 'wrap', gap: '8px', margin: '0 0 12px' } },
     starters.map((q) => {
       const b = c('button', { className: 'btn btn-ghost btn-sm', type: 'button' }, q);
       b.addEventListener('click', () => { input.value = q; send(); });
@@ -107,7 +107,7 @@ Router.register('docs-assistant', async () => {
 
   function chipRow(pairs) {
     if (!Array.isArray(pairs) || !pairs.length) return null;
-    const row = c('div', { style: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '6px', margin: '0 0 8px' } },
+    const row = c('div', { className: 'docs-chip-row', style: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '6px', margin: '0 0 8px' } },
       c('span', { style: { fontSize: '11px', color: 'var(--foggy)' } }, `${t('common.open', 'Open')}:`));
     pairs.forEach((p, i) => {
       if (i) row.appendChild(c('span', { style: { color: 'var(--foggy)' } }, '·'));
