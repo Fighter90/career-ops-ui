@@ -1,12 +1,12 @@
 # QA regression — v1.261.2 (CAR-173 geocode cache + UI.md list continuation + help key leaks + map framing)
 
-> База: v1.261.1 → v1.261.2. Тесты: **6651** (6645 pass / 6 skip / 0 fail — полный
+> База: v1.261.1 → v1.261.2. Тесты: **6655** (6649 pass / 6 skip / 0 fail — полный
 > прогон `node --test tests/*.test.mjs` на ветке релиза; все 3 fail — гейты
 > CHANGELOG-фан-аута, красные ДО фан-аута ×19 по плану, см. §0). Браузер: см. §0.
 > Источник фиксов: репорт владельца (torn geocode-кэш, кадр job-map), remote-QA v1.261.1
 > (85 raw-ключей в help, ctrl-k), CAR-173.
 > Примечание: PR #561 (help spans ×17 + remote-qa ctrl-k asserts) и агенты (#534 skeleton
-> Финальный счёт релиза (после фан-аута ×18 и мержа main): **6651 / 6645 pass / 0 fail**;
+> Финальный счёт релиза (после фан-аута ×18 и мержа main): **6655 / 6649 pass / 0 fail**;
 > (tests/help-rendered-keys.test.mjs + tests/remote-qa-ctrl-k.test.mjs из #561) ≈ 6622.
 
 ## §0 — Ворота
