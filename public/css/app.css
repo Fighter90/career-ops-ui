@@ -29,8 +29,10 @@
 .skip-link:focus { top: 0; outline: 3px solid #ff385c; outline-offset: 2px; }
 
 /* WCAG 2.4.7 — visible focus indicators. Every interactive element gets a clearly visible
-   focus ring; :focus-visible keeps mouse-click rings off but keyboard-Tab rings on. */
-*:focus-visible { outline: 2px solid var(--rausch, #ff385c); outline-offset: 2px; }
+   focus ring; :focus-visible keeps mouse-click rings off but keyboard-Tab rings on.
+   Phase-2 v3 — the cv3 focus ring shape (surface gap + accent ring): 2px outline in the
+   pure accent + 2px offset IS that shape in outline form (surface shows through the gap). */
+*:focus-visible { outline: 2px solid var(--accent-c, var(--rausch, #ff385c)); outline-offset: 2px; }
 /* Managed route-change focus (see public/js/router.js): on every
    client navigation the destination view's heading is given
    tabindex="-1" and .focus()'d so screen readers announce the new
@@ -44,16 +46,32 @@
 [tabindex="-1"]:focus-visible { outline: none; }
 /* Modal close × needs higher-contrast focus since it sits on the
    modal-header background. */
-.modal-close:focus-visible { outline: 3px solid var(--rausch, #ff385c); outline-offset: 2px; }
+.modal-close:focus-visible { outline: 3px solid var(--accent-c, var(--rausch, #ff385c)); outline-offset: 2px; }
 
-/* ───────────────────────── design tokens — light theme (default) ───────────────────────── */
+/* ───────────────────────── design tokens — light theme (default) ─────────────────────────
+   Phase 2 of the Lovable design integration: the values are now ACTIVE cv3 indirections
+   (--cv3-* lives in tokens-v3.css, loaded last). Names never changed, so every consumer
+   follows automatically; flipping the palette back is a 5-line edit in tokens-v3.css.
+   The indirection resolves per element, so ONE :root declaration follows both themes —
+   no dark re-declaration needed (unlike the literal blocks below). */
 :root {
-  --rausch: #ff385c;          /* signature coral accent — for fills/borders, NOT text */
-  --rausch-dark: #e31c5f;
-  --rausch-text: #b80f42;     /* AA-passing variant for text on light (v1.19.0) */
-  /* CAR-23 v1.243.0 — theme-INVARIANT fill for white-text buttons (the theme-aware
-     stops go pink in dark: white 1.9-3.5:1); #e31c5f keeps #fff ≥4.57:1 in BOTH themes. */
-  --rausch-fill: #e31c5f;
+  /* accent topology (v3 phase 2): the rausch family carries the pure ACCENT (Lovable
+     blue 252hue); --rausch-text moved to the cv3 DANGER ink so the --err/--error/--danger
+     aliases below keep red danger semantics. Contrast: --rausch-dark/--paper 7.37/8.95:1,
+     --rausch-text/--paper 7.47/10.60:1 (light/dark). */
+  --rausch: var(--cv3-accent);
+  --rausch-dark: var(--cv3-accent-hover);
+  --rausch-text: var(--cv3-danger-ink);
+  /* theme-INVARIANT danger fill for white-text buttons (the cv3-danger light value):
+     #fff on it is 5.80:1 and it keeps ≥3:1 against the dark canvas (WCAG 1.4.11). */
+  --rausch-fill: oklch(0.53 0.19 25);
+  /* the INDEPENDENT accent family (pure blue; .btn-primary paints flat --accent-c/--accent-ink
+     Lovable-style — white fails dark at 2.46:1, the cv3 ink flips to near-black instead). */
+  --accent-c: var(--cv3-accent);
+  --accent-hover: var(--cv3-accent-hover);
+  --accent-ink: var(--cv3-accent-ink);
+  --accent-soft: var(--cv3-accent-soft);
+  --accent-soft-ink: var(--cv3-accent-soft-ink);
   --babu: #00a699;            /* teal accent — for fills/borders, NOT text */
   --babu-text: #00665e;       /* AA-passing variant for text on light (v1.19.0) */
   --arches: #fc642d;           /* warm orange */
@@ -77,14 +95,10 @@
   --radius: 12px;
   --radius-lg: 16px;
   --radius-pill: 999px;
-  --space-1: 4px;
-  --space-2: 8px;
-  --space-3: 12px;
-  --space-4: 16px;
-  --space-5: 24px;
-  --space-6: 32px;
-  --space-7: 48px;
-  --space-8: 64px;
+  --space-1: 4px; --space-2: 8px;
+  --space-3: 12px; --space-4: 16px;
+  --space-5: 24px; --space-6: 32px;
+  --space-7: 48px; --space-8: 64px;
   --sidebar-w: 256px;
   --topbar-h: 80px;
   --transition: 180ms cubic-bezier(.2, .8, .2, 1);
@@ -139,14 +153,20 @@
   --card: var(--paper);
   --border: var(--slate);
   /* CAR-123 R3 — `--accent` was referenced by the v2-stats / v2-llm / map rules
-     but never defined: with a fallback it was a frozen #4c8bf5 that never
-     followed the theme; without one (map.css focus rings) it rendered nothing.
-     Aliased to the brand accent — the same token as every other focus ring
-     (*:focus-visible above) and active indicator — so it follows the theme
-     like the v1.137.0 aliases. AA (WCAG 1.4.11 non-text: every use is an
-     outline / border / indicator / dot, never body text): light #ff385c on
-     #ffffff = 3.52:1, dark #ff5e7e on #161a22 = 5.94:1 (tests/css-token-drift). */
-  --accent: var(--rausch);
+     but never defined. Since v3 phase 2 it resolves to the INDEPENDENT accent
+     family above (map focus rings / v2 active indicators ride the Lovable blue
+     and follow the theme; AA 1.4.11 — every use is outline/border/indicator). */
+  --accent: var(--accent-c);
+  /* CAR-123 R3 hand-offs closed on the cv3 sheet (phase 2): the subtle wash and
+     the .brief-warning warn pair resolve theme-aware via the cv3 soft/ink values. */
+  --bg-subtle: var(--cv3-surface-2);
+  --warn-bg: var(--cv3-warn-soft); --warn-border: var(--cv3-warn); --warn-fg: var(--cv3-warn-ink);
+  /* Phase-2 v3 — score-band chip pairs for components.css score-* / v2-reports
+     score-good (ink on its wash ≥4.5:1 in both themes; the sheet keeps the full A–G set). */
+  --band-a-ink: var(--cv3-band-a-ink); --band-a-bg: var(--cv3-band-a-bg);
+  --band-b-ink: var(--cv3-band-b-ink); --band-b-bg: var(--cv3-band-b-bg);
+  --band-d-ink: var(--cv3-band-d-ink); --band-d-bg: var(--cv3-band-d-bg);
+  --band-g-ink: var(--cv3-band-g-ink); --band-g-bg: var(--cv3-band-g-bg);
   color-scheme: light;
 }
 
@@ -154,50 +174,28 @@
    when the user picks the toggle (persisted to localStorage). Every
    component below reads from var(--*) so the theme swap is one place. */
 [data-theme="dark"] {
-  --rausch: #ff5e7e;
-  --rausch-dark: #ff385c;
-  --rausch-text: #ff8aa0;   /* WCAG AA on dark surfaces (v1.19.0) */
-  --babu: #2dd4bf;
-  --babu-text: #5eead4;     /* WCAG AA on dark surfaces (v1.19.0) */
-  --arches: #fb923c;
-  --hof: #f3f4f6;
-  --foggy: #9ca3af;
-  --foggy-strong: #9ca3af;   /* dark AA on --elev (#1e232e) ≈ 6.2:1 */
-  --beach: #0f1115;
-  --slate: #2a2f3a;
-  --elev: #1e232e;
-  --paper: #161a22;
-  --kazan: #34d399;
-  --kazan-text: #6ee7b7;    /* WCAG AA on dark surfaces (v1.19.0) */
-  --darjeeling: #fbbf24;
-  --darjeeling-text: #fcd34d; /* WCAG AA on dark surfaces (v1.19.0) */
-  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .4);
-  --shadow-md: 0 6px 16px rgba(0, 0, 0, .55);
+  /* rausch/accent follow the theme via the :root cv3 indirections above —
+     no literal re-declaration here (a literal would freeze the light value). */
+  --babu: #2dd4bf; --babu-text: #5eead4; --arches: #fb923c;
+  --hof: #f3f4f6; --foggy: #9ca3af;
+  --foggy-strong: #9ca3af;  /* dark AA on --elev (#1e232e) ≈ 6.2:1 */
+  --beach: #0f1115; --slate: #2a2f3a; --elev: #1e232e; --paper: #161a22;
+  --kazan: #34d399; --kazan-text: #6ee7b7;    /* WCAG AA on dark surfaces (v1.19.0) */
+  --darjeeling: #fbbf24; --darjeeling-text: #fcd34d; /* WCAG AA on dark surfaces (v1.19.0) */
+  --shadow-sm: 0 1px 2px rgba(0, 0, 0, .4); --shadow-md: 0 6px 16px rgba(0, 0, 0, .55);
   --shadow-lg: 0 8px 28px rgba(0, 0, 0, .7);
   color-scheme: dark;
 }
 
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]):not([data-theme="dark"]) {
-    --rausch: #ff5e7e;
-    --rausch-dark: #ff385c;
-    --rausch-text: #ff8aa0;
-    --babu: #2dd4bf;
-    --babu-text: #5eead4;
-    --arches: #fb923c;
-    --hof: #f3f4f6;
-    --foggy: #9ca3af;
+    --babu: #2dd4bf; --babu-text: #5eead4; --arches: #fb923c;
+    --hof: #f3f4f6; --foggy: #9ca3af;
     --foggy-strong: #9ca3af; /* dark AA on --elev (#1e232e) ≈ 6.2:1 */
-    --beach: #0f1115;
-    --slate: #2a2f3a;
-    --elev: #1e232e;
-    --paper: #161a22;
-    --kazan: #34d399;
-    --kazan-text: #6ee7b7;
-    --darjeeling: #fbbf24;
-    --darjeeling-text: #fcd34d;
-    --shadow-sm: 0 1px 2px rgba(0, 0, 0, .4);
-    --shadow-md: 0 6px 16px rgba(0, 0, 0, .55);
+    --beach: #0f1115; --slate: #2a2f3a; --elev: #1e232e; --paper: #161a22;
+    --kazan: #34d399; --kazan-text: #6ee7b7;
+    --darjeeling: #fbbf24; --darjeeling-text: #fcd34d;
+    --shadow-sm: 0 1px 2px rgba(0, 0, 0, .4); --shadow-md: 0 6px 16px rgba(0, 0, 0, .55);
     --shadow-lg: 0 8px 28px rgba(0, 0, 0, .7);
     color-scheme: dark;
   }
@@ -525,14 +523,14 @@ body.sidebar-open .sidebar-backdrop { display: block; }
 .btn:disabled { opacity: .5; cursor: not-allowed; }
 .btn.is-loading { opacity: .7; cursor: wait; pointer-events: none; }
 
-/* CAR-23 v1.243.0 — gradient from the theme-INVARIANT --rausch-fill: the theme-aware
-   stops go bright pink in dark, where white text fell to 1.9-3.5:1; the deep end is
-   color-mix'd toward black so #fff stays ≥ 4.57:1 on EVERY stop in both themes. */
+/* Phase-2 v3 (Lovable) — flat accent button: --accent-c fill + --accent-ink text
+   (light 6.01:1, dark 7.65:1 — literal white fails dark at 2.46:1, hence the ink
+   flip to near-black). Solid↔solid backgrounds interpolate; no filter-dim needed. */
 .btn-primary {
-  background: linear-gradient(135deg, var(--rausch-fill) 0%, color-mix(in srgb, var(--rausch-fill) 82%, #000) 100%);
-  color: white;
+  background: var(--accent-c);
+  color: var(--accent-ink);
 }
-.btn-primary:hover { filter: brightness(0.92); }
+.btn-primary:hover { background: var(--accent-hover); }
 
 .btn-ghost { background: transparent; color: var(--hof); border: 1px solid var(--slate); }
 .btn-ghost:hover { background: var(--beach); border-color: var(--hof); }
@@ -545,12 +543,14 @@ body.sidebar-open .sidebar-backdrop { display: block; }
 .btn-dark:hover { filter: brightness(0.92); }
 
 /* v1.55.4 — UX-6: destructive/stop action. Filled, high-contrast so
-   the Stop button is unmistakable during a multi-minute scan. */
+   the Stop button is unmistakable during a multi-minute scan.
+   Phase-2 v3 — the gradient rides the theme-INVARIANT danger red
+   (--rausch-fill: white 5.80:1, deep end 7.76:1); the border is the same
+   deepened mix (a decorative darker edge — --rausch-dark is accent now). */
 .btn-danger {
-  /* Same --rausch-fill gradient as .btn-primary (CAR-23, ≥4.57:1 with #fff); border is decorative. */
   background: linear-gradient(135deg, var(--rausch-fill) 0%, color-mix(in srgb, var(--rausch-fill) 82%, #000) 100%);
   color: #fff;
-  border: 1px solid var(--rausch-dark);
+  border: 1px solid color-mix(in srgb, var(--rausch-fill) 82%, #000);
   font-weight: 600;
 }
 /* v1.58.16 — same gradient↔solid flicker as .btn-primary; apply the
@@ -750,7 +750,7 @@ label:has(> input[type="radio"]) {
 .v2-scan-bar .input { flex: 1 1 200px; min-width: 160px; max-width: 340px; min-height: 36px; }
 .v2-scan-anchor { position: relative; display: inline-flex; }
 .v2-scan-chip-btn { cursor: pointer; white-space: nowrap; }
-.v2-scan-chip-btn.is-on { border-color: var(--rausch); color: var(--rausch-text); }
+.v2-scan-chip-btn.is-on { border-color: var(--rausch); color: var(--accent-soft-ink); } /* v3 phase 2: active chip = accent text + accent border (accent-soft-ink on paper 8.38/8.63:1) */
 .v2-scan-chip-btn.is-on::before { content: '● '; font-size: 9px; vertical-align: 2px; }
 .v2-scan-chip-val { font-weight: 700; }
 .v2-scan-pop { position: absolute; top: calc(100% + 6px); inset-inline-start: 0; z-index: var(--z-popover); min-width: 270px; max-width: min(92vw, 360px); background: var(--paper); border: 1px solid var(--slate); border-radius: var(--radius); box-shadow: var(--shadow-lg); padding: 12px; display: flex; flex-direction: column; gap: 10px; }
