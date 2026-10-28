@@ -2,6 +2,32 @@
 
 > Bu changelog artık tüm sürüm geçmişini içerir. Türkçe yerelleştirmenin eklenmesinden (v1.85.0) önce yayınlanan girdiler aşağıda İngilizce özgün hâliyle yer alır — çeviri bekliyor; asıl kaynak [🇬🇧 CHANGELOG.md](CHANGELOG.md)'dir.
 
+## [1.261.1] — 2026-10-28
+
+**prod-QA istemci yaması: `#/two-pager` için bir P1 çökme düzeltmesi, Ctrl+K'nın QWERTY-olmayan klavye düzenlerinde çalışması, 390px mobil dalgası (docs-assistant taşması, harita çiplerinin üst üste binmesi, 39 rotalı bir düzenek), CAR-137'nin tamamlanması (özgül hatalar, v2empty ×5, ipuçları ×13 + mode sayfaları) ve CAR-140'ın gerçek v2 ekran görüntülerini her yere indirmesi.**
+
+### Düzeltildi
+
+- **two-pager TDZ (CAR-170, P1, #554)**: `Cannot access 'previewTimer' before initialization` — kurulum döngüsü sözcüksel olarak `let previewTimer`'ın üzerinde dururken, kaydedilmiş etiketler düzenleyicisi geri yüklenen her çip için kurulum sırasında `onChange` tetikliyordu; böylece `#/two-pager` render'ının tamamı çöküyordu (h1 yok, ×19 yerel ayar). Zamanlayıcı + bağlama artık döngünün üzerinde duruyor; davranışsal bir test gerçek görünüm modülünü yürütüyor — düzeltmeden önce birebir prod hatası, sonrasında render edilmiş bir sayfa — artı bir sözcüksel-sıra sapma kapısı.
+- **QWERTY-olmayan klavye düzenlerinde Ctrl+K (CAR-172, #554)**: her iki akor işleyicisi de yalnızca `e.key` ile eşleşiyordu — Rusça bir klavye düzeninde akor `key='л' code='KeyK'` olarak geliyordu ve hiçbir şey yapmıyordu. nav-v2.js ve app.js'te `e.code === 'KeyK'` üzerinden eşleştiriliyor; sentetik bir 'л'/KeyK akoruyla gerçek bir tarayıcıda yeniden üretildi. CAR-122 sözleşmesi yeniden ifade ediliyor (bkz. Notlar).
+- **docs-assistant 390px taşması (CAR-172, #554)**: CAR-136 başlangıç çipleri `.btn` idi (nowrap, `flex-shrink: 0`) — kırılamayan bir 418px öge, `#/docs-assistant`'ı 390px görüntü alanının 56px ötesine itiyordu; CAR-146 daraltma deseni (v2-llm.css içinde; 800-LOC CSS kapılarına dokunulmadan) bunu 0'a indiriyor.
+- **Harita çiplerinin üst üste binmesi @390 (#552)**: 390px görüntü alanında harita meta çipleri CTA satırının üzerine biniyordu (map.css).
+- **CAR-137 — özgül hatalar + v2empty ×5 (#550)**: beş genel hata geri-dönüşü ('Error' / 'failed') özgül, eyleme dönük anahtarlara dönüştü — evaluate POST başarısızlığı, sonlandırıcı olay olmayan bir auto-pipeline akışı, scan→pipeline ekleme, repost-kümeleri yükleme, pipeline geri alması; son beş düz boş durum (`#/reports`, `#/usage`, `#/portals`, `#/activity`, `#/dashboard`) CAR-124 v2empty desenine katılıyor (açıklama + etiketli aria-hidden örnek + önceden bağlanmış eylem; 15 yeni `v2empty.*` anahtarı, dört ölü tek satırlık anahtar kaldırıldı) — tamamı ×19 sözlükte, birleştirilmiş anlık görüntü yeniden üretildi.
+- **CAR-137 — HelpHint ×13 + mode-sayfa kiti (#550)**: bağlamsal «?» ipucu artık kalan her sayfa H1'inde (pipeline, reports, dashboard, cv, portals, usage, activity, assessments, map, health, docs-assistant, settings) ve kit aracılığıyla 8 mode sayfasında duruyor (her MODES cfg'si bir `hintKey` taşıyor, `HelpHint.title` üzerinden render ediliyor).
+
+### Eklendi
+
+- **Mobile-390 düzenek (#552)**: tohumlanmış bir korpusla 390×844 boyutunda her SPA rotasının (31 kanonik + 8 mode sayfası = 39 hash) bir Playwright taraması — rota başına yatay taşma kontrolü (scrollWidth vs clientWidth, 1px tolerans, en geniş ihlalciyi adlandırır) artı bir CTA isabet kontrolü (yapışkan çubuk/çekmece/FAB birincil bir CTA'yı kapatamaz); opt-in, tarayıcı ikilisi yokken zarifçe atlanır, ağsız.
+- **Taze v2 yakalamaları ×48 (CAR-140 A fazı, #551)**: tohumlanmış, CI-izole bir fikstürden gerçek v2-arayüz ekran görüntüleri — dashboard ×19 + job-map ×19 (job-map-ta ilk kez görünüyor, job-map-vi yeni) + scan/pipeline/tracker/reports × en/ru — README'yi, yardımı ve landing'i besliyor.
+- **cvstart.org gerçek ekran görüntüleri (CAR-140 B fazı, #553)**: CAR-140 yer tutucu yuvaları gitti — landing artık gerçek v2 yakalamalarını gösteriyor (job-map vitrini + ekran görüntüsü satırları, ×19 landing yerel ayarı).
+- **CAR-137 ipuçları (#550)**: 21 yeni çevrilmiş anahtar ×19 (`help.hint.*` ×20 + mode-sayfa `hintKey`'leri) — artık her sayfa kendini yerinde açıklıyor.
+
+### Notlar
+
+- **Ctrl+K sözleşmesi (CAR-122)**: akor **komut paletini** açar — arama kutusunu doğrudan ODAKLAMAZ; arama paletten odaklanır. v1.261.0 QA kontrol listesindeki «Ctrl+K фокусит поиск» satırı geçersiz kılındı; v1.261.1 QA prompt'u güncellenmiş kontrolü taşıyor.
+- **CodeQL gerçek düzeltmeleri (#547)**: 4 uyarı kapatıldı (content.mjs sabit-anahtar yinelemesi yapısal hâle getirildi, lint taraması) — bu yamadan önce v1.261.0 main'inde yayın sonrası indi; eksiksizlik için burada listeleniyor.
+- Test tabanı: 6582 (+51); tarayıcı süiti 171–172 geçti / 0 başarısız / 1 seçime bağlı atlama; mobile-390 düzenek bağımsız çalışıyor (`node tests/playwright-mobile-390.mjs`). Hiçbir tarayıcı kaynağına dokunulmadı (kayıt defteri 121 = 116 EN + 5 RU · 116 adaptör).
+
 ## [1.261.0] — 2026-10-28
 
 **Tam inceleme dalgası 1.261.0 ile tamamlandı (tüm YÜKSEK + ORTA bulgular indi), sahibin bildirdiği dil değişimi düzeltmesi, değerlendirme-kalitesi düzeltmeleri, yardım ×18 fan-out'u, cvstart.org landing v2 — artı dalgayı belgeleyen 4 SDD/OpenSpec şartnamesi. Her düzeltme red→green fix-forward ve bir GLM-5.3-Flash taze-bağlam incelemesinden geçti.**
