@@ -8,10 +8,11 @@
  * `**`/backtick markers. ~95 such dangling runs per locale in docs/help.
  *
  * Fix (list-handler absorption): a continuation line (leading whitespace,
- * not a new block — not `#`, not `[-*] ` bullet, not a CB<n> fence
- * placeholder, not empty) joins the previous `<li>` as `<br/>`-joined
- * text. Regular / nested / numbered lists, fences and headings after a
- * list keep their existing rendering.
+ * not a new block — not `#`, not a CB<n> fence placeholder, not empty)
+ * joins the previous `<li>` as `<br/>`-joined text, and ONE level of
+ * indented `[-*] ` bullets renders as a nested `<ul>` inside that `<li>`
+ * (its own continuations join the nested item). Regular / numbered lists,
+ * fences and headings after a list keep their existing rendering.
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
@@ -56,11 +57,46 @@ test('(b) regular bullet list unchanged', () => {
   assert.equal(out, '<ul><li>one</li><li>two</li><li>three</li></ul>');
 });
 
-test('(b) nested bullet is NOT absorbed into the parent item (behavior preserved)', () => {
+test('(a) nested bullet renders a <ul> inside the parent <li> (one level)', () => {
   const out = md('- item one\n  - nested item\n- item two');
-  assert.match(out, /<li>item one<\/li>/, 'parent item must not swallow the nested bullet');
-  assert.doesNotMatch(out, /item one<br\/>- nested/);
+  assert.equal(
+    out,
+    '<ul><li>item one<ul><li>nested item</li></ul></li><li>item two</li></ul>'
+  );
+  assert.doesNotMatch(out, /item one<br\/>- nested/, 'no literal-marker absorption');
+});
+
+test('(a) the real docs/help shape: nested bullets with their own continuations', () => {
+  const out = md(
+    '- **📁 Upload CV** — pick a local file:\n' +
+    '  the server converts it:\n' +
+    '  - **Text formats** — `.md`:\n' +
+    '    are passed through.\n' +
+    '  - **Office formats** — `.docx`\n' +
+    '- **From LinkedIn** — easiest path'
+  );
+  assert.match(
+    out,
+    /<li><strong>📁 Upload CV<\/strong> — pick a local file:<br\/>the server converts it:<ul><li><strong>Text formats<\/strong> — <code>\.md<\/code>:<br\/>are passed through\.<\/li><li><strong>Office formats<\/strong> — <code>\.docx<\/code><\/li><\/ul><\/li><li><strong>From LinkedIn<\/strong>/,
+    'nested <ul> renders inside the parent <li>; nested continuations join the nested item'
+  );
+  assert.doesNotMatch(out, /\*\*/, 'no literal ** leak anywhere');
+  assert.doesNotMatch(out, /<\/ul>\n[ \t]+-/, 'no raw indented bullet run dropped after </ul>');
+});
+
+test('(в) NUL-wrapped fence placeholder inside a nested list is NOT absorbed', () => {
+  const out = md('- item one\n  - nested a\n  ```\n  code here\n  ```\n- item two');
+  assert.match(out, /<pre><code>  code here/, 'the fence still renders as a code block');
+  assert.doesNotMatch(out, /item one<br\/>/, 'the fence line must not join the parent item');
+  assert.doesNotMatch(out, /nested a<br\/>/, '…nor the nested item');
+  assert.match(out, /<li>item one<ul><li>nested a<\/li><\/ul><\/li><\/ul>/);
   assert.match(out, /<li>item two<\/li>/);
+});
+
+test('(г) heading after a nested list still renders', () => {
+  const out = md('- item one\n  - nested a\n# Heading');
+  assert.match(out, /<li>item one<ul><li>nested a<\/li><\/ul><\/li><\/ul>/);
+  assert.match(out, /<h1>Heading<\/h1>/);
 });
 
 test('(b) numbered list untouched (no <ol>, literal markers as before)', () => {
