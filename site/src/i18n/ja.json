@@ -248,7 +248,11 @@
   "demo.stageTrack": "3 · Track",
   "demo.a11y": "Simulated demo: fake job postings flow through the scan, evaluate and track stages",
   "a11y.shotTabs": "App screenshots",
-  "showcase.placeholder": "Placeholder — fresh v2 screenshot coming soon",
+  "showcase.alt.dashboard": "ダッシュボード: 自分のMarkdownファイルの上にパイプライン受信箱・トラッカーボード・統計タイル",
+  "showcase.alt.scan": "スキャン結果: 設定済みの求人ボードからの新着求人を目標職種でフィルタリング",
+  "showcase.alt.pipeline": "パイプライン: 評価待ちの求人をスコア・適合率付きの充実カードで表示",
+  "showcase.alt.tracker": "トラッカー: ステージ別ボードで応募のステータス・メモ・フォローアップを管理",
+  "showcase.alt.reports": "レポート: 各求人の完全な評価 — A–Gブロック、判定、保存済みの求人本文",
   "showcase.tabDashboard": "Dashboard",
   "showcase.tabScan": "Scan",
   "showcase.tabPipeline": "Pipeline",
@@ -260,6 +264,5 @@
   "stats.t.providers": "AI providers",
   "stats.t.license": "License",
   "stats.t.local": "Local-first",
-  "stats.note": "121 sources = 116 English board adapters + 5 Russian boards. Counts are read from the live registry when the site builds — never typed by hand.",
-  "map.placeholder": "Placeholder — fresh v2 screenshot coming soon"
+  "stats.note": "121 sources = 116 English board adapters + 5 Russian boards. Counts are read from the live registry when the site builds — never typed by hand."
 }

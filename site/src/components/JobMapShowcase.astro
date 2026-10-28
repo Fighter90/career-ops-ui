@@ -1,16 +1,17 @@
 ---
+import { Picture } from 'astro:assets';
 import { t, type Locale } from '../i18n/locales';
-import ScreenshotSlot from './ScreenshotSlot.astro';
+import { jobMapShotFor } from '../lib/screenshots';
 
 interface Props {
   locale: Locale;
 }
 const { locale } = Astro.props;
-// CAR-133: the job-map captures on disk (en/ru hand-made 2026-10-07, the rest
-// scripted around v1.249.0) predate the dark map tiles (v1.247.0), the
-// commute/relevance controls (v1.249.0) and the specialization select
-// (v1.251.0) — the section renders a labelled placeholder until CAR-140
-// captures the current map. map.alt stays the slot's accessible name.
+// Per-locale capture (synced ×19 from images/job-map-<locale>.png; a missing
+// locale falls back to the EN shot — the helper never throws). The captures
+// are the 2026-10-27 refresh: current dark tiles, commute/relevance controls
+// and the specialization select.
+const shot = jobMapShotFor(locale.file);
 const captions = [1, 2, 3].map((i) => ({
   title: t(locale, `map.c${i}.title`),
   desc: t(locale, `map.c${i}.desc`),
@@ -26,7 +27,15 @@ const captions = [1, 2, 3].map((i) => ({
     </div>
 
     <div class="reveal overflow-hidden rounded-[24px] border border-line shadow-[var(--shadow-hover)]">
-      <ScreenshotSlot label={t(locale, 'map.alt')} note={t(locale, 'map.placeholder')} />
+      <Picture
+        src={shot}
+        alt={t(locale, 'map.alt')}
+        formats={['avif', 'webp']}
+        widths={[640, 960, 1440]}
+        sizes="(max-width: 1200px) 94vw, 1160px"
+        loading="lazy"
+        class="block h-auto w-full"
+      />
     </div>
 
     <ul class="mt-8 grid gap-6 sm:grid-cols-3">

@@ -1,28 +1,30 @@
 /**
- * CAR-133 — landing v2 guards (cvstart.org).
+ * Landing v2 guards (cvstart.org).
  *
- * The redesign replaced every screenshot on the landing (all of them predated
- * the v1.260.0 v2 pipeline/tracker/reports views) with labelled placeholders
- * for CAR-140, moved the hero visual to a clearly-labelled simulated demo,
- * and added four animation systems. These guards pin the three invariants a
- * future edit is most likely to silently break:
+ * The redesign moved the hero visual to a clearly-labelled simulated demo and
+ * added four animation systems; the screenshot section now renders FRESH v2
+ * captures (the 2026-10-27 refresh: dashboard ×19, job-map ×19, plus
+ * scan/pipeline/tracker/reports EN) instead of any placeholder. These guards
+ * pin the three invariants a future edit is most likely to silently break:
  *
  *   1. MOTION SAFETY — every animation in site/src/styles/global.css is
  *      either declared inside a `prefers-reduced-motion: no-preference`
  *      block or its exact selector is disabled by an `animation: none` in a
  *      `reduce` block. The static end-state is the default; motion is the
  *      enhancement.
- *   2. HONESTY — the demo is labelled as simulated, the placeholder slots
- *      carry the CAR-140 marker, and no component renders the stale
- *      dashboard/job-map captures anymore.
- *   3. I18N — the new keys exist (non-empty) in ALL 19 site locale files
- *      and the keys orphaned by the redesign are gone.
+ *   2. HONESTY — the demo is labelled as simulated, every screenshot slot
+ *      renders a real capture of the current UI (no placeholder slots, no
+ *      hand-off markers left in the tree), and alt texts describe what is
+ *      actually shown.
+ *   3. I18N — the keys exist (non-empty) in ALL 19 site locale files and the
+ *      keys orphaned by the redesign are gone.
  *
  * CI-isolated: reads repo source files only; no server / network / browser.
+ * (The one dist-based assertion self-skips unless `site/dist/` exists.)
  */
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
-import { readFileSync, existsSync } from 'node:fs';
+import { readFileSync, existsSync, readdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
@@ -162,19 +164,100 @@ test('hero shows the simulated demo, not a stale screenshot', () => {
   assert.match(demo, /aria-hidden="true"/, 'demo rows are decorative — aria-hidden');
 });
 
-test('screenshot slots carry the CAR-140 marker; no stale capture is rendered', () => {
-  const slot = readFileSync(resolve(SITE, 'src', 'components', 'ScreenshotSlot.astro'), 'utf8');
-  assert.match(slot, /CAR-140: replace this placeholder/, 'slot missing the CAR-140 hand-off marker');
-
-  for (const comp of ['ScreenshotShowcase.astro', 'JobMapShowcase.astro']) {
-    const src = readFileSync(resolve(SITE, 'src', 'components', comp), 'utf8');
-    assert.match(src, /<ScreenshotSlot/, `${comp} must use the placeholder slot`);
-    assert.doesNotMatch(src, /astro:assets|<Picture/, `${comp} must not render a stale capture`);
-  }
+test('every screenshot slot renders a fresh v2 capture — no placeholder remains', () => {
   assert.ok(
-    !existsSync(resolve(SITE, 'src', 'lib', 'screenshots.ts')),
-    'lib/screenshots.ts should be gone — nothing renders the stale captures',
+    !existsSync(resolve(SITE, 'src', 'components', 'ScreenshotSlot.astro')),
+    'ScreenshotSlot.astro must be deleted — real captures replaced the placeholders',
   );
+
+  const showcase = readFileSync(resolve(SITE, 'src', 'components', 'ScreenshotShowcase.astro'), 'utf8');
+  assert.doesNotMatch(
+    showcase,
+    /ScreenshotSlot|shot-slot|placeholder/i,
+    'showcase must not carry placeholder remnants',
+  );
+  assert.match(showcase, /astro:assets/, 'showcase must render real captures via astro:assets');
+  // The four data-view tabs render the EN captures (only EN was captured for
+  // them); each tab must name its capture file.
+  for (const name of ['scan', 'pipeline', 'tracker', 'reports']) {
+    assert.match(showcase, new RegExp(`${name}-en\\.png`), `tab ${name} must render ${name}-en.png`);
+  }
+  // The dashboard tab is per-locale (fresh ×19, same family as job-map).
+  assert.match(showcase, /screenshotFor\(/, 'dashboard tab must pick the locale capture via lib/screenshots');
+
+  // Dashboard sits in hero visibility — eager; the four data views lazy.
+  // The panels share one templated <Picture>, so assert the loading contract
+  // itself. NOTE: Astro's <Picture> destructures loading with a 'lazy'
+  // DEFAULT, so `undefined` would still render lazy — the eager entry must
+  // produce the literal 'eager'.
+  assert.match(
+    showcase,
+    /loading=\{SHOTS\[tab\.name\]\.eager \? 'eager' : 'lazy'\}/,
+    'the loading contract must be explicit (Picture defaults undefined to lazy)',
+  );
+  assert.doesNotMatch(showcase, /loading="lazy"/, 'no hardcoded lazy on the shared Picture (flag-driven instead)');
+  assert.match(
+    showcase,
+    /dashboard: \{ src: screenshotFor\(locale\.file\), eager: true \}/,
+    'the dashboard capture alone must be eager (hero visibility)',
+  );
+
+  const jobMap = readFileSync(resolve(SITE, 'src', 'components', 'JobMapShowcase.astro'), 'utf8');
+  assert.doesNotMatch(jobMap, /ScreenshotSlot|shot-slot|placeholder/i, 'job-map must not carry placeholder remnants');
+  assert.match(jobMap, /jobMapShotFor\(/, 'job-map must use the per-locale + en-fallback helper');
+  assert.match(jobMap, /<Picture/, 'job-map must render the real capture');
+
+  const lib = readFileSync(resolve(SITE, 'src', 'lib', 'screenshots.ts'), 'utf8');
+  assert.match(lib, /import\.meta\.glob/, 'helper must resolve the synced assets via import.meta.glob');
+  assert.match(lib, /job-map-en\.png/, 'helper must pin the en fallback');
+
+  // Honesty: the alts describe real UI — they must not promise a future state.
+  const en = JSON.parse(readFileSync(resolve(SITE, 'src', 'i18n', 'en.json'), 'utf8'));
+  for (const k of ['map.alt', 'showcase.alt.dashboard', 'showcase.alt.scan', 'showcase.alt.pipeline', 'showcase.alt.tracker', 'showcase.alt.reports']) {
+    assert.doesNotMatch(en[k], /placeholder|coming soon/i, `alt ${k} must describe the capture, not a promise`);
+  }
+});
+
+test('no placeholder hand-off markers remain anywhere in site/ or tests/', () => {
+  const hits = [];
+  // Assembled so this file's own source does not carry the contiguous marker.
+  const MARKER = ['CAR', '140'].join('-');
+  // node_modules/dist/.astro are tooling output; content/ + generated/ are
+  // written by sync-assets at prebuild and mirror the repo CHANGELOGs/help
+  // verbatim — release-notes prose legitimately names the (now closed) work
+  // item, and the changelog-parity gates pin that text. Hand-written source
+  // must be clean; generated mirrors are out of scope.
+  const SKIP_DIRS = new Set(['node_modules', 'dist', '.astro', 'content', 'generated']);
+  const TEXT = /\.(mjs|js|astro|ts|css|json|md|html|txt|yml)$/;
+  const walk = (dir) => {
+    for (const e of readdirSync(dir, { withFileTypes: true })) {
+      const p = resolve(dir, e.name);
+      if (e.isDirectory()) {
+        if (!SKIP_DIRS.has(e.name)) walk(p);
+      } else if (TEXT.test(e.name) && readFileSync(p, 'utf8').includes(MARKER)) {
+        hits.push(p);
+      }
+    }
+  };
+  walk(SITE);
+  walk(resolve(ROOT, 'tests'));
+  assert.deepEqual(hits, [], `placeholder hand-off markers left in:\n  ${hits.join('\n  ')}`);
+});
+
+test('the built EN landing renders the real captures (when dist exists)', () => {
+  const index = resolve(SITE, 'dist', 'index.html');
+  if (!existsSync(index)) return; // dist is a build artifact — checked after `cd site && npm run build`
+  const html = readFileSync(index, 'utf8');
+  assert.doesNotMatch(html, /placeholder/i, 'dist/index.html must not mention placeholders');
+  for (const name of ['dashboard', 'scan', 'pipeline', 'tracker', 'reports']) {
+    assert.match(html, new RegExp(`${name}-en\\.[a-zA-Z0-9_.-]+\\.(?:png|webp|avif)`),
+      `dist/index.html must embed a ${name} capture`);
+  }
+  // Loading contract survived the build: dashboard eager (hero visibility),
+  // the data views lazy.
+  const imgTag = (needle) => html.match(new RegExp(`<img[^>]*${needle}[^>]*>`))?.[0] ?? '';
+  assert.doesNotMatch(imgTag('dashboard-en'), /loading="lazy"/, 'dashboard capture must render eager');
+  assert.match(imgTag('scan-en'), /loading="lazy"/, 'scan capture must render lazy');
 });
 
 test('the screenshot switcher is a real ARIA tablist reusing the site tab engine', () => {
@@ -207,18 +290,20 @@ test('the numbers band derives every count from facts.json (never a literal)', (
   assert.doesNotMatch(markup, /\b12[01]\b/, 'rendered markup must not hardcode the sources count');
 });
 
-test('the 22 CAR-133 keys exist in all 19 site locale dictionaries', () => {
+test('the landing screenshot keys exist in all 19 site locale dictionaries', () => {
   const KEYS = [
     'hero.ctaDocs',
     'demo.badge', 'demo.note', 'demo.stageScan', 'demo.stageEval', 'demo.stageTrack', 'demo.a11y',
     'a11y.shotTabs',
-    'showcase.placeholder', 'showcase.tabDashboard', 'showcase.tabScan', 'showcase.tabPipeline',
+    'showcase.alt.dashboard', 'showcase.alt.scan', 'showcase.alt.pipeline',
+    'showcase.alt.tracker', 'showcase.alt.reports',
+    'showcase.tabDashboard', 'showcase.tabScan', 'showcase.tabPipeline',
     'showcase.tabTracker', 'showcase.tabReports',
     'stats.t.sources', 'stats.t.tests', 'stats.t.langs', 'stats.t.providers', 'stats.t.license',
     'stats.t.local', 'stats.note',
-    'map.placeholder',
+    'map.alt',
   ];
-  assert.equal(KEYS.length, 22);
+  assert.equal(KEYS.length, 26);
   for (const code of SITE_LOCALES) {
     const dict = JSON.parse(readFileSync(resolve(SITE, 'src', 'i18n', `${code}.json`), 'utf8'));
     for (const k of KEYS) {
@@ -230,6 +315,7 @@ test('the 22 CAR-133 keys exist in all 19 site locale dictionaries', () => {
 
 test('the keys orphaned by the redesign are gone from all 19 dictionaries', () => {
   const DEAD = ['hero.alt', 'a11y.browserFrame', 'showcase.alt',
+    'showcase.placeholder', 'map.placeholder',
     'stats.mit', 'stats.langs', 'stats.adapters', 'stats.providers', 'stats.tests', 'stats.local'];
   for (const code of SITE_LOCALES) {
     const dict = JSON.parse(readFileSync(resolve(SITE, 'src', 'i18n', `${code}.json`), 'utf8'));

@@ -248,7 +248,11 @@
   "demo.stageTrack": "3 · Track",
   "demo.a11y": "Simulated demo: fake job postings flow through the scan, evaluate and track stages",
   "a11y.shotTabs": "App screenshots",
-  "showcase.placeholder": "Placeholder — fresh v2 screenshot coming soon",
+  "showcase.alt.dashboard": "Bảng điều khiển: hộp thư pipeline, bảng tracker và ô thống kê trên chính các tệp markdown của bạn",
+  "showcase.alt.scan": "Kết quả quét: tin tuyển dụng mới từ các bảng đã cấu hình, lọc theo vai trò mục tiêu của bạn",
+  "showcase.alt.pipeline": "Pipeline: tin đang chờ đánh giá — điểm số và độ phù hợp trên thẻ đã làm giàu",
+  "showcase.alt.tracker": "Tracker: hồ sơ ứng tuyển trên bảng theo giai đoạn với trạng thái, ghi chú và follow-up",
+  "showcase.alt.reports": "Báo cáo: đánh giá đầy đủ từng tin — khối A–G, phán quyết và mô tả tin đã lưu trữ",
   "showcase.tabDashboard": "Dashboard",
   "showcase.tabScan": "Scan",
   "showcase.tabPipeline": "Pipeline",
@@ -260,6 +264,5 @@
   "stats.t.providers": "AI providers",
   "stats.t.license": "License",
   "stats.t.local": "Local-first",
-  "stats.note": "121 sources = 116 English board adapters + 5 Russian boards. Counts are read from the live registry when the site builds — never typed by hand.",
-  "map.placeholder": "Placeholder — fresh v2 screenshot coming soon"
+  "stats.note": "121 sources = 116 English board adapters + 5 Russian boards. Counts are read from the live registry when the site builds — never typed by hand."
 }

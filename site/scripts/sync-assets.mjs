@@ -40,8 +40,10 @@ function fail(msg) {
 const shotsSrc = join(ROOT, 'images');
 const shotsDst = join(SITE, 'src', 'assets', 'screenshots');
 mkdirSync(shotsDst, { recursive: true });
-// dashboard-<locale>.png (README + showcase) and job-map-<locale>.png (job-map section).
-const shots = readdirSync(shotsSrc).filter((f) => /^(?:dashboard|job-map)-.+\.png$/.test(f));
+// dashboard-<locale>.png (README + showcase), job-map-<locale>.png (job-map
+// section) and the four data-view captures scan/pipeline/tracker/reports-*.png
+// (showcase tabs; EN only — the ru variants stay in images/ru/).
+const shots = readdirSync(shotsSrc).filter((f) => /^(?:dashboard|job-map|scan|pipeline|tracker|reports)-.+\.png$/.test(f));
 if (shots.length === 0) fail(`no dashboard-*.png found in ${shotsSrc}`);
 for (const f of shots) cpSync(join(shotsSrc, f), join(shotsDst, f));
 console.log(`[sync-assets] ${shots.length} screenshots -> src/assets/screenshots/`);

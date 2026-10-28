@@ -248,7 +248,11 @@
   "demo.stageTrack": "3 · Track",
   "demo.a11y": "Simulated demo: fake job postings flow through the scan, evaluate and track stages",
   "a11y.shotTabs": "App screenshots",
-  "showcase.placeholder": "Placeholder — fresh v2 screenshot coming soon",
+  "showcase.alt.dashboard": "대시보드: 내 마크다운 파일 위에 파이프라인 받은 편지함, 트래커 보드, 통계 타일",
+  "showcase.alt.scan": "스캔 결과: 설정된 채용판의 새 공고를 목표 직무 기준으로 필터링",
+  "showcase.alt.pipeline": "파이프라인: 평가 대기 공고를 점수와 적합도와 함께 강화된 카드로 표시",
+  "showcase.alt.tracker": "트래커: 단계별 보드에서 지원 현황을 상태·메모·후속 조치와 함께 관리",
+  "showcase.alt.reports": "리포트: 각 공고의 전체 평가 — A–G 블록, 판정, 보관된 채용 공고 본문",
   "showcase.tabDashboard": "Dashboard",
   "showcase.tabScan": "Scan",
   "showcase.tabPipeline": "Pipeline",
@@ -260,6 +264,5 @@
   "stats.t.providers": "AI providers",
   "stats.t.license": "License",
   "stats.t.local": "Local-first",
-  "stats.note": "121 sources = 116 English board adapters + 5 Russian boards. Counts are read from the live registry when the site builds — never typed by hand.",
-  "map.placeholder": "Placeholder — fresh v2 screenshot coming soon"
+  "stats.note": "121 sources = 116 English board adapters + 5 Russian boards. Counts are read from the live registry when the site builds — never typed by hand."
 }

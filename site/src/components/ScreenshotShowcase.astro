@@ -1,21 +1,36 @@
 ---
+import { Picture } from 'astro:assets';
 import { t, type Locale } from '../i18n/locales';
-import ScreenshotSlot from './ScreenshotSlot.astro';
+import { screenshotFor } from '../lib/screenshots';
+import scanEn from '../assets/screenshots/scan-en.png';
+import pipelineEn from '../assets/screenshots/pipeline-en.png';
+import trackerEn from '../assets/screenshots/tracker-en.png';
+import reportsEn from '../assets/screenshots/reports-en.png';
 
 interface Props {
   locale: Locale;
 }
 const { locale } = Astro.props;
 
-// CAR-133: every capture this section used to show (dashboard-*.png,
-// v1.245.0) predates the v2 pipeline (CAR-116), tracker kanban (CAR-117)
-// and reports v2 (CAR-118) shipped in v1.260.0 — showing it would
-// misrepresent the current product. Each v2 screen gets a tab and a
-// clearly-marked placeholder slot until CAR-140 captures fresh ones.
-const TABS = ['dashboard', 'scan', 'pipeline', 'tracker', 'reports'].map((name) => ({
+// Every tab renders a real capture of the current v2 UI (the 2026-10-27
+// refresh). The dashboard tab shows the reader's own locale capture (synced
+// ×19, same family as the job-map shots); the four data-view tabs render the
+// EN captures — only EN was captured for them (the ru variants stay in
+// images/ru/ for the localized READMEs).
+// The dashboard capture sits in hero visibility, so it loads eagerly; the
+// rest are below the fold and load lazily.
+const TABS = (['dashboard', 'scan', 'pipeline', 'tracker', 'reports'] as const).map((name) => ({
   name,
   label: t(locale, `showcase.tab${name[0].toUpperCase()}${name.slice(1)}`),
+  alt: t(locale, `showcase.alt.${name}`),
 }));
+const SHOTS: Record<string, { src: typeof scanEn; eager: boolean }> = {
+  dashboard: { src: screenshotFor(locale.file), eager: true },
+  scan: { src: scanEn, eager: false },
+  pipeline: { src: pipelineEn, eager: false },
+  tracker: { src: trackerEn, eager: false },
+  reports: { src: reportsEn, eager: false },
+};
 const id = 'shots';
 const captions = [1, 2, 3].map((i) => ({
   title: t(locale, `showcase.c${i}.title`),
@@ -58,9 +73,14 @@ const captions = [1, 2, 3].map((i) => ({
           data-panel={tab.name}
           hidden={i !== 0}
         >
-          <ScreenshotSlot
-            label={tab.label}
-            note={t(locale, 'showcase.placeholder')}
+          <Picture
+            src={SHOTS[tab.name].src}
+            alt={tab.alt}
+            formats={['avif', 'webp']}
+            widths={[640, 960, 1440]}
+            sizes="(max-width: 1200px) 94vw, 1160px"
+            loading={SHOTS[tab.name].eager ? 'eager' : 'lazy'}
+            class="block h-auto w-full"
           />
         </div>
       ))}

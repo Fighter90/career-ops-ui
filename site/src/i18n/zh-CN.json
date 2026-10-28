@@ -248,7 +248,11 @@
   "demo.stageTrack": "3 · Track",
   "demo.a11y": "Simulated demo: fake job postings flow through the scan, evaluate and track stages",
   "a11y.shotTabs": "App screenshots",
-  "showcase.placeholder": "Placeholder — fresh v2 screenshot coming soon",
+  "showcase.alt.dashboard": "仪表盘：在你自己的 Markdown 文件之上呈现管线收件箱、跟踪看板和统计卡片",
+  "showcase.alt.scan": "扫描结果：来自已配置职位板的新职位，按你的目标职位过滤",
+  "showcase.alt.pipeline": "管线：等待评估的职位，富卡片上显示评分与匹配度",
+  "showcase.alt.tracker": "跟踪器：按阶段看板管理申请的状态、备注和后续跟进",
+  "showcase.alt.reports": "报告：每个职位的完整评估 — A–G 模块、结论与归档的职位描述",
   "showcase.tabDashboard": "Dashboard",
   "showcase.tabScan": "Scan",
   "showcase.tabPipeline": "Pipeline",
@@ -260,6 +264,5 @@
   "stats.t.providers": "AI providers",
   "stats.t.license": "License",
   "stats.t.local": "Local-first",
-  "stats.note": "121 sources = 116 English board adapters + 5 Russian boards. Counts are read from the live registry when the site builds — never typed by hand.",
-  "map.placeholder": "Placeholder — fresh v2 screenshot coming soon"
+  "stats.note": "121 sources = 116 English board adapters + 5 Russian boards. Counts are read from the live registry when the site builds — never typed by hand."
 }
