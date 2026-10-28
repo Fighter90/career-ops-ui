@@ -32,7 +32,18 @@ import { fetchLever } from './sources/lever.mjs';
 // The next ATS we add goes only into ALL_ADAPTERS — no scanner change.
 import { resolveAdapter, ALL_ADAPTERS } from './portals/registry.mjs';
 
-const CONCURRENCY = 8;
+// CAR-178 — default fan-out, ported from the parent's scan-ats-full host
+// pool (upstream 5ef0676a "cap single-host ATS sweeps at their own
+// concurrency" and the keyed hostname limiter that followed it). The pool
+// keeps up to CONCURRENCY companies in flight, but the per-host limiter in
+// runEnScan caps any ONE ATS host at PER_HOST_CONCURRENCY: Greenhouse, Lever
+// and Ashby each serve their ENTIRE directory from a single hostname
+// (boards-api.greenhouse.io, api.lever.co, api.ashbyhq.com), so an uncapped
+// pool would hold 32 sustained connections to one API and earn an HTTP
+// throttle — and a throttled board silently loses live postings rather than
+// failing loudly.
+const CONCURRENCY = 32;
+const PER_HOST_CONCURRENCY = 10;
 
 // v1.76.0 — the scan result display is NO LONGER CAPPED. Every matched
 // (post-filter) result is stored in data/last-scan.json and the #/scan table
@@ -155,6 +166,54 @@ async function pMap(items, mapper, concurrency) {
 }
 
 /**
+ * CAR-178 — per-key semaphore: at most `limit` concurrent `fn` calls per
+ * key while any number of keys run in parallel (the parent scan-ats-full
+ * keyed limiter, verbatim). A released slot hands off directly to the next
+ * waiter for its key; a key's state is deleted once it goes idle, so the
+ * map cannot grow with the number of hosts ever seen.
+ * @param {number} limit
+ * @returns {<T>(key: string, fn: () => Promise<T>) => Promise<T>}
+ */
+export function createKeyedLimiter(limit) {
+  const states = new Map();
+  return async function withKeySlot(key, fn) {
+    let state = states.get(key);
+    if (!state) {
+      state = { active: 0, queue: [] };
+      states.set(key, state);
+    }
+    if (state.active >= limit) {
+      await new Promise((resolve) => state.queue.push(resolve));
+    } else {
+      state.active++;
+    }
+    try {
+      return await fn();
+    } finally {
+      const next = state.queue.shift();
+      if (next) next();
+      else {
+        state.active--;
+        if (state.active === 0) states.delete(key);
+      }
+    }
+  };
+}
+
+/**
+ * CAR-178 — the ATS host a company's fetch will actually hit: the hostname
+ * of the adapter-built endpoint. Entries whose endpoint is not a URL
+ * (config-driven sources resolve their URL inside the fetcher) share one
+ * conservative bucket per adapter type.
+ * @param {{ _api: { url: unknown, type: string }, name?: string }} c
+ * @returns {string}
+ */
+function hostKeyFor(c) {
+  try { return new URL(c._api.url).hostname.toLowerCase(); }
+  catch { return String(c._api.type || c.name || 'unknown'); }
+}
+
+/**
  * Run an EN scan.
  *
  * Options:
@@ -268,6 +327,13 @@ export async function runEnScan(opts = {}) {
   // flag lives on the array and is lost by the map/slice below, so it is
   // collected here to flow into the scan result and the snapshot.
   const truncatedSources = [];
+  // CAR-178 — one keyed limiter per run: the pool may hold CONCURRENCY
+  // companies in flight, but a single ATS host never takes more than
+  // PER_HOST_CONCURRENCY concurrent fetches. Detection, quarantine, dedup
+  // and the indexed pMap collection are untouched — results are still
+  // gathered by input index, so the saved snapshot is identical to a
+  // sequential run's whatever the completion order.
+  const withHostSlot = createKeyedLimiter(PER_HOST_CONCURRENCY);
   const fetchedPerCo = await pMap(withApi, async (c) => {
     if (signal?.aborted) return [];
     const fetcher = fetcherFor(c._api.type);
@@ -276,7 +342,9 @@ export async function runEnScan(opts = {}) {
       // v1.75.0 — thread the resolved company entry through so config-driven
       // sources (ibm / arbeitsagentur / glints / jobstreet) can read their
       // `<provider>:` block. URL-detected ATS fetchers ignore the extra opt.
-      const items = await fetcher(c._api.url, { fetchImpl, signal, company: c });
+      // CAR-178 — the per-host slot wraps ONLY the fetch; filters, error
+      // handling and progress below run outside it.
+      const items = await withHostSlot(hostKeyFor(c), () => fetcher(c._api.url, { fetchImpl, signal, company: c }));
       // Stamp company name on each (Greenhouse fills its own; Ashby/Lever do not),
       // plus the portals ENTRY the row was fetched for (`_entry`): the snapshot
       // carry-over (R-12, CAR-91) must match the failed set against the entry,
