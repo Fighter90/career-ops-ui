@@ -1,14 +1,14 @@
 # QA regression — v1.261.1 (prod-QA client fixes + CAR-137 completion + CAR-140 screenshots)
 
-> База: v1.261.0 → v1.261.1. Тесты: **6582** (+51). Браузер: **171–172 pass / 0 fail / 1 opt-in skip**
+> База: v1.261.0 → v1.261.1. Тесты: **6594** (+63). Браузер: **171–172 pass / 0 fail / 1 opt-in skip**
 > + mobile-390 harness (39 маршрутов, отдельный запуск). Источник фиксов: remote-QA прода v1.261.0
 > (run 40602310441; Linear CAR-170/172) + CAR-137/140 доволка.
 > Примечание: PR #554 (two-pager TDZ, Ctrl+K e.code, docs-assistant shrink) после мерджа добавит
-> **+6** тестов → ожидаемый счёт релиза **6588**; цифры ниже проверяются по факту мерджа.
+> Финальный счёт релиза: **6594 теста / 6588 pass / 6 skip** (по факту мерджа #554/#555/#556/#548).
 
 ## §0 — Ворота
 ```bash
-npm run test:ci                 # 6582 pass (6588 после #554), exit 0
+npm run test:ci                 # 6594 tests / 6588 pass, exit 0
 npm run test:e2e:browser        # 172 total / 171 pass / 1 opt-in skip
 node tests/playwright-mobile-390.mjs   # 39 маршрутов @390px — 0 overflow, 0 covered CTA
 node evals/workflow/run.mjs

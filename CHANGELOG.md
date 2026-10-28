@@ -31,7 +31,7 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 - **Ctrl+K contract (CAR-122)**: the chord opens the **command palette** — it does NOT focus the search box directly; search is focused from the palette. The v1.261.0 QA checklist line «Ctrl+K фокусит поиск» is superseded; the v1.261.1 QA prompt carries the updated check.
 - **CodeQL real-fixes (#547)**: 4 alerts closed (content.mjs literal-key iteration made structural, lint sweep) — landed post-release on v1.261.0 main before this patch; listed here for completeness.
-- Tests 6582 (+51); browser suite 171–172 pass / 0 fail / 1 opt-in skip; the mobile-390 harness runs standalone (`node tests/playwright-mobile-390.mjs`). No scanner sources touched (registry 121 = 116 EN + 5 RU · 116 adapters).
+- Tests 6594 (+63); browser suite 171–172 pass / 0 fail / 1 opt-in skip; the mobile-390 harness ships in `test:e2e:browser` (also standalone: `node tests/playwright-mobile-390.mjs`). No scanner sources touched (registry 121 = 116 EN + 5 RU · 116 adapters).
 
 ## [1.261.0] — 2026-10-28
 
