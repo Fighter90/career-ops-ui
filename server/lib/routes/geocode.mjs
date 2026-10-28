@@ -19,10 +19,10 @@
  * checkout (gitignored, never the parent project). The host is fixed by the
  * operator, never by a request, so no SSRF surface.
  */
-import { readFileSync, writeFileSync, mkdirSync } from 'node:fs';
+import { readFileSync, mkdirSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { WEB_UI_ROOT } from '../paths.mjs';
-import { withFileLock } from '../file-lock.mjs';
+import { withFileLock, atomicWrite } from '../file-lock.mjs';
 
 const NOMINATIM_BASE = (process.env.NOMINATIM_URL || 'https://nominatim.openstreetmap.org').replace(/\/+$/, '');
 const NOMINATIM = NOMINATIM_BASE + '/search';
@@ -190,7 +190,11 @@ async function flushGeocodeCacheNow() {
     await withFileLock(cacheFile, () => {
       lockWrites++;
       try {
-        writeFileSync(cacheFile, JSON.stringify(Object.fromEntries(entries)));
+        // CAR-173 — atomicWrite (same-dir temp + rename), like every other
+        // shared-file write since FULL-R1/FULL-M1: a bare writeFileSync of the
+        // target truncates it first, so a crash/OOM/SIGKILL mid-write left a
+        // torn file and the next boot's JSON.parse discarded the WHOLE cache.
+        atomicWrite(cacheFile, JSON.stringify(Object.fromEntries(entries)));
       } finally {
         lockWrites--;
       }
@@ -211,7 +215,9 @@ function flushSyncBestEffort() {
   if (!dirty || !cache) return;
   try {
     mkdirSync(dirname(cacheFile), { recursive: true });
-    writeFileSync(cacheFile, JSON.stringify(Object.fromEntries(persistableEntries())));
+    // CAR-173 — atomicWrite is sync (temp + rename), so it is allowed in the
+    // `exit` hook and a torn target is impossible here too.
+    atomicWrite(cacheFile, JSON.stringify(Object.fromEntries(persistableEntries())));
   } catch { /* best effort — the process is exiting */ }
 }
 
