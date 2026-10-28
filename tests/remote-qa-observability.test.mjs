@@ -54,8 +54,16 @@ test('collectErrTexts: both failing sources are named and the prod host is redac
   assert.equal(errTexts.length, 2);
   assert.match(errTexts[0], /greenhouse error/);
   assert.match(errTexts[1], /lever error/);
-  assert.ok(!errTexts.join('\n').includes('prod.example.org'), 'raw host must not survive');
-  assert.match(errTexts[0], /<prod>/);
+  // the makeRedactor contract, asserted exactly — substring inclusion proves nothing
+  // about WHICH host was masked, so pin the whole masked output and forbid the raw
+  // host as a standalone token (boundary-guarded, so a longer host sharing the
+  // suffix still fails the check only when it is genuinely this one).
+  assert.deepEqual(errTexts, [
+    '✗ greenhouse error: fetch failed — GET <prod>/api/scan (see server log)',
+    '✗ lever error: timeout after 60s',
+  ]);
+  assert.doesNotMatch(errTexts.join('\n'), /(?<![\w.-])prod\.example\.org(?![\w-])/,
+    'raw host must not survive as a standalone token');
 });
 
 test('collectErrTexts: capped at 10 samples, whitespace flattened, empties dropped', () => {
@@ -101,7 +109,16 @@ test('scanSummaryBlock: samples become a "stderr samples" sub-list, host redacte
   ], redact) });
   assert.match(block, /stderr lines 2/);
   assert.match(block, /stderr samples:\n- ✗ greenhouse error[^\n]*<prod>[^\n]*\| y\n- ✗ lever error: timeout/);
-  assert.ok(!block.includes('prod.example.org'));
+  // exact masked block from the makeRedactor contract — not a host-substring check
+  assert.equal(block, [
+    '**Scan (#/scan, all sources):** 87s · ATS NEW=3 · Regional NEW=1 · stderr lines 2 · result rows 410 → 414',
+    '',
+    'stderr samples:',
+    '- ✗ greenhouse error: fetch failed <prod>/x \\| y',
+    '- ✗ lever error: timeout',
+  ].join('\n'));
+  assert.doesNotMatch(block, /(?<![\w.-])prod\.example\.org(?![\w-])/,
+    'raw host must not survive as a standalone token');
 });
 
 test('summaryCell: an eval with usage gains "tok ~N"; without it the legacy cell is byte-identical', () => {
