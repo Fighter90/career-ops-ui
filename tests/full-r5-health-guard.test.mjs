@@ -79,9 +79,15 @@ async function renderHealth(payload) {
     },
     I18n: { t: (k, f) => (f === undefined ? k : f) },
   };
+  // CAR-137 — the health H1 is built via HelpHint.title(); inert stand-in.
+  w.HelpHint = {
+    title: (text) => w.UI.el('h1', { className: 'page-title' }, [w.UI.el('span', null, text)]),
+    icon: () => w.UI.el('button', { className: 'help-hint', type: 'button' }, '?'),
+    close() {},
+  };
   // eslint-disable-next-line no-new-func
-  new Function('Router', 'API', 'UI', 'I18n', 'document', SRC)(
-    w.Router, w.API, w.UI, w.I18n,
+  new Function('Router', 'API', 'UI', 'I18n', 'HelpHint', 'document', SRC)(
+    w.Router, w.API, w.UI, w.I18n, w.HelpHint,
     { getElementById: () => null, head: { appendChild() {} } },
   );
   assert.ok(w.handler, 'health.js must register the health route');

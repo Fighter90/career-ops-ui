@@ -1,4 +1,4 @@
-/* global Router, API, UI, I18n */
+/* global Router, API, UI, I18n, HelpHint */
 /**
  * #/portals — the companies the scanner watches (parent `portals.yml`
  * `tracked_companies:`) + an on-demand liveness check + "Discover ATS board".
@@ -24,6 +24,8 @@
  * portals.enable/disable/enabledToast/disabledToast/toggleFailed, the
  * portals.* discover set, health.badge* / health.fix*.
  */
+// CAR-137 i18n: the v2empty.portals.* empty-state strings live in all 19
+// locale dicts (the ×19 fan-out landed in the same change).
 
 // ── CAR-121 · pure helpers (no DOM / closure deps — vm-extractable) ──
 
@@ -223,7 +225,7 @@ Router.register('portals', async () => {
   }
 
   const root = c('div');
-  root.appendChild(c('h1', { className: 'page-title' }, t('portals.title', 'Portals')));
+  root.appendChild(HelpHint.title(t('portals.title', 'Portals'), 'help.hint.portals'));
   root.appendChild(c('p', { className: 'page-subtitle' },
     t('portals.subtitle', 'The companies the scanner watches for new roles (portals.yml). Run a health check to catch ATS slugs that have quietly broken — a 404 means that company silently disappears from every future scan.')));
 
@@ -441,7 +443,32 @@ Router.register('portals', async () => {
   function renderList() {
     listWrap.textContent = '';
     if (!companies.length) {
-      listWrap.appendChild(c('p', { style: { color: 'var(--foggy)' } }, t('portals.empty', 'No companies are tracked yet. Add tracked_companies to portals.yml.')));
+      // CAR-137 — the v2empty pattern (CAR-124): explanation + a tagged,
+      // decorative example of a tracked-company card + the real first
+      // step — the Discover block already on this page (scroll + focus,
+      // no duplicate discover UI, no extra network call).
+      listWrap.appendChild(c('div', { className: 'empty' }, [
+        c('p', { style: { fontWeight: 600, margin: '0 0 4px' } },
+          t('v2empty.portals.emptyTitle', 'No companies tracked yet')),
+        c('p', { style: { color: 'var(--foggy)', fontSize: '13px', margin: '0 0 12px' } },
+          t('v2empty.portals.emptyBody', 'Discover a company\'s job board below (Greenhouse, Ashby, or Lever) and add it to the watch list — tracked companies appear here as cards like the one below.')),
+        c('div', { className: 'v2-empty-example', 'aria-hidden': 'true' }, [
+          c('span', { className: 'v2-empty-example__tag' }, t('v2empty.exampleTag', 'Example')),
+          c('div', { style: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px' } }, [
+            c('span', { style: { fontWeight: '700', fontSize: '14px' } }, 'Acme Robotics'),
+            c('span', { className: 'tag' }, 'Greenhouse'),
+            c('span', { style: { color: 'var(--foggy)', fontSize: '12px' } }, 'boards.greenhouse.io/acme'),
+          ]),
+        ]),
+        c('p', { style: { margin: '12px 0 0' } },
+          c('button', {
+            className: 'btn btn-primary', type: 'button',
+            onClick: () => {
+              discCard.scrollIntoView({ behavior: 'smooth', block: 'start' });
+              discInput.focus({ preventScroll: true });
+            },
+          }, '🔎 ' + t('v2empty.portals.discover', 'Discover a company'))),
+      ]));
       return;
     }
     const vis = companies.filter((co) => matchState(co, stateFilter) && matchPortal(co, query));

@@ -1,9 +1,11 @@
-/* global Router, API, UI, I18n, ReportOps */
+/* global Router, API, UI, I18n, HelpHint, ReportOps */
 // The rep2.* keys below (CAR-118 #/reports v2) are translated in all 19
 // locale dicts (public/js/lib/locales/i18n-dict.<lang>.js) and enforced by
 // tests/i18n-coverage.test.mjs. The old rep.thr45/40/35 keys are no longer
 // referenced here: their dict values carried CLI commands and CAR-118 bans
 // those from this UI (the action copy is the rep2.act* keys).
+// CAR-137 i18n: the v2empty.reports.* empty-state strings live in all 19
+// locale dicts (the ×19 fan-out landed in the same change).
 Router.register('reports', async (params) => {
   const c = UI.el;
   const t = (k, f) => I18n.t(k, f);
@@ -40,17 +42,35 @@ Router.register('reports', async (params) => {
   const reports = data.reports || [];
 
   if (reports.length === 0) {
+    // CAR-137 — the v2empty pattern (CAR-124): explanation + a tagged,
+    // decorative example of the filled state + the real first step.
     return c('div', null, [
       c('header', { className: 'page-header' }, [
         c('div', null, [
-          c('h1', { className: 'page-title' }, t('rep.title')),
+          HelpHint.title(t('rep.title'), 'help.hint.reports'),
           // QA BUG-010 — the populated list view has a subtitle; the
           // empty state was the only page missing the descriptive line.
           c('p', { className: 'page-subtitle' },
             t('rep.subtitle', 'Saved evaluation & deep-research reports from reports/')),
         ]),
       ]),
-      c('div', { className: 'empty' }, t('rep.empty')),
+      c('div', { className: 'empty' }, [
+        c('p', { style: { fontWeight: 600, margin: '0 0 4px' } },
+          t('v2empty.reports.emptyTitle', 'No reports yet')),
+        c('p', { style: { color: 'var(--foggy)', fontSize: '13px', margin: '0 0 12px' } },
+          t('v2empty.reports.emptyBody', 'Evaluate your first job posting to generate a scored report — it lands here as a searchable row like the one below.')),
+        c('div', { className: 'v2-empty-example', 'aria-hidden': 'true' }, [
+          c('span', { className: 'v2-empty-example__tag' }, t('v2empty.exampleTag', 'Example')),
+          c('div', { style: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px' } }, [
+            c('span', { style: { fontWeight: '700', fontSize: '14px' } }, 'Acme Robotics — Senior Backend Engineer'),
+            c('span', { className: 'score-pill score-good' }, '4.5/5'),
+            c('span', { style: { color: 'var(--foggy)', fontSize: '12px' } }, '2026-10-01'),
+          ]),
+        ]),
+        c('p', { style: { margin: '12px 0 0' } },
+          c('a', { className: 'btn btn-primary', href: '#/evaluate' },
+            '▶ ' + t('v2empty.reports.openEvaluate', 'Run an evaluation'))),
+      ]),
     ]);
   }
 
@@ -523,7 +543,7 @@ Router.register('reports', async (params) => {
   return c('div', null, [
     c('header', { className: 'page-header' }, [
       c('div', null, [
-        c('h1', { className: 'page-title' }, t('rep.title')),
+        HelpHint.title(t('rep.title'), 'help.hint.reports'),
         c('p', { className: 'page-subtitle' }, `${reports.length} ${t('rep.inDir')} reports/`),
       ]),
       countEl,

@@ -257,8 +257,8 @@ test('CAR-119 #8: mode-page picker fills company/role inputs from a tracker pick
     },
   });
   // eslint-disable-next-line no-new-func
-  new Function('window', 'document', 'Router', 'API', 'UI', 'I18n', 'ProviderStatus', read('public/js/views/mode-page.js'))(
-    w, doc, w.Router, w.API, w.UI, w.I18n, w.ProviderStatus,
+  new Function('window', 'document', 'Router', 'API', 'UI', 'I18n', 'ProviderStatus', 'HelpHint', read('public/js/views/mode-page.js'))(
+    w, doc, w.Router, w.API, w.UI, w.I18n, w.ProviderStatus, w.HelpHint,
   );
   assert.ok(routes.contacto, 'contacto registered');
   const root = await routes.contacto();

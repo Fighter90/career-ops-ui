@@ -47,7 +47,8 @@ Router.register('evaluate', async () => {
       renderResult(r);
     } catch (e) {
       out.innerHTML = '';
-      out.appendChild(c('div', { className: 'empty' }, t('common.error') + ': ' + ((e && e.message) || 'failed')));
+      // CAR-137 — the bare 'failed' fallback became a specific, actionable message.
+      out.appendChild(c('div', { className: 'empty' }, t('common.error') + ': ' + ((e && e.message) || t('err.evaluate.failed', 'Evaluation failed — check a provider key on #/config, or run again.'))));
     }
   }
 

@@ -1,4 +1,4 @@
-/* global Router, API, UI, I18n */
+/* global Router, API, UI, I18n, HelpHint */
 /**
  * #/docs-assistant — "Ask the docs" (v1.102.0).
  *
@@ -29,7 +29,7 @@ Router.register('docs-assistant', async () => {
   const t = (k, f) => I18n.t(k, f);
 
   const root = c('div');
-  root.appendChild(c('h1', { className: 'page-title' }, t('docs.title', 'Ask the docs')));
+  root.appendChild(HelpHint.title(t('docs.title', 'Ask the docs'), 'help.hint.docsAssistant'));
   root.appendChild(c('p', { className: 'page-subtitle' },
     t('docs.subtitle', 'Ask how to use anything in the app. Answers come only from the in-app help guide in your language — nothing about your CV or job search is read.')));
 

@@ -1,4 +1,4 @@
-/* global Router, API, UI, I18n */
+/* global Router, API, UI, I18n, HelpHint */
 Router.register('health', async () => {
   const c = UI.el;
   const t = (k, f) => I18n.t(k, f);
@@ -151,7 +151,7 @@ Router.register('health', async () => {
   // but never shipped. One tree, built once above.
   const header = c('header', { className: 'page-header' }, [
     c('div', null, [
-      c('h1', { className: 'page-title' }, t('health.title')),
+      HelpHint.title(t('health.title'), 'help.hint.health'),
       data && data.version ? c('p', { className: 'page-subtitle' }, `career-ops-ui v${data.version}`) : null,
     ]),
     c('div', { className: 'flex gap-3' }, [

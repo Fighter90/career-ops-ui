@@ -1,4 +1,6 @@
-/* global Router, API, UI, I18n */
+/* global Router, API, UI, I18n, HelpHint */
+// CAR-137 i18n: the v2empty.activity.* empty-state strings live in all 19
+// locale dicts (the ×19 fan-out landed in the same change).
 Router.register('activity', async () => {
   const c = UI.el;
   const t = (k, f) => I18n.t(k, f);
@@ -44,7 +46,26 @@ Router.register('activity', async () => {
   }
 
   const tableBody = c('tbody');
-  const empty = c('div', { className: 'empty' }, t('activity.empty'));
+  // CAR-137 — the v2empty pattern (CAR-124): explanation + a tagged,
+  // decorative example of an activity row + the real first step (run a
+  // scan). The block still toggles through `empty.hidden` in render().
+  const empty = c('div', { className: 'empty' }, [
+    c('p', { style: { fontWeight: 600, margin: '0 0 4px' } },
+      t('v2empty.activity.emptyTitle', 'No activity yet')),
+    c('p', { style: { color: 'var(--foggy)', fontSize: '13px', margin: '0 0 12px' } },
+      t('v2empty.activity.emptyBody', 'Every server action — scans, evaluations, saves — lands here as a row like the one below. Run a scan to fill the log.')),
+    c('div', { className: 'v2-empty-example', 'aria-hidden': 'true' }, [
+      c('span', { className: 'v2-empty-example__tag' }, t('v2empty.exampleTag', 'Example')),
+      c('div', { style: { display: 'flex', flexWrap: 'wrap', alignItems: 'center', gap: '8px', fontSize: '13px' } }, [
+        c('span', { style: { color: 'var(--foggy)' } }, '2026-10-28 09:15'),
+        c('span', { style: { fontWeight: '700' } }, t('activity.filter.scan', 'Scan')),
+        c('span', { style: { color: 'var(--foggy)' } }, '✓'),
+      ]),
+    ]),
+    c('p', { style: { margin: '12px 0 0' } },
+      c('a', { className: 'btn btn-primary', href: '#/scan' },
+        '🌐 ' + t('scan.btnRun', 'Scan'))),
+  ]);
   empty.hidden = true;
   // CAR-94 (8) — a FAILED load used to leave the previous filter's rows in
   // the table while the new chip showed active: the failure looked exactly
@@ -167,7 +188,7 @@ Router.register('activity', async () => {
   return c('div', null, [
     c('header', { className: 'page-header' }, [
       c('div', null, [
-        c('h1', { className: 'page-title' }, t('activity.title')),
+        HelpHint.title(t('activity.title'), 'help.hint.activity'),
         c('p', { className: 'page-subtitle' }, t('activity.subtitle')),
       ]),
       c('div', { className: 'flex gap-3' }, [

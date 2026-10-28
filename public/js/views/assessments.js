@@ -1,4 +1,4 @@
-/* global Router, API, UI, I18n */
+/* global Router, API, UI, I18n, HelpHint */
 /**
  * #/assessments — Skills self-assessment log.
  *
@@ -16,7 +16,7 @@ Router.register('assessments', async () => {
   const t = (k, f) => I18n.t(k, f);
 
   const root = c('div');
-  root.appendChild(c('h1', { className: 'page-title' }, t('asmt.title', 'Skills self-assessment log')));
+  root.appendChild(HelpHint.title(t('asmt.title', 'Skills self-assessment log'), 'help.hint.assessments'));
   root.appendChild(c('p', { className: 'page-subtitle' },
     t('asmt.subtitle', 'Log a skills assessment you took — the platform, the skill, and how you scored — and track them over time.')));
 
