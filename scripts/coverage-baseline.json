@@ -120,6 +120,7 @@
     "server/lib/sources/glints.mjs",
     "server/lib/sources/google.mjs",
     "server/lib/sources/greenhouse.mjs",
+    "server/lib/sources/habr.mjs",
     "server/lib/sources/hh.mjs",
     "server/lib/sources/higheredjobs.mjs",
     "server/lib/sources/himalayas.mjs",
