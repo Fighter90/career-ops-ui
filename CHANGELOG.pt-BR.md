@@ -9,6 +9,32 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 ---
 
 
+## [1.261.1] — 2026-10-28
+
+**O patch de cliente da QA em produção: uma correção de crash P1 no `#/two-pager`, o Ctrl+K funcionando em layouts não-QWERTY, a onda mobile de 390px (overflow do docs-assistant, sobreposição do chip do mapa, um harness de 39 rotas), a conclusão do CAR-137 (erros específicos, v2empty ×5, hints ×13 + páginas de modo) e o CAR-140 pousando screenshots v2 reais em toda parte.**
+
+### Corrigido
+
+- **TDZ do two-pager (CAR-170, P1, #554)**: `Cannot access 'previewTimer' before initialization` — o editor de tags salvas disparava `onChange` durante a construção para cada chip restaurado enquanto o loop de construção ficava lexicalmente acima do `let previewTimer`, então o render inteiro do `#/two-pager` quebrava (sem h1, nos 19 locales). O agendador + binding agora vivem acima do loop; um teste comportamental executa o módulo real da view — o erro exato de produção antes da correção, uma página renderizada depois — além de um portão de drift de ordem lexical.
+- **Ctrl+K em layouts não-QWERTY (CAR-172, #554)**: ambos os handlers de atalho casavam apenas com `e.key` — num layout russo o atalho chega como `key='л' code='KeyK'` e não fazia nada. Agora casam por `e.code === 'KeyK'` em nav-v2.js e app.js; reproduzido num navegador real com um atalho sintético 'л'/KeyK. O contrato do CAR-122 é reafirmado (ver Notas).
+- **Overflow de 390px do docs-assistant (CAR-172, #554)**: os starter chips do CAR-136 eram `.btn` (nowrap, `flex-shrink: 0`) — um item inquebrável de 418px empurrava o `#/docs-assistant` 56px além de uma viewport de 390px; o padrão de encolhimento do CAR-146 (em v2-llm.css, os portões CSS de 800-LOC intocados) traz isso a 0.
+- **Sobreposição do chip do mapa @390 (#552)**: numa viewport de 390px os chips meta do mapa sobrepunham a linha de CTA (map.css).
+- **CAR-137 — erros específicos + v2empty ×5 (#550)**: cinco fallbacks genéricos de erro ('Error' / 'failed') viraram chaves específicas e acionáveis — falha do POST de evaluate, stream do auto-pipeline sem evento terminal, adição scan→pipeline, carregamento de clusters de reposts, desfazer do pipeline; os últimos cinco estados vazios planos (`#/reports`, `#/usage`, `#/portals`, `#/activity`, `#/dashboard`) se juntam ao padrão v2empty do CAR-124 (explicação + exemplo rotulado aria-hidden + ação pré-conectada; 15 novas chaves `v2empty.*`, quatro chaves mortas de uma linha removidas) — tudo ×19 dicionários, snapshot regenerado.
+- **CAR-137 — HelpHint ×13 + kit de mode-page (#550)**: a hint contextual «?» agora está no H1 de toda página restante (pipeline, reports, dashboard, cv, portals, usage, activity, assessments, map, health, docs-assistant, settings) e nas 8 páginas de modo via o kit (cada cfg de MODES carrega uma `hintKey`, renderizada através de `HelpHint.title`).
+
+### Adicionado
+
+- **Harness mobile-390 (#552)**: uma varredura Playwright de cada rota do SPA (31 canônicas + 8 páginas de modo = 39 hashes) a 390×844 com um corpus semeado — verificação de overflow horizontal por rota (scrollWidth vs clientWidth, tolerância de 1px, nomeia o maior culpado) mais uma verificação de hit de CTA (nenhuma barra sticky/drawer/FAB cobre um CTA primário); opt-in, skip gracioso sem binário de navegador, sem rede.
+- **Capturas v2 frescas ×48 (CAR-140 fase A, #551)**: screenshots reais da UI v2 de um fixture CI-isolado semeado — dashboard ×19 + job-map ×19 (job-map-ta primeira aparição, job-map-vi novo) + scan/pipeline/tracker/reports × en/ru — alimentando README, ajuda e a landing.
+- **Screenshots reais no cvstart.org (CAR-140 fase B, #553)**: os slots de placeholder do CAR-140 acabaram — a landing mostra as capturas v2 reais (vitrine do job-map + linhas de screenshots, ×19 locales da landing).
+- **Hints do CAR-137 (#550)**: 21 novas chaves traduzidas ×19 (`help.hint.*` ×20 + as `hintKey` das páginas de modo) — toda página agora se explica no lugar.
+
+### Notas
+
+- **Contrato do Ctrl+K (CAR-122)**: o atalho abre a **paleta de comandos** — NÃO foca diretamente a caixa de busca; a busca é focada a partir da paleta. A linha «Ctrl+K фокусит поиск» do checklist de QA da v1.261.0 fica substituída; o prompt de QA da v1.261.1 traz a verificação atualizada.
+- **Correções reais do CodeQL (#547)**: 4 alertas fechados (iteração de chave literal em content.mjs tornada estrutural, varredura de lint) — pousou pós-release na main da v1.261.0 antes deste patch; listado aqui por completude.
+- Testes 6582 (+51); suíte de navegador 171–172 aprovados / 0 falhas / 1 skip opt-in; o harness mobile-390 roda standalone (`node tests/playwright-mobile-390.mjs`). Nenhuma fonte do scanner tocada (registro 121 = 116 EN + 5 RU · 116 adaptadores).
+
 ## [1.261.0] — 2026-10-28
 
 **A onda de revisão completa da v1.261.0 está concluída (todos os achados HIGH + MEDIUM pousados), a correção do alternador de idiomas reportada pelo dono, correções de qualidade de avaliação, fan-out da ajuda ×18, a landing v2 do cvstart.org — mais 4 specs SDD/OpenSpec documentando a onda. Toda correção pousou por um fix-forward vermelho→verde e uma revisão de contexto-fresco GLM-5.3-Flash.**
