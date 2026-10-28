@@ -9,6 +9,32 @@
 ---
 
 
+## [1.261.1] — 2026-10-28
+
+**生产环境 QA 客户端补丁：`#/two-pager` 的 P1 崩溃修复、Ctrl+K 在非 QWERTY 布局下可用、390px 移动端浪潮（docs-assistant 溢出、地图芯片重叠、39 条路由的测试骨架）、CAR-137 收官（具体错误、v2empty ×5、提示 ×13 + 模式页），以及 CAR-140 让真实 v2 截图全面落地。**
+
+### 修复
+
+- **two-pager TDZ（CAR-170，P1，#554）**：`Cannot access 'previewTimer' before initialization` — 已保存标签的编辑器在构造期间对每个恢复的芯片触发 `onChange`，而构造循环在词法上位于 `let previewTimer` 之上，导致整个 `#/two-pager` 渲染崩溃（无 h1，×19 界面语言）。调度器与绑定现移至循环之上；一个行为测试直接执行真实视图模块——修复前复现确切的线上错误、修复后渲染出页面——另加一道词法顺序漂移门槛。
+- **非 QWERTY 布局下的 Ctrl+K（CAR-172，#554）**：两个组合键处理器此前只匹配 `e.key` — 在俄语布局下组合键到达时是 `key='л' code='KeyK'`，却毫无反应。nav-v2.js 与 app.js 现改按 `e.code === 'KeyK'` 匹配；已在真实浏览器中用合成的 'л'/KeyK 组合键复现。CAR-122 契约已重述（见备注）。
+- **docs-assistant 390px 溢出（CAR-172，#554）**：CAR-136 的起始芯片此前是 `.btn`（不换行、`flex-shrink: 0`）—— 一个不可折行的 418px 条目把 `#/docs-assistant` 推出 390px 视口 56px；CAR-146 收缩模式（位于 v2-llm.css，800 行 CSS 门槛原封未动）把它归零。
+- **地图芯片 @390 重叠（#552）**：在 390px 视口下，地图元信息芯片盖住了 CTA 行（map.css）。
+- **CAR-137 — 具体错误 + v2empty ×5（#550）**：五个通用错误回退（'Error' / 'failed'）换成了具体且可操作的键 — evaluate POST 失败、auto-pipeline 流没有终止事件、scan→pipeline 添加、repost 集群加载、pipeline 撤销；最后五个扁平空状态（`#/reports`、`#/usage`、`#/portals`、`#/activity`、`#/dashboard`）并入 CAR-124 的 v2empty 模式（解释 + 带 aria-hidden 标记的示例 + 预先接线的操作；新增 15 个 `v2empty.*` 键，删除 4 个失效的单行键）—— 全部 ×19 词典，快照已重新生成。
+- **CAR-137 — HelpHint ×13 + 模式页套件（#550）**：上下文«?»提示现已覆盖其余每个页面的 H1（pipeline、reports、dashboard、cv、portals、usage、activity、assessments、map、health、docs-assistant、settings），并经由套件覆盖 8 个模式页（每个 MODES 配置携带一个 `hintKey`，经 `HelpHint.title` 渲染）。
+
+### 新增
+
+- **Mobile-390 测试骨架（#552）**：Playwright 扫过每一条 SPA 路由（31 个规范路由 + 8 个模式页 = 39 个哈希），在 390×844 下以种子数据运行 —— 逐路由的水平溢出检查（scrollWidth 对比 clientWidth，1px 容差，点名最宽的元凶），外加 CTA 命中检查（任何吸顶条/抽屉/FAB 都不得遮住主 CTA）；可选启用，缺浏览器二进制时优雅跳过，零网络。
+- **全新 v2 截图 ×48（CAR-140 阶段 A，#551）**：来自播种的 CI 隔离夹具的真实 v2 界面截图 — dashboard ×19 + job-map ×19（job-map-ta 首次亮相，job-map-vi 为新增）+ scan/pipeline/tracker/reports × en/ru —— 供 README、帮助与落地页取用。
+- **cvstart.org 真实截图（CAR-140 阶段 B，#553）**：CAR-140 的占位槽已移除 — 落地页现展示真实的 v2 截图（job-map 展示位 + 截图行，×19 个落地页语言）。
+- **CAR-137 提示（#550）**：新增 21 个翻译键 ×19（`help.hint.*` ×20 + 模式页 `hintKey`）—— 每个页面现在都在原地自我说明。
+
+### 备注
+
+- **Ctrl+K 契约（CAR-122）**：该组合键打开的是**命令面板** — 并不直接聚焦搜索框；搜索框由面板内部获得焦点。v1.261.0 QA 清单中«Ctrl+K фокусит поиск»一行已被取代；v1.261.1 QA 提示词携带更新后的检查项。
+- **CodeQL 实修（#547）**：关闭 4 条告警（content.mjs 的字面量键迭代改为结构化写法、lint 清扫）— 在本补丁之前、作为 v1.261.0 main 的发布后提交落地；为完整起见列于此处。
+- 测试 6582（+51）；浏览器套件 171–172 通过 / 0 失败 / 1 个可选跳过；mobile-390 测试骨架可独立运行（`node tests/playwright-mobile-390.mjs`）。未触及任何扫描器来源（注册表 121 = 116 EN + 5 RU · 116 适配器）。
+
 ## [1.261.0] — 2026-10-28
 
 **全量评审浪潮收官（全部 HIGH + MEDIUM 发现均已落地），加上所有者报告的语言切换修复、评估质量修复、帮助 ×18 扇出与 cvstart.org 落地页 v2 —— 另有 4 份记录这波浪潮的 SDD/OpenSpec 规格。每项修复都经由红→绿的 fix-forward 落地，并经过一轮 GLM-5.3-Flash 全新上下文评审。**

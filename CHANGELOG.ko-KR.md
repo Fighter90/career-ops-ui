@@ -11,6 +11,32 @@
 ---
 
 
+## [1.261.1] — 2026-10-28
+
+**프로덕션-QA 클라이언트 패치: `#/two-pager`의 P1 크래시 수정, 비-QWERTY 레이아웃에서 작동하는 Ctrl+K, 390px 모바일 물결(docs-assistant 오버플로, 지도 칩 겹침, 39-라우트 하니스), CAR-137 완료(구체적 오류, v2empty ×5, 힌트 ×13 + 모드 페이지), 그리고 모든 표면에 실제 v2 스크린샷을 반영한 CAR-140.**
+
+### 수정
+
+- **two-pager TDZ (CAR-170, P1, #554)**: `Cannot access 'previewTimer' before initialization` — 뷰 구성 중에 저장 태그 편집기가 복원된 칩마다 `onChange`를 발화했고, 그 구성 루프는 어휘상 `let previewTimer` 위에 자리 잡고 있었으므로 `#/two-pager` 렌더 전체가 크래시했습니다(h1 없음, ×19 로케일). 스케줄러 + 바인딩은 이제 루프 위로 옮겨졌습니다; 동작 테스트는 실제 뷰 모듈을 실행합니다 — 수정 전에는 정확히 그 프로덕션 오류, 후에는 렌더된 페이지 — 그리고 어휘-순서 드리프트 게이트도 더합니다.
+- **비-QWERTY 레이아웃에서의 Ctrl+K (CAR-172, #554)**: 두 키 조합(chord) 핸들러가 `e.key`만 검사했습니다 — 러시아어 레이아웃에서는 조합이 `key='л' code='KeyK'`로 도착해 아무 일도 일어나지 않았습니다. nav-v2.js와 app.js가 이제 `e.code === 'KeyK'`로 매칭합니다; 합성 'л'/KeyK 조합으로 실제 브라우저에서 재현했습니다. CAR-122 계약이 재진술됩니다(참고 섹션 참조).
+- **docs-assistant 390px 오버플로 (CAR-172, #554)**: CAR-136 시작 칩들이 `.btn`(nowrap, `flex-shrink: 0`)이었습니다 — 줄바꿈할 수 없는 418px 항목 하나가 `#/docs-assistant`를 390px 뷰포트 너머 56px까지 밀었습니다; CAR-146 축소 패턴(v2-llm.css 안, 800-LOC CSS 게이트는 그대로)이 이를 0으로 되돌립니다.
+- **지도 칩 겹침 @390 (#552)**: 390px 뷰포트에서 지도 메타 칩들이 CTA 행과 겹쳤습니다(map.css).
+- **CAR-137 — 구체적 오류 + v2empty ×5 (#550)**: 다섯 개의 일반적인 오류 폴백('Error' / 'failed')이 구체적이고 실행 가능한 키가 되었습니다 — evaluate POST 실패, 터미널 이벤트 없는 auto-pipeline 스트림, scan→pipeline 추가, 재게시 클러스터 로드, 파이프라인 되돌리기; 마지막 다섯 개의 평면적인 빈 상태(`#/reports`, `#/usage`, `#/portals`, `#/activity`, `#/dashboard`)가 CAR-124 v2empty 패턴에 합류합니다(설명 + aria-hidden 태그 예시 + 미리 연결된 액션; 신규 `v2empty.*` 키 15개, 죽은 한 줄 키 4개 제거) — 전부 ×19 사전, 스냅샷 재생성.
+- **CAR-137 — HelpHint ×13 + mode-page 키트 (#550)**: 문맥적 «?» 힌트가 이제 남은 모든 페이지 H1(pipeline, reports, dashboard, cv, portals, usage, activity, assessments, map, health, docs-assistant, settings)과 키트를 통한 8개 모드 페이지에 자리합니다(각 MODES cfg가 `hintKey`를 실으며, `HelpHint.title`을 통해 렌더됩니다).
+
+### 추가
+
+- **모바일-390 하니스 (#552)**: 390×844에서 모든 SPA 라우트(정규 31개 + 모드 페이지 8개 = 39개 해시)를 걷는 Playwright 스위프(시드된 코퍼스 포함) — 라우트별 가로 오버플로 검사(scrollWidth vs clientWidth, 1px 허용 오차, 가장 넓은 위반 항목을 지목)와 CTA 적중 검사(sticky 바/드로어/FAB가 프라이머리 CTA를 가리지 않음); 옵트인, 브라우저 바이너리가 없으면 우아하게 건너뜁니다, 네트워크 없음.
+- **새 v2 캡처 ×48 (CAR-140 phase A, #551)**: 시드된 CI-격리 픽스처에서 나온 실제 v2-UI 스크린샷 — dashboard ×19 + job-map ×19 (job-map-ta 첫 등장, job-map-vi 신규) + scan/pipeline/tracker/reports × en/ru — README, 도움말, 랜딩에 들어갑니다.
+- **cvstart.org 실제 스크린샷 (CAR-140 phase B, #553)**: CAR-140 자리표시자 슬롯이 사라졌습니다 — 랜딩이 실제 v2 캡처를 보여줍니다(job-map 쇼케이스 + 스크린샷 행, ×19 랜딩 로케일).
+- **CAR-137 힌트 (#550)**: 신규 번역 키 21개 ×19 (`help.hint.*` ×20 + 모드 페이지 `hintKey`들) — 모든 페이지가 이제 그 자리에서 스스로를 설명합니다.
+
+### 참고
+
+- **Ctrl+K 계약 (CAR-122)**: 키 조합은 **커맨드 팔레트**를 엽니다 — 검색 상자를 직접 포커스하지 않습니다; 검색은 팔레트에서 포커스됩니다. v1.261.0 QA 체크리스트의 «Ctrl+K фокусит поиск» 줄은 대체되었습니다; v1.261.1 QA 프롬프트가 갱신된 검사를 담고 있습니다.
+- **CodeQL 실제 수정 (#547)**: 4개 알림이 닫혔습니다(content.mjs 리터럴-키 반복의 구조화, 린트 스윕) — 이 패치 전에 릴리스 후 v1.261.0 main에 반영되었습니다; 완전성을 위해 여기에 기록합니다.
+- 테스트 6582 (+51); 브라우저 스위트 171–172 통과 / 0 실패 / 1 옵트인 스킵; 모바일-390 하니스는 단독 실행됩니다(`node tests/playwright-mobile-390.mjs`). 스캐너 소스는 건드리지 않았습니다(레지스트리 121 = 116 EN + 5 RU · 116 어댑터).
+
 ## [1.261.0] — 2026-10-28
 
 **전면 리뷰 물결 완료(HIGH + MEDIUM 발견 전부 반영), 소유자가 보고한 언어 전환 수정, 평가 품질 수정, 도움말 ×18 팬아웃, cvstart.org 랜딩 v2 — 그리고 이 물결을 기록하는 SDD/OpenSpec 스펙 4건. 모든 수정은 적-녹(red→green) fix-forward와 새 컨텍스트 GLM-5.3-Flash 리뷰를 거쳐 반영되었습니다.**

@@ -6,6 +6,32 @@ Bản dịch: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.261.1] — 2026-10-28
+
+**Bản-patch-client-sau-QA-trên-prod: một-bản-sửa-sập-P1 cho-`#/two-pager`, Ctrl+K hoạt-động trên-các-bố-cục-bàn-phím-không-QWERTY, đợt-di-động-390px (tràn-docs-assistant, chip-bản-đồ-chồng-lấn, một-harness-39-route), hoàn-tất-CAR-137 (lỗi-cụ-thể, v2empty ×5, gợi-ý ×13 + các-trang-mode) và-CAR-140 đổ-bộ-các-ảnh-chụp-màn-hình-v2-thật ở-mọi-nơi.**
+
+### Đã sửa
+
+- **two-pager TDZ (CAR-170, P1, #554)**: `Cannot access 'previewTimer' before initialization` — trình-soạn-thảo-thẻ-đã-lưu kích-hoạt-`onChange` trong-lúc-đang-dựng, với-mỗi-chip-được-khôi-phục, trong-khi-vòng-lặp-dựng đứng-về-mặt-từ-vựng phía-trên-`let previewTimer`, nên-toàn-bộ-lượt-render-`#/two-pager` sập (không-có-h1, ×19-locale). Bộ-lập-lịch + lượt-gắn-kết giờ-nằm-phía-trên-vòng-lặp; một-kiểm-thử-hành-vi chạy-chính-module-view-thật — lỗi-prod-chính-xác trước-bản-sửa, một-trang-được-render sau-đó — cộng-với-một-cổng-phát-hiện-lệch-thứ-tự-từ-vựng.
+- **Ctrl+K trên-các-bố-cục-bàn-phím-không-QWERTY (CAR-172, #554)**: cả-hai-bộ-xử-lý-chord chỉ-khớp-theo-`e.key` — trên-một-bố-cục-Nga, chord đến-dưới-dạng-`key='л' code='KeyK'` và-không-làm-gì-cả. Giờ khớp-bằng-`e.code === 'KeyK'` trong-nav-v2.js và-app.js; tái-tạo-trên-trình-duyệt-thật với-một-chord-'л'/KeyK-tổng-hợp. Hợp-đồng-CAR-122 được-nêu-lại (xem-Ghi-chú).
+- **Tràn-docs-assistant-390px (CAR-172, #554)**: các-chip-khởi-đầu-CAR-136 là-`.btn` (nowrap, `flex-shrink: 0`) — một-mục-418px-không-thể-ngắt-đoạn đã-đẩy-`#/docs-assistant` quá-khung-hình-390px thêm-56px; mẫu-thu-nhỏ-CAR-146 (trong-v2-llm.css, các-cổng-CSS-800-LOC-không-đụng-tới) đưa-nó-về-0.
+- **Chip-bản-đồ-chồng-lấn @390 (#552)**: trên-một-khung-hình-390px, các-chip-meta-của-bản-đồ chồng-lấn-lên-hàng-CTA (map.css).
+- **CAR-137 — lỗi-cụ-thể + v2empty ×5 (#550)**: năm-bộ-fallback-lỗi-chung-chung ('Error' / 'failed') trở-thành-các-khóa-cụ-thể-có-hành-động — thất-bại-POST-đánh-giá, luồng-auto-pipeline-không-có-sự-kiện-kết-thúc, lượt-thêm-scan→pipeline, lượt-tải-cụm-repost, hoàn-tác-pipeline; năm-trạng-thái-rỗng-phẳng-cuối-cùng (`#/reports`, `#/usage`, `#/portals`, `#/activity`, `#/dashboard`) gia-nhập-mẫu-v2empty-CAR-124 (lời-giải-thích + ví-dụ-aria-hidden-có-thẻ + hành-động-nối-sẵn; 15-khóa-`v2empty.*`-mới, bốn-khóa-một-dòng-đã-chết bị-loại-bỏ) — tất-cả ×19-bộ-từ-điển, snapshot được-tái-tạo.
+- **CAR-137 — HelpHint ×13 + kit-trang-mode (#550)**: gợi-ý-«?»-theo-ngữ-cảnh giờ-đứng trên-mọi-H1-trang-còn-lại (pipeline, reports, dashboard, cv, portals, usage, activity, assessments, map, health, docs-assistant, settings) và-trên-cả-8-trang-mode qua-kit (mỗi-cấu-hình-MODES mang-một-`hintKey`, được-render qua-`HelpHint.title`).
+
+### Thêm mới
+
+- **Harness-Mobile-390 (#552)**: một-lượt-quét-Playwright qua-mọi-route-SPA (31-trang-chuẩn + 8-trang-mode = 39-hash) ở-390×844 với-một-corpus-được-gieo-sẵn — kiểm-tra-tràn-ngang-theo-từng-route (scrollWidth so-với-clientWidth, dung-sai-1px, nêu-tên-phần-tử-rộng-nhất) cộng-một-kiểm-tra-chạm-CTA (không-sticky-bar/drawer/FAB nào che-một-CTA-chính); tùy-chọn, bỏ-qua-duyên-dáng khi-không-có-binary-trình-duyệt, không-cần-mạng.
+- **Bộ-capture-v2-mới ×48 (CAR-140-giai-đoạn-A, #551)**: các-ảnh-chụp-màn-hình-UI-v2-thật từ-một-fixture-CI-isolated-được-gieo-sẵn — dashboard ×19 + job-map ×19 (job-map-ta xuất-hiện-lần-đầu, job-map-vi mới) + scan/pipeline/tracker/reports × en/ru — cung-cấp-cho-README, help và-trang-landing.
+- **Ảnh-chụp-màn-hình-thật trên-cvstart.org (CAR-140-giai-đoạn-B, #553)**: các-slot-dành-sẵn-của-CAR-140 không-còn-nữa — trang-landing hiển-thị chính-các-bản-capture-v2-thật (phần-trưng-bày-job-map + các-hàng-ảnh-chụp, trên-cả-19-locale-landing).
+- **Gợi-ý-CAR-137 (#550)**: 21-khóa-đã-dịch-mới ×19 (`help.hint.*` ×20 + các-`hintKey`-trang-mode) — giờ-mỗi-trang tự-giải-thích ngay-tại-chỗ-của-mình.
+
+### Ghi chú
+
+- **Hợp-đồng-Ctrl+K (CAR-122)**: chord mở-**palette-lệnh** — nó KHÔNG focus-trực-tiếp vào-hộp-tìm-kiếm; hộp-tìm-kiếm được-focus từ-palette. Dòng-checklist-QA-v1.261.0 «Ctrl+K фокусит поиск» bị-thay-thế; prompt-QA-v1.261.1 mang-bản-kiểm-tra-đã-cập-nhật.
+- **Các-bản-sửa-thật-CodeQL (#547)**: 4-cảnh-báo được-đóng (vòng-lặp-khóa-literal của-content.mjs được-đưa-về-dạng-cấu-trúc, một-lượt-quét-lint) — đã-đổ-bộ-sau-phát-hành trên-main-của-v1.261.0 trước-bản-patch-này; nêu-ở-đây để-đầy-đủ.
+- Kiểm-thử 6582 (+51); trình-duyệt 171–172 đỗ / 0 trượt / 1 bỏ-qua-tùy-chọn; harness-mobile-390 chạy-riêng-lẻ (`node tests/playwright-mobile-390.mjs`). Không-chạm-nguồn-quét nào (registry 121 = 116 EN + 5 RU · 116 adapter).
+
 ## [1.261.0] — 2026-10-28
 
 **Đợt-rà-soát-toàn-diện đã-hoàn-tất (mọi-phát-hiện-HIGH-và-MEDIUM đều-đổ-bộ), bản-sửa-chuyển-ngôn-ngữ được-chủ-sở-hữu-báo-cáo, các-bản-sửa-chất-lượng-đánh-giá, lượt-fan-out help ×18, trang-landing-v2-của-cvstart.org — cùng-4-spec-SDD/OpenSpec ghi-lại-đợt-này. Mọi-bản-sửa đều-đổ-bộ qua-một-fix-forward-đỏ→xanh và-một-vòng-rà-soát-ngữ-cảnh-mới của-GLM-5.3-Flash.**
