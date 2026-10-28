@@ -219,10 +219,6 @@ test('host pool: snapshot rows deterministic — portals order, not completion o
 
   assert.equal(result.counts.raw, 6);
   assert.equal(result.errors.length, 0);
-  // The scramble really did shuffle completion order — otherwise this test
-  // proves nothing about ordering.
-  const completion = [...m.perHostNow.keys()]; // (ordering probe below uses delays only)
-
   const snap = JSON.parse(readFileSync(resolve(dir, 'data', 'last-scan.json'), 'utf8'));
   assert.ok(snap.en && Array.isArray(snap.en.filtered), 'snapshot.en.filtered written (nothing kept)');
   const expectedUrls = ['co0', 'a0', 'co1', 'a1', 'co2', 'a2'].map((s) => `https://${s}.example/1`);
