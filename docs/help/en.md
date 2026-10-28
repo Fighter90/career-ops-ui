@@ -1100,8 +1100,8 @@ everything else sits behind **Advanced filters**, `scan.advancedFilters` —
 the whole panel is grouped under **Result filters**, `scan.filtersGroup`):
 
 - **Free text** — substring match against title / company.
-- **Source** dropdown — every source the registry knows (121 at the
-  moment: 116 EN + 5 RU, **All sources** by default). It is
+- **Source** dropdown — every source the registry knows (122 at the
+  moment: 117 EN + 5 RU, **All sources** by default). It is
   auto-populated live from `GET /api/scan/sources`, so a newly dropped
   adapter appears here without any app change — the list is never
   hard-coded.
@@ -1131,7 +1131,7 @@ the numerator past the ATS denominator). The tooltip says the same in
 plain words (`scan.activeCo.help`). The list is split into two groups:
 
 - ✓ **Direct API** (`scan.apiBacked`) — the board is fetched directly
-  from its public ATS API (one of the 116 EN adapters, from Greenhouse
+  from its public ATS API (one of the 117 EN adapters, from Greenhouse
   / Ashby / Lever / Workable / SmartRecruiters / Workday down to the
   long tail).
 - ○ **Web-search only** (`scan.websearchBacked`) — no adapter matches
@@ -1906,7 +1906,7 @@ output, and search the issue tracker on
 career-ops-ui treats each job board as an **adapter** — a single file under
 [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) that knows
 how to fetch + normalize one board's results. Currently the
-`server/lib/sources/` registry ships **121** sources — **116 English + 5 Russian**
+`server/lib/sources/` registry ships **122** sources — **117 English + 5 Russian**
 boards. The English set spans the major ATSes (Greenhouse / Ashby / Lever /
 Workable / SmartRecruiters / Workday), board-wide aggregators selected by an
 explicit `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board,

@@ -122,6 +122,7 @@ window.ScanResults = (function () {
     { value: 'themuse', label: 'The Muse' },
     { value: 'tkms', label: 'TKMS' },
     { value: 'torre', label: 'Torre' },
+    { value: 'trakstar', label: 'Trakstar Hire' },
     { value: 'ultipro', label: 'UKG Pro (UltiPro)' },
     { value: 'vdab', label: 'VDAB' },
     { value: 'weworkremotely', label: 'We Work Remotely' },

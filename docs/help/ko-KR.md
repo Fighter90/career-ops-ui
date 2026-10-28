@@ -973,7 +973,7 @@ v2 결과 크롬은 컨트롤을 눈에 보이게 유지합니다:
 **결과 필터**, `scan.filtersGroup` 아래에 묶여 있습니다):
 
 - **자유 텍스트** — 제목/회사에 대한 부분 문자열 일치.
-- **Source** 드롭다운 — 레지스트리가 아는 모든 소스 (현재 121: 116 EN + 5 RU, 기본값 **All sources**). `GET /api/scan/sources`에서 실시간으로 자동 생성되므로, 새로 드롭된 어댑터가 앱 변경 없이 여기에 나타납니다 — 목록은 결코 하드코딩되지 않습니다.
+- **Source** 드롭다운 — 레지스트리가 아는 모든 소스 (현재 122: 117 EN + 5 RU, 기본값 **All sources**). `GET /api/scan/sources`에서 실시간으로 자동 생성되므로, 새로 드롭된 어댑터가 앱 변경 없이 여기에 나타납니다 — 목록은 결코 하드코딩되지 않습니다.
 - **Remote / Hybrid / Onsite** 드롭다운.
 - **Country** 드롭다운 — 현재 결과에서 감지된 국가들로 채워지는 지리 필터로, 각 항목은 국기 이모지와 개수와 함께 표시됩니다(예: `🇩🇪 Germany (12)`). 하나를 선택하면 그 국가에 묶인 역할만 남습니다. 감지는 공고의 자유 텍스트 위치(국가명/별칭 + ~100개 주요 채용 시장 도시)를 국가로 매핑합니다. 보수적이며 결코 추측하지 않으므로, 위치를 확인할 수 없는 공고 — 또는 순수 "Remote" 공고 — 는 **All countries** 아래에 남습니다. 근무 형태 드롭다운과 결합하면 국가에 묶인 역할*과* 원격 역할을 모두 찾을 수 있습니다.
 - **Posted within** 드롭다운 — 클라이언트 측 기간 필터(Last 24 hours / 7 days / 30 days). `pubDate`가 더 오래된 행은 숨겨집니다. **날짜가 없는 행은 통과**합니다(누락된 데이터에는 불이익이 없음).
@@ -1003,7 +1003,7 @@ v2 결과 크롬은 컨트롤을 눈에 보이게 유지합니다:
 
 - ✓ **API 직접** (`scan.apiBacked`) — 보드가 공개 ATS API에서
   직접 가져옵니다 (Greenhouse / Ashby / Lever / Workable /
-  SmartRecruiters / Workday부터 롱테일까지, 116개 EN 어댑터 중
+  SmartRecruiters / Workday부터 롱테일까지, 117개 EN 어댑터 중
   하나).
 - ○ **웹 검색만** (`scan.websearchBacked`) — URL에 매칭되는
   어댑터가 없어, 대신 CLI의 AI 스캔이 커버합니다.
@@ -1771,7 +1771,7 @@ deep research 실행, scan 실행, 설정 변경, 모드 실행.
 
 ## 17. 새 채용 포털 소스를 추가하는 방법
 
-career-ops-ui는 각 채용 사이트를 **어댑터**로 취급합니다 — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 아래의 단일 파일이 한 사이트의 결과를 가져오고 정규화하는 방법을 알고 있습니다. 현재 `server/lib/sources/` 레지스트리는 **121**개의 소스를 포함합니다 — **영문 116개 + 러시아어 5개** 보드. 영문 세트는 주요 ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), 명시적 `provider:`로 선택되는 보드 전체 애그리게이터(RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), 그리고 `careers_url` 호스트 또는 명시적 `api:` URL에서 자동 감지되는 테넌트별 ATS(BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …)를 아우릅니다. **전체 목록은 여기서 손으로 셀 필요가 전혀 없습니다 — `server/lib/sources/`에서 자동으로 검색되어 `#/scan`의 Source 드롭다운에 실시간으로 표시됩니다.** YAML은 §5, 복사·붙여넣기 항목은 `docs/portals-examples.md`를 참조하세요.
+career-ops-ui는 각 채용 사이트를 **어댑터**로 취급합니다 — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 아래의 단일 파일이 한 사이트의 결과를 가져오고 정규화하는 방법을 알고 있습니다. 현재 `server/lib/sources/` 레지스트리는 **122**개의 소스를 포함합니다 — **영문 117개 + 러시아어 5개** 보드. 영문 세트는 주요 ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), 명시적 `provider:`로 선택되는 보드 전체 애그리게이터(RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), 그리고 `careers_url` 호스트 또는 명시적 `api:` URL에서 자동 감지되는 테넌트별 ATS(BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …)를 아우릅니다. **전체 목록은 여기서 손으로 셀 필요가 전혀 없습니다 — `server/lib/sources/`에서 자동으로 검색되어 `#/scan`의 Source 드롭다운에 실시간으로 표시됩니다.** YAML은 §5, 복사·붙여넣기 항목은 `docs/portals-examples.md`를 참조하세요.
 
 > **v1.69.0 (P-14) — 드롭인 자동 검색.** 12번째 소스 추가는 이제
 > **순수 파일 드롭**입니다. 레지스트리

@@ -283,7 +283,7 @@ test('the numbers band derives every count from facts.json (never a literal)', (
   assert.match(stats, /facts\.sources\.length/, 'sources tile must come from the registry snapshot');
   assert.match(stats, /facts\.tests/, 'tests tile must come from facts');
   assert.match(stats, /facts\.locales/, 'locales tile must come from facts');
-  assert.match(stats, /VERIFIED 2026-10-27/, 'the verification-date comment must stay');
+  assert.match(stats, /VERIFIED \d{4}-\d{2}-\d{2}/, 'the verification-date comment must stay');
   // CAR-138: the registry note below the band is placeholder-substituted too —
   // a typed 121/116/5 in any dictionary is exactly the drift the band forbids.
   assert.match(stats, /replace\('\{sources\}'/, 'stats.note must substitute {sources}');

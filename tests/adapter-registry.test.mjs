@@ -99,7 +99,7 @@ test('registry: Workday defaults site=External when careers_url omits site', () 
 
 test('registry: ALL_ADAPTERS has the expected entries', async () => {
   const { ALL_ADAPTERS } = await import('../server/lib/portals/registry.mjs');
-  assert.equal(ALL_ADAPTERS.length, 116);
+  assert.equal(ALL_ADAPTERS.length, 117);
   const ids = ALL_ADAPTERS.map((a) => a.id).sort();
   assert.deepEqual(ids, [
     '4dayweek', 'a16z-speedrun-talent', 'adp-workforcenow', 'agenticjobs', 'alibaba', 'amazon',
@@ -119,7 +119,8 @@ test('registry: ALL_ADAPTERS has the expected entries', async () => {
     'remoteok', 'remotive', 'remotli', 'rheinmetall', 'rippling', 'rss',
     'schoolspring', 'senjob', 'smartrecruiters', 'softgarden', 'solidjobs', 'startup-jobs',
     'successfactors', 'taleo', 'teamtailor', 'techinasia', 'telegram', 'telegram-channel',
-    'tencent', 'thehub', 'themuse', 'tkms', 'torre', 'ultipro',
+    'tencent', 'thehub', 'themuse', 'tkms', 'torre', 'trakstar',
+    'ultipro',
     'vdab', 'weworkremotely', 'workable', 'workday', 'workingnomads', 'wttj',
     'yourator', 'zoho-recruit',
   ]);
