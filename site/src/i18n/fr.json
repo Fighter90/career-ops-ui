@@ -248,7 +248,11 @@
   "demo.stageTrack": "3 · Track",
   "demo.a11y": "Simulated demo: fake job postings flow through the scan, evaluate and track stages",
   "a11y.shotTabs": "App screenshots",
-  "showcase.placeholder": "Placeholder — fresh v2 screenshot coming soon",
+  "showcase.alt.dashboard": "Tableau de bord : boîte de réception du pipeline, tableau du tracker et tuiles de statistiques sur vos propres fichiers markdown",
+  "showcase.alt.scan": "Résultats du scan : offres fraîches des portails configurés, filtrées selon vos rôles cibles",
+  "showcase.alt.pipeline": "Pipeline : offres en attente d'évaluation, avec score et adéquation sur des cartes enrichies",
+  "showcase.alt.tracker": "Tracker : candidatures sur un tableau par étapes avec statuts, notes et relances",
+  "showcase.alt.reports": "Rapports : l'évaluation complète de chaque offre — blocs A–G, verdict et description archivée",
   "showcase.tabDashboard": "Dashboard",
   "showcase.tabScan": "Scan",
   "showcase.tabPipeline": "Pipeline",
@@ -260,6 +264,5 @@
   "stats.t.providers": "AI providers",
   "stats.t.license": "License",
   "stats.t.local": "Local-first",
-  "stats.note": "121 sources = 116 English board adapters + 5 Russian boards. Counts are read from the live registry when the site builds — never typed by hand.",
-  "map.placeholder": "Placeholder — fresh v2 screenshot coming soon"
+  "stats.note": "121 sources = 116 English board adapters + 5 Russian boards. Counts are read from the live registry when the site builds — never typed by hand."
 }

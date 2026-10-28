@@ -639,40 +639,6 @@ html.js .hero-seq-3 { animation-delay: 160ms; }
   100% { left: 66.5%; opacity: 0; }
 }
 
-/* ------------------------------------------------- screenshot placeholder */
-.shot-slot {
-  display: flex;
-  width: 100%;
-  align-items: center;
-  justify-content: center;
-  border: 1.5px dashed var(--color-line-strong);
-  border-radius: 12px;
-  background: repeating-linear-gradient(
-    -45deg,
-    var(--color-paper-alt) 0 14px,
-    var(--color-paper) 14px 28px
-  );
-}
-.shot-slot-inner {
-  padding: 24px;
-  text-align: center;
-}
-.shot-slot-icon {
-  margin-inline: auto;
-  margin-bottom: 10px;
-  color: var(--color-ink-faint);
-}
-.shot-slot-label {
-  font-size: 0.95rem;
-  font-weight: 700;
-  color: var(--color-ink);
-}
-.shot-slot-note {
-  margin-top: 4px;
-  font-size: 0.84rem;
-  color: var(--color-ink-soft);
-}
-
 /* Light-theme tab bar for the screenshot switcher (the dark-terminal
    .install-tab selected style is overridden by this later rule). */
 .shots-tablist {

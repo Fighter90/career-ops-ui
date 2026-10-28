@@ -248,7 +248,11 @@
   "demo.stageTrack": "3 · Track",
   "demo.a11y": "Simulated demo: fake job postings flow through the scan, evaluate and track stages",
   "a11y.shotTabs": "App screenshots",
-  "showcase.placeholder": "Placeholder — fresh v2 screenshot coming soon",
+  "showcase.alt.dashboard": "لوحة التحكم: صندوق وارد خط الأنابيب ولوحة المتتبع وبطاقات الإحصاءات فوق ملفات Markdown الخاصة بك",
+  "showcase.alt.scan": "نتائج المسح: الوظائف الجديدة من اللوحات المُعدّة، مُصفّاة حسب أدوارك المستهدفة",
+  "showcase.alt.pipeline": "خط الأنابيب: الوظائف بانتظار التقييم — النتيجة والملاءمة على بطاقات مُثراة",
+  "showcase.alt.tracker": "المتتبع: الطلبات على لوحة مراحل مع الحالات والملاحظات والمتابعة",
+  "showcase.alt.reports": "التقارير: التقييم الكامل لكل وظيفة — الكتل A–G والحكم ووصف الوظيفة المؤرشف",
   "showcase.tabDashboard": "Dashboard",
   "showcase.tabScan": "Scan",
   "showcase.tabPipeline": "Pipeline",
@@ -260,6 +264,5 @@
   "stats.t.providers": "AI providers",
   "stats.t.license": "License",
   "stats.t.local": "Local-first",
-  "stats.note": "121 sources = 116 English board adapters + 5 Russian boards. Counts are read from the live registry when the site builds — never typed by hand.",
-  "map.placeholder": "Placeholder — fresh v2 screenshot coming soon"
+  "stats.note": "121 sources = 116 English board adapters + 5 Russian boards. Counts are read from the live registry when the site builds — never typed by hand."
 }

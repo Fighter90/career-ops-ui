@@ -248,7 +248,11 @@
   "demo.stageTrack": "3 · Track",
   "demo.a11y": "Simulated demo: fake job postings flow through the scan, evaluate and track stages",
   "a11y.shotTabs": "App screenshots",
-  "showcase.placeholder": "Placeholder — fresh v2 screenshot coming soon",
+  "showcase.alt.dashboard": "Panel: kendi markdown dosyalarınız üzerinde pipeline gelen kutusu, izleyici panosu ve istatistik kartları",
+  "showcase.alt.scan": "Tarama sonuçları: yapılandırılmış panolardan gelen yeni ilanlar, hedef rollerinize göre filtrelandı",
+  "showcase.alt.pipeline": "Pipeline: değerlendirme bekleyen ilanlar — zenginleştirilmiş kartlarda puan ve uyum",
+  "showcase.alt.tracker": "İzleyici: başvuruların aşama panosunda durumları, notları ve takipleri",
+  "showcase.alt.reports": "Raporlar: her ilanın tam değerlendirmesi — A–G blokları, karar ve arşivlenen ilan metni",
   "showcase.tabDashboard": "Dashboard",
   "showcase.tabScan": "Scan",
   "showcase.tabPipeline": "Pipeline",
@@ -260,6 +264,5 @@
   "stats.t.providers": "AI providers",
   "stats.t.license": "License",
   "stats.t.local": "Local-first",
-  "stats.note": "121 sources = 116 English board adapters + 5 Russian boards. Counts are read from the live registry when the site builds — never typed by hand.",
-  "map.placeholder": "Placeholder — fresh v2 screenshot coming soon"
+  "stats.note": "121 sources = 116 English board adapters + 5 Russian boards. Counts are read from the live registry when the site builds — never typed by hand."
 }

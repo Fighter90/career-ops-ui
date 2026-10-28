@@ -248,7 +248,11 @@
   "demo.stageTrack": "3 · Track",
   "demo.a11y": "Simulated demo: fake job postings flow through the scan, evaluate and track stages",
   "a11y.shotTabs": "App screenshots",
-  "showcase.placeholder": "Placeholder — fresh v2 screenshot coming soon",
+  "showcase.alt.dashboard": "डैशबोर्ड: अपनी ही मार्कडाउन फ़ाइलों पर पाइपलाइन इनबॉक्स, ट्रैकर बोर्ड और आँकड़े टाइलें",
+  "showcase.alt.scan": "स्कैन परिणाम: कॉन्फ़िगर किए गए बोर्डों से नई नौकरियाँ, आपकी लक्षित भूमिकाओं के अनुसार फ़िल्टर की गईं",
+  "showcase.alt.pipeline": "पाइपलाइन: मूल्यांकन प्रतीक्षित नौकरियाँ — समृद्ध कार्ड पर स्कोर और फ़िट",
+  "showcase.alt.tracker": "ट्रैकर: चरण बोर्ड पर आवेदन — स्थितियों, नोट्स और फ़ॉलो-अप के साथ",
+  "showcase.alt.reports": "रिपोर्ट: हर नौकरी का पूर्ण मूल्यांकन — A–G ब्लॉक, निर्णय और संग्रहीत नौकरी विवरण",
   "showcase.tabDashboard": "Dashboard",
   "showcase.tabScan": "Scan",
   "showcase.tabPipeline": "Pipeline",
@@ -260,6 +264,5 @@
   "stats.t.providers": "AI providers",
   "stats.t.license": "License",
   "stats.t.local": "Local-first",
-  "stats.note": "121 sources = 116 English board adapters + 5 Russian boards. Counts are read from the live registry when the site builds — never typed by hand.",
-  "map.placeholder": "Placeholder — fresh v2 screenshot coming soon"
+  "stats.note": "121 sources = 116 English board adapters + 5 Russian boards. Counts are read from the live registry when the site builds — never typed by hand."
 }

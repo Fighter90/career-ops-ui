@@ -53,6 +53,7 @@ on:
       - 'public/js/lib/locales/**'
       - 'public/index.html'
       - 'scripts/capture-dashboard-screenshots.mjs'
+      - 'scripts/capture-car140-screenshots.mjs'
       - '.github/workflows/dashboard-screenshots.yml'
   workflow_dispatch:
 
