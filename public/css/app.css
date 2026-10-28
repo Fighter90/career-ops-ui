@@ -26,7 +26,7 @@
   min-width: 44px; min-height: 44px;
   display: inline-flex; align-items: center;
 }
-.skip-link:focus { top: 0; outline: 3px solid #ff385c; outline-offset: 2px; }
+.skip-link:focus { top: 0; outline: 3px solid var(--accent-c); outline-offset: 2px; }
 
 /* WCAG 2.4.7 — visible focus indicators. Every interactive element gets a clearly visible
    focus ring; :focus-visible keeps mouse-click rings off but keyboard-Tab rings on.
