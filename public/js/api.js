@@ -670,18 +670,37 @@ window.UI = (function () {
       return '<blockquote>' + block.split('\n').map((l) => inline(l.replace(/^&gt; ?/, ''))).join('<br/>') + '</blockquote>';
     });
     // lists — a continuation line after a bullet (leading whitespace, not a
-    // new block: not a heading `#`, not a `[-*] ` bullet, not a NUL-wrapped
-    // fence placeholder, not blank) is absorbed into the previous <li> as
-    // `<br/>`-joined text. Without this the line fell out of the emitted
-    // <ul> and the paragraph pass skipped the chunk (it starts with the
-    // emitted <ul>), leaking raw prose with literal `**`/backtick markers.
-    s = s.replace(/(^(?:- |\* ).+(?:\n(?:(?:- |\* )|(?=[ \t]+(?=[^ \t])(?!(?:[-*] |#))(?!\0))).+)*)/gm, (block) => {
+    // new block: not a heading `#`, not a NUL-wrapped fence placeholder, not
+    // blank) is absorbed into the previous <li> as `<br/>`-joined text, and
+    // ONE level of indented `[-*] ` bullets renders as a nested <ul> inside
+    // that <li> (continuations after a nested bullet join the nested item).
+    // Without this the line fell out of the emitted <ul> and the paragraph
+    // pass skipped the chunk (it starts with the emitted <ul>), leaking raw
+    // prose with literal `**`/backtick markers. Deeper nesting is not
+    // modeled — docs/help use at most one level.
+    s = s.replace(/(^(?:- |\* ).+(?:\n(?:(?:- |\* )|(?=[ \t]+(?=[^ \t])(?!#)(?!\0))).+)*)/gm, (block) => {
       const items = [];
+      let tail = null; // lines of the most recent nested bullet — continuations land here
       block.split('\n').forEach((l) => {
-        if (/^[-*] /.test(l)) items.push([l.replace(/^[-*] /, '')]);
-        else if (items.length && l.trim()) items[items.length - 1].push(l.trim());
+        if (/^[-*] /.test(l)) {
+          items.push({ text: [l.replace(/^[-*] /, '')], nested: [] });
+          tail = null;
+        } else {
+          const nested = l.match(/^[ \t]+[-*] (.+)$/);
+          if (nested && items.length) {
+            tail = [nested[1]];
+            items[items.length - 1].nested.push(tail);
+          } else if (items.length && l.trim()) {
+            (tail || items[items.length - 1].text).push(l.trim());
+          }
+        }
       });
-      return '<ul>' + items.map((lines) => `<li>${lines.map((t) => inline(t)).join('<br/>')}</li>`).join('') + '</ul>';
+      return '<ul>' + items.map((it) => {
+        const sub = it.nested.length
+          ? '<ul>' + it.nested.map((lines) => `<li>${lines.map((t) => inline(t)).join('<br/>')}</li>`).join('') + '</ul>'
+          : '';
+        return `<li>${it.text.map((t) => inline(t)).join('<br/>')}${sub}</li>`;
+      }).join('') + '</ul>';
     });
     // paragraphs
     s = s.split('\n\n').map((p) => {
