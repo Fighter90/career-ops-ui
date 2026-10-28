@@ -6,6 +6,34 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 ---
 
+## [1.261.3] — 2026-10-28
+
+**The design-completion patch: Lovable design phase 3 (density + full coral retirement), the scan host-pool (32 companies, 10 per host), six upstream provider location fixes, the Trakstar Hire source (registry 122), CV Studio undo + unsaved-guard — plus the final-regression P3 fixes and docs parity.**
+
+### Fixed
+
+- **Map cluster «related» label 3.16:1 → 4.68:1 (both themes)**: light `--map-score-mid` darkened to `#567b75` (the suggested `#5f7f7a` measured only 4.37 — one step darker was needed); dark side already 4.98:1, untouched. Red-first pin in `map-cluster-visual`.
+- **Skip-link focus ring**: the last literal `#ff385c` outline → `var(--accent-c)` — all 78 focus rings now follow the accent token.
+- **`.tab-btn.is-active` accent topology** (#584, phase 3): the control mixed three color families (coral wash + danger text + blue border); now a single accent-soft pair.
+- **Upstream provider location fixes ×5 (#580, CAR-176)**: workday `Fully Remote` flag (not a place), workable telecommuting fan-out + state-only-when-cityless, successfactors trailing comma, lever remote word-boundary, icims `Location`-prefixed labels.
+- **http-json: no retry on a spent timeout (#580)** — a deadline abort is non-transient in both retry helpers (upstream measured ~94s on one Ashby board at 30s×retries).
+- **Docs parity (#587)**: the last 17/18-era counts in HANDOFF/CONVENTIONS/README (uk got its missing Локалізація section; §-history extended to §32/§33 — 33 H2 arithmetic verified).
+
+### Added
+
+- **Lovable design phase 3 (#584)**: density tokens live — table rows ≈32px, controls 30px, chips 24px (WCAG 2.5.8 spacing exception); every coral rgba residue moved to cv3 pairs (`.dash-hero`, `.badge-bad`, halos, `.tab-btn.is-active`); `--ease-out` declared, TOKEN_HANDOFF empty; `.callout--ok/--danger` contract.
+- **Trakstar Hire source (#583, CAR-177)**: registry **122 sources = 117 EN + 5 RU · 117 adapters** — host-pinned jsapi.recruiterbox.com, offset walk with short/empty/repeated stops, partials kept, `trakstarTruncated` tagging; count gates ×5 + help §17 ×19.
+- **Scan host-pool (#579, CAR-178)**: up to 32 companies concurrently, capped at 10 per host (upstream keyed-limiter pattern) — snapshot byte-identical to the sequential run (red-first timing-mock gate).
+- **CV Studio undo + unsaved-guard (#582, CAR-179)**: bounded undo stack (30) over AI-run results with non-QWERTY-safe `Cmd/Ctrl+Z`, unsaved-changes guard on route leave (live-probe dirty, confirm/rewind/beforeunload), i18n ×19.
+- **Upstream provider fixes tested ×17** (part of CAR-176); remote-QA summary names failing scan sources + `tok ~N` per eval (#567, already in v1.261.2 — observability used for this release's triage).
+
+### Notes
+
+- **Accent is now blue** (Lovable concept): primary actions/active states/focus rings follow `--cv3-accent`; red is reserved for danger (`.btn-danger`, `toast.error`, danger text). Coral survives only in the logo PNG asset (owner's call).
+- **Density**: table rows ≈32px / controls 30px / chips 24px — WCAG 2.5.8 spacing exception documented; the v1.26.1 44px canary was rewritten onto the token contract.
+- CodeQL: all 10 open alerts closed (4 FP-dismissed with rationale: llmRateLimit/atomicWrite documented classes; 6 fixed at source).
+- Tests 6655 → <COUNT> on the release branch; no scanner-source behavior changed beyond the new Trakstar source.
+
 ## [1.261.2] — 2026-10-28
 
 **The stability + polish patch: the geocode cache survives a mid-write crash (CAR-173), UI.md renders bullet continuations and nested lists, the help bundles' rendered-text key leaks are closed ×17, evaluate gets a per-locale token ceiling for ta (CAR-174), the RTL chrome mirrors via logical properties (85 findings), the map captures are re-framed ×19 and the map clusters pass contrast in dark — plus the first phase of the Lovable design integration (passive `tokens-v3.css` sheet), docs backfill (release review + specs), and CI-node coverage exemptions.**
