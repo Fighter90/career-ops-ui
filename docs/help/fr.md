@@ -1119,7 +1119,7 @@ tout le reste vit derrière **Filtres avancés**, `scan.advancedFilters`
 
 - **Texte libre** — correspondance de sous-chaîne sur le titre / l'entreprise.
 - Menu déroulant **Source** — toutes les sources connues du registre
-  (121 actuellement : 116 EN + 5 RU, **All sources** par défaut). Il
+  (122 actuellement : 117 EN + 5 RU, **All sources** par défaut). Il
   s'auto-remplit en direct depuis `GET /api/scan/sources`, si bien
   qu'un adaptateur nouvellement déposé apparaît ici sans aucun
   changement de l'app — la liste n'est jamais codée en dur.
@@ -1956,7 +1956,7 @@ copiez la sortie, et cherchez le problème sur le tracker d'incidents à
 
 ## 17. How to add a new job-portal source
 
-career-ops-ui traite chaque site d'emploi comme un **adaptateur** — un fichier unique sous [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) qui sait récupérer + normaliser les résultats d'un site. Actuellement, le registre `server/lib/sources/` livre **121** sources — **116 anglais + 5 russes**. L'ensemble anglais couvre les principaux ATS (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), les agrégateurs couvrant tout un board sélectionnés par un `provider:` explicite (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), et les ATS par tenant auto-détectés depuis un hôte `careers_url` ou une URL `api:` explicite (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **La liste complète n'a jamais besoin d'être comptée à la main ici — elle est auto-découverte depuis `server/lib/sources/` et affichée en direct dans le menu déroulant Source de `#/scan`.** Voir le §5 pour le YAML et `docs/portals-examples.md` pour des entrées à copier-coller.
+career-ops-ui traite chaque site d'emploi comme un **adaptateur** — un fichier unique sous [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) qui sait récupérer + normaliser les résultats d'un site. Actuellement, le registre `server/lib/sources/` livre **122** sources — **117 anglais + 5 russes**. L'ensemble anglais couvre les principaux ATS (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), les agrégateurs couvrant tout un board sélectionnés par un `provider:` explicite (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), et les ATS par tenant auto-détectés depuis un hôte `careers_url` ou une URL `api:` explicite (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **La liste complète n'a jamais besoin d'être comptée à la main ici — elle est auto-découverte depuis `server/lib/sources/` et affichée en direct dans le menu déroulant Source de `#/scan`.** Voir le §5 pour le YAML et `docs/portals-examples.md` pour des entrées à copier-coller.
 
 > **v1.69.0 (P-14) — auto-découverte par dépôt de fichier.** Ajouter une 12e source est désormais
 > un **simple dépôt de fichier**. Le registre

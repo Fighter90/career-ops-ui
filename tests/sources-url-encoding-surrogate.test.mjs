@@ -155,6 +155,22 @@ test('tkms.parseQuery drops the bad id, keeps the page', async () => {
     (rows) => rows.length === 1 && rows[0].url === 'https://x.tkms.com/en/job/Good/g-1');
 });
 
+test('trakstar.parseTrakstarPage drops the bad id, keeps the page', async () => {
+  // The rebuilt posting URL is where the host-controlled opening id is
+  // encoded — an off-host hosted_url forces that rebuild path.
+  const { parseTrakstarPage } = await load('trakstar.mjs');
+  await survives('trakstar',
+    () => parseTrakstarPage(
+      { meta: { total: 2 }, objects: [
+        { id: `${LONE}bad`, title: 'Bad Id', hosted_url: 'https://evil.example/nope' },
+        { id: 'good1', title: 'Good Id', hosted_url: 'https://evil.example/nope' },
+      ] },
+      'Acme',
+      'acme',
+    ).jobs,
+    (jobs) => jobs.length === 1 && jobs[0].url === 'https://acme.hire.trakstar.com/jobs/good1/');
+});
+
 test('vdab.normalizeJob yields null for a bad id, a job for a good one', async () => {
   const { normalizeJob } = await load('vdab.mjs');
   await survives('vdab',
@@ -201,8 +217,8 @@ test('trudvsem.normalizeTrudvsem drops a bad id without a vac_url, keeps a good 
  */
 const CONVERTED = [
   'alibaba.mjs', 'arbeitsagentur.mjs', 'bamboohr.mjs', 'feishu-jobs.mjs', 'garena.mjs',
-  'jibeapply.mjs', 'manfred.mjs', 'meituan.mjs', 'mokahr.mjs', 'phenom.mjs',
-  'thehub.mjs', 'tkms.mjs', 'vdab.mjs',
+  'jibeapply.mjs', 'manfred.mjs', 'meituan.mjs', 'mokahr.mjs', 'paylocity.mjs', 'phenom.mjs',
+  'thehub.mjs', 'tkms.mjs', 'trakstar.mjs', 'vdab.mjs',
   // web-ui-only, surfaced by the guard below on its first run
   'jobstreet.mjs', 'trudvsem.mjs',
 ];

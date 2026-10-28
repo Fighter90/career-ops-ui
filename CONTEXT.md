@@ -16,19 +16,19 @@ A term agreed in conversation but not written here will be re-invented next sess
 exporting `meta = { value, label, region, configKey? }`. `server/lib/sources/registry.mjs`
 scans the folder at boot and imports every `*.mjs`, so dropping in a valid file
 registers it with no registry edit. Drives `GET /api/scan/sources` and the `#/scan`
-Source dropdown. **Count: 121 (116 `region: 'en'` + 5 `region: 'ru'`).**
+Source dropdown. **Count: 122 (117 `region: 'en'` + 5 `region: 'ru'`).**
 
 **adapter** — an entry in the **fetch-walk registry**: `server/lib/portals/adapters/<slug>.mjs`
 plus an explicit row in `server/lib/portals/registry.mjs::ALL_ADAPTERS`. Implements
 `matches(company)` and `buildEndpoint(company)` (**string or null, never an object**)
-and performs the HTTP fetch/parse walk over `tracked_companies:`. **Count: 116 — EN only.**
+and performs the HTTP fetch/parse walk over `tracked_companies:`. **Count: 117 — EN only.**
 
 **The counts differ on purpose and both are correct.** Exactly five sources have no
 adapter: `geekjob`, `getmatch`, `habr-career`, `hh.ru`, `trudvsem` — the RU five, which
 are dispatched by `RU_DISPATCH` in `server/lib/ru-scanner.mjs` instead of walking
 company boards. So:
 
-> **121 sources = 116 EN + 5 RU · 116 adapters = the EN sources only · every adapter has a source, five sources have no adapter.**
+> **122 sources = 117 EN + 5 RU · 117 adapters = the EN sources only · every adapter has a source, five sources have no adapter.**
 
 - **Do not use** "provider" for either of these when writing web-ui code — in this
   repo `provider` means an LLM provider (`server/lib/llm-dispatch.mjs`,
