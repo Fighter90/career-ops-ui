@@ -39,7 +39,7 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 - **Ctrl+K contract (CAR-122)**: the chord opens the **command palette** — it does NOT focus the search box directly; search is focused from the palette. The remote-QA prod regression now asserts exactly this (#561).
 - **CodeQL FP-dismiss ×5**: the `js/missing-rate-limiting` alerts on main await the `security_events` token — operator action, not a code change.
 - Landed after branch cut: #561/#562/#563/#564/#565/#566/#567/#569/#570/#571/#572 are all merged to main; the #534-skeleton and CAR-139 agents merge before the tag. Nested marker lists beyond one level and inline-heavy view geometry remain documented gaps.
-- Tests 6609 on the release branch (+15 since v1.261.1; ~13 more from #561 at merge — 2 new gate files); the only red tests pre-fan-out are the CHANGELOG ×19 parity gates (locale fan-out is the orchestrator's next step); no scanner sources touched (registry 121 = 116 EN + 5 RU · 116 adapters).
+- Tests 6651 on the release branch (+42 since v1.261.1); full suite 6645 pass / 0 fail / 6 env skips; no scanner sources touched (registry 121 = 116 EN + 5 RU · 116 adapters).
 
 ## [1.261.1] — 2026-10-28
 
