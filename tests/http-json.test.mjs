@@ -5,7 +5,7 @@
 import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
-  fetchJson, fetchJsonWithRetry, delay, BROWSER_LIKE_USER_AGENT,
+  fetchJson, fetchJsonWithRetry, fetchTextWithRetry, delay, BROWSER_LIKE_USER_AGENT,
   parseRetryAfterMs, computeRetryDelayMs, JITTER_MS,
 } from '../server/lib/http-json.mjs';
 
@@ -214,4 +214,68 @@ test('fetchJsonWithRetry: a 429 with Retry-After still retries then succeeds (de
   // maxDelayMs:0 keeps the test instant; retryAfter '0' → 0ms anyway.
   assert.deepEqual(await fetchJsonWithRetry(fake, 'https://x/api', { retries: 2, retryDelayMs: 0, maxDelayMs: 0 }), { ok: 1 });
   assert.equal(calls, 2);
+});
+
+// ── a request that already spent its timeout is not retried (upstream #6132) ─
+// The scanners inject makeTimeoutFetch as their fetchImpl: every request gets
+// a hard deadline that aborts with a TimeoutError. The retry helpers used to
+// classify that abort as "transient, no status" and re-run it — spending the
+// same budget again on a board that is still hung (upstream measured ~94s for
+// one Ashby board at 30s × 3). A fast transport error (reset, DNS) never trips
+// the timer and still retries; a status the server actually sent still wins.
+
+const timedOutFetch = () => {
+  const state = { calls: 0 };
+  state.impl = async () => {
+    state.calls += 1;
+    throw new DOMException('scan fetch timed out after 200ms', 'TimeoutError');
+  };
+  return state;
+};
+
+test('fetchJsonWithRetry: does NOT retry a request that already spent its timeout', async () => {
+  const t = timedOutFetch();
+  await assert.rejects(
+    () => fetchJsonWithRetry(t.impl, 'https://x/jobs', { retries: 2, retryDelayMs: 1, maxDelayMs: 2 }),
+    (e) => e?.name === 'TimeoutError',
+  );
+  assert.equal(t.calls, 1, 'one attempt — a retry would spend the same budget again');
+});
+
+test('fetchJsonWithRetry: still retries a fast transport error that did not spend the timeout', async () => {
+  let calls = 0;
+  const fake = async () => { calls += 1; throw new Error('socket reset'); };
+  await assert.rejects(() => fetchJsonWithRetry(fake, 'https://x/jobs', { retries: 2, retryDelayMs: 0, maxDelayMs: 0 }), /socket reset/);
+  assert.equal(calls, 3, 'fast transport errors keep the retry budget');
+});
+
+test('fetchTextWithRetry: does NOT retry a spent timeout either', async () => {
+  const t = timedOutFetch();
+  await assert.rejects(
+    () => fetchTextWithRetry(t.impl, 'https://x/page', { retries: 2, retryDelayMs: 1, maxDelayMs: 2 }),
+    (e) => e?.name === 'TimeoutError',
+  );
+  assert.equal(t.calls, 1);
+});
+
+test('fetchTextWithRetry: a fast transport error is still retried', async () => {
+  let calls = 0;
+  const fake = async () => { calls += 1; throw new Error('ECONNRESET'); };
+  await assert.rejects(() => fetchTextWithRetry(fake, 'https://x/page', { retries: 2, retryDelayMs: 0, maxDelayMs: 0 }), /ECONNRESET/);
+  assert.equal(calls, 3);
+});
+
+test('fetchJsonWithRetry: an upstream watchdog abort (not our timer) still stops via signal.aborted, not via the timeout rule', async () => {
+  // An upstream abort arrives as a plain AbortError on an aborted caller
+  // signal — the `signal?.aborted` branch must keep throwing immediately, and
+  // the timeout rule must not change its error shape.
+  const ac = new AbortController();
+  ac.abort(new DOMException('client gone', 'AbortError'));
+  let calls = 0;
+  const fake = async () => { calls += 1; throw new DOMException('This operation was aborted', 'AbortError'); };
+  await assert.rejects(
+    () => fetchJsonWithRetry(fake, 'https://x/jobs', { retries: 3, retryDelayMs: 0, maxDelayMs: 0, signal: ac.signal }),
+    (e) => e?.name === 'AbortError',
+  );
+  assert.equal(calls, 1);
 });
