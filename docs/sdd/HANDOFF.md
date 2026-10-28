@@ -51,7 +51,7 @@ npm run test:coverage:gate      # coverage ratchet (scripts/coverage-baseline.js
 2. 18 locale files ×2 (`README.<L>.md`, `CHANGELOG.<L>.md`) — one sub-agent per locale; English
    source of truth; the file's own section labels; exactly one `## [X.Y.Z]` per file.
    If the source count changed: help ×19 §17 sentence, `CONTEXT.md`, `CLAUDE.md`.
-3. `cd site && npm run build` **after** all 17 changelogs are final; then
+3. `cd site && npm run build` **after** all 19 changelogs are final; then
    `grep -L 'X.Y.Z' site/src/content/changelog/*.md` must print nothing.
 4. Gates (above). Commit (`Co-Authored-By:` trailer), push branch, `gh pr create`.
 5. `gh pr checks <n> --watch`; fix failures (CodeQL: real findings get fixed; the known
@@ -87,7 +87,7 @@ the release is not done:
    scope, acceptance criteria, Verification filled with REAL output before the PR merges.
 5. **Wiki refresh in the same release**: Home ×19 banners + test floor, Scanner-Providers,
    Testing-and-QA / Release-Process counts, Roadmap page mirror of Linear.
-6. **Site freshness**: `cd site && npm run build` only after all 17 changelogs are final;
+6. **Site freshness**: `cd site && npm run build` only after all 19 changelogs are final;
    `grep -L 'X.Y.Z' site/src/content/changelog/*.md` must print nothing (sync-assets keeps
    them in the build).
 7. **Linear statuses move with the work**: In Progress when an agent starts, In Review when

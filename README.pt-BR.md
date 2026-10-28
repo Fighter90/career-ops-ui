@@ -640,7 +640,7 @@ O career-ops rende melhor **sempre ligado** — rastreando enquanto você dorme,
 
 A interface inclui **19 idiomas** — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `fr`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`, `ta`, `vi`. Desde a **v1.60.0 (I18N-SPLIT)** as traduções ficam **um arquivo por idioma** em [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, uma tabela plana `chave → texto` — mais `i18n-dict.aliases.js`. [`i18n-dict.js`](public/js/lib/i18n-dict.js) os monta em `window.__I18N_DICT`; [`i18n.js`](public/js/lib/i18n.js) resolve `t('chave', 'fallback')`. Sem build, sem fetch — o tradutor edita um único arquivo de idioma.
 
-**Adicionar ou alterar um texto:** adicione a mesma chave aos 18 arquivos de idioma (a paridade é garantida por testes), use-a com `data-i18n="scan.newButton"` ou `t('scan.newButton')`, e rode `npm test`.
+**Adicionar ou alterar um texto:** adicione a mesma chave aos 19 arquivos de idioma (a paridade é garantida por testes), use-a com `data-i18n="scan.newButton"` ou `t('scan.newButton')`, e rode `npm test`.
 
 ```js
 // public/js/lib/locales/i18n-dict.en.js   →   'scan.newButton': 'Run scan',

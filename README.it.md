@@ -669,7 +669,7 @@ La UI viene fornita con **19 lingue** — `en`, `es`, `fr`, `pt-BR`, `ko`, `ja`,
 ```js
 // public/js/lib/locales/i18n-dict.en.js   →   'scan.newButton': 'Run scan',
 // public/js/lib/locales/i18n-dict.es.js   →   'scan.newButton': 'Ejecutar búsqueda',
-// …add the same key to all 16 locale files (parity is gated)
+// …add the same key to all 19 locale files (parity is gated)
 ```
 
 Poi usala tramite `data-i18n="scan.newButton"` nel markup o `t('scan.newButton')` in JS, ed esegui `npm test`. Per aggiungere una lingua nuova di zecca, registrala in `i18n.js` (`LANGS` + `detect()`), nell'assembler, in `index.html` e nella toolchain che enumera le lingue.

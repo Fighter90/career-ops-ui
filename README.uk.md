@@ -183,6 +183,22 @@ npm run test:e2e:browser    # 101 тестів Playwright
 npm run test:coverage       # те саме + покриття V8
 ```
 
+## Локалізація
+
+Інтерфейс підтримує **19 локалей** — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `fr`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`, `ta`, `vi`. З **v1.60.0 (I18N-SPLIT)** переклади зберігаються **по одному файлу на мову** у [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, плоска таблиця `ключ → рядок` — плюс спільний `i18n-dict.aliases.js`. [`i18n-dict.js`](public/js/lib/i18n-dict.js) збирає їх у `window.__I18N_DICT`; [`i18n.js`](public/js/lib/i18n.js) розв'язує `t('ключ', 'fallback')`. Без збірки і без fetch — перекладач править один файл мови.
+
+**Додати або змінити рядок:** додайте той самий ключ до всіх 19 файлів локалей (паритет перевіряється тестами), використайте через `data-i18n="scan.newButton"` або `t('scan.newButton')` і запустіть `npm test`.
+
+```js
+// public/js/lib/locales/i18n-dict.en.js   →   'scan.newButton': 'Run scan',
+// public/js/lib/locales/i18n-dict.es.js   →   'scan.newButton': 'Ejecutar búsqueda',
+// …додайте той самий ключ до всіх 19 файлів локалей (паритет під гейтом)
+```
+
+📖 **Повний посібник:** [`docs/LOCALIZATION.md`](docs/LOCALIZATION.md) — розкладка за локалями, механізм `@alias`, додавання нової локалі покроково та всі i18n-перевірки CI.
+
+---
+
 ## 📘 Як цей репозиторій будується агентами кодування
 
 Більшість цього проєкту написана агентами кодування. Це практика з власними режимами

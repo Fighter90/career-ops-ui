@@ -642,7 +642,7 @@ career-ops は **常時稼働** が最適です — 就寝中もスキャンし�
 
 UI は **19 言語** を提供します — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `fr`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`, `ta`, `vi`。**v1.60.0 (I18N-SPLIT)** 以降、翻訳は [`public/js/lib/locales/`](public/js/lib/locales/) 配下の **言語ごとに 1 ファイル**（`i18n-dict.<lang>.js`、フラットな `キー → 文字列` テーブル）と共通の `i18n-dict.aliases.js` にあります。[`i18n-dict.js`](public/js/lib/i18n-dict.js) がそれらを `window.__I18N_DICT` に組み立て、[`i18n.js`](public/js/lib/i18n.js) が `t('キー', 'fallback')` を解決します。ビルドも fetch もなし — 翻訳者は 1 つの言語ファイルだけを編集します。
 
-**文字列の追加・変更:** 同じキーを 18 個の言語ファイルすべてに追加し（パリティはテストで強制）、`data-i18n="scan.newButton"` または `t('scan.newButton')` で使い、`npm test` を実行します。
+**文字列の追加・変更:** 同じキーを 19 個の言語ファイルすべてに追加し（パリティはテストで強制）、`data-i18n="scan.newButton"` または `t('scan.newButton')` で使い、`npm test` を実行します。
 
 ```js
 // public/js/lib/locales/i18n-dict.en.js   →   'scan.newButton': 'Run scan',
