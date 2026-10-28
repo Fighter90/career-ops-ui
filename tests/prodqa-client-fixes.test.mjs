@@ -146,3 +146,36 @@ test('prodqa 1: previewTimer is declared lexically ABOVE its first invocation', 
 });
 
 
+// ── 2. Ctrl/Cmd+K ────────────────────────────────────────────────────────
+
+test('prodqa 2: both Ctrl+K handlers are registered at document level, never view-scoped', () => {
+  const nav = read('public', 'js', 'lib', 'nav-v2.js');
+  const app = read('public', 'js', 'app.js');
+  assert.match(nav, /document\.addEventListener\('keydown', onGlobalKeydown\)/,
+    'nav-v2 registers the palette chord on document (global), not on a view element');
+  assert.match(app, /document\.addEventListener\('keydown'/,
+    'app.js registers the legacy search-focus fallback on document');
+  for (const dir of ['public/js/views', 'public/js/views/scan', 'public/js/views/config']) {
+    let names = [];
+    try { names = readdirSync(resolve(ROOT, dir)); } catch { continue; }
+    for (const n of names.filter((f) => f.endsWith('.js'))) {
+      const src = read(dir, n);
+      const docKeydown = /document\.addEventListener\(\s*['"`]keydown/.test(src);
+      const chord = /KeyK|=== ['"`]k['"`]/.test(src);
+      assert.ok(!(docKeydown && chord),
+        `${dir}/${n}: a view must not own the global Ctrl+K chord (document-level keydown + k matching)`);
+    }
+  }
+});
+
+test('prodqa 2: the chord matches e.code (KeyK), so it works on non-QWERTY layouts', () => {
+  // On a Russian layout Ctrl+K arrives as key='л' code='KeyK'; matching
+  // e.key alone made the chord dead for every non-Latin keyboard user.
+  const nav = read('public', 'js', 'lib', 'nav-v2.js');
+  const app = read('public', 'js', 'app.js');
+  assert.match(nav, /e\.code === 'KeyK'/,
+    'nav-v2 palette chord must accept e.code === \'KeyK\'');
+  assert.match(app, /e\.code === 'KeyK'/,
+    'app.js legacy fallback must accept e.code === \'KeyK\'');
+});
+

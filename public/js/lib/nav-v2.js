@@ -593,7 +593,10 @@
    *  binding (script order), so stopImmediatePropagation() makes the
    *  palette the main Cmd/Ctrl+K entry. */
   function onGlobalKeydown(e) {
-    if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K')) {
+    // e.code is layout-independent: on a Russian (or any non-QWERTY)
+    // keyboard the chord arrives as key='л' code='KeyK', so an e.key-only
+    // match left Ctrl+K dead for those users (prod-QA CAR-172).
+    if ((e.ctrlKey || e.metaKey) && (e.key === 'k' || e.key === 'K' || e.code === 'KeyK')) {
       e.preventDefault();
       e.stopImmediatePropagation();
       if (isPaletteOpen()) closePalette();
