@@ -1071,22 +1071,12 @@ jamais comme une page morte.
 
 Le chrome v2 des résultats garde les commandes à portée de vue :
 
-- **Filtres actifs** (`scan.v2.activeFilters`) — chaque filtre posé
-  s'affiche en puce supprimable au-dessus du tableau ; cliquez le
-  **✕** d'une puce (**Retirer le filtre**, `scan.v2.removeFilter`)
-  pour ne lâcher que celle-là, ou **Tout réinitialiser**
-  (`scan.v2.resetAll`) pour tout nettoyer.
+- **Filtres actifs** (`scan.v2.activeFilters`) — chaque filtre posé s'affiche en puce supprimable au-dessus du tableau ; cliquez le **✕** d'une puce (**Retirer le filtre**, `scan.v2.removeFilter`) pour ne lâcher que celle-là, ou **Tout réinitialiser** (`scan.v2.resetAll`) pour tout nettoyer.
 - **Trier par** (`scan.v2.sortBy`) — cliquez un en-tête de colonne
   (entreprise, poste, salaire, ancienneté) pour trier dessus ;
   re-cliquez pour inverser le sens.
-- **Aperçu rapide** (`scan.v2.quickView`) — cliquez une ligne pour
-  déplier sa description d'offre en place (**Description**,
-  `scan.v2.description`) sans quitter la page ; les offres sans corps
-  capturé le disent (`scan.v2.noDescription`) au lieu d'afficher une
-  carte vide.
-- **Densité des lignes** (`scan.v2.density`) — basculez **Compact** /
-  **Confortable** (`scan.v2.compact` / `scan.v2.comfortable`) pour la
-  hauteur des lignes ; le choix est mémorisé par navigateur.
+- **Aperçu rapide** (`scan.v2.quickView`) — cliquez une ligne pour déplier sa description d'offre en place (**Description**, `scan.v2.description`) sans quitter la page ; les offres sans corps capturé le disent (`scan.v2.noDescription`) au lieu d'afficher une carte vide.
+- **Densité des lignes** (`scan.v2.density`) — basculez **Compact** / **Confortable** (`scan.v2.compact` / `scan.v2.comfortable`) pour la hauteur des lignes ; le choix est mémorisé par navigateur.
 - **Journal** (`scan.v2.log`) — replie/déplie le journal de scan en
   flux pour donner toute la largeur au tableau.
 
@@ -1136,12 +1126,7 @@ tout le reste vit derrière **Filtres avancés**, `scan.advancedFilters`
 - Menu déroulant **Remote / Hybrid / Onsite**.
 - Menu déroulant **Country** — un filtre géographique alimenté par les pays détectés dans les résultats actuels, chacun affiché avec son emoji de drapeau et un décompte (p. ex. `🇩🇪 Germany (12)`). Choisissez-en un pour ne garder que les postes liés à ce pays. La détection mappe la localisation en texte libre d'une offre (noms de pays/alias + ~100 grandes villes du marché de l'emploi) vers un pays ; elle est prudente et ne devine jamais, de sorte qu'une offre dont la localisation ne peut être résolue — ou une annonce purement « Remote » — reste sous **All countries**. Combinez-le avec le menu déroulant de type de travail pour trouver des postes liés à un pays *et* à distance.
 - Menu déroulant **Publié depuis** — un filtre d'ancienneté côté client (Dernières 24 heures / 7 jours / 30 jours). Les lignes dont la `pubDate` est plus ancienne sont masquées ; les lignes **sans date indiquée passent** (l'absence de donnée n'est pas pénalisée).
-- **Salaire dès / Salaire jusqu'à** (`scan.salaryFrom` /
-  `scan.salaryTo`) — bornes en nombres simples comparées aux montants
-  analysés dans le texte de l'offre (devise ignorée,
-  `scan.v2.salaryHint`) ; cochez **Inclure les offres sans salaire**
-  (`scan.v2.includeNoSalary`) pour que le filtre de salaire ne lâche
-  pas les lignes qui ne citent aucun chiffre.
+- **Salaire dès / Salaire jusqu'à** (`scan.salaryFrom` / `scan.salaryTo`) — bornes en nombres simples comparées aux montants analysés dans le texte de l'offre (devise ignorée, `scan.v2.salaryHint`) ; cochez **Inclure les offres sans salaire** (`scan.v2.includeNoSalary`) pour que le filtre de salaire ne lâche pas les lignes qui ne citent aucun chiffre.
 - Menu déroulant **Niveau** (`scan.lblSeniority`) — Lead / Staff /
   Senior / Mid / Junior / Intern, détecté depuis le titre.
 - **★ Favoris** — cliquez sur le ☆ d'une ligne pour mettre une offre en favori (stocké dans `localStorage` par URL) ; cochez **★ Favoris** (`scan.favOnly`) dans le panneau de filtres pour n'afficher que les lignes favorites. Les favoris survivent aux scans et aux rechargements.
@@ -1245,12 +1230,7 @@ Boîte de réception des URL en attente d'évaluation. Vit dans
 Trois façons :
 
 - Tapez / collez une URL dans le champ + cliquez sur **Ajouter une URL** (`pipe.add`).
-- Utilisez le **menu de commandes** : **Cmd/Ctrl+K** (ou le bouton
-  **Menu de commandes** de la barre latérale, `nav.v2.palette`), collez
-  n'importe quel lien `http(s)://…` et le menu propose
-  **Pilote automatique : {url}** (`nav.v2.evalUrl`) — Entrée lance
-  toute la chaîne dessus. Tapez tout autre texte et **Entrée** saute
-  vers `#/scan` avec ce terme pré-rempli.
+- Utilisez le **menu de commandes** : **Cmd/Ctrl+K** (ou le bouton **Menu de commandes** de la barre latérale, `nav.v2.palette`), collez n'importe quel lien `http(s)://…` et le menu propose **Pilote automatique : {url}** (`nav.v2.evalUrl`) — Entrée lance toute la chaîne dessus. Tapez tout autre texte et **Entrée** saute vers `#/scan` avec ce terme pré-rempli.
 - Lancez un Scan (voir ci-dessus) — les nouvelles trouvailles vont au
   pipeline automatiquement.
 
@@ -1273,8 +1253,7 @@ donc un site hostile ne peut pas vous renvoyer vers loopback / IP privée /
 ### Row actions
 
 - **▶** (`pipe.evaluateBtn`) — saute à `#/evaluate?url=…` avec l'URL pré-remplie.
-- **✕** — retire l'URL de `data/pipeline.md` (demande d'abord,
-  `pipe.confirmDel`).
+- **✕** — retire l'URL de `data/pipeline.md` (demande d'abord, `pipe.confirmDel`).
 
 **Vue groupée, suppression en masse, annulation sans perte.** Nettoyer
 une grande boîte après un scan est la pièce maîtresse v2 de la page :
@@ -1291,14 +1270,7 @@ une grande boîte après un scan est la pièce maîtresse v2 de la page :
   défaut ; les offres qui ont déjà une ligne au suiveur sortent de la
   vue (et de la sélection en masse) pour que vous n'agissiez que sur du
   travail neuf.
-- **Sélectionnez** (`pipe.selectOne`) des lignes, ou **Tout
-  sélectionner (affichés)** (`pipe.selectAllShown`) — la sélection suit
-  toujours les filtres courants, jamais les lignes invisibles. La barre
-  de sélection affiche le décompte (`pipe.selectedCount`) et propose
-  **✕ Supprimer la sélection (N)** (`pipe.bulkRemove`) plus **Évaluer
-  la première sélectionnée** (`pipe.evaluateSelected`) — la suppression
-  en masse confirme une seule fois pour tout le lot, pas ligne par
-  ligne.
+- **Sélectionnez** (`pipe.selectOne`) des lignes, ou **Tout sélectionner (affichés)** (`pipe.selectAllShown`) — la sélection suit toujours les filtres courants, jamais les lignes invisibles. La barre de sélection affiche le décompte (`pipe.selectedCount`) et propose **✕ Supprimer la sélection (N)** (`pipe.bulkRemove`) plus **Évaluer la première sélectionnée** (`pipe.evaluateSelected`) — la suppression en masse confirme une seule fois pour tout le lot, pas ligne par ligne.
 
 Rien ne se perd par erreur : chaque suppression — individuelle ou en
 masse — renvoie un jeton de restauration opaque, et une barre au bas de
@@ -1420,21 +1392,14 @@ liste, et tout se compose :
   rapport.
 - **Entreprise** (`rep2.companyLabel`) — choisissez un employeur dans
   le menu déroulant.
-- **Tranche de score** (`rep2.bandLabel`) — **Élevé (4.5+)** / **Bon
-  (4.0+)** / **Moyen (3.5+)** / **Inférieur à 3,5** (`rep2.bandHigh` …
-  `rep2.bandLow`), plus un compartiment pour les rapports dont
-  l'en-tête ne porte aucun score analysable.
+- **Tranche de score** (`rep2.bandLabel`) — **Élevé (4.5+)** / **Bon (4.0+)** / **Moyen (3.5+)** / **Inférieur à 3,5** (`rep2.bandHigh` … `rep2.bandLow`), plus un compartiment pour les rapports dont l'en-tête ne porte aucun score analysable.
 - **Du / Au** (`rep2.dateFrom` / `rep2.dateTo`) — bornez la liste à
   une période.
-- **Trier par** (`rep2.sortLabel`) — **Date** / **Score** /
-  **Entreprise** (`rep2.sortDate` …), croissant ou décroissant
-  (`rep2.sortDirAsc` / `rep2.sortDirDesc`).
+- **Trier par** (`rep2.sortLabel`) — **Date** / **Score** / **Entreprise** (`rep2.sortDate` …), croissant ou décroissant (`rep2.sortDirAsc` / `rep2.sortDirDesc`).
 - Un **histogramme de distribution des scores** (`rep2.histogramLabel`)
   — cliquez une colonne pour filtrer sur cette tranche et voir la
   forme de votre pipeline d'un coup d'œil.
-- **Réinitialiser les filtres** (`rep2.reset`) nettoie tout ; quand
-  rien ne correspond, la page le dit (`rep2.noMatches`) au lieu
-  d'afficher une grille vide.
+- **Réinitialiser les filtres** (`rep2.reset`) nettoie tout ; quand rien ne correspond, la page le dit (`rep2.noMatches`) au lieu d'afficher une grille vide.
 
 Cliquez sur une carte (ou une ligne de tableau) pour lire le markdown
 complet. Pagination : 20 par page ; commandes en bas ; chaque

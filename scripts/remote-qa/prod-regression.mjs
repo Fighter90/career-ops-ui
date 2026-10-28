@@ -164,10 +164,25 @@ await Promise.all(Array.from({ length: Math.min(CONCURRENCY, LOCALES.length) }, 
   const after = await page.evaluate(() => document.documentElement.dataset.theme || '');
   if (before === after) add('en', 'dashboard', 'theme-toggle', `theme did not change (${before})`);
   await page.click('#theme-toggle').catch(() => {});
-  // Ctrl+K focuses the global search box.
+  // Ctrl+K opens the command palette (CAR-122: the nav-v2 shell owns the
+  // chord — its document-level handler registers before app.js's legacy
+  // binding and stopImmediatePropagation() wins, so the chord opens the
+  // `.nav-v2-palette` [role=dialog] command menu and focuses its input;
+  // it no longer focuses the global search box). On a build where nav-v2
+  // has not initialised, the legacy search-focus binding still exists —
+  // accept that as the fallback so the check survives a palette-less deploy.
   await page.keyboard.press('Control+k');
-  const focused = await page.evaluate(() => { const a = document.activeElement; return !!a && a.tagName === 'INPUT' && /search/i.test(a.id + ' ' + a.type + ' ' + (a.getAttribute('role') || '')); });
-  if (!focused) add('en', 'dashboard', 'ctrl-k', 'Ctrl+K did not focus the search box');
+  const chord = await page.evaluate(() => {
+    const dlg = document.querySelector('.nav-v2-palette[role="dialog"], #command-palette, .cmdk');
+    const paletteOpen = !!(dlg && !dlg.closest('[hidden]'));
+    const a = document.activeElement;
+    const paletteFocus = !!a && a.tagName === 'INPUT' && /\bnav-v2-input\b/.test(a.className || '');
+    const searchFocus = !!a && a.tagName === 'INPUT' && /search/i.test(a.id + ' ' + a.type + ' ' + (a.getAttribute('role') || ''));
+    return { paletteOpen, paletteFocus, searchFocus };
+  });
+  if (!((chord.paletteOpen && chord.paletteFocus) || chord.searchFocus)) {
+    add('en', 'dashboard', 'ctrl-k', `Ctrl+K opened neither the command palette (open=${chord.paletteOpen}, focus=${chord.paletteFocus}) nor the search box`);
+  }
   await page.keyboard.press('Escape');
   await page.goto('about:blank'); await page.goto(BASE + '/#/definitely-not-a-route'); await settle(page);
   const nf = await page.evaluate(() => document.body.innerText.length > 0);

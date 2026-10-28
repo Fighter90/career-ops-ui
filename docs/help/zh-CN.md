@@ -898,19 +898,11 @@ $EDITOR portals.yml
 
 v2 结果区让所有控件都看得见:
 
-- **当前筛选**(`scan.v2.activeFilters`)— 你设置的每个筛选都会以
-  可移除 chip 的形式显示在表格上方;点击 chip 上的 **✕**(**移除筛
-  选**,`scan.v2.removeFilter`)只去掉这一项,或**全部重置**
-  (`scan.v2.resetAll`)一次清空。
+- **当前筛选**(`scan.v2.activeFilters`)— 你设置的每个筛选都会以 可移除 chip 的形式显示在表格上方;点击 chip 上的 **✕**(**移除筛 选**,`scan.v2.removeFilter`)只去掉这一项,或**全部重置** (`scan.v2.resetAll`)一次清空。
 - **排序方式**(`scan.v2.sortBy`)— 点击列标题(公司、职位、薪资、
   年龄)按其排序;再点一次反向。
-- **快速查看**(`scan.v2.quickView`)— 点击一行即可就地展开其职位描
-  述(**职位描述**,`scan.v2.description`),无需离开页面;没有保存
-  正文的职位会如实说明(`scan.v2.noDescription`)而不是展示一张空白
-  卡片。
-- **行密度**(`scan.v2.density`)— 在**紧凑** / **宽松**
-  (`scan.v2.compact` / `scan.v2.comfortable`)行高之间切换;选择按浏
-  览器记住。
+- **快速查看**(`scan.v2.quickView`)— 点击一行即可就地展开其职位描 述(**职位描述**,`scan.v2.description`),无需离开页面;没有保存 正文的职位会如实说明(`scan.v2.noDescription`)而不是展示一张空白 卡片。
+- **行密度**(`scan.v2.density`)— 在**紧凑** / **宽松** (`scan.v2.compact` / `scan.v2.comfortable`)行高之间切换;选择按浏 览器记住。
 - **日志**(`scan.v2.log`)— 折叠/展开实时扫描日志,把完整宽度让给
   表格。
 
@@ -1045,10 +1037,7 @@ hh.ru 通过读取其公开搜索页面（`hh.ru/search/vacancy`）来扫描,与
 三种方式:
 
 - 在输入框输入/粘贴 URL,然后点击**添加 URL**(`pipe.add`)。
-- 使用**命令菜单**:**Cmd/Ctrl+K**(或侧边栏的**命令菜单**按钮,
-  `nav.v2.palette`),粘贴任意 `http(s)://…` 链接,菜单会提供
-  **自动流水线：{url}**(`nav.v2.evalUrl`)— 按 Enter 即对它跑完整
-  条链。输入其他文本并按 Enter,则跳转到 `#/scan` 并预先填好该词。
+- 使用**命令菜单**:**Cmd/Ctrl+K**(或侧边栏的**命令菜单**按钮, `nav.v2.palette`),粘贴任意 `http(s)://…` 链接,菜单会提供 **自动流水线：{url}**(`nav.v2.evalUrl`)— 按 Enter 即对它跑完整 条链。输入其他文本并按 Enter,则跳转到 `#/scan` 并预先填好该词。
 - 运行一次 Scan(见上文)— 新命中会自动进入 pipeline。
 
 每个 URL 都会在服务器端经过 `isValidJobUrl()`。Loopback
@@ -1080,12 +1069,7 @@ HTML 标签,返回最多 8 KB 纯文本。
   只有在该 host 上*所有*含公司的条目都一致时才会借用公司名。
 - **隐藏已评估**(`pipe.hideTracked`)— 默认开启;已有跟踪行的职位
   会从视图(以及批量选择)中消失,你只会对新鲜的工作采取行动。
-- **选择**(`pipe.selectOne`)任意行,或**全选所显示项**
-  (`pipe.selectAllShown`)— 选择始终跟随当前过滤器,绝不包含不可见
-  行。选择栏显示计数(`pipe.selectedCount`),并提供 **✕ 删除所选项
-  (N)**(`pipe.bulkRemove`)与**评估第一个所选项**
-  (`pipe.evaluateSelected`)— 批量删除对整个集合确认一次,而不是逐
-  行确认。
+- **选择**(`pipe.selectOne`)任意行,或**全选所显示项** (`pipe.selectAllShown`)— 选择始终跟随当前过滤器,绝不包含不可见 行。选择栏显示计数(`pipe.selectedCount`),并提供 **✕ 删除所选项 (N)**(`pipe.bulkRemove`)与**评估第一个所选项** (`pipe.evaluateSelected`)— 批量删除对整个集合确认一次,而不是逐 行确认。
 
 没有什么会误删:每次移除 — 单条或批量 — 都会返回一个不透明的恢复
 token,页面底部的一条横条(**已删除：N**,`pipe.deleted`)提供**撤
@@ -1189,18 +1173,13 @@ URL 时,逐条点击就不现实了 — 跳转到第 14 节的 **Batch evaluate*
 - **搜索报告**(`rep2.searchLabel`)— 自由文本,匹配每份报告的公司、
   职位与显示标题。
 - **公司**(`rep2.companyLabel`)— 从下拉中挑选一个雇主。
-- **分数区间**(`rep2.bandLabel`)— **高 (4.5+)** / **良好 (4.0+)**
-  / **中等 (3.5+)** / **低于 3.5**(`rep2.bandHigh` …
-  `rep2.bandLow`),外加一个收纳头部无可解析分数报告的桶。
+- **分数区间**(`rep2.bandLabel`)— **高 (4.5+)** / **良好 (4.0+)** / **中等 (3.5+)** / **低于 3.5**(`rep2.bandHigh` … `rep2.bandLow`),外加一个收纳头部无可解析分数报告的桶。
 - **起始日期 / 截止日期**(`rep2.dateFrom` / `rep2.dateTo`)— 把列表
   限定在一个时间段。
-- **排序方式**(`rep2.sortLabel`)— **日期** / **分数** / **公司**
-  (`rep2.sortDate` …),升序或降序(`rep2.sortDirAsc` /
-  `rep2.sortDirDesc`)。
+- **排序方式**(`rep2.sortLabel`)— **日期** / **分数** / **公司** (`rep2.sortDate` …),升序或降序(`rep2.sortDirAsc` / `rep2.sortDirDesc`)。
 - 一个**分数分布直方图**(`rep2.histogramLabel`)— 点击某一列即过滤
   到该区间,一眼看清 pipeline 的形状。
-- **重置筛选**(`rep2.reset`)清空一切;当没有任何匹配时,页面会如
-  实说明(`rep2.noMatches`)而不是展示一片空白网格。
+- **重置筛选**(`rep2.reset`)清空一切;当没有任何匹配时,页面会如 实说明(`rep2.noMatches`)而不是展示一片空白网格。
 
 点击卡片(或表格行)查看完整 markdown。分页: 每页 20 条;控件在底
 部;每次改动过滤器都会把你带回第 1 页。

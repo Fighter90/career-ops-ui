@@ -1099,21 +1099,12 @@ tarama hiçbir zaman ölü bir sayfa gibi okunmaz.
 
 v2 sonuç çerçevesi kontrolleri keşfedilebilir tutar:
 
-- **Etkin filtreler** (`scan.v2.activeFilters`) — ayarladığınız her
-  filtre tablonun üzerinde kaldırılabilir bir çip olarak görünür;
-  yalnızca birini düşürmek için çipteki **✕**'e tıklayın
-  (**Filtreyi kaldır**, `scan.v2.removeFilter`) ya da tamamını temizlemek
-  için **Tümünü sıfırla**'yı kullanın (`scan.v2.resetAll`).
+- **Etkin filtreler** (`scan.v2.activeFilters`) — ayarladığınız her filtre tablonun üzerinde kaldırılabilir bir çip olarak görünür; yalnızca birini düşürmek için çipteki **✕**'e tıklayın (**Filtreyi kaldır**, `scan.v2.removeFilter`) ya da tamamını temizlemek için **Tümünü sıfırla**'yı kullanın (`scan.v2.resetAll`).
 - **Şuna göre sırala** (`scan.v2.sortBy`) — ona göre sıralamak için bir
   sütun başlığına (şirket, rol, maaş, yaş) tıklayın; yönü çevirmek için
   yeniden tıklayın.
-- **Hızlı görünüm** (`scan.v2.quickView`) — sayfadan ayrılmadan ilanın
-  açıklamasını satır içinde açmak için bir satıra tıklayın
-  (**Açıklama**, `scan.v2.description`); kayıtlı gövdesi olmayan ilanlar
-  boş bir kart göstermek yerine bunu söyler (`scan.v2.noDescription`).
-- **Satır yoğunluğu** (`scan.v2.density`) — **Sıkı** / **Rahat**
-  (`scan.v2.compact` / `scan.v2.comfortable`) satır yükseklikleri
-  arasında geçiş yapın; seçim tarayıcı başına hatırlanır.
+- **Hızlı görünüm** (`scan.v2.quickView`) — sayfadan ayrılmadan ilanın açıklamasını satır içinde açmak için bir satıra tıklayın (**Açıklama**, `scan.v2.description`); kayıtlı gövdesi olmayan ilanlar boş bir kart göstermek yerine bunu söyler (`scan.v2.noDescription`).
+- **Satır yoğunluğu** (`scan.v2.density`) — **Sıkı** / **Rahat** (`scan.v2.compact` / `scan.v2.comfortable`) satır yükseklikleri arasında geçiş yapın; seçim tarayıcı başına hatırlanır.
 - **Günlük** (`scan.v2.log`) — tabloya tam genişliği vermek için akış
   tarama günlüğünü daraltın/genişletin.
 
@@ -1272,14 +1263,8 @@ Takipçi okunamazsa şerit yalnızca gelen kutusu sayacına düşer.
 
 Üç yol:
 
-- Girdiye bir URL yazın / yapıştırın + **URL ekle**'ye tıklayın
-  (`pipe.add`).
-- **Komut menüsünü** açın: **Cmd/Ctrl+K** (veya kenar çubuğundaki
-  **Komut menüsü** düğmesi, `nav.v2.palette`), herhangi bir
-  `http(s)://…` bağlantısı yapıştırın; menü **Otomatik-pipeline:
-  {url}**'yi önerir (`nav.v2.evalUrl`) — Enter, tüm zinciri üzerinde
-  çalıştırır. Başka herhangi bir metin + Enter, o terim önceden
-  doldurulmuş olarak `#/scan`'e atlar.
+- Girdiye bir URL yazın / yapıştırın + **URL ekle**'ye tıklayın (`pipe.add`).
+- **Komut menüsünü** açın: **Cmd/Ctrl+K** (veya kenar çubuğundaki **Komut menüsü** düğmesi, `nav.v2.palette`), herhangi bir `http(s)://…` bağlantısı yapıştırın; menü **Otomatik-pipeline: {url}**'yi önerir (`nav.v2.evalUrl`) — Enter, tüm zinciri üzerinde çalıştırır. Başka herhangi bir metin + Enter, o terim önceden doldurulmuş olarak `#/scan`'e atlar.
 - Bir Tarama çalıştırın (yukarıya bakın) — yeni isabetler otomatik
   olarak pipeline'a gider.
 
@@ -1304,8 +1289,7 @@ sektiremez. 3 atlamada sınırlı, 15 saniyelik zaman aşımı.
 
 - **▶** (`pipe.evaluateBtn`) — URL önceden doldurulmuş olarak
   `#/evaluate?url=…`'e atlar.
-- **✕** — URL'yi `data/pipeline.md`'den kaldırır (önce sorar,
-  `pipe.confirmDel`).
+- **✕** — URL'yi `data/pipeline.md`'den kaldırır (önce sorar, `pipe.confirmDel`).
 
 **Gruplu görünüm, toplu ayıklama, kayıpsız geri alma.** Bir taramadan
 sonra büyük bir gelen kutusunu temizlemek, sayfanın v2'sinin asıl
@@ -1324,13 +1308,7 @@ parçasıdır:
   olarak açıktır; ilanın zaten takipçi satırına sahip olan girdiler
   görünümden (ve toplu seçimden) düşer, böylece yalnızca taze işe
   işlem yaparsınız.
-- Herhangi bir satırı **Seçin** (`pipe.selectOne`) veya **Gösterilenlerin
-  tümünü seçin** (`pipe.selectAllShown`) — seçim her zaman geçerli
-  filtreleri izler, asla görünmez satırları değil. Seçim çubuğu sayıyı
-  gösterir (`pipe.selectedCount`) ve **✕ Seçilenleri kaldır (N)**
-  (`pipe.bulkRemove`) artı **Seçilen ilki değerlendir**
-  (`pipe.evaluateSelected`) sunar — toplu kaldırma, satır satır
-  değil tüm küme için bir kez onay ister.
+- Herhangi bir satırı **Seçin** (`pipe.selectOne`) veya **Gösterilenlerin tümünü seçin** (`pipe.selectAllShown`) — seçim her zaman geçerli filtreleri izler, asla görünmez satırları değil. Seçim çubuğu sayıyı gösterir (`pipe.selectedCount`) ve **✕ Seçilenleri kaldır (N)** (`pipe.bulkRemove`) artı **Seçilen ilki değerlendir** (`pipe.evaluateSelected`) sunar — toplu kaldırma, satır satır değil tüm küme için bir kez onay ister.
 
 Hiçbir şey yanlışlıkla kaybolmaz: her kaldırma — tek veya toplu —
 opak bir geri yükleme jetonu döndürür ve sayfanın altındaki bir çubuk
@@ -1453,21 +1431,13 @@ her şey birbiriyle kurgulanır:
 - **Raporlarda ara** (`rep2.searchLabel`) — her raporun şirketi,
   pozisyonu ve görünen başlığına karşı serbest metin.
 - **Şirket** (`rep2.companyLabel`) — açılır menüden bir işveren seçin.
-- **Puan aralığı** (`rep2.bandLabel`) — **Yüksek (4.5+)** / **İyi
-  (4.0+)** / **Orta (3.5+)** / **3,5 altı** (`rep2.bandHigh` …
-  `rep2.bandLow`), artı ayrıştırılabilir puanı olmayan raporlar için
-  bir kova.
-- **Başlangıç tarihi / Bitiş tarihi** (`rep2.dateFrom` /
-  `rep2.dateTo`) — listeyi bir döneme sınırlar.
-- **Sırala** (`rep2.sortLabel`) — **Tarih** / **Puan** / **Şirket**
-  (`rep2.sortDate` …), artan veya azalan (`rep2.sortDirAsc` /
-  `rep2.sortDirDesc`).
+- **Puan aralığı** (`rep2.bandLabel`) — **Yüksek (4.5+)** / **İyi (4.0+)** / **Orta (3.5+)** / **3,5 altı** (`rep2.bandHigh` … `rep2.bandLow`), artı ayrıştırılabilir puanı olmayan raporlar için bir kova.
+- **Başlangıç tarihi / Bitiş tarihi** (`rep2.dateFrom` / `rep2.dateTo`) — listeyi bir döneme sınırlar.
+- **Sırala** (`rep2.sortLabel`) — **Tarih** / **Puan** / **Şirket** (`rep2.sortDate` …), artan veya azalan (`rep2.sortDirAsc` / `rep2.sortDirDesc`).
 - **Puan dağılımı histogramı** (`rep2.histogramLabel`) — o aralığa
   filtrelemek için bir sütuna tıklayın ve hattınızın şeklini bir
   bakışta görün.
-- **Filtreleri sıfırla** (`rep2.reset`) her şeyi temizler; hiçbir şey
-  eşleşmediğinde boş bir ızgara yerine sayfa bunu söyler
-  (`rep2.noMatches`).
+- **Filtreleri sıfırla** (`rep2.reset`) her şeyi temizler; hiçbir şey eşleşmediğinde boş bir ızgara yerine sayfa bunu söyler (`rep2.noMatches`).
 
 Tam markdown'ı okumak için bir karta (veya tablo satırına)
 tıklayın. Sayfalama: sayfa başına 20, kontroller altta; her filtre

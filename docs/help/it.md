@@ -1090,19 +1090,11 @@ una scansione lenta non sembra mai una pagina morta.
 
 Il chrome v2 dei risultati tiene i controlli a vista:
 
-- **Filtri attivi** (`scan.v2.activeFilters`) — ogni filtro applicato
-  appare come chip rimovibile sopra la tabella; clic sulla **✕** di una
-  chip (**Rimuovi filtro**, `scan.v2.removeFilter`) per togliere solo
-  quella, o **Azzera tutto** (`scan.v2.resetAll`) per pulire tutto.
+- **Filtri attivi** (`scan.v2.activeFilters`) — ogni filtro applicato appare come chip rimovibile sopra la tabella; clic sulla **✕** di una chip (**Rimuovi filtro**, `scan.v2.removeFilter`) per togliere solo quella, o **Azzera tutto** (`scan.v2.resetAll`) per pulire tutto.
 - **Ordina per** (`scan.v2.sortBy`) — clic su un'intestazione di colonna
   (azienda, ruolo, stipendio, età) per ordinare; di nuovo per invertire.
-- **Vista rapida** (`scan.v2.quickView`) — clic su una riga per espandere
-  la descrizione inline (**Descrizione**, `scan.v2.description`) senza
-  uscire dalla pagina; gli annunci senza corpo catturato lo dichiarano
-  (`scan.v2.noDescription`) invece di mostrare una card vuota.
-- **Densità riga** (`scan.v2.density`) — alterna **Compatto** /
-  **Comodo** (`scan.v2.compact` / `scan.v2.comfortable`); la scelta si
-  ricorda per browser.
+- **Vista rapida** (`scan.v2.quickView`) — clic su una riga per espandere la descrizione inline (**Descrizione**, `scan.v2.description`) senza uscire dalla pagina; gli annunci senza corpo catturato lo dichiarano (`scan.v2.noDescription`) invece di mostrare una card vuota.
+- **Densità riga** (`scan.v2.density`) — alterna **Compatto** / **Comodo** (`scan.v2.compact` / `scan.v2.comfortable`); la scelta si ricorda per browser.
 - **Log** (`scan.v2.log`) — collassa/espande il log di scansione in
   streaming per dare la larghezza piena alla tabella.
 
@@ -1233,11 +1225,7 @@ Casella di posta di URL in attesa di essere valutati. Vive in `data/pipeline.md`
 Tre modi:
 
 - Digita / incolla un URL nell'input + fai clic su **Aggiungi URL** (`pipe.add`).
-- Usa il **menu dei comandi**: **Cmd/Ctrl+K** (o il pulsante **Menu dei
-  comandi** della barra laterale, `nav.v2.palette`), incolla qualsiasi link
-  `http(s)://…` e il menu offre **Auto-pipeline: {url}**
-  (`nav.v2.evalUrl`) — Enter esegue l'intera catena su di esso. Qualsiasi
-  altro testo + Enter salta a `#/scan` con quel termine pre-compilato.
+- Usa il **menu dei comandi**: **Cmd/Ctrl+K** (o il pulsante **Menu dei comandi** della barra laterale, `nav.v2.palette`), incolla qualsiasi link `http(s)://…` e il menu offre **Auto-pipeline: {url}** (`nav.v2.evalUrl`) — Enter esegue l'intera catena su di esso. Qualsiasi altro testo + Enter salta a `#/scan` con quel termine pre-compilato.
 - Esegui una Scan (vedi sopra) — i risultati freschi vanno alla pipeline
   automaticamente.
 
@@ -1266,24 +1254,11 @@ così un board ostile non può rimbalzarti su loopback / IP privato
 una casella piena dopo una scansione è il pezzo centrale v2 della
 pagina:
 
-- **Raggruppata** (`pipe.viewGrouped`) / **Elenco compatto**
-  (`pipe.viewFlat`) — la barra alterna tra elenco piatto e una bacheca
-  raggruppata per azienda: gli annunci dello stesso datore collassano
-  sotto un solo disclosable (il gruppo più grande prima), così una
-  board rumorosa non seppellisce le altre. Le aziende sconosciute si
-  raggruppano per host — ma un host ATS condiviso (diciamo
-  `jobs.lever.co`) prende in prestito un nome azienda solo quando
-  *tutte* le voci con azienda su quell'host concordano.
+- **Raggruppata** (`pipe.viewGrouped`) / **Elenco compatto** (`pipe.viewFlat`) — la barra alterna tra elenco piatto e una bacheca raggruppata per azienda: gli annunci dello stesso datore collassano sotto un solo disclosable (il gruppo più grande prima), così una board rumorosa non seppellisce le altre. Le aziende sconosciute si raggruppano per host — ma un host ATS condiviso (diciamo `jobs.lever.co`) prende in prestito un nome azienda solo quando *tutte* le voci con azienda su quell'host concordano.
 - **Nascondi già valutate** (`pipe.hideTracked`) — attivo per default;
   gli annunci che hanno già una riga nel tracker escono dalla vista (e
   dalla selezione in blocco) così agisci solo su lavoro fresco.
-- **Seleziona** (`pipe.selectOne`) le righe, o **Seleziona le visibili**
-  (`pipe.selectAllShown`) — la selezione segue sempre i filtri
-  correnti, mai righe invisibili. La barra mostra il conteggio
-  (`pipe.selectedCount`) e offre **✕ Rimuovi selezionate (N)**
-  (`pipe.bulkRemove`) più **Valuta la prima selezionata**
-  (`pipe.evaluateSelected`) — la rimozione in blocco conferma una volta
-  per l'intero set, non per riga.
+- **Seleziona** (`pipe.selectOne`) le righe, o **Seleziona le visibili** (`pipe.selectAllShown`) — la selezione segue sempre i filtri correnti, mai righe invisibili. La barra mostra il conteggio (`pipe.selectedCount`) e offre **✕ Rimuovi selezionate (N)** (`pipe.bulkRemove`) più **Valuta la prima selezionata** (`pipe.evaluateSelected`) — la rimozione in blocco conferma una volta per l'intero set, non per riga.
 
 Nulla si perde per errore: ogni rimozione — singola o in blocco —
 restituisce un token di ripristino opaco, e una barra in fondo alla
@@ -1400,21 +1375,12 @@ tutto si compone:
 - **Cerca report** (`rep2.searchLabel`) — testo libero confrontato con
   azienda, ruolo e titolo visualizzato di ogni report.
 - **Azienda** (`rep2.companyLabel`) — scegli un datore dal menu.
-- **Banda di punteggio** (`rep2.bandLabel`) — **Alta (4.5+)** / **Buona
-  (4.0+)** / **Media (3.5+)** / **Sotto 3.5** (`rep2.bandHigh` …
-  `rep2.bandLow`), più un secchio per i report senza punteggio
-  analizzabile.
+- **Banda di punteggio** (`rep2.bandLabel`) — **Alta (4.5+)** / **Buona (4.0+)** / **Media (3.5+)** / **Sotto 3.5** (`rep2.bandHigh` … `rep2.bandLow`), più un secchio per i report senza punteggio analizzabile.
 - **Data da / Data a** (`rep2.dateFrom` / `rep2.dateTo`) — lega la
   lista a un periodo.
-- **Ordina per** (`rep2.sortLabel`) — **Data** / **Punteggio** /
-  **Azienda** (`rep2.sortDate` …), crescente o decrescente
-  (`rep2.sortDirAsc` / `rep2.sortDirDesc`).
-- Un **istogramma della distribuzione dei punteggi**
-  (`rep2.histogramLabel`) — clic su una colonna per filtrare a quella
-  banda e vedere la forma del tuo pipeline a colpo d'occhio.
-- **Azzera filtri** (`rep2.reset`) pulisce tutto; quando nulla
-  coincide, la pagina lo dice (`rep2.noMatches`) invece di mostrare una
-  griglia vuota.
+- **Ordina per** (`rep2.sortLabel`) — **Data** / **Punteggio** / **Azienda** (`rep2.sortDate` …), crescente o decrescente (`rep2.sortDirAsc` / `rep2.sortDirDesc`).
+- Un **istogramma della distribuzione dei punteggi** (`rep2.histogramLabel`) — clic su una colonna per filtrare a quella banda e vedere la forma del tuo pipeline a colpo d'occhio.
+- **Azzera filtri** (`rep2.reset`) pulisce tutto; quando nulla coincide, la pagina lo dice (`rep2.noMatches`) invece di mostrare una griglia vuota.
 
 Fai clic su una card per leggere il markdown completo. Paginazione: 20 per pagina;
 controlli in fondo.

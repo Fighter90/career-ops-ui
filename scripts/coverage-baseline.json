@@ -167,6 +167,7 @@
     "server/lib/sources/workable.mjs",
     "server/lib/sources/workday.mjs",
     "server/lib/sources/wttj.mjs",
+    "server/lib/states.mjs",
     "server/lib/store.mjs",
     "server/lib/trust-validator.mjs"
   ]

@@ -989,22 +989,12 @@ desde o primeiro frame — um scan lento nunca parece uma página morta.
 
 O chrome v2 de resultados mantém os controles descobríveis:
 
-- **Filtros ativos** (`scan.v2.activeFilters`) — cada filtro aplicado
-  aparece como um chip removível acima da tabela; clique no **✕** de
-  um chip (**Remover filtro**, `scan.v2.removeFilter`) para derrubar
-  só aquele, ou **Limpar tudo** (`scan.v2.resetAll`) para limpar
-  todos.
+- **Filtros ativos** (`scan.v2.activeFilters`) — cada filtro aplicado aparece como um chip removível acima da tabela; clique no **✕** de um chip (**Remover filtro**, `scan.v2.removeFilter`) para derrubar só aquele, ou **Limpar tudo** (`scan.v2.resetAll`) para limpar todos.
 - **Ordenar por** (`scan.v2.sortBy`) — clique no cabeçalho de uma
   coluna (empresa, cargo, salário, idade) para ordenar por ela; clique
   de novo para inverter a direção.
-- **Visualização rápida** (`scan.v2.quickView`) — clique numa linha
-  para expandir a descrição da vaga inline (**Descrição**,
-  `scan.v2.description`) sem sair da página; vagas sem corpo capturado
-  dizem isso (`scan.v2.noDescription`) em vez de mostrar um cartão
-  vazio.
-- **Densidade das linhas** (`scan.v2.density`) — alterna **Compacto** /
-  **Confortável** (`scan.v2.compact` / `scan.v2.comfortable`) nas
-  alturas de linha; a escolha é lembrada por navegador.
+- **Visualização rápida** (`scan.v2.quickView`) — clique numa linha para expandir a descrição da vaga inline (**Descrição**, `scan.v2.description`) sem sair da página; vagas sem corpo capturado dizem isso (`scan.v2.noDescription`) em vez de mostrar um cartão vazio.
+- **Densidade das linhas** (`scan.v2.density`) — alterna **Compacto** / **Confortável** (`scan.v2.compact` / `scan.v2.comfortable`) nas alturas de linha; a escolha é lembrada por navegador.
 - **Registro** (`scan.v2.log`) — recolhe/expande o log de scan em
   streaming para dar a largura total à tabela.
 
@@ -1040,11 +1030,7 @@ todo o resto fica atrás de **Filtros avançados**,
 - Dropdown **Remote / Hybrid / Onsite**.
 - Dropdown **Country** — um filtro de geografia preenchido a partir dos países detectados nos resultados atuais, cada um exibido com seu emoji de bandeira e uma contagem (ex.: `🇩🇪 Germany (12)`). Escolha um para manter apenas as vagas ligadas àquele país. A detecção mapeia a localização em texto livre de uma vaga (nomes de países/aliases + ~100 grandes cidades do mercado de trabalho) para um país; é conservadora e nunca chuta, então uma vaga cuja localização não possa ser resolvida — ou um anúncio puramente "Remote" — permanece em **All countries**. Combine com o dropdown de tipo de trabalho para encontrar vagas ligadas a um país *e* remotas.
 - Dropdown **Publicado nos últimos** — um filtro de idade no lado do cliente (Últimas 24 horas / 7 dias / 30 dias). Linhas cujo `pubDate` é mais antigo ficam ocultas; linhas **sem data listada passam** (a ausência de dados não é penalizada).
-- **Salário de / Salário até** (`scan.salaryFrom` / `scan.salaryTo`) —
-  limites numéricos simples comparados com os valores extraídos do
-  texto da vaga (moeda ignorada, `scan.v2.salaryHint`); marque
-  **Incluir vagas sem salário** (`scan.v2.includeNoSalary`) para que o
-  filtro de salário não descarte linhas que não citam número algum.
+- **Salário de / Salário até** (`scan.salaryFrom` / `scan.salaryTo`) — limites numéricos simples comparados com os valores extraídos do texto da vaga (moeda ignorada, `scan.v2.salaryHint`); marque **Incluir vagas sem salário** (`scan.v2.includeNoSalary`) para que o filtro de salário não descarte linhas que não citam número algum.
 - Dropdown de **Nível** (`scan.lblSeniority`) — Lead / Staff / Senior
   / Mid / Junior / Intern, detectado pelo título.
 - **★ Favoritos** — clique no ☆ em qualquer linha para marcar uma vaga com estrela (armazenada no `localStorage` por URL); marque **★ Favoritos** (`scan.favOnly`) no painel de filtros para mostrar apenas as linhas com estrela. As estrelas sobrevivem a varreduras e recarregamentos.
@@ -1156,12 +1142,7 @@ Caixa de entrada de URLs aguardando avaliação. Vive em
 Três formas:
 
 - Digite / cole uma URL no input + clique em **Adicionar URL** (`pipe.add`).
-- Use o **menu de comandos**: **Cmd/Ctrl+K** (ou o botão **Menu de
-  comandos** da barra lateral, `nav.v2.palette`), cole qualquer link
-  `http(s)://…`, e o menu oferece **Auto-pipeline: {url}**
-  (`nav.v2.evalUrl`) — Enter roda a cadeia inteira sobre ele. Digitar
-  qualquer outro texto e apertar Enter salta para `#/scan` com aquele
-  termo pré-preenchido.
+- Use o **menu de comandos**: **Cmd/Ctrl+K** (ou o botão **Menu de comandos** da barra lateral, `nav.v2.palette`), cole qualquer link `http(s)://…`, e o menu oferece **Auto-pipeline: {url}** (`nav.v2.evalUrl`) — Enter roda a cadeia inteira sobre ele. Digitar qualquer outro texto e apertar Enter salta para `#/scan` com aquele termo pré-preenchido.
 - Rode um Scan (veja acima) — hits frescos vão para o pipeline
   automaticamente.
 
@@ -1186,30 +1167,16 @@ timeout de 15 segundos.
 ### Ações de linha
 
 - **▶** (`pipe.evaluateBtn`) — salta para `#/evaluate?url=…` com a URL pré-preenchida.
-- **✕** — remove a URL de `data/pipeline.md` (pede confirmação antes,
-  `pipe.confirmDel`).
+- **✕** — remove a URL de `data/pipeline.md` (pede confirmação antes, `pipe.confirmDel`).
 
 **Vista agrupada, descarte em massa, undo sem perdas.** Limpar uma
 caixa grande depois de um scan é a peça central v2 da página:
 
-- **Agrupado** (`pipe.viewGrouped`) / **Lista compacta**
-  (`pipe.viewFlat`) — a barra de ferramentas alterna entre uma lista
-  plana e um quadro agrupado por empresa: vagas do mesmo empregador
-  colapsam sob um só disclosure (maior grupo primeiro), então um board
-  barulhento não enterra o resto. Empresas desconhecidas se agrupam
-  pelo host delas — mas um host ATS compartilhado (digamos
-  `jobs.lever.co`) só toma emprestado um nome de empresa quando *todas*
-  as entradas com empresa naquele host concordam entre si.
+- **Agrupado** (`pipe.viewGrouped`) / **Lista compacta** (`pipe.viewFlat`) — a barra de ferramentas alterna entre uma lista plana e um quadro agrupado por empresa: vagas do mesmo empregador colapsam sob um só disclosure (maior grupo primeiro), então um board barulhento não enterra o resto. Empresas desconhecidas se agrupam pelo host delas — mas um host ATS compartilhado (digamos `jobs.lever.co`) só toma emprestado um nome de empresa quando *todas* as entradas com empresa naquele host concordam entre si.
 - **Ocultar já avaliadas** (`pipe.hideTracked`) — ligado por padrão;
   vagas cujo anúncio já tem linha no tracker saem da vista (e da
   seleção em massa) para que você só atue sobre trabalho fresco.
-- **Selecione** (`pipe.selectOne`) quaisquer linhas, ou **Selecionar
-  tudo exibido** (`pipe.selectAllShown`) — a seleção sempre segue os
-  filtros atuais, nunca linhas invisíveis. A barra de seleção mostra a
-  contagem (`pipe.selectedCount`) e oferece **✕ Remover selecionadas
-  (N)** (`pipe.bulkRemove`) mais **Avaliar a primeira selecionada**
-  (`pipe.evaluateSelected`) — a remoção em massa confirma uma vez para
-  o conjunto inteiro, não linha por linha.
+- **Selecione** (`pipe.selectOne`) quaisquer linhas, ou **Selecionar tudo exibido** (`pipe.selectAllShown`) — a seleção sempre segue os filtros atuais, nunca linhas invisíveis. A barra de seleção mostra a contagem (`pipe.selectedCount`) e oferece **✕ Remover selecionadas (N)** (`pipe.bulkRemove`) mais **Avaliar a primeira selecionada** (`pipe.evaluateSelected`) — a remoção em massa confirma uma vez para o conjunto inteiro, não linha por linha.
 
 Nada se perde por engano: cada remoção — individual ou em massa —
 devolve um token opaco de restauração, e uma barra no rodapé da página
@@ -1335,21 +1302,12 @@ da lista, e tudo compõe:
   comparado à empresa, cargo e título de exibição de cada relatório.
 - **Empresa** (`rep2.companyLabel`) — escolha um empregador no
   dropdown.
-- **Faixa de pontuação** (`rep2.bandLabel`) — **Alta (4.5+)** / **Boa
-  (4.0+)** / **Média (3.5+)** / **Abaixo de 3,5** (`rep2.bandHigh` …
-  `rep2.bandLow`), mais um balde para relatórios cujo cabeçalho não
-  tem score parseável.
+- **Faixa de pontuação** (`rep2.bandLabel`) — **Alta (4.5+)** / **Boa (4.0+)** / **Média (3.5+)** / **Abaixo de 3,5** (`rep2.bandHigh` … `rep2.bandLow`), mais um balde para relatórios cujo cabeçalho não tem score parseável.
 - **De / Até** (`rep2.dateFrom` / `rep2.dateTo`) — limita a lista a um
   período.
-- **Ordenar por** (`rep2.sortLabel`) — **Data** / **Pontuação** /
-  **Empresa** (`rep2.sortDate` …), crescente ou decrescente
-  (`rep2.sortDirAsc` / `rep2.sortDirDesc`).
-- Um **histograma de distribuição de pontuações**
-  (`rep2.histogramLabel`) — clique numa coluna para filtrar àquela
-  faixa e ver a forma do seu pipeline num relance.
-- **Limpar filtros** (`rep2.reset`) zera tudo; quando nada corresponde,
-  a página diz isso (`rep2.noMatches`) em vez de mostrar uma grade
-  vazia.
+- **Ordenar por** (`rep2.sortLabel`) — **Data** / **Pontuação** / **Empresa** (`rep2.sortDate` …), crescente ou decrescente (`rep2.sortDirAsc` / `rep2.sortDirDesc`).
+- Um **histograma de distribuição de pontuações** (`rep2.histogramLabel`) — clique numa coluna para filtrar àquela faixa e ver a forma do seu pipeline num relance.
+- **Limpar filtros** (`rep2.reset`) zera tudo; quando nada corresponde, a página diz isso (`rep2.noMatches`) em vez de mostrar uma grade vazia.
 
 Clique num card (ou linha da tabela) para ler o markdown completo.
 Paginação: 20 por página; controles no rodapé; cada mudança de filtro

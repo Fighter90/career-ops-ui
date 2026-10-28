@@ -1060,19 +1060,11 @@ frame — a slow scan never reads as a dead page.
 
 The v2 results chrome keeps the controls discoverable:
 
-- **Active filters** (`scan.v2.activeFilters`) — every filter you set
-  shows as a removable chip above the table; click the **✕** on a chip
-  (**Remove filter**, `scan.v2.removeFilter`) to drop just that one, or
-  **Reset all** (`scan.v2.resetAll`) to clear the lot.
+- **Active filters** (`scan.v2.activeFilters`) — every filter you set shows as a removable chip above the table; click the **✕** on a chip (**Remove filter**, `scan.v2.removeFilter`) to drop just that one, or **Reset all** (`scan.v2.resetAll`) to clear the lot.
 - **Sort by** (`scan.v2.sortBy`) — click a column heading (company,
   role, salary, age) to sort by it; click again to flip direction.
-- **Quick view** (`scan.v2.quickView`) — click a row to expand its
-  posting description inline (**Description**, `scan.v2.description`)
-  without leaving the page; postings with no captured body say so
-  (`scan.v2.noDescription`) instead of showing a blank card.
-- **Row density** (`scan.v2.density`) — toggle **Compact** /
-  **Comfortable** (`scan.v2.compact` / `scan.v2.comfortable`) row
-  heights; the choice is remembered per browser.
+- **Quick view** (`scan.v2.quickView`) — click a row to expand its posting description inline (**Description**, `scan.v2.description`) without leaving the page; postings with no captured body say so (`scan.v2.noDescription`) instead of showing a blank card.
+- **Row density** (`scan.v2.density`) — toggle **Compact** / **Comfortable** (`scan.v2.compact` / `scan.v2.comfortable`) row heights; the choice is remembered per browser.
 - **Log** (`scan.v2.log`) — collapse/expand the streaming scan log to
   give the table the full width.
 
@@ -1222,12 +1214,7 @@ Inbox of URLs waiting to be evaluated. Lives in `data/pipeline.md`.
 Three ways:
 
 - Type / paste a URL into the input + click **Add URL** (`pipe.add`).
-- Use the **command palette**: **Cmd/Ctrl+K** (or the sidebar's
-  **Command menu** button, `nav.v2.palette`), paste any
-  `http(s)://…` link, and the palette offers **Auto-pipeline: {url}**
-  (`nav.v2.evalUrl`) — Enter runs the whole chain on it. Typing any
-  other text and pressing Enter jumps to `#/scan` with that term
-  pre-filled.
+- Use the **command palette**: **Cmd/Ctrl+K** (or the sidebar's **Command menu** button, `nav.v2.palette`), paste any `http(s)://…` link, and the palette offers **Auto-pipeline: {url}** (`nav.v2.evalUrl`) — Enter runs the whole chain on it. Typing any other text and pressing Enter jumps to `#/scan` with that term pre-filled.
 - Run a Scan (see above) — fresh hits go to the pipeline
   automatically.
 
@@ -1265,13 +1252,7 @@ inbox after a scan is the page's v2 centrepiece:
 - **Hide already evaluated** (`pipe.hideTracked`) — on by default;
   entries whose posting already has a tracker row drop out of the
   view (and out of bulk selection) so you only ever act on fresh work.
-- **Select** (`pipe.selectOne`) any rows, or **Select all shown**
-  (`pipe.selectAllShown`) — selection always follows the current
-  filters, never invisible rows. The selection bar shows the count
-  (`pipe.selectedCount`) and offers **✕ Remove selected (N)**
-  (`pipe.bulkRemove`) plus **Evaluate first selected**
-  (`pipe.evaluateSelected`) — bulk removal confirms once for the whole
-  set, not per row.
+- **Select** (`pipe.selectOne`) any rows, or **Select all shown** (`pipe.selectAllShown`) — selection always follows the current filters, never invisible rows. The selection bar shows the count (`pipe.selectedCount`) and offers **✕ Remove selected (N)** (`pipe.bulkRemove`) plus **Evaluate first selected** (`pipe.evaluateSelected`) — bulk removal confirms once for the whole set, not per row.
 
 Nothing is lost by mistake: every removal — single or bulk — returns
 an opaque restore token, and a bar at the bottom of the page (**Deleted:
@@ -1390,20 +1371,14 @@ everything composes:
   each report's company, role and display title.
 - **Company** (`rep2.companyLabel`) — pick one employer from the
   dropdown.
-- **Score band** (`rep2.bandLabel`) — **High (4.5+)** / **Good (4.0+)**
-  / **Mid (3.5+)** / **Below 3.5** (`rep2.bandHigh` … `rep2.bandLow`),
-  plus a bucket for reports whose header carries no parseable score.
+- **Score band** (`rep2.bandLabel`) — **High (4.5+)** / **Good (4.0+)** / **Mid (3.5+)** / **Below 3.5** (`rep2.bandHigh` … `rep2.bandLow`), plus a bucket for reports whose header carries no parseable score.
 - **From date / To date** (`rep2.dateFrom` / `rep2.dateTo`) — bound
   the list to a period.
-- **Sort by** (`rep2.sortLabel`) — **Date** / **Score** / **Company**
-  (`rep2.sortDate` …), ascending or descending (`rep2.sortDirAsc` /
-  `rep2.sortDirDesc`).
+- **Sort by** (`rep2.sortLabel`) — **Date** / **Score** / **Company** (`rep2.sortDate` …), ascending or descending (`rep2.sortDirAsc` / `rep2.sortDirDesc`).
 - A **score-distribution histogram** (`rep2.histogramLabel`) — click a
   column to filter to that band and see the shape of your pipeline at
   a glance.
-- **Reset filters** (`rep2.reset`) clears everything; when nothing
-  matches, the page says so (`rep2.noMatches`) instead of showing a
-  blank grid.
+- **Reset filters** (`rep2.reset`) clears everything; when nothing matches, the page says so (`rep2.noMatches`) instead of showing a blank grid.
 
 Click a card (or table row) to read the full markdown. Pagination:
 20 per page, controls at the bottom; every filter change snaps you
