@@ -136,12 +136,19 @@ test('CAR-43: on ≤768px the content shell gains bottom padding that clears the
 // ── RTL mirrors ──────────────────────────────────────────────────────────
 
 test('RTL mirrors .tbl alignment, the toc-current rail and the score glyph margin', () => {
-  assert.match(CSS, /\[dir="rtl"\] table\.tbl th,\s*\[dir="rtl"\] table\.tbl td\s*\{[^}]*text-align:\s*right/,
-    'data tables must mirror their alignment in RTL');
-  assert.match(CSS, /\[dir="rtl"\] \.help-toc a\.toc-current\s*\{[^}]*border-right:[^}]*margin-right:\s*-11px/,
-    'the toc-current rail must flip sides in RTL');
-  assert.match(CSS, /\[dir="rtl"\] \.score-(high|mid|low)::before\s*\{[^}]*margin-right:\s*0[^}]*margin-left:\s*6px/,
-    'the score glyph margin must mirror in RTL');
+  // v1.261.x RTL deep sweep: the base rules are LOGICAL now — `.tbl` cells
+  // and `.toc-current` mirror themselves via text-align: start /
+  // border-inline-start, and the score glyph sits on the reading-start
+  // side via margin-inline-end. No [dir="rtl"] overrides exist (or are
+  // needed) for these three.
+  assert.match(CSS, /table\.tbl th,\s*table\.tbl td\s*\{[^}]*text-align:\s*start/,
+    'data table cells must align to the reading start (mirrors in RTL for free)');
+  assert.match(CSS, /\.help-toc a\.toc-current\s*\{[^}]*border-inline-start:\s*\d+px solid var\(--rausch[^}]*margin-inline-start:\s*-11px/,
+    'the toc-current rail must sit on the inline-start side (flips sides in RTL)');
+  assert.match(CSS, /\.score-(high|mid|low)::before\s*\{[^}]*margin-inline-end:\s*6px/,
+    'the score glyph margin must follow the reading direction');
+  assert.doesNotMatch(CSS, /\[dir="rtl"\] table\.tbl th/,
+    'the physical [dir="rtl"] .tbl mirror rule is superseded — its text-align: right blanket clobbered centered cells in RTL');
 });
 
 test('dead physical-direction RTL rules are gone (sidebar-toggle, notif-drawer__close)', () => {

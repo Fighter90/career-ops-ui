@@ -272,7 +272,7 @@ Router.register('tracker', async () => {
   function sortableTh(label, key) {
     const th = c('th', { scope: 'col', 'aria-sort': 'none' });
     const txt = c('span', null, label);
-    const ind = c('span', { 'aria-hidden': 'true', style: { marginLeft: '4px' } }, '⇅');
+    const ind = c('span', { 'aria-hidden': 'true', style: { marginInlineStart: '4px' } }, '⇅');
     const btn = c('button', {
       className: 'tbl-sort',
       style: { background: 'none', border: 0, font: 'inherit', cursor: 'pointer', color: 'inherit', padding: 0 },

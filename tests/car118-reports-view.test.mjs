@@ -82,8 +82,12 @@ test('CAR-118: NO CLI commands anywhere in the reports view', () => {
 });
 
 test('CAR-118: the legend keeps its RTL-isolated band cells (design-qa pin)', () => {
-  assert.match(SRC, /tdNum = \{ padding: '4px 8px', fontWeight: 600, direction: 'ltr', unicodeBidi: 'isolate' \}/);
-  assert.equal(SRC.match(/\{ style: tdNum \}/g)?.length, 4, 'four band cells use tdNum');
+  // v1.261.x RTL deep sweep: the LTR isolation moved OFF the <td> onto an
+  // inner span (ltrNum) — a cell with its own direction re-anchors
+  // text-align: start to the physical left, breaking column alignment in RTL.
+  assert.match(SRC, /tdNum = \{ padding: '4px 8px', fontWeight: 600 \}/);
+  assert.match(SRC, /ltrNum = \(s\) => c\('span', \{ style: \{ direction: 'ltr', unicodeBidi: 'isolate' \} \}, s\)/);
+  assert.equal(SRC.match(/\{ style: tdNum \}, ltrNum\(/g)?.length, 4, 'four band cells use tdNum + ltrNum');
   for (const band of ["'≥ 4.5'", "'4.0 – 4.4'", "'3.5 – 3.9'", "'< 3.5'"]) {
     assert.ok(SRC.includes(band), `band ${band} still present`);
   }

@@ -453,7 +453,7 @@
     // hitting the legacy mode-prompt route from an old bookmark sees
     // the migration target.
     const deprecationBanner = cfg.deprecation
-      ? c('div', { className: 'card', style: { borderLeft: '3px solid var(--warn)', marginBottom: '16px' } }, [
+      ? c('div', { className: 'card', style: { borderInlineStart: '3px solid var(--warn)', marginBottom: '16px' } }, [
           c('strong', null, '⚠ '),
           c('span', null, t(cfg.deprecation,
             'This route is deprecated. The canonical Batch evaluate page is now at #/batch (TSV editor + parallel runner). This legacy prompt-builder will be removed in v1.17.0.')),
@@ -537,7 +537,7 @@
         }
         const headRow = c('tr', null,
           ['#', t('fu.colCompany', 'Company'), t('fu.colRole', 'Role'), t('fu.colStatus', 'Status'), t('fu.colUrgency', 'Urgency'), t('fu.colNext', 'Days to next')]
-            .map((h) => c('th', { style: { textAlign: 'left' } }, h)));
+            .map((h) => c('th', { style: { textAlign: 'start' } }, h)));
         const rows = entries.map((e) => c('tr', null, [
           // followup-cadence.mjs emits `num` (the tracker row number); `appNum`
           // was never in its payload, so this cell rendered blank from v1.117.0

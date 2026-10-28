@@ -72,24 +72,24 @@ Router.register('usage', async () => {
       return;
     }
     const head = c('tr', null, [t('usage.colProvider', 'Provider'), t('usage.colCalls', 'Calls'), t('usage.colIn', 'Input tokens'), t('usage.colOut', 'Output tokens'), t('usage.colCost', 'Est. cost')]
-      .map((h, i) => c('th', { style: i ? { textAlign: 'right' } : null }, h)));
+      .map((h, i) => c('th', { style: i ? { textAlign: 'end' } : null }, h)));
     const rows = w.providers.map((p) => c('tr', null, [
       // v1.216.0 — brand monogram + friendly label beside each provider.
       c('td', null, c('span', { style: { display: 'inline-flex', alignItems: 'center', gap: '7px' } }, [
         (window.ProviderLogo && typeof window.ProviderLogo.el === 'function') ? window.ProviderLogo.el(p.provider, 16) : null,
         c('span', { className: 'tag' }, (window.ProviderLogo && typeof window.ProviderLogo.label === 'function') ? window.ProviderLogo.label(p.provider) : p.provider),
       ])),
-      c('td', { style: { textAlign: 'right', fontVariantNumeric: 'tabular-nums' } }, nf.format(p.calls)),
-      c('td', { style: { textAlign: 'right', fontVariantNumeric: 'tabular-nums' } }, nf.format(p.in)),
-      c('td', { style: { textAlign: 'right', fontVariantNumeric: 'tabular-nums' } }, nf.format(p.out)),
-      c('td', { style: { textAlign: 'right', fontVariantNumeric: 'tabular-nums', fontWeight: '600' } }, money(p.usd)),
+      c('td', { style: { textAlign: 'end', fontVariantNumeric: 'tabular-nums' } }, nf.format(p.calls)),
+      c('td', { style: { textAlign: 'end', fontVariantNumeric: 'tabular-nums' } }, nf.format(p.in)),
+      c('td', { style: { textAlign: 'end', fontVariantNumeric: 'tabular-nums' } }, nf.format(p.out)),
+      c('td', { style: { textAlign: 'end', fontVariantNumeric: 'tabular-nums', fontWeight: '600' } }, money(p.usd)),
     ]));
     const total = c('tr', { style: { borderTop: '2px solid var(--line, #e5e8ef)', fontWeight: '700' } }, [
       c('td', null, t('usage.total', 'Total')),
-      c('td', { style: { textAlign: 'right', fontVariantNumeric: 'tabular-nums' } }, nf.format(w.calls)),
-      c('td', { style: { textAlign: 'right', fontVariantNumeric: 'tabular-nums' } }, nf.format(w.totalIn)),
-      c('td', { style: { textAlign: 'right', fontVariantNumeric: 'tabular-nums' } }, nf.format(w.totalOut)),
-      c('td', { style: { textAlign: 'right', fontVariantNumeric: 'tabular-nums' } }, money(w.totalUsd)),
+      c('td', { style: { textAlign: 'end', fontVariantNumeric: 'tabular-nums' } }, nf.format(w.calls)),
+      c('td', { style: { textAlign: 'end', fontVariantNumeric: 'tabular-nums' } }, nf.format(w.totalIn)),
+      c('td', { style: { textAlign: 'end', fontVariantNumeric: 'tabular-nums' } }, nf.format(w.totalOut)),
+      c('td', { style: { textAlign: 'end', fontVariantNumeric: 'tabular-nums' } }, money(w.totalUsd)),
     ]);
     panel.appendChild(c('div', { className: 'table-wrap' }, c('table', { className: 'tbl' }, [c('thead', null, head), c('tbody', null, [...rows, total])])));
     panel.appendChild(c('p', { style: { fontSize: '12px', color: 'var(--foggy)', margin: '10px 0 0' } },

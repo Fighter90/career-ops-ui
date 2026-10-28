@@ -150,7 +150,7 @@ Router.register('config', async () => {
         providerTile,
         spec.label,
         spec.secret && value
-          ? c('span', { style: { marginLeft: '10px', fontSize: '12px', color: 'var(--ok, #008a05)', fontWeight: 'normal' } }, '✓ set')
+          ? c('span', { style: { marginInlineStart: '10px', fontSize: '12px', color: 'var(--ok, #008a05)', fontWeight: 'normal' } }, '✓ set')
           : null,
       ]),
       // CAR-56 #2 (v1.247.0) — hints may carry \n breaks (the LLM_PROVIDER
@@ -874,7 +874,7 @@ Router.register('config', async () => {
     return c('div', null, [
       c('h3', { style: { fontSize: '13px', fontWeight: '700', margin: '4px 0 6px', color } },
         title + ' (' + items.length + ')'),
-      c('ul', { style: { margin: '0', paddingLeft: '18px' } },
+      c('ul', { style: { margin: '0', paddingInlineStart: '18px' } },
         items.map((m) => c('li', { style: { fontSize: '13px', margin: '3px 0', lineHeight: '1.45' } }, String(m)))),
     ]);
   }

@@ -417,9 +417,13 @@ Router.register('reports', async (params) => {
 
   // PR-9 follow-up — surface the action-by-score bands inline. CAR-118:
   // CLI-free copy (the old dict-backed rows carried shell commands).
-  // CAR-58 (v1.246.0) — tdNum isolates the numeric band ("≥ 4.5") so RTL
-  // bidi cannot mirror it; tdTxt is the shared prose-cell style.
-  const tdNum = { padding: '4px 8px', fontWeight: 600, direction: 'ltr', unicodeBidi: 'isolate' };
+  // CAR-58 (v1.246.0) — the numeric band ("≥ 4.5") is isolated from RTL
+  // bidi mirroring. RTL deep sweep: the isolation moved OFF the <td> onto
+  // an inner span — a cell with its own `direction: ltr` also re-anchors
+  // `text-align: start` to the physical left, breaking column alignment
+  // under [dir="rtl"] (header right-aligned, cells left-aligned).
+  const tdNum = { padding: '4px 8px', fontWeight: 600 };
+  const ltrNum = (s) => c('span', { style: { direction: 'ltr', unicodeBidi: 'isolate' } }, s);
   const tdTxt = { padding: '4px 8px' };
   const thresholdsCard = c('details', {
     className: 'card report-legend',
@@ -430,26 +434,26 @@ Router.register('reports', async (params) => {
     c('div', { style: { marginTop: '8px', fontSize: '14px' } }, [
       c('table', { style: { width: '100%', borderCollapse: 'collapse' } }, [
         c('thead', null, c('tr', null, [
-          c('th', { style: { textAlign: 'left', padding: '4px 8px' } }, t('rep.score', 'Score')),
-          c('th', { style: { textAlign: 'left', padding: '4px 8px' } }, t('rep.thrAction', 'Next step')),
+          c('th', { style: { textAlign: 'start', padding: '4px 8px' } }, t('rep.score', 'Score')),
+          c('th', { style: { textAlign: 'start', padding: '4px 8px' } }, t('rep.thrAction', 'Next step')),
         ])),
         c('tbody', null, [
           // CAR-58 (v1.246.0) — the band cells are numeric compositions;
           // each gets an isolated LTR direction.
           c('tr', null, [
-            c('td', { style: tdNum }, '≥ 4.5'),
+            c('td', { style: tdNum }, ltrNum('≥ 4.5')),
             c('td', { style: tdTxt }, t('rep2.actApply', 'Apply now — top fit')),
           ]),
           c('tr', null, [
-            c('td', { style: tdNum }, '4.0 – 4.4'),
+            c('td', { style: tdNum }, ltrNum('4.0 – 4.4')),
             c('td', { style: tdTxt }, t('rep2.actContact', 'Apply, or find a warm contact first')),
           ]),
           c('tr', null, [
-            c('td', { style: tdNum }, '3.5 – 3.9'),
+            c('td', { style: tdNum }, ltrNum('3.5 – 3.9')),
             c('td', { style: tdTxt }, t('rep2.actResearch', 'Research the company first')),
           ]),
           c('tr', null, [
-            c('td', { style: tdNum }, '< 3.5'),
+            c('td', { style: tdNum }, ltrNum('< 3.5')),
             c('td', { style: tdTxt }, t('rep2.actLow', 'Skip unless there is a personal reason')),
           ]),
         ]),

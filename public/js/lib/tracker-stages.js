@@ -145,7 +145,7 @@ window.TrackerStages = (function () {
         c('span', {
           className: 'v2-chip' + (writable ? '' : ' v2-track-chip-muted'),
           'aria-hidden': 'true',
-          style: { marginLeft: 'auto', flex: 'none' },
+          style: { marginInlineStart: 'auto', flex: 'none' },
         }, String(count)),
       ]);
 
@@ -219,7 +219,7 @@ window.TrackerStages = (function () {
         'data-key': String(r.num ?? ''),
         'aria-label': t('track.moveBtnAria', 'Move to another status') + ' — #' + (r.num || '?') + ' ' + (r.company || ''),
         title: t('track.moveBtnAria', 'Move to another status'),
-        style: { marginLeft: 'auto', padding: '0 8px', fontSize: '11px', flex: 'none' },
+        style: { marginInlineStart: 'auto', padding: '0 8px', fontSize: '11px', flex: 'none' },
         onClick: () => ctx.onMove([r], null),
       }, t('track.moveBtn', 'Move'));
       const el = c('div', {
@@ -333,7 +333,7 @@ window.TrackerStages = (function () {
     // target; UI.confirm still gates it.
     const destructive = (target === 'Rejected');
     const list = c('ul', {
-      style: { margin: '0', paddingLeft: '18px', maxHeight: '240px', overflowY: 'auto', fontSize: '13px' },
+      style: { margin: '0', paddingInlineStart: '18px', maxHeight: '240px', overflowY: 'auto', fontSize: '13px' },
     }, moves.map((m) => c('li', { style: { margin: '2px 0' } },
       t('track.moveLine', '#{num} {company} — {role}: {from} → {to}')
         .replace('{num}', String(m.row.num ?? '?'))
@@ -512,7 +512,7 @@ window.TrackerStages = (function () {
     if (silent.length) {
       kids.push(c('p', { style: { fontSize: '13px', margin: '0 0 6px' } },
         t('track.histSilentCount', '{n} application(s) silent past your follow-up window:').replace('{n}', String(silent.length))));
-      const ul = c('ul', { style: { margin: '0 0 8px', paddingLeft: '18px' } });
+      const ul = c('ul', { style: { margin: '0 0 8px', paddingInlineStart: '18px' } });
       for (const f of silent) {
         ul.appendChild(c('li', { style: { fontSize: '13px' } },
           `#${String(f.num)} · ${String(f.appliedDate || '')} · ${t('track.histDaysSilent', '{n}d silent').replace('{n}', String(f.silentDays))} · ${t('track.histFollowups', '{n} follow-ups').replace('{n}', String(f.followupsSent || 0))}`));
@@ -522,7 +522,7 @@ window.TrackerStages = (function () {
     if (clusters.length) {
       kids.push(c('p', { style: { fontSize: '13px', margin: '0 0 6px' } },
         t('track.histRepostCount', '{n} role(s) reposted:').replace('{n}', String(clusters.length))));
-      const ul = c('ul', { style: { margin: '0 0 8px', paddingLeft: '18px' } });
+      const ul = c('ul', { style: { margin: '0 0 8px', paddingInlineStart: '18px' } });
       for (const cl of clusters) {
         ul.appendChild(c('li', { style: { fontSize: '13px' } },
           `${String(cl.role || '')} · ${String(cl.repostCount || 0)}× · ${String(cl.daysSpan || 0)}d · ${t('track.histLastSeen', 'last {d}').replace('{d}', String(cl.lastSeen || ''))}`));
@@ -562,7 +562,7 @@ window.TrackerStages = (function () {
     const t = (k, f) => I18n.t(k, f);
     if (!url || !isAtsPostingUrl(url)) return null;
 
-    const wrap = c('span', { className: 'liveness-wrap', style: { marginLeft: '6px' } });
+    const wrap = c('span', { className: 'liveness-wrap', style: { marginInlineStart: '6px' } });
     const pill = (labelKey, fallback, cls, reason) => c('span', {
       className: 'badge ' + cls,
       title: reason || '',

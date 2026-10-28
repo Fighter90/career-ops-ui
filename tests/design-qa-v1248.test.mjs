@@ -261,8 +261,9 @@ test('dashboard: the provider pill keeps inline-flex+gap against the later .dash
 // ── 10 · docs-fab vs the Leaflet attribution ────────────────────────────────
 test('map: the docs-fab never reaches the attribution at rest at 1440 and 390 (computed)', () => {
   // FAB geometry (overlays.css): fixed, bottom 24, 60×60 → its top edge sits
-  // 84px above the viewport bottom.
-  assert.match(OVERLAYS, /\.docs-fab \{[^}]*position: fixed; right: 24px; bottom: 24px;/s);
+  // 84px above the viewport bottom. (inset-inline-end: 24px — logical; same
+  // 24px inset from the trailing edge in BOTH directions.)
+  assert.match(OVERLAYS, /\.docs-fab \{[^}]*position: fixed; inset-inline-end: 24px; bottom: 24px;/s);
   assert.match(OVERLAYS, /\.docs-fab \{[^}]*width: 60px; height: 60px;/s);
   const FAB_TOP = 24 + 60; // 84
 
