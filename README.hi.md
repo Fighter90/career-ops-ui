@@ -297,7 +297,7 @@ http://127.0.0.1:4317 खोलें। Pipeline काउंटर को अ�
 | **Profile**      | `config/profile.yml` + archetypes का रीड-ओनली दृश्य — UI-फ़्रेंडली सारांश।                                         |
 | **App settings** | पैरेंट `.env` keys के लिए इन-UI एडिटर: `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, मॉडल ओवरराइड, पोर्ट / होस्ट। सीक्रेट्स पढ़ने पर मास्क्ड। |
 | **Health**       | OK / OPTIONAL / FAIL बैज में सभी सेटअप जाँचें + `doctor.mjs` और `verify-pipeline.mjs` चलाने के लिए बटन।           |
-| **Help**         | इन-ऐप मार्कडाउन यूज़र गाइड (`/#/help`), सभी 18 समर्थित भाषाओं के लिए लोकलाइज़्ड (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta)। |
+| **Help**         | इन-ऐप मार्कडाउन यूज़र गाइड (`/#/help`), सभी 19 समर्थित भाषाओं के लिए लोकलाइज़्ड (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta / vi)। |
 | **Activity log** | हर स्टेट-बदलने वाले अनुरोध (writes, runs, scans) का ऑडिट ट्रेल। सीक्रेट्स रीडैक्टेड। |
 | **Notifications** 🔔 *(v1.58.34 / v1.58.35)* | लाल unread बैज के साथ टॉप-बार बेल। क्लिक करने पर पिछले 50 टोस्ट (प्रति टैब, प्रति सेशन) की सूची वाला ड्रॉअर स्लाइड-इन होता है — Success / Error / Info-progress, हर एक के साथ एक लोकलाइज़्ड टाइमस्टैंप, मानवीय संदेश, और किसी भी `(METHOD /path · HTTP NNN)` पोस्टफ़िक्स के साथ जो एक `<details>` में समेट दिया गया है। Help **§18** हर श्रेणी का दस्तावेज़ीकरण करता है। ड्रॉअर **केवल** बेल क्लिक (या कीबोर्ड Enter / Space) पर खुलता है; ×, Esc, या बेल पर फिर क्लिक करने से बंद होता है। |
 
@@ -434,7 +434,7 @@ career-ops-ui/
    ├─ url-validation.test.mjs    # SSRF रिजेक्ट स्वीप (FIX-M3 + M6 + M7)
    ├─ cv-xss.test.mjs        # stripDangerousMarkdown राउंड-ट्रिप
    ├─ jd-sanitize.test.mjs   # sanitizeJobDescription
-   ├─ help.test.mjs / help-ui.test.mjs    # सभी 18 लोकेल में i18n पैरिटी
+   ├─ help.test.mjs / help-ui.test.mjs    # सभी 19 लोकेल में i18n पैरिटी
    ├─ playwright-smoke.mjs   # 22 ब्राउज़र फ़्लो (CV सेव, tracker, pipeline, evaluate, config, आदि)
    └─ e2e{,-comprehensive}.mjs   # पूर्ण Playwright वॉकथ्रू
 ```
@@ -559,7 +559,7 @@ event: error    data: { message }
 npm test                       # 5116 यूनिट/इंटीग्रेशन टेस्ट
 npm run test:e2e               # 21 स्मोक e2e (अपना सर्वर खुद बूट करता है)
 npm run test:e2e:full          # 23 व्यापक e2e
-npm run test:e2e:browser       # 118 Playwright ब्राउज़र (smoke + full-cycle + forms + locale-sweep ×18 + theme)
+npm run test:e2e:browser       # 118 Playwright ब्राउज़र (smoke + full-cycle + forms + locale-sweep ×19 + theme)
 npm run test:coverage          # `npm test` जैसा ही, साथ में V8 कवरेज
 ```
 
@@ -665,14 +665,14 @@ career-ops **हमेशा चालू** रहने पर सर्वो�
 
 ## स्थानीयकरण
 
-यह UI **18 लोकेल** शिप करता है — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `fr`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`, `ta`। **v1.60.0 (I18N-SPLIT)** से अनुवाद [`public/js/lib/locales/`](public/js/lib/locales/) के अंतर्गत **प्रति लोकेल एक फ़ाइल** में रहते हैं — `i18n-dict.<lang>.js`, प्रत्येक एक फ़्लैट `key → string` टेबल है — साथ ही एक साझा `i18n-dict.aliases.js`। [`i18n-dict.js`](public/js/lib/i18n-dict.js) इन्हें `window.__I18N_DICT` में असेंबल करता है; [`i18n.js`](public/js/lib/i18n.js) `t('key', 'fallback')` को रिज़ॉल्व करता है। कोई बिल्ड स्टेप नहीं, कोई रनटाइम fetch नहीं — एक अनुवादक अलगाव में एक ही भाषा फ़ाइल को संपादित करता है।
+यह UI **19 लोकेल** शिप करता है — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `fr`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`, `ta`, `vi`। **v1.60.0 (I18N-SPLIT)** से अनुवाद [`public/js/lib/locales/`](public/js/lib/locales/) के अंतर्गत **प्रति लोकेल एक फ़ाइल** में रहते हैं — `i18n-dict.<lang>.js`, प्रत्येक एक फ़्लैट `key → string` टेबल है — साथ ही एक साझा `i18n-dict.aliases.js`। [`i18n-dict.js`](public/js/lib/i18n-dict.js) इन्हें `window.__I18N_DICT` में असेंबल करता है; [`i18n.js`](public/js/lib/i18n.js) `t('key', 'fallback')` को रिज़ॉल्व करता है। कोई बिल्ड स्टेप नहीं, कोई रनटाइम fetch नहीं — एक अनुवादक अलगाव में एक ही भाषा फ़ाइल को संपादित करता है।
 
 **एक स्ट्रिंग जोड़ें या बदलें:**
 
 ```js
 // public/js/lib/locales/i18n-dict.en.js   →   'scan.newButton': 'Run scan',
 // public/js/lib/locales/i18n-dict.es.js   →   'scan.newButton': 'Ejecutar búsqueda',
-// …वही की सभी 18 लोकेल फ़ाइलों में जोड़ें (पैरिटी गेटेड है)
+// …वही की सभी 19 लोकेल फ़ाइलों में जोड़ें (पैरिटी गेटेड है)
 ```
 
 फिर इसे मार्कअप में `data-i18n="scan.newButton"` के ज़रिए या JS में `t('scan.newButton')` के ज़रिए उपयोग करें, और `npm test` चलाएँ। बिल्कुल नई भाषा जोड़ने के लिए, इसे `i18n.js` (`LANGS` + `detect()`), असेंबलर, `index.html`, और लोकेल-सूचीबद्ध करने वाले टूलिंग में रजिस्टर करें।

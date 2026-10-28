@@ -294,7 +294,7 @@ Apri http://127.0.0.1:4317. Il contatore della Pipeline dovrebbe ora indicare `0
 | **Profile**      | Vista in sola lettura di `config/profile.yml` + archetipi — riepilogo adatto alla UI.                                         |
 | **App settings** | Editor nella UI per le chiavi del `.env` principale: `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, override dei modelli, porta / host. Segreti mascherati in lettura. |
 | **Health**       | Tutti i controlli di configurazione in badge OK / OPTIONAL / FAIL + pulsanti per eseguire `doctor.mjs` e `verify-pipeline.mjs`.           |
-| **Help**         | Guida utente Markdown in-app (`/#/help`), localizzata per tutte le 18 lingue supportate (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta). |
+| **Help**         | Guida utente Markdown in-app (`/#/help`), localizzata per tutte le 19 lingue supportate (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta / vi). |
 | **Activity log** | Traccia di audit di ogni richiesta che modifica lo stato (scritture, esecuzioni, scansioni). Segreti oscurati. |
 | **Notifications** 🔔 *(v1.58.34 / v1.58.35)* | Campanella nella barra superiore con badge rosso per i non letti. Cliccala per far scorrere un pannello che elenca gli ultimi 50 toast (per scheda, per sessione) — Successo / Errore / Info-progresso, ciascuno con un timestamp localizzato, il messaggio leggibile e qualsiasi postfisso `(METHOD /path · HTTP NNN)` racchiuso in un `<details>`. La sezione Help **§18** documenta ogni categoria. Il pannello si apre **solo** al clic sulla campanella (o da tastiera Invio / Spazio); si chiude tramite ×, Esc, o ricliccando la campanella. |
 
@@ -556,7 +556,7 @@ Quando `run: true` è impostato su `/api/deep` o `/api/mode/:slug`, il server pr
 npm test                       # 5116 unit/integration tests
 npm run test:e2e               # 21 smoke e2e (boots own server)
 npm run test:e2e:full          # 23 comprehensive e2e
-npm run test:e2e:browser       # 118 Playwright browser (smoke + full-cycle + forms + locale-sweep ×18 + theme)
+npm run test:e2e:browser       # 118 Playwright browser (smoke + full-cycle + forms + locale-sweep ×19 + theme)
 npm run test:coverage          # same as `npm test` plus V8 coverage
 ```
 
@@ -645,7 +645,7 @@ Per la valutazione della prontezza per la produzione (gate di deployment, regist
 
 career-ops dà il meglio **sempre attivo** — scansiona mentre dormi, raggiungibile da qualsiasi browser. Per mettere l’intero stack su un piccolo server — la pipeline padre **career-ops**, questo visualizzatore **career-ops-ui**, e il **motore** che esegue l’IA (il tuo **abbonamento Claude** via CLI di Claude Code, un gateway **Hermes** locale, o chiavi API) — allestisci un VPS (Node ≥ 18), installa il padre + questo repo, scegli il motore, ed esponi il visualizzatore dietro un **reverse proxy HTTPS con autenticazione** mantenendo intatte le invarianti di sicurezza (CSP, guard SSRF, confine XSS, nessun segreto nei log).
 
-📖 L’**Aiuto §31** in-app ("Esegui l’intero stack nel cloud") lo illustra passo passo in tutte le 18 lingue; la checklist operatore è [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), e la [pagina wiki di deploy nel cloud](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) ha le tabelle di riferimento.
+📖 L’**Aiuto §31** in-app ("Esegui l’intero stack nel cloud") lo illustra passo passo in tutte le 19 lingue; la checklist operatore è [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), e la [pagina wiki di deploy nel cloud](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) ha le tabelle di riferimento.
 
 ---
 
@@ -662,7 +662,7 @@ career-ops dà il meglio **sempre attivo** — scansiona mentre dormi, raggiungi
 
 ## Localizzazione
 
-La UI viene fornita con **18 lingue** — `en`, `es`, `fr`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`, `ta`. Dalla **v1.60.0 (I18N-SPLIT)** le traduzioni vivono **un file per lingua** sotto [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, ciascuno una tabella piatta `key → string` — più un `i18n-dict.aliases.js` condiviso. [`i18n-dict.js`](public/js/lib/i18n-dict.js) le assembla in `window.__I18N_DICT`; [`i18n.js`](public/js/lib/i18n.js) risolve `t('key', 'fallback')`. Nessuno step di build, nessun fetch a runtime — un traduttore modifica un singolo file di lingua in isolamento.
+La UI viene fornita con **19 lingue** — `en`, `es`, `fr`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`, `ta`, `vi`. Dalla **v1.60.0 (I18N-SPLIT)** le traduzioni vivono **un file per lingua** sotto [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, ciascuno una tabella piatta `key → string` — più un `i18n-dict.aliases.js` condiviso. [`i18n-dict.js`](public/js/lib/i18n-dict.js) le assembla in `window.__I18N_DICT`; [`i18n.js`](public/js/lib/i18n.js) risolve `t('key', 'fallback')`. Nessuno step di build, nessun fetch a runtime — un traduttore modifica un singolo file di lingua in isolamento.
 
 **Aggiungere o cambiare una stringa:**
 

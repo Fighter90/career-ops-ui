@@ -41,7 +41,7 @@ data files (`cv.md`, `data/applications.md`, `reports/`,
 
 | Layer | Tech | Where |
 |---|---|---|
-| Server | Node ≥ 18, Express 4, js-yaml, multer | `server/index.mjs` (~130-LOC orchestrator) + `server/lib/routes/*.mjs` (15 modules) |
+| Server | Node ≥ 18, Express 4, js-yaml, multer | `server/index.mjs` (645-LOC orchestrator) + `server/lib/routes/*.mjs` (39 modules) |
 | Helpers (v1.21+) | ESM, no transpiler | `server/lib/{paths,parsers,runner,security,prompts,store,anthropic,env-config,activity-log,dotenv,safe-fetch,file-lock,rate-limit,en-scanner,ru-scanner,gemini,detect-reposts,role-matcher}.mjs` + `server/lib/sources/{greenhouse,ashby,lever,rss,smartrecruiters,workable,workday,geekjob,getmatch,habr,hh,trudvsem}.mjs` (46 adapters as of v1.97.0, auto-discovered via `registry.mjs` since v1.69.0/P-14) |
 | SPA | Vanilla JS, hash-router | `public/index.html`, `public/js/{app,router,api}.js`, `public/js/views/*.js`, `public/js/lib/{i18n,i18n-dict,skills,auto-pipeline,pdf-generate,report-export}.js`, `public/js/lib/locales/i18n-dict.<lang>.js` (16 + aliases) |
 | Styling | Hand-written CSS + design tokens | `public/css/{app,components,overlays}.css` (v1.131.2 split, 3 ordered `<link>`s) |

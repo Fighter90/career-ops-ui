@@ -294,7 +294,7 @@ http://127.0.0.1:4317 adresini açın. Pipeline sayacı artık `0 pending` okuma
 | **Profile**      | `config/profile.yml` + arketiplerin salt okunur görünümü — arayüz dostu özet.                                         |
 | **App settings** | Üst `.env` anahtarları için arayüz içi düzenleyici: `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, model geçersiz kılmaları, port / host. Okuma sırasında gizli bilgiler maskelenir. |
 | **Health**       | Tüm kurulum kontrolleri OK / OPTIONAL / FAIL rozetleri halinde + `doctor.mjs` ve `verify-pipeline.mjs` çalıştırma düğmeleri.           |
-| **Help**         | Desteklenen 18 dilin tamamı için yerelleştirilmiş, uygulama içi Markdown kullanıcı kılavuzu (`/#/help`) (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi). |
+| **Help**         | Desteklenen 19 dilin tamamı için yerelleştirilmiş, uygulama içi Markdown kullanıcı kılavuzu (`/#/help`) (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta / vi). |
 | **Activity log** | Durum değiştiren her isteğin (yazma, çalıştırma, tarama) denetim izi. Gizli bilgiler kaldırılır. |
 | **Notifications** 🔔 *(v1.58.34 / v1.58.35)* | Kırmızı okunmamış rozetli üst çubuk zili. Son 50 bildirimi (sekme başına, oturum başına) listeleyen bir çekmeceyi açmak için tıklayın — Başarı / Hata / Bilgi-ilerleme, her biri yerelleştirilmiş bir zaman damgası, insan okunur mesaj ve bir `<details>` içine tucked edilmiş herhangi bir `(METHOD /path · HTTP NNN)` son ekiyle. Yardım **§18** her kategoriyi belgeler. Çekmece **yalnızca** zile tıklandığında (veya klavye Enter / Space ile) açılır; ×, Esc ile ya da zile yeniden tıklayarak kapanır. |
 
@@ -645,7 +645,7 @@ Claude Code içindeki mevcut `/career-ops apply` Playwright form doldurma akış
 
 career-ops **her zaman açık** olduğunda en iyisidir — siz uyurken tarar, herhangi bir tarayıcıdan erişilebilir. Tüm yığını küçük bir sunucuya koymak için — üst **career-ops** hattı, bu **career-ops-ui** görüntüleyici ve yapay zekâyı çalıştıran **motor** (Claude Code CLI üzerinden **Claude aboneliğiniz**, yerel bir **Hermes** ağ geçidi veya sağlayıcı API anahtarları) — bir VPS hazırlayın (Node ≥ 18), üst projeyi + bu depoyu kurun, motorunuzu seçin ve görüntüleyiciyi güvenlik değişmezlerini (CSP, SSRF koruması, XSS sınırı, günlüklerde sır yok) bozmadan **kimlik doğrulamalı HTTPS ters proxy** arkasında yayınlayın.
 
-📖 Uygulama içi **Yardım §31** ("Tüm yığını bulutta çalıştır") tüm 18 dilde adım adım anlatır; operatör kontrol listesi [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), ve [bulut dağıtımı wiki sayfası](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) referans tablolarını içerir.
+📖 Uygulama içi **Yardım §31** ("Tüm yığını bulutta çalıştır") tüm 19 dilde adım adım anlatır; operatör kontrol listesi [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), ve [bulut dağıtımı wiki sayfası](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) referans tablolarını içerir.
 
 ---
 
@@ -662,7 +662,7 @@ career-ops **her zaman açık** olduğunda en iyisidir — siz uyurken tarar, he
 
 ## Yerelleştirme
 
-Arayüz **18 yerel dilde** gelir — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `fr`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`, `ta`. **v1.60.0 (I18N-SPLIT)**'ten bu yana çeviriler [`public/js/lib/locales/`](public/js/lib/locales/) altında **yerel dil başına bir dosyada** bulunur — `i18n-dict.<lang>.js`, her biri düz bir `key → string` tablosu — artı paylaşılan bir `i18n-dict.aliases.js`. [`i18n-dict.js`](public/js/lib/i18n-dict.js) bunları `window.__I18N_DICT`'e birleştirir; [`i18n.js`](public/js/lib/i18n.js), `t('key', 'fallback')`'ı çözer. Derleme adımı yok, çalışma zamanı getirmesi yok — bir çevirmen tek bir dil dosyasını izole olarak düzenler.
+Arayüz **19 yerel dilde** gelir — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `fr`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`, `ta`, `vi`. **v1.60.0 (I18N-SPLIT)**'ten bu yana çeviriler [`public/js/lib/locales/`](public/js/lib/locales/) altında **yerel dil başına bir dosyada** bulunur — `i18n-dict.<lang>.js`, her biri düz bir `key → string` tablosu — artı paylaşılan bir `i18n-dict.aliases.js`. [`i18n-dict.js`](public/js/lib/i18n-dict.js) bunları `window.__I18N_DICT`'e birleştirir; [`i18n.js`](public/js/lib/i18n.js), `t('key', 'fallback')`'ı çözer. Derleme adımı yok, çalışma zamanı getirmesi yok — bir çevirmen tek bir dil dosyasını izole olarak düzenler.
 
 **Bir dize ekleyin veya değiştirin:**
 

@@ -294,7 +294,7 @@ npm start
 | **Profile**      | Schreibgeschützte Ansicht von `config/profile.yml` + Archetypen — UI-freundliche Zusammenfassung.                                         |
 | **App settings** | UI-interner Editor für Schlüssel der übergeordneten `.env`: `ANTHROPIC_API_KEY`, `GEMINI_API_KEY`, Modell-Overrides, Port / Host. Geheimnisse beim Lesen maskiert. |
 | **Health**       | Alle Setup-Prüfungen in OK / OPTIONAL / FAIL-Badges + Schaltflächen zum Ausführen von `doctor.mjs` und `verify-pipeline.mjs`.           |
-| **Help**         | In-App-Markdown-Benutzerhandbuch (`/#/help`), lokalisiert für alle 18 unterstützten Sprachen (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta). |
+| **Help**         | In-App-Markdown-Benutzerhandbuch (`/#/help`), lokalisiert für alle 19 unterstützten Sprachen (en / es / fr / pt-BR / ko-KR / ja / ru / zh-CN / zh-TW / pl / uk / da / ar / de / it / tr / hi / ta / vi). |
 | **Activity log** | Prüfpfad jeder zustandsverändernden Anfrage (Schreibvorgänge, Ausführungen, Scans). Geheimnisse geschwärzt. |
 | **Notifications** 🔔 *(v1.58.34 / v1.58.35)* | Glocke in der oberen Leiste mit rotem Ungelesen-Badge. Klicken Sie, um eine einschiebbare Schublade mit den letzten 50 Toasts (pro Tab, pro Sitzung) einzublenden — Success / Error / Info-progress, jeweils mit einem lokalisierten Zeitstempel, der menschlichen Nachricht und jedem in ein `<details>` eingebetteten `(METHOD /path · HTTP NNN)`-Postfix. Help **§18** dokumentiert jede Kategorie. Die Schublade öffnet sich **nur** beim Klick auf die Glocke (oder per Tastatur Enter / Space); schließt über ×, Esc oder erneutes Klicken auf die Glocke. |
 
@@ -431,7 +431,7 @@ career-ops-ui/
    ├─ url-validation.test.mjs    # SSRF reject sweep (FIX-M3 + M6 + M7)
    ├─ cv-xss.test.mjs        # stripDangerousMarkdown round-trip
    ├─ jd-sanitize.test.mjs   # sanitizeJobDescription
-   ├─ help.test.mjs / help-ui.test.mjs    # i18n parity across all 18 locales
+   ├─ help.test.mjs / help-ui.test.mjs    # i18n parity across all 19 locales
    ├─ playwright-smoke.mjs   # 22 browser flows (CV save, tracker, pipeline, evaluate, config, etc.)
    └─ e2e{,-comprehensive}.mjs   # full Playwright walkthrough
 ```
@@ -556,7 +556,7 @@ Wenn `run: true` bei `/api/deep` oder `/api/mode/:slug` gesetzt ist, bevorzugt d
 npm test                       # 5116 unit/integration tests
 npm run test:e2e               # 21 smoke e2e (boots own server)
 npm run test:e2e:full          # 23 comprehensive e2e
-npm run test:e2e:browser       # 118 Playwright browser (smoke + full-cycle + forms + locale-sweep ×18 + theme)
+npm run test:e2e:browser       # 118 Playwright browser (smoke + full-cycle + forms + locale-sweep ×19 + theme)
 npm run test:coverage          # same as `npm test` plus V8 coverage
 ```
 
@@ -645,7 +645,7 @@ Für die Bewertung der Produktionsreife (Deployment-Gates, Risikoregister, aufge
 
 career-ops ist am besten **immer an** — scannt, während du schläfst, aus jedem Browser erreichbar. Um den ganzen Stack auf einen kleinen Server zu legen — die übergeordnete **career-ops**-Pipeline, diesen **career-ops-ui**-Viewer und die **Engine**, die die KI ausführt (dein **Claude-Abo** über die Claude-Code-CLI, ein lokales **Hermes**-Gateway oder Provider-API-Schlüssel) — richte einen VPS ein (Node ≥ 18), installiere das Parent + dieses Repo, wähle deine Engine und stelle den Viewer hinter einen **HTTPS-Reverse-Proxy mit Authentifizierung**, während die Sicherheits-Invarianten (CSP, SSRF-Guard, XSS-Grenze, keine Secrets in Logs) intakt bleiben.
 
-📖 Die integrierte **Hilfe §31** („Den ganzen Stack in der Cloud betreiben“) führt Schritt für Schritt in allen 18 Sprachen; die Betreiber-Checkliste ist [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), und die [Cloud-Deployment-Wiki-Seite](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) enthält die Referenztabellen.
+📖 Die integrierte **Hilfe §31** („Den ganzen Stack in der Cloud betreiben“) führt Schritt für Schritt in allen 19 Sprachen; die Betreiber-Checkliste ist [`docs/integrations/HERMES.md`](docs/integrations/HERMES.md), und die [Cloud-Deployment-Wiki-Seite](https://github.com/Fighter90/career-ops-ui/wiki/Cloud-Deployment) enthält die Referenztabellen.
 
 ---
 
@@ -662,14 +662,14 @@ career-ops ist am besten **immer an** — scannt, während du schläfst, aus jed
 
 ## Lokalisierung
 
-Die UI wird mit **18 Sprachen** ausgeliefert — `en`, `es`, `fr`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`, `ta`. Seit **v1.60.0 (I18N-SPLIT)** liegen die Übersetzungen **eine Datei pro Sprache** unter [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, jede eine flache `key → string`-Tabelle — plus eine gemeinsame `i18n-dict.aliases.js`. [`i18n-dict.js`](public/js/lib/i18n-dict.js) fügt sie zu `window.__I18N_DICT` zusammen; [`i18n.js`](public/js/lib/i18n.js) löst `t('key', 'fallback')` auf. Kein Build-Schritt, kein Laufzeit-Fetch — ein Übersetzer bearbeitet eine einzelne Sprachdatei isoliert.
+Die UI wird mit **19 Sprachen** ausgeliefert — `en`, `es`, `fr`, `pt-BR`, `ko`, `ja`, `ru`, `zh-CN`, `zh-TW`, `pl`, `uk`, `da`, `ar`, `de`, `it`, `tr`, `hi`, `ta`, `vi`. Seit **v1.60.0 (I18N-SPLIT)** liegen die Übersetzungen **eine Datei pro Sprache** unter [`public/js/lib/locales/`](public/js/lib/locales/) — `i18n-dict.<lang>.js`, jede eine flache `key → string`-Tabelle — plus eine gemeinsame `i18n-dict.aliases.js`. [`i18n-dict.js`](public/js/lib/i18n-dict.js) fügt sie zu `window.__I18N_DICT` zusammen; [`i18n.js`](public/js/lib/i18n.js) löst `t('key', 'fallback')` auf. Kein Build-Schritt, kein Laufzeit-Fetch — ein Übersetzer bearbeitet eine einzelne Sprachdatei isoliert.
 
 **Eine Zeichenkette hinzufügen oder ändern:**
 
 ```js
 // public/js/lib/locales/i18n-dict.en.js   →   'scan.newButton': 'Run scan',
 // public/js/lib/locales/i18n-dict.es.js   →   'scan.newButton': 'Ejecutar búsqueda',
-// …add the same key to all 18 locale files (parity is gated)
+// …add the same key to all 19 locale files (parity is gated)
 ```
 
 Verwenden Sie sie dann über `data-i18n="scan.newButton"` im Markup oder `t('scan.newButton')` im JS und führen Sie `npm test` aus. Um eine brandneue Sprache hinzuzufügen, registrieren Sie sie in `i18n.js` (`LANGS` + `detect()`), im Assembler, in `index.html` und im Locale-aufzählenden Tooling.
