@@ -9,6 +9,32 @@
 ---
 
 
+## [1.261.1] — 2026-10-28
+
+**prod-QA 客戶端修補：`#/two-pager` 的 P1 當機修復、Ctrl+K 在非 QWERTY 鍵盤佈局上恢復可用、390px 行動浪潮（docs-assistant 溢位、地圖晶片重疊、39 條路由的巡檢）、CAR-137 收尾（具體錯誤、v2empty ×5、提示 ×13 + 模式頁），以及 CAR-140 讓真實的 v2 截圖在各處落地。**
+
+### 修復
+
+- **two-pager TDZ（CAR-170，P1，#554）**：`Cannot access 'previewTimer' before initialization` — 已儲存標籤的編輯器在建構期間就對每個還原的晶片觸發 `onChange`，而建構迴圈在詞法順序上位於 `let previewTimer` 之上，於是整個 `#/two-pager` 渲染當機（沒有 h1，×19 語系）。排程器 + 綁定現已移到迴圈之上；一支行為面測試直接執行真實的檢視模組 — 修復前重現確切的正式環境錯誤、修復後渲染出頁面 — 另加一道詞法順序漂移閘門。
+- **Ctrl+K 在非 QWERTY 鍵盤佈局上（CAR-172，#554）**：兩個組合鍵處理器原本只比對 `e.key` — 在俄語佈局下組合鍵以 `key='л' code='KeyK'` 抵達，因此毫無作用。nav-v2.js 與 app.js 改以 `e.code === 'KeyK'` 比對；並在真實瀏覽器中以合成的 'л'/KeyK 組合鍵重現。CAR-122 契約已重述（見備註）。
+- **docs-assistant 390px 溢位（CAR-172，#554）**：CAR-136 的入門晶片是 `.btn`（nowrap、`flex-shrink: 0`）— 一個不可折行的 418px 項目把 `#/docs-assistant` 推出 390px 視窗外 56px；CAR-146 的收縮模式（位於 v2-llm.css，800-LOC CSS 閘門未動）把它歸零。
+- **地圖晶片在 390px 下重疊（#552）**：在 390px 視窗上，地圖的中繼晶片與 CTA 列重疊（map.css）。
+- **CAR-137 — 具體錯誤 + v2empty ×5（#550）**：五個籠統的錯誤回退（'Error' / 'failed'）換成具體可行動的鍵 — evaluate POST 失敗、auto-pipeline 串流缺少終止事件、scan→pipeline 加入、repost 叢集載入、pipeline 復原；最後五個平淡的空狀態（`#/reports`、`#/usage`、`#/portals`、`#/activity`、`#/dashboard`）加入 CAR-124 的 v2empty 模式（說明 + 標記 aria-hidden 的範例 + 預先接線的動作；15 個新的 `v2empty.*` 鍵、移除四個死去的一行式鍵）— 全部 ×19 字典，快照重新產生。
+- **CAR-137 — HelpHint ×13 + 模式頁套件（#550）**：情境式 «?» 提示現在坐落於其餘每個頁面的 H1 上（pipeline、reports、dashboard、cv、portals、usage、activity、assessments、map、health、docs-assistant、settings），並透過套件覆蓋 8 個模式頁（每筆 MODES 設定攜帶一個 `hintKey`，經 `HelpHint.title` 渲染）。
+
+### 新增
+
+- **Mobile-390 巡檢（#552）**：以 Playwright 走訪每條 SPA 路由（31 個規範路由 + 8 個模式頁 = 39 個 hash），在 390×844 下搭配植入的語料 — 逐路由的水平溢位檢查（scrollWidth 對 clientWidth、1px 容差、點名最寬的元兇）外加 CTA 命中檢查（任何吸附列/抽屜/FAB 都不得遮住主要 CTA）；選擇性執行、無瀏覽器二進位檔時優雅跳過、無網路。
+- **全新 v2 截圖 ×48（CAR-140 phase A，#551）**：來自植入式 CI 隔離 fixture 的真實 v2 UI 截圖 — dashboard ×19 + job-map ×19（job-map-ta 首次出現、job-map-vi 新增）+ scan/pipeline/tracker/reports × en/ru — 供 README、說明與落地頁取用。
+- **cvstart.org 真實截圖（CAR-140 phase B，#553）**：CAR-140 的預留位已成歷史 — 落地頁展示實際的 v2 截圖（job-map 展示區 + 截圖列，×19 個落地頁語系）。
+- **CAR-137 提示（#550）**：21 個新的已翻譯鍵 ×19（`help.hint.*` ×20 + 模式頁的 `hintKey`）— 每個頁面現在都能就地自我說明。
+
+### 備註
+
+- **Ctrl+K 契約（CAR-122）**：組合鍵開啟的是**命令面板** — 它並不直接聚焦搜尋框；搜尋是從面板內聚焦。v1.261.0 QA 清單中的 «Ctrl+K фокусит поиск» 一行已被取代；v1.261.1 的 QA 提示攜帶更新後的檢查。
+- **CodeQL 真實修復（#547）**：關閉 4 個警報（content.mjs 的字面量鍵迭代改為結構化、lint 清掃）— 在本修補之前已於發佈後落在 v1.261.0 的 main 上；為完整性一併列出。
+- 測試 6582（+51）；瀏覽器套件 171–172 通過 / 0 失敗 / 1 選擇性跳過；mobile-390 巡檢可獨立執行（`node tests/playwright-mobile-390.mjs`）。未觸碰任何掃描器來源（註冊表 121 = 116 EN + 5 RU · 116 配接器）。
+
 ## [1.261.0] — 2026-10-28
 
 **完整評審浪潮收官（所有 HIGH + MEDIUM 發現全數落地）、擁有者回報的語言切換修復、評估品質修復、說明 ×18 展開、cvstart.org 落地頁 v2 — 另有 4 份記錄這波浪潮的 SDD/OpenSpec 規格。每一項修復都以紅→綠的 fix-forward 與一次 GLM-5.3-Flash 全新上下文評審落地。**
