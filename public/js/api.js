@@ -669,10 +669,19 @@ window.UI = (function () {
       // emits the same safe tags it does for headings/lists.
       return '<blockquote>' + block.split('\n').map((l) => inline(l.replace(/^&gt; ?/, ''))).join('<br/>') + '</blockquote>';
     });
-    // lists
-    s = s.replace(/(^(?:- |\* ).+(?:\n(?:- |\* ).+)*)/gm, (block) => {
-      const items = block.split('\n').map((l) => l.replace(/^[-*] /, ''));
-      return '<ul>' + items.map((i) => `<li>${inline(i)}</li>`).join('') + '</ul>';
+    // lists — a continuation line after a bullet (leading whitespace, not a
+    // new block: not a heading `#`, not a `[-*] ` bullet, not a NUL-wrapped
+    // fence placeholder, not blank) is absorbed into the previous <li> as
+    // `<br/>`-joined text. Without this the line fell out of the emitted
+    // <ul> and the paragraph pass skipped the chunk (it starts with the
+    // emitted <ul>), leaking raw prose with literal `**`/backtick markers.
+    s = s.replace(/(^(?:- |\* ).+(?:\n(?:(?:- |\* )|(?=[ \t]+(?=[^ \t])(?!(?:[-*] |#))(?!\0))).+)*)/gm, (block) => {
+      const items = [];
+      block.split('\n').forEach((l) => {
+        if (/^[-*] /.test(l)) items.push([l.replace(/^[-*] /, '')]);
+        else if (items.length && l.trim()) items[items.length - 1].push(l.trim());
+      });
+      return '<ul>' + items.map((lines) => `<li>${lines.map((t) => inline(t)).join('<br/>')}</li>`).join('') + '</ul>';
     });
     // paragraphs
     s = s.split('\n\n').map((p) => {
