@@ -117,10 +117,11 @@ test('map client: the tile layer re-mounts per resolved theme and cleans up', ()
 });
 
 // ── 2 · .callout--warn ──────────────────────────────────────────────────────
-test('callout--warn: theme-aware tokens with the strict three-part dark guard', () => {
-  assert.match(COMPONENTS, /\.callout--warn\s*\{[^}]*--callout-bg:\s*#fff8e6/);
-  assert.match(COMPONENTS, /\[data-theme="dark"\]\s*\.callout--warn\s*\{[^}]*--callout-bg:\s*#2b2413/);
-  assert.match(COMPONENTS, /@media \(prefers-color-scheme: dark\)\s*\{\s*:root:not\(\[data-theme="light"\]\):not\(\[data-theme="dark"\]\)\s*\.callout--warn/);
+test('callout--warn rides the cv3 warn pair in ONE theme-following rule (v3 phase 2)', () => {
+  // v3 phase 2 — the cv3 vars are theme-aware; the strict three-part dark guard
+  // collapsed into a single rule (contrast gated in css-a11y-contrast: 5.76/8.52:1).
+  assert.match(COMPONENTS, /\.callout--warn\s*\{[^}]*--callout-bg:\s*var\(--cv3-warn-soft\)/);
+  assert.match(COMPONENTS, /\.callout--warn\s*\{[^}]*--callout-text:\s*var\(--cv3-warn-ink\)/);
 });
 
 test('callout--warn: config banner + batch banner + dashboard hero use it; inline light yellows are gone', () => {

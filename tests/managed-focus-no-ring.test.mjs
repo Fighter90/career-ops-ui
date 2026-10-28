@@ -22,10 +22,13 @@ const CSS = loadAppCss();
 const FLAT = CSS.replace(/\s+/g, ' ');
 
 test('global keyboard focus ring still defined (WCAG 2.4.7 not regressed)', () => {
+  // v3 phase 2 — the ring paints the pure ACCENT (the cv3 focus shape:
+  // 2px surface gap + 4px accent ring, in outline form); the rausch
+  // fallback chain stays for robustness.
   assert.match(
     FLAT,
-    /\*:focus-visible \{ outline: 2px solid var\(--rausch[^}]*\}/,
-    'the global *:focus-visible brand ring must remain so real ' +
+    /\*:focus-visible \{ outline: 2px solid var\(--accent-c[^}]*\}/,
+    'the global *:focus-visible accent ring must remain so real ' +
       'keyboard focus on interactive controls stays visible',
   );
 });

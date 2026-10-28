@@ -189,15 +189,12 @@ function collectDefined() {
  * Known-undefined tokens — drift owned by another item. Each entry names the
  * files that reference it (the gate fails if that moves) and the hand-off.
  * New undefined tokens FAIL; entries whose token became defined FAIL (remove).
+ *
+ * v3 phase 2 closed the COLOR hand-offs: --bg-subtle, --warn-* (app.css) and
+ * --rose* (overlays.css) resolve to the cv3 semantic values. --ease-out stays
+ * (an easing token, owned with the v2-llm motion pass).
  */
 const TOKEN_HANDOFF = [
-  { token: 'bg-subtle', files: ['app.css', 'components.css'], why: 'hand-off (CAR-123 R3 scope = --accent): kbd-shortcut/dash-chip/table-head subtle wash; light fallback exact, no dark value — dark-mode wash belongs to the next dark-surface pass' },
-  { token: 'warn-bg', files: ['app.css'], why: 'hand-off: .brief-warning cream wash — light fallback exact; dark value belongs to the dark-callout pass' },
-  { token: 'warn-border', files: ['app.css'], why: 'hand-off: .brief-warning amber border — light fallback exact; dark value belongs to the dark-callout pass' },
-  { token: 'warn-fg', files: ['app.css'], why: 'hand-off: .brief-warning amber text — light fallback exact; dark value belongs to the dark-callout pass' },
-  { token: 'rose', files: ['overlays.css'], why: 'hand-off: .scan-error-banner wash — light fallback exact; dark value belongs to the dark-callout pass' },
-  { token: 'rose-border', files: ['overlays.css'], why: 'hand-off: .scan-error-banner border — light fallback exact; dark value belongs to the dark-callout pass' },
-  { token: 'rose-ink', files: ['overlays.css'], why: 'hand-off: .scan-error-banner text — light fallback exact; dark value belongs to the dark-callout pass' },
   { token: 'ease-out', files: ['v2-llm.css'], why: 'hand-off: llm2run slide easing read with an ease-in-out fallback; naming a token whose shipped value is ease-in-out needs the v2-llm owner' },
 ];
 
@@ -221,11 +218,18 @@ test('(b) every var(--x) referenced in any stylesheet resolves (token block or r
   assert.deepEqual(stale, [], `stale token hand-off entries:\n  ${stale.join('\n  ')}`);
 });
 
-test('(c) --accent is aliased to the theme-aware brand accent, never re-hardcoded', () => {
+test('(c) --accent resolves to the independent accent family, never re-hardcoded (v3 topology)', () => {
+  // v3 phase 2: accent is its OWN family (the Lovable blue); the rausch family
+  // carries accent fills while rausch-text moved to the danger ink. --accent
+  // must alias --accent-c (never a literal), and --accent-c must resolve to the
+  // cv3 sheet value in both themes (the palette flip stays a tokens-v3.css edit).
   const app = readFileSync(resolve(CSS_DIR, 'app.css'), 'utf8');
-  assert.match(app, /--accent\s*:\s*var\(--rausch\)/,
-    '--accent must alias var(--rausch) (theme-following); a literal here would freeze the light value');
-  // the target must stay theme-aware: light :root + at least one dark block
-  const decls = app.match(/--rausch\s*:/g) || [];
-  assert.ok(decls.length >= 2, `--rausch must be declared in both themes (found ${decls.length})`);
+  assert.match(app, /--accent\s*:\s*var\(--accent-c\)/,
+    '--accent must alias var(--accent-c) (the independent family); a literal here would freeze the light value');
+  const alias = app.match(/--accent-c\s*:\s*([^;]+);/g) || [];
+  assert.ok(alias.length >= 1, '--accent-c must be declared (the accent family head)');
+  assert.match(alias[0], /var\(--cv3-accent\)/, '--accent-c must resolve to var(--cv3-accent), not a literal');
+  const tokens = readFileSync(resolve(CSS_DIR, 'tokens-v3.css'), 'utf8').replace(/\/\*[\s\S]*?\*\//g, '');
+  const accentDecls = tokens.match(/--cv3-accent\s*:/g) || [];
+  assert.ok(accentDecls.length >= 2, `--cv3-accent must be declared in light + dark blocks of tokens-v3.css (found ${accentDecls.length})`);
 });
