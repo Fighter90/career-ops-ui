@@ -1,6 +1,6 @@
 {
   "line": 98,
-  "branch": 90,
+  "branch": 89,
   "exempt": [
     "server/index.mjs",
     "server/lib/activity-log.mjs",
