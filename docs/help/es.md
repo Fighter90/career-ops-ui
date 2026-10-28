@@ -966,20 +966,12 @@ muerta.
 
 El chrome v2 de resultados mantiene los controles a la vista:
 
-- **Filtros activos** (`scan.v2.activeFilters`) — cada filtro aplicado
-  se muestra como una chip eliminable sobre la tabla; pulsa la **✕** de
-  una chip (**Quitar filtro**, `scan.v2.removeFilter`) para soltar solo
-  esa, o **Restablecer todo** (`scan.v2.resetAll`) para limpiarlas.
+- **Filtros activos** (`scan.v2.activeFilters`) — cada filtro aplicado se muestra como una chip eliminable sobre la tabla; pulsa la **✕** de una chip (**Quitar filtro**, `scan.v2.removeFilter`) para soltar solo esa, o **Restablecer todo** (`scan.v2.resetAll`) para limpiarlas.
 - **Ordenar por** (`scan.v2.sortBy`) — pulsa un encabezado de columna
   (empresa, puesto, salario, antigüedad) para ordenar; pulsa otra vez
   para invertir.
-- **Vista rápida** (`scan.v2.quickView`) — pulsa una fila para expandir
-  su descripción inline (**Descripción**, `scan.v2.description`) sin
-  salir de la página; las ofertas sin cuerpo capturado lo dicen
-  (`scan.v2.noDescription`) en vez de enseñar una tarjeta vacía.
-- **Densidad de fila** (`scan.v2.density`) — alterna **Compacto** /
-  **Cómodo** (`scan.v2.compact` / `scan.v2.comfortable`); se recuerda
-  por navegador.
+- **Vista rápida** (`scan.v2.quickView`) — pulsa una fila para expandir su descripción inline (**Descripción**, `scan.v2.description`) sin salir de la página; las ofertas sin cuerpo capturado lo dicen (`scan.v2.noDescription`) en vez de enseñar una tarjeta vacía.
+- **Densidad de fila** (`scan.v2.density`) — alterna **Compacto** / **Cómodo** (`scan.v2.compact` / `scan.v2.comfortable`); se recuerda por navegador.
 - **Log** (`scan.v2.log`) — colapsa/expande el log de escaneo en vivo
   para dar el ancho completo a la tabla.
 
@@ -1127,11 +1119,7 @@ Inbox de URLs esperando ser evaluadas. Vive en `data/pipeline.md`.
 Tres formas:
 
 - Tipea / pega una URL en el input + haz clic en **Añadir URL** (`pipe.add`).
-- Usa el **menú de comandos**: **Cmd/Ctrl+K** (o el botón **Menú de
-  comandos** de la barra lateral, `nav.v2.palette`), pega cualquier enlace
-  `http(s)://…` y el menú ofrece **Auto-pipeline: {url}**
-  (`nav.v2.evalUrl`) — Enter corre la cadena completa sobre él. Cualquier
-  otro texto + Enter salta a `#/scan` con ese término pre-rellenado.
+- Usa el **menú de comandos**: **Cmd/Ctrl+K** (o el botón **Menú de comandos** de la barra lateral, `nav.v2.palette`), pega cualquier enlace `http(s)://…` y el menú ofrece **Auto-pipeline: {url}** (`nav.v2.evalUrl`) — Enter corre la cadena completa sobre él. Cualquier otro texto + Enter salta a `#/scan` con ese término pre-rellenado.
 - Ejecuta un Scan (ver arriba) — los hits frescos van al pipeline
   automáticamente.
 
@@ -1172,13 +1160,7 @@ bandeja grande tras un escaneo es la pieza central v2 de la página:
 - **Ocultar ya evaluadas** (`pipe.hideTracked`) — activo por defecto;
   las ofertas que ya tienen fila en el tracker salen de la vista (y de
   la selección en bloque) para que solo actúes sobre trabajo fresco.
-- **Selecciona** (`pipe.selectOne`) filas, o **Seleccionar las
-  visibles** (`pipe.selectAllShown`) — la selección siempre sigue los
-  filtros actuales, jamás filas invisibles. La barra muestra el recuento
-  (`pipe.selectedCount`) y ofrece **✕ Eliminar seleccionadas (N)**
-  (`pipe.bulkRemove`) más **Evaluar la primera seleccionada**
-  (`pipe.evaluateSelected`) — el borrado en bloque confirma una vez para
-  todo el conjunto, no por fila.
+- **Selecciona** (`pipe.selectOne`) filas, o **Seleccionar las visibles** (`pipe.selectAllShown`) — la selección siempre sigue los filtros actuales, jamás filas invisibles. La barra muestra el recuento (`pipe.selectedCount`) y ofrece **✕ Eliminar seleccionadas (N)** (`pipe.bulkRemove`) más **Evaluar la primera seleccionada** (`pipe.evaluateSelected`) — el borrado en bloque confirma una vez para todo el conjunto, no por fila.
 
 Nada se pierde por error: cada eliminación — individual o en bloque —
 devuelve un token de restauración opaco, y una barra al pie de la
@@ -1301,20 +1283,14 @@ lista y todo compone:
 - **Buscar informes** (`rep2.searchLabel`) — texto libre contra
   empresa, puesto y título de cada informe.
 - **Empresa** (`rep2.companyLabel`) — elige un empleador del dropdown.
-- **Banda de score** (`rep2.bandLabel`) — **Alta (4.5+)** / **Buena
-  (4.0+)** / **Media (3.5+)** / **Bajo 3.5** (`rep2.bandHigh` …
-  `rep2.bandLow`), más un cubo para informes sin score parseable.
+- **Banda de score** (`rep2.bandLabel`) — **Alta (4.5+)** / **Buena (4.0+)** / **Media (3.5+)** / **Bajo 3.5** (`rep2.bandHigh` … `rep2.bandLow`), más un cubo para informes sin score parseable.
 - **Desde / Hasta** (`rep2.dateFrom` / `rep2.dateTo`) — acota la lista
   a un periodo.
-- **Ordenar por** (`rep2.sortLabel`) — **Fecha** / **Score** /
-  **Empresa** (`rep2.sortDate` …), ascendente o descendente
-  (`rep2.sortDirAsc` / `rep2.sortDirDesc`).
+- **Ordenar por** (`rep2.sortLabel`) — **Fecha** / **Score** / **Empresa** (`rep2.sortDate` …), ascendente o descendente (`rep2.sortDirAsc` / `rep2.sortDirDesc`).
 - Un **histograma de distribución de scores** (`rep2.histogramLabel`)
   — pulsa una columna para filtrar a esa banda y ver la forma de tu
   pipeline de un vistazo.
-- **Restablecer filtros** (`rep2.reset`) lo limpia todo; cuando nada
-  encaja, la página lo dice (`rep2.noMatches`) en vez de enseñar una
-  rejilla vacía.
+- **Restablecer filtros** (`rep2.reset`) lo limpia todo; cuando nada encaja, la página lo dice (`rep2.noMatches`) en vez de enseñar una rejilla vacía.
 
 Haz clic en una tarjeta para leer el markdown completo. Paginación:
 20 por página; controles abajo.

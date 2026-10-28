@@ -1127,22 +1127,12 @@ ersten Frame an — ein langsamer Scan wirkt nie wie eine tote Seite.
 
 Die v2-Ergebnisoberfläche hält die Bedienelemente auffindbar:
 
-- **Aktive Filter** (`scan.v2.activeFilters`) — jeder gesetzte Filter
-  erscheint als entfernbare Chip oberhalb der Tabelle; klicken Sie auf
-  das **✕** einer Chip (**Filter entfernen**, `scan.v2.removeFilter`),
-  um genau diesen fallen zu lassen, oder auf **Alle zurücksetzen**
-  (`scan.v2.resetAll`), um alle zu leeren.
+- **Aktive Filter** (`scan.v2.activeFilters`) — jeder gesetzte Filter erscheint als entfernbare Chip oberhalb der Tabelle; klicken Sie auf das **✕** einer Chip (**Filter entfernen**, `scan.v2.removeFilter`), um genau diesen fallen zu lassen, oder auf **Alle zurücksetzen** (`scan.v2.resetAll`), um alle zu leeren.
 - **Sortieren nach** (`scan.v2.sortBy`) — klicken Sie auf eine
   Spaltenüberschrift (Unternehmen, Rolle, Gehalt, Alter), um danach zu
   sortieren; nochmals klicken kehrt die Richtung um.
-- **Schnellansicht** (`scan.v2.quickView`) — klicken Sie auf eine Zeile,
-  um ihre Stellenbeschreibung direkt inline einzublenden
-  (**Beschreibung**, `scan.v2.description`), ohne die Seite zu
-  verlassen; Stellen ohne erfassten Text sagen das
-  (`scan.v2.noDescription`), statt eine leere Karte zu zeigen.
-- **Zeilendichte** (`scan.v2.density`) — schaltet zwischen **Kompakt** /
-  **Komfortabel** (`scan.v2.compact` / `scan.v2.comfortable`)
-  Zeilenhöhen um; die Wahl wird pro Browser gemerkt.
+- **Schnellansicht** (`scan.v2.quickView`) — klicken Sie auf eine Zeile, um ihre Stellenbeschreibung direkt inline einzublenden (**Beschreibung**, `scan.v2.description`), ohne die Seite zu verlassen; Stellen ohne erfassten Text sagen das (`scan.v2.noDescription`), statt eine leere Karte zu zeigen.
+- **Zeilendichte** (`scan.v2.density`) — schaltet zwischen **Kompakt** / **Komfortabel** (`scan.v2.compact` / `scan.v2.comfortable`) Zeilenhöhen um; die Wahl wird pro Browser gemerkt.
 - **Protokoll** (`scan.v2.log`) — klappt das Streaming-Scan-Log zu bzw.
   auf, um der Tabelle die volle Breite zu geben.
 
@@ -1199,22 +1189,11 @@ alles andere liegt hinter **Erweiterte Filter**, `scan.advancedFilters`
 - **Remote / Hybrid / Onsite**-Dropdown.
 - **Country**-Dropdown — ein Geografie-Filter, befüllt aus den Ländern, die in den aktuellen Ergebnissen erkannt wurden, jeweils mit seinem Flaggen-Emoji und einer Anzahl angezeigt (z. B. `🇩🇪 Germany (12)`). Wählen Sie eines aus, um nur an dieses Land gebundene Rollen zu behalten. Die Erkennung ordnet den Freitext-Standort einer Ausschreibung (Ländernamen/-aliase + ~100 große Job-Markt-Städte) einem Land zu; sie ist konservativ und rät nie, sodass eine Ausschreibung, deren Standort nicht aufgelöst werden kann — oder eine reine „Remote"-Anzeige — unter **All countries** bleibt. Kombinieren Sie es mit dem Arbeitsart-Dropdown, um länderbezogene *und* Remote-Rollen zu finden.
 - **Posted within**-Dropdown — ein clientseitiger Altersfilter (Last 24 hours / 7 days / 30 days). Zeilen, deren `pubDate` älter ist, werden ausgeblendet; Zeilen mit **keinem aufgeführten Datum passen** (fehlende Daten werden nicht bestraft).
-- **Gehalt ab / Gehalt bis** (`scan.salaryFrom` / `scan.salaryTo`) —
-  schlichte Zahlen-Grenzen, verglichen gegen Beträge, die aus dem
-  Stellentext geparst wurden (Währung ignoriert, `scan.v2.salaryHint`);
-  haken Sie **Stellen ohne Gehalt einbeziehen**
-  (`scan.v2.includeNoSalary`) an, damit der Gehaltsfilter Zeilen, die
-  gar keine Zahl nennen, nicht fallen lässt.
+- **Gehalt ab / Gehalt bis** (`scan.salaryFrom` / `scan.salaryTo`) — schlichte Zahlen-Grenzen, verglichen gegen Beträge, die aus dem Stellentext geparst wurden (Währung ignoriert, `scan.v2.salaryHint`); haken Sie **Stellen ohne Gehalt einbeziehen** (`scan.v2.includeNoSalary`) an, damit der Gehaltsfilter Zeilen, die gar keine Zahl nennen, nicht fallen lässt.
 - **Level**-Dropdown (`scan.lblSeniority`) — Lead / Staff / Senior /
   Mid / Junior / Intern, aus dem Titel erkannt.
 - **★ Favoriten** — klicken Sie auf das ☆ in einer beliebigen Zeile, um eine Stelle zu markieren (in `localStorage` nach URL gespeichert); haken Sie **★ Favoriten** (`scan.favOnly`) im Filterbereich an, um nur markierte Zeilen anzuzeigen. Sterne überleben Scans und Neuladen.
-- **Gespeicherte Suchen** (`scan.savedSearches`) — benennen Sie den
-  aktuellen Filtersatz und **Suche speichern** (`scan.saveSearch`),
-  dann wenden Sie ihn erneut aus der Liste an; gespeicherte Suchen
-  laden mit einem einzigen Klick (`scan.v2.loadSearch`), und das
-  Löschen einer Suche fragt vorher nach
-  (`scan.v2.deleteSearchConfirm`). In `localStorage` gespeichert; ein
-  beschädigter/bearbeiteter Wert wird sauber auf leer zurückgesetzt.
+- **Gespeicherte Suchen** (`scan.savedSearches`) — benennen Sie den aktuellen Filtersatz und **Suche speichern** (`scan.saveSearch`), dann wenden Sie ihn erneut aus der Liste an; gespeicherte Suchen laden mit einem einzigen Klick (`scan.v2.loadSearch`), und das Löschen einer Suche fragt vorher nach (`scan.v2.deleteSearchConfirm`). In `localStorage` gespeichert; ein beschädigter/bearbeiteter Wert wird sauber auf leer zurückgesetzt.
 - **Stack-Chips** (PHP / Go / Backend / Senior / …) — automatisch pro Zeile
   erkannt von `Skills.detectTech` und `Skills.detectLevel`.
   Mehrfachauswahl-Schnittmenge — die Auswahl von `PHP + Senior` zeigt
@@ -1330,15 +1309,8 @@ Tracker nicht lesbar ist.
 
 Drei Wege:
 
-- Tippen / fügen Sie eine URL in die Eingabe ein + klicken Sie auf
-  **URL hinzufügen** (`pipe.add`).
-- Öffnen Sie das **Befehlsmenü**: **Cmd/Ctrl+K** (oder die
-  Schaltfläche **Befehlsmenü** in der Seitenleiste,
-  `nav.v2.palette`), fügen Sie einen beliebigen `http(s)://…`-Link
-  ein, und das Menü bietet **Auto-Pipeline: {url}**
-  (`nav.v2.evalUrl`) an — Enter führt die gesamte Kette darauf aus.
-  Jeder andere Text + Enter springt zu `#/scan` mit diesem Begriff
-  vorausgefüllt.
+- Tippen / fügen Sie eine URL in die Eingabe ein + klicken Sie auf **URL hinzufügen** (`pipe.add`).
+- Öffnen Sie das **Befehlsmenü**: **Cmd/Ctrl+K** (oder die Schaltfläche **Befehlsmenü** in der Seitenleiste, `nav.v2.palette`), fügen Sie einen beliebigen `http(s)://…`-Link ein, und das Menü bietet **Auto-Pipeline: {url}** (`nav.v2.evalUrl`) an — Enter führt die gesamte Kette darauf aus. Jeder andere Text + Enter springt zu `#/scan` mit diesem Begriff vorausgefüllt.
 - Führen Sie einen Scan aus (siehe oben) — frische Treffer gehen
   automatisch in die Pipeline.
 
@@ -1363,35 +1335,18 @@ Timeout.
 
 - **▶** (`pipe.evaluateBtn`) — springt zu `#/evaluate?url=…` mit der
   URL vorausgefüllt.
-- **✕** — entfernt die URL aus `data/pipeline.md` (fragt zuerst,
-  `pipe.confirmDel`).
+- **✕** — entfernt die URL aus `data/pipeline.md` (fragt zuerst, `pipe.confirmDel`).
 
 **Gruppierte Ansicht, Massenlöschung, verlustfreies Rückgängigmachen.**
 Das Aufräumen eines großen Postfachs nach einem Scan ist die
 v2-Herzstück der Seite:
 
-- **Gruppiert** (`pipe.viewGrouped`) / **Kompaktliste**
-  (`pipe.viewFlat`) — die Werkzeugleiste schaltet zwischen einer
-  flachen Liste und einem nach Unternehmen gruppierten Board um:
-  Ausschreibungen desselben Arbeitgebers klappen unter einem
-  aufklappbaren Eintrag zusammen (größte Gruppe zuerst), sodass ein
-  lautstarkes Board den Rest nicht mehr begräbt. Unbekannte
-  Unternehmen gruppieren sich unter ihrem Host — aber ein gemeinsam
-  genutzter ATS-Host (etwa `jobs.lever.co`) leiht sich einen
-  Unternehmensnamen nur aus, wenn *alle* unternehmensführenden
-  Einträge dieses Hosts sich einig sind.
+- **Gruppiert** (`pipe.viewGrouped`) / **Kompaktliste** (`pipe.viewFlat`) — die Werkzeugleiste schaltet zwischen einer flachen Liste und einem nach Unternehmen gruppierten Board um: Ausschreibungen desselben Arbeitgebers klappen unter einem aufklappbaren Eintrag zusammen (größte Gruppe zuerst), sodass ein lautstarkes Board den Rest nicht mehr begräbt. Unbekannte Unternehmen gruppieren sich unter ihrem Host — aber ein gemeinsam genutzter ATS-Host (etwa `jobs.lever.co`) leiht sich einen Unternehmensnamen nur aus, wenn *alle* unternehmensführenden Einträge dieses Hosts sich einig sind.
 - **Bereits bewertete ausblenden** (`pipe.hideTracked`) —
   standardmäßig aktiv; Einträge, deren Ausschreibung bereits eine
   Tracker-Zeile hat, fallen aus der Ansicht (und aus der
   Massenauswahl), sodass Sie nur über frische Arbeit entscheiden.
-- **Auswählen** (`pipe.selectOne`) beliebiger Zeilen oder **Alle
-  angezeigten auswählen** (`pipe.selectAllShown`) — die Auswahl folgt
-  stets den aktuellen Filtern, nie unsichtbaren Zeilen. Die
-  Auswahlleiste zeigt die Anzahl (`pipe.selectedCount`) und bietet
-  **✕ Auswahl entfernen (N)** (`pipe.bulkRemove`) sowie **Erste
-  Auswahl bewerten** (`pipe.evaluateSelected`) an — die
-  Massenentfernung bestätigt einmal für den ganzen Satz, nicht pro
-  Zeile.
+- **Auswählen** (`pipe.selectOne`) beliebiger Zeilen oder **Alle angezeigten auswählen** (`pipe.selectAllShown`) — die Auswahl folgt stets den aktuellen Filtern, nie unsichtbaren Zeilen. Die Auswahlleiste zeigt die Anzahl (`pipe.selectedCount`) und bietet **✕ Auswahl entfernen (N)** (`pipe.bulkRemove`) sowie **Erste Auswahl bewerten** (`pipe.evaluateSelected`) an — die Massenentfernung bestätigt einmal für den ganzen Satz, nicht pro Zeile.
 
 Nichts geht versehentlich verloren: Jede Entfernung — einzeln oder in
 Masse — liefert ein opakes Wiederherstellungs-Token, und eine Leiste
@@ -1523,20 +1478,14 @@ Liste, und alles kombiniert sich:
   Unternehmen, Rolle und Anzeigetitel jedes Berichts.
 - **Unternehmen** (`rep2.companyLabel`) — wählen Sie einen Arbeitgeber
   aus dem Dropdown.
-- **Score-Bereich** (`rep2.bandLabel`) — **Hoch (4.5+)** / **Gut
-  (4.0+)** / **Mittel (3.5+)** / **Unter 3,5** (`rep2.bandHigh` …
-  `rep2.bandLow`), plus ein Kübel für Berichte ohne parsebaren Score.
+- **Score-Bereich** (`rep2.bandLabel`) — **Hoch (4.5+)** / **Gut (4.0+)** / **Mittel (3.5+)** / **Unter 3,5** (`rep2.bandHigh` … `rep2.bandLow`), plus ein Kübel für Berichte ohne parsebaren Score.
 - **Von Datum / Bis Datum** (`rep2.dateFrom` / `rep2.dateTo`) —
   grenzen die Liste auf einen Zeitraum ein.
-- **Sortieren nach** (`rep2.sortLabel`) — **Datum** / **Score** /
-  **Unternehmen** (`rep2.sortDate` …), aufsteigend oder absteigend
-  (`rep2.sortDirAsc` / `rep2.sortDirDesc`).
+- **Sortieren nach** (`rep2.sortLabel`) — **Datum** / **Score** / **Unternehmen** (`rep2.sortDate` …), aufsteigend oder absteigend (`rep2.sortDirAsc` / `rep2.sortDirDesc`).
 - Ein **Score-Verteilungs-Histogramm** (`rep2.histogramLabel`) —
   klicken Sie auf eine Spalte, um auf diese Bande zu filtern und die
   Form Ihrer Pipeline auf einen Blick zu sehen.
-- **Filter zurücksetzen** (`rep2.reset`) leert alles; wenn nichts
-  passt, sagt die Seite es (`rep2.noMatches`), statt ein leeres Raster
-  zu zeigen.
+- **Filter zurücksetzen** (`rep2.reset`) leert alles; wenn nichts passt, sagt die Seite es (`rep2.noMatches`), statt ein leeres Raster zu zeigen.
 
 Klicken Sie auf eine Karte (oder Tabellenzeile), um das vollständige
 Markdown zu lesen. Paginierung: 20 pro Seite, Steuerelemente am

@@ -891,19 +891,11 @@ HTTPS 請求。
 
 v2 結果介面讓所有控制項都找得到:
 
-- **篩選條件**(`scan.v2.activeFilters`)—— 你設定的每個篩選都會以
-  可移除的晶片顯示在表格上方;點晶片上的 **✕**(**移除篩選**,
-  `scan.v2.removeFilter`)只丟掉那一個,或點 **全部重設**
-  (`scan.v2.resetAll`)一次清空。
+- **篩選條件**(`scan.v2.activeFilters`)—— 你設定的每個篩選都會以 可移除的晶片顯示在表格上方;點晶片上的 **✕**(**移除篩選**, `scan.v2.removeFilter`)只丟掉那一個,或點 **全部重設** (`scan.v2.resetAll`)一次清空。
 - **排序方式**(`scan.v2.sortBy`)—— 點欄位標題(公司、職稱、薪資、
   年齡)即可按它排序;再點一次反向。
-- **快速檢視**(`scan.v2.quickView`)—— 點任一列即可原地展開該職缺
-  的說明(**職位說明**,`scan.v2.description`),不必離開頁面;沒有
-  擷取到內文的職缺會如實說明(`scan.v2.noDescription`),而不是顯示
-  空白卡片。
-- **列密度**(`scan.v2.density`)—— 在 **緊湊** / **寬鬆**
-  (`scan.v2.compact` / `scan.v2.comfortable`)列高之間切換;選擇按
-  瀏覽器記住。
+- **快速檢視**(`scan.v2.quickView`)—— 點任一列即可原地展開該職缺 的說明(**職位說明**,`scan.v2.description`),不必離開頁面;沒有 擷取到內文的職缺會如實說明(`scan.v2.noDescription`),而不是顯示 空白卡片。
+- **列密度**(`scan.v2.density`)—— 在 **緊湊** / **寬鬆** (`scan.v2.compact` / `scan.v2.comfortable`)列高之間切換;選擇按 瀏覽器記住。
 - **日誌**(`scan.v2.log`)—— 摺疊/展開串流掃描日誌,把完整寬度讓
   給表格。
 
@@ -1032,10 +1024,7 @@ hh.ru 透過讀取其公開搜尋頁面（`hh.ru/search/vacancy`）來掃描,與
 三種方式:
 
 - 在輸入欄輸入/貼上 URL,點 **新增 URL**(`pipe.add`)。
-- 使用**命令選單**:**Cmd/Ctrl+K**(或側邊欄的 **命令選單** 按鈕,
-  `nav.v2.palette`),貼上任一 `http(s)://…` 連結,選單會提供
-  **自動流程:{url}**(`nav.v2.evalUrl`)—— 按 Enter 即對它跑完整
-  條鏈。輸入其他文字並按 Enter 則跳到 `#/scan` 並預先填好該詞。
+- 使用**命令選單**:**Cmd/Ctrl+K**(或側邊欄的 **命令選單** 按鈕, `nav.v2.palette`),貼上任一 `http(s)://…` 連結,選單會提供 **自動流程:{url}**(`nav.v2.evalUrl`)—— 按 Enter 即對它跑完整 條鏈。輸入其他文字並按 Enter 則跳到 `#/scan` 並預先填好該詞。
 - 執行 Scan(見上節)— 新命中會自動進入 pipeline。
 
 每個 URL 都會在伺服器端通過 `isValidJobUrl()`。loopback
@@ -1068,12 +1057,7 @@ v2 核心功能:
   會借用一個公司名。
 - **隱藏已評估**(`pipe.hideTracked`)—— 預設開啟;職缺已有追蹤器
   列的條目會退出檢視(也退出批次選取),你只會對新工作動手。
-- **選取**(`pipe.selectOne`)任意列,或 **全選顯示項目**
-  (`pipe.selectAllShown`)—— 選取永遠跟隨當前篩選,絕不碰不可見的
-  列。選取列會顯示計數(`pipe.selectedCount`),並提供
-  **✕ 刪除所選項目(N)**(`pipe.bulkRemove`)與 **評估第一個所選
-  項目**(`pipe.evaluateSelected`)—— 批次刪除對整組只確認一次,
-  不是逐列。
+- **選取**(`pipe.selectOne`)任意列,或 **全選顯示項目** (`pipe.selectAllShown`)—— 選取永遠跟隨當前篩選,絕不碰不可見的 列。選取列會顯示計數(`pipe.selectedCount`),並提供 **✕ 刪除所選項目(N)**(`pipe.bulkRemove`)與 **評估第一個所選 項目**(`pipe.evaluateSelected`)—— 批次刪除對整組只確認一次, 不是逐列。
 
 沒有任何東西會被誤刪:每一次移除 —— 單筆或批次 —— 都會回傳一個
 不透明的復原權杖,頁面底部的一條橫列(**已刪除:N**,`pipe.deleted`)
@@ -1178,18 +1162,13 @@ evaluate** 子節(在父專案執行 `./batch/batch-runner.sh`),讓它
 - **搜尋報告**(`rep2.searchLabel`)—— 自由文字,對每份報告的
   公司、職稱與顯示標題比對。
 - **公司**(`rep2.companyLabel`)—— 從下拉中挑一個雇主。
-- **分數區間**(`rep2.bandLabel`)—— **高 (4.5+)** / **良好 (4.0+)**
-  / **中等 (3.5+)** / **低於 3.5**(`rep2.bandHigh` …
-  `rep2.bandLow`),外加一個給表頭沒有可解析分數的報告的區間。
+- **分數區間**(`rep2.bandLabel`)—— **高 (4.5+)** / **良好 (4.0+)** / **中等 (3.5+)** / **低於 3.5**(`rep2.bandHigh` … `rep2.bandLow`),外加一個給表頭沒有可解析分數的報告的區間。
 - **起始日期 / 結束日期**(`rep2.dateFrom` / `rep2.dateTo`)—— 把
   清單框在某段時期。
-- **排序方式**(`rep2.sortLabel`)—— **日期** / **評分** / **公司**
-  (`rep2.sortDate` …),升冪或降冪(`rep2.sortDirAsc` /
-  `rep2.sortDirDesc`)。
+- **排序方式**(`rep2.sortLabel`)—— **日期** / **評分** / **公司** (`rep2.sortDate` …),升冪或降冪(`rep2.sortDirAsc` / `rep2.sortDirDesc`)。
 - 一個 **分數分布直方圖**(`rep2.histogramLabel`)—— 點某一欄即可
   篩到該區間,一眼看清你流水線的形狀。
-- **重設篩選**(`rep2.reset`)清空一切;什麼都不匹配時,頁面會如實
-  說明(`rep2.noMatches`),而不是顯示空白網格。
+- **重設篩選**(`rep2.reset`)清空一切;什麼都不匹配時,頁面會如實 說明(`rep2.noMatches`),而不是顯示空白網格。
 
 點卡片(或表格列)即可閱讀完整 markdown。分頁:每頁 20 份;控制項
 位於底部;每次篩選變更都會把你送回第 1 頁。

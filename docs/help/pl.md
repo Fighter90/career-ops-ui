@@ -999,21 +999,12 @@ martwą stronę.
 
 Chrome v2 wyników utrzymuje sterowanie w zasięgu wzroku:
 
-- **Aktywne filtry** (`scan.v2.activeFilters`) — każdy ustawiony
-  filtr pokazuje się jako usuwalny chip nad tabelą; kliknij **✕**
-  na chipie (**Usuń filtr**, `scan.v2.removeFilter`), aby upuścić
-  tylko ten, albo **Zresetuj wszystko** (`scan.v2.resetAll`), aby
-  wyczyścić wszystkie.
+- **Aktywne filtry** (`scan.v2.activeFilters`) — każdy ustawiony filtr pokazuje się jako usuwalny chip nad tabelą; kliknij **✕** na chipie (**Usuń filtr**, `scan.v2.removeFilter`), aby upuścić tylko ten, albo **Zresetuj wszystko** (`scan.v2.resetAll`), aby wyczyścić wszystkie.
 - **Sortuj według** (`scan.v2.sortBy`) — kliknij nagłówek kolumny
   (firma, stanowisko, wynagrodzenie, wiek), aby sortować; kliknij
   ponownie, aby odwrócić kierunek.
-- **Szybki podgląd** (`scan.v2.quickView`) — kliknij wiersz, aby
-  rozwinąć opis oferty inline (**Opis**, `scan.v2.description`) bez
-  opuszczania strony; oferty bez zapisanego ciała same o tym mówią
-  (`scan.v2.noDescription`) zamiast pokazywać pustą kartę.
-- **Gęstość wierszy** (`scan.v2.density`) — przełącza wysokości
-  wierszy **Kompaktowo** / **Komfortowo** (`scan.v2.compact` /
-  `scan.v2.comfortable`); wybór jest zapamiętywany per przeglądarka.
+- **Szybki podgląd** (`scan.v2.quickView`) — kliknij wiersz, aby rozwinąć opis oferty inline (**Opis**, `scan.v2.description`) bez opuszczania strony; oferty bez zapisanego ciała same o tym mówią (`scan.v2.noDescription`) zamiast pokazywać pustą kartę.
+- **Gęstość wierszy** (`scan.v2.density`) — przełącza wysokości wierszy **Kompaktowo** / **Komfortowo** (`scan.v2.compact` / `scan.v2.comfortable`); wybór jest zapamiętywany per przeglądarka.
 - **Dziennik** (`scan.v2.log`) — zwija/rozwija dziennik skanowania
   strumieniowego, aby dać tabeli pełną szerokość.
 
@@ -1044,21 +1035,11 @@ cały panel jest pogrupowany pod **Filtry wyników**,
 - Menu rozwijane **Remote / Hybrid / Onsite**.
 - Menu rozwijane **Country** — filtr geograficzny zasilany krajami wykrytymi w bieżących wynikach, każdy pokazany z emoji flagi i licznikiem (np. `🇩🇪 Germany (12)`). Wybierz jeden, aby zachować tylko role powiązane z tym krajem. Wykrywanie mapuje swobodny tekst lokalizacji oferty (nazwy krajów/aliasy + ~100 dużych miast rynku pracy) na kraj; jest zachowawcze i nigdy nie zgaduje, więc oferta, której lokalizacji nie da się rozwiązać — lub czysto „Remote” — pozostaje pod **All countries**. Połącz go z menu rozwijanym typu pracy, aby znaleźć role powiązane z krajem *oraz* zdalne.
 - Menu rozwijane **Posted within** — filtr wieku po stronie klienta (Last 24 hours / 7 days / 30 days). Wiersze, których `pubDate` jest starszy, są ukrywane; wiersze **bez podanej daty przechodzą** (brak danych nie jest karany).
-- **Wynagrodzenie od / Wynagrodzenie do** (`scan.salaryFrom` /
-  `scan.salaryTo`) — proste granice liczbowe porównywane z kwotami
-  sparsowanymi z treści oferty (waluta ignorowana,
-  `scan.v2.salaryHint`); zaznacz **Uwzględnij oferty bez pensji**
-  (`scan.v2.includeNoSalary`), aby filtr wynagrodzenia nie gubił
-  wierszy, które w ogóle nie podają żadnej liczby.
+- **Wynagrodzenie od / Wynagrodzenie do** (`scan.salaryFrom` / `scan.salaryTo`) — proste granice liczbowe porównywane z kwotami sparsowanymi z treści oferty (waluta ignorowana, `scan.v2.salaryHint`); zaznacz **Uwzględnij oferty bez pensji** (`scan.v2.includeNoSalary`), aby filtr wynagrodzenia nie gubił wierszy, które w ogóle nie podają żadnej liczby.
 - Menu rozwijane **Poziom** (`scan.lblSeniority`) — Lead / Staff /
   Senior / Mid / Junior / Intern, wykrywane z tytułu.
 - **★ Ulubione** — kliknij ☆ w dowolnym wierszu, aby oznaczyć ofertę gwiazdką (przechowywaną w `localStorage` według URL); zaznacz **★ Ulubione** (`scan.favOnly`) w panelu filtrów, aby pokazać tylko wiersze oznaczone gwiazdką. Gwiazdki przetrwają skany i przeładowania.
-- **Zapisane wyszukiwania** (`scan.savedSearches`) — nazwij bieżący
-  zestaw filtrów i **Zapisz** (`scan.saveSearch`), a potem zastosuj
-  go ponownie z listy; zapisane wyszukiwania wczytują się jednym
-  kliknięciem (`scan.v2.loadSearch`), a usunięcie jednego najpierw
-  pyta (`scan.v2.deleteSearchConfirm`). Przechowywane w `localStorage`;
-  uszkodzona/zmodyfikowana wartość czysto resetuje się do pustej.
+- **Zapisane wyszukiwania** (`scan.savedSearches`) — nazwij bieżący zestaw filtrów i **Zapisz** (`scan.saveSearch`), a potem zastosuj go ponownie z listy; zapisane wyszukiwania wczytują się jednym kliknięciem (`scan.v2.loadSearch`), a usunięcie jednego najpierw pyta (`scan.v2.deleteSearchConfirm`). Przechowywane w `localStorage`; uszkodzona/zmodyfikowana wartość czysto resetuje się do pustej.
 - **Chipy stack** (PHP / Go / Backend / Senior / …) — auto-wykrywane
   na wiersz przez `Skills.detectTech` i `Skills.detectLevel`. Wielokrotny wybór
   z przecięciem — wybranie `PHP + Senior` pokazuje wiersze mające OBA.
@@ -1166,12 +1147,7 @@ licznika skrzynki, gdy trackera nie da się odczytać.
 Trzy sposoby:
 
 - Wpisz / wklej URL do inputu + kliknij **Dodaj URL** (`pipe.add`).
-- Użyj **menu poleceń**: **Cmd/Ctrl+K** (lub przycisk **Menu poleceń**
-  na pasku bocznym, `nav.v2.palette`), wklej dowolny link
-  `http(s)://…`, a menu zaproponuje **Auto-pipeline: {url}**
-  (`nav.v2.evalUrl`) — Enter uruchamia na nim cały łańcuch. Dowolny
-  inny tekst + Enter przenosi do `#/scan` ze wstępnie wypełnionym
-  tym hasłem.
+- Użyj **menu poleceń**: **Cmd/Ctrl+K** (lub przycisk **Menu poleceń** na pasku bocznym, `nav.v2.palette`), wklej dowolny link `http(s)://…`, a menu zaproponuje **Auto-pipeline: {url}** (`nav.v2.evalUrl`) — Enter uruchamia na nim cały łańcuch. Dowolny inny tekst + Enter przenosi do `#/scan` ze wstępnie wypełnionym tym hasłem.
 - Uruchom Scan (patrz wyżej) — nowe trafienia trafiają do pipeline
   automatycznie.
 
@@ -1195,31 +1171,17 @@ ponownie, więc wrogie forum nie może odbić Cię do loopbacku / prywatnego IP
 
 - **▶** (`pipe.evaluateBtn`) — skacze do `#/evaluate?url=…` z URL
   wstępnie wypełnionym.
-- **✕** — usuwa URL z `data/pipeline.md` (najpierw pyta,
-  `pipe.confirmDel`).
+- **✕** — usuwa URL z `data/pipeline.md` (najpierw pyta, `pipe.confirmDel`).
 
 **Widok grupowany, usuwanie zbiorcze, cofanie bez strat.** Sprzątanie
 dużej skrzynki po skanowaniu to centralny element v2 tej strony:
 
-- **Grupuj** (`pipe.viewGrouped`) / **Lista kompaktowa**
-  (`pipe.viewFlat`) — pasek narzędzi przełącza między płaską listą a
-  tablicą pogrupowaną po firmach: ogłoszenia tego samego pracodawcy
-  zwijają się pod jednym elementem rozwijanym (największa grupa
-  pierwsza), więc głośny portal nie zakopuje już reszty. Nieznane
-  firmy grupują się pod swoim hostem — ale współdzielony host ATS
-  (powiedzmy `jobs.lever.co`) pożycza nazwę firmy tylko wtedy, gdy
-  *wszystkie* wpisy z nazwą firmy na tym hoście są zgodne.
+- **Grupuj** (`pipe.viewGrouped`) / **Lista kompaktowa** (`pipe.viewFlat`) — pasek narzędzi przełącza między płaską listą a tablicą pogrupowaną po firmach: ogłoszenia tego samego pracodawcy zwijają się pod jednym elementem rozwijanym (największa grupa pierwsza), więc głośny portal nie zakopuje już reszty. Nieznane firmy grupują się pod swoim hostem — ale współdzielony host ATS (powiedzmy `jobs.lever.co`) pożycza nazwę firmy tylko wtedy, gdy *wszystkie* wpisy z nazwą firmy na tym hoście są zgodne.
 - **Ukryj już ocenione** (`pipe.hideTracked`) — domyślnie włączone;
   wpisy, których ogłoszenie ma już wiersz w trackerze, znikają z
   widoku (i z wyboru zbiorczego), więc działasz tylko na świeżej
   pracy.
-- **Zaznacz** (`pipe.selectOne`) dowolne wiersze albo **Zaznacz
-  wszystkie widoczne** (`pipe.selectAllShown`) — wybór zawsze podąża
-  za bieżącymi filtrami, nigdy za niewidocznymi wierszami. Pasek
-  wyboru pokazuje liczbę (`pipe.selectedCount`) i oferuje **✕ Usuń
-  zaznaczone (N)** (`pipe.bulkRemove`) plus **Oceń pierwszy
-  zaznaczony** (`pipe.evaluateSelected`) — usuwanie zbiorcze pyta o
-  potwierdzenie raz dla całego zestawu, nie dla każdego wiersza.
+- **Zaznacz** (`pipe.selectOne`) dowolne wiersze albo **Zaznacz wszystkie widoczne** (`pipe.selectAllShown`) — wybór zawsze podąża za bieżącymi filtrami, nigdy za niewidocznymi wierszami. Pasek wyboru pokazuje liczbę (`pipe.selectedCount`) i oferuje **✕ Usuń zaznaczone (N)** (`pipe.bulkRemove`) plus **Oceń pierwszy zaznaczony** (`pipe.evaluateSelected`) — usuwanie zbiorcze pyta o potwierdzenie raz dla całego zestawu, nie dla każdego wiersza.
 
 Niczego nie da się stracić przez pomyłkę: każde usunięcie — pojedyncze
 czy zbiorcze — zwraca nieprzejrzysty token przywracania, a pasek u dołu
@@ -1339,21 +1301,14 @@ wszystko się komponuje:
   z firmą, stanowiskiem i tytułem każdego raportu.
 - **Firma** (`rep2.companyLabel`) — wybierz pracodawcę z menu
   rozwijanego.
-- **Przedział oceny** (`rep2.bandLabel`) — **Wysoka (4.5+)** /
-  **Dobra (4.0+)** / **Średnia (3.5+)** / **Poniżej 3,5**
-  (`rep2.bandHigh` … `rep2.bandLow`), plus kubeł dla raportów bez
-  sparsowalnego wyniku.
+- **Przedział oceny** (`rep2.bandLabel`) — **Wysoka (4.5+)** / **Dobra (4.0+)** / **Średnia (3.5+)** / **Poniżej 3,5** (`rep2.bandHigh` … `rep2.bandLow`), plus kubeł dla raportów bez sparsowalnego wyniku.
 - **Od / Do** (`rep2.dateFrom` / `rep2.dateTo`) — zawiązują listę do
   okresu.
-- **Sortuj według** (`rep2.sortLabel`) — **Data** / **Wynik** /
-  **Firma** (`rep2.sortDate` …), rosnąco lub malejąco
-  (`rep2.sortDirAsc` / `rep2.sortDirDesc`).
+- **Sortuj według** (`rep2.sortLabel`) — **Data** / **Wynik** / **Firma** (`rep2.sortDate` …), rosnąco lub malejąco (`rep2.sortDirAsc` / `rep2.sortDirDesc`).
 - **Histogram rozkładu ocen** (`rep2.histogramLabel`) — kliknij
   kolumnę, aby przefiltrować do tego przedziału i zobaczyć kształt
   swojego pipeline'u na pierwszy rzut oka.
-- **Wyczyść filtry** (`rep2.reset`) czyści wszystko; gdy nic nie
-  pasuje, strona to mówi (`rep2.noMatches`) zamiast pokazywać pustą
-  siatkę.
+- **Wyczyść filtry** (`rep2.reset`) czyści wszystko; gdy nic nie pasuje, strona to mówi (`rep2.noMatches`) zamiast pokazywać pustą siatkę.
 
 Kliknij kartę (lub wiersz tabeli), aby przeczytać pełny Markdown.
 Paginacja: 20 na stronę, kontrolki na dole; każda zmiana filtra
