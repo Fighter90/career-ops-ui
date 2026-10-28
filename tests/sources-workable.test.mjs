@@ -118,14 +118,24 @@ test('workable: detects relocation intent from the description', async () => {
   assert.equal(jobs[1].relocates, false);
 });
 
-test('workable: state is folded into the location when present', () => {
+test('workable: a state alone is the place; with a city, the state stays off (upstream #6140)', () => {
   const jobs = parseWorkableWidget({
     jobs: [{
       title: 'Eng', shortcode: 'S1', shortlink: 'https://apply.workable.com/j/S1',
       city: 'Austin', state: 'TX', country: 'USA',
     }],
   });
-  assert.equal(jobs[0].location, 'Austin, TX, USA');
+  // Upstream #6140: when a city is set the state stays off the string —
+  // adding it would rewrite history keys that already stored "city, country".
+  assert.equal(jobs[0].location, 'Austin, USA');
+  const stateOnly = parseWorkableWidget({
+    jobs: [{
+      title: 'Eng', shortcode: 'S2', shortlink: 'https://apply.workable.com/j/S2',
+      city: '', state: 'Queensland', country: 'Australia',
+    }],
+  });
+  assert.equal(stateOnly[0].location, 'Queensland, Australia',
+    'a state with no city is the place, not the country alone');
 });
 
 // ── multi-country fan-out (parent parity b07171d1, #4806) ──────────────
@@ -249,6 +259,57 @@ test('workable: parent-form consumer check — always_allow UK beats blocked sib
     'always_allow [united kingdom] rescues the merged cell even though romania/poland/croatia are blocked');
   assert.equal(parentForm('Warsaw, Poland'), false, 'a pure blocked location still rejects');
   assert.equal(parentForm('London, United Kingdom'), true, 'the plain home-region cell passes');
+});
+
+// ── telecommuting + a state-only place (upstream #6140) ────────────────
+// telecommuting is a per-job flag, and it can ride on ANY fan-out sibling —
+// the folded posting must say Remote once even when the first entry carried a
+// city. A state with no city (Queensland, Oregon) is the place when the city
+// is blank; when the city IS set, the state stays off the string, matching the
+// markdown feed's "city, country" shape and the keys already stored from it.
+// Hybrid is not this flag: telecommuting false stays place-only.
+test('workable: telecommuting and a state-only place survive the folded location', () => {
+  const jobs = parseWorkableWidget({
+    jobs: [
+      { title: 'Field Coordinator', shortlink: 'https://apply.workable.com/j/B1', city: 'Bend', state: 'Oregon', country: 'United States', telecommuting: true },
+      { title: 'Regional Lead', shortlink: 'https://apply.workable.com/j/B2', city: '', state: 'Oregon', country: 'United States', telecommuting: true },
+      { title: 'Desk Analyst', shortlink: 'https://apply.workable.com/j/B3', city: 'Vancouver', state: 'British Columbia', country: 'Canada', telecommuting: false },
+      { title: 'State Only', shortlink: 'https://apply.workable.com/j/B4', city: '', state: 'Queensland', country: 'Australia', telecommuting: true },
+      { title: 'Already Remote', shortlink: 'https://apply.workable.com/j/B5', city: 'Oslo', country: 'Norway', telecommuting: true },
+      { title: 'Already Remote', shortlink: 'https://apply.workable.com/j/B5', telecommuting: true },
+      { title: 'Mixed Desk', shortlink: 'https://apply.workable.com/j/B6', city: 'Ghent', country: 'Belgium', telecommuting: false },
+      { title: 'Mixed Desk', shortlink: 'https://apply.workable.com/j/B6', city: 'Oslo', country: 'Norway', telecommuting: true },
+    ],
+  });
+  const locs = Object.fromEntries(jobs.map((j) => [j.title, j.location]));
+  assert.equal(jobs.length, 6, 'the two fan-outs collapse (B5 and B6)');
+  assert.equal(locs['Field Coordinator'], 'Bend, United States · Remote',
+    'a city is the place; the state stays off; Remote is appended once');
+  assert.equal(locs['Regional Lead'], 'Oregon, United States · Remote',
+    'a state with no city is the place, not the country alone');
+  assert.equal(locs['Desk Analyst'], 'Vancouver, Canada',
+    'telecommuting false is hybrid/onsite — no Remote marker');
+  assert.equal(locs['State Only'], 'Queensland, Australia · Remote');
+  assert.equal(locs['Already Remote'], 'Oslo, Norway · Remote',
+    'an empty-place sibling must not double the marker');
+  assert.equal(locs['Mixed Desk'], 'Ghent, Belgium · Oslo, Norway · Remote',
+    'a sibling carrying the flag marks the whole folded posting');
+  const mixed = jobs.find((j) => j.title === 'Mixed Desk');
+  assert.equal(mixed.isRemote, true, 'a sibling-carried flag drives isRemote too');
+  assert.equal(mixed.workplaceType, 'Remote');
+});
+
+// The point of the fix: ask the real consumer. A Remote allow-list is exactly
+// what dropped these before the marker existed.
+test('workable: the telecommuting marker survives a Remote allow-list', () => {
+  const allowRemote = buildLocationFilter({ allow: ['remote'] });
+  assert.equal(allowRemote('Bend, United States'), false, 'precondition: the city-only cell was dropped');
+  const merged = parseWorkableWidget({
+    jobs: [
+      { title: 'Field Coordinator', shortlink: 'https://apply.workable.com/j/B1', city: 'Bend', country: 'United States', telecommuting: true },
+    ],
+  })[0];
+  assert.equal(allowRemote(merged.location), true, 'the marked cell passes');
 });
 
 // ── large account: the whole point of the widget switch ────────────────
