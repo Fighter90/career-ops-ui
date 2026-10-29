@@ -7,19 +7,19 @@
 
 _அதிகாரப்பூர்வமற்ற இடைமுகம் — career-ops / santifer உடன் எந்தத் தொடர்பும் அல்ல, அவர்களால் அங்கீகரிக்கப்படவும் இல்லை._
 
-[![tests](https://img.shields.io/badge/tests-5823%20passed-brightgreen)](#சோதனைகள்)
+[![tests](https://img.shields.io/badge/tests-6699%20passed-brightgreen)](#சோதனைகள்)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#சோதனைகள்)
-[![playwright](https://img.shields.io/badge/playwright-143%2F143-brightgreen)](#சோதனைகள்)
+[![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#சோதனைகள்)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#தேவைகள்)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.259.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.259.0)
+[![release](https://img.shields.io/badge/release-v1.261.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.261.3)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 சமீபத்திய வெளியீடு — v1.259.0** — **ஏஜெண்ட் கூட்டத்தின் இரண்டாவது ரயில், ஆறு திருத்தங்கள்: அறிக்கை தேதிகள் server-பக்கத்திலேயே பின் செய்யப்படுகின்றன (புனையப்பட்ட 2026-01-xx இனி இல்லை), deep research மூலங்கள் முன்பே இறங்கிவிட்டன, வரைபட geocoder cache செய்து RU நகரங்களைப் படிக்கிறது (92% no-location → covered), help ×18 மொழிபெயர்க்கப்பட்ட பொத்தான் labels-ஐச் சுட்டுகிறது, UI வாக்கியங்கள் மொழிகளைக் கலப்பதை நிறுத்துகின்றன (23 keyed leaks), மேலும் சம்பள ஒப்பீடுகள் ஒரே மரபுவழி வடிவில் server-பக்கத்திலேயே கணக்கிடப்படுகின்றன (zh-TW தீர்ப்பு மாறுதல் இறந்தது). மேலும் CAR-104: JS bundle இப்போது precompressed-ஆக வழங்கப்படுகிறது — cold load 3.1 MB → 598 KB.**
+> **🆕 சமீபத்திய வெளியீடு — v1.261.3** — **வடிவமைப்பு-நிறைவு patch: Lovable design system முழுமையாக நடைமுறையில் — phase 3 density (table rows ≈32px, controls 30px, chips 24px) மற்றும் மீதமுள்ள அனைத்து coral எச்சங்களும் புதிய blue accent / red danger பிரிவுக்கு மாற்றப்பட்டன — மேலும் Trakstar Hire scan source (registry 122), scan host-pool (32 நிறுவனங்கள் வரை, host ஒன்றுக்கு 10), ஆறு upstream provider location fixes, CV Studio undo + unsaved-guard, final-regression contrast fixes (map cluster label 4.68:1). அடியில்: geocode cache இப்போது crash-களிலிருந்து தப்புகிறது, ta evaluations-க்கு 32768-token ceiling கிடைத்தது, remote-QA தோல்வியுற்ற sources-ஐ பெயரிட்டுக் காட்டுகிறது.**
 >
-> **முந்தைய வெளியீடு — v1.258.0** — **ஏஜெண்ட் கூட்டத்தின் ஆறு திருத்தங்கள்: «Active companies» எண்ணிக்கை இரு அண்டங்களைக் கலப்பதை நிறுத்துகிறது (1554/90), deep research `[source: …]` அடையாளங்களைக் கோருகிறது மற்றும் தெரியாதவற்றை ஒப்புக்கொள்கிறது, தோல்வியுற்ற படிவ fields toast-மட்டும் பிழைக்குப் பதிலாக ஒளிர்கின்றன, #/map மற்றும் #/tracker h1-ஐ skeleton loading வரிசைகளுடன் உடனடியாக ரெண்டர் செய்கின்றன, மேலும் ஒவ்வொரு /api/evaluate-உம் ~37k-token stable prefix-ஐ cache செய்கிறது (முதல் அழைப்பிற்குப் பிறகு ≈10× மலிவு).**
+> **முந்தைய வெளியீடு — v1.261.2** — **நிலைத்தன்மை + பாலிஷ்: two-pager TDZ crash சரி செய்யப்பட்டது (P1), Ctrl+K non-QWERTY அமைப்புகளில் வேலை செய்கிறது, help rendered-text key leaks ×17 மூடப்பட்டன, UI.md bullet continuations மற்றும் nested lists ரெண்டர் செய்கிறது, map captures ×19 மறு-பிரேம் செய்யப்பட்டு cvstart.org-இல் உண்மையான screenshots, RTL chrome logical properties மூலம் கண்ணாடி-பிரதி (85 findings), 11 routes முழுவதும் keyboard-a11y harness, மேலும் geocode cache crash-safe ஆக்கப்பட்டது.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -198,7 +198,7 @@ web-ui/
 │       ├── app.js          # தொடக்கம், lang switcher, theme
 │       ├── lib/            # i18n (19 மொழிகள்), api, ui, format
 │       └── views/          # ஒரு பக்கத்திற்கு ஒரு பார்வை
-├── tests/                  # 5695 unit (baseline @ v1.255.2) — node --test, கணினி முழுவதும் CI-isolated
+├── tests/                  # 6699 unit (baseline @ v1.261.3) — node --test, கணினி முழுவதும் CI-isolated
 └── docs/                   # உதவி வழிகாட்டிகள் ×19, LOCALIZATION, SDD
 ```
 
