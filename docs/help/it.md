@@ -719,6 +719,19 @@ Le offerte sotto `high` ottengono un badge **⚠ score** neutrale rispetto alla 
 senza che nulla venga filtrato. Ometti del tutto il blocco per mantenere il
 comportamento pre-1.76 (nessuna annotazione, nessun badge).
 
+### `years_min` (opzionale — web-ui 1.262.0)
+
+```yaml
+years_min: 3
+```
+
+Salta le offerte la cui descrizione dichiara un'esperienza minima sotto la
+tua soglia. Il parser legge solo i requisiti dichiarati — un'offerta senza un
+numero dichiarato passa sempre (mai scartata su un'ipotesi). Le righe saltate
+vengono registrate in `data/scan-history.tsv` come `skipped_experience`, uno
+stato puramente osservativo che non blocca mai un URL: l'offerta riappare
+quindi in una scansione successiva.
+
 ### `search_queries`
 
 ```yaml
@@ -1399,6 +1412,17 @@ inviato nulla: controlla il PDF prima di allegarlo a una candidatura.
 
 ---
 
+### Controllo annuncio — verifica d'integrità del JD (v1.262.0)
+
+Su una pagina di report il cui slug contiene un numero di report, la riga
+delle azioni dell'intestazione ha un pulsante **Controllo annuncio**. Esegue
+il gate d'integrità deterministico e zero-LLM del progetto padre sul JD
+archiviato del report (la cattura `jds/`) e mostra i risultati in linea —
+verdetto, controlli e motivi. Il gate è locale: nessun modello, nessuna
+scrittura. Finché il checkout padre non include lo script `posting-guard.mjs`,
+il pulsante risponde con un onesto avviso "script non trovato" invece di un
+errore.
+
 ## 11. Tracker (`#/tracker`)
 
 Il CRM. Una riga per candidatura; vive in `data/applications.md` come
@@ -1478,6 +1502,16 @@ Ogni filtro azzera il paginatore a pagina 1. 25 righe per pagina.
 reportSlug?, notes?, date? }`. Dedup per `(company, role)`
 case-insensitive. Dalla UI, la pagina Evaluate offre un pulsante "Add to
 tracker" dopo un punteggio riuscito.
+
+### Importare il CSV di un altro tracker (v1.262.0)
+
+Il pulsante **Importa CSV** della barra degli strumenti accetta l'esportazione
+CSV di un altro tracker (company/role/status/date/url — gli alias di colonna
+sono riconosciuti, il quoting RFC-4180 è supportato), mostra un'anteprima di
+ogni riga con il suo esito (importazione, duplicato per URL di annuncio,
+saltata) e scrive solo dopo la tua conferma. Le fasi sconosciute diventano
+Evaluated con una nota; le date accettano formati ISO, giorno-prima e
+nome-del-mese.
 
 ### "Ancora attiva?" — verifica se un annuncio ATS è ancora aperto
 
@@ -2324,6 +2358,15 @@ Prima di condividere il tuo CV come campione di scrittura o screenshot, la **Mas
 ### Rendilo umano (corrispondenza della voce)
 
 Incolla una frase o un paragrafo rigido — quel tipo di formulazione generica da IA che suona come testo preconfezionato — e **Rendilo umano** lo riscrive nella *tua* voce. La riscrittura è ancorata lato server al tuo `voice-dna.md` (come si legge la tua scrittura) e ai tuoi `writing-samples/` (la tua prosa reale). La regola ferrea: può riordinare, snellire e riadattare la voce, ma **non** introdurrà mai un fatto, una metrica o un risultato che non sia già nel testo che hai incollato. Con una chiave LLM riscrive in tempo reale; senza chiave ti consegna un prompt pronto da incollare in qualsiasi assistente. Poi modifica il tuo CV nella pagina `#/cv` come al solito — il CV Studio suggerisce, tu decidi.
+
+### Cerca frasi fatte (v1.262.0)
+
+La scheda **Cerca frasi fatte** analizza il testo incollato contro 27 frasi
+fatte da curriculum ("passionate about", "proven track record", "leveraged",
+"spearheaded", …) ed evidenzia le corrispondenze esatte — un intervallo di
+anni come 2022–2024 è una data, non un indizio, mentre `20–30%` lo è. Sola
+lettura: non viene scritto nulla da nessuna parte. La checklist di Tailor
+tratta le frasi fatte come sesta invariante.
 
 ### Suggerimento "Riutilizzare un CV precedente?"
 

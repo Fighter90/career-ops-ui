@@ -765,6 +765,19 @@ listet die Flag-Codes auf), sodass Sie Zeilen mit geringem Vertrauen sichten
 können, ohne dass etwas herausgefiltert wird. Lassen Sie den Block ganz weg,
 um das Verhalten von vor 1.76 beizubehalten (keine Annotation, kein Abzeichen).
 
+### `years_min` (optional — web-ui 1.262.0)
+
+```yaml
+years_min: 3
+```
+
+Überspringt Anzeigen, deren Beschreibung eine Mindestberufserfahrung unter
+deiner Grenze nennt. Der Parser liest nur genannte Anforderungen — eine
+Anzeige ohne genannte Zahl kommt immer durch (nie wegen einer Vermutung
+verworfen). Übersprungene Zeilen werden in `data/scan-history.tsv` als
+`skipped_experience` erfasst, ein rein beobachtender Status, der eine URL
+nie festhält — die Anzeige taucht also bei einem späteren Scan wieder auf.
+
 ### `search_queries`
 
 ```yaml
@@ -1507,6 +1520,17 @@ du es einer Bewerbung anhängst.
 
 ---
 
+### Anzeigen-Prüfung — JD-Integritätsprüfung (v1.262.0)
+
+Auf einer Berichtsseite, deren Slug eine Berichtsnummer trägt, steht in der
+Kopfaktionen-Zeile ein **Anzeigen-Prüfung**-Button. Er führt die
+deterministische Zero-LLM-Integritätsprüfung des Elternprojekts über die
+archivierte JD des Berichts (den `jds/`-Capture) aus und zeigt die Befunde
+direkt an — Urteil, Einzelprüfungen und Gründe. Die Prüfung läuft lokal:
+kein Modell, keine Schreibvorgänge. Solange der Eltern-Checkout das Skript
+`posting-guard.mjs` noch nicht mitliefert, antwortet der Button mit einem
+ehrlichen „Skript nicht gefunden“-Hinweis statt eines Fehlers.
+
 ## 11. Tracker (`#/tracker`)
 
 Das CRM. Eine Zeile pro Bewerbung; lebt in `data/applications.md` als
@@ -1589,6 +1613,16 @@ Jeder Filter setzt den Paginator auf Seite 1 zurück. 25 Zeilen pro Seite.
 reportSlug?, notes?, date? }`. Dedup nach `(company, role)`
 Groß-/Kleinschreibungs-unabhängig. Aus der UI bietet die Evaluate-Seite
 nach einer erfolgreichen Bewertung eine „Add to tracker"-Schaltfläche.
+
+### CSV eines anderen Trackers importieren (v1.262.0)
+
+Der **CSV importieren**-Button der Toolbar nimmt den CSV-Export eines anderen
+Trackers entgegen (company/role/status/date/url — Spalten-Aliase werden
+erkannt, RFC-4180-Anführungszeichen werden unterstützt), zeigt eine Vorschau
+jeder Zeile mit ihrem Ergebnis (Import, Duplikat nach Posting-URL,
+übersprungen) und schreibt erst, nachdem du bestätigt hast. Unbekannte Stufen
+landen als Evaluated mit einer Notiz; Datumswerte akzeptieren ISO-, Tag-zuerst-
+und Monatsnamen-Formen.
 
 ### „Noch aktiv?“ — prüfen, ob eine ATS-Anzeige noch offen ist
 
@@ -2468,6 +2502,15 @@ Bevor du deinen Lebenslauf als Schreibprobe oder Screenshot teilst, schwärzt di
 ### Menschlich machen (Stimmabgleich)
 
 Füge einen steifen Satz oder Absatz ein — die Art generischer KI-Formulierung, die wie Standardtext klingt — und **Menschlich machen** schreibt ihn in *deiner* Stimme um. Das Umschreiben ist serverseitig in deiner `voice-dna.md` (wie sich dein Schreiben liest) und deinen `writing-samples/` (deine echte Prosa) verankert. Die harte Regel: Es darf umsortieren, straffen und die Stimme anpassen, aber es wird **niemals** einen Fakt, eine Kennzahl oder eine Leistung einführen, die nicht bereits im eingefügten Text steht. Mit einem LLM-Schlüssel schreibt es live um; ohne Schlüssel gibt es dir einen fertigen Prompt zum Einfügen in einen beliebigen Assistenten. Bearbeite deinen Lebenslauf danach wie gewohnt auf der Seite `#/cv` — das CV Studio schlägt vor, du entscheidest.
+
+### Auf Floskeln prüfen (v1.262.0)
+
+Die **Auf Floskeln prüfen**-Karte prüft den eingefügten Text gegen 27
+abgedroschene Lebenslauf-Floskeln („passionate about“, „proven track record“,
+„leveraged“, „spearheaded“, …) und hebt die exakten Treffer hervor — ein
+Jahresbereich wie 2022–2024 ist nur ein Datum und kein Hinweis, während
+`20–30%` einer ist. Nur lesend: nichts wird irgendwo gespeichert. Die
+Tailor-Checkliste behandelt Floskeln als sechste Invariante.
 
 ### Hinweis „Ein früheres CV wiederverwenden?“
 
