@@ -128,3 +128,98 @@ test('v1.241.1: deploy waits for a running scan/eval before restarting, and alwa
   const jobMin = Number(src.match(/timeout-minutes: (\d+)/)[1]);
   assert.ok(wait / 60 + 15 <= jobMin, `scan wait ${wait}s leaves room in the ${jobMin}-min job`);
 });
+
+test('deploy: the anti-downgrade guard is executable — no ref defaults, guard precedes Deploy', () => {
+  const d = wf['deploy.yml'];
+  // (а) a bare Run-workflow click must leave both refs empty so the guard's -z fires
+  const inputs = d.on.workflow_dispatch.inputs;
+  assert.ok(!inputs.ui_ref.default, 'ui_ref must have no default (a bare click must not downgrade prod)');
+  assert.ok(!inputs.parent_ref.default, 'parent_ref must have no default');
+  const steps = d.jobs.deploy.steps;
+  // (б) a guard step exists and is gated on mode=deploy
+  const gi = steps.findIndex(
+    (s) => (s.name || '').startsWith('Guard') && s.if === "inputs.mode == 'deploy'",
+  );
+  assert.ok(gi >= 0, 'guard step with if: inputs.mode == deploy is missing');
+  const guard = steps[gi];
+  assert.equal(guard.env.GUARD_UI_REF, '${{ inputs.ui_ref }}', 'guard must read the ui_ref input');
+  assert.equal(guard.env.GUARD_PARENT_REF, '${{ inputs.parent_ref }}', 'guard must read the parent_ref input');
+  // (в) guard runs BEFORE the Deploy step in the jobs sequence
+  const di = steps.findIndex((s) => s.name === 'Deploy');
+  assert.ok(di > gi, 'the guard must precede the Deploy step');
+  // (г) empty-checks on BOTH refs + a ::error, so a partial fill cannot pass
+  assert.match(guard.run, /if \[ -z "\$GUARD_UI_REF" \] \|\| \[ -z "\$GUARD_PARENT_REF" \]/);
+  assert.match(guard.run, /::error::/);
+});
+
+test('deploy provider mode: NEW_PROVIDER is charset-validated before it reaches the remote shell', () => {
+  const steps = wf['deploy.yml'].jobs.deploy.steps;
+  const prov = steps.find((s) => (s.name || '').startsWith('Switch LLM_PROVIDER'));
+  assert.ok(prov, 'provider step missing');
+  const run = prov.run || '';
+  // strict non-empty charset gate with a ::error (input.provider is the only
+  // input spliced raw into a remote shell command line: a value containing a
+  // quote would break out of it and run arbitrary code on prod)
+  assert.match(run, /\[\[ "\$NEW_PROVIDER" =~ \^\[A-Za-z0-9_-\]\+\$ \]\]/, 'charset gate missing');
+  assert.match(run, /::error::provider must match/, 'the gate must fail loudly');
+  // the gate precedes BOTH the ssh splice and the derived key-guard grep
+  const gate = run.indexOf('NEW_PROVIDER" =~');
+  assert.ok(gate < run.indexOf('ssh prod'), 'gate must run before the remote shell splice');
+  assert.ok(gate < run.indexOf('_API_KEY='), 'gate must run before the derived key-guard grep');
+  // the key guard must derive its pattern from the validated name only
+  assert.match(run, /grep -qE "\^\$\{NEW_PROVIDER\^\^\}_API_KEY=\.\+"/);
+  // defence in depth: the Configure ssh whitelist loop covers it too
+  const ssh = steps.find((s) => (s.name || '') === 'Configure ssh');
+  assert.match(ssh.run, /for v in APP_DIR PARENT_REF UI_REF SERVICE NEW_PROVIDER; do/);
+  assert.equal(ssh.env.NEW_PROVIDER, '${{ inputs.provider }}', 'Configure ssh must receive the provider input');
+});
+
+test('deploy hermes mode: journal/unit output is case-insensitively filtered and value-masked', () => {
+  const hermes = stepRun('deploy.yml', 'deploy', 'Hermes');
+  // (а) the old case-sensitive filter is gone — it let api_key=… / ApiKey=… through
+  assert.doesNotMatch(hermes, /grep -vE "Key\|TOKEN\|SECRET\|PASSWORD"/, 'case-sensitive filter must go');
+  // the replacement is case-insensitive and covers the api_key family
+  assert.match(hermes, /grep -viE '\(api\[_-\]\?key\|token\|secret\|password\|authorization\)'/);
+  // (б) values after '=' are masked and lines truncated — one shared redact() helper
+  assert.match(hermes, /sed -E 's\/\(=\[\^ \]\{4\}\)\[\^ \]\*\/\\1…\/g; s\/\(\.\{80\}\)\.\*\/\\1…\/'/);
+  // every public sink in the step pipes through it
+  assert.match(hermes, /printf '%s\\n' "\$unit" \| redact/, 'unit-file dump unfiltered');
+  assert.match(hermes, /echo "journal unreadable"; \} \| redact/, 'hermes-gateway journal unfiltered');
+  assert.match(hermes, /journalctl -u claude-bridge -n 15[^\n]*\| redact \| tail -8/, 'claude-bridge journal unfiltered');
+});
+
+test('deploy hermes mode: HERMES_BASE_URL masks the query string like recon does', () => {
+  const hermes = stepRun('deploy.yml', 'deploy', 'Hermes');
+  // the app-view line carries both masks: basic-auth creds AND a ?token=… query
+  assert.match(
+    hermes,
+    /sed -E 's#:\/\/\[\^\/@\]\+@#:\/\/…@#; s#\[\?\]\.\*\$#\?…#'/,
+    'the hermes BASE_URL line must mask basic-auth and the query string',
+  );
+});
+
+test('deploy hermes mode: honours inputs.app_dir (no hardcoded env path)', () => {
+  const steps = wf['deploy.yml'].jobs.deploy.steps;
+  const hermesStep = steps.find((s) => (s.name || '').startsWith('Hermes'));
+  assert.ok(hermesStep, 'hermes step missing');
+  // like the provider step: APP_DIR must reach the remote script via env
+  assert.equal(hermesStep.env && hermesStep.env.APP_DIR, '${{ inputs.app_dir }}',
+    'hermes step must receive inputs.app_dir (an empty APP_DIR silently falls back)');
+  const hermes = hermesStep.run || '';
+  assert.doesNotMatch(hermes, /\/opt\/career-ops\/src\/\.env/, 'hardcoded .env path must go');
+  assert.match(hermes, /'\^HERMES_BASE_URL=.*' "\$APP_DIR\/\.env"/, 'the app-view must read $APP_DIR/.env');
+});
+
+test('deploy public check: PUBLIC_URL is https-validated before any curl', () => {
+  const pub = stepRun('deploy.yml', 'deploy', 'Public check');
+  assert.ok(pub.length > 0, 'public check step missing');
+  // an input/secret reaching curl's argument list: a leading '-' would be
+  // parsed as options, and a non-https origin would downgrade the check
+  const gate = pub.indexOf('case "$PUBLIC_URL" in');
+  assert.ok(gate > 0, 'https gate missing');
+  const block = pub.slice(gate, gate + 220);
+  assert.match(block, /https:\/\/\*\) ;;/, 'https:// must be the only accepted shape');
+  assert.match(block, /::error::/, 'the rejection must fail loudly');
+  assert.match(block, /exit 1/, 'the rejection must stop the step');
+  assert.ok(gate < pub.indexOf('curl -sS'), 'the gate must precede the first curl');
+});
