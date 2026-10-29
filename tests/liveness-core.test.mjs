@@ -86,6 +86,62 @@ test('classifyLiveness: 200, content present, no apply control → uncertain (co
   assert.equal(r.code, 'no_apply_control');
 });
 
+test('classifyLiveness: Vietnamese apply label NỘP ĐƠN ỨNG TUYỂN → active (CareerViet, parent #4832)', () => {
+  const vi = (controls) => classifyLiveness({
+    status: 200,
+    finalUrl: 'https://careerviet.vn/vi/tim-viec-lam/brand-executive.35C50000.html',
+    bodyText: 'Mô tả công việc. '.repeat(30),
+    applyControls: controls,
+  });
+  const r = vi(['NỘP ĐƠN ỨNG TUYỂN']);
+  assert.equal(r.result, 'active');
+  assert.equal(r.code, 'apply_control_visible');
+
+  const mixed = vi(['Nộp đơn ứng tuyển']);
+  assert.equal(mixed.result, 'active', 'mixed case reads too (normalizeForMatch strips the diacritics)');
+
+  // The label must not be a loose match: "đơn" prose elsewhere ("view order")
+  // is not an Apply control.
+  const neg = vi(['Xem đơn hàng']);
+  assert.equal(neg.result, 'uncertain', 'an unrelated "đơn" control is not an Apply control');
+  assert.equal(neg.code, 'no_apply_control');
+});
+
+test('classifyLiveness: Bulgarian apply labels → active (upstream #6192)', () => {
+  const bg = (controls) => classifyLiveness({
+    status: 200,
+    finalUrl: 'https://careers.example.bg/position/12345',
+    bodyText: LONG_BODY,
+    applyControls: controls,
+  });
+  // "Кандидатствай" / "Кандидатствайте сега" / "КАНДИДАТСТВАЙ" (imperative),
+  // "Кандидатстване" and "Външно кандидатстване" (noun, plain and external).
+  for (const label of ['Кандидатствай', 'Кандидатствайте сега', 'КАНДИДАТСТВАЙ', 'Кандидатстване', 'Външно кандидатстване']) {
+    const r = bg([label]);
+    assert.equal(r.result, 'active', label);
+    assert.equal(r.code, 'apply_control_visible', label);
+  }
+});
+
+test('classifyLiveness: Bulgarian non-Apply labels stay non-Apply (upstream #6192)', () => {
+  const bg = (controls) => classifyLiveness({
+    status: 200,
+    finalUrl: 'https://careers.example.bg/position/12345',
+    bodyText: LONG_BODY,
+    applyControls: controls,
+  });
+  // «Кандидати» = candidates (a different noun); «кандидатствахте» = you
+  // applied (a longer verb form the class/lookahead must not swallow);
+  // «кандидатстването» = the definite noun; «Писмо за кандидатстване» is
+  // advice copy — the noun only counts at the START of a label.
+  for (const label of ['Кандидати', 'Кандидатствахте', 'Кандидатстването', 'Писмо за кандидатстване']) {
+    const r = bg([label]);
+    assert.equal(r.result, 'uncertain', label);
+    assert.equal(r.code, 'no_apply_control', label);
+  }
+});
+
+
 test('resolveAtsApi: maps each provider posting URL to its FIXED-host public API', () => {
   const cases = [
     ['https://boards.greenhouse.io/acme/jobs/123', 'greenhouse', 'https://boards-api.greenhouse.io/v1/boards/acme/jobs/123'],
