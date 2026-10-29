@@ -1100,8 +1100,8 @@ everything else sits behind **Advanced filters**, `scan.advancedFilters` —
 the whole panel is grouped under **Result filters**, `scan.filtersGroup`):
 
 - **Free text** — substring match against title / company.
-- **Source** dropdown — every source the registry knows (122 at the
-  moment: 117 EN + 5 RU, **All sources** by default). It is
+- **Source** dropdown — every source the registry knows (123 at the
+  moment: 118 EN + 5 RU, **All sources** by default). It is
   auto-populated live from `GET /api/scan/sources`, so a newly dropped
   adapter appears here without any app change — the list is never
   hard-coded.
@@ -1131,7 +1131,7 @@ the numerator past the ATS denominator). The tooltip says the same in
 plain words (`scan.activeCo.help`). The list is split into two groups:
 
 - ✓ **Direct API** (`scan.apiBacked`) — the board is fetched directly
-  from its public ATS API (one of the 117 EN adapters, from Greenhouse
+  from its public ATS API (one of the 118 EN adapters, from Greenhouse
   / Ashby / Lever / Workable / SmartRecruiters / Workday down to the
   long tail).
 - ○ **Web-search only** (`scan.websearchBacked`) — no adapter matches
@@ -1906,13 +1906,13 @@ output, and search the issue tracker on
 career-ops-ui treats each job board as an **adapter** — a single file under
 [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) that knows
 how to fetch + normalize one board's results. Currently the
-`server/lib/sources/` registry ships **122** sources — **117 English + 5 Russian**
+`server/lib/sources/` registry ships **123** sources — **118 English + 5 Russian**
 boards. The English set spans the major ATSes (Greenhouse / Ashby / Lever /
 Workable / SmartRecruiters / Workday), board-wide aggregators selected by an
 explicit `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board,
 Amazon, …), and per-tenant ATSes auto-detected from a `careers_url` host or an
 explicit `api:` URL (BambooHR, Personio, Recruitee, Teamtailor, Avature,
-SAP SuccessFactors, …). **The complete list never needs to be hand-counted here —
+SAP SuccessFactors, …). Boards on the **Deel** job platform (`jobs.deel.com/<slug>` — the multi-tenant board Klarna and others publish on) are auto-detected from the URL, so adding one is a two-line portals.yml entry. **The complete list never needs to be hand-counted here —
 it is auto-discovered from `server/lib/sources/` and shown live in the `#/scan`
 Source dropdown.** See §5 for the YAML and
 `docs/portals-examples.md` for copy-paste entries.
