@@ -7,19 +7,19 @@
 
 _அதிகாரப்பூர்வமற்ற இடைமுகம் — career-ops / santifer உடன் எந்தத் தொடர்பும் அல்ல, அவர்களால் அங்கீகரிக்கப்படவும் இல்லை._
 
-[![tests](https://img.shields.io/badge/tests-6699%20passed-brightgreen)](#சோதனைகள்)
+[![tests](https://img.shields.io/badge/tests-6841%20passed-brightgreen)](#சோதனைகள்)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#சோதனைகள்)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#சோதனைகள்)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#தேவைகள்)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.261.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.261.3)
+[![release](https://img.shields.io/badge/release-v1.262.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 சமீபத்திய வெளியீடு — v1.261.3** — **வடிவமைப்பு-நிறைவு patch: Lovable design system முழுமையாக நடைமுறையில் — phase 3 density (table rows ≈32px, controls 30px, chips 24px) மற்றும் மீதமுள்ள அனைத்து coral எச்சங்களும் புதிய blue accent / red danger பிரிவுக்கு மாற்றப்பட்டன — மேலும் Trakstar Hire scan source (registry 122), scan host-pool (32 நிறுவனங்கள் வரை, host ஒன்றுக்கு 10), ஆறு upstream provider location fixes, CV Studio undo + unsaved-guard, final-regression contrast fixes (map cluster label 4.68:1). அடியில்: geocode cache இப்போது crash-களிலிருந்து தப்புகிறது, ta evaluations-க்கு 32768-token ceiling கிடைத்தது, remote-QA தோல்வியுற்ற sources-ஐ பெயரிட்டுக் காட்டுகிறது.**
+> **🆕 சமீபத்திய வெளியீடு — v1.262.0** — **upstream-features minor: Deel job board scanner-இல் சேர்கிறது (registry 123), வேறு tracker-இன் CSV dry-run preview உடன் #/tracker-இல் நேரடியாக import ஆகிறது, posting-guard JD integrity check + CV voice check (27 stock phrases highlight) UI-இல் வருகின்றன, years-of-experience scan filter JD-ஐப் படிக்கிறது, Apply buttons இன்னும் ஏழு மொழிகளில் புரிகின்றன — மேலும் reposts sources-க்கு இடையில் உருவாக்கப்படுவது நின்றது, MiniMax-இன் retired default model மாற்றப்பட்டது, ta evaluations தமிழிலேயே நிற்கின்றன.**
 >
-> **முந்தைய வெளியீடு — v1.261.2** — **நிலைத்தன்மை + பாலிஷ்: two-pager TDZ crash சரி செய்யப்பட்டது (P1), Ctrl+K non-QWERTY அமைப்புகளில் வேலை செய்கிறது, help rendered-text key leaks ×17 மூடப்பட்டன, UI.md bullet continuations மற்றும் nested lists ரெண்டர் செய்கிறது, map captures ×19 மறு-பிரேம் செய்யப்பட்டு cvstart.org-இல் உண்மையான screenshots, RTL chrome logical properties மூலம் கண்ணாடி-பிரதி (85 findings), 11 routes முழுவதும் keyboard-a11y harness, மேலும் geocode cache crash-safe ஆக்கப்பட்டது.**
+> **முந்தைய வெளியீடு — v1.261.3** — **வடிவமைப்பு-நிறைவு patch: Lovable design system முழுமையாக நடைமுறையில் (phase 3 density: rows ≈32px, controls 30px, chips 24px; எல்லா coral-உம் blue accent / red danger பிரிவுக்கு மாற்றப்பட்டது), Trakstar Hire scan source (registry 122), scan host-pool (32 companies, host ஒன்றுக்கு 10), ஆறு upstream provider location fixes, CV Studio undo + unsaved-guard.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -198,7 +198,7 @@ web-ui/
 │       ├── app.js          # தொடக்கம், lang switcher, theme
 │       ├── lib/            # i18n (19 மொழிகள்), api, ui, format
 │       └── views/          # ஒரு பக்கத்திற்கு ஒரு பார்வை
-├── tests/                  # 6699 unit (baseline @ v1.261.3) — node --test, கணினி முழுவதும் CI-isolated
+├── tests/                  # 6841 unit (baseline @ v1.262.0) — node --test, கணினி முழுவதும் CI-isolated
 └── docs/                   # உதவி வழிகாட்டிகள் ×19, LOCALIZATION, SDD
 ```
 

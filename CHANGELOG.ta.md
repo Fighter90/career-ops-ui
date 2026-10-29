@@ -6,6 +6,32 @@
 
 ---
 
+## [1.262.0] — 2026-10-29
+
+**upstream-features minor: Deel job board scanner-இல் சேர்கிறது (registry 123), வேறு tracker-இன் CSV `#/tracker`-இல் நேரடியாக import ஆகிறது, posting-guard integrity check + CV voice check relay/lint ஆக வருகின்றன, scanner years-of-experience filter-ஐக் கற்கிறது, Apply buttons இன்னும் ஏழு மொழிகளில் missing என்று படிக்கப்படுவதில்லை — அதனுடன் MiniMax-இன் retired default model மாற்றப்பட்டது, reposts sources-க்கு இடையில் உருவாக்கப்படுவதில்லை.**
+
+### சேர்க்கப்பட்டது
+
+- **Deel job board source (CAR-184)**: registry **123 sources = 118 EN + 5 RU · 118 adapters** — `jobs.deel.com/<slug>` tenant boards-ஐ தானாகவே detect செய்கிறது (Klarna உட்பட); Next.js flight payload முழு inventory-ஐயும் ஒரே request-இல் கொண்டுவருகிறது (titles, locations, arrangement, dates, description), அனுமதிக்கப்படாத `/api/` path தொடப்படாது, careers-ஐ வேறு இடத்தில் serve செய்யும் tenant, source **பெயரால்** மறுக்கும் redirect உடன் பதிலளிக்கிறது, compensation வேண்டுமென்றே unmapped-ஆக விடப்பட்டது (pay interval இல்லாத தொகைகள் ஒரு ஊகமே); count gates ×5 + help §17 ×19.
+- **Tracker CSV import (CAR-181)**: dry-run preview + locked commit உடன் `POST /api/tracker/import-csv` — RFC-4180 quoting, ISO / day-first / month-name வடிவங்களில் dates, வேறு tracker-இன் stages canonical states வழியாக fold செய்யப்படுகின்றன (அறியப்படாத stage note-உடன் Evaluated ஆக வருகிறது, எப்போதும் drop ஆவதில்லை), markdown-link cell அல்லது Notes column-இல் இருந்து படிக்கப்பட்ட normalized posting URL மூலம் dedup, வரம்புகள் 512 KB / 2000 rows; `#/tracker` preview modal உடன் Import CSV button பெறுகிறது, i18n ×19.
+- **Posting guard relay (CAR-182)**: `POST /api/runners/posting-guard` — parent-இன் deterministic zero-LLM JD integrity gate, `jds/` capture prefix rule (padded இருந்தாலும் இல்லையும், integer-compare) வழியாக report number-ஆல் அல்லது வெளிப்படையான sanitized path மூலம் resolve செய்யப்படுகிறது; child-க்கு argv மட்டும், 30 s ceiling, fail-soft contract; `#/reports/:slug`-இல் «Posting guard» action findings-ஐ render செய்கிறது, i18n ×19.
+- **CV voice check (CAR-188)**: 27 stock resume சொற்றொடர்கள் (`passionate about`, `proven track record`, `leveraged`, `spearheaded`, `delve`…) + dash heuristics (2022–2024 போன்ற year range ஒரு குறியல்ல; `20–30%` ஒரு குறி) — read-only `POST /api/cv-studio/voice-check` மற்றும் சரியான matches-ஐ highlight செய்யும் `#/cv-studio` card; Tailor checklist ஆறு invariants ஆக வளர்கிறது; i18n ×19.
+- **Years-of-experience scan filter (CAR-180)**: jd-years parser (65 phrasings, உறுதியில்லாதபோது எப்போதும் drop செய்வதில்லை) posting descriptions-இல் இருந்து stated minimum-ஐப் படிக்கிறது, புதிய `years_min:` portals option தகுதிக்குக் குறைவான postings-ஐ `skipped_experience` ஆக skip செய்கிறது (URL-ஐ எப்போதும் pin செய்யாத ஒரு observational history status), `yearsMin` எதிர்கால UI-க்காக scan snapshot-இல் பயணிக்கிறது.
+- **இன்னும் ஏழு மொழிகளில் Apply controls (CAR-185/189)**: வியட்நாமீஸ் `Nộp đơn ứng tuyển`, பல்கேரியன் `Кандидатствай`/`Кандидатстване`/`Външно кандидатстване` (noun label-இன் தொடக்கத்தில் anchor — advice-article links Apply அல்ல), டச்சு `Solliciteer`/`Solliciteren`, ஸ்பானிஷ் `¡Apúntame!`/`Postularse` (labels, verb அல்ல — FAQ links இப்போது முக்கியமில்லை), சீனம் `申请职位`/`投递` (முழு control-இல் anchor) — அந்த boards-இல் live postings இப்போது `no_apply_control` என்று படிக்கப்படுவதில்லை.
+
+### சரி செய்யப்பட்டது
+
+- **MiniMax default model (CAR-187)**: retired `MiniMax-Text-01` default-க்குப் பதிலாக `api.minimax.io`-இல் `MiniMax-M3.1-Flash`, `api.minimax.cn`-இல் `MiniMax-M3`; base URL vendor-pinned (non-vendor host runtime-இல் மறுக்கப்படுகிறது, key அங்கு எப்போதும் செல்வதில்லை); settings hint ×19 புதிய defaults-ஐப் பெயரிடுகிறது.
+- **Reposts-க்கு same source தேவை (CAR-186)**: LinkedIn-இலும் employer-இன் Greenhouse-இலும் பட்டியலிடப்பட்ட ஒரே role இப்போது repost என்று ரிப்போர்ட் ஆவதில்லை — clusters இப்போது `sourceHost()` அடிப்படையில் பிரிக்கப்படுகின்றன; அது regional subdomains-ஐ அறியப்பட்ட sites-இல் மட்டுமே fold செய்கிறது (`de.linkedin.com` ≡ `www.linkedin.com`, ஆனால் `ca.example.com` தனித்தே இருக்கிறது), Greenhouse host aliases-ஐ ஒரே source ஆக fold செய்கிறது, trailing dot-ஐ நீக்குகிறது.
+- **Tamil evaluation language drift (CAR-183)**: வலுவூட்டப்பட்ட Tamil directive இப்போது volume budget அருகில் volatile prompt tail-இல் அமர்கிறது (CAR-174 slot) — v1.261.2-இல் காணப்பட்ட இடைப்பட்ட drift-க்குப் பிறகு remote-QA reports மீண்டும் Tamil-இல் வருகின்றன.
+
+### குறிப்புகள்
+
+- வேண்டுமென்றே செய்யாமை: posting-guard relay fail-soft ஆக வருகிறது — fork parent-இன் `posting-guard.mjs`-ஐ இன்னும் **கொண்டிருப்பதில்லை** (upstream PR #6146 இன்னும் open); parent sync அதை கொண்டுவரும் வரை endpoint `{available:false, reason:"script-not-found"}` என்று பதிலளிக்கிறது.
+- வேண்டுமென்றே செய்யாமை: `yearsMin` இந்த release-இல் `#/scan` UI chip ஆக **வெளிப்படுத்தப்படுவதில்லை** — field snapshot-இல் பயணிக்கிறது, filter portals-config மட்டுமே.
+- வேண்டுமென்றே செய்யாமை: upstream modes/reports Machine Summary மாற்றங்கள் (#6161/#6160/#6157) **போர்ட் செய்யப்படவில்லை** — web-ui mirrors ஆக அல்ல, deploy செய்யப்பட்ட parent-உடன் வரும்.
+- Tests 6734 → 6841 release branch-இல்; scanner-இன் dedup key தொடப்படவில்லை (URL-normalization நடத்தை மாறவில்லை).
+
 ## [1.261.3] — 2026-10-28
 
 **design-நிறைவு patch: Lovable design phase 3 (density + coral முழு விலகல்), scan host-pool (32 companies, host ஒன்றுக்கு 10), ஆறு upstream provider location fixes, Trakstar Hire source (registry 122), CV Studio undo + unsaved-guard — மேலும் இறுதி-regression P3 fixes மற்றும் docs parity.**
