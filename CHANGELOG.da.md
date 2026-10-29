@@ -9,6 +9,26 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 ---
 
 
+## [1.262.1] — 2026-10-29
+
+**Den italienske evaluerings-patch: `it` tilslutter sig de token-dense sprog (32768-token-loftet + 480 s-uret), efter at OpenRouter-æren greb den i at skære rapporten lige før SCORE_SUMMARY-blokken — og provider-skift-værktøjet, der gjorde diagnosen mulig, lander i deploy-workflowet.**
+
+### Rettet
+
+- **`it`-evaluering skåret før SCORE_SUMMARY (CAR-190-halen)**: remote-QA 40928864980 (første kørsel på de genopfyldte kreditter) — en `it`-evaluering løb 264 s og kom tilbage med 15 045 tegn ved `tok ~15635` ved loftet 16 384: blok A–G intakt, `---SCORE_SUMMARY---` væk. Samme formklasse, som gav `ta` sit loft i v1.261.1 (CAR-174). `it` tilslutter sig `TOKEN_DENSE_EVAL_LOCALES` (`ta`, `hi` → `ta`, `hi`, `it`): både 32 768-token-budgettet og 480 s-uret gælder nu, og `/api/evaluate` + auto-pipeline forbliver på den ene sandhedskilde i `llm.mjs`.
+- **en-rapport uden blokke — en engangs-generationsfejl**: samme kørsel så en enkelt `en`-evaluering komme tilbage sprogkorrekt uden **nogen** af A–G-blokkene; en målrettet genkørsel bestod rent (21 091 tegn, A–G ✓). Ikke tilføjet til token-dense-sættet — én fejl er ikke en historie.
+
+### Tilføjet
+
+- **Deploy-workflow: `mode=hermes` og `mode=provider`** (CAR-190 ops-halen): `mode=hermes` genstarter Hermes-gatewayen og udskriver en fuld diagnose (unit-fil med hemmeligheder strippet af, listeners før/efter, sudo-journal, pr.-port-prober, appens egen `HERMES_BASE_URL`-visning, OpenRouter-kreditsaldo); `mode=provider` skifter `LLM_PROVIDER` med en nøgle-tilstedeværelsesvagt (nægter, når målprovidereens `*_API_KEY` mangler) og genstarter appen — sådan flyttede prod til `openrouter`, da Hermes-kreditterne løb tør midt i det. Deploy-modes ref-vagt valideres kun for `mode=deploy`, så recon/verify-dispatches virker igen (required-inputs-ændringen fra v1.261.3-æren havde tavsgjort dem).
+
+### Noter
+
+- Bevidst undladelse: `en` tilføjes **ikke** til token-dense-sættet — én blokløs rapport er en generationsfejl, ikke en volumenhistorie.
+- Bevidst undladelse: ta's forstærkede sprogdirektiv udvides **ikke** til `it` — ingen sprogdrift blev observeret for italiensk.
+- Bevidst undladelse: optagelsen af den nye UI-v2-demo-video forbliver hos ejeren (CAR-141) — landingssiden indlejrer nu alligevel via `youtube-nocookie.com`.
+- Tests 6841 → 6841 på release-branchen.
+
 ## [1.262.0] — 2026-10-29
 
 **Upstream-funktions-minoren: Deel-jobbrættet tilslutter sig scanneren (registry 123), en anden trackers CSV importeres direkte i `#/tracker`, posting-guard-integritetstjekket og CV-voice-tjekket lander som relays/lints, scanneren lærer et years-of-experience-filter, og Apply-knapper på syv flere sprog læses ikke længere som manglende — plus MiniMax' pensionerede standardmodel erstattet og reposts ikke længere fabikeret på tværs af kilder.**

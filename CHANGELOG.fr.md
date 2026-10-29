@@ -12,6 +12,26 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.262.1] — 2026-10-29
+
+**Le patch des évaluations italiennes : `it` rejoint les langues token-denses (plafond de 32768 tokens + horloge de 480 s) après que l'ère OpenRouter l'a attrapé coupant le rapport juste avant le bloc SCORE_SUMMARY — et l'outillage de bascule de fournisseur qui a rendu le diagnostic possible arrive dans le workflow de deploy.**
+
+### Corrigé
+
+- **Évaluation `it` coupée avant SCORE_SUMMARY (queue CAR-190)** : remote-QA 40928864980 (première exécution sur les crédits rechargés) — une évaluation `it` a couru 264 s et est revenue à 15 045 caractères avec `tok ~15635` au plafond de 16 384 : blocs A–G intacts, `---SCORE_SUMMARY---` disparu. La même classe de forme qui avait valu à `ta` son plafond en v1.261.1 (CAR-174). `it` rejoint `TOKEN_DENSE_EVAL_LOCALES` (`ta`, `hi` → `ta`, `hi`, `it`) : le budget de 32 768 tokens comme l'horloge de 480 s s'appliquent désormais, et `/api/evaluate` + auto-pipeline restent sur l'unique source de vérité dans `llm.mjs`.
+- **Rapport `en` sans blocs — un flocon de génération isolé** : la même exécution a vu une seule évaluation `en` revenir linguistiquement correcte avec **aucun** des blocs A–G ; une relance ciblée est passée proprement (21 091 caractères, A–G ✓). Pas d'ajout à l'ensemble token-dense — un flocon ne fait pas une histoire.
+
+### Ajouté
+
+- **Workflow de deploy : `mode=hermes` et `mode=provider`** (queue ops CAR-190) : `mode=hermes` redémarre la passerelle Hermes et imprime un diagnostic complet (fichier unit avec les secrets retirés, listeners avant/après, journal sudo, sondes port par port, la propre vue `HERMES_BASE_URL` de l'app, solde des crédits OpenRouter) ; `mode=provider` bascule `LLM_PROVIDER` avec un garde-fou de présence de clé (refuse quand le `*_API_KEY` du fournisseur cible est absent) et redémarre l'app — c'est ainsi que la prod est passée à `openrouter` quand les crédits Hermes se sont épuisés en cours de route. Le garde-fou de ref du mode deploy n'est validé que pour `mode=deploy`, donc les dispatches recon/verify refonctionnent (le changement d'inputs requis de l'ère v1.261.3 les avait réduits au silence).
+
+### Notes
+
+- Non-action délibérée : `en` n'est **pas** ajouté à l'ensemble token-dense — un rapport sans blocs est un flocon de génération, pas un historique de volume.
+- Non-action délibérée : la directive de langue renforcée pour ta n'est **pas** étendue à `it` — aucune dérive de langue n'a été observée pour l'italien.
+- Non-action délibérée : l'enregistrement de la nouvelle vidéo de démo UI-v2 reste à la charge du propriétaire (CAR-141) — la landing intègre désormais via `youtube-nocookie.com` quoi qu'il arrive.
+- Tests 6841 → 6841 sur la branche de release.
+
 ## [1.262.0] — 2026-10-29
 
 **Le minor des fonctionnalités amont : le board Deel rejoint le scanner (registre 123), le CSV d'un autre tracker s'importe directement dans `#/tracker`, la vérification d'intégrité posting-guard et la vérification de voix CV arrivent comme relais/lint, le scanner apprend un filtre d'années d'expérience, et les boutons d'Apply en sept langues de plus ne se lisent plus comme manquants — plus le modèle par défaut retiré de MiniMax remplacé et des reposts qui ne sont plus fabriqués entre sources.**

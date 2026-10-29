@@ -12,14 +12,14 @@ _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.262.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.0)
+[![release](https://img.shields.io/badge/release-v1.262.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.262.0** — **上游功能 minor：Deel 職缺看板加入掃描器（登錄表 123）、其他追蹤器的 CSV 以乾跑預覽直接匯入 #/tracker、posting-guard JD 完整性檢查與 CV 語氣檢查（27 條套語標示出來）進入 UI、年資掃描篩選會讀 JD，且 Apply 按鈕再懂七種語言 — 加上跨來源不再虛構 repost、替換 MiniMax 已退役的預設模型，而坦米爾語評估守住自己的語言。**
+> **🆕 最新版本 — v1.262.1** — **義大利語評估修補：`it` 加入 token-dense 語言（32768 token 上限 + 480 秒時鐘）— OpenRouter 時代抓到它的報告正好在 SCORE_SUMMARY 區塊前被切斷；此外 deploy workflow 新增 `mode=hermes`（閘道重啟 + 完整診斷 + 額度餘額）與 `mode=provider`（帶金鑰存在性守衛的 LLM 切換），Hermes 額度耗盡時 prod 便搬到 OpenRouter。**
 >
-> **前一版本 — v1.261.3** — **設計完工修補：Lovable 設計系統全面上線 — 第 3 階段密度（表格列 ≈32px、控制元件 30px、chips 24px），且所有殘留的珊瑚色全數遷移到新的藍色強調／紅色危險拆分 — 再加上 Trakstar Hire 掃描來源（來源登錄達 122 個）、掃描 host-pool（最多 32 家公司、每個 host 10 家）、六項上游 provider 位置修復、CV Studio 復原與未儲存變更防護，以及最終迴歸的對比度修復（地圖叢集標籤 4.68:1）。底層：地理編碼快取現在耐崩潰、ta 評估取得 32768-token 上限，且 remote-QA 會點名失敗的來源。**
+> **前一版本 — v1.262.0** — **上游功能 minor：Deel 職缺看板加入掃描器（登錄表 123）、其他追蹤器的 CSV 以乾跑預覽直接匯入 #/tracker、posting-guard JD 完整性檢查與 CV 語氣檢查（27 條套語標示出來）進入 UI、年資掃描篩選會讀 JD，且 Apply 按鈕再懂七種語言 — 加上跨來源不再虛構 repost、替換 MiniMax 已退役的預設模型，而坦米爾語評估守住自己的語言。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
