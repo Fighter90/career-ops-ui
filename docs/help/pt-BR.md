@@ -1022,8 +1022,8 @@ todo o resto fica atrás de **Filtros avançados**,
 **Filtros de resultados**, `scan.filtersGroup`):
 
 - **Texto livre** — match de substring contra título / empresa.
-- Dropdown de **Fonte** — todas as fontes que o registro conhece (122
-  agora: 117 EN + 5 RU, **All sources** por padrão). É preenchido ao
+- Dropdown de **Fonte** — todas as fontes que o registro conhece (123
+  agora: 118 EN + 5 RU, **All sources** por padrão). É preenchido ao
   vivo a partir de `GET /api/scan/sources`, então um adapter recém
   adicionado aparece aqui sem nenhuma mudança no app — a lista nunca
   é fixada no código.
@@ -1056,7 +1056,7 @@ ATSs). O tooltip diz o mesmo em palavras simples
 (`scan.activeCo.help`). A lista é dividida em dois grupos:
 
 - ✓ **API direta** (`scan.apiBacked`) — o board é buscado direto da
-  sua API ATS pública (um dos 117 adapters EN, de Greenhouse / Ashby /
+  sua API ATS pública (um dos 118 adapters EN, de Greenhouse / Ashby /
   Lever / Workable / SmartRecruiters / Workday até a cauda longa).
 - ○ **Apenas web-search** (`scan.websearchBacked`) — nenhum adapter
   corresponde à URL, então o scan com IA do CLI cobre essa.
@@ -1877,7 +1877,7 @@ copie a saída, e busque a issue no rastreador em
 
 ## 17. Como adicionar uma nova fonte de portal de vagas
 
-O career-ops-ui trata cada job board como um **adapter** — um único arquivo em [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) que sabe como buscar e normalizar os resultados de um portal. Atualmente o registry `server/lib/sources/` inclui **122** fontes — **117 em inglês + 5 russas**. O conjunto em inglês abrange os principais ATSes (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), agregadores de todo o board selecionados por um `provider:` explícito (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), e ATSes por tenant autodetectados a partir de um host `careers_url` ou de uma URL `api:` explícita (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **A lista completa nunca precisa ser contada à mão aqui — ela é autodescoberta a partir de `server/lib/sources/` e exibida ao vivo no dropdown Source de `#/scan`.** Veja a §5 para o YAML e `docs/portals-examples.md` para entradas prontas para copiar e colar.
+O career-ops-ui trata cada job board como um **adapter** — um único arquivo em [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) que sabe como buscar e normalizar os resultados de um portal. Atualmente o registry `server/lib/sources/` inclui **123** fontes — **118 em inglês + 5 russas**. O conjunto em inglês abrange os principais ATSes (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), agregadores de todo o board selecionados por um `provider:` explícito (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), e ATSes por tenant autodetectados a partir de um host `careers_url` ou de uma URL `api:` explícita (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). Os boards da plataforma **Deel** (`jobs.deel.com/<slug>` — o board multi-tenant onde Klarna e outros publicam) são autodetectados pela URL: adicionar um são duas linhas no portals.yml. **A lista completa nunca precisa ser contada à mão aqui — ela é autodescoberta a partir de `server/lib/sources/` e exibida ao vivo no dropdown Source de `#/scan`.** Veja a §5 para o YAML e `docs/portals-examples.md` para entradas prontas para copiar e colar.
 
 > **v1.69.0 (P-14) — auto-descoberta drop-in.** Adicionar uma 12.ª fonte é agora
 > um **drop puro de arquivo**. O registry

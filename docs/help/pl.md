@@ -1028,7 +1028,7 @@ cały panel jest pogrupowany pod **Filtry wyników**,
 
 - **Tekst wolny** — dopasowanie podciągu względem tytułu / firmy.
 - Menu rozwijane **Source** — wszystkie źródła, które zna rejestr
-  (obecnie 122 źródeł: 117 EN + 5 RU, domyślnie **All sources**).
+  (obecnie 123 źródeł: 118 EN + 5 RU, domyślnie **All sources**).
   Wypełnia się na żywo z `GET /api/scan/sources`, więc świeżo
   dodany adapter pojawia się tu bez zmiany w aplikacji — lista
   nigdy nie jest zaszyta na sztywno.
@@ -1060,7 +1060,7 @@ mówi to samo prostymi słowami (`scan.activeCo.help`). Lista dzieli
 się na dwie grupy:
 
 - ✓ **Bezpośrednie API** (`scan.apiBacked`) — portal jest pobierany
-  wprost z jego publicznego API ATS (jeden z 117 adapterów EN, od
+  wprost z jego publicznego API ATS (jeden z 118 adapterów EN, od
   Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday
   po długi ogon).
 - ○ **Tylko wyszukiwanie** (`scan.websearchBacked`) — żaden adapter
@@ -1833,7 +1833,7 @@ wynik i przeszukaj tracker problemów na
 
 ## 17. Jak dodać nowe źródło ofert pracy
 
-career-ops-ui traktuje każdy portal pracy jako **adapter** — pojedynczy plik w [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), który wie jak pobrać i znormalizować wyniki jednego portalu. Obecnie rejestr `server/lib/sources/` dostarcza **122** adapterów — **117 angielskich + 5 rosyjskich** portali. Zestaw angielski obejmuje główne ATS-y (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), agregatory ogólnoportalowe wybierane przez jawny `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …) oraz ATS-y na tenant automatycznie wykrywane z hosta `careers_url` lub jawnego adresu `api:` (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **Pełnej listy nigdy nie trzeba liczyć tu ręcznie — jest automatycznie wykrywana z `server/lib/sources/` i pokazywana na żywo w rozwijanym menu Source na `#/scan`.** Patrz §5 po YAML oraz `docs/portals-examples.md` po gotowe wpisy do skopiowania.
+career-ops-ui traktuje każdy portal pracy jako **adapter** — pojedynczy plik w [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), który wie jak pobrać i znormalizować wyniki jednego portalu. Obecnie rejestr `server/lib/sources/` dostarcza **123** adapterów — **118 angielskich + 5 rosyjskich** portali. Zestaw angielski obejmuje główne ATS-y (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), agregatory ogólnoportalowe wybierane przez jawny `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …) oraz ATS-y na tenant automatycznie wykrywane z hosta `careers_url` lub jawnego adresu `api:` (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). Panele na platformie **Deel** (`jobs.deel.com/<slug>` — board multi-tenant, na którym publikują Klarna i inni) są wykrywane automatycznie z adresu URL — dodanie panelu to dwa wiersze w portals.yml. **Pełnej listy nigdy nie trzeba liczyć tu ręcznie — jest automatycznie wykrywana z `server/lib/sources/` i pokazywana na żywo w rozwijanym menu Source na `#/scan`.** Patrz §5 po YAML oraz `docs/portals-examples.md` po gotowe wpisy do skopiowania.
 
 > **v1.69.0 (P-14) — plug-in z auto-odkrywaniem.** Dodanie 12. źródła to teraz
 > **czyste wrzucenie pliku**. Rejestr

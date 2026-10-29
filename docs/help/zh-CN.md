@@ -925,7 +925,7 @@ v2 结果区让所有控件都看得见:
 `scan.filtersGroup`):
 
 - **自由文本** — 对 title / company 做子串匹配。
-- **Source** 下拉 — 注册表已知的全部来源(当前 122:117 EN + 5 RU,
+- **Source** 下拉 — 注册表已知的全部来源(当前 123:118 EN + 5 RU,
   默认为**全部来源**)。它从 `GET /api/scan/sources` 实时自动填充,
   因此新放入的 adapter 无需改动应用就会出现在这里 — 列表从不硬编码。
 - **Remote / Hybrid / Onsite** 下拉。
@@ -952,7 +952,7 @@ v2 结果区让所有控件都看得见:
 组:
 
 - ✓ **直接 API**(`scan.apiBacked`)— 该版面直接从其公共 ATS API
-  抓取(117 个 EN adapter 之一,从 Greenhouse / Ashby / Lever /
+  抓取(118 个 EN adapter 之一,从 Greenhouse / Ashby / Lever /
   Workable / SmartRecruiters / Workday 一直到长尾)。
 - ○ **仅 web 搜索**(`scan.websearchBacked`)— 没有 adapter 匹配该
   URL,改由 CLI 的 AI 扫描覆盖。
@@ -1681,7 +1681,7 @@ tracker 写入、CV 保存、JD 保存、evaluate 运行、deep-research 运
 
 ## 17. 如何添加新的招聘门户来源
 
-career-ops-ui 将每个招聘站点视为一个 **adapter** — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 下的单一文件,知道如何获取并规范化某个站点的结果。目前,`server/lib/sources/` 注册表自带 **122** 个来源 —— **117 个英文 + 5 个俄文**板块。英文集合涵盖主流 ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday)、由显式 `provider:` 选择的全板块聚合器(RemoteOK、Remotive、We Work Remotely、NoDesk、Get on Board、Amazon、…),以及从 `careers_url` 主机或显式 `api:` URL 自动检测的按租户 ATS(BambooHR、Personio、Recruitee、Teamtailor、Avature、SAP SuccessFactors、…)。**完整列表永远无需在此手工统计 —— 它会从 `server/lib/sources/` 自动发现,并在 `#/scan` 的 Source 下拉框中实时显示。** YAML 见 §5,可复制粘贴的条目见 `docs/portals-examples.md`。
+career-ops-ui 将每个招聘站点视为一个 **adapter** — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 下的单一文件,知道如何获取并规范化某个站点的结果。目前,`server/lib/sources/` 注册表自带 **123** 个来源 —— **118 个英文 + 5 个俄文**板块。英文集合涵盖主流 ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday)、由显式 `provider:` 选择的全板块聚合器(RemoteOK、Remotive、We Work Remotely、NoDesk、Get on Board、Amazon、…),以及从 `careers_url` 主机或显式 `api:` URL 自动检测的按租户 ATS(BambooHR、Personio、Recruitee、Teamtailor、Avature、SAP SuccessFactors、…)。**Deel** 招聘平台上的板块（`jobs.deel.com/<slug>` —— Klarna 等公司发布职位的租户制板块）会从 URL 自动识别，添加一个板块只需 portals.yml 中的两行。**完整列表永远无需在此手工统计 —— 它会从 `server/lib/sources/` 自动发现,并在 `#/scan` 的 Source 下拉框中实时显示。** YAML 见 §5,可复制粘贴的条目见 `docs/portals-examples.md`。
 
 > **v1.69.0 (P-14) — 即插即用自动发现。** 添加第 12 个来源现在是**纯粹的文件投放**。注册表
 > ([`server/lib/sources/registry.mjs`](../../server/lib/sources/registry.mjs))

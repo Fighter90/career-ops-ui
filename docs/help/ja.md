@@ -1018,7 +1018,7 @@ v2 の結果表示はコントロールを見つけやすく保ちます:
 
 - **フリーテキスト** — タイトル / 会社名に対する部分一致。
 - **Source** ドロップダウン — レジストリが知るすべてのソース
-  (現在 122:117 EN + 5 RU、既定は **All sources**)。
+  (現在 123:118 EN + 5 RU、既定は **All sources**)。
   `GET /api/scan/sources` からライブで自動構築されるため、新しく
   追加されたアダプタはアプリの変更なしでここに現れます — リストが
   ハードコードされることはありません。
@@ -1049,7 +1049,7 @@ v2 の結果表示はコントロールを見つけやすく保ちます:
 分かれます:
 
 - ✓ **直接 API**(`scan.apiBacked`)— ボードを公開 ATS API から
-  直接取得します(117 個の EN アダプタのいずれか。Greenhouse /
+  直接取得します(118 個の EN アダプタのいずれか。Greenhouse /
   Ashby / Lever / Workable / SmartRecruiters / Workday から長尾
   まで)。
 - ○ **Web 検索のみ**(`scan.websearchBacked`)— URL に一致する
@@ -1844,7 +1844,7 @@ evaluate 実行、deep-research 実行、scan 実行、設定変更、モード
 
 ## 17. 新しい求人ポータルソースを追加する方法
 
-career-ops-ui は各求人サイトを **アダプタ** として扱います — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 配下の 1 ファイルが、1 サイトの結果取得と正規化の方法を持ちます。`server/lib/sources/` レジストリは **122** 個のソースを同梱しています — **英語圏 117 個 + ロシア系 5 個** のボードです。英語圏のセットは主要な ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday)、明示的な `provider:` で選択されるボード全体のアグリゲーター(RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …)、および `careers_url` ホストまたは明示的な `api:` URL から自動検出されるテナント単位の ATS(BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …)にわたります。**完全なリストをここで手作業で数える必要はまったくありません — `server/lib/sources/` から自動検出され、`#/scan` の Source ドロップダウンにライブで表示されます。** YAML は §5、コピー&ペースト用のエントリは `docs/portals-examples.md` を参照してください。
+career-ops-ui は各求人サイトを **アダプタ** として扱います — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 配下の 1 ファイルが、1 サイトの結果取得と正規化の方法を持ちます。`server/lib/sources/` レジストリは **123** 個のソースを同梱しています — **英語圏 118 個 + ロシア系 5 個** のボードです。英語圏のセットは主要な ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday)、明示的な `provider:` で選択されるボード全体のアグリゲーター(RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …)、および `careers_url` ホストまたは明示的な `api:` URL から自動検出されるテナント単位の ATS(BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …)にわたります。**Deel** ジョブプラットフォーム上のボード（`jobs.deel.com/<slug>` — Klarna などが公開するマルチテナントボード）は URL から自動検出されます。追加は portals.yml への 2 行です。**完全なリストをここで手作業で数える必要はまったくありません — `server/lib/sources/` から自動検出され、`#/scan` の Source ドロップダウンにライブで表示されます。** YAML は §5、コピー&ペースト用のエントリは `docs/portals-examples.md` を参照してください。
 
 > **v1.69.0 (P-14) — ドロップイン自動検出。** 12 個目のソース追加はいまや **ファイルを置くだけ** で完結します。レジストリ
 > ([`server/lib/sources/registry.mjs`](../../server/lib/sources/registry.mjs))

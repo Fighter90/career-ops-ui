@@ -155,6 +155,17 @@ test('tkms.parseQuery drops the bad id, keeps the page', async () => {
     (rows) => rows.length === 1 && rows[0].url === 'https://x.tkms.com/en/job/Good/g-1');
 });
 
+test('deel.parseDeelBoard drops the bad id, keeps the page', async () => {
+  // The rebuilt posting URL is where the host-controlled posting id is encoded.
+  const { parseDeelBoard } = await load('deel.mjs');
+  await survives('deel',
+    () => parseDeelBoard(
+      `<script>self.__next_f.push([1,${JSON.stringify(`2:{"jobPostings":${JSON.stringify([{ id: `${LONE}bad`, title: 'Bad Id' }, { id: 'ok-5', title: 'Good Id' }])}}\n`)}])</script>`,
+      { slug: 'x', company: 'X' },
+    ),
+    (jobs) => jobs.length === 1 && jobs[0].url === 'https://jobs.deel.com/x/job-details/ok-5/overview');
+});
+
 test('trakstar.parseTrakstarPage drops the bad id, keeps the page', async () => {
   // The rebuilt posting URL is where the host-controlled opening id is
   // encoded — an off-host hosted_url forces that rebuild path.
@@ -216,7 +227,7 @@ test('trudvsem.normalizeTrudvsem drops a bad id without a vac_url, keeps a good 
  * regression this list exists to catch.
  */
 const CONVERTED = [
-  'alibaba.mjs', 'arbeitsagentur.mjs', 'bamboohr.mjs', 'feishu-jobs.mjs', 'garena.mjs',
+  'alibaba.mjs', 'arbeitsagentur.mjs', 'bamboohr.mjs', 'deel.mjs', 'feishu-jobs.mjs', 'garena.mjs',
   'jibeapply.mjs', 'manfred.mjs', 'meituan.mjs', 'mokahr.mjs', 'paylocity.mjs', 'phenom.mjs',
   'thehub.mjs', 'tkms.mjs', 'trakstar.mjs', 'vdab.mjs',
   // web-ui-only, surfaced by the guard below on its first run

@@ -76,7 +76,7 @@ test('GET /api/scan/sources includes the EN ATS + aggregator sources', async () 
     'applitrack', 'arbeitnow', 'arbeitsagentur', 'ashby', 'atlassian', 'avature',
     'bamboohr', 'beesite', 'breezy', 'builtin', 'bwi', 'careerviet',
     'collage', 'comeet', 'computrabajo', 'consider', 'cryptocurrencyjobs', 'csod',
-    'dassault', 'deutschebahn', 'dover', 'eightfold', 'eploy', 'feishu-jobs',
+    'dassault', 'deel', 'deutschebahn', 'dover', 'eightfold', 'eploy', 'feishu-jobs',
     'flowxtra', 'garena', 'gem', 'generalist-world', 'getonbrd', 'getro',
     'glints', 'google', 'greenhouse', 'gupy', 'hackernews', 'hecklerkoch',
     'higheredjobs', 'himalayas', 'hiringroom', 'ibm', 'icims', 'itviec',

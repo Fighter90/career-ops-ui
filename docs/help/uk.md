@@ -763,7 +763,7 @@ remote / source / country / posted-within / salary.
 
 - **Вільний текст** — підрядковий збіг за назвою / компанією.
 - Випадаючий список **Source** — усі джерела, які знає реєстр (зараз їх
-  122: 117 EN + 5 RU, типовим є **All sources**). Він живим чином
+  123: 118 EN + 5 RU, типовим є **All sources**). Він живим чином
   автозаповнюється з `GET /api/scan/sources`, тож щойно скинутий адаптер
   з'являється тут без жодної зміни застосунку — список ніколи не є
   хардкодом.
@@ -789,7 +789,7 @@ remote / source / country / posted-within / salary.
 (`scan.activeCo.help`). Список поділено на дві групи:
 
 - ✓ **Прямий API** (`scan.apiBacked`) — дошка отримується безпосередньо
-  з її публічного ATS API (один зі 117 EN-адаптерів — від Greenhouse /
+  з її публічного ATS API (один зі 118 EN-адаптерів — від Greenhouse /
   Ashby / Lever / Workable / SmartRecruiters / Workday до довгого
   хвоста).
 - ○ **Тільки веб-пошук** (`scan.websearchBacked`) — жоден адаптер не
@@ -1393,7 +1393,7 @@ npm run doctor
 
 ## 17. Як додати нове джерело вакансій
 
-career-ops-ui розглядає кожну дошку вакансій як **адаптер** — один файл у [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), що знає, як отримати та нормалізувати результати однієї дошки. Станом на зараз реєстр `server/lib/sources/` постачається з **122** адаптерами — **117 англомовних + 5 російськомовних** дошок. Англомовний набір охоплює основні ATS (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), загальнодошкові агрегатори, що вибираються через явний `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), та ATS на тенант, які автоматично визначаються з хоста `careers_url` або явного `api:` URL (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **Повний список ніколи не потрібно рахувати тут вручну — він автоматично виявляється з `server/lib/sources/` і показується наживо у випадному списку Source на `#/scan`.** Дивіться §5 щодо YAML та `docs/portals-examples.md` щодо готових записів для копіювання.
+career-ops-ui розглядає кожну дошку вакансій як **адаптер** — один файл у [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), що знає, як отримати та нормалізувати результати однієї дошки. Станом на зараз реєстр `server/lib/sources/` постачається з **123** адаптерами — **118 англомовних + 5 російськомовних** дошок. Англомовний набір охоплює основні ATS (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), загальнодошкові агрегатори, що вибираються через явний `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), та ATS на тенант, які автоматично визначаються з хоста `careers_url` або явного `api:` URL (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). Дошки платформи **Deel** (`jobs.deel.com/<slug>` — мультиорендна дошка, де публікуються Klarna та інші) визначаються автоматично за URL, тож додати таку дошку — це запис із двох рядків у portals.yml. **Повний список ніколи не потрібно рахувати тут вручну — він автоматично виявляється з `server/lib/sources/` і показується наживо у випадному списку Source на `#/scan`.** Дивіться §5 щодо YAML та `docs/portals-examples.md` щодо готових записів для копіювання.
 
 > **v1.69.0 (P-14) — підключи та використовуй з автовідкриттям.** Додавання 12-го джерела тепер — це **просто скинути файл**. Реєстр ([`server/lib/sources/registry.mjs`](../../server/lib/sources/registry.mjs)) більше не містить вручну підтримуваного списку — при завантаженні він сканує цю папку (`readdirSync` + динамічний `import()`) та збирає блок `export const meta` з кожного `*.mjs`. Напишіть адаптер, оголосіть його `meta` — і він одразу видимий для сканера, випадаючого фільтра `#/scan` та RU-диспетчера — **редагування `registry.mjs` не потрібне**. (RU-джерела все одно потребують одного рядка в `portals.yml` батьківського проєкту; дивіться Крок 5.)
 
