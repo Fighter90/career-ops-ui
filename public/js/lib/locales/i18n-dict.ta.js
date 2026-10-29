@@ -813,6 +813,7 @@ window.__I18N_DICT_TA = {
   'import.confirm': "வரிகளை இறக்குமதி செய் ({n})",
   'import.result': "இறக்குமதி செய்யப்பட்டது: {imported} · நகல்கள்: {duplicates} · தவிர்க்கப்பட்டவை: {skipped}",
   'import.colReason': "காரணம்",
+  'import.tooLarge': "கோப்பு மிகவும் பெரியது (வரம்பு 512KB). ஏற்றுமதியைப் பிரித்து பகுதிகளாக இறக்குமதி செய்யவும்.",
   'track.col.legitimacy': "நம்பகத்தன்மை",
   'track.col.legitimacy.help': "பதவி மெய்யானது என்பதற்கான நம்பிக்கை (High / Caution / Suspicious).",
   'track.outputTitle': "வெளியீடு",

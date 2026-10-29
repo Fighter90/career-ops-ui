@@ -806,6 +806,7 @@ window.__I18N_DICT_JA = {
   'import.confirm': "行を取り込む ({n})",
   'import.result': "取り込み済み: {imported} · 重複: {duplicates} · スキップ: {skipped}",
   'import.colReason': "理由",
+  'import.tooLarge': "ファイルが大きすぎます（上限512KB）。書き出しを分割して取り込んでください。",
   'track.col.legitimacy': "信頼性",
   'track.col.legitimacy.help': "求人が本物である信頼度 (高 / 注意 / 疑い).",
   'track.outputTitle': "出力",

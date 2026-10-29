@@ -805,6 +805,7 @@ window.__I18N_DICT_DA = {
   'import.confirm': "Importér rækker ({n})",
   'import.result': "Importeret: {imported} · Dubletter: {duplicates} · Sprunget over: {skipped}",
   'import.colReason': "Årsag",
+  'import.tooLarge': "Filen er for stor (grænse 512 KB). Del eksporten og importér delene.",
   'track.col.legitimacy': "Troværdighed",
   'track.col.legitimacy.help': "Sikkerhed for at opslaget er ægte (Høj / Forsigtig / Mistænkelig).",
   'track.outputTitle': "Output",

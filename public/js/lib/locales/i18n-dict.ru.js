@@ -806,6 +806,7 @@ window.__I18N_DICT_RU = {
   'import.confirm': "Импортировать строки ({n})",
   'import.result': "Импортировано: {imported} · Дубликаты: {duplicates} · Пропущено: {skipped}",
   'import.colReason': "Причина",
+  'import.tooLarge': "Файл слишком большой (лимит 512 КБ). Разделите экспорт и импортируйте по частям.",
   'track.col.legitimacy': "Достоверность",
   'track.col.legitimacy.help': "Достоверность вакансии (высокая / осторожно / подозрительная).",
   'track.outputTitle': "Вывод",

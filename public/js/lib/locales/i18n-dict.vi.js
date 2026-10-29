@@ -800,6 +800,7 @@ window.__I18N_DICT_VI = {
   'import.confirm': "Nhập các dòng ({n})",
   'import.result': "Đã nhập: {imported} · Trùng lặp: {duplicates} · Bỏ qua: {skipped}",
   'import.colReason': "Lý do",
+  'import.tooLarge': "Tệp quá lớn (giới hạn 512KB). Hãy chia nhỏ bản xuất và nhập từng phần.",
   'track.col.legitimacy': "Độ xác thực",
   'track.col.legitimacy.help': "Mức tin rằng tin tuyển dụng là thật (Cao / Thận trọng / Nghi ngờ).",
   'track.outputTitle': "Kết quả",

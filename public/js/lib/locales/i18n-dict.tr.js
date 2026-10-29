@@ -806,6 +806,7 @@ window.__I18N_DICT_TR = {
   'import.confirm': "Satırları içe aktar ({n})",
   'import.result': "İçe aktarıldı: {imported} · Yinelenen: {duplicates} · Atlanan: {skipped}",
   'import.colReason': "Neden",
+  'import.tooLarge': "Dosya çok büyük (sınır 512 KB). Dışa aktarımı bölün ve parçalar hâlinde içe aktarın.",
   'track.col.legitimacy': "Güvenilirlik",
   'track.col.legitimacy.help': "İlanın gerçek olduğuna dair güven (Yüksek / Dikkat / Şüpheli).",
   'track.outputTitle': "Çıktı",

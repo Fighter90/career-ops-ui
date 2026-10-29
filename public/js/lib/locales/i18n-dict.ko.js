@@ -806,6 +806,7 @@ window.__I18N_DICT_KO = {
   'import.confirm': "행 가져오기 ({n})",
   'import.result': "가져옴: {imported} · 중복: {duplicates} · 건너뜀: {skipped}",
   'import.colReason': "사유",
+  'import.tooLarge': "파일이 너무 큽니다(제한 512KB). 내보내기를 나누어 가져오세요.",
   'track.col.legitimacy': "신뢰도",
   'track.col.legitimacy.help': "공고가 진짜일 가능성 (높음 / 주의 / 의심).",
   'track.outputTitle': "출력",

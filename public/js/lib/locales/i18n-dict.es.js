@@ -806,6 +806,7 @@ window.__I18N_DICT_ES = {
   'import.confirm': "Importar filas ({n})",
   'import.result': "Importadas: {imported} · Duplicados: {duplicates} · Omitidas: {skipped}",
   'import.colReason': "Motivo",
+  'import.tooLarge': "El archivo es demasiado grande (límite 512 KB). Divide la exportación e importa las partes.",
   'track.col.legitimacy': "Legitimidad",
   'track.col.legitimacy.help': "Confianza en que la oferta es real (Alta / Precaución / Sospechosa).",
   'track.outputTitle': "Salida",

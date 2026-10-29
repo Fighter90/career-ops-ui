@@ -806,6 +806,7 @@ window.__I18N_DICT_EN = {
   'import.confirm': "Import rows ({n})",
   'import.result': "Imported {imported} · Duplicates {duplicates} · Skipped {skipped}",
   'import.colReason': "Reason",
+  'import.tooLarge': "The file is too large (limit 512 KB). Split the export and import the parts.",
   'track.col.legitimacy': "Legitimacy",
   'track.col.legitimacy.help': "Confidence that the posting is real (High / Caution / Suspicious).",
   'track.outputTitle': "Output",

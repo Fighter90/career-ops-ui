@@ -806,6 +806,7 @@ window.__I18N_DICT_IT = {
   'import.confirm': "Importa righe ({n})",
   'import.result': "Importate: {imported} · Duplicati: {duplicates} · Saltate: {skipped}",
   'import.colReason': "Motivo",
+  'import.tooLarge': "Il file è troppo grande (limite 512 KB). Dividi l'esportazione e importa le parti.",
   'track.col.legitimacy': "Legittimità",
   'track.col.legitimacy.help': "Fiducia che l'annuncio sia reale (Alta / Cautela / Sospetta).",
   'track.outputTitle': "Output",

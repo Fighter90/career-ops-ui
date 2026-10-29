@@ -16589,6 +16589,27 @@
     "ta": "காரணம்",
     "vi": "Lý do"
   },
+  "import.tooLarge": {
+    "en": "The file is too large (limit 512 KB). Split the export and import the parts.",
+    "es": "El archivo es demasiado grande (límite 512 KB). Divide la exportación e importa las partes.",
+    "pt-BR": "O arquivo é grande demais (limite de 512 KB). Divida a exportação e importe as partes.",
+    "ko": "파일이 너무 큽니다(제한 512KB). 내보내기를 나누어 가져오세요.",
+    "ja": "ファイルが大きすぎます（上限512KB）。書き出しを分割して取り込んでください。",
+    "ru": "Файл слишком большой (лимит 512 КБ). Разделите экспорт и импортируйте по частям.",
+    "zh-CN": "文件过大（上限 512KB）。请拆分导出后分批导入。",
+    "zh-TW": "檔案過大（上限 512KB）。請拆分匯出後分批匯入。",
+    "fr": "Le fichier est trop volumineux (limite 512 Ko). Découpez l’export et importez les parties.",
+    "pl": "Plik jest zbyt duży (limit 512 KB). Podziel eksport i zaimportuj części.",
+    "uk": "Файл завеликий (ліміт 512 КБ). Розділіть експорт та імпортуйте частинами.",
+    "da": "Filen er for stor (grænse 512 KB). Del eksporten og importér delene.",
+    "ar": "الملف كبير جدًا (الحد 512 كيلوبايت). قسّم التصدير واستورد الأجزاء.",
+    "de": "Die Datei ist zu groß (Limit 512 KB). Teile den Export und importiere die Teile.",
+    "it": "Il file è troppo grande (limite 512 KB). Dividi l'esportazione e importa le parti.",
+    "tr": "Dosya çok büyük (sınır 512 KB). Dışa aktarımı bölün ve parçalar hâlinde içe aktarın.",
+    "hi": "फ़ाइल बहुत बड़ी है (सीमा 512KB)। एक्सपोर्ट विभाजित करें और भागों में इंपोर्ट करें।",
+    "ta": "கோப்பு மிகவும் பெரியது (வரம்பு 512KB). ஏற்றுமதியைப் பிரித்து பகுதிகளாக இறக்குமதி செய்யவும்.",
+    "vi": "Tệp quá lớn (giới hạn 512KB). Hãy chia nhỏ bản xuất và nhập từng phần."
+  },
   "track.col.legitimacy": {
     "en": "Legitimacy",
     "es": "Legitimidad",

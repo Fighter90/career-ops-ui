@@ -805,6 +805,7 @@ window.__I18N_DICT_PL = {
   'import.confirm': "Importuj wiersze ({n})",
   'import.result': "Zaimportowano: {imported} · Duplikaty: {duplicates} · Pominięto: {skipped}",
   'import.colReason': "Powód",
+  'import.tooLarge': "Plik jest zbyt duży (limit 512 KB). Podziel eksport i zaimportuj części.",
   'track.col.legitimacy': "Wiarygodność",
   'track.col.legitimacy.help': "Pewność, że ogłoszenie jest prawdziwe (Wysoka / Ostrzeżenie / Podejrzane).",
   'track.outputTitle': "Wynik",

@@ -805,6 +805,7 @@ window.__I18N_DICT_UK = {
   'import.confirm': "Імпортувати рядки ({n})",
   'import.result': "Імпортовано: {imported} · Дублікати: {duplicates} · Пропущено: {skipped}",
   'import.colReason': "Причина",
+  'import.tooLarge': "Файл завеликий (ліміт 512 КБ). Розділіть експорт та імпортуйте частинами.",
   'track.col.legitimacy': "Легітимність",
   'track.col.legitimacy.help': "Впевненість у тому, що оголошення реальне (Висока / Обережно / Підозріло).",
   'track.outputTitle': "Вивід",
