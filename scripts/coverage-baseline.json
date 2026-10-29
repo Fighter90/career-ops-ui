@@ -5,6 +5,7 @@
     "server/index.mjs",
     "server/lib/activity-log.mjs",
     "server/lib/cv-import.mjs",
+    "server/lib/cv-voice.mjs",
     "server/lib/discover-ats.mjs",
     "server/lib/docx.mjs",
     "server/lib/dotenv.mjs",
@@ -170,6 +171,7 @@
     "server/lib/sources/wttj.mjs",
     "server/lib/states.mjs",
     "server/lib/store.mjs",
+    "server/lib/tracker-import.mjs",
     "server/lib/trust-validator.mjs"
   ]
 }

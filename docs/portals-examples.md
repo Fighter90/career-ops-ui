@@ -241,6 +241,23 @@ Two optional top-level keys tune the EN scan:
 scan_quarantine: true
 ```
 
+### Years of experience (v1.262.0)
+
+An optional `years_min:` top-level key skips postings whose description states a
+minimum experience below your bar. The parser reads stated requirements only —
+a posting without a stated number always passes (it is never dropped on a
+guess):
+
+```yaml
+# Skip postings that state fewer than N years of required experience.
+# Postings with no stated number are never filtered.
+years_min: 3
+```
+
+Skipped rows are recorded in `data/scan-history.tsv` as `skipped_experience` —
+an observational status that never pins a URL, so the posting resurfaces on a
+later scan (and shows up in the reposts view without ever counting as seen).
+
 The **Max per source** cap (∞ by default) and the **Posted within** age filter
 are per-run UI controls on `#/scan` (no YAML needed); **saved searches** and
 **★ favorites** are stored in your browser's `localStorage`.

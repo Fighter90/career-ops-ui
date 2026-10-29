@@ -618,6 +618,14 @@ location_filter:
 
 `portals.yml`의 최상위 키(`title_filter`의 형제, `russian_portals` 하위 아님).
 
+### `years_min` (선택 — web-ui 1.262.0)
+
+```yaml
+years_min: 3
+```
+
+설명에 기준 이하의 최소 경력이 명시된 공고를 건너뜁니다. 파서는 명시된 요구사항만 읽습니다 — 숫자가 명시되지 않은 공고는 항상 통과합니다(추측으로 걸러내지 않음). 건너뛴 행은 `data/scan-history.tsv`에 `skipped_experience`로 기록되는데, 이는 URL을 고정하지 않는 관측용 상태이므로 공고는 이후 스캔에서 다시 나타납니다.
+
 ### `search_queries`
 
 ```yaml
@@ -973,7 +981,7 @@ v2 결과 크롬은 컨트롤을 눈에 보이게 유지합니다:
 **결과 필터**, `scan.filtersGroup` 아래에 묶여 있습니다):
 
 - **자유 텍스트** — 제목/회사에 대한 부분 문자열 일치.
-- **Source** 드롭다운 — 레지스트리가 아는 모든 소스 (현재 122: 117 EN + 5 RU, 기본값 **All sources**). `GET /api/scan/sources`에서 실시간으로 자동 생성되므로, 새로 드롭된 어댑터가 앱 변경 없이 여기에 나타납니다 — 목록은 결코 하드코딩되지 않습니다.
+- **Source** 드롭다운 — 레지스트리가 아는 모든 소스 (현재 123: 118 EN + 5 RU, 기본값 **All sources**). `GET /api/scan/sources`에서 실시간으로 자동 생성되므로, 새로 드롭된 어댑터가 앱 변경 없이 여기에 나타납니다 — 목록은 결코 하드코딩되지 않습니다.
 - **Remote / Hybrid / Onsite** 드롭다운.
 - **Country** 드롭다운 — 현재 결과에서 감지된 국가들로 채워지는 지리 필터로, 각 항목은 국기 이모지와 개수와 함께 표시됩니다(예: `🇩🇪 Germany (12)`). 하나를 선택하면 그 국가에 묶인 역할만 남습니다. 감지는 공고의 자유 텍스트 위치(국가명/별칭 + ~100개 주요 채용 시장 도시)를 국가로 매핑합니다. 보수적이며 결코 추측하지 않으므로, 위치를 확인할 수 없는 공고 — 또는 순수 "Remote" 공고 — 는 **All countries** 아래에 남습니다. 근무 형태 드롭다운과 결합하면 국가에 묶인 역할*과* 원격 역할을 모두 찾을 수 있습니다.
 - **Posted within** 드롭다운 — 클라이언트 측 기간 필터(Last 24 hours / 7 days / 30 days). `pubDate`가 더 오래된 행은 숨겨집니다. **날짜가 없는 행은 통과**합니다(누락된 데이터에는 불이익이 없음).
@@ -1003,7 +1011,7 @@ v2 결과 크롬은 컨트롤을 눈에 보이게 유지합니다:
 
 - ✓ **API 직접** (`scan.apiBacked`) — 보드가 공개 ATS API에서
   직접 가져옵니다 (Greenhouse / Ashby / Lever / Workable /
-  SmartRecruiters / Workday부터 롱테일까지, 117개 EN 어댑터 중
+  SmartRecruiters / Workday부터 롱테일까지, 118개 EN 어댑터 중
   하나).
 - ○ **웹 검색만** (`scan.websearchBacked`) — URL에 매칭되는
   어댑터가 없어, 대신 CLI의 AI 스캔이 커버합니다.
@@ -1255,6 +1263,10 @@ pipeline에 10개 이상 URL이 큐잉되었다면 JD별 클릭은 비현실적�
 필요하며, 상태 페이지에서 설치 여부를 확인할 수 있습니다). 아무 데도
 전송되지 않으니, 지원서에 첨부하기 전에 PDF를 검토하세요.
 
+### 공고 검사 — JD 무결성 확인 (v1.262.0)
+
+개별 리포트의 헤더 액션에 있는 **🛡 공고 검사** 버튼은 해당 리포트의 아카이브된 JD(슬러그의 리포트 번호로 확인되는 `jds/` 캡처)에 대해 부모 프로젝트의 결정론적 zero-LLM 무결성 게이트를 실행합니다. 결과는 인라인으로 렌더링됩니다 — 판정, 각 검사, 그 이유. 모두 로컬에서 실행: 모델 호출 없음, 기록 없음. 부모 체크아웃에 `posting-guard.mjs`가 아직 없는 동안에는 실패 대신 "script not found" 안내를 정직하게 반환합니다.
+
 ---
 
 ## 11. 트래커 (`#/tracker`)
@@ -1336,6 +1348,10 @@ Markdown 테이블로 존재합니다.
 url?, reportSlug?, notes?, date? }`. `(company, role)` 대소문자
 무시로 중복 제거. UI에서는 Evaluate 페이지가 채점 성공 후 "Add to
 tracker" 버튼을 제공합니다.
+
+### 다른 트래커의 CSV 가져오기 (v1.262.0)
+
+툴바의 **CSV 가져오기** 버튼은 다른 트래커의 CSV 내보내기(Teal, Huntr, Simplify 또는 손으로 관리한 스프레드시트 — company/role/status/date/url 열 별칭, RFC-4180 파싱)를 받아 각 행을 그 결과와 함께 미리 보여 줍니다 — 가져오기 / 같은 공고 URL의 중복 / 건너뛰기. 기록은 확인 후에만 이루어집니다. 앱이 인식하지 못하는 단계도 행을 막지 않습니다 — Evaluated로 메모와 함께 등록됩니다. 날짜는 ISO, 일 우선(day-first), 월 이름 형식을 모두 이해합니다.
 
 ### "아직 살아 있나요?" — ATS 공고가 아직 열려 있는지 확인
 
@@ -1771,7 +1787,7 @@ deep research 실행, scan 실행, 설정 변경, 모드 실행.
 
 ## 17. 새 채용 포털 소스를 추가하는 방법
 
-career-ops-ui는 각 채용 사이트를 **어댑터**로 취급합니다 — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 아래의 단일 파일이 한 사이트의 결과를 가져오고 정규화하는 방법을 알고 있습니다. 현재 `server/lib/sources/` 레지스트리는 **122**개의 소스를 포함합니다 — **영문 117개 + 러시아어 5개** 보드. 영문 세트는 주요 ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), 명시적 `provider:`로 선택되는 보드 전체 애그리게이터(RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), 그리고 `careers_url` 호스트 또는 명시적 `api:` URL에서 자동 감지되는 테넌트별 ATS(BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …)를 아우릅니다. **전체 목록은 여기서 손으로 셀 필요가 전혀 없습니다 — `server/lib/sources/`에서 자동으로 검색되어 `#/scan`의 Source 드롭다운에 실시간으로 표시됩니다.** YAML은 §5, 복사·붙여넣기 항목은 `docs/portals-examples.md`를 참조하세요.
+career-ops-ui는 각 채용 사이트를 **어댑터**로 취급합니다 — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 아래의 단일 파일이 한 사이트의 결과를 가져오고 정규화하는 방법을 알고 있습니다. 현재 `server/lib/sources/` 레지스트리는 **123**개의 소스를 포함합니다 — **영문 118개 + 러시아어 5개** 보드. 영문 세트는 주요 ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), 명시적 `provider:`로 선택되는 보드 전체 애그리게이터(RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), 그리고 `careers_url` 호스트 또는 명시적 `api:` URL에서 자동 감지되는 테넌트별 ATS(BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …)를 아우릅니다. **Deel** 잡 플랫폼의 보드(`jobs.deel.com/<slug>` — Klarna 등이 게시하는 멀티테넌트 보드)는 URL에서 자동 감지되며, 추가는 portals.yml의 두 줄이면 됩니다. **전체 목록은 여기서 손으로 셀 필요가 전혀 없습니다 — `server/lib/sources/`에서 자동으로 검색되어 `#/scan`의 Source 드롭다운에 실시간으로 표시됩니다.** YAML은 §5, 복사·붙여넣기 항목은 `docs/portals-examples.md`를 참조하세요.
 
 > **v1.69.0 (P-14) — 드롭인 자동 검색.** 12번째 소스 추가는 이제
 > **순수 파일 드롭**입니다. 레지스트리
@@ -2170,6 +2186,10 @@ career-ops-ui의 대부분은 "이 채용 공고가 내 CV와 맞는가?"를 묻
 ### 사람답게 만들기 (보이스 매칭)
 
 딱딱한 문장이나 문단 — 상투적인 문구처럼 읽히는 그런 일반적인 AI 표현 — 을 붙여 넣으면 **사람답게 만들기**가 그것을 *당신의* 목소리로 고쳐 씁니다. 이 재작성은 서버 측에서 당신의 `voice-dna.md`(당신의 글이 어떻게 읽히는지)와 `writing-samples/`(당신의 실제 문장)에 근거합니다. 엄격한 규칙: 순서를 바꾸고, 다듬고, 어조를 재조정할 수는 있지만, 붙여 넣은 텍스트에 이미 없는 사실, 지표, 성과는 **절대** 새로 만들어 넣지 않습니다. LLM 키가 있으면 실시간으로 고쳐 쓰고, 키가 없으면 어떤 어시스턴트에든 붙여 넣을 수 있는 완성된 프롬프트를 건네줍니다. 그런 다음 평소처럼 `#/cv` 페이지에서 이력서를 편집하세요 — CV Studio는 제안하고, 결정은 당신이 합니다.
+
+### 상투적 표현 검사 (v1.262.0)
+
+**상투적 표현 검사** 카드는 붙여 넣은 텍스트에서 27개의 흔한 이력서 문구("passionate about", "proven track record", "leveraged", "spearheaded"…)를 검사하고 정확한 일치를 하이라이트합니다. 연도 사이의 대시 — `2022–2024` — 는 날짜 범위이지 상투구가 아니지만, `20–30%`는 상투구로 표시됩니다. 읽기 전용이며 어디에도 기록하지 않습니다. **채용공고에 맞춤** 체크리스트는 상투적 문구를 여섯 번째 불변 항목으로 셉니다.
 
 ### "이전 CV를 재사용할까요?" 힌트
 

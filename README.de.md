@@ -7,19 +7,19 @@
 
 _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von diesen unterstützt._
 
-[![tests](https://img.shields.io/badge/tests-6699%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-6841%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.261.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.261.3)
+[![release](https://img.shields.io/badge/release-v1.262.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Neueste Version — v1.261.3** — **Der Design-Abschluss-Patch: das Lovable-Designsystem ist vollständig live — Phase-3-Dichte (Tabellenzeilen ≈32px, Steuerelemente 30px, Chips 24px) und jeder Coral-Rest wanderte zur neuen Blau-Akzent-/Rot-Gefahr-Aufteilung — dazu die Trakstar-Hire-Scan-Quelle (Registry 122), der Scan-Host-Pool (bis zu 32 Unternehmen, 10 pro Host), sechs Standort-Fixes für Upstream-Provider, CV-Studio-Undo + Ungespeichert-Schutz und die Kontrast-Fixes der Final-Regression (Map-Cluster-Label 4.68:1). Darunter: der Geocode-Cache übersteht jetzt Abstürze, ta-Bewertungen bekamen eine 32768-Token-Obergrenze, und die Remote-QA nennt die fehlgeschlagenen Quellen.**
+> **🆕 Neueste Version — v1.262.0** — **Das Upstream-Features-Minor: das Deel-Jobboard stößt zum Scanner (Registry 123), der CSV eines fremden Trackers importiert mit Dry-Run-Preview direkt in #/tracker, der Posting-Guard-JD-Integrity-Check und ein CV-Voice-Check (27 Floskeln hervorgehoben) landen in der UI, ein Years-of-Experience-Scan-Filter liest die JD, und Apply-Buttons sind in sieben weiteren Sprachen verstanden — dazu hören Reposts auf, quellenübergreifend fabriziert zu werden, MiniMax' ausgedientes Default-Modell wird ersetzt, und die Tamil-Bewertungen halten ihre Sprache.**
 >
-> **Vorherige Version — v1.261.2** — **Stabilität + Feinschliff: der Two-Pager-TDZ-Absturz behoben (P1), Ctrl+K funktioniert auf Nicht-QWERTY-Layouts, die Key-Leaks im gerenderten Hilfe-Text geschlossen ×17, UI.md rendert Aufzählungs-Fortsetzungen und verschachtelte Listen, Map-Captures neu gerahmt ×19 mit echten Screenshots auf cvstart.org, RTL-Chrome spiegelt über logische Eigenschaften (85 Funde), ein Tastatur-A11y-Harness über 11 Routen, und der Geocode-Cache absturzsicher gemacht.**
+> **Vorherige Version — v1.261.3** — **Der Design-Abschluss-Patch: das Lovable-Designsystem vollständig live (Phase-3-Dichte: Zeilen ≈32px, Controls 30px, Chips 24px; jeder Coral zur Blau-Akzent-/Rot-Gefahr-Aufteilung verschoben), die Trakstar-Hire-Scan-Quelle (Registry 122), der Scan-Host-Pool (32 Unternehmen, 10 pro Host), sechs Upstream-Provider-Location-Fixes und CV-Studio-Undo + Ungespeichert-Schutz.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -422,7 +422,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 6699 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.261.3)
+└─ tests/                    # 6841 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch

@@ -721,6 +721,20 @@ content_filter:
 
 Sémantique identique à `location_filter` : pas de clé → tout passe ; une offre avec une description **vide/manquante** passe (une donnée manquante n'est pas pénalisée) ; une correspondance `negative` → rejetée ; `positive` vide → passe ; `positive` non vide → doit correspondre à au moins un mot-clé (sous-chaîne insensible à la casse). Appliqué à la fois par la passe ATS et par les passes régionales. Seules les sources qui livrent une description/un extrait (p. ex. RSS) sont concernées — toute autre offre passe — donc l'activer ne supprime jamais silencieusement des lignes des sources qui ne portent pas de corps. Utilisez-la pour écarter une offre qui a survécu au title-filter mais dont le corps révèle un facteur rédhibitoire.
 
+### `years_min` (optionnel — web-ui 1.262.0)
+
+```yaml
+years_min: 3
+```
+
+Ignore les offres dont la description indique une expérience minimale en
+dessous de votre barre. L'analyseur ne lit que les exigences explicitement
+énoncées — une offre sans chiffre énoncé passe toujours (jamais écartée sur
+une supposition). Les lignes ignorées sont enregistrées dans
+`data/scan-history.tsv` avec le statut `skipped_experience`, un statut
+d'observation qui n'épingle jamais une URL : l'offre refait donc surface lors
+d'un scan ultérieur.
+
 ### `search_queries`
 
 ```yaml
@@ -1119,7 +1133,7 @@ tout le reste vit derrière **Filtres avancés**, `scan.advancedFilters`
 
 - **Texte libre** — correspondance de sous-chaîne sur le titre / l'entreprise.
 - Menu déroulant **Source** — toutes les sources connues du registre
-  (122 actuellement : 117 EN + 5 RU, **All sources** par défaut). Il
+  (123 actuellement : 118 EN + 5 RU, **All sources** par défaut). Il
   s'auto-remplit en direct depuis `GET /api/scan/sources`, si bien
   qu'un adaptateur nouvellement déposé apparaît ici sans aucun
   changement de l'app — la liste n'est jamais codée en dur.
@@ -1420,6 +1434,17 @@ candidature.
 
 ---
 
+### Posting guard — contrôle d'intégrité du JD (v1.262.0)
+
+Sur une page de rapport dont le slug porte un numéro de rapport, la rangée
+d'actions de l'en-tête comporte un bouton **Posting guard**. Il exécute la
+barrière d'intégrité déterministe sans LLM du parent sur le JD archivé du
+rapport (la capture `jds/`) et affiche les constats en ligne — verdict,
+vérifications et raisons. La barrière est locale : aucun modèle, aucune
+écriture. Tant que le checkout parent ne livre pas le script
+`posting-guard.mjs`, le bouton répond par une note honnête
+« script not found » au lieu d'un échec.
+
 ## 11. Tracker (`#/tracker`)
 
 Le CRM. Une ligne par candidature ; vit dans `data/applications.md` sous
@@ -1499,6 +1524,15 @@ Chaque filtre réinitialise le paginateur à la page 1. 25 lignes par page.
 reportSlug?, notes?, date? }`. Dédup par `(company, role)` insensible à la
 casse. Depuis l'UI, la page Evaluate propose un bouton « Add to tracker »
 après une notation réussie.
+
+### Importer le CSV d'un autre tracker (v1.262.0)
+
+Le bouton **Importer un CSV** de la barre d'outils accepte l'export CSV d'un
+autre tracker (company/role/status/date/url — les alias de colonnes sont
+reconnus, le quoting RFC-4180 est pris en charge), prévisualise chaque ligne
+avec son sort (import, doublon par URL de l'offre, ignoré) et n'écrit qu'après
+votre confirmation. Les étapes inconnues arrivent en Evaluated avec une note ;
+les dates acceptent les formats ISO, jour en premier et nom de mois.
 
 ### « Toujours en ligne ? » — vérifier si une offre ATS est encore ouverte
 
@@ -1956,7 +1990,7 @@ copiez la sortie, et cherchez le problème sur le tracker d'incidents à
 
 ## 17. How to add a new job-portal source
 
-career-ops-ui traite chaque site d'emploi comme un **adaptateur** — un fichier unique sous [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) qui sait récupérer + normaliser les résultats d'un site. Actuellement, le registre `server/lib/sources/` livre **122** sources — **117 anglais + 5 russes**. L'ensemble anglais couvre les principaux ATS (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), les agrégateurs couvrant tout un board sélectionnés par un `provider:` explicite (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), et les ATS par tenant auto-détectés depuis un hôte `careers_url` ou une URL `api:` explicite (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **La liste complète n'a jamais besoin d'être comptée à la main ici — elle est auto-découverte depuis `server/lib/sources/` et affichée en direct dans le menu déroulant Source de `#/scan`.** Voir le §5 pour le YAML et `docs/portals-examples.md` pour des entrées à copier-coller.
+career-ops-ui traite chaque site d'emploi comme un **adaptateur** — un fichier unique sous [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) qui sait récupérer + normaliser les résultats d'un site. Actuellement, le registre `server/lib/sources/` livre **123** sources — **118 anglais + 5 russes**. L'ensemble anglais couvre les principaux ATS (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), les agrégateurs couvrant tout un board sélectionnés par un `provider:` explicite (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), et les ATS par tenant auto-détectés depuis un hôte `careers_url` ou une URL `api:` explicite (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). Les boards de la plateforme **Deel** (`jobs.deel.com/<slug>` — le board multi-tenant où publient Klarna et d’autres) sont auto-détectés à partir de l’URL — en ajouter un tient en deux lignes de portals.yml. **La liste complète n'a jamais besoin d'être comptée à la main ici — elle est auto-découverte depuis `server/lib/sources/` et affichée en direct dans le menu déroulant Source de `#/scan`.** Voir le §5 pour le YAML et `docs/portals-examples.md` pour des entrées à copier-coller.
 
 > **v1.69.0 (P-14) — auto-découverte par dépôt de fichier.** Ajouter une 12e source est désormais
 > un **simple dépôt de fichier**. Le registre
@@ -2372,6 +2406,15 @@ Avant de partager votre CV comme échantillon d'écriture ou capture d'écran, l
 ### Rendez-le humain (correspondance de voix)
 
 Collez une phrase ou un paragraphe rigide — ce genre de formulation générique d'IA qui sonne comme du texte tout fait — et **Rendez-le humain** le réécrit dans *votre* voix. La réécriture est ancrée côté serveur dans votre `voice-dna.md` (la façon dont votre écriture se lit) et vos `writing-samples/` (votre prose réelle). La règle stricte : il peut réorganiser, resserrer et réajuster la voix, mais il n'introduira **jamais** un fait, une métrique ou une réalisation qui ne figure pas déjà dans le texte que vous avez collé. Avec une clé LLM, il réécrit en direct ; sans clé, il vous remet un prompt prêt à coller dans n'importe quel assistant. Modifiez ensuite votre CV sur la page `#/cv` comme d'habitude — le CV Studio suggère, vous décidez.
+
+### Vérification de la voix (v1.262.0)
+
+La carte **Vérification de la voix** passe le texte collé au crible de 27
+formules de CV toutes faites (« passionate about », « proven track record »,
+« leveraged », « spearheaded », …) et surligne les correspondances exactes —
+une plage d'années comme 2022–2024 est une date et non un signe, tandis que
+`20–30%` l'est. Lecture seule : rien n'est écrit nulle part. Le contrôle du
+Tailor traite les formules toutes faites comme un sixième invariant.
 
 ### Indice « Réutiliser un ancien CV ? »
 

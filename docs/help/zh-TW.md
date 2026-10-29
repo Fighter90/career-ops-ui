@@ -574,6 +574,17 @@ location_filter:
 
 `portals.yml` 頂層鍵(與 `title_filter` 平級,不巢狀於 `russian_portals` 下)。
 
+### `years_min`(可選 —— web-ui 1.262.0)
+
+```yaml
+years_min: 3
+```
+
+略過描述中自述最低年資低於你門檻的職缺。解析器只讀取**有寫明**的年資要求
+—— 沒有寫出數字的職缺一律通過(絕不憑猜測丟棄)。被略過的列會以
+`skipped_experience` 狀態記錄到 `data/scan-history.tsv` —— 這是觀察用狀態,
+不會釘住 URL,所以該職缺會在之後的掃描中重新出現。
+
 ### `search_queries`
 
 ```yaml
@@ -917,7 +928,7 @@ v2 結果介面讓所有控制項都找得到:
 **結果篩選** 組之下,`scan.filtersGroup`):
 
 - **自由文字** — 對職稱 / 公司做子字串比對。
-- **Source** 下拉 — 註冊表已知的全部來源(目前 **122**:**117 EN + 5 RU**,預設 **所有來源**)。它從 `GET /api/scan/sources` 即時自動填入,所以剛放入的新 adapter 不需任何應用程式變更就會出現在這裡 —— 清單絕不寫死。
+- **Source** 下拉 — 註冊表已知的全部來源(目前 **123**:**118 EN + 5 RU**,預設 **所有來源**)。它從 `GET /api/scan/sources` 即時自動填入,所以剛放入的新 adapter 不需任何應用程式變更就會出現在這裡 —— 清單絕不寫死。
 - **Remote / Hybrid / Onsite** 下拉。
 - **Country** 下拉 — 一個地理篩選，根據目前結果中偵測到的國家填入，每個國家都帶有其國旗 emoji 和計數(例如 `🇩🇪 Germany (12)`)。選擇一個即可只保留與該國家相關的職缺。偵測會將職缺的自由文字地點(國家名稱/別名 + 約 100 個主要就業市場城市)對應到某個國家；它很保守，絕不臆測，因此地點無法解析的職缺 —— 或純粹的 "Remote" 列表 —— 仍歸在 **All countries** 之下。將其與工作型態下拉框結合，即可同時找到與國家綁定的職缺*和*遠端職缺。
 - **Posted within** 下拉 — 一個用戶端的時效篩選(Last 24 hours / 7 days / 30 days)。`pubDate` 較舊的列會被隱藏;**沒有列出日期的列會通過**(缺少資料不會被懲罰)。
@@ -942,7 +953,7 @@ v2 結果介面讓所有控制項都找得到:
 (`scan.activeCo.help`)。清單分成兩組:
 
 - ✓ **直接 API**(`scan.apiBacked`)—— 看板直接從其公開 ATS API
-  擷取(117 個 EN adapter 之一,從 Greenhouse / Ashby / Lever /
+  擷取(118 個 EN adapter 之一,從 Greenhouse / Ashby / Lever /
   Workable / SmartRecruiters / Workday 直到長尾)。
 - ○ **僅 web 搜尋**(`scan.websearchBacked`)—— 沒有 adapter 匹配
   該 URL,由 CLI 的 AI 掃描代為涵蓋。
@@ -1186,6 +1197,15 @@ evaluate** 子節(在父專案執行 `./batch/batch-runner.sh`),讓它
 
 ---
 
+### 職缺守衛 —— JD 完整性檢查（v1.262.0）
+
+在 slug 帶有報告編號的報告頁面上，頁首動作列多了一個
+**職缺守衛（Posting guard）** 按鈕。它會對報告封存的 JD（`jds/` 擷取檔）
+執行父專案確定性的 zero-LLM 完整性閘門，並把檢查結果直接呈現在頁面上 ——
+判定、各項檢查與原因。閘門完全在本機執行：無模型、無寫入。在父專案端附上
+`posting-guard.mjs` 腳本之前，按鈕會如實回答「script not found」提示，
+而不是報錯。
+
 ## 11. 追蹤器(`#/tracker`)
 
 CRM。每件申請一列;存於 `data/applications.md` 作為
@@ -1259,6 +1279,13 @@ GitHub-Flavored Markdown 表格。
 reportSlug?, notes?, date? }`。以 `(company, role)` 大小寫不敏感
 去重。從 UI 端,Evaluate 頁面在評分成功後會提供「Add to
 tracker」按鈕。
+
+### 匯入其他追蹤器的 CSV（v1.262.0）
+
+工具列的 **Import CSV** 按鈕可接收其他追蹤器的 CSV 匯出檔
+（company/role/status/date/url —— 會辨識欄位別名，支援 RFC-4180 引號），
+逐列預覽其處置結果（匯入、依職缺 URL 判為重複、略過），並在你確認後才寫入。
+未知階段會落為 Evaluated 並附註記；日期接受 ISO、日在前與月份名稱等寫法。
 
 ### 「還在徵嗎？」 — 檢查某個 ATS 職缺是否仍然開放
 
@@ -1675,7 +1702,7 @@ scan 執行、設定變更、mode 執行。
 
 ## 17. 如何新增職位入口網站來源
 
-career-ops-ui 將每個職位網站視為 **adapter** — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 下的單一檔案,知道如何取得並正規化某個站點的結果。目前,`server/lib/sources/` 註冊表內建 **122** 個來源 —— **117 個英文 + 5 個俄文**板塊。英文集合涵蓋主流 ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday)、由明確 `provider:` 選擇的全板塊聚合器(RemoteOK、Remotive、We Work Remotely、NoDesk、Get on Board、Amazon、…),以及從 `careers_url` 主機或明確 `api:` URL 自動偵測的按租戶 ATS(BambooHR、Personio、Recruitee、Teamtailor、Avature、SAP SuccessFactors、…)。**完整清單永遠無需在此手動統計 —— 它會從 `server/lib/sources/` 自動探索,並在 `#/scan` 的 Source 下拉選單中即時顯示。** YAML 見 §5,可複製貼上的條目見 `docs/portals-examples.md`。
+career-ops-ui 將每個職位網站視為 **adapter** — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 下的單一檔案,知道如何取得並正規化某個站點的結果。目前,`server/lib/sources/` 註冊表內建 **123** 個來源 —— **118 個英文 + 5 個俄文**板塊。英文集合涵蓋主流 ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday)、由明確 `provider:` 選擇的全板塊聚合器(RemoteOK、Remotive、We Work Remotely、NoDesk、Get on Board、Amazon、…),以及從 `careers_url` 主機或明確 `api:` URL 自動偵測的按租戶 ATS(BambooHR、Personio、Recruitee、Teamtailor、Avature、SAP SuccessFactors、…)。**Deel** 招聘平台上的板塊（`jobs.deel.com/<slug>` —— Klarna 等公司發布職位的租戶制板塊）會從 URL 自動偵測，新增一個板塊只需 portals.yml 中的兩行。**完整清單永遠無需在此手動統計 —— 它會從 `server/lib/sources/` 自動探索,並在 `#/scan` 的 Source 下拉選單中即時顯示。** YAML 見 §5,可複製貼上的條目見 `docs/portals-examples.md`。
 
 > **v1.69.0 (P-14) — 直接放入即自動探索。** 新增第 12 個來源現在只需**純粹的檔案放入**。registry
 > ([`server/lib/sources/registry.mjs`](../../server/lib/sources/registry.mjs))
@@ -2062,6 +2089,14 @@ career-ops-ui 的大部分功能都在問「這份工作和我的 CV 匹配嗎�
 ### 讓它有人味（語氣匹配）
 
 貼上一句或一段生硬的文字——那種讀起來像套話的、泛泛的 AI 措辭——**讓它有人味**便會用*你的*語氣重寫它。重寫在伺服器端以你的 `voice-dna.md`（你的文字讀起來如何）和 `writing-samples/`（你真實的行文）為依據。硬性規則：它可以重新排序、精簡並重新調整語氣，但**絕不會**引入貼上文字中尚未存在的事實、指標或成就。有 LLM 金鑰時它會即時重寫；沒有金鑰時它會給你一段現成的提示詞，供貼到任意助手中。之後照常在 `#/cv` 頁面編輯你的履歷——CV Studio 提建議，你來決定。
+
+### 語氣檢查（v1.262.0）
+
+**語氣檢查（Voice check）** 卡片會拿 27 條履歷套話（"passionate about"、
+"proven track record"、"leveraged"、"spearheaded"……）逐一檢查貼上的文字，
+並精確標出命中之處 —— 2022–2024 這樣的年份區間是日期、不是套話，而
+`20–30%` 就會被標出。唯讀：不寫入任何地方。Tailor 檢查清單把套話措辭視為
+第六項不變量。
 
 ### 「重用舊履歷？」提示
 

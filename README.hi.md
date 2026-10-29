@@ -9,19 +9,19 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-6699%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-6841%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.261.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.261.3)
+[![release](https://img.shields.io/badge/release-v1.262.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.261.3** — **डिज़ाइन-समापन पैच: Lovable डिज़ाइन सिस्टम पूरी तरह लाइव है — फेज़ 3 घनत्व (टेबल रो ≈32px, कंट्रोल 30px, चिप्स 24px) और हर coral अवशेष नए ब्लू-एक्सेंट / रेड-डेंजर विभाजन में चला गया — साथ में Trakstar Hire स्कैन सोर्स (रजिस्ट्री 122), स्कैन होस्ट-पूल (32 कंपनियों तक, प्रति होस्ट 10), छह upstream प्रोवाइडर लोकेशन फ़िक्स, CV Studio अनडू + अनसेव्ड-गार्ड, और फ़ाइनल-रिग्रेशन कंट्रास्ट फ़िक्स (मैप क्लस्टर लेबल 4.68:1)। नीचे: जियोकोड कैश अब क्रैश से बचता है, ta मूल्यांकनों को 32768-टोकन सीलिंग मिली, और रिमोट-QA विफल सोर्स के नाम बताता है।**
+> **🆕 नवीनतम रिलीज़ — v1.262.0** — **अपस्ट्रीम-फ़ीचर्स minor: Deel जॉब बोर्ड स्कैनर में शामिल होता है (रजिस्ट्री 123), किसी दूसरे ट्रैकर का CSV dry-run प्रीव्यू के साथ सीधे #/tracker में इम्पोर्ट होता है, posting-guard JD इंटीग्रिटी चेक और CV वॉइस चेक (27 स्टॉक वाक्यांश हाइलाइट) UI में आते हैं, अनुभव-वर्ष स्कैन फ़िल्टर JD पढ़ता है, और Apply बटन सात और भाषाओं में समझे जाते हैं — साथ ही सोर्स के बीच reposts गढ़ना बंद, MiniMax का सेवानिवृत्त डिफ़ॉल्ट मॉडल बदला गया, और तमिल मूल्यांकन अपनी भाषा थामे रहते हैं।**
 >
-> **पिछला — v1.261.2** — **स्थिरता + पॉलिश: two-pager TDZ क्रैश ठीक (P1), Ctrl+K गैर-QWERTY लेआउट पर काम करता है, हेल्प रेंडर-टेक्स्ट की-लीक ×17 बंद, UI.md बुलेट कंटिन्यूएशन और नेस्टेड लिस्ट रेंडर करता है, मैप कैप्चर ×19 री-फ्रेम, cvstart.org पर असली स्क्रीनशॉट के साथ, RTL क्रोम लॉजिकल प्रॉपर्टीज़ से मिरर (85 फ़ाइंडिंग), 11 राउट पर कीबोर्ड-a11y हार्नेस, और जियोकोड कैश क्रैश-सेफ़ बनाया गया।**
+> **पिछला — v1.261.3** — **डिज़ाइन-पूर्णता पैच: Lovable डिज़ाइन सिस्टम पूरी तरह लाइव (फेज़ 3 घनत्व: रो ≈32px, कंट्रोल 30px, चिप्स 24px; हर coral ब्लू-एक्सेंट/रेड-डेंजर विभाजन में चला गया), Trakstar Hire स्कैन सोर्स (रजिस्ट्री 122), स्कैन होस्ट-पूल (32 कंपनियाँ, प्रति होस्ट 10), छह अपस्ट्रीम प्रोवाइडर लोकेशन फ़िक्स, और CV Studio undo + अनसेव्ड-गार्ड।**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -425,7 +425,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 6699 यूनिट + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (बेसलाइन @ v1.261.3)
+└─ tests/                    # 6841 यूनिट + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (बेसलाइन @ v1.262.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report पार्सर (प्योर फ़ंक्शन)
    ├─ api.test.mjs           # हर एंडपॉइंट, एफ़ेमरल सर्वर, कोई नेटवर्क नहीं
    ├─ {ru,en}-scanner.test.mjs   # मॉक्ड fetch

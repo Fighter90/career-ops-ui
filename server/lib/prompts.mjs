@@ -529,6 +529,29 @@ function evalVolumeBudget(lang) {
 }
 
 /**
+ * CAR-183 — reinforced language directive for the locale whose evaluation
+ * intermittently drifts out of its own script despite the opening directive
+ * and the closing reminder: remote-QA v1.261.2 saw ta reports pass the A–G
+ * structure check yet come back in English (18/19 locales green; hi has
+ * never drifted, so it stays out). One calm native sentence — the lesson
+ * CAR-92 recorded still holds: a thundering standalone mandate made the
+ * weak-ta model drop the Latin A–G headings. Stated in the report language
+ * so it binds like the volume budget above; rendered in the volatile tail
+ * BEFORE the budget block, with the closing reminder still LAST. '' for
+ * every other locale.
+ */
+const EVAL_LANGUAGE_REINFORCE = {
+  ta: 'மொழி விதி (கட்டாயம்): முழு அறிக்கையும் தமிழில் மட்டுமே எழுதப்பட வேண்டும். ஒவ்வொரு வாக்கியமும் தமிழிலேயே இருக்க வேண்டும். ஆங்கிலச் சொற்கள் தொழில்நுட்பச் சொற்களாகவும் பெயர்களாகவும் மட்டுமே அனுமதிக்கப்படும்.',
+};
+
+/** The reinforced language directive for a drift-prone locale; '' elsewhere. */
+function evalLanguageReinforce(lang) {
+  const base = String(lang || 'en').trim().toLowerCase().split('-')[0];
+  return (Object.prototype.hasOwnProperty.call(EVAL_LANGUAGE_REINFORCE, base)
+    && typeof EVAL_LANGUAGE_REINFORCE[base] === 'string') ? EVAL_LANGUAGE_REINFORCE[base] : '';
+}
+
+/**
  * The per-posting tail: fenced JD, compensation block, heading skeleton, closing language reminder.
  */
 function evaluationPromptTail(jd, lang) {
@@ -554,10 +577,14 @@ function evaluationPromptTail(jd, lang) {
   const compSection = comp ? `\n${comp}\n` : '';
   // CAR-174 — the volume budget rides the tail right before the language
   // reminder, which must stay the prompt's LAST instruction (CAR-92).
+  // CAR-183 — the reinforced native-language directive for a drift locale
+  // (ta only) rides the tail just BEFORE the budget block.
+  const reinforce = evalLanguageReinforce(lang);
+  const reinforceSection = reinforce ? `\n${reinforce}\n` : '';
   const budget = evalVolumeBudget(lang);
   const budgetSection = budget ? `\n${budget}\n` : '';
   return `${untrustedJd(jd)}
-${compSection}${skeleton}${budgetSection}${buildLanguageReminder(lang)}`;
+${compSection}${skeleton}${reinforceSection}${budgetSection}${buildLanguageReminder(lang)}`;
 }
 
 /**

@@ -192,6 +192,10 @@ import { techinasiaAdapter } from './adapters/techinasia.mjs';
 // host-detected <client>.hire.trakstar.com / <client>.recruiterbox.com or
 // explicit `provider: trakstar`; no-auth Frontend API, 100 openings/page).
 import { trakstarAdapter } from './adapters/trakstar.mjs';
+// CAR-184 — parent parity: Deel (multi-tenant job board jobs.deel.com/<slug>,
+// exact-host detected; the landing page's Next.js flight payload carries the
+// whole inventory in one request).
+import { deelAdapter } from './adapters/deel.mjs';
 
 export const ALL_ADAPTERS = [
   builtinAdapter,
@@ -383,6 +387,9 @@ export const ALL_ADAPTERS = [
   // jsapi.recruiterbox.com, 100 openings/page, max_pages cap (default 20,
   // max 50). Distinct hosts, so appending is safe.
   trakstarAdapter,
+  // Deel (CAR-184) — host-detected jobs.deel.com/<slug> boards (Klarna et al.);
+  // exact-host match only, one page request per board.
+  deelAdapter,
 ];
 
 /**

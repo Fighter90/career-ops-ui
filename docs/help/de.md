@@ -765,6 +765,19 @@ listet die Flag-Codes auf), sodass Sie Zeilen mit geringem Vertrauen sichten
 können, ohne dass etwas herausgefiltert wird. Lassen Sie den Block ganz weg,
 um das Verhalten von vor 1.76 beizubehalten (keine Annotation, kein Abzeichen).
 
+### `years_min` (optional — web-ui 1.262.0)
+
+```yaml
+years_min: 3
+```
+
+Überspringt Anzeigen, deren Beschreibung eine Mindestberufserfahrung unter
+deiner Grenze nennt. Der Parser liest nur genannte Anforderungen — eine
+Anzeige ohne genannte Zahl kommt immer durch (nie wegen einer Vermutung
+verworfen). Übersprungene Zeilen werden in `data/scan-history.tsv` als
+`skipped_experience` erfasst, ein rein beobachtender Status, der eine URL
+nie festhält — die Anzeige taucht also bei einem späteren Scan wieder auf.
+
 ### `search_queries`
 
 ```yaml
@@ -1183,7 +1196,7 @@ alles andere liegt hinter **Erweiterte Filter**, `scan.advancedFilters`
 - **Freitext** — Teilzeichenketten-Übereinstimmung gegen Titel /
   Unternehmen.
 - **Source**-Dropdown — jede Quelle, die die Registry kennt (aktuell
-  122: 117 EN + 5 RU, standardmäßig **All sources**). Sie wird live aus
+  123: 118 EN + 5 RU, standardmäßig **All sources**). Sie wird live aus
   `GET /api/scan/sources` befüllt, sodass ein neu abgelegter Adapter
   ohne App-Änderung hier erscheint — die Liste ist nie hartcodiert.
 - **Remote / Hybrid / Onsite**-Dropdown.
@@ -1217,7 +1230,7 @@ Der Tooltip sagt dasselbe in schlichten Worten
 (`scan.activeCo.help`). Die Liste ist in zwei Gruppen geteilt:
 
 - ✓ **Direkte API** (`scan.apiBacked`) — das Board wird direkt aus
-  seiner öffentlichen ATS-API geholt (einer der 117 EN-Adapter, von
+  seiner öffentlichen ATS-API geholt (einer der 118 EN-Adapter, von
   Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday
   bis zum langen Schwanz).
 - ○ **Nur Websuche** (`scan.websearchBacked`) — kein Adapter passt zur
@@ -1507,6 +1520,17 @@ du es einer Bewerbung anhängst.
 
 ---
 
+### Anzeigen-Prüfung — JD-Integritätsprüfung (v1.262.0)
+
+Auf einer Berichtsseite, deren Slug eine Berichtsnummer trägt, steht in der
+Kopfaktionen-Zeile ein **Anzeigen-Prüfung**-Button. Er führt die
+deterministische Zero-LLM-Integritätsprüfung des Elternprojekts über die
+archivierte JD des Berichts (den `jds/`-Capture) aus und zeigt die Befunde
+direkt an — Urteil, Einzelprüfungen und Gründe. Die Prüfung läuft lokal:
+kein Modell, keine Schreibvorgänge. Solange der Eltern-Checkout das Skript
+`posting-guard.mjs` noch nicht mitliefert, antwortet der Button mit einem
+ehrlichen „Skript nicht gefunden“-Hinweis statt eines Fehlers.
+
 ## 11. Tracker (`#/tracker`)
 
 Das CRM. Eine Zeile pro Bewerbung; lebt in `data/applications.md` als
@@ -1589,6 +1613,16 @@ Jeder Filter setzt den Paginator auf Seite 1 zurück. 25 Zeilen pro Seite.
 reportSlug?, notes?, date? }`. Dedup nach `(company, role)`
 Groß-/Kleinschreibungs-unabhängig. Aus der UI bietet die Evaluate-Seite
 nach einer erfolgreichen Bewertung eine „Add to tracker"-Schaltfläche.
+
+### CSV eines anderen Trackers importieren (v1.262.0)
+
+Der **CSV importieren**-Button der Toolbar nimmt den CSV-Export eines anderen
+Trackers entgegen (company/role/status/date/url — Spalten-Aliase werden
+erkannt, RFC-4180-Anführungszeichen werden unterstützt), zeigt eine Vorschau
+jeder Zeile mit ihrem Ergebnis (Import, Duplikat nach Posting-URL,
+übersprungen) und schreibt erst, nachdem du bestätigt hast. Unbekannte Stufen
+landen als Evaluated mit einer Notiz; Datumswerte akzeptieren ISO-, Tag-zuerst-
+und Monatsnamen-Formen.
 
 ### „Noch aktiv?“ — prüfen, ob eine ATS-Anzeige noch offen ist
 
@@ -2045,7 +2079,7 @@ kopieren Sie die Ausgabe und durchsuchen Sie den Issue-Tracker unter
 
 ## 17. So fügen Sie eine neue Jobportal-Quelle hinzu
 
-career-ops-ui behandelt jedes Job-Board als **Adapter** — eine einzelne Datei unter [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), die weiß, wie man die Ergebnisse eines Boards abruft + normalisiert. Aktuell liefert die `server/lib/sources/`-Registry **122** Adapter — **117 englische + 5 russische** Boards. Das englische Set umfasst die großen ATSes (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), board-weite Aggregatoren, die per explizitem `provider:` ausgewählt werden (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), sowie Per-Mandant-ATSes, die automatisch aus einem `careers_url`-Host oder einer expliziten `api:`-URL erkannt werden (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **Die vollständige Liste muss hier niemals von Hand gezählt werden — sie wird automatisch aus `server/lib/sources/` ermittelt und live im Source-Dropdown von `#/scan` angezeigt.** Siehe §5 für das YAML und `docs/portals-examples.md` für Kopier-Einfüge-Einträge.
+career-ops-ui behandelt jedes Job-Board als **Adapter** — eine einzelne Datei unter [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), die weiß, wie man die Ergebnisse eines Boards abruft + normalisiert. Aktuell liefert die `server/lib/sources/`-Registry **123** Adapter — **118 englische + 5 russische** Boards. Das englische Set umfasst die großen ATSes (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), board-weite Aggregatoren, die per explizitem `provider:` ausgewählt werden (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), sowie Per-Mandant-ATSes, die automatisch aus einem `careers_url`-Host oder einer expliziten `api:`-URL erkannt werden (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). Boards auf der **Deel**-Jobplattform (`jobs.deel.com/<slug>` — das Multi-Tenant-Board, auf dem Klarna und andere veröffentlichen) werden automatisch an der URL erkannt — das Hinzufügen ist ein Zwei-Zeilen-Eintrag in portals.yml. **Die vollständige Liste muss hier niemals von Hand gezählt werden — sie wird automatisch aus `server/lib/sources/` ermittelt und live im Source-Dropdown von `#/scan` angezeigt.** Siehe §5 für das YAML und `docs/portals-examples.md` für Kopier-Einfüge-Einträge.
 
 > **v1.69.0 (P-14) — Drop-in-Auto-Discovery.** Das Hinzufügen einer 12. Quelle ist
 > jetzt ein **reines Datei-Ablegen**. Die Registry
@@ -2468,6 +2502,15 @@ Bevor du deinen Lebenslauf als Schreibprobe oder Screenshot teilst, schwärzt di
 ### Menschlich machen (Stimmabgleich)
 
 Füge einen steifen Satz oder Absatz ein — die Art generischer KI-Formulierung, die wie Standardtext klingt — und **Menschlich machen** schreibt ihn in *deiner* Stimme um. Das Umschreiben ist serverseitig in deiner `voice-dna.md` (wie sich dein Schreiben liest) und deinen `writing-samples/` (deine echte Prosa) verankert. Die harte Regel: Es darf umsortieren, straffen und die Stimme anpassen, aber es wird **niemals** einen Fakt, eine Kennzahl oder eine Leistung einführen, die nicht bereits im eingefügten Text steht. Mit einem LLM-Schlüssel schreibt es live um; ohne Schlüssel gibt es dir einen fertigen Prompt zum Einfügen in einen beliebigen Assistenten. Bearbeite deinen Lebenslauf danach wie gewohnt auf der Seite `#/cv` — das CV Studio schlägt vor, du entscheidest.
+
+### Auf Floskeln prüfen (v1.262.0)
+
+Die **Auf Floskeln prüfen**-Karte prüft den eingefügten Text gegen 27
+abgedroschene Lebenslauf-Floskeln („passionate about“, „proven track record“,
+„leveraged“, „spearheaded“, …) und hebt die exakten Treffer hervor — ein
+Jahresbereich wie 2022–2024 ist nur ein Datum und kein Hinweis, während
+`20–30%` einer ist. Nur lesend: nichts wird irgendwo gespeichert. Die
+Tailor-Checkliste behandelt Floskeln als sechste Invariante.
 
 ### Hinweis „Ein früheres CV wiederverwenden?“
 

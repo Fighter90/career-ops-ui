@@ -80,7 +80,9 @@
   const DEEPSEEK_MODELS = ['deepseek-chat', 'deepseek-reasoner'];
   const ZAI_MODELS = ['glm-4.6', 'glm-4.5', 'glm-4.5-air', 'glm-4-plus'];
   const KIMI_MODELS = ['kimi-k2-0711-preview', 'moonshot-v1-128k', 'moonshot-v1-32k', 'moonshot-v1-8k'];
-  const MINIMAX_MODELS = ['MiniMax-Text-01', 'abab6.5s-chat'];
+  // CAR-187 — MiniMax-Text-01 is retired: M3.1-Flash is the api.minimax.io
+  // default, M3 the api.minimax.cn one (server/lib/openai.mjs minimaxDefaultModel).
+  const MINIMAX_MODELS = ['MiniMax-M3.1-Flash', 'MiniMax-M3', 'MiniMax-M2.7', 'abab6.5s-chat'];
   const MISTRAL_MODELS = ['mistral-large-latest', 'mistral-small-latest', 'open-mistral-nemo', 'codestral-latest'];
   const GROK_MODELS = ['grok-4', 'grok-3', 'grok-3-mini', 'grok-2-latest'];
   // Inkling (Thinking Machines) is a Together-hosted model, not its own provider.
@@ -292,10 +294,10 @@
     },
     {
       key: 'MINIMAX_MODEL', secret: false, kind: 'select',
-      options: MINIMAX_MODELS, defaultValue: 'MiniMax-Text-01',
+      options: MINIMAX_MODELS, defaultValue: 'MiniMax-M3.1-Flash',
       labelKey: 'config.minimaxModel', label: 'MINIMAX_MODEL',
       hintKey: 'config.minimaxModelHint',
-      hintFallback: 'Default: MiniMax-Text-01.',
+      hintFallback: 'Default: MiniMax-M3.1-Flash. On api.minimax.cn: MiniMax-M3.',
     },
     {
       key: 'MISTRAL_API_KEY', secret: true,

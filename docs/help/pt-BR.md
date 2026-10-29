@@ -658,6 +658,14 @@ Filtra as vagas escaneadas pela **localização** (substring, sem diferenciar ma
 
 Chave de nível superior em `portals.yml` (irmã de `title_filter`, não aninhada em `russian_portals`).
 
+### `years_min` (opcional — web-ui 1.262.0)
+
+```yaml
+years_min: 3
+```
+
+Descarta vagas cuja descrição declare uma experiência mínima abaixo do seu limite. O parser lê apenas requisitos declarados — uma vaga sem número declarado sempre passa (nunca descartada por suposição). As linhas descartadas são registradas em `data/scan-history.tsv` como `skipped_experience`, um status observacional que nunca fixa uma URL, então a vaga reaparece num scan posterior.
+
 ### `search_queries`
 
 ```yaml
@@ -1022,8 +1030,8 @@ todo o resto fica atrás de **Filtros avançados**,
 **Filtros de resultados**, `scan.filtersGroup`):
 
 - **Texto livre** — match de substring contra título / empresa.
-- Dropdown de **Fonte** — todas as fontes que o registro conhece (122
-  agora: 117 EN + 5 RU, **All sources** por padrão). É preenchido ao
+- Dropdown de **Fonte** — todas as fontes que o registro conhece (123
+  agora: 118 EN + 5 RU, **All sources** por padrão). É preenchido ao
   vivo a partir de `GET /api/scan/sources`, então um adapter recém
   adicionado aparece aqui sem nenhuma mudança no app — a lista nunca
   é fixada no código.
@@ -1056,7 +1064,7 @@ ATSs). O tooltip diz o mesmo em palavras simples
 (`scan.activeCo.help`). A lista é dividida em dois grupos:
 
 - ✓ **API direta** (`scan.apiBacked`) — o board é buscado direto da
-  sua API ATS pública (um dos 117 adapters EN, de Greenhouse / Ashby /
+  sua API ATS pública (um dos 118 adapters EN, de Greenhouse / Ashby /
   Lever / Workable / SmartRecruiters / Workday até a cauda longa).
 - ○ **Apenas web-search** (`scan.websearchBacked`) — nenhum adapter
   corresponde à URL, então o scan com IA do CLI cobre essa.
@@ -1325,6 +1333,10 @@ Abra um relatório salvo e clique em **📄 Gerar PDF**. Ele executa
 (precisa do Playwright; a página Saúde mostra se está instalado). Nada é
 enviado: revise o PDF antes de anexá-lo a uma candidatura.
 
+### Verificação do anúncio — integridade do JD (v1.262.0)
+
+Nas ações do cabeçalho de um relatório individual, o botão **🛡 Verificação do anúncio** executa o gate de integridade determinístico e zero-LLM do projeto pai sobre o JD arquivado daquele relatório (a captura em `jds/`, resolvida pelo número do relatório no slug). Os achados são renderizados inline: o veredito, cada checagem e sua razão. Tudo roda local: sem modelo e sem gravações. Enquanto seu checkout do pai não tiver `posting-guard.mjs`, o botão responde honestamente com uma nota de "script not found" em vez de falhar.
+
 ---
 
 ## 11. Tracker (`#/tracker`)
@@ -1410,6 +1422,10 @@ página.
 reportSlug?, notes?, date? }`. Dedup por `(company, role)`
 case-insensitive. Na UI, a página Evaluate oferece um botão "Add to
 tracker" depois de uma pontuação bem-sucedida.
+
+### Importar o CSV de outro tracker (v1.262.0)
+
+O botão **Importar CSV** da barra de ferramentas aceita o export CSV de outro tracker (Teal, Huntr, Simplify ou uma planilha feita à mão — aliases de coluna para company/role/status/date/url, parse RFC-4180) e pré-visualiza cada linha com seu destino: importar, duplicada (mesma URL de vaga) ou pular. Nada é gravado até você confirmar. Um estágio que o app não reconhece não bloqueia a linha — ela entra como Evaluated com uma nota. Datas são entendidas em ISO, dia-primeiro ou com nome de mês.
 
 ### "Ainda no ar?" — verifique se uma vaga de ATS continua aberta
 
@@ -1877,7 +1893,7 @@ copie a saída, e busque a issue no rastreador em
 
 ## 17. Como adicionar uma nova fonte de portal de vagas
 
-O career-ops-ui trata cada job board como um **adapter** — um único arquivo em [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) que sabe como buscar e normalizar os resultados de um portal. Atualmente o registry `server/lib/sources/` inclui **122** fontes — **117 em inglês + 5 russas**. O conjunto em inglês abrange os principais ATSes (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), agregadores de todo o board selecionados por um `provider:` explícito (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), e ATSes por tenant autodetectados a partir de um host `careers_url` ou de uma URL `api:` explícita (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **A lista completa nunca precisa ser contada à mão aqui — ela é autodescoberta a partir de `server/lib/sources/` e exibida ao vivo no dropdown Source de `#/scan`.** Veja a §5 para o YAML e `docs/portals-examples.md` para entradas prontas para copiar e colar.
+O career-ops-ui trata cada job board como um **adapter** — um único arquivo em [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) que sabe como buscar e normalizar os resultados de um portal. Atualmente o registry `server/lib/sources/` inclui **123** fontes — **118 em inglês + 5 russas**. O conjunto em inglês abrange os principais ATSes (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), agregadores de todo o board selecionados por um `provider:` explícito (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), e ATSes por tenant autodetectados a partir de um host `careers_url` ou de uma URL `api:` explícita (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). Os boards da plataforma **Deel** (`jobs.deel.com/<slug>` — o board multi-tenant onde Klarna e outros publicam) são autodetectados pela URL: adicionar um são duas linhas no portals.yml. **A lista completa nunca precisa ser contada à mão aqui — ela é autodescoberta a partir de `server/lib/sources/` e exibida ao vivo no dropdown Source de `#/scan`.** Veja a §5 para o YAML e `docs/portals-examples.md` para entradas prontas para copiar e colar.
 
 > **v1.69.0 (P-14) — auto-descoberta drop-in.** Adicionar uma 12.ª fonte é agora
 > um **drop puro de arquivo**. O registry
@@ -2280,6 +2296,10 @@ Antes de compartilhar seu CV como amostra de escrita ou captura de tela, a **Má
 ### Torne humano (correspondência de voz)
 
 Cole uma frase ou um parágrafo engessado — aquele tipo de redação genérica de IA que soa como texto padrão — e **Torne humano** o reescreve na *sua* voz. A reescrita é fundamentada no servidor no seu `voice-dna.md` (como sua escrita soa) e nos seus `writing-samples/` (sua prosa real). A regra rígida: ele pode reordenar, enxugar e reajustar a voz, mas **nunca** vai introduzir um fato, métrica ou conquista que já não esteja no texto que você colou. Com uma chave de LLM, ele reescreve ao vivo; sem chave, ele entrega um prompt pronto para colar em qualquer assistente. Depois edite seu CV na página `#/cv` como de costume — o CV Studio sugere, você decide.
+
+### Verificação de frases de efeito (v1.262.0)
+
+O cartão **Verificação de frases de efeito** analisa qualquer texto colado em busca de 27 frases de efeito de currículo ("passionate about", "proven track record", "leveraged", "spearheaded"…) e destaca as ocorrências exatas. Um travessão entre anos — `2022–2024` — é um intervalo de datas, não um clichê, mas `20–30%` é marcado como clichê. É somente leitura: nada é gravado em lugar algum. O checklist de **Adaptar a uma vaga** conta frases de efeito como seu sexto invariante.
 
 ### Dica "Reaproveitar um CV anterior?"
 

@@ -653,6 +653,14 @@ location_filter:
 
 `portals.yml` のトップレベルキー(`title_filter` の兄弟、`russian_portals` の下ではない)。
 
+### `years_min` (任意 — web-ui 1.262.0)
+
+```yaml
+years_min: 3
+```
+
+説明文にあなたの基準を下回る最低経験年数が明記された求人をスキップします。パーサーが読むのは明記された要件のみ — 数字の明記がない求人は常に通過します（推測で落とすことはありません）。スキップされた行は `data/scan-history.tsv` に `skipped_experience` として記録されます。これは観測用のステータスで URL を固定しないため、求人は後のスキャンで再び現れます。
+
 ### `search_queries`
 
 ```yaml
@@ -1018,7 +1026,7 @@ v2 の結果表示はコントロールを見つけやすく保ちます:
 
 - **フリーテキスト** — タイトル / 会社名に対する部分一致。
 - **Source** ドロップダウン — レジストリが知るすべてのソース
-  (現在 122:117 EN + 5 RU、既定は **All sources**)。
+  (現在 123:118 EN + 5 RU、既定は **All sources**)。
   `GET /api/scan/sources` からライブで自動構築されるため、新しく
   追加されたアダプタはアプリの変更なしでここに現れます — リストが
   ハードコードされることはありません。
@@ -1049,7 +1057,7 @@ v2 の結果表示はコントロールを見つけやすく保ちます:
 分かれます:
 
 - ✓ **直接 API**(`scan.apiBacked`)— ボードを公開 ATS API から
-  直接取得します(117 個の EN アダプタのいずれか。Greenhouse /
+  直接取得します(118 個の EN アダプタのいずれか。Greenhouse /
   Ashby / Lever / Workable / SmartRecruiters / Workday から長尾
   まで)。
 - ○ **Web 検索のみ**(`scan.websearchBacked`)— URL に一致する
@@ -1312,6 +1320,10 @@ markdown を `reports/<date>-<company>-<role>.md` に永続化します。
 が必要で、ヘルス(Health)ページで導入状況を確認できます)。どこにも送信されません。
 応募に添付する前に PDF を確認してください。
 
+### 求人チェック — JD 完全性チェック (v1.262.0)
+
+個別レポートのヘッダーアクションにある **🛡 求人チェック** ボタンは、そのレポートのアーカイブ済み JD（スラグのレポート番号で解決される `jds/` キャプチャ）に対して、親プロジェクトの決定論的 zero-LLM 完全性ゲートを実行します。結果はインラインで表示されます — 判定、各チェック、その理由。すべてローカルで実行: モデル呼び出しなし、書き込みなし。親のチェックアウトに `posting-guard.mjs` がまだ無い間は、失敗する代わりに「script not found」の注記が正直に返されます。
+
 ---
 
 ## 11. トラッカー (`#/tracker`)
@@ -1397,6 +1409,10 @@ Flavored Markdown テーブルとして保存されます。
 url?, reportSlug?, notes?, date? }`。`(company, role)` を
 大文字小文字非依存で重複排除します。UI からは、Evaluate ページが
 採点成功後に "Add to tracker" ボタンを提供します。
+
+### 別トラッカーの CSV を取り込む (v1.262.0)
+
+ツールバーの **CSVを取り込む** ボタンは、他のトラッカーの CSV エクスポート（Teal、Huntr、Simplify、手作りのスプレッドシート — company/role/status/date/url の列エイリアス、RFC-4180 パース）を受け取り、各行をその結果つきでプレビューします — 取り込み / 同じ求人 URL の重複 / スキップ。記録されるのは確認後のみです。アプリが認識しないステータスも行をブロックしません — Evaluated として注記付きで登録されます。日付は ISO、日先頭（day-first）、月名のいずれの形式も解釈します。
 
 ### 「まだ募集中？」 — ATS 求人がまだ開いているか確認
 
@@ -1844,7 +1860,7 @@ evaluate 実行、deep-research 実行、scan 実行、設定変更、モード
 
 ## 17. 新しい求人ポータルソースを追加する方法
 
-career-ops-ui は各求人サイトを **アダプタ** として扱います — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 配下の 1 ファイルが、1 サイトの結果取得と正規化の方法を持ちます。`server/lib/sources/` レジストリは **122** 個のソースを同梱しています — **英語圏 117 個 + ロシア系 5 個** のボードです。英語圏のセットは主要な ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday)、明示的な `provider:` で選択されるボード全体のアグリゲーター(RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …)、および `careers_url` ホストまたは明示的な `api:` URL から自動検出されるテナント単位の ATS(BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …)にわたります。**完全なリストをここで手作業で数える必要はまったくありません — `server/lib/sources/` から自動検出され、`#/scan` の Source ドロップダウンにライブで表示されます。** YAML は §5、コピー&ペースト用のエントリは `docs/portals-examples.md` を参照してください。
+career-ops-ui は各求人サイトを **アダプタ** として扱います — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 配下の 1 ファイルが、1 サイトの結果取得と正規化の方法を持ちます。`server/lib/sources/` レジストリは **123** 個のソースを同梱しています — **英語圏 118 個 + ロシア系 5 個** のボードです。英語圏のセットは主要な ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday)、明示的な `provider:` で選択されるボード全体のアグリゲーター(RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …)、および `careers_url` ホストまたは明示的な `api:` URL から自動検出されるテナント単位の ATS(BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …)にわたります。**Deel** ジョブプラットフォーム上のボード（`jobs.deel.com/<slug>` — Klarna などが公開するマルチテナントボード）は URL から自動検出されます。追加は portals.yml への 2 行です。**完全なリストをここで手作業で数える必要はまったくありません — `server/lib/sources/` から自動検出され、`#/scan` の Source ドロップダウンにライブで表示されます。** YAML は §5、コピー&ペースト用のエントリは `docs/portals-examples.md` を参照してください。
 
 > **v1.69.0 (P-14) — ドロップイン自動検出。** 12 個目のソース追加はいまや **ファイルを置くだけ** で完結します。レジストリ
 > ([`server/lib/sources/registry.mjs`](../../server/lib/sources/registry.mjs))
@@ -2224,6 +2240,10 @@ CVを文章サンプルやスクリーンショットとして共有する前に
 ### 人間らしくする（ボイスマッチング）
 
 硬い一文や段落 — 定型文のように読める、あの一般的なAIっぽい言い回し — を貼り付けると、**人間らしくする**がそれを*あなたの*声で書き換えます。書き換えはサーバー側で、あなたの `voice-dna.md`（あなたの文章がどう読めるか）と `writing-samples/`（あなたの実際の文章）に基づきます。厳格なルール: 並べ替え、引き締め、声の調整はできますが、貼り付けたテキストにまだない事実、指標、実績を**決して**持ち込みません。LLMキーがあればライブで書き換え、キーがなければどんなアシスタントにも貼り付けられる、そのまま使えるプロンプトを渡します。その後はいつも通り `#/cv` ページでCVを編集してください — CV Studioは提案し、決めるのはあなたです。
+
+### 定型表現チェック (v1.262.0)
+
+**定型表現チェック** カードは、貼り付けたテキストを 27 の定型レジュメフレーズ（「passionate about」「proven track record」「leveraged」「spearheaded」など）に対して検査し、一致箇所を正確にハイライトします。年の間のダッシュ — `2022–2024` — は日付範囲であって定型句ではありませんが、`20–30%` は定型句として検出されます。読み取り専用で、どこにも書き込みません。**求人に合わせて最適化** のチェックリストは、定型フレーズを 6 番目の不変条件として数えます。
 
 ### 「過去の CV を再利用？」ヒント
 

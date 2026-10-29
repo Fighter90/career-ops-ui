@@ -10,19 +10,19 @@
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
-[![tests](https://img.shields.io/badge/tests-6699%20passed-brightgreen)](#testy)
+[![tests](https://img.shields.io/badge/tests-6841%20passed-brightgreen)](#testy)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#testy)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.261.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.261.3)
+[![release](https://img.shields.io/badge/release-v1.262.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Najnowsze wydanie — v1.261.3** — **Patch dopełniający design: system designu Lovable jest w pełni aktywny — gęstość fazy 3 (wiersze tabel ≈32px, kontrolki 30px, chipy 24px), a wszystkie pozostałości koloru koralowego przeniesiono do nowego podziału niebieski akcent / czerwone zagrożenie — do tego źródło skanowania Trakstar Hire (rejestr 122 źródeł), host-pool skanowania (do 32 firm, 10 na host), sześć poprawek lokalizacji providerów z upstreamu, undo w CV Studio + ochrona niezapisanych zmian, oraz poprawki kontrastu z finalnej regresji (etykieta klastra mapy 4.68:1). Pod spodem: cache geokodera przeżywa teraz awarie, ewaluacje ta mają sufit 32768 tokenów, a remote-QA wymienia źródła, które zawiodły.**
+> **🆕 Najnowsze wydanie — v1.262.0** — **Minor z funkcjami z upstreamu: tablica Deel dołącza do skanera (rejestr 123), CSV z innego trackera importuje się prosto do #/tracker z podglądem dry-run, check integralności JD posting-guard i check głosu CV (27 podświetlonych utartych fraz) trafiają do UI, filtr skanu po latach doświadczenia czyta JD, a przyciski Apply są rozumiane w siedmiu kolejnych językach — do tego reposty przestają być fabrykowane między źródłami, zastąpiono wycofany domyślny model MiniMax, a ewaluacje tamilskie trzymają swój język.**
 >
-> **Poprzednie wydanie — v1.261.2** — **Stabilność + szlif: naprawiony crash TDZ two-pagera (P1), Ctrl+K działa na układach innych niż QWERTY, zamknięte wycieki kluczy w renderowanym tekście pomocy ×17, UI.md renderuje kontynuacje punktorów i listy zagnieżdżone, zrzuty mapy przeformowane ×19 z prawdziwymi zrzutami ekranu na cvstart.org, chrome RTL lustrzanie przez właściwości logiczne (85 ustaleń), harness dostępności klawiatury na 11 trasach, oraz cache geokodera odporny na awarie.**
+> **Poprzednie wydanie — v1.261.3** — **Patch dopełniający design: system designu Lovable jest w pełni aktywny — gęstość fazy 3 (wiersze tabel ≈32px, kontrolki 30px, chipy 24px), a wszystkie pozostałości koloru koralowego przeniesiono do nowego podziału niebieski akcent / czerwone zagrożenie — do tego źródło skanowania Trakstar Hire (rejestr 122 źródeł), host-pool skanowania (do 32 firm, 10 na host), sześć poprawek lokalizacji providerów z upstreamu, undo w CV Studio + ochrona niezapisanych zmian, oraz poprawki kontrastu z finalnej regresji (etykieta klastra mapy 4.68:1). Pod spodem: cache geokodera przeżywa teraz awarie, ewaluacje ta mają sufit 32768 tokenów, a remote-QA wymienia źródła, które zawiodły.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -147,7 +147,7 @@ career-ops/
 └─ web-ui/          ← to repozytorium
    ├─ server/       # Express + 15 modułów tras
    ├─ public/       # vanilla JS SPA, bez bundlera
-   └─ tests/        # 6699 testów jednostkowych + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (podstawa @ v1.261.3)
+   └─ tests/        # 6841 testów jednostkowych + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (podstawa @ v1.262.0)
 ```
 
 Serwer ma dwie zależności produkcyjne: `express` i `js-yaml`. Brak transpilacji, brak bundlera — cały interfejs to mniej niż 30 KB zminifikowanego kodu.

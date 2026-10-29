@@ -40,6 +40,7 @@ window.ScanResults = (function () {
     { value: 'csod', label: 'Cornerstone' },
     { value: 'cryptocurrencyjobs', label: 'Cryptocurrency Jobs' },
     { value: 'dassault', label: 'Dassault Systèmes' },
+    { value: 'deel', label: 'Deel' },
     { value: 'deutschebahn', label: 'Deutsche Bahn' },
     { value: 'dover', label: 'Dover' },
     { value: 'eightfold', label: 'Eightfold' },

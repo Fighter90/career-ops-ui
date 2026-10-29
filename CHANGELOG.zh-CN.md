@@ -9,6 +9,32 @@
 ---
 
 
+## [1.262.0] — 2026-10-29
+
+**上游功能 minor：Deel 招聘看板加入扫描器（注册表 123）、其他 tracker 的 CSV 直接导入 `#/tracker`、posting-guard 的 JD 完整性检查与 CV 语气检查以 relay/lint 形式落地、扫描器学会按工作年限过滤、Apply 按钮再多懂 7 种语言而不再被读作缺失 —— 加上 MiniMax 已退役的默认模型被替换、跨来源的 repost 不再被凭空捏造。**
+
+### 新增
+
+- **Deel 招聘看板来源（CAR-184）**：注册表 **123 sources = 118 EN + 5 RU · 118 adapters** —— 自动识别 `jobs.deel.com/<slug>` 租户看板（Klarna 等）；Next.js flight 载荷一次请求带回全部职位清单（标题、地点、用工形式、日期、描述），绝不触碰被禁的 `/api/` 路径，把招聘页放在别处的租户返回的重定向会被来源**指名**拒绝；薪酬刻意不做映射（没有支付周期的金额只能是猜测）；计数门槛 ×5 + 帮助 §17 ×19。
+- **Tracker CSV 导入（CAR-181）**：`POST /api/tracker/import-csv`，带 dry-run 预览与加锁提交 —— RFC-4180 引号、ISO / 日在先 / 月名日期格式、外来 tracker 阶段折叠进正典状态（未知阶段以 Evaluated 落地并附注记，绝不丢弃）、以从 markdown 链接单元格或 Notes 列读出的规范化职位 URL 去重、限额 512 KB / 2000 行；`#/tracker` 新增带预览模态框的 Import CSV 按钮，i18n ×19。
+- **Posting guard 中继（CAR-182）**：`POST /api/runners/posting-guard` —— 父项目的确定性 zero-LLM JD 完整性门，按报告编号经 `jds/` 捕获前缀规则（有无补零皆可，按整数比较）或显式净化路径解析；子进程只拿到 argv、30 秒上限与 fail-soft 契约；`#/reports/:slug` 上的「Posting guard」操作渲染检查结果，i18n ×19。
+- **CV 语气检查（CAR-188）**：27 条简历套话（`passionate about`、`proven track record`、`leveraged`、`spearheaded`、`delve`…）外加破折号启发式（2022–2024 这样的年份区间不是信号；`20–30%` 是），以只读 `POST /api/cv-studio/voice-check` 与 `#/cv-studio` 卡片呈现，精确高亮命中处；Tailor 检查清单增至六条不变式；i18n ×19。
+- **按工作年限过滤的扫描过滤器（CAR-180）**：jd-years 解析器（65 种表述，拿不准时绝不丢弃）从职位描述读取声明的最低年限，portals 新选项 `years_min:` 把资历不足的职位以 `skipped_experience` 跳过（一种从不钉死 URL 的观察型历史状态），`yearsMin` 随扫描快照携带，为将来的 UI 做准备。
+- **再多 7 种语言的 Apply 控件（CAR-185/189）**：越南语 `Nộp đơn ứng tuyển`、保加利亚语 `Кандидатствай`/`Кандидатстване`/`Външно кандидатстване`（名词锚定到标签开头 —— 建议文章链接不算 Apply）、荷兰语 `Solliciteer`/`Solliciteren`、西班牙语 `¡Apúntame!`/`Postularse`（标签而非动词 —— FAQ 链接不再碍事）、中文 `申请职位`/`投递`（锚定到整个控件）—— 这些看板上的在招职位不再被读作 `no_apply_control`。
+
+### 修复
+
+- **MiniMax 默认模型（CAR-187）**：已退役的 `MiniMax-Text-01` 默认值由 `api.minimax.io` 上的 `MiniMax-M3.1-Flash` 与 `api.minimax.cn` 上的 `MiniMax-M3` 取代；基础 URL 钉定到厂商（非厂商主机会在运行时被拒，密钥永远到不了那里）；设置提示 ×19 点名新的默认值。
+- **Repost 要求同一来源（CAR-186）**：同一职位同时挂在 LinkedIn 与雇主自己的 Greenhouse 上，不再被报成 repost —— 聚类现按 `sourceHost()` 拆分，它只在已知站点上折叠区域子域（`de.linkedin.com` ≡ `www.linkedin.com`，但 `ca.example.com` 保持独立），把 Greenhouse 的主机别名折叠为单一来源，并剥掉尾部句点。
+- **泰米尔语评估的语言漂移（CAR-183）**：强化版泰米尔语指令现驻留在提示词尾部的易变区，紧邻体量预算（CAR-174 槽位）—— 在 v1.261.2 见到的间歇性漂移之后，remote-QA 报告重新以泰米尔语落地。
+
+### 备注
+
+- 刻意的未行动：posting-guard 中继以 fail-soft 方式发布 —— fork 目前**尚未**携带父项目的 `posting-guard.mjs`（上游 PR #6146 仍处于打开状态），因此在父项目同步带来它之前，端点一直返回 `{available:false, reason:"script-not-found"}`。
+- 刻意的未行动：`yearsMin` 在本版本中**未**以 `#/scan` UI chip 形式露出 —— 字段随快照发布，过滤器仅存在于 portals 配置中。
+- 刻意的未行动：上游 modes/reports 的 Machine Summary 变更（#6161/#6160/#6157）**未**被移植 —— 它们随已部署的父项目而来，而非 web-ui 镜像。
+- 测试 6734 → 6841（发布分支）；扫描器的去重键保持不变（URL 规范化行为**未**改变）。
+
 ## [1.261.3] — 2026-10-28
 
 **设计收尾补丁：Lovable 设计第三阶段（密度 + 珊瑚色全面退役）、扫描主机池（32 家公司、每主机 10 家）、六处上游提供方地点修复、Trakstar Hire 来源（注册表 122）、CV Studio 撤销 + 未保存守卫 —— 另有 final-regression P3 修复与文档对齐。**

@@ -28,6 +28,7 @@ import { runNodeScript } from '../runner.mjs';
 import { parseJsonStdout, sanitizeDetail } from '../parent-relay.mjs';
 import { isValidJobUrl } from '../security.mjs';
 import { safeGet } from '../safe-fetch.mjs';
+import { detectStockPhrases } from '../cv-voice.mjs';
 
 const MAX_TEXT = 20 * 1024;      // the CV chunk to rewrite
 const MAX_SAMPLE = 8 * 1024;     // per writing sample
@@ -102,7 +103,7 @@ const TAILOR_INSTRUCTIONS = [
   'letter is a teaser whose only job is to get the résumé opened. Anything that',
   'is not grasped at a glance does not work.',
   '',
-  '## Five invariants',
+  '## Six invariants',
   '1. Relevant first — what matches the vacancy goes in the top lines.',
   '2. Role = role of the vacancy — the headline and titles reflect the role',
   '   actually performed and what the JD asks for (never inflate beyond the',
@@ -112,6 +113,9 @@ const TAILOR_INSTRUCTIONS = [
   '   the candidate genuinely has), methodology, and team/scale signals.',
   '5. Numbers only in results — achievements are quantified; a metric marker (✔)',
   '   sets them off. Never put numbers in plain responsibilities.',
+  '6. No stock phrasing — never "passionate about", "proven track record",',
+  '   "results-driven", "leveraged", "spearheaded", "best practices" filler;',
+  '   keep the candidate\'s own concrete verbs and nouns.',
   '',
   '## Résumé rules',
   '- Headline = the target role (from the JD / the optional headline hint), using',
@@ -374,5 +378,19 @@ export function registerCvStudioRoutes(app) {
     } finally {
       if (dir) { try { rmSync(dir, { recursive: true, force: true }); } catch { /* ignore */ } }
     }
+  });
+
+  // POST /api/cv-studio/voice-check — zero-LLM stock-phrase lint (CAR-188,
+  // ported from upstream career-ops #6178). Runs server/lib/cv-voice.mjs over
+  // the pasted text and reports banned stock phrases ("spearheaded", "proven
+  // track record", …) plus em/en dashes that are not date ranges, each with a
+  // 1-based line number for client-side highlighting. READ-ONLY: nothing is
+  // ever written — no files, no LLM, no parent project.
+  app.post('/api/cv-studio/voice-check', llmRateLimit, (req, res) => {
+    const body = (req.body && typeof req.body === 'object') ? req.body : {};
+    const text = (typeof body.text === 'string' ? body.text : '').slice(0, MAX_VERIFY);
+    if (!text.trim()) return res.status(400).json({ error: 'no text to check' });
+    const phrases = detectStockPhrases(text);
+    return res.json({ phrases, count: phrases.length });
   });
 }

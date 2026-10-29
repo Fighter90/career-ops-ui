@@ -17,6 +17,9 @@ import { addPipelineUrl } from './parsers.mjs';
 import { sanitizeTsvField, normalizeScanUrl } from './scan-sanitize.mjs';
 import { normalizeUrl } from './url-key.mjs';
 import { buildLocationFilter, buildContentFilter, buildTitleFilter, cleanStringList } from './location-filter.mjs';
+// CAR-180 — stated years of experience (upstream #6154): parseYearsRequirement
+// reads job.description, buildYearsMinFilter is the years_min threshold.
+import { parseYearsRequirement, buildYearsMinFilter } from './jd-years.mjs';
 import { buildTrustValidator } from './trust-validator.mjs';
 import { buildTierFilter } from './classify-tier.mjs';
 import { loadQuarantine, isQuarantined, quarantineAdd, pruneQuarantine, saveQuarantine, isPermanentFailure, RETRY_AFTER_DAYS } from './scan-quarantine.mjs';
@@ -108,6 +111,23 @@ export function detectApi(company, onError) {
   return { type: m.adapter.id, url: m.endpoint };
 }
 
+/**
+ * CAR-180 — the stated minimum years of experience for one fetched job, or
+ * undefined when its JD text states no gating figure (no description,
+ * preferred-only, skill-specific, none, or an "equivalent combination"
+ * reading). Reads the same field the content filter matches —
+ * `description ?? snippet` — so sources that ship no body are never judged.
+ * An unstated or uncertain bar must never filter.
+ * @param {{ description?: unknown, snippet?: unknown } | undefined} j
+ * @returns {number|undefined}
+ */
+function statedYearsMin(j) {
+  const text = j ? (j.description ?? j.snippet) : undefined;
+  if (typeof text !== 'string' || !text.trim()) return undefined;
+  const r = parseYearsRequirement(text);
+  return r.status === 'stated' ? r.min : undefined;
+}
+
 // v1.13.0 — fetchers sourced from the registry. Any new adapter added to
 // ALL_ADAPTERS automatically becomes callable here. Looked up per scan (not
 // snapshotted at import) so the fetcher always belongs to the adapter that
@@ -124,7 +144,7 @@ function loadPortals() {
 // or age filter. They are observations, not "seen": the parent never lets them
 // pin a URL, so a posting that later passes (a widened allow list, a re-dated
 // listing) must still come through here too.
-const OBSERVATIONAL_HISTORY_STATUSES = new Set(['skipped_location', 'skipped_age']);
+const OBSERVATIONAL_HISTORY_STATUSES = new Set(['skipped_location', 'skipped_age', 'skipped_experience']);
 
 function isObservationalHistoryRow(line) {
   const cells = line.split('\t');
@@ -350,7 +370,14 @@ export async function runEnScan(opts = {}) {
       // carry-over (R-12, CAR-91) must match the failed set against the entry,
       // never against `source` — a failed entry named "Lever" used to keep
       // every successfully-rescanned company's lever-source rows.
-      const withCo = items.map((i) => ({ ...i, company: i.company || c.name, _entry: c.name }));
+      const withCo = items.map((i) => ({
+        ...i,
+        company: i.company || c.name,
+        _entry: c.name,
+        // CAR-180 — stated years for the years_min filter and the #/scan
+        // badge; undefined when the description states no gating figure.
+        yearsMin: statedYearsMin(i),
+      }));
       log('stdout', `  ✓ ${label} ${c._api.type.padEnd(10)} ${items.length} jobs`);
       // A source that stopped early tags its result array; say so instead of
       // presenting a partial board as the whole one. The flag itself is lost
@@ -395,31 +422,43 @@ export async function runEnScan(opts = {}) {
   // v1.75.0 (#974) — optional content_filter on a posting's description/snippet.
   // No key → pass-all; only sources that ship a description are affected.
   const contentOk = buildContentFilter(portals.content_filter);
+  // CAR-180 — optional portals.yml `years_min: N` (jd-years.mjs, upstream
+  // #6154): a posting whose JD states a required overall minimum BELOW N is
+  // cut and recorded as an observational `skipped_experience` history row
+  // (never a pin: change years_min and it comes back). No key → pass-all,
+  // and a posting with no stated figure always passes.
+  const yearsOk = buildYearsMinFilter(portals.years_min);
   // Optional portals.yml `skip_tiers` (top-level list): drop postings whose
   // seniority tier is in the list. No key → pass-all.
   const tierOk = buildTierFilter(portals.skip_tiers);
   // Apply title filter (positive must match, negative must NOT match)
-  // + location + tier filters, and stamp `_boosted` for any title containing a
+  // + location + tier + content filters, and stamp `_boosted` for any title containing a
   // seniority_boost keyword. The boost stamp is INFORMATIONAL — it
   // doesn't filter; the SPA uses it to surface a badge so users see why
   // a row is ranked higher.
-  const passes = (j) => titleOk(j.title)
+  const basePasses = (j) => titleOk(j.title)
     && locOk(j.location)
     && tierOk(j.title)
     && contentOk(j.description ?? j.snippet);
+  const passes = (j) => basePasses(j) && yearsOk(j.yearsMin);
   // v1.80.0 — per-source cap (0 = unlimited), applied AFTER the filters so a
   // source contributes up to N MATCHING jobs; capping the raw list first let
   // irrelevant rows eat the quota.
   let cappedAway = 0;
+  const yearsSkipped = [];
   const matched = perCo.flatMap((list) => {
-    const kept = list.filter(passes);
+    const kept = list.filter((j) => {
+      if (!basePasses(j)) return false;
+      if (!yearsOk(j.yearsMin)) { yearsSkipped.push(j); return false; }
+      return true;
+    });
     if (maxPerSource > 0 && kept.length > maxPerSource) {
       cappedAway += kept.length - maxPerSource;
       return kept.slice(0, maxPerSource);
     }
     return kept;
   });
-  const removedTitle = allRaw.length - matched.length - cappedAway;
+  const removedTitle = allRaw.length - matched.length - cappedAway - yearsSkipped.length;
   // Within-run dedup on the normalised URL: the same posting reached twice
   // (two queries, a tracking-parameter variant) is ONE row — otherwise it was
   // appended to pipeline/history twice and read as a repost later.
@@ -459,6 +498,7 @@ export async function runEnScan(opts = {}) {
   log('stdout', '━'.repeat(60));
   log('stdout', `Total found:           ${allRaw.length}`);
   log('stdout', `Filtered by title:     ${removedTitle} removed`);
+  if (yearsSkipped.length) log('stdout', `Filtered by experience: ${yearsSkipped.length} removed (years_min: ${portals.years_min})`);
   if (cappedAway) log('stdout', `Per-source cap:        ${cappedAway} removed (max ${maxPerSource} per source)`);
   if (runDup) log('stdout', `Duplicate in run:      ${runDup} skipped`);
   if (cooldownSkipped) log('stdout', `Cooldown skipped:      ${cooldownSkipped} (re-applied roles, re_apply_windows)`);
@@ -471,6 +511,14 @@ export async function runEnScan(opts = {}) {
       await appendToPipeline(fresh);
       appendToHistory(fresh);
       log('stdout', `→ Appended ${fresh.length} URLs to data/pipeline.md`);
+    }
+    // CAR-180 — postings the years_min filter cut are recorded as
+    // observational parent-format rows (status column last, like the parent's
+    // skipped_location/skipped_age), so the user can see what was dropped and
+    // why it can come back: every reader treats the status as non-seeing.
+    if (yearsSkipped.length) {
+      const recorded = appendSkippedHistory(yearsSkipped);
+      if (recorded) log('stdout', `→ Recorded ${recorded} skipped_experience row(s) in data/scan-history.tsv`);
     }
     // Save BOTH fresh (new) and filtered (all matching positives, even dups)
     // so the UI can show a richer list to browse.
@@ -515,7 +563,7 @@ export async function runEnScan(opts = {}) {
   }
 
   return {
-    counts: { raw: allRaw.length, removedTitle, cooldownSkipped, dup, fresh: fresh.length, skipped, runDup, capped: cappedAway },
+    counts: { raw: allRaw.length, removedTitle, yearsSkipped: yearsSkipped.length, cooldownSkipped, dup, fresh: fresh.length, skipped, runDup, capped: cappedAway },
     fresh,
     errors,
     truncatedSources,
@@ -552,6 +600,48 @@ function appendToHistory(jobs) {
       .join('\t')
   );
   appendFileSync(PATHS.scanHistory, lines.join('\n') + '\n');
+}
+
+/**
+ * CAR-180 — record postings the years_min filter cut as parent-format
+ * observational rows: `url  date  portal  title  company  skipped_experience`.
+ * Parent shape, not the web-ui row above, because the meaning is the parent's
+ * (a recorded cut, not a seen posting): `loadSeenUrls` already skips these
+ * statuses, so the URL can come back the moment the threshold drops, and
+ * detect-reposts ignores every non-`added` parent row. One row per posting —
+ * a URL already carrying skipped_experience is never appended again.
+ * @param {Array<{url: string, source?: string, title?: string, company?: string}>} jobs
+ * @returns {number} rows actually appended
+ */
+function appendSkippedHistory(jobs) {
+  let existing = '';
+  try { existing = readFileSync(PATHS.scanHistory, 'utf8'); } catch {}
+  const recorded = new Set(
+    existing.split('\n')
+      .map((line) => line.split('\t'))
+      .filter((cells) => /^https?:\/\//i.test(cells[0] || '') && String(cells[5] || '').trim() === 'skipped_experience')
+      .map((cells) => normalizeUrl(cells[0]) || cells[0])
+  );
+  const rows = [];
+  const seen = new Set();
+  for (const j of jobs) {
+    const url = normalizeScanUrl(j.url);
+    const key = normalizeUrl(url) || url;
+    if (recorded.has(key) || seen.has(key)) continue;
+    seen.add(key);
+    rows.push([
+      url,
+      new Date().toISOString().slice(0, 10),
+      sanitizeTsvField(String(j.source ?? '')),
+      sanitizeTsvField(String(j.title ?? '')),
+      sanitizeTsvField(String(j.company ?? '')),
+      'skipped_experience',
+    ].join('\t'));
+  }
+  if (!rows.length) return 0;
+  mkdirSync(PATHS.scanHistory.replace(/\/[^/]+$/, ''), { recursive: true });
+  appendFileSync(PATHS.scanHistory, rows.join('\n') + '\n');
+  return rows.length;
 }
 
 const LAST_SCAN_PATH = PATHS.applications.replace(/applications\.md$/, 'last-scan.json');

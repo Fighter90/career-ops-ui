@@ -6,6 +6,32 @@ Bản dịch: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.262.0] — 2026-10-29
+
+**Bản-minor-tính-năng-upstream: board-việc-làm-Deel gia-nhập-scanner (registry 123), CSV-của-tracker-khác nhập-trực-tiếp vào `#/tracker`, chốt-kiểm-toàn-vẹn-posting-guard và-chốt-kiểm-giọng-CV đến-dưới-dạng relay/lint, scanner học-một-bộ-lọc-số-năm-kinh-nghiệm, và-các-nút-Apply ở-bảy-ngôn-ngữ-không-nữa không-còn-bị-đọc-là-thiếu — cùng-mô-hình-mặc-định-đã-nghỉ-hưu-của-MiniMax được-thay-thế và-các-repost không-còn-bị-bịa-ra-giữa-các-nguồn.**
+
+### Thêm mới
+
+- **Nguồn-board-Deel (CAR-184)**: registry **123 sources = 118 EN + 5 RU · 118 adapters** — tự-phát-hiện các-board-tenant `jobs.deel.com/<slug>` (Klarna và-một-số-khác); payload-flight-Next.js mang-toàn-bộ-danh-mục-trong-một-lượt-yêu-cầu (tiêu-đề, vị-trí, hình-thức, ngày, mô-tả), đường-dẫn-`/api/`-bị-cấm không-bao-giờ-bị-đụng-tới, một-tenant-công-bố-vị-trí-ở-nơi-khác trả-lời-bằng-một-redirect mà-nguồn-từ-chối **bằng-tên-gọi**, và-lương được-cố-ý-để-unmapped (các-con-số-không-có-khoảng-thời-gian-trả-lương sẽ-chỉ-là-một-phỏng-đoán); cổng-đếm ×5 + help §17 ×19.
+- **Nhập-CSV-tracker (CAR-181)**: `POST /api/tracker/import-csv` với-bản-xem-trước-dry-run và-commit-bị-khóa — trích-dẫn-RFC-4180, ngày-theo-các-dạng-ISO / ngày-trước / tên-tháng, các-giai-đoạn-của-tracker-ngoại được-fold-qua-các-trạng-thái-chuẩn (một-giai-đoạn-lạ về-dưới-dạng Evaluated kèm-ghi-chú, không-bao-giờ-bị-bỏ), dedup-theo-URL-đăng-chuẩn-hóa đọc-từ-ô-markdown-link hoặc-cột-Notes, giới-hạn-512 KB / 2000-hàng; `#/tracker` có-thêm-nút-Nhập-CSV với-modal-xem-trước, i18n ×19.
+- **Relay-posting-guard (CAR-182)**: `POST /api/runners/posting-guard` — chốt-kiểm-toàn-vẹn-JD-zero-LLM-xác-định-của-parent, được-giải-theo-số-report qua-quy-tắc-tiền-tố-capture-`jds/` (có-hay-không-có-pad, so-sánh-số-nguyên) hoặc-một-đường-dẫn-sạch-được-nêu-rõ; tiến-trình-con chỉ-nhận-argv, một-trần-30-sn và-một-hợp-đồng-fail-soft; một-hành-động-«Posting guard» trên-`#/reports/:slug` hiển-thị-các-phát-hiện, i18n ×19.
+- **Chốt-kiểm-giọng-CV (CAR-188)**: 27-cụm-từ-sáo-rỗng-trong-CV (`passionate about`, `proven track record`, `leveraged`, `spearheaded`, `delve`…) cộng-các-heuristic-về-gạch-ngang (khoảng-năm-như-2022–2024 không-phải-một-dấu-hiệu; `20–30%` thì-có) dưới-dạng `POST /api/cv-studio/voice-check` chỉ-đọc và-một-thẻ-`#/cv-studio` tô-sáng-các-khớp-chính-xác; danh-mục-kiểm-của-Tailor lớn-lên-thành-sáu-bất-biến; i18n ×19.
+- **Bộ-lọc-quét-số-năm-kinh-nghiệm (CAR-180)**: bộ-phân-tích-jd-years (65-cách-diễn-đạt, không-bao-giờ-bỏ-khi-chưa-chắc) đọc-mức-tối-thiểu-được-nêu-từ-mô-tả-các-đăng, một-tùy-chọn-`years_min:`-mới-của-portals bỏ-qua-các-đăng-thiếu-đủ-năng-lực-dưới-dạng-`skipped_experience` (một-trạng-thái-lịch-sử-quan-sát không-bao-giờ-ghim-một-URL), và-`yearsMin` đi-cùng-snapshot-quét cho-UI-tương-lai.
+- **Các-nút-Apply ở-bảy-ngôn-ngữ-không-nữa (CAR-185/189)**: tiếng-Việt `Nộp đơn ứng tuyển`, tiếng-Bulgaria `Кандидатствай`/`Кандидатстване`/`Външно кандидатстване` (danh-từ-neo-vào-đầu-nhãn — các-liên-kết-bài-tư-vấn không-phải-Apply), tiếng-Hà-Lan `Solliciteer`/`Solliciteren`, tiếng-Tây-Ban-Nha `¡Apúntame!`/`Postularse` (các-nhãn, không-phải-động-từ — liên-kết-FAQ không-còn-quan-trọng), tiếng-Trung `申请职位`/`投递` (neo-vào-toàn-bộ-nút) — các-đăng-còn-sống-trên-những-board-đó không-còn-bị-đọc-là-`no_apply_control`.
+
+### Đã sửa
+
+- **Mô-hình-mặc-định-MiniMax (CAR-187)**: mặc-định-đã-nghỉ-hưu-`MiniMax-Text-01` được-thay-bằng-`MiniMax-M3.1-Flash` trên-`api.minimax.io` và-`MiniMax-M3` trên-`api.minimax.cn`; URL-cơ-sở được-ghim-vào-nhà-cung-cấp (một-host-không-phải-nhà-cung-cấp bị-từ-chối-khi-chạy và-khóa không-bao-giờ-tới-được-nó); gợi-ý-cài-đặt ×19 gọi-tên-các-mặc-định-mới.
+- **Repost yêu-cầu-cùng-một-nguồn (CAR-186)**: một-vai-trí được-liệt-kê-trên-LinkedIn và-trên-Greenhouse-của-nhà-tuyển-dụng không-còn-bị-báo-là-repost — các-cụm giờ-chia-theo-`sourceHost()`, hàm-này fold-subdomain-vùng-chỉ-trên-các-site-đã-biết (`de.linkedin.com` ≡ `www.linkedin.com`, nhưng-`ca.example.com` vẫn-riêng), fold-các-bí-danh-host-Greenhouse thành-một-nguồn-duy-nhất và-bỏ-một-dấu-chấm-cuối.
+- **Trôi-ngôn-ngữ-đánh-giá-Tamil (CAR-183)**: một-chỉ-đạo-Tamil-được-củng-cố giờ-ngồi-trong-phần-đuôi-prompt-biến-động cạnh-ngân-sách-dung-lượng (slot-CAR-174) — các-report-remote-QA lại-về-tiếng-Tamil sau-cơn-trôi-ngắt-quãng-gặp-trong-v1.261.2.
+
+### Ghi chú
+
+- Không-hành-động-cố-ý: relay-posting-guard lên-đường-dưới-dạng-fail-soft — fork **không** mang `posting-guard.mjs` của-parent (PR-upstream-#6146 vẫn-đang-mở), nên-đến-khi-một-lượt-đồng-bộ-parent chở-nó-về thì-điểm-cuối trả-lời-`{available:false, reason:"script-not-found"}`.
+- Không-hành-động-cố-ý: `yearsMin` **không** được-biểu-diện-làm-chip-UI-`#/scan` trong-bản-phát-hành-này — trường-đi-trong-snapshot và-bộ-lọc-chỉ-là-config-của-portals.
+- Không-hành-động-cố-ý: các-thay-đổi-Machine-Summary-modes/reports-của-upstream (#6161/#6160/#6157) **không** được-port — chúng-đến-với-parent-đã-triển-khai, không-phải-dưới-dạng-các-mirror-web-ui.
+- Kiểm-thử 6734 → 6841 trên-nhánh-phát-hành; khóa-dedup-của-scanner nguyên-vẹn (hành-vi-chuẩn-hóa-URL **không** thay-đổi).
+
 ## [1.261.3] — 2026-10-28
 
 **Bản-patch-hoàn-thiện-thiết-kế: giai-đoạn-3-thiết-kế-Lovable (mật-độ + nghỉ-hưu-coral-hoàn-toàn), host-pool-quét (32-công-ty, 10-mỗi-host), sáu-bản-sửa-vị-trí-nhà-cung-cấp-upstream, nguồn-Trakstar-Hire (registry 122), undo + chốt-bảo-vệ-chưa-lưu của-CV-Studio — cùng-các-bản-sửa-P3-hồi-quy-cuối-cùng và-đồng-bộ-docs.**

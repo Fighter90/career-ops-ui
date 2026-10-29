@@ -4,9 +4,11 @@
  *
  * Operates on the web-ui scan-history.tsv format. Groups scan-history rows by company,
  * fuzzy-matches role titles via roleFuzzyMatch, and flags any company+role that
- * appears 2+ times with DIFFERENT URLs inside a rolling window (default 90d).
- * Such clusters are almost certainly the same opening being re-listed by the
- * employer — a signal of stale pipelines / ghost postings.
+ * appears 2+ times with DIFFERENT URLs inside a rolling window (default 90d)
+ * FROM THE SAME SOURCE (see sourceHost): one live opening picked up by the
+ * employer's ATS and a job board on different days is a duplicate, not a
+ * re-listing. Such clusters are almost certainly the same opening being
+ * re-listed by the employer — a signal of stale pipelines / ghost postings.
  *
  * web-ui scan-history.tsv columns (written by en-scanner.mjs / ru-scanner.mjs):
  *   date \t source \t id \t company \t title \t url
@@ -113,35 +115,90 @@ export function detectReposts(rows, windowDays = DEFAULT_WINDOW_DAYS) {
   return clusters.sort((a, b) => (a.lastSeen < b.lastSeen ? 1 : -1));
 }
 
+// The site a posting URL belongs to — the same-source constraint of the
+// header. Hostname, lowercased, without `www.`. A two-letter regional prefix
+// is folded only on sites known to serve one board under per-country
+// subdomains (`de.linkedin.com` and `www.linkedin.com` are one site), so two
+// unrelated tenants such as `ca.example.com` and `www.example.com` stay
+// apart. Greenhouse serves the same board under several hosts, so they fold
+// to one. Unparseable URLs keep the raw string, so they never merge with
+// anything but themselves.
+const REGIONAL_SUBDOMAIN_SITES = new Set(['linkedin.com', 'indeed.com']);
+const GREENHOUSE_HOSTS = new Set([
+  'boards.greenhouse.io',
+  'job-boards.greenhouse.io',
+  'job-boards.eu.greenhouse.io',
+  'greenhouse.io',
+]);
+
+export function sourceHost(url) {
+  let host;
+  try {
+    host = new URL(url).hostname.toLowerCase().replace(/\.$/, '');
+  } catch {
+    return String(url);
+  }
+  if (GREENHOUSE_HOSTS.has(host)) return 'greenhouse.io';
+  const labels = host.split('.');
+  if (labels.length > 2 && labels[0] === 'www') labels.shift();
+  else if (labels.length > 2 && /^[a-z]{2}$/.test(labels[0]) && REGIONAL_SUBDOMAIN_SITES.has(labels.slice(1).join('.'))) labels.shift();
+  return labels.join('.');
+}
+
 // Cluster rows in a single company group: group by title (exact or fuzzy),
-// then a window over dates cuts sub-clusters spanning at most windowDays. The
-// sub-clusters are DISJOINT: a row that closed one cluster does not seed the
-// next with its predecessors, or the same sightings were reported twice.
+// split every title group by SOURCE HOST (a repost is the same site listing
+// the role again under a new URL — scan-history.tsv mixes the employer's ATS,
+// job boards and aggregators, and one live opening is routinely picked up by
+// two of them on different days, which grouped across sources reads as a
+// repost), then a window over dates cuts sub-clusters spanning at most
+// windowDays. The sub-clusters are DISJOINT: a row that closed one cluster
+// does not seed the next with its predecessors, or the same sightings were
+// reported twice.
 function detectRepostsInGroup(rows, windowDays) {
   const titleGroups = groupRowsByTitle(rows);
 
   const results = [];
   for (const group of titleGroups) {
     if (group.length < 2) continue;
-    const sorted = [...group].sort((a, b) => (a.date < b.date ? -1 : 1));
-    let cluster = [];
-    for (const row of sorted) {
-      if (cluster.length === 0) { cluster = [row]; continue; }
-      const span = daysBetween(cluster[0].date, row.date);
-      if (span <= windowDays) {
-        cluster.push(row);
-      } else {
-        if (cluster.length >= 2) {
-          const built = buildRepostCluster(cluster, windowDays);
-          if (built) results.push(built);
-        }
-        cluster = [row];
+    // Insertion order of the Map keeps first-appearance order, so the output
+    // ordering is unchanged from a single window walk over the whole group.
+    const bySource = new Map();
+    for (const row of group) {
+      const host = sourceHost(row.url);
+      if (!bySource.has(host)) bySource.set(host, []);
+      bySource.get(host).push(row);
+    }
+    for (const sameSource of bySource.values()) {
+      if (sameSource.length < 2) continue;
+      results.push(...windowCluster(sameSource, windowDays));
+    }
+  }
+  return results;
+}
+
+// Window-clusters one same-company, same-title, same-source group. The
+// sub-clusters are DISJOINT: a row that closed one cluster does not seed the
+// next with its predecessors, or the same sightings were reported twice.
+function windowCluster(rows, windowDays) {
+  const sorted = [...rows].sort((a, b) => (a.date < b.date ? -1 : 1));
+  const results = [];
+  let cluster = [];
+  for (const row of sorted) {
+    if (cluster.length === 0) { cluster = [row]; continue; }
+    const span = daysBetween(cluster[0].date, row.date);
+    if (span <= windowDays) {
+      cluster.push(row);
+    } else {
+      if (cluster.length >= 2) {
+        const built = buildRepostCluster(cluster, windowDays);
+        if (built) results.push(built);
       }
+      cluster = [row];
     }
-    if (cluster.length >= 2) {
-      const built = buildRepostCluster(cluster, windowDays);
-      if (built) results.push(built);
-    }
+  }
+  if (cluster.length >= 2) {
+    const built = buildRepostCluster(cluster, windowDays);
+    if (built) results.push(built);
   }
   return results;
 }

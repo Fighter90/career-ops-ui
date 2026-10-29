@@ -120,7 +120,7 @@ test('Playwright smoke: dashboard renders + footer version present', { skip: SKI
   });
   // Uncaught JS exceptions never match BENIGN_CONSOLE, so a real script error
   // still fails the test even though transient network 404s are filtered out.
-  page.on('pageerror', (e) => consoleErrors.push('pageerror: ' + e.message));
+  page.on('pageerror', (e) => consoleErrors.push('pageerror: ' + (e.stack || e.message)));
   await page.goto(baseUrl + '/#/dashboard');
   await page.waitForSelector('#content', { timeout: 5000 });
   // Footer renders the package.json version (e.g. "v1.7.2").
@@ -393,7 +393,7 @@ test('Playwright smoke: dashboard ✨ Auto-pipeline button → #/auto screen wit
   const consoleErrors = [];
   page.on('console', (msg) => { if (msg.type() === 'error') consoleErrors.push(msg.text()); });
   // Real uncaught JS exceptions still fail (they never match BENIGN_CONSOLE).
-  page.on('pageerror', (e) => consoleErrors.push('pageerror: ' + e.message));
+  page.on('pageerror', (e) => consoleErrors.push('pageerror: ' + (e.stack || e.message)));
   await page.goto(baseUrl + '/#/dashboard');
   await page.waitForSelector('#content', { timeout: 5000 });
   // The CTA in the page-header now navigates to the dedicated screen.

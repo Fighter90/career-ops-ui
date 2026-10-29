@@ -14,6 +14,41 @@ Router.register('reports', async (params) => {
   if (params[0]) {
     const slug = params.join('/');
     const r = await API.get('/api/reports/' + encodeURIComponent(slug));
+    // CAR-182 — the deterministic JD integrity gate (zero-LLM, read-only):
+    // relays the parent posting-guard.mjs over this report's jds/ capture.
+    // The report number is the slug's leading numeric prefix (064-… → 64);
+    // a slug without one has no capture to check and no button.
+    const reportNum = parseInt(slug, 10);
+    const guardCard = Number.isInteger(reportNum) && reportNum > 0 ? c('div', { className: 'posting-guard-result' }) : null;
+    const guardMd = (d) => [
+      `**${d.findings.verdict}**`,
+      '',
+      `\`${d.file}\``,
+      '',
+      '```json',
+      JSON.stringify(d.findings, null, 2),
+      '```',
+    ].join('\n');
+    const runGuard = async (e) => {
+      const btn = e.currentTarget;
+      if (btn.disabled) return;
+      btn.disabled = true;
+      btn.textContent = '🛡 ' + t('rep2.guardRunning', 'Checking posting integrity…');
+      try {
+        const d = await API.post('/api/runners/posting-guard', { report: reportNum });
+        if (!d.available) throw new Error(d.detail || d.reason || 'unavailable');
+        if (guardCard) {
+          guardCard.innerHTML = '';
+          guardCard.appendChild(c('div', { className: 'card md', html: UI.md(guardMd(d)) }));
+          guardCard.scrollIntoView?.({ behavior: 'smooth', block: 'nearest' });
+        }
+      } catch (err) {
+        UI.toast(t('rep2.guardFailed', 'Integrity check failed') + ': ' + err.message, 'error');
+      } finally {
+        btn.disabled = false;
+        btn.textContent = '🛡 ' + t('rep2.guardBtn', 'Posting guard');
+      }
+    };
     return c('div', null, [
       c('header', { className: 'page-header' }, [
         c('div', null, [
@@ -31,8 +66,12 @@ Router.register('reports', async (params) => {
             className: 'btn btn-primary',
             onClick: (e) => window.PdfGenerate.run({ kind: 'report', slug, button: e.currentTarget }),
           }, '📄 ' + t('common.generatePdf', 'Generate PDF')),
+          // CAR-182 — present whenever the slug carries a report number.
+          guardCard && c('button', { className: 'btn btn-ghost', onClick: (e) => runGuard(e) },
+            '🛡 ' + t('rep2.guardBtn', 'Posting guard')),
         ]),
       ]),
+      guardCard,
       c('div', { className: 'card md', html: UI.md(r.markdown) }),
     ]);
   }
