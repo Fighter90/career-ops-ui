@@ -36,6 +36,7 @@
   "install.log2": "Abhängigkeiten installiert",
   "install.npxNote": "Führt das lokal installierte Paket in deinem career-ops/web-ui-Checkout aus — Hinweis zu GitHub Packages im README.",
   "install.gitNote": "Die UI lebt in einem career-ops-Projekt als web-ui/ — das Startskript installiert Abhängigkeiten und öffnet das Dashboard.",
+  "install.gitComment": "# Ihr vorhandenes career-ops-Projekt",
   "install.curlNote": "Klont career-ops und die UI, installiert Abhängigkeiten und öffnet das Dashboard.",
   "how.h2": "So funktioniert's",
   "how.sub": "Vier Schritte vom leeren Ordner zur bewerteten, nachverfolgten Stellen-Pipeline.",
@@ -263,5 +264,6 @@
   "stats.t.providers": "KI-Anbieter",
   "stats.t.license": "Lizenz",
   "stats.t.local": "lokal",
-  "stats.note": "{sources} Quellen = {en} Adapter für englischsprachige Jobbörsen + {ru} russischsprachige Börsen. Die Zahlen werden beim Build der Website aus der Live-Registry gelesen — nie von Hand eingetragen."
+  "stats.note": "{sources} Quellen = {en} Adapter für englischsprachige Jobbörsen + {ru} russischsprachige Börsen. Die Zahlen werden beim Build der Website aus der Live-Registry gelesen — nie von Hand eingetragen.",
+  "install.windowsNote": "Unter Windows diese Befehle in WSL (Ubuntu) ausführen — eine macOS/Linux-Shell ist erforderlich."
 }

@@ -36,6 +36,7 @@
   "install.log2": "依存関係をインストールしました",
   "install.npxNote": "career-ops/web-uiのチェックアウト内でローカルにインストールされたパッケージを実行します — GitHub Packagesの注意事項はREADMEを参照。",
   "install.gitNote": "UIはcareer-opsプロジェクト内のweb-ui/として動作します — 起動スクリプトが依存関係をインストールし、ダッシュボードを開きます。",
+  "install.gitComment": "# 既存の career-ops プロジェクト",
   "install.curlNote": "career-opsとUIをクローンし、依存関係をインストールしてダッシュボードを開きます。",
   "how.h2": "仕組み",
   "how.sub": "空のフォルダから、スコア付きで追跡される求人パイプラインまで4ステップ。",
@@ -263,5 +264,6 @@
   "stats.t.providers": "AIプロバイダー",
   "stats.t.license": "ライセンス",
   "stats.t.local": "ローカル実行",
-  "stats.note": "ソース{sources}件＝英語圏ボードのアダプター{en}件＋ロシア語ボード{ru}件。数値はサイトのビルド時にライブレジストリから読み込まれ、手入力は一切行われません。"
+  "stats.note": "ソース{sources}件＝英語圏ボードのアダプター{en}件＋ロシア語ボード{ru}件。数値はサイトのビルド時にライブレジストリから読み込まれ、手入力は一切行われません。",
+  "install.windowsNote": "Windows では WSL（Ubuntu）内で実行してください。macOS/Linux のシェルが必要です。"
 }

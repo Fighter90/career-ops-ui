@@ -36,6 +36,7 @@
   "install.log2": "의존성 설치 완료",
   "install.npxNote": "career-ops/web-ui 체크아웃 안에서 로컬에 설치된 패키지를 실행합니다 — GitHub Packages 관련 내용은 README를 참고하세요.",
   "install.gitNote": "UI는 career-ops 프로젝트 안에 web-ui/로 존재합니다 — 시작 스크립트가 의존성을 설치하고 대시보드를 엽니다.",
+  "install.gitComment": "# 기존 career-ops 프로젝트",
   "install.curlNote": "career-ops와 UI를 클론하고, 의존성을 설치하고, 대시보드를 엽니다.",
   "how.h2": "작동 방식",
   "how.sub": "빈 폴더에서 점수가 매겨지고 추적되는 채용 파이프라인까지 4단계.",
@@ -263,5 +264,6 @@
   "stats.t.providers": "AI 프로바이더",
   "stats.t.license": "라이선스",
   "stats.t.local": "로컬 실행",
-  "stats.note": "소스 {sources}개 = 영어 채용 보드 어댑터 {en}개 + 러시아어 보드 {ru}개. 수치는 사이트 빌드 시 라이브 레지스트리에서 읽어오며, 수동으로 입력하지 않습니다."
+  "stats.note": "소스 {sources}개 = 영어 채용 보드 어댑터 {en}개 + 러시아어 보드 {ru}개. 수치는 사이트 빌드 시 라이브 레지스트리에서 읽어오며, 수동으로 입력하지 않습니다.",
+  "install.windowsNote": "Windows에서는 WSL(Ubuntu) 안에서 실행하세요. macOS/Linux 셸이 필요합니다."
 }

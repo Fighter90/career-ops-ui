@@ -36,6 +36,7 @@
   "install.log2": "dependencies installed",
   "install.npxNote": "Runs the locally installed package inside your career-ops/web-ui checkout — see the README for the GitHub Packages note.",
   "install.gitNote": "The UI lives inside a career-ops project as web-ui/ — the start script installs dependencies and opens the dashboard.",
+  "install.gitComment": "# your existing career-ops project",
   "install.curlNote": "Clones career-ops and the UI, installs dependencies and opens the dashboard.",
   "how.h2": "How it works",
   "how.sub": "Four steps from an empty folder to a tracked, scored job pipeline.",
@@ -263,5 +264,6 @@
   "stats.t.providers": "AI providers",
   "stats.t.license": "License",
   "stats.t.local": "Local-first",
-  "stats.note": "{sources} sources = {en} English board adapters + {ru} Russian boards. Counts are read from the live registry when the site builds — never typed by hand."
+  "stats.note": "{sources} sources = {en} English board adapters + {ru} Russian boards. Counts are read from the live registry when the site builds — never typed by hand.",
+  "install.windowsNote": "On Windows, run these commands inside WSL (Ubuntu) — a macOS/Linux shell is required."
 }

@@ -36,6 +36,7 @@
   "install.log2": "bağımlılıklar kuruldu",
   "install.npxNote": "career-ops/web-ui kopyanız içinde yerel olarak kurulmuş paketi çalıştırır — GitHub Packages notu için README'ye bakın.",
   "install.gitNote": "UI, bir career-ops projesinin içinde web-ui/ olarak yaşar — başlangıç betiği bağımlılıkları kurar ve panoyu açar.",
+  "install.gitComment": "# mevcut career-ops projeniz",
   "install.curlNote": "career-ops'u ve UI'yi klonlar, bağımlılıkları kurar ve panoyu açar.",
   "how.h2": "Nasıl çalışır",
   "how.sub": "Boş bir klasörden puanlanmış, takip edilen bir ilan pipeline'ına dört adım.",
@@ -263,5 +264,6 @@
   "stats.t.providers": "Yapay zekâ sağlayıcıları",
   "stats.t.license": "Lisans",
   "stats.t.local": "yerel",
-  "stats.note": "{sources} kaynak = {en} İngilizce iş panosu adaptörü + {ru} Rusça pano. Sayılar site derlenirken canlı kayıttan okunur — asla elle yazılmaz."
+  "stats.note": "{sources} kaynak = {en} İngilizce iş panosu adaptörü + {ru} Rusça pano. Sayılar site derlenirken canlı kayıttan okunur — asla elle yazılmaz.",
+  "install.windowsNote": "Windows'ta bu komutları WSL (Ubuntu) içinde çalıştırın — macOS/Linux kabuğu gerekir."
 }

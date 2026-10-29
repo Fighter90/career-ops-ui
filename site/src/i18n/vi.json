@@ -36,6 +36,7 @@
   "install.log2": "đã cài dependencies",
   "install.npxNote": "Chạy gói đã cài cục bộ bên trong bản checkout career-ops/web-ui của bạn — xem ghi chú GitHub Packages trong README.",
   "install.gitNote": "UI nằm bên trong một dự án career-ops dạng web-ui/ — script khởi động sẽ cài dependencies và mở bảng điều khiển.",
+  "install.gitComment": "# dự án career-ops hiện có của bạn",
   "install.curlNote": "Clone career-ops và UI, cài dependencies và mở bảng điều khiển.",
   "how.h2": "Hoạt động thế nào",
   "how.sub": "Bốn bước từ một thư mục trống tới một pipeline việc làm được theo dõi, có điểm số.",
@@ -263,5 +264,6 @@
   "stats.t.providers": "Nhà cung cấp AI",
   "stats.t.license": "Giấy phép",
   "stats.t.local": "cục bộ",
-  "stats.note": "{sources} nguồn = {en} adapter cho các bảng việc làm tiếng Anh + {ru} bảng tiếng Nga. Các con số được đọc từ registry trực tiếp khi build trang — không bao giờ nhập tay."
+  "stats.note": "{sources} nguồn = {en} adapter cho các bảng việc làm tiếng Anh + {ru} bảng tiếng Nga. Các con số được đọc từ registry trực tiếp khi build trang — không bao giờ nhập tay.",
+  "install.windowsNote": "Trên Windows, hãy chạy các lệnh này trong WSL (Ubuntu) — cần shell macOS/Linux."
 }
