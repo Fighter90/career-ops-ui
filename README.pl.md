@@ -147,7 +147,7 @@ career-ops/
 └─ web-ui/          ← to repozytorium
    ├─ server/       # Express + 15 modułów tras
    ├─ public/       # vanilla JS SPA, bez bundlera
-   └─ tests/        # 6841 testów jednostkowych + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (podstawa @ v1.262.0)
+   └─ tests/        # 6841 testów jednostkowych + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (podstawa @ v1.262.1)
 ```
 
 Serwer ma dwie zależności produkcyjne: `express` i `js-yaml`. Brak transpilacji, brak bundlera — cały interfejs to mniej niż 30 KB zminifikowanego kodu.
@@ -195,7 +195,7 @@ zamiast na nowo wyprowadzać wnioski, podejmować te same decyzje i psuć te sam
 
 | Plik | Czym jest | Kiedy go czytać |
 |---|---|---|
-| **[`CONTEXT.md`](CONTEXT.md)** | Słownik domenowy: jedna zaakceptowana nazwa na pojęcie, z odrzuconymi wariantami oznaczonymi jako *nie używać*. | **Najpierw.** Rozstrzyga nieporozumienia, za które to repozytorium faktycznie płaci — `source` kontra `adapter` (109 vs 104, i dlaczego oba są poprawne), `mirror` kontra `relay`, `telegram` kontra `telegram-channel`. |
+| **[`CONTEXT.md`](CONTEXT.md)** | Słownik domenowy: jedna zaakceptowana nazwa na pojęcie, z odrzuconymi wariantami oznaczonymi jako *nie używać*. | **Najpierw.** Rozstrzyga nieporozumienia, za które to repozytorium faktycznie płaci — `source` kontra `adapter` (123 vs 118, i dlaczego oba są poprawne), `mirror` kontra `relay`, `telegram` kontra `telegram-channel`. |
 | **[`PROGRESS.md`](PROGRESS.md)** | Stan prac: co jest zrobione, kolejny krok, znane problemy oraz **porzucone podejścia**. | Na początku każdej sesji. Git pokazuje, co się zmieniło; ten plik mówi, na jakim etapie jest praca i co już wypróbowano i odrzucono. |
 | **[`docs/adr/`](docs/adr/)** | Numerowane rejestry decyzji — kontekst, decyzja, konsekwencje oraz co skłoniłoby nas do ponownego rozważenia. | Przed zmianą czegokolwiek, co obejmuje dany rejestr. To rejestr decyduje, nie bieżące wydanie. |
 | **[`CLAUDE.md`](CLAUDE.md)** | Indeks na jeden ekran, wskazujący na trzy powyższe pliki. | Automatycznie, przez agenta. Celowo *nie* jest bazą wiedzy — długi plik jest tylko przeglądany pobieżnie, a potem ignorowany. |

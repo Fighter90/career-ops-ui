@@ -187,7 +187,7 @@ web-ui/
 ├── server/                 # Express (API + SSE + proxy LLM)
 │   ├── index.mjs           # createApp — cách-lý-CI 100%
 │   └── lib/
-│       ├── sources/        # 121 nguồn bảng việc làm (116 EN + 5 RU)
+│       ├── sources/        # 123 nguồn bảng việc làm (118 EN + 5 RU)
 │       ├── ru-scanner.mjs  # bộ-điều-phối-khu-vực
 │       └── routes/         # help, docs-assistant, config, tracker, …
 ├── public/
@@ -203,7 +203,7 @@ web-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 6841 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.0)
+└─ tests/                    # 6841 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.1)
    ├─ parsers.test.mjs       # bộ-phân-tách-markdown / pipeline / báo-cáo (hàm-thuần)
    ├─ api.test.mjs           # mọi-endpoint, máy-chủ-ephemeral, không-mạng
    ├─ {ru,en}-scanner.test.mjs   # fetch-mocked

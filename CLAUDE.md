@@ -6,7 +6,7 @@ they are relevant.
 
 | Read this | When |
 |---|---|
-| [CONTEXT.md](CONTEXT.md) | **first** — domain dictionary. One accepted name per concept. Settles `source` vs `adapter` (109 vs 104), `mirror` vs `relay`, `telegram` vs `telegram-channel`. |
+| [CONTEXT.md](CONTEXT.md) | **first** — domain dictionary. One accepted name per concept. Settles `source` vs `adapter` (123 vs 118), `mirror` vs `relay`, `telegram` vs `telegram-channel`. |
 | [PROGRESS.md](PROGRESS.md) | at session start — current state, next step, known issues, and **abandoned approaches** you should not retry. |
 | [docs/adr/](docs/adr/) | before changing anything the records cover — why a choice was made, and what would make us revisit it. |
 | [docs/sdd/CONVENTIONS.md](docs/sdd/CONVENTIONS.md) | while writing code — module system, routes, sanitizers, i18n, testing. |
@@ -23,11 +23,11 @@ they are relevant.
 - **Every release ships a QA prompt** (`qa/QA-REGRESSION-PROMPT-v<version>.md`),
   patches included.
 - **Every release runs the full regression on BOTH stands** — local `127.0.0.1:4317`
-  and prod (resumecraft.ru): all views, ×18 locales, live LLM (`remote-qa -f live=true`)
+  and prod (resumecraft.ru): all views, ×19 locales, live LLM (`remote-qa -f live=true`)
   and scanner (`-f scan=true`). Findings go to Linear (Russian) immediately and are
   executed until done.
-- **Every release updates: CHANGELOG ×18 (EN + 17 locales, parity green), the wiki
-  (Home ×18 banners + counts + Roadmap), the site build (cvstart.org), `PROGRESS.md`,
+- **Every release updates: CHANGELOG ×19 (EN + 18 locales, parity green), the wiki
+  (Home ×19 banners + counts + Roadmap), the site build (cvstart.org), `PROGRESS.md`,
   and a spec in `docs/sdd/specs/` with real verification output.** Linear statuses move
   with the work (In Progress → In Review → Done on deployed-and-verified). Full list:
   `docs/sdd/HANDOFF.md` → *Post-release standing rules*.

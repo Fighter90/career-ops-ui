@@ -35,9 +35,9 @@ company boards. So:
   `GET /api/status/providers`). The **parent** project calls its scrapers
   `providers/*.mjs`; when porting, a parent *provider* becomes a web-ui *source*
   **and**, for EN boards, also an *adapter*.
-- **Do not use** "109 adapters" — that number is sources. The public "N adapters"
+- **Do not use** "123 adapters" — that number is sources. The public "N adapters"
   phrasing in README badges and the wiki is the **sources** total kept for historical
-  continuity; inside the code, `ALL_ADAPTERS.length === 104`.
+  continuity; inside the code, `ALL_ADAPTERS.length === 118`.
 - **Do not use** "portal" and "board" interchangeably in new prose: a **job board**
   is the third-party site; a **portal entry** is our row in `tracked_companies:`.
 

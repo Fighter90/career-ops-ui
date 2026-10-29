@@ -388,7 +388,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 6841 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.0)
+└─ tests/                    # 6841 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.1)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -651,7 +651,7 @@ La majeure partie de ce projet est écrite avec des agents de codage. C'est une 
 
 | Fichier | Ce que c'est | À lire quand |
 |---|---|---|
-| **[`CONTEXT.md`](CONTEXT.md)** | Dictionnaire du domaine : un nom retenu par concept, les variantes rejetées marquées *à ne pas utiliser*. | **En premier.** Il tranche les confusions que ce dépôt paie réellement — `source` contre `adapter` (109 contre 104, et pourquoi les deux ont raison), `mirror` contre `relay`, `telegram` contre `telegram-channel`. |
+| **[`CONTEXT.md`](CONTEXT.md)** | Dictionnaire du domaine : un nom retenu par concept, les variantes rejetées marquées *à ne pas utiliser*. | **En premier.** Il tranche les confusions que ce dépôt paie réellement — `source` contre `adapter` (123 contre 118, et pourquoi les deux ont raison), `mirror` contre `relay`, `telegram` contre `telegram-channel`. |
 | **[`PROGRESS.md`](PROGRESS.md)** | État des travaux : ce qui est fait, la prochaine étape, les problèmes connus, et les **approches abandonnées**. | Au début de chaque session. Git montre ce qui a changé ; ce fichier dit où en est le travail et ce qui a déjà été essayé puis rejeté. |
 | **[`docs/adr/`](docs/adr/)** | Des fiches de décision numérotées — contexte, décision, conséquences, et ce qui ferait revenir dessus. | Avant de modifier quoi que ce soit qu'une fiche couvre. C'est la fiche qui décide, pas la release en cours. |
 | **[`CLAUDE.md`](CLAUDE.md)** | Un index tenant sur un écran, pointant vers les trois fichiers ci-dessus. | Automatiquement, par l'agent. Délibérément *pas* une base de connaissances — une longue se parcourt en diagonale, puis s'ignore. |
