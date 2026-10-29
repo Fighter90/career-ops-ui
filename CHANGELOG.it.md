@@ -10,7 +10,7 @@
 
 ### Note
 
-- Deliberatamente una patch a scopo unico: qui non arriva altro — il contenuto della coda della revisione di v1.262.2 è uscito separatamente.
+- Deliberatamente una patch a scopo unico: la correzione di `pl` è l'unico cambio che questa versione porta — non porta nient'altro; il contenuto della coda della revisione di v1.262.2 è uscito separatamente.
 
 Tests 6867 → 6868 (+1) · Playwright 176 · registro invariato: 123 sources = 118 EN + 5 RU · 118 adapters.
 

@@ -17,7 +17,7 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 
 ### Noter
 
-- Bevidst en patch med ét formål: her sejler intet andet med — gennemgangs-hale-indholdet fra v1.262.2 udkom separat.
+- Bevidst en patch med ét formål: `pl`-rettelsen er den eneste ændring, denne udgivelse sejler med — den sejler ikke noget andet med; gennemgangs-hale-indholdet fra v1.262.2 udkom separat.
 
 Tests 6867 → 6868 (+1) · Playwright 176 · registry uændret: 123 sources = 118 EN + 5 RU · 118 adapters.
 

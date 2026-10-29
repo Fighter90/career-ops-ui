@@ -20,7 +20,7 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ### Notes
 
-- Délibérément un patch à but unique : rien d'autre ne voyage ici — le contenu de la queue de revue de la v1.262.2 est sorti séparément.
+- Délibérément un patch à but unique : la correction de `pl` est le seul changement que cette version embarque — elle n'embarque rien d'autre ; le contenu de la queue de revue de la v1.262.2 est sorti séparément.
 
 Tests 6867 → 6868 (+1) · Playwright 176 · registre inchangé : 123 sources = 118 EN + 5 RU · 118 adapters.
 

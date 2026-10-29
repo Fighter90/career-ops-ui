@@ -18,7 +18,7 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ### Uwagi
 
-- Świadomie jednocelowy patch: nic więcej tu nie wychodzi — zawartość review-tail v1.262.2 wyszła osobno.
+- Świadomie jednocelowy patch: poprawka `pl` to jedyna zmiana, jaką niesie to wydanie — nie wozi niczego więcej; zawartość review-tail v1.262.2 wyszła osobno.
 
 Tests 6867 → 6868 (+1) · Playwright 176 · rejestr bez zmian: 123 sources = 118 EN + 5 RU · 118 adapters.
 

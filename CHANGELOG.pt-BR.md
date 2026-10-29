@@ -16,7 +16,7 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ### Notas
 
-- Deliberadamente um patch de propósito único: nada mais viaja aqui — o conteúdo da cauda de revisão da v1.262.2 saiu separadamente.
+- Deliberadamente um patch de propósito único: a correção do `pl` é a única mudança que esta versão traz — não empacota nada além disso; o conteúdo da cauda de revisão da v1.262.2 saiu separadamente.
 
 Tests 6867 → 6868 (+1) · Playwright 176 · registro inalterado: 123 sources = 118 EN + 5 RU · 118 adapters.
 

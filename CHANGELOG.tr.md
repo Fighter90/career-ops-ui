@@ -10,7 +10,7 @@
 
 ### Notlar
 
-- Bilinçli olarak tek-amaçlı bir yama: burada başka bir şey gitmiyor — v1.262.2 inceleme-kuyruğu içeriği ayrı gönderildi.
+- Bilinçli olarak tek-amaçlı bir yama: `pl` düzeltmesi bu sürümün taşıdığı tek değişiklik — başka hiçbir şey taşımıyor; v1.262.2 inceleme-kuyruğu içeriği ayrı gönderildi.
 
 Tests 6867 → 6868 (+1) · Playwright 176 · registry değişmedi: 123 sources = 118 EN + 5 RU · 118 adapters.
 

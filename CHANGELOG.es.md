@@ -21,7 +21,7 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 
 ### Notas
 
-- Deliberadamente un parche de propósito único: aquí no viaja nada más — el contenido de la cola de revisión de v1.262.2 salió por separado.
+- Deliberadamente un parche de propósito único: el arreglo de `pl` es el único cambio que trae esta versión — no empaqueta nada más; el contenido de la cola de revisión de v1.262.2 salió por separado.
 
 Tests 6867 → 6868 (+1) · Playwright 176 · registro sin cambios: 123 sources = 118 EN + 5 RU · 118 adapters.
 

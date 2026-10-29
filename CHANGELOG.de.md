@@ -10,7 +10,7 @@
 
 ### Hinweise
 
-- Bewusst ein Single-Purpose-Patch: hier kommt sonst nichts mit — der Review-Tail-Inhalt von v1.262.2 ist separat erschienen.
+- Bewusst ein Single-Purpose-Patch: der `pl`-Fix ist die einzige Änderung, die dieses Release mitbringt — er bringt nichts anderes mit; der Review-Tail-Inhalt von v1.262.2 ist separat erschienen.
 
 Tests 6867 → 6868 (+1) · Playwright 176 · Registry unverändert: 123 sources = 118 EN + 5 RU · 118 adapters.
 

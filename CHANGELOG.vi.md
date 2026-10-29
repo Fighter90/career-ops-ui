@@ -16,7 +16,7 @@ Bản dịch: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ### Ghi chú
 
-- Không-hành-động-cố-ý: bản-patch-một-mục-đích — không-có-gì-khác được-đóng-gói ở-đây; nội-dung-đuôi-rà-soát-v1.262.2 đã-ra-mắt-riêng-biệt.
+- Không-hành-động-cố-ý: bản-patch-một-mục-đích — bản-sửa-`pl` là thay-đổi-duy-nhất mà bản-phát-hành-này-mang; không-đóng-gói-thêm-bất-cứ-gì-khác; nội-dung-đuôi-rà-soát-v1.262.2 đã-ra-mắt-riêng-biệt.
 - Tests 6867 → 6868 (+1) trên-nhánh-phát-hành · Playwright 176 · registry không-thay-đổi: 123 sources = 118 EN + 5 RU · 118 adapters.
 
 ## [1.262.2] — 2026-10-30
