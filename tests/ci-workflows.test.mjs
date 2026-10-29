@@ -197,3 +197,29 @@ test('deploy hermes mode: HERMES_BASE_URL masks the query string like recon does
     'the hermes BASE_URL line must mask basic-auth and the query string',
   );
 });
+
+test('deploy hermes mode: honours inputs.app_dir (no hardcoded env path)', () => {
+  const steps = wf['deploy.yml'].jobs.deploy.steps;
+  const hermesStep = steps.find((s) => (s.name || '').startsWith('Hermes'));
+  assert.ok(hermesStep, 'hermes step missing');
+  // like the provider step: APP_DIR must reach the remote script via env
+  assert.equal(hermesStep.env && hermesStep.env.APP_DIR, '${{ inputs.app_dir }}',
+    'hermes step must receive inputs.app_dir (an empty APP_DIR silently falls back)');
+  const hermes = hermesStep.run || '';
+  assert.doesNotMatch(hermes, /\/opt\/career-ops\/src\/\.env/, 'hardcoded .env path must go');
+  assert.match(hermes, /'\^HERMES_BASE_URL=.*' "\$APP_DIR\/\.env"/, 'the app-view must read $APP_DIR/.env');
+});
+
+test('deploy public check: PUBLIC_URL is https-validated before any curl', () => {
+  const pub = stepRun('deploy.yml', 'deploy', 'Public check');
+  assert.ok(pub.length > 0, 'public check step missing');
+  // an input/secret reaching curl's argument list: a leading '-' would be
+  // parsed as options, and a non-https origin would downgrade the check
+  const gate = pub.indexOf('case "$PUBLIC_URL" in');
+  assert.ok(gate > 0, 'https gate missing');
+  const block = pub.slice(gate, gate + 220);
+  assert.match(block, /https:\/\/\*\) ;;/, 'https:// must be the only accepted shape');
+  assert.match(block, /::error::/, 'the rejection must fail loudly');
+  assert.match(block, /exit 1/, 'the rejection must stop the step');
+  assert.ok(gate < pub.indexOf('curl -sS'), 'the gate must precede the first curl');
+});
