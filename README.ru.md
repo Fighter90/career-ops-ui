@@ -12,14 +12,14 @@ _Неофициальный интерфейс — не аффилирован �
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#тесты)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#требования)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.262.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.0)
+[![release](https://img.shields.io/badge/release-v1.262.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Последний релиз — v1.262.0** — **Функциональный minor из upstream: борда вакансий Deel присоединяется к сканеру (реестр 123), CSV чужого трекера импортируется прямо в #/tracker с dry-run-превью, проверка целостности JD posting-guard и проверка голоса CV (27 подсвеченных штампов) появляются в UI, фильтр по годам опыта читает JD, а кнопки Apply понимаются ещё на семи языках — плюс репосты перестают фабриковаться между источниками, ушедший на пенсию дефолт MiniMax заменён, а ta-оценки держат язык.**
+> **🆕 Последний релиз — v1.262.1** — **Итальянский патч оценок: `it` присоединяется к токен-плотным локалям (потолок 32768 токенов + таймер 480 с) после того, как эпоха OpenRouter поймала её срезающей отчёт прямо перед блоком SCORE_SUMMARY, — плюс deploy-workflow получил `mode=hermes` (перезапуск шлюза + полная диагностика + баланс кредитов) и `mode=provider` (переключение LLM с проверкой наличия ключа) — так прод переехал на OpenRouter, когда кончились кредиты Hermes.**
 >
-> **Предыдущий релиз — v1.261.3** — **Патч завершения дизайна: дизайн-система Lovable полностью вошла в строй — плотность фазы 3 (строки таблиц ≈32px, контролы 30px, чипы 24px) и все остатки кораллового переехали в новое разделение «синий акцент / красная опасность» — плюс источник сканирования Trakstar Hire (в реестре — 122), хост-пул сканера (до 32 компаний, по 10 на хост), шесть исправлений локаций в провайдерах из upstream, undo и защита несохранённых правок в CV Studio, а также контрастные правки финальной регрессии (подпись кластера на карте 4.68:1). Под этим: кэш геокодера теперь переживает падения, у ta-оценок появился потолок в 32768 токенов, а remote-QA называет сбойные источники по имени.**
+> **Предыдущий релиз — v1.262.0** — **Функциональный minor из upstream: борда вакансий Deel присоединяется к сканеру (реестр 123), CSV чужого трекера импортируется прямо в #/tracker с dry-run-превью, проверка целостности JD posting-guard и проверка голоса CV (27 подсвеченных штампов) появляются в UI, фильтр по годам опыта читает JD, а кнопки Apply понимаются ещё на семи языках — плюс репосты перестают фабриковаться между источниками, ушедший на пенсию дефолт MiniMax заменён, а ta-оценки держат язык.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -392,7 +392,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 6841 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.0)
+└─ tests/                    # 6841 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.1)
    ├─ parsers.test.mjs       # парсеры markdown / pipeline / отчётов (чистые функции)
    ├─ api.test.mjs           # каждая точка входа, эфемерный сервер, без сети
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch

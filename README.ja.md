@@ -12,14 +12,14 @@ _非公式 UI — career-ops / santifer とは提携しておらず、承認も�
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.262.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.0)
+[![release](https://img.shields.io/badge/release-v1.262.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.262.0** — **アップストリーム機能のマイナー: Deel求人ボードがスキャナに加わり(レジストリ 123)、別トラッカーのCSVを#/trackerへ直接インポート(dry-runプレビュー付き)、posting-guardのJD整合性チェックとCVボイスチェック(定型フレーズ27件をハイライト)がUIに登場、経験年数スキャンフィルタがJDを読み取り、Applyボタンがさらに7言語で理解されます — 加えてリポストがソース間で捏造されなくなり、MiniMaxの引退済みデフォルトモデルが置き換えられ、ta評価は言語を維持します。**
+> **🆕 最新リリース — v1.262.1** — **イタリア語評価パッチ: OpenRouter期に`it`のレポートがSCORE_SUMMARYブロックの直前で切れているのが捕捉され、`it`はトークン密度の高いロケール(32768トークン上限+480秒クロック)に加わりました — さらにdeploy workflowに`mode=hermes`(ゲートウェイ再起動+完全診断+クレジット残高)と`mode=provider`(キー存在ガード付きのLLM切り替え)が加わり、Hermesのクレジットが尽きたときprodはこうしてOpenRouterへ移行しました。**
 >
-> **前バージョン — v1.261.3** — **デザイン完成パッチ: Lovableデザインシステムが完全に稼働 — フェーズ3の密度(テーブル行 ≈32px、コントロール 30px、チップ 24px)と、coralの残りはすべて新しい青アクセント/赤デンジャーへの分割に移行 — さらにTrakstar Hireスキャンソース(レジストリ 122)、スキャンのホストプール(最大32社、1ホストあたり10社)、上流プロバイダーのロケーション修正6件、CV Studioのundo+未保存ガード、そして最終回帰のcontrast修正(マップクラスターラベル 4.68:1)。その下では: ジオコードキャッシュはクラッシュに耐え、ta評価には32768トークンの上限が付き、remote-QAは失敗したソースを名指しします。**
+> **前バージョン — v1.262.0** — **アップストリーム機能のマイナー: Deel求人ボードがスキャナに加わり(レジストリ 123)、別トラッカーのCSVを#/trackerへ直接インポート(dry-runプレビュー付き)、posting-guardのJD整合性チェックとCVボイスチェック(定型フレーズ27件をハイライト)がUIに登場、経験年数スキャンフィルタがJDを読み取り、Applyボタンがさらに7言語で理解されます — 加えてリポストがソース間で捏造されなくなり、MiniMaxの引退済みデフォルトモデルが置き換えられ、ta評価は言語を維持します。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -394,7 +394,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 6841 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.0)
+└─ tests/                    # 6841 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.1)
    ├─ parsers.test.mjs       # markdown / pipeline / report パーサー(純粋関数)
    ├─ api.test.mjs           # 全エンドポイント、ephemeral server、ネットワークなし
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch

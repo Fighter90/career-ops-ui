@@ -12,14 +12,14 @@ _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.262.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.0)
+[![release](https://img.shields.io/badge/release-v1.262.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versão — v1.262.0** — **O minor de recursos upstream: o board de vagas Deel entra no scanner (registro 123), o CSV de outro tracker importa direto no #/tracker com pré-visualização de dry-run, a verificação de integridade do JD do posting-guard e um cheque de voz do CV (27 frases prontas destacadas) chegam à UI, um filtro de anos de experiência do scan lê o JD, e os botões de Apply são compreendidos em mais sete idiomas — além disso os reposts param de ser fabricados entre fontes, o modelo padrão aposentado do MiniMax é substituído, e as avaliações em ta mantêm o idioma.**
+> **🆕 Última versão — v1.262.1** — **O patch de avaliação em italiano: `it` entra nas locales densas em tokens (teto de 32768 tokens + relógio de 480 s) depois que a era OpenRouter a pegou cortando o relatório logo antes do bloco SCORE_SUMMARY — mais o deploy workflow ganhou `mode=hermes` (reinício do gateway + diagnóstico completo + saldo de créditos) e `mode=provider` (troca de LLM com guarda de presença de chave), que moveu o prod para o OpenRouter quando os créditos do Hermes acabaram.**
 >
-> **Anterior — v1.261.3** — **O patch de conclusão do design: o sistema de design Lovable está totalmente ativo — densidade da fase 3 (linhas de tabela ≈32px, controles 30px, chips 24px) e todo resquício de coral movido para a nova divisão azul de destaque / vermelho de perigo — mais a fonte de scan Trakstar Hire (122 no registro), o host-pool do scan (até 32 empresas, 10 por host), seis correções de localização em providers upstream, desfazer + proteção contra alterações não salvas no CV Studio, e os ajustes de contraste da regressão final (rótulo do cluster do mapa 4.68:1). Por baixo: o cache do geocodificador agora sobrevive a quedas, as avaliações em ta ganharam um teto de 32768 tokens, e o remote-QA nomeia as fontes que falham.**
+> **Anterior — v1.262.0** — **O minor de recursos upstream: o board de vagas Deel entra no scanner (registro 123), o CSV de outro tracker importa direto no #/tracker com pré-visualização de dry-run, a verificação de integridade do JD do posting-guard e um cheque de voz do CV (27 frases prontas destacadas) chegam à UI, um filtro de anos de experiência do scan lê o JD, e os botões de Apply são compreendidos em mais sete idiomas — além disso os reposts param de ser fabricados entre fontes, o modelo padrão aposentado do MiniMax é substituído, e as avaliações em ta mantêm o idioma.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -392,7 +392,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 6841 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.0)
+└─ tests/                    # 6841 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.1)
    ├─ parsers.test.mjs       # parsers de markdown / pipeline / report (funções puras)
    ├─ api.test.mjs           # cada endpoint, servidor efêmero, sem rede
    ├─ {ru,en}-scanner.test.mjs   # fetch mockado

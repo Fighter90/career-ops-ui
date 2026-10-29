@@ -9,6 +9,26 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 ---
 
 
+## [1.262.1] — 2026-10-29
+
+**O patch de avaliação em italiano: `it` entra nas locales densas em tokens (teto de 32768 tokens + relógio de 480 s) depois que a era OpenRouter a pegou cortando o relatório logo antes do bloco SCORE_SUMMARY — e a ferramenta de troca de provedor que tornou o diagnóstico possível chega no deploy workflow.**
+
+### Corrigido
+
+- **Avaliação em `it` cortada antes de SCORE_SUMMARY (cauda do CAR-190)**: remote-QA 40928864980 (primeira execução com os créditos recarregados) — uma avaliação em `it` rodou 264 s e voltou com 15 045 caracteres e `tok ~15635` no teto de 16 384: blocos A–G intactos, `---SCORE_SUMMARY---` desaparecido. A mesma classe de forma que rendeu a `ta` seu teto em v1.261.1 (CAR-174). `it` entra em `TOKEN_DENSE_EVAL_LOCALES` (`ta`, `hi` → `ta`, `hi`, `it`): tanto o orçamento de 32 768 tokens quanto o relógio de 480 s passam a valer, e `/api/evaluate` + auto-pipeline permanecem sobre a única fonte de verdade em `llm.mjs`.
+- **Relatório em en sem blocos — um flake de geração pontual**: na mesma execução uma única avaliação em `en` voltou com o idioma correto mas **sem nenhum** dos blocos A–G; uma re-execução direcionada passou limpa (21 091 caracteres, A–G ✓). Não entra no conjunto denso em tokens — um flake não é um histórico.
+
+### Adicionado
+
+- **Deploy workflow: `mode=hermes` e `mode=provider`** (cauda operacional do CAR-190): `mode=hermes` reinicia o gateway Hermes e imprime um diagnóstico completo (unit file com os segredos limpos, listeners antes/depois, journal do sudo, sondas por porta, a própria visão de `HERMES_BASE_URL` do app, saldo de créditos do OpenRouter); `mode=provider` troca o `LLM_PROVIDER` com uma guarda de presença de chave (recusa quando o `*_API_KEY` do provedor de destino está ausente) e reinicia o app — foi assim que o prod migrou para `openrouter` quando os créditos do Hermes acabaram no meio do caminho. A guarda de refs do deploy-mode é validada apenas para `mode=deploy`, então os despachos de recon/verify voltam a funcionar (a mudança da era v1.261.3 de inputs obrigatórios os tinha silenciado).
+
+### Notas
+
+- Não-ação deliberada: `en` **não** entra no conjunto denso em tokens — um relatório sem blocos é um flake de geração, não um histórico de volume.
+- Não-ação deliberada: a diretiva de idioma reforçada do ta **não** se estende ao `it` — nenhum desvio de idioma foi observado para o italiano.
+- Não-ação deliberada: gravar o novo vídeo demo da UI-v2 continua com o dono (CAR-141) — a landing agora incorpora via `youtube-nocookie.com` de qualquer forma.
+- Testes 6841 → 6841 na branch de release.
+
 ## [1.262.0] — 2026-10-29
 
 **O minor de recursos upstream: o board de vagas Deel entra no scanner (registro 123), o CSV de outro tracker é importado direto no `#/tracker`, a verificação de integridade do JD do posting-guard e o cheque de voz do CV chegam como relays/lints, o scanner ganha um filtro de anos de experiência, e os botões de Apply em mais sete idiomas deixam de parecer ausentes — além do modelo padrão aposentado do MiniMax ser substituído e os reposts deixarem de ser fabricados entre fontes.**

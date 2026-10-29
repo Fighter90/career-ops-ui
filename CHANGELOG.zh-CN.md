@@ -9,6 +9,26 @@
 ---
 
 
+## [1.262.1] — 2026-10-29
+
+**意大利语评估补丁：在 OpenRouter 时代，`it` 被发现在 SCORE_SUMMARY 块之前截断报告，于是 `it` 加入 token 密集型 locale（32768 token 上限 + 480 秒时钟）—— 而让诊断成为可能的 provider 切换工具也随 deploy workflow 一同发布。**
+
+### 修复
+
+- **`it` 评估在 SCORE_SUMMARY 之前被截断（CAR-190 尾巴）**：remote-QA 40928864980（补充信用后的首次运行）—— 一次 `it` 评估运行了 264 秒，带着 `tok ~15635` 在 16,384 上限处返回 15,045 字符：A–G 块完好，`---SCORE_SUMMARY---` 消失。正是 v1.261.1（CAR-174）中为 `ta` 赢得上限的那一类形状。`it` 加入 `TOKEN_DENSE_EVAL_LOCALES`（`ta`、`hi` → `ta`、`hi`、`it`）：32,768 token 预算与 480 秒时钟现在同时生效，`/api/evaluate` + auto-pipeline 仍以 `llm.mjs` 为唯一事实来源。
+- **en 无块报告 —— 一次性的生成 flake**：同一次运行中，单个 `en` 评估返回时语言正确但**没有任何** A–G 块；一次针对性重跑干净通过（21,091 字符，A–G ✓）。未加入 token 密集集合 —— 一次 flake 不成历史。
+
+### 新增
+
+- **Deploy workflow：`mode=hermes` 与 `mode=provider`（CAR-190 运维尾巴）**：`mode=hermes` 重启 Hermes 网关并打印完整诊断（剥离密钥后的 unit 文件、前后监听器、sudo journal、逐端口探测、应用自身的 `HERMES_BASE_URL` 视图、OpenRouter 信用余额）；`mode=provider` 在密钥存在性守卫下切换 `LLM_PROVIDER`（目标 provider 的 `*_API_KEY` 缺失时拒绝）并重启应用 —— Hermes 信用中途耗尽时，prod 就是这样迁到 `openrouter` 的。deploy-mode ref 守卫只针对 `mode=deploy` 做校验，因此 recon/verify 派发恢复工作（v1.261.3 时代的必填输入变更曾让它们哑火）。
+
+### 备注
+
+- 刻意的未行动：`en` **未**加入 token 密集集合 —— 一份无块报告是生成 flake，不是体量历史。
+- 刻意的未行动：ta 强化语言指令**未**扩展到 `it` —— 意大利语未观察到语言漂移。
+- 刻意的未行动：录制新的 UI-v2 演示视频仍归 owner（CAR-141）—— 落地页无论如何现已通过 `youtube-nocookie.com` 嵌入。
+- 测试 6841 → 6841（发布分支）。
+
 ## [1.262.0] — 2026-10-29
 
 **上游功能 minor：Deel 招聘看板加入扫描器（注册表 123）、其他 tracker 的 CSV 直接导入 `#/tracker`、posting-guard 的 JD 完整性检查与 CV 语气检查以 relay/lint 形式落地、扫描器学会按工作年限过滤、Apply 按钮再多懂 7 种语言而不再被读作缺失 —— 加上 MiniMax 已退役的默认模型被替换、跨来源的 repost 不再被凭空捏造。**
