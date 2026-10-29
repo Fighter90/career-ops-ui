@@ -107,11 +107,16 @@ test('evalMaxTokens: EN and unknown/undefined keep the 16384 ceiling', () => {
   assert.equal(evalMaxTokens('de-DE'), 16384);
 });
 
-test('evalMaxTokens: token-dense locales (ta, hi) get 32768', () => {
+test('evalMaxTokens: token-dense locales (ta, hi, it) get 32768', () => {
   assert.equal(evalMaxTokens('ta'), 32768);
   assert.equal(evalMaxTokens('hi'), 32768);
   assert.equal(evalMaxTokens('ta-IN'), 32768);
   assert.equal(evalMaxTokens('TA'), 32768); // case-insensitive, defensive
+  // CAR-190 tail — remote-QA v1.262.0 (OpenRouter era): an it evaluation ran
+  // 264 s and came back 15045 chars cut right before the SCORE_SUMMARY block
+  // (tok ~15635 at the 16384 ceiling). Same shape class as ta v1.261.1.
+  assert.equal(evalMaxTokens('it'), 32768);
+  assert.equal(evalMaxTokens('it-IT'), 32768);
 });
 
 test('evalMaxTokens is a pure function of the lang string', () => {
