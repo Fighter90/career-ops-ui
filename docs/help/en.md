@@ -714,6 +714,18 @@ table (the tooltip lists the flag codes), so you can eyeball low-trust rows
 without anything being filtered out. Leave the block out entirely to keep the
 pre-1.76 behaviour (no annotation, no badge).
 
+### `years_min` (optional — web-ui 1.262.0)
+
+```yaml
+years_min: 3
+```
+
+Skips postings whose description states a minimum experience below your bar.
+The parser reads stated requirements only — a posting without a stated number
+always passes (never dropped on a guess). Skipped rows are recorded in
+`data/scan-history.tsv` as `skipped_experience`, an observational status that
+never pins a URL, so the posting resurfaces on a later scan.
+
 ### `search_queries`
 
 ```yaml
@@ -1399,6 +1411,16 @@ it to an application.
 
 ---
 
+### Posting guard — JD integrity check (v1.262.0)
+
+On a report page whose slug carries a report number, the header actions row has
+a **Posting guard** button. It runs the parent's deterministic zero-LLM
+integrity gate over the report's archived JD (the `jds/` capture) and renders
+the findings inline — verdict, checks, and reasons. The gate is local: no
+model, no writes. Until the parent checkout ships the `posting-guard.mjs`
+script, the button answers with an honest "script not found" note instead of a
+failure.
+
 ## 11. Tracker (`#/tracker`)
 
 The CRM. One row per application; lives in `data/applications.md` as a
@@ -1461,6 +1483,14 @@ Every filter resets the paginator to page 1. 25 rows per page.
 reportSlug?, notes?, date? }`. Dedup by `(company, role)`
 case-insensitive. From the UI, the Evaluate page offers an "Add to
 tracker" button after a successful score.
+
+### Import another tracker's CSV (v1.262.0)
+
+The toolbar's **Import CSV** button takes another tracker's CSV export
+(company/role/status/date/url — column aliases are recognised, RFC-4180
+quoting supported), previews every row with its outcome (import, duplicate by
+posting URL, skipped) and writes only after you confirm. Unknown stages land
+as Evaluated with a note; dates accept ISO, day-first and month-name forms.
 
 ### "Still live?" — check whether an ATS posting is still open
 
@@ -2329,6 +2359,14 @@ Before you share your CV as a writing sample or a screenshot, the **Privacy mask
 Paste a stiff line or paragraph — the kind of generic AI phrasing that reads as boilerplate — and **Make it human** rewrites it in *your* voice. The rewrite is grounded server-side in your `voice-dna.md` (how your writing reads) and your `writing-samples/` (your real prose). The hard rule: it may reorder, tighten, and re-voice, but it will **never** introduce a fact, metric, or achievement that isn't already in the text you pasted. With an LLM key it rewrites live; with no key it hands you a ready-to-run prompt to paste into any assistant. Then edit your CV on the `#/cv` page as usual — CV Studio suggests, you decide.
 
 **Tailor to a job.** Paste a job description into the **Tailor to a job** card and CV Studio produces a **résumé tailored to that posting plus a matching cover letter**, then runs both through a **recruiter-grade checklist gate** before it hands them over. The mechanic is distilled from career-coaching practice into generic rules — a recruiter reads in seconds, so relevant experience goes to the top, the headline matches the vacancy's role, results carry specific numbers, and the cover letter stays a short teaser with a single "requirement ↔ your matching fact" bridge. The checklist reports each item as PASS/FAIL: **errors block** (they're fixed before you see the result), **warnings advise**. Everything is grounded only in your own CV, profile, and two-pager — it reorders and reframes what you already have but **never fabricates** an employer, metric, or claim. With an LLM key it runs live; with no key you get the ready-to-run prompt. Optionally type a target role/headline to steer it. Export the result as Markdown, PDF, or DOCX with the buttons on the result card.
+
+### Voice check (v1.262.0)
+
+The **Voice check** card lints the pasted text against 27 stock résumé phrases
+("passionate about", "proven track record", "leveraged", "spearheaded", …) and
+highlights the exact matches — a year range like 2022–2024 is a date, not a
+tell, while `20–30%` is. Read-only: nothing is written anywhere. The Tailor
+checklist treats stock phrasing as a sixth invariant.
 
 ### "Reuse a past CV?" hint
 
