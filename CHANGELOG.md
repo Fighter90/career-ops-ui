@@ -32,7 +32,7 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 - **Accent is now blue** (Lovable concept): primary actions/active states/focus rings follow `--cv3-accent`; red is reserved for danger (`.btn-danger`, `toast.error`, danger text). Coral survives only in the logo PNG asset (owner's call).
 - **Density**: table rows ≈32px / controls 30px / chips 24px — WCAG 2.5.8 spacing exception documented; the v1.26.1 44px canary was rewritten onto the token contract.
 - CodeQL: all 10 open alerts closed (4 FP-dismissed with rationale: llmRateLimit/atomicWrite documented classes; 6 fixed at source).
-- Tests 6655 → 6734 on the release branch; no scanner-source behavior changed beyond the new Trakstar source.
+- Tests 6655 → 6734 on the release branch. Deliberate non-action: the scanner did **not** change behavior beyond the new Trakstar source, and the upstream fix queue (#6154 years-of-experience, #6170 CSV import, #6146 posting-guard) is **not** part of this patch release — it rides the next minor.
 
 ## [1.261.2] — 2026-10-28
 
