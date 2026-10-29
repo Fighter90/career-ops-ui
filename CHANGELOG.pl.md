@@ -10,6 +10,18 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.262.3] — 2026-10-30
+
+### Naprawiono
+
+- **`pl` dołącza do języków token-dense ewaluacji** (`pl` → limit 32768 tokenów + zegar 480 s). Pełny remote-QA na prodzie v1.262.1 przyłapał polską ewaluację umierającą na standardowym limicie — `502 · openrouter · 300 s · 0 ch` — a punktowy rerun wysłany z v1.262.2 odtworzył to dokładnie (przebiegi 40960568766 i 40968958062): 18/19 locale przeszło A–G, `it` skończyła na 302 s wewnątrz token-dense zegara 480 s, a `pl` dwukrotnie uderzyła w ścianę z zerowym wyjściem. Deterministyczny timeout, nie flake — ta sama klasa kształtu, która przeniosła `it` w v1.262.1. Pin red-first: `evalMaxTokens('pl') = 32768`, `evalTimeoutMs('pl') = 480_000`, 18 standardowych locale zachowuje 300 s.
+
+### Uwagi
+
+- Świadomie jednocelowy patch: nic więcej tu nie wychodzi — zawartość review-tail v1.262.2 wyszła osobno.
+
+Tests 6867 → 6868 (+1) · Playwright 176 · rejestr bez zmian: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.262.2] — 2026-10-30
 
 ### Naprawiono
