@@ -10,6 +10,26 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.262.1] — 2026-10-29
+
+**Patch ewaluacji włoskiej: `it` dołącza do języków token-dense (limit 32768 tokenów + zegar 480 s) po tym, jak era OpenRouter przyłapała go na ucinaniu raportu tuż przed blokiem SCORE_SUMMARY — a narzędzia przełączania dostawcy, które umożliwiły diagnozę, trafiają do deploy workflow.**
+
+### Naprawiono
+
+- **Ewaluacja `it` ucięta przed SCORE_SUMMARY (ogon CAR-190)**: remote-QA 40928864980 (pierwszy przebieg na uzupełnionych kredytach) — ewaluacja `it` biegła 264 s i wróciła z 15 045 znakami przy `tok ~15635` na limicie 16 384: bloki A–G nietknięte, `---SCORE_SUMMARY---` zniknął. Ta sama klasa kształtu, która dała `ta` jej limit w v1.261.1 (CAR-174). `it` dołącza do `TOKEN_DENSE_EVAL_LOCALES` (`ta`, `hi` → `ta`, `hi`, `it`): i budżet 32 768 tokenów, i zegar 480 s obowiązują teraz, a `/api/evaluate` + auto-pipeline pozostają na jednym źródle prawdy w `llm.mjs`.
+- **Raport `en` bez bloków — jednorazowa wpadka generacji**: ten sam przebieg zobaczył pojedynczą ewaluację `en`, która wróciła poprawna językowo z **żadnym** z bloków A–G; celowy rerun przeszedł czysto (21 091 znaków, A–G ✓). Nie dodano do zestawu token-dense — jedna wpadka to nie historia.
+
+### Dodano
+
+- **Deploy workflow: `mode=hermes` i `mode=provider`** (ogon ops CAR-190): `mode=hermes` restartuje bramkę Hermes i drukuje pełną diagnozę (plik unit z wyczyszczonymi sekretami, listenery przed/po, dziennik sudo, sondy per port, własny widok `HERMES_BASE_URL` aplikacji, saldo kredytów OpenRouter); `mode=provider` przełącza `LLM_PROVIDER` ze strażnikiem obecności klucza (odmawia, gdy `*_API_KEY` dostawcy docelowego go nie ma) i restartuje aplikację — tak prod przeniósł się na `openrouter`, gdy kredyty Hermes wyczerpały się w locie. Strażnik ref trybu deploy jest walidowany tylko dla `mode=deploy`, więc dispatche recon/verify znów działają (zmiana wymaganych inputów z ery v1.261.3 uciszyła je).
+
+### Uwagi
+
+- Świadome odstąpienie: `en` **nie** trafia do zestawu token-dense — jeden raport bez bloków to wpadka generacji, nie historia objętości.
+- Świadome odstąpienie: wzmocniona dyrektywa językowa ta **nie** jest rozszerzana na `it` — nie zaobserwowano dryfu językowego we włoskim.
+- Świadome odstąpienie: nagranie nowej wideo-demo UI-v2 zostaje przy właścicielu (CAR-141) — landing i tak osadza teraz przez `youtube-nocookie.com`.
+- Testów 6841 → 6841 na gałęzi wydania.
+
 ## [1.262.0] — 2026-10-29
 
 **Minor z funkcjami z upstreamu: tablica Deel dołącza do skanera (rejestr 123), CSV z innego trackera importuje się prosto do `#/tracker`, check integralności posting-guard i check głosu CV trafiają jako relay/lint, skaner uczy się filtru lat doświadczenia, a przyciski Apply w siedmiu kolejnych językach przestają wyglądać na brakujące — do tego zastąpiony wycofany model domyślny MiniMax i reposty już nie fabrykowane między źródłami.**
