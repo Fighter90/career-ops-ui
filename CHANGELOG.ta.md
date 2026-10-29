@@ -6,6 +6,25 @@
 
 ---
 
+## [1.262.2] — 2026-10-30
+
+### சரி செய்யப்பட்டது
+
+- **Wave-review tail — 7 low-severity findings, ஒவ்வொன்றும் red-first.** CSV import backslash round-trip: cell-இல் இருந்த `\` write-இல் double ஆகவும் read-back-இலும் double ஆகவே எழுதப்பட்டது, அதனால் அதே CSV-ஐ மீண்டும் import செய்யும்போது company+role dedup தவறிவிட்டது, duplicate row உருவாகும் வாய்ப்பு இருந்தது — reader இப்போது split-க்குப் பிறகு `\\`-ஐ unescape செய்கிறது (write→read round-trip lossless, re-import dedup ஆகும்). cv-voice `<head>` strip unclosed tags-இல் quadratic ஆக இருந்தது — route cap செய்யும் 64 KB input-இல் 4827 ms → 13 ms. `statedYearsMin` `years_min` configure செய்யப்படாதபோதும் ஒவ்வொரு source-இன் ஒவ்வொரு job-க்கும் முழு years-parser-ஐ ஓட்டியது — இப்போது lazy, large scan-இல் ஒரு சில விநாடிகள் CPU மறைந்தது. readdir-க்கும் statSync-க்கும் இடையில் நீக்கப்பட்ட ஒரு capture posting-guard listing-ஐ crash செய்தது (TOCTOU — மறைந்த files இப்போது skip ஆகின்றன). MiniMax CN default `api.minimax.cn` exact-ஐ மட்டுமே match செய்தது — இப்போது எந்த `*.minimax.cn` base URL-க்கும் CN model கிடைக்கிறது. Deel-இன் hex ref அல்லாத `$`-tokens இனி snippet-இல் literal ஆக leak ஆவதில்லை. Import picker `file.text()`-க்கு முன்பே `file.size`-ஐ check செய்கிறது — 512 KB server cap browser மாஸிவ் file-ஐ parse செய்த பிறகே 413 தருவதாக இருந்தது — localized `import.tooLarge` toast ×19 உடன்.
+- **Deploy workflow hardening (workflows review F1–F6).** `provider` charset validation இல்லாமல் remote shell-இல் interpolate செய்யப்பட்ட ஒரே input — value-இல் ஒரு `'` quoting-இலிருந்து வெளியேறி prod-இல் arbitrary code ஓட்டும்; இப்போது எந்த splice-க்கும் முன்பு whitelisted `^[A-Za-z0-9_-]+$`, key-guard grep false-pass ஆகாது. hermes diagnostics step public log-இல் raw journalctl + unit dumps அச்சிட்டது; அதன் filter uppercase `*_API_KEY=`-ஐ தவறியது, எதையும் mask செய்யவில்லை — இப்போது shared case-insensitive redact + value masking + 80-char truncation மூன்று sinks-இலும், `?token=` query strings-உம் mask. hermes step `inputs.app_dir`-ஐ புறக்கணித்து `/opt/career-ops/src/.env` hardcode செய்தது. `public_url` https check இல்லாமல் curl-ஐ அடைந்தது (leading `-` வழியாக option injection). மேலும் anti-downgrade guard — v1.238.0 incident fix — executable gate இல்லாமல் இருந்தது: ci-workflows-இல் ஆறு புதிய pins (refs defaults இல்லாமல், guard Deploy-க்கு முன்பே ஓடுகிறது, strict refs regex).
+- **Import-modal tail (SPA review).** Modal outcome modal பயன்படுத்தும் அதே nav guard-ஐ arm செய்கிறது — வேறு view-க்கு navigate செய்தால் modal அந்த view-இன் மேல் orphan ஆவதில்லை. Hidden file input `change`-இல் மட்டுமல்ல, `cancel`-இலும் நீக்கப்படுகிறது — repeated dismissals document.body-இல் inputs-ஐ leak செய்வதில்லை. `plan.duplicates` preview-இல் guarded form வழியாக read ஆகிறது. Tracker `num` allocation `Math.max(...spread)`-க்குப் பதிலாக `reduce` பயன்படுத்துகிறது — spread ~100k rows-இல் argument limit-ஐ அடைகிறது.
+
+### மாற்றப்பட்டது
+
+- Docs: help guide-இன் «118 EN adapters» bullet fr/it/ta-இல் count-ஐ சுமக்கிறது (மற்ற 15 locales ஏற்கனவே கொண்டிருந்தன). cvstart.org-இன் vendor prices official pricing pages-உடன் மீண்டும் சரிபார்க்கப்பட்டன — நான்கும் மாறவில்லை, CHECKED_ON → 2026-10-30. Post-release drift sweep README ×19, CONTEXT.md, CLAUDE.md மற்றும் SDD manuals முழுவதும் 42 stale count/version lines-ஐ சரி செய்தது (109/104-era மற்றும் v1.262.0-era leftovers).
+
+### குறிப்புகள்
+
+- வேண்டுமென்றே செய்யாமை: cv-studio native `window.confirm` (CAR-179 era) அப்படியே இருக்கிறது — அதை `UI.confirm` ஆக மாற்றுவது follow-up, patch item அல்ல; `<mark title>` stock-phrase tooltip tooltip-ஆகவே இருக்கிறது (ஏற்றுக்கொள்ளத்தக்க a11y floor); `remote-qa.yml` `cancel-in-progress: true` வைத்திருக்கிறது — re-dispatch ஓடும் regression-ஐ வேண்டுமென்றே supersede செய்கிறது.
+- prod v1.262.1-இல் முழு remote-QA: routes ×19 ✓ · site ×19 ✓ · links ✓ · live LLM 18/19 locales A–G ✓ — `pl` ஒரே `502 · 300 s · 0 ch` provider timeout சந்தித்தது (token-dense எல்லையல்ல; spot re-run இந்த release-உடன் வருகிறது).
+
+Tests 6841 → 6867 release branch-இல் (6864 pass / 0 fail / 3 skip, +26 vs v1.262.1) · Playwright 176 · coverage 98.42 % line / 89.94 % branch · registry மாறவில்லை: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.262.1] — 2026-10-29
 
 **Italian-evaluation patch: OpenRouter era it-இன் report-ஐ SCORE_SUMMARY block-க்கு முன்பே வெட்டுவதைப் பிடித்ததால் `it` token-dense locales-உடன் சேர்கிறது (32768-token ceiling + 480 s clock) — மேலும் இந்த diagnosis-ஐ சாத்தியமாக்கிய provider-switch tooling deploy workflow-இல் வருகிறது.**
