@@ -86,6 +86,74 @@ test('classifyLiveness: 200, content present, no apply control → uncertain (co
   assert.equal(r.code, 'no_apply_control');
 });
 
+// --- CAR-189: language-specific apply controls (upstream APPLY_PATTERNS tail) ---
+// Positives must reach active via apply_control_visible. Negatives matter as
+// much: closed postings keep their FAQ/help links, so matching the verb (or an
+// unanchored label) would keep dead postings alive forever.
+function controlFixture(controls) {
+  return classifyLiveness({
+    status: 200,
+    requestedUrl: 'https://careers.example.com/job/123',
+    finalUrl: 'https://careers.example.com/job/123',
+    bodyText: LONG_BODY,
+    applyControls: controls,
+  });
+}
+
+test('classifyLiveness: Dutch apply controls → active (CAR-189, VDAB/Recruitee NL)', () => {
+  for (const control of ['Solliciteer nu', 'Solliciteren']) {
+    const r = controlFixture([control]);
+    assert.equal(r.result, 'active', control);
+    assert.equal(r.code, 'apply_control_visible', control);
+  }
+});
+
+test('classifyLiveness: Dutch noun "Sollicitatie…" is not an apply control (CAR-189)', () => {
+  const r = controlFixture(['Sollicitatieprocedure']);
+  assert.equal(r.result, 'uncertain');
+  assert.equal(r.code, 'no_apply_control');
+});
+
+test('classifyLiveness: getManfred "¡Apúntame!" → active; the verb "aplicar" does not (CAR-189)', () => {
+  const r = controlFixture(['¡Apúntame!']);
+  assert.equal(r.result, 'active');
+  assert.equal(r.code, 'apply_control_visible');
+
+  // Closed getManfred postings keep an FAQ button like this one — a verb
+  // match would keep them alive forever.
+  const faq = controlFixture(['¿Puedo aplicar si vivo fuera de España?']);
+  assert.equal(faq.result, 'uncertain');
+  assert.equal(faq.code, 'no_apply_control');
+});
+
+test('classifyLiveness: HiringRoom "Postularse" label → active; the help-link verb does not (CAR-189)', () => {
+  const r = controlFixture(['Postularse']);
+  assert.equal(r.result, 'active');
+  assert.equal(r.code, 'apply_control_visible');
+
+  // Every HiringRoom posting also links a help article "¿Cómo me postulo?".
+  const help = controlFixture(['¿Cómo me postulo?']);
+  assert.equal(help.result, 'uncertain');
+  assert.equal(help.code, 'no_apply_control');
+});
+
+test('classifyLiveness: MokaHR/Feishu exact apply labels → active; prose/status labels do not (CAR-189)', () => {
+  for (const control of ['申请职位', '投递']) {
+    const r = controlFixture([control]);
+    assert.equal(r.result, 'active', control);
+    assert.equal(r.code, 'apply_control_visible', control);
+  }
+
+  // Bare “申请” appears in descriptive prose and longer labels containing
+  // “投递” are status/history controls — the patterns are anchored to the
+  // whole control text on purpose.
+  for (const control of ['在申请职位描述中了解详情', '投递记录']) {
+    const r = controlFixture([control]);
+    assert.equal(r.result, 'uncertain', control);
+    assert.equal(r.code, 'no_apply_control', control);
+  }
+});
+
 test('resolveAtsApi: maps each provider posting URL to its FIXED-host public API', () => {
   const cases = [
     ['https://boards.greenhouse.io/acme/jobs/123', 'greenhouse', 'https://boards-api.greenhouse.io/v1/boards/acme/jobs/123'],
