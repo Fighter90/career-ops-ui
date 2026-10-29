@@ -2,13 +2,12 @@
 
 This is the operating manual. Read it, then `PLAN.md` (order) and `BACKLOG.md` (what is left).
 
-## State (2026-10-07)
+## State (2026-10-30)
 
-- Released: **v1.240.0** (parent parity @ `62905981`, 109 sources) — tagged, GitHub release, npm
-  package, cvstart.org, deployed to resumecraft.ru. **v1.241.0** (review hardening + job map #381)
-  is on PR #388; see `PROGRESS.md` for whether it has shipped.
-- Next: Phase 2 (v1.242.0 sources correctness) → Phase 3 (client) → Phase 4 (`#/scan` redesign) →
-  Phase 5 (Tamil) → Phase 6 (upstream ports). Items live in `BACKLOG.md`.
+- Released: **v1.262.1** — deployed to resumecraft.ru (prod = 1.262.1, parent 1.38.0 @ `0595b5d1` true-merge of upstream). Tagged, GitHub release, npm package, cvstart.org rebuilt.
+- Registry: **123 sources = 118 EN + 5 RU · 118 adapters** · 39 route modules · 19 locales · tests **6841** · help 33 H2 / 129 H3.
+- Recent trains: v1.261.3 (design-completion) → v1.262.0 (upstream features CAR-180…189) → v1.262.1 (it token-dense). Deploy gained `mode=hermes` / `mode=provider` plus a deploy-only ref guard after the v1.238.0 downgrade incident (#591/#597).
+- Next: v1.262.2 review tail (7 L-findings from the wave review) + help ×18 "118 EN adapters" bullet gap. Open owner item: CAR-141 demo video recording.
 
 ## Non-negotiable rules
 
