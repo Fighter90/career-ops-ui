@@ -151,6 +151,24 @@ const APPLY_PATTERNS = [
   /panelu aplikowania/i,
   // Accent-free: apply controls go through normalizeForMatch too ("wyślij" → "wyslij").
   /wyslij (cv|aplikacj)/i,
+  // Vietnamese (CareerViet): "NỘP ĐƠN ỨNG TUYỂN". NFD leaves Đ/đ as is, so the
+  // first letter of "đơn" is matched explicitly; everything else is
+  // accent-free, because apply controls go through normalizeForMatch. The
+  // label alone proves nothing — a closed CareerViet posting keeps its whole
+  // page and this button (upstream #4832 reads the posting's deadline before
+  // this control for exactly that reason).
+  /\bnop [dđ]on ung tuyen\b/i,
+  // Bulgarian (#6192): "Кандидатствай" / "Кандидатствайте" — the imperative
+  // "apply", singular and plural — and the noun "Кандидатстване" /
+  // "Външно кандидатстване" (an external application). normalizeForMatch
+  // strips the breve from Й ("Кандидатствай" normalizes to "…ваи"), so the
+  // class covers both й and its normalized и. \b is ASCII-only and treats
+  // Cyrillic as non-word, so the guards are Unicode letter/mark lookarounds
+  // instead. The noun form is anchored to the START of the label: advice copy
+  // like "Писмо за кандидатстване" (a cover-letter how-to) is not an Apply
+  // button, and the lookahead keeps longer forms ("кандидатстването") out.
+  /^кандидатства[ий](?:те)?(?![\p{L}\p{M}])/iu,
+  /^(?:външно )?кандидатстване(?![\p{L}\p{M}])/iu,
 ];
 
 const MIN_CONTENT_CHARS = 300;
