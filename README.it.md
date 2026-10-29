@@ -422,7 +422,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 6841 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.0)
+└─ tests/                    # 6841 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.1)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -690,7 +690,7 @@ invece di ri-derivare, ri-decidere e ri-rompere di nuovo le stesse cose.
 
 | File | Cos'è | Quando leggerlo |
 |---|---|---|
-| **[`CONTEXT.md`](CONTEXT.md)** | Dizionario di dominio: un nome accettato per ogni concetto, con le varianti respinte contrassegnate come *da non usare*. | **Per primo.** Risolve le confusioni che questo repo paga davvero — `source` vs `adapter` (109 vs 104, e perché sono entrambi corretti), `mirror` vs `relay`, `telegram` vs `telegram-channel`. |
+| **[`CONTEXT.md`](CONTEXT.md)** | Dizionario di dominio: un nome accettato per ogni concetto, con le varianti respinte contrassegnate come *da non usare*. | **Per primo.** Risolve le confusioni che questo repo paga davvero — `source` vs `adapter` (123 vs 118, e perché sono entrambi corretti), `mirror` vs `relay`, `telegram` vs `telegram-channel`. |
 | **[`PROGRESS.md`](PROGRESS.md)** | Stato di lavoro: cosa è fatto, il prossimo passo, i problemi noti e gli **approcci abbandonati**. | All'inizio di ogni sessione. Git mostra cosa è cambiato; questo dice a che punto è il lavoro e cosa è già stato provato e respinto. |
 | **[`docs/adr/`](docs/adr/)** | Verbali di decisione numerati — contesto, decisione, conseguenze e cosa ci farebbe tornare a riconsiderarla. | Prima di cambiare qualcosa che un verbale copre. Decide il verbale, non la release attuale. |
 | **[`CLAUDE.md`](CLAUDE.md)** | Un indice di una sola schermata che rimanda ai tre file sopra. | Automaticamente, dall'agente. Deliberatamente *non* una base di conoscenza — una lunga viene scorsa in fretta e poi ignorata. |

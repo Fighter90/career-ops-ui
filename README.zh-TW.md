@@ -392,7 +392,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 6841 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.0)
+└─ tests/                    # 6841 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.1)
    ├─ parsers.test.mjs       # markdown / pipeline / report 解析器(純函式)
    ├─ api.test.mjs           # 每個端點、暫時性伺服器、無網路
    ├─ {ru,en}-scanner.test.mjs   # 已 mock 的 fetch
@@ -659,7 +659,7 @@ career-ops **常開** 時最佳 —— 在你睡覺時掃描,可從任何瀏覽�
 
 | 檔案 | 是什麼 | 何時讀 |
 |---|---|---|
-| **[`CONTEXT.md`](CONTEXT.md)** | 領域詞典：每個概念對應一個被採納的名稱，被否決的變體標為*不要使用*。 | **第一個讀。** 它解決了這個儲存庫真正付出代價的那些混淆——`source` 與 `adapter`（109 對 104，以及為什麼兩者都對）、`mirror` 與 `relay`、`telegram` 與 `telegram-channel`。 |
+| **[`CONTEXT.md`](CONTEXT.md)** | 領域詞典：每個概念對應一個被採納的名稱，被否決的變體標為*不要使用*。 | **第一個讀。** 它解決了這個儲存庫真正付出代價的那些混淆——`source` 與 `adapter`（123 對 118，以及為什麼兩者都對）、`mirror` 與 `relay`、`telegram` 與 `telegram-channel`。 |
 | **[`PROGRESS.md`](PROGRESS.md)** | 工作狀態：已完成的、下一步、已知問題，以及**被放棄的方案**。 | 每次工作階段開始時。Git 顯示改動了什麼；這份檔案說明工作現在處於什麼階段，以及哪些方案已經試過又被否決。 |
 | **[`docs/adr/`](docs/adr/)** | 編號的決策紀錄——背景、決策、後果，以及什麼情況會讓人重新考慮它。 | 在修改某條紀錄所涉及的內容之前。做主的是紀錄，不是目前這個發布版本。 |
 | **[`CLAUDE.md`](CLAUDE.md)** | 一螢幕之內的索引，指向上面三份檔案。 | 由代理自動讀取。它刻意*不是*知識庫——太長的檔案只會被草草翻過然後被忽略。 |

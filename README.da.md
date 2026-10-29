@@ -422,7 +422,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 6841 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.0)
+└─ tests/                    # 6841 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.1)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -690,7 +690,7 @@ genudlede, genbeslutte og genødelægge de samme ting.
 
 | Fil | Hvad det er | Læs den, når |
 |---|---|---|
-| **[`CONTEXT.md`](CONTEXT.md)** | Domæneordbog: ét godkendt navn pr. begreb, med de afviste varianter markeret *må ikke bruges*. | **Først.** Den afgør de forvirringer, dette repository rent faktisk betaler for — `source` vs. `adapter` (109 vs. 104, og hvorfor begge har ret), `mirror` vs. `relay`, `telegram` vs. `telegram-channel`. |
+| **[`CONTEXT.md`](CONTEXT.md)** | Domæneordbog: ét godkendt navn pr. begreb, med de afviste varianter markeret *må ikke bruges*. | **Først.** Den afgør de forvirringer, dette repository rent faktisk betaler for — `source` vs. `adapter` (123 vs. 118, og hvorfor begge har ret), `mirror` vs. `relay`, `telegram` vs. `telegram-channel`. |
 | **[`PROGRESS.md`](PROGRESS.md)** | Arbejdstilstand: hvad der er gjort, næste skridt, kendte problemer og **opgivne tilgange**. | Ved starten af enhver session. Git viser, hvad der er ændret; denne fil siger, hvor arbejdet står, og hvad der allerede er forsøgt og forkastet. |
 | **[`docs/adr/`](docs/adr/)** | Nummererede beslutningsprotokoller — kontekst, beslutning, konsekvenser, og hvad der ville få os til at genoverveje. | Før du ændrer noget, en protokol dækker. Det er protokollen, der bestemmer, ikke den aktuelle udgivelse. |
 | **[`CLAUDE.md`](CLAUDE.md)** | Et ét-skærms-indeks, der peger på de tre ovenfor. | Automatisk, af agenten. Bevidst *ikke* en videnbase — en lang en bliver skimmet og derefter ignoreret. |

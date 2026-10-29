@@ -714,7 +714,7 @@ re-deriving, re-deciding and re-breaking the same things.
 
 | File | What it is | Read it when |
 |---|---|---|
-| **[`CONTEXT.md`](CONTEXT.md)** | Domain dictionary: one accepted name per concept, with the rejected variants marked *do not use*. | **First.** It settles the confusions this repo actually pays for — `source` vs `adapter` (109 vs 104, and why both are right), `mirror` vs `relay`, `telegram` vs `telegram-channel`. |
+| **[`CONTEXT.md`](CONTEXT.md)** | Domain dictionary: one accepted name per concept, with the rejected variants marked *do not use*. | **First.** It settles the confusions this repo actually pays for — `source` vs `adapter` (123 vs 118, and why both are right), `mirror` vs `relay`, `telegram` vs `telegram-channel`. |
 | **[`PROGRESS.md`](PROGRESS.md)** | Working state: what is done, the next step, known issues, and **abandoned approaches**. | At the start of any session. Git shows what changed; this says where the work stands and what was already tried and rejected. |
 | **[`docs/adr/`](docs/adr/)** | Numbered decision records — context, decision, consequences, and what would make us revisit. | Before changing anything a record covers. The record decides, not the current release. |
 | **[`CLAUDE.md`](CLAUDE.md)** | A one-screen index pointing at the three above. | Automatically, by the agent. Deliberately *not* a knowledge base — a long one gets skimmed and then ignored. |

@@ -422,7 +422,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 6841 birim + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.0)
+└─ tests/                    # 6841 birim + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.1)
    ├─ parsers.test.mjs       # markdown / pipeline / rapor ayrıştırıcıları (saf fonksiyonlar)
    ├─ api.test.mjs           # her uç nokta, geçici sunucu, ağ yok
    ├─ {ru,en}-scanner.test.mjs   # taklit edilmiş fetch
@@ -691,7 +691,7 @@ edebilmesidir.
 
 | Dosya | Ne olduğu | Ne zaman okunur |
 |---|---|---|
-| **[`CONTEXT.md`](CONTEXT.md)** | Alan sözlüğü: her kavram için kabul edilmiş tek bir ad, reddedilen varyantlar *kullanma* olarak işaretlenmiş. | **Önce bu.** Bu deponun gerçekten bedelini ödediği karışıklıkları çözer — `source` ile `adapter` (109'e karşı 104, ve ikisinin de neden doğru olduğu), `mirror` ile `relay`, `telegram` ile `telegram-channel`. |
+| **[`CONTEXT.md`](CONTEXT.md)** | Alan sözlüğü: her kavram için kabul edilmiş tek bir ad, reddedilen varyantlar *kullanma* olarak işaretlenmiş. | **Önce bu.** Bu deponun gerçekten bedelini ödediği karışıklıkları çözer — `source` ile `adapter` (123'e karşı 118, ve ikisinin de neden doğru olduğu), `mirror` ile `relay`, `telegram` ile `telegram-channel`. |
 | **[`PROGRESS.md`](PROGRESS.md)** | Çalışma durumu: ne tamamlandı, sıradaki adım, bilinen sorunlar ve **terk edilmiş yaklaşımlar**. | Her oturumun başında. Git neyin değiştiğini gösterir; bu dosya işin nerede durduğunu ve daha önce nelerin denenip reddedildiğini söyler. |
 | **[`docs/adr/`](docs/adr/)** | Numaralandırılmış karar kayıtları — bağlam, karar, sonuçlar ve bizi yeniden gözden geçirmeye ne iter. | Bir kaydın kapsadığı herhangi bir şeyi değiştirmeden önce. Karar veren kayıttır, mevcut sürüm değil. |
 | **[`CLAUDE.md`](CLAUDE.md)** | Yukarıdaki üç dosyaya işaret eden tek ekranlık bir dizin. | Otomatik olarak, ajan tarafından. Bilinçli biçimde bir bilgi tabanı *değildir* — uzun olanı göz gezdirilir ve sonra göz ardı edilir. |

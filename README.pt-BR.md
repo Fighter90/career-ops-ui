@@ -657,7 +657,7 @@ A maior parte deste projeto é escrita com agentes de codificação. Essa é uma
 
 | Arquivo | O que é | Leia quando |
 |---|---|---|
-| **[`CONTEXT.md`](CONTEXT.md)** | Dicionário de domínio: um nome aceito por conceito, com as variantes rejeitadas marcadas como *não usar*. | **Primeiro.** Resolve as confusões que este repositório realmente paga — `source` vs `adapter` (109 vs 104, e por que ambos estão certos), `mirror` vs `relay`, `telegram` vs `telegram-channel`. |
+| **[`CONTEXT.md`](CONTEXT.md)** | Dicionário de domínio: um nome aceito por conceito, com as variantes rejeitadas marcadas como *não usar*. | **Primeiro.** Resolve as confusões que este repositório realmente paga — `source` vs `adapter` (123 vs 118, e por que ambos estão certos), `mirror` vs `relay`, `telegram` vs `telegram-channel`. |
 | **[`PROGRESS.md`](PROGRESS.md)** | Estado de trabalho: o que está pronto, o próximo passo, problemas conhecidos e **abordagens abandonadas**. | No início de qualquer sessão. O Git mostra o que mudou; isto diz em que ponto o trabalho está e o que já foi tentado e rejeitado. |
 | **[`docs/adr/`](docs/adr/)** | Registros de decisão numerados — contexto, decisão, consequências, e o que nos faria reconsiderar. | Antes de mudar qualquer coisa que um registro cubra. Quem decide é o registro, não a release atual. |
 | **[`CLAUDE.md`](CLAUDE.md)** | Um índice de uma única tela apontando para os três acima. | Automaticamente, pelo agente. Deliberadamente *não* é uma base de conhecimento — uma longa é folheada por cima e depois ignorada. |

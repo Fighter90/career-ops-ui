@@ -189,7 +189,7 @@ web-ui/
 ├── server/                 # Express (API + SSE + LLM proxies)
 │   ├── index.mjs           # createApp — 100% CI-isolated
 │   └── lib/
-│       ├── sources/        # 109 போர்டல் அடாப்டர்கள் (104 EN + 5 RU)
+│       ├── sources/        # 123 மூலங்கள் (118 EN + 5 RU)
 │       ├── ru-scanner.mjs  # பிராந்திய dispatcher
 │       └── routes/         # help, docs-assistant, config, tracker, …
 ├── public/
@@ -198,7 +198,7 @@ web-ui/
 │       ├── app.js          # தொடக்கம், lang switcher, theme
 │       ├── lib/            # i18n (19 மொழிகள்), api, ui, format
 │       └── views/          # ஒரு பக்கத்திற்கு ஒரு பார்வை
-├── tests/                  # 6841 unit (baseline @ v1.262.0) — node --test, கணினி முழுவதும் CI-isolated
+├── tests/                  # 6841 unit (baseline @ v1.262.1) — node --test, கணினி முழுவதும் CI-isolated
 └── docs/                   # உதவி வழிகாட்டிகள் ×19, LOCALIZATION, SDD
 ```
 

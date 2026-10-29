@@ -422,7 +422,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 6841 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.0)
+└─ tests/                    # 6841 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.1)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -691,7 +691,7 @@ kaputtzumachen.
 
 | Datei | Was sie ist | Wann man sie liest |
 |---|---|---|
-| **[`CONTEXT.md`](CONTEXT.md)** | Fachbegriffs-Wörterbuch: ein akzeptierter Name pro Konzept, mit den abgelehnten Varianten als *nicht verwenden* markiert. | **Zuerst.** Sie klärt die Verwechslungen, die dieses Repo tatsächlich kosten — `source` vs. `adapter` (109 vs. 104, und warum beide richtig sind), `mirror` vs. `relay`, `telegram` vs. `telegram-channel`. |
+| **[`CONTEXT.md`](CONTEXT.md)** | Fachbegriffs-Wörterbuch: ein akzeptierter Name pro Konzept, mit den abgelehnten Varianten als *nicht verwenden* markiert. | **Zuerst.** Sie klärt die Verwechslungen, die dieses Repo tatsächlich kosten — `source` vs. `adapter` (123 vs. 118, und warum beide richtig sind), `mirror` vs. `relay`, `telegram` vs. `telegram-channel`. |
 | **[`PROGRESS.md`](PROGRESS.md)** | Arbeitsstand: was erledigt ist, der nächste Schritt, bekannte Probleme und **verworfene Ansätze**. | Zu Beginn jeder Sitzung. Git zeigt, was sich geändert hat; hier steht, wo die Arbeit steht und was bereits versucht und verworfen wurde. |
 | **[`docs/adr/`](docs/adr/)** | Nummerierte Entscheidungsprotokolle — Kontext, Entscheidung, Konsequenzen und was uns dazu bringen würde, sie zu überdenken. | Bevor etwas geändert wird, das ein Protokoll abdeckt. Das Protokoll entscheidet, nicht das aktuelle Release. |
 | **[`CLAUDE.md`](CLAUDE.md)** | Ein Index auf einem Bildschirm, der auf die drei oben genannten verweist. | Automatisch, durch den Agenten. Bewusst *keine* Wissensdatenbank — eine lange wird überflogen und dann ignoriert. |
