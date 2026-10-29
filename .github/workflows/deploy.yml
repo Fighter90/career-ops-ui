@@ -276,8 +276,21 @@ jobs:
         run: |
           ssh prod "APP_DIR='$APP_DIR' bash -s" <<'REMOTE'
           APP_DIR="${APP_DIR:-/opt/career-ops/src}"
+          # Public-log discipline: the Actions log is world-readable and the
+          # recon hourly-scan section documents a real token leak through it.
+          # Case-insensitive filter (the old "Key|TOKEN|…" was case-sensitive
+          # and missed api_key/ApiKey) plus value masking: everything after
+          # the 4th char of an =value becomes …, long lines are truncated.
+          redact() {
+            grep -viE '(api[_-]?key|token|secret|password|authorization)' \
+              | sed -E 's/(=[^ ]{4})[^ ]*/\1…/g; s/(.{80}).*/\1…/'
+          }
           echo "===== unit file ====="
-          systemctl cat hermes-gateway --no-pager 2>/dev/null | grep -vE "Key|TOKEN|SECRET|PASSWORD" || echo "no unit file"
+          if unit=$(systemctl cat hermes-gateway --no-pager 2>/dev/null); then
+            printf '%s\n' "$unit" | redact
+          else
+            echo "no unit file"
+          fi
           echo "===== before ====="
           systemctl show hermes-gateway -p ActiveState,SubState,ExecMainStartTimestamp,NRestarts,ExecMainStatus --no-pager || true
           echo "===== listeners (node/python/hermes) ====="
@@ -288,7 +301,9 @@ jobs:
           systemctl is-active hermes-gateway || true
           systemctl show hermes-gateway -p ActiveState,SubState,ExecMainStatus,NRestarts --no-pager || true
           echo "===== journal (sudo, last 25) ====="
-          sudo -n journalctl -u hermes-gateway -n 25 --no-pager -o cat 2>/dev/null || journalctl -u hermes-gateway -n 25 --no-pager -o cat 2>/dev/null || echo "journal unreadable"
+          { sudo -n journalctl -u hermes-gateway -n 25 --no-pager -o cat 2>/dev/null \
+              || journalctl -u hermes-gateway -n 25 --no-pager -o cat 2>/dev/null \
+              || echo "journal unreadable"; } | redact
           echo "===== listeners again ====="
           sudo -n ss -ltnp 2>/dev/null | grep -E "node|python|hermes" || ss -ltnp 2>/dev/null | grep -E "node|python|hermes" || echo "no listeners matched"
           echo "===== probe every plausible port ====="
@@ -304,7 +319,7 @@ jobs:
             sudo -n systemctl restart claude-bridge 2>/dev/null || systemctl restart claude-bridge
             sleep 6
             systemctl is-active claude-bridge || true
-            sudo -n journalctl -u claude-bridge -n 15 --no-pager -o cat 2>/dev/null | tail -8 || true
+            { sudo -n journalctl -u claude-bridge -n 15 --no-pager -o cat 2>/dev/null || true; } | redact | tail -8 || true
             CODE8788=$(curl -s -o /dev/null -w '%{http_code}' -m 4 "http://127.0.0.1:8788/v1/models" 2>/dev/null || echo 000)
             echo "  claude-bridge /v1/models after restart -> $CODE8788"
           fi
