@@ -6,6 +6,25 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 ---
 
+## [1.262.2] — 2026-10-30
+
+### Fixed
+
+- **Wave-review tail — 7 low-severity findings, each red-first.** The CSV import backslash round-trip: a `\` in a cell was written doubled and read back doubled, so re-importing the same CSV missed the company+role dedup and could create a duplicate row — the reader now unescapes `\\` after the split (write→read round-trip is lossless, re-import dedups). The cv-voice `<head>` strip was quadratic on unclosed tags — 4827 ms → 13 ms on the 64 KB input the route caps at. `statedYearsMin` ran the full years-parser for every job of every source even when `years_min` was not configured — now lazy, the seconds of CPU per large scan are gone. A capture deleted between readdir and statSync crashed the posting-guard listing (TOCTOU — vanished files are skipped). The MiniMax CN default matched only `api.minimax.cn` exactly — any `*.minimax.cn` base URL now gets the CN model. Deel `$`-tokens that are not hex refs no longer leak into the snippet as literals. The import picker checks `file.size` BEFORE `file.text()` — the 512 KB server cap answered 413 only after the browser had parsed a possibly huge file — with a localized `import.tooLarge` toast ×19.
+- **Deploy workflow hardening (workflows review F1–F6).** `provider` was the only input interpolated into the remote shell without charset validation — a `'` in the value broke out of the quoting and ran arbitrary code on prod; now whitelisted `^[A-Za-z0-9_-]+$` before any splice, and the key-guard grep can no longer false-pass. The hermes diagnostics step printed raw journalctl + unit dumps to the public log; its filter missed uppercase `*_API_KEY=` and masked nothing — now a shared case-insensitive redact + value masking + 80-char truncation on all three sinks, `?token=` query strings masked too. The hermes step ignored `inputs.app_dir` and hardcoded `/opt/career-ops/src/.env`. `public_url` reached curl without an https check (option injection via a leading `-`). And the anti-downgrade guard — the v1.238.0 incident fix — had no executable gate: six new pins in ci-workflows (refs have no defaults, guard runs before Deploy, strict refs regex).
+- **Import-modal tail (SPA review).** The modal arms the same nav guard as the outcome modal — navigating away no longer leaves it orphaned on top of another view. The hidden file input is removed on `cancel`, not only on `change` — repeated dismissals no longer leak inputs into document.body. `plan.duplicates` is read through the guarded form in the preview. Tracker `num` allocation uses `reduce` instead of `Math.max(...spread)` — the spread hits the argument limit at ~100k rows.
+
+### Changed
+
+- Docs: the help guide's «118 EN adapters» bullet now carries the count in fr/it/ta (the other 15 locales already had it). Vendor prices on cvstart.org re-verified against the official pricing pages — all four unchanged, CHECKED_ON → 2026-10-30. A post-release drift sweep fixed 42 stale count/version lines across README ×19, CONTEXT.md, CLAUDE.md and the SDD manuals (109/104-era and v1.262.0-era leftovers).
+
+### Notes
+
+- Deliberately not done: the cv-studio native `window.confirm` (CAR-179 era) stays — converting it to `UI.confirm` is a follow-up, not a patch item; the `<mark title>` stock-phrase tooltip stays tooltip-only (acceptable a11y floor); `remote-qa.yml` keeps `cancel-in-progress: true` — re-dispatching intentionally supersedes a running regression.
+- Full remote-QA on prod v1.262.1: routes ×19 ✓ · site ×19 ✓ · links ✓ · live LLM 18/19 locales A–G ✓ — `pl` hit a single `502 · 300 s · 0 ch` provider timeout (not token-dense territory; the spot re-run rides this release).
+
+Tests 6867 (6864 pass / 0 fail / 3 skip, +26 vs v1.262.1) · Playwright 176 · coverage 98.42 % line / 89.94 % branch · registry unchanged: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.262.1] — 2026-10-29
 
 **The Italian-evaluation patch: `it` joins the token-dense locales (32768-token ceiling + 480 s clock) after the OpenRouter era caught it cutting the report right before the SCORE_SUMMARY block — and the provider switch tooling that made the diagnosis possible ships in the deploy workflow.**

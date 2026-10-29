@@ -9,21 +9,21 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-6841%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-6867%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.262.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.1)
+[![release](https://img.shields.io/badge/release-v1.262.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.2)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Latest release — v1.262.1** — **The Italian-evaluation patch: `it` joins the token-dense locales (32768-token ceiling + 480 s clock) after the OpenRouter era caught its report cutting right before the SCORE_SUMMARY block — plus the deploy workflow gained `mode=hermes` (gateway restart + full diagnosis + credits balance) and `mode=provider` (LLM switch with a key-presence guard), which moved prod to OpenRouter when the Hermes credits ran out.**
+> **🆕 Latest release — v1.262.2** — **The review-tail patch: seven wave-review findings closed red-first — the CSV import backslash round-trip (re-importing the same export dedups again), the cv-voice head-strip 4827 ms → 13 ms, `years_min` computed lazily on large scans, a capture-listing TOCTOU crash fixed, MiniMax CN defaults for any `*.minimax.cn` base URL, and the import picker checks the 512 KB cap before reading a file — plus deploy.yml hardening (F1–F6: a provider-input injection guard, hermes log redaction, `?token=` masking, app_dir, the public_url https gate, and six executable anti-downgrade pins) and the import-modal tail (nav guard, cancel cleanup, guarded duplicates). Tests 6841 → 6867.**
 
 
 >
-> **Previous — v1.262.0** — **The upstream-features minor: the Deel job board joins the scanner (registry 123), another tracker's CSV imports straight into #/tracker with a dry-run preview, the posting-guard JD integrity check and a CV voice check (27 stock phrases highlighted) land in the UI, a years-of-experience scan filter reads the JD, and Apply buttons are understood in seven more languages.**
+> **Previous — v1.262.1** — **The Italian-evaluation patch: `it` joins the token-dense locales (32768-token ceiling + 480 s clock) after the OpenRouter era caught its report cutting right before the SCORE_SUMMARY block — plus the deploy workflow gained `mode=hermes` (gateway restart + full diagnosis + credits balance) and `mode=provider` (LLM switch with a key-presence guard), which moved prod to OpenRouter when the Hermes credits ran out.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -447,7 +447,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 6841 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.1)
+└─ tests/                    # 6867 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.2)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch

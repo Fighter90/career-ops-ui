@@ -12,6 +12,25 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.262.2] — 2026-10-30
+
+### Corrigé
+
+- **Queue de revue en vague — 7 constats de faible sévérité, chacun en rouge d'abord.** L'aller-retour du backslash de l'import CSV : un `\` dans une cellule était écrit doublé et relu doublé, donc ré-importer le même CSV manquait la dédup entreprise+rôle et pouvait créer une ligne dupliquée — le lecteur déséchappe désormais `\\` après le split (l'aller-retour écriture→lecture est sans perte, le ré-import déduplique). Le strip `<head>` de cv-voice était quadratique sur les balises non fermées — 4827 ms → 13 ms sur l'entrée de 64 Ko que la route plafonne. `statedYearsMin` lançait le parseur d'années complet pour chaque offre de chaque source même quand `years_min` n'était pas configuré — désormais paresseux, les secondes de CPU par grand scan disparaissent. Une capture supprimée entre readdir et statSync faisait planter le listing du posting-guard (TOCTOU — les fichiers disparus sont ignorés). Le défaut CN de MiniMax ne matchait qu'exactement `api.minimax.cn` — toute URL de base `*.minimax.cn` reçoit désormais le modèle CN. Les tokens `$` de Deel qui ne sont pas des refs hex ne fuient plus dans le snippet comme littéraux. Le picker d'import vérifie `file.size` AVANT `file.text()` — le plafond serveur de 512 Ko répondait 413 seulement après que le navigateur avait parsé un fichier potentiellement énorme — avec un toast `import.tooLarge` localisé ×19.
+- **Durcissement du workflow de deploy (revue des workflows F1–F6).** `provider` était la seule input interpolée dans le shell distant sans validation de charset — un `'` dans la valeur cassait le quoting et exécutait du code arbitraire en prod ; désormais en liste blanche `^[A-Za-z0-9_-]+$` avant toute interpolation, et le grep du garde-fou de clé ne peut plus faux-passer. L'étape de diagnostic hermes imprimait du journalctl brut + des dumps d'unit dans le log public ; son filtre ratait les `*_API_KEY=` en majuscules et ne masquait rien — désormais une censure partagée insensible à la casse + masquage des valeurs + troncature à 80 caractères sur les trois puits, les query strings `?token=` masquées aussi. L'étape hermes ignorait `inputs.app_dir` et codait en dur `/opt/career-ops/src/.env`. `public_url` atteignait curl sans vérification https (injection d'option via un `-` initial). Et le garde anti-retour en arrière — le correctif de l'incident v1.238.0 — n'avait pas de garde exécutable : six nouvelles épingles dans ci-workflows (les refs n'ont pas de défauts, le garde tourne avant Deploy, regex de refs stricte).
+- **Queue de la modale d'import (revue SPA).** La modale arme le même nav guard que la modale d'issue — naviguer ailleurs ne la laisse plus orpheline au-dessus d'une autre vue. L'input fichier caché est retirée sur `cancel`, pas seulement sur `change` — les fermetures répétées ne fuient plus d'inputs dans document.body. `plan.duplicates` est lu à travers la forme gardée dans l'aperçu. L'allocation du `num` du tracker utilise `reduce` au lieu de `Math.max(...spread)` — le spread touche la limite d'arguments vers ~100k lignes.
+
+### Changé
+
+- Docs : la puce «118 EN adapters» du guide d'aide porte désormais le compte en fr/it/ta (les 15 autres langues l'avaient déjà). Les prix des fournisseurs sur cvstart.org revérifiés contre les pages de tarifs officielles — les quatre inchangés, CHECKED_ON → 2026-10-30. Un balayage de dérive post-release a corrigé 42 lignes de compte/version périmées à travers README ×19, CONTEXT.md, CLAUDE.md et les manuels SDD (restes de l'ère 109/104 et de l'ère v1.262.0).
+
+### Notes
+
+- Non-action délibérée : le `window.confirm` natif de cv-studio (ère CAR-179) reste — sa conversion en `UI.confirm` est un suivi, pas un item de patch ; l'infobulle de phrases toutes faites `<mark title>` reste une simple infobulle (plancher a11y acceptable) ; `remote-qa.yml` garde `cancel-in-progress: true` — re-dispatcher supplante intentionnellement une régression en cours.
+- remote-QA complète sur la prod v1.262.1 : routes ×19 ✓ · site ×19 ✓ · liens ✓ · LLM en direct 18/19 langues A–G ✓ — `pl` a pris un seul timeout de fournisseur `502 · 300 s · 0 ch` (pas du territoire token-dense ; la relance ciblée voyage avec cette release).
+
+Tests 6841 → 6867 sur la branche de release — 6864 pass / 0 fail / 3 skip, +26 vs v1.262.1 · Playwright 176 · couverture 98.42 % lignes / 89.94 % branches · registre inchangé : 123 sources = 118 EN + 5 RU · 118 adaptateurs.
+
 ## [1.262.1] — 2026-10-29
 
 **Le patch des évaluations italiennes : `it` rejoint les langues token-denses (plafond de 32768 tokens + horloge de 480 s) après que l'ère OpenRouter l'a attrapé coupant le rapport juste avant le bloc SCORE_SUMMARY — et l'outillage de bascule de fournisseur qui a rendu le diagnostic possible arrive dans le workflow de deploy.**

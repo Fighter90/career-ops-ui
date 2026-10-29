@@ -7,19 +7,19 @@
 
 _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır._
 
-[![tests](https://img.shields.io/badge/tests-6841%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-6867%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.262.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.1)
+[![release](https://img.shields.io/badge/release-v1.262.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.2)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Son sürüm — v1.262.1** — **İtalyanca değerlendirme yaması: OpenRouter dönemi raporu SCORE_SUMMARY bloğunun hemen önünde keserken yakaladığı için `it` token-yoğun yerel ayarlara katılıyor (32768 token tavanı + 480 s saati) — ayrıca deploy workflow'u `mode=hermes` (gateway yeniden başlatma + tam teşhis + kredi bakiyesi) ve `mode=provider` (anahtar-varlığı korumasıyla LLM geçişi) kazandı; Hermes kredileri bittiğinde prod'u OpenRouter'a taşıyan şey bu oldu.**
+> **🆕 Son sürüm — v1.262.2** — **İnceleme-kuyruğu yaması: yedi dalga-incelemesi bulgusu red-first kapatıldı — CSV içe aktarma ters-bölü gidiş-dönüşü (aynı export'un yeniden içe aktarımı yeniden tekilleştiriyor), cv-voice başlık-kırpma 4827 ms → 13 ms, `years_min` büyük taramalarda tembel (lazy) hesaplanıyor, bir capture-listeleme TOCTOU çökmesi düzeltildi, herhangi bir `*.minimax.cn` base URL'si için MiniMax CN varsayılanları ve içe aktarma seçicisi dosyayı okumadan önce 512 KB tavanını kontrol ediyor — ayrıca deploy.yml sağlamlaştırması (F1–F6: sağlayıcı-girdisi enjeksiyon koruması, hermes günlüğü ayıklama, `?token=` maskeleme, app_dir, public_url https kapısı ve altı yürütülebilir anti-downgrade sabitlemesi) ve içe aktarma modalı kuyruğu (nav guard, cancel temizliği, korumalı yinelenenler). Testler 6841 → 6867.**
 >
-> **Önceki — v1.262.0** — **Upstream-özellikleri minor sürümü: Deel iş panosu tarayıcıya katılıyor (registry 123), başka bir tracker'ın CSV'si dry-run önizlemeyle doğrudan #/tracker'a aktarılıyor, posting-guard JD bütünlük denetimi ve bir CV ses denetimi (27 kalıplaşmış ifade vurgulanmış) arayüze giriyor, deneyim-yılı tarama filtresi JD'yi okuyor ve Apply düğmeleri yedi dilde daha anlaşılıyor — artı repost'lar kaynaklar arasında uydurulmayı bırakıyor, MiniMax'ın emekliye ayrılmış varsayılan modeli değiştiriliyor ve Tamilce değerlendirmeler dilini koruyor.**
+> **Önceki — v1.262.1** — **İtalyanca değerlendirme yaması: OpenRouter dönemi raporu SCORE_SUMMARY bloğunun hemen önünde keserken yakaladığı için `it` token-yoğun yerel ayarlara katılıyor (32768 token tavanı + 480 s saati) — ayrıca deploy workflow'u `mode=hermes` (gateway yeniden başlatma + tam teşhis + kredi bakiyesi) ve `mode=provider` (anahtar-varlığı korumasıyla LLM geçişi) kazandı; Hermes kredileri bittiğinde prod'u OpenRouter'a taşıyan şey bu oldu.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -422,7 +422,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 6841 birim + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.1)
+└─ tests/                    # 6867 birim + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.2)
    ├─ parsers.test.mjs       # markdown / pipeline / rapor ayrıştırıcıları (saf fonksiyonlar)
    ├─ api.test.mjs           # her uç nokta, geçici sunucu, ağ yok
    ├─ {ru,en}-scanner.test.mjs   # taklit edilmiş fetch

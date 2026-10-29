@@ -7,19 +7,19 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-6841%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-6867%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.262.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.1)
+[![release](https://img.shields.io/badge/release-v1.262.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.2)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.262.1** — **意大利语评估补丁：OpenRouter 时代 `it` 被发现在 SCORE_SUMMARY 块之前截断报告，`it` 由此加入 token 密集型 locale（32768 token 上限 + 480 秒时钟）—— deploy workflow 新增 `mode=hermes`（网关重启 + 完整诊断 + 信用余额）与 `mode=provider`（带密钥存在性守卫的 LLM 切换），Hermes 信用耗尽时 prod 正是这样迁往 OpenRouter 的。**
+> **🆕 最新版本 — v1.262.2** — **评审尾巴补丁：七项 wave-review 发现逐条 red-first 关闭 —— CSV 导入的反斜杠 round-trip（重新导入同一份导出会再次去重）、cv-voice 头部剥离 4827 ms → 13 ms、`years_min` 在大型扫描上改为惰性计算、capture 列表的 TOCTOU 崩溃已修复、任意 `*.minimax.cn` base URL 获得默认 MiniMax CN 模型、导入选择器在读取文件之前先检查 512 KB 上限 —— 加上 deploy.yml 加固（F1–F6：provider 输入注入守卫、hermes 日志脱敏、`?token=` 掩码、app_dir、public_url https 门、六条可执行的防降级 pin）与 import-modal 尾巴（nav guard、cancel 清理、重复项受守卫）。测试 6841 → 6867。**
 >
-> **上一版本 — v1.262.0** — **上游功能 minor：Deel 招聘看板加入扫描器（注册表 123）、其他 tracker 的 CSV 可直接导入 #/tracker（附 dry-run 预览）、posting-guard 的 JD 完整性检查与 CV 语气检查（27 条套话高亮）进入 UI、按工作年限过滤的扫描器会读取 JD，Apply 按钮再多懂 7 种语言 —— 此外跨来源的 repost 不再被凭空捏造，MiniMax 已退役的默认模型被替换，ta 评估守住语言。**
+> **上一版本 — v1.262.1** — **意大利语评估补丁：OpenRouter 时代 `it` 被发现在 SCORE_SUMMARY 块之前截断报告，`it` 由此加入 token 密集型 locale（32768 token 上限 + 480 秒时钟）—— deploy workflow 新增 `mode=hermes`（网关重启 + 完整诊断 + 信用余额）与 `mode=provider`（带密钥存在性守卫的 LLM 切换），Hermes 信用耗尽时 prod 正是这样迁往 OpenRouter 的。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -392,7 +392,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 6841 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.1)
+└─ tests/                    # 6867 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.2)
    ├─ parsers.test.mjs       # markdown / pipeline / report 解析器(纯函数)
    ├─ api.test.mjs           # 每个端点,临时端口,无外网
    ├─ {ru,en}-scanner.test.mjs   # mock 后的 fetch

@@ -9,19 +9,19 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-6841%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-6867%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.262.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.1)
+[![release](https://img.shields.io/badge/release-v1.262.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.2)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.262.1** — **इतालवी-मूल्यांकन पैच: OpenRouter युग ने उसकी रिपोर्ट को SCORE_SUMMARY ब्लॉक से ठीक पहले कटते हुए पकड़ा, इसलिए `it` टोकन-डेंस लोकेल में शामिल होता है (32768-टोकन सीलिंग + 480 सेकंड घड़ी) — साथ ही deploy workflow को `mode=hermes` (गेटवे रीस्टार्ट + पूरी डायग्नोस्टिक्स + क्रेडिट बैलेंस) और `mode=provider` (की-प्रेज़ेंस गार्ड के साथ LLM स्विच) मिला, जिसने Hermes क्रेडिट खत्म होने पर प्रोड को OpenRouter पर ले जाया।**
+> **🆕 नवीनतम रिलीज़ — v1.262.2** — **रिव्यू-टेल पैच: सात वेव-रिव्यू खोजें लाल-पहले बंद — CSV इम्पोर्ट बैकस्लैश राउंड-ट्रिप (उसी एक्सपोर्ट का दोबारा इम्पोर्ट फिर डीडुप होता है), cv-voice हेड-स्ट्रिप 4827 ms → 13 ms, `years_min` बड़े स्कैन पर लेज़ी गणना, कैप्चर-लिस्टिंग TOCTOU क्रैश ठीक, किसी भी `*.minimax.cn` बेस URL के लिए MiniMax CN डिफ़ॉल्ट, और इम्पोर्ट पिकर फ़ाइल पढ़ने से पहले 512 KB सीमा जाँचता है — साथ ही deploy.yml सुदृढ़ीकरण (F1–F6: provider-इनपुट injection गार्ड, hermes लॉग रिडैक्शन, `?token=` मास्किंग, app_dir, public_url https गेट, और छह निष्पादन-योग्य एंटी-डाउनग्रेड पिन) और इम्पोर्ट-मोडल टेल (nav guard, cancel क्लीनअप, गार्डेड डुप्लिकेट)। टेस्ट 6841 → 6867।**
 >
-> **पिछला — v1.262.0** — **अपस्ट्रीम-फ़ीचर्स minor: Deel जॉब बोर्ड स्कैनर में शामिल होता है (रजिस्ट्री 123), किसी दूसरे ट्रैकर का CSV dry-run प्रीव्यू के साथ सीधे #/tracker में इम्पोर्ट होता है, posting-guard JD इंटीग्रिटी चेक और CV वॉइस चेक (27 स्टॉक वाक्यांश हाइलाइट) UI में आते हैं, अनुभव-वर्ष स्कैन फ़िल्टर JD पढ़ता है, और Apply बटन सात और भाषाओं में समझे जाते हैं — साथ ही सोर्स के बीच reposts गढ़ना बंद, MiniMax का सेवानिवृत्त डिफ़ॉल्ट मॉडल बदला गया, और तमिल मूल्यांकन अपनी भाषा थामे रहते हैं।**
+> **पिछला — v1.262.1** — **इतालवी-मूल्यांकन पैच: OpenRouter युग ने उसकी रिपोर्ट को SCORE_SUMMARY ब्लॉक से ठीक पहले कटते हुए पकड़ा, इसलिए `it` टोकन-डेंस लोकेल में शामिल होता है (32768-टोकन सीलिंग + 480 सेकंड घड़ी) — साथ ही deploy workflow को `mode=hermes` (गेटवे रीस्टार्ट + पूरी डायग्नोस्टिक्स + क्रेडिट बैलेंस) और `mode=provider` (की-प्रेज़ेंस गार्ड के साथ LLM स्विच) मिला, जिसने Hermes क्रेडिट खत्म होने पर प्रोड को OpenRouter पर ले जाया।**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -425,7 +425,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 6841 यूनिट + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (बेसलाइन @ v1.262.1)
+└─ tests/                    # 6867 यूनिट + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (बेसलाइन @ v1.262.2)
    ├─ parsers.test.mjs       # markdown / pipeline / report पार्सर (प्योर फ़ंक्शन)
    ├─ api.test.mjs           # हर एंडपॉइंट, एफ़ेमरल सर्वर, कोई नेटवर्क नहीं
    ├─ {ru,en}-scanner.test.mjs   # मॉक्ड fetch

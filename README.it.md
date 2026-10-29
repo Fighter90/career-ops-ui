@@ -7,19 +7,19 @@
 
 _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-6841%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-6867%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.262.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.1)
+[![release](https://img.shields.io/badge/release-v1.262.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.2)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Ultima release — v1.262.1** — **La patch della valutazione italiana: `it` entra nelle località token-dense (soffitto di 32768 token + orologio di 480 s) dopo che l'era OpenRouter l'ha colta a tagliare il report subito prima del blocco SCORE_SUMMARY — in più il workflow di deploy ha guadagnato `mode=hermes` (riavvio del gateway + diagnosi completa + saldo crediti) e `mode=provider` (cambio LLM con una guardia di presenza della chiave), che ha spostato la produzione su OpenRouter quando i crediti Hermes si sono esauriti.**
+> **🆕 Ultima release — v1.262.2** — **La patch di coda della revisione: sette reperti della revisione d'ondata chiusi red-first — il round-trip del backslash dell'import CSV (il re-import dello stesso export deduplica di nuovo), lo strip `<head>` di cv-voice 4827 ms → 13 ms, `years_min` calcolato in lazy sui scan estesi, un crash TOCTOU dell'elenco delle capture corretto, predefiniti MiniMax CN per qualsiasi URL di base `*.minimax.cn`, e l'import picker controlla il tetto di 512 KB prima di leggere un file — più l'indurimento di deploy.yml (F1–F6: una guardia contro l'iniezione dell'input provider, il redact dei log hermes, il mascheramento di `?token=`, app_dir, il gate https di public_url e sei pin anti-downgrade eseguibili) e la coda della import-modal (nav guard, pulizia su cancel, duplicati guardati). Test 6841 → 6867.**
 >
-> **Precedente — v1.262.0** — **Il minor delle funzionalità upstream: il board Deel entra nello scanner (registro 123), il CSV di un tracker estraneo si importa direttamente in #/tracker con un'anteprima dry-run, il controllo di integrità JD posting-guard e un controllo voce del CV (27 frasi fatte evidenziate) approdano nella UI, un filtro scan anni-di-esperienza legge il JD, e i pulsanti Apply sono capiti in altre sette lingue — più i repost smettono di essere fabbricati tra le fonti, il modello predefinito ritirato di MiniMax viene sostituito e le valutazioni tamil tengono la loro lingua.**
+> **Precedente — v1.262.1** — **La patch della valutazione italiana: `it` entra nelle località token-dense (soffitto di 32768 token + orologio di 480 s) dopo che l'era OpenRouter l'ha colta a tagliare il report subito prima del blocco SCORE_SUMMARY — in più il workflow di deploy ha guadagnato `mode=hermes` (riavvio del gateway + diagnosi completa + saldo crediti) e `mode=provider` (cambio LLM con una guardia di presenza della chiave), che ha spostato la produzione su OpenRouter quando i crediti Hermes si sono esauriti.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -422,7 +422,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 6841 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.1)
+└─ tests/                    # 6867 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.2)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch

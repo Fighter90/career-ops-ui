@@ -2,6 +2,24 @@
 
 > Dieses Changelog enthält die vollständige Versionsgeschichte. Einträge, die vor der deutschen Lokalisierung (v1.85.0) veröffentlicht wurden, stehen unten im englischen Original — Übersetzung ausstehend; maßgeblich bleibt [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.262.2] — 2026-10-30
+
+### Behoben
+
+- **Wave-Review-Tail — 7 Befunde geringer Schwere, jeder red-first.** Der CSV-Import-Backslash-Roundtrip: ein `\` in einer Zelle wurde doppelt geschrieben und doppelt zurückgelesen, sodass der erneute Import derselben CSV das Firmen+Rollen-Dedup verfehlte und eine Dublettenzeile erzeugen konnte — der Reader entwandet `\\` jetzt nach dem Split (der Schreiben→Lesen-Roundtrip ist verlustfrei, der Re-Import dedupliziert). Das cv-voice-`<head>`-Stripping war quadratisch bei ungeschlossenen Tags — 4827 ms → 13 ms auf der 64-KB-Eingabe, mit der die Route deckelt. `statedYearsMin` fuhr den vollen Years-Parser für jede Stelle jeder Quelle, selbst wenn `years_min` nicht konfiguriert war — jetzt lazy, die CPU-Sekunden pro großem Scan sind weg. Ein zwischen readdir und statSync gelöschtes Capture ließ das Posting-Guard-Listing abstürzen (TOCTOU — verschwundene Dateien werden übersprungen). Der MiniMax-CN-Default matchte nur exakt `api.minimax.cn` — jede `*.minimax.cn`-Basis-URL bekommt jetzt das CN-Modell. Deel-`$`-Tokens, die keine Hex-Refs sind, lecken nicht länger als Literale in den Snippet. Der Import-Picker prüft `file.size` VOR `file.text()` — das 512-KB-Server-Limit antwortete mit 413 erst, nachdem der Browser eine möglicherweise riesige Datei geparst hatte — mit einem lokalisierten `import.tooLarge`-Toast ×19.
+- **Deploy-Workflow-Härtung (Workflows-Review F1–F6).** `provider` war die einzige Eingabe, die ohne Zeichensatz-Validierung in die Remote-Shell interpoliert wurde — ein `'` im Wert brach aus dem Quoting aus und führte beliebigen Code auf der Prod aus; jetzt wird vor jedem Splice auf die Whitelist `^[A-Za-z0-9_-]+$` geprüft, und der Key-Guard-grep kann nicht mehr fälschlich durchgehen. Der Hermes-Diagnose-Schritt druckte rohes journalctl + Unit-Dumps ins öffentliche Log; sein Filter verfehlte großgeschriebene `*_API_KEY=` und maskierte nichts — jetzt ein gemeinsamer case-insensitiver Redact + Wert-Masking + 80-Zeichen-Kürzung an allen drei Sinks, auch `?token=`-Query-Strings werden maskiert. Der Hermes-Schritt ignorierte `inputs.app_dir` und hardcodete `/opt/career-ops/src/.env`. `public_url` erreichte curl ohne https-Prüfung (Option-Injection über ein führendes `-`). Und der Anti-Downgrade-Guard — der Fix des v1.238.0-Vorfalls — hatte kein ausführbares Gate: sechs neue Pins in ci-workflows (Refs haben keine Defaults, der Guard läuft vor Deploy, strenge Refs-Regex).
+- **Import-Modal-Tail (SPA-Review).** Das Modal aktiviert denselben Nav-Guard wie das Outcome-Modal — ein Wegnavigieren hinterlässt es nicht mehr verwaist über einer anderen View. Das versteckte Datei-Input wird bei `cancel` entfernt, nicht nur bei `change` — wiederholtes Verwerfen leakt keine Inputs mehr in document.body. `plan.duplicates` wird in der Preview über die bewachte Form gelesen. Die Tracker-`num`-Allokation nutzt `reduce` statt `Math.max(...spread)` — der Spread stößt bei ~100k Zeilen an das Argument-Limit.
+
+### Geändert
+
+- Docs: der «118 EN adapters»-Bullet des Hilfe-Guides trägt die Zahl jetzt auch in fr/it/ta (die anderen 15 Locales hatten sie bereits). Die Vendor-Preise auf cvstart.org wurden gegen die offiziellen Pricing-Seiten nachgeprüft — alle vier unverändert, CHECKED_ON → 2026-10-30. Ein Post-Release-Drift-Sweep korrigierte 42 veraltete Zahl/Version-Zeilen über README ×19, CONTEXT.md, CLAUDE.md und die SDD-Handbücher (Überbleibsel der 109/104-Ära und der v1.262.0-Ära).
+
+### Hinweise
+
+- Bewusste Nicht-Aktion: das native `window.confirm` des cv-studio (Ära CAR-179) bleibt — die Umstellung auf `UI.confirm` ist ein Follow-up, kein Patch-Posten; der `<mark title>`-Floskel-Tooltip bleibt nur Tooltip (akzeptable A11y-Untergrenze); `remote-qa.yml` behält `cancel-in-progress: true` — eine erneute Auslösung ersetzt eine laufende Regression bewusst.
+- Volles Remote-QA auf der Prod v1.262.1: Routen ×19 ✓ · Site ×19 ✓ · Links ✓ · Live-LLM 18/19 Locales A–G ✓ — `pl` traf ein einzelnes `502 · 300 s · 0 ch`-Provider-Timeout (kein token-dichtes Terrain; der Spot-Nachlauf reist mit diesem Release).
+- Tests 6841 → 6867 auf dem Release-Branch (6864 pass / 0 fail / 3 skip, +26 vs v1.262.1) · Playwright 176 · Coverage 98.42 % Zeilen / 89.94 % Branches · Registry unverändert: 123 Quellen = 118 EN + 5 RU · 118 Adapter.
+
 ## [1.262.1] — 2026-10-29
 
 **Der Italienisch-Bewertungs-Patch: `it` stößt zu den token-dichten Locales hinzu (32768-Token-Ceiling + 480 s Uhr), nachdem die OpenRouter-Ära es dabei ertappt hat, den Bericht direkt vor dem SCORE_SUMMARY-Block abzuschneiden — und das Provider-Wechsel-Werkzeug, das diese Diagnose erst möglich machte, kommt im Deploy-Workflow an.**

@@ -7,19 +7,19 @@
 
 _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-6841%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-6867%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.262.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.1)
+[![release](https://img.shields.io/badge/release-v1.262.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.2)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versión — v1.262.1** — **El parche de evaluación en italiano: `it` se une a las locales densas en tokens (techo de 32768 tokens + reloj de 480 s) después de que la era OpenRouter la pillara cortando el informe justo antes del bloque SCORE_SUMMARY — más el deploy workflow ganó `mode=hermes` (reinicio de la pasarela + diagnóstico completo + saldo de créditos) y `mode=provider` (cambio de LLM con guardia de presencia de clave), que movió prod a OpenRouter cuando los créditos de Hermes se agotaron.**
+> **🆕 Última versión — v1.262.2** — **El parche de cola de revisión: siete hallazgos de la revisión por oleadas cerrados rojo primero — el viaje de ida y vuelta de la barra invertida en la importación CSV (reimportar el mismo export vuelve a deduplicar), el strip de `<head>` de cv-voice 4827 ms → 13 ms, `years_min` calculado perezosamente en escaneos grandes, un crash TOCTOU en el listado de capturas arreglado, defaults CN de MiniMax para cualquier base URL `*.minimax.cn`, y el picker de importación comprueba el tope de 512 KB antes de leer un archivo — más el endurecimiento de deploy.yml (F1–F6: guardia de inyección de input de proveedor, redacción del log de hermes, enmascaramiento de `?token=`, app_dir, la puerta https de public_url y seis pins anti-downgrade ejecutables) y la cola del modal de importación (guardia de navegación, limpieza en cancel, duplicados con guardia). Tests 6841 → 6867.**
 >
-> **Anterior — v1.262.0** — **El minor de funciones upstream: el board de empleo Deel se une al escáner (registro 123), el CSV de otro tracker se importa directamente en #/tracker con vista previa de dry-run, la verificación de integridad del JD del posting-guard y un chequeo de voz del CV (27 frases hechas resaltadas) aterrizan en la UI, un filtro de años de experiencia del scan lee el JD, y los botones de Apply se entienden en siete idiomas más — además, los reposts dejan de fabricarse entre fuentes, el modelo por defecto retirado de MiniMax se reemplaza, y las evaluaciones en ta mantienen su idioma.**
+> **Anterior — v1.262.1** — **El parche de evaluación en italiano: `it` se une a las locales densas en tokens (techo de 32768 tokens + reloj de 480 s) después de que la era OpenRouter la pillara cortando el informe justo antes del bloque SCORE_SUMMARY — más el deploy workflow ganó `mode=hermes` (reinicio de la pasarela + diagnóstico completo + saldo de créditos) y `mode=provider` (cambio de LLM con guardia de presencia de clave), que movió prod a OpenRouter cuando los créditos de Hermes se agotaron.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -392,7 +392,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 6841 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.1)
+└─ tests/                    # 6867 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.2)
    ├─ parsers.test.mjs       # parsers markdown / pipeline / report (funciones puras)
    ├─ api.test.mjs           # cada endpoint, servidor efímero, sin red
    ├─ {ru,en}-scanner.test.mjs   # fetch mockeado

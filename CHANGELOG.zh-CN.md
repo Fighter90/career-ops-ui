@@ -9,6 +9,25 @@
 ---
 
 
+## [1.262.2] — 2026-10-30
+
+### 修复
+
+- **Wave-review 尾巴 —— 7 项低严重度发现，逐条 red-first。** CSV 导入的反斜杠 round-trip：单元格中的 `\` 写入时翻倍、读回时仍是翻倍状态，重新导入同一份 CSV 会错过 company+role 去重并可能制造重复行 —— 读取器现在在切分之后对 `\\` 反转义（写→读 round-trip 无损，重新导入会去重）。cv-voice 的 `<head>` 剥离在未闭合标签上是二次复杂度 —— 在路由封顶的 64 KB 输入上从 4827 ms 降到 13 ms。`statedYearsMin` 在未配置 `years_min` 时也会对每个来源的每个职位运行完整的年限解析器 —— 现在改为惰性，大型扫描上每次数秒的 CPU 开销消失了。一个 capture 在 readdir 与 statSync 之间被删除会让 posting-guard 列表崩溃（TOCTOU —— 消失的文件被跳过）。MiniMax CN 默认此前只精确匹配 `api.minimax.cn` —— 现在任何 `*.minimax.cn` base URL 都能拿到 CN 模型。Deel 中并非十六进制引用的 `$` token 不再作为字面量泄漏进摘要。导入选择器在 `file.text()` 之前检查 `file.size` —— 512 KB 服务器上限此前只在浏览器解析完可能巨大的文件之后才返回 413 —— 并带本地化的 `import.tooLarge` toast ×19。
+- **Deploy workflow 加固（workflows review F1–F6）。** `provider` 是唯一未做字符集校验就插值进远程 shell 的输入 —— 值里的一个 `'` 会跳出引号并在 prod 上执行任意代码；现在在任何拼接之前先过 `^[A-Za-z0-9_-]+$` 白名单，且 key-guard 的 grep 不再可能假通过。hermes 诊断步骤把原始 journalctl + unit 转储打印进公开日志；它的过滤器漏掉大写的 `*_API_KEY=` 且什么都没掩码 —— 现在在全部三个输出上统一做大小写不敏感的脱敏 + 值掩码 + 80 字符截断，`?token=` 查询串同样掩码。hermes 步骤忽略 `inputs.app_dir` 而硬编码 `/opt/career-ops/src/.env`。`public_url` 在未经 https 检查的情况下就进入 curl（经前导 `-` 的选项注入）。而防降级守卫 —— v1.238.0 事故的修复 —— 一直没有可执行的门槛：ci-workflows 中新增六条 pin（refs 无默认值、守卫先于 Deploy 运行、严格的 refs 正则）。
+- **Import-modal 尾巴（SPA review）。** 模态框装上与 outcome 模态框相同的 nav guard —— 导航离开不再把它孤儿化地留在另一个视图之上。隐藏的 file input 在 `cancel` 时移除，而不只在 `change` 时 —— 反复关闭不再把 input 泄漏进 document.body。`plan.duplicates` 在预览中经由受守卫的形式读取。Tracker `num` 分配改用 `reduce` 而非 `Math.max(...spread)` —— spread 在约 10 万行处会撞上参数上限。
+
+### 更改
+
+- 文档：help 指南的「118 EN adapters」条目现在在 fr/it/ta 中也带上计数（其余 15 个 locale 早已带上）。cvstart.org 上的厂商价格对照官方定价页重新核验 —— 四个全部未变，CHECKED_ON → 2026-10-30。发布后的漂移清扫修复了 README ×19、CONTEXT.md、CLAUDE.md 与 SDD 手册中 42 行过期的计数/版本（109/104 时代与 v1.262.0 时代的残留）。
+
+### 备注
+
+- 刻意的未行动：cv-studio 原生的 `window.confirm`（CAR-179 时代）保留 —— 把它换成 `UI.confirm` 属于后续工作，不是补丁项；`<mark title>` 套话 tooltip 保持仅 tooltip（可接受的 a11y 底线）；`remote-qa.yml` 保留 `cancel-in-progress: true` —— 重新派发有意取代一次正在运行的回归。
+- prod v1.262.1 上的完整 remote-QA：routes ×19 ✓ · site ×19 ✓ · links ✓ · live LLM 18/19 locale A–G ✓ —— `pl` 遇到一次 `502 · 300 s · 0 ch` provider 超时（不在 token 密集范畴；点状重跑随本发布进行）。
+
+测试 6841 → 6867（6864 通过 / 0 失败 / 3 跳过，+26 对比 v1.262.1）· Playwright 176 · 覆盖率 98.42 % 行 / 89.94 % 分支 · 注册表不变：123 sources = 118 EN + 5 RU · 118 adapters。
+
 ## [1.262.1] — 2026-10-29
 
 **意大利语评估补丁：在 OpenRouter 时代，`it` 被发现在 SCORE_SUMMARY 块之前截断报告，于是 `it` 加入 token 密集型 locale（32768 token 上限 + 480 秒时钟）—— 而让诊断成为可能的 provider 切换工具也随 deploy workflow 一同发布。**
