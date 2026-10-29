@@ -169,6 +169,20 @@ const APPLY_PATTERNS = [
   // button, and the lookahead keeps longer forms ("кандидатстването") out.
   /^кандидатства[ий](?:те)?(?![\p{L}\p{M}])/iu,
   /^(?:външно )?кандидатстване(?![\p{L}\p{M}])/iu,
+  // Dutch (VDAB, Recruitee career sites in Dutch): "Solliciteer nu", "Solliciteren".
+  /\bsollicit(?:eer|eren)\b/i,
+  // Spanish (getManfred): "¡Apúntame!", "sign me up". Not the verb "aplicar":
+  // most getManfred postings, closed ones too, have an FAQ button such as
+  // "¿Puedo aplicar si vivo fuera de España?".
+  /\bapuntame\b/i,
+  // Spanish (HiringRoom): "Postularse". The label, not the verb: every HiringRoom
+  // posting also links a help article, "¿Cómo me postulo?" ("how do I apply?").
+  /\bpostularse\b/i,
+  // Chinese MokaHR and Feishu Jobs detail pages use these exact control texts.
+  // Keep them narrow: bare “申请” appears in descriptive prose, while longer
+  // labels containing “投递” can be status/history controls rather than Apply.
+  /^申请职位$/,
+  /^投递$/,
 ];
 
 const MIN_CONTENT_CHARS = 300;
