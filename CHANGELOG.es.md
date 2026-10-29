@@ -13,6 +13,32 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.262.0] — 2026-10-29
+
+**El minor de funciones upstream: el board de empleo Deel se une al escáner (registro 123), el CSV de otro tracker se importa directamente en `#/tracker`, la verificación de integridad del JD del posting-guard y el chequeo de voz del CV aterrizan como relays/lints, el escáner aprende un filtro de años de experiencia, y los botones de Apply en siete idiomas más dejan de leerse como ausentes — además, el modelo por defecto retirado de MiniMax se reemplaza y los reposts dejan de fabricarse entre fuentes.**
+
+### Añadido
+
+- **Fuente del board Deel (CAR-184)**: registro **123 fuentes = 118 EN + 5 RU · 118 adaptadores** — autodetecta boards de tenants `jobs.deel.com/<slug>` (Klarna y otros); el payload flight de Next.js trae todo el inventario en una sola petición (títulos, ubicaciones, modalidad, fechas, descripción), la ruta `/api/` prohibida jamás se toca, y un tenant que publica sus carreras en otro lugar responde con una redirección que la fuente rechaza **por nombre**; la compensación se deja deliberadamente sin mapear (importes sin intervalo de pago serían una adivinanza); gates de recuento ×5 + help §17 ×19.
+- **Importación CSV del tracker (CAR-181)**: `POST /api/tracker/import-csv` con vista previa de dry-run y un commit bajo lock — entrecomillado RFC-4180, fechas en formatos ISO / día-primero / nombre de mes, etapas de trackers ajenos plegadas hacia los estados canónicos (una etapa desconocida aterriza como Evaluated con una nota, nunca se descarta), dedup por URL de publicación normalizada leída de la celda del enlace markdown o de la columna Notes, límites de 512 KB / 2000 filas; `#/tracker` gana un botón Import CSV con modal de vista previa, i18n ×19.
+- **Relay del posting guard (CAR-182)**: `POST /api/runners/posting-guard` — la compuerta determinista y sin LLM de integridad del JD del proyecto padre, resuelta por número de informe mediante la regla de prefijo de las capturas de `jds/` (con relleno o sin él, comparada como entero) o una ruta saneada explícita; el hijo recibe solo argv, un techo de 30 s y un contrato fail-soft; una acción «Posting guard» en `#/reports/:slug` renderiza los hallazgos, i18n ×19.
+- **Chequeo de voz del CV (CAR-188)**: 27 frases hechas de currículum (`passionate about`, `proven track record`, `leveraged`, `spearheaded`, `delve`…) más heurísticas de guiones (un rango de años como 2022–2024 no es señal; `20–30%` sí lo es) como un `POST /api/cv-studio/voice-check` de solo lectura y una tarjeta `#/cv-studio` que resalta las coincidencias exactas; la lista de verificación de Tailor crece hasta seis invariantes; i18n ×19.
+- **Filtro de años de experiencia del scan (CAR-180)**: el parser jd-years (65 formulaciones, nunca descarta cuando no está seguro) lee el mínimo declarado en las descripciones de las ofertas, una nueva opción `years_min:` de portals salta las ofertas sin cualificación suficiente como `skipped_experience` (un estado de historial observacional que jamás fija una URL), y `yearsMin` viaja en el snapshot del scan para una futura UI.
+- **Controles de Apply en siete idiomas más (CAR-185/189)**: vietnamita `Nộp đơn ứng tuyển`, búlgaro `Кандидатствай`/`Кандидатстване`/`Външно кандидатстване` (el sustantivo anclado al inicio de la etiqueta — los enlaces a artículos de consejos no son Apply), neerlandés `Solliciteer`/`Solliciteren`, español `¡Apúntame!`/`Postularse` (etiquetas, no el verbo — los enlaces de FAQ dejan de importar), chino `申请职位`/`投递` (anclado al control completo) — las ofertas activas de esos boards dejan de leerse como `no_apply_control`.
+
+### Corregido
+
+- **Modelo por defecto de MiniMax (CAR-187)**: el `MiniMax-Text-01` retirado como defecto se reemplaza por `MiniMax-M3.1-Flash` en `api.minimax.io` y `MiniMax-M3` en `api.minimax.cn`; la URL base queda anclada al proveedor (un host ajeno al proveedor se rechaza en runtime y la clave jamás llega hasta él); la ayuda de ajustes ×19 nombra los nuevos defectos.
+- **Los reposts exigen la misma fuente (CAR-186)**: un rol publicado en LinkedIn y en el Greenhouse del empleador ya no se reporta como repost — los clústeres ahora se dividen por `sourceHost()`, que pliega subdominios regionales solo en sitios conocidos (`de.linkedin.com` ≡ `www.linkedin.com`, pero `ca.example.com` queda aparte), pliega los alias de host de Greenhouse en una sola fuente y elimina un punto final suelto.
+- **Deriva de idioma en evaluaciones en tamil (CAR-183)**: una directiva de tamil reforzada vive ahora en la cola volátil del prompt junto al presupuesto de volumen (el hueco de CAR-174) — los informes de remote-QA vuelven a aterrizar en tamil tras la deriva intermitente vista en v1.261.2.
+
+### Notas
+
+- No-acción deliberada: el relay del posting-guard se entrega en fail-soft — el fork todavía **no** lleva el `posting-guard.mjs` del proyecto padre (el PR upstream #6146 sigue abierto), así que el endpoint responde `{available:false, reason:"script-not-found"}` hasta que un sync del padre lo traiga.
+- No-acción deliberada: `yearsMin` **no** se expone como chip de UI en `#/scan` en este release — el campo viaja en el snapshot y el filtro vive solo en la configuración de portals.
+- No-acción deliberada: los cambios de Machine Summary de modes/reports upstream (#6161/#6160/#6157) **no** se portan — llegan con el proyecto padre desplegado, no como mirrors de web-ui.
+- Tests 6734 → 6841 en la rama de release; la clave de dedup del escáner no se toca (el comportamiento de normalización de URLs **no** cambió).
+
 ## [1.261.3] — 2026-10-28
 
 **El parche de cierre de diseño: fase 3 del diseño Lovable (densidad + retirada completa del coral), el host-pool del scan (32 empresas, 10 por host), seis correcciones de location en proveedores upstream, la fuente Trakstar Hire (registro 122), undo + guarda de cambios sin guardar en CV Studio — más las correcciones P3 de la regresión final y la paridad de documentación.**

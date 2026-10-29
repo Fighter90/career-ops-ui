@@ -7,19 +7,19 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-6699%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-6841%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.261.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.261.3)
+[![release](https://img.shields.io/badge/release-v1.262.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.261.3** — **디자인 완성 패치: Lovable 디자인 시스템이 완전히 적용 — 3단계 밀도(테이블 행 ≈32px, 컨트롤 30px, 칩 24px)와 coral 잔여물은 모두 새로운 파란 액센트/빨간 위험 분할로 이동 — 여기에 Trakstar Hire 스캔 소스(레지스트리 122), 스캔 호스트 풀(최대 32개 회사, 호스트당 10개), 업스트림 프로바이더 로케이션 수정 6건, CV Studio undo + 미저장 가드, 그리고 최종 회귀 대비 수정(지도 클러스터 라벨 4.68:1). 그 아래로: 지오코드 캐시는 이제 크래시에서 살아남고, ta 평가에는 32768 토큰 상한이 생겼으며, remote-QA는 실패한 소스를 이름으로 밝힙니다.**
+> **🆕 최신 릴리스 — v1.262.0** — **업스트림 기능 마이너: Deel 구직 보드가 스캐너에 합류하고(레지스트리 123), 다른 트래커의 CSV를 #/tracker로 바로 가져오기(dry-run 미리보기 포함), posting-guard의 JD 무결성 검사와 CV 보이스 검사(27개 상투 표현 하이라이트)가 UI에 들어오며, 경력 연수 스캔 필터가 JD를 읽고, Apply 버튼이 7개 언어 더에서 인식됩니다 — 더해 리포스트가 소스 간에 조작되지 않게 되고, MiniMax의 은퇴한 기본 모델은 교체되며, ta 평가는 언어를 지킵니다.**
 >
-> **이전 버전 — v1.261.2** — **안정성 + 마무리: two-pager TDZ 크래시 수정(P1), 비 QWERTY 레이아웃에서도 Ctrl+K 동작, 도움말 렌더링 텍스트 키 누수 ×17 해소, UI.md가 불릿 연속 행과 중첩 리스트를 렌더링, 지도 캡처 ×19 재프레이밍(cvstart.org에 실제 스크린샷), RTL 크롬을 논리 속성으로 미러링(85건), 11개 라우트 대상 키보드 a11y 하네스, 그리고 지오코드 캐시를 크래시 세이프로.**
+> **이전 버전 — v1.261.3** — **디자인 완성 패치: Lovable 디자인 시스템이 완전히 적용 — 3단계 밀도(테이블 행 ≈32px, 컨트롤 30px, 칩 24px)와 coral 잔여물은 모두 새로운 파란 액센트/빨간 위험 분할로 이동 — 여기에 Trakstar Hire 스캔 소스(레지스트리 122), 스캔 호스트 풀(최대 32개 회사, 호스트당 10개), 업스트림 프로바이더 로케이션 수정 6건, CV Studio undo + 미저장 가드, 그리고 최종 회귀 대비 수정(지도 클러스터 라벨 4.68:1). 그 아래로: 지오코드 캐시는 이제 크래시에서 살아남고, ta 평가에는 32768 토큰 상한이 생겼으며, remote-QA는 실패한 소스를 이름으로 밝힙니다.**
 
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
@@ -393,7 +393,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 6699 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.261.3)
+└─ tests/                    # 6841 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report 파서 (순수 함수)
    ├─ api.test.mjs           # 모든 엔드포인트, 임시 서버, 네트워크 없음
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
