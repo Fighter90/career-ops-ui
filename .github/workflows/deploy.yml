@@ -273,6 +273,8 @@ jobs:
 
       - name: Hermes gateway restart + diagnose (mode=hermes)
         if: inputs.mode == 'hermes'
+        env:
+          APP_DIR: ${{ inputs.app_dir }}
         run: |
           ssh prod "APP_DIR='$APP_DIR' bash -s" <<'REMOTE'
           APP_DIR="${APP_DIR:-/opt/career-ops/src}"
@@ -339,7 +341,7 @@ jobs:
             grep -hoE '^LLM_PROVIDER=.*' "$ENVF" 2>/dev/null || echo "LLM_PROVIDER unset (auto)"
           done
           echo "===== app view of the gateway ====="
-          grep -hoE '^HERMES_BASE_URL=.*' /opt/career-ops/src/.env 2>/dev/null | sed -E 's#://[^/@]+@#://…@#; s#[?].*$#?…#' || echo "HERMES_BASE_URL unset (default http://127.0.0.1:8642/v1)"
+          grep -hoE '^HERMES_BASE_URL=.*' "$APP_DIR/.env" 2>/dev/null | sed -E 's#://[^/@]+@#://…@#; s#[?].*$#?…#' || echo "HERMES_BASE_URL unset (default http://127.0.0.1:8642/v1)"
           REMOTE
 
       - name: Guard — mode=deploy requires explicit refs
