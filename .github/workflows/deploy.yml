@@ -37,17 +37,16 @@ on:
       mode:
         description: 'recon (read-only), deploy, or verify (read-only smoke of the live app)'
         type: choice
-        options: [recon, deploy, verify, cleanup-plan, cleanup-apply]
+        options: [recon, deploy, verify, hermes, cleanup-plan, cleanup-apply]
         default: recon
       app_dir:
         description: 'Parent career-ops checkout on the server (web-ui is its web-ui/ subdir)'
         default: /opt/career-ops/src
       parent_ref:
-        description: 'Parent career-ops ref to deploy (tag, branch or sha) — REQUIRED'
-        required: true
+        description: 'Parent career-ops ref to deploy (required for mode=deploy; ignored otherwise)'
+        default: ''
       ui_ref:
-        description: 'web-ui release tag to deploy (vX.Y.Z) — REQUIRED, no default: a bare Run-workflow click must never downgrade prod'
-        required: true
+        description: 'web-ui release tag to deploy (vX.Y.Z; required for mode=deploy — a bare click must never downgrade prod)'
       service:
         description: 'systemd unit of the web-ui'
         default: career-ops-ui
@@ -238,6 +237,40 @@ jobs:
               for (const c of h.checks||[]) if (c.required && !c.ok) console.log("REQUIRED FAIL: "+c.name);})'; fi
           true
           REMOTE
+
+      - name: Hermes gateway restart (mode=hermes)
+        if: inputs.mode == 'hermes'
+        run: |
+          ssh prod "bash -s" <<'REMOTE'
+          set -e
+          echo "===== before ====="
+          systemctl is-active hermes-gateway || true
+          systemctl show hermes-gateway -p ActiveState,SubState,ExecMainStartTimestamp,NRestarts --no-pager || true
+          echo "===== restart ====="
+          sudo -n systemctl restart hermes-gateway 2>/dev/null || systemctl restart hermes-gateway
+          sleep 4
+          systemctl is-active hermes-gateway
+          echo "===== journal (last 15) ====="
+          journalctl -u hermes-gateway -n 15 --no-pager -o cat 2>/dev/null || true
+          echo "===== local probe ====="
+          PORT=$(grep -hoE 'PORT=[0-9]+' /etc/systemd/system/hermes-gateway.service 2>/dev/null | head -1 | cut -d= -f2)
+          PORT="${PORT:-8642}"
+          CODE=$(curl -s -o /dev/null -w '%{http_code}' -m 6 "http://127.0.0.1:$PORT/v1/models" || echo curl-failed)
+          echo "gateway /v1/models -> $CODE"
+          [ "$CODE" = "200" ] || { echo "::warning::gateway probe answered $CODE"; }
+          REMOTE
+
+      - name: Deploy guard (mode=deploy requires explicit refs)
+        if: inputs.mode == 'deploy'
+        run: |
+          if [ -z "${{ inputs.ui_ref }}" ] || [ -z "${{ inputs.parent_ref }}" ]; then
+            echo "::error::mode=deploy requires an explicit ui_ref (vX.Y.Z) and parent_ref — a bare Run-workflow click must never downgrade prod"
+            exit 1
+          fi
+          case "${{ inputs.ui_ref }}" in
+            v[0-9]*.[0-9]*.[0-9]*) ;;
+            *) echo "::error::ui_ref must be a release tag (vX.Y.Z), got: ${{ inputs.ui_ref }}"; exit 1;;
+          esac
 
       - name: Deploy
         if: inputs.mode == 'deploy'
