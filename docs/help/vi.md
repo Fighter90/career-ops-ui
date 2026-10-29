@@ -702,6 +702,19 @@ Các tin dưới mức `high` nhận một huy hiệu **⚠ điểm** trung-tín
 mà không có gì bị lọc. Bỏ hẳn khối này để giữ hành vi
 trước-1.76 (không chú thích, không huy hiệu).
 
+### `years_min` (tùy chọn — web-ui 1.262.0)
+
+```yaml
+years_min: 3
+```
+
+Bỏ qua các tin mà mô tả nêu mức kinh nghiệm tối thiểu dưới ngưỡng của bạn.
+Parser chỉ đọc các yêu cầu được nêu rõ — tin không nêu con số nào luôn được
+qua (không bao giờ bị loại vì phỏng đoán). Các dòng bị bỏ qua được ghi vào
+`data/scan-history.tsv` với trạng thái `skipped_experience` — một trạng thái
+chỉ mang tính quan sát, không bao giờ ghim URL, nên tin sẽ xuất hiện lại
+trong một lượt quét sau.
+
 ### `search_queries`
 
 ```yaml
@@ -1386,6 +1399,16 @@ nó vào một đơn ứng tuyển.
 
 ---
 
+### Kiểm tra tin tuyển dụng — kiểm tra tính toàn vẹn của JD (v1.262.0)
+
+Trên trang báo cáo có slug mang số báo cáo, hàng thao tác đầu trang có nút
+**Kiểm tra tin tuyển dụng**. Nó chạy cổng kiểm-toàn-vẹn deterministic
+zero-LLM của dự án gốc trên JD đã lưu trữ của báo cáo (bản capture `jds/`)
+và hiển thị các phát hiện ngay tại chỗ — phán quyết, các phép kiểm tra và lý
+do. Cổng chạy cục bộ: không mô hình, không ghi. Cho đến khi checkout gốc
+cung cấp script `posting-guard.mjs`, nút sẽ trả lời bằng một ghi chú thành
+thật "không tìm thấy script" thay vì báo lỗi.
+
 ## 11. Trình theo dõi (`#/tracker`)
 
 Chiếc CRM. Mỗi đơn một dòng; nằm trong `data/applications.md` dưới dạng
@@ -1462,6 +1485,15 @@ Mọi bộ lọc đặt lại paginator về trang 1. 25 dòng mỗi trang.
 reportSlug?, notes?, date? }`. Khử trùng lặp theo `(company, role)`
 không phân biệt hoa thường. Từ UI, trang Evaluate cung cấp nút "Add to
 tracker" sau một lần chấm điểm thành công.
+
+### Nhập CSV từ trình theo dõi khác (v1.262.0)
+
+Nút **Nhập CSV** trên thanh công cụ nhận xuất CSV của một trình theo dõi khác
+(company/role/status/date/url — các bí danh cột được nhận diện, trích-dẫn
+RFC-4180 được hỗ trợ), xem trước từng dòng kèm kết quả của nó (nhập, trùng
+theo URL tin đăng, bỏ qua) và chỉ ghi sau khi bạn xác nhận. Trạng thái không
+rõ ràng sẽ thành Evaluated kèm ghi chú; ngày tháng nhận dạng ISO, ngày-trước
+và tên-tháng.
 
 ### "Still live?" — kiểm tra tin ATS còn mở không
 
@@ -2321,6 +2353,14 @@ Trước khi bạn chia sẻ CV như một mẫu bài viết hay một ảnh ch�
 Dán một câu hay đoạn cứng nhắc — kiểu cách diễn đạt AI chung chung đọc như hàng khuôn — và **Làm nó tự nhiên** viết lại nó bằng *giọng*-của bạn. Bản viết lại được đặt gốc phía máy chủ trong `voice-dna.md` của bạn (cách bài viết của bạn đọc ra sao) và `writing-samples/` của bạn (văn bản thật của bạn). Quy tắc cứng: nó có thể sắp lại, thu gọn, và đổi giọng, nhưng nó **không bao giờ** đưa vào một sự kiện, chỉ số, hay thành tựu không đã có trong văn bản bạn vừa dán. Có khóa LLM nó viết lại trực tiếp; không khóa nó đưa bạn một prompt chạy ngay để dán vào bất kỳ trợ lý nào. Rồi sửa CV trên trang-`#/cv` như thường lệ — CV Studio gợi ý, bạn quyết định.
 
 **Điều chỉnh theo một công việc.** Dán một mô tả công việc vào thẻ **Tailor to a job** và CV Studio tạo ra một **CV được điều chỉnh cho tin đăng ấy cộng một thư xin việc khớp**, rồi đưa cả hai qua một **cổng danh mục kiểm tra độ recruiter** trước khi trao chúng. Cơ chế này được chưng cất từ thực hành coaching sự nghiệp thành các quy tắc chung — một recruiter đọc trong vài giây, nên kinh nghiệm liên quan lên đầu, tiêu đề khớp vị trí của tin, kết quả mang con số cụ thể, và thư xin việc giữ dạng teaser ngắn với một cầu nối "yêu cầu ↔ sự kiện khớp của bạn". Danh mục báo cáo mỗi mục dưới dạng PASS/FAIL: **lỗi chặn** (chúng được sửa trước khi bạn thấy kết quả), **cảnh báo khuyên**. Mọi thứ được đặt gốc chỉ trong CV, hồ sơ, và hai trang của chính bạn — nó sắp lại và định hình lại những gì bạn đã có nhưng **không bao giờ bịa** một nhà tuyển dụng, chỉ số, hay tuyên bố. Có khóa LLM nó chạy trực tiếp; không khóa bạn nhận prompt chạy ngay. Tùy chọn gõ một vị trí/tiêu đề mục tiêu để lái nó. Xuất kết quả thành Markdown, PDF, hay DOCX bằng các nút trên thẻ kết quả.
+
+### Kiểm tra cụm từ khuôn mẫu (v1.262.0)
+
+Thẻ **Kiểm tra cụm từ khuôn mẫu** soát văn bản đã dán với 27 cụm từ CV khuôn
+mẫu ("passionate about", "proven track record", "leveraged", "spearheaded",
+…) và làm nổi bật các khớp chính xác — một khoảng năm như 2022–2024 là ngày
+tháng, không phải dấu-hiệu, còn `20–30%` thì là. Chỉ-đọc: không ghi gì ở bất
+kỳ đâu. Checklist Tailor coi cách-dùng-khuôn-mẫu là bất-biến thứ sáu.
 
 ### Gợi ý "Dùng lại CV cũ?"
 

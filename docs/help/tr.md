@@ -742,6 +742,19 @@ kodlarını listeler), böylece hiçbir şey filtrelenmeden düşük güvenli
 satırları gözden geçirebilirsiniz. 1.76 öncesi davranışı (açıklama yok,
 rozet yok) korumak için bloğu tamamen dışarıda bırakın.
 
+### `years_min` (isteğe bağlı — web-ui 1.262.0)
+
+```yaml
+years_min: 3
+```
+
+Açıklamasında sizin eşiğinizin altında bir asgari deneyim belirten ilanları
+atlar. Ayrıştırıcı yalnızca belirtilen gereksinimleri okur — belirtilmiş bir
+sayısı olmayan ilan her zaman geçer (asla bir tahmin üzerine elenmez).
+Atlanan satırlar `data/scan-history.tsv` dosyasına `skipped_experience` olarak
+kaydedilir; bu, bir URL'yi asla sabitlemeyen gözlemsel bir durumdur, dolayısıyla
+ilan sonraki bir taramada yeniden ortaya çıkar.
+
 ### `search_queries`
 
 ```yaml
@@ -1457,6 +1470,16 @@ Hiçbir yere gönderilmez: bir başvuruya eklemeden önce PDF'i gözden geçirin
 
 ---
 
+### İlan kontrolü — JD bütünlük denetimi (v1.262.0)
+
+Slug'ında rapor numarası taşıyan bir rapor sayfasında, başlık eylem satırında
+bir **İlan kontrolü** düğmesi bulunur. Düğme, üst projenin deterministik
+zero-LLM bütünlük kapısını raporun arşivlenmiş JD'si (`jds/` yakalaması)
+üzerinden çalıştırır ve bulguları satır içinde gösterir — karar, kontroller
+ve nedenler. Kapı yereldir: model yok, yazma yok. Üst proje çatalı
+`posting-guard.mjs` betiğini henüz göndermediği sürece, düğme bir hatayla
+değil dürüstçe "betik bulunamadı" notuyla yanıt verir.
+
 ## 11. Tracker (`#/tracker`)
 
 CRM. Başvuru başına bir satır; `data/applications.md`'de bir
@@ -1536,6 +1559,15 @@ Her filtre sayfalayıcıyı 1. sayfaya sıfırlar. Sayfa başına 25 satır.
 reportSlug?, notes?, date? }`. `(company, role)`'ye göre büyük/küçük
 harfe duyarlı olmayan çiftleme-önleme. Arayüzden, Evaluate sayfası
 başarılı bir puanlamadan sonra bir "Add to tracker" düğmesi sunar.
+
+### Başka bir Tracker'ın CSV'sini içe aktarma (v1.262.0)
+
+Araç çubuğundaki **CSV içe aktar** düğmesi başka bir Tracker'ın CSV dışa
+aktarımını alır (company/role/status/date/url — sütun takma adları tanınır,
+RFC-4180 tırnaklaması desteklenir), her satırı sonucuyla birlikte önizler
+(içe aktarma, ilan URL'sine göre yinelenen, atlandı) ve yalnızca siz
+onayladıktan sonra yazar. Bilinmeyen aşamalar bir notla birlikte Evaluated
+olur; tarihler ISO, gün-önce ve ay-adı biçimlerini kabul eder.
 
 ### "Hâlâ açık mı?" — bir ATS ilanının hâlâ açık olup olmadığını denetle
 
@@ -2395,6 +2427,15 @@ CV'nizi bir yazı örneği ya da ekran görüntüsü olarak paylaşmadan önce, 
 ### İnsanlaştır (ses eşleştirme)
 
 Katı bir cümleyi ya da paragrafı yapıştırın — kalıp metin gibi okunan o tür genel yapay zekâ ifadelerini — ve **İnsanlaştır** onu *sizin* sesinizle yeniden yazsın. Yeniden yazma, sunucu tarafında `voice-dna.md` dosyanıza (yazınızın nasıl okunduğu) ve `writing-samples/` (gerçek düzyazınız) dayandırılır. Katı kural: sıralamayı değiştirebilir, sıkılaştırabilir ve sesi yeniden ayarlayabilir, ancak yapıştırdığınız metinde zaten bulunmayan bir olguyu, metriği ya da başarıyı **asla** eklemez. Bir LLM anahtarıyla canlı olarak yeniden yazar; anahtar yoksa, herhangi bir asistana yapıştırmanız için hazır bir istem verir. Ardından CV'nizi her zamanki gibi `#/cv` sayfasında düzenleyin — CV Studio önerir, siz karar verirsiniz.
+
+### Kalıp ifadeleri kontrol et (v1.262.0)
+
+**Kalıp ifadeleri kontrol et** kartı, yapıştırılan metni 27 klişe özgeçmiş
+ifadesine karşı tarar ("passionate about", "proven track record", "leveraged",
+"spearheaded", …) ve birebir eşleşmeleri vurgular — 2022–2024 gibi bir yıl
+aralığı bir tarihtir, ipucu değildir; `20–30%` ise ipucudur. Salt okunur:
+hiçbir yere hiçbir şey yazılmaz. Tailor kontrol listesi kalıp ifadelerini
+altıncı değişmez olarak sayar.
 
 ### "Eski bir CV yeniden kullanılsın mı?" ipucu
 
