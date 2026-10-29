@@ -6,6 +6,26 @@ Bản dịch: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.262.2] — 2026-10-30
+
+**Bản-patch-đuôi-rà-soát: bảy-phát-hiện-mức-thấp được-đóng-đỏ-trước — vòng-backslash-nhập-CSV (nhập-lại-cùng-một-tệp-export được-dedup-lại), tước-phần-`<head>`-cv-voice 4827 ms → 13 ms, `years_min` tính-lười-trên-các-lượt-quét-lớn, một-vụ-crash-TOCTOU-khi-liệt-kê-capture được-sửa, mặc-định-MiniMax-CN cho-mọi-URL-cơ-sở-`*.minimax.cn`, và-bộ-chọn-nhập kiểm-tra-trần-512 KB trước-khi-đọc-tệp — cộng-củng-cố-deploy.yml (F1–F6: guard-chống-chèn-input-provider, redact-nhật-ký-hermes, che-`?token=`, app_dir, cổng-https-của-public_url và-sáu-chốt-chống-hạ-cấp-thực-thi) và-đuôi-import-modal (nav-guard, dọn-dẹp-khi-cancel, duplicates-được-bảo-vệ). Kiểm-thử 6841 → 6867.**
+
+### Đã sửa
+
+- **Đuôi-rà-soát-sóng — 7 phát-hiện-mức-thấp, mỗi-viên-đỏ-trước.** Vòng-backslash-nhập-CSV: một `\` trong-ô bị-ghi-thành-đôi và-đọc-về-cũng-thành-đôi, nên-việc-nhập-lại-cùng-một-CSV lỡ-cái-dedup-công-ty+vai-trò và-có-thể-tạo-ra-một-hàng-trùng — bộ-đọc giờ-unescapes `\\` sau-lệnh-split (vòng-write→read là-vô-tổn, nhập-lại được-dedup). Việc-tước-`<head>`-của-cv-voice có-độ-phức-tạp-bậc-hai trên-các-thẻ-chưa-đóng — 4827 ms → 13 ms trên-ngành-vào-64 KB mà-route ghim-trần. `statedYearsMin` chạy-toàn-bộ-bộ-phân-tích-số-năm cho-mọi-việc-làm-của-mọi-nguồn kể-cả-khi `years_min` chưa-được-cấu-hình — giờ-lười-hóa, mấy-giây-CPU-mỗi-lượt-quét-lớn tan-biến. Một-capture bị-xóa-giữa-readdir và-statSync làm-crash-việc-liệt-kê-của-posting-guard (TOCTOU — tệp-biến-mất thì-được-bỏ-qua). Mặc-định-MiniMax-CN trước-đây chỉ-khớp-chính-xác-`api.minimax.cn` — giờ-mọi-URL-cơ-sở-`*.minimax.cn` đều-nhận-mô-hình-CN. Các-token-`$`-của-Deel không-phải-tham-chiếu-hex không-còn-rò-vào-snippet-dưới-dạng-văn-tự. Bộ-chọn-nhập kiểm-tra `file.size` TRƯỚC-khi-gọi `file.text()` — trần-512 KB-của-server trả-413 chỉ-sau-khi-trình-duyệt đã-phân-tích-xong-một-tệp-có-thể-khổng-lồ — kèm-toast-`import.tooLarge` bản-địa-hóa ×19.
+- **Củng-cố-deploy-workflow (rà-soát-workflows F1–F6).** `provider` là-input-duy-nhất được-nội-suy-vào-remote-shell mà-không-có-charset-validation — một `'` trong-giá-trị thoát-khỏi-dấu-nháy và-chạy-code-tùy-ý-trên-prod; giờ-được-whitelist-`^[A-Za-z0-9_-]+$` trước-mọi-lệnh-nối, và-grep-của-key-guard không-còn-false-pass. Bước-chẩn-đoán-hermes in-nhật-ký-journalctl-thô + dump-unit ra-log-công-khai; bộ-lọc-của-nó lỡ-`*_API_KEY=`-viết-hoa và-không-che-gì-cả — giờ là-redact-chung-không-phân-biệt-hoa-thường + che-giá-trị + cắt-80-ký-tự trên-cả-ba-điểm-xả, các-query-string-`?token=` cũng-được-che. Bước-hermes bỏ-qua-`inputs.app_dir` và-hardcode-`/opt/career-ops/src/.env`. `public_url` tới-nơi-curl mà-không-có-kiểm-tra-https (chèn-tùy-chọn-qua-một-dấu-`-`-đầu). Và-chốt-chống-hạ-cấp — bản-sửa-sự-cố-v1.238.0 — không-có-cổng-thực-thi nào: sáu-chốt-mới-trong-ci-workflows (refs không-có-default, guard chạy-trước-Deploy, regex-refs-nghiêm-ngặt).
+- **Đuôi-import-modal (rà-soát-SPA).** Modal-gắn-cùng-một-nav-guard-với-outcome-modal — việc-rời-đi-không-còn-bỏ-lại-nó-mồ-côi-đè-trên-một-view-khác. Input-tệp-ẩn bị-gỡ-khi-`cancel`, không-chỉ-khi-`change` — những-lần-bỏ-đi-lặp-lại không-còn-làm-rò-input-vào-document.body. `plan.duplicates` được-đọc-qua-dạng-được-bảo-vệ trong-bản-xem-trước. Việc-phân-phối-`num`-của-tracker dùng-`reduce` thay-cho-`Math.max(...spread)` — spread chạm-ngưỡng-đối-số ở-khoảng-~100k-hàng.
+
+### Đã thay đổi
+
+- Docs: gạch-đầu-dòng-«118 EN adapters»-của-hướng-dẫn giờ-mang-số-đếm ở-fr/it/ta (15-locale-còn-lại đã-có-từ-trước). Giá-vendor trên-cvstart.org được-xác-minh-lại-với-các-trang-bảng-giá-chính-thức — cả-bốn-không-đổi, CHECKED_ON → 2026-10-30. Một-lượt-rà-trôi-sau-triển-khai đã-sửa-42-dòng-đếm/phiên-bản-lỗi-thời xuyên-suốt-README ×19, CONTEXT.md, CLAUDE.md và-các-sổ-tay-SDD (tàn-dư-thời-đại-109/104 và-thời-v1.262.0).
+
+### Ghi chú
+
+- Không-hành-động-cố-ý: `window.confirm`-thuần-của-cv-studio (thời-CAR-179) được-giữ-nguyên — chuyển-nó-sang-`UI.confirm` là-một-việc-theo-sau, không-phải-mục-patch; tooltip-cụm-từ-sáo-rỗng-`<mark title>` giữ-nguyên-dạng-chỉ-tooltip (sàn-a11y-chấp-nhận-được); `remote-qa.yml` giữ-`cancel-in-progress: true` — việc-gửi-lại cố-ý-thay-thế-một-lượt-hồi-quy-đang-chạy.
+- Full-remote-QA trên-prod-v1.262.1: routes ×19 ✓ · site ×19 ✓ · links ✓ · live-LLM 18/19-locale A–G ✓ — `pl` vấp-một-timeout-nhà-cung-cấp-`502 · 300 s · 0 ch` (không-phải-vùng-token-dense; lượt-chạy-lại-có-đích đi-cùng-bản-phát-hành-này).
+- Kiểm-thử 6841 → 6867 (6864 pass / 0 fail / 3 skip, +26 so-với-v1.262.1) trên-nhánh-phát-hành · Playwright 176 · độ-phủ 98.42 % dòng / 89.94 % nhánh · registry không-thay-đổi: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.262.1] — 2026-10-29
 
 **Bản-patch-đánh-giá-tiếng-Ý: kỷ-nguyên-OpenRouter bắt-gặp-nó-cắt-report-ngay-trước-khối-SCORE_SUMMARY nên `it` gia-nhập-các-locale-token-dense (trần-32768-token + đồng-hồ-480 s) — và-công-cụ-chuyển-provider giúp-được-cái-chẩn-đoán-đó lên-đường-trong-deploy-workflow.**
