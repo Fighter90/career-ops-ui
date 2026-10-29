@@ -354,6 +354,13 @@ export async function runEnScan(opts = {}) {
   // gathered by input index, so the saved snapshot is identical to a
   // sequential run's whatever the completion order.
   const withHostSlot = createKeyedLimiter(PER_HOST_CONCURRENCY);
+  // L262-R3 — `yearsMin` exists for the years_min filter (and the #/scan
+  // badge fed from it); parseYearsRequirement walks the whole description
+  // (~ms per JD), so the stamp is computed during the fetch ONLY when the
+  // filter is actually configured. Mirrors buildYearsMinFilter's validity
+  // rule; tests/jd-years-filter.test.mjs locks the configured path.
+  const yearsMinConfigured = typeof portals.years_min === 'number'
+    && Number.isFinite(portals.years_min) && portals.years_min >= 0;
   const fetchedPerCo = await pMap(withApi, async (c) => {
     if (signal?.aborted) return [];
     const fetcher = fetcherFor(c._api.type);
@@ -376,7 +383,8 @@ export async function runEnScan(opts = {}) {
         _entry: c.name,
         // CAR-180 — stated years for the years_min filter and the #/scan
         // badge; undefined when the description states no gating figure.
-        yearsMin: statedYearsMin(i),
+        // L262-R3 — skipped entirely when years_min is not configured.
+        ...(yearsMinConfigured ? { yearsMin: statedYearsMin(i) } : {}),
       }));
       log('stdout', `  ✓ ${label} ${c._api.type.padEnd(10)} ${items.length} jobs`);
       // A source that stopped early tags its result array; say so instead of
