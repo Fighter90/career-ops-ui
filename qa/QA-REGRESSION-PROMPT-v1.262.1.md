@@ -1,5 +1,5 @@
-> База: v1.262.0 → v1.262.1. Тесты: **<COUNT>** (<PASS> pass / 0 fail — патч: it → token-dense).
-> Финальный счёт релиза: **<COUNT> / <PASS> pass / 0 fail**.
+> База: v1.262.0 → v1.262.1. Тесты: **6841** (6838 pass / 0 fail — патч: it → token-dense).
+> Финальный счёт релиза: **6841 / 6838 pass / 0 fail**.
 
 # QA Regression Prompt — v1.262.1
 

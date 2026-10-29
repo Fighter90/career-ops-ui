@@ -24,7 +24,7 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 - Deliberate non-action: `en` is **not** added to the token-dense set — one blockless report is a generation flake, not a volume history.
 - Deliberate non-action: the ta reinforced-language directive is **not** extended to `it` — no language drift was observed for Italian.
 - Deliberate non-action: recording the new UI-v2 demo video stays with the owner (CAR-141) — the landing now embeds via `youtube-nocookie.com` regardless.
-- Tests 6841 → <COUNT> on the release branch.
+- Tests 6841 → 6841 on the release branch.
 
 ## [1.262.0] — 2026-10-29
 
