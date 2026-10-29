@@ -17,10 +17,11 @@
  */
 import { existsSync, readdirSync, statSync, readFileSync, writeFileSync, mkdirSync, unlink } from 'node:fs';
 import { randomBytes } from 'node:crypto';
-import { PATHS, path as projPath } from '../paths.mjs';
+import { resolve } from 'node:path';
+import { PATHS, PROJECT_ROOT, path as projPath } from '../paths.mjs';
 import { runTrackedScript, streamNodeScript } from '../runner.mjs';
 import { sanitizePathName } from '../security.mjs';
-import { sanitizeDetail } from '../parent-relay.mjs';
+import { parseJsonStdout, sanitizeDetail } from '../parent-relay.mjs';
 
 /** True if `s` carries a C0 control char or DEL — spawn throws on NUL. */
 function hasControlChar(s) {
@@ -201,6 +202,78 @@ export function registerRunnerRoutes(app) {
     const html = cvMarkdownToHtml(md, firstHeading);
     // The CV keeps the parent's fact check — it is exactly what it guards.
     streamGeneratePdf(res, { slug: 'cv', html, format: req.query.format, skipFactCheck: false });
+  });
+
+  // ─── CAR-182 — zero-token JD integrity gate (parent posting-guard.mjs) ───
+  // Deterministic, read-only: `{ report }` resolves the report's jds/ capture
+  // or `{ jdPath }` names one directly, then the route relays
+  // `node posting-guard.mjs --in jds/<name> --json`. Both reach the child only
+  // as argv array elements (never shell-interpolated); jdPath is
+  // sanitizePathName'd first. Fail-soft {available:false} without the script
+  // (CI / standalone installs).
+
+  /**
+   * The jds/ capture belonging to report `num`, newest first when several
+   * files share the number (collision suffixes -2, -3). Mirrors the parent
+   * jd-capture.mjs prefix rule: padded and unpadded prefixes both resolve
+   * (`064-`, `64-`), and matching compares the parsed integer, so report 64
+   * never picks up report 640's capture.
+   */
+  function findCaptureByReport(num) {
+    if (!existsSync(PATHS.jdsDir)) return null;
+    const wanted = String(num);
+    const matches = readdirSync(PATHS.jdsDir)
+      .filter((f) => {
+        const m = f.match(/^(\d+)-/);
+        return m && String(parseInt(m[1], 10)) === wanted;
+      })
+      .map((f) => ({ f, mtime: statSync(projPath('jds', f)).mtimeMs }))
+      .sort((a, b) => b.mtime - a.mtime);
+    return matches.length ? matches[0].f : null;
+  }
+
+  app.post('/api/runners/posting-guard', async (req, res) => {
+    const { report, jdPath } = req.body || {};
+    const hasReport = report != null && report !== '';
+    const hasPath = jdPath != null && jdPath !== '';
+    if (!hasReport && !hasPath) return res.status(400).json({ error: 'report or jdPath required' });
+    if (hasReport && hasPath) return res.status(400).json({ error: 'pass report or jdPath, not both' });
+
+    let name = null;
+    if (hasPath) {
+      if (typeof jdPath !== 'string') return res.status(400).json({ error: 'jdPath must be a string' });
+      name = sanitizePathName(jdPath);
+      if (!name) return res.status(400).json({ error: 'invalid jdPath' });
+    } else {
+      if (typeof report !== 'number' && typeof report !== 'string') {
+        return res.status(400).json({ error: 'report must be a number' });
+      }
+      const n = Number(report);
+      if (!Number.isInteger(n) || n < 1 || n > 999_999) {
+        return res.status(400).json({ error: 'report must be a positive integer' });
+      }
+      name = findCaptureByReport(n);
+      if (!name) return res.status(404).json({ error: 'no jds/ capture for report', report: n });
+    }
+
+    if (!existsSync(projPath('jds', name))) {
+      return res.status(404).json({ error: 'jd not found', file: `jds/${name}` });
+    }
+
+    const script = 'posting-guard.mjs';
+    if (!existsSync(resolve(PROJECT_ROOT, script))) {
+      return res.json({ available: false, reason: 'script-not-found' });
+    }
+    const r = await runTrackedScript(script, ['--in', `jds/${name}`, '--json'], { timeoutMs: 30_000 });
+    const findings = parseJsonStdout(r.stdout);
+    if (r.code !== 0 || !findings || typeof findings.verdict !== 'string') {
+      return res.json({
+        available: false,
+        reason: r.killed ? 'timeout' : 'script-error',
+        ...(r.stderr ? { detail: sanitizeDetail(r.stderr) } : {}),
+      });
+    }
+    res.json({ available: true, file: `jds/${name}`, findings });
   });
 
   // ─── List + download generated PDFs (output/*.pdf) ───
