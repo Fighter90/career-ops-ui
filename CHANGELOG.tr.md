@@ -28,7 +28,7 @@
 - **Accent artık mavi** (Lovable konsepti): birincil eylemler/aktif durumlar/odak halkaları `--cv3-accent`'ı izliyor; kırmızı danger için saklı (`.btn-danger`, `toast.error`, danger metni). Coral yalnızca logo PNG varlığında yaşıyor (sahibin kararı).
 - **Yoğunluk**: tablo satırları ≈32px / denetimler 30px / çipler 24px — WCAG 2.5.8 boşluk istisnası belgelendirildi; v1.26.1'in 44px kanaryası token sözleşmesi üzerine yeniden yazıldı.
 - CodeQL: açık 10 uyarının tamamı kapatıldı (4'ü gerekçeyle FP olarak kapatıldı — belgelenmiş sınıflar: llmRateLimit/atomicWrite; 6'sı kaynakta düzeltildi).
-- Testler sürüm dalında 6655 → 6699; yeni Trakstar kaynağının ötesinde hiçbir tarayıcı-kaynak davranışı değişmedi.
+- Testler sürüm dalında 6655 → 6734; yeni Trakstar kaynağının ötesinde hiçbir tarayıcı-kaynak davranışı değişmedi.
 
 ## [1.261.2] — 2026-10-28
 

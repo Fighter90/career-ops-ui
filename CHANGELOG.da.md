@@ -35,7 +35,7 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 - **Accenten er nu blå** (Lovable-konceptet): primære handlinger/aktive tilstande/fokusringe følger `--cv3-accent`; rød er reserveret til danger (`.btn-danger`, `toast.error`, danger-tekst). Coral overlever kun i logo-PNG-assetet (ejerens valg).
 - **Density**: tabelrækker ≈32px / kontroller 30px / chips 24px — WCAG 2.5.8 spacing-undtagelsen dokumenteret; v1.26.1-44px-canaryen blev omskrevet til token-kontrakten.
 - CodeQL: alle 10 åbne alarmer lukket (4 FP-afvist med begrundelse: llmRateLimit/atomicWrite-dokumenterede klasser; 6 rettet i kilden).
-- Tests 6655 → <COUNT> på release-branchen; ingen scannerkilde-adfærd ændret ud over den nye Trakstar-kilde.
+- Tests 6655 → 6734 på release-branchen; ingen scannerkilde-adfærd ændret ud over den nye Trakstar-kilde.
 
 ## [1.261.2] — 2026-10-28
 

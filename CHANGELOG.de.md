@@ -28,7 +28,7 @@
 - **Der Akzent ist jetzt blau** (Lovable-Konzept): primäre Aktionen/aktive Zustände/Fokusringe folgen `--cv3-accent`; Rot ist dem Danger vorbehalten (`.btn-danger`, `toast.error`, Danger-Text). Coral überlebt nur im Logo-PNG-Asset (Owner-Entscheidung).
 - **Dichte**: Tabellenzeilen ≈32px / Controls 30px / Chips 24px — WCAG-2.5.8-Spacing-Ausnahme dokumentiert; der 44px-Canary aus v1.26.1 wurde auf den Token-Vertrag umgeschrieben.
 - CodeQL: alle 10 offenen Alerts geschlossen (4 als FP dismissed mit Begründung: llmRateLimit/atomicWrite sind dokumentierte Klassen; 6 an der Quelle gefixt).
-- Tests 6655 → **6699** auf dem Release-Branch; außer der neuen Trakstar-Quelle hat sich kein Scanner-Quellen-Verhalten geändert.
+- Tests 6655 → **6734** auf dem Release-Branch; außer der neuen Trakstar-Quelle hat sich kein Scanner-Quellen-Verhalten geändert.
 
 ## [1.261.2] — 2026-10-28
 

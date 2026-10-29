@@ -32,7 +32,7 @@ Bản dịch: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 - **Accent giờ-là-blue** (quan-niệm-Lovable): hành-động-chính/trạng-thái-hoạt-động/vòng-focus theo-`--cv3-accent`; màu-đỏ-được-dành-riêng-cho-danger (`.btn-danger`, `toast.error`, chữ-danger). Coral chỉ-còn-sống-sót-trong-tài-sản-logo-PNG (quyết-định-của-chủ-sở-hữu).
 - **Mật-độ**: hàng-bảng ≈32px / điều-khiển 30px / chip 24px — ngoại-lệ-khoảng-cách-WCAG 2.5.8 được-ghi-chép; canary-44px-của-v1.26.1 được-viết-lại-lên-hợp-đồng-token.
 - CodeQL: cả-10-cảnh-báo-còn-mở được-đóng (4 FP được-loại-có-lý-do: các-lớp-được-ghi-chép-llmRateLimit/atomicWrite; 6 được-sửa-tại-nguồn).
-- Tests 6655 → 6699 trên-nhánh-phát-hành; không-hành-vi-nguồn-quét nào thay-đổi ngoài-nguồn-Trakstar-mới.
+- Tests 6655 → 6734 trên-nhánh-phát-hành; không-hành-vi-nguồn-quét nào thay-đổi ngoài-nguồn-Trakstar-mới.
 
 ## [1.261.2] — 2026-10-28
 

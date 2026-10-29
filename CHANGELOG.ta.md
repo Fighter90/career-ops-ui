@@ -32,7 +32,7 @@
 - **Accent இப்போது blue** (Lovable concept): primary actions/active states/focus rings `--cv3-accent`-ஐப் பின்பற்றுகின்றன; red danger-க்கு மட்டுமே ஒதுக்கப்பட்டுள்ளது (`.btn-danger`, `toast.error`, danger text). Coral logo PNG asset-இல் மட்டுமே எஞ்சியுள்ளது (உரிமையாளரின் முடிவு).
 - **Density**: table rows ≈32px / controls 30px / chips 24px — WCAG 2.5.8 spacing exception ஆவணப்படுத்தப்பட்டது; v1.26.1-இன் 44px canary token contract மீது மறுஎழுதப்பட்டது.
 - CodeQL: திறந்த 10 alerts-உம் மூடப்பட்டன (4 FP-dismissed, rationale உடன்: llmRateLimit/atomicWrite documented classes; 6 source-இலேயே திருத்தம்).
-- Tests release branch-இல் 6655 → 6699; புதிய Trakstar source-ஐத் தாண்டி scanner-source behavior-இல் எந்த மாற்றமும் இல்லை.
+- Tests release branch-இல் 6655 → 6734; புதிய Trakstar source-ஐத் தாண்டி scanner-source behavior-இல் எந்த மாற்றமும் இல்லை.
 
 ## [1.261.2] — 2026-10-28
 

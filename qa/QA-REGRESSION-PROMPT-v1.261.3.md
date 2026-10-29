@@ -1,5 +1,5 @@
-> База: v1.261.2 → v1.261.3. Тесты: **6699** (6691 pass / 6 skip / 2 parity-gate fails до фан-аута — после фан-аута 0 fail).
-> Финальный счёт релиза: **6699 / 6691 pass / 6 env-skip**.
+> База: v1.261.2 → v1.261.3. Тесты: **6734** (6728 pass / 6 opt-in skip / 0 fail — счёт после мержа main: Trakstar + host-pool + P3 тест-хвосты).
+> Финальный счёт релиза: **6734 / 6728 pass / 6 opt-in skip / 0 fail**.
 
 # QA Regression Prompt — v1.261.3
 

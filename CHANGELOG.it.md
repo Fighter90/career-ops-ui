@@ -28,7 +28,7 @@
 - **L'accento ora è blu** (concetto Lovable): azioni primarie/stati attivi/anelli di focus seguono `--cv3-accent`; il rosso è riservato al danger (`.btn-danger`, `toast.error`, testo di danger). Il corallo sopravvive solo nell'asset PNG del logo (decisione del proprietario).
 - **Densità**: righe di tabella ≈32px / controlli 30px / chip 24px — eccezione di spaziatura WCAG 2.5.8 documentata; il canary 44px della v1.26.1 è stato riscritto sul contratto dei token.
 - CodeQL: tutti i 10 alert aperti sono chiusi (4 archiviati come falsi positivi con motivazione: classi documentate llmRateLimit/atomicWrite; 6 corretti alla fonte).
-- Test 6655 → 6699 sul branch di release; nessun comportamento delle fonti di scan cambiato oltre la nuova fonte Trakstar.
+- Test 6655 → 6734 sul branch di release; nessun comportamento delle fonti di scan cambiato oltre la nuova fonte Trakstar.
 
 ## [1.261.2] — 2026-10-28
 

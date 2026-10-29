@@ -36,7 +36,7 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 - **Akcent jest teraz niebieski** (koncept Lovable): akcje podstawowe/stany aktywne/pierścienie fokusu podążają za `--cv3-accent`; czerwony zarezerwowany dla danger (`.btn-danger`, `toast.error`, tekst danger). Koral przetrwał tylko w zasobie logo PNG (decyzja właściciela).
 - **Gęstość**: wiersze tabel ≈32px / kontrolki 30px / chipy 24px — wyjątek odstępów WCAG 2.5.8 udokumentowany; kanarek 44px z v1.26.1 przepisany na kontrakt tokenów.
 - CodeQL: wszystkie 10 otwartych alertów zamknięte (4 odrzucone jako FP z uzasadnieniem: udokumentowane klasy llmRateLimit/atomicWrite; 6 naprawionych u źródła).
-- Testów 6655 → 6699 na gałęzi wydania; zachowanie źródeł skanera nie zmieniło się poza nowe źródło Trakstar.
+- Testów 6655 → 6734 na gałęzi wydania; zachowanie źródeł skanera nie zmieniło się poza nowe źródło Trakstar.
 
 ## [1.261.2] — 2026-10-28
 

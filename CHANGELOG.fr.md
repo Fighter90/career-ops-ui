@@ -38,7 +38,7 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 - **L'accent est désormais bleu** (concept Lovable) : les actions primaires/états actifs/liserés de focus suivent `--cv3-accent` ; le rouge est réservé au danger (`.btn-danger`, `toast.error`, texte de danger). Le corail ne survit que dans l'asset PNG du logo (décision du propriétaire).
 - **Densité** : lignes de table ≈32px / contrôles 30px / chips 24px — exception d'espacement WCAG 2.5.8 documentée ; le canari 44px de la v1.26.1 a été réécrit sur le contrat de tokens.
 - CodeQL : les 10 alertes ouvertes sont closes (4 archivées comme faux positifs avec justification : classes documentées llmRateLimit/atomicWrite ; 6 corrigées à la source).
-- Tests 6655 → 6699 sur la branche de release ; aucun changement de comportement des sources de scan au-delà de la nouvelle source Trakstar.
+- Tests 6655 → 6734 sur la branche de release ; aucun changement de comportement des sources de scan au-delà de la nouvelle source Trakstar.
 
 ## [1.261.2] — 2026-10-28
 

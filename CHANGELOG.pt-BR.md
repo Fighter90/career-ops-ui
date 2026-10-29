@@ -35,7 +35,7 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 - **O acento agora é azul** (conceito do Lovable): ações primárias/estados ativos/anéis de foco seguem `--cv3-accent`; o vermelho fica reservado para danger (`.btn-danger`, `toast.error`, texto de danger). O coral sobrevive apenas no asset PNG do logo (decisão do dono).
 - **Densidade**: linhas de tabela ≈32px / controles 30px / chips 24px — exceção de espaçamento WCAG 2.5.8 documentada; a canary de 44px da v1.26.1 foi reescrita sobre o contrato de tokens.
 - CodeQL: todos os 10 alertas abertos fechados (4 descartados como FP com justificativa: classes documentadas llmRateLimit/atomicWrite; 6 corrigidos na fonte).
-- Testes 6655 → <COUNT> na branch de release; nenhum comportamento de fonte do scanner mudado além da nova fonte Trakstar.
+- Testes 6655 → 6734 na branch de release; nenhum comportamento de fonte do scanner mudado além da nova fonte Trakstar.
 
 ## [1.261.2] — 2026-10-28
 

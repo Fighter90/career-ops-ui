@@ -33,7 +33,7 @@
 
 - **의도적으로 하지 않은 것**: `.tab-btn`의 밀도(별도 44px 계약); logo-PNG는 코랄로 남깁니다(소유자 결정); 업스트림 #6154(years-of-experience)와 #6170(CSV import)은 Linear에 있습니다(CAR-180/181).
 - 게이트: `npm run test:ci` exit 0 · changelog 패리티 exit 0 · `npm run test:e2e:browser` 176 pass / 1 opt-in skip.
-- 테스트 6699(릴리스 최종: 6691 pass / 6 env-skip); 레지스트리 122 = 117 EN + 5 RU · 117 어댑터.
+- 테스트 6734(릴리스 최종: 6691 pass / 6 env-skip); 레지스트리 122 = 117 EN + 5 RU · 117 어댑터.
 
 ## [1.261.2] — 2026-10-28
 
