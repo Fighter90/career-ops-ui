@@ -721,6 +721,14 @@ jobs:
           set -euo pipefail
           [ -n "$PUBLIC_URL" ] || { echo "::notice::no public_url and no PROD_URL secret — public check skipped"; exit 0; }
           PUBLIC_URL="${PUBLIC_URL%/}"
+          # $PUBLIC_URL reaches curl's argument list below: a value with a
+          # leading '-' would be parsed as options (argument injection), and a
+          # non-https origin would quietly downgrade the public check. An
+          # https:// origin is the only accepted shape.
+          case "$PUBLIC_URL" in
+            https://*) ;;
+            *) echo "::error::public_url/PROD_URL must be an https:// origin (got: $PUBLIC_URL)"; exit 1;;
+          esac
           # The site sits behind HTTP basic auth, so 401 means "up and gated".
           for p in / /api/health; do
             code=$(curl -sS -o /dev/null -w '%{http_code}' --max-time 15 "$PUBLIC_URL$p")
