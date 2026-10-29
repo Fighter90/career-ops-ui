@@ -18,6 +18,34 @@ test('parseMarkdownTable: empty input', () => {
   assert.deepEqual(parseMarkdownTable(null), { headers: [], rows: [] });
 });
 
+// Review tail L1 — the CSV-import writer (routes/tracker.mjs cell()) escapes
+// `\` → `\\` BEFORE `\|`; the reader must undo both in the same order, or a
+// company like `C:\Users\Иван` reads back as `C:\\Users\Иван` and a re-import
+// of the same CSV misses the company+role dedup.
+test('parseMarkdownTable: backslash cell survives the write→read roundtrip', () => {
+  // Mirror the writer's escape chain exactly (routes/tracker.mjs cell()).
+  const cell = (s) => String(s || '').replace(/\\/g, '\\\\').replace(/\|/g, '\\|').replace(/[\r\n]+/g, ' ').trim();
+  const original = 'C:\\Users\\Иван';
+  const table = [
+    '| # | Date | Company | Role | Score | Status | PDF | Report | Notes |',
+    '|---|------|---------|------|-------|--------|-----|--------|-------|',
+    `| 001 | 2026-06-01 | ${cell(original)} | Data Analyst | N/A | Evaluated | ❌ | — | note |`,
+  ].join('\n');
+  const { headers, rows } = parseMarkdownTable(table);
+  assert.equal(headers.length, 9);
+  assert.equal(rows.length, 1);
+  assert.equal(rows[0][2], original, `expected ${JSON.stringify(original)}, got ${JSON.stringify(rows[0][2])}`);
+});
+
+test('parseMarkdownTable: mixed escapes roundtrip losslessly', () => {
+  const cell = (s) => String(s || '').replace(/\\/g, '\\\\').replace(/\|/g, '\\|').replace(/[\r\n]+/g, ' ').trim();
+  for (const original of ['a|b', 'a\\|b', 'a\\\\|b', 'path\\', '\\', 'Acme | Co']) {
+    const table = ['| a | b |', '|---|---|', `| 001 | ${cell(original)} |`].join('\n');
+    const { rows } = parseMarkdownTable(table);
+    assert.equal(rows[0][1], original, `expected ${JSON.stringify(original)}, got ${JSON.stringify(rows[0][1])}`);
+  }
+});
+
 test('parseMarkdownTable: simple table', () => {
   const md = `
 intro line

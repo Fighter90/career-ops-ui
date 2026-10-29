@@ -56,8 +56,13 @@ export function parseMarkdownTable(text) {
     // part IS the last cell, not the empty tail after the closing pipe.
     const parts = splitUnescaped(line, '|');
     const closed = line.length > 1 && line.endsWith('|') && !line.endsWith('\\|');
+    // L262-R1 — undo the writer's escape chain in reverse: the import
+    // writer (routes/tracker.mjs cell()) escapes `\` → `\\` FIRST and
+    // `|` → `\|` second, so the reader restores `\|` before `\\` —
+    // otherwise a company like `C:\Users\Иван` reads back as
+    // `C:\\Users\Иван` and a re-import misses the company+role dedup.
     const cells = (closed ? parts.slice(1, -1) : parts.slice(1))
-      .map((c) => c.replace(/\\\|/g, '|').trim());
+      .map((c) => c.replace(/\\\|/g, '|').replace(/\\\\/g, '\\').trim());
 
     if (!inTable) {
       headers = cells;
