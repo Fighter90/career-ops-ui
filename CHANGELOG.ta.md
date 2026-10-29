@@ -6,6 +6,18 @@
 
 ---
 
+## [1.262.3] — 2026-10-30
+
+### சரி செய்யப்பட்டது
+
+- **pl token-dense evaluation locales-உடன் சேர்கிறது** (`pl` → 32768-token ceiling + 480 s clock). prod v1.262.1-இல் நடந்த முழு remote-QA, Polish evaluation standard ceiling-இல் இறந்துவிட்டதைப் பிடித்தது — `502 · openrouter · 300 s · 0 ch` — v1.262.2-உடன் dispatch செய்யப்பட்ட spot re-run அதை சரியாகவே இனம் கண்டது (runs 40960568766 மற்றும் 40968958062): 18/19 locales A–G pass ஆனது, `it` token-dense 480 s clock-க்குள் 302 s-இல் முடிந்தது, `pl` பூஜ்ஜிய output-உடன் இருமுறை சுவரில் மோதியது. இது deterministic timeout, flake அல்ல — v1.262.1-இல் `it`-ஐ இந்த set-க்கு நகர்த்திய அதே shape class. Red-first pin: `evalMaxTokens('pl') = 32768`, `evalTimeoutMs('pl') = 480_000`, மற்ற 18 standard locales 300 s வைத்திருக்கின்றன.
+
+### குறிப்புகள்
+
+- வேண்டுமென்றே ஒரே-நோக்கம் கொண்ட patch: இங்கே வேறு எதுவும் சேரவில்லை — v1.262.2 review-tail content தனியாக வெளியானது.
+
+Tests 6867 → 6868 (+1) · Playwright 176 · registry மாறவில்லை: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.262.2] — 2026-10-30
 
 ### சரி செய்யப்பட்டது
