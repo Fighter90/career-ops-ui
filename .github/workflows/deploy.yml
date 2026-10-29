@@ -262,6 +262,19 @@ jobs:
             CODE=$(curl -s -o /dev/null -w '%{http_code}' -m 4 "http://127.0.0.1:$P/v1/models" 2>/dev/null || echo 000)
             echo "  127.0.0.1:$P/v1/models -> $CODE"
           done
+          echo "===== API gateway (8788 = claude-bridge, HERMES_BASE_URL) ====="
+          CODE8788=$(curl -s -o /dev/null -w '%{http_code}' -m 4 "http://127.0.0.1:8788/v1/models" 2>/dev/null || echo 000)
+          echo "  claude-bridge /v1/models -> $CODE8788"
+          if [ "$CODE8788" != "200" ]; then
+            echo "  --- restarting claude-bridge ---"
+            sudo -n systemctl restart claude-bridge 2>/dev/null || systemctl restart claude-bridge
+            sleep 6
+            systemctl is-active claude-bridge || true
+            sudo -n journalctl -u claude-bridge -n 15 --no-pager -o cat 2>/dev/null | tail -8 || true
+            CODE8788=$(curl -s -o /dev/null -w '%{http_code}' -m 4 "http://127.0.0.1:8788/v1/models" 2>/dev/null || echo 000)
+            echo "  claude-bridge /v1/models after restart -> $CODE8788"
+          fi
+          [ "$CODE8788" = "200" ] || echo "::warning::claude-bridge probe answered $CODE8788 — manual operator action may be required"
           echo "===== app view of the gateway ====="
           grep -hoE '^HERMES_BASE_URL=.*' /opt/career-ops/src/.env 2>/dev/null | sed -E 's#://[^/@]+@#://…@#' || echo "HERMES_BASE_URL unset (default http://127.0.0.1:8642/v1)"
           REMOTE
