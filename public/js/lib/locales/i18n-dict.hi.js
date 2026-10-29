@@ -297,7 +297,7 @@ window.__I18N_DICT_HI = {
   'config.kimiBaseUrl': "MOONSHOT_BASE_URL",
   'config.minimaxHint': "कुंजी प्राप्त करें: platform.minimax.io। OpenAI-संगत (api.minimax.io/v1)। सेट होने पर ⚡ लाइव इवैल चलाता है।",
   'config.minimaxKey': "MINIMAX_API_KEY",
-  'config.minimaxModelHint': "डिफ़ॉल्ट: MiniMax-Text-01।",
+  'config.minimaxModelHint': "डिफ़ॉल्ट: MiniMax-M3.1-Flash। api.minimax.cn पर: MiniMax-M3।",
   'config.minimaxModel': "MINIMAX_MODEL",
   'config.mistralHint': "कुंजी प्राप्त करें: console.mistral.ai। OpenAI-संगत (api.mistral.ai/v1)। सेट होने पर ⚡ लाइव इवैल चलाता है।",
   'config.mistralKey': "MISTRAL_API_KEY",

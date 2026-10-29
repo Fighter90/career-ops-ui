@@ -292,7 +292,7 @@ window.__I18N_DICT_VI = {
   'config.kimiBaseUrl': "MOONSHOT_BASE_URL",
   'config.minimaxHint': "Lấy khóa tại platform.minimax.io. Tương thích OpenAI (api.minimax.io/v1); khi đã đặt, chạy đánh giá ⚡ trực tiếp.",
   'config.minimaxKey': "MINIMAX_API_KEY",
-  'config.minimaxModelHint': "Mặc định: MiniMax-Text-01.",
+  'config.minimaxModelHint': "Mặc định: MiniMax-M3.1-Flash. Trên api.minimax.cn: MiniMax-M3.",
   'config.minimaxModel': "MINIMAX_MODEL",
   'config.mistralHint': "Lấy khóa tại console.mistral.ai. Tương thích OpenAI (api.mistral.ai/v1); khi đã đặt, chạy đánh giá ⚡ trực tiếp.",
   'config.mistralKey': "MISTRAL_API_KEY",

@@ -297,7 +297,7 @@ window.__I18N_DICT_TR = {
   'config.kimiBaseUrl': "MOONSHOT_BASE_URL",
   'config.minimaxHint': "Anahtar alın: platform.minimax.io. OpenAI uyumlu (api.minimax.io/v1); ayarlandığında ⚡ canlı değerlendirmeyi çalıştırır.",
   'config.minimaxKey': "MINIMAX_API_KEY",
-  'config.minimaxModelHint': "Varsayılan: MiniMax-Text-01.",
+  'config.minimaxModelHint': "Varsayılan: MiniMax-M3.1-Flash. api.minimax.cn üzerinde: MiniMax-M3.",
   'config.minimaxModel': "MINIMAX_MODEL",
   'config.mistralHint': "Anahtar alın: console.mistral.ai. OpenAI uyumlu (api.mistral.ai/v1); ayarlandığında ⚡ canlı değerlendirmeyi çalıştırır.",
   'config.mistralKey': "MISTRAL_API_KEY",

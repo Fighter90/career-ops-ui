@@ -303,7 +303,7 @@ window.__I18N_DICT_TA = {
   'config.kimiBaseUrl': "MOONSHOT_BASE_URL",
   'config.minimaxHint': "platform.minimax.io இல் கீ பெறுங்கள். OpenAI-இசைவு (api.minimax.io/v1); அமைக்கப்பட்டால், ⚡ நேரடி மதிபீட்டை இயக்கும்.",
   'config.minimaxKey': "MINIMAX_API_KEY",
-  'config.minimaxModelHint': "இயல்புநிலை: MiniMax-Text-01.",
+  'config.minimaxModelHint': "இயல்புநிலை: MiniMax-M3.1-Flash. api.minimax.cn இல்: MiniMax-M3.",
   'config.minimaxModel': "MINIMAX_MODEL",
   'config.mistralHint': "console.mistral.ai இல் கீ பெறுங்கள். OpenAI-இசைவு (api.mistral.ai/v1); அமைக்கப்பட்டால், ⚡ நேரடி மதிபீட்டை இயக்கும்.",
   'config.mistralKey': "MISTRAL_API_KEY",

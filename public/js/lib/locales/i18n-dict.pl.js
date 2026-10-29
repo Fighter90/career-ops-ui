@@ -296,7 +296,7 @@ window.__I18N_DICT_PL = {
   'config.kimiBaseUrl': "MOONSHOT_BASE_URL",
   'config.minimaxHint': "Uzyskaj klucz na platform.minimax.io. zgodny z OpenAI (api.minimax.io/v1); po ustawieniu uruchamia ⚡ ocenę na żywo.",
   'config.minimaxKey': "MINIMAX_API_KEY",
-  'config.minimaxModelHint': "Domyślnie: MiniMax-Text-01.",
+  'config.minimaxModelHint': "Domyślnie: MiniMax-M3.1-Flash. Na api.minimax.cn: MiniMax-M3.",
   'config.minimaxModel': "MINIMAX_MODEL",
   'config.mistralHint': "Uzyskaj klucz na console.mistral.ai. zgodny z OpenAI (api.mistral.ai/v1); po ustawieniu uruchamia ⚡ ocenę na żywo.",
   'config.mistralKey': "MISTRAL_API_KEY",

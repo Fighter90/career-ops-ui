@@ -480,7 +480,7 @@ test('hasArkKey / hasArkCnKey gate on their own env (ARK_API_KEY / ARK_CN_API_KE
 test('run<Provider> wrappers post to the expected endpoint with their default model', async () => {
   const CASES = [
     { fn: () => runKimi,      url: 'https://api.moonshot.ai/v1/chat/completions',      model: 'kimi-k2-0711-preview' },
-    { fn: () => runMiniMax,   url: 'https://api.minimax.io/v1/chat/completions',       model: 'MiniMax-Text-01' },
+    { fn: () => runMiniMax,   url: 'https://api.minimax.io/v1/chat/completions',       model: 'MiniMax-M3.1-Flash' },
     { fn: () => runMistral,   url: 'https://api.mistral.ai/v1/chat/completions',       model: 'mistral-large-latest' },
     { fn: () => runFireworks, url: 'https://api.fireworks.ai/inference/v1/chat/completions', model: 'accounts/fireworks/models/llama-v3p3-70b-instruct' },
   ];

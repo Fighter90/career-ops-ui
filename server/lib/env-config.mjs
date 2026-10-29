@@ -313,6 +313,7 @@ export function isUsableKey(raw, minLen = 20) {
 export const BASE_URL_POLICIES = {
   ZAI_BASE_URL: { vendor: ['z.ai', 'bigmodel.cn'] },
   MOONSHOT_BASE_URL: { vendor: ['moonshot.ai', 'moonshot.cn'] },
+  MINIMAX_BASE_URL: { vendor: ['minimax.io', 'minimax.cn'] },
   ARK_BASE_URL: { vendor: ['bytepluses.com', 'volces.com'] },
   ARK_CN_BASE_URL: { vendor: ['volces.com', 'bytepluses.com'] },
   HERMES_BASE_URL: { local: true },

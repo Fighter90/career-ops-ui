@@ -339,13 +339,26 @@ export async function runKimi(prompt, opts = {}) {
 }
 export function hasKimiKey() { return isUsableKey(envKey('MOONSHOT_API_KEY')); }
 
-/** MiniMax — OpenAI-compatible. */
+/** CAR-187 — the region default model for a resolved MiniMax chat URL:
+ *  MiniMax-M3 on the CN endpoint (api.minimax.cn), MiniMax-M3.1-Flash on
+ *  the international one and anywhere else — 'MiniMax-Text-01' is retired
+ *  (upstream #5531). */
+export function minimaxDefaultModel(chatUrl) {
+  try {
+    return new URL(chatUrl).hostname === 'api.minimax.cn' ? 'MiniMax-M3' : 'MiniMax-M3.1-Flash';
+  } catch { return 'MiniMax-M3.1-Flash'; }
+}
+
+/** MiniMax — OpenAI-compatible; base override for the CN endpoint
+ *  (MINIMAX_BASE_URL, hand-edited .env / shell export — the vendor pin
+ *  lives in env-config.mjs BASE_URL_POLICIES). */
 export async function runMiniMax(prompt, opts = {}) {
-  return runOpenAICompatible(prompt, {
-    url: opts.url || MINIMAX_URL,
+  // Same resolution configuredChatUrl() applies below, so the region default
+  // and the URL the request actually goes to can never disagree.
+  const chatUrl = opts.url || compatChatUrl(envKey('MINIMAX_BASE_URL'), MINIMAX_URL);
+  return runConfigured(prompt, opts, 'MINIMAX_BASE_URL', 'MiniMax', (b) => compatChatUrl(b, MINIMAX_URL), {
     apiKey: opts.apiKey || envKey('MINIMAX_API_KEY'),
-    model: opts.model || envKey('MINIMAX_MODEL') || 'MiniMax-Text-01',
-    label: 'MiniMax', ...opts,
+    model: opts.model || envKey('MINIMAX_MODEL') || minimaxDefaultModel(chatUrl),
   });
 }
 export function hasMiniMaxKey() { return isUsableKey(envKey('MINIMAX_API_KEY')); }

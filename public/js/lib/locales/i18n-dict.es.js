@@ -297,7 +297,7 @@ window.__I18N_DICT_ES = {
   'config.kimiBaseUrl': "MOONSHOT_BASE_URL",
   'config.minimaxHint': "Consigue una clave en platform.minimax.io. compatible con OpenAI (api.minimax.io/v1); cuando está definida, ejecuta la ⚡ eval en vivo.",
   'config.minimaxKey': "MINIMAX_API_KEY",
-  'config.minimaxModelHint': "Por defecto: MiniMax-Text-01.",
+  'config.minimaxModelHint': "Por defecto: MiniMax-M3.1-Flash. En api.minimax.cn: MiniMax-M3.",
   'config.minimaxModel': "MINIMAX_MODEL",
   'config.mistralHint': "Consigue una clave en console.mistral.ai. compatible con OpenAI (api.mistral.ai/v1); cuando está definida, ejecuta la ⚡ eval en vivo.",
   'config.mistralKey': "MISTRAL_API_KEY",

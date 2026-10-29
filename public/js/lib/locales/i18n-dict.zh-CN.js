@@ -297,7 +297,7 @@ window.__I18N_DICT_ZH_CN = {
   'config.kimiBaseUrl': "MOONSHOT_BASE_URL",
   'config.minimaxHint': "获取密钥: platform.minimax.io。OpenAI 兼容 (api.minimax.io/v1)。设置后运行 ⚡ 实时评估。",
   'config.minimaxKey': "MINIMAX_API_KEY",
-  'config.minimaxModelHint': "默认: MiniMax-Text-01。",
+  'config.minimaxModelHint': "默认: MiniMax-M3.1-Flash。api.minimax.cn 上为 MiniMax-M3。",
   'config.minimaxModel': "MINIMAX_MODEL",
   'config.mistralHint': "获取密钥: console.mistral.ai。OpenAI 兼容 (api.mistral.ai/v1)。设置后运行 ⚡ 实时评估。",
   'config.mistralKey': "MISTRAL_API_KEY",
