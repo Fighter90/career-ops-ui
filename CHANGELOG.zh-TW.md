@@ -8,6 +8,24 @@
 
 ---
 
+## [1.262.2] — 2026-10-30
+
+### 修復
+
+- **波次審查尾巴 — 7 項低嚴重度發現，每一項都紅測先行。** CSV 匯入的反斜線往返：儲存格中的 `\` 寫入時被翻倍、讀回時仍是翻倍的，因此重新匯入同一份 CSV 會錯過公司+職缺去重，並可能產生重複列 — 讀取器現在會在切分後還原 `\\`（寫入→讀取往返無損，重新匯入即去重）。cv-voice 的 `<head>` 剝除在未閉合標籤上是二次方複雜度 — 在路由上限的 64 KB 輸入上從 4827 毫秒降到 13 毫秒。`statedYearsMin` 即使在未設定 `years_min` 時也對每個來源的每個職缺執行完整年資解析器 — 現在改為惰性求值，大型掃描動輒數秒的 CPU 時間消失。readdir 與 statSync 之間被刪除的擷取檔曾使 posting-guard 清單崩潰（TOCTOU — 消失的檔案現予跳過）。MiniMax CN 預設值過去只精確匹配 `api.minimax.cn` — 現在任何 `*.minimax.cn` base URL 都取得 CN 模型。Deel 中非十六進位引用的 `$` 記號不再以字面值洩入摘要。匯入選擇器在 `file.text()` **之前**先檢查 `file.size` — 512 KB 伺服器上限過去要等瀏覽器解析完可能巨大的檔案後才回 413 — 並帶有本地化的 `import.tooLarge` toast ×19。
+- **Deploy workflow 強化（workflows 審查 F1–F6）。** `provider` 是唯一未經字元集驗證就內插進遠端 shell 的輸入 — 值中的一個 `'` 會掙脫引號並在 prod 上執行任意程式碼；現在在任何拼接之前先以 `^[A-Za-z0-9_-]+$` 白名單驗證，金鑰守衛的 grep 也不再誤判通過。hermes 診斷步驟把原始 journalctl + unit 傾印印進公開日誌；其過濾器漏掉大寫的 `*_API_KEY=` 且什麼都沒遮蔽 — 現在三個輸出端共用不分大小寫的遮蔽 + 值遮罩 + 80 字元截斷，`?token=` 查詢字串也一併遮蔽。hermes 步驟過去忽略 `inputs.app_dir`、硬編碼 `/opt/career-ops/src/.env`。`public_url` 未經 https 檢查就直接進 curl（可藉前置 `-` 進行選項注入）。而防降級守衛 — v1.238.0 事故的修復 — 一直沒有可執行的閘門：ci-workflows 新增六道釘樁（refs 無預設值、守衛在 Deploy 之前執行、嚴格的 refs 正則）。
+- **匯入對話框尾巴（SPA 審查）。** 對話框佈下與 outcome 對話框相同的 nav guard — 離開頁面不再讓它孤懸在另一個檢視之上。隱藏的檔案輸入現在在 `cancel` 時移除，而非只在 `change` 時 — 反覆取消不再把輸入元素洩漏進 document.body。`plan.duplicates` 在預覽中改經守衛形式讀取。追蹤器 `num` 分配改用 `reduce` 而非 `Math.max(...spread)` — spread 在約 10 萬列處會撞上引數上限。
+
+### 變更
+
+- 文件：說明指南的「118 EN adapters」條目在 fr/it/ta 中補上數量（其餘 15 個語言已有）。cvstart.org 上的供應商價格對照官方定價頁重新核實 — 四項全部未變，CHECKED_ON → 2026-10-30。發佈後的漂移巡檢修正了 README ×19、CONTEXT.md、CLAUDE.md 與 SDD 手冊中 42 處過期的數量／版本行（109/104 年代與 v1.262.0 年代的殘留）。
+
+### 備註
+
+- 刻意不處理：cv-studio 原生的 `window.confirm`（CAR-179 年代）保留 — 轉換成 `UI.confirm` 是後續工作，不是修補項；`<mark title>` 套語工具提示維持僅工具提示（可接受的 a11y 底線）；`remote-qa.yml` 保留 `cancel-in-progress: true` — 重新派發本就意在取代執行中的迴歸。
+- prod v1.262.1 的完整 remote-QA：routes ×19 ✓ · site ×19 ✓ · links ✓ · live LLM 18/19 語言 A–G ✓ — `pl` 撞上一次 `502 · 300 s · 0 ch` 供應商逾時（不屬 token-dense 範疇；針對性重跑隨本次發佈出貨）。
+- 發佈分支上的測試為 6841 → 6867（6864 pass / 0 fail / 3 skip，較 v1.262.1 +26）· Playwright 176 · 覆蓋率 98.42 % 行 / 89.94 % 分支 · 註冊表未變：123 sources = 118 EN + 5 RU · 118 adapters。
+
 ## [1.262.1] — 2026-10-29
 
 **義大利語評估修補：`it` 加入 token-dense 語言（32768 token 上限 + 480 秒時鐘）— OpenRouter 時代抓到它的報告正好在 SCORE_SUMMARY 區塊前被切斷，而讓診斷成為可能的供應商切換工具也隨 deploy workflow 出貨。**
