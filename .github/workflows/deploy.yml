@@ -238,26 +238,32 @@ jobs:
           true
           REMOTE
 
-      - name: Hermes gateway restart (mode=hermes)
+      - name: Hermes gateway restart + diagnose (mode=hermes)
         if: inputs.mode == 'hermes'
         run: |
           ssh prod "bash -s" <<'REMOTE'
-          set -e
+          echo "===== unit file ====="
+          systemctl cat hermes-gateway --no-pager 2>/dev/null | grep -vE "Key|TOKEN|SECRET|PASSWORD" || echo "no unit file"
           echo "===== before ====="
-          systemctl is-active hermes-gateway || true
-          systemctl show hermes-gateway -p ActiveState,SubState,ExecMainStartTimestamp,NRestarts --no-pager || true
+          systemctl show hermes-gateway -p ActiveState,SubState,ExecMainStartTimestamp,NRestarts,ExecMainStatus --no-pager || true
+          echo "===== listeners (node/python/hermes) ====="
+          sudo -n ss -ltnp 2>/dev/null | grep -E "node|python|hermes" || ss -ltnp 2>/dev/null | grep -E "node|python|hermes" || echo "no listeners matched"
           echo "===== restart ====="
           sudo -n systemctl restart hermes-gateway 2>/dev/null || systemctl restart hermes-gateway
-          sleep 4
-          systemctl is-active hermes-gateway
-          echo "===== journal (last 15) ====="
-          journalctl -u hermes-gateway -n 15 --no-pager -o cat 2>/dev/null || true
-          echo "===== local probe ====="
-          PORT=$(grep -hoE 'PORT=[0-9]+' /etc/systemd/system/hermes-gateway.service 2>/dev/null | head -1 | cut -d= -f2)
-          PORT="${PORT:-8642}"
-          CODE=$(curl -s -o /dev/null -w '%{http_code}' -m 6 "http://127.0.0.1:$PORT/v1/models" || echo curl-failed)
-          echo "gateway /v1/models -> $CODE"
-          [ "$CODE" = "200" ] || { echo "::warning::gateway probe answered $CODE"; }
+          sleep 6
+          systemctl is-active hermes-gateway || true
+          systemctl show hermes-gateway -p ActiveState,SubState,ExecMainStatus,NRestarts --no-pager || true
+          echo "===== journal (sudo, last 25) ====="
+          sudo -n journalctl -u hermes-gateway -n 25 --no-pager -o cat 2>/dev/null || journalctl -u hermes-gateway -n 25 --no-pager -o cat 2>/dev/null || echo "journal unreadable"
+          echo "===== listeners again ====="
+          sudo -n ss -ltnp 2>/dev/null | grep -E "node|python|hermes" || ss -ltnp 2>/dev/null | grep -E "node|python|hermes" || echo "no listeners matched"
+          echo "===== probe every plausible port ====="
+          for P in 8642 8787 3000 4000 8080; do
+            CODE=$(curl -s -o /dev/null -w '%{http_code}' -m 4 "http://127.0.0.1:$P/v1/models" 2>/dev/null || echo 000)
+            echo "  127.0.0.1:$P/v1/models -> $CODE"
+          done
+          echo "===== app view of the gateway ====="
+          grep -hoE '^HERMES_BASE_URL=.*' /opt/career-ops/src/.env 2>/dev/null | sed -E 's#://[^/@]+@#://…@#' || echo "HERMES_BASE_URL unset (default http://127.0.0.1:8642/v1)"
           REMOTE
 
       - name: Deploy guard (mode=deploy requires explicit refs)
