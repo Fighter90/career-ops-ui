@@ -2,6 +2,18 @@
 
 > Bu changelog artık tüm sürüm geçmişini içerir. Türkçe yerelleştirmenin eklenmesinden (v1.85.0) önce yayınlanan girdiler aşağıda İngilizce özgün hâliyle yer alır — çeviri bekliyor; asıl kaynak [🇬🇧 CHANGELOG.md](CHANGELOG.md)'dir.
 
+## [1.262.3] — 2026-10-30
+
+### Düzeltildi
+
+- **pl, token-yoğun değerlendirme yerel ayarlarına katılıyor** (`pl` → 32768-token tavanı + 480 s saati). prod v1.262.1 üzerindeki tam remote-QA, Lehçe evaluate'in standart tavanda öldüğünü yakaladı — `502 · openrouter · 300 s · 0 ch` — ve v1.262.2 ile gönderilen hedefli yeniden koşu onu birebir yeniden üretti (koşular 40960568766 ve 40968958062): 18/19 yerel ayar A–G'den geçti, `it` token-yoğun 480 s saati içinde 302 s'de bitti, `pl` ise sıfır çıktıyla iki kez duvara çarptı. Deterministik bir zaman aşımı, bir feyk değil — v1.262.1'de `it`'i bu kümeye taşıyan şekil sınıfının aynısı. Red-first sabitleme: `evalMaxTokens('pl') = 32768`, `evalTimeoutMs('pl') = 480_000`, 18 standart yerel ayar 300 s tutuyor.
+
+### Notlar
+
+- Bilinçli olarak tek-amaçlı bir yama: burada başka bir şey gitmiyor — v1.262.2 inceleme-kuyruğu içeriği ayrı gönderildi.
+
+Tests 6867 → 6868 (+1) · Playwright 176 · registry değişmedi: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.262.2] — 2026-10-30
 
 ### Düzeltildi
