@@ -7,19 +7,19 @@
 
 _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-6699%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-6841%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.261.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.261.3)
+[![release](https://img.shields.io/badge/release-v1.262.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Seneste udgivelse — v1.261.3** — **Design-færdiggørelses-patchen: Lovable-designsystemet er fuldt live — fase 3-tæthed (tabelrækker ≈32px, kontroller 30px, chips 24px), og alle coral-rester er flyttet til det nye blå-accent / rød-fare-split — plus Trakstar Hire-scanningskilden (registret 122 kilder), scan-host-poolen (op til 32 virksomheder, 10 pr. host), seks upstream-provider-lokationsrettelser, CV Studio undo + unsaved-guard, og kontrastrettelserne fra den afsluttende regression (kortklynge-etiketten 4.68:1). Under overfladen: geokode-cachen overlever nu crash, ta-evalueringer fik et loft på 32768 tokens, og remote-QA nævner de kilder, der fejlede.**
+> **🆕 Seneste udgivelse — v1.262.0** — **Upstream-funktions-minoren: Deel-jobbrættet tilslutter sig scanneren (registry 123), en anden trackers CSV importeres direkte i #/tracker med dry-run-preview, posting-guard JD-integritetstjekket og et CV voice-tjek (27 fremhævede slidte fraser) lander i UI'en, et years-of-experience-scanfilter læser JD'en, og Apply-knapper forstås på syv flere sprog — plus reposts holder op med at blive fabikeret på tværs af kilder, MiniMax' pensionerede standardmodel erstattes, og tamilske evalueringer holder deres sprog.**
 >
-> **Tidligere — v1.261.2** — **Stabilitet + polering: two-pagerens TDZ-crash rettet (P1), Ctrl+K virker på ikke-QWERTY-tastaturlayouts, hjælpens renderede tekst-nøglelækager lukket ×17, UI.md renderer punktfortsættelser og indlejrede lister, kortoptagelser omrammet ×19 med rigtige skærmbilleder på cvstart.org, RTL-chrome spejlet via logiske egenskaber (85 fund), et keyboard-a11y-harness over 11 ruter, og geokode-cachen gjort crash-sikker.**
+> **Tidligere — v1.261.3** — **Design-færdiggørelses-patchen: Lovable-designsystemet er fuldt live — fase 3-tæthed (tabelrækker ≈32px, kontroller 30px, chips 24px), og alle coral-rester er flyttet til det nye blå-accent / rød-fare-split — plus Trakstar Hire-scanningskilden (registret 122 kilder), scan-host-poolen (op til 32 virksomheder, 10 pr. host), seks upstream-provider-lokationsrettelser, CV Studio undo + unsaved-guard, og kontrastrettelserne fra den afsluttende regression (kortklynge-etiketten 4.68:1). Under overfladen: geokode-cachen overlever nu crash, ta-evalueringer fik et loft på 32768 tokens, og remote-QA nævner de kilder, der fejlede.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -422,7 +422,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 6699 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.261.3)
+└─ tests/                    # 6841 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch

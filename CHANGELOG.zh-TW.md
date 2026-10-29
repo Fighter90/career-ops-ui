@@ -8,6 +8,32 @@
 
 ---
 
+## [1.262.0] — 2026-10-29
+
+**上游功能 minor：Deel 職缺看板加入掃描器（登錄表 123）、其他追蹤器的 CSV 以乾跑預覽直接匯入 `#/tracker`、posting-guard 完整性檢查與 CV 語氣檢查以轉發／規則檢查的形式落地、掃描器學會年資篩選，且 Apply 按鈕再懂七種語言 — 加上替換 MiniMax 已退役的預設模型，以及跨來源不再虛構 repost。**
+
+### 新增
+
+- **Deel 職缺看板來源（CAR-184）**：登錄表 **123 來源 = 118 EN + 5 RU · 118 配接器** — 自動偵測 `jobs.deel.com/<slug>` 租戶看板（Klarna 等公司）；Next.js flight 承載在一次請求中攜帶整份清單（職稱、地點、工作型態、日期、描述），被禁止的 `/api/` 路徑絕不觸碰，把職缺放在別處的租戶會以重新導向回應，來源**點名**拒絕該導向，而薪資刻意不映射（沒有給薪區間的金額只能是猜測）；計數閘 ×5 + 說明 §17 ×19。
+- **追蹤器 CSV 匯入（CAR-181）**：`POST /api/tracker/import-csv`，附乾跑預覽與上鎖的提交 — RFC-4180 引號、ISO / 日在前 / 月份名稱等日期格式、外部追蹤器的階段經 canonical 狀態摺疊（未知階段落為 Evaluated 並附註記，絕不丟棄）、以正規化的職缺 URL 去重（讀自 markdown 連結儲存格或 Notes 欄位）、上限 512 KB / 2000 列；`#/tracker` 新增 Import CSV 按鈕與預覽對話框，i18n ×19。
+- **Posting guard 轉發（CAR-182）**：`POST /api/runners/posting-guard` — 父專案的確定性、零 LLM JD 完整性閘，以報告編號經 `jds/` 擷取前綴規則（有無補零、以整數比較）或明確的消毒路徑解析；子程序只取得 argv、30 秒上限與 fail-soft 契約；`#/reports/:slug` 上的「Posting guard」動作會呈現檢查結果，i18n ×19。
+- **CV 語氣檢查（CAR-188）**：27 個履歷套語（`passionate about`、`proven track record`、`leveraged`、`spearheaded`、`delve`…）加上破折號啟發式（2022–2024 這類年份區間不是訊號；`20–30%` 是），以唯讀的 `POST /api/cv-studio/voice-check` 與 `#/cv-studio` 卡片呈現，精確標出相符處；Tailor 檢查清單擴充為六項不變量；i18n ×19。
+- **年資掃描篩選（CAR-180）**：jd-years 解析器（65 種表述，不確定時絕不丟棄）從職缺描述讀出明示的最低年資，新的 `years_min:` portals 選項以 `skipped_experience` 略過資歷不足的職缺（一個觀察用的歷史狀態，永不釘住 URL），而 `yearsMin` 隨掃描快照保存，供未來 UI 使用。
+- **七種語言的 Apply 控制項（CAR-185/189）**：越南語 `Nộp đơn ứng tuyển`、保加利亞語 `Кандидатствай`/`Кандидатстване`/`Външно кандидатстване`（名詞錨定到標籤開頭 — 建議文章連結不是 Apply）、荷蘭語 `Solliciteer`/`Solliciteren`、西班牙語 `¡Apúntame!`/`Postularse`（標籤，而非動詞 — FAQ 連結不再造成干擾）、中文 `申请职位`/`投递`（錨定到整個控制項）— 這些看板上的在職職缺不再被讀成 `no_apply_control`。
+
+### 修復
+
+- **MiniMax 預設模型（CAR-187）**：已退役的 `MiniMax-Text-01` 預設由 `api.minimax.io` 上的 `MiniMax-M3.1-Flash` 與 `api.minimax.cn` 上的 `MiniMax-M3` 取代；base URL 固定於供應商網域（非供應商主機在執行期被拒絕，金鑰永遠到不了那裡）；設定提示 ×19 點名新預設。
+- **重新刊登需要相同來源（CAR-186）**：同一職位同時出現在 LinkedIn 與雇主的 Greenhouse 上，不再被回報為 repost — 叢集現在以 `sourceHost()` 切分，只在已知網站上摺疊區域子網域（`de.linkedin.com` ≡ `www.linkedin.com`，但 `ca.example.com` 保持獨立）、把 Greenhouse 主機別名摺成單一來源，並去除尾隨的點。
+- **坦米爾語評估的語言漂移（CAR-183）**：強化版的坦米爾語指令現在位於易變的提示尾段、緊鄰用量預算（CAR-174 的位置）— v1.261.2 見到的間歇性漂移之後，remote-QA 報告重新落在坦米爾語。
+
+### 備註
+
+- 刻意不處理：posting-guard 轉發以 fail-soft 出貨 — fork 尚**未**攜帶父專案的 `posting-guard.mjs`（upstream PR #6146 仍開啟中），端點因此回應 `{available:false, reason:"script-not-found"}`，直到一次父專案同步把它帶來。
+- 刻意不處理：`yearsMin` 本次發佈**沒有**做成 `#/scan` 的 UI 晶片 — 欄位隨快照出貨，篩選僅能透過 portals 設定。
+- 刻意不處理：上游 modes/reports 的 Machine Summary 變更（#6161/#6160/#6157）**未**移植 — 它們會隨部署的父專案到來，而非以 web-ui 鏡像的形式。
+- 發佈分支上的測試為 6734 → 6841；掃描器的去重鍵未動（URL 正規化行為**沒有**改變）。
+
 ## [1.261.3] — 2026-10-28
 
 **設計收尾修補：Lovable 設計第三階段（密度 + 珊瑚色全面退役）、掃描主機池（32 家公司、每主機上限 10 家）、六項上游提供者位置修復、Trakstar Hire 來源（註冊表 122）、CV Studio 復原 + 未儲存防護 — 另有最終迴歸 P3 修復與文件平價。**

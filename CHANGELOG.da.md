@@ -9,6 +9,32 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 ---
 
 
+## [1.262.0] — 2026-10-29
+
+**Upstream-funktions-minoren: Deel-jobbrættet tilslutter sig scanneren (registry 123), en anden trackers CSV importeres direkte i `#/tracker`, posting-guard-integritetstjekket og CV-voice-tjekket lander som relays/lints, scanneren lærer et years-of-experience-filter, og Apply-knapper på syv flere sprog læses ikke længere som manglende — plus MiniMax' pensionerede standardmodel erstattet og reposts ikke længere fabikeret på tværs af kilder.**
+
+### Tilføjet
+
+- **Deel-jobbræt-kilden (CAR-184)**: registry **123 sources = 118 EN + 5 RU · 118 adaptere** — auto-detekterer `jobs.deel.com/<slug>`-tenant-brætter (Klarna og andre); Next.js flight-payloaden bærer hele lageret i én anmodning (titler, lokationer, arrangement, datoer, beskrivelse), den forbudte `/api/`-sti røres aldrig, en tenant, der serverer karriere et andet sted, svarer med en redirect, som kilden nægter **ved navn**, og kompensation er bevidst ikke mappet (beløb uden betalingsinterval ville være et gæt); count-gates ×5 + help §17 ×19.
+- **Tracker-CSV-import (CAR-181)**: `POST /api/tracker/import-csv` med dry-run-preview og en låst commit — RFC-4180-citation, datoer i ISO / dag-først / månedsnavn-former, fremmede tracker-stadier foldet gennem de kanoniske tilstande (et ukendt stadie lander som Evaluated med en note, aldrig smidt væk), dedup på normaliseret posting-URL læst fra markdown-link-cellen eller Notes-kolonnen, grænser 512 KB / 2000 rækker; `#/tracker` får en Import CSV-knap med en preview-modal, i18n ×19.
+- **Posting guard-relay (CAR-182)**: `POST /api/runners/posting-guard` — parentens deterministiske zero-LLM JD-integritetsgate, opløst ved rapportnummer gennem `jds/`-capture-præfiksreglen (padret eller ej, sammenlignet som heltal) eller en eksplicit saniteret sti; barnet får kun argv, et loft på 30 s og en fail-soft-kontrakt; en «Posting guard»-handling på `#/reports/:slug` renderer fundene, i18n ×19.
+- **CV voice-tjek (CAR-188)**: 27 slidte cv-fraser (`passionate about`, `proven track record`, `leveraged`, `spearheaded`, `delve`…) plus bindestreg-heuristik (et årsinterval som 2022–2024 er ikke et tell; `20–30%` er det) som en read-only `POST /api/cv-studio/voice-check` og et `#/cv-studio`-kort, der fremhæver de præcise match; Tailor-tjeklisten vokser til seks invarianter; i18n ×19.
+- **Years-of-experience-scanfilter (CAR-180)**: jd-years-parseren (65 formuleringer, dropper aldrig i tvivl) læser det oplyste minimum fra postingsbeskrivelserne, en ny `years_min:`-portals-indstilling springer underkvalificerede postings over som `skipped_experience` (en observationel historikstatus, der aldrig pinner en URL), og `yearsMin` rider med i scan-snapshotet til fremtidig UI.
+- **Apply-kontroller på syv flere sprog (CAR-185/189)**: vietnamesisk `Nộp đơn ứng tuyển`, bulgarsk `Кандидатствай`/`Кандидатстване`/`Външно кандидатстване` (substantivet forankret i labelens start — rådgivningsartikel-links er ikke Apply), nederlandsk `Solliciteer`/`Solliciteren`, spansk `¡Apúntame!`/`Postularse` (labels, ikke verbet — FAQ-links betyder ikke længere noget), kinesisk `申请职位`/`投递` (forankret i hele kontrollen) — levende postings på de brætter læses ikke længere som `no_apply_control`.
+
+### Rettet
+
+- **MiniMax-standardmodel (CAR-187)**: den pensionerede standard `MiniMax-Text-01` erstattes af `MiniMax-M3.1-Flash` på `api.minimax.io` og `MiniMax-M3` på `api.minimax.cn`; base-URL'en er vendor-pinned (en ikke-vendor-vært afvises ved runtime, og nøglen når den aldrig); indstillings-hintet ×19 nævner de nye standarder.
+- **Reposts kræver samme kilde (CAR-186)**: en rolle listet på LinkedIn og på arbejdsgiverens Greenhouse rapporteres ikke længere som repost — klynger opdeles nu efter `sourceHost()`, som kun folder regionale subdomæner på kendte sider (`de.linkedin.com` ≡ `www.linkedin.com`, men `ca.example.com` holdes adskilt), folder Greenhouse-værtsaliasserne til én kilde og stripper et afsluttende punktum.
+- **Tamilsk evaluerings-sprogdrift (CAR-183)**: et forstærket tamilsk-direktiv sidder nu i den flygtige prompt-hale ved siden af volumenbudgettet (CAR-174-pladsen) — remote-QA-rapporter lander igen på tamilsk efter den intermitterende drift set i v1.261.2.
+
+### Noter
+
+- Bevidst undladelse: posting-guard-relayet udsendes fail-soft — forkken bærer **ikke** parentens `posting-guard.mjs` endnu (upstream PR #6146 er stadig åben), så endpointet svarer `{available:false, reason:"script-not-found"}`, indtil en parent-sync leverer det.
+- Bevidst undladelse: `yearsMin` er **ikke** eksponeret som en `#/scan`-UI-chip i denne release — feltet følger med snapshotet, og filteret er kun portals-config.
+- Bevidst undladelse: upstream modes/reports Machine Summary-ændringerne (#6161/#6160/#6157) er **ikke** portet — de ankommer med den deployede parent, ikke som web-ui-spejle.
+- Tests 6734 → 6841 på release-branchen; scannerens dedup-nøgle er uberørt (URL-normaliseringsadfærden ændrede sig **ikke**).
+
 ## [1.261.3] — 2026-10-28
 
 **Design-færdiggørelsespatchen: Lovable-design fase 3 (density + fuld coral-pensionering), scan host-pool (32 virksomheder, 10 pr. host), seks upstream provider-lokationsrettelser, Trakstar Hire-kilden (registry 122), CV Studio undo + unsaved-guard — plus final-regression P3-rettelserne og docs-paritet.**
