@@ -117,6 +117,39 @@ function cvMarkdownToHtml(md, title) {
 </head><body>${s}</body></html>`;
 }
 
+/**
+ * The jds/ capture belonging to report `num`, newest first when several
+ * files share the number (collision suffixes -2, -3). Mirrors the parent
+ * jd-capture.mjs prefix rule: padded and unpadded prefixes both resolve
+ * (`064-`, `64-`), and matching compares the parsed integer, so report 64
+ * never picks up report 640's capture. `statFn` is injectable for the
+ * TOCTOU test. L262-R4 — a capture removed between the readdir and its
+ * stat must not throw the route a 500: vanished files are skipped.
+ * @param {string} jdsDir
+ * @param {number|string} num
+ * @param {(p: string) => { mtimeMs: number }} [statFn]
+ * @returns {string|null}
+ */
+export function findCaptureByReport(jdsDir, num, statFn = statSync) {
+  if (!existsSync(jdsDir)) return null;
+  const wanted = String(num);
+  const matches = readdirSync(jdsDir)
+    .filter((f) => {
+      const m = f.match(/^(\d+)-/);
+      return m && String(parseInt(m[1], 10)) === wanted;
+    })
+    .map((f) => {
+      try {
+        return { f, mtime: statFn(resolve(jdsDir, f)).mtimeMs };
+      } catch {
+        return null; // vanished between the readdir and this stat — skip
+      }
+    })
+    .filter(Boolean)
+    .sort((a, b) => b.mtime - a.mtime);
+  return matches.length ? matches[0].f : null;
+}
+
 const BUFFERED = [
   { route: '/api/run/doctor',     script: 'doctor.mjs' },
   { route: '/api/run/verify',     script: 'verify-pipeline.mjs' },
@@ -213,24 +246,11 @@ export function registerRunnerRoutes(app) {
   // (CI / standalone installs).
 
   /**
-   * The jds/ capture belonging to report `num`, newest first when several
-   * files share the number (collision suffixes -2, -3). Mirrors the parent
-   * jd-capture.mjs prefix rule: padded and unpadded prefixes both resolve
-   * (`064-`, `64-`), and matching compares the parsed integer, so report 64
-   * never picks up report 640's capture.
+   * The jds/ capture belonging to report `num` — the shared helper above
+   * (L262-R4: a capture stat-failing ENOENT between the readdir and its
+   * stat is skipped, never a 500).
    */
-  function findCaptureByReport(num) {
-    if (!existsSync(PATHS.jdsDir)) return null;
-    const wanted = String(num);
-    const matches = readdirSync(PATHS.jdsDir)
-      .filter((f) => {
-        const m = f.match(/^(\d+)-/);
-        return m && String(parseInt(m[1], 10)) === wanted;
-      })
-      .map((f) => ({ f, mtime: statSync(projPath('jds', f)).mtimeMs }))
-      .sort((a, b) => b.mtime - a.mtime);
-    return matches.length ? matches[0].f : null;
-  }
+  const findCapture = (num) => findCaptureByReport(PATHS.jdsDir, num);
 
   app.post('/api/runners/posting-guard', async (req, res) => {
     const { report, jdPath } = req.body || {};
@@ -252,7 +272,7 @@ export function registerRunnerRoutes(app) {
       if (!Number.isInteger(n) || n < 1 || n > 999_999) {
         return res.status(400).json({ error: 'report must be a positive integer' });
       }
-      name = findCaptureByReport(n);
+      name = findCapture(n);
       if (!name) return res.status(404).json({ error: 'no jds/ capture for report', report: n });
     }
 
