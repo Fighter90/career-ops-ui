@@ -10,19 +10,19 @@
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
-[![tests](https://img.shields.io/badge/tests-5823%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-6699%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#الاختبارات)
-[![playwright](https://img.shields.io/badge/playwright-143%2F143-brightgreen)](#الاختبارات)
+[![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.259.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.259.0)
+[![release](https://img.shields.io/badge/release-v1.261.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.261.3)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 أحدث إصدار — v1.259.0** — **قطار أسطول الوكلاء الثاني، ستة إصلاحات: تواريخ التقارير مثبَّتة من جهة الخادم (لا مزيد من التواريخ الملفَّقة على نمط 2026-01-xx)، ومصادر البحث العميق وصلت في إصدار سابق، والترميز الجغرافي للخريطة يخزّن مؤقتًا ويقرأ المدن الروسية (92% من حالات «بلا موقع» أصبحت مغطّاة)، والمساعدة ×18 تستشهد بتسميات الأزرار المترجمة، وجُمل الواجهة تتوقف عن خلط اللغات (23 تسريبة موسومة بمفاتيح)، ومقارنات الراتب تُحتسَب من جهة الخادم بصيغة قاعدية واحدة (انقلاب حكم zh-TW مات). إضافةً إلى CAR-104: حزمة JS تُشحن الآن مضغوطة مسبقًا — التحميل البارد 3.1 MB → 598 KB.**
+> **🆕 أحدث إصدار — v1.261.3** — **رقعة إكمال التصميم: نظام تصميم Lovable أصبح يعمل بالكامل — كثافة المرحلة 3 (صفوف الجداول ≈32px، عناصر التحكم 30px، الشرائح 24px)، وكل بقايا اللون المرجاني انتقلت إلى الانقسام الجديد بين الأزرق المميِّز والأحمر الخطر — إضافةً إلى مصدر الفحص Trakstar Hire (السجل 122 مصدرًا)، وخدمة host-pool للفحص (حتى 32 شركة، 10 لكل host)، وستة إصلاحات لمواقع المزودين من المنبع، والتراجع (undo) في CV Studio + حماية غير المحفوظ، وإصلاحات التباين في الانحدار النهائي (تسمية عنقود الخريطة 4.68:1). وفي العمق: ذاكرة الترميز الجغرافي المؤقتة تنجو الآن من الأعطال، وتقييمات ta حصلت على سقف 32768 من الرموز، والفحص البعيد remote-QA يسمّي المصادر التي فشلت.**
 >
-> **السابق — v1.258.0** — **ستة إصلاحات من أسطول الوكلاء: عدّاد «الشركات النشطة» يتوقف عن خلط كونين (1554/90)، والبحث العميق يفرض وسوم `[source: …]` ويعترف بالمجهول، وحقول النماذج الفاشلة تُضيء بدل الاكتفاء بخطأ إشعاري، ويعرض `#/map` و`#/tracker` عنوان h1 فورًا مع صفوف هياكل عظمية للتحميل، وكل `/api/evaluate` يخزّن مؤقتًا البادئة المستقرة البالغة ~37k من الرموز (أرخص بـ ≈10× بعد النداء الأول).**
+> **السابق — v1.261.2** — **الاستقرار + الصقل: إصلاح عطل TDZ في الصفحة المزدوجة (two-pager) (P1)، وCtrl+K يعمل على تخطيطات لوحة المفاتيح غير QWERTY، وإغلاق تسريبات المفاتيح في النص المعروض للمساعدة ×17، وUI.md يعرض استمرارات النقاط والقوائم المتداخلة، وإعادة تأطير لقطات الخريطة ×19 مع لقطات شاشة حقيقية على cvstart.org، وانعكاس واجهة RTL عبر الخصائص المنطقية (85 ملاحظة)، وharness لإمكانية الوصول بلوحة المفاتيح على 11 مسارًا، وجعل ذاكرة الترميز الجغرافي المؤقتة محصّنة ضد الأعطال.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -171,7 +171,7 @@ career-ops/
 └─ web-ui/          ← هذا المستودع
    ├─ server/       # Express + 15 وحدة مسارات
    ├─ public/       # vanilla JS SPA — بدون bundler
-   └─ tests/        # 5695 unit + 144 Playwright + 44 e2e (baseline @ v1.255.2)
+   └─ tests/        # 6699 unit + 176 Playwright + 44 e2e (baseline @ v1.261.3)
 ```
 
 <div dir="rtl">
