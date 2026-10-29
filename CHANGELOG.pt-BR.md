@@ -9,6 +9,32 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 ---
 
 
+## [1.262.0] — 2026-10-29
+
+**O minor de recursos upstream: o board de vagas Deel entra no scanner (registro 123), o CSV de outro tracker é importado direto no `#/tracker`, a verificação de integridade do JD do posting-guard e o cheque de voz do CV chegam como relays/lints, o scanner ganha um filtro de anos de experiência, e os botões de Apply em mais sete idiomas deixam de parecer ausentes — além do modelo padrão aposentado do MiniMax ser substituído e os reposts deixarem de ser fabricados entre fontes.**
+
+### Adicionado
+
+- **Fonte do board Deel (CAR-184)**: registro **123 fontes = 118 EN + 5 RU · 118 adaptadores** — detecta automaticamente boards de tenants `jobs.deel.com/<slug>` (Klarna e outros); o payload flight do Next.js traz o inventário inteiro numa única requisição (títulos, localizações, arranjo, datas, descrição), o caminho `/api/` proibido nunca é tocado, e um tenant que publica carreiras em outro lugar responde com um redirect que a fonte recusa **pelo nome**; a compensação fica deliberadamente sem mapear (valores sem intervalo de pagamento seriam um chute); portões de contagem ×5 + ajuda §17 ×19.
+- **Importação CSV do tracker (CAR-181)**: `POST /api/tracker/import-csv` com pré-visualização de dry-run e um commit travado — aspas RFC-4180, datas em formatos ISO / dia-primeiro / nome-de-mês, estágios de trackers estrangeiros dobrados pelos estados canônicos (um estágio desconhecido aterriza como Evaluated com uma nota, nunca descartado), dedup por URL de vaga normalizada lida da célula do link markdown ou da coluna Notes, limites de 512 KB / 2000 linhas; `#/tracker` ganha um botão Import CSV com modal de pré-visualização, i18n ×19.
+- **Relay do posting guard (CAR-182)**: `POST /api/runners/posting-guard` — o gate determinístico e sem LLM de integridade do JD do projeto pai, resolvido por número de relatório pela regra de prefixo das capturas de `jds/` (com padding ou sem, comparado como inteiro) ou um caminho sanitizado explícito; o filho recebe apenas argv, um teto de 30 s e um contrato fail-soft; uma ação «Posting guard» em `#/reports/:slug` renderiza as constatações, i18n ×19.
+- **Cheque de voz do CV (CAR-188)**: 27 frases prontas de currículo (`passionate about`, `proven track record`, `leveraged`, `spearheaded`, `delve`…) mais heurísticas de travessão (um intervalo de anos como 2022–2024 não é um sinal; `20–30%` é) como um `POST /api/cv-studio/voice-check` somente leitura e um cartão `#/cv-studio` que destaca as ocorrências exatas; a checklist do Tailor cresce para seis invariantes; i18n ×19.
+- **Filtro de anos de experiência do scan (CAR-180)**: o parser jd-years (65 formulações, nunca descarta quando não tem certeza) lê o mínimo declarado nas descrições das vagas, uma nova opção `years_min:` do portals pula vagas sem qualificação suficiente como `skipped_experience` (um status de histórico observacional que nunca fixa uma URL), e `yearsMin` segue no snapshot do scan para uma UI futura.
+- **Controles de Apply em mais sete idiomas (CAR-185/189)**: vietnamita `Nộp đơn ứng tuyển`, búlgaro `Кандидатствай`/`Кандидатстване`/`Външно кандидатстване` (o substantivo ancorado ao início do rótulo — links de artigos de conselho não são Apply), holandês `Solliciteer`/`Solliciteren`, espanhol `¡Apúntame!`/`Postularse` (rótulos, não o verbo — links de FAQ deixam de importar), chinês `申请职位`/`投递` (ancorado ao controle inteiro) — vagas ativas nesses boards deixam de ser lidas como `no_apply_control`.
+
+### Corrigido
+
+- **Modelo padrão do MiniMax (CAR-187)**: o `MiniMax-Text-01` aposentado como padrão é substituído por `MiniMax-M3.1-Flash` em `api.minimax.io` e `MiniMax-M3` em `api.minimax.cn`; a URL base fica presa ao fornecedor (um host fora do fornecedor é recusado em runtime e a chave nunca chega até ele); a dica de configurações ×19 nomeia os novos padrões.
+- **Reposts exigem a mesma fonte (CAR-186)**: um cargo listado no LinkedIn e no Greenhouse do empregador não é mais reportado como repost — os clusters agora se dividem por `sourceHost()`, que dobra subdomínios regionais apenas em sites conhecidos (`de.linkedin.com` ≡ `www.linkedin.com`, mas `ca.example.com` fica separado), dobra os aliases de host do Greenhouse numa única fonte e remove um ponto final.
+- **Desvio de idioma nas avaliações em tâmil (CAR-183)**: uma diretiva de tâmil reforçada agora senta na cauda volátil do prompt junto ao orçamento de volume (o slot do CAR-174) — os relatórios do remote-QA voltam a aterrizar em tâmil após o desvio intermitente visto na v1.261.2.
+
+### Notas
+
+- Não-ação deliberada: o relay do posting-guard chega em modo fail-soft — o fork ainda **não** carrega o `posting-guard.mjs` do projeto pai (o PR upstream #6146 segue aberto), então o endpoint responde `{available:false, reason:"script-not-found"}` até um sync do pai o entregar.
+- Não-ação deliberada: `yearsMin` **não** aparece como chip de UI em `#/scan` neste release — o campo vai no snapshot e o filtro existe apenas na configuração de portals.
+- Não-ação deliberada: as mudanças de Machine Summary em modes/reports upstream (#6161/#6160/#6157) **não** são portadas — chegam com o projeto pai implantado, não como mirrors do web-ui.
+- Testes 6734 → 6841 na branch de release; a chave de dedup do scanner fica intocada (o comportamento de normalização de URLs **não** mudou).
+
 ## [1.261.3] — 2026-10-28
 
 **O patch de conclusão de design: fase 3 do design do Lovable (densidade + aposentadoria completa do coral), o pool de hosts do scan (32 empresas, 10 por host), seis correções de localização de providers upstream, a fonte Trakstar Hire (registro 122), desfazer + guarda de alterações não salvas no CV Studio — mais as correções P3 da regressão final e a paridade de docs.**

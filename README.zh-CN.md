@@ -7,19 +7,19 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-6699%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-6841%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.261.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.261.3)
+[![release](https://img.shields.io/badge/release-v1.262.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.261.3** — **设计收尾补丁：Lovable 设计系统全面上线 —— 第 3 阶段密度（表格行 ≈32px、控件 30px、chip 24px），且所有残留的 coral 色全部迁往新的蓝色强调 / 红色危险拆分 —— 外加 Trakstar Hire 扫描来源（注册表 122）、扫描主机池（最多 32 家公司、每主机 10 家）、六项上游 provider 位置修复、CV Studio 撤销 + 未保存守卫，以及最终回归的对比度修复（地图聚合标签 4.68:1）。底层：地理编码缓存现在可从崩溃中存活，ta 评估获得 32768 token 上限，remote-QA 会点名失败的来源。**
+> **🆕 最新版本 — v1.262.0** — **上游功能 minor：Deel 招聘看板加入扫描器（注册表 123）、其他 tracker 的 CSV 可直接导入 #/tracker（附 dry-run 预览）、posting-guard 的 JD 完整性检查与 CV 语气检查（27 条套话高亮）进入 UI、按工作年限过滤的扫描器会读取 JD，Apply 按钮再多懂 7 种语言 —— 此外跨来源的 repost 不再被凭空捏造，MiniMax 已退役的默认模型被替换，ta 评估守住语言。**
 >
-> **上一版本 — v1.261.2** — **稳定性 + 打磨：修复 two-pager 的 TDZ 崩溃（P1）、Ctrl+K 在非 QWERTY 键盘布局下可用、解决帮助渲染文本的键名泄漏 ×17、UI.md 渲染列表项续行与嵌套列表、地图截图重新取景 ×19 并在 cvstart.org 上使用真实截图、RTL 界面元素经逻辑属性镜像（85 处发现）、覆盖 11 条路由的键盘无障碍 harness，以及地理编码缓存改为崩溃安全写入。**
+> **上一版本 — v1.261.3** — **设计收尾补丁：Lovable 设计系统全面上线 —— 第 3 阶段密度（表格行 ≈32px、控件 30px、chip 24px），且所有残留的 coral 色全部迁往新的蓝色强调 / 红色危险拆分 —— 外加 Trakstar Hire 扫描来源（注册表 122）、扫描主机池（最多 32 家公司、每主机 10 家）、六项上游 provider 位置修复、CV Studio 撤销 + 未保存守卫，以及最终回归的对比度修复（地图聚合标签 4.68:1）。底层：地理编码缓存现在可从崩溃中存活，ta 评估获得 32768 token 上限，remote-QA 会点名失败的来源。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -392,7 +392,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 6699 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.261.3)
+└─ tests/                    # 6841 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report 解析器(纯函数)
    ├─ api.test.mjs           # 每个端点,临时端口,无外网
    ├─ {ru,en}-scanner.test.mjs   # mock 后的 fetch
