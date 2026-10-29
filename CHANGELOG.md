@@ -6,6 +6,26 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 ---
 
+## [1.262.1] — 2026-10-29
+
+**The Italian-evaluation patch: `it` joins the token-dense locales (32768-token ceiling + 480 s clock) after the OpenRouter era caught it cutting the report right before the SCORE_SUMMARY block — and the provider switch tooling that made the diagnosis possible ships in the deploy workflow.**
+
+### Fixed
+
+- **`it` evaluation cut before SCORE_SUMMARY (CAR-190 tail)**: remote-QA 40928864980 (first run on the refilled credits) — an `it` evaluation ran 264 s and came back 15 045 characters with `tok ~15635` at the 16 384 ceiling: Block A–G intact, `---SCORE_SUMMARY---` gone. The same shape class that earned `ta` its ceiling in v1.261.1 (CAR-174). `it` joins `TOKEN_DENSE_EVAL_LOCALES` (`ta`, `hi` → `ta`, `hi`, `it`): both the 32 768-token budget and the 480 s clock now apply, and `/api/evaluate` + auto-pipeline stay on the one source of truth in `llm.mjs`.
+- **en no-blocks report — one-off generation flake**: the same run saw a single `en` evaluation come back language-correct with **none** of the A–G blocks; a targeted re-run passed clean (21 091 characters, A–G ✓). Not added to the token-dense set — one flake is not a history.
+
+### Added
+
+- **Deploy workflow: `mode=hermes` and `mode=provider`** (CAR-190 ops tail): `mode=hermes` restarts the Hermes gateway and prints a full diagnosis (unit file with secrets stripped, listeners before/after, sudo journal, per-port probes, the app's own `HERMES_BASE_URL` view, OpenRouter credits balance); `mode=provider` switches `LLM_PROVIDER` with a key-presence guard (refuses when the target provider's `*_API_KEY` is absent) and restarts the app — this is how prod moved to `openrouter` when the Hermes credits ran out mid-flight. The deploy-mode ref guard is validated for `mode=deploy` only, so recon/verify dispatches work again (the v1.261.3-era required-inputs change had silenced them).
+
+### Notes
+
+- Deliberate non-action: `en` is **not** added to the token-dense set — one blockless report is a generation flake, not a volume history.
+- Deliberate non-action: the ta reinforced-language directive is **not** extended to `it` — no language drift was observed for Italian.
+- Deliberate non-action: recording the new UI-v2 demo video stays with the owner (CAR-141) — the landing now embeds via `youtube-nocookie.com` regardless.
+- Tests 6841 → <COUNT> on the release branch.
+
 ## [1.262.0] — 2026-10-29
 
 **The upstream-features minor: the Deel job board joins the scanner (registry 123), another tracker's CSV imports straight into `#/tracker`, the posting-guard integrity check and the CV voice check land as relays/lints, the scanner learns a years-of-experience filter, and seven more languages of Apply buttons stop reading as missing — plus MiniMax's retired default model replaced and reposts no longer fabricated across sources.**
