@@ -36,6 +36,7 @@
   "install.log2": "dépendances installées",
   "install.npxNote": "Exécute le paquet installé localement dans votre copie de career-ops/web-ui — voir le README pour la note GitHub Packages.",
   "install.gitNote": "L'UI vit dans un projet career-ops sous web-ui/ — le script de démarrage installe les dépendances et ouvre le tableau de bord.",
+  "install.gitComment": "# votre projet career-ops existant",
   "install.curlNote": "Clone career-ops et l'UI, installe les dépendances et ouvre le tableau de bord.",
   "how.h2": "Comment ça marche",
   "how.sub": "Quatre étapes entre un dossier vide et un pipeline d'offres noté et suivi.",
@@ -263,5 +264,6 @@
   "stats.t.providers": "Fournisseurs d'IA",
   "stats.t.license": "Licence",
   "stats.t.local": "en local",
-  "stats.note": "{sources} sources = {en} adaptateurs de job boards anglophones + {ru} boards russophones. Les chiffres sont lus depuis le registre en direct lors de la compilation du site — jamais saisis à la main."
+  "stats.note": "{sources} sources = {en} adaptateurs de job boards anglophones + {ru} boards russophones. Les chiffres sont lus depuis le registre en direct lors de la compilation du site — jamais saisis à la main.",
+  "install.windowsNote": "Sous Windows, exécutez ces commandes dans WSL (Ubuntu) — un shell macOS/Linux est requis."
 }

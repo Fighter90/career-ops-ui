@@ -36,6 +36,7 @@
   "install.log2": "afhængigheder installeret",
   "install.npxNote": "Kører den lokalt installerede pakke i din career-ops/web-ui-kopi — se README om GitHub Packages.",
   "install.gitNote": "UI'et bor i et career-ops-projekt som web-ui/ — startscriptet installerer afhængigheder og åbner dashboardet.",
+  "install.gitComment": "# dit eksisterende career-ops-projekt",
   "install.curlNote": "Kloner career-ops og UI'et, installerer afhængigheder og åbner dashboardet.",
   "how.h2": "Sådan virker det",
   "how.sub": "Fire trin fra en tom mappe til en bedømt og sporet pipeline af jobopslag.",
@@ -263,5 +264,6 @@
   "stats.t.providers": "AI-udbydere",
   "stats.t.license": "Licens",
   "stats.t.local": "lokal",
-  "stats.note": "{sources} kilder = {en} adapters til engelsksprogede jobportaler + {ru} russisksprogede portaler. Tallene læses fra det levende register, når sitet bygges — de tastes aldrig i hånden."
+  "stats.note": "{sources} kilder = {en} adapters til engelsksprogede jobportaler + {ru} russisksprogede portaler. Tallene læses fra det levende register, når sitet bygges — de tastes aldrig i hånden.",
+  "install.windowsNote": "Kør disse kommandoer i WSL (Ubuntu) på Windows — der kræves en macOS/Linux-shell."
 }

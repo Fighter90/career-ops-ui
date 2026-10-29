@@ -4,7 +4,7 @@
  *
  * Rendered ONCE per page (from Landing). Any element with `data-video-modal`
  * opens it; the YouTube iframe is injected only on open (and removed on close,
- * which stops playback), so nothing loads from youtube.com until the user asks.
+ * which stops playback), so nothing loads from youtube-nocookie.com until the user asks.
  * The site has no CSP, so the embed loads directly.
  */
 import { t, type Locale } from '../i18n/locales';
@@ -128,7 +128,7 @@ const VIDEO_ID = 'LcVPUg9IsDk';
       lastFocus = (trigger as HTMLElement) || (document.activeElement as HTMLElement);
       if (frame) {
         frame.innerHTML =
-          `<iframe src="https://www.youtube.com/embed/${id}?autoplay=1&rel=0" ` +
+          `<iframe src="https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0" ` +
           `title="career-ops-ui preview" frameborder="0" ` +
           `allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" ` +
           `referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>`;

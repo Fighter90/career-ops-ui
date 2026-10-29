@@ -36,6 +36,7 @@
   "install.log2": "相依套件已安裝",
   "install.npxNote": "在你的 career-ops/web-ui 副本內執行本地安裝的套件 — GitHub Packages 相關說明請見 README。",
   "install.gitNote": "UI 以 web-ui/ 形式存在於 career-ops 專案內 — 啟動腳本會安裝相依套件並開啟儀表板。",
+  "install.gitComment": "# 你已有的 career-ops 專案",
   "install.curlNote": "複製 career-ops 與 UI,安裝相依套件並開啟儀表板。",
   "how.h2": "運作方式",
   "how.sub": "四個步驟,從空資料夾到已評分、可追蹤的職缺流程。",
@@ -263,5 +264,6 @@
   "stats.t.providers": "AI 供應商",
   "stats.t.license": "授權",
   "stats.t.local": "本機執行",
-  "stats.note": "{sources} 個來源 = {en} 個英文求職平台轉接器 + {ru} 個俄文平台。數字在網站建置時從即時登錄表讀取——絕非手工填寫。"
+  "stats.note": "{sources} 個來源 = {en} 個英文求職平台轉接器 + {ru} 個俄文平台。數字在網站建置時從即時登錄表讀取——絕非手工填寫。",
+  "install.windowsNote": "在 Windows 上請在 WSL（Ubuntu）中執行這些命令——需要 macOS/Linux shell。"
 }

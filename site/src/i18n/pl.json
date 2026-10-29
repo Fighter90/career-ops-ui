@@ -36,6 +36,7 @@
   "install.log2": "zainstalowano zależności",
   "install.npxNote": "Uruchamia lokalnie zainstalowany pakiet w Twojej kopii career-ops/web-ui — o rejestrze GitHub Packages przeczytasz w README.",
   "install.gitNote": "UI mieszka w projekcie career-ops jako web-ui/ — skrypt startowy instaluje zależności i otwiera panel.",
+  "install.gitComment": "# Twój istniejący projekt career-ops",
   "install.curlNote": "Klonuje career-ops i UI, instaluje zależności i otwiera panel.",
   "how.h2": "Jak to działa",
   "how.sub": "Cztery kroki od pustego folderu do ocenionego, śledzonego pipeline'u ofert.",
@@ -263,5 +264,6 @@
   "stats.t.providers": "Dostawcy AI",
   "stats.t.license": "Licencja",
   "stats.t.local": "lokalnie",
-  "stats.note": "{sources} źródeł = {en} adapterów anglojęzycznych portali z ofertami + {ru} rosyjskojęzycznych portali. Liczby są odczytywane z żywego rejestru podczas budowania strony — nigdy nie wpisywane ręcznie."
+  "stats.note": "{sources} źródeł = {en} adapterów anglojęzycznych portali z ofertami + {ru} rosyjskojęzycznych portali. Liczby są odczytywane z żywego rejestru podczas budowania strony — nigdy nie wpisywane ręcznie.",
+  "install.windowsNote": "Pod Windowsem uruchom te polecenia w WSL (Ubuntu) — wymagana jest powłoka macOS/Linux."
 }

@@ -36,6 +36,7 @@
   "install.log2": "依赖已安装",
   "install.npxNote": "在你的 career-ops/web-ui 副本内运行本地安装的包 — GitHub Packages 相关说明见 README。",
   "install.gitNote": "UI 以 web-ui/ 形式存在于 career-ops 项目内 — 启动脚本会安装依赖并打开仪表盘。",
+  "install.gitComment": "# 你已有的 career-ops 项目",
   "install.curlNote": "克隆 career-ops 和 UI,安装依赖并打开仪表盘。",
   "how.h2": "工作原理",
   "how.sub": "四步之内,从一个空文件夹到打分完毕、可跟踪的职位流水线。",
@@ -263,5 +264,6 @@
   "stats.t.providers": "AI 服务商",
   "stats.t.license": "许可证",
   "stats.t.local": "本地运行",
-  "stats.note": "{sources} 个来源 = {en} 个英文招聘平台适配器 + {ru} 个俄文平台。数字在网站构建时从实时注册表读取——绝非手工填写。"
+  "stats.note": "{sources} 个来源 = {en} 个英文招聘平台适配器 + {ru} 个俄文平台。数字在网站构建时从实时注册表读取——绝非手工填写。",
+  "install.windowsNote": "在 Windows 上请在 WSL（Ubuntu）中运行这些命令——需要 macOS/Linux shell。"
 }
