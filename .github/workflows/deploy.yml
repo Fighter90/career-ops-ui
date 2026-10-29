@@ -242,7 +242,7 @@ jobs:
         if: inputs.mode == 'hermes'
         run: |
           ssh prod "APP_DIR='$APP_DIR' bash -s" <<'REMOTE'
-          APP_DIR="\${APP_DIR:-/opt/career-ops/src}"
+          APP_DIR="${APP_DIR:-/opt/career-ops/src}"
           echo "===== unit file ====="
           systemctl cat hermes-gateway --no-pager 2>/dev/null | grep -vE "Key|TOKEN|SECRET|PASSWORD" || echo "no unit file"
           echo "===== before ====="
