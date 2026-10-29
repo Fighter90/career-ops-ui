@@ -38,6 +38,14 @@
  * CAR-179 i18n: three new `cvs.*` keys (`cvs.undo`, `cvs.undoHint`,
  * `cvs.unsavedConfirm`) ship as EN fallbacks — pending the ×19 dict
  * fan-out, so the dictionaries themselves are untouched here.
+ *
+ * CAR-188 — "Voice check" (upstream #6178): a zero-LLM stock-phrase lint
+ * over any pasted draft. POST /api/cv-studio/voice-check reports the stock
+ * phrases ("spearheaded", "proven track record", …) plus em/en dashes that
+ * are not date ranges, each with a 1-based line number + the matched line
+ * text, so the panel highlights hits exactly (server-provided lineText —
+ * no client re-matching). Read-only, joins the CAR-179 restore buffer and
+ * dirty probe like the fact-check.
  */
 
 // CAR-179 — module-level state shared by every render of this route (a
@@ -483,6 +491,43 @@ Router.register('cv-studio', async () => {
     vfIn, c('div', { style: { marginTop: '8px' } }, vfBtn), vfOut,
   ]));
 
+  // ── 8. Voice check (CAR-188, upstream #6178) ──
+  // Zero-LLM stock-phrase lint: paste a tailored CV / cover letter / any AI
+  // draft and see the stock phrases ("spearheaded", "proven track record"…)
+  // and non-date-range em/en dashes it carries. Relayed by
+  // POST /api/cv-studio/voice-check → { phrases: [{phrase, line, match,
+  // index, lineText}], count }. Nothing is written; suggestions only.
+  const vcIn = c('textarea', {
+    className: 'input', rows: 8, style: { width: '100%', fontFamily: 'inherit' },
+    'data-i18n-placeholder': 'cvs.voicePlaceholder',
+    placeholder: t('cvs.voicePlaceholder', 'Paste the text to check…'),
+    'aria-label': t('cvs.voiceTitle', 'Voice check'),
+  });
+  const vcBtn = c('button', { className: 'btn btn-primary', type: 'button' }, t('cvs.voiceCheck', 'Check for stock phrases'));
+  const vcOut = c('div', { style: { marginTop: '12px' } });
+
+  vcBtn.addEventListener('click', async () => {
+    const text = vcIn.value.trim();
+    if (!text) { UI.toast(t('cvs.voiceEmpty', 'Paste some text to check first.'), 'warn'); return; }
+    vcBtn.disabled = true;
+    vcOut.textContent = '';
+    try {
+      const res = await API.post('/api/cv-studio/voice-check', { text });
+      voiceLive = res || { phrases: [], count: 0 };
+      paintVoiceResult(voiceLive);
+      rememberStudioState();
+    } catch (err) {
+      UI.toast((err && err.message) || t('cvs.voiceFailed', 'Could not check the text'), 'error');
+    } finally { vcBtn.disabled = false; }
+  });
+
+  root.appendChild(c('div', { className: 'card', style: { padding: '16px', margin: '18px 0 8px' } }, [
+    c('h2', { style: { fontSize: '15px', margin: '0 0 4px' } }, t('cvs.voiceTitle', 'Voice check')),
+    c('p', { style: { fontSize: '12px', color: 'var(--foggy)', margin: '0 0 10px' } },
+      t('cvs.voiceHelp', 'Paste an AI-tailored CV or cover letter and see the stock phrases it carries — “spearheaded”, “proven track record”, “leveraged” — plus dashes that are not date ranges. Zero-LLM; nothing is written.')),
+    vcIn, c('div', { style: { marginTop: '8px' } }, vcBtn), vcOut,
+  ]));
+
   // ── Keep the studio's work when you leave (CAR-179, upstream #6182) ──
   // Paint helpers first (hoisted declarations — the run handlers above and
   // the restore below share one path per panel, so an undo snapshot
@@ -529,6 +574,51 @@ Router.register('cv-studio', async () => {
       chips(t('cvs.vfWarnings', 'Advisory phrases'), res.warnings, 'var(--foggy)'),
     ].filter(Boolean)));
   }
+  // Voice check (CAR-188): the panel renders the SERVER's post-markup lines
+  // (lineText) with each hit marked at the server's index — exact by
+  // construction, no client-side re-matching. Like the fact-check, the
+  // verdict is zero-LLM and re-runnable, so it is not undoable; it only
+  // joins the dirty probe and restore buffer.
+  function paintVoiceResult(res) {
+    const findings = Array.isArray(res && res.phrases) ? res.phrases : [];
+    const panel = c('div', { className: 'card', style: { padding: '12px' } });
+    if (!findings.length) {
+      panel.appendChild(c('span', { className: 'badge badge-ok' },
+        t('cvs.voiceClean', 'Clean — no stock phrases found.')));
+    } else {
+      panel.appendChild(c('div', { style: { margin: '0 0 8px' } }, c('span', { className: 'badge badge-warn' },
+        t('cvs.voiceFound', '{n} stock phrase(s) found.').replace('{n}', String(findings.length)))));
+      const byLine = new Map();
+      for (const f of findings) {
+        if (!byLine.has(f.line)) byLine.set(f.line, []);
+        byLine.get(f.line).push(f);
+      }
+      const markStyle = {
+        background: 'var(--warn-bg, #fff7e6)',
+        color: 'var(--warn-fg, #663d00)',
+        borderRadius: '2px',
+        padding: '0 1px',
+      };
+      for (const [lineNo, fs] of byLine) {
+        fs.sort((a, b) => (Number(a.index) || 0) - (Number(b.index) || 0));
+        const lineText = String((fs[0] && fs[0].lineText) ?? '');
+        const row = c('div', { style: { fontFamily: 'monospace', fontSize: '12px', lineHeight: '1.6', overflowWrap: 'anywhere' } },
+          [c('span', { style: { color: 'var(--foggy)', userSelect: 'none' } }, `${lineNo}: `)]);
+        let cursor = 0;
+        for (const f of fs) {
+          const start = Number(f.index);
+          const hit = String(f.match || '');
+          if (!Number.isFinite(start) || start < cursor || start + hit.length > lineText.length) continue;
+          if (start > cursor) row.appendChild(document.createTextNode(lineText.slice(cursor, start)));
+          row.appendChild(c('mark', { title: String(f.phrase || ''), style: markStyle }, lineText.slice(start, start + hit.length)));
+          cursor = start + hit.length;
+        }
+        if (cursor < lineText.length) row.appendChild(document.createTextNode(lineText.slice(cursor)));
+        panel.appendChild(row);
+      }
+    }
+    vcOut.appendChild(panel);
+  }
   // An undo snapshot re-runs the panel's own paint path after clearing it.
   // The fact-check verdict is deliberately NOT undoable — it is zero-LLM
   // and re-runnable in place — it only joins the dirty probe and buffer.
@@ -559,6 +649,7 @@ Router.register('cv-studio', async () => {
   let tailorLive = null;
   let addLive = null;
   let vfLive = null;
+  let voiceLive = null;
 
   // Restore buffer — written on every input event and after every
   // paint/undo, consumed by the next render of this route.
@@ -569,13 +660,15 @@ Router.register('cv-studio', async () => {
       addUrlIn: addUrlIn.value,
       addTextIn: addTextIn.value,
       vfIn: vfIn.value,
+      vcIn: vcIn.value,
       human: humanLive,
       tailor: tailorLive,
       add: addLive,
       vf: vfLive,
+      voice: voiceLive,
     };
   };
-  [humanIn, jdIn, addUrlIn, addTextIn, vfIn].forEach((inp) => inp.addEventListener('input', rememberStudioState));
+  [humanIn, jdIn, addUrlIn, addTextIn, vfIn, vcIn].forEach((inp) => inp.addEventListener('input', rememberStudioState));
 
   // Upstream guards e.key === 'z'; the CAR-172 lesson adds the e.code
   // chord so a non-QWERTY layout (Cmd+Я) still reaches the studio undo.
@@ -597,16 +690,19 @@ Router.register('cv-studio', async () => {
     addUrlIn.value = b.addUrlIn || '';
     addTextIn.value = b.addTextIn || '';
     vfIn.value = b.vfIn || '';
+    vcIn.value = b.vcIn || '';
     if (b.human) { humanLive = b.human; paintHumanResult(b.human); }
     if (b.tailor) { tailorLive = b.tailor; paintTailorResult(b.tailor); }
     if (b.add) { addLive = b.add; paintAddResult(b.add); }
     if (b.vf) { vfLive = b.vf; paintVfResult(b.vf); }
+    if (b.voice) { voiceLive = b.voice; paintVoiceResult(b.voice); }
   }
 
   // Dirty is probed LIVE at event time (UX-A10: never a flag an async
   // handler may have missed): any typed input or any painted result.
   const isStudioDirty = () => !!(humanIn.value.trim() || jdIn.value.trim() || addUrlIn.value.trim()
-    || addTextIn.value.trim() || vfIn.value.trim() || humanLive || tailorLive || addLive || vfLive);
+    || addTextIn.value.trim() || vfIn.value.trim() || vcIn.value.trim()
+    || humanLive || tailorLive || addLive || vfLive || voiceLive);
 
   const onStudioBeforeUnload = (e) => {
     if (!isStudioDirty()) return;
