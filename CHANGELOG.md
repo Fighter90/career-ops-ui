@@ -14,7 +14,7 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 ### Notes
 
-- Deliberately a single-purpose patch: nothing else ships here — the v1.262.2 review-tail content went out separately.
+- Deliberately a single-purpose patch: the pl fix is the only change this release carries — it does not bundle anything else; the v1.262.2 review-tail content went out separately.
 
 Tests 6867 → 6868 (+1) · Playwright 176 · registry unchanged: 123 sources = 118 EN + 5 RU · 118 adapters.
 
