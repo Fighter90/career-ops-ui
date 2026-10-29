@@ -1158,7 +1158,7 @@ l'intero pannello è raggruppato sotto **Filtri dei risultati**,
 Una card comprimibile che elenca ogni azienda in `portals.yml` con il suo
 stato di scansione:
 
-- tag verde ✓ — supporto API diretto (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday).
+- tag verde ✓ — supporto API diretto (uno dei 118 adattatori EN, da Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday).
 - tag grigio ○ — ripiego sul prompt di ricerca web (nessuna corrispondenza API).
 
 **Fai clic sul nome dell'azienda** → riempie il filtro dei risultati sopra con quel

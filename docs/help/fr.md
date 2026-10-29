@@ -1159,8 +1159,8 @@ tout le reste vit derrière **Filtres avancés**, `scan.advancedFilters`
 Une carte repliable listant chaque entreprise de `portals.yml` avec son
 statut de scan :
 
-- tag vert ✓ — support API direct (Greenhouse / Ashby / Lever / Workable /
-  SmartRecruiters / Workday).
+- tag vert ✓ — support API direct (l'un des 118 adaptateurs EN, de
+  Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday).
 - tag gris ○ — repli sur un prompt de recherche web (pas de correspondance
   API).
 
