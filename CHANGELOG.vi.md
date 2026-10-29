@@ -6,6 +6,19 @@ Bản dịch: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.262.3] — 2026-10-30
+
+**Bản-patch-token-dense-của-pl: full-remote-QA trên-prod-v1.262.1 bắt-gặp-lượt-đánh-giá-tiếng-Ba-Lan chết-ở-trần-300 s-chuẩn — `502 · 0 ch` — hai-lần (lượt-chạy-đầy-đủ-×19 40960568766 và-lượt-chạy-lại-có-đích-của-v1.262.2 40968958062), trong-khi-18/19-locale đạt-A–G; `pl` giờ-gia-nhập `ta`/`hi`/`it` với-trần-32768-token và-đồng-hồ-480 s, được-ghim-đỏ-trước (`evalMaxTokens`, `evalTimeoutMs`). Cùng-lớp-hình-dạng-với-`it`-trong-v1.262.1. Tests 6867 → 6868.**
+
+### Đã sửa
+
+- **`pl` gia-nhập-các-locale-đánh-giá-token-dense** (`pl` → trần-32768-token + đồng-hồ-480 s). Full-remote-QA trên-prod-v1.262.1 bắt-gặp-lượt-đánh-giá-tiếng-Ba-Lan chết-ở-trần-chuẩn — `502 · openrouter · 300 s · 0 ch` — và-lượt-chạy-lại-có-đích gửi-cùng-v1.262.2 tái-hiện-nó-chính-xác (hai-lượt-chạy 40960568766 và-40968958062): 18/19-locale đạt-A–G, `it` kết-thúc-ở-302 s bên-trong-đồng-hồ-token-dense-480 s, còn-`pl` đâm-vào-tường hai-lần với-kết-quả-số-0. Một-timeout-xác-định, không-phải-flake — cùng-một-lớp-hình-dạng đã-đưa-`it` vào-v1.262.1. Ghim-đỏ-trước: `evalMaxTokens('pl') = 32768`, `evalTimeoutMs('pl') = 480_000`, 18-locale-chuẩn giữ-nguyên-300 s.
+
+### Ghi chú
+
+- Không-hành-động-cố-ý: bản-patch-một-mục-đích — không-có-gì-khác được-đóng-gói ở-đây; nội-dung-đuôi-rà-soát-v1.262.2 đã-ra-mắt-riêng-biệt.
+- Tests 6867 → 6868 (+1) trên-nhánh-phát-hành · Playwright 176 · registry không-thay-đổi: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.262.2] — 2026-10-30
 
 **Bản-patch-đuôi-rà-soát: bảy-phát-hiện-mức-thấp được-đóng-đỏ-trước — vòng-backslash-nhập-CSV (nhập-lại-cùng-một-tệp-export được-dedup-lại), tước-phần-`<head>`-cv-voice 4827 ms → 13 ms, `years_min` tính-lười-trên-các-lượt-quét-lớn, một-vụ-crash-TOCTOU-khi-liệt-kê-capture được-sửa, mặc-định-MiniMax-CN cho-mọi-URL-cơ-sở-`*.minimax.cn`, và-bộ-chọn-nhập kiểm-tra-trần-512 KB trước-khi-đọc-tệp — cộng-củng-cố-deploy.yml (F1–F6: guard-chống-chèn-input-provider, redact-nhật-ký-hermes, che-`?token=`, app_dir, cổng-https-của-public_url và-sáu-chốt-chống-hạ-cấp-thực-thi) và-đuôi-import-modal (nav-guard, dọn-dẹp-khi-cancel, duplicates-được-bảo-vệ). Kiểm-thử 6841 → 6867.**

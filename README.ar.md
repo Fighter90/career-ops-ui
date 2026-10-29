@@ -10,19 +10,20 @@
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
-[![tests](https://img.shields.io/badge/tests-6867%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-6868%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#الاختبارات)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.262.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.2)
+[![release](https://img.shields.io/badge/release-v1.262.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.3)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 أحدث إصدار — v1.262.2** — **رقعة ذيل المراجعة: سبع نتائج من مراجعة الموجة أُغلقت بالأحمر أولًا — مداورة الشرطة المائلة العكسية في استيراد CSV (إعادة استيراد التصدير نفسه تزيل التكرار من جديد)، وتجريد رأس cv-voice من 4827 ms إلى 13 ms، وحساب `years_min` بتأجيل على المسوحات الكبيرة، وإصلاح انهيار TOCTOU في سرَد الالتقاطات، وافتراضيات CN لـ MiniMax لأي عنوان أساسي `*.minimax.cn`، وفحص منتقي الاستيراد لسقف 512 كيلوبايت قبل قراءة الملف — إضافةً إلى تحصين deploy.yml (F1–F6: حارس حقن مدخلات المزوّد، وحجب سجلات hermes، وتقنيع `?token=`، وapp_dir، وبوابة https لـ public_url، وستة تثبيتات تنفيذية ضد التراجع) وذيل نافذة الاستيراد (حارس nav، وتنظيف عند الإلغاء، وتكرارات محمية). الاختبارات 6841 → 6867.**
+> **🆕 أحدث إصدار — v1.262.3** — **رقعة `pl` كثيفة-الرموز: remote-QA الكاملة على إنتاج v1.262.1 أمسكت التقييم البولندي وهو يموت عند سقف 300 s القياسي — `502 · 0 ch` — مرتين (التشغيل الكامل ×19 ذو الرقم 40960568766 وإعادة التشغيل الموجَّهة من v1.262.2 ذو الرقم 40968958062)، بينما اجتازت 18/19 لغة A–G؛ تنضم `pl` الآن إلى `ta`/`hi`/`it` بسقف 32768 رمزًا ومؤقّت 480 s، مثبَّتة بالأحمر أولًا (`evalMaxTokens`، `evalTimeoutMs`). فئة الشكل نفسها التي نقلت `it` في v1.262.1. Tests 6867 → 6868.**
 >
-> **السابق — v1.262.1** — **رقعة التقييمات الإيطالية: `it` تنضم إلى اللغات كثيفة-الرموز (سقف 32768 رمزًا + مؤقّت 480 ثانية) بعد أن أمسكها عصر OpenRouter وهي تقتطع التقرير قبل كتلة SCORE_SUMMARY مباشرةً — إضافةً إلى حصول سير عمل النشر على `mode=hermes` (إعادة تشغيل البوابة + تشخيص كامل + رصيد الأرصدة) و`mode=provider` (تبديل LLM بحارس وجود المفتاح)، مما نقل الإنتاج إلى OpenRouter حين نفدت أرصدة Hermes.**
+> **السابق — v1.262.2** — **رقعة ذيل المراجعة: سبع نتائج من مراجعة الموجة أُغلقت بالأحمر أولًا — مداورة الشرطة المائلة العكسية في استيراد CSV (إعادة استيراد التصدير نفسه تزيل التكرار من جديد)، وتجريد رأس cv-voice من 4827 ms إلى 13 ms، وحساب `years_min` بتأجيل على المسوحات الكبيرة، وإصلاح انهيار TOCTOU في سرَد الالتقاطات، وافتراضيات CN لـ MiniMax لأي عنوان أساسي `*.minimax.cn`، وفحص منتقي الاستيراد لسقف 512 كيلوبايت قبل قراءة الملف — إضافةً إلى تحصين deploy.yml (F1–F6: حارس حقن مدخلات المزوّد، وحجب سجلات hermes، وتقنيع `?token=`، وapp_dir، وبوابة https لـ public_url، وستة تثبيتات تنفيذية ضد التراجع) وذيل نافذة الاستيراد (حارس nav، وتنظيف عند الإلغاء، وتكرارات محمية). الاختبارات 6841 → 6867.**
+>
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -171,7 +172,7 @@ career-ops/
 └─ web-ui/          ← هذا المستودع
    ├─ server/       # Express + 15 وحدة مسارات
    ├─ public/       # vanilla JS SPA — بدون bundler
-   └─ tests/        # 6867 unit + 176 Playwright + 44 e2e (baseline @ v1.262.2)
+   └─ tests/        # 6868 unit + 176 Playwright + 44 e2e (baseline @ v1.262.3)
 ```
 
 <div dir="rtl">
