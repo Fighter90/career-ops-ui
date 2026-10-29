@@ -979,7 +979,7 @@ v2 முடிவு chrome கட்டுப்பாடுகளைக் �
 `portals.yml`-இல் உள்ள ஒவ்வொரு நிறுவனத்தையும் அதன்
 ஸ்கேன் நிலையுடன் பட்டியலிடும் சுருங்கக்கூடிய அட்டை:
 
-- ✓ பச்சை தகடு — நேரடி API ஆதரவு (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday).
+- ✓ பச்சை தகடு — நேரடி API ஆதரவு (118 EN அடாப்டர்களில் ஒன்று — Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday).
 - ○ சாம்பல் தகடு — web-search பிராம்டுக்கு பின்வாங்கல் (API பொருத்தம் இல்லை).
 
 **நிறுவனப் பெயரைச் சொடுக்க** → மேலே உள்ள முடிவு வடிப்பானை அந்தப்
