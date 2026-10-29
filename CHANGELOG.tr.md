@@ -2,6 +2,24 @@
 
 > Bu changelog artık tüm sürüm geçmişini içerir. Türkçe yerelleştirmenin eklenmesinden (v1.85.0) önce yayınlanan girdiler aşağıda İngilizce özgün hâliyle yer alır — çeviri bekliyor; asıl kaynak [🇬🇧 CHANGELOG.md](CHANGELOG.md)'dir.
 
+## [1.262.2] — 2026-10-30
+
+### Düzeltildi
+
+- **Dalga-incelemesi kuyruğu — 7 düşük-şiddetli bulgu, her biri red-first.** CSV içe aktarma ters-bölü gidiş-dönüşü: bir hücredeki `\` yazılırken ikiye katlanıyor ve geri okunurken de ikiye katlanmış kalıyordu, böylece aynı CSV'nin yeniden içe aktarımı şirket+rol tekilleştirmesini kaçırıyor ve yinelenen bir satır oluşturabiliyordu — okuyucu artık bölme işleminden sonra `\\` kaçışını geri çözüyor (yaz→oku gidiş-dönüşü kayıpsız, yeniden içe aktarım tekilleştiriyor). cv-voice `<head>` kırpma, kapanmamış etiketlerde ikinci derecedendi — rotanın tavanladığı 64 KB girdi üzerinde 4827 ms → 13 ms. `statedYearsMin`, `years_min` yapılandırılmamışken bile her kaynağın her işi için tam yıl-ayrıştırıcısını çalıştırıyordu — artık tembel (lazy), büyük tarama başına saniyelerce CPU ortadan kalktı. readdir ile statSync arasında silinen bir capture, posting-guard listelemesini çökertiyordu (TOCTOU — kaybolan dosyalar atlanıyor). MiniMax CN varsayılanı yalnızca `api.minimax.cn` ile tam eşleşme arıyordu — artık herhangi bir `*.minimax.cn` base URL'si CN modelini alıyor. Hex referansı olmayan Deel `$`-token'ları artık özete sabit-metin olarak sızmıyor. İçe aktarma seçici, `file.text()`'ten ÖNCE `file.size`'ı kontrol ediyor — 512 KB sunucu tavanı, tarayıcı olası bir dev dosyayı ayrıştırdıktan sonra ancak 413 döndürüyordu — yerelleştirilmiş bir `import.tooLarge` toast ×19 ile.
+- **Deploy workflow'unun sağlamlaştırılması (workflows incelemesi F1–F6).** `provider`, karakter-seti doğrulaması olmadan uzak kabuğa yerleştirilen tek girdiydi — değer içindeki bir `'` tırnaklamayı kırıyor ve prod'da keyfi kod çalıştırıyordu; artık herhangi bir birleştirmeden önce `^[A-Za-z0-9_-]+$` beyaz listesiyle doğrulanıyor ve anahtar-koruma grep'i artık yanlış geçemez. hermes teşhis adımı ham journalctl + unit dökümlerini genel günlüğe basıyordu; filtresi büyük harfli `*_API_KEY=`'i kaçırıyor ve hiçbir şeyi maskelemiyordu — artık üç çıkış kanalında paylaşılan büyük/küçük-harf-duyarsız ayıklama + değer maskeleme + 80 karakter kırpma var, `?token=` sorgu dizeleri de maskeleniyor. hermes adımı `inputs.app_dir`'i yok sayıyor ve `/opt/career-ops/src/.env` yolunu sabitliyordu. `public_url`, bir https kontrolü olmadan curl'a ulaşıyordu (başındaki `-` ile seçenek enjeksiyonu). Ve anti-downgrade koruması — v1.238.0 olayının düzeltmesi — hiçbir yürütülebilir kapısı yoktu: ci-workflows'a altı yeni sabitleme (refs'in varsayılanı yok, koruma Deploy'dan önce çalışıyor, katı refs regex'i).
+- **İçe aktarma modalı kuyruğu (SPA incelemesi).** Modal, outcome modalıyla aynı nav guard'ı kuruyor — sayfadan ayrılmak artık onu başka bir görünümün üzerinde yetim bırakmıyor. Gizli dosya girdisi artık yalnızca `change`'de değil `cancel`'de de kaldırılıyor — art arda iptaller document.body'ye girdi elemanları sızdırmıyor. `plan.duplicates`, önizlemede korumalı biçimden okunuyor. Tracker `num` tahsisi, `Math.max(...spread)` yerine `reduce` kullanıyor — spread ~100 bin satırda argüman sınırına çarpıyor.
+
+### Değişti
+
+- Dokümantasyon: yardım kılavuzunun «118 EN adapters» maddesi fr/it/ta'da da sayıyı taşıyor (diğer 15 yerel ayarda zaten vardı). cvstart.org'daki satıcı fiyatları resmi fiyatlandırma sayfalarına karşı yeniden doğrulandı — dördü de değişmedi, CHECKED_ON → 2026-10-30. Sürüm-sonrası sürüklenme taraması, README ×19, CONTEXT.md, CLAUDE.md ve SDD kılavuzlarında 42 bayat sayı/sürüm satırını düzeltti (109/104 dönemi ve v1.262.0 dönemi kalıntıları).
+
+### Notlar
+
+- Bilinçli eylemsizlik: cv-studio'nun yerel `window.confirm`'i (CAR-179 dönemi) kalıyor — onu `UI.confirm`'e dönüştürmek bir takip işidir, yama maddesi değil; `<mark title>` kalıp-ifade tooltip'i yalnızca-tooltip olarak kalıyor (kabul edilebilir a11y tabanı); `remote-qa.yml`, `cancel-in-progress: true` tutuyor — yeniden gönderme, çalışan bir regresyonun yerini kasıtlı olarak alıyor.
+- prod v1.262.1 üzerinde tam remote-QA: routes ×19 ✓ · site ×19 ✓ · links ✓ · canlı LLM 18/19 yerel ayarda A–G ✓ — `pl` tek bir `502 · 300 s · 0 ch` sağlayıcı zaman aşımı yedi (token-yoğun bölge değil; hedefli yeniden koşu bu sürümle gidiyor).
+- Testler 6841 → 6867, sürüm dalında (6864 pass / 0 fail / 3 skip, +26 vs v1.262.1) · Playwright 176 · kapsam 98.42 % satır / 89.94 % dal · registry değişmedi: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.262.1] — 2026-10-29
 
 **İtalyanca değerlendirme yaması: OpenRouter dönemi raporu SCORE_SUMMARY bloğunun hemen önünde keserken yakaladığı için `it` token-yoğun yerel ayarlara katılıyor (32768 token tavanı + 480 s saati) — ve bu tanıyı mümkün kılan sağlayıcı geçiş araç takımı deploy workflow'una geliyor.**
