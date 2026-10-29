@@ -2,6 +2,26 @@
 
 > Questo changelog contiene ora la cronologia completa delle versioni. Le voci pubblicate prima della localizzazione italiana (v1.85.0) compaiono sotto nell'originale inglese — traduzione in attesa; il riferimento resta [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.262.1] — 2026-10-29
+
+**La patch della valutazione italiana: `it` entra nelle località token-dense (soffitto di 32 768 token + orologio di 480 s) dopo che l'era OpenRouter l'ha colta a tagliare il report subito prima del blocco SCORE_SUMMARY — e lo strumento di cambio provider che ha reso possibile la diagnosi arriva nel workflow di deploy.**
+
+### Corretto
+
+- **Valutazione `it` tagliata prima di SCORE_SUMMARY (coda CAR-190)**: remote-QA 40928864980 (prima esecuzione con i crediti ricaricati) — una valutazione `it` è durata 264 s ed è tornata con 15 045 caratteri, `tok ~15635` al soffitto di 16 384: blocchi A–G intatti, `---SCORE_SUMMARY---` sparito. La stessa classe di forma che è valsa a `ta` il suo soffitto in v1.261.1 (CAR-174). `it` entra in `TOKEN_DENSE_EVAL_LOCALES` (`ta`, `hi` → `ta`, `hi`, `it`): valgono ora sia il budget di 32 768 token sia l'orologio di 480 s, e `/api/evaluate` + auto-pipeline restano sull'unica fonte di verità in `llm.mjs`.
+- **Report `en` senza blocchi — un'anomalia di generazione isolata**: la stessa esecuzione ha visto una singola valutazione `en` tornare linguisticamente corretta ma senza **nessuno** dei blocchi A–G; una riesecuzione mirata è passata pulita (21 091 caratteri, A–G ✓). Non aggiunto all'insieme token-dense — un'anomalia isolata non è una storia.
+
+### Aggiunto
+
+- **Workflow di deploy: `mode=hermes` e `mode=provider`** (coda ops CAR-190): `mode=hermes` riavvia il gateway Hermes e stampa una diagnosi completa (unit file con i segreti rimossi, listener prima/dopo, journal sudo, sonde porta per porta, la vista `HERMES_BASE_URL` dell'app stessa, saldo dei crediti OpenRouter); `mode=provider` cambia `LLM_PROVIDER` con una guardia di presenza della chiave (rifiuta quando manca la `*_API_KEY` del provider di destinazione) e riavvia l'app — è così che la produzione è passata a `openrouter` quando i crediti Hermes si sono esauriti in corsa. La guardia del ref delle modalità di deploy è validata solo per `mode=deploy`, quindi i dispatch di recon/verify funzionano di nuovo (la modifica required-inputs dell'era v1.261.3 li aveva silenziati).
+
+### Note
+
+- Non-azione deliberata: `en` **non** entra nell'insieme token-dense — un report senza blocchi è un'anomalia di generazione, non una storia di volumi.
+- Non-azione deliberata: la direttiva linguistica rafforzata per ta **non** si estende a `it` — nessuna deriva linguistica osservata per l'italiano.
+- Non-azione deliberata: la registrazione del nuovo video dimostrativo UI-v2 resta al proprietario (CAR-141) — la landing ora incorpora comunque via `youtube-nocookie.com`.
+- Test 6841 → 6841 sul ramo di rilascio.
+
 ## [1.262.0] — 2026-10-29
 
 **Il minor delle funzionalità upstream: il board Deel entra nello scanner (registro 123), il CSV di un tracker estraneo si importa direttamente in `#/tracker`, il controllo di integrità posting-guard e il controllo voce del CV arrivano come relay/lint, lo scanner impara un filtro anni-di-esperienza, e i pulsanti Apply in altre sette lingue non risultano più mancanti — più il modello predefinito ritirato di MiniMax viene sostituito e i repost non vengono più fabbricati tra le fonti.**

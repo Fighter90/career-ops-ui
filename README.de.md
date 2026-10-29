@@ -12,14 +12,14 @@ _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.262.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.0)
+[![release](https://img.shields.io/badge/release-v1.262.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Neueste Version — v1.262.0** — **Das Upstream-Features-Minor: das Deel-Jobboard stößt zum Scanner (Registry 123), der CSV eines fremden Trackers importiert mit Dry-Run-Preview direkt in #/tracker, der Posting-Guard-JD-Integrity-Check und ein CV-Voice-Check (27 Floskeln hervorgehoben) landen in der UI, ein Years-of-Experience-Scan-Filter liest die JD, und Apply-Buttons sind in sieben weiteren Sprachen verstanden — dazu hören Reposts auf, quellenübergreifend fabriziert zu werden, MiniMax' ausgedientes Default-Modell wird ersetzt, und die Tamil-Bewertungen halten ihre Sprache.**
+> **🆕 Neueste Version — v1.262.1** — **Der Italienisch-Bewertungs-Patch: `it` stößt zu den token-dichten Locales hinzu (32768-Token-Ceiling + 480 s Uhr), nachdem die OpenRouter-Ära seinen Bericht beim Abschneiden direkt vor dem SCORE_SUMMARY-Block ertappt hat — dazu hat der Deploy-Workflow `mode=hermes` (Gateway-Neustart + vollständige Diagnose + Credits-Saldo) und `mode=provider` (LLM-Wechsel mit Key-Präsenz-Guard) bekommen, womit die Prod auf OpenRouter wechselte, als die Hermes-Credits ausgingen.**
 >
-> **Vorherige Version — v1.261.3** — **Der Design-Abschluss-Patch: das Lovable-Designsystem vollständig live (Phase-3-Dichte: Zeilen ≈32px, Controls 30px, Chips 24px; jeder Coral zur Blau-Akzent-/Rot-Gefahr-Aufteilung verschoben), die Trakstar-Hire-Scan-Quelle (Registry 122), der Scan-Host-Pool (32 Unternehmen, 10 pro Host), sechs Upstream-Provider-Location-Fixes und CV-Studio-Undo + Ungespeichert-Schutz.**
+> **Vorherige Version — v1.262.0** — **Das Upstream-Features-Minor: das Deel-Jobboard stößt zum Scanner (Registry 123), der CSV eines fremden Trackers importiert mit Dry-Run-Preview direkt in #/tracker, der Posting-Guard-JD-Integrity-Check und ein CV-Voice-Check (27 Floskeln hervorgehoben) landen in der UI, ein Years-of-Experience-Scan-Filter liest die JD, und Apply-Buttons sind in sieben weiteren Sprachen verstanden — dazu hören Reposts auf, quellenübergreifend fabriziert zu werden, MiniMax' ausgedientes Default-Modell wird ersetzt, und die Tamil-Bewertungen halten ihre Sprache.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

@@ -12,14 +12,14 @@ _அதிகாரப்பூர்வமற்ற இடைமுகம் �
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#சோதனைகள்)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#தேவைகள்)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.262.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.0)
+[![release](https://img.shields.io/badge/release-v1.262.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 சமீபத்திய வெளியீடு — v1.262.0** — **upstream-features minor: Deel job board scanner-இல் சேர்கிறது (registry 123), வேறு tracker-இன் CSV dry-run preview உடன் #/tracker-இல் நேரடியாக import ஆகிறது, posting-guard JD integrity check + CV voice check (27 stock phrases highlight) UI-இல் வருகின்றன, years-of-experience scan filter JD-ஐப் படிக்கிறது, Apply buttons இன்னும் ஏழு மொழிகளில் புரிகின்றன — மேலும் reposts sources-க்கு இடையில் உருவாக்கப்படுவது நின்றது, MiniMax-இன் retired default model மாற்றப்பட்டது, ta evaluations தமிழிலேயே நிற்கின்றன.**
+> **🆕 சமீபத்திய வெளியீடு — v1.262.1** — **Italian-evaluation patch: OpenRouter era it-இன் report SCORE_SUMMARY block-க்கு முன்பே வெட்டப்படுவதைப் பிடித்ததால் `it` token-dense locales-உடன் சேர்கிறது (32768-token ceiling + 480 s clock) — மேலும் deploy workflow `mode=hermes` (gateway restart + full diagnosis + credits balance) மற்றும் `mode=provider` (key-presence guard உடன் LLM switch) பெற்றது; Hermes credits தீர்ந்தபோது இதுவே prod-ஐ OpenRouter-க்கு நகர்த்தியது.**
 >
-> **முந்தைய வெளியீடு — v1.261.3** — **வடிவமைப்பு-நிறைவு patch: Lovable design system முழுமையாக நடைமுறையில் (phase 3 density: rows ≈32px, controls 30px, chips 24px; எல்லா coral-உம் blue accent / red danger பிரிவுக்கு மாற்றப்பட்டது), Trakstar Hire scan source (registry 122), scan host-pool (32 companies, host ஒன்றுக்கு 10), ஆறு upstream provider location fixes, CV Studio undo + unsaved-guard.**
+> **முந்தைய வெளியீடு — v1.262.0** — **upstream-features minor: Deel job board scanner-இல் சேர்கிறது (registry 123), வேறு tracker-இன் CSV dry-run preview உடன் #/tracker-இல் நேரடியாக import ஆகிறது, posting-guard JD integrity check + CV voice check (27 stock phrases highlight) UI-இல் வருகின்றன, years-of-experience scan filter JD-ஐப் படிக்கிறது, Apply buttons இன்னும் ஏழு மொழிகளில் புரிகின்றன — மேலும் reposts sources-க்கு இடையில் உருவாக்கப்படுவது நின்றது, MiniMax-இன் retired default model மாற்றப்பட்டது, ta evaluations தமிழிலேயே நிற்கின்றன.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

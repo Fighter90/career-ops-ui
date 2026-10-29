@@ -12,14 +12,14 @@ _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve 
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.262.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.0)
+[![release](https://img.shields.io/badge/release-v1.262.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Son sürüm — v1.262.0** — **Upstream-özellikleri minor sürümü: Deel iş panosu tarayıcıya katılıyor (registry 123), başka bir tracker'ın CSV'si dry-run önizlemeyle doğrudan #/tracker'a aktarılıyor, posting-guard JD bütünlük denetimi ve bir CV ses denetimi (27 kalıplaşmış ifade vurgulanmış) arayüze giriyor, deneyim-yılı tarama filtresi JD'yi okuyor ve Apply düğmeleri yedi dilde daha anlaşılıyor — artı repost'lar kaynaklar arasında uydurulmayı bırakıyor, MiniMax'ın emekliye ayrılmış varsayılan modeli değiştiriliyor ve Tamilce değerlendirmeler dilini koruyor.**
+> **🆕 Son sürüm — v1.262.1** — **İtalyanca değerlendirme yaması: OpenRouter dönemi raporu SCORE_SUMMARY bloğunun hemen önünde keserken yakaladığı için `it` token-yoğun yerel ayarlara katılıyor (32768 token tavanı + 480 s saati) — ayrıca deploy workflow'u `mode=hermes` (gateway yeniden başlatma + tam teşhis + kredi bakiyesi) ve `mode=provider` (anahtar-varlığı korumasıyla LLM geçişi) kazandı; Hermes kredileri bittiğinde prod'u OpenRouter'a taşıyan şey bu oldu.**
 >
-> **Önceki — v1.261.3** — **Tasarım-tamamlama yaması: Lovable tasarım sistemi tamamen canlı (faz 3 yoğunluğu: satırlar ≈32px, denetimler 30px, çipler 24px; her coral mavi-vurgu/kırmızı-tehlike ayrımına taşındı), Trakstar Hire tarama kaynağı (registry 122), tarama ana bilgisayar havuzu (32 şirket, ana bilgisayar başına 10), altı upstream sağlayıcı konum düzeltmesi ve CV Studio geri alma + kaydedilmemiş koruması.**
+> **Önceki — v1.262.0** — **Upstream-özellikleri minor sürümü: Deel iş panosu tarayıcıya katılıyor (registry 123), başka bir tracker'ın CSV'si dry-run önizlemeyle doğrudan #/tracker'a aktarılıyor, posting-guard JD bütünlük denetimi ve bir CV ses denetimi (27 kalıplaşmış ifade vurgulanmış) arayüze giriyor, deneyim-yılı tarama filtresi JD'yi okuyor ve Apply düğmeleri yedi dilde daha anlaşılıyor — artı repost'lar kaynaklar arasında uydurulmayı bırakıyor, MiniMax'ın emekliye ayrılmış varsayılan modeli değiştiriliyor ve Tamilce değerlendirmeler dilini koruyor.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

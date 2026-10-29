@@ -2,6 +2,26 @@
 
 > Bu changelog artık tüm sürüm geçmişini içerir. Türkçe yerelleştirmenin eklenmesinden (v1.85.0) önce yayınlanan girdiler aşağıda İngilizce özgün hâliyle yer alır — çeviri bekliyor; asıl kaynak [🇬🇧 CHANGELOG.md](CHANGELOG.md)'dir.
 
+## [1.262.1] — 2026-10-29
+
+**İtalyanca değerlendirme yaması: OpenRouter dönemi raporu SCORE_SUMMARY bloğunun hemen önünde keserken yakaladığı için `it` token-yoğun yerel ayarlara katılıyor (32768 token tavanı + 480 s saati) — ve bu tanıyı mümkün kılan sağlayıcı geçiş araç takımı deploy workflow'una geliyor.**
+
+### Düzeltildi
+
+- **`it` değerlendirmesi SCORE_SUMMARY'den önce kesildi (CAR-190 kuyruğu)**: remote-QA 40928864980 (yeniden doldurulan kredilerle ilk koşu) — bir `it` değerlendirmesi 264 s koştu ve 15 045 karakterle döndü, 16 384 tavanında `tok ~15635`: A–G blokları sağlam, `---SCORE_SUMMARY---` yok. v1.261.1'de (CAR-174) `ta`'ya tavanını kazandıran şekil sınıfının aynısı. `it`, `TOKEN_DENSE_EVAL_LOCALES`'e katılıyor (`ta`, `hi` → `ta`, `hi`, `it`): hem 32 768 token bütçesi hem de 480 s saati artık uygulanıyor ve `/api/evaluate` + auto-pipeline `llm.mjs`'teki tek doğruluk kaynağında kalıyor.
+- **Bloksuz en raporu — tek seferlik üretim feyki**: Aynı koşu tek bir `en` değerlendirmesinin dili doğru ama A–G bloklarının hiçbiri olmadan döndüğünü gördü; hedefli bir yeniden koşu tertemiz geçti (21 091 karakter, A–G ✓). Token-yoğun kümeye eklenmedi — bir feyk tarih değildir.
+
+### Eklendi
+
+- **Deploy workflow'u: `mode=hermes` ve `mode=provider`** (CAR-190 operasyon kuyruğu): `mode=hermes` Hermes gateway'ini yeniden başlatır ve tam bir teşhis basar (sırları ayıklanmış unit dosyası, önce/sonra dinleyiciler, sudo günlüğü, port-port sondalar, uygulamanın kendi `HERMES_BASE_URL` görünümü, OpenRouter kredi bakiyesi); `mode=provider` bir anahtar-varlığı korumasıyla `LLM_PROVIDER`'ı değiştirir (hedef sağlayıcının `*_API_KEY`'i yoksa reddeder) ve uygulamayı yeniden başlatır — Hermes kredileri yolda bittiğinde prod'un `openrouter`'a geçtiği yöntem budur. Deploy-modu ref koruması yalnızca `mode=deploy` için doğrulanıyor, böylece recon/verify gönderimleri yeniden çalışıyor (v1.261.3 dönemindeki required-inputs değişikliği onları sessizleştirmişti).
+
+### Notlar
+
+- Bilinçli eylemsizlik: `en` token-yoğun kümeye **hiç** eklenmiyor — bloksuz tek bir rapor bir üretim feykidir, hacim tarihi değil.
+- Bilinçli eylemsizlik: pekiştirilmiş ta dil yönergesi `it`'e **hiç** genişletilmiyor — İtalyanca için dil kayması gözlemlenmedi.
+- Bilinçli eylemsizlik: yeni UI-v2 demo videosunun kaydı owner'da kalıyor (CAR-141) — landing artık her durumda `youtube-nocookie.com` üzerinden gömüyor.
+- Testler 6841 → 6841, sürüm dalında.
+
 ## [1.262.0] — 2026-10-29
 
 **Upstream-özellikleri minor sürümü: Deel iş panosu tarayıcıya katılıyor (registry 123), başka bir tracker'ın CSV'si doğrudan `#/tracker`'a aktarılıyor, posting-guard bütünlük denetimi ve CV ses denetimi relay/lint olarak geliyor, tarayıcı bir deneyim-yılı filtresi öğreniyor ve yedi dilde daha Apply düğmeleri eksik gibi okunmayı bırakıyor — ayrıca MiniMax'ın emekliye ayrılmış varsayılan modeli değiştirildi ve repost'lar artık kaynaklar arasında uydurulmuyor.**

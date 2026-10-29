@@ -2,6 +2,26 @@
 
 > Dieses Changelog enthält die vollständige Versionsgeschichte. Einträge, die vor der deutschen Lokalisierung (v1.85.0) veröffentlicht wurden, stehen unten im englischen Original — Übersetzung ausstehend; maßgeblich bleibt [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.262.1] — 2026-10-29
+
+**Der Italienisch-Bewertungs-Patch: `it` stößt zu den token-dichten Locales hinzu (32768-Token-Ceiling + 480 s Uhr), nachdem die OpenRouter-Ära es dabei ertappt hat, den Bericht direkt vor dem SCORE_SUMMARY-Block abzuschneiden — und das Provider-Wechsel-Werkzeug, das diese Diagnose erst möglich machte, kommt im Deploy-Workflow an.**
+
+### Behoben
+
+- **`it`-Bewertung vor SCORE_SUMMARY abgeschnitten (CAR-190-Tail)**: Remote-QA 40928864980 (erster Lauf mit den wieder aufgefüllten Credits) — eine `it`-Bewertung lief 264 s und kam mit 15 045 Zeichen zurück, `tok ~15635` am 16-384-Ceiling: Blöcke A–G intakt, `---SCORE_SUMMARY---` weg. Dieselbe Formklasse, die `ta` in v1.261.1 (CAR-174) ihr Ceiling eingebracht hat. `it` stößt zu `TOKEN_DENSE_EVAL_LOCALES` (`ta`, `hi` → `ta`, `hi`, `it`): Sowohl das 32-768-Token-Budget als auch die 480 s Uhr greifen jetzt, und `/api/evaluate` + Auto-Pipeline bleiben bei der einen Quelle der Wahrheit in `llm.mjs`.
+- **en-Bericht ohne Blöcke — ein einmaliger Generierungs-Flake**: Derselbe Lauf sah eine einzelne `en`-Bewertung sprachrichtig zurückkommen, aber ganz ohne die A–G-Blöcke; ein gezielter Nachlauf lief sauber durch (21 091 Zeichen, A–G ✓). Nicht in den token-dichten Satz aufgenommen — ein Flake ist keine Historie.
+
+### Hinzugefügt
+
+- **Deploy-Workflow: `mode=hermes` und `mode=provider`** (CAR-190-Ops-Tail): `mode=hermes` startet das Hermes-Gateway neu und druckt eine vollständige Diagnose (Unit-Datei mit entfernten Secrets, Listener vorher/nachher, sudo-Journal, Port-für-Port-Sonden, die eigene `HERMES_BASE_URL`-Sicht der App, OpenRouter-Credits-Saldo); `mode=provider` wechselt `LLM_PROVIDER` mit einem Key-Präsenz-Guard (verweigert, wenn der `*_API_KEY` des Ziel-Providers fehlt) und startet die App neu — so wechselte die Prod auf `openrouter`, als die Hermes-Credits im Flug ausgingen. Der Deploy-Mode-Ref-Guard wird nur für `mode=deploy` validiert, damit Recon-/Verify-Dispatches wieder funktionieren (die Required-Inputs-Änderung aus der v1.261.3-Ära hatte sie verstummen lassen).
+
+### Hinweise
+
+- Bewusste Nicht-Aktion: `en` kommt **nicht** in den token-dichten Satz — ein Bericht ohne Blöcke ist ein Generierungs-Flake, keine Volumen-Historie.
+- Bewusste Nicht-Aktion: die verstärkte Ta-Sprachdirektive wird **nicht** auf `it` ausgeweitet — für Italienisch wurde kein Sprachdrift beobachtet.
+- Bewusste Nicht-Aktion: die Aufnahme des neuen UI-v2-Demovideos bleibt beim Owner (CAR-141) — die Landingpage bettet inzwischen ohnehin über `youtube-nocookie.com` ein.
+- Tests 6841 → 6841 auf dem Release-Branch.
+
 ## [1.262.0] — 2026-10-29
 
 **Das Upstream-Features-Minor: die Deel-Jobboard-Quelle stößt zum Scanner (Registry 123), der CSV-Import eines fremden Trackers landet direkt in `#/tracker`, der Posting-Guard-Integrity-Check und der CV-Voice-Check kommen als Relays/Lints, der Scanner lernt einen Years-of-Experience-Filter, und Apply-Buttons in sieben weiteren Sprachen lesen nicht mehr als fehlend — dazu ist MiniMax' ausgedientes Default-Modell ersetzt und Reposts werden nicht mehr über Quellen hinweg fabriziert.**
