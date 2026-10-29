@@ -30,7 +30,7 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 - Deliberate non-action: the posting-guard relay ships fail-soft — the fork does **not** carry the parent's `posting-guard.mjs` yet (upstream PR #6146 is still open), so the endpoint answers `{available:false, reason:"script-not-found"}` until a parent sync ships it.
 - Deliberate non-action: `yearsMin` is **not** surfaced as a `#/scan` UI chip in this release — the field ships in the snapshot and the filter is portals-config only.
 - Deliberate non-action: the upstream modes/reports Machine Summary changes (#6161/#6160/#6157) are **not** ported — they arrive with the deployed parent, not as web-ui mirrors.
-- Tests 6734 → <COUNT> on the release branch; the scanner's dedup key is untouched (URL-normalization behavior did **not** change).
+- Tests 6734 → 6841 on the release branch; the scanner's dedup key is untouched (URL-normalization behavior did **not** change).
 
 ## [1.261.3] — 2026-10-28
 
