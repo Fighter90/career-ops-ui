@@ -9,6 +9,34 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 ---
 
 
+## [1.261.3] — 2026-10-28
+
+**Design-færdiggørelsespatchen: Lovable-design fase 3 (density + fuld coral-pensionering), scan host-pool (32 virksomheder, 10 pr. host), seks upstream provider-lokationsrettelser, Trakstar Hire-kilden (registry 122), CV Studio undo + unsaved-guard — plus final-regression P3-rettelserne og docs-paritet.**
+
+### Rettet
+
+- **Kortklynge-«related»-label 3.16:1 → 4.68:1 (begge temaer)**: den lyse `--map-score-mid` formørket til `#567b75` (det foreslåede `#5f7f7a` målte kun 4.37 — ét trin mørkere var nødvendigt); den mørke side allerede 4.98:1, uberørt. Red-first-pin i `map-cluster-visual`.
+- **Skip-link-fokusring**: den sidste bogstavelige `#ff385c`-outline → `var(--accent-c)` — alle 78 fokusringe følger nu accent-tokenet.
+- **`.tab-btn.is-active`-accent-topologi** (#584, fase 3): kontrollen blandede tre farvefamilier (coral wash + danger-tekst + blå kant); nu et enkelt accent-soft-par.
+- **Upstream provider-lokationsrettelser ×5 (#580, CAR-176)**: workday `Fully Remote`-flag (ikke et sted), workable telecommuting-fan-out + state kun når byen mangler, successfactors afsluttende komma, lever remote-ordgrænse, icims `Location`-præfikserede labels.
+- **http-json: intet retry på en brugt timeout (#580)** — et deadline-abort er ikke-transient i begge retry-hjælpere (upstream målte ~94 s på ét Ashby-board ved 30 s × retries).
+- **Docs-paritet (#587)**: de sidste tællere fra 17/18-æraen i HANDOFF/CONVENTIONS/README (uk fik sin manglende Локалізація-sektion; §-historikken udvidet til §32/§33 — 33 H2-aritmetikken verificeret).
+
+### Tilføjet
+
+- **Lovable-design fase 3 (#584)**: density-tokens er live — tabelrækker ≈32px, kontroller 30px, chips 24px (WCAG 2.5.8 spacing-undtagelse); alle coral-rgba-rester flyttet til cv3-par (`.dash-hero`, `.badge-bad`, haloer, `.tab-btn.is-active`); `--ease-out` erklæret, TOKEN_HANDOFF tom; `.callout--ok/--danger`-kontrakten.
+- **Trakstar Hire-kilden (#583, CAR-177)**: registry **122 sources = 117 EN + 5 RU · 117 adaptere** — host-pinned jsapi.recruiterbox.com, offset-gennemløb med korte/tomme/gentagne stop, partials bevaret, `trakstarTruncated`-mærkning; count-gates ×5 + help §17 ×19.
+- **Scan host-pool (#579, CAR-178)**: op til 32 virksomheder samtidig, begrænset til 10 pr. host (upstream keyed-limiter-mønsteret) — snapshot byte-identisk med den sekventielle kørsel (red-first timing-mock-gate).
+- **CV Studio undo + unsaved-guard (#582, CAR-179)**: afgrænset undo-stack (30) over AI-kørselsresultater med ikke-QWERTY-sikker `Cmd/Ctrl+Z`, unsaved-changes-guard ved ruteafgang (live-probe dirty, confirm/rewind/beforeunload), i18n ×19.
+- **Upstream provider-rettelser testet ×17** (del af CAR-176); remote-QA-opsummeringen navngiver fejlende scan-kilder + `tok ~N` pr. eval (#567, allerede i v1.261.2 — observabiliteten brugt til denne releases triage).
+
+### Noter
+
+- **Accenten er nu blå** (Lovable-konceptet): primære handlinger/aktive tilstande/fokusringe følger `--cv3-accent`; rød er reserveret til danger (`.btn-danger`, `toast.error`, danger-tekst). Coral overlever kun i logo-PNG-assetet (ejerens valg).
+- **Density**: tabelrækker ≈32px / kontroller 30px / chips 24px — WCAG 2.5.8 spacing-undtagelsen dokumenteret; v1.26.1-44px-canaryen blev omskrevet til token-kontrakten.
+- CodeQL: alle 10 åbne alarmer lukket (4 FP-afvist med begrundelse: llmRateLimit/atomicWrite-dokumenterede klasser; 6 rettet i kilden).
+- Tests 6655 → <COUNT> på release-branchen; ingen scannerkilde-adfærd ændret ud over den nye Trakstar-kilde.
+
 ## [1.261.2] — 2026-10-28
 
 **Stabilitets- og poleringspatchen: geocode-cachen overlever et crash midt i en skrivning (CAR-173), UI.md renderer punktfortsættelser og indlejrede lister, nøglelækagerne i hjælpebundles' renderede tekst er lukket ×17, evaluate får et token-loft pr. locale for ta (CAR-174), RTL-chromen spejles via logiske properties (85 fund), kort-captures genindrammes ×19, og kortklyngerne består kontrasten i mørkt tema — plus fase 1 af Lovable-designintegrationen (det passive `tokens-v3.css`-ark), docs-backfill (release-gennemgang + specs) og CI-node-coverage-undtagelser.**
