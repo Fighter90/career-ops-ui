@@ -13,6 +13,24 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.262.2] — 2026-10-30
+
+### Corregido
+
+- **Cola de la revisión por oleadas — 7 hallazgos de severidad baja, cada uno rojo primero.** El viaje de ida y vuelta de la barra invertida en la importación CSV: una `\` en una celda se escribía duplicada y se leía duplicada, así que reimportar el mismo CSV se saltaba el dedup de company+role y podía crear una fila duplicada — el lector ahora desescapa `\\` tras el split (el ciclo escritura→lectura es sin pérdidas, la reimportación deduplica). El strip de `<head>` de cv-voice era cuadrático con etiquetas sin cerrar — 4827 ms → 13 ms en la entrada de 64 KB que la ruta topa. `statedYearsMin` ejecutaba el parser completo de años para cada oferta de cada fuente aunque `years_min` no estuviera configurado — ahora es perezoso, los segundos de CPU por escaneo grande desaparecen. Una captura borrada entre readdir y statSync tumbaba el listado del posting-guard (TOCTOU — los archivos desaparecidos se saltan). El default CN de MiniMax solo reconocía `api.minimax.cn` exacto — cualquier base URL `*.minimax.cn` recibe ahora el modelo CN. Los tokens `$` de Deel que no son refs hex ya no se cuelan en el snippet como literales. El picker de importación comprueba `file.size` ANTES de `file.text()` — el tope de servidor de 512 KB respondía 413 solo después de que el navegador hubiera parseado un archivo posiblemente enorme — con un toast localizado `import.tooLarge` ×19.
+- **Endurecimiento del deploy workflow (revisión de workflows F1–F6).** `provider` era la única entrada interpolada en la shell remota sin validación de charset — una `'` en el valor rompía las comillas y ejecutaba código arbitrario en prod; ahora se lista en blanco `^[A-Za-z0-9_-]+$` antes de cualquier empalme, y el grep de la guardia de clave ya no puede pasar en falso. El paso de diagnóstico de hermes imprimía journalctl crudo + volcados de units al log público; su filtro se perdía los `*_API_KEY=` en mayúsculas y no enmascaraba nada — ahora un redact compartido case-insensitive + enmascaramiento de valores + truncado a 80 caracteres en los tres sumideros, y las query strings `?token=` también se enmascaran. El paso de hermes ignoraba `inputs.app_dir` y hardcodeaba `/opt/career-ops/src/.env`. `public_url` llegaba a curl sin comprobación https (inyección de opción mediante un `-` inicial). Y la guardia anti-downgrade — el arreglo del incidente v1.238.0 — no tenía puerta ejecutable: seis pins nuevos en ci-workflows (refs sin defaults, la guardia corre antes de Deploy, regex estricta de refs).
+- **Cola del modal de importación (revisión SPA).** El modal arma la misma guardia de navegación que el modal de outcome — alejarse de la página ya no lo deja huérfano encima de otra vista. El input de archivo oculto se elimina en `cancel`, no solo en `change` — los cierres repetidos ya no filtran inputs a document.body. `plan.duplicates` se lee por la forma con guardia en la vista previa. La asignación de `num` del tracker usa `reduce` en lugar de `Math.max(...spread)` — el spread alcanza el límite de argumentos alrededor de ~100k filas.
+
+### Cambiado
+
+- Docs: la viñeta «118 EN adapters» de la guía de help ahora lleva el conteo en fr/it/ta (las otras 15 locales ya lo tenían). Los precios de los proveedores en cvstart.org se reverificaron contra las páginas oficiales de precios — los cuatro sin cambios, CHECKED_ON → 2026-10-30. Un barrido de deriva post-release arregló 42 líneas obsoletas de conteo/versión entre README ×19, CONTEXT.md, CLAUDE.md y los manuales SDD (restos de la era 109/104 y de la v1.262.0).
+
+### Notas
+
+- No-acción deliberada: el `window.confirm` nativo de cv-studio (era CAR-179) se queda — convertirlo a `UI.confirm` es trabajo posterior, no un ítem de parche; el tooltip de frases hechas `<mark title>` sigue siendo solo tooltip (suelo de a11y aceptable); `remote-qa.yml` conserva `cancel-in-progress: true` — re-despachar sustituye deliberadamente una regresión en curso.
+- remote-QA completo en prod v1.262.1: routes ×19 ✓ · site ×19 ✓ · links ✓ · LLM en vivo 18/19 locales A–G ✓ — `pl` pilló un único timeout de proveedor `502 · 300 s · 0 ch` (no es territorio denso en tokens; la re-corrida puntual viaja con este release).
+- Tests 6841 → 6867 en la rama de release (6864 pass / 0 fail / 3 skip, +26 vs v1.262.1) · Playwright 176 · cobertura 98.42 % líneas / 89.94 % ramas · registro sin cambios: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.262.1] — 2026-10-29
 
 **El parche de evaluación en italiano: `it` se une a las locales densas en tokens (techo de 32768 tokens + reloj de 480 s) después de que la era OpenRouter la pillara cortando el informe justo antes del bloque SCORE_SUMMARY — y la herramienta de cambio de proveedor que hizo posible el diagnóstico llega en el deploy workflow.**
