@@ -8,6 +8,24 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.262.2] — 2026-10-30
+
+### Corrigido
+
+- **Cauda da revisão da onda — 7 achados de baixa severidade, cada um red-first.** O round-trip da barra invertida do import de CSV: um `\` numa célula era gravado dobrado e relido dobrado, então re-importar o mesmo CSV perdia a dedup empresa+cargo e podia criar uma linha duplicada — o leitor agora desfaz o escape de `\\` depois do split (o round-trip gravação→leitura é sem perdas, o re-import deduplica). O strip do `<head>` do cv-voice era quadrático em tags não fechadas — 4827 ms → 13 ms na entrada de 64 KB que a rota limita. `statedYearsMin` rodava o parser de anos completo para cada vaga de cada fonte mesmo quando `years_min` não estava configurado — agora lazy, os segundos de CPU por scan grande desapareceram. Uma captura deletada entre readdir e statSync derrubava a listagem do posting-guard (TOCTOU — arquivos desaparecidos são pulados). O padrão CN do MiniMax casava apenas com `api.minimax.cn` exato — qualquer URL base `*.minimax.cn` agora recebe o modelo CN. Tokens `$` do Deel que não são refs hex não vazam mais para o snippet como literais. O picker de import checa `file.size` ANTES de `file.text()` — o teto de servidor de 512 KB respondia 413 só depois de o navegador ter parseado um arquivo possivelmente enorme — com um toast `import.tooLarge` localizado ×19.
+- **Endurecimento do deploy workflow (revisão de workflows F1–F6).** `provider` era a única input interpolada no shell remoto sem validação de charset — um `'` no valor quebrava o quoting e executava código arbitrário no prod; agora em allowlist `^[A-Za-z0-9_-]+$` antes de qualquer interpolação, e o grep da guarda de chave não pode mais dar falso-positivo. A etapa de diagnóstico do hermes imprimia journalctl bruto + dumps de unit no log público; seu filtro perdia `*_API_KEY=` em maiúsculas e não mascarava nada — agora uma redação compartilhada case-insensitive + mascaramento de valores + truncamento em 80 caracteres nos três sinks, query strings `?token=` mascaradas também. A etapa do hermes ignorava `inputs.app_dir` e tinha `/opt/career-ops/src/.env` hardcoded. `public_url` chegava ao curl sem checagem de https (injeção de opção via um `-` inicial). E a guarda anti-downgrade — o fix do incidente v1.238.0 — não tinha gate executável: seis novos pins no ci-workflows (refs sem defaults, a guarda roda antes do Deploy, regex de refs estrita).
+- **Cauda do import-modal (revisão SPA).** A modal arma o mesmo nav guard da modal de outcome — navegar para longe não a deixa mais órfã sobre outra view. O input de arquivo oculto é removido no `cancel`, não apenas no `change` — descartes repetidos não vazam mais inputs no document.body. `plan.duplicates` é lido pela forma protegida na pré-visualização. A alocação de `num` do tracker usa `reduce` em vez de `Math.max(...spread)` — o spread bate no limite de argumentos perto de ~100k linhas.
+
+### Alterado
+
+- Docs: a bullet «118 EN adapters» do guia de ajuda agora carrega a contagem em fr/it/ta (as outras 15 locales já tinham). Preços de fornecedores no cvstart.org reverificados contra as páginas de preços oficiais — os quatro inalterados, CHECKED_ON → 2026-10-30. Uma varredura de drift pós-release corrigiu 42 linhas de contagem/versão desatualizadas em README ×19, CONTEXT.md, CLAUDE.md e os manuais SDD (sobras da era 109/104 e da era v1.262.0).
+
+### Notas
+
+- Não-ação deliberada: o `window.confirm` nativo do cv-studio (era CAR-179) permanece — convertê-lo para `UI.confirm` é um follow-up, não um item de patch; o tooltip de frases prontas `<mark title>` permanece apenas tooltip (piso de a11y aceitável); `remote-qa.yml` mantém `cancel-in-progress: true` — re-despachar substitui intencionalmente uma regressão em andamento.
+- remote-QA completo no prod v1.262.1: rotas ×19 ✓ · site ×19 ✓ · links ✓ · LLM ao vivo 18/19 locales A–G ✓ — `pl` pegou um único timeout de provedor `502 · 300 s · 0 ch` (território não denso em tokens; a re-execução pontual viaja com este release).
+
+Testes 6841 → 6867 na branch de release — 6864 pass / 0 fail / 3 skip, +26 vs v1.262.1 · Playwright 176 · cobertura 98.42 % em linhas / 89.94 % em branches · registro inalterado: 123 sources = 118 EN + 5 RU · 118 adapters.
 
 ## [1.262.1] — 2026-10-29
 
