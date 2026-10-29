@@ -2,6 +2,34 @@
 
 > Dieses Changelog enthält die vollständige Versionsgeschichte. Einträge, die vor der deutschen Lokalisierung (v1.85.0) veröffentlicht wurden, stehen unten im englischen Original — Übersetzung ausstehend; maßgeblich bleibt [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.261.3] — 2026-10-28
+
+**Der Design-Vervollständigungs-Patch: Lovable-Design Phase 3 (Dichte + vollständige Coral-Ausmusterung), der Scan-Host-Pool (32 Unternehmen, 10 pro Host), sechs Upstream-Provider-Location-Fixes, die Trakstar-Hire-Quelle (Registry 122), CV-Studio-Undo + Wächter für ungespeicherte Änderungen — dazu die Final-Regression-P3-Fixes und die Docs-Parität.**
+
+### Behoben
+
+- **`related`-Label der Map-Cluster-Blasen 3,16:1 → 4,68:1 (beide Themes)**: das helle `--map-score-mid` auf `#567b75` abgedunkelt (das vorgeschlagene `#5f7f7a` maß nur 4,37 — ein Schritt dunkler war nötig); die Dark-Seite liegt bereits bei 4,98:1, unangetastet. Red-first-Pin in `map-cluster-visual`.
+- **Skip-Link-Fokusring**: der letzte literale `#ff385c`-Outline → `var(--accent-c)` — alle 78 Fokusringe folgen jetzt dem Akzent-Token.
+- **`.tab-btn.is-active`-Akzent-Topologie** (#584, Phase 3): das Control mischte drei Farbfamilien (Coral-Wash + Danger-Text + blauer Rand); jetzt ein einziges Accent-soft-Paar.
+- **Upstream-Provider-Location-Fixes ×5 (#580, CAR-176)**: workday `Fully Remote`-Flag (kein Ort), workable Telecommuting-Fan-out + State nur ohne Stadt, successfactors nachgestelltes Komma, lever Remote-Wortgrenze, icims `Location`-präfixierte Labels.
+- **http-json: kein Retry nach verbrauchtem Timeout (#580)** — ein Deadline-Abort ist in beiden Retry-Helfern nicht-transient (Upstream maß ~94s auf einem Ashby-Board bei 30s×Retries).
+- **Docs-Parität (#587)**: die letzten Zähler aus der 17/18-Ära in HANDOFF/CONVENTIONS/README (uk bekam seine fehlende Локалізація-Sektion; die §-Historie bis §32/§33 erweitert — die 33-H2-Arithmetik verifiziert).
+
+### Hinzugefügt
+
+- **Lovable-Design Phase 3 (#584)**: die Density-Tokens sind live — Tabellenzeilen ≈32px, Controls 30px, Chips 24px (WCAG-2.5.8-Spacing-Ausnahme); jeder Coral-rgba-Rest in cv3-Paare überführt (`.dash-hero`, `.badge-bad`, Halos, `.tab-btn.is-active`); `--ease-out` deklariert, TOKEN_HANDOFF leer; der `.callout--ok/--danger`-Vertrag.
+- **Trakstar-Hire-Quelle (#583, CAR-177)**: Registry **122 Quellen = 117 EN + 5 RU · 117 Adapter** — host-gepinntes jsapi.recruiterbox.com, Offset-Walk mit Short-/Empty-/Repeated-Stops, Partials bleiben erhalten, `trakstarTruncated`-Markierung; Count-Gates ×5 + Hilfe §17 ×19.
+- **Scan-Host-Pool (#579, CAR-178)**: bis zu 32 Unternehmen gleichzeitig, gedeckelt bei 10 pro Host (das Keyed-Limiter-Muster des Upstream) — Snapshot byte-identisch zum sequenziellen Lauf (red-first Timing-Mock-Gate).
+- **CV-Studio-Undo + Wächter für ungespeicherte Änderungen (#582, CAR-179)**: begrenzter Undo-Stack (30) über die Ergebnisse der KI-Läufe mit nicht-QWERTY-sicherem `Cmd/Ctrl+Z`, Wächter vor ungespeicherten Änderungen beim Verlassen der Route (Live-Probe dirty, confirm/rewind/beforeunload), i18n ×19.
+- **Upstream-Provider-Fixes ×17 getestet** (Teil von CAR-176); die Remote-QA-Zusammenfassung benennt fehlgeschlagene Scan-Quellen + `tok ~N` pro Eval (#567, bereits in v1.261.2 — die Observability wurde für das Triage dieses Releases genutzt).
+
+### Hinweise
+
+- **Der Akzent ist jetzt blau** (Lovable-Konzept): primäre Aktionen/aktive Zustände/Fokusringe folgen `--cv3-accent`; Rot ist dem Danger vorbehalten (`.btn-danger`, `toast.error`, Danger-Text). Coral überlebt nur im Logo-PNG-Asset (Owner-Entscheidung).
+- **Dichte**: Tabellenzeilen ≈32px / Controls 30px / Chips 24px — WCAG-2.5.8-Spacing-Ausnahme dokumentiert; der 44px-Canary aus v1.26.1 wurde auf den Token-Vertrag umgeschrieben.
+- CodeQL: alle 10 offenen Alerts geschlossen (4 als FP dismissed mit Begründung: llmRateLimit/atomicWrite sind dokumentierte Klassen; 6 an der Quelle gefixt).
+- Tests 6655 → **6734** auf dem Release-Branch; außer der neuen Trakstar-Quelle hat sich kein Scanner-Quellen-Verhalten geändert.
+
 ## [1.261.2] — 2026-10-28
 
 **Der Stabilitäts- und Polier-Patch: der Geocode-Cache überlebt einen Absturz mitten im Schreibvorgang (CAR-173), UI.md rendert Listen-Fortsetzungen und verschachtelte Listen, die Key-Lecks im gerenderten Hilfe-Text sind ×17 geschlossen, evaluate bekommt ein sprachabhängiges Token-Limit für ta (CAR-174), der RTL-Chrome spiegelt über logische Properties (85 Funde), die Map-Captures sind ×19 neu gerahmt und die Map-Cluster bestehen den Kontrast im Dark-Theme — dazu die erste Phase der Lovable-Design-Integration (passives `tokens-v3.css`-Stylesheet), Docs-Backfill (Release-Review + Specs) und CI-Node-Coverage-Ausnahmen.**

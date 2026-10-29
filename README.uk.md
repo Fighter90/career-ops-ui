@@ -10,19 +10,19 @@
 
 _Неофіційний інтерфейс — не пов'язаний із career-ops / santifer і не схвалений ними._
 
-[![tests](https://img.shields.io/badge/tests-5823%20passed-brightgreen)](#тести)
+[![tests](https://img.shields.io/badge/tests-6699%20passed-brightgreen)](#тести)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#тести)
-[![playwright](https://img.shields.io/badge/playwright-143%2F143-brightgreen)](#тести)
+[![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.259.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.259.0)
+[![release](https://img.shields.io/badge/release-v1.261.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.261.3)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Останній реліз — v1.259.0** — **Другий потяг агентного флоту, шість виправлень: дати звітів закріплюються сервером (вигаданих 2026-01-xx більше не буде), джерела глибокого рісьорчу приїхали раніше, геокодер мапи кешує результати й читає RU-міста (92% без локації → покрито), довідка ×18 цитує локалізовані підписи кнопок, речення інтерфейсу перестають змішувати мови (23 витоки за ключами), а порівняння зарплат рахуються на сервері в одній канонічній формі (кейс zh-TW з перевертанням вердикту мертвий). Плюс CAR-104: JS-бандл тепер постачається заздалегідь стиснутим — холодне завантаження 3.1 MB → 598 KB.**
+> **🆕 Останній реліз — v1.261.3** — **Патч завершення дизайну: дизайн-система Lovable повністю працює — щільність фази 3 (рядки таблиць ≈32px, контроли 30px, чіпи 24px), і всі залишки коралового переїхали на нове розділення синій акцент / червона небезпека — плюс джерело сканування Trakstar Hire (реєстр 122 джерел), host-pool сканування (до 32 компаній, 10 на хост), шість виправлень локацій провайдерів з upstream, undo в CV Studio + захист незбереженого, і виправлення контрасту фінальної регресії (мітка кластера мапи 4.68:1). Під ними: кеш геокодера тепер переживає збої, оцінки ta отримали стелю 32768 токенів, а remote-QA називає джерела, що впали.**
 >
-> **Попередній реліз — v1.258.0** — **Шість виправлень агентного флоту: лічильник «Активні компанії» перестає змішувати два всесвіти (1554/90), глибокий рісьорч вимагає маркерів `[source: …]` і визнає невідоме, поля форми з невдалим POST підсвічуються замість помилки лише тостом, #/map і #/tracker рендерять свій h1 миттєво зі скелетон-рядками завантаження, а кожен /api/evaluate кешує стабільний префікс на ~37k токенів (≈10× дешевше після першого виклику).**
+> **Попередній реліз — v1.261.2** — **Стабільність + шліфування: виправлено TDZ-crash у two-pager (P1), Ctrl+K працює на розкладках не-QWERTY, закрито витоки ключів у відрендереному тексті довідки ×17, UI.md рендерить продовження маркерів і вкладені списки, захоплення мапи переобрамлено ×19 зі справжніми скріншотами на cvstart.org, RTL-хром дзеркалиться логічними властивостями (85 знахідок), harness клавіатурної a11y на 11 маршрутах, і кеш геокодера зроблено стійким до збоїв.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -147,7 +147,7 @@ career-ops/
 └─ web-ui/          ← це репозиторій
    ├─ server/       # Express + 15 модулів маршрутів
    ├─ public/       # vanilla JS SPA, без бандлера
-   └─ tests/        # 5695 unit + 144 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.255.2)
+   └─ tests/        # 6699 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.261.3)
 ```
 
 Сервер має дві виробничі залежності: `express` та `js-yaml`. Жодного transpile, жодного бандлера — весь UI займає менше 30 KB у мінімізованому вигляді.

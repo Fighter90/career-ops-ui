@@ -7,19 +7,19 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-5823%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-6699%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
-[![playwright](https://img.shields.io/badge/playwright-143%2F143-brightgreen)](#tests)
+[![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.259.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.259.0)
+[![release](https://img.shields.io/badge/release-v1.261.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.261.3)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.259.0** — **에이전트 플릿 두 번째 트레인, 수정 여섯 건: 리포트 날짜는 서버에서 고정되고(지어낸 2026-01-xx는 이제 없음), 심층 조사 출처는 이전 릴리스에서 이미 착지했으며, 지도 지오코더는 캐시하며 RU 도시를 읽고(위치 없음 92% → 커버), 도움말 ×18은 현지화된 버튼 라벨을 인용하며, UI 문장은 언어 섞임을 멈추고(키가 지정된 누수 23건), 급여 비교는 하나의 정규 형태로 서버 측에서 계산됩니다(zh-TW 판정 뒤집힘은 이제 죽었습니다). 여기에 CAR-104: JS 번들이 이제 사전 압축되어 출시됩니다 — 콜드 로드 3.1 MB → 598 KB.**
+> **🆕 최신 릴리스 — v1.261.3** — **디자인 완성 패치: Lovable 디자인 시스템이 완전히 적용 — 3단계 밀도(테이블 행 ≈32px, 컨트롤 30px, 칩 24px)와 coral 잔여물은 모두 새로운 파란 액센트/빨간 위험 분할로 이동 — 여기에 Trakstar Hire 스캔 소스(레지스트리 122), 스캔 호스트 풀(최대 32개 회사, 호스트당 10개), 업스트림 프로바이더 로케이션 수정 6건, CV Studio undo + 미저장 가드, 그리고 최종 회귀 대비 수정(지도 클러스터 라벨 4.68:1). 그 아래로: 지오코드 캐시는 이제 크래시에서 살아남고, ta 평가에는 32768 토큰 상한이 생겼으며, remote-QA는 실패한 소스를 이름으로 밝힙니다.**
 >
-> **이전 버전 — v1.258.0** — **에이전트 플릿 수정 여섯 건: «활성 회사» 카운터가 두 우주를 섞는 것을 멈추고(1554/90), 심층 조사는 `[source: …]` 마커를 요구하고 모름을 인정하며, 실패한 폼 필드는 토스트-전용 오류 대신 밝게 표시되고, #/map과 #/tracker는 스켈레톤 로딩 행과 함께 h1을 즉시 렌더링하며, 모든 /api/evaluate는 ~37k 토큰 안정 접두사를 캐시합니다(첫 호출 이후 ≈10× 저렴).**
+> **이전 버전 — v1.261.2** — **안정성 + 마무리: two-pager TDZ 크래시 수정(P1), 비 QWERTY 레이아웃에서도 Ctrl+K 동작, 도움말 렌더링 텍스트 키 누수 ×17 해소, UI.md가 불릿 연속 행과 중첩 리스트를 렌더링, 지도 캡처 ×19 재프레이밍(cvstart.org에 실제 스크린샷), RTL 크롬을 논리 속성으로 미러링(85건), 11개 라우트 대상 키보드 a11y 하네스, 그리고 지오코드 캐시를 크래시 세이프로.**
 
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
@@ -393,7 +393,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 5695 unit + 144 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.255.2)
+└─ tests/                    # 6699 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.261.3)
    ├─ parsers.test.mjs       # markdown / pipeline / report 파서 (순수 함수)
    ├─ api.test.mjs           # 모든 엔드포인트, 임시 서버, 네트워크 없음
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch

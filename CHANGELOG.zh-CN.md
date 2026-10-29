@@ -9,6 +9,34 @@
 ---
 
 
+## [1.261.3] — 2026-10-28
+
+**设计收尾补丁：Lovable 设计第三阶段（密度 + 珊瑚色全面退役）、扫描主机池（32 家公司、每主机 10 家）、六处上游提供方地点修复、Trakstar Hire 来源（注册表 122）、CV Studio 撤销 + 未保存守卫 —— 另有 final-regression P3 修复与文档对齐。**
+
+### 修复
+
+- **地图聚类 `related` 标签 3.16:1 → 4.68:1（两套主题）**：浅色侧 `--map-score-mid` 加深至 `#567b75`（建议值 `#5f7f7a` 实测只有 4.37 —— 需要再深一档）；深色侧本已达 4.98:1，未动。红→绿钉定于 `map-cluster-visual`。
+- **Skip-link 焦点环**：最后一处字面 `#ff385c` 轮廓 → `var(--accent-c)` —— 全部 78 个焦点环现随强调色令牌。
+- **`.tab-btn.is-active` 强调色拓扑**（#584，第三阶段）：该控件此前混用了三个色彩族（珊瑚色底 + danger 文字 + 蓝色边框）；现为一对统一的 accent-soft 配色。
+- **上游提供方地点修复 ×5（#580，CAR-176）**：workday 的 `Fully Remote` 标记（不是地点）、workable 的 telecommuting 展开 + 仅在无城市时才写州、successfactors 的尾随逗号、lever 的 remote 词边界、icims 的 `Location` 前缀标签。
+- **http-json：超时预算耗尽后不再重试（#580）** —— 截止时间触发的中止在两个重试助手中都属非瞬态错误（上游实测：某块 Ashby 看板按 30s×重试算耗时约 94s）。
+- **文档对齐（#587）**：HANDOFF/CONVENTIONS/README 中最后的 17/18 时代计数（uk 补上了缺失的 Локалізація 章节；§-历史延展至 §32/§33 —— 33 个 H2 的算术已验证）。
+
+### 新增
+
+- **Lovable 设计第三阶段（#584）**：密度令牌生效 —— 表格行 ≈32px、控件 30px、chips 24px（WCAG 2.5.8 间距豁免）；每一处珊瑚色 rgba 残留移入 cv3 配色对（`.dash-hero`、`.badge-bad`、halo 光晕、`.tab-btn.is-active`）；声明 `--ease-out`，TOKEN_HANDOFF 清空；确立 `.callout--ok/--danger` 契约。
+- **Trakstar Hire 来源（#583，CAR-177）**：注册表 **122 sources = 117 EN + 5 RU · 117 adapters** —— 主机钉定 jsapi.recruiterbox.com，偏移走查遇短页/空页/重复页即停，保留部分结果，`trakstarTruncated` 截断标记；计数门槛 ×5 + 帮助 §17 ×19。
+- **扫描主机池（#579，CAR-178）**：最多 32 家公司并发、每主机封顶 10 家（上游 keyed-limiter 模式）—— 快照与顺序执行逐字节一致（红→绿计时模拟门槛）。
+- **CV Studio 撤销 + 未保存守卫（#582，CAR-179）**：对 AI 运行结果的有界撤销栈（30 步），配以在非 QWERTY 布局下同样可用的 `Cmd/Ctrl+Z`；离开路由时的未保存更改守卫（实时探测脏状态，confirm/rewind/beforeunload）；i18n ×19。
+- **上游提供方修复测试覆盖 ×17**（CAR-176 的一部分）；remote-QA 摘要点名失败的扫描来源 + 每次 eval 的 `tok ~N`（#567，v1.261.2 已包含 —— 本次发布的分诊用的正是这套可观测性）。
+
+### 备注
+
+- **强调色现为蓝色**（Lovable 概念）：主操作/激活态/焦点环跟随 `--cv3-accent`；红色仅保留给 danger（`.btn-danger`、`toast.error`、danger 文字）。珊瑚色只在 logo PNG 资产中保留（所有者的决定）。
+- **密度**：表格行 ≈32px / 控件 30px / chips 24px —— WCAG 2.5.8 间距豁免已记录在案；v1.26.1 的 44px 金丝雀断言改写为令牌契约。
+- CodeQL：全部 10 个未决告警关闭（4 个附理由豁免为误报：llmRateLimit/atomicWrite 属已归档类别；6 个在源码处实修）。
+- 测试 6655 → 6734（发布分支）；除新增的 Trakstar 来源之外，扫描来源行为无任何变化。
+
 ## [1.261.2] — 2026-10-28
 
 **稳定性与打磨补丁：地理编码缓存可挺过写入中途的崩溃（CAR-173）、UI.md 渲染列表项续行与嵌套列表、帮助包渲染文本中的键泄漏 ×17 全部关闭、evaluate 为 ta 获得按语言划分的 token 上限（CAR-174）、RTL 固定界面元素经逻辑属性实现镜像（85 处发现）、地图截图重新取景 ×19 且地图聚类在深色主题下通过对比度检查 —— 另有 Lovable 设计集成的第一阶段（被动加载的 `tokens-v3.css` 样式表）、文档回填（发布评审 + 规格），以及 CI 节点覆盖率豁免。**

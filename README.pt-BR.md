@@ -7,19 +7,19 @@
 
 _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-5823%20passed-brightgreen)](#testes)
+[![tests](https://img.shields.io/badge/tests-6699%20passed-brightgreen)](#testes)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
-[![playwright](https://img.shields.io/badge/playwright-143%2F143-brightgreen)](#testes)
+[![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.259.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.259.0)
+[![release](https://img.shields.io/badge/release-v1.261.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.261.3)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versão — v1.259.0** — **Segundo trem da frota de agentes, seis correções: as datas dos relatórios são fixadas pelo servidor (nada mais de datas 2026-01-xx inventadas), as fontes da pesquisa profunda chegaram mais cedo, o geocodificador do mapa faz cache e lê cidades cirílicas (92% sem localização → cobertas), a ajuda ×18 cita os rótulos de botões localizados, as frases da UI param de misturar idiomas (23 vazamentos por chave), e as comparações salariais são calculadas no servidor em uma única forma canônica (a virada de veredito do zh-TW está morta). Mais o CAR-104: o bundle JS agora é distribuído pré-comprimido — carregamento a frio 3.1 MB → 598 KB.**
+> **🆕 Última versão — v1.261.3** — **O patch de conclusão do design: o sistema de design Lovable está totalmente ativo — densidade da fase 3 (linhas de tabela ≈32px, controles 30px, chips 24px) e todo resquício de coral movido para a nova divisão azul de destaque / vermelho de perigo — mais a fonte de scan Trakstar Hire (122 no registro), o host-pool do scan (até 32 empresas, 10 por host), seis correções de localização em providers upstream, desfazer + proteção contra alterações não salvas no CV Studio, e os ajustes de contraste da regressão final (rótulo do cluster do mapa 4.68:1). Por baixo: o cache do geocodificador agora sobrevive a quedas, as avaliações em ta ganharam um teto de 32768 tokens, e o remote-QA nomeia as fontes que falham.**
 >
-> **Anterior — v1.258.0** — **Seis correções da frota de agentes: o contador «Empresas ativas» para de misturar dois universos (1554/90), a pesquisa profunda exige marcadores `[source: …]` e admite o desconhecido, os campos de formulário que falham acendem em vez de um erro apenas em toast, #/map e #/tracker renderizam o h1 instantaneamente com linhas de skeleton de carregamento, e cada /api/evaluate faz cache do prefixo estável de ~37k tokens (≈10× mais barato depois da primeira chamada).**
+> **Anterior — v1.261.2** — **Estabilidade + polimento: corrigido o crash TDZ do two-pager (P1), Ctrl+K funciona em layouts não QWERTY, fechados os vazamentos de chaves no texto renderizado da ajuda ×17, UI.md renderiza continuações de marcadores e listas aninhadas, capturas do mapa reenquadradas ×19 com screenshots reais no cvstart.org, o chrome RTL espelhado via propriedades lógicas (85 achados), um harness de a11y de teclado sobre 11 rotas, e o cache do geocodificador tornado crash-safe.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -392,7 +392,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 5695 unit + 144 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.255.2)
+└─ tests/                    # 6699 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.261.3)
    ├─ parsers.test.mjs       # parsers de markdown / pipeline / report (funções puras)
    ├─ api.test.mjs           # cada endpoint, servidor efêmero, sem rede
    ├─ {ru,en}-scanner.test.mjs   # fetch mockado

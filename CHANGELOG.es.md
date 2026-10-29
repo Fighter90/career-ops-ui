@@ -13,6 +13,34 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.261.3] — 2026-10-28
+
+**El parche de cierre de diseño: fase 3 del diseño Lovable (densidad + retirada completa del coral), el host-pool del scan (32 empresas, 10 por host), seis correcciones de location en proveedores upstream, la fuente Trakstar Hire (registro 122), undo + guarda de cambios sin guardar en CV Studio — más las correcciones P3 de la regresión final y la paridad de documentación.**
+
+### Corregido
+
+- **Etiqueta «related» de los clústeres del mapa 3.16:1 → 4.68:1 (ambos temas)**: el `--map-score-mid` claro se oscureció a `#567b75` (el `#5f7f7a` sugerido solo medía 4.37 — hacía falta un paso más oscuro); el lado oscuro ya estaba en 4.98:1, intacto. Pin rojo-primero en `map-cluster-visual`.
+- **Anillo de foco del skip-link**: el último contorno literal `#ff385c` → `var(--accent-c)` — los 78 anillos de foco siguen ahora el token de acento.
+- **Topología de acento de `.tab-btn.is-active`** (#584, fase 3): el control mezclaba tres familias de color (tinte coral + texto danger + borde azul); ahora un único par accent-soft.
+- **Correcciones de location en proveedores upstream ×5 (#580, CAR-176)**: flag `Fully Remote` de workday (no es un lugar), fan-out de telecommuting de workable + estado solo cuando no hay ciudad, coma final de successfactors, frontera de palabra para remote en lever, etiquetas con prefijo `Location` en icims.
+- **http-json: sin reintento en un timeout agotado (#580)** — un aborto por deadline es no transitorio en ambos helpers de reintento (upstream midió ~94 s en un board de Ashby con 30 s×reintentos).
+- **Paridad de documentación (#587)**: los últimos contadores de la era 17/18 en HANDOFF/CONVENTIONS/README (uk recibió su sección Локалізація que faltaba; la historia de § extendida hasta §32/§33 — aritmética de 33 H2 verificada).
+
+### Añadido
+
+- **Fase 3 del diseño Lovable (#584)**: tokens de densidad activos — filas de tabla ≈32px, controles 30px, chips 24px (excepción de espaciado WCAG 2.5.8); cada residuo rgba coral movido a pares cv3 (`.dash-hero`, `.badge-bad`, halos, `.tab-btn.is-active`); `--ease-out` declarado, TOKEN_HANDOFF vacío; contrato `.callout--ok/--danger`.
+- **Fuente Trakstar Hire (#583, CAR-177)**: registro **122 fuentes = 117 EN + 5 RU · 117 adaptadores** — anclado al host jsapi.recruiterbox.com, recorrido por offset con paradas cortas/vacías/repetidas, parciales conservados, etiquetado `trakstarTruncated`; gates de recuento ×5 + help §17 ×19.
+- **Host-pool del scan (#579, CAR-178)**: hasta 32 empresas en concurrencia, con tope de 10 por host (patrón keyed-limiter de upstream) — snapshot byte a byte idéntico a la ejecución secuencial (gate rojo-primero con mock de tiempos).
+- **Undo + guarda de cambios sin guardar en CV Studio (#582, CAR-179)**: pila de undo acotada (30) sobre los resultados de ejecuciones de IA con `Cmd/Ctrl+Z` seguro en teclados no QWERTY, guarda de cambios sin guardar al salir de la ruta (dirty por live-probe, confirm/rewind/beforeunload), i18n ×19.
+- **Correcciones de proveedores upstream probadas ×17** (parte de CAR-176); el resumen de remote-QA nombra las fuentes de escaneo que fallan + `tok ~N` por eval (#567, ya en v1.261.2 — la observabilidad se usó para el triage de este release).
+
+### Notas
+
+- **El acento es ahora azul** (concepto Lovable): acciones primarias/estados activos/anillos de foco siguen `--cv3-accent`; el rojo queda reservado para danger (`.btn-danger`, `toast.error`, texto de danger). El coral sobrevive solo en el asset PNG del logo (decisión del propietario).
+- **Densidad**: filas de tabla ≈32px / controles 30px / chips 24px — excepción de espaciado WCAG 2.5.8 documentada; el canary de 44px de v1.26.1 se reescribió sobre el contrato de tokens.
+- CodeQL: las 10 alertas abiertas cerradas (4 descartadas como FP con justificación: clases documentadas llmRateLimit/atomicWrite; 6 corregidas en el código fuente).
+- Tests 6655 → 6734 en la rama de release; ningún comportamiento de fuentes de escaneo cambió aparte de la nueva fuente Trakstar.
+
 ## [1.261.2] — 2026-10-28
 
 **El parche de estabilidad + pulido: la caché de geocodificación sobrevive a un crash a mitad de escritura (CAR-173), UI.md renderiza continuaciones de viñetas y listas anidadas, las fugas de claves en el texto renderizado de los archivos de help quedan cerradas ×17, evaluate recibe un techo de tokens por idioma para ta (CAR-174), el chrome RTL se refleja mediante propiedades lógicas (85 hallazgos), las capturas del mapa se reencuadran ×19 y los clústeres del mapa pasan el contraste en oscuro — más la primera fase de la integración de diseño Lovable (hoja pasiva `tokens-v3.css`), backfill de documentación (revisión de release + specs) y exenciones de cobertura por varianza de nodos de CI.**

@@ -7,19 +7,19 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-5823%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-6699%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
-[![playwright](https://img.shields.io/badge/playwright-143%2F143-brightgreen)](#tests)
+[![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.259.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.259.0)
+[![release](https://img.shields.io/badge/release-v1.261.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.261.3)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.259.0** — **第二趟 agent 艦隊列車，六項修復：報告日期由伺服器端釘住（不再出現捏造的 2026-01-xx）、深度研究來源標記已提前落地、地圖地理編碼器快取並讀取俄語城市（92% 的無位置列 → 已覆蓋）、說明 ×18 引用本地化的按鈕標籤、UI 句子不再混雜語言（23 個鍵值洩漏），且薪資比較改以單一規範形式在伺服器端計算（zh-TW 的判決翻轉已死）。再加上 CAR-104：JS bundle 現在以預先壓縮形式出貨 — 冷載入 3.1 MB → 598 KB。**
+> **🆕 最新版本 — v1.261.3** — **設計完工修補：Lovable 設計系統全面上線 — 第 3 階段密度（表格列 ≈32px、控制元件 30px、chips 24px），且所有殘留的珊瑚色全數遷移到新的藍色強調／紅色危險拆分 — 再加上 Trakstar Hire 掃描來源（來源登錄達 122 個）、掃描 host-pool（最多 32 家公司、每個 host 10 家）、六項上游 provider 位置修復、CV Studio 復原與未儲存變更防護，以及最終迴歸的對比度修復（地圖叢集標籤 4.68:1）。底層：地理編碼快取現在耐崩潰、ta 評估取得 32768-token 上限，且 remote-QA 會點名失敗的來源。**
 >
-> **前一版本 — v1.258.0** — **agent 艦隊的六項修復：«活動公司» 計數器不再混合兩個世界（1554/90）、深度研究必須附上 `[source: …]` 標記並坦承未知、失敗的表單欄位會直接亮起而不只跳出 toast 錯誤、#/map 與 #/tracker 即時渲染 h1 並配備骨架載入列，且每次 /api/evaluate 都會快取約 37k-token 的穩定前綴（首次呼叫後 ≈10× 更便宜）。**
+> **前一版本 — v1.261.2** — **穩定性 + 打磨：兩頁紙（two-pager）TDZ 當機修復（P1）、Ctrl+K 在非 QWERTY 鍵盤配置上可用、說明渲染文字的鍵值洩漏已關閉 ×17、UI.md 支援清單延續列與巢狀清單、地圖截圖重新取景 ×19 並在 cvstart.org 附上真實截圖、RTL 介面改用邏輯屬性鏡像（85 項發現）、涵蓋 11 個路由的鍵盤無障礙測試框架，以及地理編碼快取改造為耐崩潰。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -392,7 +392,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 5695 unit + 144 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.255.2)
+└─ tests/                    # 6699 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.261.3)
    ├─ parsers.test.mjs       # markdown / pipeline / report 解析器(純函式)
    ├─ api.test.mjs           # 每個端點、暫時性伺服器、無網路
    ├─ {ru,en}-scanner.test.mjs   # 已 mock 的 fetch

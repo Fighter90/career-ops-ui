@@ -2,6 +2,34 @@
 
 > Questo changelog contiene ora la cronologia completa delle versioni. Le voci pubblicate prima della localizzazione italiana (v1.85.0) compaiono sotto nell'originale inglese — traduzione in attesa; il riferimento resta [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.261.3] — 2026-10-28
+
+**La patch di completamento del design: la fase 3 del design Lovable (densità + ritiro completo del corallo), il pool di host dello scan (32 aziende, 10 per host), cinque fix di localizzazione dei provider upstream, la fonte Trakstar Hire (registro 122), l'undo + la guardia unsaved di CV Studio — più i fix P3 della regressione finale e la parità della documentazione.**
+
+### Corretto
+
+- **Etichetta «related» dei cluster della mappa 3.16:1 → 4.68:1 (entrambi i temi)**: il `--map-score-mid` chiaro è stato scurito a `#567b75` (il `#5f7f7a` suggerito misurava solo 4.37 — serviva un passo in più); il lato dark era già a 4.98:1, intoccato. Pin rosso-first in `map-cluster-visual`.
+- **Anello di focus dello skip-link**: l'ultimo outline letterale `#ff385c` → `var(--accent-c)` — tutti i 78 anelli di focus seguono ora il token dell'accento.
+- **Topologia dell'accento di `.tab-btn.is-active`** (#584, fase 3): il controllo mescolava tre famiglie di colore (lavaggio corallo + testo danger + bordo blu); ora un'unica coppia accent-soft.
+- **Fix di localizzazione dei provider upstream ×5 (#580, CAR-176)**: flag workday `Fully Remote` (non è un luogo), fan-out telecommuting workable + stato solo in assenza di città, virgola finale successfactors, word-boundary remote lever, etichette con prefisso `Location` icims.
+- **http-json: nessun retry su un timeout esaurito (#580)** — un abort di scadenza è non transitorio in entrambi gli helper di retry (l'upstream ha misurato ~94s su un board Ashby a 30s×retry).
+- **Parità della documentazione (#587)**: gli ultimi contatori dell'era 17/18 in HANDOFF/CONVENTIONS/README (uk riceve la sua sezione Локалізація mancante; la storia dei § estesa a §32/§33 — aritmetica dei 33 H2 verificata).
+
+### Aggiunto
+
+- **Fase 3 del design Lovable (#584)**: i token di densità sono attivi — righe di tabella ≈32px, controlli 30px, chip 24px (eccezione di spaziatura WCAG 2.5.8); ogni residuo rgba corallo spostato sulle coppie cv3 (`.dash-hero`, `.badge-bad`, aloni, `.tab-btn.is-active`); `--ease-out` dichiarato, TOKEN_HANDOFF vuoto; contratto `.callout--ok/--danger`.
+- **Fonte Trakstar Hire (#583, CAR-177)**: registro **122 fonti = 117 EN + 5 RU · 117 adattatori** — host-pinned jsapi.recruiterbox.com, percorso a offset con arresti brevi/vuoti/ripetuti, parziali conservati, marcatura `trakstarTruncated`; gate di conteggio ×5 + guida §17 ×19.
+- **Pool di host dello scan (#579, CAR-178)**: fino a 32 aziende in concorrenza, con tetto di 10 per host (pattern keyed-limiter upstream) — snapshot byte-per-byte identico all'esecuzione sequenziale (gate timing-mock rosso-first).
+- **Undo + guardia unsaved di CV Studio (#582, CAR-179)**: stack di undo limitato (30) sui risultati delle esecuzioni AI con `Cmd/Ctrl+Z` sicuro per tastiere non-QWERTY, guardia unsaved-changes all'abbandono della rotta (probe live del dirty, confirm/rewind/beforeunload), i18n ×19.
+- **Fix dei provider upstream testati ×17** (parte di CAR-176); il sommario della remote-QA nomina le fonti di scan in fallimento + `tok ~N` per valutazione (#567, già in v1.261.2 — l'osservabilità è stata usata per il triage di questa release).
+
+### Note
+
+- **L'accento ora è blu** (concetto Lovable): azioni primarie/stati attivi/anelli di focus seguono `--cv3-accent`; il rosso è riservato al danger (`.btn-danger`, `toast.error`, testo di danger). Il corallo sopravvive solo nell'asset PNG del logo (decisione del proprietario).
+- **Densità**: righe di tabella ≈32px / controlli 30px / chip 24px — eccezione di spaziatura WCAG 2.5.8 documentata; il canary 44px della v1.26.1 è stato riscritto sul contratto dei token.
+- CodeQL: tutti i 10 alert aperti sono chiusi (4 archiviati come falsi positivi con motivazione: classi documentate llmRateLimit/atomicWrite; 6 corretti alla fonte).
+- Test 6655 → 6734 sul branch di release; nessun comportamento delle fonti di scan cambiato oltre la nuova fonte Trakstar.
+
 ## [1.261.2] — 2026-10-28
 
 **La patch di stabilità e rifinitura: la cache del geocoding sopravvive a un crash a metà scrittura (CAR-173), UI.md renderizza le continuazioni dei bullet e gli elenchi annidati, le fughe di chiavi nel testo renderizzato dei bundle della guida sono chiuse ×17, le valutazioni ottengono un tetto di token per locale per il ta (CAR-174), il chrome RTL va in specchio tramite proprietà logiche (85 finding), le catture della mappa sono ri-inquadrate ×19 e i cluster della mappa passano il contrasto in dark — più la prima fase dell'integrazione del design Lovable (foglio passivo `tokens-v3.css`), il backfill della documentazione (release review + specifiche) e le esenzioni di copertura per la varianza dei nodi CI.**

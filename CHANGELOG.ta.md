@@ -6,6 +6,34 @@
 
 ---
 
+## [1.261.3] — 2026-10-28
+
+**design-நிறைவு patch: Lovable design phase 3 (density + coral முழு விலகல்), scan host-pool (32 companies, host ஒன்றுக்கு 10), ஆறு upstream provider location fixes, Trakstar Hire source (registry 122), CV Studio undo + unsaved-guard — மேலும் இறுதி-regression P3 fixes மற்றும் docs parity.**
+
+### சரி செய்யப்பட்டது
+
+- **Map cluster «related» label 3.16:1 → 4.68:1 (இரு themes-இலும்)**: light `--map-score-mid` `#567b75`-ஆக இருட்டாக்கப்பட்டது (பரிந்துரைக்கப்பட்ட `#5f7f7a` 4.37 மட்டுமே அளந்தது — ஒரு படி இருண்ட நிறம் தேவைப்பட்டது); dark பக்கம் ஏற்கனவே 4.98:1 — தொடப்படவில்லை. Red-first pin `map-cluster-visual`-இல்.
+- **Skip-link focus ring**: மீதமிருந்த கடைசி literal `#ff385c` outline → `var(--accent-c)` — 78 focus rings-உம் இப்போது accent token-ஐப் பின்பற்றுகின்றன.
+- **`.tab-btn.is-active` accent topology** (#584, phase 3): control மூன்று நிறக் குடும்பங்களைக் கலந்திருந்தது (coral wash + danger text + blue border); இப்போது ஒரு ஒற்றை accent-soft pair.
+- **Upstream provider location fixes ×5 (#580, CAR-176)**: workday `Fully Remote` flag (அது ஒரு இடம் அல்ல), workable telecommuting fan-out + நகரம் இல்லாதபோது மட்டும் state, successfactors trailing comma, lever remote word-boundary, icims `Location`-prefixed labels.
+- **http-json: spent timeout-இல் retry இல்லை (#580)** — deadline abort இரு retry helpers-இலும் non-transient (upstream ஒரு Ashby board-இல் 30s×retries நிலையில் ~94s அளந்தது).
+- **Docs parity (#587)**: HANDOFF/CONVENTIONS/README-இல் மீதமிருந்த கடைசி 17/18-era counts (uk-க்கு காணாமல் போன Локалізація section கிடைத்தது; §-history §32/§33 வரை நீட்டிக்கப்பட்டது — 33 H2 கணக்கீடு சரிபார்க்கப்பட்டது).
+
+### சேர்க்கப்பட்டது
+
+- **Lovable design phase 3 (#584)**: density tokens செயல்பாட்டில் — table rows ≈32px, controls 30px, chips 24px (WCAG 2.5.8 spacing exception); coral rgba எச்சங்கள் அனைத்தும் cv3 pairs-ஆக மாற்றப்பட்டன (`.dash-hero`, `.badge-bad`, halos, `.tab-btn.is-active`); `--ease-out` declare செய்யப்பட்டது, TOKEN_HANDOFF காலியாக உள்ளது; `.callout--ok/--danger` contract.
+- **Trakstar Hire source (#583, CAR-177)**: registry **122 sources = 117 EN + 5 RU · 117 adapters** — host-pinned jsapi.recruiterbox.com, short/empty/repeated stops உள்ள offset walk, partials பாதுகாக்கப்பட்டன, `trakstarTruncated` tagging; count gates ×5 + help §17 ×19.
+- **Scan host-pool (#579, CAR-178)**: ஒரே நேரத்தில் 32 companies வரை, host ஒன்றுக்கு 10-ஆக வரம்பிடப்பட்டது (upstream keyed-limiter pattern) — snapshot sequential run-உடன் byte-identical (red-first timing-mock gate).
+- **CV Studio undo + unsaved-guard (#582, CAR-179)**: AI-run results மீது வரம்புள்ள undo stack (30), non-QWERTY-safe `Cmd/Ctrl+Z` உடன், route-ஐ விட்டு வெளியேறும்போது unsaved-changes guard (live-probe dirty, confirm/rewind/beforeunload), i18n ×19.
+- **Upstream provider fixes ×17 test செய்யப்பட்டன** (CAR-176-இன் பகுதி); remote-QA summary தோல்வியுற்ற scan sources-ஐப் பெயரிடுகிறது + eval ஒன்றுக்கு `tok ~N` (#567, ஏற்கனவே v1.261.2-இல் — இந்த release-இன் triage-க்கு அந்த observability பயன்பட்டது).
+
+### குறிப்புகள்
+
+- **Accent இப்போது blue** (Lovable concept): primary actions/active states/focus rings `--cv3-accent`-ஐப் பின்பற்றுகின்றன; red danger-க்கு மட்டுமே ஒதுக்கப்பட்டுள்ளது (`.btn-danger`, `toast.error`, danger text). Coral logo PNG asset-இல் மட்டுமே எஞ்சியுள்ளது (உரிமையாளரின் முடிவு).
+- **Density**: table rows ≈32px / controls 30px / chips 24px — WCAG 2.5.8 spacing exception ஆவணப்படுத்தப்பட்டது; v1.26.1-இன் 44px canary token contract மீது மறுஎழுதப்பட்டது.
+- CodeQL: திறந்த 10 alerts-உம் மூடப்பட்டன (4 FP-dismissed, rationale உடன்: llmRateLimit/atomicWrite documented classes; 6 source-இலேயே திருத்தம்).
+- Tests release branch-இல் 6655 → 6734; புதிய Trakstar source-ஐத் தாண்டி scanner-source behavior-இல் எந்த மாற்றமும் இல்லை.
+
 ## [1.261.2] — 2026-10-28
 
 **நிலைத்தன்மை + polish patch: geocode cache write-இன் நடுவிலான crash-ஐத் தாங்குகிறது (CAR-173), UI.md bullet continuation-களையும் nested lists-ஐயும் render செய்கிறது, help bundle-களின் rendered-text key leaks ×17 மூடப்பட்டன, evaluate-க்கு ta-வுக்கான per-locale token ceiling கிடைத்தது (CAR-174), RTL chrome logical properties வழியாக மிரர் ஆகிறது (85 கண்டறிதல்கள்), map captures ×19 மீண்டும் frame செய்யப்பட்டன, map clusters dark-இல் contrast தேர்ச்சி பெறுகின்றன — மேலும் Lovable design integration-இன் முதல் கட்டம் (passive `tokens-v3.css` sheet), docs backfill (release review + specs), CI-node coverage exemptions.**
