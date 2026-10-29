@@ -639,6 +639,9 @@ function armTrackerModalNavGuard() {
   window.addEventListener('hashchange', onHashChange);
   return detach;
 }
+// L262-SPA — the CSV-import modal (lib/tracker-import.js) arms the same
+// guard; exposed here so the lib does not duplicate the hashchange listener.
+window.TrackerModalNavGuard = armTrackerModalNavGuard;
 
 // --- Record-outcome modal (#/tracker) --------------------------------------
 // A preview-then-confirm form that records an application's final outcome via

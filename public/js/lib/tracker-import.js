@@ -47,6 +47,9 @@
         btn.disabled = false;
       }
     });
+    // L262-SPA — dismissing the picker fires `cancel`, not `change`; without
+    // this the hidden input (and its closure) leaks into document.body.
+    input.addEventListener('cancel', function () { input.remove(); });
     input.click();
   }
 
@@ -55,7 +58,7 @@
     var summary = c('p', { className: 'modal-msg' },
       t('import.summary', 'To import: {imported} · Duplicates: {duplicates} · Skipped: {skipped}')
         .replace('{imported}', plan.imported)
-        .replace('{duplicates}', plan.duplicates.length)
+        .replace('{duplicates}', (plan.duplicates || []).length)
         .replace('{skipped}', plan.skipped));
 
     var shown = (plan.rows || []).slice(0, PREVIEW_CAP);
@@ -111,7 +114,10 @@
       rest > 0 ? c('div', { style: { color: 'var(--foggy)', fontSize: '13px' } }, '… +' + rest) : null,
       c('div', { style: { display: 'flex', gap: '8px', justifyContent: 'flex-end' } }, [cancelBtn, commitBtn]),
     ].filter(Boolean));
-    window.UI.modal(t('import.title', 'Import applications from CSV'), body);
+    // CAR-36/L262-SPA — the import modal arms the same nav guard as the
+    // outcome modal: navigating away closes it; UI.modal runs the detach
+    // (third arg) on every dismissal path — × / Esc / backdrop / close.
+    window.UI.modal(t('import.title', 'Import applications from CSV'), body, window.TrackerModalNavGuard());
   }
 
   window.TrackerImport = { pick: pick };

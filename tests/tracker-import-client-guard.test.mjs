@@ -34,3 +34,33 @@ test('import.tooLarge exists in all 19 locales', () => {
     assert.ok(typeof row[lang] === 'string' && row[lang].length > 0, `import.tooLarge missing for ${lang}`);
   }
 });
+
+// --- L262-SPA review tail — three defensive fixes in the import flow -------
+
+test('the hidden file input is removed when the picker is dismissed (cancel)', () => {
+  assert.match(src, /addEventListener\('cancel'/, 'a cancel listener must remove the orphan input from document.body');
+});
+
+test('preview reads plan.duplicates through the guarded form', () => {
+  assert.doesNotMatch(src, /plan\.duplicates\.length/, 'a shape change would crash preview() inside the try');
+  assert.match(src, /\(plan\.duplicates \|\| \[\]\)\.length/, 'the guarded form mirrors the result path');
+});
+
+test('the import modal arms the same nav guard as the outcome modal', () => {
+  assert.match(src, /window\.TrackerModalNavGuard\(\)/, 'UI.modal receives the shared guard as onClose');
+  const tracker = readFileSync(
+    fileURLToPath(new URL('../public/js/views/tracker.js', import.meta.url)),
+    'utf8',
+  );
+  assert.match(tracker, /window\.TrackerModalNavGuard\s*=/, 'tracker.js exports the guard for the lib');
+});
+
+test('routes/tracker.mjs allocates num with reduce, not Math.max(...spread)', () => {
+  const routes = readFileSync(
+    fileURLToPath(new URL('../server/lib/routes/tracker.mjs', import.meta.url)),
+    'utf8',
+  );
+  assert.doesNotMatch(routes, /Math\.max\([^)]*\.\.\.existing/, 'the spread hits the argument limit at ~100k rows');
+  const uses = routes.match(/existing\.reduce\(\(m, r\) => Math\.max\(m, parseInt\(r\.num, 10\) \|\| 0\), 0\)/g) || [];
+  assert.ok(uses.length >= 2, 'both allocation sites use the reduce form');
+});

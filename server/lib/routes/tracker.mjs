@@ -134,7 +134,7 @@ export function registerTrackerRoutes(app) {
       }
 
       // Compute next # under the lock — atomic w.r.t. other tracker writers.
-      const nextNum = String((Math.max(0, ...existing.map((r) => parseInt(r.num, 10) || 0))) + 1).padStart(3, '0');
+      const nextNum = String((existing.reduce((m, r) => Math.max(m, parseInt(r.num, 10) || 0), 0)) + 1).padStart(3, '0');
 
       // Build the row using the existing column order:
       //   # | Date | Company | Role | Score | Status | PDF | Report | Notes
@@ -236,7 +236,7 @@ export function registerTrackerRoutes(app) {
         .some((h) => String(h).trim().toLowerCase() === 'url');
       const cell = (s) => String(s || '').replace(/\\/g, '\\\\').replace(/\|/g, '\\|').replace(/[\r\n]+/g, ' ').trim();
       const existing = parseApplications(content);
-      let num = Math.max(0, ...existing.map((r) => parseInt(r.num, 10) || 0));
+      let num = existing.reduce((m, r) => Math.max(m, parseInt(r.num, 10) || 0), 0);
       const newLines = toImport.map((e) => {
         num += 1;
         // No URL column → the posting URL rides in Notes (the same place
