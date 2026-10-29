@@ -340,12 +340,17 @@ export async function runKimi(prompt, opts = {}) {
 export function hasKimiKey() { return isUsableKey(envKey('MOONSHOT_API_KEY')); }
 
 /** CAR-187 — the region default model for a resolved MiniMax chat URL:
- *  MiniMax-M3 on the CN endpoint (api.minimax.cn), MiniMax-M3.1-Flash on
+ *  MiniMax-M3 on the CN endpoint (any *.minimax.cn host — L262-R5: the
+ *  bare registrable domain is a valid vendor endpoint too), MiniMax-M3.1-Flash on
  *  the international one and anywhere else — 'MiniMax-Text-01' is retired
  *  (upstream #5531). */
+const MINIMAX_CN_HOST_RE = /(?:^|\.)minimax\.cn$/;
+
 export function minimaxDefaultModel(chatUrl) {
   try {
-    return new URL(chatUrl).hostname === 'api.minimax.cn' ? 'MiniMax-M3' : 'MiniMax-M3.1-Flash';
+    return MINIMAX_CN_HOST_RE.test(new URL(chatUrl).hostname.toLowerCase())
+      ? 'MiniMax-M3'
+      : 'MiniMax-M3.1-Flash';
   } catch { return 'MiniMax-M3.1-Flash'; }
 }
 
