@@ -806,6 +806,7 @@ window.__I18N_DICT_PT_BR = {
   'import.confirm': "Importar linhas ({n})",
   'import.result': "Importadas: {imported} · Duplicadas: {duplicates} · Ignoradas: {skipped}",
   'import.colReason': "Motivo",
+  'import.tooLarge': "O arquivo é grande demais (limite de 512 KB). Divida a exportação e importe as partes.",
   'track.col.legitimacy': "Legitimidade",
   'track.col.legitimacy.help': "Confiança de que a vaga é real (Alta / Atenção / Suspeita).",
   'track.outputTitle': "Saída",

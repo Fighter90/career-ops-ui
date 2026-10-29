@@ -806,6 +806,7 @@ window.__I18N_DICT_FR = {
   'import.confirm': "Importer les lignes ({n})",
   'import.result': "Importées : {imported} · Doublons : {duplicates} · Ignorées : {skipped}",
   'import.colReason': "Motif",
+  'import.tooLarge': "Le fichier est trop volumineux (limite 512 Ko). Découpez l’export et importez les parties.",
   'track.col.legitimacy': "Légitimité",
   'track.col.legitimacy.help': "Confiance que l'annonce est réelle (Élevée / Prudence / Suspecte).",
   'track.outputTitle': "Sortie",

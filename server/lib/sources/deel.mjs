@@ -227,15 +227,26 @@ function locationOf(job) {
 
 /**
  * Resolve a `richtextDescription` value: a `$<hex>` reference into the text rows,
- * or an inline string. Anything else is no description.
+ * or an inline string. Anything else is no description. L262-R6 — a short
+ * `$xx` token that is not a valid hex reference can only be a broken text
+ * reference, never a description, so it is skipped instead of shipping the
+ * literal ('$9z') into the snippet; a real inline description that merely
+ * STARTS with '$' is longer than any reference and survives.
  * @param {unknown} ref
  * @param {Map<string, string>} texts
  * @returns {string}
  */
+const DEEL_REF_RE = /^\$[0-9a-f]+$/;
+const DEEL_REFISH_RE = /^\$[0-9a-z]{1,3}$/;
+
 function descriptionOf(ref, texts) {
   if (typeof ref !== 'string') return '';
-  const html = /^\$[0-9a-f]+$/.test(ref) ? texts.get(ref.slice(1)) : ref;
-  return html ? htmlToText(html) : '';
+  if (DEEL_REF_RE.test(ref)) {
+    const html = texts.get(ref.slice(1));
+    return html ? htmlToText(html) : '';
+  }
+  if (DEEL_REFISH_RE.test(ref)) return '';
+  return ref ? htmlToText(ref) : '';
 }
 
 /**

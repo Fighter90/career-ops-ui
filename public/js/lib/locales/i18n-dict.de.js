@@ -806,6 +806,7 @@ window.__I18N_DICT_DE = {
   'import.confirm': "Zeilen importieren ({n})",
   'import.result': "Importiert: {imported} · Duplikate: {duplicates} · Übersprungen: {skipped}",
   'import.colReason': "Grund",
+  'import.tooLarge': "Die Datei ist zu groß (Limit 512 KB). Teile den Export und importiere die Teile.",
   'track.col.legitimacy': "Legitimität",
   'track.col.legitimacy.help': "Vertrauen, dass die Anzeige echt ist (Hoch / Vorsicht / Verdächtig).",
   'track.outputTitle': "Ausgabe",

@@ -329,3 +329,23 @@ test('deel: fetchDeel wraps a 200 whose body is broken — the parse throws, nev
     /no Next\.js flight data/,
   );
 });
+
+// L262-R6 — a short `$xx` token that is not a valid hex reference can only
+// be a broken text reference, never a description: it must be skipped, not
+// shipped into the snippet as the literal '$9z'.
+test('deel: a short non-hex $-token description is skipped, not inlined', () => {
+  const junk = parseDeelBoard(pageWith(boardStream([
+    posting({ id: '44444444-4444-4444-8444-444444444444', richtextDescription: '$9z' }),
+    posting({ id: '55555555-5555-4555-8555-555555555555', richtextDescription: '$zz' }),
+  ])), { slug: 'acme', company: 'Acme' });
+  assert.equal(junk.length, 2);
+  for (const j of junk) {
+    assert.ok(!('description' in j), `${j.title}: no description key for a broken $-reference`);
+  }
+  // A real inline description that merely STARTS with '$' still survives.
+  const money = parseDeelBoard(pageWith(boardStream([
+    posting({ id: '66666666-6666-4666-8666-666666666666', richtextDescription: '$120k base — a real description body' }),
+  ])), { slug: 'acme', company: 'Acme' });
+  assert.equal(money.length, 1);
+  assert.equal(money[0].description, '$120k base — a real description body');
+});

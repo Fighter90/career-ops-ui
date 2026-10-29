@@ -134,3 +134,29 @@ test('a lookalike host (api.minimax.cn.evil.test) does not get the CN default �
   assert.match(String(r.error), /not an official endpoint/);
   assert.equal(called, false);
 });
+
+// L262-R5 — the CN default compared hostname strictly with
+// 'api.minimax.cn', so the bare registrable domain (a valid vendor
+// endpoint) got the international default. CN = any *.minimax.cn host.
+test('MINIMAX_BASE_URL=bare minimax.cn domain → MiniMax-M3', async () => {
+  const { r, sentModel } =
+    await capture('MINIMAX_BASE_URL=https://minimax.cn/v1\n');
+  assert.equal(r.error, null, r.error);
+  assert.equal(sentModel, 'MiniMax-M3', 'the registrable-domain CN host must get the CN default');
+});
+
+test('explicit international api.minimax.io keeps MiniMax-M3.1-Flash', async () => {
+  const { sentModel } = await capture('MINIMAX_BASE_URL=https://api.minimax.io/v1\n');
+  assert.equal(sentModel, 'MiniMax-M3.1-Flash');
+});
+
+test('minimaxDefaultModel: subdomain rule, lookalike hosts stay international', async () => {
+  const { minimaxDefaultModel } = await import('../server/lib/openai.mjs');
+  assert.equal(minimaxDefaultModel('https://api.minimax.cn/v1'), 'MiniMax-M3');
+  assert.equal(minimaxDefaultModel('https://minimax.cn/v1'), 'MiniMax-M3');
+  assert.equal(minimaxDefaultModel('https://v1.api.minimax.cn/chat/completions'), 'MiniMax-M3');
+  assert.equal(minimaxDefaultModel('https://api.minimax.io/v1'), 'MiniMax-M3.1-Flash');
+  assert.equal(minimaxDefaultModel('https://evil-minimax.cn/v1'), 'MiniMax-M3.1-Flash', 'suffix host is not a minimax.cn host');
+  assert.equal(minimaxDefaultModel('https://minimax.cn.evil.test/v1'), 'MiniMax-M3.1-Flash', 'the domain must be the suffix');
+  assert.equal(minimaxDefaultModel('not a url'), 'MiniMax-M3.1-Flash');
+});

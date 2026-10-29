@@ -236,3 +236,35 @@ test('more than 2000 data rows are rejected', async () => {
   assert.equal(status, 400);
   assert.match(body.error, /2000/);
 });
+
+// L262-R1 — the web writer escapes `\` → `\\` in the Company cell, so a
+// tracker row for `C:\Users\Иван` is STORED as `C:\\Users\\Иван`. The reader
+// must undo that escape, or a re-import of the same CSV sees a different
+// company+role key and appends a duplicate row.
+test('a company cell containing a backslash dedups on re-import (lossless read)', async () => {
+  // Write the tracker the way routes/tracker.mjs cell() would: escape `\`
+  // before `|`, collapse newlines.
+  const cell = (s) => String(s || '').replace(/\\/g, '\\\\').replace(/\|/g, '\\|').replace(/[\r\n]+/g, ' ').trim();
+  const company = 'C:\\Users\\Иван';
+  seedTracker([
+    '# Applications Tracker',
+    '',
+    '| # | Date | Company | Role | Score | Status | PDF | Report | Notes |',
+    '|---|------|---------|------|-------|--------|-----|--------|-------|',
+    `| 001 | 2026-06-01 | ${cell(company)} | Data Analyst | N/A | Evaluated | ❌ | — | ${cell('https://jobs.example.com/backslash/1')} |`,
+    '',
+  ].join('\n'));
+
+  const csv = [
+    'Company,Job Position,Stage,Date Applied,Job URL',
+    `${company},Data Analyst,Evaluated,2026-06-01,https://jobs.example.com/backslash/1`,
+    '',
+  ].join('\n');
+
+  const { status, body } = await post({ csv });
+  assert.equal(status, 200);
+  assert.equal(body.imported, 0, 'lossless: true — the row must dedup, not duplicate');
+  assert.equal(body.duplicates.length, 1, 'one duplicate recognized');
+  assert.equal(body.duplicates[0].company, company);
+  assert.match(body.duplicates[0].reason, /posting URL|company and role/);
+});

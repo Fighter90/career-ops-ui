@@ -66,6 +66,36 @@ const AFTER_YEAR_RE = new RegExp(`${YEAR}\\s*$`);
 const RANGE_TAIL_RE = new RegExp(`^\\s*(?:${YEAR}\\b|present\\b|current\\b|now\\b|today\\b)`, 'i');
 
 /**
+ * Drop every closed `<head …>…</head>` block in ONE left-to-right walk —
+ * L262-R2: the previous lazy `/<head[\s>][\s\S]*?<\/head>/` rescan restarted
+ * the `</head>` search from every opener, which is quadratic when the close
+ * tag never comes (a broken template: 658 ms on 64 KB). Openers after the
+ * last close have no block to own and are left for the fixed-point tag
+ * sweep, exactly as when the regex matched nothing.
+ * @param {string} s
+ * @returns {string}
+ */
+function stripHeadBlocks(s) {
+  const lower = s.toLowerCase();
+  const openRe = /<head[\s>]/gi;
+  const CLOSE = '</head>';
+  let out = '';
+  let last = 0; // output emitted up to here
+  let closeFrom = 0; // next close search starts here
+  let m;
+  while ((m = openRe.exec(s)) !== null) {
+    const bodyStart = m.index + m[0].length;
+    if (bodyStart <= last) continue; // opener inside an already-dropped block
+    const close = lower.indexOf(CLOSE, Math.max(bodyStart, closeFrom));
+    if (close === -1) break; // no closes remain — every later opener is unclosed too
+    out += s.slice(last, m.index) + '\n';
+    last = close + CLOSE.length;
+    closeFrom = last;
+  }
+  return out + s.slice(last);
+}
+
+/**
  * Bounded, line-preserving markup strip. Upstream imports its own
  * `stripMarkup` from verify-cv-facts.mjs (which does not exist in this repo);
  * this is the local stand-in: the <head>/<title> block and comments are
@@ -76,10 +106,9 @@ const RANGE_TAIL_RE = new RegExp(`^\\s*(?:${YEAR}\\b|present\\b|current\\b|now\\
  * @returns {string[]}
  */
 function linesOf(text) {
-  let out = String(text ?? '')
+  let out = stripHeadBlocks(String(text ?? ''))
     // The <head> is not printed. Its <title> carries the template's own
     // "Name — CV" separator, which the candidate never wrote.
-    .replace(/<head[\s>][\s\S]*?<\/head>/gi, '\n')
     .replace(/<!--[\s\S]*?-->/g, '\n')
     .replace(/<br\s*\/?>/gi, '\n')
     .replace(/<\/(?:p|li|h\d|div|tr|section|article)>/gi, '\n');

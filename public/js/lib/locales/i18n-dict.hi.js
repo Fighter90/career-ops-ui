@@ -809,6 +809,7 @@ window.__I18N_DICT_HI = {
   'import.confirm': "पंक्तियाँ आयात करें ({n})",
   'import.result': "आयातित: {imported} · डुप्लिकेट: {duplicates} · छोड़े गए: {skipped}",
   'import.colReason': "कारण",
+  'import.tooLarge': "फ़ाइल बहुत बड़ी है (सीमा 512KB)। एक्सपोर्ट विभाजित करें और भागों में इंपोर्ट करें।",
   'track.col.legitimacy': "वैधता",
   'track.col.legitimacy.help': "यह विश्वास कि पोस्टिंग असली है (उच्च / सावधानी / संदिग्ध)।",
   'track.outputTitle': "आउटपुट",

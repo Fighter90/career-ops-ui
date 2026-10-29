@@ -160,3 +160,39 @@ test('the same phrase on several lines reports once per line', () => {
   const found = detectStockPhrases('Utilized Terraform.\nUtilized Helm.');
   assert.deepEqual(found.map((f) => f.line), [1, 2]);
 });
+
+// L262-R2 — the <head> strip used a lazy `[\s\S]*?</head>` scan from EVERY
+// `<head` start; with the close tag missing (broken template) that is
+// quadratic in the number of openers (658 ms on 64 KB in review). The fix
+// walks openers with indexOf and stops at the first missing close.
+test('unclosed <head> openers are handled in linear time', () => {
+  // ~52k unclosed openers in a 256 KB document — the unfixed lazy rescan
+  // costs ~800 ms locally (quadratic); the fixed walk is a single scan.
+  let html = '<head>'.repeat(52400).slice(0, 256 * 1024);
+  html += ' passionate about growth';
+  assert.ok(html.length >= 256 * 1024);
+
+  const t0 = performance.now();
+  const hits = detectStockPhrases(html);
+  const elapsed = performance.now() - t0;
+  assert.equal(hits.length, 1, 'the banned phrase after the broken head is still found');
+  assert.ok(elapsed < 200, `head strip must be linear: took ${Math.round(elapsed)} ms`);
+});
+
+test('head strip keeps its semantics (closed / unclosed / mixed case)', () => {
+  // A closed <head> block is dropped outright — its <title> separator never
+  // reaches the lint; an unclosed opener loses only the tag itself (the
+  // fixed-point tag sweep owns it), and matching is case-insensitive.
+  const closed = '<!doctype html><html><HEAD><title>John — CV</title></head><body>passionate about growth</body></html>';
+  const hitsClosed = detectStockPhrases(closed);
+  assert.equal(hitsClosed.length, 1);
+  assert.ok(!hitsClosed[0].lineText.includes('CV</title>'), 'title line is dropped with the head');
+
+  const unclosed = '<html><head><title>John CV</title><body>passionate about growth</body></html>';
+  const hitsUnclosed = detectStockPhrases(unclosed);
+  assert.equal(hitsUnclosed.length, 1, 'unclosed head does not swallow the body');
+  assert.ok(hitsUnclosed[0].lineText.includes('John CV'), 'the unclosed title survives (only the fixed-point sweep owns it)');
+
+  const mixed = '<HEAD>a</HeAd>b passionate about growth';
+  assert.equal(detectStockPhrases(mixed).length, 1);
+});

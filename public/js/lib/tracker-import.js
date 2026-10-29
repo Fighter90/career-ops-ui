@@ -30,8 +30,14 @@
       if (!file) return;
       btn.disabled = true;
       try {
-        // An oversized file is rejected server-side (413, ≤512KB) and
-        // surfaces through the toast — no duplicate client-side limit.
+        // L262-R7 — guard the size BEFORE reading: the server cap (413,
+        // ≤512KB) otherwise answers only after the browser parsed a
+        // possibly huge file into memory. Mirrors MAX_CSV_BYTES.
+        var MAX_IMPORT_BYTES = 512 * 1024;
+        if (file.size > MAX_IMPORT_BYTES) {
+          window.UI.toast(t('import.tooLarge', 'The file is too large (limit 512 KB). Split the export and import the parts.'), 'error');
+          return;
+        }
         var csv = await file.text();
         var plan = await window.API.post('/api/tracker/import-csv', { csv: csv, source: file.name });
         preview(csv, file.name, plan, t);

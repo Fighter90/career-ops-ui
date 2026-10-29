@@ -806,6 +806,7 @@ window.__I18N_DICT_ZH_TW = {
   'import.confirm': "匯入 {n} 列",
   'import.result': "已匯入 {imported} · 重複 {duplicates} · 略過 {skipped}",
   'import.colReason': "原因",
+  'import.tooLarge': "檔案過大（上限 512KB）。請拆分匯出後分批匯入。",
   'track.col.legitimacy': "可信度",
   'track.col.legitimacy.help': "該招聘真實性的信心(高 / 注意 / 可疑)。",
   'track.outputTitle': "輸出",

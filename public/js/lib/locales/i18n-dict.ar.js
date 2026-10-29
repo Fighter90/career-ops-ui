@@ -805,6 +805,7 @@ window.__I18N_DICT_AR = {
   'import.confirm': "استيراد الصفوف ({n})",
   'import.result': "تم استيراد {imported} · مكررات {duplicates} · تم تخطي {skipped}",
   'import.colReason': "السبب",
+  'import.tooLarge': "الملف كبير جدًا (الحد 512 كيلوبايت). قسّم التصدير واستورد الأجزاء.",
   'track.col.legitimacy': "المصداقية",
   'track.col.legitimacy.help': "الثقة في كون الإعلان حقيقيًا (عالي / تحذير / مشبوه).",
   'track.outputTitle': "الإخراج",
