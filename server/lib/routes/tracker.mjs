@@ -102,7 +102,7 @@ export function registerTrackerRoutes(app) {
     // just notes. A pipe in company / role would break the markdown
     // table layout (the parser would split the cell into two), and a
     // newline would terminate the row mid-build.
-    const cell = (s) => String(s || '').replace(/\|/g, '\\|').replace(/[\r\n]+/g, ' ').trim();
+    const cell = (s) => String(s || '').replace(/\\/g, '\\\\').replace(/\|/g, '\\|').replace(/[\r\n]+/g, ' ').trim();
     const safeCompany = cell(company);
     const safeRole = cell(role);
     // Fold any label/id/alias (case-insensitive, stray ** tolerated) to its
@@ -234,7 +234,7 @@ export function registerTrackerRoutes(app) {
 
       const hasUrlCol = parseMarkdownTable(content).headers
         .some((h) => String(h).trim().toLowerCase() === 'url');
-      const cell = (s) => String(s || '').replace(/\|/g, '\\|').replace(/[\r\n]+/g, ' ').trim();
+      const cell = (s) => String(s || '').replace(/\\/g, '\\\\').replace(/\|/g, '\\|').replace(/[\r\n]+/g, ' ').trim();
       const existing = parseApplications(content);
       let num = Math.max(0, ...existing.map((r) => parseInt(r.num, 10) || 0));
       const newLines = toImport.map((e) => {

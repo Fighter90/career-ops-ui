@@ -17,7 +17,6 @@ import { test } from 'node:test';
 import assert from 'node:assert/strict';
 import {
   meta,
-  DEEL_HOST,
   SLUG_RE,
   assertDeelUrl,
   extractSlug,

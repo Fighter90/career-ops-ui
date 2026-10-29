@@ -22,12 +22,23 @@ Router.register('tracker', async () => {
   // the canonical funnel are fetched together; the stages endpoint fails soft
   // to an empty funnel (the board degrades to an ALL-only view) so the tracker
   // still renders if the parent's states.yml is momentarily unreadable.
-  const [data, stagesData, commute] = await Promise.all([
-    API.get('/api/tracker'),
-    API.get('/api/tracker/stages').catch(() => ({ stages: [], aliases: {} })),
-    API.get('/api/commute').catch(() => null),
-  ]);
-  const rows = data.rows || [];
+  let data, stagesData, commute, loadError = null;
+  try {
+    [data, stagesData, commute] = await Promise.all([
+      API.get('/api/tracker'),
+      API.get('/api/tracker/stages').catch(() => ({ stages: [], aliases: {} })),
+      API.get('/api/commute').catch(() => null),
+    ]);
+  } catch (err) {
+    // Fail soft: a transient /api/tracker failure renders an empty board with
+    // a visible banner — never a dead route (the router's error screen gives
+    // the user no board to come back to, and a re-navigation already works).
+    loadError = err;
+    data = {};
+    stagesData = { stages: [], aliases: {} };
+    commute = null;
+  }
+  const rows = Array.isArray(data.rows) ? data.rows : [];
   const STAGES = Array.isArray(stagesData.stages) ? stagesData.stages : [];
   const ALIASES = stagesData.aliases || {};
   const TS = window.TrackerStages;
@@ -445,6 +456,7 @@ Router.register('tracker', async () => {
   // reaches the canonical 'Hired' state, greet it above the board — static
   // markup, no timers/confetti (CSP-safe, calm-by-default). v1.131.0: count by
   // the FOLDED status so a Spanish/legacy alias (e.g. "contratado") still lands.
+  if (loadError) UI.toast((loadError && loadError.message) || t('common.error', 'Error'), 'error');
   const hiredCount = rows.filter((r) => fold(r && r.status) === 'Hired').length;
   const hiredBanner = hiredCount
     ? c('div', { className: 'card mb-3 hired-banner', role: 'status' }, [
