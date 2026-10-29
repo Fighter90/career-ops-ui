@@ -14,14 +14,14 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.262.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.0)
+[![release](https://img.shields.io/badge/release-v1.262.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.262.0** — **अपस्ट्रीम-फ़ीचर्स minor: Deel जॉब बोर्ड स्कैनर में शामिल होता है (रजिस्ट्री 123), किसी दूसरे ट्रैकर का CSV dry-run प्रीव्यू के साथ सीधे #/tracker में इम्पोर्ट होता है, posting-guard JD इंटीग्रिटी चेक और CV वॉइस चेक (27 स्टॉक वाक्यांश हाइलाइट) UI में आते हैं, अनुभव-वर्ष स्कैन फ़िल्टर JD पढ़ता है, और Apply बटन सात और भाषाओं में समझे जाते हैं — साथ ही सोर्स के बीच reposts गढ़ना बंद, MiniMax का सेवानिवृत्त डिफ़ॉल्ट मॉडल बदला गया, और तमिल मूल्यांकन अपनी भाषा थामे रहते हैं।**
+> **🆕 नवीनतम रिलीज़ — v1.262.1** — **इतालवी-मूल्यांकन पैच: OpenRouter युग ने उसकी रिपोर्ट को SCORE_SUMMARY ब्लॉक से ठीक पहले कटते हुए पकड़ा, इसलिए `it` टोकन-डेंस लोकेल में शामिल होता है (32768-टोकन सीलिंग + 480 सेकंड घड़ी) — साथ ही deploy workflow को `mode=hermes` (गेटवे रीस्टार्ट + पूरी डायग्नोस्टिक्स + क्रेडिट बैलेंस) और `mode=provider` (की-प्रेज़ेंस गार्ड के साथ LLM स्विच) मिला, जिसने Hermes क्रेडिट खत्म होने पर प्रोड को OpenRouter पर ले जाया।**
 >
-> **पिछला — v1.261.3** — **डिज़ाइन-पूर्णता पैच: Lovable डिज़ाइन सिस्टम पूरी तरह लाइव (फेज़ 3 घनत्व: रो ≈32px, कंट्रोल 30px, चिप्स 24px; हर coral ब्लू-एक्सेंट/रेड-डेंजर विभाजन में चला गया), Trakstar Hire स्कैन सोर्स (रजिस्ट्री 122), स्कैन होस्ट-पूल (32 कंपनियाँ, प्रति होस्ट 10), छह अपस्ट्रीम प्रोवाइडर लोकेशन फ़िक्स, और CV Studio undo + अनसेव्ड-गार्ड।**
+> **पिछला — v1.262.0** — **अपस्ट्रीम-फ़ीचर्स minor: Deel जॉब बोर्ड स्कैनर में शामिल होता है (रजिस्ट्री 123), किसी दूसरे ट्रैकर का CSV dry-run प्रीव्यू के साथ सीधे #/tracker में इम्पोर्ट होता है, posting-guard JD इंटीग्रिटी चेक और CV वॉइस चेक (27 स्टॉक वाक्यांश हाइलाइट) UI में आते हैं, अनुभव-वर्ष स्कैन फ़िल्टर JD पढ़ता है, और Apply बटन सात और भाषाओं में समझे जाते हैं — साथ ही सोर्स के बीच reposts गढ़ना बंद, MiniMax का सेवानिवृत्त डिफ़ॉल्ट मॉडल बदला गया, और तमिल मूल्यांकन अपनी भाषा थामे रहते हैं।**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

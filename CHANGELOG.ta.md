@@ -6,6 +6,26 @@
 
 ---
 
+## [1.262.1] — 2026-10-29
+
+**Italian-evaluation patch: OpenRouter era it-இன் report-ஐ SCORE_SUMMARY block-க்கு முன்பே வெட்டுவதைப் பிடித்ததால் `it` token-dense locales-உடன் சேர்கிறது (32768-token ceiling + 480 s clock) — மேலும் இந்த diagnosis-ஐ சாத்தியமாக்கிய provider-switch tooling deploy workflow-இல் வருகிறது.**
+
+### சரி செய்யப்பட்டது
+
+- **`it` evaluation SCORE_SUMMARY-க்கு முன் வெட்டப்பட்டது (CAR-190 tail)**: remote-QA 40928864980 (refill செய்யப்பட்ட credits-இல் முதல் run) — ஒரு `it` evaluation 264 s ஓடி 15 045 characters-உடன் திரும்பியது, 16 384 ceiling-இல் `tok ~15635`: Block A–G அப்படியே, `---SCORE_SUMMARY---` மறைந்தது. v1.261.1-இல் (CAR-174) `ta`-க்கு ceiling பெற்றுத்தந்த அதே shape class. `it` `TOKEN_DENSE_EVAL_LOCALES`-இல் சேர்கிறது (`ta`, `hi` → `ta`, `hi`, `it`): 32 768-token budget + 480 s clock இரண்டும் இப்போது பொருந்துகின்றன, `/api/evaluate` + auto-pipeline `llm.mjs`-இன் ஒரே source-of-truth-இலேயே இருக்கின்றன.
+- **en no-blocks report — one-off generation flake**: அதே run-இல் ஒரு `en` evaluation language-சரியாக திரும்பியது ஆனால் A–G blocks எதுவும் **இல்லை**; ஒரு targeted re-run சுத்தமாக pass ஆனது (21 091 characters, A–G ✓). Token-dense set-இல் சேர்க்கப்படவில்லை — ஒரு flake history அல்ல.
+
+### சேர்க்கப்பட்டது
+
+- **Deploy workflow: `mode=hermes` + `mode=provider`** (CAR-190 ops tail): `mode=hermes` Hermes gateway-ஐ restart செய்து முழு diagnosis அச்சிடுகிறது (secrets நீக்கிய unit file, listeners before/after, sudo journal, per-port probes, app-இன் சொந்த `HERMES_BASE_URL` view, OpenRouter credits balance); `mode=provider` key-presence guard உடன் `LLM_PROVIDER`-ஐ மாற்றுகிறது (target provider-இன் `*_API_KEY` இல்லாவிட்டால் மறுக்கிறது) மற்றும் app-ஐ restart செய்கிறது — Hermes credits பாதியில் தீர்ந்தபோது prod இப்படித்தான் `openrouter`-க்கு நகர்ந்தது. Deploy-mode ref guard `mode=deploy`-க்கு மட்டுமே validate செய்யப்படுகிறது, அதனால் recon/verify dispatches மீண்டும் வேலை செய்கின்றன (v1.261.3-era required-inputs மாற்றம் அவற்றை மவுனமாக்கியது).
+
+### குறிப்புகள்
+
+- வேண்டுமென்றே செய்யாமை: `en` token-dense set-இல் **சேர்க்கப்படுவதில்லை** — ஒரு no-blocks report ஒரு generation flake மட்டுமே, volume history அல்ல.
+- வேண்டுமென்றே செய்யாமை: ta reinforced-language directive `it`-க்கு **விரிவாக்கப்படுவதில்லை** — Italian-க்கு language drift காணப்படவில்லை.
+- வேண்டுமென்றே செய்யாமை: புதிய UI-v2 demo video recording owner-இடமே இருக்கிறது (CAR-141) — landing இப்போது எப்படியும் `youtube-nocookie.com` வழியாக embed செய்கிறது.
+- Tests 6841 → 6841 release branch-இல்.
+
 ## [1.262.0] — 2026-10-29
 
 **upstream-features minor: Deel job board scanner-இல் சேர்கிறது (registry 123), வேறு tracker-இன் CSV `#/tracker`-இல் நேரடியாக import ஆகிறது, posting-guard integrity check + CV voice check relay/lint ஆக வருகின்றன, scanner years-of-experience filter-ஐக் கற்கிறது, Apply buttons இன்னும் ஏழு மொழிகளில் missing என்று படிக்கப்படுவதில்லை — அதனுடன் MiniMax-இன் retired default model மாற்றப்பட்டது, reposts sources-க்கு இடையில் உருவாக்கப்படுவதில்லை.**

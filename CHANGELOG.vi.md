@@ -6,6 +6,26 @@ Bản dịch: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.262.1] — 2026-10-29
+
+**Bản-patch-đánh-giá-tiếng-Ý: kỷ-nguyên-OpenRouter bắt-gặp-nó-cắt-report-ngay-trước-khối-SCORE_SUMMARY nên `it` gia-nhập-các-locale-token-dense (trần-32768-token + đồng-hồ-480 s) — và-công-cụ-chuyển-provider giúp-được-cái-chẩn-đoán-đó lên-đường-trong-deploy-workflow.**
+
+### Đã sửa
+
+- **Đánh-giá-`it` bị-cắt-trước-SCORE_SUMMARY (đuôi-CAR-190)**: remote-QA 40928864980 (lần-chạy-đầu-với-tín-dụng-đã-nạp-lại) — một-lượt-đánh-giá-`it` chạy-264 s và-trở-về-với-15 045 ký-tự, `tok ~15635` ở-trần-16 384: khối-A–G nguyên-vẹn, `---SCORE_SUMMARY---` biến-mất. Cùng-một-lớp-hình-dạng đã-mang-cho-`ta` cái-trần-của-nó-ở-v1.261.1 (CAR-174). `it` gia-nhập-`TOKEN_DENSE_EVAL_LOCALES` (`ta`, `hi` → `ta`, `hi`, `it`): cả-ngân-sách-32 768-token lẫn-đồng-hồ-480 s đều-áp-dụng, và-`/api/evaluate` + auto-pipeline đứng-trên-một-nguồn-sự-thật-duy-nhất-trong-`llm.mjs`.
+- **Report-en-không-có-khối — một-vụ-flake-sinh-ra-một-lần**: cùng-lượt-chạy thấy-một-lượt-đánh-giá-`en` trở-về-đúng-ngôn-ngữ nhưng-không-có-bất-kỳ-khối-A–G-nào; một-lượt-chạy-lại-có-đích vượt-qua-sạch-sẽ (21 091 ký-tự, A–G ✓). Không-thêm-vào-tập-token-dense — một-vụ-flake không-phải-là-lịch-sử.
+
+### Thêm mới
+
+- **Deploy-workflow: `mode=hermes` và `mode=provider`** (đuôi-ops-CAR-190): `mode=hermes` khởi-động-lại-gateway-Hermes và-in-ra-một-bản-chẩn-đoán-đầy-đủ (unit-file với-các-secret-đã-bị-loại, listeners trước/sau, nhật-ký-sudo, thăm-dò-từng-cổng, cái-nhìn-`HERMES_BASE_URL` của-chính-app, số-dư-tín-dụng-OpenRouter); `mode=provider` chuyển-`LLM_PROVIDER` với-một-guard-kiểm-tra-sự-hiện-diện-của-khóa (từ-chối-khi-`*_API_KEY` của-provider-đích vắng-mặt) và-khởi-động-lại-app — đây-chính-là-cách-prod chuyển-sang-`openrouter` khi-tín-dụng-Hermes hết-giữa-chừng. Guard-ref-của-các-chế-độ-deploy chỉ-được-xác-thực-cho-`mode=deploy`, nên-các-lượt-gửi-recon/verify hoạt-động-trở-lại (thay-đổi-required-inputs-thời-v1.261.3 đã-làm-chúng-im-lặng).
+
+### Ghi chú
+
+- Không-hành-động-cố-ý: `en` **không** được-thêm-vào-tập-token-dense — một-report-không-có-khối chỉ-là-một-vụ-flake-sinh-ra, không-phải-lịch-sử-khối-lượng.
+- Không-hành-động-cố-ý: chỉ-thị-ngôn-ngữ-củng-cố-của-ta **không** được-mở-rộng-sang-`it` — không-quan-sát-thấy-trôi-ngôn-ngữ-nào-với-tiếng-Ý.
+- Không-hành-động-cố-ý: việc-ghi-hình-video-demo-UI-v2-mới thuộc-về-owner (CAR-141) — landing giờ-đây embed-qua-`youtube-nocookie.com` bất-chấp.
+- Kiểm-thử 6841 → 6841 trên-nhánh-phát-hành.
+
 ## [1.262.0] — 2026-10-29
 
 **Bản-minor-tính-năng-upstream: board-việc-làm-Deel gia-nhập-scanner (registry 123), CSV-của-tracker-khác nhập-trực-tiếp vào `#/tracker`, chốt-kiểm-toàn-vẹn-posting-guard và-chốt-kiểm-giọng-CV đến-dưới-dạng relay/lint, scanner học-một-bộ-lọc-số-năm-kinh-nghiệm, và-các-nút-Apply ở-bảy-ngôn-ngữ-không-nữa không-còn-bị-đọc-là-thiếu — cùng-mô-hình-mặc-định-đã-nghỉ-hưu-của-MiniMax được-thay-thế và-các-repost không-còn-bị-bịa-ra-giữa-các-nguồn.**
