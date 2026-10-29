@@ -7,11 +7,11 @@ interface Props {
 }
 const { locale } = Astro.props;
 
-// VERIFIED 2026-10-27 (CAR-133, worktree feat/car133-landing-v2 @ origin/main 1f8231d):
+// VERIFIED 2026-10-28 (worktree feat/trakstar-provider, upstream #6131 port):
 //   node -e "import('./server/lib/sources/registry.mjs').then(m=>console.log(m.SOURCES.length))"
-//     → SOURCES 121 (116 EN + 5 RU)
+//     → SOURCES 122 (117 EN + 5 RU)
 //   node -e "import('./server/lib/portals/registry.mjs').then(m=>console.log(m.ALL_ADAPTERS.length))"
-//     → ALL_ADAPTERS 116
+//     → ALL_ADAPTERS 117
 //   npm test → # pass 6347 / # tests 6353 (6 skipped, 0 fail)
 //     (facts.tests reads the release-pinned count from docs/sdd/CONVENTIONS.md; the
 //      tile shows it rounded down to the nearest hundred with a "+" suffix, so a
@@ -20,9 +20,9 @@ const { locale } = Astro.props;
 // Every number below comes from src/generated/facts.json (written from the live
 // registry at build time) — nothing on the page is typed by hand.
 
-// Exact, build-time registry-derived counts. The sources total (121) is the
-// public-facing count (116 EN-board adapters + 5 RU readers — see CONTEXT.md);
-// facts.adapters (116 files on disk) is the technical count and stays in the
+// Exact, build-time registry-derived counts. The sources total (122) is the
+// public-facing count (117 EN-board adapters + 5 RU readers — see CONTEXT.md);
+// facts.adapters (117 files on disk) is the technical count and stays in the
 // verified comment above, not in the marketing band.
 const sources = facts.sources.length;
 // The tests tile keeps the "+" convention: floor to the nearest hundred so a

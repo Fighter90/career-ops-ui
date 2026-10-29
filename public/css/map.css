@@ -2,7 +2,11 @@
 :root {
   --map-score-top: #006b5e;
   --map-score-good: #2f7f74;
-  --map-score-mid: #789792;
+  /* Final-regression P3: light rings paint this as the number on a white
+     fill — #789792 read 3.16:1 (AA needs 4.5). #567b75 holds 4.68:1 in both
+     directions (ink on the white ring, white ink on a mid-tile). The dark
+     value below already reads 4.98:1 on the dark --paper ring, untouched. */
+  --map-score-mid: #567b75;
   --map-score-low: #aeb8b6;
   --map-score-none: #8f9997;
 }

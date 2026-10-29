@@ -188,6 +188,10 @@ import { ultiproAdapter } from './adapters/ultipro.mjs';
 // build). Both board-wide, explicit `provider:` only.
 import { platsbankenAdapter } from './adapters/platsbanken.mjs';
 import { techinasiaAdapter } from './adapters/techinasia.mjs';
+// Upstream #6131 — Trakstar Hire (formerly Recruiterbox; per-tenant ATS,
+// host-detected <client>.hire.trakstar.com / <client>.recruiterbox.com or
+// explicit `provider: trakstar`; no-auth Frontend API, 100 openings/page).
+import { trakstarAdapter } from './adapters/trakstar.mjs';
 
 export const ALL_ADAPTERS = [
   builtinAdapter,
@@ -373,6 +377,12 @@ export const ALL_ADAPTERS = [
   // Asia (Algolia job_postings index, explicit `provider: techinasia` only).
   platsbankenAdapter,
   techinasiaAdapter,
+  // Upstream #6131 — Trakstar Hire (formerly Recruiterbox). Per-tenant ATS,
+  // host-detected <client>.hire.trakstar.com / <client>.recruiterbox.com or
+  // explicit `provider: trakstar`; no-auth Frontend API at
+  // jsapi.recruiterbox.com, 100 openings/page, max_pages cap (default 20,
+  // max 50). Distinct hosts, so appending is safe.
+  trakstarAdapter,
 ];
 
 /**

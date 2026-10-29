@@ -157,6 +157,23 @@ test('map: dark-theme cluster bubbles sit on a surface fill with AA number contr
   } finally { await page.close(); }
 });
 
+test('map: light-theme cluster bubbles keep AA number contrast', { skip: SKIP }, async () => {
+  // Final-regression P3 (#671-era sweep): the ring label «related» painted
+  // --map-score-mid #789792 on the white ring fill = 3.16:1 (AA needs 4.5 at
+  // 11px). The palette must hold AA in BOTH themes; the light mid value is
+  // pinned here the same way the dark palette is pinned above.
+  const page = await context.newPage();
+  try {
+    await openMapWithClusters(page);
+    await page.evaluate(MEASURE_JS);
+    const ring = await page.evaluate(() => window.__readCluster('.job-cluster.ring'));
+    const filled = await page.evaluate(() => window.__readCluster('.job-cluster:not(.ring)'));
+    assert.equal(ring.label, 'related', 'the fixture must produce the long word label');
+    assert.ok(ring.contrast >= 4.5, `light ring number contrast ${ring.contrast.toFixed(2)}:1 < 4.5 (${ring.fg} on ${ring.bg})`);
+    assert.ok(filled.contrast >= 4.5, `light filled number contrast ${filled.contrast.toFixed(2)}:1 < 4.5 (${filled.fg} on ${filled.bg})`);
+  } finally { await page.close(); }
+});
+
 test('map: the prefers-color-scheme dark mirror gets the same cluster treatment', { skip: SKIP }, async () => {
   const page = await context.newPage();
   await page.emulateMedia({ colorScheme: 'dark' });

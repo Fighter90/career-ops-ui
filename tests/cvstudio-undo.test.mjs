@@ -328,7 +328,7 @@ test('cvstudio guard: confirming the leave keeps the work for the next render', 
 });
 
 test('cvstudio guard: beforeunload vetoes leaving with dirty state only', async () => {
-  const { handler, win, fire } = loadStudioRoute({});
+  const { handler, fire } = loadStudioRoute({});
   const root = await handler();
 
   const clean = { prevented: false, returnValue: undefined, preventDefault() { this.prevented = true; } };

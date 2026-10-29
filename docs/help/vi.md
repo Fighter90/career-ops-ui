@@ -1088,8 +1088,8 @@ gia; phần còn lại nằm sau **Advanced filters**, `scan.advancedFilters`
 — toàn khung được nhóm dưới **Result filters**, `scan.filtersGroup`):
 
 - **Văn bản tự do** — so khớp chuỗi con với tiêu đề / công ty.
-- **Nguồn** dropdown — mọi nguồn registry biết (121 vào lúc này:
-  116 EN + 5 RU, **All sources** theo mặc định). Nó được làm đầy trực
+- **Nguồn** dropdown — mọi nguồn registry biết (122 vào lúc này:
+  117 EN + 5 RU, **All sources** theo mặc định). Nó được làm đầy trực
   tiếp từ `GET /api/scan/sources`, nên một adapter mới thả vào xuất
   hiện ở đây mà không cần thay đổi ứng dụng nào — danh sách không bao
   giờ bị hardcode.
@@ -1120,7 +1120,7 @@ qua mẫu số ATS). Tooltip nói điều tương tự bằng lời thường
 (`scan.activeCo.help`). Danh sách được chia thành hai nhóm:
 
 - ✓ **Direct API** (`scan.apiBacked`) — bảng được lấy trực tiếp từ API
-  ATS công khai của nó (một trong 116 adapter EN, từ Greenhouse /
+  ATS công khai của nó (một trong 117 adapter EN, từ Greenhouse /
   Ashby / Lever / Workable / SmartRecruiters / Workday xuống phần đuôi
   dài).
 - ○ **Web-search only** (`scan.websearchBacked`) — không adapter nào
@@ -1900,7 +1900,7 @@ kết quả, và tìm trên trình theo dõi issue tại
 career-ops-ui coi mỗi bảng việc làm là một **adapter** — một tệp đơn dưới
 [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) biết
 cách lấy + chuẩn hóa kết quả của một bảng. Hiện tại
-`server/lib/sources/` registry cung cấp **121** nguồn — **116 bảng tiếng Anh + 5 bảng tiếng Nga**. Bộ tiếng Anh trải khắp các ATS lớn (Greenhouse / Ashby / Lever /
+`server/lib/sources/` registry cung cấp **122** nguồn — **117 bảng tiếng Anh + 5 bảng tiếng Nga**. Bộ tiếng Anh trải khắp các ATS lớn (Greenhouse / Ashby / Lever /
 Workable / SmartRecruiters / Workday), các aggregator toàn bảng chọn bằng
 `provider:` tường minh (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board,
 Amazon, …), và các ATS theo tenant tự phát hiện từ host `careers_url` hay

@@ -1088,8 +1088,8 @@ ligger bag **Avancerede filtre**, `scan.advancedFilters` — hele panelet
 er grupperet under **Resultatfiltre**, `scan.filtersGroup`):
 
 - **Fritekst** — delstreng-match mod titel / virksomhed.
-- **Source**-dropdown — alle kilder, som registreringen kender (121 i
-  øjeblikket: 116 EN + 5 RU, **All sources** som standard). Den fyldes
+- **Source**-dropdown — alle kilder, som registreringen kender (122 i
+  øjeblikket: 117 EN + 5 RU, **All sources** som standard). Den fyldes
   live fra `GET /api/scan/sources`, så en nydroppet adapter dukker op
   her uden nogen app-ændring — listen er aldrig hårdkodet.
 - **Remote / Hybrid / Onsite**-dropdown.
@@ -1120,7 +1120,7 @@ Værktøjstippet siger det samme i almindelige ord (`scan.activeCo.help`).
 Listen er opdelt i to grupper:
 
 - ✓ **Direkte API** (`scan.apiBacked`) — boardet hentes direkte fra dets
-  offentlige ATS-API (én af de 116 EN-adaptere, fra Greenhouse / Ashby /
+  offentlige ATS-API (én af de 117 EN-adaptere, fra Greenhouse / Ashby /
   Lever / Workable / SmartRecruiters / Workday og ned ad den lange hale).
 - ○ **Kun websøgning** (`scan.websearchBacked`) — ingen adapter matcher
   URL'en, så CLI'ens AI-scan dækker den i stedet.
@@ -1905,7 +1905,7 @@ outputtet, og søg i issue-trackeren på
 
 ## 17. Sådan tilføjer du en ny jobportal-kilde
 
-career-ops-ui behandler hvert jobboard som en **adapter** — en enkelt fil under [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), der ved, hvordan man henter + normaliserer ét boards resultater. I dag leverer `server/lib/sources/`-registreringen **121** kilder — **116 engelske + 5 russiske** boards. Det engelske sæt spænder over de store ATS'er (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), board-brede aggregatorer valgt af en eksplicit `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …) og per-tenant-ATS'er auto-detekteret fra en `careers_url`-host eller en eksplicit `api:`-URL (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **Den komplette liste behøver aldrig at blive talt manuelt her — den auto-opdages fra `server/lib/sources/` og vises live i Source-dropdownen på `#/scan`.** Se §5 for YAML'en og `docs/portals-examples.md` for copy-paste-poster.
+career-ops-ui behandler hvert jobboard som en **adapter** — en enkelt fil under [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), der ved, hvordan man henter + normaliserer ét boards resultater. I dag leverer `server/lib/sources/`-registreringen **122** kilder — **117 engelske + 5 russiske** boards. Det engelske sæt spænder over de store ATS'er (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), board-brede aggregatorer valgt af en eksplicit `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …) og per-tenant-ATS'er auto-detekteret fra en `careers_url`-host eller en eksplicit `api:`-URL (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **Den komplette liste behøver aldrig at blive talt manuelt her — den auto-opdages fra `server/lib/sources/` og vises live i Source-dropdownen på `#/scan`.** Se §5 for YAML'en og `docs/portals-examples.md` for copy-paste-poster.
 
 > **v1.69.0 (P-14) — drop-in auto-discovery.** At tilføje en 12. kilde er nu
 > et **rent fil-drop**. Registreringen

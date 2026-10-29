@@ -26,7 +26,7 @@ const captions = [1, 2, 3].map((i) => ({
       <p class="text-lg text-ink-soft">{t(locale, 'map.sub')}</p>
     </div>
 
-    <div class="reveal overflow-hidden rounded-[24px] border border-line shadow-[var(--shadow-hover)]">
+    <div class="reveal rounded-[24px] border border-line bg-white p-3 shadow-[var(--shadow-hover)] sm:p-4">
       <Picture
         src={shot}
         alt={t(locale, 'map.alt')}
@@ -34,7 +34,7 @@ const captions = [1, 2, 3].map((i) => ({
         widths={[640, 960, 1440]}
         sizes="(max-width: 1200px) 94vw, 1160px"
         loading="lazy"
-        class="block h-auto w-full"
+        class="block h-auto w-full rounded-[12px]"
       />
     </div>
 

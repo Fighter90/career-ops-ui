@@ -57,6 +57,7 @@
     "server/lib/portals/adapters/teamtailor.mjs",
     "server/lib/portals/adapters/tencent.mjs",
     "server/lib/portals/adapters/tkms.mjs",
+    "server/lib/portals/adapters/trakstar.mjs",
     "server/lib/portals/adapters/workable.mjs",
     "server/lib/portals/adapters/wttj.mjs",
     "server/lib/portals/adapters/yourator.mjs",

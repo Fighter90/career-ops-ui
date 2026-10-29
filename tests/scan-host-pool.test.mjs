@@ -214,15 +214,11 @@ test('host pool: companies on different hosts run in parallel (12 in flight, hos
 
 test('host pool: snapshot rows deterministic — portals order, not completion order', async () => {
   writePortals(dir, portalsMixed6());
-  const { fetch, m } = makeTimedFetch({ delayFor: (url) => delayForCompany(idxFromSlug(slugOf(url))) });
+  const { fetch } = makeTimedFetch({ delayFor: (url) => delayForCompany(idxFromSlug(slugOf(url))) });
   const result = await runEnScan({ writeFiles: true, fetchImpl: fetch, onLog: () => {} });
 
   assert.equal(result.counts.raw, 6);
   assert.equal(result.errors.length, 0);
-  // The scramble really did shuffle completion order — otherwise this test
-  // proves nothing about ordering.
-  const completion = [...m.perHostNow.keys()]; // (ordering probe below uses delays only)
-
   const snap = JSON.parse(readFileSync(resolve(dir, 'data', 'last-scan.json'), 'utf8'));
   assert.ok(snap.en && Array.isArray(snap.en.filtered), 'snapshot.en.filtered written (nothing kept)');
   const expectedUrls = ['co0', 'a0', 'co1', 'a1', 'co2', 'a2'].map((s) => `https://${s}.example/1`);

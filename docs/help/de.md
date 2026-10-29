@@ -1183,7 +1183,7 @@ alles andere liegt hinter **Erweiterte Filter**, `scan.advancedFilters`
 - **Freitext** — Teilzeichenketten-Übereinstimmung gegen Titel /
   Unternehmen.
 - **Source**-Dropdown — jede Quelle, die die Registry kennt (aktuell
-  121: 116 EN + 5 RU, standardmäßig **All sources**). Sie wird live aus
+  122: 117 EN + 5 RU, standardmäßig **All sources**). Sie wird live aus
   `GET /api/scan/sources` befüllt, sodass ein neu abgelegter Adapter
   ohne App-Änderung hier erscheint — die Liste ist nie hartcodiert.
 - **Remote / Hybrid / Onsite**-Dropdown.
@@ -1217,7 +1217,7 @@ Der Tooltip sagt dasselbe in schlichten Worten
 (`scan.activeCo.help`). Die Liste ist in zwei Gruppen geteilt:
 
 - ✓ **Direkte API** (`scan.apiBacked`) — das Board wird direkt aus
-  seiner öffentlichen ATS-API geholt (einer der 116 EN-Adapter, von
+  seiner öffentlichen ATS-API geholt (einer der 117 EN-Adapter, von
   Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday
   bis zum langen Schwanz).
 - ○ **Nur Websuche** (`scan.websearchBacked`) — kein Adapter passt zur
@@ -2045,7 +2045,7 @@ kopieren Sie die Ausgabe und durchsuchen Sie den Issue-Tracker unter
 
 ## 17. So fügen Sie eine neue Jobportal-Quelle hinzu
 
-career-ops-ui behandelt jedes Job-Board als **Adapter** — eine einzelne Datei unter [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), die weiß, wie man die Ergebnisse eines Boards abruft + normalisiert. Aktuell liefert die `server/lib/sources/`-Registry **121** Adapter — **116 englische + 5 russische** Boards. Das englische Set umfasst die großen ATSes (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), board-weite Aggregatoren, die per explizitem `provider:` ausgewählt werden (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), sowie Per-Mandant-ATSes, die automatisch aus einem `careers_url`-Host oder einer expliziten `api:`-URL erkannt werden (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **Die vollständige Liste muss hier niemals von Hand gezählt werden — sie wird automatisch aus `server/lib/sources/` ermittelt und live im Source-Dropdown von `#/scan` angezeigt.** Siehe §5 für das YAML und `docs/portals-examples.md` für Kopier-Einfüge-Einträge.
+career-ops-ui behandelt jedes Job-Board als **Adapter** — eine einzelne Datei unter [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), die weiß, wie man die Ergebnisse eines Boards abruft + normalisiert. Aktuell liefert die `server/lib/sources/`-Registry **122** Adapter — **117 englische + 5 russische** Boards. Das englische Set umfasst die großen ATSes (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), board-weite Aggregatoren, die per explizitem `provider:` ausgewählt werden (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), sowie Per-Mandant-ATSes, die automatisch aus einem `careers_url`-Host oder einer expliziten `api:`-URL erkannt werden (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). **Die vollständige Liste muss hier niemals von Hand gezählt werden — sie wird automatisch aus `server/lib/sources/` ermittelt und live im Source-Dropdown von `#/scan` angezeigt.** Siehe §5 für das YAML und `docs/portals-examples.md` für Kopier-Einfüge-Einträge.
 
 > **v1.69.0 (P-14) — Drop-in-Auto-Discovery.** Das Hinzufügen einer 12. Quelle ist
 > jetzt ein **reines Datei-Ablegen**. Die Registry
