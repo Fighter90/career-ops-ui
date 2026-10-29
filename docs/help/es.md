@@ -631,6 +631,14 @@ Filtra las vacantes escaneadas por su **ubicación** (subcadena, sin distinguir 
 
 Clave de nivel superior en `portals.yml` (hermana de `title_filter`, no anidada en `russian_portals`).
 
+### `years_min` (opcional — web-ui 1.262.0)
+
+```yaml
+years_min: 3
+```
+
+Descarta las vacantes cuya descripción declare una experiencia mínima por debajo de tu umbral. El parser solo lee requisitos declarados — una vacante sin cifra declarada siempre pasa (nunca se descarta por una suposición). Las filas descartadas se registran en `data/scan-history.tsv` como `skipped_experience`, un estado observacional que nunca fija una URL, así que la vacante vuelve a aparecer en un scan posterior.
+
 ### `search_queries`
 
 ```yaml
@@ -1308,6 +1316,10 @@ Abre un informe guardado y pulsa **📄 Generar PDF**. Ejecuta
 instalado). No se envía nada: revisa el PDF antes de adjuntarlo a una
 candidatura.
 
+### Revisión del anuncio — comprobación de integridad del JD (v1.262.0)
+
+En las acciones de cabecera de un informe individual, el botón **🛡 Revisión del anuncio** ejecuta el gate de integridad determinista y zero-LLM del proyecto padre sobre el JD archivado de ese informe (su captura en `jds/`, resuelta por el número de informe del slug). Los hallazgos se muestran inline: el veredicto, cada comprobación y su motivo. Todo corre en local: sin modelo y sin escrituras. Mientras tu checkout del padre no incluya `posting-guard.mjs`, el botón responde honestamente con una nota de "script not found" en lugar de fallar.
+
 ---
 
 ## 11. Tracker (`#/tracker`)
@@ -1392,6 +1404,10 @@ Cada filtro resetea el paginador a la página 1. 25 filas por página.
 reportSlug?, notes?, date? }`. Dedup por `(empresa, rol)`
 case-insensitive. Desde el UI, la página Evaluate ofrece un botón
 "Add to tracker" tras una puntuación exitosa.
+
+### Importar el CSV de otro tracker (v1.262.0)
+
+El botón **Importar CSV** de la barra de herramientas acepta el export CSV de otro tracker (Teal, Huntr, Simplify o una hoja de cálculo hecha a mano — alias de columnas para company/role/status/date/url, parseo RFC-4180) y previsualiza cada fila con su destino: importar, duplicada (misma URL de oferta) u omitir. Nada se registra hasta que confirmas. Una etapa que la app no reconoce no bloquea la fila — se registra como Evaluated con una nota. Las fechas se entienden en ISO, día-primero o con nombre de mes.
 
 ### "¿Sigue activa?" — comprueba si una oferta ATS sigue abierta
 
@@ -2256,6 +2272,10 @@ Antes de compartir tu CV como muestra de escritura o captura de pantalla, la **M
 ### Hazlo humano (coincidencia de voz)
 
 Pega una frase o un párrafo rígido —ese tipo de redacción genérica de IA que suena a plantilla— y **Hazlo humano** lo reescribe con *tu* voz. La reescritura se fundamenta en el servidor en tu `voice-dna.md` (cómo se lee tu escritura) y en tus `writing-samples/` (tu prosa real). La regla estricta: puede reordenar, condensar y reajustar la voz, pero **nunca** introducirá un hecho, métrica o logro que no esté ya en el texto que pegaste. Con una clave de LLM lo reescribe en vivo; sin clave te entrega un prompt listo para pegar en cualquier asistente. Luego edita tu CV en la página `#/cv` como de costumbre: CV Studio sugiere, tú decides.
+
+### Comprobación de frases hechas (v1.262.0)
+
+La tarjeta **Comprobación de frases hechas** analiza cualquier texto pegado en busca de 27 frases hechas de currículum ("passionate about", "proven track record", "leveraged", "spearheaded"…) y resalta las coincidencias exactas. Un guion entre años — `2022–2024` — es un rango de fechas, no un cliché, pero `20–30%` sí se marca como cliché. Es de solo lectura: no escribe nada en ningún sitio. El checklist de **Adaptar a un empleo** cuenta las frases hechas como su sexto invariante.
 
 ### Pista "¿Reutilizar un CV anterior?"
 

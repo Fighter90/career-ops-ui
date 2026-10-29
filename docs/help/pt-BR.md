@@ -658,6 +658,14 @@ Filtra as vagas escaneadas pela **localização** (substring, sem diferenciar ma
 
 Chave de nível superior em `portals.yml` (irmã de `title_filter`, não aninhada em `russian_portals`).
 
+### `years_min` (opcional — web-ui 1.262.0)
+
+```yaml
+years_min: 3
+```
+
+Descarta vagas cuja descrição declare uma experiência mínima abaixo do seu limite. O parser lê apenas requisitos declarados — uma vaga sem número declarado sempre passa (nunca descartada por suposição). As linhas descartadas são registradas em `data/scan-history.tsv` como `skipped_experience`, um status observacional que nunca fixa uma URL, então a vaga reaparece num scan posterior.
+
 ### `search_queries`
 
 ```yaml
@@ -1325,6 +1333,10 @@ Abra um relatório salvo e clique em **📄 Gerar PDF**. Ele executa
 (precisa do Playwright; a página Saúde mostra se está instalado). Nada é
 enviado: revise o PDF antes de anexá-lo a uma candidatura.
 
+### Verificação do anúncio — integridade do JD (v1.262.0)
+
+Nas ações do cabeçalho de um relatório individual, o botão **🛡 Verificação do anúncio** executa o gate de integridade determinístico e zero-LLM do projeto pai sobre o JD arquivado daquele relatório (a captura em `jds/`, resolvida pelo número do relatório no slug). Os achados são renderizados inline: o veredito, cada checagem e sua razão. Tudo roda local: sem modelo e sem gravações. Enquanto seu checkout do pai não tiver `posting-guard.mjs`, o botão responde honestamente com uma nota de "script not found" em vez de falhar.
+
 ---
 
 ## 11. Tracker (`#/tracker`)
@@ -1410,6 +1422,10 @@ página.
 reportSlug?, notes?, date? }`. Dedup por `(company, role)`
 case-insensitive. Na UI, a página Evaluate oferece um botão "Add to
 tracker" depois de uma pontuação bem-sucedida.
+
+### Importar o CSV de outro tracker (v1.262.0)
+
+O botão **Importar CSV** da barra de ferramentas aceita o export CSV de outro tracker (Teal, Huntr, Simplify ou uma planilha feita à mão — aliases de coluna para company/role/status/date/url, parse RFC-4180) e pré-visualiza cada linha com seu destino: importar, duplicada (mesma URL de vaga) ou pular. Nada é gravado até você confirmar. Um estágio que o app não reconhece não bloqueia a linha — ela entra como Evaluated com uma nota. Datas são entendidas em ISO, dia-primeiro ou com nome de mês.
 
 ### "Ainda no ar?" — verifique se uma vaga de ATS continua aberta
 
@@ -2280,6 +2296,10 @@ Antes de compartilhar seu CV como amostra de escrita ou captura de tela, a **Má
 ### Torne humano (correspondência de voz)
 
 Cole uma frase ou um parágrafo engessado — aquele tipo de redação genérica de IA que soa como texto padrão — e **Torne humano** o reescreve na *sua* voz. A reescrita é fundamentada no servidor no seu `voice-dna.md` (como sua escrita soa) e nos seus `writing-samples/` (sua prosa real). A regra rígida: ele pode reordenar, enxugar e reajustar a voz, mas **nunca** vai introduzir um fato, métrica ou conquista que já não esteja no texto que você colou. Com uma chave de LLM, ele reescreve ao vivo; sem chave, ele entrega um prompt pronto para colar em qualquer assistente. Depois edite seu CV na página `#/cv` como de costume — o CV Studio sugere, você decide.
+
+### Verificação de frases de efeito (v1.262.0)
+
+O cartão **Verificação de frases de efeito** analisa qualquer texto colado em busca de 27 frases de efeito de currículo ("passionate about", "proven track record", "leveraged", "spearheaded"…) e destaca as ocorrências exatas. Um travessão entre anos — `2022–2024` — é um intervalo de datas, não um clichê, mas `20–30%` é marcado como clichê. É somente leitura: nada é gravado em lugar algum. O checklist de **Adaptar a uma vaga** conta frases de efeito como seu sexto invariante.
 
 ### Dica "Reaproveitar um CV anterior?"
 

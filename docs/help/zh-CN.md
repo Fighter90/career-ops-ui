@@ -588,6 +588,14 @@ location_filter:
 
 `portals.yml` 顶层键(与 `title_filter` 平级,不嵌套在 `russian_portals` 下)。
 
+### `years_min`(可选 —— web-ui 1.262.0)
+
+```yaml
+years_min: 3
+```
+
+跳过描述中注明了低于你门槛的最低经验年限的职位。解析器只读取明确写出的要求 —— 没有写明数字的职位一律通过（绝不凭猜测过滤）。被跳过的行会以 `skipped_experience` 记入 `data/scan-history.tsv`，这是一个不会固定 URL 的观测性状态，因此职位会在之后的扫描中再次出现。
+
 ### `search_queries`
 
 ```yaml
@@ -1195,6 +1203,10 @@ URL 时,逐条点击就不现实了 — 跳转到第 14 节的 **Batch evaluate*
 `generate-pdf.mjs`,并将文件写入 `output/*.pdf`(需要 Playwright — 健康页面会
 显示是否已安装)。不会发送到任何地方:在把 PDF 附到申请之前先检查一下。
 
+### 招聘信息检查 —— JD 完整性校验(v1.262.0)
+
+在单个报告的页眉操作中，**🛡 招聘信息检查** 按钮会以父项目的确定性 zero-LLM 完整性门禁检查该报告归档的 JD（通过 slug 中的报告编号解析出的 `jds/` 捕获文件）。结果内联渲染 —— 判定、每项检查及其原因。一切都在本地运行：不调用模型，不写入任何内容。在你的父项目 checkout 包含 `posting-guard.mjs` 之前，按钮会诚实地返回一条 “script not found” 提示，而不是报错。
+
 ---
 
 ## 11. 跟踪器(`#/tracker`)
@@ -1267,6 +1279,10 @@ CRM。每次申请一行;以 GitHub-Flavored Markdown 表的形式存于
 `POST /api/tracker` — body `{ company, role, score?, status?, url?,
 reportSlug?, notes?, date? }`。按 `(company, role)` 大小写不敏感地
 去重。UI 中,Evaluate 页在成功评分后会提供 "Add to tracker" 按钮。
+
+### 导入其他 tracker 的 CSV(v1.262.0)
+
+工具栏中的 **导入 CSV** 按钮接受来自其他 tracker 的 CSV 导出（Teal、Huntr、Simplify 或手工维护的表格 —— company/role/status/date/url 的列别名，RFC-4180 解析），并预览每一行及其去向 —— 导入 / 相同职位 URL 的重复 / 跳过。只有在你确认之后才会写入记录。应用无法识别的阶段不会挡住该行 —— 它会以 Evaluated 加一条备注的方式登记。日期支持 ISO、“日在前”（day-first）和月份名称格式。
 
 ### “还在招吗？” — 检查某个 ATS 职位是否仍然开放
 
@@ -2067,6 +2083,10 @@ career-ops-ui 的大部分功能都在问“这份工作和我的 CV 匹配吗�
 ### 让它有人味（语气匹配）
 
 粘贴一句或一段生硬的文字——那种读起来像套话的、泛泛的 AI 措辞——**让它有人味**便会用*你的*语气重写它。重写在服务器端以你的 `voice-dna.md`（你的文字读起来如何）和 `writing-samples/`（你真实的行文）为依据。硬性规则：它可以重新排序、精简并重新调整语气，但**绝不会**引入粘贴文本中尚未存在的事实、指标或成就。有 LLM 密钥时它会实时重写；没有密钥时它会给你一段现成的提示词，供粘贴到任意助手中。之后照常在 `#/cv` 页面编辑你的简历——CV Studio 提建议，你来决定。
+
+### 套话检查(v1.262.0)
+
+**套话检查** 卡片会检查粘贴的文本中是否出现 27 句套话式的简历用语（“passionate about”“proven track record”“leveraged”“spearheaded”……），并精确高亮匹配项。年份之间的连接号 —— `2022–2024` —— 是日期区间，不是套话；而 `20–30%` 则会被标记为套话。只读检查，不写入任何内容。**针对职位定制** 的检查清单将套话式措辞计为第六条不变量。
 
 ### “复用旧简历？”提示
 
