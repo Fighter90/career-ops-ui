@@ -11,7 +11,7 @@ const { locale, id } = Astro.props;
 // Real, working install commands only — verified against README.md.
 const CURL = 'curl -fsSL https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/bin/setup.sh | bash';
 const NPX = 'cd career-ops/web-ui\nnpx career-ops-ui setup';
-const GIT = `cd career-ops   # ${t(locale, 'install.gitComment')}\ngit clone https://github.com/Fighter90/career-ops-ui.git web-ui\ncd web-ui && bash bin/start.sh`;
+const GIT = `cd career-ops   ${t(locale, 'install.gitComment')}\ngit clone https://github.com/Fighter90/career-ops-ui.git web-ui\ncd web-ui && bash bin/start.sh`;
 
 const TABS = [
   { name: 'curl', cmd: CURL, noteKey: 'install.curlNote' },
