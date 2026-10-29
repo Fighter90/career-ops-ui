@@ -9,19 +9,19 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 🌐 **Website: [cvstart.org](https://cvstart.org)** — multilingual landing + user guide (source in [`site/`](site/)).
 
-[![tests](https://img.shields.io/badge/tests-5795%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-6699%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
-[![playwright](https://img.shields.io/badge/playwright-143%2F143-brightgreen)](#tests)
+[![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.259.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.259.0)
+[![release](https://img.shields.io/badge/release-v1.261.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.261.3)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Latest release — v1.259.0** — **The second agent-fleet train, six fixes: report dates are server-pinned (no more invented 2026-01-xx), deep-research sources landed earlier, the map geocoder caches and reads RU cities (92% no-location → covered), help ×18 cites the localized button labels, UI sentences stop mixing languages (23 keyed leaks), and salary comparisons are computed server-side in one canonical form (the zh-TW verdict flip is dead). Plus CAR-104: the JS bundle now ships precompressed — cold load 3.1 MB → 598 KB.**
+> **🆕 Latest release — v1.261.3** — **The design-completion patch: the Lovable design system is fully live — phase 3 density (table rows ≈32px, controls 30px, chips 24px) and every coral leftover moved to the new blue accent / red danger split — plus the Trakstar Hire scan source (registry 122), the scan host-pool (up to 32 companies, 10 per host), six upstream provider location fixes, CV Studio undo + unsaved-guard, and the final-regression contrast fixes (map cluster label 4.68:1). Underneath: the geocode cache now survives crashes, ta evaluations got a 32768-token ceiling, and remote-QA names failing sources.**
 >
-> **Previous — v1.258.0** — **Six fixes from the agent fleet: the «Active companies» counter stops mixing two universes (1554/90), deep research demands `[source: …]` markers and admits unknowns, failed form fields light up instead of a toast-only error, #/map and #/tracker render their h1 instantly with skeleton loading rows, and every /api/evaluate caches the ~37k-token stable prefix (≈10× cheaper after the first call).**
+> **Previous — v1.261.2** — **Stability + polish: two-pager TDZ crash fixed (P1), Ctrl+K works on non-QWERTY layouts, help rendered-text key leaks closed ×17, UI.md renders bullet continuations and nested lists, map captures re-framed ×19 with real screenshots on cvstart.org, RTL chrome mirrors via logical properties (85 findings), a keyboard-a11y harness over 11 routes, and the geocode cache made crash-safe.**
 >
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
@@ -446,7 +446,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 5795 unit + 144 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.259.0)
+└─ tests/                    # 6699 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.261.3)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
