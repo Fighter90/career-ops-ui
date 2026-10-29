@@ -93,6 +93,7 @@ jobs:
           PARENT_REF: ${{ inputs.parent_ref }}
           UI_REF: ${{ inputs.ui_ref }}
           SERVICE: ${{ inputs.service }}
+          NEW_PROVIDER: ${{ inputs.provider }}
           PORT: ${{ inputs.port }}
           MODE: ${{ inputs.mode }}
         run: |
@@ -101,7 +102,7 @@ jobs:
           if ! [[ "$PORT" =~ ^[0-9]{1,5}$ ]] || (( PORT < 1 || PORT > 65535 )); then
             echo "::error::port must be 1-65535"; exit 1
           fi
-          for v in APP_DIR PARENT_REF UI_REF SERVICE; do
+          for v in APP_DIR PARENT_REF UI_REF SERVICE NEW_PROVIDER; do
             [[ "${!v}" =~ ^[A-Za-z0-9._/@-]*$ ]] || { echo "::error::input $v has characters outside [A-Za-z0-9._/@-]"; exit 1; }
           done
           for v in DEPLOY_SSH_KEY DEPLOY_HOST DEPLOY_USER; do
@@ -247,9 +248,15 @@ jobs:
           APP_DIR: ${{ inputs.app_dir }}
           NEW_PROVIDER: ${{ inputs.provider }}
         run: |
+          # NEW_PROVIDER is spliced into the remote command line below — a value
+          # containing a quote would break out of it and run arbitrary code on
+          # prod. Same charset as the Configure ssh gate, repeated here so the
+          # failure names this step.
+          [[ "$NEW_PROVIDER" =~ ^[A-Za-z0-9_-]+$ ]] || { echo "::error::provider must match [A-Za-z0-9_-]+ (got: $NEW_PROVIDER)"; exit 1; }
           ssh prod "APP_DIR='$APP_DIR' NEW_PROVIDER='$NEW_PROVIDER' bash -s" <<'REMOTE'
           APP_DIR="${APP_DIR:-/opt/career-ops/src}"
           echo "current: $(grep -hoE '^LLM_PROVIDER=.*' "$APP_DIR/.env" 2>/dev/null || echo 'unset (auto)')"
+          # Safe as an ERE because the charset gate above allows [A-Za-z0-9_-] only.
           if ! grep -qE "^${NEW_PROVIDER^^}_API_KEY=.+" "$APP_DIR/.env"; then
             echo "::error::${NEW_PROVIDER^^}_API_KEY is not set in $APP_DIR/.env — refusing to switch"
             exit 1
