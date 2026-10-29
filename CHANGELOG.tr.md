@@ -2,6 +2,32 @@
 
 > Bu changelog artık tüm sürüm geçmişini içerir. Türkçe yerelleştirmenin eklenmesinden (v1.85.0) önce yayınlanan girdiler aşağıda İngilizce özgün hâliyle yer alır — çeviri bekliyor; asıl kaynak [🇬🇧 CHANGELOG.md](CHANGELOG.md)'dir.
 
+## [1.262.0] — 2026-10-29
+
+**Upstream-özellikleri minor sürümü: Deel iş panosu tarayıcıya katılıyor (registry 123), başka bir tracker'ın CSV'si doğrudan `#/tracker`'a aktarılıyor, posting-guard bütünlük denetimi ve CV ses denetimi relay/lint olarak geliyor, tarayıcı bir deneyim-yılı filtresi öğreniyor ve yedi dilde daha Apply düğmeleri eksik gibi okunmayı bırakıyor — ayrıca MiniMax'ın emekliye ayrılmış varsayılan modeli değiştirildi ve repost'lar artık kaynaklar arasında uydurulmuyor.**
+
+### Eklendi
+
+- **Deel iş panosu kaynağı (CAR-184)**: registry **123 kaynak = 118 EN + 5 RU · 118 adapter** — `jobs.deel.com/<slug>` tenant panolarını otomatik algılar (Klarna ve diğerleri); Next.js flight yükü tüm envanteri tek istekte taşır (başlıklar, konumlar, düzen, tarihler, açıklama), izin verilmeyen `/api/` yoluna hiç dokunulmaz, iş ilanlarını başka yerde yayınlayan bir tenant, kaynağın **adıyla** reddettiği bir redirect ile yanıt verir ve ücret bilgisi bilinçli olarak eşlenmemiş bırakılır (ödeme aralığı olmayan tutarlar bir tahmin olurdu); count kapıları ×5 + help §17 ×19.
+- **Tracker CSV içe aktarma (CAR-181)**: dry-run önizlemeli ve kilitli commit'li `POST /api/tracker/import-csv` — RFC-4180 tırnaklama, ISO / gün-önce / ay-adı biçimlerinde tarihler, yabancı tracker aşamaları kanonik durumlara katlanır (bilinmeyen bir aşama notla birlikte Evaluated olarak gelir, asla atılmaz), markdown-link hücresinden veya Notlar sütunundan okunan normalize edilmiş ilan URL'siyle tekilleştirme, sınırlar 512 KB / 2000 satır; `#/tracker`, önizleme modallı bir CSV İçe Aktar düğmesi kazanır, i18n ×19.
+- **Posting guard relay'i (CAR-182)**: `POST /api/runners/posting-guard` — parent'ın deterministik sıfır-LLM JD bütünlük kapısı, `jds/` capture önek kuralıyla (doldurulmuş ya da değil, tam-sayı karşılaştırmalı) rapor numarasından veya açık, temizlenmiş bir yoldan çözülür; çocuk yalnızca argv, 30 sn'lik bir tavan ve fail-soft bir sözleşme alır; `#/reports/:slug` üzerindeki bir «Posting guard» eylemi bulguları gösterir, i18n ×19.
+- **CV ses denetimi (CAR-188)**: özgeçmişlerdeki 27 kalıplaşmış ifade (`passionate about`, `proven track record`, `leveraged`, `spearheaded`, `delve`…) artı kısa çizgi bulguları (2022–2024 gibi bir yıl aralığı bir iz değildir; `20–30%` öyledir) salt-okunur `POST /api/cv-studio/voice-check` olarak ve birebir eşleşmeleri vurgulayan bir `#/cv-studio` kartı; Tailor kontrol listesi altı değişmeze büyüyor; i18n ×19.
+- **Deneyim-yılı tarama filtresi (CAR-180)**: jd-years ayrıştırıcısı (65 ifade, emin olmadığında asla atmaz) ilan açıklamalarından belirtilen alt sınırı okur, yeni bir `years_min:` portals seçeneği yetersiz-nitelikli ilanları `skipped_experience` olarak atlar (asla bir URL'yi sabitlemeyen gözlemsel bir geçmiş durumu) ve `yearsMin` gelecekteki UI için tarama snapshot'ında yolculuk eder.
+- **Yedi dilde daha Apply denetimleri (CAR-185/189)**: Vietnamca `Nộp đơn ứng tuyển`, Bulgarca `Кандидатствай`/`Кандидатстване`/`Външно кандидатстване` (isim etiketin başına sabitlenir — tavsiye-makalesi bağlantıları Apply değildir), Felemenkçe `Solliciteer`/`Solliciteren`, İspanyolca `¡Apúntame!`/`Postularse` (etiketler, fiil değil — SSS bağlantıları artık önemsizdir), Çince `申请职位`/`投递` (denetimin tamamına sabitlenir) — bu panolardaki canlı ilanlar artık `no_apply_control` okumuyor.
+
+### Düzeltildi
+
+- **MiniMax varsayılan modeli (CAR-187)**: emekliye ayrılmış `MiniMax-Text-01` varsayılanı, `api.minimax.io` üzerinde `MiniMax-M3.1-Flash` ve `api.minimax.cn` üzerinde `MiniMax-M3` ile değiştirildi; temel URL satıcıya sabitli (satıcı-olmayan bir ana bilgisayar çalışma zamanında reddedilir ve anahtar ona hiç ulaşmaz); ayarlar ipucu ×19 yeni varsayılanları adlandırıyor.
+- **Repost'lar aynı kaynağı gerektiriyor (CAR-186)**: LinkedIn'de ve işverenin Greenhouse'unda listelenen bir rol artık repost olarak bildirilmiyor — kümeler artık `sourceHost()`'a göre bölünüyor; bu, bölgesel alt alan adlarını yalnızca bilinen sitelerde katlar (`de.linkedin.com` ≡ `www.linkedin.com`, ama `ca.example.com` ayrı kalır), Greenhouse ana bilgisayar takma adlarını tek kaynakta birleştirir ve sondaki noktayı soyar.
+- **Tamilce değerlendirme dil-sürüklenmesi (CAR-183)**: güçlendirilmiş bir Tamilce yönergesi artık hacim bütçesinin yanındaki uçucu prompt kuyruğunda oturuyor (CAR-174 yuvası) — v1.261.2'de görülen aralıklı sürüklenmenin ardından remote-QA raporları yeniden Tamilce'ye düşüyor.
+
+### Notlar
+
+- Bilinçli eylemsizlik: posting-guard relay'i fail-soft olarak geliyor — fork, parent'ın `posting-guard.mjs` dosyasını henüz **hiç** taşımıyor (upstream PR #6146 hâlâ açık), bu yüzden bir parent senkronizasyonu onu sevk edene dek uç nokta `{available:false, reason:"script-not-found"}` yanıtını veriyor.
+- Bilinçli eylemsizlik: `yearsMin` bu sürümde bir `#/scan` UI çipi olarak **hiç** görünmüyor — alan snapshot'ta yol alıyor ve filtre yalnızca portals-config.
+- Bilinçli eylemsizlik: upstream modes/reports Machine Summary değişiklikleri (#6161/#6160/#6157) **hiç** port edilmedi — web-ui aynaları olarak değil, dağıtılmış parent ile geliyorlar.
+- Testler 6734 → 6841, sürüm dalında; tarayıcının dedup anahtarına dokunulmadı (URL-normalizasyon davranışı **hiç** değişmedi).
+
 ## [1.261.3] — 2026-10-28
 
 **Tasarım-tamamlama yaması: Lovable tasarım fazı 3 (yoğunluk + coral'ın tamamen emekli edilmesi), tarama ana bilgisayar havuzu (32 şirket, ana bilgisayar başına 10), altı upstream sağlayıcı konum düzeltmesi, Trakstar Hire kaynağı (kayıt defteri 122), CV Studio geri alması + kaydedilmemiş-değişiklik koruması — artı nihai-regresyon P3 düzeltmeleri ve dokümantasyon paritesi.**

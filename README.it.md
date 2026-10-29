@@ -7,19 +7,19 @@
 
 _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-6699%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-6841%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.261.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.261.3)
+[![release](https://img.shields.io/badge/release-v1.262.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Ultima release — v1.261.3** — **La patch di completamento del design: il design system Lovable è pienamente attivo — densità della fase 3 (righe di tabella ≈32px, controlli 30px, chip 24px) e ogni residuo coral spostato sulla nuova separazione blu-accento / rosso-danger — più la fonte di scansione Trakstar Hire (registro 122), il pool di host della scansione (fino a 32 aziende, 10 per host), sei fix di località per i provider upstream, l'undo + la guardia non-salvato di CV Studio e le correzioni di contrasto della regressione finale (etichetta del cluster della mappa 4.68:1). Sotto: la cache dei geocode ora sopravvive ai crash, le valutazioni ta hanno ricevuto un tetto di 32768 token, e la remote-QA nomina le fonti fallite.**
+> **🆕 Ultima release — v1.262.0** — **Il minor delle funzionalità upstream: il board Deel entra nello scanner (registro 123), il CSV di un tracker estraneo si importa direttamente in #/tracker con un'anteprima dry-run, il controllo di integrità JD posting-guard e un controllo voce del CV (27 frasi fatte evidenziate) approdano nella UI, un filtro scan anni-di-esperienza legge il JD, e i pulsanti Apply sono capiti in altre sette lingue — più i repost smettono di essere fabbricati tra le fonti, il modello predefinito ritirato di MiniMax viene sostituito e le valutazioni tamil tengono la loro lingua.**
 >
-> **Precedente — v1.261.2** — **Stabilità + rifinitura: crash TDZ del two-pager risolto (P1), Ctrl+K funziona sui layout non-QWERTY, perdite di chiavi nel testo renderizzato della guida chiuse ×17, UI.md renderizza le continuazioni dei punti elenco e gli elenchi annidati, catture della mappa ricorniciate ×19 con screenshot reali su cvstart.org, chrome RTL specchiato tramite proprietà logiche (85 riscontri), un harness di accessibilità da tastiera su 11 rotte, e la cache dei geocode resa a prova di crash.**
+> **Precedente — v1.261.3** — **La patch di completamento del design: il design system Lovable pienamente attivo (densità fase 3: righe ≈32px, controlli 30px, chip 24px; ogni corallo spostato sulla separazione blu-accento/rosso-danger), la fonte scan Trakstar Hire (registro 122), il pool di host dello scan (32 aziende, 10 per host), sei fix di località dei provider upstream, e l'undo + la guardia unsaved di CV Studio.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -422,7 +422,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 6699 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.261.3)
+└─ tests/                    # 6841 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
