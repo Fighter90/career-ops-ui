@@ -2,6 +2,34 @@
 
 > Bu changelog artık tüm sürüm geçmişini içerir. Türkçe yerelleştirmenin eklenmesinden (v1.85.0) önce yayınlanan girdiler aşağıda İngilizce özgün hâliyle yer alır — çeviri bekliyor; asıl kaynak [🇬🇧 CHANGELOG.md](CHANGELOG.md)'dir.
 
+## [1.261.3] — 2026-10-28
+
+**Tasarım-tamamlama yaması: Lovable tasarım fazı 3 (yoğunluk + coral'ın tamamen emekli edilmesi), tarama ana bilgisayar havuzu (32 şirket, ana bilgisayar başına 10), altı upstream sağlayıcı konum düzeltmesi, Trakstar Hire kaynağı (kayıt defteri 122), CV Studio geri alması + kaydedilmemiş-değişiklik koruması — artı nihai-regresyon P3 düzeltmeleri ve dokümantasyon paritesi.**
+
+### Düzeltildi
+
+- **Harita kümesi «related» etiketi 3.16:1 → 4.68:1 (her iki tema)**: açık temadaki `--map-score-mid` `#567b75`'e koyulaştırıldı (önerilen `#5f7f7a` yalnızca 4.37 ölçtü — bir adım daha koyu gerekiyordu); koyu taraf zaten 4.98:1'di, dokunulmadı. `map-cluster-visual` içinde red-first sabitlemesi.
+- **Skip-link odak halkası**: son kalan literel `#ff385c` konturu → `var(--accent-c)` — 78 odak halkasının tamamı artık accent token'ını izliyor.
+- **`.tab-btn.is-active` accent topolojisi** (#584, faz 3): denetim üç renk ailesini karıştırıyordu (açık coral dolgusu + danger metni + mavi kenarlık); artık tek bir accent-soft çifti.
+- **Upstream sağlayıcı konum düzeltmeleri ×5 (#580, CAR-176)**: workday `Fully Remote` bayrağı (bir yer değil), workable telecommuting fan-out'u + eyaletin yalnızca şehir yokken eklenmesi, successfactors sondaki virgül, lever remote kelime-sınırı, icims `Location`-önekli etiketler.
+- **http-json: tükenmiş zaman aşımında yeniden deneme yok (#580)** — son-tarih iptali her iki yeniden-deneme yardımcısında da geçici değil (upstream, 30sn×yeniden-denemelerle bir Ashby panosunda ~94sn ölçtü).
+- **Dokümantasyon paritesi (#587)**: HANDOFF/CONVENTIONS/README içindeki son 17/18-dönemi sayaçları (uk, eksik Локалізація bölümünü aldı; §-geçmişi §32/§33'e uzatıldı — 33 H2 aritmetiği doğrulandı).
+
+### Eklendi
+
+- **Lovable tasarım fazı 3 (#584)**: yoğunluk token'ları canlı — tablo satırları ≈32px, denetimler 30px, çipler 24px (WCAG 2.5.8 boşluk istisnası); her coral rgba kalıntısı cv3 çiftlerine taşındı (`.dash-hero`, `.badge-bad`, haleler, `.tab-btn.is-active`); `--ease-out` tanımlandı, TOKEN_HANDOFF boş; `.callout--ok/--danger` sözleşmesi.
+- **Trakstar Hire kaynağı (#583, CAR-177)**: kayıt defteri **122 kaynak = 117 EN + 5 RU · 117 adaptör** — ana bilgisayara sabitlenmiş jsapi.recruiterbox.com, kısa/boş/tekrarlı duruşlarla offset yürüyüşü, kısmiler korunuyor, `trakstarTruncated` etiketlemesi; sayaç kapıları ×5 + yardım §17 ×19.
+- **Tarama ana bilgisayar havuzu (#579, CAR-178)**: eşzamanlı 32 şirkete kadar, ana bilgisayar başına 10 ile sınırlı (upstream anahtarlı-limiter deseni) — anlık görüntü sıralı koşuyla bayt-birebir özdeş (red-first zamanlama-sahte kapısı).
+- **CV Studio geri alması + kaydedilmemiş-değişiklik koruması (#582, CAR-179)**: QWERTY-olmayan düzenlerde güvenli `Cmd/Ctrl+Z` ile AI-koşusu sonuçları üzerinde sınırlı bir geri alma yığını (30), rotadan ayrılırken kaydedilmemiş-değişiklik koruması (canlı-probe ile kirli kontrolü, confirm/rewind/beforeunload), i18n ×19.
+- **Upstream sağlayıcı düzeltmeleri ×17 test edildi** (CAR-176'nın parçası); remote-QA özeti başarısız tarama kaynaklarını adlandırıyor + eval başına `tok ~N` (#567, v1.261.2'de zaten mevcut — bu sürümün triajında gözlemlenebilirlik kullanıldı).
+
+### Notlar
+
+- **Accent artık mavi** (Lovable konsepti): birincil eylemler/aktif durumlar/odak halkaları `--cv3-accent`'ı izliyor; kırmızı danger için saklı (`.btn-danger`, `toast.error`, danger metni). Coral yalnızca logo PNG varlığında yaşıyor (sahibin kararı).
+- **Yoğunluk**: tablo satırları ≈32px / denetimler 30px / çipler 24px — WCAG 2.5.8 boşluk istisnası belgelendirildi; v1.26.1'in 44px kanaryası token sözleşmesi üzerine yeniden yazıldı.
+- CodeQL: açık 10 uyarının tamamı kapatıldı (4'ü gerekçeyle FP olarak kapatıldı — belgelenmiş sınıflar: llmRateLimit/atomicWrite; 6'sı kaynakta düzeltildi).
+- Testler sürüm dalında 6655 → 6699; yeni Trakstar kaynağının ötesinde hiçbir tarayıcı-kaynak davranışı değişmedi.
+
 ## [1.261.2] — 2026-10-28
 
 **Kararlılık + cilalama yaması: geocode önbelleği yazım-ortası bir çökmeyi atlatıyor (CAR-173), UI.md madde-işareti devamlarını ve iç içe listeleri render ediyor, yardım paketlerindeki render-edilen-metin anahtar sızıntıları ×17 kapatıldı, evaluate ta için yerel-ayar duyarlı bir token tavanı alıyor (CAR-174), RTL chrome mantıksal özelliklerle aynalanıyor (85 bulgu), harita yakalamaları ×19 yeniden çerçeveleniyor ve harita kümeleri koyu temada kontrastı geçiyor — artı Lovable tasarım entegrasyonunun ilk fazı (pasif `tokens-v3.css` sayfası), dokümantasyon geri-doldurması (sürüm incelemesi + şartnameler) ve CI-düğüm kapsam muafiyetleri.**
