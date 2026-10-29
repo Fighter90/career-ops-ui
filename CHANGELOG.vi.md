@@ -6,6 +6,34 @@ Bản dịch: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.261.3] — 2026-10-28
+
+**Bản-patch-hoàn-thiện-thiết-kế: giai-đoạn-3-thiết-kế-Lovable (mật-độ + nghỉ-hưu-coral-hoàn-toàn), host-pool-quét (32-công-ty, 10-mỗi-host), sáu-bản-sửa-vị-trí-nhà-cung-cấp-upstream, nguồn-Trakstar-Hire (registry 122), undo + chốt-bảo-vệ-chưa-lưu của-CV-Studio — cùng-các-bản-sửa-P3-hồi-quy-cuối-cùng và-đồng-bộ-docs.**
+
+### Đã sửa
+
+- **Nhãn-«related»-của-cluster-bản-đồ 3.16:1 → 4.68:1 (cả-hai-theme)**: `--map-score-mid`-nhạt bị-làm-đậm-thành-`#567b75` (giá-trị-đề-xuất-`#5f7f7a` chỉ-đo-được-4.37 — cần-một-bước-đậm-hơn); phía-dark từ-trước-đã-4.98:1, không-đụng-tới. Ghim-đỏ-trước trong-`map-cluster-visual`.
+- **Vòng-focus-của-skip-link**: outline-`#ff385c`-trần-cuối-cùng → `var(--accent-c)` — cả-78-vòng-focus giờ-theo-token-accent.
+- **Cấu-trúc-accent-của-`.tab-btn.is-active`** (#584, giai-đoạn-3): nút-bấm-từng-trộn-ba-họ-màu (sắc-phủ-coral + chữ-danger + viền-blue); giờ là-một-cặp-accent-soft-đơn-nhất.
+- **Bản-sửa-vị-trí-nhà-cung-cấp-upstream ×5 (#580, CAR-176)**: cờ-`Fully Remote`-của-workday (không-phải-một-nơi-chốn), fan-out-telecommuting-của-workable + chỉ-lấy-state-khi-không-có-thành-phố, dấu-phẩy-dư-cuối-của-successfactors, ranh-giới-từ-cho-remote-của-lever, các-nhãn-tiền-tố-`Location`-của-icims.
+- **http-json: không-retry-trên-timeout-đã-cạn (#580)** — một-lượt-hủy-do-quá-hạn là-lỗi-không-tạm-thời ở-cả-hai-trợ-lý-retry (upstream đo-được ~94s trên-một-board-Ashby với-30s×lần-retry).
+- **Đồng-bộ-docs (#587)**: những-bộ-đếm-thời-đại-17/18-cuối-cùng trong-HANDOFF/CONVENTIONS/README (uk nhận-phần-Локалізація-còn-thiếu; lịch-sử-§-mở-rộng-tới-§32/§33 — số-học-33-H2 được-kiểm-chứng).
+
+### Thêm mới
+
+- **Thiết-kế-Lovable giai-đoạn-3 (#584)**: các-token-mật-độ lên-sóng — hàng-bảng ≈32px, điều-khiển 30px, chip 24px (ngoại-lệ-khoảng-cách-WCAG 2.5.8); mọi-tàn-dư-rgba-coral chuyển-sang-các-cặp-cv3 (`.dash-hero`, `.badge-bad`, quầng, `.tab-btn.is-active`); `--ease-out` được-khai-báo, TOKEN_HANDOFF rỗng; hợp-đồng-`.callout--ok/--danger`.
+- **Nguồn-Trakstar-Hire (#583, CAR-177)**: registry **122 sources = 117 EN + 5 RU · 117 adapters** — ghim-host jsapi.recruiterbox.com, bước-đi-offset với-các-điểm-dừng-ngắn/rỗng/lặp, các-phần-từng-phần được-giữ, gắn-thẻ-`trakstarTruncated`; cổng-đếm ×5 + help §17 ×19.
+- **Host-pool-quét (#579, CAR-178)**: tới-32-công-ty đồng-thời, chặn-trần-10-mỗi-host (mẫu-hình-keyed-limiter-của-upstream) — snapshot giống-từng-byte-với-lượt-chạy-tuần-tự (cổng-mock-thời-gian-đỏ-trước).
+- **Undo + chốt-bảo-vệ-chưa-lưu của-CV-Studio (#582, CAR-179)**: stack-undo-có-trần (30) phủ-lên-kết-quả-lượt-chạy-AI với-`Cmd/Ctrl+Z`-an-toàn-cho-layout-không-QWERTY, chốt-bảo-vệ-chưa-lưu-khi-rời-route (dò-dirty-trực-tiếp, confirm/rewind/beforeunload), i18n ×19.
+- **Các-bản-sửa-nhà-cung-cấp-upstream được-kiểm-thử ×17** (một-phần-của-CAR-176); phần-tóm-tắt-remote-QA nêu-tên-các-nguồn-quét-trượt + in-`tok ~N` mỗi-lượt-eval (#567, đã-có-từ-v1.261.2 — observability được-dùng-cho-việc-sàng-lọc-của-bản-phát-hành-này).
+
+### Ghi chú
+
+- **Accent giờ-là-blue** (quan-niệm-Lovable): hành-động-chính/trạng-thái-hoạt-động/vòng-focus theo-`--cv3-accent`; màu-đỏ-được-dành-riêng-cho-danger (`.btn-danger`, `toast.error`, chữ-danger). Coral chỉ-còn-sống-sót-trong-tài-sản-logo-PNG (quyết-định-của-chủ-sở-hữu).
+- **Mật-độ**: hàng-bảng ≈32px / điều-khiển 30px / chip 24px — ngoại-lệ-khoảng-cách-WCAG 2.5.8 được-ghi-chép; canary-44px-của-v1.26.1 được-viết-lại-lên-hợp-đồng-token.
+- CodeQL: cả-10-cảnh-báo-còn-mở được-đóng (4 FP được-loại-có-lý-do: các-lớp-được-ghi-chép-llmRateLimit/atomicWrite; 6 được-sửa-tại-nguồn).
+- Tests 6655 → 6699 trên-nhánh-phát-hành; không-hành-vi-nguồn-quét nào thay-đổi ngoài-nguồn-Trakstar-mới.
+
 ## [1.261.2] — 2026-10-28
 
 **Bản-patch-ổn-định + hoàn-thiện: cache-geocode sống-sót-crash-giữa-lúc-ghi (CAR-173), UI.md render-phần-tiếp-nối-bullet và-các-danh-sách-lồng-nhau, các-lỗ-rò-khóa-trong-văn-bản-render của-các-bundle-help được-đóng ×17, evaluate nhận-trần-token-theo-locale cho-ta (CAR-174), chrome-RTL phản-chiếu qua-các-logical-property (85-phát-hiện), các-capture-bản-đồ được-khung-lại ×19 và-các-cluster-bản-đồ đỗ-tương-phản-trên-dark — cùng-giai-đoạn-đầu-tiên-của-tích-hợp-thiết-kế-Lovable (tệp-thụ-động `tokens-v3.css`), backfill-docs (review-release + specs) và-các-ngoại-lệ-coverage-CI-node.**
