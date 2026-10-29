@@ -11,10 +11,15 @@
  */
 import { readFileSync, mkdirSync } from 'node:fs';
 import { PATHS, path as projPath } from '../paths.mjs';
-import { parseApplications, today } from '../parsers.mjs';
+import { parseApplications, parseMarkdownTable, today } from '../parsers.mjs';
 import { safeReadApps, safeListReports } from '../store.mjs';
 import { withFileLock, atomicWrite } from '../file-lock.mjs';
 import { canonicalizeStatus, readCanonicalStates } from '../states.mjs';
+// CAR-181 — import another tracker's CSV export. Pure planning lives in
+// lib/tracker-import.mjs; this route only validates, locks and writes.
+import {
+  MAX_CSV_BYTES, MAX_IMPORT_ROWS, parseCsv, planImport,
+} from '../tracker-import.mjs';
 
 // v1.128.0 — the canonical status vocabulary is no
 // longer hardcoded here. `server/lib/states.mjs` reads
@@ -157,6 +162,119 @@ export function registerTrackerRoutes(app) {
       return { ok: true, num: nextNum };
     });
     res.json(result);
+  });
+
+  // CAR-181 — import the applications in another tracker's CSV export
+  // (Teal / Huntr / Simplify / a spreadsheet). Dry run by default: the body
+  // is planned against the CURRENT tracker (dedup by normalized posting URL
+  // via url-key, company+role fallback) and NOTHING is written. A second
+  // call with { commit: true } re-plans inside withFileLock and appends the
+  // import rows through the same markdown-table conventions as POST /api/tracker
+  // (N/A score sentinel, escaped cells, temp-then-rename write).
+  app.post('/api/tracker/import-csv', async (req, res) => {
+    const { csv, commit, source } = req.body || {};
+    if (typeof csv !== 'string' || !csv.trim()) {
+      return res.status(400).json({ error: 'csv text is required' });
+    }
+    if (Buffer.byteLength(csv, 'utf8') > MAX_CSV_BYTES) {
+      return res.status(413).json({ error: 'CSV is too large (limit 512KB). Split the export and import the parts.' });
+    }
+    const csvRows = parseCsv(csv);
+    const dataRowCount = csvRows.slice(1).filter((r) => r.some((c) => String(c).trim())).length;
+    if (dataRowCount > MAX_IMPORT_ROWS) {
+      return res.status(400).json({ error: `CSV has ${dataRowCount} data rows (limit ${MAX_IMPORT_ROWS}). Split the export and import the parts.` });
+    }
+    const safeSource = typeof source === 'string'
+      ? source.replace(/[\r\n\t]+/g, ' ').trim().slice(0, 80)
+      : '';
+    const states = readCanonicalStates();
+
+    const buildPlan = (trackerRows) => {
+      try {
+        return { ok: true, plan: planImport(csvRows, { trackerRows, today: today(), source: safeSource, states }) };
+      } catch (err) {
+        return { ok: false, error: err instanceof Error ? err.message : String(err) };
+      }
+    };
+    // Dry-run shape: counts + the per-row preview the UI renders.
+    const summarize = (plan) => {
+      const imported = [];
+      const duplicates = [];
+      const skipped = [];
+      const rows = plan.entries.map((e) => {
+        if (e.outcome === 'import') imported.push(e);
+        else if (e.outcome === 'tracked' || e.outcome === 'repeat') {
+          duplicates.push({ company: e.company, role: e.role, reason: e.reason });
+        } else skipped.push(e);
+        return {
+          row: e.row, company: e.company, role: e.role, status: e.status || '',
+          date: e.date || '', url: e.url, outcome: e.outcome, reason: e.reason || '',
+        };
+      });
+      return { imported: imported.length, skipped: skipped.length, duplicates, rows };
+    };
+
+    if (!commit) {
+      let content = '';
+      try { content = readFileSync(PATHS.applications, 'utf8'); } catch { content = ''; }
+      const planned = buildPlan(parseApplications(content));
+      if (!planned.ok) return res.status(400).json({ error: planned.error });
+      return res.json(summarize(planned.plan));
+    }
+
+    // Commit: re-plan INSIDE the lock against the file as it is right now
+    // (a dry run may be stale by the time the user confirms), then append.
+    const result = await withFileLock(PATHS.applications, async () => {
+      let content = '';
+      try { content = readFileSync(PATHS.applications, 'utf8'); } catch { content = ''; }
+      const planned = buildPlan(parseApplications(content));
+      if (!planned.ok) return { status: 400, body: { error: planned.error } };
+      const toImport = planned.plan.entries.filter((e) => e.outcome === 'import');
+      if (!toImport.length) return { status: 200, body: { ...summarize(planned.plan), written: 0 } };
+
+      const hasUrlCol = parseMarkdownTable(content).headers
+        .some((h) => String(h).trim().toLowerCase() === 'url');
+      const cell = (s) => String(s || '').replace(/\|/g, '\\|').replace(/[\r\n]+/g, ' ').trim();
+      const existing = parseApplications(content);
+      let num = Math.max(0, ...existing.map((r) => parseInt(r.num, 10) || 0));
+      const newLines = toImport.map((e) => {
+        num += 1;
+        // No URL column → the posting URL rides in Notes (the same place
+        // POST /api/tracker puts it), so a second import still dedups on it.
+        const notes = [
+          e.notes,
+          !hasUrlCol && e.url ? e.url : '',
+          !hasUrlCol && e.location ? e.location : '',
+        ].filter(Boolean).join('; ').slice(0, 500);
+        const row = [
+          String(num).padStart(3, '0'), e.date, cell(e.company), cell(e.role),
+          'N/A', e.status, '❌', '—', notes || '—',
+        ].map(cell);
+        if (hasUrlCol && e.url) row.push(cell(e.url));
+        return `| ${row.join(' | ')} |`;
+      });
+      let updated;
+      if (!content || !/^\|\s*#/m.test(content)) {
+        updated = [
+          '# Applications Tracker',
+          '',
+          hasUrlCol
+            ? '| # | Date | Company | Role | Score | Status | PDF | Report | Notes | URL |'
+            : '| # | Date | Company | Role | Score | Status | PDF | Report | Notes |',
+          hasUrlCol
+            ? '|---|------|---------|------|-------|--------|-----|--------|-------|-----|'
+            : '|---|------|---------|------|-------|--------|-----|--------|-------|',
+          ...newLines,
+          '',
+        ].join('\n');
+      } else {
+        updated = content.replace(/\n*$/, '\n') + newLines.join('\n') + '\n';
+      }
+      mkdirSync(projPath('data'), { recursive: true });
+      atomicWrite(PATHS.applications, updated);
+      return { status: 200, body: { ...summarize(planned.plan), written: toImport.length } };
+    });
+    return res.status(result.status).json(result.body);
   });
 
   // CAR-129 (v1.256.0) — one-shot score backfill: rows carrying a report

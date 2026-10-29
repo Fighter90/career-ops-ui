@@ -532,7 +532,17 @@ Router.register('tracker', async () => {
           make('/api/run/normalize', t('track.normalize')),
           make('/api/run/dedup', t('track.dedup')),
           make('/api/run/merge', t('track.merge')),
-        ]);
+          // CAR-181 — import another tracker's CSV export. NOT disabled on an
+          // empty tracker: an import is exactly how the first rows arrive.
+          // (Flow lives in lib/tracker-import.js — the CAR-117 split pattern.)
+          window.TrackerImport
+            ? c('button', {
+              className: 'btn btn-ghost',
+              title: t('import.btn', 'Import CSV'),
+              onClick: (e) => window.TrackerImport.pick(e.currentTarget, t),
+            }, t('import.btn', 'Import CSV'))
+            : null,
+        ]).filter(Boolean);
       })(),
     ]),
 
@@ -711,3 +721,4 @@ function openOutcomeModal(r, c, t) {
   const detachNavGuard = armTrackerModalNavGuard();
   UI.modal(t('track.outcome.record', 'Record outcome'), body, detachNavGuard);
 }
+
