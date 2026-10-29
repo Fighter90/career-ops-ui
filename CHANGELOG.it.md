@@ -2,6 +2,24 @@
 
 > Questo changelog contiene ora la cronologia completa delle versioni. Le voci pubblicate prima della localizzazione italiana (v1.85.0) compaiono sotto nell'originale inglese — traduzione in attesa; il riferimento resta [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.262.2] — 2026-10-30
+
+### Corretto
+
+- **Coda della revisione d'ondata — 7 reperti di bassa gravità, ciascuno chiuso red-first.** Il round-trip del backslash dell'import CSV: un `\` in una cella veniva scritto raddoppiato e riletto raddoppiato, così il re-import dello stesso CSV saltava il dedup azienda+ruolo e poteva creare una riga duplicata — il lettore ora fa l'unescape di `\\` dopo lo split (il round-trip scrittura→lettura è senza perdite, il re-import deduplica). Lo strip `<head>` di cv-voice era quadratico sui tag non chiusi — 4827 ms → 13 ms sull'input da 64 KB che la rotta pone a tetto. `statedYearsMin` eseguiva il parser completo degli anni per ogni posizione di ogni fonte anche quando `years_min` non era configurato — ora è lazy, i secondi di CPU per scan estesi sono spariti. Una capture cancellata tra readdir e statSync faceva crashare l'elenco del posting-guard (TOCTOU — i file scomparsi vengono saltati). Il predefinito MiniMax CN combaciava solo con `api.minimax.cn` esatto — ora qualsiasi URL di base `*.minimax.cn` riceve il modello CN. I token `$` di Deel che non sono riferimenti hex non filtrano più nello snippet come letterali. L'import picker controlla `file.size` PRIMA di `file.text()` — il tetto server di 512 KB rispondeva 413 solo dopo che il browser aveva analizzato un file potenzialmente enorme — con un toast `import.tooLarge` localizzato ×19.
+- **Indurimento del workflow di deploy (revisione dei workflows F1–F6).** `provider` era l'unico input interpolato nella shell remota senza validazione del charset — un `'` nel valore rompeva il quoting ed eseguiva codice arbitrario in produzione; ora è in whitelist `^[A-Za-z0-9_-]+$` prima di qualunque splice, e la grep della guardia della chiave non può più passare per falso positivo. Il passo diagnostico hermes stampava journalctl grezzo + dump delle unit nel log pubblico; il suo filtro ignorava `*_API_KEY=` in maiuscolo e non mascherava nulla — ora un redact condiviso case-insensitive + mascheramento dei valori + troncamento a 80 caratteri su tutti e tre i sink, e anche le query string `?token=` sono mascherate. Il passo hermes ignorava `inputs.app_dir` e aveva hardcoded `/opt/career-ops/src/.env`. `public_url` arrivava a curl senza un controllo https (iniezione di opzioni tramite un `-` iniziale). E la guardia anti-downgrade — la correzione dell'incidente v1.238.0 — non aveva un gate eseguibile: sei nuovi pin in ci-workflows (i ref non hanno default, la guardia gira prima di Deploy, regex dei ref severa).
+- **Coda della import-modal (revisione SPA).** La modale arma la stessa nav guard della modale outcome — navigare altrove non la lascia più orfana sopra un'altra vista. L'input file nascosto viene rimosso su `cancel`, non solo su `change` — le chiusure ripetute non infiltrano più input in document.body. `plan.duplicates` viene letto nella forma guardata nell'anteprima. L'allocazione di `num` del tracker usa `reduce` invece di `Math.max(...spread)` — lo spread raggiunge il limite degli argomenti a ~100k righe.
+
+### Modificato
+
+- Docs: il bullet «118 EN adapters» della guida ora riporta il conteggio in fr/it/ta (le altre 15 località lo avevano già). I prezzi dei vendor su cvstart.org riverificati contro le pagine prezzi ufficiali — tutti e quattro invariati, CHECKED_ON → 2026-10-30. Una sweep post-rilascio delle derive ha corretto 42 righe conteggio/versione stantie in README ×19, CONTEXT.md, CLAUDE.md e i manuali SDD (residui dell'era 109/104 e dell'era v1.262.0).
+
+### Note
+
+- Non-azione deliberata: il nativo `window.confirm` di cv-studio (era CAR-179) resta — convertirlo a `UI.confirm` è un lavoro a seguire, non un punto della patch; il tooltip delle frasi fatte `<mark title>` resta solo tooltip (pavimento di a11y accettabile); `remote-qa.yml` mantiene `cancel-in-progress: true` — il ri-dispatch sostituisce intenzionalmente una regressione in corso.
+- Remote-QA completa sul prod v1.262.1: rotte ×19 ✓ · sito ×19 ✓ · link ✓ · LLM live 18/19 località A–G ✓ — `pl` ha colto un singolo timeout del provider `502 · 300 s · 0 ch` (non territorio token-dense; il re-run puntuale viaggia con questo rilascio).
+- Test 6841 → 6867 sul ramo di rilascio (6864 pass / 0 fail / 3 skip, +26) · Playwright 176 · copertura 98.42 % righe / 89.94 % rami · registro invariato: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.262.1] — 2026-10-29
 
 **La patch della valutazione italiana: `it` entra nelle località token-dense (soffitto di 32 768 token + orologio di 480 s) dopo che l'era OpenRouter l'ha colta a tagliare il report subito prima del blocco SCORE_SUMMARY — e lo strumento di cambio provider che ha reso possibile la diagnosi arriva nel workflow di deploy.**
