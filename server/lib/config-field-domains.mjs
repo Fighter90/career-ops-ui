@@ -45,7 +45,7 @@ export const CURATED_DOMAINS = Object.freeze({
   DEEPSEEK_MODEL: Object.freeze(["deepseek-chat", "deepseek-reasoner"]),
   ZAI_MODEL: Object.freeze(["glm-4.6", "glm-4.5", "glm-4.5-air", "glm-4-plus"]),
   MOONSHOT_MODEL: Object.freeze(["kimi-k2-0711-preview", "moonshot-v1-128k", "moonshot-v1-32k", "moonshot-v1-8k"]),
-  MINIMAX_MODEL: Object.freeze(["MiniMax-Text-01", "abab6.5s-chat"]),
+  MINIMAX_MODEL: Object.freeze(["MiniMax-M3.1-Flash", "MiniMax-M3", "MiniMax-M2.7", "abab6.5s-chat"]),
   MISTRAL_MODEL: Object.freeze(["mistral-large-latest", "mistral-small-latest", "open-mistral-nemo", "codestral-latest"]),
   XAI_MODEL: Object.freeze(["grok-4", "grok-3", "grok-3-mini", "grok-2-latest"]),
   TOGETHER_MODEL: Object.freeze(["meta-llama/Llama-3.3-70B-Instruct-Turbo", "deepseek-ai/DeepSeek-V3", "Qwen/Qwen2.5-72B-Instruct-Turbo", "mistralai/Mixtral-8x7B-Instruct-v0.1", "thinkingmachines/Inkling"]),

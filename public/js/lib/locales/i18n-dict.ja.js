@@ -297,7 +297,7 @@ window.__I18N_DICT_JA = {
   'config.kimiBaseUrl': "MOONSHOT_BASE_URL",
   'config.minimaxHint': "キーの取得: platform.minimax.io。OpenAI 互換 (api.minimax.io/v1)。設定すると ⚡ ライブ評価を実行。",
   'config.minimaxKey': "MINIMAX_API_KEY",
-  'config.minimaxModelHint': "既定: MiniMax-Text-01。",
+  'config.minimaxModelHint': "既定: MiniMax-M3.1-Flash。api.minimax.cn では MiniMax-M3。",
   'config.minimaxModel': "MINIMAX_MODEL",
   'config.mistralHint': "キーの取得: console.mistral.ai。OpenAI 互換 (api.mistral.ai/v1)。設定すると ⚡ ライブ評価を実行。",
   'config.mistralKey': "MISTRAL_API_KEY",

@@ -297,7 +297,7 @@ window.__I18N_DICT_KO = {
   'config.kimiBaseUrl': "MOONSHOT_BASE_URL",
   'config.minimaxHint': "키 발급: platform.minimax.io. OpenAI 호환 (api.minimax.io/v1); 설정 시 ⚡ 라이브 평가를 실행.",
   'config.minimaxKey': "MINIMAX_API_KEY",
-  'config.minimaxModelHint': "기본값: MiniMax-Text-01.",
+  'config.minimaxModelHint': "기본값: MiniMax-M3.1-Flash. api.minimax.cn에서는 MiniMax-M3.",
   'config.minimaxModel': "MINIMAX_MODEL",
   'config.mistralHint': "키 발급: console.mistral.ai. OpenAI 호환 (api.mistral.ai/v1); 설정 시 ⚡ 라이브 평가를 실행.",
   'config.mistralKey': "MISTRAL_API_KEY",
