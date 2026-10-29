@@ -12,14 +12,14 @@ _அதிகாரப்பூர்வமற்ற இடைமுகம் �
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#சோதனைகள்)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#தேவைகள்)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.262.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.1)
+[![release](https://img.shields.io/badge/release-v1.262.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.2)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 சமீபத்திய வெளியீடு — v1.262.1** — **Italian-evaluation patch: OpenRouter era it-இன் report SCORE_SUMMARY block-க்கு முன்பே வெட்டப்படுவதைப் பிடித்ததால் `it` token-dense locales-உடன் சேர்கிறது (32768-token ceiling + 480 s clock) — மேலும் deploy workflow `mode=hermes` (gateway restart + full diagnosis + credits balance) மற்றும் `mode=provider` (key-presence guard உடன் LLM switch) பெற்றது; Hermes credits தீர்ந்தபோது இதுவே prod-ஐ OpenRouter-க்கு நகர்த்தியது.**
+> **🆕 சமீபத்திய வெளியீடு — v1.262.2** — **review-tail patch: ஏழு wave-review findings red-first ஆக மூடப்பட்டன — CSV import backslash round-trip (அதே export-ஐ மீண்டும் import செய்தால் dedup ஆகும்), cv-voice head-strip 4827 ms → 13 ms, `years_min` large scans-இல் lazily compute ஆகிறது, capture-listing TOCTOU crash சரி செய்யப்பட்டது, எந்த `*.minimax.cn` base URL-க்கும் MiniMax CN defaults, import picker file-ஐப் படிக்கும் முன்பே 512 KB cap-ஐ check செய்கிறது — மேலும் deploy.yml hardening (F1–F6: provider-input injection guard, hermes log redaction, `?token=` masking, app_dir, public_url https gate, ஆறு executable anti-downgrade pins) மற்றும் import-modal tail (nav guard, cancel cleanup, guarded duplicates). Tests 6841 → 6867.**
 >
-> **முந்தைய வெளியீடு — v1.262.0** — **upstream-features minor: Deel job board scanner-இல் சேர்கிறது (registry 123), வேறு tracker-இன் CSV dry-run preview உடன் #/tracker-இல் நேரடியாக import ஆகிறது, posting-guard JD integrity check + CV voice check (27 stock phrases highlight) UI-இல் வருகின்றன, years-of-experience scan filter JD-ஐப் படிக்கிறது, Apply buttons இன்னும் ஏழு மொழிகளில் புரிகின்றன — மேலும் reposts sources-க்கு இடையில் உருவாக்கப்படுவது நின்றது, MiniMax-இன் retired default model மாற்றப்பட்டது, ta evaluations தமிழிலேயே நிற்கின்றன.**
+> **முந்தைய வெளியீடு — v1.262.1** — **Italian-evaluation patch: OpenRouter era it-இன் report SCORE_SUMMARY block-க்கு முன்பே வெட்டப்படுவதைப் பிடித்ததால் `it` token-dense locales-உடன் சேர்கிறது (32768-token ceiling + 480 s clock) — மேலும் deploy workflow `mode=hermes` (gateway restart + full diagnosis + credits balance) மற்றும் `mode=provider` (key-presence guard உடன் LLM switch) பெற்றது; Hermes credits தீர்ந்தபோது இதுவே prod-ஐ OpenRouter-க்கு நகர்த்தியது.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -198,7 +198,7 @@ web-ui/
 │       ├── app.js          # தொடக்கம், lang switcher, theme
 │       ├── lib/            # i18n (19 மொழிகள்), api, ui, format
 │       └── views/          # ஒரு பக்கத்திற்கு ஒரு பார்வை
-├── tests/                  # 6841 unit (baseline @ v1.262.1) — node --test, கணினி முழுவதும் CI-isolated
+├── tests/                  # 6867 unit (baseline @ v1.262.2) — node --test, கணினி முழுவதும் CI-isolated
 └── docs/                   # உதவி வழிகாட்டிகள் ×19, LOCALIZATION, SDD
 ```
 
