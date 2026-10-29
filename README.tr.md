@@ -431,7 +431,7 @@ career-ops-ui/
    ├─ url-validation.test.mjs    # SSRF reddetme taraması (FIX-M3 + M6 + M7)
    ├─ cv-xss.test.mjs        # stripDangerousMarkdown gidiş-dönüşü
    ├─ jd-sanitize.test.mjs   # sanitizeJobDescription
-   ├─ help.test.mjs / help-ui.test.mjs    # 18 yerel dilin tamamında i18n eşitliği
+   ├─ help.test.mjs / help-ui.test.mjs    # 19 yerel dilin tamamında i18n eşitliği
    ├─ playwright-smoke.mjs   # 22 tarayıcı akışı (CV kaydetme, tracker, pipeline, evaluate, config, vb.)
    └─ e2e{,-comprehensive}.mjs   # tam Playwright gezintisi
 ```
@@ -669,7 +669,7 @@ Arayüz **19 yerel dilde** gelir — `en`, `es`, `pt-BR`, `ko`, `ja`, `ru`, `zh-
 ```js
 // public/js/lib/locales/i18n-dict.en.js   →   'scan.newButton': 'Run scan',
 // public/js/lib/locales/i18n-dict.es.js   →   'scan.newButton': 'Ejecutar búsqueda',
-// …aynı anahtarı 18 yerel dil dosyasının tamamına ekleyin (eşitlik kapılıdır)
+// …aynı anahtarı 19 yerel dil dosyasının tamamına ekleyin (eşitlik kapılıdır)
 ```
 
 Ardından bunu işaretlemede `data-i18n="scan.newButton"` ya da JS'de `t('scan.newButton')` aracılığıyla kullanın ve `npm test` çalıştırın. Yepyeni bir dil eklemek için, onu `i18n.js` (`LANGS` + `detect()`), birleştirici, `index.html` ve yerel dilleri sıralayan araçlara kaydedin.
