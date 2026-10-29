@@ -302,6 +302,13 @@ jobs:
             echo "  claude-bridge /v1/models after restart -> $CODE8788"
           fi
           [ "$CODE8788" = "200" ] || echo "::warning::claude-bridge probe answered $CODE8788 — manual operator action may be required"
+          echo "===== credits balance (numbers only) ====="
+          OR_KEY=$(grep -hoE '^OPENROUTER_API_KEY=.*' "$APP_DIR/.env" 2>/dev/null | head -1 | cut -d= -f2- | tr -d '"' | tr -d "'")
+          if [ -n "$OR_KEY" ]; then
+            curl -s -m 8 https://openrouter.ai/api/v1/credits -H "Authorization: Bearer $OR_KEY" | grep -oE '"(total_credits|total_usage)"[^,}]*' || echo "credits endpoint unreachable"
+          else
+            echo "no OPENROUTER_API_KEY"
+          fi
           echo "===== provider key inventory (names only, no values) ====="
           for ENVF in "$APP_DIR/.env" "$APP_DIR/web-ui/.env"; do
             echo "--- $ENVF ---"
