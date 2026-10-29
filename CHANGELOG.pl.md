@@ -10,6 +10,24 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.262.2] — 2026-10-30
+
+### Naprawiono
+
+- **Ogon recenzji falowej — 7 ustaleń o niskiej wadze, każde zamknięte najpierw czerwonym testem.** Powrotna podróż backslasha przy imporcie CSV: `\` w komórce był zapisywany podwojony i czytany z powrotem podwojony, więc ponowny import tego samego CSV omijał dedup company+role i mógł utworzyć zduplikowany wiersz — czytnik od teraz usuwa escape `\\` po podziale (cykl zapis→odczyt jest bezstratny, ponowny import deduplikuje). Wycinanie `<head>` w cv-voice było kwadratowe przy niedomkniętych tagach — 4827 ms → 13 ms na wejściu 64 KB, którym ogranicza route. `statedYearsMin` uruchamiał pełny parser lat dla każdej oferty każdego źródła nawet wtedy, gdy `years_min` nie było skonfigurowane — teraz leniwie, sekundy CPU na duży skan zniknęły. Capture usunięty między readdir a statSync wywalał listowanie posting-guard (TOCTOU — zniknięte pliki są pomijane). Domyślna wartość MiniMax CN pasowała wyłącznie do dokładnie `api.minimax.cn` — każdy base URL `*.minimax.cn` dostaje teraz model CN. Tokeny `$` Deela, które nie są referencjami hex, nie przeciekają już do snippetu jako literały. Import picker sprawdza `file.size` PRZED `file.text()` — limit 512 KB po stronie serwera odpowiadał 413 dopiero po tym, jak przeglądarka sparsowała potencjalnie ogromny plik — z lokalizowanym toastem `import.tooLarge` ×19.
+- **Utwardzenie deploy workflow (recenzja workflows F1–F6).** `provider` było jedynym inputem wstawianym do zdalnego shella bez walidacji zestawu znaków — apostrof `'` w wartości wybijał się z cudzysłowów i uruchamiał dowolny kod na prodzie; teraz whitelista `^[A-Za-z0-9_-]+$` przed każdym wstawieniem, a grep strażnika klucza nie da już fałszywego zaliczenia. Krok diagnostyki hermes drukował surowe journalctl + zrzuty unitu do publicznego logu; jego filtr pomijał wielkie litery w `*_API_KEY=` i niczego nie maskował — teraz wspólne redagowanie niewrażliwe na wielkość liter + maskowanie wartości + ucinanie do 80 znaków na wszystkich trzech ujściach, maskowane są też query strings `?token=`. Krok hermes ignorował `inputs.app_dir` i na sztywno wpisywał `/opt/career-ops/src/.env`. `public_url` trafiało do curl bez sprawdzenia https (iniekcja opcji przez wiodący `-`). A strażnik antydowngrade'owy — poprawka po incydencie v1.238.0 — nie miał wykonywalnej bramki: sześć nowych pinów w ci-workflows (refy bez domyślnych wartości, strażnik odpala się przed Deploy, ścisły regex refów).
+- **Ogon import-modal (recenzja SPA).** Modal uzbraja ten sam nav guard co modal outcome — przejście na inny widok nie zostawia go już osieroconego na wierzchu innego widoku. Ukryty input pliku jest usuwany przy `cancel`, nie tylko przy `change` — powtarzane zamykania nie wyciekają już inputami do document.body. `plan.duplicates` jest odczytywany przez strzeżoną formę w podglądzie. Alokacja `num` trackera używa `reduce` zamiast `Math.max(...spread)` — spread wpada w limit argumentów przy ~100k wierszy.
+
+### Zmieniono
+
+- Dokumentacja: punkt «118 EN adapters» w przewodniku pomocy nosi teraz licznik także we fr/it/ta (pozostałe 15 locale miało go już wcześniej). Ceny dostawców na cvstart.org zweryfikowane ponownie względem oficjalnych stron cenników — wszystkie cztery bez zmian, CHECKED_ON → 2026-10-30. Przegląd dryfu po wydaniu poprawił 42 nieaktualne linie z licznikami/wersjami w README ×19, CONTEXT.md, CLAUDE.md i podręcznikach SDD (pozostałości ery 109/104 i ery v1.262.0).
+
+### Uwagi
+
+- Świadomie nie zrobiono: natywny `window.confirm` w cv-studio (era CAR-179) zostaje — konwersja na `UI.confirm` to follow-up, nie punkt patcha; tooltip `<mark title>` dla utartych fraz zostaje wyłącznie tooltipem (akceptowalny poziom a11y); `remote-qa.yml` zachowuje `cancel-in-progress: true` — ponowny dispatch celowo zastępuje biegnącą regresję.
+- Pełny remote-QA na prodzie v1.262.1: routes ×19 ✓ · site ×19 ✓ · links ✓ · live LLM 18/19 locale A–G ✓ — `pl` trafił na pojedynczy timeout dostawcy `502 · 300 s · 0 ch` (nie teren token-dense; punktowy rerun jedzie z tym wydaniem).
+- Testów 6841 → 6867 na gałęzi wydania (6864 zaliczone / 0 niepowodzeń / 3 pominięte, +26 względem v1.262.1) · Playwright 176 · pokrycie 98.42 % linii / 89.94 % gałęzi · rejestr bez zmian: 123 źródła = 118 EN + 5 RU · 118 adapterów.
+
 ## [1.262.1] — 2026-10-29
 
 **Patch ewaluacji włoskiej: `it` dołącza do języków token-dense (limit 32768 tokenów + zegar 480 s) po tym, jak era OpenRouter przyłapała go na ucinaniu raportu tuż przed blokiem SCORE_SUMMARY — a narzędzia przełączania dostawcy, które umożliwiły diagnozę, trafiają do deploy workflow.**
