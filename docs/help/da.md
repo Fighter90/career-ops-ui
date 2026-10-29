@@ -714,6 +714,18 @@ tabellen (tooltippet lister flag-koderne), så du kan øjne low-trust-rækker
 uden at noget bliver filtreret ud. Lad blokken være helt ude for at bevare den
 pre-1.76-adfærd (ingen annotering, ingen badge).
 
+### `years_min` (valgfrit — web-ui 1.262.0)
+
+```yaml
+years_min: 3
+```
+
+Springer opslag over, hvis beskrivelse angiver en mindste erfaring under din
+grænse. Parseren læser kun angivne krav — et opslag uden et angivet tal går
+altid igennem (aldrig droppet på et gæt). Sprungne rækker registreres i
+`data/scan-history.tsv` som `skipped_experience`, en observationsstatus, der
+aldrig fastgør en URL, så opslaget dukker op igen ved en senere scanning.
+
 ### `search_queries`
 
 ```yaml
@@ -1386,6 +1398,16 @@ nogen steder: gennemgå PDF'en, før du vedhæfter den til en ansøgning.
 
 ---
 
+### Posting guard — JD-integritetstjek (v1.262.0)
+
+På en rapportside, hvis slug bærer et rapportnummer, har handlingsrækken i
+sidehovedet en **Posting guard**-knap. Den kører forældre-projektets
+deterministiske zero-LLM integritetsgate over rapportens arkiverede JD
+(`jds/`-optagelsen) og viser fundene inline — dom, tjek og årsager. Gaten er
+lokal: ingen model, ingen skrivninger. Indtil forældre-checkout'en leverer
+`posting-guard.mjs`-scriptet, svarer knappen med en ærlig
+"script not found"-note i stedet for en fejl.
+
 ## 11. Tracker (`#/tracker`)
 
 CRM'en. Én række per ansøgning; lever i `data/applications.md` som en
@@ -1463,6 +1485,15 @@ Hvert filter nulstiller paginatoren til side 1. 25 rækker per side.
 reportSlug?, notes?, date? }`. Dedup efter `(company, role)`
 case-insensitive. Fra UI'en tilbyder Evaluate-siden en "Add to
 tracker"-knap efter en vellykket score.
+
+### Importér en anden trackers CSV (v1.262.0)
+
+Værktøjsbjælkens **Importér CSV**-knap tager en anden trackers CSV-eksport
+(company/role/status/date/url — kolonnealiasser genkendes,
+RFC-4180-anførselstegn understøttes), forhåndsviser hver række med dens udfald
+(import, dublet efter opslags-URL, sprunget over) og skriver først, når du
+bekræfter. Ukendte stadier lander som Evaluated med en note; datoer accepterer
+ISO-, dag-først- og månedsnavne-former.
 
 ### "Stadig aktiv?" — tjek, om et ATS-opslag stadig er åbent
 
@@ -2319,6 +2350,15 @@ Før du deler dit CV som en skriveprøve eller et skærmbillede, skjuler **Priva
 ### Gør det menneskeligt (stemmematch)
 
 Indsæt en stiv linje eller et afsnit — den slags generiske AI-formulering, der læses som standardtekst — og **Gør det menneskeligt** omskriver det i *din* stemme. Omskrivningen er forankret på serversiden i din `voice-dna.md` (hvordan din skrift læses) og dine `writing-samples/` (din faktiske prosa). Den hårde regel: den må omordne, stramme op og justere stemmen, men den vil **aldrig** indføre et faktum, en metrik eller en præstation, der ikke allerede står i den tekst, du indsatte. Med en LLM-nøgle omskriver den live; uden nøgle giver den dig en klar prompt til at indsætte i en hvilken som helst assistent. Rediger derefter dit CV på siden `#/cv` som sædvanligt — CV Studio foreslår, du bestemmer.
+
+### Stemmetjek (v1.262.0)
+
+**Stemmetjek**-kortet gennemgår den indsatte tekst mod 27 slidte
+CV-formuleringer ("passionate about", "proven track record", "leveraged",
+"spearheaded", …) og fremhæver de præcise træffere — et årsinterval som
+2022–2024 er en dato, ikke et vidnesbyrd, mens `20–30%` er det.
+Skrivebeskyttet: intet skrives nogen steder. Tailor-tjeklisten behandler slidte
+formuleringer som en sjette invariant.
 
 ### "Genbrug et tidligere CV?"-tip
 

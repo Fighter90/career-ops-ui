@@ -574,6 +574,17 @@ location_filter:
 
 `portals.yml` 頂層鍵(與 `title_filter` 平級,不巢狀於 `russian_portals` 下)。
 
+### `years_min`(可選 —— web-ui 1.262.0)
+
+```yaml
+years_min: 3
+```
+
+略過描述中自述最低年資低於你門檻的職缺。解析器只讀取**有寫明**的年資要求
+—— 沒有寫出數字的職缺一律通過(絕不憑猜測丟棄)。被略過的列會以
+`skipped_experience` 狀態記錄到 `data/scan-history.tsv` —— 這是觀察用狀態,
+不會釘住 URL,所以該職缺會在之後的掃描中重新出現。
+
 ### `search_queries`
 
 ```yaml
@@ -1186,6 +1197,15 @@ evaluate** 子節(在父專案執行 `./batch/batch-runner.sh`),讓它
 
 ---
 
+### 職缺守衛 —— JD 完整性檢查（v1.262.0）
+
+在 slug 帶有報告編號的報告頁面上，頁首動作列多了一個
+**職缺守衛（Posting guard）** 按鈕。它會對報告封存的 JD（`jds/` 擷取檔）
+執行父專案確定性的 zero-LLM 完整性閘門，並把檢查結果直接呈現在頁面上 ——
+判定、各項檢查與原因。閘門完全在本機執行：無模型、無寫入。在父專案端附上
+`posting-guard.mjs` 腳本之前，按鈕會如實回答「script not found」提示，
+而不是報錯。
+
 ## 11. 追蹤器(`#/tracker`)
 
 CRM。每件申請一列;存於 `data/applications.md` 作為
@@ -1259,6 +1279,13 @@ GitHub-Flavored Markdown 表格。
 reportSlug?, notes?, date? }`。以 `(company, role)` 大小寫不敏感
 去重。從 UI 端,Evaluate 頁面在評分成功後會提供「Add to
 tracker」按鈕。
+
+### 匯入其他追蹤器的 CSV（v1.262.0）
+
+工具列的 **Import CSV** 按鈕可接收其他追蹤器的 CSV 匯出檔
+（company/role/status/date/url —— 會辨識欄位別名，支援 RFC-4180 引號），
+逐列預覽其處置結果（匯入、依職缺 URL 判為重複、略過），並在你確認後才寫入。
+未知階段會落為 Evaluated 並附註記；日期接受 ISO、日在前與月份名稱等寫法。
 
 ### 「還在徵嗎？」 — 檢查某個 ATS 職缺是否仍然開放
 
@@ -2062,6 +2089,14 @@ career-ops-ui 的大部分功能都在問「這份工作和我的 CV 匹配嗎�
 ### 讓它有人味（語氣匹配）
 
 貼上一句或一段生硬的文字——那種讀起來像套話的、泛泛的 AI 措辭——**讓它有人味**便會用*你的*語氣重寫它。重寫在伺服器端以你的 `voice-dna.md`（你的文字讀起來如何）和 `writing-samples/`（你真實的行文）為依據。硬性規則：它可以重新排序、精簡並重新調整語氣，但**絕不會**引入貼上文字中尚未存在的事實、指標或成就。有 LLM 金鑰時它會即時重寫；沒有金鑰時它會給你一段現成的提示詞，供貼到任意助手中。之後照常在 `#/cv` 頁面編輯你的履歷——CV Studio 提建議，你來決定。
+
+### 語氣檢查（v1.262.0）
+
+**語氣檢查（Voice check）** 卡片會拿 27 條履歷套話（"passionate about"、
+"proven track record"、"leveraged"、"spearheaded"……）逐一檢查貼上的文字，
+並精確標出命中之處 —— 2022–2024 這樣的年份區間是日期、不是套話，而
+`20–30%` 就會被標出。唯讀：不寫入任何地方。Tailor 檢查清單把套話措辭視為
+第六項不變量。
 
 ### 「重用舊履歷？」提示
 
