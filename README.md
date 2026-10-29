@@ -22,8 +22,9 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 > **🆕 Latest release — v1.262.0** — **The upstream-features minor: the Deel job board joins the scanner (registry 123), another tracker's CSV imports straight into #/tracker with a dry-run preview, the posting-guard JD integrity check and a CV voice check (27 stock phrases highlighted) land in the UI, a years-of-experience scan filter reads the JD, and Apply buttons are understood in seven more languages — plus reposts stop being fabricated across sources, MiniMax's retired default model is replaced, and Tamil evaluations hold their language.**
 
 >
-> **Previous — v1.261.2** — **Stability + polish: two-pager TDZ crash > **Previous — v1.261.3** — **The design-completion patch: the Lovable design system fully live (phase 3 density: rows ≈32px, controls 30px, chips 24px; every coral moved to the blue-accent/red-danger split), the Trakstar Hire scan source (registry 122), the scan host-pool (32 companies, 10 per host), six upstream provider location fixes, and CV Studio undo + unsaved-guard.**
-ter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
+> **Previous — v1.261.3** — **The design-completion patch: the Lovable design system fully live (phase 3 density: rows ≈32px, controls 30px, chips 24px; every coral moved to the blue-accent/red-danger split), the Trakstar Hire scan source (registry 122), the scan host-pool (32 companies, 10 per host), six upstream provider location fixes, and CV Studio undo + unsaved-guard.**
+
+<p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
 >
 > 📜 Full release history: **[CHANGELOG.md](CHANGELOG.md)**.
