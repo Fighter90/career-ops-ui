@@ -151,3 +151,49 @@ test('deploy: the anti-downgrade guard is executable — no ref defaults, guard 
   assert.match(guard.run, /if \[ -z "\$GUARD_UI_REF" \] \|\| \[ -z "\$GUARD_PARENT_REF" \]/);
   assert.match(guard.run, /::error::/);
 });
+
+test('deploy provider mode: NEW_PROVIDER is charset-validated before it reaches the remote shell', () => {
+  const steps = wf['deploy.yml'].jobs.deploy.steps;
+  const prov = steps.find((s) => (s.name || '').startsWith('Switch LLM_PROVIDER'));
+  assert.ok(prov, 'provider step missing');
+  const run = prov.run || '';
+  // strict non-empty charset gate with a ::error (input.provider is the only
+  // input spliced raw into a remote shell command line: a value containing a
+  // quote would break out of it and run arbitrary code on prod)
+  assert.match(run, /\[\[ "\$NEW_PROVIDER" =~ \^\[A-Za-z0-9_-\]\+\$ \]\]/, 'charset gate missing');
+  assert.match(run, /::error::provider must match/, 'the gate must fail loudly');
+  // the gate precedes BOTH the ssh splice and the derived key-guard grep
+  const gate = run.indexOf('NEW_PROVIDER" =~');
+  assert.ok(gate < run.indexOf('ssh prod'), 'gate must run before the remote shell splice');
+  assert.ok(gate < run.indexOf('_API_KEY='), 'gate must run before the derived key-guard grep');
+  // the key guard must derive its pattern from the validated name only
+  assert.match(run, /grep -qE "\^\$\{NEW_PROVIDER\^\^\}_API_KEY=\.\+"/);
+  // defence in depth: the Configure ssh whitelist loop covers it too
+  const ssh = steps.find((s) => (s.name || '') === 'Configure ssh');
+  assert.match(ssh.run, /for v in APP_DIR PARENT_REF UI_REF SERVICE NEW_PROVIDER; do/);
+  assert.equal(ssh.env.NEW_PROVIDER, '${{ inputs.provider }}', 'Configure ssh must receive the provider input');
+});
+
+test('deploy hermes mode: journal/unit output is case-insensitively filtered and value-masked', () => {
+  const hermes = stepRun('deploy.yml', 'deploy', 'Hermes');
+  // (а) the old case-sensitive filter is gone — it let api_key=… / ApiKey=… through
+  assert.doesNotMatch(hermes, /grep -vE "Key\|TOKEN\|SECRET\|PASSWORD"/, 'case-sensitive filter must go');
+  // the replacement is case-insensitive and covers the api_key family
+  assert.match(hermes, /grep -viE '\(api\[_-\]\?key\|token\|secret\|password\|authorization\)'/);
+  // (б) values after '=' are masked and lines truncated — one shared redact() helper
+  assert.match(hermes, /sed -E 's\/\(=\[\^ \]\{4\}\)\[\^ \]\*\/\\1…\/g; s\/\(\.\{80\}\)\.\*\/\\1…\/'/);
+  // every public sink in the step pipes through it
+  assert.match(hermes, /printf '%s\\n' "\$unit" \| redact/, 'unit-file dump unfiltered');
+  assert.match(hermes, /echo "journal unreadable"; \} \| redact/, 'hermes-gateway journal unfiltered');
+  assert.match(hermes, /journalctl -u claude-bridge -n 15[^\n]*\| redact \| tail -8/, 'claude-bridge journal unfiltered');
+});
+
+test('deploy hermes mode: HERMES_BASE_URL masks the query string like recon does', () => {
+  const hermes = stepRun('deploy.yml', 'deploy', 'Hermes');
+  // the app-view line carries both masks: basic-auth creds AND a ?token=… query
+  assert.match(
+    hermes,
+    /sed -E 's#:\/\/\[\^\/@\]\+@#:\/\/…@#; s#\[\?\]\.\*\$#\?…#'/,
+    'the hermes BASE_URL line must mask basic-auth and the query string',
+  );
+});
