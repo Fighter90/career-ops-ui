@@ -13,6 +13,7 @@ import {
   parseScanHistory,
   detectReposts,
   detectRepostsFromFile,
+  sourceHost,
   DEFAULT_WINDOW_DAYS,
 } from '../server/lib/detect-reposts.mjs';
 
@@ -176,4 +177,92 @@ test('detectReposts: window override narrows the cluster', () => {
 
 test('detectRepostsFromFile: absent path returns [] (no throw)', () => {
   assert.deepEqual(detectRepostsFromFile('/nonexistent/scan-history.tsv'), []);
+});
+
+// CAR-186 (upstream #6165 + #6190): a repost is the SAME SOURCE re-listing the
+// role. scan-history.tsv mixes the employer's ATS, job boards and aggregators,
+// and one live opening is routinely picked up by two of them on different days
+// — grouped across sources that reads as a repost even though the opening was
+// listed once and never changed.
+test('detectReposts CAR-186: linkedin + the company greenhouse is a duplicate, not a repost', () => {
+  const rows = parseScanHistory([
+    '2026-01-10\tlinkedin\ta\tAcme\tData Engineer\thttps://www.linkedin.com/jobs/view/de-1',
+    '2026-01-14\tgreenhouse\tb\tAcme\tData Engineer\thttps://boards.greenhouse.io/acme/jobs/de-1',
+  ].join('\n'));
+  assert.equal(detectReposts(rows, 90).length, 0, 'cross-source sighting is not a repost');
+
+  // Rows without a source column (plain objects) key on the URL host too.
+  const plain = [
+    { date: new Date('2026-01-10T00:00:00Z'), dateStr: '2026-01-10', url: 'https://www.linkedin.com/jobs/view/2', title: 'Data Engineer', company: 'Acme' },
+    { date: new Date('2026-01-14T00:00:00Z'), dateStr: '2026-01-14', url: 'https://boards.greenhouse.io/acme/jobs/2', title: 'Data Engineer', company: 'Acme' },
+  ];
+  assert.equal(detectReposts(plain, 90).length, 0, 'no source column → URL host identity');
+});
+
+test('detectReposts CAR-186: regional + www LinkedIn are one site — re-listing is a repost', () => {
+  const rows = parseScanHistory([
+    '2026-01-10\tlinkedin\ta\tAcme\tData Engineer\thttps://de.linkedin.com/jobs/view/1',
+    '2026-01-20\tlinkedin\tb\tAcme\tData Engineer\thttps://www.linkedin.com/jobs/view/2',
+  ].join('\n'));
+  const clusters = detectReposts(rows, 90);
+  assert.equal(clusters.length, 1, 'one LinkedIn site, two URLs → repost');
+  assert.equal(clusters[0].repostCount, 2);
+});
+
+test('detectReposts CAR-186: the source split keeps same-source reposts detectable', () => {
+  // The exact CAR-186 scenario: linkedin, greenhouse, linkedin again. The
+  // greenhouse sighting must not join the cluster — and must not hide the
+  // genuine LinkedIn re-listing either.
+  const rows = parseScanHistory([
+    '2026-01-10\tlinkedin\ta\tAcme\tData Engineer\thttps://www.linkedin.com/jobs/view/1',
+    '2026-01-14\tgreenhouse\tb\tAcme\tData Engineer\thttps://boards.greenhouse.io/acme/jobs/1',
+    '2026-01-20\tlinkedin\tc\tAcme\tData Engineer\thttps://www.linkedin.com/jobs/view/2',
+  ].join('\n'));
+  const clusters = detectReposts(rows, 90);
+  assert.equal(clusters.length, 1, 'the two LinkedIn sightings still repost');
+  assert.equal(clusters[0].repostCount, 2);
+  assert.ok(clusters[0].appearances.every((a) => a.url.includes('linkedin.com')), 'greenhouse sighting excluded');
+});
+
+test('sourceHost CAR-186: a two-letter subdomain folds only on known regional sites', () => {
+  assert.notEqual(
+    sourceHost('https://ca.example.com/jobs/1'),
+    sourceHost('https://www.example.com/jobs/1'),
+    'unknown site: the regional prefix stays its own source',
+  );
+  assert.equal(
+    sourceHost('https://de.linkedin.com/jobs/view/1'),
+    sourceHost('https://www.linkedin.com/jobs/view/2'),
+    'LinkedIn regional subdomains are one site',
+  );
+  assert.equal(
+    sourceHost('https://www.indeed.com/viewjob?jk=1'),
+    sourceHost('https://de.indeed.com/viewjob?jk=2'),
+    'Indeed regional subdomains are one site',
+  );
+  assert.equal(sourceHost('https://de.linkedin.com/jobs/view/1'), 'linkedin.com');
+});
+
+test('sourceHost CAR-186: Greenhouse host aliases fold to one source', () => {
+  assert.equal(sourceHost('https://boards.greenhouse.io/acme/jobs/1'), 'greenhouse.io');
+  assert.equal(sourceHost('https://job-boards.greenhouse.io/acme/jobs/2'), 'greenhouse.io');
+  assert.equal(sourceHost('https://job-boards.eu.greenhouse.io/acme/jobs/3'), 'greenhouse.io');
+  assert.equal(sourceHost('https://greenhouse.io/acme'), 'greenhouse.io');
+  assert.equal(sourceHost('https://boards.eu.greenhouse.io/acme/jobs/4'), 'boards.eu.greenhouse.io', 'only the pinned aliases fold');
+
+  // …and folding makes a role seen across the aliases one repost cluster.
+  const rows = parseScanHistory([
+    '2026-01-10\tgreenhouse\ta\tAcme\tData Engineer\thttps://boards.greenhouse.io/acme/jobs/1',
+    '2026-01-15\tgreenhouse\tb\tAcme\tData Engineer\thttps://job-boards.greenhouse.io/acme/jobs/2',
+    '2026-01-20\tgreenhouse\tc\tAcme\tData Engineer\thttps://job-boards.eu.greenhouse.io/acme/jobs/3',
+  ].join('\n'));
+  const clusters = detectReposts(rows, 90);
+  assert.equal(clusters.length, 1, 'Greenhouse aliases are one board');
+  assert.equal(clusters[0].repostCount, 3);
+});
+
+test('sourceHost CAR-186: a trailing-dot host is the same site; unparseable stays raw', () => {
+  assert.equal(sourceHost('https://linkedin.com./jobs/1'), sourceHost('https://www.linkedin.com/jobs/2'));
+  assert.equal(sourceHost('https://boards.greenhouse.io./acme/jobs/1'), 'greenhouse.io');
+  assert.equal(sourceHost('not a url'), 'not a url', 'unparseable keeps the raw string');
 });
