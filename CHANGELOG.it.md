@@ -2,6 +2,18 @@
 
 > Questo changelog contiene ora la cronologia completa delle versioni. Le voci pubblicate prima della localizzazione italiana (v1.85.0) compaiono sotto nell'originale inglese — traduzione in attesa; il riferimento resta [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.262.3] — 2026-10-30
+
+### Corretto
+
+- **`pl` entra nelle località token-dense di valutazione** (`pl` → il soffitto di 32768 token + l'orologio di 480 s). La remote-QA completa sul prod v1.262.1 ha colto la valutazione polacca mentre moriva al soffitto standard — `502 · openrouter · 300 s · 0 ch` — e il re-run puntuale inviato con v1.262.2 l'ha riprodotta esattamente (le esecuzioni 40960568766 e 40968958062): 18/19 località hanno passato A–G, `it` è finita a 302 s entro l'orologio token-dense di 480 s, e `pl` ha colpito il muro due volte con output zero. Un timeout deterministico, non un'anomalia — la stessa classe di forma che ha mosso `it` in v1.262.1. Pin red-first: `evalMaxTokens('pl') = 32768`, `evalTimeoutMs('pl') = 480_000`, le 18 località standard mantengono 300 s.
+
+### Note
+
+- Deliberatamente una patch a scopo unico: qui non arriva altro — il contenuto della coda della revisione di v1.262.2 è uscito separatamente.
+
+Tests 6867 → 6868 (+1) · Playwright 176 · registro invariato: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.262.2] — 2026-10-30
 
 ### Corretto

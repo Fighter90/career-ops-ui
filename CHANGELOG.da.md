@@ -9,6 +9,18 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 ---
 
 
+## [1.262.3] — 2026-10-30
+
+### Rettet
+
+- **`pl` tilslutter sig de token-dense evaluerings-sprog** (`pl` → 32768-token-loftet + 480 s-uret). Den fulde remote-QA på prod v1.262.1 greb den polske evaluering i at dø ved standardloftet — `502 · openrouter · 300 s · 0 ch` — og punkt-genkørslen afsendt med v1.262.2 gengav den præcist (kørslerne 40960568766 og 40968958062): 18/19 locales bestod A–G, `it` sluttede på 302 s inden for token-dense-uret på 480 s, og `pl` ramte muren to gange med nul output. En deterministisk timeout, ikke en fejl — samme formklasse, der flyttede `it` i v1.262.1. Red-first-pin: `evalMaxTokens('pl') = 32768`, `evalTimeoutMs('pl') = 480_000`, de 18 standard-locales beholder 300 s.
+
+### Noter
+
+- Bevidst en patch med ét formål: her sejler intet andet med — gennemgangs-hale-indholdet fra v1.262.2 udkom separat.
+
+Tests 6867 → 6868 (+1) · Playwright 176 · registry uændret: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.262.2] — 2026-10-30
 
 ### Rettet
