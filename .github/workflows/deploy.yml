@@ -43,11 +43,11 @@ on:
         description: 'Parent career-ops checkout on the server (web-ui is its web-ui/ subdir)'
         default: /opt/career-ops/src
       parent_ref:
-        description: 'Parent career-ops ref to deploy (tag, branch or sha)'
-        default: f4f55def
+        description: 'Parent career-ops ref to deploy (tag, branch or sha) — REQUIRED'
+        required: true
       ui_ref:
-        description: 'web-ui ref to deploy'
-        default: v1.238.0
+        description: 'web-ui release tag to deploy (vX.Y.Z) — REQUIRED, no default: a bare Run-workflow click must never downgrade prod'
+        required: true
       service:
         description: 'systemd unit of the web-ui'
         default: career-ops-ui
