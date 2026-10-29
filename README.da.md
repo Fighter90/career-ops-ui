@@ -12,14 +12,14 @@ _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santi
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.262.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.1)
+[![release](https://img.shields.io/badge/release-v1.262.2-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.2)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Seneste udgivelse — v1.262.1** — **Den italienske evaluerings-patch: `it` tilslutter sig de token-dense sprog (32768-token-loftet + 480 s-uret), efter at OpenRouter-æren greb dens rapport i at skære sig lige før SCORE_SUMMARY-blokken — plus deploy-workflowet fik `mode=hermes` (gateway-genstart + fuld diagnose + kreditsaldo) og `mode=provider` (LLM-skift med en nøgle-tilstedeværelsesvagt), som flyttede prod til OpenRouter, da Hermes-kreditterne løb tør.**
+> **🆕 Seneste udgivelse — v1.262.2** — **Gennemgangs-hale-patchen: syv gennemgangsbølge-fund lukket red-first — CSV-importens backslash-rundtur (re-import af samme eksport deduper igen), cv-voice head-strip 4827 ms → 13 ms, `years_min` beregnet dovent på store scans, en TOCTOU-crash i capture-listingen rettet, MiniMax' CN-standarder for enhver `*.minimax.cn` base-URL, og import-vælgeren tjekker 512 KB-grænsen, før den læser filen — plus deploy.yml-hærdning (F1–F6: en provider-input-injektionsvagt, hermes log-redaktion, `?token=`-maskering, app_dir, public_url-https-gatten og seks eksekverbare anti-nedgraderings-pins) og import-modalens hale (nav-vagt, cancel-oprydning, bevogtede dubletter). Tests 6841 → 6867 på release-branchen.**
 >
-> **Tidligere — v1.262.0** — **Upstream-funktions-minoren: Deel-jobbrættet tilslutter sig scanneren (registry 123), en anden trackers CSV importeres direkte i #/tracker med dry-run-preview, posting-guard JD-integritetstjekket og et CV voice-tjek (27 fremhævede slidte fraser) lander i UI'en, et years-of-experience-scanfilter læser JD'en, og Apply-knapper forstås på syv flere sprog — plus reposts holder op med at blive fabikeret på tværs af kilder, MiniMax' pensionerede standardmodel erstattes, og tamilske evalueringer holder deres sprog.**
+> **Tidligere — v1.262.1** — **Den italienske evaluerings-patch: `it` tilslutter sig de token-dense sprog (32768-token-loftet + 480 s-uret), efter at OpenRouter-æren greb dens rapport i at skære sig lige før SCORE_SUMMARY-blokken — plus deploy-workflowet fik `mode=hermes` (gateway-genstart + fuld diagnose + kreditsaldo) og `mode=provider` (LLM-skift med en nøgle-tilstedeværelsesvagt), som flyttede prod til OpenRouter, da Hermes-kreditterne løb tør.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -422,7 +422,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 6841 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.1)
+└─ tests/                    # 6867 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.2)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch

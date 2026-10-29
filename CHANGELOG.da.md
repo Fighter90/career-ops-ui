@@ -9,6 +9,25 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 ---
 
 
+## [1.262.2] — 2026-10-30
+
+### Rettet
+
+- **Gennemgangsbølgens hale — 7 fund med lav alvorlighed, hvert red-first.** CSV-importens backslash-rundtur: en `\` i en celle blev skrevet fordoblet og læst tilbage fordoblet, så re-import af den samme CSV overså company+role-dedup'en og kunne skabe en dubletrække — læseren unescaper nu `\\` efter splittet (write→read-rundturen er tabsfri, re-import deduper). cv-voice `<head>`-fjernelsen var kvadratisk på uafsluttede tags — 4827 ms → 13 ms på det 64 KB-input, ruten loftes ved. `statedYearsMin` kørte den fulde years-parser for hvert job fra hver kilde, selv når `years_min` ikke var konfigureret — nu dovent, de sekunders CPU-tid pr. stor scan er væk. En capture, der blev slettet mellem readdir og statSync, fik posting-guard-listingen til at crashe (TOCTOU — forsvundne filer springes over). MiniMax' CN-standard matchede kun `api.minimax.cn` helt præcist — enhver `*.minimax.cn` base-URL får nu CN-modellen. Deel `$`-tokens, der ikke er hex-referencer, lækker ikke længere ud i snippet'en som literaler. Import-vælgeren tjekker `file.size` FØR `file.text()` — serverens 512 KB-grænse svarede 413 først, efter browseren havde parset en muligvis kæmpestor fil — med et lokaliseret `import.tooLarge`-toast ×19.
+- **Deploy-workflow-hærdning (workflows-gennemgangen F1–F6).** `provider` var det eneste input, der interpoleredes ind i den fjerne shell uden tegnsætvalidering — en `'` i værdien brød ud af citationerne og kunne køre vilkårlig kode på prod; nu whitelisted `^[A-Za-z0-9_-]+$` før enhver sammenføjning, og nøgle-vagtens grep kan ikke længere bestå fejlaktigt. Hermes-diagnostiktrinnet udskrev rå journalctl- og unit-dumps til den offentlige log; dets filter overså versale `*_API_KEY=` og maskerede intet — nu en delt case-insensitiv redaktion + værdimaskering + 80-tegns-afkortning på alle tre sinks, `?token=`-querystrenge maskeres også. Hermes-trinnet ignorerede `inputs.app_dir` og hardkodede `/opt/career-ops/src/.env`. `public_url` nåede curl uden et https-tjek (option-injektion via en indledende `-`). Og anti-nedgraderings-vagten — v1.238.0-incidentens rettelse — havde ingen eksekverbar gate: seks nye pins i ci-workflows (refs har ingen defaults, vagten kører før Deploy, striks refs-regex).
+- **Import-modalens hale (SPA-gennemgangen).** Modalen aktiverer den samme nav-vagt som outcome-modalen — navigation væk efterlader den ikke længere forældreløs oven på en anden visning. Det skjulte file-input fjernes ved `cancel`, ikke kun ved `change` — gentagne afbrydelser lækker ikke længere inputs ind i document.body. `plan.duplicates` læses gennem den bevogtede form i previewet. Trackerens `num`-allokering bruger `reduce` i stedet for `Math.max(...spread)` — spread'et rammer argumentgrænsen ved ~100k rækker.
+
+### Ændret
+
+- Docs: hjælpeguidens «118 EN adapters»-punkt bærer nu tallet i fr/it/ta (de andre 15 locales havde det allerede). Leverandørpriserne på cvstart.org genverificeret mod de officielle prissider — alle fire uændrede, CHECKED_ON → 2026-10-30. En post-release drift-sweep rettede 42 forældede antals-/versionslinjer på tværs af README ×19, CONTEXT.md, CLAUDE.md og SDD-manualerne (rester fra 109/104-æraen og v1.262.0-æraen).
+
+### Noter
+
+- Bevidst undladelse: cv-studios native `window.confirm` (CAR-179-æraen) forbliver — konverteringen til `UI.confirm` er en opfølgning, ikke et patch-punkt; `<mark title>`-tooltippen for slidte fraser forbliver tooltip-kun (acceptabelt a11y-gulv); `remote-qa.yml` beholder `cancel-in-progress: true` — re-dispatch oversprøjter bevidst en kørende regression.
+- Fuld remote-QA på prod v1.262.1: ruter ×19 ✓ · site ×19 ✓ · links ✓ · live LLM 18/19 locales A–G ✓ — `pl` ramte en enkelt `502 · 300 s · 0 ch` provider-timeout (ikke token-dense-territorium; punkt-genkørslen følger med denne udgivelse).
+
+Tests 6867 (6864 pass / 0 fail / 3 skip, +26 vs v1.262.1) · Playwright 176 · dækning 98.42 % linje / 89.94 % gren · registry uændret: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.262.1] — 2026-10-29
 
 **Den italienske evaluerings-patch: `it` tilslutter sig de token-dense sprog (32768-token-loftet + 480 s-uret), efter at OpenRouter-æren greb den i at skære rapporten lige før SCORE_SUMMARY-blokken — og provider-skift-værktøjet, der gjorde diagnosen mulig, lander i deploy-workflowet.**
