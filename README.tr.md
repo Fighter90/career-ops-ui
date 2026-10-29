@@ -7,19 +7,19 @@
 
 _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır._
 
-[![tests](https://img.shields.io/badge/tests-5823%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-6699%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
-[![playwright](https://img.shields.io/badge/playwright-143%2F143-brightgreen)](#tests)
+[![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.259.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.259.0)
+[![release](https://img.shields.io/badge/release-v1.261.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.261.3)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Son sürüm — v1.259.0** — **Ajan filosundan ikinci tren, altı düzeltme: rapor tarihleri sunucu tarafında sabitleniyor (artık uydurma 2026-01-xx yok), derin araştırma kaynakları daha önce indi, harita coğrafi kodlayıcısı önbelleğe alıp RU şehirlerini okuyor (%92 konum-yok → kapsandı), yardım ×18 yerelleştirilmiş düğme etiketlerini kullandırıyor, arayüz cümleleri dilleri karıştırmayı bırakıyor (23 anahtarlı sızıntı) ve maaş karşılaştırmaları tek kanonik biçimde sunucu tarafında hesaplanıyor (zh-TW karar çevrilmesi öldü). Artı CAR-104: JS paketi artık ön-sıkıştırılmış dağıtılıyor — soğuk yükleme 3.1 MB → 598 KB.**
+> **🆕 Son sürüm — v1.261.3** — **Tasarım-tamamlama yaması: Lovable tasarım sistemi tamamen canlı — faz 3 yoğunluğu (tablo satırları ≈32px, denetimler 30px, chip'ler 24px) ve kalan tüm coral, yeni mavi vurgu / kırmızı tehlike ayrımına taşındı — ayrıca Trakstar Hire tarama kaynağı (registry 122), tarama ana bilgisayar havuzu (en fazla 32 şirket, ana bilgisayar başına 10), altı upstream sağlayıcı konum düzeltmesi, CV Studio geri alma + kaydedilmemiş koruması ve son-regresyon kontrast düzeltmeleri (harita küme etiketi 4.68:1). Altında: coğrafi kodlama önbelleği artık çökmelere dayanıyor, ta değerlendirmeleri 32768-belirteç tavanı aldı ve uzaktan-QA başarısız kaynakları adıyla bildiriyor.**
 >
-> **Önceki — v1.258.0** — **Ajan filosundan altı düzeltme: «Aktif şirketler» sayacı iki evreni (1554/90) karıştırmayı bırakıyor, derin araştırma `[source: …]` işaretleri talep ediyor ve bilinmeyenleri kabul ediyor, başarısız form alanları yalnızca-toast hatası yerine aydınlanıyor, #/map ve #/tracker h1'lerini iskelet yükleme satırlarıyla anında render ediyor ve her /api/evaluate ~37k-belirteçlik kararlı öneki önbelleğe alıyor (ilk çağrıdan sonra ≈10× daha ucuz).**
+> **Önceki — v1.261.2** — **Kararlılık + cila: two-pager TDZ çökmesi giderildi (P1), Ctrl+K QWERTY-olmayan düzenlerde çalışıyor, yardım işlenmiş-metin anahtarlı sızıntıları ×17 kapatıldı, UI.md madde işareti devamlarını ve iç içe listeleri render ediyor, harita yakalamaları ×19 yeniden kadrajlandı cvstart.org'da gerçek ekran görüntüleriyle, RTL arayüzü mantıksal özelliklerle aynalanıyor (85 bulgu), 11 rota üzerinde bir klavye-a11y düzeneği ve coğrafi kodlama önbelleği çökme-güvenli yapıldı.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -422,7 +422,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 5695 birim + 144 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.255.2)
+└─ tests/                    # 6699 birim + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.261.3)
    ├─ parsers.test.mjs       # markdown / pipeline / rapor ayrıştırıcıları (saf fonksiyonlar)
    ├─ api.test.mjs           # her uç nokta, geçici sunucu, ağ yok
    ├─ {ru,en}-scanner.test.mjs   # taklit edilmiş fetch
