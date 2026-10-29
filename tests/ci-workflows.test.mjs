@@ -128,3 +128,26 @@ test('v1.241.1: deploy waits for a running scan/eval before restarting, and alwa
   const jobMin = Number(src.match(/timeout-minutes: (\d+)/)[1]);
   assert.ok(wait / 60 + 15 <= jobMin, `scan wait ${wait}s leaves room in the ${jobMin}-min job`);
 });
+
+test('deploy: the anti-downgrade guard is executable — no ref defaults, guard precedes Deploy', () => {
+  const d = wf['deploy.yml'];
+  // (а) a bare Run-workflow click must leave both refs empty so the guard's -z fires
+  const inputs = d.on.workflow_dispatch.inputs;
+  assert.ok(!inputs.ui_ref.default, 'ui_ref must have no default (a bare click must not downgrade prod)');
+  assert.ok(!inputs.parent_ref.default, 'parent_ref must have no default');
+  const steps = d.jobs.deploy.steps;
+  // (б) a guard step exists and is gated on mode=deploy
+  const gi = steps.findIndex(
+    (s) => (s.name || '').startsWith('Guard') && s.if === "inputs.mode == 'deploy'",
+  );
+  assert.ok(gi >= 0, 'guard step with if: inputs.mode == deploy is missing');
+  const guard = steps[gi];
+  assert.equal(guard.env.GUARD_UI_REF, '${{ inputs.ui_ref }}', 'guard must read the ui_ref input');
+  assert.equal(guard.env.GUARD_PARENT_REF, '${{ inputs.parent_ref }}', 'guard must read the parent_ref input');
+  // (в) guard runs BEFORE the Deploy step in the jobs sequence
+  const di = steps.findIndex((s) => s.name === 'Deploy');
+  assert.ok(di > gi, 'the guard must precede the Deploy step');
+  // (г) empty-checks on BOTH refs + a ::error, so a partial fill cannot pass
+  assert.match(guard.run, /if \[ -z "\$GUARD_UI_REF" \] \|\| \[ -z "\$GUARD_PARENT_REF" \]/);
+  assert.match(guard.run, /::error::/);
+});
