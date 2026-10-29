@@ -11,8 +11,8 @@
 3. **Import-modal хвост (SPA)**: навигация закрывает модалку (тот же nav-guard, что outcome-модалка); отмена файлового диалога не оставляет orphan-input; превью читает `(plan.duplicates || []).length` — `tests/tracker-import-client-guard.test.mjs` (6 тестов).
 4. **Производительность скана**: `statedYearsMin` не считается, когда `years_min` не задан (`tests/en-scanner-years-lazy.test.mjs`); cv-voice head-strip линеен (4827→13 ms на 64KB).
 5. **Регресс v1.262.0–1**: it/ta/hi token-dense (32768/480s), mode=hermes/mode=provider, Deel/CSV-import/posting-guard/voice-check/years_min/liveness ×7/reposts/MiniMax — не сломаны.
-6. **Провайдер прод**: LLM_PROVIDER=openrouter; полный remote-QA 18/19 A–G ✓ (pl — одиночный 502/300s/0ch таймаут провайдера, не token-dense кейс; точечный перезапуск pl прикладывается к релизу).
+6. **Провайдер прод**: LLM_PROVIDER=openrouter; полный remote-QA 18/19 A–G ✓; pl — 502/300s/0ch ДВАЖДЫ (полный ×19 + точечный перезапуск 40968958062) — детерминированный таймаут потолка 300s; фикс pl → token-dense идёт отдельным патчем v1.262.3 (red-first в evaluate-truncation), не входит в v1.262.2.
 
 §2 Регресс-классы: R-01…R-12 (см. TRACEABILITY).
 
-§3 Осознанно не сделано: cv-studio нативный `window.confirm` (эра CAR-179) остаётся — перевод на `UI.confirm` отдельный follow-up; `<mark title>` остаётся tooltip-only (приемлемый a11y-пол); `remote-qa.yml` сохраняет `cancel-in-progress: true` (повторный dispatch сознательно отменяет идущий регресс); запись нового демо-видео UI v2 — CAR-141, владелец.
+§3 Осознанно не сделано: cv-studio нативный `window.confirm` (эра CAR-179) остаётся — перевод на `UI.confirm` отдельный follow-up; `<mark title>` остаётся tooltip-only (приемлемый a11y-пол); `remote-qa.yml` сохраняет `cancel-in-progress: true` (повторный dispatch сознательно отменяет идущий регресс); запись нового демо-видео UI v2 — CAR-141, владелец; pl в token-dense — намеренно НЕ в этом релизе (v1.262.3, повторенный сценарий it→v1.262.1).
