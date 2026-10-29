@@ -5,14 +5,14 @@
  * never invented. Numbers for the career-ops-ui column come from
  * src/generated/facts.json at build time.
  *
- * Sources (checked 2026-07-10):
+ * Sources (checked 2026-10-30):
  *  - Jobscan:  https://app.jobscan.co/plan  (free: 5 scans/mo; Premium $49.95/mo or $89.95/quarter)
  *  - Teal:     https://www.tealhq.com/pricing + https://help.tealhq.com/en/articles/9530153-teal-vs-teal
  *              (free plan; Teal+ $13/wk, $29/mo or $79/quarter; match score + unlimited AI on Teal+)
  *  - Huntr:    https://huntr.co/pricing  (free: 100 tracked jobs, 2 tailored resumes; Pro $40/mo)
  *  - Rezi:     https://www.rezi.ai/pricing  (free: 1 resume, 3 PDF downloads; Pro $29/mo; $149 lifetime)
  */
-export const CHECKED_ON = '2026-07-10';
+export const CHECKED_ON = '2026-10-30';
 
 export const SOURCES = [
   { name: 'Jobscan', url: 'https://app.jobscan.co/plan' },
