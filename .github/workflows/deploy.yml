@@ -37,7 +37,7 @@ on:
       mode:
         description: 'recon (read-only), deploy, or verify (read-only smoke of the live app)'
         type: choice
-        options: [recon, deploy, verify, hermes, cleanup-plan, cleanup-apply]
+        options: [recon, deploy, verify, hermes, provider, cleanup-plan, cleanup-apply]
         default: recon
       app_dir:
         description: 'Parent career-ops checkout on the server (web-ui is its web-ui/ subdir)'
@@ -45,6 +45,9 @@ on:
       parent_ref:
         description: 'Parent career-ops ref to deploy (required for mode=deploy; ignored otherwise)'
         default: ''
+      provider:
+        description: 'mode=provider: switch LLM_PROVIDER to this (openrouter/anthropic/gemini/deepseek/glm/…); its *_API_KEY must already be in $APP_DIR/.env'
+        default: openrouter
       ui_ref:
         description: 'web-ui release tag to deploy (vX.Y.Z; required for mode=deploy — a bare click must never downgrade prod)'
       service:
@@ -236,6 +239,29 @@ jobs:
               console.log("ok="+h.ok+" version="+h.version+" parentVersion="+h.parentVersion+" warnings="+h.warnings);
               for (const c of h.checks||[]) if (c.required && !c.ok) console.log("REQUIRED FAIL: "+c.name);})'; fi
           true
+          REMOTE
+
+      - name: Switch LLM_PROVIDER (mode=provider)
+        if: inputs.mode == 'provider'
+        env:
+          APP_DIR: ${{ inputs.app_dir }}
+          NEW_PROVIDER: ${{ inputs.provider }}
+        run: |
+          ssh prod "APP_DIR='$APP_DIR' NEW_PROVIDER='$NEW_PROVIDER' bash -s" <<'REMOTE'
+          APP_DIR="${APP_DIR:-/opt/career-ops/src}"
+          echo "current: $(grep -hoE '^LLM_PROVIDER=.*' "$APP_DIR/.env" 2>/dev/null || echo 'unset (auto)')"
+          if ! grep -qE "^${NEW_PROVIDER^^}_API_KEY=.+" "$APP_DIR/.env"; then
+            echo "::error::${NEW_PROVIDER^^}_API_KEY is not set in $APP_DIR/.env — refusing to switch"
+            exit 1
+          fi
+          sed -i "s/^LLM_PROVIDER=.*/LLM_PROVIDER=$NEW_PROVIDER/" "$APP_DIR/.env"
+          grep -qE '^LLM_PROVIDER=' "$APP_DIR/.env" || echo "LLM_PROVIDER=$NEW_PROVIDER" >> "$APP_DIR/.env"
+          echo "now: $(grep -hoE '^LLM_PROVIDER=.*' "$APP_DIR/.env")"
+          sudo -n systemctl restart career-ops-ui 2>/dev/null || systemctl restart career-ops-ui
+          sleep 5
+          systemctl is-active career-ops-ui
+          CODE=$(curl -s -o /dev/null -w '%{http_code}' -m 6 http://127.0.0.1:4317/api/health)
+          echo "app health -> $CODE"
           REMOTE
 
       - name: Hermes gateway restart + diagnose (mode=hermes)
