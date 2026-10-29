@@ -282,16 +282,19 @@ jobs:
           grep -hoE '^HERMES_BASE_URL=.*' /opt/career-ops/src/.env 2>/dev/null | sed -E 's#://[^/@]+@#://…@#' || echo "HERMES_BASE_URL unset (default http://127.0.0.1:8642/v1)"
           REMOTE
 
-      - name: Deploy guard (mode=deploy requires explicit refs)
+      - name: Guard — mode=deploy requires explicit refs
         if: inputs.mode == 'deploy'
+        env:
+          GUARD_UI_REF: ${{ inputs.ui_ref }}
+          GUARD_PARENT_REF: ${{ inputs.parent_ref }}
         run: |
-          if [ -z "${{ inputs.ui_ref }}" ] || [ -z "${{ inputs.parent_ref }}" ]; then
+          if [ -z "$GUARD_UI_REF" ] || [ -z "$GUARD_PARENT_REF" ]; then
             echo "::error::mode=deploy requires an explicit ui_ref (vX.Y.Z) and parent_ref — a bare Run-workflow click must never downgrade prod"
             exit 1
           fi
-          case "${{ inputs.ui_ref }}" in
+          case "$GUARD_UI_REF" in
             v[0-9]*.[0-9]*.[0-9]*) ;;
-            *) echo "::error::ui_ref must be a release tag (vX.Y.Z), got: ${{ inputs.ui_ref }}"; exit 1;;
+            *) echo "::error::ui_ref must be a release tag (vX.Y.Z), got: $GUARD_UI_REF"; exit 1;;
           esac
 
       - name: Deploy
