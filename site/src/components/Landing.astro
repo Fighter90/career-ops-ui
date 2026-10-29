@@ -16,7 +16,7 @@ import Faq from './Faq.astro';
 import FinalCta from './FinalCta.astro';
 import Footer from './Footer.astro';
 import VideoModal from './VideoModal.astro';
-import { t, type Locale } from '../i18n/locales';
+import { LOCALES, t, type Locale } from '../i18n/locales';
 import facts from '../generated/facts.json';
 
 interface Props {
@@ -42,7 +42,9 @@ const jsonLd = {
   description: metaDesc,
   offers: { '@type': 'Offer', price: '0', priceCurrency: 'USD' },
   license: 'https://github.com/Fighter90/career-ops-ui/blob/main/LICENSE',
-  inLanguage: ['en', 'es', 'fr', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi'],
+  // CAR-138 tail — derived from LOCALES so a 20th locale can never be lost again
+  // (ta and vi had silently dropped out of the hand-written 17-element list).
+  inLanguage: LOCALES.map((l) => l.code),
   sameAs: [facts.repoUrl],
   url: 'https://cvstart.org/',
 };

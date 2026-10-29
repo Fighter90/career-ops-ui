@@ -366,3 +366,20 @@ test('site.js keeps both new effects double-gated (JS media query + CSS media qu
   assert.match(countup, /prefers-reduced-motion: reduce/, 'count-up must check reduced motion in JS too');
   assert.match(countup, /IntersectionObserver/, 'count-up reveals via IntersectionObserver');
 });
+
+test('CAR-138 tail: JSON-LD inLanguage is derived from LOCALES — every locale file is covered, none hand-lost', () => {
+  const landing = readFileSync(resolve(SITE, 'src', 'components', 'Landing.astro'), 'utf8');
+  // the hand-written 17-element list is gone (ta and vi had silently dropped out of it)
+  assert.doesNotMatch(landing, /inLanguage:\s*\[/, 'inLanguage must be derived from LOCALES, not a hand-written array');
+  assert.match(landing, /inLanguage:\s*LOCALES\.map\(\(l\) => l\.code\)/, 'inLanguage derives from LOCALES');
+  // every locale JSON on disk must be represented through LOCALES codes
+  const i18nDir = resolve(SITE, 'src', 'i18n');
+  const localeFiles = readdirSync(i18nDir).filter((f) => f.endsWith('.json'));
+  const codes = localeFiles.map((f) => JSON.parse(readFileSync(resolve(i18nDir, f), 'utf8')));
+  assert.equal(codes.length >= 19, true, 'at least 19 locale files expected');
+  const localesTs = readFileSync(resolve(SITE, 'src', 'i18n', 'locales.ts'), 'utf8');
+  for (const f of localeFiles) {
+    const code = f.replace('.json', '');
+    assert.match(localesTs, new RegExp(`code:\\s*'${code.replace('+', '\\+')}'`), `LOCALES covers ${code}`);
+  }
+});
