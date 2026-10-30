@@ -167,8 +167,8 @@ derinlemesine iner.
 > career-ops-ui open       # open + RAISE the dashboard tab in your browser
 > ```
 >
-> `setup`/`run` sonrasında tarayıcı sekmesi otomatik olarak açılır **ve
-> öne getirilir** (v1.43.0); `career-ops-ui open` aynı şeyi talep
+> `setup`/`run` sonrasında tarayıcı sekmesi otomatik olarak açılır
+> **ve öne getirilir** (v1.43.0); `career-ops-ui open` aynı şeyi talep
 > üzerine yapar, böylece pano sekmesini aramak zorunda kalmazsınız.
 > `NO_OPEN=1`, headless/CI başlatmalarında otomatik açmayı devre dışı
 > bırakır.
@@ -200,8 +200,8 @@ kontrol yeşil olmalıdır:
 Kırmızı bir şey varsa, sayfa düzeltilecek tam dosyayı veya ortam
 değişkenini söyler. Health yeşil olana kadar devam etmeyin.
 
-**Adım 3 — Kenar çubuğunda `⚒ App settings`e tıklayın.** **API keys &
-runtime** sekmesine gelirsiniz.
+**Adım 3 — Kenar çubuğunda `⚒ App settings`e tıklayın.** **API keys & runtime**
+sekmesine gelirsiniz.
 - `ANTHROPIC_API_KEY` (tercih edilen — uzun metin puanlaması daha iyi)
   ve/veya `GEMINI_API_KEY` yapıştırın. Anahtarları
   <https://console.anthropic.com/settings/keys> veya
@@ -247,8 +247,8 @@ temizler (`<script>` / `javascript:` / satır içi işleyiciler çıkarılır)
 ve `cv.md`'yi yazar. Bildirim: *"Saved"*.
 
 **Adım 8 (opsiyonel) — `📄 Generate PDF`ye tıklayın.** Üst projede
-`generate-pdf.mjs`'yi çalıştırır (Playwright gerekir) ve **yeni PDF
-işi bitince** tarayıcınıza otomatik olarak indirilir. Sayfanın
+`generate-pdf.mjs`'yi çalıştırır (Playwright gerekir) ve
+**yeni PDF işi bitince** tarayıcınıza otomatik olarak indirilir. Sayfanın
 altındaki liste, önceden oluşturulmuş her dosyayı saklar.
 
 ### C. Açık pozisyon bulma (tarama başına ~2 dakika)
@@ -273,8 +273,8 @@ sonuç listeleri sayfalanır.
 kuyruğa aldığı her URL'yi görürsünüz. İş tanımını satır içi önizlemek
 için bir girdiye tıklayın.
 
-**Adım 12 — Herhangi bir iş tanımının yanındaki `▶ Evaluate`ye
-tıklayın.** Bu, `#/evaluate`e atlar. Bir API anahtarı ayarlıysa canlı
+**Adım 12 — Herhangi bir iş tanımının yanındaki `▶ Evaluate`ye tıklayın.**
+Bu, `#/evaluate`e atlar. Bir API anahtarı ayarlıysa canlı
 çalışır; ayarlı değilse, kendi LLM'inize yapıştırmanız için elle bir
 prompt alırsınız. Canlı mod, A–G bölümleri boyunca CV'nize karşı bir
 **0–5 puan** üretir (Role / Company / Compensation / Risk / Stretch /
@@ -287,8 +287,8 @@ kısa listenizdir.
 
 ### E. Kısa listeye alınan şirkete karar verin ve derinlemesine araştırın (~3 dakika)
 
-**Adım 14 — İlerlemeye değer bir açık pozisyon seçin. Kenar çubuğunda
-`Deep research`e tıklayın.** Şirket adını ve rolü girin. Model,
+**Adım 14 — İlerlemeye değer bir açık pozisyon seçin. Kenar çubuğunda `Deep research`e tıklayın.**
+Şirket adını ve rolü girin. Model,
 7 bölümlük bir şirket brifingi üretir (misyon, son haberler, teknoloji
 yığını, işe alım sinyalleri, ücret kıyaslamaları, riskler, önerilen
 yaklaşım). Kayıt `interview-prep/<company>-<role>.md`'ye düşer.
@@ -326,13 +326,12 @@ derinlemesine araştırma brifingine bağlantı. Tarih otomatik doldurulur.
 Orijinal başvuruya atıfta bulunan nazik bir kontrol e-postası taslağı
 hazırlar. Gönderin. Tracker durumunu `Followed up` olarak güncelleyin.
 
-**Adım 20 — Bir mülakat daveti aldığınızda `Interview prep` modunu
-çalıştırın** (`#/interview-prep`). Belirli şirket + aşama için (sistem
+**Adım 20 — Bir mülakat daveti aldığınızda `Interview prep` modunu çalıştırın** (`#/interview-prep`). Belirli şirket + aşama için (sistem
 tasarımı / davranışsal / kodlama) hedefli hazırlık üretir.
 Derinlemesine araştırma brifinginden otomatik olarak çeker.
 
-**Adım 21 — Teklifi mi aldınız? Tracker durumunu `Offer` olarak
-güncelleyin** ve değerlendirme raporunuzun ücret bölümünü yeniden
+**Adım 21 — Teklifi mi aldınız? Tracker durumunu `Offer` olarak güncelleyin**
+ve değerlendirme raporunuzun ücret bölümünü yeniden
 inceleyin — minimum kabul rakamınız tam orada.
 
 ### TL;DR — kenar çubuğu sırası iş akışıyla eşleşir
@@ -386,8 +385,8 @@ olarak işaretler (`auto.superseded`).
 
 Boş sayfa tek alanı hakkında dürüsttür: bir **Örnek** etiketi ve bir
 **Örnek bir URL dene** düğmesi (`v2empty.auto.tryExample`) girdiyi
-örnek bir ilanla doldurur — **Çalıştır'a basana kadar hiçbir şey
-çalışmaz** (`v2empty.auto.hint`), dolayısıyla keşfetmenin maliyeti
+örnek bir ilanla doldurur — **Çalıştır'a basana kadar hiçbir şey çalışmaz**
+(`v2empty.auto.hint`), dolayısıyla keşfetmenin maliyeti
 yoktur.
 
 **API anahtarı yok mu?** Pipeline **elle modda** çalışır: 3–5.
@@ -477,17 +476,15 @@ Kaydetmenin güvenli olma şekli:
 
 - Form yalnızca 14 modellenmiş skaler yolu
   `{ fields: { "candidate.full_name": … } }` olarak gönderir. Sunucu,
-  **mevcut `config/profile.yml`'yi okur, yalnızca o yaprakları
-  ayarlar/temizler ve tüm nesneyi yeniden serileştirir** — böylece
+  **mevcut `config/profile.yml`'yi okur, yalnızca o yaprakları ayarlar/temizler ve tüm nesneyi yeniden serileştirir** — böylece
   formun modellemediği iç içe diziler (`target_roles.archetypes`,
   `narrative.proof_points`, `narrative.superpowers`) ve elle
-  eklediğiniz herhangi bir özel anahtar **gidiş-dönüşten dokunulmadan
-  çıkar**. Bir alanı temizlemek o anahtarı temizce kaldırır (`phone: ""`
+  eklediğiniz herhangi bir özel anahtar **gidiş-dönüşten dokunulmadan çıkar**. Bir alanı temizlemek o anahtarı temizce kaldırır (`phone: ""`
   kalıntısı olmaz).
 - Doğrulama yine tam bir ad gerektirir; `# Career-Ops Profile
   Configuration` başlığı otomatik olarak basılır.
-- Bir ödünleşme: bir alan-formu kaydetmesi **YAML'yi yeniden
-  serileştirir, dolayısıyla satır içi `#` yorumları kaybolur**. Yorumları
+- Bir ödünleşme: bir alan-formu kaydetmesi
+  **YAML'yi yeniden serileştirir, dolayısıyla satır içi `#` yorumları kaybolur**. Yorumları
   korumak veya iç içe dizileri düzenlemek için, sekmenin altındaki
   **Advanced: edit raw YAML** açılırını kullanın — bu, 1.32 öncesi
   tam-dosya düzenleyicisidir, değişmemiştir (kaydetmede tüm dosyayı
@@ -534,8 +531,8 @@ harcamazsınız. Başarıda ~200 karakterlik bir örnek döndürür.
 
 ## 3. Profile (`#/profile` — `#/settings` olarak da erişilebilir)
 
-`config/profile.yml`'nin salt-okunur özet kart görünümü. **Düzenlemek
-için**, **App settings → Profile sekmesine** (`#/config` → Profile)
+`config/profile.yml`'nin salt-okunur özet kart görünümü. **Düzenlemek için**,
+**App settings → Profile sekmesine** (`#/config` → Profile)
 gidin — web-ui 1.32.0'dan bu yana bu, ham-YAML yığını değil, alan-alan
 bir formdur (Candidate / Narrative / Compensation). Kaydetmeler aynı
 dosyaya birleştirir; bu sayfa yeniden yüklemede yeniden ayrıştırır.
@@ -639,8 +636,8 @@ career-ops.org şemasıyla
 1:1 eşleşir.
 
 > **Kısayol:** `#/portals` URL'si artık doğrudan **App settings**'e
-> çözümlenir ve (bir bölgesel kaynak yapılandırıldığında) **Regional
-> sources** grubuna atlar — böylece yer imine eklenmiş veya yazılmış bir
+> çözümlenir ve (bir bölgesel kaynak yapılandırıldığında)
+> **Regional sources** grubuna atlar — böylece yer imine eklenmiş veya yazılmış bir
 > `#/portals` bağlantısı artık 404 vermez (v1.42.0).
 
 ### `title_filter`
@@ -1117,7 +1114,6 @@ v2 sonuç çerçevesi kontrolleri keşfedilebilir tutar:
   sütun başlığına (şirket, rol, maaş, yaş) tıklayın; yönü çevirmek için
   yeniden tıklayın.
 - **Hızlı görünüm** (`scan.v2.quickView`) — sayfadan ayrılmadan ilanın açıklamasını satır içinde açmak için bir satıra tıklayın (**Açıklama**, `scan.v2.description`); kayıtlı gövdesi olmayan ilanlar boş bir kart göstermek yerine bunu söyler (`scan.v2.noDescription`).
-- **Satır yoğunluğu** (`scan.v2.density`) — **Sıkı** / **Rahat** (`scan.v2.compact` / `scan.v2.comfortable`) satır yükseklikleri arasında geçiş yapın; seçim tarayıcı başına hatırlanır.
 - **Günlük** (`scan.v2.log`) — tabloya tam genişliği vermek için akış
   tarama günlüğünü daraltın/genişletin.
 
@@ -1431,8 +1427,8 @@ yokken sönük bir «Puan algılanmadı» hapı) — ve satırları taradığın
 yoğun bir **Tablo** görünümüne dönebilirsiniz (`rep2.viewTable`). Her
 kart ve tablo satırı, puan aralığına uygun **önerilen sonraki adımı**
 da adlandırır: **Hemen başvur — çok uygun** (`rep2.actApply`),
-**Başvur veya önce bir kişi bul** (`rep2.actContact`), **Önce şirketi
-araştır** (`rep2.actResearch`) veya **Kişisel bir neden yoksa atla**
+**Başvur veya önce bir kişi bul** (`rep2.actContact`),
+**Önce şirketi araştır** (`rep2.actResearch`) veya **Kişisel bir neden yoksa atla**
 (`rep2.actLow`) — her biri doğru sayfaya giden doğrudan bir
 bağlantıdır. Puanı olmayan bir kart, raporun kendisine işaret eden bir
 araç ipucuyla sönük **Puan algılanmadı** hapını gösterir
@@ -1507,8 +1503,8 @@ söyler (`track.moveJournal`) — bir durumu geri çevirmek için satırdaki
 işlenir (`track.kanbanReadOnly`) ve bırakmaları reddeder. Üst projenin
 sonuç kaydedicisi eksikse durum taşımaları dürüst bir notla devre dışı
 bırakılır (`track.kanbanMovesOff`). Pano yüklenirken uygulamanın geri
-kalanıyla aynı iskelet satırlarını gösterir ve boş bir pano **Başvuru
-yok** der (`track.kanbanEmpty`) ve pipeline'a işaret eder
+kalanıyla aynı iskelet satırlarını gösterir ve boş bir pano **Başvuru yok** der
+(`track.kanbanEmpty`) ve pipeline'a işaret eder
 (`track.emptyBody`).
 
 Durum beyaz listesi sunucu tarafında zorlanır; bir `POST /api/tracker`'da
@@ -1649,8 +1645,7 @@ görevlilerine **Outreach**, **Interview prep** tek-sayfalıkları ve
 
 ### Ortak yapı
 
-Her sayfada küçük bir form (alanlar moda özeldir), bir **▶ Generate
-prompt** düğmesi (manuel) ve — bir Anthropic veya Gemini anahtarı
+Her sayfada küçük bir form (alanlar moda özeldir), bir **▶ Generate prompt** düğmesi (manuel) ve — bir Anthropic veya Gemini anahtarı
 mevcut olduğunda — birincil hale gelen bir **⚡ Canlı çalıştır** düğmesi
 bulunur.
 
@@ -1925,8 +1920,8 @@ npm run doctor
 Bu, araştırma-sonrası, mülakat-öncesi aşamadır. Bu uygulamada üç yapı
 bir araya gelir:
 
-1. `interview-prep/` altındaki **kaydedilmiş derinlemesine-araştırma
-   dosyaları**, çalıştırdığınız her şirket-rol çifti için bir tane.
+1. `interview-prep/` altındaki **kaydedilmiş derinlemesine-araştırma dosyaları**,
+   çalıştırdığınız her şirket-rol çifti için bir tane.
    **Deep research** sayfasından veya doğrudan `/api/interview-prep`
    üzerinden göz atın.
 2. **Patterns modu** (`#/patterns`) — yansıtıcı bir prompt oluşturur:
@@ -2018,8 +2013,8 @@ career-ops-ui, her iş kartını bir **adaptör** olarak ele alır — [`server/
 > tarar (`readdirSync` + dinamik `import()`) ve her `*.mjs`'den
 > `export const meta` bloğunu toplar. Adaptörü yazın, `meta`'sını
 > bildirin ve tarayıcıya, `#/scan` filtre açılır menüsüne ve RU
-> dağıtıcısına anında görünür olsun — **`registry.mjs`'de düzenleme
-> gerekmez**. (RU kaynakları hâlâ üstün `portals.yml`'sinde bir satıra
+> dağıtıcısına anında görünür olsun —
+> **`registry.mjs`'de düzenleme gerekmez**. (RU kaynakları hâlâ üstün `portals.yml`'sinde bir satıra
 > ihtiyaç duyar; Adım 5'e bakın.)
 
 ### Adım 1 — Adaptörü yazın
