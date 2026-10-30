@@ -2,6 +2,18 @@
 
 > Questo changelog contiene ora la cronologia completa delle versioni. Le voci pubblicate prima della localizzazione italiana (v1.85.0) compaiono sotto nell'originale inglese — traduzione in attesa; il riferimento resta [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.262.4] — 2026-10-30
+
+### Corretto
+
+- **`ja` entra nelle località token-dense di valutazione** (`ja` → il soffitto di 32768 token + l'orologio di 480 s). Il re-run puntuale a 5 località sul prod v1.262.3 ha separato i quattro timeout `502 · 300 s · 0 ch` della notte in transitori e deterministici: ar (250 s), ko (291 s) e zh-CN (259 s) hanno passato i loro re-run, la deriva linguistica una tantum di ru non si è ripetuta — ma `ja` ha colpito il soffitto standard due volte con output zero (l'esecuzione completa ×19 40981578549 e quella puntuale 41012725839). Stessa classe di forma di it/pl. Pin red-first: `evalMaxTokens('ja') = 32768`, `evalTimeoutMs('ja') = 480_000`, le altre località mantengono 300 s.
+
+### Note
+
+- Deliberatamente una patch a scopo unico: la correzione di `ja` è l'unico cambio che questa versione porta — non porta nient'altro. ar/ko/zh-CN restano al soffitto standard sulle prove di stanotte (passano; i fallimenti della notte erano transitori da carico del provider), e la deriva di ru è stata un'anomalia di generazione una tantum.
+
+Tests 6868 → 6869 (+1) · Playwright 176 · registro invariato: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.262.3] — 2026-10-30
 
 ### Corretto
