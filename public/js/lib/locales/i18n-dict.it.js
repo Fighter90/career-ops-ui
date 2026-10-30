@@ -1839,4 +1839,16 @@ window.__I18N_DICT_IT = {
   "evc.gapsTitle": "Da verificare: {list}",
   "evc.confirmed": "{n} confermati",
   "evc.gaps": "{n} lacune",
+  // rlinks — report-links runner (v1.246.0 backlog #4)
+  "rlinks.button": "Ripara i link dei report",
+  "rlinks.running": "Esecuzione di fix-report-links.mjs…",
+  "rlinks.runningApply": "Riparazione in corso…",
+  "rlinks.title": "Riparazione dei link dei report",
+  "rlinks.count": "Link ai report non validi: {count}",
+  "rlinks.zeroBroken": "Nessun link ai report non valido",
+  "rlinks.repair": "Ripara…",
+  "rlinks.confirmTitle": "Riscrivere le celle Report non valide?",
+  "rlinks.confirmBody": "fix-report-links.mjs riscrive la cella Report di ogni riga non valida del tracker come «—» (viene conservato un backup .bak). Il resto del file non cambia.",
+  "rlinks.done": "Riparazione completata",
+  "rlinks.failed": "fix-report-links.mjs non riuscito",
 };

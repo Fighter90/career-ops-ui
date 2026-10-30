@@ -1839,4 +1839,16 @@ window.__I18N_DICT_DA = {
   "evc.gapsTitle": "Kræver efterprøvning: {list}",
   "evc.confirmed": "{n} bekræftet",
   "evc.gaps": "{n} huller",
+  // rlinks — report-links runner (v1.246.0 backlog #4)
+  "rlinks.button": "Reparér rapportlinks",
+  "rlinks.running": "Kører fix-report-links.mjs…",
+  "rlinks.runningApply": "Udfører reparationen…",
+  "rlinks.title": "Reparation af rapportlinks",
+  "rlinks.count": "Ødelagte rapportlinks: {count}",
+  "rlinks.zeroBroken": "Ingen ødelagte rapportlinks",
+  "rlinks.repair": "Reparér…",
+  "rlinks.confirmTitle": "Overskrive ødelagte Report-celler?",
+  "rlinks.confirmBody": "fix-report-links.mjs overskriver Report-cellen for hver ødelagt tracker-række til “—” (en .bak-sikkerhedskopi gemmes). Intet andet i filen ændres.",
+  "rlinks.done": "Reparation gennemført",
+  "rlinks.failed": "fix-report-links.mjs fejlede",
 };

@@ -1841,4 +1841,16 @@ window.__I18N_DICT_ZH_TW = {
   "evc.gapsTitle": "待核實：{list}",
   "evc.confirmed": "已確認 {n} 項",
   "evc.gaps": "{n} 項缺口",
+  // rlinks — report-links runner (v1.246.0 backlog #4)
+  "rlinks.button": "修復報告連結",
+  "rlinks.running": "正在執行 fix-report-links.mjs…",
+  "rlinks.runningApply": "正在執行修復…",
+  "rlinks.title": "報告連結修復",
+  "rlinks.count": "失效的報告連結：{count} 個",
+  "rlinks.zeroBroken": "沒有失效的報告連結",
+  "rlinks.repair": "修復…",
+  "rlinks.confirmTitle": "改寫失效的 Report 儲存格？",
+  "rlinks.confirmBody": "fix-report-links.mjs 會把每個失效追蹤列的 Report 儲存格改寫為「—」（保留 .bak 備份）。檔案其餘內容不變。",
+  "rlinks.done": "修復完成",
+  "rlinks.failed": "fix-report-links.mjs 執行失敗",
 };

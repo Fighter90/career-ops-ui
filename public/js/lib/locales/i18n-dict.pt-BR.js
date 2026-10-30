@@ -1839,4 +1839,16 @@ window.__I18N_DICT_PT_BR = {
   "evc.gapsTitle": "Requer verificação: {list}",
   "evc.confirmed": "{n} confirmados",
   "evc.gaps": "{n} lacunas",
+  // rlinks — report-links runner (v1.246.0 backlog #4)
+  "rlinks.button": "Corrigir links de relatórios",
+  "rlinks.running": "Executando fix-report-links.mjs…",
+  "rlinks.runningApply": "Executando o reparo…",
+  "rlinks.title": "Correção de links de relatórios",
+  "rlinks.count": "Links de relatórios quebrados: {count}",
+  "rlinks.zeroBroken": "Nenhum link de relatório quebrado",
+  "rlinks.repair": "Corrigir…",
+  "rlinks.confirmTitle": "Reescrever as células de relatório quebradas?",
+  "rlinks.confirmBody": "O fix-report-links.mjs reescreve a célula de relatório de cada linha quebrada do tracker como «—» (um backup .bak é mantido). Nada mais no arquivo muda.",
+  "rlinks.done": "Reparo concluído",
+  "rlinks.failed": "fix-report-links.mjs falhou",
 };

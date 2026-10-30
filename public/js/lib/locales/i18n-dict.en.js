@@ -1846,4 +1846,16 @@ window.__I18N_DICT_EN = {
   "evc.gapsTitle": "Needs verification: {list}",
   "evc.confirmed": "{n} confirmed",
   "evc.gaps": "{n} gaps",
+  // rlinks — report-links runner (v1.246.0 backlog #4)
+  "rlinks.button": "Fix report links",
+  "rlinks.running": "Running fix-report-links.mjs…",
+  "rlinks.runningApply": "Running the repair…",
+  "rlinks.title": "Report link repair",
+  "rlinks.count": "{count} broken report link(s)",
+  "rlinks.zeroBroken": "No broken report links",
+  "rlinks.repair": "Repair…",
+  "rlinks.confirmTitle": "Rewrite broken Report cells?",
+  "rlinks.confirmBody": "fix-report-links.mjs rewrites the Report cell of every broken tracker row to “—” (a .bak backup is kept). Nothing else in the file changes.",
+  "rlinks.done": "Repair complete",
+  "rlinks.failed": "fix-report-links.mjs failed",
 };

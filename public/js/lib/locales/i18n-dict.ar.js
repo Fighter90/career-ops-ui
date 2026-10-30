@@ -1839,4 +1839,16 @@ window.__I18N_DICT_AR = {
   "evc.gapsTitle": "يحتاج إلى تحقق: {list}",
   "evc.confirmed": "{n} مؤكَّدة",
   "evc.gaps": "{n} فجوات",
+  // rlinks — report-links runner (v1.246.0 backlog #4)
+  "rlinks.button": "إصلاح روابط التقارير",
+  "rlinks.running": "جارٍ تشغيل fix-report-links.mjs…",
+  "rlinks.runningApply": "جارٍ تنفيذ الإصلاح…",
+  "rlinks.title": "إصلاح روابط التقارير",
+  "rlinks.count": "روابط التقارير المعطوبة: {count}",
+  "rlinks.zeroBroken": "لا توجد روابط تقارير معطوبة",
+  "rlinks.repair": "إصلاح…",
+  "rlinks.confirmTitle": "إعادة كتابة خلايا Report المعطوبة؟",
+  "rlinks.confirmBody": "يعيد fix-report-links.mjs كتابة خلية Report لكل صف معطوب في المتعقب إلى «—» (يُحتفظ بنسخة احتياطية .bak). لا يتغير أي شيء آخر في الملف.",
+  "rlinks.done": "اكتمل الإصلاح",
+  "rlinks.failed": "فشل fix-report-links.mjs",
 };

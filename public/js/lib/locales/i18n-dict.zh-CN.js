@@ -1840,4 +1840,16 @@ window.__I18N_DICT_ZH_CN = {
   "evc.gapsTitle": "待核实：{list}",
   "evc.confirmed": "已确认 {n} 项",
   "evc.gaps": "{n} 项缺口",
+  // rlinks — report-links runner (v1.246.0 backlog #4)
+  "rlinks.button": "修复报告链接",
+  "rlinks.running": "正在运行 fix-report-links.mjs…",
+  "rlinks.runningApply": "正在执行修复…",
+  "rlinks.title": "报告链接修复",
+  "rlinks.count": "失效的报告链接：{count} 个",
+  "rlinks.zeroBroken": "没有失效的报告链接",
+  "rlinks.repair": "修复…",
+  "rlinks.confirmTitle": "重写失效的 Report 单元格？",
+  "rlinks.confirmBody": "fix-report-links.mjs 会把每个失效跟踪行的 Report 单元格改写为“—”（保留 .bak 备份）。文件其余内容不变。",
+  "rlinks.done": "修复完成",
+  "rlinks.failed": "fix-report-links.mjs 运行失败",
 };

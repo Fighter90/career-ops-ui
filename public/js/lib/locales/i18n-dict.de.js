@@ -1839,4 +1839,16 @@ window.__I18N_DICT_DE = {
   "evc.gapsTitle": "Zu überprüfen: {list}",
   "evc.confirmed": "{n} bestätigt",
   "evc.gaps": "{n} Lücken",
+  // rlinks — report-links runner (v1.246.0 backlog #4)
+  "rlinks.button": "Berichtslinks reparieren",
+  "rlinks.running": "fix-report-links.mjs läuft…",
+  "rlinks.runningApply": "Reparatur läuft…",
+  "rlinks.title": "Reparatur der Berichtslinks",
+  "rlinks.count": "Beschädigte Berichtslinks: {count}",
+  "rlinks.zeroBroken": "Keine beschädigten Berichtslinks",
+  "rlinks.repair": "Reparieren…",
+  "rlinks.confirmTitle": "Beschädigte Report-Zellen überschreiben?",
+  "rlinks.confirmBody": "fix-report-links.mjs überschreibt die Report-Zelle jeder beschädigten Tracker-Zeile mit „—“ (ein .bak-Backup bleibt erhalten). Sonst ändert sich an der Datei nichts.",
+  "rlinks.done": "Reparatur abgeschlossen",
+  "rlinks.failed": "fix-report-links.mjs fehlgeschlagen",
 };

@@ -149,6 +149,60 @@ Router.register('health', async () => {
   // ignore checksOk, so a malformed payload rendered empty cards with no
   // alert — the CAR-121 "never read as all-clear" contract was advertised
   // but never shipped. One tree, built once above.
+  // ─── Report-links runner (v1.246.0 backlog #4, parent #4751) ───
+  // Verify-pipeline's Check 3 REPORTS tracker rows whose Report cell links
+  // at a missing file; this action runs the parent's canonical repair next
+  // to it: `node fix-report-links.mjs --dry-run` previews, `apply` rewrites
+  // only the dead single-link cell to "—" (a .bak backup is kept). The
+  // route relays both; this helper renders the preview and gates the repair
+  // behind a danger UI.confirm.
+  function reportLinksModal(r) {
+    const isApply = r && r.mode === 'apply';
+    const count = r && r.summary && typeof r.summary.count === 'number' ? r.summary.count : null;
+    const summaryLine = isApply
+      ? t('rlinks.done', 'Repair complete')
+      : count === 0
+        ? t('rlinks.zeroBroken', 'No broken report links')
+        : count != null
+          ? t('rlinks.count', '{count} broken report link(s)').replace('{count}', String(count))
+          : null;
+    // Repair only makes sense from a dry-run preview; with an unparseable
+    // count the output still lists the rows, so keep the button available.
+    const repairBtn = !isApply && (count == null || count > 0)
+      ? c('div', { className: 'flex gap-3', style: { marginTop: '12px' } }, [
+        c('button', {
+          className: 'btn btn-danger',
+          onClick: (e) => repairReportLinks(e.currentTarget),
+        }, t('rlinks.repair', 'Repair…')),
+      ])
+      : null;
+    UI.modal(t('rlinks.title', 'Report link repair'), c('div', null, [
+      summaryLine ? c('p', { className: 'modal-msg' }, summaryLine) : null,
+      c('pre', { className: 'console' },
+        [r && r.output, r && r.detail].filter(Boolean).join('\n')),
+      repairBtn,
+    ]));
+  }
+
+  async function repairReportLinks(btn) {
+    const ok = await UI.confirm(
+      t('rlinks.confirmTitle', 'Rewrite broken Report cells?'),
+      t('rlinks.confirmBody', 'fix-report-links.mjs rewrites the Report cell of every broken tracker row to "—" (a .bak backup is kept). Nothing else in the file changes.'),
+      { danger: true, confirmLabel: t('rlinks.repair', 'Repair…') },
+    );
+    if (!ok) return;
+    UI.toast(t('rlinks.runningApply', 'Running the repair…'));
+    try {
+      const r = await UI.withSpinner(btn, () => API.post('/api/runners/report-links', { mode: 'apply' }));
+      UI.dismissToast();
+      reportLinksModal(r);
+      UI.toast(t('rlinks.done', 'Repair complete'));
+    } catch (err) {
+      UI.dismissToast();
+      UI.toast((err && err.message) || t('rlinks.failed', 'fix-report-links.mjs failed'), 'error');
+    }
+  }
+
   const header = c('header', { className: 'page-header' }, [
     c('div', null, [
       HelpHint.title(t('health.title'), 'help.hint.health'),
@@ -193,6 +247,19 @@ Router.register('health', async () => {
           UI.toast((err && err.message) || t('common.error', 'Error'), 'error');
         }
       }}, t('health.verify')),
+      // Report-links runner — dry-run preview first, repair behind a
+      // danger confirm inside the preview modal (reportLinksModal above).
+      c('button', { className: 'btn btn-ghost', onClick: async (e) => {
+        UI.toast(t('rlinks.running', 'Running fix-report-links.mjs…'));
+        try {
+          const r = await UI.withSpinner(e.currentTarget, () => API.post('/api/runners/report-links', {}));
+          UI.dismissToast();
+          reportLinksModal(r);
+        } catch (err) {
+          UI.dismissToast();
+          UI.toast((err && err.message) || t('rlinks.failed', 'fix-report-links.mjs failed'), 'error');
+        }
+      }}, t('rlinks.button', 'Fix report links')),
     ]),
   ]);
 

@@ -1826,4 +1826,16 @@ window.__I18N_DICT_TA = {
   "evc.gapsTitle": "சரிபார்க்க வேண்டும்: {list}",
   "evc.confirmed": "{n} உறுதிப்படுத்தப்பட்டது",
   "evc.gaps": "{n} இடைவெளிகள்",
+  // rlinks — report-links runner (v1.246.0 backlog #4)
+  "rlinks.button": "அறிக்கை இணைப்புகளை சரிசெய்",
+  "rlinks.running": "fix-report-links.mjs இயங்குகிறது…",
+  "rlinks.runningApply": "பழுது இயங்குகிறது…",
+  "rlinks.title": "அறிக்கை இணைப்பு பழுது",
+  "rlinks.count": "சிதைந்த அறிக்கை இணைப்புகள்: {count}",
+  "rlinks.zeroBroken": "சிதைந்த அறிக்கை இணைப்புகள் இல்லை",
+  "rlinks.repair": "பழுது…",
+  "rlinks.confirmTitle": "சிதைந்த Report அணிகளை மீண்டும் எழுதவா?",
+  "rlinks.confirmBody": "fix-report-links.mjs சிதைந்த ஒவ்வொரு ட்ரேக்கர் வரிசையின் Report அணியை “—” ஆக மீண்டும் எழுதும் (.bak காப்பு வைக்கப்படும்). கோப்பின் பிற உள்ளடக்கம் மாறாது.",
+  "rlinks.done": "பழுது முடிந்தது",
+  "rlinks.failed": "fix-report-links.mjs தோல்வியுற்றது",
 };

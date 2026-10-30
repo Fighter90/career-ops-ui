@@ -1839,4 +1839,16 @@ window.__I18N_DICT_UK = {
   "evc.gapsTitle": "Потребує перевірки: {list}",
   "evc.confirmed": "{n} підтверджено",
   "evc.gaps": "{n} пробілів",
+  // rlinks — report-links runner (v1.246.0 backlog #4)
+  "rlinks.button": "Виправити посилання на звіти",
+  "rlinks.running": "Запускаю fix-report-links.mjs…",
+  "rlinks.runningApply": "Виконую виправлення…",
+  "rlinks.title": "Виправлення посилань на звіти",
+  "rlinks.count": "Пошкоджених посилань на звіти: {count}",
+  "rlinks.zeroBroken": "Пошкоджених посилань на звіти немає",
+  "rlinks.repair": "Виправити…",
+  "rlinks.confirmTitle": "Переписати пошкоджені клітинки Report?",
+  "rlinks.confirmBody": "fix-report-links.mjs перепише клітинку Report кожного пошкодженого рядка трекера на «—» (резервна копія .bak зберігається). Решта файлу не змінюється.",
+  "rlinks.done": "Виправлення завершено",
+  "rlinks.failed": "Помилка fix-report-links.mjs",
 };

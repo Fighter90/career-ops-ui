@@ -1841,4 +1841,16 @@ window.__I18N_DICT_TR = {
   "evc.gapsTitle": "Doğrulanmalı: {list}",
   "evc.confirmed": "{n} doğrulandı",
   "evc.gaps": "{n} boşluk",
+  // rlinks — report-links runner (v1.246.0 backlog #4)
+  "rlinks.button": "Rapor bağlantılarını onar",
+  "rlinks.running": "fix-report-links.mjs çalışıyor…",
+  "rlinks.runningApply": "Onarım çalışıyor…",
+  "rlinks.title": "Rapor bağlantısı onarımı",
+  "rlinks.count": "Bozuk rapor bağlantısı: {count}",
+  "rlinks.zeroBroken": "Bozuk rapor bağlantısı yok",
+  "rlinks.repair": "Onar…",
+  "rlinks.confirmTitle": "Bozuk Report hücreleri yeniden yazılsın mı?",
+  "rlinks.confirmBody": "fix-report-links.mjs, bozuk her izleyici satırının Report hücresini “—” olarak yeniden yazar (.bak yedeği tutulur). Dosyanın başka hiçbir yeri değişmez.",
+  "rlinks.done": "Onarım tamamlandı",
+  "rlinks.failed": "fix-report-links.mjs başarısız oldu",
 };
