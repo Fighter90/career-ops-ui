@@ -10,19 +10,19 @@
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
-[![tests](https://img.shields.io/badge/tests-6868%20passed-brightgreen)](#testy)
+[![tests](https://img.shields.io/badge/tests-6869%20passed-brightgreen)](#testy)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#testy)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.262.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.3)
+[![release](https://img.shields.io/badge/release-v1.262.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.4)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Najnowsze wydanie — v1.262.3** — **Patch token-dense dla `pl`: pełny remote-QA na prodzie v1.262.1 przyłapał polską ewaluację umierającą na standardowym limicie 300 s — `502 · 0 ch` — dwukrotnie (pełny przebieg ×19 40960568766 i punktowy rerun z v1.262.2 40968958062), podczas gdy 18/19 locale przeszło A–G; `pl` dołącza teraz do `ta`/`hi`/`it` z limitem 32768 tokenów i zegarem 480 s, przypięte red-first (`evalMaxTokens`, `evalTimeoutMs`). Ta sama klasa kształtu co `it` w v1.262.1. Tests 6867 → 6868.**
+> **🆕 Najnowsze wydanie — v1.262.4** — **Patch token-dense dla `ja`: punktowy rerun pięciu locale na prodzie rozdzielił cztery nocne timeouty ewaluacji — ar/ko/zh-CN przeszły (250–291 s), jednorazowy dryf ru nie powtórzył się — ale `ja` dwukrotnie uderzyła w standardowy limit 300 s z zerowym wyjściem; `ja` dołącza teraz do `ta`/`hi`/`it`/`pl` z limitem 32768 tokenów i zegarem 480 s, przypięte red-first. Tests 6868 → 6869.**
 >
-> **Poprzednie wydanie — v1.262.2** — **Patch z ogona recenzji: siedem ustaleń recenzji falowej zamkniętych najpierw czerwonym testem — powrotna podróż backslasha importu CSV (ponowny import tego samego eksportu znów deduplikuje), wycinanie `<head>` w cv-voice 4827 ms → 13 ms, `years_min` liczone leniwie na dużych skanach, naprawiony crash TOCTOU przy listowaniu capture'ów, domyślne wartości MiniMax CN dla każdego base URL `*.minimax.cn`, a import picker sprawdza limit 512 KB przed odczytem pliku — do tego utwardzenie deploy.yml (F1–F6: strażnik przed iniekcją inputu provider, redagowanie logu hermes, maskowanie `?token=`, app_dir, bramka https dla public_url i sześć wykonywalnych pinów antydowngrade'owych) oraz ogon import-modal (nav guard, sprzątanie przy cancel, strzeżone duplikaty). Testy 6841 → 6867.**
+> **Poprzednie wydanie — v1.262.3** — **Patch token-dense dla `pl`: pełny remote-QA na prodzie v1.262.1 przyłapał polską ewaluację umierającą na standardowym limicie 300 s — `502 · 0 ch` — dwukrotnie (pełny przebieg ×19 40960568766 i punktowy rerun z v1.262.2 40968958062), podczas gdy 18/19 locale przeszło A–G; `pl` dołącza teraz do `ta`/`hi`/`it` z limitem 32768 tokenów i zegarem 480 s, przypięte red-first (`evalMaxTokens`, `evalTimeoutMs`). Ta sama klasa kształtu co `it` w v1.262.1. Tests 6867 → 6868.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -147,7 +147,7 @@ career-ops/
 └─ web-ui/          ← to repozytorium
    ├─ server/       # Express + 15 modułów tras
    ├─ public/       # vanilla JS SPA, bez bundlera
-   └─ tests/        # 6868 testów jednostkowych + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (podstawa @ v1.262.3)
+   └─ tests/        # 6869 testów jednostkowych + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (podstawa @ v1.262.4)
 ```
 
 Serwer ma dwie zależności produkcyjne: `express` i `js-yaml`. Brak transpilacji, brak bundlera — cały interfejs to mniej niż 30 KB zminifikowanego kodu.
