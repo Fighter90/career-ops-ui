@@ -100,6 +100,8 @@ window.__I18N_DICT_KO = {
   'nav.v2.palette': "명령 메뉴",
   'nav.v2.paletteLabel': "이동…",
   'nav.v2.recent': "최근",
+  'nav.v2.recentHint': "최근에 방문한 5개 섹션; 현재 페이지는 표시되지 않습니다",
+  'nav.v2.clearRecent': "지우기",
   'nav.v2.pin': "즐겨찾기에 고정",
   'nav.v2.unpin': "즐겨찾기에서 제거",
   'nav.v2.moveUp': "위로 이동",

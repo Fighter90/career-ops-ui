@@ -99,6 +99,8 @@ window.__I18N_DICT_DA = {
   'nav.v2.palette': "Kommandomenu",
   'nav.v2.paletteLabel': "Gå til…",
   'nav.v2.recent': "Seneste",
+  'nav.v2.recentHint': "Dine 5 senest besøgte sektioner; den aktuelle side vises ikke",
+  'nav.v2.clearRecent': "Ryd",
   'nav.v2.pin': "Fastgør til favoritter",
   'nav.v2.unpin': "Fjern fra favoritter",
   'nav.v2.moveUp': "Flyt op",

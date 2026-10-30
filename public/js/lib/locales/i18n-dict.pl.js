@@ -99,6 +99,8 @@ window.__I18N_DICT_PL = {
   'nav.v2.palette': "Menu poleceń",
   'nav.v2.paletteLabel': "Przejdź do…",
   'nav.v2.recent': "Ostatnie",
+  'nav.v2.recentHint': "5 ostatnio odwiedzonych sekcji; bieżąca strona nie jest pokazywana",
+  'nav.v2.clearRecent': "Wyczyść",
   'nav.v2.pin': "Przypnij do ulubionych",
   'nav.v2.unpin': "Usuń z ulubionych",
   'nav.v2.moveUp': "Przenieś w górę",

@@ -100,6 +100,8 @@ window.__I18N_DICT_DE = {
   'nav.v2.palette': "Befehlsmenü",
   'nav.v2.paletteLabel': "Springen zu…",
   'nav.v2.recent': "Zuletzt",
+  'nav.v2.recentHint': "Ihre 5 zuletzt besuchten Bereiche; die aktuelle Seite wird nicht angezeigt",
+  'nav.v2.clearRecent': "Leeren",
   'nav.v2.pin': "Zu Favoriten hinzufügen",
   'nav.v2.unpin': "Aus Favoriten entfernen",
   'nav.v2.moveUp': "Nach oben",

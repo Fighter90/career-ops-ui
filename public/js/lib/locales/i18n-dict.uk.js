@@ -99,6 +99,8 @@ window.__I18N_DICT_UK = {
   'nav.v2.palette': "Меню команд",
   'nav.v2.paletteLabel': "Перейти до…",
   'nav.v2.recent': "Недавні",
+  'nav.v2.recentHint': "Останні 5 відвіданих розділів; поточна сторінка не показується",
+  'nav.v2.clearRecent': "Очистити",
   'nav.v2.pin': "Додати в обране",
   'nav.v2.unpin': "Вилучити з обраного",
   'nav.v2.moveUp': "Перемістити вгору",

@@ -100,6 +100,8 @@ window.__I18N_DICT_RU = {
   'nav.v2.palette': "Меню команд",
   'nav.v2.paletteLabel': "Перейти к…",
   'nav.v2.recent': "Недавние",
+  'nav.v2.recentHint': "Последние 5 посещённых разделов; текущая страница не показывается",
+  'nav.v2.clearRecent': "Очистить",
   'nav.v2.pin': "Добавить в избранное",
   'nav.v2.unpin': "Убрать из избранного",
   'nav.v2.moveUp': "Переместить вверх",

@@ -100,6 +100,8 @@ window.__I18N_DICT_TR = {
   'nav.v2.palette': "Komut menüsü",
   'nav.v2.paletteLabel': "Şuraya git…",
   'nav.v2.recent': "Son kullanılanlar",
+  'nav.v2.recentHint': "En son ziyaret edilen 5 bölüm; geçerli sayfa gösterilmez",
+  'nav.v2.clearRecent': "Temizle",
   'nav.v2.pin': "Sık kullanılanlara ekle",
   'nav.v2.unpin': "Sık kullanılanlardan çıkar",
   'nav.v2.moveUp': "Yukarı taşı",

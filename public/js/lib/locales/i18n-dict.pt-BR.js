@@ -100,6 +100,8 @@ window.__I18N_DICT_PT_BR = {
   'nav.v2.palette': "Menu de comandos",
   'nav.v2.paletteLabel': "Ir para…",
   'nav.v2.recent': "Recentes",
+  'nav.v2.recentHint': "Suas 5 seções visitadas recentemente; a página atual não aparece",
+  'nav.v2.clearRecent': "Limpar",
   'nav.v2.pin': "Fixar nos favoritos",
   'nav.v2.unpin': "Remover dos favoritos",
   'nav.v2.moveUp': "Mover para cima",

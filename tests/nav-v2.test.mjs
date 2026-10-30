@@ -324,3 +324,15 @@ test('v2-nav.css: token-based (no hex), ≤ 800 LOC, motion-safe, RTL-mirrored',
   assert.match(CSS, /prefers-reduced-motion/, 'reduced-motion opt-out required');
   assert.match(CSS, /\[dir="rtl"\]/, 'RTL chevron mirror required');
 });
+
+// ── owner UX batch — recents group: hint + Clear ────────────────────────────
+
+test('recents: the group header carries a hint and a Clear button that empties the list', () => {
+  assert.ok(SRC.includes("'nav.v2.recentHint'"), 'recToggle must carry the recentHint key (title + aria-label)');
+  assert.ok(SRC.includes("'nav.v2.clearRecent'"), 'the Clear button must use the clearRecent key');
+  assert.match(SRC, /nav-v2-clear/, 'the Clear button class exists');
+  assert.match(SRC, /Object\.assign\(\{\}, state, \{ recent: \[\] \}\)/,
+    'the clear handler empties recent immutably, then writeStore + renderDynamicGroups');
+  assert.match(CSS, /\.nav-v2-clear/, 'v2-nav.css styles the clear button');
+  assert.match(CSS, /\.nav-v2-group-head/, 'the toggle + clear row has a shared flex head');
+});

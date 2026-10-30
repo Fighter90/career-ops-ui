@@ -99,6 +99,8 @@ window.__I18N_DICT_AR = {
   'nav.v2.palette': "قائمة الأوامر",
   'nav.v2.paletteLabel': "الانتقال إلى…",
   'nav.v2.recent': "الأخيرة",
+  'nav.v2.recentHint': "آخر 5 أقسام زرتها؛ الصفحة الحالية لا تظهر",
+  'nav.v2.clearRecent': "مسح",
   'nav.v2.pin': "التثبيت في المفضلة",
   'nav.v2.unpin': "الإزالة من المفضلة",
   'nav.v2.moveUp': "نقل لأعلى",

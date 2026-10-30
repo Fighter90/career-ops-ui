@@ -100,6 +100,8 @@ window.__I18N_DICT_EN = {
   'nav.v2.palette': "Command menu",
   'nav.v2.paletteLabel': "Jump to…",
   'nav.v2.recent': "Recent",
+  'nav.v2.recentHint': "Your 5 most recently visited sections; the current page is not shown",
+  'nav.v2.clearRecent': "Clear",
   'nav.v2.pin': "Pin to favorites",
   'nav.v2.unpin': "Remove from favorites",
   'nav.v2.moveUp': "Move up",

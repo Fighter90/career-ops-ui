@@ -100,6 +100,8 @@ window.__I18N_DICT_ZH_TW = {
   'nav.v2.palette': "命令選單",
   'nav.v2.paletteLabel': "跳至…",
   'nav.v2.recent': "最近瀏覽",
+  'nav.v2.recentHint': "最近造訪的 5 個分區；目前頁面不顯示",
+  'nav.v2.clearRecent': "清除",
   'nav.v2.pin': "加入收藏夾",
   'nav.v2.unpin': "從收藏夾移除",
   'nav.v2.moveUp': "上移",

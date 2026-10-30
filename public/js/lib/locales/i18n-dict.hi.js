@@ -100,6 +100,8 @@ window.__I18N_DICT_HI = {
   'nav.v2.palette': "कमांड मेनू",
   'nav.v2.paletteLabel': "इस पर जाएँ…",
   'nav.v2.recent': "हाल के",
+  'nav.v2.recentHint': "आपके हाल में देखे गए 5 अनुभाग; वर्तमान पृष्ठ नहीं दिखता",
+  'nav.v2.clearRecent': "साफ़ करें",
   'nav.v2.pin': "पसंदीदा में जोड़ें",
   'nav.v2.unpin': "पसंदीदा से हटाएँ",
   'nav.v2.moveUp': "ऊपर ले जाएँ",

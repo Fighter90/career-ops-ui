@@ -100,6 +100,8 @@ window.__I18N_DICT_IT = {
   'nav.v2.palette': "Menu dei comandi",
   'nav.v2.paletteLabel': "Vai a…",
   'nav.v2.recent': "Recenti",
+  'nav.v2.recentHint': "Le 5 sezioni visitate di recente; la pagina corrente non viene mostrata",
+  'nav.v2.clearRecent': "Cancella",
   'nav.v2.pin': "Aggiungi ai preferiti",
   'nav.v2.unpin': "Rimuovi dai preferiti",
   'nav.v2.moveUp': "Sposta su",

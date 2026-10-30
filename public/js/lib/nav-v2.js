@@ -255,15 +255,38 @@
     recLabel.textContent = t('nav.v2.recent', 'Recent');
     recToggle.appendChild(recChev);
     recToggle.appendChild(recLabel);
+    // Owner UX batch — the group header explains itself (why the current
+    // page never shows up in the list) and carries a Clear action.
+    recToggle.setAttribute('title', t('nav.v2.recentHint', 'Your 5 most recently visited sections; the current page is not shown'));
+    recToggle.setAttribute('aria-label', t('nav.v2.recentHint', 'Your 5 most recently visited sections; the current page is not shown'));
+    recToggle.setAttribute('data-i18n-title', 'nav.v2.recentHint');
+    recToggle.setAttribute('data-i18n-aria-label', 'nav.v2.recentHint');
     recToggle.addEventListener('click', () => {
       const open = recToggle.getAttribute('aria-expanded') === 'true';
       recToggle.setAttribute('aria-expanded', open ? 'false' : 'true');
       recItems.hidden = open;
     });
+    // Clear (modeled on the notifications drawer's clear-all): empties the
+    // recents list for good — the section re-hides itself on the re-render
+    // (an empty recent array makes the `.every(currentId)` hidden check true).
+    const recClear = document.createElement('button');
+    recClear.className = 'nav-v2-clear';
+    recClear.type = 'button';
+    recClear.setAttribute('data-i18n', 'nav.v2.clearRecent');
+    recClear.textContent = t('nav.v2.clearRecent', 'Clear');
+    recClear.addEventListener('click', () => {
+      state = Object.assign({}, state, { recent: [] });
+      writeStore();
+      renderDynamicGroups();
+    });
     const recItems = document.createElement('div');
     recItems.className = 'nav-v2-items';
     recItems.id = 'nav-v2-items-__recents';
-    recentSection.appendChild(recToggle);
+    const recHead = document.createElement('div');
+    recHead.className = 'nav-v2-group-head';
+    recHead.appendChild(recToggle);
+    recHead.appendChild(recClear);
+    recentSection.appendChild(recHead);
     recentSection.appendChild(recItems);
 
     dynamicMount.appendChild(favSection);

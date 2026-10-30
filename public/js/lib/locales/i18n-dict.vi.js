@@ -96,6 +96,8 @@ window.__I18N_DICT_VI = {
   'nav.v2.palette': "Menu lệnh",
   'nav.v2.paletteLabel': "Đi đến…",
   'nav.v2.recent': "Gần đây",
+  'nav.v2.recentHint': "5 mục bạn đã ghé gần đây; trang hiện tại không được hiển thị",
+  'nav.v2.clearRecent': "Xoá",
   'nav.v2.pin': "Ghim vào yêu thích",
   'nav.v2.unpin': "Bỏ khỏi yêu thích",
   'nav.v2.moveUp': "Di chuyển lên",

@@ -65,6 +65,26 @@
   transition: background var(--transition), color var(--transition);
 }
 .nav-v2-toggle:hover { background: var(--beach); color: var(--ink); }
+
+/* Owner UX batch — the Recents group header is a flex row: the collapsible
+   toggle takes the width, a small Clear chip sits beside it. Geometry of the
+   toggle matches the bare-group look (the head carries the old margins). */
+.nav-v2-group-head { display: flex; align-items: center; gap: 4px; margin: 14px 12px 4px; }
+.nav-v2-group-head .nav-v2-toggle { flex: 1 1 auto; width: auto; margin: 0; min-width: 0; }
+.nav-v2-clear {
+  flex: 0 0 auto;
+  border: 0;
+  border-radius: var(--radius);
+  background: transparent;
+  color: var(--foggy);
+  font-size: var(--font-size-xs);
+  font-weight: 600;
+  padding: 4px 8px;
+  min-height: 28px;
+  cursor: pointer;
+  transition: background var(--transition), color var(--transition);
+}
+.nav-v2-clear:hover { background: var(--beach); color: var(--ink); }
 .nav-v2-chev {
   display: inline-flex;
   font-size: 10px;

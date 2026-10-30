@@ -100,6 +100,8 @@ window.__I18N_DICT_JA = {
   'nav.v2.palette': "コマンドメニュー",
   'nav.v2.paletteLabel': "移動先…",
   'nav.v2.recent': "最近",
+  'nav.v2.recentHint': "最近訪れた5つのセクション。現在のページは表示されません",
+  'nav.v2.clearRecent': "クリア",
   'nav.v2.pin': "お気に入りに固定",
   'nav.v2.unpin': "お気に入りから削除",
   'nav.v2.moveUp': "上へ移動",
