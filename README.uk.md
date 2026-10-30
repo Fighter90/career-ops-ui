@@ -10,19 +10,19 @@
 
 _Неофіційний інтерфейс — не пов'язаний із career-ops / santifer і не схвалений ними._
 
-[![tests](https://img.shields.io/badge/tests-6869%20passed-brightgreen)](#тести)
+[![tests](https://img.shields.io/badge/tests-6905%20passed-brightgreen)](#тести)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#тести)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.262.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.4)
+[![release](https://img.shields.io/badge/release-v1.263.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.263.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Останній реліз — v1.262.4** — **Патч token-dense для `ja`: п'ятилокальний прицільний повторний запуск на проді розділив чотири нічні тайм-аути оцінювання — ar/ko/zh-CN пройшли (250–291 с), разовий дрейф ru не повторився — але `ja` двічі врізалася в стандартну стелю 300 с з нульовим виводом; `ja` тепер долучається до `ta`/`hi`/`it`/`pl` зі стелею 32768 токенів і годинником 480 с, закріплено red-first. Tests 6868 → 6869.**
+> **🆕 Останній реліз — v1.263.0** — **Батч UX від власника: шар полірування анімацій (touch-безпечні ховери, підйом лише інтерактивних карток, анімації модалок/поповерів/тостів/теми — безпечно за reduced-motion), акцент змінюється з синього на багряно-червоний як у логотипа, WCAG-проходження контрасту (docs-fab 6.4:1, тости, межі форм 3:1), кожен контроль отримує програмне ім'я, і дюжина виправлень розкладки — шапка таблиці скану більше не накриває пошук, фільтр зарплати знову нормального розміру, сторінка документації більше не переповнюється, мобільний drawer отримав видиму кнопку закриття. Tests 6869 → 6905.**
 >
-> **Попередній реліз — v1.262.3** — **Патч token-dense для `pl`: повна remote-QA на проді v1.262.1 спіймала польське оцінювання, що вмирає на стандартній стелі 300 с — `502 · 0 ch` — двічі (повний запуск ×19 40960568766 і прицільний повторний запуск з v1.262.2 40968958062), тоді як 18/19 локалей пройшли A–G; `pl` тепер долучається до `ta`/`hi`/`it` зі стелею 32768 токенів і годинником 480 с, закріплено red-first (`evalMaxTokens`, `evalTimeoutMs`). Той самий клас форми, що `it` у v1.262.1. Tests 6867 → 6868.**
+> **Попередній реліз — v1.262.4** — **Патч token-dense для `ja`: п'ятилокальний прицільний повторний запуск на проді розділив чотири нічні тайм-аути оцінювання — ar/ko/zh-CN пройшли (250–291 с), разовий дрейф ru не повторився — але `ja` двічі врізалася в стандартну стелю 300 с з нульовим виводом; `ja` тепер долучається до `ta`/`hi`/`it`/`pl` зі стелею 32768 токенів і годинником 480 с, закріплено red-first. Tests 6868 → 6869.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -147,7 +147,7 @@ career-ops/
 └─ web-ui/          ← це репозиторій
    ├─ server/       # Express + 15 модулів маршрутів
    ├─ public/       # vanilla JS SPA, без бандлера
-   └─ tests/        # 6869 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.4)
+   └─ tests/        # 6905 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.263.0)
 ```
 
 Сервер має дві виробничі залежності: `express` та `js-yaml`. Жодного transpile, жодного бандлера — весь UI займає менше 30 KB у мінімізованому вигляді.

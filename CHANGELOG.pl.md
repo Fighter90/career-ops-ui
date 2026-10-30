@@ -10,6 +10,35 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.263.0] — 2026-10-30
+
+### Dodano
+
+- **Warstwa wypolerowania animacji** — nowy `motion.css` (ostatni arkusz aplikacji): wejścia modali/popoverów (scale .97 + wygaszanie, 130–180 ms), springowe pojawianie toastów + miękki stan odchodzenia, springowe wciśnięcie przełącznika motywu, scale(.97) przy wciśnięciu chipów/zakładek, stagger-infrastruktura (kroki 50 ms, limit 12), wygaszanie `.page-enter` przy zmianie trasy (router), przejścia focus-halo na chipach/zakładkach. Każda reguła jest bezpieczna przy `prefers-reduced-motion` (ruch spada do none, opacity/kolor zostają).
+- **Poprawność na urządzeniach dotykowych** — 68 reguł hover-uniesienia było niechronionych: urządzenia dotykowe zostawały z „zawieszoną" uniesioną kartą po tapnięciu. Wszystkie transform-hovery są teraz ogrodzone `@media (hover:hover)` (neutralizator motion.css), a uniesienie karty dotyczy tylko faktycznie interaktywnych kart (`.card:has(a)`, `a.card`, `button.card`, `[role=button].card`) — koniec z fałszywą affordancją na statycznych kartach.
+- **A11y: każda kontrola ma nazwę programistyczną.** Nowy helper `A11yDump` nazywa wszystkie 16 readonly-zrzutów wyjścia LLM; 12 pól z samym placeholderem (CV Studio ×6, config ×2, wyszukiwanie w skanie, select oceny w trackerze, notatka outcome, edytor planu, URL auto-pipeline, bug report) dostało `aria-label`; bramka `a11y-form-wires` wymaga tego teraz dla całej klasy (było 26 nienazwanych miejsc, jest 0 + allowlist z udokumentowanymi powodami).
+
+### Naprawiono
+
+- **#/scan**: przyklejony nagłówek tabeli nie maluje się już na wierzchu wyszukiwania w topbarze po przewinięciu pod niego (z było równe topbarowi, wygrywał późniejszy DOM — teraz token-derived poniżej niego); inputy «Зарплата от/до» są znowu normalnych rozmiarów (reguła flex `.v2-scan-bar .input` przeciekała do kolumnowego flexa popovera i ustawiała flex-basis 200 px jako WYSOKOŚĆ — teraz scope przez `>` + strażnik popovera); przycisk przełączania gęstości usunięty decyzją właściciela (mechanika zostaje, klucze i18n usunięte ×19).
+- **Utwardzenie deploy workflow (F1–F6)**: input `provider` walidowany pod kątem zestawu znaków przed każdym wstawieniem do shella; diagnostyka hermes redaguje wartości (filtr kluczy niewrażliwy na wielkość liter + maskowanie wartości + ucinanie do 80 znaków na wszystkich trzech ujściach, maskowane są też `?token=`); krok hermes respektuje `inputs.app_dir`; public_url przepuszczany tylko po https; strażnik antydowngrade'owy ma 6 wykonywalnych pinów (refy bez domyślnych, strażnik przed Deploy, ścisły regex refów).
+- **Ogon recenzji, red-first**: powrotna podróż backslasha przy imporcie CSV (ponowny import znowu się deduplikuje), wycinanie `<head>` w cv-voice 4827 ms → 13 ms, `statedYearsMin` liczone leniwie, TOCTOU capture w posting-guard, wildcard MiniMax CN, pomijanie tokenów Deela, strażniki rozmiaru import pickera przed odczytem. Modal importu: uzbrojony nav guard, input pliku usuwany przy cancel, strzeżony odczyt duplikatów, `num` przez reduce.
+- **Batch UX od właściciela**: pionowy rytm hero dashboardu (dzieci inline-level sklejane w jeden line box); przesunięcie aktywnego wiersza spisu treści pomocy o −8 px (wierszowy inline gutter + kolumna numerów); mobilny drawer (widoczny przycisk ✕, reset scrollTop, fantomowe wygaszanie --paper ograniczone do `.has-hud`); strona docs-assistant nie przepełnia się już przy długim URL w odpowiedzi (łańcuch grid `min-width` + `overflow-wrap: anywhere`); «Ostatnie» wyjaśnione (podpowiedź) + czyszczalne; Save w career-plan uzbraja się ponownie po nieudanym wczytaniu; URL-prefill w evaluate nie pali już wywołania LLM na placeholderze wklejania; Enter w auto-pipeline respektuje kompozycję IME.
+- **Kontrast (audyt WCAG, 296 par)**: gradient docs-fab 2.43 → 6.4:1, para toast.success → ok-soft (1.75 → AA w ciemnym), flip banner btn-dark → `--ink`, jasne warianty scan-logbtn/reposts-badge/fab-chip/close, oraz obramowania kontrolek formularzy do 3:1 (`--cv3-input-line`, WCAG 1.4.11 — było 1.2:1).
+- **Przegląd wizualny**: pusty stan trackera to karta na całą szerokość (wcześniej przycinany wewnątrz tabeli 760 px przy 390); linia konsoli skanu dostaje wielokropek zamiast połowicznego ucięcia; pływający chat-FAB nie zakrywa już treści przy 390 (cel 44 px, inset 12); pusty stan «Application statuses» na dashboardzie trzyma się wzorca v2-empty; podpowiedź «?» w stats dostaje separator + cel 44 px; zakładka Input w career-plan wyjaśnia, gdzie ląduje wynik; markdown §1 pomocy (18 zepsutych spanów pogrubienia).
+
+### Zmieniono
+
+- **Akcent: niebieski → karmazynowoczerwony (prośba właściciela, spójny z logo, hue 15)** — 5 tokenów cv3 × 3 bloki motywu; tekst bąbelka czatu `docs-assistant` jedzie przez `--accent-ink` (wcześniej literał #fff, 2.39:1 w ciemnym); podkład funded jedzie przez `--accent-soft`. Danger zostaje przy hue 25 ze swoimi treatmentami.
+- Dokumentacja: licznik w tabeli testowania README ×17 (dryf ery v1.248), §1 pomocy + 18 spanów markdown, «118» w pomocy fr/it/ta, ceny dostawców CHECKED_ON 2026-10-30, fakty HANDOFF/CONTEXT/TRACEABILITY.
+
+### Uwagi
+
+- Świadomie nie zrobiono: przeróbka przeglądu szkieletów zostaje na boku (kontrakt car112 przypina obecne wygaszanie dosłownie); crossfade ikony przełącznika motywu zostaje zamianą `display` (obserwuje go kontrakt Playwright theme-toggle); skala `.btn:active` nie została zduplikowana (właścicielem jest app.css); stagger animacji to wyłącznie infrastruktura — kafelki dashboardu przyjmą go później; proza pomocy ×19 (wzmianka o gęstości, markdown §1, «118») jedzie następnym fan-outem.
+- Pełne dowody remote-QA: punktowy rerun `ja` zielony (376 s / A–G ✓) na v1.262.4; en/it zielone wcześniej, w erze token-dense.
+
+Tests 6869 → 6905 (+36) · Playwright 176 · pokrycie 98.4 % linii / 89.9 % gałęzi · rejestr bez zmian: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.262.4] — 2026-10-30
 
 ### Naprawiono
