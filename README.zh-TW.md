@@ -537,7 +537,7 @@ npm run test:coverage          # 同 `npm test`,加上 V8 coverage
 
 | Suite                       | 測試數 | 內容                                                                                                         |
 | --------------------------- | ----- | ------------------------------------------------------------------------------------------------------------ |
-| `node --test tests/*.test.mjs`(unit + integration) | **6868** | 每個端點、暫時性伺服器、無網路。涵蓋解析器、scanner(已 mock)、runner、anthropic、CSP / 安全 header、實體感知 XSS、JD sanitize、URL 驗證、SSRF redirect rebind、檔案互斥下的並行 tracker 寫入、`llmRateLimit`、路徑統一 sanitization、i18n parity。 |
+| `node --test tests/*.test.mjs`(unit + integration) |  **6869** | 每個端點、暫時性伺服器、無網路。涵蓋解析器、scanner(已 mock)、runner、anthropic、CSP / 安全 header、實體感知 XSS、JD sanitize、URL 驗證、SSRF redirect rebind、檔案互斥下的並行 tracker 寫入、`llmRateLimit`、路徑統一 sanitization、i18n parity。 |
 | `tests/e2e.mjs`(smoke)      | 21 | Playwright headless:每條路由可渲染、基本流程。                                                              |
 | `tests/e2e-comprehensive.mjs` | 23 | 完整 Playwright walkthrough:11 條路由 + 12 條功能流程。                                                      |
 | `tests/playwright-smoke.mjs`(`npm run test:e2e:browser`) | **32** | 瀏覽器驅動 smoke:dashboard render、navigation、語言切換、404、health、tracker round-trip(BF-1)、pipeline add + 無效 URL 掃描、reports empty、evaluate 手動 fallback、config 金鑰遮罩、CV PUT XSS strip、pipeline preview 400、WCAG 1.4.1 視覺冗餘線索回歸。 |

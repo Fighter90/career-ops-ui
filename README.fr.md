@@ -528,7 +528,7 @@ npm run test:coverage          # same as `npm test` plus V8 coverage
 
 | Suite                       | Tests | Quoi                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + intégration) | **6868** | Chaque endpoint, serveur éphémère, sans réseau. 329 fichiers : parsers, scanners (mockés), runners, anthropic/openai, en-têtes de sécurité, XSS, désinfection d'offre, validation d'URL, parité i18n, + les suites de fixes UX v1.55→v1.56. |
+| `node --test tests/*.test.mjs` (unit + intégration) |  **6869** | Chaque endpoint, serveur éphémère, sans réseau. 329 fichiers : parsers, scanners (mockés), runners, anthropic/openai, en-têtes de sécurité, XSS, désinfection d'offre, validation d'URL, parité i18n, + les suites de fixes UX v1.55→v1.56. |
 | `tests/e2e.mjs` (smoke)      | 21 | Playwright headless : chaque route s'affiche, flux de base.                                                |
 | `tests/e2e-comprehensive.mjs` | 23 | Parcours Playwright complet : 11 routes + 12 flux fonctionnels.                                            |
 | `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **118** | Piloté par navigateur : rendu du dashboard, navigation, changement de langue, 404, health, aller-retour tracker, ajout pipeline + balayage URL-invalide, rapports, repli manuel d'évaluation, clés de config masquées, retrait XSS au PUT du CV, aperçu pipeline 400, SSE auto-pipeline. |

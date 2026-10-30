@@ -562,7 +562,7 @@ npm run test:coverage          # `npm test` ile aynı, artı V8 kapsamı
 
 | Paket                       | Test | Ne                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (birim + entegrasyon) | **6868** | Her uç nokta, geçici sunucu, ağ yok. 329 dosya: ayrıştırıcılar, tarayıcılar (taklit edilmiş), çalıştırıcılar, anthropic/openai, güvenlik başlıkları, XSS, iş tanımı temizleme, URL doğrulama, i18n eşitliği, + v1.55→v1.56 UX-düzeltme paketleri. |
+| `node --test tests/*.test.mjs` (birim + entegrasyon) |  **6869** | Her uç nokta, geçici sunucu, ağ yok. 329 dosya: ayrıştırıcılar, tarayıcılar (taklit edilmiş), çalıştırıcılar, anthropic/openai, güvenlik başlıkları, XSS, iş tanımı temizleme, URL doğrulama, i18n eşitliği, + v1.55→v1.56 UX-düzeltme paketleri. |
 | `tests/e2e.mjs` (smoke)      | 21 | Playwright başsız: her rota render edilir, temel akışlar.                                                     |
 | `tests/e2e-comprehensive.mjs` | 23 | Tam Playwright gezintisi: 11 rota + 12 işlevsel akış.                                              |
 | `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **118** | Tarayıcı güdümlü: dashboard render, gezinme, dil değiştirme, 404, health, tracker gidiş-dönüşü, pipeline ekleme + geçersiz-URL taraması, raporlar, evaluate manuel yedeği, config anahtarları maskeli, CV PUT XSS temizleme, pipeline preview 400, auto-pipeline SSE. |

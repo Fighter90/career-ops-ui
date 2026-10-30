@@ -565,7 +565,7 @@ npm run test:coverage          # `npm test` जैसा ही, साथ म�
 
 | सूट                       | टेस्ट | क्या                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (यूनिट + इंटीग्रेशन) | **6868** | हर एंडपॉइंट, एफ़ेमरल सर्वर, कोई नेटवर्क नहीं। 490 फ़ाइलें: parsers, scanners (मॉक्ड), runners, anthropic/openai, सुरक्षा हेडर, XSS, JD सैनिटाइज़, URL वैलिडेशन, i18n पैरिटी, + v1.55→v1.56 UX-फ़िक्स सूट। |
+| `node --test tests/*.test.mjs` (यूनिट + इंटीग्रेशन) |  **6869** | हर एंडपॉइंट, एफ़ेमरल सर्वर, कोई नेटवर्क नहीं। 490 फ़ाइलें: parsers, scanners (मॉक्ड), runners, anthropic/openai, सुरक्षा हेडर, XSS, JD सैनिटाइज़, URL वैलिडेशन, i18n पैरिटी, + v1.55→v1.56 UX-फ़िक्स सूट। |
 | `tests/e2e.mjs` (स्मोक)      | 21 | Playwright हेडलेस: हर राउट रेंडर होता है, बुनियादी फ़्लो।                                                     |
 | `tests/e2e-comprehensive.mjs` | 23 | पूर्ण Playwright वॉकथ्रू: 11 राउट + 12 फ़ंक्शनल फ़्लो।                                              |
 | `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **118** | ब्राउज़र-ड्रिवन: डैशबोर्ड रेंडर, नेविगेशन, भाषा स्विच, 404, health, tracker राउंड-ट्रिप, pipeline जोड़ना + अमान्य-URL स्वीप, reports, evaluate मैनुअल फ़ॉलबैक, config कीज़ मास्क्ड, CV PUT XSS स्ट्रिप, pipeline preview 400, auto-pipeline SSE। |

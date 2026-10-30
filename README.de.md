@@ -563,7 +563,7 @@ npm run test:coverage          # same as `npm test` plus V8 coverage
 
 | Suite                       | Tests | Was                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integration) | **6868** | Jeder Endpunkt, ephemerer Server, kein Netzwerk. 329 Dateien: Parser, Scanner (gemockt), Runner, anthropic/openai, Security-Header, XSS, JD-Sanitize, URL-Validierung, i18n-Parität, + die UX-Fix-Suites v1.55→v1.56. |
+| `node --test tests/*.test.mjs` (unit + integration) |  **6869** | Jeder Endpunkt, ephemerer Server, kein Netzwerk. 329 Dateien: Parser, Scanner (gemockt), Runner, anthropic/openai, Security-Header, XSS, JD-Sanitize, URL-Validierung, i18n-Parität, + die UX-Fix-Suites v1.55→v1.56. |
 | `tests/e2e.mjs` (smoke)      | 21 | Playwright headless: jede Route rendert, grundlegende Flows.                                                     |
 | `tests/e2e-comprehensive.mjs` | 23 | Vollständiger Playwright-Durchlauf: 11 Routen + 12 funktionale Flows.                                              |
 | `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **118** | Browsergesteuert: Dashboard-Rendering, Navigation, Sprachwechsel, 404, Health, Tracker-Round-Trip, Pipeline-Add + Invalid-URL-Sweep, Reports, Evaluate-Manual-Fallback, Config-Keys maskiert, CV-PUT-XSS-Strip, Pipeline-Preview 400, Auto-Pipeline-SSE. |

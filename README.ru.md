@@ -537,7 +537,7 @@ npm run test:coverage          # то же, что `npm test`, плюс V8-по�
 
 | Сьют                       | Тестов | Что покрывает                                                                                              |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integration) | **6868** | Каждый эндпоинт, эфемерный сервер, без сети. Включая парсеры, сканер (mocked), runner, anthropic, заголовки безопасности, XSS, sanitize JD, валидацию URL, защиту от DNS-rebind, состояние гонки на трекере, rate-limit, path-traversal, паритет i18n. |
+| `node --test tests/*.test.mjs` (unit + integration) |  **6869** | Каждый эндпоинт, эфемерный сервер, без сети. Включая парсеры, сканер (mocked), runner, anthropic, заголовки безопасности, XSS, sanitize JD, валидацию URL, защиту от DNS-rebind, состояние гонки на трекере, rate-limit, path-traversal, паритет i18n. |
 | `tests/e2e.mjs` (smoke)      | 21 | Playwright headless: каждый маршрут рендерится, базовые сценарии работают.                                 |
 | `tests/e2e-comprehensive.mjs` | 23 | Полный Playwright-walkthrough: 11 маршрутов + 12 функциональных сценариев.                                 |
 | `tests/playwright-smoke.mjs` (`npm run test:e2e:browser`) | **32** | Browser-driven smoke: рендер дашборда, навигация, переключение языка, 404, health, tracker round-trip (BF-1), pipeline add + invalid-URL sweep, пустые reports, evaluate manual fallback, маскирование ключей в config, XSS-strip на PUT CV, pipeline preview 400. |

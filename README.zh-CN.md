@@ -535,7 +535,7 @@ npm run test:coverage          # 同 `npm test`,附加 V8 覆盖率
 
 | 套件                       | 测试数 | 内容                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs`(unit + integration) | **6868** | 每个端点,临时端口,无外网。覆盖 parser、scanner(已 mock)、runner、anthropic、安全 header、XSS(含实体解码)、JD sanitize、URL 校验、SSRF 重定向 / rebind、并发互斥、路径遍历、速率限制、i18n 对等。 |
+| `node --test tests/*.test.mjs`(unit + integration) |  **6869** | 每个端点,临时端口,无外网。覆盖 parser、scanner(已 mock)、runner、anthropic、安全 header、XSS(含实体解码)、JD sanitize、URL 校验、SSRF 重定向 / rebind、并发互斥、路径遍历、速率限制、i18n 对等。 |
 | `tests/e2e.mjs`(smoke)      | 21 | Playwright headless:每个路由可渲染,基础流程。                                                            |
 | `tests/e2e-comprehensive.mjs` | 23 | 完整 Playwright walkthrough:11 个路由 + 12 个功能流程。                                                   |
 | `tests/playwright-smoke.mjs`(`npm run test:e2e:browser`) | **12** | 浏览器驱动的烟雾:dashboard 渲染、导航、语言切换、404、health、tracker 往返(BF-1)、pipeline 添加 + 无效 URL 扫描、reports 空、evaluate 手动回退、config keys 遮蔽、CV PUT XSS 清理、pipeline preview 400。 |
