@@ -1380,6 +1380,7 @@ window.__I18N_DICT_ZH_TW = {
   'plan.saveFailed': "無法儲存計畫",
   'plan.preview': "預覽",
   'plan.privacyNote': "儲存到你父專案的使用者層（config/career-plan.md）——永遠不會被更新覆寫，且僅在你執行的 LLM 提示內部傳送。",
+  'plan.resultNote': "產生的計畫會顯示在「{tab}」標籤頁 — 執行產生後，開啟「{tab}」。",
   // ── 職業方向 (v1.96.0) ──
   'nav.orientation': "職業方向",
   'orient.title': "職業方向",
@@ -1822,4 +1823,6 @@ window.__I18N_DICT_ZH_TW = {
   'a11y.readonlyOutput': "產生的結果 — 唯讀",
   'config.rawProfile': "設定檔 YAML 原始編輯器",
   'config.rawModes': "modes 原始編輯器",
+  'v2empty.dash.statusesTitle': '還沒有可顯示的狀態',
+  'v2empty.dash.statusesBody': '評估一個職缺並納入追蹤——它的應徵狀態會加入這裡的漏斗。',
 };

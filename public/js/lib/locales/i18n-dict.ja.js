@@ -1380,6 +1380,7 @@ window.__I18N_DICT_JA = {
   'plan.saveFailed': "プランを保存できませんでした",
   'plan.preview': "プレビュー",
   'plan.privacyNote': "親プロジェクトのユーザーレイヤー（config/career-plan.md）に保存されます — 更新で上書きされることはなく、あなたが実行するLLMプロンプトの中でのみ送信されます。",
+  'plan.resultNote': "生成されたプランは「{tab}」タブに表示されます — 生成を実行してから「{tab}」タブを開いてください。",
   // ── キャリアの方向性 (v1.96.0) ──
   'nav.orientation': "キャリアの方向性",
   'orient.title': "キャリアの方向性",
@@ -1821,4 +1822,6 @@ window.__I18N_DICT_JA = {
   'a11y.readonlyOutput': "生成された結果 — 読み取り専用",
   'config.rawProfile': "プロフィール YAML 生エディター",
   'config.rawModes': "modes 生エディター",
+  'v2empty.dash.statusesTitle': '表示するステータスはまだありません',
+  'v2empty.dash.statusesBody': '求人を評価して追跡すると、その応募ステータスがこのファネルに追加されます。',
 };

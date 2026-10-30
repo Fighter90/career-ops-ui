@@ -1379,6 +1379,7 @@ window.__I18N_DICT_DA = {
   'plan.saveFailed': "Kunne ikke gemme planen",
   'plan.preview': "Forhåndsvisning",
   'plan.privacyNote': "Gemt i brugerlaget i dit overordnede projekt (config/career-plan.md) — bliver aldrig overskrevet af opdateringer og sendes kun inde i de LLM-prompts, du kører.",
+  'plan.resultNote': "Den genererede plan vises under fanen {tab} — start genereringen, og åbn derefter fanen {tab}.",
   // ── v1.96.0 (Epic 27) — AI-karriereorientering ──
   'nav.orientation': "Karriereorientering",
   'orient.title': "Karriereorientering",
@@ -1820,4 +1821,6 @@ window.__I18N_DICT_DA = {
   'a11y.readonlyOutput': "Genereret resultat — skrivebeskyttet",
   'config.rawProfile': "Rå YAML-profilredigering",
   'config.rawModes': "Rå modes-redigering",
+  'v2empty.dash.statusesTitle': 'Ingen statusser at vise endnu',
+  'v2empty.dash.statusesBody': 'Evaluér et jobopslag og følg det — dets ansøgningsstatus kommer ind i tragten her.',
 };

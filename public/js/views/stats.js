@@ -251,7 +251,10 @@ Router.register('stats', async () => {
   // LOGICAL margin mirrors correctly under [dir="rtl"] (no physical margin-left).
   // CAR-120 — it now sits outside the scroller too, so a scrolling tab row
   // never carries the hint away with it.
-  const hintRow = c('div', { style: { display: 'flex', alignItems: 'center', gap: '2px', flex: '0 0 auto', padding: '0 8px', minHeight: '20px', fontSize: '13px', fontWeight: '600', color: 'var(--ink, #111)' } });
+  // CAR-212 — at either scroll extreme the last tab lands flush against the
+  // `?` (strip gap 4px) and the hint read as part of the tape: a logical
+  // divider pins it off the tape, and the row is a 44px touch target.
+  const hintRow = c('div', { style: { display: 'flex', alignItems: 'center', gap: '4px', flex: '0 0 auto', padding: '0 8px', minHeight: '44px', fontSize: '13px', fontWeight: '600', color: 'var(--ink, #111)', borderInlineStart: '1px solid var(--line, #e5e7eb)' } });
   const tabStrip = c('div', {
     className: 'v2-stats-strip',
   }, [c('div', { className: 'v2-stats-scroller' }, tabBar), hintRow]);

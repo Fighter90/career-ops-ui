@@ -1379,6 +1379,7 @@ window.__I18N_DICT_DE = {
   'plan.saveFailed': "Der Plan konnte nicht gespeichert werden",
   'plan.preview': "Vorschau",
   'plan.privacyNote': "Gespeichert in der Benutzerebene Ihres übergeordneten Projekts (config/career-plan.md) — wird bei Updates nie überschrieben und nur innerhalb der LLM-Prompts gesendet, die Sie ausführen.",
+  'plan.resultNote': "Der generierte Plan erscheint auf der Registerkarte „{tab}“ — starten Sie die Generierung und öffnen Sie dann „{tab}“.",
   // ── Berufsorientierung (v1.96.0) ──
   'nav.orientation': "Berufsorientierung",
   'orient.title': "Berufsorientierung",
@@ -1820,4 +1821,6 @@ window.__I18N_DICT_DE = {
   'a11y.readonlyOutput': "Generiertes Ergebnis – schreibgeschützt",
   'config.rawProfile': "Roh-YAML-Profil-Editor",
   'config.rawModes': "Roh-Modes-Editor",
+  'v2empty.dash.statusesTitle': 'Noch keine Statusanzeige vorhanden',
+  'v2empty.dash.statusesBody': 'Bewerten Sie eine Stelle und verfolgen Sie sie — ihr Bewerbungsstatus erscheint hier im Trichter.',
 };

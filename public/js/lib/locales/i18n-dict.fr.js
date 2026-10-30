@@ -1379,6 +1379,7 @@ window.__I18N_DICT_FR = {
   'plan.saveFailed': "Impossible d’enregistrer le plan",
   'plan.preview': "Aperçu",
   'plan.privacyNote': "Enregistré dans la couche utilisateur de votre projet parent (config/career-plan.md) — jamais écrasé par les mises à jour, et envoyé uniquement à l’intérieur des prompts LLM que vous exécutez.",
+  'plan.resultNote': "Le plan généré apparaît dans l'onglet {tab} — lancez la génération, puis ouvrez {tab}.",
   // ── Orientation de carrière (v1.96.0) ──
   'nav.orientation': "Orientation de carrière",
   'orient.title': "Orientation de carrière",
@@ -1820,4 +1821,6 @@ window.__I18N_DICT_FR = {
   'a11y.readonlyOutput': "Résultat généré — lecture seule",
   'config.rawProfile': "Éditeur YAML brut du profil",
   'config.rawModes': "Éditeur brut des modes",
+  'v2empty.dash.statusesTitle': 'Aucun statut à afficher pour l\'instant',
+  'v2empty.dash.statusesBody': 'Évaluez une offre et suivez-la — son statut de candidature rejoint l\'entonnoir ici.',
 };

@@ -1380,6 +1380,7 @@ window.__I18N_DICT_KO = {
   'plan.saveFailed': "플랜을 저장할 수 없습니다",
   'plan.preview': "미리보기",
   'plan.privacyNote': "상위 프로젝트의 사용자 레이어(config/career-plan.md)에 저장됩니다 — 업데이트로 덮어써지지 않으며, 당신이 실행하는 LLM 프롬프트 안에서만 전송됩니다.",
+  'plan.resultNote': "생성된 계획은 {tab} 탭에 나타납니다 — 생성을 실행한 뒤 {tab} 탭을 여세요.",
   // ── 커리어 방향성 (v1.96.0) ──
   'nav.orientation': "커리어 방향성",
   'orient.title': "커리어 방향성",
@@ -1821,4 +1822,6 @@ window.__I18N_DICT_KO = {
   'a11y.readonlyOutput': "생성된 결과 — 읽기 전용",
   'config.rawProfile': "프로필 YAML 원본 편집기",
   'config.rawModes': "modes 원본 편집기",
+  'v2empty.dash.statusesTitle': '표시할 상태가 아직 없습니다',
+  'v2empty.dash.statusesBody': '공고를 평가하고 추적하세요 — 지원 상태가 이 퍼널에 추가됩니다.',
 };

@@ -624,7 +624,12 @@
 [dir="rtl"] .docs-fab__bubble--me { border-bottom-right-radius: 14px; border-bottom-left-radius: 5px; }
 
 @media (max-width: 480px) {
-  .docs-fab__panel { right: 12px; left: 12px; width: auto; bottom: 88px; height: auto; max-height: calc(100vh - 120px); }
+  /* CAR-215 — a 60px launcher at 24px insets covered real content at 390px
+     (dashboard welcome, scan reposts line, stats empty, cv-studio/evaluate
+     textareas). A 44px launcher at 12px insets reclaims the corner while
+     keeping the 44px touch target; the panel keeps its clearance above it. */
+  .docs-fab { width: 44px; height: 44px; inset-inline-end: 12px; bottom: 12px; }
+  .docs-fab__panel { right: 12px; left: 12px; width: auto; bottom: 68px; height: auto; max-height: calc(100vh - 96px); }
 }
 @media (prefers-reduced-motion: reduce) {
   .docs-fab, .docs-fab__send, .docs-fab__chip { transition: none; }

@@ -17,8 +17,8 @@ help sidebar.
 > to fuzzy-jump to any page from anywhere. Every page shows its title
 > instantly and fills in grey shimmer rows while data loads, so
 > navigation never feels blank. And no page greets you with a bare
-> void: the four that start empty — **Auto-pipeline**, **Apply
-> checklist**, **Batch**, and **Funded companies** — show a worked
+> void: the four that start empty — **Auto-pipeline**, **Apply checklist**,
+> **Batch**, and **Funded companies** — show a worked
 > example plus the one action that fills them (`v2empty.exampleTag`).
 
 > **Audience:** anyone who just dropped this UI inside a `career-ops`
@@ -163,8 +163,8 @@ each phase.
 > career-ops-ui open       # open + RAISE the dashboard tab in your browser
 > ```
 >
-> After `setup`/`run` the browser tab is opened **and brought to the
-> front** automatically (v1.43.0); `career-ops-ui open` does the same on
+> After `setup`/`run` the browser tab is opened **and brought to the front**
+> automatically (v1.43.0); `career-ops-ui open` does the same on
 > demand so you never have to hunt for the dashboard tab. `NO_OPEN=1`
 > disables auto-open for headless/CI starts.
 >
@@ -239,8 +239,8 @@ sanitizes (`<script>` / `javascript:` / inline handlers stripped) and
 writes `cv.md`. Toast: *"Saved"*.
 
 **Step 8 (optional) — Click `📄 Generate PDF`.** Runs
-`generate-pdf.mjs` in the parent (Playwright required) and **the new
-PDF auto-downloads** to your browser when done. The list at the
+`generate-pdf.mjs` in the parent (Playwright required) and
+**the new PDF auto-downloads** to your browser when done. The list at the
 bottom of the page keeps every previously generated file.
 
 ### C. Find vacancies (~2 minutes per scan)
@@ -277,8 +277,8 @@ in section D. Anything with `Verdict: pursue` is your shortlist.
 
 ### E. Decide & deeply research the shortlisted company (~3 minutes)
 
-**Step 14 — Pick a vacancy worth pursuing. Click `Deep research`
-in the sidebar.** Enter the company name and role. The model
+**Step 14 — Pick a vacancy worth pursuing. Click `Deep research` in the sidebar.**
+Enter the company name and role. The model
 produces a 7-section company brief (mission, recent news, tech
 stack, hiring signals, comp benchmarks, risks, recommended angle).
 Save lands in `interview-prep/<company>-<role>.md`.
@@ -316,8 +316,8 @@ report, link to the deep-research brief. Date is auto-filled.
 Drafts a polite check-in email referencing the original application.
 Send. Update tracker status to `Followed up`.
 
-**Step 20 — When you get an interview invite, run `Interview prep`
-mode** (`#/interview-prep`). Generates targeted prep for the
+**Step 20 — When you get an interview invite, run `Interview prep` mode** (`#/interview-prep`).
+Generates targeted prep for the
 specific company + stage (system design / behavioral / coding).
 Pulls from the deep-research brief automatically.
 
@@ -455,17 +455,17 @@ form, fields grouped into three collapsible sections:
 How the save is safe:
 
 - The form sends only the 14 modeled scalar paths as
-  `{ fields: { "candidate.full_name": … } }`. The server **reads the
-  existing `config/profile.yml`, sets/clears only those leaves, and
-  re-serializes the whole object** — so nested arrays the form does
+  `{ fields: { "candidate.full_name": … } }`. The server
+  **reads the existing `config/profile.yml`, sets/clears only those leaves, and re-serializes the whole object**
+  — so nested arrays the form does
   not model (`target_roles.archetypes`, `narrative.proof_points`,
   `narrative.superpowers`) and any custom keys you added by hand
   **survive the round-trip untouched**. Clearing a field removes that
   key cleanly (no `phone: ""` residue).
 - Validation still requires a full name; the `# Career-Ops Profile
   Configuration` header is stamped automatically.
-- One tradeoff: a field-form save **re-serializes the YAML, so inline
-  `#` comments are lost**. To preserve comments or to edit nested
+- One tradeoff: a field-form save
+  **re-serializes the YAML, so inline `#` comments are lost**. To preserve comments or to edit nested
   arrays, use the **Advanced: edit raw YAML** disclosure at the
   bottom of the tab — it is the pre-1.32 full-file editor, unchanged
   (replaces the whole file on save).
@@ -524,8 +524,8 @@ this page re-parses on reload.
 
 The fields that matter most:
 
-- `candidate.full_name` — used in every prompt. **Replace the
-  template `Jane Smith`** before scanning anything for real, or your
+- `candidate.full_name` — used in every prompt.
+  **Replace the template `Jane Smith`** before scanning anything for real, or your
   generated cover letters will go out under the placeholder name.
 - `candidate.email`, `linkedin`, `github` — referenced in cover-letter
   generation and the apply checklist.
@@ -615,8 +615,8 @@ career-ops.org schema from
 [scan-job-portals](https://career-ops.org/docs/introduction/guides/scan-job-portals)
 1:1.
 
-> **Shortcut:** the `#/portals` URL now resolves straight to **App
-> settings** and (when a regional source is configured) jumps to the
+> **Shortcut:** the `#/portals` URL now resolves straight to **App settings**
+> and (when a regional source is configured) jumps to the
 > **Regional sources** group — so a bookmarked or typed `#/portals`
 > link no longer 404s (v1.42.0).
 
@@ -629,8 +629,8 @@ title_filter:
   seniority_boost: [Senior, Staff, Lead, Principal]
 ```
 
-A scanned vacancy passes when its title contains **at least one
-positive** keyword AND **none of the negative** keywords. Tune both.
+A scanned vacancy passes when its title contains **at least one positive**
+keyword AND **none of the negative** keywords. Tune both.
 Keywords are case-insensitive substrings.
 
 `seniority_boost` is the third title-filter key. Keywords listed
@@ -856,8 +856,8 @@ russian_portals:
 ```
 
 `queries` are case-insensitive substring matches against vacancy titles
-on hh.ru and Habr Career. **Be careful with overlap with the negative
-list** — if `"Senior PHP"` is in `queries` but `"php"` ends up in
+on hh.ru and Habr Career. **Be careful with overlap with the negative list**
+— if `"Senior PHP"` is in `queries` but `"php"` ends up in
 `title_filter.negative`, the scan will return zero results and the
 console will warn you about the conflict.
 
@@ -1081,8 +1081,8 @@ The v2 results chrome keeps the controls discoverable:
   give the table the full width.
 
 Every row carries its own actions: **Evaluate** (`scan.v2.evaluate`)
-jumps straight into a scored evaluation of that posting, **To
-pipeline** (`scan.v2.toPipeline`) queues the URL (with an
+jumps straight into a scored evaluation of that posting,
+**To pipeline** (`scan.v2.toPipeline`) queues the URL (with an
 already-queued toast, `scan.v2.pipelineDup`), **Open posting ↗**
 (`scan.v2.openPosting`) opens the careers page in a new tab, and the
 ☆ star toggles a favorite.
@@ -1241,8 +1241,8 @@ don't send CORS headers so the browser can't fetch them directly; the
 server proxies the request, strips `<script>` / `<style>` / HTML tags,
 and returns up to 8 KB of plain text.
 
-The preview proxy walks redirects manually with **per-hop SSRF
-validation** — every `Location` header runs through `isValidJobUrl()`
+The preview proxy walks redirects manually with **per-hop SSRF validation**
+— every `Location` header runs through `isValidJobUrl()`
 again, so a hostile board can't bounce you to loopback / private IP
 / `file://`. Capped at 3 hops, 15-second timeout.
 
@@ -1267,8 +1267,8 @@ inbox after a scan is the page's v2 centrepiece:
 - **Select** (`pipe.selectOne`) any rows, or **Select all shown** (`pipe.selectAllShown`) — selection always follows the current filters, never invisible rows. The selection bar shows the count (`pipe.selectedCount`) and offers **✕ Remove selected (N)** (`pipe.bulkRemove`) plus **Evaluate first selected** (`pipe.evaluateSelected`) — bulk removal confirms once for the whole set, not per row.
 
 Nothing is lost by mistake: every removal — single or bulk — returns
-an opaque restore token, and a bar at the bottom of the page (**Deleted:
-N**, `pipe.deleted`) offers **Undo** (`pipe.undo`) / **Dismiss**
+an opaque restore token, and a bar at the bottom of the page
+(**Deleted: N**, `pipe.deleted`) offers **Undo** (`pipe.undo`) / **Dismiss**
 (`pipe.undoDismiss`). Removals stack up to five batches (oldest
 dropped); **Undo** restores the most recent one by sending its tokens
 to `POST /api/pipeline/restore`, which reinserts the exact original
@@ -1369,10 +1369,10 @@ legitimacy badge and a colour-coded score pill (green ≥ 4.0, yellow
 header carries no parseable score) — and can flip to a dense **Table**
 view (`rep2.viewTable`) when you want to scan rows instead. Every card
 and table row also names the **suggested next step** for its score
-band: **Apply now — top fit** (`rep2.actApply`), **Apply, or find a
-warm contact first** (`rep2.actContact`), **Research the company
-first** (`rep2.actResearch`), or **Skip unless there is a personal
-reason** (`rep2.actLow`) — each one a link straight to the right page.
+band: **Apply now — top fit** (`rep2.actApply`),
+**Apply, or find a warm contact first** (`rep2.actContact`),
+**Research the company first** (`rep2.actResearch`), or
+**Skip unless there is a personal reason** (`rep2.actLow`) — each one a link straight to the right page.
 A card with no score shows the muted **Score not detected** pill
 (`rep.scoreUnparsed`) with a tooltip pointing at the report itself.
 
@@ -1571,8 +1571,8 @@ retrospectives. Each one wraps a specific `modes/<slug>.md` template:
 
 ### Shared shape
 
-Each page has a small form (the fields are mode-specific), a **▶
-Generate prompt** button (manual), and — when an Anthropic or Gemini
+Each page has a small form (the fields are mode-specific), a
+**▶ Generate prompt** button (manual), and — when an Anthropic or Gemini
 key is present — a **⚡ Run live** button that promotes to primary.
 
 Clicking **▶ Generate prompt** returns the assembled prompt with your
@@ -1606,8 +1606,8 @@ The SPA's checklist is for users who prefer to fill the form by hand
 without invoking Playwright. An empty page doesn't leave you guessing:
 it shows **Generate an application checklist** with a worked example
 (`v2empty.apply.emptyTitle` / `v2empty.apply.emptyBody`) and, if you
-already evaluated the posting, a shortcut to **pick an evaluated
-report** (`v2empty.apply.pickReport`) so the checklist starts from
+already evaluated the posting, a shortcut to
+**pick an evaluated report** (`v2empty.apply.pickReport`) so the checklist starts from
 that report's data. It covers:
 
 0. Run `/career-ops apply <url>` in Claude Code to read the form via
@@ -1942,9 +1942,9 @@ Workable / SmartRecruiters / Workday), board-wide aggregators selected by an
 explicit `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board,
 Amazon, …), and per-tenant ATSes auto-detected from a `careers_url` host or an
 explicit `api:` URL (BambooHR, Personio, Recruitee, Teamtailor, Avature,
-SAP SuccessFactors, …). Boards on the **Deel** job platform (`jobs.deel.com/<slug>` — the multi-tenant board Klarna and others publish on) are auto-detected from the URL, so adding one is a two-line portals.yml entry. **The complete list never needs to be hand-counted here —
-it is auto-discovered from `server/lib/sources/` and shown live in the `#/scan`
-Source dropdown.** See §5 for the YAML and
+SAP SuccessFactors, …). Boards on the **Deel** job platform (`jobs.deel.com/<slug>` — the multi-tenant board Klarna and others publish on) are auto-detected from the URL, so adding one is a two-line portals.yml entry.
+**The complete list never needs to be hand-counted here — it is auto-discovered from `server/lib/sources/` and shown live in the `#/scan` Source dropdown.**
+See §5 for the YAML and
 `docs/portals-examples.md` for copy-paste entries.
 
 > **v1.69.0 (P-14) — drop-in auto-discovery.** Adding a 12th source is now

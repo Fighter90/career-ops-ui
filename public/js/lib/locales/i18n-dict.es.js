@@ -1379,6 +1379,7 @@ window.__I18N_DICT_ES = {
   'plan.saveFailed': "No se pudo guardar el plan",
   'plan.preview': "Vista previa",
   'plan.privacyNote': "Se guarda en la capa de usuario de tu proyecto principal (config/career-plan.md) — nunca se sobrescribe con las actualizaciones y solo se envía dentro de los prompts del LLM que ejecutes.",
+  'plan.resultNote': "El plan generado aparece en la pestaña {tab} — lanza la generación y abre {tab}.",
   // ── Orientación profesional (v1.96.0) ──
   'nav.orientation': "Orientación profesional",
   'orient.title': "Orientación profesional",
@@ -1821,4 +1822,6 @@ window.__I18N_DICT_ES = {
   'a11y.readonlyOutput': "Resultado generado — solo lectura",
   'config.rawProfile': "Editor YAML sin formato del perfil",
   'config.rawModes': "Editor sin formato de modes",
+  'v2empty.dash.statusesTitle': 'Aún no hay estados para mostrar',
+  'v2empty.dash.statusesBody': 'Evalúa una oferta y hazle seguimiento: su estado de candidatura se une aquí al embudo.',
 };

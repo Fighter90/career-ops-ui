@@ -1379,6 +1379,7 @@ window.__I18N_DICT_IT = {
   'plan.saveFailed': "Impossibile salvare il piano",
   'plan.preview': "Anteprima",
   'plan.privacyNote': "Salvato nel livello utente del tuo progetto principale (config/career-plan.md) — mai sovrascritto dagli aggiornamenti e inviato solo all’interno dei prompt LLM che esegui.",
+  'plan.resultNote': "Il piano generato appare nella scheda {tab} — avvia la generazione, quindi apri {tab}.",
   // ── Orientamento professionale (v1.96.0) ──
   'nav.orientation': "Orientamento professionale",
   'orient.title': "Orientamento professionale",
@@ -1820,4 +1821,6 @@ window.__I18N_DICT_IT = {
   'a11y.readonlyOutput': "Risultato generato — sola lettura",
   'config.rawProfile': "Editor YAML grezzo del profilo",
   'config.rawModes': "Editor grezzo dei modes",
+  'v2empty.dash.statusesTitle': 'Nessuno stato da mostrare ancora',
+  'v2empty.dash.statusesBody': 'Valuta un annuncio e monitoralo — il suo stato di candidatura entra in questo funnel.',
 };

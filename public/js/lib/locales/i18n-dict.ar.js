@@ -1379,6 +1379,7 @@ window.__I18N_DICT_AR = {
   'plan.saveFailed': "تعذّر حفظ الخطة",
   'plan.preview': "معاينة",
   'plan.privacyNote': "محفوظة في طبقة المستخدم بمشروعك الأصلي (‪config/career-plan.md‬) — لا تُستبدَل أبدًا بالتحديثات، ولا تُرسَل إلا داخل موجّهات ‏LLM‏ التي تشغّلها.",
+  'plan.resultNote': "تظهر الخطة المُولَّدة في علامة تبويب {tab} — شغّل الإنشاء ثم افتح علامة تبويب {tab}.",
   // ── التوجيه المهني (v1.96.0) ──
   'nav.orientation': "التوجيه المهني",
   'orient.title': "التوجيه المهني",
@@ -1820,4 +1821,6 @@ window.__I18N_DICT_AR = {
   'a11y.readonlyOutput': "نتيجة مُولَّدة — للقراءة فقط",
   'config.rawProfile': "محرر YAML الخام للملف الشخصي",
   'config.rawModes': "محرر الأوضاع الخام",
+  'v2empty.dash.statusesTitle': 'لا توجد حالات للعرض بعد',
+  'v2empty.dash.statusesBody': 'قيّم وظيفة وتابعها — ستظهر حالتها في قمع التقدم هنا.',
 };

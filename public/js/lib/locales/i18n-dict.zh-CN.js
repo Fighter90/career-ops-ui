@@ -1380,6 +1380,7 @@ window.__I18N_DICT_ZH_CN = {
   'plan.saveFailed': "无法保存计划",
   'plan.preview': "预览",
   'plan.privacyNote': "保存到你父项目的用户层（config/career-plan.md）——永远不会被更新覆盖，且仅在你运行的 LLM 提示内部发送。",
+  'plan.resultNote': "生成的计划会显示在“{tab}”标签页 — 运行生成后，打开“{tab}”。",
   // ── 职业方向 (v1.96.0) ──
   'nav.orientation': "职业方向",
   'orient.title': "职业方向",
@@ -1821,4 +1822,6 @@ window.__I18N_DICT_ZH_CN = {
   'a11y.readonlyOutput': "生成的结果 — 只读",
   'config.rawProfile': "配置文件 YAML 原始编辑器",
   'config.rawModes': "modes 原始编辑器",
+  'v2empty.dash.statusesTitle': '还没有可显示的状态',
+  'v2empty.dash.statusesBody': '评估一个职位并纳入跟踪——它的申请状态会加入这里的漏斗。',
 };

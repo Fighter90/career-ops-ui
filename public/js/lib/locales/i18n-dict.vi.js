@@ -1361,6 +1361,7 @@ window.__I18N_DICT_VI = {
   'plan.saveFailed': "Không lưu được kế hoạch",
   'plan.preview': "Xem trước",
   'plan.privacyNote': "Lưu vào tầng người dùng của dự án gốc (config/career-plan.md) — không bao giờ bị cập nhật ghi đè, và chỉ được gửi bên trong các prompt LLM bạn chạy.",
+  'plan.resultNote': "Kế hoạch được tạo sẽ xuất hiện trong tab {tab} — chạy tạo kế hoạch, sau đó mở tab {tab}.",
   'nav.orientation': "Định hướng sự nghiệp",
   'orient.title': "Định hướng sự nghiệp",
   'orient.subtitle': "Hướng nào phù hợp với bạn — suy ra từ CV và hồ sơ của chính bạn: các vectơ sự nghiệp khớp nhất, vị trí đề xuất, thế mạnh, và CV của bạn đọc ra sao. Một sự chiêm nghiệm, không phải bài trắc nghiệm tâm lý.",
@@ -1795,4 +1796,6 @@ window.__I18N_DICT_VI = {
   'a11y.readonlyOutput': "Kết quả đã tạo — chỉ đọc",
   'config.rawProfile': "Trình soạn thảo YAML thô của hồ sơ",
   'config.rawModes': "Trình soạn thảo modes thô",
+  'v2empty.dash.statusesTitle': 'Chưa có trạng thái nào để hiển thị',
+  'v2empty.dash.statusesBody': 'Hãy đánh giá một tin và theo dõi nó — trạng thái ứng tuyển của tin sẽ vào phễu tại đây.',
 };

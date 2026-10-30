@@ -1385,6 +1385,7 @@ window.__I18N_DICT_EN = {
   'plan.saveFailed': "Could not save the plan",
   'plan.preview': "Preview",
   'plan.privacyNote': "Saved to your parent project’s user layer (config/career-plan.md) — never overwritten by updates, and only ever sent inside the LLM prompts you run.",
+  'plan.resultNote': "The generated plan lands on the {tab} tab — run the generation, then open {tab}.",
   // ── v1.96.0 (Epic 27) — AI career-orientation profile ──
   'nav.orientation': "Career orientation",
   'orient.title': "Career orientation",
@@ -1827,4 +1828,6 @@ window.__I18N_DICT_EN = {
   'a11y.readonlyOutput': "Generated result — read only",
   'config.rawProfile': "Raw profile YAML editor",
   'config.rawModes': "Raw modes editor",
+  'v2empty.dash.statusesTitle': 'No statuses to show yet',
+  'v2empty.dash.statusesBody': 'Evaluate a posting and track it — its application status joins the funnel here.',
 };

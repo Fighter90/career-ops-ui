@@ -1380,6 +1380,7 @@ window.__I18N_DICT_TR = {
   'plan.saveFailed': "Plan kaydedilemedi",
   'plan.preview': "Önizleme",
   'plan.privacyNote': "Üst projenizin kullanıcı katmanına kaydedildi (config/career-plan.md) — güncellemelerle asla üzerine yazılmaz ve yalnızca çalıştırdığınız LLM istemlerinin içinde gönderilir.",
+  'plan.resultNote': "Oluşturulan plan {tab} sekmesinde görünür — oluşturmayı çalıştırın, ardından {tab} sekmesini açın.",
   // ── v1.96.0 (Epic 27) — AI kariyer-yönelimi profili ──
   'nav.orientation': "Kariyer yönelimi",
   'orient.title': "Kariyer yönelimi",
@@ -1822,4 +1823,6 @@ window.__I18N_DICT_TR = {
   'a11y.readonlyOutput': "Üretilen sonuç — salt okunur",
   'config.rawProfile': "Ham profil YAML düzenleyicisi",
   'config.rawModes': "Ham modes düzenleyicisi",
+  'v2empty.dash.statusesTitle': 'Henüz gösterilecek durum yok',
+  'v2empty.dash.statusesBody': 'Bir ilanı değerlendirin ve takip edin — başvuru durumu bu huniye eklenir.',
 };
