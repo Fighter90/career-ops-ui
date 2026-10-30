@@ -14,8 +14,8 @@
 > 即可从任何位置模糊跳转到任意页面。每个页面都会立即显示标题,并在
 > 数据加载期间填入灰色的加载占位行,导航永远不会是一片空白。没有
 > 哪个页面会以光秃秃的空状态迎接你:四个初始为空的页面 —
-> **Auto-pipeline**、**Apply checklist**、**Batch** 和 **Funded
-> companies** — 会展示一个示例,外加填满它的那一个操作
+> **Auto-pipeline**、**Apply checklist**、**Batch** 和
+> **Funded companies** — 会展示一个示例,外加填满它的那一个操作
 > (`v2empty.exampleTag`)。
 
 > **适用对象:** 任何刚把这套 UI 放进 `career-ops` checkout 目录、运
@@ -57,8 +57,8 @@
 - **AI 无关架构** — career-ops **不**捆绑任何模型。它是嵌在已有 AI
   编码 CLI 中的一组命令。在 Anthropic ↔ Gemini ↔ OpenAI 之间切换提
   供商,你的评估历史依然保持一致。
-- **由人控制的提交** — career-ops 起草答案、打开表单,但 **由你点
-  击 Submit 按钮**。系统绝不会自动申请。系统负责提供结构与评估,人
+- **由人控制的提交** — career-ops 起草答案、打开表单,但
+  **由你点击 Submit 按钮**。系统绝不会自动申请。系统负责提供结构与评估,人
   类保留最终提交权。
 - **结构化求职** — 为多次投递的主动、有意识的求职而设计;不是一次
   性投递工具,也不是推荐引擎。安装大约耗时 15 分钟,假设你熟悉终端
@@ -149,8 +149,8 @@ career-ops-ui 的 `#/dashboard` 与 `#/tracker` 会高亮每一条 ≥ 4.0 的
 > career-ops-ui open       # 打开并将浏览器中的仪表盘标签页置于最前
 > ```
 >
-> `setup`/`run` 之后,浏览器标签页会自动打开**并被带到最
-> 前面**(v1.43.0);`career-ops-ui open` 可按需执行相同操作,
+> `setup`/`run` 之后,浏览器标签页会自动打开
+> **并被带到最前面**(v1.43.0);`career-ops-ui open` 可按需执行相同操作,
 > 因此你再也不必去翻找仪表盘标签页。`NO_OPEN=1` 可在
 > headless/CI 启动时禁用自动打开。
 >
@@ -435,8 +435,8 @@ URL** 按钮(`v2empty.auto.tryExample`)会用一条示例职位填入输入框
 
 最重要的字段:
 
-- `candidate.full_name` — 每个提示都会用到。**在正式扫描前必须替换
-  模板中的 `Jane Smith`**,否则生成的求职信会以占位符姓名发送出去。
+- `candidate.full_name` — 每个提示都会用到。
+  **在正式扫描前必须替换模板中的 `Jane Smith`**,否则生成的求职信会以占位符姓名发送出去。
 - `candidate.email`、`linkedin`、`github` — 求职信生成与 apply 清单
   中会引用。
 - `target.roles` — 接受的职位头衔。扫描器的正向过滤器会隐式使用
@@ -910,7 +910,6 @@ v2 结果区让所有控件都看得见:
 - **排序方式**(`scan.v2.sortBy`)— 点击列标题(公司、职位、薪资、
   年龄)按其排序;再点一次反向。
 - **快速查看**(`scan.v2.quickView`)— 点击一行即可就地展开其职位描 述(**职位描述**,`scan.v2.description`),无需离开页面;没有保存 正文的职位会如实说明(`scan.v2.noDescription`)而不是展示一张空白 卡片。
-- **行密度**(`scan.v2.density`)— 在**紧凑** / **宽松** (`scan.v2.compact` / `scan.v2.comfortable`)行高之间切换;选择按浏 览器记住。
 - **日志**(`scan.v2.log`)— 折叠/展开实时扫描日志,把完整宽度让给
   表格。
 
