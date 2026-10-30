@@ -585,6 +585,11 @@ window.__I18N_DICT_TA = {
   'batch.pendingAdditions': "நிலுவை ட்ரேக்கர் சேர்ப்புகள்:",
   'batch.merge': "ட்ரேக்கரில் இணை",
   'batch.merged': "ட்ரேக்கரில் இணைக்கப்பட்டது",
+  // #4746 — paid-run confirmation (batch is billed per evaluation)
+  'batch.cost.confirmTitle': "கட்டண பேச் இயக்கத்தை உறுதிப்படுத்தவும்",
+  'batch.cost.confirmBody': "சுமார் {n} மதிப்பீடுகள் ≈ {usd} (வழங்குநர் {provider})। இயக்கவா?",
+  'batch.cost.confirmOk': "பேச் இயக்கு",
+  'batch.cost.usdUnknown': "செலவு தெரியவில்லை",
   'batch.noRunnerTitle': "batch/batch-runner.sh காணவில்லை",
   'batch.noRunnerBody': "ரன்னர் பெற்றோர் career-ops திட்டத்தில் உள்ளது. batch/batch-runner.sh இருப்பதையும் இயக்கக்கூடியதாக (chmod +x) இருப்பதையும் உறுதி செய்யவும்.",
   'scan.boostedBy': "இதனால் ஊக்குவிக்கப்பட்டது",

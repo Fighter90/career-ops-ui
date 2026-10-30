@@ -580,6 +580,11 @@ window.__I18N_DICT_RU = {
   'batch.pendingAdditions': "ожидающих добавлений в трекер:",
   'batch.merge': "Слить в трекер",
   'batch.merged': "Слито в трекер",
+  // #4746 — paid-run confirmation (batch is billed per evaluation)
+  'batch.cost.confirmTitle': "Подтвердите платный запуск батча",
+  'batch.cost.confirmBody': "Примерно {n} оценок ≈ {usd} (провайдер {provider}). Запустить?",
+  'batch.cost.confirmOk': "Запустить батч",
+  'batch.cost.usdUnknown': "стоимость неизвестна",
   'batch.noRunnerTitle': "batch/batch-runner.sh не найден",
   'batch.noRunnerBody': "Runner живёт в parent-проекте career-ops. Проверьте, что batch/batch-runner.sh существует и исполняем (chmod +x).",
   'scan.boostedBy': "Буст по",

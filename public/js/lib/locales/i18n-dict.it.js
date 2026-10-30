@@ -580,6 +580,11 @@ window.__I18N_DICT_IT = {
   'batch.pendingAdditions': "aggiunte al tracker in sospeso:",
   'batch.merge': "Unisci nel tracker",
   'batch.merged': "Unito nel tracker",
+  // #4746 — paid-run confirmation (batch is billed per evaluation)
+  'batch.cost.confirmTitle': "Conferma esecuzione batch a pagamento",
+  'batch.cost.confirmBody': "Circa {n} valutazioni ≈ {usd} (provider {provider}). Eseguire?",
+  'batch.cost.confirmOk': "Esegui batch",
+  'batch.cost.usdUnknown': "costo sconosciuto",
   'batch.noRunnerTitle': "batch/batch-runner.sh non trovato",
   'batch.noRunnerBody': "Il runner risiede nel progetto padre career-ops. Assicurati che batch/batch-runner.sh esista e sia eseguibile (chmod +x).",
   'scan.boostedBy': "Potenziato da",

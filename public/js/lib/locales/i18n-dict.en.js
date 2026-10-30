@@ -580,6 +580,11 @@ window.__I18N_DICT_EN = {
   'batch.pendingAdditions': "pending tracker additions:",
   'batch.merge': "Merge into tracker",
   'batch.merged': "Merged into tracker",
+  // #4746 — paid-run confirmation (batch is billed per evaluation)
+  'batch.cost.confirmTitle': "Confirm paid batch run",
+  'batch.cost.confirmBody': "Approximately {n} evaluations ≈ {usd} (provider {provider}). Run?",
+  'batch.cost.confirmOk': "Run batch",
+  'batch.cost.usdUnknown': "cost unknown",
   'batch.noRunnerTitle': "batch/batch-runner.sh not found",
   'batch.noRunnerBody': "The runner lives in the parent career-ops project. Ensure batch/batch-runner.sh exists and is executable (chmod +x).",
   'scan.boostedBy': "Boosted by",

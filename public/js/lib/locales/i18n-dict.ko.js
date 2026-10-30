@@ -580,6 +580,11 @@ window.__I18N_DICT_KO = {
   'batch.pendingAdditions': "대기 중인 트래커 추가:",
   'batch.merge': "트래커에 병합",
   'batch.merged': "트래커에 병합됨",
+  // #4746 — paid-run confirmation (batch is billed per evaluation)
+  'batch.cost.confirmTitle': "유료 배치 실행 확인",
+  'batch.cost.confirmBody': "약 {n}개 평가 ≈ {usd} (제공자 {provider}). 실행할까요?",
+  'batch.cost.confirmOk': "배치 실행",
+  'batch.cost.usdUnknown': "비용 알 수 없음",
   'batch.noRunnerTitle': "batch/batch-runner.sh 가 없음",
   'batch.noRunnerBody': "Runner는 부모 career-ops 프로젝트에 있습니다. batch/batch-runner.sh 가 존재하고 실행 가능한지 (chmod +x) 확인하세요.",
   'scan.boostedBy': "부스트 키워드",

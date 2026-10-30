@@ -579,6 +579,11 @@ window.__I18N_DICT_AR = {
   'batch.pendingAdditions': "إضافات متتبع معلّقة:",
   'batch.merge': "دمج في المتتبع",
   'batch.merged': "تم الدمج في المتتبع",
+  // #4746 — paid-run confirmation (batch is billed per evaluation)
+  'batch.cost.confirmTitle': "تأكيد تشغيل الدفعة المدفوعة",
+  'batch.cost.confirmBody': "حوالي {n} تقييمات ≈ {usd} (المزود {provider}). التشغيل؟",
+  'batch.cost.confirmOk': "تشغيل الدفعة",
+  'batch.cost.usdUnknown': "التكلفة غير معروفة",
   'batch.noRunnerTitle': "batch/batch-runner.sh غير موجود",
   'batch.noRunnerBody': "المشغّل يوجد في مشروع career-ops الأصلي. تأكد من وجود batch/batch-runner.sh وأنه قابل للتنفيذ (chmod +x).",
   'scan.boostedBy': "معزّز بواسطة",

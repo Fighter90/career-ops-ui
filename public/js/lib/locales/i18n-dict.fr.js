@@ -580,6 +580,11 @@ window.__I18N_DICT_FR = {
   'batch.pendingAdditions': "ajouts au suivi en attente :",
   'batch.merge': "Fusionner avec le suivi",
   'batch.merged': "Fusionné avec le suivi",
+  // #4746 — paid-run confirmation (batch is billed per evaluation)
+  'batch.cost.confirmTitle': "Confirmer le lot payant",
+  'batch.cost.confirmBody': "Environ {n} évaluations ≈ {usd} (fournisseur {provider}). Exécuter ?",
+  'batch.cost.confirmOk': "Exécuter le lot",
+  'batch.cost.usdUnknown': "coût inconnu",
   'batch.noRunnerTitle': "batch/batch-runner.sh introuvable",
   'batch.noRunnerBody': "Le runner se trouve dans le projet parent career-ops. Assurez-vous que batch/batch-runner.sh existe et est exécutable (chmod +x).",
   'scan.boostedBy': "Augmenté par",

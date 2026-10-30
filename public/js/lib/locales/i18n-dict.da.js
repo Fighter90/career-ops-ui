@@ -579,6 +579,11 @@ window.__I18N_DICT_DA = {
   'batch.pendingAdditions': "afventende tracker-tilføjelser:",
   'batch.merge': "Flet ind i tracker",
   'batch.merged': "Flettet ind i tracker",
+  // #4746 — paid-run confirmation (batch is billed per evaluation)
+  'batch.cost.confirmTitle': "Bekræft betalt batch-kørsel",
+  'batch.cost.confirmBody': "Cirka {n} evalueringer ≈ {usd} (udbyder {provider}). Kør?",
+  'batch.cost.confirmOk': "Kør batch",
+  'batch.cost.usdUnknown': "omkostning ukendt",
   'batch.noRunnerTitle': "batch/batch-runner.sh blev ikke fundet",
   'batch.noRunnerBody': "Runneren ligger i det overordnede career-ops-projekt. Sørg for, at batch/batch-runner.sh findes og er eksekverbar (chmod +x).",
   'scan.boostedBy': "Fremhævet af",

@@ -18,6 +18,7 @@ import { PATHS } from '../paths.mjs';
 import { runTrackedScript } from '../runner.mjs';
 import { withFileLock, atomicWrite } from '../file-lock.mjs';
 import { llmRateLimit } from '../rate-limit.mjs';
+import { recordUsage, createBatchUsageParser } from '../llm-usage.mjs';
 
 const TSV_MAX_BYTES = 1024 * 1024; // 1 MB — generous for ~10k JD URLs.
 
@@ -185,6 +186,13 @@ export function registerBatchRoutes(app) {
       return res.end();
     }
     activeBatch = { startedAt: new Date().toISOString() };
+    // #4746 — the batch path bills REAL tokens through the parent's CLI
+    // workers, yet none of it reached data/llm-usage.jsonl (the Usage page
+    // was blind to the app's most expensive operation). The parent's
+    // aggregate-tokens.mjs tail streams through here on stdout; parse it
+    // and record ONE usage record per run under the 'batch' provider tag.
+    // Best-effort: an unparseable tail records nothing.
+    const batchUsage = createBatchUsageParser();
     const args = [];
     if (req.query.dryRun === '1') args.push('--dry-run');
     if (req.query.parallel) args.push('--parallel', String(parallel));
@@ -241,6 +249,7 @@ export function registerBatchRoutes(app) {
     const handleChunk = (stream, chunk) => {
       for (const line of chunk.toString().split('\n')) {
         if (!line) continue;
+        if (stream === 'stdout') batchUsage.feed(line);
         send('log', { stream, line });
       }
     };
@@ -267,6 +276,20 @@ export function registerBatchRoutes(app) {
     child.on('close', (code) => {
       clearTimeout(runtimeTimer);
       activeBatch = null;
+      // #4746 — land the usage record BEFORE done so a client that sees
+      // "done" can already read it from the Usage page. A record with the
+      // parent's $ estimate carries cost (preferred at aggregation, CAR-106);
+      // without one, tokens-only under the 'batch' tag (priceFor('batch') is
+      // 0 — the Usage page shows the tokens honestly at $0 rather than a
+      // fabricated price).
+      const u = batchUsage.result();
+      if (u) {
+        recordUsage('batch', {
+          prompt_tokens: u.in,
+          completion_tokens: u.out,
+          cost: u.cost > 0 ? u.cost : undefined,
+        });
+      }
       send('done', { code, additions: listAdditions().length });
       res.end();
     });

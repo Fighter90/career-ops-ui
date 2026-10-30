@@ -95,6 +95,55 @@ export function parseSubprocessUsage(stdout) {
   return null;
 }
 
+/**
+ * #4746 — best-effort parser for the parent batch-runner.sh's token summary.
+ * At the end of every run the parent prints (via batch/aggregate-tokens.mjs)
+ * an "=== Aggregated Token Breakdown ===" section whose step lines carry
+ * `N prompt / M completion` counts and whose final `total:` line carries the
+ * run's own estimated dollar cost. Feed the streamed stdout lines; result()
+ * returns { in, out, cost } once the total line has landed, or null when the
+ * section never appeared (older parent, dry run, no aggregate script). The
+ * dollar figure is the PARENT's estimate — kept as the record's cost
+ * (CAR-106 shape), so the Usage page prefers it over the local pricing
+ * table. Numbers arrive in the parent's human format ("12.3k", "1,234").
+ */
+export function createBatchUsageParser() {
+  let inSection = false;
+  let agg = null;
+  const parseK = (s) => {
+    const t = String(s || '').toLowerCase().replace(/,/g, '').trim();
+    if (t.endsWith('k')) return Math.round(parseFloat(t.slice(0, -1)) * 1000) || 0;
+    return parseInt(t, 10) || 0;
+  };
+  return {
+    feed(line) {
+      const l = String(line || '');
+      if (l.includes('=== Aggregated Token Breakdown ===')) {
+        inSection = true;
+        agg = { in: 0, out: 0, cost: 0 };
+        return;
+      }
+      if (!inSection || !agg) return;
+      let m = l.match(/^\s*[\w ]+:\s*([\d.,]+k?)\s+prompt\s*\/\s*([\d.,]+k?)\s+completion/i);
+      if (m) {
+        agg.in += parseK(m[1]);
+        agg.out += parseK(m[2]);
+        return;
+      }
+      // The section's closing total line: `  total:  64.7k tokens ($0.1234)`
+      // (cost n/a when the parent could not price the model — then no $ group).
+      m = l.match(/^\s*total:\s+[\d.,]+k?\s+tokens(?:\s*\(\s*\$([\d.]+)\s*\))?/i);
+      if (m) {
+        if (m[1] != null) agg.cost = parseFloat(m[1]) || 0;
+        inSection = false;
+      }
+    },
+    result() {
+      return agg && (agg.in || agg.out) ? agg : null;
+    },
+  };
+}
+
 /** Read + parse the usage log (bounded), newest-last. Exported for tests. */
 export function readUsage(file = PATHS.llmUsage) {
   if (!existsSync(file)) return [];

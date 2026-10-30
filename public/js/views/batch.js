@@ -55,6 +55,43 @@ function nextBatchId(existingRaw) {
   return Math.max(0, ...ids) + 1;
 }
 
+// #4746 — the run is the app's most expensive operation and had neither a
+// spend confirmation nor a usage record. The pure halves below are
+// module-scope function declarations (classic script → window-visible) so
+// tests drive them in a vm: countBatchRows mirrors the server's parseTsv
+// (blank + '#' comment lines skipped); estimateBatchCost folds the
+// provider's own usage history (all-time per-call mean from GET /api/usage)
+// into a per-evaluation token average, falling back to a documented 8000
+// tokens when there is no history yet. The dollar figure is an ESTIMATE
+// from the rough llm-pricing table — real in/out split with history, a
+// blended in/out rate on the fallback — surfaced as an estimate, never billed.
+function countBatchRows(text) {
+  return String(text || '').split(/\r?\n/)
+    .filter((line) => { const l = line.trim(); return l && !l.startsWith('#'); }).length;
+}
+
+// #4746 — no-history fallback: one evaluation ≈ 8000 tokens.
+const BATCH_FALLBACK_TOKENS_PER_EVAL = 8000;
+
+function estimateBatchCost(n, providerUsage, price) {
+  const hasHistory = !!(providerUsage && providerUsage.calls > 0);
+  const tokensPerEval = hasHistory
+    ? Math.round(((providerUsage.in || 0) + (providerUsage.out || 0)) / providerUsage.calls)
+    : BATCH_FALLBACK_TOKENS_PER_EVAL;
+  let usd = null;
+  if (price && typeof price.in === 'number' && typeof price.out === 'number') {
+    if (hasHistory) {
+      const avgIn = (providerUsage.in || 0) / providerUsage.calls;
+      const avgOut = (providerUsage.out || 0) / providerUsage.calls;
+      usd = (n * avgIn * price.in + n * avgOut * price.out) / 1e6;
+    } else {
+      const blended = (price.in + price.out) / 2;
+      usd = (n * tokensPerEval * blended) / 1e6;
+    }
+  }
+  return { n, tokensPerEval, usd };
+}
+
 Router.register('batch', async () => {
   const c = UI.el;
   const t = (k, f) => I18n.t(k, f);
@@ -276,8 +313,53 @@ Router.register('batch', async () => {
     onClick: () => runRunner(),
   }, '▶ ' + t('batch.runBtn', 'Run batch'));
 
-  function runRunner() {
+  // #4746 — best-effort cost estimate for the confirm dialog: the active
+  // provider (falling back to the usage history's biggest spender when no
+  // provider is forced), that provider's all-time per-call usage average
+  // and its pricing row. Any fetch failure degrades the text ("cost
+  // unknown") — it must never block the run.
+  async function buildCostEstimate(n) {
+    let provider = null;
+    let usage = null;
+    let price = null;
+    try {
+      const [st, u] = await Promise.all([
+        API.get('/api/status/providers'),
+        API.get('/api/usage'),
+      ]);
+      const all = u && u.windows && u.windows.all && u.windows.all.providers;
+      provider = (st && st.activeProvider) || (all && all.length && all[0].provider) || null;
+      if (provider && all) {
+        const e = all.find((p) => p.provider === provider);
+        if (e) usage = { in: e.in, out: e.out, calls: e.calls };
+      }
+      if (provider && u && u.prices && u.prices[provider]) price = u.prices[provider];
+    } catch { /* estimate stays best-effort */ }
+    return { ...estimateBatchCost(n, usage, price), provider: provider || '—' };
+  }
+
+  async function runRunner() {
     if (batchRunning) return;
+    // #4746 — a multi-row run bills N real evaluations and had no gate:
+    // show the spend confirm for every N ≥ 2 run (a single row keeps the
+    // old path). --dry-run makes zero model calls, so the estimate premise
+    // is false and the gate is skipped there. Declining aborts cleanly.
+    const rows = countBatchRows(textarea.value);
+    if (rows >= 2 && !dryRun.checked) {
+      const est = await buildCostEstimate(rows);
+      const usdText = est.usd != null
+        ? '$' + est.usd.toFixed(2)
+        : t('batch.cost.usdUnknown', 'cost unknown');
+      const ok = await UI.confirm(
+        t('batch.cost.confirmTitle', 'Confirm paid batch run'),
+        t('batch.cost.confirmBody', 'Approximately {n} evaluations ≈ {usd} (provider {provider}). Run?')
+          .replace('{n}', String(est.n))
+          .replace('{usd}', usdText)
+          .replace('{provider}', est.provider),
+        { danger: false, confirmLabel: t('batch.cost.confirmOk', 'Run batch') },
+      );
+      if (!ok) return;
+    }
     const params = new URLSearchParams();
     if (dryRun.checked) params.set('dryRun', '1');
     if (parallelSel.value && parallelSel.value !== '1') params.set('parallel', parallelSel.value);

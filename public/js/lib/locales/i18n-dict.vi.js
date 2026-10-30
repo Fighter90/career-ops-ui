@@ -574,6 +574,11 @@ window.__I18N_DICT_VI = {
   'batch.pendingAdditions': "bổ sung tracker đang chờ:",
   'batch.merge': "Hợp nhất vào tracker",
   'batch.merged': "Đã hợp nhất vào tracker",
+  // #4746 — paid-run confirmation (batch is billed per evaluation)
+  'batch.cost.confirmTitle': "Xác nhận chạy batch trả phí",
+  'batch.cost.confirmBody': "Khoảng {n} đánh giá ≈ {usd} (nhà cung cấp {provider}). Chạy?",
+  'batch.cost.confirmOk': "Chạy batch",
+  'batch.cost.usdUnknown': "chi phí không rõ",
   'batch.noRunnerTitle': "Không tìm thấy batch/batch-runner.sh",
   'batch.noRunnerBody': "Runner nằm trong dự án career-ops gốc. Đảm bảo batch/batch-runner.sh tồn tại và có quyền thực thi (chmod +x).",
   'scan.boostedBy': "Được tăng bởi",

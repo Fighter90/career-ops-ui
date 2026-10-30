@@ -579,6 +579,11 @@ window.__I18N_DICT_PL = {
   'batch.pendingAdditions': "oczekujące uzupełnienia trackera:",
   'batch.merge': "Scal z trackerem",
   'batch.merged': "Scalono z trackerem",
+  // #4746 — paid-run confirmation (batch is billed per evaluation)
+  'batch.cost.confirmTitle': "Potwierdź płatne uruchomienie partii",
+  'batch.cost.confirmBody': "Około {n} ocen ≈ {usd} (dostawca {provider}). Uruchomić?",
+  'batch.cost.confirmOk': "Uruchom partię",
+  'batch.cost.usdUnknown': "koszt nieznany",
   'batch.noRunnerTitle': "Nie znaleziono batch/batch-runner.sh",
   'batch.noRunnerBody': "Runner znajduje się w nadrzędnym projekcie career-ops. Upewnij się, że batch/batch-runner.sh istnieje i jest wykonywalny (chmod +x).",
   'scan.boostedBy': "Promowany przez",
