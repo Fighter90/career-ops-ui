@@ -6,6 +6,18 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 ---
 
+## [1.262.3] — 2026-10-30
+
+### Fixed
+
+- **pl joins the token-dense evaluation locales** (`pl` → the 32768-token ceiling + the 480 s clock). The full remote-QA on prod v1.262.1 caught the Polish evaluate dying at the standard ceiling — `502 · openrouter · 300 s · 0 ch` — and the spot re-run dispatched with v1.262.2 reproduced it exactly (runs 40960568766 and 40968958062): 18/19 locales passed A–G, `it` finished at 302 s inside the token-dense 480 s clock, and `pl` hit the wall twice with zero output. A deterministic timeout, not a flake — the same shape class that moved `it` in v1.262.1. Red-first pin: `evalMaxTokens('pl') = 32768`, `evalTimeoutMs('pl') = 480_000`, the 18 standard locales keep 300 s.
+
+### Notes
+
+- Deliberately a single-purpose patch: the pl fix is the only change this release carries — it does not bundle anything else; the v1.262.2 review-tail content went out separately.
+
+Tests 6867 → 6868 (+1) · Playwright 176 · registry unchanged: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.262.2] — 2026-10-30
 
 ### Fixed

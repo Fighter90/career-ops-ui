@@ -12,6 +12,18 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.262.3] — 2026-10-30
+
+### Corrigé
+
+- **pl rejoint les langues token-denses d'évaluation** (`pl` → le plafond de 32768 tokens + l'horloge de 480 s). La remote-QA complète sur la prod v1.262.1 a attrapé l'évaluation polonaise en train de mourir au plafond standard — `502 · openrouter · 300 s · 0 ch` — et la relance ciblée dispatchée avec la v1.262.2 l'a reproduit exactement (exécutions 40960568766 et 40968958062) : 18/19 langues ont passé A–G, `it` a terminé en 302 s dans l'horloge token-dense de 480 s, et `pl` a buté deux fois sur le mur avec zéro sortie. Un timeout déterministe, pas un flake — la même classe de forme qui a fait passer `it` en v1.262.1. Épingle en rouge d'abord : `evalMaxTokens('pl') = 32768`, `evalTimeoutMs('pl') = 480_000`, les 18 langues standard gardent 300 s.
+
+### Notes
+
+- Délibérément un patch à but unique : la correction de `pl` est le seul changement que cette version embarque — elle n'embarque rien d'autre ; le contenu de la queue de revue de la v1.262.2 est sorti séparément.
+
+Tests 6867 → 6868 (+1) · Playwright 176 · registre inchangé : 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.262.2] — 2026-10-30
 
 ### Corrigé

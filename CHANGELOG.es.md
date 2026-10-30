@@ -13,6 +13,18 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.262.3] — 2026-10-30
+
+### Corregido
+
+- **pl se une a las locales densas en tokens para evaluación** (`pl` → el techo de 32768 tokens + el reloj de 480 s). La remote-QA completa en prod v1.262.1 pilló la evaluación polaca muriendo en el techo estándar — `502 · openrouter · 300 s · 0 ch` — y la re-corrida puntual despachada con v1.262.2 lo reprodujo exactamente (corridas 40960568766 y 40968958062): 18/19 locales pasaron A–G, `it` terminó en 302 s dentro del reloj token-dense de 480 s, y `pl` chocó dos veces con el muro con cero salida. Un timeout determinista, no un flake — la misma clase de forma que movió a `it` en v1.262.1. Pin rojo primero: `evalMaxTokens('pl') = 32768`, `evalTimeoutMs('pl') = 480_000`, las 18 locales estándar mantienen 300 s.
+
+### Notas
+
+- Deliberadamente un parche de propósito único: el arreglo de `pl` es el único cambio que trae esta versión — no empaqueta nada más; el contenido de la cola de revisión de v1.262.2 salió por separado.
+
+Tests 6867 → 6868 (+1) · Playwright 176 · registro sin cambios: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.262.2] — 2026-10-30
 
 ### Corregido

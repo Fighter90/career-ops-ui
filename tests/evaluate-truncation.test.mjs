@@ -26,7 +26,7 @@ import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 
 let runOpenAICompatible, runAnthropic, runGemini;
-let evaluationWarnings, EVAL_MAX_TOKENS, evalMaxTokens;
+let evaluationWarnings, EVAL_MAX_TOKENS, evalMaxTokens, evalTimeoutMs;
 let buildEvaluationPrompt;
 
 const reply = (json) => async () => ({ ok: true, status: 200, text: async () => JSON.stringify(json) });
@@ -63,7 +63,7 @@ before(async () => {
   ({ runOpenAICompatible } = await import('../server/lib/openai.mjs'));
   ({ runAnthropic } = await import('../server/lib/anthropic.mjs'));
   ({ runGemini } = await import('../server/lib/gemini.mjs'));
-  ({ evaluationWarnings, EVAL_MAX_TOKENS, evalMaxTokens } = await import('../server/lib/routes/llm.mjs'));
+  ({ evaluationWarnings, EVAL_MAX_TOKENS, evalMaxTokens, evalTimeoutMs } = await import('../server/lib/routes/llm.mjs'));
   ({ buildEvaluationPrompt } = await import('../server/lib/prompts.mjs'));
 });
 
@@ -117,6 +117,19 @@ test('evalMaxTokens: token-dense locales (ta, hi, it) get 32768', () => {
   // (tok ~15635 at the 16384 ceiling). Same shape class as ta v1.261.1.
   assert.equal(evalMaxTokens('it'), 32768);
   assert.equal(evalMaxTokens('it-IT'), 32768);
+});
+
+test('evalMaxTokens: pl joins the token-dense locales (v1.262.3)', () => {
+  // remote-QA on prod v1.262.1 — run 40960568766 (full ×19) AND the spot
+  // re-run 40968958062: the pl evaluate hit `502 · openrouter · 300 s · 0 ch`
+  // at the standard ceiling BOTH times while 18/19 locales passed (it needed
+  // 302 s inside the token-dense 480 s clock). Deterministic, not a flake —
+  // same shape as it → v1.262.1.
+  assert.equal(evalMaxTokens('pl'), 32768);
+  assert.equal(evalMaxTokens('pl-PL'), 32768);
+  assert.equal(evalTimeoutMs('pl'), 480_000);
+  // the 18 still-standard locales keep the 300 s clock
+  assert.equal(evalTimeoutMs('en'), 300_000);
 });
 
 test('evalMaxTokens is a pure function of the lang string', () => {

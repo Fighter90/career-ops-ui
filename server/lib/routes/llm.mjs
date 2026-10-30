@@ -50,7 +50,7 @@ export const EVAL_TIMEOUT_MS = 300_000;
 // locales keep EVAL_TIMEOUT_MS; token-dense locales get 480 s. Pure function
 // of the locale string; GEMINI_EVAL_TIMEOUT_MS below stays the EN baseline.
 const EVAL_TIMEOUT_TOKEN_DENSE_MS = 480_000;
-const TOKEN_DENSE_EVAL_LOCALES = new Set(['ta', 'hi', 'it']);
+const TOKEN_DENSE_EVAL_LOCALES = new Set(['ta', 'hi', 'it', 'pl']);
 export function evalTimeoutMs(lang) {
   const base = String(lang || 'en').trim().toLowerCase().split('-')[0];
   return TOKEN_DENSE_EVAL_LOCALES.has(base) ? EVAL_TIMEOUT_TOKEN_DENSE_MS : EVAL_TIMEOUT_MS;

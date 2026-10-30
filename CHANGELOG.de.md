@@ -2,6 +2,18 @@
 
 > Dieses Changelog enthält die vollständige Versionsgeschichte. Einträge, die vor der deutschen Lokalisierung (v1.85.0) veröffentlicht wurden, stehen unten im englischen Original — Übersetzung ausstehend; maßgeblich bleibt [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.262.3] — 2026-10-30
+
+### Behoben
+
+- **`pl` stößt zu den token-dichten Bewertungs-Locales hinzu** (`pl` → das 32768-Token-Ceiling + die 480 s Uhr). Das volle Remote-QA auf der Prod v1.262.1 hat die polnische Bewertung beim Sterben am Standard-Ceiling ertappt — `502 · openrouter · 300 s · 0 ch` — und der mit v1.262.2 ausgelöste Spot-Nachlauf reproduzierte sie exakt (die Läufe 40960568766 und 40968958062): 18/19 Locales bestanden A–G, `it` endete nach 302 s innerhalb der token-dichten 480 s Uhr, und `pl` lief zweimal mit null Output gegen die Wand. Ein deterministischer Timeout, kein Flake — dieselbe Formklasse, die `it` in v1.262.1 bewegt hat. Red-first-Pin: `evalMaxTokens('pl') = 32768`, `evalTimeoutMs('pl') = 480_000`, die 18 Standard-Locales behalten 300 s.
+
+### Hinweise
+
+- Bewusst ein Single-Purpose-Patch: der `pl`-Fix ist die einzige Änderung, die dieses Release mitbringt — er bringt nichts anderes mit; der Review-Tail-Inhalt von v1.262.2 ist separat erschienen.
+
+Tests 6867 → 6868 (+1) · Playwright 176 · Registry unverändert: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.262.2] — 2026-10-30
 
 ### Behoben
