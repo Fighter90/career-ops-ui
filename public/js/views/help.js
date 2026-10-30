@@ -92,7 +92,7 @@ Router.register('help', async () => {
       // own end-aligned column so titles align down the list.
       style: {
         display: 'flex', gap: '6px', alignItems: 'baseline', padding: '4px 0',
-        borderInlineStart: '3px solid transparent', marginInlineStart: '-11px', paddingInlineStart: '8px',
+        borderInlineStart: '3px solid var(--_toc-rail, transparent)', marginInlineStart: '-11px', paddingInlineStart: '8px',
         color: 'var(--hof)',
         textDecoration: 'none', fontSize: '13px', lineHeight: 1.55,
       },

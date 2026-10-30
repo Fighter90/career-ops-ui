@@ -16,6 +16,9 @@ import { fileURLToPath } from 'node:url';
 import { loadScanSrc } from './helpers/scan-src.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
+const read = (...p) => readFileSync(resolve(ROOT, ...p), 'utf8');
+const loadAppCss = () => ['app.css', 'components.css', 'overlays.css', 'map.css', 'tokens-v3.css', 'motion.css']
+  .map((f) => readFileSync(resolve(ROOT, 'public', 'css', f), 'utf8')).join('\n');
 
 test('ux-owner: #/scan pagebar has no Compact density toggle (owner decision)', () => {
   const src = loadScanSrc();
@@ -48,8 +51,8 @@ test('ux-owner: dashboard hero stacks vertically (column flex + gap)', () => {
 
 test('ux-owner: help TOC rows carry a permanent gutter; toc-current only flips color', () => {
   const src = readFileSync(resolve(ROOT, 'public', 'js', 'views', 'help.js'), 'utf8');
-  assert.ok(src.includes("borderInlineStart: '3px solid transparent'"),
-    'every TOC row must reserve the gutter with a transparent inline border');
+  assert.ok(src.includes("borderInlineStart: '3px solid var(--_toc-rail, transparent)'"),
+    'every TOC row reserves the gutter inline and references --_toc-rail (the .toc-current class lifts it)');
   assert.ok(src.includes("paddingInlineStart: '8px'") && src.includes("marginInlineStart: '-11px'"),
     'every TOC row must carry the gutter geometry inline');
   assert.ok(src.includes("flex: '0 0 1.6ch'"), 'section number must sit in its own end-aligned span column');
@@ -58,7 +61,7 @@ test('ux-owner: help TOC rows carry a permanent gutter; toc-current only flips c
   assert.ok(cur, 'toc-current rule found');
   assert.ok(!cur[1].includes('padding-inline-start') && !cur[1].includes('margin-inline-start'),
     'toc-current must NOT shift geometry (padding/margin live inline on every row now)');
-  assert.ok(cur[1].includes('border-inline-start-color'), 'toc-current flips the bar color only');
+  assert.ok(cur[1].includes('--_toc-rail:'), 'toc-current lifts the rail via the --_toc-rail var (inline geometry stays untouched)');
 });
 
 test('ux-owner: mobile drawer — in-sidebar close button, scroll reset, HUD-gated bottom lift', () => {
@@ -152,4 +155,13 @@ test('ux-owner: auto-pipeline URL Enter ignores IME composition', () => {
   assert.ok(h, 'the URL input keydown handler found');
   assert.match(h[0], /e\.isComposing \|\| e\.keyCode === 229/,
     'IME composition Enter must not start the paid run (CAR-21 contract, same as docs-assistant)');
+});
+
+test('UX sweep follow-up: toc-current lifts the rail through the inline var reference (not the losing border-color)', () => {
+  const help = read('public', 'js', 'views', 'help.js');
+  assert.match(help, /borderInlineStart: '3px solid var\(--_toc-rail, transparent\)'/,
+    'the inline gutter must reference --_toc-rail so the .toc-current class can light it');
+  const css = loadAppCss();
+  assert.match(css, /\.help-toc a\.toc-current\s*\{[^}]*--_toc-rail:\s*var\(--rausch/,
+    '.toc-current lifts --_toc-rail to the accent');
 });

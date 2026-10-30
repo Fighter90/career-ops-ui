@@ -97,7 +97,10 @@
 
 .help-toc a.toc-current {
   color: var(--rausch-text); /* CAR-23: AA text variant */
-  font-weight: 600; border-inline-start-color: var(--rausch, #ff385c); /* the gutter itself (transparent border + geometry) is inline on EVERY toc row now — this rule only flips color/weight/bar */
+  font-weight: 600;
+  /* the rail: inline style holds the geometry and REFERENCES the var — the class
+     lifts it (custom properties resolve through the inline var() reference) */
+  --_toc-rail: var(--rausch, #ff385c);
 }
 
 /* U-15 (v1.58.33) — CV Save button dirty-state. When the editor has
