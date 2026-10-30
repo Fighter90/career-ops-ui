@@ -9,6 +9,32 @@
 ---
 
 
+## [1.264.0] — 2026-10-31
+
+### 新增
+
+- **跟踪器状态就地编辑** —— `#/tracker` 每一行的状态徽章变为规范阶段的紧凑 `<select>`（来自 `GET /api/tracker/stages`，绝不是硬编码白名单）。`POST /api/tracker/status` 在 `applications.md` 锁下转发父项目的规范 `set-status.mjs`（经 `states.mjs` 做状态白名单、`--dry-run`/`--note` 透传、带净化详情的 fail-soft 502、argv 数组 spawn）。成功时该行就地更新（色调类 + 标签页计数，焦点保留）；失败时回滚并弹出 toast。转发无法处理的行 —— 手工编辑的未知状态、编号为 `#` 的回填哨兵 —— 保留只读徽章（route-review LOW 修复；评审者：无 HIGH/MED 发现）。
+- **服务器警告在每个 AI 页面可见** —— `evaluate`、`deep`、`auto-pipeline`（页面**与**模态框）、`career-plan`、`market`、`cv-studio`（humanize + tailor）现在把服务器的 `warnings` 数组（输出 token 截断、语言漂移、日期修正）渲染为 `badge-warn` 条带（`role="status"`）；auto-pipeline 模态框不再丢弃 done 帧警告。新键 `llm.truncatedNotice` ×19。
+- **覆盖率浪潮（+111 测试）** —— `routes/map.mjs` 100/94.9、`geocode.mjs` 96.3/92.9、`content.mjs` 99/84.9、`networking.mjs` 96.4/89.1、`sources/habr.mjs` 100/98.2（新增 `tests/cov-*-routes.test.mjs` ×3、`tests/sources-habr.test.mjs`）；分支下限保持在 ≥ 90 %。
+- **Linear CAR-191…216 收尾包**（`docs/reviews/2026-10-30-linear-car191-216-closure-bundle.md`）—— 可直接粘贴的所有者收尾文档，附每个 CAR 的提交 SHA 与证据评论。
+
+### 修复
+
+- **Trudvsem 扫描源** —— 空页（`results: {}`，「越过末尾」时也一样）不再杀死整个扫描（干净的零行）；API 错误信封（HTTP-200 内含 `status: 500`）以 API 自己的文本抛出；分页按**记录**偏移行走（此前是页索引 —— 页面静默重复，数百个职位只拿到约 52 个）；行走会在 API 的深偏移失败区（`offset × limit ≥ 10000`）之前停下。已做端到端实机验证。
+- **habr** —— 标题/公司名在实体解码**之后**再做标签剥离（与 hh.mjs 对齐）：卡片标题里的 `&lt;script&gt;` 无法再以活标记的形式进入扫描行；标题中合法的 `>>` 得以幸存。
+- **PUT /api/profile（raw 路径）** —— 缺少非空 `full_name` 的 `candidate:` 块会被拒绝，与字段合并路径同一标准（此前它会持久化 `full_name: null`）。
+- **提示的真实性** —— `.doc` 从 CV 上传 accept 列表与 `cv.uploadHint` ×19 中移除（解析器从未支持过它）；`config.openaiModelHint` ×19 指名 `gpt-5`（服务器把任何 `*-codex` id 映射到它）；`config.anthropicModelHint` ×19 与 **Anthropic 默认值**现在与父项目的档位一致 —— 默认 `claude-sonnet-5-5`，高级 `claude-opus-5-5`。
+- **Claude Code 文档链接** → `code.claude.com`（旧 `docs.anthropic.com/en/docs/claude-code` URL 在 links 门里抛 TypeError）。
+- help ×19：行密度条目已移除（该切换在 v1.263.0 离开了 UI），18 处损坏的 `**bold**` span 家族得到修复 —— 另外渲染器泄漏类在 ×19 修复（每个表格后段落的第二个空行；管道字符移出加粗单元格）：**全部 19 份 help 包渲染后字面 `**` 为 0**。
+
+### 备注
+
+- **Anthropic 默认模型已变更**为 `claude-sonnet-5-5`（父项目的标准档位）。依赖旧静默默认（`claude-sonnet-4-6`）的部署会自动升级 —— 要退出请在 `.env` 中固定 `ANTHROPIC_MODEL`。
+- 刻意的未行动：设计上留白的两个 LOW 评审细节（inline 选择框不镜像看板 `movesReady` 降级 —— 每次失败都给出诚实的 toast 是选定的行为；`code: 'timeout'` 分支继续由 fake-writer 契约覆盖，而不是一个 >30 s 的测试）。CAR-141（演示视频）仍是所有者的事。
+- help ×19 在 v1.263.0 发布后于 `main` 上获得了发布后散文梳理（密度条目移除、渲染器泄漏类修复）—— 本版本是携带它的第一个标签。
+
+Tests 6905 → 7041 (+136) · Playwright 176（173 通过 / 1 个 opt-in 跳过）· 覆盖率 98.5 % 行 / 90.1 % 分支 · 注册表不变：123 sources = 118 EN + 5 RU · 118 adapters。
+
 ## [1.263.0] — 2026-10-30
 
 ### 新增

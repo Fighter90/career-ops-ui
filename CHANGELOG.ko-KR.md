@@ -10,6 +10,32 @@
 
 ---
 
+## [1.264.0] — 2026-10-31
+
+### 추가
+
+- **인라인 트래커 상태 편집** — `#/tracker`의 모든 행 상태 배지가 정규 스테이지의 컴팩트한 `<select>`입니다 (`GET /api/tracker/stages`에서 오며, 하드코딩된 화이트리스트가 아닙니다). `POST /api/tracker/status`는 `applications.md` 락 아래에서 상위의 정규 `set-status.mjs`를 릴레이합니다 (`states.mjs`를 통한 상태 화이트리스트, `--dry-run`/`--note` 패스스루, 정화된 상세를 담은 fail-soft 502, argv-배열 스폰). 성공 시 행이 제자리에서 갱신되고 (톤 클래스 + 탭 카운트, 포커스 유지); 실패 시 되돌려지고 토스트합니다. 릴레이가 다룰 수 없는 행 — 손으로 편집된 알 수 없는 상태, 백필 센티널 `#` — 는 읽기 전용 배지를 유지합니다 (route-review LOW 수정; 리뷰어: HIGH/MED 발견 없음).
+- **모든 AI 페이지에 서버 경고 표시** — `evaluate`, `deep`, `auto-pipeline` (페이지 **및** 모달), `career-plan`, `market`, `cv-studio` (humanize + tailor)가 이제 서버의 `warnings` 배열 (출력 토큰 절단, 언어 드리프트, 날짜 수정)을 `badge-warn` 밴드 (`role="status"`)로 렌더링합니다; auto-pipeline 모달은 done-프레임 경고를 더 이상 드롭하지 않습니다. 새 키 `llm.truncatedNotice` ×19.
+- **커버리지 웨이브 (+111 테스트)** — `routes/map.mjs` 100/94.9, `geocode.mjs` 96.3/92.9, `content.mjs` 99/84.9, `networking.mjs` 96.4/89.1, `sources/habr.mjs` 100/98.2 (새 `tests/cov-*-routes.test.mjs` ×3, `tests/sources-habr.test.mjs`); 브랜치 하한은 ≥ 90 % 유지.
+- **Linear CAR-191…216 클로저 번들** (`docs/reviews/2026-10-30-linear-car191-216-closure-bundle.md`) — CAR별 커밋 SHA와 증거 코멘트를 갖춘, 붙여넣기 준비가 끝난 오너 마무리 문서.
+
+### 수정
+
+- **Trudvsem 스캔 소스** — 빈 페이지 (`results: {}`, 「끝을 지났을」 때도 마찬가지)가 더 이상 스캔 전체를 죽이지 않습니다 (깨끗한 0행); API 오류 봉투 (`status: 500`을 담은 HTTP-200)는 API 자신의 텍스트로 throw합니다; 페이지네이션은 **레코드** 오프셋을 걷습니다 (이전에는 페이지-인덱스였습니다 — 페이지가 조용히 중복됐고, 수백 개 대신 ~52개 공고); 걷기는 API의 딥-오프셋 실패 구간 (`offset × limit ≥ 10000`) 바로 전에서 멈춥니다. 라이브 엔드-투-엔드 검증 완료.
+- **habr** — 제목/회사는 엔티티 디코딩 **후에** 태그가 제거됩니다 (hh.mjs 패리티): 카드 제목의 `&lt;script&gt;`가 살아있는 마크업으로 스캔 행에 도달할 수 없습니다; 제목의 정당한 `>>`는 살아남습니다.
+- **PUT /api/profile (raw 경로)** — 비어 있지 않은 `full_name`이 없는 `candidate:` 블록은 거부됩니다. 필드-병합 경로와 같은 라인입니다 (이전에는 `full_name: null`을 영속화했습니다).
+- **힌트의 정직함** — `.doc`이 CV 업로드 accept 목록과 `cv.uploadHint` ×19에서 제거됐습니다 (파서는 한 번도 지원하지 않았습니다); `config.openaiModelHint` ×19는 `gpt-5`를 이름으로 씁니다 (서버는 모든 `*-codex` id를 그것으로 매핑합니다); `config.anthropicModelHint` ×19와 **Anthropic 기본값**은 이제 상위의 티어를 반영합니다 — 기본 `claude-sonnet-5-5`, 프리미엄 `claude-opus-5-5`.
+- **Claude Code 문서 링크** → `code.claude.com` (이전 `docs.anthropic.com/en/docs/claude-code` URL은 links 게이트에서 TypeError를 냅니다).
+- help ×19: 행-밀도 불릿은 사라졌고 (토글은 v1.263.0에서 UI를 떠났습니다) 18개 계열의 깨진 `**bold**` 스팬이 수리됐습니다 — 게다가 렌더러-누수 클래스가 ×19로 수정됐습니다 (테이블-뒤-단락마다의 두 번째 빈 줄; 볼드 셀에서 나가는 파이프 글리프): **모든 19개 help 번들에서 렌더 시 리터럴 `**` 0개**.
+
+### 참고
+
+- **Anthropic 기본 모델이 변경됐습니다** — `claude-sonnet-5-5` (상위의 스탠다드 티어). 이전 조용한 기본값 (`claude-sonnet-4-6`)에 의존하던 배포는 자동으로 업그레이드됩니다 — 옵트아웃하려면 `.env`에 `ANTHROPIC_MODEL`을 고정하세요.
+- 의도적으로 하지 않은 것: 설계상 열어둔 두 LOW 리뷰 지적 (인라인 셀렉트는 칸반 `movesReady` 성능 저하를 미러링하지 않습니다 — 모든 실패에서 정직한 토스트가 선택된 동작입니다; `code: 'timeout'` 브랜치는 30 s 초과 테스트가 아니라 fake-writer 컨트랙트가 계속 커버합니다). CAR-141 (데모 비디오)은 오너의 몫으로 남아 있습니다.
+- help ×19는 v1.263.0 출시 후 `main`에서 릴리스-후 산문 패스 (밀도 불릿 제거, 렌더러-누수 클래스 수정)를 받았습니다 — 이 릴리스가 그것을 담는 첫 태그입니다.
+
+Tests 6905 → 7041 (+136) · Playwright 176 (173 통과 / 1 opt-in 스킵) · 커버리지 98.5 % 라인 / 90.1 % 브랜치 · 레지스트리 변경 없음: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.263.0] — 2026-10-30
 
 ### 추가
