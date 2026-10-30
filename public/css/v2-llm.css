@@ -28,10 +28,19 @@
 
 .llm2 {
   display: grid;
-  grid-template-columns: minmax(300px, 5fr) 7fr;
+  /* minmax(0, 7fr) on the result column + min-width:0 below: a bare `7fr`
+     track has min-width:auto, so an unbreakable child (a long URL / token
+     in a chat answer) forced the docs-assistant result column wider than
+     the viewport (owner report). */
+  grid-template-columns: minmax(300px, 5fr) minmax(0, 7fr);
   gap: 24px;
   align-items: start;
 }
+.llm2__form,
+.llm2__result { min-width: 0; }
+/* Chat answers go through the markdown renderer; wrap anywhere so long
+   URLs/tokens in an answer can never push the column out. */
+.chat-log .md { overflow-wrap: anywhere; }
 
 /* Mobile tab bar: hidden on the two-column desktop layout. */
 .llm2__tabs { display: none; }
@@ -51,7 +60,9 @@
 
 @media (max-width: 1279.98px) {
   .llm2 {
-    grid-template-columns: 1fr;
+    /* minmax(0, 1fr): a bare 1fr track keeps min-width:auto and can be
+       stretched past the viewport by unbreakable content. */
+    grid-template-columns: minmax(0, 1fr);
     gap: 12px;
   }
   .llm2__tabs {
