@@ -6,6 +6,18 @@
 
 ---
 
+## [1.262.4] — 2026-10-30
+
+### சரி செய்யப்பட்டது
+
+- **`ja` token-dense evaluation locales-உடன் சேர்கிறது** (`ja` → 32768-token ceiling + 480 s clock). prod v1.262.3-இல் நடந்த 5-locale spot re-run, இரவின் நான்கு `502 · 300 s · 0 ch` timeouts-ஐ தற்காலிகங்கள் மற்றும் நிலையானங்கள் எனப் பிரித்தது: ar (250 s), ko (291 s) மற்றும் zh-CN (259 s) தங்கள் reruns-ஐ pass ஆனது, ru-இன் ஒருமுறை language drift திரும்பவில்லை — ஆனால் `ja` standard ceiling-இல் பூஜ்ஜிய output-உடன் இருமுறை மோதியது (முழு ×19 run 40981578549 மற்றும் spot 41012725839). it/pl-இல் கிடைத்த அதே shape class. Red-first pin: `evalMaxTokens('ja') = 32768`, `evalTimeoutMs('ja') = 480_000`, மற்ற locales 300 s வைத்திருக்கின்றன.
+
+### குறிப்புகள்
+
+- வேண்டுமென்றே ஒரே-நோக்கம் கொண்ட patch: `ja` fix தான் இந்த release சுமக்கும் ஒரே மாற்றம் — வேறு எதையும் சுமக்காது. இன்று இரவின் சான்றின்படி ar/ko/zh-CN standard ceiling-இலேயே இருக்கின்றன (அவை pass ஆகின்றன; இரவின் தோல்விகள் provider-load தற்காலிகங்கள்), ru-இன் drift ஒருமுறை generation flake ஆகும்.
+
+Tests 6868 → 6869 (+1) · Playwright 176 · registry மாறவில்லை: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.262.3] — 2026-10-30
 
 ### சரி செய்யப்பட்டது
