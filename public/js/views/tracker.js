@@ -338,7 +338,12 @@ Router.register('tracker', async () => {
   // Without stages (endpoint down) the read-only badge renders as before.
   function statusCell(r) {
     const folded = fold(r.status);
-    if (!STAGES.length) {
+    // Route-review LOW fixes: a status the canonical stages don't know (a
+    // hand-edited cell the server canonicalizer tolerates) and a backfill
+    // sentinel row (`N/A` / `—` / `-` — POST can never address it) render
+    // the read-only badge instead of a select that misrepresents or 400s.
+    const SENTINEL = /^(n\/a|—|-)$/i;
+    if (!STAGES.length || !STAGES.includes(folded) || SENTINEL.test(String(r.num ?? '').trim())) {
       return c('span', { className: 'badge ' + trackerStatusClass(r.status) }, statusLabel(folded));
     }
     const sel = c('select', {
