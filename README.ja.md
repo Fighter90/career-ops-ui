@@ -7,19 +7,19 @@
 
 _非公式 UI — career-ops / santifer とは提携しておらず、承認も受けていません。_
 
-[![tests](https://img.shields.io/badge/tests-6869%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-6905%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.262.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.4)
+[![release](https://img.shields.io/badge/release-v1.263.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.263.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.262.4** — **jaトークン密度パッチ: prodでの5ロケール・スポット再ランが、その夜の4件のevaluateタイムアウトを切り分けました — ar/ko/zh-CNは合格(250–291 s)、ruの一回限りのドリフトは再発せず — しかし`ja`はゼロ出力のまま標準の300 s上限に2回ぶつかりました; `ja`は`ta`/`hi`/`it`/`pl`に加わり、32768トークン上限と480 sクロックを赤ファーストで固定。テスト 6868 → 6869。**
+> **🆕 最新リリース — v1.263.0** — **オーナーUXバッチ: モーションポリッシュ層(タッチセーフなホバー、インタラクティブ限定のカードリフト、モーダル/ポップオーバー/トースト/テーマアニメーション — reduced-motionセーフ)、アクセントがロゴに合わせてブルー → クリムゾンレッドへ反転、WCAGコントラスト合格(docs-fab 6.4:1、トースト、フォームボーダー3:1)、すべてのコントロールがプログラム上の名前を獲得、そして十数件のレイアウト修正 — scanテーブルヘッダーはもう検索を覆わず、給与フィルターは通常サイズに戻り、docsページは決してオーバーフローせず、モバイルドロワーに見える閉じるボタンが付きました。テスト 6869 → 6905。**
 >
-> **前バージョン — v1.262.3** — **plトークン密度パッチ: prod v1.262.1でのフルremote-QAが、ポーランド語評価が標準の300 s上限で死ぬ様子を2回捕捉 — `502 · 0 ch` — (フル×19ラン40960568766とv1.262.2スポット再ラン40968958062)、その間18/19ロケールはA–Gに合格; `pl`は`ta`/`hi`/`it`に加わり32768トークン上限と480 sクロックを赤ファーストで固定(`evalMaxTokens`、`evalTimeoutMs`)。v1.262.1の`it`と同じ形状クラスです。テスト 6867 → 6868。**
+> **前バージョン — v1.262.4** — **jaトークン密度パッチ: prodでの5ロケール・スポット再ランが、その夜の4件のevaluateタイムアウトを切り分けました — ar/ko/zh-CNは合格(250–291 s)、ruの一回限りのドリフトは再発せず — しかし`ja`はゼロ出力のまま標準の300 s上限に2回ぶつかりました; `ja`は`ta`/`hi`/`it`/`pl`に加わり、32768トークン上限と480 sクロックを赤ファーストで固定。テスト 6868 → 6869。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -394,7 +394,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 6869 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.4)
+└─ tests/                    # 6905 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.263.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report パーサー(純粋関数)
    ├─ api.test.mjs           # 全エンドポイント、ephemeral server、ネットワークなし
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -539,7 +539,7 @@ npm run test:coverage          # `npm test` 相当 + V8 coverage
 
 | スイート                       | テスト数 | 内容                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs`(unit + integration) | **6868** | 全エンドポイント、ephemeral server、ネットワーク非依存。parser、scanner(モック)、runner、anthropic、security headers、XSS、JD サニタイズ、URL バリデーション、i18n parity、レート制限、ファイルロック、safe-fetch、path-traversal、DNS リバインドリダイレクトを含みます。 |
+| `node --test tests/*.test.mjs`(unit + integration) |  **6869** | 全エンドポイント、ephemeral server、ネットワーク非依存。parser、scanner(モック)、runner、anthropic、security headers、XSS、JD サニタイズ、URL バリデーション、i18n parity、レート制限、ファイルロック、safe-fetch、path-traversal、DNS リバインドリダイレクトを含みます。 |
 | `tests/e2e.mjs`(smoke)     | 21 | Playwright ヘッドレス: 各 route のレンダリングと基本フロー。                                                |
 | `tests/e2e-comprehensive.mjs` | 23 | Playwright による完全な walkthrough: 11 routes + 12 機能フロー。                                          |
 | `tests/playwright-smoke.mjs`(`npm run test:e2e:browser`) | **32** | ブラウザ駆動 smoke: dashboard レンダリング、ナビゲーション、言語切替、404、health、tracker ラウンドトリップ (BF-1)、pipeline 追加と無効 URL sweep、reports 空、evaluate 手動フォールバック、config キーマスク、CV PUT XSS ストリップ、pipeline preview 400、レート制限、競合書き込み、エンティティ対応 XSS。 |

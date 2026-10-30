@@ -7,19 +7,19 @@
 
 _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-6869%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-6905%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.262.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.4)
+[![release](https://img.shields.io/badge/release-v1.263.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.263.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versión — v1.262.4** — **El parche token-dense de `ja`: la re-corrida puntual de 5 locales en prod separó los cuatro timeouts de evaluación de la noche — ar/ko/zh-CN pasaron (250–291 s), el drift puntual de ru no se repitió — pero `ja` chocó dos veces con el techo estándar de 300 s con cero salida; `ja` ahora se une a `ta`/`hi`/`it`/`pl` con el techo de 32768 tokens y el reloj de 480 s, fijado rojo primero. Tests 6868 → 6869.**
+> **🆕 Última versión — v1.263.0** — **El lote UX del propietario: una capa de pulido de movimiento (hovers seguros al tacto, lift de tarjeta solo en elementos interactivos, animaciones de modal/popover/toast/tema — seguras con reduced-motion), el acento vira de azul → rojo carmesí como el logo, una pasada de contraste WCAG (docs-fab 6.4:1, toast, bordes de formulario 3:1), cada control recibe un nombre programático, y una docena de correcciones de maquetación — la cabecera de la tabla de scan ya no tapa la búsqueda, el filtro de salario vuelve a tener tamaño normal, la página de docs nunca desborda, el drawer móvil estrena un cierre visible. Tests 6869 → 6905.**
 >
-> **Anterior — v1.262.3** — **El parche token-dense de `pl`: la remote-QA completa en prod v1.262.1 pilló la evaluación polaca muriendo en el techo estándar de 300 s — `502 · 0 ch` — dos veces (la corrida completa ×19 40960568766 y la re-corrida puntual de v1.262.2 40968958062), mientras 18/19 locales pasaban A–G; `pl` ahora se une a `ta`/`hi`/`it` con el techo de 32768 tokens y el reloj de 480 s, fijado rojo primero (`evalMaxTokens`, `evalTimeoutMs`). La misma clase de forma que `it` en v1.262.1. Tests 6867 → 6868.**
+> **Anterior — v1.262.4** — **El parche token-dense de `ja`: la re-corrida puntual de 5 locales en prod separó los cuatro timeouts de evaluación de la noche — ar/ko/zh-CN pasaron (250–291 s), el drift puntual de ru no se repitió — pero `ja` chocó dos veces con el techo estándar de 300 s con cero salida; `ja` ahora se une a `ta`/`hi`/`it`/`pl` con el techo de 32768 tokens y el reloj de 480 s, fijado rojo primero. Tests 6868 → 6869.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -392,7 +392,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 6869 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.4)
+└─ tests/                    # 6905 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.263.0)
    ├─ parsers.test.mjs       # parsers markdown / pipeline / report (funciones puras)
    ├─ api.test.mjs           # cada endpoint, servidor efímero, sin red
    ├─ {ru,en}-scanner.test.mjs   # fetch mockeado
@@ -535,7 +535,7 @@ npm run test:coverage          # igual que `npm test` más cobertura V8
 
 | Suite                       | Tests | Qué cubre                                                                                                  |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integración) | **6868** | Cada endpoint, servidor efímero, sin red. Incluye parser, scanner (mockeado), runner, anthropic, security headers, XSS, JD sanitize, validación de URL, DNS rebind, mutex de archivo, rate limit, path traversal y paridad i18n. |
+| `node --test tests/*.test.mjs` (unit + integración) |  **6869** | Cada endpoint, servidor efímero, sin red. Incluye parser, scanner (mockeado), runner, anthropic, security headers, XSS, JD sanitize, validación de URL, DNS rebind, mutex de archivo, rate limit, path traversal y paridad i18n. |
 | `tests/e2e.mjs` (smoke)      | 21 | Playwright headless: cada ruta renderiza, flujos básicos.                                                  |
 | `tests/e2e-comprehensive.mjs` | 23 | Walkthrough Playwright completo: 11 rutas + 12 flujos funcionales.                                         |
 | `tests/playwright-smoke.mjs` (`npm run test:e2e:browser`) | **32** | Smoke con navegador: render del dashboard, navegación, cambio de idioma, 404, health, tracker round-trip (BF-1), añadir a pipeline + barrido de URL inválida, reports vacío, evaluate manual fallback, claves de config enmascaradas, CV PUT XSS strip, pipeline preview 400. |

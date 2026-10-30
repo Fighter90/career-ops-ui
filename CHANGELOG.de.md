@@ -2,6 +2,35 @@
 
 > Dieses Changelog enthält die vollständige Versionsgeschichte. Einträge, die vor der deutschen Lokalisierung (v1.85.0) veröffentlicht wurden, stehen unten im englischen Original — Übersetzung ausstehend; maßgeblich bleibt [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.263.0] — 2026-10-30
+
+### Hinzugefügt
+
+- **Motion-Polish-Layer** — neues `motion.css` (letztes App-Sheet): Modal-/Popover-Eintritte (scale .97 + Fade, 130–180 ms), Toast-Spring-in + weicher Leaving-Zustand, Theme-Toggle-Press-Feder, Chip/Tab-Press scale(.97), Stagger-Infrastruktur (50-ms-Schritte, Cap 12), `.page-enter`-Routenwechsel-Fade (Router), Focus-Halo-Übergänge an Chips/Tabs. Jede Regel ist `prefers-reduced-motion`-sicher (Bewegung fällt auf none, Opacity/Farbe bleiben).
+- **Touch-Korrektheit** — 68 Hover-Lift-Regeln waren ungeschützt: Touch-Geräte behielten nach einem Tipp eine hängende „angehobene"-Karte. Alle Transform-Hovers sind jetzt `@media (hover:hover)`-gegated (motion.css-Neutralisierer), und der Karten-Lift greift nur bei wirklich interaktiven Karten (`.card:has(a)`, `a.card`, `button.card`, `[role=button].card`) — keine falsche Affordance mehr auf statischen Karten.
+- **A11y: jede Kontrolle hat einen programmatischen Namen.** Ein neuer `A11yDump`-Helper benennt alle 16 Readonly-LLM-Output-Dumps; 12 Placeholder-only-Felder (CV Studio ×6, config ×2, scan-Suche, tracker-Score-Select, outcome-Notiz, plan-Editor, auto-URL, bug report) bekamen `aria-label`s; das `a11y-form-wires`-Gate erzwingt das jetzt klassenweit (vorher 26 unbenannte Stellen, jetzt 0 + Allowlist mit dokumentierten Gründen).
+
+### Behoben
+
+- **#/scan**: der Sticky-Tabellen-Header übermalt die Topbar-Suche nicht mehr, sobald sie unter ihn scrollt (z war gleich dem der Topbar, das spätere DOM gewann — jetzt token-abgeleitet darunter); die „Зарплата от/до"-Eingaben sind wieder normal groß (eine `.v2-scan-bar .input`-Flex-Regel lief in den Spalten-Flex des Popovers und setzte flex-basis 200 px als HÖHE — jetzt `>`-gescopet + Popover-Guard); der Density-Toggle-Button ist auf Eigentümer-Entscheidung entfernt (Verdrahtung bleibt, i18n-Keys entfernt ×19).
+- **Deploy-Workflow-Härtung (F1–F6)**: `provider`-Input charset-validiert vor jedem Shell-Splice; hermes-Diagnostik schwärzt Werte (case-insensitiver Key-Filter + Wertmaske + 80-Zeichen-Schnitt an allen drei Sinks, `?token=` ebenfalls maskiert); der hermes-Schritt respektiert `inputs.app_dir`; public_url https-gegated; der Anti-Downgrade-Guard hat 6 ausführbare Pins (keine Defaults, Guard-vor-Deploy-Reihenfolge, strict refs regex).
+- **Review-Schwanz, red-first**: CSV-Import-Backslash-Roundtrip (Re-Import deduplizierte wieder), cv-voice Head-Strip 4827 ms → 13 ms, `statedYearsMin` lazy berechnet, posting-guard Capture TOCTOU, MiniMax-CN-Wildcard, deel-Token-Skip, Import-Picker-Size-Guards vor dem Lesen. Import-Modal: Nav-Guard scharfgeschaltet, File-Input beim Abbruch entfernt, bewachte Duplikat-Lesevorgänge, `num` via reduce.
+- **Owner-UX-Batch**: vertikaler Rhythmus des Dashboard-Hero (Inline-Level-Kinder zu einer Zeilenbox verklebt); help-TOC −8 px Verschiebung der aktiven Zeile (Inline-Gutter pro Zeile + Nummernspalte); mobiler Drawer (sichtbares ✕-Schließen, scrollTop-Reset, der Phantom-`--paper`-Fade auf `.has-hud` gegated); die docs-assistant-Seite läuft nicht mehr über mit einer langen URL in einer Antwort (Grid-`min-width`-Kette + `overflow-wrap: anywhere`); „Недавние" erklärt (Hinweis) + löschbar; career-plan Save bewaffnet sich nach einer fehlgeschlagenen Ladung erneut; evaluate URL-Prefill verbrennt keinen LLM-Aufruf mehr auf dem Paste-Platzhalter; auto-pipeline Enter respektiert die IME-Komposition.
+- **Kontrast (WCAG-Audit, 296 Paare)**: docs-fab-Gradient 2.43 → 6.4:1, toast.success → ok-soft-Paar (1.75 → AA dark), Banner btn-dark → `--ink`-Flip, scan-logbtn/reposts-badge/fab-chip/close helle Varianten, und Formular-Kontrollränder auf 3:1 (`--cv3-input-line`, WCAG 1.4.11 — war 1.2:1).
+- **Visueller Durchgang**: der Tracker-Leerzustand ist eine Karte in voller Breite (war abgeschnitten innerhalb der 760-px-Tabelle bei 390); die Scan-Konsolenzeile ellipsisiert, statt halb abgeschnitten zu werden; der schwebende Chat-FAB verdeckt bei 390 keinen Inhalt mehr (44-px-Ziel, inset 12); der Dashboard-„Application statuses"-Leerzustand folgt dem v2-empty-Muster; der stats-„?"-Hinweis bekommt einen Teiler + 44-px-Ziel; der career-plan Input-Tab erklärt, wo das Ergebnis landet; help §1 Markdown (18 kaputte Bold-Spans).
+
+### Geändert
+
+- **Akzent Blau → Karmesinrot (Eigentümer-Wunsch, logo-koherent, hue 15)** — 5 cv3-Tokens × 3 Theme-Blöcke; der `docs-assistant`-Chatbubble-Text reitet auf `--accent-ink` (war literales #fff, 2.39:1 im Dark); der funded-Wash reitet auf `--accent-soft`. Danger bleibt hue 25 mit seinen eigenen Behandlungen.
+- Docs: README-Testing-Tabellen-Zählung ×17 (eine Drift aus der v1.248-Ära), help §1 + 18 Markdown-Spans, help fr/it/ta „118", Anbieterpreise CHECKED_ON 2026-10-30, HANDOFF/CONTEXT/TRACEABILITY-Fakten.
+
+### Hinweise
+
+- Bewusst nicht getan: die Skeleton-Sweep-Überarbeitung bleibt draußen (der car112-Vertrag pinnt das aktuelle Fade wörtlich); das Theme-Toggle-Icon-Crossfade bleibt ein `display`-Swap (der Theme-Toggle-Playwright-Vertrag beobachtet es); das `.btn:active`-Scale wurde nicht dupliziert (app.css besitzt es); Motion-Stagger ist nur Infrastruktur — die Dashboard-Tiles übernehmen ihn später; help ×19-Prosa (Density-Erwähnung, §1-Markdown, „118") kommt mit dem nächsten Fan-out.
+- Volle Remote-QA-Beweise: ja Spot grün (376 s / A–G ✓) auf v1.262.4; en/it früher in der Token-Dense-Ära grün.
+
+Tests 6869 → 6905 (+36) · Playwright 176 · Coverage 98.4 % Zeilen / 89.9 % Branches · Registry unverändert: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.262.4] — 2026-10-30
 
 ### Behoben

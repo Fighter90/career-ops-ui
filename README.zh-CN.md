@@ -7,19 +7,19 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-6869%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-6905%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.262.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.4)
+[![release](https://img.shields.io/badge/release-v1.263.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.263.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.262.4** — **ja token 密集补丁：prod 上的 5-locale 点状重跑把当晚的四个 evaluate 超时拆分为两类 —— ar/ko/zh-CN 通过（250–291 s），ru 的一次性漂移未复现 —— 但 `ja` 两次撞上标准 300 s 上限且零输出；`ja` 现在与 `ta`/`hi`/`it`/`pl` 一同加入 32768 token 上限与 480 s 时钟，red-first 固定。测试 6868 → 6869。**
+> **🆕 最新版本 — v1.263.0** — **所有者 UX 批次：动效打磨层（触屏安全的 hover、仅可交互卡片的抬升、模态/弹层/toast/主题动画 —— reduced-motion 安全）、强调色随 logo 从蓝 → 深红翻转、WCAG 对比度通过（docs-fab 6.4:1、toast、表单边框 3:1）、每个控件获得编程名称，以及十余处布局修复 —— scan 表格表头不再盖住搜索、薪资过滤器恢复常规尺寸、docs 页面绝不再溢出、移动端抽屉获得了可见的关闭按钮。测试 6869 → 6905。**
 >
-> **上一版本 — v1.262.3** — **pl token 密集补丁：prod v1.262.1 上的完整 remote-QA 两次抓到波兰语评估死在标准 300 s 上限上 —— `502 · 0 ch` ——（完整 ×19 运行 40960568766 与 v1.262.2 点状重跑 40968958062），与此同时 18/19 locale 通过 A–G；`pl` 现在与 `ta`/`hi`/`it` 一同加入 32768 token 上限与 480 s 时钟，red-first 固定（`evalMaxTokens`、`evalTimeoutMs`）。与 v1.262.1 的 `it` 同一形态类别。测试 6867 → 6868。**
+> **上一版本 — v1.262.4** — **ja token 密集补丁：prod 上的 5-locale 点状重跑把当晚的四个 evaluate 超时拆分为两类 —— ar/ko/zh-CN 通过（250–291 s），ru 的一次性漂移未复现 —— 但 `ja` 两次撞上标准 300 s 上限且零输出；`ja` 现在与 `ta`/`hi`/`it`/`pl` 一同加入 32768 token 上限与 480 s 时钟，red-first 固定。测试 6868 → 6869。**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -392,7 +392,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 6869 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.4)
+└─ tests/                    # 6905 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.263.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report 解析器(纯函数)
    ├─ api.test.mjs           # 每个端点,临时端口,无外网
    ├─ {ru,en}-scanner.test.mjs   # mock 后的 fetch
@@ -535,7 +535,7 @@ npm run test:coverage          # 同 `npm test`,附加 V8 覆盖率
 
 | 套件                       | 测试数 | 内容                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs`(unit + integration) | **6868** | 每个端点,临时端口,无外网。覆盖 parser、scanner(已 mock)、runner、anthropic、安全 header、XSS(含实体解码)、JD sanitize、URL 校验、SSRF 重定向 / rebind、并发互斥、路径遍历、速率限制、i18n 对等。 |
+| `node --test tests/*.test.mjs`(unit + integration) |  **6869** | 每个端点,临时端口,无外网。覆盖 parser、scanner(已 mock)、runner、anthropic、安全 header、XSS(含实体解码)、JD sanitize、URL 校验、SSRF 重定向 / rebind、并发互斥、路径遍历、速率限制、i18n 对等。 |
 | `tests/e2e.mjs`(smoke)      | 21 | Playwright headless:每个路由可渲染,基础流程。                                                            |
 | `tests/e2e-comprehensive.mjs` | 23 | 完整 Playwright walkthrough:11 个路由 + 12 个功能流程。                                                   |
 | `tests/playwright-smoke.mjs`(`npm run test:e2e:browser`) | **12** | 浏览器驱动的烟雾:dashboard 渲染、导航、语言切换、404、health、tracker 往返(BF-1)、pipeline 添加 + 无效 URL 扫描、reports 空、evaluate 手动回退、config keys 遮蔽、CV PUT XSS 清理、pipeline preview 400。 |
