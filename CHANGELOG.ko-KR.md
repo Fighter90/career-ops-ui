@@ -10,6 +10,35 @@
 
 ---
 
+## [1.263.0] — 2026-10-30
+
+### 추가
+
+- **모션 폴리시 레이어** — 새 `motion.css`(앱의 마지막 시트): 모달/팝오버 등장(scale .97 + 페이드, 130–180 ms), 토스트 스프링-인 + 소프트 퇴장 상태, 테마 토글 누름 스프링, 칩/탭 누름 scale(.97), 스태거 인프라(50 ms 스텝, 상한 12), `.page-enter` 라우트 전환 페이드(라우터), 칩/탭의 포커스-할로 전환. 모든 규칙은 `prefers-reduced-motion` 세이프입니다(움직임은 none으로 떨어지고, opacity/color는 유지).
+- **터치 정확성** — 68개의 호버-리프트 규칙이 무방비였습니다: 터치 기기는 탭 뒤에 들러붙은 "들어 올려진" 카드를 유지했습니다. 이제 모든 transform 호버는 `@media (hover:hover)`로 게이트되고(motion.css 뉴트럴라이저), 카드 리프트는 진짜 인터랙티브한 카드에만 적용됩니다(`.card:has(a)`, `a.card`, `button.card`, `[role=button].card`) — 정적 카드의 가짜 어포던스는 끝입니다.
+- **A11y: 모든 컨트롤이 프로그래매틱 이름을 갖습니다.** 새 `A11yDump` 헬퍼가 16개 readonly LLM-출력 덤프 전부에 이름을 붙입니다; 플레이스홀더뿐이던 12개 필드(CV Studio ×6, config ×2, scan 검색, tracker 점수 셀렉트, outcome 노트, plan 에디터, auto URL, 버그 리포트)에 `aria-label`이 붙었습니다; `a11y-form-wires` 게이트가 이제 이를 클래스 전체로 강제합니다(이름 없는 사이트 26곳 → 이제 0 + 이유가 문서화된 allowlist).
+
+### 수정
+
+- **#/scan**: 스티키 테이블 헤더가 스크롤로 아래로 들어간 뒤 탑바 검색 위에 더 이상 덧그리지 않습니다(z가 탑바와 같았고 뒤의 DOM이 이겼습니다 — 이제 토큰 파생으로 그 아래에); "Зарплата от/до" 입력이 정상 크기로 돌아왔습니다(`.v2-scan-bar .input` flex 규칙이 팝오버의 column flex로 새어 flex-basis 200 px를 HEIGHT로 설정했습니다 — 이제 `>` 스코프 + 팝오버 가드); 밀도 토글 버튼은 오너 결정으로 제거됐습니다(배관은 유지, i18n 키는 ×19 제거).
+- **Deploy 워크플로 강화 (F1–F6)**: `provider` 입력이 어떤 셸 splice보다 먼저 문자셋 검증을 거칩니다; hermes 진단이 값을 redact합니다(세 싱크 모두에 대소문자 무시 키 필터 + 값 마스킹 + 80자 절단, `?token=`도 마스킹); hermes 단계가 `inputs.app_dir`를 존중합니다; public_url은 https 게이트; 안티-다운그레이드 가드에 실행 가능한 핀 6개(기본값 없음, 가드가 Deploy보다 먼저, 엄격한 refs 정규식).
+- **리뷰 꼬리, red-first**: CSV 가져오기 백슬래시 왕복(재가져오기가 다시 dedup됩니다), cv-voice 헤드-스트립 4827 ms → 13 ms, `statedYearsMin` 지연 계산, posting-guard 캡처 TOCTOU, MiniMax CN 와일드카드, deel 토큰 스킵, 가져오기 픽커가 읽기 전에 크기 가드. 가져오기 모달: nav 가드 무장, cancel에서 파일 입력 제거, 가드된 중복 읽기, `reduce`를 통한 `num`.
+- **오너 UX 배치**: 대시보드 히어로 수직 리듬(인라인 레벨 자식이 하나의 라인 박스로 붙었습니다); help TOC −8 px 활성 행 시프트(행별 인라인 거터 + 숫자 열); 모바일 드로어(보이는 ✕ 닫기, scrollTop 리셋, 유령 --paper 페이드는 `.has-hud`로 게이트); docs-assistant 페이지가 답변 안의 긴 URL로 더 이상 넘치지 않습니다(그리드 `min-width` 체인 + `overflow-wrap: anywhere`); «Недавние»(최근 항목) 설명(힌트) + 지우기 가능; career-plan Save가 실패한 로드 뒤에 다시 무장됩니다; evaluate URL-프리필이 붙여넣기 플레이스홀더에 LLM 호출을 태우지 않습니다; auto-pipeline Enter가 IME 조합을 존중합니다.
+- **대비 (WCAG 감사, 296쌍)**: docs-fab 그라디언트 2.43 → 6.4:1, toast.success → ok-soft 쌍(1.75 → 다크 AA), 배너 btn-dark → `--ink` 플립, scan-logbtn/reposts-badge/fab-chip/close 라이트 변형, 그리고 폼 컨트롤 보더를 3:1로(`--cv3-input-line`, WCAG 1.4.11 — 이전 1.2:1).
+- **비주얼 스윕**: tracker 빈 상태가 전체 폭 카드입니다(390에서 760 px 테이블 안쪽으로 잘려 있었습니다); scan 콘솔 라인이 반쯤 잘리는 대신 말줄임표를 칩니다; 플로팅 채팅 FAB가 390에서 콘텐츠를 더 이상 덮지 않습니다(44 px 타깃, inset 12); 대시보드 «Application statuses»(지원 상태) 빈 상태가 v2-empty 패턴을 따릅니다; stats «?» 힌트에 디바이더 + 44 px 타깃; career-plan Input 탭이 결과가 어디에 떨어지는지 설명합니다; help §1 마크다운(깨진 볼드 스팬 18개).
+
+### 변경
+
+- **액센트 블루 → 크림슨 레드 (오너 요청, 로고와 일치, hue 15)** — cv3 토큰 5개 × 테마 블록 3개; `docs-assistant` 채팅 버블 텍스트는 `--accent-ink`를 탑니다(리터럴 #fff였고 다크에서 2.39:1); funded 워시는 `--accent-soft`를 탑니다. Danger는 hue 25로 자체 처리를 유지합니다.
+- 문서: README 테스팅-테이블 카운트 ×17(v1.248 시대의 드리프트), help §1 + 마크다운 스팬 18개, help fr/it/ta «118», 벤더 가격 CHECKED_ON 2026-10-30, HANDOFF/CONTEXT/TRACEABILITY 사실.
+
+### 참고
+
+- 의도적으로 하지 않은 것: 스켈레톤 스윕 재작업은 밖에 둡니다(car112 컨트랙트가 현재 페이드를 그대로 고정합니다); 테마 토글 아이콘 크로스페이드는 `display` 스왑으로 유지됩니다(테마 토글 Playwright 컨트랙트가 그것을 관찰합니다); `.btn:active` scale은 중복하지 않았습니다(app.css가 소유합니다); 모션 스태거는 인프라일 뿐입니다 — 대시보드 타일이 나중에 채택합니다; help ×19 산문(밀도 언급, §1 마크다운, «118»)은 다음 팬-아웃에 동승합니다.
+- 전체 remote-QA 증거: v1.262.4에서 ja 표적 그린(376 s / A–G ✓); en/it은 토큰 밀도 시대의 이른 시점에 그린.
+
+- 테스트 6869 → 6905 (+36) · Playwright 176 · 커버리지 98.4 % 라인 / 89.9 % 브랜치 · 레지스트리 변경 없음: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.262.4] — 2026-10-30
 
 ### 수정

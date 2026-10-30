@@ -9,6 +9,35 @@
 ---
 
 
+## [1.263.0] — 2026-10-30
+
+### 新增
+
+- **动效打磨层** — 新的`motion.css`（应用的最后一张样式表）：模态/弹层出场（scale .97 + 渐显，130–180 ms）、toast 弹性入场 + 柔和离场状态、主题切换按压弹性、chip/标签按压 scale(.97)、stagger 基础设施（50 ms 步进，上限 12）、`.page-enter` 路由切换渐显（router）、chip/标签的 focus 光环过渡。每条规则都是 `prefers-reduced-motion` 安全的（动效降为 none，不透明度/颜色保持）。
+- **触屏正确性** — 68 条 hover 抬升规则此前没有防护：触屏设备在点按后会保留一张卡住的「被抬起」卡片。现在所有 transform hover 都经 `@media (hover:hover)` 加门（motion.css 中和器），且卡片抬升只对真正可交互的卡片生效（`.card:has(a)`、`a.card`、`button.card`、`[role=button].card`）—— 静态卡片上不再有虚假可供性。
+- **A11y：每个控件都有编程名称。** 新的 `A11yDump` 助手为全部 16 个只读 LLM 输出转储命名；12 个只有占位符的字段（CV Studio ×6、config ×2、scan 搜索、tracker 分数选择框、outcome 备注、plan 编辑器、auto URL、bug 报告）补上了 `aria-label`；`a11y-form-wires` 门现在按类全量强制（此前 26 处未命名站点 → 现在为 0 + 带书面理由的 allowlist）。
+
+### 修复
+
+- **#/scan**：吸顶表格表头滚动到下方后不再盖住顶栏搜索（此前 z 与顶栏相同、后出现的 DOM 胜出 —— 现在按 token 派生排在其下）；「Зарплата от/до」输入框恢复常规尺寸（`.v2-scan-bar .input` 的 flex 规则泄漏进弹层的 column flex，把 flex-basis 200 px 当作 HEIGHT —— 现在改为 `>` 作用域 + 弹层守卫）；密度切换按钮按所有者决定移除（管线保留，i18n 键 ×19 移除）。
+- **Deploy workflow 加固（F1–F6）**：`provider` 输入在任何 shell 拼接前做字符集校验；hermes 诊断对值脱敏（三个输出全部：大小写不敏感的键过滤 + 值掩码 + 80 字符截断，`?token=` 同样掩码）；hermes 步骤尊重 `inputs.app_dir`；public_url 走 https 门；防降级守卫新增 6 条可执行 pin（无默认值、守卫先于 Deploy 运行、严格的 refs 正则）。
+- **Review 尾巴，red-first**：CSV 导入反斜杠 round-trip（重新导入重新去重）、cv-voice 头部剥离 4827 ms → 13 ms、`statedYearsMin` 惰性计算、posting-guard capture TOCTOU、MiniMax CN 通配、deel token 跳过、导入选择器读取前做大小守卫。导入模态框：装上 nav 守卫、cancel 时移除 file input、受守卫的重复项读取、`num` 改用 reduce。
+- **所有者 UX 批次**：仪表盘 hero 垂直节奏（inline 级子元素粘进一个行盒）；help TOC −8 px 活动行位移（每行 inline 槽 + 数字列）；移动端抽屉（可见的 ✕ 关闭、scrollTop 重置、幽灵 --paper 渐隐限定到 `.has-hud`）；docs-assistant 页面在答案里有长 URL 时不再溢出（grid `min-width` 链 + `overflow-wrap: anywhere`）；「Недавние」（最近项）有说明（hint）+ 可清空；career-plan 的 Save 在加载失败后重新武装；evaluate 的 URL 预填不再在粘贴占位符上烧掉一次 LLM 调用；auto-pipeline 的 Enter 尊重 IME 组合输入。
+- **对比度（WCAG 审计，296 对）**：docs-fab 渐变 2.43 → 6.4:1，toast.success → ok-soft 配对（1.75 → 深色 AA），banner btn-dark → `--ink` 翻转，scan-logbtn/reposts-badge/fab-chip/close 亮色变体，表单控件边框到 3:1（`--cv3-input-line`，WCAG 1.4.11 —— 此前 1.2:1）。
+- **视觉清扫**：tracker 空状态改为全宽卡片（此前在 390 宽度下被 760 px 表格裁剪）；scan 控制台行改用省略号而非半截裁剪；浮动聊天 FAB 在 390 下不再盖住内容（44 px 目标，inset 12）；仪表盘「Application statuses」（申请状态）空状态遵循 v2-empty 模式；stats「?」提示获得分隔线 + 44 px 目标；career-plan 的 Input 标签页说明结果落在哪里；help §1 markdown（18 处损坏的加粗 span）。
+
+### 更改
+
+- **强调色蓝 → 深红（所有者要求，与 logo 一致，hue 15）** — 5 个 cv3 token × 3 个主题块；`docs-assistant` 聊天气泡文字走 `--accent-ink`（此前是字面 #fff，深色下 2.39:1）；funded 底色走 `--accent-soft`。Danger 保持 hue 25 及其自有处理。
+- 文档：README 测试表计数 ×17（v1.248 时代的漂移）、help §1 + 18 处 markdown span、help fr/it/ta «118»、厂商价格 CHECKED_ON 2026-10-30、HANDOFF/CONTEXT/TRACEABILITY 事实。
+
+### 备注
+
+- 刻意的未行动：骨架屏清扫重做留在门外（car112 契约逐字固定了当前的渐隐）；主题切换图标交叉渐隐保持 `display` 切换（主题切换 Playwright 契约在观察它）；`.btn:active` scale 未做重复（app.css 拥有它）；动效 stagger 仅是基础设施 —— 仪表盘磁贴稍后采用；help ×19 散文（密度提及、§1 markdown、«118»）搭下一次 fan-out。
+- 完整 remote-QA 证据：ja 点状在 v1.262.4 上绿（376 s / A–G ✓）；en/it 在 token 密集时代更早时已绿。
+
+测试 6869 → 6905 (+36) · Playwright 176 · 覆盖率 98.4 % 行 / 89.9 % 分支 · 注册表不变：123 sources = 118 EN + 5 RU · 118 adapters。
+
 ## [1.262.4] — 2026-10-30
 
 ### 修复
