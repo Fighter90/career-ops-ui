@@ -26,3 +26,13 @@ test('CAR-210 — tracker first-run empty state renders OUTSIDE the min-width ta
   assert.match(src, /emptyHost\.hidden = !\(tableActive && emptyFirstRun\)/, 'applyViewMode gates the host');
   assert.match(src, /tableWrap\.style\.display = tableActive && !emptyFirstRun \? '' : 'none'/, 'table hides on a first-run empty tracker');
 });
+
+test('CAR-211 — collapsed scan-log line never wraps (nowrap + ellipsis in the strip)', () => {
+  const css = read('public/css/app.css');
+  assert.match(
+    css,
+    /\.scan-terminal:not\(\.v2-scan-log-open\) \.console \{ max-height: 1\.6em; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; \}/,
+    'the collapsed console clips one line with an ellipsis instead of slicing a wrapped second line',
+  );
+});
+

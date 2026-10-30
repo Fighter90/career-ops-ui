@@ -783,7 +783,7 @@ tr.v2-scan-isnew > td { animation: v2scan-in 150ms var(--ease-out); }
 .scan-icon--score.v2-scan-score-hi { color: var(--kazan-text, var(--kazan)); font-weight: 700; }
 .scan-icon--score.v2-scan-score-mid { color: var(--darjeeling-text, var(--darjeeling)); }
 .scan-icon--score.v2-scan-score-lo { color: var(--rausch-text, var(--rausch)); }
-.scan-terminal:not(.v2-scan-log-open) .console { max-height: 2.4em; overflow: hidden; }
+.scan-terminal:not(.v2-scan-log-open) .console { max-height: 1.6em; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; } /* CAR-211 — the ready line never wraps in the collapsed strip */
 .v2-scan-logbtn { flex: 0 0 auto; margin-inline-start: auto; color: #6f7781; }
 .v2-scan-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.35); z-index: var(--z-modal); opacity: 0; visibility: hidden; transition: opacity var(--transition), visibility var(--transition); }
 .v2-scan-backdrop.is-open { opacity: 1; visibility: visible; }
