@@ -553,7 +553,7 @@ event: error    data: { message }
 ## Testler
 
 ```bash
-npm test                       # 5116 birim/entegrasyon testi
+npm test                       # 6868 birim/entegrasyon testi
 npm run test:e2e               # 21 smoke e2e (kendi sunucusunu başlatır)
 npm run test:e2e:full          # 23 kapsamlı e2e
 npm run test:e2e:browser       # 118 Playwright tarayıcı (smoke + full-cycle + forms + locale-sweep)
@@ -562,7 +562,7 @@ npm run test:coverage          # `npm test` ile aynı, artı V8 kapsamı
 
 | Paket                       | Test | Ne                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (birim + entegrasyon) | **5116** | Her uç nokta, geçici sunucu, ağ yok. 329 dosya: ayrıştırıcılar, tarayıcılar (taklit edilmiş), çalıştırıcılar, anthropic/openai, güvenlik başlıkları, XSS, iş tanımı temizleme, URL doğrulama, i18n eşitliği, + v1.55→v1.56 UX-düzeltme paketleri. |
+| `node --test tests/*.test.mjs` (birim + entegrasyon) | **6868** | Her uç nokta, geçici sunucu, ağ yok. 329 dosya: ayrıştırıcılar, tarayıcılar (taklit edilmiş), çalıştırıcılar, anthropic/openai, güvenlik başlıkları, XSS, iş tanımı temizleme, URL doğrulama, i18n eşitliği, + v1.55→v1.56 UX-düzeltme paketleri. |
 | `tests/e2e.mjs` (smoke)      | 21 | Playwright başsız: her rota render edilir, temel akışlar.                                                     |
 | `tests/e2e-comprehensive.mjs` | 23 | Tam Playwright gezintisi: 11 rota + 12 işlevsel akış.                                              |
 | `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **118** | Tarayıcı güdümlü: dashboard render, gezinme, dil değiştirme, 404, health, tracker gidiş-dönüşü, pipeline ekleme + geçersiz-URL taraması, raporlar, evaluate manuel yedeği, config anahtarları maskeli, CV PUT XSS temizleme, pipeline preview 400, auto-pipeline SSE. |
@@ -735,7 +735,7 @@ sayfasında denetlenir.
 
 Issue'lar ve PR'lar memnuniyetle karşılanır. Ev kuralları:
 
-- Push'tan önce `npm test` çalıştırın — **5116 kontrol yeşil** çıtadır (arayüze dokunursanız artı 118 Playwright).
+- Push'tan önce `npm test` çalıştırın — **6868 kontrol yeşil** çıtadır (arayüze dokunursanız artı 118 Playwright).
 - Önemsiz olmayan değişiklikler GSD pipeline'ından geçer. Bkz. [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md).
 - Bu depo içinden üst `career-ops/` projesindeki hiçbir şeyi değiştirmeyin. Bütün mesele, bunun invaziv olmayan bir örtü olmasıdır. Katı kurallar [`CLAUDE.md`](CLAUDE.md) içinde.
 - Konvansiyonel commit'ler: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`. İsteğe bağlı kapsam: `feat(scan):`. Kırıcı değişiklik: `feat!:`.

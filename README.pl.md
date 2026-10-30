@@ -176,7 +176,7 @@ Oficjalna strona: [career-ops.org](https://career-ops.org) · Dokumentacja: [car
 ## Testy
 
 ```bash
-npm test                    # 5116 testów jednostkowych/integracyjnych
+npm test                    # 6868 testów jednostkowych/integracyjnych
 npm run test:e2e            # 21 smoke e2e
 npm run test:e2e:full       # 23 comprehensive e2e
 npm run test:e2e:browser    # 101 testów Playwright

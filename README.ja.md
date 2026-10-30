@@ -530,7 +530,7 @@ LLM エンドポイントはレート制限の対象です(`server/lib/rate-limi
 ## テスト
 
 ```bash
-npm test                       # 5116 unit/integration テスト
+npm test                       # 6868 unit/integration テスト
 npm run test:e2e               # 21 smoke e2e(独自サーバーを起動)
 npm run test:e2e:full          # 23 comprehensive e2e
 npm run test:e2e:browser       # 118 Playwright browser-smoke
@@ -539,7 +539,7 @@ npm run test:coverage          # `npm test` 相当 + V8 coverage
 
 | スイート                       | テスト数 | 内容                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs`(unit + integration) | **5116** | 全エンドポイント、ephemeral server、ネットワーク非依存。parser、scanner(モック)、runner、anthropic、security headers、XSS、JD サニタイズ、URL バリデーション、i18n parity、レート制限、ファイルロック、safe-fetch、path-traversal、DNS リバインドリダイレクトを含みます。 |
+| `node --test tests/*.test.mjs`(unit + integration) | **6868** | 全エンドポイント、ephemeral server、ネットワーク非依存。parser、scanner(モック)、runner、anthropic、security headers、XSS、JD サニタイズ、URL バリデーション、i18n parity、レート制限、ファイルロック、safe-fetch、path-traversal、DNS リバインドリダイレクトを含みます。 |
 | `tests/e2e.mjs`(smoke)     | 21 | Playwright ヘッドレス: 各 route のレンダリングと基本フロー。                                                |
 | `tests/e2e-comprehensive.mjs` | 23 | Playwright による完全な walkthrough: 11 routes + 12 機能フロー。                                          |
 | `tests/playwright-smoke.mjs`(`npm run test:e2e:browser`) | **32** | ブラウザ駆動 smoke: dashboard レンダリング、ナビゲーション、言語切替、404、health、tracker ラウンドトリップ (BF-1)、pipeline 追加と無効 URL sweep、reports 空、evaluate 手動フォールバック、config キーマスク、CV PUT XSS ストリップ、pipeline preview 400、レート制限、競合書き込み、エンティティ対応 XSS。 |
@@ -694,7 +694,7 @@ node evals/workflow/run.mjs --task qa-prompt-mandatory
 
 Issue と PR を歓迎します。ハウスルール:
 
-- プッシュ前に `npm test` を実行してください。**5116 checks green** がバーラインです(UI に手を入れる場合は加えて 118 Playwright)。
+- プッシュ前に `npm test` を実行してください。**6868 checks green** がバーラインです(UI に手を入れる場合は加えて 118 Playwright)。
 - 非自明な変更は GSD パイプラインを経由します。[`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md) を参照してください。
 - 本リポジトリから親 `career-ops/` プロジェクト内のファイルを変更してはなりません。本プロジェクトの本質は、非侵襲的なオーバーレイであることです。ハードルールは [`CLAUDE.md`](CLAUDE.md) にあります。
 - Conventional commits: `feat`、`fix`、`refactor`、`docs`、`test`、`chore`、`perf`、`ci`。オプショナルスコープ: `feat(scan):`。Breaking change は `feat!:`。

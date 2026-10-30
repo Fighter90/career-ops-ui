@@ -176,7 +176,7 @@ career-ops найкраще працює **завжди увімкненим** �
 ## Тести
 
 ```bash
-npm test                    # 5116 unit/integration-тестів
+npm test                    # 6868 unit/integration-тестів
 npm run test:e2e            # 21 smoke e2e
 npm run test:e2e:full       # 23 comprehensive e2e
 npm run test:e2e:browser    # 101 тестів Playwright

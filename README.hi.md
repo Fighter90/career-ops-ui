@@ -556,7 +556,7 @@ event: error    data: { message }
 ## टेस्ट
 
 ```bash
-npm test                       # 5116 यूनिट/इंटीग्रेशन टेस्ट
+npm test                       # 6868 यूनिट/इंटीग्रेशन टेस्ट
 npm run test:e2e               # 21 स्मोक e2e (अपना सर्वर खुद बूट करता है)
 npm run test:e2e:full          # 23 व्यापक e2e
 npm run test:e2e:browser       # 118 Playwright ब्राउज़र (smoke + full-cycle + forms + locale-sweep ×19 + theme)
@@ -565,7 +565,7 @@ npm run test:coverage          # `npm test` जैसा ही, साथ म�
 
 | सूट                       | टेस्ट | क्या                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (यूनिट + इंटीग्रेशन) | **5116** | हर एंडपॉइंट, एफ़ेमरल सर्वर, कोई नेटवर्क नहीं। 490 फ़ाइलें: parsers, scanners (मॉक्ड), runners, anthropic/openai, सुरक्षा हेडर, XSS, JD सैनिटाइज़, URL वैलिडेशन, i18n पैरिटी, + v1.55→v1.56 UX-फ़िक्स सूट। |
+| `node --test tests/*.test.mjs` (यूनिट + इंटीग्रेशन) | **6868** | हर एंडपॉइंट, एफ़ेमरल सर्वर, कोई नेटवर्क नहीं। 490 फ़ाइलें: parsers, scanners (मॉक्ड), runners, anthropic/openai, सुरक्षा हेडर, XSS, JD सैनिटाइज़, URL वैलिडेशन, i18n पैरिटी, + v1.55→v1.56 UX-फ़िक्स सूट। |
 | `tests/e2e.mjs` (स्मोक)      | 21 | Playwright हेडलेस: हर राउट रेंडर होता है, बुनियादी फ़्लो।                                                     |
 | `tests/e2e-comprehensive.mjs` | 23 | पूर्ण Playwright वॉकथ्रू: 11 राउट + 12 फ़ंक्शनल फ़्लो।                                              |
 | `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **118** | ब्राउज़र-ड्रिवन: डैशबोर्ड रेंडर, नेविगेशन, भाषा स्विच, 404, health, tracker राउंड-ट्रिप, pipeline जोड़ना + अमान्य-URL स्वीप, reports, evaluate मैनुअल फ़ॉलबैक, config कीज़ मास्क्ड, CV PUT XSS स्ट्रिप, pipeline preview 400, auto-pipeline SSE। |
@@ -737,7 +737,7 @@ node evals/workflow/run.mjs --task qa-prompt-mandatory
 
 Issues और PRs का स्वागत है। घर के नियम:
 
-- पुश करने से पहले `npm test` चलाएँ — **5116 चेक ग्रीन** बार है (यदि आप UI छूते हैं तो साथ में 118 Playwright भी)।
+- पुश करने से पहले `npm test` चलाएँ — **6868 चेक ग्रीन** बार है (यदि आप UI छूते हैं तो साथ में 118 Playwright भी)।
 - गैर-तुच्छ बदलाव GSD पाइपलाइन से होकर गुज़रते हैं। [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md) देखें।
 - इस रेपो के अंदर से पैरेंट `career-ops/` प्रोजेक्ट में कुछ भी संशोधित न करें। पूरा उद्देश्य यही है कि यह एक गैर-आक्रामक ओवरले है। कठोर नियम [`CLAUDE.md`](CLAUDE.md) में हैं।
 - कन्वेंशनल कमिट्स: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`। वैकल्पिक स्कोप: `feat(scan):`। ब्रेकिंग चेंज: `feat!:`।

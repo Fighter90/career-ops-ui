@@ -205,7 +205,7 @@ career-ops/
 </div>
 
 ```bash
-npm test                    # 5116 اختبار وحدة وتكامل
+npm test                    # 6868 اختبار وحدة وتكامل
 npm run test:e2e            # 21 اختبار e2e دخاني
 npm run test:e2e:full       # 23 اختبار e2e شامل
 npm run test:e2e:browser    # 101 اختبار Playwright
