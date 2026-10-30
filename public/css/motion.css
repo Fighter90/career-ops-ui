@@ -1,0 +1,230 @@
+/* ═══════════════════════════════════════════════════════════════════════════
+   motion.css — the motion layer (Emil interaction-audit pass, 2026-10)
+
+   Owns everything that moves on purpose: entrance/exit keyframes, press
+   feedback, the route-enter rise, and the touch / reduced-motion
+   neutralizers. It is a SEPARATE sheet on purpose: app.css (799/800) and
+   components.css (800/800) sit exactly at the file-size canary, so no base
+   sheet may grow. This file loads LAST of all stylesheets — every rule in
+   here is a deliberate cascade override of a base-sheet rule, never a
+   re-statement of one.
+
+   Contracts locked by tests/ux-motion.test.mjs:
+   - durations ride the --motion-* tokens; the only literal ms values are the
+     token definitions themselves and the stagger animation-delay ramp;
+   - easing always consumes var(--ease-out) (declared once in the app.css
+     token block, per the v3 phase-3 hand-off) or the spring curve below —
+     never a literal easing keyword;
+   - every motion rule has a prefers-reduced-motion neutralizer (belt and
+     braces on top of the global one in overlays.css);
+   - the skeleton shimmer is deliberately NOT here: car112 pins its exact
+     reduce contract inside overlays.css, so that sweep stays untouched.
+
+   Touch notes (CAR-207): `(hover: none)` devices keep :hover stuck after a
+   tap, so every hover LIFT is neutralized there — overlap, not a rewrite of
+   the base sheets. (CAR-196): on pointer devices the generic .card lift is
+   reserved for cards that are actually interactive (contain a link, or are
+   a button / role=button themselves).
+   ═══════════════════════════════════════════════════════════════════════════ */
+
+:root {
+  --ease-spring: cubic-bezier(.34, 1.56, .64, 1); /* slight overshoot for playful pops */
+  --motion-fast: 120ms;  /* press feedback · popover/backdrop fades · toast exit */
+  --motion-base: 180ms;  /* modal card · route-enter rise · stagger items */
+  --motion-rise: 240ms;  /* toast entrance (spring) — the longest move on screen */
+}
+
+/* ───────────────── modal enter (fade the backdrop, rise the card) ─────────
+   Base states are opacity:0/scale(.97) so the animation always owns the
+   entrance; `forwards` holds the final frame. display:none → flex on the
+   .modal root restarts both animations on every open. */
+.modal-backdrop {
+  opacity: 0;
+  animation: m-fade var(--motion-fast) var(--ease-out) forwards;
+}
+.modal-card {
+  opacity: 0;
+  transform: scale(.97);
+  animation: m-rise var(--motion-base) var(--ease-out) forwards;
+}
+
+/* ───────────────── popovers (help "?" hint · scan-filter popup) ───────────
+   Both are appended fresh / un-hidden on open, so the animation runs on each
+   appearance. Their JS flips them above/below the anchor via top/left — a
+   center-origin 4px rise + scale reads correctly from either side, so the
+   transform-origin stays at its default. */
+.help-pop,
+.v2-scan-pop {
+  animation: m-rise var(--motion-fast) var(--ease-out);
+}
+
+/* ───────────────── press feedback ──────────────────────────────────────────
+   The base sheets give these controls transitions WITHOUT transform, so a
+   bare :active scale would snap. This list REPLACES theirs (later sheet
+   wins) and adds transform first + box-shadow, so the focus halo
+   (overlays.css .chip/.tab-btn focus-visible ring) eases in too.
+   .btn is deliberately NOT here: app.css already gives .btn:active its own
+   scale(.98) press. */
+.chip,
+.tab-btn,
+.tracker-tab,
+.v2-map-chip {
+  transition:
+    transform var(--motion-fast) var(--ease-out),
+    background var(--transition),
+    border-color var(--transition),
+    color var(--transition),
+    box-shadow var(--transition);
+}
+.chip:active,
+.tab-btn:active,
+.tracker-tab:active,
+.v2-map-chip:active {
+  transform: scale(.97);
+}
+
+/* ───────────────── theme-toggle spring ─────────────────────────────────────
+   The icon swap itself (display:none ↔ block) is owned by components.css and
+   pinned by the playwright theme-toggle suite — only the BUTTON gets the
+   spring press here. */
+.theme-toggle {
+  transition:
+    transform var(--motion-fast) var(--ease-spring),
+    background var(--transition),
+    border-color var(--transition);
+}
+.theme-toggle:active {
+  transform: scale(.92);
+}
+
+/* ───────────────── touch: no stuck hover lifts (CAR-207) ──────────────────
+   On `(hover: none)` devices :hover latches after a tap and the lift never
+   releases. Neutralize every hover lift — this must stay a pure override of
+   the base hover rules (same selectors, later sheet), never an edit there. */
+@media (hover: none) {
+  .qa-tile:hover,
+  .metric-card:hover,
+  .card:hover,
+  .docs-fab:hover,
+  .btn:hover {
+    transform: none;
+  }
+}
+
+/* ───────────────── lift only interactive cards (CAR-196) ──────────────────
+   A plain informational .card sits still on hover; a card that IS a link /
+   button (or contains one) keeps the 1px lift as the affordance cue. The
+   first rule must come before the interactive ones at equal specificity so
+   the lift only survives on the interactive forms. */
+@media (hover: hover) {
+  .card:hover {
+    transform: none;
+  }
+  .card:has(a):hover,
+  a.card:hover,
+  button.card:hover,
+  [role="button"].card:hover {
+    transform: translateY(-1px);
+  }
+}
+
+/* ───────────────── route enter ─────────────────────────────────────────────
+   router.js tags the first element of a CHANGED route with .page-enter
+   (never on first paint, never on a same-route re-render — a language
+   switch must not replay a page transition). */
+.page-enter {
+  animation: rise-in var(--motion-base) var(--ease-out);
+}
+
+/* ───────────────── stagger (infrastructure — no view uses it yet) ──────────
+   Add .stagger to a grid/list container; direct children rise in sequence,
+   50 ms apart, capped at 600 ms from the 13th child on. `backwards` keeps
+   delayed children on the from-frame (hidden) until their turn. */
+.stagger > * {
+  animation: rise-in var(--motion-base) var(--ease-out) backwards;
+}
+.stagger > *:nth-child(2) { animation-delay: 50ms; }
+.stagger > *:nth-child(3) { animation-delay: 100ms; }
+.stagger > *:nth-child(4) { animation-delay: 150ms; }
+.stagger > *:nth-child(5) { animation-delay: 200ms; }
+.stagger > *:nth-child(6) { animation-delay: 250ms; }
+.stagger > *:nth-child(7) { animation-delay: 300ms; }
+.stagger > *:nth-child(8) { animation-delay: 350ms; }
+.stagger > *:nth-child(9) { animation-delay: 400ms; }
+.stagger > *:nth-child(10) { animation-delay: 450ms; }
+.stagger > *:nth-child(11) { animation-delay: 500ms; }
+.stagger > *:nth-child(12) { animation-delay: 550ms; }
+.stagger > *:nth-child(n+12) { animation-delay: 600ms; } /* cap */
+
+/* ───────────────── toast enter / leave ─────────────────────────────────────
+   Enter replaces the base slide-in with a springy rise (api.js creates the
+   toast once and re-fills it, so the enter animation plays on first
+   appearance). Leave is attribute-driven: api.js sets [data-leaving] and
+   hides for real on animationend, with a setTimeout fuse so the hide can
+   never be lost (reduced motion, interrupted animation, detached node). */
+.toast {
+  animation: toast-in var(--motion-rise) var(--ease-spring);
+}
+.toast[data-leaving] {
+  animation: toast-out var(--motion-fast) var(--ease-out) both;
+}
+
+/* ───────────────── keyframes ─────────────────────────────────────────────── */
+@keyframes m-fade {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+@keyframes m-rise {
+  from { opacity: 0; transform: scale(.97) translateY(4px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes rise-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes toast-in {
+  from { opacity: 0; transform: translateY(14px) scale(.98); }
+  to { opacity: 1; transform: none; }
+}
+@keyframes toast-out {
+  from { opacity: 1; transform: none; }
+  to { opacity: 0; transform: translateY(8px) scale(.98); }
+}
+
+/* ───────────────── reduced motion: per-rule neutralizers ───────────────────
+   The global overlays.css block already crushes every duration to 0.01ms
+   with !important; these are the explicit per-rule forms so each motion rule
+   in THIS file has its documented off-switch (and so the modal's opacity:0
+   base state can never strand invisible if a future refactor swaps the
+   global crush for animation:none). Selectors mirror their motion rules —
+   including the :has()/attribute forms — so the later block wins at equal
+   specificity. */
+@media (prefers-reduced-motion: reduce) {
+  .modal-backdrop,
+  .modal-card {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
+  .help-pop,
+  .v2-scan-pop {
+    animation: none;
+  }
+  .card:hover,
+  .card:has(a):hover,
+  a.card:hover,
+  button.card:hover,
+  [role="button"].card:hover {
+    transform: none;
+  }
+  .toast,
+  .toast[data-leaving] {
+    animation: none;
+  }
+  .page-enter {
+    animation: none;
+  }
+  .stagger > * {
+    animation: none;
+  }
+}
