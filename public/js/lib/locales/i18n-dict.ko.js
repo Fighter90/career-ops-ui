@@ -1834,4 +1834,10 @@ window.__I18N_DICT_KO = {
   "track.inlineStatusAria": "지원 상태 변경",
   "track.statusUpdated": "상태가 업데이트되었습니다: {state}",
   "track.statusUpdateFailed": "상태를 업데이트할 수 없습니다",
+
+  // evc — evidence-confidence chips on the report view (#4452)
+  "evc.confirmedTitle": "근거로 확인됨: {list}",
+  "evc.gapsTitle": "확인 필요: {list}",
+  "evc.confirmed": "{n}개 확인됨",
+  "evc.gaps": "{n}개 미확인",
 };

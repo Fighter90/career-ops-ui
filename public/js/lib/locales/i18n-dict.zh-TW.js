@@ -1835,4 +1835,10 @@ window.__I18N_DICT_ZH_TW = {
   "track.inlineStatusAria": "變更申請狀態",
   "track.statusUpdated": "狀態已更新為 {state}",
   "track.statusUpdateFailed": "無法更新狀態",
+
+  // evc — evidence-confidence chips on the report view (#4452)
+  "evc.confirmedTitle": "證據已確認：{list}",
+  "evc.gapsTitle": "待核實：{list}",
+  "evc.confirmed": "已確認 {n} 項",
+  "evc.gaps": "{n} 項缺口",
 };

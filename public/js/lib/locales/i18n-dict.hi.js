@@ -1845,4 +1845,10 @@ window.__I18N_DICT_HI = {
   "track.inlineStatusAria": "आवेदन की स्थिति बदलें",
   "track.statusUpdated": "स्थिति अपडेट हुई: {state}",
   "track.statusUpdateFailed": "स्थिति अपडेट नहीं हो सकी",
+
+  // evc — evidence-confidence chips on the report view (#4452)
+  "evc.confirmedTitle": "साक्ष्य द्वारा पुष्ट: {list}",
+  "evc.gapsTitle": "सत्यापन आवश्यक: {list}",
+  "evc.confirmed": "{n} पुष्ट",
+  "evc.gaps": "{n} अंतराल",
 };

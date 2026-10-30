@@ -1833,4 +1833,10 @@ window.__I18N_DICT_PL = {
   "track.inlineStatusAria": "Zmień status aplikacji",
   "track.statusUpdated": "Status zaktualizowany na {state}",
   "track.statusUpdateFailed": "Nie udało się zaktualizować statusu",
+
+  // evc — evidence-confidence chips on the report view (#4452)
+  "evc.confirmedTitle": "Potwierdzone dowodami: {list}",
+  "evc.gapsTitle": "Wymaga weryfikacji: {list}",
+  "evc.confirmed": "{n} potwierdzonych",
+  "evc.gaps": "{n} luk",
 };

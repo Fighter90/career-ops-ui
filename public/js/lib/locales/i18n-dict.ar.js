@@ -1833,4 +1833,10 @@ window.__I18N_DICT_AR = {
   "track.inlineStatusAria": "تغيير حالة الطلب",
   "track.statusUpdated": "تم تحديث الحالة إلى {state}",
   "track.statusUpdateFailed": "تعذّر تحديث الحالة",
+
+  // evc — evidence-confidence chips on the report view (#4452)
+  "evc.confirmedTitle": "مؤكَّد بالأدلة: {list}",
+  "evc.gapsTitle": "يحتاج إلى تحقق: {list}",
+  "evc.confirmed": "{n} مؤكَّدة",
+  "evc.gaps": "{n} فجوات",
 };

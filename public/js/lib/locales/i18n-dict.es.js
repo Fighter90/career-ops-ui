@@ -1834,4 +1834,10 @@ window.__I18N_DICT_ES = {
   "track.inlineStatusAria": "Cambiar el estado de la solicitud",
   "track.statusUpdated": "Estado actualizado a {state}",
   "track.statusUpdateFailed": "No se pudo actualizar el estado",
+
+  // evc — evidence-confidence chips on the report view (#4452)
+  "evc.confirmedTitle": "Confirmado por evidencia: {list}",
+  "evc.gapsTitle": "Requiere verificación: {list}",
+  "evc.confirmed": "{n} confirmados",
+  "evc.gaps": "{n} vacíos",
 };

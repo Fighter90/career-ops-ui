@@ -1833,4 +1833,10 @@ window.__I18N_DICT_DA = {
   "track.inlineStatusAria": "Ændr ansøgningens status",
   "track.statusUpdated": "Status opdateret til {state}",
   "track.statusUpdateFailed": "Kunne ikke opdatere statussen",
+
+  // evc — evidence-confidence chips on the report view (#4452)
+  "evc.confirmedTitle": "Bekræftet af dokumentation: {list}",
+  "evc.gapsTitle": "Kræver efterprøvning: {list}",
+  "evc.confirmed": "{n} bekræftet",
+  "evc.gaps": "{n} huller",
 };

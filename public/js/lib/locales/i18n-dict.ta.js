@@ -1820,4 +1820,10 @@ window.__I18N_DICT_TA = {
   "track.inlineStatusAria": "விண்ணப்ப நிலையை மாற்று",
   "track.statusUpdated": "நிலை புதுப்பிக்கப்பட்டது: {state}",
   "track.statusUpdateFailed": "நிலையைப் புதுப்பிக்க முடியவில்லை",
+
+  // evc — evidence-confidence chips on the report view (#4452)
+  "evc.confirmedTitle": "ஆதாரத்தால் உறுதிப்படுத்தப்பட்டது: {list}",
+  "evc.gapsTitle": "சரிபார்க்க வேண்டும்: {list}",
+  "evc.confirmed": "{n} உறுதிப்படுத்தப்பட்டது",
+  "evc.gaps": "{n} இடைவெளிகள்",
 };

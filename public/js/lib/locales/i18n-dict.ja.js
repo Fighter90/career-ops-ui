@@ -1834,4 +1834,10 @@ window.__I18N_DICT_JA = {
   "track.inlineStatusAria": "応募ステータスを変更",
   "track.statusUpdated": "ステータスを更新しました: {state}",
   "track.statusUpdateFailed": "ステータスを更新できませんでした",
+
+  // evc — evidence-confidence chips on the report view (#4452)
+  "evc.confirmedTitle": "根拠により確認済み: {list}",
+  "evc.gapsTitle": "要確認: {list}",
+  "evc.confirmed": "{n}件 確認済み",
+  "evc.gaps": "{n}件 未確認",
 };

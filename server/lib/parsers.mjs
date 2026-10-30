@@ -757,6 +757,56 @@ function yamlValue(src, key) {
   return m ? m[1].trim() : '';
 }
 
+// #4452 — `score_evidence` from the Machine Summary: the parent's evaluation
+// contract (modes/oferta.md, canonical schema in batch/batch-prompt.md) makes
+// the model mirror its Score Evidence table as a nested YAML map of scoring
+// dimensions → `supported | partial | unknown`. Tolerant of the ```yaml
+// fences and of quoted values; the scan stops at the first line that is not
+// an indented `key: value` (dedent / next top-level key / closing fence), so
+// later summary fields are never swallowed. Unknown dims and off-contract
+// values are dropped, so an unfilled placeholder degrades to {} and the
+// evidence chips stay hidden. Returns {} when the key is absent.
+function machineScoreEvidence(src) {
+  const lines = String(src).split('\n');
+  const at = lines.findIndex((l) => /^[ \t]*score_evidence[ \t]*:/.test(l));
+  if (at === -1) return {};
+  const out = {};
+  for (let i = at + 1; i < lines.length; i++) {
+    const m = lines[i].match(/^[ \t]{2,}([\w-]+)[ \t]*:[ \t]*"?(supported|partial|unknown)"?[ \t]*$/);
+    if (!m) break;
+    out[m[1]] = m[2];
+  }
+  return out;
+}
+
+// #4452 — `confidence_gaps` from the Machine Summary: up to three concrete
+// verification priorities the model could not resolve. Both YAML list forms
+// are read — the inline `confidence_gaps: ["a", "b"]` and the block list
+// under a bare `confidence_gaps:` — plus the schema default `[]`. Items keep
+// their commas: the inline form prefers quoted-string extraction, the block
+// form is line-based. Returns [] when absent or empty.
+function machineConfidenceGaps(src) {
+  const lines = String(src).split('\n');
+  const at = lines.findIndex((l) => /^[ \t]*confidence_gaps[ \t]*:/.test(l));
+  if (at === -1) return [];
+  const inline = lines[at].slice(lines[at].indexOf(':') + 1).trim();
+  if (inline && inline !== '[]' && inline !== 'null' && inline !== '~') {
+    const quoted = inline.match(/"([^"]*)"/g);
+    const items = quoted
+      ? quoted.map((s) => s.slice(1, -1).trim())
+      : inline.replace(/^\[/, '').replace(/\]$/, '').split(',').map((s) => s.replace(/^['"]|['"]$/g, '').trim());
+    return items.filter(Boolean);
+  }
+  const out = [];
+  for (let i = at + 1; i < lines.length; i++) {
+    const m = lines[i].match(/^[ \t]+-[ \t]*(.+)$/);
+    if (!m) break;
+    const item = m[1].replace(/^['"]|['"]$/g, '').trim();
+    if (item) out.push(item);
+  }
+  return out;
+}
+
 // v1.174.0 (FIND-2) — strip markdown emphasis markers (**bold** / *italic*)
 // from an extracted value, so a legitimacy chip reads "High Confidence", not
 // "** High Confidence". v1.175.0 — nullish-safe (a nullish input yields '',
@@ -833,7 +883,12 @@ function toIsoDate(d) {
 
 /**
  * Parse a report file's header (the first heading + metadata).
- * Returns { title, date, archetype, score, scoreNum, url, legitimacy, pdf }.
+ * Returns { title, date, archetype, score, scoreNum, url, legitimacy, pdf,
+ *           scoreEvidence, confidenceGaps }.
+ *
+ * #4452 — `scoreEvidence` ({dim: supported|partial|unknown}) and
+ * `confidenceGaps` (string[]) come from the Machine Summary contract; both
+ * default to {} / [] so a report without them renders no evidence block.
  *
  * FIX-1 (v1.159.0): parsing is no longer English-only. Order of precedence:
  *   1. English `**Score:**`-style bold labels  → keeps EN reports byte-identical.
@@ -853,6 +908,8 @@ export function parseReportHeader(text, opts = {}) {
     url: '',
     legitimacy: '',
     pdf: '',
+    scoreEvidence: {},
+    confidenceGaps: [],
   };
   const mtimeIso = opts.mtime ? toIsoDate(opts.mtime) : '';
   if (!text) {
@@ -887,6 +944,11 @@ export function parseReportHeader(text, opts = {}) {
   if (!out.url) out.url = yamlValue(src, 'url');
   if (!out.archetype) out.archetype = yamlValue(src, 'archetype');
   if (!out.pdf) out.pdf = yamlValue(src, 'pdf');
+
+  // (#4452) Evidence-confidence surfaces — the Machine Summary contract's
+  // score_evidence map and confidence_gaps list, for the report-view chips.
+  out.scoreEvidence = machineScoreEvidence(src);
+  out.confidenceGaps = machineConfidenceGaps(src);
 
   // (2.5) Localized BOLD labels (`**Оценка:** 1.5/5`). Beats the loose prose
   //       fallback so a body H1 that merely contains the label word can't win.

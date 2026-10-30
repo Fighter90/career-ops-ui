@@ -1833,4 +1833,10 @@ window.__I18N_DICT_FR = {
   "track.inlineStatusAria": "Changer le statut de la candidature",
   "track.statusUpdated": "Statut mis à jour : {state}",
   "track.statusUpdateFailed": "Impossible de mettre à jour le statut",
+
+  // evc — evidence-confidence chips on the report view (#4452)
+  "evc.confirmedTitle": "Confirmé par les preuves : {list}",
+  "evc.gapsTitle": "À vérifier : {list}",
+  "evc.confirmed": "{n} confirmés",
+  "evc.gaps": "{n} lacunes",
 };

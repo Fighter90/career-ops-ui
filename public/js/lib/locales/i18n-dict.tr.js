@@ -1835,4 +1835,10 @@ window.__I18N_DICT_TR = {
   "track.inlineStatusAria": "Başvuru durumunu değiştir",
   "track.statusUpdated": "Durum güncellendi: {state}",
   "track.statusUpdateFailed": "Durum güncellenemedi",
+
+  // evc — evidence-confidence chips on the report view (#4452)
+  "evc.confirmedTitle": "Kanıtlarla doğrulandı: {list}",
+  "evc.gapsTitle": "Doğrulanmalı: {list}",
+  "evc.confirmed": "{n} doğrulandı",
+  "evc.gaps": "{n} boşluk",
 };
