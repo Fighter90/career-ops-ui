@@ -7,19 +7,18 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-6869%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-6905%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.262.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.4)
+[![release](https://img.shields.io/badge/release-v1.263.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.263.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.262.4** — **ja token-dense 修補：prod 的 5 語言針對性重跑分開了當晚四個評估逾時 — `ar`/`ko`/`zh-CN` 通過（250–291 s），`ru` 的一次性漂移沒有再現 — 但 `ja` 兩次撞上標準 300 s 上限、輸出為零；`ja` 現在以 32768-token 上限與 480 s 時鐘加入 `ta`/`hi`/`it`/`pl`，紅測先行釘樁。Tests 6868 → 6869.**
-> **前一版本 — v1.262.3** — **pl token-dense 修補：prod v1.262.1 的完整 remote-QA 兩次抓到波蘭語評估在標準 300 s 上限處死亡 — `502 · 0 ch`（完整 ×19 執行 40960568766 與 v1.262.2 的針對性重跑 40968958062），而 18/19 語言通過 A–G；`pl` 現在以 32768-token 上限與 480 s 時鐘加入 `ta`/`hi`/`it`，紅測先行釘樁（`evalMaxTokens`、`evalTimeoutMs`）。與 v1.262.1 中 `it` 相同的形態類別。Tests 6867 → 6868。**
->
+> **🆕 最新版本 — v1.263.0** — **負責人 UX 批次：動效打磨層（觸控安全的 hover、僅互動元素抬升、modal/popover/toast/主題動畫 — reduced-motion 安全）、強調色像 logo 一樣由藍翻轉為深紅、WCAG 對比過關（docs-fab 6.4:1、toast、表單邊框 3:1）、每個控制項都有程式化名稱，外加一打版面修正 — scan 表頭不再蓋住搜尋、薪資篩選恢復正常尺寸、docs 頁面不再溢出、行動版抽屜有了可見的關閉鈕。Tests 6869 → 6905.**
+> **前一版本 — v1.262.4** — **ja token-dense 修補：prod 的 5 語言針對性重跑分開了當晚四個評估逾時 — `ar`/`ko`/`zh-CN` 通過（250–291 s），`ru` 的一次性漂移沒有再現 — 但 `ja` 兩次撞上標準 300 s 上限、輸出為零；`ja` 現在以 32768-token 上限與 480 s 時鐘加入 `ta`/`hi`/`it`/`pl`，紅測先行釘樁。Tests 6868 → 6869.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -392,7 +391,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 6869 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.4)
+└─ tests/                    # 6905 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.263.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report 解析器(純函式)
    ├─ api.test.mjs           # 每個端點、暫時性伺服器、無網路
    ├─ {ru,en}-scanner.test.mjs   # 已 mock 的 fetch

@@ -8,6 +8,35 @@
 
 ---
 
+## [1.263.0] — 2026-10-30
+
+### 新增
+
+- **動效打磨層** — 新的 `motion.css`（app 的最後一張樣式表）：modal/popover 進場（縮放 .97 + 淡入，130–180 ms）、toast 彈簧進場 + 柔和離場狀態、主題切換按壓彈簧、chip/tab 按壓 scale(.97)、stagger 基礎設施（50 ms 步進、上限 12）、路由切換的 `.page-enter` 淡入（router）、chip/tab 的 focus-halo 過渡。每條規則都對 `prefers-reduced-motion` 安全（位移降為 none，透明度／顏色保持）。
+- **觸控正確性** — 68 條 hover-lift 規則過去未加防護：觸控裝置在點按後會留下一張「被抬起」卡住的卡片。所有 transform hover 現在都以 `@media (hover:hover)` 加閘（motion.css 中和器），且卡片抬升只套用在真正可互動的卡片（`.card:has(a)`、`a.card`、`button.card`、`[role=button].card`）— 靜態卡片不再出現假的互動暗示。
+- **無障礙：每個控制項都有程式化名稱。** 新的 `A11yDump` 輔助器為全部 16 個唯讀 LLM 輸出傾印命名；12 個只有 placeholder 的欄位（CV Studio ×6、config ×2、scan 搜尋、tracker 分數下拉、outcome 備註、計畫編輯器、auto URL、bug report）取得 `aria-label`；`a11y-form-wires` 閘門現在對整個類別強制執行（原本 26 處未命名，現在 0 + 帶有記錄在案理由的允許清單）。
+
+### 修復
+
+- **#/scan**：捲動到下方後，表格的黏性表頭不再繪製在頂欄搜尋之上（z 值原本與頂欄相等、較晚的 DOM 取勝 — 現在以 token 推導並置於其下）；「Зарплата от/до」兩個輸入框恢復正常尺寸（`.v2-scan-bar .input` 的 flex 規則漏進 popover 的縱向 flex，把 flex-basis 200 px 當成高度 — 現在以 `>` 限定範圍 + popover 防護）；密度切換按鈕依負責人決定移除（管線保留、i18n 鍵移除 ×19）。
+- **部署工作流程強化（F1–F6）**：`provider` 輸入在任何 shell 拼接之前先做字元集驗證；hermes 診斷遮蔽數值（不分大小寫的鍵過濾 + 數值遮罩 + 三個輸出口一律 80 字元截斷，`?token=` 也一併遮蔽）；hermes 步驟尊重 `inputs.app_dir`；public_url 加 https 閘；防降級守衛有 6 個可執行釘樁（無預設值、守衛先於 Deploy 的順序、嚴格的 refs regex）。
+- **審查尾巴，紅測先行**：CSV 匯入的反斜線往返（重新匯入再次去重）、cv-voice 頭部剝除 4827→13 ms、`statedYearsMin` 惰性計算、posting-guard 擷取的 TOCTOU、MiniMax CN 萬用字元、跳過 deel 記號、匯入選擇器在讀取前先做尺寸防護。匯入視窗：武裝 nav-guard、取消時移除檔案輸入、有防護地讀取重複項、`num` 改用 reduce。
+- **負責人 UX 批次**：dashboard hero 的垂直節奏（inline 層級的子元素黏合成一個行盒）；help TOC −8 px 的作用列位移（每列內嵌槽溝 + 數字欄）；行動版抽屜（可見的 ✕ 關閉鈕、scrollTop 重置、幽靈 --paper 淡入限定在 `.has-hud`）；docs-assistant 頁面在答案含長 URL 時不再溢出（grid 的 `min-width` 鏈 + `overflow-wrap: anywhere`）；「Недавние」獲得解釋（提示）+ 可清除；career-plan 的 Save 在載入失敗後重新待命；evaluate 的 URL 預填不再對貼上佔位符燒掉一次 LLM 呼叫；auto-pipeline 的 Enter 尊重 IME 組字。
+- **對比（WCAG 稽核，296 對）**：docs-fab 漸層 2.43 → 6.4:1、toast.success → ok-soft 對（1.75 → AA dark）、banner 的 btn-dark 翻轉為 `--ink`、scan-logbtn/reposts-badge/fab-chip/close 的淺色變體，以及表單控制項邊框提升到 3:1（`--cv3-input-line`，WCAG 1.4.11 — 原本 1.2:1）。
+- **視覺巡掃**：tracker 空狀態改為全寬卡片（原本在 390 寬度被 760 px 表格裁切）；scan 主控台行改為刪節號而非半截裁切；浮動聊天 FAB 在 390 寬度不再覆蓋內容（44 px 目標、內縮 12）；dashboard「Application statuses」空狀態遵循 v2-empty 模式；stats「?」提示獲得分隔線 + 44 px 目標；career-plan Input 分頁說明結果落在何處；help §1 的 markdown（18 個斷裂的粗體 span）。
+
+### 變更
+
+- **強調色由藍 → 深紅（負責人要求、與 logo 一致、hue 15）** — 5 個 cv3 token × 3 個主題區塊；`docs-assistant` 聊天泡泡文字走 `--accent-ink`（原本是字面 #fff，dark 下 2.39:1）；funded 洗色走 `--accent-soft`。Danger 維持 hue 25 與其自己的處理。
+- 文件：README 測試表數量 ×17（v1.248 年代的漂移）、help §1 + 18 個 markdown span、help fr/it/ta「118」、供應商價格 CHECKED_ON 2026-10-30、HANDOFF/CONTEXT/TRACEABILITY 事實。
+
+### 備註
+
+- 刻意不做：骨架屏掃描重做留在門外（car112 契約逐字釘住目前的淡入）；主題切換圖示的交叉淡出維持 `display` 切換（主題切換 Playwright 契約在觀察它）；`.btn:active` 縮放未重複實作（app.css 擁有它）；動效 stagger 只是基礎設施 — dashboard 卡片稍後才採用；help ×19 的散文（密度提及、§1 markdown、「118」）搭下一波 fan-out。
+- 完整 remote-QA 證據：v1.262.4 上 ja 針對性執行 green（376 s / A–G ✓）；en/it 更早就在 token-dense 年代轉 green。
+
+Tests 6869 → 6905 (+36) · Playwright 176 · 覆蓋率 98.4 % 行 / 89.9 % 分支 · 註冊表未變：123 sources = 118 EN + 5 RU · 118 adapters。
+
 ## [1.262.4] — 2026-10-30
 
 ### 修復
