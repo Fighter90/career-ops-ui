@@ -254,7 +254,7 @@ window.__I18N_DICT_TR = {
   'config.anthropicKey': "Anthropic API anahtarı (Claude)",
   'config.anthropicHint': "console.anthropic.com → API keys adresinden bir tane alın. Ayarlandığında, \"⚡ Canlı çalıştır\" prompt'ları Claude aracılığıyla yürütür.",
   'config.anthropicModel': "Anthropic modeli",
-  'config.anthropicModelHint': "Varsayılan: claude-sonnet-4-6. Diğer seçenekler: claude-opus-4-7, claude-haiku-4-5.",
+  'config.anthropicModelHint': "Varsayılan: claude-sonnet-5-5. Diğer seçenekler: claude-opus-5-5, claude-haiku-4-5.",
   'config.geminiKey': "Gemini API anahtarı (yedek)",
   'config.geminiHint': "aistudio.google.com/apikey adresinde ücretsiz katman. Anthropic ayarlı olmadığında yedek olarak kullanılır.",
   'config.geminiModel': "Gemini modeli",

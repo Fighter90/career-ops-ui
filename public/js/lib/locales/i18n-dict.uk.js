@@ -253,7 +253,7 @@ window.__I18N_DICT_UK = {
   'config.anthropicKey': "Ключ API Anthropic (Claude)",
   'config.anthropicHint': "Отримайте на console.anthropic.com → API keys. Коли встановлено, \"⚡ Запустити наживо\" виконує промпти через Claude.",
   'config.anthropicModel': "Модель Anthropic",
-  'config.anthropicModelHint': "За замовчуванням: claude-sonnet-4-6. Інші варіанти: claude-opus-4-7, claude-haiku-4-5.",
+  'config.anthropicModelHint': "За замовчуванням: claude-sonnet-5-5. Інші варіанти: claude-opus-5-5, claude-haiku-4-5.",
   'config.geminiKey': "Gemini API key (резервний)",
   'config.geminiHint': "Безкоштовний рівень на aistudio.google.com/apikey. Використовується як резерв, коли Anthropic не встановлено.",
   'config.geminiModel': "Модель Gemini",

@@ -254,7 +254,7 @@ window.__I18N_DICT_ZH_TW = {
   'config.anthropicKey': "Anthropic API 金鑰 (Claude)",
   'config.anthropicHint': "在 console.anthropic.com → API keys 取得。設定後「⚡ Run live」透過 Claude 執行。",
   'config.anthropicModel': "Anthropic 模型",
-  'config.anthropicModelHint': "預設: claude-sonnet-4-6。其他: claude-opus-4-7, claude-haiku-4-5。",
+  'config.anthropicModelHint': "預設: claude-sonnet-5-5。其他: claude-opus-5-5, claude-haiku-4-5。",
   'config.geminiKey': "Gemini API 金鑰 (備用)",
   'config.geminiHint': "aistudio.google.com/apikey 免費層。Anthropic 未設定時備用。",
   'config.geminiModel': "Gemini 模型",

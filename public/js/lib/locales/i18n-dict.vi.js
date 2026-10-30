@@ -250,7 +250,7 @@ window.__I18N_DICT_VI = {
   'config.anthropicKey': "Khóa API Anthropic (Claude)",
   'config.anthropicHint': "Lấy khóa tại console.anthropic.com → API keys. Khi đã đặt, \"⚡ Chạy trực tiếp\" thực thi prompt qua Claude.",
   'config.anthropicModel': "Mô hình Anthropic",
-  'config.anthropicModelHint': "Mặc định: claude-sonnet-4-6. Lựa chọn khác: claude-opus-4-7, claude-haiku-4-5.",
+  'config.anthropicModelHint': "Mặc định: claude-sonnet-5-5. Lựa chọn khác: claude-opus-5-5, claude-haiku-4-5.",
   'config.geminiKey': "Khóa API Gemini (dự phòng)",
   'config.geminiHint': "Gói miễn phí tại aistudio.google.com/apikey. Dùng dự phòng khi chưa đặt Anthropic.",
   'config.geminiModel': "Mô hình Gemini",

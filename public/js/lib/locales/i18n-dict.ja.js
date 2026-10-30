@@ -254,7 +254,7 @@ window.__I18N_DICT_JA = {
   'config.anthropicKey': "Anthropic API キー (Claude)",
   'config.anthropicHint': "console.anthropic.com → API keys で取得。設定すると \"⚡ Run live\" が Claude で実行されます。",
   'config.anthropicModel': "Anthropic モデル",
-  'config.anthropicModelHint': "既定: claude-sonnet-4-6。他: claude-opus-4-7, claude-haiku-4-5。",
+  'config.anthropicModelHint': "既定: claude-sonnet-5-5。他: claude-opus-5-5, claude-haiku-4-5。",
   'config.geminiKey': "Gemini API キー (フォールバック)",
   'config.geminiHint': "aistudio.google.com/apikey の無料枠。Anthropic 未設定時のフォールバック。",
   'config.geminiModel': "Gemini モデル",

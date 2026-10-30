@@ -261,7 +261,7 @@ window.__I18N_DICT_TA = {
   'config.anthropicKey': "Anthropic API key (Claude)",
   'config.anthropicHint': "console.anthropic.com → API keys இங்கே பெறுங்கள். அமைக்கப்பட்டால், \"⚡ Run live\" பிராம்ட்டுகளை Claude வழியாக இயக்கும்.",
   'config.anthropicModel': "Anthropic மாடல்",
-  'config.anthropicModelHint': "இயல்புநிலை: claude-sonnet-4-6. மற்ற விருப்பங்கள்: claude-opus-4-7, claude-haiku-4-5.",
+  'config.anthropicModelHint': "இயல்புநிலை: claude-sonnet-5-5. மற்ற விருப்பங்கள்: claude-opus-5-5, claude-haiku-4-5.",
   'config.geminiKey': "Gemini API key (பின்வாங்கல்)",
   'config.geminiHint': "aistudio.google.com/apikey இல் இலவச அடுக்கு. Anthropic அமைக்கப்படாதபோது பின்வாங்கலாகப் பயன்படும்.",
   'config.geminiModel': "Gemini மாடல்",

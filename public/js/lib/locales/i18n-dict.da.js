@@ -253,7 +253,7 @@ window.__I18N_DICT_DA = {
   'config.anthropicKey': "Anthropic API-nøgle (Claude)",
   'config.anthropicHint': "Få en på console.anthropic.com → API keys. Når den er sat, kører \"⚡ Kør live\" prompts via Claude.",
   'config.anthropicModel': "Anthropic-model",
-  'config.anthropicModelHint': "Standard: claude-sonnet-4-6. Andre muligheder: claude-opus-4-7, claude-haiku-4-5.",
+  'config.anthropicModelHint': "Standard: claude-sonnet-5-5. Andre muligheder: claude-opus-5-5, claude-haiku-4-5.",
   'config.geminiKey': "Gemini API-nøgle (fallback)",
   'config.geminiHint': "Gratis niveau på aistudio.google.com/apikey. Bruges som fallback, når Anthropic ikke er sat.",
   'config.geminiModel': "Gemini-model",

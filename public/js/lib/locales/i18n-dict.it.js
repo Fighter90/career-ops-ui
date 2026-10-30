@@ -254,7 +254,7 @@ window.__I18N_DICT_IT = {
   'config.anthropicKey': "Chiave API Anthropic (Claude)",
   'config.anthropicHint': "Ottienine una su console.anthropic.com → API keys. Quando impostata, \"⚡ Esegui in tempo reale\" esegue i prompt tramite Claude.",
   'config.anthropicModel': "Modello Anthropic",
-  'config.anthropicModelHint': "Predefinito: claude-sonnet-4-6. Altre opzioni: claude-opus-4-7, claude-haiku-4-5.",
+  'config.anthropicModelHint': "Predefinito: claude-sonnet-5-5. Altre opzioni: claude-opus-5-5, claude-haiku-4-5.",
   'config.geminiKey': "Chiave API Gemini (fallback)",
   'config.geminiHint': "Piano gratuito su aistudio.google.com/apikey. Usata come fallback quando Anthropic non è impostata.",
   'config.geminiModel': "Modello Gemini",

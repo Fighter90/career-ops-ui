@@ -254,7 +254,7 @@ window.__I18N_DICT_KO = {
   'config.anthropicKey': "Anthropic API 키 (Claude)",
   'config.anthropicHint': "console.anthropic.com → API keys 에서 발급. 설정시 \"⚡ Run live\" 가 Claude 로 실행.",
   'config.anthropicModel': "Anthropic 모델",
-  'config.anthropicModelHint': "기본값: claude-sonnet-4-6. 다른 옵션: claude-opus-4-7, claude-haiku-4-5.",
+  'config.anthropicModelHint': "기본값: claude-sonnet-5-5. 다른 옵션: claude-opus-5-5, claude-haiku-4-5.",
   'config.geminiKey': "Gemini API 키 (대체)",
   'config.geminiHint': "aistudio.google.com/apikey 무료 티어. Anthropic 미설정시 대체.",
   'config.geminiModel': "Gemini 모델",

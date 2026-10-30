@@ -254,7 +254,7 @@ window.__I18N_DICT_HI = {
   'config.anthropicKey': "Anthropic API की (Claude)",
   'config.anthropicHint': "console.anthropic.com → API keys पर एक प्राप्त करें। सेट होने पर, \"⚡ लाइव चलाएं\" प्रॉम्प्ट को Claude के ज़रिए निष्पादित करता है।",
   'config.anthropicModel': "Anthropic मॉडल",
-  'config.anthropicModelHint': "डिफ़ॉल्ट: claude-sonnet-4-6। अन्य विकल्प: claude-opus-4-7, claude-haiku-4-5।",
+  'config.anthropicModelHint': "डिफ़ॉल्ट: claude-sonnet-5-5। अन्य विकल्प: claude-opus-5-5, claude-haiku-4-5।",
   'config.geminiKey': "Gemini API की (फ़ॉलबैक)",
   'config.geminiHint': "aistudio.google.com/apikey पर फ्री टियर। Anthropic सेट न होने पर फ़ॉलबैक के रूप में उपयोग होता है।",
   'config.geminiModel': "Gemini मॉडल",
