@@ -36,3 +36,15 @@ test('CAR-211 — collapsed scan-log line never wraps (nowrap + ellipsis in the 
   );
 });
 
+test('CAR-214 — help §1 carries no bold span broken across blockquote lines', () => {
+  const md = read('docs/help/en.md');
+  // The four empty-start pages: every **…** span complete on its own line.
+  assert.match(md, /— \*\*Auto-pipeline\*\*, \*\*Apply checklist\*\*,\n> \*\*Batch\*\*, and \*\*Funded companies\*\* —/, 'flat bold per line in §1');
+  // And nowhere in the bundle does a bold opener dangle at end-of-line inside a quote.
+  const broken = md.split('\n').filter((l) => {
+    const open = (l.match(/\*\*/g) || []).length;
+    return open % 2 === 1;
+  });
+  assert.equal(broken.length, 0, `lines with an unpaired ** (renders as literal asterisks): ${broken.slice(0, 3).join(' | ')}`);
+});
+
