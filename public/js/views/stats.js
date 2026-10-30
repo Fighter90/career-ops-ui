@@ -535,6 +535,20 @@ Router.register('stats', async () => {
         if (res && res.markdown) {
           currentMd = res.markdown;
           const title = () => `${t('stats.marketTitle', 'AI market report')}${region.value ? ' — ' + region.value : ''}`;
+          // v1.239.4 warnings surface (BACKLOG views-2) — /api/stats/market
+          // names a cut-off report on `warnings`; it used to render as if
+          // the analysis were complete.
+          const warnings = Array.isArray(res.warnings) ? res.warnings : [];
+          if (warnings.length) {
+            out.appendChild(c('div', {
+              className: 'badge badge-warn',
+              role: 'status',
+              style: { display: 'block', marginBottom: '12px', whiteSpace: 'normal', lineHeight: '1.5', textAlign: 'start' },
+            }, [
+              c('div', { style: { margin: '2px 0', fontWeight: 600 } }, '⚠ ' + t('llm.truncatedNotice', 'Model output may be truncated — re-run if the report looks cut off')),
+              ...warnings.map((w) => c('div', { style: { margin: '2px 0' } }, '· ' + w)),
+            ]));
+          }
           out.appendChild(c('div', { className: 'card md', html: UI.md(res.markdown), style: { padding: '16px' } }));
           out.appendChild(ReportExport.actionsBar(() => currentMd, title, t));
         } else if (res && res.prompt) {

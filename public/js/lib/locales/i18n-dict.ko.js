@@ -1824,4 +1824,5 @@ window.__I18N_DICT_KO = {
   'config.rawModes': "modes 원본 편집기",
   'v2empty.dash.statusesTitle': '표시할 상태가 아직 없습니다',
   'v2empty.dash.statusesBody': '공고를 평가하고 추적하세요 — 지원 상태가 이 퍼널에 추가됩니다.',
+  "llm.truncatedNotice": "모델 출력이 잘렸을 수 있습니다 — 보고서가 잘린 것 같으면 다시 실행하세요",
 };

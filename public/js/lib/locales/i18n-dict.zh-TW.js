@@ -1825,4 +1825,5 @@ window.__I18N_DICT_ZH_TW = {
   'config.rawModes': "modes 原始編輯器",
   'v2empty.dash.statusesTitle': '還沒有可顯示的狀態',
   'v2empty.dash.statusesBody': '評估一個職缺並納入追蹤——它的應徵狀態會加入這裡的漏斗。',
+  "llm.truncatedNotice": "模型輸出可能被截斷 — 如報告看起來不完整，請重新執行",
 };

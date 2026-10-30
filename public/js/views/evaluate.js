@@ -99,7 +99,10 @@ Router.register('evaluate', async () => {
       // (evaluationWarnings — since v1.239.4 the FIRST entry names a report
       // cut off at the output-token limit). Dropping it painted a truncated
       // evaluation as if it were whole. Render the banner above the body;
-      // the strings are server data, so no new copy is introduced.
+      // the strings are server data — the one new line of copy is the
+      // localized truncation notice that leads the band (v1.239.4 warnings
+      // surface, BACKLOG views-2), so a bare "report not in ru" line no
+      // longer reads as unexplained jargon.
       const warnings = Array.isArray(r.warnings) ? r.warnings : [];
       const cls = failed ? 'badge-bad' : 'badge-ok';
       // v1.218.0 — name whichever of the 18 providers actually ran (was a stale
@@ -136,7 +139,10 @@ Router.register('evaluate', async () => {
           className: 'badge badge-warn',
           role: 'status',
           style: { display: 'block', marginBottom: '12px', whiteSpace: 'normal', lineHeight: '1.5', textAlign: 'start' },
-        }, warnings.map((w) => c('div', { style: { margin: '2px 0' } }, '⚠ ' + w))) : null,
+        }, [
+          c('div', { style: { margin: '2px 0', fontWeight: 600 } }, '⚠ ' + t('llm.truncatedNotice', 'Model output may be truncated — re-run if the report looks cut off')),
+          ...warnings.map((w) => c('div', { style: { margin: '2px 0' } }, '· ' + w)),
+        ]) : null,
         (r.markdown || r.stdout) && c('div', { className: 'md', html: UI.md(r.markdown || r.stdout) }),
         r.stderr && c('details', null, [
           c('summary', null, 'stderr'),

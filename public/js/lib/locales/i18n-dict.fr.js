@@ -1823,4 +1823,5 @@ window.__I18N_DICT_FR = {
   'config.rawModes': "Éditeur brut des modes",
   'v2empty.dash.statusesTitle': 'Aucun statut à afficher pour l\'instant',
   'v2empty.dash.statusesBody': 'Évaluez une offre et suivez-la — son statut de candidature rejoint l\'entonnoir ici.',
+  "llm.truncatedNotice": "La sortie du modèle a peut-être été tronquée — relancez si le rapport semble coupé",
 };

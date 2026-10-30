@@ -1798,4 +1798,5 @@ window.__I18N_DICT_VI = {
   'config.rawModes': "Trình soạn thảo modes thô",
   'v2empty.dash.statusesTitle': 'Chưa có trạng thái nào để hiển thị',
   'v2empty.dash.statusesBody': 'Hãy đánh giá một tin và theo dõi nó — trạng thái ứng tuyển của tin sẽ vào phễu tại đây.',
+  "llm.truncatedNotice": "Đầu ra của mô hình có thể bị cắt bớt — chạy lại nếu báo cáo có vẻ bị cắt ngang",
 };

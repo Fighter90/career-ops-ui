@@ -1823,4 +1823,5 @@ window.__I18N_DICT_PL = {
   'config.rawModes': "Edytor surowego pliku modes",
   'v2empty.dash.statusesTitle': 'Nie ma jeszcze statusów do pokazania',
   'v2empty.dash.statusesBody': 'Oceń ofertę i śledź ją — jej status aplikacji dołączy do tego lejka.',
+  "llm.truncatedNotice": "Wynik modela mógł zostać ucięty — uruchom ponownie, jeśli raport wygląda na ucięty",
 };

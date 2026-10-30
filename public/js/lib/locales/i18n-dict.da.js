@@ -1823,4 +1823,5 @@ window.__I18N_DICT_DA = {
   'config.rawModes': "Rå modes-redigering",
   'v2empty.dash.statusesTitle': 'Ingen statusser at vise endnu',
   'v2empty.dash.statusesBody': 'Evaluér et jobopslag og følg det — dets ansøgningsstatus kommer ind i tragten her.',
+  "llm.truncatedNotice": "Modellens output kan være blevet afkortet — kør igen, hvis rapporten ser afskåret ud",
 };
