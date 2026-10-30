@@ -6,6 +6,35 @@ Bản dịch: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.263.0] — 2026-10-30
+
+### Thêm mới
+
+- **Lớp-đánh-bóng-chuyển-động** — `motion.css` mới (tệp-css-cuối-cùng-của-app): các-lượt-vào-của-modal/popover (scale .97 + fade, 130–180 ms), spring-in-của-toast + trạng-thái-rời-đi-mềm, spring-nhấn-của-nút-đổi-theme, nhấn-scale(.97)-cho-chip/tab, hạ-tầng-stagger (bước 50 ms, trần 12), fade `.page-enter` khi-đổi-route (router), và-các-chuyển-tiếp-focus-halo trên-chip/tab. Mọi-quy-tắc đều-an-toàn-với-`prefers-reduced-motion` (chuyển-động-rơi-về-none, opacity/màu-giữ-nguyên).
+- **Đúng-đắn-trên-màn-hình-cảm-ứng** — 68-quy-tắc-hover-lift trước-đây-không-được-bảo-vệ: thiết-bị-cảm-ứng giữ-một-thẻ-«được-nâng»-bị-kẹt sau-một-lượt-chạm. Mọi-hover-transform giờ-được-gate-bằng-`@media (hover:hover)` (bộ-trung-hòa-của-motion.css), và-hiệu-ứng-nâng-thẻ chỉ-áp-dụng-cho-các-thẻ-thực-sự-tương-tác (`.card:has(a)`, `a.card`, `button.card`, `[role=button].card`) — không-còn-affordance-sai trên-các-thẻ-tĩnh.
+- **A11y: mọi-bộ-điều-khiển có-tên-chương-trình.** Trợ-lý-`A11yDump` mới đặt-tên-cả-16-dump-đầu-ra-LLM-chỉ-đọc; 12-trường-chỉ-có-placeholder (CV Studio ×6, config ×2, ô-tìm-kiếm-scan, select-điểm-tracker, ghi-chú-outcome, trình-soạn-thảo-kế-hoạch, URL-auto, bug report) nhận-`aria-label`; cổng-`a11y-form-wires` giờ-thi-hành-điều-này-cho-cả-lớp (trước-đây-26-mẫu-không-có-tên, giờ-0 + danh-sách-cho-phép-có-lý-do-được-tài-liệu-hóa).
+
+### Đã sửa
+
+- **#/scan**: header-dính-của-bảng không-còn-vẽ-đè-lên-ô-tìm-kiếm-của-topbar khi-cuộn-dưới-nó (z-bằng-của-topbar, DOM-sau-thắng — giờ-dẫn-xuất-từ-token và-nằm-dưới); hai-ô-«Зарплата от/до» trở-lại-kích-thước-thường (một-quy-tắc-flex-`.v2-scan-bar .input` rò-vào-cột-flex-của-popover và-đặt-flex-basis 200 px làm-CHIỀU-CAO — giờ-scope-bằng-`>` + guard-popover); nút-đổi-mật-độ bị-gỡ-theo-quyết-định-của-chủ (phần-cấu-trúc-giữ-lại, các-khóa-i18n gỡ-×19).
+- **Củng-cố-deploy-workflow (F1–F6)**: đầu-vào-`provider` được-kiểm-tra-charset trước-mọi-viết-lồng-vào-shell; chẩn-đoán-hermes redact-giá-trị (bộ-lọc-khóa-không-phân-biệt-hoa-thường + mặt-nạ-giá-trị + cắt-80-ký-tự trên-cả-ba-điểm-xả, `?token=` cũng-được-che); bước-hermes tôn-trọng-`inputs.app_dir`; public_url được-gate-https; guard-chống-hạ-cấp có-6-ghim-thực-thi (không-mặc-định, thứ-tự-guard-trước-Deploy, regex-tham-chiếu-nghiêm-ngặt).
+- **Đuôi-rà-soát, đỏ-trước**: vòng-backslash-nhập-CSV (nhập-lại-được-dedup-lại), tước-phần-đầu-cv-voice 4827→13 ms, `statedYearsMin` tính-lười, TOCTOU-capture-của-posting-guard, wildcard-MiniMax-CN, bỏ-token-deel, và-các-đề-phòng-kích-thước-của-bộ-chọn-nhập trước-khi-đọc. Import-modal: nav-guard được-gắn, input-tệp bị-gỡ-khi-cancel, duplicates-được-đọc-có-bảo-vệ, `num` qua-reduce.
+- **Đợt-UX-của-chủ**: nhịp-dọc-của-hero-dashboard (các-con-cấp-inline được-dán-thành-một-line-box); độ-lệch-hàng-đang-chọn-−8 px trong-TOC-help (rãnh-inline-theo-từng-hàng + cột-số); drawer-di-động (nút-đóng-✕-hiển-thị, reset-scrollTop, fade---paper-bóng-được-gate-vào-`.has-hud`); trang-docs-assistant không-còn-tràn-khi-có-URL-dài-trong-câu-trả-lời (chuỗi-`min-width`-của-grid + `overflow-wrap: anywhere`); «Недавние» được-giải-thích (hint) + có-thể-xóa; Save-của-career-plan được-tái-kích-động-sau-một-lượt-tải-thất-bại; prefill-URL-của-evaluate không-còn-đốt-một-lượt-gọi-LLM vào-placeholder-dán; Enter-của-auto-pipeline tôn-trọng-trạng-thái-tổng-hợp-IME.
+- **Tương-phản (kiểm-toán-WCAG, 296-cặp)**: gradient-docs-fab 2.43 → 6.4:1, cặp-toast.success → ok-soft (1.75 → AA-dark), lật-btn-dark-của-banner → `--ink`, biến-thể-sáng cho-scan-logbtn/reposts-badge/fab-chip/close, và-viền-của-các-bộ-điều-khiển-form lên-3:1 (`--cv3-input-line`, WCAG 1.4.11 — trước-đây-1.2:1).
+- **Quét-thẩm-mỹ**: empty-state-của-tracker là-một-thẻ-trọn-chiều-rộng (trước-đây-bị-cắt-trong-bảng-760 px ở-390); dòng-console-scan được-ellipsis thay-vì-bị-cắt-nửa-vời; chat-FAB-trôi không-còn-che-nội-dung ở-390 (đích-44 px, inset 12); empty-state-«Application statuses»-của-dashboard theo-mẫu-v2-empty; hint-«?»-của-stats có-một-divider + đích-44 px; tab-Input-của-career-plan giải-thích-kết-quả-hạ-cánh-ở-đâu; markdown-§1-của-help (18-span-đậm-bị-hỏng).
+
+### Đã thay đổi
+
+- **Màu-nhấn-xanh-dương → đỏ-crimson (theo-yêu-cầu-của-chủ, hợp-logo, hue 15)** — 5-token-cv3 × 3-khối-theme; văn-bản-bong-bóng-chat-`docs-assistant` đi-trên-`--accent-ink` (trước-đây-là-#fff-nghĩa-đen, 2.39:1 trên-dark); wash-funded đi-trên-`--accent-soft`. Danger giữ-hue 25 với-các-xử-lý-riêng-của-nó.
+- Tài-liệu: số-đếm-bảng-kiểm-thử-trong-README ×17 (một-sai-lệch-thời-v1.248), help-§1 + 18-span-markdown, help-fr/it/ta-«118», giá-nhà-cung-cấp-CHECKED_ON-2026-10-30, các-sự-thật-HANDOFF/CONTEXT/TRACEABILITY.
+
+### Ghi chú
+
+- Không-hành-động-cố-ý: việc-làm-lại-vòng-quét-skeleton nằm-ngoài (hợp-đồng-car112 ghim-chính-xác-hiệu-ứng-fade-hiện-tại); crossfade-biểu-tượng-đổi-theme giữ-là-swap-`display` (hợp-đồng-Playwright-đổi-theme quan-sát-nó); scale-`.btn:active` không-bị-nhân-bản (app.css sở-hữu-nó); stagger-chuyển-động chỉ-là-hạ-tầng — các-thẻ-dashboard sẽ-đón-nó-sau; văn-bản-help-×19 (đề-cập-mật-độ, markdown-§1, «118») lên-đợt-fan-out-kế-tiếp.
+- Bằng-chứng-remote-QA-đầy-đủ: chạy-đích-ja-green (376 s / A–G ✓) trên-v1.262.4; en/it-green-từ-trước-trong-thời-kỳ-token-dense.
+
+Tests 6869 → 6905 (+36) · Playwright 176 · coverage 98.4 % line / 89.9 % branch · registry không-thay-đổi: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.262.4] — 2026-10-30
 
 ### Đã sửa
