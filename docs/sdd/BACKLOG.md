@@ -154,9 +154,15 @@ Parent fork `origin/main` = `08db03d8`, VERSION 1.35.0, 0 behind upstream — no
 1. ~~Liveness: a posting that says how it will close is still open — parent `c0264e7c` (#4771) **with**
    the open #4810 line-break guard → `server/lib/liveness-core.mjs` + tests.~~ **Shipped** — see
    `docs/sdd/specs/2026-10-08-upstream-ports-v1.246.0.md`.
-2. Inline tracker status edit (M) — relay `set-status.mjs --row N <state> --json` (+ `--dry-run`),
+2. ~~Inline tracker status edit (M) — relay `set-status.mjs --row N <state> --json` (+ `--dry-run`),
    new `POST /api/tracker/status`, select per row in `tracker.js`, i18n ×17; brings #4524 (JD archived
-   on → Interview). Needs the route reviewer.
+   on → Interview). Needs the route reviewer.~~ **Landed** on `feat/tracker-inline-status` (3 commits:
+   red `tests/tracker-inline-status.test.mjs` + the relay in `routes/tracker.mjs` via `runTrackedScript`
+   (applications.md lock, canonicalizeStatus whitelist, fail-soft 502) + the row `<select>` in
+   `tracker.js`, keys `track.inlineStatusAria/statusUpdated/statusUpdateFailed` ×19 + snapshot;
+   `bulk|move` stay forbidden in the tracker-v2 guard, `/api/tracker/status` is pinned as sanctioned).
+   Hand-offs: API.md entry, route-reviewer pass, the #4524 JD-archive-on-Interview hook rides the
+   parent's own set-status.mjs (already canonical — no web-ui code).
 3. ~~Anthropic model ids `claude-sonnet-5-5` / `claude-opus-5-5` (#4703) → `config-field-domains.mjs:40`,
    `anthropic.mjs` default, `llm-pricing.mjs`.~~ **Partially shipped**: `llm-pricing.mjs` carries the
    upstream-id note (no parent pricing exists — cost stays unknown). REMAINDER is a hand-off (needs a
