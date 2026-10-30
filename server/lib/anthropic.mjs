@@ -4,8 +4,8 @@
  * path for /api/deep and /api/mode/:slug, so users with an
  * ANTHROPIC_API_KEY can run modes live in the browser.
  *
- * Model defaults to claude-sonnet-4-6 (current best mid-tier balance);
- * override via ANTHROPIC_MODEL env var.
+ * Model defaults to claude-sonnet-5-5 (the parent batch-runner's
+ * standard-tier model); override via ANTHROPIC_MODEL env var.
  *
  * v1.54.9 — key/model lookups go through effectiveEnv() so a key set
  * in the `.env` after boot is honoured without a server
@@ -40,7 +40,7 @@ export async function runAnthropic(prompt, opts = {}) {
   if (!apiKey) {
     return { markdown: '', usage: null, error: 'ANTHROPIC_API_KEY not set' };
   }
-  const model = opts.model || envKey('ANTHROPIC_MODEL') || 'claude-sonnet-4-6';
+  const model = opts.model || envKey('ANTHROPIC_MODEL') || 'claude-sonnet-5-5';
   // The clamp is a sanity ceiling, not an API limit; 32768 so the token-dense
   // locales' evaluate budget (evalMaxTokens, CAR-174) survives the forwarding.
   const maxTokens = Math.min(Math.max(opts.maxTokens || 8192, 256), 32768);

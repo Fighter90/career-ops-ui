@@ -124,10 +124,10 @@
     },
     {
       key: 'ANTHROPIC_MODEL', secret: false, kind: 'select',
-      options: ANTHROPIC_MODELS, defaultValue: 'claude-sonnet-4-6',
+      options: ANTHROPIC_MODELS, defaultValue: 'claude-sonnet-5-5',
       labelKey: 'config.anthropicModel', label: 'ANTHROPIC_MODEL',
       hintKey: 'config.anthropicModelHint',
-      hintFallback: 'Default: claude-sonnet-4-6. Heavier reasoning: claude-opus-4-7. Cheap & fast: claude-haiku-4-5.',
+      hintFallback: 'Default: claude-sonnet-5-5. Heavier reasoning: claude-opus-5-5. Cheap & fast: claude-haiku-4-5.',
     },
     {
       key: 'GEMINI_API_KEY', secret: true,
