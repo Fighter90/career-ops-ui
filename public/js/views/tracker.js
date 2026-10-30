@@ -238,16 +238,26 @@ Router.register('tracker', async () => {
     // Restore it (see lib/focus-preserve.js).
     FocusPreserved.withFocusPreserved(tbody, () => {
       tbody.innerHTML = '';
+      // CAR-210 — the first-run empty state (title + body + CTA) no longer
+      // renders inside the min-width table (cut off at 390px): it gets a
+      // full-width host instead, and the table is hidden while it shows.
+      if (rows.length === 0) {
+        FocusPreserved.withFocusPreserved(emptyHost, () => {
+          emptyHost.textContent = '';
+          emptyHost.appendChild(c('div', { className: 'card empty' }, [
+            c('strong', null, t('track.emptyTitle', 'No applications yet')),
+            c('p', { style: { margin: '8px 0 0' } }, t('track.emptyBody', 'Run the pipeline or evaluate a JD to populate this tracker.')),
+            c('div', { style: { marginTop: '12px' } },
+              c('a', { href: '#/pipeline', className: 'btn btn-primary btn-sm' }, t('track.emptyCta', 'Open pipeline'))),
+          ]));
+        });
+        return;
+      }
+      emptyHost.textContent = '';
       if (all.length === 0) {
-        // WS2 #26 — distinguish first-run (no data at all) from a filter that
-        // excluded everything; the former gets an actionable CTA.
-        const emptyCell = rows.length === 0
-          ? c('td', { colspan: hasCommute ? 12 : 10, style: { textAlign: 'center', padding: '40px', color: 'var(--foggy)' } }, [
-              c('strong', null, t('track.emptyTitle', 'No applications yet')),
-              c('p', { style: { margin: '8px 0 0' } }, t('track.emptyBody', 'Run the pipeline or evaluate a JD to populate this tracker.')),
-              c('a', { href: '#/pipeline', className: 'btn btn-primary btn-sm', style: { marginTop: '12px' } }, t('track.emptyCta', 'Open pipeline')),
-            ])
-          : c('td', { colspan: hasCommute ? 12 : 10, style: { textAlign: 'center', padding: '40px', color: 'var(--foggy)' } }, t('track.noMatch'));
+        // WS2 #26 — a filter that excluded everything keeps the in-table
+        // notice (a short single line survives the scroll container).
+        const emptyCell = c('td', { colspan: hasCommute ? 12 : 10, style: { textAlign: 'center', padding: '40px', color: 'var(--foggy)' } }, t('track.noMatch'));
         tbody.appendChild(c('tr', null, emptyCell));
         return;
       }
@@ -396,6 +406,10 @@ Router.register('tracker', async () => {
     ]);
   }
 
+  // CAR-210 — full-width host for the first-run empty state; lives OUTSIDE the
+  // min-width table so the CTA is not clipped inside the 760px scroll box.
+  const emptyHost = c('div', { hidden: true });
+
   applyFilters();
 
   // ── CAR-117 · the two hosts ────────────────────────────────────────────────
@@ -434,8 +448,12 @@ Router.register('tracker', async () => {
 
   function applyViewMode() {
     const tableActive = viewModeNow() === 'table';
-    tableWrap.style.display = tableActive ? '' : 'none';
-    pgWrap.style.display = tableActive ? '' : 'none';
+    // CAR-210 — a first-run empty tracker shows the full-width empty host
+    // instead of the (hidden) table; the kanban host keeps its own empty card.
+    const emptyFirstRun = rows.length === 0;
+    emptyHost.hidden = !(tableActive && emptyFirstRun);
+    tableWrap.style.display = tableActive && !emptyFirstRun ? '' : 'none';
+    pgWrap.style.display = tableActive && !emptyFirstRun ? '' : 'none';
     kanbanHost.style.display = tableActive ? 'none' : '';
     if (!tableActive) renderKanban();
     if (bulk) bulk.el.hidden = bulk.size() === 0 || tableActive;
@@ -557,6 +575,7 @@ Router.register('tracker', async () => {
     bulk ? bulk.el : null,
     TS ? TS.companyHistoryCard(rows, c, t) : null,
 
+    emptyHost,
     tableWrap,
     kanbanHost,
     pgWrap,
