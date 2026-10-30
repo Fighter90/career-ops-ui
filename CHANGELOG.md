@@ -6,6 +6,35 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 ---
 
+## [1.263.0] — 2026-10-30
+
+### Added
+
+- **Motion polish layer** — new `motion.css` (last app sheet): modal/popover entrances (scale .97 + fade, 130–180 ms), toast spring-in + soft leaving state, theme-toggle press spring, chip/tab press scale(.97), stagger infrastructure (50 ms steps, cap 12), `.page-enter` route-change fade (router), focus-halo transitions on chips/tabs. Every rule is `prefers-reduced-motion`-safe (movement drops to none, opacity/color stay).
+- **Touch correctness** — 68 hover-lift rules were unguarded: touch devices kept a stuck "lifted" card after a tap. All transform hovers are now `@media (hover:hover)`-gated (motion.css neutraliser), and the card lift applies only to genuinely interactive cards (`.card:has(a)`, `a.card`, `button.card`, `[role=button].card`) — no more false affordance on static cards.
+- **A11y: every control has a programmatic name.** New `A11yDump` helper names all 16 readonly LLM-output dumps; 12 placeholder-only fields (CV Studio ×6, config ×2, scan search, tracker score select, outcome note, plan editor, auto URL, bug report) got `aria-label`s; the `a11y-form-wires` gate now enforces this class-wide (was 26 unnamed sites, now 0 + allowlist with documented reasons).
+
+### Fixed
+
+- **#/scan**: the sticky table header no longer paints over the topbar search once scrolled under (z was equal to the topbar's, later DOM won — now token-derived below it); the "Зарплата от/до" inputs are normal-sized again (a `.v2-scan-bar .input` flex rule leaked into the popover's column flex and set flex-basis 200 px as HEIGHT — now `>`-scoped + popover guard); the density toggle button is removed by owner decision (plumbing kept, i18n keys removed ×19).
+- **Deploy workflow hardening (F1–F6)**: `provider` input charset-validated before any shell splice; hermes diagnostics redact values (case-insensitive key filter + value mask + 80-char cut on all three sinks, `?token=` masked too); hermes step respects `inputs.app_dir`; public_url https-gated; the anti-downgrade guard has 6 executable pins (no defaults, guard-before-Deploy order, strict refs regex).
+- **Review tail, red-first**: CSV-import backslash round-trip (re-import deduped again), cv-voice head-strip 4827 ms → 13 ms, `statedYearsMin` computed lazily, posting-guard capture TOCTOU, MiniMax CN wildcard, deel token skip, import picker size-guards before read. Import modal: nav-guard armed, file input removed on cancel, guarded duplicates read, `num` via reduce.
+- **Owner UX batch**: dashboard hero vertical rhythm (inline-level children glued into one line box); help TOC −8 px active-row shift (per-row inline gutter + number column); mobile drawer (visible ✕ close, scrollTop reset, the phantom --paper fade gated to `.has-hud`); docs-assistant page no longer overflows with a long URL in an answer (grid `min-width` chain + `overflow-wrap: anywhere`); «Недавние» explained (hint) + clearable; career-plan Save re-arms after a failed load; evaluate URL-prefill no longer burns an LLM call on the paste-placeholder; auto-pipeline Enter respects IME composition.
+- **Contrast (WCAG audit, 296 pairs)**: docs-fab gradient 2.43 → 6.4:1, toast.success → ok-soft pair (1.75 → AA dark), banner btn-dark → `--ink` flip, scan-logbtn/reposts-badge/fab-chip/close light variants, and form-control borders to 3:1 (`--cv3-input-line`, WCAG 1.4.11 — was 1.2:1).
+- **Visual sweep**: tracker empty state is a full-width card (was clipped inside the 760 px table at 390); scan console line ellipsifies instead of half-clipping; the floating chat FAB no longer covers content at 390 (44 px target, inset 12); dashboard «Application statuses» empty state follows the v2-empty pattern; stats «?» hint gets a divider + 44 px target; career-plan Input tab explains where the result lands; help §1 markdown (18 broken bold spans).
+
+### Changed
+
+- **Accent blue → crimson red (owner request, logo-coherent, hue 15)** — 5 cv3 tokens × 3 theme blocks; `docs-assistant` chat bubble text rides `--accent-ink` (was literal #fff, 2.39:1 in dark); funded wash rides `--accent-soft`. Danger stays hue 25 with its own treatments.
+- Docs: README testing-table count ×17 (a v1.248-era drift), help §1 + 18 markdown spans, help fr/it/ta «118», vendor prices CHECKED_ON 2026-10-30, HANDOFF/CONTEXT/TRACEABILITY facts.
+
+### Notes
+
+- Deliberately not done: skeleton sweep rework stays out (the car112 contract pins the current fade verbatim); the theme-toggle icon crossfade stays a `display` swap (the theme-toggle Playwright contract observes it); `.btn:active` scale was not duplicated (app.css owns it); motion stagger is infrastructure only — the dashboard tiles adopt it later; help ×19 prose (density mention, §1 markdown, «118») rides the next fan-out.
+- Full remote-QA evidence: ja spot green (376 s / A–G ✓) on v1.262.4; en/it green earlier in the token-dense era.
+
+Tests 6869 → 6905 (+36) · Playwright 176 · coverage 98.4 % line / 89.9 % branch · registry unchanged: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.262.4] — 2026-10-30
 
 ### Fixed
