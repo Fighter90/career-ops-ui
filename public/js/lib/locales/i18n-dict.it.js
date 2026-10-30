@@ -734,6 +734,7 @@ window.__I18N_DICT_IT = {
   'eval.evaluating': "Valutazione…",
   'eval.shortJd': "JD troppo corta (min 50 caratteri)",
   'eval.emptyJd': "La JD è obbligatoria — incolla la descrizione completa del lavoro",
+  'eval.pasteJd': "Questo è il modello di precompilazione URL — incolla il testo dell'annuncio sotto l'URL",
   'eval.placeholder': "Incolla il testo completo della JD (responsabilità, requisiti, qualifiche, informazioni sul ruolo…)",
   'eval.jdHint': "Incolla la descrizione completa del lavoro. Minimo 50 caratteri dopo la sanitizzazione.",
   'eval.manualMode': "Modalità manuale (nessuna chiave provider)",

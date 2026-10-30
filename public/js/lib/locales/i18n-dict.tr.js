@@ -734,6 +734,7 @@ window.__I18N_DICT_TR = {
   'eval.evaluating': "Değerlendiriliyor…",
   'eval.shortJd': "JD çok kısa (en az 50 karakter)",
   'eval.emptyJd': "JD gereklidir — tam iş tanımını yapıştırın",
+  'eval.pasteJd': "Bu URL ön doldurma şablonu — URL'nin altına iş ilanı metnini yapıştırın",
   'eval.placeholder': "Tam JD metnini yapıştırın (sorumluluklar, gereksinimler, nitelikler, rol hakkında…)",
   'eval.jdHint': "Tam iş tanımını yapıştırın. Temizleme sonrası en az 50 karakter.",
   'eval.manualMode': "Manuel mod (sağlayıcı anahtarı yok)",

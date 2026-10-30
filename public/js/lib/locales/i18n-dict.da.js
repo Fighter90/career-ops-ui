@@ -733,6 +733,7 @@ window.__I18N_DICT_DA = {
   'eval.evaluating': "Vurderer…",
   'eval.shortJd': "Jobopslaget er for kort (min. 50 tegn)",
   'eval.emptyJd': "Jobopslag er påkrævet — indsæt den fulde jobbeskrivelse",
+  'eval.pasteJd': "Dette er URL-forudfyldningsskabelonen — indsæt stillingens tekst under URL'en",
   'eval.placeholder': "Indsæt den fulde tekst fra jobopslaget (ansvar, krav, kvalifikationer, om rollen…)",
   'eval.jdHint': "Indsæt den fulde jobbeskrivelse. Minimum 50 tegn efter rensning.",
   'eval.manualMode': "Manuel tilstand (ingen udbyder-nøgle)",

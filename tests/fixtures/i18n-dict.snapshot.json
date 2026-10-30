@@ -15077,6 +15077,27 @@
     "ta": "JD தேவை — முழு வேலை விவரத்தை ஒட்டுங்கள்",
     "vi": "Cần có JD — dán toàn bộ mô tả công việc"
   },
+  "eval.pasteJd": {
+    "en": "This is the URL prefill template — paste the job description text below the URL",
+    "es": "Esto es la plantilla de la URL — pega el texto de la oferta debajo de la URL",
+    "pt-BR": "Este é o modelo de preenchimento da URL — cole o texto da vaga abaixo da URL",
+    "ko": "URL 미리 채우기 템플릿입니다 — URL 아래에 채용 공고 본문을 붙여넣으세요",
+    "ja": "URLプリフィルのテンプレートです — URLの下に求人本文を貼り付けてください",
+    "ru": "Это шаблон предзаполнения по ссылке — вставьте текст вакансии под ссылкой",
+    "zh-CN": "这是 URL 预填模板 — 请在 URL 下方粘贴职位描述正文",
+    "zh-TW": "這是 URL 預填範本 — 請在 URL 下方貼上職缺描述本文",
+    "fr": "Ceci est le modèle de préremplissage URL — collez le texte de l'offre sous l'URL",
+    "pl": "To szablon wypełniania z URL — wklej treść oferty pod adresem URL",
+    "uk": "Це шаблон попереднього заповнення за посиланням — вставте текст вакансії під посиланням",
+    "da": "Dette er URL-forudfyldningsskabelonen — indsæt stillingens tekst under URL'en",
+    "ar": "هذا قالب التعبئة المسبقة للرابط — الصق نص الوظيفة أسفل الرابط",
+    "de": "Dies ist die URL-Vorlage — fügen Sie den Stellenbeschreibungstext unter der URL ein",
+    "it": "Questo è il modello di precompilazione URL — incolla il testo dell'annuncio sotto l'URL",
+    "tr": "Bu URL ön doldurma şablonu — URL'nin altına iş ilanı metnini yapıştırın",
+    "hi": "यह URL प्रीफ़िल टेम्पलेट है — URL के नीचे जॉब विवरण का टेक्स्ट पेस्ट करें",
+    "ta": "இது URL முன் நிரப்பும் வார்ப்புரு — URL-க்குக் கீழே வேலை விவரத்தை ஒட்டவும்",
+    "vi": "Đây là mẫu điền sẵn URL — dán nội dung tin tuyển dụng bên dưới URL"
+  },
   "eval.placeholder": {
     "en": "Paste the full JD text (responsibilities, requirements, qualifications, about the role…)",
     "es": "Pega el texto completo del JD…",

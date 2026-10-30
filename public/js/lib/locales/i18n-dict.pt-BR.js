@@ -734,6 +734,7 @@ window.__I18N_DICT_PT_BR = {
   'eval.evaluating': "Avaliando…",
   'eval.shortJd': "JD muito curto (min 50 chars)",
   'eval.emptyJd': "O JD é obrigatório — cole a descrição completa",
+  'eval.pasteJd': "Este é o modelo de preenchimento da URL — cole o texto da vaga abaixo da URL",
   'eval.placeholder': "Cole o texto completo do JD…",
   'eval.jdHint': "Cole a descrição completa da vaga. Mínimo 50 caracteres após sanitização.",
   'eval.manualMode': "Modo manual (sem chave de provedor)",

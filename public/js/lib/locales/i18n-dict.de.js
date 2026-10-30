@@ -734,6 +734,7 @@ window.__I18N_DICT_DE = {
   'eval.evaluating': "Wird bewertet…",
   'eval.shortJd': "JD zu kurz (min. 50 Zeichen)",
   'eval.emptyJd': "JD ist erforderlich — fügen Sie die vollständige Stellenbeschreibung ein",
+  'eval.pasteJd': "Dies ist die URL-Vorlage — fügen Sie den Stellenbeschreibungstext unter der URL ein",
   'eval.placeholder': "Fügen Sie den vollständigen JD-Text ein (Aufgaben, Anforderungen, Qualifikationen, über die Rolle…)",
   'eval.jdHint': "Fügen Sie die vollständige Stellenbeschreibung ein. Mindestens 50 Zeichen nach der Bereinigung.",
   'eval.manualMode': "Manueller Modus (kein Provider-Schlüssel)",

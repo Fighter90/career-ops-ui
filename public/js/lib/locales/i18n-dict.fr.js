@@ -734,6 +734,7 @@ window.__I18N_DICT_FR = {
   'eval.evaluating': "Évaluation…",
   'eval.shortJd': "Le JD est trop court (min. 50 caractères)",
   'eval.emptyJd': "Le JD est requis — collez la description complète du poste.",
+  'eval.pasteJd': "Ceci est le modèle de préremplissage URL — collez le texte de l'offre sous l'URL",
   'eval.placeholder': "Collez le texte complet de la description du poste (responsabilités, exigences, qualifications, informations sur le rôle…)",
   'eval.jdHint': "Collez la description complète du poste. Minimum 50 caractères après nettoyage.",
   'eval.manualMode': "Mode manuel (aucune clé de fournisseur)",

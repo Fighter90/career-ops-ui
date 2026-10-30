@@ -734,6 +734,7 @@ window.__I18N_DICT_EN = {
   'eval.evaluating': "Evaluating…",
   'eval.shortJd': "JD too short (min 50 chars)",
   'eval.emptyJd': "JD is required — paste the full job description",
+  'eval.pasteJd': "This is the URL prefill template — paste the job description text below the URL",
   'eval.placeholder': "Paste the full JD text (responsibilities, requirements, qualifications, about the role…)",
   'eval.jdHint': "Paste the full job description. Minimum 50 characters after sanitization.",
   'eval.manualMode': "Manual mode (no provider key set)",

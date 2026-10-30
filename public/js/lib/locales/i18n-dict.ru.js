@@ -734,6 +734,7 @@ window.__I18N_DICT_RU = {
   'eval.evaluating': "Оценка…",
   'eval.shortJd': "JD слишком короткий (min 50 chars)",
   'eval.emptyJd': "JD обязателен — вставьте полное описание вакансии",
+  'eval.pasteJd': "Это шаблон предзаполнения по ссылке — вставьте текст вакансии под ссылкой",
   'eval.placeholder': "Вставьте полный текст вакансии (responsibilities, requirements, qualifications, about the role…)",
   'eval.jdHint': "Вставьте полный текст вакансии. Минимум 50 символов после санитайзинга.",
   'eval.manualMode': "Ручной режим (ключ провайдера не задан)",

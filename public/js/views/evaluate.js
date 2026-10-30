@@ -41,6 +41,14 @@ Router.register('evaluate', async () => {
       UI.toast(t('eval.shortJd'), 'error');
       return;
     }
+    // Owner UX batch — a ?url= hand-off prefills the field with the
+    // template text; 50 chars of template sailed past the length gate and
+    // burned an LLM call on a placeholder. Name the actual problem instead.
+    if (jd.includes('[paste JD text here]')) {
+      UI.toast(t('eval.pasteJd', 'This is the URL prefill template — paste the job description text below the URL'), 'error');
+      jdInput.focus();
+      return;
+    }
     out.innerHTML = `<div class="loading">${t('eval.evaluating')}</div>`;
     try {
       const r = await API.post('/api/evaluate', { jd, save: saveJd.checked }, { lang: true });

@@ -734,6 +734,7 @@ window.__I18N_DICT_JA = {
   'eval.evaluating': "評価中…",
   'eval.shortJd': "JD が短すぎます (最低 50 文字)",
   'eval.emptyJd': "JD は必須です — 求人内容を全文貼り付けてください",
+  'eval.pasteJd': "URLプリフィルのテンプレートです — URLの下に求人本文を貼り付けてください",
   'eval.placeholder': "完全な JD テキストを貼り付けてください…",
   'eval.jdHint': "完全な職務記述を貼り付けてください。サニタイズ後 50 文字以上。",
   'eval.manualMode': "手動モード(プロバイダーキー未設定)",

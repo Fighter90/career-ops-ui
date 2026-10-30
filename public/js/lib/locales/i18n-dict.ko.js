@@ -734,6 +734,7 @@ window.__I18N_DICT_KO = {
   'eval.evaluating': "평가 중…",
   'eval.shortJd': "JD가 너무 짧음 (최소 50자)",
   'eval.emptyJd': "JD 가 필요합니다 — 전체 채용 공고를 붙여넣으세요",
+  'eval.pasteJd': "URL 미리 채우기 템플릿입니다 — URL 아래에 채용 공고 본문을 붙여넣으세요",
   'eval.placeholder': "전체 JD 텍스트를 붙여넣으세요…",
   'eval.jdHint': "전체 채용 공고를 붙여넣으세요. 정제 후 최소 50자.",
   'eval.manualMode': "수동 모드(제공자 키 없음)",

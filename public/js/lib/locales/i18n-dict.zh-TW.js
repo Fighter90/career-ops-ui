@@ -734,6 +734,7 @@ window.__I18N_DICT_ZH_TW = {
   'eval.evaluating': "評估中…",
   'eval.shortJd': "JD 過短 (最少 50 字元)",
   'eval.emptyJd': "需要填寫 JD — 請貼上完整的職缺描述",
+  'eval.pasteJd': "這是 URL 預填範本 — 請在 URL 下方貼上職缺描述本文",
   'eval.placeholder': "貼上完整的 JD 文字…",
   'eval.jdHint': "貼上完整的職位描述。淨化後至少 50 個字元。",
   'eval.manualMode': "手動模式(未設定供應方金鑰)",

@@ -734,6 +734,7 @@ window.__I18N_DICT_ES = {
   'eval.evaluating': "Evaluando…",
   'eval.shortJd': "JD demasiado corto (min 50 chars)",
   'eval.emptyJd': "El JD es obligatorio — pega la descripción completa",
+  'eval.pasteJd': "Esto es la plantilla de la URL — pega el texto de la oferta debajo de la URL",
   'eval.placeholder': "Pega el texto completo del JD…",
   'eval.jdHint': "Pega la descripción completa del puesto. Mínimo 50 caracteres tras sanitización.",
   'eval.manualMode': "Modo manual (sin clave de proveedor)",

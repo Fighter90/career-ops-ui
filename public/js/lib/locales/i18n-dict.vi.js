@@ -728,6 +728,7 @@ window.__I18N_DICT_VI = {
   'eval.evaluating': "Đang đánh giá…",
   'eval.shortJd': "JD quá ngắn (tối thiểu 50 ký tự)",
   'eval.emptyJd': "Cần có JD — dán toàn bộ mô tả công việc",
+  'eval.pasteJd': "Đây là mẫu điền sẵn URL — dán nội dung tin tuyển dụng bên dưới URL",
   'eval.placeholder': "Dán toàn bộ văn bản JD (trách nhiệm, yêu cầu, bằng cấp, về vị trí…)",
   'eval.jdHint': "Dán toàn bộ mô tả công việc. Tối thiểu 50 ký tự sau khi làm sạch.",
   'eval.manualMode': "Chế độ thủ công (chưa đặt khóa nhà cung cấp)",

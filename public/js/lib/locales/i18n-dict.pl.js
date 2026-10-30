@@ -733,6 +733,7 @@ window.__I18N_DICT_PL = {
   'eval.evaluating': "Ocenianie…",
   'eval.shortJd': "JD za krótki (min. 50 znaków)",
   'eval.emptyJd': "JD jest wymagany — wklej pełny opis stanowiska",
+  'eval.pasteJd': "To szablon wypełniania z URL — wklej treść oferty pod adresem URL",
   'eval.placeholder': "Wklej pełny tekst JD (obowiązki, wymagania, kwalifikacje, opis roli…)",
   'eval.jdHint': "Wklej pełny opis stanowiska. Minimum 50 znaków po sanityzacji.",
   'eval.manualMode': "Tryb ręczny (brak klucza dostawcy)",

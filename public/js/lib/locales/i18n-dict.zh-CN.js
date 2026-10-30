@@ -734,6 +734,7 @@ window.__I18N_DICT_ZH_CN = {
   'eval.evaluating': "评估中…",
   'eval.shortJd': "JD 过短 (最少 50 字符)",
   'eval.emptyJd': "需要填写 JD — 请粘贴完整的职位描述",
+  'eval.pasteJd': "这是 URL 预填模板 — 请在 URL 下方粘贴职位描述正文",
   'eval.placeholder': "粘贴完整的 JD 文本…",
   'eval.jdHint': "粘贴完整的职位描述。净化后至少 50 个字符。",
   'eval.manualMode': "手动模式(未设置提供方密钥)",
