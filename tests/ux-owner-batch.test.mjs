@@ -145,3 +145,11 @@ test('ux-owner: eval.pasteJd exists in every locale', () => {
     assert.ok(src.includes("'eval.pasteJd':"), `eval.pasteJd missing in i18n-dict.${loc}.js`);
   }
 });
+
+test('ux-owner: auto-pipeline URL Enter ignores IME composition', () => {
+  const src = readFileSync(resolve(ROOT, 'public', 'js', 'views', 'auto.js'), 'utf8');
+  const h = src.match(/urlInput\.addEventListener\('keydown'[\s\S]{0,300}?\}\);/);
+  assert.ok(h, 'the URL input keydown handler found');
+  assert.match(h[0], /e\.isComposing \|\| e\.keyCode === 229/,
+    'IME composition Enter must not start the paid run (CAR-21 contract, same as docs-assistant)');
+});

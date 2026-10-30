@@ -282,7 +282,12 @@ Router.register('auto', async () => {
   }
 
   runBtn.addEventListener('click', run);
-  urlInput.addEventListener('keydown', (e) => { if (e.key === 'Enter') run(); });
+  urlInput.addEventListener('keydown', (e) => {
+    // CAR-21 (v1.243.0) — IME composition Enter is text input, not a send;
+    // firing run() here started a paid pipeline mid-composition.
+    if (e.isComposing || e.keyCode === 229) return;
+    if (e.key === 'Enter') run();
+  });
 
   const root = c('div', null, [
     // CAR-51 #2 (v1.247.0) — the sparkle decoration is gone: this was the app's
