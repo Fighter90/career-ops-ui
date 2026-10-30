@@ -223,6 +223,7 @@ Router.register('cv-studio', async () => {
       if (runCtrl.cancelled || runCtrl.signal.aborted) return; // a cancelled run paints nothing more
       if (res && res.markdown) {
         humanLive = res.markdown;
+        paintRunWarnings(humanOut, res.warnings);
         paintHumanResult(res.markdown);
         rememberStudioState();
       } else {
@@ -273,6 +274,7 @@ Router.register('cv-studio', async () => {
       if (runCtrl.cancelled || runCtrl.signal.aborted) return; // a cancelled run paints nothing more
       if (res && res.markdown) {
         tailorLive = res.markdown;
+        paintRunWarnings(tailorOut, res.warnings);
         paintTailorResult(res.markdown);
         rememberStudioState();
       } else {
@@ -542,6 +544,22 @@ Router.register('cv-studio', async () => {
   function paintHumanResult(markdown) {
     humanOut.appendChild(c('div', { className: 'card', style: { padding: '12px' } },
       c('div', { className: 'md', html: UI.md(markdown) })));
+  }
+  // v1.239.4 warnings surface (BACKLOG views-2) — the humanize/tailor live
+  // routes name a cut-off answer on `warnings` (cutOff); the result panels
+  // used to paint it as if it were whole. Band above the result, undo-safe:
+  // a re-run repaints over it like any other panel content.
+  function paintRunWarnings(host, warnings) {
+    const list = Array.isArray(warnings) ? warnings : [];
+    if (!list.length) return;
+    host.appendChild(c('div', {
+      className: 'badge badge-warn',
+      role: 'status',
+      style: { display: 'block', marginBottom: '12px', whiteSpace: 'normal', lineHeight: '1.5', textAlign: 'start' },
+    }, [
+      c('div', { style: { margin: '2px 0', fontWeight: 600 } }, '⚠ ' + t('llm.truncatedNotice', 'Model output may be truncated — re-run if the report looks cut off')),
+      ...list.map((w) => c('div', { style: { margin: '2px 0' } }, '· ' + w)),
+    ]));
   }
   function paintTailorResult(markdown) {
     tailorOut.appendChild(c('div', { className: 'card', style: { padding: '12px' } }, [

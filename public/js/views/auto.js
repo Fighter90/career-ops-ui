@@ -201,6 +201,11 @@ Router.register('auto', async () => {
     }
     links.push(c('a', { className: 'btn btn-ghost', href: '#/tracker' },
       t('auto.viewTracker', 'Open tracker')));
+    // v1.239.4 warnings surface (BACKLOG views-2) — the done frame carries
+    // `warnings` (cut-off report, looping cut, language/date notices, the
+    // same strings evaluationWarnings() shapes for /api/evaluate); the page
+    // used to render "Pipeline complete" over a half report silently.
+    const warnings = Array.isArray(data && data.warnings) ? data.warnings : [];
     resultEl.appendChild(c('div', { className: 'card' }, [
       c('h2', { className: 'section-title' }, '✓ ' + t('auto.doneTitle', 'Pipeline complete')),
       c('p', { style: { color: 'var(--foggy)', fontSize: '14px' } }, [
@@ -208,6 +213,14 @@ Router.register('auto', async () => {
         data && data.role ? ` — ${data.role}` : '',
         data && data.legitimacy ? ` · ${t('auto.legitimacy', 'Legitimacy')}: ${data.legitimacy}` : '',
       ].join('')),
+      warnings.length ? c('div', {
+        className: 'badge badge-warn',
+        role: 'status',
+        style: { display: 'block', margin: '10px 0', whiteSpace: 'normal', lineHeight: '1.5', textAlign: 'start' },
+      }, [
+        c('div', { style: { margin: '2px 0', fontWeight: 600 } }, '⚠ ' + t('llm.truncatedNotice', 'Model output may be truncated — re-run if the report looks cut off')),
+        ...warnings.map((w) => c('div', { style: { margin: '2px 0' } }, '· ' + w)),
+      ]) : null,
       c('div', { className: 'flex gap-3 mt-3', style: { flexWrap: 'wrap' } }, links),
     ]));
   }

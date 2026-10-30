@@ -1823,4 +1823,5 @@ window.__I18N_DICT_AR = {
   'config.rawModes': "محرر الأوضاع الخام",
   'v2empty.dash.statusesTitle': 'لا توجد حالات للعرض بعد',
   'v2empty.dash.statusesBody': 'قيّم وظيفة وتابعها — ستظهر حالتها في قمع التقدم هنا.',
+  "llm.truncatedNotice": "قد يكون ناتج النموذج مقتطعاً — أعد التشغيل إذا بدا التقرير مقطوعاً",
 };

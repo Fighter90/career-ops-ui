@@ -1823,4 +1823,5 @@ window.__I18N_DICT_IT = {
   'config.rawModes': "Editor grezzo dei modes",
   'v2empty.dash.statusesTitle': 'Nessuno stato da mostrare ancora',
   'v2empty.dash.statusesBody': 'Valuta un annuncio e monitoralo — il suo stato di candidatura entra in questo funnel.',
+  "llm.truncatedNotice": "L'output del modello potrebbe essere troncato — rilancia se il report sembra interrotto",
 };

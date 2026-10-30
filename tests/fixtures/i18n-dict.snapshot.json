@@ -37295,6 +37295,27 @@
     "ta": "ஒரு பதவியை மதிப்பிட்டு கண்காணியுங்கள் — அதன் விண்ணப்ப நிலை இங்கே நிலைக்குழவில் சேரும்.",
     "vi": "Hãy đánh giá một tin và theo dõi nó — trạng thái ứng tuyển của tin sẽ vào phễu tại đây."
   },
+  "llm.truncatedNotice": {
+    "en": "Model output may be truncated — re-run if the report looks cut off",
+    "es": "Es posible que la salida del modelo esté truncada — vuelve a ejecutar si el informe parece cortado",
+    "pt-BR": "A saída do modelo pode estar truncada — execute novamente se o relatório parecer cortado",
+    "ko": "모델 출력이 잘렸을 수 있습니다 — 보고서가 잘린 것 같으면 다시 실행하세요",
+    "ja": "モデル出力が切り詰められた可能性があります — レポートが途中で切れているように見える場合は再実行してください",
+    "ru": "Ответ модели мог обрезаться — запустите заново, если отчёт выглядит оборванным",
+    "zh-CN": "模型输出可能被截断 — 如报告看起来不完整，请重新运行",
+    "zh-TW": "模型輸出可能被截斷 — 如報告看起來不完整，請重新執行",
+    "fr": "La sortie du modèle a peut-être été tronquée — relancez si le rapport semble coupé",
+    "pl": "Wynik modela mógł zostać ucięty — uruchom ponownie, jeśli raport wygląda na ucięty",
+    "uk": "Відповідь моделі могла обрізатися — запустіть заново, якщо звіт виглядає обірваним",
+    "da": "Modellens output kan være blevet afkortet — kør igen, hvis rapporten ser afskåret ud",
+    "ar": "قد يكون ناتج النموذج مقتطعاً — أعد التشغيل إذا بدا التقرير مقطوعاً",
+    "de": "Die Modellausgabe ist möglicherweise gekürzt — führe den Lauf erneut aus, wenn der Bericht abgeschnitten wirkt",
+    "it": "L'output del modello potrebbe essere troncato — rilancia se il report sembra interrotto",
+    "tr": "Model çıktısı kesilmiş olabilir — rapor yarıda kesilmiş görünüyorsa yeniden çalıştırın",
+    "hi": "मॉडल आउटपुट कटा हुआ हो सकता है — अगर रिपोर्ट अधूरी लगे तो दोबारा चलाएँ",
+    "ta": "மாதிரி வெளியீடு துண்டிக்கப்பட்டிருக்கலாம் — அறிக்கை துண்டிக்கப்பட்டதாகத் தோன்றினால் மீண்டும் இயக்கவும்",
+    "vi": "Đầu ra của mô hình có thể bị cắt bớt — chạy lại nếu báo cáo có vẻ bị cắt ngang"
+  },
   "nav.apply": {
     "@alias": "apply.title"
   },

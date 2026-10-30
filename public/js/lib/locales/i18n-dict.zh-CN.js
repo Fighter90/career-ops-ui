@@ -1824,4 +1824,5 @@ window.__I18N_DICT_ZH_CN = {
   'config.rawModes': "modes 原始编辑器",
   'v2empty.dash.statusesTitle': '还没有可显示的状态',
   'v2empty.dash.statusesBody': '评估一个职位并纳入跟踪——它的申请状态会加入这里的漏斗。',
+  "llm.truncatedNotice": "模型输出可能被截断 — 如报告看起来不完整，请重新运行",
 };

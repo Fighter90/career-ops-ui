@@ -1825,4 +1825,5 @@ window.__I18N_DICT_TR = {
   'config.rawModes': "Ham modes düzenleyicisi",
   'v2empty.dash.statusesTitle': 'Henüz gösterilecek durum yok',
   'v2empty.dash.statusesBody': 'Bir ilanı değerlendirin ve takip edin — başvuru durumu bu huniye eklenir.',
+  "llm.truncatedNotice": "Model çıktısı kesilmiş olabilir — rapor yarıda kesilmiş görünüyorsa yeniden çalıştırın",
 };

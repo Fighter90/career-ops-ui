@@ -249,6 +249,21 @@ Router.register('deep', async () => {
         ])
       : null;
     const body = c('div', { className: 'card md', html: UI.md(markdown || '') });
+    // v1.239.4 warnings surface (BACKLOG views-2) — POST /api/deep names a
+    // cut-off brief (and context-notice extras) on `warnings`; runLive used
+    // to drop them, so a truncated brief rendered as if it were whole. Lead
+    // the band with the shared localized notice; server strings stay data.
+    const warnings = Array.isArray(opts.warnings) ? opts.warnings : [];
+    if (warnings.length) {
+      card.appendChild(c('div', {
+        className: 'badge badge-warn',
+        role: 'status',
+        style: { display: 'block', marginBottom: '12px', whiteSpace: 'normal', lineHeight: '1.5', textAlign: 'start' },
+      }, [
+        c('div', { style: { margin: '2px 0', fontWeight: 600 } }, '⚠ ' + t('llm.truncatedNotice', 'Model output may be truncated — re-run if the report looks cut off')),
+        ...warnings.map((w) => c('div', { style: { margin: '2px 0' } }, '· ' + w)),
+      ]));
+    }
     if (briefWarning) card.appendChild(briefWarning);
     card.append(header, body);
     out.appendChild(card);
@@ -304,7 +319,7 @@ Router.register('deep', async () => {
       if (myToken !== runToken) return; // a newer run owns `out`
       if (runCtrl.cancelled || runCtrl.signal.aborted) return; // a cancelled run paints nothing more
       if (r && r.markdown) {
-        showResult(`${company.value.trim()}${role.value.trim() ? ' — ' + role.value.trim() : ''}`, r.markdown, { saved: r.saved });
+        showResult(`${company.value.trim()}${role.value.trim() ? ' — ' + role.value.trim() : ''}`, r.markdown, { saved: r.saved, warnings: r.warnings });
         loadArchive();
       } else {
         // CAR-20 (v1.243.0) — the old message hard-named Gemini while the

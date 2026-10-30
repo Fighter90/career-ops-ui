@@ -1824,4 +1824,5 @@ window.__I18N_DICT_ES = {
   'config.rawModes': "Editor sin formato de modes",
   'v2empty.dash.statusesTitle': 'Aún no hay estados para mostrar',
   'v2empty.dash.statusesBody': 'Evalúa una oferta y hazle seguimiento: su estado de candidatura se une aquí al embudo.',
+  "llm.truncatedNotice": "Es posible que la salida del modelo esté truncada — vuelve a ejecutar si el informe parece cortado",
 };

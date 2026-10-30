@@ -158,6 +158,20 @@ Router.register('career-plan', async () => {
         // Show the plan as READABLE formatted text immediately (no raw tags) —
         // the textarea below stays available for editing. Preview toggles it.
         preview.textContent = '';
+        // v1.239.4 warnings surface (BACKLOG views-2) — /api/career-plan/generate
+        // names a cut-off plan on `warnings` ("plan cut off at the output-token
+        // limit"); it used to land in the editor as if it were whole.
+        const warnings = Array.isArray(res.warnings) ? res.warnings : [];
+        if (warnings.length) {
+          preview.appendChild(c('div', {
+            className: 'badge badge-warn',
+            role: 'status',
+            style: { display: 'block', marginBottom: '12px', whiteSpace: 'normal', lineHeight: '1.5', textAlign: 'start' },
+          }, [
+            c('div', { style: { margin: '2px 0', fontWeight: 600 } }, '⚠ ' + t('llm.truncatedNotice', 'Model output may be truncated — re-run if the report looks cut off')),
+            ...warnings.map((w) => c('div', { style: { margin: '2px 0' } }, '· ' + w)),
+          ]));
+        }
         preview.appendChild(c('div', { className: 'card md', html: UI.md(res.markdown), style: { padding: '16px', marginTop: '4px' } }));
         // Guard: scrollIntoView on a detached node is a silent no-op, but only
         // scroll when actually laid out (view still mounted) to avoid surprises.
