@@ -56,8 +56,8 @@
 - **AI 不可知架構** — career-ops 並 **不** 內建任何模型。它以指令
   形式運行於既有的 AI 編碼 CLI 內。切換供應商(Anthropic ↔ Gemini
   ↔ OpenAI)時,你的評估歷史依然保持一致。
-- **由人類控制投遞** — career-ops 起草答案並開啟表單,但 **由你
-  按下 Submit**。系統 **絕不** 自動投遞。系統提供結構與評估,
+- **由人類控制投遞** — career-ops 起草答案並開啟表單,但
+  **由你按下 Submit**。系統 **絕不** 自動投遞。系統提供結構與評估,
   最終投遞決策權保留在人類手中。
 - **結構化求職** — 為主動、有目的、會大量投遞的求職而設計;
   並非單次投遞工具,也不是推薦引擎。完整設定約需 15 分鐘,且
@@ -148,8 +148,8 @@ career-ops-ui 的 `#/dashboard` 與 `#/tracker` 會把分數達 4.0 以上
 > career-ops-ui open       # 開啟並將瀏覽器中的儀表板分頁帶到最前
 > ```
 >
-> `setup`/`run` 之後,瀏覽器分頁會自動開啟**並被帶到最
-> 前面**(v1.43.0);`career-ops-ui open` 可隨需執行相同動作,
+> `setup`/`run` 之後,瀏覽器分頁會自動開啟
+> **並被帶到最前面**(v1.43.0);`career-ops-ui open` 可隨需執行相同動作,
 > 因此你再也不必翻找儀表板分頁。`NO_OPEN=1` 可在 headless/CI
 > 啟動時停用自動開啟。
 >
@@ -178,8 +178,8 @@ career-ops-ui 的 `#/dashboard` 與 `#/tracker` 會把分數達 4.0 以上
 若任一項為紅色,頁面會明確告訴你要修哪個檔案或環境變數。在
 Health 全綠之前不要繼續往下做。
 
-**第 3 步 — 點側邊欄的 `⚒ App settings`。** 你會落在 **API keys
-& runtime** 分頁。
+**第 3 步 — 點側邊欄的 `⚒ App settings`。** 你會落在
+**API keys & runtime** 分頁。
 - 貼上 `ANTHROPIC_API_KEY`(首選 — 對長文評分品質更好)以及/或
   `GEMINI_API_KEY`。可在 <https://console.anthropic.com/settings/keys>
   或 <https://aistudio.google.com/apikey> 取得金鑰。
@@ -221,8 +221,8 @@ Health 全綠之前不要繼續往下做。
 吐司提示:*「Saved」*。
 
 **第 8 步(選用)— 點 `📄 Generate PDF`。** 會在父專案執行
-`generate-pdf.mjs`(需要 Playwright),完成時 **新的 PDF 會自動
-下載** 到瀏覽器。頁面底部的清單會保留每一份先前產生的檔案。
+`generate-pdf.mjs`(需要 Playwright),完成時
+**新的 PDF 會自動下載** 到瀏覽器。頁面底部的清單會保留每一份先前產生的檔案。
 
 ### C. 尋找職缺(每次掃描約 2 分鐘)
 
@@ -420,8 +420,8 @@ JD。輔助器會生成逐步的投遞檢查清單:
 
 最關鍵的欄位:
 
-- `candidate.full_name` — 每個提示都會用到。**在真正掃描任何
-  職缺之前,務必把樣板的 `Jane Smith` 替換掉**,否則你產生的
+- `candidate.full_name` — 每個提示都會用到。
+  **在真正掃描任何職缺之前,務必把樣板的 `Jane Smith` 替換掉**,否則你產生的
   求職信會以佔位姓名寄出去。
 - `candidate.email`、`linkedin`、`github` — 求職信生成與申請
   檢查清單都會引用。
@@ -906,7 +906,6 @@ v2 結果介面讓所有控制項都找得到:
 - **排序方式**(`scan.v2.sortBy`)—— 點欄位標題(公司、職稱、薪資、
   年齡)即可按它排序;再點一次反向。
 - **快速檢視**(`scan.v2.quickView`)—— 點任一列即可原地展開該職缺 的說明(**職位說明**,`scan.v2.description`),不必離開頁面;沒有 擷取到內文的職缺會如實說明(`scan.v2.noDescription`),而不是顯示 空白卡片。
-- **列密度**(`scan.v2.density`)—— 在 **緊湊** / **寬鬆** (`scan.v2.compact` / `scan.v2.comfortable`)列高之間切換;選擇按 瀏覽器記住。
 - **日誌**(`scan.v2.log`)—— 摺疊/展開串流掃描日誌,把完整寬度讓
   給表格。
 
@@ -1148,8 +1147,8 @@ F. **STAR stories** — 1–3 段可直接貼上的 S-T-A-R 區塊,針對該
 ### 有 10 個以上 JD 時用批次評估
 
 對單一 JD,`#/evaluate` 頁面是正確的工具。當 pipeline 排隊有 10
-個以上 URL 時,逐一點擊就不切實際 — 請跳到第 14 節的 **Batch
-evaluate** 子節(在父專案執行 `./batch/batch-runner.sh`),讓它
+個以上 URL 時,逐一點擊就不切實際 — 請跳到第 14 節的
+**Batch evaluate** 子節(在父專案執行 `./batch/batch-runner.sh`),讓它
 整夜跑,然後回到 `#/reports` / `#/tracker` 看結果。完整流程:
 [batch-evaluate-offers](https://career-ops.org/docs/introduction/guides/batch-evaluate-offers)。
 
@@ -1364,8 +1363,8 @@ tracker」按鈕。
 
 ### 共用樣板
 
-每個頁面都有一個小表單(欄位視 mode 而定)、一顆 **▶
-Generate prompt** 按鈕(手動),以及 — 當有 Anthropic 或 Gemini
+每個頁面都有一個小表單(欄位視 mode 而定)、一顆
+**▶ Generate prompt** 按鈕(手動),以及 — 當有 Anthropic 或 Gemini
 金鑰時 — 一顆會晉升為主按鈕的 **⚡ 即時執行**。
 
 點 **▶ Generate prompt** 會回傳組合好的提示,把你的表單值
