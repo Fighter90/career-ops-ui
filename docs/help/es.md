@@ -13,8 +13,8 @@ concreta vía el índice del sidebar de ayuda.
 > **Networking**, **Analítica**, **Configuración** (`nav.group.*`) —
 > que se abren cuando visitas una sección y se quedan donde los
 > dejaste. Marca con una ☆ cualquier página para fijarla bajo
-> **Favoritos**, y pulsa **Cmd/Ctrl+K** (o el botón **Menú de
-> comandos** en la parte superior del sidebar, `nav.v2.palette`) para
+> **Favoritos**, y pulsa **Cmd/Ctrl+K** (o el botón **Menú de comandos**
+> en la parte superior del sidebar, `nav.v2.palette`) para
 > saltar por búsqueda difusa a cualquier página desde cualquier
 > lugar. Cada página muestra su título al instante y rellena filas
 > grises con brillo mientras cargan los datos, así que la navegación
@@ -168,8 +168,8 @@ verás al éxito. Las secciones 2–16 entran en profundidad en cada fase.
 > career-ops-ui open       # abre + TRAE AL FRENTE la pestaña del panel en tu navegador
 > ```
 >
-> Tras `setup`/`run` la pestaña del navegador se abre **y se trae al
-> frente** automáticamente (v1.43.0); `career-ops-ui open` hace lo mismo
+> Tras `setup`/`run` la pestaña del navegador se abre **y se trae al frente**
+> automáticamente (v1.43.0); `career-ops-ui open` hace lo mismo
 > bajo demanda, así nunca tienes que buscar la pestaña del panel.
 > `NO_OPEN=1` desactiva la apertura automática en arranques headless/CI.
 >
@@ -233,8 +233,8 @@ la izquierda, vista previa en vivo a la derecha.
 - **Sube un currículum existente** — haz clic en **📁 Upload CV**,
   elige cualquiera de `.docx / .doc / .odt / .rtf / .pdf / .html /
   .txt / .md`. El servidor convierte a markdown vía pandoc o
-  pdftotext, sanea XSS, y coloca el resultado en el editor. **Revisa
-  la conversión** — los PDFs especialmente pueden perder fidelidad de
+  pdftotext, sanea XSS, y coloca el resultado en el editor.
+  **Revisa la conversión** — los PDFs especialmente pueden perder fidelidad de
   layout.
 - **Pega markdown directamente** — el textarea es un editor markdown;
   el panel derecho es lo que verá el LLM (y tu futuro reclutador).
@@ -242,13 +242,13 @@ la izquierda, vista previa en vivo a la derecha.
   debajo de 1500 palabras. Secciones en este orden: Summary,
   Experience, Projects, Education, Skills.
 
-**Paso 7 — Haz clic en `💾 Save` (arriba a la derecha de la página
-CV).** El servidor sanea (se eliminan `<script>` / `javascript:` /
+**Paso 7 — Haz clic en `💾 Save` (arriba a la derecha de la página CV).**
+El servidor sanea (se eliminan `<script>` / `javascript:` /
 manejadores inline) y escribe `cv.md`. Toast: *"Saved"*.
 
 **Paso 8 (opcional) — Haz clic en `📄 Generate PDF`.** Ejecuta
-`generate-pdf.mjs` en el padre (Playwright requerido) y **el PDF nuevo
-se descarga automáticamente** en tu navegador al terminar. La lista al
+`generate-pdf.mjs` en el padre (Playwright requerido) y
+**el PDF nuevo se descarga automáticamente** en tu navegador al terminar. La lista al
 final de la página conserva cada archivo previamente generado.
 
 ### C. Encontrar vacantes (~2 minutos por scan)
@@ -286,8 +286,8 @@ es tu short-list.
 
 ### E. Decidir e investigar a fondo la empresa preseleccionada (~3 minutos)
 
-**Paso 14 — Elige una vacante que valga la pena perseguir. Haz clic
-en `Deep research` en el sidebar.** Introduce el nombre de la empresa
+**Paso 14 — Elige una vacante que valga la pena perseguir. Haz clic en `Deep research` en el sidebar.**
+Introduce el nombre de la empresa
 y el rol. El modelo produce un briefing de empresa de 7 secciones
 (misión, news recientes, stack tecnológico, señales de contratación,
 benchmarks de compensación, riesgos, ángulo recomendado). El guardado
@@ -328,14 +328,13 @@ autorellena.
 candidatura original. Envía. Actualiza el estado del tracker a
 `Followed up`.
 
-**Paso 20 — Cuando te llegue una invitación a entrevista, ejecuta el
-modo `Interview prep`** (`#/interview-prep`). Genera preparación
+**Paso 20 — Cuando te llegue una invitación a entrevista, ejecuta el modo `Interview prep`** (`#/interview-prep`).
+Genera preparación
 dirigida para la empresa + etapa específica (system design /
 behavioral / coding). Tira automáticamente del briefing de deep
 research.
 
-**Paso 21 — ¿Conseguiste la oferta? Actualiza el estado del Tracker a
-`Offer`** y revisa la sección de comp de tu reporte de evaluación —
+**Paso 21 — ¿Conseguiste la oferta? Actualiza el estado del Tracker a `Offer`** y revisa la sección de comp de tu reporte de evaluación —
 tu número mínimo de aceptación está justo ahí.
 
 ### TL;DR — el orden del sidebar coincide con el workflow
@@ -346,8 +345,7 @@ tu número mínimo de aceptación está justo ahí.
 
 El sidebar agrupa estas mismas páginas por fase (**Búsqueda** →
 **Decisión** → **Aplicación** → …), así que el orden del workflow y
-el orden del menú coinciden; **Cmd/Ctrl+K** abre el **Menú de
-comandos** (`nav.v2.palette`) si prefieres teclear tres letras antes
+el orden del menú coinciden; **Cmd/Ctrl+K** abre el **Menú de comandos** (`nav.v2.palette`) si prefieres teclear tres letras antes
 que rastrear la lista. Eso es todo. 21 pasos, botón-por-botón, de
 cero a oferta.
 
@@ -452,8 +450,7 @@ Las claves que más suelen hacer falta. Es una selección, no el registro: `#/co
 
 ### Botones smoke-test
 
-Después de guardar, haz clic en **▶ Test Anthropic** o **▶ Test
-Gemini** — ambos disparan un prompt diminuto (≤256 tokens de output)
+Después de guardar, haz clic en **▶ Test Anthropic** o **▶ Test Gemini** — ambos disparan un prompt diminuto (≤256 tokens de output)
 para que gastes esencialmente nada mientras confirmas que la clave
 está conectada correctamente. Devuelve una muestra de ~200 caracteres
 en caso de éxito.
@@ -473,8 +470,8 @@ re-parsea al recargar.
 
 Los campos que más importan:
 
-- `candidate.full_name` — usado en cada prompt. **Reemplaza el
-  template `Jane Smith`** antes de escanear nada de verdad, o tus
+- `candidate.full_name` — usado en cada prompt.
+  **Reemplaza el template `Jane Smith`** antes de escanear nada de verdad, o tus
   cover letters generadas saldrán bajo el nombre placeholder.
 - `candidate.email`, `linkedin`, `github` — referenciados en la
   generación de cover letters y en la apply checklist.
@@ -512,8 +509,8 @@ letter. Vive en `cv.md` en la raíz del proyecto padre.
     `apt install pandoc` en Linux).
   - **PDF** — `.pdf` se extrae vía **pdftotext** de Poppler
     (`brew install poppler` / `apt install poppler-utils`).
-  - El markdown convertido aterriza en el editor; haz clic en **💾
-    Save** para persistir. El resultado se sanea (mismo strip XSS
+  - El markdown convertido aterriza en el editor; haz clic en **💾 Save**
+    para persistir. El resultado se sanea (mismo strip XSS
     que el pegado).
   - Tope estricto: **10 MB** por upload. Archivos más grandes → 413.
 - **Desde LinkedIn** — la ruta más fácil: abre Claude Code en el
@@ -569,8 +566,8 @@ padre. Tres secciones importan. Las tres secciones del SPA (abajo)
 coinciden 1:1 con el schema canónico de career-ops.org de
 [scan-job-portals](https://career-ops.org/docs/introduction/guides/scan-job-portals).
 
-> **Atajo:** la URL `#/portals` ahora resuelve directamente a **App
-> settings** y (cuando hay una fuente regional configurada) salta al
+> **Atajo:** la URL `#/portals` ahora resuelve directamente a **App settings**
+> y (cuando hay una fuente regional configurada) salta al
 > grupo **Regional sources** — así un enlace `#/portals` marcado o
 > tecleado ya no da 404 (v1.42.0).
 
@@ -583,8 +580,8 @@ title_filter:
   seniority_boost: [Senior, Staff, Lead, Principal]
 ```
 
-Una vacante escaneada pasa cuando su título contiene **al menos una
-keyword positiva** Y **ninguna de las keywords negativas**. Ajusta
+Una vacante escaneada pasa cuando su título contiene **al menos una keyword positiva**
+Y **ninguna de las keywords negativas**. Ajusta
 ambas. Las keywords son substrings case-insensitive.
 
 `seniority_boost` es la tercera clave de title-filter. Las keywords
@@ -673,8 +670,8 @@ SmartRecruiters / Workday), `enabled: true|false` para incluir /
 excluir sin borrar la entrada. El ATS scanner detecta el ATS desde el
 patrón de URL (`job-boards.greenhouse.io/<slug>` → Greenhouse, etc.)
 y consulta la boards-api pública de cada empresa directamente. Las
-empresas sin un ATS reconocible se omiten (la tarjeta **Active
-Companies** en `/#/scan` las muestra en gris con `○`).
+empresas sin un ATS reconocible se omiten (la tarjeta **Active Companies**
+en `/#/scan` las muestra en gris con `○`).
 
 **Fijar un tenant de Personio (v1.237.0).** Muchas empresas incrustan su
 tablero de Personio como un **iframe** en una página de empleo con marca
@@ -756,8 +753,8 @@ russian_portals:
 ```
 
 `queries` son matches de substring case-insensitive contra los títulos
-de vacantes en hh.ru y Habr Career. **Cuida el solapamiento con la
-lista negativa** — si `"Senior PHP"` está en `queries` pero `"php"`
+de vacantes en hh.ru y Habr Career.
+**Cuida el solapamiento con la lista negativa** — si `"Senior PHP"` está en `queries` pero `"php"`
 acaba en `title_filter.negative`, el scan devolverá cero resultados y
 la consola te avisará del conflicto.
 
@@ -979,13 +976,12 @@ El chrome v2 de resultados mantiene los controles a la vista:
   (empresa, puesto, salario, antigüedad) para ordenar; pulsa otra vez
   para invertir.
 - **Vista rápida** (`scan.v2.quickView`) — pulsa una fila para expandir su descripción inline (**Descripción**, `scan.v2.description`) sin salir de la página; las ofertas sin cuerpo capturado lo dicen (`scan.v2.noDescription`) en vez de enseñar una tarjeta vacía.
-- **Densidad de fila** (`scan.v2.density`) — alterna **Compacto** / **Cómodo** (`scan.v2.compact` / `scan.v2.comfortable`); se recuerda por navegador.
 - **Log** (`scan.v2.log`) — colapsa/expande el log de escaneo en vivo
   para dar el ancho completo a la tabla.
 
 Cada fila trae sus propias acciones: **Evaluar** (`scan.v2.evaluate`)
-salta directo a una evaluación puntuada de esa oferta, **Al
-pipeline** (`scan.v2.toPipeline`) encola la URL (con toast de ya
+salta directo a una evaluación puntuada de esa oferta,
+**Al pipeline** (`scan.v2.toPipeline`) encola la URL (con toast de ya
 encolada, `scan.v2.pipelineDup`), **Abrir oferta ↗**
 (`scan.v2.openPosting`) abre la página de carreras en otra pestaña, y
 la ☆ marca favorito.
@@ -1276,8 +1272,8 @@ fecha, badge de legitimidad y píldora de score con color (verde ≥ 4.0,
 amarillo ≥ 3.0, rojo por debajo, con una píldora apagada «Score no
 detectado» cuando la cabecera no trae score parseable) — y puede
 cambiar a una vista densa de **Tabla** (`rep2.viewTable`) para leer
-filas. Cada tarjeta y fila nombra además el **siguiente paso
-sugerido** para su banda de score: **Aplica ya — encaje máximo**
+filas. Cada tarjeta y fila nombra además el **siguiente paso sugerido**
+para su banda de score: **Aplica ya — encaje máximo**
 (`rep2.actApply`), **Aplica, o busca antes un contacto cálido**
 (`rep2.actContact`), **Investiga la empresa primero**
 (`rep2.actResearch`) o **Salta salvo motivo personal** (`rep2.actLow`)
@@ -1340,8 +1336,8 @@ tabla GitHub-Flavored Markdown.
 **kanban** de arrastrar-y-soltar: una columna por estado canónico
 (título anunciado como *Applications by status*, `track.kanbanBoardAria`),
 una tarjeta por candidatura. Arrastra una tarjeta a otra columna — o
-enfócala y pulsa **Mover** — y el cambio se **previsualiza antes de
-escribir nada** (`track.kanbanMoveHint`); un movimiento confirmado
+enfócala y pulsa **Mover** — y el cambio se
+**previsualiza antes de escribir nada** (`track.kanbanMoveHint`); un movimiento confirmado
 registra entrada en el diario de outcomes y reescribe
 `data/applications.md`, y la tarjeta te lo dice (`track.moveJournal`)
 — para devolver un estado, usa el botón **Outcome** de la fila. Las
@@ -1350,8 +1346,8 @@ semántica solo tú puedes elegir) se renderizan de solo lectura
 (`track.kanbanReadOnly`) y rechazan drops. Si el grabador de outcomes
 del padre falta, los movimientos se desactivan con una nota honesta
 (`track.kanbanMovesOff`). Mientras el tablero carga muestra las mismas
-filas con brillo que el resto de la app, y un tablero vacío dice **No
-hay candidaturas** (`track.kanbanEmpty`) con un puntero al pipeline
+filas con brillo que el resto de la app, y un tablero vacío dice
+**No hay candidaturas** (`track.kanbanEmpty`) con un puntero al pipeline
 (`track.emptyBody`).
 
 La whitelist de estados se aplica del lado del servidor; enviar
@@ -1728,8 +1724,8 @@ Requerido para dos features de career-ops:
 
 - **Form-fill** en `/career-ops apply` (paso 3 de arriba — Playwright
   abre el navegador, lee labels de campos, sugiere respuestas).
-- **Generación de PDF** vía `/career-ops pdf` y el botón **📄
-  Generate PDF** del SPA en `#/cv` / `#/reports/:slug` /
+- **Generación de PDF** vía `/career-ops pdf` y el botón **📄 Generar PDF**
+  del SPA en `#/cv` / `#/reports/:slug` /
   `#/evaluate` / `#/deep` / `#/interview-prep`.
 
 **Fallback cuando falta Playwright:** el flujo apply cae a WebFetch

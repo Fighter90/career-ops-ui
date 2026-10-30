@@ -21,8 +21,8 @@ latérale de l'aide.
 > instantanément et remplit des rangées grises scintillantes pendant
 > le chargement des données, si bien que la navigation ne paraît jamais
 > vide. Et aucune page ne vous accueille par un néant : les quatre qui
-> démarrent vides — **Pilote automatique**, **Liste de contrôle de
-> candidature**, **Lot** et **Entreprises financées** — affichent un
+> démarrent vides — **Pilote automatique**,
+> **Liste de contrôle de candidature**, **Lot** et **Entreprises financées** — affichent un
 > exemple résolu plus l'unique action qui les remplit
 > (`v2empty.exampleTag`).
 
@@ -76,8 +76,8 @@ votre machine.
   codage IA existants. Changez de fournisseur (Anthropic ↔ Gemini ↔
   OpenAI) et votre historique d'évaluations reste cohérent.
 - **Soumissions contrôlées par l'humain** — career-ops rédige les
-  réponses et ouvre le formulaire, mais **c'est vous qui cliquez sur
-  Envoyer**. Le système ne postule jamais automatiquement. Il fournit la
+  réponses et ouvre le formulaire, mais
+  **c'est vous qui cliquez sur Envoyer**. Le système ne postule jamais automatiquement. Il fournit la
   structure et l'évaluation ; l'humain garde l'autorité finale de
   soumission.
 - **Recherche structurée** — conçu pour une recherche d'emploi active et
@@ -177,8 +177,8 @@ détaillent chaque phase.
 > career-ops-ui open       # open + RAISE the dashboard tab in your browser
 > ```
 >
-> Après `setup`/`run`, l'onglet du navigateur est ouvert **et mis au
-> premier plan** automatiquement (v1.43.0) ; `career-ops-ui open` fait de
+> Après `setup`/`run`, l'onglet du navigateur est ouvert **et mis au premier plan**
+> automatiquement (v1.43.0) ; `career-ops-ui open` fait de
 > même à la demande, pour ne jamais avoir à chercher l'onglet du tableau
 > de bord. `NO_OPEN=1` désactive l'ouverture auto pour les démarrages
 > headless/CI.
@@ -257,8 +257,8 @@ serveur neutralise (`<script>` / `javascript:` / gestionnaires inline
 supprimés) et écrit `cv.md`. Toast : *« Saved »*.
 
 **Étape 8 (facultatif) — Cliquez sur `📄 Generate PDF`.** Lance
-`generate-pdf.mjs` dans le parent (Playwright requis) et **le nouveau PDF
-se télécharge automatiquement** dans votre navigateur une fois terminé. La
+`generate-pdf.mjs` dans le parent (Playwright requis) et
+**le nouveau PDF se télécharge automatiquement** dans votre navigateur une fois terminé. La
 liste en bas de page conserve tous les fichiers générés précédemment.
 
 ### C. Find vacancies (~2 minutes par scan)
@@ -299,8 +299,8 @@ votre liste restreinte.
 
 ### E. Decide & deeply research the shortlisted company (~3 minutes)
 
-**Étape 14 — Choisissez une offre qui mérite d'être poursuivie. Cliquez
-sur `Deep research` dans la barre latérale.** Saisissez le nom de
+**Étape 14 — Choisissez une offre qui mérite d'être poursuivie. Cliquez sur `Deep research` dans la barre latérale.**
+Saisissez le nom de
 l'entreprise et le poste. Le modèle produit un dossier d'entreprise en 7
 sections (mission, actualités récentes, stack technique, signaux
 d'embauche, repères de rémunération, risques, angle recommandé).
@@ -341,8 +341,8 @@ remplie automatiquement.
 (`#/followup`). Rédige un e-mail de relance poli faisant référence à la
 candidature initiale. Envoyez. Mettez le statut du tracker à `Followed up`.
 
-**Étape 20 — Quand vous recevez une invitation à un entretien, lancez le
-mode `Interview prep`** (`#/interview-prep`). Génère une préparation ciblée
+**Étape 20 — Quand vous recevez une invitation à un entretien, lancez le mode `Interview prep`** (`#/interview-prep`).
+Génère une préparation ciblée
 pour l'entreprise + l'étape précises (system design / comportemental /
 coding). S'appuie automatiquement sur le dossier de recherche.
 
@@ -393,14 +393,14 @@ enregistré (**Afficher le rapport**, `auto.viewReport`) et au
 **suiveur** (`auto.viewTracker`). Une étape échouée est marquée en
 rouge avec son message et le bouton se réactive pour corriger l'URL et
 réessayer sans recharger. Lancer une nouvelle exécution pendant qu'une
-autre tourne encore est sans danger : l'ancienne se marque **Remplacé
-— une exécution plus récente a été demandée** (`auto.superseded`) au
+autre tourne encore est sans danger : l'ancienne se marque
+**Remplacé — une exécution plus récente a été demandée** (`auto.superseded`) au
 lieu de dépenser deux fois pour une réponse périmée.
 
 La page vide est honnête sur son unique champ : l'étiquette **Exemple**
 et le bouton **Essayer une URL d'exemple** (`v2empty.auto.tryExample`)
-remplissent le champ avec une offre d'échantillon — **rien ne
-s'exécute avant d'avoir cliqué sur Lancer** (`v2empty.auto.hint`), donc
+remplissent le champ avec une offre d'échantillon —
+**rien ne s'exécute avant d'avoir cliqué sur Lancer** (`v2empty.auto.hint`), donc
 explorer ne coûte rien.
 
 **Pas de clé API ?** Le pipeline s'exécute en **mode manuel** : les étapes
@@ -444,8 +444,8 @@ Trois onglets :
    des champs répétables (ajout/suppression de lignes) ; les sections en
    prose — **Exit Narrative / Location Policy** — s'affichent comme des
    textareas étiquetées ; toute section inconnue ou non-liste retombe sur
-   une textarea verbatim étiquetée. L'enregistrement **fusionne par
-   section** — le préambule, les sections intactes et les sections
+   une textarea verbatim étiquetée. L'enregistrement
+   **fusionne par section** — le préambule, les sections intactes et les sections
    personnalisées sont préservés à l'octet près. Un volet *Advanced: raw
    markdown* reste disponible pour les éditions plein fichier —
    ajout/suppression de sections ou édition du préambule.
@@ -490,17 +490,17 @@ structuré, champs groupés en trois sections repliables :
 Pourquoi l'enregistrement est sûr :
 
 - Le formulaire n'envoie que les 14 chemins scalaires modélisés sous forme
-  `{ fields: { "candidate.full_name": … } }`. Le serveur **lit le
-  `config/profile.yml` existant, définit/efface seulement ces feuilles, et
-  re-sérialise tout l'objet** — donc les tableaux imbriqués que le
+  `{ fields: { "candidate.full_name": … } }`. Le serveur
+  **lit le `config/profile.yml` existant, définit/efface seulement ces feuilles, et re-sérialise tout l'objet**
+  — donc les tableaux imbriqués que le
   formulaire ne modélise pas (`target_roles.archetypes`,
   `narrative.proof_points`, `narrative.superpowers`) et toute clé
   personnalisée ajoutée à la main **survivent à l'aller-retour intacts**.
   Vider un champ retire proprement cette clé (pas de résidu `phone: ""`).
 - La validation exige toujours un nom complet ; l'en-tête `# Career-Ops
   Profile Configuration` est apposé automatiquement.
-- Un compromis : un enregistrement par formulaire **re-sérialise le YAML,
-  donc les commentaires inline `#` sont perdus**. Pour préserver les
+- Un compromis : un enregistrement par formulaire
+  **re-sérialise le YAML, donc les commentaires inline `#` sont perdus**. Pour préserver les
   commentaires ou éditer des tableaux imbriqués, utilisez le volet
   **Advanced: edit raw YAML** en bas de l'onglet — c'est l'éditeur plein
   fichier d'avant la 1.32, inchangé (remplace tout le fichier à
@@ -535,8 +535,7 @@ Les clés dont on a le plus souvent besoin. C'est une sélection, pas le registr
 
 ### Smoke-test buttons
 
-Après l'enregistrement, cliquez sur **▶ Test Anthropic** ou **▶ Test
-Gemini** — les deux envoient un prompt minuscule (≤256 tokens en sortie)
+Après l'enregistrement, cliquez sur **▶ Test Anthropic** ou **▶ Test Gemini** — les deux envoient un prompt minuscule (≤256 tokens en sortie)
 donc vous ne dépensez quasiment rien tout en confirmant que la clé est bien
 câblée. Renvoie un échantillon d'~200 caractères en cas de succès.
 
@@ -556,8 +555,8 @@ même fichier ; cette page se re-parse au rechargement.
 
 Les champs qui comptent le plus :
 
-- `candidate.full_name` — utilisé dans chaque prompt. **Remplacez le modèle
-  `Jane Smith`** avant de scanner quoi que ce soit pour de vrai, sinon vos
+- `candidate.full_name` — utilisé dans chaque prompt.
+  **Remplacez le modèle `Jane Smith`** avant de scanner quoi que ce soit pour de vrai, sinon vos
   lettres de motivation générées partiront sous le nom indicatif.
 - `candidate.email`, `linkedin`, `github` — référencés dans la génération de
   lettre de motivation et la checklist de candidature.
@@ -664,8 +663,8 @@ title_filter:
   seniority_boost: [Senior, Staff, Lead, Principal]
 ```
 
-Une offre scannée passe quand son titre contient **au moins un mot-clé
-positif** ET **aucun mot-clé négatif**. Réglez les deux. Les mots-clés sont
+Une offre scannée passe quand son titre contient **au moins un mot-clé positif**
+ET **aucun mot-clé négatif**. Réglez les deux. Les mots-clés sont
 des sous-chaînes insensibles à la casse.
 
 `seniority_boost` est la troisième clé du title-filter. Les mots-clés listés
@@ -851,8 +850,8 @@ russian_portals:
 ```
 
 `queries` sont des correspondances de sous-chaînes insensibles à la casse
-sur les titres d'offres de hh.ru et Habr Career. **Attention au
-chevauchement avec la liste négative** — si `"Senior PHP"` est dans
+sur les titres d'offres de hh.ru et Habr Career.
+**Attention au chevauchement avec la liste négative** — si `"Senior PHP"` est dans
 `queries` mais `"php"` finit dans `title_filter.negative`, le scan ne
 renverra aucun résultat et la console vous avertira du conflit.
 
@@ -864,8 +863,7 @@ plus que l'UA par défaut (`habr-career`, scrape HTML ; `trudvsem`, API
 open-data gouvernementale — pas de clé, pas de barrière IP). Deux sont des
 scrapes HTML de sites tech (`getmatch`, `geekjob` — sans clé non plus). Un
 est l'API canonique hh.ru qui peut renvoyer 403 depuis des IP non russes
-sauf si vous définissez une variable `HH_USER_AGENT` via **App settings →
-API keys & runtime** (ou lancez le serveur depuis une IP / un nœud de sortie
+sauf si vous définissez une variable `HH_USER_AGENT` via **App settings → API keys & runtime** (ou lancez le serveur depuis une IP / un nœud de sortie
 VPN russe).
 
 #### Source inventory
@@ -1090,7 +1088,6 @@ Le chrome v2 des résultats garde les commandes à portée de vue :
   (entreprise, poste, salaire, ancienneté) pour trier dessus ;
   re-cliquez pour inverser le sens.
 - **Aperçu rapide** (`scan.v2.quickView`) — cliquez une ligne pour déplier sa description d'offre en place (**Description**, `scan.v2.description`) sans quitter la page ; les offres sans corps capturé le disent (`scan.v2.noDescription`) au lieu d'afficher une carte vide.
-- **Densité des lignes** (`scan.v2.density`) — basculez **Compact** / **Confortable** (`scan.v2.compact` / `scan.v2.comfortable`) pour la hauteur des lignes ; le choix est mémorisé par navigateur.
 - **Journal** (`scan.v2.log`) — replie/déplie le journal de scan en
   flux pour donner toute la largeur au tableau.
 
@@ -1102,9 +1099,8 @@ offre, **Vers le pipeline** (`scan.v2.toPipeline`) met l'URL en file
 dans un nouvel onglet, et l'étoile ☆ bascule un favori.
 
 **Rechercher + Exclure.** La boîte **Rechercher** est votre filtre
-« postes à trouver » — tapez un ou plusieurs termes **séparés par des
-virgules** et une ligne s'affiche si elle correspond à **l'un
-quelconque** d'entre eux (OU) ; un `-mot` initial **exclut** ce terme
+« postes à trouver » — tapez un ou plusieurs termes **séparés par des virgules**
+et une ligne s'affiche si elle correspond à **l'un quelconque** d'entre eux (OU) ; un `-mot` initial **exclut** ce terme
 (`scan.v2.moreHint`). La boîte **Exclure** séparée (`scan.lblExclude`)
 fait la même chose avec des termes entiers : des mots séparés par des
 virgules qui **masquent** toute ligne dont l'entreprise / le poste / la
@@ -1259,8 +1255,8 @@ des sites ATS n'envoient pas d'en-têtes CORS, donc le navigateur ne peut pas
 les récupérer directement ; le serveur relaie la requête, retire les balises
 `<script>` / `<style>` / HTML, et renvoie jusqu'à 8 Ko de texte brut.
 
-Le proxy d'aperçu suit les redirections manuellement avec une **validation
-SSRF par saut** — chaque en-tête `Location` repasse par `isValidJobUrl()`,
+Le proxy d'aperçu suit les redirections manuellement avec une
+**validation SSRF par saut** — chaque en-tête `Location` repasse par `isValidJobUrl()`,
 donc un site hostile ne peut pas vous renvoyer vers loopback / IP privée /
 `file://`. Plafonné à 3 sauts, délai de 15 secondes.
 
@@ -1647,8 +1643,8 @@ parent.
 
 La checklist de la SPA est pour les utilisateurs qui préfèrent remplir le
 formulaire à la main sans invoquer Playwright. Une page vide ne vous
-laisse pas deviner : elle affiche **Générer une liste de contrôle de
-candidature** avec un exemple résolu (`v2empty.apply.emptyTitle` /
+laisse pas deviner : elle affiche
+**Générer une liste de contrôle de candidature** avec un exemple résolu (`v2empty.apply.emptyTitle` /
 `v2empty.apply.emptyBody`) et, si vous avez déjà évalué l'offre, un
 raccourci pour **choisir un rapport évalué** (`v2empty.apply.pickReport`)
 afin que la checklist démarre depuis les données de ce rapport. Elle
