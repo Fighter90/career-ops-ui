@@ -220,6 +220,7 @@
             setStep(data.i, data.status, data.detail || '');
             break;
           case 'done':
+            state.warnings = Array.isArray(data.warnings) ? data.warnings : [];
             state.score = data.score;
             state.legitimacy = data.legitimacy || '';
             state.company = data.company || '';
@@ -284,6 +285,15 @@
           state.legitimacy ? c('span', { className: 'tag' }, t('auto.legit', 'Legit') + ' ' + state.legitimacy) : null,
           state.trackerNum ? c('span', { className: 'tag' }, 'tracker #' + state.trackerNum) : null,
         ].filter(Boolean)),
+        // warnings-surface (views-2 hand-off) — the server's done frame may
+        // carry warnings (truncation, language, date corrections); the modal
+        // renders the same band the page views do instead of dropping them.
+        ...(state.warnings && state.warnings.length ? [c('div', { className: 'badge badge-warn mt-3', role: 'status', style: { display: 'block', textAlign: 'start' } }, [
+          c('strong', null, '⚠ ' + t('llm.truncatedNotice', 'Model output may be truncated — re-run if the report looks cut off')),
+          ...(state.warnings.length > 1 || !/^model output/i.test(state.warnings[0] || '')
+            ? [c('div', { style: { marginTop: '4px', fontSize: '13px' } }, state.warnings.join(' · '))]
+            : []),
+        ])] : []),
         // v1.16.0 — server persists the report to parent reports/, so we
         // link straight to the canonical viewer instead of dumping the
         // markdown inline. PDF generation stays a one-click on the report
