@@ -744,7 +744,9 @@ label:has(> input[type="radio"]) {
 
 /* ───────────── CAR-115 — #/scan v2: live filter chips, windowed results, quick view ───────────── */
 .v2-scan-bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin: 0 0 10px; }
-.v2-scan-bar .input { flex: 1 1 200px; min-width: 160px; max-width: 340px; min-height: 36px; }
+/* CAR-115 follow-ups: `.v2-scan-bar .input` matched the popover inputs too (the popover's column flex turned the 200px flex-basis into a ~200px height) — direct children only now, plus a protective mirror for the popover controls (column flex would resize HEIGHT, not width). */
+.v2-scan-bar > .input { flex: 1 1 200px; min-width: 160px; max-width: 340px; min-height: 36px; }
+.v2-scan-pop .input, .v2-scan-pop .select { flex: 0 0 auto; width: 100%; max-width: none; min-height: 36px; }
 .v2-scan-anchor { position: relative; display: inline-flex; }
 .v2-scan-chip-btn { cursor: pointer; white-space: nowrap; }
 .v2-scan-chip-btn.is-on { border-color: var(--rausch); color: var(--accent-soft-ink); } /* v3 phase 2: active chip = accent text + accent border (accent-soft-ink on paper 8.38/8.63:1) */
@@ -767,7 +769,8 @@ label:has(> input[type="radio"]) {
 .v2-scan-facets { display: flex; flex-direction: column; gap: 8px; margin: 0 0 10px; }
 .v2-scan-facets:empty { display: none; }
 .table-wrap.v2-scan-viewport { max-height: 65vh; overflow: auto; overscroll-behavior: contain; }
-table.scan-tbl thead th { position: sticky; top: 0; z-index: var(--z-topbar); }
+/* z-index 1, NOT var(--z-topbar) (equal value + later DOM let this sticky header paint over the topbar searchbar once scrolled under it); sticky already lifts it above the row backgrounds (precedent: .reposts-body .tbl th) */
+table.scan-tbl thead th { position: sticky; top: 0; z-index: 1; }
 .v2-scan-sort { display: flex; width: 100%; align-items: center; gap: 4px; background: none; border: 0; color: inherit; font: inherit; font-weight: 700; text-align: start; cursor: pointer; padding: 0; }
 .v2-scan-sort:hover { color: var(--hof); }
 .v2-scan-sort-ind { font-size: 10px; opacity: .7; }
