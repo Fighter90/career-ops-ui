@@ -2,6 +2,35 @@
 
 > Questo changelog contiene ora la cronologia completa delle versioni. Le voci pubblicate prima della localizzazione italiana (v1.85.0) compaiono sotto nell'originale inglese — traduzione in attesa; il riferimento resta [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.263.0] — 2026-10-30
+
+### Aggiunto
+
+- **Strato di rifinitura del movimento** — nuovo `motion.css` (ultimo foglio dell'app): entrate di modal/popover (scale .97 + dissolvenza, 130–180 ms), spring-in del toast + stato di uscita morbido, molla della pressione del theme-toggle, pressione chip/tab scale(.97), infrastruttura a scaglioni (passi da 50 ms, tetto 12), dissolvenza al cambio di rotta `.page-enter` (router), transizioni focus-halo su chip/tab. Ogni regola è sicura per `prefers-reduced-motion` (il movimento scende a none, opacità/colore restano).
+- **Correttezza touch** — 68 regole di hover-lift erano non protette: i dispositivi touch tenevano bloccata una carta "sollevata" dopo un tocco. Tutti gli hover con transform ora sono vincolati da `@media (hover:hover)` (neutralizzatore di motion.css), e il sollevamento della carta si applica solo alle carte genuinamente interattive (`.card:has(a)`, `a.card`, `button.card`, `[role=button].card`) — niente più false affordance sulle carte statiche.
+- **A11y: ogni controllo ha un nome programmatico.** Il nuovo helper `A11yDump` nomina tutti i 16 dump di output LLM di sola lettura; 12 campi solo-placeholder (CV Studio ×6, config ×2, ricerca scan, select punteggio tracker, nota outcome, editor plan, URL auto, bug report) hanno ricevuto `aria-label`; il gate `a11y-form-wires` ora lo impone a livello di classe (prima 26 siti senza nome, ora 0 + allowlist con motivazioni documentate).
+
+### Corretto
+
+- **#/scan**: l'intestazione sticky della tabella non dipinge più sopra la ricerca della topbar quando questa scorre sotto di essa (z era pari a quello della topbar, il DOM successivo vinceva — ora derivato dai token sotto di essa); gli input «Зарплата от/до» sono di nuovo di dimensioni normali (una regola flex `.v2-scan-bar .input` trapelava nel flex di colonna del popover e impostava flex-basis 200 px come ALTEZZA — ora con scope `>` + guardia del popover); il pulsante di attivazione della densità è rimosso per decisione del proprietario (il cablaggio resta, chiavi i18n rimosse ×19).
+- **Indurimento del workflow di deploy (F1–F6)**: input `provider` validato per charset prima di qualsiasi splice di shell; la diagnostica hermes oscura i valori (filtro delle chiavi case-insensitive + maschera del valore + taglio a 80 caratteri su tutti e tre i sink, `?token=` mascherato anch'esso); il passaggio hermes rispetta `inputs.app_dir`; public_url vincolata a https; la guardia anti-downgrade ha 6 pin eseguibili (nessun default, ordine guardia-prima-di-Deploy, regex strict sui refs).
+- **Coda delle revisioni, red-first**: round-trip del backslash dell'import CSV (il re-import ha di nuovo deduplicato), head-strip di cv-voice 4827 ms → 13 ms, `statedYearsMin` calcolato con pigritizia, TOCTOU della cattura del posting-guard, wildcard CN di MiniMax, salto del token deel, guardie di dimensione del selettore di import prima della lettura. Modal di import: nav-guard armata, input file rimosso all'annullamento, letture di duplicati custodite, `num` via reduce.
+- **Batch UX del proprietario**: ritmo verticale dell'hero della dashboard (figli a livello inline incollati in una sola line box); spostamento di −8 px della riga attiva nel TOC della guida (gutter inline per riga + colonna numerica); drawer mobile (chiusura ✕ visibile, reset dello scrollTop, la dissolvenza fantasma `--paper` vincolata a `.has-hud`); la pagina docs-assistant non va più in overflow con un URL lungo in una risposta (catena `min-width` della griglia + `overflow-wrap: anywhere`); «Недавние» spiegato (suggerimento) + cancellabile; il Save di career-plan si riarma dopo un caricamento fallito; il prefill URL di evaluate non brucia più una chiamata LLM sul segnaposto dell'incolla; l'Enter dell'auto-pipeline rispetta la composizione IME.
+- **Contrasto (audit WCAG, 296 coppie)**: gradiente del docs-fab 2.43 → 6.4:1, coppia toast.success → ok-soft (1.75 → AA dark), flip del banner btn-dark → `--ink`, varianti chiare di scan-logbtn/reposts-badge/fab-chip/close, e bordi dei controlli dei form a 3:1 (`--cv3-input-line`, WCAG 1.4.11 — era 1.2:1).
+- **Spazzata visiva**: lo stato vuoto del tracker è una carta a piena larghezza (era tagliato dentro la tabella di 760 px a 390); la riga della console di scan va in ellissi invece di tagliarsi a metà; il FAB della chat fluttuante non copre più il contenuto a 390 (obiettivo 44 px, inset 12); lo stato vuoto «Application statuses» della dashboard segue il pattern v2-empty; il suggerimento «?» delle statistiche ottiene un divisore + obiettivo 44 px; il tab Input di career-plan spiega dove atterra il risultato; markdown della guida §1 (18 span in grassetto rotti).
+
+### Modificato
+
+- **Accento blu → rosso cremisi (richiesta del proprietario, coerente col logo, hue 15)** — 5 token cv3 × 3 blocchi tema; il testo della bolla di chat di `docs-assistant` cavalca `--accent-ink` (era #fff letterale, 2.39:1 in dark); il lavaggio di funded cavalca `--accent-soft`. Il danger resta hue 25 con i suoi trattamenti propri.
+- Docs: conteggio della tabella testing del README ×17 (una deriva dell'era v1.248), guida §1 + 18 span markdown, guida fr/it/ta «118», prezzi dei fornitori CHECKED_ON 2026-10-30, fatti di HANDOFF/CONTEXT/TRACEABILITY.
+
+### Note
+
+- Deliberatamente non fatto: la rielaborazione della spazzata degli skeleton resta fuori (il contratto car112 blocca verbatim la dissolvenza attuale); il crossfade dell'icona del theme-toggle resta uno scambio `display` (il contratto Playwright del theme-toggle lo osserva); la scala `.btn:active` non è stata duplicata (app.css la possiede); lo scaglione del movimento è solo infrastruttura — le tile della dashboard lo adotteranno più tardi; la prosa della guida ×19 (menzione della densità, markdown §1, «118») viene con il prossimo fan-out.
+- Prove complete della remote-QA: spot di ja verde (376 s / A–G ✓) su v1.262.4; en/it verdi prima nell'era token-dense.
+
+Tests 6869 → 6905 (+36) · Playwright 176 · copertura 98.4 % righe / 89.9 % rami · registro invariato: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.262.4] — 2026-10-30
 
 ### Corretto
