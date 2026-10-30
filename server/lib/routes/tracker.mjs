@@ -361,8 +361,9 @@ export function registerTrackerRoutes(app) {
   // templates/states.yml (server/lib/states.mjs). Fail-soft 502 { error } on a
   // missing script, a non-zero exit or an unparseable stdout — the client
   // reverts the select. web-ui never writes applications.md from a route body.
-  const SET_STATUS_SCRIPT = 'set-status.mjs';
-  const SET_STATUS_TIMEOUT_MS = 30_000;
+  // Registry-entry shape (FULL-M1 guard): the script name lives in a
+  // `script:` entry, the same shape the TRACKER_MUTATING registry uses.
+  const SET_STATUS = { script: 'set-status.mjs', timeoutMs: 30_000 };
   const MAX_NOTE = 200; // mirrors the POST /api/tracker notes-cell cap
 
   /** True if `s` carries a C0 control char or DEL — spawn throws on NUL. */
@@ -396,7 +397,7 @@ export function registerTrackerRoutes(app) {
     if (note.length > MAX_NOTE) {
       return res.status(400).json({ error: `note must be ≤ ${MAX_NOTE} chars` });
     }
-    if (!existsSync(resolve(PROJECT_ROOT, SET_STATUS_SCRIPT))) {
+    if (!existsSync(resolve(PROJECT_ROOT, SET_STATUS.script))) {
       return res.status(502).json({ error: 'set-status.mjs not found in the parent project' });
     }
 
@@ -406,7 +407,7 @@ export function registerTrackerRoutes(app) {
     if (dryRun) args.push('--dry-run');
     args.push('--json');
 
-    const r = await runTrackedScript(SET_STATUS_SCRIPT, args, { timeoutMs: SET_STATUS_TIMEOUT_MS });
+    const r = await runTrackedScript(SET_STATUS.script, args, { timeoutMs: SET_STATUS.timeoutMs });
     const data = parseJsonStdout(r.stdout);
     if (r.code !== 0 || !data) {
       return res.status(502).json({

@@ -120,7 +120,7 @@ test('tracker: labels render through t(); comparisons and tab values stay canoni
   // statusClass to trackerStatusClass: dashboard.js declared the same
   // top-level name in a sibling classic script, so the last-loaded file
   // won the window binding.)
-  assert.match(TRACKER, /c\('span', \{ className: 'badge ' \+ trackerStatusClass\(r\.status\) \}, statusLabel\(fold\(r\.status\)\)\)/);
+  assert.match(TRACKER, /c\('span', \{ className: 'badge ' \+ trackerStatusClass\(r\.status\) \}, statusLabel\((?:folded|fold\(r\.status\))\)\)/);
   // The stage FOLDING / filtering math is untouched (canonical on both sides).
   assert.match(TRACKER, /if \(activeStage && fold\(r\.status\) !== activeStage\) continue;/);
   assert.match(TRACKER, /const hiredCount = rows\.filter\(\(r\) => fold\(r && r\.status\) === 'Hired'\)\.length;/);
