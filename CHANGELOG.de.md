@@ -2,6 +2,18 @@
 
 > Dieses Changelog enthält die vollständige Versionsgeschichte. Einträge, die vor der deutschen Lokalisierung (v1.85.0) veröffentlicht wurden, stehen unten im englischen Original — Übersetzung ausstehend; maßgeblich bleibt [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.262.4] — 2026-10-30
+
+### Behoben
+
+- **`ja` stößt zu den token-dichten Bewertungs-Locales hinzu** (`ja` → das 32768-Token-Ceiling + die 480 s Uhr). Der 5-Locales-Spot-Nachlauf auf der Prod v1.262.3 trennte die vier `502 · 300 s · 0 ch`-Timeouts der Nacht in transiente und deterministische: ar (250 s), ko (291 s) und zh-CN (259 s) bestanden ihre Reruns, die einmalige Sprachdrift von ru wiederholte sich nicht — aber `ja` stieß zweimal mit null Output an die Standard-Schranke (der volle ×19-Lauf 40981578549 und der Spot-Lauf 41012725839). Dieselbe Formklasse wie it/pl. Red-first-Pin: `evalMaxTokens('ja') = 32768`, `evalTimeoutMs('ja') = 480_000`, die anderen Locales behalten 300 s.
+
+### Hinweise
+
+- Bewusst ein Single-Purpose-Patch: der `ja`-Fix ist die einzige Änderung, die dieses Release mitbringt — es kommt nichts anderes mit. ar/ko/zh-CN bleiben auf dem Standard-Ceiling aufgrund der Beweise von heute Nacht (sie bestehen; die Fehler der Nacht waren transiente Provider-Last), und die Drift von ru war ein einmaliger Generierungs-Flake.
+
+Tests 6868 → 6869 (+1) · Playwright 176 · Registry unverändert: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.262.3] — 2026-10-30
 
 ### Behoben
