@@ -166,6 +166,7 @@ Router.register('auto', async () => {
         className: 'textarea', rows: 12, readOnly: true,
         style: { width: '100%', fontFamily: 'ui-monospace,monospace', fontSize: '13px' },
       });
+      A11yDump.label(ta, t('a11y.readonlyOutput', 'Generated result — read only'));
       ta.value = data.prompt || '';
       resultEl.appendChild(c('div', { className: 'card' }, [
         c('h2', { className: 'section-title' }, t('auto.manualTitle', 'Manual mode — no API key')),

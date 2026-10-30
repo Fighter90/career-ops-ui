@@ -26,11 +26,11 @@ Router.register('mock-interview', async () => {
     t('mock.subtitle', 'Rehearse turn by turn against a real role. Every answer gets STAR+R feedback, a score, and a follow-up — grounded in your CV, two-pager, and story bank.')));
 
   // ── setup bar ──
-  const roleInput = c('input', { type: 'text', className: 'input', 'data-i18n-placeholder': 'mock.rolePh' });
+  const roleInput = c('input', { type: 'text', className: 'input', 'data-i18n-placeholder': 'mock.rolePh', 'data-i18n-aria-label': 'mock.rolePh' });
   roleInput.placeholder = t('mock.rolePh', 'Target role (e.g. Senior Backend Engineer)');
-  const companyInput = c('input', { type: 'text', className: 'input', 'data-i18n-placeholder': 'mock.companyPh' });
+  const companyInput = c('input', { type: 'text', className: 'input', 'data-i18n-placeholder': 'mock.companyPh', 'data-i18n-aria-label': 'mock.companyPh' });
   companyInput.placeholder = t('mock.companyPh', 'Company (optional)');
-  const jdInput = c('textarea', { className: 'input', rows: '3', 'data-i18n-placeholder': 'mock.jdPh' });
+  const jdInput = c('textarea', { className: 'input', rows: '3', 'data-i18n-placeholder': 'mock.jdPh', 'data-i18n-aria-label': 'mock.jdPh' });
   jdInput.placeholder = t('mock.jdPh', 'Paste the job description (optional) — sharpens the questions.');
 
   const startBtn = c('button', { className: 'btn btn-primary', type: 'button' }, t('mock.start', 'Start interview'));
@@ -59,7 +59,7 @@ Router.register('mock-interview', async () => {
 
   // ── conversation ──
   const thread = c('div', { role: 'log', 'aria-live': 'polite', style: { display: 'flex', flexDirection: 'column', gap: '12px', margin: '0 0 14px' } });
-  const answerBox = c('textarea', { className: 'input', rows: '4', 'data-i18n-placeholder': 'mock.answerPh' });
+  const answerBox = c('textarea', { className: 'input', rows: '4', 'data-i18n-placeholder': 'mock.answerPh', 'data-i18n-aria-label': 'mock.answerPh' });
   answerBox.placeholder = t('mock.answerPh', 'Type your answer, then Send…');
   const sendBtn = c('button', { className: 'btn btn-primary', type: 'button' }, t('mock.send', 'Send answer'));
   const saveBtn = c('button', { className: 'btn btn-ghost', type: 'button' }, t('mock.save', 'Save transcript'));
@@ -145,10 +145,12 @@ Router.register('mock-interview', async () => {
   }
 
   function showManualPrompt(prompt) {
+    const dump = c('textarea', { className: 'input', rows: '16', readonly: 'readonly', style: { width: '100%', fontFamily: 'monospace', fontSize: '12px' } }, prompt);
+    A11yDump.label(dump, t('a11y.readonlyOutput', 'Generated result — read only'));
     const body = c('div', null, [
       c('p', { style: { margin: '0 0 10px', color: 'var(--foggy)' } },
         t('mock.manualHelp', 'No LLM key is set. Copy this prompt into any LLM, then paste the interviewer’s reply back in as your next answer prompt.')),
-      c('textarea', { className: 'input', rows: '16', readonly: 'readonly', style: { width: '100%', fontFamily: 'monospace', fontSize: '12px' } }, prompt),
+      dump,
     ]);
     UI.modal(t('mock.manualTitle', 'Run this turn manually'), body);
   }

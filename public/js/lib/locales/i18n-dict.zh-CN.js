@@ -1818,4 +1818,5 @@ window.__I18N_DICT_ZH_CN = {
   'v2empty.dash.recentBody': "你跟踪的评估会变成带评分和状态的申请行,如下方示例。",
   'v2empty.dash.pipelineTitle': "流水线收件箱为空",
   'v2empty.dash.pipelineBody': "把职位 URL 粘贴到流水线 — 它会在收件箱中等待你评估,如下方示例行。",
+  'a11y.readonlyOutput': "生成的结果 — 只读",
 };

@@ -1817,4 +1817,5 @@ window.__I18N_DICT_IT = {
   'v2empty.dash.recentBody': "Le valutazioni che segui diventano righe di candidatura con punteggi e stati, come nell'esempio sotto.",
   'v2empty.dash.pipelineTitle': "La casella della pipeline è vuota",
   'v2empty.dash.pipelineBody': "Incolla l'URL di un annuncio nella pipeline — aspetta nella casella finché non lo valuti, come nella riga di esempio.",
+  'a11y.readonlyOutput': "Risultato generato — sola lettura",
 };

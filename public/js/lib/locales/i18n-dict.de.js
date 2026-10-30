@@ -1817,4 +1817,5 @@ window.__I18N_DICT_DE = {
   'v2empty.dash.recentBody': "Verfolgte Bewertungen werden zu Bewerbungszeilen mit Noten und Status, wie im Beispiel unten.",
   'v2empty.dash.pipelineTitle': "Der Pipeline-Eingang ist leer",
   'v2empty.dash.pipelineBody': "Fügen Sie eine Stellen-URL in die Pipeline ein — sie wartet im Eingang, bis Sie sie bewerten, wie in der Beispielzeile.",
+  'a11y.readonlyOutput': "Generiertes Ergebnis – schreibgeschützt",
 };

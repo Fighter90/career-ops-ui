@@ -159,6 +159,7 @@
       className: 'input', readonly: 'readonly', rows: '14',
       style: { width: '100%', fontFamily: 'monospace', fontSize: '12px', marginTop: '8px' },
     });
+    A11yDump.label(preview, t('a11y.readonlyOutput', 'Generated result — read only'));
     var openLink = c('a', {
       className: 'btn btn-primary', target: '_blank', rel: 'noopener noreferrer',
       style: { textDecoration: 'none' },

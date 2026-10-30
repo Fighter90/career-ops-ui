@@ -1792,4 +1792,5 @@ window.__I18N_DICT_VI = {
   'v2empty.dash.recentBody': "Các đánh giá bạn theo dõi sẽ trở thành dòng ứng tuyển có điểm và trạng thái, giống ví dụ bên dưới.",
   'v2empty.dash.pipelineTitle': "Hộp thư pipeline đang trống",
   'v2empty.dash.pipelineBody': "Dán URL bài đăng vào pipeline — nó chờ trong hộp thư cho đến khi bạn đánh giá, giống dòng ví dụ.",
+  'a11y.readonlyOutput': "Kết quả đã tạo — chỉ đọc",
 };
