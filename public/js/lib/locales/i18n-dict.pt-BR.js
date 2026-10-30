@@ -1817,4 +1817,6 @@ window.__I18N_DICT_PT_BR = {
   'v2empty.dash.recentBody': "As avaliações que você acompanha viram linhas de aplicações com pontuações e status, como a do exemplo.",
   'v2empty.dash.pipelineTitle': "A caixa de entrada do pipeline está vazia",
   'v2empty.dash.pipelineBody': "Cole a URL de uma vaga no pipeline — ela espera na caixa de entrada até você avaliá-la, como na linha do exemplo.",
+  'v2empty.dash.statusesTitle': 'Ainda não há status para mostrar',
+  'v2empty.dash.statusesBody': 'Avalie uma vaga e acompanhe-a — o status da candidatura entra no funil aqui.',
 };

@@ -1819,4 +1819,6 @@ window.__I18N_DICT_ZH_TW = {
   'v2empty.dash.recentBody': "你追蹤的評估會變成帶評分與狀態的申請列,如下方範例。",
   'v2empty.dash.pipelineTitle': "流水線收件匣是空的",
   'v2empty.dash.pipelineBody': "把職缺 URL 貼到流水線 — 它會在收件匣中等待你評估,如下方範例列。",
+  'v2empty.dash.statusesTitle': '還沒有可顯示的狀態',
+  'v2empty.dash.statusesBody': '評估一個職缺並納入追蹤——它的應徵狀態會加入這裡的漏斗。',
 };

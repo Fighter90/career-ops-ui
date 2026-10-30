@@ -1818,4 +1818,6 @@ window.__I18N_DICT_KO = {
   'v2empty.dash.recentBody': "추적한 평가는 아래 예시처럼 점수와 상태가 있는 지원 행이 됩니다.",
   'v2empty.dash.pipelineTitle': "파이프라인 수신함이 비어 있습니다",
   'v2empty.dash.pipelineBody': "채용 공고 URL을 파이프라인에 붙여넣으세요 — 평가할 때까지 아래 예시 줄처럼 수신함에서 기다립니다.",
+  'v2empty.dash.statusesTitle': '표시할 상태가 아직 없습니다',
+  'v2empty.dash.statusesBody': '공고를 평가하고 추적하세요 — 지원 상태가 이 퍼널에 추가됩니다.',
 };

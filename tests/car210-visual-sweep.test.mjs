@@ -48,3 +48,16 @@ test('CAR-214 — help §1 carries no bold span broken across blockquote lines',
   assert.equal(broken.length, 0, `lines with an unpaired ** (renders as literal asterisks): ${broken.slice(0, 3).join(' | ')}`);
 });
 
+test('CAR-216 — dashboard funnel empty state is the v2empty pattern, not a bare "No results"', () => {
+  const src = read('public/js/views/dashboard.js');
+  assert.match(src, /v2empty\.dash\.statusesTitle/, 'statuses empty has a title');
+  assert.match(src, /v2empty\.dash\.statusesBody/, '…and an explanation body');
+  assert.match(src, /href: '#\/evaluate'[\s\S]*?v2empty\.reports\.openEvaluate/, '…and the real first-step action');
+  // The bare common.empty fallback is gone from the funnel section.
+  const funnel = src.slice(src.indexOf("t('dash.statuses'"), src.indexOf('function profileFixtureBanner'));
+  assert.doesNotMatch(funnel, /common\.empty/, 'bare "No results" removed from the funnel card');
+  // Both keys ship in the EN dict (the ×19 parity gate re-checks the rest).
+  assert.match(read('public/js/lib/locales/i18n-dict.en.js'), /'v2empty\.dash\.statusesTitle'/);
+  assert.match(read('public/js/lib/locales/i18n-dict.en.js'), /'v2empty\.dash\.statusesBody'/);
+});
+

@@ -1817,4 +1817,6 @@ window.__I18N_DICT_DE = {
   'v2empty.dash.recentBody': "Verfolgte Bewertungen werden zu Bewerbungszeilen mit Noten und Status, wie im Beispiel unten.",
   'v2empty.dash.pipelineTitle': "Der Pipeline-Eingang ist leer",
   'v2empty.dash.pipelineBody': "Fügen Sie eine Stellen-URL in die Pipeline ein — sie wartet im Eingang, bis Sie sie bewerten, wie in der Beispielzeile.",
+  'v2empty.dash.statusesTitle': 'Noch keine Statusanzeige vorhanden',
+  'v2empty.dash.statusesBody': 'Bewerten Sie eine Stelle und verfolgen Sie sie — ihr Bewerbungsstatus erscheint hier im Trichter.',
 };

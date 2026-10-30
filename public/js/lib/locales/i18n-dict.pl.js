@@ -1817,4 +1817,6 @@ window.__I18N_DICT_PL = {
   'v2empty.dash.recentBody': "Śledzone oceny stają się wierszami aplikacji z ocenami i statusami, jak w przykładzie poniżej.",
   'v2empty.dash.pipelineTitle': "Skrzynka pipeline'u jest pusta",
   'v2empty.dash.pipelineBody': "Wklej URL ogłoszenia do pipeline'u — poczeka w skrzynce do czasu oceny, jak w wierszu przykładowym.",
+  'v2empty.dash.statusesTitle': 'Nie ma jeszcze statusów do pokazania',
+  'v2empty.dash.statusesBody': 'Oceń ofertę i śledź ją — jej status aplikacji dołączy do tego lejka.',
 };

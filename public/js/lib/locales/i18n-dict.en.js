@@ -1824,4 +1824,6 @@ window.__I18N_DICT_EN = {
   'v2empty.dash.recentBody': "Evaluations you track become application rows with scores and statuses, like the one below.",
   'v2empty.dash.pipelineTitle': "The pipeline inbox is empty",
   'v2empty.dash.pipelineBody': "Paste a posting URL into the pipeline — it waits in the inbox until you evaluate it, like the line below.",
+  'v2empty.dash.statusesTitle': 'No statuses to show yet',
+  'v2empty.dash.statusesBody': 'Evaluate a posting and track it — its application status joins the funnel here.',
 };

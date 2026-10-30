@@ -1818,4 +1818,6 @@ window.__I18N_DICT_ES = {
   'v2empty.dash.recentBody': "Las evaluaciones que sigas se convierten en filas de aplicaciones con puntuaciones y estados, como la del ejemplo.",
   'v2empty.dash.pipelineTitle': "La bandeja de entrada del pipeline está vacía",
   'v2empty.dash.pipelineBody': "Pega la URL de una vacante en el pipeline — espera en la bandeja de entrada hasta que la evalúes, como en la línea del ejemplo.",
+  'v2empty.dash.statusesTitle': 'Aún no hay estados para mostrar',
+  'v2empty.dash.statusesBody': 'Evalúa una oferta y hazle seguimiento: su estado de candidatura se une aquí al embudo.',
 };

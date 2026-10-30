@@ -518,9 +518,19 @@ Router.register('dashboard', async () => {
       }, [
         summary,
         // Finding 11 — a fresh install shows the shared empty state, not a
-        // wall of zero tiles.
+        // wall of zero tiles. CAR-216 — the bare «No results» line became the
+        // v2empty pattern (title + body + the real first step), matching the
+        // dashboard's other tiles.
         fc.isEmpty
-          ? c('div', { className: 'empty' }, t('common.empty', 'Nothing here yet'))
+          ? c('div', { className: 'empty' }, [
+              c('p', { style: { fontWeight: 600, margin: '0 0 4px' } },
+                t('v2empty.dash.statusesTitle', 'No statuses to show yet')),
+              c('p', { style: { color: 'var(--foggy)', fontSize: '13px', margin: '0 0 12px' } },
+                t('v2empty.dash.statusesBody', 'Evaluate a posting and track it — its application status joins the funnel here.')),
+              c('p', { style: { margin: '0' } },
+                c('a', { className: 'btn btn-ghost btn-sm', href: '#/evaluate' },
+                  t('v2empty.reports.openEvaluate', 'Run an evaluation'))),
+            ])
           : strip,
         unknownChips.length ? c('div', {
           className: 'flex gap-3',
