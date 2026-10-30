@@ -84,10 +84,12 @@ Router.register('memory', async () => {
       });
       if (runCtrl.cancelled || runCtrl.signal.aborted) return; // a cancelled run paints nothing more
       const prompt = res && res.prompt;
+      const dump = c('textarea', { className: 'input', rows: '16', readonly: 'readonly', style: { width: '100%', fontFamily: 'monospace', fontSize: '12px' } }, prompt);
+      A11yDump.label(dump, t('a11y.readonlyOutput', 'Generated result — read only'));
       suggestionOut.appendChild(c('div', { className: 'card', style: { padding: '16px' } }, [
         c('p', { style: { margin: '0 0 10px', color: 'var(--foggy)' } },
           t('mem.suggestHelp', 'Run this in any LLM, review the behavioural bullets it proposes, then paste an edited version into your memory note above. It reads your tracker — it never invents facts.')),
-        c('textarea', { className: 'input', rows: '16', readonly: 'readonly', style: { width: '100%', fontFamily: 'monospace', fontSize: '12px' } }, prompt),
+        dump,
         c('div', { style: { marginTop: '10px' } }, [
           c('button', {
             className: 'btn btn-ghost btn-sm', type: 'button',

@@ -237,10 +237,12 @@ Router.register('two-pager', async () => {
   }
 
   function showManualPrompt(prompt) {
+    const dump = c('textarea', { className: 'input', rows: '16', readonly: 'readonly', style: { width: '100%', fontFamily: 'monospace', fontSize: '12px' } }, prompt);
+    A11yDump.label(dump, t('a11y.readonlyOutput', 'Generated result — read only'));
     const body = c('div', null, [
       c('p', { style: { margin: '0 0 10px', color: 'var(--foggy)' } },
         t('twoPager.aiFillHelp', 'Run this in any LLM, then paste the YAML fields back into the form above. It uses only your CV and profile — nothing is invented.')),
-      c('textarea', { className: 'input', rows: '16', readonly: 'readonly', style: { width: '100%', fontFamily: 'monospace', fontSize: '12px' } }, prompt),
+      dump,
     ]);
     UI.modal(t('twoPager.aiFill', '✨ AI fill assistant'), body);
   }

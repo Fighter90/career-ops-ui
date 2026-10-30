@@ -1818,4 +1818,7 @@ window.__I18N_DICT_JA = {
   'v2empty.dash.recentBody': "追跡した評価は、下の例のようにスコアとステータスを持つ応募行になります。",
   'v2empty.dash.pipelineTitle': "パイプラインの受信箱は空です",
   'v2empty.dash.pipelineBody': "求人 URL をパイプラインに貼り付けましょう — 評価するまで下の例の行のように受信箱で待機します。",
+  'a11y.readonlyOutput': "生成された結果 — 読み取り専用",
+  'config.rawProfile': "プロフィール YAML 生エディター",
+  'config.rawModes': "modes 生エディター",
 };

@@ -1817,4 +1817,7 @@ window.__I18N_DICT_AR = {
   'v2empty.dash.recentBody': "التقييمات التي تتابعها تصبح صفوف طلبات بدرجات وحالات مثل المثال أدناه.",
   'v2empty.dash.pipelineTitle': "صندوق خط الأنابيب فارغ",
   'v2empty.dash.pipelineBody': "الصق رابط إعلان وظيفة في خط الأنابيب — ينتظر في الصندوق حتى تقيّمه، مثل سطر المثال.",
+  'a11y.readonlyOutput': "نتيجة مُولَّدة — للقراءة فقط",
+  'config.rawProfile': "محرر YAML الخام للملف الشخصي",
+  'config.rawModes': "محرر الأوضاع الخام",
 };

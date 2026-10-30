@@ -1817,4 +1817,7 @@ window.__I18N_DICT_DA = {
   'v2empty.dash.recentBody': "Vurderinger du følger bliver til ansøgningsrækker med scores og statusser, som i eksemplet nedenfor.",
   'v2empty.dash.pipelineTitle': "Pipeline-indbakken er tom",
   'v2empty.dash.pipelineBody': "Indsæt et opslags-URL i pipelinen — det venter i indbakken, til du vurderer det, som i eksempelrækken.",
+  'a11y.readonlyOutput': "Genereret resultat — skrivebeskyttet",
+  'config.rawProfile': "Rå YAML-profilredigering",
+  'config.rawModes': "Rå modes-redigering",
 };

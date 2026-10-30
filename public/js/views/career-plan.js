@@ -158,10 +158,12 @@ Router.register('career-plan', async () => {
         if (preview.isConnected) preview.scrollIntoView({ behavior: 'smooth', block: 'start' });
         UI.toast(t('plan.generated', 'Plan generated — review, edit, then Save'), 'success');
       } else if (res && res.prompt) {
+        const dump = c('textarea', { className: 'input', rows: '18', readonly: 'readonly', style: { width: '100%', fontFamily: 'monospace', fontSize: '12px' } }, res.prompt);
+        A11yDump.label(dump, t('a11y.readonlyOutput', 'Generated result — read only'));
         const body = c('div', null, [
           c('p', { style: { margin: '0 0 10px', color: 'var(--foggy)' } },
             (res.message) || t('export.manual', 'No API key set — copy this prompt into any LLM, then paste the result back.')),
-          c('textarea', { className: 'input', rows: '18', readonly: 'readonly', style: { width: '100%', fontFamily: 'monospace', fontSize: '12px' } }, res.prompt),
+          dump,
         ]);
         UI.modal(t('plan.generate', 'Generate plan'), body);
       }

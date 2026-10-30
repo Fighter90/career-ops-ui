@@ -154,10 +154,12 @@ Router.register('docs-assistant', async () => {
         log.appendChild(bubble('bot', c('div', null, parts)));
       } else if (res && res.prompt) {
         // No key: hand over the grounded prompt to run anywhere.
+        const dump = c('textarea', { className: 'input', rows: '16', readonly: 'readonly', style: { width: '100%', fontFamily: 'monospace', fontSize: '12px' } }, res.prompt);
+        A11yDump.label(dump, t('a11y.readonlyOutput', 'Generated result — read only'));
         const body = c('div', null, [
           ...(links ? [links] : []),
           c('p', { style: { margin: '0 0 10px', color: 'var(--foggy)' } }, t('docs.manualHelp', 'No LLM key is set. Copy this prompt (it already contains the relevant help sections) into any assistant to get your answer.')),
-          c('textarea', { className: 'input', rows: '16', readonly: 'readonly', style: { width: '100%', fontFamily: 'monospace', fontSize: '12px' } }, res.prompt),
+          dump,
         ]);
         UI.modal(t('docs.title', 'Ask the docs'), body);
         log.appendChild(bubble('bot', c('span', { style: { color: 'var(--foggy)' } }, t('docs.manualBubble', 'No API key set — I opened a ready-to-run prompt you can paste into any assistant.'))));

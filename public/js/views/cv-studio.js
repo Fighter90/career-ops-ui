@@ -158,9 +158,10 @@ Router.register('cv-studio', async () => {
     toggles[key] = cb;
     return c('label', { style: { display: 'inline-flex', alignItems: 'center', gap: '5px', fontSize: '13px' } }, [cb, t(labelKey, labelFb)]);
   };
-  const nameInput = c('input', { type: 'text', className: 'input', style: { maxWidth: '200px' }, 'data-i18n-placeholder': 'cvs.namePh' });
+  const nameInput = c('input', { type: 'text', className: 'input', style: { maxWidth: '200px' }, 'data-i18n-placeholder': 'cvs.namePh', 'data-i18n-aria-label': 'cvs.namePh' });
   nameInput.placeholder = t('cvs.namePh', 'Your full name (to initial-ise)');
   const maskOut = c('textarea', { className: 'input', rows: '10', readonly: 'readonly', style: { width: '100%', fontFamily: 'monospace', fontSize: '12px', marginTop: '10px' } });
+  A11yDump.label(maskOut, t('a11y.readonlyOutput', 'Generated result — read only'));
   const maskStat = c('div', { style: { fontSize: '12px', color: 'var(--foggy)', marginTop: '6px' } });
   const copyBtn = c('button', { className: 'btn btn-ghost btn-sm', type: 'button', style: { marginTop: '8px' } }, t('cvs.copy', 'Copy masked CV'));
 
@@ -197,7 +198,7 @@ Router.register('cv-studio', async () => {
   runMask();
 
   // ── 3. Make it human / voice match ──
-  const humanIn = c('textarea', { className: 'input', rows: '5', 'data-i18n-placeholder': 'cvs.humanPh' });
+  const humanIn = c('textarea', { className: 'input', rows: '5', 'data-i18n-placeholder': 'cvs.humanPh', 'data-i18n-aria-label': 'cvs.humanPh' });
   humanIn.placeholder = t('cvs.humanPh', 'Paste a stiff line or paragraph from your CV to rewrite in your voice…');
   const humanBtn = c('button', { className: 'btn btn-primary', type: 'button' }, t('cvs.humanize', '✨ Make it human'));
   const humanOut = c('div', { style: { marginTop: '10px' }, 'data-studio-panel': 'human' });
@@ -225,9 +226,11 @@ Router.register('cv-studio', async () => {
         paintHumanResult(res.markdown);
         rememberStudioState();
       } else {
+        const dump = c('textarea', { className: 'input', rows: '16', readonly: 'readonly', style: { width: '100%', fontFamily: 'monospace', fontSize: '12px' } }, res && res.prompt);
+        A11yDump.label(dump, t('a11y.readonlyOutput', 'Generated result — read only'));
         const body = c('div', null, [
           c('p', { style: { margin: '0 0 10px', color: 'var(--foggy)' } }, t('cvs.humanManualHelp', 'No LLM key is set. Copy this prompt into any LLM, then paste the rewrite back into your CV.')),
-          c('textarea', { className: 'input', rows: '16', readonly: 'readonly', style: { width: '100%', fontFamily: 'monospace', fontSize: '12px' } }, res && res.prompt),
+          dump,
         ]);
         UI.modal(t('cvs.humanize', '✨ Make it human'), body);
       }
@@ -242,9 +245,9 @@ Router.register('cv-studio', async () => {
   ]));
 
   // ── 4. Tailor to a job — résumé + cover letter with a checklist gate ──
-  const jdIn = c('textarea', { className: 'input', rows: '6', 'data-i18n-placeholder': 'cvs.tailorJdPh' });
+  const jdIn = c('textarea', { className: 'input', rows: '6', 'data-i18n-placeholder': 'cvs.tailorJdPh', 'data-i18n-aria-label': 'cvs.tailorJdPh' });
   jdIn.placeholder = t('cvs.tailorJdPh', 'Paste the target job description here…');
-  const headIn = c('input', { type: 'text', className: 'input', style: { marginTop: '8px' }, 'data-i18n-placeholder': 'cvs.tailorHeadPh' });
+  const headIn = c('input', { type: 'text', className: 'input', style: { marginTop: '8px' }, 'data-i18n-placeholder': 'cvs.tailorHeadPh', 'data-i18n-aria-label': 'cvs.tailorHeadPh' });
   headIn.placeholder = t('cvs.tailorHeadPh', 'Optional: target role / headline (e.g. "Senior Backend Engineer")');
   const tailorBtn = c('button', { className: 'btn btn-primary', type: 'button' }, t('cvs.tailorBtn', '🎯 Tailor résumé + cover letter'));
   const tailorOut = c('div', { style: { marginTop: '10px' } });
@@ -273,9 +276,11 @@ Router.register('cv-studio', async () => {
         paintTailorResult(res.markdown);
         rememberStudioState();
       } else {
+        const dump = c('textarea', { className: 'input', rows: '16', readonly: 'readonly', style: { width: '100%', fontFamily: 'monospace', fontSize: '12px' } }, res && res.prompt);
+        A11yDump.label(dump, t('a11y.readonlyOutput', 'Generated result — read only'));
         const body = c('div', null, [
           c('p', { style: { margin: '0 0 10px', color: 'var(--foggy)' } }, t('cvs.tailorManualHelp', 'No LLM key is set. Copy this prompt into any LLM, then paste the tailored résumé + cover letter back.')),
-          c('textarea', { className: 'input', rows: '16', readonly: 'readonly', style: { width: '100%', fontFamily: 'monospace', fontSize: '12px' } }, res && res.prompt),
+          dump,
         ]);
         UI.modal(t('cvs.tailorBtn', '🎯 Tailor résumé + cover letter'), body);
       }
@@ -294,9 +299,9 @@ Router.register('cv-studio', async () => {
   // A project/publication URL or pasted text → grounded ATS bullets to review
   // and paste into the CV editor yourself. Suggestions only — nothing is
   // written to any file (the URL fetch is SSRF-guarded server-side).
-  const addUrlIn = c('input', { type: 'text', className: 'input', 'data-i18n-placeholder': 'cvs.addUrlPh' });
+  const addUrlIn = c('input', { type: 'text', className: 'input', 'data-i18n-placeholder': 'cvs.addUrlPh', 'data-i18n-aria-label': 'cvs.addUrlPh' });
   addUrlIn.placeholder = t('cvs.addUrlPh', 'https:// … a repo, article, or portfolio page (optional)');
-  const addTextIn = c('textarea', { className: 'input', rows: '5', style: { marginTop: '8px' }, 'data-i18n-placeholder': 'cvs.addTextPh' });
+  const addTextIn = c('textarea', { className: 'input', rows: '5', style: { marginTop: '8px' }, 'data-i18n-placeholder': 'cvs.addTextPh', 'data-i18n-aria-label': 'cvs.addTextPh' });
   addTextIn.placeholder = t('cvs.addTextPh', '…or paste the project/publication description here');
   const addBtn = c('button', { className: 'btn btn-primary', type: 'button' }, t('cvs.addBtn', '➕ Suggest CV bullets'));
   const addOut = c('div', { style: { marginTop: '10px' } });
@@ -326,9 +331,11 @@ Router.register('cv-studio', async () => {
         paintAddResult(res.markdown);
         rememberStudioState();
       } else {
+        const dump = c('textarea', { className: 'input', rows: '16', readonly: 'readonly', style: { width: '100%', fontFamily: 'monospace', fontSize: '12px' } }, res && res.prompt);
+        A11yDump.label(dump, t('a11y.readonlyOutput', 'Generated result — read only'));
         UI.modal(t('cvs.addTitle', 'Add to CV'), c('div', null, [
           c('p', { style: { margin: '0 0 10px', color: 'var(--foggy)' } }, t('cvs.addManualHelp', 'No LLM key is set. Copy this prompt into any LLM, then review the bullets it returns.')),
-          c('textarea', { className: 'input', rows: '16', readonly: 'readonly', style: { width: '100%', fontFamily: 'monospace', fontSize: '12px' } }, res && res.prompt),
+          dump,
         ]));
       }
     } catch (err) {

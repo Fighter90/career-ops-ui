@@ -57,11 +57,14 @@ function loadLibs({ hash = '#/scan', clipboard = false, execCommand = true } = {
     );
   };
   load('public/js/lib/logbuf.js');
+  // A11yDump BEFORE bug-report.js (CAR-209 — the readonly preview is named
+  // through it); the real helper runs, the stub elements record setAttribute.
+  load('public/js/lib/a11y-dump.js');
   // API stub BEFORE bug-report.js so collect() sees the health payload
   win.API = { get: async () => JSON.parse(JSON.stringify(HEALTH)) };
   const src = readFileSync(resolve(ROOT, 'public/js/lib/bug-report.js'), 'utf8');
   // eslint-disable-next-line no-new-func
-  new Function('window', 'console', 'location', 'URL', 'URLSearchParams', 'navigator', 'document', 'fetch', 'UI', 'I18n', src)(
+  new Function('window', 'console', 'location', 'URL', 'URLSearchParams', 'navigator', 'document', 'fetch', 'UI', 'I18n', 'A11yDump', src)(
     win, console_, location, URL, URLSearchParams, navigator, doc, () => {},
     {
       el: (tag, attrs, children) => {
@@ -72,6 +75,7 @@ function loadLibs({ hash = '#/scan', clipboard = false, execCommand = true } = {
           appendChild(ch) { this.children.push(ch); return ch; },
           addEventListener(type, fn) { this._handlers[type] = fn; },
           select() { this._selected = true; },
+          setAttribute(k, v) { this[k] = v; },
         };
         for (const [k, v] of Object.entries(attrs || {})) if (k !== 'style') e[k] = v;
         const kids = children == null ? [] : (Array.isArray(children) ? children : [children]);
@@ -81,6 +85,7 @@ function loadLibs({ hash = '#/scan', clipboard = false, execCommand = true } = {
       modal: (title, body) => { win._modal = { title, body }; },
       toast: (msg, type) => toastCalls.push({ msg: String(msg), type }),
     },
+    undefined, win.A11yDump,
   );
   win.BugReport._toastCalls = toastCalls;
   return win;

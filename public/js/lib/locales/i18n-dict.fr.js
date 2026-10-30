@@ -1817,4 +1817,7 @@ window.__I18N_DICT_FR = {
   'v2empty.dash.recentBody': "Les évaluations que vous suivez deviennent des lignes de candidature avec notes et statuts, comme celle de l'exemple.",
   'v2empty.dash.pipelineTitle': "La boîte de réception du pipeline est vide",
   'v2empty.dash.pipelineBody': "Collez l'URL d'une offre dans le pipeline — elle attend dans la boîte de réception jusqu'à son évaluation, comme dans la ligne d'exemple.",
+  'a11y.readonlyOutput': "Résultat généré — lecture seule",
+  'config.rawProfile': "Éditeur YAML brut du profil",
+  'config.rawModes': "Éditeur brut des modes",
 };

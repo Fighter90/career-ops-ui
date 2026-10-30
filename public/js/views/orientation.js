@@ -85,9 +85,11 @@ Router.register('orientation', async () => {
         out.appendChild(c('div', { className: 'card md', html: UI.md(res.markdown), style: { padding: '16px' } }));
         out.appendChild(ReportExport.actionsBar(() => currentMd, () => t('orient.title', 'Career orientation'), t));
       } else if (res && res.prompt) {
+        const dump = c('textarea', { className: 'input', rows: '18', readonly: 'readonly', style: { width: '100%', fontFamily: 'monospace', fontSize: '12px' } }, res.prompt);
+        A11yDump.label(dump, t('a11y.readonlyOutput', 'Generated result — read only'));
         out.appendChild(c('p', { style: { color: 'var(--foggy)', margin: '0 0 8px' } },
           (res.message) || t('export.manual', 'No API key set — copy this prompt into any LLM, then paste the result back.')));
-        out.appendChild(c('textarea', { className: 'input', rows: '18', readonly: 'readonly', style: { width: '100%', fontFamily: 'monospace', fontSize: '12px' } }, res.prompt));
+        out.appendChild(dump);
       }
     } catch (err) {
       // CAR-94 (7) — the error replaces the spinner INSIDE the box, with the

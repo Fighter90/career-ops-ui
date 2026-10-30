@@ -261,6 +261,7 @@ Router.register('config', async () => {
   const profileTextarea = c('textarea', {
     className: 'textarea',
     rows: 18,
+    'data-i18n-aria-label': 'config.rawProfile',
     style: { minHeight: '340px', fontFamily: 'ui-monospace,monospace', fontSize: '13px' },
   });
   let profileLoaded = false;
@@ -624,6 +625,7 @@ Router.register('config', async () => {
   const modesTextarea = c('textarea', {
     className: 'textarea',
     rows: 24,
+    'data-i18n-aria-label': 'config.rawModes',
     style: { width: '100%', fontFamily: 'ui-monospace, monospace', fontSize: '13px', minHeight: '420px' },
     placeholder: '# Career framing (modes/_profile.md)\n\n## Target Roles\n- …',
   });

@@ -116,10 +116,12 @@ Router.register('networking', async () => {
   }
 
   function showManualPrompt(prompt) {
+    const dump = c('textarea', { className: 'input', rows: '16', readonly: 'readonly', style: { width: '100%', fontFamily: 'monospace', fontSize: '12px' } }, prompt);
+    A11yDump.label(dump, t('a11y.readonlyOutput', 'Generated result — read only'));
     const body = c('div', null, [
       c('p', { style: { margin: '0 0 10px', color: 'var(--foggy)' } },
         t('net.manualHelp', 'No LLM key is set. Copy this prompt into any LLM, then paste the plan back here or save it from there.')),
-      c('textarea', { className: 'input', rows: '16', readonly: 'readonly', style: { width: '100%', fontFamily: 'monospace', fontSize: '12px' } }, prompt),
+      dump,
     ]);
     UI.modal(t('net.manualTitle', 'Run this plan manually'), body);
   }

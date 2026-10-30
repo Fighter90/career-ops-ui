@@ -1817,4 +1817,7 @@ window.__I18N_DICT_PL = {
   'v2empty.dash.recentBody': "Śledzone oceny stają się wierszami aplikacji z ocenami i statusami, jak w przykładzie poniżej.",
   'v2empty.dash.pipelineTitle': "Skrzynka pipeline'u jest pusta",
   'v2empty.dash.pipelineBody': "Wklej URL ogłoszenia do pipeline'u — poczeka w skrzynce do czasu oceny, jak w wierszu przykładowym.",
+  'a11y.readonlyOutput': "Wygenerowany wynik — tylko do odczytu",
+  'config.rawProfile': "Edytor surowego pliku YAML profilu",
+  'config.rawModes': "Edytor surowego pliku modes",
 };
