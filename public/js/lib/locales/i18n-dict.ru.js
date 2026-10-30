@@ -1824,4 +1824,8 @@ window.__I18N_DICT_RU = {
   'config.rawModes': "Редактор modes (карьерного фрейминга)",
   'v2empty.dash.statusesTitle': 'Статусов пока нет',
   'v2empty.dash.statusesBody': 'Оцените вакансию и добавьте её в трекер — её статус появится в этой воронке.',
+  // track — inline status edit (v1.246.0 backlog #2)
+  "track.inlineStatusAria": "Изменить статус заявки",
+  "track.statusUpdated": "Статус обновлён: {state}",
+  "track.statusUpdateFailed": "Не удалось обновить статус",
 };

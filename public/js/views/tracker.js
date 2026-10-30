@@ -329,6 +329,50 @@ Router.register('tracker', async () => {
       ? window.ScoreTone.scoreClass(v)
       : (v >= 4 ? 'score-high' : v >= 3 ? 'score-mid' : 'score-low');
   }
+  // ── v1.246.0 backlog #2 · inline status edit ───────────────────────────────
+  // The status badge becomes a compact <select> of the canonical stages
+  // (GET /api/tracker/stages — never a hardcoded whitelist). onChange POSTs
+  // /api/tracker/status (the parent set-status.mjs relay). Success updates the
+  // row in place — status, the select's tone class and the tab counts — so the
+  // focused select is never torn down; failure reverts the value and toasts.
+  // Without stages (endpoint down) the read-only badge renders as before.
+  function statusCell(r) {
+    const folded = fold(r.status);
+    if (!STAGES.length) {
+      return c('span', { className: 'badge ' + trackerStatusClass(r.status) }, statusLabel(folded));
+    }
+    const sel = c('select', {
+      className: 'badge ' + trackerStatusClass(r.status),
+      // Row-scoped identity — FocusPreserved/data-key convention (CAR-93).
+      'data-key': String(r.num ?? ''),
+      'data-i18n-aria-label': 'track.inlineStatusAria',
+      'aria-label': t('track.inlineStatusAria', 'Change status'),
+      onChange: () => { changeStatus(r, sel); },
+    }, STAGES.map((s) => c('option', { value: s }, statusLabel(s))));
+    sel.value = folded;
+    return sel;
+  }
+  async function changeStatus(r, sel) {
+    const target = sel.value;
+    const prev = fold(r.status);
+    if (!target || target === prev) return;
+    sel.disabled = true;
+    try {
+      await API.post('/api/tracker/status', { row: Number(r.num), state: target });
+      r.status = target;
+      // In-place refresh: the select keeps focus; the tabs recount from `rows`.
+      sel.className = 'badge ' + trackerStatusClass(r.status);
+      renderTabs();
+      UI.toast(t('track.statusUpdated', 'Status updated to {state}').replace('{state}', statusLabel(target)), 'success');
+      // A row that no longer matches the active stage tab must leave the view.
+      if (activeStage && fold(target) !== activeStage) applyFilters();
+    } catch {
+      sel.value = prev;
+      UI.toast(t('track.statusUpdateFailed', 'Could not update the status'), 'error');
+    } finally {
+      sel.disabled = false;
+    }
+  }
   function row(r) {
     // v1.128.0 — finer 4-tier tone (>=4.2/3.8/3.0) with a
     // letter-grade fallback, via the shared ScoreTone helper. Falls back to the
@@ -365,14 +409,15 @@ Router.register('tracker', async () => {
       hasCommute ? c('td', null, commuteOf(r)?.location || r.location || '—') : null,
       hasCommute ? commuteCell(commuteOf(r)) : null,
       c('td', { className: 'v2-track-nowrap', style: { whiteSpace: 'nowrap' } }, c('span', { className: 'score-pill ' + score }, r.score || '—')),
-      // Status badge + (for ATS postings) a lazy "still live?" check. The
-      // affordance is null for non-ATS rows, so most rows are unchanged.
-      // v1.248.2 — the badge CAPTION is the localized canonical label (the raw
-      // status is folded through the server alias map first, so "contratado"
-      // shows as "Hired"/«Нанят»); trackerStatusClass + every comparison
-      // still read the canonical value.
+      // Inline status edit (v1.246.0 backlog #2): the badge is now a compact
+      // canonical-stage <select> (statusCell). The badge caption convention
+      // holds — the displayed label is the localized canonical label, the raw
+      // status is folded through the server alias map first, and
+      // trackerStatusClass + every comparison still read the canonical value.
+      // (For ATS postings) a lazy "still live?" check rides alongside; the
+      // affordance is null for non-ATS rows.
       c('td', { className: 'v2-track-nowrap', style: { whiteSpace: 'nowrap' } }, [
-        c('span', { className: 'badge ' + trackerStatusClass(r.status) }, statusLabel(fold(r.status))),
+        statusCell(r),
         TS ? TS.livenessAffordance(r.url, r.num) : null,
       ]),
       // G-006 (v1.15.0) — Legitimacy column. Mirrors the badge tint used on

@@ -1823,4 +1823,8 @@ window.__I18N_DICT_PL = {
   'config.rawModes': "Edytor surowego pliku modes",
   'v2empty.dash.statusesTitle': 'Nie ma jeszcze statusów do pokazania',
   'v2empty.dash.statusesBody': 'Oceń ofertę i śledź ją — jej status aplikacji dołączy do tego lejka.',
+  // track — inline status edit (v1.246.0 backlog #2)
+  "track.inlineStatusAria": "Zmień status aplikacji",
+  "track.statusUpdated": "Status zaktualizowany na {state}",
+  "track.statusUpdateFailed": "Nie udało się zaktualizować statusu",
 };

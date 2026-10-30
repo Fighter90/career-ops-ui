@@ -1830,4 +1830,8 @@ window.__I18N_DICT_EN = {
   'config.rawModes': "Raw modes editor",
   'v2empty.dash.statusesTitle': 'No statuses to show yet',
   'v2empty.dash.statusesBody': 'Evaluate a posting and track it — its application status joins the funnel here.',
+  // track — inline status edit (v1.246.0 backlog #2)
+  "track.inlineStatusAria": "Change application status",
+  "track.statusUpdated": "Status updated to {state}",
+  "track.statusUpdateFailed": "Could not update the status",
 };

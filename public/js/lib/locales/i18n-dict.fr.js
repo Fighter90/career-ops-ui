@@ -1823,4 +1823,8 @@ window.__I18N_DICT_FR = {
   'config.rawModes': "Éditeur brut des modes",
   'v2empty.dash.statusesTitle': 'Aucun statut à afficher pour l\'instant',
   'v2empty.dash.statusesBody': 'Évaluez une offre et suivez-la — son statut de candidature rejoint l\'entonnoir ici.',
+  // track — inline status edit (v1.246.0 backlog #2)
+  "track.inlineStatusAria": "Changer le statut de la candidature",
+  "track.statusUpdated": "Statut mis à jour : {state}",
+  "track.statusUpdateFailed": "Impossible de mettre à jour le statut",
 };

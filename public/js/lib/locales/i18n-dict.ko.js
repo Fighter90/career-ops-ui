@@ -1824,4 +1824,8 @@ window.__I18N_DICT_KO = {
   'config.rawModes': "modes 원본 편집기",
   'v2empty.dash.statusesTitle': '표시할 상태가 아직 없습니다',
   'v2empty.dash.statusesBody': '공고를 평가하고 추적하세요 — 지원 상태가 이 퍼널에 추가됩니다.',
+  // track — inline status edit (v1.246.0 backlog #2)
+  "track.inlineStatusAria": "지원 상태 변경",
+  "track.statusUpdated": "상태가 업데이트되었습니다: {state}",
+  "track.statusUpdateFailed": "상태를 업데이트할 수 없습니다",
 };

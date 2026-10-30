@@ -135,9 +135,14 @@ test('DnD is guarded INSIDE the handler bodies (r2 #12 — anchored, not substri
 test('moves write ONLY through the existing per-row outcome relay', () => {
   // the one write endpoint in the move engine:
   assert.match(LIB, /API\.post\('\/api\/outcome'/);
-  // and there is no invented bulk/tracker/status endpoint anywhere:
+  // and there is no invented tracker-write path in the move engine itself:
   assert.ok(!/\/api\/tracker\/(status|bulk|move)/.test(LIB), 'no invented tracker write endpoints');
-  assert.ok(!/\/api\/tracker\/(status|bulk|move)/.test(TRK), 'no invented tracker write endpoints in the view');
+  // v1.246.0 backlog #2 — /api/tracker/status is now a SANCTIONED endpoint
+  // (server: routes/tracker.mjs → the parent set-status.mjs relay, pinned by
+  // tests/tracker-inline-status.test.mjs); the view may use it for the inline
+  // status <select> only. bulk/move remain invented:
+  assert.ok(!/\/api\/tracker\/(bulk|move)/.test(TRK), 'no invented tracker write endpoints in the view');
+  assert.match(TRK, /API\.post\('\/api\/tracker\/status'/, 'inline status edits go through the sanctioned relay');
 });
 
 test('degrade keys off the STRUCTURED relay signal, never a message substring (r2 #7)', () => {

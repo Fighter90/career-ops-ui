@@ -1825,4 +1825,8 @@ window.__I18N_DICT_ZH_TW = {
   'config.rawModes': "modes 原始編輯器",
   'v2empty.dash.statusesTitle': '還沒有可顯示的狀態',
   'v2empty.dash.statusesBody': '評估一個職缺並納入追蹤——它的應徵狀態會加入這裡的漏斗。',
+  // track — inline status edit (v1.246.0 backlog #2)
+  "track.inlineStatusAria": "變更申請狀態",
+  "track.statusUpdated": "狀態已更新為 {state}",
+  "track.statusUpdateFailed": "無法更新狀態",
 };

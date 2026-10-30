@@ -1823,4 +1823,8 @@ window.__I18N_DICT_IT = {
   'config.rawModes': "Editor grezzo dei modes",
   'v2empty.dash.statusesTitle': 'Nessuno stato da mostrare ancora',
   'v2empty.dash.statusesBody': 'Valuta un annuncio e monitoralo — il suo stato di candidatura entra in questo funnel.',
+  // track — inline status edit (v1.246.0 backlog #2)
+  "track.inlineStatusAria": "Modifica lo stato della candidatura",
+  "track.statusUpdated": "Stato aggiornato a {state}",
+  "track.statusUpdateFailed": "Impossibile aggiornare lo stato",
 };
