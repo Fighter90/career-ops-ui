@@ -79,6 +79,14 @@ test('400 on an unknown state — the whitelist is canonicalizeStatus, no spawn'
   assert.match((await r.json()).error, /invalid state/i);
 });
 
+test('400 on a missing/empty state', async () => {
+  for (const state of [undefined, '', '   ']) {
+    const r = await post({ row: 1, state });
+    assert.equal(r.status, 400, `state=${JSON.stringify(state)}`);
+    assert.match((await r.json()).error, /state is required/i);
+  }
+});
+
 test('400 on a note with a control character or over the cap', async () => {
   const r = await post({ row: 1, state: 'Applied', note: 'line1\nline2' });
   assert.equal(r.status, 400);
