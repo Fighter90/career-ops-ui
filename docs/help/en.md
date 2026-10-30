@@ -108,6 +108,7 @@ locally on your machine.
 | PDF | `generate-pdf.mjs` | `📄 Generate PDF` on `#/cv`, `#/reports/:slug`, `#/evaluate`, `#/deep`, `#/interview-prep` |
 | Data files | shared with career-ops-ui | shared with career-ops |
 
+
 career-ops-ui is **pure additions**. Nothing inside `career-ops/`
 changes. Both surfaces share the same `cv.md`, `config/profile.yml`,
 `portals.yml`, `data/`, `reports/`, `interview-prep/`, `modes/`.
@@ -1447,7 +1448,7 @@ a `POST /api/tracker` defaults to `Evaluated`. The canonical
 |---|---|
 | `#` | Auto-numbered, zero-padded (`001`, `002`, …). |
 | `Date` | ISO date (`YYYY-MM-DD`). Defaults to today. |
-| `Company` | Free text. **Pipes (`\|`) and newlines are escaped automatically.** |
+| `Company` | Free text. **Pipes and newlines are escaped automatically.** |
 | `Role` | Same. |
 | `Score` | `N/5` format (e.g. `4.2/5`). |
 | `Status` | Whitelisted enum. |
@@ -1922,6 +1923,7 @@ events.
 | Pipeline preview shows `(unsafe redirect)` | Posting redirected to a private IP / loopback | This is a security feature (REVIEW-B1). The redirect target is rejected and the original URL is unchanged. |
 | Tracker row text breaks the table | Pipe in company name pre-v1.9.1 | Update to v1.9.1+ — pipes are escaped end-to-end (BF-1). |
 | `npm test` fails on fresh clone | Tests assume parent project layout | Use `CAREER_OPS_ROOT=$(mktemp -d)` and bootstrap fixtures. |
+
 
 For deeper diagnostics: run **▶ Doctor** on the Health page, copy the
 output, and search the issue tracker on
