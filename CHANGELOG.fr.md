@@ -12,6 +12,18 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.262.4] — 2026-10-30
+
+### Corrigé
+
+- **ja rejoint les langues token-denses d'évaluation** (`ja` → le plafond de 32768 tokens + l'horloge de 480 s). La relance ciblée de 5 langues sur la prod v1.262.3 a séparé les quatre timeouts `502 · 300 s · 0 ch` de la nuit en transitoires et déterministes : ar (250 s), ko (291 s) et zh-CN (259 s) ont passé leurs relances, la dérive de langue ponctuelle de ru ne s'est pas répétée — mais `ja` a buté deux fois sur le plafond standard avec zéro sortie (l'exécution complète ×19 40981578549 et la ciblée 41012725839). La même classe de forme que it/pl. Épingle en rouge d'abord : `evalMaxTokens('ja') = 32768`, `evalTimeoutMs('ja') = 480_000`, les autres langues gardent 300 s.
+
+### Notes
+
+- Délibérément un patch à but unique : la correction de `ja` est le seul changement que cette version embarque — elle n'embarque rien d'autre. ar/ko/zh-CN restent au plafond standard au vu des preuves de cette nuit (elles passent ; les échecs de la nuit étaient des transitoires de charge du fournisseur), et la dérive de ru était un flake de génération ponctuel.
+
+Tests 6868 → 6869 (+1) · Playwright 176 · registre inchangé : 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.262.3] — 2026-10-30
 
 ### Corrigé
