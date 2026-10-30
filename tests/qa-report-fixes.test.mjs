@@ -421,8 +421,8 @@ test('UX-A5-r4 (v1.59.9): scroll-spy is initial-paint-eager (synchronous compute
   const css = loadAppCss();
   assert.match(css, /\.help-toc\s+a\.toc-current\s*\{[^}]*color:\s*var\(--rausch/,
     '.help-toc a.toc-current must paint color from --rausch');
-  assert.match(css, /\.help-toc\s+a\.toc-current\s*\{[^}]*border-inline-start-color:\s*var\(--rausch/,
-    '.help-toc a.toc-current must paint a visible border-inline-start from --rausch');
+  assert.match(css, /\.help-toc\s+a\.toc-current\s*\{[^}]*--_toc-rail:\s*var\(--rausch/,
+    '.help-toc a.toc-current must paint a visible rail from --rausch (via the --_toc-rail lift)');
 });
 
 test('UX-A5-r3 (v1.59.8): help.js TOC scroll-spy uses a plain scroll listener (NOT IntersectionObserver)', () => {

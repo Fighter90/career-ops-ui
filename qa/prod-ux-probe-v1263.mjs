@@ -104,12 +104,13 @@ async function checkScanSticky(page, tag) {
   await page.evaluate(() => {
     window.scrollTo(0, document.documentElement.scrollHeight);
     const search = document.querySelector('.searchbar');
-    const wrap = document.querySelector('.table-wrap');
+    const wrap = document.querySelector('.table-wrap.v2-scan-viewport') || document.querySelector('.table-wrap');
     const s = search.getBoundingClientRect();
     const wTop = wrap.getBoundingClientRect().top;
     window.scrollBy(0, Math.round(wTop - (s.y + 2)));
   });
   await page.waitForTimeout(300);
+  const scrollable = await page.evaluate(() => window.scrollY);
   const hit = await page.evaluate(() => {
     const th = document.querySelector('#scan-results thead th');
     const search = document.querySelector('.searchbar');
@@ -130,6 +131,10 @@ async function checkScanSticky(page, tag) {
   if (hit.error) { rec('1a', '#/scan: sticky header vs topbar', 'no cover', hit.error, 'SKIP', shot); return; }
   if (!hit.overlap) {
     rec('1a', '#/scan: sticky header vs topbar', 'no overlap band reached', `no overlap after scroll (scrollY=${hit.scrollY}) — layout differs from the probe's assumption`, 'SKIP', shot);
+    return;
+  }
+  if (!scrollable) {
+    rec('1a', '#/scan: sticky header vs topbar', 'page scrollable so the probe means something', `scrollY=0 — страница не проскроллилась`, 'SKIP', shot);
     return;
   }
   rec('1a', '#/scan: sticky table header vs topbar (elementFromPoint at overlap)',
@@ -293,7 +298,7 @@ async function checkMobileDrawer(page, tag) {
     geo.map && geo.map.right <= geo.innerWidth + 1 ? 'PASS' : 'FAIL', shotOpen);
   // «Профинансированные компании» wraps, not cut
   if (geo.funded) {
-    const lines = geo.fundedLineH ? Math.round(geo.funded.h / geo.fundedLineH) : null;
+    const lines = state.fundedLineH ? Math.round(geo.funded.h / state.fundedLineH) : null;
     const notCut = geo.funded.right <= geo.innerWidth + 1;
     const wraps = lines !== null ? lines >= 2 : null;
     rec('3c', 'Мобильный drawer 390: «Профинансированные компании» переносится, не обрезана',
@@ -442,12 +447,6 @@ async function checkDarkTheme(page, tag) {
   await page.evaluate(() => { window.__uxModalP = UI.confirm('Проверка тёмной темы', 'Текст модального окна для контраста', { confirmLabel: 'Понятно' }); });
   await page.waitForSelector('.modal-msg', { state: 'visible', timeout: 5000 }).catch(() => {});
   await page.waitForTimeout(400);
-  const modal = await page.evaluate(() => {
-    const msg = document.querySelector('.modal-msg');
-    if (!msg) return null;
-    return window.__ux.sample(['.modal-msg', '.modal button', '.modal .btn']).concat(
-      [{ sel: '.modal-msg(box)', fg: getComputedStyle(msg).color, bg: window.__ux.effBg(msg), contrast: null }]);
-  }).then((arr) => arr ? arr.map((s) => s.contrast == null ? { ...s, contrast: s.contrast } : s) : null);
   const modalSamples = await page.evaluate(() => {
     const msg = document.querySelector('.modal-msg');
     if (!msg) return [];
