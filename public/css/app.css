@@ -454,7 +454,7 @@ body.sidebar-open .sidebar-backdrop { display: block; }
   flex: 1;
   max-width: 540px;
   background: var(--paper);
-  border: 1px solid var(--slate);
+  border: 1px solid var(--cv3-input-line, var(--slate));
   box-shadow: var(--shadow-sm);
   border-radius: var(--radius-pill);
   padding: 10px 18px;
@@ -784,7 +784,7 @@ tr.v2-scan-isnew > td { animation: v2scan-in 150ms var(--ease-out); }
 .scan-icon--score.v2-scan-score-mid { color: var(--darjeeling-text, var(--darjeeling)); }
 .scan-icon--score.v2-scan-score-lo { color: var(--rausch-text, var(--rausch)); }
 .scan-terminal:not(.v2-scan-log-open) .console { max-height: 2.4em; overflow: hidden; }
-.v2-scan-logbtn { flex: 0 0 auto; margin-inline-start: auto; color: #8b949e; }
+.v2-scan-logbtn { flex: 0 0 auto; margin-inline-start: auto; color: #6f7781; }
 .v2-scan-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,.35); z-index: var(--z-modal); opacity: 0; visibility: hidden; transition: opacity var(--transition), visibility var(--transition); }
 .v2-scan-backdrop.is-open { opacity: 1; visibility: visible; }
 .v2-scan-panel { position: fixed; top: 0; inset-inline-end: 0; bottom: 0; width: min(440px, 94vw); background: var(--paper); border-inline-start: 1px solid var(--slate); box-shadow: var(--shadow-lg); z-index: calc(var(--z-modal) + 1); padding: 20px; overflow-y: auto; transform: translateX(102%); visibility: hidden; transition: transform var(--transition), visibility var(--transition); }

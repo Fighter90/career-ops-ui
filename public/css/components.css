@@ -320,7 +320,7 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
 .input, .textarea, .select {
   width: 100%;
   padding: 12px 14px;
-  border: 1px solid var(--slate);
+  border: 1px solid var(--cv3-input-line, var(--slate));
   border-radius: var(--radius);
   background: var(--paper);
   font-size: 14px;
@@ -479,7 +479,7 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
 .conn-banner[hidden] { display: none; }
 /* The translucent-black chip keeps literal WHITE text in both themes: over the banner
    fill its blend is ≥7.9:1, while the inherited --paper would go near-black in dark. */
-.conn-banner .btn-dark { background: rgba(0,0,0,.4); border: none; color: #fff; }
+.conn-banner .btn-dark { background: rgba(0,0,0,.4); border: none; color: var(--ink); }
 .conn-banner .btn-dark:hover { background: rgba(0,0,0,.6); }
 
 /* v1.55.3 (UX-2) — 4-provider OR onboarding: .onboarding-warn = loud cold-start banner
@@ -495,7 +495,7 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
   font-size: 14px;
   font-weight: 500;
 }
-#onboarding-banner.onboarding-warn .btn-dark { background: rgba(0,0,0,.4); border: none; color: #fff; }
+#onboarding-banner.onboarding-warn .btn-dark { background: rgba(0,0,0,.4); border: none; color: var(--ink); }
 #onboarding-banner.onboarding-warn .btn-dark:hover { background: rgba(0,0,0,.6); }
 #onboarding-banner.onboarding-ok {
   padding: 6px 24px;
@@ -761,7 +761,7 @@ a.scan-posting-title:hover, a.scan-posting-title:focus-visible { text-decoration
 [dir='rtl'] .reposts[open] .reposts-summary::before { transform: rotate(45deg); }
 .reposts-badge {
   margin-inline-start: auto; padding: 2px 10px; border-radius: var(--radius-pill);
-  background: var(--elev); color: var(--foggy); font-size: var(--font-size-sm);
+  background: var(--elev); color: #6e6e6e; font-size: var(--font-size-sm);
   font-weight: 600; font-variant-numeric: tabular-nums;
 }
 .reposts-body { padding: 2px 20px 20px; max-height: 460px; overflow: auto; }
@@ -796,3 +796,4 @@ a.scan-posting-title:hover, a.scan-posting-title:focus-visible { text-decoration
 /* CAR-49 (v1.246.0) — the machine slug tail shown after a localized activity
    ACTION label (dynamic families keep the identifier traceable). */
 .activity-raw-slug { margin-inline-start: 6px; font-size: 11px; color: var(--foggy); }
+

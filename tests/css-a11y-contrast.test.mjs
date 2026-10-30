@@ -127,7 +127,7 @@ const PAIRS = [
   // v3 phase 2 — toast.error rides the theme-INVARIANT danger red --rausch-fill
   // with literal white text (the inherited --paper goes near-black in dark)
   ['toast.error text', '#ffffff', 'var(--rausch-fill)', AA],
-  ['toast.success text', 'var(--paper)', 'var(--kazan)', AA],
+  ['toast.success text', 'var(--cv3-ok-ink)', 'var(--cv3-ok-soft)', AA],
   // toast technical-detail chip: theme-neutral paper surface, not a dark
   // blend that turns unreadable on the bright error/success fills
   ['toast detail <code> text', 'var(--hof)', 'var(--paper)', AA],
@@ -187,7 +187,7 @@ test('every flagged text/fill pair meets WCAG AA (≥4.5:1) in light, dark-expli
     }
     // sanity: the two dark variants must not silently diverge
     if (name === 'darkSystem') {
-      for (const t of ['--paper', '--hof', '--rausch-dark', '--kazan', '--rausch-text', '--accent-c', '--band-a-ink']) {
+      for (const t of ['--paper', '--hof', '--rausch-dark', '--cv3-ok-soft', '--rausch-text', '--accent-c', '--band-a-ink']) {
         const a = JSON.stringify(resolveColor(SETS.darkExplicit, `var(${t})`));
         const b = JSON.stringify(resolveColor(theme, `var(${t})`));
         assert.equal(a, b, `${t} diverges between [data-theme="dark"] and the system-dark block`);
@@ -248,7 +248,7 @@ test('the flagged selectors actually paint with the AA token pair (source bindin
   assert.match(rule('\\.toast'), /color:\s*var\(--paper\)/, '.toast must paint text from --paper');
   assert.match(rule('\\.toast\\.error'), /background:\s*var\(--rausch-fill\)/, '.toast.error fill must be the invariant danger red --rausch-fill');
   assert.match(rule('\\.toast\\.error'), /color:\s*#fff/, '.toast.error keeps literal white text over the invariant fill');
-  assert.match(rule('\\.toast\\.success'), /background:\s*var\(--kazan\)/, '.toast.success fill must be --kazan');
+  assert.match(rule('\\.toast\\.success'), /background:\s*var\(--cv3-ok-soft\)/, '.toast.success fill must be the ok-soft AA pair');
   assert.match(rule('\\.toast\\s+\\.toast-detail\\s*>\\s*code'), /background:\s*var\(--paper\)/, 'toast detail chip must be --paper');
   assert.match(rule('\\.btn-dark'), /color:\s*var\(--paper\)/, '.btn-dark must paint text from --paper');
   assert.match(rule('\\.conn-banner'), /background:\s*var\(--rausch-dark\)[\s\S]*color:\s*var\(--paper\)/, '.conn-banner must use the --rausch-dark/--paper pair');

@@ -28,7 +28,7 @@
 }
 /* CAR-23 — variant fills AA with the inherited --paper text in BOTH themes. */
 .toast.error { background: var(--rausch-fill); color: #fff; } /* v3 phase 2: the theme-INVARIANT danger red keeps literal WHITE text in both themes (5.80:1); the inherited --paper would go near-black in dark (3.01:1) — same pattern as the banner .btn-dark chip */
-.toast.success { background: var(--kazan); }
+.toast.success { background: var(--cv3-ok-soft); color: var(--cv3-ok-ink); }
 /* CAR-130 — failed-POST field marking (the shared mode-page submit helper):
    the control the error focuses also gets a visible invalid state (WCAG
    3.3.1), cleared on the next input/change. Lives here, not in
@@ -506,9 +506,9 @@
    grounded-help chat panel. Self-contained cool-gradient accent (deliberately
    distinct from the coral brand); theme-aware surfaces; CSP-safe. */
 :root {
-  --fab-grad: linear-gradient(135deg, #6aa8ff 0%, #a487e6 100%);
+  --fab-grad: linear-gradient(135deg, #0b57d0 0%, #5326ad 100%);
   --fab-glow: 0 6px 26px rgba(112, 140, 240, .50);
-  --fab-accent: #2f9fb8;               /* teal chip accent (AA on light) */
+  --fab-accent: #00819a;               /* teal chip accent (AA on light) */
   --fab-panel-bg: #ffffff;
   --fab-panel-head: linear-gradient(180deg, rgba(106,168,255,.10), rgba(164,135,230,.06));
   --fab-bubble-bot: #f1f3f8;
@@ -577,7 +577,7 @@
 .docs-fab__dot { width: 8px; height: 8px; border-radius: 50%; background: #35c759; box-shadow: 0 0 0 3px rgba(53, 199, 89, .18); }
 .docs-fab__close {
   flex: none; width: 30px; height: 30px; border: none; border-radius: 8px;
-  background: transparent; color: var(--foggy, #888); cursor: pointer;
+  background: transparent; color: #6e6e6e; cursor: pointer;
   display: flex; align-items: center; justify-content: center;
   transition: background var(--transition, .18s ease), color var(--transition, .18s ease);
 }
