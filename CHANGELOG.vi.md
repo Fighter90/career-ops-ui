@@ -6,6 +6,18 @@ Bản dịch: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.262.4] — 2026-10-30
+
+### Đã sửa
+
+- **`ja` gia-nhập-các-locale-đánh-giá-token-dense** (`ja` → trần-32768-token + đồng-hồ-480 s). Lượt-chạy-lại-có-đích-5-locale trên-prod-v1.262.3 tách-bốn-timeout-của-đêm `502 · 300 s · 0 ch` thành-transient-và-xác-định: `ar` (250 s), `ko` (291 s) và-`zh-CN` (259 s) đạt-lượt-chạy-lại-của-mình, lệch-ngôn-ngữ-đột-phát-của-`ru` không-tái-diễn — nhưng-`ja` đâm-vào-trần-chuẩn hai-lần với-kết-quả-số-0 (lượt-chạy-đầy-đủ-×19 40981578549 và-lượt-chạy-có-đích 41012725839). Cùng-lớp-hình-dạng-với-`it`/`pl`. Ghim-đỏ-trước: `evalMaxTokens('ja') = 32768`, `evalTimeoutMs('ja') = 480_000`, các-locale-khác giữ-nguyên-300 s.
+
+### Ghi chú
+
+- Không-hành-động-cố-ý: bản-patch-một-mục-đích — bản-sửa-`ja` là thay-đổi-duy-nhất mà bản-phát-hành-này-mang; không-đóng-gói-thêm-bất-cứ-gì-khác. `ar`/`ko`/`zh-CN` giữ-nguyên-trần-chuẩn dựa-trên-bằng-chứng-đêm-nay (chúng-đạt; các-timeout-của-đêm là-transient-tải-provider), còn-lệch-của-`ru` là một-flake-sinh-tạo-đột-phát.
+
+Tests 6868 → 6869 (+1) · Playwright 176 · registry không-thay-đổi: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.262.3] — 2026-10-30
 
 **Bản-patch-token-dense-của-pl: full-remote-QA trên-prod-v1.262.1 bắt-gặp-lượt-đánh-giá-tiếng-Ba-Lan chết-ở-trần-300 s-chuẩn — `502 · 0 ch` — hai-lần (lượt-chạy-đầy-đủ-×19 40960568766 và-lượt-chạy-lại-có-đích-của-v1.262.2 40968958062), trong-khi-18/19-locale đạt-A–G; `pl` giờ-gia-nhập `ta`/`hi`/`it` với-trần-32768-token và-đồng-hồ-480 s, được-ghim-đỏ-trước (`evalMaxTokens`, `evalTimeoutMs`). Cùng-lớp-hình-dạng-với-`it`-trong-v1.262.1. Tests 6867 → 6868.**

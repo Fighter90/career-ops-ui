@@ -10,6 +10,18 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.262.4] — 2026-10-30
+
+### Naprawiono
+
+- **`ja` dołącza do języków token-dense ewaluacji** (`ja` → limit 32768 tokenów + zegar 480 s). Punktowy rerun pięciu locale na prodzie v1.262.3 rozdzielił cztery nocne timeouty `502 · 300 s · 0 ch` na przejściowe i deterministyczne: ar (250 s), ko (291 s) i zh-CN (259 s) przeszły swoje reruny, jednorazowy dryf językowy ru nie powtórzył się — ale `ja` dwukrotnie uderzyła w standardowy limit z zerowym wyjściem (pełny przebieg ×19 40981578549 i punktowy 41012725839). Ta sama klasa kształtu co it/pl. Pin red-first: `evalMaxTokens('ja') = 32768`, `evalTimeoutMs('ja') = 480_000`, pozostałe locale zachowują 300 s.
+
+### Uwagi
+
+- Świadomie jednocelowy patch: poprawka `ja` to jedyna zmiana, jaką niesie to wydanie — nie wozi niczego więcej. ar/ko/zh-CN pozostają na standardowym limicie przy dzisiejszych danych (przechodzą; nocne awarie były przejściowymi problemami z obciążeniem providera), a dryf ru okazał się jednorazową wpadką generacji.
+
+Tests 6868 → 6869 (+1) · Playwright 176 · rejestr bez zmian: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.262.3] — 2026-10-30
 
 ### Naprawiono

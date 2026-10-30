@@ -2,6 +2,18 @@
 
 > Bu changelog artık tüm sürüm geçmişini içerir. Türkçe yerelleştirmenin eklenmesinden (v1.85.0) önce yayınlanan girdiler aşağıda İngilizce özgün hâliyle yer alır — çeviri bekliyor; asıl kaynak [🇬🇧 CHANGELOG.md](CHANGELOG.md)'dir.
 
+## [1.262.4] — 2026-10-30
+
+### Düzeltildi
+
+- **`ja`, token-yoğun değerlendirme yerel ayarlarına katılıyor** (`ja` → 32768-token tavanı + 480 s saati). prod v1.262.3 üzerindeki 5-yerel-ayarlık hedefli yeniden koşu, gecenin dört `502 · 300 s · 0 ch` zaman aşımını geçiciler ve deterministikler olarak ayırdı: ar (250 s), ko (291 s) ve zh-CN (259 s) yeniden koşularından geçti, ru'nun tek seferlik dil sürüklenmesi tekrarlanmadı — ama `ja` standart tavanda sıfır çıktıyla iki kez duvara çarptı (tam ×19 koşu 40981578549 ve hedefli yeniden koşu 41012725839). it/pl ile aynı şekil sınıfı. Red-first sabitleme: `evalMaxTokens('ja') = 32768`, `evalTimeoutMs('ja') = 480_000`, diğer yerel ayarlar 300 s tutuyor.
+
+### Notlar
+
+- Bilinçli olarak tek-amaçlı bir yama: `ja` düzeltmesi bu sürümün taşıdığı tek değişiklik — başka hiçbir şey taşımıyor. Gecenin kanıtına göre ar/ko/zh-CN standart tavanda kalıyor (geçiyorlar; gecenin başarısızlıkları sağlayıcı yükü geçicileriydi) ve ru'nun sürüklenmesi tek seferlik bir üretim feyk'iydi.
+
+Tests 6868 → 6869 (+1) · Playwright 176 · registry değişmedi: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.262.3] — 2026-10-30
 
 ### Düzeltildi

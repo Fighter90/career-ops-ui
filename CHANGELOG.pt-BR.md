@@ -8,6 +8,18 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.262.4] — 2026-10-30
+
+### Corrigido
+
+- **ja entra nas locales densas em tokens de avaliação** (`ja` → o teto de 32768 tokens + o relógio de 480 s). A re-execução pontual de 5 locales no prod v1.262.3 separou os quatro timeouts `502 · 300 s · 0 ch` da noite em transitórios e deterministas: ar (250 s), ko (291 s) e zh-CN (259 s) passaram nas suas re-execuções, o drift de linguagem pontual do ru não se repetiu — mas o `ja` bateu no teto padrão duas vezes com zero saída (a execução completa ×19 40981578549 e a pontual 41012725839). A mesma classe de forma de it/pl. Pin red-first: `evalMaxTokens('ja') = 32768`, `evalTimeoutMs('ja') = 480_000`, as demais locales mantêm 300 s.
+
+### Notas
+
+- Deliberadamente um patch de propósito único: a correção do `ja` é a única mudança que esta versão traz — não empacota nada além disso. ar/ko/zh-CN ficam no teto padrão pela evidência desta noite (passam; as falhas da noite foram transitórios de carga do provider), e o drift do ru foi um flake de geração pontual.
+
+Tests 6868 → 6869 (+1) · Playwright 176 · registro inalterado: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.262.3] — 2026-10-30
 
 ### Corrigido

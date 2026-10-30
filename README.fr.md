@@ -7,19 +7,19 @@
 
 _Interface non officielle — sans affiliation ni approbation de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-6868%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-6869%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.262.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.3)
+[![release](https://img.shields.io/badge/release-v1.262.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.4)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Dernière version — v1.262.3** — **Le patch token-dense de `pl` : la remote-QA complète sur la prod v1.262.1 a attrapé l'évaluation polonaise en train de mourir au plafond standard de 300 s — `502 · 0 ch` — deux fois (l'exécution complète ×19 40960568766 et la relance ciblée de la v1.262.2 40968958062), tandis que 18/19 langues passaient A–G ; `pl` rejoint désormais `ta`/`hi`/`it` avec le plafond de 32768 tokens et l'horloge de 480 s, épinglé en rouge d'abord (`evalMaxTokens`, `evalTimeoutMs`). La même classe de forme que `it` en v1.262.1. Tests 6867 → 6868.**
+> **🆕 Dernière version — v1.262.4** — **Le patch token-dense de `ja` : la relance ciblée de 5 langues sur la prod a séparé les quatre timeouts d'évaluation de la nuit — ar/ko/zh-CN ont passé (250–291 s), la dérive ponctuelle de ru ne s'est pas répétée — mais `ja` a buté deux fois sur le plafond standard de 300 s avec zéro sortie ; `ja` rejoint désormais `ta`/`hi`/`it`/`pl` avec le plafond de 32768 tokens et l'horloge de 480 s, épinglé en rouge d'abord. Tests 6868 → 6869.**
 >
-> **Précédente — v1.262.2** — **Le patch de queue de revue : sept constats de revue en vague fermés en rouge d'abord — l'aller-retour du backslash de l'import CSV (ré-importer le même export déduplique à nouveau), le strip `<head>` de cv-voice 4827 ms → 13 ms, `years_min` calculé paresseusement sur les grands scans, un crash TOCTOU du listing des captures corrigé, les défauts CN de MiniMax pour toute URL de base `*.minimax.cn`, et le picker d'import vérifie le plafond de 512 Ko avant de lire un fichier — plus le durcissement de deploy.yml (F1–F6 : un garde d'injection de l'input provider, la censure des logs hermes, le masquage des `?token=`, app_dir, le garde https de public_url et six épingles anti-retour en arrière exécutables) et la queue de la modale d'import (nav guard, nettoyage sur cancel, doublons sous garde). Tests 6841 → 6867.**
+> **Précédente — v1.262.3** — **Le patch token-dense de `pl` : la remote-QA complète sur la prod v1.262.1 a attrapé l'évaluation polonaise en train de mourir au plafond standard de 300 s — `502 · 0 ch` — deux fois (l'exécution complète ×19 40960568766 et la relance ciblée de la v1.262.2 40968958062), tandis que 18/19 langues passaient A–G ; `pl` rejoint désormais `ta`/`hi`/`it` avec le plafond de 32768 tokens et l'horloge de 480 s, épinglé en rouge d'abord (`evalMaxTokens`, `evalTimeoutMs`). La même classe de forme que `it` en v1.262.1. Tests 6867 → 6868.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -388,7 +388,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 6868 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.3)
+└─ tests/                    # 6869 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.4)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch

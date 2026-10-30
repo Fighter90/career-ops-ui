@@ -7,19 +7,18 @@
 
 _Giao diện không chính thức — không liên kết với career-ops / santifer, cũng không được họ chứng thực._
 
-[![tests](https://img.shields.io/badge/tests-6868%20passed-brightgreen)](#kiểm-thử)
+[![tests](https://img.shields.io/badge/tests-6869%20passed-brightgreen)](#kiểm-thử)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#kiểm-thử)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#kiểm-thử)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#yêu-cầu)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.262.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.3)
+[![release](https://img.shields.io/badge/release-v1.262.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.4)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Bản phát hành mới nhất — v1.262.3** — **Bản-patch-token-dense-của-pl: full-remote-QA trên-prod-v1.262.1 bắt-gặp-lượt-đánh-giá-tiếng-Ba-Lan chết-ở-trần-300 s-chuẩn — `502 · 0 ch` — hai-lần (lượt-chạy-đầy-đủ-×19 40960568766 và-lượt-chạy-lại-có-đích-của-v1.262.2 40968958062), trong-khi-18/19-locale đạt-A–G; `pl` giờ-gia-nhập `ta`/`hi`/`it` với-trần-32768-token và-đồng-hồ-480 s, được-ghim-đỏ-trước (`evalMaxTokens`, `evalTimeoutMs`). Cùng-lớp-hình-dạng-với-`it`-trong-v1.262.1. Tests 6867 → 6868.**
->
-> **Bản trước — v1.262.2** — **Bản-patch-đuôi-rà-soát: bảy-phát-hiện-rà-soát-sóng được-đóng-đỏ-trước — vòng-backslash-nhập-CSV (nhập-lại-cùng-một-tệp-export được-dedup-lại), tước-phần-`<head>`-cv-voice 4827 ms → 13 ms, `years_min` tính-lười-trên-các-lượt-quét-lớn, một-vụ-crash-TOCTOU-khi-liệt-kê-capture được-sửa, mặc-định-MiniMax-CN cho-mọi-URL-cơ-sở-`*.minimax.cn`, và-bộ-chọn-nhập kiểm-tra-trần-512 KB trước-khi-đọc-tệp — cộng-củng-cố-deploy.yml (F1–F6: guard-chống-chèn-input-provider, redact-nhật-ký-hermes, che-`?token=`, app_dir, cổng-https-của-public_url và-sáu-chốt-chống-hạ-cấp-thực-thi) và-đuôi-import-modal (nav-guard, dọn-dẹp-khi-cancel, duplicates-được-bảo-vệ). Kiểm-thử 6841 → 6867.**
+> **🆕 Bản phát hành mới nhất — v1.262.4** — **Bản-patch-token-dense-của-ja: lượt-chạy-lại-có-đích-5-locale trên-prod tách-bốn-timeout-đánh-giá-của-đêm — `ar`/`ko`/`zh-CN` đạt (250–291 s), lệch-đột-phát-của-`ru` không-tái-diễn — nhưng-`ja` đâm-vào-trần-300 s-chuẩn hai-lần với-kết-quả-số-0; `ja` giờ-gia-nhập `ta`/`hi`/`it`/`pl` với-trần-32768-token và-đồng-hồ-480 s, được-ghim-đỏ-trước. Tests 6868 → 6869.**
+> **Bản trước — v1.262.3** — **Bản-patch-token-dense-của-pl: full-remote-QA trên-prod-v1.262.1 bắt-gặp-lượt-đánh-giá-tiếng-Ba-Lan chết-ở-trần-300 s-chuẩn — `502 · 0 ch` — hai-lần (lượt-chạy-đầy-đủ-×19 40960568766 và-lượt-chạy-lại-có-đích-của-v1.262.2 40968958062), trong-khi-18/19-locale đạt-A–G; `pl` giờ-gia-nhập `ta`/`hi`/`it` với-trần-32768-token và-đồng-hồ-480 s, được-ghim-đỏ-trước (`evalMaxTokens`, `evalTimeoutMs`). Cùng-lớp-hình-dạng-với-`it`-trong-v1.262.1. Tests 6867 → 6868.**
 >
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
@@ -204,7 +203,7 @@ web-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 6868 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.3)
+└─ tests/                    # 6869 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.4)
    ├─ parsers.test.mjs       # bộ-phân-tách-markdown / pipeline / báo-cáo (hàm-thuần)
    ├─ api.test.mjs           # mọi-endpoint, máy-chủ-ephemeral, không-mạng
    ├─ {ru,en}-scanner.test.mjs   # fetch-mocked

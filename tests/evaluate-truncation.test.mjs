@@ -119,6 +119,17 @@ test('evalMaxTokens: token-dense locales (ta, hi, it) get 32768', () => {
   assert.equal(evalMaxTokens('it-IT'), 32768);
 });
 
+test('evalMaxTokens: ja joins the token-dense locales (v1.262.4)', () => {
+  // remote-QA on prod v1.262.3 — ja hit `502 · openrouter · 300 s · 0 ch` at the
+  // standard ceiling TWICE: the full ×19 run 40981578549 AND the 5-locale spot
+  // re-run 41012725839 (ar/ko/zh-CN passed their reruns at 250–291 s; ru's
+  // one-off drift did not repeat). Same shape class as it/pl.
+  assert.equal(evalMaxTokens('ja'), 32768);
+  assert.equal(evalMaxTokens('ja-JP'), 32768);
+  assert.equal(evalTimeoutMs('ja'), 480_000);
+  assert.equal(evalTimeoutMs('en'), 300_000);
+});
+
 test('evalMaxTokens: pl joins the token-dense locales (v1.262.3)', () => {
   // remote-QA on prod v1.262.1 — run 40960568766 (full ×19) AND the spot
   // re-run 40968958062: the pl evaluate hit `502 · openrouter · 300 s · 0 ch`

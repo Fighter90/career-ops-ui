@@ -9,6 +9,18 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 ---
 
 
+## [1.262.4] — 2026-10-30
+
+### Rettet
+
+- **`ja` tilslutter sig de token-dense evaluerings-sprog** (`ja` → 32768-token-loftet + 480 s-uret). 5-locale-punkt-genkørslen på prod v1.262.3 adskilte nattens fire `502 · 300 s · 0 ch`-timeouts i forbigående og deterministiske: ar (250 s), ko (291 s) og zh-CN (259 s) bestod deres genkørsler, ru's engangs-sproglige afvigelse gentog sig ikke — men `ja` ramte standardloftet to gange med nul output (den fulde ×19-kørsel 40981578549 og punktkørslen 41012725839). Samme formklasse som it/pl. Red-first-pin: `evalMaxTokens('ja') = 32768`, `evalTimeoutMs('ja') = 480_000`, de andre locales beholder 300 s.
+
+### Noter
+
+- Bevidst en patch med ét formål: `ja`-rettelsen er den eneste ændring, denne udgivelse sejler med — den medfølger ikke noget andet. ar/ko/zh-CN bliver på standardloftet på nattens belæg (de består; nattens fejl var forbigående provider-belastning), og ru's afvigelse var en engangs-genereringsfejl.
+
+Tests 6868 → 6869 (+1) · Playwright 176 · registry uændret: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.262.3] — 2026-10-30
 
 ### Rettet
