@@ -168,12 +168,12 @@ Parent fork `origin/main` = `08db03d8`, VERSION 1.35.0, 0 behind upstream — no
    mirror `public/js/views/config/field-specs.js` `ANTHROPIC_MODELS` must gain the two ids in ONE
    change, same order — `tests/config-select-domains.test.mjs` drift-gates them deepEqual; optionally
    `server/lib/anthropic.mjs` default + field-specs `defaultValue`/`hintFallback` (i18n keys unchanged).
-4. `fix-report-links.mjs` runner (#4751) with a dry-run preview → `routes/runners.mjs` + a button.
+4. ~~`fix-report-links.mjs` runner (#4751) with a dry-run preview → `routes/runners.mjs` + a button.~~ **Landed** — `POST /api/runners/report-links` (dry-run default, apply behind UI.confirm under the applications.md lock; deliberately NOT in TRACKER_MUTATING — nested lock would deadlock) + the Repair card on `#/health` (`rlinks.*` ×19).
 5. ~~Gem `isoCountry` → country name (#4774): copy parent `providers/_country.mjs` (76 lines) to
    `server/lib/sources/_country.mjs`.~~ **Shipped** — `server/lib/sources/_country.mjs` verbatim +
    `sources/gem.mjs` wiring, see the same spec.
 Later: evidence-confidence chip (#4452), `language.modes_dir` markets incl. `sg`/`id`/`nl` (#3793/#4687),
-saved contacts (#4692/#4363, privacy review), batch cost confirm (#4746, needs batch usage logging).
+saved contacts (#4692/#4363, privacy review), ~~batch cost confirm (#4746, needs batch usage logging)~~ **Landed** — the batch close-path parses the parent's aggregated token tail into one `recordUsage('batch', …)` (CAR-106 cost preferred), rows ≥ 2 gate the run behind a cost-estimate `UI.confirm` (`batch.cost.*` ×19).
 Port when merged upstream: workable multi-country (#4806), smartrecruiters slug links (#4770),
 radancy location (#4689), PageUp provider (#4693 → 110 sources), personio languages (#4789),
 Vietnamese README/mode (#4729/#4727).
