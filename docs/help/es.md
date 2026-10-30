@@ -112,6 +112,7 @@ career-ops toca):
 | PDF | `generate-pdf.mjs` | `📄 Generate PDF` en `#/cv`, `#/reports/:slug`, `#/evaluate`, `#/deep`, `#/interview-prep` |
 | Archivos de datos | compartidos con career-ops-ui | compartidos con career-ops |
 
+
 career-ops-ui son **puramente adiciones**. Nada dentro de
 `career-ops/` cambia. Ambas superficies comparten el mismo `cv.md`,
 `config/profile.yml`, `portals.yml`, `data/`, `reports/`,
@@ -129,6 +130,7 @@ hacer a continuación (tabla canónica de
 | **4.0 – 4.4** | Aplica, o `/career-ops contacto` para warm intro primero. |
 | **3.5 – 3.9** | Ejecuta `/career-ops deep` — investiga la empresa / rol antes de decidir. |
 | **< 3.5** | Salta salvo que tengas un motivo personal específico. |
+
 
 El `#/dashboard` y el `#/tracker` de career-ops-ui resaltan cada fila
 en 4.0 o por encima para que puedas tomar acción sin re-ejecutar
@@ -1093,6 +1095,7 @@ por título · duplicados omitidos · nuevas ofertas añadidas.
 | **3.5 – 3.9** | `/career-ops deep` — investiga primero |
 | **< 3.5** | salta salvo razón personal específica |
 
+
 El `#/dashboard` y el `#/tracker` del SPA resaltan cada fila en 4.0
 o por encima para que puedas tomar acción sin re-ejecutar nada.
 
@@ -1362,7 +1365,7 @@ apply` (ver §14).
 |---|---|
 | `#` | Auto-numerado, con ceros a la izquierda (`001`, `002`, …). |
 | `Date` | Fecha ISO (`YYYY-MM-DD`). Default: hoy. |
-| `Company` | Texto libre. **Pipes (`\|`) y newlines se escapan automáticamente.** |
+| `Company` | Texto libre. **Pipes () y newlines se escapan automáticamente.** |
 | `Role` | Lo mismo. |
 | `Score` | Formato `N/5` (p. ej. `4.2/5`). |
 | `Status` | Enum de la whitelist. |
@@ -1651,6 +1654,7 @@ desde el CLI.
 | `source` | Plataforma de origen (LinkedIn, Greenhouse, etc.) |
 | `notes` | Detalle contextual opcional |
 
+
 Fila de ejemplo:
 
 ```
@@ -1855,6 +1859,7 @@ Filtra por prefijo de acción (`pipeline.`, `cv.`, `evaluate`,
 | Pipeline preview muestra `(unsafe redirect)` | El posting redirigió a una IP privada / loopback | Es un feature de seguridad (REVIEW-B1). El target de redirect se rechaza y la URL original se mantiene sin cambios. |
 | El texto de una fila del tracker rompe la tabla | Pipe en el nombre de empresa pre-v1.9.1 | Actualiza a v1.9.1+ — los pipes se escapan end-to-end (BF-1). |
 | `npm test` falla en clon fresco | Los tests asumen el layout del proyecto padre | Usa `CAREER_OPS_ROOT=$(mktemp -d)` y bootstrapea fixtures. |
+
 
 Para diagnóstico más profundo: ejecuta **Ejecutar doctor** en la página
 Health, copia el output, y busca el issue en el tracker en
@@ -2115,6 +2120,7 @@ El drawer **solo se abre al hacer clic en la campana** (o Enter / Space con foco
 | **Éxito** | `Guardado`, `Copiado`, `Actualizado`, scan completo, CV importado, apply-checklist, perfil guardado | borde izquierdo verde; toast verde |
 | **Error** | URL inválida, errores de API con sufijo `(MÉTODO /ruta · HTTP NNN)`, fallos de red, duplicados de pipeline-400, doctor/verify exit ≠ 0 | borde izquierdo rojo; toast rojo; postfix en `Detalles` (U-4) |
 | **Info** | `Running doctor.mjs…`, `Refreshing…`, `Loading…`, progreso de scan | borde gris |
+
 
 Cada entrada muestra hora local, mensaje humano y, si existe, el postfix técnico en monospace.
 

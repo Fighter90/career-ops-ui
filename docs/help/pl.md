@@ -125,6 +125,7 @@ Gdy JD ma już ocenę, wynik określa kolejny krok
 | **3.5 – 3.9** | Uruchom `/career-ops deep` — zbadaj firmę/rolę przed podjęciem decyzji. |
 | **< 3.5** | Pomiń, chyba że masz konkretny osobisty powód. |
 
+
 `#/dashboard` i `#/tracker` w career-ops-ui podświetlają każdy wiersz
 o wartości 4.0 lub wyższej, dzięki czemu możesz podjąć działanie bez ponownego uruchamiania czegokolwiek.
 
@@ -1124,6 +1125,7 @@ wsadowo oceni nowe URL-e):
 | **3.5 – 3.9** | `/career-ops deep` — najpierw zbadaj |
 | **< 3.5** | pomiń, chyba że masz konkretny osobisty powód |
 
+
 `#/dashboard` i `#/tracker` w SPA podświetlają każdy wiersz o wartości
 4.0 lub wyższej, żebyś mógł podjąć działanie bez ponownego uruchamiania czegokolwiek.
 
@@ -1660,6 +1662,7 @@ jest niepraktyczne przy takiej liczbie), użyj batch runnera z CLI.
 | `source` | Platforma źródłowa (LinkedIn, Greenhouse, itp.) |
 | `notes` | Opcjonalny kontekst |
 
+
 Przykładowy wiersz:
 
 ```
@@ -2120,6 +2123,7 @@ czyści odznakę.
 | **Sukces** | `Saved`, `Copied`, `Refreshed`, ukończone skanowanie, zaimportowane CV, akcje listy kontrolnej apply („Copied unchecked", „Reset"), zapisany profil, dodany URL do pipeline | zielona lewa ramka w szufladzie; zielone tło toastu |
 | **Błąd** | Nieudana walidacja URL (musi zaczynać się od `http://` / `https://`, bez znaków skryptowych/szablonowych), błędy API z postfiksem `(METHOD /path · HTTP NNN)`, błędy sieci (serwer wyłączony), duplikaty pipeline-400, niezerowe wyjście doctor / verify-pipeline | czerwona lewa ramka; czerwone tło toastu; postfiks techniczny schowany w bloku `Details` `<details>` (U-4 / v1.58.24) |
 | **Info / postęp** | `Running doctor.mjs…`, `Running verify-pipeline.mjs…`, `Refreshing…`, `Loading…`, `Generating prompt…`, linie postępu skanowania | szara lewa ramka; domyślne tło toastu |
+
 
 Każdy wpis szuflady pokazuje:
 

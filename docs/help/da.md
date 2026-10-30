@@ -110,6 +110,7 @@ lokalt på din maskine.
 | PDF | `generate-pdf.mjs` | `📄 Generér PDF` på `#/cv`, `#/reports/:slug`, `#/evaluate`, `#/deep`, `#/interview-prep` |
 | Datafiler | delt med career-ops-ui | delt med career-ops |
 
+
 career-ops-ui er **rene tilføjelser**. Intet inde i `career-ops/`
 ændres. Begge flader deler de samme `cv.md`, `config/profile.yml`,
 `portals.yml`, `data/`, `reports/`, `interview-prep/`, `modes/`.
@@ -126,6 +127,7 @@ næste gang (kanonisk tabel fra
 | **4.0 – 4.4** | Ansøg, eller `/career-ops contacto` for en varm introduktion først. |
 | **3.5 – 3.9** | Kør `/career-ops deep` — undersøg virksomheden / rollen, før du beslutter. |
 | **< 3.5** | Spring over, medmindre du har en specifik personlig grund. |
+
 
 career-ops-ui's `#/dashboard` og `#/tracker` fremhæver hver række på eller
 over 4.0, så du kan vælge handling uden at køre noget om igen.
@@ -1183,6 +1185,7 @@ batch-scorer de nye URL'er):
 | **3.5 – 3.9** | `/career-ops deep` — undersøg først |
 | **< 3.5** | spring over, medmindre du har en specifik personlig grund |
 
+
 SPA'ens `#/dashboard` og `#/tracker` fremhæver hver række på eller
 over 4.0, så du kan vælge handling uden at køre noget om igen.
 
@@ -1449,7 +1452,7 @@ en `POST /api/tracker` defaulter til `Evaluated`. Den kanoniske
 |---|---|
 | `#` | Auto-nummereret, nul-padded (`001`, `002`, …). |
 | `Date` | ISO-dato (`YYYY-MM-DD`). Defaulter til i dag. |
-| `Company` | Fritekst. **Pipes (`\|`) og linjeskift escapes automatisk.** |
+| `Company` | Fritekst. **Pipes () og linjeskift escapes automatisk.** |
 | `Role` | Samme. |
 | `Score` | `N/5`-format (f.eks. `4.2/5`). |
 | `Status` | Whitelistet enum. |
@@ -1728,6 +1731,7 @@ du skifter til CLI-runneren.
 | `source` | Oprindelsesplatform (LinkedIn, Greenhouse, osv.) |
 | `notes` | Valgfri kontekstuel detalje |
 
+
 Eksempelrække:
 
 ```
@@ -1925,6 +1929,7 @@ events.
 | Pipeline-preview viser `(unsafe redirect)` | Opslag omdirigerede til en privat IP / loopback | Dette er en sikkerhedsfunktion (REVIEW-B1). Redirect-målet afvises, og den oprindelige URL er uændret. |
 | Tracker-rækketekst bryder tabellen | Pipe i virksomhedsnavn pre-v1.9.1 | Opdater til v1.9.1+ — pipes escapes end-to-end (BF-1). |
 | `npm test` fejler på frisk clone | Tests antager overordnet projektlayout | Brug `CAREER_OPS_ROOT=$(mktemp -d)` og bootstrap fixtures. |
+
 
 For dybere diagnostik: kør **Kør doctor** på Health-siden, kopier
 outputtet, og søg i issue-trackeren på
@@ -2191,6 +2196,7 @@ rydder badget.
 | **Success** | `Gemt`, `Kopieret`, `Genopfrisket`, scan færdig, CV importeret, apply-tjekliste-handlinger ("Kopieret ukrydset", "Nulstil"), profil gemt, pipeline-URL tilføjet | grøn venstre kant i skuffen; grøn toast-baggrund |
 | **Error** | URL-valideringsfejl (skal starte med `http://` / `https://`, ingen script-/template-tegn), API-fejl med `(METHOD /path · HTTP NNN)`-postfikset, netværksfejl (server nede), pipeline-400-dubletter, doctor / verify-pipeline ikke-nul exit | rød venstre kant; rød toast-baggrund; teknisk postfiks tucket ind i `Details`-`<details>`-blokken (U-4 / v1.58.24) |
 | **Info / progress** | `Running doctor.mjs…`, `Running verify-pipeline.mjs…`, `Refreshing…`, `Loading…`, `Generating prompt…`, scan-progress-linjer | grå venstre kant; standard toast-baggrund |
+
 
 Hver skuffe-post viser:
 

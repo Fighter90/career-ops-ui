@@ -110,6 +110,7 @@ her başvuruyu makinenizde yerel olarak takip eder.
 | PDF | `generate-pdf.mjs` | `#/cv`, `#/reports/:slug`, `#/evaluate`, `#/deep`, `#/interview-prep` üzerinde `📄 Generate PDF` |
 | Veri dosyaları | career-ops-ui ile paylaşılır | career-ops ile paylaşılır |
 
+
 career-ops-ui **tamamen eklemelerden** ibarettir. `career-ops/`
 içindeki hiçbir şey değişmez. Her iki yüzey de aynı `cv.md`,
 `config/profile.yml`, `portals.yml`, `data/`, `reports/`,
@@ -127,6 +128,7 @@ adımın ne olacağını belirler (kanonik tablo,
 | **4.0 – 4.4** | Başvurun ya da önce sıcak bir tanışma için `/career-ops contacto`. |
 | **3.5 – 3.9** | `/career-ops deep` çalıştırın — karar vermeden önce şirketi / rolü araştırın. |
 | **< 3.5** | Belirli bir kişisel nedeniniz yoksa atlayın. |
+
 
 career-ops-ui'nin `#/dashboard` ve `#/tracker` sayfaları, 4.0 ve
 üzerindeki her satırı vurgular; böylece hiçbir şeyi yeniden çalıştırmadan
@@ -1236,6 +1238,7 @@ toplu puanladıktan sonra uygulayın):
 | **3.5 – 3.9** | `/career-ops deep` — önce araştırın |
 | **< 3.5** | belirli bir kişisel nedeniniz yoksa atlayın |
 
+
 SPA'nın `#/dashboard` ve `#/tracker` sayfaları, 4.0 ve üzerindeki her
 satırı vurgular, böylece hiçbir şeyi yeniden çalıştırmadan eylem
 seçebilirsiniz.
@@ -1518,7 +1521,7 @@ başka herhangi bir şey göndermek `Evaluated`'a varsayılır. Kanonik
 |---|---|
 | `#` | Otomatik-numaralı, sıfırla-doldurulmuş (`001`, `002`, …). |
 | `Date` | ISO tarih (`YYYY-MM-DD`). Bugüne varsayılır. |
-| `Company` | Serbest metin. **Borular (`\|`) ve satır sonları otomatik olarak kaçırılır.** |
+| `Company` | Serbest metin. **Borular () ve satır sonları otomatik olarak kaçırılır.** |
 | `Role` | Aynı. |
 | `Score` | `N/5` biçimi (ör. `4.2/5`). |
 | `Status` | Beyaz listeli enum. |
@@ -1794,6 +1797,7 @@ teker-teker `#/evaluate`'i bu hacim için pratik değildir), CLI'den toplu
 | `source` | Köken platform (LinkedIn, Greenhouse, vb.) |
 | `notes` | Opsiyonel bağlamsal ayrıntı |
 
+
 Örnek satır:
 
 ```
@@ -1993,6 +1997,7 @@ vb.). Sayfa başına 25 satır; sunucu en fazla 500 en-son olay döndürür.
 | Pipeline önizlemesi `(unsafe redirect)` gösteriyor | İlan özel bir IP'ye / loopback'e yönlendirdi | Bu bir güvenlik özelliğidir (REVIEW-B1). Yönlendirme hedefi reddedilir ve orijinal URL değişmeden kalır. |
 | Tracker satırı metni tabloyu bozuyor | v1.9.1 öncesi şirket adında boru | v1.9.1+'ya güncelleyin — borular baştan sona kaçırılır (BF-1). |
 | Taze klonda `npm test` başarısız | Testler üst proje düzenini varsayıyor | `CAREER_OPS_ROOT=$(mktemp -d)` kullanın ve fikstürleri önyükleyin. |
+
 
 Daha derin tanılama için: Health sayfasında **Doctor çalıştır** çalıştırın,
 çıktıyı kopyalayın ve
@@ -2264,6 +2269,7 @@ açmak rozeti temizler.
 | **Success** | `Saved`, `Copied`, `Refreshed`, tarama tamamlandı, CV içe aktarıldı, apply-checklist eylemleri ("Copied unchecked", "Reset"), profil kaydedildi, pipeline URL'si eklendi | çekmecede yeşil sol kenarlık; yeşil toast arka planı |
 | **Error** | URL doğrulama hatası (`http://` / `https://` ile başlamalı, betik/şablon karakteri yok), `(METHOD /path · HTTP NNN)` postfix'li API hataları, ağ hataları (sunucu kapalı), pipeline-400 çiftleri, doctor / verify-pipeline sıfır-olmayan çıkış | kırmızı sol kenarlık; kırmızı toast arka planı; teknik postfix, `Details` `<details>` bloğuna gizlenir (U-4 / v1.58.24) |
 | **Info / progress** | `Running doctor.mjs…`, `Running verify-pipeline.mjs…`, `Refreshing…`, `Loading…`, `Generating prompt…`, tarama ilerleme satırları | gri sol kenarlık; varsayılan toast arka planı |
+
 
 Her çekmece girdisi şunları gösterir:
 

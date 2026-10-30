@@ -109,6 +109,7 @@
 | PDF | `generate-pdf.mjs` | `#/cv`, `#/reports/:slug`, `#/evaluate`, `#/deep`, `#/interview-prep`의 `📄 Generate PDF` |
 | 데이터 파일 | career-ops-ui와 공유 | career-ops와 공유 |
 
+
 career-ops-ui는 **순수 추가물**입니다. `career-ops/` 내부의 무엇도
 변경되지 않습니다. 두 표면은 동일한 `cv.md`,
 `config/profile.yml`, `portals.yml`, `data/`, `reports/`,
@@ -126,6 +127,7 @@ JD가 평가되고 나면 점수가 다음에 무엇을 할지 결정합니다 (
 | **4.0 – 4.4** | 지원하거나 `/career-ops contacto`로 warm intro 먼저. |
 | **3.5 – 3.9** | `/career-ops deep` — 결정 전에 회사/롤 리서치. |
 | **< 3.5** | 개인적 사유가 명확하지 않은 한 건너뜀. |
+
 
 career-ops-ui의 `#/dashboard`와 `#/tracker`는 4.0 이상 모든 행을
 강조하므로 재실행 없이 바로 다음 액션을 선택할 수 있습니다.
@@ -1063,6 +1065,7 @@ append되고, 방문한 모든 URL이 `data/scan-history.tsv`에
 | **3.5 – 3.9** | `/career-ops deep` — 먼저 리서치 |
 | **< 3.5** | 특별한 개인 사유 없는 한 건너뜀 |
 
+
 SPA의 `#/dashboard`와 `#/tracker`는 4.0 이상 모든 행을 강조하여,
 어떤 것도 재실행하지 않고 다음 액션을 고를 수 있게 합니다.
 
@@ -1309,7 +1312,7 @@ Markdown 테이블로 존재합니다.
 |---|---|
 | `#` | 자동 번호, 영 패딩 (`001`, `002`, …). |
 | `Date` | ISO 날짜 (`YYYY-MM-DD`). 기본 오늘. |
-| `Company` | 자유 텍스트. **파이프 (`\|`)와 개행은 자동 이스케이프됩니다.** |
+| `Company` | 자유 텍스트. **파이프 ()와 개행은 자동 이스케이프됩니다.** |
 | `Role` | 동일. |
 | `Score` | `N/5` 포맷 (예: `4.2/5`). |
 | `Status` | 허용 목록 enum. |
@@ -1583,6 +1586,7 @@ SPA의 체크리스트는 Playwright를 호출하지 않고 손으로 폼을 채
 | `source` | 출처 플랫폼 (LinkedIn, Greenhouse 등) |
 | `notes` | 선택적 맥락 정보 |
 
+
 행 예시:
 
 ```
@@ -1776,6 +1780,7 @@ deep research 실행, scan 실행, 설정 변경, 모드 실행.
 | Pipeline 미리보기에 `(unsafe redirect)` | 공고가 사설 IP / loopback으로 리디렉트 | 보안 기능입니다(REVIEW-B1). 리디렉트 타깃은 거부되고 원본 URL은 변경되지 않습니다. |
 | Tracker 행이 테이블을 깨뜨림 | v1.9.1 이전의 회사 이름 파이프 | v1.9.1+로 업데이트 — 파이프는 종단 간 이스케이프됩니다 (BF-1). |
 | 신선한 클론에서 `npm test` 실패 | 테스트가 부모 프로젝트 레이아웃 가정 | `CAREER_OPS_ROOT=$(mktemp -d)` 사용 및 픽스처 부트스트랩. |
+
 
 더 깊은 진단: Health 페이지에서 **doctor 실행** 실행, 출력 복사,
 <https://github.com/Fighter90/career-ops-ui/issues>의 이슈
@@ -2032,6 +2037,7 @@ russian_portals:
 | **성공** | `Saved`, `Copied`, `Refreshed`, 스캔 완료, CV 임포트, apply-checklist 액션, 프로필 저장 | 왼쪽 테두리 녹색; 녹색 토스트 배경 |
 | **오류** | URL 검증 실패, `(METHOD /path · HTTP NNN)` 접미사가 붙은 API 오류, 네트워크 실패, pipeline-400 중복, doctor/verify 비정상 종료 | 왼쪽 테두리 빨강; 빨간 토스트 배경; 기술 접미사는 `세부 정보` `<details>` 에 격납 (U-4) |
 | **정보 / 진행** | `Running doctor.mjs…`, `Running verify-pipeline.mjs…`, `Refreshing…`, `Loading…`, 스캔 진행 | 왼쪽 테두리 회색 |
+
 
 각 항목: 시각(`HH:MM:SS`, 현재 언어), 메시지(U-4 로 헤드라인은 정리됨), 있을 경우 `(METHOD /path · HTTP NNN)` 등 기술 세부 사항(monospace).
 

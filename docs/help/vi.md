@@ -107,6 +107,7 @@ ngay trên máy của bạn.
 | PDF | `generate-pdf.mjs` | `📄 Generate PDF` trên `#/cv`, `#/reports/:slug`, `#/evaluate`, `#/deep`, `#/interview-prep` |
 | Tệp dữ liệu | dùng chung với career-ops-ui | dùng chung với career-ops |
 
+
 career-ops-ui là **phần bổ sung thuần túy**. Không gì bên trong `career-ops/`
 bị thay đổi. Cả hai mặt bàn dùng chung `cv.md`, `config/profile.yml`,
 `portals.yml`, `data/`, `reports/`, `interview-prep/`, `modes/`.
@@ -123,6 +124,7 @@ Khi một JD đã có đánh giá, điểm số quyết định bước tiếp t
 | **4.0 – 4.4** | Nộp đơn, hoặc `/career-ops contacto` để được giới thiệu thân thiện trước. |
 | **3.5 – 3.9** | Chạy `/career-ops deep` — nghiên cứu công ty / vị trí trước khi quyết. |
 | **< 3.5** | Bỏ qua trừ khi bạn có lý do cá nhân cụ thể. |
+
 
 `#/dashboard` và `#/tracker` của career-ops-ui làm nổi bật mọi dòng từ 4.0
 trở lên để bạn chọn hành động mà không cần chạy lại gì.
@@ -1184,6 +1186,7 @@ chấm batch các URL mới):
 | **3.5 – 3.9** | `/career-ops deep` — nghiên cứu trước |
 | **< 3.5** | bỏ qua trừ khi bạn có lý do cá nhân cụ thể |
 
+
 `#/dashboard` và `#/tracker` của SPA làm nổi bật mọi dòng từ
 4.0 trở lên để bạn chọn hành động mà không cần chạy lại gì.
 
@@ -1450,7 +1453,7 @@ chính thức `Evaluated → Applied` diễn ra tự động khi bạn xác nh�
 |---|---|
 | `#` | Tự đánh số, đệm số-0 (`001`, `002`, …). |
 | `Date` | Ngày ISO (`YYYY-MM-DD`). Mặc định hôm nay. |
-| `Company` | Văn bản tự do. **Dấu ống (`\|`) và ký tự xuống dòng được thoát tự động.** |
+| `Company` | Văn bản tự do. **Dấu ống () và ký tự xuống dòng được thoát tự động.** |
 | `Role` | Như trên. |
 | `Score` | Định dạng `N/5` (vd `4.2/5`). |
 | `Status` | Enum trong danh sách cho phép. |
@@ -1725,6 +1728,7 @@ xuống CLI runner.
 | `source` | Nền tảng nguồn gốc (LinkedIn, Greenhouse, v.v.) |
 | `notes` | Chi tiết ngữ cảnh tùy chọn |
 
+
 Dòng ví dụ:
 
 ```
@@ -1918,6 +1922,7 @@ gần nhất.
 | Xem trước pipeline hiện `(unsafe redirect)` | Tin đăng redirect tới IP riêng / loopback | Đây là tính năng bảo mật (REVIEW-B1). Đích redirect bị từ chối và URL gốc không đổi. |
 | Văn bản dòng tracker làm vỡ bảng | Dấu ống trong tên công ty trước v1.9.1 | Nâng lên v1.9.1+ — dấu ống được thoát từ đầu đến cuối (BF-1). |
 | `npm test` thất bại trên bản clone mới | Các test giả định bố cục dự án gốc | Dùng `CAREER_OPS_ROOT=$(mktemp -d)` và dựng fixtures. |
+
 
 Để chẩn đoán sâu hơn: chạy **Chạy doctor** trên trang Health, sao chép
 kết quả, và tìm trên trình theo dõi issue tại
@@ -2193,6 +2198,7 @@ xóa huy hiệu.
 | **Thành công** | `Đã lưu`, `Đã sao chép`, `Đã làm mới`, quét xong, CV đã nhập, các hành động danh mục apply ("Đã sao chép phần chưa tích", "Đã đặt lại"), hồ sơ đã lưu, URL đã thêm vào pipeline | viền trái xanh trong ngăn kéo; nền toast xanh |
 | **Lỗi** | xác thực URL thất bại (phải bắt đầu bằng `http://` / `https://`, không có ký tự script/template), lỗi API với hậu tố `(METHOD /path · HTTP NNN)`, lỗi mạng (máy chủ tắt), trùng lặp pipeline-400, doctor / verify pipeline exit khác-0 | viền trái đỏ; nền toast đỏ; hậu tố kỹ thuật giấu trong khối `Details` `<details>` (U-4 / v1.58.24) |
 | **Thông tin / tiến trình** | `Đang chạy doctor.mjs…`, `Đang chạy verify-pipeline.mjs…`, `Đang làm mới…`, `Đang tải…`, `Đang tạo prompt…`, các dòng tiến trình quét | viền trái xám; nền toast mặc định |
+
 
 Mỗi mục trong ngăn kéo hiện:
 

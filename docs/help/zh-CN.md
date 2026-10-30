@@ -97,6 +97,7 @@
 | PDF | `generate-pdf.mjs` | `📄 Generate PDF` 按钮位于 `#/cv`、`#/reports/:slug`、`#/evaluate`、`#/deep`、`#/interview-prep` |
 | 数据文件 | 与 career-ops-ui 共享 | 与 career-ops 共享 |
 
+
 career-ops-ui 是 **纯增量** 项目。`career-ops/` 内部的任何文件都不会
 被修改。两套界面共享同一份 `cv.md`、`config/profile.yml`、
 `portals.yml`、`data/`、`reports/`、`interview-prep/`、`modes/`。
@@ -113,6 +114,7 @@ career-ops-ui 是 **纯增量** 项目。`career-ops/` 内部的任何文件都�
 | **4.0 – 4.4** | 申请,或先用 `/career-ops contacto` 做温和推荐接触。 |
 | **3.5 – 3.9** | 运行 `/career-ops deep` — 先调研公司/角色再决定。 |
 | **< 3.5** | 除非有具体的个人理由,否则跳过。 |
+
 
 career-ops-ui 的 `#/dashboard` 与 `#/tracker` 会高亮每一条 ≥ 4.0 的
 记录,无需重新运行任何命令即可挑选行动对象。
@@ -1010,6 +1012,7 @@ ATS 全量扫描对你已知正在招聘的目标返回空时很有用。
 | **3.5 – 3.9** | `/career-ops deep` — 先调研 |
 | **< 3.5** | 除非有具体的个人理由,否则跳过 |
 
+
 SPA 的 `#/dashboard` 与 `#/tracker` 会高亮所有 ≥ 4.0 的行,无需重新
 运行即可选择行动对象。
 
@@ -1245,7 +1248,7 @@ CRM。每次申请一行;以 GitHub-Flavored Markdown 表的形式存于
 |---|---|
 | `#` | 自动编号,补零(`001`、`002`、…)。 |
 | `Date` | ISO 日期(`YYYY-MM-DD`)。默认今天。 |
-| `Company` | 自由文本。**竖线(`\|`)与换行会被自动转义。** |
+| `Company` | 自由文本。**竖线()与换行会被自动转义。** |
 | `Role` | 同上。 |
 | `Score` | `N/5` 格式(例如 `4.2/5`)。 |
 | `Status` | 白名单枚举。 |
@@ -1499,6 +1502,7 @@ SPA 清单适合不想调用 Playwright、希望手工填表的用户。空页�
 | `source` | 来源平台(LinkedIn、Greenhouse 等) |
 | `notes` | 可选的上下文说明 |
 
+
 行示例:
 
 ```
@@ -1686,6 +1690,7 @@ tracker 写入、CV 保存、JD 保存、evaluate 运行、deep-research 运
 | Pipeline 预览显示 `(unsafe redirect)` | 职位重定向到私网 IP / loopback | 这是一项安全机制(REVIEW-B1)。重定向目标被拒绝,原始 URL 不受影响。 |
 | Tracker 行文本撑破表格 | v1.9.1 之前公司名中的竖线 | 升级到 v1.9.1+ — 竖线已端到端转义(BF-1)。 |
 | 全新 clone 上 `npm test` 失败 | 测试假设父项目布局 | 使用 `CAREER_OPS_ROOT=$(mktemp -d)` 并 bootstrap fixtures。 |
+
 
 更深入的诊断:在 Health 页运行 **运行 doctor**,复制输出,在
 <https://github.com/Fighter90/career-ops-ui/issues> 的 issue tracker
@@ -1929,6 +1934,7 @@ russian_portals:
 | **成功** | `Saved`、`Copied`、`Refreshed`、扫描完成、CV 导入、apply-checklist 操作、个人资料保存 | 左侧绿色边;绿色 toast 背景 |
 | **错误** | URL 校验失败、带 `(METHOD /path · HTTP NNN)` 后缀的 API 错误、网络失败、pipeline-400 重复、doctor/verify 非零退出 | 左侧红色边;红色 toast 背景;技术后缀塞入 `详细信息` `<details>`(U-4) |
 | **信息 / 进度** | `Running doctor.mjs…`、`Refreshing…`、`Loading…`、扫描进度 | 左侧灰色边 |
+
 
 每条显示:本地时间、人类可读消息、(若有)`(METHOD /path · HTTP NNN)` 等等技术细节(等宽字体)。
 

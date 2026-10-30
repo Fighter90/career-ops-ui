@@ -109,6 +109,7 @@
 | PDF | `generate-pdf.mjs` | `📄 Generate PDF` (`#/cv`、`#/reports/:slug`、`#/evaluate`、`#/deep`、`#/interview-prep`) |
 | データファイル | career-ops-ui と共有 | career-ops と共有 |
 
+
 career-ops-ui は **純粋な追加** です。`career-ops/` 内には一切変更が
 ありません。両表面は同じ `cv.md`、`config/profile.yml`、
 `portals.yml`、`data/`、`reports/`、`interview-prep/`、`modes/` を
@@ -126,6 +127,7 @@ JD に評価が付くと、score によって次のステップが決まりま�
 | **4.0 – 4.4** | 応募する、または `/career-ops contacto` で先にウォームイントロ。 |
 | **3.5 – 3.9** | `/career-ops deep` を実行 — 決定前に会社・ロールを調査。 |
 | **< 3.5** | 特別な個人的理由がなければスキップ。 |
+
 
 career-ops-ui の `#/dashboard` と `#/tracker` は 4.0 以上の行を
 ハイライトするので、何も再実行することなくアクションを選べます。
@@ -1109,6 +1111,7 @@ Claude Code / Cursor / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwe
 | **3.5 – 3.9** | `/career-ops deep` — まず調査 |
 | **< 3.5** | 特別な個人的理由がなければスキップ |
 
+
 SPA の `#/dashboard` と `#/tracker` は 4.0 以上の行をハイライト
 するので、何も再実行することなくアクションを選べます。
 
@@ -1369,7 +1372,7 @@ Flavored Markdown テーブルとして保存されます。
 |---|---|
 | `#` | 自動採番、ゼロパディング (`001`、`002`、…)。 |
 | `Date` | ISO 日付 (`YYYY-MM-DD`)。デフォルトは当日。 |
-| `Company` | フリーテキスト。**パイプ (`\|`) と改行は自動エスケープされます。** |
+| `Company` | フリーテキスト。**パイプ () と改行は自動エスケープされます。** |
 | `Role` | 同上。 |
 | `Score` | `N/5` 形式 (例: `4.2/5`)。 |
 | `Status` | ホワイトリスト化された列挙型。 |
@@ -1650,6 +1653,7 @@ SPA のチェックリストは、Playwright を起動せず手動でフォー�
 | `source` | 出所プラットフォーム (LinkedIn、Greenhouse など) |
 | `notes` | 任意のコンテキスト詳細 |
 
+
 行の例:
 
 ```
@@ -1848,6 +1852,7 @@ evaluate 実行、deep-research 実行、scan 実行、設定変更、モード
 | Pipeline プレビューに `(unsafe redirect)` | 投稿がプライベート IP / ループバックへリダイレクト | これはセキュリティ機能です (REVIEW-B1)。リダイレクト先は拒否され、元の URL は変更されません。 |
 | Tracker 行のテキストがテーブルを壊す | v1.9.1 以前で会社名にパイプ | v1.9.1 以上へ更新 — パイプはエンドツーエンドでエスケープされます (BF-1)。 |
 | 新規クローンで `npm test` が失敗 | テストが親プロジェクトレイアウトを仮定 | `CAREER_OPS_ROOT=$(mktemp -d)` を使ってフィクスチャをブートストラップ。 |
+
 
 より詳細な診断には: Health ページで **doctor を実行** を実行し、出力を
 コピーし、issue トラッカー
@@ -2086,6 +2091,7 @@ russian_portals:
 | **成功** | `保存しました`, `コピー`, `更新しました`, スキャン完了, CV インポート, apply-checklist 操作, プロフィール保存 | 左ボーダー緑; 緑の toast 背景 |
 | **エラー** | URL バリデーション失敗、API エラー (`(METHOD /path · HTTP NNN)` 付き)、ネットワーク失敗、pipeline-400 重複、doctor / verify 異常終了 | 左ボーダー赤; 赤の toast 背景; 技術詳細は `詳細` `<details>` に格納 (U-4) |
 | **情報 / 進行** | `Running doctor.mjs…`, `Running verify-pipeline.mjs…`, `Refreshing…`, `Loading…`, スキャン進行 | 左ボーダーグレー |
+
 
 エントリ表示項目: 時刻 (`HH:MM:SS` 言語別)、メッセージ (U-4 で末尾の技術情報を分離後)、必要に応じて `(METHOD /path · HTTP NNN)` 等の技術詳細 (monospace)。
 

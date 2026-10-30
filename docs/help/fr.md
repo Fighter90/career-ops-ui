@@ -120,6 +120,7 @@ votre machine.
 | PDF | `generate-pdf.mjs` | `📄 Generate PDF` sur `#/cv`, `#/reports/:slug`, `#/evaluate`, `#/deep`, `#/interview-prep` |
 | Fichiers de données | partagés avec career-ops-ui | partagés avec career-ops |
 
+
 career-ops-ui n'apporte **que des ajouts**. Rien à l'intérieur de
 `career-ops/` ne change. Les deux surfaces partagent les mêmes `cv.md`,
 `config/profile.yml`, `portals.yml`, `data/`, `reports/`,
@@ -137,6 +138,7 @@ Une fois qu'une offre a une évaluation, le score détermine la suite
 | **4.0 – 4.4** | Postulez, ou `/career-ops contacto` pour une intro chaleureuse d'abord. |
 | **3.5 – 3.9** | Lancez `/career-ops deep` — recherchez l'entreprise / le poste avant de décider. |
 | **< 3.5** | Passez, sauf raison personnelle précise. |
+
 
 Le `#/dashboard` et le `#/tracker` de career-ops-ui mettent en évidence
 chaque ligne à 4.0 ou au-dessus pour que vous puissiez choisir une action
@@ -1209,6 +1211,7 @@ note en lot les nouvelles URL) :
 | **3.5 – 3.9** | `/career-ops deep` — recherchez d'abord |
 | **< 3.5** | passez sauf raison personnelle précise |
 
+
 Le `#/dashboard` et le `#/tracker` de la SPA mettent en évidence chaque
 ligne à 4.0 ou au-dessus pour choisir une action sans rien relancer.
 
@@ -1485,7 +1488,7 @@ fin de `/career-ops apply` (voir §14).
 |---|---|
 | `#` | Auto-numéroté, complété de zéros (`001`, `002`, …). |
 | `Date` | Date ISO (`YYYY-MM-DD`). Par défaut aujourd'hui. |
-| `Company` | Texte libre. **Les barres verticales (`\|`) et les retours à la ligne sont échappés automatiquement.** |
+| `Company` | Texte libre. **Les barres verticales () et les retours à la ligne sont échappés automatiquement.** |
 | `Role` | Idem. |
 | `Score` | Format `N/5` (p. ex. `4.2/5`). |
 | `Status` | Enum en liste blanche. |
@@ -1771,6 +1774,7 @@ vers le runner CLI.
 | `source` | Plateforme d'origine (LinkedIn, Greenhouse, etc.) |
 | `notes` | Détail contextuel optionnel |
 
+
 Exemple de ligne :
 
 ```
@@ -1976,6 +1980,7 @@ plus récents.
 | L'aperçu du pipeline montre `(unsafe redirect)` | L'offre redirige vers une IP privée / loopback | C'est une fonctionnalité de sécurité (REVIEW-B1). La cible de redirection est rejetée et l'URL d'origine est inchangée. |
 | Le texte d'une ligne de tracker casse le tableau | Barre verticale dans le nom d'entreprise avant la v1.9.1 | Mettez à jour vers la v1.9.1+ — les barres sont échappées de bout en bout (BF-1). |
 | `npm test` échoue sur un clone neuf | Les tests supposent la disposition du projet parent | Utilisez `CAREER_OPS_ROOT=$(mktemp -d)` et amorcez des fixtures. |
+
 
 Pour un diagnostic plus poussé : lancez **Exécuter le docteur** sur la page Health,
 copiez la sortie, et cherchez le problème sur le tracker d'incidents à
@@ -2244,6 +2249,7 @@ vues depuis la dernière ouverture ; ouvrir le tiroir efface le badge.
 | **Success** | `Saved`, `Copied`, `Refreshed`, scan terminé, CV importé, actions de checklist apply (« Copied unchecked », « Reset »), profil enregistré, URL ajoutée au pipeline | bordure gauche verte dans le tiroir ; fond de toast vert |
 | **Error** | échec de validation d'URL (doit commencer par `http://` / `https://`, pas de caractères script/template), erreurs d'API avec le postfixe `(METHOD /path · HTTP NNN)`, échecs réseau (serveur en panne), doublons pipeline-400, sortie non-zéro de doctor / verify-pipeline | bordure gauche rouge ; fond de toast rouge ; postfixe technique rangé dans le bloc `Details` `<details>` (U-4 / v1.58.24) |
 | **Info / progress** | `Running doctor.mjs…`, `Running verify-pipeline.mjs…`, `Refreshing…`, `Loading…`, `Generating prompt…`, lignes de progression de scan | bordure gauche grise ; fond de toast par défaut |
+
 
 Chaque entrée du tiroir affiche :
 

@@ -113,6 +113,7 @@ career-ops tocca):
 | PDF | `generate-pdf.mjs` | `📄 Generate PDF` su `#/cv`, `#/reports/:slug`, `#/evaluate`, `#/deep`, `#/interview-prep` |
 | File di dati | condivisi con career-ops-ui | condivisi con career-ops |
 
+
 career-ops-ui è **pura aggiunta**. Nulla dentro `career-ops/`
 cambia. Entrambe le superfici condividono gli stessi `cv.md`, `config/profile.yml`,
 `portals.yml`, `data/`, `reports/`, `interview-prep/`, `modes/`.
@@ -129,6 +130,7 @@ fare dopo (tabella canonica da
 | **4.0 – 4.4** | Candidati, oppure `/career-ops contacto` prima per un contatto caldo. |
 | **3.5 – 3.9** | Esegui `/career-ops deep` — ricerca l'azienda / ruolo prima di decidere. |
 | **< 3.5** | Salta a meno che tu non abbia una ragione personale specifica. |
+
 
 `#/dashboard` e `#/tracker` di career-ops-ui evidenziano ogni riga pari
 o superiore a 4.0 così puoi scegliere l'azione senza rieseguire nulla.
@@ -1207,6 +1209,7 @@ valuta in batch i nuovi URL):
 | **3.5 – 3.9** | `/career-ops deep` — ricerca prima |
 | **< 3.5** | salta a meno che tu non abbia una ragione personale specifica |
 
+
 `#/dashboard` e `#/tracker` della SPA evidenziano ogni riga pari o
 superiore a 4.0 così puoi scegliere l'azione senza rieseguire nulla.
 
@@ -1465,7 +1468,7 @@ un `POST /api/tracker` fa il default a `Evaluated`. La transizione canonica
 |---|---|
 | `#` | Numerata automaticamente, con zeri iniziali (`001`, `002`, …). |
 | `Date` | Data ISO (`YYYY-MM-DD`). Default a oggi. |
-| `Company` | Testo libero. **Le pipe (`\|`) e i newline vengono escapati automaticamente.** |
+| `Company` | Testo libero. **Le pipe () e i newline vengono escapati automaticamente.** |
 | `Role` | Uguale. |
 | `Score` | Formato `N/5` (es. `4.2/5`). |
 | `Status` | Enum in whitelist. |
@@ -1738,6 +1741,7 @@ diretto nell'input (`v2empty.batch.pasteAdded`), così
 | `source` | Piattaforma di origine (LinkedIn, Greenhouse, ecc.) |
 | `notes` | Dettaglio contestuale opzionale |
 
+
 Riga di esempio:
 
 ```
@@ -1934,6 +1938,7 @@ recenti.
 | L'anteprima della pipeline mostra `(unsafe redirect)` | L'offerta reindirizzava a un IP privato / loopback | Questa è una funzione di sicurezza (REVIEW-B1). Il target del reindirizzamento è rifiutato e l'URL originale è invariato. |
 | Il testo di una riga del tracker rompe la tabella | Pipe nel nome dell'azienda pre-v1.9.1 | Aggiorna a v1.9.1+ — le pipe sono escapate da un capo all'altro (BF-1). |
 | `npm test` fallisce su un clone pulito | I test presuppongono il layout del progetto padre | Usa `CAREER_OPS_ROOT=$(mktemp -d)` e fai il bootstrap delle fixture. |
+
 
 Per diagnostiche più approfondite: esegui **Esegui doctor** sulla pagina Health, copia l'
 output, e cerca la issue nel tracker su
@@ -2200,6 +2205,7 @@ cancella il badge.
 | **Success** | `Saved`, `Copied`, `Refreshed`, scansione completata, CV importato, azioni della apply-checklist ("Copied unchecked", "Reset"), profilo salvato, URL della pipeline aggiunto | bordo sinistro verde nel cassetto; sfondo toast verde |
 | **Error** | Fallimento della validazione URL (deve iniziare con `http://` / `https://`, nessun carattere di script/template), errori API con il postfisso `(METHOD /path · HTTP NNN)`, guasti di rete (server giù), duplicati pipeline-400, exit non-zero di doctor / verify-pipeline | bordo sinistro rosso; sfondo toast rosso; postfisso tecnico riposto nel blocco `<details>` `Details` (U-4 / v1.58.24) |
 | **Info / progress** | `Running doctor.mjs…`, `Running verify-pipeline.mjs…`, `Refreshing…`, `Loading…`, `Generating prompt…`, righe di avanzamento della scansione | bordo sinistro grigio; sfondo toast di default |
+
 
 Ogni voce del cassetto mostra:
 

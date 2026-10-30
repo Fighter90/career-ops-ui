@@ -115,6 +115,7 @@ career-ops toca):
 | PDF | `generate-pdf.mjs` | `📄 Generate PDF` em `#/cv`, `#/reports/:slug`, `#/evaluate`, `#/deep`, `#/interview-prep` |
 | Arquivos de dados | compartilhados com career-ops-ui | compartilhados com career-ops |
 
+
 career-ops-ui é **adições puras**. Nada dentro de `career-ops/` muda.
 Ambas as superfícies compartilham o mesmo `cv.md`,
 `config/profile.yml`, `portals.yml`, `data/`, `reports/`,
@@ -132,6 +133,7 @@ Quando um JD tem uma avaliação, o score determina o próximo passo
 | **4.0 – 4.4** | Candidate-se, ou `/career-ops contacto` para uma introdução calorosa antes. |
 | **3.5 – 3.9** | Rode `/career-ops deep` — pesquise empresa / cargo antes de decidir. |
 | **< 3.5** | Pule, a menos que tenha uma razão pessoal específica. |
+
 
 O `#/dashboard` e `#/tracker` do career-ops-ui destacam cada linha
 com score igual ou acima de 4.0, para você escolher uma ação sem
@@ -1116,6 +1118,7 @@ título · duplicatas puladas · novas ofertas adicionadas.
 | **3.5 – 3.9** | `/career-ops deep` — pesquise primeiro |
 | **< 3.5** | pule, a menos que tenha uma razão pessoal específica |
 
+
 O `#/dashboard` e `#/tracker` da SPA destacam cada linha com score
 igual ou acima de 4.0, para você escolher uma ação sem re-rodar nada.
 
@@ -1381,7 +1384,7 @@ confirma `Submitted.` no fim de `/career-ops apply` (veja §14).
 |---|---|
 | `#` | Auto-numerada, com zero à esquerda (`001`, `002`, …). |
 | `Date` | Data ISO (`AAAA-MM-DD`). Default para hoje. |
-| `Company` | Texto livre. **Pipes (`\|`) e quebras de linha são escapados automaticamente.** |
+| `Company` | Texto livre. **Pipes () e quebras de linha são escapados automaticamente.** |
 | `Role` | Igual. |
 | `Score` | Formato `N/5` (ex.: `4.2/5`). |
 | `Status` | Enum com whitelist. |
@@ -1676,6 +1679,7 @@ tabulação):
 | `source` | Plataforma de origem (LinkedIn, Greenhouse, etc.) |
 | `notes` | Detalhe contextual opcional |
 
+
 Linha de exemplo:
 
 ```
@@ -1880,6 +1884,7 @@ mais recentes.
 | Preview do pipeline mostra `(unsafe redirect)` | Postagem redirecionou para um IP privada / loopback | Esta é uma feature de segurança (REVIEW-B1). O alvo do redirect é rejeitado e a URL original permanece inalterada. |
 | Texto da linha do tracker quebra a tabela | Pipe no nome da empresa pre-v1.9.1 | Atualize para v1.9.1+ — pipes são escapados ponta a ponta (BF-1). |
 | `npm test` falha em clone fresco | Os testes assumem layout do projeto pai | Use `CAREER_OPS_ROOT=$(mktemp -d)` e bootstrap fixtures. |
+
 
 Para diagnóstico mais profundo: rode **Executar doctor** na página Health,
 copie a saída, e busque a issue no rastreador em
@@ -2140,6 +2145,7 @@ O drawer **só abre ao clicar no sino** (ou Enter / Space com foco). Nunca abre 
 | **Sucesso** | `Salvo`, `Copiado`, `Atualizado`, scan completo, CV importado, ações de apply-checklist, perfil salvo | borda esquerda verde; toast verde |
 | **Erro** | URL inválida, erros de API com postfix `(MÉTODO /caminho · HTTP NNN)`, falhas de rede, duplicatas de pipeline-400, doctor/verify exit ≠ 0 | borda esquerda vermelha; toast vermelho; postfix em `Detalhes` (U-4) |
 | **Info / progresso** | `Running doctor.mjs…`, `Refreshing…`, `Loading…`, progresso do scan | borda esquerda cinza |
+
 
 Cada entrada mostra hora local, mensagem humana e, se houver, postfix técnico em monospace.
 

@@ -112,6 +112,7 @@ verfolgt jede Bewerbung lokal auf Ihrem Rechner.
 | PDF | `generate-pdf.mjs` | `📄 Generate PDF` auf `#/cv`, `#/reports/:slug`, `#/evaluate`, `#/deep`, `#/interview-prep` |
 | Datendateien | geteilt mit career-ops-ui | geteilt mit career-ops |
 
+
 career-ops-ui besteht aus **reinen Ergänzungen**. Nichts innerhalb von
 `career-ops/` ändert sich. Beide Oberflächen teilen sich dieselbe
 `cv.md`, `config/profile.yml`, `portals.yml`, `data/`, `reports/`,
@@ -129,6 +130,7 @@ zu tun ist (kanonische Tabelle aus
 | **4.0 – 4.4** | Bewerben oder `/career-ops contacto` für eine warme Vorstellung zuerst. |
 | **3.5 – 3.9** | Führen Sie `/career-ops deep` aus — das Unternehmen / die Rolle vor der Entscheidung recherchieren. |
 | **< 3.5** | Überspringen, es sei denn, Sie haben einen bestimmten persönlichen Grund. |
+
 
 `#/dashboard` und `#/tracker` von career-ops-ui heben jede Zeile ab 4.0
 hervor, sodass Sie eine Handlung auswählen können, ohne etwas erneut
@@ -1284,6 +1286,7 @@ batch-scored die neuen URLs):
 | **3.5 – 3.9** | `/career-ops deep` — zuerst recherchieren |
 | **< 3.5** | überspringen, es sei denn, Sie haben einen bestimmten persönlichen Grund |
 
+
 `#/dashboard` und `#/tracker` der SPA heben jede Zeile ab 4.0 hervor,
 sodass Sie eine Handlung auswählen können, ohne etwas erneut ausführen zu
 müssen.
@@ -1574,7 +1577,7 @@ kanonische `Evaluated → Applied`-Übergang ist automatisch, wenn Sie
 |---|---|
 | `#` | Automatisch nummeriert, mit Nullen aufgefüllt (`001`, `002`, …). |
 | `Date` | ISO-Datum (`YYYY-MM-DD`). Standardmäßig heute. |
-| `Company` | Freitext. **Pipes (`\|`) und Zeilenumbrüche werden automatisch escaped.** |
+| `Company` | Freitext. **Pipes () und Zeilenumbrüche werden automatisch escaped.** |
 | `Role` | Dasselbe. |
 | `Score` | `N/5`-Format (z. B. `4.2/5`). |
 | `Status` | Whitelisted enum. |
@@ -1861,6 +1864,7 @@ unpraktisch), verwenden Sie den Batch-Runner von der CLI.
 | `source` | Ursprungsplattform (LinkedIn, Greenhouse usw.) |
 | `notes` | Optionales Kontextdetail |
 
+
 Beispielzeile:
 
 ```
@@ -2067,6 +2071,7 @@ Ereignisse zurück.
 | Pipeline-Vorschau zeigt `(unsafe redirect)` | Ausschreibung leitet zu einer privaten IP / Loopback um | Dies ist eine Sicherheitsfunktion (REVIEW-B1). Das Umleitungsziel wird abgelehnt und die ursprüngliche URL bleibt unverändert. |
 | Tracker-Zeilentext bricht die Tabelle | Pipe im Unternehmensnamen vor v1.9.1 | Auf v1.9.1+ aktualisieren — Pipes werden durchgängig escaped (BF-1). |
 | `npm test` schlägt bei frischem Klon fehl | Tests setzen das Layout des übergeordneten Projekts voraus | `CAREER_OPS_ROOT=$(mktemp -d)` verwenden und Fixtures bootstrappen. |
+
 
 Für tiefere Diagnostik: führen Sie **Doctor ausführen** auf der Health-Seite aus,
 kopieren Sie die Ausgabe und durchsuchen Sie den Issue-Tracker unter
@@ -2342,6 +2347,7 @@ selbst. Das rote Abzeichen auf der Glocke zählt Einträge, die Sie seit dem let
 | **Success** | `Saved`, `Copied`, `Refreshed`, Scan abgeschlossen, CV importiert, Apply-Checklisten-Aktionen („Copied unchecked", „Reset"), Profil gespeichert, Pipeline-URL hinzugefügt | grüner linker Rand in der Schublade; grüner Toast-Hintergrund |
 | **Error** | URL-Validierungsfehler (muss mit `http://` / `https://` beginnen, keine Skript-/Vorlagen-Zeichen), API-Fehler mit dem `(METHOD /path · HTTP NNN)`-Postfix, Netzwerkfehler (Server ausgefallen), Pipeline-400-Duplikate, doctor / verify-pipeline Nicht-Null-Exit | roter linker Rand; roter Toast-Hintergrund; technisches Postfix in den `Details`-`<details>`-Block gesteckt (U-4 / v1.58.24) |
 | **Info / progress** | `Running doctor.mjs…`, `Running verify-pipeline.mjs…`, `Refreshing…`, `Loading…`, `Generating prompt…`, Scan-Fortschrittszeilen | grauer linker Rand; Standard-Toast-Hintergrund |
+
 
 Jeder Schubladeneintrag zeigt:
 

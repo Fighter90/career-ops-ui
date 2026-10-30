@@ -113,6 +113,7 @@
 | PDF | `generate-pdf.mjs` | `#/cv`, `#/reports/:slug`, `#/evaluate`, `#/deep`, `#/interview-prep` पर `📄 Generate PDF` |
 | डेटा फ़ाइलें | career-ops-ui के साथ साझा | career-ops के साथ साझा |
 
+
 career-ops-ui **शुद्ध रूप से एक जोड़ है**। `career-ops/` के अंदर कुछ
 भी नहीं बदलता। दोनों सतहें एक ही `cv.md`, `config/profile.yml`,
 `portals.yml`, `data/`, `reports/`, `interview-prep/`, `modes/` साझा
@@ -131,6 +132,7 @@ career-ops-ui **शुद्ध रूप से एक जोड़ है**।
 | **4.0 – 4.4** | अप्लाई करें, या पहले वॉर्म इंट्रो के लिए `/career-ops contacto`। |
 | **3.5 – 3.9** | निर्णय लेने से पहले कंपनी / रोल पर शोध के लिए `/career-ops deep` चलाएँ। |
 | **< 3.5** | जब तक कोई खास व्यक्तिगत वजह न हो, छोड़ दें। |
+
 
 career-ops-ui का `#/dashboard` और `#/tracker` 4.0 या उससे ऊपर की हर
 पंक्ति को हाइलाइट करता है ताकि आप बिना कुछ दोबारा चलाए एक्शन चुन
@@ -1353,6 +1355,7 @@ Claude Code / Cursor / Codex / OpenCode / Antigravity CLI / Grok Build CLI / Qwe
 | **3.5 – 3.9** | `/career-ops deep` — पहले रिसर्च करें |
 | **< 3.5** | जब तक कोई ख़ास निजी वजह न हो, छोड़ दें |
 
+
 SPA के `#/dashboard` और `#/tracker`, 4.0 या उससे ऊपर वाली हर रो को
 हाइलाइट करते हैं ताकि आप बिना कुछ दोबारा चलाए एक्शन चुन सकें।
 
@@ -1624,7 +1627,7 @@ GitHub-Flavored Markdown टेबल के रूप में रहती �
 |---|---|
 | `#` | ऑटो-नंबरिंग, ज़ीरो-पैडेड (`001`, `002`, …). |
 | `Date` | ISO तिथि (`YYYY-MM-DD`). डिफ़ॉल्ट रूप से आज की तिथि। |
-| `Company` | मुक्त पाठ। **पाइप (`\|`) और नई-पंक्तियाँ स्वतः एस्केप हो जाती हैं।** |
+| `Company` | मुक्त पाठ। **पाइप () और नई-पंक्तियाँ स्वतः एस्केप हो जाती हैं।** |
 | `Role` | वही व्यवहार। |
 | `Score` | `N/5` प्रारूप (जैसे, `4.2/5`). |
 | `Status` | व्हाइटलिस्टेड enum। |
@@ -1911,6 +1914,7 @@ SPA की चेकलिस्ट उन उपयोगकर्ताओं 
 | `source` | मूल प्लेटफ़ॉर्म (LinkedIn, Greenhouse, आदि) |
 | `notes` | वैकल्पिक संदर्भात्मक विवरण |
 
+
 उदाहरण पंक्ति:
 
 ```
@@ -2112,6 +2116,7 @@ key वैल्यू दिखाई नहीं देगी।
 | Pipeline preview में `(unsafe redirect)` दिखता है | Posting एक प्राइवेट IP / loopback पर रीडायरेक्ट हुई | यह एक सुरक्षा फ़ीचर है (REVIEW-B1)। रीडायरेक्ट टारगेट अस्वीकृत कर दिया जाता है और मूल URL अपरिवर्तित रहता है। |
 | Tracker पंक्ति का टेक्स्ट टेबल तोड़ देता है | v1.9.1 से पहले कंपनी नाम में Pipe | v1.9.1+ पर अपडेट करें — pipes एंड-टू-एंड escape किए जाते हैं (BF-1)। |
 | ताज़ा clone पर `npm test` फ़ेल होता है | टेस्ट पैरेंट प्रोजेक्ट के लेआउट को मान लेते हैं | `CAREER_OPS_ROOT=$(mktemp -d)` इस्तेमाल करें और fixtures बूटस्ट्रैप करें। |
+
 
 गहरे निदान के लिए: Health पेज पर **doctor चलाएं** चलाएँ, आउटपुट कॉपी
 करें, और इश्यू ट्रैकर पर खोजें
@@ -2391,6 +2396,7 @@ Drawer **सिर्फ़ तभी खुलता है जब आप ब�
 | **Success** | `Saved`, `Copied`, `Refreshed`, scan पूरा, CV इम्पोर्ट हुआ, apply-checklist क्रियाएँ ("Copied unchecked", "Reset"), profile सेव हुआ, pipeline URL जोड़ा गया | drawer में हरा बायाँ बॉर्डर; हरा toast बैकग्राउंड |
 | **Error** | URL validation विफलता (`http://` / `https://` से शुरू होना चाहिए, कोई script/template वर्ण नहीं), `(METHOD /path · HTTP NNN)` postfix वाली API errors, नेटवर्क विफलताएँ (सर्वर डाउन), pipeline-400 duplicates, doctor / verify-pipeline का non-zero exit | लाल बायाँ बॉर्डर; लाल toast बैकग्राउंड; तकनीकी postfix `Details` `<details>` ब्लॉक में समेट दिया जाता है (U-4 / v1.58.24) |
 | **Info / progress** | `Running doctor.mjs…`, `Running verify-pipeline.mjs…`, `Refreshing…`, `Loading…`, `Generating prompt…`, scan प्रोग्रेस लाइनें | धूसर बायाँ बॉर्डर; डिफ़ॉल्ट toast बैकग्राउंड |
+
 
 हर drawer एंट्री दिखाती है:
 

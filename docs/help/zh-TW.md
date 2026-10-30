@@ -96,6 +96,7 @@
 | PDF | `generate-pdf.mjs` | `📄 Generate PDF`,出現在 `#/cv`、`#/reports/:slug`、`#/evaluate`、`#/deep`、`#/interview-prep` |
 | 資料檔案 | 與 career-ops-ui 共用 | 與 career-ops 共用 |
 
+
 career-ops-ui 是 **純附加** 的工具。`career-ops/` 內部的任何東西
 都不會被改動。兩個介面共用同一份 `cv.md`、`config/profile.yml`、
 `portals.yml`、`data/`、`reports/`、`interview-prep/`、`modes/`。
@@ -111,6 +112,7 @@ career-ops-ui 是 **純附加** 的工具。`career-ops/` 內部的任何東西
 | **4.0 – 4.4** | 申請,或先用 `/career-ops contacto` 做暖場介紹。 |
 | **3.5 – 3.9** | 執行 `/career-ops deep` — 在決定前先研究公司/角色。 |
 | **< 3.5** | 除非你有特定的個人理由,否則跳過。 |
+
 
 career-ops-ui 的 `#/dashboard` 與 `#/tracker` 會把分數達 4.0 以上
 的每一列都標亮,讓你不必重跑任何指令就能挑選下一步行動。
@@ -1004,6 +1006,7 @@ tokens。直接造訪每個 `tracked_companies` 頁面,並能發掘非 API
 | **3.5 – 3.9** | `/career-ops deep` — 先做研究 |
 | **< 3.5** | 除非你有特定的個人理由,否則跳過 |
 
+
 SPA 的 `#/dashboard` 與 `#/tracker` 會標亮每一列 score ≥ 4.0
 的條目,讓你不必重跑任何指令就能挑選行動。
 
@@ -1243,7 +1246,7 @@ GitHub-Flavored Markdown 表格。
 |---|---|
 | `#` | 自動編號,前導補零(`001`、`002`、…)。 |
 | `Date` | ISO 日期(`YYYY-MM-DD`)。預設今天。 |
-| `Company` | 自由文字。**豎線(`\|`)與換行會被自動跳脫。** |
+| `Company` | 自由文字。**豎線()與換行會被自動跳脫。** |
 | `Role` | 同上。 |
 | `Score` | `N/5` 格式(例如 `4.2/5`)。 |
 | `Status` | 白名單列舉。 |
@@ -1503,6 +1506,7 @@ SPA 的檢查清單是給偏好手動填表、不想啟動 Playwright 的使用�
 | `source` | 來源平台(LinkedIn、Greenhouse 等) |
 | `notes` | 選填的脈絡細節 |
 
+
 範例列:
 
 ```
@@ -1691,6 +1695,7 @@ scan 執行、設定變更、mode 執行。
 | Pipeline 預覽顯示 `(unsafe redirect)` | 貼文被轉址到私有 IP / loopback | 這是安全功能(REVIEW-B1)。轉址目標被拒絕,原 URL 不變。 |
 | Tracker 列文字撐破表格 | v1.9.1 之前公司名稱含豎線 | 升級到 v1.9.1+ — 豎線已端到端跳脫(BF-1)。 |
 | `npm test` 在新 clone 上失敗 | 測試假設父專案版面 | 使用 `CAREER_OPS_ROOT=$(mktemp -d)` 並 bootstrap fixtures。 |
+
 
 更深入的診斷:在 Health 頁面執行 **執行 doctor**,複製輸出,並到
 <https://github.com/Fighter90/career-ops-ui/issues> 搜尋 issue
@@ -1935,6 +1940,7 @@ russian_portals:
 | **成功** | `Saved`、`Copied`、`Refreshed`、掃描完成、CV 匯入、apply-checklist 操作、個人資料儲存 | 左側綠色邊;綠色 toast 背景 |
 | **錯誤** | URL 驗證失敗、帶 `(METHOD /path · HTTP NNN)` 後綴的 API 錯誤、網路失敗、pipeline-400 重複、doctor/verify 非零退出 | 左側紅色邊;紅色 toast 背景;技術後綴塞入 `詳細資訊` `<details>`(U-4) |
 | **資訊 / 進度** | `Running doctor.mjs…`、`Refreshing…`、`Loading…`、掃描進度 | 左側灰色邊 |
+
 
 每條顯示:本地時間、人類可讀訊息、(若有)`(METHOD /path · HTTP NNN)` 等技術細節(等寬字型)。
 
