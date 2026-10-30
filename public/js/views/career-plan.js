@@ -87,6 +87,10 @@ Router.register('career-plan', async () => {
   editor.value = planBuffer != null ? planBuffer : saved;
   editor.addEventListener('input', () => {
     planBuffer = editor.value === saved ? null : editor.value;
+    // Owner UX batch — a failed GET leaves Save disabled at creation, but the
+    // editor still renders, so a user typing their own plan could never save.
+    // Any deliberate edit re-arms it (same contract as two-pager.js).
+    saveBtn.disabled = false;
   });
 
   // CAR-20 — Save is armed only once the plan actually loaded (or an

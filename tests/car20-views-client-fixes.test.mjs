@@ -183,6 +183,16 @@ test('CAR-20 [M] career-plan.js: load failure surfaces; Save is gated until cont
   assert.match(PLAN, /planLoadError\)/, 'the error is surfaced in the view');
 });
 
+test('owner UX batch: a deliberate edit re-arms Save after a failed load', () => {
+  // The disabled attribute is set at creation; when the GET failed the view
+  // still renders the editor, so a user who types their own plan was locked
+  // out of saving forever. The input handler must clear the flag (same
+  // contract as two-pager.js).
+  const handler = PLAN.match(/editor\.addEventListener\('input'[\s\S]{0,400}?\n  \}\);/);
+  assert.ok(handler, 'the editor input handler found');
+  assert.match(handler[0], /saveBtn\.disabled = false;/, 'input re-arms Save');
+});
+
 // ─── [M] cv-studio.js ───
 
 test('CAR-20 [M] cv-studio.js: a CV-load failure no longer masquerades as "no CV yet"', () => {
