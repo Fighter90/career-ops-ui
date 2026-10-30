@@ -112,11 +112,14 @@ test('normalizeTrudvsem skips records with no title', () => {
   assert.equal(normalizeTrudvsem({}), null);
 });
 
-test('searchTrudvsem paginates by offset and stops once meta.total is covered', async () => {
+test('searchTrudvsem paginates by RECORD offset and stops once meta.total is covered', async () => {
+  // Verified live 2026-10-30: the API's `offset` is a record offset —
+  // limit=1&offset=1 returns the SECOND record; limit=2&offset=0 returns the
+  // same first two. Page p must therefore send offset = p * perPage.
   const rec = (id) => ({ vacancy: { id: String(id), 'job-name': `Dev ${id}`, vac_url: `https://trudvsem.ru/vacancy/${id}` } });
   const byOffset = {
     '0': { status: 200, meta: { total: 3, limit: 2, offset: 0 }, results: { vacancies: [rec(1), rec(2)] } },
-    '1': { status: 200, meta: { total: 3, limit: 2, offset: 1 }, results: { vacancies: [rec(3)] } },
+    '2': { status: 200, meta: { total: 3, limit: 2, offset: 2 }, results: { vacancies: [rec(3)] } },
   };
   let calls = 0;
   const fetchImpl = async (url) => {
@@ -126,8 +129,207 @@ test('searchTrudvsem paginates by offset and stops once meta.total is covered', 
     return new Response(JSON.stringify(body), { status: 200, headers: { 'content-type': 'application/json' } });
   };
   const out = await searchTrudvsem('q', { perPage: 2, fetchImpl });
-  assert.equal(out.length, 3, 'collects across both offset pages');
+  assert.equal(out.length, 3, 'collects across both record-offset pages');
   assert.ok(calls <= 2, 'stops once (page+1)*limit >= total');
+});
+
+// ---------------------------------------------------------------------------
+// 2026-10-30 — the opendata envelope moved under our feet (remote-QA run
+// 41107813987). Verified live against https://opendata.trudvsem.ru:
+//   ok:    {"status":"200","request":{"api":"v1"},"meta":{"total":N,"limit":L},
+//           "results":{"vacancies":[{"vacancy":{...}}]}}
+//   empty: {"status":"200",...,"meta":{"total":0,"limit":L},"results":{}}
+//          (zero-match query AND any page past the end — no `vacancies` key)
+//   error: {"status":"500","request":{"api":"v1"},"meta":{"error":"..."}}
+//          (HTTP status is STILL 200 — the API's own `status` field decides)
+// ---------------------------------------------------------------------------
+
+test('searchTrudvsem reads the real 2026-10-30 envelope with a full vacancy record', async () => {
+  // Trimmed live fixture: curl "https://opendata.trudvsem.ru/api/v1/vacancies?limit=1"
+  const fetchImpl = mkFetch({
+    status: '200',
+    request: { api: 'v1' },
+    meta: { total: 502711, limit: 1 },
+    results: {
+      vacancies: [
+        {
+          vacancy: {
+            id: '05d39665-58df-11f1-a642-c92d05b1328c',
+            source: 'Вакансия интернет ресурса',
+            region: { region_code: '5000000000000', name: 'Московская область' },
+            company: {
+              companycode: '1027700404797',
+              'hr-agency': false,
+              inn: '7702319337',
+              name: 'ИММА, медицинские клиники',
+              url: 'https://trudvsem.ru/company/1027700404797',
+            },
+            'creation-date': '2026-05-26',
+            date_modify: '2026-10-30T13:39:59+0300',
+            salary: 'от 0',
+            salary_min: 0,
+            salary_max: 0,
+            'job-name': 'Врач-эндокринолог (Мега ХИМКИ)',
+            vac_url: 'https://trudvsem.ru/vacancy/card/1027700404797/05d39665-58df-11f1-a642-c92d05b1328c',
+            schedule: 'Полный рабочий день',
+            duty: 'Амбулаторный приём ( пациенты 0+ / 18+ )',
+            category: { specialisation: 'Здравоохранение и социальное обеспечение' },
+            requirement: { education: 'Не указано', experience: 1 },
+            addresses: { address: [{ location: 'Московская область, г Химки', lng: '37.400681', lat: '55.910076' }] },
+            contact_list: [{ contact_type: 'Телефон', contact_value: '+7 495 7485982' }],
+            work_places: 1,
+            skills: [],
+            workPlaceType: { workPlaceForeign: false, workPlaceOrdinary: true },
+            shift: [],
+            trainingDays: 0,
+            currency: '«руб.»',
+          },
+        },
+      ],
+    },
+  });
+
+  const out = await searchTrudvsem('эндокринолог', { fetchImpl, perPage: 1 });
+  assert.equal(out.length, 1);
+  const j = out[0];
+  assert.equal(j.id, 'trudvsem-05d39665-58df-11f1-a642-c92d05b1328c');
+  assert.equal(j.title, 'Врач-эндокринолог (Мега ХИМКИ)');
+  assert.equal(j.company, 'ИММА, медицинские клиники');
+  assert.equal(j.url, 'https://trudvsem.ru/vacancy/card/1027700404797/05d39665-58df-11f1-a642-c92d05b1328c');
+  assert.equal(j.location, 'Московская область');
+  assert.equal(j.date, '2026-05-26');
+  assert.equal(j.salary, '', 'a 0/0 salary range reads as no salary');
+  assert.equal(j.source, 'trudvsem');
+});
+
+test('searchTrudvsem reads the empty-page envelope (results: {}) as zero rows, not a shape break', async () => {
+  // The zero-match shape, byte-for-byte from the live API:
+  // curl ".../vacancies?text=zzzzqnotexist12345&limit=10&offset=0"
+  const fetchImpl = mkFetch({
+    status: '200',
+    request: { api: 'v1' },
+    meta: { total: 0, limit: 10 },
+    results: {},
+  });
+  const errs = [];
+  const orig = console.error;
+  console.error = (...a) => errs.push(a.join(' '));
+  let out;
+  try {
+    out = await searchTrudvsem('zzzzqnotexist12345', { fetchImpl });
+  } finally {
+    console.error = orig;
+  }
+  assert.deepEqual(out, []);
+  assert.equal(errs.join(' '), '', 'an empty page is not an error to log');
+});
+
+test('searchTrudvsem stops cleanly on the empty-page envelope after a full page', async () => {
+  const rec = (id) => ({ vacancy: { id: String(id), 'job-name': `Dev ${id}`, vac_url: `https://trudvsem.ru/vacancy/${id}` } });
+  let call = 0;
+  const fetchImpl = async () => {
+    call += 1;
+    if (call === 1) {
+      return new Response(JSON.stringify({ status: '200', request: { api: 'v1' }, meta: { total: 60, limit: 50 }, results: { vacancies: [rec('1'), rec('2')] } }), { status: 200, headers: { 'content-type': 'application/json' } });
+    }
+    // Past-the-end page: the API now answers results:{} (HTTP 200), not an empty array.
+    return new Response(JSON.stringify({ status: '200', request: { api: 'v1' }, meta: { total: 60, limit: 50 }, results: {} }), { status: 200, headers: { 'content-type': 'application/json' } });
+  };
+  const errs = [];
+  const orig = console.error;
+  console.error = (...a) => errs.push(a.join(' '));
+  let out;
+  try {
+    out = await searchTrudvsem('q', { fetchImpl });
+  } finally {
+    console.error = orig;
+  }
+  assert.equal(out.length, 2, 'page-1 rows survive the empty second page');
+  assert.equal(errs.join(' '), '', 'walking into the empty page is a normal end, not a failure');
+});
+
+test('searchTrudvsem surfaces the API error envelope (HTTP 200 + status 500) as a labeled throw', async () => {
+  // Verified live: ".../vacancies?text=python&limit=50&offset=200" →
+  // HTTP 200 with {"status":"500","request":{"api":"v1"},"meta":{"error":"..."}}
+  const fetchImpl = mkFetch({
+    status: '500',
+    request: { api: 'v1' },
+    meta: { error: 'При выполнении запроса произошла ошибка. Проверьте синтаксис запроса' },
+  });
+  await assert.rejects(
+    () => searchTrudvsem('q', { fetchImpl }),
+    (err) => {
+      assert.match(err.message, /Trudvsem: API returned status 500/);
+      assert.match(err.message, /При выполнении запроса произошла ошибка/, 'carries the API’s own error text');
+      return true;
+    },
+  );
+});
+
+test('searchTrudvsem keeps partials and names the API error when a later page errors', async () => {
+  const rec = (id) => ({ vacancy: { id: String(id), 'job-name': `Dev ${id}`, vac_url: `https://trudvsem.ru/vacancy/${id}` } });
+  let call = 0;
+  const fetchImpl = async () => {
+    call += 1;
+    if (call === 1) {
+      return new Response(JSON.stringify({ status: '200', request: { api: 'v1' }, meta: { total: 99, limit: 50 }, results: { vacancies: [rec('1')] } }), { status: 200, headers: { 'content-type': 'application/json' } });
+    }
+    return new Response(JSON.stringify({ status: '500', request: { api: 'v1' }, meta: { error: 'Сильно превышено максимальное количество запрашиваемых записей' } }), { status: 200, headers: { 'content-type': 'application/json' } });
+  };
+  const errs = [];
+  const orig = console.error;
+  console.error = (...a) => errs.push(a.join(' '));
+  let out;
+  try {
+    out = await searchTrudvsem('q', { fetchImpl });
+  } finally {
+    console.error = orig;
+  }
+  assert.equal(out.length, 1, 'the collected page survives a later error page');
+  assert.match(errs.join(' '), /Сильно превышено/, 'the log names the API’s error, not just a shape complaint');
+});
+
+test('searchTrudvsem never walks into the API deep-offset refusal (offset*limit >= 10000)', async () => {
+  // limit=50&offset=200 → HTTP 200 {"status":"500",...} (verified live);
+  // limit=100&offset=100 → the same. The walk must stop before that zone.
+  const rec = (id) => ({ vacancy: { id: String(id), 'job-name': `Dev ${id}`, vac_url: `https://trudvsem.ru/vacancy/${id}` } });
+  const sentOffsets = [];
+  const fetchImpl = async (url) => {
+    const off = Number(new URL(url).searchParams.get('offset'));
+    sentOffsets.push(off);
+    if (off * 50 >= 10000) {
+      return new Response(JSON.stringify({ status: '500', request: { api: 'v1' }, meta: { error: 'deep offset refusal' } }), { status: 200, headers: { 'content-type': 'application/json' } });
+    }
+    const rows = Array.from({ length: 50 }, (_, i) => rec(`p${off}-${i}`));
+    return new Response(JSON.stringify({ status: '200', request: { api: 'v1' }, meta: { total: 1000000, limit: 50 }, results: { vacancies: rows } }), { status: 200, headers: { 'content-type': 'application/json' } });
+  };
+  const errs = [];
+  const orig = console.error;
+  console.error = (...a) => errs.push(a.join(' '));
+  let out;
+  try {
+    out = await searchTrudvsem('q', { perPage: 50, fetchImpl });
+  } finally {
+    console.error = orig;
+  }
+  assert.equal(sentOffsets.length, 4, 'pages 0..3 only — page 4 would send offset 200, which the API refuses');
+  assert.ok(Math.max(...sentOffsets) < 200, `max sent offset ${Math.max(...sentOffsets)} stays under the refusal zone`);
+  assert.equal(out.length, 200, 'four full pages collected');
+  assert.equal(errs.join(' '), '', 'no error logged — the walk ended by the guard, not by an API refusal');
+});
+
+test('normalizeTrudvsem decodes HTML entities in employer-submitted strings', () => {
+  const row = normalizeTrudvsem({
+    vacancy: {
+      id: '12',
+      'job-name': 'C&amp;C&#43;&#43; Developer &#8212; удалённо',
+      company: { name: 'ООО Рога &amp; Копыта' },
+      duty: 'Опыт с D&lt;em&gt; не нужен',
+    },
+  });
+  assert.equal(row.title, 'C&C++ Developer — удалённо');
+  assert.equal(row.company, 'ООО Рога & Копыта');
+  assert.equal(row.snippet, 'Опыт с D<em> не нужен');
 });
 
 // ---------------------------------------------------------------------------
