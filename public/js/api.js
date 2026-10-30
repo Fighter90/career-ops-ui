@@ -435,6 +435,9 @@ window.UI = (function () {
       d.appendChild(code);
       t.appendChild(d);
     }
+    // Cancel any pending leave animation from a previous toast — a new
+    // message arriving mid toast-out must stay fully visible.
+    if (t._toastLeave) t._toastLeave();
     t.className = 'toast ' + (type || '');
     t.hidden = false;
     clearTimeout(toastTimer);
@@ -447,14 +450,44 @@ window.UI = (function () {
     const dwell = isErr
       ? Math.min(20000, Math.max(9000, 60 * raw.length))
       : 3500;
-    toastTimer = setTimeout(() => (t.hidden = true), dwell);
+    toastTimer = setTimeout(() => hideToast(t), dwell);
+  }
+  // Emil motion audit — the toast leaves through the 140 ms-class toast-out
+  // animation instead of vanishing: [data-leaving] flips the animation in
+  // motion.css, the real hide happens on animationend, and a 200 ms fuse
+  // guarantees the hide even when animationend never fires (reduced-motion
+  // neutralizers, an interrupted animation, a detached node). Re-showing a
+  // leaving toast cancels the leave first (toast() calls the same hook).
+  function hideToast(t) {
+    if (!t || t.hidden) { if (t) t.hidden = true; return; }
+    if (t._toastLeave) t._toastLeave();
+    clearTimeout(toastTimer);
+    let done = false;
+    const onEnd = (e) => { if (e.target === t && e.animationName === 'toast-out') finish(); };
+    const finish = () => {
+      if (done) return;
+      done = true;
+      t.removeEventListener('animationend', onEnd);
+      t._toastLeave = null;
+      t.hidden = true;
+      delete t.dataset.leaving;
+    };
+    t._toastLeave = () => {
+      done = true;
+      t.removeEventListener('animationend', onEnd);
+      t._toastLeave = null;
+      delete t.dataset.leaving;
+    };
+    t.dataset.leaving = '';
+    t.addEventListener('animationend', onEnd);
+    setTimeout(finish, 200);
   }
   // v1.58.0 (QA BUG-007) — explicitly hide the toast. A progress toast
   // like "Running doctor.mjs…" otherwise lingered for its full dwell
   // and overlapped the result modal, looking like the app had hung.
   function dismissToast() {
     const t = document.getElementById('toast');
-    if (t) t.hidden = true;
+    if (t) hideToast(t);
     clearTimeout(toastTimer);
   }
   // v1.17.0 — a11y: focus management + Tab trap. Remembers the element

@@ -101,6 +101,22 @@ window.Router = (function () {
   // before touching the DOM.
   let renderEpoch = 0;
 
+  // Emil motion audit — the previous route's name, for the .page-enter rise.
+  // A page transition plays ONLY on an actual route CHANGE: not on the first
+  // paint (it would fight the skip-link, same reason focusNewView skips it)
+  // and not on a same-route re-render (Router.render() from a view — e.g. the
+  // language switch — must not replay a page transition).
+  let prevRouteName = null;
+
+  // Tag the first rendered element with .page-enter (CSS: rise-in) when the
+  // route actually changed. Runs on the success AND the error render path —
+  // both replace the view.
+  function applyRouteEnter(content, changed) {
+    if (!changed) return;
+    const first = content.firstElementChild;
+    if (first) first.classList.add('page-enter');
+  }
+
   async function render() {
     // A bare in-page anchor (e.g. the skip link's '#content') is not an SPA
     // route: the browser scrolls natively and NO re-render must happen —
@@ -111,6 +127,8 @@ window.Router = (function () {
     if (h && !h.startsWith('#/')) return;
     const myEpoch = ++renderEpoch;
     const { name, rawName, params } = current();
+    const routeChanged = prevRouteName !== null && prevRouteName !== name;
+    prevRouteName = name;
 
     document.querySelectorAll('.nav-item').forEach((a) => {
       // Highlight nav match against EITHER the alias (rawName) or the
@@ -139,6 +157,7 @@ window.Router = (function () {
       } else if (typeof result === 'string') {
         content.innerHTML = result;
       }
+      applyRouteEnter(content, routeChanged);
       focusNewView(content);
     } catch (err) {
       if (myEpoch !== renderEpoch) return; // stale failure — newer view owns the DOM
@@ -158,6 +177,7 @@ window.Router = (function () {
         <button class="btn btn-ghost mt-3" data-action="router-retry">${retryStr}</button>
       </div>`;
       content.querySelector('[data-action="router-retry"]')?.addEventListener('click', () => render());
+      applyRouteEnter(content, routeChanged);
       focusNewView(content);
       if (!isNet) window.UI?.toast(err.message || 'Render error', 'error');
     }
