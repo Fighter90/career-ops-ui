@@ -169,8 +169,8 @@ Abschnitte 2–16 unten gehen tiefer auf jede Phase ein.
 > career-ops-ui open       # open + RAISE the dashboard tab in your browser
 > ```
 >
-> Nach `setup`/`run` wird der Browser-Tab automatisch geöffnet **und in
-> den Vordergrund gebracht** (v1.43.0); `career-ops-ui open` tut dasselbe
+> Nach `setup`/`run` wird der Browser-Tab automatisch geöffnet **und in den Vordergrund gebracht**
+> (v1.43.0); `career-ops-ui open` tut dasselbe
 > auf Anfrage, sodass Sie den Dashboard-Tab nie suchen müssen. `NO_OPEN=1`
 > deaktiviert das automatische Öffnen für Headless-/CI-Starts.
 >
@@ -238,8 +238,8 @@ Editor links, Live-Vorschau rechts.
   wählen Sie eines der Formate
   `.docx / .doc / .odt / .rtf / .pdf / .html / .txt / .md`. Der
   Server konvertiert über pandoc oder pdftotext in Markdown, bereinigt
-  XSS und legt das Ergebnis in den Editor. **Überprüfen Sie die
-  Konvertierung** — insbesondere PDFs können an Layout-Treue verlieren.
+  XSS und legt das Ergebnis in den Editor.
+  **Überprüfen Sie die Konvertierung** — insbesondere PDFs können an Layout-Treue verlieren.
 - **Markdown direkt einfügen** — der Textbereich ist ein Markdown-Editor;
   der rechte Bereich zeigt, was das LLM (und Ihr zukünftiger Recruiter) sehen wird.
 - **Ton-Tipps:** ein Aufzählungspunkt = eine Errungenschaft mit einer
@@ -294,8 +294,8 @@ fit / Verdict). Das Speichern landet in `reports/<date>-<slug>.md`.
 
 ### E. Das ausgewählte Unternehmen entscheiden & tiefgehend recherchieren (~3 Minuten)
 
-**Schritt 14 — Wählen Sie eine verfolgenswerte Stelle aus. Klicken Sie in
-der Seitenleiste auf `Deep research`.** Geben Sie den Unternehmensnamen
+**Schritt 14 — Wählen Sie eine verfolgenswerte Stelle aus. Klicken Sie in der Seitenleiste auf `Deep research`.**
+Geben Sie den Unternehmensnamen
 und die Rolle ein. Das Modell erstellt ein siebenteiliges
 Unternehmensbriefing (Mission, aktuelle Nachrichten, Tech-Stack,
 Einstellungssignale, Vergütungs-Benchmarks, Risiken, empfohlener
@@ -338,13 +338,13 @@ wird automatisch ausgefüllt.
 ursprüngliche Bewerbung Bezug nimmt. Senden. Aktualisieren Sie den
 Tracker-Status auf `Followed up`.
 
-**Schritt 20 — Wenn Sie eine Interview-Einladung erhalten, führen Sie den
-`Interview prep`-Modus aus** (`#/interview-prep`). Generiert gezielte
+**Schritt 20 — Wenn Sie eine Interview-Einladung erhalten, führen Sie den `Interview prep`-Modus aus** (`#/interview-prep`).
+Generiert gezielte
 Vorbereitung für das jeweilige Unternehmen + die Phase (System-Design /
 Behavioral / Coding). Zieht automatisch aus dem Deep-Research-Briefing.
 
-**Schritt 21 — Angebot erhalten? Aktualisieren Sie den Tracker-Status auf
-`Offer`** und schauen Sie sich den Vergütungsabschnitt Ihres
+**Schritt 21 — Angebot erhalten? Aktualisieren Sie den Tracker-Status auf `Offer`**
+und schauen Sie sich den Vergütungsabschnitt Ihres
 Bewertungsreports erneut an — Ihre Mindestannahmezahl steht genau dort.
 
 ### TL;DR — die Reihenfolge der Seitenleiste entspricht dem Workflow
@@ -392,15 +392,15 @@ gespeicherten Report (**Bericht anzeigen**, `auto.viewReport`) und zum
 mit seiner Meldung markiert, und die Schaltfläche wird wieder
 aktiviert, sodass Sie die URL korrigieren und ohne Neuladen erneut
 versuchen können. Einen neuen Lauf zu starten, während einer noch läuft,
-ist gefahrlos: Der ältere Lauf markiert sich selbst als **Ersetzt — ein
-neuerer Lauf wurde angefordert** (`auto.superseded`), statt bei einer
+ist gefahrlos: Der ältere Lauf markiert sich selbst als
+**Ersetzt — ein neuerer Lauf wurde angefordert** (`auto.superseded`), statt bei einer
 veralteten Antwort doppelt zu zahlen.
 
 Die leere Seite ist ehrlich bezüglich ihres einzigen Felds: Ein
 **Beispiel**-Tag und die Schaltfläche **Beispiel-URL ausprobieren**
 (`v2empty.auto.tryExample`) füllen die Eingabe mit einer
-Beispiel-Ausschreibung — **nichts läuft, bis Sie auf Ausführen
-drücken** (`v2empty.auto.hint`), sodass Erkunden nichts kostet.
+Beispiel-Ausschreibung —
+**nichts läuft, bis Sie auf Ausführen drücken** (`v2empty.auto.hint`), sodass Erkunden nichts kostet.
 
 **Kein API-Schlüssel?** Die Pipeline läuft im **manuellen Modus**: Die
 Schritte 3–5 werden zusammengeklappt, und Sie erhalten eine
@@ -491,9 +491,9 @@ strukturiertes Formular, Felder gruppiert in drei ausklappbare Abschnitte:
 Wie das Speichern sicher ist:
 
 - Das Formular sendet nur die 14 modellierten Skalarpfade als
-  `{ fields: { "candidate.full_name": … } }`. Der Server **liest die
-  vorhandene `config/profile.yml`, setzt/leert nur diese Blätter und
-  serialisiert das gesamte Objekt neu** — sodass verschachtelte Arrays,
+  `{ fields: { "candidate.full_name": … } }`. Der Server
+  **liest die vorhandene `config/profile.yml`, setzt/leert nur diese Blätter und serialisiert das gesamte Objekt neu**
+  — sodass verschachtelte Arrays,
   die das Formular nicht modelliert (`target_roles.archetypes`,
   `narrative.proof_points`, `narrative.superpowers`), und alle
   benutzerdefinierten Schlüssel, die Sie von Hand hinzugefügt haben,
@@ -501,8 +501,8 @@ Wie das Speichern sicher ist:
   entfernt diesen Schlüssel sauber (kein `phone: ""`-Rückstand).
 - Die Validierung erfordert weiterhin einen vollständigen Namen; der
   Header `# Career-Ops Profile Configuration` wird automatisch gestempelt.
-- Ein Kompromiss: Ein Feldformular-Speichern **serialisiert das YAML neu,
-  sodass Inline-`#`-Kommentare verloren gehen**. Um Kommentare zu
+- Ein Kompromiss: Ein Feldformular-Speichern
+  **serialisiert das YAML neu, sodass Inline-`#`-Kommentare verloren gehen**. Um Kommentare zu
   bewahren oder verschachtelte Arrays zu bearbeiten, verwenden Sie die
   Ausklappung **Advanced: edit raw YAML** am unteren Rand des Tabs — es
   ist der Vollständige-Datei-Editor von vor 1.32, unverändert (ersetzt
@@ -561,8 +561,8 @@ Seite parst beim Neuladen neu.
 
 Die Felder, die am wichtigsten sind:
 
-- `candidate.full_name` — wird in jedem Prompt verwendet. **Ersetzen Sie
-  die Vorlage `Jane Smith`**, bevor Sie etwas ernsthaft scannen, sonst
+- `candidate.full_name` — wird in jedem Prompt verwendet.
+  **Ersetzen Sie die Vorlage `Jane Smith`**, bevor Sie etwas ernsthaft scannen, sonst
   gehen Ihre generierten Anschreiben unter dem Platzhalternamen raus.
 - `candidate.email`, `linkedin`, `github` — werden in der
   Anschreiben-Generierung und der Bewerbungscheckliste referenziert.
@@ -657,8 +657,8 @@ SPA (unten) entsprechen dem kanonischen career-ops.org-Schema aus
 [scan-job-portals](https://career-ops.org/docs/introduction/guides/scan-job-portals)
 1:1.
 
-> **Abkürzung:** die `#/portals`-URL löst jetzt direkt zu **App
-> settings** auf und (wenn eine regionale Quelle konfiguriert ist)
+> **Abkürzung:** die `#/portals`-URL löst jetzt direkt zu **App settings**
+> auf und (wenn eine regionale Quelle konfiguriert ist)
 > springt zur Gruppe **Regional sources** — sodass ein gemerkter oder
 > getippter `#/portals`-Link nicht mehr 404 liefert (v1.42.0).
 
@@ -913,8 +913,8 @@ russian_portals:
 ```
 
 `queries` sind Groß-/Kleinschreibungs-unabhängige Teilzeichenketten-
-Übereinstimmungen gegen Stellentitel auf hh.ru und Habr Career. **Seien
-Sie vorsichtig mit Überschneidungen mit der Negativliste** — wenn
+Übereinstimmungen gegen Stellentitel auf hh.ru und Habr Career.
+**Seien Sie vorsichtig mit Überschneidungen mit der Negativliste** — wenn
 `"Senior PHP"` in `queries` steht, aber `"php"` in
 `title_filter.negative` landet, gibt der Scan null Ergebnisse zurück, und
 die Konsole warnt Sie vor dem Konflikt.
@@ -1145,7 +1145,6 @@ Die v2-Ergebnisoberfläche hält die Bedienelemente auffindbar:
   Spaltenüberschrift (Unternehmen, Rolle, Gehalt, Alter), um danach zu
   sortieren; nochmals klicken kehrt die Richtung um.
 - **Schnellansicht** (`scan.v2.quickView`) — klicken Sie auf eine Zeile, um ihre Stellenbeschreibung direkt inline einzublenden (**Beschreibung**, `scan.v2.description`), ohne die Seite zu verlassen; Stellen ohne erfassten Text sagen das (`scan.v2.noDescription`), statt eine leere Karte zu zeigen.
-- **Zeilendichte** (`scan.v2.density`) — schaltet zwischen **Kompakt** / **Komfortabel** (`scan.v2.compact` / `scan.v2.comfortable`) Zeilenhöhen um; die Wahl wird pro Browser gemerkt.
 - **Protokoll** (`scan.v2.log`) — klappt das Streaming-Scan-Log zu bzw.
   auf, um der Tabelle die volle Breite zu geben.
 
@@ -1157,8 +1156,8 @@ Stelle, **In die Pipeline** (`scan.v2.toPipeline`) reiht die URL ein
 einem neuen Tab, und der ☆-Stern schaltet einen Favoriten um.
 
 **Search + Exclude.** Das **Search**-Feld ist Ihr „Rollen-gefunden“-
-Filter — tippen Sie einen oder mehrere Begriffe **durch Kommas
-getrennt**, und eine Zeile erscheint, wenn sie **einen** davon trifft
+Filter — tippen Sie einen oder mehrere Begriffe
+**durch Kommas getrennt**, und eine Zeile erscheint, wenn sie **einen** davon trifft
 (ODER); ein führendes `-wort` **schließt** diesen Begriff aus
 (`scan.v2.moreHint`). Das separate **Exclude**-Feld (`scan.lblExclude`)
 tut dasselbe für ganze Begriffe: kommagetrennte Wörter, die jede Zeile
@@ -1338,8 +1337,8 @@ laden. Die meisten ATS-Boards senden keine CORS-Header, sodass der Browser
 sie nicht direkt abrufen kann; der Server proxyt die Anfrage, entfernt
 `<script>` / `<style>` / HTML-Tags und gibt bis zu 8 KB Klartext zurück.
 
-Der Vorschau-Proxy durchläuft Weiterleitungen manuell mit **SSRF-
-Validierung pro Hop** — jeder `Location`-Header durchläuft erneut
+Der Vorschau-Proxy durchläuft Weiterleitungen manuell mit **SSRF-Validierung pro Hop**
+— jeder `Location`-Header durchläuft erneut
 `isValidJobUrl()`, sodass ein feindliches Board Sie nicht zu Loopback /
 privater IP / `file://` umleiten kann. Begrenzt auf 3 Hops, 15-Sekunden-
 Timeout.
@@ -1369,8 +1368,8 @@ Entfernungen stapeln sich bis zu fünf Chargen (die älteste fällt weg);
 **Rückgängig** stellt die jüngste wieder her, indem es ihre Tokens an
 `POST /api/pipeline/restore` sendet, das die exakten ursprünglichen
 Zeilen wieder einfügt (Checklist-Metadaten inklusive — nichts wird neu
-abgeleitet oder neu hinzugefügt) und mit **Zur Pipeline
-wiederhergestellt** (`pipe.undone`) bestätigt. Die Leiste hängt
+abgeleitet oder neu hinzugefügt) und mit
+**Zur Pipeline wiederhergestellt** (`pipe.undone`) bestätigt. Die Leiste hängt
 außerhalb des eigenen Markups der Seite, sodass ein Re-Render
 (Navigation, der Schnell-Hinzufügen-Fluss) ein ausstehendes
 Rückgängigmachen nicht verschlucken kann; kennt der Server ein Token
@@ -1474,10 +1473,9 @@ gedämpften „Score nicht erkannt“-Pille, wenn der Header keinen
 parsebaren Score trägt) — und kann in eine dichte
 **Tabellen**-Ansicht (`rep2.viewTable`) umschalten, wenn Sie lieber
 Zeilen überfliegen. Jede Karte und Tabellenzeile nennt zudem den
-**vorgeschlagenen nächsten Schritt** für ihre Score-Bande: **Jetzt
-bewerben — sehr gute Passung** (`rep2.actApply`), **Bewerben oder
-zuerst einen Kontakt finden** (`rep2.actContact`), **Zuerst das
-Unternehmen recherchieren** (`rep2.actResearch`) oder
+**vorgeschlagenen nächsten Schritt** für ihre Score-Bande: **Jetzt bewerben — sehr gute Passung** (`rep2.actApply`),
+**Bewerben oder zuerst einen Kontakt finden** (`rep2.actContact`),
+**Zuerst das Unternehmen recherchieren** (`rep2.actResearch`) oder
 **Überspringen, außer mit persönlichem Grund** (`rep2.actLow`) —
 jeder davon ein Link direkt zur richtigen Seite. Eine Karte ohne
 Score zeigt die gedämpfte **Score nicht erkannt**-Pille
@@ -1550,8 +1548,8 @@ Drag-and-Drop-**Kanban**: eine Spalte pro kanonischem Status
 (Board-Titel angekündigt als *Bewerbungen nach Status*,
 `track.kanbanBoardAria`), eine Karte pro Bewerbung. Ziehen Sie eine
 Karte in eine andere Spalte — oder fokussieren Sie sie und drücken
-Sie **Verschieben** — und die Änderung wird **angezeigt, bevor etwas
-geschrieben wird** (`track.kanbanMoveHint`); eine bestätigte
+Sie **Verschieben** — und die Änderung wird
+**angezeigt, bevor etwas geschrieben wird** (`track.kanbanMoveHint`); eine bestätigte
 Verschiebung schreibt einen Eintrag ins Ergebnistagebuch und
 überschreibt `data/applications.md`, und die Karte sagt es Ihnen
 (`track.moveJournal`) — um einen Status zurückzuändern, nutzen Sie
@@ -2187,8 +2185,8 @@ Drei Verträge, die jeder Adapter EINHALTEN MUSS:
 
 ### Schritt 2 — Das `meta` des Adapters deklarieren (Auto-Registrierung)
 
-Das ist der gesamte Registrierungsschritt. **Sie bearbeiten `registry.mjs`
-nicht.** Stellen Sie einfach sicher, dass der Adapter einen `meta`-Block
+Das ist der gesamte Registrierungsschritt.
+**Sie bearbeiten `registry.mjs` nicht.** Stellen Sie einfach sicher, dass der Adapter einen `meta`-Block
 exportiert — die Registry entdeckt ihn automatisch beim Boot:
 
 ```js

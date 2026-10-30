@@ -168,8 +168,8 @@ approfondiscono ogni fase.
 > career-ops-ui open       # open + RAISE the dashboard tab in your browser
 > ```
 >
-> Dopo `setup`/`run` la scheda del browser viene aperta **e portata in
-> primo piano** automaticamente (v1.43.0); `career-ops-ui open` fa lo
+> Dopo `setup`/`run` la scheda del browser viene aperta **e portata in primo piano**
+> automaticamente (v1.43.0); `career-ops-ui open` fa lo
 > stesso su richiesta così non devi mai cercare la scheda della
 > dashboard. `NO_OPEN=1` disabilita l'apertura automatica per avvii
 > headless/CI.
@@ -246,8 +246,8 @@ sanifica (rimuove `<script>` / `javascript:` / gestori inline) e
 scrive `cv.md`. Toast: *"Saved"*.
 
 **Passo 8 (opzionale) — Fai clic su `📄 Generate PDF`.** Esegue
-`generate-pdf.mjs` nel padre (Playwright richiesto) e **il nuovo
-PDF viene scaricato automaticamente** nel tuo browser al termine. L'elenco in
+`generate-pdf.mjs` nel padre (Playwright richiesto) e
+**il nuovo PDF viene scaricato automaticamente** nel tuo browser al termine. L'elenco in
 fondo alla pagina conserva ogni file generato in precedenza.
 
 ### C. Trova offerte di lavoro (~2 minuti per scansione)
@@ -285,8 +285,8 @@ nella sezione D. Qualsiasi cosa con `Verdict: pursue` è la tua rosa di candidat
 
 ### E. Decidi e ricerca in modo approfondito l'azienda in rosa (~3 minuti)
 
-**Passo 14 — Scegli un'offerta di lavoro che vale la pena perseguire. Fai clic su `Deep research`
-nella barra laterale.** Inserisci il nome dell'azienda e il ruolo. Il modello
+**Passo 14 — Scegli un'offerta di lavoro che vale la pena perseguire. Fai clic su `Deep research` nella barra laterale.**
+Inserisci il nome dell'azienda e il ruolo. Il modello
 produce un brief aziendale a 7 sezioni (missione, notizie recenti, tech
 stack, segnali di assunzione, benchmark retributivi, rischi, angolazione consigliata).
 Il salvataggio finisce in `interview-prep/<company>-<role>.md`.
@@ -372,14 +372,14 @@ salvato (**View report**, `auto.viewReport`) e al **tracker**
 (`auto.viewTracker`). Un passo
 fallito è marcato in rosso con il suo messaggio e il pulsante si riabilita così
 puoi correggere l'URL e riprovare senza ricaricare. Avviare una nuova passata
-mentre una è ancora in corso è sicuro: la più vecchia si marca **Sostituito —
-è stata richiesta una passata più recente** (`auto.superseded`) invece di
+mentre una è ancora in corso è sicuro: la più vecchia si marca
+**Sostituito — è stata richiesta una passata più recente** (`auto.superseded`) invece di
 spendere due volte su una risposta stantia.
 
 La pagina vuota è onesta sul suo unico campo: l'etichetta **Esempio** e il
 pulsante **Incolla URL di esempio** (`v2empty.auto.tryExample`) riempiono
-l'input con un'offerta campione — **non parte nulla finché non premi
-Esegui** (`v2empty.auto.hint`), così guardare non costa nulla.
+l'input con un'offerta campione —
+**non parte nulla finché non premi Esegui** (`v2empty.auto.hint`), così guardare non costa nulla.
 
 **Nessuna chiave API?** La pipeline gira in **modalità manuale**: i passi 3–5
 si comprimono e ottieni una card di prompt pronta da incollare (copia in Claude
@@ -464,17 +464,17 @@ strutturato, con campi raggruppati in tre sezioni comprimibili:
 Come il salvataggio è sicuro:
 
 - Il modulo invia solo i 14 percorsi scalari modellati come
-  `{ fields: { "candidate.full_name": … } }`. Il server **legge il
-  `config/profile.yml` esistente, imposta/cancella solo quelle foglie, e
-  ri-serializza l'intero oggetto** — così gli array annidati che il modulo
+  `{ fields: { "candidate.full_name": … } }`. Il server
+  **legge il `config/profile.yml` esistente, imposta/cancella solo quelle foglie, e ri-serializza l'intero oggetto**
+  — così gli array annidati che il modulo
   non modella (`target_roles.archetypes`, `narrative.proof_points`,
   `narrative.superpowers`) e qualsiasi chiave personalizzata aggiunta a mano
   **sopravvivono al round-trip intatti**. Svuotare un campo rimuove quella
   chiave in modo pulito (nessun residuo `phone: ""`).
 - La validazione richiede comunque un nome completo; l'intestazione `# Career-Ops Profile
   Configuration` viene apposta automaticamente.
-- Un compromesso: un salvataggio del modulo a campi **ri-serializza lo YAML, quindi i commenti
-  `#` inline vengono persi**. Per preservare i commenti o per modificare array
+- Un compromesso: un salvataggio del modulo a campi
+  **ri-serializza lo YAML, quindi i commenti `#` inline vengono persi**. Per preservare i commenti o per modificare array
   annidati, usa il pannello **Advanced: edit raw YAML** in
   fondo alla scheda — è l'editor dell'intero file pre-1.32, invariato
   (sostituisce l'intero file al salvataggio).
@@ -529,8 +529,8 @@ questa pagina ri-analizza al ricaricamento.
 
 I campi che contano di più:
 
-- `candidate.full_name` — usato in ogni prompt. **Sostituisci il
-  template `Jane Smith`** prima di scansionare qualcosa sul serio, altrimenti le tue
+- `candidate.full_name` — usato in ogni prompt.
+  **Sostituisci il template `Jane Smith`** prima di scansionare qualcosa sul serio, altrimenti le tue
   lettere di presentazione generate usciranno sotto il nome segnaposto.
 - `candidate.email`, `linkedin`, `github` — richiamati nella generazione della lettera
   di presentazione e nella apply checklist.
@@ -620,8 +620,8 @@ di career-ops.org da
 [scan-job-portals](https://career-ops.org/docs/introduction/guides/scan-job-portals)
 1:1.
 
-> **Scorciatoia:** l'URL `#/portals` ora risolve direttamente su **App
-> settings** e (quando una sorgente regionale è configurata) salta al
+> **Scorciatoia:** l'URL `#/portals` ora risolve direttamente su **App settings**
+> e (quando una sorgente regionale è configurata) salta al
 > gruppo **Regional sources** — così un link `#/portals` segnalibro o
 > digitato non dà più 404 (v1.42.0).
 
@@ -634,8 +634,8 @@ title_filter:
   seniority_boost: [Senior, Staff, Lead, Principal]
 ```
 
-Un'offerta di lavoro scansionata passa quando il suo titolo contiene **almeno una
-keyword positive** E **nessuna** delle keyword negative. Regola entrambe.
+Un'offerta di lavoro scansionata passa quando il suo titolo contiene **almeno una keyword positive**
+E **nessuna** delle keyword negative. Regola entrambe.
 Le keyword sono sottostringhe case-insensitive.
 
 `seniority_boost` è la terza chiave del title-filter. Le keyword elencate
@@ -866,8 +866,8 @@ russian_portals:
 ```
 
 `queries` sono corrispondenze di sottostringa case-insensitive contro i titoli
-delle offerte di lavoro su hh.ru e Habr Career. **Attenzione alla sovrapposizione con la lista
-negativa** — se `"Senior PHP"` è in `queries` ma `"php"` finisce in
+delle offerte di lavoro su hh.ru e Habr Career.
+**Attenzione alla sovrapposizione con la lista negativa** — se `"Senior PHP"` è in `queries` ma `"php"` finisce in
 `title_filter.negative`, la scansione restituirà zero risultati e la
 console ti avviserà del conflitto.
 
@@ -1107,13 +1107,12 @@ Il chrome v2 dei risultati tiene i controlli a vista:
 - **Ordina per** (`scan.v2.sortBy`) — clic su un'intestazione di colonna
   (azienda, ruolo, stipendio, età) per ordinare; di nuovo per invertire.
 - **Vista rapida** (`scan.v2.quickView`) — clic su una riga per espandere la descrizione inline (**Descrizione**, `scan.v2.description`) senza uscire dalla pagina; gli annunci senza corpo catturato lo dichiarano (`scan.v2.noDescription`) invece di mostrare una card vuota.
-- **Densità riga** (`scan.v2.density`) — alterna **Compatto** / **Comodo** (`scan.v2.compact` / `scan.v2.comfortable`); la scelta si ricorda per browser.
 - **Log** (`scan.v2.log`) — collassa/espande il log di scansione in
   streaming per dare la larghezza piena alla tabella.
 
 Ogni riga porta le proprie azioni: **Valuta** (`scan.v2.evaluate`) salta
-diritto a una valutazione punteggiata di quell'annuncio, **Al
-pipeline** (`scan.v2.toPipeline`) accoda l'URL (con toast di già-in-coda,
+diritto a una valutazione punteggiata di quell'annuncio,
+**Al pipeline** (`scan.v2.toPipeline`) accoda l'URL (con toast di già-in-coda,
 `scan.v2.pipelineDup`), **Apri annuncio ↗** (`scan.v2.openPosting`) apre
 la pagina carriere in una nuova scheda, e la ☆ segna nei preferiti.
 
@@ -1253,8 +1252,8 @@ non invia header CORS quindi il browser non può recuperarli direttamente; il
 server fa da proxy alla richiesta, rimuove tag `<script>` / `<style>` / HTML,
 e restituisce fino a 8 KB di testo semplice.
 
-Il proxy di anteprima segue i reindirizzamenti manualmente con **validazione SSRF
-per-hop** — ogni header `Location` passa di nuovo attraverso `isValidJobUrl()`,
+Il proxy di anteprima segue i reindirizzamenti manualmente con **validazione SSRF per-hop**
+— ogni header `Location` passa di nuovo attraverso `isValidJobUrl()`,
 così un board ostile non può rimbalzarti su loopback / IP privato
 / `file://`. Limitato a 3 hop, timeout di 15 secondi.
 
@@ -1373,11 +1372,10 @@ data, badge di legittimità e pill di punteggio a colori (verde ≥ 4.0,
 giallo ≥ 3.0, rosso sotto, con una pill muta «Punteggio non rilevato»
 quando l'intestazione non porta un punteggio analizzabile) — e può
 passare a una vista densa a **Tabella** (`rep2.viewTable`) quando vuoi
-scorrere righe. Ogni card e riga di tabella nomina anche il **passo
-successivo suggerito** per la sua banda di punteggio: **Candidati ora —
-massimo affinità** (`rep2.actApply`), **Candidati, o trova prima un
-contatto caldo** (`rep2.actContact`), **Prima studia l'azienda**
-(`rep2.actResearch`), o **Salta salvo motivo personale** (`rep2.actLow`)
+scorrere righe. Ogni card e riga di tabella nomina anche il **passo successivo suggerito** per la sua banda di punteggio: **Candidati ora — massimo affinità** (`rep2.actApply`),
+**Candidati, o trova prima un contatto caldo** (`rep2.actContact`),
+**Prima studia l'azienda** (`rep2.actResearch`), o
+**Salta salvo motivo personale** (`rep2.actLow`)
 — ciascuno un link diretto alla pagina giusta. Una card senza
 punteggio mostra la pill muta **Punteggio non rilevato**
 (`rep.scoreUnparsed`) con tooltip verso il report stesso.
@@ -1442,8 +1440,8 @@ tabella GitHub-Flavored Markdown.
 della bacheca annunciato come *Applications by status*,
 `track.kanbanBoardAria`), una card per candidatura. Trascina una card
 su un'altra colonna — o focalizzala e premi **Sposta** — e il
-cambiamento viene **anteprimato prima che qualsiasi cosa venga
-scritta** (`track.kanbanMoveHint`); uno spostamento confermato registra
+cambiamento viene
+**anteprimato prima che qualsiasi cosa venga scritta** (`track.kanbanMoveHint`); uno spostamento confermato registra
 una voce nel diario degli outcome e riscrive `data/applications.md`, e
 la card te lo dice (`track.moveJournal`) — per riportare uno stato
 indietro, usa il pulsante **Outcome** della riga. Le colonne che il
@@ -1452,8 +1450,8 @@ tu) si renderizzano in sola lettura (`track.kanbanReadOnly`) e
 rifiutano i drop. Se il registratore di outcome del padre manca, gli
 spostamenti si disabilitano con una nota onesta
 (`track.kanbanMovesOff`). Mentre la bacheca carica mostra le stesse
-righe con shimmer del resto dell'app, e una bacheca vuota dice **Nessuna
-candidatura** (`track.kanbanEmpty`) con un puntatore al pipeline
+righe con shimmer del resto dell'app, e una bacheca vuota dice
+**Nessuna candidatura** (`track.kanbanEmpty`) con un puntatore al pipeline
 (`track.emptyBody`).
 
 La whitelist degli stati è imposta lato server; inviare qualcos'altro in
@@ -1592,8 +1590,8 @@ Ciascuno avvolge uno specifico template `modes/<slug>.md`:
 
 ### Forma condivisa
 
-Ogni pagina ha un piccolo modulo (i campi sono specifici della modalità), un pulsante **▶
-Generate prompt** (manuale), e — quando è presente una chiave Anthropic o Gemini
+Ogni pagina ha un piccolo modulo (i campi sono specifici della modalità), un pulsante
+**▶ Generate prompt** (manuale), e — quando è presente una chiave Anthropic o Gemini
 — un pulsante **⚡ Esegui in tempo reale** che viene promosso a primario.
 
 Fare clic su **▶ Generate prompt** restituisce il prompt assemblato con i tuoi
