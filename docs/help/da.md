@@ -165,8 +165,8 @@ hver fase.
 > career-ops-ui open       # åbn + HÆV dashboard-fanen i din browser
 > ```
 >
-> Efter `setup`/`run` åbnes browser-fanen **og bringes i
-> forgrunden** automatisk (v1.43.0); `career-ops-ui open` gør det samme on
+> Efter `setup`/`run` åbnes browser-fanen **og bringes i forgrunden**
+> automatisk (v1.43.0); `career-ops-ui open` gør det samme on
 > demand, så du aldrig skal lede efter dashboard-fanen. `NO_OPEN=1`
 > deaktiverer auto-åbning ved headless-/CI-starts.
 >
@@ -241,8 +241,8 @@ saniterer (`<script>` / `javascript:` / inline-handlere fjernes) og
 skriver `cv.md`. Toast: *"Gemt"*.
 
 **Trin 8 (valgfrit) — Klik på `📄 Generér PDF`.** Kører
-`generate-pdf.mjs` i den overordnede (Playwright påkrævet) og **den nye
-PDF auto-downloades** til din browser, når den er færdig. Listen nederst
+`generate-pdf.mjs` i den overordnede (Playwright påkrævet) og
+**den nye PDF auto-downloades** til din browser, når den er færdig. Listen nederst
 på siden bevarer hver tidligere genereret fil.
 
 ### C. Find ledige stillinger (~2 minutter per scan)
@@ -279,8 +279,8 @@ i sektion D. Alt med `Verdict: pursue` er din shortlist.
 
 ### E. Beslut og lav dybt research på den shortlistede virksomhed (~3 minutter)
 
-**Trin 14 — Vælg en stilling værd at forfølge. Klik på `Deep research`
-i sidebjælken.** Indtast virksomhedens navn og rolle. Modellen
+**Trin 14 — Vælg en stilling værd at forfølge. Klik på `Deep research` i sidebjælken.**
+Indtast virksomhedens navn og rolle. Modellen
 producerer et 7-sektions virksomhedsbrief (mission, seneste nyheder, tech-
 stack, ansættelsessignaler, kompensationsbenchmarks, risici, anbefalet vinkel).
 Gem lander i `interview-prep/<company>-<role>.md`.
@@ -318,8 +318,8 @@ rapporten, link til det dybe research-brief. Datoen udfyldes automatisk.
 Udarbejder en høflig opfølgnings-e-mail, der refererer til den oprindelige ansøgning.
 Send. Opdater tracker-status til `Followed up`.
 
-**Trin 20 — Når du får en samtaleinvitation, kør `Interview prep`-
-tilstanden** (`#/interview-prep`). Genererer målrettet forberedelse til den
+**Trin 20 — Når du får en samtaleinvitation, kør `Interview prep`-tilstanden** (`#/interview-prep`).
+Genererer målrettet forberedelse til den
 specifikke virksomhed + fase (system design / behavioral / coding).
 Trækker fra det dybe research-brief automatisk.
 
@@ -363,8 +363,8 @@ i ét observerbart gennemløb:
 Live feedback er en lodret **stepper** (hvert trin lyser op
 running → done / failed; `aria-current` markerer det aktive trin, og et
 høfligt skærmlæser live-område annoncerer hver overgang). Ved succes
-deep-linker resultatkortet direkte til den gemte rapport (**Vis
-rapport**, `auto.viewReport`) og **trackeren** (`auto.viewTracker`). Et
+deep-linker resultatkortet direkte til den gemte rapport
+(**Vis rapport**, `auto.viewReport`) og **trackeren** (`auto.viewTracker`). Et
 fejlet trin markeres rødt med sin besked, og knappen genaktiveres, så du
 kan rette URL'en og prøve igen uden at genindlæse. At starte et nyt
 gennemløb, mens ét stadig kører, er sikkert: det ældre gennemløb markerer
@@ -459,17 +459,17 @@ formular, felter grupperet i tre sammenfoldelige sektioner:
 Sådan er gemningen sikker:
 
 - Formularen sender kun de 14 modellerede skalar-stier som
-  `{ fields: { "candidate.full_name": … } }`. Serveren **læser den
-  eksisterende `config/profile.yml`, sætter/rydder kun disse blade og
-  re-serialiserer hele objektet** — så indlejrede arrays, formularen
+  `{ fields: { "candidate.full_name": … } }`. Serveren
+  **læser den eksisterende `config/profile.yml`, sætter/rydder kun disse blade og re-serialiserer hele objektet**
+  — så indlejrede arrays, formularen
   ikke modellerer (`target_roles.archetypes`, `narrative.proof_points`,
   `narrative.superpowers`), og eventuelle brugerdefinerede nøgler, du tilføjede i hånden,
   **overlever round-trippet urørt**. Rydning af et felt fjerner den
   nøgle rent (intet `phone: ""`-restprodukt).
 - Validering kræver stadig et fuldt navn; `# Career-Ops Profile
   Configuration`-headeren stemples automatisk.
-- En afvejning: et feltformular-gem **re-serialiserer YAML'en, så inline
-  `#`-kommentarer går tabt**. For at bevare kommentarer eller redigere indlejrede
+- En afvejning: et feltformular-gem
+  **re-serialiserer YAML'en, så inline `#`-kommentarer går tabt**. For at bevare kommentarer eller redigere indlejrede
   arrays, brug **Avanceret: redigér rå YAML**-foldningen nederst
   på fanen — det er pre-1.32-fuld-fil-editoren, uændret
   (erstatter hele filen ved gem).
@@ -524,8 +524,8 @@ denne side genparser ved genindlæsning.
 
 De felter, der betyder mest:
 
-- `candidate.full_name` — bruges i hver prompt. **Erstat
-  skabelonens `Jane Smith`**, før du scanner noget for alvor, ellers vil dine
+- `candidate.full_name` — bruges i hver prompt.
+  **Erstat skabelonens `Jane Smith`**, før du scanner noget for alvor, ellers vil dine
   genererede ansøgningsbreve gå ud under placeholder-navnet.
 - `candidate.email`, `linkedin`, `github` — refereret i ansøgningsbrev-
   generering og ansøgningstjeklisten.
@@ -615,8 +615,8 @@ career-ops.org-skema fra
 [scan-job-portals](https://career-ops.org/docs/introduction/guides/scan-job-portals)
 1:1.
 
-> **Genvej:** `#/portals`-URL'en resolver nu direkte til **App
-> settings** og (når en regional kilde er konfigureret) springer til
+> **Genvej:** `#/portals`-URL'en resolver nu direkte til **App settings**
+> og (når en regional kilde er konfigureret) springer til
 > **Regionale kilder**-gruppen — så et bogmærket eller indtastet `#/portals`-
 > link ikke længere giver 404 (v1.42.0).
 
@@ -629,8 +629,8 @@ title_filter:
   seniority_boost: [Senior, Staff, Lead, Principal]
 ```
 
-En scannet stilling består, når dens titel indeholder **mindst ét
-positivt** nøgleord OG **ingen af de negative** nøgleord. Justér begge.
+En scannet stilling består, når dens titel indeholder **mindst ét positivt**
+nøgleord OG **ingen af de negative** nøgleord. Justér begge.
 Nøgleord er case-insensitive delstrenge.
 
 `seniority_boost` er den tredje title-filter-nøgle. Nøgleord listet
@@ -857,8 +857,8 @@ russian_portals:
 ```
 
 `queries` er case-insensitive delstreng-match mod stillingstitler
-på hh.ru og Habr Career. **Vær forsigtig med overlap med den negative
-liste** — hvis `"Senior PHP"` er i `queries`, men `"php"` ender i
+på hh.ru og Habr Career. **Vær forsigtig med overlap med den negative liste**
+— hvis `"Senior PHP"` er i `queries`, men `"php"` ender i
 `title_filter.negative`, vil scanningen returnere nul resultater, og
 konsollen vil advare dig om konflikten.
 
@@ -1059,7 +1059,6 @@ V2-resultatchromen holder styringerne synlige:
   (virksomhed, rolle, løn, alder) for at sortere efter den; klik igen
   for at vende retningen.
 - **Hurtig visning** (`scan.v2.quickView`) — klik på en række for at folle dens opslagsbeskrivelse ud på stedet (**Beskrivelse**, `scan.v2.description`) uden at forlade siden; opslag uden gemt brødtekst siger det (`scan.v2.noDescription`) i stedet for at vise et tomt kort.
-- **Rækketæthed** (`scan.v2.density`) — skift mellem **Kompakt** / **Komfortabel** (`scan.v2.compact` / `scan.v2.comfortable`) rækkehøjder; valget huskes pr. browser.
 - **Log** (`scan.v2.log`) — kollaps/udfold den streamende scan-log for
   at give tabellen hele bredden.
 
@@ -1229,8 +1228,8 @@ sender ikke CORS-headere, så browseren ikke kan hente dem direkte; serveren
 proxyer anmodningen, stripper `<script>` / `<style>` / HTML-tags og
 returnerer op til 8 KB almindelig tekst.
 
-Preview-proxyen gennemgår omdirigeringer manuelt med **per-hop SSRF-
-validering** — hver `Location`-header kører gennem `isValidJobUrl()`
+Preview-proxyen gennemgår omdirigeringer manuelt med **per-hop SSRF-validering**
+— hver `Location`-header kører gennem `isValidJobUrl()`
 igen, så et fjendtligt board ikke kan sende dig til loopback / privat IP
 / `file://`. Begrænset til 3 hops, 15-sekunders timeout.
 
@@ -1357,10 +1356,10 @@ rød under, med en dæmpet «Score ikke fundet»-pille, når headeren ikke
 bærer en parserbar score) — og kan skifte til en tæt **Tabel**-visning
 (`rep2.viewTable`), når du hellere vil skanne rækker. Hvert kort og hver
 tabellrække nævner også det **foreslåede næste trin** for sit
-scoreinterval: **Søg nu — godt match** (`rep2.actApply`), **Søg, eller
-find først en kontakt** (`rep2.actContact`), **Undersøg virksomheden
-først** (`rep2.actResearch`) eller **Spring over, medmindre personlig
-grund** (`rep2.actLow`) — hver især et link direkte til den rigtige
+scoreinterval: **Søg nu — godt match** (`rep2.actApply`),
+**Søg, eller find først en kontakt** (`rep2.actContact`),
+**Undersøg virksomheden først** (`rep2.actResearch`) eller
+**Spring over, medmindre personlig grund** (`rep2.actLow`) — hver især et link direkte til den rigtige
 side. Et kort uden score viser den dæmpede **Score ikke fundet**-pille
 (`rep.scoreUnparsed`) med et værktøjstip, der peger på selve rapporten.
 
@@ -1435,8 +1434,8 @@ rækkens **Resultat**-knap. Kolonner, som pipelinen selv styrer (og
 (`track.kanbanReadOnly`) og afviser drops. Hvis forældreprojektets
 resultatoptager mangler, deaktiveres statusflyt med en ærlig note
 (`track.kanbanMovesOff`). Mens boardet indlæses, viser det de samme
-shimmer-rækker som resten af appen, og et tomt board siger **Ingen
-ansøgninger** (`track.kanbanEmpty`) med en henvisning til pipelinen
+shimmer-rækker som resten af appen, og et tomt board siger
+**Ingen ansøgninger** (`track.kanbanEmpty`) med en henvisning til pipelinen
 (`track.emptyBody`).
 
 Status-whitelisten håndhæves server-side; at sende noget andet i
@@ -1574,8 +1573,8 @@ retrospektiver. Hver enkelt indkapsler en specifik `modes/<slug>.md`-skabelon:
 
 ### Fælles form
 
-Hver side har en lille formular (felterne er mode-specifikke), en **▶
-Generér prompt**-knap (manuel), og — når en Anthropic- eller Gemini-
+Hver side har en lille formular (felterne er mode-specifikke), en
+**▶ Generér prompt**-knap (manuel), og — når en Anthropic- eller Gemini-
 nøgle er til stede — en **⚡ Kør live**-knap, der forfremmes til primær.
 
 At klikke på **▶ Generér prompt** returnerer den samlede prompt med dine
@@ -1609,8 +1608,8 @@ SPA'ens tjekliste er til brugere, der foretrækker at udfylde formularen i hånd
 uden at invokere Playwright. En tom side lader dig ikke gætte: den viser
 **Generer en ansøgnings-checkliste** med et gennemarbejdet eksempel
 (`v2empty.apply.emptyTitle` / `v2empty.apply.emptyBody`) og, hvis du
-allerede har vurderet opslaget, en genvej til at **vælge en vurderet
-rapport** (`v2empty.apply.pickReport`), så tjeklisten starter fra den
+allerede har vurderet opslaget, en genvej til at
+**vælge en vurderet rapport** (`v2empty.apply.pickReport`), så tjeklisten starter fra den
 rapports data. Den dækker:
 
 0. Kør `/career-ops apply <url>` i Claude Code for at læse formularen via
