@@ -1820,4 +1820,6 @@ window.__I18N_DICT_ZH_TW = {
   'v2empty.dash.pipelineTitle': "流水線收件匣是空的",
   'v2empty.dash.pipelineBody': "把職缺 URL 貼到流水線 — 它會在收件匣中等待你評估,如下方範例列。",
   'a11y.readonlyOutput': "產生的結果 — 唯讀",
+  'config.rawProfile': "設定檔 YAML 原始編輯器",
+  'config.rawModes': "modes 原始編輯器",
 };

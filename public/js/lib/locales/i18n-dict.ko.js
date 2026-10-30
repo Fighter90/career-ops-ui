@@ -1819,4 +1819,6 @@ window.__I18N_DICT_KO = {
   'v2empty.dash.pipelineTitle': "파이프라인 수신함이 비어 있습니다",
   'v2empty.dash.pipelineBody': "채용 공고 URL을 파이프라인에 붙여넣으세요 — 평가할 때까지 아래 예시 줄처럼 수신함에서 기다립니다.",
   'a11y.readonlyOutput': "생성된 결과 — 읽기 전용",
+  'config.rawProfile': "프로필 YAML 원본 편집기",
+  'config.rawModes': "modes 원본 편집기",
 };

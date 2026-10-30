@@ -1818,4 +1818,6 @@ window.__I18N_DICT_UK = {
   'v2empty.dash.pipelineTitle': "Воронка порожня",
   'v2empty.dash.pipelineBody': "Вставте URL вакансії у воронку — вона чекатиме в черзі до оцінки, як рядок у прикладі нижче.",
   'a11y.readonlyOutput': "Згенерований результат — лише для читання",
+  'config.rawProfile': "Редактор YAML профілю",
+  'config.rawModes': "Редактор modes (кар'єрного фреймінгу)",
 };

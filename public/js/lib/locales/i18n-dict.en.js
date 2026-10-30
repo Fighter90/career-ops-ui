@@ -1825,4 +1825,6 @@ window.__I18N_DICT_EN = {
   'v2empty.dash.pipelineTitle': "The pipeline inbox is empty",
   'v2empty.dash.pipelineBody': "Paste a posting URL into the pipeline — it waits in the inbox until you evaluate it, like the line below.",
   'a11y.readonlyOutput': "Generated result — read only",
+  'config.rawProfile': "Raw profile YAML editor",
+  'config.rawModes': "Raw modes editor",
 };

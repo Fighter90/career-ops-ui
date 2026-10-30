@@ -1830,4 +1830,6 @@ window.__I18N_DICT_HI = {
   'v2empty.dash.pipelineTitle': "पाइपलाइन इनबॉक्स खाली है",
   'v2empty.dash.pipelineBody': "पाइपलाइन में एक पोस्टिंग URL पेस्ट करें — यह आपके मूल्यांकन तक उदाहरण पंक्ति की तरह इनबॉक्स में इंतज़ार करती है।",
   'a11y.readonlyOutput': "जेनरेट किया गया परिणाम — केवल पढ़ने के लिए",
+  'config.rawProfile': "कच्चा प्रोफ़ाइल YAML संपादक",
+  'config.rawModes': "कच्चा modes संपादक",
 };

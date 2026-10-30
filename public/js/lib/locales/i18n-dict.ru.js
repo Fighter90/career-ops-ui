@@ -1819,4 +1819,6 @@ window.__I18N_DICT_RU = {
   'v2empty.dash.pipelineTitle': "Воронка пуста",
   'v2empty.dash.pipelineBody': "Вставьте URL вакансии в воронку — она будет ждать в очереди до оценки, как строка в примере ниже.",
   'a11y.readonlyOutput': "Сгенерированный результат — только чтение",
+  'config.rawProfile': "Редактор YAML профиля",
+  'config.rawModes': "Редактор modes (карьерного фрейминга)",
 };

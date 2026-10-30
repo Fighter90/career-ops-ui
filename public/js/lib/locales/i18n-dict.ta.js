@@ -1805,4 +1805,6 @@ window.__I18N_DICT_TA = {
   'v2empty.dash.pipelineTitle': "பைப்லைன் இன்பாக்ஸ் காலியாக உள்ளது",
   'v2empty.dash.pipelineBody': "ஒரு இடுகை URL-ஐ பைப்லைனில் ஒட்டவும் — நீங்கள் மதிப்பிடும் வரை எடுத்துக்காட்டு வரி போல இன்பாக்ஸில் காத்திருக்கும்.",
   'a11y.readonlyOutput': "உருவாக்கப்பட்ட முடிவு — படிக்க மட்டும்",
+  'config.rawProfile': "மூல சுயவிவர YAML திருத்தி",
+  'config.rawModes': "மூல modes திருத்தி",
 };

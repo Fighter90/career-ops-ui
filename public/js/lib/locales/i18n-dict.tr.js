@@ -1820,4 +1820,6 @@ window.__I18N_DICT_TR = {
   'v2empty.dash.pipelineTitle': "Pipeline gelen kutusu boş",
   'v2empty.dash.pipelineBody': "Bir ilan URL'sini pipeline'a yapıştırın — değerlendirilene kadar örnek satırdaki gibi gelen kutusunda bekler.",
   'a11y.readonlyOutput': "Üretilen sonuç — salt okunur",
+  'config.rawProfile': "Ham profil YAML düzenleyicisi",
+  'config.rawModes': "Ham modes düzenleyicisi",
 };

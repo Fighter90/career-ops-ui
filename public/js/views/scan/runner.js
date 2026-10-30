@@ -567,6 +567,7 @@ repostsPanel.addEventListener('toggle', async () => {
     const filterIn = c('input', {
       className: 'input',
       placeholder: t('scan.companiesFilter', 'Filter companies…'),
+      'data-i18n-aria-label': 'scan.companiesFilter',
       style: { maxWidth: '320px', marginTop: '12px', display: 'none' },
     });
     let expanded = false;
