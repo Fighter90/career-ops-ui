@@ -2,6 +2,35 @@
 
 > Bu changelog artık tüm sürüm geçmişini içerir. Türkçe yerelleştirmenin eklenmesinden (v1.85.0) önce yayınlanan girdiler aşağıda İngilizce özgün hâliyle yer alır — çeviri bekliyor; asıl kaynak [🇬🇧 CHANGELOG.md](CHANGELOG.md)'dir.
 
+## [1.263.0] — 2026-10-30
+
+### Eklendi
+
+- **Hareket cilalama katmanı** — yeni `motion.css` (son app sayfası): modal/popover girişleri (scale .97 + fade, 130–180 ms), toast yay-vari giriş + yumuşak ayrılma durumu, tema-düğmesi basma yayı, chip/sekme basma scale(.97), kademelendirme altyapısı (50 ms adımlar, 12 tavan), `.page-enter` rota-değişimi solması (router), chip'lerde/sekmelerde odak-halo geçişleri. Her kural `prefers-reduced-motion`-güvenli (hareket none'a düşer, opaklık/renk kalır).
+- **Dokunma doğruluğu** — 68 hover-lift kuralı korumasızdı: dokunmatik cihazlar bir dokunuş sonrasında takılı kalmış "kaldırılmış" bir kart tutuyordu. Tüm transform hover'ları artık `@media (hover:hover)`-kapılı (motion.css nötrleştirici) ve kart kaldırma yalnızca gerçekten etkileşimli kartlara uygulanıyor (`.card:has(a)`, `a.card`, `button.card`, `[role=button].card`) — statik kartlarda artık sahte affordance yok.
+- **Erişilebilirlik: her kontrolün programatik bir adı var.** Yeni `A11yDump` yardımcısı 16 salt-okunur LLM-çıktısı dökümünün tümünü adlandırıyor; 12 yalnızca-placeholder alanı (CV Studio ×6, config ×2, scan arama, tracker puan seçici, outcome notu, plan düzenleyici, auto URL, hata raporu) `aria-label` aldı; `a11y-form-wires` kapısı artık bunu sınıf-çapında dayatıyor (26 adlandırılmamış yer vardı, artık 0 + gerekçeleri belgelenmiş bir allowlist).
+
+### Düzeltildi
+
+- **#/scan**: yapışkan tablo başlığı, üstüne kaydırıldığında artık topbar aramasının üzerine boyamıyor (z topbar'ınkine eşitti, sonra gelen DOM kazanıyordu — artık onun altında token-türevli); "Зарплата от/до" girdileri yeniden normal boyutta (bir `.v2-scan-bar .input` flex kuralı popover'ın sütun flex'ine sızıyor ve flex-basis 200 px'i YÜKSEKLİK olarak ayarlıyordu — artık `>`-kapsamlı + popover koruması); yoğunluk düğmesi sahip kararıyla kaldırıldı (altyapı korundu, i18n anahtarları ×19 kaldırıldı).
+- **Deploy workflow sağlamlaştırması (F1–F6)**: `provider` girdisi herhangi bir kabuk birleştirmesinden önce karakter-seti doğrulamasından geçiyor; hermes teşhisleri değerleri ayıklıyor (büyük/küçük-harf-duyarsız anahtar filtresi + değer maskeleme + üç çıkış kanalında da 80 karakter kırpma, `?token=` de maskeleniyor); hermes adımı `inputs.app_dir`'e saygı duyuyor; public_url https-kapılı; anti-downgrade korumasının 6 yürütülebilir sabitlemesi var (varsayılan yok, koruma-Deploy'dan-önce sırası, katı refs regex'i).
+- **İnceleme kuyruğu, red-first**: CSV-içe-aktarma ters-bölü gidiş-dönüşü (yeniden içe aktarım yeniden tekilleştiriyor), cv-voice baş-kırpma 4827 ms → 13 ms, `statedYearsMin` tembel hesaplanıyor, posting-guard capture TOCTOU, MiniMax CN joker'i, deel token atlama, içe aktarma seçicinin okumadan önce boyut-korumaları. İçe aktarma modalı: nav-guard kuruldu, dosya girdisi iptalde kaldırılıyor, korumalı yinelenenler okunuyor, `num` reduce ile.
+- **Sahibin UX paketi**: dashboard hero dikey ritmi (satır-seviyesi çocuklar tek satır kutusuna yapıştırılıyordu); yardım TOC'si −8 px aktif-satır kayması (satır-başına satır-içi oluk + numara sütunu); mobil çekmece (görünür ✕ kapatma, scrollTop sıfırlama, hayalet --paper solması `.has-hud`'a kapılı); docs-assistant sayfası artık yanıttaki uzun bir URL ile taşmıyor (grid `min-width` zinciri + `overflow-wrap: anywhere`); «Недавние» açıklandı (ipucu) + temizlenebilir; career-plan Kaydet başarısız bir yükleme sonrasında yeniden kuruluyor; evaluate URL-ön-doldurması yapıştırma-yer-tutucusu üzerinde artık bir LLM çağrısı yakmıyor; auto-pipeline Enter IME bileşimine saygı duyuyor.
+- **Kontrast (WCAG denetimi, 296 çift)**: docs-fab degrade 2.43 → 6.4:1, toast.success → ok-soft çifti (1.75 → AA koyu), banner btn-dark → `--ink` çevirmesi, scan-logbtn/reposts-badge/fab-chip/close açık varyantları ve form-kontrol kenarlıkları 3:1'e (`--cv3-input-line`, WCAG 1.4.11 — 1.2:1 idi).
+- **Görsel tarama**: tracker boş durumu tam-genişlik bir kart (390'da 760 px tablonun içinde kırpılıyordu); scan konsol satırı yarım-kırpma yerine üç-noktayla kısalıyor; yüzen sohbet FAB'ı artık 390'da içeriği örtmüyor (44 px hedef, inset 12); dashboard «Application statuses» boş durumu v2-empty desenini izliyor; stats «?» ipucu bir ayırıcı + 44 px hedef alıyor; career-plan Input sekmesi sonucun nereye geldiğini açıklıyor; yardım §1 markdown (18 kırık kalın aralığı).
+
+### Değişti
+
+- **Vurgu mavisi → kızıl kırmızı (sahip isteği, logo ile uyumlu, hue 15)** — 5 cv3 token × 3 tema bloğu; `docs-assistant` sohbet balonu metni `--accent-ink`'e biniyor (sabit #fff idi, koyuda 2.39:1); funded yıkaması `--accent-soft`'a biniyor. Danger kendi tedavileriyle hue 25'te kalıyor.
+- Dokümantasyon: README test-tablosu sayısı ×17 (v1.248 döneminden bir sürüklenme), yardım §1 + 18 markdown aralığı, yardım fr/it/ta «118», satıcı fiyatları CHECKED_ON 2026-10-30, HANDOFF/CONTEXT/TRACEABILITY olguları.
+
+### Notlar
+
+- Bilinçli olarak yapılmadı: skeleton sweep yeniden işi dışarıda kalıyor (car112 sözleşmesi mevcut solmayı kelimesi kelimesine sabitliyor); tema-düğmesi simge çapraz-solması bir `display` değişimi olarak kalıyor (tema-düğmesi Playwright sözleşmesi onu gözlemliyor); `.btn:active` scale çoğaltılmadı (app.css ona sahip); motion kademelendirme yalnızca altyapı — dashboard karoları onu sonra benimser; yardım ×19 düzyazısı (yoğunluk anması, §1 markdown, «118») sonraki fan-out'a biniyor.
+- Tam remote-QA kanıtı: v1.262.4 üzerinde ja hedefli yeşil (376 s / A–G ✓); en/it token-yoğun dönemde daha önce yeşildi.
+
+Tests 6869 → 6905 (+36) · Playwright 176 · kapsam 98.4 % satır / 89.9 % dal · registry değişmedi: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.262.4] — 2026-10-30
 
 ### Düzeltildi
