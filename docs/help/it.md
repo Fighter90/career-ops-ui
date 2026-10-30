@@ -1429,6 +1429,8 @@ errore.
 Il CRM. Una riga per candidatura; vive in `data/applications.md` come
 tabella GitHub-Flavored Markdown.
 
+Il badge di stato di ogni riga è anche un **select** — scegli uno stadio e viene salvato all'istante: il server inoltra al `set-status.mjs` canonico e la riga si aggiorna sul posto; un salvataggio fallito ripristina il valore e mostra un toast. Le righe con uno stato modificato a mano o sconosciuto, e le righe di backfill numerate `N/A`, mostrano invece un badge di sola lettura.
+
 ### Flusso di stato
 
 `Evaluated` → `Applied` → `Responded` → `Interview` → `Offer` /
