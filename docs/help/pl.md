@@ -13,15 +13,15 @@ do konkretnej sekcji za pomocą spisu treści w pasku bocznym pomocy.
 > **Networking**, **Analityka**, **Konfiguracja** (`nav.group.*`) —
 > które otwierają się przy wejściu do sekcji i zostają tam, gdzie je
 > zostawiono. Oznacz dowolną stronę gwiazdką, aby przypiąć ją w
-> **Ulubionych**, i naciskaj **Cmd/Ctrl+K** (albo przycisk **Menu
-> poleceń** na górze paska bocznego, `nav.v2.palette`), aby z
+> **Ulubionych**, i naciskaj **Cmd/Ctrl+K**
+> (albo przycisk **Menu poleceń** na górze paska bocznego, `nav.v2.palette`), aby z
 > dowolnego miejsca rozmytym wyszukiwaniem przeskoczyć do dowolnej
 > strony. Każda strona natychmiast pokazuje swój tytuł, a w trakcie
 > ładowania danych wypełnia się szarymi migoczącymi wierszami, więc
 > nawigacja nigdy nie wydaje się pusta. Żadna strona nie wita też
 > gołą pustką: cztery, które zaczynają od zera — **Auto-pipeline**,
-> **Lista kontrolna aplikowania**, **Partia** i **Finansowane
-> firmy** — pokazują przykładowe wypełnienie oraz jedno działanie,
+> **Lista kontrolna aplikowania**, **Partia** i
+> **Finansowane firmy** — pokazują przykładowe wypełnienie oraz jedno działanie,
 > które je uruchamia (`v2empty.exampleTag`).
 
 > **Odbiorcy:** każdy, kto właśnie umieścił ten interfejs w katalogu
@@ -107,6 +107,7 @@ działający jako polecenia slash w dowolnym CLI do kodowania AI (Claude Code, C
 | PDF | `generate-pdf.mjs` | `📄 Generate PDF` na `#/cv`, `#/reports/:slug`, `#/evaluate`, `#/deep`, `#/interview-prep` |
 | Pliki danych | współdzielone z career-ops-ui | współdzielone z career-ops |
 
+
 career-ops-ui to **czyste rozszerzenie**. Nic wewnątrz `career-ops/`
 nie ulega zmianie. Obie powierzchnie korzystają z tych samych plików `cv.md`, `config/profile.yml`,
 `portals.yml`, `data/`, `reports/`, `interview-prep/`, `modes/`.
@@ -162,8 +163,8 @@ każdą fazę.
 > career-ops-ui open       # open + RAISE the dashboard tab in your browser
 > ```
 >
-> Po `setup`/`run` zakładka przeglądarki jest otwierana **i wysuwana na
-> wierzch** automatycznie (v1.43.0); `career-ops-ui open` robi to samo na
+> Po `setup`/`run` zakładka przeglądarki jest otwierana
+> **i wysuwana na wierzch** automatycznie (v1.43.0); `career-ops-ui open` robi to samo na
 > żądanie, żebyś nigdy nie musiał szukać zakładki dashboardu. `NO_OPEN=1`
 > wyłącza auto-otwieranie dla uruchomień headless/CI.
 >
@@ -454,17 +455,16 @@ z polami zgrupowanymi w trzy składane sekcje:
 Jak zapis jest bezpieczny:
 
 - Formularz wysyła tylko 14 modelowanych skalarnych ścieżek jako
-  `{ fields: { "candidate.full_name": … } }`. Serwer **odczytuje istniejący
-  `config/profile.yml`, ustawia/czyści tylko te liście, i
-  ponownie serializuje cały obiekt** — więc zagnieżdżone tablice, których formularz
+  `{ fields: { "candidate.full_name": … } }`.
+  Serwer **odczytuje istniejący `config/profile.yml`, ustawia/czyści tylko te liście, i ponownie serializuje cały obiekt** — więc zagnieżdżone tablice, których formularz
   nie modeluje (`target_roles.archetypes`, `narrative.proof_points`,
   `narrative.superpowers`) i wszelkie niestandardowe klucze dodane ręcznie
   **przeżywają round-trip bez zmian**. Wyczyszczenie pola usuwa ten
   klucz bez pozostawiania `phone: ""`.
 - Walidacja nadal wymaga pełnego imienia i nazwiska; nagłówek `# Career-Ops Profile
   Configuration` jest automatycznie dodawany.
-- Jeden kompromis: zapis z formularza pól **ponownie serializuje YAML, więc inline
-  komentarze `#` są tracone**. Aby zachować komentarze lub edytować zagnieżdżone
+- Jeden kompromis: zapis z formularza pól
+  **ponownie serializuje YAML, więc inline komentarze `#` są tracone**. Aby zachować komentarze lub edytować zagnieżdżone
   tablice, użyj ujawnienia **Advanced: edit raw YAML** na
   dole zakładki — to jest pełny edytor pliku sprzed v1.32, niezmieniony
   (zastępuje cały plik przy zapisie).
@@ -519,8 +519,8 @@ ta strona ponownie parsuje po przeładowaniu.
 
 Najważniejsze pola:
 
-- `candidate.full_name` — używane w każdym prompcie. **Zastąp
-  szablonowe `Jane Smith`** przed skanowaniem czegokolwiek na poważnie, bo Twoje
+- `candidate.full_name` — używane w każdym prompcie.
+  **Zastąp szablonowe `Jane Smith`** przed skanowaniem czegokolwiek na poważnie, bo Twoje
   wygenerowane listy motywacyjne wyjdą pod imieniem placeholder.
 - `candidate.email`, `linkedin`, `github` — przywoływane przy generowaniu listów
   motywacyjnych i liście kontrolnej aplikowania.
@@ -606,8 +606,8 @@ schematowi career-ops.org z
 [scan-job-portals](https://career-ops.org/docs/introduction/guides/scan-job-portals)
 1:1.
 
-> **Skrót:** URL `#/portals` teraz rozwiązuje się bezpośrednio do **App
-> settings** i (gdy skonfigurowane jest regionalne źródło) skacze do
+> **Skrót:** URL `#/portals` teraz rozwiązuje się bezpośrednio do **App settings**
+> i (gdy skonfigurowane jest regionalne źródło) skacze do
 > grupy **Regional sources** — więc zakładkowy lub wpisany link `#/portals`
 > nie daje już 404 (v1.42.0).
 
@@ -1017,7 +1017,6 @@ Chrome v2 wyników utrzymuje sterowanie w zasięgu wzroku:
   (firma, stanowisko, wynagrodzenie, wiek), aby sortować; kliknij
   ponownie, aby odwrócić kierunek.
 - **Szybki podgląd** (`scan.v2.quickView`) — kliknij wiersz, aby rozwinąć opis oferty inline (**Opis**, `scan.v2.description`) bez opuszczania strony; oferty bez zapisanego ciała same o tym mówią (`scan.v2.noDescription`) zamiast pokazywać pustą kartę.
-- **Gęstość wierszy** (`scan.v2.density`) — przełącza wysokości wierszy **Kompaktowo** / **Komfortowo** (`scan.v2.compact` / `scan.v2.comfortable`); wybór jest zapamiętywany per przeglądarka.
 - **Dziennik** (`scan.v2.log`) — zwija/rozwija dziennik skanowania
   strumieniowego, aby dać tabeli pełną szerokość.
 
@@ -1394,7 +1393,7 @@ przejście `Evaluated → Applied` jest automatyczne, gdy potwierdzisz
 |---|---|
 | `#` | Auto-numerowany, uzupełniany zerami (`001`, `002`, …). |
 | `Date` | Data ISO (`YYYY-MM-DD`). Domyślnie dzisiaj. |
-| `Company` | Dowolny tekst. **Potoki (`\|`) i znaki nowej linii są escapowane automatycznie.** |
+| `Company` | Dowolny tekst. **Potoki i znaki nowej linii są escapowane automatycznie.** |
 | `Role` | To samo. |
 | `Score` | Format `N/5` (np. `4.2/5`). |
 | `Status` | Wyliczenie z białą listą. |
@@ -1855,6 +1854,7 @@ zdarzeń.
 | Podgląd pipeline pokazuje `(unsafe redirect)` | Ogłoszenie przekierowało do prywatnego IP / loopback | To jest funkcja bezpieczeństwa (REVIEW-B1). Cel przekierowania jest odrzucany, a oryginalny URL pozostaje bez zmian. |
 | Tekst wiersza trackera psuje tabelę | Potok w nazwie firmy przed v1.9.1 | Zaktualizuj do v1.9.1+ — potoki są escapowane end-to-end (BF-1). |
 | `npm test` nie udaje się na świeżym klonie | Testy zakładają układ projektu nadrzędnego | Użyj `CAREER_OPS_ROOT=$(mktemp -d)` i bootstrap fixtures. |
+
 
 Dla głębszej diagnostyki: uruchom **Uruchom doctor** na stronie Health, skopiuj
 wynik i przeszukaj tracker problemów na
