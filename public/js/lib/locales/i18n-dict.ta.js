@@ -382,6 +382,7 @@ window.__I18N_DICT_TA = {
   'top.search.label': "நிறுவனங்கள், பதவிகள் அல்லது URL-களைத் தேடு",
   'top.search.aria': "உலகளாவிய தேடல் — Cmd+K கவனத்திற்கு, URL ஒட்டி Enter ஆனால் auto-pipeline",
   'nav.toggleMenu': "மெனுவை மாற்று",
+  'nav.closeMenu': "பட்டியலை மூடு",
   'common.closeDialog': "உரையாடலை மூடு",
   'top.search.toggle': "தேடல்",
   'top.doctor': "மருத்துவர்",

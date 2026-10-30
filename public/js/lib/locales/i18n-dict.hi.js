@@ -377,6 +377,7 @@ window.__I18N_DICT_HI = {
   'top.search.label': "कंपनियाँ, भूमिकाएँ या URL खोजें",
   'top.search.aria': "वैश्विक खोज — फ़ोकस के लिए Cmd+K दबाएँ, URL पेस्ट करें और ऑटो-पाइपलाइन के लिए Enter दबाएँ",
   'nav.toggleMenu': "मेन्यू खोलें या बंद करें",
+  'nav.closeMenu': "मेनू बंद करें",
 
   'common.closeDialog': "डायलॉग बंद करें",
   'top.search.toggle': "खोजें",

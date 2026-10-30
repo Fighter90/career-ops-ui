@@ -376,6 +376,7 @@ window.__I18N_DICT_ZH_CN = {
   'top.search.label': "搜索公司、职位或 URL",
   'top.search.aria': "全局搜索 — Cmd+K 聚焦,粘贴 URL 并按 Enter 触发 auto-pipeline",
   'nav.toggleMenu': "打开或收起菜单",
+  'nav.closeMenu': "关闭菜单",
 
   'common.closeDialog': "关闭对话框",
   'top.search.toggle': "搜索",

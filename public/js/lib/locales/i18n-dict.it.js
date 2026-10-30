@@ -376,6 +376,7 @@ window.__I18N_DICT_IT = {
   'top.search.label': "Cerca aziende, ruoli o URL",
   'top.search.aria': "Ricerca globale — Cmd+K per attivare, incolla un URL e premi Invio per l'auto-pipeline",
   'nav.toggleMenu': "Apri o chiudi il menu",
+  'nav.closeMenu': "Chiudi menu",
 
   'common.closeDialog': "Chiudi la finestra di dialogo",
   'top.search.toggle': "Cerca",

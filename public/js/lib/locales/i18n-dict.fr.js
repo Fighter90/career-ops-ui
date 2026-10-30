@@ -376,6 +376,7 @@ window.__I18N_DICT_FR = {
   'top.search.label': "Recherche d'entreprises, de rôles ou d'URLs",
   'top.search.aria': "Recherche globale — Cmd+K pour se concentrer, collez une URL et appuyez sur Entrée pour le pipeline automatique",
   'nav.toggleMenu': "Ouvrir ou fermer le menu",
+  'nav.closeMenu': "Fermer le menu",
 
   'common.closeDialog': "Fermer la boîte de dialogue",
   'top.search.toggle': "Rechercher",

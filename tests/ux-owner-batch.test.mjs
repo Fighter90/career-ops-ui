@@ -60,3 +60,37 @@ test('ux-owner: help TOC rows carry a permanent gutter; toc-current only flips c
     'toc-current must NOT shift geometry (padding/margin live inline on every row now)');
   assert.ok(cur[1].includes('border-inline-start-color'), 'toc-current flips the bar color only');
 });
+
+test('ux-owner: mobile drawer — in-sidebar close button, scroll reset, HUD-gated bottom lift', () => {
+  const html = readFileSync(resolve(ROOT, 'public', 'index.html'), 'utf8');
+  const aside = html.match(/<aside class="sidebar" id="sidebar">[\s\S]*?<\/aside>/);
+  assert.ok(aside, 'sidebar aside found');
+  assert.ok(aside[0].includes('id="sidebar-close"'), 'close button lives INSIDE the sidebar');
+  assert.ok(aside[0].includes('data-i18n-aria-label="nav.closeMenu"'), 'close button aria-label is i18n-keyed');
+
+  const appJs = readFileSync(resolve(ROOT, 'public', 'js', 'app.js'), 'utf8');
+  assert.ok(appJs.includes("getElementById('sidebar-close')"), 'app.js must wire the sidebar close button');
+  const openFn = appJs.match(/function openSidebar\(\)[\s\S]{0,400}?\n  \}/);
+  assert.ok(openFn && /scrollTop = 0/.test(openFn[0]), 'openSidebar must reset the sidebar scroll to the top');
+
+  const appCss = readFileSync(resolve(ROOT, 'public', 'css', 'app.css'), 'utf8');
+  assert.ok(/\.sidebar-close\s*\{[^}]*display:\s*none/.test(appCss), '.sidebar-close hidden on desktop');
+  assert.ok(/@media \(max-width: 900px\) \{[\s\S]*?\.sidebar-close\s*\{/.test(appCss),
+    '.sidebar-close shown inside the ≤900px block');
+
+  const overlays = readFileSync(resolve(ROOT, 'public', 'css', 'overlays.css'), 'utf8');
+  assert.ok(!/\n\.sidebar \{[^\n]*bottom: max\(0px/.test(overlays),
+    'the sidebar bottom lift must be gated to .sidebar.has-hud');
+  assert.ok(!/\n\.sidebar::after \{/.test(overlays),
+    '.sidebar::after must be gated to .sidebar.has-hud::after');
+  const hud = readFileSync(resolve(ROOT, 'public', 'js', 'lib', 'usage-hud.js'), 'utf8');
+  assert.ok(hud.includes("classList.toggle('has-hud'"), 'usage-hud must toggle the has-hud class');
+});
+
+test('ux-owner: nav.closeMenu exists in every locale', () => {
+  const locales = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi', 'ta', 'vi'];
+  for (const loc of locales) {
+    const src = readFileSync(resolve(ROOT, 'public', 'js', 'lib', 'locales', `i18n-dict.${loc}.js`), 'utf8');
+    assert.ok(src.includes("'nav.closeMenu':"), `nav.closeMenu missing in i18n-dict.${loc}.js`);
+  }
+});

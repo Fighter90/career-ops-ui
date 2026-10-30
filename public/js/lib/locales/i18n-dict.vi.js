@@ -371,6 +371,7 @@ window.__I18N_DICT_VI = {
   'top.search.label': "Tìm công ty, vị trí hoặc URL",
   'top.search.aria': "Tìm kiếm toàn cục — Cmd+K để trỏ tới, dán URL rồi Enter để chạy auto-pipeline",
   'nav.toggleMenu': "Bật/tắt menu",
+  'nav.closeMenu': "Đóng menu",
   'common.closeDialog': "Đóng hộp thoại",
   'top.search.toggle': "Tìm kiếm",
   'top.doctor': "Doctor",

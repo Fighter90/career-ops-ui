@@ -376,6 +376,7 @@ window.__I18N_DICT_TR = {
   'top.search.label': "Şirketleri, rolleri veya URL'leri ara",
   'top.search.aria': "Genel arama — odaklanmak için Cmd+K, otomatik-pipeline için bir URL yapıştırıp Enter'a basın",
   'nav.toggleMenu': "Menüyü aç veya kapat",
+  'nav.closeMenu': "Menüyü kapat",
 
   'common.closeDialog': "İletişim kutusunu kapat",
   'top.search.toggle': "Ara",

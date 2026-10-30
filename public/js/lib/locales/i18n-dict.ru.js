@@ -376,6 +376,7 @@ window.__I18N_DICT_RU = {
   'top.search.label': "Поиск компаний, ролей или URL",
   'top.search.aria': "Глобальный поиск — Cmd+K для фокуса, вставьте URL и Enter для auto-pipeline",
   'nav.toggleMenu': "Открыть или закрыть меню",
+  'nav.closeMenu': "Закрыть меню",
 
   'common.closeDialog': "Закрыть диалог",
   'top.search.toggle': "Поиск",

@@ -375,6 +375,7 @@ window.__I18N_DICT_DA = {
   'top.search.label': "Søg i virksomheder, roller eller URL'er",
   'top.search.aria': "Global søgning — Cmd+K for fokus, indsæt en URL og Enter for auto-pipeline",
   'nav.toggleMenu': "Åbn eller luk menuen",
+  'nav.closeMenu': "Luk menu",
 
   'common.closeDialog': "Luk dialogboksen",
   'top.search.toggle': "Søg",

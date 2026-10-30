@@ -114,6 +114,10 @@
     if (!sidebar || !host) return;
     var h = host.offsetHeight || 0;
     sidebar.style.setProperty('--usage-hud-pad', h ? (h + 8) + 'px' : '0px');
+    // Owner UX batch — the bottom-lift + fade CSS is gated to .has-hud so a
+    // sidebar rendered WITHOUT the HUD (logged-out / narrow fallbacks) keeps
+    // its natural bottom edge instead of a phantom lift.
+    sidebar.classList.toggle('has-hud', h > 0);
   }
 
   function setCollapsed(v) {

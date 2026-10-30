@@ -652,13 +652,16 @@
    its height + 8 as the `--usage-hud-pad` custom property and the sidebar's
    fixed box ENDS above the HUD (bottom = pad − 8, no inline-style clobbering —
    v1.116 review finding), so nav items never slide under it at ANY scroll
-   position (CAR-49) — padding alone only cleared the last item at scroll-end. */
-.sidebar { padding-bottom: var(--space-5); bottom: max(0px, calc(var(--usage-hud-pad, 0px) - 8px)); }
+   position (CAR-49) — padding alone only cleared the last item at scroll-end.
+   Owner UX batch: BOTH lift rules are gated to `.sidebar.has-hud` —
+   usage-hud.js toggles that class only when the HUD is actually rendered,
+   so a sidebar without the HUD keeps its natural bottom edge. */
+.sidebar.has-hud { padding-bottom: var(--space-5); bottom: max(0px, calc(var(--usage-hud-pad, 0px) - 8px)); }
 /* CAR-49 — a soft fade at the scrollport's bottom edge (just above the HUD):
    mid-scroll nav items dissolve into the surface instead of stopping at a hard
    line. Paints inside the sidebar's stacking context (below the HUD's z), and
    pointer-events: none keeps it from blocking the last visible link. */
-.sidebar::after {
+.sidebar.has-hud::after {
   content: ''; position: fixed; inset-inline-start: 0;
   bottom: max(0px, calc(var(--usage-hud-pad, 0px) - 8px));
   width: var(--sidebar-w); height: 22px;

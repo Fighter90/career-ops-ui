@@ -376,6 +376,7 @@ window.__I18N_DICT_KO = {
   'top.search.label': "회사, 직무 또는 URL 검색",
   'top.search.aria': "전역 검색 — Cmd+K 로 포커스, URL 을 붙여 넣고 Enter 로 auto-pipeline",
   'nav.toggleMenu': "메뉴 열기/닫기",
+  'nav.closeMenu': "메뉴 닫기",
 
   'common.closeDialog': "대화상자 닫기",
   'top.search.toggle': "검색",

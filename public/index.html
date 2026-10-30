@@ -65,6 +65,11 @@
         <span class="logo-text">career-ops-ui</span>
       </a>
 
+      <!-- Owner UX batch — the mobile drawer had no in-drawer close control
+           (only backdrop / Escape / nav click); this ✕ sits at the drawer's
+           top edge. Hidden on desktop via app.css, shown ≤900px. -->
+      <button class="sidebar-close" id="sidebar-close" aria-label="Close menu" data-i18n-aria-label="nav.closeMenu" type="button">✕</button>
+
       <!-- CAR-122 — sidebar v2: the 38 flat entries became 7 collapsible
            groups (state persisted by js/lib/nav-v2.js in
            `career-ops-ui:nav-v2`) + a Favorites/Recents pair rendered

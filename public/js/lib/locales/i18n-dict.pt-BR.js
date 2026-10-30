@@ -376,6 +376,7 @@ window.__I18N_DICT_PT_BR = {
   'top.search.label': "Buscar empresas, vagas ou URLs",
   'top.search.aria': "Busca global — Cmd+K para focar, cole uma URL e Enter para auto-pipeline",
   'nav.toggleMenu': "Abrir ou fechar o menu",
+  'nav.closeMenu': "Fechar menu",
 
   'common.closeDialog': "Fechar a caixa de diálogo",
   'top.search.toggle': "Buscar",

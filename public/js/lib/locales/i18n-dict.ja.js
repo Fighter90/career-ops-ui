@@ -376,6 +376,7 @@ window.__I18N_DICT_JA = {
   'top.search.label': "会社、役割、URL を検索",
   'top.search.aria': "グローバル検索 — Cmd+K でフォーカス、URL を貼り付け Enter で auto-pipeline",
   'nav.toggleMenu': "メニューを開く／閉じる",
+  'nav.closeMenu': "メニューを閉じる",
 
   'common.closeDialog': "ダイアログを閉じる",
   'top.search.toggle': "検索",

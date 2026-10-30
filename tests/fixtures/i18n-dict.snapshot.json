@@ -7580,6 +7580,27 @@
     "ta": "மெனுவை மாற்று",
     "vi": "Bật/tắt menu"
   },
+  "nav.closeMenu": {
+    "en": "Close menu",
+    "es": "Cerrar menú",
+    "pt-BR": "Fechar menu",
+    "ko": "메뉴 닫기",
+    "ja": "メニューを閉じる",
+    "ru": "Закрыть меню",
+    "zh-CN": "关闭菜单",
+    "zh-TW": "關閉選單",
+    "fr": "Fermer le menu",
+    "pl": "Zamknij menu",
+    "uk": "Закрити меню",
+    "da": "Luk menu",
+    "ar": "إغلاق القائمة",
+    "de": "Menü schließen",
+    "it": "Chiudi menu",
+    "tr": "Menüyü kapat",
+    "hi": "मेनू बंद करें",
+    "ta": "பட்டியலை மூடு",
+    "vi": "Đóng menu"
+  },
   "common.closeDialog": {
     "en": "Close dialog",
     "es": "Cerrar el diálogo",

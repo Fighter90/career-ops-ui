@@ -521,12 +521,22 @@ I18n.onChange(() => {
     toggle.setAttribute('aria-expanded', document.body.classList.contains('sidebar-open') ? 'true' : 'false');
   }
   function closeSidebar() { document.body.classList.remove('sidebar-open'); syncSidebarAria(); }
-  function openSidebar()  { document.body.classList.add('sidebar-open'); syncSidebarAria(); }
+  function openSidebar()  {
+    document.body.classList.add('sidebar-open'); syncSidebarAria();
+    // Owner UX batch — reopening the drawer keeps the scroll position from
+    // the last open (or from a previous long nav), so the drawer can open
+    // showing its middle/bottom. Always start at the top.
+    const sb = document.getElementById('sidebar');
+    if (sb) sb.scrollTop = 0;
+  }
   if (toggle) toggle.addEventListener('click', () => {
     if (document.body.classList.contains('sidebar-open')) closeSidebar();
     else openSidebar();
   });
   if (backdrop) backdrop.addEventListener('click', closeSidebar);
+  // Owner UX batch — in-drawer ✕ (mobile only; the button is display:none
+  // on desktop via app.css).
+  document.getElementById('sidebar-close')?.addEventListener('click', closeSidebar);
   document.querySelectorAll('.sidebar a').forEach((a) =>
     a.addEventListener('click', closeSidebar));
   // CAR-23 (v1.243.0) — Escape closes the open mobile drawer (the CSS
