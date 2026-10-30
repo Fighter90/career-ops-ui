@@ -7,19 +7,19 @@
 
 _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von diesen unterstützt._
 
-[![tests](https://img.shields.io/badge/tests-6869%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-6905%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.262.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.4)
+[![release](https://img.shields.io/badge/release-v1.263.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.263.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Neueste Version — v1.262.4** — **Der ja-Token-Dense-Patch: der 5-Locales-Spot-Nachlauf auf der Prod hat die vier Bewertungs-Timeouts der Nacht getrennt — ar/ko/zh-CN bestanden (250–291 s), die einmalige Drift von ru wiederholte sich nicht — aber `ja` stieß zweimal mit null Output an die Standard-300-s-Schranke; `ja` stößt jetzt zu `ta`/`hi`/`it`/`pl` mit dem 32768-Token-Ceiling und der 480 s Uhr hinzu, red-first gepinnt. Tests 6868 → 6869.**
+> **🆕 Neueste Version — v1.263.0** — **Die Owner-UX-Charge: ein Motion-Polish-Layer (touch-sichere Hovers, Lift nur für interaktive Karten, Modal-/Popover-/Toast-/Theme-Animationen — reduced-motion-sicher), der Akzent kippt Blau → Karmesinrot wie das Logo, ein WCAG-Kontrastdurchlauf (docs-fab 6.4:1, Toast, Formularrahmen 3:1), jede Kontrolle bekommt einen programmatischen Namen, und ein Dutzend Layout-Fixes — der Scan-Tabellen-Header verdeckt die Suche nicht mehr, der Gehaltsfilter ist wieder normal groß, die Docs-Seite läuft nie über, der mobile Drawer hat ein sichtbares Schließen bekommen. Tests 6869 → 6905.**
 >
-> **Vorherige Version — v1.262.3** — **Der pl-Token-Dense-Patch: das volle Remote-QA auf der Prod v1.262.1 hat die polnische Bewertung beim Sterben an der Standard-300-s-Schranke ertappt — `502 · 0 ch` — zweimal (der volle ×19-Lauf 40960568766 und der Spot-Nachlauf mit v1.262.2 40968958062), während 18/19 Locales A–G bestanden; `pl` stößt jetzt zu `ta`/`hi`/`it` mit dem 32768-Token-Ceiling und der 480 s Uhr hinzu, red-first gepinnt (`evalMaxTokens`, `evalTimeoutMs`). Dieselbe Formklasse wie `it` in v1.262.1. Tests 6867 → 6868.**
+> **Vorherige Version — v1.262.4** — **Der ja-Token-Dense-Patch: der 5-Locales-Spot-Nachlauf auf der Prod hat die vier Bewertungs-Timeouts der Nacht getrennt — ar/ko/zh-CN bestanden (250–291 s), die einmalige Drift von ru wiederholte sich nicht — aber `ja` stieß zweimal mit null Output an die Standard-300-s-Schranke; `ja` stößt jetzt zu `ta`/`hi`/`it`/`pl` mit dem 32768-Token-Ceiling und der 480 s Uhr hinzu, red-first gepinnt. Tests 6868 → 6869.**
 >
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
@@ -423,7 +423,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 6869 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.262.4)
+└─ tests/                    # 6905 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.263.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch

@@ -9,6 +9,35 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 ---
 
 
+## [1.263.0] — 2026-10-30
+
+### Tilføjet
+
+- **Motion-polish-lag** — ny `motion.css` (sidste app-ark): modal/popover-indgange (scale .97 + fade, 130–180 ms), toast spring-in + blød leaving-tilstand, theme-toggle tryk-fjeder, chip/tab tryk scale(.97), stagger-infrastruktur (50 ms-trin, loft 12), `.page-enter` ruteskifte-fade (router), focus-halo-overgange på chips/tabs. Hver regel er `prefers-reduced-motion`-sikker (bevægelse falder til none, opacity/farve består).
+- **Touch-korrekthed** — 68 hover-lift-regler var ubeskyttede: touch-enheder fik hængende et "løftet" kort efter et tryk. Alle transform-hovers er nu `@media (hover:hover)`-gated (motion.css-neutraliseren), og kort-liftet gælder kun reelt interaktive kort (`.card:has(a)`, `a.card`, `button.card`, `[role=button].card`) — ikke flere falske affordances på statiske kort.
+- **A11y: alle kontroller har et programmatisk navn.** Ny `A11yDump`-hjælper navngiver alle 16 readonly LLM-output-dumps; 12 placeholder-only-felter (CV Studio ×6, config ×2, scan-søgning, tracker-score-vælger, outcome-note, plan-editor, auto-URL, bug report) fik `aria-label`s; `a11y-form-wires`-gaten håndhæver det nu klasse-dækkende (var 26 unavngivne steder, nu 0 + allowlist med dokumenterede begrundelser).
+
+### Rettet
+
+- **#/scan**: den sticky tabel-header tegner ikke længere oven på topbar-søgningen, når den scroller under den (z var lig med topbarens, den senere DOM vandt — nu token-afledt under den); «Зарплата от/до»-inputfelterne er normal-store igen (en `.v2-scan-bar .input`-flexregel lækkede ind i popoverens kolonneflex og satte flex-basis 200 px som HØJDE — nu `>`-scopet + popover-guard); density-toggle-knappen er fjernet ved ejerbeslutning (plumbing beholdt, i18n-nøgler fjernet ×19).
+- **Deploy-workflow-hærdning (F1–F6)**: `provider`-input charset-valideret før enhver shell-sammenføjning; hermes-diagnostik redigerer værdier (case-insensitivt nøglefilter + værdimaske + 80-tegns-klip på alle tre sinks, `?token=` maskeret også); hermes-trinnet respekterer `inputs.app_dir`; public_url https-gated; anti-downgrade-guarden har 6 eksekverbare pins (ingen defaults, guard-før-Deploy-rækkefølge, strict refs-regex).
+- **Review-hale, red-first**: CSV-import backslash round-trip (re-import deduplikerede igen), cv-voice head-strip 4827 ms → 13 ms, `statedYearsMin` beregnes dovent, posting-guard capture TOCTOU, MiniMax CN-wildcard, deel token-skip, import-vælger size-guards før læsning. Import-modal: nav-guard aktiveret, file-input fjernet ved annullering, bevogtede dubletlæsninger, `num` via reduce.
+- **Owner UX-batch**: dashboard-heroens lodrette rytme (inline-level børn limet sammen i én linjeboks); help TOC −8 px forskudt aktiv række (per-række inline-gutter + talkolonne); mobil drawer (synlig ✕-lukning, scrollTop-nulstilling, den fantom-`--paper`-fade gated til `.has-hud`); docs-assistant-siden overflyder ikke længere med en lang URL i et svar (grid `min-width`-kæde + `overflow-wrap: anywhere`); «Недавние» forklaret (hint) + kan ryddes; career-plan Save genarmes efter en fejlet indlæsning; evaluate URL-prefill brænder ikke længere et LLM-kald på indsæt-pladsholderen; auto-pipeline Enter respekterer IME-komposition.
+- **Kontrast (WCAG-audit, 296 par)**: docs-fab-gradient 2.43 → 6.4:1, toast.success → ok-soft-parret (1.75 → AA dark), banner btn-dark → `--ink`-flip, scan-logbtn/reposts-badge/fab-chip/close lyse varianter, og formular kontrolrammer til 3:1 (`--cv3-input-line`, WCAG 1.4.11 — var 1.2:1).
+- **Visuel omgang**: trackerens tomme tilstand er et fuldbreddes-kort (var klippet inde i 760 px-tabellen ved 390); scan-konsollinjen ellipser i stedet for at klippe halvt; den flydende chat-FAB dækker ikke længere indhold ved 390 (44 px-mål, inset 12); dashboardens «Application statuses»-tomme tilstand følger v2-empty-mønsteret; stats «?»-hintet får en divider + 44 px-mål; career-plan Input-fanen forklarer, hvor resultatet lander; help §1 markdown (18 ødelagte bold-spans).
+
+### Ændret
+
+- **Accent blå → karmosinrød (ejerønske, logo-koherent, hue 15)** — 5 cv3-tokens × 3 tema-blokke; `docs-assistant`-chatboble-tekst rider på `--accent-ink` (var bogstavelig #fff, 2.39:1 i dark); funded-wash rider på `--accent-soft`. Danger forbliver hue 25 med sine egne behandlinger.
+- Docs: README testing-tabel-tælling ×17 (en drift fra v1.248-tiden), help §1 + 18 markdown-spans, help fr/it/ta «118», leverandørpriser CHECKED_ON 2026-10-30, HANDOFF/CONTEXT/TRACEABILITY-fakta.
+
+### Noter
+
+- Bevidst ikke gjort: skeleton sweep-omarbejdningen holdes ude (car112-kontrakten pinner den nuværende fade ordret); theme-toggle-ikonets crossfade forbliver en `display`-swap (theme-toggle Playwright-kontrakten observerer den); `.btn:active`-scale blev ikke duplikeret (app.css ejer den); motion stagger er kun infrastruktur — dashboard-tiles adopterer den senere; help ×19-prosa (density-omtale, §1 markdown, «118») kommer med den næste fan-out.
+- Fuld remote-QA-dokumentation: ja punkt-genkørsel grøn (376 s / A–G ✓) på v1.262.4; en/it grønne tidligere i token-dense-æraen.
+
+Tests 6869 → 6905 (+36) · Playwright 176 · dækning 98.4 % linje / 89.9 % gren · registry uændret: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.262.4] — 2026-10-30
 
 ### Rettet
