@@ -7,19 +7,19 @@
 
 _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır._
 
-[![tests](https://img.shields.io/badge/tests-6905%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7041%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.263.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.263.0)
+[![release](https://img.shields.io/badge/release-v1.264.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.264.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Son sürüm — v1.263.0** — **Sahibin UX paketi: bir hareket cilalama katmanı (dokunma-güvenli hover'lar, yalnızca-etkileşimli kart kaldırma, modal/popover/toast/tema animasyonları — reduced-motion güvenli), vurgu logoya uyarak maviden → kızıl kırmızıya döner, bir WCAG kontrast geçişi (docs-fab 6.4:1, toast, form kenarlıkları 3:1), her kontrol programatik bir ad alır ve bir düzine düzen düzeltmesi — scan tablo başlığı artık aramayı örtmüyor, maaş filtresi yeniden normal boyutta, docs sayfası asla taşmıyor, mobil çekmece görünür bir kapatma kazandı. Testler 6869 → 6905.**
+> **🆕 Son sürüm — v1.264.0** — **Yayın-sonrası sağlamlaştırma dalgası: her tracker satırının durumu satır-içi düzenlenebilir (`applications.md` kilidi altında üst projenin kanonik set-status.mjs), sunucu uyarıları (kırpılma, dil sürüklenmesi) altı AI sayfasının hepsinde bir şerit olarak gösteriliyor, Trudvsem tarama kaynağı boş sayfalarda hayatta kalıyor ve kayıt ofsetleriyle yürüyor, habr başlıkları işaretlemeyi yeniden canlandıramıyor, ham profil kapısı full_name satırını tutuyor ve ipuçları sonunda doğruyu söylüyor (.doc gitti, gpt-5 ve Anthropic 5-5 katmanları). Testler 6905 → 7041.**
 >
-> **Önceki — v1.262.4** — **ja token-yoğun yaması: prod üzerindeki 5-yerel-ayarlık hedefli yeniden koşu, gecenin dört evaluate zaman aşımını ayırdı — ar/ko/zh-CN geçti (250–291 s), ru'nun tek seferlik sürüklenmesi tekrarlanmadı — ama `ja` standart 300 s tavanına sıfır çıktıyla iki kez çarptı; `ja` artık 32768-token tavanı ve 480 s saatiyle `ta`/`hi`/`it`/`pl`'e katılıyor, red-first sabitlendi. Testler 6868 → 6869.**
+> **Önceki — v1.263.0** — **Sahibin UX paketi: bir hareket cilalama katmanı (dokunma-güvenli hover'lar, yalnızca-etkileşimli kart kaldırma, modal/popover/toast/tema animasyonları — reduced-motion güvenli), vurgu logoya uyarak maviden → kızıl kırmızıya döner, bir WCAG kontrast geçişi (docs-fab 6.4:1, toast, form kenarlıkları 3:1), her kontrol programatik bir ad alır ve bir düzine düzen düzeltmesi — scan tablo başlığı artık aramayı örtmüyor, maaş filtresi yeniden normal boyutta, docs sayfası asla taşmıyor, mobil çekmece görünür bir kapatma kazandı. Testler 6869 → 6905.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -422,7 +422,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 6905 birim + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.263.0)
+└─ tests/                    # 7041 birim + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.264.0)
    ├─ parsers.test.mjs       # markdown / pipeline / rapor ayrıştırıcıları (saf fonksiyonlar)
    ├─ api.test.mjs           # her uç nokta, geçici sunucu, ağ yok
    ├─ {ru,en}-scanner.test.mjs   # taklit edilmiş fetch
