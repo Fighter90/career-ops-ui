@@ -138,8 +138,9 @@ function makeHarness(response) {
     postJSON: async () => response,
   };
   // eslint-disable-next-line no-new-func
-  new Function('window', 'document', 'Router', 'API', 'UI', 'I18n', 'HelpHint', VIEW)(
-    w, doc, w.Router, w.API, w.UI, w.I18n, w.HelpHint,
+  w.A11yDump = { label() {} };
+  new Function('window', 'document', 'A11yDump', 'Router', 'API', 'UI', 'I18n', 'HelpHint', VIEW)(
+    w, doc, w.A11yDump, w.Router, w.API, w.UI, w.I18n, w.HelpHint,
   );
   return { w, routes, went, modals, toasts };
 }

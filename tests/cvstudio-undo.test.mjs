@@ -178,8 +178,10 @@ function loadStudioRoute({ markdown = '# Jane Doe\n\nEngineer.', humanize = [], 
       : p === '/api/jds' ? Promise.resolve({ jds }) : Promise.resolve({})),
   };
   const src = read('public', 'js', 'views', 'cv-studio.js');
-  new Function('window', 'Router', 'API', 'UI', 'I18n', 'HelpHint', src)(
+  const a11yDump = { label() {} };
+  new Function('window', 'A11yDump', 'Router', 'API', 'UI', 'I18n', 'HelpHint', src)(
     win,
+    a11yDump,
     { register: (name, fn) => { registered[name] = fn; }, go() {} },
     api,
     ui,

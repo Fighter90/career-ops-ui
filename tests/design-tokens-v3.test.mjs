@@ -188,15 +188,17 @@ test('values are oklch-first — no hex/rgb(a) color literals', () => {
   }
 });
 
-test('index.html loads tokens-v3.css last of the /css/ sheets, before leaflet', () => {
+test('index.html loads motion.css last of the /css/ sheets, tokens-v3 after map, leaflet last', () => {
   const html = HTML();
   const links = [...html.matchAll(/\/css\/([a-z0-9-]+\.css)/g)];
   const last = links[links.length - 1];
-  assert.equal(last[1], 'tokens-v3.css',
-    `tokens-v3.css must be the LAST /css/ stylesheet (found ${last[1]})`);
+  assert.equal(last[1], 'motion.css',
+    `motion.css must be the LAST /css/ stylesheet (found ${last[1]})`);
   const mapPos = html.indexOf('/css/map.css');
   const tokPos = html.indexOf('/css/tokens-v3.css');
+  const motPos = html.indexOf('/css/motion.css');
   const leafPos = html.indexOf('/vendor/leaflet/leaflet.css');
   assert.ok(mapPos > -1 && mapPos < tokPos, 'tokens-v3.css must load after map.css');
-  assert.ok(leafPos > tokPos, 'tokens-v3.css must load before the leaflet vendor stylesheet');
+  assert.ok(tokPos < motPos, 'motion.css must load after tokens-v3.css (cascade overrides)');
+  assert.ok(leafPos > motPos, 'the leaflet vendor stylesheet must load after all app sheets');
 });

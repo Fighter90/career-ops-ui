@@ -45,7 +45,9 @@ test('usage-hud is pinned to the sidebar bottom (fixed, full sidebar width) and 
   assert.doesNotMatch(SRC, /style\.paddingBottom\s*=/);
   assert.match(SRC, /if \(!document\.querySelector\(['"]\.sidebar['"]\)\) return;/);
   assert.match(css, /--usage-hud-pad/);
-  assert.match(css, /\.sidebar\s*\{[^}]*bottom:\s*max\(0px,\s*calc\(var\(--usage-hud-pad,\s*0px\)\s*-\s*8px\)\)/);
+  // Owner UX batch — the bottom-lift is gated to .sidebar.has-hud: without a
+  // rendered HUD the sidebar keeps its natural bottom edge (no phantom fade).
+  assert.match(css, /\.sidebar\.has-hud\s*\{[^}]*bottom:\s*max\(0px,\s*calc\(var\(--usage-hud-pad,\s*0px\)\s*-\s*8px\)\)/);
 });
 
 test('usage-hud refreshes in real time (interval + tab-focus + hashchange)', () => {

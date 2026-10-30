@@ -143,8 +143,10 @@ test('RTL mirrors .tbl alignment, the toc-current rail and the score glyph margi
   // needed) for these three.
   assert.match(CSS, /table\.tbl th,\s*table\.tbl td\s*\{[^}]*text-align:\s*start/,
     'data table cells must align to the reading start (mirrors in RTL for free)');
-  assert.match(CSS, /\.help-toc a\.toc-current\s*\{[^}]*border-inline-start:\s*\d+px solid var\(--rausch[^}]*margin-inline-start:\s*-11px/,
-    'the toc-current rail must sit on the inline-start side (flips sides in RTL)');
+  assert.match(CSS, /\.help-toc a\.toc-current\s*\{[^}]*border-inline-start-color:\s*var\(--rausch/,
+    'the toc-current rail rides the inline-start side via the per-row inline gutter (flips sides in RTL)');
+  assert.match(CSS, /\.help-toc a\.toc-current\s*\{[^}]*font-weight:\s*600/,
+    'the toc-current active state is weight-highlighted');
   assert.match(CSS, /\.score-(high|mid|low)::before\s*\{[^}]*margin-inline-end:\s*6px/,
     'the score glyph margin must follow the reading direction');
   assert.doesNotMatch(CSS, /\[dir="rtl"\] table\.tbl th/,

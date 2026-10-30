@@ -306,7 +306,7 @@ test('stats: tabs are nowrap and the "?" sits end-aligned ON the strip (RTL-safe
   // End-aligned: the hint sits AFTER the scroller in the strip's flex row, so
   // it stays visible at the strip's end edge in LTR and RTL alike; the
   // scroller's fade mask is symmetric and mirrors itself under [dir="rtl"].
-  assert.match(STATS, /hintRow = c\('div', \{ style: \{ display: 'flex', alignItems: 'center', gap: '2px', flex: '0 0 auto'/);
+  assert.match(STATS, /hintRow = c\('div', \{ style: \{ display: 'flex', alignItems: 'center', gap: '4px', flex: '0 0 auto', padding: '0 8px', minHeight: '44px'/);
   assert.match(STATS, /\[c\('div', \{ className: 'v2-stats-scroller' \}, tabBar\), hintRow\]/,
     'hint row rides the strip line, after the scroller');
   assert.ok(!STATS.includes("margin: '-8px 0 14px'"), 'the stray-line negative margin is gone');
