@@ -84,8 +84,16 @@ Router.register('help', async () => {
       .replace(/\*([^*]+)\*/g, '$1');
     const a = c('a', {
       href: '#help-h-' + h.id.replace(/^help-h-/, ''),
+      // Owner UX batch — the active-row highlight (`.toc-current`) used to
+      // add its gutter (border + padding + negative margin) ONLY to the
+      // current link, so every scroll-spy step re-flowed the whole TOC.
+      // Every row now reserves the gutter permanently; `.toc-current`
+      // flips color/weight/bar-color only. The section number sits in its
+      // own end-aligned column so titles align down the list.
       style: {
-        display: 'block', padding: '4px 0', color: 'var(--hof)',
+        display: 'flex', gap: '6px', alignItems: 'baseline', padding: '4px 0',
+        borderInlineStart: '3px solid transparent', marginInlineStart: '-11px', paddingInlineStart: '8px',
+        color: 'var(--hof)',
         textDecoration: 'none', fontSize: '13px', lineHeight: 1.55,
       },
       onClick: (e) => {
@@ -110,7 +118,12 @@ Router.register('help', async () => {
         target.setAttribute('tabindex', '-1');
         target.focus({ preventScroll: true });
       },
-    }, plain);
+    });
+    // Split the leading "N." into its own end-aligned column (flex child of
+    // the row above); headings without a numbered prefix render as-is.
+    const numMatch = plain.match(/^(\d+)\.\s+/);
+    a.appendChild(c('span', { style: { flex: '0 0 1.6ch', textAlign: 'end' } }, numMatch ? numMatch[1] + '.' : ''));
+    a.appendChild(c('span', null, numMatch ? plain.slice(numMatch[0].length) : plain));
     // v1.62.x — index each section's BODY too (every node from this H2
     // up to the next H2), so the filter is full-text: an H3 subsection
     // like `rss` is findable by content, not just by its H2 title.

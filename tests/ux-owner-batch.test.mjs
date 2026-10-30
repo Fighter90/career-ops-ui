@@ -45,3 +45,18 @@ test('ux-owner: dashboard hero stacks vertically (column flex + gap)', () => {
   assert.ok(style.includes('gap:'), 'hero inner must space children via gap');
   assert.ok(style.includes("alignItems: 'flex-start'"), 'hero children align to the start edge');
 });
+
+test('ux-owner: help TOC rows carry a permanent gutter; toc-current only flips color', () => {
+  const src = readFileSync(resolve(ROOT, 'public', 'js', 'views', 'help.js'), 'utf8');
+  assert.ok(src.includes("borderInlineStart: '3px solid transparent'"),
+    'every TOC row must reserve the gutter with a transparent inline border');
+  assert.ok(src.includes("paddingInlineStart: '8px'") && src.includes("marginInlineStart: '-11px'"),
+    'every TOC row must carry the gutter geometry inline');
+  assert.ok(src.includes("flex: '0 0 1.6ch'"), 'section number must sit in its own end-aligned span column');
+  const css = readFileSync(resolve(ROOT, 'public', 'css', 'overlays.css'), 'utf8');
+  const cur = css.match(/\.help-toc a\.toc-current \{([^}]*)\}/);
+  assert.ok(cur, 'toc-current rule found');
+  assert.ok(!cur[1].includes('padding-inline-start') && !cur[1].includes('margin-inline-start'),
+    'toc-current must NOT shift geometry (padding/margin live inline on every row now)');
+  assert.ok(cur[1].includes('border-inline-start-color'), 'toc-current flips the bar color only');
+});
