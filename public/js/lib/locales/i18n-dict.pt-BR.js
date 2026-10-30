@@ -1824,4 +1824,8 @@ window.__I18N_DICT_PT_BR = {
   'v2empty.dash.statusesTitle': 'Ainda não há status para mostrar',
   'v2empty.dash.statusesBody': 'Avalie uma vaga e acompanhe-a — o status da candidatura entra no funil aqui.',
   "llm.truncatedNotice": "A saída do modelo pode estar truncada — execute novamente se o relatório parecer cortado",
+  // track — inline status edit (v1.246.0 backlog #2)
+  "track.inlineStatusAria": "Alterar o status da candidatura",
+  "track.statusUpdated": "Status atualizado para {state}",
+  "track.statusUpdateFailed": "Não foi possível atualizar o status",
 };

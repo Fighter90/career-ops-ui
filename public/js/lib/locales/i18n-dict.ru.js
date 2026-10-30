@@ -1825,4 +1825,8 @@ window.__I18N_DICT_RU = {
   'v2empty.dash.statusesTitle': 'Статусов пока нет',
   'v2empty.dash.statusesBody': 'Оцените вакансию и добавьте её в трекер — её статус появится в этой воронке.',
   "llm.truncatedNotice": "Ответ модели мог обрезаться — запустите заново, если отчёт выглядит оборванным",
+  // track — inline status edit (v1.246.0 backlog #2)
+  "track.inlineStatusAria": "Изменить статус заявки",
+  "track.statusUpdated": "Статус обновлён: {state}",
+  "track.statusUpdateFailed": "Не удалось обновить статус",
 };

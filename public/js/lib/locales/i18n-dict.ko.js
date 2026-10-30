@@ -1825,4 +1825,8 @@ window.__I18N_DICT_KO = {
   'v2empty.dash.statusesTitle': '표시할 상태가 아직 없습니다',
   'v2empty.dash.statusesBody': '공고를 평가하고 추적하세요 — 지원 상태가 이 퍼널에 추가됩니다.',
   "llm.truncatedNotice": "모델 출력이 잘렸을 수 있습니다 — 보고서가 잘린 것 같으면 다시 실행하세요",
+  // track — inline status edit (v1.246.0 backlog #2)
+  "track.inlineStatusAria": "지원 상태 변경",
+  "track.statusUpdated": "상태가 업데이트되었습니다: {state}",
+  "track.statusUpdateFailed": "상태를 업데이트할 수 없습니다",
 };

@@ -1811,4 +1811,8 @@ window.__I18N_DICT_TA = {
   'v2empty.dash.statusesTitle': 'காட்ட இன்னும் நிலைகள் இல்லை',
   'v2empty.dash.statusesBody': 'ஒரு பதவியை மதிப்பிட்டு கண்காணியுங்கள் — அதன் விண்ணப்ப நிலை இங்கே நிலைக்குழவில் சேரும்.',
   "llm.truncatedNotice": "மாதிரி வெளியீடு துண்டிக்கப்பட்டிருக்கலாம் — அறிக்கை துண்டிக்கப்பட்டதாகத் தோன்றினால் மீண்டும் இயக்கவும்",
+  // track — inline status edit (v1.246.0 backlog #2)
+  "track.inlineStatusAria": "விண்ணப்ப நிலையை மாற்று",
+  "track.statusUpdated": "நிலை புதுப்பிக்கப்பட்டது: {state}",
+  "track.statusUpdateFailed": "நிலையைப் புதுப்பிக்க முடியவில்லை",
 };

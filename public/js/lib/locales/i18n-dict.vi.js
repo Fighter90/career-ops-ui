@@ -1799,4 +1799,8 @@ window.__I18N_DICT_VI = {
   'v2empty.dash.statusesTitle': 'Chưa có trạng thái nào để hiển thị',
   'v2empty.dash.statusesBody': 'Hãy đánh giá một tin và theo dõi nó — trạng thái ứng tuyển của tin sẽ vào phễu tại đây.',
   "llm.truncatedNotice": "Đầu ra của mô hình có thể bị cắt bớt — chạy lại nếu báo cáo có vẻ bị cắt ngang",
+  // track — inline status edit (v1.246.0 backlog #2)
+  "track.inlineStatusAria": "Thay đổi trạng thái ứng tuyển",
+  "track.statusUpdated": "Đã cập nhật trạng thái thành {state}",
+  "track.statusUpdateFailed": "Không thể cập nhật trạng thái",
 };

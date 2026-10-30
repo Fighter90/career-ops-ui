@@ -1825,4 +1825,8 @@ window.__I18N_DICT_ES = {
   'v2empty.dash.statusesTitle': 'Aún no hay estados para mostrar',
   'v2empty.dash.statusesBody': 'Evalúa una oferta y hazle seguimiento: su estado de candidatura se une aquí al embudo.',
   "llm.truncatedNotice": "Es posible que la salida del modelo esté truncada — vuelve a ejecutar si el informe parece cortado",
+  // track — inline status edit (v1.246.0 backlog #2)
+  "track.inlineStatusAria": "Cambiar el estado de la solicitud",
+  "track.statusUpdated": "Estado actualizado a {state}",
+  "track.statusUpdateFailed": "No se pudo actualizar el estado",
 };

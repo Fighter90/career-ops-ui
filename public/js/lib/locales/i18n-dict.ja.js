@@ -1825,4 +1825,8 @@ window.__I18N_DICT_JA = {
   'v2empty.dash.statusesTitle': '表示するステータスはまだありません',
   'v2empty.dash.statusesBody': '求人を評価して追跡すると、その応募ステータスがこのファネルに追加されます。',
   "llm.truncatedNotice": "モデル出力が切り詰められた可能性があります — レポートが途中で切れているように見える場合は再実行してください",
+  // track — inline status edit (v1.246.0 backlog #2)
+  "track.inlineStatusAria": "応募ステータスを変更",
+  "track.statusUpdated": "ステータスを更新しました: {state}",
+  "track.statusUpdateFailed": "ステータスを更新できませんでした",
 };

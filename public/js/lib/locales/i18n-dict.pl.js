@@ -1824,4 +1824,8 @@ window.__I18N_DICT_PL = {
   'v2empty.dash.statusesTitle': 'Nie ma jeszcze statusów do pokazania',
   'v2empty.dash.statusesBody': 'Oceń ofertę i śledź ją — jej status aplikacji dołączy do tego lejka.',
   "llm.truncatedNotice": "Wynik modela mógł zostać ucięty — uruchom ponownie, jeśli raport wygląda na ucięty",
+  // track — inline status edit (v1.246.0 backlog #2)
+  "track.inlineStatusAria": "Zmień status aplikacji",
+  "track.statusUpdated": "Status zaktualizowany na {state}",
+  "track.statusUpdateFailed": "Nie udało się zaktualizować statusu",
 };

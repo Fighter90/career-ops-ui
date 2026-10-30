@@ -1824,4 +1824,8 @@ window.__I18N_DICT_IT = {
   'v2empty.dash.statusesTitle': 'Nessuno stato da mostrare ancora',
   'v2empty.dash.statusesBody': 'Valuta un annuncio e monitoralo — il suo stato di candidatura entra in questo funnel.',
   "llm.truncatedNotice": "L'output del modello potrebbe essere troncato — rilancia se il report sembra interrotto",
+  // track — inline status edit (v1.246.0 backlog #2)
+  "track.inlineStatusAria": "Modifica lo stato della candidatura",
+  "track.statusUpdated": "Stato aggiornato a {state}",
+  "track.statusUpdateFailed": "Impossibile aggiornare lo stato",
 };

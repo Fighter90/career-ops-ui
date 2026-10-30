@@ -1824,4 +1824,8 @@ window.__I18N_DICT_DE = {
   'v2empty.dash.statusesTitle': 'Noch keine Statusanzeige vorhanden',
   'v2empty.dash.statusesBody': 'Bewerten Sie eine Stelle und verfolgen Sie sie — ihr Bewerbungsstatus erscheint hier im Trichter.',
   "llm.truncatedNotice": "Die Modellausgabe ist möglicherweise gekürzt — führe den Lauf erneut aus, wenn der Bericht abgeschnitten wirkt",
+  // track — inline status edit (v1.246.0 backlog #2)
+  "track.inlineStatusAria": "Bewerbungsstatus ändern",
+  "track.statusUpdated": "Status aktualisiert auf {state}",
+  "track.statusUpdateFailed": "Status konnte nicht aktualisiert werden",
 };

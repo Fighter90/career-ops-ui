@@ -1826,4 +1826,8 @@ window.__I18N_DICT_TR = {
   'v2empty.dash.statusesTitle': 'Henüz gösterilecek durum yok',
   'v2empty.dash.statusesBody': 'Bir ilanı değerlendirin ve takip edin — başvuru durumu bu huniye eklenir.',
   "llm.truncatedNotice": "Model çıktısı kesilmiş olabilir — rapor yarıda kesilmiş görünüyorsa yeniden çalıştırın",
+  // track — inline status edit (v1.246.0 backlog #2)
+  "track.inlineStatusAria": "Başvuru durumunu değiştir",
+  "track.statusUpdated": "Durum güncellendi: {state}",
+  "track.statusUpdateFailed": "Durum güncellenemedi",
 };

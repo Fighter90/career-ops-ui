@@ -9,12 +9,16 @@
  * and reportSlug are sanitized. The Markdown table is bootstrapped on
  * first write.
  */
-import { readFileSync, mkdirSync } from 'node:fs';
-import { PATHS, path as projPath } from '../paths.mjs';
+import { readFileSync, mkdirSync, existsSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { PATHS, PROJECT_ROOT, path as projPath } from '../paths.mjs';
 import { parseApplications, parseMarkdownTable, today } from '../parsers.mjs';
 import { safeReadApps, safeListReports } from '../store.mjs';
 import { withFileLock, atomicWrite } from '../file-lock.mjs';
-import { canonicalizeStatus, readCanonicalStates } from '../states.mjs';
+import { canonicalizeStatus, readCanonicalStates, canonicalLabels } from '../states.mjs';
+import { runTrackedScript } from '../runner.mjs';
+import { llmRateLimit } from '../rate-limit.mjs';
+import { parseJsonStdout, sanitizeDetail } from '../parent-relay.mjs';
 // CAR-181 — import another tracker's CSV export. Pure planning lives in
 // lib/tracker-import.mjs; this route only validates, locks and writes.
 import {
@@ -344,5 +348,73 @@ export function registerTrackerRoutes(app) {
       return done(applied);
     });
     res.json(result);
+  });
+
+  // ─── Inline status edit (v1.246.0 backlog #2) ─────────────────────────────
+  // The #/tracker row's status <select> writes through the parent's canonical
+  // writer, never directly: the route relays
+  //   node set-status.mjs --row N <State> [--note "..."] [--dry-run] --json
+  // spawned via runTrackedScript (set-status.mjs is TRACKER_MUTATING, so the
+  // spawn holds the applications.md lock and serializes with web-ui's own
+  // tracker writers). The state whitelist is NOT duplicated here:
+  // canonicalizeStatus() folds any label/id/alias to its canonical form via
+  // templates/states.yml (server/lib/states.mjs). Fail-soft 502 { error } on a
+  // missing script, a non-zero exit or an unparseable stdout — the client
+  // reverts the select. web-ui never writes applications.md from a route body.
+  const SET_STATUS_SCRIPT = 'set-status.mjs';
+  const SET_STATUS_TIMEOUT_MS = 30_000;
+  const MAX_NOTE = 200; // mirrors the POST /api/tracker notes-cell cap
+
+  /** True if `s` carries a C0 control char or DEL — spawn throws on NUL. */
+  function hasControlChar(s) {
+    for (let i = 0; i < s.length; i += 1) {
+      const code = s.charCodeAt(i);
+      if (code < 0x20 || code === 0x7f) return true;
+    }
+    return false;
+  }
+
+  app.post('/api/tracker/status', llmRateLimit, async (req, res) => {
+    const body = (req.body && typeof req.body === 'object') ? req.body : {};
+    const { row, state } = body;
+    const note = typeof body.note === 'string' ? body.note.trim() : '';
+    const dryRun = body.dryRun === true;
+
+    if (typeof row !== 'number' || !Number.isInteger(row) || row < 1) {
+      return res.status(400).json({ error: 'row must be a positive integer' });
+    }
+    if (typeof state !== 'string' || !state.trim()) {
+      return res.status(400).json({ error: 'state is required' });
+    }
+    const canonical = canonicalizeStatus(state);
+    if (!canonical) {
+      return res.status(400).json({ error: `invalid state; valid: ${canonicalLabels().join(', ')}` });
+    }
+    if (hasControlChar(note)) {
+      return res.status(400).json({ error: 'control characters are not allowed' });
+    }
+    if (note.length > MAX_NOTE) {
+      return res.status(400).json({ error: `note must be ≤ ${MAX_NOTE} chars` });
+    }
+    if (!existsSync(resolve(PROJECT_ROOT, SET_STATUS_SCRIPT))) {
+      return res.status(502).json({ error: 'set-status.mjs not found in the parent project' });
+    }
+
+    // Flag + positional args as an argv array — never shell-interpolated.
+    const args = ['--row', String(row), canonical];
+    if (note) args.push('--note', note);
+    if (dryRun) args.push('--dry-run');
+    args.push('--json');
+
+    const r = await runTrackedScript(SET_STATUS_SCRIPT, args, { timeoutMs: SET_STATUS_TIMEOUT_MS });
+    const data = parseJsonStdout(r.stdout);
+    if (r.code !== 0 || !data) {
+      return res.status(502).json({
+        error: (data && data.error) || 'set-status.mjs failed',
+        code: r.killed ? 'timeout' : 'script-error',
+        detail: sanitizeDetail(r.stderr),
+      });
+    }
+    return res.json({ ok: true, ...data });
   });
 }

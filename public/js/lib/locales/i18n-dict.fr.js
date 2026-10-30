@@ -1824,4 +1824,8 @@ window.__I18N_DICT_FR = {
   'v2empty.dash.statusesTitle': 'Aucun statut à afficher pour l\'instant',
   'v2empty.dash.statusesBody': 'Évaluez une offre et suivez-la — son statut de candidature rejoint l\'entonnoir ici.',
   "llm.truncatedNotice": "La sortie du modèle a peut-être été tronquée — relancez si le rapport semble coupé",
+  // track — inline status edit (v1.246.0 backlog #2)
+  "track.inlineStatusAria": "Changer le statut de la candidature",
+  "track.statusUpdated": "Statut mis à jour : {state}",
+  "track.statusUpdateFailed": "Impossible de mettre à jour le statut",
 };

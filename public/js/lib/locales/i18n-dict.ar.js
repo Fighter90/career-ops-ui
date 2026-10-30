@@ -1824,4 +1824,8 @@ window.__I18N_DICT_AR = {
   'v2empty.dash.statusesTitle': 'لا توجد حالات للعرض بعد',
   'v2empty.dash.statusesBody': 'قيّم وظيفة وتابعها — ستظهر حالتها في قمع التقدم هنا.',
   "llm.truncatedNotice": "قد يكون ناتج النموذج مقتطعاً — أعد التشغيل إذا بدا التقرير مقطوعاً",
+  // track — inline status edit (v1.246.0 backlog #2)
+  "track.inlineStatusAria": "تغيير حالة الطلب",
+  "track.statusUpdated": "تم تحديث الحالة إلى {state}",
+  "track.statusUpdateFailed": "تعذّر تحديث الحالة",
 };

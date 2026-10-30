@@ -1824,4 +1824,8 @@ window.__I18N_DICT_DA = {
   'v2empty.dash.statusesTitle': 'Ingen statusser at vise endnu',
   'v2empty.dash.statusesBody': 'Evaluér et jobopslag og følg det — dets ansøgningsstatus kommer ind i tragten her.',
   "llm.truncatedNotice": "Modellens output kan være blevet afkortet — kør igen, hvis rapporten ser afskåret ud",
+  // track — inline status edit (v1.246.0 backlog #2)
+  "track.inlineStatusAria": "Ændr ansøgningens status",
+  "track.statusUpdated": "Status opdateret til {state}",
+  "track.statusUpdateFailed": "Kunne ikke opdatere statussen",
 };

@@ -1836,4 +1836,8 @@ window.__I18N_DICT_HI = {
   'v2empty.dash.statusesTitle': 'दिखाने के लिए अभी कोई स्थिति नहीं है',
   'v2empty.dash.statusesBody': 'एक पोस्टिंग का मूल्यांकन करें और उसे ट्रैक करें — उसकी आवेदन स्थिति यहाँ फ़नल में जुड़ेगी।',
   "llm.truncatedNotice": "मॉडल आउटपुट कटा हुआ हो सकता है — अगर रिपोर्ट अधूरी लगे तो दोबारा चलाएँ",
+  // track — inline status edit (v1.246.0 backlog #2)
+  "track.inlineStatusAria": "आवेदन की स्थिति बदलें",
+  "track.statusUpdated": "स्थिति अपडेट हुई: {state}",
+  "track.statusUpdateFailed": "स्थिति अपडेट नहीं हो सकी",
 };
