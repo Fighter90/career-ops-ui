@@ -210,7 +210,7 @@ career-ops-ui 的 `#/dashboard` 与 `#/tracker` 会高亮每一条 ≥ 4.0 的
 
 **第 6 步 — 选择一条路径填充编辑器:**
 - **上传已有简历** — 点击 **📁 Upload CV**,选择任一格式:
-  `.docx / .doc / .odt / .rtf / .pdf / .html / .txt / .md`。服务器
+  `.docx / .odt / .rtf / .pdf / .html / .txt / .md`。服务器
   会通过 pandoc 或 pdftotext 转换为 markdown,净化 XSS 内容,并将结
   果放入编辑器。**请检查转换结果** — 尤其是 PDF,可能丢失版面信息。
 - **直接粘贴 markdown** — 文本框就是 markdown 编辑器;右侧面板呈现
@@ -467,7 +467,7 @@ Health 页面会暴露一项 **Profile customized** 检查,只要
   成 markdown:
   - **文本格式** — `.md`、`.markdown`、`.txt`、`.html`、`.htm` 直
     通(HTML 经 pandoc → GFM markdown)。
-  - **Office 格式** — `.docx`、`.doc`、`.odt`、`.rtf` 经 **pandoc**
+  - **Office 格式** — `.docx`、`.odt`、`.rtf` 经 **pandoc**
     转换(macOS 用 `brew install pandoc`,Linux 用
     `apt install pandoc`)。
   - **PDF** — `.pdf` 经 Poppler 的 **pdftotext** 提取

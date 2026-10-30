@@ -233,7 +233,7 @@ editor a sinistra, anteprima in tempo reale a destra.
 
 **Passo 6 — Scegli un percorso per riempire l'editor:**
 - **Carica un curriculum esistente** — fai clic su **📁 Upload CV**, scegli uno tra
-  `.docx / .doc / .odt / .rtf / .pdf / .html / .txt / .md`. Il
+  `.docx / .odt / .rtf / .pdf / .html / .txt / .md`. Il
   server converte in markdown tramite pandoc o pdftotext, sanifica l'XSS
   e inserisce il risultato nell'editor. **Rivedi la conversione** —
   i PDF in particolare possono perdere fedeltà nel layout.
@@ -564,7 +564,7 @@ di presentazione. Vive in `cv.md` alla radice del progetto padre.
   il server lo converte in markdown per te:
   - **Formati di testo** — `.md`, `.markdown`, `.txt`, `.html`, `.htm`
     vengono passati direttamente (l'HTML passa via pandoc → GFM markdown).
-  - **Formati Office** — `.docx`, `.doc`, `.odt`, `.rtf` vengono
+  - **Formati Office** — `.docx`, `.odt`, `.rtf` vengono
     convertiti tramite **pandoc** (`brew install pandoc` su macOS,
     `apt install pandoc` su Linux).
   - **PDF** — `.pdf` viene estratto tramite **pdftotext** da Poppler

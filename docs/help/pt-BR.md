@@ -239,7 +239,7 @@ canônico `# Career-Ops Profile Configuration`.
 **Passo 6 — Escolha um caminho para preencher o editor:**
 - **Faça upload de um currículo existente** — clique em
   **📁 Upload CV**, escolha um arquivo entre
-  `.docx / .doc / .odt / .rtf / .pdf / .html / .txt / .md`. O
+  `.docx / .odt / .rtf / .pdf / .html / .txt / .md`. O
   servidor converte para markdown via pandoc ou pdftotext, sanitiza
   XSS, e coloca o resultado no editor. **Revise a conversão** — PDFs
   especialmente podem perder fidelidade de layout.
@@ -535,7 +535,7 @@ letter. Vive em `cv.md` na raiz do projeto pai.
   formatos e o servidor converte para markdown para você:
   - **Formatos de texto** — `.md`, `.markdown`, `.txt`, `.html`,
     `.htm` passam direto (HTML vai via pandoc → GFM markdown).
-  - **Formatos Office** — `.docx`, `.doc`, `.odt`, `.rtf` são
+  - **Formatos Office** — `.docx`, `.odt`, `.rtf` são
     convertidos via **pandoc** (`brew install pandoc` no macOS,
     `apt install pandoc` no Linux).
   - **PDF** — `.pdf` é extraído via **pdftotext** do Poppler

@@ -243,7 +243,7 @@ l'éditeur à gauche, l'aperçu en direct à droite.
 
 **Étape 6 — Choisissez une voie pour remplir l'éditeur :**
 - **Importer un CV existant** — cliquez sur **📁 Upload CV**, choisissez
-  l'un de `.docx / .doc / .odt / .rtf / .pdf / .html / .txt / .md`. Le
+  l'un de `.docx / .odt / .rtf / .pdf / .html / .txt / .md`. Le
   serveur convertit en markdown via pandoc ou pdftotext, neutralise le XSS,
   et dépose le résultat dans l'éditeur. **Vérifiez la conversion** — les
   PDF surtout peuvent perdre en fidélité de mise en page.
@@ -590,7 +590,7 @@ lettre de motivation. Vit dans `cv.md` à la racine du projet parent.
   le serveur le convertit en markdown pour vous :
   - **Formats texte** — `.md`, `.markdown`, `.txt`, `.html`, `.htm` sont
     passés tels quels (le HTML passe par pandoc → markdown GFM).
-  - **Formats Office** — `.docx`, `.doc`, `.odt`, `.rtf` sont convertis via
+  - **Formats Office** — `.docx`, `.odt`, `.rtf` sont convertis via
     **pandoc** (`brew install pandoc` sur macOS, `apt install pandoc` sur
     Linux).
   - **PDF** — `.pdf` est extrait via **pdftotext** de Poppler

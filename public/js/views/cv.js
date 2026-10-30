@@ -156,11 +156,13 @@ Router.register('cv', async () => {
   }
 
   // Hidden file input — we'll click() it from the visible "Upload CV" button.
-  // Accepts text formats; binary formats (pdf/docx/odt/rtf/doc) POST to
+  // Accepts text formats; binary formats (pdf/docx/odt/rtf) POST to
   // /api/cv/import, which delegates to pandoc / pdftotext server-side.
+  // (Legacy `.doc` is NOT offered: pandoc has no reader for it — the server
+  // would only ever 422; see cv-import.mjs.)
   const fileInput = c('input', {
     type: 'file',
-    accept: '.md,.markdown,.txt,.html,.htm,.pdf,.docx,.doc,.odt,.rtf',
+    accept: '.md,.markdown,.txt,.html,.htm,.pdf,.docx,.odt,.rtf',
     style: { display: 'none' },
     onChange: async (e) => {
       const file = e.target.files?.[0];
@@ -231,7 +233,7 @@ Router.register('cv', async () => {
           className: 'btn btn-ghost',
           onClick: () => fileInput.click(),
           title: t('cv.uploadHint',
-            'Upload .md, .txt, .html, .pdf, .docx, .odt, .rtf or .doc — converted server-side, then review and Save.'),
+            'Upload .md, .txt, .html, .pdf, .docx, .odt, .rtf — converted server-side, then review and Save.'),
         }, t('cv.upload', 'Upload CV')),
         c('button', { className: 'btn btn-ghost', onClick: async (e) => {
           // M-2 (v1.58.10): UI.modal() now auto-dismisses the progress

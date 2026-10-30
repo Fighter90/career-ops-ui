@@ -238,7 +238,7 @@ Editor links, Live-Vorschau rechts.
 **Schritt 6 — Wählen Sie einen Weg, um den Editor zu füllen:**
 - **Vorhandenen Lebenslauf hochladen** — klicken Sie auf **📁 Upload CV**,
   wählen Sie eines der Formate
-  `.docx / .doc / .odt / .rtf / .pdf / .html / .txt / .md`. Der
+  `.docx / .odt / .rtf / .pdf / .html / .txt / .md`. Der
   Server konvertiert über pandoc oder pdftotext in Markdown, bereinigt
   XSS und legt das Ergebnis in den Editor.
   **Überprüfen Sie die Konvertierung** — insbesondere PDFs können an Layout-Treue verlieren.
@@ -598,7 +598,7 @@ Projekts.
   und der Server konvertiert sie für Sie in Markdown:
   - **Textformate** — `.md`, `.markdown`, `.txt`, `.html`, `.htm`
     werden durchgereicht (HTML geht über pandoc → GFM-Markdown).
-  - **Office-Formate** — `.docx`, `.doc`, `.odt`, `.rtf` werden über
+  - **Office-Formate** — `.docx`, `.odt`, `.rtf` werden über
     **pandoc** konvertiert (`brew install pandoc` auf macOS,
     `apt install pandoc` auf Linux).
   - **PDF** — `.pdf` wird über **pdftotext** aus Poppler extrahiert

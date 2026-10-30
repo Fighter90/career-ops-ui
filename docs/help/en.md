@@ -225,7 +225,7 @@ left, live preview on the right.
 
 **Step 6 — Pick one path to fill the editor:**
 - **Upload an existing résumé** — click **📁 Upload CV**, pick any of
-  `.docx / .doc / .odt / .rtf / .pdf / .html / .txt / .md`. The
+  `.docx / .odt / .rtf / .pdf / .html / .txt / .md`. The
   server converts to markdown via pandoc or pdftotext, sanitizes XSS,
   and drops the result in the editor. **Review the conversion** —
   PDFs especially can lose layout fidelity.
@@ -558,7 +558,7 @@ letter. Lives in `cv.md` at the parent project root.
   the server converts it to markdown for you:
   - **Text formats** — `.md`, `.markdown`, `.txt`, `.html`, `.htm`
     are passed through (HTML goes via pandoc → GFM markdown).
-  - **Office formats** — `.docx`, `.doc`, `.odt`, `.rtf` are
+  - **Office formats** — `.docx`, `.odt`, `.rtf` are
     converted via **pandoc** (`brew install pandoc` on macOS,
     `apt install pandoc` on Linux).
   - **PDF** — `.pdf` is extracted via **pdftotext** from Poppler

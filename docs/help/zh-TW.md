@@ -208,7 +208,7 @@ Health 全綠之前不要繼續往下做。
 
 **第 6 步 — 選一種方式填入編輯器:**
 - **上傳既有履歷** — 點 **📁 Upload CV**,挑選任一個
-  `.docx / .doc / .odt / .rtf / .pdf / .html / .txt / .md` 檔案。
+  `.docx / .odt / .rtf / .pdf / .html / .txt / .md` 檔案。
   伺服器會透過 pandoc 或 pdftotext 轉成 markdown,做 XSS 淨化,
   並將結果放進編輯器。**請檢查轉換結果** — 尤其是 PDF,版面常會
   失真。
@@ -454,7 +454,7 @@ Health 頁面有一項 **Profile customized** 檢查,只要
   轉成 markdown:
   - **純文字格式** — `.md`、`.markdown`、`.txt`、`.html`、`.htm`
     直接傳遞(HTML 經 pandoc → GFM markdown)。
-  - **Office 格式** — `.docx`、`.doc`、`.odt`、`.rtf` 透過
+  - **Office 格式** — `.docx`、`.odt`、`.rtf` 透過
     **pandoc** 轉換(macOS 上 `brew install pandoc`,Linux 上
     `apt install pandoc`)。
   - **PDF** — `.pdf` 透過 Poppler 的 **pdftotext** 抽取

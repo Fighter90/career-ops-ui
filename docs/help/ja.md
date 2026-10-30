@@ -230,7 +230,7 @@ career-ops-ui の `#/dashboard` と `#/tracker` は 4.0 以上の行を
 
 **ステップ 6 — エディタを埋める方法を 1 つ選びます:**
 - **既存のレジュメをアップロード** — **📁 Upload CV** をクリックし、
-  `.docx / .doc / .odt / .rtf / .pdf / .html / .txt / .md` の
+  `.docx / .odt / .rtf / .pdf / .html / .txt / .md` の
   いずれかを選択。サーバは pandoc または pdftotext で markdown に
   変換し、XSS をサニタイズしてエディタに挿入します。**変換結果を
   必ずレビュー**してください — 特に PDF はレイアウト忠実度が
@@ -520,7 +520,7 @@ Health ページは **Profile customized** チェックを表示し、
   すると、サーバが markdown に変換します:
   - **テキスト形式** — `.md`、`.markdown`、`.txt`、`.html`、`.htm`
     はそのままパススルー (HTML は pandoc → GFM markdown)。
-  - **Office 形式** — `.docx`、`.doc`、`.odt`、`.rtf` は
+  - **Office 形式** — `.docx`、`.odt`、`.rtf` は
     **pandoc** で変換 (macOS は `brew install pandoc`、Linux は
     `apt install pandoc`)。
   - **PDF** — `.pdf` は Poppler の **pdftotext** で抽出

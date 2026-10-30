@@ -250,7 +250,7 @@ env var ठीक करनी है। Health हरा होने तक �
 
 **स्टेप 6 — एडिटर भरने के लिए एक रास्ता चुनें:**
 - **मौजूदा रिज़्यूमे अपलोड करें** — **📁 Upload CV** क्लिक करें,
-  `.docx / .doc / .odt / .rtf / .pdf / .html / .txt / .md` में से
+  `.docx / .odt / .rtf / .pdf / .html / .txt / .md` में से
   कोई भी चुनें। सर्वर pandoc या pdftotext के ज़रिए मार्कडाउन में
   बदलता है, XSS सैनिटाइज़ करता है, और नतीजा एडिटर में डाल देता है।
   **कन्वर्ज़न की समीक्षा करें** — खासकर PDF में लेआउट की सटीकता खो
@@ -657,7 +657,7 @@ Health पेज एक **Profile customized** चेक दिखाता ह�
   - **टेक्स्ट फ़ॉर्मैट** — `.md`, `.markdown`, `.txt`, `.html`,
     `.htm` सीधे पास हो जाते हैं (HTML pandoc → GFM मार्कडाउन से
     होकर जाता है)।
-  - **ऑफ़िस फ़ॉर्मैट** — `.docx`, `.doc`, `.odt`, `.rtf` को **pandoc**
+  - **ऑफ़िस फ़ॉर्मैट** — `.docx`, `.odt`, `.rtf` को **pandoc**
     के ज़रिए बदला जाता है (macOS पर `brew install pandoc`,
     Linux पर `apt install pandoc`)।
   - **PDF** — `.pdf` को Poppler के **pdftotext** के ज़रिए निकाला
