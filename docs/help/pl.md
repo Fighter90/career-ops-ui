@@ -1357,6 +1357,8 @@ odpowiada uczciwą notatką „script not found" zamiast błędem.
 CRM. Jeden wiersz na aplikację; przechowywany w `data/applications.md` jako
 tabela GitHub-Flavored Markdown.
 
+Odznaka statusu w każdym wierszu to także **select**: wybierz etap — i zapisuje się natychmiast: serwer wywołuje kanoniczny `set-status.mjs`, a wiersz aktualizuje się w miejscu; przy nieudanym zapisie wartość się cofa i pojawia się toast. Wiersze z ręcznie wpisanym lub nieznanym statusem oraz wiersze backfill z numerem `N/A` pokazują zamiast tego odznakę read-only.
+
 ### Przepływ statusu
 
 `Evaluated` → `Applied` → `Responded` → `Interview` → `Offer` /

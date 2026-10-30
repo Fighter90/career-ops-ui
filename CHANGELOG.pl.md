@@ -10,6 +10,32 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.264.0] — 2026-10-31
+
+### Dodano
+
+- **Inline-edycja statusu w trackerze** — odznaka statusu każdego wiersza `#/tracker` stała się kompaktowym `<select>` kanonicznych etapów (z `GET /api/tracker/stages`, żadnej zahardkodowanej whitelisty). `POST /api/tracker/status` wywołuje kanoniczny `set-status.mjs` rodzica pod lockiem `applications.md` (whitelist stanów przez `states.mjs`, przekaz `--dry-run`/`--note`, fail-soft 502 z zsanityzowanym szczegółem, spawn przez tablicę argv). Sukces aktualizuje wiersz w miejscu (klasa tone + liczniki zakładek, focus zachowany); porażka cofa wartość i pokazuje toast. Wiersze, których relay nie potrafi zaadresować — ręcznie wpisany nieznany status, sentinela backfill `#` — zachowują odznakę read-only (poprawki LOW z route-review; recenzent: żadnych HIGH/MED).
+- **Ostrzeżenia serwera na każdej stronie AI** — `evaluate`, `deep`, `auto-pipeline` (strona **i** modal), `career-plan`, `market`, `cv-studio` (humanize + tailor) pokazują teraz tablicę `warnings` serwera (ucięcie po tokenach wyjścia, dryf języka, korekty dat) jako pasek `badge-warn` (`role="status"`); modal auto-pipeline nie gubi już ostrzeżeń z ramki done. Nowy klucz `llm.truncatedNotice` ×19.
+- **Fala pokrycia (+111 testów)** — `routes/map.mjs` 100/94.9, `geocode.mjs` 96.3/92.9, `content.mjs` 99/84.9, `networking.mjs` 96.4/89.1, `sources/habr.mjs` 100/98.2 (nowe `tests/cov-*-routes.test.mjs` ×3, `tests/sources-habr.test.mjs`); dolna granica po gałęziach utrzymana na ≥ 90 %.
+- **Paczka zamknięcia Linear CAR-191…216** (`docs/reviews/2026-10-30-linear-car191-216-closure-bundle.md`) — gotowy do wklejenia close-out dla właściciela z SHA commitów i komentarzami-dowodami dla każdego CAR.
+
+### Naprawiono
+
+- **Skan-źródło Trudvsem** — pusta strona (`results: {}`, także „za końcem") już nie zabija całego skanu (czyste zero wierszy); koperty błędów API (HTTP-200 z `status: 500`) rzucają wyjątek z tekstem samego API; paginacja idzie po **record**-offsetach (było po indeksie stron — strony po cichu się dublowały, ~52 wakaty zamiast setek); przejście zatrzymuje się przed strefą awarii API przy głębokich offsetach (`offset × limit ≥ 10000`). Zweryfikowane na żywo end-to-end.
+- **habr** — tytuły/firmy są oczyszczane z tagów **po** dekodowaniu encji (paritet z hh.mjs): `&lt;script&gt;` w tytule karty nie dociera już do wierszy skanu jako żywy markup; legalne `>>` w tytułach przeżywa.
+- **PUT /api/profile (ścieżka raw)** — blok `candidate:` bez niepustego `full_name` jest odrzucany, tak samo jak na ścieżce scalania pól (wcześniej zapisywano `full_name: null`).
+- **Prawdomówność podpowiedzi** — `.doc` usunięte z listy accept wgrywania CV i z `cv.uploadHint` ×19 (parser nigdy go nie wspierał); `config.openaiModelHint` ×19 wymienia `gpt-5` (serwer mapuje każdy id `*-codex` na niego); `config.anthropicModelHint` ×19 i **domyślny model Anthropic** odzwierciedlają teraz tiery rodzica — domyślnie `claude-sonnet-5-5`, premium `claude-opus-5-5`.
+- **Link do dokumentacji Claude Code** → `code.claude.com` (stary URL `docs.anthropic.com/en/docs/claude-code` wywala TypeErrors w bramce linków).
+- help ×19: usunięto punkt Row-density (przełącznik opuścił UI w v1.263.0) i naprawiono 18 rodzin zepsutych spanów `**bold**` — plus klasa przecieku renderera poprawiona ×19 (drugi pusty wiersz po każdej tabeli przed akapitem; glif pipe poza pogrubionymi komórkami): **0 literałów `**` w renderze we wszystkich 19 paczkach pomocy**.
+
+### Uwagi
+
+- **Domyślny model Anthropic zmienił się** na `claude-sonnet-5-5` (standardowy tier rodzica). Wdrożenia polegające na starym cichym domyśle (`claude-sonnet-4-6`) aktualizują się automatycznie — przypnij `ANTHROPIC_MODEL` w `.env`, żeby zostać przy poprzednim.
+- Świadomie nie zrobiono: dwa LOW-zastrzeżenia recenzji pozostawione otwarte celowo (inline select nie odwzorowuje degradacji `movesReady` kanbana — uczciwy toast przy każdej porażce to wybrane zachowanie; gałąź `code: 'timeout'` pozostaje pokryta kontraktem fake-writer, a nie testem >30 s). CAR-141 (wideo demo) pozostaje za właścicielem.
+- help ×19 dostały po-release'owy przegląd prozy (punkt gęstości usunięty, klasa przecieku renderera poprawiona) na `main` po wydaniu v1.263.0 — to wydanie to pierwszy tag, który go wozi.
+
+Tests 6905 → 7041 (+136) · Playwright 176 (173 pass / 1 opt-in skip) · pokrycie 98.5 % linii / 90.1 % gałęzi · rejestr bez zmian: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.263.0] — 2026-10-30
 
 ### Dodano

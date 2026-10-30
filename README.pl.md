@@ -10,19 +10,19 @@
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
-[![tests](https://img.shields.io/badge/tests-6905%20passed-brightgreen)](#testy)
+[![tests](https://img.shields.io/badge/tests-7041%20passed-brightgreen)](#testy)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#testy)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.263.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.263.0)
+[![release](https://img.shields.io/badge/release-v1.264.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.264.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Najnowsze wydanie — v1.263.0** — **Batch UX od właściciela: warstwa wypolerowania animacji (hover bezpieczne dla dotyku, uniesienie tylko interaktywnych kart, animacje modal/popover/toast/motyw — bezpieczne przy reduced-motion), akcent zmienia się z niebieskiego na karmazynowoczerwony jak w logo, przegląd kontrastu WCAG (docs-fab 6.4:1, toasty, obramowania formularzy 3:1), każda kontrola dostaje nazwę programistyczną, oraz tuzin poprawek układu — nagłówek tabeli skanu już nie zakrywa wyszukiwania, filtr wynagrodzeń znów ma normalny rozmiar, strona dokumentacji już się nie przepełnia, mobilny drawer doczekał się widocznego przycisku zamknięcia. Tests 6869 → 6905.**
+> **🆕 Najnowsze wydanie — v1.264.0** — **Po-release'owa fala utwardzenia: status każdego wiersza trackera edytuje się inline (kanoniczny set-status.mjs rodzica pod lockiem applications.md), ostrzeżenia serwera (ucięcie, dryf języka) pokazują się jako pasek na wszystkich sześciu stronach AI, skan-źródło Trudvsem przetrwa puste strony i idzie po record-offsetach, tytuły habr nie wskrzeszają markupu, raw-bramka profilu trzyma linię full_name, a podpowiedzi w końcu mówią prawdę (.doc zniknęło, gpt-5 i tiery Anthropic 5-5). Tests 6905 → 7041.**
 >
-> **Poprzednie wydanie — v1.262.4** — **Patch token-dense dla `ja`: punktowy rerun pięciu locale na prodzie rozdzielił cztery nocne timeouty ewaluacji — ar/ko/zh-CN przeszły (250–291 s), jednorazowy dryf ru nie powtórzył się — ale `ja` dwukrotnie uderzyła w standardowy limit 300 s z zerowym wyjściem; `ja` dołącza teraz do `ta`/`hi`/`it`/`pl` z limitem 32768 tokenów i zegarem 480 s, przypięte red-first. Tests 6868 → 6869.**
+> **Poprzednie wydanie — v1.263.0** — **Batch UX od właściciela: warstwa wypolerowania animacji (hover bezpieczne dla dotyku, uniesienie tylko interaktywnych kart, animacje modal/popover/toast/motyw — bezpieczne przy reduced-motion), akcent zmienia się z niebieskiego na karmazynowoczerwony jak w logo, przegląd kontrastu WCAG (docs-fab 6.4:1, toasty, obramowania formularzy 3:1), każda kontrola dostaje nazwę programistyczną, oraz tuzin poprawek układu — nagłówek tabeli skanu już nie zakrywa wyszukiwania, filtr wynagrodzeń znów ma normalny rozmiar, strona dokumentacji już się nie przepełnia, mobilny drawer doczekał się widocznego przycisku zamknięcia. Tests 6869 → 6905.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -147,7 +147,7 @@ career-ops/
 └─ web-ui/          ← to repozytorium
    ├─ server/       # Express + 15 modułów tras
    ├─ public/       # vanilla JS SPA, bez bundlera
-   └─ tests/        # 6905 testów jednostkowych + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (podstawa @ v1.263.0)
+   └─ tests/        # 7041 testów jednostkowych + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (podstawa @ v1.264.0)
 ```
 
 Serwer ma dwie zależności produkcyjne: `express` i `js-yaml`. Brak transpilacji, brak bundlera — cały interfejs to mniej niż 30 KB zminifikowanego kodu.
