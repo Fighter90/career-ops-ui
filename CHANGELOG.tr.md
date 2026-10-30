@@ -2,6 +2,32 @@
 
 > Bu changelog artık tüm sürüm geçmişini içerir. Türkçe yerelleştirmenin eklenmesinden (v1.85.0) önce yayınlanan girdiler aşağıda İngilizce özgün hâliyle yer alır — çeviri bekliyor; asıl kaynak [🇬🇧 CHANGELOG.md](CHANGELOG.md)'dir.
 
+## [1.264.0] — 2026-10-31
+
+### Eklendi
+
+- **Satır-içi tracker durum düzenlemesi** — her `#/tracker` satırının durum rozeti, kanonik aşamaların kompakt bir `<select>`'i (`GET /api/tracker/stages`'ten, asla sabit kodlanmış bir whitelist değil). `POST /api/tracker/status`, üst projenin kanonik `set-status.mjs`'ini `applications.md` kilidi altında aktarıyor (durum whitelist'i `states.mjs` üzerinden, `--dry-run`/`--note` geçişi, temizlenmiş ayrıntıyla fail-soft 502, argv-dizisi spawn). Başarı satırı yerinde güncelliyor (ton sınıfı + sekme sayıları, odak korunur); başarısızlık değeri geri alır ve toast gösterir. Aktarımın adresleyemediği satırlar — elle düzenlenmiş bilinmeyen bir durum, bir backfill sentinel'i `#` — salt-okunur rozeti tutuyor (route-review LOW düzeltmeleri; inceleyici: HIGH/MED bulgu yok).
+- **Sunucu uyarıları her AI sayfasında yüzeye çıkarıldı** — `evaluate`, `deep`, `auto-pipeline` (sayfa **ve** modal), `career-plan`, `market`, `cv-studio` (humanize + tailor) artık sunucunun `warnings` dizisini (çıktı-token kırpılması, dil sürüklenmesi, tarih düzeltmeleri) bir `badge-warn` şeridi olarak (`role="status"`) render ediyor; auto-pipeline modalı artık done-frame uyarılarını düşürmüyor. Yeni anahtar `llm.truncatedNotice` ×19.
+- **Kapsam dalgası (+111 test)** — `routes/map.mjs` 100/94.9, `geocode.mjs` 96.3/92.9, `content.mjs` 99/84.9, `networking.mjs` 96.4/89.1, `sources/habr.mjs` 100/98.2 (yeni `tests/cov-*-routes.test.mjs` ×3, `tests/sources-habr.test.mjs`); dal tabanı ≥ 90 %'ta tutuldu.
+- **Linear CAR-191…216 kapanış paketi** (`docs/reviews/2026-10-30-linear-car191-216-closure-bundle.md`) — CAR başına commit SHA'ları ve kanıt yorumlarıyla yapıştırılmaya-hazır sahip kapanışı.
+
+### Düzeltildi
+
+- **Trudvsem tarama kaynağı** — boş bir sayfa (`results: {}`, "sonun ötesinde" de dahil) artık tüm taramayı öldürmüyor (temiz sıfır satır); API hata zarfları (HTTP-200 `status: 500` ile) API'nin kendi metniyle fırlatılıyor; sayfalama **kayıt** ofsetleriyle yürüyor (sayfa-indeksiydi — sayılar sessizce kopyalanıyordu, yüzlerce yerine ~52 ilan); yürüyüş, API'nin derin-ofset hata bölgesinden önce duruyor (`offset × limit ≥ 10000`). Canlı uçtan uca doğrulandı.
+- **habr** — başlıklar/şirketler varlık çözümünden **sonra** etiket-kırpılıyor (hh.mjs paritesi): kart başlığındaki `&lt;script&gt;` artık canlı işaretleme olarak tarama satırlarına ulaşamıyor; başlıklardaki meşru `>>` hayatta kalıyor.
+- **PUT /api/profile (ham yol)** — boş olmayan bir `full_name` içermeyen bir `candidate:` bloğu reddediliyor, alanlar-birleştirme yoluyla aynı çizgide (`full_name: null` kalıcıyordu).
+- **İpucu dürüstlüğü** — `.doc` CV yükleme kabul listesinden ve `cv.uploadHint` ×19'dan kaldırıldı (ayrıştırıcı onu hiç desteklemedi); `config.openaiModelHint` ×19 `gpt-5` adını veriyor (sunucu her `*-codex` kimliğini ona eşliyor); `config.anthropicModelHint` ×19 ve **Anthropic varsayılanı** artık üst projenin katmanlarını yansıtıyor — varsayılan `claude-sonnet-5-5`, premium `claude-opus-5-5`.
+- **Claude Code dokümantasyon bağlantısı** → `code.claude.com` (eski `docs.anthropic.com/en/docs/claude-code` URL'si bağlantılar kapısında TypeErrors veriyor).
+- yardım ×19: Satır-yoğunluğu mermisi gitti (düğme v1.263.0'da arayüzden ayrıldı) ve 18 kırık `**bold**` aralık ailesi onarıldı — artı renderer-sızıntı sınıfı ×19 düzeltildi (her tablo-öncesi-paragraftan sonra ikinci boş satır; kalın hücrelerin dışına taşan pipe glifi): **19 yardım paketinin tamamında render'da 0 literal `**`**.
+
+### Notlar
+
+- **Anthropic varsayılan modeli değişti** → `claude-sonnet-5-5` (üst projenin standart katmanı). Eski sessiz varsayılana (`claude-sonnet-4-6`) dayanan dağıtımlar otomatik yükseliyor — vazgeçmek için `.env`'de `ANTHROPIC_MODEL`'i sabitleyin.
+- Bilinçli olarak yapılmadı: tasarım gereği açık bırakılan iki LOW inceleme kusuru (satır-içi seçici kanban `movesReady` bozulmasını yansıtmıyor — her başarısızlıkta dürüst toast seçilen davranış; `code: 'timeout'` dalı >30 s'lik bir testle değil, sahte-yazıcı sözleşmesiyle kapsanıyor). CAR-141 (tanıtım videosu) sahibin kalıyor.
+- yardım ×19, v1.263.0 gönderildikten sonra `main` üzerinde yayın-sonrası düzyazı geçişini aldı (yoğunluk mermisi çıktı, renderer-sızıntı sınıfı düzeltildi) — bu sürüm onu taşıyan ilk etiket.
+
+Tests 6905 → 7041 (+136) · Playwright 176 (173 geçti / 1 opsiyonel atlandı) · kapsam 98.5 % satır / 90.1 % dal · registry değişmedi: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.263.0] — 2026-10-30
 
 ### Eklendi
