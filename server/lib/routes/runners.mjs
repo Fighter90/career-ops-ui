@@ -20,6 +20,7 @@ import { randomBytes } from 'node:crypto';
 import { resolve } from 'node:path';
 import { PATHS, PROJECT_ROOT, path as projPath } from '../paths.mjs';
 import { runTrackedScript, streamNodeScript } from '../runner.mjs';
+import { withFileLock } from '../file-lock.mjs';
 import { sanitizePathName } from '../security.mjs';
 import { parseJsonStdout, sanitizeDetail } from '../parent-relay.mjs';
 
@@ -294,6 +295,72 @@ export function registerRunnerRoutes(app) {
       });
     }
     res.json({ available: true, file: `jds/${name}`, findings });
+  });
+
+  // ─── Report-links runner (v1.246.0 backlog #4, parent #4751) ───
+  // Zero-LLM relay of the parent's canonical tracker repair:
+  //   node fix-report-links.mjs --dry-run   (default — read-only preview)
+  //   node fix-report-links.mjs             (apply — rewrite dead Report cells)
+  // `{ mode: 'dry-run' | 'apply' }`, dry-run when omitted. The parent emits
+  // PLAIN TEXT (no --json flag today), so an exit-0 run passes the text
+  // through as `output` plus a light parse (rows / summary); a JSON stdout
+  // (if the parent ever gains one) passes through structurally. A non-zero
+  // exit or a missing script is a fail-soft 502. apply rewrites
+  // data/applications.md, so the spawn holds the tracker lock
+  // (withFileLock) — the same chain web-ui's own tracker writers use;
+  // fix-report-links.mjs takes the parent's own OS-level transaction lock
+  // on top. NOTE: the script is deliberately NOT in TRACKER_MUTATING —
+  // the lock here would nest with a registry-driven one and deadlock the
+  // non-reentrant mutex. Dry-run is read-only and takes no lock.
+  const REPORT_LINKS = { script: 'fix-report-links.mjs', timeoutMs: 45_000 };
+
+  app.post('/api/runners/report-links', async (req, res) => {
+    const body = (req.body && typeof req.body === 'object') ? req.body : {};
+    // Absent (undefined) means the default; an explicit null or any other
+    // value is garbage and must be a 400, never a silent dry-run.
+    const mode = body.mode === undefined ? 'dry-run' : body.mode;
+    if (mode !== 'dry-run' && mode !== 'apply') {
+      return res.status(400).json({ error: "mode must be 'dry-run' or 'apply'" });
+    }
+    if (!existsSync(resolve(PROJECT_ROOT, REPORT_LINKS.script))) {
+      return res.status(502).json({ error: `${REPORT_LINKS.script} not found in the parent project` });
+    }
+    // Flag as an argv array element — never shell-interpolated.
+    const args = mode === 'apply' ? [] : ['--dry-run'];
+    const run = () => runTrackedScript(REPORT_LINKS.script, args, { timeoutMs: REPORT_LINKS.timeoutMs });
+    const r = mode === 'apply' ? await withFileLock(PATHS.applications, run) : await run();
+
+    const finish = (payload) => res.json({ mode, ...payload });
+    if (r.code !== 0) {
+      const data = parseJsonStdout(r.stdout);
+      return res.status(502).json({
+        mode,
+        error: (data && data.error) || `${REPORT_LINKS.script} failed`,
+        code: r.killed ? 'timeout' : 'script-error',
+        ...(r.stdout ? { output: r.stdout } : {}),
+        detail: r.stderr ? sanitizeDetail(r.stderr) : '',
+      });
+    }
+    // JSON stdout (a future parent contract) passes through structurally.
+    const data = parseJsonStdout(r.stdout);
+    if (data) return finish(data);
+
+    // Plain-text stdout (today's parent contract): pass the text through
+    // and lift the stable lines into rows/summary for the client.
+    const rows = [];
+    const rowRe = /^(?:Would rewrite|Rewrote)\s+#(\d+)\s+(.*)$/gm;
+    let m;
+    while ((m = rowRe.exec(r.stdout)) !== null) rows.push({ num: Number(m[1]), detail: m[2].trim() });
+    const countMatch = r.stdout.match(/(\d+)\s+dead report link/);
+    finish({
+      code: 0,
+      output: r.stdout,
+      rows,
+      summary: {
+        count: countMatch ? Number(countMatch[1]) : null,
+        dryRun: /\(dry-run\b/.test(r.stdout),
+      },
+    });
   });
 
   // ─── List + download generated PDFs (output/*.pdf) ───

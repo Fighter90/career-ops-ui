@@ -1828,4 +1828,16 @@ window.__I18N_DICT_FR = {
   "track.inlineStatusAria": "Changer le statut de la candidature",
   "track.statusUpdated": "Statut mis à jour : {state}",
   "track.statusUpdateFailed": "Impossible de mettre à jour le statut",
+  // rlinks — report-links runner (v1.246.0 backlog #4)
+  "rlinks.button": "Réparer les liens de rapports",
+  "rlinks.running": "Exécution de fix-report-links.mjs…",
+  "rlinks.runningApply": "Réparation en cours…",
+  "rlinks.title": "Réparation des liens de rapports",
+  "rlinks.count": "{count} lien(s) de rapport cassé(s)",
+  "rlinks.zeroBroken": "Aucun lien de rapport cassé",
+  "rlinks.repair": "Réparer…",
+  "rlinks.confirmTitle": "Réécrire les cellules de rapport cassées ?",
+  "rlinks.confirmBody": "fix-report-links.mjs réécrit la cellule de rapport de chaque ligne cassée du tracker en « — » (une sauvegarde .bak est conservée). Rien d’autre dans le fichier ne change.",
+  "rlinks.done": "Réparation terminée",
+  "rlinks.failed": "Échec de fix-report-links.mjs",
 };

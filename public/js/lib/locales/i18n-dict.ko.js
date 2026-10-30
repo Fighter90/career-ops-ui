@@ -1829,4 +1829,16 @@ window.__I18N_DICT_KO = {
   "track.inlineStatusAria": "지원 상태 변경",
   "track.statusUpdated": "상태가 업데이트되었습니다: {state}",
   "track.statusUpdateFailed": "상태를 업데이트할 수 없습니다",
+  // rlinks — report-links runner (v1.246.0 backlog #4)
+  "rlinks.button": "리포트 링크 수정",
+  "rlinks.running": "fix-report-links.mjs 실행 중…",
+  "rlinks.runningApply": "복구 실행 중…",
+  "rlinks.title": "리포트 링크 복구",
+  "rlinks.count": "끊어진 리포트 링크: {count}개",
+  "rlinks.zeroBroken": "끊어진 리포트 링크가 없습니다",
+  "rlinks.repair": "복구…",
+  "rlinks.confirmTitle": "끊어진 Report 셀을 다시 쓸까요?",
+  "rlinks.confirmBody": "fix-report-links.mjs가 끊어진 트래커 행의 Report 셀을 \"—\"로 다시 씁니다(.bak 백업이 유지됨). 파일의 다른 내용은 바뀌지 않습니다.",
+  "rlinks.done": "복구 완료",
+  "rlinks.failed": "fix-report-links.mjs 실패",
 };

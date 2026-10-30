@@ -1828,4 +1828,16 @@ window.__I18N_DICT_PL = {
   "track.inlineStatusAria": "Zmień status aplikacji",
   "track.statusUpdated": "Status zaktualizowany na {state}",
   "track.statusUpdateFailed": "Nie udało się zaktualizować statusu",
+  // rlinks — report-links runner (v1.246.0 backlog #4)
+  "rlinks.button": "Napraw linki raportów",
+  "rlinks.running": "Uruchamianie fix-report-links.mjs…",
+  "rlinks.runningApply": "Wykonywanie naprawy…",
+  "rlinks.title": "Naprawa linków raportów",
+  "rlinks.count": "Uszkodzone linki do raportów: {count}",
+  "rlinks.zeroBroken": "Brak uszkodzonych linków do raportów",
+  "rlinks.repair": "Napraw…",
+  "rlinks.confirmTitle": "Przepisać uszkodzone komórki Report?",
+  "rlinks.confirmBody": "fix-report-links.mjs przepisze komórkę Report każdego uszkodzonego wiersza trackera na „—” (kopia zapasowa .bak zostaje zachowana). Reszta pliku pozostaje bez zmian.",
+  "rlinks.done": "Naprawa zakończona",
+  "rlinks.failed": "Błąd fix-report-links.mjs",
 };

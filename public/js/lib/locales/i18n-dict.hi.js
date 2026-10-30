@@ -1840,4 +1840,16 @@ window.__I18N_DICT_HI = {
   "track.inlineStatusAria": "आवेदन की स्थिति बदलें",
   "track.statusUpdated": "स्थिति अपडेट हुई: {state}",
   "track.statusUpdateFailed": "स्थिति अपडेट नहीं हो सकी",
+  // rlinks — report-links runner (v1.246.0 backlog #4)
+  "rlinks.button": "रिपोर्ट लिंक ठीक करें",
+  "rlinks.running": "fix-report-links.mjs चल रहा है…",
+  "rlinks.runningApply": "मरम्मत चल रही है…",
+  "rlinks.title": "रिपोर्ट लिंक मरम्मत",
+  "rlinks.count": "टूटे हुए रिपोर्ट लिंक: {count}",
+  "rlinks.zeroBroken": "कोई टूटा हुआ रिपोर्ट लिंक नहीं",
+  "rlinks.repair": "मरम्मत करें…",
+  "rlinks.confirmTitle": "टूटी Report सेल फिर से लिखें?",
+  "rlinks.confirmBody": "fix-report-links.mjs हर टूटी ट्रैकर पंक्ति की Report सेल को \"—\" में फिर से लिखता है (.bak बैकअप सुरक्षित रहता है)। फ़ाइल का बाकी हिस्सा नहीं बदलता।",
+  "rlinks.done": "मरम्मत पूरी हुई",
+  "rlinks.failed": "fix-report-links.mjs विफल रहा",
 };

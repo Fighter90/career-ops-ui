@@ -1829,4 +1829,16 @@ window.__I18N_DICT_ES = {
   "track.inlineStatusAria": "Cambiar el estado de la solicitud",
   "track.statusUpdated": "Estado actualizado a {state}",
   "track.statusUpdateFailed": "No se pudo actualizar el estado",
+  // rlinks — report-links runner (v1.246.0 backlog #4)
+  "rlinks.button": "Reparar enlaces de informes",
+  "rlinks.running": "Ejecutando fix-report-links.mjs…",
+  "rlinks.runningApply": "Ejecutando la reparación…",
+  "rlinks.title": "Reparación de enlaces de informes",
+  "rlinks.count": "{count} enlaces de informes rotos",
+  "rlinks.zeroBroken": "No hay enlaces de informes rotos",
+  "rlinks.repair": "Reparar…",
+  "rlinks.confirmTitle": "¿Reescribir las celdas de informe rotas?",
+  "rlinks.confirmBody": "fix-report-links.mjs reescribe la celda de informe de cada fila rota del tracker como «—» (se conserva una copia de seguridad .bak). Nada más del archivo cambia.",
+  "rlinks.done": "Reparación completada",
+  "rlinks.failed": "fix-report-links.mjs falló",
 };

@@ -1829,4 +1829,16 @@ window.__I18N_DICT_JA = {
   "track.inlineStatusAria": "応募ステータスを変更",
   "track.statusUpdated": "ステータスを更新しました: {state}",
   "track.statusUpdateFailed": "ステータスを更新できませんでした",
+  // rlinks — report-links runner (v1.246.0 backlog #4)
+  "rlinks.button": "レポートリンクを修復",
+  "rlinks.running": "fix-report-links.mjs を実行中…",
+  "rlinks.runningApply": "修復を実行中…",
+  "rlinks.title": "レポートリンクの修復",
+  "rlinks.count": "壊れたレポートリンク: {count} 件",
+  "rlinks.zeroBroken": "壊れたレポートリンクはありません",
+  "rlinks.repair": "修復…",
+  "rlinks.confirmTitle": "壊れた Report セルを書き換えますか？",
+  "rlinks.confirmBody": "fix-report-links.mjs が、壊れたトラッカー行の Report セルを「—」に書き換えます（.bak バックアップが残ります）。ファイルの他の部分は変わりません。",
+  "rlinks.done": "修復が完了しました",
+  "rlinks.failed": "fix-report-links.mjs が失敗しました",
 };

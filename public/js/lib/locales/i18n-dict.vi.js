@@ -1803,4 +1803,16 @@ window.__I18N_DICT_VI = {
   "track.inlineStatusAria": "Thay đổi trạng thái ứng tuyển",
   "track.statusUpdated": "Đã cập nhật trạng thái thành {state}",
   "track.statusUpdateFailed": "Không thể cập nhật trạng thái",
+  // rlinks — report-links runner (v1.246.0 backlog #4)
+  "rlinks.button": "Sửa liên kết báo cáo",
+  "rlinks.running": "Đang chạy fix-report-links.mjs…",
+  "rlinks.runningApply": "Đang thực hiện sửa chữa…",
+  "rlinks.title": "Sửa liên kết báo cáo",
+  "rlinks.count": "Liên kết báo cáo bị hỏng: {count}",
+  "rlinks.zeroBroken": "Không có liên kết báo cáo bị hỏng",
+  "rlinks.repair": "Sửa chữa…",
+  "rlinks.confirmTitle": "Ghi lại các ô Report bị hỏng?",
+  "rlinks.confirmBody": "fix-report-links.mjs ghi lại ô Report của mọi dòng tracker bị hỏng thành “—” (bản sao lưu .bak được giữ lại). Không có gì khác trong tệp thay đổi.",
+  "rlinks.done": "Đã sửa chữa xong",
+  "rlinks.failed": "fix-report-links.mjs thất bại",
 };

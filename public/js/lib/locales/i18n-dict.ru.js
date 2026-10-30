@@ -1829,4 +1829,16 @@ window.__I18N_DICT_RU = {
   "track.inlineStatusAria": "Изменить статус заявки",
   "track.statusUpdated": "Статус обновлён: {state}",
   "track.statusUpdateFailed": "Не удалось обновить статус",
+  // rlinks — report-links runner (v1.246.0 backlog #4)
+  "rlinks.button": "Исправить ссылки на отчёты",
+  "rlinks.running": "Запускаю fix-report-links.mjs…",
+  "rlinks.runningApply": "Запускаю исправление…",
+  "rlinks.title": "Исправление ссылок на отчёты",
+  "rlinks.count": "Битых ссылок на отчёты: {count}",
+  "rlinks.zeroBroken": "Битых ссылок на отчёты нет",
+  "rlinks.repair": "Исправить…",
+  "rlinks.confirmTitle": "Переписать битые ячейки Report?",
+  "rlinks.confirmBody": "fix-report-links.mjs перепишет ячейку Report каждой битой строки трекера на «—» (сохраняется резервная копия .bak). Остальное содержимое файла не меняется.",
+  "rlinks.done": "Исправление завершено",
+  "rlinks.failed": "Ошибка fix-report-links.mjs",
 };
