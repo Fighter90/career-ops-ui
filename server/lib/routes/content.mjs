@@ -371,7 +371,10 @@ export function registerContentRoutes(app) {
       return res.status(400).json({ error: 'profile must be a YAML mapping' });
     }
     // G-009: accept EITHER legacy `candidate:` block OR canonical top-level `full_name:`.
-    const hasCandidate = parsed.candidate && typeof parsed.candidate === 'object';
+    // Raw path must hold the same line as the fields-merge path: a candidate
+    // block without a non-empty full_name would persist `full_name: null`.
+    const hasCandidate = parsed.candidate && typeof parsed.candidate === 'object'
+      && typeof parsed.candidate.full_name === 'string' && parsed.candidate.full_name.trim();
     const hasCanonical = typeof parsed.full_name === 'string' && parsed.full_name.trim();
     if (!hasCandidate && !hasCanonical) {
       return res.status(400).json({

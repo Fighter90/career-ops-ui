@@ -120,7 +120,7 @@ test('parseHabrCards: double-encoded entity decodes exactly once', () => {
 // Titles reach scan rows / pipeline.md / tracker TSV, so the invariant should
 // hold here too. Fix would be one stripTags-style pass over title/company in
 // parseHabrCards — left to the owner (source edits out of scope for this run).
-test.skip('parseHabrCards: entity decoding cannot resurrect markup (BROKEN — see finding in file header)', () => {
+test('parseHabrCards: entity decoding cannot resurrect markup (fixed: strip-after-decode, hh.mjs parity)', () => {
   const jobs = parseHabrCards(page(card({ title: 'Dev &lt;script&gt;x&lt;/script&gt;', company: 'A&amp;lt;B' })));
   assert.doesNotMatch(jobs[0].title, /[<>]/);
 });

@@ -11,6 +11,16 @@
 import { decodeEntities } from '../html-entities.mjs';
 import { fetchTextFollowSameHost } from '../http-json.mjs';
 
+// CAR-142 parity with hh.mjs: decode entities FIRST, then strip any markup
+// the decode resurrected («&lt;script&gt;» must not reach scan rows live).
+function stripDecoded(s) {
+  return decodeEntities(String(s || ''))
+    .replace(/<[^>]*>/g, ' ')
+    .replace(/</g, '') // a lone raw '<' could still open markup downstream; '>>' in titles is real text
+    .replace(/\s+/g, ' ')
+    .trim();
+}
+
 const HABR_BASE = 'https://career.habr.com';
 
 const UA =
@@ -182,8 +192,8 @@ export function parseHabrCards(html) {
       // the company name flows on to the tracker/reports — the SSR cards arrive
       // escaped ("Changellenge &gt;&gt;", "ООО &quot;М-ТЕХ&quot;"), so an undecoded
       // "&" in a role silently failed a user's own "&" keyword (v1.210.1).
-      title: decodeEntities(titleMatch[2].trim()),
-      company: decodeEntities(company?.trim() || ''),
+      title: stripDecoded(titleMatch[2].trim()),
+      company: stripDecoded(company?.trim() || ''),
       url: HABR_BASE + titleMatch[1],
       salary: (salary || '').trim(),
       location: city || (isRemote ? 'Remote' : 'Russia'),

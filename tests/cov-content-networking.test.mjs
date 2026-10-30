@@ -281,7 +281,7 @@ test('PUT /api/profile raw: body shapes, YAML errors, non-mappings and missing n
 // fields-merge gate (`typeof base.candidate.full_name === 'string' && trim`).
 // content.mjs PUT /api/profile raw path, hasCandidate check. Skipped pin of
 // the intended behaviour; flip to assert.equal(…, 400) when tightened.
-test.skip('PUT /api/profile raw: a candidate block WITHOUT full_name is refused (BROKEN — see finding)', async () => {
+test('PUT /api/profile raw: a candidate block WITHOUT full_name is refused (fixed: raw gate holds the fields-merge line)', async () => {
   const r = await jsonReq('PUT', '/api/profile', { yaml: 'candidate:\n  email: x\n' });
   assert.equal(r.status, 400);
 });

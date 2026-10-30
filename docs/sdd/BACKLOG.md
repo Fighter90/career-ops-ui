@@ -37,16 +37,14 @@ landed first). What the phase delivered:
   (v1.241.0), `thehub.mjs` (conformed).
 
 Still open from this phase:
-- [L] dedicated tests for `sources/habr.mjs` (hh got `tests/sources-hh.test.mjs`; habr has none) —
-  both remain ratchet exemptions until then.
+- ~~[L] dedicated tests for `sources/habr.mjs`~~ **Closed** — `tests/sources-habr.test.mjs` (22 specs, 100/98.2) in the coverage wave `91d4a7f4`; the strip-after-decode finding it pinned is fixed in the same wave.
 
 ## v1.243.0 — client, CSS/a11y, i18n (Phase 3)
 
 Also from Phase 1 hand-offs: show `warnings` (truncation) on deep / auto-pipeline / career-plan /
 market / cv-studio pages; drop `.doc` from `public/js/views/cv.js` accept list and `cv.uploadHint`
 ×17; `config.openaiModelHint` ×17 and help ×17 still say the web-ui default is `gpt-5-codex`
-(web-ui now sends Codex-only models as `gpt-5`); raise coverage of `routes/map.mjs`, `routes/geocode.mjs`;
-`content.mjs` and `networking.mjs` branch coverage (37 % / 61 %).
+(web-ui now sends Codex-only models as `gpt-5`); raise coverage of ~~`routes/map.mjs`, `routes/geocode.mjs`; `content.mjs` and `networking.mjs` branch coverage (37 % / 61 %).~~ **Closed** — the coverage wave (`tests/cov-{map,geocode,content-networking}-routes.test.mjs`, +87 specs): map 100/94.9, geocode 96.3/92.9, content 99/84.9, networking 96.4/89.1.
 
 ## client-libs-1
 (Closed in feat/v1.243.0-client-fixes — router anchor/hash, auto-pipeline SSE flush, API.stream
