@@ -112,3 +112,129 @@ test('memory / networking / career-plan / two-pager inputs carry aria-labels (SP
     assert.match(src, re, `${file} missing ${re}`);
   }
 });
+
+// ─── CAR-209 (a11y wave 2) — every input/textarea carries a programmatic name ───
+// A control without an accessible name is announced as just "edit text" /
+// "checkbox" — unusable with a screen reader. Static contract: every literal
+// `c('input'…)` / `c('textarea'…)` in views/ + lib/ must either
+//   (a) carry `aria-label` / `data-i18n-aria-label` / `htmlFor` in its options,
+//   (b) sit inside a `c('label'…)` span (inline or via its variable), or
+//   (c) pair with a literal `htmlFor: 'X'` elsewhere in the same file,
+// or appear in the reviewed ALLOWLIST below (each entry states WHY it is
+// named at runtime in a way static analysis cannot see). Readonly dumps are
+// exempt when their file names them via `A11yDump.label` (grep per file).
+// Regex-based by design (same discipline as the IDREF test above): when the
+// source shape changes, an allowlist entry stops matching and this test
+// flags the site for re-triage instead of silently passing it.
+
+function balancedCall(src, openIdx) {
+  let depth = 0, quote = null;
+  for (let i = openIdx; i < src.length; i++) {
+    const ch = src[i];
+    if (quote) { if (ch === quote && src[i - 1] !== '\\') quote = null; continue; }
+    if (ch === "'" || ch === '"' || ch === '`') { quote = ch; continue; }
+    if (ch === '(') depth++;
+    else if (ch === ')') { depth--; if (depth === 0) return i; }
+  }
+  return -1;
+}
+
+function objectSpan(text, start) { // text[start] === '{' → index of the matching '}'
+  let depth = 0, quote = null;
+  for (let i = start; i < text.length; i++) {
+    const ch = text[i];
+    if (quote) { if (ch === quote && text[i - 1] !== '\\') quote = null; continue; }
+    if (ch === "'" || ch === '"' || ch === '`') { quote = ch; continue; }
+    if (ch === '{') depth++;
+    else if (ch === '}') { depth--; if (depth === 0) return i; }
+  }
+  return -1;
+}
+
+const CONTROLS_ALLOWLIST = [
+  // Hidden file inputs driven by a visible button — never focused directly.
+  { file: 'views/cv.js', re: /type: 'file'[\s\S]{0,200}display: 'none'/, reason: 'hidden file input clicked from the visible Upload CV button' },
+  { file: 'lib/tracker-import.js', re: /type: 'file'[\s\S]{0,200}aria-hidden/, reason: 'hidden CSV file input opened from the visible Import button' },
+  // Checkboxes wrapped in labels at runtime through the check() helper.
+  { file: 'views/map.js', re: /type: 'checkbox', checked: mapPrefs\.showUnevaluated/, reason: 'wrapped via check() → c(label) in the map filter legend' },
+  { file: 'views/map.js', re: /type: 'checkbox', checked: commutePrefs\.showUnknown/, reason: 'wrapped via check() → c(label) in the map filter legend' },
+  { file: 'views/map.js', re: /type: 'checkbox', checked: mapPrefs\.layers\[layer\] !== false/, reason: 'wrapped via check() → c(label) in the map layer toggles' },
+  // Checkboxes painted into c('label') by the filter-bar factory in scan/filters.js.
+  { file: 'views/scan.js', re: /type: 'checkbox', id: 'scan-filter-salary-any'/, reason: 'wrapped in c(label) inside the scan/filters.js filter bar' },
+  { file: 'views/scan.js', re: /type: 'checkbox', id: 'fav-only'/, reason: 'wrapped in c(label) inside the scan/filters.js filter bar' },
+  // Dynamic-id label pairings (label[for] built with the same variable/id
+  // expression at runtime — the literal regex cannot pair them).
+  { file: 'views/assessments.js', re: /id,\s*\n?\s*'data-i18n-placeholder': phKey/, reason: 'labeled() helper pairs a dynamic id with c(label, htmlFor: id)' },
+  { file: 'views/config.js', re: /id: inputId,\s*\n?\s*'aria-describedby': hintId/, reason: 'provider field pairs its dynamic inputId with c(label, htmlFor: inputId)' },
+  { file: 'views/config.js', re: /\{ id, className: 'textarea', rows: 3 \}/, reason: 'structured profile field pairs its id with c(label, htmlFor: id)' },
+  { file: 'views/config.js', re: /\{ id, className: 'input', type: f\.type \|\| 'text' \}/, reason: 'structured profile field pairs its id with c(label, htmlFor: id)' },
+  { file: 'lib/modes-form.js', re: /rows: 6,\s*'aria-describedby': fieldId \+ '-desc',\s*style: \{ width: '100%', fontSize: '13px' \}/, reason: 'modes prose field pairs fieldId with c(label, htmlFor: fieldId)' },
+  { file: 'lib/modes-form.js', re: /rows: 8,\s*'aria-describedby': fieldId \+ '-desc'/, reason: 'modes verbatim-list field pairs fieldId with c(label, htmlFor: fieldId)' },
+  { file: 'lib/modes-form.js', re: /rows: 6,\s*style: \{ width: '100%', fontFamily: 'ui-monospace,monospace'/, reason: 'non-canonical modes field pairs fieldId with c(label, htmlFor: fieldId)' },
+  // Reports toolbar inputs named through hiddenLabel() visually-hidden labels.
+  { file: 'views/reports.js', re: /type: 'search',\s*\n?\s*id: 'reports-search',/, reason: 'named via hiddenLabel(reports-search) visually-hidden label' },
+  { file: 'views/reports.js', re: /type: 'text',\s*\n?\s*id: 'reports-company',/, reason: 'named via hiddenLabel(reports-company) visually-hidden label' },
+  { file: 'views/reports.js', re: /type: 'date', id: 'reports-date-from',/, reason: 'named via hiddenLabel(reports-date-from) visually-hidden label' },
+  { file: 'views/reports.js', re: /type: 'date', id: 'reports-date-to',/, reason: 'named via hiddenLabel(reports-date-to) visually-hidden label' },
+  // stats.js is owned by a parallel agent in this wave — its readonly dump
+  // (:540) gains A11yDump.label with that agent's change; drop this entry then.
+  { file: 'views/stats.js', re: /rows: '18', readonly: 'readonly'/, reason: 'readonly dump — stats.js owned by a parallel agent, A11yDump.label lands with their wave' },
+];
+
+test('a11y: every c(input/textarea) literal carries a programmatic name (CAR-209)', () => {
+  const ROOTS = [
+    resolve(__dirname, '..', 'public', 'js', 'views'),
+    resolve(__dirname, '..', 'public', 'js', 'lib'),
+  ];
+  const unnamed = [];
+  for (const root of ROOTS) {
+    for (const file of walkJs(root)) {
+      const rel = file.slice(root.length + 1);
+      const group = root.endsWith('views') ? `views/${rel}` : `lib/${rel}`;
+      const src = readFileSync(file, 'utf8');
+      // Balanced c('label'…) spans — a control inside one is labelled.
+      const labelSpans = [];
+      for (const m of src.matchAll(/\bc\(\s*'label'/g)) {
+        const open = src.indexOf('(', m.index);
+        const close = balancedCall(src, open);
+        if (close > 0) labelSpans.push([m.index, close]);
+      }
+      const labelSpanText = labelSpans.map(([a, b]) => src.slice(a, b + 1)).join('\n');
+      // Literal htmlFor targets declared in this file.
+      const htmlForIds = new Set();
+      for (const m of src.matchAll(/\bhtmlFor:\s*(['"])([a-zA-Z0-9_.\-]+)\1/g)) htmlForIds.add(m[2]);
+      const hasDumpHelper = src.includes('A11yDump.label');
+      for (const m of src.matchAll(/\bc\(\s*'(input|textarea)'/g)) {
+        const open = src.indexOf('(', m.index);
+        const close = balancedCall(src, open);
+        if (close < 0) continue;
+        const callText = src.slice(m.index, close + 1);
+        const ob = callText.indexOf('{');
+        const optsText = ob >= 0 ? callText.slice(ob, objectSpan(callText, ob) + 1) : '';
+        // `const NAME = c('input'…` — NAME referenced inside a label span counts.
+        const pre = src.slice(Math.max(0, m.index - 120), m.index);
+        const varMatch = pre.match(/\b(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=\s*$/);
+        // (?<![\w.$]) keeps 'preview' from matching the i18n key 'bug.preview'.
+        const varNamed = varMatch && new RegExp(`(?<![\\w.$])${varMatch[1].replace(/\$/g, '\\$')}\\b`).test(labelSpanText);
+        const named =
+          /aria-label|htmlFor/.test(optsText) ||
+          labelSpans.some(([a, b]) => m.index >= a && m.index <= b) ||
+          varNamed ||
+          [...htmlForIds].some((id) => new RegExp(`\\bid:\\s*['"]${id.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}['"]`).test(callText));
+        if (named) continue;
+        // Readonly generated-output dumps: named via A11yDump.label in-file.
+        if (/readonly|readOnly/i.test(optsText) && hasDumpHelper) continue;
+        const line = src.slice(0, m.index).split('\n').length;
+        const allow = CONTROLS_ALLOWLIST.some(
+          (e) => e.file === group && e.re.test(optsText));
+        if (allow) continue;
+        unnamed.push(`${group}:${line} — ${callText.replace(/\s+/g, ' ').slice(0, 90)}`);
+      }
+    }
+  }
+  if (unnamed.length) {
+    console.error(`Unnamed controls (${unnamed.length}):\n  ` + unnamed.join('\n  '));
+  }
+  assert.deepStrictEqual(unnamed, [],
+    `${unnamed.length} input/textarea literal(s) without a programmatic name — add aria-label / data-i18n-aria-label / a label wrap, or an allowlist entry with a reason`);
+});
