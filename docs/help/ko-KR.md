@@ -228,7 +228,7 @@ batch 처리, apply 흐름, Playwright 설정)는
 
 **6단계 — 에디터를 채우는 방법 하나를 선택합니다:**
 - **기존 이력서 업로드** — **📁 Upload CV**를 클릭하고
-  `.docx / .doc / .odt / .rtf / .pdf / .html / .txt / .md` 중
+  `.docx / .odt / .rtf / .pdf / .html / .txt / .md` 중
   아무 파일이나 선택. 서버가 pandoc 또는 pdftotext로 마크다운으로
   변환하고 XSS를 정화한 결과를 에디터에 채워줍니다. **변환
   결과를 검토**하십시오 — 특히 PDF는 레이아웃이 손실되기 쉽습니다.
@@ -487,7 +487,7 @@ Health 페이지는 `full_name`이 알려진 자리표시자 이름과 일치하
   마크다운으로 변환합니다:
   - **텍스트 형식** — `.md`, `.markdown`, `.txt`, `.html`,
     `.htm`은 그대로 통과 (HTML은 pandoc → GFM markdown).
-  - **오피스 형식** — `.docx`, `.doc`, `.odt`, `.rtf`는
+  - **오피스 형식** — `.docx`, `.odt`, `.rtf`는
     **pandoc**으로 변환 (macOS: `brew install pandoc`, Linux:
     `apt install pandoc`).
   - **PDF** — `.pdf`는 Poppler의 **pdftotext**로 추출

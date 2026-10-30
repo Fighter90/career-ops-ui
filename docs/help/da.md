@@ -228,7 +228,7 @@ venstre, live preview til højre.
 
 **Trin 6 — Vælg én vej til at udfylde editoren:**
 - **Upload et eksisterende CV** — klik på **📁 Upload CV**, vælg en af
-  `.docx / .doc / .odt / .rtf / .pdf / .html / .txt / .md`. Serveren
+  `.docx / .odt / .rtf / .pdf / .html / .txt / .md`. Serveren
   konverterer til markdown via pandoc eller pdftotext, saniterer XSS
   og lægger resultatet i editoren. **Gennemgå konverteringen** —
   især PDF'er kan miste layouttroskab.
@@ -559,7 +559,7 @@ brev. Lever i `cv.md` i den overordnede projektrod.
   serveren konverterer den til markdown for dig:
   - **Tekstformater** — `.md`, `.markdown`, `.txt`, `.html`, `.htm`
     sendes igennem (HTML går via pandoc → GFM markdown).
-  - **Office-formater** — `.docx`, `.doc`, `.odt`, `.rtf`
+  - **Office-formater** — `.docx`, `.odt`, `.rtf`
     konverteres via **pandoc** (`brew install pandoc` på macOS,
     `apt install pandoc` på Linux).
   - **PDF** — `.pdf` udtrækkes via **pdftotext** fra Poppler

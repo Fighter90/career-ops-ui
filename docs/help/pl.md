@@ -225,7 +225,7 @@ lewej, podgląd na żywo po prawej.
 
 **Krok 6 — Wybierz jedną ścieżkę do wypełnienia edytora:**
 - **Prześlij istniejące CV** — kliknij **📁 Upload CV**, wybierz dowolny z
-  formatów `.docx / .doc / .odt / .rtf / .pdf / .html / .txt / .md`. Serwer
+  formatów `.docx / .odt / .rtf / .pdf / .html / .txt / .md`. Serwer
   konwertuje do Markdown przez pandoc lub pdftotext, usuwa XSS
   i umieszcza wynik w edytorze. **Sprawdź konwersję** —
   pliki PDF szczególnie mogą tracić wierność układu.
@@ -549,7 +549,7 @@ motywacyjnego. Przechowywane w `cv.md` w katalogu głównym projektu nadrzędneg
   serwer konwertuje go do Markdown:
   - **Formaty tekstowe** — `.md`, `.markdown`, `.txt`, `.html`, `.htm`
     są przepuszczane (HTML przechodzi przez pandoc → GFM Markdown).
-  - **Formaty biurowe** — `.docx`, `.doc`, `.odt`, `.rtf` są
+  - **Formaty biurowe** — `.docx`, `.odt`, `.rtf` są
     konwertowane przez **pandoc** (`brew install pandoc` na macOS,
     `apt install pandoc` na Linux).
   - **PDF** — `.pdf` jest ekstrahowany przez **pdftotext** z Poppler

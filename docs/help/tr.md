@@ -232,7 +232,7 @@ düzenleyici, sağda canlı önizleme.
 
 **Adım 6 — Düzenleyiciyi doldurmak için bir yol seçin:**
 - **Mevcut bir özgeçmişi yükleyin** — **📁 Upload CV**'ye tıklayın,
-  `.docx / .doc / .odt / .rtf / .pdf / .html / .txt / .md`'den herhangi
+  `.docx / .odt / .rtf / .pdf / .html / .txt / .md`'den herhangi
   birini seçin. Sunucu, pandoc veya pdftotext aracılığıyla markdown'a
   dönüştürür, XSS'yi temizler ve sonucu düzenleyiciye bırakır.
   **Dönüşümü gözden geçirin** — özellikle PDF'ler düzen doğruluğunu
@@ -576,7 +576,7 @@ kaynağı. Üst proje kökündeki `cv.md`'de bulunur.
   seçin, sunucu sizin için markdown'a dönüştürsün:
   - **Metin biçimleri** — `.md`, `.markdown`, `.txt`, `.html`, `.htm`
     olduğu gibi geçirilir (HTML, pandoc → GFM markdown ile gider).
-  - **Office biçimleri** — `.docx`, `.doc`, `.odt`, `.rtf` **pandoc**
+  - **Office biçimleri** — `.docx`, `.odt`, `.rtf` **pandoc**
     aracılığıyla dönüştürülür (macOS'ta `brew install pandoc`,
     Linux'ta `apt install pandoc`).
   - **PDF** — `.pdf`, Poppler'daki **pdftotext** ile çıkarılır

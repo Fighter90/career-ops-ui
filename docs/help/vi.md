@@ -225,7 +225,7 @@ trái, xem-trước trực tiếp bên phải.
 
 **Bước 6 — Chọn một đường để làm đầy trình soạn:**
 - **Tải lên CV có sẵn** — bấm **📁 Upload CV**, chọn tùy ý
-  `.docx / .doc / .odt / .rtf / .pdf / .html / .txt / .md`. Máy chủ
+  `.docx / .odt / .rtf / .pdf / .html / .txt / .md`. Máy chủ
   chuyển sang markdown qua pandoc hay pdftotext, làm sạch XSS,
   và thả kết quả vào trình soạn. **Xem lại bản chuyển đổi** —
   nhất là PDF dễ mất định dạng.
@@ -549,7 +549,7 @@ xin việc. Nằm trong `cv.md` tại thư mục gốc dự án.
   máy chủ chuyển nó sang markdown giúp bạn:
   - **Định dạng văn bản** — `.md`, `.markdown`, `.txt`, `.html`, `.htm`
     được đưa thẳng qua (HTML đi qua pandoc → markdown GFM).
-  - **Định dạng Office** — `.docx`, `.doc`, `.odt`, `.rtf` được
+  - **Định dạng Office** — `.docx`, `.odt`, `.rtf` được
     chuyển qua **pandoc** (`brew install pandoc` trên macOS,
     `apt install pandoc` trên Linux).
   - **PDF** — `.pdf` được trích qua **pdftotext** từ Poppler

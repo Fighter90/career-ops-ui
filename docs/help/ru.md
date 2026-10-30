@@ -239,7 +239,7 @@ batch-обработка, флоу подачи, установка Playwright) 
 **Шаг 6 — Выберите способ заполнить редактор:**
 
 - **Загрузить готовое резюме** — нажмите **📁 Upload CV**, выберите
-  любой из `.docx / .doc / .odt / .rtf / .pdf / .html / .txt / .md`.
+  любой из `.docx / .odt / .rtf / .pdf / .html / .txt / .md`.
   Сервер конвертирует файл в markdown через pandoc или pdftotext,
   выполняет санитайзинг от XSS и кладёт результат в редактор.
   **Проверьте конверсию** — у PDF особенно может потеряться вёрстка.
@@ -510,7 +510,7 @@ letter. Хранится в `cv.md` в корне родительского п�
   - **Текстовые форматы** — `.md`, `.markdown`, `.txt`, `.html`,
     `.htm` передаются без изменений (HTML идёт через pandoc → GFM
     markdown).
-  - **Office-форматы** — `.docx`, `.doc`, `.odt`, `.rtf`
+  - **Office-форматы** — `.docx`, `.odt`, `.rtf`
     конвертируются через **pandoc** (`brew install pandoc` на
     macOS, `apt install pandoc` на Linux).
   - **PDF** — `.pdf` извлекается через **pdftotext** из Poppler
