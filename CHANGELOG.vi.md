@@ -6,6 +6,32 @@ Bản dịch: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.264.0] — 2026-10-31
+
+### Thêm mới
+
+- **Sửa-trạng-thái-tracker ngay-trên-dòng** — huy hiệu trạng thái của mỗi dòng `#/tracker` giờ là một `<select>` gọn với các giai đoạn chính tắc (từ `GET /api/tracker/stages`, không bao giờ là whitelist hardcode). `POST /api/tracker/status` relay `set-status.mjs` chính tắc của dự án gốc dưới khóa `applications.md` (whitelist trạng thái qua `states.mjs`, passthrough `--dry-run`/`--note`, fail-soft 502 với chi tiết đã làm-sạch, spawn bằng mảng argv). Thành công cập nhật dòng tại chỗ (lớp tone + số-đếm-tab, giữ-focus); thất bại hoàn-nguyên giá trị và hiện toast. Các dòng mà relay không thể trỏ tới — trạng-thái-không-rõ-sửa-tay, hoặc số-sentinel-backfill `#` — giữ huy hiệu chỉ-đọc (các-sửa-LOW-từ-rà-soát-route; người-rà-soát: không có phát-hiện HIGH/MED).
+- **Cảnh-báo-server hiện-trên-mọi-trang-AI** — `evaluate`, `deep`, `auto-pipeline` (cả-trang **lẫn** modal), `career-plan`, `market`, `cv-studio` (humanize + tailor) giờ kết-xuất mảng `warnings` của server (bắt-tay-token-đầu-ra, trôi-ngôn-ngữ, sửa-ngày) thành một-dải-`badge-warn` (`role="status"`); modal-auto-pipeline không-còn-làm-rơi-cảnh-báo-của-frame-done. Khóa mới `llm.truncatedNotice` ×19.
+- **Sóng-coverage (+111-kiểm-thử)** — `routes/map.mjs` 100/94.9, `geocode.mjs` 96.3/92.9, `content.mjs` 99/84.9, `networking.mjs` 96.4/89.1, `sources/habr.mjs` 100/98.2 (`tests/cov-*-routes.test.mjs` mới ×3, `tests/sources-habr.test.mjs`); sàn-branch giữ-ở-≥ 90 %.
+- **Gói-đóng-CAR-191…216-trên-Linear** (`docs/reviews/2026-10-30-linear-car191-216-closure-bundle.md`) — bản-đóng-sẵn-để-dán-cho-chủ với SHA-commit-theo-từng-CAR và các-bình-luận-bằng-chứng.
+
+### Đã sửa
+
+- **Nguồn-quét-Trudvsem** — trang-rỗng (`results: {}`, cả-«qua-điểm-cuối») không-còn-giết-cả-lượt-quét (kết-thúc-sạch-với-không-dòng-nào); phong-bì-lỗi-API (HTTP-200 với `status: 500`) ném-với-văn-bản-của-chính-API; phân-trang đi-theo-offset-từng-**bản-ghi** (trước-đây-là-chỉ-số-trang — các-trang-bị-nhân-bản-ngầm, ~52-vacancy-thay-vì-hàng-trăm); lượt-đi dừng-trước-vùng-lỗi-offset-sâu-của-API (`offset × limit ≥ 10000`). Đã-xác-thực-trực-tiếp-từ-đầu-đến-cuối.
+- **habr** — tiêu-đề/công ty được-tước-thẻ **sau-khi** giải-mã-đối-tượng (ngang-hàng-với-hh.mjs): `&lt;script&gt;` trong-tiêu-đề-thẻ không-còn-đến-được-các-dòng-quét dạng-markup-sống; `>>` hợp-lệ-trong-tiêu-đề sống-sót.
+- **PUT /api/profile (đường-thô)** — khối-`candidate:` thiếu-`full_name` khác-rỗng bị-từ-chối, cùng-một-hàng-với-đường-gộp-trường (trước-đây-nó lưu-`full_name: null`).
+- **Trung-thực-của-hints** — `.doc` bị-gỡ-khỏi-danh-sách-chấp-nhận-khi-tải-CV và khỏi `cv.uploadHint` ×19 (parser chưa-bao-giờ-hỗ-trợ nó); `config.openaiModelHint` ×19 nêu-`gpt-5` (server ánh-xạ-mọi-id-`*-codex` về nó); `config.anthropicModelHint` ×19 và **mặc-định-Anthropic** giờ-đối-xứng-với-các-tier-của-dự-án-gốc — mặc-định `claude-sonnet-5-5`, premium `claude-opus-5-5`.
+- **Liên-kết-tài-liệu-Claude-Code** → `code.claude.com` (URL `docs.anthropic.com/en/docs/claude-code` cũ ném-TypeError trong-cổng-liên-kết).
+- help ×19: gạch-dòng-mật-độ-hàng đã-bị-gỡ (toggle rời-UI-trong-v1.263.0) và 18-họ-span-`**đậm**`-bị-hỏng được-sửa — cộng-với-lớp-lệch-renderer được-sửa-×19 (dòng-trống-thứ-hai-sau-mọi-bảng-trước-đoạn-văn; ký-tự-ống-nước ra-khỏi-ô-đậm): **0-ký-tự-`**`-nghĩa-đen-trong-kết-xuất-trên-cả-19-gói-help**.
+
+### Ghi chú
+
+- **Mô-hình-mặc-định-của-Anthropic đã-thay-đổi** thành `claude-sonnet-5-5` (tier-chuẩn-của-dự-án-gốc). Các-bản-deploy dựa-vào-mặc-định-ngầm-cũ (`claude-sonnet-4-6`) tự-động-nâng-cấp — ghim `ANTHROPIC_MODEL` trong `.env` để-từ-chối.
+- Không-hành-động-cố-ý: hai-chấm-rà-soát-mức-LOW được-cố-để-ngỏ (select-nhúng không-đối-xứng-với-sự-suy-giảm-`movesReady`-của-kanban — toast-thành-thực-khi-mọi-lần-thất-bại là-hành-vi-được-chọn; nhánh-`code: 'timeout'` vẫn-được-phủ-bởi-hợp-đồng-fake-writer, không-phải-bài-kiểm->30 s). CAR-141 (video demo) vẫn-thuộc-về-chủ.
+- help ×19 nhận-lượt-chỉnh-văn-bản-sau-phát-hành (bỏ-gạch-dòng-mật-độ, sửa-lớp-lệch-renderer) trên `main` sau-khi-v1.263.0 đã-ra-mắt — đây-là-tag-đầu-tiên mang nó.
+
+Tests 6905 → 7041 (+136) · Playwright 176 (173 đạt / 1 bỏ-qua-tùy-chọn) · coverage 98.5 % line / 90.1 % branch · registry không-thay-đổi: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.263.0] — 2026-10-30
 
 ### Thêm mới
