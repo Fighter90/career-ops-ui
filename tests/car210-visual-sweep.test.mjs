@@ -12,6 +12,7 @@ import { dirname, join } from 'node:path';
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const read = (p) => readFileSync(join(ROOT, p), 'utf8');
+
 test('CAR-210 — tracker first-run empty state renders OUTSIDE the min-width table', () => {
   const src = read('public/js/views/tracker.js');
   // The dedicated full-width host exists and ships in the page tree.
@@ -81,3 +82,8 @@ test('CAR-213 — the career-plan Input tab redirects to the Result tab', () => 
   }
 });
 
+test('CAR-215 — the docs FAB shrinks inside the ≤480px block and keeps a 44px touch target', () => {
+  const css = read('public/css/overlays.css');
+  assert.match(css, /@media \(max-width: 480px\) \{\n\s*\/\* CAR-215[\s\S]*?\.docs-fab \{ width: 44px; height: 44px; inset-inline-end: 12px; bottom: 12px; \}/, '44px launcher at 12px insets');
+  assert.match(css, /\.docs-fab__panel \{ right: 12px; left: 12px; width: auto; bottom: 68px;/, 'panel keeps its clearance above the smaller launcher');
+});
