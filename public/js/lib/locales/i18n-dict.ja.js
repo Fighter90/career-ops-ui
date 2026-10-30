@@ -1373,6 +1373,7 @@ window.__I18N_DICT_JA = {
   'plan.generated': "プランを生成しました — 確認・編集してから保存してください",
   'plan.generateFailed': "プランを生成できませんでした",
   'plan.editorPh': "ここにプランが表示されます。生成するか、自分で書いてから保存してください。",
+  'plan.editorLabel': "キャリアプランエディター",
   'plan.save': "プランを保存",
   'plan.saved': "キャリアプランを保存しました",
   'plan.saveFailed': "プランを保存できませんでした",

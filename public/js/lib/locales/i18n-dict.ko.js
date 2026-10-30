@@ -1373,6 +1373,7 @@ window.__I18N_DICT_KO = {
   'plan.generated': "플랜이 생성되었습니다 — 검토하고 편집한 뒤 저장하세요",
   'plan.generateFailed': "플랜을 생성할 수 없습니다",
   'plan.editorPh': "여기에 플랜이 표시됩니다. 생성하거나 직접 작성한 뒤 저장하세요.",
+  'plan.editorLabel': "커리어 플랜 편집기",
   'plan.save': "플랜 저장",
   'plan.saved': "커리어 플랜이 저장되었습니다",
   'plan.saveFailed': "플랜을 저장할 수 없습니다",

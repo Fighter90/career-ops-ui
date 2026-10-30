@@ -1372,6 +1372,7 @@ window.__I18N_DICT_PL = {
   'plan.generated': "Plan wygenerowany — przejrzyj, edytuj, a następnie zapisz",
   'plan.generateFailed': "Nie udało się wygenerować planu",
   'plan.editorPh': "Twój plan pojawi się tutaj. Wygeneruj go lub napisz własny — a następnie zapisz.",
+  'plan.editorLabel': "Edytor planu kariery",
   'plan.save': "Zapisz plan",
   'plan.saved': "Plan kariery zapisany",
   'plan.saveFailed': "Nie udało się zapisać planu",

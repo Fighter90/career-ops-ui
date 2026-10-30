@@ -96,6 +96,7 @@
     const urlInput = c('input', {
       className: 'input',
       placeholder: 'https://job-boards.greenhouse.io/anthropic/jobs/4567',
+      'aria-label': t('auto.urlLabel', 'Job posting URL'),
       style: { width: '100%' },
       value: opts.prefillUrl || '',
     });

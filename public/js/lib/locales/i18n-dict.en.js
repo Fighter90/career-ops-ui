@@ -1378,6 +1378,7 @@ window.__I18N_DICT_EN = {
   'plan.generated': "Plan generated — review, edit, then Save",
   'plan.generateFailed': "Could not generate the plan",
   'plan.editorPh': "Your plan will appear here. Generate one, or write your own — then Save.",
+  'plan.editorLabel': "Career plan editor",
   'plan.save': "Save plan",
   'plan.saved': "Career plan saved",
   'plan.saveFailed': "Could not save the plan",

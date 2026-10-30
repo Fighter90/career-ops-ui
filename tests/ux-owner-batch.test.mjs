@@ -94,3 +94,32 @@ test('ux-owner: nav.closeMenu exists in every locale', () => {
     assert.ok(src.includes("'nav.closeMenu':"), `nav.closeMenu missing in i18n-dict.${loc}.js`);
   }
 });
+
+test('ux-owner: the six owner-flagged controls carry accessible names', () => {
+  const read = (...p) => readFileSync(resolve(ROOT, 'public', 'js', ...p), 'utf8');
+  const scan = read('views', 'scan.js');
+  assert.match(scan, /id: 'scan-filter-text', placeholder: t\('scan\.filterText'\), 'aria-label': t\('scan\.filterText'\)/,
+    '#scan-filter-text needs an aria-label');
+  const tracker = read('views', 'tracker.js');
+  assert.match(tracker, /className: 'select', style: \{ maxWidth: '180px' \}, 'aria-label': t\('track\.anyScore'\)/,
+    'the tracker score select needs an aria-label');
+  assert.match(tracker, /maxLength: 500, placeholder: t\('track\.outcome\.notePh[^']*', '[^']*'\), 'aria-label': t\('track\.outcome\.notePh/,
+    'the outcome-modal note input needs an aria-label');
+  const plan = read('views', 'career-plan.js');
+  assert.match(plan, /rows: '22', 'data-i18n-placeholder': 'plan\.editorPh', 'aria-label': t\('plan\.editorLabel'/,
+    'the career-plan editor needs an aria-label');
+  const auto = read('lib', 'auto-pipeline.js');
+  const urlIn = auto.match(/const urlInput = c\('input', \{[\s\S]{0,300}?\}\);/);
+  assert.ok(urlIn && /'aria-label': t\('auto\.urlLabel'/.test(urlIn[0]), 'the auto-pipeline URL input needs an aria-label');
+  const bug = read('lib', 'bug-report.js');
+  const ta = bug.match(/var ta = c\('textarea', \{[\s\S]{0,300}?\}\);/);
+  assert.ok(ta && /'aria-label': t\('bug\.ph'/.test(ta[0]), 'the bug-report textarea needs an aria-label');
+});
+
+test('ux-owner: plan.editorLabel exists in every locale', () => {
+  const locales = ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi', 'ta', 'vi'];
+  for (const loc of locales) {
+    const src = readFileSync(resolve(ROOT, 'public', 'js', 'lib', 'locales', `i18n-dict.${loc}.js`), 'utf8');
+    assert.ok(src.includes("'plan.editorLabel':"), `plan.editorLabel missing in i18n-dict.${loc}.js`);
+  }
+});

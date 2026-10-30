@@ -1372,6 +1372,7 @@ window.__I18N_DICT_AR = {
   'plan.generated': "تم إنشاء الخطة — راجعها وحرّرها ثم احفظها",
   'plan.generateFailed': "تعذّر إنشاء الخطة",
   'plan.editorPh': "ستظهر خطتك هنا. أنشئ واحدة، أو اكتب خطتك الخاصة — ثم احفظها.",
+  'plan.editorLabel': "محرر الخطة المهنية",
   'plan.save': "حفظ الخطة",
   'plan.saved': "تم حفظ خطة المسار المهني",
   'plan.saveFailed': "تعذّر حفظ الخطة",

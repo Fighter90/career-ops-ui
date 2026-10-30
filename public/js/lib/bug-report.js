@@ -153,6 +153,7 @@
     var ta = c('textarea', {
       className: 'input', rows: '4', style: { width: '100%' },
       placeholder: t('bug.ph', 'What were you doing, and what went wrong?'),
+      'aria-label': t('bug.ph', 'What were you doing, and what went wrong?'),
     });
     var preview = c('textarea', {
       className: 'input', readonly: 'readonly', rows: '14',

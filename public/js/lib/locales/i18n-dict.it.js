@@ -1372,6 +1372,7 @@ window.__I18N_DICT_IT = {
   'plan.generated': "Piano generato — rivedi, modifica, poi Salva",
   'plan.generateFailed': "Impossibile generare il piano",
   'plan.editorPh': "Il tuo piano apparirà qui. Generane uno oppure scrivi il tuo — poi Salva.",
+  'plan.editorLabel': "Editor del piano di carriera",
   'plan.save': "Salva piano",
   'plan.saved': "Piano di carriera salvato",
   'plan.saveFailed': "Impossibile salvare il piano",

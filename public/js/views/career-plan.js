@@ -80,7 +80,7 @@ Router.register('career-plan', async () => {
   const resultCol = c('div', null, [runHost]);
 
   // ── editable plan + actions ──
-  const editor = c('textarea', { className: 'input', rows: '22', 'data-i18n-placeholder': 'plan.editorPh', style: { width: '100%', fontFamily: 'inherit' } });
+  const editor = c('textarea', { className: 'input', rows: '22', 'data-i18n-placeholder': 'plan.editorPh', 'aria-label': t('plan.editorLabel', 'Career plan editor'), style: { width: '100%', fontFamily: 'inherit' } });
   editor.placeholder = t('plan.editorPh', 'Your plan will appear here. Generate one, or write your own — then Save.');
   // CAR-20 — re-seed from the module buffer when one exists (restores
   // the user's unsaved plan across re-renders).

@@ -28223,6 +28223,27 @@
     "ta": "உங்கள் திட்டம் இங்கே தோன்றும். ஒன்றை உருவாக்குங்கள் அல்லது நீங்களே எழுதுங்கள் — பிறகு சேமி.",
     "vi": "Kế hoạch của bạn sẽ hiện ở đây. Tạo một cái, hoặc tự viết — rồi Lưu."
   },
+  "plan.editorLabel": {
+    "en": "Career plan editor",
+    "es": "Editor del plan de carrera",
+    "pt-BR": "Editor do plano de carreira",
+    "ko": "커리어 플랜 편집기",
+    "ja": "キャリアプランエディター",
+    "ru": "Редактор карьерного плана",
+    "zh-CN": "职业规划编辑器",
+    "zh-TW": "職涯規劃編輯器",
+    "fr": "Éditeur de plan de carrière",
+    "pl": "Edytor planu kariery",
+    "uk": "Редактор кар'єрного плану",
+    "da": "Karriereplan-editor",
+    "ar": "محرر الخطة المهنية",
+    "de": "Karriereplan-Editor",
+    "it": "Editor del piano di carriera",
+    "tr": "Kariyer planı düzenleyici",
+    "hi": "करियर योजना संपादक",
+    "ta": "தொழில் திட்ட திருத்தி",
+    "vi": "Trình soạn kế hoạch nghề nghiệp"
+  },
   "plan.save": {
     "en": "Save plan",
     "es": "Guardar plan",

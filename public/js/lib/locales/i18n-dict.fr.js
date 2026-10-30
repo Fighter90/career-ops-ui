@@ -1372,6 +1372,7 @@ window.__I18N_DICT_FR = {
   'plan.generated': "Plan généré — relisez, modifiez, puis Enregistrez",
   'plan.generateFailed': "Impossible de générer le plan",
   'plan.editorPh': "Votre plan apparaîtra ici. Générez-en un, ou rédigez le vôtre — puis Enregistrez.",
+  'plan.editorLabel': "Éditeur de plan de carrière",
   'plan.save': "Enregistrer le plan",
   'plan.saved': "Plan de carrière enregistré",
   'plan.saveFailed': "Impossible d’enregistrer le plan",

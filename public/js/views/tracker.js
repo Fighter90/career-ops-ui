@@ -44,7 +44,7 @@ Router.register('tracker', async () => {
   // write flips this off and the board re-renders read-only with a hint.
   let movesReady = true;
 
-  const filterScore = c('select', { className: 'select', style: { maxWidth: '180px' } }, [
+  const filterScore = c('select', { className: 'select', style: { maxWidth: '180px' }, 'aria-label': t('track.anyScore') }, [
     c('option', { value: '' }, t('track.anyScore')),
     c('option', { value: '4' }, t('track.scoreHigh')),
     c('option', { value: '3' }, t('track.scoreMid')),
@@ -664,7 +664,7 @@ function openOutcomeModal(r, c, t) {
 
   const select = c('select', { className: 'input', 'aria-label': t('track.outcome.record', 'Record outcome') },
     OUTCOME_OPTIONS.map((o) => c('option', { value: o.value }, t(o.key, o.fb))));
-  const note = c('input', { className: 'input', type: 'text', maxLength: 500, placeholder: t('track.outcome.notePh', 'Note (optional)') });
+  const note = c('input', { className: 'input', type: 'text', maxLength: 500, placeholder: t('track.outcome.notePh', 'Note (optional)'), 'aria-label': t('track.outcome.notePh', 'Note (optional)') });
   const result = c('div', { role: 'status', style: { fontSize: '13px', minHeight: '18px', color: 'var(--foggy)' } }, '');
 
   const previewBtn = c('button', { className: 'btn btn-ghost', type: 'button' }, t('track.outcome.preview', 'Preview'));

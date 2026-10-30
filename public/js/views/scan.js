@@ -266,7 +266,7 @@ Router.register('scan', async () => {
   const resultsEl = c('div', { id: 'scan-results' });
 
   const dryRun = c('input', { type: 'checkbox', id: 'dry-run' });
-  const filterText = c('input', { className: 'input', id: 'scan-filter-text', placeholder: t('scan.filterText') });
+  const filterText = c('input', { className: 'input', id: 'scan-filter-text', placeholder: t('scan.filterText'), 'aria-label': t('scan.filterText') });
   // v1.109.0 — "Exclude" keywords: comma-separated terms; a row is hidden if its
   // company/title/location contains ANY of them. Pairs with the include search
   // (which now treats commas as OR — "roles to find"). CAR-115 — the main

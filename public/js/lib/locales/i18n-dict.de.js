@@ -1372,6 +1372,7 @@ window.__I18N_DICT_DE = {
   'plan.generated': "Plan generiert — prüfen, bearbeiten, dann Speichern",
   'plan.generateFailed': "Der Plan konnte nicht generiert werden",
   'plan.editorPh': "Ihr Plan erscheint hier. Generieren Sie einen oder schreiben Sie Ihren eigenen — dann Speichern.",
+  'plan.editorLabel': "Karriereplan-Editor",
   'plan.save': "Plan speichern",
   'plan.saved': "Karriereplan gespeichert",
   'plan.saveFailed': "Der Plan konnte nicht gespeichert werden",

@@ -1372,6 +1372,7 @@ window.__I18N_DICT_DA = {
   'plan.generated': "Plan genereret — gennemse, redigér, og gem så",
   'plan.generateFailed': "Kunne ikke generere planen",
   'plan.editorPh': "Din plan vises her. Generér en, eller skriv din egen — og gem så.",
+  'plan.editorLabel': "Karriereplan-editor",
   'plan.save': "Gem plan",
   'plan.saved': "Karriereplan gemt",
   'plan.saveFailed': "Kunne ikke gemme planen",

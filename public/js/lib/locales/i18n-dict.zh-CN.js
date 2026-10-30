@@ -1373,6 +1373,7 @@ window.__I18N_DICT_ZH_CN = {
   'plan.generated': "计划已生成——请查看、编辑，然后保存",
   'plan.generateFailed': "无法生成计划",
   'plan.editorPh': "你的计划将显示在这里。生成一份，或自己撰写——然后保存。",
+  'plan.editorLabel': "职业规划编辑器",
   'plan.save': "保存计划",
   'plan.saved': "职业规划已保存",
   'plan.saveFailed': "无法保存计划",

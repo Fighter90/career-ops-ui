@@ -1354,6 +1354,7 @@ window.__I18N_DICT_VI = {
   'plan.generated': "Đã tạo kế hoạch — xem lại, sửa, rồi Lưu",
   'plan.generateFailed': "Không tạo được kế hoạch",
   'plan.editorPh': "Kế hoạch của bạn sẽ hiện ở đây. Tạo một cái, hoặc tự viết — rồi Lưu.",
+  'plan.editorLabel': "Trình soạn kế hoạch nghề nghiệp",
   'plan.save': "Lưu kế hoạch",
   'plan.saved': "Đã lưu kế hoạch sự nghiệp",
   'plan.saveFailed': "Không lưu được kế hoạch",

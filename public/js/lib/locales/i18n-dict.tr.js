@@ -1373,6 +1373,7 @@ window.__I18N_DICT_TR = {
   'plan.generated': "Plan oluşturuldu — gözden geçirin, düzenleyin, sonra Kaydet'e basın",
   'plan.generateFailed': "Plan oluşturulamadı",
   'plan.editorPh': "Planınız burada görünecek. Bir tane oluşturun ya da kendiniz yazın — sonra Kaydet'e basın.",
+  'plan.editorLabel': "Kariyer planı düzenleyici",
   'plan.save': "Planı kaydet",
   'plan.saved': "Kariyer planı kaydedildi",
   'plan.saveFailed': "Plan kaydedilemedi",

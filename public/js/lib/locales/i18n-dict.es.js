@@ -1372,6 +1372,7 @@ window.__I18N_DICT_ES = {
   'plan.generated': "Plan generado — revísalo, edítalo y luego guárdalo",
   'plan.generateFailed': "No se pudo generar el plan",
   'plan.editorPh': "Tu plan aparecerá aquí. Genera uno o escribe el tuyo propio, y luego guárdalo.",
+  'plan.editorLabel': "Editor del plan de carrera",
   'plan.save': "Guardar plan",
   'plan.saved': "Plan de carrera guardado",
   'plan.saveFailed': "No se pudo guardar el plan",
