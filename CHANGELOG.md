@@ -6,6 +6,18 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 ---
 
+## [1.262.4] — 2026-10-30
+
+### Fixed
+
+- **ja joins the token-dense evaluation locales** (`ja` → the 32768-token ceiling + the 480 s clock). The 5-locale spot re-run on prod v1.262.3 separated the night's four `502 · 300 s · 0 ch` timeouts into transients and deterministics: ar (250 s), ko (291 s) and zh-CN (259 s) passed their reruns, ru's one-off language drift did not repeat — but `ja` hit the standard ceiling twice with zero output (the full ×19 run 40981578549 and the spot 41012725839). Same shape class as it/pl. Red-first pin: `evalMaxTokens('ja') = 32768`, `evalTimeoutMs('ja') = 480_000`, the other locales keep 300 s.
+
+### Notes
+
+- Deliberately a single-purpose patch: the ja fix is the only change this release carries — it does not bundle anything else. ar/ko/zh-CN stay at the standard ceiling on tonight's evidence (they pass; the night's failures were provider-load transients), and ru's drift was a one-off generation flake.
+
+Tests 6868 → 6869 (+1) · Playwright 176 · registry unchanged: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.262.3] — 2026-10-30
 
 ### Fixed
