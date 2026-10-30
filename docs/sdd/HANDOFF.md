@@ -4,10 +4,10 @@ This is the operating manual. Read it, then `PLAN.md` (order) and `BACKLOG.md` (
 
 ## State (2026-10-30)
 
-- Released: **v1.262.1** — deployed to resumecraft.ru (prod = 1.262.1, parent 1.38.0 @ `0595b5d1` true-merge of upstream). Tagged, GitHub release, npm package, cvstart.org rebuilt.
-- Registry: **123 sources = 118 EN + 5 RU · 118 adapters** · 39 route modules · 19 locales · tests **6841** · help 33 H2 / 129 H3.
-- Recent trains: v1.261.3 (design-completion) → v1.262.0 (upstream features CAR-180…189) → v1.262.1 (it token-dense). Deploy gained `mode=hermes` / `mode=provider` plus a deploy-only ref guard after the v1.238.0 downgrade incident (#591/#597).
-- Next: v1.262.2 review tail (7 L-findings from the wave review) + help ×18 "118 EN adapters" bullet gap. Open owner item: CAR-141 demo video recording.
+- Released: **v1.263.0** (owner UX batch: motion.css polish layer, accent blue→crimson hue 15, contrast pass, a11y all-controls-named, scan/dashboard/help/drawer fixes, 7 visual-sweep fixes) — deployed to resumecraft.ru (prod = 1.263.0, parent 1.38.0 @ `0595b5d1`). Tagged, GitHub release, npm package, cvstart.org rebuilt. Before it, over the last day: v1.262.4 (ja token-dense), v1.262.3 (pl token-dense), v1.262.2 (review-tail: 7 L-fixes + deploy F1–F6 + import-modal tail), v1.262.1 (it token-dense).
+- Registry: **123 sources = 118 EN + 5 RU · 118 adapters** · 39 route modules · 19 locales · tests **6905** · help 33 H2 / 129 H3 · Playwright 176 · `motion.css` added as the last `/css/` sheet.
+- Recent trains: v1.262.2 (review-tail — 7 wave-review L-findings closed red-first; deploy.yml F1–F6 incl. 6 executable anti-downgrade pins; import-modal tail) → v1.262.3 (pl token-dense: 32768 tokens + 480 s clock, after the ×2 `502 · 300 s · 0 ch` evals on prod) → v1.262.4 (ja token-dense: same ceiling, after the 5-locale spot re-run split the night's timeouts) → v1.263.0 (owner UX batch — motion.css, crimson accent, contrast/a11y passes, scan/dashboard/help/drawer fixes). Deploy workflow gained `mode=hermes` / `mode=provider` in v1.262.1.
+- Next: help ×19 prose fan-out (density mention + §1 markdown spans — the running `help/1.263.0-*` wave closes it), CAR-141 demo video recording (owner), 33 «landed & evolved» branches — owner's call.
 
 ## Non-negotiable rules
 
