@@ -178,12 +178,10 @@ Router.register('scan', async () => {
       };
     } catch { return { params: null, sort: null }; }
   })();
-  // CAR-115 — density (row height) for the windowed results table,
-  // persisted like the other scan prefs. Mutable: the pagebar toggle flips it.
-  let density = (() => {
-    try { return localStorage.getItem('career-ops-ui:scan:density') === 'compact' ? 'compact' : 'comfortable'; }
-    catch { return 'comfortable'; }
-  })();
+  // CAR-115 — density (row height) for the windowed results table. The
+  // pagebar toggle was removed (owner decision, 2026-10-30): the model stays
+  // so the windowed row math (scan-results ROW_H / getDensity) is unaffected.
+  let density = 'comfortable';
   // Late-bound view services the results subsystem calls back into.
   const view = {};
   let portalsData = null;
@@ -507,25 +505,10 @@ Router.register('scan', async () => {
     const n = parseInt(pageSizeSelect.value, 10);
     if (Number.isFinite(n) && n > 0) { pager.setPageSize(n); SR.render(); }
   });
-  // CAR-115 — density toggle (compact/comfortable row height). The label
-  // names the mode it will SWITCH TO (aria-pressed carries the state).
-  const densityBtn = c('button', {
-    className: 'btn btn-ghost btn-sm v2-scan-density', type: 'button',
-    onClick: () => {
-      density = density === 'compact' ? 'comfortable' : 'compact';
-      densityBtn.textContent = '≡ ' + (density === 'compact'
-        ? t('scan.v2.comfortable', 'Comfortable')
-        : t('scan.v2.compact', 'Compact'));
-      densityBtn.setAttribute('aria-pressed', String(density === 'compact'));
-      densityBtn.setAttribute('aria-label', t('scan.v2.density', 'Row density') + ': ' + density);
-      try { localStorage.setItem('career-ops-ui:scan:density', density); } catch { /* private mode */ }
-      SR.render();
-    },
-  });
-  densityBtn.textContent = '≡ ' + (density === 'compact' ? t('scan.v2.compact', 'Compact') : t('scan.v2.comfortable', 'Comfortable'));
-  densityBtn.setAttribute('aria-pressed', String(density === 'compact'));
-  densityBtn.setAttribute('aria-label', t('scan.v2.density', 'Row density') + ': ' + density);
-  const scanPagebar = c('div', { className: 'scan-pagebar' }, [densityBtn, pageSizeSelect]);
+  // CAR-115 — the density toggle was removed (owner decision): rows-per-page
+  // select only. The density MODEL stays in scan-results (getDensity plumbing
+  // is still exercised by tests/car115-scan-v2.test.mjs).
+  const scanPagebar = c('div', { className: 'scan-pagebar' }, [pageSizeSelect]);
   // v1.132.0 — the results-rendering subsystem was extracted to
   // public/js/lib/scan-results.js (file-size-contract split). It closes over
   // this context; lastResults is passed as a getter because refreshResults()
@@ -739,9 +722,8 @@ Router.register('scan', async () => {
       // Apply button is gone (acceptance: no Apply button; live chips).
       filterBar.barEl,
       presetsWrap,
-      // v1.244.0 — rows-per-page for the results pager (AC3) + the CAR-115
-      // density toggle; both sit above the table, outside the re-rendered
-      // #scan-results subtree.
+      // v1.244.0 — rows-per-page for the results pager (AC3); sits above
+      // the table, outside the re-rendered #scan-results subtree.
       scanPagebar,
       resultsEl,
     ]),

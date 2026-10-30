@@ -1751,9 +1751,6 @@ window.__I18N_DICT_KO = {
   'stats.ovDay_other': "{n}일",
   // ── CAR-115 — #/scan v2: live filter chips, windowed results, quick view ──
   'scan.v2.activeFilters': "활성 필터",
-  'scan.v2.compact': "컴팩트",
-  'scan.v2.comfortable': "넓게",
-  'scan.v2.density': "행 밀도",
   'scan.v2.description': "설명",
   'scan.v2.evaluate': "평가",
   'scan.v2.includeNoSalary': "무급 채용 포함",

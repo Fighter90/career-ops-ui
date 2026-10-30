@@ -1750,9 +1750,6 @@ window.__I18N_DICT_AR = {
   'stats.ovDay_other': "{n} يوم",
   // ── CAR-115 — #/scan v2: live filter chips, windowed results, quick view ──
   'scan.v2.activeFilters': "عوامل التصفية النشطة",
-  'scan.v2.compact': "مضغوط",
-  'scan.v2.comfortable': "مريح",
-  'scan.v2.density': "كثافة الصفوف",
   'scan.v2.description': "الوصف",
   'scan.v2.evaluate': "تقييم",
   'scan.v2.includeNoSalary': "تضمين الوظائف بدون راتب",

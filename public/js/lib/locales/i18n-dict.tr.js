@@ -1752,9 +1752,6 @@ window.__I18N_DICT_TR = {
   'stats.ovDay_other': "{n} gün",
   // ── CAR-115 — #/scan v2: live filter chips, windowed results, quick view ──
   'scan.v2.activeFilters': "Etkin filtreler",
-  'scan.v2.compact': "Sıkı",
-  'scan.v2.comfortable': "Rahat",
-  'scan.v2.density': "Satır yoğunluğu",
   'scan.v2.description': "Açıklama",
   'scan.v2.evaluate': "Değerlendir",
   'scan.v2.includeNoSalary': "Maaşsız işleri dahil et",

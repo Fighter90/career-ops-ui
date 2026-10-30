@@ -360,10 +360,15 @@ Router.register('dashboard', async () => {
         PLANE('radial-gradient(closest-side, color-mix(in srgb, var(--darjeeling) 7%, transparent), transparent 68%)',
           { top: '-10%', left: '-12%', width: '34%', height: '90%' }),
       ]),
-      c('div', { className: 'v2-dash-hero-inner', style: { position: 'relative' } }, [
+      c('div', {
+        className: 'v2-dash-hero-inner',
+        // Owner UX batch: the greeting and the action row stacked on one line;
+        // a column flex with gap keeps the hero vertically composed.
+        style: { position: 'relative', display: 'flex', flexDirection: 'column', alignItems: 'flex-start', gap: 'var(--space-3)' },
+      }, [
         c('p', {
           className: 'v2-dash-greeting',
-          style: { margin: '0 0 var(--space-2)', color: 'var(--foggy-strong)', fontSize: 'var(--font-size-base)' },
+          style: { margin: '0', color: 'var(--foggy-strong)', fontSize: 'var(--font-size-base)' },
         }, GREETING),
         c('div', {
           className: 'v2-dash-split',

@@ -1751,9 +1751,6 @@ window.__I18N_DICT_RU = {
   'stats.ovDay_other': "{n} дн.",
   // ── CAR-115 — #/scan v2: live filter chips, windowed results, quick view ──
   'scan.v2.activeFilters': "Активные фильтры",
-  'scan.v2.compact': "Компактно",
-  'scan.v2.comfortable': "Просторно",
-  'scan.v2.density': "Плотность строк",
   'scan.v2.description': "Описание",
   'scan.v2.evaluate': "Оценить",
   'scan.v2.includeNoSalary': "Включать вакансии без зарплаты",

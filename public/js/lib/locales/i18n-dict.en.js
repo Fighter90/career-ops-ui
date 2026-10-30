@@ -1757,9 +1757,6 @@ window.__I18N_DICT_EN = {
   'stats.ovDay_other': "{n} days",
   // ── CAR-115 — #/scan v2: live filter chips, windowed results, quick view ──
   'scan.v2.activeFilters': "Active filters",
-  'scan.v2.compact': "Compact",
-  'scan.v2.comfortable': "Comfortable",
-  'scan.v2.density': "Row density",
   'scan.v2.description': "Description",
   'scan.v2.evaluate': "Evaluate",
   'scan.v2.includeNoSalary': "Include jobs without salary",

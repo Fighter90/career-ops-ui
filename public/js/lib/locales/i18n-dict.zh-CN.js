@@ -1751,9 +1751,6 @@ window.__I18N_DICT_ZH_CN = {
   'stats.ovDay_other': "{n}天",
   // ── CAR-115 — #/scan v2: live filter chips, windowed results, quick view ──
   'scan.v2.activeFilters': "当前筛选",
-  'scan.v2.compact': "紧凑",
-  'scan.v2.comfortable': "宽松",
-  'scan.v2.density': "行密度",
   'scan.v2.description': "职位描述",
   'scan.v2.evaluate': "评估",
   'scan.v2.includeNoSalary': "包含无薪职位",

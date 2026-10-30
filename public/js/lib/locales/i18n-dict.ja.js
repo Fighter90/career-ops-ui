@@ -1751,9 +1751,6 @@ window.__I18N_DICT_JA = {
   'stats.ovDay_other': "{n}日",
   // ── CAR-115 — #/scan v2: live filter chips, windowed results, quick view ──
   'scan.v2.activeFilters': "適用中のフィルター",
-  'scan.v2.compact': "コンパクト",
-  'scan.v2.comfortable': "快適",
-  'scan.v2.density': "行の密度",
   'scan.v2.description': "説明",
   'scan.v2.evaluate': "評価",
   'scan.v2.includeNoSalary': "給与のない求人を含める",

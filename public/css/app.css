@@ -796,4 +796,3 @@ tr.v2-scan-isnew > td { animation: v2scan-in 150ms var(--ease-out); }
 .v2-scan-qv-desc { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 14px; line-height: 1.5; max-height: 46vh; overflow-y: auto; border-top: 1px solid var(--slate); padding-top: 10px; margin: 0 0 14px; }
 .v2-scan-qv-actions { display: flex; flex-wrap: wrap; gap: 8px; }
 .v2-scan-qv-close { position: absolute; top: 12px; inset-inline-end: 12px; }
-.v2-scan-density { min-height: 32px; }

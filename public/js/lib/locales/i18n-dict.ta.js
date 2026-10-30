@@ -1737,9 +1737,6 @@ window.__I18N_DICT_TA = {
   'stats.ovDay_other': "{n} நாட்கள்",
   // ── CAR-115 — #/scan v2: live filter chips, windowed results, quick view ──
   'scan.v2.activeFilters': "செயலில் உள்ள வடிகட்டிகள்",
-  'scan.v2.compact': "சுருக்கமான",
-  'scan.v2.comfortable': "வசதியான",
-  'scan.v2.density': "வரிசை அடர்த்தி",
   'scan.v2.description': "விளக்கம்",
   'scan.v2.evaluate': "மதிப்பீடு",
   'scan.v2.includeNoSalary': "சம்பளமில்லாத வேலைகளை சேர்க்கவும்",

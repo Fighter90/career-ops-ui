@@ -1725,9 +1725,6 @@ window.__I18N_DICT_VI = {
   'stats.ovDay_other': "{n} ngày",
   // ── CAR-115 — #/scan v2: live filter chips, windowed results, quick view ──
   'scan.v2.activeFilters': "Bộ lọc đang bật",
-  'scan.v2.compact': "Gọn",
-  'scan.v2.comfortable': "Thoáng",
-  'scan.v2.density': "Mật độ hàng",
   'scan.v2.description': "Mô tả",
   'scan.v2.evaluate': "Đánh giá",
   'scan.v2.includeNoSalary': "Bao gồm việc không có lương",
