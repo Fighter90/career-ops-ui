@@ -128,6 +128,10 @@ Parses `data/applications.md` into rows.
 
 Body: `{ company, role, score?, status?, url?, reportSlug?, notes?, date? }`. Required: `company`, `role`. Status whitelist: `Evaluated, Applied, Responded, Interview, Offer, Hired, Rejected, Discarded, SKIP`. Dedup by `(company, role)` case-insensitive — returns `{ deduped: true, existingNum }` instead of creating a duplicate. Auto-numbers (zero-padded), bootstraps the table header if missing.
 
+### `POST /api/tracker/status`
+
+Inline status edit (BACKLOG v1.246.0 #2). Body: `{ row, state, note?, dryRun? }`. `row` — integer ≥ 1; `state` — canonicalized through `server/lib/states.mjs` (aliases/case folded, unknown → **400**); `note` — control-char-guarded, ≤ 200 chars. Relays the parent's canonical writer `set-status.mjs --row N <State> [--note] [--dry-run] --json` via `runTrackedScript` (the script takes the `applications.md` lock itself, so the relay serializes with every web-ui writer; web-ui never writes the tracker directly). Fail-soft: non-JSON / non-zero exit / missing script → **502** `{ error, code, detail }` (stderr sanitized). Success → the parent script's `{ ok, row, state, … }` passthrough (`dryRun` echoed). Drives the inline status `<select>` on `#/tracker` (`track.inlineStatus*` keys ×19).
+
 ### `GET /api/liveness?url=<URL>`
 
 Zero-token, zero-browser "still live?" check for an ATS-hosted posting (Greenhouse / Lever / Ashby / Workday / SmartRecruiters public JSON). SSRF-safe: `isValidJobUrl` gate + fixed known hosts + `safeGet` + a cross-origin-redirect guard. Returns `{ result: 'live'|'expired'|'uncertain', code, reason, provider }`. An unrecognized ATS host or an inconclusive probe still returns **200** with `result: 'uncertain'`, `code: 'inconclusive'`, `provider: null` (no Playwright fallback at this rung). A loopback / `file:` / private / template URL → **400** `{ error }`. Drives the "still live?" badge on `#/tracker` and scan results.
