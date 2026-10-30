@@ -17,8 +17,8 @@ lần chạy đầu; sau đó nhảy tới mục cụ thể qua mục lục ở 
 > và lấp đầy các hàng lấp lánh xám trong lúc dữ liệu tải, nên việc
 > điều hướng không bao giờ trông trống rỗng. Và không trang nào chào
 > bạn bằng một khoảng trống trơ trọi: bốn trang khởi đầu rỗng —
-> **Auto-pipeline**, **Apply checklist**, **Batch**, và **Funded
-> companies** — hiện một ví dụ mẫu cộng đúng một hành động làm đầy
+> **Auto-pipeline**, **Apply checklist**, **Batch**, và
+> **Funded companies** — hiện một ví dụ mẫu cộng đúng một hành động làm đầy
 > chúng (`v2empty.exampleTag`).
 
 > **Đối tượng:** bất kỳ ai vừa thả UI này vào một bản `career-ops`
@@ -162,8 +162,8 @@ từng giai đoạn.
 > career-ops-ui open       # mở + NÂNG tab bảng điều khiển lên trước trong trình duyệt
 > ```
 >
-> Sau `setup`/`run`, tab trình duyệt được mở **và đưa lên
-> trước** tự động (v1.43.0); `career-ops-ui open` làm điều tương tự theo
+> Sau `setup`/`run`, tab trình duyệt được mở **và đưa lên trước**
+> tự động (v1.43.0); `career-ops-ui open` làm điều tương tự theo
 > yêu cầu để bạn không phải săn tab bảng điều khiển. `NO_OPEN=1`
 > tắt tự-mở cho các lần khởi chạy headless/CI.
 >
@@ -238,8 +238,8 @@ làm sạch (`<script>` / `javascript:` / inline handler bị loại) và
 ghi `cv.md`. Toast: *"Đã lưu"*.
 
 **Bước 8 (tùy chọn) — Bấm `📄 Generate PDF`.** Chạy
-`generate-pdf.mjs` ở dự án gốc (cần Playwright) và **PDF mới
-tự tải xuống** trình duyệt của bạn khi xong. Danh sách ở
+`generate-pdf.mjs` ở dự án gốc (cần Playwright) và
+**PDF mới tự tải xuống** trình duyệt của bạn khi xong. Danh sách ở
 dưới trang giữ mọi tệp đã tạo trước đó.
 
 ### C. Tìm tin tuyển dụng (~2 phút mỗi lần quét)
@@ -274,8 +274,8 @@ Mọi thứ dưới `comp_total_min_usd` của bạn bị gắn cờ đỏ
 
 ### E. Quyết định & nghiên cứu sâu công ty lọt-vòng (~3 phút)
 
-**Bước 14 — Chọn một tin đáng theo đuổi. Bấm `Deep research`
-trên thanh bên.** Nhập tên công ty và vị trí. Mô hình
+**Bước 14 — Chọn một tin đáng theo đuổi. Bấm `Deep research` trên thanh bên.**
+Nhập tên công ty và vị trí. Mô hình
 tạo một bản tóm tắt công ty 7 mục (sứ mệnh, tin tức gần đây, tech
 stack, tín hiệu tuyển người, chuẩn lương, rủi ro, góc tiếp cận đề xuất).
 Lưu sẽ đổ vào `interview-prep/<company>-<role>.md`.
@@ -367,8 +367,8 @@ quá hạn.
 
 Trang rỗng thành thật với trường duy nhất của nó: một thẻ
 **Example** và nút **Try an example URL** (`v2empty.auto.tryExample`)
-điền vào ô nhập một tin tuyển dụng mẫu — **không gì chạy cho tới khi
-bạn bấm Run** (`v2empty.auto.hint`), nên việc khám phá không tốn gì.
+điền vào ô nhập một tin tuyển dụng mẫu —
+**không gì chạy cho tới khi bạn bấm Run** (`v2empty.auto.hint`), nên việc khám phá không tốn gì.
 
 **Chưa có khóa API?** Pipeline chạy ở **chế độ thủ công**: các bước 3–5
 thu gọn và bạn nhận một thẻ prompt sẵn-sàn-dán (sao chép vào Claude
@@ -446,17 +446,17 @@ cài đặt nằm trong một khối không-phân-biệt. Giờ nó là một bi
 Vì sao việc lưu an toàn:
 
 - Biểu mẫu chỉ gửi 14 đường vô-hướng được mô hình hóa dưới dạng
-  `{ fields: { "candidate.full_name": … } }`. Máy chủ **đọc
-  `config/profile.yml` hiện có, chỉ đặt/xóa đúng những lá đó, và
-  tuần-tự-hóa lại toàn bộ đối tượng** — nên các mảng lồng nhau mà biểu mẫu
+  `{ fields: { "candidate.full_name": … } }`. Máy chủ
+  **đọc `config/profile.yml` hiện có, chỉ đặt/xóa đúng những lá đó, và tuần-tự-hóa lại toàn bộ đối tượng**
+  — nên các mảng lồng nhau mà biểu mẫu
   không mô hình (`target_roles.archetypes`, `narrative.proof_points`,
   `narrative.superpowers`) và mọi khóa tùy chọn bạn tự thêm
   **sống sót qua lượt đi-về nguyên vẹn**. Xóa trắng một trường gỡ khóa đó
   sạch sẽ (không để lại `phone: ""`).
 - Kiểm tra vẫn yêu cầu họ tên; phần đầu `# Career-Ops Profile
   Configuration` được đóng dấu tự động.
-- Một đánh đổi: lưu-biểu-mẫu **tuần-tự-hóa lại YAML, nên chú thích
-  `#` nội dòng bị mất**. Để giữ chú thích hay sửa mảng lồng nhau,
+- Một đánh đổi: lưu-biểu-mẫu
+  **tuần-tự-hóa lại YAML, nên chú thích `#` nội dòng bị mất**. Để giữ chú thích hay sửa mảng lồng nhau,
   dùng mục mở-rộng **Advanced: edit raw YAML** ở dưới tab — đó là
   trình soạn toàn-tệp trước-1.32, không đổi (thay thế toàn bộ tệp khi lưu).
 - Tóm tắt chỉ-đọc tại `#/profile` là người bạn đồng hành trực quan.
@@ -514,8 +514,8 @@ trang này đọc lại khi tải lại.
 
 Những trường quan trọng nhất:
 
-- `candidate.full_name` — dùng trong mọi prompt. **Hãy thay placeholder
-  `Jane Smith`** trước khi quét bất cứ thứ gì thật, nếu không các thư
+- `candidate.full_name` — dùng trong mọi prompt.
+  **Hãy thay placeholder `Jane Smith`** trước khi quét bất cứ thứ gì thật, nếu không các thư
   xin việc được tạo sẽ đi ra dưới tên placeholder.
 - `candidate.email`, `linkedin`, `github` — được tham chiếu khi tạo
   thư xin việc và trong danh mục kiểm tra apply.
@@ -604,8 +604,8 @@ phần quan trọng. Ba phần của SPA (bên dưới) khớp 1:1 với schema
 chính thức career-ops.org từ
 [scan-job-portals](https://career-ops.org/docs/introduction/guides/scan-job-portals).
 
-> **Đường tắt:** URL `#/portals` giờ trỏ thẳng tới **App
-> settings** và (khi một nguồn khu vực được cấu hình) nhảy tới nhóm
+> **Đường tắt:** URL `#/portals` giờ trỏ thẳng tới **App settings**
+> và (khi một nguồn khu vực được cấu hình) nhảy tới nhóm
 > **Regional sources** — nên liên kết `#/portals` đã lưu-đánh-dấu hay gõ-tay
 > không còn 404 (v1.42.0).
 
@@ -618,8 +618,8 @@ title_filter:
   seniority_boost: [Senior, Staff, Lead, Principal]
 ```
 
-Một tin được quét đi qua khi tiêu đề của nó chứa **ít nhất một
-từ khóa positive** VÀ **không từ khóa negative nào**. Tinh chỉnh cả hai.
+Một tin được quét đi qua khi tiêu đề của nó chứa **ít nhất một từ khóa positive**
+VÀ **không từ khóa negative nào**. Tinh chỉnh cả hai.
 Từ khóa là chuỗi-con không-phân-biệt-hoa-thường.
 
 `seniority_boost` là khóa thứ ba của bộ lọc tiêu đề. Từ khóa liệt kê
@@ -845,8 +845,8 @@ russian_portals:
 ```
 
 `queries` là các chuỗi so-khớp-chuỗi-con không-phân-biệt-hoa-thường với tiêu đề
-việc làm trên hh.ru và Habr Career. **Cẩn thận với chồng lấn với danh sách
-negative** — nếu `"Senior PHP"` nằm trong `queries` nhưng `"php"` lại nằm trong
+việc làm trên hh.ru và Habr Career. **Cẩn thận với chồng lấn với danh sách negative**
+— nếu `"Senior PHP"` nằm trong `queries` nhưng `"php"` lại nằm trong
 `title_filter.negative`, lượt quét sẽ trả về 0 kết quả và console
 sẽ cảnh báo về xung đột.
 
@@ -1065,7 +1065,6 @@ Chrome kết quả v2 giữ mọi nút điều khiển luôn dễ tìm thấy:
 - **Sort by** (`scan.v2.sortBy`) — bấm một tiêu đề cột (công ty,
   vị trí, lương, tuổi) để sắp theo nó; bấm lần nữa để đảo chiều.
 - **Quick view** (`scan.v2.quickView`) — bấm một dòng để mở rộng mô tả tin tuyển dụng ngay tại chỗ (**Description**, `scan.v2.description`) mà không rời trang; các tin không có nội dung đã thu ghi điều đó (`scan.v2.noDescription`) thay vì hiện một thẻ trống.
-- **Row density** (`scan.v2.density`) — chuyển **Compact** / **Comfortable** (`scan.v2.compact` / `scan.v2.comfortable`) giữa các độ cao dòng; lựa chọn được ghi nhớ theo từng trình duyệt.
 - **Log** (`scan.v2.log`) — thu gọn/mở rộng nhật ký quét streaming để
   nhường bảng toàn bộ bề rộng.
 
@@ -1230,8 +1229,8 @@ không gửi header CORS nên trình duyệt không thể gọi trực tiếp; m
 proxy yêu cầu, strip `<script>` / `<style>` / thẻ HTML,
 và trả về tối đa 8 KB văn bản thuần.
 
-Proxy xem trước đi qua các redirect thủ công với **xác thực SSRF
-từng bước** — mọi header `Location` lại đi qua `isValidJobUrl()`
+Proxy xem trước đi qua các redirect thủ công với **xác thực SSRF từng bước**
+— mọi header `Location` lại đi qua `isValidJobUrl()`
 thêm một lần, nên một bảng ác ý không thể ném bạn về loopback / IP riêng
 / `file://`. Giới hạn 3 bước, timeout 15 giây.
 
@@ -1256,9 +1255,9 @@ hộp vào lớn sau một lượt quét là tâm điểm v2 của trang này:
 - **Select** (`pipe.selectOne`) bất kỳ dòng nào, hay **Select all shown** (`pipe.selectAllShown`) — vùng chọn luôn bám theo các bộ lọc hiện tại, không bao giờ các dòng vô hình. Thanh vùng chọn hiện số đếm (`pipe.selectedCount`) và đưa ra **✕ Remove selected (N)** (`pipe.bulkRemove`) cộng với **Evaluate first selected** (`pipe.evaluateSelected`) — xóa hàng loạt xác nhận một lần cho cả bộ, không phải từng dòng.
 
 Không gì bị mất do sơ suất: mỗi lần xóa — đơn hay hàng loạt — trả về
-một token hoàn tác mờ-đục, và một thanh ở đáy trang (**Deleted:
-N**, `pipe.deleted`) đưa ra **Undo** (`pipe.undo`) / **Dismiss**
-(`pipe.undoDismiss`). Các lần xóa xếp chồng tới năm lô (lô cũ nhất bị
+một token hoàn tác mờ-đục, và một thanh ở đáy trang (**Deleted: N**, `pipe.deleted`) đưa ra
+**Undo** (`pipe.undo`) / **Dismiss** (`pipe.undoDismiss`).
+Các lần xóa xếp chồng tới năm lô (lô cũ nhất bị
 bỏ); **Undo** hoàn tác lô gần nhất bằng cách gửi các token của nó tới
 `POST /api/pipeline/restore`, vốn chèn lại đúng các dòng gốc nguyên
 vẹn (bao gồm metadata checklist — không gì được suy-dự-lại hay
@@ -1357,10 +1356,10 @@ huy hiệu độ chính đáng và một pill điểm màu-mã-hóa (xanh ≥ 4.
 không mang điểm phân-tích-được) — và có thể lật sang khung xem **Table**
 trù mật (`rep2.viewTable`) khi bạn muốn dò theo dòng thay vì thẻ. Mỗi
 thẻ và mỗi dòng bảng còn nêu **bước tiếp theo đề xuất** cho dải điểm
-của nó: **Apply now — top fit** (`rep2.actApply`), **Apply, or find a
-warm contact first** (`rep2.actContact`), **Research the company
-first** (`rep2.actResearch`), hay **Skip unless there is a personal
-reason** (`rep2.actLow`) — mỗi cái là một liên kết thẳng tới đúng trang
+của nó: **Apply now — top fit** (`rep2.actApply`),
+**Apply, or find a warm contact first** (`rep2.actContact`),
+**Research the company first** (`rep2.actResearch`), hay
+**Skip unless there is a personal reason** (`rep2.actLow`) — mỗi cái là một liên kết thẳng tới đúng trang
 cần đến. Một thẻ không có điểm hiện pill mờ **Score not detected**
 (`rep.scoreUnparsed`) với tooltip trỏ về chính báo cáo.
 
@@ -1573,8 +1572,8 @@ recruiter, one pager **Interview prep**, và hồi đáo **Patterns**
 
 ### Dạng chung
 
-Mỗi trang có một biểu mẫu nhỏ (các trường riêng từng mode), một nút **▶
-Generate prompt** (thủ công), và — khi có khóa Anthropic hay Gemini
+Mỗi trang có một biểu mẫu nhỏ (các trường riêng từng mode), một nút
+**▶ Generate prompt** (thủ công), và — khi có khóa Anthropic hay Gemini
 — một nút **⚡ Chạy trực tiếp** được nâng lên làm nút chính.
 
 Bấm **▶ Generate prompt** trả về prompt đã lắp ráp với các giá trị
@@ -1608,8 +1607,8 @@ Danh mục của SPA dành cho những ai thích tự điền form
 mà không gọi Playwright. Một trang rỗng không để bạn phải đoán mò:
 nó hiện **Generate an application checklist** với một ví dụ mẫu
 (`v2empty.apply.emptyTitle` / `v2empty.apply.emptyBody`) và, nếu bạn
-đã đánh giá tin này rồi, một lối tắt tới việc **pick an evaluated
-report** (`v2empty.apply.pickReport`) để danh mục khởi đầu từ dữ liệu
+đã đánh giá tin này rồi, một lối tắt tới việc
+**pick an evaluated report** (`v2empty.apply.pickReport`) để danh mục khởi đầu từ dữ liệu
 của chính báo cáo đó. Nó bao gồm:
 
 0. Chạy `/career-ops apply <url>` trong Claude Code để đọc form qua
@@ -1937,9 +1936,8 @@ Workable / SmartRecruiters / Workday), các aggregator toàn bảng chọn bằn
 `provider:` tường minh (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board,
 Amazon, …), và các ATS theo tenant tự phát hiện từ host `careers_url` hay
 URL `api:` tường minh (BambooHR, Personio, Recruitee, Teamtailor, Avature,
-SAP SuccessFactors, …). Các board trên nền tảng **Deel** (`jobs.deel.com/<slug>` — board đa tenant nơi Klarna và nhiều công ty khác đăng tin) được tự động nhận diện từ URL — thêm một board chỉ là hai dòng trong portals.yml. **Danh sách đầy đủ không bao giờ cần được đếm tay ở đây —
-nó được tự phát hiện từ `server/lib/sources/` và hiển thị trực tiếp trong dropdown
-Source của `#/scan`.** Xem §5 cho YAML và
+SAP SuccessFactors, …). Các board trên nền tảng **Deel** (`jobs.deel.com/<slug>` — board đa tenant nơi Klarna và nhiều công ty khác đăng tin) được tự động nhận diện từ URL — thêm một board chỉ là hai dòng trong portals.yml.
+**Danh sách đầy đủ không bao giờ cần được đếm tay ở đây — nó được tự phát hiện từ `server/lib/sources/` và hiển thị trực tiếp trong dropdown Source của `#/scan`.** Xem §5 cho YAML và
 `docs/portals-examples.md` cho các mục copy paste.
 
 > **v1.69.0 (P-14) — tự phát hiện thả vào là chạy.** Thêm nguồn thứ 12 giờ là một
