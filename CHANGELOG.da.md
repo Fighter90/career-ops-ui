@@ -9,6 +9,32 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 ---
 
 
+## [1.264.0] — 2026-10-31
+
+### Tilføjet
+
+- **Inline-redigering af tracker-status** — hver rækkes status-badge i `#/tracker` er en kompakt `<select>` med de kanoniske stadier (fra `GET /api/tracker/stages`, aldrig en hardkodet whiteliste). `POST /api/tracker/status` videresender til forælderens kanoniske `set-status.mjs` under `applications.md`-låsen (status-whiteliste via `states.mjs`, `--dry-run`/`--note`-gennemgivelse, fail-soft 502 med saniteret detalje, argv-array-spawn). Succes opdaterer rækken på stedet (tone-klasse + fanetællinger, fokus bevaret); fejl tilbagefører og viser en toast. Rækker, som videresendelsen ikke kan ramme — en håndredigeret ukendt status, en backfill-sentinel `#` — beholder det skrivebeskyttede badge (route-review LOW-fixes; reviewer: ingen HIGH/MED-fund).
+- **Serveradvarsler vises på alle AI-sider** — `evaluate`, `deep`, `auto-pipeline` (både side **og** modal), `career-plan`, `market` og `cv-studio` (humanize + tailor) renderer nu serverens `warnings`-array (output-token-forkortelse, sprogdrift, datokorrektioner) som et `badge-warn`-bånd (`role="status"`); auto-pipeline-modalen taber ikke længere done-frame-advarslerne. Ny nøgle `llm.truncatedNotice` ×19.
+- **Dækningsbølge (+111 tests)** — `routes/map.mjs` 100/94.9, `geocode.mjs` 96.3/92.9, `content.mjs` 99/84.9, `networking.mjs` 96.4/89.1, `sources/habr.mjs` 100/98.2 (nye `tests/cov-*-routes.test.mjs` ×3, `tests/sources-habr.test.mjs`); gren-gulvet holdt på ≥ 90 %.
+- **Linear CAR-191…216-lukningsbundt** (`docs/reviews/2026-10-30-linear-car191-216-closure-bundle.md`) — ejers afslutningstekst klar til at indsætte, med commit-SHA'er pr. CAR og beviskommentarer.
+
+### Rettet
+
+- **Trudvsem-scan-kilden** — en tom side (`results: {}`, også «forbi enden») dræber ikke længere hele scan'en (rene nul rækker); API-fejlkonvolutter (HTTP-200 med `status: 500`) kaster med API'ets egen tekst; pagineringen går i **post**-offsets (var side-indeks — sider blev stille duplikeret, ~52 stillinger i stedet for hundredvis); gennemgangen stopper før API'ets deep-offset-fejlzone (`offset × limit ≥ 10000`). Verificeret live end-to-end.
+- **habr** — titler/firmaer tag-strippes **efter** entity-decoding (hh.mjs-paritet): `&lt;script&gt;` i en kort-titel kan ikke længere nå scan-rækkerne som levende markup; legitime `>>` i titler overlever.
+- **PUT /api/profile (rå sti)** — en `candidate:`-blok uden en ikke-tom `full_name` afvises, samme linje som fields-merge-stien (den gemte tidligere `full_name: null`).
+- **Ærlige hints** — `.doc` fjernet fra CV-uploadens acceptliste og fra `cv.uploadHint` ×19 (parseren understøttede det aldrig); `config.openaiModelHint` ×19 nævner `gpt-5` (serveren kortlægger ethvert `*-codex`-id til det); `config.anthropicModelHint` ×19 og **Anthropic-standard** spejler nu forælderens tier — standard `claude-sonnet-5-5`, premium `claude-opus-5-5`.
+- **Claude Code-doklink** → `code.claude.com` (den gamle `docs.anthropic.com/en/docs/claude-code`-URL giver TypeError i links-gaten).
+- help ×19: Row-density-bulleten er væk (togglen forlod UI'en i v1.263.0), og 18 ødelagte `**fed**`-span-familier er repareret — plus renderer-leak-klassen fixet ×19 (anden tom linje efter hver tabel-før-afsnit; pipe-tegnet ud af fed-celler): **0 bogstavelige `**` i rendering på tværs af alle 19 help-bundter**.
+
+### Noter
+
+- **Anthropic-standardmodellen er skiftet** til `claude-sonnet-5-5` (forælderens standard-tier). Deploys, der stolede på den gamle stille standard (`claude-sonnet-4-6`), opgraderer automatisk — pin `ANTHROPIC_MODEL` i `.env` for at fravælge.
+- Bevidst ikke gjort: de to LOW-review-prikker, der med vilje er ladt åbne (inline-select spejler ikke kanbanens `movesReady`-nedgradering — ærlig toast ved enhver fejl er den valgte adfærd; `code: 'timeout'`-grenen forbliver dækket af fake-writer-kontrakten, ikke af en >30 s-test). CAR-141 (demovideo) forbliver ejerens.
+- help ×19 fik efter udgivelsen en prosa-omgang (density-bullet ud, renderer-leak-klassen fixet) på `main`, efter at v1.263.0 blev udgivet — denne udgivelse er det første tag, der bærer den.
+
+Tests 6905 → 7041 (+136) · Playwright 176 (173 bestået / 1 opt-in skip) · dækning 98.5 % linje / 90.1 % gren · registry uændret: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.263.0] — 2026-10-30
 
 ### Tilføjet

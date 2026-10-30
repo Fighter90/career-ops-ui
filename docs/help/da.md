@@ -1415,6 +1415,8 @@ lokal: ingen model, ingen skrivninger. Indtil forældre-checkout'en leverer
 CRM'en. Én række per ansøgning; lever i `data/applications.md` som en
 GitHub-Flavored Markdown-tabel.
 
+Hver rækkes status-badge er også en **select** — vælg et stadie, og det gemmes med det samme: serveren videresender til den kanoniske `set-status.mjs`, og rækken opdateres på stedet; en fejlet gemning tilbagefører værdien og viser en toast. Rækker med en håndredigeret eller ukendt status samt backfill-rækker nummereret `N/A` viser i stedet et skrivebeskyttet badge.
+
 ### Statusflow
 
 `Evaluated` → `Applied` → `Responded` → `Interview` → `Offer` /

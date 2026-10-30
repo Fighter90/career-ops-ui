@@ -2,6 +2,32 @@
 
 > Dieses Changelog enthält die vollständige Versionsgeschichte. Einträge, die vor der deutschen Lokalisierung (v1.85.0) veröffentlicht wurden, stehen unten im englischen Original — Übersetzung ausstehend; maßgeblich bleibt [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.264.0] — 2026-10-31
+
+### Hinzugefügt
+
+- **Inline-Bearbeitung des Tracker-Status** — das Status-Badge jeder `#/tracker`-Zeile ist ein kompaktes `<select>` der kanonischen Stufen (aus `GET /api/tracker/stages`, nie eine hartcodierte Whitelist). `POST /api/tracker/status` reicht an das kanonische `set-status.mjs` des Elternprojekts weiter, unter der `applications.md`-Sperre (Status-Whitelist via `states.mjs`, `--dry-run`/`--note`-Durchreichung, fail-soft 502 mit bereinigtem Detail, argv-Array-Spawn). Erfolg aktualisiert die Zeile an Ort und Stelle (Tone-Klasse + Tab-Zählungen, Fokus bleibt); Versagen macht rückgängig und zeigt einen Toast. Zeilen, die das Relay nicht adressieren kann — ein handeditierter unbekannter Status, ein Backfill-Sentinel `#` — behalten das schreibgeschützte Badge (Route-Review-LOW-Fixes; Reviewer: keine HIGH/MED-Funde).
+- **Server-Warnungen auf jeder KI-Seite sichtbar** — `evaluate`, `deep`, `auto-pipeline` (Seite **und** Modal), `career-plan`, `market`, `cv-studio` (humanize + tailor) rendern jetzt das `warnings`-Array des Servers (Output-Token-Kürzung, Sprachdrift, Datumskorrekturen) als `badge-warn`-Band (`role="status"`); das Auto-Pipeline-Modal verwirft die Done-Frame-Warnungen nicht mehr. Neuer Key `llm.truncatedNotice` ×19.
+- **Coverage-Welle (+111 Tests)** — `routes/map.mjs` 100/94.9, `geocode.mjs` 96.3/92.9, `content.mjs` 99/84.9, `networking.mjs` 96.4/89.1, `sources/habr.mjs` 100/98.2 (neu `tests/cov-*-routes.test.mjs` ×3, `tests/sources-habr.test.mjs`); Branch-Boden bei ≥ 90 % gehalten.
+- **Linear CAR-191…216-Abschlussbündel** (`docs/reviews/2026-10-30-linear-car191-216-closure-bundle.md`) — einfügebereiter Owner-Abschluss mit Commit-SHAs pro CAR und Beleg-Kommentaren.
+
+### Behoben
+
+- **Trudvsem-Scan-Quelle** — eine leere Seite (`results: {}`, auch „hinter dem Ende") killt nicht mehr den ganzen Scan (sauber null Zeilen); API-Fehlerumschläge (HTTP-200 mit `status: 500`) werfen mit dem eigenen Text der API; die Paginierung läuft in **Record**-Offsets (war Seiten-Index — Seiten wurden stillschweigend dupliziert, ~52 Stellen statt Hunderten); der Walk stoppt vor der Deep-Offset-Fehlerzone der API (`offset × limit ≥ 10000`). Live end-to-end verifiziert.
+- **habr** — Titel/Firmen werden **nach** der Entity-Dekodierung von Tags befreit (hh.mjs-Parität): `&lt;script&gt;` in einem Karten-Titel erreicht die Scan-Zeilen nicht mehr als lebendes Markup; legitime `>>` in Titeln überleben.
+- **PUT /api/profile (Raw-Pfad)** — ein `candidate:`-Block ohne nicht-leeres `full_name` wird abgewiesen, gleiche Linie wie der Felder-Merge-Pfad (er persistierte früher `full_name: null`).
+- **Ehrliche Hints** — `.doc` aus der CV-Upload-Accept-Liste und aus `cv.uploadHint` ×19 entfernt (der Parser unterstützte es nie); `config.openaiModelHint` ×19 nennt `gpt-5` (der Server mappt jede `*-codex`-ID darauf); `config.anthropicModelHint` ×19 und der **Anthropic-Default** spiegeln jetzt die Tiers des Elternprojekts — Default `claude-sonnet-5-5`, Premium `claude-opus-5-5`.
+- **Claude-Code-Docs-Link** → `code.claude.com` (die alte `docs.anthropic.com/en/docs/claude-code`-URL wirft im Links-Gate einen TypeError).
+- help ×19: der Row-Density-Bullet ist weg (der Toggle hat die UI in v1.263.0 verlassen) und 18 kaputte `**fett**`-Span-Familien sind repariert — plus die Renderer-Leak-Klasse ×19 gefixt (zweite Leerzeile nach jeder Tabelle-vor-Absatz; Pipe-Zeichen raus aus den Fett-Zellen): **0 literale `**` im Rendering über alle 19 Help-Bundles**.
+
+### Hinweise
+
+- **Das Anthropic-Standardmodell hat gewechselt** auf `claude-sonnet-5-5` (der Standard-Tier des Elternprojekts). Deploys, die auf den alten stillen Default (`claude-sonnet-4-6`) bauten, aktualisieren sich automatisch — `ANTHROPIC_MODEL` in `.env` pinnen, um auszusteigen.
+- Bewusst nicht getan: die beiden LOW-Review-Nits, absichtlich offen gelassen (der Inline-Select spiegelt nicht die Kanban-`movesReady`-Degradierung — der ehrliche Toast bei jedem Fehler ist das gewählte Verhalten; der `code: 'timeout'`-Zweig bleibt vom Fake-Writer-Vertrag abgedeckt, nicht von einem >30-s-Test). CAR-141 (Demo-Video) bleibt beim Owner.
+- help ×19 hat den Post-Release-Prosa-Durchgang (Density-Bullet raus, Renderer-Leak-Klasse gefixt) auf `main` bekommen, nachdem v1.263.0 erschienen war — dieses Release ist das erste Tag, das ihn trägt.
+
+Tests 6905 → 7041 (+136) · Playwright 176 (173 bestanden / 1 opt-in-Skip) · Coverage 98.5 % Zeilen / 90.1 % Branches · Registry unverändert: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.263.0] — 2026-10-30
 
 ### Hinzugefügt
