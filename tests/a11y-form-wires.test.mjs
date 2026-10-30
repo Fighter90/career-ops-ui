@@ -176,9 +176,6 @@ const CONTROLS_ALLOWLIST = [
   { file: 'views/reports.js', re: /type: 'text',\s*\n?\s*id: 'reports-company',/, reason: 'named via hiddenLabel(reports-company) visually-hidden label' },
   { file: 'views/reports.js', re: /type: 'date', id: 'reports-date-from',/, reason: 'named via hiddenLabel(reports-date-from) visually-hidden label' },
   { file: 'views/reports.js', re: /type: 'date', id: 'reports-date-to',/, reason: 'named via hiddenLabel(reports-date-to) visually-hidden label' },
-  // stats.js is owned by a parallel agent in this wave — its readonly dump
-  // (:540) gains A11yDump.label with that agent's change; drop this entry then.
-  { file: 'views/stats.js', re: /rows: '18', readonly: 'readonly'/, reason: 'readonly dump — stats.js owned by a parallel agent, A11yDump.label lands with their wave' },
 ];
 
 test('a11y: every c(input/textarea) literal carries a programmatic name (CAR-209)', () => {

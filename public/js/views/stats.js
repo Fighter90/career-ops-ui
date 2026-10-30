@@ -540,7 +540,9 @@ Router.register('stats', async () => {
         } else if (res && res.prompt) {
           out.appendChild(c('p', { style: { color: 'var(--foggy)', margin: '0 0 8px' } },
             (res.message) || t('export.manual', 'No API key set — copy this prompt into any LLM, then paste the result back.')));
-          out.appendChild(c('textarea', { className: 'input', rows: '18', readonly: 'readonly', style: { width: '100%', fontFamily: 'monospace', fontSize: '12px' } }, res.prompt));
+          const promptTa = c('textarea', { className: 'input', rows: '18', readonly: 'readonly', style: { width: '100%', fontFamily: 'monospace', fontSize: '12px' } }, res.prompt);
+          window.A11yDump.label(promptTa, t('a11y.readonlyOutput', 'Generated result — read only'));
+          out.appendChild(promptTa);
         }
       } catch (err) {
         out.textContent = '';
