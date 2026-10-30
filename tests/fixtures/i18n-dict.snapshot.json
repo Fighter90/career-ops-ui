@@ -5040,7 +5040,7 @@
     "vi": "Mô hình Anthropic"
   },
   "config.anthropicModelHint": {
-    "en": "Default: claude-sonnet-4-6. Other options: claude-opus-4-7, claude-haiku-4-5.",
+    "en": "Default: claude-sonnet-5-5. Other options: claude-opus-5-5, claude-haiku-4-5.",
     "es": "Por defecto: claude-sonnet-4-6. Otras opciones: claude-opus-4-7, claude-haiku-4-5.",
     "pt-BR": "Padrão: claude-sonnet-4-6. Outras opções: claude-opus-4-7, claude-haiku-4-5.",
     "ko": "기본값: claude-sonnet-4-6. 다른 옵션: claude-opus-4-7, claude-haiku-4-5.",
