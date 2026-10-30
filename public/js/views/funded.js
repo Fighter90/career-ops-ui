@@ -42,7 +42,7 @@ Router.register('funded', async () => {
       c('div', { style: { display: 'flex', alignItems: 'center', gap: '8px', margin: '0 0 8px' } },
         c('span', { style: { fontWeight: '700', fontSize: '14px' } }, 'Acme Robotics')),
       c('div', { style: { display: 'flex', flexWrap: 'wrap', gap: '6px', margin: '0 0 8px' } }, [
-        chip('Series B', 'var(--rausch-text)', 'rgba(255,56,92,.14)'),
+        chip('Series B', 'var(--rausch-text)', 'var(--accent-soft, rgba(255,56,92,.14))'),
         chip('$40M', 'var(--ink)', 'var(--panel-2, rgba(0,0,0,.06))'),
         chip(`${t('funded.score', 'Score')} 7`, 'var(--kazan-text)', 'rgba(6,101,7,.12)'),
       ]),
@@ -180,7 +180,7 @@ Router.register('funded', async () => {
         const head = c('div', { style: { display: 'flex', alignItems: 'center', gap: '8px', margin: '0 0 8px' } },
           [logo, nameEl].filter(Boolean));
         const chips = [];
-        if (co.round) chips.push(chip(String(co.round), 'var(--rausch-text)', 'rgba(255,56,92,.14)'));
+        if (co.round) chips.push(chip(String(co.round), 'var(--rausch-text)', 'var(--accent-soft, rgba(255,56,92,.14))'));
         if (co.amount) chips.push(chip(String(co.amount), 'var(--ink)', 'var(--panel-2, rgba(0,0,0,.06))'));
         const score = Number(co.discovery_score);
         if (isFinite(score) && score > 0) chips.push(chip(`${t('funded.score', 'Score')} ${Math.round(score)}`, 'var(--kazan-text)', 'rgba(6,101,7,.12)'));
