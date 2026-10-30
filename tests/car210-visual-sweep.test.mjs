@@ -68,3 +68,16 @@ test('CAR-212 — the stats "?" hint is pinned off the scrolling tab tape (divid
   assert.match(hintRow, /minHeight: '44px'/, 'touch-target row height');
 });
 
+test('CAR-213 — the career-plan Input tab redirects to the Result tab', () => {
+  const src = read('public/js/views/career-plan.js');
+  assert.match(src, /plan\.resultNote/, 'note present on the Input pane');
+  assert.ok(
+    src.includes("replace(/\\{tab\\}/g, t('llm2.tabResult'"),
+    'interpolates the LOCALIZED tab label',
+  );
+  // The key exists in every locale dict (parity here, not just EN).
+  for (const lang of ['en', 'es', 'pt-BR', 'ko', 'ja', 'ru', 'zh-CN', 'zh-TW', 'fr', 'pl', 'uk', 'da', 'ar', 'de', 'it', 'tr', 'hi', 'ta', 'vi']) {
+    assert.match(read(`public/js/lib/locales/i18n-dict.${lang}.js`), /'plan\.resultNote'/, `plan.resultNote in ${lang}`);
+  }
+});
+

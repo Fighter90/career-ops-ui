@@ -1380,6 +1380,7 @@ window.__I18N_DICT_ZH_CN = {
   'plan.saveFailed': "无法保存计划",
   'plan.preview': "预览",
   'plan.privacyNote': "保存到你父项目的用户层（config/career-plan.md）——永远不会被更新覆盖，且仅在你运行的 LLM 提示内部发送。",
+  'plan.resultNote': "生成的计划会显示在“{tab}”标签页 — 运行生成后，打开“{tab}”。",
   // ── 职业方向 (v1.96.0) ──
   'nav.orientation': "职业方向",
   'orient.title': "职业方向",

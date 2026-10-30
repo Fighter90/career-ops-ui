@@ -1379,6 +1379,7 @@ window.__I18N_DICT_DA = {
   'plan.saveFailed': "Kunne ikke gemme planen",
   'plan.preview': "Forhåndsvisning",
   'plan.privacyNote': "Gemt i brugerlaget i dit overordnede projekt (config/career-plan.md) — bliver aldrig overskrevet af opdateringer og sendes kun inde i de LLM-prompts, du kører.",
+  'plan.resultNote': "Den genererede plan vises under fanen {tab} — start genereringen, og åbn derefter fanen {tab}.",
   // ── v1.96.0 (Epic 27) — AI-karriereorientering ──
   'nav.orientation': "Karriereorientering",
   'orient.title': "Karriereorientering",

@@ -118,6 +118,12 @@ Router.register('career-plan', async () => {
 
   const page = window.LlmPageKit.layout({ form: formCol, result: resultCol });
   root.appendChild(page.root);
+  // CAR-213 — on the Input tab the single control row left ~45% blank beneath
+  // it (mobile): a compact note under the form says where the plan lands and
+  // doubles as the redirect to the Result tab ({tab} = the localized tab label).
+  page.formPane.appendChild(c('p', { style: { color: 'var(--foggy)', fontSize: '12px', margin: '0' } },
+    t('plan.resultNote', 'The generated plan lands on the {tab} tab — run the generation, then open {tab}.')
+      .replace(/\{tab\}/g, t('llm2.tabResult', 'Result'))));
 
   resultCol.appendChild(c('div', { className: 'card', style: { padding: '16px', margin: '0 0 12px' } }, [
     editor,

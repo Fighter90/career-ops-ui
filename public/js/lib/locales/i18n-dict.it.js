@@ -1379,6 +1379,7 @@ window.__I18N_DICT_IT = {
   'plan.saveFailed': "Impossibile salvare il piano",
   'plan.preview': "Anteprima",
   'plan.privacyNote': "Salvato nel livello utente del tuo progetto principale (config/career-plan.md) — mai sovrascritto dagli aggiornamenti e inviato solo all’interno dei prompt LLM che esegui.",
+  'plan.resultNote': "Il piano generato appare nella scheda {tab} — avvia la generazione, quindi apri {tab}.",
   // ── Orientamento professionale (v1.96.0) ──
   'nav.orientation': "Orientamento professionale",
   'orient.title': "Orientamento professionale",

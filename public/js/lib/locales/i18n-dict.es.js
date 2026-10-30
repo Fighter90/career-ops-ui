@@ -1379,6 +1379,7 @@ window.__I18N_DICT_ES = {
   'plan.saveFailed': "No se pudo guardar el plan",
   'plan.preview': "Vista previa",
   'plan.privacyNote': "Se guarda en la capa de usuario de tu proyecto principal (config/career-plan.md) — nunca se sobrescribe con las actualizaciones y solo se envía dentro de los prompts del LLM que ejecutes.",
+  'plan.resultNote': "El plan generado aparece en la pestaña {tab} — lanza la generación y abre {tab}.",
   // ── Orientación profesional (v1.96.0) ──
   'nav.orientation': "Orientación profesional",
   'orient.title': "Orientación profesional",

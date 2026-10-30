@@ -1379,6 +1379,7 @@ window.__I18N_DICT_FR = {
   'plan.saveFailed': "Impossible d’enregistrer le plan",
   'plan.preview': "Aperçu",
   'plan.privacyNote': "Enregistré dans la couche utilisateur de votre projet parent (config/career-plan.md) — jamais écrasé par les mises à jour, et envoyé uniquement à l’intérieur des prompts LLM que vous exécutez.",
+  'plan.resultNote': "Le plan généré apparaît dans l'onglet {tab} — lancez la génération, puis ouvrez {tab}.",
   // ── Orientation de carrière (v1.96.0) ──
   'nav.orientation': "Orientation de carrière",
   'orient.title': "Orientation de carrière",

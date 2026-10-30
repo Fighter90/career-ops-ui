@@ -1380,6 +1380,7 @@ window.__I18N_DICT_JA = {
   'plan.saveFailed': "プランを保存できませんでした",
   'plan.preview': "プレビュー",
   'plan.privacyNote': "親プロジェクトのユーザーレイヤー（config/career-plan.md）に保存されます — 更新で上書きされることはなく、あなたが実行するLLMプロンプトの中でのみ送信されます。",
+  'plan.resultNote': "生成されたプランは「{tab}」タブに表示されます — 生成を実行してから「{tab}」タブを開いてください。",
   // ── キャリアの方向性 (v1.96.0) ──
   'nav.orientation': "キャリアの方向性",
   'orient.title': "キャリアの方向性",

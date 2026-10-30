@@ -1379,6 +1379,7 @@ window.__I18N_DICT_PL = {
   'plan.saveFailed': "Nie udało się zapisać planu",
   'plan.preview': "Podgląd",
   'plan.privacyNote': "Zapisano w warstwie użytkownika Twojego projektu nadrzędnego (config/career-plan.md) — nigdy nie nadpisywane przez aktualizacje i wysyłane wyłącznie wewnątrz promptów LLM, które uruchamiasz.",
+  'plan.resultNote': "Wygenerowany plan pojawi się na karcie „{tab}” — uruchom generowanie, a następnie otwórz kartę „{tab}”.",
   // ── v1.96.0 (Epic 27) — AI career-orientation profile ──
   'nav.orientation': "Orientacja zawodowa",
   'orient.title': "Orientacja zawodowa",

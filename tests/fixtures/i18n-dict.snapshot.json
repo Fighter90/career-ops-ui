@@ -28370,6 +28370,27 @@
     "ta": "உங்கள் பெற்றோர் திட்டத்தின் பயனர் அடுக்கில் சேமிக்கப்படும் (config/career-plan.md) — புதுப்பிப்புகளால் ஒருபோதும் மேலெழுதப்படாது; நீங்கள் இயக்கும் LLM பிராம்ட்டுகளுக்குள் மட்டுமே அனுப்பப்படும்.",
     "vi": "Lưu vào tầng người dùng của dự án gốc (config/career-plan.md) — không bao giờ bị cập nhật ghi đè, và chỉ được gửi bên trong các prompt LLM bạn chạy."
   },
+  "plan.resultNote": {
+    "en": "The generated plan lands on the {tab} tab — run the generation, then open {tab}.",
+    "es": "El plan generado aparece en la pestaña {tab} — lanza la generación y abre {tab}.",
+    "pt-BR": "O plano gerado aparece na aba {tab} — inicie a geração e abra {tab}.",
+    "ko": "생성된 계획은 {tab} 탭에 나타납니다 — 생성을 실행한 뒤 {tab} 탭을 여세요.",
+    "ja": "生成されたプランは「{tab}」タブに表示されます — 生成を実行してから「{tab}」タブを開いてください。",
+    "ru": "Сгенерированный план появится на вкладке «{tab}» — запустите генерацию, затем откройте вкладку «{tab}».",
+    "zh-CN": "生成的计划会显示在“{tab}”标签页 — 运行生成后，打开“{tab}”。",
+    "zh-TW": "產生的計畫會顯示在「{tab}」標籤頁 — 執行產生後，開啟「{tab}」。",
+    "fr": "Le plan généré apparaît dans l'onglet {tab} — lancez la génération, puis ouvrez {tab}.",
+    "pl": "Wygenerowany plan pojawi się na karcie „{tab}” — uruchom generowanie, a następnie otwórz kartę „{tab}”.",
+    "uk": "Згенерований план з'явиться на вкладці «{tab}» — запустіть генерацію, а потім відкрийте вкладку «{tab}».",
+    "da": "Den genererede plan vises under fanen {tab} — start genereringen, og åbn derefter fanen {tab}.",
+    "ar": "تظهر الخطة المُولَّدة في علامة تبويب {tab} — شغّل الإنشاء ثم افتح علامة تبويب {tab}.",
+    "de": "Der generierte Plan erscheint auf der Registerkarte „{tab}“ — starten Sie die Generierung und öffnen Sie dann „{tab}“.",
+    "it": "Il piano generato appare nella scheda {tab} — avvia la generazione, quindi apri {tab}.",
+    "tr": "Oluşturulan plan {tab} sekmesinde görünür — oluşturmayı çalıştırın, ardından {tab} sekmesini açın.",
+    "hi": "जेनरेट की गई योजना {tab} टैब पर दिखेगी — जेनरेशन चलाएँ, फिर {tab} टैब खोलें।",
+    "ta": "உருவாக்கப்பட்ட திட்டம் {tab} தாவலில் தோன்றும் — உருவாக்கத்தை இயக்கி, பிறகு {tab} தாவலைத் திறக்கவும்.",
+    "vi": "Kế hoạch được tạo sẽ xuất hiện trong tab {tab} — chạy tạo kế hoạch, sau đó mở tab {tab}."
+  },
   "nav.orientation": {
     "en": "Career orientation",
     "es": "Orientación profesional",
