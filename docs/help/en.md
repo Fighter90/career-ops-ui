@@ -1076,7 +1076,6 @@ The v2 results chrome keeps the controls discoverable:
 - **Sort by** (`scan.v2.sortBy`) — click a column heading (company,
   role, salary, age) to sort by it; click again to flip direction.
 - **Quick view** (`scan.v2.quickView`) — click a row to expand its posting description inline (**Description**, `scan.v2.description`) without leaving the page; postings with no captured body say so (`scan.v2.noDescription`) instead of showing a blank card.
-- **Row density** (`scan.v2.density`) — toggle **Compact** / **Comfortable** (`scan.v2.compact` / `scan.v2.comfortable`) row heights; the choice is remembered per browser.
 - **Log** (`scan.v2.log`) — collapse/expand the streaming scan log to
   give the table the full width.
 
