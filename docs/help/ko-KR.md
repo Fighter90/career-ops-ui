@@ -163,8 +163,8 @@ batch 처리, apply 흐름, Playwright 설정)는
 > career-ops-ui open       # 브라우저의 대시보드 탭을 열고 맨 앞으로 가져오기
 > ```
 >
-> `setup`/`run` 이후 브라우저 탭은 자동으로 열리고 **맨 앞으로
-> 가져와집니다** (v1.43.0). `career-ops-ui open`은 필요할 때 동일하게
+> `setup`/`run` 이후 브라우저 탭은 자동으로 열리고
+> **맨 앞으로 가져와집니다** (v1.43.0). `career-ops-ui open`은 필요할 때 동일하게
 > 동작하므로 대시보드 탭을 찾아 헤맬 필요가 없습니다. `NO_OPEN=1`은
 > 헤드리스/CI 시작 시 자동 열기를 비활성화합니다.
 >
@@ -453,8 +453,8 @@ Evaluate → Reports → Deep research → Apply checklist → Outreach
 
 가장 중요한 필드:
 
-- `candidate.full_name` — 모든 프롬프트에 사용됩니다. **실 운영
-  스캔 전에 템플릿 `Jane Smith`를 반드시 교체**하지 않으면 생성된
+- `candidate.full_name` — 모든 프롬프트에 사용됩니다.
+  **실 운영 스캔 전에 템플릿 `Jane Smith`를 반드시 교체**하지 않으면 생성된
   커버 레터가 자리표시자 이름으로 발송됩니다.
 - `candidate.email`, `linkedin`, `github` — 커버 레터 생성과
   apply 체크리스트에서 참조.
@@ -944,7 +944,6 @@ v2 결과 크롬은 컨트롤을 눈에 보이게 유지합니다:
 - **정렬 기준** (`scan.v2.sortBy`) — 컬럼 헤딩(회사, 롤, 급여,
   경과)을 클릭해 정렬; 다시 클릭하면 방향이 뒤집힙니다.
 - **빠른 보기** (`scan.v2.quickView`) — 행을 클릭하면 페이지를 떠나지 않고 공고 설명이 인라인으로 펼쳐집니다 (**설명**, `scan.v2.description`); 본문이 캡처되지 않은 공고는 빈 카드 대신 그렇게 말합니다 (`scan.v2.noDescription`).
-- **행 밀도** (`scan.v2.density`) — **컴팩트** / **넓게** (`scan.v2.compact` / `scan.v2.comfortable`) 행 높이를 전환합니다; 선택은 브라우저별로 기억됩니다.
 - **로그** (`scan.v2.log`) — 스트리밍 스캔 로그를 접거나 펼쳐
   테이블에 전체 폭을 줍니다.
 
