@@ -1828,4 +1828,10 @@ window.__I18N_DICT_DE = {
   "track.inlineStatusAria": "Bewerbungsstatus ändern",
   "track.statusUpdated": "Status aktualisiert auf {state}",
   "track.statusUpdateFailed": "Status konnte nicht aktualisiert werden",
+
+  // evc — evidence-confidence chips on the report view (#4452)
+  "evc.confirmedTitle": "Durch Belege bestätigt: {list}",
+  "evc.gapsTitle": "Zu überprüfen: {list}",
+  "evc.confirmed": "{n} bestätigt",
+  "evc.gaps": "{n} Lücken",
 };

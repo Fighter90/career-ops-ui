@@ -1835,4 +1835,10 @@ window.__I18N_DICT_EN = {
   "track.inlineStatusAria": "Change application status",
   "track.statusUpdated": "Status updated to {state}",
   "track.statusUpdateFailed": "Could not update the status",
+
+  // evc — evidence-confidence chips on the report view (#4452)
+  "evc.confirmedTitle": "Confirmed by evidence: {list}",
+  "evc.gapsTitle": "Needs verification: {list}",
+  "evc.confirmed": "{n} confirmed",
+  "evc.gaps": "{n} gaps",
 };

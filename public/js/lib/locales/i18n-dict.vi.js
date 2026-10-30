@@ -1803,4 +1803,10 @@ window.__I18N_DICT_VI = {
   "track.inlineStatusAria": "Thay đổi trạng thái ứng tuyển",
   "track.statusUpdated": "Đã cập nhật trạng thái thành {state}",
   "track.statusUpdateFailed": "Không thể cập nhật trạng thái",
+
+  // evc — evidence-confidence chips on the report view (#4452)
+  "evc.confirmedTitle": "Được xác nhận bằng bằng chứng: {list}",
+  "evc.gapsTitle": "Cần xác minh: {list}",
+  "evc.confirmed": "đã xác nhận {n}",
+  "evc.gaps": "{n} điểm chưa rõ",
 };

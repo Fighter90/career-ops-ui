@@ -49,6 +49,33 @@ Router.register('reports', async (params) => {
         btn.textContent = '🛡 ' + t('rep2.guardBtn', 'Posting guard');
       }
     };
+    // #4452 — evidence-confidence chips (#/reports detail). The parent's
+    // evaluation contract makes fresh reports carry score_evidence (five
+    // dims → supported|partial|unknown) and confidence_gaps (≤3 verification
+    // priorities) in the Machine Summary; parseReportHeader lifts both into
+    // the detail payload. A green chip counts the supported dims (title:
+    // the list), an amber one the unverified gaps; a report with neither
+    // renders no block at all (silent).
+    const evcDims = Array.isArray(r.scoreEvidence)
+      ? []
+      : Object.entries(r.scoreEvidence || {});
+    const evcSupported = evcDims.filter(([, v]) => v === 'supported');
+    const evcGaps = (Array.isArray(r.confidenceGaps) ? r.confidenceGaps : [])
+      .filter((g) => typeof g === 'string' && g.trim());
+    const evcChips = (evcSupported.length || evcGaps.length)
+      ? c('div', { className: 'evc-row', style: { display: 'flex', flexWrap: 'wrap', gap: '8px', marginBlockStart: '8px' } }, [
+        evcSupported.length > 0 && c('span', {
+          className: 'badge badge-ok',
+          title: t('evc.confirmedTitle', 'Confirmed by evidence: {list}')
+            .replace('{list}', evcSupported.map(([k]) => String(k).replace(/_/g, ' ')).join(' · ')),
+        }, '✓ ' + t('evc.confirmed', '{n} confirmed').replace('{n}', String(evcSupported.length))),
+        evcGaps.length > 0 && c('span', {
+          className: 'badge badge-warn',
+          title: t('evc.gapsTitle', 'Needs verification: {list}')
+            .replace('{list}', evcGaps.join(' · ')),
+        }, '⚠ ' + t('evc.gaps', '{n} gaps').replace('{n}', String(evcGaps.length))),
+      ].filter(Boolean))
+      : null;
     return c('div', null, [
       c('header', { className: 'page-header' }, [
         c('div', null, [
@@ -58,6 +85,7 @@ Router.register('reports', async (params) => {
           // recognised label was stripped).
           c('h1', { className: 'page-title' }, r.title || slug),
           c('p', { className: 'page-subtitle' }, [r.date, r.archetype, r.legitimacy].filter(Boolean).join(' · ')),
+          evcChips,
         ]),
         c('div', { className: 'flex gap-3' }, [
           c('button', { className: 'btn btn-ghost', onClick: () => Router.go('/reports') }, t('rep.allReports')),

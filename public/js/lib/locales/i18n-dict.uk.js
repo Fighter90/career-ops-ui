@@ -1828,4 +1828,10 @@ window.__I18N_DICT_UK = {
   "track.inlineStatusAria": "Змінити статус заявки",
   "track.statusUpdated": "Статус оновлено: {state}",
   "track.statusUpdateFailed": "Не вдалося оновити статус",
+
+  // evc — evidence-confidence chips on the report view (#4452)
+  "evc.confirmedTitle": "Підтверджено фактами: {list}",
+  "evc.gapsTitle": "Потребує перевірки: {list}",
+  "evc.confirmed": "{n} підтверджено",
+  "evc.gaps": "{n} пробілів",
 };

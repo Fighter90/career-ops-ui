@@ -1829,4 +1829,10 @@ window.__I18N_DICT_ZH_CN = {
   "track.inlineStatusAria": "更改申请状态",
   "track.statusUpdated": "状态已更新为 {state}",
   "track.statusUpdateFailed": "无法更新状态",
+
+  // evc — evidence-confidence chips on the report view (#4452)
+  "evc.confirmedTitle": "证据已确认：{list}",
+  "evc.gapsTitle": "待核实：{list}",
+  "evc.confirmed": "已确认 {n} 项",
+  "evc.gaps": "{n} 项缺口",
 };
