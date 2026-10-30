@@ -121,7 +121,7 @@ test('POST /api/cv/import: .md passthrough converts and sanitizes', async () => 
 
 test('POST /api/cv/import: a real multipart file part converts (multer path)', async () => {
   const fd = new FormData();
-  fd.append('file', new File(['# Multipart CV\nbody'], 'cv.md', { type: 'text/markdown' }));
+  fd.append('file', new Blob(['# Multipart CV\nbody'], { type: 'text/markdown' }), 'cv.md'); // Blob, not File: Node 18 has no File global
   const res = await fetch(`${baseUrl}/api/cv/import`, { method: 'POST', body: fd });
   assert.equal(res.status, 200);
   const body = await res.json();
