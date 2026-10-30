@@ -8,6 +8,32 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.264.0] — 2026-10-31
+
+### Adicionado
+
+- **Edição inline do status do tracker** — o badge de status de cada linha do `#/tracker` é um `<select>` compacto com as etapas canônicas (de `GET /api/tracker/stages`, nunca uma whitelist hard-coded). `POST /api/tracker/status` repassa o `set-status.mjs` canônico do pai sob o lock do `applications.md` (whitelist de estados via `states.mjs`, passthrough de `--dry-run`/`--note`, 502 fail-soft com detalhe sanitizado, spawn com array de argv). O sucesso atualiza a linha in place (classe de tom + contagens das tabs, foco preservado); a falha reverte e mostra um toast. As linhas que o relay não consegue endereçar — um status desconhecido editado à mão, um sentinel de backfill `#` — mantêm o badge somente leitura (correções route-review LOW; revisor: sem achados HIGH/MED).
+- **Avisos do servidor visíveis em toda página de IA** — `evaluate`, `deep`, `auto-pipeline` (página **e** modal), `career-plan`, `market`, `cv-studio` (humanize + tailor) agora renderizam o array `warnings` do servidor (truncamento de tokens de saída, drift de idioma, correções de data) como uma faixa `badge-warn` (`role="status"`); o modal do auto-pipeline não descarta mais os avisos do frame done. Nova chave `llm.truncatedNotice` ×19.
+- **Onda de cobertura (+111 tests)** — `routes/map.mjs` 100/94.9, `geocode.mjs` 96.3/92.9, `content.mjs` 99/84.9, `networking.mjs` 96.4/89.1, `sources/habr.mjs` 100/98.2 (novos `tests/cov-*-routes.test.mjs` ×3, `tests/sources-habr.test.mjs`); o piso de branches se mantém em ≥ 90 %.
+- **Pacote de fechamento das Linear CAR-191…216** (`docs/reviews/2026-10-30-linear-car191-216-closure-bundle.md`) — fechamento pronto para colar para o dono, com SHAs de commit por CAR e comentários de evidência.
+
+### Corrigido
+
+- **Fonte de scan Trudvsem** — uma página vazia (`results: {}`, também "depois do fim") não mata mais o scan inteiro (zero linhas, limpo); envelopes de erro da API (HTTP-200 com `status: 500`) lançam com o texto da própria API; a paginação caminha por offsets de **registro** (antes índice de página — páginas duplicadas em silêncio, ~52 vagas em vez de centenas); o caminho para antes da zona de falha de deep-offset da API (`offset × limit ≥ 10000`). Verificado de ponta a ponta ao vivo.
+- **habr** — títulos/empresas são limpos de tags **depois** da decodificação de entidades (paridade com hh.mjs): um `&lt;script&gt;` no título de um card não pode mais chegar às linhas do scan como markup vivo; `>>` legítimos em títulos sobrevivem.
+- **PUT /api/profile (caminho raw)** — um bloco `candidate:` sem `full_name` não vazio é recusado, na mesma linha do caminho de merge de campos (antes persistia `full_name: null`).
+- **Veracidade dos hints** — `.doc` sai da lista de aceitação de upload de CV e `cv.uploadHint` ×19 (o parser nunca o suportou); `config.openaiModelHint` ×19 nomeia `gpt-5` (o servidor mapeia para ele qualquer id `*-codex`); `config.anthropicModelHint` ×19 e o **default do Anthropic** agora espelham os tiers do pai — default `claude-sonnet-5-5`, premium `claude-opus-5-5`.
+- **Link da documentação do Claude Code** → `code.claude.com` (a URL antiga `docs.anthropic.com/en/docs/claude-code` lançava TypeError no gate de links).
+- help ×19: o bullet de densidade de linha sumiu (o toggle deixou a UI na v1.263.0) e 18 famílias de spans `**bold**` quebrados foram reparadas — mais a classe de leak do renderizador corrigida ×19 (segunda linha em branco depois de toda tabela-antes-de-parágrafo; o glifo de pipe fora das células de negrito): **0 `**` literal no render nos 19 bundles de help**.
+
+### Notas
+
+- **O modelo default do Anthropic mudou** para `claude-sonnet-5-5` (o tier padrão do pai). Deploys que dependiam do antigo default silencioso (`claude-sonnet-4-6`) sobem automaticamente — fixe `ANTHROPIC_MODEL` no `.env` para ficar de fora.
+- Deliberadamente não feito: os dois detalhes LOW da revisão ficam abertos de propósito (o select inline não espelha a degradação `movesReady` do kanban — o toast honesto em toda falha é o comportamento escolhido; o branch `code: 'timeout'` continua coberto pelo contrato do fake-writer, não por um teste de >30 s). CAR-141 (vídeo de demo) continua sendo do dono.
+- help ×19 ganhou a passada de prosa pós-release (bullet de densidade fora, classe de leak do renderizador corrigida) no `main` depois de a v1.263.0 sair — este release é a primeira tag que a carrega.
+
+Tests 6905 → 7041 (+136) · Playwright 176 (173 pass / 1 opt-in skip) · cobertura 98.5 % em linhas / 90.1 % em branches · registro inalterado: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.263.0] — 2026-10-30
 
 ### Adicionado

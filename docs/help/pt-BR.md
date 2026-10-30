@@ -1345,6 +1345,8 @@ Nas ações do cabeçalho de um relatório individual, o botão **🛡 Verifica�
 O CRM. Uma linha por candidatura; vive em `data/applications.md`
 como uma tabela GitHub-Flavored Markdown.
 
+O badge de status de cada linha também é um **select** — escolha uma etapa e ela salva na hora: o servidor repassa o `set-status.mjs` canônico e a linha é atualizada in place; um save que falha reverte o valor e mostra um toast. Linhas com um status editado à mão ou desconhecido, e linhas de backfill numeradas `N/A`, mostram em vez disso um badge somente leitura.
+
 ### Fluxo de status
 
 `Evaluated` → `Applied` → `Responded` → `Interview` → `Offer` /

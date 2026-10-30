@@ -7,19 +7,19 @@
 
 _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-6905%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7041%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.263.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.263.0)
+[![release](https://img.shields.io/badge/release-v1.264.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.264.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versión — v1.263.0** — **El lote UX del propietario: una capa de pulido de movimiento (hovers seguros al tacto, lift de tarjeta solo en elementos interactivos, animaciones de modal/popover/toast/tema — seguras con reduced-motion), el acento vira de azul → rojo carmesí como el logo, una pasada de contraste WCAG (docs-fab 6.4:1, toast, bordes de formulario 3:1), cada control recibe un nombre programático, y una docena de correcciones de maquetación — la cabecera de la tabla de scan ya no tapa la búsqueda, el filtro de salario vuelve a tener tamaño normal, la página de docs nunca desborda, el drawer móvil estrena un cierre visible. Tests 6869 → 6905.**
+> **🆕 Última versión — v1.264.0** — **La ola de endurecimiento poslanzamiento: el estado de cada fila del tracker se edita en línea (el set-status.mjs canónico del padre bajo el candado de applications.md), las advertencias del servidor (truncamiento, deriva de idioma) se muestran como una banda en las seis páginas de IA, la fuente de scan Trudvsem sobrevive a las páginas vacías y recorre offsets de registro, los títulos de habr no pueden resucitar markup, la puerta del perfil en crudo sostiene la línea de full_name, y los hints por fin dicen la verdad (.doc desaparece, gpt-5 y los niveles 5-5 de Anthropic). Tests 6905 → 7041.**
 >
-> **Anterior — v1.262.4** — **El parche token-dense de `ja`: la re-corrida puntual de 5 locales en prod separó los cuatro timeouts de evaluación de la noche — ar/ko/zh-CN pasaron (250–291 s), el drift puntual de ru no se repitió — pero `ja` chocó dos veces con el techo estándar de 300 s con cero salida; `ja` ahora se une a `ta`/`hi`/`it`/`pl` con el techo de 32768 tokens y el reloj de 480 s, fijado rojo primero. Tests 6868 → 6869.**
+> **Anterior — v1.263.0** — **El lote UX del propietario: una capa de pulido de movimiento (hovers seguros al tacto, lift de tarjeta solo en elementos interactivos, animaciones de modal/popover/toast/tema — seguras con reduced-motion), el acento vira de azul → rojo carmesí como el logo, una pasada de contraste WCAG (docs-fab 6.4:1, toast, bordes de formulario 3:1), cada control recibe un nombre programático, y una docena de correcciones de maquetación — la cabecera de la tabla de scan ya no tapa la búsqueda, el filtro de salario vuelve a tener tamaño normal, la página de docs nunca desborda, el drawer móvil estrena un cierre visible. Tests 6869 → 6905.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -392,7 +392,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 6905 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.263.0)
+└─ tests/                    # 7041 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.264.0)
    ├─ parsers.test.mjs       # parsers markdown / pipeline / report (funciones puras)
    ├─ api.test.mjs           # cada endpoint, servidor efímero, sin red
    ├─ {ru,en}-scanner.test.mjs   # fetch mockeado
