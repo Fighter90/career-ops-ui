@@ -8,6 +8,32 @@
 
 ---
 
+## [1.264.0] — 2026-10-31
+
+### 新增
+
+- **追蹤器列內狀態編輯** — `#/tracker` 每列的狀態徽章現在是一個緊湊的 `<select>`，列出規範階段（來自 `GET /api/tracker/stages`，絕非硬編碼白名單）。`POST /api/tracker/status` 在 `applications.md` 鎖下中繼父專案的正式 `set-status.mjs`（經 `states.mjs` 做狀態白名單、`--dry-run`/`--note` 透傳、帶淨化細節的 fail-soft 502、argv 陣列 spawn）。成功就地更新該列（tone 類別 + 分頁計數、焦點保留）；失敗則還原並彈出 toast。中繼無法處理的列 — 手工改出來的未知狀態、回填哨兵編號 `#` — 保留唯讀徽章（route-review 的 LOW 修復；審查者：無 HIGH/MED 發現）。
+- **伺服器警告浮現於每個 AI 頁面** — `evaluate`、`deep`、`auto-pipeline`（頁面**與**彈窗）、`career-plan`、`market`、`cv-studio`（humanize + tailor）現在把伺服器的 `warnings` 陣列（輸出 token 截斷、語言漂移、日期修正）渲染為 `badge-warn` 橫帶（`role="status"`）；auto-pipeline 彈窗不再丟棄 done 幀的警告。新鍵 `llm.truncatedNotice` ×19。
+- **覆蓋率浪潮（+111 個測試）** — `routes/map.mjs` 100/94.9、`geocode.mjs` 96.3/92.9、`content.mjs` 99/84.9、`networking.mjs` 96.4/89.1、`sources/habr.mjs` 100/98.2（新的 `tests/cov-*-routes.test.mjs` ×3 與 `tests/sources-habr.test.mjs`）；分支地板維持 ≥ 90 %。
+- **Linear CAR-191…216 結案包**（`docs/reviews/2026-10-30-linear-car191-216-closure-bundle.md`）— 給負責人的即貼即用結案文件，附每個 CAR 的提交 SHA 與證據評論。
+
+### 修復
+
+- **Trudvsem 掃描源** — 空頁（`results: {}`，也包括「越過末尾」）不再殺死整個掃描（乾淨的零列）；API 錯誤信封（HTTP-200 帶 `status: 500`）以 API 自己的文字拋出；分頁改走**逐筆記錄**的 offset（原本是頁索引 — 頁面被默默重複，只有約 52 個職缺而非數百個）；行走會停在 API 的深 offset 失效區之前（`offset × limit ≥ 10000`）。已通過線上端到端驗證。
+- **habr** — 標題／公司在實體解碼**之後**才剝除標籤（與 hh.mjs 對齊）：卡片標題中的 `&lt;script&gt;` 不再能以活體標記抵達掃描列；標題中合法的 `>>` 得以存活。
+- **PUT /api/profile（原始路徑）** — 缺少非空 `full_name` 的 `candidate:` 區塊會被拒絕，與欄位合併路徑同一陣線（過去會把 `full_name: null` 持久化）。
+- **提示的真實性** — `.doc` 從 CV 上傳接受清單與 `cv.uploadHint` ×19 中移除（解析器從未支援過它）；`config.openaiModelHint` ×19 點名 `gpt-5`（伺服器把任何 `*-codex` id 對映到它）；`config.anthropicModelHint` ×19 與 **Anthropic 預設**現在鏡像父專案的層級 — 預設 `claude-sonnet-5-5`、premium `claude-opus-5-5`。
+- **Claude Code 文件連結** → `code.claude.com`（舊的 `docs.anthropic.com/en/docs/claude-code` URL 在連結閘中拋 TypeError）。
+- help ×19：行密度項目已消失（該切換於 v1.263.0 離開 UI），並修復 18 組斷裂的 `**粗體**` span 家族 — 另外修復 ×19 的渲染器洩漏類（每個表格-後接段落之後的第二個空行；豎線符號移出粗體儲存格）：**全部 19 份 help 捆包渲染中零個字面 `**`**。
+
+### 備註
+
+- **Anthropic 預設模型已變更**為 `claude-sonnet-5-5`（父專案的標準層級）。依賴舊的沉默預設（`claude-sonnet-4-6`）的部署會自動升級 — 在 `.env` 釘住 `ANTHROPIC_MODEL` 即可退出。
+- 刻意不做：兩個 LOW 級審查小瑕疵刻意留白（行內下拉不鏡像 kanban 的 `movesReady` 降級 — 每次失敗都誠實彈 toast 是選定的行為；`code: 'timeout'` 分支仍由 fake-writer 契約覆蓋，而非 >30 s 的測試）。CAR-141（示範影片）仍屬負責人。
+- help ×19 在 v1.263.0 出貨後於 `main` 上獲得了發行後文字巡檢（移除密度項目、修復渲染器洩漏類）— 本版本是第一個攜帶它的標籤。
+
+Tests 6905 → 7041 (+136) · Playwright 176（173 通過 / 1 自願略過） · 覆蓋率 98.5 % 行 / 90.1 % 分支 · 註冊表未變：123 sources = 118 EN + 5 RU · 118 adapters。
+
 ## [1.263.0] — 2026-10-30
 
 ### 新增

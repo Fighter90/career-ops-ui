@@ -1213,6 +1213,11 @@ F. **STAR stories** — 1–3 段可直接貼上的 S-T-A-R 區塊,針對該
 CRM。每件申請一列;存於 `data/applications.md` 作為
 GitHub-Flavored Markdown 表格。
 
+每列的狀態徽章同時也是一個 **select** — 選一個階段就立即儲存:伺服器
+中繼正式的 `set-status.mjs`,該列就地更新;儲存失敗時還原數值並彈出
+toast。狀態被手工改過或無法識別的列,以及編號為 `N/A` 的回填列,則改
+為顯示唯讀徽章。
+
 ### 狀態流轉
 
 `Evaluated` → `Applied` → `Responded` → `Interview` → `Offer` /
