@@ -7,19 +7,19 @@
 
 _அதிகாரப்பூர்வமற்ற இடைமுகம் — career-ops / santifer உடன் எந்தத் தொடர்பும் அல்ல, அவர்களால் அங்கீகரிக்கப்படவும் இல்லை._
 
-[![tests](https://img.shields.io/badge/tests-6868%20passed-brightgreen)](#சோதனைகள்)
+[![tests](https://img.shields.io/badge/tests-6869%20passed-brightgreen)](#சோதனைகள்)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#சோதனைகள்)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#சோதனைகள்)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#தேவைகள்)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.262.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.3)
+[![release](https://img.shields.io/badge/release-v1.262.4-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.262.4)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 சமீபத்திய வெளியீடு — v1.262.3** — **pl token-dense patch: prod v1.262.1-இல் நடந்த முழு remote-QA, Polish evaluation standard 300 s ceiling-இல் இறப்பதை — `502 · 0 ch` — இருமுறை பிடித்தது (முழு ×19 run 40960568766 மற்றும் v1.262.2 spot re-run 40968958062), அப்போது 18/19 locales A–G pass ஆனது; `pl` இப்போது 32768-token ceiling மற்றும் 480 s clock உடன் `ta`/`hi`/`it`-உடன் சேர்கிறது, red-first ஆக pin செய்யப்பட்டது (`evalMaxTokens`, `evalTimeoutMs`). v1.262.1-இல் `it`-க்குக் கிடைத்த அதே shape class. Tests 6867 → 6868.**
+> **🆕 சமீபத்திய வெளியீடு — v1.262.4** — **ja token-dense patch: prod-இல் நடந்த 5-locale spot re-run இரவின் நான்கு evaluate timeouts-ஐ பிரித்தது — ar/ko/zh-CN pass ஆனது (250–291 s), ru-இன் ஒருமுறை drift திரும்பவில்லை — ஆனால் `ja` standard 300 s ceiling-இல் பூஜ்ஜிய output-உடன் இருமுறை மோதியது; `ja` இப்போது 32768-token ceiling மற்றும் 480 s clock உடன் `ta`/`hi`/`it`/`pl`-உடன் சேர்கிறது, red-first ஆக pin செய்யப்பட்டது. Tests 6868 → 6869.**
 >
-> **முந்தைய வெளியீடு — v1.262.2** — **review-tail patch: ஏழு wave-review findings red-first ஆக மூடப்பட்டன — CSV import backslash round-trip (அதே export-ஐ மீண்டும் import செய்தால் dedup ஆகும்), cv-voice head-strip 4827 ms → 13 ms, `years_min` large scans-இல் lazily compute ஆகிறது, capture-listing TOCTOU crash சரி செய்யப்பட்டது, எந்த `*.minimax.cn` base URL-க்கும் MiniMax CN defaults, import picker file-ஐப் படிக்கும் முன்பே 512 KB cap-ஐ check செய்கிறது — மேலும் deploy.yml hardening (F1–F6: provider-input injection guard, hermes log redaction, `?token=` masking, app_dir, public_url https gate, ஆறு executable anti-downgrade pins) மற்றும் import-modal tail (nav guard, cancel cleanup, guarded duplicates). Tests 6841 → 6867.**
+> **முந்தைய வெளியீடு — v1.262.3** — **pl token-dense patch: prod v1.262.1-இல் நடந்த முழு remote-QA, Polish evaluation standard 300 s ceiling-இல் இறப்பதை — `502 · 0 ch` — இருமுறை பிடித்தது (முழு ×19 run 40960568766 மற்றும் v1.262.2 spot re-run 40968958062), அப்போது 18/19 locales A–G pass ஆனது; `pl` இப்போது 32768-token ceiling மற்றும் 480 s clock உடன் `ta`/`hi`/`it`-உடன் சேர்கிறது, red-first ஆக pin செய்யப்பட்டது (`evalMaxTokens`, `evalTimeoutMs`). v1.262.1-இல் `it`-க்குக் கிடைத்த அதே shape class. Tests 6867 → 6868.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -198,7 +198,7 @@ web-ui/
 │       ├── app.js          # தொடக்கம், lang switcher, theme
 │       ├── lib/            # i18n (19 மொழிகள்), api, ui, format
 │       └── views/          # ஒரு பக்கத்திற்கு ஒரு பார்வை
-├── tests/                  # 6868 unit (baseline @ v1.262.3) — node --test, கணினி முழுவதும் CI-isolated
+├── tests/                  # 6869 unit (baseline @ v1.262.4) — node --test, கணினி முழுவதும் CI-isolated
 └── docs/                   # உதவி வழிகாட்டிகள் ×19, LOCALIZATION, SDD
 ```
 
