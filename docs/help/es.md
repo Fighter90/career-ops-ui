@@ -1326,6 +1326,8 @@ En las acciones de cabecera de un informe individual, el botón **🛡 Revisión
 El CRM. Una fila por candidatura; vive en `data/applications.md` como
 tabla GitHub-Flavored Markdown.
 
+El badge de estado de cada fila es también un **select** — elige una etapa y se guarda al instante: el servidor transmite el `set-status.mjs` canónico y la fila se actualiza in situ; un guardado fallido revierte el valor y muestra un toast. Las filas con un estado editado a mano o desconocido, y las filas de backfill numeradas `N/A`, muestran en su lugar un badge de solo lectura.
+
 ### Flujo de estados
 
 `Evaluated` → `Applied` → `Responded` → `Interview` → `Offer` /
