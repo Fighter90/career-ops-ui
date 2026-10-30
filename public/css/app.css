@@ -55,18 +55,18 @@
    The indirection resolves per element, so ONE :root declaration follows both themes —
    no dark re-declaration needed (unlike the literal blocks below). */
 :root {
-  /* accent topology (v3 phase 2): the rausch family carries the pure ACCENT (Lovable
-     blue 252hue); --rausch-text moved to the cv3 DANGER ink so the --err/--error/--danger
-     aliases below keep red danger semantics. Contrast: --rausch-dark/--paper 7.37/8.95:1,
-     --rausch-text/--paper 7.47/10.60:1 (light/dark). */
+  /* accent topology (v3 phase 2): the rausch family carries the pure ACCENT (crimson
+     red, hue 15 — owner request, logo-coherent); --rausch-text moved to the cv3 DANGER
+     ink so the --err/--error/--danger aliases below keep red danger semantics. Contrast:
+     --rausch-dark/--paper 7.37/8.95:1, --rausch-text/--paper 7.47/10.60:1 (light/dark). */
   --rausch: var(--cv3-accent);
   --rausch-dark: var(--cv3-accent-hover);
   --rausch-text: var(--cv3-danger-ink);
   /* theme-INVARIANT danger fill for white-text buttons (the cv3-danger light value):
      #fff on it is 5.80:1 and it keeps ≥3:1 against the dark canvas (WCAG 1.4.11). */
   --rausch-fill: oklch(0.53 0.19 25);
-  /* the INDEPENDENT accent family (pure blue; .btn-primary paints flat --accent-c/--accent-ink
-     Lovable-style — white fails dark at 2.46:1, the cv3 ink flips to near-black instead). */
+  /* the INDEPENDENT accent family (crimson red; .btn-primary paints flat --accent-c/--accent-ink
+     cv3-style — white fails dark at 2.46:1, the cv3 ink flips to near-black instead). */
   --accent-c: var(--cv3-accent);
   --accent-hover: var(--cv3-accent-hover);
   --accent-ink: var(--cv3-accent-ink);
@@ -152,7 +152,7 @@
   --border: var(--slate);
   /* CAR-123 R3 — `--accent` was referenced by the v2-stats / v2-llm / map rules
      but never defined. Since v3 phase 2 it resolves to the INDEPENDENT accent
-     family above (map focus rings / v2 active indicators ride the Lovable blue
+     family above (map focus rings / v2 active indicators ride the crimson accent
      and follow the theme; AA 1.4.11 — every use is outline/border/indicator). */
   --accent: var(--accent-c);
   /* CAR-123 R3 hand-offs closed on the cv3 sheet (phase 2): the subtle wash and

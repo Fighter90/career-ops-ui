@@ -17,10 +17,11 @@
      --cv3-ink-3       → --foggy          (muted text)
      --cv3-line        → --slate          (hairline)
      --cv3-line-strong → (no current token — new emphasized hairline)
-     --cv3-accent-*    → --rausch family  (REPLACEMENT: the Lovable primary
-                         action is blue 250–252hue; coral stays live in
-                         app.css until the owner rules — this sheet ships the
-                         Lovable default, flipping back is a 5-line edit here)
+     --cv3-accent-*    → --rausch family  (REPLACEMENT: the primary action
+                         is crimson red (hue 15), owner request — logo-
+                         coherent; coral stays live in app.css until phase 2
+                         rewires the call sites — flipping back is a 5-line
+                         edit here)
      --cv3-ok-*        → --kazan family   (success)
      --cv3-warn-*      → --darjeeling family (warning)
      --cv3-danger-*    → --rausch-text / --rausch-dark (danger)
@@ -40,7 +41,8 @@
    DELIBERATE DIVERGENCES from the Lovable concept (owner-visible):
      • Geist / Geist Mono → Inter / system mono. No new font dependency; the
        swap is a later, opt-in decision (CSP already pins Google Fonts Inter).
-     • Accent = Lovable blue, not the current coral --rausch (see mapping).
+     • Accent = crimson red (hue 15, owner request — logo-coherent), not the
+       coral --rausch (see mapping).
 
    Contrast notes from the Lovable concept (light, on surface-1): ink 15.8:1,
    ink-2 8.6:1, ink-3 5.0:1; dark ink-3 5.2:1 — WCAG AA (1.4.3) or better.
@@ -60,12 +62,13 @@
   /* lines — hairline / emphasized hairline */
   --cv3-line: oklch(0.925 0.005 250);
   --cv3-line-strong: oklch(0.86 0.008 250);
-  /* accent (Lovable blue) — fill / hover / text-on-fill / soft wash / ink-on-soft */
-  --cv3-accent: oklch(0.5 0.16 252);
-  --cv3-accent-hover: oklch(0.45 0.16 252);
+  /* accent (crimson red, owner request — logo-coherent) — fill / hover /
+     text-on-fill / soft wash / ink-on-soft */
+  --cv3-accent: oklch(0.56 0.17 15);
+  --cv3-accent-hover: oklch(0.51 0.17 15);
   --cv3-accent-ink: oklch(1 0 0);
-  --cv3-accent-soft: oklch(0.95 0.03 252);
-  --cv3-accent-soft-ink: oklch(0.42 0.15 252);
+  --cv3-accent-soft: oklch(0.95 0.03 15);
+  --cv3-accent-soft-ink: oklch(0.46 0.16 15);
   /* semantic — success */
   --cv3-ok: oklch(0.5 0.12 155);
   --cv3-ok-soft: oklch(0.93 0.06 155);
@@ -140,11 +143,11 @@
   --cv3-ink-3: oklch(0.68 0.008 252);
   --cv3-line: oklch(0.28 0.01 255);
   --cv3-line-strong: oklch(0.35 0.012 255);
-  --cv3-accent: oklch(0.72 0.13 250);
-  --cv3-accent-hover: oklch(0.78 0.13 250);
+  --cv3-accent: oklch(0.72 0.13 15);
+  --cv3-accent-hover: oklch(0.78 0.13 15);
   --cv3-accent-ink: oklch(0.18 0.03 255);
-  --cv3-accent-soft: oklch(0.3 0.06 252);
-  --cv3-accent-soft-ink: oklch(0.85 0.08 250);
+  --cv3-accent-soft: oklch(0.3 0.06 15);
+  --cv3-accent-soft-ink: oklch(0.85 0.09 15);
   --cv3-ok: oklch(0.72 0.12 155);
   --cv3-ok-soft: oklch(0.3 0.06 155);
   --cv3-ok-ink: oklch(0.85 0.09 155);
@@ -186,11 +189,11 @@
     --cv3-ink-3: oklch(0.68 0.008 252);
     --cv3-line: oklch(0.28 0.01 255);
     --cv3-line-strong: oklch(0.35 0.012 255);
-    --cv3-accent: oklch(0.72 0.13 250);
-    --cv3-accent-hover: oklch(0.78 0.13 250);
+    --cv3-accent: oklch(0.72 0.13 15);
+    --cv3-accent-hover: oklch(0.78 0.13 15);
     --cv3-accent-ink: oklch(0.18 0.03 255);
-    --cv3-accent-soft: oklch(0.3 0.06 252);
-    --cv3-accent-soft-ink: oklch(0.85 0.08 250);
+    --cv3-accent-soft: oklch(0.3 0.06 15);
+    --cv3-accent-soft-ink: oklch(0.85 0.09 15);
     --cv3-ok: oklch(0.72 0.12 155);
     --cv3-ok-soft: oklch(0.3 0.06 155);
     --cv3-ok-ink: oklch(0.85 0.09 155);

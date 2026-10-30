@@ -67,7 +67,7 @@ Router.register('docs-assistant', async () => {
 
   function bubble(kind, node) {
     const mine = kind === 'me';
-    return c('div', { style: { alignSelf: mine ? 'flex-end' : 'flex-start', maxWidth: '85%', background: mine ? 'var(--accent, #4c8bf5)' : 'var(--panel-2, #eef1f6)', color: mine ? '#fff' : 'inherit', borderRadius: '12px', padding: '10px 14px' } }, node);
+    return c('div', { style: { alignSelf: mine ? 'flex-end' : 'flex-start', maxWidth: '85%', background: mine ? 'var(--accent, #4c8bf5)' : 'var(--panel-2, #eef1f6)', color: mine ? 'var(--accent-ink, #fff)' : 'inherit', borderRadius: '12px', padding: '10px 14px' } }, node);
   }
 
   // CAR-136 T4 — deterministic route links. The grounded-sections list the
