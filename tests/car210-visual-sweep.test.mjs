@@ -61,3 +61,10 @@ test('CAR-216 — dashboard funnel empty state is the v2empty pattern, not a bar
   assert.match(read('public/js/lib/locales/i18n-dict.en.js'), /'v2empty\.dash\.statusesBody'/);
 });
 
+test('CAR-212 — the stats "?" hint is pinned off the scrolling tab tape (divider + 44px target)', () => {
+  const src = read('public/js/views/stats.js');
+  const hintRow = src.slice(src.indexOf('const hintRow'), src.indexOf('const tabStrip'));
+  assert.match(hintRow, /borderInlineStart: '1px solid var\(--line/, 'logical divider between tape and hint');
+  assert.match(hintRow, /minHeight: '44px'/, 'touch-target row height');
+});
+
