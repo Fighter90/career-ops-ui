@@ -580,6 +580,11 @@ window.__I18N_DICT_JA = {
   'batch.pendingAdditions': "保留中のトラッカー追加:",
   'batch.merge': "トラッカーにマージ",
   'batch.merged': "トラッカーにマージされました",
+  // #4746 — paid-run confirmation (batch is billed per evaluation)
+  'batch.cost.confirmTitle': "有料バッチ実行の確認",
+  'batch.cost.confirmBody': "約 {n} 件の評価 ≈ {usd} (プロバイダー {provider})。実行しますか?",
+  'batch.cost.confirmOk': "バッチを実行",
+  'batch.cost.usdUnknown': "費用不明",
   'batch.noRunnerTitle': "batch/batch-runner.sh が見つかりません",
   'batch.noRunnerBody': "Runner は親 career-ops プロジェクトにあります。batch/batch-runner.sh が存在し実行可能 (chmod +x) であることを確認してください。",
   'scan.boostedBy': "ブーストキーワード",

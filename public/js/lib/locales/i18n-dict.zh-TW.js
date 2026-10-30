@@ -580,6 +580,11 @@ window.__I18N_DICT_ZH_TW = {
   'batch.pendingAdditions': "待處理的追蹤器新增:",
   'batch.merge': "合併到追蹤器",
   'batch.merged': "已合併到追蹤器",
+  // #4746 — paid-run confirmation (batch is billed per evaluation)
+  'batch.cost.confirmTitle': "確認付費批次執行",
+  'batch.cost.confirmBody': "約 {n} 次評估 ≈ {usd}（供應商 {provider}）。執行？",
+  'batch.cost.confirmOk': "執行批次",
+  'batch.cost.usdUnknown': "費用未知",
   'batch.noRunnerTitle': "找不到 batch/batch-runner.sh",
   'batch.noRunnerBody': "Runner 在父 career-ops 專案中。確保 batch/batch-runner.sh 存在且可執行 (chmod +x)。",
   'scan.boostedBy': "提升關鍵字",

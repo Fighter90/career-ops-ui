@@ -579,6 +579,11 @@ window.__I18N_DICT_UK = {
   'batch.pendingAdditions': "очікуючих доповнень до трекера:",
   'batch.merge': "Об'єднати з трекером",
   'batch.merged': "Об'єднано з трекером",
+  // #4746 — paid-run confirmation (batch is billed per evaluation)
+  'batch.cost.confirmTitle': "Підтвердьте платний запуск пакета",
+  'batch.cost.confirmBody': "Приблизно {n} оцінок ≈ {usd} (провайдер {provider}). Запустити?",
+  'batch.cost.confirmOk': "Запустити пакет",
+  'batch.cost.usdUnknown': "вартість невідома",
   'batch.noRunnerTitle': "batch/batch-runner.sh не знайдено",
   'batch.noRunnerBody': "Runner знаходиться у батьківському проєкті career-ops. Переконайтесь, що batch/batch-runner.sh існує і є виконуваним (chmod +x).",
   'scan.boostedBy': "Буст від",

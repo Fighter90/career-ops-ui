@@ -580,6 +580,11 @@ window.__I18N_DICT_TR = {
   'batch.pendingAdditions': "bekleyen takip tablosu eklemesi:",
   'batch.merge': "Takip tablosuna birleştir",
   'batch.merged': "Takip tablosuna birleştirildi",
+  // #4746 — paid-run confirmation (batch is billed per evaluation)
+  'batch.cost.confirmTitle': "Ücretli toplu işlemi onayla",
+  'batch.cost.confirmBody': "Yaklaşık {n} değerlendirme ≈ {usd} (sağlayıcı {provider}). Çalıştırılsın mı?",
+  'batch.cost.confirmOk': "Toplu işlemi çalıştır",
+  'batch.cost.usdUnknown': "maliyet bilinmiyor",
   'batch.noRunnerTitle': "batch/batch-runner.sh bulunamadı",
   'batch.noRunnerBody': "Çalıştırıcı üst career-ops projesinde bulunur. batch/batch-runner.sh dosyasının var olduğundan ve yürütülebilir olduğundan emin olun (chmod +x).",
   'scan.boostedBy': "Şununla artırıldı",

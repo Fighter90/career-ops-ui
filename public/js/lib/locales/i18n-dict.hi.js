@@ -582,6 +582,11 @@ window.__I18N_DICT_HI = {
   'batch.pendingAdditions': "लंबित ट्रैकर जोड़:",
   'batch.merge': "ट्रैकर में मर्ज करें",
   'batch.merged': "ट्रैकर में मर्ज किया गया",
+  // #4746 — paid-run confirmation (batch is billed per evaluation)
+  'batch.cost.confirmTitle': "सशुल्क बैच रन की पुष्टि करें",
+  'batch.cost.confirmBody': "लगभग {n} मूल्यांकन ≈ {usd} (प्रदाता {provider})। चलाएँ?",
+  'batch.cost.confirmOk': "बैच चलाएँ",
+  'batch.cost.usdUnknown': "लागत अज्ञात",
   'batch.noRunnerTitle': "batch/batch-runner.sh नहीं मिला",
   'batch.noRunnerBody': "रनर पेरेंट career-ops प्रोजेक्ट में है। सुनिश्चित करें कि batch/batch-runner.sh मौजूद है और एक्ज़ीक्यूटेबल है (chmod +x)।",
   'scan.boostedBy': "इनके द्वारा बूस्ट किया गया",
