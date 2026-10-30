@@ -13,8 +13,8 @@ uma seção específica via sumário no menu lateral de ajuda.
 > **Networking**, **Analítica**, **Configuração** (`nav.group.*`) —
 > que abrem quando você visita uma seção e permanecem onde você os
 > deixou. Clique na ☆ de qualquer página para fixá-la em
-> **Favoritos**, e pressione **Cmd/Ctrl+K** (ou o botão **Menu de
-> comandos** no topo da barra lateral, `nav.v2.palette`) para pular,
+> **Favoritos**, e pressione **Cmd/Ctrl+K** (ou o botão **Menu de comandos**
+> no topo da barra lateral, `nav.v2.palette`) para pular,
 > por busca difusa, para qualquer página a partir de qualquer lugar.
 > Toda página mostra seu título instantaneamente e preenche linhas
 > cinzas com brilho enquanto os dados carregam, então a navegação
@@ -171,8 +171,8 @@ em caso de sucesso. As seções 2–16 abaixo aprofundam cada fase.
 > career-ops-ui open       # abre + TRAZ PARA FRENTE a aba do painel no seu navegador
 > ```
 >
-> Após `setup`/`run` a aba do navegador é aberta **e trazida para a
-> frente** automaticamente (v1.43.0); `career-ops-ui open` faz o mesmo
+> Após `setup`/`run` a aba do navegador é aberta **e trazida para a frente**
+> automaticamente (v1.43.0); `career-ops-ui open` faz o mesmo
 > sob demanda, então você nunca precisa procurar a aba do painel.
 > `NO_OPEN=1` desativa a abertura automática em inícios headless/CI.
 >
@@ -248,13 +248,13 @@ canônico `# Career-Ops Profile Configuration`.
   Mantenha abaixo de 1500 palavras. Seções nesta ordem: Summary,
   Experience, Projects, Education, Skills.
 
-**Passo 7 — Clique em `💾 Save` (canto superior direito da página
-CV).** O servidor sanitiza (`<script>` / `javascript:` / handlers
+**Passo 7 — Clique em `💾 Save` (canto superior direito da página CV).**
+O servidor sanitiza (`<script>` / `javascript:` / handlers
 inline são removidos) e grava `cv.md`. Toast: *"Saved"*.
 
 **Passo 8 (opcional) — Clique em `📄 Generate PDF`.** Roda
-`generate-pdf.mjs` no projeto pai (Playwright necessário) e **o novo
-PDF é baixado automaticamente** para o seu navegador quando termina.
+`generate-pdf.mjs` no projeto pai (Playwright necessário) e
+**o novo PDF é baixado automaticamente** para o seu navegador quando termina.
 A lista no rodapé da página mantém cada arquivo gerado anteriormente.
 
 ### C. Encontrar vagas (~2 minutos por scan)
@@ -294,8 +294,8 @@ coisa com `Verdict: pursue` é sua short-list.
 
 ### E. Decidir e pesquisar a fundo a empresa shortlisted (~3 minutos)
 
-**Passo 14 — Escolha uma vaga que valha a pena perseguir. Clique em
-`Deep research` na barra lateral.** Digite o nome da empresa e o
+**Passo 14 — Escolha uma vaga que valha a pena perseguir. Clique em `Deep research` na barra lateral.**
+Digite o nome da empresa e o
 cargo. O modelo produz um briefing de empresa em 7 seções (missão,
 notícias recentes, stack tecnológico, sinais de contratação,
 benchmarks de remuneração, riscos, ângulo recomendado). Save cai em
@@ -337,13 +337,12 @@ link para o relatório, link para o briefing de deep research. A data
 candidatura original. Envie. Atualize o status do tracker para
 `Followed up`.
 
-**Passo 20 — Quando receber um convite de entrevista, rode o modo
-`Interview prep`** (`#/interview-prep`). Gera preparação direcionada
+**Passo 20 — Quando receber um convite de entrevista, rode o modo `Interview prep`** (`#/interview-prep`).
+Gera preparação direcionada
 para a empresa específica + estágio (system design / behavioral /
 coding). Puxa do briefing de deep research automaticamente.
 
-**Passo 21 — Conseguiu a oferta? Atualize o status do Tracker para
-`Offer`** e revisite a seção de remuneração do seu relatório de
+**Passo 21 — Conseguiu a oferta? Atualize o status do Tracker para `Offer`** e revisite a seção de remuneração do seu relatório de
 avaliação — seu número mínimo de aceitação está lá.
 
 ### TL;DR — a ordem da barra lateral coincide com o workflow
@@ -382,8 +381,8 @@ sucesso, o cartão de resultado linka direto ao relatório salvo
 (`auto.viewTracker`). Um passo falho é marcado em vermelho com sua
 mensagem e o botão reabilita, para você corrigir a URL e tentar de
 novo sem recarregar. Iniciar uma nova execução enquanto outra ainda
-roda é seguro: a execução mais antiga se marca **Substituído — uma
-execução mais recente foi solicitada** (`auto.superseded`) em vez de
+roda é seguro: a execução mais antiga se marca
+**Substituído — uma execução mais recente foi solicitada** (`auto.superseded`) em vez de
 gastar duas vezes com uma resposta obsoleta.
 
 A página vazia é honesta quanto ao seu único campo: a etiqueta
@@ -492,15 +491,15 @@ A aba **Doutor de configuração** em `#/config` executa uma verificação somen
 
 ## 3. Perfil (`#/profile` — também acessível como `#/settings`)
 
-Vista somente-leitura em card de `config/profile.yml`. **Para
-editar**, vá em **App settings → aba Profile** (`#/config` →
+Vista somente-leitura em card de `config/profile.yml`.
+**Para editar**, vá em **App settings → aba Profile** (`#/config` →
 Profile). Saves caem no mesmo arquivo; esta página faz re-parse no
 reload.
 
 Os campos que mais importam:
 
-- `candidate.full_name` — usado em cada prompt. **Substitua o
-  template `Jane Smith`** antes de escanear qualquer coisa de
+- `candidate.full_name` — usado em cada prompt.
+  **Substitua o template `Jane Smith`** antes de escanear qualquer coisa de
   verdade, ou suas cover letters geradas sairão sob o nome
   placeholder.
 - `candidate.email`, `linkedin`, `github` — referenciados na geração
@@ -596,8 +595,8 @@ o schema canônico de career-ops.org de
 [scan-job-portals](https://career-ops.org/docs/introduction/guides/scan-job-portals)
 1:1.
 
-> **Atalho:** a URL `#/portals` agora resolve direto para **App
-> settings** e (quando há uma fonte regional configurada) salta para
+> **Atalho:** a URL `#/portals` agora resolve direto para **App settings**
+> e (quando há uma fonte regional configurada) salta para
 > o grupo **Regional sources** — então um link `#/portals` salvo nos
 > favoritos ou digitado não dá mais 404 (v1.42.0).
 
@@ -610,8 +609,8 @@ title_filter:
   seniority_boost: [Senior, Staff, Lead, Principal]
 ```
 
-Uma vaga escaneada passa quando seu título contém **pelo menos uma
-palavra-chave positiva** E **nenhuma das palavras-chave negativas**.
+Uma vaga escaneada passa quando seu título contém **pelo menos uma palavra-chave positiva**
+E **nenhuma das palavras-chave negativas**.
 Ajuste os dois. As palavras-chave são substrings case-insensitive.
 
 `seniority_boost` é a terceira chave do title-filter. Palavras-chave
@@ -700,8 +699,8 @@ SmartRecruiters / Workday), `enabled: true|false` para
 incluir/excluir sem deletar a entrada. O scanner ATS detecta o ATS
 pelo padrão da URL (`job-boards.greenhouse.io/<slug>` → Greenhouse,
 etc.) e busca a boards-api pública de cada empresa diretamente.
-Empresas sem um ATS reconhecível são puladas (o card **Active
-Companies** em `/#/scan` as mostra em cinza com `○`).
+Empresas sem um ATS reconhecível são puladas (o card **Active Companies**
+em `/#/scan` as mostra em cinza com `○`).
 
 **Fixando um tenant do Personio (v1.237.0).** Muitas empresas incorporam
 seu board do Personio como um **iframe** em uma página de carreiras com
@@ -782,8 +781,8 @@ russian_portals:
 ```
 
 `queries` são matches case-insensitive de substring contra títulos de
-vagas em hh.ru e Habr Career. **Cuidado com sobreposição com a lista
-negativa** — se `"Senior PHP"` está em `queries` mas `"php"` acaba
+vagas em hh.ru e Habr Career.
+**Cuidado com sobreposição com a lista negativa** — se `"Senior PHP"` está em `queries` mas `"php"` acaba
 em `title_filter.negative`, o scan retornará zero resultados e o
 console te avisará sobre o conflito.
 
@@ -1002,7 +1001,6 @@ O chrome v2 de resultados mantém os controles descobríveis:
   coluna (empresa, cargo, salário, idade) para ordenar por ela; clique
   de novo para inverter a direção.
 - **Visualização rápida** (`scan.v2.quickView`) — clique numa linha para expandir a descrição da vaga inline (**Descrição**, `scan.v2.description`) sem sair da página; vagas sem corpo capturado dizem isso (`scan.v2.noDescription`) em vez de mostrar um cartão vazio.
-- **Densidade das linhas** (`scan.v2.density`) — alterna **Compacto** / **Confortável** (`scan.v2.compact` / `scan.v2.comfortable`) nas alturas de linha; a escolha é lembrada por navegador.
 - **Registro** (`scan.v2.log`) — recolhe/expande o log de scan em
   streaming para dar a largura total à tabela.
 
@@ -1166,8 +1164,8 @@ navegador não consegue buscá-los diretamente; o servidor faz proxy
 da requisição, remove `<script>` / `<style>` / tags HTML, e retorna
 até 8 KB de texto puro.
 
-O proxy de preview percorre redirects manualmente com **validação
-SSRF por hop** — cada cabeçalho `Location` passa por
+O proxy de preview percorre redirects manualmente com
+**validação SSRF por hop** — cada cabeçalho `Location` passa por
 `isValidJobUrl()` novamente, para que um board hostil não consiga te
 bouncear para loopback / IP privada / `file://`. Limite de 3 hops,
 timeout de 15 segundos.
@@ -1357,8 +1355,8 @@ como uma tabela GitHub-Flavored Markdown.
 de arrastar e soltar: uma coluna por status canônico (título anunciado
 como *Candidaturas por status*, `track.kanbanBoardAria`), um cartão por
 candidatura. Arraste um cartão a outra coluna — ou foque-o e pressione
-**Mover** — e a mudança é **pré-visualizada antes de qualquer coisa
-ser gravada** (`track.kanbanMoveHint`); um movimento confirmado
+**Mover** — e a mudança é
+**pré-visualizada antes de qualquer coisa ser gravada** (`track.kanbanMoveHint`); um movimento confirmado
 registra um lançamento no diário de resultados e reescreve
 `data/applications.md`, e o cartão avisa você disso
 (`track.moveJournal`) — para devolver um status, use o botão
@@ -1759,8 +1757,7 @@ Necessário para duas features do career-ops:
 fallback para WebFetch (preview de formulário só texto, sem
 click-fill). A geração de PDF simplesmente dá erro.
 
-**Setup principal (rode a partir da raiz do projeto pai
-career-ops):**
+**Setup principal (rode a partir da raiz do projeto pai career-ops):**
 
 ```bash
 # Instala o Chromium para o Playwright
@@ -1810,8 +1807,8 @@ Esta é a fase pós-research, pré-entrevista. Três artefatos neste app
 convergem:
 
 1. **Arquivos de deep research salvos** em `interview-prep/`, um por
-   par empresa-cargo que você rodou. Navegue da página **Deep
-   research** ou diretamente via `/api/interview-prep`.
+   par empresa-cargo que você rodou. Navegue da página **Deep research**
+   ou diretamente via `/api/interview-prep`.
 2. **Modo Patterns** (`#/patterns`) — gera um prompt
    auto-reflexivo: "ao longo das minhas últimas N entrevistas /
    ofertas / rejeições, que padrões se mantêm?" Útil quando você
