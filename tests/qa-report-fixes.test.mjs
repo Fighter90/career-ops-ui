@@ -421,7 +421,7 @@ test('UX-A5-r4 (v1.59.9): scroll-spy is initial-paint-eager (synchronous compute
   const css = loadAppCss();
   assert.match(css, /\.help-toc\s+a\.toc-current\s*\{[^}]*color:\s*var\(--rausch/,
     '.help-toc a.toc-current must paint color from --rausch');
-  assert.match(css, /\.help-toc\s+a\.toc-current\s*\{[^}]*border-inline-start:\s*\d+px\s+solid\s+var\(--rausch/,
+  assert.match(css, /\.help-toc\s+a\.toc-current\s*\{[^}]*border-inline-start-color:\s*var\(--rausch/,
     '.help-toc a.toc-current must paint a visible border-inline-start from --rausch');
 });
 
