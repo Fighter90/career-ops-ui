@@ -166,7 +166,7 @@
   "faq.q6": "Invia le candidature automaticamente?",
   "faq.a6": "No — per principio. Prepara bozze, compila e organizza; tu controlli e premi invia. Nulla viene mai inviato a tuo nome.",
   "faq.q7": "Quali job board può scansionare?",
-  "faq.a7": "~{adapters} adattatori: Greenhouse, Ashby, Lever, Workable, SmartRecruiters, Workday, Recruitee, Teamtailor, board di lavoro remoto e fonti russe (hh.ru, Habr Career, GetMatch e altre). Le board nuove sono semplici file adattatore drop-in.",
+  "faq.a7": "{sources} fonti di job board: {sourcesEn} board internazionali (Greenhouse, Ashby, Lever, Workable, SmartRecruiters, Workday, Recruitee, Teamtailor, aggregatori di lavoro remoto e altro) più {sourcesRu} russe (hh.ru, Habr Career, GetMatch, GeekJob, Trudvsem). Le board nuove sono semplici file adattatore drop-in.",
   "faq.q8": "Quali lingue supporta?",
   "faq.a8": "{n}: inglese, spagnolo, francese, portoghese (BR), coreano, giapponese, russo, cinese (semplificato e tradizionale), polacco, ucraino, danese, arabo (RTL), tedesco, italiano, turco, hindi, tamil e vietnamita — inclusa la guida utente completa.",
   "faq.q9": "Posso contribuire?",
