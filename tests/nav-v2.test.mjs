@@ -336,3 +336,41 @@ test('recents: the group header carries a hint and a Clear button that empties t
   assert.match(CSS, /\.nav-v2-clear/, 'v2-nav.css styles the clear button');
   assert.match(CSS, /\.nav-v2-group-head/, 'the toggle + clear row has a shared flex head');
 });
+
+// ── CAR-203 — sidebar pill: long localized labels truncate gracefully ──────
+
+test('CAR-203: nav labels shrink (min-width:0) + ellipsize inside the pill; the full text is reachable via title', () => {
+  // 1. The base pill: the label span is a flex child whose default
+  //    min-width:auto refused to shrink, so the long ru label
+  //    («Профинансированные компании») overflowed the pill and hard-clipped
+  //    at the row edge. Both label contracts live in v2-nav.css (the
+  //    sidebar-v2 sheet — app.css sits exactly at its 800-LOC ceiling):
+  //    the label is shrinkable and truncates on one line. Logical
+  //    properties only — the ellipsis lands on the inline end in RTL too;
+  //    padding/min-height (the 44px touch target) and the active paint
+  //    are untouched.
+  const label = CSS.match(
+    /\.nav-item > span:not\(\.nav-ico\),\s*\.nav-v2-row-link > span:not\(\.nav-ico\)\s*\{[^}]*\}/,
+  );
+  assert.ok(label, 'v2-nav.css must style both nav label spans (CAR-203)');
+  for (const decl of ['min-width:\\s*0', 'overflow:\\s*hidden',
+    'text-overflow:\\s*ellipsis', 'white-space:\\s*nowrap']) {
+    assert.match(label[0], new RegExp(decl), `.nav-item label misses ${decl.replace(/\\\\/g, '')}`);
+  }
+  // 2. Favorites/recents rows reuse the very same labels over a narrower
+  //    row (the star + reorder controls steal width) — the shared rule
+  //    covers them (see the selector list above).
+  // 3. Truncation must stay discoverable: the wiring mirrors the
+  //    LOCALIZED label into the span's title, reusing the SAME i18n key
+  //    (zero new dictionary entries). t() is read directly — not off the
+  //    span's textContent — so the result is order-independent with
+  //    app.js's applyI18n pass. Synced at boot, on every dynamic-row
+  //    rebuild and on language switch.
+  assert.match(SRC, /function syncLabelTitles/, 'nav-v2.js must define syncLabelTitles');
+  assert.match(SRC, /\.title = t\(/, 'titles carry the localized t() value');
+  assert.ok((SRC.match(/syncLabelTitles\(\)/g) || []).length >= 3,
+    'syncLabelTitles must run at boot, per row rebuild and on language switch');
+  // 4. The reported pill keeps its static data-i18n label — the title
+  //    reuses that exact key, so the fallback text below stays English.
+  assert.match(HTML, /<span class="nav-ico">💰<\/span> <span data-i18n="nav\.funded">Funded companies<\/span>/);
+});
