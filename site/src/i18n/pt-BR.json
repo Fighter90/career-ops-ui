@@ -166,7 +166,7 @@
   "faq.q6": "Ele envia candidaturas automaticamente?",
   "faq.a6": "Não — por princípio. Ele rascunha, preenche e prepara; você revisa e aperta enviar. Nada é enviado em seu nome.",
   "faq.q7": "Quais portais de vagas ele consegue varrer?",
-  "faq.a7": "~{adapters} adaptadores: Greenhouse, Ashby, Lever, Workable, SmartRecruiters, Workday, Recruitee, Teamtailor, portais de trabalho remoto e fontes russas (hh.ru, Habr Career, GetMatch e mais). Portais novos são arquivos adaptadores drop-in.",
+  "faq.a7": "{sources} fontes de job boards: {sourcesEn} portais internacionais (Greenhouse, Ashby, Lever, Workable, SmartRecruiters, Workday, Recruitee, Teamtailor, agregadores de trabalho remoto e mais) além de {sourcesRu} russas (hh.ru, Habr Career, GetMatch, GeekJob, Trudvsem). Portais novos são arquivos adaptadores drop-in.",
   "faq.q8": "Quais idiomas ele suporta?",
   "faq.a8": "{n}: inglês, espanhol, francês, português (BR), coreano, japonês, russo, chinês (simplificado e tradicional), polonês, ucraniano, dinamarquês, árabe (RTL), alemão, italiano, turco, hindi, tâmil e vietnamita — incluindo o guia do usuário completo.",
   "faq.q9": "Posso contribuir?",
