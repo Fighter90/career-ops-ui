@@ -19,9 +19,11 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.264.0** — **पोस्ट-रिलीज़ हार्डनिंग वेव: हर tracker पंक्ति का स्टेटस इनलाइन-एडिटेबल है (applications.md लॉक के तहत पैरेंट का कैननिकल set-status.mjs), सर्वर चेतावनियाँ (ट्रंकेशन, भाषा ड्रिफ्ट) सभी छह AI पेजों पर एक बैंड के रूप में दिखती हैं, Trudvsem स्कैन सोर्स खाली पेजों से बचता है और रिकॉर्ड ऑफ़सेट पर चलता है, habr टाइटल मार्कअप को पुनर्जीवित नहीं कर सकते, रॉ प्रोफ़ाइल गेट full_name लाइन पकड़ता है, और हिंट्स आखिरकार सच बोलते हैं (.doc चला गया, gpt-5 और Anthropic 5-5 टियर्स)। टेस्ट 6905 → 7041।**
+> **🆕 नवीनतम रिलीज़ — v1.264.1** — **दो एजेंट-निर्मित सुधार: साइडबार पिल्स लंबे स्थानीयकृत लेबल को सहजता से ट्रंकेट करते हैं (ellipsis + स्थानीयकृत टूलटिप — «Профинансированные компании» अब कठोरता से नहीं कटता), और हर स्थानीयकरण के लिए एक 480 s मूल्यांकन सीलिंग (es/zh-CN पर क्षणिक 300 s कट-ऑफ़ अब नहीं); cvstart.org FAQ अब registry-व्युत्पन्न सटीक सोर्स गिनती रखता है (123 = 118 अंतरराष्ट्रीय + 5 रूसी)। टेस्ट 7041 → 7075।**
+
+
 >
-> **पिछला — v1.263.0** — **Owner UX बैच: एक मोशन पॉलिश लेयर (टच-सुरक्षित होवर, केवल-इंटरैक्टिव कार्ड लिफ्ट, modal/popover/toast/थीम एनिमेशन — reduced-motion सुरक्षित), एक्सेंट लोगो की तरह नीला → क्रिमसन लाल हो जाता है, एक WCAG कंट्रास्ट पास (docs-fab 6.4:1, toast, फ़ॉर्म बॉर्डर 3:1), हर कंट्रोल को एक प्रोग्रामेटिक नाम मिलता है, और एक दर्जन लेआउट फ़िक्स — scan टेबल हेडर अब सर्च को कवर नहीं करता, सैलरी फ़िल्टर फिर से सामान्य आकार का है, docs पेज कभी ओवरफ़्लो नहीं करता, मोबाइल ड्रॉअर को एक दृश्यमान क्लोज़ मिला। टेस्ट 6869 → 6905।**
+> **पिछला — v1.264.0** — **पोस्ट-रिलीज़ हार्डनिंग वेव: हर tracker पंक्ति का स्टेटस इनलाइन-एडिटेबल है (applications.md लॉक के तहत पैरेंट का कैननिकल set-status.mjs), सर्वर चेतावनियाँ (ट्रंकेशन, भाषा ड्रिफ्ट) सभी छह AI पेजों पर एक बैंड के रूप में दिखती हैं, Trudvsem स्कैन सोर्स खाली पेजों से बचता है और रिकॉर्ड ऑफ़सेट पर चलता है, habr टाइटल मार्कअप को पुनर्जीवित नहीं कर सकते, रॉ प्रोफ़ाइल गेट full_name लाइन पकड़ता है, और हिंट्स आखिरकार सच बोलते हैं (.doc चला गया, gpt-5 और Anthropic 5-5 टियर्स)। टेस्ट 6905 → 7041।**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
