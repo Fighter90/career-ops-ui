@@ -114,7 +114,6 @@ async function checkScanSticky(page, tag) {
   const hit = await page.evaluate(() => {
     const th = document.querySelector('#scan-results thead th');
     const search = document.querySelector('.searchbar');
-    const topbar = document.querySelector('.topbar');
     if (!th || !search) return { error: 'missing elements' };
     const a = th.getBoundingClientRect(), b = search.getBoundingClientRect();
     const x1 = Math.max(a.x, b.x), y1 = Math.max(a.y, b.y);
@@ -193,7 +192,6 @@ async function checkAccentCrimson(page, sel, label, tag, idSuffix) {
     return { bg: s.backgroundColor, text: (el.textContent || '').trim().slice(0, 30) };
   }, sel);
   if (!info) { rec(idSuffix, `${label}: акцент кнопки`, 'crimson (hue ≈ 15, не синий)', `element ${sel} not found`, 'SKIP', ''); return; }
-  const c = await page.evaluate((bg) => window.__ux.rgb(bg), info.bg);
   const hue = await page.evaluate((bg) => window.__ux.hue(window.__ux.rgb(bg)), info.bg);
   const notBlue = hue === null ? false : !(hue >= 180 && hue <= 280);
   const reddish = hue === null ? false : (hue <= 40 || hue >= 330);
@@ -300,7 +298,6 @@ async function checkMobileDrawer(page, tag) {
   if (geo.funded) {
     const lines = state.fundedLineH ? Math.round(geo.funded.h / state.fundedLineH) : null;
     const notCut = geo.funded.right <= geo.innerWidth + 1;
-    const wraps = lines !== null ? lines >= 2 : null;
     rec('3c', 'Мобильный drawer 390: «Профинансированные компании» переносится, не обрезана',
       'right ≤ innerWidth и высота ≥ 2 строк (перенос)',
       `right=${geo.funded.right}/${geo.innerWidth}, h=${geo.funded.h}px, строк≈${lines}`,

@@ -18,7 +18,6 @@
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { BENIGN_CONSOLE } from './helpers/console-noise.mjs';
 import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
@@ -85,14 +84,6 @@ async function openScan() {
   await page.goto(baseUrl + '/#/scan');
   await page.waitForSelector('#scan-results table tbody tr', { timeout: 8000 });
   return page;
-}
-
-// rect(a) × rect(b) intersection, or null.
-function overlap(a, b) {
-  const x1 = Math.max(a.x, b.x), y1 = Math.max(a.y, b.y);
-  const x2 = Math.min(a.x + a.width, b.x + b.width), y2 = Math.min(a.y + a.height, b.y + b.height);
-  if (x2 <= x1 || y2 <= y1) return null;
-  return { x: (x1 + x2) / 2, y: (y1 + y2) / 2 };
 }
 
 test('scan sticky thead never paints over the topbar search bar', { skip: SKIP }, async () => {
