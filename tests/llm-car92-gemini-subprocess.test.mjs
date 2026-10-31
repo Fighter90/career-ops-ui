@@ -4,8 +4,8 @@
  *
  *   /api/evaluate (Gemini branch): non-zero exit was returned as HTTP 200 with
  *   no error, `...result` forwarded the raw stderr to the client, the timeout
- *   was 120 s while EVAL_TIMEOUT_MS is 300 s, no --lang was passed and
- *   recordUsage was never called.
+ *   was 120 s while EVAL_TIMEOUT_MS was 300 s (480 s since CAR-218), no --lang
+ *   was passed and recordUsage was never called.
  *   /api/auto-pipeline mode:'gemini': same lang/usage gaps (its exit-code and
  *   timeout handling was already right).
  *
@@ -106,9 +106,9 @@ async function post(path, body) {
   return { status: r.status, body: j, text };
 }
 
-test('CAR-92.2: the subprocess timeout is EVAL_TIMEOUT_MS (300 s), not 120 s', async () => {
+test('CAR-92.2: the subprocess timeout is EVAL_TIMEOUT_MS (480 s, CAR-218), not 120 s', async () => {
   const { GEMINI_EVAL_TIMEOUT_MS } = await import('../server/lib/routes/llm.mjs');
-  assert.equal(GEMINI_EVAL_TIMEOUT_MS, 300_000);
+  assert.equal(GEMINI_EVAL_TIMEOUT_MS, 480_000);
 });
 
 test('CAR-92.2: /api/evaluate passes --lang to the subprocess', async () => {
