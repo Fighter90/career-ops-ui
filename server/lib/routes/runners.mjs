@@ -22,6 +22,7 @@ import { PATHS, PROJECT_ROOT, path as projPath } from '../paths.mjs';
 import { runTrackedScript, streamNodeScript } from '../runner.mjs';
 import { withFileLock } from '../file-lock.mjs';
 import { sanitizePathName } from '../security.mjs';
+import { writeRateLimit } from '../rate-limit.mjs';
 import { parseJsonStdout, sanitizeDetail } from '../parent-relay.mjs';
 
 /** True if `s` carries a C0 control char or DEL — spawn throws on NUL. */
@@ -314,7 +315,10 @@ export function registerRunnerRoutes(app) {
   // non-reentrant mutex. Dry-run is read-only and takes no lock.
   const REPORT_LINKS = { script: 'fix-report-links.mjs', timeoutMs: 45_000 };
 
-  app.post('/api/runners/report-links', async (req, res) => {
+  // writeRateLimit (CodeQL #705) — the relay spawns a subprocess per call
+  // (apply rewrites data/applications.md), so a runaway client loop must
+  // hit the unconditional 60/min guard, not the parent's repair script.
+  app.post('/api/runners/report-links', writeRateLimit, async (req, res) => {
     const body = (req.body && typeof req.body === 'object') ? req.body : {};
     // Absent (undefined) means the default; an explicit null or any other
     // value is garbage and must be a 400, never a silent dry-run.
