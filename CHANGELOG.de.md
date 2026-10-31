@@ -25,6 +25,7 @@
 - **Das Anthropic-Standardmodell hat gewechselt** auf `claude-sonnet-5-5` (der Standard-Tier des Elternprojekts). Deploys, die auf den alten stillen Default (`claude-sonnet-4-6`) bauten, aktualisieren sich automatisch — `ANTHROPIC_MODEL` in `.env` pinnen, um auszusteigen.
 - Bewusst nicht getan: die beiden LOW-Review-Nits, absichtlich offen gelassen (der Inline-Select spiegelt nicht die Kanban-`movesReady`-Degradierung — der ehrliche Toast bei jedem Fehler ist das gewählte Verhalten; der `code: 'timeout'`-Zweig bleibt vom Fake-Writer-Vertrag abgedeckt, nicht von einem >30-s-Test). CAR-141 (Demo-Video) bleibt beim Owner.
 - help ×19 hat den Post-Release-Prosa-Durchgang (Density-Bullet raus, Renderer-Leak-Klasse gefixt) auf `main` bekommen, nachdem v1.263.0 erschienen war — dieses Release ist das erste Tag, das ihn trägt.
+- Auch in diesem Tag: die Basis des Evidence-Chips (Report-Parsers + Ansicht-Badges), der fix-report-links-Runner (`POST /api/runners/report-links`, Karte „Reparieren“ auf `#/health`) und die Batch-Kostenschätzung/-bestätigung mit Usage-Aufzeichnung — zwischen Branch-Schnitt und Tag auf main gelandet.
 
 Tests 6905 → 7041 (+136) · Playwright 176 (173 bestanden / 1 opt-in-Skip) · Coverage 98.5 % Zeilen / 90.1 % Branches · Registry unverändert: 123 sources = 118 EN + 5 RU · 118 adapters.
 

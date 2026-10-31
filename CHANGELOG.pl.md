@@ -33,6 +33,7 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 - **Domyślny model Anthropic zmienił się** na `claude-sonnet-5-5` (standardowy tier rodzica). Wdrożenia polegające na starym cichym domyśle (`claude-sonnet-4-6`) aktualizują się automatycznie — przypnij `ANTHROPIC_MODEL` w `.env`, żeby zostać przy poprzednim.
 - Świadomie nie zrobiono: dwa LOW-zastrzeżenia recenzji pozostawione otwarte celowo (inline select nie odwzorowuje degradacji `movesReady` kanbana — uczciwy toast przy każdej porażce to wybrane zachowanie; gałąź `code: 'timeout'` pozostaje pokryta kontraktem fake-writer, a nie testem >30 s). CAR-141 (wideo demo) pozostaje za właścicielem.
 - help ×19 dostały po-release'owy przegląd prozy (punkt gęstości usunięty, klasa przecieku renderera poprawiona) na `main` po wydaniu v1.263.0 — to wydanie to pierwszy tag, który go wozi.
+- Również w tym tagu: infrastruktura chipa dowodów (parsery raportów + odznaki widoku), runner fix-report-links (`POST /api/runners/report-links`, karta «Napraw» na `#/health`) oraz szacowanie/potwierdzanie kosztu batcha z zapisem usage — trafiły na main między cięciem gałęzi a tagiem.
 
 Tests 6905 → 7041 (+136) · Playwright 176 (173 pass / 1 opt-in skip) · pokrycie 98.5 % linii / 90.1 % gałęzi · rejestr bez zmian: 123 sources = 118 EN + 5 RU · 118 adapters.
 

@@ -32,6 +32,7 @@
 - **Anthropic 默认模型已变更**为 `claude-sonnet-5-5`（父项目的标准档位）。依赖旧静默默认（`claude-sonnet-4-6`）的部署会自动升级 —— 要退出请在 `.env` 中固定 `ANTHROPIC_MODEL`。
 - 刻意的未行动：设计上留白的两个 LOW 评审细节（inline 选择框不镜像看板 `movesReady` 降级 —— 每次失败都给出诚实的 toast 是选定的行为；`code: 'timeout'` 分支继续由 fake-writer 契约覆盖，而不是一个 >30 s 的测试）。CAR-141（演示视频）仍是所有者的事。
 - help ×19 在 v1.263.0 发布后于 `main` 上获得了发布后散文梳理（密度条目移除、渲染器泄漏类修复）—— 本版本是携带它的第一个标签。
+- 本标签还包含：证据置信度芯片基础（报告解析器 + 视图徽章）、fix-report-links 运行器（`POST /api/runners/report-links`，`#/health` 上的「修复」卡片）以及带用量记录的批处理成本估算/确认——在分支切出与打标签之间进入 main。
 
 Tests 6905 → 7041 (+136) · Playwright 176（173 通过 / 1 个 opt-in 跳过）· 覆盖率 98.5 % 行 / 90.1 % 分支 · 注册表不变：123 sources = 118 EN + 5 RU · 118 adapters。
 

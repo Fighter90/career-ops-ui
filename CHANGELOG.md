@@ -29,6 +29,7 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 - **The Anthropic default model changed** to `claude-sonnet-5-5` (the parent's standard tier). Deploys that relied on the old silent default (`claude-sonnet-4-6`) upgrade automatically — pin `ANTHROPIC_MODEL` in `.env` to opt out.
 - Deliberately not done: the two LOW review nits left open by design (inline select does not mirror the kanban `movesReady` degradation — honest toast on every failure is the chosen behaviour; the `code: 'timeout'` branch stays covered by the fake-writer contract, not a >30 s test). CAR-141 (demo video) remains the owner's.
 - help ×19 got the post-release prose pass (density bullet out, renderer-leak class fixed) on `main` after v1.263.0 shipped — this release is the first tag carrying it.
+- Also in this tag: the evidence-confidence chip plumbing (report parsers + view badges), the fix-report-links runner (`POST /api/runners/report-links`, Repair card on `#/health`), and the batch cost estimate/confirm with usage recording — landed on main between the branch cut and the tag.
 
 Tests 6905 → 7041 (+136) · Playwright 176 (173 pass / 1 opt-in skip) · coverage 98.5 % line / 90.1 % branch · registry unchanged: 123 sources = 118 EN + 5 RU · 118 adapters.
 

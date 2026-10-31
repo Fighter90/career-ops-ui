@@ -31,6 +31,7 @@
 - **Anthropic 預設模型已變更**為 `claude-sonnet-5-5`（父專案的標準層級）。依賴舊的沉默預設（`claude-sonnet-4-6`）的部署會自動升級 — 在 `.env` 釘住 `ANTHROPIC_MODEL` 即可退出。
 - 刻意不做：兩個 LOW 級審查小瑕疵刻意留白（行內下拉不鏡像 kanban 的 `movesReady` 降級 — 每次失敗都誠實彈 toast 是選定的行為；`code: 'timeout'` 分支仍由 fake-writer 契約覆蓋，而非 >30 s 的測試）。CAR-141（示範影片）仍屬負責人。
 - help ×19 在 v1.263.0 出貨後於 `main` 上獲得了發行後文字巡檢（移除密度項目、修復渲染器洩漏類）— 本版本是第一個攜帶它的標籤。
+- 本標籤還包含：證據信心晶片基礎（報告解析器 + 檢視徽章）、fix-report-links 執行器（`POST /api/runners/report-links`，`#/health` 上的「修復」卡片）以及含用量記錄的批次成本估算/確認——在分支切出與打標籤之間進入 main。
 
 Tests 6905 → 7041 (+136) · Playwright 176（173 通過 / 1 自願略過） · 覆蓋率 98.5 % 行 / 90.1 % 分支 · 註冊表未變：123 sources = 118 EN + 5 RU · 118 adapters。
 

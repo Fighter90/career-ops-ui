@@ -32,6 +32,7 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 - **Anthropic-standardmodellen er skiftet** til `claude-sonnet-5-5` (forælderens standard-tier). Deploys, der stolede på den gamle stille standard (`claude-sonnet-4-6`), opgraderer automatisk — pin `ANTHROPIC_MODEL` i `.env` for at fravælge.
 - Bevidst ikke gjort: de to LOW-review-prikker, der med vilje er ladt åbne (inline-select spejler ikke kanbanens `movesReady`-nedgradering — ærlig toast ved enhver fejl er den valgte adfærd; `code: 'timeout'`-grenen forbliver dækket af fake-writer-kontrakten, ikke af en >30 s-test). CAR-141 (demovideo) forbliver ejerens.
 - help ×19 fik efter udgivelsen en prosa-omgang (density-bullet ud, renderer-leak-klassen fixet) på `main`, efter at v1.263.0 blev udgivet — denne udgivelse er det første tag, der bærer den.
+- Også i dette tag: evidence-chip-plumbing (rapport-parsers + visnings-badges), fix-report-links-runneren (`POST /api/runners/report-links`, kortet «Reparer» på `#/health`) og batchomkostningsestimat/-bekræftelse med usage-optagelse — landet på main mellem branch-klippet og tagget.
 
 Tests 6905 → 7041 (+136) · Playwright 176 (173 bestået / 1 opt-in skip) · dækning 98.5 % linje / 90.1 % gren · registry uændret: 123 sources = 118 EN + 5 RU · 118 adapters.
 

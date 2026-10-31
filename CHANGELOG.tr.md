@@ -25,6 +25,7 @@
 - **Anthropic varsayılan modeli değişti** → `claude-sonnet-5-5` (üst projenin standart katmanı). Eski sessiz varsayılana (`claude-sonnet-4-6`) dayanan dağıtımlar otomatik yükseliyor — vazgeçmek için `.env`'de `ANTHROPIC_MODEL`'i sabitleyin.
 - Bilinçli olarak yapılmadı: tasarım gereği açık bırakılan iki LOW inceleme kusuru (satır-içi seçici kanban `movesReady` bozulmasını yansıtmıyor — her başarısızlıkta dürüst toast seçilen davranış; `code: 'timeout'` dalı >30 s'lik bir testle değil, sahte-yazıcı sözleşmesiyle kapsanıyor). CAR-141 (tanıtım videosu) sahibin kalıyor.
 - yardım ×19, v1.263.0 gönderildikten sonra `main` üzerinde yayın-sonrası düzyazı geçişini aldı (yoğunluk mermisi çıktı, renderer-sızıntı sınıfı düzeltildi) — bu sürüm onu taşıyan ilk etiket.
+- Bu etikette ayrıca: kanıt çipi altyapısı (rapor parser'ları + görünüm rozetleri), fix-report-links runner'ı (`POST /api/runners/report-links`, `#/health` üzerinde «Onar» kartı) ve kullanım kaydıyla batch maliyet tahmini/onayı — dal kesimi ile etiket arasında main'e geldi.
 
 Tests 6905 → 7041 (+136) · Playwright 176 (173 geçti / 1 opsiyonel atlandı) · kapsam 98.5 % satır / 90.1 % dal · registry değişmedi: 123 sources = 118 EN + 5 RU · 118 adapters.
 

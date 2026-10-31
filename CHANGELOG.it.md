@@ -25,6 +25,7 @@
 - **Il modello predefinito di Anthropic è cambiato** in `claude-sonnet-5-5` (il tier standard del padre). I deploy che si affidavano al vecchio default silenzioso (`claude-sonnet-4-6`) si aggiornano automaticamente — fissare `ANTHROPIC_MODEL` in `.env` per rinunciare.
 - Deliberatamente non fatto: le due criticità LOW lasciate aperte di proposito (il select inline non rispecchia la degradazione `movesReady` del kanban — il toast onesto a ogni fallimento è il comportamento scelto; il ramo `code: 'timeout'` resta coperto dal contratto del fake-writer, non da un test >30 s). CAR-141 (video dimostrativo) resta al proprietario.
 - help ×19 ha ricevuto la passata di prosa post-release (bullet della densità fuori, classe di leak del renderer sistemata) su `main` dopo l'uscita della v1.263.0 — questa release è il primo tag che la porta.
+- Anche in questo tag: la base del chip di evidenza (parser dei report + badge della vista), il runner fix-report-links (`POST /api/runners/report-links`, card «Ripara» su `#/health`) e la stima/conferma del costo del batch con registrazione usage — arrivati su main tra il taglio del branch e il tag.
 
 Tests 6905 → 7041 (+136) · Playwright 176 (173 superati / 1 skip opt-in) · copertura 98.5 % righe / 90.1 % rami · registro invariato: 123 sources = 118 EN + 5 RU · 118 adapters.
 

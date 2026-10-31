@@ -29,6 +29,7 @@ Bản dịch: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 - **Mô-hình-mặc-định-của-Anthropic đã-thay-đổi** thành `claude-sonnet-5-5` (tier-chuẩn-của-dự-án-gốc). Các-bản-deploy dựa-vào-mặc-định-ngầm-cũ (`claude-sonnet-4-6`) tự-động-nâng-cấp — ghim `ANTHROPIC_MODEL` trong `.env` để-từ-chối.
 - Không-hành-động-cố-ý: hai-chấm-rà-soát-mức-LOW được-cố-để-ngỏ (select-nhúng không-đối-xứng-với-sự-suy-giảm-`movesReady`-của-kanban — toast-thành-thực-khi-mọi-lần-thất-bại là-hành-vi-được-chọn; nhánh-`code: 'timeout'` vẫn-được-phủ-bởi-hợp-đồng-fake-writer, không-phải-bài-kiểm->30 s). CAR-141 (video demo) vẫn-thuộc-về-chủ.
 - help ×19 nhận-lượt-chỉnh-văn-bản-sau-phát-hành (bỏ-gạch-dòng-mật-độ, sửa-lớp-lệch-renderer) trên `main` sau-khi-v1.263.0 đã-ra-mắt — đây-là-tag-đầu-tiên mang nó.
+- Cũng trong tag này: nền tảng chip bằng chứng (bộ phân tích báo cáo + huy hiệu xem), runner fix-report-links (`POST /api/runners/report-links`, thẻ «Sửa chữa» trên `#/health`) và ước tính/xác nhận chi phí batch kèm ghi nhận usage — vào main giữa lúc cắt nhánh và lúc đánh tag.
 
 Tests 6905 → 7041 (+136) · Playwright 176 (173 đạt / 1 bỏ-qua-tùy-chọn) · coverage 98.5 % line / 90.1 % branch · registry không-thay-đổi: 123 sources = 118 EN + 5 RU · 118 adapters.
 

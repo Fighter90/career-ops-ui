@@ -35,6 +35,7 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 - **Le modèle par défaut d'Anthropic a changé** pour `claude-sonnet-5-5` (le palier standard du parent). Les déploiements qui comptaient sur l'ancien défaut silencieux (`claude-sonnet-4-6`) basculent automatiquement — épinglez `ANTHROPIC_MODEL` dans le `.env` pour y échapper.
 - Délibérément non fait : les deux détails LOW de la revue restent ouverts à dessein (le select en place ne reflète pas la dégradation `movesReady` du kanban — le toast honnête à chaque échec est le comportement retenu ; la branche `code: 'timeout'` reste couverte par le contrat du fake-writer, pas par un test de >30 s). CAR-141 (vidéo de démo) reste au propriétaire.
 - help ×19 a reçu la passe de prose post-livraison (puce de densité retirée, classe de fuite du moteur de rendu corrigée) sur `main` après la sortie de la v1.263.0 — cette version est la première étiquette qui l'embarque.
+- Également dans ce tag : la base du chip de preuve (parsers de rapports + badges de vue), le runner fix-report-links (`POST /api/runners/report-links`, carte « Réparer » sur `#/health`) et l'estimation/confirmation du coût du lot avec enregistrement d'usage — arrivés sur main entre la coupe de branche et le tag.
 
 Tests 6905 → 7041 (+136) · Playwright 176 (173 pass / 1 opt-in skip) · couverture 98.5 % lignes / 90.1 % branches · registre inchangé : 123 sources = 118 EN + 5 RU · 118 adapters.
 
