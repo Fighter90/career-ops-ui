@@ -166,7 +166,7 @@
   "faq.q6": "Verschickt es Bewerbungen automatisch?",
   "faq.a6": "Nein — aus Prinzip. Es entwirft, füllt aus und bereitet vor; du prüfst und drückst auf Senden. Nichts wird jemals in deinem Namen abgeschickt.",
   "faq.q7": "Welche Jobbörsen kann es scannen?",
-  "faq.a7": "~{adapters} Adapter: Greenhouse, Ashby, Lever, Workable, SmartRecruiters, Workday, Recruitee, Teamtailor, Remote-Work-Börsen und russische Quellen (hh.ru, Habr Career, GetMatch und mehr). Neue Börsen sind einfache Drop-in-Adapterdateien.",
+  "faq.a7": "{sources} Job-Board-Quellen: {sourcesEn} internationale Börsen (Greenhouse, Ashby, Lever, Workable, SmartRecruiters, Workday, Recruitee, Teamtailor, Remote-Work-Aggregatoren und mehr) plus {sourcesRu} russische Quellen (hh.ru, Habr Career, GetMatch, GeekJob, Trudvsem). Neue Börsen sind einfache Drop-in-Adapterdateien.",
   "faq.q8": "Welche Sprachen werden unterstützt?",
   "faq.a8": "{n}: Englisch, Spanisch, Französisch, Portugiesisch (BR), Koreanisch, Japanisch, Russisch, Chinesisch (vereinfacht und traditionell), Polnisch, Ukrainisch, Dänisch, Arabisch (RTL), Deutsch, Italienisch, Türkisch, Hindi, Tamil und Vietnamesisch — inklusive vollständigem Handbuch.",
   "faq.q9": "Kann ich beitragen?",
