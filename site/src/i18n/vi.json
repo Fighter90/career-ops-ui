@@ -163,7 +163,7 @@
   "faq.q6": "Nó có tự nộp đơn không?",
   "faq.a6": "Không — theo nguyên tắc. Nó soạn, điền và chuẩn bị; bạn xem lại và bấm gửi. Không gì từng được nộp thay bạn.",
   "faq.q7": "Nó quét được những bảng việc làm nào?",
-  "faq.a7": "~{adapters} adapter: Greenhouse, Ashby, Lever, Workable, SmartRecruiters, Workday, Recruitee, Teamtailor, các bảng remote và các nguồn Nga (hh.ru, Habr Career, GetMatch và hơn nữa). Bảng mới là các tệp adapter thả-vào-là-chạy.",
+  "faq.a7": "{sources} nguồn bảng việc làm: {sourcesEn} bảng quốc tế (Greenhouse, Ashby, Lever, Workable, SmartRecruiters, Workday, Recruitee, Teamtailor, các aggregator remote-work và hơn nữa) cộng với {sourcesRu} nguồn Nga (hh.ru, Habr Career, GetMatch, GeekJob, Trudvsem). Bảng mới là các tệp adapter thả-vào-là-chạy.",
   "faq.q8": "Nó hỗ trợ những ngôn ngữ nào?",
   "faq.a8": "{n}: English, Español, Français, Português (BR), 한국어, 日本語, Русский, 简体/繁體中文, Polski, Українська, Dansk, العربية (RTL), Deutsch, Italiano, Türkçe, हिन्दी, தமிழ் và Tiếng Việt — kể cả toàn bộ hướng dẫn người dùng.",
   "faq.q9": "Tôi có thể đóng góp không?",

@@ -6,6 +6,22 @@ Bản dịch: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.264.1] — 2026-10-31
+
+### Đã sửa
+
+- **Các-viên-pill-viền-sidebar cắt-bớt-nhãn-bản-địa-hóa-dài một-cách-duyên-dáng (CAR-203)** — span-nhãn-nav giờ là một công-dân-flex đúng-đắn (`min-width: 0` + `overflow: hidden` + `text-overflow: ellipsis` + `nowrap` trong `v2-nav.css`), và `syncLabelTitles()` trong `nav-v2.js` phản-chiếu nhãn-**đã-bản-địa-hóa** vào tooltip qua cùng-một-khóa `data-i18n` (không-thêm-khóa-i18n-mới nào) — chữ «Профинансированные компании» dài đọc-được lại khi hover thay-vì bị cắt-cứng bởi `overflow: hidden` của hàng. Đích-chạm-44 px, cách-vẽ-đang-chọn và đối-xứng-RTL không bị đụng-đến; ghim đỏ-trước trong `tests/nav-v2.test.mjs`.
+- **Một-trần-đánh-giá-480 s cho-mọi-locale (CAR-218)** — remote-QA v1.264.0 bắt-được các lượt-đánh-giá `502 · 300 s · 0 ch` tạm-thời trên `es` và `zh-CN` (lượt-chạy-lại-điểm đã đạt, nhưng bức-tường là thật). `EVAL_TIMEOUT_MS` giờ là `480_000` và `evalTimeoutMs(lang)` trả-về nó vô-điều-kiện — `GEMINI_EVAL_TIMEOUT_MS` và auto-pipeline kế-thừa. Ngân-sách-**token** nhận-thức-locale từ CAR-174 (16384 / 32768) vẫn là lần-tách-theo-locale duy-nhất.
+
+### Đã thay đổi
+
+- **FAQ-của-cvstart.org mang số-đếm-nguồn chính-xác (CAR-217)** — `{sources} job-board sources: {sourcesEn} international boards plus {sourcesRu} Russian ones` được-thay-bằng-giá-trị từ `facts.json` — thứ được-sinh ra từ registry sống (123 = 118 EN + 5 RU) — nên các-con-số không-thể-bao-giờ trôi; các-locale-vẫn-còn cách-diễn-dẫn `~{adapters}` cũ tiếp-tục làm-tròn qua `adaptersRounded`. Các-nâng-cấp-văn-bản-EN đi-kèm-theo (`meta.helpDesc`, `helpTeaser.c1.desc`, `faq.a2` nêu menu-lệnh, pipeline-gộp-nhóm-có-undo và tracker-kanban).
+
+### Ghi chú
+
+- Không-hành-động-cố-ý: các-nâng-cấp-văn-bản-i18n-của-site (`meta.helpDesc` / `helpTeaser.c1.desc` / `faq.a2`) giữ-chỉ-EN trong-bản-phát-hành-này — các-locale-khác giữ cách-diễn-dẫn đúng-nhưng-quá-khái-quát cho-tới đợt-docs-kế-tiếp (`faq.a7` của-họ nhận các-placeholder-đếm-chính-xác ở-nơi-được-dịch). CAR-141 (video demo) vẫn-thuộc-về-chủ; nhánh-`car136/m141` bị-thay-thế đã-bị-xóa với-các-ý-tưởng được-ghi-lại-trên-nhiệm-vụ-Linear (khôi-phục-được-qua-tag-`archive/car136-m141`).
+- Tests 7041 → 7075 (ghim CAR-203 + viết-lại-ghim CAR-218); Playwright 176; registry không-thay-đổi 123 = 118 EN + 5 RU · 118 adapters.
+
 ## [1.264.0] — 2026-10-31
 
 ### Thêm mới
