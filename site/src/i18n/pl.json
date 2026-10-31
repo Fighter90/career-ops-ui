@@ -166,7 +166,7 @@
   "faq.q6": "Czy wysyła aplikacje automatycznie?",
   "faq.a6": "Nie — z zasady. Przygotowuje szkice i wypełnia formularze; Ty sprawdzasz i klikasz wyślij. Nic nigdy nie jest wysyłane w Twoim imieniu.",
   "faq.q7": "Jakie portale z ofertami potrafi skanować?",
-  "faq.a7": "~{adapters} adapterów: Greenhouse, Ashby, Lever, Workable, SmartRecruiters, Workday, Recruitee, Teamtailor, portale pracy zdalnej i rosyjskie źródła (hh.ru, Habr Career, GetMatch i inne). Nowe portale to zwykłe pliki adapterów typu drop-in.",
+  "faq.a7": "{sources} źródeł portali z ofertami pracy: {sourcesEn} międzynarodowych (Greenhouse, Ashby, Lever, Workable, SmartRecruiters, Workday, Recruitee, Teamtailor, agregatory pracy zdalnej i inne) plus {sourcesRu} rosyjskich (hh.ru, Habr Career, GetMatch, GeekJob, Trudvsem). Nowe portale to zwykłe pliki adapterów typu drop-in.",
   "faq.q8": "Jakie języki obsługuje?",
   "faq.a8": "{n}: angielski, hiszpański, francuski, portugalski (BR), koreański, japoński, rosyjski, chiński (uproszczony i tradycyjny), polski, ukraiński, duński, arabski (RTL), niemiecki, włoski, turecki, hindi, tamilski i wietnamski — łącznie z pełnym podręcznikiem.",
   "faq.q9": "Czy mogę współtworzyć projekt?",
