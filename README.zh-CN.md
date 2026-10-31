@@ -17,9 +17,11 @@ _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.264.0** — **发布后加固浪潮：每一行跟踪器状态都可就地编辑（父项目的规范 set-status.mjs 在 applications.md 锁下），服务器警告（截断、语言漂移）在全部六个 AI 页面上以条带显示，Trudvsem 扫描源在空页下幸存并按记录偏移行走，habr 标题无法复活标记，raw 档案门守住 full_name 行，提示终于说实话（.doc 消失了，gpt-5 与 Anthropic 5-5 档位）。Tests 6905 → 7041.**
+> **🆕 最新版本 — v1.264.1** — **两项智能体构建的修复：侧边栏胶囊优雅截断长的本地化标签（省略号 + 本地化的工具提示 —— «Профинансированные компании» 不再被硬裁），以及每个语言统一一个 480 s 评估上限（es/zh-CN 不再有瞬时的 300 s 截断）；cvstart.org FAQ 现在携带由注册表派生的精确来源计数（123 = 118 个国际平台 + 5 个俄罗斯来源）。Tests 7041 → 7075.**
+
+
 >
-> **上一版本 — v1.263.0** — **所有者 UX 批次：动效打磨层（触屏安全的 hover、仅可交互卡片的抬升、模态/弹层/toast/主题动画 —— reduced-motion 安全）、强调色随 logo 从蓝 → 深红翻转、WCAG 对比度通过（docs-fab 6.4:1、toast、表单边框 3:1）、每个控件获得编程名称，以及十余处布局修复 —— scan 表格表头不再盖住搜索、薪资过滤器恢复常规尺寸、docs 页面绝不再溢出、移动端抽屉获得了可见的关闭按钮。测试 6869 → 6905。**
+> **上一版本 — v1.264.0** — **发布后加固浪潮：每一行跟踪器状态都可就地编辑（父项目的规范 set-status.mjs 在 applications.md 锁下），服务器警告（截断、语言漂移）在全部六个 AI 页面上以条带显示，Trudvsem 扫描源在空页下幸存并按记录偏移行走，habr 标题无法复活标记，raw 档案门守住 full_name 行，提示终于说实话（.doc 消失了，gpt-5 与 Anthropic 5-5 档位）。Tests 6905 → 7041.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
