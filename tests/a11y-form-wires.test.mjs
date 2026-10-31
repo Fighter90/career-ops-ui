@@ -212,7 +212,7 @@ test('a11y: every c(input/textarea) literal carries a programmatic name (CAR-209
         const pre = src.slice(Math.max(0, m.index - 120), m.index);
         const varMatch = pre.match(/\b(?:const|let|var)\s+([A-Za-z_$][\w$]*)\s*=\s*$/);
         // (?<![\w.$]) keeps 'preview' from matching the i18n key 'bug.preview'.
-        const varNamed = varMatch && new RegExp(`(?<![\\w.$])${varMatch[1].replace(/\$/g, '\\$')}\\b`).test(labelSpanText);
+        const varNamed = varMatch && new RegExp(`(?<![\\w.$])${varMatch[1].replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}\\b`).test(labelSpanText);
         const named =
           /aria-label|htmlFor/.test(optsText) ||
           labelSpans.some(([a, b]) => m.index >= a && m.index <= b) ||
