@@ -1,6 +1,8 @@
 # Decision bundle — 34 remote-ветки «landed & evolved» (2026-10-31)
 
 **Для владельца: один проход, две ветки не трогать, остальное — одна команда.**
+
+**Executed: 2026-10-31 — 32 ветки удалены по этому списку (SHAs восстановимы из этого документа — приложение с tip-SHA в конце).**
 Метод: для каждой ветки сняты `git log origin/main..<branch>` (unmerged),
 `git cherry origin/main <branch>` (уникальные патчи — после squash-мержей он
 врёт в сторону «+», поэтому решающий критерий — grep маркеров фичи в дереве
@@ -141,3 +143,49 @@ views + mode-page kit ×8)».
    (`car136/m138`): возможен доезд #578/#602-подобных фиксов.
 4. Проверка выполнена только `git`-чтением; ни одна ветка этим документом
    не удалялась.
+
+## Executed — SHA-запись удалённых веток (2026-10-31)
+
+Все 32 ветки из DELETE (safe) удалены `git push origin --delete` 2026-10-31
+(41 heads → 9). Tip-SHA сняты `git ls-remote origin` непосредственно перед
+удалением. Восстановление: `git fetch origin <sha>` (GitHub отдаёт по SHA)
+и `git branch <имя> <sha>`, либо `git push origin <sha>:refs/heads/<имя>`.
+
+| Ветка | Tip SHA |
+|---|---|
+| `car136/m141` | `c476eace4f57e7633b46bebcbcc10b79e7d7e145` |
+| `car136/t1` | `905694a454867767b6912bc978bf5047bb869866` |
+| `car136/t3a` | `2433c93b91cb3ab97c7f9e2609842cfa47c75582` |
+| `car136/t3b` | `5e3c4ab093d20f282f0448fd6c347543274fcb55` |
+| `car136/t3c` | `b6a8106bdcd53ef01c99c5fd94c561d0dd4ea3e7` |
+| `car136/t3d` | `6315609cc962c6d0d1be7a5c89d501ffb64555d6` |
+| `car136/t3e` | `8ad519a89d1af72149c6641bc0de52f67f65a0d4` |
+| `car136/t3f` | `886189f9f052a06a21b734cd9daede64f81a40af` |
+| `car136/t4` | `1a2ea99b2a2d230a94fae826a4f198d7cbcb2802` |
+| `car137/empty` | `43c4606b2a64166093ca0ef3f9ba9f4b6ccf046c` |
+| `car137/err` | `de76d94b67d23eb57d56297d220c381fc7c5913f` |
+| `car137/hints` | `2f1244828569fe1135815497d39101f6e0d704a0` |
+| `changelog/1.263.0-a` | `833fc8923ea5eb838be39a65fa22202f34213185` |
+| `changelog/1.263.0-b` | `5de93650dc5181263f7e23e88241e12044a9626b` |
+| `changelog/1.263.0-c` | `d5cc810a9ac93d3f4dde1162bb5d5b819d7d2ca1` |
+| `changelog/1.263.0-d` | `0d0c432edfda5ffa32f636a6127313c16f647634` |
+| `changelog/1.263.0-e` | `6934fd86f23988480dd72f3113458251e5364f44` |
+| `changelog/1.263.0-f` | `143333f3ca6e3d5bc0b29498e54dfd1e1347dc25` |
+| `docs/progress-1262` | `de292fb7d89f6495402d744aee3d510f24b38247` |
+| `fanout/1.262.0-a` | `30e4b74eaace48ccdda3e23e40d07678a89fd434` |
+| `fanout/1.262.0-b` | `8e43e767dcb8f3d0d8789a718b106be9803a9ce2` |
+| `fanout/1.262.0-c` | `7035c9674c9d97bdde0ae4a8d225d07f333c227c` |
+| `feat/cv-voice-check` | `141f19027e58ad79951dfdc9f3242654bd20bcba` |
+| `feat/deel-provider` | `e9a458b2d4ee0d077c69bdf9375263de23389d86` |
+| `feat/design-v3-active` | `36eedc3d6c4cb3c11d38009c116d50f157e44a71` |
+| `feat/design-v3-phase3` | `34827ea15de040b31c1ce09ec7a55f6d3161a667` |
+| `feat/posting-guard-relay` | `a80ab40aeb8933299078df48a72d26acf838f80a` |
+| `feat/tracker-csv-import` | `00b0b84c95a912bb496be41c4d1af38e8e26ef1d` |
+| `fix/liveness-apply-patterns` | `8818c59ce7565c192e73b3331e879ecca0982b8c` |
+| `fix/liveness-apply-patterns-2` | `d707db5e18d8c15ddc4f04c020fe0dbd6b5e30e0` |
+| `fix/minimax-flash-default` | `e803014d12e1db5d4d5d531eab6be863b8a7dd8f` |
+| `sweep/docs-drift` | `2f3f8a8315b4bae205cd913908c8a0ec3140067c` |
+
+Не тронуты: `main`, `car136/m138` (OWNER REVIEW, `12f15b14`),
+`changelog/1.264.0-a…f`, `spec/1.264.0`; `release/1.264.0-integration` уже
+удалена релизным поездом v1.264.0 (#610) до этого прохода.
