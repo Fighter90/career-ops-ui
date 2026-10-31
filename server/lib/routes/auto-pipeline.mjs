@@ -705,7 +705,7 @@ export function registerAutoPipelineRoutes(app) {
         try {
           // CAR-92 (round 2, review finding 3): `signal` wires the route's
           // disconnect controller into the runner's kill plumbing — without
-          // it a hung-up client still burned up to 300 s of Gemini spend.
+          // it a hung-up client still burned up to 480 s of Gemini spend.
           r = await runNodeScript('gemini-eval.mjs', geminiEvalArgs(tmp, { lang }), { timeoutMs: evalTimeoutMs(lang), signal: ctrl.signal });
         } finally {
           try { unlinkSync(tmp); } catch { /* already gone */ }

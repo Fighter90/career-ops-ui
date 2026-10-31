@@ -39,24 +39,25 @@ import { languageOk } from '../../../scripts/remote-qa/lang-check.mjs';
 // CJK locales (ko / zh-TW / ja, 10–13k characters): the summary at the end was
 // cut off and read as "missing SCORE_SUMMARY" (live regression, v1.239.3).
 export const EVAL_MAX_TOKENS = 16384;
-// A full A–G report with a ~190 KB context took 88–136 s on prod and one
-// locale passed 180 s (the provider default) — 2026-10-07 QA.
-export const EVAL_TIMEOUT_MS = 300_000;
-// CAR-147 — the evaluate ceiling is locale-aware. Tamil/Hindi are not slower
-// on input (the prompt ≈ EN and the context prefix is prompt-cached): they are
-// output-token-dense — Indic scripts tokenize at several tokens per syllable —
-// so the same buffered 16384-token A–G report sits at/past the 300 s wall
-// (ta on prod: HTTP 502 after exactly 300 s, empty report). EN and unknown
-// locales keep EVAL_TIMEOUT_MS; token-dense locales get 480 s. Pure function
-// of the locale string; GEMINI_EVAL_TIMEOUT_MS below stays the EN baseline.
-const EVAL_TIMEOUT_TOKEN_DENSE_MS = 480_000;
+// CAR-147 (300 s base, 2026-10-26) → CAR-218 (480 s for EVERY locale, 2026-10-31).
+// CAR-147 made the ceiling locale-aware after ta hit `502 · 300 s · 0 ch` on
+// prod (Indic scripts tokenize at several tokens per syllable, so the same
+// buffered 16384-token A–G report sits at/past the 300 s wall). Remote-QA on
+// v1.264.0 then caught transient `502 · 300 s · 0 ch` runs on es and zh-CN —
+// locales that were never token-dense — so the split folded into ONE base
+// ceiling: 480 s wall-clock for every locale. The locale split survives only
+// in the output-token budget below (evalMaxTokens, CAR-174). Pure function of
+// the locale string; GEMINI_EVAL_TIMEOUT_MS below inherits this value.
+export const EVAL_TIMEOUT_MS = 480_000;
 const TOKEN_DENSE_EVAL_LOCALES = new Set(['ta', 'hi', 'it', 'pl', 'ja']);
 export function evalTimeoutMs(lang) {
-  const base = String(lang || 'en').trim().toLowerCase().split('-')[0];
-  return TOKEN_DENSE_EVAL_LOCALES.has(base) ? EVAL_TIMEOUT_TOKEN_DENSE_MS : EVAL_TIMEOUT_MS;
+  // CAR-218 — one ceiling for every locale; `lang` stays in the signature
+  // (every call site threads it; tests pin the function shape).
+  return EVAL_TIMEOUT_MS;
 }
-// CAR-174 — the output-token ceiling is locale-aware for the same reason the
-// wall-clock above is (remote-QA v1.261.1: a ta evaluation ran 268 s and came
+// CAR-174 — the output-token ceiling is locale-aware (the wall-clock above
+// was split the same way under CAR-147; since CAR-218 only the budget splits).
+// Remote-QA v1.261.1: a ta evaluation ran 268 s and came
 // back 32 032 characters cut at the 16384 ceiling — Block B–G and the
 // SCORE_SUMMARY missing; ta volume history 11k → 17k → 32k chars). CAR-147
 // lifted the clock; this lifts the budget the ta run actually hit. EN and
@@ -114,9 +115,10 @@ function unlinkQuiet(file) {
 //   · `--lang <locale>` FIRST — the script skips unknown `--` flags but would
 //     glue the bare VALUE onto the positional JD text; `--file` (later)
 //     replaces the text, so an unknown `--lang` stays harmless either way.
-//   · the locale-aware evalTimeoutMs(lang) ceiling (300 s; 480 s for the
-//     token-dense ta/hi, CAR-147 — a real EN evaluation ran 136 s; the old
-//     120 s evaluate-side timeout killed live runs).
+//   · the evalTimeoutMs(lang) ceiling — 480 s for every locale since CAR-218
+//     (CAR-147 made it locale-aware — a real EN evaluation ran 136 s and the
+//     old 120 s evaluate-side timeout killed live runs — before es/zh-CN
+//     transients folded the split into one base).
 //   · a non-zero exit is the CALLER's failure path; stderr stays on the
 //     server (it can echo provider errors) and never reaches the client.
 //   · usage is parsed from stdout best-effort (parseSubprocessUsage) and
@@ -222,7 +224,7 @@ export function registerLlmRoutes(app) {
     // the CAR-92 gemini-eval.mjs subprocess (NOT a runGemini call), so it is
     // intercepted before the cascade runs; the Anthropic + tail branches then
     // go through runActiveProvider with a client-disconnect abort signal —
-    // a hung-up browser no longer burns the rest of a 300 s generation.
+    // a hung-up browser no longer burns the rest of a 480 s generation.
     const chosen = resolveProvider();
 
     if (chosen && chosen.mode === 'gemini') {
@@ -231,7 +233,7 @@ export function registerLlmRoutes(app) {
       // bundleProjectContext needed here. --no-save: the script otherwise
       // writes its own report, tracker row and merge — side effects the user
       // asked for only with `save`. The temp JD file is always removed.
-      // CAR-92: --lang, the 300 s timeout, a bounded error on a non-zero
+      // CAR-92: --lang, the 480 s timeout, a bounded error on a non-zero
       // exit (raw stderr stays server-side) and best-effort usage recording.
       const tmpFile = projPath('output', `web-jd-${Date.now()}.txt`);
       mkdirSync(PATHS.outputDir, { recursive: true });
