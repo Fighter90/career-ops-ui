@@ -166,7 +166,7 @@
   "faq.q6": "¿Envía candidaturas automáticamente?",
   "faq.a6": "No — por principio. Redacta, rellena y prepara; tú revisas y pulsas enviar. Nunca se envía nada en tu nombre.",
   "faq.q7": "¿Qué portales de empleo puede escanear?",
-  "faq.a7": "~{adapters} adaptadores: Greenhouse, Ashby, Lever, Workable, SmartRecruiters, Workday, Recruitee, Teamtailor, portales de trabajo remoto y fuentes rusas (hh.ru, Habr Career, GetMatch y más). Los portales nuevos son archivos adaptadores drop-in.",
+  "faq.a7": "{sources} fuentes de portales de empleo: {sourcesEn} tableros internacionales (Greenhouse, Ashby, Lever, Workable, SmartRecruiters, Workday, Recruitee, Teamtailor, agregadores de trabajo remoto y más) más {sourcesRu} rusas (hh.ru, Habr Career, GetMatch, GeekJob, Trudvsem). Los portales nuevos son archivos adaptadores drop-in.",
   "faq.q8": "¿Qué idiomas soporta?",
   "faq.a8": "{n}: inglés, español, francés, portugués (BR), coreano, japonés, ruso, chino (simplificado y tradicional), polaco, ucraniano, danés, árabe (RTL), alemán, italiano, turco, hindi, tamil y vietnamita — incluida la guía de usuario completa.",
   "faq.q9": "¿Puedo contribuir?",

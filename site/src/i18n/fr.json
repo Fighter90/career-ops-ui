@@ -166,7 +166,7 @@
   "faq.q6": "Envoie-t-il les candidatures automatiquement ?",
   "faq.a6": "Non — par principe. Il rédige, remplit et prépare ; vous relisez et appuyez sur envoyer. Rien n'est jamais soumis à votre place.",
   "faq.q7": "Quels job boards peut-il scanner ?",
-  "faq.a7": "~{adapters} adaptateurs : Greenhouse, Ashby, Lever, Workable, SmartRecruiters, Workday, Recruitee, Teamtailor, des boards de télétravail et des sources russes (hh.ru, Habr Career, GetMatch et plus). Un nouveau board, c'est un simple fichier adaptateur à déposer.",
+  "faq.a7": "{sources} sources de boards d'offres : {sourcesEn} boards internationaux (Greenhouse, Ashby, Lever, Workable, SmartRecruiters, Workday, Recruitee, Teamtailor, des agrégateurs de télétravail et plus) plus {sourcesRu} sources russes (hh.ru, Habr Career, GetMatch, GeekJob, Trudvsem). Un nouveau board, c'est un simple fichier adaptateur à déposer.",
   "faq.q8": "Quelles langues sont prises en charge ?",
   "faq.a8": "{n} : anglais, espagnol, français, portugais (BR), coréen, japonais, russe, chinois (simplifié et traditionnel), polonais, ukrainien, danois, arabe (RTL), allemand, italien, turc, hindi, tamoul et vietnamien — guide utilisateur complet inclus.",
   "faq.q9": "Puis-je contribuer ?",

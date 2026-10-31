@@ -166,7 +166,7 @@
   "faq.q6": "Sender den ansøgninger automatisk?",
   "faq.a6": "Nej — af princip. Den udarbejder, udfylder og forbereder; du gennemgår og trykker send. Intet indsendes nogensinde på dine vegne.",
   "faq.q7": "Hvilke jobportaler kan den scanne?",
-  "faq.a7": "~{adapters} adaptere: Greenhouse, Ashby, Lever, Workable, SmartRecruiters, Workday, Recruitee, Teamtailor, portaler for fjernarbejde og russiske kilder (hh.ru, Habr Career, GetMatch m.fl.). Nye portaler er simple drop-in-adapterfiler.",
+  "faq.a7": "{sources} job-board-kilder: {sourcesEn} internationale boards (Greenhouse, Ashby, Lever, Workable, SmartRecruiters, Workday, Recruitee, Teamtailor, portaler for fjernarbejde m.fl.) plus {sourcesRu} russiske kilder (hh.ru, Habr Career, GetMatch, GeekJob, Trudvsem). Nye portaler er simple drop-in-adapterfiler.",
   "faq.q8": "Hvilke sprog understøttes?",
   "faq.a8": "{n}: engelsk, spansk, fransk, portugisisk (BR), koreansk, japansk, russisk, kinesisk (forenklet og traditionelt), polsk, ukrainsk, dansk, arabisk (RTL), tysk, italiensk, tyrkisk, hindi, tamilsk og vietnamesisk — inklusive den fulde brugervejledning.",
   "faq.q9": "Kan jeg bidrage?",

@@ -17,9 +17,9 @@ _非公式 UI — career-ops / santifer とは提携しておらず、承認も�
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新リリース — v1.264.0** — **リリース後強化ウェーブ: すべてのトラッカー行のステータスがインライン編集可能に(親の正規set-status.mjsがapplications.mdロックの下で)、サーバー警告(切り詰め、言語ドリフト)が6つのAIページすべてで帯として表示、Trudvsemスキャンソースは空ページを生き残りレコードオフセットを歩き、habrタイトルはマークアップを復活させられず、rawプロフィールゲートはfull_name行を守り、ヒントがついに真実を語ります(.docは消え、gpt-5とAnthropic 5-5ティア)。Tests 6905 → 7041.**
+> **🆕 最新リリース — v1.264.1** — **エージェント構築の2つの修正: サイドバーのピルが長いローカライズ済みラベルを優雅に切り詰めます (省略記号 + ローカライズ済みツールチップ — 「Профинансированные компании」のハードクリップはもうありません)、そしてすべてのロケールに1つの480 s評価上限 (es/zh-CNの一過性の300 s打ち切りはもうありません); cvstart.orgのFAQがレジストリ由来の正確なソース数を載せるようになりました (123 = 国際118 + ロシア5)。テスト 7041 → 7075。**
 >
-> **前バージョン — v1.263.0** — **オーナーUXバッチ: モーションポリッシュ層(タッチセーフなホバー、インタラクティブ限定のカードリフト、モーダル/ポップオーバー/トースト/テーマアニメーション — reduced-motionセーフ)、アクセントがロゴに合わせてブルー → クリムゾンレッドへ反転、WCAGコントラスト合格(docs-fab 6.4:1、トースト、フォームボーダー3:1)、すべてのコントロールがプログラム上の名前を獲得、そして十数件のレイアウト修正 — scanテーブルヘッダーはもう検索を覆わず、給与フィルターは通常サイズに戻り、docsページは決してオーバーフローせず、モバイルドロワーに見える閉じるボタンが付きました。テスト 6869 → 6905。**
+> **前バージョン — v1.264.0** — **リリース後強化ウェーブ: すべてのトラッカー行のステータスがインライン編集可能に(親の正規set-status.mjsがapplications.mdロックの下で)、サーバー警告(切り詰め、言語ドリフト)が6つのAIページすべてで帯として表示、Trudvsemスキャンソースは空ページを生き残りレコードオフセットを歩き、habrタイトルはマークアップを復活させられず、rawプロフィールゲートはfull_name行を守り、ヒントがついに真実を語ります(.docは消え、gpt-5とAnthropic 5-5ティア)。Tests 6905 → 7041.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

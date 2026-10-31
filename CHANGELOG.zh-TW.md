@@ -8,6 +8,22 @@
 
 ---
 
+## [1.264.1] — 2026-10-31
+
+### 修復
+
+- **側邊欄膠囊優雅地截斷過長的本地化標籤（CAR-203）** — 導覽標籤 span 現在是名正言順的 flex 成員（`v2-nav.css` 中的 `min-width: 0` + `overflow: hidden` + `text-overflow: ellipsis` + `nowrap`），且 `nav-v2.js` 的 `syncLabelTitles()` 透過同一個 `data-i18n` 鍵把**本地化**標籤鏡射進工具提示（零個新 i18n 鍵）— 長長的「Профинансированные компании」重新可以透過懸停讀取，而不是被該列的 `overflow: hidden` 硬性裁掉。44 px 的觸控目標、啟用著色與 RTL 鏡射都不動；red-first 釘選在 `tests/nav-v2.test.mjs`。
+- **每個語系統一 480 s 評估上限（CAR-218）** — remote-QA v1.264.0 在 `es` 與 `zh-CN` 上抓到瞬時的 `502 · 300 s · 0 ch` 評估（抽測重跑通過了，但那道牆是真實的）。`EVAL_TIMEOUT_MS` 現在是 `480_000`，且 `evalTimeoutMs(lang)` 無條件回傳它 — `GEMINI_EVAL_TIMEOUT_MS` 與 auto-pipeline 一併繼承。CAR-174 的語系感知 **token** 預算（16384 / 32768）仍是唯一的逐語系切分。
+
+### 變更
+
+- **cvstart.org FAQ 攜帶精確的來源計數（CAR-217）** — `{sources} job-board sources: {sourcesEn} international boards plus {sourcesRu} Russian ones` 由 `facts.json` 替換，而 `facts.json` 是從線上註冊表生成（123 = 118 EN + 5 RU），所以數字永不漂移；仍停在舊 `~{adapters}` 措辭的語系繼續透過 `adaptersRounded` 四捨五入。EN 文案升級順帶而來（`meta.helpDesc`、`helpTeaser.c1.desc`、`faq.a2` 點名指令選單、帶復原的分組 pipeline 與 kanban 追蹤器）。
+
+### 備註
+
+- 刻意不做：本版本的網站 i18n 文案升級（`meta.helpDesc` / `helpTeaser.c1.desc` / `faq.a2`）僅限 EN — 其他語系在下一波文件浪潮前維持正確但較圓潤的措辭（已翻譯者的 `faq.a7` 獲得精確計數佔位符）。CAR-141（示範影片）仍屬負責人；被取代的 `car136/m141` 分支已刪除，其想法記錄在 Linear 任務上（可透過標籤 `archive/car136-m141` 找回）。
+- Tests 7041 → 7075（CAR-203 釘選 + CAR-218 釘選重寫）；Playwright 176；註冊表未變：123 sources = 118 EN + 5 RU · 118 adapters。
+
 ## [1.264.0] — 2026-10-31
 
 ### 新增

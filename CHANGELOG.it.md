@@ -2,6 +2,22 @@
 
 > Questo changelog contiene ora la cronologia completa delle versioni. Le voci pubblicate prima della localizzazione italiana (v1.85.0) compaiono sotto nell'originale inglese — traduzione in attesa; il riferimento resta [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.264.1] — 2026-10-31
+
+### Corretto
+
+- **Le pill del sidebar troncano con garbo le etichette localizzate lunghe (CAR-203)** — lo span dell'etichetta di navigazione è ora un cittadino flex a tutti gli effetti (`min-width: 0` + `overflow: hidden` + `text-overflow: ellipsis` + `nowrap` in `v2-nav.css`), e `syncLabelTitles()` in `nav-v2.js` rispecchia l'etichetta **localizzata** nel tooltip tramite la stessa chiave `data-i18n` (zero nuove chiavi i18n) — la lunga «Профинансированные компании» è di nuovo leggibile al passaggio del mouse invece di venire troncata di netto dall'`overflow: hidden` della riga. Il touch target di 44 px, la tinta attiva e il mirror RTL non sono toccati; pin red-first in `tests/nav-v2.test.mjs`.
+- **Un solo soffitto di valutazione di 480 s per ogni località (CAR-218)** — la remote-QA di v1.264.0 ha colto valutazioni transitorie `502 · 300 s · 0 ch` su `es` e `zh-CN` (il re-run puntuale è passato, ma il muro era reale). `EVAL_TIMEOUT_MS` è ora `480_000` e `evalTimeoutMs(lang)` lo restituisce incondizionatamente — `GEMINI_EVAL_TIMEOUT_MS` e l'auto-pipeline lo ereditano. Il budget **token** sensibile alla località da CAR-174 (16384 / 32768) resta l'unica suddivisione per località.
+
+### Modificato
+
+- **La FAQ di cvstart.org porta i conteggi esatti delle fonti (CAR-217)** — il template `{sources} job-board sources: {sourcesEn} international boards plus {sourcesRu} Russian ones` è sostituito da `facts.json`, generato dal registro live (123 = 118 EN + 5 RU), così i numeri non possono mai andare in deriva; le località ancora sulla formulazione più vecchia `~{adapters}` continuano ad arrotondare via `adaptersRounded`. Gli upgrade della copia EN viaggiano nello stesso giro (`meta.helpDesc`, `helpTeaser.c1.desc`, `faq.a2` nominano la palette dei comandi, la pipeline raggruppata con undo e il tracker kanban).
+
+### Note
+
+- Deliberatamente non fatto: gli upgrade della copia i18n del sito (`meta.helpDesc` / `helpTeaser.c1.desc` / `faq.a2`) restano EN-only in questo rilascio — le altre località mantengono formulazioni corrette ma più arrotondate fino alla prossima onda documentale (il loro `faq.a7` riceve i placeholder dei conteggi esatti dove è tradotto). CAR-141 (video dimostrativo) resta al proprietario; il ramo superato `car136/m141` è stato eliminato con le sue idee annotate nella task Linear (recuperabile via tag `archive/car136-m141`).
+- Tests 7041 → 7075 (pin CAR-203 + pin CAR-218 riscritti); Playwright 176; registro invariato: 123 = 118 EN + 5 RU · 118 adapters.
+
 ## [1.264.0] — 2026-10-31
 
 ### Aggiunto

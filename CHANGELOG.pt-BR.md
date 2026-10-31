@@ -8,6 +8,22 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.264.1] — 2026-10-31
+
+### Corrigido
+
+- **As pills da sidebar truncam com elegância rótulos localizados longos (CAR-203)** — o span do rótulo da nav agora é um cidadão flex de verdade (`min-width: 0` + `overflow: hidden` + `text-overflow: ellipsis` + `nowrap` em `v2-nav.css`), e `syncLabelTitles()` em `nav-v2.js` espelha o rótulo **localizado** no tooltip pela mesma chave `data-i18n` (zero novas chaves i18n) — o longo «Профинансированные компании» volta a ser legível no hover em vez de ser cortado na força pelo `overflow: hidden` da linha. O alvo de toque de 44 px, a pintura do estado ativo e o espelhamento RTL ficam intocados; pin red-first em `tests/nav-v2.test.mjs`.
+- **Um teto único de avaliação de 480 s para toda localidade (CAR-218)** — o remote-QA da v1.264.0 capturou avaliações `502 · 300 s · 0 ch` transitórias em `es` e `zh-CN` (o re-run pontual passou, mas a parede era real). `EVAL_TIMEOUT_MS` agora é `480_000` e `evalTimeoutMs(lang)` o retorna incondicionalmente — `GEMINI_EVAL_TIMEOUT_MS` e o auto-pipeline herdam. O orçamento de **tokens** por localidade do CAR-174 (16384 / 32768) continua sendo o único split por localidade.
+
+### Alterado
+
+- **O FAQ do cvstart.org carrega contagens exatas de fontes (CAR-217)** — `{sources} job-board sources: {sourcesEn} international boards plus {sourcesRu} Russian ones` substituído a partir do `facts.json`, gerado do registro ao vivo (123 = 118 EN + 5 RU), de modo que os números nunca podem divergir; as localidades que ainda têm a redação antiga `~{adapters}` continuam arredondando via `adaptersRounded`. Os upgrades de copy em EN acompanham (`meta.helpDesc`, `helpTeaser.c1.desc`, `faq.a2` citam o menu de comandos, o pipeline agrupado com undo e o tracker kanban).
+
+### Notas
+
+- Deliberadamente não feito: os upgrades de copy do i18n do site (`meta.helpDesc` / `helpTeaser.c1.desc` / `faq.a2`) ficam somente em EN neste release — as outras localidades mantêm redação correta, porém mais genérica, até a próxima onda de docs (o `faq.a7` delas ganha os placeholders de contagem exata onde traduzido). CAR-141 (vídeo de demo) continua sendo do dono; a branch substituída `car136/m141` foi deletada com as ideias registradas na task da Linear (recuperável via tag `archive/car136-m141`).
+- Tests 7041 → 7075 (pin do CAR-203 + reescritas do pin do CAR-218); Playwright 176; registro inalterado 123 = 118 EN + 5 RU · 118 adapters.
+
 ## [1.264.0] — 2026-10-31
 
 ### Adicionado

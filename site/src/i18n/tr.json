@@ -166,7 +166,7 @@
   "faq.q6": "Başvuruları otomatik gönderiyor mu?",
   "faq.a6": "Hayır — ilkesel olarak. Taslak hazırlar, doldurur ve düzenler; siz gözden geçirir ve gönder'e basarsınız. Sizin adınıza asla hiçbir şey gönderilmez.",
   "faq.q7": "Hangi iş panolarını tarayabilir?",
-  "faq.a7": "~{adapters} adaptör: Greenhouse, Ashby, Lever, Workable, SmartRecruiters, Workday, Recruitee, Teamtailor, uzaktan çalışma panoları ve Rus kaynakları (hh.ru, Habr Career, GetMatch ve dahası). Yeni panolar, bırak-çalışsın adaptör dosyalarıdır.",
+  "faq.a7": "{sources} iş panosu kaynağı: {sourcesEn} uluslararası pano (Greenhouse, Ashby, Lever, Workable, SmartRecruiters, Workday, Recruitee, Teamtailor, uzaktan çalışma toplayıcıları ve dahası) artı {sourcesRu} Rus kaynağı (hh.ru, Habr Career, GetMatch, GeekJob, Trudvsem). Yeni panolar, bırak-çalışsın adaptör dosyalarıdır.",
   "faq.q8": "Hangi dilleri destekliyor?",
   "faq.a8": "{n}: İngilizce, İspanyolca, Fransızca, Portekizce (BR), Korece, Japonca, Rusça, Çince (basitleştirilmiş ve geleneksel), Lehçe, Ukraynaca, Danca, Arapça (RTL), Almanca, İtalyanca, Türkçe, Hintçe, Tamilce ve Vietnamca — eksiksiz kullanıcı kılavuzu dahil.",
   "faq.q9": "Katkıda bulunabilir miyim?",

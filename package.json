@@ -1,6 +1,6 @@
 {
   "name": "@fighter90/career-ops-ui",
-  "version": "1.264.0",
+  "version": "1.264.1",
   "description": "Clean, docs-style web interface for the career-ops AI job-search pipeline — search, evaluate, deep-dive, apply, track every offer from a single browser tab.",
   "type": "module",
   "license": "MIT",
@@ -66,6 +66,7 @@
   },
   "dependencies": {
     "express": "^4.22.2",
+    "express-rate-limit": "^7.5.1",
     "js-yaml": "^4.3.2",
     "leaflet": "^1.9.4",
     "multer": "^2.5.0"

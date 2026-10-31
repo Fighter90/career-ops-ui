@@ -6,6 +6,22 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 ---
 
+## [1.264.1] — 2026-10-31
+
+### Fixed
+
+- **Sidebar pills truncate long localized labels gracefully (CAR-203)** — the nav label span is now a proper flex citizen (`min-width: 0` + `overflow: hidden` + `text-overflow: ellipsis` + `nowrap` in `v2-nav.css`), and `syncLabelTitles()` in `nav-v2.js` mirrors the **localized** label into the tooltip through the same `data-i18n` key (zero new i18n keys) — the long «Профинансированные компании» is readable again on hover instead of being hard-clipped by the row's `overflow: hidden`. The 44 px touch target, active paint and RTL mirror are untouched; red-first pin in `tests/nav-v2.test.mjs`.
+- **One 480 s evaluation ceiling for every locale (CAR-218)** — remote-QA v1.264.0 caught transient `502 · 300 s · 0 ch` evaluations on `es` and `zh-CN` (the spot re-run passed, but the wall was real). `EVAL_TIMEOUT_MS` is now `480_000` and `evalTimeoutMs(lang)` returns it unconditionally — `GEMINI_EVAL_TIMEOUT_MS` and the auto-pipeline inherit. The locale-aware **token** budget from CAR-174 (16384 / 32768) stays the only per-locale split.
+
+### Changed
+
+- **cvstart.org FAQ carries exact source counts (CAR-217)** — `{sources} job-board sources: {sourcesEn} international boards plus {sourcesRu} Russian ones` substituted from `facts.json`, which is generated from the live registry (123 = 118 EN + 5 RU), so the numbers can never drift; locales still on the older `~{adapters}` wording keep rounding via `adaptersRounded`. EN copy upgrades ride along (`meta.helpDesc`, `helpTeaser.c1.desc`, `faq.a2` name the command menu, grouped pipeline with undo and the kanban tracker).
+
+### Notes
+
+- Deliberately not done: the site i18n copy upgrades (`meta.helpDesc` / `helpTeaser.c1.desc` / `faq.a2`) stay EN-only this release — other locales keep correct-but-rounder wording until the next docs wave (their `faq.a7` gains the exact-count placeholders where translated). CAR-141 (demo video) remains the owner's; the superseded `car136/m141` branch was deleted with its ideas recorded on the Linear task (recoverable via tag `archive/car136-m141`).
+- Tests 7041 → 7075 (CAR-203 pin + CAR-218 pin rewrites); Playwright 176; registry unchanged 123 = 118 EN + 5 RU · 118 adapters.
+
 ## [1.264.0] — 2026-10-31
 
 ### Added

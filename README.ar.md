@@ -20,8 +20,11 @@ _واجهة غير رسمية — لا علاقة لها بـ career-ops / santi
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 أحدث إصدار — v1.264.0** — **موجة التحصين ما بعد الإصدار: حالة كل صف في المتتبع قابلة للتحرير داخل الصف (سكربت `set-status.mjs` القياسي للمشروع الأصلي تحت قفل `applications.md`)، وتحذيرات الخادم (البتر وانحراف اللغة) تظهر كشريط على كل صفحات الذكاء الاصطناعي الست، ومصدر مسح Trudvsem ينجو من الصفحات الفارغة ويمشي على إزاحات السجلات، وعناوين habr لا يمكنها إحياء الترميز، وبوابة الملف الخام تحرس سطر `full_name`، والتلميحات تقول الحقيقة أخيراً (اختفت `.doc`، و`gpt-5` وفئتا Anthropic 5-5). Tests 6905 → 7041.**
-> **السابق — v1.263.0** — **دفعة UX للمالك: طبقة صقل حركي (تحويمات آمنة للمس، رفع بطاقات للتفاعلية فقط، حركات للنوافذ المنبثقة/الفقاعات/toast/السمة — آمنة مع reduced-motion)، واللون المميز يقلب من الأزرق → الأحمر القرمزي كالشعار، واجتياز تباين WCAG (docs-fab 6.4:1، toast، حدود النماذج 3:1)، وكل عنصر تحكم ينال اسمًا برمجيًا، ودزينة من إصلاحات التخطيط — رأس جدول scan لم يعد يغطي البحث، ومرشح الراتب عاد إلى حجمه الطبيعي، وصفحة docs لا تفيض أبدًا، والدرج المحمول نال زر إغلاق مرئيًا. Tests 6869 → 6905.**
+> **🆕 أحدث إصدار — v1.264.1** — **إصلاحان من بناء الوكلاء: حبوب الشريط الجانبي تقتطع التسميات المترجَمة الطويلة بلطف (علامة حذف + تلميح مترجَم — لا مزيد من القص القاسي لـ «Профинансированные компании»)، وسقف تقييم واحد قدره 480 s لكل لغة (لا مزيد من القطع العابرة عند 300 s على es/zh-CN)؛ وتحمل الأسئلة الشائعة على cvstart.org الآن عدّادات مصادر دقيقة مشتقة من السجل (123 = 118 دولية + 5 روسية). Tests 7041 → 7075.**
+
+
+>
+> **السابق — v1.264.0** — **موجة التحصين ما بعد الإصدار: حالة كل صف في المتتبع قابلة للتحرير داخل الصف (سكربت `set-status.mjs` القياسي للمشروع الأصلي تحت قفل `applications.md`)، وتحذيرات الخادم (البتر وانحراف اللغة) تظهر كشريط على كل صفحات الذكاء الاصطناعي الست، ومصدر مسح Trudvsem ينجو من الصفحات الفارغة ويمشي على إزاحات السجلات، وعناوين habr لا يمكنها إحياء الترميز، وبوابة الملف الخام تحرس سطر `full_name`، والتلميحات تقول الحقيقة أخيراً (اختفت `.doc`، و`gpt-5` وفئتا Anthropic 5-5). Tests 6905 → 7041.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

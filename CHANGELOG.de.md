@@ -2,6 +2,22 @@
 
 > Dieses Changelog enthält die vollständige Versionsgeschichte. Einträge, die vor der deutschen Lokalisierung (v1.85.0) veröffentlicht wurden, stehen unten im englischen Original — Übersetzung ausstehend; maßgeblich bleibt [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.264.1] — 2026-10-31
+
+### Behoben
+
+- **Sidebar-Pills kürzen lange lokalisierte Labels elegant (CAR-203)** — das Nav-Label-Span ist jetzt ein ordentliches Flex-Mitglied (`min-width: 0` + `overflow: hidden` + `text-overflow: ellipsis` + `nowrap` in `v2-nav.css`), und `syncLabelTitles()` in `nav-v2.js` spiegelt das **lokalisierte** Label über denselben `data-i18n`-Key in den Tooltip (null neue i18n-Keys) — das lange «Профинансированные компании» ist beim Hover wieder lesbar, statt vom `overflow: hidden` der Zeile hart abgeschnitten zu werden. Das 44-px-Touch-Ziel, die aktive Färbung und der RTL-Spiegel bleiben unberührt; red-first-Pin in `tests/nav-v2.test.mjs`.
+- **Eine 480-s-Evaluations-Obergrenze für jede Locale (CAR-218)** — die Remote-QA von v1.264.0 fing vorübergehende `502 · 300 s · 0 ch`-Evaluierungen auf `es` und `zh-CN` ab (der Spot-Re-Run lief grün, aber die Wand war real). `EVAL_TIMEOUT_MS` ist jetzt `480_000`, und `evalTimeoutMs(lang)` gibt ihn bedingungslos zurück — `GEMINI_EVAL_TIMEOUT_MS` und die Auto-Pipeline erben. Das locale-spezifische **Token**-Budget aus CAR-174 (16384 / 32768) bleibt die einzige pro-Locale-Aufteilung.
+
+### Geändert
+
+- **cvstart.org-FAQ trägt exakte Source-Zählungen (CAR-217)** — `{sources} job-board sources: {sourcesEn} international boards plus {sourcesRu} Russian ones` wird aus `facts.json` substituiert, das aus der Live-Registry erzeugt wird (123 = 118 EN + 5 RU), sodass die Zahlen nie driften können; Locales mit der älteren `~{adapters}`-Formulierung runden weiter über `adaptersRounded`. EN-Textverbesserungen fahren mit: `meta.helpDesc`, `helpTeaser.c1.desc` und `faq.a2` nennen das Befehlsmenü, die gruppierte Pipeline mit Undo und den Kanban-Tracker.
+
+### Hinweise
+
+- Bewusst nicht getan: die Site-i18n-Textverbesserungen (`meta.helpDesc` / `helpTeaser.c1.desc` / `faq.a2`) bleiben in diesem Release EN-only — andere Locales behalten ihre korrekte, aber runder formulierte Fassung bis zur nächsten Docs-Welle (ihr `faq.a7` bekommt die Exaktzahl-Platzhalter, wo übersetzt). CAR-141 (Demo-Video) bleibt beim Owner; der überholte Zweig `car136/m141` wurde gelöscht, seine Ideen sind im Linear-Task festgehalten (wiederherstellbar über den Tag `archive/car136-m141`).
+- Tests 7041 → 7075 (CAR-203-Pin + CAR-218-Pin-Rewrites); Playwright 176; Registry unverändert 123 = 118 EN + 5 RU · 118 adapters.
+
 ## [1.264.0] — 2026-10-31
 
 ### Hinzugefügt
