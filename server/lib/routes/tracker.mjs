@@ -17,7 +17,7 @@ import { safeReadApps, safeListReports } from '../store.mjs';
 import { withFileLock, atomicWrite } from '../file-lock.mjs';
 import { canonicalizeStatus, readCanonicalStates, canonicalLabels } from '../states.mjs';
 import { runTrackedScript } from '../runner.mjs';
-import { llmRateLimit } from '../rate-limit.mjs';
+import { writeRateLimit } from '../rate-limit.mjs';
 import { parseJsonStdout, sanitizeDetail } from '../parent-relay.mjs';
 // CAR-181 — import another tracker's CSV export. Pure planning lives in
 // lib/tracker-import.mjs; this route only validates, locks and writes.
@@ -375,7 +375,12 @@ export function registerTrackerRoutes(app) {
     return false;
   }
 
-  app.post('/api/tracker/status', llmRateLimit, async (req, res) => {
+  // writeRateLimit (CodeQL #703) — the relay spawns set-status.mjs per call
+  // under the applications.md lock. The previous llmRateLimit was a no-op on
+  // the default loopback bind (isPubliclyExposed gate) and mis-scoped a
+  // token limiter onto a non-LLM route; the unconditional write limiter
+  // (60/min per route × IP) guards the spawn on every bind.
+  app.post('/api/tracker/status', writeRateLimit, async (req, res) => {
     const body = (req.body && typeof req.body === 'object') ? req.body : {};
     const { row, state } = body;
     const note = typeof body.note === 'string' ? body.note.trim() : '';
