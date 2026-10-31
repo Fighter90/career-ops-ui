@@ -10,6 +10,22 @@
 
 ---
 
+## [1.264.1] — 2026-10-31
+
+### 수정
+
+- **사이드바 필이 현지화된 긴 레이블을 우아하게 잘라냅니다 (CAR-203)** — 내비 레이블 스팬은 이제 제대로 된 flex 시민입니다 (`v2-nav.css`의 `min-width: 0` + `overflow: hidden` + `text-overflow: ellipsis` + `nowrap`), 그리고 `nav-v2.js`의 `syncLabelTitles()`는 같은 `data-i18n` 키를 통해 **현지화된** 레이블을 툴팁에 미러링합니다 (새 i18n 키 0개) — 긴 «Профинансированные компании»가 행의 `overflow: hidden`에 의해 하드-클립되는 대신 호버에서 다시 읽힙니다. 44 px 터치 타깃, 활성 페인트, RTL 미러는 그대로입니다; red-first 핀은 `tests/nav-v2.test.mjs`에 있습니다.
+- **모든 로케일에 하나의 480 s 평가 천장 (CAR-218)** — remote-QA v1.264.0이 `es`와 `zh-CN`에서 일시적인 `502 · 300 s · 0 ch` 평가를 잡아냈습니다 (스팟 재실행은 통과했지만, 벽은 실재했습니다). `EVAL_TIMEOUT_MS`는 이제 `480_000`이고 `evalTimeoutMs(lang)`는 이를 무조건 반환합니다 — `GEMINI_EVAL_TIMEOUT_MS`와 auto-pipeline이 상속합니다. CAR-174의 로케일 인지 **토큰** 예산 (16384 / 32768)은 유일한 로케일별 분할로 남습니다.
+
+### 변경
+
+- **cvstart.org FAQ가 정확한 소스 카운트를 실어 나릅니다 (CAR-217)** — `{sources} job-board sources: {sourcesEn} international boards plus {sourcesRu} Russian ones`가 라이브 레지스트리 (123 = 118 EN + 5 RU)에서 생성되는 `facts.json`에서 치환되므로, 숫자는 절대 드리프트할 수 없습니다; 여전히 이전 `~{adapters}` 문구를 쓰는 로케일은 `adaptersRounded`를 통해 반올림을 유지합니다. EN 카피 업그레이드가 함께 탑승합니다 (`meta.helpDesc`, `helpTeaser.c1.desc`, `faq.a2`가 커맨드 메뉴, 되돌리기가 있는 그룹화된 파이프라인, 칸반 트래커를 이름으로 씁니다).
+
+### 참고
+
+- 의도적으로 하지 않은 것: 사이트 i18n 카피 업그레이드 (`meta.helpDesc` / `helpTeaser.c1.desc` / `faq.a2`)는 이번 릴리스에서 EN 전용으로 남습니다 — 다른 로케일은 다음 docs 웨이브까지 정확하지만 더 둥근 문구를 유지합니다 (번역된 곳에서는 그들의 `faq.a7`가 정확-카운트 플레이스홀더를 얻습니다). CAR-141 (데모 비디오)은 오너의 몫으로 남아 있습니다; 대체된 `car136/m141` 브랜치는 아이디어가 Linear 태스크에 기록된 채로 삭제됐습니다 (태그 `archive/car136-m141`로 복구 가능).
+- 테스트 7041 → 7075 (CAR-203 핀 + CAR-218 핀 재작성); Playwright 176; 레지스트리 변경 없음 123 = 118 EN + 5 RU · 118 adapters.
+
 ## [1.264.0] — 2026-10-31
 
 ### 추가

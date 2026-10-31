@@ -17,10 +17,11 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.264.0** — **릴리스 후 강화 웨이브: 모든 트래커 행의 상태를 인라인 편집할 수 있습니다 (상위의 정규 set-status.mjs가 applications.md 락 아래에서), 서버 경고 (절단, 언어 드리프트)가 여섯 AI 페이지 전부에서 밴드로 표시되고, Trudvsem 스캔 소스는 빈 페이지를 살아남아 레코드 오프셋을 걷으며, habr 제목은 마크업을 되살릴 수 없고, raw 프로필 게이트는 full_name 라인을 지키며, 힌트가 마침내 진실을 말합니다 (.doc은 사라졌고, gpt-5와 Anthropic 5-5 티어). Tests 6905 → 7041.**
->
-> **이전 버전 — v1.263.0** — **오너 UX 배치: 모션 폴리시 레이어(터치-세이프 호버, 인터랙티브 전용 카드 리프트, 모달/팝오버/토스트/테마 애니메이션 — reduced-motion 세이프), 액센트가 로고처럼 블루 → 크림슨 레드로 전환, WCAG 대비 통과(docs-fab 6.4:1, 토스트, 폼 보더 3:1), 모든 컨트롤이 프로그래매틱 이름을 갖습니다, 그리고 열두 가지 레이아웃 수정 — scan 테이블 헤더가 더 이상 검색을 덮지 않고, 급여 필터가 정상 크기로 돌아오며, docs 페이지는 절대 넘치지 않고, 모바일 드로어에 보이는 닫기가 생겼습니다. 테스트 6869 → 6905.**
+> **🆕 최신 릴리스 — v1.264.1** — **에이전트가 만든 두 가지 수정: 사이드바 필이 현지화된 긴 레이블을 우아하게 잘라냅니다 (말줄임표 + 현지화된 툴팁 — «Профинансированные компании»가 더 이상 하드-클립되지 않음), 그리고 모든 로케일에 하나의 480 s 평가 천장 (es/zh-CN에서의 일시적인 300 s 절단은 이제 없음); cvstart.org FAQ는 이제 레지스트리에서 파생된 정확한 소스 카운트를 실어 나릅니다 (123 = 118 국제 + 5 러시아). 테스트 7041 → 7075.**
 
+
+>
+> **이전 버전 — v1.264.0** — **릴리스 후 강화 웨이브: 모든 트래커 행의 상태를 인라인 편집할 수 있습니다 (상위의 정규 set-status.mjs가 applications.md 락 아래에서), 서버 경고 (절단, 언어 드리프트)가 여섯 AI 페이지 전부에서 밴드로 표시되고, Trudvsem 스캔 소스는 빈 페이지를 살아남아 레코드 오프셋을 걷으며, habr 제목은 마크업을 되살릴 수 없고, raw 프로필 게이트는 full_name 라인을 지키며, 힌트가 마침내 진실을 말합니다 (.doc은 사라졌고, gpt-5와 Anthropic 5-5 티어). Tests 6905 → 7041.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
