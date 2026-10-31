@@ -8,6 +8,21 @@
 
 ---
 
+## [1.264.1] — 2026-10-31
+
+### 修正
+
+- **サイドバーのピルが長いローカライズ済みラベルを優雅に切り詰めます (CAR-203)** — ナビラベルのspanは、正しいflex構成要素になりました (`v2-nav.css`での`min-width: 0` + `overflow: hidden` + `text-overflow: ellipsis` + `nowrap`)、そして`nav-v2.js`の`syncLabelTitles()`は、同じ`data-i18n`キーを通じて**ローカライズ済み**ラベルをツールチップにミラーします (i18nキーの新規追加はゼロ) — 長い「Профинансированные компании」は、行の`overflow: hidden`によるハードクリップの代わりに、ホバーで再び読めるようになりました。44 pxのタッチターゲット、アクティブな塗り、RTLミラーには手を入れていません; 赤ファーストのピンは`tests/nav-v2.test.mjs`。
+- **すべてのロケールに1つの480 s評価上限 (CAR-218)** — remote-QA v1.264.0が`es`と`zh-CN`の一過性の`502 · 300 s · 0 ch`評価を捉えました (スポット再実行は合格しましたが、壁は実在しました)。`EVAL_TIMEOUT_MS`は`480_000`になり、`evalTimeoutMs(lang)`は無条件でそれを返します — `GEMINI_EVAL_TIMEOUT_MS`とauto-pipelineが継承します。CAR-174によるロケール対応の**トークン**予算 (16384 / 32768) は、唯一のロケールごとの分岐のままです。
+
+### 変更
+
+- **cvstart.org FAQが正確なソース数を載せます (CAR-217)** — `{sources} job-board sources: {sourcesEn} international boards plus {sourcesRu} Russian ones`が`facts.json`から置換されます。これはライブレジストリ (123 = 118 EN + 5 RU) から生成されるので、数字がドリフトすることは決してありません; 旧`~{adapters}`文言のままのロケールは`adaptersRounded`経由で丸め続けます。ENコピーのアップグレードが同乗します (`meta.helpDesc`、`helpTeaser.c1.desc`、`faq.a2`はコマンドメニュー、undo付きのグループ化パイプライン、カンバントラッカーを名指しします)。
+
+### メモ
+
+- 意図的に見送った項目: サイトi18nコピーのアップグレード (`meta.helpDesc` / `helpTeaser.c1.desc` / `faq.a2`) はこのリリースではEN限定のままです — 他のロケールは、次のドキュメント波まで正しいがやや丸い文言を保ちます (翻訳済みの箇所では`faq.a7`が正確カウントのプレースホルダーを得ます)。CAR-141 (デモ動画) はオーナーのままです; 役目を終えた`car136/m141`ブランチは削除され、そのアイデアはLinearタスクに記録されています (タグ`archive/car136-m141`で復元可能)。
+- テスト 7041 → 7075 (CAR-203ピン + CAR-218ピン書き換え); Playwright 176; レジストリ変更なし: 123 sources = 118 EN + 5 RU · 118 adapters。
 
 ## [1.264.0] — 2026-10-31
 
