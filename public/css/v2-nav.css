@@ -164,6 +164,23 @@
   text-decoration: none !important;
   transition: background var(--transition), color var(--transition);
 }
+/* CAR-203 — a label span is the pill's shrinkable flex child. Its default
+   min-width:auto made a long localized label («Профинансированные компании»)
+   refuse to shrink: it overflowed the .nav-item pill and hard-clipped at the
+   row's overflow:hidden edge (no ellipsis). Both contracts live here (the
+   sidebar-v2 sheet; app.css sits exactly at its 800-LOC ceiling). Logical
+   properties only — the ellipsis lands on the inline end in RTL too; the
+   44px touch target (padding + min-height in app.css) and the active paint
+   are untouched. The full text stays discoverable: nav-v2.js mirrors the
+   same i18n value into the span's title. */
+.nav-item > span:not(.nav-ico),
+.nav-v2-row-link > span:not(.nav-ico) {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
 .nav-v2-row-link:hover { background: var(--beach); }
 .nav-v2-fav-row .nav-v2-row-link,
 .nav-v2-recent-row .nav-v2-row-link { font-size: 14px; }

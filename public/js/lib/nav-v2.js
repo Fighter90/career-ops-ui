@@ -323,6 +323,7 @@
       const r = registryById(id);
       if (r) recItems.appendChild(recentRow(r));
     });
+    syncLabelTitles(); // fresh rows carry their full-text title (CAR-203) — before any focus-restore early return
 
     // 1) the same row survived (↑/↓ reorder, star press) → restore there
     if (prevId && state.favs.indexOf(prevId) !== -1) {
@@ -369,6 +370,20 @@
       b.setAttribute('aria-label', lbl);
       b.title = lbl;
     });
+  }
+
+  /** CAR-203 — a truncated label must stay discoverable: mirror the
+   *  LOCALIZED value into the label span's title, reusing the very same
+   *  i18n key (zero new dictionary entries). t() is read directly rather
+   *  than off the span's textContent so the result is order-independent
+   *  with app.js's applyI18n pass on a language switch. Static pills sync
+   *  at boot + on switch; dynamic rows re-sync on every rebuild. */
+  function syncLabelTitles() {
+    document.querySelectorAll('.nav-item > [data-i18n], .nav-v2-row-link > [data-i18n]')
+      .forEach((label) => {
+        const key = label.getAttribute('data-i18n');
+        if (key) label.title = t(key, label.textContent);
+      });
   }
 
   function wrapStaticItems(navEl) {
@@ -672,6 +687,7 @@
     renderDynamicGroups();
     applyGroupStates();
     syncStars();
+    syncLabelTitles(); // static pills + dynamic rows (CAR-203)
 
     const launch = document.getElementById('nav-v2-launch');
     if (launch) {
@@ -695,6 +711,7 @@
     if (window.I18n && typeof I18n.onChange === 'function') {
       I18n.onChange(() => {
         syncStars();
+        syncLabelTitles(); // titles follow the switched language (CAR-203)
         syncPaletteChrome();
         if (isPaletteOpen()) renderOptions(palette.input.value);
       });
