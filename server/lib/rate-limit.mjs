@@ -8,29 +8,34 @@
  * /api/mode/:slug / /api/auto-pipeline and drain the user's
  * ANTHROPIC_API_KEY at ≈ $0.05 per request.
  *
- * Two limiters, one mechanism:
+ * Two limiters:
  *   - llmRateLimit  — 10 req / 60 s per IP (configurable via LLM_RATE_LIMIT
  *     env), active ONLY when isPubliclyExposed() is true — loopback users
  *     see no behavioural change. Guards the token-spending routes.
- *   - writeRateLimit — 60 req / 60 s per (route × IP) (configurable via
+ *   - writeRateLimit — a factory over express-rate-limit's rateLimit()
+ *     (the canonical middleware CodeQL's js/missing-rate-limiting query
+ *     recognises), 60 req / 60 s per (route × IP) (configurable via
  *     WRITE_RATE_LIMIT env), UNCONDITIONAL. Guards the file-mutating /
- *     subprocess-spawning relays flagged by CodeQL js/missing-rate-limiting
- *     (#705 /api/runners/report-links, #703 /api/tracker/status): a guard
+ *     subprocess-spawning relays flagged by CodeQL (#705
+ *     /api/runners/report-links, #703 /api/tracker/status): a guard
  *     that skips loopback is not a guard — on the default bind those
  *     endpoints were unthrottled, and a per-request subprocess (or a
  *     data-file rewrite) is exactly what a runaway client loop must not
  *     saturate. The limit is generous: no legitimate client (or test,
  *     ≤12 calls per endpoint per process) comes near it.
  *
- * Both: sliding window with a monotonic clock, 429 + Retry-After header
- * on bucket overflow. Buckets are swept at most once a second and the
- * map evicts oldest-first at MAX_BUCKETS, so a flood of distinct
- * addresses cannot grow it without bound.
- *
- * The v2.x auth gate (P-12) will replace this with proper per-user
- * accounting. Until then, this is the cheap interim defense.
+ * Mechanics:
+ *   - llmRateLimit: sliding window with a monotonic clock, 429 +
+ *     Retry-After header on bucket overflow. Buckets are swept at most once
+ *     a second and the map evicts oldest-first at MAX_BUCKETS, so a flood
+ *     of distinct addresses cannot grow it without bound.
+ *   - writeRateLimit: a per-route express-rate-limit MemoryStore (each
+ *     factory call creates its own instance → per-route isolation by
+ *     construction, with the route prefix still in the key), standard +
+ *     legacy headers, and the same 429 JSON contract as before.
  */
 import { isPubliclyExposed } from './security.mjs';
+import { rateLimit, MemoryStore } from 'express-rate-limit';
 
 const LLM_DEFAULT_LIMIT = 10;
 const WRITE_DEFAULT_LIMIT = 60;
@@ -43,15 +48,18 @@ const SWEEP_EVERY_MS = 1_000;
 // insertion order) are dropped first.
 export const MAX_BUCKETS = 10_000;
 
-// One store per limiter. The write limiter keys per (route × IP) so a flood
-// against one mutating endpoint cannot lock out the others; the LLM limiter
-// keys by IP only (one global spend budget per client).
+// The LLM limiter's store (keys by IP — one global spend budget per
+// client). The write limiter now owns one express-rate-limit MemoryStore
+// per route (see WRITE_STORES below).
 function makeStore() {
   return { map: new Map(), nextSweepAt: 0 };
 }
 
 const LLM_STORE = makeStore();
-const WRITE_STORE = makeStore();
+
+// The write limiter's per-route express-rate-limit stores, tracked so
+// __resetRateLimits() can clear every instance between test cases.
+const WRITE_STORES = new Set();
 
 /**
  * Bucket key for a client address. IPv6 is keyed by its /64 — a single host is
@@ -117,9 +125,10 @@ function tooManyRequests(res, bucket, limit, windowMs, now) {
  *   app.post('/api/evaluate', llmRateLimit, async (req, res) => { … });
  *
  * On overflow we 429 with the Retry-After header that browsers respect
- * for back-off. `gate` lets a limiter stay inactive under a condition
- * (the LLM limiter is loopback-free by design); the write limiter has
- * no gate — its guard must hold on every bind.
+ * for back-off. `gate` lets the limiter stay inactive under a condition
+ * (the LLM limiter is loopback-free by design). The mutating-relay
+ * limiter (writeRateLimit, below) no longer shares this engine — it is a
+ * factory over express-rate-limit.
  */
 function makeRateLimiter({ store, envVar, defaultLimit, gate, perRoute }) {
   return function rateLimit(req, res, next) {
@@ -160,13 +169,50 @@ export const llmRateLimit = makeRateLimiter({
  * a generous 60 req/min per (route × IP) so normal UI use and the test
  * suite never trip it, while a runaway client loop gets a 429 instead of
  * saturating per-request spawns or tracker-file rewrites.
+ *
+ * A factory over express-rate-limit's rateLimit() — the literal
+ * `rateLimit({…})` middleware CodeQL's js/missing-rate-limiting models —
+ * so the registration reads `app.post(path, writeRateLimit(), handler)`.
+ * Each call creates its own MemoryStore instance, which IS the per-route
+ * isolation; the route prefix in the key keeps the documented keying
+ * contract (route × IP) intact for direct-call tests.
  */
-export const writeRateLimit = makeRateLimiter({
-  store: WRITE_STORE,
-  envVar: 'WRITE_RATE_LIMIT',
-  defaultLimit: WRITE_DEFAULT_LIMIT,
-  perRoute: true,
-});
+export function writeRateLimit() {
+  const { limit, windowMs } = limitConfig('WRITE_RATE_LIMIT', {
+    limit: WRITE_DEFAULT_LIMIT,
+    windowMs: DEFAULT_WINDOW_MS,
+  });
+  const store = new MemoryStore({ windowMs });
+  WRITE_STORES.add(store);
+  return rateLimit({
+    windowMs,
+    limit,
+    statusCode: 429,
+    // draft-6 RateLimit-* headers + Retry-After on block; legacyHeaders
+    // keeps the previous X-RateLimit-Limit/Reset contract.
+    standardHeaders: true,
+    legacyHeaders: true,
+    // Route × IP — the same keying as before (route prefix guards the
+    // direct-call unit tests; the store instance is per-route anyway).
+    keyGenerator: (req) =>
+      `${String(req.originalUrl || req.url || '').split('?')[0]}|${clientKey(req.ip || req.socket?.remoteAddress)}`,
+    handler: (req, res) => {
+      const resetAt = req.rateLimit?.resetTime?.getTime?.() ?? Date.now() + windowMs;
+      const retryAfter = Math.max(1, Math.ceil((resetAt - Date.now()) / 1000));
+      res.setHeader('Retry-After', String(retryAfter));
+      return res.status(429).json({
+        ok: false,
+        error: `rate limit: ${limit} req per ${Math.round(windowMs / 1000)}s`,
+        retryAfter,
+      });
+    },
+    // Loopback single-user app (no trust proxy, Caddy in front on prod):
+    // the built-in validations would only add console noise the old
+    // custom middleware never emitted.
+    validate: false,
+    store,
+  });
+}
 
 /**
  * Test-only — reset the LLM limiter's buckets between cases. Production
@@ -185,11 +231,13 @@ export function _bucketCount() {
 
 /**
  * Test-only — reset BOTH limiters (LLM + write) between cases or suites.
- * Cheap enough for a suite-wide after() hook; production callers never
- * invoke it.
+ * The LLM buckets die with the custom map; each write store exposes the
+ * public MemoryStore.resetAll(). Production callers never invoke this;
+ * MemoryStore rotates its own windows on the windowMs timer.
  */
 export function __resetRateLimits() {
   _resetBuckets();
-  WRITE_STORE.map.clear();
-  WRITE_STORE.nextSweepAt = 0;
+  for (const store of WRITE_STORES) {
+    if (typeof store.resetAll === 'function') store.resetAll();
+  }
 }

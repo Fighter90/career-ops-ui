@@ -379,8 +379,10 @@ export function registerTrackerRoutes(app) {
   // under the applications.md lock. The previous llmRateLimit was a no-op on
   // the default loopback bind (isPubliclyExposed gate) and mis-scoped a
   // token limiter onto a non-LLM route; the unconditional write limiter
-  // (60/min per route × IP) guards the spawn on every bind.
-  app.post('/api/tracker/status', writeRateLimit, async (req, res) => {
+  // (60/min per route × IP) guards the spawn on every bind. writeRateLimit()
+  // is a factory over express-rate-limit's rateLimit() — each call creates
+  // the route's own limiter instance (per-route isolation).
+  app.post('/api/tracker/status', writeRateLimit(), async (req, res) => {
     const body = (req.body && typeof req.body === 'object') ? req.body : {};
     const { row, state } = body;
     const note = typeof body.note === 'string' ? body.note.trim() : '';
