@@ -236,6 +236,14 @@ test('the banner Refresh chip stays readable over the translucent-black blend (b
   }
 });
 
+test('banner .btn-dark rules BIND literal white text (owner screenshot: var(--ink) painted black-on-crimson in light)', () => {
+  for (const sel of ['.conn-banner \\.btn-dark', '#onboarding-banner\\.onboarding-warn \\.btn-dark']) {
+    const r = rule(sel);
+    assert.match(r, /color:\s*#fff/i, `${sel} must paint literal white — --ink is near-black in light`);
+    assert.doesNotMatch(r, /var\(--ink\)/, `${sel} must not ride --ink (theme-flipped to black in light)`);
+  }
+});
+
 // ── bindings: the contract is tied to the selectors, not just the values ──
 
 function rule(selector) {

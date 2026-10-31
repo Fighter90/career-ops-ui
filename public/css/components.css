@@ -477,9 +477,9 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
   gap: 16px; font-size: 14px; font-weight: 500;
 }
 .conn-banner[hidden] { display: none; }
-/* The translucent-black chip keeps literal WHITE text in both themes: over the banner
-   fill its blend is ≥7.9:1, while the inherited --paper would go near-black in dark. */
-.conn-banner .btn-dark { background: rgba(0,0,0,.4); border: none; color: var(--ink); }
+/* The translucent-black chip keeps literal WHITE text in both themes (≥7.7:1 light
+   / ≥7.9:1 dark over the banner fill) — --ink is near-BLACK in light: owner screenshot. */
+.conn-banner .btn-dark { background: rgba(0,0,0,.4); border: none; color: #fff; }
 .conn-banner .btn-dark:hover { background: rgba(0,0,0,.6); }
 
 /* v1.55.3 (UX-2) — 4-provider OR onboarding: .onboarding-warn = loud cold-start banner
@@ -495,7 +495,7 @@ table.tbl tr.row-boosted td:first-child { box-shadow: inset 3px 0 0 var(--rausch
   font-size: 14px;
   font-weight: 500;
 }
-#onboarding-banner.onboarding-warn .btn-dark { background: rgba(0,0,0,.4); border: none; color: var(--ink); }
+#onboarding-banner.onboarding-warn .btn-dark { background: rgba(0,0,0,.4); border: none; color: #fff; } /* literal white — see .conn-banner above */
 #onboarding-banner.onboarding-warn .btn-dark:hover { background: rgba(0,0,0,.6); }
 #onboarding-banner.onboarding-ok {
   padding: 6px 24px;
