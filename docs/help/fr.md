@@ -1449,6 +1449,8 @@ vérifications et raisons. La barrière est locale : aucun modèle, aucune
 Le CRM. Une ligne par candidature ; vit dans `data/applications.md` sous
 forme de tableau GitHub-Flavored Markdown.
 
+Le badge de statut de chaque ligne est aussi un **select** — choisissez une étape et c'est enregistré instantanément : le serveur relaie le `set-status.mjs` canonique et la ligne se met à jour sur place ; un enregistrement échoué annule la valeur et affiche un toast. Les lignes au statut édité à la main ou inconnu, et les lignes de backfill numérotées `N/A`, affichent à la place un badge en lecture seule.
+
 ### Status flow
 
 `Evaluated` → `Applied` → `Responded` → `Interview` → `Offer` / `Hired` / `Rejected`

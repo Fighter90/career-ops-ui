@@ -1216,6 +1216,8 @@ URL 时,逐条点击就不现实了 — 跳转到第 14 节的 **Batch evaluate*
 CRM。每次申请一行;以 GitHub-Flavored Markdown 表的形式存于
 `data/applications.md`。
 
+每行的状态徽章同时也是一个选择框 —— 选定一个阶段即会立即保存：服务器会转发规范的 `set-status.mjs`，该行就地更新；保存失败时值会回滚并显示 toast。带有手工编辑的未知状态的行，以及编号为 `N/A` 的回填行，则显示只读徽章。
+
 ### 状态流转
 
 `Evaluated` → `Applied` → `Responded` → `Interview` → `Offer` /

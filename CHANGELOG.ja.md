@@ -9,6 +9,32 @@
 ---
 
 
+## [1.264.0] — 2026-10-31
+
+### 追加
+
+- **インライン・トラッカー状態編集** — `#/tracker`のすべての行のステータスバッジが、正規ステージのコンパクトな`<select>`になります (`GET /api/tracker/stages`から供給され、ハードコードされたホワイトリストではありません)。`POST /api/tracker/status`は`applications.md`ロックの下で親の正規`set-status.mjs`をリレーします (`states.mjs`による状態ホワイトリスト、`--dry-run`/`--note`パススルー、サニタイズ済み詳細付きのfail-soft 502、argv配列スポーン)。成功すると行はその場で更新され (トーンクラス + タブ件数、フォーカス維持); 失敗すると元に戻りトーストを出します。リレーが扱えない行 — 手作業で編集された不明なステータス、バックフィルSentinel `#` — は読み取り専用バッジを保ちます (route-review LOW修正; レビュアー: HIGH/MEDの指摘なし)。
+- **すべてのAIページにサーバー警告を表示** — `evaluate`、`deep`、`auto-pipeline` (ページ **と** モーダル)、`career-plan`、`market`、`cv-studio` (humanize + tailor)は、サーバーの`warnings`配列 (出力トークン切り詰め、言語ドリフト、日付修正)を`badge-warn`帯 (`role="status"`)として描画するようになりました; auto-pipelineモーダルはdoneフレームの警告をもう落としません。新しいキー`llm.truncatedNotice` ×19。
+- **カバレッジ波 (+111テスト)** — `routes/map.mjs` 100/94.9、`geocode.mjs` 96.3/92.9、`content.mjs` 99/84.9、`networking.mjs` 96.4/89.1、`sources/habr.mjs` 100/98.2 (新規`tests/cov-*-routes.test.mjs` ×3、`tests/sources-habr.test.mjs`); 分岐下限は≥ 90 %を維持。
+- **Linear CAR-191…216クロージャーバンドル** (`docs/reviews/2026-10-30-linear-car191-216-closure-bundle.md`) — CARごとのコミットSHAとエビデンスコメントを添えた、貼り付け可能なオーナー完結文書。
+
+### 修正
+
+- **Trudvsemスキャンソース** — 空ページ (`results: {}`、「終端を過ぎた」場合も) がスキャン全体を殺さなくなります (きれいなゼロ行); APIエラーエンベロープ (`status: 500`入りのHTTP-200) はAPI自身のテキストでthrowします; ページネーションは**レコード**オフセットを歩きます (以前はページインデックスでした — ページが静かに重複し、数百ではなく約52件); ウォークはAPIのディープオフセット失敗領域 (`offset × limit ≥ 10000`) の手前で止まります。ライブのエンドツーエンド検証済み。
+- **habr** — タイトル/会社名はエンティティデコードの**後に**タグ除去されます (hh.mjsパリティ): カードタイトル内の`&lt;script&gt;`が生きたマークアップとしてスキャン行に届くことはもうありません; タイトル内の正当な`>>`は生き残ります。
+- **PUT /api/profile (rawパス)** — 空でない`full_name`を持たない`candidate:`ブロックは拒否されます。フィールドマージ経路と同じラインです (以前は`full_name: null`を永続化していました)。
+- **ヒントの正直さ** — `.doc`をCVアップロードのacceptリストと`cv.uploadHint` ×19から削除 (パーサーは一度もサポートしていませんでした); `config.openaiModelHint` ×19は`gpt-5`を名指しします (サーバーはすべての`*-codex` idをそれにマッピングします); `config.anthropicModelHint` ×19と**Anthropicデフォルト**は親のティアを映します — デフォルト`claude-sonnet-5-5`、プレミアム`claude-opus-5-5`。
+- **Claude Codeドキュメントリンク** → `code.claude.com` (旧`docs.anthropic.com/en/docs/claude-code` URLはlinksゲートでTypeErrorを出します)。
+- help ×19: 行デンシティの箇条書きは消え (トグルはv1.263.0でUIを去りました)、18家族の壊れた`**bold**`スパンが修復されました — 加えてレンダラー漏れクラスが×19で修正 (すべてのテーブル後段落の後の2つ目の空行; ボールドセルから出ていくパイプ文字): **全19ヘルプバンドルでレンダー上のリテラル`**`は0**。
+
+### メモ
+
+- **Anthropicデフォルトモデルが変わりました** — `claude-sonnet-5-5` (親のスタンダードティア)。旧サイレントデフォルト (`claude-sonnet-4-6`) に依存していたデプロイは自動的にアップグレードされます — オプトアウトするには`.env`で`ANTHROPIC_MODEL`を固定してください。
+- 意図的に見送った項目: 設計上開いたままの2つのLOWレビュー指摘 (インラインセレクトはカンバンの`movesReady`劣化をミラーしません — すべての失敗で正直なトーストを出すのが選ばれた挙動です; `code: 'timeout'`分岐は30 s超のテストではなくfake-writer契約がカバーし続けます)。CAR-141 (デモ動画) はオーナーのままです。
+- help ×19は、v1.263.0出荷後に`main`でリリース後の散文パス (デンシティ箇条書きの除去、レンダラー漏れクラスの修正) を受けました — このリリースがそれを載せる最初のタグです。
+
+Tests 6905 → 7041 (+136) · Playwright 176 (173 合格 / 1 opt-in スキップ) · カバレッジ 98.5 % 行 / 90.1 % 分岐 · レジストリ変更なし: 123 sources = 118 EN + 5 RU · 118 adapters。
+
 ## [1.263.0] — 2026-10-30
 
 ### 追加

@@ -1276,6 +1276,8 @@ pipeline에 10개 이상 URL이 큐잉되었다면 JD별 클릭은 비현실적�
 CRM. 지원당 한 행. `data/applications.md`에 GitHub-Flavored
 Markdown 테이블로 존재합니다.
 
+각 행의 상태 배지는 셀렉트이기도 합니다 — 스테이지를 고르면 즉시 저장됩니다: 서버는 정규 `set-status.mjs`를 릴레이하고 행이 제자리에서 갱신됩니다; 저장에 실패하면 값이 되돌려지고 토스트가 표시됩니다. 손으로 편집된 알 수 없는 상태를 가진 행과 `N/A`로 번호가 매겨진 백필 행은 대신 읽기 전용 배지를 표시합니다.
+
 ### 상태 흐름
 
 `Evaluated` → `Applied` → `Responded` → `Interview` → `Offer` /

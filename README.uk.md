@@ -10,19 +10,19 @@
 
 _Неофіційний інтерфейс — не пов'язаний із career-ops / santifer і не схвалений ними._
 
-[![tests](https://img.shields.io/badge/tests-6905%20passed-brightgreen)](#тести)
+[![tests](https://img.shields.io/badge/tests-7041%20passed-brightgreen)](#тести)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#тести)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#тести)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#вимоги)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.263.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.263.0)
+[![release](https://img.shields.io/badge/release-v1.264.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.264.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Останній реліз — v1.263.0** — **Батч UX від власника: шар полірування анімацій (touch-безпечні ховери, підйом лише інтерактивних карток, анімації модалок/поповерів/тостів/теми — безпечно за reduced-motion), акцент змінюється з синього на багряно-червоний як у логотипа, WCAG-проходження контрасту (docs-fab 6.4:1, тости, межі форм 3:1), кожен контроль отримує програмне ім'я, і дюжина виправлень розкладки — шапка таблиці скану більше не накриває пошук, фільтр зарплати знову нормального розміру, сторінка документації більше не переповнюється, мобільний drawer отримав видиму кнопку закриття. Tests 6869 → 6905.**
+> **🆕 Останній реліз — v1.264.0** — **Пост-релізна хвиля загартування: статус кожного рядка трекера редагується інлайн (канонічний set-status.mjs батька під локом applications.md), попередження сервера (обрізання, дрейф мови) показуються смугою на всіх шести AI-сторінках, скан-джерело Trudvsem переживає порожні сторінки й іде за record-зміщеннями, заголовки habr не воскрешають розмітку, raw-гейт профілю тримає рядок full_name, а хінти нарешті кажуть правду (.doc зник, gpt-5 і тири Anthropic 5-5). Tests 6905 → 7041.**
 >
-> **Попередній реліз — v1.262.4** — **Патч token-dense для `ja`: п'ятилокальний прицільний повторний запуск на проді розділив чотири нічні тайм-аути оцінювання — ar/ko/zh-CN пройшли (250–291 с), разовий дрейф ru не повторився — але `ja` двічі врізалася в стандартну стелю 300 с з нульовим виводом; `ja` тепер долучається до `ta`/`hi`/`it`/`pl` зі стелею 32768 токенів і годинником 480 с, закріплено red-first. Tests 6868 → 6869.**
+> **Попередній реліз — v1.263.0** — **Батч UX від власника: шар полірування анімацій (touch-безпечні ховери, підйом лише інтерактивних карток, анімації модалок/поповерів/тостів/теми — безпечно за reduced-motion), акцент змінюється з синього на багряно-червоний як у логотипа, WCAG-проходження контрасту (docs-fab 6.4:1, тости, межі форм 3:1), кожен контроль отримує програмне ім'я, і дюжина виправлень розкладки — шапка таблиці скану більше не накриває пошук, фільтр зарплати знову нормального розміру, сторінка документації більше не переповнюється, мобільний drawer отримав видиму кнопку закриття. Tests 6869 → 6905.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -147,7 +147,7 @@ career-ops/
 └─ web-ui/          ← це репозиторій
    ├─ server/       # Express + 15 модулів маршрутів
    ├─ public/       # vanilla JS SPA, без бандлера
-   └─ tests/        # 6905 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.263.0)
+   └─ tests/        # 7041 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.264.0)
 ```
 
 Сервер має дві виробничі залежності: `express` та `js-yaml`. Жодного transpile, жодного бандлера — весь UI займає менше 30 KB у мінімізованому вигляді.

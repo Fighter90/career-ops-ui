@@ -7,19 +7,19 @@
 
 _அதிகாரப்பூர்வமற்ற இடைமுகம் — career-ops / santifer உடன் எந்தத் தொடர்பும் அல்ல, அவர்களால் அங்கீகரிக்கப்படவும் இல்லை._
 
-[![tests](https://img.shields.io/badge/tests-6905%20passed-brightgreen)](#சோதனைகள்)
+[![tests](https://img.shields.io/badge/tests-7041%20passed-brightgreen)](#சோதனைகள்)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#சோதனைகள்)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#சோதனைகள்)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#தேவைகள்)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.263.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.263.0)
+[![release](https://img.shields.io/badge/release-v1.264.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.264.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 சமீபத்திய வெளியீடு — v1.263.0** — **உரிமையாளர் UX தொகுப்பு: ஒரு motion polish அடுக்கு (தொடு-பாதுகாப்பான hovers, ஊடாடக்கூடியவை மட்டும் கொண்ட அட்டை உயர்வு, modal/popover/toast/theme அனிமேஷன்கள் — reduced-motion பாதுகாப்பானது), உச்சரிப்பு logo போல நீலம் → கருஞ்சிவப்பு ஆக மாறுகிறது, ஒரு WCAG மாறுபாடு தேர்ச்சி (docs-fab 6.4:1, toast, படிவ எல்லைகள் 3:1), ஒவ்வொரு கட்டுப்பாட்டுக்கும் ஒரு நிரல்-ரீதியான பெயர் கிடைக்கிறது, மேலும் ஒரு டசன் தளவமைப்பு திருத்தங்கள் — scan அட்டவணை தலைப்பு இனி தேடலை மூடாது, சம்பள வடிகட்டி மீண்டும் இயல்பான அளவில் உள்ளது, docs பக்கம் ஒருபோதும் வழிந்து செல்லாது, மொபைல் இழுப்பறைக்கு ஒரு தெரியும் மூடல் கிடைத்தது. Tests 6869 → 6905.**
+> **🆕 சமீபத்திய வெளியீடு — v1.264.0** — **வெளியீட்டுக்குப்-பிந்தைய hardening அலை: ஒவ்வொரு tracker வரிசையின் நிலையும் இன்லைன்-திருத்தக்கூடியது (applications.md பூட்டின் கீழ் பெற்றோரின் அதிகாரப்பூர்வ set-status.mjs), சர்வர எச்சரிக்கைகள் (துண்டிப்பு, மொழி விலகல்) அனைத்து ஆறு AI பக்கங்களிலும் ஒரு பட்டையாகத் தெரிகின்றன, Trudvsem ஸ்கேன் மூலம் காலி பக்கங்களிலிருந்து தப்பி record ஆஃப்செட்களில் நடக்கிறது, habr தலைப்புகள் markup-ஐ உயிர்ப்பிக்க முடியாது, raw சுயவிவரக் கேட் full_name கோட்டைப் பிடித்திருக்கிறது, மேலும் குறிப்புகள் இறுதியில் உண்மையைச் சொல்கின்றன (.doc நீக்கப்பட்டது, gpt-5 மற்றும் Anthropic 5-5 நிலைகள்). Tests 6905 → 7041.**
 >
-> **முந்தைய வெளியீடு — v1.262.4** — **ja token-dense patch: prod-இல் நடந்த 5-locale spot re-run இரவின் நான்கு evaluate timeouts-ஐ பிரித்தது — ar/ko/zh-CN pass ஆனது (250–291 s), ru-இன் ஒருமுறை drift திரும்பவில்லை — ஆனால் `ja` standard 300 s ceiling-இல் பூஜ்ஜிய output-உடன் இருமுறை மோதியது; `ja` இப்போது 32768-token ceiling மற்றும் 480 s clock உடன் `ta`/`hi`/`it`/`pl`-உடன் சேர்கிறது, red-first ஆக pin செய்யப்பட்டது. Tests 6868 → 6869.**
+> **முந்தைய வெளியீடு — v1.263.0** — **உரிமையாளர் UX தொகுப்பு: ஒரு motion polish அடுக்கு (தொடு-பாதுகாப்பான hovers, ஊடாடக்கூடியவை மட்டும் கொண்ட அட்டை உயர்வு, modal/popover/toast/theme அனிமேஷன்கள் — reduced-motion பாதுகாப்பானது), உச்சரிப்பு logo போல நீலம் → கருஞ்சிவப்பு ஆக மாறுகிறது, ஒரு WCAG மாறுபாடு தேர்ச்சி (docs-fab 6.4:1, toast, படிவ எல்லைகள் 3:1), ஒவ்வொரு கட்டுப்பாட்டுக்கும் ஒரு நிரல்-ரீதியான பெயர் கிடைக்கிறது, மேலும் ஒரு டசன் தளவமைப்பு திருத்தங்கள் — scan அட்டவணை தலைப்பு இனி தேடலை மூடாது, சம்பள வடிகட்டி மீண்டும் இயல்பான அளவில் உள்ளது, docs பக்கம் ஒருபோதும் வழிந்து செல்லாது, மொபைல் இழுப்பறைக்கு ஒரு தெரியும் மூடல் கிடைத்தது. Tests 6869 → 6905.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -198,7 +198,7 @@ web-ui/
 │       ├── app.js          # தொடக்கம், lang switcher, theme
 │       ├── lib/            # i18n (19 மொழிகள்), api, ui, format
 │       └── views/          # ஒரு பக்கத்திற்கு ஒரு பார்வை
-├── tests/                  # 6905 unit (baseline @ v1.263.0) — node --test, கணினி முழுவதும் CI-isolated
+├── tests/                  # 7041 unit (baseline @ v1.264.0) — node --test, கணினி முழுவதும் CI-isolated
 └── docs/                   # உதவி வழிகாட்டிகள் ×19, LOCALIZATION, SDD
 ```
 

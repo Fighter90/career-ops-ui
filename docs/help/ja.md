@@ -1333,6 +1333,8 @@ markdown を `reports/<date>-<company>-<role>.md` に永続化します。
 CRM です。応募 1 件 = 1 行。`data/applications.md` に GitHub
 Flavored Markdown テーブルとして保存されます。
 
+各行のステータスバッジはセレクトにもなっています — ステージを選ぶと即座に保存されます: サーバーは正規の `set-status.mjs` をリレーし、行はその場で更新されます; 保存に失敗すると値が元に戻り、トーストが表示されます。手作業で編集された不明なステータスを持つ行と、`N/A` と番号付けされたバックフィル行は、代わりに読み取り専用のバッジを表示します。
+
 ### ステータスフロー
 
 `Evaluated` → `Applied` → `Responded` → `Interview` → `Offer` /

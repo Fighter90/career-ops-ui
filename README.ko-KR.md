@@ -7,19 +7,19 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-6905%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7041%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.263.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.263.0)
+[![release](https://img.shields.io/badge/release-v1.264.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.264.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.263.0** — **오너 UX 배치: 모션 폴리시 레이어(터치-세이프 호버, 인터랙티브 전용 카드 리프트, 모달/팝오버/토스트/테마 애니메이션 — reduced-motion 세이프), 액센트가 로고처럼 블루 → 크림슨 레드로 전환, WCAG 대비 통과(docs-fab 6.4:1, 토스트, 폼 보더 3:1), 모든 컨트롤이 프로그래매틱 이름을 갖습니다, 그리고 열두 가지 레이아웃 수정 — scan 테이블 헤더가 더 이상 검색을 덮지 않고, 급여 필터가 정상 크기로 돌아오며, docs 페이지는 절대 넘치지 않고, 모바일 드로어에 보이는 닫기가 생겼습니다. 테스트 6869 → 6905.**
+> **🆕 최신 릴리스 — v1.264.0** — **릴리스 후 강화 웨이브: 모든 트래커 행의 상태를 인라인 편집할 수 있습니다 (상위의 정규 set-status.mjs가 applications.md 락 아래에서), 서버 경고 (절단, 언어 드리프트)가 여섯 AI 페이지 전부에서 밴드로 표시되고, Trudvsem 스캔 소스는 빈 페이지를 살아남아 레코드 오프셋을 걷으며, habr 제목은 마크업을 되살릴 수 없고, raw 프로필 게이트는 full_name 라인을 지키며, 힌트가 마침내 진실을 말합니다 (.doc은 사라졌고, gpt-5와 Anthropic 5-5 티어). Tests 6905 → 7041.**
 >
-> **이전 버전 — v1.262.4** — **ja 토큰 밀도 패치: prod의 5-로케일 표적 재실행이 그날 밤의 네 평가 타임아웃을 갈랐습니다 — ar/ko/zh-CN은 통과(250–291 s), ru의 일회성 드리프트는 재발하지 않음 — 하지만 `ja`는 출력 없이 표준 300 s 천장을 두 번 쳤습니다; 이제 `ja`가 `ta`/`hi`/`it`/`pl`과 함께 32768 토큰 천장과 480 s 클록에 합류하며 red-first로 고정됐습니다. 테스트 6868 → 6869.**
+> **이전 버전 — v1.263.0** — **오너 UX 배치: 모션 폴리시 레이어(터치-세이프 호버, 인터랙티브 전용 카드 리프트, 모달/팝오버/토스트/테마 애니메이션 — reduced-motion 세이프), 액센트가 로고처럼 블루 → 크림슨 레드로 전환, WCAG 대비 통과(docs-fab 6.4:1, 토스트, 폼 보더 3:1), 모든 컨트롤이 프로그래매틱 이름을 갖습니다, 그리고 열두 가지 레이아웃 수정 — scan 테이블 헤더가 더 이상 검색을 덮지 않고, 급여 필터가 정상 크기로 돌아오며, docs 페이지는 절대 넘치지 않고, 모바일 드로어에 보이는 닫기가 생겼습니다. 테스트 6869 → 6905.**
 
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
@@ -393,7 +393,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 6905 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.263.0)
+└─ tests/                    # 7041 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.264.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report 파서 (순수 함수)
    ├─ api.test.mjs           # 모든 엔드포인트, 임시 서버, 네트워크 없음
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -536,7 +536,7 @@ npm run test:coverage          # `npm test`와 동일 + V8 coverage
 
 | Suite                       | Tests | 내용                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integration) |  **6869** | 모든 엔드포인트, 임시 서버, 네트워크 없음. parser, scanner (mocked), runner, anthropic, security headers, XSS, JD sanitize, URL validation, path traversal, DNS-rebind, file lock, rate limit, i18n 패리티 포함. |
+| `node --test tests/*.test.mjs` (unit + integration) |   **7041** | 모든 엔드포인트, 임시 서버, 네트워크 없음. parser, scanner (mocked), runner, anthropic, security headers, XSS, JD sanitize, URL validation, path traversal, DNS-rebind, file lock, rate limit, i18n 패리티 포함. |
 | `tests/e2e.mjs` (smoke)      | 21 | Playwright headless: 모든 라우트 렌더링, 기본 플로우.                                                     |
 | `tests/e2e-comprehensive.mjs` | 23 | 전체 Playwright 워크스루: 11개 라우트 + 12개 기능 플로우.                                              |
 | `tests/playwright-smoke.mjs` (`npm run test:e2e:browser`) | **32** | 브라우저 주도 smoke: dashboard render, navigation, language switch, 404, health, tracker round-trip (BF-1), pipeline add + invalid-URL 스윕, reports empty, evaluate manual fallback, config keys masked, CV PUT XSS strip, pipeline preview 400. |

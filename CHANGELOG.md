@@ -6,6 +6,32 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 ---
 
+## [1.264.0] — 2026-10-31
+
+### Added
+
+- **Inline tracker status edit** — every `#/tracker` row's status badge is a compact `<select>` of the canonical stages (from `GET /api/tracker/stages`, never a hardcoded whitelist). `POST /api/tracker/status` relays the parent's canonical `set-status.mjs` under the `applications.md` lock (state whitelist via `states.mjs`, `--dry-run`/`--note` passthrough, fail-soft 502 with sanitized detail, argv-array spawn). Success updates the row in place (tone class + tab counts, focus kept); failure reverts and toasts. Rows the relay cannot address — a hand-edited unknown status, a backfill sentinel `#` — keep the read-only badge (route-review LOW fixes; reviewer: no HIGH/MED findings).
+- **Server warnings surfaced on every AI page** — `evaluate`, `deep`, `auto-pipeline` (page **and** modal), `career-plan`, `market`, `cv-studio` (humanize + tailor) now render the server's `warnings` array (output-token truncation, language drift, date corrections) as a `badge-warn` band (`role="status"`); the auto-pipeline modal no longer drops the done-frame warnings. New key `llm.truncatedNotice` ×19.
+- **Coverage wave (+111 tests)** — `routes/map.mjs` 100/94.9, `geocode.mjs` 96.3/92.9, `content.mjs` 99/84.9, `networking.mjs` 96.4/89.1, `sources/habr.mjs` 100/98.2 (new `tests/cov-*-routes.test.mjs` ×3, `tests/sources-habr.test.mjs`); branch floor held at ≥ 90 %.
+- **Linear CAR-191…216 closure bundle** (`docs/reviews/2026-10-30-linear-car191-216-closure-bundle.md`) — paste-ready owner close-out with per-CAR commit SHAs and evidence comments.
+
+### Fixed
+
+- **Trudvsem scan source** — an empty page (`results: {}`, also "past the end") no longer kills the whole scan (clean zero rows); API error envelopes (HTTP-200 with `status: 500`) throw with the API's own text; pagination walks **record** offsets (was page-index — pages silently duplicated, ~52 vacancies instead of hundreds); the walk stops before the API's deep-offset failure zone (`offset × limit ≥ 10000`). Live end-to-end verified.
+- **habr** — titles/companies are tag-stripped **after** entity decoding (hh.mjs parity): `&lt;script&gt;` in a card title can no longer reach scan rows as live markup; legitimate `>>` in titles survives.
+- **PUT /api/profile (raw path)** — a `candidate:` block without a non-empty `full_name` is refused, same line as the fields-merge path (it used to persist `full_name: null`).
+- **Hints truthfulness** — `.doc` removed from the CV upload accept list and `cv.uploadHint` ×19 (the parser never supported it); `config.openaiModelHint` ×19 names `gpt-5` (the server maps any `*-codex` id to it); `config.anthropicModelHint` ×19 and the **Anthropic default** now mirror the parent's tiers — default `claude-sonnet-5-5`, premium `claude-opus-5-5`.
+- **Claude Code docs link** → `code.claude.com` (the old `docs.anthropic.com/en/docs/claude-code` URL TypeErrors in the links gate).
+- help ×19: the Row-density bullet is gone (the toggle left the UI in v1.263.0) and 18 broken `**bold**` span families repaired — plus the renderer-leak class fixed ×19 (second blank line after every table-before-paragraph; pipe glyph out of bold cells): **0 literal `**` in render across all 19 help bundles**.
+
+### Notes
+
+- **The Anthropic default model changed** to `claude-sonnet-5-5` (the parent's standard tier). Deploys that relied on the old silent default (`claude-sonnet-4-6`) upgrade automatically — pin `ANTHROPIC_MODEL` in `.env` to opt out.
+- Deliberately not done: the two LOW review nits left open by design (inline select does not mirror the kanban `movesReady` degradation — honest toast on every failure is the chosen behaviour; the `code: 'timeout'` branch stays covered by the fake-writer contract, not a >30 s test). CAR-141 (demo video) remains the owner's.
+- help ×19 got the post-release prose pass (density bullet out, renderer-leak class fixed) on `main` after v1.263.0 shipped — this release is the first tag carrying it.
+
+Tests 6905 → 7041 (+136) · Playwright 176 (173 pass / 1 opt-in skip) · coverage 98.5 % line / 90.1 % branch · registry unchanged: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.263.0] — 2026-10-30
 
 ### Added
