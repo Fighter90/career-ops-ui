@@ -2,12 +2,12 @@
 
 This is the operating manual. Read it, then `PLAN.md` (order) and `BACKLOG.md` (what is left).
 
-## State (2026-10-30)
+## State (2026-10-31)
 
-- Released: **v1.263.0** (owner UX batch: motion.css polish layer, accent blue→crimson hue 15, contrast pass, a11y all-controls-named, scan/dashboard/help/drawer fixes, 7 visual-sweep fixes) — deployed to resumecraft.ru (prod = 1.263.0, parent 1.38.0 @ `0595b5d1`). Tagged, GitHub release, npm package, cvstart.org rebuilt. Before it, over the last day: v1.262.4 (ja token-dense), v1.262.3 (pl token-dense), v1.262.2 (review-tail: 7 L-fixes + deploy F1–F6 + import-modal tail), v1.262.1 (it token-dense).
-- Registry: **123 sources = 118 EN + 5 RU · 118 adapters** · 39 route modules · 19 locales · tests **6905** · help 33 H2 / 129 H3 · Playwright 176 · `motion.css` added as the last `/css/` sheet.
-- Recent trains: v1.262.2 (review-tail — 7 wave-review L-findings closed red-first; deploy.yml F1–F6 incl. 6 executable anti-downgrade pins; import-modal tail) → v1.262.3 (pl token-dense: 32768 tokens + 480 s clock, after the ×2 `502 · 300 s · 0 ch` evals on prod) → v1.262.4 (ja token-dense: same ceiling, after the 5-locale spot re-run split the night's timeouts) → v1.263.0 (owner UX batch — motion.css, crimson accent, contrast/a11y passes, scan/dashboard/help/drawer fixes). Deploy workflow gained `mode=hermes` / `mode=provider` in v1.262.1.
-- Next: help ×19 prose fan-out (density mention + §1 markdown spans — the running `help/1.263.0-*` wave closes it), CAR-141 demo video recording (owner), 33 «landed & evolved» branches — owner's call.
+- Released: **v1.264.0** (post-release hardening wave, PR #610: inline tracker status edit via `POST /api/tracker/status`, server warnings surfaced on 6 AI pages + the auto modal, coverage wave +111, trudvsem empty-page/record-offset fix live-verified, habr strip-after-decode, raw profile full_name gate, hints truthfulness — Anthropic default now `claude-sonnet-5-5`, help ×19 renderer-leak class closed, banner buttons literal white) — deployed to resumecraft.ru (prod = 1.264.0, parent 1.38.0 @ `0595b5d1`). Remote-QA v1.264.0: routes/site/links + ответы 19/19 ✓; live-evaluate es/zh-CN 502×1 → спот ✓ (transient). Before it: v1.263.0 (owner UX batch), v1.262.4 (ja token-dense), v1.262.3 (pl token-dense), v1.262.2 (review-tail), v1.262.1 (it token-dense).
+- Registry: **123 sources = 118 EN + 5 RU · 118 adapters** · 39 route modules · 19 locales · tests **7041** · help 33 H2 / 129 H3 · Playwright 176 · `motion.css` is the last `/css/` sheet.
+- Hygiene (2026-10-31): Linear **CAR-191…216 closed** with evidence comments (the closure bundle `docs/reviews/2026-10-30-linear-car191-216-closure-bundle.md` executed via the carrer-ops-ui API key); **CAR-217** (owner review: `car136/m138` — exact FAQ counts, agent-verified sound) and **CAR-218** (candidate: base eval ceiling 480 s for all locales) created. Origin heads = `main` + `car136/m138`; `release/1.264.0-integration` deleted (ship-train step 12), 32 «landed & evolved» branches deleted earlier with `origin-hygiene/*` backups. `LINEAR_CARER_OPS_UI_KEY` in `~/.zshenv` drives the carrer-ops-ui workspace (`LINEAR_API_KEY` points at methodagent — do not use it for CAR tasks).
+- Next: CAR-217 owner verdict (merge `car136/m138` or drop it), CAR-218 owner call (patch vs next wave), CAR-141 demo video recording (owner), CAR-203 sidebar-pill truncation (no fix found in v1.263.0/v1.264.0 — needs repro + fix).
 
 ## Non-negotiable rules
 

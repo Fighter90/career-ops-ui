@@ -205,20 +205,9 @@ header rule (each item → its merge PR):
 | FULL-M4 — logo + batch | #523 | CAR-163: logo magic-byte pin on every path + private cache + nosniff; batch single-flight + `--parallel`/`--min-score` validation |
 | FULL-M5 — provider cascade consolidation | #521 | CAR-167: one cascade via `resolveProvider()` in llm-dispatch, `res.on('close')` abort — client disconnect no longer burns tokens |
 | CAR-147 — eval timeout on token-dense locales | #524 | 480 s evaluation ceiling (ta 502-timeout dead) |
+| FULL-M1 — server shared-file writes | #526 + #539 | tracked spawns + locked atomic PUT saves (cv/profile/modes/config via the portals-style lock + temp-rename; tracker-mutating scripts under one TRACKER_MUTATING set) |
+| FULL-M6 — client consolidation | #531 + #536 (+ #525) | SSE parser → API.postStream, withFocusPreserved, clipboard awaited, safe-fetch pre-abort crash + credential strip, dotenv `__proto__` validation, isPrivateOrLoopback NAT64/6to4 ranges, server-side consolidation |
 
-Still open (rows kept):
-
-- **[M] FULL-M1 — server shared-file writes without lock/atomicity:** tracker-mutating parent
-  scripts (runners/batch/outcome/followup) outside `withFileLock(PATHS.applications)`;
-  `PUT /api/cv|profile|modes|config` plain writeFileSync — reuse the portals.mjs
-  lock+temp-rename helper. Tracker-mutating script list in one TRACKER_MUTATING set.
-  **In flight:** `fix/m1-wave1` (pushed to origin).
-- **[M] FULL-M6 — client consolidation:** SSE parser ×4 → API.postStream; withFocusPreserved ×3;
-  H1-label tables ×3 (drift-gate the server copy); statusClass divergence; evaluate/mode-page
-  unawaited clipboard (false «Copied»); two-pager stale preview after AI fill + debounce;
-  llm-usage rotation; file-lock GC dead code; dotenv `__proto__` key validation +
-  Object.create(null); safe-fetch redirect header leak + abort-listener pile-up;
-  isPrivateOrLoopback missing NAT64/6to4/198.18/240.0.0.0/4; env-config mtime cache;
-  providerCostHint observers on body; countries favorites per-row parse.
-  **In flight:** `fix/m6-wave1` (client) + `fix/m6s-wave1` (server) — local only,
-  not yet pushed; `fix/sf-wave1` (safe-fetch slice) — pushed to origin.
+No rows kept — the FULL wave is fully landed (verified 2026-10-31: the `fix/m1-wave1` /
+`fix/m6-wave1` / `fix/m6s-wave1` / `fix/sf-wave1` branches no longer exist and every item's
+marker test is on `main`).
