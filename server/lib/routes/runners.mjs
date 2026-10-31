@@ -318,7 +318,9 @@ export function registerRunnerRoutes(app) {
   // writeRateLimit (CodeQL #705) — the relay spawns a subprocess per call
   // (apply rewrites data/applications.md), so a runaway client loop must
   // hit the unconditional 60/min guard, not the parent's repair script.
-  app.post('/api/runners/report-links', writeRateLimit, async (req, res) => {
+  // writeRateLimit() is a factory over express-rate-limit's rateLimit() —
+  // each call creates the route's own limiter instance (per-route isolation).
+  app.post('/api/runners/report-links', writeRateLimit(), async (req, res) => {
     const body = (req.body && typeof req.body === 'object') ? req.body : {};
     // Absent (undefined) means the default; an explicit null or any other
     // value is garbage and must be a 400, never a silent dry-run.

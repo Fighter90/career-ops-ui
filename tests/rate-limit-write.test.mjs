@@ -12,6 +12,15 @@
  * while staying generous enough that no legitimate client or existing
  * test (≤12 calls per endpoint per process) ever trips it.
  *
+ * Engine (CodeQL re-flagged the custom middleware in #706/#707 — the
+ * js/missing-rate-limiting query only models the canonical
+ * express-rate-limit): writeRateLimit() is a factory returning
+ * rateLimit({…}) from 'express-rate-limit' — the literal call CodeQL
+ * recognises in the middleware chain. Behavioral contract unchanged:
+ * limit+1 → 429 with a JSON {ok:false, error, retryAfter} body and a
+ * numeric Retry-After header; per-route isolation via one limiter
+ * instance (and one MemoryStore) per route.
+ *
  * CI-isolated: mkdtemp CAREER_OPS_ROOT with cv.md + a minimal tracker table,
  * WRITE_RATE_LIMIT env override ("3/60s") so limit+1 is 4 requests, no
  * network, 127.0.0.1 bind, dynamic imports AFTER the env is set
@@ -59,9 +68,8 @@ before(async () => {
 });
 
 after(async () => {
-  // Server FIRST — everything below must never block its close (on
-  // unpatched code __resetRateLimits does not exist yet; the limiter's
-  // buckets die with the process).
+  // Server FIRST — everything below must never block its close (the
+  // limiter's buckets die with the process; the reset is belt-and-braces).
   if (server) await new Promise((r) => { server.closeIdleConnections?.(); server.close(r); });
   try {
     const rl = await import('../server/lib/rate-limit.mjs');
@@ -110,45 +118,59 @@ test('POST /api/tracker/status: 3 requests pass with the handler code, the 4th i
 });
 
 test('writeRateLimit buckets are per route — one endpoint filling does not throttle the other', async () => {
-  // Unit-level: a 1-req bucket on route A must not block route B for the
-  // same IP (per-route × IP keying — the two endpoints above each own a
-  // bucket on the live server, so this contract is pinned here directly).
+  // Unit-level: each factory call creates its own limiter instance +
+  // MemoryStore, so a 1-req bucket on route A must not block route B for
+  // the same IP (the two endpoints above each own a bucket on the live
+  // server, so this contract is pinned here directly too).
   process.env.WRITE_RATE_LIMIT = '1/60s';
   const { writeRateLimit } = await import('../server/lib/rate-limit.mjs');
+  const routeA = writeRateLimit();
+  const routeB = writeRateLimit();
   let passed = 0;
+  const codes = [];
   const mkReq = (url) => ({ ip: '198.51.100.9', socket: { remoteAddress: '198.51.100.9' }, originalUrl: url, url });
-  const res = { setHeader() {}, status() { return res; }, json() {} };
-  writeRateLimit(mkReq('/api/runners/report-links'), res, () => { passed += 1; }); // fills route A
-  writeRateLimit(mkReq('/api/tracker/status'), res, () => { passed += 1; });       // route B — fresh bucket
+  const mkRes = () => {
+    const res = { setHeader() {}, status(c) { codes.push(c); return res; }, json() {} };
+    return res;
+  };
+  await routeA(mkReq('/api/runners/report-links'), mkRes(), () => { passed += 1; }); // fills route A
+  await routeB(mkReq('/api/tracker/status'), mkRes(), () => { passed += 1; });       // route B — fresh bucket
   assert.equal(passed, 2, 'a full bucket on one route must not leak into another');
+  await routeA(mkReq('/api/runners/report-links'), mkRes(), () => { passed += 1; }); // over route A's limit
+  assert.deepEqual(codes, [429], 'the same route over its limit must be blocked, the other must not');
 });
 
 // ── Source pin: both alerted mutations apply the unconditional limiter. ──
 
-test('source: routes/tracker.mjs gates POST /api/tracker/status with writeRateLimit', () => {
+test('source: routes/tracker.mjs gates POST /api/tracker/status with writeRateLimit()', () => {
   const src = readFileSync(join(__dirname, '..', 'server', 'lib', 'routes', 'tracker.mjs'), 'utf8');
   assert.match(src, /import \{ writeRateLimit \} from '\.\.\/rate-limit\.mjs';/);
-  assert.match(src, /app\.post\('\/api\/tracker\/status', writeRateLimit,/);
+  assert.match(src, /app\.post\('\/api\/tracker\/status', writeRateLimit\(\),/);
   // The LLM limiter (loopback-conditional) no longer fronts this route —
   // the write limiter is the unconditional guard.
   assert.ok(!/app\.post\('\/api\/tracker\/status', llmRateLimit,/.test(src),
     'tracker/status must not depend on the loopback-conditional llmRateLimit');
 });
 
-test('source: routes/runners.mjs gates POST /api/runners/report-links with writeRateLimit', () => {
+test('source: routes/runners.mjs gates POST /api/runners/report-links with writeRateLimit()', () => {
   const src = readFileSync(join(__dirname, '..', 'server', 'lib', 'routes', 'runners.mjs'), 'utf8');
   assert.match(src, /import \{ writeRateLimit \} from '\.\.\/rate-limit\.mjs';/);
-  assert.match(src, /app\.post\('\/api\/runners\/report-links', writeRateLimit,/);
+  assert.match(src, /app\.post\('\/api\/runners\/report-links', writeRateLimit\(\),/);
 });
 
-test('source: rate-limit.mjs exports the unconditional writeRateLimit + a test reset', () => {
+test('source: rate-limit.mjs exports the express-rate-limit writeRateLimit factory + a test reset', () => {
   const src = readFileSync(join(__dirname, '..', 'server', 'lib', 'rate-limit.mjs'), 'utf8');
-  assert.match(src, /export const writeRateLimit = makeRateLimiter\(\{/);
+  // The factory must wrap the canonical rateLimit() from express-rate-limit —
+  // the literal middleware call CodeQL's js/missing-rate-limiting models.
+  assert.match(src, /import \{ rateLimit, MemoryStore \} from 'express-rate-limit';/);
+  assert.match(src, /export function writeRateLimit\(\)/);
+  assert.match(src, /return rateLimit\(\{/);
   assert.match(src, /export function __resetRateLimits\(/);
-  // Unconditional: the write limiter's factory call carries no `gate` —
-  // (the llm limiter keeps its isPubliclyExposed gate; the write guard
-  // must hold on loopback too).
-  const def = src.slice(src.indexOf('export const writeRateLimit'));
-  const defBody = def.slice(0, def.indexOf('});'));
-  assert.ok(!/gate:/.test(defBody), 'writeRateLimit must not gate on isPubliclyExposed');
+  // Unconditional: the write limiter's factory carries no isPubliclyExposed
+  // gate — (the llm limiter keeps its loopback gate; the write guard must
+  // hold on loopback too).
+  const def = src.slice(src.indexOf('export function writeRateLimit()'));
+  const defBody = def.slice(0, def.indexOf('}\n'));
+  assert.ok(!/isPubliclyExposed/.test(defBody), 'writeRateLimit must not gate on isPubliclyExposed');
+  assert.ok(!/gate:/.test(defBody), 'writeRateLimit must carry no gate at all');
 });
