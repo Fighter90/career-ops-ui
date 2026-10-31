@@ -1484,6 +1484,8 @@ değil dürüstçe "betik bulunamadı" notuyla yanıt verir.
 CRM. Başvuru başına bir satır; `data/applications.md`'de bir
 GitHub-Flavored Markdown tablosu olarak bulunur.
 
+Her satırın durum rozeti aynı zamanda bir **seçici**dir — bir aşama seçin ve anında kaydedilir: sunucu kanonik `set-status.mjs`'i aktarır ve satır yerinde güncellenir; başarısız bir kayıt değeri geri alır ve bir toast gösterir. Elle düzenlenmiş veya bilinmeyen bir durumu olan satırlar ile `N/A` olarak numaralanmış backfill satırları bunun yerine salt-okunur bir rozet gösterir.
+
 ### Durum akışı
 
 `Evaluated` → `Applied` → `Responded` → `Interview` → `Offer` /

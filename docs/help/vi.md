@@ -1416,6 +1416,12 @@ thật "không tìm thấy script" thay vì báo lỗi.
 Chiếc CRM. Mỗi đơn một dòng; nằm trong `data/applications.md` dưới dạng
 bảng GitHub Flavored Markdown.
 
+Huy hiệu trạng thái của mỗi dòng cũng là một **select** — chọn một giai
+đoạn là lưu ngay: server relay `set-status.mjs` chính tắc và dòng được
+cập nhật tại chỗ; một-lượt-lưu-thất-bại hoàn-nguyên giá trị và hiện
+toast. Các dòng có trạng thái bị sửa tay hoặc không rõ, và các dòng
+backfill được đánh số `N/A`, hiển thị huy hiệu chỉ-đọc thay vào đó.
+
 ### Luồng trạng thái
 
 `Evaluated` → `Applied` → `Responded` → `Interview` → `Offer` /

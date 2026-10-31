@@ -1426,6 +1426,8 @@ failure.
 The CRM. One row per application; lives in `data/applications.md` as a
 GitHub-Flavored Markdown table.
 
+Every row's status badge is also a **select** — pick a stage and it saves instantly: the server relays the canonical `set-status.mjs` and the row updates in place; a failed save reverts the value and shows a toast. Rows with a hand-edited or unknown status, and backfill rows numbered `N/A`, show a read-only badge instead.
+
 ### Status flow
 
 `Evaluated` → `Applied` → `Responded` → `Interview` → `Offer` /

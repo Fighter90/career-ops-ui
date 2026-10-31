@@ -7,19 +7,19 @@
 
 _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von diesen unterstützt._
 
-[![tests](https://img.shields.io/badge/tests-6905%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7041%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.263.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.263.0)
+[![release](https://img.shields.io/badge/release-v1.264.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.264.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Neueste Version — v1.263.0** — **Die Owner-UX-Charge: ein Motion-Polish-Layer (touch-sichere Hovers, Lift nur für interaktive Karten, Modal-/Popover-/Toast-/Theme-Animationen — reduced-motion-sicher), der Akzent kippt Blau → Karmesinrot wie das Logo, ein WCAG-Kontrastdurchlauf (docs-fab 6.4:1, Toast, Formularrahmen 3:1), jede Kontrolle bekommt einen programmatischen Namen, und ein Dutzend Layout-Fixes — der Scan-Tabellen-Header verdeckt die Suche nicht mehr, der Gehaltsfilter ist wieder normal groß, die Docs-Seite läuft nie über, der mobile Drawer hat ein sichtbares Schließen bekommen. Tests 6869 → 6905.**
+> **🆕 Neueste Version — v1.264.0** — **Die Post-Release-Härtungswelle: der Status jeder Tracker-Zeile ist inline bearbeitbar (das kanonische `set-status.mjs` des Elternprojekts unter der `applications.md`-Sperre), Server-Warnungen (Kürzung, Sprachdrift) erscheinen als Band auf allen sechs KI-Seiten, die Trudvsem-Scan-Quelle überlebt leere Seiten und läuft in Record-Offsets, habr-Titel können kein Markup wiederbeleben, das Raw-Profil-Gate hält die `full_name`-Zeile, und die Hints sagen endlich die Wahrheit (.doc ist weg, `gpt-5` und die Anthropic-5-5-Tiers). Tests 6905 → 7041.**
 >
-> **Vorherige Version — v1.262.4** — **Der ja-Token-Dense-Patch: der 5-Locales-Spot-Nachlauf auf der Prod hat die vier Bewertungs-Timeouts der Nacht getrennt — ar/ko/zh-CN bestanden (250–291 s), die einmalige Drift von ru wiederholte sich nicht — aber `ja` stieß zweimal mit null Output an die Standard-300-s-Schranke; `ja` stößt jetzt zu `ta`/`hi`/`it`/`pl` mit dem 32768-Token-Ceiling und der 480 s Uhr hinzu, red-first gepinnt. Tests 6868 → 6869.**
+> **Vorherige Version — v1.263.0** — **Die Owner-UX-Charge: ein Motion-Polish-Layer (touch-sichere Hovers, Lift nur für interaktive Karten, Modal-/Popover-/Toast-/Theme-Animationen — reduced-motion-sicher), der Akzent kippt Blau → Karmesinrot wie das Logo, ein WCAG-Kontrastdurchlauf (docs-fab 6.4:1, Toast, Formularrahmen 3:1), jede Kontrolle bekommt einen programmatischen Namen, und ein Dutzend Layout-Fixes — der Scan-Tabellen-Header verdeckt die Suche nicht mehr, der Gehaltsfilter ist wieder normal groß, die Docs-Seite läuft nie über, der mobile Drawer hat ein sichtbares Schließen bekommen. Tests 6869 → 6905.**
 >
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
@@ -423,7 +423,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 6905 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.263.0)
+└─ tests/                    # 7041 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.264.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -563,7 +563,7 @@ npm run test:coverage          # same as `npm test` plus V8 coverage
 
 | Suite                       | Tests | Was                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integration) |  **6869** | Jeder Endpunkt, ephemerer Server, kein Netzwerk. 329 Dateien: Parser, Scanner (gemockt), Runner, anthropic/openai, Security-Header, XSS, JD-Sanitize, URL-Validierung, i18n-Parität, + die UX-Fix-Suites v1.55→v1.56. |
+| `node --test tests/*.test.mjs` (unit + integration) |   **7041** | Jeder Endpunkt, ephemerer Server, kein Netzwerk. 329 Dateien: Parser, Scanner (gemockt), Runner, anthropic/openai, Security-Header, XSS, JD-Sanitize, URL-Validierung, i18n-Parität, + die UX-Fix-Suites v1.55→v1.56. |
 | `tests/e2e.mjs` (smoke)      | 21 | Playwright headless: jede Route rendert, grundlegende Flows.                                                     |
 | `tests/e2e-comprehensive.mjs` | 23 | Vollständiger Playwright-Durchlauf: 11 Routen + 12 funktionale Flows.                                              |
 | `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **118** | Browsergesteuert: Dashboard-Rendering, Navigation, Sprachwechsel, 404, Health, Tracker-Round-Trip, Pipeline-Add + Invalid-URL-Sweep, Reports, Evaluate-Manual-Fallback, Config-Keys maskiert, CV-PUT-XSS-Strip, Pipeline-Preview 400, Auto-Pipeline-SSE. |

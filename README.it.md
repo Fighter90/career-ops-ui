@@ -7,19 +7,19 @@
 
 _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-6905%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7041%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.263.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.263.0)
+[![release](https://img.shields.io/badge/release-v1.264.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.264.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Ultima release — v1.263.0** — **Il batch UX del proprietario: uno strato di rifinitura del movimento (hover sicuri al tocco, sollevamento solo per le carte interattive, animazioni di modal/popover/toast/tema — sicure per reduced-motion), l'accento passa dal blu al rosso cremisi come il logo, un passaggio di contrasto WCAG (docs-fab 6.4:1, toast, bordi dei form 3:1), ogni controllo riceve un nome programmatico, e una dozzina di correzioni di layout — l'intestazione della tabella di scan non copre più la ricerca, il filtro salariale è di nuovo di dimensioni normali, la pagina dei documenti non va mai in overflow, il drawer mobile ha guadagnato una chiusura visibile. Tests 6869 → 6905.**
+> **🆕 Ultima release — v1.264.0** — **L'onda di indurimento post-release: lo stato di ogni riga del tracker è modificabile inline (il `set-status.mjs` canonico del padre sotto il lock di `applications.md`), gli avvisi del server (troncamento, deriva linguistica) appaiono come una fascia su tutte e sei le pagine IA, la fonte di scan Trudvsem sopravvive alle pagine vuote e cammina sugli offset dei record, i titoli di habr non possono resuscitare markup, il gate del profilo raw tiene la riga `full_name`, e i suggerimenti dicono finalmente la verità (.doc è sparito, `gpt-5` e i tier Anthropic 5-5). Tests 6905 → 7041.**
 >
-> **Precedente — v1.262.4** — **La patch token-dense per `ja`: il re-run puntuale a 5 località sul prod ha separato i quattro timeout di valutazione della notte — ar/ko/zh-CN hanno passato (250–291 s), la deriva una tantum di ru non si è ripetuta — ma `ja` ha colpito il soffitto standard di 300 s due volte con output zero; `ja` entra ora insieme a `ta`/`hi`/`it`/`pl` con il soffitto di 32768 token e l'orologio di 480 s, pinnata red-first. Tests 6868 → 6869.**
+> **Precedente — v1.263.0** — **Il batch UX del proprietario: uno strato di rifinitura del movimento (hover sicuri al tocco, sollevamento solo per le carte interattive, animazioni di modal/popover/toast/tema — sicure per reduced-motion), l'accento passa dal blu al rosso cremisi come il logo, un passaggio di contrasto WCAG (docs-fab 6.4:1, toast, bordi dei form 3:1), ogni controllo riceve un nome programmatico, e una dozzina di correzioni di layout — l'intestazione della tabella di scan non copre più la ricerca, il filtro salariale è di nuovo di dimensioni normali, la pagina dei documenti non va mai in overflow, il drawer mobile ha guadagnato una chiusura visibile. Tests 6869 → 6905.**
 >
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
@@ -423,7 +423,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 6905 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.263.0)
+└─ tests/                    # 7041 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.264.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -563,7 +563,7 @@ npm run test:coverage          # same as `npm test` plus V8 coverage
 
 | Suite                       | Test | Cosa                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integration) |  **6869** | Ogni endpoint, server effimero, nessuna rete. 329 file: parser, scanner (mockati), runner, anthropic/openai, header di sicurezza, XSS, sanitizzazione JD, validazione URL, parità i18n, + le suite di correzioni UX v1.55→v1.56. |
+| `node --test tests/*.test.mjs` (unit + integration) |   **7041** | Ogni endpoint, server effimero, nessuna rete. 329 file: parser, scanner (mockati), runner, anthropic/openai, header di sicurezza, XSS, sanitizzazione JD, validazione URL, parità i18n, + le suite di correzioni UX v1.55→v1.56. |
 | `tests/e2e.mjs` (smoke)      | 21 | Playwright headless: ogni rotta viene renderizzata, flussi di base.                                                     |
 | `tests/e2e-comprehensive.mjs` | 23 | Walkthrough Playwright completo: 11 rotte + 12 flussi funzionali.                                              |
 | `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **118** | Guidati da browser: render della dashboard, navigazione, cambio lingua, 404, health, round-trip del tracker, aggiunta alla pipeline + sweep di URL non validi, report, fallback manuale di evaluate, chiavi di config mascherate, rimozione XSS su CV PUT, anteprima pipeline 400, SSE auto-pipeline. |

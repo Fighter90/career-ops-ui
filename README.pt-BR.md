@@ -7,19 +7,19 @@
 
 _UI não oficial — sem afiliação ou endosso de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-6905%20passed-brightgreen)](#testes)
+[![tests](https://img.shields.io/badge/tests-7041%20passed-brightgreen)](#testes)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#testes)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requisitos)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.263.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.263.0)
+[![release](https://img.shields.io/badge/release-v1.264.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.264.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versão — v1.263.0** — **O lote UX do dono: uma camada de polimento de motion (hovers seguros ao toque, lift de card só em elementos interativos, animações de modal/popover/toast/tema — seguras com reduced-motion), o destaque vira de azul → vermelho carmesim como o logo, uma passada de contraste WCAG (docs-fab 6.4:1, toast, bordas de formulário 3:1), todo controle ganha um nome programático, e uma dúzia de correções de layout — o header da tabela do scan não cobre mais a busca, o filtro de salário volta ao tamanho normal, a página de docs nunca transborda, o drawer mobile ganhou um fechar visível. Tests 6869 → 6905.**
+> **🆕 Última versão — v1.264.0** — **A onda de endurecimento pós-release: o status de cada linha do tracker é editável inline (o set-status.mjs canônico do pai sob o lock do applications.md), os avisos do servidor (truncamento, drift de idioma) aparecem como uma faixa nas seis páginas de IA, a fonte de scan Trudvsem sobrevive a páginas vazias e caminha por offsets de registro, os títulos do habr não podem ressuscitar markup, o gate do perfil raw segura a linha de full_name, e os hints finalmente dizem a verdade (.doc foi embora, gpt-5 e os tiers 5-5 do Anthropic). Tests 6905 → 7041.**
 >
-> **Anterior — v1.262.4** — **O patch token-dense do `ja`: a re-execução pontual de 5 locales no prod separou os quatro timeouts de avaliação da noite — ar/ko/zh-CN passaram (250–291 s), o drift pontual do ru não se repetiu — mas o `ja` bateu no teto padrão de 300 s duas vezes com zero saída; o `ja` agora entra com `ta`/`hi`/`it`/`pl` no teto de 32768 tokens e no relógio de 480 s, fixado red-first. Tests 6868 → 6869.**
+> **Anterior — v1.263.0** — **O lote UX do dono: uma camada de polimento de motion (hovers seguros ao toque, lift de card só em elementos interativos, animações de modal/popover/toast/tema — seguras com reduced-motion), o destaque vira de azul → vermelho carmesim como o logo, uma passada de contraste WCAG (docs-fab 6.4:1, toast, bordas de formulário 3:1), todo controle ganha um nome programático, e uma dúzia de correções de layout — o header da tabela do scan não cobre mais a busca, o filtro de salário volta ao tamanho normal, a página de docs nunca transborda, o drawer mobile ganhou um fechar visível. Tests 6869 → 6905.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -392,7 +392,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 6905 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.263.0)
+└─ tests/                    # 7041 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.264.0)
    ├─ parsers.test.mjs       # parsers de markdown / pipeline / report (funções puras)
    ├─ api.test.mjs           # cada endpoint, servidor efêmero, sem rede
    ├─ {ru,en}-scanner.test.mjs   # fetch mockado
@@ -536,7 +536,7 @@ npm run test:coverage          # idêntico a `npm test` mais V8 coverage
 
 | Suíte                       | Testes  | O que cobre                                                                                                |
 | --------------------------- | ------- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integration) |  **6869** | Cada endpoint, servidor efêmero, sem rede. Inclui parser, scanner (mockado), runner, anthropic, security headers, XSS entity-aware, JD sanitize, validação de URL, paridade i18n, mutex de tracker, rate-limit, path-traversal e DNS rebind. |
+| `node --test tests/*.test.mjs` (unit + integration) |   **7041** | Cada endpoint, servidor efêmero, sem rede. Inclui parser, scanner (mockado), runner, anthropic, security headers, XSS entity-aware, JD sanitize, validação de URL, paridade i18n, mutex de tracker, rate-limit, path-traversal e DNS rebind. |
 | `tests/e2e.mjs` (smoke)      | 21 | Playwright headless: cada rota renderiza, fluxos básicos.                                                  |
 | `tests/e2e-comprehensive.mjs` | 23 | Walkthrough Playwright completo: 11 rotas + 12 fluxos funcionais.                                          |
 | `tests/playwright-smoke.mjs` (`npm run test:e2e:browser`) | **32** | Browser-driven smoke: render do dashboard, navegação, troca de idioma, 404, health, round-trip do tracker (BF-1), pipeline add + varredura de URL inválida, reports vazio, evaluate fallback manual, config com chaves mascaradas, CV PUT XSS strip, pipeline preview 400 + cobertura WCAG 1.4.1. |

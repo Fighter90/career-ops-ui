@@ -1537,6 +1537,8 @@ ehrlichen „Skript nicht gefunden“-Hinweis statt eines Fehlers.
 Das CRM. Eine Zeile pro Bewerbung; lebt in `data/applications.md` als
 GitHub-Flavored-Markdown-Tabelle.
 
+Das Status-Badge jeder Zeile ist auch ein **Select** — eine Stufe auswählen, und sie wird sofort gespeichert: der Server reicht an das kanonische `set-status.mjs` weiter, und die Zeile aktualisiert sich an Ort und Stelle; ein fehlgeschlagenes Speichern macht den Wert rückgängig und zeigt einen Toast. Zeilen mit einem handeditierten oder unbekannten Status sowie Backfill-Zeilen mit der Nummer `N/A` zeigen stattdessen ein schreibgeschütztes Badge.
+
 ### Status-Ablauf
 
 `Evaluated` → `Applied` → `Responded` → `Interview` → `Offer` /

@@ -9,19 +9,19 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-6905%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7041%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.263.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.263.0)
+[![release](https://img.shields.io/badge/release-v1.264.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.264.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.263.0** — **Owner UX बैच: एक मोशन पॉलिश लेयर (टच-सुरक्षित होवर, केवल-इंटरैक्टिव कार्ड लिफ्ट, modal/popover/toast/थीम एनिमेशन — reduced-motion सुरक्षित), एक्सेंट लोगो की तरह नीला → क्रिमसन लाल हो जाता है, एक WCAG कंट्रास्ट पास (docs-fab 6.4:1, toast, फ़ॉर्म बॉर्डर 3:1), हर कंट्रोल को एक प्रोग्रामेटिक नाम मिलता है, और एक दर्जन लेआउट फ़िक्स — scan टेबल हेडर अब सर्च को कवर नहीं करता, सैलरी फ़िल्टर फिर से सामान्य आकार का है, docs पेज कभी ओवरफ़्लो नहीं करता, मोबाइल ड्रॉअर को एक दृश्यमान क्लोज़ मिला। टेस्ट 6869 → 6905।**
+> **🆕 नवीनतम रिलीज़ — v1.264.0** — **पोस्ट-रिलीज़ हार्डनिंग वेव: हर tracker पंक्ति का स्टेटस इनलाइन-एडिटेबल है (applications.md लॉक के तहत पैरेंट का कैननिकल set-status.mjs), सर्वर चेतावनियाँ (ट्रंकेशन, भाषा ड्रिफ्ट) सभी छह AI पेजों पर एक बैंड के रूप में दिखती हैं, Trudvsem स्कैन सोर्स खाली पेजों से बचता है और रिकॉर्ड ऑफ़सेट पर चलता है, habr टाइटल मार्कअप को पुनर्जीवित नहीं कर सकते, रॉ प्रोफ़ाइल गेट full_name लाइन पकड़ता है, और हिंट्स आखिरकार सच बोलते हैं (.doc चला गया, gpt-5 और Anthropic 5-5 टियर्स)। टेस्ट 6905 → 7041।**
 >
-> **पिछला — v1.262.4** — **ja टोकन-डेंस पैच: प्रोड पर 5-लोकेल स्पॉट री-रन ने रात के चार evaluate टाइमआउट को अलग किया — ar/ko/zh-CN पास हुए (250–291 s), ru का एकमात्र ड्रिफ्ट दोहराया नहीं गया — लेकिन `ja` मानक 300 s सीलिंग से शून्य आउटपुट के साथ दो बार टकराया; `ja` अब 32768-टोकन सीलिंग और 480 सेकंड घड़ी के साथ `ta`/`hi`/`it`/`pl` में शामिल होता है, लाल-पहले पिन किया गया। टेस्ट 6868 → 6869।**
+> **पिछला — v1.263.0** — **Owner UX बैच: एक मोशन पॉलिश लेयर (टच-सुरक्षित होवर, केवल-इंटरैक्टिव कार्ड लिफ्ट, modal/popover/toast/थीम एनिमेशन — reduced-motion सुरक्षित), एक्सेंट लोगो की तरह नीला → क्रिमसन लाल हो जाता है, एक WCAG कंट्रास्ट पास (docs-fab 6.4:1, toast, फ़ॉर्म बॉर्डर 3:1), हर कंट्रोल को एक प्रोग्रामेटिक नाम मिलता है, और एक दर्जन लेआउट फ़िक्स — scan टेबल हेडर अब सर्च को कवर नहीं करता, सैलरी फ़िल्टर फिर से सामान्य आकार का है, docs पेज कभी ओवरफ़्लो नहीं करता, मोबाइल ड्रॉअर को एक दृश्यमान क्लोज़ मिला। टेस्ट 6869 → 6905।**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -425,7 +425,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 6905 यूनिट + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (बेसलाइन @ v1.263.0)
+└─ tests/                    # 7041 यूनिट + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (बेसलाइन @ v1.264.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report पार्सर (प्योर फ़ंक्शन)
    ├─ api.test.mjs           # हर एंडपॉइंट, एफ़ेमरल सर्वर, कोई नेटवर्क नहीं
    ├─ {ru,en}-scanner.test.mjs   # मॉक्ड fetch
@@ -565,7 +565,7 @@ npm run test:coverage          # `npm test` जैसा ही, साथ म�
 
 | सूट                       | टेस्ट | क्या                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (यूनिट + इंटीग्रेशन) |  **6869** | हर एंडपॉइंट, एफ़ेमरल सर्वर, कोई नेटवर्क नहीं। 490 फ़ाइलें: parsers, scanners (मॉक्ड), runners, anthropic/openai, सुरक्षा हेडर, XSS, JD सैनिटाइज़, URL वैलिडेशन, i18n पैरिटी, + v1.55→v1.56 UX-फ़िक्स सूट। |
+| `node --test tests/*.test.mjs` (यूनिट + इंटीग्रेशन) |   **7041** | हर एंडपॉइंट, एफ़ेमरल सर्वर, कोई नेटवर्क नहीं। 490 फ़ाइलें: parsers, scanners (मॉक्ड), runners, anthropic/openai, सुरक्षा हेडर, XSS, JD सैनिटाइज़, URL वैलिडेशन, i18n पैरिटी, + v1.55→v1.56 UX-फ़िक्स सूट। |
 | `tests/e2e.mjs` (स्मोक)      | 21 | Playwright हेडलेस: हर राउट रेंडर होता है, बुनियादी फ़्लो।                                                     |
 | `tests/e2e-comprehensive.mjs` | 23 | पूर्ण Playwright वॉकथ्रू: 11 राउट + 12 फ़ंक्शनल फ़्लो।                                              |
 | `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **118** | ब्राउज़र-ड्रिवन: डैशबोर्ड रेंडर, नेविगेशन, भाषा स्विच, 404, health, tracker राउंड-ट्रिप, pipeline जोड़ना + अमान्य-URL स्वीप, reports, evaluate मैनुअल फ़ॉलबैक, config कीज़ मास्क्ड, CV PUT XSS स्ट्रिप, pipeline preview 400, auto-pipeline SSE। |
