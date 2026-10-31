@@ -2,6 +2,22 @@
 
 > Bu changelog artık tüm sürüm geçmişini içerir. Türkçe yerelleştirmenin eklenmesinden (v1.85.0) önce yayınlanan girdiler aşağıda İngilizce özgün hâliyle yer alır — çeviri bekliyor; asıl kaynak [🇬🇧 CHANGELOG.md](CHANGELOG.md)'dir.
 
+## [1.264.1] — 2026-10-31
+
+### Düzeltildi
+
+- **Kenar çubuğu hapları uzun yerelleştirilmiş etiketleri zarifçe kısaltıyor (CAR-203)** — gezinme etiketi span'i artık düzgün bir flex vatandaşı (`v2-nav.css` içinde `min-width: 0` + `overflow: hidden` + `text-overflow: ellipsis` + `nowrap`), ve `nav-v2.js`'teki `syncLabelTitles()` **yerelleştirilmiş** etiketi aynı `data-i18n` anahtarı üzerinden araç ipucuna yansıtıyor (sıfır yeni i18n anahtarı) — uzun «Профинансированные компании» artık satırın `overflow: hidden`'ı tarafından sertçe kırpılmak yerine fareyle üzerine gelindiğinde yeniden okunuyor. 44 px dokunma hedefi, aktif boyama ve RTL aynası dokunulmadan kaldı; red-first sabitleme `tests/nav-v2.test.mjs` içinde.
+- **Her yerel ayar için tek bir 480 s değerlendirme tavanı (CAR-218)** — remote-QA v1.264.0, `es` ve `zh-CN` üzerinde geçici `502 · 300 s · 0 ch` değerlendirmeleri yakaladı (hedefli yeniden koşu geçti, ama duvar gerçekte oradaydı). `EVAL_TIMEOUT_MS` artık `480_000` ve `evalTimeoutMs(lang)` onu koşulsuz döndürüyor — `GEMINI_EVAL_TIMEOUT_MS` ve auto-pipeline miras alıyor. CAR-174'ten gelen yerel-ayar-duyarlı **token** bütçesi (16384 / 32768) yerel ayar başına tek bölünme olarak kalıyor.
+
+### Değişti
+
+- **cvstart.org SSS tam kaynak sayılarını taşıyor (CAR-217)** — `{sources} iş panosu kaynağı: {sourcesEn} uluslararası pano artı {sourcesRu} Rus kaynağı` ifadesi `facts.json`'dan yerine konuyor; `facts.json` canlı registry'den üretiliyor (123 = 118 EN + 5 RU), böylece sayılar asla sapamaz; hâlâ eski `~{adapters}` söyleminde olan yerel ayarlar `adaptersRounded` üzerinden yuvarlamayı sürdürüyor. EN metin yükseltmeleri de beraberinde geliyor (`meta.helpDesc`, `helpTeaser.c1.desc`, `faq.a2` komut menüsünü, geri al özelliğiyle gruplanmış pipeline'ı ve kanban tracker'ı adlandırıyor).
+
+### Notlar
+
+- **Bilinçli olarak yapılmadı:** site i18n metin yükseltmeleri (`meta.helpDesc` / `helpTeaser.c1.desc` / `faq.a2`) bu sürümde yalnızca EN kalıyor — diğer yerel ayarlar bir sonraki dokümantasyon dalgasına kadar doğru-ama-daha-yuvarlak söylemi koruyor (çevrilenlerde onların `faq.a7`'si tam-sayı yer tutucularını kazanıyor). CAR-141 (tanıtım videosu) sahibin kalıyor; yerine geçen `car136/m141` dalı silindi, fikirleri Linear görevine not edildi (`archive/car136-m141` etiketiyle kurtarılabilir).
+- Testler 7041 → 7075 (CAR-203 sabitlemesi + CAR-218 sabitleme yeniden yazımları); Playwright 176; registry değişmedi 123 = 118 EN + 5 RU · 118 adapters.
+
 ## [1.264.0] — 2026-10-31
 
 ### Eklendi
