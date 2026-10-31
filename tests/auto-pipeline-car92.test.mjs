@@ -152,7 +152,7 @@ test('CAR-92.6: closing the connection aborts the upstream provider call (no fur
     if (String(u).includes('api.anthropic.com')) {
       return new Promise((_, reject) => {
         // A self-release timer keeps a pre-fix red run from parking the route's
-        // own 300 s EVAL timer (the abort only propagates with the fix).
+        // own EVAL timer (the abort only propagates with the fix).
         const release = setTimeout(() => bail('mock provider timed out (no abort seen)'), 5000);
         const bail = (why) => { clearTimeout(release); reject(new Error(why)); };
         const sig = o && o.signal;

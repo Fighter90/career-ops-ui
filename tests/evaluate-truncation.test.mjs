@@ -127,7 +127,7 @@ test('evalMaxTokens: ja joins the token-dense locales (v1.262.4)', () => {
   assert.equal(evalMaxTokens('ja'), 32768);
   assert.equal(evalMaxTokens('ja-JP'), 32768);
   assert.equal(evalTimeoutMs('ja'), 480_000);
-  assert.equal(evalTimeoutMs('en'), 300_000);
+  assert.equal(evalTimeoutMs('en'), 480_000); // CAR-218 — one ceiling for every locale
 });
 
 test('evalMaxTokens: pl joins the token-dense locales (v1.262.3)', () => {
@@ -139,8 +139,9 @@ test('evalMaxTokens: pl joins the token-dense locales (v1.262.3)', () => {
   assert.equal(evalMaxTokens('pl'), 32768);
   assert.equal(evalMaxTokens('pl-PL'), 32768);
   assert.equal(evalTimeoutMs('pl'), 480_000);
-  // the 18 still-standard locales keep the 300 s clock
-  assert.equal(evalTimeoutMs('en'), 300_000);
+  // CAR-218 — the clock no longer splits by locale: every locale keeps the
+  // same 480 s ceiling (es/zh-CN transient `502 · 300 s · 0 ch`, v1.264.0 QA).
+  assert.equal(evalTimeoutMs('en'), 480_000);
 });
 
 test('evalMaxTokens is a pure function of the lang string', () => {

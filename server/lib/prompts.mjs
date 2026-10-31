@@ -510,7 +510,8 @@ LEGITIMACY: <High Confidence | Proceed with Caution | Suspicious>
 
 /**
  * CAR-174 — output-volume budget for the token-dense evaluation locales (the
- * same locales evalMaxTokens/evalTimeoutMs widen). Tamil generation is
+ * same locales evalMaxTokens widens; evalTimeoutMs no longer splits — one
+ * 480 s ceiling for every locale since CAR-218). Tamil generation is
  * unstable in volume (prod: 11k → 17k → 32k chars, the last run cut at the
  * token ceiling with Block B–G and the summary missing) — a hard budget keeps
  * one A–G report inside a single generation even at the wider ceiling. The

@@ -284,12 +284,14 @@ test('evaluation routes pass the language to the context and a locale-aware time
     assert.ok(calls.length >= 1);
     for (const c of calls) assert.match(c, /\blang\b/, c);
   }
-  // CAR-147 — the evaluate ceiling is a pure function of the locale: EN keeps
-  // the 300 s base (EVAL_TIMEOUT_MS), token-dense ta/hi get 480 s, and BOTH
-  // files thread evalTimeoutMs(lang) into their provider/subprocess call sites.
-  // CAR-174 — same contract for the output-token budget: evalMaxTokens(lang)
-  // (16384 base, 32768 token-dense) at every in-process call site.
-  assert.match(llm, /EVAL_TIMEOUT_MS = 300_000/);
+  // CAR-147/CAR-218 — the evaluate ceiling is a pure function of the locale
+  // and ONE ceiling for every locale since CAR-218 (480 s, EVAL_TIMEOUT_MS;
+  // the CAR-147 300/480 split is folded into it). BOTH files thread
+  // evalTimeoutMs(lang) into their provider/subprocess call sites.
+  // CAR-174 — the locale split survives only in the output-token budget:
+  // evalMaxTokens(lang) (16384 base, 32768 token-dense) at every in-process
+  // call site.
+  assert.match(llm, /EVAL_TIMEOUT_MS = 480_000/);
   assert.match(llm, /export function evalTimeoutMs\(lang\)/);
   assert.match(llm, /export function evalMaxTokens\(lang\)/);
   assert.match(ap, /evalTimeoutMs\(lang\)/);
