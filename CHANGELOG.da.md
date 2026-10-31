@@ -9,6 +9,22 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 ---
 
 
+## [1.264.1] — 2026-10-31
+
+### Rettet
+
+- **Sidebar-piller afkorter lange lokaliserede labels elegant (CAR-203)** — nav-label-spanen er nu et ordentligt flex-element (`min-width: 0` + `overflow: hidden` + `text-overflow: ellipsis` + `nowrap` i `v2-nav.css`), og `syncLabelTitles()` i `nav-v2.js` spejler den **lokaliserede** label over i tooltippen via samme `data-i18n`-nøgle (nul nye i18n-nøgler) — den lange «Профинансированные компании» kan igen læses ved hover i stedet for at blive hårdt klippet af rækkens `overflow: hidden`. Touch-målet på 44 px, den aktive maling og RTL-spejlingen er urørte; red-first-pin i `tests/nav-v2.test.mjs`.
+- **Ét evalueringsloft på 480 s for alle lokaler (CAR-218)** — remote-QA v1.264.0 afdækkede forbigående `502 · 300 s · 0 ch`-evalueringer på `es` og `zh-CN` (punkt-genkørslen bestod, men muren var reel). `EVAL_TIMEOUT_MS` er nu `480_000`, og `evalTimeoutMs(lang)` returnerer den ubetinget — `GEMINI_EVAL_TIMEOUT_MS` og auto-pipeline arver den. Det locale-bevidste **token**-budget fra CAR-174 (16384 / 32768) forbliver den eneste per-locale-opdeling.
+
+### Ændret
+
+- **cvstart.org-FAQ'en bærer eksakte kildeantal (CAR-217)** — `{sources} job-board sources: {sourcesEn} international boards plus {sourcesRu} Russian ones` substitueres fra `facts.json`, som genereres fra det levende registry (123 = 118 EN + 5 RU), så tallene aldrig kan drive; lokaler, der stadig er på den ældre `~{adapters}`-formulering, fortsætter med afrunding via `adaptersRounded`. EN-tekstopgraderinger følger med (`meta.helpDesc`, `helpTeaser.c1.desc` og `faq.a2` nævner kommandomenuen, den grupperede pipeline med undo og kanban-trackeren).
+
+### Noter
+
+- Bevidst ikke gjort: site-i18n-tekstopgraderingerne (`meta.helpDesc` / `helpTeaser.c1.desc` / `faq.a2`) forbliver EN-only i denne udgivelse — andre lokaler beholder korrekt, men rundere formulering indtil den næste docs-bølge (deres `faq.a7` får pladsholderne med de eksakte tal, hvor de er oversat). CAR-141 (demovideo) forbliver ejerens; den afløste `car136/m141`-gren blev slettet med sine idéer noteret på Linear-opgaven (kan gendannes via tagget `archive/car136-m141`).
+- Tests 7041 → 7075 (CAR-203-pin + CAR-218-pin-omskrivninger); Playwright 176; registry uændret: 123 sources = 118 EN + 5 RU · 118 adapters.
+
 ## [1.264.0] — 2026-10-31
 
 ### Tilføjet
