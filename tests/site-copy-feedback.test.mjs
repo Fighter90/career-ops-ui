@@ -115,7 +115,7 @@ test('site.js copy handler is failure-proof (fallback + shared feedback, no stac
   assert.match(section, /classList\.add\('copied'\)/, 'feedback must add the .copied class');
   assert.match(section, /live\.textContent\s*=/, 'feedback must fill the aria-live region');
   assert.match(section, /dataset\.copiedLabel/, 'the localized label must reach the live region');
-  assert.match(section, /1500/, 'the copied state must revert after ~1.5s');
+  assert.match(section, /2000/, 'the copied state must revert after ~2s');
 
   // Rapid re-clicks must not stack revert timers (first one clears the
   // state early). A per-button timer reset is the cheap guard.
