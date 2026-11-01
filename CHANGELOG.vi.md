@@ -6,6 +6,23 @@ Bản dịch: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.264.2] — 2026-11-01
+
+### Đã sửa
+
+- **Các-tiêu-đề-nhóm-sidebar gia-nhập-điều-ước-cắt-bớt (CAR-219)** — các-nhãn-toggle-nhóm (`.nav-v2-toggle > span`) giờ được-cắt-bớt-bằng-dấu-ellipsis và mang tooltip-**bản-địa-hóa** qua cùng-cơ-chế-`syncLabelTitles()` như các-item-nav-CAR-203; mũi-tên-chevron không-bao-giờ-co-lại, toggle vẫn-nhấn-được, RTL giữ-nguyên. Ghim-đỏ-trước trong `tests/nav-v2.test.mjs` (+1 → 7082 tests).
+
+### Đã thay đổi
+
+- **Văn-bản-của-cvstart.org ra-mắt-đầy-dịch-trong-cả-19-ngôn-ngữ (CAR-220)** — `meta.helpDesc`, `helpTeaser.c1.desc` và `faq.a2` giờ được-dịch-trong-mọi-locale-của-site (chúng chỉ-EN trong-v1.264.1 do-cố-ý); GitHub Pages đã-đưa-bản-văn-bản-nâng-cấp lên-sống trên cvstart.org.
+- **Vệ-sinh-backlog + rà-soát (CAR-221/222)** — sáu-mục-«port-when-merged-upstream» được-đóng: cả-bảy-PR-upstream đã-được-merge, bốn-mục đã-port-từ-trước, hai-mục thuộc-về-dự-án-gốc. `docs/reviews/REVIEW-2026-10-31-v1.264.1.md` được-đưa-vào (0 HIGH / 0 MED, ba-follow-up-LOW được-ghi-trong-BACKLOG), và **danh-sách-port-parent-sync** được-ghi-lại (6 PORT / 3 VERIFY / khoảng-trống-nguồn-apple; đuôi-upstream 118 commits @ VERSION 1.38.0).
+
+### Ghi chú
+
+- Bản-sửa-con-dấu-mirror-của-changelog (`92a05fcf`) đi-kèm-trong-tag-này: mọi-mirror-phân-trang trên cvstart.org giờ mang phiên-bản-phát-hành-đã-sinh-ra-nó, nên grader-`site-build-after-fanout` cuối-cùng-cũng-chạy-lôgic-thật-của-mình thay-vì-bỏ-qua.
+- Không-hành-động-cố-ý: giới-hạn-các-POST-mutating-còn-lại (rà-soát-LOW-№3) và ghép-bucket-trust-proxy — được-ghi-trong-BACKLOG cho-đợt-củng-cố-kế-tiếp. CAR-141 (video demo) vẫn-thuộc-về-chủ.
+- Tests 7081 → 7082 (+1 ghim-CAR-219); Playwright 176; registry không-thay-đổi 123 = 118 EN + 5 RU · 118 adapters.
+
 ## [1.264.1] — 2026-10-31
 
 ### Đã sửa
