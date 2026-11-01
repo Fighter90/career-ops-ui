@@ -17,11 +17,11 @@ _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.264.1** — **两项智能体构建的修复：侧边栏胶囊优雅截断长的本地化标签（省略号 + 本地化的工具提示 —— «Профинансированные компании» 不再被硬裁），以及每个语言统一一个 480 s 评估上限（es/zh-CN 不再有瞬时的 300 s 截断）；cvstart.org FAQ 现在携带由注册表派生的精确来源计数（123 = 118 个国际平台 + 5 个俄罗斯来源）。Tests 7041 → 7081.**
+> **🆕 最新版本 — v1.264.2** — **侧边栏分组标题加入截断契约（省略号 + 本地化工具提示），cvstart.org 帮助/FAQ 文案现以全部 19 种语言发布，发布评审以 0 个 HIGH 发现收官 —— parent-sync 移植清单已为下一波浪潮记录在案。Tests 7081 → 7082.**
 
 
 >
-> **上一版本 — v1.264.0** — **发布后加固浪潮：每一行跟踪器状态都可就地编辑（父项目的规范 set-status.mjs 在 applications.md 锁下），服务器警告（截断、语言漂移）在全部六个 AI 页面上以条带显示，Trudvsem 扫描源在空页下幸存并按记录偏移行走，habr 标题无法复活标记，raw 档案门守住 full_name 行，提示终于说实话（.doc 消失了，gpt-5 与 Anthropic 5-5 档位）。Tests 6905 → 7041.**
+> **上一版本 — v1.264.1** — **两项智能体构建的修复：侧边栏胶囊优雅截断长的本地化标签（省略号 + 本地化的工具提示 —— «Профинансированные компании» 不再被硬裁），以及每个语言统一一个 480 s 评估上限（es/zh-CN 不再有瞬时的 300 s 截断）；cvstart.org FAQ 现在携带由注册表派生的精确来源计数（123 = 118 个国际平台 + 5 个俄罗斯来源）。Tests 7041 → 7081.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
