@@ -196,6 +196,8 @@ import { trakstarAdapter } from './adapters/trakstar.mjs';
 // exact-host detected; the landing page's Next.js flight payload carries the
 // whole inventory in one request).
 import { deelAdapter } from './adapters/deel.mjs';
+import { appleAdapter } from './adapters/apple.mjs';
+import { bulldogjobAdapter } from './adapters/bulldogjob.mjs';
 
 export const ALL_ADAPTERS = [
   builtinAdapter,
@@ -390,6 +392,12 @@ export const ALL_ADAPTERS = [
   // Deel (CAR-184) — host-detected jobs.deel.com/<slug> boards (Klarna et al.);
   // exact-host match only, one page request per board.
   deelAdapter,
+  // Apple (parent #5496+#6196) — one board on jobs.apple.com; the SSR hydration
+  // blob is read from the ordinary search route; entry-driven queries/teams axes.
+  appleAdapter,
+  // Bulldogjob (parent #6253) — Polish tech board bulldogjob.pl; __NEXT_DATA__
+  // listing pages, filters in the path, explicit /page,N on every request.
+  bulldogjobAdapter,
 ];
 
 /**

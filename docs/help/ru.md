@@ -996,7 +996,7 @@ $EDITOR portals.yml
 
 - **Free text** — подстрочное совпадение по title / company.
 - **Source** dropdown — каждый источник, который знает registry
-  (сейчас **123**: **118 EN + 5 RU**, по умолчанию **All sources**).
+  (сейчас **125**: **120 EN + 5 RU**, по умолчанию **All sources**).
   Список заполняется вживую из `GET /api/scan/sources`, так что новый
   положенный адаптер появляется здесь без каких-либо изменений
   приложения — список никогда не захардкожен.
@@ -1839,7 +1839,7 @@ Health, скопируйте вывод и поищите проблему в is
 
 ## 17. Как добавить новый источник для скана
 
-career-ops-ui рассматривает каждый job-сайт как **adapter** — единый файл в [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), который умеет fetch'ить и нормализовать результаты одного сайта. На текущий момент registry `server/lib/sources/` поставляется с **123** источниками — **118 английских + 5 русских** досок. Английский набор охватывает основные ATSes (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), агрегаторы уровня всей доски, выбираемые через явный `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), и ATSes на тенант, автоматически определяемые по хосту `careers_url` или явному `api:` URL (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). Доски платформы **Deel** (`jobs.deel.com/<slug>` — мульти-тенантная доска, на которой публикуются Klarna и другие) определяются автоматически по URL, так что добавить такую доску — это запись из двух строк в portals.yml. **Полный список никогда не нужно пересчитывать здесь вручную — он автоматически обнаруживается из `server/lib/sources/` и показывается вживую в выпадающем списке Source на `#/scan`.** См. §5 для YAML и `docs/portals-examples.md` для готовых copy-paste-записей.
+career-ops-ui рассматривает каждый job-сайт как **adapter** — единый файл в [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/), который умеет fetch'ить и нормализовать результаты одного сайта. На текущий момент registry `server/lib/sources/` поставляется с **125** источниками — **120 английских + 5 русских** досок. Английский набор охватывает основные ATSes (Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday), агрегаторы уровня всей доски, выбираемые через явный `provider:` (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board, Amazon, …), и ATSes на тенант, автоматически определяемые по хосту `careers_url` или явному `api:` URL (BambooHR, Personio, Recruitee, Teamtailor, Avature, SAP SuccessFactors, …). Доски платформы **Deel** (`jobs.deel.com/<slug>` — мульти-тенантная доска, на которой публикуются Klarna и другие) определяются автоматически по URL, так что добавить такую доску — это запись из двух строк в portals.yml. **Полный список никогда не нужно пересчитывать здесь вручную — он автоматически обнаруживается из `server/lib/sources/` и показывается вживую в выпадающем списке Source на `#/scan`.** См. §5 для YAML и `docs/portals-examples.md` для готовых copy-paste-записей.
 
 > **v1.69.0 (P-14) — авторегистрация по принципу drop-in.** Добавление 12-го источника теперь — это **просто одни файл**. Реестр
 > ([`server/lib/sources/registry.mjs`](../../server/lib/sources/registry.mjs))

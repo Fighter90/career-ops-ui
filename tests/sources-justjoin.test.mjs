@@ -315,3 +315,19 @@ test('adapter: id and label', () => {
   assert.equal(justjoinAdapter.id, 'justjoin');
   assert.equal(justjoinAdapter.label, 'JustJoin.it');
 });
+
+test('fetchJustJoin: dates by lastPublishedAt, not the refresh date (#6254)', async () => {
+  // `publishedAt` moves forward on every employer refresh (most of the board
+  // carries today's date); `lastPublishedAt` keeps the earlier publication
+  // date. Prefer it; fall back when missing or unparseable.
+  const payload = envelopeOf([
+    { slug: 'a', title: 'A', companyName: 'X', publishedAt: '2026-11-01T00:00:00Z', lastPublishedAt: '2026-08-15T00:00:00Z' },
+    { slug: 'b', title: 'B', companyName: 'X', publishedAt: '2026-11-01T00:00:00Z' },
+    { slug: 'c', title: 'C', companyName: 'X', publishedAt: '2026-11-01T00:00:00Z', lastPublishedAt: 'not-a-date' },
+  ]);
+  const fetchImpl = async () => ({ ok: true, json: async () => payload });
+  const jobs = await fetchJustJoin(API_URL, { fetchImpl });
+  assert.equal(jobs[0].date, '2026-08-15'); // the earlier publication date wins
+  assert.equal(jobs[1].date, '2026-11-01'); // missing → publishedAt
+  assert.equal(jobs[2].date, '2026-11-01'); // unparseable → publishedAt
+});

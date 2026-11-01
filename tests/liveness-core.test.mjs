@@ -253,3 +253,24 @@ test('classifyAshbyBoard: listed → active, absent/unlisted → expired, bad sh
   assert.equal(classifyAshbyBoard(null, 'uuid-1'), null);
   assert.equal(classifyAshbyBoard({ nope: true }, 'uuid-1'), null);
 });
+
+test('classifyLiveness: Built In "Sorry, this job was removed" banner → expired even with an APPLY control (#6336)', () => {
+  // Built In keeps a removed posting's full JD and its APPLY control and says
+  // it is gone only in a banner — the apply control used to win.
+  const r = classifyLiveness({
+    status: 200,
+    bodyText: 'Sorry, this job was removed at 08:47 p.m. (UTC) on Wednesday, Oct 14, 2026\n' + LONG_BODY,
+    applyControls: ['Apply for this job'],
+  });
+  assert.equal(r.result, 'expired');
+  assert.equal(r.code, 'expired_body');
+});
+
+test('classifyLiveness: a sibling "Job removed" badge (no "sorry") with an APPLY control stays active (#6336)', () => {
+  const r = classifyLiveness({
+    status: 200,
+    bodyText: 'Job removed\n' + LONG_BODY,
+    applyControls: ['Apply for this job'],
+  });
+  assert.equal(r.result, 'active');
+});

@@ -432,3 +432,26 @@ test('jobviteAdapter: buildEndpoint returns feed URL when eId known, else board 
   assert.equal(jobviteAdapter.buildEndpoint({}), null);
   assert.equal(jobviteAdapter.buildEndpoint(null), null);
 });
+
+test('parseJobviteXml: folds rows that share one posting URL into one job (#6127)', () => {
+  // A public Jobvite feed returns one <job> row per city for a single detail
+  // URL. The parser used to keep the first city and let the scanner count the
+  // rest as duplicates; now siblings contribute locations only, joined with
+  // " · " in feed order, first title/date kept.
+  const xml = [
+    '<result>',
+    '<job><title>Senior Backend Engineer</title><detail-url>http://jobs.example.com/1</detail-url><location>Kraków, PL</location><date>11/1/2026</date></job>',
+    '<job><title>Senior Backend Engineer</title><detail-url>http://jobs.example.com/1</detail-url><location>Warsaw, PL — Remote</location><date>11/1/2026</date></job>',
+    '<job><title>Senior Backend Engineer</title><detail-url>http://jobs.example.com/1</detail-url><location>Kraków, PL</location></job>',
+    '<job><title>Other Role</title><detail-url>http://jobs.example.com/2</detail-url><location>Gdańsk, PL</location></job>',
+    '</result>',
+  ].join('');
+  const jobs = parseJobviteXml(xml, 'Acme');
+  assert.equal(jobs.length, 2); // 3 sibling rows fold into 1
+  assert.equal(jobs[0].location, 'Kraków, PL · Warsaw, PL — Remote'); // feed order, repeat collapses
+  assert.equal(jobs[0].title, 'Senior Backend Engineer');
+  assert.equal(jobs[0].isRemote, true); // re-evaluated over the joined location
+  assert.equal(jobs[0].workplaceType, 'Remote');
+  assert.equal(jobs[1].location, 'Gdańsk, PL');
+  assert.ok(jobs[0].date); // first row's date survives
+});
