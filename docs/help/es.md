@@ -2140,11 +2140,11 @@ Cada entrada muestra hora local, mensaje humano y, si existe, el postfix técnic
 
 ## 19. Localizar la aplicación a tu idioma
 
-La interfaz se distribuye en 17 idiomas (English, Español, Français, Português, 한국어, 日本語, Русский, 简体中文, 繁體中文, Polski, Українська, Dansk, العربية, Deutsch, Italiano, Türkçe, हिन्दी). Cada etiqueta en pantalla proviene de un diccionario de traducciones, y puedes añadir o corregir un idioma sin tocar la lógica de la app.
+La interfaz se distribuye en 19 idiomas (English, Español, Français, Português, 한국어, 日本語, Русский, 简体中文, 繁體中文, Polski, Українська, Dansk, العربية, Deutsch, Italiano, Türkçe, हिन्दी, தமிழ், Tiếng Việt). Cada etiqueta en pantalla proviene de un diccionario de traducciones, y puedes añadir o corregir un idioma sin tocar la lógica de la app.
 
 **Dónde viven las traducciones.** Desde la v1.60.0 cada idioma es su propio archivo en `public/js/lib/locales/` — `i18n-dict.en.js`, `i18n-dict.es.js`, `i18n-dict.ru.js`, etc. — una lista simple de pares `'clave': 'texto'`. Un `i18n-dict.aliases.js` compartido permite que claves que deben leerse igual (una etiqueta del menú y el título de su página) apunten a una sola traducción. `i18n-dict.js` los ensambla al cargar; nunca lo edites.
 
-**Corregir o añadir un texto.** Abre el archivo de tu idioma, busca la clave (p. ej. `'nav.scan'`) y edita el texto. Para añadir una etiqueta nueva, agrega la misma clave a **los 17** archivos de idioma con el valor traducido y úsala en la página con `t('tu.clave')`. Ejecuta `npm test` — falla si a algún idioma le falta la clave, así nada se publica a medio traducir.
+**Corregir o añadir un texto.** Abre el archivo de tu idioma, busca la clave (p. ej. `'nav.scan'`) y edita el texto. Para añadir una etiqueta nueva, agrega la misma clave a **los 19** archivos de idioma con el valor traducido y úsala en la página con `t('tu.clave')`. Ejecuta `npm test` — falla si a algún idioma le falta la clave, así nada se publica a medio traducir.
 
 **Añadir un idioma nuevo.** Copia `i18n-dict.en.js` a `i18n-dict.<código>.js`, traduce cada valor y registra el código en `i18n.js` (la lista de idiomas + autodetección del navegador), en el ensamblador `i18n-dict.js`, y añade una línea `<script>` en `index.html`. La lista completa — incluido el snapshot de tests y los archivos de ayuda / README — está en `docs/LOCALIZATION.md`.
 
@@ -2431,7 +2431,7 @@ Salir de `127.0.0.1` significa que la seguridad que el loopback te daba gratis a
 
 ## 32. Ejecútalo desde OpenWorker (compañero de trabajo con IA)
 
-¿Prefieres un compañero de trabajo con IA de escritorio antes que el navegador? **[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** es un compañero de trabajo de **[OpenWorker](https://github.com/andrewyng/openworker)** (la app de compañero de trabajo con IA de código abierto y local-first de Andrew Ng) que dirige por ti todo este pipeline — escanea portales, puntúa el encaje con tu CV, adapta un CV + carta de presentación bien fundamentados, hace seguimiento de las candidaturas, redacta mensajes de seguimiento — y puede **abrir este panel** cuando se lo pidas. Es una única «persona» en Markdown, sin código; OpenWorker no ejecuta nada de eso como programa, las instrucciones solo guían al agente. Su guía se distribuye en los 17 idiomas.
+¿Prefieres un compañero de trabajo con IA de escritorio antes que el navegador? **[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** es un compañero de trabajo de **[OpenWorker](https://github.com/andrewyng/openworker)** (la app de compañero de trabajo con IA de código abierto y local-first de Andrew Ng) que dirige por ti todo este pipeline — escanea portales, puntúa el encaje con tu CV, adapta un CV + carta de presentación bien fundamentados, hace seguimiento de las candidaturas, redacta mensajes de seguimiento — y puede **abrir este panel** cuando se lo pidas. Es una única «persona» en Markdown, sin código; OpenWorker no ejecuta nada de eso como programa, las instrucciones solo guían al agente. Su guía se distribuye en los 19 idiomas.
 
 ### Qué hace el compañero de trabajo
 

@@ -1963,11 +1963,11 @@ russian_portals:
 
 ## 19. 將應用在地化為你的語言
 
-介面提供 17 種語言(English、Español、Français、Português、한국어、日本語、Русский、简体中文、繁體中文, Polski, Українська, Dansk, العربية, Deutsch, Italiano, Türkçe, हिन्दी)。畫面上的每個文案都來自翻譯字典,你無需改動應用邏輯即可新增或修正某種語言。
+介面提供 19 種語言(English、Español、Français、Português、한국어、日本語、Русский、简体中文、繁體中文, Polski, Українська, Dansk, العربية, Deutsch, Italiano, Türkçe, हिन्दी, தமிழ், Tiếng Việt)。畫面上的每個文案都來自翻譯字典,你無需改動應用邏輯即可新增或修正某種語言。
 
 **翻譯檔案在哪裡。** 自 v1.60.0 起,每種語言都是 `public/js/lib/locales/` 下的獨立檔案 —— `i18n-dict.en.js`、`i18n-dict.es.js`、`i18n-dict.ru.js` 等 —— 一份簡單的 `'鍵': '文案'` 清單。共用的 `i18n-dict.aliases.js` 讓必須保持一致的鍵(側欄標籤與其頁面標題)指向同一筆翻譯。`i18n-dict.js` 在載入時將它們組裝起來,你無需編輯它。
 
-**修正或新增文案。** 開啟你語言的檔案,找到鍵(如 `'nav.scan'`)並修改文案。要新增一個標籤,把同一個鍵與譯文加入**全部 17 個**語言檔案,然後在頁面中用 `t('your.key')` 引用。執行 `npm test` —— 若任何語言缺少該鍵就會失敗,因此不會發布半成品翻譯。
+**修正或新增文案。** 開啟你語言的檔案,找到鍵(如 `'nav.scan'`)並修改文案。要新增一個標籤,把同一個鍵與譯文加入**全部 19 個**語言檔案,然後在頁面中用 `t('your.key')` 引用。執行 `npm test` —— 若任何語言缺少該鍵就會失敗,因此不會發布半成品翻譯。
 
 **新增一種語言。** 把 `i18n-dict.en.js` 複製為 `i18n-dict.<code>.js` 並翻譯每個值,然後在 `i18n.js`(語言清單 + 瀏覽器自動偵測)、`i18n-dict.js` 組裝器中註冊該代碼,並在 `index.html` 增加一行 `<script>`。包含測試快照與說明 / README 配套檔案的完整清單見 `docs/LOCALIZATION.md`。
 
@@ -2251,7 +2251,7 @@ career-ops 不繫結任何特定 CLI，所以在 AI 上你有三個可靠的選�
 
 ## 32. 從 OpenWorker(AI 同事)執行
 
-比起瀏覽器，你更偏好桌面版的 AI 同事嗎?**[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** 是一個 **[OpenWorker](https://github.com/andrewyng/openworker)** 同事(Andrew Ng 開源、以本機為優先的 AI 同事應用),它會替你驅動整套流程 —— 掃描職缺板、依你的履歷為契合度評分、產出有事實依據的客製化履歷 + 求職信、追蹤應徵、草擬追蹤信件 —— 而且能在你要求時**啟動這個儀表板**。它只是單一、不含程式碼的 Markdown「人格設定」;OpenWorker 不會把其中任何內容當成程式來執行,那些指示只是用來引導代理。它的指南提供全部 17 種語言的版本。
+比起瀏覽器，你更偏好桌面版的 AI 同事嗎?**[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** 是一個 **[OpenWorker](https://github.com/andrewyng/openworker)** 同事(Andrew Ng 開源、以本機為優先的 AI 同事應用),它會替你驅動整套流程 —— 掃描職缺板、依你的履歷為契合度評分、產出有事實依據的客製化履歷 + 求職信、追蹤應徵、草擬追蹤信件 —— 而且能在你要求時**啟動這個儀表板**。它只是單一、不含程式碼的 Markdown「人格設定」;OpenWorker 不會把其中任何內容當成程式來執行,那些指示只是用來引導代理。它的指南提供全部 19 種語言的版本。
 
 ### 這個同事會做什麼
 

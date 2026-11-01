@@ -2274,11 +2274,11 @@ Chaque entrée du tiroir affiche :
 
 ## 19. Localizing the app into your language
 
-L'interface est livrée en 17 langues (English, Español, Français, Português, 한국어, 日本語, Русский, 简体中文, 繁體中文, Polski, Українська, Dansk, العربية, Deutsch, Italiano, Türkçe, हिन्दी). Chaque libellé à l'écran provient d'un dictionnaire de traduction, et vous pouvez ajouter ou corriger une langue sans toucher à la logique de l'application.
+L'interface est livrée en 19 langues (English, Español, Français, Português, 한국어, 日本語, Русский, 简体中文, 繁體中文, Polski, Українська, Dansk, العربية, Deutsch, Italiano, Türkçe, हिन्दी, தமிழ், Tiếng Việt). Chaque libellé à l'écran provient d'un dictionnaire de traduction, et vous pouvez ajouter ou corriger une langue sans toucher à la logique de l'application.
 
 **Où vivent les traductions.** Depuis la v1.60.0, chaque langue est son propre fichier sous `public/js/lib/locales/` — `i18n-dict.en.js`, `i18n-dict.es.js`, `i18n-dict.fr.js`, `i18n-dict.ru.js`, et ainsi de suite — une simple liste de paires `'key': 'text'`. Un `i18n-dict.aliases.js` partagé permet aux clés qui doivent toujours se lire à l'identique (un libellé de barre latérale et son titre de page) de pointer vers une seule traduction. `i18n-dict.js` les fusionne toutes au chargement de la page ; vous ne l'éditez jamais.
 
-**Corriger ou ajouter une phrase.** Ouvrez le fichier de votre langue, trouvez la clé (p. ex. `'nav.scan'`) et éditez le texte. Pour ajouter un libellé tout neuf, ajoutez la même clé à **tous les 17** fichiers de langue avec la valeur traduite, puis référencez-la dans la page via `t('your.key')`. Lancez `npm test` — il échoue si une langue manque la clé, donc rien n'est livré à moitié traduit.
+**Corriger ou ajouter une phrase.** Ouvrez le fichier de votre langue, trouvez la clé (p. ex. `'nav.scan'`) et éditez le texte. Pour ajouter un libellé tout neuf, ajoutez la même clé à **tous les 19** fichiers de langue avec la valeur traduite, puis référencez-la dans la page via `t('your.key')`. Lancez `npm test` — il échoue si une langue manque la clé, donc rien n'est livré à moitié traduit.
 
 **Ajouter une langue entièrement nouvelle.** Copiez `i18n-dict.en.js` vers `i18n-dict.<code>.js`, traduisez chaque valeur, puis enregistrez le code dans `i18n.js` (la liste de langues + l'auto-détection du navigateur), dans l'assembleur `i18n-dict.js`, et ajoutez une ligne `<script>` dans `index.html`. La checklist complète — y compris le snapshot de test et les fichiers compagnons help / README — est dans `docs/LOCALIZATION.md`.
 
@@ -2563,7 +2563,7 @@ Quitter `127.0.0.1` signifie que la sécurité que le loopback vous offrait grat
 
 ## 32. Le faire tourner depuis OpenWorker (collègue IA)
 
-Vous préférez un collègue IA de bureau plutôt que le navigateur ? **[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** est un collègue **[OpenWorker](https://github.com/andrewyng/openworker)** (l'application de collègue IA open source et local-first d'Andrew Ng) qui pilote tout ce pipeline pour vous — scanner les portails, évaluer l'adéquation par rapport à votre CV, adapter un CV + une lettre de motivation ancrés dans les faits, suivre les candidatures, rédiger des relances — et il peut **lancer ce tableau de bord** à la demande. C'est une simple « persona » en Markdown, sans code ; OpenWorker n'en exécute aucune partie comme un programme, les instructions ne font qu'orienter l'agent. Son guide est livré dans les 17 langues.
+Vous préférez un collègue IA de bureau plutôt que le navigateur ? **[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** est un collègue **[OpenWorker](https://github.com/andrewyng/openworker)** (l'application de collègue IA open source et local-first d'Andrew Ng) qui pilote tout ce pipeline pour vous — scanner les portails, évaluer l'adéquation par rapport à votre CV, adapter un CV + une lettre de motivation ancrés dans les faits, suivre les candidatures, rédiger des relances — et il peut **lancer ce tableau de bord** à la demande. C'est une simple « persona » en Markdown, sans code ; OpenWorker n'en exécute aucune partie comme un programme, les instructions ne font qu'orienter l'agent. Son guide est livré dans les 19 langues.
 
 ### Ce que fait le collègue
 

@@ -2294,11 +2294,11 @@ Her çekmece girdisi şunları gösterir:
 
 ## 19. Uygulamayı kendi dilinize yerelleştirme
 
-Arayüz 17 dilde gönderilir (English, Español, Français, Português, 한국어, 日本語, Русский, 简体中文, 繁體中文, Polski, Українська, Dansk, العربية, Deutsch, Italiano, Türkçe, हिन्दी). Ekrandaki her etiket bir çeviri sözlüğünden gelir ve uygulama mantığına dokunmadan bir dili ekleyebilir veya düzeltebilirsiniz.
+Arayüz 19 dilde gönderilir (English, Español, Français, Português, 한국어, 日本語, Русский, 简体中文, 繁體中文, Polski, Українська, Dansk, العربية, Deutsch, Italiano, Türkçe, हिन्दी, தமிழ், Tiếng Việt). Ekrandaki her etiket bir çeviri sözlüğünden gelir ve uygulama mantığına dokunmadan bir dili ekleyebilir veya düzeltebilirsiniz.
 
 **Çevirilerin bulunduğu yer.** v1.60.0'dan beri her dil, `public/js/lib/locales/` altında kendi dosyasıdır — `i18n-dict.en.js`, `i18n-dict.es.js`, `i18n-dict.ru.js` ve benzeri — basit bir `'key': 'text'` çiftleri listesi. Paylaşılan bir `i18n-dict.aliases.js`, her zaman aynı okunması gereken anahtarların (bir kenar çubuğu etiketi ve onun sayfa başlığı) tek bir çeviriye işaret etmesini sağlar. `i18n-dict.js` bunların hepsini sayfa yüklemede birleştirir; onu asla düzenlemezsiniz.
 
-**Bir ifadeyi düzeltin veya ekleyin.** Diliniz için dosyayı açın, anahtarı bulun (ör. `'nav.scan'`) ve metni düzenleyin. Yepyeni bir etiket eklemek için, aynı anahtarı çevrilmiş değerle **17 dil dosyasının tümüne** ekleyin, ardından sayfada `t('your.key')` aracılığıyla ona başvurun. `npm test` çalıştırın — herhangi bir dil anahtardan yoksunsa başarısız olur, böylece hiçbir şey yarı-çevrilmiş gönderilmez.
+**Bir ifadeyi düzeltin veya ekleyin.** Diliniz için dosyayı açın, anahtarı bulun (ör. `'nav.scan'`) ve metni düzenleyin. Yepyeni bir etiket eklemek için, aynı anahtarı çevrilmiş değerle **19 dil dosyasının tümüne** ekleyin, ardından sayfada `t('your.key')` aracılığıyla ona başvurun. `npm test` çalıştırın — herhangi bir dil anahtardan yoksunsa başarısız olur, böylece hiçbir şey yarı-çevrilmiş gönderilmez.
 
 **Yepyeni bir dilin tamamını ekleyin.** `i18n-dict.en.js`'yi `i18n-dict.<code>.js`'ye kopyalayın, her değeri çevirin, ardından kodu `i18n.js`'de (dil listesi + tarayıcı otomatik-tespit), `i18n-dict.js` birleştiricisinde kaydedin ve `index.html`'de bir `<script>` satırı ekleyin. Tam kontrol listesi — test anlık görüntüsü ve yardım / README eşlik dosyaları dahil — `docs/LOCALIZATION.md`'dedir.
 
@@ -2592,7 +2592,7 @@ career-ops CLI'dan bağımsızdır, yani yapay zeka için üç dürüst seçene�
 
 ## 32. OpenWorker'dan çalıştırma (yapay zeka iş arkadaşı)
 
-Tarayıcı yerine bir masaüstü yapay zeka iş arkadaşını mı tercih edersiniz? **[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)**, tüm bu hattı sizin için yürüten bir **[OpenWorker](https://github.com/andrewyng/openworker)** iş arkadaşıdır (Andrew Ng'nin açık kaynaklı, yerel öncelikli yapay zeka iş arkadaşı uygulaması) — panoları tarar, CV'nize karşı uygunlukları puanlar, temellendirilmiş bir CV + ön yazı uyarlar, başvuruları izler, takip mesajı taslakları hazırlar — ve istek üzerine **bu paneli açabilir**. Tek, kod içermeyen bir Markdown "persona"dır; OpenWorker bunun hiçbirini bir program olarak çalıştırmaz, talimatlar yalnızca ajanı yönlendirir. Kılavuzu 17 dilin tamamında sunulur.
+Tarayıcı yerine bir masaüstü yapay zeka iş arkadaşını mı tercih edersiniz? **[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)**, tüm bu hattı sizin için yürüten bir **[OpenWorker](https://github.com/andrewyng/openworker)** iş arkadaşıdır (Andrew Ng'nin açık kaynaklı, yerel öncelikli yapay zeka iş arkadaşı uygulaması) — panoları tarar, CV'nize karşı uygunlukları puanlar, temellendirilmiş bir CV + ön yazı uyarlar, başvuruları izler, takip mesajı taslakları hazırlar — ve istek üzerine **bu paneli açabilir**. Tek, kod içermeyen bir Markdown "persona"dır; OpenWorker bunun hiçbirini bir program olarak çalıştırmaz, talimatlar yalnızca ajanı yönlendirir. Kılavuzu 19 dilin tamamında sunulur.
 
 ### İş arkadaşı ne yapar
 

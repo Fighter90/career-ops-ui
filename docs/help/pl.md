@@ -2148,11 +2148,11 @@ Każdy wpis szuflady pokazuje:
 
 ## 19. Lokalizacja aplikacji
 
-Interfejs jest dostępny w 17 językach (English, Español, Français, Português, 한국어, 日本語, Русский, 简体中文, 繁體中文, Polski, Українська, Dansk, العربية, Deutsch, Italiano, Türkçe, हिन्दी). Każda etykieta na ekranie pochodzi ze słownika tłumaczeń i możesz dodać lub poprawić język bez dotykania logiki aplikacji.
+Interfejs jest dostępny w 19 językach (English, Español, Français, Português, 한국어, 日本語, Русский, 简体中文, 繁體中文, Polski, Українська, Dansk, العربية, Deutsch, Italiano, Türkçe, हिन्दी, தமிழ், Tiếng Việt). Każda etykieta na ekranie pochodzi ze słownika tłumaczeń i możesz dodać lub poprawić język bez dotykania logiki aplikacji.
 
 **Gdzie mieszkają tłumaczenia.** Od v1.60.0 każdy język to własny plik w `public/js/lib/locales/` — `i18n-dict.en.js`, `i18n-dict.es.js`, `i18n-dict.ru.js` itd. — prosta lista par `'klucz': 'tekst'`. Wspólny `i18n-dict.aliases.js` pozwala kluczom, które muszą zawsze brzmieć identycznie (etykieta paska bocznego i tytuł jej strony), wskazywać na jedno tłumaczenie. `i18n-dict.js` scala je wszystkie przy ładowaniu strony; nigdy go nie edytujesz.
 
-**Popraw lub dodaj frazę.** Otwórz plik dla swojego języka, znajdź klucz (np. `'nav.scan'`) i edytuj tekst. Aby dodać zupełnie nową etykietę, dodaj ten sam klucz do **wszystkich 17** plików językowych z przetłumaczoną wartością, a następnie odwołaj się do niego na stronie przez `t('your.key')`. Uruchom `npm test` — nie powiedzie się jeśli jakikolwiek język nie ma klucza, więc nic nie jest wysyłane w połowie przetłumaczone.
+**Popraw lub dodaj frazę.** Otwórz plik dla swojego języka, znajdź klucz (np. `'nav.scan'`) i edytuj tekst. Aby dodać zupełnie nową etykietę, dodaj ten sam klucz do **wszystkich 19** plików językowych z przetłumaczoną wartością, a następnie odwołaj się do niego na stronie przez `t('your.key')`. Uruchom `npm test` — nie powiedzie się jeśli jakikolwiek język nie ma klucza, więc nic nie jest wysyłane w połowie przetłumaczone.
 
 **Dodaj zupełnie nowy język.** Skopiuj `i18n-dict.en.js` do `i18n-dict.<code>.js`, przetłumacz każdą wartość, a następnie zarejestruj kod w `i18n.js` (lista języków + auto-wykrywanie przeglądarki), w assemblerze `i18n-dict.js` i dodaj linię `<script>` w `index.html`. Pełna lista kontrolna — w tym snapshot testowy i pliki towarzyszące pomocy / README — znajduje się w `docs/LOCALIZATION.md`.
 
@@ -2448,7 +2448,7 @@ Wyjście poza `127.0.0.1` oznacza, że bezpieczeństwo, które loopback dawał z
 
 ## 32. Uruchamianie z OpenWorker (współpracownik AI)
 
-Wolisz desktopowego współpracownika AI od przeglądarki? **[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** to współpracownik **[OpenWorker](https://github.com/andrewyng/openworker)** (open-source'owa, działająca lokalnie aplikacja współpracownika AI autorstwa Andrew Ng), który prowadzi za ciebie cały ten pipeline — skanuje portale, ocenia dopasowanie względem twojego CV, dopasowuje ugruntowane CV + list motywacyjny, śledzi aplikacje, przygotowuje wiadomości follow-up — i na życzenie potrafi **uruchomić ten dashboard**. To pojedyncza, wolna od kodu „persona” w Markdown; OpenWorker nie uruchamia żadnej jej części jako programu, instrukcje jedynie kierują agentem. Jego przewodnik dostępny jest we wszystkich 17 językach.
+Wolisz desktopowego współpracownika AI od przeglądarki? **[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** to współpracownik **[OpenWorker](https://github.com/andrewyng/openworker)** (open-source'owa, działająca lokalnie aplikacja współpracownika AI autorstwa Andrew Ng), który prowadzi za ciebie cały ten pipeline — skanuje portale, ocenia dopasowanie względem twojego CV, dopasowuje ugruntowane CV + list motywacyjny, śledzi aplikacje, przygotowuje wiadomości follow-up — i na życzenie potrafi **uruchomić ten dashboard**. To pojedyncza, wolna od kodu „persona” w Markdown; OpenWorker nie uruchamia żadnej jej części jako programu, instrukcje jedynie kierują agentem. Jego przewodnik dostępny jest we wszystkich 19 językach.
 
 ### Co robi współpracownik
 
