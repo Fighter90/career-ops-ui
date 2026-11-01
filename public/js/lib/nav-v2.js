@@ -377,9 +377,12 @@
    *  i18n key (zero new dictionary entries). t() is read directly rather
    *  than off the span's textContent so the result is order-independent
    *  with app.js's applyI18n pass on a language switch. Static pills sync
-   *  at boot + on switch; dynamic rows re-sync on every rebuild. */
+   *  at boot + on switch; dynamic rows re-sync on every rebuild.
+   *  CAR-219 — the group-header label spans (the 7 static toggles + the
+   *  dynamic Favorites/Recents headers) ride the same pass through the
+   *  same selector: no new call sites were needed. */
   function syncLabelTitles() {
-    document.querySelectorAll('.nav-item > [data-i18n], .nav-v2-row-link > [data-i18n]')
+    document.querySelectorAll('.nav-item > [data-i18n], .nav-v2-row-link > [data-i18n], .nav-v2-toggle > [data-i18n]')
       .forEach((label) => {
         const key = label.getAttribute('data-i18n');
         if (key) label.title = t(key, label.textContent);

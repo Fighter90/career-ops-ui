@@ -374,3 +374,48 @@ test('CAR-203: nav labels shrink (min-width:0) + ellipsize inside the pill; the 
   //    reuses that exact key, so the fallback text below stays English.
   assert.match(HTML, /<span class="nav-ico">💰<\/span> <span data-i18n="nav\.funded">Funded companies<\/span>/);
 });
+
+// ── CAR-219 — group-header spans join the CAR-203 contract ─────────────────
+
+test('CAR-219: group-header label spans truncate like pills + carry the localized title', () => {
+  // 1. CSS: the group toggle is a flex row (chevron + label). A long
+  //    localized group label («Профинансированные компании»-class text)
+  //    must shrink + ellipsize INSIDE the toggle instead of overflowing
+  //    the button (the toggle itself does not clip) and bleeding into the
+  //    .nav-v2-group-head Clear chip. The chevron keeps its intrinsic
+  //    size — :not(.nav-v2-chev) — so the expand arrow never collapses.
+  //    Same declaration set as the CAR-203 pill contract; logical
+  //    properties only, so the ellipsis lands on the inline end in RTL.
+  const rule = CSS.match(/\.nav-v2-toggle > span:not\(\.nav-v2-chev\)\s*\{[^}]*\}/);
+  assert.ok(rule, 'v2-nav.css must style the group-header label spans (CAR-219)');
+  for (const decl of ['min-width:\\s*0', 'overflow:\\s*hidden',
+    'text-overflow:\\s*ellipsis', 'white-space:\\s*nowrap']) {
+    assert.match(rule[0], new RegExp(decl), `group-header label misses ${decl.replace(/\\\\/g, '')}`);
+  }
+  // 2. Truncation must not cost the toggle its geometry: the 28px touch
+  //    target and the uppercase header look stay on the button (this rule
+  //    touches the LABEL span only, never the toggle's min-height).
+  const toggle = CSS.match(/\.nav-v2-toggle\s*\{[^}]*\}/);
+  assert.ok(toggle, 'the base .nav-v2-toggle rule must stay intact');
+  assert.match(toggle[0], /min-height:\s*28px/, 'the 28px toggle touch target is preserved');
+  assert.match(toggle[0], /text-transform:\s*uppercase/, 'the uppercase header look is preserved');
+  // 3. JS: syncLabelTitles covers the group-header spans too — titles
+  //    follow the LOCALIZED value (t() directly, not textContent), riding
+  //    the existing boot / dynamic-rebuild / language-switch call sites
+  //    once the selector includes the new spans (zero new calls needed).
+  assert.match(SRC, /\.nav-v2-toggle > \[data-i18n\]/,
+    'syncLabelTitles must include the group-header label spans');
+  // 4. Every static group toggle keeps its data-i18n label span (the
+  //    title reuses that exact key); the dynamic favorites/recents
+  //    headers carry the same structure from the JS builders.
+  const toggles = (HTML.match(/<button class="nav-v2-toggle"[^>]*>[\s\S]*?<\/button>/g) || []);
+  assert.equal(toggles.length, 7, '7 static group toggles expected');
+  for (const tgl of toggles) {
+    assert.match(tgl, /<span data-i18n="nav\.group\.[a-z]+">/, 'header label stays i18n-keyed');
+    assert.match(tgl, /<span class="nav-v2-chev"/, 'the chevron span stays a sibling of the label');
+  }
+  assert.match(SRC, /favLabel\.setAttribute\('data-i18n', 'nav\.group\.favorites'\)/,
+    'the dynamic Favorites header keeps its data-i18n label span');
+  assert.match(SRC, /recLabel\.setAttribute\('data-i18n', 'nav\.v2\.recent'\)/,
+    'the dynamic Recents header keeps its data-i18n label span');
+});
