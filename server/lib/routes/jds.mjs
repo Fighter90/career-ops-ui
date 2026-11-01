@@ -16,7 +16,7 @@ import { resolve } from 'node:path';
 import { PATHS, path as projPath, PROJECT_ROOT } from '../paths.mjs';
 import { slugify, today } from '../parsers.mjs';
 import { sanitizePathName, sanitizeJobDescription } from '../security.mjs';
-import { llmRateLimit } from '../rate-limit.mjs';
+import { llmRateLimit, writeRateLimit } from '../rate-limit.mjs';
 import { runNodeScript } from '../runner.mjs';
 import { parseJsonStdout, sanitizeDetail } from '../parent-relay.mjs';
 
@@ -55,7 +55,7 @@ export function registerJdsRoutes(app) {
     res.type('text/plain').send(readFileSync(file, 'utf8'));
   });
 
-  app.delete('/api/jds/:name', (req, res) => {
+  app.delete('/api/jds/:name', writeRateLimit(), (req, res) => {
     // Strip path-traversal characters; require the canonical .txt suffix
     // so we cannot accidentally remove an unrelated file.
     const safe = sanitizePathName(req.params.name);
@@ -68,7 +68,7 @@ export function registerJdsRoutes(app) {
     res.json({ ok: true, deleted: safe });
   });
 
-  app.post('/api/jds', (req, res) => {
+  app.post('/api/jds', writeRateLimit(), (req, res) => {
     const { text, slug, overwrite } = req.body || {};
     // Same JD ingress rules as /api/evaluate: a string, sanitized (control
     // bytes / <script> removed), length-capped — and an over-cap paste is a

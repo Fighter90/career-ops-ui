@@ -10,6 +10,7 @@
  * cv.md / profile / disk. Bounded so a runaway paste can't OOM the process.
  */
 import { buildDocx, markdownToBlocks } from '../docx.mjs';
+import { writeRateLimit } from '../rate-limit.mjs';
 
 const MAX_MD = 200_000; // 200 KB of markdown is plenty for a two-pager / report
 
@@ -18,7 +19,7 @@ function safeName(s) {
 }
 
 export function registerExportRoutes(app) {
-  app.post('/api/export/docx', (req, res) => {
+  app.post('/api/export/docx', writeRateLimit(), (req, res) => {
     const body = (req.body && typeof req.body === 'object') ? req.body : {};
     const md = (typeof body.markdown === 'string' ? body.markdown : '').slice(0, MAX_MD);
     if (!md.trim()) return res.status(400).json({ error: 'markdown is required' });

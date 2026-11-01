@@ -21,6 +21,7 @@ import yaml from 'js-yaml';
 import { PATHS, path as projPath } from '../paths.mjs';
 import { withFileLock, atomicWrite } from '../file-lock.mjs';
 import { stripDangerousMarkdown, sanitizePathName } from '../security.mjs';
+import { writeRateLimit } from '../rate-limit.mjs';
 import { logActivity } from '../activity-log.mjs';
 import { importDocumentToMarkdown, MAX_UPLOAD_BYTES } from '../cv-import.mjs';
 
@@ -48,7 +49,7 @@ export function registerContentRoutes(app) {
     res.json({ markdown: readFileSync(PATHS.cv, 'utf8') });
   });
 
-  app.put('/api/cv', async (req, res) => {
+  app.put('/api/cv', writeRateLimit(), async (req, res) => {
     const raw = (req.body?.markdown ?? req.body) || '';
     if (typeof raw !== 'string' || !raw.trim()) {
       return res.status(400).json({ error: 'markdown body required' });
@@ -83,6 +84,7 @@ export function registerContentRoutes(app) {
   // and returned as 413 JSON.
   app.post(
     '/api/cv/import',
+    writeRateLimit(),
     // Dispatch on Content-Type. multer's `.any()` accepts any field name;
     // express.raw handles the original octet-stream wire format. Both
     // run with the same `MAX_UPLOAD_BYTES` cap.
@@ -281,7 +283,7 @@ export function registerContentRoutes(app) {
     }
   }
 
-  app.put('/api/profile', async (req, res) => {
+  app.put('/api/profile', writeRateLimit(), async (req, res) => {
     // ── v1.32.0 — field-form merge path: { fields: { "candidate.full_name": … } } ──
     const hasFields = req.body && req.body.fields && typeof req.body.fields === 'object' && !Array.isArray(req.body.fields);
     const hasArrays = req.body && req.body.arrays && typeof req.body.arrays === 'object' && !Array.isArray(req.body.arrays);
@@ -510,7 +512,7 @@ export function registerContentRoutes(app) {
       (s.headingLine ?? `## ${s.heading}\n`) + s.body).join('');
   }
 
-  app.put('/api/modes/_profile', async (req, res) => {
+  app.put('/api/modes/_profile', writeRateLimit(), async (req, res) => {
     // ── v1.36.0 — section-merge path: { sections: { "<heading>": "<body>" } } ──
     if (req.body && req.body.sections && typeof req.body.sections === 'object' && !Array.isArray(req.body.sections)) {
       const incoming = req.body.sections;

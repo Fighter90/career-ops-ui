@@ -17,7 +17,11 @@ const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..');
 const src = readFileSync(join(ROOT, 'server/lib/routes/batch.mjs'), 'utf8');
 
 test('batch.mjs imports llmRateLimit', () => {
-  assert.match(src, /import \{ llmRateLimit \} from '\.\.\/rate-limit\.mjs';/);
+  // review LOW #3 widened the import to { llmRateLimit, writeRateLimit }
+  // (the PUT/merge mutations moved to the unconditional write guard); the
+  // LLM-cost contract below still requires llmRateLimit to stay imported
+  // and fronting GET /api/stream/batch.
+  assert.match(src, /import \{ llmRateLimit, writeRateLimit \} from '\.\.\/rate-limit\.mjs';/);
 });
 
 test('GET /api/stream/batch is gated by llmRateLimit', () => {

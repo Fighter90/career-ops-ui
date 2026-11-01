@@ -51,7 +51,7 @@ import { parseApplications, today } from '../parsers.mjs';
 import { logActivity } from '../activity-log.mjs';
 import { safeGet } from '../safe-fetch.mjs';
 import { withFileLock, atomicWrite } from '../file-lock.mjs';
-import { llmRateLimit } from '../rate-limit.mjs';
+import { llmRateLimit, writeRateLimit } from '../rate-limit.mjs';
 
 const FETCH_TIMEOUT_MS = 30_000;
 const FETCH_MAX_BODY_BYTES = 64 * 1024;
@@ -534,7 +534,10 @@ async function markPipelineRejected(url, reason) {
 }
 
 export function registerAutoPipelineRoutes(app) {
-  app.post('/api/auto-pipeline', llmRateLimit, async (req, res) => {
+  // writeRateLimit() stacked BEFORE the loopback-gated llmRateLimit (review
+  // LOW #3): auto-pipeline both spends tokens AND writes pipeline.md /
+  // reports/ / tracker rows, so the unconditional guard applies first.
+  app.post('/api/auto-pipeline', writeRateLimit(), llmRateLimit, async (req, res) => {
     const body = (req.body && typeof req.body === 'object') ? req.body : {};
     // R-03 — type the body BEFORE the SSE stream opens, so a malformed field
     // is a plain JSON 400 (it used to throw in .toString() / the prompt builder).

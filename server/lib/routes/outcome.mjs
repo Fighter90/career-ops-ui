@@ -30,7 +30,7 @@ import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { PROJECT_ROOT } from '../paths.mjs';
 import { runTrackedScript } from '../runner.mjs';
-import { llmRateLimit } from '../rate-limit.mjs';
+import { writeRateLimit } from '../rate-limit.mjs';
 import { parseJsonStdout, sanitizeDetail } from '../parent-relay.mjs';
 
 const SCRIPT = 'outcome.mjs';
@@ -68,10 +68,11 @@ function hasControlChar(s) {
 }
 
 export function registerOutcomeRoutes(app) {
-  // llmRateLimit is a per-IP token bucket (no-op on loopback), reused verbatim
-  // so CodeQL's rate-limiting model recognizes the guard — same as the other
-  // shell-out relays.
-  app.post('/api/outcome', llmRateLimit, async (req, res) => {
+  // writeRateLimit — unconditional per-route guard (review LOW #3): this
+  // route shells out to the parent outcome script and archives artifacts,
+  // so a runaway loop must hit 429, not saturate the spawns. Unlike the
+  // previous loopback-gated llmRateLimit, the guard holds on every bind.
+  app.post('/api/outcome', writeRateLimit(), async (req, res) => {
     const body = (req.body && typeof req.body === 'object') ? req.body : {};
     const dryRun = body.dryRun === true;
 

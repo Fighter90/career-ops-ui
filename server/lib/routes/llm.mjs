@@ -91,7 +91,7 @@ function modeWarnings(ctxWarnings, r) {
 import { recordUsage, parseSubprocessUsage } from '../llm-usage.mjs';
 import { sanitizeJobDescription, sanitizePathName } from '../security.mjs';
 import { cleanLlmMarkdown } from '../llm-output.mjs';
-import { llmRateLimit } from '../rate-limit.mjs';
+import { llmRateLimit, writeRateLimit } from '../rate-limit.mjs';
 import {
   bundleProjectContext,
   buildEvaluationPromptParts,
@@ -184,7 +184,11 @@ const SMOKE_JD = 'Smoke test: Senior Backend Engineer with PHP and Go responsibi
 
 export function registerLlmRoutes(app) {
   // ─── /api/evaluate ──────────────────────────────────────────────────
-  app.post('/api/evaluate', llmRateLimit, async (req, res) => {
+  // writeRateLimit() is stacked BEFORE the loopback-gated llmRateLimit
+  // (review LOW #3): /api/evaluate both spends tokens AND persists the
+  // report + tracker row on success, so the unconditional file-mutation
+  // guard applies first; the LLM token bucket still fronts the spend.
+  app.post('/api/evaluate', writeRateLimit(), llmRateLimit, async (req, res) => {
     const { jd: rawJd, save, mode } = req.body || {};
     const jd = sanitizeJobDescription(rawJd);
     if (!jd || jd.length < 50) {
@@ -357,7 +361,9 @@ export function registerLlmRoutes(app) {
   });
 
   // ─── /api/deep ──────────────────────────────────────────────────────
-  app.post('/api/deep', llmRateLimit, async (req, res) => {
+  // Same stack as /api/evaluate: unconditional write guard first (deep
+  // research saves interview-prep briefs on disk), then the LLM bucket.
+  app.post('/api/deep', writeRateLimit(), llmRateLimit, async (req, res) => {
     const { company, role, run, url } = req.body || {};
     // Typed before use: a non-string company/role used to throw inside the
     // prompt builder (R-03 — a malformed body is a 4xx, never a 500).
@@ -453,7 +459,7 @@ export function registerLlmRoutes(app) {
     res.json({ name: safe, markdown: cleanLlmMarkdown(readFileSync(file, 'utf8')) });
   });
 
-  app.delete('/api/interview-prep/:name', (req, res) => {
+  app.delete('/api/interview-prep/:name', writeRateLimit(), (req, res) => {
     // Only the web UI's own deep-*.md briefs: the parent's interview-prep
     // reports and story-bank.md are not this page's to delete.
     const safe = req.params.name;
@@ -520,6 +526,10 @@ export function registerLlmRoutes(app) {
   });
 
   // ─── /api/apply-helper ──────────────────────────────────────────────
+  // ALLOWED BARE in the rate-limit coverage tripwire (tests/
+  // rate-limit-coverage.test.mjs): pure local computation —
+  // buildApplyChecklist does no I/O, no spawn, no LLM spend, so there is
+  // nothing a runaway loop can saturate and no limiter is wired.
   app.post('/api/apply-helper', (req, res) => {
     const { url, jd } = req.body || {};
     if (!url) return res.status(400).json({ error: 'url required' });

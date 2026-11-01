@@ -26,7 +26,7 @@ import { sanitizeJobDescription, sanitizePathName } from '../security.mjs';
 import { bundleProjectContext, resolveLocale } from '../prompts.mjs';
 import { cleanLlmMarkdown } from '../llm-output.mjs';
 import { writeExclusive } from './interview.mjs';
-import { llmRateLimit } from '../rate-limit.mjs';
+import { llmRateLimit, writeRateLimit } from '../rate-limit.mjs';
 import { runActiveProvider, providerAvailable } from '../llm-dispatch.mjs';
 
 const MAX_FIELD = 200;
@@ -107,7 +107,7 @@ export function registerNetworkingRoutes(app) {
     return res.json({ mode: r.mode, prompt, markdown: cleanLlmMarkdown(r.markdown), usage: r.usage });
   });
 
-  app.post('/api/networking/save', llmRateLimit, async (req, res) => {
+  app.post('/api/networking/save', writeRateLimit(), async (req, res) => {
     const body = (req.body && typeof req.body === 'object') ? req.body : {};
     const company = clip(body.company, MAX_FIELD).trim();
     const role = clip(body.role, MAX_FIELD).trim();
@@ -154,7 +154,7 @@ export function registerNetworkingRoutes(app) {
     res.json({ name: safe, markdown: cleanLlmMarkdown(readFileSync(file, 'utf8')) });
   });
 
-  app.delete('/api/networking/plans/:name', (req, res) => {
+  app.delete('/api/networking/plans/:name', writeRateLimit(), (req, res) => {
     const safe = sanitizePathName(req.params.name);
     const file = safe && safe.startsWith('net-') && safe.endsWith('.md') ? resolvePlanFile(safe) : null;
     if (!file) return res.status(400).json({ error: 'invalid name' });
