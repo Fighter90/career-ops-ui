@@ -90,7 +90,7 @@ export function registerTrackerRoutes(app) {
     res.json({ stages, aliases });
   });
 
-  app.post('/api/tracker', async (req, res) => {
+  app.post('/api/tracker', writeRateLimit(), async (req, res) => {
     const { company, role, score, status, url, reportSlug, notes, date } = req.body || {};
     // Type-check before any string method: a non-string company/role used to
     // throw (.toLowerCase) inside the file lock -> unhandled rejection.
@@ -175,7 +175,7 @@ export function registerTrackerRoutes(app) {
   // call with { commit: true } re-plans inside withFileLock and appends the
   // import rows through the same markdown-table conventions as POST /api/tracker
   // (N/A score sentinel, escaped cells, temp-then-rename write).
-  app.post('/api/tracker/import-csv', async (req, res) => {
+  app.post('/api/tracker/import-csv', writeRateLimit(), async (req, res) => {
     const { csv, commit, source } = req.body || {};
     if (typeof csv !== 'string' || !csv.trim()) {
       return res.status(400).json({ error: 'csv text is required' });
@@ -287,7 +287,7 @@ export function registerTrackerRoutes(app) {
   // Everything else is read-only: scored rows, explicit sentinels (N/A),
   // rows without a report link and reports without a parseable score are
   // left untouched. Only the Score cell of a matched row is rewritten.
-  app.post('/api/tracker/backfill-scores', async (req, res) => {
+  app.post('/api/tracker/backfill-scores', writeRateLimit(), async (req, res) => {
     const result = await withFileLock(PATHS.applications, async () => {
       let content = '';
       try { content = readFileSync(PATHS.applications, 'utf8'); } catch {

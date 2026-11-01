@@ -19,7 +19,7 @@
 import { existsSync, readFileSync, appendFileSync, mkdirSync } from 'node:fs';
 import { dirname, resolve } from 'node:path';
 import { PATHS, PROJECT_ROOT } from '../paths.mjs';
-import { llmRateLimit } from '../rate-limit.mjs';
+import { llmRateLimit, writeRateLimit } from '../rate-limit.mjs';
 import { runNodeScript } from '../runner.mjs';
 import { parseJsonStdout, isEmptyTrackerError, sanitizeDetail } from '../parent-relay.mjs';
 
@@ -74,7 +74,7 @@ export function registerStatsRoutes(app) {
   // filesystem-writing snapshot append on a public bind. Reused verbatim from
   // the LLM routes so CodeQL's rate-limiting model recognizes the guard
   // (js/missing-rate-limiting).
-  app.post('/api/stats/snapshot', llmRateLimit, (req, res) => {
+  app.post('/api/stats/snapshot', writeRateLimit(), (req, res) => {
     const snap = { ts: new Date().toISOString(), ...toCompactSnapshot(req.body) };
     try {
       mkdirSync(dirname(PATHS.roleStats), { recursive: true });

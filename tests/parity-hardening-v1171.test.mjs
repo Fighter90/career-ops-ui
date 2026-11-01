@@ -21,11 +21,14 @@ const read = (...p) => readFileSync(resolve(__dirname, '..', ...p), 'utf8');
 
 test('shell-out endpoints are rate-limited (followup ×2 + stats/patterns) and imports exist', () => {
   const fu = read('server', 'lib', 'routes', 'followup.mjs');
-  assert.match(fu, /import \{ llmRateLimit \} from '\.\.\/rate-limit\.mjs';/);
+  assert.match(fu, /import \{ llmRateLimit, writeRateLimit \} from '\.\.\/rate-limit\.mjs';/);
   assert.match(fu, /app\.get\('\/api\/followup', llmRateLimit,/);
-  assert.match(fu, /app\.post\('\/api\/followup\/seed', llmRateLimit,/);
+  // review LOW #3: the seed POST is a write + spawn relay — the
+  // unconditional write guard (works on loopback too), not the
+  // loopback-gated LLM bucket.
+  assert.match(fu, /app\.post\('\/api\/followup\/seed', writeRateLimit\(\),/);
   const st = read('server', 'lib', 'routes', 'stats.mjs');
-  assert.match(st, /import \{ llmRateLimit \} from '\.\.\/rate-limit\.mjs';/);
+  assert.match(st, /import \{ llmRateLimit, writeRateLimit \} from '\.\.\/rate-limit\.mjs';/);
   assert.match(st, /app\.get\('\/api\/stats\/patterns', llmRateLimit,/);
 });
 

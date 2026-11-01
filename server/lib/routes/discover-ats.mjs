@@ -21,6 +21,7 @@ import { readFileSync, writeFileSync, renameSync, existsSync } from 'node:fs';
 import yaml from 'js-yaml';
 import { PATHS } from '../paths.mjs';
 import { withFileLock } from '../file-lock.mjs';
+import { writeRateLimit } from '../rate-limit.mjs';
 import { resolveAdapter } from '../portals/registry.mjs';
 import {
   discoverAts,
@@ -46,7 +47,7 @@ function isAllowedCareersUrl(url) {
 
 export function registerDiscoverAtsRoutes(app) {
   // ── Read-only preview ────────────────────────────────────────────────
-  app.post('/api/portals/discover', async (req, res) => {
+  app.post('/api/portals/discover', writeRateLimit(), async (req, res) => {
     const body = (req.body && typeof req.body === 'object') ? req.body : {};
     const company = typeof body.company === 'string' ? body.company.trim() : '';
     if (!company) return res.status(400).json({ error: 'company is required' });
@@ -62,7 +63,7 @@ export function registerDiscoverAtsRoutes(app) {
   });
 
   // ── Explicit write: add a discovered board to tracked_companies ───────
-  app.post('/api/portals/track', async (req, res) => {
+  app.post('/api/portals/track', writeRateLimit(), async (req, res) => {
     const body = (req.body && typeof req.body === 'object') ? req.body : {};
     const name = typeof body.name === 'string' ? body.name.trim() : '';
     const careersUrl = typeof body.careers_url === 'string' ? body.careers_url.trim() : '';

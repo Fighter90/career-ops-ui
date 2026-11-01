@@ -28,7 +28,7 @@ import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { PROJECT_ROOT } from '../paths.mjs';
 import { runNodeScript, runTrackedScript } from '../runner.mjs';
-import { llmRateLimit } from '../rate-limit.mjs';
+import { llmRateLimit, writeRateLimit } from '../rate-limit.mjs';
 import { parseJsonStdout, isEmptyTrackerError, sanitizeDetail } from '../parent-relay.mjs';
 
 const CADENCE_SCRIPT = 'followup-cadence.mjs';
@@ -69,7 +69,7 @@ export function registerFollowupRoutes(app) {
     res.json({ available: true, ...data });
   });
 
-  app.post('/api/followup/seed', llmRateLimit, async (req, res) => {
+  app.post('/api/followup/seed', writeRateLimit(), async (req, res) => {
     if (!scriptAvailable(SEED_SCRIPT)) {
       res.status(400).json({ error: 'followup-seed.mjs not found in the parent project' });
       return;

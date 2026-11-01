@@ -23,6 +23,7 @@ import { parseReportHeader } from '../parsers.mjs';
 import { safeListReports } from '../store.mjs';
 import { stripDangerousMarkdown, sanitizePathName } from '../security.mjs';
 import { logActivity } from '../activity-log.mjs';
+import { writeRateLimit } from '../rate-limit.mjs';
 
 const MAX_REPORT_BYTES = 1024 * 1024; // 1 MB
 
@@ -54,7 +55,7 @@ export function registerReportsRoutes(app) {
   // step 4 after a successful evaluate. Per CLAUDE.md hard rule #1,
   // the server writes parent files ONLY on explicit user actions like
   // this one.
-  app.post('/api/reports', (req, res) => {
+  app.post('/api/reports', writeRateLimit(), (req, res) => {
     const { slug: rawSlug, markdown, overwrite } = req.body || {};
     const slug = sanitizeSlug(rawSlug);
     if (!slug) {

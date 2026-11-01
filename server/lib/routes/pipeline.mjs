@@ -24,6 +24,7 @@ import { isValidJobUrl } from '../security.mjs';
 import { safeReadPipeline } from '../store.mjs';
 import { safeGet } from '../safe-fetch.mjs';
 import { withFileLock, atomicWrite } from '../file-lock.mjs';
+import { writeRateLimit } from '../rate-limit.mjs';
 
 const PREVIEW_TIMEOUT_MS = 15_000;
 const PREVIEW_MAX_BODY_BYTES = 8000;
@@ -53,7 +54,7 @@ export function registerPipelineRoutes(app) {
     res.json({ urls: safeReadPipeline() });
   });
 
-  app.post('/api/pipeline', async (req, res) => {
+  app.post('/api/pipeline', writeRateLimit(), async (req, res) => {
     const url = (req.body?.url || req.body?.text || '').toString().trim();
     if (!url) return res.status(400).json({ error: 'url required' });
     if (!isValidJobUrl(url)) {
@@ -108,7 +109,7 @@ export function registerPipelineRoutes(app) {
   // duplicated (and the same token twice is a no-op). Unknown tokens
   // (restart, store eviction, or a fabricated value) are REPORTED, never
   // written — the client falls back to the bare re-add for those URLs.
-  app.post('/api/pipeline/restore', async (req, res) => {
+  app.post('/api/pipeline/restore', writeRateLimit(), async (req, res) => {
     const tokens = req.body?.tokens;
     if (!Array.isArray(tokens)) {
       return res.status(400).json({ error: 'tokens required (array of restore tokens from DELETE)' });
@@ -197,7 +198,7 @@ export function registerPipelineRoutes(app) {
     }
   });
 
-  app.delete('/api/pipeline', async (req, res) => {
+  app.delete('/api/pipeline', writeRateLimit(), async (req, res) => {
     const url = (req.query.url || (req.body && req.body.url) || '').toString().trim();
     if (!url) return res.status(400).json({ error: 'url required (query ?url= or body.url)' });
     // v1.20.1 (H-6) — guard the read-modify-write so DELETE doesn't

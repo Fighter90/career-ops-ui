@@ -22,7 +22,7 @@ import { existsSync, readFileSync, mkdirSync } from 'node:fs';
 import { dirname } from 'node:path';
 import { PATHS } from '../paths.mjs';
 import { withFileLock, atomicWrite } from '../file-lock.mjs';
-import { llmRateLimit } from '../rate-limit.mjs';
+import { llmRateLimit, writeRateLimit } from '../rate-limit.mjs';
 import { stripDangerousMarkdown } from '../security.mjs';
 import { resolveLocale, buildLocaleDirective } from '../prompts.mjs';
 
@@ -58,7 +58,7 @@ export function registerMemoryRoutes(app) {
     res.json({ markdown: readMemory() });
   });
 
-  app.put('/api/memory', async (req, res) => {
+  app.put('/api/memory', writeRateLimit(), async (req, res) => {
     const markdown = normalizeMemory(req.body);
     try {
       await withFileLock(PATHS.memory, async () => {

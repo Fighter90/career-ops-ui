@@ -20,7 +20,7 @@ import { PATHS } from '../paths.mjs';
 import { withFileLock, atomicWrite } from '../file-lock.mjs';
 import { bundleProjectContext, resolveLocale, buildLocaleDirective } from '../prompts.mjs';
 import { cleanLlmMarkdown } from '../llm-output.mjs';
-import { llmRateLimit } from '../rate-limit.mjs';
+import { llmRateLimit, writeRateLimit } from '../rate-limit.mjs';
 import { stripDangerousMarkdown } from '../security.mjs';
 import { runActiveProvider, providerAvailable } from '../llm-dispatch.mjs';
 
@@ -89,7 +89,7 @@ export function registerCareerPlanRoutes(app) {
     res.json({ markdown: readPlan() });
   });
 
-  app.put('/api/career-plan', async (req, res) => {
+  app.put('/api/career-plan', writeRateLimit(), async (req, res) => {
     const markdown = normalizePlan(req.body);
     try {
       await withFileLock(PATHS.careerPlan, async () => {

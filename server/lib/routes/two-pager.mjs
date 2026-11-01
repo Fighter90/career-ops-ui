@@ -22,7 +22,7 @@ import yaml from 'js-yaml';
 import { PATHS } from '../paths.mjs';
 import { withFileLock, atomicWrite } from '../file-lock.mjs';
 import { bundleProjectContext, resolveLocale, buildLocaleDirective } from '../prompts.mjs';
-import { llmRateLimit } from '../rate-limit.mjs';
+import { llmRateLimit, writeRateLimit } from '../rate-limit.mjs';
 import { runActiveProvider, providerAvailable } from '../llm-dispatch.mjs';
 
 const EMPTY = () => ({
@@ -85,7 +85,7 @@ export function registerTwoPagerRoutes(app) {
     res.json({ twoPager: readTwoPager() });
   });
 
-  app.put('/api/two-pager', async (req, res) => {
+  app.put('/api/two-pager', writeRateLimit(), async (req, res) => {
     const clean = normalizeTwoPager(req.body);
     try {
       await withFileLock(PATHS.twoPager, async () => {
