@@ -29,7 +29,7 @@ Spec: `specs/2026-10-06-test-coverage-90.md`.
 ## Execution checklist (agent mode) — the order work actually happens in
 
 Every release runs the same **ship train**: `test:ci` + browser suite + `evals/workflow` + i18n audit +
-changelog parity → docs ×17 (English by the orchestrator, one agent per other locale) → QA prompt → PR → CI green → squash-merge →
+changelog parity → docs ×19 (English by the orchestrator, one agent per other locale) → QA prompt → PR → CI green → squash-merge →
 tag → Release workflow → `publish-package.yml` → Pages deploy → wiki → **`deploy.yml mode=deploy`**
 to resumecraft.ru → `deploy.yml mode=verify` → local restart. Nothing is "done" before verify passes.
 

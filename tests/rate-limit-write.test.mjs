@@ -128,7 +128,9 @@ test('writeRateLimit buckets are per route — one endpoint filling does not thr
   const routeB = writeRateLimit();
   let passed = 0;
   const codes = [];
-  const mkReq = (url) => ({ ip: '198.51.100.9', socket: { remoteAddress: '198.51.100.9' }, originalUrl: url, url });
+  // app.get + headers keep the (now-armed) trustProxy/xForwardedForHeader validations
+  // quiet for direct factory calls — see tests/rate-limit-trust-proxy.test.mjs.
+  const mkReq = (url) => ({ ip: '198.51.100.9', socket: { remoteAddress: '198.51.100.9' }, originalUrl: url, url, app: { get: () => false }, headers: {} });
   const mkRes = () => {
     const res = { setHeader() {}, status(c) { codes.push(c); return res; }, json() {} };
     return res;
