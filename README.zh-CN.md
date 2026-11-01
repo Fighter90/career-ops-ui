@@ -7,12 +7,12 @@
 
 _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。_
 
-[![tests](https://img.shields.io/badge/tests-7096%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7135%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.264.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.264.3)
+[![release](https://img.shields.io/badge/release-v1.265.0 扫描来源 Apple 与 Bulldogjob(注册表 125 = 120 EN + 5 RU)、IBM 分页重构、修复 justjoin/jobvite/liveness(parent-sync @ fe857ecf)。
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
@@ -21,7 +21,7 @@ _非官方界面 — 与 career-ops / santifer 无关联，亦未获其认可。
 
 
 >
-> **上一版本 — v1.264.2** — **侧边栏分组标题加入截断契约（省略号 + 本地化工具提示），cvstart.org 帮助/FAQ 文案现以全部 19 种语言发布，发布评审以 0 个 HIGH 发现收官 —— parent-sync 移植清单已为下一波浪潮记录在案。Tests 7081 → 7082.**
+> **上一版本 — v1.264.3** — **侧边栏分组标题加入截断契约（省略号 + 本地化工具提示），cvstart.org 帮助/FAQ 文案现以全部 19 种语言发布，发布评审以 0 个 HIGH 发现收官 —— parent-sync 移植清单已为下一波浪潮记录在案。Tests 7081 → 7082.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -394,7 +394,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 7096 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.264.3)
+└─ tests/                    # 7135 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.265.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report 解析器(纯函数)
    ├─ api.test.mjs           # 每个端点,临时端口,无外网
    ├─ {ru,en}-scanner.test.mjs   # mock 后的 fetch
@@ -537,7 +537,7 @@ npm run test:coverage          # 同 `npm test`,附加 V8 覆盖率
 
 | 套件                       | 测试数 | 内容                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs`(unit + integration) |   **7096** | 每个端点,临时端口,无外网。覆盖 parser、scanner(已 mock)、runner、anthropic、安全 header、XSS(含实体解码)、JD sanitize、URL 校验、SSRF 重定向 / rebind、并发互斥、路径遍历、速率限制、i18n 对等。 |
+| `node --test tests/*.test.mjs`(unit + integration) |   **7135** | 每个端点,临时端口,无外网。覆盖 parser、scanner(已 mock)、runner、anthropic、安全 header、XSS(含实体解码)、JD sanitize、URL 校验、SSRF 重定向 / rebind、并发互斥、路径遍历、速率限制、i18n 对等。 |
 | `tests/e2e.mjs`(smoke)      | 21 | Playwright headless:每个路由可渲染,基础流程。                                                            |
 | `tests/e2e-comprehensive.mjs` | 23 | 完整 Playwright walkthrough:11 个路由 + 12 个功能流程。                                                   |
 | `tests/playwright-smoke.mjs`(`npm run test:e2e:browser`) | **176** | 浏览器驱动的烟雾:dashboard 渲染、导航、语言切换、404、health、tracker 往返(BF-1)、pipeline 添加 + 无效 URL 扫描、reports 空、evaluate 手动回退、config keys 遮蔽、CV PUT XSS 清理、pipeline preview 400。 |

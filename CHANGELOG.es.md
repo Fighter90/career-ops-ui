@@ -13,6 +13,21 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.265.0] — 2026-11-01
+### Añadido
+
+- **Dos nuevas fuentes de escaneo — Apple y Bulldogjob (registro 123 → 125 = 120 EN + 5 RU · 120 adapters)** — ola de parent-sync contra career-ops @ `fe857ecf`. **Apple** (`jobs.apple.com`, #5496 + #6196): el sitio es una app React Router SSR sin una API JSON utilizable, así que la fuente lee el blob de hidratación de la ruta de búsqueda ordinaria (`window.__staticRouterHydrationData`); el descubrimiento lo define la entrada (`apple.queries` con orden por relevancia + ejes `apple.teams`, sin valores por defecto — una entrada sin ninguno lanza error), las páginas se acotan con `max_pages` (2 por defecto, techo 50) con pausa de 200 ms, cada segmento de URL se codifica a prueba de surrogates y una oferta marcada **PIPE** por Apple lleva en el snippet la nota «puede ser un talent pipeline» — nada se filtra por ello. **Bulldogjob** (`bulldogjob.pl`, #6253): el tablero polaco tampoco tiene API JSON — los listados llevan `__NEXT_DATA__` (50/página, `totalCount`); el `careers_url` de la entrada es la búsqueda construida en el sitio (los filtros viven en la ruta), cada petición lleva un `/page,N` explícito y el recorrido se detiene en una página corta, el total declarado o `max_pages` (25 por defecto, techo 100) con etiqueta de truncamiento en tableros parciales.
+- **Rework de la paginación de IBM (#6273)** — el recorrido fijo de 600 registros pasa a `max_pages` (20 por defecto, techo 300, override por entrada) con pausa de 200 ms entre páginas y reintento por página vía `fetchJsonWithRetry`; una primera página fallida lanza error, una página posterior fallida conserva lo recogido y nombra la página, y solo una página completa en el techo propio de la entrada avisa «raise max_pages».
+
+### Corregido
+
+- **justjoin fecha las ofertas por `lastPublishedAt` (#6254)** — el `publishedAt` de la API de candidatos avanza cada vez que el empleador refresca la oferta, así que la mayor parte del tablero llevaba la fecha de hoy y `max_posting_age_days` dejaba pasar ofertas de semanas; ahora gana la fecha de publicación anterior, con fallback cuando falta o no parsea.
+- **jobvite pliega las filas que comparten un posting URL (#6127)** — un feed público devuelve una fila `<job>` por ciudad para un único detail URL; el parser conservaba la primera ciudad y contaba el resto como duplicados. Ahora los hermanos aportan solo localizaciones, unidas con ` · ` en orden de feed, se mantienen el primer título/fecha y «remote» se reevalúa sobre la localización unida.
+- **Liveness: un rung para UltiPro (#6090)** — UKG no tiene endpoint JSON por oferta y responde 200 en las cerradas, así que las 57 ofertas UltiPro cerradas leían *uncertain*. La página de detalle incrusta el registro: `OpportunityIsClosed` true/false → expired/active, el aviso «opportunity unavailable» → expired, cualquier otra cosa queda para el navegador. **El banner de Built In «Sorry, this job was removed» es hard-expired (#6336)** — la página conserva el JD completo y el control APPLY; ahora gana el banner, y el badge hermano «Job removed» sin «sorry» no coincide.
+
+### Notas
+
+- Deliberadamente no hecho: la mitad parent-side del fix de jobvite sobre el compilador de localizaciones de scan.mjs (web-ui documenta el compilador USPS como no-port) y el campo `note` del padre para la pista PIPE de Apple (el job shape de web-ui no tiene `note`; viaja en `snippet`). Tests 7096 → **7135** (+39); Playwright 173 pass / 0 fail / 1 opt-in skip; coverage gate ≥ 98/89; registro **125 = 120 EN + 5 RU · 120 adapters** (todas las puertas de recuento regeneradas desde el registro vivo).
 ## [1.264.3] — 2026-11-01
 
 ### Corregido

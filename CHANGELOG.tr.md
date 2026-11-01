@@ -2,6 +2,21 @@
 
 > Bu changelog artık tüm sürüm geçmişini içerir. Türkçe yerelleştirmenin eklenmesinden (v1.85.0) önce yayınlanan girdiler aşağıda İngilizce özgün hâliyle yer alır — çeviri bekliyor; asıl kaynak [🇬🇧 CHANGELOG.md](CHANGELOG.md)'dir.
 
+## [1.265.0] — 2026-11-01
+### Eklendi
+
+- **İki yeni tarama kaynağı — Apple ve Bulldogjob (kayıt 123 → 125 = 120 EN + 5 RU · 120 adapter)** — career-ops @ `fe857ecf` karşısında parent-sync dalgası. **Apple** (`jobs.apple.com`, #5496 + #6196): site kullanılabilir bir JSON API'si olmayan bir React Router SSR uygulaması; kaynak sıradan arama rotasının hydration blob'unu okur (`window.__staticRouterHydrationData`); keşif girdi tarafından yönetilir (`apple.queries` ilgililik sıralı metin eksenleri + `apple.teams` slug eksenleri, varsayılan yok — ikisi de olmayan girdi fırlatır), sayfalar `max_pages` ile sınırlı (varsayılan 2, tavan 50) 200 ms pacing'le, URL'nin her segmenti surrogate-güvenli kodlanır ve Apple'ın **PIPE** diye etiketlediği ilan snippet'inde «talent pipeline olabilir» ipucu taşır — bunun üzerine filtre yapılmaz. **Bulldogjob** (`bulldogjob.pl`, #6253): Polonya teknoloji panosunun da JSON API'si yok — listeleme sayfaları `__NEXT_DATA__` (50/sayfa, `totalCount`) taşır; girdinin `careers_url`'i kullanıcının sitede kurduğu aramadır (filtreler yolda yaşar), her istek açık bir `/page,N` taşır ve yürüyüş kısa sayfada, bildirilen total'da veya `max_pages`'te (varsayılan 25, tavan 100) durur, kısmi panolarda kesilme etiketiyle.
+- **IBM sayfalama rework'u (#6273)** — sabit 600 kayıtlık yürüyüş `max_pages` olur (varsayılan 20, tavan 300, girdi bazlı override), sayfalar arası 200 ms pacing ve `fetchJsonWithRetry` üzerinden sayfa başına retry; ilk sayfa başarısızsa fırlatır, sonraki bir sayfa başarısızsa toplananı korur ve sayfayı adlandırır, yalnızca girdinin kendi tavanında tam sayı bir sayfa «raise max_pages» uyarısı verir.
+
+### Düzeltildi
+
+- **justjoin ilanları `lastPublishedAt` ile tarihliyor (#6254)** — aday API'nin `publishedAt`'ı işveren her yenilediğinde ilerler, panonun çoğu bugünün tarihini taşıyordu ve `max_posting_age_days` haftalardan kalma ilanları geçiriyordu; artık daha erken yayın tarihi kazanır, eksik veya parse edilemezse fallback.
+- **jobvite tek bir posting URL paylaşan satırları katlıyor (#6127)** — kamuya açık bir besleme tek bir detail URL için şehir başına bir `<job>` satırı döndürür; ayrıştırıcı ilk şehri tutuyor ve gerisini yineler olarak sayıyordu. Artık kardeş satırlar yalnızca konum katkısı verir, feed sırasıyla ` · ` ile birleşir, ilk başlık/tarih kalır, remote birleşen konum üzerinden yeniden değerlendirilir.
+- **Liveness: bir UltiPro rung'ı (#6090)** — UKG'nin ilan başına JSON endpoint'i yok ve kapalı ilanlara da 200 döner, böylece 57 kapalı UltiPro ilanının tamamı *uncertain* okunuyordu. Detay sayfası kaydı gömer: `OpportunityIsClosed` true/false → expired/active, «opportunity unavailable» bildirimi → expired, gerisi tarayıcıya kalır. **Built In'ın «Sorry, this job was removed» bandı hard-expired oldu (#6336)** — sayfa tam JD'yi ve APPLY kontrolünü tutuyor; artık bant kazanır, «sorry» içermeyen kardeş «Job removed» rozeti eşleşmez.
+
+### Notlar
+
+- Bilinçli olarak yapılmadı: jobvite düzeltmesinin parent-tarafı scan.mjs konum derleyicisi yarısı (web-ui USPS derleyicisini no-port olarak belgeler) ve Apple PIPE ipucu için ebeveynin `note` alanı (web-ui job shape'inde `note` yok; `snippet` içinde seyahat eder). Tests 7096 → **7135** (+39); Playwright 173 pass / 0 fail / 1 opt-in skip; coverage gate ≥ 98/89; kayıt **125 = 120 EN + 5 RU · 120 adapter** (tüm sayaç kapıları canlı kayıttan yeniden üretildi).
 ## [1.264.3] — 2026-11-01
 
 ### Düzeltildi

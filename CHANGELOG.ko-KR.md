@@ -10,6 +10,21 @@
 
 ---
 
+## [1.265.0] — 2026-11-01
+### 추가
+
+- **두 개의 새 스캔 소스 — Apple, Bulldogjob (레지스트리 123 → 125 = 120 EN + 5 RU · 120 adapters)** — career-ops @ `fe857ecf` 기준 parent-sync 웨이브. **Apple** (`jobs.apple.com`, #5496 + #6196): 사이트는 사용 가능한 JSON API가 없는 React Router SSR 앱이라 소스가 일반 검색 라우트의 하이드레이션 블롭(`window.__staticRouterHydrationData`)을 읽습니다; 발견은 엔트리 주도(`apple.queries` 관련도 정렬 텍스트 축 + `apple.teams` 슬러그 축, 기본값 없음 — 둘 다 없는 엔트리는 throw), 페이지는 `max_pages`(기본 2, 상한 50)로 제한되며 200 ms 페이싱, URL 세그먼트마다 서로게이트 안전 인코딩, Apple이 **PIPE**로 표시한 공고는 snippet에 «인재 파이프라인일 수 있음» 힌트를 실립니다 — 이를 기준으로 필터링하지 않습니다. **Bulldogjob** (`bulldogjob.pl`, #6253): 폴란드 테크 보드도 JSON API가 없습니다 — 목록 페이지가 `__NEXT_DATA__`(50/페이지, `totalCount`)를 싣습니다; 엔트리의 `careers_url`은 사용자가 사이트에서 만든 검색(필터는 경로에), 모든 요청에 명시적 `/page,N`이 붙고, 워크는 짧은 페이지, 보고된 total 또는 `max_pages`(기본 25, 상한 100)에서 멈추며 부분 보드에 잘림 태그를 붙입니다.
+- **IBM 페이지네이션 리워크 (#6273)** — 고정 600 레코드 워크가 `max_pages`(기본 20, 상한 300, 엔트리 오버라이드)로 바뀌고, 200 ms 인터페이스 페이싱과 `fetchJsonWithRetry`를 통한 페이지별 재시도; 첫 페이지 실패는 throw, 이후 페이지 실패는 수집분을 유지하며 페이지를 명명하고, 엔트리 자신의 상한에서 꽉 찬 페이지만 «raise max_pages» 경고를 냅니다.
+
+### 수정
+
+- **justjoin은 `lastPublishedAt`로 공고를 dating합니다 (#6254)** — 후보 API의 `publishedAt`은 고용주가 공고를 새로 고칠 때마다 앞으로 이동해 보드 대부분이 오늘 날짜를 달고 있었고 `max_posting_age_days`가 몇 주 된 공고를 놓치지 않고 통과시켰습니다; 이제 더 이른 게시일이 이기며, 없거나 파스 불가하면 폴백합니다.
+- **jobvite는 하나의 posting URL을 공유하는 행을 접습니다 (#6127)** — 공개 피드는 하나의 detail URL에 도시별 `<job>` 행을 반환합니다; 파서는 첫 도시만 남기고 나머지를 중복으로 셌습니다. 이제 형제 행은 위치만 기여하며 feed 순서대로 ` · `로 연결되고, 첫 title/date가 유지되며, remote는 병합된 위치로 재평가됩니다.
+- **Liveness: UltiPro 런그 (#6090)** — UKG에는 공고별 JSON 엔드포인트가 없고 닫힌 공고에도 200으로 답해 57개의 닫힌 UltiPro 공고가 모두 *uncertain*으로 읽혔습니다. 상세 페이지는 레코드를 내장합니다: `OpportunityIsClosed` true/false → expired/active, «opportunity unavailable» 공지 → expired, 그 외는 브라우저에 맡깁니다. **Built In의 «Sorry, this job was removed» 배너는 hard-expired (#6336)** — 페이지가 전체 JD와 APPLY 컨트롤을 유지합니다; 이제 배너가 이기고, «sorry» 없는 형제 «Job removed» 배지는 매치되지 않습니다.
+
+### 참고
+
+- 의도적으로 하지 않음: jobvite 수정의 parent 쪽 scan.mjs 위치 컴파일러 절반(web-ui는 USPS 컴파일러를 no-port로 문서화)과 Apple PIPE 힌트용 부모의 `note` 필드(web-ui job shape에는 `note`가 없음; `snippet`으로 이동). Tests 7096 → **7135** (+39); Playwright 173 pass / 0 fail / 1 opt-in skip; coverage gate ≥ 98/89; 레지스트리 **125 = 120 EN + 5 RU · 120 adapters** (모든 카운트 게이트를 살아있는 레지스트리에서 재생성).
 ## [1.264.3] — 2026-11-01
 
 ### 수정

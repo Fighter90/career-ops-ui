@@ -204,7 +204,11 @@ function normalize(o) {
     isRemote: wt === 'Remote',
     workplaceType: wt,
     relocates: false,
-    date: formatDate(o.published_at || o.publishedAt),
+    // `publishedAt` moves forward every time the employer refreshes the offer
+    // (most of the board carries today's date), while `lastPublishedAt` keeps
+    // the earlier publication date. Prefer it so max_posting_age_days sees a
+    // refreshed old posting as old. (#6254)
+    date: formatDate(o.last_published_at || o.lastPublishedAt) || formatDate(o.published_at || o.publishedAt),
     snippet: '',
     source: 'justjoin',
   };

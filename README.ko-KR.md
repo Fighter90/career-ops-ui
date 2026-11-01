@@ -7,12 +7,12 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-7096%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7135%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.264.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.264.3)
+[![release](https://img.shields.io/badge/release-v1.265.0 스캔 소스 Apple와 Bulldogjob(레지스트리 125 = 120 EN + 5 RU), IBM 페이지네이션 리워크, 수정 justjoin/jobvite/liveness(parent-sync @ fe857ecf).
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
@@ -21,7 +21,7 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 
 
 >
-> **이전 버전 — v1.264.2** — **사이드바 그룹 헤더가 잘림 컨트랙트에 합류합니다 (말줄임표 + 현지화된 툴팁), cvstart.org의 help/FAQ 카피가 이제 19개 언어 전부로 번역되어 배포되며, 릴리스 리뷰는 HIGH 발견 0개로 반영됩니다 — parent-sync 포트-리스트가 다음 웨이브를 위해 기록됐습니다. 테스트 7081 → 7082.**
+> **이전 버전 — v1.264.3** — **사이드바 그룹 헤더가 잘림 컨트랙트에 합류합니다 (말줄임표 + 현지화된 툴팁), cvstart.org의 help/FAQ 카피가 이제 19개 언어 전부로 번역되어 배포되며, 릴리스 리뷰는 HIGH 발견 0개로 반영됩니다 — parent-sync 포트-리스트가 다음 웨이브를 위해 기록됐습니다. 테스트 7081 → 7082.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -394,7 +394,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 7096 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.264.3)
+└─ tests/                    # 7135 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.265.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report 파서 (순수 함수)
    ├─ api.test.mjs           # 모든 엔드포인트, 임시 서버, 네트워크 없음
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -537,7 +537,7 @@ npm run test:coverage          # `npm test`와 동일 + V8 coverage
 
 | Suite                       | Tests | 내용                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integration) |   **7096** | 모든 엔드포인트, 임시 서버, 네트워크 없음. parser, scanner (mocked), runner, anthropic, security headers, XSS, JD sanitize, URL validation, path traversal, DNS-rebind, file lock, rate limit, i18n 패리티 포함. |
+| `node --test tests/*.test.mjs` (unit + integration) |   **7135** | 모든 엔드포인트, 임시 서버, 네트워크 없음. parser, scanner (mocked), runner, anthropic, security headers, XSS, JD sanitize, URL validation, path traversal, DNS-rebind, file lock, rate limit, i18n 패리티 포함. |
 | `tests/e2e.mjs` (smoke)      | 21 | Playwright headless: 모든 라우트 렌더링, 기본 플로우.                                                     |
 | `tests/e2e-comprehensive.mjs` | 23 | 전체 Playwright 워크스루: 11개 라우트 + 12개 기능 플로우.                                              |
 | `tests/playwright-smoke.mjs` (`npm run test:e2e:browser`) | **176** | 브라우저 주도 smoke: dashboard render, navigation, language switch, 404, health, tracker round-trip (BF-1), pipeline add + invalid-URL 스윕, reports empty, evaluate manual fallback, config keys masked, CV PUT XSS strip, pipeline preview 400. |

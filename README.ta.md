@@ -7,19 +7,19 @@
 
 _அதிகாரப்பூர்வமற்ற இடைமுகம் — career-ops / santifer உடன் எந்தத் தொடர்பும் அல்ல, அவர்களால் அங்கீகரிக்கப்படவும் இல்லை._
 
-[![tests](https://img.shields.io/badge/tests-7096%20passed-brightgreen)](#சோதனைகள்)
+[![tests](https://img.shields.io/badge/tests-7135%20passed-brightgreen)](#சோதனைகள்)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#சோதனைகள்)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#சோதனைகள்)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#தேவைகள்)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.264.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.264.3)
+[![release](https://img.shields.io/badge/release-v1.265.0 ஸ்கேன் மூலங்கள் Apple மற்றும் Bulldogjob (பதிவேடு 125 = 120 EN + 5 RU), IBM பக்கப்பதிவு மறுசீரமைப்பு, திருத்தங்கள் justjoin/jobvite/liveness (parent-sync @ fe857ecf).
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
 > **🆕 சமீபத்திய வெளியீடு — v1.264.3** — **ரேட்-லிமிட் வலுவூட்டல் இப்போது அனைத்து மாற்றும் எண்ட்பாயிண்ட்களையும் உள்ளடக்குகிறது, CAR-141 நகலெடுப்பு உறுதிப்படுத்தலுக்கு 2 s டைமரைச் சேர்க்கிறது, மேலும் help வழிகாட்டி அனைத்து 19 மொழிகளிலும் புதுப்பிக்கப்படுகிறது. Tests 7082 → 7096.**
 >
-> **முந்தைய வெளியீடு — v1.264.2** — **சைட்பார் குழு தலைப்புகள் சுருக்குதல் ஒப்பந்தத்தில் சேர்கின்றன (ellipsis + மொழியாக்கப்பட்ட tooltips), cvstart.org help/FAQ உரை இப்போது அனைத்து 19 மொழிகளிலும் மொழிபெயர்க்கப்பட்டு வழங்கப்படுகிறது, மேலும் வெளியீட்டு மறுஆய்வு 0 HIGH கண்டுபிடிப்புகளுடன் முடிகிறது — அடுத்த அலைக்கான parent-sync port-list பதிவு செய்யப்பட்டுள்ளது. Tests 7081 → 7082.**
+> **முந்தைய வெளியீடு — v1.264.3** — **சைட்பார் குழு தலைப்புகள் சுருக்குதல் ஒப்பந்தத்தில் சேர்கின்றன (ellipsis + மொழியாக்கப்பட்ட tooltips), cvstart.org help/FAQ உரை இப்போது அனைத்து 19 மொழிகளிலும் மொழிபெயர்க்கப்பட்டு வழங்கப்படுகிறது, மேலும் வெளியீட்டு மறுஆய்வு 0 HIGH கண்டுபிடிப்புகளுடன் முடிகிறது — அடுத்த அலைக்கான parent-sync port-list பதிவு செய்யப்பட்டுள்ளது. Tests 7081 → 7082.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -198,7 +198,7 @@ web-ui/
 │       ├── app.js          # தொடக்கம், lang switcher, theme
 │       ├── lib/            # i18n (19 மொழிகள்), api, ui, format
 │       └── views/          # ஒரு பக்கத்திற்கு ஒரு பார்வை
-├── tests/                  # 7096 unit (baseline @ v1.264.3) — node --test, கணினி முழுவதும் CI-isolated
+├── tests/                  # 7096 unit (baseline @ v1.265.0) — node --test, கணினி முழுவதும் CI-isolated
 └── docs/                   # உதவி வழிகாட்டிகள் ×19, LOCALIZATION, SDD
 ```
 

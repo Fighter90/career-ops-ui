@@ -1675,7 +1675,7 @@ npm run doctor
 career-ops-ui ஒவ்வொரு வேலைப் பலகையையும் ஒரு **அடாப்டராகக்** கருதும் —
 [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) கீழ் ஒரு கோப்பு;
 அது ஒரு பலகையின் முடிவுகளை எப்படிப் பெற + இயல்பாக்குவது என்று அறியும். தற்போது
-`server/lib/sources/` registry **123** மூலங்களை வழங்குகிறது — **118 English + 5 Russian**
+`server/lib/sources/` registry **125** மூலங்களை வழங்குகிறது — **120 English + 5 Russian**
 பலகைகள். ஆங்கிலத் தொகுப்பு முக்கிய ATS-களையும் (Greenhouse / Ashby / Lever /
 Workable / SmartRecruiters / Workday), வெளிப்படையான `provider:` ஆல் தேர்ந்தெடுக்கப்பட்ட பலகை-அளவு aggregators-ஐயும் (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board,
 Amazon, …), மற்றும் `careers_url` ஹோஸ்ட் அல்லது வெளிப்படையான `api:` URL-இலிருந்து தானாகக் கண்டறியப்படும் per-tenant ATS-களையும் (BambooHR, Personio, Recruitee, Teamtailor, Avature,

@@ -62,6 +62,11 @@ const HARD_EXPIRED_PATTERNS = [
   // a missed banner costs one wasted re-check, a false match deletes a live
   // job from every future scan (see the 429 guard below for the mechanism).
   /this (?:job|role|position)(?: listing)? is closed\b(?!-)/i,
+  // Built In keeps a removed posting's full JD and its APPLY control, and says
+  // it is gone only in a banner under the title: "Sorry, this job was removed
+  // at 08:47 p.m. (UTC) on Wednesday, Oct 14, 2026" (#6327). The "sorry"
+  // keeps a sibling listing's "Job removed" badge from matching. (#6336)
+  /\bsorry,? this job was removed\b/i,
   /job (listing )?not found/i,
   /the page you are looking for doesn.t exist/i,
   /applications?\s+(?:(?:have|are|is)\s+)?closed/i,

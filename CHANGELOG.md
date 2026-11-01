@@ -6,6 +6,27 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 ---
 
+## [1.265.0] — 2026-11-01
+
+### Added
+
+- **Two new scan sources — Apple and Bulldogjob (registry 123 → 125 = 120 EN + 5 RU · 120 adapters)** — the parent-sync wave against career-ops @ `fe857ecf`. **Apple** (`jobs.apple.com`, #5496 + #6196): the careers site is a React Router SSR app with no usable JSON API, so the source reads the ordinary search route's hydration blob (`window.__staticRouterHydrationData`); discovery is entry-driven (`apple.queries` text axes with relevance sort + `apple.teams` slug axes, no defaults — an entry without either throws), pages are capped by `max_pages` (default 2, ceiling 50) with 200 ms pacing, every URL segment is surrogate-safe encoded, and a posting Apple labels **PIPE** carries a "may be a talent pipeline" hint in its snippet — nothing is filtered on it. **Bulldogjob** (`bulldogjob.pl`, #6253): the Polish tech board has no JSON API either — the listing pages ship `__NEXT_DATA__` (50/page, `totalCount`); the entry's `careers_url` is the site search the user built (filters live in the path), every request carries an explicit `/page,N`, and the walk stops on a short page, the reported total or `max_pages` (default 25, ceiling 100) with a truncation tag on partial boards.
+- **IBM pagination rework (#6273)** — the fixed 600-record walk becomes `max_pages` (default 20, cap 300, per-entry override) with 200 ms inter-page pacing and per-page retry through `fetchJsonWithRetry` (429/5xx/transport); a failed first page throws, a failed later page keeps the partials and names the page, and only a full page at the entry's own cap warns "raise max_pages".
+
+### Fixed
+
+- **justjoin dates offers by `lastPublishedAt` (#6254)** — the candidate API's `publishedAt` moves forward every time an employer refreshes an offer, so most of the board carried today's date and `max_posting_age_days` let weeks-old postings through; the earlier publication date wins now, falling back when missing or unparseable.
+- **jobvite folds rows that share one posting URL (#6127)** — a public feed returns one `<job>` row per city for a single detail URL; the parser used to keep the first city and let the scanner count the rest as duplicates. Siblings now contribute locations only, joined with ` · ` in feed order, first title/date kept, remote re-evaluated over the joined location.
+- **Liveness: an UltiPro rung (#6090)** — UKG has no per-posting JSON endpoint and answers 200 for closed postings, so all 57 closed UltiPro postings read *uncertain*. The detail page embeds the record: `OpportunityIsClosed` true/false → expired/active, the board's "opportunity unavailable" notice → expired, anything else stays with the browser. **Built In's "Sorry, this job was removed" banner is hard-expired (#6336)** — the page keeps its full JD and APPLY control; the banner wins now, while a sibling "Job removed" badge without "sorry" does not match.
+
+### Verified no-ports (parent delta scanned, web-ui already correct)
+
+- icims location-label prefix (#6130), workday fully-remote marker (#6143) and the Bulgarian Apply controls (#6192) were already present; smartrecruiters `releasedDate` (#6303) is already read; the Machine Summary as last report section (#6157) needs no parser change (`machineSummaryBlock()` is position-independent); liveness CLI flags (#6086) are parent-side; personio language-dedup (#4789) stays deferred — a 3-commit stack for a scanner capability most web-ui sources cannot express yet.
+
+### Notes
+
+- Deliberately not done: the parent-side `scan.mjs` location-compiler half of the jobvite fix (web-ui documents the USPS compiler as a no-port) and the parent's `note` field for the Apple PIPE hint (web-ui's job shape has no `note`; it rides in `snippet`). Tests 7096 → **7135** (+39); Playwright 173 pass / 0 fail / 1 opt-in skip; coverage gate ≥ 98/89; registry **125 = 120 EN + 5 RU · 120 adapters** (all count gates regenerated from the live registry).
+
 ## [1.264.3] — 2026-11-01
 
 ### Fixed

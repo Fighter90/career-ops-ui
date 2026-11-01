@@ -7,12 +7,12 @@
 
 _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-7096%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7135%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.264.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.264.3)
+[![release](https://img.shields.io/badge/release-v1.265.0 fuentes de escaneo Apple y Bulldogjob (registro 125 = 120 EN + 5 RU), rework de paginación IBM, correcciones justjoin/jobvite/liveness (parent-sync @ fe857ecf).
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
@@ -21,7 +21,7 @@ _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
 
 >
-> **Anterior — v1.264.2** — **Las cabeceras de grupo de la barra lateral se suman al contrato de truncamiento (elipsis + tooltips localizados), el texto de ayuda/FAQ de cvstart.org ahora se envía traducido en los 19 idiomas, y la revisión del lanzamiento cierra con 0 hallazgos HIGH — la lista de puertos del parent-sync queda registrada para la próxima ola. Tests 7081 → 7082.**
+> **Anterior — v1.264.3** — **Las cabeceras de grupo de la barra lateral se suman al contrato de truncamiento (elipsis + tooltips localizados), el texto de ayuda/FAQ de cvstart.org ahora se envía traducido en los 19 idiomas, y la revisión del lanzamiento cierra con 0 hallazgos HIGH — la lista de puertos del parent-sync queda registrada para la próxima ola. Tests 7081 → 7082.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -394,7 +394,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 7096 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.264.3)
+└─ tests/                    # 7135 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.265.0)
    ├─ parsers.test.mjs       # parsers markdown / pipeline / report (funciones puras)
    ├─ api.test.mjs           # cada endpoint, servidor efímero, sin red
    ├─ {ru,en}-scanner.test.mjs   # fetch mockeado
@@ -537,7 +537,7 @@ npm run test:coverage          # igual que `npm test` más cobertura V8
 
 | Suite                       | Tests | Qué cubre                                                                                                  |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integración) |   **7096** | Cada endpoint, servidor efímero, sin red. Incluye parser, scanner (mockeado), runner, anthropic, security headers, XSS, JD sanitize, validación de URL, DNS rebind, mutex de archivo, rate limit, path traversal y paridad i18n. |
+| `node --test tests/*.test.mjs` (unit + integración) |   **7135** | Cada endpoint, servidor efímero, sin red. Incluye parser, scanner (mockeado), runner, anthropic, security headers, XSS, JD sanitize, validación de URL, DNS rebind, mutex de archivo, rate limit, path traversal y paridad i18n. |
 | `tests/e2e.mjs` (smoke)      | 21 | Playwright headless: cada ruta renderiza, flujos básicos.                                                  |
 | `tests/e2e-comprehensive.mjs` | 23 | Walkthrough Playwright completo: 11 rutas + 12 flujos funcionales.                                         |
 | `tests/playwright-smoke.mjs` (`npm run test:e2e:browser`) | **176** | Smoke con navegador: render del dashboard, navegación, cambio de idioma, 404, health, tracker round-trip (BF-1), añadir a pipeline + barrido de URL inválida, reports vacío, evaluate manual fallback, claves de config enmascaradas, CV PUT XSS strip, pipeline preview 400. |

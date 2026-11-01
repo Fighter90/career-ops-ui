@@ -17,12 +17,24 @@
  *
  * Used by the ibm adapter (server/lib/portals/adapters/ibm.mjs).
  */
-import { fetchJson } from '../http-json.mjs';
+import { fetchJsonWithRetry } from '../http-json.mjs';
 
 export const API_URL = 'https://www-api.ibm.com/search/api/v2';
 const PAGE_SIZE = 30;
-const MAX_RECORDS = 600; // safety cap on pagination
+// IBM's `total` is unreliable (often capped at the page size), so the walk is
+// bounded by these, never by the response. 20 pages is the 600-record cap this
+// provider always had; an entry can raise it with `max_pages`. (#6273)
+const DEFAULT_MAX_PAGES = 20;
+const MAX_PAGES_CAP = 300;
+export const PAGE_DELAY_MS = 200;
 const REMOTE_RE = /remote|home\s*office|anywhere/i;
+
+/** Resolve the page cap: a positive integer `max_pages` on the entry, capped. */
+export function resolveMaxPages(entry) {
+  const v = entry?.max_pages;
+  if (Number.isInteger(v) && v > 0) return Math.min(v, MAX_PAGES_CAP);
+  return DEFAULT_MAX_PAGES;
+}
 
 export const meta = {
   value: 'ibm',
@@ -129,8 +141,21 @@ export async function fetchIbm(apiUrl = API_URL, opts = {}) {
   const { fetchImpl = fetch, signal, company = {} } = opts;
   assertIbmApiUrl(apiUrl);
   const postFilter = buildPostFilter(company.ibm || {});
+  const maxPages = resolveMaxPages(company);
+  // Test seam; the default honors the abort signal while pacing between pages.
+  const sleep = opts.sleep || ((ms) => new Promise((resolve, reject) => {
+    const t = setTimeout(resolve, ms);
+    if (signal) signal.addEventListener('abort', () => { clearTimeout(t); reject(signal.reason ?? new Error('aborted')); }, { once: true });
+  }));
   const out = [];
-  for (let from = 0; from < MAX_RECORDS; from += PAGE_SIZE) {
+  // Why the walk stopped: 'complete' (a short page), 'cap' (max_pages ran out
+  // on a full page) or 'fetch-error' (a later page failed after retries).
+  let stopReason = 'complete';
+  let page = 0;
+  let lastPageFull = false;
+  for (; page < maxPages; page++) {
+    if (page > 0) await sleep(PAGE_DELAY_MS);
+    const from = page * PAGE_SIZE;
     const body = {
       appId: 'careers',
       scopes: ['careers2'],
@@ -146,15 +171,35 @@ export async function fetchIbm(apiUrl = API_URL, opts = {}) {
         'field_keyword_05', 'field_keyword_08', 'field_keyword_17',
         'field_keyword_18', 'field_keyword_19'],
     };
-    const json = await fetchJson(fetchImpl, apiUrl, {
-      method: 'POST',
-      headers: { 'content-type': 'application/json', accept: 'application/json' },
-      body: JSON.stringify(body),
-      signal,
-    });
+    let json;
+    try {
+      // redirect:'error' prevents SSRF via server-side redirects
+      json = await fetchJsonWithRetry(fetchImpl, apiUrl, {
+        method: 'POST',
+        headers: { 'content-type': 'application/json', accept: 'application/json' },
+        body: JSON.stringify(body),
+        redirect: 'error',
+        signal,
+      });
+    } catch (err) {
+      // A failed first page is a broken board, not an empty one — throw so the
+      // scan surfaces it. Past page one in a real scan, keep what was collected
+      // and say so.
+      if (page === 0) throw err;
+      console.error(`⚠️  ibm: ${company.name || 'IBM'} truncated at page ${page + 1} of ${maxPages} (${out.length} jobs): ${err.message}`);
+      stopReason = 'fetch-error';
+      break;
+    }
     out.push(...parseIbmResponse(json));
-    // Stop on the first short page; IBM's `total` is unreliable.
-    if (json.hits.hits.length < PAGE_SIZE) break;
+    // Stop on the first short page; IBM's `total` is not trusted.
+    lastPageFull = json.hits.hits.length >= PAGE_SIZE;
+    if (!lastPageFull) break;
+  }
+  // Only a full page at the entry's own cap is a truncation. A short last page
+  // ended the board on its own.
+  if (stopReason === 'complete' && lastPageFull && page === maxPages) stopReason = 'cap';
+  if (stopReason === 'cap') {
+    console.error(`⚠️  ibm: ${company.name || 'IBM'} truncated at max_pages=${maxPages} (${out.length} jobs) — raise max_pages on this entry for more`);
   }
   return out;
 }

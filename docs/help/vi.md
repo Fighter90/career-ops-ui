@@ -1942,7 +1942,7 @@ kết quả, và tìm trên trình theo dõi issue tại
 career-ops-ui coi mỗi bảng việc làm là một **adapter** — một tệp đơn dưới
 [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) biết
 cách lấy + chuẩn hóa kết quả của một bảng. Hiện tại
-`server/lib/sources/` registry cung cấp **123** nguồn — **118 bảng tiếng Anh + 5 bảng tiếng Nga**. Bộ tiếng Anh trải khắp các ATS lớn (Greenhouse / Ashby / Lever /
+`server/lib/sources/` registry cung cấp **125** nguồn — **120 bảng tiếng Anh + 5 bảng tiếng Nga**. Bộ tiếng Anh trải khắp các ATS lớn (Greenhouse / Ashby / Lever /
 Workable / SmartRecruiters / Workday), các aggregator toàn bảng chọn bằng
 `provider:` tường minh (RemoteOK, Remotive, We Work Remotely, NoDesk, Get on Board,
 Amazon, …), và các ATS theo tenant tự phát hiện từ host `careers_url` hay

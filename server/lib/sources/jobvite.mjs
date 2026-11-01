@@ -274,6 +274,12 @@ export function parseJobviteXml(xml, companyName) {
   const company = typeof companyName === 'string' ? companyName : '';
 
   const out = [];
+  // One posting is several <job> rows that share a detail URL and differ in
+  // <location>. Keyed by the URL we store, so a later city is not a second
+  // job (#6127): the scanner used to keep the first city and drop the rest
+  // as duplicates.
+  /** @type {Map<string, {job: object, locations: Set<string>}>} */
+  const byUrl = new Map();
   const OPEN = '<job>';
   const CLOSE = '</job>';
   let cursor = 0;
@@ -309,22 +315,40 @@ export function parseJobviteXml(xml, companyName) {
     const snippet = decodeEntities(tagText(block, 'category'));
     const rawId = tagText(block, 'id');
     const postedAt = parseJobviteDate(tagText(block, 'date'));
-    const isRemote = /\bremote\b/i.test(`${location} ${title}`);
 
-    out.push({
+    const merged = byUrl.get(url);
+    if (merged) {
+      // Sibling of a posting already emitted. It contributes a location only.
+      // An empty one adds nothing; a repeat collapses, so the cell never says
+      // the same city twice. The first title and date stay.
+      if (location) merged.locations.add(location);
+      continue;
+    }
+
+    const job = {
       id: `jobvite-${rawId || url}`,
       title,
       company,
       url,
       salary: '', // the public feed exposes no salary field
       location,
-      isRemote,
-      workplaceType: isRemote ? 'Remote' : '',
+      isRemote: /\bremote\b/i.test(`${location} ${title}`),
+      workplaceType: /\bremote\b/i.test(`${location} ${title}`) ? 'Remote' : '',
       relocates: false,
       date: postedAt !== undefined ? new Date(postedAt).toISOString() : '',
       snippet,
       source: 'jobvite',
-    });
+    };
+    out.push(job);
+    byUrl.set(url, { job, locations: new Set(location ? [location] : []) });
+  }
+  // Set insertion order is feed order. A single location re-joins to the same
+  // string. ` · ` is the separator location_filter already treats as a list
+  // (see workable).
+  for (const { job, locations } of byUrl.values()) {
+    job.location = [...locations].join(' · ');
+    job.isRemote = /\bremote\b/i.test(`${job.location} ${job.title}`);
+    job.workplaceType = job.isRemote ? 'Remote' : '';
   }
   return out;
 }

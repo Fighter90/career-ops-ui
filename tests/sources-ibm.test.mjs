@@ -9,7 +9,9 @@ import {
   fetchIbm,
   parseIbmResponse,
   buildPostFilter,
+  resolveMaxPages,
   API_URL,
+  PAGE_DELAY_MS,
   meta,
 } from '../server/lib/sources/ibm.mjs';
 
@@ -143,4 +145,94 @@ test('fetchIbm: a non-ok response throws with .status', async () => {
 
 test('meta: value, label, region', () => {
   assert.deepEqual(meta, { value: 'ibm', label: 'IBM', region: 'en' });
+});
+
+// ── pagination rework: max_pages + pacing + retry (#6273) ───────────────────
+
+const mkFullPage = (from) => Array.from(
+  { length: 30 },
+  (_, i) => mkHit({ _id: `${from + i}`, url: `https://www.ibm.com/careers/job/${from + i}` }),
+);
+
+test('resolveMaxPages: default 20, entry override, 300 ceiling, junk ignored (#6273)', () => {
+  assert.equal(resolveMaxPages({}), 20);
+  assert.equal(resolveMaxPages({ max_pages: 3 }), 3);
+  assert.equal(resolveMaxPages({ max_pages: 5000 }), 300);
+  assert.equal(resolveMaxPages({ max_pages: -1 }), 20);
+  assert.equal(resolveMaxPages({ max_pages: '7' }), 20);
+  assert.equal(resolveMaxPages(null), 20);
+});
+
+test('fetchIbm: paces between pages, never before the first (#6273)', async () => {
+  const sleeps = [];
+  const impl = async () => ({ ok: true, json: async () => ({ hits: { hits: mkFullPage(0) } }) });
+  await fetchIbm(API_URL, { fetchImpl: impl, company: { max_pages: 2 }, sleep: async (ms) => sleeps.push(ms) });
+  assert.deepEqual(sleeps, [PAGE_DELAY_MS]); // one pause for 2 pages — after page 1
+});
+
+test('fetchIbm: a full board stops at max_pages and warns to raise it (#6273)', async () => {
+  const lines = [];
+  const orig = console.error;
+  console.error = (...a) => { lines.push(a.join(' ')); };
+  try {
+    const calls = { n: 0 };
+    const impl = async () => { calls.n += 1; return { ok: true, json: async () => ({ hits: { hits: mkFullPage(calls.n * 30) } }) }; };
+    const jobs = await fetchIbm(API_URL, { fetchImpl: impl, company: { name: 'IBM', max_pages: 3 } });
+    assert.equal(calls.n, 3);
+    assert.equal(jobs.length, 90);
+    assert.ok(lines.some((l) => l.includes('raise max_pages')), lines.join('\n'));
+  } finally { console.error = orig; }
+});
+
+test('fetchIbm: a short page at the cap is a complete board, not a truncation (#6273)', async () => {
+  const lines = [];
+  const orig = console.error;
+  console.error = (...a) => { lines.push(a.join(' ')); };
+  try {
+    let call = 0;
+    const impl = async () => {
+      call += 1;
+      const hits = call === 1 ? mkFullPage(0) : [mkHit({ _id: 'x', url: 'https://www.ibm.com/careers/job/x' })];
+      return { ok: true, json: async () => ({ hits: { hits } }) };
+    };
+    const jobs = await fetchIbm(API_URL, { fetchImpl: impl, company: { max_pages: 2 }, sleep: async () => {} });
+    assert.equal(call, 2);
+    assert.equal(jobs.length, 31);
+    assert.equal(lines.length, 0);
+  } finally { console.error = orig; }
+});
+
+test('fetchIbm: a transient 503 is retried, not fatal (#6273)', async () => {
+  let calls = 0;
+  const impl = async () => {
+    calls += 1;
+    if (calls === 1) throw Object.assign(new Error('HTTP 503'), { status: 503 });
+    return { ok: true, json: async () => ({ hits: { hits: mkFullPage(0) } }) };
+  };
+  const jobs = await fetchIbm(API_URL, { fetchImpl: impl, company: { max_pages: 1 } });
+  assert.equal(calls, 2);
+  assert.equal(jobs.length, 30);
+});
+
+test('fetchIbm: a failed later page keeps earlier pages and warns without blaming max_pages (#6273)', async () => {
+  const lines = [];
+  const orig = console.error;
+  console.error = (...a) => { lines.push(a.join(' ')); };
+  try {
+    let calls = 0;
+    const impl = async () => {
+      calls += 1;
+      if (calls === 2) throw Object.assign(new Error('HTTP 404'), { status: 404 });
+      return { ok: true, json: async () => ({ hits: { hits: mkFullPage(0) } }) };
+    };
+    const jobs = await fetchIbm(API_URL, { fetchImpl: impl, company: { name: 'IBM', max_pages: 5 }, sleep: async () => {} });
+    assert.equal(jobs.length, 30);
+    assert.ok(lines.some((l) => l.includes('truncated at page 2')), lines.join('\n'));
+    assert.ok(!lines.some((l) => l.includes('raise max_pages')));
+  } finally { console.error = orig; }
+});
+
+test('fetchIbm: a failed first page throws instead of returning [] (#6273)', async () => {
+  const impl = async () => { throw Object.assign(new Error('HTTP 404'), { status: 404 }); };
+  await assert.rejects(() => fetchIbm(API_URL, { fetchImpl: impl }));
 });

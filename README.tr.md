@@ -7,12 +7,12 @@
 
 _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve onlar tarafından onaylanmamıştır._
 
-[![tests](https://img.shields.io/badge/tests-7096%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7135%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.264.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.264.3)
+[![release](https://img.shields.io/badge/release-v1.265.0 tarama kaynakları Apple ve Bulldogjob (kayıt 125 = 120 EN + 5 RU), IBM sayfalama rework’u, düzeltmeler justjoin/jobvite/liveness (parent-sync @ fe857ecf).
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
@@ -21,7 +21,7 @@ _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve 
 
 
 >
-> **Önceki — v1.264.2** — **Kenar çubuğu grup başlıkları kısaltma sözleşmesine katılıyor (üç nokta + yerelleştirilmiş araç ipuçları), cvstart.org yardım/SSS metni artık 19 dilin tamamında çevrilmiş olarak yayınlanıyor ve yayın incelemesi 0 HIGH bulgusuyla tamamlanıyor — bir sonraki dalga için parent-sync port-listesi kayda geçti. Testler 7081 → 7082.**
+> **Önceki — v1.264.3** — **Kenar çubuğu grup başlıkları kısaltma sözleşmesine katılıyor (üç nokta + yerelleştirilmiş araç ipuçları), cvstart.org yardım/SSS metni artık 19 dilin tamamında çevrilmiş olarak yayınlanıyor ve yayın incelemesi 0 HIGH bulgusuyla tamamlanıyor — bir sonraki dalga için parent-sync port-listesi kayda geçti. Testler 7081 → 7082.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -424,7 +424,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 7096 birim + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.264.3)
+└─ tests/                    # 7096 birim + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.265.0)
    ├─ parsers.test.mjs       # markdown / pipeline / rapor ayrıştırıcıları (saf fonksiyonlar)
    ├─ api.test.mjs           # her uç nokta, geçici sunucu, ağ yok
    ├─ {ru,en}-scanner.test.mjs   # taklit edilmiş fetch
@@ -564,7 +564,7 @@ npm run test:coverage          # `npm test` ile aynı, artı V8 kapsamı
 
 | Paket                       | Test | Ne                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (birim + entegrasyon) |   **7096** | Her uç nokta, geçici sunucu, ağ yok. 329 dosya: ayrıştırıcılar, tarayıcılar (taklit edilmiş), çalıştırıcılar, anthropic/openai, güvenlik başlıkları, XSS, iş tanımı temizleme, URL doğrulama, i18n eşitliği, + v1.55→v1.56 UX-düzeltme paketleri. |
+| `node --test tests/*.test.mjs` (birim + entegrasyon) |   **7135** | Her uç nokta, geçici sunucu, ağ yok. 329 dosya: ayrıştırıcılar, tarayıcılar (taklit edilmiş), çalıştırıcılar, anthropic/openai, güvenlik başlıkları, XSS, iş tanımı temizleme, URL doğrulama, i18n eşitliği, + v1.55→v1.56 UX-düzeltme paketleri. |
 | `tests/e2e.mjs` (smoke)      | 21 | Playwright başsız: her rota render edilir, temel akışlar.                                                     |
 | `tests/e2e-comprehensive.mjs` | 23 | Tam Playwright gezintisi: 11 rota + 12 işlevsel akış.                                              |
 | `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **176** | Tarayıcı güdümlü: dashboard render, gezinme, dil değiştirme, 404, health, tracker gidiş-dönüşü, pipeline ekleme + geçersiz-URL taraması, raporlar, evaluate manuel yedeği, config anahtarları maskeli, CV PUT XSS temizleme, pipeline preview 400, auto-pipeline SSE. |

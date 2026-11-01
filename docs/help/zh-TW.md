@@ -929,7 +929,7 @@ v2 結果介面讓所有控制項都找得到:
 **結果篩選** 組之下,`scan.filtersGroup`):
 
 - **自由文字** — 對職稱 / 公司做子字串比對。
-- **Source** 下拉 — 註冊表已知的全部來源(目前 **123**:**118 EN + 5 RU**,預設 **所有來源**)。它從 `GET /api/scan/sources` 即時自動填入,所以剛放入的新 adapter 不需任何應用程式變更就會出現在這裡 —— 清單絕不寫死。
+- **Source** 下拉 — 註冊表已知的全部來源(目前 **125**:**120 EN + 5 RU**,預設 **所有來源**)。它從 `GET /api/scan/sources` 即時自動填入,所以剛放入的新 adapter 不需任何應用程式變更就會出現在這裡 —— 清單絕不寫死。
 - **Remote / Hybrid / Onsite** 下拉。
 - **Country** 下拉 — 一個地理篩選，根據目前結果中偵測到的國家填入，每個國家都帶有其國旗 emoji 和計數(例如 `🇩🇪 Germany (12)`)。選擇一個即可只保留與該國家相關的職缺。偵測會將職缺的自由文字地點(國家名稱/別名 + 約 100 個主要就業市場城市)對應到某個國家；它很保守，絕不臆測，因此地點無法解析的職缺 —— 或純粹的 "Remote" 列表 —— 仍歸在 **All countries** 之下。將其與工作型態下拉框結合，即可同時找到與國家綁定的職缺*和*遠端職缺。
 - **Posted within** 下拉 — 一個用戶端的時效篩選(Last 24 hours / 7 days / 30 days)。`pubDate` 較舊的列會被隱藏;**沒有列出日期的列會通過**(缺少資料不會被懲罰)。
@@ -1711,7 +1711,7 @@ scan 執行、設定變更、mode 執行。
 
 ## 17. 如何新增職位入口網站來源
 
-career-ops-ui 將每個職位網站視為 **adapter** — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 下的單一檔案,知道如何取得並正規化某個站點的結果。目前,`server/lib/sources/` 註冊表內建 **123** 個來源 —— **118 個英文 + 5 個俄文**板塊。英文集合涵蓋主流 ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday)、由明確 `provider:` 選擇的全板塊聚合器(RemoteOK、Remotive、We Work Remotely、NoDesk、Get on Board、Amazon、…),以及從 `careers_url` 主機或明確 `api:` URL 自動偵測的按租戶 ATS(BambooHR、Personio、Recruitee、Teamtailor、Avature、SAP SuccessFactors、…)。**Deel** 招聘平台上的板塊（`jobs.deel.com/<slug>` —— Klarna 等公司發布職位的租戶制板塊）會從 URL 自動偵測，新增一個板塊只需 portals.yml 中的兩行。**完整清單永遠無需在此手動統計 —— 它會從 `server/lib/sources/` 自動探索,並在 `#/scan` 的 Source 下拉選單中即時顯示。** YAML 見 §5,可複製貼上的條目見 `docs/portals-examples.md`。
+career-ops-ui 將每個職位網站視為 **adapter** — [`server/lib/sources/<slug>.mjs`](../../server/lib/sources/) 下的單一檔案,知道如何取得並正規化某個站點的結果。目前,`server/lib/sources/` 註冊表內建 **125** 個來源 —— **120 個英文 + 5 個俄文**板塊。英文集合涵蓋主流 ATS(Greenhouse / Ashby / Lever / Workable / SmartRecruiters / Workday)、由明確 `provider:` 選擇的全板塊聚合器(RemoteOK、Remotive、We Work Remotely、NoDesk、Get on Board、Amazon、…),以及從 `careers_url` 主機或明確 `api:` URL 自動偵測的按租戶 ATS(BambooHR、Personio、Recruitee、Teamtailor、Avature、SAP SuccessFactors、…)。**Deel** 招聘平台上的板塊（`jobs.deel.com/<slug>` —— Klarna 等公司發布職位的租戶制板塊）會從 URL 自動偵測，新增一個板塊只需 portals.yml 中的兩行。**完整清單永遠無需在此手動統計 —— 它會從 `server/lib/sources/` 自動探索,並在 `#/scan` 的 Source 下拉選單中即時顯示。** YAML 見 §5,可複製貼上的條目見 `docs/portals-examples.md`。
 
 > **v1.69.0 (P-14) — 直接放入即自動探索。** 新增第 12 個來源現在只需**純粹的檔案放入**。registry
 > ([`server/lib/sources/registry.mjs`](../../server/lib/sources/registry.mjs))

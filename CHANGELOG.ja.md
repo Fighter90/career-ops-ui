@@ -8,6 +8,21 @@
 
 ---
 
+## [1.265.0] — 2026-11-01
+### 追加
+
+- **新しいスキャンソース 2 つ — Apple と Bulldogjob(レジストリ 123 → 125 = 120 EN + 5 RU · 120 アダプタ)** — career-ops @ `fe857ecf` 対応の parent-sync ウェーブ。**Apple**(`jobs.apple.com`、#5496 + #6196):サイトは利用可能な JSON API のない React Router SSR アプリのため、通常の検索ルートのハイドレーション blob(`window.__staticRouterHydrationData`)を読みます;ディスカバリーはエントリ駆動(`apple.queries` の関連度順テキスト軸 + `apple.teams` のスラグ軸、デフォルトなし — どちらもないエントリは throw)、ページは `max_pages`(既定 2、上限 50)で制限され 200 ms のペーシング、URL の各セグメントはサロゲート安全にエンコード、Apple が **PIPE** 表示した求人は snippet に「talent pipeline の可能性」ヒントを載せます — これでフィルタはしません。**Bulldogjob**(`bulldogjob.pl`、#6253):ポーランドのテックボードも JSON API がなく、リストページは `__NEXT_DATA__`(50/ページ、`totalCount`)を運びます;エントリの `careers_url` はサイト上で組み立てた検索(フィルタはパスに)、全リクエストに明示的な `/page,N` を付け、ウォークは短いページ・報告 total・`max_pages`(既定 25、上限 100)で止まり、部分ボードには切り詰めタグを付けます。
+- **IBM ページネーション再構築 (#6273)** — 固定 600 レコードのウォークが `max_pages`(既定 20、上限 300、エントリ上書き)になり、ページ間 200 ms ペーシングと `fetchJsonWithRetry` によるページ毎リトライ;最初のページ失敗は throw、以降のページ失敗は収集分を保持してページを名指しし、エントリ自身の上限で満了ページのときだけ «raise max_pages» 警告を出します。
+
+### 修正
+
+- **justjoin は `lastPublishedAt` で求人を dating(#6254)** — 候補者 API の `publishedAt` は雇用主が更新するたび前進し、ボードの大部分が今日の日付を帯びて `max_posting_age_days` が数週間前の求人を通していました;現在はより早い公開日が優先され、欠落・パース不能ならフォールバックします。
+- **jobvite は一つの posting URL を共有する行を折りたたみます(#6127)** — 公開フィードは同一 detail URL に対して都市ごとに `<job>` 行を返します;パーサーは最初の都市だけ残し残りを重複として数えていました。現在は兄弟行はロケーションだけ寄与し、feed 順に ` · ` で結合、最初の title/date は保持、remote は結合後のロケーションで再評価されます。
+- **Liveness: UltiPro ラン(#6090)** — UKG には求人ごとの JSON エンドポイントがなく、クローズ済みにも 200 を返すため、クローズ済みの UltiPro 求人 57 件すべてが *uncertain* と読まれていました。詳細ページはレコードを埋め込みます:`OpportunityIsClosed` true/false → expired/active、「opportunity unavailable」通知 → expired、それ以外はブラウザへ。**Built In の «Sorry, this job was removed» バナーは hard-expired(#6336)** — ページは完全な JD と APPLY コントロールを保持します;今はバナーが勝ち、«sorry» のない兄弟 «Job removed» バッジは一致しません。
+
+### メモ
+
+- 意図的に見送り:jobvite 修正の parent 側 scan.mjs ロケーションコンパイラ半分(web-ui は USPS コンパイラを no-port と文書化)と Apple PIPE ヒント用の親の `note` フィールド(web-ui の job shape に `note` はなし;`snippet` で運搬)。Tests 7096 → **7135**(+39);Playwright 173 pass / 0 fail / 1 opt-in skip;coverage gate ≥ 98/89;レジストリ **125 = 120 EN + 5 RU · 120 アダプタ**(全カウントゲートを生レジストリから再生成)。
 ## [1.264.3] — 2026-11-01
 
 ### 修正

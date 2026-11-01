@@ -6,6 +6,21 @@ Bản dịch: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.265.0] — 2026-11-01
+### Đã thêm
+
+- **Hai nguồn quét mới — Apple và Bulldogjob (sổ đăng ký 123 → 125 = 120 EN + 5 RU · 120 adapters)** — đợt parent-sync đối chiếu career-ops @ `fe857ecf`. **Apple** (`jobs.apple.com`, #5496 + #6196): trang là ứng dụng React Router SSR không có JSON API dùng được, nên nguồn đọc khối hydration của tuyến tìm kiếm thường (`window.__staticRouterHydrationData`); khám phá do mục điều khiển (`apple.queries` sắp theo độ liên quan + các trục `apple.teams`, không có mặc định — mục thiếu cả hai sẽ ném lỗi), số trang bị chặn bởi `max_pages` (mặc định 2, trần 50) với nhịp 200 ms, mọi đoạn URL được mã hoá an-toàn-surrogate, và bài đăng Apple gắn nhãn **PIPE** mang trong snippet ghi chú «có thể là talent pipeline» — không lọc theo nó. **Bulldogjob** (`bulldogjob.pl`, #6253): bảng công nghệ Ba Lan cũng không có JSON API — trang liệt kê mang `__NEXT_DATA__` (50/trang, `totalCount`); `careers_url` của mục là phép tìm kiếm người dùng dựng trên trang (bộ lọc nằm trong đường dẫn), mọi yêu cầu đều mang `/page,N` tường minh, và bước đi dừng ở trang ngắn, tổng báo cáo hoặc `max_pages` (mặc định 25, trần 100) kèm nhãn cắt ngắn trên bảng một phần.
+- **Tái cấu trúc phân trang IBM (#6273)** — bước đi cố định 600 bản ghi trở thành `max_pages` (mặc định 20, trần 300, ghi đè theo mục) với nhịp 200 ms giữa các trang và retry từng trang qua `fetchJsonWithRetry`; trang đầu thất bại sẽ ném, trang sau thất bại giữ phần đã thu và gọi tên trang, và chỉ trang đầy tại trần riêng của mục mới cảnh báo «raise max_pages».
+
+### Đã sửa
+
+- **justjoin đánh ngày đề xuất theo `lastPublishedAt` (#6254)** — `publishedAt` của API ứng viên tiến lên mỗi lần nhà tuyển dụng làm mới, nên phần lớn bảng mang ngày hôm nay và `max_posting_age_days` để lọt đề xuất đã cũ hàng tuần; nay ngày phát hành sớm hơn thắng, fallback khi thiếu hoặc không parse được.
+- **jobvite gập các hàng chia sẻ một posting URL (#6127)** — một feed công khai trả về mỗi thành phố một hàng `<job>` cho cùng một detail URL; parser giữ thành phố đầu và để scanner đếm phần còn lại là trùng lặp. Nay các hàng anh em chỉ đóng góp địa điểm, nối bằng ` · ` theo thứ tự feed, giữ title/ngày đầu tiên, và remote được đánh giá lại trên địa điểm đã nối.
+- **Liveness: một rung UltiPro (#6090)** — UKG không có endpoint JSON theo bài đăng và trả 200 cả với bài đã đóng, nên cả 57 bài UltiPro đã đóng đều đọc *uncertain*. Trang chi tiết nhúng bản ghi: `OpportunityIsClosed` true/false → expired/active, thông báo «opportunity unavailable» → expired, phần còn lại cho trình duyệt. **Biểu ngữ của Built In «Sorry, this job was removed» trở thành hard-expired (#6336)** — trang giữ nguyên JD đầy đủ và điều khiển APPLY; nay biểu ngữ thắng, và huy hiệu anh em «Job removed» không có «sorry» không khớp.
+
+### Ghi chú
+
+- Cố ý không làm: nửa parent-side của bản sửa jobvite về bộ biên dịch địa điểm scan.mjs (web-ui ghi bộ biên dịch USPS là no-port) và trường `note` của cha cho gợi ý PIPE của Apple (job shape của web-ui không có `note`; nó đi trong `snippet`). Tests 7096 → **7135** (+39); Playwright 173 pass / 0 fail / 1 opt-in skip; coverage gate ≥ 98/89; sổ **125 = 120 EN + 5 RU · 120 adapters** (tất cả cổng đếm được tái tạo từ sổ đăng ký sống).
 ## [1.264.3] — 2026-11-01
 
 ### Đã sửa
