@@ -17,11 +17,11 @@ _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.264.1** — **兩個由 AI 代理打造的修復：側邊欄膠囊優雅地截斷過長的本地化標籤（省略號 + 本地化的工具提示 — «Профинансированные компании» 不再被硬性裁切），以及每個語系統一的 480 s 評估上限（es/zh-CN 不再出現瞬時的 300 s 截斷）；cvstart.org FAQ 現在攜帶由註冊表推導的精確來源計數（123 = 118 個國際平台 + 5 個俄羅斯平台）。Tests 7041 → 7081.**
+> **🆕 最新版本 — v1.264.2** — **側邊欄群組標題加入截斷契約（省略號 + 本地化工具提示），cvstart.org 的 help/FAQ 文案如今以全部 19 個語言出貨，且發行審查以 0 個 HIGH 發現落地 — parent-sync 移植清單已為下一波浪潮記錄在案。Tests 7081 → 7082.**
 
 
 >
-> **前一版本 — v1.264.0** — **發行後加固浪潮：追蹤器每列的狀態都可就地內嵌編輯（父專案的正式 `set-status.mjs` 在 `applications.md` 鎖下）、伺服器警告（截斷、語言漂移）以橫帶形式顯示在全部六個 AI 頁面上、Trudvsem 掃描源能挺過空頁並逐筆記錄行走 offset、habr 標題無法復活標記、原始設定檔閘門守住 `full_name` 行，而各提示終於說實話（`.doc` 消失了，`gpt-5` 與 Anthropic 5-5 兩個層級）。Tests 6905 → 7041.**
+> **前一版本 — v1.264.1** — **兩個由 AI 代理打造的修復：側邊欄膠囊優雅地截斷過長的本地化標籤（省略號 + 本地化的工具提示 — «Профинансированные компании» 不再被硬性裁切），以及每個語系統一的 480 s 評估上限（es/zh-CN 不再出現瞬時的 300 s 截斷）；cvstart.org FAQ 現在攜帶由註冊表推導的精確來源計數（123 = 118 個國際平台 + 5 個俄羅斯平台）。Tests 7041 → 7081.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

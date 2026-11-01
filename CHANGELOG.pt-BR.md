@@ -8,6 +8,23 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.264.2] — 2026-11-01
+
+### Corrigido
+
+- **Os cabeçalhos de grupo da sidebar aderem ao contrato de truncamento (CAR-219)** — os rótulos dos toggles de grupo (`.nav-v2-toggle > span`) agora truncam com reticências e carregam um tooltip **localizado** pelo mesmo mecanismo `syncLabelTitles()` dos itens de nav do CAR-203; a setinha nunca encolhe, o toggle continua clicável, o RTL se mantém. Pin red-first em `tests/nav-v2.test.mjs` (+1 → 7082 tests).
+
+### Alterado
+
+- **A copy do cvstart.org chega em todas as 19 línguas (CAR-220)** — `meta.helpDesc`, `helpTeaser.c1.desc` e `faq.a2` estão traduzidos em toda localidade do site (eram somente EN na v1.264.1 por design); o GitHub Pages publicou a copy atualizada ao vivo no cvstart.org.
+- **Higiene do backlog + revisão (CAR-221/222)** — os seis itens «port when merged upstream» estão fechados: todos os sete PRs upstream estão mergeados, quatro itens já haviam sido portados, dois são do lado do pai. `docs/reviews/REVIEW-2026-10-31-v1.264.1.md` chega (0 HIGH / 0 MED, três follow-ups LOW registrados no BACKLOG), e a **port-list do parent-sync** fica registrada (6 PORT / 3 VERIFY / o gap da fonte apple; cauda upstream de 118 commits @ VERSION 1.38.0).
+
+### Notas
+
+- A correção do mirror-stamp do changelog (`92a05fcf`) vem nesta tag: todo mirror paginado no cvstart.org agora carrega a versão do release gerador, de modo que o grader `site-build-after-fanout` finalmente exerce sua lógica real em vez de pular.
+- Deliberadamente não feito: o throttling dos POSTs mutantes restantes (LOW №3 da revisão) e o acoplamento de buckets do trust-proxy — registrados no BACKLOG para a próxima onda de endurecimento. CAR-141 (vídeo de demo) continua sendo do dono.
+- Tests 7081 → 7082 (+1 pin do CAR-219); Playwright 176; registro inalterado 123 = 118 EN + 5 RU · 118 adapters.
+
 ## [1.264.1] — 2026-10-31
 
 ### Corrigido

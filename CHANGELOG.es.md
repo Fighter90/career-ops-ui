@@ -13,6 +13,23 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.264.2] — 2026-11-01
+
+### Corregido
+
+- **Las cabeceras de grupo de la barra lateral se suman al contrato de truncamiento (CAR-219)** — las etiquetas de los toggles de grupo (`.nav-v2-toggle > span`) ahora truncan con elipsis y llevan un tooltip **localizado** a través del mismo mecanismo `syncLabelTitles()` que los elementos de navegación de CAR-203; el chevron nunca se encoge, el toggle sigue siendo clicable y el RTL se mantiene. Pin rojo primero en `tests/nav-v2.test.mjs` (+1 → 7082 tests).
+
+### Cambiado
+
+- **El texto de cvstart.org se envía en los 19 idiomas (CAR-220)** — `meta.helpDesc`, `helpTeaser.c1.desc` y `faq.a2` están traducidos en cada locale del sitio (en v1.264.1 eran solo EN por diseño); GitHub Pages ya sirve la copia mejorada en cvstart.org.
+- **Higiene del backlog y de la revisión (CAR-221/222)** — los seis puntos «port when merged upstream» quedan cerrados: los siete PRs upstream están fusionados, cuatro puntos ya estaban portados y dos son del lado del padre. Aterriza `docs/reviews/REVIEW-2026-10-31-v1.264.1.md` (0 HIGH / 0 MED, tres seguimientos LOW registrados en BACKLOG) y queda registrada la **lista de puertos del parent-sync** (6 PORT / 3 VERIFY / el hueco de la fuente apple; cola upstream de 118 commits @ VERSION 1.38.0).
+
+### Notas
+
+- La corrección del sello-espejo del changelog (`92a05fcf`) viaja en este tag: cada espejo paginado de cvstart.org lleva ahora la versión del release que lo generó, así que el grader `site-build-after-fanout` por fin ejercita su lógica real en lugar de saltarse la prueba.
+- Deliberadamente no hecho: limitar los POSTs mutantes restantes (LOW №3 de la revisión) y el acoplamiento de buckets con trust-proxy — quedan registrados en BACKLOG para la próxima ola de endurecimiento. CAR-141 (vídeo de demo) sigue siendo del propietario.
+- Tests 7081 → 7082 (pin CAR-219); Playwright 176; registro sin cambios 123 = 118 EN + 5 RU · 118 adapters.
+
 ## [1.264.1] — 2026-10-31
 
 ### Corregido

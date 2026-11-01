@@ -2,6 +2,23 @@
 
 > Bu changelog artık tüm sürüm geçmişini içerir. Türkçe yerelleştirmenin eklenmesinden (v1.85.0) önce yayınlanan girdiler aşağıda İngilizce özgün hâliyle yer alır — çeviri bekliyor; asıl kaynak [🇬🇧 CHANGELOG.md](CHANGELOG.md)'dir.
 
+## [1.264.2] — 2026-11-01
+
+### Düzeltildi
+
+- **Kenar çubuğu grup başlıkları kısaltma sözleşmesine katılıyor (CAR-219)** — grup açma/kapama etiketleri (`.nav-v2-toggle > span`) artık üç nokta ile kısaltılıyor ve CAR-203 gezinme öğeleriyle aynı `syncLabelTitles()` mekanizması üzerinden **yerelleştirilmiş** bir araç ipucu taşıyor; chevron asla küçülmüyor, açma/kapama tıklanabilir kalıyor, RTL bozulmadan korunuyor. Red-first sabitleme `tests/nav-v2.test.mjs` içinde (+1 → 7082 test).
+
+### Değişti
+
+- **cvstart.org metni 19 dilin tamamında yayınlanıyor (CAR-220)** — `meta.helpDesc`, `helpTeaser.c1.desc` ve `faq.a2` her site yerel ayarında çevrilmiş (v1.264.1'de tasarım gereği yalnızca EN'diler); GitHub Pages yükseltilmiş metni cvstart.org'da canlı olarak yayınladı.
+- **Backlog + inceleme hijyeni (CAR-221/222)** — «upstream'de birleştirildikten sonra taşınacak» altı madde kapatıldı: yedi upstream PR'sinin tamamı birleştirildi, dört madde zaten taşınmıştı, ikisi üst proje tarafında. `docs/reviews/REVIEW-2026-10-31-v1.264.1.md` geliyor (0 HIGH / 0 MED, üç LOW takip maddesi BACKLOG'a not edildi) ve **parent-sync port-listesi** kayda geçiyor (6 PORT / 3 VERIFY / apple kaynak boşluğu; upstream kuyruğu 118 commit @ VERSION 1.38.0).
+
+### Notlar
+
+- Changelog ayna-damgası düzeltmesi (`92a05fcf`) bu etiketle birlikte geliyor: cvstart.org'daki her sayfalanmış ayna artık onu üreten sürümün sürüm numarasını taşıyor, böylece `site-build-after-fanout` değerlendiricisi nihayet atlamak yerine gerçek mantığını çalıştırıyor.
+- Bilinçli olarak yapılmadı: kalan veri-değiştiren POST'ların hız sınırlandırılması (inceleme LOW №3) ve trust-proxy kova bağlaşımı — bir sonraki sağlamlaştırma dalgası için BACKLOG'a not edildi. CAR-141 (tanıtım videosu) sahibin kalıyor.
+- Testler 7081 → 7082 (+1 CAR-219 sabitlemesi); Playwright 176; registry değişmedi 123 = 118 EN + 5 RU · 118 adapters.
+
 ## [1.264.1] — 2026-10-31
 
 ### Düzeltildi

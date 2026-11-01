@@ -19,11 +19,11 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Latest release — v1.264.1** — **Two agent-built fixes: sidebar pills truncate long localized labels gracefully (ellipsis + a localized tooltip — no more hard-clipped «Профинансированные компании»), and one 480 s evaluation ceiling for every locale (no more transient 300 s cut-offs on es/zh-CN); the cvstart.org FAQ now carries exact registry-derived source counts (123 = 118 international + 5 Russian). Tests 7041 → 7081.**
+> **🆕 Latest release — v1.264.2** — **Sidebar group headers join the truncation contract (ellipsis + localized tooltips), the cvstart.org help/FAQ copy now ships translated in all 19 languages, and the release review lands with 0 HIGH findings — the parent-sync port-list is recorded for the next wave. Tests 7081 → 7082.**
 
 
 >
-> **Previous — v1.264.0** — **The post-release hardening wave: every tracker row's status is inline-editable (the parent's canonical set-status.mjs under the applications.md lock), server warnings (truncation, language drift) show as a band on all six AI pages, the Trudvsem scan source survives empty pages and walks record offsets, habr titles cannot resurrect markup, the raw profile gate holds the full_name line, and the hints finally tell the truth (.doc is gone, gpt-5 and the Anthropic 5-5 tiers). Tests 6905 → 7041.**
+> **Previous — v1.264.1** — **Two agent-built fixes: sidebar pills truncate long localized labels gracefully (ellipsis + a localized tooltip — no more hard-clipped «Профинансированные компании»), and one 480 s evaluation ceiling for every locale (no more transient 300 s cut-offs on es/zh-CN); the cvstart.org FAQ now carries exact registry-derived source counts (123 = 118 international + 5 Russian). Tests 7041 → 7081.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 

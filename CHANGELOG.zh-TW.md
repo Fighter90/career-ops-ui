@@ -8,6 +8,23 @@
 
 ---
 
+## [1.264.2] — 2026-11-01
+
+### 修復
+
+- **側邊欄群組標題加入截斷契約（CAR-219）** — 群組切換標籤（`.nav-v2-toggle > span`）現在以省略號截斷，並透過與 CAR-203 導覽項目相同的 `syncLabelTitles()` 機制攜帶**本地化**的工具提示；chevron 永不縮小、切換保持可點擊、RTL 維持成立。red-first 釘選在 `tests/nav-v2.test.mjs`（+1 → 7082 個測試）。
+
+### 變更
+
+- **cvstart.org 文案以全部 19 個語言出貨（CAR-220）** — `meta.helpDesc`、`helpTeaser.c1.desc` 與 `faq.a2` 在每個網站語系都有翻譯（v1.264.1 中它們按設計僅限 EN）；GitHub Pages 已把升級後的文案線上發佈到 cvstart.org。
+- **Backlog + 審查衛生（CAR-221/222）** — 六個「待上游合併後移植」項目結案：全部七個上游 PR 已合併，四個項目早已移植，兩個屬父專案端。`docs/reviews/REVIEW-2026-10-31-v1.264.1.md` 落地（0 HIGH / 0 MED，三個 LOW 後續記錄在 BACKLOG），且 **parent-sync 移植清單**已記錄在案（6 PORT / 3 VERIFY / apple 來源缺口；上游尾部 118 個提交 @ VERSION 1.38.0）。
+
+### 備註
+
+- 變更日誌鏡像蓋章修復（`92a05fcf`）隨本標籤同行：cvstart.org 上每個分頁鏡像現在都攜帶生成它的發行版本，所以 `site-build-after-fanout` 評分器終於執行其真實邏輯而不是跳過。
+- 刻意不做：節流其餘的變更性 POST（審查 LOW №3）與 trust-proxy 桶耦合 — 記錄在 BACKLOG，留給下一波加固。CAR-141（示範影片）仍屬負責人。
+- Tests 7081 → 7082（+1 CAR-219 釘選）；Playwright 176；註冊表未變：123 sources = 118 EN + 5 RU · 118 adapters。
+
 ## [1.264.1] — 2026-10-31
 
 ### 修復

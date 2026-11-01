@@ -17,11 +17,11 @@ _Giao diện không chính thức — không liên kết với career-ops / sant
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Bản phát hành mới nhất — v1.264.1** — **Hai-sửa-do-agent-thực-hiện: các-viên-pill-viền-sidebar cắt-bớt-nhãn-bản-địa-hóa-dài một-cách-duyên-dáng (ellipsis + tooltip-bản-địa-hóa — không-còn-cắt-cứng-chữ-«Профинансированные компании»), và một-trần-đánh-giá-480 s cho-mọi-locale (không-còn-những-lượt-cắt-cụt-300 s-tạm-thời trên es/zh-CN); FAQ-của-cvstart.org giờ-mang số-đếm-nguồn-chính-xác-suy-từ-registry (123 = 118-quốc-tế + 5-Nga). Tests 7041 → 7081.**
+> **🆕 Bản phát hành mới nhất — v1.264.2** — **Các-tiêu-đề-nhóm-sidebar gia-nhập-điều-ước-cắt-bớt (ellipsis + tooltip-bản-địa-hóa), văn-bản-help/FAQ-của-cvstart.org giờ-ra-mắt-đã-dịch-trong-cả-19-ngôn-ngữ, và rà-soát-phát-hành được-đưa-vào-với-0-phát-hiện-HIGH — danh-sách-port-parent-sync được-ghi-lại cho-đợt-sóng-kế-tiếp. Tests 7081 → 7082.**
 
 
 >
-> **Bản trước — v1.264.0** — **Đợt-củng-cố-sau-phát-hành: trạng-thái-của-mọi-dòng-tracker giờ-sửa-được-ngay-trên-dòng (`set-status.mjs` chính-tắc-của-dự-án-gốc dưới-khóa-`applications.md`), cảnh-báo-server (bắt-tay, trôi-ngôn-ngữ) hiện-thành-một-dải-trên-cả-sáu-trang-AI, nguồn-quét-Trudvsem sống-sót-qua-trang-rỗng và-đi-theo-offset-bản-ghi, tiêu-đề-habr không-thể-hồi-sinh-markup, cổng-hồ-sơ-thô giữ-chặt-dòng-`full_name`, và-các-hint cuối-cùng-nói-thật (`.doc` đã-biến-mất, `gpt-5` và-hai-tier-Anthropic-5-5). Tests 6905 → 7041.**
+> **Bản trước — v1.264.1** — **Hai-sửa-do-agent-thực-hiện: các-viên-pill-viền-sidebar cắt-bớt-nhãn-bản-địa-hóa-dài một-cách-duyên-dáng (ellipsis + tooltip-bản-địa-hóa — không-còn-cắt-cứng-chữ-«Профинансированные компании»), và một-trần-đánh-giá-480 s cho-mọi-locale (không-còn-những-lượt-cắt-cụt-300 s-tạm-thời trên es/zh-CN); FAQ-của-cvstart.org giờ-mang số-đếm-nguồn-chính-xác-suy-từ-registry (123 = 118-quốc-tế + 5-Nga). Tests 7041 → 7081.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
