@@ -7,19 +7,19 @@
 
 _Uofficiel grænseflade — ikke tilknyttet eller godkendt af career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-7096%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7135%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#krav)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.264.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.264.3)
+[![release](https://img.shields.io/badge/release-v1.265.0 scan-kilder Apple og Bulldogjob (registret 125 = 120 EN + 5 RU), IBM-pagination-rework, rettelser justjoin/jobvite/liveness (parent-sync @ fe857ecf).
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
 > **🆕 Seneste udgivelse — v1.264.3** — **Rate-limit-hærdning dækker nu alle skrivende endpoints, CAR-141 tilføjer en 2 s-bekræftelsestimer ved kopiering, og hjælpen er opdateret på alle 19 sprog. Tests 7082 → 7096.**
 >
-> **Tidligere — v1.264.2** — **Sidebar-gruppeoverskrifter følger nu afkortningskontrakten (ellipsis + lokaliserede tooltips), cvstart.org-teksten til hjælp/FAQ udkommer nu oversat på alle 19 sprog, og udgivelses-reviewet lander med 0 HIGH-fund — parent-sync-port-listen er noteret til den næste bølge. Tests 7081 → 7082.**
+> **Tidligere — v1.264.3** — **Sidebar-gruppeoverskrifter følger nu afkortningskontrakten (ellipsis + lokaliserede tooltips), cvstart.org-teksten til hjælp/FAQ udkommer nu oversat på alle 19 sprog, og udgivelses-reviewet lander med 0 HIGH-fund — parent-sync-port-listen er noteret til den næste bølge. Tests 7081 → 7082.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -422,7 +422,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 7096 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.264.3)
+└─ tests/                    # 7135 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.265.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report parsers (pure functions)
    ├─ api.test.mjs           # every endpoint, ephemeral server, no network
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -553,7 +553,7 @@ Når `run: true` er sat på `/api/deep` eller `/api/mode/:slug`, foretrækker se
 ## Tests
 
 ```bash
-npm test                       # 7096 unit/integration tests
+npm test                       # 7135 unit/integration tests
 npm run test:e2e               # 21 smoke e2e (boots own server)
 npm run test:e2e:full          # 23 comprehensive e2e
 npm run test:e2e:browser       # 176 Playwright browser (smoke + full-cycle + forms + locale-sweep ×19 + theme)
@@ -562,7 +562,7 @@ npm run test:coverage          # same as `npm test` plus V8 coverage
 
 | Suite                       | Tests | What                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integration) |   **7096** | Every endpoint, ephemeral server, no network. 490 files: parsers, scanners (mocked), runners, anthropic/openai, security headers, XSS, JD sanitize, URL validation, i18n parity, + the v1.55→v1.56 UX-fix suites. |
+| `node --test tests/*.test.mjs` (unit + integration) |   **7135** | Every endpoint, ephemeral server, no network. 490 files: parsers, scanners (mocked), runners, anthropic/openai, security headers, XSS, JD sanitize, URL validation, i18n parity, + the v1.55→v1.56 UX-fix suites. |
 | `tests/e2e.mjs` (smoke)      | 21 | Playwright headless: every route renders, basic flows.                                                     |
 | `tests/e2e-comprehensive.mjs` | 23 | Full Playwright walkthrough: 11 routes + 12 functional flows.                                              |
 | `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **176** | Browser-driven: dashboard render, navigation, language switch, 404, health, tracker round-trip, pipeline add + invalid-URL sweep, reports, evaluate manual fallback, config keys masked, CV PUT XSS strip, pipeline preview 400, auto-pipeline SSE. |

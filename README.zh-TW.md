@@ -7,12 +7,12 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-7096%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7135%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.264.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.264.3)
+[![release](https://img.shields.io/badge/release-v1.265.0 掃描來源 Apple 與 Bulldogjob(註冊表 125 = 120 EN + 5 RU)、IBM 分頁重構、修復 justjoin/jobvite/liveness(parent-sync @ fe857ecf)。
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
@@ -21,7 +21,7 @@ _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。
 
 
 >
-> **前一版本 — v1.264.2** — **側邊欄群組標題加入截斷契約（省略號 + 本地化工具提示），cvstart.org 的 help/FAQ 文案如今以全部 19 個語言出貨，且發行審查以 0 個 HIGH 發現落地 — parent-sync 移植清單已為下一波浪潮記錄在案。Tests 7081 → 7082.**
+> **前一版本 — v1.264.3** — **側邊欄群組標題加入截斷契約（省略號 + 本地化工具提示），cvstart.org 的 help/FAQ 文案如今以全部 19 個語言出貨，且發行審查以 0 個 HIGH 發現落地 — parent-sync 移植清單已為下一波浪潮記錄在案。Tests 7081 → 7082.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -394,7 +394,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 7096 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.264.3)
+└─ tests/                    # 7135 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.265.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report 解析器(純函式)
    ├─ api.test.mjs           # 每個端點、暫時性伺服器、無網路
    ├─ {ru,en}-scanner.test.mjs   # 已 mock 的 fetch
@@ -540,7 +540,7 @@ npm run test:coverage          # 同 `npm test`,加上 V8 coverage
 
 | Suite                       | 測試數 | 內容                                                                                                         |
 | --------------------------- | ----- | ------------------------------------------------------------------------------------------------------------ |
-| `node --test tests/*.test.mjs`(unit + integration) |   **7096** | 每個端點、暫時性伺服器、無網路。涵蓋解析器、scanner(已 mock)、runner、anthropic、CSP / 安全 header、實體感知 XSS、JD sanitize、URL 驗證、SSRF redirect rebind、檔案互斥下的並行 tracker 寫入、`llmRateLimit`、路徑統一 sanitization、i18n parity。 |
+| `node --test tests/*.test.mjs`(unit + integration) |   **7135** | 每個端點、暫時性伺服器、無網路。涵蓋解析器、scanner(已 mock)、runner、anthropic、CSP / 安全 header、實體感知 XSS、JD sanitize、URL 驗證、SSRF redirect rebind、檔案互斥下的並行 tracker 寫入、`llmRateLimit`、路徑統一 sanitization、i18n parity。 |
 | `tests/e2e.mjs`(smoke)      | 21 | Playwright headless:每條路由可渲染、基本流程。                                                              |
 | `tests/e2e-comprehensive.mjs` | 23 | 完整 Playwright walkthrough:11 條路由 + 12 條功能流程。                                                      |
 | `tests/playwright-smoke.mjs`(`npm run test:e2e:browser`) | **176** | 瀏覽器驅動 smoke:dashboard render、navigation、語言切換、404、health、tracker round-trip(BF-1)、pipeline add + 無效 URL 掃描、reports empty、evaluate 手動 fallback、config 金鑰遮罩、CV PUT XSS strip、pipeline preview 400、WCAG 1.4.1 視覺冗餘線索回歸。 |

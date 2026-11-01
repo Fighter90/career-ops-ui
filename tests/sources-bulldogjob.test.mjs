@@ -174,3 +174,48 @@ test('fetchBulldogjob: rejects a non-listing endpoint before any request', async
   );
   assert.equal(fetched, false);
 });
+
+test('bulldogjob: edge branches — mixed remote+city, dot segments, www host, adapter nulls, pre-abort', async () => {
+  // remote flag AND a city → 'Remote, Kraków'
+  const both = parseBulldogjobPage(page([bjob(7, 'Both', { remote: true, city: 'Kraków', redirectTo: undefined })], 1));
+  assert.equal(both.rows[0].location, 'Remote, Kraków');
+  // dot segments are dropped from the filter path
+  assert.equal(buildSearchPath(parseListingUrl(`${LIST}/./../role,devops`)), '/companies/jobs/s/role,devops');
+  // the www host parses directly too
+  assert.ok(parseListingUrl('https://www.bulldogjob.pl/companies/jobs/s/role,devops'));
+  // adapter: null/non-object companies never match; api: falls back to careers_url
+  assert.equal(bulldogjobAdapter.matches(null), false);
+  assert.equal(bulldogjobAdapter.matches('x'), false);
+  assert.equal(bulldogjobAdapter.buildEndpoint({ api: 'https://bulldogjob.pl/companies/jobs/s/role,devops' }), 'https://bulldogjob.pl/companies/jobs/s/role,devops');
+  // a pre-aborted signal fails loud before any request
+  const controller = new AbortController();
+  controller.abort();
+  let fetched = false;
+  await assert.rejects(
+    () => fetchBulldogjob(LIST, { fetchImpl: async () => { fetched = true; return ok(page([])); }, signal: controller.signal }),
+    /abort/i,
+  );
+  assert.equal(fetched, false);
+});
+
+test('bulldogjob: remaining branches — empty location, junk redirectTo, trailing slash, non-string html, option defaults', async () => {
+  // no remote flag and no city → empty location string
+  const neither = parseBulldogjobPage(page([bjob(9, 'Neither', { remote: false, city: '' })], 1));
+  assert.equal(neither.rows[0].location, '');
+  // a junk redirectTo string fails URL parsing and falls back to the board page
+  const junk = parseBulldogjobPage(page([bjob(10, 'Junk', { redirectTo: 'not a url' })], 1));
+  assert.ok(junk.rows[0].url.startsWith('https://bulldogjob.pl/companies/jobs/'));
+  // a trailing slash on the listing URL parses the same as a bare one
+  assert.deepEqual(buildSearchPath(parseListingUrl(`${LIST}/`)), '/companies/jobs/s/role,devops');
+  // extractNextData refuses non-string input
+  assert.equal(extractNextData(undefined), null);
+  // the default company object (no opts.company key) and the default sleep both work —
+  // one real 250 ms pause across two pages
+  const impl = async (url) => {
+    const n = Number(url.match(/page,(\d+)/)[1]);
+    return ok(page(Array.from({ length: 50 }, (_, i) => bjob(String(i), 'R')), 100000));
+  };
+  const jobs = await fetchBulldogjob(LIST, { fetchImpl: impl, company: { max_pages: 2 } });
+  assert.equal(jobs.length, 50); // identical ids across pages dedup to one page
+  assert.equal(jobs.bulldogjobTruncated, true);
+});

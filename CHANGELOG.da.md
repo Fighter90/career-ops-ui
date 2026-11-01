@@ -9,6 +9,21 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 ---
 
 
+## [1.265.0] — 2026-11-01
+### Tilføjet
+
+- **To nye scan-kilder — Apple og Bulldogjob (registret 123 → 125 = 120 EN + 5 RU · 120 adapters)** — parent-sync-bølge mod career-ops @ `fe857ecf`. **Apple** (`jobs.apple.com`, #5496 + #6196): sitet er en React Router SSR-app uden en brugbar JSON-API, så kilden læser hydration-blob'en fra den almindelige søgerute (`window.__staticRouterHydrationData`); opdagelsen styres af entry'en (`apple.queries` med relevans-sortering + `apple.teams`-slug-akser, ingen standarder — en entry uden nogen af dem kaster), siderne afgrænses af `max_pages` (standard 2, loft 50) med 200 ms pacing, hvert URL-segment kodernes surrogate-sikkert, og en stilling Apple mærker **PIPE** bærer i sit snippet noten «kan være et talent pipeline» — der filtreres ikke på den. **Bulldogjob** (`bulldogjob.pl`, #6253): det polske tech-board har heller ingen JSON-API — listesiderne bærer `__NEXT_DATA__` (50/side, `totalCount`); entry'ens `careers_url` er den søgning brugeren byggede på sitet (filtrene bor i stien), hver request medtager en eksplicit `/page,N`, og gåturen stopper ved en kort side, det rapporterede total eller `max_pages` (standard 25, loft 100) med et afkortningsmærke på delvise boards.
+- **IBM-paginationens rework (#6273)** — det faste 600-record-gennemløb bliver `max_pages` (standard 20, loft 300, override pr. entry) med 200 ms pause mellem sider og pr.-side-retry via `fetchJsonWithRetry`; en fejlende første side kaster, en fejlende senere side beholder det indsamlede og navngiver siden, og kun en fuld side ved entry'ens eget loft advarer «raise max_pages».
+
+### Rettet
+
+- **justjoin daterer job efter `lastPublishedAt` (#6254)** — kandidat-API'ens `publishedAt` rykker sig ved hver opdatering fra arbejdsgiveren, så størstedelen af boardet bar dagens dato og `max_posting_age_days lod ugers gamle job slippe igennem; nu vinder den tidligere publiceringsdato, med fallback når den mangler eller ikke kan parses.
+- **jobvite folder rækker der deler ét posting URL (#6127)** — et offentligt feed returnerer én `<job>`-række pr. by for ét detail URL; parseren beholdt den første by og lod scanneren tælle resten som dubletter. Nu bidrager søskende kun med lokationer, sammenføjet med ` · ` i feed-rækkefølge, første titel/dato består, og remote revurderes på den sammenfattede lokation.
+- **Liveness: et UltiPro-rung (#6090)** — UKG har ingen per-posting JSON-endpoint og svarer 200 på lukkede, så alle 57 lukkede UltiPro-stillinger blev læst *uncertain*. Detaljesiden indlejrer rekorden: `OpportunityIsClosed` true/false → expired/active, boardets «opportunity unavailable»-notice → expired, alt andet overlades til browseren. **Built Ins banner «Sorry, this job was removed» bliver hard-expired (#6336)** — siden beholder den fulde JD og APPLY-kontrollen; nu vinder banneret, og et søskende-«Job removed»-badge uden «sorry» matcher ikke.
+
+### Noter
+
+- Bevidst ikke gjort: parent-siden af jobvite-fixen om scan.mjs's lokations-kompilator (web-ui dokumenterer USPS-kompilatoren som no-port) og forælderens `note`-felt til Apples PIPE-hint (web-uis job-shape har ingen `note`; den rejser i `snippet`). Tests 7096 → **7135** (+39); Playwright 173 pass / 0 fail / 1 opt-in skip; coverage gate ≥ 98/89; registret **125 = 120 EN + 5 RU · 120 adapters** (alle tælleporte regenereret fra det levende register).
 ## [1.264.3] — 2026-11-01
 
 ### Rettet

@@ -192,3 +192,21 @@ test('fetchApple: a teams-only entry runs no text search; a PIPE row carries the
   assert.equal(req.snippet, '');
   assert.equal(untyped.snippet, '');
 });
+
+test('parseHydration: garbage inside the blob → null; edge rows behave', () => {
+  assert.equal(parseHydration('<script>window.__staticRouterHydrationData = JSON.parse("not json");</script>'), null);
+  // isMultiLocation fallback when the row carries no locations
+  const page = (search) => `<script>window.__staticRouterHydrationData = JSON.parse(${JSON.stringify(JSON.stringify({ loaderData: { search } }))});</script>`;
+  const multi = parseSearchPage(page({ searchResults: [{ id: 'm1', postingTitle: 'Multi Role', isMultiLocation: true }], totalRecords: 1 }), 'https://jobs.apple.com/en-us/search?page=1', 'Apple');
+  assert.equal(multi.jobs[0].location, 'Various Locations within United States');
+  // a row without postingTitle drops; a remote location sets the workplace type;
+  // an unparseable date yields ''
+  const edge = parseSearchPage(page({ searchResults: [
+    { id: 'x' },
+    { id: 'r1', postingTitle: 'Remote Role', locations: [{ name: 'Remote — United States' }], postDateInGMT: 'garbage' },
+  ], totalRecords: 2 }), 'https://jobs.apple.com/en-us/search?page=1', 'Apple');
+  assert.equal(edge.jobs.length, 1);
+  assert.equal(edge.jobs[0].isRemote, true);
+  assert.equal(edge.jobs[0].workplaceType, 'Remote');
+  assert.equal(edge.jobs[0].date, '');
+});

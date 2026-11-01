@@ -8,6 +8,21 @@
 
 ---
 
+## [1.265.0] — 2026-11-01
+### 新增
+
+- **兩個新的掃描來源 — Apple 與 Bulldogjob（註冊表 123 → 125 = 120 EN + 5 RU · 120 adapters）** — 針對 career-ops @ `fe857ecf` 的 parent-sync 浪潮。**Apple**（`jobs.apple.com`，#5496 + #6196）：站點是 React Router SSR 應用且沒有可用的 JSON API，因此來源讀取普通搜尋路由的水合資料塊（`window.__staticRouterHydrationData`）；發現由條目驅動（`apple.queries` 按相關性排序的文字軸 + `apple.teams` 團隊 slug 軸，無預設值 — 二者皆缺的條目會擲錯），頁數由 `max_pages` 限制（預設 2，上限 50），頁間 200 ms 節流，URL 每個段都做防孤立代理編碼，被 Apple 標為 **PIPE** 的職缺在 snippet 中帶「可能是人才儲備庫」提示 — 不據此過濾。**Bulldogjob**（`bulldogjob.pl`，#6253）：波蘭技術板同樣沒有 JSON API — 列表頁內嵌 `__NEXT_DATA__`（50/頁，`totalCount`）；條目的 `careers_url` 是使用者在站點上建構的搜尋（過濾器在路徑裡），每個請求都帶顯式 `/page,N`，遍歷在短頁、報告的 total 或 `max_pages`（預設 25，上限 100）處停止，部分板會帶截斷標記。
+- **IBM 分頁重構（#6273）** — 固定的 600 筆遍歷改為 `max_pages`（預設 20，上限 300，條目可覆蓋），頁間 200 ms 節流，逐頁經 `fetchJsonWithRetry` 重試；第一頁失敗即擲錯，後續頁失敗保留已收集並點名頁碼，只有在自己上限處仍是整頁時才警告「raise max_pages」。
+
+### 修復
+
+- **justjoin 以 `lastPublishedAt` 計算職缺日期（#6254）** — 候選人 API 的 `publishedAt` 在雇主每次重新整理時前移，導致大部分板都帶今天的日期，`max_posting_age_days` 放行了數週前的舊職缺；現在以較早的發布日期為準，缺失或無法解析時回退。
+- **jobvite 摺疊共享同一 posting URL 的列（#6127）** — 公共 feed 會為同一個 detail URL 每個城市回傳一列 `<job>`；解析器此前保留第一個城市、其餘被掃描器當作重複。現在兄弟列只貢獻地點，按 feed 順序以 ` · ` 連接，保留首個標題/日期，remote 依據合併後的地點重新判定。
+- **Liveness：新增 UltiPro 執行級（#6090）** — UKG 沒有按職缺的 JSON 端點且對已關閉職缺也回傳 200，因此全部 57 條已關閉的 UltiPro 職缺讀作 *uncertain*。詳情頁內嵌記錄：`OpportunityIsClosed` true/false → expired/active，「opportunity unavailable」提示 → expired，其餘交給瀏覽器。**Built In 的「Sorry, this job was removed」橫幅成為 hard-expired（#6336）** — 頁面保留完整 JD 與 APPLY 控制項；現在橫幅勝出，而沒有「sorry」的兄弟「Job removed」徽章不符。
+
+### 備註
+
+- 有意未做：jobvite 修復中 parent 側 scan.mjs 地點編譯器的那一半（web-ui 將 USPS 編譯器記錄為 no-port），以及父專案為 Apple PIPE 提示設定的 `note` 欄位（web-ui 的 job shape 沒有 `note`；它隨 `snippet` 攜帶）。測試 7096 → **7135**（+39）；Playwright 173 pass / 0 fail / 1 opt-in skip；coverage gate ≥ 98/89；註冊表 **125 = 120 EN + 5 RU · 120 adapters**（全部計數關卡由活註冊表再生）。
 ## [1.264.3] — 2026-11-01
 
 ### 修復

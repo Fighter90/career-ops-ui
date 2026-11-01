@@ -2,6 +2,21 @@
 
 > Dieses Changelog enthält die vollständige Versionsgeschichte. Einträge, die vor der deutschen Lokalisierung (v1.85.0) veröffentlicht wurden, stehen unten im englischen Original — Übersetzung ausstehend; maßgeblich bleibt [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.265.0] — 2026-11-01
+### Neu
+
+- **Zwei neue Scan-Quellen — Apple und Bulldogjob (Register 123 → 125 = 120 EN + 5 RU · 120 Adapter)** — Parent-Sync-Welle gegen career-ops @ `fe857ecf`. **Apple** (`jobs.apple.com`, #5496 + #6196): die Seite ist eine React-Router-SSR-App ohne brauchbare JSON-API, daher liest die Quelle den Hydration-Blob der gewöhnlichen Suchroute (`window.__staticRouterHydrationData`); die Ermittlung steuert der Eintrag (`apple.queries` nach Relevanz sortiert + `apple.teams`-Slug-Achsen, keine Defaults — ein Eintrag ohne beides wirft), die Seiten sind durch `max_pages` begrenzt (Standard 2, Deckel 50) mit 200-ms-Pacing, jedes URL-Segment wird surrogate-sicher kodiert, und eine Stellung, die Apple als **PIPE** markiert, trägt im Snippet den Hinweis «kann ein Talent-Pipeline sein» — danach wird nicht gefiltert. **Bulldogjob** (`bulldogjob.pl`, #6253): das polnische Tech-Board hat ebenfalls keine JSON-API — die Listing-Seiten tragen `__NEXT_DATA__` (50/Seite, `totalCount`); der `careers_url` des Eintrags ist die auf der Seite gebaute Suche (die Filter leben im Pfad), jede Anfrage trägt ein explizites `/page,N`, und der Walk hält bei einer kurzen Seite, dem gemeldeten Total oder `max_pages` (Standard 25, Deckel 100) mit Truncation-Tag auf Teilboards.
+- **IBM-Pagination-Rework (#6273)** — der feste 600-Record-Walk wird zu `max_pages` (Standard 20, Deckel 300, Override je Eintrag) mit 200-ms-Pacing zwischen Seiten und Retry pro Seite über `fetchJsonWithRetry`; eine fehlgeschlagene erste Seite wirft, eine fehlgeschlagene spätere behält das Gesammelte und benennt die Seite, und nur eine volle Seite am eigenen Deckel des Eintrags warnt «raise max_pages».
+
+### Behoben
+
+- **justjoin datiert Angebote nach `lastPublishedAt` (#6254)** — das `publishedAt` der Kandidaten-API rückt bei jeder Aktualisierung durch den Arbeitgeber vor, sodass der Großteil des Boards das heutige Datum trug und `max_posting_age_days` Wochen alte Angebote durchließ; jetzt gewinnt das frühere Publikationsdatum, mit Fallback, wenn es fehlt oder sich nicht parsen lässt.
+- **jobvite faltet Zeilen, die einen Posting-URL teilen (#6127)** — ein öffentlicher Feed liefert eine `<job>`-Zeile pro Stadt für einen einzigen Detail-URL; der Parser behielt die erste Stadt und zählte den Rest als Duplikate. Nun tragen Geschwister nur Orte bei, in Feed-Reihenfolge mit ` · ` verbunden, erster Titel/datum bleibt, und remote wird über den verbundenen Ort neu bewertet.
+- **Liveness: ein UltiPro-Rung (#6090)** — UKG hat keinen Per-Posting-JSON-Endpoint und antwortet auch auf geschlossene mit 200, sodass alle 57 geschlossenen UltiPro-Stellungen *uncertain* lasen. Die Detailseite bettet den Datensatz ein: `OpportunityIsClosed` true/false → expired/active, der Hinweis «opportunity unavailable» → expired, alles andere bleibt beim Browser. **Built Ins Banner „Sorry, this job was removed" wird hard-expired (#6336)** — die Seite behält den vollen JD und die APPLY-Steuerung; nun gewinnt das Banner, und ein Geschwister-„Job removed"-Badge ohne „sorry" matcht nicht.
+
+### Hinweise
+
+- Bewusst nicht getan: die Parent-Seite der Jobvite-Fixes zum Location-Compiler von scan.mjs (web-ui dokumentiert den USPS-Compiler als No-Port) und das `note`-Feld des Parents für Apples PIPE-Hinweis (web-uis Job-Shape hat kein `note`; es reist im `snippet`). Tests 7096 → **7135** (+39); Playwright 173 pass / 0 fail / 1 opt-in skip; Coverage-Gate ≥ 98/89; Register **125 = 120 EN + 5 RU · 120 Adapter** (alle Zähl-Gates aus dem lebenden Register regeneriert).
 ## [1.264.3] — 2026-11-01
 
 ### Behoben
