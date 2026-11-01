@@ -164,18 +164,43 @@ export const llmRateLimit = makeRateLimiter({
 });
 
 /**
- * File-mutating / subprocess-spawning relay routes (CodeQL #705/#703 —
- * js/missing-rate-limiting). Unconditional: active on loopback too, with
- * a generous 60 req/min per (route × IP) so normal UI use and the test
- * suite never trip it, while a runaway client loop gets a 429 instead of
- * saturating per-request spawns or tracker-file rewrites.
+ * The `validate` option for writeRateLimit() — a targeted opt-out, not the
+ * old blanket `false` (review LOW #2, REVIEW-2026-10-31-v1.264.1). Caddy on
+ * prod always sends X-Forwarded-For; WITHOUT trust proxy ignoring that
+ * header is the designed spoof-proof state (keying on the socket address),
+ * not a misconfiguration — so only xForwardedForHeader is opted out and
+ * every other built-in validation (incl. trustProxy) stays armed. Setting
+ * TRUST_PROXY means XFF is trusted input ⇒ full validation (`true`).
+ *
+ * Read once at factory-call time (route registration), matching where
+ * index.mjs applies app.set('trust proxy', …).
+ * @returns {true | { xForwardedForHeader: false }}
+ */
+export function writeValidateConfig() {
+  return process.env.TRUST_PROXY ? true : { xForwardedForHeader: false };
+}
+
+/**
+ * File-mutating / subprocess-spawning relay routes (first wired for CodeQL
+ * #705 /api/runners/report-links and #703 /api/tracker/status —
+ * js/missing-rate-limiting; the fleet keeps growing, a parallel wave wires
+ * the ~47 mutating relay POSTs through this same factory). Unconditional:
+ * active on loopback too, with a generous 60 req/min per (route × IP) so
+ * normal UI use and the test suite never trip it, while a runaway client
+ * loop gets a 429 instead of saturating per-request spawns or tracker-file
+ * rewrites.
  *
  * A factory over express-rate-limit's rateLimit() — the literal
  * `rateLimit({…})` middleware CodeQL's js/missing-rate-limiting models —
  * so the registration reads `app.post(path, writeRateLimit(), handler)`.
  * Each call creates its own MemoryStore instance, which IS the per-route
- * isolation; the route prefix in the key keeps the documented keying
- * contract (route × IP) intact for direct-call tests.
+ * isolation. Keying uses the library's DEFAULT keyGenerator (`req.ip`) on
+ * purpose: the library ties its trustProxy / xForwardedForHeader / ip
+ * validations to that default keyGenerator, and a custom one would
+ * silently skip them (the blanket `validate: false` this replaces was
+ * doubly effective for exactly that reason). With `trust proxy` set,
+ * Express itself resolves req.ip to the right-most trusted XFF entry, so
+ * hop-count deployments keep per-client buckets (review LOW #1/#2).
  */
 export function writeRateLimit() {
   const { limit, windowMs } = limitConfig('WRITE_RATE_LIMIT', {
@@ -192,10 +217,11 @@ export function writeRateLimit() {
     // keeps the previous X-RateLimit-Limit/Reset contract.
     standardHeaders: true,
     legacyHeaders: true,
-    // Route × IP — the same keying as before (route prefix guards the
-    // direct-call unit tests; the store instance is per-route anyway).
-    keyGenerator: (req) =>
-      `${String(req.originalUrl || req.url || '').split('?')[0]}|${clientKey(req.ip || req.socket?.remoteAddress)}`,
+    // Keying: the library's DEFAULT keyGenerator (req.ip) — required so
+    // its armed trustProxy/xForwardedForHeader/ip validations actually run
+    // (a custom keyGenerator silently skips them). Per-route isolation
+    // comes from this factory call's own MemoryStore; with `trust proxy`
+    // set, Express resolves req.ip to the right-most trusted XFF entry.
     handler: (req, res) => {
       const resetAt = req.rateLimit?.resetTime?.getTime?.() ?? Date.now() + windowMs;
       const retryAfter = Math.max(1, Math.ceil((resetAt - Date.now()) / 1000));
@@ -206,10 +232,9 @@ export function writeRateLimit() {
         retryAfter,
       });
     },
-    // Loopback single-user app (no trust proxy, Caddy in front on prod):
-    // the built-in validations would only add console noise the old
-    // custom middleware never emitted.
-    validate: false,
+    // Targeted validation opt-out (see writeValidateConfig above) —
+    // replaces the blanket `validate: false` (review LOW #2).
+    validate: writeValidateConfig(),
     store,
   });
 }

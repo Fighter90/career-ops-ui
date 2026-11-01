@@ -405,6 +405,21 @@ export function createApp() {
   installAsyncRouteSafety();
   const app = express();
   app.disable('x-powered-by'); // don't advertise the framework (issue #29 / v1.69.5 API hygiene)
+  // Opt-in trust proxy (review LOW #1, REVIEW-2026-10-31-v1.264.1) — hop
+  // count, NEVER boolean true: `true` takes the LEFT-most (attacker-
+  // controlled) end of the X-Forwarded-For chain for req.ip, so any client
+  // could mint fresh rate-limit buckets at will. A hop count trusts only
+  // the proxy that connected to us and resolves req.ip to the right-most
+  // trusted XFF entry — one Caddy hop on the same host is the prod topology
+  // at resumecraft.ru. Unset by default: loopback deploys key limiters on
+  // the socket address, which is spoof-proof. express-rate-limit's
+  // keyGenerator needs no change (it reads req.ip); the matching
+  // writeValidateConfig() in rate-limit.mjs re-arms full validations when
+  // this is set. Must run BEFORE route registration (limiters read req.ip
+  // per request, but the setting belongs to app setup).
+  if (process.env.TRUST_PROXY) {
+    app.set('trust proxy', Number.parseInt(process.env.TRUST_PROXY, 10) || 1);
+  }
   // First middleware: Host allowlist (DNS rebinding) + same-origin check (CSRF)
   // — the loopback bind is the only access control this server has (request-guard.mjs).
   app.use(requestGuard({ bindHost: process.env.HOST, allowedHosts: process.env.ALLOWED_HOSTS }));
