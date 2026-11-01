@@ -212,7 +212,6 @@ test('bulldogjob: remaining branches — empty location, junk redirectTo, traili
   // the default company object (no opts.company key) and the default sleep both work —
   // one real 250 ms pause across two pages
   const impl = async (url) => {
-    const n = Number(url.match(/page,(\d+)/)[1]);
     return ok(page(Array.from({ length: 50 }, (_, i) => bjob(String(i), 'R')), 100000));
   };
   const jobs = await fetchBulldogjob(LIST, { fetchImpl: impl, company: { max_pages: 2 } });
