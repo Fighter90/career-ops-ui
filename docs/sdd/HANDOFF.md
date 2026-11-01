@@ -2,11 +2,11 @@
 
 This is the operating manual. Read it, then `PLAN.md` (order) and `BACKLOG.md` (what is left).
 
-## State (2026-10-31, вечер)
+## State (2026-11-01)
 
-- Released: **v1.264.1** (wave patch: CAR-203 sidebar pill truncation, CAR-218 one 480 s eval ceiling for every locale, CAR-217 exact cvstart.org FAQ counts + faq.a7 ×19 fan-out; CodeQL ×9 closed — writeRateLimit on **express-rate-limit@7.5.1** for `POST /api/runners/report-links` + `POST /api/tracker/status`, metachar-escape + unused-var lints; docs ×19 by an 18-agent fan-out) — deployed to resumecraft.ru (deploy ✓ public 401 + security headers, verify ✓). Wave PR #611 → `58a48f15`; release PR #612 → `9494a058` = tag `v1.264.1`. Tests **7081** / 0 fail · Playwright **173 pass / 0 fail / 1 opt-in skip** · registry 123 = 118 EN + 5 RU · 118 adapters.
-- Hygiene (2026-10-31): **branches = 0** — local and origin carry only `main` (the 203-branch DELETE-SAFE audit executed; `car136/m141` superseded → tag `archive/car136-m141`, ideas recorded on Linear CAR-141; `car136/m138` merged via this release and deleted). **Linear: 0 active** — CAR-203/217/218 Done with evidence; CAR-141 (demo video) stays owner-owned. Post-merge CodeQL: **OPEN ALERTS: 0** (lesson learned: a custom middleware is not recognized by `js/missing-rate-limiting` — use the canonical `express-rate-limit` call in the middleware chain). Remote-QA regression dispatched (run 41240782803).
-- Next: remote-QA v1.264.1 verdict (routes/site/links ×19; findings → Linear), CAR-141 demo video (owner), site i18n copy upgrades (helpDesc/helpTeaser/faq.a2) stay EN-only until the next docs wave.
+- Released: **v1.264.2** (nav-polish patch: CAR-219 sidebar group-header truncation + localized title sync — red-first pin, tests **7082**/0; CAR-220 cvstart.org copy ×18 locales; CAR-221 upstream port-check — 7/7 upstream PRs merged, the parent-sync port-list recorded in BACKLOG (6 PORT / 3 VERIFY / apple gap, upstream tail 118 @ VERSION 1.38.0); CAR-222 `docs/reviews/REVIEW-2026-10-31-v1.264.1.md` — 0 HIGH / 0 MED, 3 LOW follow-ups in BACKLOG; docs ×19 by an 18-agent fan-out) — deployed to resumecraft.ru (`deploy.yml ui_ref=v1.264.2` ✓, verify ✓, public 401). Wave PR #613 → `00364177`; release PR #614 → `276972c3` = tag `v1.264.2`. Registry 123 = 118 EN + 5 RU · 118 adapters; evals 14/0/1skip; coverage 98.45/90.05; browser 173/0/1skip.
+- Hygiene (2026-11-01): **branches = 0** (only `main` local + origin), worktrees = 1 (main); **Linear: 0 active** — CAR-219…222 Done with evidence; CAR-141 (demo video) stays owner-owned. Pages re-dispatched manually after the release merge (root CHANGELOG changes don't touch site/** — the auto-trigger only fires on site/** pushes). Remote-QA for v1.264.2 dispatched.
+- Next: remote-QA v1.264.2 verdict (findings → Linear); the parent-sync wave per the recorded port-list (triggers: upstream release cut, IBM/UltiPro/justjoin pain, or a second tail); the next hardening wave per the review LOWs (throttle the remaining mutating POSTs, trust-proxy bucket coupling); CAR-141 demo video (owner).
 
 ## Non-negotiable rules
 
