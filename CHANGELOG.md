@@ -6,6 +6,24 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 ---
 
+## [1.264.3] — 2026-11-01
+
+### Fixed
+
+- **Rate-limit hardening wave (review LOW №1–3 from `REVIEW-2026-10-31-v1.264.1`)** — `writeRateLimit()` (express-rate-limit@7.5.1, 60 req/min route×IP, 429 JSON + Retry-After) now covers **all 47 mutating endpoints** (was 2): 9 mis-scoped `llmRateLimit` guards replaced (`/api/config` — the `.env` rewrite!, `PUT /api/batch`, `/api/batch/merge`, outcome, followup/seed, assessments, stats/snapshot, mock-interview/save, networking/save), 3 stacked **before** the LLM bucket on the expensive paths (`/api/evaluate`, `/api/deep`, `/api/auto-pipeline`), and 33 bare registrations wired (CV/profile/modes editors, all tracker writes, pipeline POST/restore/DELETE, jds, the 7 `/api/run/*` via one loop edit, posting-guard, Playwright-PDF inline, portals toggle/health/track, discover, reports, export/docx, two-pager, career-plan, memory and the three DELETE routes). `/api/apply-helper` stays allowlisted bare (pure local computation, pinned); 16 pure-LLM routes keep the conditional LLM bucket by design. A **completeness tripwire** (`tests/rate-limit-coverage.test.mjs`, red-first at 27 bare) fails CI on any future unthrottled mutating registration.
+- **`TRUST_PROXY` opt-in + re-armed validations (review LOW №1–2)** — `app.set('trust proxy', N)` honours a `TRUST_PROXY` env **hop count** (never boolean `true` — that would key on the attacker-controlled left XFF end); unset by default, so loopback keeps its documented socket-keyed per-route degeneration. `validate: false` becomes a targeted `writeValidateConfig()`: only `xForwardedForHeader` is opted out (Caddy's XFF is ignored *by design* without trust proxy), every other validation — including `trustProxy` — is loud again, so a future `trust proxy: true` misconfiguration surfaces as `ERR_ERL_PERMISSIVE_TRUST_PROXY` instead of silence. The custom `keyGenerator` was removed deliberately: express-rate-limit ties its proxy validations to the default key generator, and per-route isolation is unchanged (one `MemoryStore` per factory call).
+- **cvstart.org copy feedback reverts after 2 s (CAR-141)** — the «Скопировано ✓» state now holds the acceptance-criterion 2 seconds (was 1.5 s), red-first pinned in `tests/site-copy-feedback.test.mjs`. This closes the last agent-fixable CAR-141 criterion; the demo-video refresh stays owner-deferred (decision 2026-11-01).
+
+### Changed
+
+- **Help bundles say 19 languages (×19)** — the §19 "Localizing the app" and §32 "Run it from OpenWorker" sentences no longer lag two locales behind: every bundle now says **19** with தமிழ் and Tiếng Việt in its own enumeration style (ar uses the spelled-out «التسع عشرة»), and `vi.md` §32's own «cả-17» remnant is fixed too. Structure gates (33 H2 / 125+ H3) byte-stable.
+- **State hygiene** — `AGENTS.md` states v1.264.2 / 7082 tests (was v1.86.x / 1566); `PLAN.md` marks releases 1–7 **Shipped** and its ship-train paragraph says docs ×19; the `StatsBar.astro` comment now describes what `facts.adapters` actually holds (123 = sources total, historical key name kept for consumers); the `i18n.js` header says 19 languages; the v1.264.2 QA prompt carries the true coverage (98.45/90.05) and the Playwright arithmetic (176 = 174 harness + 1 opt-in skip + 2 script-level suites).
+
+### Notes
+
+- Deliberately not done: the **parent-sync wave** per the recorded port-list stays in BACKLOG — the fork must sync past upstream `a9476866` first (7 of the 10 port-list commits are not in the local parent tree yet; IBM/UltiPro/Bulldogjob/apple scoped S–M, personio language-dedup deferred to its own release). CAR-141's demo-video re-record is consciously deferred by the owner («видео не надо пока», 2026-11-01).
+- Tests 7082 → **7096** (+9 coverage tripwire + 5 trust-proxy); Playwright **173 pass / 0 fail / 1 opt-in skip** (+2 chevron pins inside existing cases); coverage 98.46 line / 90.10 branch; evals 14/0/1skip; registry unchanged 123 = 118 EN + 5 RU · 118 adapters.
+
 ## [1.264.2] — 2026-11-01
 
 ### Fixed

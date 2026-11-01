@@ -13,6 +13,24 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.264.3] — 2026-11-01
+
+### Corregido
+
+- **Ola de endurecimiento de rate-limit (LOW nº 1–3 de `REVIEW-2026-10-31-v1.264.1`)** — `writeRateLimit()` (express-rate-limit@7.5.1, 60 req/min route×IP, 429 JSON + Retry-After) cubre ahora **los 47 endpoints de mutación** (antes 2): 9 guardas de `llmRateLimit` mal acotadas se sustituyen (`/api/config` — ¡reescritura de `.env`!, `PUT /api/batch`, `/api/batch/merge`, outcome, followup/seed, assessments, stats/snapshot, mock-interview/save, networking/save), 3 se apilan **antes** del bucket de LLM en las rutas más caras (`/api/evaluate`, `/api/deep`, `/api/auto-pipeline`) y 33 registros desnudos se conectan (editores CV/profile/modes, todas las escrituras del tracker, pipeline POST/restore/DELETE, jds, 7× `/api/run/*` con una sola edición del bucle, posting-guard, Playwright-PDF inline, portals toggle/health/track, discover, reports, export/docx, two-pager, career-plan, memory y las tres rutas DELETE). `/api/apply-helper` sigue en allowlist sin límite (cómputo local puro, fijado); 16 rutas puramente LLM conservan el bucket condicional de LLM por diseño. Un **tripwire de completitud** (`tests/rate-limit-coverage.test.mjs`, red-first con 27 desnudos) hace fallar el CI ante cualquier futura registro de mutación sin throttling.
+- **`TRUST_PROXY` opt-in + validaciones rearmadas (LOW nº 1–2)** — `app.set('trust proxy', N)` acepta un **hop-count** del env (nunca boolean `true` — cifraría con el extremo izquierdo del XFF controlado por el atacante); sin valor por defecto, loopback conserva la degeneración documentada con clave por socket. `validate: false` pasa a un `writeValidateConfig()` dirigido: solo se desactiva `xForwardedForHeader` (el XFF de Caddy se ignora *por diseño* sin trust proxy); las demás validaciones — incluida `trustProxy` — vuelven a ser ruidosas, así que una futura configuración errónea `trust proxy: true` se manifestará como `ERR_ERL_PERMISSIVE_TRUST_PROXY` y no en silencio. El `keyGenerator` personalizado se eliminó deliberadamente: express-rate-limit ata sus validaciones de proxy al generador por defecto, y el aislamiento por ruta no cambia (un `MemoryStore` por llamada de fábrica).
+- **La confirmación de copia de cvstart.org dura 2 s (CAR-141)** — el estado «Скопировано ✓» se mantiene ahora 2 segundos según el criterio de aceptación (antes 1,5 s), con pin red-first en `tests/site-copy-feedback.test.mjs`. Cierra el último criterio de CAR-141 reparable por agente; la regrabación del vídeo demo queda aplazada por decisión del propietario.
+
+### Cambiado
+
+- **La ayuda dice 19 idiomas (×19)** — las frases de §19 «Localizing the app» y §32 «Run it from OpenWorker» ya no van dos localizaciones por detrás: cada bundle dice ahora **19**, con தமிழ் y Tiếng Việt añadidos a cada enumeración en su propio estilo (ar lo hace con la cifra escrita «التسع عشرة»), y el resto «cả-17» del §32 de `vi.md` también queda corregido. Las puertas de estructura (33 H2 / 125+ H3) se mantienen byte-estables.
+- **Higiene de estado** — `AGENTS.md` indica v1.264.2 / 7082 tests (antes v1.86.x / 1566); `PLAN.md` marca las entregas 1–7 como **Shipped** y su párrafo del tren dice docs ×19; el comentario de `StatsBar.astro` describe lo que `facts.adapters` really contiene (123 = total de fuentes, nombre histórico de la clave conservado); la cabecera de `i18n.js` dice 19 idiomas; el QA prompt v1.264.2 lleva la cobertura real (98.45/90.05) y la aritmética de Playwright (176 = 174 harness + 1 opt-in skip + 2 suites a nivel de script).
+
+### Notas
+
+- Deliberadamente no hecho: la **ola de parent-sync** según la port-list registrada sigue en BACKLOG — el fork debe sincronizarse primero past upstream `a9476866` (7 de los 10 commits de la lista aún no están en el árbol local del padre; IBM/UltiPro/Bulldogjob/apple con alcance S–M, personio language-dedup aplazado a su propia entrega). La regrabación del vídeo demo de CAR-141 queda aplazada conscientemente por el propietario («видео не надо пока», 2026-11-01).
+- Tests 7082 → **7096** (+9 tripwire de cobertura + 5 trust-proxy); Playwright **173 pass / 0 fail / 1 opt-in skip** (+2 pines de chevron dentro de casos existentes); coverage 98.46 line / 90.10 branch; evals 14/0/1skip; registro sin cambios 123 = 118 EN + 5 RU · 118 adapters.
+
 ## [1.264.2] — 2026-11-01
 
 ### Corregido

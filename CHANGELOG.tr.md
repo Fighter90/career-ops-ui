@@ -2,6 +2,24 @@
 
 > Bu changelog artık tüm sürüm geçmişini içerir. Türkçe yerelleştirmenin eklenmesinden (v1.85.0) önce yayınlanan girdiler aşağıda İngilizce özgün hâliyle yer alır — çeviri bekliyor; asıl kaynak [🇬🇧 CHANGELOG.md](CHANGELOG.md)'dir.
 
+## [1.264.3] — 2026-11-01
+
+### Düzeltildi
+
+- **Hız sınırı sağlamlaştırma dalgası (`REVIEW-2026-10-31-v1.264.1`'den inceleme LOW №1–3)** — `writeRateLimit()` (express-rate-limit@7.5.1, 60 req/min route×IP, 429 JSON + Retry-After) artık **47 veri-değiştiren uç noktanın tamamını** kapsıyor (2 idi): kapsam dışı bırakılmış 9 `llmRateLimit` koruması değiştirildi (`/api/config` — `.env` yeniden yazımı!, `PUT /api/batch`, `/api/batch/merge`, outcome, followup/seed, assessments, stats/snapshot, mock-interview/save, networking/save), pahalı yollarda LLM kovasının **öncesine** 3 tane istiflendi (`/api/evaluate`, `/api/deep`, `/api/auto-pipeline`) ve 33 çıplak kayıt bağlandı (CV/profile/modes düzenleyicileri, tüm tracker yazımları, pipeline POST/restore/DELETE, jds, tek bir döngü düzenlemesiyle 7 `/api/run/*`, posting-guard, satır-içi Playwright-PDF, portals toggle/health/track, discover, reports, export/docx, two-pager, career-plan, memory ve üç DELETE rotası). `/api/apply-helper` allowlist'li çıplak olarak kalıyor (salt yerel hesaplama, sabitlenmiş); 16 salt-LLM rotası tasarım gereği koşullu LLM kovasını koruyor. Bir **eksiksizlik tetikleyicisi** (`tests/rate-limit-coverage.test.mjs`, 27 çıplak kayıtla red-first) gelecekteki her hız sınırlandırılmamış veri-değiştiren kayıtta CI'ı düşürür.
+- **`TRUST_PROXY` isteğe bağlı kullanımı + yeniden devreye alınan doğrulamalar (inceleme LOW №1–2)** — `app.set('trust proxy', N)` bir `TRUST_PROXY` env **hop sayısını** kabul ediyor (asla boolean `true` değil — bu, saldırgan-kontrollü sol XFF ucuna göre anahtarlamaya yol açardı); varsayılan olarak ayarsız, böylece loopback belgelenmiş soket-anahtarlı rota-başına dejenerasyonunu koruyor. `validate: false`, hedefli bir `writeValidateConfig()`'e dönüşüyor: yalnızca `xForwardedForHeader` muaf tutuluyor (trust proxy olmadan Caddy'nin XFF'si *tasarım gereği* yok sayılıyor), diğer her doğrulama — `trustProxy` dahil — yeniden gürültülü, böylece gelecekteki bir `trust proxy: true` yanlış yapılandırması sessizlik yerine `ERR_ERL_PERMISSIVE_TRUST_PROXY` olarak yüzeye çıkıyor. Özel `keyGenerator` bilinçli olarak kaldırıldı: express-rate-limit, proxy doğrulamalarını varsayılan anahtar üreticisine bağlıyor ve rota-başına izolasyon değişmedi (her fabrika çağrısına bir `MemoryStore`).
+- **cvstart.org kopyalama geri bildirimi 2 sn sonra geri alınıyor (CAR-141)** — «Скопировано ✓» durumu artık kabul kriterindeki 2 saniye boyunca kalıyor (1,5 sn idi), `tests/site-copy-feedback.test.mjs` içinde red-first sabitlendi. Bu, CAR-141'in ajan tarafından giderilebilir son kriterini kapatıyor; tanıtım videosu yenilemesi sahibin ertelemesinde kalıyor (karar 2026-11-01).
+
+### Değişti
+
+- **Yardım paketleri 19 dil diyor (×19)** — §19 "Localizing the app" ve §32 "Run it from OpenWorker" cümleleri artık iki yerel ayar geriden gelmiyor: her paket artık **19** diyor ve தமிழ் ile Tiếng Việt'i kendi sayım biçimiyle adlandırıyor (ar, yazıyla yazılmış «التسع عشرة» biçimini kullanıyor); `vi.md` §32'sindeki kendi «cả-17» kalıntısı da düzeltildi. Yapı kapıları (33 H2 / 125+ H3) bayt düzeyinde kararlı.
+- **Durum hijyeni** — `AGENTS.md` v1.264.2 / 7082 test diyor (v1.86.x / 1566 idi); `PLAN.md` 1–7. sürümleri **Shipped** olarak işaretliyor ve ship-train paragrafı docs ×19 diyor; `StatsBar.astro` yorumu artık `facts.adapters`'ın gerçekte ne tuttuğunu açıklıyor (123 = kaynak toplamı, tüketiciler için tarihsel anahtar adı korundu); `i18n.js` başlığı 19 dil diyor; v1.264.2 QA istemi gerçek kapsamı (98.45/90.05) ve Playwright aritmetiğini (176 = 174 harness + 1 opsiyonel atlama + 2 betik-seviyesi süit) taşıyor.
+
+### Notlar
+
+- Bilinçli olarak yapılmadı: kayıtlı port-listesi başına **parent-sync dalgası** BACKLOG'da kalıyor — fork önce upstream `a9476866`'ın ötesine senkronize olmalı (10 port-listesi commit'inin 7'si henüz yerel üst proje ağacında değil; IBM/UltiPro/Bulldogjob/apple S–M olarak kapsamlandı, personio language-dedup kendi sürümüne ertelendi). CAR-141'in tanıtım videosu yeniden kaydı sahibin tarafından bilinçli olarak ertelendi («видео не надо пока», 2026-11-01).
+- Testler 7082 → **7096** (+9 kapsam tetikleyicisi + 5 trust-proxy); Playwright **173 geçti / 0 başarısız / 1 opsiyonel atlandı** (mevcut vakalar içinde +2 chevron sabitlemesi); kapsam 98.46 satır / 90.10 dal; evals 14/0/1skip; registry değişmedi 123 = 118 EN + 5 RU · 118 adapters.
+
 ## [1.264.2] — 2026-11-01
 
 ### Düzeltildi

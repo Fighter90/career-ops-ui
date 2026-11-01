@@ -7,21 +7,21 @@
 
 _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았습니다._
 
-[![tests](https://img.shields.io/badge/tests-7041%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7096%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.264.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.264.0)
+[![release](https://img.shields.io/badge/release-v1.264.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.264.3)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.264.2** — **사이드바 그룹 헤더가 잘림 컨트랙트에 합류합니다 (말줄임표 + 현지화된 툴팁), cvstart.org의 help/FAQ 카피가 이제 19개 언어 전부로 번역되어 배포되며, 릴리스 리뷰는 HIGH 발견 0개로 반영됩니다 — parent-sync 포트-리스트가 다음 웨이브를 위해 기록됐습니다. 테스트 7081 → 7082.**
+> **🆕 최신 릴리스 — v1.264.3** — **레이트 리밋 강화가 이제 모든 변경 엔드포인트를 커버하고, CAR-141은 2 s 복사 확인 타이머를 추가하며, 도움말은 19개 언어 모두에서 갱신됐습니다. 테스트 7082 → 7096.**
 
 
 >
-> **이전 버전 — v1.264.1** — **에이전트가 만든 두 가지 수정: 사이드바 필이 현지화된 긴 레이블을 우아하게 잘라냅니다 (말줄임표 + 현지화된 툴팁 — «Профинансированные компании»가 더 이상 하드-클립되지 않음), 그리고 모든 로케일에 하나의 480 s 평가 천장 (es/zh-CN에서의 일시적인 300 s 절단은 이제 없음); cvstart.org FAQ는 이제 레지스트리에서 파생된 정확한 소스 카운트를 실어 나릅니다 (123 = 118 국제 + 5 러시아). 테스트 7041 → 7081.**
+> **이전 버전 — v1.264.2** — **사이드바 그룹 헤더가 잘림 컨트랙트에 합류합니다 (말줄임표 + 현지화된 툴팁), cvstart.org의 help/FAQ 카피가 이제 19개 언어 전부로 번역되어 배포되며, 릴리스 리뷰는 HIGH 발견 0개로 반영됩니다 — parent-sync 포트-리스트가 다음 웨이브를 위해 기록됐습니다. 테스트 7081 → 7082.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -394,7 +394,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 7041 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.264.0)
+└─ tests/                    # 7096 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.264.3)
    ├─ parsers.test.mjs       # markdown / pipeline / report 파서 (순수 함수)
    ├─ api.test.mjs           # 모든 엔드포인트, 임시 서버, 네트워크 없음
    ├─ {ru,en}-scanner.test.mjs   # mocked fetch
@@ -528,20 +528,20 @@ event: error    data: { message }
 ## 테스트
 
 ```bash
-npm test                       # 6868 unit/integration 테스트
+npm test                       # 7096 unit/integration 테스트
 npm run test:e2e               # 21 smoke e2e (자체 서버 부팅)
 npm run test:e2e:full          # 23 comprehensive e2e
-npm run test:e2e:browser       # 118 Playwright browser-smoke
+npm run test:e2e:browser       # 176 Playwright browser-smoke
 npm run test:coverage          # `npm test`와 동일 + V8 coverage
 ```
 
 | Suite                       | Tests | 내용                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integration) |   **7041** | 모든 엔드포인트, 임시 서버, 네트워크 없음. parser, scanner (mocked), runner, anthropic, security headers, XSS, JD sanitize, URL validation, path traversal, DNS-rebind, file lock, rate limit, i18n 패리티 포함. |
+| `node --test tests/*.test.mjs` (unit + integration) |   **7096** | 모든 엔드포인트, 임시 서버, 네트워크 없음. parser, scanner (mocked), runner, anthropic, security headers, XSS, JD sanitize, URL validation, path traversal, DNS-rebind, file lock, rate limit, i18n 패리티 포함. |
 | `tests/e2e.mjs` (smoke)      | 21 | Playwright headless: 모든 라우트 렌더링, 기본 플로우.                                                     |
 | `tests/e2e-comprehensive.mjs` | 23 | 전체 Playwright 워크스루: 11개 라우트 + 12개 기능 플로우.                                              |
-| `tests/playwright-smoke.mjs` (`npm run test:e2e:browser`) | **32** | 브라우저 주도 smoke: dashboard render, navigation, language switch, 404, health, tracker round-trip (BF-1), pipeline add + invalid-URL 스윕, reports empty, evaluate manual fallback, config keys masked, CV PUT XSS strip, pipeline preview 400. |
-| **합계** (네 스위트 합계)                   | **5278** | **0 fails, 0 flakes**                                                                                    |
+| `tests/playwright-smoke.mjs` (`npm run test:e2e:browser`) | **176** | 브라우저 주도 smoke: dashboard render, navigation, language switch, 404, health, tracker round-trip (BF-1), pipeline add + invalid-URL 스윕, reports empty, evaluate manual fallback, config keys masked, CV PUT XSS strip, pipeline preview 400. |
+| **합계** (네 스위트 합계)                   | **7316** | **0 fails, 0 flakes**                                                                                    |
 
 Coverage: `--experimental-test-coverage` 기준 약 93% 라인 / 약 83% 브랜치.
 
@@ -694,7 +694,7 @@ node evals/workflow/run.mjs --task qa-prompt-mandatory
 
 이슈와 PR을 환영합니다. 하우스 룰은 다음과 같습니다.
 
-- 푸시 전에 `npm test`를 실행합니다 — **6868 checks green**이 기준입니다(UI를 건드리는 경우 118개의 Playwright 테스트도 포함).
+- 푸시 전에 `npm test`를 실행합니다 — **7096 checks green**이 기준입니다(UI를 건드리는 경우 176개의 Playwright 테스트도 포함).
 - 비자명한 변경은 GSD 파이프라인을 거칩니다. [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md)를 참고하십시오.
 - 이 저장소 내부에서 부모 `career-ops/` 프로젝트의 어떤 파일도 수정하지 마십시오. 핵심 가치는 이것이 비침습적 오버레이라는 점에 있습니다. [`CLAUDE.md`](CLAUDE.md)의 hard rule을 확인하십시오.
 - Conventional commits: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`. 선택적 스코프: `feat(scan):`. Breaking change: `feat!:`.

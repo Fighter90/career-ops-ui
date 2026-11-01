@@ -8,6 +8,24 @@
 
 ---
 
+## [1.264.3] — 2026-11-01
+
+### Исправлено
+
+- **Волна укрепления rate-limit (LOW №1–3 из `REVIEW-2026-10-31-v1.264.1`)** — `writeRateLimit()` (express-rate-limit@7.5.1, 60 req/min route×IP, 429 JSON + Retry-After) теперь покрывает **все 47 мутирующих эндпоинтов** (было 2): 9 mis-scoped-гардов `llmRateLimit` заменены (`/api/config` — перезапись `.env`!, `PUT /api/batch`, `/api/batch/merge`, outcome, followup/seed, assessments, stats/snapshot, mock-interview/save, networking/save), 3 поставлены **перед** LLM-бакетом на самых дорогих путях (`/api/evaluate`, `/api/deep`, `/api/auto-pipeline`) и 33 голые регистрации подключены (редакторы CV/profile/modes, все записи трекера, pipeline POST/restore/DELETE, jds, 7× `/api/run/*` одной правкой цикла, posting-guard, Playwright-PDF inline, portals toggle/health/track, discover, reports, export/docx, two-pager, career-plan, memory и три DELETE-маршрута). `/api/apply-helper` остаётся в allowlist без лимита (чистые локальные вычисления, закреплено); 16 чисто-LLM маршрутов сохраняют условный LLM-бакет по дизайну. **Полный tripwire** (`tests/rate-limit-coverage.test.mjs`, red-first на 27 голых) валит CI при любой будущей неограниченной мутирующей регистрации.
+- **`TRUST_PROXY` opt-in + повторно вооружённые валидации (LOW №1–2)** — `app.set('trust proxy', N)` принимает env **hop-count** (никогда boolean `true` — иначе ключ строится по атакерскому левому концу XFF); по умолчанию не задан — loopback сохраняет задокументированную дегенерацию с ключом по сокету. `validate: false` становится таргетированным `writeValidateConfig()`: выключена только проверка `xForwardedForHeader` (XFF от Caddy игнорируется *по дизайну* без trust proxy), все остальные валидации — включая `trustProxy` — снова громкие, поэтому будущая misconfiguration `trust proxy: true` проявится как `ERR_ERL_PERMISSIVE_TRUST_PROXY`, а не тишина. Кастомный `keyGenerator` удалён осознанно: express-rate-limit привязывает прокси-валидации к дефолтному генератору ключей, а изоляция по маршрутам не изменилась (один `MemoryStore` на вызов фабрики).
+- **Обратная связь копирования на cvstart.org держится 2 с (CAR-141)** — состояние «Скопировано ✓» теперь держится 2 секунды по критерию приёмки (было 1,5 с), red-first пин в `tests/site-copy-feedback.test.mjs`. Это закрывает последний агенто-исправимый критерий CAR-141; перезапись демо-видео остаётся отложенной решением владельца.
+
+### Изменено
+
+- **Справка говорит о 19 языках (×19)** — предложения §19 «Localizing the app» и §32 «Run it from OpenWorker» больше не отстают на две локали: каждый бандл теперь говорит **19**, в перечислениях добавлены தமிழ் и Tiếng Việt в собственном стиле файла (ar — прописью «التسع عشرة»), а собственный остаток «cả-17» в §32 у `vi.md` тоже исправлен. Структурные гейты (33 H2 / 125+ H3) байт-стабильны.
+- **Гигиена состояния** — `AGENTS.md` называет v1.264.2 / 7082 тестов (было v1.86.x / 1566); `PLAN.md` помечает релизы 1–7 как **Shipped**, а параграф ship-поезда говорит docs ×19; комментарий `StatsBar.astro` описывает, что `facts.adapters` реально хранит (123 = общее число источников, историческое имя ключа сохранено для потребителей); шапка `i18n.js` говорит о 19 языках; QA-промпт v1.264.2 несёт истинное покрытие (98.45/90.05) и арифметику Playwright (176 = 174 harness + 1 opt-in skip + 2 скриптовых сьюта).
+
+### Примечания
+
+- Осознанно не сделано: **волна parent-sync** по записанному порт-листу остаётся в BACKLOG — сначала форк должен синхронизироваться past upstream `a9476866` (7 из 10 коммитов порт-листа ещё не в локальном дереве родителя; IBM/UltiPro/Bulldogjob/apple скоупированы S–M, personio language-dedup отложен в отдельный релиз). Перезапись демо-видео CAR-141 сознательно отложена владельцем («видео не надо пока», 2026-11-01).
+- Тесты 7082 → **7096** (+9 tripwire покрытия + 5 trust-proxy); Playwright **173 pass / 0 fail / 1 opt-in skip** (+2 chevron-пина внутри существующих кейсов); coverage 98.46 line / 90.10 branch; evals 14/0/1skip; реестр без изменений 123 = 118 EN + 5 RU · 118 adapters.
+
 ## [1.264.2] — 2026-11-01
 
 ### Исправлено

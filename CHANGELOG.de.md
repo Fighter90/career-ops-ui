@@ -2,6 +2,24 @@
 
 > Dieses Changelog enthält die vollständige Versionsgeschichte. Einträge, die vor der deutschen Lokalisierung (v1.85.0) veröffentlicht wurden, stehen unten im englischen Original — Übersetzung ausstehend; maßgeblich bleibt [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.264.3] — 2026-11-01
+
+### Behoben
+
+- **Rate-Limit-Härtungswelle (Review-LOW №1–3 aus `REVIEW-2026-10-31-v1.264.1`)** — `writeRateLimit()` (express-rate-limit@7.5.1, 60 req/min route×IP, 429 JSON + Retry-After) deckt jetzt **alle 47 mutierenden Endpunkte** ab (waren 2): 9 falsch gescopete `llmRateLimit`-Guards ersetzt (`/api/config` — die `.env`-Neuschreibung!, `PUT /api/batch`, `/api/batch/merge`, outcome, followup/seed, assessments, stats/snapshot, mock-interview/save, networking/save), 3 gestapelt **vor** dem LLM-Bucket auf den teuren Pfaden (`/api/evaluate`, `/api/deep`, `/api/auto-pipeline`), und 33 nackte Registrierungen verdrahtet (CV-/Profil-/Modes-Editoren, alle Tracker-Schreibzugriffe, Pipeline POST/restore/DELETE, jds, die 7 `/api/run/*` über eine Loop-Änderung, posting-guard, Playwright-PDF inline, portals toggle/health/track, discover, reports, export/docx, two-pager, career-plan, memory und die drei DELETE-Routen). `/api/apply-helper` bleibt als Allowlist-Fall ohne Rate-Limit (reine lokale Berechnung, gepinnt); 16 reine LLM-Routen behalten den konditionalen LLM-Bucket by design. Ein **Vollständigkeits-Tripwire** (`tests/rate-limit-coverage.test.mjs`, red-first bei 27 nackten) lässt CI bei jeder künftigen ungedrosselten mutierenden Registrierung fehlschlagen.
+- **`TRUST_PROXY`-Opt-in + neu bewaffnete Validierungen (Review-LOW №1–2)** — `app.set('trust proxy', N)` respektiert eine `TRUST_PROXY`-Env als **Hop-Anzahl** (nie boolean `true` — das würde auf das Angreifer-kontrollierte linke XFF-Ende keyen); standardmäßig unset, sodass Loopback seine dokumentierte socket-keyed Degeneration pro Route behält. `validate: false` wird zu einem gezielten `writeValidateConfig()`: nur `xForwardedForHeader` ist ausgenommen (Caddys XFF wird ohne Trust Proxy *by design* ignoriert), jede andere Validierung — inklusive `trustProxy` — ist wieder laut, sodass eine künftige `trust proxy: true`-Fehlkonfiguration als `ERR_ERL_PERMISSIVE_TRUST_PROXY` an die Oberfläche kommt, statt zu verstummen. Der eigene `keyGenerator` wurde bewusst entfernt: express-rate-limit koppelt seine Proxy-Validierungen an den Standard-Key-Generator, und die Isolation pro Route bleibt unverändert (ein `MemoryStore` pro Factory-Aufruf).
+- **cvstart.org-Kopier-Feedback springt nach 2 s zurück (CAR-141)** — der «Скопировано ✓»-Zustand hält jetzt die akzeptanzkriterien-vorgeschriebenen 2 Sekunden (waren 1,5 s), red-first gepinnt in `tests/site-copy-feedback.test.mjs`. Damit ist das letzte agenten-fixierbare CAR-141-Kriterium geschlossen; die Demo-Video-Aktualisierung bleibt vom Owner vertagt (Entscheidung 2026-11-01).
+
+### Geändert
+
+- **Help-Bundles sagen 19 Sprachen (×19)** — die §19-„Localizing the app“- und §32-„Run it from OpenWorker“-Sätze hinken nicht mehr zwei Locales hinterher: jedes Bundle sagt jetzt **19** mit தமிழ் und Tiếng Việt im jeweiligen Aufzählungsstil (ar nutzt das ausgeschriebene «التسع عشرة»), und der eigene «cả-17»-Rest in `vi.md` §32 ist ebenfalls gefixt. Struktur-Gates (33 H2 / 125+ H3) byte-stabil.
+- **State-Hygiene** — `AGENTS.md` nennt v1.264.2 / 7082 Tests (war v1.86.x / 1566); `PLAN.md` markiert die Releases 1–7 als **Shipped**, und ihr Ship-Train-Absatz sagt docs ×19; der `StatsBar.astro`-Kommentar beschreibt jetzt, was `facts.adapters` tatsächlich enthält (123 = Sources-Gesamtzahl, der historische Key-Name bleibt für Konsumenten erhalten); der `i18n.js`-Header sagt 19 Sprachen; der v1.264.2-QA-Prompt trägt die echte Coverage (98.45/90.05) und die Playwright-Arithmetik (176 = 174 Harness + 1 opt-in-Skip + 2 Script-Level-Suiten).
+
+### Hinweise
+
+- Bewusst nicht getan: die **Parent-Sync-Welle** gemäß der festgehaltenen Port-Liste bleibt im BACKLOG — der Fork muss erst über Upstream `a9476866` hinaus synchronisieren (7 der 10 Port-Listen-Commits sind noch nicht im lokalen Eltern-Baum; IBM/UltiPro/Bulldogjob/apple mit Umfang S–M gescort, personio language-dedup auf ein eigenes Release vertagt). Die erneute Aufnahme des CAR-141-Demo-Videos ist vom Owner bewusst vertagt («видео не надо пока», 2026-11-01).
+- Tests 7082 → **7096** (+9 Coverage-Tripwire + 5 Trust-Proxy); Playwright **173 bestanden / 0 fehlgeschlagen / 1 opt-in-Skip** (+2 Chevron-Pins in bestehenden Fällen); Coverage 98.46 Zeilen / 90.10 Branches; Evals 14/0/1skip; Registry unverändert 123 = 118 EN + 5 RU · 118 adapters.
+
 ## [1.264.2] — 2026-11-01
 
 ### Behoben

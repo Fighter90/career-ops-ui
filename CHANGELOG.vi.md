@@ -6,6 +6,24 @@ Bản dịch: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.264.3] — 2026-11-01
+
+### Đã sửa
+
+- **Đợt-củng-cố-rate-limit (rà-soát-LOW-№1–3 từ `REVIEW-2026-10-31-v1.264.1`)** — `writeRateLimit()` (express-rate-limit@7.5.1, 60 req/phút route×IP, 429 JSON + Retry-After) giờ phủ **cả-47-endpoint-mutating** (trước là 2): 9-guard-`llmRateLimit` gán-sai-phạm-vi được-thay (`/api/config` — chính-là-việc-viết-lại-`.env`!, `PUT /api/batch`, `/api/batch/merge`, outcome, followup/seed, assessments, stats/snapshot, mock-interview/save, networking/save), 3-xếp-chồng **trước** bucket-LLM trên-các-đường-tốn-kém (`/api/evaluate`, `/api/deep`, `/api/auto-pipeline`), và 33-đăng-ký-trần được-gắn-giới-hạn (các-bộ-soạn-CV/profile/modes, mọi-lượt-viết-tracker, pipeline POST/restore/DELETE, jds, cả-7-`/api/run/*` qua một-lần-sửa-vòng-lặp, posting-guard, Playwright-PDF-inline, portals toggle/health/track, discover, reports, export/docx, two-pager, career-plan, memory và ba-route-DELETE). `/api/apply-helper` vẫn-trần-trong-allowlist (thuần-tính-toán-cục-bộ, được-ghim); 16-route-LLM-thuần giữ bucket-LLM-có-điều-kiện theo-thiết-kế. Một-**tripwire-đầy-đủ** (`tests/rate-limit-coverage.test.mjs`, đỏ-trước ở-mốc-27-trần) làm-CI-thất-bại với-mọi-đăng-ký-mutating-chưa-giới-hạn trong-tương-lai.
+- **`TRUST_PROXY` theo-chọn + các-xác-thực-tái-kích-hoạt (rà-soát-LOW-№1–2)** — `app.set('trust proxy', N)` tôn-trọng một-**số-hop** trong-env `TRUST_PROXY` (không-bao-giờ-boolean `true` — điều-đó sẽ-khóa-theo đầu-XFF-bên-trái nằm-trong-tay-tấn-công-viên); không-đặt-theo-mặc-định, nên loopback giữ-cách-suy-giảm-theo-socket-mỗi-route như-đã-tài-liệu-hóa. `validate: false` trở-thành một-`writeValidateConfig()` nhắm-đích: chỉ `xForwardedForHeader` được-loại-trừ (XFF-của-Caddy bị-bỏ-qua *có-cố-ý* khi-không-có-trust-proxy), mọi-xác-thực-khác — kể-cả `trustProxy` — lại-hét-to, nên một-cấu-hình-sai `trust proxy: true` trong-tương-lai sẽ-hiện-ra dạng-`ERR_ERL_PERMISSIVE_TRUST_PROXY` thay-vì-im-lặng. `keyGenerator` tùy-biến bị-gỡ-một-cách-cố-ý: express-rate-limit gắn-các-xác-thực-proxy của-mình-vào bộ-sinh-khóa-mặc-định, và cách-cô-lập-mỗi-route không-đổi (một `MemoryStore` mỗi-lần-gọi-factory).
+- **Phản-hồi-copy của-cvstart.org hoàn-nguyên sau-2 s (CAR-141)** — trạng-thái-«Скопировано ✓» giờ giữ tiêu-chí-chấp-nhận trong-2 s (trước là 1.5 s), ghim-đỏ-trước trong `tests/site-copy-feedback.test.mjs`. Việc-này đóng-tiêu-chí-CAR-141 cuối-cùng trong-tầm-sửa-của-agent; lượt-làm-mới-video-demo vẫn-ở-trạng-thái-hoãn-bởi-chủ (quyết-định 2026-11-01).
+
+### Đã thay đổi
+
+- **Các-gói-help nêu-19-ngôn-ngữ (×19)** — các-câu-§19 "Localizing the app" và §32 "Run it from OpenWorker" không-còn-lệch-hai-locale: mọi-gói giờ nêu **19** với தமிழ் và Tiếng Việt theo-kiểu-liệt-kê-của-chính-mình (ar dùng-dạng-đọc-thành-chữ «التسع عشرة»), và tàn-dư-«cả-17» của chính-§32-trong-`vi.md` cũng-được-sửa-nốt. Các-cổng-cấu-trúc (33 H2 / 125+ H3) ổn-định-theo-byte.
+- **Vệ-sinh-trạng-thái** — `AGENTS.md` nêu-v1.264.2 / 7082-kiểm-thử (trước là v1.86.x / 1566); `PLAN.md` đánh-dấu các-bản-phát-hành-1–7 **Shipped** và đoạn-ship-train của-nó nói docs ×19; bình-luận-`StatsBar.astro` giờ mô-tả đúng những-gì-`facts.adapters` thực-chứa (123 = tổng-số-nguồn, tên-khóa-lịch-sử được-giữ cho-các-bên-tiêu-dùng); phần-đầu-`i18n.js` nói-19-ngôn-ngữ; QA-prompt-v1.264.2 mang coverage-thật (98.45/90.05) và phép-tính-Playwright (176 = 174 harness + 1 bỏ-qua-tùy-chọn + 2-suite-cấp-script).
+
+### Ghi chú
+
+- Không-hành-động-cố-ý: **đợt-parent-sync** theo-danh-sách-port-đã-ghi vẫn-nằm-trong-BACKLOG — fork phải-sync-qua-quá `a9476866` upstream trước (7-trong-10-commit-của-danh-sách-port chưa-có-trong-cây-parent-cục-bộ; IBM/UltiPro/Bulldogjob/apple scope-S–M, personio language-dedup hoãn-sang-bản-phát-hành-riêng-của-nó). Lượt-ghi-lại-video-demo-CAR-141 do-chủ-cố-ý-hoãn («видео не надо пока», 2026-11-01).
+- Tests 7082 → **7096** (+9-tripwire-coverage + 5-trust-proxy); Playwright **173 đạt / 0 thất-bại / 1 bỏ-qua-tùy-chọn** (+2-ghim-chevron bên-trong-các-case-đã-có); coverage 98.46 line / 90.10 branch; evals 14/0/1skip; registry không-thay-đổi 123 = 118 EN + 5 RU · 118 adapters.
+
 ## [1.264.2] — 2026-11-01
 
 ### Đã sửa

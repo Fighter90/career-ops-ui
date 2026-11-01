@@ -2,6 +2,24 @@
 
 > यह परिवर्तन-सूची अब संपूर्ण रिलीज़-इतिहास रखती है। हिन्दी स्थानीयकरण (v1.122.0) से पहले प्रकाशित प्रविष्टियाँ नीचे अंग्रेज़ी मूल रूप में हैं — अनुवाद बाकी है; आधिकारिक स्रोत [🇬🇧 CHANGELOG.md](CHANGELOG.md) है।
 
+## [1.264.3] — 2026-11-01
+
+### ठीक किया
+
+- **रेट-लिमिट सुदृढ़ीकरण तरंग (`REVIEW-2026-10-31-v1.264.1` के LOW №1–3)** — `writeRateLimit()` (express-rate-limit@7.5.1, 60 req/min route×IP, 429 JSON + Retry-After) अब **सभी 47 म्यूटेटिंग एंडपॉइंट** को कवर करता है (पहले 2): 9 गलत-स्कोप वाली `llmRateLimit` गार्ड बदली गईं (`/api/config` — `.env` रीराइट!, `PUT /api/batch`, `/api/batch/merge`, outcome, followup/seed, assessments, stats/snapshot, mock-interview/save, networking/save), सबसे महँगे पथों पर LLM बकेट से **पहले** 3 स्टैक की गईं (`/api/evaluate`, `/api/deep`, `/api/auto-pipeline`) और 33 नंगे रजिस्ट्रेशन जोड़े गए (CV/profile/modes एडिटर, tracker की सभी राइट्स, pipeline POST/restore/DELETE, jds, 7× `/api/run/*` एक लूप-एडिट से, posting-guard, Playwright-PDF inline, portals toggle/health/track, discover, reports, export/docx, two-pager, career-plan, memory और तीन DELETE रूट)। `/api/apply-helper` allowlist में बिना लिमिट रहता है (शुद्ध लोकल कंप्यूटेशन, पिन्ड); 16 शुद्ध-LLM रूट डिज़ाइन के अनुसार सशर्त LLM बकेट रखते हैं। **कम्प्लीटनेस ट्रिपवायर** (`tests/rate-limit-coverage.test.mjs`, 27 नंगे पर red-first) भविष्य के किसी भी बिना-थ्रॉटल म्यूटेटिंग रजिस्ट्रेशन पर CI को गिरा देता है।
+- **`TRUST_PROXY` ऑप्ट-इन + फिर से सशस्त्र वैलिडेशन (LOW №1–2)** — `app.set('trust proxy', N)` env से **hop-count** स्वीकार करता है (कभी भी boolean `true` नहीं — वरना कुंजी हमलावर-नियंत्रित XFF के बाएं सिरे पर बनेगी); डिफ़ॉल्ट रूप से अनसेट, loopback सॉकेट-कुंजी वाली प्रलेखित डिजनरेशन रखता है। `validate: false` लक्षित `writeValidateConfig()` बन जाता है: केवल `xForwardedForHeader` बंद (बिना trust proxy के Caddy का XFF *डिज़ाइन से* नजरअंदाज़) ; बाकी वैलिडेशन — `trustProxy` समेत — फिर से शोरगुल करते हैं, इसलिए भविष्य की `trust proxy: true` गलत-कॉन्फ़िग `ERR_ERL_PERMISSIVE_TRUST_PROXY` के रूप में सामने आएगी, मौन नहीं। कस्टम `keyGenerator` जानबूझकर हटाया गया: express-rate-limit अपने प्रॉक्सी वैलिडेशन डिफ़ॉल्ट जनरेटर से बाँधता है, और प्रति-रूट आइसोलेशन अपरिवर्तित है (प्रति फैक्ट्री-कॉल एक `MemoryStore`)।
+- **cvstart.org कॉपी फीडबैक 2 s टिकता है (CAR-141)** — «Скопировано ✓» स्थिति अब स्वीकृति-मानदंड के अनुसार 2 सेकंड टिकती है (पहले 1.5 s), red-first पिन `tests/site-copy-feedback.test.mjs` में। यह CAR-141 का अंतिम एजेंट-मरम्मत-योग्य मानदंड बंद करता है; डेमो-वीडियो की री-रिकॉर्डिंग मालिक के निर्णय से स्थगित है।
+
+### बदला गया
+
+- **हेल्प 19 भाषाएँ कहती है (×19)** — §19 «Localizing the app» और §32 «Run it from OpenWorker» के वाक्य अब दो लोकल पीछे नहीं रहते: हर bundle अब **19** कहता है, हर फ़ाइल की अपनी गिनती-शैली में தமிழ் और Tiếng Việt जोड़े गए (ar लिखित अंक «التسع عشرة» में), और `vi.md` के §32 का अपना «cả-17» अवशेष भी ठीक किया गया। संरचना-गेट (33 H2 / 125+ H3) बाइट-स्थिर।
+- **स्टेट हाइजीन** — `AGENTS.md` v1.264.2 / 7082 tests बताता है (पहले v1.86.x / 1566); `PLAN.md` डिलीवरी 1–7 को **Shipped** चिह्नित करता है और उसका ट्रेन-पैराग्राफ docs ×19 कहता है; `StatsBar.astro` का कमेंट बताता है कि `facts.adapters` वास्तव में क्या रखता है (123 = कुल स्रोत, उपभोक्ताओं के लिए ऐतिहासिक कुंजी-नाम बरकरार); `i18n.js` हेडर 19 भाषाएँ कहता है; QA प्रॉम्प्ट v1.264.2 सही कवरेज (98.45/90.05) और Playwright अंकगणित (176 = 174 harness + 1 opt-in skip + 2 स्क्रिप्ट-स्तरीय सूट) रखता है।
+
+### नोट्स
+
+- जानबूझकर नहीं किया गया: दर्ज port-list के अनुसार **parent-sync तरंग** BACKLOG में रहती है — fork को पहले upstream `a9476866` से आगे सिंक होना होगा (सूची के 10 में से 7 कमिट अभी पैरेंट के लोकल ट्री में नहीं हैं; IBM/UltiPro/Bulldogjob/apple स्कोप S–M, personio language-dedup अपनी अलग डिलीवरी के लिए टाला गया)। CAR-141 डेमो-वीडियो की री-रिकॉर्डिंग मालिक द्वारा जानबूझकर स्थगित («видео не надо пока», 2026-11-01)।
+- Tests 7082 → **7096** (+9 कवरेज ट्रिपवायर + 5 trust-proxy); Playwright **173 pass / 0 fail / 1 opt-in skip** (मौजूदा केसों के भीतर +2 chevron पिन); coverage 98.46 line / 90.10 branch; evals 14/0/1skip; रजिस्ट्री अपरिवर्तित 123 = 118 EN + 5 RU · 118 adapters.
+
 ## [1.264.2] — 2026-11-01
 
 ### ठीक किया

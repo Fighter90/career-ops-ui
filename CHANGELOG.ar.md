@@ -11,6 +11,24 @@
 ---
 
 
+## [1.264.3] — 2026-11-01
+
+### أُصلح
+
+- **موجة تحصين حد الطلبات (LOW №1–3 من `REVIEW-2026-10-31-v1.264.1`)** — `writeRateLimit()` (express-rate-limit@7.5.1، 60 req/min route×IP، 429 JSON + Retry-After) يغطي الآن **جميع الـ 47 نقطة نهاية المُعدِّلة** (كانت 2): استُبدلت 9 حراس `llmRateLimit` سيّئي النطاق (`/api/config` — إعادة كتابة `.env`!، `PUT /api/batch`، `/api/batch/merge`، outcome، followup/seed، assessments، stats/snapshot، mock-interview/save، networking/save)، وجُمعت 3 **قبل** دلو LLM على أغلى المسارات (`/api/evaluate`، `/api/deep`، `/api/auto-pipeline`)، ووُصّلت 33 تسجيلات عارية (محررات CV/profile/modes، كل كتابات tracker، pipeline POST/restore/DELETE، jds، 7× `/api/run/*` بتعديل حلقة واحد، posting-guard، Playwright-PDF inline، portals toggle/health/track، discover، reports، export/docx، two-pager، career-plan، memory وثلاث مسارات DELETE). يبقى `/api/apply-helper` في allowlist بلا حد (حساب محلي خالص، مثبَّت)؛ وتحتفظ 16 مسارًا LLM-خالصة بدلو LLM الشرطي بحكم التصميم. **وشيك الاكتمال** (`tests/rate-limit-coverage.test.mjs`، red-first عند 27 عارية) يُسقط CI أمام أي تسجيل مُعدِّل غير مقيَّد مستقبلًا.
+- **`TRUST_PROXY` اختياري + تسليح التحققات من جديد (LOW №1–2)** — يقبل `app.set('trust proxy', N)` **hop-count** من env (ليس أبدًا boolean `true` — وإلا بُنيت المفتاح على الطرف الأيسر من XFF الذي يتحكم به المهاجم)؛ بلا قيمة افتراضية، يحتفظ loopback بالانحلال الموثَّق بمفتاح مقبس. يصبح `validate: false` هو `writeValidateConfig()` الموجَّه: يُطفأ فقط `xForwardedForHeader` (يُتجاهَل XFF من Caddy *بحكم التصميم* بلا trust proxy)؛ وتعود بقية التحققات — بما فيها `trustProxy` — صاخبة، فتظهر أي سوء-تهيئة مستقبلية `trust proxy: true` كـ `ERR_ERL_PERMISSIVE_TRUST_PROXY` لا كصمت. أُزيل `keyGenerator` المخصص عمدًا: يربط express-rate-limit تحققاته الوكيلة بالمولِّد الافتراضي، وعزل المسارات لا يتغير (`MemoryStore` واحد لكل استدعاء مصنع).
+- **تغذية النسخ في cvstart.org تبقى ثانيتين (CAR-141)** — تحتفظ حالة «Скопировано ✓» الآن بثانيتين وفق معيار القبول (كانت 1,5 ثانية)، مع تثبيت red-first في `tests/site-copy-feedback.test.mjs`. يُغلق هذا آخر معيار قابل للإصلاح بوكيل في CAR-141؛ وتبقى إعادة تسجيل الفيديو التجريبي مؤجَّلة بقرار المالك.
+
+### تغيّر
+
+- **الوثائق تقول 19 لغة (×19)** — لم تعد جملتا §19 «Localizing the app» و§32 «Run it from OpenWorker» متأخرتين لغتين كاملتين: كل bundle يقول الآن **19**، مع إضافة தமிழ் وTiếng Việt إلى كل تعداد بأسلوب الملف نفسه (ar بالرقم المفوَّظ «التسع عشرة»)، وأُصلح أيضًا بقايا «cả-17» في §32 من `vi.md`. بوابات البنية (33 H2 / 125+ H3) مستقرة بايت-ببايت.
+- **نظافة الحالة** — يذكر `AGENTS.md` الإصدار v1.264.2 / 7082 اختبارًا (كان v1.86.x / 1566)؛ ويعلّم `PLAN.md` التسليمات 1–7 بأنها **Shipped** وتقول فقرة قطاره docs ×19؛ ويصف تعليق `StatsBar.astro` ما يحفظه `facts.adapters` فعلًا (123 = إجمالي المصادر، اسم المفتاح التاريخي محفوظ للمستهلكين)؛ وتقول ترويسة `i18n.js` إنها 19 لغة؛ ويحمل QA prompt‏ v1.264.2 التغطية الحقيقية (98.45/90.05) وحساب Playwright (176 = 174 harness + 1 opt-in skip + مجموعتان على مستوى السكربت).
+
+### ملاحظات
+
+- لم يُفعل عمدًا: تبقى **موجة parent-sync** وفق port-list المسجَّلة في BACKLOG — يجب أن يتزامن fork أولًا past upstream `a9476866` (7 من أصل 10 التزامات في القائمة ليست بعد في شجرة الأب المحلية؛ IBM/UltiPro/Bulldogjob/apple بنطاق S–M، personio language-dedup مؤجَّل إلى تسليمه الخاص). تبقى إعادة تسجيل الفيديو التجريبي لـ CAR-141 مؤجَّلة عمدًا من المالك («видео не надо пока»، 2026-11-01).
+- الاختبارات 7082 → **7096** (+9 وشيك تغطية + 5 trust-proxy)؛ Playwright **173 pass / 0 fail / 1 opt-in skip** (+2 تثبيت chevron داخل حالات قائمة)؛ coverage 98.46 line / 90.10 branch؛ evals 14/0/1skip؛ السجل دون تغيير 123 = 118 EN + 5 RU · 118 adapters.
+
 ## [1.264.2] — 2026-11-01
 
 ### أُصلح

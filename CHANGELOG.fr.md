@@ -12,6 +12,24 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.264.3] — 2026-11-01
+
+### Corrigé
+
+- **Vague de durcissement du rate-limiting (revue LOW №1–3 depuis `REVIEW-2026-10-31-v1.264.1`)** — `writeRateLimit()` (express-rate-limit@7.5.1, 60 req/min route×IP, 429 JSON + Retry-After) couvre désormais **les 47 endpoints mutatifs** (contre 2) : 9 gardes `llmRateLimit` mal cadrées remplacées (`/api/config` — la réécriture du `.env` !, `PUT /api/batch`, `/api/batch/merge`, outcome, followup/seed, assessments, stats/snapshot, mock-interview/save, networking/save), 3 empilées **avant** le bucket LLM sur les chemins coûteux (`/api/evaluate`, `/api/deep`, `/api/auto-pipeline`), et 33 enregistrements nus câblés (éditeurs CV/profile/modes, toutes les écritures du tracker, pipeline POST/restore/DELETE, jds, les 7 `/api/run/*` via une seule modification de boucle, posting-guard, Playwright-PDF inline, portals toggle/health/track, discover, reports, export/docx, two-pager, career-plan, memory et les trois routes DELETE). `/api/apply-helper` reste sur liste blanche en nu (calcul purement local, épinglé) ; 16 routes purement LLM gardent le bucket LLM conditionnel par conception. Un **filet de complétude** (`tests/rate-limit-coverage.test.mjs`, rouge d'abord à 27 nus) fait échouer la CI sur tout futur enregistrement mutatif non limité.
+- **`TRUST_PROXY` en opt-in + validations ré-armées (revue LOW №1–2)** — `app.set('trust proxy', N)` honore un **nombre de sauts** `TRUST_PROXY` en variable d'environnement (jamais le boolean `true` — la clé porterait alors sur l'extrémité gauche du XFF contrôlée par l'attaquant) ; désactivé par défaut, si bien que le loopback conserve sa dégénérescence documentée par socket par route. `validate: false` devient un `writeValidateConfig()` ciblé : seul `xForwardedForHeader` en est retiré (le XFF de Caddy est ignoré *par conception* sans trust proxy), toutes les autres validations — `trustProxy` incluse — redeviennent bruyantes, si bien qu'une future mauvaise configuration `trust proxy: true` remonte en `ERR_ERL_PERMISSIVE_TRUST_PROXY` au lieu du silence. Le `keyGenerator` personnalisé a été retiré délibérément : express-rate-limit lie ses validations proxy au générateur de clés par défaut, et l'isolation par route est inchangée (un `MemoryStore` par appel de factory).
+- **Le retour visuel de copie de cvstart.org retombe après 2 s (CAR-141)** — l'état « Скопировано ✓ » tient désormais les 2 secondes du critère d'acceptation (contre 1.5 s), épinglé rouge d'abord dans `tests/site-copy-feedback.test.mjs`. Cela clôt le dernier critère CAR-141 corrigeable par un agent ; la refonte de la vidéo de démo reste différée par le propriétaire (décision du 2026-11-01).
+
+### Modifié
+
+- **Les bundles d'aide disent 19 langues (×19)** — les phrases des §19 « Localizing the app » et §32 « Run it from OpenWorker » ne sont plus en retard de deux locales : chaque bundle dit désormais **19** avec தமிழ் et Tiếng Việt dans son propre style d'énumération (ar utilise le « التسع عشرة » épelé), et le résidu « cả-17 » de la §32 de `vi.md` est corrigé lui aussi. Gates de structure (33 H2 / 125+ H3) stables à l'octet.
+- **Hygiène d'état** — `AGENTS.md` énonce v1.264.2 / 7082 tests (au lieu de v1.86.x / 1566) ; `PLAN.md` marque les releases 1–7 **Shipped** et son paragraphe ship-train dit docs ×19 ; le commentaire de `StatsBar.astro` décrit désormais ce que contient réellement `facts.adapters` (123 = total des sources, nom de clé historique conservé pour les consommateurs) ; l'en-tête de `i18n.js` dit 19 langues ; le prompt QA de la v1.264.2 porte la vraie couverture (98.45/90.05) et l'arithmétique Playwright (176 = 174 harness + 1 opt-in skip + 2 suites au niveau script).
+
+### Notes
+
+- Délibérément non fait : la **vague parent-sync** selon la liste de ports consignée reste dans BACKLOG — le fork doit d'abord se synchroniser au-delà de l'amont `a9476866` (7 des 10 commits de la liste de ports ne sont pas encore dans l'arbre parent local ; IBM/UltiPro/Bulldogjob/apple cadrés S–M, personio language-dedup différé à sa propre release). Le ré-enregistrement de la vidéo de démo de CAR-141 est consciemment différé par le propriétaire (« видео не надо пока », 2026-11-01).
+- Tests 7082 → **7096** (+9 filet de couverture + 5 trust-proxy) ; Playwright **173 pass / 0 fail / 1 opt-in skip** (+2 épingles chevron à l'intérieur de cas existants) ; couverture 98.46 lignes / 90.10 branches ; evals 14/0/1skip ; registre inchangé : 123 = 118 EN + 5 RU · 118 adapters.
+
 ## [1.264.2] — 2026-11-01
 
 ### Corrigé

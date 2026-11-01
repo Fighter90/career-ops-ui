@@ -8,6 +8,24 @@
 
 ---
 
+## [1.264.3] — 2026-11-01
+
+### 修正
+
+- **レートリミット強化波 (レビューLOW №1–3、`REVIEW-2026-10-31-v1.264.1`より)** — `writeRateLimit()` (express-rate-limit@7.5.1、60 req/min ルート×IP、429 JSON + Retry-After) が**ミューテーティングエンドポイント47個すべて**をカバーするようになりました (以前は2個): スコープ誤りの9個の`llmRateLimit`ガードを置換 (`/api/config` — あの`.env`書き換え!、`PUT /api/batch`、`/api/batch/merge`、outcome、followup/seed、assessments、stats/snapshot、mock-interview/save、networking/save)、高コスト経路 (`/api/evaluate`、`/api/deep`、`/api/auto-pipeline`) ではLLMバケットの**手前**に3個をスタック、そして素の登録33個を配線 (CV/profile/modesエディター、すべてのトラッカー書き込み、pipeline POST/restore/DELETE、jds、7個の`/api/run/*`は1回のループ編集で、posting-guard、Playwright-PDFインライン、portals toggle/health/track、discover、reports、export/docx、two-pager、career-plan、memory、および3個のDELETEルート)。`/api/apply-helper`は素のままallowlistに残ります (純粋なローカル計算、ピン留め済み); 16個の純LLMルートは設計どおり条件付きLLMバケットを保ちます。**完全性トリップワイヤ** (`tests/rate-limit-coverage.test.mjs`、素のまま27個の状態で赤ファースト) は、将来の未スロットルのミューテーティング登録があればCIを失敗させます。
+- **`TRUST_PROXY`オプトイン + 検証の再武装 (レビューLOW №1–2)** — `app.set('trust proxy', N)`は`TRUST_PROXY`環境変数の**ホップ数**を尊重します (真偽値`true`は決して使いません — それは攻撃者制御のXFF左端をキーにしてしまいます); デフォルトでは未設定なので、ループバックは文書化済みのソケットキーによるルートごとの劣化を保ちます。`validate: false`は狙いを絞った`writeValidateConfig()`になります: `xForwardedForHeader`だけがオプトアウトされ (trust proxyなしではCaddyのXFFは*設計どおり*無視されます)、`trustProxy`を含む他のすべての検証は再び声高になり、将来の`trust proxy: true`設定ミスは沈黙の代わりに`ERR_ERL_PERMISSIVE_TRUST_PROXY`として表面化します。カスタム`keyGenerator`は意図的に削除されました: express-rate-limitはプロキシ検証をデフォルトのキージェネレーターに結びつけており、ルートごとの分離は変わりません (ファクトリ呼び出しごとに1つの`MemoryStore`)。
+- **cvstart.orgのコピー・フィードバックが2 sで元に戻ります (CAR-141)** — 「Скопировано ✓」状態が受け入れ基準どおりの2 s間保持されるようになりました (以前は1.5 s)。赤ファーストのピンは`tests/site-copy-feedback.test.mjs`。これでエージェント修正可能なCAR-141基準は完結します; デモ動画のリフレッシュはオーナー側の見送りのままです (決定 2026-11-01)。
+
+### 変更
+
+- **ヘルプバンドルが19言語と言います (×19)** — §19「Localizing the app」と§32「Run it from OpenWorker」の文はもう2ロケール遅れません: すべてのバンドルが**19**と言い、தமிழ்とTiếng Việtをそれぞれの列挙スタイルで載せ (arは綴り出した「التسع عشرة」を使います)、`vi.md` §32自身の「cả-17」の残骸も修正されました。構造ゲート (33 H2 / 125+ H3) はバイト単位で安定。
+- **状態衛生** — `AGENTS.md`はv1.264.2 / 7082テストを述べます (以前はv1.86.x / 1566); `PLAN.md`はリリース1–7を**Shipped**とマークし、出荷列車の段落はdocs ×19と言います; `StatsBar.astro`のコメントは`facts.adapters`が実際に保持するものを記述するようになりました (123 = sources合計、消費者のために歴史的キー名は維持); `i18n.js`のヘッダーは19言語と言います; v1.264.2 QAプロンプトは真のカバレッジ (98.45/90.05) とPlaywrightの算術 (176 = 174ハーネス + 1 opt-inスキップ + 2スクリプトレベルスイート) を載せます。
+
+### メモ
+
+- 意図的に見送った項目: 記録されたポートリストに沿った**parent-sync波**はBACKLOGに残ります — フォークはまず上流`a9476866`を超えて同期しなければなりません (ポートリストの10コミットのうち7つはまだローカル親ツリーにありません; IBM/UltiPro/Bulldogjob/appleはS–Mでスコープ済み、personio言語重複排除は独自のリリースに先送り)。CAR-141のデモ動画の再収録はオーナーが意識的に見送っています (「видео не надо пока」、2026-11-01)。
+- テスト 7082 → **7096** (+9 カバレッジトリップワイヤ + 5 trust-proxy); Playwright **173 合格 / 0 失敗 / 1 opt-in スキップ** (既存ケース内に+2 シェブロンピン); カバレッジ 98.46 行 / 90.10 分岐; evals 14/0/1skip; レジストリ変更なし: 123 sources = 118 EN + 5 RU · 118 adapters。
+
 ## [1.264.2] — 2026-11-01
 
 ### 修正
