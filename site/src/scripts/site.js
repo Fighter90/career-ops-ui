@@ -111,7 +111,7 @@ const showCopied = (btn) => {
     setTimeout(() => {
       btn.classList.remove('copied');
       if (live) live.textContent = '';
-    }, 1500)
+    }, 2000)
   );
 };
 // Deprecated, but the only clipboard path left where the async API is
