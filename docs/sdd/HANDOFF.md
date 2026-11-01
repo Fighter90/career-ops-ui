@@ -2,11 +2,12 @@
 
 This is the operating manual. Read it, then `PLAN.md` (order) and `BACKLOG.md` (what is left).
 
-## State (2026-11-01)
+## State (2026-11-01, вечер)
 
-- Released: **v1.264.2** (nav-polish patch: CAR-219 sidebar group-header truncation + localized title sync — red-first pin, tests **7082**/0; CAR-220 cvstart.org copy ×18 locales; CAR-221 upstream port-check — 7/7 upstream PRs merged, the parent-sync port-list recorded in BACKLOG (6 PORT / 3 VERIFY / apple gap, upstream tail 118 @ VERSION 1.38.0); CAR-222 `docs/reviews/REVIEW-2026-10-31-v1.264.1.md` — 0 HIGH / 0 MED, 3 LOW follow-ups in BACKLOG; docs ×19 by an 18-agent fan-out) — deployed to resumecraft.ru (`deploy.yml ui_ref=v1.264.2` ✓, verify ✓, public 401). Wave PR #613 → `00364177`; release PR #614 → `276972c3` = tag `v1.264.2`. Registry 123 = 118 EN + 5 RU · 118 adapters; evals 14/0/1skip; coverage 98.45/90.05; browser 173/0/1skip.
-- Hygiene (2026-11-01): **branches = 0** (only `main` local + origin), worktrees = 1 (main); **Linear: 0 active** — CAR-219…222 Done with evidence; CAR-141 (demo video) stays owner-owned. Pages re-dispatched manually after the release merge (root CHANGELOG changes don't touch site/** — the auto-trigger only fires on site/** pushes). Remote-QA for v1.264.2 dispatched.
-- Next: remote-QA v1.264.2 verdict (findings → Linear); the parent-sync wave per the recorded port-list (triggers: upstream release cut, IBM/UltiPro/justjoin pain, or a second tail); the next hardening wave per the review LOWs (throttle the remaining mutating POSTs, trust-proxy bucket coupling); CAR-141 demo video (owner).
+- Released: **v1.265.0** (parent-sync wave against career-ops @ `fe857ecf` — apple + bulldogjob sources, registry **125 = 120 EN + 5 RU · 120 adapters**, count gates ×8 regenerated; IBM max_pages/pacing/retry #6273; justjoin lastPublishedAt #6254; jobvite shared-URL fold #6127; liveness UltiPro rung #6090 + Built In hard-expired #6336; no-ports verified: icims #6130 / workday #6143 / Bulgarian apply #6192 already present, smartrecruiters #6303 already read, Machine Summary #6157 position-independent; personio #4789 deferred) — deployed to resumecraft.ru (`deploy.yml ui_ref=v1.265.0 parent_ref=fe857ecf` ✓, verify ✓). Wave+release PR **#616** → `82623fa3` = tag `v1.265.0`. Tests **7138**/0 · Playwright **174** (173 pass / 0 fail / 1 opt-in skip) · evals 14/0/1skip · coverage 98.47/90.16 · remote-QA ✓ SUCCESS.
+- Before it: **v1.264.3** (rate-limit hardening: writeRateLimit on 47/47 mutating endpoints + the completeness tripwire, TRUST_PROXY hop-count opt-in + targeted writeValidateConfig, CAR-141 copy-feedback 2 s, help §19/§32 say 19 languages ×19, state hygiene; PR **#615** → `3bf0b965` = tag `v1.264.3`; remote-QA ✓ SUCCESS).
+- Hygiene (2026-11-01): **branches = 0 / worktrees = 1** (only `main` local + origin); **Linear: 0 active** (CAR-141 closed Done — 3/4 criteria met in code, the demo-video re-record consciously owner-deferred). **BACKLOG: the recorded port-list is fully executed** — the next parent-sync trigger is a new upstream tail.
+- Next: personio language-dedup (#4789 stack) as its own release when scanner capabilities warrant it; the usual per-release hygiene.
 
 ## Non-negotiable rules
 
