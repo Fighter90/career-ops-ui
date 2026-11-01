@@ -180,6 +180,21 @@
   text-overflow: ellipsis;
   white-space: nowrap;
 }
+/* CAR-219 — group headers join the CAR-203 truncation contract: the
+   toggle is a flex row (chevron + label) and a long localized group
+   label had nowhere to shrink (min-width:auto refused below its text
+   width) while the button does not clip — inside the Recents
+   .nav-v2-group-head it bled into the Clear chip. The label span
+   truncates on one line instead; the chevron keeps its intrinsic size
+   (:not(.nav-v2-chev)) and the toggle's 28px touch target + uppercase
+   look are untouched. nav-v2.js mirrors the localized label into the
+   span's title through the same syncLabelTitles() pass. */
+.nav-v2-toggle > span:not(.nav-v2-chev) {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
 
 .nav-v2-row-link:hover { background: var(--beach); }
 .nav-v2-fav-row .nav-v2-row-link,

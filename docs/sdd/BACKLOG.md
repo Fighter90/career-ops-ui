@@ -178,6 +178,11 @@ Port when merged upstream: workable multi-country (#4806), smartrecruiters slug 
 radancy location (#4689), PageUp provider (#4693 → 110 sources), personio languages (#4789),
 Vietnamese README/mode (#4729/#4727).
 
+## Next hardening wave (2026-11-01, from CAR-221/222)
+
+- **Parent-sync port-list** (upstream career-ops-hq @ `6210e441`, VERSION still 1.38.0, tail 118 commits, behind 0): PORT 6 — IBM cap/pace/retry #6273 · justjoin `lastPublishedAt` #6254 · jobvite fold-locations #6127 · liveness UltiPro-rung #6090 · liveness Built In expired #6336 · **Bulldogjob — новый источник #6253** (реестр 123→124). VERIFY 3 — smartrecruiters #6303 (releasedDate уже читается) · Machine Summary last-section #6157 (проверить парсеры) · personio language-dedup #4789 (осознанное решение). Гэп: источника **apple** нет вообще (родитель добавил 25 окт, до хвоста) — портить одним заходом с #6196 или фиксировать no-port. Все 7 «port when merged upstream» позиций старого BACKLOG смержены апстримом и закрыты (4 уже портированы ранее, 2 — parent-side). Триггер синка: релизный кат апстрима, пользовательская боль IBM/UltiPro/justjoin, либо второй такой хвост.
+- **Review LOW findings** (REVIEW-2026-10-31-v1.264.1): (1) без `trust proxy` за Caddy per-(route×IP) вырождается в per-route global — при включении trust proxy переделать keyGenerator и вернуть `validations`; (2) `validate: false` у express-rate-limit — связка с (1); (3) `writeRateLimit()` покрывает 2 из ~19 мутирующих POST — CodeQL пометил только два, остальная поверхность (7× `/api/run/*`, posting-guard, import-csv, backfill-scores, pipeline, portals-toggle) — кандидат на следующую hardening-волну.
+
 ## Operator actions (not code)
 
 - Move `PROD_URL`, `AUTH_LOGIN`, `AUTH_PASSWORD` into the `production` environment's secrets (repo-level
