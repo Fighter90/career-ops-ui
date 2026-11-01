@@ -2,6 +2,23 @@
 
 > Dieses Changelog enthält die vollständige Versionsgeschichte. Einträge, die vor der deutschen Lokalisierung (v1.85.0) veröffentlicht wurden, stehen unten im englischen Original — Übersetzung ausstehend; maßgeblich bleibt [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.264.2] — 2026-11-01
+
+### Behoben
+
+- **Sidebar-Gruppenheader schließen sich dem Kürzungs-Contract an (CAR-219)** — die Gruppen-Toggle-Labels (`.nav-v2-toggle > span`) kürzen jetzt mit Ellipsis und tragen einen **lokalisierten** Tooltip über denselben `syncLabelTitles()`-Mechanismus wie die CAR-203-Nav-Items; der Chevron schrumpft nie, der Toggle bleibt klickbar, RTL hält. Red-first-Pin in `tests/nav-v2.test.mjs` (+1 → 7082 Tests).
+
+### Geändert
+
+- **cvstart.org-Texte erscheinen in allen 19 Sprachen (CAR-220)** — `meta.helpDesc`, `helpTeaser.c1.desc` und `faq.a2` sind in jeder Site-Locale übersetzt (in v1.264.1 waren sie by design EN-only); GitHub Pages hat den überarbeiteten Text live auf cvstart.org ausgeliefert.
+- **Backlog- und Review-Hygiene (CAR-221/222)** — die sechs «Port-when-merged-upstream»-Items sind geschlossen: alle sieben Upstream-PRs sind gemerged, vier Items waren bereits portiert, zwei sind auf der Eltern-Seite. `docs/reviews/REVIEW-2026-10-31-v1.264.1.md` landet (0 HIGH / 0 MED, drei LOW-Follow-ups im BACKLOG vermerkt), und die **Parent-Sync-Port-Liste** ist festgehalten (6 PORT / 3 VERIFY / die apple-Source-Lücke; Upstream-Tail 118 Commits @ VERSION 1.38.0).
+
+### Hinweise
+
+- Der Changelog-Mirror-Stamp-Fix (`92a05fcf`) fährt in diesem Tag mit: jeder paginierte Mirror auf cvstart.org trägt jetzt die generierende Release-Version, sodass der `site-build-after-fanout`-Grader endlich seine echte Logik ausübt, statt zu überspringen.
+- Bewusst nicht getan: das Drosseln der restlichen mutierenden POSTs (Review-LOW №3) und die Trust-Proxy-Bucket-Kopplung — im BACKLOG für die nächste Härtungswelle vermerkt. CAR-141 (Demo-Video) bleibt beim Owner.
+- Tests 7081 → 7082 (+1 CAR-219-Pin); Playwright 176; Registry unverändert 123 = 118 EN + 5 RU · 118 adapters.
+
 ## [1.264.1] — 2026-10-31
 
 ### Behoben

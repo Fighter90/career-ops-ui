@@ -17,11 +17,11 @@ _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Neueste Version — v1.264.1** — **Zwei agentengebaute Fixes: Sidebar-Pills kürzen lange lokalisierte Labels elegant (Ellipsis + ein lokalisierter Tooltip — «Профинансированные компании» wird nicht mehr hart abgeschnitten), und eine einzige 480-s-Evaluations-Obergrenze für jede Locale (keine vorübergehenden 300-s-Abbrüche mehr bei es/zh-CN); das cvstart.org-FAQ führt jetzt exakte, aus der Registry abgeleitete Quellenzahlen (123 = 118 international + 5 russische). Tests 7041 → 7081.**
+> **🆕 Neueste Version — v1.264.2** — **Sidebar-Gruppenheader schließen sich dem Kürzungs-Contract an (Ellipsis + lokalisierte Tooltips), die cvstart.org-Hilfe-/FAQ-Texte erscheinen jetzt in allen 19 Sprachen übersetzt, und das Release-Review landet mit 0 HIGH-Funden — die Parent-Sync-Port-Liste ist für die nächste Welle festgehalten. Tests 7081 → 7082.**
 
 
 >
-> **Vorherige Version — v1.264.0** — **Die Post-Release-Härtungswelle: der Status jeder Tracker-Zeile ist inline bearbeitbar (das kanonische `set-status.mjs` des Elternprojekts unter der `applications.md`-Sperre), Server-Warnungen (Kürzung, Sprachdrift) erscheinen als Band auf allen sechs KI-Seiten, die Trudvsem-Scan-Quelle überlebt leere Seiten und läuft in Record-Offsets, habr-Titel können kein Markup wiederbeleben, das Raw-Profil-Gate hält die `full_name`-Zeile, und die Hints sagen endlich die Wahrheit (.doc ist weg, `gpt-5` und die Anthropic-5-5-Tiers). Tests 6905 → 7041.**
+> **Vorherige Version — v1.264.1** — **Zwei agentengebaute Fixes: Sidebar-Pills kürzen lange lokalisierte Labels elegant (Ellipsis + ein lokalisierter Tooltip — «Профинансированные компании» wird nicht mehr hart abgeschnitten), und eine einzige 480-s-Evaluations-Obergrenze für jede Locale (keine vorübergehenden 300-s-Abbrüche mehr bei es/zh-CN); das cvstart.org-FAQ führt jetzt exakte, aus der Registry abgeleitete Quellenzahlen (123 = 118 international + 5 russische). Tests 7041 → 7081.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
