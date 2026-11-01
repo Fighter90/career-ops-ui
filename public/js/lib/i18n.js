@@ -1,6 +1,6 @@
 /* global window, localStorage */
 /**
- * Tiny i18n module. 18 languages, key-based translations, persisted in
+ * Tiny i18n module. 19 languages, key-based translations, persisted in
  * localStorage. Falls back to English (and to the key itself) when missing.
  *
  * Usage in views:

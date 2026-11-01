@@ -21,9 +21,13 @@ const { locale } = Astro.props;
 // registry at build time) — nothing on the page is typed by hand.
 
 // Exact, build-time registry-derived counts. The sources total (123) is the
-// public-facing count (118 EN-board adapters + 5 RU readers — see CONTEXT.md);
-// facts.adapters (118 files on disk) is the technical count and stays in the
-// verified comment above, not in the marketing band.
+// public-facing count (118 EN + 5 RU — see CONTEXT.md); facts.adapters holds
+// that same 123 (one server/lib/sources/<slug>.mjs file per registry entry —
+// sync-assets fails the build if the two disagree). The "adapters" key name
+// is historical and kept for consumer stability; in CONTEXT.md vocabulary the
+// 118 "adapters" are the EN fetch-walk adapters, and the technical
+// EN/RU split (facts.adaptersEn / facts.adaptersRu) stays in the verified
+// comment above, not in the marketing band.
 const sources = facts.sources.length;
 // The tests tile keeps the "+" convention: floor to the nearest hundred so a
 // release-pinned count can never overstate the live suite.

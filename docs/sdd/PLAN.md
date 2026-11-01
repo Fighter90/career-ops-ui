@@ -13,13 +13,13 @@ views ×3, client libs ×2, tests ×3, scripts/CI, security sweep, i18n, CSS/a11
 
 | # | Release | Concern | Status |
 |---|---|---|---|
-| 1 | **v1.240.0** | Parent parity @ `62905981` (6 sources, 6 provider fixes) + checklist `pipeline.md` (#380, @bullitt186) | **Ready — PR → CI → merge → tag → release → publish → wiki → deploy** |
-| 2 | **v1.241.0** | **Server hardening** — security, process-crash, data-loss | Foundation done (Host/Origin guard, async-error safety, `CAREER_OPS_ROOT`, runner kill); agents A–D next |
-| 3 | **v1.242.0** | **Sources correctness** — dead sources, "malformed 200 = empty board", pagination, SSRF pins | Planned (agents E–F) |
-| 4 | **v1.243.0** | **Client fixes** — views, libs, CSS/a11y, i18n gaps | Planned (agents G–H, I18N) |
-| 5 | **v1.244.0** | **`#/scan` redesign** — row anatomy, title cell, filters, pagination | Spec drafted |
-| 6 | **v1.245.0** | **Tamil (`ta`) locale** — the 18th language | Planned |
-| 7 | **v1.246.0** | **Upstream features** — inline status edit, batch spend confirm, evidence-confidence chip, saved contacts | Backlog, ranked |
+| 1 | **v1.240.0** | Parent parity @ `62905981` (6 sources, 6 provider fixes) + checklist `pipeline.md` (#380, @bullitt186) | **Shipped** (v1.240.0) |
+| 2 | **v1.241.0** | **Server hardening** — security, process-crash, data-loss | **Shipped** (v1.241.0) |
+| 3 | **v1.242.0** | **Sources correctness** — dead sources, "malformed 200 = empty board", pagination, SSRF pins | **Shipped** (v1.242.0) |
+| 4 | **v1.243.0** | **Client fixes** — views, libs, CSS/a11y, i18n gaps | **Shipped** (v1.243.0) |
+| 5 | **v1.244.0** | **`#/scan` redesign** — row anatomy, title cell, filters, pagination | **Shipped** (v1.244.0) |
+| 6 | **v1.245.0** | **Tamil (`ta`) locale** — the 18th language | **Shipped** (v1.245.0) |
+| 7 | **v1.246.0** | **Upstream features** — inline status edit, batch spend confirm, evidence-confidence chip, saved contacts | **Shipped** (v1.246.0) |
 
 Coverage (**≥ 90 % line and branch** on `server/` and `public/`, measured; baseline 97.4 % line /
 86.0 % branch) is not a release of its own: each of releases 2–5 raises it on the files it
