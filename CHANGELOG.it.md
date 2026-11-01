@@ -2,6 +2,23 @@
 
 > Questo changelog contiene ora la cronologia completa delle versioni. Le voci pubblicate prima della localizzazione italiana (v1.85.0) compaiono sotto nell'originale inglese — traduzione in attesa; il riferimento resta [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.264.2] — 2026-11-01
+
+### Corretto
+
+- **Le intestazioni di gruppo del sidebar entrano nel contratto di troncamento (CAR-219)** — le etichette dei toggle di gruppo (`.nav-v2-toggle > span`) ora si troncano con un'ellissi e portano un tooltip **localizzato** attraverso lo stesso meccanismo `syncLabelTitles()` degli elementi nav del CAR-203; il chevron non si restringe mai, il toggle resta cliccabile, l'RTL tiene. Pin red-first in `tests/nav-v2.test.mjs` (+1 → 7082 test).
+
+### Modificato
+
+- **La copia di cvstart.org arriva in tutte le 19 lingue (CAR-220)** — `meta.helpDesc`, `helpTeaser.c1.desc` e `faq.a2` sono tradotti in ogni località del sito (in v1.264.1 erano EN-only di proposito); GitHub Pages ha pubblicato dal vivo la copia aggiornata su cvstart.org.
+- **Igiene di backlog + review (CAR-221/222)** — le sei voci «port when merged upstream» sono chiuse: tutti e sette i PR upstream sono mergiati, quattro voci erano già portate, due sono lato padre. Arriva `docs/reviews/REVIEW-2026-10-31-v1.264.1.md` (0 HIGH / 0 MED, tre follow-up LOW annotati nel BACKLOG) e viene registrata la **port-list della parent-sync** (6 PORT / 3 VERIFY / il gap della fonte apple; coda upstream di 118 commit @ VERSION 1.38.0).
+
+### Note
+
+- La correzione dello stamp dei mirror del changelog (`92a05fcf`) viaggia in questo tag: ogni mirror paginato su cvstart.org ora porta la versione del rilascio generatore, così il grader `site-build-after-fanout` esercita finalmente la sua vera logica invece di saltare.
+- Deliberatamente non fatto: il throttling dei POST mutanti rimanenti (review LOW №3) e l'accoppiamento trust-proxy dei bucket — annotati nel BACKLOG per la prossima onda di indurimento. CAR-141 (video dimostrativo) resta al proprietario.
+- Tests 7081 → 7082 (+1 pin CAR-219); Playwright 176; registro invariato: 123 = 118 EN + 5 RU · 118 adapters.
+
 ## [1.264.1] — 2026-10-31
 
 ### Corretto
