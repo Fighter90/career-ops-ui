@@ -9,6 +9,23 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 ---
 
 
+## [1.264.2] — 2026-11-01
+
+### Rettet
+
+- **Sidebar-gruppeoverskrifter følger nu afkortningskontrakten (CAR-219)** — gruppens toggle-labels (`.nav-v2-toggle > span`) afkortes nu med en ellipsis og bærer en **lokaliseret** tooltip via samme `syncLabelTitles()`-mekanisme som CAR-203-nav-elementerne; chevronen skrumper aldrig, togglen forbliver klikbar, og RTL holder. Red-first-pin i `tests/nav-v2.test.mjs` (+1 → 7082 tests).
+
+### Ændret
+
+- **cvstart.org-teksten udkommer på alle 19 sprog (CAR-220)** — `meta.helpDesc`, `helpTeaser.c1.desc` og `faq.a2` er oversat til alle site-lokaler (de var EN-only i v1.264.1 med vilje); GitHub Pages leverede den opgraderede tekst live på cvstart.org.
+- **Backlog- og review-hygiejne (CAR-221/222)** — de seks «port when merged upstream»-punkter er lukket: alle syv upstream-PR'er er merget, fire punkter var allerede porteret, to ligger hos forælderen. `docs/reviews/REVIEW-2026-10-31-v1.264.1.md` lander (0 HIGH / 0 MED, tre LOW-opfølgninger noteret i BACKLOG), og **parent-sync-port-listen** er noteret (6 PORT / 3 VERIFY / apple-kildehullet; upstream-hale 118 commits @ VERSION 1.38.0).
+
+### Noter
+
+- Changelog-spejl-stempel-fixet (`92a05fcf`) følger med i dette tag: alle paginerede spejle på cvstart.org bærer nu den genererende udgivelsesversion, så `site-build-after-fanout`-graderen endelig øver sin reelle logik i stedet for at skippe.
+- Bevidst ikke gjort: throttle af de resterende muterende POST'er (review LOW nr. 3) og trust-proxy-bucket-koblingen — noteret i BACKLOG til den næste hærdningsbølge. CAR-141 (demovideo) forbliver ejerens.
+- Tests 7081 → 7082 (+1 CAR-219-pin); Playwright 176; registry uændret: 123 = 118 EN + 5 RU · 118 adapters.
+
 ## [1.264.1] — 2026-10-31
 
 ### Rettet
