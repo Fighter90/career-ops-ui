@@ -17,7 +17,7 @@ import { existsSync, readFileSync, mkdirSync, readdirSync, statSync } from 'node
 import { PATHS } from '../paths.mjs';
 import { runTrackedScript } from '../runner.mjs';
 import { withFileLock, atomicWrite } from '../file-lock.mjs';
-import { llmRateLimit } from '../rate-limit.mjs';
+import { llmRateLimit, writeRateLimit } from '../rate-limit.mjs';
 import { recordUsage, createBatchUsageParser } from '../llm-usage.mjs';
 
 const TSV_MAX_BYTES = 1024 * 1024; // 1 MB — generous for ~10k JD URLs.
@@ -98,10 +98,10 @@ export function registerBatchRoutes(app) {
   });
 
   // ── PUT — replace batch-input.tsv ──
-  // llmRateLimit: this persists a request body into batch-input.tsv that the
-  // runner later evaluates — same per-IP token bucket as the stream route
-  // (no-op on loopback; gates HOST=0.0.0.0 setups). Mirrors assessments.mjs.
-  app.put('/api/batch', llmRateLimit, async (req, res) => {
+  // writeRateLimit: this persists a request body into batch-input.tsv that the
+  // runner later evaluates — a file mutation, so the unconditional per-route
+  // guard applies (review LOW #3; llmRateLimit stays on the GET stream).
+  app.put('/api/batch', writeRateLimit(), async (req, res) => {
     const raw = (req.body?.raw ?? '').toString();
     if (raw.length > TSV_MAX_BYTES) {
       return res.status(413).json({ error: 'batch input too large', limit: TSV_MAX_BYTES });
@@ -302,9 +302,9 @@ export function registerBatchRoutes(app) {
   });
 
   // ── POST /api/batch/merge ── run merge-tracker.mjs and report result ──
-  // llmRateLimit: spawns a tracker-mutating script — same per-IP bucket as
-  // the other batch mutations (no-op on loopback).
-  app.post('/api/batch/merge', llmRateLimit, async (req, res) => {
+  // writeRateLimit: spawns a tracker-mutating script — the unconditional
+  // per-route guard applies (review LOW #3).
+  app.post('/api/batch/merge', writeRateLimit(), async (req, res) => {
     const args = [];
     if (req.body?.dryRun) args.push('--dry-run');
     try {

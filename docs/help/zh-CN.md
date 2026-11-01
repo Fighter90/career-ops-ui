@@ -1954,11 +1954,11 @@ russian_portals:
 
 ## 19. 将应用本地化为你的语言
 
-界面提供 17 种语言(English、Español、Français、Português、한국어、日本語、Русский、简体中文、繁體中文, Polski, Українська, Dansk, العربية, Deutsch, Italiano, Türkçe, हिन्दी)。屏幕上的每个文案都来自翻译词典,你无需改动应用逻辑即可新增或修正某种语言。
+界面提供 19 种语言(English、Español、Français、Português、한국어、日本語、Русский、简体中文、繁體中文, Polski, Українська, Dansk, العربية, Deutsch, Italiano, Türkçe, हिन्दी, தமிழ், Tiếng Việt)。屏幕上的每个文案都来自翻译词典,你无需改动应用逻辑即可新增或修正某种语言。
 
 **翻译文件在哪里。** 自 v1.60.0 起,每种语言都是 `public/js/lib/locales/` 下的独立文件 —— `i18n-dict.en.js`、`i18n-dict.es.js`、`i18n-dict.ru.js` 等 —— 一份简单的 `'键': '文案'` 列表。共享的 `i18n-dict.aliases.js` 让必须保持一致的键(侧栏标签与其页面标题)指向同一条翻译。`i18n-dict.js` 在加载时把它们装配起来,你无需编辑它。
 
-**修正或新增文案。** 打开你语言的文件,找到键(如 `'nav.scan'`)并修改文案。要新增一个标签,把同一个键和译文加入**全部 17 个**语言文件,然后在页面中用 `t('your.key')` 引用。运行 `npm test` —— 若任何语言缺少该键就会失败,因此不会发布半成品翻译。
+**修正或新增文案。** 打开你语言的文件,找到键(如 `'nav.scan'`)并修改文案。要新增一个标签,把同一个键和译文加入**全部 19 个**语言文件,然后在页面中用 `t('your.key')` 引用。运行 `npm test` —— 若任何语言缺少该键就会失败,因此不会发布半成品翻译。
 
 **新增一种语言。** 把 `i18n-dict.en.js` 复制为 `i18n-dict.<code>.js` 并翻译每个值,然后在 `i18n.js`(语言列表 + 浏览器自动检测)、`i18n-dict.js` 装配器中注册该代码,并在 `index.html` 增加一行 `<script>`。包含测试快照与帮助 / README 配套文件的完整清单见 `docs/LOCALIZATION.md`。
 
@@ -2238,7 +2238,7 @@ career-ops 不绑定任何特定 CLI,所以在 AI 上你有三个靠得住的选
 
 ## 32. 从 OpenWorker(AI 同事)运行
 
-比起浏览器,更想要一位桌面端的 AI 同事?**[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** 是一位 **[OpenWorker](https://github.com/andrewyng/openworker)** 同事(Andrew Ng 出品的开源、本地优先的 AI 同事应用),它能替你驱动整套流水线 —— 扫描招聘板、对照你的简历为匹配度打分、量身定制一份有据可依的简历 + 求职信、追踪申请、起草跟进邮件 —— 并且能在你需要时**启动这个仪表盘**。它只是一个不含任何代码的 Markdown“人设”;OpenWorker 并不会把它当作程序来运行,这些指令只是在引导智能体。它的指南以全部 17 种语言提供。
+比起浏览器,更想要一位桌面端的 AI 同事?**[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** 是一位 **[OpenWorker](https://github.com/andrewyng/openworker)** 同事(Andrew Ng 出品的开源、本地优先的 AI 同事应用),它能替你驱动整套流水线 —— 扫描招聘板、对照你的简历为匹配度打分、量身定制一份有据可依的简历 + 求职信、追踪申请、起草跟进邮件 —— 并且能在你需要时**启动这个仪表盘**。它只是一个不含任何代码的 Markdown“人设”;OpenWorker 并不会把它当作程序来运行,这些指令只是在引导智能体。它的指南以全部 19 种语言提供。
 
 ### 这位同事能做什么
 

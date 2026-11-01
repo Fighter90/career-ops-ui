@@ -8,6 +8,24 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.264.3] — 2026-11-01
+
+### Corrigido
+
+- **Onda de endurecimento do rate-limit (LOW №1–3 da revisão, em `REVIEW-2026-10-31-v1.264.1`)** — o `writeRateLimit()` (express-rate-limit@7.5.1, 60 req/min route×IP, 429 JSON + Retry-After) agora cobre **todos os 47 endpoints mutantes** (eram 2): 9 guards `llmRateLimit` mal escopados foram substituídos (`/api/config` — a reescrita do `.env`!, `PUT /api/batch`, `/api/batch/merge`, outcome, followup/seed, assessments, stats/snapshot, mock-interview/save, networking/save), 3 ficam empilhados **antes** do bucket de LLM nos caminhos caros (`/api/evaluate`, `/api/deep`, `/api/auto-pipeline`), e 33 rotas bare foram ligadas (editores de CV/profile/modes, todas as escritas do tracker, pipeline POST/restore/DELETE, jds, os 7 `/api/run/*` via uma única edição de loop, posting-guard, Playwright-PDF inline, portals toggle/health/track, discover, reports, export/docx, two-pager, career-plan, memory e as três rotas DELETE). `/api/apply-helper` permanece allowlisted bare (computação puramente local, pinado); 16 rotas puramente de LLM mantêm por design o bucket condicional de LLM. Um **tripwire de completude** (`tests/rate-limit-coverage.test.mjs`, red-first com 27 bare) quebra o CI caso qualquer rota mutante futura seja registrada sem throttle.
+- **`TRUST_PROXY` opt-in + validações re-armadas (LOW №1–2 da revisão)** — o `app.set('trust proxy', N)` honra um **hop count** `TRUST_PROXY` do env (nunca `true` booleano — isso chavearia pela extremidade esquerda do XFF, controlada pelo atacante); sem valor por padrão, então o loopback mantém sua degradação documentada por rota com chave de socket. O `validate: false` vira um `writeValidateConfig()` direcionado: só o `xForwardedForHeader` fica de fora (o XFF do Caddy é ignorado *por design* sem trust proxy), e toda outra validação — incluindo `trustProxy` — volta a ser ruidosa, de modo que um futuro erro de configuração `trust proxy: true` apareça como `ERR_ERL_PERMISSIVE_TRUST_PROXY` em vez de silêncio. O `keyGenerator` customizado foi removido de propósito: o express-rate-limit amarra suas validações de proxy ao gerador de chave default, e o isolamento por rota fica inalterado (um `MemoryStore` por chamada de factory).
+- **O feedback da copy do cvstart.org reverte depois de 2 s (CAR-141)** — o estado «Скопировано ✓» agora segura os 2 segundos do critério de aceitação (eram 1.5 s), pinado red-first em `tests/site-copy-feedback.test.mjs`. Isso fecha o último critério do CAR-141 corrigível por agente; a atualização do vídeo de demo segue deferida pelo dono (decisão de 2026-11-01).
+
+### Alterado
+
+- **Os bundles de help dizem 19 línguas (×19)** — as frases da §19 "Localizing the app" e da §32 "Run it from OpenWorker" não ficam mais duas localidades atrás: todo bundle agora diz **19**, com தமிழ் e Tiếng Việt no seu próprio estilo de enumeração (ar usa o «التسع عشرة» por extenso), e o remanescente «cả-17» da própria §32 do `vi.md` também é corrigido. Os gates de estrutura (33 H2 / 125+ H3) ficam byte-estáveis.
+- **Higiene de estado** — o `AGENTS.md` declara v1.264.2 / 7082 tests (era v1.86.x / 1566); o `PLAN.md` marca os releases 1–7 como **Shipped** e o parágrafo do ship-train dele diz docs ×19; o comentário do `StatsBar.astro` agora descreve o que o `facts.adapters` realmente guarda (123 = total de sources, nome histórico da chave mantido para os consumidores); o cabeçalho do `i18n.js` diz 19 línguas; o QA prompt da v1.264.2 carrega a cobertura real (98.45/90.05) e a aritmética do Playwright (176 = 174 harness + 1 opt-in skip + 2 suítes de nível de script).
+
+### Notas
+
+- Deliberadamente não feito: a **onda de parent-sync** conforme a port-list registrada fica no BACKLOG — o fork precisa sincronizar além do upstream `a9476866` primeiro (7 dos 10 commits da port-list ainda não estão na árvore local do pai; IBM/UltiPro/Bulldogjob/apple com escopo S–M, personio language-dedup deferido para o próprio release). O re-record do vídeo de demo do CAR-141 segue conscientemente deferido pelo dono («видео не надо пока», 2026-11-01).
+- Tests 7082 → **7096** (+9 tripwire de cobertura + 5 trust-proxy); Playwright **173 pass / 0 fail / 1 opt-in skip** (+2 pins de setinha dentro de cases existentes); cobertura 98.46 linhas / 90.10 branches; evals 14/0/1skip; registro inalterado 123 = 118 EN + 5 RU · 118 adapters.
+
 ## [1.264.2] — 2026-11-01
 
 ### Corrigido

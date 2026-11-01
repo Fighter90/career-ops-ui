@@ -2,6 +2,24 @@
 
 > Questo changelog contiene ora la cronologia completa delle versioni. Le voci pubblicate prima della localizzazione italiana (v1.85.0) compaiono sotto nell'originale inglese — traduzione in attesa; il riferimento resta [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.264.3] — 2026-11-01
+
+### Corretto
+
+- **Onda di irrobustimento del rate-limit (LOW nº 1–3 da `REVIEW-2026-10-31-v1.264.1`)** — `writeRateLimit()` (express-rate-limit@7.5.1, 60 req/min route×IP, 429 JSON + Retry-After) copre ora **tutti i 47 endpoint di mutazione** (prima 2): 9 guardie `llmRateLimit` mal delimitate sono sostituite (`/api/config` — riscrittura del `.env`!, `PUT /api/batch`, `/api/batch/merge`, outcome, followup/seed, assessments, stats/snapshot, mock-interview/save, networking/save), 3 sono impilate **prima** del bucket LLM sui percorsi più costosi (`/api/evaluate`, `/api/deep`, `/api/auto-pipeline`) e 33 registrazioni nude vengono collegate (editor CV/profile/modes, tutte le scritture del tracker, pipeline POST/restore/DELETE, jds, 7× `/api/run/*` con una sola modifica al ciclo, posting-guard, Playwright-PDF inline, portals toggle/health/track, discover, reports, export/docx, two-pager, career-plan, memory e le tre rotte DELETE). `/api/apply-helper` resta in allowlist senza limite (calcolo locale puro, fissato); 16 rotte puramente LLM mantengono il bucket condizionale LLM per progetto. Un **tripwire di completezza** (`tests/rate-limit-coverage.test.mjs`, red-first a 27 nude) fa fallire il CI davanti a qualsiasi futura registrazione di mutazione senza throttle.
+- **`TRUST_PROXY` opt-in + validazioni riarmate (LOW nº 1–2)** — `app.set('trust proxy', N)` accetta un **hop-count** dall'env (mai boolean `true` — altrimenti la chiave si costruisce sull'estremità sinistra dell'XFF controllata dall'attaccante); senza valore predefinito, il loopback conserva la degenerazione documentata con chiave su socket. `validate: false` diventa un `writeValidateConfig()` mirato: viene disattivata solo `xForwardedForHeader` (l'XFF di Caddy è ignorato *per progetto* senza trust proxy); le altre validazioni — incluso `trustProxy` — tornano rumorose, così una futura configurazione errata `trust proxy: true` si manifesta come `ERR_ERL_PERMISSIVE_TRUST_PROXY` e non in silenzio. Il `keyGenerator` personalizzato è stato rimosso deliberatamente: express-rate-limit lega le proprie validazioni proxy al generatore predefinito, e l'isolamento per rotta non cambia (un `MemoryStore` per chiamata di factory).
+- **Il feedback di copia di cvstart.org dura 2 s (CAR-141)** — lo stato «Скопировано ✓» ora permanece 2 secondi secondo il criterio di accettazione (prima 1,5 s), con pin red-first in `tests/site-copy-feedback.test.mjs`. Chiude l'ultimo criterio del CAR-141 riparabile da agente; la ri-registrazione del video demo resta rimandata per decisione del proprietario.
+
+### Modificato
+
+- **L'aiuto dice 19 lingue (×19)** — le frasi del §19 «Localizing the app» e del §32 «Run it from OpenWorker» non restano più due localizzazioni indietro: ogni bundle dice ora **19**, con தமிழ் e Tiếng Việt aggiunti a ogni enumerazione nello stile proprio del file (ar usa la cifra scritta «التسع عشرة»), e il residuo «cả-17» del §32 di `vi.md` è corretto a sua volta. I cancelli di struttura (33 H2 / 125+ H3) restano byte-stabili.
+- **Igiene di stato** — `AGENTS.md` indica v1.264.2 / 7082 test (prima v1.86.x / 1566); `PLAN.md` segna le consegne 1–7 come **Shipped** e il suo paragrafo del treno dice docs ×19; il commento di `StatsBar.astro` descrive ciò che `facts.adapters` contiene davvero (123 = totale delle fonti, nome storico della chiave conservato per i consumatori); l'intestazione di `i18n.js` dice 19 lingue; il QA prompt v1.264.2 porta la copertura reale (98.45/90.05) e l'aritmetica di Playwright (176 = 174 harness + 1 opt-in skip + 2 suite a livello di script).
+
+### Note
+
+- Deliberatamente non fatto: l'**onda di parent-sync** secondo la port-list registrata resta in BACKLOG — il fork deve prima sincronizzarsi past upstream `a9476866` (7 dei 10 commit della lista non sono ancora nell'albero locale del genitore; IBM/UltiPro/Bulldogjob/apple con portata S–M, personio language-dedup rimandato a una propria consegna). La ri-registrazione del video demo del CAR-141 resta consapevolmente rinviata dal proprietario («видео не надо пока», 2026-11-01).
+- Test 7082 → **7096** (+9 tripwire di copertura + 5 trust-proxy); Playwright **173 pass / 0 fail / 1 opt-in skip** (+2 pin dei chevron dentro casi esistenti); coverage 98.46 line / 90.10 branch; evals 14/0/1skip; registro invariato 123 = 118 EN + 5 RU · 118 adapters.
+
 ## [1.264.2] — 2026-11-01
 
 ### Corretto

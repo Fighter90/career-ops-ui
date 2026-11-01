@@ -33,7 +33,7 @@ import { existsSync } from 'node:fs';
 import { resolve } from 'node:path';
 import { PROJECT_ROOT } from '../paths.mjs';
 import { runNodeScript } from '../runner.mjs';
-import { llmRateLimit } from '../rate-limit.mjs';
+import { llmRateLimit, writeRateLimit } from '../rate-limit.mjs';
 import { parseJsonStdout, sanitizeDetail } from '../parent-relay.mjs';
 
 const SCRIPT = 'assessment-log.mjs';
@@ -100,7 +100,7 @@ export function registerAssessmentsRoutes(app) {
   });
 
   // ── Write: append one assessment event (explicit user action) ──
-  app.post('/api/assessments', llmRateLimit, async (req, res) => {
+  app.post('/api/assessments', writeRateLimit(), async (req, res) => {
     if (!scriptAvailable()) {
       res.status(400).json({ error: 'assessment-log.mjs not found in the parent project' });
       return;

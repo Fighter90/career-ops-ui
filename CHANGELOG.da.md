@@ -9,6 +9,24 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 ---
 
 
+## [1.264.3] — 2026-11-01
+
+### Rettet
+
+- **Rate-limit-hærdningsbølge (review LOW nr. 1–3 fra `REVIEW-2026-10-31-v1.264.1`)** — `writeRateLimit()` (express-rate-limit@7.5.1, 60 req/min route×IP, 429 JSON + Retry-After) dækker nu **alle 47 muterende endpoints** (var 2): 9 forkert scoped `llmRateLimit`-guards erstattet (`/api/config` — `.env`-omskrivningen!, `PUT /api/batch`, `/api/batch/merge`, outcome, followup/seed, assessments, stats/snapshot, mock-interview/save, networking/save), 3 stablet **foran** LLM-bucketen på de dyre stier (`/api/evaluate`, `/api/deep`, `/api/auto-pipeline`) og 33 nøgne registreringer koblet på (CV/profil/modes-editorer, alle tracker-skrivninger, pipeline POST/restore/DELETE, jds, de 7 `/api/run/*` via én loop-ændring, posting-guard, Playwright-PDF inline, portals toggle/health/track, discover, reports, export/docx, two-pager, career-plan, memory og de tre DELETE-routes). `/api/apply-helper` forbliver allowlistet bare (ren lokal beregning, pinnet); 16 rene LLM-routes beholder den betingede LLM-bucket med vilje. En **fuldstændighedstripwire** (`tests/rate-limit-coverage.test.mjs`, red-first ved 27 nøgne) fejler CI ved enhver fremtidig muterende registrering uden throttle.
+- **`TRUST_PROXY` opt-in + genaktiverede valideringer (review LOW nr. 1–2)** — `app.set('trust proxy', N)` respekterer en `TRUST_PROXY`-env **antal hop** (aldrig boolean `true` — det ville nøgles på den angriberstyrede venstre XFF-ende); ikke sat som standard, så loopback beholder sin dokumenterede socket-nøglede per-route-degeneration. `validate: false` bliver til en målrettet `writeValidateConfig()`: kun `xForwardedForHeader` er opted out (Caddys XFF ignoreres *med vilje* uden trust proxy), alle andre valideringer — inklusive `trustProxy` — er højlydte igen, så en fremtidig `trust proxy: true`-fejlkonfiguration dukker op som `ERR_ERL_PERMISSIVE_TRUST_PROXY` i stedet for at forblive lydløs. Den brugerdefinerede `keyGenerator` blev fjernet med vilje: express-rate-limit kobler sine proxy-valideringer til standard key-generatoren, og per-route-isoleringen er uændret (én `MemoryStore` pr. factory-kald).
+- **cvstart.org copy-feedback nulstilles efter 2 s (CAR-141)** — «Скопировано ✓»-tilstanden holder nu acceptanskriteriets 2 sekunder (var 1,5 s), red-first pinnet i `tests/site-copy-feedback.test.mjs`. Dette lukker det sidste CAR-141-kriterium, som agenten kan fikse; demovideo-opfriskningen forbliver udskudt af ejeren (beslutning 2026-11-01).
+
+### Ændret
+
+- **Help-bundterne siger 19 sprog (×19)** — §19 "Localizing the app"- og §32 "Run it from OpenWorker"-sætningerne halter ikke længere to lokaler bagefter: hvert bundt siger nu **19** med தமிழ் og Tiếng Việt i sin egen opremsningsstil (ar bruger den udelte «التسع عشرة»), og `vi.md` §32's egen «cả-17»-rest er også fixet. Struktur-gates (33 H2 / 125+ H3) byte-stabile.
+- **State-hygiejne** — `AGENTS.md` angiver v1.264.2 / 7082 tests (var v1.86.x / 1566); `PLAN.md` markerer udgivelser 1–7 som **Shipped**, og dets ship-train-afsnit siger docs ×19; `StatsBar.astro`-kommentaren beskriver nu, hvad `facts.adapters` reelt indeholder (123 = sources-total, det historiske nøglenavn bevaret for forbrugere); `i18n.js`-headeren siger 19 sprog; v1.264.2 QA-prompten bærer den reelle dækning (98.45/90.05) og Playwright-regnestykket (176 = 174 harness + 1 opt-in skip + 2 suiter på script-niveau).
+
+### Noter
+
+- Bevidst ikke gjort: **parent-sync-bølgen** ifølge den noterede port-liste forbliver i BACKLOG — fork'en skal synkroniseres forbi upstream `a9476866` først (7 af de 10 port-liste-commits er endnu ikke i det lokale forælder-træ; IBM/UltiPro/Bulldogjob/apple scoupet S–M, personio language-dedup udskudt til sin egen udgivelse). CAR-141's genindspilning af demovideoen er bevidst udskudt af ejeren («видео не надо пока», 2026-11-01).
+- Tests 7082 → **7096** (+9 coverage-tripwire + 5 trust-proxy); Playwright **173 bestået / 0 fejlet / 1 opt-in skip** (+2 chevron-pins inde i eksisterende cases); dækning 98.46 linje / 90.10 gren; evals 14/0/1skip; registry uændret: 123 = 118 EN + 5 RU · 118 adapters.
+
 ## [1.264.2] — 2026-11-01
 
 ### Rettet

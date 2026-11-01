@@ -113,24 +113,38 @@ test('GET /api/stats/trend is empty-safe when no snapshots exist', async () => {
   assert.deepEqual(snapshots, []);
 });
 
-test('POST /api/stats/snapshot is rate-limited on a public bind (locks the guard)', async () => {
-  const { _resetBuckets } = await import('../server/lib/rate-limit.mjs');
-  const origHost = process.env.HOST;
-  const origLimit = process.env.LLM_RATE_LIMIT;
+test('POST /api/stats/snapshot is rate-limited by the unconditional write guard (locks the guard)', async () => {
+  // review LOW #3 moved the snapshot write from the loopback-gated
+  // llmRateLimit to the unconditional writeRateLimit. writeRateLimit()
+  // reads WRITE_RATE_LIMIT at factory (registration) time, so the tiny
+  // bucket needs its own app instance: createApp() re-registers every
+  // route with fresh limiter instances under the env override. Same
+  // behavioral contract as the old public-bind pin — and now bind-free:
+  // the write guard fires on loopback too.
+  const { createApp } = await import('../server/index.mjs');
+  const { __resetRateLimits } = await import('../server/lib/rate-limit.mjs');
+  const origLimit = process.env.WRITE_RATE_LIMIT;
+  process.env.WRITE_RATE_LIMIT = '2/60s';
+  __resetRateLimits();
+  let server2, base2;
   try {
-    process.env.HOST = '0.0.0.0';        // isPubliclyExposed() → true
-    process.env.LLM_RATE_LIMIT = '2/60s'; // tiny bucket so the 3rd POST trips it
-    _resetBuckets();
-    const r1 = await postJson('/api/stats/snapshot', SAMPLE);
-    const r2 = await postJson('/api/stats/snapshot', SAMPLE);
-    const r3 = await postJson('/api/stats/snapshot', SAMPLE);
+    const app = createApp();
+    await new Promise((r) => {
+      server2 = app.listen(0, '127.0.0.1', () => { base2 = `http://127.0.0.1:${server2.address().port}`; r(); });
+    });
+    const post = (body) => fetch(`${base2}/api/stats/snapshot`, {
+      method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify(body),
+    });
+    const r1 = await post(SAMPLE);
+    const r2 = await post(SAMPLE);
+    const r3 = await post(SAMPLE);
     assert.equal(r1.status, 200);
     assert.equal(r2.status, 200);
     assert.equal(r3.status, 429, '3rd snapshot over the 2/60s limit must be 429');
     assert.equal((await r3.json()).ok, false);
   } finally {
-    if (origHost === undefined) delete process.env.HOST; else process.env.HOST = origHost;
-    if (origLimit === undefined) delete process.env.LLM_RATE_LIMIT; else process.env.LLM_RATE_LIMIT = origLimit;
-    _resetBuckets();
+    if (server2) await new Promise((r) => { server2.closeIdleConnections?.(); server2.close(r); });
+    if (origLimit === undefined) delete process.env.WRITE_RATE_LIMIT; else process.env.WRITE_RATE_LIMIT = origLimit;
+    __resetRateLimits();
   }
 });

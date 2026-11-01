@@ -15,7 +15,7 @@ import { dirname } from 'node:path';
 import { homedir } from 'node:os';
 import { PATHS } from '../paths.mjs';
 import { withFileLock } from '../file-lock.mjs';
-import { llmRateLimit } from '../rate-limit.mjs';
+import { writeRateLimit } from '../rate-limit.mjs';
 import yaml from 'js-yaml';
 import {
   KNOWN_KEYS,
@@ -87,10 +87,11 @@ export function registerConfigRoutes(app) {
     });
   });
 
-  // llmRateLimit — this route writes the .env file (API keys, provider
-  // selection): the most sensitive mutation the app exposes. Same per-IP
-  // bucket as the batch mutations (no-op on loopback; gates HOST=0.0.0.0).
-  app.post('/api/config', llmRateLimit, async (req, res) => {
+  // writeRateLimit — this route writes the .env file (API keys, provider
+  // selection): the most sensitive mutation the app exposes. Unconditional
+  // (review LOW #3): unlike the loopback-gated llmRateLimit, the guard holds
+  // on every bind — 60 req/min per route × IP.
+  app.post('/api/config', writeRateLimit(), async (req, res) => {
     // v1.57.2 — the SPA's API client (public/js/api.js) auto-attaches a
     // `lang` field to EVERY JSON POST body so LLM-bound routes can pick
     // up the UI locale. /api/config is NOT an LLM route and `lang` is

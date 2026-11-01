@@ -22,6 +22,7 @@ import yaml from 'js-yaml';
 import { PATHS } from '../paths.mjs';
 import { safeGet } from '../safe-fetch.mjs';
 import { withFileLock } from '../file-lock.mjs';
+import { writeRateLimit } from '../rate-limit.mjs';
 
 const PROBE_TIMEOUT_MS = 12_000;
 const PROBE_CHUNK = 8; // concurrent probes
@@ -123,7 +124,11 @@ export function registerPortalsRoutes(app) {
   // (en-scanner filters `c.enabled !== false`) skips or resumes it. Surgical +
   // parse-validated: if the edit wouldn't re-parse to valid YAML, we refuse to
   // write. Same write-through contract as POST /api/tracker / PUT /api/cv.
-  app.post('/api/portals/toggle', async (req, res) => {
+  // writeRateLimit — the toggle flips an `enabled` flag in portals.yml (a
+  // tracked-companies file rewrite) and the health probe fans out one
+  // network fetch per tracked board; the unconditional 60/min guard bounds
+  // both (review LOW #3).
+  app.post('/api/portals/toggle', writeRateLimit(), async (req, res) => {
     const body = (req.body && typeof req.body === 'object') ? req.body : {};
     const careersUrl = typeof body.careers_url === 'string' ? body.careers_url : '';
     if (!careersUrl) return res.status(400).json({ error: 'careers_url is required' });
@@ -158,7 +163,7 @@ export function registerPortalsRoutes(app) {
     }
   });
 
-  app.post('/api/portals/health', async (_req, res) => {
+  app.post('/api/portals/health', writeRateLimit(), async (_req, res) => {
     const tracked = loadTracked();
     if (tracked === null) return res.status(404).json({ error: 'portals.yml not found or unreadable' });
     const enabled = tracked.filter((c) => c.enabled && c.careers_url);

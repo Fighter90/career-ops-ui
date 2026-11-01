@@ -2226,11 +2226,11 @@ Every drawer entry shows:
 
 ## 19. Localizing the app into your language
 
-The interface ships in 17 languages (English, Español, Français, Português, 한국어, 日本語, Русский, 简体中文, 繁體中文, Polski, Українська, Dansk, العربية, Deutsch, Italiano, Türkçe, हिन्दी). Every on-screen label comes from a translation dictionary, and you can add or correct a language without touching the app logic.
+The interface ships in 19 languages (English, Español, Français, Português, 한국어, 日本語, Русский, 简体中文, 繁體中文, Polski, Українська, Dansk, العربية, Deutsch, Italiano, Türkçe, हिन्दी, தமிழ், Tiếng Việt). Every on-screen label comes from a translation dictionary, and you can add or correct a language without touching the app logic.
 
 **Where the translations live.** Since v1.60.0 each language is its own file under `public/js/lib/locales/` — `i18n-dict.en.js`, `i18n-dict.es.js`, `i18n-dict.ru.js`, and so on — a simple list of `'key': 'text'` pairs. A shared `i18n-dict.aliases.js` lets keys that must always read identically (a sidebar label and its page title) point at one translation. `i18n-dict.js` merges them all at page load; you never edit it.
 
-**Fix or add a phrase.** Open the file for your language, find the key (e.g. `'nav.scan'`) and edit the text. To add a brand-new label, add the same key to **all 17** language files with the translated value, then reference it in the page via `t('your.key')`. Run `npm test` — it fails if any language is missing the key, so nothing ships half-translated.
+**Fix or add a phrase.** Open the file for your language, find the key (e.g. `'nav.scan'`) and edit the text. To add a brand-new label, add the same key to **all 19** language files with the translated value, then reference it in the page via `t('your.key')`. Run `npm test` — it fails if any language is missing the key, so nothing ships half-translated.
 
 **Add a whole new language.** Copy `i18n-dict.en.js` to `i18n-dict.<code>.js`, translate every value, then register the code in `i18n.js` (the language list + browser auto-detect), in the `i18n-dict.js` assembler, and add a `<script>` line in `index.html`. The full checklist — including the test snapshot and the help / README companion files — is in `docs/LOCALIZATION.md`.
 
@@ -2520,7 +2520,7 @@ Moving off `127.0.0.1` means the safety the loopback gave you for free must now 
 
 ## 32. Run it from OpenWorker (AI coworker)
 
-Prefer a desktop AI coworker over the browser? **[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** is an **[OpenWorker](https://github.com/andrewyng/openworker)** coworker (Andrew Ng's open-source, local-first AI coworker app) that drives this whole pipeline for you — scan boards, score fits against your CV, tailor a grounded CV + cover letter, track applications, draft follow-ups — and it can **launch this dashboard** on request. It's a single, code-free Markdown "persona"; OpenWorker runs none of it as a program, the instructions just steer the agent. Its guide ships in all 17 languages.
+Prefer a desktop AI coworker over the browser? **[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** is an **[OpenWorker](https://github.com/andrewyng/openworker)** coworker (Andrew Ng's open-source, local-first AI coworker app) that drives this whole pipeline for you — scan boards, score fits against your CV, tailor a grounded CV + cover letter, track applications, draft follow-ups — and it can **launch this dashboard** on request. It's a single, code-free Markdown "persona"; OpenWorker runs none of it as a program, the instructions just steer the agent. Its guide ships in all 19 languages.
 
 ### What the coworker does
 

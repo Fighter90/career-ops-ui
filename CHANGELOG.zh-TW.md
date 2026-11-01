@@ -8,6 +8,24 @@
 
 ---
 
+## [1.264.3] — 2026-11-01
+
+### 修復
+
+- **限流強化浪潮（`REVIEW-2026-10-31-v1.264.1` 的 LOW №1–3）** — `writeRateLimit()`（express-rate-limit@7.5.1，60 req/min route×IP，429 JSON + Retry-After）現已覆蓋**全部 47 個變更型端點**（此前僅 2 個）：替換 9 個作用域錯位的 `llmRateLimit` 守衛（`/api/config` — 會重寫 `.env`！、`PUT /api/batch`、`/api/batch/merge`、outcome、followup/seed、assessments、stats/snapshot、mock-interview/save、networking/save），在最昂貴的路徑上於 LLM 桶**之前**堆疊 3 個（`/api/evaluate`、`/api/deep`、`/api/auto-pipeline`），並為 33 個裸註冊接線（CV/profile/modes 編輯器、tracker 的全部寫入、pipeline POST/restore/DELETE、jds、7× `/api/run/*` 一處迴圈修改、posting-guard、Playwright-PDF inline、portals toggle/health/track、discover、reports、export/docx、two-pager、career-plan、memory 以及三條 DELETE 路由）。`/api/apply-helper` 保持在 allowlist 中不限流（純本地運算，已固定）；16 條純 LLM 路由按設計保留條件性 LLM 桶。**完備性 tripwire**（`tests/rate-limit-coverage.test.mjs`，以 27 個裸註冊 red-first 起步）會在未來出現任何未限流的變更型註冊時讓 CI 失敗。
+- **`TRUST_PROXY` 可選啟用 + 重新武裝的驗證（LOW №1–2）** — `app.set('trust proxy', N)` 接受 env 的 **hop-count**（絕不為布林 `true` — 否則將按攻擊者可控的 XFF 左端建構鍵）；預設不設置，loopback 保留按套接字取鍵的既定退化。`validate: false` 改為定向的 `writeValidateConfig()`：僅關閉 `xForwardedForHeader`（無 trust proxy 時忽略 Caddy 的 XFF *正是設計*）；其餘驗證 — 包括 `trustProxy` — 重新發聲，因此未來 `trust proxy: true` 的誤配置會以 `ERR_ERL_PERMISSIVE_TRUST_PROXY` 顯現而非沉默。自訂 `keyGenerator` 被有意移除：express-rate-limit 將其代理驗證綁定到預設鍵產生器，且按路由隔離不變（每次工廠呼叫一個 `MemoryStore`）。
+- **cvstart.org 複製回饋保持 2 秒（CAR-141）** — 「Скопировано ✓」狀態現按驗收標準保持 2 秒（此前 1.5 秒），red-first 固定於 `tests/site-copy-feedback.test.mjs`。這關閉了 CAR-141 最後一個可由代理修復的標準；示範影片的重錄由所有者決定推遲。
+
+### 變更
+
+- **說明文件宣告 19 種語言（×19）** — §19 «Localizing the app» 與 §32 «Run it from OpenWorker» 的句子不再落後兩種語言：每個 bundle 現在寫 **19**，並按各檔案自己的列舉風格加入 தமிழ் 與 Tiếng Việt（ar 採用拼寫的「التسع عشرة」），`vi.md` §32 自身的「cả-17」殘餘也已修正。結構關卡（33 H2 / 125+ H3）位元組穩定。
+- **狀態衛生** — `AGENTS.md` 註明 v1.264.2 / 7082 tests（此前 v1.86.x / 1566）；`PLAN.md` 將交付 1–7 標記為 **Shipped**，其列車段落寫 docs ×19；`StatsBar.astro` 的註解描述 `facts.adapters` 真正保存的內容（123 = 來源總數，歷史鍵名為消費者保留）；`i18n.js` 標頭寫 19 種語言；QA 提示 v1.264.2 載有真實覆蓋率（98.45/90.05）和 Playwright 算術（176 = 174 harness + 1 opt-in skip + 2 個腳本級套件）。
+
+### 備註
+
+- 有意未做：按已記錄的 port-list 進行的 **parent-sync 浪潮**仍留在 BACKLOG — fork 必須先同步過 upstream `a9476866`（列表 10 個提交中有 7 個尚不在父專案本地樹中；IBM/UltiPro/Bulldogjob/apple 規模 S–M，personio language-dedup 推遲至其獨立交付）。CAR-141 示範影片的重錄由所有者有意推遲（«видео не надо пока»，2026-11-01）。
+- 測試 7082 → **7096**（+9 覆蓋率 tripwire + 5 trust-proxy）；Playwright **173 pass / 0 fail / 1 opt-in skip**（在既有案例內 +2 個 chevron 固定）；coverage 98.46 line / 90.10 branch；evals 14/0/1skip；註冊表不變 123 = 118 EN + 5 RU · 118 adapters。
+
 ## [1.264.2] — 2026-11-01
 
 ### 修復

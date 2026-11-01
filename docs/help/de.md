@@ -2372,11 +2372,11 @@ Jeder Schubladeneintrag zeigt:
 
 ## 19. Die App in Ihre Sprache lokalisieren
 
-Die Oberfläche wird in 17 Sprachen ausgeliefert (English, Español, Français, Português, 한국어, 日本語, Русский, 简体中文, 繁體中文, Polski, Українська, Dansk, العربية, Deutsch, Italiano, Türkçe, हिन्दी). Jede Bildschirmbeschriftung stammt aus einem Übersetzungswörterbuch, und Sie können eine Sprache hinzufügen oder korrigieren, ohne die App-Logik zu berühren.
+Die Oberfläche wird in 19 Sprachen ausgeliefert (English, Español, Français, Português, 한국어, 日本語, Русский, 简体中文, 繁體中文, Polski, Українська, Dansk, العربية, Deutsch, Italiano, Türkçe, हिन्दी, தமிழ், Tiếng Việt). Jede Bildschirmbeschriftung stammt aus einem Übersetzungswörterbuch, und Sie können eine Sprache hinzufügen oder korrigieren, ohne die App-Logik zu berühren.
 
 **Wo die Übersetzungen leben.** Seit v1.60.0 ist jede Sprache ihre eigene Datei unter `public/js/lib/locales/` — `i18n-dict.en.js`, `i18n-dict.es.js`, `i18n-dict.ru.js` und so weiter — eine einfache Liste von `'key': 'text'`-Paaren. Ein gemeinsames `i18n-dict.aliases.js` lässt Schlüssel, die immer identisch lauten müssen (eine Seitenleistenbeschriftung und ihr Seitentitel), auf eine Übersetzung zeigen. `i18n-dict.js` führt sie alle beim Laden der Seite zusammen; Sie bearbeiten es nie.
 
-**Eine Phrase korrigieren oder hinzufügen.** Öffnen Sie die Datei für Ihre Sprache, finden Sie den Schlüssel (z. B. `'nav.scan'`) und bearbeiten Sie den Text. Um eine brandneue Beschriftung hinzuzufügen, fügen Sie denselben Schlüssel zu **allen 17** Sprachdateien mit dem übersetzten Wert hinzu und referenzieren Sie ihn dann in der Seite über `t('your.key')`. Führen Sie `npm test` aus — es schlägt fehl, wenn einer Sprache der Schlüssel fehlt, sodass nichts halb übersetzt ausgeliefert wird.
+**Eine Phrase korrigieren oder hinzufügen.** Öffnen Sie die Datei für Ihre Sprache, finden Sie den Schlüssel (z. B. `'nav.scan'`) und bearbeiten Sie den Text. Um eine brandneue Beschriftung hinzuzufügen, fügen Sie denselben Schlüssel zu **allen 19** Sprachdateien mit dem übersetzten Wert hinzu und referenzieren Sie ihn dann in der Seite über `t('your.key')`. Führen Sie `npm test` aus — es schlägt fehl, wenn einer Sprache der Schlüssel fehlt, sodass nichts halb übersetzt ausgeliefert wird.
 
 **Eine ganz neue Sprache hinzufügen.** Kopieren Sie `i18n-dict.en.js` nach `i18n-dict.<code>.js`, übersetzen Sie jeden Wert und registrieren Sie dann den Code in `i18n.js` (die Sprachliste + die Browser-Auto-Erkennung), im `i18n-dict.js`-Assembler und fügen Sie eine `<script>`-Zeile in `index.html` hinzu. Die vollständige Checkliste — einschließlich des Test-Snapshots und der Hilfe-/README-Begleitdateien — steht in `docs/LOCALIZATION.md`.
 
@@ -2669,7 +2669,7 @@ Das Verlassen von `127.0.0.1` bedeutet, dass die Sicherheit, die das Loopback ko
 
 ## 32. Über OpenWorker betreiben (KI-Kollege)
 
-Lieber einen KI-Kollegen auf dem Desktop statt des Browsers? **[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** ist ein **[OpenWorker](https://github.com/andrewyng/openworker)**-Kollege (Andrew Ngs quelloffene, local-first KI-Kollegen-App), der diese gesamte Pipeline für Sie steuert — Boards scannen, die Passgenauigkeit gegen Ihren Lebenslauf bewerten, einen fundierten Lebenslauf + ein Anschreiben zuschneiden, Bewerbungen verfolgen, Nachfass-Nachrichten entwerfen — und er kann auf Wunsch **dieses Dashboard starten**. Es ist eine einzige, code-freie Markdown-„Persona"; OpenWorker führt nichts davon als Programm aus, die Anweisungen steuern lediglich den Agenten. Sein Leitfaden wird in allen 17 Sprachen ausgeliefert.
+Lieber einen KI-Kollegen auf dem Desktop statt des Browsers? **[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** ist ein **[OpenWorker](https://github.com/andrewyng/openworker)**-Kollege (Andrew Ngs quelloffene, local-first KI-Kollegen-App), der diese gesamte Pipeline für Sie steuert — Boards scannen, die Passgenauigkeit gegen Ihren Lebenslauf bewerten, einen fundierten Lebenslauf + ein Anschreiben zuschneiden, Bewerbungen verfolgen, Nachfass-Nachrichten entwerfen — und er kann auf Wunsch **dieses Dashboard starten**. Es ist eine einzige, code-freie Markdown-„Persona"; OpenWorker führt nichts davon als Programm aus, die Anweisungen steuern lediglich den Agenten. Sein Leitfaden wird in allen 19 Sprachen ausgeliefert.
 
 ### Was der Kollege macht
 

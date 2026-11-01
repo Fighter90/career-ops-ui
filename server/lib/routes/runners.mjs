@@ -181,7 +181,11 @@ export function registerRunnerRoutes(app) {
   });
 
   for (const def of BUFFERED) {
-    app.post(def.route, async (_req, res) => {
+    // writeRateLimit (review LOW #3) — ONE limiter instance for the whole
+    // buffered registry: every /api/run/* POST spawns a parent script
+    // (merge/dedup/normalize rewrite data/applications.md), so a runaway
+    // client loop must hit the unconditional 60/min guard per route × IP.
+    app.post(def.route, writeRateLimit(), async (_req, res) => {
       // FULL-M1 — merge/dedup/normalize are in TRACKER_MUTATING (they
       // rewrite data/applications.md): the spawn holds the tracker file
       // lock so it serializes with web-ui's own tracker writers. Read-only
@@ -254,7 +258,7 @@ export function registerRunnerRoutes(app) {
    */
   const findCapture = (num) => findCaptureByReport(PATHS.jdsDir, num);
 
-  app.post('/api/runners/posting-guard', async (req, res) => {
+  app.post('/api/runners/posting-guard', writeRateLimit(), async (req, res) => {
     const { report, jdPath } = req.body || {};
     const hasReport = report != null && report !== '';
     const hasPath = jdPath != null && jdPath !== '';
@@ -472,7 +476,7 @@ export function registerRunnerRoutes(app) {
   // for unsaved content (e.g. /#/evaluate result before persisting). SSE
   // works through POST too: EventSource doesn't, but the SPA fetches with
   // ReadableStream parsing for this endpoint.
-  app.post('/api/stream/pdf/inline', (req, res) => {
+  app.post('/api/stream/pdf/inline', writeRateLimit(), (req, res) => {
     const { markdown, title, slug, format } = req.body || {};
     if (!markdown || typeof markdown !== 'string') {
       res.writeHead(400, { 'Content-Type': 'application/json' });

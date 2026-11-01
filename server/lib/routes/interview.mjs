@@ -26,7 +26,7 @@ import { slugify, today } from '../parsers.mjs';
 import { sanitizeJobDescription, sanitizePathName } from '../security.mjs';
 import { bundleProjectContext, resolveLocale } from '../prompts.mjs';
 import { cleanLlmMarkdown } from '../llm-output.mjs';
-import { llmRateLimit } from '../rate-limit.mjs';
+import { llmRateLimit, writeRateLimit } from '../rate-limit.mjs';
 import { runActiveProvider, providerAvailable } from '../llm-dispatch.mjs';
 import { runNodeScript } from '../runner.mjs';
 import { parseJsonStdout, sanitizeDetail } from '../parent-relay.mjs';
@@ -187,7 +187,7 @@ export function registerInterviewRoutes(app) {
   });
 
   // Persist a finished transcript to the user layer. Explicit user action.
-  app.post('/api/mock-interview/save', llmRateLimit, async (req, res) => {
+  app.post('/api/mock-interview/save', writeRateLimit(), async (req, res) => {
     const body = (req.body && typeof req.body === 'object') ? req.body : {};
     const role = clip(body.role, MAX_FIELD).trim();
     const company = clip(body.company, MAX_FIELD).trim();
@@ -237,7 +237,7 @@ export function registerInterviewRoutes(app) {
     res.json({ name: safe, markdown: cleanLlmMarkdown(readFileSync(file, 'utf8')) });
   });
 
-  app.delete('/api/mock-interview/sessions/:name', (req, res) => {
+  app.delete('/api/mock-interview/sessions/:name', writeRateLimit(), (req, res) => {
     const safe = sanitizePathName(req.params.name);
     const file = safe && safe.startsWith('mock-') && safe.endsWith('.md') ? resolveSessionFile(safe) : null;
     if (!file) return res.status(400).json({ error: 'invalid name' });

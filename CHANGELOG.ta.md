@@ -6,6 +6,24 @@
 
 ---
 
+## [1.264.3] — 2026-11-01
+
+### சரி செய்யப்பட்டது
+
+- **Rate-limit hardening அலை (`REVIEW-2026-10-31-v1.264.1`-இலிருந்து review LOW №1–3)** — `writeRateLimit()` (express-rate-limit@7.5.1, 60 req/min route×IP, 429 JSON + Retry-After) இப்போது **அனைத்து 47 mutating endpoints**-ஐயும் உள்ளடக்குகிறது (முன்பு 2): 9 தவறான வரம்பில் பொருத்தப்பட்ட `llmRateLimit` காப்புகள் மாற்றப்பட்டன (`/api/config` — `.env` மறுஎழுதல்!, `PUT /api/batch`, `/api/batch/merge`, outcome, followup/seed, assessments, stats/snapshot, mock-interview/save, networking/save), 3 செலவு மிகுந்த பாதைகளில் LLM bucket-க்கு **முன்** அடுக்கப்பட்டன (`/api/evaluate`, `/api/deep`, `/api/auto-pipeline`), மேலும் 33 காப்பற்ற பதிவுகள் இணைக்கப்பட்டன (CV/profile/modes திருத்திகள், அனைத்து tracker எழுத்துகள், pipeline POST/restore/DELETE, jds, ஒரே loop திருத்தத்தின் வழியாக 7 `/api/run/*`, posting-guard, Playwright-PDF inline, portals toggle/health/track, discover, reports, export/docx, two-pager, career-plan, memory மற்றும் மூன்று DELETE routes). `/api/apply-helper` காப்பற்ற நிலையிலேயே allowlist-இல் இருக்கிறது (தூய உள்ளூர் கணக்கீடு, pin செய்யப்பட்டது); 16 தூய-LLM routes வடிவமைப்பளவே நிபந்தனையுள்ள LLM bucket-ஐத் தக்கவைக்கின்றன. ஒரு **completeness tripwire** (`tests/rate-limit-coverage.test.mjs`, தொடக்கத்தில் 27 காப்பற்றதாக red-first) எதிர்காலத்தில் throttle செய்யப்படாத எந்தப் புதிய mutating registration உருவானாலும் CI-ஐத் தோல்வியுறச் செய்கிறது.
+- **`TRUST_PROXY` opt-in + மீண்டும் செயல்படுத்தப்பட்ட சரிபார்ப்புகள் (review LOW №1–2)** — `app.set('trust proxy', N)` ஒரு `TRUST_PROXY` env **hop count**-ஐ மதிக்கிறது (ஒருபோதும் boolean `true` அல்ல — அப்படியிருந்தால் தாக்குபவர் கட்டுப்படுத்தக்கூடிய இடப்புற XFF முனையில் key செய்யப்படும்); இயல்புநிலையில் அமைக்கப்படவில்லை, எனவே loopback தன் ஆவணப்படுத்தப்பட்ட socket-keyed per-route degeneration-ஐத் தக்கவைக்கிறது. `validate: false` ஒரு குறிவைத்த `writeValidateConfig()` ஆக மாறுகிறது: `xForwardedForHeader` மட்டுமே opt-out செய்யப்படுகிறது (trust proxy இல்லாதபோது Caddy-இன் XFF *வடிவமைப்பளவே* புறக்கணிக்கப்படுகிறது), மற்ற ஒவ்வொரு சரிபார்ப்பும் — `trustProxy` உட்பட — மீண்டும் சத்தமாகிறது, எனவே எதிர்காலத்தில் `trust proxy: true` என்ற தவறான கட்டமைப்பு மௌனத்துக்குப் பதிலாக `ERR_ERL_PERMISSIVE_TRUST_PROXY` ஆக வெளிப்படும். custom `keyGenerator` வேண்டுமென்றே நீக்கப்பட்டது: express-rate-limit தன் proxy சரிபார்ப்புகளை இயல்புநிலை key generator-உடன் இணைக்கிறது, மேலும் per-route தனிமைப்படுத்தல் மாறவில்லை (ஒரு factory call-க்கு ஒரு `MemoryStore`).
+- **cvstart.org copy feedback 2 s கழித்து மீட்டமைக்கப்படுகிறது (CAR-141)** — «Скопировано ✓» நிலை இப்போது ஏற்பு-அளவுகோலின்படி 2 வினாடிகள் நிலைக்கிறது (முன்பு 1.5 s), `tests/site-copy-feedback.test.mjs`-இல் red-first pin செய்யப்பட்டது. இது agent திருத்தக்கூடிய கடைசி CAR-141 அளவுகோலை மூடுகிறது; டெமோ வீடியோ புதுப்பிப்பு உரிமையாளரால் நிலுவைப்படுத்தப்பட்டே இருக்கிறது (முடிவு 2026-11-01).
+
+### மாற்றப்பட்டது
+
+- **Help தொகுப்புகள் 19 மொழிகள் எனக் கூறுகின்றன (×19)** — §19 "Localizing the app" மற்றும் §32 "Run it from OpenWorker" வாக்கியங்கள் இனி இரு மொழிகள் பின்தங்குவதில்லை: ஒவ்வொரு தொகுப்பும் இப்போது தன் சொந்த enumeration நடையில் தமிழ் மற்றும் Tiếng Việt உள்ளிட்ட **19** எனக் கூறுகிறது (ar எழுத்தாக்கப்பட்ட «التسع عشرة»-ஐப் பயன்படுத்துகிறது), மேலும் `vi.md` §32-இன் சொந்த «cả-17» எச்சமும் சரி செய்யப்பட்டது. அமைப்பு கதவுகள் (33 H2 / 125+ H3) byte-நிலையானவை.
+- **நிலை சுகாதாரம்** — `AGENTS.md` v1.264.2 / 7082 tests எனக் கூறுகிறது (முன்பு v1.86.x / 1566); `PLAN.md` வெளியீடுகள் 1–7-ஐ **Shipped** எனக் குறிக்கிறது, அதன் ship-train பத்தி docs ×19 எனக் கூறுகிறது; `StatsBar.astro` கருத்து இப்போது `facts.adapters` உண்மையில் எதை வைத்திருக்கிறது என்பதை விவரிக்கிறது (123 = மொத்த sources, நுகர்வோருக்காக வரலாற்று key பெயர் வைக்கப்பட்டது); `i18n.js` தலைப்பு 19 மொழிகள் எனக் கூறுகிறது; v1.264.2 QA prompt உண்மையான கவரேஜை (98.45/90.05) மற்றும் Playwright கணக்கீட்டை (176 = 174 harness + 1 opt-in skip + 2 script-level suites) சுமக்கிறது.
+
+### குறிப்புகள்
+
+- வேண்டுமென்றே செய்யப்படாதது: பதிவு செய்யப்பட்ட port-list-இன் படி **parent-sync அலை** BACKLOG-இல் இருக்கிறது — fork முதலில் upstream `a9476866`-ஐத் தாண்டி sync செய்யப்பட வேண்டும் (10 port-list commitகளில் 7 இன்னும் உள்ளூர் parent tree-இல் இல்லை; IBM/UltiPro/Bulldogjob/apple S–M அளவில் வரையறுக்கப்பட்டன, personio language-dedup அதற்கென தனியான வெளியீட்டுக்கு நிலுவைப்படுத்தப்பட்டது). CAR-141-இன் டெமோ வீடியோவை மீண்டும் பதிவு செய்யும் பணி உரிமையாளரால் நனவாக நிலுவைப்படுத்தப்பட்டது («видео не надо пока», 2026-11-01).
+- Tests 7082 → **7096** (+9 coverage tripwire + 5 trust-proxy); Playwright **173 pass / 0 fail / 1 opt-in skip** (ஏற்கனவே உள்ள cases-க்குள் +2 chevron pins); கவரேஜ் 98.46 வரி / 90.10 branch; evals 14/0/1skip; registry மாறவில்லை: 123 = 118 EN + 5 RU · 118 adapters.
+
 ## [1.264.2] — 2026-11-01
 
 ### சரி செய்யப்பட்டது

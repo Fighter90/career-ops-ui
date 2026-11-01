@@ -2517,7 +2517,7 @@ Rời-`127.0.0.1` nghĩa là lớp an toàn mà loopback đã tặng bạn miễ
 
 ## 32. Chạy nó từ OpenWorker (AI coworker)
 
-Thích một AI coworker desktop hơn trình duyệt? **[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** là một coworker **[OpenWorker](https://github.com/andrewyng/openworker)** (ứng dụng coworker AI mở, cục bộ trước của Andrew Ng) lái toàn bộ pipeline này giúp bạn — quét các bảng, chấm độ khớp so với CV của bạn, điều chỉnh một CV + thư xin việc có gốc rễ, theo dõi các đơn ứng tuyển, soạn các lần nhắc lại — và nó có thể **khởi chạy dashboard này** theo yêu cầu. Đó là một-"persona"-Markdown đơn, không code; OpenWorker không chạy bất cứ phần nào của nó như một chương trình, các chỉ dẫn chỉ lái agent. Hướng dẫn của nó phát hành trong cả-17-ngôn ngữ.
+Thích một AI coworker desktop hơn trình duyệt? **[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** là một coworker **[OpenWorker](https://github.com/andrewyng/openworker)** (ứng dụng coworker AI mở, cục bộ trước của Andrew Ng) lái toàn bộ pipeline này giúp bạn — quét các bảng, chấm độ khớp so với CV của bạn, điều chỉnh một CV + thư xin việc có gốc rễ, theo dõi các đơn ứng tuyển, soạn các lần nhắc lại — và nó có thể **khởi chạy dashboard này** theo yêu cầu. Đó là một-"persona"-Markdown đơn, không code; OpenWorker không chạy bất cứ phần nào của nó như một chương trình, các chỉ dẫn chỉ lái agent. Hướng dẫn của nó phát hành trong cả-19-ngôn ngữ.
 
 ### Coworker làm gì
 

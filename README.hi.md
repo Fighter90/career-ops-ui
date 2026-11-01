@@ -9,21 +9,21 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-7041%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7096%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.264.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.264.0)
+[![release](https://img.shields.io/badge/release-v1.264.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.264.3)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.264.2** — **साइडबार ग्रुप हेडर ट्रंकेशन अनुबंध में शामिल होते हैं (ellipsis + स्थानीयकृत टूलटिप्स), cvstart.org की help/FAQ कॉपी अब सभी 19 भाषाओं में अनूदित आती है, और रिलीज़ समीक्षा 0 HIGH फाइंडिंग के साथ आती है — अगली वेव के लिए parent-sync पोर्ट-लिस्ट दर्ज होती है। टेस्ट 7081 → 7082।**
+> **🆕 नवीनतम रिलीज़ — v1.264.3** — **रेट-लिमिट हार्डनिंग अब हर म्यूटेटिंग एंडपॉइंट को कवर करती है, CAR-141 कॉपी कन्फर्मेशन के लिए 2 s टाइमर जोड़ता है, और हेल्प गाइड सभी 19 भाषाओं में अपडेट होती है। टेस्ट 7082 → 7096।**
 
 
 >
-> **पिछला — v1.264.1** — **दो एजेंट-निर्मित सुधार: साइडबार पिल्स लंबे स्थानीयकृत लेबल को सहजता से ट्रंकेट करते हैं (ellipsis + स्थानीयकृत टूलटिप — «Профинансированные компании» अब कठोरता से नहीं कटता), और हर स्थानीयकरण के लिए एक 480 s मूल्यांकन सीलिंग (es/zh-CN पर क्षणिक 300 s कट-ऑफ़ अब नहीं); cvstart.org FAQ अब registry-व्युत्पन्न सटीक सोर्स गिनती रखता है (123 = 118 अंतरराष्ट्रीय + 5 रूसी)। टेस्ट 7041 → 7081।**
+> **पिछला — v1.264.2** — **साइडबार ग्रुप हेडर ट्रंकेशन अनुबंध में शामिल होते हैं (ellipsis + स्थानीयकृत टूलटिप्स), cvstart.org की help/FAQ कॉपी अब सभी 19 भाषाओं में अनूदित आती है, और रिलीज़ समीक्षा 0 HIGH फाइंडिंग के साथ आती है — अगली वेव के लिए parent-sync पोर्ट-लिस्ट दर्ज होती है। टेस्ट 7081 → 7082।**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -427,7 +427,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 7041 यूनिट + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (बेसलाइन @ v1.264.0)
+└─ tests/                    # 7096 यूनिट + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (बेसलाइन @ v1.264.3)
    ├─ parsers.test.mjs       # markdown / pipeline / report पार्सर (प्योर फ़ंक्शन)
    ├─ api.test.mjs           # हर एंडपॉइंट, एफ़ेमरल सर्वर, कोई नेटवर्क नहीं
    ├─ {ru,en}-scanner.test.mjs   # मॉक्ड fetch
@@ -558,20 +558,20 @@ event: error    data: { message }
 ## टेस्ट
 
 ```bash
-npm test                       # 6868 यूनिट/इंटीग्रेशन टेस्ट
+npm test                       # 7096 यूनिट/इंटीग्रेशन टेस्ट
 npm run test:e2e               # 21 स्मोक e2e (अपना सर्वर खुद बूट करता है)
 npm run test:e2e:full          # 23 व्यापक e2e
-npm run test:e2e:browser       # 118 Playwright ब्राउज़र (smoke + full-cycle + forms + locale-sweep ×19 + theme)
+npm run test:e2e:browser       # 176 Playwright ब्राउज़र (smoke + full-cycle + forms + locale-sweep ×19 + theme)
 npm run test:coverage          # `npm test` जैसा ही, साथ में V8 कवरेज
 ```
 
 | सूट                       | टेस्ट | क्या                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (यूनिट + इंटीग्रेशन) |   **7041** | हर एंडपॉइंट, एफ़ेमरल सर्वर, कोई नेटवर्क नहीं। 490 फ़ाइलें: parsers, scanners (मॉक्ड), runners, anthropic/openai, सुरक्षा हेडर, XSS, JD सैनिटाइज़, URL वैलिडेशन, i18n पैरिटी, + v1.55→v1.56 UX-फ़िक्स सूट। |
+| `node --test tests/*.test.mjs` (यूनिट + इंटीग्रेशन) |   **7096** | हर एंडपॉइंट, एफ़ेमरल सर्वर, कोई नेटवर्क नहीं। 490 फ़ाइलें: parsers, scanners (मॉक्ड), runners, anthropic/openai, सुरक्षा हेडर, XSS, JD सैनिटाइज़, URL वैलिडेशन, i18n पैरिटी, + v1.55→v1.56 UX-फ़िक्स सूट। |
 | `tests/e2e.mjs` (स्मोक)      | 21 | Playwright हेडलेस: हर राउट रेंडर होता है, बुनियादी फ़्लो।                                                     |
 | `tests/e2e-comprehensive.mjs` | 23 | पूर्ण Playwright वॉकथ्रू: 11 राउट + 12 फ़ंक्शनल फ़्लो।                                              |
-| `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **118** | ब्राउज़र-ड्रिवन: डैशबोर्ड रेंडर, नेविगेशन, भाषा स्विच, 404, health, tracker राउंड-ट्रिप, pipeline जोड़ना + अमान्य-URL स्वीप, reports, evaluate मैनुअल फ़ॉलबैक, config कीज़ मास्क्ड, CV PUT XSS स्ट्रिप, pipeline preview 400, auto-pipeline SSE। |
-| **कुल** (चारों सुइट)                   | **5278** | **0 विफलताएँ, 0 फ़्लेक**                                                                                    |
+| `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **176** | ब्राउज़र-ड्रिवन: डैशबोर्ड रेंडर, नेविगेशन, भाषा स्विच, 404, health, tracker राउंड-ट्रिप, pipeline जोड़ना + अमान्य-URL स्वीप, reports, evaluate मैनुअल फ़ॉलबैक, config कीज़ मास्क्ड, CV PUT XSS स्ट्रिप, pipeline preview 400, auto-pipeline SSE। |
+| **कुल** (चारों सुइट)                   | **7316** | **0 विफलताएँ, 0 फ़्लेक**                                                                                    |
 
 कवरेज: `--experimental-test-coverage` के माध्यम से ~93% लाइन / ~83% ब्रांच।
 
@@ -739,7 +739,7 @@ node evals/workflow/run.mjs --task qa-prompt-mandatory
 
 Issues और PRs का स्वागत है। घर के नियम:
 
-- पुश करने से पहले `npm test` चलाएँ — **6868 चेक ग्रीन** बार है (यदि आप UI छूते हैं तो साथ में 118 Playwright भी)।
+- पुश करने से पहले `npm test` चलाएँ — **7096 चेक ग्रीन** बार है (यदि आप UI छूते हैं तो साथ में 176 Playwright भी)।
 - गैर-तुच्छ बदलाव GSD पाइपलाइन से होकर गुज़रते हैं। [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md) देखें।
 - इस रेपो के अंदर से पैरेंट `career-ops/` प्रोजेक्ट में कुछ भी संशोधित न करें। पूरा उद्देश्य यही है कि यह एक गैर-आक्रामक ओवरले है। कठोर नियम [`CLAUDE.md`](CLAUDE.md) में हैं।
 - कन्वेंशनल कमिट्स: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`। वैकल्पिक स्कोप: `feat(scan):`। ब्रेकिंग चेंज: `feat!:`।

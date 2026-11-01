@@ -7,21 +7,21 @@
 
 _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
-[![tests](https://img.shields.io/badge/tests-7041%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7096%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.264.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.264.0)
+[![release](https://img.shields.io/badge/release-v1.264.3-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.264.3)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versión — v1.264.2** — **Las cabeceras de grupo de la barra lateral se suman al contrato de truncamiento (elipsis + tooltips localizados), el texto de ayuda/FAQ de cvstart.org ahora se envía traducido en los 19 idiomas, y la revisión del lanzamiento cierra con 0 hallazgos HIGH — la lista de puertos del parent-sync queda registrada para la próxima ola. Tests 7081 → 7082.**
+> **🆕 Última versión — v1.264.3** — **El endurecimiento de rate-limits cubre ahora todos los endpoints de mutación, CAR-141 añade un temporizador de confirmación de copia de 2 s, y la ayuda se actualiza en los 19 idiomas. Tests 7082 → 7096.**
 
 
 >
-> **Anterior — v1.264.1** — **Dos correcciones construidas por agentes: las píldoras de la barra lateral truncan con elegancia las etiquetas localizadas largas (elipsis + un tooltip localizado — adiós al recorte en seco de «Профинансированные компании») y un único techo de evaluación de 480 s para todas las locales (se acabaron los cortes transitorios de 300 s en es/zh-CN); la FAQ de cvstart.org ahora lleva los recuentos exactos de sources derivados del registro (123 = 118 internacionales + 5 rusas). Tests 7041 → 7081.**
+> **Anterior — v1.264.2** — **Las cabeceras de grupo de la barra lateral se suman al contrato de truncamiento (elipsis + tooltips localizados), el texto de ayuda/FAQ de cvstart.org ahora se envía traducido en los 19 idiomas, y la revisión del lanzamiento cierra con 0 hallazgos HIGH — la lista de puertos del parent-sync queda registrada para la próxima ola. Tests 7081 → 7082.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -394,7 +394,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 7041 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.264.0)
+└─ tests/                    # 7096 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.264.3)
    ├─ parsers.test.mjs       # parsers markdown / pipeline / report (funciones puras)
    ├─ api.test.mjs           # cada endpoint, servidor efímero, sin red
    ├─ {ru,en}-scanner.test.mjs   # fetch mockeado
@@ -528,7 +528,7 @@ Cuando se establece `run: true` en `/api/deep` o `/api/mode/:slug`, el servidor 
 ## Tests
 
 ```bash
-npm test                       # 6868 tests unit/integración
+npm test                       # 7096 tests unit/integración
 npm run test:e2e               # 21 smoke e2e (arranca su propio servidor)
 npm run test:e2e:full          # 23 e2e completos
 npm run test:e2e:browser       # 101 smoke Playwright en navegador
@@ -537,10 +537,10 @@ npm run test:coverage          # igual que `npm test` más cobertura V8
 
 | Suite                       | Tests | Qué cubre                                                                                                  |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (unit + integración) |   **7041** | Cada endpoint, servidor efímero, sin red. Incluye parser, scanner (mockeado), runner, anthropic, security headers, XSS, JD sanitize, validación de URL, DNS rebind, mutex de archivo, rate limit, path traversal y paridad i18n. |
+| `node --test tests/*.test.mjs` (unit + integración) |   **7096** | Cada endpoint, servidor efímero, sin red. Incluye parser, scanner (mockeado), runner, anthropic, security headers, XSS, JD sanitize, validación de URL, DNS rebind, mutex de archivo, rate limit, path traversal y paridad i18n. |
 | `tests/e2e.mjs` (smoke)      | 21 | Playwright headless: cada ruta renderiza, flujos básicos.                                                  |
 | `tests/e2e-comprehensive.mjs` | 23 | Walkthrough Playwright completo: 11 rutas + 12 flujos funcionales.                                         |
-| `tests/playwright-smoke.mjs` (`npm run test:e2e:browser`) | **32** | Smoke con navegador: render del dashboard, navegación, cambio de idioma, 404, health, tracker round-trip (BF-1), añadir a pipeline + barrido de URL inválida, reports vacío, evaluate manual fallback, claves de config enmascaradas, CV PUT XSS strip, pipeline preview 400. |
+| `tests/playwright-smoke.mjs` (`npm run test:e2e:browser`) | **176** | Smoke con navegador: render del dashboard, navegación, cambio de idioma, 404, health, tracker round-trip (BF-1), añadir a pipeline + barrido de URL inválida, reports vacío, evaluate manual fallback, claves de config enmascaradas, CV PUT XSS strip, pipeline preview 400. |
 | **Total**                   | **~530** | **0 fallos, 0 flakes**                                                                                  |
 
 Cobertura: ~93% línea / ~83% rama vía `--experimental-test-coverage`.
@@ -693,7 +693,7 @@ Qué patrones del libro están realmente implementados aquí — y cuáles no �
 
 Issues y PRs bienvenidos. Reglas de la casa:
 
-- Ejecuta `npm test` antes de hacer push — **6868 checks en verde** es el mínimo (más 118 Playwright si tocas la UI).
+- Ejecuta `npm test` antes de hacer push — **7096 checks en verde** es el mínimo (más 176 Playwright si tocas la UI).
 - Los cambios no triviales pasan por la pipeline GSD. Ver [`docs/sdd/SDD-GUIDE.md`](docs/sdd/SDD-GUIDE.md).
 - No modifiques nada del proyecto padre `career-ops/` desde dentro de este repositorio. Todo el sentido es que sea una capa no invasiva. Reglas duras en [`CLAUDE.md`](CLAUDE.md).
 - Conventional commits: `feat`, `fix`, `refactor`, `docs`, `test`, `chore`, `perf`, `ci`. Scope opcional: `feat(scan):`. Breaking change: `feat!:`.

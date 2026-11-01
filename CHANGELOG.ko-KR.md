@@ -10,6 +10,24 @@
 
 ---
 
+## [1.264.3] — 2026-11-01
+
+### 수정
+
+- **레이트-리밋 강화 웨이브 (`REVIEW-2026-10-31-v1.264.1`의 리뷰 LOW №1–3)** — `writeRateLimit()` (express-rate-limit@7.5.1, 60 req/min route×IP, 429 JSON + Retry-After)가 이제 **47개 mutating 엔드포인트 전부**를 커버합니다 (이전에는 2개): 잘못 스코프된 `llmRateLimit` 가드 9개를 교체하고 (`/api/config` — 바로 그 `.env` 재작성!, `PUT /api/batch`, `/api/batch/merge`, outcome, followup/seed, assessments, stats/snapshot, mock-interview/save, networking/save), 비용이 큰 경로에서 LLM 버킷 **앞에** 3개를 스택하고 (`/api/evaluate`, `/api/deep`, `/api/auto-pipeline`), bare 등록 33개를 연결했습니다 (CV/profile/modes 에디터, 모든 tracker 쓰기, pipeline POST/restore/DELETE, jds, 한 번의 루프 편집으로 잡히는 7개의 `/api/run/*`, posting-guard, Playwright-PDF 인라인, portals toggle/health/track, discover, reports, export/docx, two-pager, career-plan, memory, 그리고 DELETE 라우트 3개). `/api/apply-helper`는 allowlisted bare로 남습니다 (순수 로컬 계산, 고정됨); 16개 순수-LLM 라우트는 설계상 조건부 LLM 버킷을 유지합니다. **완전성 트립와이어** (`tests/rate-limit-coverage.test.mjs`, bare 27개 시점에서 red-first)는 앞으로 스로틀되지 않은 mutating 등록이 하나라도 등장하면 CI를 실패시킵니다.
+- **`TRUST_PROXY` 옵트인 + 재무장된 검증 (리뷰 LOW №1–2)** — `app.set('trust proxy', N)`는 `TRUST_PROXY` env **홉 카운트**를 존중합니다 (불리언 `true`는 결코 아닙니다 — 그렇게 하면 공격자가 통제하는 왼쪽 XFF 끝을 키로 삼게 됩니다); 기본값은 미설정이므로, 루프백은 문서화된 소켓-키 기반 라우트별 열화를 그대로 유지합니다. `validate: false`는 표적화된 `writeValidateConfig()`가 됩니다: 옵트아웃되는 것은 `xForwardedForHeader`뿐이고 (trust proxy가 없으면 Caddy의 XFF는 *설계상* 무시됩니다), `trustProxy`를 포함한 나머지 모든 검증은 다시 시끄러워져서, 미래의 `trust proxy: true` 오설정이 침묵 대신 `ERR_ERL_PERMISSIVE_TRUST_PROXY`로 표면화됩니다. 커스텀 `keyGenerator`는 의도적으로 제거됐습니다: express-rate-limit는 프록시 검증을 기본 키 제너레이터에 묶어 두며, 라우트별 격리는 변함이 없습니다 (팩토리 호출마다 하나의 `MemoryStore`).
+- **cvstart.org 카피 피드백이 2 s 후에 되돌려집니다 (CAR-141)** — «Скопировано ✓» 상태는 이제 수용 기준인 2 s를 유지합니다 (이전에는 1.5 s), red-first 핀은 `tests/site-copy-feedback.test.mjs`에 있습니다. 이것으로 에이전트가 고칠 수 있는 마지막 CAR-141 기준이 닫혔습니다; 데모 비디오 새로 고침은 오너가 미룬 채 남아 있습니다 (결정 2026-11-01).
+
+### 변경
+
+- **Help 번들이 19개 언어를 말합니다 (×19)** — §19 "Localizing the app"과 §32 "Run it from OpenWorker" 문장이 더 이상 두 로케일만큼 뒤처지지 않습니다: 모든 번들은 이제 **19**를 말하며 தமிழ்와 Tiếng Việt를 각자의 열거 스타일로 실어 나릅니다 (ar는 풀어 쓴 «التسع عشرة»를 씁니다), 그리고 `vi.md` §32의 «cả-17» 잔재도 함께 고쳐졌습니다. 구조 게이트 (33 H2 / 125+ H3)는 바이트-안정입니다.
+- **상태 위생** — `AGENTS.md`는 v1.264.2 / 7082 테스트를 말합니다 (이전에는 v1.86.x / 1566); `PLAN.md`는 릴리스 1–7을 **Shipped**로 표시하고 ship-train 단락은 docs ×19라고 말합니다; `StatsBar.astro` 코멘트는 이제 `facts.adapters`가 실제로 무엇을 담는지를 설명합니다 (123 = sources 총합, 소비자를 위한 역사적 키 이름은 유지); `i18n.js` 헤더는 19개 언어를 말합니다; v1.264.2 QA 프롬프트는 진짜 커버리지 (98.45/90.05)와 Playwright 산술 (176 = 174 harness + 1 opt-in 스킵 + 2 script-level 스위트)을 실어 나릅니다.
+
+### 참고
+
+- 의도적으로 하지 않은 것: 기록된 포트-리스트에 따른 **parent-sync 웨이브**는 BACKLOG에 남아 있습니다 — 포크는 먼저 상류 `a9476866`을 지나 싱크해야 합니다 (포트-리스트 커밋 10개 중 7개가 아직 로컬 부모 트리에 없습니다; IBM/UltiPro/Bulldogjob/apple는 S–M 스코프, personio language-dedup은 자체 릴리스로 미뤄졌습니다). CAR-141의 데모 비디오 재녹화는 오너가 의식적으로 미뤘습니다 («видео не надо пока», 2026-11-01).
+- 테스트 7082 → **7096** (+9 커버리지 트립와이어 + 5 trust-proxy); Playwright **173 통과 / 0 실패 / 1 opt-in 스킵** (기존 케이스 안의 셰브론 핀 2개); 커버리지 98.46 라인 / 90.10 브랜치; evals 14/0/1skip; 레지스트리 변경 없음 123 = 118 EN + 5 RU · 118 adapters.
+
 ## [1.264.2] — 2026-11-01
 
 ### 수정

@@ -2,7 +2,10 @@
 
 > Release: **v1.264.2** (2026-11-01) · wave PR **#613** (squash → `00364177`) + release train
 > Prod target: resumecraft.ru = **1.264.2**, parent 1.38.0 @ `0595b5d1`
-> Tests: **7082** unit (0 fail) · Playwright **176** (173 pass / 1 opt-in skip local) · registry 123 = 118 EN + 5 RU · 118 adapters · coverage 98.46/90.06 · evals 14/0/1skip
+> Tests: **7082** unit (0 fail) · Playwright **176** (173 pass / 1 opt-in skip local) · registry 123 = 118 EN + 5 RU · 118 adapters · coverage 98.45/90.05 · evals 14/0/1skip
+> Playwright arithmetic: 176 = the `test:e2e:browser` TAP total of **174** (173 pass / 0 fail / 1 skip — the
+> opt-in `SCAN_REDESIGN_CAPTURE=1` layout-capture test in `scan-redesign-layout.test.mjs`) plus
+> `tests/e2e.mjs` and `tests/e2e-comprehensive.mjs`, each counted as one script-level pass.
 
 ## What shipped (verify these first)
 
