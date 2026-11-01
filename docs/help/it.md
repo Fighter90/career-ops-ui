@@ -2230,11 +2230,11 @@ Ogni voce del cassetto mostra:
 
 ## 19. Localizzare l'app nella tua lingua
 
-L'interfaccia è disponibile in 17 lingue (English, Español, Français, Português, 한국어, 日本語, Русский, 简体中文, 繁體中文, Polski, Українська, Dansk, العربية, Deutsch, Italiano, Türkçe, हिन्दी). Ogni etichetta a schermo proviene da un dizionario di traduzione, e puoi aggiungere o correggere una lingua senza toccare la logica dell'app.
+L'interfaccia è disponibile in 19 lingue (English, Español, Français, Português, 한국어, 日本語, Русский, 简体中文, 繁體中文, Polski, Українська, Dansk, العربية, Deutsch, Italiano, Türkçe, हिन्दी, தமிழ், Tiếng Việt). Ogni etichetta a schermo proviene da un dizionario di traduzione, e puoi aggiungere o correggere una lingua senza toccare la logica dell'app.
 
 **Dove vivono le traduzioni.** Da v1.60.0 ogni lingua è il proprio file sotto `public/js/lib/locales/` — `i18n-dict.en.js`, `i18n-dict.es.js`, `i18n-dict.ru.js`, e così via — un semplice elenco di coppie `'key': 'text'`. Un `i18n-dict.aliases.js` condiviso consente alle chiavi che devono leggersi sempre in modo identico (l'etichetta di una voce della barra laterale e il suo titolo di pagina) di puntare a una sola traduzione. `i18n-dict.js` le unisce tutte al caricamento della pagina; non lo modifichi mai.
 
-**Correggi o aggiungi una frase.** Apri il file per la tua lingua, trova la chiave (es. `'nav.scan'`) e modifica il testo. Per aggiungere un'etichetta nuova di zecca, aggiungi la stessa chiave a **tutti e 17** i file di lingua con il valore tradotto, poi richiamala nella pagina via `t('your.key')`. Esegui `npm test` — fallisce se qualsiasi lingua manca della chiave, così nulla viene spedito tradotto a metà.
+**Correggi o aggiungi una frase.** Apri il file per la tua lingua, trova la chiave (es. `'nav.scan'`) e modifica il testo. Per aggiungere un'etichetta nuova di zecca, aggiungi la stessa chiave a **tutti e 19** i file di lingua con il valore tradotto, poi richiamala nella pagina via `t('your.key')`. Esegui `npm test` — fallisce se qualsiasi lingua manca della chiave, così nulla viene spedito tradotto a metà.
 
 **Aggiungi un'intera nuova lingua.** Copia `i18n-dict.en.js` in `i18n-dict.<code>.js`, traduci ogni valore, poi registra il codice in `i18n.js` (l'elenco delle lingue + l'auto-rilevamento del browser), nell'assembler `i18n-dict.js`, e aggiungi una riga `<script>` in `index.html`. La checklist completa — inclusi lo snapshot di test e i file compagni della guida / README — è in `docs/LOCALIZATION.md`.
 
@@ -2526,7 +2526,7 @@ Lasciare `127.0.0.1` significa che la sicurezza che il loopback offriva gratuita
 
 ## 32. Eseguirlo da OpenWorker (collega IA)
 
-Preferisci un collega IA desktop al browser? **[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** è un collega **[OpenWorker](https://github.com/andrewyng/openworker)** (l'app di collega IA open-source e local-first di Andrew Ng) che guida al posto tuo l'intera pipeline — scansiona le bacheche, valuta la compatibilità rispetto al tuo CV, adatta un CV + una lettera di presentazione fondati sui fatti, tiene traccia delle candidature, redige i follow-up — e su richiesta può **avviare questa dashboard**. È una singola "persona" Markdown priva di codice; OpenWorker non ne esegue nulla come programma, le istruzioni si limitano a orientare l'agente. La sua guida è disponibile in tutte le 17 lingue.
+Preferisci un collega IA desktop al browser? **[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** è un collega **[OpenWorker](https://github.com/andrewyng/openworker)** (l'app di collega IA open-source e local-first di Andrew Ng) che guida al posto tuo l'intera pipeline — scansiona le bacheche, valuta la compatibilità rispetto al tuo CV, adatta un CV + una lettera di presentazione fondati sui fatti, tiene traccia delle candidature, redige i follow-up — e su richiesta può **avviare questa dashboard**. È una singola "persona" Markdown priva di codice; OpenWorker non ne esegue nulla come programma, le istruzioni si limitano a orientare l'agente. La sua guida è disponibile in tutte le 19 lingue.
 
 ### Cosa fa il collega
 

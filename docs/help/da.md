@@ -2221,11 +2221,11 @@ Hver skuffe-post viser:
 
 ## 19. Lokalisering af appen til dit sprog
 
-Grænsefladen leveres på 17 sprog (English, Español, Français, Português, 한국어, 日本語, Русский, 简体中文, 繁體中文, Polski, Українська, Dansk, العربية, Deutsch, Italiano, Türkçe, हिन्दी). Hver skærm-label kommer fra en oversættelsesordbog, og du kan tilføje eller rette et sprog uden at røre app-logikken.
+Grænsefladen leveres på 19 sprog (English, Español, Français, Português, 한국어, 日本語, Русский, 简体中文, 繁體中文, Polski, Українська, Dansk, العربية, Deutsch, Italiano, Türkçe, हिन्दी, தமிழ், Tiếng Việt). Hver skærm-label kommer fra en oversættelsesordbog, og du kan tilføje eller rette et sprog uden at røre app-logikken.
 
 **Hvor oversættelserne lever.** Siden v1.60.0 er hvert sprog sin egen fil under `public/js/lib/locales/` — `i18n-dict.en.js`, `i18n-dict.es.js`, `i18n-dict.ru.js` osv. — en simpel liste af `'key': 'text'`-par. En delt `i18n-dict.aliases.js` lader nøgler, der altid skal læse identisk (en sidebjælke-label og dens sidetitel), pege på én oversættelse. `i18n-dict.js` fletter dem alle ved sideindlæsning; du redigerer den aldrig.
 
-**Ret eller tilføj en frase.** Åbn filen for dit sprog, find nøglen (f.eks. `'nav.scan'`) og redigér teksten. For at tilføje en helt ny label, tilføj den samme nøgle til **alle 17** sprogfiler med den oversatte værdi, og referér den derefter i siden via `t('your.key')`. Kør `npm test` — den fejler, hvis et sprog mangler nøglen, så intet leveres halvt-oversat.
+**Ret eller tilføj en frase.** Åbn filen for dit sprog, find nøglen (f.eks. `'nav.scan'`) og redigér teksten. For at tilføje en helt ny label, tilføj den samme nøgle til **alle 19** sprogfiler med den oversatte værdi, og referér den derefter i siden via `t('your.key')`. Kør `npm test` — den fejler, hvis et sprog mangler nøglen, så intet leveres halvt-oversat.
 
 **Tilføj et helt nyt sprog.** Kopier `i18n-dict.en.js` til `i18n-dict.<code>.js`, oversæt hver værdi, og registrér derefter koden i `i18n.js` (sproglisten + browser-auto-detektering), i `i18n-dict.js`-assembleren, og tilføj en `<script>`-linje i `index.html`. Den fulde tjekliste — inklusive test-snapshottet og hjælpe- / README-ledsagerfilerne — er i `docs/LOCALIZATION.md`.
 
@@ -2509,7 +2509,7 @@ At flytte væk fra `127.0.0.1` betyder, at den sikkerhed, loopback gav gratis, n
 
 ## 32. Kør den fra OpenWorker (AI-kollega)
 
-Foretrækker du en AI-kollega på skrivebordet frem for browseren? **[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** er en **[OpenWorker](https://github.com/andrewyng/openworker)**-kollega (Andrew Ngs open source, local-first AI-kollega-app), der driver hele denne pipeline for dig — scanner jobopslag, scorer match mod dit CV, skræddersyr et velfunderet CV + følgebrev, holder styr på ansøgninger, udarbejder opfølgninger — og den kan **starte dette dashboard** på anmodning. Det er en enkelt, kodefri Markdown-"persona"; OpenWorker kører intet af det som et program — instruktionerne styrer blot agenten. Dens guide leveres på alle 17 sprog.
+Foretrækker du en AI-kollega på skrivebordet frem for browseren? **[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** er en **[OpenWorker](https://github.com/andrewyng/openworker)**-kollega (Andrew Ngs open source, local-first AI-kollega-app), der driver hele denne pipeline for dig — scanner jobopslag, scorer match mod dit CV, skræddersyr et velfunderet CV + følgebrev, holder styr på ansøgninger, udarbejder opfølgninger — og den kan **starte dette dashboard** på anmodning. Det er en enkelt, kodefri Markdown-"persona"; OpenWorker kører intet af det som et program — instruktionerne styrer blot agenten. Dens guide leveres på alle 19 sprog.
 
 ### Hvad kollegaen gør
 

@@ -2165,11 +2165,11 @@ Cada entrada mostra hora local, mensagem humana e, se houver, postfix técnico e
 
 ## 19. Localizar o app para o seu idioma
 
-A interface é distribuída em 17 idiomas (English, Español, Français, Português, 한국어, 日本語, Русский, 简体中文, 繁體中文, Polski, Українська, Dansk, العربية, Deutsch, Italiano, Türkçe, हिन्दी). Cada rótulo na tela vem de um dicionário de traduções, e você pode adicionar ou corrigir um idioma sem mexer na lógica do app.
+A interface é distribuída em 19 idiomas (English, Español, Français, Português, 한국어, 日本語, Русский, 简体中文, 繁體中文, Polski, Українська, Dansk, العربية, Deutsch, Italiano, Türkçe, हिन्दी, தமிழ், Tiếng Việt). Cada rótulo na tela vem de um dicionário de traduções, e você pode adicionar ou corrigir um idioma sem mexer na lógica do app.
 
 **Onde ficam as traduções.** Desde a v1.60.0 cada idioma é um arquivo próprio em `public/js/lib/locales/` — `i18n-dict.en.js`, `i18n-dict.es.js`, `i18n-dict.ru.js`, etc. — uma lista simples de pares `'chave': 'texto'`. Um `i18n-dict.aliases.js` compartilhado faz com que chaves que devem ler igual (um rótulo do menu e o título da sua página) apontem para uma única tradução. `i18n-dict.js` monta tudo no carregamento; você nunca o edita.
 
-**Corrigir ou adicionar um texto.** Abra o arquivo do seu idioma, encontre a chave (ex.: `'nav.scan'`) e edite o texto. Para adicionar um rótulo novo, acrescente a mesma chave aos **17** arquivos de idioma com o valor traduzido e use-a na página via `t('sua.chave')`. Rode `npm test` — ele falha se algum idioma estiver sem a chave, então nada é publicado pela metade.
+**Corrigir ou adicionar um texto.** Abra o arquivo do seu idioma, encontre a chave (ex.: `'nav.scan'`) e edite o texto. Para adicionar um rótulo novo, acrescente a mesma chave aos **19** arquivos de idioma com o valor traduzido e use-a na página via `t('sua.chave')`. Rode `npm test` — ele falha se algum idioma estiver sem a chave, então nada é publicado pela metade.
 
 **Adicionar um idioma novo.** Copie `i18n-dict.en.js` para `i18n-dict.<código>.js`, traduza cada valor e registre o código em `i18n.js` (a lista de idiomas + autodetecção do navegador), no montador `i18n-dict.js`, e adicione uma linha `<script>` em `index.html`. O checklist completo — incluindo o snapshot de testes e os arquivos de ajuda / README — está em `docs/LOCALIZATION.md`.
 
@@ -2456,7 +2456,7 @@ Sair de `127.0.0.1` significa que a segurança que o loopback dava de graça ago
 
 ## 32. Execute a partir do OpenWorker (colega de trabalho de IA)
 
-Prefere um colega de trabalho de IA no desktop em vez do navegador? O **[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** é um colega de trabalho do **[OpenWorker](https://github.com/andrewyng/openworker)** (o app de colega de trabalho de IA local-first e de código aberto de Andrew Ng) que conduz toda essa pipeline para você — escaneia portais, pontua o ajuste em relação ao seu currículo, adapta um CV + carta de apresentação fundamentados, acompanha as candidaturas, redige follow-ups — e pode **abrir este dashboard** quando solicitado. É uma única "persona" em Markdown, sem código; o OpenWorker não executa nada disso como programa, as instruções apenas orientam o agente. Seu guia é distribuído nos 17 idiomas.
+Prefere um colega de trabalho de IA no desktop em vez do navegador? O **[career-ops-coworker](https://github.com/Fighter90/career-ops-coworker)** é um colega de trabalho do **[OpenWorker](https://github.com/andrewyng/openworker)** (o app de colega de trabalho de IA local-first e de código aberto de Andrew Ng) que conduz toda essa pipeline para você — escaneia portais, pontua o ajuste em relação ao seu currículo, adapta um CV + carta de apresentação fundamentados, acompanha as candidaturas, redige follow-ups — e pode **abrir este dashboard** quando solicitado. É uma única "persona" em Markdown, sem código; o OpenWorker não executa nada disso como programa, as instruções apenas orientam o agente. Seu guia é distribuído nos 19 idiomas.
 
 ### O que o colega de trabalho faz
 
