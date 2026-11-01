@@ -12,6 +12,23 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.264.2] — 2026-11-01
+
+### Corrigé
+
+- **Les en-têtes de groupes de la barre latérale adhèrent au contrat de troncature (CAR-219)** — les libellés des bascules de groupe (`.nav-v2-toggle > span`) se tronquent désormais avec des points de suspension et portent une infobulle **localisée** via le même mécanisme `syncLabelTitles()` que les éléments de navigation de CAR-203 ; le chevron ne rétrécit jamais, la bascule reste cliquable, le RTL tient. Épingle rouge d'abord dans `tests/nav-v2.test.mjs` (+1 → 7082 tests).
+
+### Modifié
+
+- **La copie de cvstart.org est livrée dans les 19 langues (CAR-220)** — `meta.helpDesc`, `helpTeaser.c1.desc` et `faq.a2` sont traduits dans chaque locale du site (ils étaient EN-seulement en v1.264.1 par conception) ; GitHub Pages a mis la copie améliorée en ligne sur cvstart.org.
+- **Hygiène du backlog + de la revue (CAR-221/222)** — les six éléments « port when merged upstream » sont clôturés : les sept PR amont sont fusionnées, quatre éléments étaient déjà portés, deux relèvent du parent. `docs/reviews/REVIEW-2026-10-31-v1.264.1.md` est livré (0 HIGH / 0 MED, trois relances LOW consignées dans BACKLOG), et la **liste de ports parent-sync** est consignée (6 PORT / 3 VERIFY / le manque de la source apple ; queue amont de 118 commits @ VERSION 1.38.0).
+
+### Notes
+
+- Le correctif d'estampillage des miroirs du journal (`92a05fcf`) voyage dans ce tag : chaque miroir paginé sur cvstart.org porte désormais la version de la release génératrice, si bien que le grader `site-build-after-fanout` exerce enfin sa vraie logique au lieu de sauter.
+- Délibérément non fait : le throttling des POST mutatifs restants (revue LOW №3) et le couplage des buckets trust-proxy — consignés dans BACKLOG pour la prochaine vague de durcissement. CAR-141 (vidéo de démo) reste au propriétaire.
+- Tests 7081 → 7082 (+1 épingle CAR-219) ; Playwright 176 ; registre inchangé : 123 = 118 EN + 5 RU · 118 adapters.
+
 ## [1.264.1] — 2026-10-31
 
 ### Corrigé
