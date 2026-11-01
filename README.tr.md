@@ -17,11 +17,11 @@ _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve 
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Son sürüm — v1.264.1** — **İki ajan yapımı düzeltme: kenar çubuğu hapları uzun yerelleştirilmiş etiketleri zarifçe kısaltıyor (üç nokta + yerelleştirilmiş bir araç ipucu — «Профинансированные компании» artık sertçe kırpılmıyor) ve her yerel ayar için tek bir 480 s değerlendirme tavanı (es/zh-CN üzerinde artık geçici 300 s kesintileri yok); cvstart.org SSS artık registry'den türetilmiş tam kaynak sayılarını taşıyor (123 = 118 uluslararası + 5 Rus). Testler 7041 → 7081.**
+> **🆕 Son sürüm — v1.264.2** — **Kenar çubuğu grup başlıkları kısaltma sözleşmesine katılıyor (üç nokta + yerelleştirilmiş araç ipuçları), cvstart.org yardım/SSS metni artık 19 dilin tamamında çevrilmiş olarak yayınlanıyor ve yayın incelemesi 0 HIGH bulgusuyla tamamlanıyor — bir sonraki dalga için parent-sync port-listesi kayda geçti. Testler 7081 → 7082.**
 
 
 >
-> **Önceki — v1.264.0** — **Yayın-sonrası sağlamlaştırma dalgası: her tracker satırının durumu satır-içi düzenlenebilir (`applications.md` kilidi altında üst projenin kanonik set-status.mjs), sunucu uyarıları (kırpılma, dil sürüklenmesi) altı AI sayfasının hepsinde bir şerit olarak gösteriliyor, Trudvsem tarama kaynağı boş sayfalarda hayatta kalıyor ve kayıt ofsetleriyle yürüyor, habr başlıkları işaretlemeyi yeniden canlandıramıyor, ham profil kapısı full_name satırını tutuyor ve ipuçları sonunda doğruyu söylüyor (.doc gitti, gpt-5 ve Anthropic 5-5 katmanları). Testler 6905 → 7041.**
+> **Önceki — v1.264.1** — **İki ajan yapımı düzeltme: kenar çubuğu hapları uzun yerelleştirilmiş etiketleri zarifçe kısaltıyor (üç nokta + yerelleştirilmiş bir araç ipucu — «Профинансированные компании» artık sertçe kırpılmıyor) ve her yerel ayar için tek bir 480 s değerlendirme tavanı (es/zh-CN üzerinde artık geçici 300 s kesintileri yok); cvstart.org SSS artık registry'den türetilmiş tam kaynak sayılarını taşıyor (123 = 118 uluslararası + 5 Rus). Testler 7041 → 7081.**
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
