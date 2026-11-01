@@ -9,6 +9,23 @@
 ---
 
 
+## [1.264.2] — 2026-11-01
+
+### 修复
+
+- **侧边栏分组标题加入截断契约（CAR-219）** —— 分组切换标签（`.nav-v2-toggle > span`）现以省略号截断，并像 CAR-203 导航项一样通过同一个 `syncLabelTitles()` 机制携带**本地化**的工具提示；箭头从不收缩，切换仍可点击，RTL 保持不破。Red-first 钉子位于 `tests/nav-v2.test.mjs`（+1 → 7082 测试）。
+
+### 更改
+
+- **cvstart.org 文案以全部 19 种语言发布（CAR-220）** —— `meta.helpDesc`、`helpTeaser.c1.desc` 与 `faq.a2` 在每个站点语言中均已翻译（v1.264.1 时它们按设计仅 EN）；GitHub Pages 已把升级后的文案实装上线到 cvstart.org。
+- **Backlog + 评审卫生（CAR-221/222）** —— 六项「待上游合并后移植」条目已关闭：七个上游 PR 全部合并，四项此前已移植，两项在父项目侧。`docs/reviews/REVIEW-2026-10-31-v1.264.1.md` 已落地（0 HIGH / 0 MED，三个 LOW 后续已记入 BACKLOG），且 **parent-sync 移植清单**已记录在案（6 PORT / 3 VERIFY / apple 来源缺口；上游尾部 118 个提交 @ VERSION 1.38.0）。
+
+### 备注
+
+- 变更日志镜像戳修复（`92a05fcf`）随本标签搭车：cvstart.org 上每个分页镜像现在都携带生成它的发布版本，因此 `site-build-after-fanout` 评分器终于跑上了自己的真实逻辑，而不是跳过。
+- 刻意的未行动：对其余变更型 POST 的限流（评审 LOW №3）与 trust-proxy 桶耦合 —— 已记入 BACKLOG，留给下一波加固。CAR-141（演示视频）仍是所有者的事。
+- Tests 7081 → 7082（+1 CAR-219 钉子）；Playwright 176；注册表不变 123 = 118 EN + 5 RU · 118 adapters。
+
 ## [1.264.1] — 2026-10-31
 
 ### 修复
