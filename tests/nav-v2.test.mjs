@@ -418,4 +418,14 @@ test('CAR-219: group-header label spans truncate like pills + carry the localize
     'the dynamic Favorites header keeps its data-i18n label span');
   assert.match(SRC, /recLabel\.setAttribute\('data-i18n', 'nav\.v2\.recent'\)/,
     'the dynamic Recents header keeps its data-i18n label span');
+  // 5. The dynamic builders also assign the chevron class in JS — the CSS
+  //    :not(.nav-v2-chev) exclusion above pins it BY NAME, so a rename here
+  //    would silently pull the arrow under the truncation rule (it would
+  //    min-width:0 + ellipsis itself to nothing) and drop the CAR-203
+  //    geometry contract. The static toggles' chevrons are pinned by the
+  //    index.html loop above; the dynamic ones get the same pin.
+  assert.match(SRC, /favChev\.className = 'nav-v2-chev'/,
+    'the dynamic Favorites chevron keeps the nav-v2-chev class (:not(.nav-v2-chev) pins it by name)');
+  assert.match(SRC, /recChev\.className = 'nav-v2-chev'/,
+    'the dynamic Recents chevron keeps the nav-v2-chev class (:not(.nav-v2-chev) pins it by name)');
 });
