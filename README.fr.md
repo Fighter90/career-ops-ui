@@ -17,7 +17,7 @@ _Interface non officielle — sans affiliation ni approbation de career-ops / sa
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Dernière version — v1.264.1** — **Deux corrections fabriquées par les agents : les pastilles de la barre latérale tronquent élégamment les libellés localisés longs (points de suspension + une infobulle localisée — fini le rognage brutal de « Профинансированные компании »), et un plafond d'évaluation de 480 s pour chaque locale (fini les coupures transitoires à 300 s sur es/zh-CN) ; la FAQ de cvstart.org porte désormais les compteurs de sources exacts issus du registre (123 = 118 internationales + 5 russes). Tests 7041 → 7075.**
+> **🆕 Dernière version — v1.264.1** — **Deux corrections fabriquées par les agents : les pastilles de la barre latérale tronquent élégamment les libellés localisés longs (points de suspension + une infobulle localisée — fini le rognage brutal de « Профинансированные компании »), et un plafond d'évaluation de 480 s pour chaque locale (fini les coupures transitoires à 300 s sur es/zh-CN) ; la FAQ de cvstart.org porte désormais les compteurs de sources exacts issus du registre (123 = 118 internationales + 5 russes). Tests 7041 → 7081.**
 
 
 >

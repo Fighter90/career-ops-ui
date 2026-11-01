@@ -16,7 +16,7 @@
 ### Notlar
 
 - **Bilinçli olarak yapılmadı:** site i18n metin yükseltmeleri (`meta.helpDesc` / `helpTeaser.c1.desc` / `faq.a2`) bu sürümde yalnızca EN kalıyor — diğer yerel ayarlar bir sonraki dokümantasyon dalgasına kadar doğru-ama-daha-yuvarlak söylemi koruyor (çevrilenlerde onların `faq.a7`'si tam-sayı yer tutucularını kazanıyor). CAR-141 (tanıtım videosu) sahibin kalıyor; yerine geçen `car136/m141` dalı silindi, fikirleri Linear görevine not edildi (`archive/car136-m141` etiketiyle kurtarılabilir).
-- Testler 7041 → 7075 (CAR-203 sabitlemesi + CAR-218 sabitleme yeniden yazımları); Playwright 176; registry değişmedi 123 = 118 EN + 5 RU · 118 adapters.
+- Testler 7041 → 7081 (CAR-203 sabitlemesi + CAR-218 sabitleme yeniden yazımları); Playwright 176; registry değişmedi 123 = 118 EN + 5 RU · 118 adapters.
 
 ## [1.264.0] — 2026-10-31
 

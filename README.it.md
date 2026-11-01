@@ -17,7 +17,7 @@ _Interfaccia non ufficiale — non affiliata né approvata da career-ops / santi
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Ultima release — v1.264.1** — **Due correzioni realizzate dagli agenti: le pill del sidebar troncano con garbo le etichette localizzate lunghe (ellissi + un tooltip localizzato — niente più troncamento netto di «Профинансированные компании») e un soffitto di valutazione di 480 s per ogni località (niente più troncamenti transitori di 300 s su es/zh-CN); la FAQ di cvstart.org ora porta i conteggi esatti delle fonti derivati dal registro (123 = 118 internazionali + 5 russe). Tests 7041 → 7075.**
+> **🆕 Ultima release — v1.264.1** — **Due correzioni realizzate dagli agenti: le pill del sidebar troncano con garbo le etichette localizzate lunghe (ellissi + un tooltip localizzato — niente più troncamento netto di «Профинансированные компании») e un soffitto di valutazione di 480 s per ogni località (niente più troncamenti transitori di 300 s su es/zh-CN); la FAQ di cvstart.org ora porta i conteggi esatti delle fonti derivati dal registro (123 = 118 internazionali + 5 russe). Tests 7041 → 7081.**
 
 
 >

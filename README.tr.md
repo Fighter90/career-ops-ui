@@ -17,7 +17,7 @@ _Resmi olmayan arayüz — career-ops / santifer ile bağlantılı değildir ve 
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Son sürüm — v1.264.1** — **İki ajan yapımı düzeltme: kenar çubuğu hapları uzun yerelleştirilmiş etiketleri zarifçe kısaltıyor (üç nokta + yerelleştirilmiş bir araç ipucu — «Профинансированные компании» artık sertçe kırpılmıyor) ve her yerel ayar için tek bir 480 s değerlendirme tavanı (es/zh-CN üzerinde artık geçici 300 s kesintileri yok); cvstart.org SSS artık registry'den türetilmiş tam kaynak sayılarını taşıyor (123 = 118 uluslararası + 5 Rus). Testler 7041 → 7075.**
+> **🆕 Son sürüm — v1.264.1** — **İki ajan yapımı düzeltme: kenar çubuğu hapları uzun yerelleştirilmiş etiketleri zarifçe kısaltıyor (üç nokta + yerelleştirilmiş bir araç ipucu — «Профинансированные компании» artık sertçe kırpılmıyor) ve her yerel ayar için tek bir 480 s değerlendirme tavanı (es/zh-CN üzerinde artık geçici 300 s kesintileri yok); cvstart.org SSS artık registry'den türetilmiş tam kaynak sayılarını taşıyor (123 = 118 uluslararası + 5 Rus). Testler 7041 → 7081.**
 
 
 >

@@ -17,7 +17,7 @@ _Inoffizielle Oberfläche — nicht mit career-ops / santifer verbunden oder von
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Neueste Version — v1.264.1** — **Zwei agentengebaute Fixes: Sidebar-Pills kürzen lange lokalisierte Labels elegant (Ellipsis + ein lokalisierter Tooltip — «Профинансированные компании» wird nicht mehr hart abgeschnitten), und eine einzige 480-s-Evaluations-Obergrenze für jede Locale (keine vorübergehenden 300-s-Abbrüche mehr bei es/zh-CN); das cvstart.org-FAQ führt jetzt exakte, aus der Registry abgeleitete Quellenzahlen (123 = 118 international + 5 russische). Tests 7041 → 7075.**
+> **🆕 Neueste Version — v1.264.1** — **Zwei agentengebaute Fixes: Sidebar-Pills kürzen lange lokalisierte Labels elegant (Ellipsis + ein lokalisierter Tooltip — «Профинансированные компании» wird nicht mehr hart abgeschnitten), und eine einzige 480-s-Evaluations-Obergrenze für jede Locale (keine vorübergehenden 300-s-Abbrüche mehr bei es/zh-CN); das cvstart.org-FAQ führt jetzt exakte, aus der Registry abgeleitete Quellenzahlen (123 = 118 international + 5 russische). Tests 7041 → 7081.**
 
 
 >

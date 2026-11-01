@@ -17,7 +17,7 @@ _비공식 UI — career-ops / santifer와 제휴하거나 보증받지 않았�
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 최신 릴리스 — v1.264.1** — **에이전트가 만든 두 가지 수정: 사이드바 필이 현지화된 긴 레이블을 우아하게 잘라냅니다 (말줄임표 + 현지화된 툴팁 — «Профинансированные компании»가 더 이상 하드-클립되지 않음), 그리고 모든 로케일에 하나의 480 s 평가 천장 (es/zh-CN에서의 일시적인 300 s 절단은 이제 없음); cvstart.org FAQ는 이제 레지스트리에서 파생된 정확한 소스 카운트를 실어 나릅니다 (123 = 118 국제 + 5 러시아). 테스트 7041 → 7075.**
+> **🆕 최신 릴리스 — v1.264.1** — **에이전트가 만든 두 가지 수정: 사이드바 필이 현지화된 긴 레이블을 우아하게 잘라냅니다 (말줄임표 + 현지화된 툴팁 — «Профинансированные компании»가 더 이상 하드-클립되지 않음), 그리고 모든 로케일에 하나의 480 s 평가 천장 (es/zh-CN에서의 일시적인 300 s 절단은 이제 없음); cvstart.org FAQ는 이제 레지스트리에서 파생된 정확한 소스 카운트를 실어 나릅니다 (123 = 118 국제 + 5 러시아). 테스트 7041 → 7081.**
 
 
 >

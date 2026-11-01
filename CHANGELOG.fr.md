@@ -26,7 +26,7 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ### Notes
 
 - Délibérément non fait : les montées de copie i18n du site (`meta.helpDesc` / `helpTeaser.c1.desc` / `faq.a2`) restent EN-seulement cette version — les autres locales gardent une formulation correcte mais plus arrondie jusqu'à la prochaine vague de docs (leur `faq.a7` gagne les placeholders des compteurs exacts là où traduits). CAR-141 (vidéo de démo) reste au propriétaire ; la branche supplantée `car136/m141` a été supprimée, ses idées consignées sur la tâche Linear (récupérables via le tag `archive/car136-m141`).
-- Tests 7041 → 7075 (épingle CAR-203 + réécritures d'épingles CAR-218) ; Playwright 176 ; registre inchangé : 123 = 118 EN + 5 RU · 118 adapters.
+- Tests 7041 → 7081 (épingle CAR-203 + réécritures d'épingles CAR-218) ; Playwright 176 ; registre inchangé : 123 = 118 EN + 5 RU · 118 adapters.
 
 ## [1.264.0] — 2026-10-31
 

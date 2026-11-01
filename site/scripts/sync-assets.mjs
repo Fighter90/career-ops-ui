@@ -104,6 +104,11 @@ console.log(`[sync-assets] ${helpFiles.length} help guides -> src/content/help/`
 const { pathToFileURL } = await import('node:url');
 const clDst = join(SITE, 'src', 'content', 'changelog');
 mkdirSync(clDst, { recursive: true });
+// Every page footer carries the generating release version — the
+// `site-build-after-fanout` workflow grader (and the ship-train grep -L gate)
+// require the current version in EVERY mirror, not only on page 1, so a
+// rebuild after a locale fan-out is provably fresh.
+const SITE_VERSION = JSON.parse(readFileSync(join(ROOT, 'package.json'), 'utf8')).version;
 const GH_ROOT_BASE = `${REPO_URL}/blob/main/`;
 function rewriteRootLinks(md) {
   return md.replace(/\]\((?!https?:\/\/|#|mailto:)([^)\s]+)\)/g, (_m, target) => {
@@ -190,7 +195,8 @@ for (const [lang, { file, entries }] of clSources) {
   clIndex[lang] = { pages: chunks.length, months: buildMonthIndex(chunks) };
   chunks.forEach((chunk, p) => {
     const body = chunk.map((r) => r.lines.join('\n')).join('\n');
-    writeFileSync(join(clDst, `${lang}-p${String(p + 1).padStart(2, '0')}.md`), rewriteRootLinks(`${body.trimStart()}\n`));
+    const footer = `\n\n---\n\n*career-ops-ui v${SITE_VERSION} · page ${p + 1}/${chunks.length} · mirror of the project changelog for cvstart.org*`;
+    writeFileSync(join(clDst, `${lang}-p${String(p + 1).padStart(2, '0')}.md`), rewriteRootLinks(`${body.trimStart()}\n${footer}\n`));
   });
   // Delivery tripwire (CAR-131, adapted to pagination): the pages on disk
   // must carry the same release count as their source — a partial write, an

@@ -20,7 +20,7 @@ Bản dịch: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 ### Ghi chú
 
 - Không-hành-động-cố-ý: các-nâng-cấp-văn-bản-i18n-của-site (`meta.helpDesc` / `helpTeaser.c1.desc` / `faq.a2`) giữ-chỉ-EN trong-bản-phát-hành-này — các-locale-khác giữ cách-diễn-dẫn đúng-nhưng-quá-khái-quát cho-tới đợt-docs-kế-tiếp (`faq.a7` của-họ nhận các-placeholder-đếm-chính-xác ở-nơi-được-dịch). CAR-141 (video demo) vẫn-thuộc-về-chủ; nhánh-`car136/m141` bị-thay-thế đã-bị-xóa với-các-ý-tưởng được-ghi-lại-trên-nhiệm-vụ-Linear (khôi-phục-được-qua-tag-`archive/car136-m141`).
-- Tests 7041 → 7075 (ghim CAR-203 + viết-lại-ghim CAR-218); Playwright 176; registry không-thay-đổi 123 = 118 EN + 5 RU · 118 adapters.
+- Tests 7041 → 7081 (ghim CAR-203 + viết-lại-ghim CAR-218); Playwright 176; registry không-thay-đổi 123 = 118 EN + 5 RU · 118 adapters.
 
 ## [1.264.0] — 2026-10-31
 

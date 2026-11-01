@@ -22,7 +22,7 @@
 ### 備註
 
 - 刻意不做：本版本的網站 i18n 文案升級（`meta.helpDesc` / `helpTeaser.c1.desc` / `faq.a2`）僅限 EN — 其他語系在下一波文件浪潮前維持正確但較圓潤的措辭（已翻譯者的 `faq.a7` 獲得精確計數佔位符）。CAR-141（示範影片）仍屬負責人；被取代的 `car136/m141` 分支已刪除，其想法記錄在 Linear 任務上（可透過標籤 `archive/car136-m141` 找回）。
-- Tests 7041 → 7075（CAR-203 釘選 + CAR-218 釘選重寫）；Playwright 176；註冊表未變：123 sources = 118 EN + 5 RU · 118 adapters。
+- Tests 7041 → 7081（CAR-203 釘選 + CAR-218 釘選重寫）；Playwright 176；註冊表未變：123 sources = 118 EN + 5 RU · 118 adapters。
 
 ## [1.264.0] — 2026-10-31
 

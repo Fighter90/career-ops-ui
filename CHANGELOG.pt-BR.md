@@ -22,7 +22,7 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 ### Notas
 
 - Deliberadamente não feito: os upgrades de copy do i18n do site (`meta.helpDesc` / `helpTeaser.c1.desc` / `faq.a2`) ficam somente em EN neste release — as outras localidades mantêm redação correta, porém mais genérica, até a próxima onda de docs (o `faq.a7` delas ganha os placeholders de contagem exata onde traduzido). CAR-141 (vídeo de demo) continua sendo do dono; a branch substituída `car136/m141` foi deletada com as ideias registradas na task da Linear (recuperável via tag `archive/car136-m141`).
-- Tests 7041 → 7075 (pin do CAR-203 + reescritas do pin do CAR-218); Playwright 176; registro inalterado 123 = 118 EN + 5 RU · 118 adapters.
+- Tests 7041 → 7081 (pin do CAR-203 + reescritas do pin do CAR-218); Playwright 176; registro inalterado 123 = 118 EN + 5 RU · 118 adapters.
 
 ## [1.264.0] — 2026-10-31
 

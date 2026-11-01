@@ -16,7 +16,7 @@
 ### Hinweise
 
 - Bewusst nicht getan: die Site-i18n-Textverbesserungen (`meta.helpDesc` / `helpTeaser.c1.desc` / `faq.a2`) bleiben in diesem Release EN-only — andere Locales behalten ihre korrekte, aber runder formulierte Fassung bis zur nächsten Docs-Welle (ihr `faq.a7` bekommt die Exaktzahl-Platzhalter, wo übersetzt). CAR-141 (Demo-Video) bleibt beim Owner; der überholte Zweig `car136/m141` wurde gelöscht, seine Ideen sind im Linear-Task festgehalten (wiederherstellbar über den Tag `archive/car136-m141`).
-- Tests 7041 → 7075 (CAR-203-Pin + CAR-218-Pin-Rewrites); Playwright 176; Registry unverändert 123 = 118 EN + 5 RU · 118 adapters.
+- Tests 7041 → 7081 (CAR-203-Pin + CAR-218-Pin-Rewrites); Playwright 176; Registry unverändert 123 = 118 EN + 5 RU · 118 adapters.
 
 ## [1.264.0] — 2026-10-31
 

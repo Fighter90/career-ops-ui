@@ -20,7 +20,7 @@ _واجهة غير رسمية — لا علاقة لها بـ career-ops / santi
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 أحدث إصدار — v1.264.1** — **إصلاحان من بناء الوكلاء: حبوب الشريط الجانبي تقتطع التسميات المترجَمة الطويلة بلطف (علامة حذف + تلميح مترجَم — لا مزيد من القص القاسي لـ «Профинансированные компании»)، وسقف تقييم واحد قدره 480 s لكل لغة (لا مزيد من القطع العابرة عند 300 s على es/zh-CN)؛ وتحمل الأسئلة الشائعة على cvstart.org الآن عدّادات مصادر دقيقة مشتقة من السجل (123 = 118 دولية + 5 روسية). Tests 7041 → 7075.**
+> **🆕 أحدث إصدار — v1.264.1** — **إصلاحان من بناء الوكلاء: حبوب الشريط الجانبي تقتطع التسميات المترجَمة الطويلة بلطف (علامة حذف + تلميح مترجَم — لا مزيد من القص القاسي لـ «Профинансированные компании»)، وسقف تقييم واحد قدره 480 s لكل لغة (لا مزيد من القطع العابرة عند 300 s على es/zh-CN)؛ وتحمل الأسئلة الشائعة على cvstart.org الآن عدّادات مصادر دقيقة مشتقة من السجل (123 = 118 دولية + 5 روسية). Tests 7041 → 7081.**
 
 
 >

@@ -17,7 +17,7 @@ _UI no oficial — sin afiliación ni respaldo de career-ops / santifer._
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Última versión — v1.264.1** — **Dos correcciones construidas por agentes: las píldoras de la barra lateral truncan con elegancia las etiquetas localizadas largas (elipsis + un tooltip localizado — adiós al recorte en seco de «Профинансированные компании») y un único techo de evaluación de 480 s para todas las locales (se acabaron los cortes transitorios de 300 s en es/zh-CN); la FAQ de cvstart.org ahora lleva los recuentos exactos de sources derivados del registro (123 = 118 internacionales + 5 rusas). Tests 7041 → 7075.**
+> **🆕 Última versión — v1.264.1** — **Dos correcciones construidas por agentes: las píldoras de la barra lateral truncan con elegancia las etiquetas localizadas largas (elipsis + un tooltip localizado — adiós al recorte en seco de «Профинансированные компании») y un único techo de evaluación de 480 s para todas las locales (se acabaron los cortes transitorios de 300 s en es/zh-CN); la FAQ de cvstart.org ahora lleva los recuentos exactos de sources derivados del registro (123 = 118 internacionales + 5 rusas). Tests 7041 → 7081.**
 
 
 >

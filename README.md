@@ -19,7 +19,7 @@ _Unofficial UI — not affiliated with or endorsed by career-ops / santifer._
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Latest release — v1.264.1** — **Two agent-built fixes: sidebar pills truncate long localized labels gracefully (ellipsis + a localized tooltip — no more hard-clipped «Профинансированные компании»), and one 480 s evaluation ceiling for every locale (no more transient 300 s cut-offs on es/zh-CN); the cvstart.org FAQ now carries exact registry-derived source counts (123 = 118 international + 5 Russian). Tests 7041 → 7075.**
+> **🆕 Latest release — v1.264.1** — **Two agent-built fixes: sidebar pills truncate long localized labels gracefully (ellipsis + a localized tooltip — no more hard-clipped «Профинансированные компании»), and one 480 s evaluation ceiling for every locale (no more transient 300 s cut-offs on es/zh-CN); the cvstart.org FAQ now carries exact registry-derived source counts (123 = 118 international + 5 Russian). Tests 7041 → 7081.**
 
 
 >

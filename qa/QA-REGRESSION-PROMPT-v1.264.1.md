@@ -2,7 +2,7 @@
 
 > Release: **v1.264.1** (2026-10-31) · wave PR **#611** (squash → `58a48f15`) + CAR-137/138 tail (exact FAQ counts)
 > Prod target: resumecraft.ru = **1.264.1**, parent 1.38.0 @ `0595b5d1`
-> Tests: **7075** unit (0 fail) · Playwright **176** · registry 123 = 118 EN + 5 RU · 118 adapters · coverage 98.5/90.1
+> Tests: **7081** unit (0 fail) · Playwright **176** · registry 123 = 118 EN + 5 RU · 118 adapters · coverage 98.5/90.1
 
 ## What shipped (verify these first)
 

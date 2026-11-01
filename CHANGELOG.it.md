@@ -16,7 +16,7 @@
 ### Note
 
 - Deliberatamente non fatto: gli upgrade della copia i18n del sito (`meta.helpDesc` / `helpTeaser.c1.desc` / `faq.a2`) restano EN-only in questo rilascio — le altre località mantengono formulazioni corrette ma più arrotondate fino alla prossima onda documentale (il loro `faq.a7` riceve i placeholder dei conteggi esatti dove è tradotto). CAR-141 (video dimostrativo) resta al proprietario; il ramo superato `car136/m141` è stato eliminato con le sue idee annotate nella task Linear (recuperabile via tag `archive/car136-m141`).
-- Tests 7041 → 7075 (pin CAR-203 + pin CAR-218 riscritti); Playwright 176; registro invariato: 123 = 118 EN + 5 RU · 118 adapters.
+- Tests 7041 → 7081 (pin CAR-203 + pin CAR-218 riscritti); Playwright 176; registro invariato: 123 = 118 EN + 5 RU · 118 adapters.
 
 ## [1.264.0] — 2026-10-31
 

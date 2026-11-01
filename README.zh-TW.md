@@ -17,7 +17,7 @@ _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.264.1** — **兩個由 AI 代理打造的修復：側邊欄膠囊優雅地截斷過長的本地化標籤（省略號 + 本地化的工具提示 — «Профинансированные компании» 不再被硬性裁切），以及每個語系統一的 480 s 評估上限（es/zh-CN 不再出現瞬時的 300 s 截斷）；cvstart.org FAQ 現在攜帶由註冊表推導的精確來源計數（123 = 118 個國際平台 + 5 個俄羅斯平台）。Tests 7041 → 7075.**
+> **🆕 最新版本 — v1.264.1** — **兩個由 AI 代理打造的修復：側邊欄膠囊優雅地截斷過長的本地化標籤（省略號 + 本地化的工具提示 — «Профинансированные компании» 不再被硬性裁切），以及每個語系統一的 480 s 評估上限（es/zh-CN 不再出現瞬時的 300 s 截斷）；cvstart.org FAQ 現在攜帶由註冊表推導的精確來源計數（123 = 118 個國際平台 + 5 個俄羅斯平台）。Tests 7041 → 7081.**
 
 
 >

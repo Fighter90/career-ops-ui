@@ -23,7 +23,7 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 ### Noter
 
 - Bevidst ikke gjort: site-i18n-tekstopgraderingerne (`meta.helpDesc` / `helpTeaser.c1.desc` / `faq.a2`) forbliver EN-only i denne udgivelse — andre lokaler beholder korrekt, men rundere formulering indtil den næste docs-bølge (deres `faq.a7` får pladsholderne med de eksakte tal, hvor de er oversat). CAR-141 (demovideo) forbliver ejerens; den afløste `car136/m141`-gren blev slettet med sine idéer noteret på Linear-opgaven (kan gendannes via tagget `archive/car136-m141`).
-- Tests 7041 → 7075 (CAR-203-pin + CAR-218-pin-omskrivninger); Playwright 176; registry uændret: 123 sources = 118 EN + 5 RU · 118 adapters.
+- Tests 7041 → 7081 (CAR-203-pin + CAR-218-pin-omskrivninger); Playwright 176; registry uændret: 123 sources = 118 EN + 5 RU · 118 adapters.
 
 ## [1.264.0] — 2026-10-31
 

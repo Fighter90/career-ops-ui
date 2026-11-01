@@ -27,7 +27,7 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ### Notas
 
 - Deliberadamente no hecho: las mejoras de texto i18n del sitio (`meta.helpDesc` / `helpTeaser.c1.desc` / `faq.a2`) siguen siendo solo EN en esta versión — las demás locales conservan una redacción correcta pero más redondeada hasta la siguiente ola de documentación (su `faq.a7` gana los placeholders de recuento exacto donde esté traducido). CAR-141 (vídeo de demo) sigue siendo del propietario; la rama sustituida `car136/m141` se eliminó con sus ideas registradas en la tarea de Linear (recuperables vía el tag `archive/car136-m141`).
-- Tests 7041 → 7075 (pin CAR-203 + reescrituras del pin CAR-218); Playwright 176; registro sin cambios 123 = 118 EN + 5 RU · 118 adapters.
+- Tests 7041 → 7081 (pin CAR-203 + reescrituras del pin CAR-218); Playwright 176; registro sin cambios 123 = 118 EN + 5 RU · 118 adapters.
 
 ## [1.264.0] — 2026-10-31
 

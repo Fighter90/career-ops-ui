@@ -20,7 +20,7 @@ _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Najnowsze wydanie — v1.264.1** — **Dwie poprawki zbudowane przez agentów: pigułki w sidebarze zgrabnie ucinają długie zlokalizowane etykiety (wielokropek + zlokalizowany tooltip — koniec z twardym ucinaniem «Профинансированные компании») oraz jeden sufit 480 s oceny dla wszystkich języków (koniec z ulotnymi ucięciami 300 s na es/zh-CN); FAQ na cvstart.org nosi teraz dokładne liczby źródeł wyliczone z rejestru (123 = 118 międzynarodowych + 5 rosyjskich). Tests 7041 → 7075.**
+> **🆕 Najnowsze wydanie — v1.264.1** — **Dwie poprawki zbudowane przez agentów: pigułki w sidebarze zgrabnie ucinają długie zlokalizowane etykiety (wielokropek + zlokalizowany tooltip — koniec z twardym ucinaniem «Профинансированные компании») oraz jeden sufit 480 s oceny dla wszystkich języków (koniec z ulotnymi ucięciami 300 s na es/zh-CN); FAQ na cvstart.org nosi teraz dokładne liczby źródeł wyliczone z rejestru (123 = 118 międzynarodowych + 5 rosyjskich). Tests 7041 → 7081.**
 
 
 >

@@ -19,7 +19,7 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.264.1** — **दो एजेंट-निर्मित सुधार: साइडबार पिल्स लंबे स्थानीयकृत लेबल को सहजता से ट्रंकेट करते हैं (ellipsis + स्थानीयकृत टूलटिप — «Профинансированные компании» अब कठोरता से नहीं कटता), और हर स्थानीयकरण के लिए एक 480 s मूल्यांकन सीलिंग (es/zh-CN पर क्षणिक 300 s कट-ऑफ़ अब नहीं); cvstart.org FAQ अब registry-व्युत्पन्न सटीक सोर्स गिनती रखता है (123 = 118 अंतरराष्ट्रीय + 5 रूसी)। टेस्ट 7041 → 7075।**
+> **🆕 नवीनतम रिलीज़ — v1.264.1** — **दो एजेंट-निर्मित सुधार: साइडबार पिल्स लंबे स्थानीयकृत लेबल को सहजता से ट्रंकेट करते हैं (ellipsis + स्थानीयकृत टूलटिप — «Профинансированные компании» अब कठोरता से नहीं कटता), और हर स्थानीयकरण के लिए एक 480 s मूल्यांकन सीलिंग (es/zh-CN पर क्षणिक 300 s कट-ऑफ़ अब नहीं); cvstart.org FAQ अब registry-व्युत्पन्न सटीक सोर्स गिनती रखता है (123 = 118 अंतरराष्ट्रीय + 5 रूसी)। टेस्ट 7041 → 7081।**
 
 
 >

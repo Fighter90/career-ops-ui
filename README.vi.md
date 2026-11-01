@@ -17,7 +17,7 @@ _Giao diện không chính thức — không liên kết với career-ops / sant
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Bản phát hành mới nhất — v1.264.1** — **Hai-sửa-do-agent-thực-hiện: các-viên-pill-viền-sidebar cắt-bớt-nhãn-bản-địa-hóa-dài một-cách-duyên-dáng (ellipsis + tooltip-bản-địa-hóa — không-còn-cắt-cứng-chữ-«Профинансированные компании»), và một-trần-đánh-giá-480 s cho-mọi-locale (không-còn-những-lượt-cắt-cụt-300 s-tạm-thời trên es/zh-CN); FAQ-của-cvstart.org giờ-mang số-đếm-nguồn-chính-xác-suy-từ-registry (123 = 118-quốc-tế + 5-Nga). Tests 7041 → 7075.**
+> **🆕 Bản phát hành mới nhất — v1.264.1** — **Hai-sửa-do-agent-thực-hiện: các-viên-pill-viền-sidebar cắt-bớt-nhãn-bản-địa-hóa-dài một-cách-duyên-dáng (ellipsis + tooltip-bản-địa-hóa — không-còn-cắt-cứng-chữ-«Профинансированные компании»), và một-trần-đánh-giá-480 s cho-mọi-locale (không-còn-những-lượt-cắt-cụt-300 s-tạm-thời trên es/zh-CN); FAQ-của-cvstart.org giờ-mang số-đếm-nguồn-chính-xác-suy-từ-registry (123 = 118-quốc-tế + 5-Nga). Tests 7041 → 7081.**
 
 
 >
