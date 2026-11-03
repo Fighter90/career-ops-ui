@@ -165,47 +165,52 @@ test('orderByPreferredLanguage: no rank hits → provider order unchanged', () =
 });
 
 // ── preferredLanguagePick ───────────────────────────────────────────
-test('preferredLanguagePick: the best-ranked version of one posting is the kept row', () => {
+test('preferredLanguagePick: orders one posting\u2019s version rows preferred-first (parent #5285)', () => {
   const rows = [
     { language: 'de', title: 'QA (m/w/d)' },
     { language: 'en', title: 'QA (m/f/d)' },
     { language: 'fr', title: 'QA (fr)' },
   ];
-  assert.equal(preferredLanguagePick(rows, ['en', 'fr']), rows[1]);
-  assert.equal(preferredLanguagePick(rows, ['fr', 'en']), rows[2]);
+  assert.deepEqual(preferredLanguagePick(rows, ['en', 'fr']).map((r) => r.title),
+    ['QA (m/f/d)', 'QA (fr)', 'QA (m/w/d)']);
+  assert.deepEqual(preferredLanguagePick(rows, ['fr', 'en']).map((r) => r.title),
+    ['QA (fr)', 'QA (m/f/d)', 'QA (m/w/d)']);
 });
 
-test('preferredLanguagePick: no preferred list → the default-kept rule (the first row)', () => {
+test('preferredLanguagePick: no preferred list → a copy in the provider\u2019s order', () => {
   const rows = [{ language: 'de' }, { language: 'en' }];
-  assert.equal(preferredLanguagePick(rows, []), rows[0]);
-  assert.equal(preferredLanguagePick(rows, undefined), rows[0]);
-  assert.equal(preferredLanguagePick(rows, null), rows[0]);
+  const picked = preferredLanguagePick(rows, []);
+  assert.deepEqual(picked, rows);
+  assert.notEqual(picked, rows);
+  assert.deepEqual(preferredLanguagePick(rows, undefined), rows);
+  assert.deepEqual(preferredLanguagePick(rows, null), rows);
+  assert.deepEqual(preferredLanguagePick([], ['en']), []);
 });
 
-test('preferredLanguagePick: no row in a preferred language → the default-kept rule', () => {
+test('preferredLanguagePick: no row in a preferred language → the default-kept order', () => {
   const rows = [{ language: 'de' }, { language: 'fr' }];
-  assert.equal(preferredLanguagePick(rows, ['en']), rows[0]);
+  assert.deepEqual(preferredLanguagePick(rows, ['en']), rows);
 });
 
 test('preferredLanguagePick: unknown-language rows never beat a preferred one', () => {
   const rows = [{ title: 'untagged' }, { language: 'en', title: 'en' }];
-  assert.equal(preferredLanguagePick(rows, ['en']), rows[1]);
+  assert.deepEqual(preferredLanguagePick(rows, ['en']).map((r) => r.title), ['en', 'untagged']);
 });
 
 test('preferredLanguagePick: regional variants and loose spellings fold to the same form', () => {
   const rows = [{ language: 'en-GB' }, { language: 'EN' }];
-  assert.equal(preferredLanguagePick(rows, ['en']), rows[0]);
+  assert.deepEqual(preferredLanguagePick(rows, ['en']), rows); // both rank 0 → stable order
 });
 
-test('preferredLanguagePick: stable on ties — the provider\'s first row wins', () => {
+test('preferredLanguagePick: stable on ties — the provider\'s order holds', () => {
   const rows = [{ language: 'en', title: 'first' }, { language: 'en', title: 'second' }];
-  assert.equal(preferredLanguagePick(rows, ['en']), rows[0]);
+  assert.deepEqual(preferredLanguagePick(rows, ['en']).map((r) => r.title), ['first', 'second']);
 });
 
-test('preferredLanguagePick: empty or non-array input → undefined', () => {
-  assert.equal(preferredLanguagePick([], ['en']), undefined);
-  assert.equal(preferredLanguagePick(undefined, ['en']), undefined);
-  assert.equal(preferredLanguagePick('nope', ['en']), undefined);
+test('preferredLanguagePick: empty or non-array input → an empty array', () => {
+  assert.deepEqual(preferredLanguagePick([], ['en']), []);
+  assert.deepEqual(preferredLanguagePick(undefined, ['en']), []);
+  assert.deepEqual(preferredLanguagePick('nope', ['en']), []);
 });
 
 // ── validatePreferredLanguages (validate-portals.mjs port) ──────────

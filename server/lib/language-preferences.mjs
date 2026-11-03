@@ -203,9 +203,13 @@ export function orderByPreferredLanguage(rows, rank) {
  * @returns {T|undefined} `undefined` when `rows` is empty or not an array.
  */
 export function preferredLanguagePick(rows, preferred) {
-  if (!Array.isArray(rows) || rows.length === 0) return undefined;
-  if (!Array.isArray(preferred) || preferred.length === 0) return rows[0];
-  return orderByPreferredLanguage(rows, preferredLanguageRanker(preferred))[0];
+  if (!Array.isArray(rows) || rows.length === 0) return [];
+  if (!Array.isArray(preferred) || preferred.length === 0) return [...rows];
+  // Parent semantics (#5285): the pick ORDERS one posting's version rows
+  // preferred-first (stable, provider order on ties) — the caller keeps the
+  // first row when the language switch is off, or every row in that order
+  // when it is on.
+  return orderByPreferredLanguage(rows, preferredLanguageRanker(preferred));
 }
 
 /**
@@ -242,4 +246,65 @@ export function validatePreferredLanguages(value) {
     }
   });
   return { ok: errors.length === 0, errors };
+}
+
+/**
+ * The comparison key of a posting title for language-version resolution:
+ * NFKC-normalised, whitespace-collapsed, lowercased. (Parent #4789.)
+ * @param {unknown} title
+ * @returns {string}
+ */
+export function variantTitleKey(title) {
+  return String(title ?? '').normalize('NFKC').trim().replace(/\s+/g, ' ').toLowerCase();
+}
+
+/**
+ * Record one seen version of a posting under its URL key, in the shape
+ * {@link isUnseenLanguageVersion} reads. (Parent #4789.)
+ *
+ * @param {Map<string, Array<{languages: string[], title: string}>>} variantsByUrl
+ * @param {string} key - The posting's canonical URL key.
+ * @param {string[]} languages - Language forms; empty when unknown.
+ * @param {unknown} title
+ * @returns {void}
+ */
+export function recordUrlVariant(variantsByUrl, key, languages, title) {
+  let rows = variantsByUrl.get(key);
+  if (!rows) variantsByUrl.set(key, (rows = []));
+  rows.push({ languages, title: variantTitleKey(title) });
+}
+
+/**
+ * Whether a candidate whose URL key was already seen is a language version of
+ * that posting which none of the seen rows was in.
+ *
+ * Some ATSes serve every language version of a posting at one URL with a
+ * language param, which the canonical key drops, so the versions share a URL
+ * key. A seen row's language is its own when it recorded one. Otherwise it is
+ * resolved against `siblings`, this scan's versions of the same posting in
+ * provider order: the one sibling whose title matches the row's, else the
+ * first sibling — a provider emits a posting's own default language first.
+ * True only when every seen row resolves to a language and none is the
+ * candidate's; a candidate of unknown language stays a duplicate. (Parent
+ * #4789.)
+ *
+ * @param {Array<{languages: string[], title: string}>|undefined} seenRows - From {@link recordUrlVariant}.
+ * @param {{languages: string[], title: unknown}} candidate
+ * @param {Array<{languages: string[], title: unknown}>} siblings - Including the candidate.
+ * @returns {boolean}
+ */
+export function isUnseenLanguageVersion(seenRows, candidate, siblings = []) {
+  if (!Array.isArray(seenRows) || seenRows.length === 0) return false;
+  if (!candidate.languages.length) return false;
+  const known = siblings.filter((sibling) => sibling.languages.length > 0);
+  const resolve = (row) => {
+    if (row.languages.length) return row.languages;
+    const titled = row.title ? known.filter((sibling) => variantTitleKey(sibling.title) === row.title) : [];
+    if (titled.length === 1) return titled[0].languages;
+    return known[0]?.languages ?? [];
+  };
+  return seenRows.every((row) => {
+    const languages = resolve(row);
+    return languages.length > 0 && !candidate.languages.some((language) => languages.includes(language));
+  });
 }
