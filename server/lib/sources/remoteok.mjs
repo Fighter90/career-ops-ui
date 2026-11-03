@@ -69,6 +69,20 @@ function isTrustedJobUrl(value) {
   return parsed.protocol === 'https:' && REMOTEOK_HOST_RE.test(parsed.hostname);
 }
 
+/**
+ * `date` is ISO 8601 with an offset (2026-11-02T10:43:35+00:00). Without a
+ * parseable one the client "Posted within" age filter can't judge the row, so
+ * unparseable junk must not flow through as garbage: it stays '' (undated).
+ * (#6274)
+ * @param {unknown} value
+ * @returns {string}
+ */
+function toIsoDate(value) {
+  if (typeof value !== 'string' || !value.trim()) return '';
+  const s = value.trim();
+  return Number.isNaN(Date.parse(s)) ? '' : s;
+}
+
 /** tiny stable hash (djb2) → base36, for postings with no native id. */
 function djb2(str) {
   let h = 5381;
@@ -114,7 +128,7 @@ function normalize(j) {
     isRemote: true,
     workplaceType: 'Remote',
     relocates: false,
-    date: typeof j.date === 'string' ? j.date : '',
+    date: toIsoDate(j.date),
     snippet: '',
     source: 'remoteok',
   };

@@ -94,9 +94,11 @@ test('fetchWorkingNomads normalizes pub_date to YYYY-MM-DD UTC', async () => {
       { ...FEED_ROW, url: 'https://www.workingnomads.com/j/b', pub_date: '2026-06-16T23:30:00Z' },
       { ...FEED_ROW, url: 'https://www.workingnomads.com/j/c', pub_date: 'garbage' },
       { ...FEED_ROW, url: 'https://www.workingnomads.com/j/d', pub_date: undefined },
+      // #6274: the live shape — ISO 8601 with an offset → folded to the UTC day.
+      { ...FEED_ROW, url: 'https://www.workingnomads.com/j/e', pub_date: '2026-10-29T09:50:51-04:00' },
     ]),
   });
-  assert.deepEqual(jobs.map((j) => j.date), ['2026-06-16', '2026-06-16', '', '']);
+  assert.deepEqual(jobs.map((j) => j.date), ['2026-06-16', '2026-06-16', '', '', '2026-10-29']);
 });
 
 // ── adapter contract (the paired host pin) ──────────────────────────────────
