@@ -1,6 +1,6 @@
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
+import { mkdtempSync, mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 import { fetchGreenhouse } from '../server/lib/sources/greenhouse.mjs';
@@ -203,5 +203,109 @@ test('runEnScan: onProgress fires per company and reaches total/total', async ()
   assert.equal(lastDone, lastTotal, 'final progress should be done===total');
   for (let i = 1; i < progress.length; i++) {
     assert.ok(progress[i][0] >= progress[i - 1][0], 'done is non-decreasing');
+  }
+});
+
+// ───────────────────────── board response cache (CAR-226, parent #6105) ─────────────────────────
+
+test('runEnScan: two entries sharing one board endpoint fetch it once inside the run-scope cache', async () => {
+  // The board cache is in-memory and scoped to ONE runEnScan call, so the
+  // observable win is within-run: two tracked_companies entries resolving to
+  // the same endpoint must not open the request twice, and the run logs the
+  // reuse. (The parent persists under data/cache/http/ for cross-process
+  // reuse; web-ui keeps the store in memory by design.)
+  const portalsPath = resolve(process.env.CAREER_OPS_ROOT, 'portals.yml');
+  const original = readFileSync(portalsPath, 'utf8');
+  const logLines = [];
+  try {
+    writeFileSync(portalsPath, [
+      'tracked_companies:',
+      '  - name: GH-Co',
+      '    careers_url: https://job-boards.greenhouse.io/ghco',
+      '    api: https://boards-api.greenhouse.io/v1/boards/ghco/jobs',
+      '    enabled: true',
+      '  - name: GH-Co-Dup',
+      '    careers_url: https://job-boards.greenhouse.io/ghco-dup',
+      '    api: https://boards-api.greenhouse.io/v1/boards/ghco/jobs',
+      '    enabled: true',
+      '  - name: Ash-Co',
+      '    careers_url: https://jobs.ashbyhq.com/ashco',
+      '    enabled: true',
+      'title_filter:',
+      '  positive: ["Senior", "Lead"]',
+      '  negative: ["Junior"]',
+    ].join('\n'));
+    const greenhouseJobs = JSON.stringify({
+      jobs: [
+        { id: 1, title: 'Senior Go Engineer', company_name: 'GH-Co', absolute_url: 'https://gh.example/cached-1', location: { name: 'Berlin' }, offices: [{ name: 'Berlin' }], first_published: '2026-01-01' },
+      ],
+    });
+    const greenhouseHits = [];
+    const fakeFetch = async (url) => {
+      if (url.includes('greenhouse')) {
+        greenhouseHits.push(url);
+        return new Response(greenhouseJobs, { status: 200, headers: { 'content-type': 'application/json', etag: '"gh-1"' } });
+      }
+      if (url.includes('ashbyhq')) {
+        return new Response(JSON.stringify({
+          jobs: [{ id: 'a', title: 'Senior Go Engineer', location: 'Remote', isRemote: true, workplaceType: 'Remote', jobUrl: 'https://ash.example/a', publishedAt: '2026-01-02', compensation: {} }],
+        }), { status: 200, headers: { 'content-type': 'application/json' } });
+      }
+      throw new Error('unknown URL ' + url);
+    };
+    const result = await runEnScan({
+      writeFiles: false,
+      fetchImpl: fakeFetch,
+      onLog: (stream, line) => logLines.push(`${stream}: ${line}`),
+    });
+    assert.equal(greenhouseHits.length, 1,
+      `the shared greenhouse board was fetched ${greenhouseHits.length} times inside one run`);
+    // Both entries still contribute their rows — the cache changes the
+    // transport, never what a scan collects.
+    const ghRows = result.fresh.filter((j) => j.url === 'https://gh.example/cached-1');
+    assert.ok(ghRows.length >= 1, 'the shared board rows survive the cache');
+    const reuseLine = logLines.find((l) => l.includes('reused 1 board response'));
+    assert.ok(reuseLine, `the run must log the reuse; stderr had: ${logLines.filter((l) => l.startsWith('stderr')).join(' | ')}`);
+  } finally {
+    writeFileSync(portalsPath, original);
+  }
+});
+
+test('runEnScan: CAREER_OPS_HTTP_CACHE=0 always downloads', async () => {
+  const portalsPath = resolve(process.env.CAREER_OPS_ROOT, 'portals.yml');
+  const original = readFileSync(portalsPath, 'utf8');
+  try {
+    writeFileSync(portalsPath, original.replace(
+      '    api: https://boards-api.greenhouse.io/v1/boards/ghco/jobs\n    enabled: true',
+      '    api: https://boards-api.greenhouse.io/v1/boards/ghco/jobs\n    enabled: true\n  - name: GH-Co-Dup\n    careers_url: https://job-boards.greenhouse.io/ghco-dup\n    api: https://boards-api.greenhouse.io/v1/boards/ghco/jobs\n    enabled: true',
+    ));
+    const greenhouseJobs = JSON.stringify({
+      jobs: [
+        { id: 1, title: 'Senior Go Engineer', company_name: 'GH-Co', absolute_url: 'https://gh.example/off-1', location: { name: 'Berlin' }, offices: [{ name: 'Berlin' }], first_published: '2026-01-01' },
+      ],
+    });
+    const greenhouseHits = [];
+    const fakeFetch = async (url) => {
+      if (url.includes('greenhouse')) {
+        greenhouseHits.push(url);
+        return new Response(greenhouseJobs, { status: 200, headers: { 'content-type': 'application/json' } });
+      }
+      if (url.includes('ashbyhq')) {
+        return new Response(JSON.stringify({ jobs: [] }), { status: 200 });
+      }
+      throw new Error('unknown URL ' + url);
+    };
+    const prev = process.env.CAREER_OPS_HTTP_CACHE;
+    process.env.CAREER_OPS_HTTP_CACHE = '0';
+    try {
+      await runEnScan({ writeFiles: false, fetchImpl: fakeFetch, onLog: () => {} });
+    } finally {
+      if (prev === undefined) delete process.env.CAREER_OPS_HTTP_CACHE;
+      else process.env.CAREER_OPS_HTTP_CACHE = prev;
+    }
+    assert.equal(greenhouseHits.length, 2,
+      `the kill switch must always download (${greenhouseHits.length} requests)`);
+  } finally {
+    writeFileSync(portalsPath, original);
   }
 });
