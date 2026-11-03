@@ -21,7 +21,6 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, mkdirSync, writeFileSync, readdirSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
-import { normalizeUrl } from '../server/lib/url-key.mjs';
 import { resolvePreferredLanguages, preferredLanguagePick } from '../server/lib/language-preferences.mjs';
 
 let dir;
