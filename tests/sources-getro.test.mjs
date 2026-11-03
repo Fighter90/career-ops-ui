@@ -479,6 +479,43 @@ test('fetchGetro: age cutoff breaks pagination once a dated job is older than th
   ]);
 });
 
+test('fetchGetro: drops an old FEATURED pin without stopping the walk (parent #6406)', async () => {
+  // Getro boards pin featured postings above the newest-first order. An old
+  // pin used to set reachedOld on page 0 and end the walk there — Earlybird's
+  // board opened with pins 10/91/152 days old and the provider returned 18 of
+  // 620 postings. An old pin is dropped like any old posting, but it says
+  // nothing about the pages after it, so it must not stop the walk. A stale
+  // NON-featured posting still does.
+  const fresh = Math.floor(Date.now() / 1000) - 2 * 86_400;   // 2d ago — inside a 90d window
+  const stale = Math.floor(Date.now() / 1000) - 100 * 86_400; // 100d ago — past it
+  const row = (id, createdAt, featured = false) => ({
+    title: id,
+    url: `https://jobs.b2venture.vc/${id}`,
+    organization: { name: 'Acme' },
+    created_at: createdAt,
+    featured,
+  });
+  const pages = [
+    [row('pin-fresh', fresh, true), row('pin-old', stale, true), row('a', fresh)],
+    [row('b', fresh)],
+    [row('c', stale), row('d', fresh)], // the stale non-featured row ends the walk AFTER this page
+    [row('never-read', fresh)],
+  ];
+  let calls = 0;
+  const jobs = await fetchGetro(null, {
+    fetchImpl: async (_url, opts) => {
+      calls += 1;
+      const page = JSON.parse(opts.body).page;
+      // count is huge so only the age cutoff / short page can stop the walk.
+      return ok({ results: { count: 100_000, jobs: pages[page] || [] } });
+    },
+    company: { name: 'b2v', getro_collection: 4283, getro_max_age_days: 90 },
+  });
+  assert.equal(calls, 3, 'the old featured pin did not stop the walk; pages 0–2 fetched, page 3 never');
+  assert.deepEqual(jobs.map((j) => j.title), ['pin-fresh', 'a', 'b', 'd'],
+    'fresh pin + fresh postings kept, the old pin dropped, the walk continued to d');
+});
+
 // ---------------------------------------------------------------------------
 // salary, all-locations, work_mode remote-detect
 // ---------------------------------------------------------------------------
