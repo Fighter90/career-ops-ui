@@ -25,6 +25,7 @@ import { buildTierFilter } from './classify-tier.mjs';
 import { loadQuarantine, isQuarantined, quarantineAdd, pruneQuarantine, saveQuarantine, isPermanentFailure, RETRY_AFTER_DAYS } from './scan-quarantine.mjs';
 import { withFileLock, atomicWrite } from './file-lock.mjs';
 import { makeTimeoutFetch } from './fetch-timeout.mjs';
+import { portalTopLevelTypos } from './portals-keys.mjs';
 import { loadReApplyWindows, buildCooldownFilter } from './cooldown.mjs';
 import { fetchGreenhouse } from './sources/greenhouse.mjs';
 import { fetchAshby } from './sources/ashby.mjs';
@@ -136,7 +137,20 @@ const fetcherFor = (id) => ALL_ADAPTERS.find((a) => a.id === id)?.fetch;
 
 function loadPortals() {
   if (!existsSync(PATHS.portals)) return {};
-  return yaml.load(readFileSync(PATHS.portals, 'utf8')) || {};
+  const parsed = yaml.load(readFileSync(PATHS.portals, 'utf8')) || {};
+  // Parent #6107 — a key one or two edits from a real setting
+  // (`tracked_companys`) was silently ignored: the company list read as
+  // missing and the scan reported success with zero companies. A near-miss is
+  // a typo: name the file, the key, and the suggestion, and refuse to scan
+  // (the route surfaces the message as the scan's SSE error). Far-from-any-
+  // setting keys — private notes — keep passing.
+  const typos = portalTopLevelTypos(parsed);
+  if (typos.length > 0) {
+    const lines = typos.map((t) =>
+      `unknown top-level key "${t.key}" — did you mean "${t.suggestion}"? The misspelled key is ignored, so this scan would report success without applying it.`);
+    throw new Error(`Error: ${PATHS.portals}: ${lines.join('\n')}`);
+  }
+  return parsed;
 }
 
 // Parent-format scan-history rows (`url  first_seen  portal  title  company
