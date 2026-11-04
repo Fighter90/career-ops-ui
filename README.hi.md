@@ -9,17 +9,17 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-7243%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7395%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.267.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.267.0)
+[![release](https://img.shields.io/badge/release-v1.267.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.267.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.267.0** — चार नए स्कैन स्रोत — GermanTechJobs, Darwinbox, Keka, ApplicantPro/isolved (रजिस्ट्री 129 = 124 EN + 5 RU) — ETag से बोर्ड-प्रतिक्रिया पुनःउपयोग, चार बोर्डों पर तारीखें, portals.yml की गलत स्पेलिंग वाली कुंजी अब ज़ोर से विफल होती है, getro पुराने फ़ीचर्ड पिन के आगे चलता है (parent-sync @ 7d8feb6d)। Tests 7096 → 7243।
+> **🆕 नवीनतम रिलीज़ — v1.267.1** — चार नए स्कैन स्रोत — GermanTechJobs, Darwinbox, Keka, ApplicantPro/isolved (रजिस्ट्री 129 = 124 EN + 5 RU) — ETag से बोर्ड-प्रतिक्रिया पुनःउपयोग, चार बोर्डों पर तारीखें, portals.yml की गलत स्पेलिंग वाली कुंजी अब ज़ोर से विफल होती है, getro पुराने फ़ीचर्ड पिन के आगे चलता है (parent-sync @ 7d8feb6d)। Tests 7096 → 7243।
 
 
 >
@@ -427,7 +427,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 7243 यूनिट + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (बेसलाइन @ v1.267.0)
+└─ tests/                    # 7243 यूनिट + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (बेसलाइन @ v1.267.1)
    ├─ parsers.test.mjs       # markdown / pipeline / report पार्सर (प्योर फ़ंक्शन)
    ├─ api.test.mjs           # हर एंडपॉइंट, एफ़ेमरल सर्वर, कोई नेटवर्क नहीं
    ├─ {ru,en}-scanner.test.mjs   # मॉक्ड fetch

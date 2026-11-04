@@ -19,6 +19,7 @@ import {
   withBoardResponseCache,
   resolveBoardCacheTtlMs,
   formatBoardCacheWindow,
+  boardCacheStats,
 } from '../server/lib/board-response-cache.mjs';
 import { fetchJson, fetchText } from '../server/lib/http-json.mjs';
 
@@ -345,4 +346,52 @@ test('cachedBoardText is inert without a store (direct contract)', async () => {
   });
   assert.equal(body, 'text');
   assert.deepEqual(loadCalls[0].conditional, { ifNoneMatch: null });
+});
+
+test('gate coverage: no-store bypasses saving, a 304 with nothing saved surfaces HTTP 304, the store evicts its oldest entry at MAX_ENTRIES', async () => {
+  // 1. noStore responses are served but never saved — a second read refetches.
+  const noStoreImpl = countingFetch(() => new Response(JSON.stringify({ n: 1 }), {
+    status: 200,
+    headers: { 'content-type': 'application/json', etag: '"v1"', 'cache-control': 'no-store' },
+  }));
+  const noStore = await withBoardResponseCache({ ttlMs: DEFAULT_TTL_MS }, async () => {
+    await fetchJson(noStoreImpl, 'https://a.example/no-store');
+    await fetchJson(noStoreImpl, 'https://a.example/no-store');
+    return boardCacheStats();
+  });
+  assert.equal(noStoreImpl.hits.length, 2, 'no-store boards refetch every time');
+  assert.equal(noStore.misses, 2);
+  assert.equal(noStore.hits, 0);
+
+  // 2. a caller-supplied If-None-Match meeting an unsaved board surfaces the
+  //    304 as the HTTP status it is (fetchText branch: err.status = 304).
+  const unsaved304 = countingFetch(() => notModifiedResponse());
+  await assert.rejects(
+    withBoardResponseCache({ ttlMs: DEFAULT_TTL_MS }, () => fetchText(
+      unsaved304,
+      'https://b.example/unsaved',
+      { headers: { 'if-none-match': '"x"' } },
+    )),
+    /HTTP 304/,
+  );
+
+  // 3. the store evicts its oldest entry once MAX_ENTRIES is reached (512):
+  //    513 distinct boards — the first URL is gone by the end, re-fetching it
+  //    after the walk is a MISS again (not a fresh hit).
+  const round = { n: 0 };
+  const evictionImpl = countingFetch((url) => jsonResponse(
+    { board: url },
+    { etag: `"e${round.n}"` },
+  ));
+  const boards = Array.from({ length: 513 }, (_, i) => `https://c.example/board-${i}`);
+  const stats = await withBoardResponseCache({ ttlMs: DEFAULT_TTL_MS }, async () => {
+    for (const url of boards) {
+      round.n += 1;
+      await fetchJson(evictionImpl, url);
+    }
+    return boardCacheStats();
+  });
+  assert.equal(evictionImpl.hits.length, 513, 'every board is fetched exactly once');
+  assert.equal(stats.misses, 513);
+  assert.equal(stats.hits, 0);
 });

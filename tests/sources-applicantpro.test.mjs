@@ -571,3 +571,47 @@ test('applicantpro: a transport failure on the site-id page propagates unwrapped
     FakeSentinel,
   );
 });
+
+test('parseListResponse: salary edge branches — one-sided ranges and junk amounts (CAR-228 coverage)', () => {
+  // salaryText branches: min-only, max-only, both, neither; junk amounts drop out
+  const jobs = [
+    { id: 11, title: 'Min only', payTypeFrame: 'per year', minSalary: 48000, maxSalary: 'junk' },
+    { id: 12, title: 'Max only', payTypeFrame: 'per year', minSalary: 'junk', maxSalary: 60000 },
+    { id: 13, title: 'Zero amounts', payTypeFrame: 'per year', minSalary: 0, maxSalary: -5 },
+    { id: 14, title: 'Both', payTypeFrame: 'per year', minSalary: 48000, maxSalary: 60000 },
+    { id: 15, title: 'Hourly frame', payTypeFrame: 'per hour', minSalary: 30, maxSalary: 50 },
+  ];
+  const parsed = parseListResponse(
+    { success: true, data: { jobs, jobCount: jobs.length } },
+    'Acme',
+  );
+  const rows = Object.fromEntries(parsed.map((r) => [r.title, r.salary]));
+  // parseListResponse keeps the STRUCTURED salary; the display string is
+  // applied by normalize() in the fetch path — so assert the ranges here and
+  // the salaryText branches through a normalize-level fetch test below.
+  assert.deepEqual(rows['Min only'], { min: 48000 });
+  assert.deepEqual(rows['Max only'], { max: 60000 });
+  assert.equal(rows['Zero amounts'], undefined);
+  assert.deepEqual(rows['Both'], { min: 48000, max: 60000 });
+  assert.equal(rows['Hourly frame'], undefined); // non-annual frames are left off
+});
+
+test('applicantpro: normalize renders one-sided annual salaries as ≥ / ≤ through the fetch flow (#CAR-228)', async () => {
+  const body = listJson();
+  body.data.jobs = [
+    { id: 9200001, title: 'Min-side role', jobLocation: 'X', payTypeFrame: 'per year', minSalary: 48000 },
+    { id: 9200002, title: 'Max-side role', jobLocation: 'X', payTypeFrame: 'per year', maxSalary: 60000 },
+    { id: 9200003, title: 'Both sides', jobLocation: 'X', payTypeFrame: 'annual', minSalary: 10, maxSalary: 20 },
+  ];
+  body.data.jobCount = 3;
+  const impl = async (url) => {
+    if (url === `${ORIGIN}/jobs/`) return { ok: true, status: 200, text: async () => JOBS_PAGE };
+    if (/\/core\/jobs\//.test(url)) return { ok: true, status: 200, json: async () => body };
+    throw new Error(`unexpected URL: ${url}`);
+  };
+  const jobs = await fetchApplicantpro(`${ORIGIN}/jobs/`, { fetchImpl: impl, sleep: async () => {} });
+  const rows = Object.fromEntries(jobs.map((r) => [r.title, r.salary]));
+  assert.equal(rows['Min-side role'], '≥ 48000');
+  assert.equal(rows['Max-side role'], '≤ 60000');
+  assert.equal(rows['Both sides'], '10–20');
+});

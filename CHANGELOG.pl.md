@@ -10,6 +10,18 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.267.1] — 2026-11-04
+
+### Naprawiono
+
+- **Naprawa pociągu release'ów (bramki CI v1.267.0)** — łańcuch zliczania testów w PROJECT-CONTEXT nie urywa się już na głowie v1.267.0 (format strzałki, który dopasowuje eval grader), prompty QA są zreorganizowane (jeden żywy prompt na release, v1.266.0 zarchiwizowany), a pokrycie per plik podniesiono ponad ratchet 98/90: renderer salary w applicantpro traci nieosiągalny fallthrough (salaryRangeOf dowodnie daje undefined, {min}, {max} lub {min,max}), jednostronne gałęzie ≥/≤ są teraz przypięte przez przepływ fetch, a zestaw board-response-cache przypina ominięcie no-store, 304 dostarczone przez wywołującego wobec niezapisanej tablicy oraz wyrzucanie przy MAX_ENTRIES.
+- Testy: licznik na żywo to **7395** (suity fali v1.266.0/1.267.0 niosą więcej speców, niż śledziły wcześniejsze notki — łańcuch jest ponownie zakotwiczony na zmierzonym poziomie: 7392 po fali, + 3 testy bramki w tej łatce); pokrycie 98.51 linii / 90.35 gałęzi.
+
+### Uwagi
+- Tag v1.267.0 pozostaje wskazujący na czerwony commit merge'a — nie jest przestawiany (serwer odrzuca przestawione tagi); v1.267.1 jest nośnikiem wdrożenia.
+
+- Naprawa patchowa pociągu v1.267.0: bramki CI zielone, drzewo kodu nie zmieniło się merytorycznie.
+
 ## [1.267.0] — 2026-11-04
 ### Dodano
 

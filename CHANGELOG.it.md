@@ -2,6 +2,18 @@
 
 > Questo changelog contiene ora la cronologia completa delle versioni. Le voci pubblicate prima della localizzazione italiana (v1.85.0) compaiono sotto nell'originale inglese — traduzione in attesa; il riferimento resta [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.267.1] — 2026-11-04
+
+### Corretto
+
+- **Riparazione del treno di release (i gate CI di v1.267.0)** — la catena dei conteggi dei test in PROJECT-CONTEXT non si spezza più alla testa di v1.267.0 (il formato freccia che l'eval grader matcha), i prompt QA sono riorganizzati (un prompt vivo per release, v1.266.0 archiviato) e la copertura per file viene portata sopra il ratchet 98/90: il renderer del salario di applicantpro perde un fallthrough irraggiungibile (salaryRangeOf dimostrabilmente produce undefined, {min}, {max} o {min,max}) con i rami unilaterali ≥/≤ ora pinati attraverso il flusso fetch, e la suite board-response-cache pina il bypass no-store, il 304 fornito dal chiamante contro un board non salvato e l'eviction a MAX_ENTRIES.
+- Test: il conteggio live è **7395** (le suite dell'ondata v1.266.0/1.267.0 portano più spec di quanto le note precedenti tracciassero — la catena è ri-ancorata al piano misurato: 7392 dopo l'ondata, + 3 test di gate in questa patch); copertura 98.51 riga / 90.35 ramo.
+
+### Note
+- Il tag v1.267.0 resta puntato sul commit rosso del merge — non viene ripuntato (il server rifiuta i tag ripuntati); v1.267.1 è il veicolo di deploy.
+
+- Riparazione in patch del treno v1.267.0: gate CI verdi, l'albero del codice non è cambiato in sostanza.
+
 ## [1.267.0] — 2026-11-04
 ### Aggiunto
 

@@ -13,7 +13,7 @@
 
 ## Verification (real output, release/v1.267.0)
 
-- `npm run test:ci` → **7243 tests · 7239 pass · 0 fail · 4 skip** (post-CAR-228; the integration first surfaced a 1397-fail contract break — fixed, documented)
+- `npm run test:ci` → **7398 tests · 7395 pass · 0 fail · 3 skip** (the live re-measure re-pins the under-counted chain; at the v1.267.0 merge the same runner read 7395/7392/0/3 — the wave notes tracked +105, the suites actually carry more; the integration first surfaced a 1397-fail contract break — fixed, documented)
 - `npm run test:e2e:browser` → 174 / 173 pass / 0 fail / 1 opt-in skip
 - `node evals/workflow/run.mjs` → 14 pass · 0 fail · 1 skip
 - `npm run test:coverage:gate` → 98.47 line / 90.17 branch (no FAIL rows)

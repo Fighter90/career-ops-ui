@@ -7,17 +7,17 @@
 
 _非官方介面 — 與 career-ops / santifer 無關聯，亦未獲其認可。_
 
-[![tests](https://img.shields.io/badge/tests-7243%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7395%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.267.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.267.0)
+[![release](https://img.shields.io/badge/release-v1.267.1-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.267.1)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 最新版本 — v1.267.0** — 四個新的掃描來源 — GermanTechJobs、Darwinbox、Keka、ApplicantPro/isolved(註冊表 129 = 124 EN + 5 RU)— ETag 看板回應重用、四個看板的日期、portals.yml 拼錯的鍵現在會大聲失敗、getro 走過舊的置頂釘(parent-sync @ 7d8feb6d)。測試 7096 → 7243。
+> **🆕 最新版本 — v1.267.1** — 四個新的掃描來源 — GermanTechJobs、Darwinbox、Keka、ApplicantPro/isolved(註冊表 129 = 124 EN + 5 RU)— ETag 看板回應重用、四個看板的日期、portals.yml 拼錯的鍵現在會大聲失敗、getro 走過舊的置頂釘(parent-sync @ 7d8feb6d)。測試 7096 → 7243。
 
 
 >
@@ -394,7 +394,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 7243 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.267.0)
+└─ tests/                    # 7243 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.267.1)
    ├─ parsers.test.mjs       # markdown / pipeline / report 解析器(純函式)
    ├─ api.test.mjs           # 每個端點、暫時性伺服器、無網路
    ├─ {ru,en}-scanner.test.mjs   # 已 mock 的 fetch
