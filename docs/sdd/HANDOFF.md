@@ -2,15 +2,14 @@
 
 This is the operating manual. Read it, then `PLAN.md` (order) and `BACKLOG.md` (what is left).
 
-## State (2026-11-04, ночь)
+## State (2026-11-04, день)
 
-- Released: **v1.267.1** (deploy vehicle — the `v1.267.0` tag stays on the red merge `09d5b520`, not re-pointed) — the fix-forward repair of the v1.267.0 train: coverage ratchet (applicantpro salaryText unreachable fallthrough removed + ≥/≤ branches pinned + board-cache no-store/304-unsaved/MAX_ENTRIES pins), evals chain (PROJECT-CONTEXT arrow, one live QA prompt, site mirrors), and the test-count chain re-pinned to the LIVE measure (the wave notes tracked +105; the real floor after the wave is 7392, +3 gate tests → **7398 total / 7395 pass**). PR **#619** → `d4642b4e` = tag `v1.267.1`.
-- Before it: **v1.267.0** (PR **#618** → `09d5b520`) — the second parent-sync wave against career-ops @ `7d8feb6d`: germantechjobs #6346 + darwinbox + keka + applicantpro → registry **129 = 124 EN + 5 RU · 124 adapters**, count gates ×8 regenerated; ETag board-response reuse #6105; postedAt ×4 #6274; misspelled portals-key rejection #6107; getro featured-pin #6406; CAR-228 scan-filter compat.
-- Before it: **v1.266.0** (PR **#617** → `fc3d931d`) — personio language-dedup CAR-223 (#4789+#5044+#5285): dedup_include_language, preferred_languages, per-language rows, shared language-preferences.mjs.
-- Gates: test:ci **7398/7395/0** · Playwright **173 pass / 0 fail / 1 opt-in skip** · evals 0 ✗ · coverage **98.51/90.35** · changelog parity ✓ ×19 · wiki-banner gate OK ×19.
-- Deployed: run **41761990876** ✓ (prod 1.265.0 → **1.267.1**, public 401) · verify **41762404332** ✓ (routes 200, caddy 502/24h: 0) · **remote-QA 41762635152 ✓ SUCCESS** (prod routes × 19 locales 8m41s, site × 19 3m22s, links ✓).
-- Hygiene: **Linear 0 active** (CAR-223…228 → Done with evidence comments; CAR-223's earlier closure had not persisted — re-verify statuses after MCP writes). Wiki refreshed (Home ×19 v1.267.1/129/7395, Scanner-Providers +6 rows, Testing-and-QA, Roadmap ×3). Pages dispatched manually (the merge push did not trigger it).
-- Next: the usual per-release hygiene; the next parent-sync trigger is a new upstream tail beyond `7d8feb6d`.
+- Released: **v1.267.2** — getro truncation-warning parity (#6465, the fork-sync tail career-ops @ `31a29b30`): the board walk retries transient per-page failures through the shared `fetchJsonWithRetry`; the truncation warning names the failed page (1-based), the real request count (`err.attempts`) and the partials kept; `fetchJsonWithRetry` stamps `err.attempts` and takes an injectable `sleep`. The rest of the 11-commit fork-sync tail is deliberately not ported (parent-side: Ctrl+K #6084, onboarding CLI #6432, ua modes #6445, verify-ats perf #6442). PR **#621** → `edb21a22` = tag `v1.267.2`.
+- Before it: **v1.267.1** (PR #619 → `d4642b4e`) and **v1.267.0** (PR #618 → `09d5b520`) — see the 2026-11-04 night state below for the train details.
+- Gates: test:ci **7401/7398/0** · Playwright **0 fail / 1 opt-in skip** · evals 0 ✗ · coverage **98.51/90.36** · changelog parity ✓ ×19 · wiki-banner gate OK ×19.
+- Deployed: run **41822767291** ✓ (prod 1.267.1 → **1.267.2**, public 401) · verify **41823216340** ✓ (routes 200, caddy 502/24h: 0) · **remote-QA 41823554782 ✓ SUCCESS** (prod routes × 19 locales 8m58s, site × 19 3m52s, links ✓).
+- Parent fork: local main = origin/main = **31a29b30** (GitHub Sync fork carried 11 upstream commits; the local duplicate merge was dropped via `checkout -B main origin/main`). Parent suite on Node 22: **20205 passed / 0 failed** (`env -u OPENCODE` — the marker tripped 2 doctor inline checks; `pdfjs-dist` installed --no-save in web/).
+- Hygiene: **Linear 0 active** (CAR-223…228 Done with evidence). Next parent-sync trigger: a new upstream tail beyond `31a29b30`.
 
 ## Non-negotiable rules
 
