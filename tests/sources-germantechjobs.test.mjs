@@ -28,7 +28,6 @@ import assert from 'node:assert/strict';
 import {
   meta,
   FEED_URL,
-  TRUSTED_HOST,
   assertGermantechjobsUrl,
   splitTitle,
   cleanUrl,

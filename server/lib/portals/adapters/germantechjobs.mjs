@@ -17,13 +17,15 @@
  *
  * Ported from the parent's providers/germantechjobs.mjs (upstream #6346).
  */
-import { fetchGermantechjobs, FEED_URL, TRUSTED_HOST } from '../../sources/germantechjobs.mjs';
+import { fetchGermantechjobs, FEED_URL } from '../../sources/germantechjobs.mjs';
 import { pinnedOverride } from '../../sources/_override.mjs';
 
 // Exact host rule — mirrors the source's assertGermantechjobsUrl: the bare
 // host or any dot-bounded subdomain form (each label dot-free), never a
-// look-alike suffix/prefix.
-const GERMANTECHJOBS_HOST_RE = new RegExp(`^(?:[^.]+\\.)*${TRUSTED_HOST.replace(/\./g, '\\.')}$`, 'i');
+// look-alike suffix/prefix. Hardcoded rather than built from TRUSTED_HOST:
+// the host is a module constant and CodeQL flags RegExp-from-variable as
+// incomplete escaping regardless of the input being a literal.
+const GERMANTECHJOBS_HOST_RE = /^(?:[^.]+\.)*germantechjobs\.de$/i;
 
 export const germantechjobsAdapter = {
   id: 'germantechjobs',

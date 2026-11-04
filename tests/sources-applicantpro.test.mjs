@@ -19,7 +19,6 @@ import assert from 'node:assert/strict';
 import {
   meta,
   assertApplicantproUrl,
-  resolveOrigin,
   extractDomainId,
   parseListResponse,
   parseDetail,
