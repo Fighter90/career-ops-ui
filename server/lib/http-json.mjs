@@ -454,13 +454,17 @@ export function spentRequestTimeout(err) {
  * @returns {Promise<any>}
  */
 export async function fetchJsonWithRetry(fetchImpl, url, opts = {}) {
-  const { retries = 2, retryDelayMs = 500, maxDelayMs = 8000, signal, ...rest } = opts;
+  const { retries = 2, retryDelayMs = 500, maxDelayMs = 8000, signal, sleep = delay, ...rest } = opts;
   let lastErr;
   for (let attempt = 0; attempt <= retries; attempt += 1) {
     try {
       return await fetchJson(fetchImpl, url, { ...rest, signal });
     } catch (err) {
       lastErr = err;
+      // The rethrown error carries .attempts — how many requests were actually
+      // made for this call — so a caller's diagnostics never invent a count
+      // (mirrors the parent's #2506/#6465 semantics).
+      if (err !== null && (typeof err === 'object' || typeof err === 'function')) err.attempts = attempt + 1;
       const status = err && typeof err.status === 'number' ? err.status : undefined;
       // A refused redirect looks like a no-status network error but is
       // deterministic — never retry it.
@@ -480,8 +484,9 @@ export async function fetchJsonWithRetry(fetchImpl, url, opts = {}) {
       if (!transient || attempt === retries || signal?.aborted) throw err;
       // Exponential backoff + jitter, honouring a (clamped) Retry-After when the
       // 429/503 carried one — instead of a flat delay that keeps re-hammering a
-      // rate-limited board at a fixed cadence.
-      await delay(computeRetryDelayMs({ attempt, baseDelayMs: retryDelayMs, maxDelayMs, retryAfter: err?.retryAfter }), signal);
+      // rate-limited board at a fixed cadence. `sleep` is injectable so tests
+      // skip the wall-clock waits.
+      await sleep(computeRetryDelayMs({ attempt, baseDelayMs: retryDelayMs, maxDelayMs, retryAfter: err?.retryAfter }), signal);
     }
   }
   throw lastErr;

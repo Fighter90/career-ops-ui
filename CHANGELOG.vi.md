@@ -6,6 +6,17 @@ Bản dịch: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.267.2] — 2026-11-04
+
+### Đã sửa
+
+- **getro: cảnh báo cắt ngang gọi tên trang thất bại và số lần thử thực tế (#6465)** — vòng đi qua board thử lại các thất bại tạm-thời theo trang qua fetchJsonWithRetry dùng chung (429/5xx/mạng, backoff luỹ-thừa tôn trọng Retry-After; fetch theo trang trước đây là một-phát), và một thất bại ở trang sau sau ≥1 thành công ghi nhật ký cảnh báo với số trang gốc-1 («truncated at page 2 of 5»), các request thực sự đã thực hiện («after 3 attempts» — rejection không phải object nói «an unknown number of attempts») và các phần kết giữ lại. fetchJsonWithRetry giờ đóng dấu err.attempts ở mọi rethrow và nhận một sleep có-thể-tiêm, để kiểm thử bỏ qua backoff đồng-hồ-thực.
+- Kiểm thử 7395 → **7398**; ratchet độ phủ không đổi (98.51 dòng / 90.35 nhánh).
+
+### Ghi chú
+
+- Đồng-bộ fork (career-ops @ `31a29b30`, 11 commit upstream) không cần thay đổi web-ui nào khác: phần còn lại của đuôi là phía parent — web app Next.js của chính parent (palette Ctrl+K #6084, kiểm tra CLI onboarding #6432), cách-dùng-điệp của các interview-mode ua (#6445 — đến cùng parent đã triển khai), một vòng hiệu năng verify-ats (#6442 — tự hiện-thực), các commit test/CI/docs. Tag v1.267.0 được để trỏ đến commit merge đỏ; v1.267.1 và bản vá này là các phương tiện triển khai.
+
 ## [1.267.1] — 2026-11-04
 
 ### Đã sửa

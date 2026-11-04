@@ -39,7 +39,7 @@
  * Host-pinned to api.getro.com + HTTPS + `redirect:'error'` (SSRF-safe). Used by
  * the getro adapter (server/lib/portals/adapters/getro.mjs).
  */
-import { fetchJson } from '../http-json.mjs';
+import { fetchJson, fetchJsonWithRetry, delay } from '../http-json.mjs';
 import { safeGet } from '../safe-fetch.mjs';
 import { withTimeout } from '../fetch-timeout.mjs';
 import { requireArray } from './_shape.mjs';
@@ -387,7 +387,7 @@ export function normalizeGetroJob(job, fallbackCompany = '', createdMs) {
  * @param {{ fetchImpl?: Function, signal?: AbortSignal, company?: any }} [opts]
  */
 export async function fetchGetro(endpoint, opts = {}) {
-  const { fetchImpl = fetch, signal, company = {}, safeGetImpl } = opts;
+  const { fetchImpl = fetch, signal, company = {}, safeGetImpl, sleep = delay } = opts;
   const id = await resolveCollectionId(company, { safeGetImpl, signal });
   if (!id) {
     throw new Error(
@@ -414,7 +414,9 @@ export async function fetchGetro(endpoint, opts = {}) {
   for (let page = 0; page < maxPages && page * HITS_PER_PAGE < total; page += 1) {
     let json;
     try {
-      json = await fetchJson(fetchImpl, apiUrl, {
+      // Transient per-page failures (429/5xx/network) retry through the shared
+      // helper; the sleep is injectable so tests run without backoff waits.
+      json = await fetchJsonWithRetry(fetchImpl, apiUrl, {
         method: 'POST',
         // apiUrl is pinned to api.getro.com (https); redirect:'error' refuses a
         // 3xx to a private/metadata IP (matches every other source).
@@ -422,11 +424,23 @@ export async function fetchGetro(endpoint, opts = {}) {
         headers: { 'content-type': 'application/json', accept: 'application/json' },
         body: JSON.stringify({ hitsPerPage: HITS_PER_PAGE, page }),
         signal,
+        sleep,
       });
     } catch (err) {
       // Dead-board contract: page 0 failing (nothing collected) propagates; a
       // later page failing after ≥1 success keeps the partials already gathered.
       if (!succeededOnce) throw err;
+      // The truncation warning names the failed page in 1-based numbering, the
+      // pages the walk planned to read, and the requests really made for that
+      // page (#6465). err.attempts is the real request count: a non-retryable
+      // error ends the retry loop after one attempt. A rejection that is not an
+      // object cannot carry the count, so the warning says it is unknown.
+      const attempts = err?.attempts;
+      const attemptsText = attempts === undefined
+        ? 'an unknown number of attempts'
+        : `${attempts} attempt${attempts === 1 ? '' : 's'}`;
+      const pagesToFetch = Math.min(maxPages, Math.ceil(total / HITS_PER_PAGE));
+      console.error(`⚠️  getro: ${company?.name || id} truncated at page ${page + 1} of ${pagesToFetch} after ${attemptsText} (${out.length} jobs): ${err?.cause || err?.message || err}`);
       break;
     }
     succeededOnce = true;

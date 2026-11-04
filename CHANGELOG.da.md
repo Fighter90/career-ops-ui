@@ -9,6 +9,17 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 ---
 
 
+## [1.267.2] — 2026-11-04
+
+### Rettet
+
+- **getro: afkortningsadvarslen nævner den side, der fejlede, og det rigtige antal forsøg (#6465)** — board-gennemløbet prøver forbigående side-fejl igen gennem den delte fetchJsonWithRetry (429/5xx/netværk, eksponentiel backoff, der respekterer Retry-After; fetch pr. side var ét enkelt forsøg), og en fejl på en senere side efter ≥1 succes logger advarslen med 1-baserede sidetal («truncated at page 2 of 5»), de faktisk foretagne kald («after 3 attempts» — et rejection, der ikke er et objekt, siger «an unknown number of attempts») og de beholdte delresultater. fetchJsonWithRetry stempler nu err.attempts ved hvert rethrow og tager en injicerbar sleep, så testene springer væg-ur-backoffen over.
+- Test 7395 → **7398**; dæknings-ratchet uændret (98.51 linje / 90.35 gren).
+
+### Noter
+
+- fork-synken (career-ops @ `31a29b30`, 11 upstream-commits) behøver ingen anden web-ui-ændring: resten af halen er forælder-siden — forælderens egen Next.js-webapp (Ctrl+K-paletten #6084, onboarding-CLI-tjek #6432), ua-interview-modes-formuleringen (#6445 — ankommer med den udrullede forælder), en verify-ats-ydelsesrunde (#6442 — egen implementering), test/CI/docs-commits. Tagget v1.267.0 efterlades pegende på den røde merge-commit; v1.267.1 og denne rettelse er udrulningskøretøjerne.
+
 ## [1.267.1] — 2026-11-04
 
 ### Rettet

@@ -279,3 +279,20 @@ test('fetchJsonWithRetry: an upstream watchdog abort (not our timer) still stops
   );
   assert.equal(calls, 1);
 });
+
+test('fetchJsonWithRetry: the rethrown error carries the real attempt count (#6465)', async () => {
+  let calls = 0;
+  const transient = async () => { calls += 1; const e = new Error('boom'); e.status = 503; throw e; };
+  await assert.rejects(
+    fetchJsonWithRetry(transient, 'https://retry.example/r', { retries: 2, sleep: async () => {} }),
+    (e) => e.attempts === 3,
+  );
+  assert.equal(calls, 3, '1 + 2 retries');
+  let calls2 = 0;
+  const permanent = async () => { calls2 += 1; const e = new Error('nope'); e.status = 400; throw e; };
+  await assert.rejects(
+    fetchJsonWithRetry(permanent, 'https://retry.example/r', { sleep: async () => {} }),
+    (e) => e.attempts === 1,
+  );
+  assert.equal(calls2, 1, 'a permanent 4xx is not retried');
+});

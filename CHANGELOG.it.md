@@ -2,6 +2,17 @@
 
 > Questo changelog contiene ora la cronologia completa delle versioni. Le voci pubblicate prima della localizzazione italiana (v1.85.0) compaiono sotto nell'originale inglese — traduzione in attesa; il riferimento resta [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.267.2] — 2026-11-04
+
+### Corretto
+
+- **getro: l'avviso di troncamento nomina la pagina fallita e il vero numero di tentativi (#6465)** — il percorso del board riprova gli errori transitori per pagina tramite il fetchJsonWithRetry condiviso (429/5xx/rete, backoff esponenziale che rispetta Retry-After; il fetch per pagina era a singolo colpo), e un fallimento di una pagina successiva dopo ≥1 successo registra l'avviso con numeri di pagina 1-based («truncated at page 2 of 5»), le richieste davvero effettuate («after 3 attempts» — un rejection non-oggetto dice «an unknown number of attempts») e i parziali conservati. fetchJsonWithRetry ora timbra err.attempts a ogni rethrow e accetta uno sleep iniettabile così i test saltano il backoff da orologio reale.
+- Test 7395 → **7398**; ratchet di copertura invariato (98.51 riga / 90.35 ramo).
+
+### Note
+
+- La sincronizzazione del fork (career-ops @ `31a29b30`, 11 commit upstream) non richiede altri cambiamenti web-ui: il resto della coda è lato parent — la web app Next.js del parent stesso (palette Ctrl+K #6084, controllo CLI di onboarding #6432), la formulazione delle modalità di colloquio ua (#6445 — arriva con il parent deployato), un passaggio di performance di verify-ats (#6442 — implementazione propria), commit di test/CI/docs. Il tag v1.267.0 resta puntato sul commit rosso del merge; v1.267.1 e questa patch sono i veicoli di deploy.
+
 ## [1.267.1] — 2026-11-04
 
 ### Corretto

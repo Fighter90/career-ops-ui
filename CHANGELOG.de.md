@@ -2,6 +2,17 @@
 
 > Dieses Changelog enthält die vollständige Versionsgeschichte. Einträge, die vor der deutschen Lokalisierung (v1.85.0) veröffentlicht wurden, stehen unten im englischen Original — Übersetzung ausstehend; maßgeblich bleibt [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.267.2] — 2026-11-04
+
+### Behoben
+
+- **getro: die Abschneide-Warnung nennt die fehlgeschlagene Seite und die echte Versuchszahl (#6465)** — der Board-Durchlauf wiederholt flüchtige Seiten-Fehler über das gemeinsame fetchJsonWithRetry (429/5xx/Netzwerk, exponentielles Backoff unter Beachtung von Retry-After; der Fetch pro Seite war ein Einzelschuss), und ein Fehler einer späteren Seite nach ≥1 Erfolg loggt die Warnung mit 1-basierten Seitennummern („truncated at page 2 of 5“), den wirklich gemachten Requests („after 3 attempts“ — ein Non-Objekt-Rejection sagt „an unknown number of attempts“) und den behaltenen Teilergebnissen. fetchJsonWithRetry stempelt jetzt bei jedem Rethrow err.attempts und nimmt einen injizierbaren Sleep, damit Tests den Wanduhr-Backoff überspringen.
+- Tests 7395 → **7398**; Coverage-Ratchet unverändert (98.51 Zeile / 90.35 Zweig).
+
+### Hinweise
+
+- Der Fork-Sync (career-ops @ `31a29b30`, 11 Upstream-Commits) braucht keine weitere web-ui-Änderung: der Rest des Tails ist Parent-Seite — die eigene Next.js-Web-App des Parents (Ctrl+K-Palette #6084, Onboarding-CLI-Check #6432), die ua-Interview-Modi-Formulierung (#6445 — kommt mit dem deployten Parent), ein verify-ats-Performance-Durchlauf (#6442 — eigene Implementierung), Test-/CI-/Docs-Commits. Der Tag v1.267.0 bleibt auf dem roten Merge-Commit; v1.267.1 und dieser Patch sind die Deploy-Fahrzeuge.
+
 ## [1.267.1] — 2026-11-04
 
 ### Behoben
