@@ -8,6 +8,31 @@
 
 ---
 
+## [1.267.0] — 2026-11-04
+### 新增
+
+- **四個新的掃描來源 — GermanTechJobs、Darwinbox、Keka、ApplicantPro/isolved（註冊表 125 → 129 = 124 EN + 5 RU · 124 adapters）** — 針對 career-ops @ `7d8feb6d`（87 個 upstream 提交）的第二波 parent-sync 浪潮。**GermanTechJobs**（#6346）：`germantechjobs.de/rss` 的全站 RSS（單一請求約 626 筆項目）；雇主取自標題的最後一個 `" @ "` 段 — 標題缺該段的職缺直接丟棄，絕不歸到板名下；僅限顯式 `provider:` 選用。**Darwinbox**（#6416）：`<tenant>.darwinbox.in` 背後免認證的 `alljobs` JSON，公司 id 來自招募頁 URL，分頁 POST 遍歷（50/頁，`max_pages` 20/200），短頁停止點讀自來源自身的列數。**Keka**（#6199）：兩個請求 — 一個以 `redirect:'manual'` 取得的招募頁外殼，其腳本指名 feed UUID（未知租戶 302 到 `TenantNotFound.html`，讀作具名 404），接著以單一 embed-jobs 陣列取回全部在招職缺。**ApplicantPro / isolved**（#6252）：從 bootstrap 取得數字型 `domainId`，再取 `{success, data:{jobs, jobCount}}`；`jobCount > rows` 時警告列表不完整；可選的 `applicantpro: { fetchDetails: true }` 以 250 ms 節流經 JSON-LD 補充細節。
+- **ETag 板回應重用（#6105）** — 同一次掃描內，15 分鐘內取得的板回應原樣重用，較舊的以 `If-None-Match` 重新驗證（304 時保留原 body）；快取鍵涵蓋 method + URL + 憑證標頭 + body，重疊的讀取合併到進行中的 promise，`CAREER_OPS_HTTP_CACHE=0` / `_TTL_MS` 可覆蓋此行為。快取存在於每輪掃描的記憶體內（web-ui 沒有磁碟快取契約）— 已記錄為一處偏離。
+
+### 修復
+
+- **四個板補上日期（#6274）** — remoteok、remotive、workingnomads 與 IBM 現在都輸出發布日期，「Posted within」過濾器在這些板上生效；remotive 的 naive 時間戳以 UTC 正規化（其因機器而異的時效計算 bug 是真實在線上發生的），IBM 的 `_source` 實際請求 `dcdate`。
+- **拼錯的 portals.yml 鍵會被拒絕（#6107）** — EN 掃描現在在任何 fetch 之前就擲出具名錯誤（檔案 + 鍵 + 最接近鍵的建議，Levenshtein ≤ 2），而非默默忽略 `titel_filter:`。
+- **getro 繼續走過舊的 featured 釘選（#6406）** — 釘選的過時職缺仍被丟棄，但不再終止分頁；遍歷在真正的短頁上結束。
+
+### 備註
+
+- 有意未做：RU 掃描器的已見過濾器不具語言感知，其 portals 解析路徑也不執行拼錯鍵關卡（交接記錄在浪潮規格中 — 目前尚無 RU 板輸出按語言區分的列）；remoteok 保留帶時區位移的日期字串而不做 UTC 正規化（其 live shape 是確定性的）。測試 7096 → **7243**；Playwright 173 pass / 0 fail / 1 opt-in skip；註冊表 **129 = 124 EN + 5 RU · 124 adapters**（全部計數關卡由活註冊表再生）。
+
+## [1.266.0] — 2026-11-01
+### 新增
+
+- **Personio 語言版本不再互相吞併（CAR-223：parent #4789 + #5044 + #5285）** — 先前延後的整組變更，此次以獨立發布執行。**掃描側（#4789）**：`scan_history.dedup_include_language: true`（嚴格 opt-in — 關閉時逐位元組相同）讓同一職缺的語言版本透過已見歷史的變體機制（`languageFormsFromUrl` / `recordUrlVariant` / `isUnseenLanguageVersion`）在去重中存活；canonical 鍵會剝除 `language/lang/locale` 參數。**preferred_languages（#5285）**：把職缺的版本列按偏好優先排序（穩定排序；平手時按 provider 順序）— 與該開關無關（關閉時保留偏好版本，開啟時按該順序保留每個版本），並附 `validatePreferredLanguages`（validate-portals 的移植）。**personio fan-out（#5044）**：招募頁的取得不再強制帶 `?language=en`（租戶自身的 `?language=xx` 會被尊重），並為每個語言版本輸出一列，帶 `language` + `?language=<code>` 的 URL；`dedupIncludeLanguage` 會追加按語言的取得（上限 5，帶節流）；/xml 與職缺連結的回退路徑不變。**recruitee** 獲得相同的 `language` 輸出 + `preferred_languages`（來自 opts 或條目）。共用輔助函式位於 `server/lib/language-preferences.mjs`。
+
+### 備註
+
+- 已記錄交接、有意未做：RU 掃描器的已見過濾器不具語言感知，且目前尚無 RU 板輸出按語言區分的列；用戶端 `url-key.js` 鏡像與 portals 路由的驗證接線仍待完成。測試 7096 → **7203**；註冊表不變 125 = 120 EN + 5 RU · 120 adapters。
+
 ## [1.265.0] — 2026-11-01
 ### 新增
 

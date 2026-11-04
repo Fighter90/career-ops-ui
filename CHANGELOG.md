@@ -6,6 +6,33 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 ---
 
+## [1.267.0] — 2026-11-04
+
+### Added
+
+- **Four new scan sources — GermanTechJobs, Darwinbox, Keka, ApplicantPro/isolved (registry 125 → 129 = 124 EN + 5 RU · 124 adapters)** — the second parent-sync wave against career-ops @ `7d8feb6d` (87 upstream commits). **GermanTechJobs** (#6346): board-wide RSS at `germantechjobs.de/rss` (~626 items in one request); the employer is the last `" @ "` segment of the title — a title without one is dropped, never filed under the board; explicit `provider:` selection only. **Darwinbox** (#6416): zero-auth `alljobs` JSON behind `<tenant>.darwinbox.in`, the company id comes from the careers URL, paginated POST walk (50/page, `max_pages` 20/200) with the short-page stop read from the source's own row count. **Keka** (#6199): two requests — a `redirect:'manual'` careers shell whose script names the feed UUID (an unknown tenant 302s to `TenantNotFound.html` and reads as a named 404), then the whole open inventory in one embed-jobs array. **ApplicantPro / isolved** (#6252): the numeric `domainId` off the bootstrap, then `{success, data:{jobs, jobCount}}`; `jobCount > rows` warns the list is incomplete; opt-in `applicantpro: { fetchDetails: true }` enriches from JSON-LD at 250 ms pacing.
+- **ETag board-response reuse (#6105)** — within one scan, a board response fetched in the last 15 minutes is reused as-is and older ones revalidate with `If-None-Match` (304 keeps the body); the cache key covers method + URL + credential headers + body, overlapping reads collapse onto the in-flight promise, and `CAREER_OPS_HTTP_CACHE=0` / `_TTL_MS` override it. In-memory per scan run (web-ui has no on-disk cache contract) — a deviation recorded.
+
+### Fixed
+
+- **Dates on four boards (#6274)** — remoteok, remotive, workingnomads and IBM now emit a publication date, so the "Posted within" filter works there; remotive's naive timestamp is UTC-normalized (its per-machine age bug was live), IBM's `_source` actually requests `dcdate`.
+- **A misspelled portals.yml key is rejected (#6107)** — the EN scan now throws a named error (file + key + nearest-key suggestion, Levenshtein ≤ 2) before any fetch, instead of silently ignoring `titel_filter:`.
+- **getro keeps walking past an old featured pin (#6406)** — a pinned stale posting is still dropped but no longer terminates the pagination; the walk ends on a real short page.
+
+### Notes
+
+- Deliberately not done: the RU scanner's seen-filter is not language-aware and its portals parse path does not run the misspelled-key gate (hand-offs recorded in the wave spec — no RU board emits per-language rows yet); remoteok keeps its offset-bearing date string rather than UTC-normalizing (its live shape is deterministic). Tests 7096 → **7243**; Playwright 173 pass / 0 fail / 1 opt-in skip; registry **129 = 124 EN + 5 RU · 124 adapters** (all count gates regenerated from the live registry).
+
+## [1.266.0] — 2026-11-01
+
+### Added
+
+- **Personio language versions stop eating each other (CAR-223: parent #4789 + #5044 + #5285)** — the deferred stack, executed as its own release. **Scan-side (#4789)**: `scan_history.dedup_include_language: true` (strict opt-in — OFF is byte-identical) makes language versions of one posting survive the dedup via the seen-history variant machinery (`languageFormsFromUrl` / `recordUrlVariant` / `isUnseenLanguageVersion`); the canonical key strips `language/lang/locale` params. **preferred_languages (#5285)**: orders a posting's version rows preferred-first (stable, provider order on ties) — independent of the switch (OFF keeps the preferred version, ON keeps every version in that order), with a `validatePreferredLanguages` port of validate-portals. **personio fan-out (#5044)**: the careers page is fetched without the `?language=en` force (a tenant's own `?language=xx` is honoured) and emits one row per language version with `language` + `?language=<code>` URLs; `dedupIncludeLanguage` adds per-language fetches (cap 5, paced); /xml and job-link fallbacks unchanged. **recruitee** gains the same `language` emission + `preferred_languages` (opts or entry). The shared helpers live in `server/lib/language-preferences.mjs`.
+
+### Notes
+
+- Hand-offs recorded, deliberately not done: the RU scanner's seen-filter is not language-aware and no RU board emits per-language rows yet; the client `url-key.js` mirror and the portals-route validation wiring stay open. Tests 7096 → **7203**; registry unchanged 125 = 120 EN + 5 RU · 120 adapters.
+
 ## [1.265.0] — 2026-11-01
 
 ### Added

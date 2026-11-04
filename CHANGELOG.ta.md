@@ -6,6 +6,31 @@
 
 ---
 
+## [1.267.0] — 2026-11-04
+### சேர்க்கப்பட்டது
+
+- **நான்கு புதிய ஸ்கேன் மூலங்கள் — GermanTechJobs, Darwinbox, Keka, ApplicantPro/isolved (பதிவேடு 125 → 129 = 124 EN + 5 RU · 124 adapters)** — career-ops @ `7d8feb6d` (87 upstream commitகள்) எதிரான இரண்டாவது parent-sync அலை. **GermanTechJobs** (#6346): `germantechjobs.de/rss` இல் board-wide RSS (ஒரே கோரிக்கையில் ~626 உருப்படிகள்); முதலாளி title-இன் கடைசி `" @ "` பகுதி — அத்தகைய பகுதி இல்லாத title drop செய்யப்படும், பலகையின் பெயரில் ஒருபோதும் பதியாது; வெளிப்படையான `provider:` தேர்வு மட்டுமே. **Darwinbox** (#6416): `<tenant>.darwinbox.in` பின்னால் zero-auth `alljobs` JSON; company id careers URL-இலிருந்து வருகிறது; paginate செய்யப்பட்ட POST நடை (50/பக்கம், `max_pages` 20/200), short-page நிறுத்தம் மூலத்தின் சொந்த வரிசை எண்ணிக்கையிலிருந்து படிக்கப்படுகிறது. **Keka** (#6199): இரண்டு கோரிக்கைகள் — feed UUID-ஐப் பெயரிடும் script கொண்ட `redirect:'manual'` careers shell (தெரியாத tenant `TenantNotFound.html`-க்கு 302 செய்யும், பெயரிடப்பட்ட 404 ஆகப் படிக்கப்படும்), பிறகு முழு திறந்த இருப்புப்பட்டியலும் ஒரே embed-jobs அணியில். **ApplicantPro / isolved** (#6252): bootstrap-இலிருந்து எண் வடிவ `domainId`, பிறகு `{success, data:{jobs, jobCount}}`; `jobCount > rows` என்றால் பட்டியல் முழுமையற்றது என எச்சரிக்கும்; opt-in `applicantpro: { fetchDetails: true }` 250 ms நிறுத்தத்தில் JSON-LD-இலிருந்து வளப்படுத்துகிறது.
+- **ETag board-response மீள்பயன்பாடு (#6105)** — ஒரே ஸ்கேனுக்குள், கடந்த 15 நிமிடங்களில் fetch செய்யப்பட்ட board response அப்படியே மீண்டும் பயன்படுத்தப்படும், பழையவை `If-None-Match` உடன் revalidate செய்யப்படும் (304 body-ஐத் தக்கவைக்கும்); cache key method + URL + credential headers + body எல்லாவற்றையும் உள்ளடக்கும், ஒன்றுபடும் படிப்புகள் நடைமுறையிலுள்ள promise-இல் ஒன்றுகூடும், மேலும் `CAREER_OPS_HTTP_CACHE=0` / `_TTL_MS` அதை மேலெழுதும். ஒரு ஸ்கேன் இயக்கத்துக்கு நினைவகத்தில் மட்டுமே (web-ui-க்கு on-disk cache ஒப்பந்தம் இல்லை) — பதிவு செய்யப்பட்ட ஒரு விலகல்.
+
+### சரி செய்யப்பட்டது
+
+- **நான்கு பலகைகளில் தேதிகள் (#6274)** — remoteok, remotive, workingnomads மற்றும் IBM இப்போது வெளியீட்டுத் தேதியை வழங்குகின்றன, எனவே «Posted within» வடிப்பான் அங்கு வேலை செய்யும்; remotive-இன் naive timestamp UTC-இயல்பாக்கம் செய்யப்படுகிறது (அதன் மெஷின்வாரி வயது bug நேரடியாக இயங்கியது), IBM-இன் `_source` உண்மையில் `dcdate`-ஐக் கோருகிறது.
+- **தவறாக எழுதப்பட்ட portals.yml key நிராகரிக்கப்படுகிறது (#6107)** — EN ஸ்கேன் இப்போது எந்த fetch-க்கும் முன் பெயரிடப்பட்ட பிழையை throw செய்யும் (file + key + அருகிலுள்ள key பரிந்துரை, Levenshtein ≤ 2); `titel_filter:` மௌனமாகப் புறக்கணிக்கப்படுவதற்குப் பதிலாக.
+- **getro பழைய featured pin-ஐத் தாண்டியும் நடையைத் தொடர்கிறது (#6406)** — pin செய்யப்பட்ட காலாவதியான பதவி இன்னும் drop செய்யப்படும், ஆனால் இனி pagination-ஐ முடிக்காது; நடை உண்மையான short பக்கத்தில் முடியும்.
+
+### குறிப்புகள்
+
+- வேண்டுமென்றே செய்யவில்லை: RU ஸ்கேனரின் seen-வடிப்பான் மொழி-உணர்திறன் கொண்டதல்ல, மேலும் அதன் portals parse பாதை தவறாக எழுதப்பட்ட-key கதவை இயக்குவதில்லை (wave spec-இல் hand-offகள் பதிவு — இன்னும் எந்த RU பலகையும் மொழிவாரி வரிசைகளை வழங்குவதில்லை); remoteok தன் offset-சுமக்கும் தேதி எழுத்தை UTC-இயல்பாக்காமல் வைத்திருக்கிறது (அதன் நேரடி வடிவம் தீர்மானகரமானது). Tests 7096 → **7243**; Playwright 173 pass / 0 fail / 1 opt-in skip; பதிவேடு **129 = 124 EN + 5 RU · 124 adapters** (எல்லா எண்ணிக்கை கதவுகளும் உயிர்ப் பதிவேட்டிலிருந்து மீண்டும் உருவாக்கப்பட்டன).
+
+## [1.266.0] — 2026-11-01
+### சேர்க்கப்பட்டது
+
+- **Personio மொழி பதிப்புகள் ஒன்றையொன்று விழுங்குவதை நிறுத்துகின்றன (CAR-223: parent #4789 + #5044 + #5285)** — நிலுவைப்படுத்தப்பட்ட stack, அதற்கென தனியான வெளியீடாக நிறைவேற்றப்பட்டது. **ஸ்கேன் பக்கம் (#4789)**: `scan_history.dedup_include_language: true` (strict opt-in — OFF byte-அளவில் சமமானது) seen-history variant இயங்குமுறை வழியாக (`languageFormsFromUrl` / `recordUrlVariant` / `isUnseenLanguageVersion`) ஒரு பதவியின் மொழி பதிப்புகள் dedup-ஐத் தாண்டி நிலைக்க வைக்கிறது; canonical key `language/lang/locale` paramsகளை நீக்குகிறது. **preferred_languages (#5285)**: ஒரு பதவியின் version வரிசைகளை விருப்பம்-முதல் வரிசையில் அடுக்குகிறது (நிலையானது, சமநிலையில் provider வரிசை) — மாற்றத்திலிருந்து சுதந்திரம் (OFF விருப்பமான version-ஐ வைக்கும், ON ஒவ்வொரு version-ஐயும் அந்த வரிசையில் வைக்கும்), validate-portals-இன் `validatePreferredLanguages` port உடன். **personio fan-out (#5044)**: careers பக்கம் `?language=en` வல்லுறுத்தல் இல்லாமல் fetch செய்யப்படுகிறது (tenant-இன் சொந்த `?language=xx` மதிக்கப்படும்) மற்றும் ஒவ்வொரு மொழி பதிப்புக்கும் `language` + `?language=<code>` URL உடன் ஒரு வரிசை வழங்குகிறது; `dedupIncludeLanguage` மொழிவாரி fetchகளைச் சேர்க்கிறது (வரம்பு 5, paced); /xml மற்றும் job-link fallbackகள் மாறவில்லை. **recruitee** அதே `language` emission + `preferred_languages` (opts அல்லது entry) பெறுகிறது. பங்கிடப்பட்ட உதவியாளர்கள் `server/lib/language-preferences.mjs` இல் இருக்கின்றன.
+
+### குறிப்புகள்
+
+- Hand-offகள் பதிவு, வேண்டுமென்றே செய்யவில்லை: RU ஸ்கேனரின் seen-வடிப்பான் மொழி-உணர்திறன் கொண்டதல்ல, மேலும் எந்த RU பலகையும் இன்னும் மொழிவாரி வரிசைகளை வழங்குவதில்லை; client `url-key.js` mirror மற்றும் portals-route சரிபார்ப்பு இணைப்பு திறந்தே இருக்கின்றன. Tests 7096 → **7203**; registry மாறவில்லை: 125 = 120 EN + 5 RU · 120 adapters.
+
 ## [1.265.0] — 2026-11-01
 ### சேர்க்கப்பட்டது
 

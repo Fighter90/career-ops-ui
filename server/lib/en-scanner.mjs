@@ -36,6 +36,8 @@ import { buildTierFilter } from './classify-tier.mjs';
 import { loadQuarantine, isQuarantined, quarantineAdd, pruneQuarantine, saveQuarantine, isPermanentFailure, RETRY_AFTER_DAYS } from './scan-quarantine.mjs';
 import { withFileLock, atomicWrite } from './file-lock.mjs';
 import { makeTimeoutFetch } from './fetch-timeout.mjs';
+import { withBoardResponseCache, boardCacheStats, resolveBoardCacheTtlMs, formatBoardCacheWindow } from './board-response-cache.mjs';
+import { portalTopLevelTypos } from './portals-keys.mjs';
 import { loadReApplyWindows, buildCooldownFilter } from './cooldown.mjs';
 import { fetchGreenhouse } from './sources/greenhouse.mjs';
 import { fetchAshby } from './sources/ashby.mjs';
@@ -147,7 +149,20 @@ const fetcherFor = (id) => ALL_ADAPTERS.find((a) => a.id === id)?.fetch;
 
 function loadPortals() {
   if (!existsSync(PATHS.portals)) return {};
-  return yaml.load(readFileSync(PATHS.portals, 'utf8')) || {};
+  const parsed = yaml.load(readFileSync(PATHS.portals, 'utf8')) || {};
+  // Parent #6107 — a key one or two edits from a real setting
+  // (`tracked_companys`) was silently ignored: the company list read as
+  // missing and the scan reported success with zero companies. A near-miss is
+  // a typo: name the file, the key, and the suggestion, and refuse to scan
+  // (the route surfaces the message as the scan's SSE error). Far-from-any-
+  // setting keys — private notes — keep passing.
+  const typos = portalTopLevelTypos(parsed);
+  if (typos.length > 0) {
+    const lines = typos.map((t) =>
+      `unknown top-level key "${t.key}" — did you mean "${t.suggestion}"? The misspelled key is ignored, so this scan would report success without applying it.`);
+    throw new Error(`Error: ${PATHS.portals}: ${lines.join('\n')}`);
+  }
+  return parsed;
 }
 
 // Parent-format scan-history rows (`url  first_seen  portal  title  company
@@ -472,7 +487,16 @@ export async function runEnScan(opts = {}) {
   // rule; tests/jd-years-filter.test.mjs locks the configured path.
   const yearsMinConfigured = typeof portals.years_min === 'number'
     && Number.isFinite(portals.years_min) && portals.years_min >= 0;
-  const fetchedPerCo = await pMap(withApi, async (c) => {
+  // CAR-226 (parent #6105) — a second board read inside the freshness window
+  // (default 15 minutes) reuses the saved response, and a stale GET is
+  // rechecked with If-None-Match. CAREER_OPS_HTTP_CACHE=0 always downloads;
+  // CAREER_OPS_HTTP_CACHE_TTL_MS overrides the window. The store is IN MEMORY
+  // and scoped to THIS run (web-ui has no on-disk cache contract — the parent
+  // persists under data/cache/http/ for cross-process reuse; noted deviation).
+  const cacheEnabled = process.env.CAREER_OPS_HTTP_CACHE !== '0';
+  const cacheTtlMs = resolveBoardCacheTtlMs(process.env.CAREER_OPS_HTTP_CACHE_TTL_MS);
+  const fetchedPerCo = await withBoardResponseCache({ ttlMs: cacheTtlMs, disabled: !cacheEnabled }, async () => {
+    const fetchAllBoards = () => pMap(withApi, async (c) => {
     if (signal?.aborted) return [];
     const fetcher = fetcherFor(c._api.type);
     const label = String(c.name ?? '').padEnd(28);
@@ -556,6 +580,20 @@ export async function runEnScan(opts = {}) {
       onProgress(++progressDone, withApi.length);
     }
   }, CONCURRENCY);
+    const rows = await fetchAllBoards();
+    const stats = boardCacheStats();
+    if (stats && (stats.hits > 0 || stats.revalidated > 0)) {
+      const parts = [];
+      if (stats.hits > 0) {
+        parts.push(`reused ${stats.hits} board response${stats.hits === 1 ? '' : 's'} fetched in the last ${formatBoardCacheWindow(cacheTtlMs)}`);
+      }
+      if (stats.revalidated > 0) {
+        parts.push(`rechecked ${stats.revalidated} older board response${stats.revalidated === 1 ? '' : 's'} with If-None-Match`);
+      }
+      log('stderr', `scan: ${parts.join(', and ')}. Set CAREER_OPS_HTTP_CACHE=0 to always download.`);
+    }
+    return rows;
+  });
 
   // Persist quarantine changes (skip in dry-run, like the other scan writes).
   if (quarantineOn && writeFiles && quarantineChanged) {

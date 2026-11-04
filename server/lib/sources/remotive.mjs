@@ -65,6 +65,23 @@ function isTrustedJobUrl(value) {
 }
 
 /**
+ * `publication_date` arrives with NO offset (2026-10-27T12:56:13), which
+ * Date.parse reads as the machine's local time — 7 hours off in Los Angeles.
+ * Normalize to a UTC ISO timestamp, so the same row gets the same
+ * "Posted within" age on every machine; a value that already carries an
+ * offset keeps its instant. Unparseable → '' (undated). (#6274)
+ * @param {unknown} value
+ * @returns {string}
+ */
+function toIsoDateUtc(value) {
+  if (typeof value !== 'string' || !value.trim()) return '';
+  let s = value.trim();
+  if (/T\d/.test(s) && !/(?:Z|[+-]\d{2}:?\d{2})$/i.test(s)) s += 'Z';
+  const ms = Date.parse(s);
+  return Number.isNaN(ms) ? '' : new Date(ms).toISOString();
+}
+
+/**
  * Fetch + normalize the Remotive public feed.
  * @param {string} feedUrl
  * @param {{ fetchImpl?: Function, signal?: AbortSignal }} [opts]
@@ -99,7 +116,7 @@ function normalize(j) {
     isRemote: true,
     workplaceType: 'Remote',
     relocates: false,
-    date: typeof j.publication_date === 'string' ? j.publication_date : '',
+    date: toIsoDateUtc(j.publication_date),
     snippet: '',
     source: 'remotive',
   };

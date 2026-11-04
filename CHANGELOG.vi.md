@@ -6,6 +6,29 @@ Bản dịch: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.267.0] — 2026-11-04
+### Đã thêm
+
+- **Bốn nguồn quét mới — GermanTechJobs, Darwinbox, Keka, ApplicantPro/isolved (sổ đăng ký 125 → 129 = 124 EN + 5 RU · 124 adapters)** — đợt parent-sync thứ hai đối chiếu career-ops @ `7d8feb6d` (87 commit upstream). **GermanTechJobs** (#6346): RSS toàn bảng tại `germantechjobs.de/rss` (~626 mục trong một yêu cầu); nhà tuyển dụng là đoạn cuối `" @ "` của title — title thiếu nó bị loại, không bao giờ ghi dưới tên bảng; chỉ chọn qua `provider:` tường minh. **Darwinbox** (#6416): JSON `alljobs` không cần xác thực đằng sau `<tenant>.darwinbox.in`, id công ty lấy từ careers URL, bước đi POST phân trang (50/trang, `max_pages` 20/200) với điều kiện dừng trang-ngắn đọc từ số hàng do chính nguồn báo. **Keka** (#6199): hai yêu cầu — vỏ careers `redirect:'manual'` mà script của nó gọi tên UUID của feed (tenant lạ 302 tới `TenantNotFound.html` và đọc như một 404 có tên), rồi toàn bộ tồn kho mở trong một mảng embed-jobs. **ApplicantPro / isolved** (#6252): `domainId` dạng số lấy từ bootstrap, rồi `{success, data:{jobs, jobCount}}`; `jobCount > rows` cảnh báo danh sách chưa đầy đủ; tùy chọn `applicantpro: { fetchDetails: true }` làm giàu từ JSON-LD với nhịp 250 ms.
+- **Tái sử dụng phản hồi bảng qua ETag (#6105)** — trong một lần quét, phản hồi bảng lấy được trong 15 phút qua được dùng lại nguyên trạng, còn phản hồi cũ hơn được kiểm tra lại bằng `If-None-Match` (304 giữ nguyên body); cache key bao gồm method + URL + các header credential + body, các lượt đọc chồng nhau gộp vào promise đang chạy, và `CAREER_OPS_HTTP_CACHE=0` / `_TTL_MS` ghi đè nó. Trong bộ nhớ theo từng lần chạy quét (web-ui không có hợp đồng cache trên đĩa) — một điểm lệch được ghi nhận.
+
+### Đã sửa
+
+- **Ngày xuất bản trên bốn bảng (#6274)** — remoteok, remotive, workingnomads và IBM nay phát ngày xuất bản, nên bộ lọc «Posted within» hoạt động trên các bảng này; timestamp naive của remotive được chuẩn hóa UTC (bug tuổi tính theo từng máy của nó từng xảy ra thật), còn `_source` của IBM giờ thực sự yêu cầu `dcdate`.
+- **Khóa portals.yml sai chính tả bị từ chối (#6107)** — lần quét EN nay ném lỗi có tên (file + khóa + gợi ý khóa gần nhất, Levenshtein ≤ 2) trước mọi fetch, thay vì âm thầm bỏ qua `titel_filter:`.
+- **getro tiếp tục bước đi qua ghim featured cũ (#6406)** — bài đăng pinned đã cũ vẫn bị loại nhưng không còn chấm dứt phân trang; bước đi kết thúc trên một trang ngắn thật.
+
+### Ghi chú
+
+- Cố ý không làm: bộ lọc seen của RU scanner chưa nhận biết ngôn ngữ và đường dẫn parse portals của nó chưa chạy cổng kiểm tra khóa sai chính tả (hand-off được ghi trong wave spec — chưa có bảng RU nào phát các hàng theo ngôn ngữ); remoteok giữ chuỗi ngày mang offset thay vì chuẩn hóa UTC (shape sống của nó là tất định). Tests 7096 → **7243**; Playwright 173 pass / 0 fail / 1 opt-in skip; sổ đăng ký **129 = 124 EN + 5 RU · 124 adapters** (tất cả cổng đếm được tái tạo từ sổ đăng ký sống).
+## [1.266.0] — 2026-11-01
+### Đã thêm
+
+- **Các phiên bản ngôn ngữ Personio ngừng nuốt nhau (CAR-223: parent #4789 + #5044 + #5285)** — khối bị trì hoãn được thực thi thành một bản phát hành riêng. **Scan-side (#4789)**: `scan_history.dedup_include_language: true` (opt-in nghiêm ngặt — OFF là đồng nhất từng byte) làm các phiên bản ngôn ngữ của một bài đăng sống sót qua dedup nhờ cơ chế biến thể seen-history (`languageFormsFromUrl` / `recordUrlVariant` / `isUnseenLanguageVersion`); khóa chuẩn tách bỏ các tham số `language/lang/locale`. **preferred_languages (#5285)**: sắp các hàng phiên bản của một bài đăng theo ưu tiên-trước (ổn định, khi hòa thì theo thứ tự provider) — độc lập với công tắc (OFF giữ phiên bản ưu tiên, ON giữ mọi phiên bản theo thứ tự đó), kèm bản port `validatePreferredLanguages` của validate-portals. **fan-out personio (#5044)**: trang careers được fetch không còn ép `?language=en` (`?language=xx` riêng của tenant được tôn trọng) và phát một hàng cho mỗi phiên bản ngôn ngữ với URL mang `language` + `?language=<code>`; `dedupIncludeLanguage` thêm các fetch theo ngôn ngữ (trần 5, có nhịp); các fallback /xml và job-link không đổi. **recruitee** nhận cách phát `language` + `preferred_languages` tương tự (từ opts hoặc mục). Các helper dùng chung nằm tại `server/lib/language-preferences.mjs`.
+
+### Ghi chú
+
+- Hand-off được ghi, cố ý không làm: bộ lọc seen của RU scanner chưa nhận biết ngôn ngữ và chưa có bảng RU nào phát các hàng theo ngôn ngữ; mirror `url-key.js` phía client và việc nối kiểm tra xác thực trên tuyến portals vẫn mở. Tests 7096 → **7203**; sổ đăng ký không đổi 125 = 120 EN + 5 RU · 120 adapters.
 ## [1.265.0] — 2026-11-01
 ### Đã thêm
 

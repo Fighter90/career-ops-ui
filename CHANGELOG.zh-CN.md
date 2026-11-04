@@ -9,6 +9,33 @@
 ---
 
 
+## [1.267.0] — 2026-11-04
+
+### 新增
+
+- **四个新的扫描来源 — GermanTechJobs、Darwinbox、Keka、ApplicantPro/isolved（注册表 125 → 129 = 124 EN + 5 RU · 124 adapters）** — 针对 career-ops @ `7d8feb6d` 的第二波 parent-sync（87 个上游提交）。**GermanTechJobs**（#6346）：`germantechjobs.de/rss` 的全板 RSS（单次请求约 626 条）；雇主是标题中最后一个 `" @ "` 段 — 没有该段的标题被丢弃，绝不归在该板名下；仅支持显式 `provider:` 选择。**Darwinbox**（#6416）：`<tenant>.darwinbox.in` 背后的零认证 `alljobs` JSON，公司 id 来自招聘 URL，分页 POST 遍历（50/页，`max_pages` 20/200），短页停止点读取来源自身的行数。**Keka**（#6199）：两个请求 — 先是 `redirect:'manual'` 的招聘外壳页，其脚本里写明 feed UUID（未知租户 302 到 `TenantNotFound.html`，读作具名 404），随后一个 embed-jobs 数组取回整个开放职位清单。**ApplicantPro / isolved**（#6252）：从 bootstrap 取数字型 `domainId`，然后是 `{success, data:{jobs, jobCount}}`；`jobCount > rows` 时警告清单不完整；按需启用 `applicantpro: { fetchDetails: true }` 时以 250 ms 节流从 JSON-LD 丰富详情。
+- **ETag 板响应复用（#6105）** — 在同一次扫描内，15 分钟内抓取过的板响应原样复用，更旧的以 `If-None-Match` 重新验证（304 时保留响应体）；缓存键覆盖 method + URL + 认证头 + 请求体，重叠读取合并到进行中的同一 promise，`CAREER_OPS_HTTP_CACHE=0` / `_TTL_MS` 可覆盖。内存缓存、仅限每次扫描运行（web-ui 没有磁盘缓存契约）— 已记录为偏差。
+
+### 修复
+
+- **四个板的发布日期（#6274）** — remoteok、remotive、workingnomads 与 IBM 现在输出发布日期，「Posted within」过滤器在这些板上生效；remotive 的无时区时间戳按 UTC 归一（其按机器而异的日期 bug 是线上真实存在的），IBM 的 `_source` 现在真正请求 `dcdate`。
+- **拼写错误的 portals.yml 键被拒绝（#6107）** — EN 扫描现在会在任何抓取之前抛出具名错误（文件 + 键 + 最近键建议，Levenshtein ≤ 2），而不是静默忽略 `titel_filter:`。
+- **getro 继续遍历越过旧的精选置顶（#6406）** — 置顶的过期职位仍然被丢弃，但不再终止分页；遍历在真正的短页处结束。
+
+### 备注
+
+- 有意未做：RU 扫描器的 seen 过滤器不具备语言感知，其 portals 解析路径也不运行拼错键关卡（交接已记录在浪潮 spec 中 — 目前尚无 RU 板按语言输出行）；remoteok 保留带偏移量的日期字符串而不做 UTC 归一（其线上形状是确定的）。测试 7096 → **7243**；Playwright 173 pass / 0 fail / 1 opt-in skip；注册表 **129 = 124 EN + 5 RU · 124 adapters**（全部计数关卡由活注册表再生）。
+
+## [1.266.0] — 2026-11-01
+
+### 新增
+
+- **Personio 语言版本不再互相吞噬（CAR-223：父项目 #4789 + #5044 + #5285）** — 这份此前推迟的提交栈，作为独立交付执行。**扫描侧（#4789）**：`scan_history.dedup_include_language: true`（严格 opt-in — 关闭时行为字节级不变）让同一职位的各语言版本经 seen-history 变体机制在去重后存活（`languageFormsFromUrl` / `recordUrlVariant` / `isUnseenLanguageVersion`）；规范键剥离 `language/lang/locale` 参数。**preferred_languages（#5285）**：把一个职位的版本行按偏好在前排序（稳定排序，平局时按 provider 顺序）— 与该开关相互独立（关闭时保留偏好版本，开启时按该顺序保留每个版本），并移植了 validate-portals 的 `validatePreferredLanguages`。**personio 扇出（#5044）**：招聘页抓取不再强制 `?language=en`（尊重租户自身的 `?language=xx`），并为每个语言版本输出一行，附 `language` 与 `?language=<code>` URL；`dedupIncludeLanguage` 增加按语言的抓取（上限 5，带节流）；/xml 与职位链接回退保持不变。**recruitee** 获得相同的 `language` 输出 + `preferred_languages`（opts 或条目）。共享辅助函数位于 `server/lib/language-preferences.mjs`。
+
+### 备注
+
+- 交接已记录，有意未做：RU 扫描器的 seen 过滤器不具备语言感知，且目前尚无 RU 板按语言输出行；客户端 `url-key.js` 镜像与 portals 路由的校验接线仍待完成。测试 7096 → **7203**；注册表不变 125 = 120 EN + 5 RU · 120 adapters。
+
 ## [1.265.0] — 2026-11-01
 ### 新增
 

@@ -9,21 +9,21 @@ _ग़ैर-आधिकारिक UI — career-ops / santifer से न �
 
 🌐 **वेबसाइट: [cvstart.org](https://cvstart.org)** — बहुभाषी लैंडिंग + यूज़र गाइड (स्रोत [`site/`](site/) में)।
 
-[![tests](https://img.shields.io/badge/tests-7135%20passed-brightgreen)](#tests)
+[![tests](https://img.shields.io/badge/tests-7243%20passed-brightgreen)](#tests)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#tests)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#tests)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#requirements)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.265.0 स्कैन स्रोत Apple और Bulldogjob (रजिस्ट्री 125 = 120 EN + 5 RU), IBM पेजिनेशन री-वर्क, सुधार justjoin/jobvite/liveness (parent-sync @ fe857ecf)।
+[![release](https://img.shields.io/badge/release-v1.267.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.267.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 नवीनतम रिलीज़ — v1.264.3** — **रेट-लिमिट हार्डनिंग अब हर म्यूटेटिंग एंडपॉइंट को कवर करती है, CAR-141 कॉपी कन्फर्मेशन के लिए 2 s टाइमर जोड़ता है, और हेल्प गाइड सभी 19 भाषाओं में अपडेट होती है। टेस्ट 7082 → 7096।**
+> **🆕 नवीनतम रिलीज़ — v1.267.0** — चार नए स्कैन स्रोत — GermanTechJobs, Darwinbox, Keka, ApplicantPro/isolved (रजिस्ट्री 129 = 124 EN + 5 RU) — ETag से बोर्ड-प्रतिक्रिया पुनःउपयोग, चार बोर्डों पर तारीखें, portals.yml की गलत स्पेलिंग वाली कुंजी अब ज़ोर से विफल होती है, getro पुराने फ़ीचर्ड पिन के आगे चलता है (parent-sync @ 7d8feb6d)। Tests 7096 → 7243।
 
 
 >
-> **पिछला — v1.264.3** — **साइडबार ग्रुप हेडर ट्रंकेशन अनुबंध में शामिल होते हैं (ellipsis + स्थानीयकृत टूलटिप्स), cvstart.org की help/FAQ कॉपी अब सभी 19 भाषाओं में अनूदित आती है, और रिलीज़ समीक्षा 0 HIGH फाइंडिंग के साथ आती है — अगली वेव के लिए parent-sync पोर्ट-लिस्ट दर्ज होती है। टेस्ट 7081 → 7082।**
+> **पिछला — v1.266.0** — personio language-dedup (CAR-223): एक पोस्टिंग के भाषा-वर्शन scan_history.dedup_include_language के पीछे dedup से बच जाते हैं, preferred_languages क्रम, personio/recruitee में प्रति-भाषा पंक्तियाँ। Tests 7096 → 7203।
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -427,7 +427,7 @@ career-ops-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 7096 यूनिट + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (बेसलाइन @ v1.264.3)
+└─ tests/                    # 7243 यूनिट + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (बेसलाइन @ v1.267.0)
    ├─ parsers.test.mjs       # markdown / pipeline / report पार्सर (प्योर फ़ंक्शन)
    ├─ api.test.mjs           # हर एंडपॉइंट, एफ़ेमरल सर्वर, कोई नेटवर्क नहीं
    ├─ {ru,en}-scanner.test.mjs   # मॉक्ड fetch
@@ -558,7 +558,7 @@ event: error    data: { message }
 ## टेस्ट
 
 ```bash
-npm test                       # 7096 यूनिट/इंटीग्रेशन टेस्ट
+npm test                       # 7243 यूनिट/इंटीग्रेशन टेस्ट
 npm run test:e2e               # 21 स्मोक e2e (अपना सर्वर खुद बूट करता है)
 npm run test:e2e:full          # 23 व्यापक e2e
 npm run test:e2e:browser       # 176 Playwright ब्राउज़र (smoke + full-cycle + forms + locale-sweep ×19 + theme)
@@ -567,7 +567,7 @@ npm run test:coverage          # `npm test` जैसा ही, साथ म�
 
 | सूट                       | टेस्ट | क्या                                                                                                       |
 | --------------------------- | ----- | ---------------------------------------------------------------------------------------------------------- |
-| `node --test tests/*.test.mjs` (यूनिट + इंटीग्रेशन) |   **7135** | हर एंडपॉइंट, एफ़ेमरल सर्वर, कोई नेटवर्क नहीं। 490 फ़ाइलें: parsers, scanners (मॉक्ड), runners, anthropic/openai, सुरक्षा हेडर, XSS, JD सैनिटाइज़, URL वैलिडेशन, i18n पैरिटी, + v1.55→v1.56 UX-फ़िक्स सूट। |
+| `node --test tests/*.test.mjs` (यूनिट + इंटीग्रेशन) |   **7243** | हर एंडपॉइंट, एफ़ेमरल सर्वर, कोई नेटवर्क नहीं। 490 फ़ाइलें: parsers, scanners (मॉक्ड), runners, anthropic/openai, सुरक्षा हेडर, XSS, JD सैनिटाइज़, URL वैलिडेशन, i18n पैरिटी, + v1.55→v1.56 UX-फ़िक्स सूट। |
 | `tests/e2e.mjs` (स्मोक)      | 21 | Playwright हेडलेस: हर राउट रेंडर होता है, बुनियादी फ़्लो।                                                     |
 | `tests/e2e-comprehensive.mjs` | 23 | पूर्ण Playwright वॉकथ्रू: 11 राउट + 12 फ़ंक्शनल फ़्लो।                                              |
 | `npm run test:e2e:browser` (`playwright-smoke` + `playwright-full-cycle` + `playwright-forms` + `playwright-locale-sweep`) | **176** | ब्राउज़र-ड्रिवन: डैशबोर्ड रेंडर, नेविगेशन, भाषा स्विच, 404, health, tracker राउंड-ट्रिप, pipeline जोड़ना + अमान्य-URL स्वीप, reports, evaluate मैनुअल फ़ॉलबैक, config कीज़ मास्क्ड, CV PUT XSS स्ट्रिप, pipeline preview 400, auto-pipeline SSE। |

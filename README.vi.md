@@ -7,21 +7,21 @@
 
 _Giao diện không chính thức — không liên kết với career-ops / santifer, cũng không được họ chứng thực._
 
-[![tests](https://img.shields.io/badge/tests-7135%20passed-brightgreen)](#kiểm-thử)
+[![tests](https://img.shields.io/badge/tests-7243%20passed-brightgreen)](#kiểm-thử)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#kiểm-thử)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#kiểm-thử)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#yêu-cầu)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.265.0 nguồn quét Apple và Bulldogjob (sổ 125 = 120 EN + 5 RU), tái cấu trúc phân trang IBM, bản sửa justjoin/jobvite/liveness (parent-sync @ fe857ecf).
+[![release](https://img.shields.io/badge/release-v1.267.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.267.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Bản phát hành mới nhất — v1.264.3** — **Hạn-chế-tốc-độ được-củng-cố trên mọi endpoint thay-đổi, CAR-141 thêm bộ-hẹn-xác-nhận-sao-chép 2 s, và trợ-giúp được-cập-nhật qua cả 19 ngôn-ngữ. Tests 7082 → 7096.**
+> **🆕 Bản phát hành mới nhất — v1.267.0** — bốn nguồn quét mới — GermanTechJobs, Darwinbox, Keka, ApplicantPro/isolved (sổ 129 = 124 EN + 5 RU) — tái sử dụng phản hồi bảng qua ETag, ngày trên bốn bảng, khóa portals.yml gõ sai nay thất bại ồn ào, getro đi qua các ghim nổi cũ (parent-sync @ 7d8feb6d). Tests 7096 → 7243.
 
 
 >
-> **Bản trước — v1.264.3** — **Các-tiêu-đề-nhóm-sidebar gia-nhập-điều-ước-cắt-bớt (ellipsis + tooltip-bản-địa-hóa), văn-bản-help/FAQ-của-cvstart.org giờ-ra-mắt-đã-dịch-trong-cả-19-ngôn-ngữ, và rà-soát-phát-hành được-đưa-vào-với-0-phát-hiện-HIGH — danh-sách-port-parent-sync được-ghi-lại cho-đợt-sóng-kế-tiếp. Tests 7081 → 7082.**
+> **Bản trước — v1.266.0** — personio language-dedup (CAR-223): các phiên bản ngôn ngữ của một bài đăng sống sót qua dedup sau scan_history.dedup_include_language, thứ tự preferred_languages, hàng theo ngôn ngữ trong personio/recruitee. Tests 7096 → 7203.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -205,7 +205,7 @@ web-ui/
 │  ├─ sdd/{SDD-GUIDE,CONVENTIONS}.md
 │  ├─ architecture/{OVERVIEW,SERVER,FRONTEND,API,DATA-FLOWS}.md
 │  └─ reviews/REVIEW-*.md
-└─ tests/                    # 7135 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.265.0)
+└─ tests/                    # 7243 unit + 176 Playwright + 23/23 e2e:full + 21 e2e:smoke (baseline @ v1.267.0)
    ├─ parsers.test.mjs       # bộ-phân-tách-markdown / pipeline / báo-cáo (hàm-thuần)
    ├─ api.test.mjs           # mọi-endpoint, máy-chủ-ephemeral, không-mạng
    ├─ {ru,en}-scanner.test.mjs   # fetch-mocked

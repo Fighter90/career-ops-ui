@@ -24,6 +24,7 @@
 import { promises as dns } from 'node:dns';
 import { isIP } from 'node:net';
 import { isPrivateOrLoopbackHost } from './security.mjs';
+import { cachedBoardText } from './board-response-cache.mjs';
 
 /**
  * Test-only resolver hook (mirrors safe-fetch.mjs `_setLookup`): a suite can
@@ -181,16 +182,46 @@ export function withPinnedEncoding(headers) {
 export const REDIRECT_REFUSAL_CAUSE_MESSAGE = 'unexpected redirect';
 
 /**
+ * Case-insensitive single-header read off a plain-object header bag (the
+ * contract in this module: caller headers are plain objects; a `Headers`
+ * instance would silently spread to nothing under `withPinnedEncoding`).
+ */
+function headerValue(headers, name) {
+  for (const [k, v] of Object.entries(headers || {})) {
+    if (k.toLowerCase() === name) return v;
+  }
+  return null;
+}
+
+/**
+ * The real fetch behind the board cache for {@link fetchJson}: identical
+ * status/shape handling to the helper's historic body, plus the conditional
+ * revalidation the cache adds — when rechecking, the saved ETag rides the
+ * request as If-None-Match and a 304 is the answer "unchanged", not a failed
+ * board (parent #6105). The parsed JSON is validated HERE, before the cache
+ * sees it, so a body that does not parse is never saved.
+ *
  * @param {typeof fetch} fetchImpl
  * @param {string} url
- * @param {{ method?: string, headers?: Record<string,string>, body?: string,
- *           signal?: AbortSignal, redirect?: 'error'|'follow'|'manual' }} [opts]
- * @returns {Promise<any>}
+ * @param {object} opts the caller's options, untouched
+ * @param {{ ifNoneMatch: string|null }} conditional
+ * @returns {Promise<{ body: any, etag: string|null, noStore?: boolean } | { notModified: true }>}
  */
-export async function fetchJson(fetchImpl, url, opts = {}) {
+async function loadJsonBoard(fetchImpl, url, opts, conditional) {
   const { method = 'GET', headers = {}, body, signal, redirect = 'error' } = opts;
+  const inm = conditional?.ifNoneMatch;
+  const requestHeaders = inm && headerValue(headers, 'if-none-match') == null
+    ? { ...headers, 'if-none-match': inm }
+    : headers;
+  const acceptNotModified = headerValue(requestHeaders, 'if-none-match') != null;
   await guardResolvedHost(fetchImpl, url);
-  const res = await fetchImpl(url, { method, headers: withPinnedEncoding(headers), body, signal, redirect });
+  const res = await fetchImpl(url, { method, headers: withPinnedEncoding(requestHeaders), body, signal, redirect });
+  if (acceptNotModified && res.status === 304) {
+    // Release the unread body before reusing the saved one (undici pins the
+    // socket until the body is consumed or cancelled).
+    await res.body?.cancel?.().catch(() => {});
+    return { notModified: true };
+  }
   if (!res.ok) {
     const err = new Error(`HTTP ${res.status} (${url})`);
     err.status = res.status;
@@ -201,13 +232,30 @@ export async function fetchJson(fetchImpl, url, opts = {}) {
     throw err;
   }
   try {
-    return await res.json();
+    const data = await res.json();
+    const cacheControl = res.headers?.get?.('cache-control') || '';
+    return {
+      body: data,
+      etag: res.headers?.get?.('etag'),
+      noStore: cacheControl.toLowerCase().includes('no-store'),
+    };
   } catch (e) {
     // A 2xx that isn't JSON (e.g. an HTML error/maintenance page served with
     // status 200) would otherwise surface as a bare SyntaxError. Wrap it so the
     // scanner's per-source error log says which endpoint misbehaved.
     throw new Error(`non-JSON 2xx response from ${url}: ${e.message}`);
   }
+}
+
+/**
+ * @param {typeof fetch} fetchImpl
+ * @param {string} url
+ * @param {{ method?: string, headers?: Record<string,string>, body?: string,
+ *           signal?: AbortSignal, redirect?: 'error'|'follow'|'manual' }} [opts]
+ * @returns {Promise<any>}
+ */
+export async function fetchJson(fetchImpl, url, opts = {}) {
+  return cachedBoardText(url, opts, (u, o, conditional) => loadJsonBoard(fetchImpl, u, o, conditional));
 }
 
 /**
@@ -231,9 +279,34 @@ export async function fetchJson(fetchImpl, url, opts = {}) {
  * @returns {Promise<string>}
  */
 export async function fetchText(fetchImpl, url, opts = {}) {
+  return cachedBoardText(url, opts, (u, o, conditional) => loadTextBoard(fetchImpl, u, o, conditional));
+}
+
+/**
+ * The real fetch behind the board cache for {@link fetchText} — the text
+ * sibling of {@link loadJsonBoard}. Same conditional revalidation (If-None-Match
+ * in, 304 → `{ notModified: true }`), same exact status/`.location`/`.retryAfter`
+ * shapes as the helper's historic body.
+ *
+ * @param {typeof fetch} fetchImpl
+ * @param {string} url
+ * @param {object} opts the caller's options, untouched
+ * @param {{ ifNoneMatch: string|null }} conditional
+ * @returns {Promise<{ body: string, etag: string|null, noStore?: boolean } | { notModified: true }>}
+ */
+async function loadTextBoard(fetchImpl, url, opts, conditional) {
   const { method = 'GET', headers = {}, body, signal, redirect = 'error' } = opts;
+  const inm = conditional?.ifNoneMatch;
+  const requestHeaders = inm && headerValue(headers, 'if-none-match') == null
+    ? { ...headers, 'if-none-match': inm }
+    : headers;
+  const acceptNotModified = headerValue(requestHeaders, 'if-none-match') != null;
   await guardResolvedHost(fetchImpl, url);
-  const res = await fetchImpl(url, { method, headers: withPinnedEncoding(headers), body, signal, redirect });
+  const res = await fetchImpl(url, { method, headers: withPinnedEncoding(requestHeaders), body, signal, redirect });
+  if (acceptNotModified && res.status === 304) {
+    await res.body?.cancel?.().catch(() => {});
+    return { notModified: true };
+  }
   if (!res.ok) {
     const err = new Error(`HTTP ${res.status} (${url})`);
     err.status = res.status;
@@ -243,7 +316,12 @@ export async function fetchText(fetchImpl, url, opts = {}) {
     err.retryAfter = res.headers?.get?.('retry-after') ?? null;
     throw err;
   }
-  return await res.text();
+  const cacheControl = res.headers?.get?.('cache-control') || '';
+  return {
+    body: await res.text(),
+    etag: res.headers?.get?.('etag'),
+    noStore: cacheControl.toLowerCase().includes('no-store'),
+  };
 }
 
 // Statuses whose response has no body — reading .text() on them is a no-op.
