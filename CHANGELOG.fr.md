@@ -12,6 +12,18 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.267.1] — 2026-11-04
+
+### Corrigé
+
+- **Réparation du train de releases (les gates CI de v1.267.0)** — la chaîne de comptage des tests dans PROJECT-CONTEXT ne casse plus à la tête de v1.267.0 (le format flèche que l'eval grader matche), les prompts QA sont réorganisés (un prompt vivant par release, v1.266.0 archivé) et la couverture par fichier est relevée au-dessus du ratchet 98/90 : le renderer de salaire d'applicantpro perd un fallthrough inatteignable (salaryRangeOf ne produit, de façon démontrable, que undefined, {min}, {max} ou {min,max}) avec les branches unilatérales ≥/≤ désormais épinglées à travers le flux fetch, et la suite board-response-cache épingle le contournement no-store, le 304 fourni par l'appelant contre un board non sauvegardé et l'éviction MAX_ENTRIES.
+- Tests : le compte en direct est **7395** (les suites de la vague v1.266.0/1.267.0 embarquent plus de specs que ne le suivaient les notes antérieures — la chaîne est ré-ancrée au plancher mesuré : 7392 après la vague, + 3 tests de garde dans ce patch) ; couverture 98.51 lignes / 90.35 branches.
+
+### Notes
+- Le tag v1.267.0 reste pointé sur le commit rouge du merge — non re-pointé (le serveur refuse les tags re-pointés) ; v1.267.1 est le véhicule de déploiement.
+
+- Réparation en patch du train v1.267.0 : gates CI au vert, l'arbre du code n'a pas changé en substance.
+
 ## [1.267.0] — 2026-11-04
 ### Ajouté
 

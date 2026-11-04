@@ -8,6 +8,18 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.267.1] — 2026-11-04
+
+### Corrigido
+
+- **Reparo do trem de releases (os gates de CI do v1.267.0)** — a cadeia de contagem de testes no PROJECT-CONTEXT não quebra mais na cabeça do v1.267.0 (o formato de seta que o eval grader casa), os prompts de QA são reorganizados (um prompt vivo por release, v1.266.0 arquivado) e a cobertura por arquivo sobe acima do ratchet 98/90: o renderizador de salário do applicantpro perde um fallthrough inalcançável (salaryRangeOf devolve, de forma demonstrável, undefined, {min}, {max} ou {min,max}) com os ramos unilaterais ≥/≤ agora fixados através do fluxo de fetch, e a suíte board-response-cache fixa o bypass de no-store, o 304 fornecido pelo chamador contra um board não salvo e a expulsão em MAX_ENTRIES.
+- Testes: a contagem ao vivo é **7395** (as suítes da onda v1.266.0/1.267.0 carregam mais specs do que as notas anteriores acompanharam — a cadeia é re-ancorada no piso medido: 7392 após a onda, + 3 testes de gate neste patch); cobertura 98.51 linha / 90.35 ramo.
+
+### Notas
+- A tag v1.267.0 permanece apontando para o commit vermelho do merge — não é re-apontada (o servidor recusa tags re-apontadas); v1.267.1 é o veículo de deploy.
+
+- Reparo em patch do trem v1.267.0: gates de CI verdes, a árvore de código não mudou em substância.
+
 ## [1.267.0] — 2026-11-04
 
 ### Adicionado

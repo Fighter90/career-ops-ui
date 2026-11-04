@@ -6,6 +6,16 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 ---
 
+## [1.267.1] — 2026-11-04
+
+### Fixed
+
+- **Release-train repair (v1.267.0's CI gates)** — the PROJECT-CONTEXT test-count chain no longer breaks at the v1.267.0 head (the arrow format the eval grader matches), the QA prompts are re-organized (one live prompt per release, v1.266.0 archived), and per-file coverage is raised above the 98/90 ratchet: the applicantpro salary renderer loses an unreachable fallthrough (salaryRangeOf provably yields undefined, {min}, {max} or {min,max}) with the one-sided ≥/≤ branches now pinned through the fetch flow, and the board-response-cache suite pins the no-store bypass, the caller-supplied 304 against an unsaved board, and the MAX_ENTRIES eviction.
+- Tests: the live count is **7395** (the v1.266.0/1.267.0 wave suites carry more specs than the earlier notes tracked — the chain is re-pinned to the measured floor: 7392 after the wave, + 3 gate tests in this patch); coverage 98.51 line / 90.35 branch.
+
+### Notes
+- The v1.267.0 tag is left pointing at the red merge commit — not re-pointed (the server refuses re-pointed tags); v1.267.1 is the deploy vehicle.
+
 ## [1.267.0] — 2026-11-04
 
 ### Added

@@ -13,6 +13,18 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.267.1] — 2026-11-04
+
+### Corregido
+
+- **Reparación del tren de releases (los gates de CI de v1.267.0)** — la cadena de conteos de tests en PROJECT-CONTEXT ya no se rompe en la cabecera de v1.267.0 (el formato de flecha que matchea el eval grader), los prompts de QA se reorganizan (un prompt vivo por release, v1.266.0 archivado) y la cobertura por archivo se eleva por encima del ratchet 98/90: el renderizador de salario de applicantpro pierde un fallthrough inalcanzable (salaryRangeOf devuelve, de forma demostrable, undefined, {min}, {max} o {min,max}) con las ramas unilaterales ≥/≤ ahora fijadas a través del flujo de fetch, y la suite board-response-cache fija el bypass de no-store, el 304 suministrado por el llamador contra un board sin guardar y la expulsión en MAX_ENTRIES.
+- Pruebas: el recuento en vivo es **7395** (las suites de la ola v1.266.0/1.267.0 llevan más specs de lo que las notas anteriores seguían — la cadena se re-ancla al nivel medido: 7392 tras la ola, + 3 pruebas de gate en este parche); cobertura 98.51 línea / 90.35 rama.
+
+### Notas
+- La etiqueta v1.267.0 se deja apuntando al commit rojo del merge — no se re-apunta (el servidor rechaza etiquetas re-apuntadas); v1.267.1 es el vehículo de despliegue.
+
+- Reparación en parche del tren v1.267.0: gates de CI en verde, el árbol de código no cambió en lo sustancial.
+
 ## [1.267.0] — 2026-11-04
 
 ### Añadido

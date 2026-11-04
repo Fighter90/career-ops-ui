@@ -6,6 +6,18 @@ Bản dịch: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.267.1] — 2026-11-04
+
+### Đã sửa
+
+- **Sửa chữa tàu release (các cổng CI của v1.267.0)** — chuỗi đếm-test trong PROJECT-CONTEXT không còn đứt ở đầu v1.267.0 (định dạng mũi tên mà eval grader khớp), các prompt QA được tổ chức lại (một prompt sống cho mỗi release, v1.266.0 được lưu trữ), và coverage theo tập tin được nâng lên trên ratchet 98/90: renderer salary của applicantpro bỏ một fallthrough không-tới-được (salaryRangeOf được-chứng-minh chỉ trả về undefined, {min}, {max} hoặc {min,max}) với các nhánh một chiều ≥/≤ giờ được ghim qua fetch flow, và suite board-response-cache ghim bypass no-store, 304 do caller cung cấp đối với board chưa lưu, và eviction ở MAX_ENTRIES.
+- Kiểm thử: số đếm trực tiếp là **7395** (các bộ của đợt v1.266.0/1.267.0 mang nhiều spec hơn những gì các ghi chú trước theo dõi — chuỗi được neo lại vào sàn đo được: 7392 sau đợt, +3 kiểm thử cổng trong bản vá này); độ phủ 98.51 dòng / 90.35 nhánh.
+
+### Ghi chú
+- Tag v1.267.0 được để trỏ đến commit merge đỏ — không trỏ lại (máy chủ từ chối tag bị trỏ lại); v1.267.1 là phương tiện triển khai.
+
+- Sửa lỗi bản vá cho tàu v1.267.0: các cổng CI xanh, cây code không thay đổi về bản chất.
+
 ## [1.267.0] — 2026-11-04
 ### Đã thêm
 

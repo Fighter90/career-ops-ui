@@ -9,6 +9,18 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 ---
 
 
+## [1.267.1] — 2026-11-04
+
+### Rettet
+
+- **Release-togs-reparation (v1.267.0's CI-porte)** — testtællekæden i PROJECT-CONTEXT knækker ikke længere ved v1.267.0-hovedet (pileformatet, som eval graderen matcher), QA-prompterne reorganiseres (én live prompt pr. release, v1.266.0 arkiveret), og dækningen pr. fil løftes over ratchet 98/90: applicantpros salary-renderer mister en uopnåelig fallthrough (salaryRangeOf giver dokumenteret undefined, {min}, {max} eller {min,max}), med de ensidede ≥/≤-grene nu pindet gennem fetch-flowet, og board-response-cache-suitten pinner no-store-bypass, den kalder-leverede 304 mod et ikke-gemt board og MAX_ENTRIES-evictionen.
+- Test: det levende tal er **7395** (suiterne fra v1.266.0/1.267.0-bølgen bærer flere specs end de tidligere noter fulgte — kæden genforankres på det målte gulv: 7392 efter bølgen, + 3 gate-test i denne rettelse); dækning 98.51 linje / 90.35 gren.
+
+### Noter
+- Tagget v1.267.0 efterlades pegende på den røde merge-commit — peges ikke om (serveren afviser ompeggede tags); v1.267.1 er udrulningskøretøjet.
+
+- Patch-reparation af toget v1.267.0: CI-portene er grønne, kodetræet ændrede sig ikke væsentligt.
+
 ## [1.267.0] — 2026-11-04
 
 ### Tilføjet

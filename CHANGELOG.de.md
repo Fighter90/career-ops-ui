@@ -2,6 +2,18 @@
 
 > Dieses Changelog enthält die vollständige Versionsgeschichte. Einträge, die vor der deutschen Lokalisierung (v1.85.0) veröffentlicht wurden, stehen unten im englischen Original — Übersetzung ausstehend; maßgeblich bleibt [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.267.1] — 2026-11-04
+
+### Behoben
+
+- **Release-Zug-Reparatur (die CI-Gates von v1.267.0)** — die Testzähler-Kette in PROJECT-CONTEXT bricht an der v1.267.0-Spitze nicht mehr (das Pfeil-Format, das der Eval-Grader matcht), die QA-Prompts werden neu organisiert (ein Live-Prompt pro Release, v1.266.0 archiviert), und die Coverage pro Datei wird über den 98/90-Ratchet gehoben: der applicantpro-Salary-Renderer verliert einen unerreichbaren Fallthrough (salaryRangeOf erweist sich als nur undefined, {min}, {max} oder {min,max} liefernd), wobei die einseitigen ≥/≤-Zweige jetzt durch den Fetch-Flow gepinnt sind, und die board-response-cache-Suite pinnt den no-store-Bypass, den vom Aufrufer gelieferten 304 gegen ein nicht gespeichertes Board und die MAX_ENTRIES-Verdrängung.
+- Tests: die Live-Zählung ist **7395** (die Suiten der v1.266.0/1.267.0-Welle tragen mehr Specs, als die früheren Notizen verfolgten — die Kette wird auf den gemessenen Boden neu verankert: 7392 nach der Welle, + 3 Gate-Tests in diesem Patch); Abdeckung 98.51 Zeile / 90.35 Zweig.
+
+### Hinweise
+- Der Tag v1.267.0 bleibt auf dem roten Merge-Commit — nicht umgezeigt (der Server lehnt umgezeigte Tags ab); v1.267.1 ist das Deploy-Fahrzeug.
+
+- Patch-Reparatur des Zugs v1.267.0: die CI-Gates sind grün, der Code-Baum hat sich im Wesentlichen nicht geändert.
+
 ## [1.267.0] — 2026-11-04
 ### Neu
 

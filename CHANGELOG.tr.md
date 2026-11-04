@@ -2,6 +2,18 @@
 
 > Bu changelog artık tüm sürüm geçmişini içerir. Türkçe yerelleştirmenin eklenmesinden (v1.85.0) önce yayınlanan girdiler aşağıda İngilizce özgün hâliyle yer alır — çeviri bekliyor; asıl kaynak [🇬🇧 CHANGELOG.md](CHANGELOG.md)'dir.
 
+## [1.267.1] — 2026-11-04
+
+### Düzeltildi
+
+- **Release treni onarımı (v1.267.0'un CI kapıları)** — PROJECT-CONTEXT'teki test-sayım zinciri artık v1.267.0 başında kopmuyor (eval grader'ın eşlediği ok biçimi), QA prompt'ları yeniden düzenlendi (release başına bir canlı prompt, v1.266.0 arşivlendi) ve dosya-başına coverage 98/90 ratchet'ının üzerine çekildi: applicantpro salary renderer'ı ulaşılamaz bir fallthrough kaybediyor (salaryRangeOf kanıtlanabilir biçimde yalnızca undefined, {min}, {max} veya {min,max} üretiyor), tek-taraflı ≥/≤ dalları fetch akışı üzerinden sabitleniyor ve board-response-cache suite'ı no-store bypass'ını, kaydedilmemiş bir board'a karşı çağıranın sağladığı 304'ü ve MAX_ENTRIES tahliyesini sabitliyor.
+- Testler: canlı sayım **7395** (v1.266.0/1.267.0 dalgasının süitleri önceki notların izlediğinden daha fazla spec taşıyor — zincir ölçülen tabana yeniden sabitleniyor: dalgadan sonra 7392, bu yamada +3 kapı testi); kapsam 98.51 satır / 90.35 dal.
+
+### Notlar
+- v1.267.0 etiketi kırmızı merge commit'ini göstermeye bırakılır — yeniden işaretlenmez (sunucu yeniden işaretlenen etiketleri reddeder); v1.267.1 dağıtım aracıdır.
+
+- v1.267.0 treninin yama onarımı: CI kapıları yeşil, kod ağacı özünde değişmedi.
+
 ## [1.267.0] — 2026-11-04
 
 ### Eklendi
