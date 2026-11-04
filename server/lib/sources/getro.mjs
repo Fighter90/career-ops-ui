@@ -39,7 +39,7 @@
  * Host-pinned to api.getro.com + HTTPS + `redirect:'error'` (SSRF-safe). Used by
  * the getro adapter (server/lib/portals/adapters/getro.mjs).
  */
-import { fetchJson, fetchJsonWithRetry, delay } from '../http-json.mjs';
+import { fetchJsonWithRetry, delay } from '../http-json.mjs';
 import { safeGet } from '../safe-fetch.mjs';
 import { withTimeout } from '../fetch-timeout.mjs';
 import { requireArray } from './_shape.mjs';
