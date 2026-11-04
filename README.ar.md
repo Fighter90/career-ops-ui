@@ -10,21 +10,21 @@
 
 _واجهة غير رسمية — لا علاقة لها بـ career-ops / santifer ولا تحظى بموافقتهما._
 
-[![tests](https://img.shields.io/badge/tests-7135%20passed-brightgreen)](#الاختبارات)
+[![tests](https://img.shields.io/badge/tests-7243%20passed-brightgreen)](#الاختبارات)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#الاختبارات)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#الاختبارات)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#المتطلبات)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.265.0 مصدرا مسح Apple و Bulldogjob (السجل 125 = 120 EN + 5 RU)، إعادة هندسة ترقيم IBM، إصلاحات justjoin/jobvite/liveness (parent-sync @ fe857ecf)。
+[![release](https://img.shields.io/badge/release-v1.267.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.267.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 أحدث إصدار — v1.264.3** — **تحصين حدود المعدل (rate-limit) يغطي الآن كل نقاط النهاية المُعدِّلة، ويضيف CAR-141 مؤشر تأكيد نسخ مدته 2 s، وتُحدَّث المساعدة بجميع اللغات التسع عشرة. Tests 7082 → 7096.**
+> **🆕 أحدث إصدار — v1.267.0** — أربعة مصادر مسح جديدة — GermanTechJobs و Darwinbox و Keka و ApplicantPro/isolved (السجل 129 = 124 EN + 5 RU) — إعادة استخدام استجابات اللوحات عبر ETag، تواريخ على أربعة لوحات، مفتاح portals.yml الخاطئ الإملاء يفشل بصوت عالٍ، وgetro يتجاوز الدبابيس المميزة القديمة (parent-sync @ 7d8feb6d). الاختبارات 7096 → 7243.
 
 
 >
-> **السابق — v1.264.3** — **ترويسات مجموعات الشريط الجانبي تنضم إلى عقد القتط (علامة حذف + تلميحات مترجَمة)، ونص المساعدة والأسئلة الشائعة على cvstart.org يُشحن الآن مترجَماً بكل اللغات التسع عشرة، ومراجعة الإصدار تصل بلا نتائج HIGH — وتُسجَّل قائمة نقل مزامنة المشروع الأصلي للموجة التالية. Tests 7081 → 7082.**
+> **السابق — v1.266.0** — personio language-dedup (CAR-223): نسخ اللغة من الوظيفة الواحدة تنجو من إزالة التكرار خلف scan_history.dedup_include_language، وترتيب preferred_languages، وصفوف لكل لغة في personio/recruitee. الاختبارات 7096 → 7203.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -173,7 +173,7 @@ career-ops/
 └─ web-ui/          ← هذا المستودع
    ├─ server/       # Express + 15 وحدة مسارات
    ├─ public/       # vanilla JS SPA — بدون bundler
-   └─ tests/        # 7135 unit + 176 Playwright + 44 e2e (baseline @ v1.265.0)
+   └─ tests/        # 7243 unit + 176 Playwright + 44 e2e (baseline @ v1.267.0)
 ```
 
 <div dir="rtl">
@@ -206,7 +206,7 @@ career-ops/
 </div>
 
 ```bash
-npm test                    # 7096 اختبار وحدة وتكامل
+npm test                    # 7243 اختبار وحدة وتكامل
 npm run test:e2e            # 21 اختبار e2e دخاني
 npm run test:e2e:full       # 23 اختبار e2e شامل
 npm run test:e2e:browser    # 101 اختبار Playwright

@@ -10,6 +10,33 @@
 
 ---
 
+## [1.267.0] — 2026-11-04
+
+### 추가
+
+- **네 개의 새 스캔 소스 — GermanTechJobs, Darwinbox, Keka, ApplicantPro/isolved (레지스트리 125 → 129 = 124 EN + 5 RU · 124 adapters)** — career-ops @ `7d8feb6d` 기준 두 번째 parent-sync 웨이브 (상류 커밋 87개). **GermanTechJobs** (#6346): `germantechjobs.de/rss`의 보드 전역 RSS (요청 한 번에 약 626개 항목); 고용주는 title의 마지막 `" @ "` 세그먼트입니다 — 이 세그먼트가 없는 title은 드롭되며 보드가 고용주로 기록되는 일은 없습니다; 명시적 `provider:` 선택만 지원합니다. **Darwinbox** (#6416): `<tenant>.darwinbox.in` 뒤의 무인증 `alljobs` JSON, 회사 id는 careers URL에서 나오며, POST 페이지네이션 워크 (50/페이지, `max_pages` 20/200) — 짧은 페이지에서의 정지는 소스 자체 행 개수에서 읽습니다. **Keka** (#6199): 두 번의 요청 — `redirect:'manual'` careers 셸의 스크립트가 피드 UUID를 밝혀주고 (알 수 없는 테넌트는 `TenantNotFound.html`로 302되어 이름 붙은 404로 읽힙니다), 이어서 열려 있는 전체 인벤토리를 하나의 embed-jobs 배열로 받습니다. **ApplicantPro / isolved** (#6252): 부트스트랩에서 숫자 `domainId`를 얻은 뒤 `{success, data:{jobs, jobCount}}`; `jobCount > rows`이면 목록이 불완전하다고 경고하고, 옵트인 `applicantpro: { fetchDetails: true }`는 250 ms 페이싱으로 JSON-LD에서 보강합니다.
+- **ETag 보드 응답 재사용 (#6105)** — 한 스캔 안에서 최근 15분 내에 가져온 보드 응답은 그대로 재사용되고, 더 오래된 응답은 `If-None-Match`로 재검증합니다 (304는 본문을 유지); 캐시 키는 method + URL + credential 헤더 + 본문을 커버하고, 겹치는 읽기는 진행 중인 프라미스로 접히며, `CAREER_OPS_HTTP_CACHE=0` / `_TTL_MS`가 이를 오버라이드합니다. 스캔 런별 인메모리입니다 (web-ui에는 온-디스크 캐시 컨트랙트가 없습니다) — 기록된 편차입니다.
+
+### 수정
+
+- **네 보드의 게시일 (#6274)** — remoteok, remotive, workingnomads, IBM이 이제 게시일을 내보내 «Posted within» 필터가 그 보드에서 작동합니다; remotive의 naive 타임스탬프는 UTC로 정규화되고 (기계별로 틀어지는 나이 버그가 실제로 발생 중이었습니다), IBM의 `_source`는 이제 실제로 `dcdate`를 요청합니다.
+- **portals.yml의 오타 키는 거부됩니다 (#6107)** — EN 스캔은 어떤 fetch보다도 먼저 이름 붙은 에러를 throw합니다 (파일 + 키 + 가장 가까운 키 제안, Levenshtein ≤ 2); 조용히 `titel_filter:`를 무시하던 때와는 다릅니다.
+- **getro는 오래된 featured 핀을 지나 계속 걷습니다 (#6406)** — 핀된 오래된 공고는 여전히 드롭되지만 더 이상 페이지네이션을 끝내지 않습니다; 워크는 진짜 짧은 페이지에서 끝납니다.
+
+### 참고
+
+- 의도적으로 하지 않음: RU 스캐너의 seen-필터는 언어를 인식하지 않고 RU 스캐너의 portals 파스 경로는 오타 키 게이트를 실행하지 않습니다 (웨이브 스펙에 핸드오프가 기록됨 — 아직 언어별 행을 내보내는 RU 보드는 없습니다); remoteok는 UTC 정규화 대신 오프셋이 붙은 날짜 문자열을 유지합니다 (라이브 형태가 결정적입니다). Tests 7096 → **7243**; Playwright 173 pass / 0 fail / 1 opt-in skip; 레지스트리 **129 = 124 EN + 5 RU · 124 adapters** (모든 카운트 게이트를 살아있는 레지스트리에서 재생성).
+
+## [1.266.0] — 2026-11-01
+
+### 추가
+
+- **Personio 언어 버전들이 서로를 잡아먹는 일을 멈춥니다 (CAR-223: parent #4789 + #5044 + #5285)** — 미뤄둔 스택을 자체 릴리스로 실행했습니다. **스캔 측 (#4789)**: `scan_history.dedup_include_language: true` (엄격한 옵트인 — OFF는 바이트 단위로 동일)이 seen-history 변형 메커니즘 (`languageFormsFromUrl` / `recordUrlVariant` / `isUnseenLanguageVersion`)을 통해 한 공고의 언어 버전들이 dedup에서 살아남게 만듭니다; 정준 키는 `language/lang/locale` 파라미터를 벗겨냅니다. **preferred_languages (#5285)**: 공고의 버전 행을 선호 버전 우선으로 정렬합니다 (안정 정렬, 동순위에서는 provider 순서) — 스위치와는 독립적입니다 (OFF는 선호 버전을 유지하고, ON은 모든 버전을 그 순서로 유지합니다), validate-portals의 `validatePreferredLanguages` 포트가 함께 제공됩니다. **personio fan-out (#5044)**: careers 페이지를 `?language=en` 강제 없이 가져오고 (테넌트 자체의 `?language=xx`는 존중됩니다) 언어 버전마다 `language` + `?language=<code>` URL로 한 행씩 내보냅니다; `dedupIncludeLanguage`는 언어별 fetch를 추가합니다 (상한 5, 페이싱 적용); /xml과 job-link 폴백은 변함없습니다. **recruitee**는 같은 `language` 방출 + `preferred_languages` (opts 또는 엔트리)를 얻습니다. 공유 헬퍼들은 `server/lib/language-preferences.mjs`에 있습니다.
+
+### 참고
+
+- 핸드오프는 기록됐고, 의도적으로 하지 않음: RU 스캐너의 seen-필터는 언어를 인식하지 않으며 아직 언어별 행을 내보내는 RU 보드는 없습니다; 클라이언트 `url-key.js` 미러와 portals-라우트 검증 연결은 열려 있습니다. Tests 7096 → **7203**; 레지스트리 변경 없음 125 = 120 EN + 5 RU · 120 adapters.
+
 ## [1.265.0] — 2026-11-01
 ### 추가
 

@@ -2,6 +2,33 @@
 
 > Bu changelog artık tüm sürüm geçmişini içerir. Türkçe yerelleştirmenin eklenmesinden (v1.85.0) önce yayınlanan girdiler aşağıda İngilizce özgün hâliyle yer alır — çeviri bekliyor; asıl kaynak [🇬🇧 CHANGELOG.md](CHANGELOG.md)'dir.
 
+## [1.267.0] — 2026-11-04
+
+### Eklendi
+
+- **Dört yeni tarama kaynağı — GermanTechJobs, Darwinbox, Keka, ApplicantPro/isolved (kayıt 125 → 129 = 124 EN + 5 RU · 124 adapter)** — career-ops @ `7d8feb6d` (87 upstream commit) karşısında ikinci parent-sync dalgası. **GermanTechJobs** (#6346): `germantechjobs.de/rss` üzerinden pano-geneli RSS (tek istekte ~626 öğe); işveren başlığın son `" @ "` segmentidir — bir tane içermeyen başlık düşürülür, asla panonun altına kaydedilmez; yalnızca açık `provider:` seçimi. **Darwinbox** (#6416): `<tenant>.darwinbox.in` ardında kimlik-gerektirmeyen `alljobs` JSON'u, şirket id'si careers URL'sinden gelir, POST ile sayfalı yürüyüş (50/sayfa, `max_pages` 20/200), kısa-sayfa durağı kaynağın kendi satır sayısından okunur. **Keka** (#6199): iki istek — feed UUID'sini adlandıran betiği taşıyan `redirect:'manual'` bir careers kabuğu (bilinmeyen bir tenant `TenantNotFound.html`'e 302 döner ve adlandırılmış bir 404 gibi okunur), ardından açık envanterin tamamı tek bir embed-jobs dizisinde. **ApplicantPro / isolved** (#6252): bootstrap'tan sayısal `domainId`, ardından `{success, data:{jobs, jobCount}}`; `jobCount > rows` listenin eksik olduğu konusunda uyarır; isteğe bağlı `applicantpro: { fetchDetails: true }` 250 ms pacing'le JSON-LD'den zenginleştirir.
+- **ETag ile pano yanıtlarının yeniden kullanımı (#6105)** — tek bir tarama içinde son 15 dakikada çekilmiş bir pano yanıtı olduğu gibi yeniden kullanılır ve daha eskileri `If-None-Match` ile yeniden doğrulanır (304 gövdeyi korur); önbellek anahtarı yöntem + URL + kimlik başlıkları + gövdeyi kapsar, üst üste binen okumalar uçuştaki promise'e katlanır, `CAREER_OPS_HTTP_CACHE=0` / `_TTL_MS` bunları override eder. Tarama koşusu başına bellek-içi (web-ui'nin disk-üzeri önbellek sözleşmesi yok) — kayda geçen bir sapma.
+
+### Düzeltildi
+
+- **Dört panoda tarihler (#6274)** — remoteok, remotive, workingnomads ve IBM artık bir yayın tarihi veriyor, böylece «Posted within» filtresi oralarda da çalışıyor; remotive'nin naive zaman damgası UTC'ye normalize ediliyor (makine-başına yaş bug'ı canlıydı), IBM'in `_source`'u gerçekte `dcdate` istiyor.
+- **Yanlış yazılmış bir portals.yml anahtarı reddediliyor (#6107)** — EN taraması artık herhangi bir istekten önce adlandırılmış bir hata fırlatıyor (dosya + anahtar + en yakın anahtar önerisi, Levenshtein ≤ 2), `titel_filter:`'ı sessizce yok saymak yerine.
+- **getro eski bir featured pin'inin ötesinde yürümeye devam ediyor (#6406)** — sabitlenmiş bayat bir ilan hâlâ düşürülüyor ama artık sayfalamayı sonlandırmıyor; yürüyüş gerçek bir kısa sayfada biter.
+
+### Notlar
+
+- Bilinçli olarak yapılmadı: RU tarayıcının seen-filtresi dil-duyarlı değil ve onun portals ayrıştırma yolu yanlış-yazım-anahtarı kapısını çalıştırmıyor (hand-off'lar dalga spesinde kayıtlı — henüz dil-başına satır veren bir RU panosu yok); remoteok, UTC'ye normalize etmek yerine offset taşıyan tarih dizisini tutuyor (canlı şekli deterministik). Testler 7096 → **7243**; Playwright 173 geçti / 0 başarısız / 1 opsiyonel atlandı; kayıt **129 = 124 EN + 5 RU · 124 adapter** (tüm sayaç kapıları canlı kayıttan yeniden üretildi).
+
+## [1.266.0] — 2026-11-01
+
+### Eklendi
+
+- **Personio dil sürümleri birbirini yemeyi bırakıyor (CAR-223: parent #4789 + #5044 + #5285)** — ertelenmiş yığın, kendi sürümü olarak icra edildi. **Tarama tarafı (#4789)**: `scan_history.dedup_include_language: true` (katı opt-in — KAPALI bayt-özdeş) bir ilanın dil sürümlerinin seen-history varyant mekanizması üzerinden dedup'ı atlatmasını sağlar (`languageFormsFromUrl` / `recordUrlVariant` / `isUnseenLanguageVersion`); kanonik anahtar `language/lang/locale` parametrelerini soyar. **preferred_languages (#5285)**: bir ilanın sürüm satırlarını tercih-edilen-önce sıralar (kararlı, eşitlikte sağlayıcı sırası) — anahtardan bağımsız (KAPALI tercih edilen sürümü tutar, AÇIK her sürümü o sırada tutar), validate-portals'in bir `validatePreferredLanguages` portuyla. **personio fan-out (#5044)**: careers sayfası `?language=en` zorlaması olmadan çekilir (bir tenant'ın kendi `?language=xx`'i dikkate alınır) ve her dil sürümü için `language` + `?language=<code>` URL'leriyle bir satır verir; `dedupIncludeLanguage` dil-başına çekimler ekler (tavan 5, pacing'li); /xml ve job-link yedekleri değişmedi. **recruitee** aynı `language` emisyonunu + `preferred_languages`'ı kazanır (opts veya girdi). Paylaşılan yardımcılar `server/lib/language-preferences.mjs` içinde yaşıyor.
+
+### Notlar
+
+- Hand-off'lar kayıtlı, bilinçli olarak yapılmadı: RU tarayıcının seen-filtresi dil-duyarlı değil ve henüz dil-başına satır veren bir RU panosu yok; istemci `url-key.js` aynası ve portals-rota doğrulama bağlantısı açık kalıyor. Testler 7096 → **7203**; kayıt değişmedi 125 = 120 EN + 5 RU · 120 adapter.
+
 ## [1.265.0] — 2026-11-01
 ### Eklendi
 

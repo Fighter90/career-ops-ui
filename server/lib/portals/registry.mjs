@@ -196,6 +196,10 @@ import { trakstarAdapter } from './adapters/trakstar.mjs';
 // exact-host detected; the landing page's Next.js flight payload carries the
 // whole inventory in one request).
 import { deelAdapter } from './adapters/deel.mjs';
+import { applicantproAdapter } from './adapters/applicantpro.mjs';
+import { darwinboxAdapter } from './adapters/darwinbox.mjs';
+import { germantechjobsAdapter } from './adapters/germantechjobs.mjs';
+import { kekaAdapter } from './adapters/keka.mjs';
 import { appleAdapter } from './adapters/apple.mjs';
 import { bulldogjobAdapter } from './adapters/bulldogjob.mjs';
 
@@ -398,6 +402,18 @@ export const ALL_ADAPTERS = [
   // Bulldogjob (parent #6253) — Polish tech board bulldogjob.pl; __NEXT_DATA__
   // listing pages, filters in the path, explicit /page,N on every request.
   bulldogjobAdapter,
+  // ApplicantPro / isolved TA (parent #6252) — tenant.applicantpro.com boards;
+  // domainId off the bootstrap, opt-in JSON-LD detail enrichment.
+  applicantproAdapter,
+  // Darwinbox (parent #6416) — <tenant>.darwinbox.in alljobs JSON, id from the
+  // careers URL, paginated POST walk.
+  darwinboxAdapter,
+  // GermanTechJobs (parent #6346) — board-wide RSS at germantechjobs.de/rss;
+  // explicit provider selection only.
+  germantechjobsAdapter,
+  // Keka (parent #6199) — <tenant>.keka.com embed-jobs feed; identifier off
+  // the careers shell, redirect:'manual' tenant probe.
+  kekaAdapter,
 ];
 
 /**

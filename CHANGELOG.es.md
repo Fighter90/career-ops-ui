@@ -13,6 +13,33 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.267.0] — 2026-11-04
+
+### Añadido
+
+- **Cuatro nuevas fuentes de escaneo — GermanTechJobs, Darwinbox, Keka, ApplicantPro/isolved (registro 125 → 129 = 124 EN + 5 RU · 124 adapters)** — la segunda ola de parent-sync contra career-ops @ `7d8feb6d` (87 commits upstream). **GermanTechJobs** (#6346): RSS de todo el tablero en `germantechjobs.de/rss` (~626 elementos en una sola petición); el empleador es el último segmento ` @ ` del título — un título sin él se descarta, nunca se archiva bajo el tablero; selección solo mediante `provider:` explícito. **Darwinbox** (#6416): JSON `alljobs` sin autenticación detrás de `<tenant>.darwinbox.in`, el id de empresa sale de la URL de carreras, recorrido paginado por POST (50/página, `max_pages` 20/200) con el alto por página corta leído del propio recuento de filas de la fuente. **Keka** (#6199): dos peticiones — una shell de carreras con `redirect:'manual'` cuyo script nombra el UUID del feed (un tenant desconocido redirige 302 a `TenantNotFound.html` y se lee como un 404 con nombre), y después todo el inventario abierto en un único array embed-jobs. **ApplicantPro / isolved** (#6252): el `domainId` numérico del bootstrap y después `{success, data:{jobs, jobCount}}`; `jobCount > rows` avisa que la lista está incompleta; el opt-in `applicantpro: { fetchDetails: true }` enriquece desde JSON-LD con pausa de 250 ms.
+- **Reutilización de respuestas de tablero vía ETag (#6105)** — dentro de un mismo escaneo, una respuesta de tablero obtenida en los últimos 15 minutos se reutiliza tal cual y las más antiguas se revalidan con `If-None-Match` (el 304 conserva el cuerpo); la clave de caché cubre método + URL + cabeceras de credenciales + cuerpo, las lecturas solapadas se pliegan sobre la promesa en vuelo, y `CAREER_OPS_HTTP_CACHE=0` / `_TTL_MS` lo anulan. En memoria por ejecución de escaneo (web-ui no tiene contrato de caché en disco) — desviación registrada.
+
+### Corregido
+
+- **Fechas en cuatro tableros (#6274)** — remoteok, remotive, workingnomads e IBM emiten ahora fecha de publicación, así que el filtro «Posted within» funciona allí; el timestamp naive de remotive se normaliza a UTC (su bug de edad por máquina estaba vivo), y el `_source` de IBM realmente pide `dcdate`.
+- **Una clave mal escrita de portals.yml se rechaza (#6107)** — el escaneo EN lanza ahora un error con nombre (archivo + clave + sugerencia de la clave más cercana, Levenshtein ≤ 2) antes de cualquier petición, en lugar de ignorar en silencio `titel_filter:`.
+- **getro sigue recorriendo más allá de un pin destacado antiguo (#6406)** — una oferta fijada caducada se sigue descartando, pero ya no corta la paginación; el recorrido termina en una página corta real.
+
+### Notas
+
+- Deliberadamente no hecho: el filtro de vistos del escáner RU no distingue idioma y su ruta de parseo de portals no pasa por la puerta de claves mal escritas (hand-offs registrados en la spec de la ola — ningún tablero RU emite aún filas por idioma); remoteok conserva su cadena de fecha con offset en lugar de normalizarla a UTC (su forma viva es determinista). Tests 7096 → **7243**; Playwright 173 pass / 0 fail / 1 opt-in skip; registro **129 = 124 EN + 5 RU · 124 adapters** (todas las puertas de recuento regeneradas desde el registro vivo).
+
+## [1.266.0] — 2026-11-01
+
+### Añadido
+
+- **Las versiones por idioma de Personio dejan de comerse entre sí (CAR-223: parent #4789 + #5044 + #5285)** — la pila aplazada, ejecutada como release propio. **Lado de escaneo (#4789)**: `scan_history.dedup_include_language: true` (strict opt-in — con OFF es byte-idéntico) hace que las versiones por idioma de una misma oferta sobrevivan al dedup vía la maquinaria de variantes del historial de vistos (`languageFormsFromUrl` / `recordUrlVariant` / `isUnseenLanguageVersion`); la clave canónica elimina los parámetros `language/lang/locale`. **preferred_languages (#5285)**: ordena las filas de versiones de una oferta con la preferida primero (estable, orden de proveedor en empates) — independiente del interruptor (con OFF se conserva la versión preferida, con ON se conservan todas en ese orden), con un port `validatePreferredLanguages` de validate-portals. **Fan-out de personio (#5044)**: la página de carreras se pide sin el force `?language=en` (se honra el `?language=xx` propio del tenant) y emite una fila por versión de idioma con URLs `language` + `?language=<code>`; `dedupIncludeLanguage` añade peticiones por idioma (tope 5, con pausa); los fallbacks /xml y job-link sin cambios. **recruitee** gana la misma emisión `language` + `preferred_languages` (opts o entrada). Los helpers compartidos viven en `server/lib/language-preferences.mjs`.
+
+### Notas
+
+- Hand-offs registrados, deliberadamente no hecho: el filtro de vistos del escáner RU no distingue idioma y ningún tablero RU emite aún filas por idioma; el espejo cliente `url-key.js` y el cableado de validación de la ruta de portals siguen abiertos. Tests 7096 → **7203**; registro sin cambios 125 = 120 EN + 5 RU · 120 adapters.
+
 ## [1.265.0] — 2026-11-01
 ### Añadido
 

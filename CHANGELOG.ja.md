@@ -8,6 +8,33 @@
 
 ---
 
+## [1.267.0] — 2026-11-04
+
+### 追加
+
+- **新しいスキャンソース 4 つ — GermanTechJobs、Darwinbox、Keka、ApplicantPro/isolved(レジストリ 125 → 129 = 124 EN + 5 RU · 124 アダプタ)** — career-ops @ `7d8feb6d`(上流 87 コミット)対応の第 2 parent-sync ウェーブ。**GermanTechJobs**(#6346):`germantechjobs.de/rss` のボード全体 RSS(1 リクエストで約 626 件);雇用主は title の最後の `" @ "` セグメント — これを含まない title は、ボード名義で登録される代わりに破棄されます;明示的な `provider:` 選択のみ。**Darwinbox**(#6416):`<tenant>.darwinbox.in` 配下の認証不要の `alljobs` JSON、企業 id は careers URL から取得、(50/ページ、`max_pages` 20/200 の)ページネーション POST ウォークで、短ページの停止判定はソース自身の行数から読み取ります。**Keka**(#6199):2 リクエスト — フィード UUID をスクリプトが指し示す `redirect:'manual'` の careers シェル(未知のテナントは `TenantNotFound.html` へ 302 し、名前付き 404 として読まれる)の後、オープン中の在庫全体を 1 つの embed-jobs 配列として取得。**ApplicantPro / isolved**(#6252):ブートストラップから数値の `domainId` を取得し、次に `{success, data:{jobs, jobCount}}`;`jobCount > rows` ならリストが不完全であることを警告;オプトインの `applicantpro: { fetchDetails: true }` で 250 ms ペーシングの JSON-LD エンリッチ。
+- **ETag によるボードレスポンス再利用(#6105)** — 1 スキャン内で、直近 15 分以内に取得したボードレスポンスはそのまま再利用され、それより古いものは `If-None-Match` で再検証(304 ならボディを保持);キャッシュキーはメソッド + URL + 認証ヘッダー + ボディをカバーし、重なる読み取りは in-flight の promise に集約、`CAREER_OPS_HTTP_CACHE=0` / `_TTL_MS` で上書きできます。スキャン実行ごとのメモリ内保持(web-ui には on-disk キャッシュ契約がない)— 偏差として記録済み。
+
+### 修正
+
+- **4 つのボードの日付(#6274)** — remoteok、remotive、workingnomads、IBM が公開日を出力するようになり、「Posted within」フィルタがこれらのボードで機能します;remotive のタイムゾーンなしタイムスタンプは UTC 正規化され(マシンごとの age バグが実際に発生していました)、IBM の `_source` は実際に `dcdate` を要求します。
+- **portals.yml のスペルミスされたキーは拒否されます(#6107)** — EN スキャンは、これまでのように `titel_filter:` を黙って無視する代わりに、どのフェッチよりも前に名前付きエラーを throw します(ファイル + キー + 最近傍キーの候補、Levenshtein ≤ 2)。
+- **getro は古い featured ピンの先へ歩き続けます(#6406)** — ピン留めされた期限切れ求人は依然として破棄されますが、もはやページネーションを終端させません;ウォークは実際の短いページで終わります。
+
+### メモ
+
+- 意図的に見送り:RU スキャナの seen-filter は言語非対応のままで、その portals パース経路はスペルミスキーゲートを実行しません(ハンドオフはウェーブスペックに記録 — RU ボードはまだ言語ごとの行を出力しないため);remoteok はオフセット付きの date 文字列のまま UTC 正規化しません(ライブの形状は決定的です)。Tests 7096 → **7243**;Playwright 173 pass / 0 fail / 1 opt-in skip;レジストリ **129 = 124 EN + 5 RU · 124 アダプタ**(全カウントゲートを生レジストリから再生成)。
+
+## [1.266.0] — 2026-11-01
+
+### 追加
+
+- **Personio の言語バージョンが互いに食い合わなくなりました(CAR-223:parent #4789 + #5044 + #5285)** — 先送りされていたスタックを独自のリリースとして実行。**スキャン側(#4789)**:`scan_history.dedup_include_language: true`(厳密なオプトイン — OFF はバイト単位で同一)により、seen-history バリアント機構(`languageFormsFromUrl` / `recordUrlVariant` / `isUnseenLanguageVersion`)を通じて一つの求人の言語バージョンが重複排除を生き延びます;正規キーは `language/lang/locale` パラメータを剥がします。**preferred_languages(#5285)**:求人のバージョン行を優先順に並べます(安定、同順はプロバイダ順)— スイッチとは独立(OFF は優先バージョンを保持、ON はすべてのバージョンをその順で保持)、validate-portals の移植版 `validatePreferredLanguages` 付き。**personio fan-out(#5044)**:careers ページは `?language=en` の強制なしで取得され(テナント自身の `?language=xx` は尊重)、`language` + `?language=<code>` URL 付きで言語バージョンごとに 1 行を出力;`dedupIncludeLanguage` は言語ごとのフェッチを追加(上限 5、ペーシングあり);/xml と job-link のフォールバックは変更なし。**recruitee** も同じ `language` 出力 + `preferred_languages`(opts またはエントリ)を得ます。共有ヘルパーは `server/lib/language-preferences.mjs` にあります。
+
+### メモ
+
+- ハンドオフを記録、意図的に見送り:RU スキャナの seen-filter は言語非対応のままで、RU ボードはまだ言語ごとの行を出力しません;クライアントの `url-key.js` ミラーと portals ルートの検証配線は未着手のままです。Tests 7096 → **7203**;レジストリ変更なし:125 = 120 EN + 5 RU · 120 アダプタ。
+
 ## [1.265.0] — 2026-11-01
 ### 追加
 

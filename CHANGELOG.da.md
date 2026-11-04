@@ -9,6 +9,33 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 ---
 
 
+## [1.267.0] — 2026-11-04
+
+### Tilføjet
+
+- **Fire nye scan-kilder — GermanTechJobs, Darwinbox, Keka, ApplicantPro/isolved (registret 125 → 129 = 124 EN + 5 RU · 124 adapters)** — den anden parent-sync-bølge mod career-ops @ `7d8feb6d` (87 upstream-commits). **GermanTechJobs** (#6346): board-dækkende RSS på `germantechjobs.de/rss` (~626 poster i én request); arbejdsgiveren er det sidste `" @ "`-segment i titlen — en titel uden sådan et segment droppes og bogføres aldrig under boardet; kun eksplicit `provider:`-valg. **Darwinbox** (#6416): zero-auth `alljobs`-JSON bag `<tenant>.darwinbox.in`, company-id'en kommer fra careers-URL'en, pagineret POST-gennemløb (50/side, `max_pages` 20/200), hvor stop-ved-kort-side aflæses af kildens eget antal rækker. **Keka** (#6199): to requests — en `redirect:'manual'`-careers-shell, hvis script navngiver feed-UUID'en (en ukendt tenant 302'er til `TenantNotFound.html` og læses som en navngiven 404), og derefter hele det åbne stillingslager i ét embed-jobs-array. **ApplicantPro / isolved** (#6252): den numeriske `domainId` fra bootstrap'et, derefter `{success, data:{jobs, jobCount}}`; `jobCount > rows` advarer om, at listen er ufuldstændig; opt-in `applicantpro: { fetchDetails: true }` beriger fra JSON-LD med 250 ms pacing.
+- **Genbrug af board-svar via ETag (#6105)** — inden for én scan genbruges et board-svar, der er hentet inden for de seneste 15 minutter, som det er, og ældre revalideres med `If-None-Match` (304 beholder body'en); cache-nøglen dækker metode + URL + credential-headere + body, overlappende læsninger kollapser på det igangværende promise, og `CAREER_OPS_HTTP_CACHE=0` / `_TTL_MS` tilsidesætter den. In-memory pr. scan-kørsel (web-ui har ingen on-disk-cache-kontrakt) — en afvigelse er noteret.
+
+### Rettet
+
+- **Datoer på fire boards (#6274)** — remoteok, remotive, workingnomads og IBM udsender nu en publiceringsdato, så «Posted within»-filteret virker der; remotives naive timestamp normaliseres til UTC (buggen med maskinafhængig alder var live), og IBMs `_source` forespørger faktisk `dcdate`.
+- **Et portals.yml-nøgle med stavefejl afvises (#6107)** — EN-scannen kaster nu en navngiven fejl (fil + nøgle + forslag til den nærmeste nøgle, Levenshtein ≤ 2), før nogen fetch, i stedet for at ignorere `titel_filter:` lydløst.
+- **getro fortsætter gennemløbet forbi en gammel featured-pin (#6406)** — et fastnålet, forældet posting droppes stadig, men afslutter ikke længere pagination'en; gennemløbet slutter på en ægte kort side.
+
+### Noter
+
+- Bevidst ikke gjort: RU-scannerens seen-filter er ikke sprogbevidst, og dens portals-parsesti kører ikke misspelled-key-porten (hand-offs er noteret i bølgespec'en — intet RU-board udsender endnu rækker pr. sprog); remoteok beholder sin offset-bærende datostreng i stedet for at normalisere til UTC (dens live-shape er deterministisk). Tests 7096 → **7243**; Playwright 173 pass / 0 fail / 1 opt-in skip; registret **129 = 124 EN + 5 RU · 124 adapters** (alle tælleporte regenereret fra det levende register).
+
+## [1.266.0] — 2026-11-01
+
+### Tilføjet
+
+- **Personios sprogversioner overskriver ikke længere hinanden (CAR-223: parent #4789 + #5044 + #5285)** — den udskudte stak, udført som sin egen udgivelse. **Scan-siden (#4789)**: `scan_history.dedup_include_language: true` (streng opt-in — OFF er byte-identisk) får sprogversioner af ét posting til at overleve dedup'en via seen-history-variantmekanikken (`languageFormsFromUrl` / `recordUrlVariant` / `isUnseenLanguageVersion`); den kanoniske nøgle fjerner `language/lang/locale`-parametrene. **preferred_languages (#5285)**: sorterer et postings versionsrækker med den foretrukne først (stabilt, provider-rækkefølge ved ligestilling) — uafhængig af kontakten (OFF beholder den foretrukne version, ON beholder hver version i den rækkefølge), med en `validatePreferredLanguages`-port af validate-portals. **personio fan-out (#5044)**: careers-siden hentes uden `?language=en`-tvangen (en tenants egen `?language=xx` respekteres) og udsender én række pr. sprogversion med `language` + `?language=<code>`-URL'er; `dedupIncludeLanguage` tilføjer fetches pr. sprog (loft 5, paced); /xml- og job-link-fallbacks uændrede. **recruitee** får samme `language`-udsendelse + `preferred_languages` (opts eller entry). De fælles hjælpere ligger i `server/lib/language-preferences.mjs`.
+
+### Noter
+
+- Hand-offs noteret, bevidst ikke gjort: RU-scannerens seen-filter er ikke sprogbevidst, og intet RU-board udsender endnu rækker pr. sprog; client-spejlet `url-key.js` og koblingen af portals-route-valideringen forbliver åbne. Tests 7096 → **7203**; registret uændret: 125 = 120 EN + 5 RU · 120 adapters.
+
 ## [1.265.0] — 2026-11-01
 ### Tilføjet
 

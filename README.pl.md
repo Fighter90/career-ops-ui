@@ -10,21 +10,21 @@
 
 _Nieoficjalny interfejs — niepowiązany z career-ops / santifer ani przez nich nieautoryzowany._
 
-[![tests](https://img.shields.io/badge/tests-7135%20passed-brightgreen)](#testy)
+[![tests](https://img.shields.io/badge/tests-7243%20passed-brightgreen)](#testy)
 [![e2e](https://img.shields.io/badge/e2e-23%2F23%20%2B%2021%2F21-brightgreen)](#testy)
 [![playwright](https://img.shields.io/badge/playwright-176%2F176-brightgreen)](#testy)
 [![node](https://img.shields.io/badge/node-%E2%89%A518-blue)](#wymagania)
 [![license](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
-[![release](https://img.shields.io/badge/release-v1.265.0 źródła skanowania Apple i Bulldogjob (rejestr 125 = 120 EN + 5 RU), rework paginacji IBM, poprawki justjoin/jobvite/liveness (parent-sync @ fe857ecf).
+[![release](https://img.shields.io/badge/release-v1.267.0-blue)](https://github.com/Fighter90/career-ops-ui/releases/tag/v1.267.0)
 [![agentic patterns](https://img.shields.io/badge/📘_built_with-Agentic_Coding_Design_Patterns-8A2BE2)](https://mokevnin.github.io/agentic-coding-design-patterns/en/)
 
 <a href="https://www.producthunt.com/products/career-ops-ui?embed=true&amp;utm_source=badge-featured&amp;utm_medium=badge&amp;utm_campaign=badge-career-ops-ui" target="_blank" rel="noopener noreferrer"><img alt="career-ops-ui - The open-source job search command center | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1221619&amp;theme=light&amp;t=1786619651408"></a>
 
-> **🆕 Najnowsze wydanie — v1.264.3** — **Utwardnienie rate-limitów obejmuje teraz wszystkie endpointy mutujące, CAR-141 dodaje timer potwierdzenia kopiowania na 2 s, a pomoc jest zaktualizowana we wszystkich 19 językach. Tests 7082 → 7096.**
+> **🆕 Najnowsze wydanie — v1.267.0** — cztery nowe źródła skanowania — GermanTechJobs, Darwinbox, Keka, ApplicantPro/isolved (rejestr 129 = 124 EN + 5 RU) — ponowne użycie odpowiedzi tablic po ETag, daty na czterech tablicach, literówka w kluczu portals.yml pada głośno, getro idzie dalej mimo starych przypiętych pinów (parent-sync @ 7d8feb6d). Tests 7096 → 7243.
 
 
 >
-> **Poprzednie wydanie — v1.264.3** — **Nagłówki grup w sidebarze dołączają do kontraktu ucinania (wielokropek + zlokalizowane tooltipy), treść pomocy/FAQ na cvstart.org trafia teraz na produkcję przetłumaczona na wszystkie 19 języków, a przegląd wydania ląduje z zerem ustaleń HIGH — lista portów parent-sync zapisana na kolejną falę. Tests 7081 → 7082.**
+> **Poprzednie wydanie — v1.266.0** — personio language-dedup (CAR-223): wersje językowe oferty przetrwają dedup za scan_history.dedup_include_language, porządek preferred_languages, wiersze per język w personio/recruitee. Tests 7096 → 7203.
 
 <p align="center"><img src="https://raw.githubusercontent.com/Fighter90/career-ops-ui/main/images/providers.png" alt="Works with 18 LLM providers — Anthropic, OpenAI, Gemini, Qwen, OpenRouter, GitHub, DeepSeek, Kimi, MiniMax, Mistral, Ollama and more" width="760"></p>
 
@@ -178,7 +178,7 @@ Oficjalna strona: [career-ops.org](https://career-ops.org) · Dokumentacja: [car
 ## Testy
 
 ```bash
-npm test                    # 7096 testów jednostkowych/integracyjnych
+npm test                    # 7243 testów jednostkowych/integracyjnych
 npm run test:e2e            # 21 smoke e2e
 npm run test:e2e:full       # 23 comprehensive e2e
 npm run test:e2e:browser    # 101 testów Playwright

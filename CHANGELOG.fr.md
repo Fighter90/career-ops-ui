@@ -12,6 +12,29 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.267.0] — 2026-11-04
+### Ajouté
+
+- **Quatre nouvelles sources de scan — GermanTechJobs, Darwinbox, Keka, ApplicantPro/isolved (registre 125 → 129 = 124 EN + 5 RU · 124 adapters)** — la deuxième vague parent-sync contre career-ops @ `7d8feb6d` (87 commits amont). **GermanTechJobs** (#6346) : RSS à l'échelle du board sur `germantechjobs.de/rss` (~626 éléments en une seule requête) ; l'employeur est le dernier segment `" @ "` du titre — un titre sans lui est abandonné, jamais rattaché au board ; sélection explicite par `provider:` uniquement. **Darwinbox** (#6416) : JSON `alljobs` sans authentification derrière `<tenant>.darwinbox.in`, l'id de l'entreprise provient de l'URL carrières, marche POST paginée (50/page, `max_pages` 20/200) avec l'arrêt sur page courte lu depuis le propre comptage de lignes de la source. **Keka** (#6199) : deux requêtes — une coquille carrières en `redirect:'manual'` dont le script nomme l'UUID du flux (un tenant inconnu répond 302 vers `TenantNotFound.html` et se lit comme un 404 nommé), puis tout l'inventaire ouvert en un seul tableau embed-jobs. **ApplicantPro / isolved** (#6252) : le `domainId` numérique tiré du bootstrap, puis `{success, data:{jobs, jobCount}}` ; `jobCount > rows` avertit que la liste est incomplète ; l'opt-in `applicantpro: { fetchDetails: true }` enrichit depuis le JSON-LD avec une pause de 250 ms.
+- **Réutilisation des réponses de board par ETag (#6105)** — au sein d'un même scan, une réponse de board récupérée dans les 15 dernières minutes est réutilisée telle quelle et les plus anciennes sont revalidées avec `If-None-Match` (un 304 conserve le corps) ; la clé de cache couvre méthode + URL + en-têtes d'identifiants + corps, les lectures qui se chevauchent se replient sur la promesse en cours, et `CAREER_OPS_HTTP_CACHE=0` / `_TTL_MS` la surchargent. En mémoire, par exécution de scan (web-ui n'a pas de contrat de cache sur disque) — un écart consigné.
+
+### Corrigé
+
+- **Dates sur quatre boards (#6274)** — remoteok, remotive, workingnomads et IBM émettent désormais une date de publication, si bien que le filtre « Posted within » y fonctionne ; le timestamp naïf de remotive est normalisé en UTC (son bug d'âge par machine était en production), le `_source` d'IBM demande réellement `dcdate`.
+- **Une clé mal orthographiée de portals.yml est rejetée (#6107)** — le scan EN lève désormais une erreur nommée (fichier + clé + suggestion de la clé la plus proche, Levenshtein ≤ 2) avant toute récupération, au lieu d'ignorer silencieusement `titel_filter:`.
+- **getro continue sa marche au-delà d'une épingle « featured » périmée (#6406)** — une annonce épinglée périmée est toujours abandonnée mais ne termine plus la pagination ; la marche s'arrête sur une vraie page courte.
+
+### Notes
+
+- Délibérément non fait : le seen-filter du scanner RU n'est pas sensible à la langue et son chemin de parse des portals ne passe pas par la porte des clés mal orthographiées (hand-offs consignés dans la spec de la vague — aucun board RU n'émet encore de lignes par langue) ; remoteok garde sa chaîne de date porteuse d'offset plutôt que de la normaliser en UTC (sa forme en production est déterministe). Tests 7096 → **7243** ; Playwright 173 pass / 0 fail / 1 opt-in skip ; registre **129 = 124 EN + 5 RU · 124 adapters** (toutes les portes de comptage régénérées depuis le registre vivant).
+## [1.266.0] — 2026-11-01
+### Ajouté
+
+- **Les versions linguistiques de Personio cessent de se manger entre elles (CAR-223 : parent #4789 + #5044 + #5285)** — la pile différée, exécutée comme sa propre release. **Côté scan (#4789)** : `scan_history.dedup_include_language: true` (opt-in strict — OFF est identique à l'octet près) fait survivre les versions linguistiques d'une même annonce à la dédup via la machinerie de variantes du seen-history (`languageFormsFromUrl` / `recordUrlVariant` / `isUnseenLanguageVersion`) ; la clé canonique retire les paramètres `language/lang/locale`. **preferred_languages (#5285)** : ordonne les lignes de versions d'une annonce préférentiel-d'abord (stable, ordre du provider en cas d'égalité) — indépendant du switch (OFF garde la version préférée, ON garde chaque version dans cet ordre), avec un port `validatePreferredLanguages` de validate-portals. **fan-out personio (#5044)** : la page carrières est récupérée sans le forçage `?language=en` (le `?language=xx` propre d'un tenant est honoré) et émet une ligne par version linguistique avec des URLs `language` + `?language=<code>` ; `dedupIncludeLanguage` ajoute des récupérations par langue (plafond 5, espacées) ; les replis /xml et job-link inchangés. **recruitee** gagne la même émission `language` + `preferred_languages` (opts ou entrée). Les helpers partagés vivent dans `server/lib/language-preferences.mjs`.
+
+### Notes
+
+- Hand-offs consignés, délibérément non fait : le seen-filter du scanner RU n'est pas sensible à la langue et aucun board RU n'émet encore de lignes par langue ; le miroir client `url-key.js` et le câblage de la validation de la route portals restent ouverts. Tests 7096 → **7203** ; registre inchangé : 125 = 120 EN + 5 RU · 120 adapters.
 ## [1.265.0] — 2026-11-01
 ### Ajouté
 
