@@ -76,6 +76,32 @@ test('parseIbmResponse: remote detection from the work-mode and location facets'
   assert.equal(jobs[2].isRemote, false);
 });
 
+// ── #6274: `dcdate` (a plain YYYY-MM-DD; the only date the API's _source
+// allowlist accepts) fills the row date so the client "Posted within" age
+// filter can judge it; unparseable or absent stays '' (undated-row
+// convention).
+test('parseIbmResponse: dcdate fills date (#6274) — unparseable or absent stays ""', () => {
+  const jobs = parseIbmResponse({ hits: { hits: [
+    mkHit({ dcdate: '2026-10-05', url: 'https://www.ibm.com/careers/job/d1' }),
+    mkHit({ dcdate: 'n/a', url: 'https://www.ibm.com/careers/job/d2' }), // unparseable → ''
+    mkHit({ url: 'https://www.ibm.com/careers/job/d3' }), // absent → ''
+  ] } });
+  assert.deepEqual(jobs.map((j) => j.date), ['2026-10-05', '', '']);
+});
+
+test('fetchIbm: the POST body requests dcdate in _source (#6274)', async () => {
+  const sources = [];
+  const impl = async (url, opts) => {
+    sources.push(JSON.parse(opts.body)._source);
+    return { ok: true, json: async () => ({ hits: { hits: [mkHit()] } }) };
+  };
+  await fetchIbm(API_URL, { fetchImpl: impl, company: { max_pages: 2 }, sleep: async () => {} });
+  assert.ok(sources.length >= 1);
+  for (const src of sources) {
+    assert.ok(src.includes('dcdate'), `_source must request dcdate: ${JSON.stringify(src)}`);
+  }
+});
+
 // ---------------------------------------------------------------------------
 // buildPostFilter
 // ---------------------------------------------------------------------------

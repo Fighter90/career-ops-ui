@@ -124,12 +124,26 @@ export function parseIbmResponse(json) {
       isRemote,
       workplaceType: isRemote ? 'Remote' : (mode || 'Onsite'),
       relocates: false,
-      date: '',
+      date: toIsoDate(s.dcdate),
       snippet: '',
       source: 'ibm',
     });
   }
   return out;
+}
+
+/**
+ * `dcdate` is a plain YYYY-MM-DD (Date.parse reads that as UTC midnight); it
+ * tracks the job ids (newer id, later date), so it reads as the posting date.
+ * It is the only date the API's _source allowlist accepts. Absent or
+ * unparseable → '' (undated). (#6274)
+ * @param {unknown} value
+ * @returns {string}
+ */
+function toIsoDate(value) {
+  if (typeof value !== 'string' || !value.trim()) return '';
+  const s = value.trim();
+  return Number.isNaN(Date.parse(s)) ? '' : s;
 }
 
 /**
@@ -167,7 +181,7 @@ export async function fetchIbm(apiUrl = API_URL, opts = {}) {
       lang: 'zz',
       localeSelector: {},
       sm: { query: '', lang: 'zz' },
-      _source: ['_id', 'title', 'url', 'description', 'language',
+      _source: ['_id', 'title', 'url', 'description', 'language', 'dcdate',
         'field_keyword_05', 'field_keyword_08', 'field_keyword_17',
         'field_keyword_18', 'field_keyword_19'],
     };

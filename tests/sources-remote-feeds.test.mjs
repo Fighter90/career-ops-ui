@@ -43,6 +43,28 @@ test('fetchRemoteOk: ids are unique and prefixed', async () => {
   assert.equal(new Set(jobs.map((j) => j.id)).size, jobs.length);
 });
 
+// ── #6274: the feed's `date` (ISO 8601 with an offset) must reach the row so
+// the client "Posted within" age filter can judge it; unparseable or missing
+// dates stay '' (the undated-row convention) — never garbage passthrough.
+test('fetchRemoteOk: date is parse-validated (#6274) — offset shape kept, junk → ""', async () => {
+  const feed = [
+    { legal: 'meta' },
+    { id: 1, position: 'Dated', url: 'https://remoteok.com/l/1', date: '2026-11-02T10:43:35+00:00' }, // live shape
+    { id: 2, position: 'Padded', url: 'https://remoteok.com/l/2', date: '  2026-11-02T10:43:35+00:00  ' }, // trimmed, still parseable
+    { id: 3, position: 'Garbage', url: 'https://remoteok.com/l/3', date: 'not a date' }, // unparseable → ''
+    { id: 4, position: 'Undated', url: 'https://remoteok.com/l/4' }, // missing → ''
+    { id: 5, position: 'Non-string', url: 'https://remoteok.com/l/5', date: null }, // non-string → ''
+  ];
+  const jobs = await fetchRemoteOk(undefined, { fetchImpl: okJson(feed) });
+  assert.deepEqual(jobs.map((j) => j.date), [
+    '2026-11-02T10:43:35+00:00',
+    '2026-11-02T10:43:35+00:00',
+    '',
+    '',
+    '',
+  ]);
+});
+
 test('fetchRemoteOk: throws on non-array payload', async () => {
   await assert.rejects(() => fetchRemoteOk(undefined, { fetchImpl: okJson({ nope: 1 }) }), /expected a JSON array/);
 });
@@ -71,6 +93,29 @@ test('fetchRemotive: parses { jobs: [...] }, drops invalid rows', async () => {
 
 test('fetchRemotive: throws when shape is not { jobs: [...] }', async () => {
   await assert.rejects(() => fetchRemotive(undefined, { fetchImpl: okJson([]) }), /expected \{ jobs/);
+});
+
+// ── #6274: `publication_date` arrives with NO offset (2026-10-27T12:56:13);
+// Date.parse reads that as the machine's local time (7 hours off in Los
+// Angeles), so the row must carry a UTC-normalized timestamp — the same row
+// gets the same "Posted within" age on every machine. Unparseable or missing
+// stays '' (the undated-row convention).
+test('fetchRemotive: publication_date is UTC-normalized (#6274) — naive is not machine-local', async () => {
+  const feed = { jobs: [
+    { id: 1, title: 'Naive', url: 'https://remotive.com/j/1', publication_date: '2026-10-27T12:56:13' }, // live shape: no offset
+    { id: 2, title: 'Offset', url: 'https://remotive.com/j/2', publication_date: '2026-10-27T12:56:13+02:00' }, // offset honored → UTC
+    { id: 3, title: 'Day', url: 'https://remotive.com/j/3', publication_date: '2026-10-27' }, // bare date = UTC midnight
+    { id: 4, title: 'Garbage', url: 'https://remotive.com/j/4', publication_date: 'not a date' }, // unparseable → ''
+    { id: 5, title: 'Undated', url: 'https://remotive.com/j/5' }, // missing → ''
+  ] };
+  const jobs = await fetchRemotive(undefined, { fetchImpl: okJson(feed) });
+  assert.deepEqual(jobs.map((j) => j.date), [
+    '2026-10-27T12:56:13.000Z',
+    '2026-10-27T10:56:13.000Z',
+    '2026-10-27T00:00:00.000Z',
+    '',
+    '',
+  ]);
 });
 
 // ─────────────────────────── Working Nomads ─────────────────────────
