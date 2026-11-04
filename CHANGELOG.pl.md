@@ -10,6 +10,17 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.267.2] — 2026-11-04
+
+### Naprawiono
+
+- **getro: ostrzeżenie o ucięciu nazywa stronę, która zawiodła, i rzeczywistą liczbę prób (#6465)** — przejście po tablicy ponawia przejściowe awarie per strona przez wspólny fetchJsonWithRetry (429/5xx/sieć, wykładnicze wycofywanie z poszanowaniem Retry-After; fetch per strona był jednorazowy), a awaria późniejszej strony po ≥1 sukcesie loguje ostrzeżenie z numerami stron od 1 («truncated at page 2 of 5»), faktycznie wykonanymi żądaniami («after 3 attempts» — rejection niebędący obiektem mówi «an unknown number of attempts») i zachowanymi wynikami częściowymi. fetchJsonWithRetry teraz stempluje err.attempts przy każdym rethrow i przyjmuje wstrzykiwalny sleep, żeby testy pomijały wycofywanie według zegara ściennego.
+- Testy 7395 → **7398**; ratchet pokrycia bez zmian (98.51 linii / 90.35 gałęzi).
+
+### Uwagi
+
+- Sync forka (career-ops @ `31a29b30`, 11 commitów upstream) nie wymaga innych zmian w web-ui: reszta ogona jest po stronie rodzica — własna aplikacja web Next.js rodzica (paleta Ctrl+K #6084, sprawdzanie CLI w onboardingu #6432), sformułowania trybów rozmowy ua (#6445 — przychodzi z wdrożonym rodzicem), przebieg wydajnościowy verify-ats (#6442 — własna implementacja), commity test/CI/docs. Tag v1.267.0 pozostaje wskazujący na czerwony commit merge'a; v1.267.1 i ta łatka są nośnikami wdrożenia.
+
 ## [1.267.1] — 2026-11-04
 
 ### Naprawiono

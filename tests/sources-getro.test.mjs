@@ -444,7 +444,7 @@ test('fetchGetro: a page-2 failure after ≥1 success keeps the partials', async
       calls += 1;
       const page = JSON.parse(opts.body).page;
       if (page === 0) return ok({ results: { count: 40, jobs: [job('A'), job('B')] } });
-      return { ok: false, status: 500 }; // second request (page 1) blows up
+      return { ok: false, status: 400 }; // second request (page 1) fails permanently
     },
     company: { name: 'b2v', getro_collection: 4283, getro_max_age_days: 0 },
   });
@@ -567,4 +567,52 @@ test('normalizeGetroJob: carries the salary string + all-locations + work_mode r
   assert.equal(n.location, 'Zurich, Berlin');
   assert.equal(n.isRemote, true);
   assert.equal(n.workplaceType, 'Remote');
+});
+
+test('fetchGetro: the truncation warning names the failed page, the planned pages and the real attempts (#6465)', async () => {
+  const warnings = [];
+  const realError = console.error;
+  console.error = (...args) => { warnings.push(args.join(' ')); };
+  let calls = 0;
+  try {
+    await fetchGetro(null, {
+      fetchImpl: async (_url, opts) => {
+        calls += 1;
+        const page = JSON.parse(opts.body).page;
+        if (page === 0) return ok({ results: { count: 100, jobs: [job('First')] } });
+        const err = new Error('HTTP 429');
+        err.status = 429;
+        throw err;
+      },
+      sleep: async () => {},
+      company: { name: 'ExampleVC', getro_collection: 4283, getro_max_age_days: 0 },
+    });
+  } finally {
+    console.error = realError;
+  }
+  assert.equal(calls, 4, 'page 1 retried to the full budget: 1 + 2 retries');
+  assert.match(
+    warnings.join('\n'),
+    /ExampleVC truncated at page 2 of 5 after 3 attempts \(1 jobs\): HTTP 429/,
+  );
+});
+
+test('fetchGetro: a non-object rejection warns an unknown attempt count (#6465)', async () => {
+  const warnings = [];
+  const realError = console.error;
+  console.error = (...args) => { warnings.push(args.join(' ')); };
+  try {
+    await fetchGetro(null, {
+      fetchImpl: async (_url, opts) => {
+        const page = JSON.parse(opts.body).page;
+        if (page === 0) return ok({ results: { count: 100, jobs: [job('First')] } });
+        throw 'boom'; // a rejection that is not an object cannot carry the count
+      },
+      sleep: async () => {},
+      company: { name: 'ExampleVC', getro_collection: 4283, getro_max_age_days: 0 },
+    });
+  } finally {
+    console.error = realError;
+  }
+  assert.match(warnings.join('\n'), /truncated at page 2 of 5 after an unknown number of attempts/);
 });

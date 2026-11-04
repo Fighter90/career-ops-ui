@@ -2,6 +2,17 @@
 
 > Bu changelog artık tüm sürüm geçmişini içerir. Türkçe yerelleştirmenin eklenmesinden (v1.85.0) önce yayınlanan girdiler aşağıda İngilizce özgün hâliyle yer alır — çeviri bekliyor; asıl kaynak [🇬🇧 CHANGELOG.md](CHANGELOG.md)'dir.
 
+## [1.267.2] — 2026-11-04
+
+### Düzeltildi
+
+- **getro: kırpılma uyarısı başarısız sayfayı ve gerçek deneme sayısını adlandırıyor (#6465)** — board gezinimi, sayfa-başına geçici başarısızlıkları paylaşılan fetchJsonWithRetry üzerinden yeniden deniyor (429/5xx/ağ, Retry-After'a saygı duyan üstel geri çekilme; sayfa-başına fetch tek atımdı) ve ≥1 başarıdan sonra sonraki bir sayfanın başarısızlığı uyarıyı 1-temelli sayfa numaralarıyla («truncated at page 2 of 5»), gerçekten yapılan isteklerle («after 3 attempts» — nesne olmayan bir rejection «an unknown number of attempts» der) ve tutulan kısımlarla günlüklüyor. fetchJsonWithRetry artık her rethrow'da err.attempts damgalıyor ve enjekte edilebilir bir sleep alıyor, böylece testler duvar-saati geri çekilmesini atlıyor.
+- Testler 7395 → **7398**; kapsam ratchet'ı değişmedi (98.51 satır / 90.35 dal).
+
+### Notlar
+
+- Fork senkronizasyonu (career-ops @ `31a29b30`, 11 upstream commit'i) başka web-ui değişikliği gerektirmiyor: kuyruğun geri kalanı parent tarafı — parent'ın kendi Next.js web uygulaması (Ctrl+K paleti #6084, onboarding CLI kontrolü #6432), ua mülakat-modları ifade kalıbı (#6445 — dağıtılmış parent ile geliyor), bir verify-ats performans turu (#6442 — kendi uygulaması), test/CI/docs commit'leri. v1.267.0 etiketi kırmızı merge commit'ini göstermeye bırakılıyor; v1.267.1 ve bu yama dağıtım araçlarıdır.
+
 ## [1.267.1] — 2026-11-04
 
 ### Düzeltildi

@@ -13,6 +13,17 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.267.2] — 2026-11-04
+
+### Corregido
+
+- **getro: el aviso de truncado nombra la página fallida y el recuento real de intentos (#6465)** — el recorrido del board reintenta los fallos transitorios por página a través del fetchJsonWithRetry compartido (429/5xx/red, backoff exponencial respetando Retry-After; el fetch por página era de un solo intento), y un fallo de página posterior tras ≥1 éxito registra el aviso con números de página 1-based («truncated at page 2 of 5»), las peticiones realmente hechas («after 3 attempts» — un rejection que no es objeto dice «an unknown number of attempts») y los parciales conservados. fetchJsonWithRetry ahora estampa err.attempts en cada rethrow y acepta un sleep inyectable para que los tests se salten el backoff de reloj.
+- Pruebas 7395 → **7398**; ratchet de cobertura sin cambios (98.51 línea / 90.35 rama).
+
+### Notas
+
+- La sincronización del fork (career-ops @ `31a29b30`, 11 commits upstream) no necesita ningún otro cambio en web-ui: el resto de la cola es lado padre — la propia app web Next.js del padre (paleta Ctrl+K #6084, chequeo CLI de onboarding #6432), la redacción de los modos de entrevista ua (#6445 — llega con el padre desplegado), un pase de rendimiento de verify-ats (#6442 — implementación propia), commits de tests/CI/docs. La etiqueta v1.267.0 sigue apuntando al commit rojo del merge; v1.267.1 y este parche son los vehículos de despliegue.
+
 ## [1.267.1] — 2026-11-04
 
 ### Corregido

@@ -8,6 +8,17 @@
 
 ---
 
+## [1.267.2] — 2026-11-04
+
+### 修復
+
+- **getro: 截斷警告點出失敗頁面與真實嘗試次數 (#6465)** — 板遍歷現經共享 fetchJsonWithRetry 重試頁面級瞬時失敗(429/5xx/網路、遵循 Retry-After 的指數退避；此前逐頁 fetch 為單次)，而 ≥1 次成功後的後續頁面失敗會記錄警告，含 1-基頁碼(「truncated at page 2 of 5」)、實際發出的請求(「after 3 attempts」——非物件 rejection 則說「an unknown number of attempts」)與保留的部分結果。fetchJsonWithRetry 現在在每次 rethrow 時打上 err.attempts，並接受可注入的 sleep，讓測試跳過真實時鐘退避。
+- 測試 7395 → **7398**；覆蓋率 ratchet 不變(98.51 行 / 90.35 分支)。
+
+### 備註
+
+- fork 同步(career-ops @ `31a29b30`，11 個上游提交)無需其他 web-ui 變更：尾部其餘為父側——父專案自己的 Next.js 網頁應用(Ctrl+K 調色盤 #6084、onboarding CLI 檢查 #6432)、ua 面試模式措辭(#6445——隨已部署父專案而來)、verify-ats 效能優化(#6442——自有實作)、測試/CI/文件提交。v1.267.0 標籤保留指向紅色合併提交；v1.267.1 與本修補為部署載體。
+
 ## [1.267.1] — 2026-11-04
 
 ### 修復

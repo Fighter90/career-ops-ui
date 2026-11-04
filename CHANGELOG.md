@@ -6,6 +6,17 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 ---
 
+## [1.267.2] — 2026-11-04
+
+### Fixed
+
+- **getro: the truncation warning names the failed page and the real attempt count (#6465)** — the board walk retries transient per-page failures through the shared fetchJsonWithRetry (429/5xx/network, exponential backoff honouring Retry-After; the per-page fetch had been single-shot), and a later-page failure after ≥1 success logs the warning with 1-based page numbers ("truncated at page 2 of 5"), the requests really made ("after 3 attempts" — a non-object rejection says "an unknown number of attempts") and the partials kept. fetchJsonWithRetry now stamps err.attempts on every rethrow and takes an injectable sleep so tests skip the wall-clock backoff.
+- Tests 7395 → **7398**; coverage ratchet unchanged (98.51 line / 90.35 branch).
+
+### Notes
+
+- The rest of the fork-sync tail (career-ops @ `31a29b30`, 11 upstream commits) is deliberately **not** ported — parent-side only: the parent's own Next.js web app (Ctrl+K palette #6084, onboarding CLI check #6432), the ua interview-modes wording (#6445 — arrives with the deployed parent), a verify-ats perf pass (#6442 — own implementation), test/CI/docs commits. The v1.267.0 tag stays pointing at the red merge commit — not re-pointed; v1.267.1 and this patch are the deploy vehicles.
+
 ## [1.267.1] — 2026-11-04
 
 ### Fixed
