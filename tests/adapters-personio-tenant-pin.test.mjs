@@ -186,9 +186,13 @@ test('personio pin: the pinned host is the host actually fetched (injected fetch
   const url = ep({ personio: 'acmegroup', careers_url: IFRAME_CAREERS_URL });
   const jobs = await fetchPersonio(url, { fetchImpl, company: { name: 'Acme' } });
 
-  assert.equal(requested.length, 1);
-  assert.equal(new URL(requested[0]).hostname, 'acmegroup.jobs.personio.de');
-  assert.equal(new URL(requested[0]).protocol, 'https:');
+  // CAR-223: the careers page is fetched first and the /xml feed answers when
+  // the page's payload yields nothing — every request stays ON the pinned host.
+  assert.equal(requested.length, 2);
+  for (const u of requested) {
+    assert.equal(new URL(u).hostname, 'acmegroup.jobs.personio.de');
+    assert.equal(new URL(u).protocol, 'https:');
+  }
   assert.equal(jobs.length, 1);
   assert.equal(jobs[0].url, 'https://acmegroup.jobs.personio.de/job/7');
 });

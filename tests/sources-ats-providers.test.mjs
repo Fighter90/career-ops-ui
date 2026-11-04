@@ -260,8 +260,9 @@ test('personio: fetch falls back to HTML scrape when the /xml feed is disabled (
     return { ok: true, text: async () => PERSONIO_HTML };         // careers page
   };
   const jobs = await fetchPersonio('https://acme.jobs.personio.de/xml', { fetchImpl, company: { name: 'Acme' } });
-  assert.equal(calls.length, 2);
-  assert.equal(calls[1], 'https://acme.jobs.personio.de/?language=en');
+  assert.equal(calls.length, 2); // careers page first (CAR-223), then /xml — no off-domain fallback
+  assert.equal(calls[0], 'https://acme.jobs.personio.de/'); // the ?language=en hard-force is gone
+  assert.equal(calls[1], 'https://acme.jobs.personio.de/xml');
   assert.equal(jobs.length, 2);
   assert.equal(jobs[0].title, 'ML-QA Engineer');
   assert.equal(jobs[0].url, 'https://acme.jobs.personio.de/job/2378948');
@@ -278,7 +279,11 @@ test('personio: fetch re-throws a non-404 XML error without falling back to HTML
     fetchPersonio('https://acme.jobs.personio.de/xml', { fetchImpl, company: { name: 'Acme' } }),
     /HTTP 500/,
   );
-  assert.equal(calls.length, 1); // only /xml was hit — no fallback on a 500
+  // The careers page is fetched first (CAR-223) and the feed answers second;
+  // a 500 still rethrows — no fallback anywhere OFF the tenant host.
+  assert.ok(calls.length >= 1);
+  assert.ok(calls.every(u => new URL(u).hostname === 'acme.jobs.personio.de'),
+    `only in-domain URLs expected, saw ${JSON.stringify(calls)}`);
 });
 
 // ─────────────────────────────── Recruitee ──────────────────────────────

@@ -16,6 +16,17 @@ import { PATHS } from './paths.mjs';
 import { addPipelineUrl } from './parsers.mjs';
 import { sanitizeTsvField, normalizeScanUrl } from './scan-sanitize.mjs';
 import { normalizeUrl } from './url-key.mjs';
+// CAR-223 (#4789/#5285) — the pure language-dedup helpers (parent scan.mjs):
+// language forms, the seen-version machinery, and the preferred_languages pick.
+import {
+  languageFormsForDedup,
+  languageFormsFromUrl,
+  isUnseenLanguageVersion,
+  recordUrlVariant,
+  resolvePreferredLanguages,
+  preferredLanguageRanker,
+  preferredLanguagePick,
+} from './language-preferences.mjs';
 import { buildLocationFilter, buildContentFilter, buildTitleFilter, cleanStringList } from './location-filter.mjs';
 // CAR-180 — stated years of experience (upstream #6154): parseYearsRequirement
 // reads job.description, buildYearsMinFilter is the years_min threshold.
@@ -153,22 +164,106 @@ function isObservationalHistoryRow(line) {
 }
 
 /**
+ * Read the opt-in `scan_history.dedup_include_language` switch (CAR-223,
+ * upstream #4789, parent resolveDedupIncludeLanguage).
+ *
+ * An employer can publish one posting in more than one language at one URL,
+ * with the URL differing only in a language param. url-key.mjs strips that
+ * param from the canonical key, so the versions share one key — correct for a
+ * candidate who reads every language (they are duplicates), wrong for one who
+ * applies in some languages only: with the switch on, a language version of a
+ * seen posting that no seen row was in is kept. Strict boolean `true` only,
+ * like the parent's resolveDedupIncludeLocation.
+ * @param {object} [config] - Parsed portals.yml.
+ * @returns {boolean}
+ */
+export function resolveDedupIncludeLanguage(config = {}) {
+  return config.scan_history?.dedup_include_language === true;
+}
+
+/**
+ * The title cell of a pipeline.md checklist row (`- [ ] url | company | title
+ * | …`) — the cell a seen-version resolution compares against. Fenced
+ * `url | comp` rows carry compensation, not a title, and record none.
+ * @param {string} line
+ * @returns {string}
+ */
+function pipelineRowTitle(line) {
+  const m = /^\s*-\s*\[[ x]\]\s*/i.exec(line);
+  if (!m) return '';
+  const cells = line.trim().slice(m[0].length).split(/\s+\|\s+/).map((s) => s.trim());
+  return cells[2] || '';
+}
+
+/**
+ * Title and language CELL of one scan-history.tsv row. Two row shapes share
+ * the file: the parent format (`url | first_seen | portal | title | company |
+ * status | … | language | listing_key` — the language column was appended
+ * later, so older rows stop short) and web-ui's own (`date | source | id |
+ * company | title | url`). The URL's position tells them apart.
+ * @param {string} line
+ * @returns {{ title: string, language: string }}
+ */
+function scanHistoryRowContext(line) {
+  const cells = line.split('\t');
+  if (/^https?:\/\//i.test(cells[0] || '')) {
+    return { title: cells[3] || '', language: cells[13] || '' };
+  }
+  return { title: cells[4] || '', language: '' };
+}
+
+/**
+ * Every URL already known — scan-history.tsv, pipeline.md, applications.md —
+ * normalised with url-key so tracking-parameter variants collapse, plus
+ * (CAR-223, #4789) the language versions each seen URL stands for: a row's
+ * language is its recorded cell when it has one, else the language its URL
+ * asks for, and its title rides along for rows that recorded neither. The
+ * variants feed the seen filter behind `scan_history.dedup_include_language`;
+ * the seen set itself is built exactly as before (same lines, same tokens).
+ * Shared by the EN and RU scanners.
+ * @returns {{ seen: Set<string>, variants: Map<string, Array<{languages: string[], title: string}>> }}
+ */
+export function collectSeenUrls() {
+  const seen = new Set();
+  // Which language versions each seen URL key stands for — read by the
+  // dedup filter behind scan_history.dedup_include_language.
+  const variants = new Map();
+  for (const p of [PATHS.scanHistory, PATHS.pipeline, PATHS.applications]) {
+    let text = '';
+    try { text = readFileSync(p, 'utf8'); } catch { continue; }
+    for (const line of text.split('\n')) {
+      if (p === PATHS.scanHistory && isObservationalHistoryRow(line)) continue;
+      for (const m of line.matchAll(/https?:\/\/\S+/g)) {
+        const token = normalizeUrl(m[0]) || m[0];
+        seen.add(token);
+        let languages;
+        let title = '';
+        if (p === PATHS.scanHistory) {
+          const ctx = scanHistoryRowContext(line);
+          const recorded = languageFormsForDedup(ctx.language);
+          languages = recorded.length ? recorded : languageFormsFromUrl(m[0]);
+          title = ctx.title;
+        } else if (p === PATHS.pipeline) {
+          languages = languageFormsFromUrl(m[0]);
+          title = pipelineRowTitle(line);
+        } else {
+          languages = languageFormsFromUrl(m[0]);
+        }
+        recordUrlVariant(variants, token, languages, title);
+      }
+    }
+  }
+  return { seen, variants };
+}
+
+/**
  * Every URL already known — scan-history.tsv, pipeline.md, applications.md —
  * normalised with url-key so tracking-parameter variants collapse. Shared by
  * the EN and RU scanners.
  * @returns {Set<string>}
  */
 export function loadSeenUrls() {
-  const seen = new Set();
-  for (const p of [PATHS.scanHistory, PATHS.pipeline, PATHS.applications]) {
-    let text = '';
-    try { text = readFileSync(p, 'utf8'); } catch { continue; }
-    for (const line of text.split('\n')) {
-      if (p === PATHS.scanHistory && isObservationalHistoryRow(line)) continue;
-      for (const m of line.matchAll(/https?:\/\/\S+/g)) seen.add(normalizeUrl(m[0]) || m[0]);
-    }
-  }
-  return seen;
+  return collectSeenUrls().seen;
 }
 
 async function pMap(items, mapper, concurrency) {
@@ -273,7 +368,23 @@ export async function runEnScan(opts = {}) {
   // postings — it NEVER drops a job.
   const trust = buildTrustValidator(portals.trust_filter);
   const trustOn = !!(portals.trust_filter && portals.trust_filter.enabled !== false);
-  const seen = loadSeenUrls();
+  // CAR-223 (#4789) — opt-in `scan_history.dedup_include_language`: behind it
+  // the URL dedup keeps a language version of a seen posting that no seen row
+  // was in. Off (the default) the behavior is unchanged — a language variant
+  // of a seen posting dedups away.
+  const dedupIncludeLanguage = resolveDedupIncludeLanguage(portals);
+  // CAR-223 (#5285) — top-level `preferred_languages`: the languages the
+  // candidate wants a posting in, best first. Ordering only — it decides
+  // WHICH version of a posting the dedup keeps, never filters one out.
+  const preferredLanguages = resolvePreferredLanguages(portals);
+  const preferredLanguageRank = preferredLanguages.length
+    ? preferredLanguageRanker(preferredLanguages)
+    : null;
+  const { seen, variants: seenVariants } = collectSeenUrls();
+  // CAR-223 (#4789) — filled during the fetch walk below: each fetched
+  // posting's language versions, in provider order, before any filter. Empty
+  // (and unfilled) unless dedup_include_language is on.
+  const siblingsByUrl = new Map();
 
   let companies = portals.tracked_companies || portals.companies || [];
   // v1.228.0 — `telegram_channels:` is its own top-level block. A channel is
@@ -371,13 +482,41 @@ export async function runEnScan(opts = {}) {
       // `<provider>:` block. URL-detected ATS fetchers ignore the extra opt.
       // CAR-178 — the per-host slot wraps ONLY the fetch; filters, error
       // handling and progress below run outside it.
-      const items = await withHostSlot(hostKeyFor(c), () => fetcher(c._api.url, { fetchImpl, signal, company: c }));
+      const items = await withHostSlot(hostKeyFor(c), () => fetcher(c._api.url, {
+        fetchImpl, signal, company: c,
+        // CAR-223 — a provider that serves extra language versions of a
+        // posting at extra cost fetches them only when the scan will keep
+        // them; one that returns versions selectively also returns the
+        // preferred ones (parent scan ctx, #4789/#5285).
+        dedupIncludeLanguage,
+        ...(preferredLanguageRank ? { preferredLanguageRank } : {}),
+      }));
+      // CAR-223 (#4789) — the versions this fetch returned, from the UNSORTED
+      // items: the provider's own order — each posting's default language
+      // first — is what the language-aware seen dedup resolves a seen row
+      // against. Recorded before any filter, so a seen row is matched against
+      // every version, also those a filter rejects (a German title can fail a
+      // title filter that its English version passes).
+      if (dedupIncludeLanguage) {
+        for (const j of items) {
+          const languages = languageFormsForDedup(j?.language);
+          if (!languages.length) continue;
+          recordUrlVariant(siblingsByUrl, normalizeUrl(j.url) || j.url, languages, j.title);
+        }
+      }
+      // CAR-223 (#5285) — preferred languages first, best first; stable, so
+      // the rest keep the provider's order. What the dedup keeps is the FIRST
+      // version of a posting it meets (dedup_include_language off) or every
+      // version in this order (on) — either way this is what makes it keep
+      // the preferred one. The result flags (ultiproTruncated /
+      // peoplesoftIncomplete) live on `items` and are unaffected by reordering.
+      const ordered = preferredLanguages.length ? preferredLanguagePick(items, preferredLanguages) : items;
       // Stamp company name on each (Greenhouse fills its own; Ashby/Lever do not),
       // plus the portals ENTRY the row was fetched for (`_entry`): the snapshot
       // carry-over (R-12, CAR-91) must match the failed set against the entry,
       // never against `source` — a failed entry named "Lever" used to keep
       // every successfully-rescanned company's lever-source rows.
-      const withCo = items.map((i) => ({
+      const withCo = ordered.map((i) => ({
         ...i,
         company: i.company || c.name,
         _entry: c.name,
@@ -469,12 +608,22 @@ export async function runEnScan(opts = {}) {
   const removedTitle = allRaw.length - matched.length - cappedAway - yearsSkipped.length;
   // Within-run dedup on the normalised URL: the same posting reached twice
   // (two queries, a tracking-parameter variant) is ONE row — otherwise it was
-  // appended to pipeline/history twice and read as a repost later.
+  // appended to pipeline/history twice and read as a repost later. Behind
+  // dedup_include_language (CAR-223, #4789) a same-key row passes as a
+  // language version none of the rows this run kept was in; an
+  // unknown-language candidate keeps the duplicate.
   const runKeys = new Set();
+  const runVariants = new Map();
   const unique = matched.filter((j) => {
     const key = normalizeUrl(j.url) || j.url;
-    if (runKeys.has(key)) return false;
+    if (runKeys.has(key)) {
+      if (!dedupIncludeLanguage) return false;
+      return isUnseenLanguageVersion(runVariants.get(key),
+        { languages: languageFormsForDedup(j.language), title: j.title },
+        siblingsByUrl.get(key));
+    }
     runKeys.add(key);
+    recordUrlVariant(runVariants, key, languageFormsForDedup(j.language), j.title);
     return true;
   });
   const runDup = matched.length - unique.length;
@@ -499,7 +648,19 @@ export async function runEnScan(opts = {}) {
   const cooldownFilter = buildCooldownFilter(loadReApplyWindows(PATHS.profile), cooldownToday);
   const afterCooldown = filtered.filter((j) => !cooldownFilter(j).skip);
   const cooldownSkipped = filtered.length - afterCooldown.length;
-  const fresh = afterCooldown.filter((j) => !seen.has(normalizeUrl(j.url) || j.url));
+  // Cross-run dedup on the normalised URL. Behind dedup_include_language
+  // (CAR-223, #4789) a seen URL key passes only as a language version of that
+  // posting no seen row was in — the seen rows' languages and titles come
+  // from collectSeenUrls, the candidate's siblings from this run's own fetch.
+  // An unknown-language candidate keeps the duplicate.
+  const fresh = afterCooldown.filter((j) => {
+    const key = normalizeUrl(j.url) || j.url;
+    if (!seen.has(key)) return true;
+    if (!dedupIncludeLanguage) return false;
+    return isUnseenLanguageVersion(seenVariants.get(key),
+      { languages: languageFormsForDedup(j.language), title: j.title },
+      siblingsByUrl.get(key));
+  });
   const dup = afterCooldown.length - fresh.length;
 
   log('stdout', '');

@@ -34,6 +34,17 @@ const TRACKING_PARAMS = [
   /^mc_cid$/i, /^mc_eid$/i, /^igshid$/i, /^_hsenc$/i, /^_hsmi$/i, /^trk$/i, /^trackingid$/i,
 ];
 
+// CAR-223 (#4789) — query params naming the language a page renders in
+// (`?language=de`, `?lang=en-GB`, `?locale=fr`). One posting served in several
+// languages at one URL must collapse to ONE key, so these params carry no
+// identity and are stripped like the tracking params above — the same allowlist
+// discipline as the parent's DEDUP_STRIP_PARAMS. Exact names only (`language`
+// is functional on some boards, so no regex-y `^lang` strip); the stored URL is
+// untouched — language-preferences.mjs reads the param back
+// (languageFormsFromUrl) to tell the versions apart again behind
+// scan_history.dedup_include_language.
+const LANGUAGE_PARAMS = ['language', 'lang', 'locale'];
+
 /**
  * `decodeURIComponent` throws `URIError` on a malformed percent-escape, and the
  * id here comes straight off a scraped URL. A bad escape means "no usable id",
@@ -102,7 +113,9 @@ export function normalizeUrl(raw) {
 
   const keep = [];
   for (const [k, v] of u.searchParams.entries()) {
-    if (!TRACKING_PARAMS.some((re) => re.test(k))) keep.push([k, v]);
+    if (TRACKING_PARAMS.some((re) => re.test(k))) continue;
+    if (LANGUAGE_PARAMS.includes(k.toLowerCase())) continue;
+    keep.push([k, v]);
   }
   keep.sort((x, y) => (x[0] !== y[0] ? (x[0] < y[0] ? -1 : 1) : (x[1] < y[1] ? -1 : x[1] > y[1] ? 1 : 0)));
   u.search = '';
