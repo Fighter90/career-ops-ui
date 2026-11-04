@@ -2,12 +2,15 @@
 
 This is the operating manual. Read it, then `PLAN.md` (order) and `BACKLOG.md` (what is left).
 
-## State (2026-11-01, вечер)
+## State (2026-11-04, ночь)
 
-- Released: **v1.265.0** (parent-sync wave against career-ops @ `fe857ecf` — apple + bulldogjob sources, registry **125 = 120 EN + 5 RU · 120 adapters**, count gates ×8 regenerated; IBM max_pages/pacing/retry #6273; justjoin lastPublishedAt #6254; jobvite shared-URL fold #6127; liveness UltiPro rung #6090 + Built In hard-expired #6336; no-ports verified: icims #6130 / workday #6143 / Bulgarian apply #6192 already present, smartrecruiters #6303 already read, Machine Summary #6157 position-independent; personio #4789 deferred) — deployed to resumecraft.ru (`deploy.yml ui_ref=v1.265.0 parent_ref=fe857ecf` ✓, verify ✓). Wave+release PR **#616** → `82623fa3` = tag `v1.265.0`. Tests **7138**/0 · Playwright **174** (173 pass / 0 fail / 1 opt-in skip) · evals 14/0/1skip · coverage 98.47/90.16 · remote-QA ✓ SUCCESS.
-- Before it: **v1.264.3** (rate-limit hardening: writeRateLimit on 47/47 mutating endpoints + the completeness tripwire, TRUST_PROXY hop-count opt-in + targeted writeValidateConfig, CAR-141 copy-feedback 2 s, help §19/§32 say 19 languages ×19, state hygiene; PR **#615** → `3bf0b965` = tag `v1.264.3`; remote-QA ✓ SUCCESS).
-- Hygiene (2026-11-01): **branches = 0 / worktrees = 1** (only `main` local + origin); **Linear: 0 active** (CAR-141 closed Done — 3/4 criteria met in code, the demo-video re-record consciously owner-deferred). **BACKLOG: the recorded port-list is fully executed** — the next parent-sync trigger is a new upstream tail.
-- Next: personio language-dedup (#4789 stack) as its own release when scanner capabilities warrant it; the usual per-release hygiene.
+- Released: **v1.267.1** (deploy vehicle — the `v1.267.0` tag stays on the red merge `09d5b520`, not re-pointed) — the fix-forward repair of the v1.267.0 train: coverage ratchet (applicantpro salaryText unreachable fallthrough removed + ≥/≤ branches pinned + board-cache no-store/304-unsaved/MAX_ENTRIES pins), evals chain (PROJECT-CONTEXT arrow, one live QA prompt, site mirrors), and the test-count chain re-pinned to the LIVE measure (the wave notes tracked +105; the real floor after the wave is 7392, +3 gate tests → **7398 total / 7395 pass**). PR **#619** → `d4642b4e` = tag `v1.267.1`.
+- Before it: **v1.267.0** (PR **#618** → `09d5b520`) — the second parent-sync wave against career-ops @ `7d8feb6d`: germantechjobs #6346 + darwinbox + keka + applicantpro → registry **129 = 124 EN + 5 RU · 124 adapters**, count gates ×8 regenerated; ETag board-response reuse #6105; postedAt ×4 #6274; misspelled portals-key rejection #6107; getro featured-pin #6406; CAR-228 scan-filter compat.
+- Before it: **v1.266.0** (PR **#617** → `fc3d931d`) — personio language-dedup CAR-223 (#4789+#5044+#5285): dedup_include_language, preferred_languages, per-language rows, shared language-preferences.mjs.
+- Gates: test:ci **7398/7395/0** · Playwright **173 pass / 0 fail / 1 opt-in skip** · evals 0 ✗ · coverage **98.51/90.35** · changelog parity ✓ ×19 · wiki-banner gate OK ×19.
+- Deployed: run **41761990876** ✓ (prod 1.265.0 → **1.267.1**, public 401) · verify **41762404332** ✓ (routes 200, caddy 502/24h: 0) · **remote-QA 41762635152 ✓ SUCCESS** (prod routes × 19 locales 8m41s, site × 19 3m22s, links ✓).
+- Hygiene: **Linear 0 active** (CAR-223…228 → Done with evidence comments; CAR-223's earlier closure had not persisted — re-verify statuses after MCP writes). Wiki refreshed (Home ×19 v1.267.1/129/7395, Scanner-Providers +6 rows, Testing-and-QA, Roadmap ×3). Pages dispatched manually (the merge push did not trigger it).
+- Next: the usual per-release hygiene; the next parent-sync trigger is a new upstream tail beyond `7d8feb6d`.
 
 ## Non-negotiable rules
 
