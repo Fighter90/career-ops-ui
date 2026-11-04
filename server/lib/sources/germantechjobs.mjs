@@ -18,14 +18,29 @@
  *
  *  - `<title>` carries the employer: "{Role} @ {Company} [{salary range}]".
  *    The company is the last " @ " segment and the trailing salary bracket is
- *    stripped from the role. A title with no " @ " has no identifiable
- *    employer — the row is DROPPED rather than attributed to the board or the
- *    portal entry name, which would let the scanner's company+role dedup
- *    merge two different employers' same-titled postings into one opening.
+ *    stripped from the role — its inner text is KEPT as the row's salary
+ *    display string (the bracket is mandatory on every posting, so this is
+ *    feed-carried data, never invented). The string is never annualized here:
+ *    German-formatted thousands ("48.000") are exactly what the client's
+ *    shared salary tokenizer reads correctly (CAR-228 — the #/scan salary
+ *    facet parses it to 48000–70000; see tests/sources-germantechjobs.test.mjs).
+ *    A title with no " @ " has no identifiable employer — the row is DROPPED
+ *    rather than attributed to the board or the portal entry name, which
+ *    would let the scanner's company+role dedup merge two different
+ *    employers' same-titled postings into one opening.
  *  - There is no location tag, and `<description>` does not carry one either
  *    (sampled: 20 of 626 items mention a location line, the rest pack
- *    salary/requirements/tech only). Location is therefore '' on every row.
- *    Recovering city would cost one detail-page request per posting
+ *    salary/requirements/tech only). The PARSE layer therefore emits location
+ *    '' on every row — the feed's truth. The normalized ROW carries the
+ *    board-level country default (BOARD_LOCATION, 'Germany'): the board's own
+ *    identity (germantechjobs.de, a mandatory € salary on every posting,
+ *    German-formatted figures) is a country claim, not a city, and the board
+ *    default follows the apple/google DEFAULT_LOCATION precedent. It feeds
+ *    the #/scan country facet (Countries.detectCountry('Germany') → de) and
+ *    the server location_filter (block: Germany now correctly drops the
+ *    board; strict allow-lists now see the real country instead of a
+ *    always-passing empty). A CITY is never invented — recovering one would
+ *    cost one detail-page request per posting
  *    (`window.__detailedJob` carries cityCategory/actualCity), which is not a
  *    free list-payload field, so it is not done.
  *
@@ -58,6 +73,13 @@ export const FEED_URL = 'https://germantechjobs.de/rss';
 export const TRUSTED_HOST = 'germantechjobs.de';
 
 /**
+ * Board-level country default on every normalized row. The feed carries no
+ * per-item location (see the header), so the row fills the country the BOARD
+ * is — never a city. apple/google set the same DEFAULT_LOCATION precedent.
+ */
+export const BOARD_LOCATION = 'Germany';
+
+/**
  * Defence-in-depth endpoint check: HTTPS on the board host (subdomain form
  * allowed — `x.germantechjobs.de` carries a dot boundary, so a look-alike
  * like `eviltermantechjobs.de` never matches). Runs on the endpoint the
@@ -84,25 +106,32 @@ export function assertGermantechjobsUrl(url) {
  *   "Data Architect (all Genders) @ BORA Gruppe Deutschland [48.000 - 70.000 €]"
  *   "CIAM Platform Engineer (w/m/d) @ SEW-EURODRIVE GmbH & Co KG [50.000 - 80.000 €]"
  * The company is after the LAST " @ ", the role before it, and a trailing
- * salary bracket "[... €]" is stripped (only a bracket carrying € — a
- * location bracket like "[Düsseldorf]" is not a salary). When no " @ " is
- * present there is no identifiable employer: company is '' and the caller
- * drops the row rather than attributing it to the board or the entry name.
- * Exported for tests.
+ * salary bracket "[... €]" is stripped from the role — its inner text is
+ * returned as `salary` (the display string the #/scan salary facet parses;
+ * never annualized here). Only a bracket carrying € is a salary bracket — a
+ * location bracket like "[Düsseldorf]" is not. When no " @ " is present there
+ * is no identifiable employer: company is '' and the caller drops the row
+ * rather than attributing it to the board or the entry name. Exported for
+ * tests.
  * @param {string} rawTitle
- * @returns {{title: string, company: string}} company is '' when unattributable
+ * @returns {{title: string, company: string, salary: string}} company is '' when unattributable
  */
 export function splitTitle(rawTitle) {
   let text = String(rawTitle ?? '').trim();
-  text = text.replace(/\s*\[[^\]]*€[^\]]*\]\s*$/, '').trim();
+  let salary = '';
+  const bracket = text.match(/\s*\[([^\]]*€[^\]]*)\]\s*$/);
+  if (bracket) {
+    salary = bracket[1].replace(/\s+/g, ' ').trim();
+    text = text.slice(0, bracket.index).trim();
+  }
 
   const at = text.lastIndexOf(' @ ');
   if (at > 0) {
     const title = text.slice(0, at).trim();
     const company = text.slice(at + 3).trim();
-    if (title && company) return { title, company };
+    if (title && company) return { title, company, salary };
   }
-  return { title: text, company: '' };
+  return { title: text, company: '', salary };
 }
 
 /**
@@ -177,7 +206,7 @@ const ENVELOPE_RE = /<rss\b[^>]*>[\s\S]*<channel\b[^>]*>[\s\S]*<\/channel>[\s\S]
  *   error so a broken fetch never reads as "zero jobs".
  *
  * @param {unknown} xml raw RSS feed body
- * @returns {Array<{title: string, url: string, company: string, location: string, description?: string, postedAt?: number}>}
+ * @returns {Array<{title: string, url: string, company: string, location: string, salary?: string, description?: string, postedAt?: number}>}
  */
 export function parseGermantechjobsFeed(xml) {
   if (typeof xml !== 'string') {
@@ -224,7 +253,7 @@ export function parseGermantechjobsFeed(xml) {
     // to anyone: drop it rather than filing it under the board or the portal
     // entry name, which would let the scanner's company+role dedup merge two
     // different employers' same-titled postings into one opening.
-    const { title, company } = splitTitle(rawTitle);
+    const { title, company, salary } = splitTitle(rawTitle);
     if (!company) continue;
 
     // Description ships in the list payload, so it is free — the scanner's
@@ -237,14 +266,12 @@ export function parseGermantechjobsFeed(xml) {
       title,
       company,
       // The feed carries no location for any item (see the header comment), so
-      // this is '' on every row. scan's location_filter passes an empty
-      // location unless `strict: true` is set — a location-restricted sweep
-      // against this board therefore needs the default (non-strict) setting.
-      // Recovering city would mean one detail-page request per posting, which
-      // is not free and so is not done.
+      // this is '' on every PARSE row — the feed's truth. The board-level
+      // country default is applied at the normalized-row layer (normalize).
       location: '',
       url,
     };
+    if (salary) job.salary = salary;
     if (description) job.description = description;
     const postedAt = toEpochMs(tagText(item, 'pubDate'));
     if (postedAt !== undefined) job.postedAt = postedAt;
@@ -261,11 +288,15 @@ function normalize(row) {
     title: row.title,
     company: row.company,
     url: row.url,
-    // The € salary bracket in the title is German-formatted ("48.000 - 70.000
-    // €") — parsing it would misread the thousands separator, so it is never
-    // annualized here.
-    salary: '',
-    location: row.location || '',
+    // The salary display string captured from the title's € bracket (CAR-228):
+    // kept verbatim, never annualized here — German-formatted thousands
+    // ("48.000") are what the client's shared salary tokenizer reads
+    // correctly, so the #/scan salary facet filters on real figures.
+    salary: row.salary || '',
+    // The board-level country default feeds the country facet; the feed
+    // carries no per-item location, so a CITY is never invented (see
+    // BOARD_LOCATION).
+    location: row.location || BOARD_LOCATION,
     isRemote: /remote|удал[её]н/i.test(row.title),
     workplaceType: '',
     relocates: false,

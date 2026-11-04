@@ -34,6 +34,20 @@ import {
   fetchDarwinbox,
 } from '../server/lib/sources/darwinbox.mjs';
 import { darwinboxAdapter } from '../server/lib/portals/adapters/darwinbox.mjs';
+import { readFileSync } from 'node:fs';
+import { resolve, dirname } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+// The #/scan facet helpers the emitted rows must feed (CAR-228): the salary
+// tokenizer + range filter from public/js/lib/skills.js and the country
+// detector from public/js/lib/countries.js, both browser IIFEs loaded under a
+// synthetic window (the established tests/salary-filter.test.mjs pattern).
+const __dirname = dirname(fileURLToPath(import.meta.url));
+globalThis.window = {};
+new Function(readFileSync(resolve(__dirname, '..', 'public', 'js', 'lib', 'skills.js'), 'utf8'))();
+new Function(readFileSync(resolve(__dirname, '..', 'public', 'js', 'lib', 'countries.js'), 'utf8'))();
+const Skills = globalThis.window.Skills;
+const Countries = globalThis.window.Countries;
 
 const ORIGIN = 'https://acme.darwinbox.in';
 const BOARD = { origin: ORIGIN, companyId: 'main' };
@@ -531,6 +545,62 @@ test('darwinbox: normalized rows carry the scanner 12-field shape', async () => 
   assert.equal(r.workplaceType, '');
   assert.equal(r.relocates, false);
   assert.equal(r.snippet, 'Build things & ship');
+});
+
+// ── CAR-228 — the emitted fields feed the #/scan filter panel ────────────────
+
+test('darwinbox: normalized rows feed the REAL #/scan facets — INR salary range, country detection, age-facet date', async () => {
+  const ctx = pagedFetch([envelope([row('a1')])]);
+  const jobs = await fetchDarwinbox('', {
+    fetchImpl: ctx.fetchImpl, sleep: ctx.sleep, company: { name: 'Acme', careers_url: CAREERS }, retries: 0,
+  });
+  const [r] = jobs;
+  // The display string "1600000–2300000 INR" (en dash, no grouping) parses to
+  // raw rupees — the facet compares numbers currency-agnostically (documented
+  // Skills behavior: no offline FX), which is exactly the intended contract.
+  assert.deepEqual(Skills.parseSalaryRange(r.salary), { min: 1600000, max: 2300000 });
+  assert.equal(Skills.salaryInRange(r, 1000000, 2000000), true, 'overlap semantics keep the row');
+  assert.equal(Skills.salaryInRange(r, 3000000, 4000000), false);
+  // A one-sided bound renders as "≥ N" / "≤ N" and still parses to one number.
+  const oneSided = pagedFetch([envelope([row('b1', { salary_min: '', salary_max: '900000' })])]);
+  const [r2] = await fetchDarwinbox('', {
+    fetchImpl: oneSided.fetchImpl, sleep: oneSided.sleep, company: { name: 'Acme', careers_url: CAREERS }, retries: 0,
+  });
+  assert.equal(r2.salary, '≤ 900000 INR');
+  assert.deepEqual(Skills.parseSalaryRange(r2.salary), { min: 900000, max: 900000 });
+  // The "; "-joined location maps through the REAL country facet.
+  assert.deepEqual(Countries.detectCountry(r.location), { code: 'in', name: 'India', flag: '🇮🇳' });
+  assert.equal(Countries.rowInCountry(r, 'in'), true);
+  // The date parses for the Posted-within facet.
+  assert.ok(Number.isFinite(Date.parse(r.date)), `age facet reads ${r.date}`);
+});
+
+test('darwinbox: an ageless row keeps date as a defined "" — the Posted-within facet conservative-passes it', async () => {
+  // Neither posted_on nor created_on parses → postedAt unset → date ''.
+  const ctx = pagedFetch([envelope([row('a1', { posted_on: undefined, created_on: undefined })])]);
+  const jobs = await fetchDarwinbox('', {
+    fetchImpl: ctx.fetchImpl, sleep: ctx.sleep, company: { name: 'Acme', careers_url: CAREERS }, retries: 0,
+  });
+  assert.equal(jobs.length, 1);
+  assert.equal(jobs[0].date, '');
+  assert.equal(typeof jobs[0].date, 'string', 'an empty string, never undefined — the age facet guards on truthy r.date');
+  assert.equal(jobs[0].salary, '1600000–2300000 INR', 'the silent date does not silence the other fields');
+});
+
+test('darwinbox: no-invention — a silent feed leaves the field empty, never a guess', async () => {
+  // salary_timeframe Monthly → no salary (left out rather than converted);
+  // no tool_tip_locations/locations → location ''. Both stay '' on the row.
+  const ctx = pagedFetch([envelope([row('a1', {
+    salary_timeframe: 'Monthly',
+    tool_tip_locations: [],
+    locations: '',
+  })])]);
+  const jobs = await fetchDarwinbox('', {
+    fetchImpl: ctx.fetchImpl, sleep: ctx.sleep, company: { name: 'Acme', careers_url: CAREERS }, retries: 0,
+  });
+  assert.equal(jobs[0].salary, '', 'a non-annual figure is never annualized into a salary');
+  assert.equal(jobs[0].location, '', 'a location-less row stays location-less');
+  assert.equal(Skills.parseSalaryRange(jobs[0].salary), null);
 });
 
 test('darwinbox: fetch fails loud when the signal is already aborted (no empty board)', async () => {
