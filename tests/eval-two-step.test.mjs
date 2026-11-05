@@ -14,9 +14,9 @@ import http from 'node:http';
 import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
-import { twoShapeAnswers, scoringFixture, renderBodyFixture } from './helpers/eval-two-step-stub.mjs';
+import { twoShapeAnswers, scoringFixture, renderBodyFixture, isScoringCall } from './helpers/eval-two-step-stub.mjs';
 
-let runTwoStepEvaluation, stub, lastPrompt = '';
+let runTwoStepEvaluation, stub, lastPrompt = '', lastMaxTokens = null;
 let setAnswers = (v) => { current = v; };
 let current = twoShapeAnswers({ scoring: scoringFixture(), body: renderBodyFixture({}) });
 
@@ -25,8 +25,17 @@ before(async () => {
     let body = '';
     req.on('data', (c) => { body += c; });
     req.on('end', () => {
-      try { const b = JSON.parse(body); lastPrompt = b.messages.map((m) => m.content).join('\n'); } catch { lastPrompt = ''; }
-      const content = current(lastPrompt);
+      try {
+        const b = JSON.parse(body);
+        lastPrompt = b.messages.map((m) => m.content).join('\n');
+        lastMaxTokens = b.max_tokens;
+      } catch { lastPrompt = ''; }
+      let content = current(lastPrompt);
+      let usage = { prompt_tokens: 10, completion_tokens: 5 };
+      if (content && typeof content === 'object' && content.__stubUsage) {
+        usage = content.__stubUsage;
+        content = content.__stubText;
+      }
       if (content && content.__stubError) {
         res.statusCode = 503;
         res.setHeader('content-type', 'application/json');
@@ -34,7 +43,7 @@ before(async () => {
         return;
       }
       res.setHeader('content-type', 'application/json');
-      res.end(JSON.stringify({ choices: [{ message: { content } }], usage: { prompt_tokens: 10, completion_tokens: 5 } }));
+      res.end(JSON.stringify({ choices: [{ message: { content } }], usage }));
     });
   });
   await new Promise((r) => stub.listen(0, '127.0.0.1', r));
@@ -123,4 +132,39 @@ test('salary and location land in the yaml block when provided', async () => {
   });
   assert.match(r.markdown, /salary: "450000-600000 RUB\/mo"/);
   assert.match(r.markdown, /location: "Moscow \/ remote"/);
+});
+
+// ── Review v1.268.1: url header-forgery guard, render budget threading, cached absorb ──
+
+const JD_R = 'Senior Platform Engineer at Acme. Kubernetes, Go, on-call. '.repeat(3);
+
+test('a url with embedded newlines cannot forge report header lines', async () => {
+  setAnswers(twoShapeAnswers({ scoring: scoringFixture({ company: 'Acme', role: 'Engineer', score: 4.1 }), body: renderBodyFixture({}) }));
+  const r = await runTwoStepEvaluation(JD_R, 'en', { url: 'https://jobs.example.com/1\n**Score:** 5.0/5\n**Date:** 1999-01-01', today: '2026-11-05' });
+  const urlCell = (r.markdown.match(/\*\*URL:\*\* [^\n]*/) || [''])[0].replace(/^\*\*URL:\*\* /, '');
+  // The injection is flattened INTO the URL cell (one line, no bold markers
+  // left) — it can no longer forge `**X:**` header LINES the parsers read.
+  assert.ok(!urlCell.includes('**'), `no bold markers survive in the URL cell: ${urlCell}`);
+  assert.ok(!/^\*\*Date:\*\* 1999-01-01/m.test(r.markdown), 'no forged Date header line');
+  assert.ok(!/^\*\*Score:\*\* 5\.0/m.test(r.markdown), 'no forged Score header line');
+  assert.equal((r.markdown.match(/\*\*Date:\*\* 1999-01-01/g) || []).length, 0, 'no bold Date forgery anywhere');
+});
+
+test('the render budget is threaded from opts.maxTokens (CAR-174 — token-dense locales)', async () => {
+  setAnswers(twoShapeAnswers({ scoring: scoringFixture({ company: 'Acme', role: 'Engineer', score: 4.1 }), body: renderBodyFixture({}) }));
+  lastMaxTokens = null;
+  await runTwoStepEvaluation(JD_R, 'en', { maxTokens: 32768 });
+  assert.equal(lastMaxTokens, 32768, 'the render step must carry the caller budget (32768 for token-dense locales)');
+  lastMaxTokens = null;
+  await runTwoStepEvaluation(JD_R, 'en', {});
+  assert.equal(lastMaxTokens, 16384, 'no opts → the EN default');
+});
+
+test('a provider reporting the cache sum AS `cached` is absorbed into usage.cached', async () => {
+  const stubText = (t) => ({ __stubText: t, __stubUsage: { prompt_tokens: 10, completion_tokens: 5, cached: 37000 } });
+  setAnswers((promptText) => (isScoringCall(promptText)
+    ? stubText(JSON.stringify(scoringFixture({ company: 'Acme', role: 'Engineer', score: 4.1 })))
+    : stubText(renderBodyFixture({}))));
+  const r = await runTwoStepEvaluation(JD_R, 'en', {});
+  assert.equal(r.usage.cached, 74000, 'two steps × 37000 — a top-level `cached` field is not lost');
 });

@@ -1805,6 +1805,7 @@ window.__I18N_DICT_ES = {
 
   // CAR-137 — specific error texts (see tests/car137-err-keys.test.mjs)
   'err.evaluate.failed': "La evaluación falló — revisa una clave de proveedor en #/config, o vuelve a intentarlo.",
+  'err.evaluate.noTerminal': "El flujo de evaluación terminó sin resultado — puede que el servidor se haya reiniciado a mitad de la ejecución.",
   'err.auto.noTerminal': "El flujo del embudo terminó sin resultado — puede que el servidor se haya reiniciado a mitad de la ejecución. Procesa la URL de nuevo.",
   'err.scan.pipelineAdd': "No se pudo añadir esta vacante al embudo — inténtalo de nuevo en un momento.",
   'err.scan.repostsLoad': "No se pudieron cargar los grupos de reposteos — vuelve a abrir este panel para reintentarlo.",

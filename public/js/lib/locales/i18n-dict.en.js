@@ -1811,6 +1811,7 @@ window.__I18N_DICT_EN = {
 
   // CAR-137 — specific error texts (see tests/car137-err-keys.test.mjs)
   'err.evaluate.failed': "Evaluation failed — check a provider key on #/config, or run again.",
+  'err.evaluate.noTerminal': "The evaluation stream ended without a result — the server may have restarted mid-run.",
   'err.auto.noTerminal': "The pipeline stream ended without a result — the server may have restarted mid-run. Run the URL again.",
   'err.scan.pipelineAdd': "Could not add this posting to the pipeline — try again in a moment.",
   'err.scan.repostsLoad': "Could not load repost clusters — reopen this panel to retry.",

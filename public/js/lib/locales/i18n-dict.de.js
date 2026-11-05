@@ -1804,6 +1804,7 @@ window.__I18N_DICT_DE = {
 
   // CAR-137 — specific error texts (see tests/car137-err-keys.test.mjs)
   'err.evaluate.failed': "Die Bewertung ist fehlgeschlagen — prüfen Sie einen Anbieter-Schlüssel unter #/config, oder versuchen Sie es erneut.",
+  'err.evaluate.noTerminal': "Der Bewertungs-Stream endete ohne Ergebnis — der Server wurde möglicherweise mitten in der Ausführung neu gestartet.",
   'err.auto.noTerminal': "Der Trichter-Stream endete ohne Ergebnis — der Server wurde möglicherweise mitten in der Ausführung neu gestartet. Führen Sie die URL erneut aus.",
   'err.scan.pipelineAdd': "Diese Stelle konnte nicht zum Trichter hinzugefügt werden — versuchen Sie es gleich noch einmal.",
   'err.scan.repostsLoad': "Gruppen wiederholt ausgeschriebener Rollen konnten nicht geladen werden — öffnen Sie dieses Panel erneut, um es erneut zu versuchen.",

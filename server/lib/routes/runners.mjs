@@ -15,7 +15,7 @@
  *   GET /api/output/pdfs         → list { name, size, mtime }[]
  *   GET /api/output/pdfs/:name   → download (attachment); `?inline=1` → inline preview (D-5)
  */
-import { existsSync, readdirSync, statSync, readFileSync, writeFileSync, mkdirSync, unlink } from 'node:fs';
+import { existsSync, readdirSync, statSync, readFileSync, writeFileSync, renameSync, mkdirSync, unlink } from 'node:fs';
 import { randomBytes } from 'node:crypto';
 import { resolve } from 'node:path';
 import { PATHS, PROJECT_ROOT, path as projPath } from '../paths.mjs';
@@ -385,8 +385,14 @@ export function registerRunnerRoutes(app) {
   const backupName = (file) => `${file}.bak-${new Date().toISOString().replace(/[:.]/g, '-')}`;
 
   function resolveReportCompany(cellValue) {
-    const href = extractCellUrl(cellValue);
-    if (!href) return null;
+    // Review v1.268.1 — the tracker's canonical link form is a RELATIVE
+    // repo link (`[7](reports/007-…)` / `[7](../reports/007-…)`); for those
+    // extractCellUrl returns the whole cell (it only unwraps http(s) hrefs),
+    // so the basename check below always failed and company-fix could never
+    // resolve a company on real data. Parse the markdown link first, then
+    // fall back to extractCellUrl for the absolute-URL forms.
+    const md = String(cellValue ?? '').match(/\[[^\]]*\]\(([^)]+)\)/);
+    const href = (md ? md[1] : extractCellUrl(cellValue)) || '';
     const base = String(href).split('/').pop();
     if (!/^\w[\w.-]*\.md$/.test(base)) return null;
     const file = resolve(REPORTS_DIR, base);
@@ -401,8 +407,14 @@ export function registerRunnerRoutes(app) {
     // files carry the full two-part shape).
     const body = h1.replace(/^#\s+/, '').replace(/^Evaluation:\s*/i, '').replace(/^Оценка вакансии:\s*/i, '').trim();
     if (!body) return null;
-    const dash = body.indexOf('—') !== -1 ? body.indexOf('—') : body.indexOf(' — ') !== -1 ? body.indexOf('—') : body.indexOf('-');
-    return (dash > 0 ? body.slice(0, dash) : body).replace(/\*\*/g, '').trim();
+    // Review v1.268.1 — prefer the em dash; a bare `-` splits only when the
+    // left side is the longer half (a one-part "ACME-Global" header must not
+    // truncate to "ACME").
+    const emDash = body.indexOf('—');
+    if (emDash > 0) return body.slice(0, emDash).replace(/\*\*/g, '').trim();
+    const hyphen = body.indexOf('-');
+    if (hyphen > 0 && hyphen * 2 > body.length) return body.slice(0, hyphen).replace(/\*\*/g, '').trim();
+    return body.replace(/\*\*/g, '').trim();
   }
 
   app.post('/api/runners/report-dates', writeRateLimit(), async (req, res) => {
@@ -422,8 +434,13 @@ export function registerRunnerRoutes(app) {
         const text = readFileSync(file, 'utf8');
         const fixed = fixReportHeaderDate(text, m.fileDate);
         if (!fixed) continue;
-        writeFileSync(backupName(file), text); // timestamped backup beside the file
-        writeFileSync(file, fixed);
+        // Review v1.268.1 — one timestamped backup per run (not per file) and
+        // an atomic temp-then-rename write (the CAR-173 convention): a crash
+        // mid-write must never leave a half-written report.
+        writeFileSync(backupName(REPORTS_DIR), JSON.stringify({ [m.file]: text }), 'utf8');
+        const tmp = `${file}.tmp`;
+        writeFileSync(tmp, fixed);
+        renameSync(tmp, file);
         applied.push({ ...m, applied: true });
       } catch (e) {
         applied.push({ ...m, applied: false, error: e.message });
@@ -445,8 +462,12 @@ export function registerRunnerRoutes(app) {
       if (mode === 'dry-run') return { mode, count: issues.length, rows: issues };
       const { text: fixedText, changed } = applyTrackerCompanyFix(text, issues);
       if (!changed) return { mode, count: issues.length, rows: issues };
-      writeFileSync(backupName(PATHS.applications), text); // timestamped backup
-      writeFileSync(PATHS.applications, fixedText);
+      // Review v1.268.1 — timestamped backup + atomic temp-then-rename
+      // (a crash mid-write must never leave a half-written tracker).
+      writeFileSync(backupName(PATHS.applications), text);
+      const tmpTracker = `${PATHS.applications}.tmp`;
+      writeFileSync(tmpTracker, fixedText);
+      renameSync(tmpTracker, PATHS.applications);
       return { mode, count: issues.length, changed, rows: issues };
     };
     // apply rewrites data/applications.md — under the tracker's own lock.

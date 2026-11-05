@@ -59,6 +59,8 @@ Every row below corresponds to a documented HTTP action initiated by a UI contro
 |---|---|---|---|
 | `cv.md` | "Save" in CV view | `PUT /api/cv` | Sanitized via `stripDangerousMarkdown` (v1.22.0 M-4: entity-decoded before regex strip). 1 MB cap. |
 | `data/applications.md` | "Add to tracker" | `POST /api/tracker` | Dedup by (company, role) case-insensitive. Bootstraps header if file empty. **v1.21.0 (H-6):** read-modify-write serialized via `withFileLock(PATHS.applications, fn)` from `server/lib/file-lock.mjs` — concurrent POSTs no longer drop rows. |
+| `data/applications.md` (Company cells) | Repair runners | `POST /api/runners/company-fix` (CAR-232) | Dry-run default; apply rewrites ONLY the Company cell from the linked report's H1 (line-surgical, `|` flattened, `fixed: null` rows never guessed), under the tracker lock + timestamped `.bak-…` + atomic temp-then-rename. |
+| `reports/*.md` (header `**Date:**`) | Repair runners | `POST /api/runners/report-dates` (CAR-233) | Dry-run default; apply rewrites ONLY the date line to the filename stamp (CAR-101 `fixReportHeaderDate`), one `.bak-…` snapshot per run, atomic temp-then-rename. |
 | `data/pipeline.md` | "Add URL" / paste in global search | `POST /api/pipeline`, `DELETE /api/pipeline?url=` | URL gated by `isValidJobUrl`. Dedup. **v1.21.0 (H-6):** both POST and DELETE wrapped in `withFileLock(PATHS.pipeline, fn)`. |
 | `data/scan-history.tsv` | Scan run | `GET /api/stream/scan?source=ats\|regional\|both` (v1.18.0+) | Append-only. Skipped on `dryRun=1`. |
 | `data/last-scan.json` | Scan run | (same) | Replaced atomically. Skipped on `dryRun=1`. |

@@ -1806,6 +1806,7 @@ window.__I18N_DICT_TR = {
 
   // CAR-137 — specific error texts (see tests/car137-err-keys.test.mjs)
   'err.evaluate.failed': "Değerlendirme başarısız oldu — #/config bölümünde bir sağlayıcı anahtarı kontrol edin veya yeniden deneyin.",
+  'err.evaluate.noTerminal': "Değerlendirme akışı sonuç olmadan sona erdi — sunucu işlem sırasında yeniden başlamış olabilir.",
   'err.auto.noTerminal': "Huni akışı sonuç olmadan sona erdi — sunucu işlem sırasında yeniden başlamış olabilir. URL'yi yeniden çalıştırın.",
   'err.scan.pipelineAdd': "Bu ilan huniye eklenemedi — birazdan yeniden deneyin.",
   'err.scan.repostsLoad': "Yeniden yayın kümeleri yüklenemedi — yeniden denemek için bu paneli yeniden açın.",

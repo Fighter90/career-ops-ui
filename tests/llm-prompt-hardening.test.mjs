@@ -300,12 +300,14 @@ test('evaluation routes pass the language to the render step and a locale-aware 
   assert.match(llm, /export function evalMaxTokens\(lang\)/);
   assert.match(llm, /evalTimeoutMs\(lang\)/);
   assert.match(ap, /evalTimeoutMs\(lang\)/);
-  // The in-process render step keeps the 16384-token output ceiling and the
-  // 300 s clock — the seven-section body is bounded by construction, so the
-  // per-locale evalMaxTokens split no longer applies there (CAR-174's
-  // ceiling lives on in the exported pure function + the subprocess path).
-  assert.match(two, /maxTokens: 16384/);
+  // The in-process render step keeps the 300 s clock; the output budget is
+  // locale-aware again (review v1.268.1 restored CAR-174 — ta/hi/it/pl/ja
+  // renders past 16384 chars came back cut): BOTH call sites thread
+  // evalMaxTokens(lang) and eval-two-step defaults to the EN 16384 ceiling.
+  assert.match(two, /maxTokens: opts\.maxTokens \|\| 16384/);
   assert.match(two, /timeoutMs: RENDER_TIMEOUT_MS/);
+  assert.match(llm, /maxTokens: evalMaxTokens\(lang\)/);
+  assert.match(ap, /maxTokens: evalMaxTokens\(lang\)/);
 });
 
 test('the language reminder keeps quotes and names in English but nothing else (hi code-switching)', () => {

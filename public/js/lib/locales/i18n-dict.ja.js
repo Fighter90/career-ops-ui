@@ -1805,6 +1805,7 @@ window.__I18N_DICT_JA = {
 
   // CAR-137 — specific error texts (see tests/car137-err-keys.test.mjs)
   'err.evaluate.failed': "評価に失敗しました — #/config でプロバイダーキーを確認するか、もう一度実行してください。",
+  'err.evaluate.noTerminal': "評価のストリームが結果なしで終了しました — 実行中にサーバーが再起動した可能性があります。",
   'err.auto.noTerminal': "パイプラインのストリームが結果なしで終了しました — 実行中にサーバーが再起動した可能性があります。URL をもう一度実行してください。",
   'err.scan.pipelineAdd': "この求人をパイプラインに追加できませんでした — しばらくしてからもう一度お試しください。",
   'err.scan.repostsLoad': "再掲載クラスタを読み込めませんでした — このパネルを開き直して再試行してください。",

@@ -1804,6 +1804,7 @@ window.__I18N_DICT_PT_BR = {
 
   // CAR-137 — specific error texts (see tests/car137-err-keys.test.mjs)
   'err.evaluate.failed': "A avaliação falhou — verifique uma chave de provedor em #/config, ou tente novamente.",
+  'err.evaluate.noTerminal': "O fluxo de avaliação terminou sem resultado — o servidor pode ter reiniciado no meio da execução.",
   'err.auto.noTerminal': "O fluxo do funil terminou sem resultado — o servidor pode ter reiniciado no meio da execução. Processe a URL novamente.",
   'err.scan.pipelineAdd': "Não foi possível adicionar esta vaga ao funil — tente novamente em instantes.",
   'err.scan.repostsLoad': "Não foi possível carregar os grupos de repostagens — reabra este painel para tentar de novo.",

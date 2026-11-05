@@ -1805,6 +1805,7 @@ window.__I18N_DICT_KO = {
 
   // CAR-137 — specific error texts (see tests/car137-err-keys.test.mjs)
   'err.evaluate.failed': "평가에 실패했습니다 — #/config 에서 제공자 키를 확인하거나 다시 시도하세요.",
+  'err.evaluate.noTerminal': "평가 스트림이 결과 없이 종료되었습니다 — 실행 중에 서버가 재시작했을 수 있습니다.",
   'err.auto.noTerminal': "파이프라인 스트림이 결과 없이 종료되었습니다 — 실행 중에 서버가 재시작했을 수 있습니다. URL 을 다시 실행하세요.",
   'err.scan.pipelineAdd': "이 공고를 파이프라인에 추가하지 못했습니다 — 잠시 후 다시 시도하세요.",
   'err.scan.repostsLoad': "재게시 클러스터를 불러오지 못했습니다 — 이 패널을 다시 열어 재시도하세요.",

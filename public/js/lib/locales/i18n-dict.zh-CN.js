@@ -1805,6 +1805,7 @@ window.__I18N_DICT_ZH_CN = {
 
   // CAR-137 — specific error texts (see tests/car137-err-keys.test.mjs)
   'err.evaluate.failed': "评估失败 — 请在 #/config 检查服务商密钥，或重新运行。",
+  'err.evaluate.noTerminal': "评估数据流在没有结果的情况下结束 — 服务器可能在运行中途重启了。",
   'err.auto.noTerminal': "流水线数据流在没有结果的情况下结束 — 服务器可能在运行中途重启了。请重新运行该 URL。",
   'err.scan.pipelineAdd': "无法将该职位加入流水线 — 请稍后再试。",
   'err.scan.repostsLoad': "无法加载重复发布分组 — 请重新打开此面板重试。",

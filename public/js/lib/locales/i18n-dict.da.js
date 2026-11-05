@@ -1804,6 +1804,7 @@ window.__I18N_DICT_DA = {
 
   // CAR-137 — specific error texts (see tests/car137-err-keys.test.mjs)
   'err.evaluate.failed': "Vurderingen mislykkedes — tjek en udbydernøgle under #/config, eller prøv igen.",
+  'err.evaluate.noTerminal': "Vurderings-streamen sluttede uden resultat — serveren kan være blevet genstartet midt i kørslen.",
   'err.auto.noTerminal': "Tragt-streamen sluttede uden resultat — serveren kan være blevet genstartet midt i kørslen. Kør URL'en igen.",
   'err.scan.pipelineAdd': "Kunne ikke tilføje dette opslag til tragten — prøv igen om et øjeblik.",
   'err.scan.repostsLoad': "Kunne ikke indlæse genopslagsklynger — genåbn dette panel for at prøve igen.",

@@ -1,4 +1,13 @@
 /* global Router, API, UI, I18n, HelpHint */
+// v1.268.1 review — navigating away mid-evaluation used to leave the SSE
+// drain (and the server-side provider spend — FULL-M5 threads the client
+// disconnect into the provider call) running against a detached view. The
+// route-change hook below aborts the CURRENT run's controller. One
+// module-level registration with a single slot: armed on run start,
+// disarmed when the run settles — never re-registered per render.
+let abortRun = null;
+Router.onRouteChange(() => abortRun && abortRun());
+
 Router.register('evaluate', async () => {
   const c = UI.el;
   const t = (k, f) => I18n.t(k, f);
@@ -73,19 +82,39 @@ Router.register('evaluate', async () => {
     };
     const setStage = (name, detail) => {
       if (etaLine) { etaLine.remove(); etaLine = null; }
-      out.innerHTML = `<div class="loading">${stageLabel(name)}${detail ? ` — ${detail}` : ''}</div>`;
+      // v1.268.1 review — the stage `detail` is server-controlled data;
+      // interpolating it through innerHTML handed the server a markup
+      // channel. Build a text node instead (same visual output).
+      out.replaceChildren(c('div', { className: 'loading' }, stageLabel(name) + (detail ? ' — ' + detail : '')));
     };
+    // v1.268.1 review — one AbortController per run; the module-level
+    // route-change hook (top of file) aborts it on navigation so the client
+    // disconnect stops the server-side provider call.
+    const ctrl = new AbortController();
+    const stop = () => ctrl.abort();
+    abortRun = stop;
     try {
-      const r = await new Promise((resolve, reject) => {
+      const r = await new Promise(async (resolve, reject) => {
         let settled = false;
-        API.postStream('/api/evaluate', { jd, save: saveJd.checked }, (ev, data) => {
-          if (settled) return;
-          if (ev === 'done') { settled = true; resolve(data); }
-          else if (ev === 'stage') setStage(data.name, data.detail);
-          else if (ev === 'error') { settled = true; reject(new Error(data.message || 'stream error')); }
-        });
-        // The stream ends without a terminal frame → same contract as the
-        // other consumers: surface the no-terminal-frame error.
+        try {
+          await API.postStream('/api/evaluate', { jd, save: saveJd.checked }, (ev, data) => {
+            if (settled) return;
+            if (ev === 'done') { settled = true; resolve(data); }
+            else if (ev === 'stage') setStage(data.name, data.detail);
+            else if (ev === 'error') { settled = true; reject(new Error(data.message || 'stream error')); }
+          }, ctrl.signal);
+        } catch { /* postStream resolves on every path; a throw must not hang either */ }
+        if (!settled) {
+          settled = true;
+          // The stream ended WITHOUT a terminal frame (server restart
+          // mid-run) used to leave this Promise unsettled forever: the
+          // Generate button stayed disabled with no explanation. Same
+          // contract as auto-pipeline — any non-aborted end lands in a
+          // terminal state; a deliberate route-change abort is silent
+          // (navigation is not an error).
+          if (ctrl.signal.aborted) resolve(undefined);
+          else reject(new Error(t('err.evaluate.noTerminal', 'The evaluation stream ended without a result — the server may have restarted mid-run.')));
+        }
       });
       if (!r || (!r.markdown && r.mode !== 'manual')) {
         throw new Error(t('err.evaluate.failed', 'Evaluation failed — check a provider key on #/config, or run again.'));
@@ -95,6 +124,9 @@ Router.register('evaluate', async () => {
       out.innerHTML = '';
       // CAR-137 — the bare 'failed' fallback became a specific, actionable message.
       out.appendChild(c('div', { className: 'empty' }, t('common.error') + ': ' + ((e && e.message) || t('err.evaluate.failed', 'Evaluation failed — check a provider key on #/config, or run again.'))));
+    } finally {
+      // The run settled: disarm the slot unless a newer run re-armed it.
+      if (abortRun === stop) abortRun = null;
     }
   }
 

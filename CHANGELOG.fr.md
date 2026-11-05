@@ -28,7 +28,7 @@ Traductions : [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 - Les migrations de données de prod (dates des rapports, entreprises du tracker, backfill des scores) sont des ACTIONS DU PROPRIÉTAIRE : lancer le dry-run des nouveaux runners, relire, puis appliquer — l'outillage arrive ici, les changements de données ne s'exécutent pas automatiquement.
 - Le tag v1.267.0 reste pointé sur le commit de merge rouge — non re-pointé ; v1.267.1/1.267.2/1.268.0 sont les véhicules de déploiement.
 
-- Tests 7395 → **7490** ; couverture 98.49 lignes / 90.31 branches.
+- Tests 7395 → **7510** ; couverture 98.49 lignes / 90.31 branches.
 
 ## [1.267.2] — 2026-11-04
 
