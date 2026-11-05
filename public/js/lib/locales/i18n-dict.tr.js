@@ -379,6 +379,7 @@ window.__I18N_DICT_TR = {
   'top.search.aria': "Genel arama — odaklanmak için Cmd+K, otomatik huni için bir URL yapıştırıp Enter'a basın",
   'nav.toggleMenu': "Menüyü aç veya kapat",
   'nav.closeMenu': "Menüyü kapat",
+  'nav.resizeSidebar': "Menü genişliğini değiştir",
 
   'common.closeDialog': "İletişim kutusunu kapat",
   'top.search.toggle': "Ara",

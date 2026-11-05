@@ -378,6 +378,7 @@ window.__I18N_DICT_AR = {
   'top.search.aria': "بحث شامل — Cmd+K للتركيز، الصق رابطًا واضغط Enter للخط التلقائي",
   'nav.toggleMenu': "فتح القائمة أو إغلاقها",
   'nav.closeMenu': "إغلاق القائمة",
+  'nav.resizeSidebar': "تغيير عرض القائمة",
 
   'common.closeDialog': "إغلاق مربع الحوار",
   'top.search.toggle': "بحث",

@@ -379,6 +379,7 @@ window.__I18N_DICT_ZH_TW = {
   'top.search.aria': "全域搜尋 — Cmd+K 聚焦,貼上 URL 並按 Enter 觸發自動流水線",
   'nav.toggleMenu': "開啟或收起選單",
   'nav.closeMenu': "關閉選單",
+  'nav.resizeSidebar': "調整選單寬度",
 
   'common.closeDialog': "關閉對話框",
   'top.search.toggle': "搜尋",

@@ -379,6 +379,7 @@ window.__I18N_DICT_EN = {
   'top.search.aria': "Global search — Cmd+K to focus, paste a URL and Enter for auto-pipeline",
   'nav.toggleMenu': "Toggle menu",
   'nav.closeMenu': "Close menu",
+  'nav.resizeSidebar': "Resize sidebar",
 
   'common.closeDialog': "Close dialog",
   'top.search.toggle': "Search",

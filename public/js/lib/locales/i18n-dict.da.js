@@ -378,6 +378,7 @@ window.__I18N_DICT_DA = {
   'top.search.aria': "Global søgning — Cmd+K for fokus, indsæt en URL og Enter for auto-tragten",
   'nav.toggleMenu': "Åbn eller luk menuen",
   'nav.closeMenu': "Luk menu",
+  'nav.resizeSidebar': "Tilpas menuens bredde",
 
   'common.closeDialog': "Luk dialogboksen",
   'top.search.toggle': "Søg",

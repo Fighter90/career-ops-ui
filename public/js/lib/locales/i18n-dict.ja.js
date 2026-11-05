@@ -379,6 +379,7 @@ window.__I18N_DICT_JA = {
   'top.search.aria': "グローバル検索 — Cmd+K でフォーカス、URL を貼り付け Enter で自動パイプライン",
   'nav.toggleMenu': "メニューを開く／閉じる",
   'nav.closeMenu': "メニューを閉じる",
+  'nav.resizeSidebar': "メニューの幅を変更",
 
   'common.closeDialog': "ダイアログを閉じる",
   'top.search.toggle': "検索",

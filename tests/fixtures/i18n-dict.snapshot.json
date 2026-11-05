@@ -7643,6 +7643,27 @@
     "ta": "பட்டியலை மூடு",
     "vi": "Đóng menu"
   },
+  "nav.resizeSidebar": {
+    "en": "Resize sidebar",
+    "es": "Cambiar el ancho del menú",
+    "pt-BR": "Alterar a largura do menu",
+    "ko": "메뉴 너비 조절",
+    "ja": "メニューの幅を変更",
+    "ru": "Изменить ширину меню",
+    "zh-CN": "调整菜单宽度",
+    "zh-TW": "調整選單寬度",
+    "fr": "Redimensionner le menu",
+    "pl": "Zmień szerokość menu",
+    "uk": "Змінити ширину меню",
+    "da": "Tilpas menuens bredde",
+    "ar": "تغيير عرض القائمة",
+    "de": "Menübreite ändern",
+    "it": "Ridimensiona il menu",
+    "tr": "Menü genişliğini değiştir",
+    "hi": "मेन्यू की चौड़ाई बदलें",
+    "ta": "மெனுவின் அகலத்தை மாற்று",
+    "vi": "Đổi chiều rộng menu"
+  },
   "common.closeDialog": {
     "en": "Close dialog",
     "es": "Cerrar el diálogo",

@@ -378,6 +378,7 @@ window.__I18N_DICT_UK = {
   'top.search.aria': "Глобальний пошук — Cmd+K для фокусу, вставте URL і Enter для авто-воронки",
   'nav.toggleMenu': "Відкрити або закрити меню",
   'nav.closeMenu': "Закрити меню",
+  'nav.resizeSidebar': "Змінити ширину меню",
 
   'common.closeDialog': "Закрити діалог",
   'top.search.toggle': "Пошук",

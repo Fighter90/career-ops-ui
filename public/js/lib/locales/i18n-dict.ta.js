@@ -385,6 +385,7 @@ window.__I18N_DICT_TA = {
   'top.search.aria': "உலகளாவிய தேடல் — Cmd+K கவனத்திற்கு, URL ஒட்டி Enter ஆனால் தானியங்கு பைப்லைன்",
   'nav.toggleMenu': "மெனுவை மாற்று",
   'nav.closeMenu': "பட்டியலை மூடு",
+  'nav.resizeSidebar': "மெனுவின் அகலத்தை மாற்று",
   'common.closeDialog': "உரையாடலை மூடு",
   'top.search.toggle': "தேடல்",
   'top.doctor': "மருத்துவர்",

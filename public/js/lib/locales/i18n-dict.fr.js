@@ -379,6 +379,7 @@ window.__I18N_DICT_FR = {
   'top.search.aria': "Recherche globale — Cmd+K pour se concentrer, collez une URL et appuyez sur Entrée pour le tunnel automatique",
   'nav.toggleMenu': "Ouvrir ou fermer le menu",
   'nav.closeMenu': "Fermer le menu",
+  'nav.resizeSidebar': "Redimensionner le menu",
 
   'common.closeDialog': "Fermer la boîte de dialogue",
   'top.search.toggle': "Rechercher",
