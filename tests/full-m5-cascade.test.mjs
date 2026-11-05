@@ -35,6 +35,10 @@ import assert from 'node:assert/strict';
 import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
+// v1.268.0 (CAR-229/230) — the live evaluate makes TWO provider calls with
+// prompt-keyed shapes (scoring → bare JSON, render → the A–G body); the
+// provider mocks branch on the raw request body via the shared helper.
+import { twoShapeAnswers, scoringFixture, renderBodyFixture } from './helpers/eval-two-step-stub.mjs';
 
 const KEYS = ['ANTHROPIC_API_KEY', 'GEMINI_API_KEY', 'GOOGLE_API_KEY', 'OPENAI_API_KEY',
   'QWEN_API_KEY', 'OPENROUTER_API_KEY', 'GITHUB_MODELS_API_KEY', 'GITHUB_MODELS_TOKEN',
@@ -55,6 +59,14 @@ function hostIs(u, host) {
   try { return new URL(String(u)).host === host; } catch { return false; }
 }
 const saved = {};
+// The two-shape answer set for the live evaluate cascade: a valid scoring
+// JSON for the scoring prompt and a complete A–G body for the render prompt.
+// Prompts from /api/mode and /api/deep carry neither marker → the mock falls
+// through to its generic brief.
+const evalAnswers = twoShapeAnswers({
+  scoring: scoringFixture({ company: 'Acme', role: 'Engineer', archetype: 'backend', legitimacy: 'High Confidence', score: 4.0 }),
+  body: renderBodyFixture({}),
+});
 
 before(async () => {
   ROOT = mkdtempSync(resolve(tmpdir(), 'full-m5-cascade-'));
@@ -93,14 +105,19 @@ afterEach(() => { globalThis.fetch = realFetch; });
 const json = (o) => new Response(JSON.stringify(o), { status: 200, headers: { 'content-type': 'application/json' } });
 const JD = 'Senior Backend Engineer at Acme. Go, PostgreSQL, Kubernetes, on-call rotation, code review.';
 
-/** Provider mocks in each provider's own response schema, matched by host. */
+/** Provider mocks in each provider's own response schema, matched by host.
+ *  v1.268.0 — the evaluate cascade's two calls are answered by prompt shape
+ *  (the raw request body carries the marker text; JSON escaping never touches
+ *  either marker string), so the mock branches before falling back to the
+ *  generic one-line brief used by /api/mode and /api/deep. */
 function mockProviders() {
   const calls = [];
+  const answer = (name, rawBody) => evalAnswers(String(rawBody ?? '')) || `# ${name} brief`;
   globalThis.fetch = async (u, o = {}) => {
     const s = String(u);
     if (hostIs(s, 'api.anthropic.com')) {
       calls.push({ host: 'anthropic', signal: o.signal || null });
-      return json({ content: [{ type: 'text', text: '# anthropic brief' }], stop_reason: 'end_turn', usage: { input_tokens: 3, output_tokens: 2 } });
+      return json({ content: [{ type: 'text', text: answer('anthropic', o?.body) }], stop_reason: 'end_turn', usage: { input_tokens: 3, output_tokens: 2 } });
     }
     if (hostIs(s, 'generativelanguage.googleapis.com')) {
       calls.push({ host: 'gemini', signal: o.signal || null });
@@ -109,7 +126,7 @@ function mockProviders() {
     for (const [host, name] of [['api.openai.com', 'openai'], ['api.deepseek.com', 'deepseek'], ['127.0.0.1:8642', 'hermes']]) {
       if (hostIs(s, host)) {
         calls.push({ host: name, signal: o.signal || null });
-        return json({ choices: [{ message: { content: `# ${name} brief` }, finish_reason: 'stop' }], usage: { prompt_tokens: 3, completion_tokens: 2 } });
+        return json({ choices: [{ message: { content: answer(name, o?.body) }, finish_reason: 'stop' }], usage: { prompt_tokens: 3, completion_tokens: 2 } });
       }
     }
     return realFetch(u, o);
@@ -127,6 +144,26 @@ async function post(path, body, { signal } = {}) {
   const text = await r.text();
   let j = null; try { j = JSON.parse(text); } catch { /* empty body after abort */ }
   return { status: r.status, body: j, text };
+}
+
+/** POST /api/evaluate and drain the SSE stream into `{ev, data}` frames
+ *  (v1.268.0 — every evaluate path answers on the stream; a 4xx before the
+ *  stream stays plain JSON and yields an empty frame list). */
+async function postEvaluate(body, { signal } = {}) {
+  const r = await fetch(baseUrl + '/api/evaluate', {
+    method: 'POST',
+    headers: { 'content-type': 'application/json', accept: 'text/event-stream' },
+    body: JSON.stringify(body),
+    ...(signal ? { signal } : {}),
+  });
+  const text = await r.text();
+  const events = [];
+  for (const frame of text.split('\n\n')) {
+    const ev = (frame.match(/^event:\s*(.+)$/m) || [])[1];
+    const data = (frame.match(/^data:\s*([\s\S]+)$/m) || [])[1];
+    if (ev) events.push({ ev, data: data ? JSON.parse(data) : {} });
+  }
+  return { status: r.status, events, text };
 }
 
 const usageLines = () => {
@@ -231,14 +268,18 @@ test('FULL-M5b one gate: evaluate + mode + deep always agree on the provider', a
     const calls = mockProviders();
     const nGem = geminiCalls().length;
     const [ev, md, dp] = await Promise.all([
-      post('/api/evaluate', { jd: JD }),
+      postEvaluate({ jd: JD }),
       post('/api/mode/cover', { run: true }),
       post('/api/deep', { company: 'Acme', run: true }),
     ]);
-    assert.equal(ev.status, 200, `evaluate ${JSON.stringify(env)}: ${JSON.stringify(ev.body).slice(0, 200)}`);
+    assert.equal(ev.status, 200, `evaluate ${JSON.stringify(env)}: ${ev.text.slice(0, 200)}`);
     assert.equal(md.status, 200, `mode ${JSON.stringify(env)}: ${JSON.stringify(md.body).slice(0, 200)}`);
     assert.equal(dp.status, 200, `deep ${JSON.stringify(env)}: ${JSON.stringify(dp.body).slice(0, 200)}`);
-    const modes = [ev.body.mode, md.body.mode, dp.body.mode];
+    // v1.268.0 — every evaluate path answers on the SSE stream; the terminal
+    // `done` frame carries the same `mode` the pre-streaming JSON had.
+    const doneFrame = ev.events.find((e) => e.ev === 'done');
+    assert.ok(doneFrame, `evaluate ${JSON.stringify(env)}: no done frame — ${ev.text.slice(0, 200)}`);
+    const modes = [doneFrame.data.mode, md.body.mode, dp.body.mode];
     assert.deepEqual(modes, [expected, expected, expected],
       `gate drift under ${JSON.stringify(env)}: evaluate=${modes[0]} mode=${modes[1]} deep=${modes[2]}`);
     if (expected === 'anthropic') {
@@ -255,43 +296,64 @@ test('FULL-M5b one gate: evaluate + mode + deep always agree on the provider', a
 
 test('FULL-M5 usage: a live evaluate + mode run each record usage exactly once', async () => {
   process.env.OPENAI_API_KEY = OAI;
-  mockProviders();
+  const calls = mockProviders();
   const before = usageLines().length;
-  const ev = await post('/api/evaluate', { jd: JD });
+  const ev = await postEvaluate({ jd: JD });
   assert.equal(ev.status, 200);
+  assert.ok(ev.events.some((e) => e.ev === 'done'), 'the evaluate run must complete (done frame)');
   const md = await post('/api/mode/cover', { run: true });
   assert.equal(md.status, 200);
   const rows = usageLines().slice(before);
-  assert.equal(rows.filter((u) => u.provider === 'openai').length, 2,
-    `expected exactly one usage row per live run, got ${JSON.stringify(rows)}`);
+  const providerCalls = calls.filter((c) => c.host === 'openai').length;
+  // v1.268.0 — the evaluate cascade makes TWO provider calls (scoring + render)
+  // and llm-dispatch records each exactly once; the mode run records its one
+  // call exactly once. Usage-per-provider-call stays 1:1 — the route never
+  // double-records a call the dispatch already recorded.
+  assert.ok(providerCalls >= 3, `expected the evaluate's two steps + the mode run to call the provider, got ${providerCalls} calls`);
+  assert.equal(rows.filter((u) => u.provider === 'openai').length, providerCalls,
+    `expected exactly one usage row per provider call, got ${JSON.stringify(rows)}`);
 });
 
 test('FULL-M5 contract: evaluate success/error and mode shapes are unchanged', async () => {
-  // A well-formed A–G + SCORE_SUMMARY evaluation → no `warnings` key, so the
-  // exact response shape is assertable (a malformed report legitimately adds one).
-  const GOOD_EVAL = ['A', 'B', 'C', 'D', 'E', 'F', 'G'].map((L) => `## Block ${L} — x\nok\n`).join('')
-    + '\n---SCORE_SUMMARY---\nCOMPANY: Acme\nROLE: Engineer\nSCORE: 4.0\nARCHETYPE: backend\nLEGITIMACY: High Confidence\n---END_SUMMARY---\n';
+  // v1.268.0 — /api/evaluate answers as an SSE stream for every path; the
+  // terminal `done` frame carries the success payload and a failure after the
+  // headers is an `error` frame. The evaluate legs below assert the stream
+  // shapes; the /api/mode shapes are unchanged (plain JSON).
   let calls = [];
   process.env.OPENAI_API_KEY = OAI;
   globalThis.fetch = async (u, o = {}) => {
     if (!hostIs(u, 'api.openai.com')) return realFetch(u, o);
     calls.push('openai');
-    return json({ choices: [{ message: { content: GOOD_EVAL }, finish_reason: 'stop' }], usage: { prompt_tokens: 3, completion_tokens: 2 } });
+    const answer = evalAnswers(String(o?.body ?? ''));
+    return json({ choices: [{ message: { content: answer }, finish_reason: 'stop' }], usage: { prompt_tokens: 3, completion_tokens: 2 } });
   };
-  const ev = await post('/api/evaluate', { jd: JD });
-  assert.deepEqual(Object.keys(ev.body).sort(), ['markdown', 'mode', 'prompt', 'saved', 'usage'],
+  const ev = await postEvaluate({ jd: JD });
+  assert.equal(ev.status, 200);
+  const doneFrame = ev.events.find((e) => e.ev === 'done');
+  assert.ok(doneFrame, 'a clean two-step run must end in a done frame');
+  assert.deepEqual(Object.keys(doneFrame.data).sort(), ['elapsedMs', 'fallbackUsed', 'markdown', 'mode', 'saved', 'scoring', 'steps', 'usage'],
     'evaluate success shape drifted');
-  assert.equal(ev.body.mode, 'openai');
-  assert.equal(ev.body.saved, null);
-  assert.equal(ev.body.warnings, undefined, 'a well-formed report must carry no warnings key');
+  assert.equal(doneFrame.data.mode, 'openai');
+  assert.equal(doneFrame.data.saved, null);
+  assert.equal(doneFrame.data.warnings, undefined, 'a well-formed run must carry no warnings key');
+  // The server assembles the machine surfaces (header + yaml block) and the
+  // display markdown strips the SCORE_SUMMARY.
+  assert.match(doneFrame.data.markdown, /^# Evaluation: Acme — Engineer/m);
+  assert.ok(!doneFrame.data.markdown.includes('---SCORE_SUMMARY---'), 'the summary block must be stripped from the payload');
 
   globalThis.fetch = async (u, o = {}) => (hostIs(u, 'api.openai.com')
     ? json({ choices: [{ message: { content: '' }, finish_reason: 'stop' }] })
     : realFetch(u, o));
-  const err = await post('/api/evaluate', { jd: JD });
-  assert.equal(err.status, 502);
-  assert.deepEqual(Object.keys(err.body).sort(), ['error', 'mode', 'prompt', 'saved'], 'evaluate 502 shape drifted');
-  assert.equal(err.body.mode, 'openai');
+  const err = await postEvaluate({ jd: JD });
+  // Failure AFTER the headers → an `error` frame on the 200 stream, not a
+  // plain-JSON 502 (the headers are already gone when the step fails).
+  assert.equal(err.status, 200);
+  const errFrame = err.events.find((e) => e.ev === 'error');
+  assert.ok(errFrame, 'the failed run must carry an error frame');
+  assert.deepEqual(Object.keys(errFrame.data).sort(), ['message', 'step'], 'evaluate error-frame shape drifted');
+  assert.equal(errFrame.data.step, 'scoring', 'an unusable scoring answer must fail the scoring step');
+  assert.ok(errFrame.data.message, 'the error frame must carry a message');
+  assert.ok(!err.events.some((e) => e.ev === 'done'), 'a failed run must not emit a done frame');
 
   process.env.ANTHROPIC_API_KEY = ANT;
   globalThis.fetch = async (u, o = {}) => {

@@ -797,6 +797,7 @@ window.__I18N_DICT_HI = {
   'track.col.pdf': "PDF",
   'track.col.actions': "कार्रवाइयाँ",
   'track.fixHint': "data/applications.md को उसी स्थान पर फिर से लिखता है",
+  'track.moreActions': "अन्य कार्य",
   'track.emptyTitle': "अभी तक कोई आवेदन नहीं",
   'track.emptyBody': "इस ट्रैकर को भरने के लिए पाइपलाइन चलाएं या किसी JD का मूल्यांकन करें।",
   'track.emptyCta': "पाइपलाइन खोलें",
@@ -1863,4 +1864,8 @@ window.__I18N_DICT_HI = {
   "rlinks.confirmBody": "fix-report-links.mjs हर टूटी ट्रैकर पंक्ति की Report सेल को \"—\" में फिर से लिखता है (.bak बैकअप सुरक्षित रहता है)। फ़ाइल का बाकी हिस्सा नहीं बदलता।",
   "rlinks.done": "मरम्मत पूरी हुई",
   "rlinks.failed": "fix-report-links.mjs विफल रहा",
+  'eval.stageScoring': 'पोस्टिंग स्कोर कर रहे हैं (कैनोनिकल EN)…',
+  'eval.stageRendering': 'रिपोर्ट रेंडर कर रहे हैं…',
+  'eval.stageAssembling': 'रिपोर्ट असेंबल कर रहे हैं…',
+  'eval.etaHint': 'सामान्य: माध्यिका {p50} सेकंड · p90 {p90} सेकंड',
 };

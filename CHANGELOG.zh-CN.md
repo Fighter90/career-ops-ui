@@ -9,6 +9,24 @@
 ---
 
 
+## [1.268.0] — 2026-11-05
+
+### 变更
+
+- **Evaluate 现在是两步流水线(CAR-229)** — 2026-11-04 的生产回归显示,同一份合成 JD 因报告语言不同而得到 1.0–4.0 的评分,且机器块只存在于 17 个语言中的 8 个。现在的契约是:(1)SCORING 步骤读取上下文和 JD,只输出一份规范的英文 JSON(company、role、archetype、legitimacy、score、逐块 A–G 分数 + summaries),temperature 0.1 固定、时钟 120 s;(2)RENDER 步骤用报告语言详述七个 A–G 章节 — 禁止改动数字,禁止写标题或任何机器块。报告由服务器组装:`# Evaluation:` 标题、`**Date:**/**Score:**/**Legitimacy:**` 行、---SCORE_SUMMARY--- 块和 ```yaml 机器块全部由服务器从 scoring JSON 构建 — 每个语言在构造上就拥有相同的机器表面,任何在正文里"纠正"数字的模型都动不了规范值。客户端载荷保留机器块(```yaml),剥离 summary 块。
+- **UI 中的 Evaluate 阶段进度(CAR-230)** — /api/evaluate 以 SSE 阶段(scoring → rendering → assembling)流式输出,取代一次沉默的 POST;加载行引用真实延迟(来自使用日志的 p50/p90 — llm-usage 行与 readUsage 现在携带 durationMs;/api/usage 公开 llmLatency),取代过时的"2–4 分钟"文案。scoring 步骤对非 JSON 回答重试一次;重试后仍缺章节的 render 回退到服务器构建的正文(warning 保留,机器表面保持完整)。
+- **面向每个语言的 Prompt 缓存(CAR-111)** — 两个步骤共享一个字节稳定的英文指令头部(上下文包 + 共享指令打开每个 prompt,在全部 19 个语言中逐字节一致);语言指令、scoring JSON 和 JD 乘坐在未缓存的尾部。一项测试固定所有语言的逐字节一致稳定前缀 — 每语言缓存未命中(非 en 上 cached_tokens 为 0)在结构上已消除。
+- **数据迁移运行器(CAR-232/233)** — `POST /api/runners/report-dates` 和 `POST /api/runners/company-fix`(默认 dry-run,apply 时附带带时间戳的 .bak 备份):报告头日期与文件名日期对齐(2026-10-26 之前的 368 行),持有来源名("hh" — 123 行)或职位名(14 行)的跟踪器 Company 单元格则从其报告的 H1 解析出雇主。先 dry-run;apply 只动指名的单元格,逐行外科手术式。
+- **Permissions-Policy 头** — `camera=(), microphone=(), geolocation=(), payment=(), usb=()`:本应用从不使用的表面被显式拒绝(QA 2026-11-04)。
+
+### 备注
+
+- **本版本刻意不包含(2026-11-04 修复计划的 P2/P3):**帮助指南的 `{{t:key}}` 占位符机制与深链接标签本地化(CAR-107 尾巴)、仪表盘术语表清扫(CAR-108 尾巴)、地图聚合 + hh.ru 区域地理编码(CAR-105)、面向破坏性操作的跟踪器头部菜单(CAR-117 尾巴)、站点头部模糊 + 复制反馈(CAR-132/141 尾巴)、README ar/pl/uk/vi 对齐、每语言词典分块(CAR-104 尾巴)。它们已划定范围并排队 — 本版本交付强制性的 P0+P1 集。
+- 生产数据迁移(报告日期、跟踪器公司、分数回填)是所有者的操作:运行新运行器的 dry-run,审阅后 apply — 工具随此版本交付,数据变更不会自动执行。
+- v1.267.0 标签继续指向红色合并提交 — 不重指;v1.267.1/1.267.2/1.268.0 是部署载体。
+
+- 测试 7395 → **7488**;覆盖率 98.49 行 / 90.31 分支。
+
 ## [1.267.2] — 2026-11-04
 
 ### 修复

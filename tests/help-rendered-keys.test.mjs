@@ -9,11 +9,18 @@
  *
  *   docs/help/<locale>.md
  *     → stripGithubOnlyBlocks()          (server ingress, routes/help.mjs)
+ *     → {{t:key}} resolution             (views/help.js, ACTIVE locale — CAR-107)
  *     → UI.md()                          (SPA renderer, loaded from api.js)
  *     → drop <h1>                        (views/help.js keeps a single h1)
  *     → drop code/pre/script/style       (the checker's own exemption)
  *     → text                              (detached clone ⇒ textContent rules)
  *     → every key of i18n-dict.en.js must be absent
+ *
+ * The {{t:key}} step is part of the chain since CAR-107 (P2.1): the bundles
+ * reference UI labels as placeholders and views/help.js substitutes them
+ * through I18n.t before UI.md(). This gate mirrors that step with the same
+ * locale mapping, so a placeholder resolved for the bundle's own locale is
+ * what the checker's DOM clone would see.
  *
  * The renderer is line-oriented: its list handler consumes only `- `/`* `
  * lines, and a wrapped continuation line dangling after a bullet is emitted
@@ -33,9 +40,10 @@ import assert from 'node:assert/strict';
 import { readFileSync, readdirSync } from 'node:fs';
 import { resolve, dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
-import { stripGithubOnlyBlocks } from '../server/lib/help-markdown.mjs';
+import { stripGithubOnlyBlocks, substituteHelpPlaceholders } from '../server/lib/help-markdown.mjs';
 import { htmlToText } from '../server/lib/html-to-text.mjs';
 import { loadMd } from './helpers/ui-md.mjs';
+import { loadI18n } from './helpers/i18n-vm.mjs';
 import { renderedTextOutsideCode } from '../scripts/remote-qa/help-render-scan.mjs';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
@@ -47,13 +55,27 @@ const KEYS = [...readFileSync(resolve(__dirname, '..', 'public/js/lib/locales/i1
 
 const md = loadMd(); // self-probing: fails loudly if the api.js extraction mis-slices
 
+// The real I18n module (assembled dict + locale switching) — the same
+// substitution the #/help view applies. ko-KR.md ↔ SPA code `ko`, the one
+// filename/code mismatch (routes/help.mjs FILE_ALIASES).
+const I18N = loadI18n();
+function langForFile(f) {
+  const stem = f.replace(/\.md$/, '');
+  return stem === 'ko-KR' ? 'ko' : stem;
+}
+
 /**
  * Reproduce the checker's view of a rendered help page via the shared
  * renderedTextOutsideCode() (one implementation with the CLI scan), plus the
  * TOC strings the help view derives from the <h2> headings.
  */
-function checkerText(markdown) {
-  const html = md(stripGithubOnlyBlocks(markdown));
+function checkerText(markdown, lang) {
+  // CAR-107 (P2.1) — resolve {{t:key}} to the ACTIVE locale's label before
+  // rendering, exactly as views/help.js does (unknown key keeps its raw
+  // placeholder, which the key scan below then reports as a leak).
+  I18N.setLang(lang);
+  const resolved = substituteHelpPlaceholders(stripGithubOnlyBlocks(markdown), (key) => I18N.t(key, `{{t:${key}}}`));
+  const html = md(resolved);
   const body = renderedTextOutsideCode(html, { dropH1: true }); // views/help.js strips the doc's own title
   // TOC: h2 text with the backtick/bold/italic fences dropped — exactly the
   // `plain` transform views/help.js applies to TOC labels. Code-span text
@@ -70,7 +92,7 @@ const files = readdirSync(HELP_DIR).filter((f) => f.endsWith('.md')).sort();
 test('help-rendered-keys: every bundle cites keys only inside code spans (prod raw-i18n-key scan, ×' + files.length + ')', () => {
   const failures = [];
   for (const f of files) {
-    const text = checkerText(readFileSync(join(HELP_DIR, f), 'utf8'));
+    const text = checkerText(readFileSync(join(HELP_DIR, f), 'utf8'), langForFile(f));
     const leaked = [];
     for (const k of KEYS) {
       const at = text.indexOf(k);

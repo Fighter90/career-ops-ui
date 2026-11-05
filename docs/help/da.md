@@ -2275,7 +2275,7 @@ Klik **Gem two-pager** for at gemme den. Den skrives til dit **overordnede caree
 
 ### AI-udfyldningsassistenten
 
-Usikker på formuleringen? Klik **✨ AI fill assistant**. Den bygger en klar-til-brug-prompt (Mnookin-formatet, med dit CV og din profil indlejret) og viser den i en dialog. Kør den prompt i en hvilken som helst LLM, og indsæt derefter de resulterende YAML-felter tilbage i formularen. Assistenten bruger kun **dit eget** CV og din egen profil — den opfinder aldrig fakta om dig, og der foretages ingen live API-kald fra denne knap.
+Usikker på formuleringen? Klik **{{t:twoPager.aiFill}}**. Den bygger en klar-til-brug-prompt (Mnookin-formatet, med dit CV og din profil indlejret) og viser den i en dialog. Kør den prompt i en hvilken som helst LLM, og indsæt derefter de resulterende YAML-felter tilbage i formularen. Assistenten bruger kun **dit eget** CV og din egen profil — den opfinder aldrig fakta om dig, og der foretages ingen live API-kald fra denne knap.
 
 ### Fit-to-what-you-want-scoren
 

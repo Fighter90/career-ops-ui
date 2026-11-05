@@ -47,10 +47,11 @@ const QUESTIONS = [
 ];
 
 let dict;
+let substituteHelpPlaceholdersEn;
 
 before(async () => {
   ({ splitSections, topSections } = await import('../server/lib/routes/docs-assistant.mjs'));
-  ({ stripGithubOnlyBlocks } = await import('../server/lib/help-markdown.mjs'));
+  ({ stripGithubOnlyBlocks, substituteHelpPlaceholdersEn } = await import('../server/lib/help-markdown.mjs'));
   ({ loadAssembledDict, I18N_LANGS } = await import('./helpers/i18n-vm.mjs'));
   dict = loadAssembledDict();
 });
@@ -70,7 +71,10 @@ test('sentinel: docs.q1/q2/q3 exist non-empty in all 19 locale dicts', () => {
 for (const file of HELP_LOCALES) {
   test(`reference questions retrieve their targets (${file})`, () => {
     const lang = dictLangOf(file);
-    const md = stripGithubOnlyBlocks(readFileSync(join(HELP_DIR, `${file}.md`), 'utf8'));
+    // v1.268.0 (CAR-107) — the corpus carries {{t:key}} placeholders; the
+    // production docs-assistant resolves them EN-side before tokenizing, and
+    // so does this test (raw placeholders would shift retrieval scoring).
+    const md = substituteHelpPlaceholdersEn(stripGithubOnlyBlocks(readFileSync(join(HELP_DIR, `${file}.md`), 'utf8')));
     const sections = splitSections(md);
     for (const [key, want, label] of QUESTIONS) {
       const question = dict[key][lang];

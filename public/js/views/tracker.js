@@ -1,4 +1,6 @@
 /* global Router, API, UI, I18n, HelpHint, MapPrefs, PostingUrlKey */
+// TODO: split by concern — the CAR-117 pattern (tracker-stages.js /
+// tracker-import.js); buildHeaderMenu is the next extract candidate.
 Router.register('tracker', async () => {
   const c = UI.el;
   const t = (k, f) => I18n.t(k, f);
@@ -580,38 +582,13 @@ Router.register('tracker', async () => {
         HelpHint.title(t('track.title'), 'help.hint.tracker'),
         c('p', { className: 'page-subtitle' }, `${rows.length} ${t('track.entriesIn')} data/applications.md`),
       ]),
-      // U-10 (v1.58.30) — Normalize / Dedup / Merge buttons disabled when
-      // data/applications.md is empty. Clicking them on an empty tracker is a
-      // no-op that still hit the parent project; now the user sees the action is
-      // unavailable and gets a localized tooltip explaining why.
-      (() => {
-        const empty = rows.length === 0;
-        const emptyTitle = t('track.fixEmpty', 'Add a row to the tracker first — this rewrites data/applications.md and there is nothing to rewrite yet.');
-        const enabledTitle = t('track.fixHint', 'Rewrites data/applications.md in place');
-        const make = (api, label) =>
-          c('button', {
-            className: 'btn btn-ghost',
-            disabled: empty,
-            title: empty ? emptyTitle : enabledTitle,
-            'aria-disabled': empty ? 'true' : 'false',
-            onClick: (e) => runFix(e.currentTarget, api, t),
-          }, label);
-        return c('div', { className: 'flex gap-3' }, [
-          make('/api/run/normalize', t('track.normalize')),
-          make('/api/run/dedup', t('track.dedup')),
-          make('/api/run/merge', t('track.merge')),
-          // CAR-181 — import another tracker's CSV export. NOT disabled on an
-          // empty tracker: an import is exactly how the first rows arrive.
-          // (Flow lives in lib/tracker-import.js — the CAR-117 split pattern.)
-          window.TrackerImport
-            ? c('button', {
-              className: 'btn btn-ghost',
-              title: t('import.btn', 'Import CSV'),
-              onClick: (e) => window.TrackerImport.pick(e.currentTarget, t),
-            }, t('import.btn', 'Import CSV'))
-            : null,
-        ].filter(Boolean));
-      })(),
+      // CAR-117 tail (P3.2) — the four heavy operations (Normalize / Dedup /
+      // Merge TSV / Import CSV) collapse into the compact «⋯» overflow menu
+      // built by buildHeaderMenu below: the toolbar stops presenting
+      // destructive bulk ops as big buttons. Handlers unchanged — runFix
+      // keeps its UI.confirm gate before the POST; the CSV import keeps its
+      // preview → confirm modal (lib/tracker-import.js).
+      buildHeaderMenu(rows, c, t),
     ]),
 
     c('div', { className: 'card mb-3' }, [
@@ -635,6 +612,164 @@ Router.register('tracker', async () => {
 // lib/tracker-stages.js (CAR-117 split: tracker.js was over the 800-LOC
 // contract; the two panels are self-contained and travel with the board
 // engine they now serve).
+
+// CAR-117 tail (P3.2) — the header's four heavy operations (Normalize / Dedup /
+// Merge TSV / Import CSV) collapse into one compact «⋯» overflow button: the
+// toolbar stops shouting destructive bulk ops, and each action keeps its
+// existing confirm-gated handler (runFix = UI.confirm BEFORE the POST — the
+// gate is pinned by tests/confirm-gate.test.mjs; the CSV import keeps its
+// preview → confirm modal in lib/tracker-import.js).
+//
+// Menu contract mirrors lib/help-hint.js, the project's popover pattern:
+//   - CSP-safe: UI.el + addEventListener + textContent, no innerHTML;
+//   - the trigger is a real <button> with aria-expanded + aria-haspopup; the
+//     menu is role="menu" and its items role="menuitem" <button>s;
+//   - Escape closes and returns focus to the trigger (explicit dismissal);
+//     outside click / resize / scroll close passively, listeners detached;
+//   - the menu is appended to document.body and positioned under the trigger
+//     (clamped to the viewport, RTL-mirrored), so a board re-render can
+//     never clip it; disabled items keep the U-10 (v1.58.30) empty-tracker
+//     tooltip semantics.
+function buildHeaderMenu(rows, c, t) {
+  const empty = rows.length === 0;
+  const emptyTitle = t('track.fixEmpty', 'Add a row to the tracker first — this rewrites data/applications.md and there is nothing to rewrite yet.');
+  const enabledTitle = t('track.fixHint', 'Rewrites data/applications.md in place');
+
+  let menu = null;
+  const trigger = c('button', {
+    className: 'btn btn-ghost',
+    type: 'button',
+    'aria-label': t('track.moreActions', 'More actions'),
+    title: t('track.moreActions', 'More actions'),
+    'aria-haspopup': 'true',
+    'aria-expanded': 'false',
+  }, '⋯');
+
+  function onDocClick(e) {
+    if (!menu) return;
+    if (menu.contains(e.target) || trigger.contains(e.target)) return;
+    closeMenu(false);
+  }
+  function onKey(e) { if (e.key === 'Escape') { e.stopPropagation(); closeMenu(true); } }
+  // Passive window-driven closes; own wrappers so the event object never
+  // leaks into closeMenu's `refocus` (the CAR-18 help-hint lesson).
+  function onWinClose() { if (menu) closeMenu(false); }
+
+  function closeMenu(refocus) {
+    if (!menu) return;
+    document.removeEventListener('click', onDocClick, true);
+    document.removeEventListener('keydown', onKey, true);
+    window.removeEventListener('resize', onWinClose);
+    window.removeEventListener('scroll', onWinClose, true);
+    if (menu.parentNode) menu.parentNode.removeChild(menu);
+    menu = null;
+    trigger.setAttribute('aria-expanded', 'false');
+    if (refocus) { try { trigger.focus(); } catch { /* detached */ } }
+  }
+
+  function position() {
+    const r = trigger.getBoundingClientRect();
+    const rtl = (document.documentElement.getAttribute('dir') === 'rtl');
+    const margin = 8;
+    const mw = Math.min(menu.offsetWidth || 200, window.innerWidth - margin * 2);
+    let left = rtl ? (r.right - mw) : r.left;
+    left = Math.max(margin, Math.min(left, window.innerWidth - mw - margin));
+    const mh = menu.offsetHeight || 0;
+    let top = r.bottom + 6;
+    if (top + mh > window.innerHeight - margin && r.top - mh - 6 > margin) top = r.top - mh - 6;
+    menu.style.left = Math.round(left) + 'px';
+    menu.style.top = Math.round(top) + 'px';
+  }
+
+  // U-10 (v1.58.30) — Normalize / Dedup / Merge stay disabled when
+  // data/applications.md is empty (aria-disabled mirrors it), with the
+  // localized tooltip explaining why; Import CSV is never disabled on an
+  // empty tracker (an import is exactly how the first rows arrive).
+  const fixItem = (label, api) => c('button', {
+    type: 'button',
+    role: 'menuitem',
+    className: 'btn btn-ghost tracker-menu-item',
+    disabled: empty,
+    'aria-disabled': empty ? 'true' : 'false',
+    title: empty ? emptyTitle : enabledTitle,
+    style: {
+      display: 'block',
+      width: '100%',
+      textAlign: 'left',
+      border: 'none',
+      borderRadius: '0',
+      justifyContent: 'flex-start',
+      paddingInline: '10px',
+    },
+    // the destructive gate stays in runFix: UI.confirm BEFORE the POST
+    onClick: () => { closeMenu(true); runFix(trigger, api, t); },
+  }, label);
+
+  const importItem = () => window.TrackerImport ? c('button', {
+    type: 'button',
+    role: 'menuitem',
+    className: 'btn btn-ghost tracker-menu-item',
+    title: t('import.btn', 'Import CSV'),
+    style: {
+      display: 'block',
+      width: '100%',
+      textAlign: 'left',
+      border: 'none',
+      borderRadius: '0',
+      justifyContent: 'flex-start',
+      paddingInline: '10px',
+    },
+    // its destructive gate is the picker's own preview → confirm modal
+    onClick: () => { closeMenu(true); window.TrackerImport.pick(trigger, t); },
+  }, t('import.btn', 'Import CSV')) : null;
+
+  const items = () => [
+    fixItem(t('track.normalize'), '/api/run/normalize'),
+    fixItem(t('track.dedup'), '/api/run/dedup'),
+    fixItem(t('track.merge'), '/api/run/merge'),
+    // CAR-181 — import another tracker's CSV export.
+    // (Flow lives in lib/tracker-import.js — the CAR-117 split pattern.)
+    importItem(),
+  ].filter(Boolean);
+
+  trigger.addEventListener('click', () => {
+    if (menu) { closeMenu(true); return; } // toggling the trigger is an explicit dismissal
+    menu = c('div', {
+      role: 'menu',
+      'aria-label': t('track.moreActions', 'More actions'),
+      style: {
+        position: 'fixed',
+        zIndex: 'var(--z-popover)',
+        minWidth: '200px',
+        padding: '4px',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '2px',
+        background: 'var(--paper)',
+        color: 'var(--ink)',
+        border: '1px solid var(--line)',
+        borderRadius: 'var(--radius-lg, 12px)',
+        boxShadow: 'var(--shadow-lg)',
+        fontSize: 'var(--font-size-md)',
+      },
+    }, items());
+    document.body.appendChild(menu);
+    position();
+    trigger.setAttribute('aria-expanded', 'true');
+    const first = menu.querySelector('button:not(:disabled)');
+    if (first) { try { first.focus(); } catch { /* detached */ } }
+    // defer listener attach so the opening click doesn't immediately close it
+    setTimeout(() => {
+      if (!menu) return;
+      document.addEventListener('click', onDocClick, true);
+      document.addEventListener('keydown', onKey, true);
+      window.addEventListener('resize', onWinClose);
+      window.addEventListener('scroll', onWinClose, true);
+    }, 0);
+  });
+
+  return trigger;
+}
 
 async function runFix(btn, path, t) {
   // WS2 #9 — normalize/dedup/merge REWRITE the parent data/applications.md in

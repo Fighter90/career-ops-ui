@@ -35,12 +35,12 @@ import { writeFileSync, readFileSync, mkdirSync, existsSync, unlinkSync } from '
 
 import { PATHS, path as projPath } from '../paths.mjs';
 import { isValidJobUrl, sanitizeJobDescription } from '../security.mjs';
-import { runAnthropic, hasAnthropicKey } from '../anthropic.mjs';
 import { runNodeScript } from '../runner.mjs';
-import { bundleProjectContext, buildEvaluationPrompt, buildEvaluationPromptParts, resolveLocale } from '../prompts.mjs';
-import { runActiveProvider, PROMPT_SIZE_SOFT_CAP } from '../llm-dispatch.mjs';
+import { buildEvaluationPrompt, resolveLocale } from '../prompts.mjs';
+import { resolveProvider } from '../llm-dispatch.mjs';
+import { runTwoStepEvaluation } from '../eval-two-step.mjs';
 import { recordUsage, parseSubprocessUsage } from '../llm-usage.mjs';
-import { evaluationWarnings, evalMaxTokens, evalTimeoutMs, geminiEvalArgs } from './llm.mjs';
+import { evalTimeoutMs, geminiEvalArgs } from './llm.mjs';
 import { providerOrder } from '../env-config.mjs';
 import { stripDangerousMarkdown } from '../security.mjs';
 import { stripScoreSummary, validateEvaluationReport, cutRepeatedBlockHeadings, extractSummaryScore, extractBodyScore, fixReportDate } from '../eval-validate.mjs';
@@ -690,11 +690,6 @@ export function registerAutoPipelineRoutes(app) {
     let evalMode = lockEvalMode;
     const warnings = [];
     try {
-      // CAR-111 — parts, as /api/evaluate: the Anthropic branch caches
-      // ctx + stable and leaves the JD tail uncached. No manual echo here
-      // (auto-pipeline writes the report itself), so no full-prompt string.
-      const promptParts = buildEvaluationPromptParts(jdText, lang);
-
       if (evalMode === 'gemini') {
         // Explicit `mode: 'gemini'` keeps the oferta-tuned gemini-eval.mjs.
         // --no-save: this route writes the report + tracker row itself; the
@@ -729,51 +724,19 @@ export function registerAutoPipelineRoutes(app) {
         // summary) are returned unchanged.
         markdown = synthesizeGeminiSummary(markdown, guess);
       } else {
-        const ctx = bundleProjectContext({ modeSlugs: ['_shared', 'oferta'], lang, warnings });
-        // CAR-111 — cache the byte-stable prefix on the Anthropic path, the
-        // JD tail stays uncached (same split as /api/evaluate).
-        const cachePrefix = ctx + promptParts.stable;
-        const full = cachePrefix + promptParts.volatile;
-        if (full.length > PROMPT_SIZE_SOFT_CAP) {
-          step(2, 'failed', `prompt ${full.length} > ${PROMPT_SIZE_SOFT_CAP} cap`);
-          return fail(2, 'prompt too large');
-        }
-        // 16384 (32768 for the token-dense locales, CAR-174), as /api/evaluate:
-        // a CJK A–G report plus SCORE_SUMMARY outgrew 8192.
-        // `signal` (CAR-92): a client disconnect aborts the upstream call.
-        const runOpts = { maxTokens: evalMaxTokens(lang), timeoutMs: evalTimeoutMs(lang), signal: ctrl.signal };
-        let r;
-        if (evalMode === 'anthropic') {
-          // Explicit `mode: 'anthropic'` pins the provider.
-          if (!hasAnthropicKey()) {
-            step(2, 'failed', 'ANTHROPIC_API_KEY not set');
-            return fail(2, 'no LLM key');
-          }
-          r = await runAnthropic(full, { ...runOpts, cachePrefix });
-          if (!r.error) recordUsage('anthropic', r.usage);
-          r = { ...r, mode: 'anthropic' };
-        } else {
-          // The shared cascade: honours LLM_PROVIDER, covers every provider,
-          // records usage (llm-dispatch.mjs).
-          r = await runActiveProvider(full, runOpts);
-          if (r.mode === 'manual') {
-            step(2, 'failed', 'no LLM key set; manual mode incompatible with auto-pipeline');
-            return fail(2, 'no LLM key');
-          }
-        }
-        evalMode = r.mode;
-        if (r.error) {
-          step(2, 'failed', r.error);
-          return fail(2, r.error);
-        }
-        // A cut-off report would be filed as complete (score missing, tracker
-        // row pointing at half a report) — stop instead.
-        if (r.truncated) {
-          step(2, 'failed', 'report cut off at the output-token limit');
-          return fail(2, 'report cut off at the output-token limit');
-        }
-        markdown = r.markdown || '';
-        warnings.push(...evaluationWarnings(r));
+        // v1.268.0 (CAR-229) — the two-step contract: en scoring JSON
+        // (temperature 0.1) → locale render → server-assembled machine
+        // surface. The assembled report carries header + SCORE_SUMMARY +
+        // yaml, so the extractors below keep ONE code path.
+        const two = await runTwoStepEvaluation(jdText, lang, {
+          url,
+          signal: ctrl.signal,
+          onStage: (name, detail) => step(2, 'running', `${name}${detail ? ` — ${detail}` : ''}`),
+        });
+        if (two.fallbackUsed) step(2, 'running', 'render fallback body used');
+        markdown = two.markdown;
+        evalMode = resolveProvider()?.mode || evalMode;
+        warnings.push(...two.warnings);
       }
       if (!markdown.trim()) {
         step(2, 'failed', 'empty evaluation');

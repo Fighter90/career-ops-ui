@@ -368,7 +368,7 @@ Evaluate → Reports → Deep research → Apply checklist → Outreach
 
 두 탭:
 
-1. **API keys & runtime** — 부모 프로젝트의 `.env`를 브라우저에서
+1. **{{t:config.tabApi}}** — 부모 프로젝트의 `.env`를 브라우저에서
    편집합니다 (career-ops Node 스크립트가 시작 시 읽는 동일 파일).
    이 탭은 공급자별 모델 선택기도 제공합니다 — `ANTHROPIC_MODEL`·
    `GEMINI_MODEL` 옆에 `OPENAI_MODEL`(OpenAI/Codex).
@@ -379,7 +379,7 @@ Evaluate → Reports → Deep research → Apply checklist → Outreach
 
 **LLM 공급자 설정 (단계별).** web UI 의 ⚡ 라이브 평가는 *헤드리스*로 실행되며 하나의 API 키를 사용합니다. "OR" 로 동작합니다 — 이 중 **아무거나 하나만** 설정하면 바로 동작하며, 여러 개를 설정하면 `auto` 가 다음 순서로 선호합니다: Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama → BytePlus Ark → Volcengine Ark. (career-ops 자체는 CLI 비종속입니다 — Claude Code, Cursor, Codex, Gemini, OpenCode, Antigravity, Grok Build, Qwen, Copilot 또는 Kimi 안에서도 실행하며, 그것은 이 헤드리스 키와는 별개입니다.)
 
-1. `#/config` → **API keys & runtime** 탭을 엽니다.
+1. `#/config` → **{{t:config.tabApi}}** 탭을 엽니다.
 2. **`LLM_PROVIDER`**에서 공급자를 선택합니다: `auto`(설정된 키를 사용), 또는 `claude` / `gemini` / `openai` / `qwen` 로 강제 지정.
 3. 선택한 공급자의 키 + 모델을 채웁니다:
    - **Anthropic** — `ANTHROPIC_API_KEY`(console.anthropic.com) 설정, 선택적으로 `ANTHROPIC_MODEL`(기본값 `claude-sonnet-4-6`).
@@ -751,7 +751,7 @@ russian_portals:
 
 ### 러시아 포털 구성 — 상세 설정 가이드
 
-v1.29.0은 5개의 러시아어 어댑터를 제공합니다. 두 개는 기본 UA 이상의 설정이 필요 없습니다(`habr-career` HTML 스크레이프, `trudvsem` 정부 open-data API — 키 없음, IP 제한 없음). 두 개는 기술 포털의 HTML 스크레이프(`getmatch`, `geekjob` — 키 없음)이며, 하나는 hh.ru 표준 API로 러시아 외부 IP에서는 `HH_USER_AGENT` 환경 변수를 **App settings → API keys & runtime**에서 설정하지 않으면 403이 발생할 수 있습니다(또는 러시아 IP/VPN 사용).
+v1.29.0은 5개의 러시아어 어댑터를 제공합니다. 두 개는 기본 UA 이상의 설정이 필요 없습니다(`habr-career` HTML 스크레이프, `trudvsem` 정부 open-data API — 키 없음, IP 제한 없음). 두 개는 기술 포털의 HTML 스크레이프(`getmatch`, `geekjob` — 키 없음)이며, 하나는 hh.ru 표준 API로 러시아 외부 IP에서는 `HH_USER_AGENT` 환경 변수를 **App settings → {{t:config.tabApi}}**에서 설정하지 않으면 403이 발생할 수 있습니다(또는 러시아 IP/VPN 사용).
 
 #### 소스 목록
 
@@ -1436,11 +1436,11 @@ Evaluate와 동일한 폴백 체인:
 
 ### 공통 형태
 
-각 페이지에 모드별 소형 폼, **▶ Generate prompt** 버튼(수동),
+각 페이지에 모드별 소형 폼, **{{t:deep.run}}** 버튼(수동),
 그리고 Anthropic 또는 Gemini 키가 있을 때 — 기본 액션으로 격상되는
 **⚡ 실시간 실행** 버튼이 있습니다.
 
-**▶ Generate prompt** 클릭은 폼 값을 `User-supplied context:`
+**{{t:deep.run}}** 클릭은 폼 값을 `User-supplied context:`
 블록에 JSON 직렬화한 다음 `modes/<slug>.md` 템플릿을 그대로
 이어 붙인 조립된 프롬프트를 반환합니다. 선호하는 LLM에 복사해
 붙여넣으십시오.
@@ -2111,7 +2111,7 @@ career-ops-ui의 대부분은 "이 채용 공고가 내 CV와 맞는가?"를 묻
 
 ### AI 작성 도우미
 
-어떻게 표현할지 막막한가요? **✨ AI fill assistant**를 클릭하세요. 곧바로 실행할 수 있는 프롬프트(당신의 CV와 프로필이 인라인으로 포함된 Mnookin 형식)를 만들어 대화 상자에 보여줍니다. 그 프롬프트를 원하는 LLM에서 실행한 뒤, 결과로 나온 YAML 필드를 다시 양식에 붙여 넣으세요. 이 도우미는 오직 **당신 자신의** CV와 프로필만 사용합니다 — 당신에 대한 사실을 지어내지 않으며, 이 버튼에서 실시간 API 호출은 이루어지지 않습니다.
+어떻게 표현할지 막막한가요? **{{t:twoPager.aiFill}}**를 클릭하세요. 곧바로 실행할 수 있는 프롬프트(당신의 CV와 프로필이 인라인으로 포함된 Mnookin 형식)를 만들어 대화 상자에 보여줍니다. 그 프롬프트를 원하는 LLM에서 실행한 뒤, 결과로 나온 YAML 필드를 다시 양식에 붙여 넣으세요. 이 도우미는 오직 **당신 자신의** CV와 프로필만 사용합니다 — 당신에 대한 사실을 지어내지 않으며, 이 버튼에서 실시간 API 호출은 이루어지지 않습니다.
 
 ### 원하는 것과의 적합도 점수
 

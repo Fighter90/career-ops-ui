@@ -107,8 +107,12 @@ test('static: the LLM-bound call sites opt in explicitly', () => {
   // which carries lang by contract (its 12 AI-view consumers are all
   // LLM-bound). The gate therefore accepts either form per site: an explicit
   // `{ lang: true }` on API.post, or the LlmPageKit transport.
+  // v1.268.0 (CAR-229) — /api/evaluate answers as an SSE stream, so the
+  // evaluate view moved onto API.postStream, whose transport injects lang
+  // into the body itself (api.js: `{ ...body, lang }` + the Accept-Language
+  // header) — accepted here as the third opt-in form.
   const cases = [
-    ['public/js/views/evaluate.js', /API\.post\('\/api\/evaluate',[\s\S]{0,200}?\{ lang: true \}\)/, 1],
+    ['public/js/views/evaluate.js', /API\.post\('\/api\/evaluate',[\s\S]{0,200}?\{ lang: true \}\)|API\.postStream\('\/api\/evaluate'/, 1],
     ['public/js/views/deep.js', /API\.post\('\/api\/deep',[\s\S]{0,200}?\{ lang: true \}\)|LlmPageKit\.postJSON\('\/api\/deep'/, 2],
     ['public/js/views/mode-page.js', /API\.post\('\/api\/mode\/' \+ apiSlug,[\s\S]{0,200}?\{ lang: true \}\)|LlmPageKit\.postJSON\('\/api\/mode\/' \+ apiSlug/, 2],
     ['public/js/views/apply.js', /API\.post\('\/api\/apply-helper',[\s\S]{0,200}?\{ lang: true \}\)/, 1],

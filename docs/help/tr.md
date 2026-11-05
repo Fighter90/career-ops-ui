@@ -202,7 +202,7 @@ kontrol yeşil olmalıdır:
 Kırmızı bir şey varsa, sayfa düzeltilecek tam dosyayı veya ortam
 değişkenini söyler. Health yeşil olana kadar devam etmeyin.
 
-**Adım 3 — Kenar çubuğunda `⚒ App settings`e tıklayın.** **API keys & runtime**
+**Adım 3 — Kenar çubuğunda `⚒ App settings`e tıklayın.** **{{t:config.tabApi}}**
 sekmesine gelirsiniz.
 - `ANTHROPIC_API_KEY` (tercih edilen — uzun metin puanlaması daha iyi)
   ve/veya `GEMINI_API_KEY` yapıştırın. Anahtarları
@@ -417,7 +417,7 @@ terfi ettirildi).
 
 Üç sekme:
 
-1. **API keys & runtime** — üst projenin `.env` dosyası üzerinde
+1. **{{t:config.tabApi}}** — üst projenin `.env` dosyası üzerinde
    yapılandırılmış alan formu (career-ops Node betiklerinin başlangıçta
    okuduğu aynı dosya). Gruplanmış: API keys / Runtime / Regional
    sources. Sekme ayrıca sağlayıcı başına model seçicilerini de sunar —
@@ -442,7 +442,7 @@ Herhangi bir sekmedeki bir kaydetme anında yayılır — sunucu yeniden başlat
 
 **LLM sağlayıcınızı ayarlama (adım adım).** Web arayüzünün ⚡ canlı değerlendirmesi *headless* çalışır ve tek bir API anahtarı kullanır. "OR" mantığıyla çalışır — bunlardan **herhangi birini** ayarlayın ve öylece çalışır; birkaçı ayarlıysa, `auto` şu sırayla tercih eder: Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama → BytePlus Ark → Volcengine Ark. (career-ops'un kendisi CLI'den bağımsızdır — onu Claude Code, Cursor, Codex, Gemini, OpenCode, Antigravity, Grok Build, Qwen, Copilot veya Kimi içinde de çalıştırırsınız; bu, bu headless anahtardan ayrıdır.)
 
-1. `#/config` → **API keys & runtime** sekmesini açın.
+1. `#/config` → **{{t:config.tabApi}}** sekmesini açın.
 2. Sağlayıcınızı **`LLM_PROVIDER`** içinde seçin: `auto` (hangi anahtar ayarlıysa onu kullan) ya da `claude` / `gemini` / `openai` / `qwen` ile birini zorlayın.
 3. Seçtiğiniz sağlayıcı için anahtarı + modeli doldurun:
    - **Anthropic** — `ANTHROPIC_API_KEY` ayarlayın (console.anthropic.com), opsiyonel olarak `ANTHROPIC_MODEL` (varsayılan `claude-sonnet-4-6`).
@@ -896,7 +896,7 @@ sıfır sonuç döndürür ve konsol sizi çakışma konusunda uyarır.
 
 ### Rus portallarını yapılandırma — ayrıntılı kurulum kılavuzu
 
-v1.29.0, 5 Rusça adaptörü gönderir. İkisi varsayılan UA'dan başka bir şey gerektirmez (`habr-career`, HTML kazıma; `trudvsem`, hükümet açık-veri API'si — anahtar yok, IP kapısı yok). İkisi teknik kartların HTML kazımalarıdır (`getmatch`, `geekjob` — yine anahtar yok). Biri, **App settings → API keys & runtime** aracılığıyla bir `HH_USER_AGENT` env değişkeni ayarlamadığınız sürece (veya sunucuyu bir Rus IP'sinden / VPN çıkış düğümünden çalıştırmadığınız sürece) Rusya dışı IP'lerden 403 verebilen kanonik hh.ru API'sidir.
+v1.29.0, 5 Rusça adaptörü gönderir. İkisi varsayılan UA'dan başka bir şey gerektirmez (`habr-career`, HTML kazıma; `trudvsem`, hükümet açık-veri API'si — anahtar yok, IP kapısı yok). İkisi teknik kartların HTML kazımalarıdır (`getmatch`, `geekjob` — yine anahtar yok). Biri, **App settings → {{t:config.tabApi}}** aracılığıyla bir `HH_USER_AGENT` env değişkeni ayarlamadığınız sürece (veya sunucuyu bir Rus IP'sinden / VPN çıkış düğümünden çalıştırmadığınız sürece) Rusya dışı IP'lerden 403 verebilen kanonik hh.ru API'sidir.
 
 #### Kaynak envanteri
 
@@ -1650,11 +1650,11 @@ görevlilerine **Outreach**, **Interview prep** tek-sayfalıkları ve
 
 ### Ortak yapı
 
-Her sayfada küçük bir form (alanlar moda özeldir), bir **▶ Generate prompt** düğmesi (manuel) ve — bir Anthropic veya Gemini anahtarı
+Her sayfada küçük bir form (alanlar moda özeldir), bir **{{t:deep.run}}** düğmesi (manuel) ve — bir Anthropic veya Gemini anahtarı
 mevcut olduğunda — birincil hale gelen bir **⚡ Canlı çalıştır** düğmesi
 bulunur.
 
-**▶ Generate prompt**'a tıklamak, form değerleriniz bir
+**{{t:deep.run}}**'a tıklamak, form değerleriniz bir
 `User-supplied context:` bloğuna JSON-dizeleştirilmiş, ardından birebir
 `modes/<slug>.md` şablonu izleyen şekilde birleştirilmiş promptu
 döndürür. Tercih ettiğiniz LLM'e kopyalayıp yapıştırın.
@@ -2348,7 +2348,7 @@ Kaydetmek için **Save two-pager** düğmesine tıklayın. Dosya, **üst career-
 
 ### AI doldurma yardımcısı
 
-Nasıl ifade edeceğinizden emin değil misiniz? **✨ AI fill assistant** düğmesine tıklayın. Çalıştırmaya hazır bir istem (CV'niz ve profiliniz gömülü olarak, Mnookin formatında) oluşturur ve bunu bir iletişim kutusunda gösterir. Bu istemi herhangi bir LLM'de çalıştırın, ardından ortaya çıkan YAML alanlarını forma geri yapıştırın. Yardımcı yalnızca **kendi** CV'nizi ve profilinizi kullanır — hakkınızda asla gerçekler uydurmaz ve bu düğmeden hiçbir canlı API çağrısı yapılmaz.
+Nasıl ifade edeceğinizden emin değil misiniz? **{{t:twoPager.aiFill}}** düğmesine tıklayın. Çalıştırmaya hazır bir istem (CV'niz ve profiliniz gömülü olarak, Mnookin formatında) oluşturur ve bunu bir iletişim kutusunda gösterir. Bu istemi herhangi bir LLM'de çalıştırın, ardından ortaya çıkan YAML alanlarını forma geri yapıştırın. Yardımcı yalnızca **kendi** CV'nizi ve profilinizi kullanır — hakkınızda asla gerçekler uydurmaz ve bu düğmeden hiçbir canlı API çağrısı yapılmaz.
 
 ### İstediğinize uygunluk puanı
 

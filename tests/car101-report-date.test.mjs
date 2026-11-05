@@ -23,6 +23,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, readFileSync, existsSync, rmSync
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 import { promises as dns } from 'node:dns';
+import { twoShapeAnswers, scoringFixture, renderBodyFixture } from './helpers/eval-two-step-stub.mjs';
 
 let P; let fixReportDate; let routeToday;
 let server; let baseUrl; let ROOT; let restoreTransport = null;
@@ -352,76 +353,94 @@ test('CAR-101: an invalid today argument falls back to the server date', () => {
   assert.match(r.text, /\*\*Date:\*\* \d{4}-\d{2}-\d{2}/);
 });
 
-// ── Route level: /api/evaluate (Anthropic path) ─────────────────────────────
-
-const GOOD_BLOCKS = (dateLine) => [
-  '# Evaluation: Acme — Platform Engineer',
-  '',
-  `**Date:** ${dateLine}`,
-  '**URL:** https://jobs.example.com/acme/42',
-  '',
-  ...['A', 'B', 'C', 'D', 'E', 'F', 'G'].map((L) => `## Block ${L} — x\nok\n`),
-  '---SCORE_SUMMARY---',
-  'COMPANY: Acme',
-  'ROLE: Platform Engineer',
-  'SCORE: 4.2',
-  'ARCHETYPE: Platform',
-  'LEGITIMACY: High Confidence',
-  '---END_SUMMARY---',
-  '',
-].join('\n');
+// ── Route level: /api/evaluate (Anthropic path, the two-step contract) ──────
+//
+// v1.268.0 (CAR-229) — the live cascade is TWO provider calls: scoring (EN
+// JSON) → render (the seven `## X)` sections) → the SERVER assembles the
+// header. The model can no longer write a **Date:** line at all: the header
+// is server-side knowledge by construction, so fixReportDate's correction
+// premise applies only to the gemini-eval.mjs subprocess branch (its
+// unit-level logic stays pinned by the fixReportDate tests above).
 
 const JD = 'Senior Platform Engineer at Acme. Kubernetes, Go, on-call rotation, platform tooling. '.repeat(3);
 
-test('CAR-101: /api/evaluate corrects an invented header date server-side, with a warning', async () => {
-  process.env.LLM_PROVIDER = 'anthropic';
-  process.env.ANTHROPIC_API_KEY = ANT;
-  const TODAY = routeToday();
+/**
+ * The prompt text of an Anthropic/OpenAI-compatible request body. Content
+ * may be a plain string OR typed blocks (CAR-111 prompt caching splits the
+ * cached prefix from the volatile tail).
+ */
+function promptFromBody(rawBody) {
+  try {
+    const b = JSON.parse(rawBody);
+    return (b.messages || []).map((m) => {
+      const c = m.content;
+      if (typeof c === 'string') return c;
+      if (Array.isArray(c)) return c.filter((p) => p && p.type === 'text').map((p) => p.text).join('');
+      return '';
+    }).join('\n');
+  } catch {
+    return '';
+  }
+}
+
+/** A two-shape Anthropic stub: scoring → JSON fixture, render → A–G body. */
+function stubAnthropicTwoStep() {
+  const answers = twoShapeAnswers({
+    scoring: scoringFixture({ company: 'Acme', role: 'Platform Engineer', score: 4.2 }),
+    body: renderBodyFixture({}),
+  });
   globalThis.fetch = async (u, o = {}) => {
     if (new URL(String(u)).host === 'api.anthropic.com') {
-      return new Response(JSON.stringify({
-        content: [{ type: 'text', text: GOOD_BLOCKS('2026-01-15') }],
+      return json({
+        content: [{ type: 'text', text: answers(promptFromBody(String(o?.body || ''))) }],
         stop_reason: 'end_turn',
         usage: { input_tokens: 100, output_tokens: 50 },
-      }), { status: 200, headers: { 'content-type': 'application/json' } });
+      });
     }
     return realFetch(u, o);
   };
+}
+
+const json = (o) => new Response(JSON.stringify(o), { status: 200, headers: { 'content-type': 'application/json' } });
+const sseEvents = (text) => text.split('\n\n').filter(Boolean).map((b) => ({
+  event: (b.match(/^event: (.+)$/m) || [])[1],
+  data: JSON.parse((b.match(/^data: (.+)$/m) || [, 'null'])[1]),
+}));
+const doneOf = (ev) => ev.find((e) => e.event === 'done')?.data;
+
+test('CAR-101: the cascade header date is server-written — today, never an invented date, no date warning', async () => {
+  process.env.LLM_PROVIDER = 'anthropic';
+  process.env.ANTHROPIC_API_KEY = ANT;
+  const TODAY = routeToday();
+  stubAnthropicTwoStep();
   const res = await fetch(`${baseUrl}/api/evaluate`, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ jd: JD }),
   });
   assert.equal(res.status, 200);
-  const b = await res.json();
-  assert.match(b.markdown, new RegExp(`\\*\\*Date:\\*\\* ${TODAY}`), 'the saved/returned markdown carries today');
-  assert.ok(!b.markdown.includes('2026-01-15'));
-  assert.ok((b.warnings || []).some((w) => w.includes('**Date:**')), JSON.stringify(b.warnings));
+  const ev = sseEvents(await res.text());
+  const done = doneOf(ev);
+  assert.ok(done, `the stream completes: ${JSON.stringify(ev.map((e) => e.event))}`);
+  assert.match(done.markdown, new RegExp(`\\*\\*Date:\\*\\* ${TODAY}`), 'the returned markdown carries today');
+  assert.ok(!done.markdown.includes('2026-01-15'), 'no invented date can reach the header — the server writes it');
+  assert.ok(!(done.warnings || []).some((w) => w.includes('**Date:**')), JSON.stringify(done.warnings));
 });
 
-test('CAR-101: /api/evaluate passes a correct date through byte-identical, no warning', async () => {
+test('CAR-101: the cascade header carries today on every run and stays silent about dates', async () => {
   process.env.LLM_PROVIDER = 'anthropic';
   process.env.ANTHROPIC_API_KEY = ANT;
   const TODAY = routeToday();
-  globalThis.fetch = async (u, o = {}) => {
-    if (new URL(String(u)).host === 'api.anthropic.com') {
-      return new Response(JSON.stringify({
-        content: [{ type: 'text', text: GOOD_BLOCKS(TODAY) }],
-        stop_reason: 'end_turn',
-        usage: { input_tokens: 100, output_tokens: 50 },
-      }), { status: 200, headers: { 'content-type': 'application/json' } });
-    }
-    return realFetch(u, o);
-  };
+  stubAnthropicTwoStep();
   const res = await fetch(`${baseUrl}/api/evaluate`, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
     body: JSON.stringify({ jd: JD }),
   });
   assert.equal(res.status, 200);
-  const b = await res.json();
-  assert.match(b.markdown, new RegExp(`\\*\\*Date:\\*\\* ${TODAY}`));
-  assert.ok(!(b.warnings || []).some((w) => w.includes('**Date:**')), JSON.stringify(b.warnings));
+  const done = doneOf(sseEvents(await res.text()));
+  assert.match(done.markdown, new RegExp(`\\*\\*Date:\\*\\* ${TODAY}`));
+  assert.ok(!(done.warnings || []).some((w) => w.includes('**Date:**')), JSON.stringify(done.warnings));
 });
 
 // ── Route level: /api/auto-pipeline save path ────────────────────────────────
@@ -435,26 +454,11 @@ async function stubJobPage() {
   restoreTransport = _setTransport(async () => ({ status: 200, headers: { 'content-type': 'text/html' }, body: Buffer.from(JOB_HTML) }));
 }
 
-const json = (o) => new Response(JSON.stringify(o), { status: 200, headers: { 'content-type': 'application/json' } });
-const sseEvents = (text) => text.split('\n\n').filter(Boolean).map((b) => ({
-  event: (b.match(/^event: (.+)$/m) || [])[1],
-  data: JSON.parse((b.match(/^data: (.+)$/m) || [, 'null'])[1]),
-}));
-
-async function runPipeline(reportDateLine) {
+async function runPipeline() {
   process.env.ANTHROPIC_API_KEY = ANT;
   process.env.LLM_PROVIDER = 'anthropic';
   await stubJobPage();
-  globalThis.fetch = async (u, o = {}) => {
-    if (new URL(String(u)).host === 'api.anthropic.com') {
-      return json({
-        content: [{ type: 'text', text: GOOD_BLOCKS(reportDateLine) }],
-        stop_reason: 'end_turn',
-        usage: { input_tokens: 100, output_tokens: 50 },
-      });
-    }
-    return realFetch(u, o);
-  };
+  stubAnthropicTwoStep();
   const r = await fetch(`${baseUrl}/api/auto-pipeline`, {
     method: 'POST',
     headers: { 'content-type': 'application/json' },
@@ -463,26 +467,26 @@ async function runPipeline(reportDateLine) {
   return sseEvents(await r.text());
 }
 
-test('CAR-101: the auto-pipeline saves the report with today in the header, never an invented date', async () => {
+test('CAR-101: the auto-pipeline saves the report with today in the header — the server writes it, no date warning', async () => {
   const TODAY = routeToday();
   rmSync(resolve(ROOT, 'reports'), { recursive: true, force: true });
   mkdirSync(resolve(ROOT, 'reports'), { recursive: true });
-  const ev = await runPipeline('2026-01-15');
+  const ev = await runPipeline();
   const done = ev.find((e) => e.event === 'done');
   assert.ok(done, `the run completes: ${JSON.stringify(ev.map((e) => e.event))}`);
   const savedFile = resolve(ROOT, 'reports', `${done.data.slug}.md`);
   assert.ok(existsSync(savedFile), 'report written');
   const md = readFileSync(savedFile, 'utf8');
   assert.match(md, new RegExp(`\\*\\*Date:\\*\\* ${TODAY}`), 'the saved header carries today');
-  assert.ok(!md.includes('2026-01-15'));
-  assert.ok((done.data.warnings || []).some((w) => w.includes('**Date:**')), JSON.stringify(done.data.warnings));
+  assert.ok(!md.includes('2026-01-15'), 'no invented date survives — the assembled header is server-written');
+  assert.ok(!(done.data.warnings || []).some((w) => w.includes('**Date:**')), JSON.stringify(done.data.warnings));
 });
 
-test('CAR-101: the auto-pipeline saves a correct date untouched and stays silent', async () => {
+test('CAR-101: the auto-pipeline header stays today and silent about dates', async () => {
   const TODAY = routeToday();
   rmSync(resolve(ROOT, 'reports'), { recursive: true, force: true });
   mkdirSync(resolve(ROOT, 'reports'), { recursive: true });
-  const ev = await runPipeline(TODAY);
+  const ev = await runPipeline();
   const done = ev.find((e) => e.event === 'done');
   assert.ok(done, `the run completes: ${JSON.stringify(ev.map((e) => e.event))}`);
   const md = readFileSync(resolve(ROOT, 'reports', `${done.data.slug}.md`), 'utf8');

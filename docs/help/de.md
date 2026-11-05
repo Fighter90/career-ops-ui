@@ -205,7 +205,7 @@ Umgebungsvariable zu korrigieren ist. Fahren Sie nicht fort, bis Health
 grün ist.
 
 **Schritt 3 — Klicken Sie in der Seitenleiste auf `⚒ App settings`.** Sie
-landen auf dem Tab **API keys & runtime**.
+landen auf dem Tab **{{t:config.tabApi}}**.
 - Fügen Sie `ANTHROPIC_API_KEY` ein (bevorzugt — bessere Langtext-
   Bewertung) und/oder `GEMINI_API_KEY`. Schlüssel erhalten Sie unter
   <https://console.anthropic.com/settings/keys> oder
@@ -430,7 +430,7 @@ transiente Modal vor 1.34 wurde zu dieser Seite befördert).
 
 Drei Tabs:
 
-1. **API keys & runtime** — strukturiertes Feldformular über die `.env`
+1. **{{t:config.tabApi}}** — strukturiertes Feldformular über die `.env`
    des übergeordneten Projekts (dieselbe Datei, die die career-ops-Node-
    Skripte beim Start lesen). Gruppiert: API keys / Runtime / Regional
    sources. Der Tab stellt auch anbieterspezifische Modellauswahlen bereit
@@ -458,7 +458,7 @@ Server-Neustart.
 
 **Einrichten Ihres LLM-Anbieters (Schritt für Schritt).** Die ⚡ Live-Bewertung der Web-UI läuft *headless* und verwendet einen API-Schlüssel. Sie funktioniert per „ODER" — setzen Sie **einen beliebigen** dieser Schlüssel, und es funktioniert einfach; wenn mehrere gesetzt sind, bevorzugt `auto` sie in dieser Reihenfolge: Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama → BytePlus Ark → Volcengine Ark. (career-ops selbst ist CLI-agnostisch — Sie führen es auch innerhalb von Claude Code, Cursor, Codex, Gemini, OpenCode, Antigravity, Grok Build, Qwen, Copilot oder Kimi aus; das ist von diesem Headless-Schlüssel getrennt.)
 
-1. Öffnen Sie `#/config` → den Tab **API keys & runtime**.
+1. Öffnen Sie `#/config` → den Tab **{{t:config.tabApi}}**.
 2. Wählen Sie Ihren Anbieter in **`LLM_PROVIDER`**: `auto` (verwendet den gesetzten Schlüssel) oder erzwingen Sie einen mit `claude` / `gemini` / `openai` / `qwen`.
 3. Füllen Sie den Schlüssel + das Modell für den gewählten Anbieter aus:
    - **Anthropic** — setzen Sie `ANTHROPIC_API_KEY` (console.anthropic.com), optional `ANTHROPIC_MODEL` (default `claude-sonnet-4-6`).
@@ -924,7 +924,7 @@ die Konsole warnt Sie vor dem Konflikt.
 
 ### Russische Portale konfigurieren — detaillierte Einrichtungsanleitung
 
-v1.29.0 liefert 5 russischsprachige Adapter. Zwei benötigen nichts weiter als den Standard-UA (`habr-career`, HTML-Scrape; `trudvsem`, Regierungs-Open-Data-API — kein Schlüssel, kein IP-Gate). Zwei sind HTML-Scrapes von Tech-Boards (`getmatch`, `geekjob` — ebenfalls kein Schlüssel). Eines ist die kanonische hh.ru-API, die von nicht-russischen IPs mit 403 antworten kann, sofern Sie nicht eine `HH_USER_AGENT`-Umgebungsvariable über **App settings → API keys & runtime** setzen (oder den Server von einer russischen IP / einem VPN-Ausgangsknoten aus ausführen).
+v1.29.0 liefert 5 russischsprachige Adapter. Zwei benötigen nichts weiter als den Standard-UA (`habr-career`, HTML-Scrape; `trudvsem`, Regierungs-Open-Data-API — kein Schlüssel, kein IP-Gate). Zwei sind HTML-Scrapes von Tech-Boards (`getmatch`, `geekjob` — ebenfalls kein Schlüssel). Eines ist die kanonische hh.ru-API, die von nicht-russischen IPs mit 403 antworten kann, sofern Sie nicht eine `HH_USER_AGENT`-Umgebungsvariable über **App settings → {{t:config.tabApi}}** setzen (oder den Server von einer russischen IP / einem VPN-Ausgangsknoten aus ausführen).
 
 #### Quellen-Inventar
 
@@ -1711,11 +1711,11 @@ Retrospektiven. Jeder umschließt eine bestimmte
 ### Gemeinsame Form
 
 Jede Seite hat ein kleines Formular (die Felder sind modusspezifisch),
-eine Schaltfläche **▶ Generate prompt** (manuell) und — wenn ein
+eine Schaltfläche **{{t:deep.run}}** (manuell) und — wenn ein
 Anthropic- oder Gemini-Schlüssel vorhanden ist — eine Schaltfläche
 **⚡ Live ausführen**, die zur primären wird.
 
-Ein Klick auf **▶ Generate prompt** gibt den zusammengesetzten Prompt
+Ein Klick auf **{{t:deep.run}}** gibt den zusammengesetzten Prompt
 zurück, wobei Ihre Formularwerte als JSON in einen `User-supplied
 context:`-Block gebracht werden, gefolgt von der wortgetreuen
 `modes/<slug>.md`-Vorlage. Kopieren und in Ihr bevorzugtes LLM einfügen.

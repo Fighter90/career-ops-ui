@@ -464,6 +464,10 @@ export function createApp() {
     res.setHeader('X-Content-Type-Options', 'nosniff');
     res.setHeader('X-Frame-Options', 'DENY');
     res.setHeader('Referrer-Policy', 'same-origin');
+    // v1.268.0 (QA 2026-11-04) — the missing Permissions-Policy: this app
+    // never uses camera/microphone/geolocation; the explicit deny-on-self
+    // removes the headers browsers probe for by default.
+    res.setHeader('Permissions-Policy', 'camera=(), microphone=(), geolocation=(), payment=(), usb=()');
     next();
   });
 

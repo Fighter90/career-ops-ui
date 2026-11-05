@@ -3,7 +3,8 @@
  *
  * Covers:
  *   - URL validation gate (step 1 fails → SSE error event)
- *   - No-LLM-key path (step 3 reaches "manual" mode → SSE error event)
+ *   - No-LLM-key path (step 3: the scoring step fails → SSE error event; the
+ *     v1.268.0 two-step contract moved the failure into eval-two-step)
  *   - Tracker row append (step 5 with mock JD fetched from an injected HTML)
  *
  * We don't invoke the live LLM here — the unit test asserts the SSE
@@ -131,7 +132,9 @@ test('SSE: loopback URL rejected by SSRF gate', async () => {
 test('SSE: valid URL but no LLM key → reaches step 3 then errors', async () => {
   // No live network: pin DNS to a public documentation address and serve
   // the JD from a stubbed safe-fetch transport. Validate + fetch must
-  // succeed, then the evaluate step must fail with "no LLM key".
+  // succeed, then the two-step evaluation fails at the SCORING step
+  // (runActiveProvider answers { mode: 'manual' } with no key — the JSON
+  // the scoring step expects never arrives).
   const fetched = [];
   dns.lookup = async () => ({ address: '93.184.216.34', family: 4 });
   restoreTransport = _setTransport(async (url) => {
@@ -151,7 +154,8 @@ test('SSE: valid URL but no LLM key → reaches step 3 then errors', async () =>
     const err = events.find((e) => e.event === 'error');
     assert.ok(err, 'should emit an error event without LLM key');
     assert.equal(err.data.step, 'evaluate');
-    assert.equal(err.data.message, 'no LLM key');
+    assert.match(err.data.message, /scoring step failed/,
+      `the two-step scoring step names the failure — got: ${err.data.message}`);
   } finally {
     dns.lookup = origLookup;
     restoreTransport(); restoreTransport = null;

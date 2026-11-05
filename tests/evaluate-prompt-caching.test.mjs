@@ -30,11 +30,13 @@
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
+import { scoringFixture } from './helpers/eval-two-step-stub.mjs';
 import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 
 let runAnthropic, buildEvaluationPrompt, buildEvaluationPromptParts, createApp;
+const sent = [];
 let ROOT;
 const realFetch = globalThis.fetch;
 const ENV_KEYS = ['CAREER_OPS_ROOT', 'LLM_PROVIDER', 'ANTHROPIC_API_KEY'];
@@ -53,6 +55,27 @@ function capture(fetchImpl) {
   return seen;
 }
 
+
+const scoringJson8 = JSON.stringify(scoringFixture({ company: 'Acme', role: 'Eng', score: 3.5 }));
+const renderBody8 = ['A', 'B', 'C', 'D', 'E', 'F', 'G'].map((L) => `## ${L}) ok`).join('\n\n');
+const anthropicReply = (promptText) => {
+  const content = promptText.includes('Output ONLY a JSON object') ? scoringJson8 : renderBody8;
+  return {
+    content: [{ type: 'text', text: content }],
+    stop_reason: 'end_turn',
+    usage: { input_tokens: 37000, output_tokens: 900, cache_read_input_tokens: 36999 },
+  };
+};
+async function evaluateFetchStub(u, o = {}) {
+  if (new URL(String(u)).host === 'api.anthropic.com') {
+    const body = JSON.parse(o.body);
+    const promptText = (body.messages || []).map((m) => (Array.isArray(m.content) ? m.content.map((b2) => b2.text).join('\n') : String(m.content || ''))).join('\n');
+    sent.push(body);
+    return { ok: true, status: 200, text: async () => JSON.stringify(anthropicReply(promptText)) };
+  }
+  return realFetch(u, o);
+}
+
 const JD_A = 'Senior Platform Engineer at Acme. Kubernetes, Go, on-call rotation, platform tooling. '.repeat(3);
 const JD_B = 'Staff Backend Engineer at Globex. Rust, distributed systems, data pipelines, observability. '.repeat(3);
 
@@ -60,6 +83,10 @@ before(async () => {
   ROOT = mkdtempSync(resolve(tmpdir(), 'eval-cache-'));
   mkdirSync(resolve(ROOT, 'config'), { recursive: true });
   mkdirSync(resolve(ROOT, 'modes'), { recursive: true });
+  mkdirSync(resolve(ROOT, 'data'), { recursive: true });
+  mkdirSync(resolve(ROOT, 'reports'), { recursive: true });
+  writeFileSync(resolve(ROOT, 'data', 'applications.md'), '');
+  writeFileSync(resolve(ROOT, 'data', 'pipeline.md'), '# pipeline\n');
   writeFileSync(resolve(ROOT, 'cv.md'), '# CV\nTen years of platform engineering.\n');
   writeFileSync(resolve(ROOT, 'config', 'profile.yml'), 'candidate:\n  full_name: Test\n');
   writeFileSync(resolve(ROOT, 'portals.yml'), 'tracked_companies: []\n');
@@ -69,6 +96,7 @@ before(async () => {
   process.env.CAREER_OPS_ROOT = ROOT;
   ({ runAnthropic } = await import('../server/lib/anthropic.mjs'));
   ({ buildEvaluationPrompt, buildEvaluationPromptParts } = await import('../server/lib/prompts.mjs'));
+  globalThis.fetch = evaluateFetchStub;
 });
 
 after(() => {
@@ -167,54 +195,56 @@ test('two different JDs produce a byte-identical stable prefix (en and ru)', () 
 test('two /api/evaluate calls with different JDs send byte-identical cached prefixes; usage passes through', async () => {
   process.env.LLM_PROVIDER = 'anthropic';
   process.env.ANTHROPIC_API_KEY = 'sk-ant-fake0123456789abcdefghijklmnop';
-  const sent = [];
-  const anthropicJson = () => ({
-    content: [{ type: 'text', text: '## A) ok\n\n---SCORE_SUMMARY---\nCOMPANY: Acme\nROLE: Eng\nSCORE: 3.5\nARCHETYPE: Platform\nLEGITIMACY: High Confidence\n---END_SUMMARY---\n' }],
-    stop_reason: 'end_turn',
-    usage: { input_tokens: 37000, output_tokens: 900, cache_read_input_tokens: 36999 },
-  });
-  globalThis.fetch = async (u, o = {}) => {
-    if (new URL(String(u)).host === 'api.anthropic.com') {
-      sent.push(JSON.parse(o.body));
-      return reply(anthropicJson())();
-    }
-    return realFetch(u, o);
-  };
+  // v1.268.0 — TWO provider calls per evaluate (scoring en-JSON, render
+  // locale body); the top-level anthropicReply stub answers each with
+  // what its step expects.
+  sent.length = 0;
   ({ createApp } = await import('../server/index.mjs'));
   const server = await new Promise((r) => { const s = createApp().listen(0, '127.0.0.1', () => r(s)); });
-  try {
-    const post = (jd) => fetch(`http://127.0.0.1:${server.address().port}/api/evaluate`, {
+  const drainDone = async (jd) => {
+    const res = await fetch(`http://127.0.0.1:${server.address().port}/api/evaluate`, {
       method: 'POST',
       headers: { 'content-type': 'application/json' },
       body: JSON.stringify({ jd }),
-    }).then((res) => Promise.all([res.status, res.json()]));
-    const [s1, b1] = await post(JD_A);
-    const [s2, b2] = await post(JD_B);
-    assert.equal(s1, 200, JSON.stringify(b1).slice(0, 200));
-    assert.equal(s2, 200, JSON.stringify(b2).slice(0, 200));
-    assert.equal(sent.length, 2);
+    });
+    assert.equal(res.status, 200);
+    const text = await res.text();
+    const frame = text.split('\n\n').find((f) => f.startsWith('event: done'));
+    if (!frame) {
+      throw new Error(`no done frame — providerCalls=${sent.length} raw tail: ${text.slice(-400)}`);
+    }
+    return JSON.parse((frame.match(/^data:\s*([\s\S]+)$/m) || [])[1] || '{}');
+  };
+  try {
+    const b1 = await drainDone(JD_A);
+    await drainDone(JD_B); // result asserted through `sent` below
+    assert.equal(sent.length, 4, 'two evaluate runs × two steps');
 
+    // The Anthropic request shape: [cached prefix block, uncached tail block].
     for (const [i, body] of sent.entries()) {
       const blocks = body.messages[0].content;
       assert.ok(Array.isArray(blocks) && blocks.length === 2, `request ${i + 1}: two content blocks`);
       assert.deepEqual(blocks[0].cache_control, { type: 'ephemeral' });
       assert.ok(blocks[0].text.includes('<project_context>'), 'the cached prefix carries the inlined project context');
       assert.ok(blocks[0].text.includes('modes/oferta.md'), '…and the mode files');
-      assert.ok(blocks[0].text.includes('---SCORE_SUMMARY---'), '…and the machine-format instructions');
-      const jdText = i === 0 ? JD_A.trim() : JD_B.trim();
+      const jdText = i < 2 ? JD_A.trim() : JD_B.trim();
       assert.ok(!blocks[0].text.includes(jdText), `request ${i + 1}: this JD is not inside the cached block`);
       assert.ok(blocks[1].text.includes(jdText), `request ${i + 1}: this JD rides the uncached tail`);
     }
-    // The whole point of CAR-111: same bytes cached across different JDs.
-    assert.equal(sent[0].messages[0].content[0].text, sent[1].messages[0].content[0].text,
-      'cached prefix must be byte-identical across calls with different JDs');
-    assert.notEqual(sent[0].messages[0].content[1].text, sent[1].messages[0].content[1].text);
 
-    // The client-facing echo still shows the full prompt (manual-copy parity).
-    assert.ok(b1.prompt.includes(JD_A.trim()));
-    // Usage fields pass through untouched (no changes to usage recording).
-    assert.equal(b1.usage.cache_read_input_tokens, 36999);
-    assert.equal(b1.usage.input_tokens, 37000);
+    // CAR-111's whole point, now STRONGER: the stable prefixes are
+    // byte-identical across different JDs for BOTH steps — so the provider
+    // cache covers every locale and every posting after the first call.
+    const [scoreA, renderA, scoreB, renderB] = sent.map((b2) => b2.messages[0].content[0].text);
+    assert.equal(scoreA, scoreB, 'scoring prefix byte-identical across JDs');
+    assert.equal(renderA, renderB, 'render prefix byte-identical across JDs');
+    assert.notEqual(sent[0].messages[0].content[1].text, sent[1].messages[0].content[1].text, 'the JD tails differ');
+    // Cross-step: the shared EN instruction header opens both prefixes.
+    assert.equal(scoreA.split('\n\n')[0], renderA.split('\n\n')[0].slice(0, scoreA.split('\n\n')[0].length), 'both steps open with the shared instruction header');
+
+    // Usage fields pass through aggregated: both steps' cache reads sum up.
+    assert.equal(b1.usage.cached, 73998, '36999 × 2 steps');
+    assert.equal(b1.usage.in, 74000);
   } finally {
     server.closeAllConnections?.();
     await new Promise((r) => server.close(r));

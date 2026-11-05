@@ -129,15 +129,16 @@ test('ux-owner: plan.editorLabel exists in every locale', () => {
 
 test('ux-owner: evaluate refuses to spend an LLM call on the URL prefill template', () => {
   const src = readFileSync(resolve(ROOT, 'public', 'js', 'views', 'evaluate.js'), 'utf8');
-  const run = src.match(/async function run\(\) \{[\s\S]{0,2000}?\n  \}/);
+  const run = src.match(/async function run\(\) \{[\s\S]{0,6000}?\n  \}/);
   assert.ok(run, 'run() found');
   assert.match(run[0], /includes\('\[paste JD text here\]'\)/,
     'run() must detect the prefill template before the API call');
   assert.match(run[0], /eval\.pasteJd/, 'a specific toast key names the problem');
   assert.match(run[0], /jdInput\.focus\(\)/, 'focus returns to the JD field');
-  // order guard: the template check must sit BEFORE the API.post
+  // order guard: the template check must sit BEFORE the API call
+  // (v1.268.0 — the transport is API.postStream, SSE stage events)
   const guard = run[0].indexOf("includes('[paste JD text here]')");
-  const post = run[0].indexOf("API.post('/api/evaluate'");
+  const post = run[0].indexOf("API.postStream('/api/evaluate'");
   assert.ok(guard > -1 && post > -1 && guard < post, 'the guard runs before the LLM POST');
 });
 

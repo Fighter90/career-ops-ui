@@ -13,6 +13,24 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 ---
 
 
+## [1.268.0] — 2026-11-05
+
+### Cambiado
+
+- **Evaluate es ahora un pipeline de dos pasos (CAR-229)** — la regresión de producción del 2026-11-04 mostró que el mismo JD sintético puntuaba 1.0–4.0 según el idioma del informe, y que el bloque de máquina estaba presente solo en 8 de 17 locales. El contrato ahora es: (1) un paso SCORING lee el contexto y el JD y emite SOLO un JSON canónico en inglés (company, role, archetype, legitimacy, score, puntuaciones por bloque A–G + summaries) con una temperature 0.1 fijada y un reloj de 120 s; (2) un paso RENDER elabora las siete secciones A–G en el idioma del informe — prohibido tocar los números, prohibido escribir el encabezado o cualquier bloque de máquina. El SERVIDOR ensambla el informe: el encabezado `# Evaluation:`, las líneas `**Date:**/**Score:**/**Legitimacy:**`, el bloque ---SCORE_SUMMARY--- y el bloque de máquina ```yaml se construyen todos en el servidor a partir del JSON de scoring — cada locale envía la misma superficie de máquina por construcción, y un modelo que «corrige» un número en la prosa no puede mover los valores canónicos. El payload del cliente conserva el bloque de máquina (```yaml) y elimina el bloque de summary.
+- **Progreso de etapas de Evaluate en la UI (CAR-230)** — /api/evaluate transmite etapas SSE (scoring → rendering → assembling) en lugar de un único POST silencioso; la línea de carga cita la latencia REAL (p50/p90 del diario de uso — las filas de llm-usage y readUsage ahora llevan durationMs; /api/usage expone llmLatency) en lugar de la copia obsoleta de «2–4 min». El paso de scoring reintenta una vez una respuesta no JSON; un render al que le faltan secciones tras un reintento recurre a un cuerpo construido en el servidor (warning conservado, la superficie de máquina sigue completa).
+- **Caché de prompt para cada locale (CAR-111)** — ambos pasos comparten UN encabezado de instrucciones en inglés estable byte a byte (el bundle de contexto + las instrucciones compartidas abren cada prompt, idéntico byte a byte en los 19 locales); la directiva de idioma, el JSON de scoring y el JD van en la cola sin caché. Un test fija prefijos estables idénticos byte a byte en todos los locales — el cache miss por locale (cached_tokens 0 en non-en) desaparece estructuralmente.
+- **Runners de migración de datos (CAR-232/233)** — `POST /api/runners/report-dates` y `POST /api/runners/company-fix` (dry-run por defecto, apply con una copia .bak con marca de tiempo): fechas de los encabezados de informes reconciliadas con la fecha del nombre de archivo (368 filas anteriores a 2026-10-26), y celdas Company del tracker que contenían un nombre de fuente («hh» — 123 filas) o un título de rol (14 filas) resueltas al empleador desde el H1 de su informe. Primero dry-run; apply toca solo las celdas nombradas, con cirugía por línea.
+- **Cabecera Permissions-Policy** — `camera=(), microphone=(), geolocation=(), payment=(), usb=()`: las superficies que esta app nunca usa quedan explícitamente denegadas (QA 2026-11-04).
+
+### Notas
+
+- **Deliberadamente no en esta versión (P2/P3 del programa de correcciones del 2026-11-04):** el mecanismo de placeholders `{{t:key}}` de la guía de ayuda y la localización de etiquetas de deep-link (colas del CAR-107), la limpieza del glosario del dashboard (cola del CAR-108), los agregados del mapa + geocodificación de área de hh.ru (CAR-105), el menú de cabecera del tracker para operaciones destructivas (cola del CAR-117), el blur de la cabecera del sitio + copy feedback (colas del CAR-132/141), la paridad README ar/pl/uk/vi y los fragmentos de diccionario por locale (cola del CAR-104). Están acotados y en cola — esta versión envía el conjunto obligatorio P0+P1.
+- Las migraciones de datos de producción (fechas de informes, compañías del tracker, backfill de puntuaciones) son ACCIONES DEL PROPIETARIO: ejecutar el dry-run de los nuevos runners, revisar y luego aplicar — la herramienta llega aquí, los cambios de datos no se ejecutan automáticamente.
+- El tag v1.267.0 sigue apuntando al commit de merge rojo — no se re-apunta; v1.267.1/1.267.2/1.268.0 son los vehículos de despliegue.
+
+- Pruebas 7395 → **7488**; cobertura 98.49 línea / 90.31 rama.
+
 ## [1.267.2] — 2026-11-04
 
 ### Corregido

@@ -20,6 +20,7 @@ import { mkdtempSync, mkdirSync, writeFileSync, existsSync, readdirSync, rmSync 
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
 import { promises as dns } from 'node:dns';
+import { twoShapeAnswers, scoringFixture, renderBodyFixture, promptFromOpenAiBody } from './helpers/eval-two-step-stub.mjs';
 
 const KEYS = ['ANTHROPIC_API_KEY', 'OPENAI_API_KEY', 'LLM_PROVIDER'];
 const ANT = 'sk-ant-fake0123456789abcdefghijklmnop';
@@ -63,8 +64,22 @@ afterEach(() => {
 
 const JOB_URL = 'https://jobs.example.com/acme/42';
 const JOB_HTML = '<html><body><h1>Platform Engineer at Acme</h1><p>' + 'We build distributed systems in Go. '.repeat(10) + '</p></body></html>';
-const GOOD_REPORT = ['A', 'B', 'C', 'D', 'E', 'F', 'G'].map((L) => `## Block ${L} — x\nok\n`).join('')
-  + '\n---SCORE_SUMMARY---\nCOMPANY: Acme\nROLE: Platform Engineer\nSCORE: 4.2\nARCHETYPE: Platform\nLEGITIMACY: High Confidence\n---END_SUMMARY---\n';
+// v1.268.0 (CAR-229) — the two-step contract: the provider answers the
+// scoring call with the JSON and the render call with the A–G body; the
+// server builds the header/summary/yaml itself.
+const ANSWERS = twoShapeAnswers({
+  scoring: scoringFixture({ company: 'Acme', role: 'Platform Engineer', archetype: 'Platform', score: 4.2 }),
+  body: renderBodyFixture({ line: 'The candidate meets the requirements: platform engineering, Kubernetes and Go.' }),
+});
+/** The prompt text of an Anthropic Messages request body (prefix + tail text blocks joined). */
+const promptFromAnthropicBody = (rawBody) => {
+  try {
+    const b = JSON.parse(rawBody);
+    const c = (b.messages || [])[0]?.content;
+    if (typeof c === 'string') return c;
+    return (c || []).map((p) => (typeof p?.text === 'string' ? p.text : '')).join('');
+  } catch { return ''; }
+};
 
 async function stubJobPage(html) {
   const { _setTransport } = await import('../server/lib/safe-fetch.mjs');
@@ -107,7 +122,8 @@ test('CAR-92.5: mode:"anthropic" is ignored when LLM_PROVIDER pins a cheaper pro
     const s = String(u);
     if (s.includes('api.anthropic.com') || s.includes('api.openai.com')) {
       calls.push(s.includes('anthropic') ? 'anthropic' : 'openai');
-      return json({ choices: [{ message: { content: GOOD_REPORT }, finish_reason: 'stop' }], usage: { prompt_tokens: 5, completion_tokens: 3 } });
+      const content = ANSWERS(promptFromOpenAiBody(o?.body));
+      return json({ choices: [{ message: { content }, finish_reason: 'stop' }], usage: { prompt_tokens: 5, completion_tokens: 3 } });
     }
     return realFetch(u, o);
   };
@@ -115,24 +131,36 @@ test('CAR-92.5: mode:"anthropic" is ignored when LLM_PROVIDER pins a cheaper pro
   const done = ev.find((e) => e.event === 'done');
   assert.ok(done, 'the run completes');
   assert.equal(done.data.evalMode, 'openai', 'the server config (LLM_PROVIDER) decides, not the request body');
-  assert.deepEqual(calls, ['openai'], 'no paid-provider call may happen');
+  // CAR-229: BOTH step calls (scoring + render) route through the cascade —
+  // the cheap provider serves the whole evaluation, the paid one is never hit.
+  assert.deepEqual(calls, ['openai', 'openai'], 'no paid-provider call may happen');
 });
 
-test('CAR-92.5: with LLM_PROVIDER=auto the explicit anthropic pin is still honoured', async () => {
+test('CAR-92.5: with LLM_PROVIDER=auto the anthropic cascade serves both steps (the explicit pin rides the cascade)', async () => {
+  // CAR-229 — the request-body pin branch was folded into resolveProvider():
+  // with `auto` the cascade order (Anthropic first) picks anthropic and the
+  // SAME provider must serve BOTH two-step calls.
   await stubJobPage(JOB_HTML);
   process.env.ANTHROPIC_API_KEY = ANT;
   process.env.OPENAI_API_KEY = OAI;
   process.env.LLM_PROVIDER = 'auto';
   const hosts = [];
   globalThis.fetch = async (u, o = {}) => {
-    const s = String(u);
-    if (s.includes('api.anthropic.com')) { hosts.push('anthropic'); return json({ content: [{ type: 'text', text: GOOD_REPORT }], stop_reason: 'end_turn', usage: { input_tokens: 5, output_tokens: 3 } }); }
-    if (s.includes('api.openai.com')) { hosts.push('openai'); return json({ choices: [{ message: { content: GOOD_REPORT }, finish_reason: 'stop' }], usage: {} }); }
+    let host = '';
+    try { host = new URL(String(u)).host; } catch { /* not a URL */ }
+    if (host === 'api.anthropic.com') {
+      hosts.push('anthropic');
+      const content = ANSWERS(promptFromAnthropicBody(o?.body));
+      return json({ content: [{ type: 'text', text: content }], stop_reason: 'end_turn', usage: { input_tokens: 5, output_tokens: 3 } });
+    }
+    if (host === 'api.openai.com') { hosts.push('openai'); return json({ choices: [{ message: { content: '' }, finish_reason: 'stop' }], usage: {} }); }
     return realFetch(u, o);
   };
   const ev = sseEvents((await post({ url: JOB_URL, mode: 'anthropic' })).text);
-  assert.equal(ev.find((e) => e.event === 'done').data.evalMode, 'anthropic');
-  assert.deepEqual(hosts, ['anthropic']);
+  const done = ev.find((e) => e.event === 'done');
+  assert.ok(done, 'the run completes');
+  assert.equal(done.data.evalMode, 'anthropic');
+  assert.deepEqual(hosts, ['anthropic', 'anthropic'], 'both steps hit anthropic; openai is never called');
 });
 
 test('CAR-92.5: mode:"manual" stays always available regardless of the server tier', async () => {
@@ -148,16 +176,23 @@ test('CAR-92.6: closing the connection aborts the upstream provider call (no fur
   await stubJobPage(JOB_HTML);
   process.env.ANTHROPIC_API_KEY = ANT;
   let sawAbort = false;
+  // Every provider invocation records whether its signal was ALREADY aborted
+  // at call time: a pre-aborted invocation never hits the wire (the runner
+  // refuses to send; undici would reject on the signal anyway). The spend
+  // guarantee is "nothing is SENT after the disconnect".
+  const providerCalls = [];
   globalThis.fetch = async (u, o = {}) => {
     if (String(u).includes('api.anthropic.com')) {
+      const sig = o && o.signal;
+      const preAborted = Boolean(sig && sig.aborted);
+      providerCalls.push({ preAborted });
+      if (preAborted) { sawAbort = true; return Promise.reject(new Error('aborted before send')); }
       return new Promise((_, reject) => {
         // A self-release timer keeps a pre-fix red run from parking the route's
         // own EVAL timer (the abort only propagates with the fix).
         const release = setTimeout(() => bail('mock provider timed out (no abort seen)'), 5000);
         const bail = (why) => { clearTimeout(release); reject(new Error(why)); };
-        const sig = o && o.signal;
         if (!sig) { bail('no signal passed to the provider fetch'); return; }
-        if (sig.aborted) { sawAbort = true; bail('aborted before send'); return; }
         sig.addEventListener('abort', () => { sawAbort = true; bail('The operation was aborted'); });
       });
     }
@@ -186,6 +221,14 @@ test('CAR-92.6: closing the connection aborts the upstream provider call (no fur
   for (let i = 0; i < 40 && !sawAbort; i++) await new Promise((r) => setTimeout(r, 50));
   assert.ok(sawAbort, 'the provider fetch must observe the abort when the client disconnects');
   reader.cancel().catch(() => {});
+  // CAR-229 — the abort reaches the two-step eval: the in-flight scoring call
+  // is the only request ever SENT; any later invocation (the scoring retry,
+  // the render step) observes the route's aborted signal and never reaches
+  // the wire — no further spend after the client hung up.
+  await new Promise((r) => setTimeout(r, 400));
+  assert.ok(providerCalls.length >= 1, 'the in-flight scoring call reached the provider');
+  assert.ok(providerCalls.slice(1).every((c) => c.preAborted),
+    `no provider request may be SENT after the disconnect — got: ${JSON.stringify(providerCalls)}`);
   // No report may be filed for the aborted run (only files from earlier
   // tests in this file may exist).
   await new Promise((r) => setTimeout(r, 200));

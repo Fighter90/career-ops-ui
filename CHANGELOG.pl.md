@@ -10,6 +10,24 @@ Tłumaczenia: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.268.0] — 2026-11-05
+
+### Zmieniono
+
+- **Evaluate to teraz dwuetapowy pipeline (CAR-229)** — regresja produkcyjna z 2026-11-04 pokazała ten sam syntetyczny JD oceniany na 1.0–4.0 w zależności od języka raportu oraz blok maszynowy obecny tylko w 8 z 17 locale. Kontrakt brzmi teraz: (1) etap SCORING czyta kontekst i JD i wypisuje WYŁĄCZNIE kanoniczny angielski JSON (company, role, archetype, legitimacy, score, punkty per blok A–G + summaries) przy przypiętej temperature 0.1 i zegarze 120 s; (2) etap RENDER rozwija siedem sekcji A–G w języku raportu — zakaz dotykania liczb, zakaz pisania nagłówka i jakiegokolwiek bloku maszynowego. Raport SKŁADA SERWER: nagłówek `# Evaluation:`, linie `**Date:**/**Score:**/**Legitimacy:**`, blok ---SCORE_SUMMARY--- i blok maszynowy ```yaml — wszystko powstaje po stronie serwera z JSON-a scoringu — każdy locale wysyła tę samą powierzchnię maszynową z samej konstrukcji, a model „poprawiający" liczbę w prozie nie przestawi wartości kanonicznych. Payload klienta zachowuje blok maszynowy (```yaml) i obcina blok summary.
+- **Postęp etapów Evaluate w UI (CAR-230)** — /api/evaluate strumieniuje etapy SSE (scoring → rendering → assembling) zamiast jednego cichego POST; linia ładowania cytuje PRAWDZIWY latency (p50/p90 z dziennika użycia — wiersze llm-usage i readUsage niosą teraz durationMs; /api/usage eksponuje llmLatency) zamiast przestarzałego tekstu „2–4 min". Etap scoring raz ponawia odpowiedź nie-JSON; render z brakującymi sekcjami po ponowie sięga po treść zbudowaną po stronie serwera (warning zachowany, powierzchnia maszynowa pozostaje kompletna).
+- **Cache promptu dla każdego locale (CAR-111)** — oba etapy dzielą JEDEN stabilny bajtowo angielski nagłówek instrukcji (bundle kontekstu + wspólne instrukcje otwierają każdy prompt, identyczny bajt w bajt we wszystkich 19 locale); dyrektywa języka, JSON scoringu i JD jadą w niecache'owanym ogonie. Test przypina bajtowo identyczne stabilne prefiksy we wszystkich locale — per-locale cache miss (cached_tokens 0 na non-en) jest strukturalnie wyeliminowany.
+- **Runnery migracji danych (CAR-232/233)** — `POST /api/runners/report-dates` i `POST /api/runners/company-fix` (domyślnie dry-run, apply z kopią .bak z timestampem): daty w nagłówkach raportów uzgodnione z datą z nazwy pliku (368 wierszy sprzed 2026-10-26), a komórki Company trackera trzymające nazwę źródła („hh" — 123 wiersze) lub tytuł roli (14 wierszy) rozwiązane do pracodawcy z H1 ich raportu. Najpierw dry-run; apply dotyka tylko wskazanych komórek, chirurgicznie per linia.
+- **Nagłówek Permissions-Policy** — `camera=(), microphone=(), geolocation=(), payment=(), usb=()`: powierzchnie, których ta aplikacja nigdy nie używa, są jawnie zabronione (QA 2026-11-04).
+
+### Uwagi
+
+- **Świadomie nie w tym wydaniu (P2/P3 programu poprawek z 2026-11-04):** mechanizm placeholderów `{{t:key}}` w przewodniku pomocy i lokalizacja etykiet deep-link (ogony CAR-107), przegląd glosariusza dashboardu (ogon CAR-108), agregaty mapy + geokodowanie obszarowe hh.ru (CAR-105), menu nagłówka trackera dla operacji destrukcyjnych (ogon CAR-117), rozmycie nagłówka strony + copy feedback (ogony CAR-132/141), parzystość README ar/pl/uk/vi oraz per-locale kawałki słownika (ogon CAR-104). Mają zakres i stoją w kolejce — to wydanie wysyła obowiązkowy zestaw P0+P1.
+- Migracje danych produkcyjnych (daty raportów, firmy w trackerze, backfill ocen) to CZYNNOŚCI WŁAŚCICIELA: odpalić dry-run nowych runnerów, przejrzeć, potem apply — narzędzia przyjeżdżają tutaj, zmiany danych nie wykonują się same.
+- Tag v1.267.0 dalej wskazuje czerwony commit merge — nie przepinany; v1.267.1/1.267.2/1.268.0 są pojazdami wdrożenia.
+
+- Testy 7395 → **7488**; pokrycie 98.49 linii / 90.31 gałęzi.
+
 ## [1.267.2] — 2026-11-04
 
 ### Naprawiono

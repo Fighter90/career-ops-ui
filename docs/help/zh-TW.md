@@ -181,7 +181,7 @@ career-ops-ui 的 `#/dashboard` 與 `#/tracker` 會把分數達 4.0 以上
 Health 全綠之前不要繼續往下做。
 
 **第 3 步 — 點側邊欄的 `⚒ App settings`。** 你會落在
-**API keys & runtime** 分頁。
+**{{t:config.tabApi}}** 分頁。
 - 貼上 `ANTHROPIC_API_KEY`(首選 — 對長文評分品質更好)以及/或
   `GEMINI_API_KEY`。可在 <https://console.anthropic.com/settings/keys>
   或 <https://aistudio.google.com/apikey> 取得金鑰。
@@ -335,7 +335,7 @@ JD。輔助器會生成逐步的投遞檢查清單:
 
 兩個分頁:
 
-1. **API keys & runtime** — 從瀏覽器編輯父專案的 `.env`(就是
+1. **{{t:config.tabApi}}** — 從瀏覽器編輯父專案的 `.env`(就是
    career-ops 的 Node 腳本啟動時讀取的同一份檔案)。此分頁也提供
    按供應方的模型選擇器 —— 在 `ANTHROPIC_MODEL`、`GEMINI_MODEL`
    旁新增 `OPENAI_MODEL`(OpenAI/Codex)。
@@ -346,7 +346,7 @@ JD。輔助器會生成逐步的投遞檢查清單:
 
 **設定你的 LLM 供應方(逐步)。** web UI 的 ⚡ 即時評估以*無頭*方式執行,使用一個 API 金鑰。它透過 "OR" 運作 —— 設定其中**任意一個**即可正常運作;設定多個時,`auto` 按此順序優先:Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama → BytePlus Ark → Volcengine Ark。(career-ops 本身是 CLI 無關的 —— 你也可以在 Claude Code、Cursor、Codex、Gemini、OpenCode、Antigravity、Grok Build、Qwen、Copilot 或 Kimi 內執行它;那與此無頭金鑰無關。)
 
-1. 開啟 `#/config` → **API keys & runtime** 分頁。
+1. 開啟 `#/config` → **{{t:config.tabApi}}** 分頁。
 2. 在 **`LLM_PROVIDER`** 中選擇你的供應方:`auto`(使用已設定的金鑰),或用 `claude` / `gemini` / `openai` / `qwen` 強制指定一個。
 3. 填寫你所選供應方的金鑰 + 模型:
    - **Anthropic** —— 設定 `ANTHROPIC_API_KEY`(console.anthropic.com),選擇性 `ANTHROPIC_MODEL`(預設 `claude-sonnet-4-6`)。
@@ -705,7 +705,7 @@ russian_portals:
 
 ### 設定俄文入口網站 — 詳細設定指南
 
-v1.29.0 內建 5 個俄文 adapter。兩個無需預設 UA 以外的額外設定(`habr-career` HTML 抓取;`trudvsem` 政府開放資料 API — 無 key、無地理閘)。兩個是科技板塊的 HTML 抓取(`getmatch`、`geekjob` — 同樣無 key)。一個是 hh.ru 標準 API,從非俄羅斯 IP 可能回傳 403,除非透過 **App settings → API keys & runtime** 設定 `HH_USER_AGENT` 環境變數(或從俄羅斯 IP / VPN 執行)。
+v1.29.0 內建 5 個俄文 adapter。兩個無需預設 UA 以外的額外設定(`habr-career` HTML 抓取;`trudvsem` 政府開放資料 API — 無 key、無地理閘)。兩個是科技板塊的 HTML 抓取(`getmatch`、`geekjob` — 同樣無 key)。一個是 hh.ru 標準 API,從非俄羅斯 IP 可能回傳 403,除非透過 **App settings → {{t:config.tabApi}}** 設定 `HH_USER_AGENT` 環境變數(或從俄羅斯 IP / VPN 執行)。
 
 #### 來源清單
 
@@ -1372,10 +1372,10 @@ tracker」按鈕。
 ### 共用樣板
 
 每個頁面都有一個小表單(欄位視 mode 而定)、一顆
-**▶ Generate prompt** 按鈕(手動),以及 — 當有 Anthropic 或 Gemini
+**{{t:deep.run}}** 按鈕(手動),以及 — 當有 Anthropic 或 Gemini
 金鑰時 — 一顆會晉升為主按鈕的 **⚡ 即時執行**。
 
-點 **▶ Generate prompt** 會回傳組合好的提示,把你的表單值
+點 **{{t:deep.run}}** 會回傳組合好的提示,把你的表單值
 JSON 字串化後塞入 `User-supplied context:` 區塊,後面接原樣的
 `modes/<slug>.md` 模板。複製貼到你選擇的 LLM。
 
@@ -2017,7 +2017,7 @@ career-ops-ui 的大部分功能都在問「這份工作和我的 CV 匹配嗎�
 
 ### AI 填寫助手
 
-不確定該怎麼措辭？點擊 **✨ AI fill assistant**。它會建構一段可直接執行的提示詞(Mnookin 格式,並把你的 CV 和個人資料內嵌其中),並在對話框中顯示。把該提示詞放到任意 LLM 中執行,然後把產生的 YAML 欄位貼回表單。該助手始終只使用**你自己的** CV 和個人資料——它不會編造關於你的事實,而且點擊此按鈕不會發起任何即時 API 呼叫。
+不確定該怎麼措辭？點擊 **{{t:twoPager.aiFill}}**。它會建構一段可直接執行的提示詞(Mnookin 格式,並把你的 CV 和個人資料內嵌其中),並在對話框中顯示。把該提示詞放到任意 LLM 中執行,然後把產生的 YAML 欄位貼回表單。該助手始終只使用**你自己的** CV 和個人資料——它不會編造關於你的事實,而且點擊此按鈕不會發起任何即時 API 呼叫。
 
 ### 契合度評分——與你想要的相符程度
 

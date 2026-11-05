@@ -126,14 +126,20 @@ test('CAR-92.2: /api/evaluate passes --lang to the subprocess', async () => {
   assert.ok(args.indexOf('--file') < args.indexOf('--lang') + 2 || args.indexOf('--file') !== -1);
 });
 
-test('CAR-92.2: /api/evaluate non-zero exit → 502 with a bounded error, stderr never forwarded', async () => {
+test('CAR-92.2: /api/evaluate non-zero exit fails on the stream with a bounded error, stderr never forwarded', async () => {
   process.env.FAKE_GEMINI_EXIT = '1';
   const r = await post('/api/evaluate', { jd: JD });
-  assert.equal(r.status, 502, 'a failed subprocess must not be a 200');
-  assert.ok(r.body.error, 'an error message is present');
-  assert.match(r.body.error, /exit|код|code|1/i);
-  assert.ok(!('stderr' in r.body), 'raw stderr must not reach the client');
-  assert.ok(!JSON.stringify(r.body).includes(STDERR_MARKER), 'stderr content must not reach the client');
+  // v1.268.0 — the SSE headers are already out when the subprocess fails, so
+  // the status is a 200 stream and the failure is an `error` frame naming the
+  // mode + saved state. A failed subprocess must not look like a success.
+  assert.equal(r.status, 200);
+  const err = sseEvents(r.text).find((e) => e.event === 'error')?.data;
+  assert.ok(err, 'an error frame is present');
+  assert.ok(!sseEvents(r.text).some((e) => e.event === 'done'), 'no done frame for a failed subprocess');
+  assert.match(err.message, /exit|код|code|1/i);
+  assert.equal(err.mode, 'gemini');
+  assert.ok(!('stderr' in err), 'raw stderr must not reach the client');
+  assert.ok(!r.text.includes(STDERR_MARKER), 'stderr content must not reach the client');
 });
 
 test('CAR-92.2: /api/evaluate gemini usage is parsed from stdout and recorded', async () => {

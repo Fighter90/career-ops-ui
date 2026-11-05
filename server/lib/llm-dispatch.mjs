@@ -108,7 +108,7 @@ export function resolveProvider() {
  *                                            returns the copy-paste prompt)
  *   { mode: 'too-large', size, cap }       — prompt exceeds the soft cap
  */
-export async function runActiveProvider(fullPrompt, { sizeCap = PROMPT_SIZE_SOFT_CAP, maxTokens, timeoutMs, signal, cachePrefix } = {}) {
+export async function runActiveProvider(fullPrompt, { sizeCap = PROMPT_SIZE_SOFT_CAP, maxTokens, timeoutMs, signal, cachePrefix, temperature } = {}) {
   if (typeof fullPrompt !== 'string' || !fullPrompt) return { mode: 'manual' };
   if (fullPrompt.length > sizeCap) return { mode: 'too-large', size: fullPrompt.length, cap: sizeCap };
 
@@ -117,12 +117,20 @@ export async function runActiveProvider(fullPrompt, { sizeCap = PROMPT_SIZE_SOFT
   const runOpts = {};
   if (maxTokens) runOpts.maxTokens = maxTokens;
   if (timeoutMs) runOpts.timeoutMs = timeoutMs;
+  // CAR-229 — the scoring step pins the sampling temperature (a measurement
+  // must not be creative). Providers that do not support the field ignore it.
+  if (temperature !== undefined) runOpts.temperature = temperature;
   // CAR-92 — a route-level abort (the SSE client hung up) must reach the
   // provider request, not die at the dispatch boundary.
   if (signal) runOpts.signal = signal;
   // CAR-111 — see the opts doc: the cache breakpoint is Anthropic-only.
   if (cachePrefix && chosen.mode === 'anthropic') runOpts.cachePrefix = cachePrefix;
+  // CAR-230 — wall-clock duration rides the usage record: the evaluate ETA
+  // reads p50/p90 from real call statistics instead of stale copy.
+  const t0 = Date.now();
   const r = await chosen.run(fullPrompt, runOpts);
+  const elapsed = Date.now() - t0;
+  if (r && r.usage && typeof r.usage === 'object' && !r.usage.durationMs) r.usage.durationMs = elapsed;
   if (r.error) return { mode: chosen.mode, error: r.error };
   recordUsage(chosen.mode, r.usage);
   return { mode: chosen.mode, markdown: r.markdown, usage: r.usage, truncated: !!r.truncated };

@@ -204,7 +204,7 @@ Si algo está en rojo, la página te indica el archivo o variable de
 entorno exacta a arreglar. No continúes hasta que Health esté verde.
 
 **Paso 3 — Haz clic en `⚒ App settings` en el sidebar.** Aterrizas en
-la pestaña **API keys & runtime**.
+la pestaña **{{t:config.tabApi}}**.
 - Pega `ANTHROPIC_API_KEY` (preferida — mejor scoring de formato
   largo) y/o `GEMINI_API_KEY`. Obtén las claves en
   <https://console.anthropic.com/settings/keys> o
@@ -381,7 +381,7 @@ La página vacía es honesta con su único campo: la etiqueta **Ejemplo** y el b
 
 Dos pestañas:
 
-1. **API keys & runtime** — edita el `.env` del proyecto padre desde
+1. **{{t:config.tabApi}}** — edita el `.env` del proyecto padre desde
    el navegador (el mismo archivo que los scripts Node de career-ops
    leen al arrancar). La pestaña también ofrece selectores de modelo
    por proveedor — `OPENAI_MODEL` (OpenAI/Codex) junto a
@@ -395,7 +395,7 @@ reiniciar el servidor.
 
 **Configurar tu proveedor LLM (paso a paso).** La ⚡ evaluación en vivo del web UI corre *headless* y usa una clave de API. Funciona vía "OR" — define **cualquiera** de estas y ya funciona; con varias definidas, `auto` las prefiere en este orden: Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama → BytePlus Ark → Volcengine Ark. (career-ops en sí es agnóstico de CLI — también lo ejecutas dentro de Claude Code, Cursor, Codex, Gemini, OpenCode, Antigravity, Grok Build, Qwen, Copilot o Kimi; eso es independiente de esta clave headless.)
 
-1. Abre `#/config` → la pestaña **API keys & runtime**.
+1. Abre `#/config` → la pestaña **{{t:config.tabApi}}**.
 2. Elige tu proveedor en **`LLM_PROVIDER`**: `auto` (usa la clave que esté definida), o fuerza uno con `claude` / `gemini` / `openai` / `qwen`.
 3. Rellena la clave + modelo del proveedor que elegiste:
    - **Anthropic** — define `ANTHROPIC_API_KEY` (console.anthropic.com), opcionalmente `ANTHROPIC_MODEL` (default `claude-sonnet-4-6`).
@@ -763,7 +763,7 @@ la consola te avisará del conflicto.
 
 ### Configurar los portales rusos — guía detallada
 
-v1.29.0 incluye 5 adaptadores rusos. Dos no requieren nada más allá del UA por defecto (`habr-career`, scraping HTML; `trudvsem`, API open-data gubernamental — sin key, sin barrera geográfica). Dos son scrapers HTML de portales técnicos (`getmatch`, `geekjob` — tampoco requieren key). Uno es la API canónica de hh.ru, que puede devolver 403 desde IPs fuera de Rusia salvo que configures la variable de entorno `HH_USER_AGENT` vía **App settings → API keys & runtime** (o ejecutes el servidor desde una IP rusa / VPN).
+v1.29.0 incluye 5 adaptadores rusos. Dos no requieren nada más allá del UA por defecto (`habr-career`, scraping HTML; `trudvsem`, API open-data gubernamental — sin key, sin barrera geográfica). Dos son scrapers HTML de portales técnicos (`getmatch`, `geekjob` — tampoco requieren key). Uno es la API canónica de hh.ru, que puede devolver 403 desde IPs fuera de Rusia salvo que configures la variable de entorno `HH_USER_AGENT` vía **App settings → {{t:config.tabApi}}** (o ejecutes el servidor desde una IP rusa / VPN).
 
 #### Inventario de fuentes
 
@@ -1339,7 +1339,7 @@ El badge de estado de cada fila es también un **select** — elige una etapa y 
 
 **Vista kanban (v2).** El mismo tablero también se lee como un
 **kanban** de arrastrar-y-soltar: una columna por estado canónico
-(título anunciado como *Applications by status*, `track.kanbanBoardAria`),
+(título anunciado como *{{t:track.kanbanBoardAria}}*, `track.kanbanBoardAria`),
 una tarjeta por candidatura. Arrastra una tarjeta a otra columna — o
 enfócala y pulsa **Mover** — y el cambio se
 **previsualiza antes de escribir nada** (`track.kanbanMoveHint`); un movimiento confirmado
@@ -1494,11 +1494,11 @@ retrospectivas de **Patterns**. Cada uno envuelve una plantilla
 ### Forma compartida
 
 Cada página tiene un pequeño formulario (los campos son específicos
-del modo), un botón **▶ Generate prompt** (manual), y — cuando hay
+del modo), un botón **{{t:deep.run}}** (manual), y — cuando hay
 una clave Anthropic o Gemini presente — un botón **⚡ Ejecutar en vivo** que
 asciende a primary.
 
-Hacer clic en **▶ Generate prompt** devuelve el prompt ensamblado con
+Hacer clic en **{{t:deep.run}}** devuelve el prompt ensamblado con
 tus valores del formulario JSON-stringificados en un bloque
 `User-supplied context:`, seguido por la plantilla `modes/<slug>.md`
 verbatim. Copia y pega en tu LLM de elección.

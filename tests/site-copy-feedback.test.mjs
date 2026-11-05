@@ -96,6 +96,16 @@ test('a11y.copy + a11y.copied exist and are non-empty in all 19 site locales', (
   }
 });
 
+test('a11y.copied is the localized «Copied ✓» short form in all 19 site locales', () => {
+  for (const code of SITE_LOCALES) {
+    const dict = JSON.parse(readFileSync(resolve(SITE, 'src', 'i18n', `${code}.json`), 'utf8'));
+    const label = dict['a11y.copied'];
+    assert.match(label, /✓\s*$/, `${code}.json a11y.copied must carry the ✓ success marker (P3.4)`);
+    // Short on purpose: it lands in a one-line toast/live region, not prose.
+    assert.ok(label.trim().length <= 30, `${code}.json a11y.copied should stay short, got "${label}"`);
+  }
+});
+
 test('site.js copy handler is failure-proof (fallback + shared feedback, no stacked timers)', () => {
   const js = readFileSync(resolve(SITE, 'src', 'scripts', 'site.js'), 'utf8');
   const start = js.indexOf('copy buttons');

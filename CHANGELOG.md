@@ -6,6 +6,24 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 
 ---
 
+## [1.268.0] — 2026-11-05
+
+### Changed
+
+- **Evaluate is now a two-step pipeline (CAR-229)** — the 2026-11-04 prod regression showed the same synthetic JD scoring 1.0–4.0 depending on the report language, and the machine block present in only 8 of 17 locales. The contract is now: (1) a SCORING step reads the context and the JD and outputs ONLY a canonical English JSON (company, role, archetype, legitimacy, score, per-block A–G scores + summaries) at a pinned temperature 0.1 with a 120 s clock; (2) a RENDER step elaborates the seven A–G sections in the report locale — forbidden to touch numbers, forbidden to write the header or any machine block. The SERVER assembles the report: the `# Evaluation:` header, the `**Date:**/**Score:**/**Legitimacy:**` lines, the ---SCORE_SUMMARY--- block and the ```yaml machine block are all built server-side from the scoring JSON — every locale ships the same machine surface by construction, and a model that "corrects" a number in prose cannot move the canonical values. The client payload keeps the machine block (```yaml) and strips the summary block.
+- **Evaluate stage progress in the UI (CAR-230)** — /api/evaluate streams SSE stages (scoring → rendering → assembling) instead of one silent POST; the loading line quotes REAL latency (p50/p90 from the usage journal — llm-usage rows and readUsage now carry durationMs; /api/usage exposes llmLatency) instead of the stale "2–4 min" copy. The scoring step retries a non-JSON answer once; a render missing sections after a retry falls back to a server-built body (warning carried, machine surface stays complete).
+- **Prompt cache for every locale (CAR-111)** — both steps share ONE byte-stable English instruction header (the context bundle + shared instructions open every prompt, byte-identical across all 19 locales); the locale directive, the scoring JSON and the JD ride the uncached tail. A test pins byte-identical stable prefixes across all locales — the per-locale cache miss (cached_tokens 0 on non-en) is structurally gone.
+- **Data migration runners (CAR-232/233)** — `POST /api/runners/report-dates` and `POST /api/runners/company-fix` (dry-run default, apply with a timestamped .bak backup): report header dates reconciled to the filename date (368 pre-2026-10-26 rows), and tracker Company cells holding a source name ("hh" — 123 rows) or a role title (14 rows) resolved to the employer from their report's H1. Dry-run first; apply touches only the named cells, line-surgically.
+- **Permissions-Policy header** — `camera=(), microphone=(), geolocation=(), payment=(), usb=()`: the surfaces this app never uses are explicitly denied (QA 2026-11-04).
+
+### Notes
+
+- **Deliberately not in this release (P2/P3 of the 2026-11-04 fix program):** the help-guide `{{t:key}}` placeholder mechanism and the deep-link label localization (CAR-107 tails), the dashboard glossary sweep (CAR-108 tail), the map aggregates + hh.ru area geocoding (CAR-105), the tracker header menu for destructive operations (CAR-117 tail), the site header blur + copy feedback (CAR-132/141 tails), README ar/pl/uk/vi parity, and the per-locale dict chunks (CAR-104 tail). They are scoped and queued — this release ships the mandatory P0+P1 set.
+- The prod data migrations (report dates, tracker companies, score backfill) are OWNER ACTIONS: run the new runners' dry-run, review, then apply — the tooling ships here, the data changes do not run automatically.
+- The v1.267.0 tag stays pointing at the red merge commit — not re-pointed; v1.267.1/1.267.2/1.268.0 are the deploy vehicles.
+
+- Tests 7395 → **7488**; coverage 98.49 line / 90.31 branch.
+
 ## [1.267.2] — 2026-11-04
 
 ### Fixed

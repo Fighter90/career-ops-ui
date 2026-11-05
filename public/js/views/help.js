@@ -52,8 +52,18 @@ Router.register('help', async () => {
 
   // Render markdown into a hidden scratch div so we can extract h2's
   // and assign anchor IDs BEFORE the DOM lands on the page.
+  // CAR-107 (P2.1) — the bundles reference UI labels as {{t:key}} place-
+  // holders instead of hard-coded EN strings, so a translated guide always
+  // shows the button/tab label in the ACTIVE locale (a translator can no
+  // longer paste the EN label into the prose and drift from the app).
+  // Resolve through the assembled dict; a key missing from the dict keeps
+  // the raw placeholder visible rather than silently rendering anything.
+  const markdown = String(payload.markdown || '').replace(
+    /\{\{t:([A-Za-z0-9_.-]+)\}\}/g,
+    (raw, key) => I18n.t(key, raw),
+  );
   const scratch = document.createElement('div');
-  scratch.innerHTML = UI.md(payload.markdown || '');
+  scratch.innerHTML = UI.md(markdown);
 
   // v1.50.0 (WS2 #28) — the doc markdown starts with its own `# Title`
   // → a SECOND <h1> on a page whose header already provides the single

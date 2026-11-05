@@ -9,6 +9,24 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 ---
 
 
+## [1.268.0] — 2026-11-05
+
+### Ændret
+
+- **Evaluate er nu en to-trins pipeline (CAR-229)** — produktionsregressionen 2026-11-04 viste den samme syntetiske JD scoret 1.0–4.0 afhængigt af rapportens sprog, og maskinblokken til stede i kun 8 af 17 locales. Kontrakten er nu: (1) et SCORING-trin læser konteksten og JD'en og udsender KUN en kanonisk engelsk JSON (company, role, archetype, legitimacy, score, per-blok A–G-scores + summaries) ved en fastgjort temperature 0.1 med et 120 s-ur; (2) et RENDER-trin uddyber de syv A–G-sektioner på rapportens sprog — forbudt at røre tal, forbudt at skrive headeren eller nogen maskinblok. SERVEREN samler rapporten: `# Evaluation:`-headeren, `**Date:**/**Score:**/**Legitimacy:**`-linjerne, ---SCORE_SUMMARY----blokken og ```yaml-maskinblokken bygges alle server-side fra scoring-JSON'en — hver locale leverer den samme maskinflade af konstruktion, og en model der "retter" et tal i prosaen kan ikke flytte de kanoniske værdier. Client-payloadet bevarer maskinblokken (```yaml) og strimler summary-blokken.
+- **Evaluate-trinnes fremskridt i UI'en (CAR-230)** — /api/evaluate streamer SSE-trin (scoring → rendering → assembling) i stedet for ét stille POST; indlæsningslinjen citerer den RIGTIGE latency (p50/p90 fra usage-journalen — llm-usage-rækker og readUsage bærer nu durationMs; /api/usage eksponerer llmLatency) i stedet for den forældede "2–4 min"-kopi. Scoring-trinnet retrier et ikke-JSON-svar én gang; et render med manglende sektioner efter et retry falder tilbage på en serverbygget krop (warning bevaret, maskinfladen forbliver komplet).
+- **Prompt-cache for hver locale (CAR-111)** — begge trin deler ÉN bytestabil engelsk instruktionsheader (kontekstbundtet + delte instruktioner åbner hver prompt, byte-identisk på tværs af alle 19 locales); sprogdirektivet, scoring-JSON'en og JD'en rider på den ucachede hale. En test fastgør byte-identiske stabile præfikser på tværs af alle locales — per-locale cache miss (cached_tokens 0 på non-en) er strukturelt væk.
+- **Datamigrations-runners (CAR-232/233)** — `POST /api/runners/report-dates` og `POST /api/runners/company-fix` (dry-run som standard, apply med en tidsstemplede .bak-backup): rapport-header-datoer forligt med filnavnets dato (368 rækker før 2026-10-26), og tracker-Company-celler med et kildenavn ("hh" — 123 rækker) eller en rolletitel (14 rækker) opløst til arbejdsgiveren fra deres rapports H1. Dry-run først; apply rører kun de navngivne celler, kirurgisk pr. linje.
+- **Permissions-Policy-header** — `camera=(), microphone=(), geolocation=(), payment=(), usb=()`: de flader denne app aldrig bruger, nægtes eksplicit (QA 2026-11-04).
+
+### Noter
+
+- **Bevidst ikke i denne udgivelse (P2/P3 af fix-programmet 2026-11-04):** help-guidens `{{t:key}}` placeholder-mekanisme og deep-link-etiketlokaliseringen (CAR-107-haler), dashboard-glossarsvæbet (CAR-108-hale), kort-aggregaterne + hh.ru-områdegeokodning (CAR-105), tracker-header-menuen til destruktive operationer (CAR-117-hale), site-header-blur + copy feedback (CAR-132/141-haler), README ar/pl/uk/vi-paritet og per-locale-ordbogsstykkerne (CAR-104-hale). De er afgrænsede og i kø — denne udgivelse leverer det obligatoriske P0+P1-sæt.
+- Prod-datamigrationerne (rapportdatoer, tracker-virksomheder, score-backfill) er EJERENS HANDLINGER: kør de nye runners' dry-run, gennemgå, og apply derefter — værktøjet skibes her, dataændringerne kører ikke automatisk.
+- v1.267.0-taget peger fortsat på det røde merge-commit — ikke repointet; v1.267.1/1.267.2/1.268.0 er deploy-køretøjerne.
+
+- Test 7395 → **7488**; dækning 98.49 linje / 90.31 gren.
+
 ## [1.267.2] — 2026-11-04
 
 ### Rettet

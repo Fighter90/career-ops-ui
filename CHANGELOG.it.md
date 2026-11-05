@@ -2,6 +2,24 @@
 
 > Questo changelog contiene ora la cronologia completa delle versioni. Le voci pubblicate prima della localizzazione italiana (v1.85.0) compaiono sotto nell'originale inglese — traduzione in attesa; il riferimento resta [🇬🇧 CHANGELOG.md](CHANGELOG.md).
 
+## [1.268.0] — 2026-11-05
+
+### Modificato
+
+- **Evaluate è ora una pipeline a due passi (CAR-229)** — la regressione di produzione del 2026-11-04 ha mostrato lo stesso JD sintetico valutato 1.0–4.0 a seconda della lingua del report, e il blocco macchina presente solo in 8 delle 17 locale. Il contratto ora è: (1) un passo SCORING legge il contesto e il JD ed emette SOLO un JSON canonico in inglese (company, role, archetype, legitimacy, score, punteggi per blocco A–G + summaries) a una temperature 0.1 fissata con un orologio di 120 s; (2) un passo RENDER elabora le sette sezioni A–G nella lingua del report — vietato toccare i numeri, vietato scrivere l'header o qualsiasi blocco macchina. Il SERVER assembla il report: l'header `# Evaluation:`, le righe `**Date:**/**Score:**/**Legitimacy:**`, il blocco ---SCORE_SUMMARY--- e il blocco macchina ```yaml sono tutti costruiti lato server dal JSON di scoring — ogni locale spedisce la stessa superficie macchina per costruzione, e un modello che «corregge» un numero nella prosa non può spostare i valori canonici. Il payload del client mantiene il blocco macchina (```yaml) e rimuove il blocco summary.
+- **Avanzamento delle fasi di Evaluate nella UI (CAR-230)** — /api/evaluate trasmette in streaming fasi SSE (scoring → rendering → assembling) invece di un unico POST silenzioso; la riga di caricamento cita la latenza REALE (p50/p90 dal diario di utilizzo — le righe llm-usage e readUsage ora portano durationMs; /api/usage espone llmLatency) invece della copia superata «2–4 min». Il passo di scoring riprova una volta una risposta non JSON; un render privo di sezioni dopo un riprova ripiega su un corpo costruito lato server (warning conservato, la superficie macchina resta completa).
+- **Cache dei prompt per ogni locale (CAR-111)** — entrambi i passi condividono UN header di istruzioni inglese stabile al byte (il bundle di contesto + le istruzioni condivise aprono ogni prompt, identico al byte su tutte le 19 locale); la direttiva di lingua, il JSON di scoring e il JD viaggiano nella coda non in cache. Un test fissa prefissi stabili identici al byte su tutte le locale — il cache miss per locale (cached_tokens 0 su non-en) è strutturalmente eliminato.
+- **Runner di migrazione dati (CAR-232/233)** — `POST /api/runners/report-dates` e `POST /api/runners/company-fix` (dry-run di default, apply con un backup .bak con timestamp): date degli header dei report riconciliate con la data del nome file (368 righe precedenti al 2026-10-26), e celle Company del tracker che contenevano un nome di sorgente («hh» — 123 righe) o un titolo di ruolo (14 righe) risolte al datore di lavoro dall'H1 del loro report. Prima il dry-run; l'apply tocca solo le celle nominate, chirurgicamente riga per riga.
+- **Header Permissions-Policy** — `camera=(), microphone=(), geolocation=(), payment=(), usb=()`: le superfici che questa app non usa mai sono negate esplicitamente (QA 2026-11-04).
+
+### Note
+
+- **Deliberatamente non in questa versione (P2/P3 del programma di fix del 2026-11-04):** il meccanismo di placeholder `{{t:key}}` della guida e la localizzazione delle etichette dei deep-link (code del CAR-107), la pulizia del glossario della dashboard (coda del CAR-108), gli aggregati della mappa + il geocoding di area di hh.ru (CAR-105), il menu header del tracker per le operazioni distruttive (coda del CAR-117), il blur dell'header del sito + il copy feedback (code del CAR-132/141), la parità README ar/pl/uk/vi e i pezzi di dizionario per locale (coda del CAR-104). Sono in scope e in coda — questa versione spedisce l'insieme obbligatorio P0+P1.
+- Le migrazioni dati di produzione (date dei report, aziende del tracker, backfill dei punteggi) sono AZIONI DEL PROPRIETARIO: eseguire il dry-run dei nuovi runner, rivedere, poi apply — gli attrezzi arrivano qui, le modifiche ai dati non girano da sole.
+- Il tag v1.267.0 resta puntato al commit di merge rosso — non ripuntato; v1.267.1/1.267.2/1.268.0 sono i veicoli di deploy.
+
+- Test 7395 → **7488**; copertura 98.49 riga / 90.31 ramo.
+
 ## [1.267.2] — 2026-11-04
 
 ### Corretto

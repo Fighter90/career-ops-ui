@@ -196,7 +196,7 @@ Jeśli coś jest czerwone, strona podaje dokładny plik lub zmienną środowisko
 naprawienia. Nie kontynuuj, dopóki Health nie jest zielone.
 
 **Krok 3 — Kliknij `⚒ App settings` w pasku bocznym.** Trafiasz na zakładkę
-**API keys & runtime**.
+**{{t:config.tabApi}}**.
 - Wklej `ANTHROPIC_API_KEY` (preferowany — lepsza długa ocena)
   i/lub `GEMINI_API_KEY`. Uzyskaj klucze z
   <https://console.anthropic.com/settings/keys> lub
@@ -398,7 +398,7 @@ do tej strony).
 
 Trzy zakładki:
 
-1. **API keys & runtime** — formularz pól strukturalnych nad plikiem `.env`
+1. **{{t:config.tabApi}}** — formularz pól strukturalnych nad plikiem `.env`
    projektu nadrzędnego (ten sam plik, który skrypty Node career-ops odczytują przy
    starcie). Zgrupowane: API keys / Runtime / Regional sources. Zakładka
    udostępnia również selektory modeli na dostawcę — `OPENAI_MODEL`
@@ -422,7 +422,7 @@ Zapis w dowolnej zakładce propaguje natychmiast — bez restartu serwera.
 
 **Konfigurowanie dostawcy LLM (krok po kroku).** ⚡ Ocena na żywo w interfejsie webowym działa *headless* i używa jednego klucza API. Działa przez „OR" — ustaw **którykolwiek jeden** z nich i po prostu działa; przy kilku ustawionych, `auto` preferuje je w tej kolejności: Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama → BytePlus Ark → Volcengine Ark. (sam career-ops jest agnostyczny co do CLI — uruchamiasz go również wewnątrz Claude Code, Cursor, Codex, Gemini, OpenCode, Antigravity, Grok Build, Qwen, Copilot lub Kimi; to jest oddzielne od tego klucza headless.)
 
-1. Otwórz `#/config` → zakładkę **API keys & runtime**.
+1. Otwórz `#/config` → zakładkę **{{t:config.tabApi}}**.
 2. Wybierz dostawcę w **`LLM_PROVIDER`**: `auto` (użyj dowolnego ustawionego klucza) lub wymuś jeden z `claude` / `gemini` / `openai` / `qwen`.
 3. Wypełnij klucz + model dla wybranego dostawcy:
    - **Anthropic** — ustaw `ANTHROPIC_API_KEY` (console.anthropic.com), opcjonalnie `ANTHROPIC_MODEL` (domyślnie `claude-sonnet-4-6`).
@@ -822,7 +822,7 @@ ostrzeże Cię o konflikcie.
 
 ### Konfiguracja rosyjskich portali — szczegółowy przewodnik
 
-v1.29.0 dostarcza 5 adapterów w języku rosyjskim. Dwa nie potrzebują niczego poza domyślnym UA (`habr-career`, scraping HTML; `trudvsem`, rządowe API open-data — bez klucza, bez blokady IP). Dwa to scrapery HTML portali technicznych (`getmatch`, `geekjob` — też bez klucza). Jeden to kanoniczne API hh.ru, które może zwracać 403 z nie-rosyjskich IP, chyba że ustawisz zmienną środowiskową `HH_USER_AGENT` przez **App settings → API keys & runtime** (lub uruchomisz serwer z rosyjskiego IP / węzła wyjściowego VPN).
+v1.29.0 dostarcza 5 adapterów w języku rosyjskim. Dwa nie potrzebują niczego poza domyślnym UA (`habr-career`, scraping HTML; `trudvsem`, rządowe API open-data — bez klucza, bez blokady IP). Dwa to scrapery HTML portali technicznych (`getmatch`, `geekjob` — też bez klucza). Jeden to kanoniczne API hh.ru, które może zwracać 403 z nie-rosyjskich IP, chyba że ustawisz zmienną środowiskową `HH_USER_AGENT` przez **App settings → {{t:config.tabApi}}** (lub uruchomisz serwer z rosyjskiego IP / węzła wyjściowego VPN).
 
 #### Inwentarz źródeł
 
@@ -1521,11 +1521,10 @@ retrospekcje **Patterns**. Każdy opakowuje konkretny szablon `modes/<slug>.md`:
 
 ### Wspólna struktura
 
-Każda strona ma mały formularz (pola są specyficzne dla trybu), przycisk **▶
-Generate prompt** (ręczny) i — gdy obecny jest klucz Anthropic lub Gemini —
+Każda strona ma mały formularz (pola są specyficzne dla trybu), przycisk **{{t:deep.run}}** (ręczny) i — gdy obecny jest klucz Anthropic lub Gemini —
 przycisk **⚡ Uruchom na żywo**, który awansuje do podstawowego.
 
-Kliknięcie **▶ Generate prompt** zwraca zmontowany prompt z Twoimi
+Kliknięcie **{{t:deep.run}}** zwraca zmontowany prompt z Twoimi
 wartościami formularza JSON-ifikowanymi do bloku `User-supplied context:`,
 po którym następuje verbatim szablon `modes/<slug>.md`. Kopiuj i wklej
 do wybranego przez Ciebie LLM.
@@ -2214,7 +2213,7 @@ Kliknij **Save two-pager**, aby zapisać. Plik jest zapisywany do **warstwy uży
 
 ### Asystent wypełniania AI
 
-Nie masz pewności, jak to ująć? Kliknij **✨ AI fill assistant**. Buduje on gotowy do uruchomienia prompt (w formacie Mnookina, z wplecionym twoim CV i profilem) i pokazuje go w oknie dialogowym. Uruchom ten prompt w dowolnym LLM, a następnie wklej powstałe pola YAML z powrotem do formularza. Asystent korzysta wyłącznie z **twojego własnego** CV i profilu — nigdy nie wymyśla o tobie faktów, a ten przycisk nie wykonuje żadnego wywołania API na żywo.
+Nie masz pewności, jak to ująć? Kliknij **{{t:twoPager.aiFill}}**. Buduje on gotowy do uruchomienia prompt (w formacie Mnookina, z wplecionym twoim CV i profilem) i pokazuje go w oknie dialogowym. Uruchom ten prompt w dowolnym LLM, a następnie wklej powstałe pola YAML z powrotem do formularza. Asystent korzysta wyłącznie z **twojego własnego** CV i profilu — nigdy nie wymyśla o tobie faktów, a ten przycisk nie wykonuje żadnego wywołania API na żywo.
 
 ### Ocena dopasowania do tego, czego chcesz
 

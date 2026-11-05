@@ -19,6 +19,7 @@
 import { cpSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync, existsSync } from 'node:fs';
 import { dirname, join, resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { createContext, runInContext } from 'node:vm';
 import {
   PAGE_BYTES,
   buildMonthIndex,
@@ -78,13 +79,61 @@ function rewriteLinks(md) {
   });
 }
 
+// --- 3b. help {{t:key}} UI-label placeholders (CAR-107) ----------------------
+//
+// docs/help bundles reference UI labels as {{t:key}} instead of hard-coded
+// EN strings, so the in-app guide renders the ACTIVE locale's label. The
+// site resolves them at sync time: a key present in the site's own i18n
+// file (src/i18n/<locale>.json) wins; otherwise the label falls back to the
+// app's EN dict (the single source of truth). A key with no EN value is a
+// hard build failure — cvstart.org must never print a raw placeholder.
+const HELP_PLACEHOLDER_RE = /\{\{t:([A-Za-z0-9_.-]+)\}\}/g;
+// Help-file stem → site i18n JSON name (ko-KR.md reads ko.json).
+const SITE_JSON_NAMES = { 'ko-KR': 'ko' };
+const SITE_I18N_DIR = join(SITE, 'src', 'i18n');
+
+let _enLabels = null;
+function enLabel(key) {
+  if (!_enLabels) {
+    const ctx = createContext({ window: {} });
+    runInContext(readFileSync(join(ROOT, 'public', 'js', 'lib', 'locales', 'i18n-dict.en.js'), 'utf8'), ctx);
+    runInContext(readFileSync(join(ROOT, 'public', 'js', 'lib', 'locales', 'i18n-dict.aliases.js'), 'utf8'), ctx);
+    const en = ctx.window.__I18N_DICT_EN || {};
+    const aliases = ctx.window.__I18N_ALIASES || {};
+    _enLabels = (k) => en[k] ?? en[aliases[k]] ?? null;
+  }
+  return _enLabels(key);
+}
+
+function siteLabel(stem, key) {
+  const name = SITE_JSON_NAMES[stem] ?? stem;
+  const p = join(SITE_I18N_DIR, `${name}.json`);
+  if (existsSync(p)) {
+    try {
+      const json = JSON.parse(readFileSync(p, 'utf8'));
+      if (typeof json[key] === 'string' && json[key].length > 0) return json[key];
+    } catch { /* malformed site locale file → EN fallback below */ }
+  }
+  return enLabel(key);
+}
+
+function resolveHelpPlaceholders(md, stem) {
+  return md.replace(HELP_PLACEHOLDER_RE, (raw, key) => {
+    const v = siteLabel(stem, key);
+    if (typeof v !== 'string' || v.length === 0) {
+      fail(`help guide ${stem}.md: {{t:${key}}} has no EN dict value — add the key to public/js/lib/locales/i18n-dict.en.js`);
+    }
+    return v;
+  });
+}
+
 // The site page supplies its own <h1> (HelpArticle.astro); the guide's title
 // line would render a second one (CAR-132 — exactly one h1 per page).
 // stripLeadingH1 comes from scripts/lib/changelog-split.mjs (behavior-tested).
 
 for (const f of helpFiles) {
   const md = readFileSync(join(helpSrc, f), 'utf8');
-  writeFileSync(join(helpDst, f), rewriteLinks(stripLeadingH1(md)));
+  writeFileSync(join(helpDst, f), rewriteLinks(stripLeadingH1(resolveHelpPlaceholders(md, f.replace(/\.md$/, '')))));
 }
 console.log(`[sync-assets] ${helpFiles.length} help guides -> src/content/help/`);
 

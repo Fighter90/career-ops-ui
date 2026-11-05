@@ -117,6 +117,38 @@ window.Router = (function () {
     if (first) first.classList.add('page-enter');
   }
 
+  // P3.3 (route-change overlay hygiene) — a tiny cleanup registry the router
+  // runs on every actual ROUTE change. Overlays live in top-level elements
+  // OUTSIDE #content, so a navigation that happens while one is open used to
+  // leave it hanging over the new page (the QA-reported "Preview & export
+  // modal over a different page" bug class). The shared overlay closer from
+  // api.js is auto-registered below; future non-modal surfaces can subscribe
+  // the same way instead of each adding its own hashchange listener.
+  //
+  // Scope: hooks run on a route-NAME change only. The language-switch
+  // same-route re-render (Router.render() from a view) must not slam dialogs
+  // shut, and the first paint has nothing open. Errors in a hook are logged
+  // and contained — cleanup must never break navigation.
+  const routeChangeHooks = [];
+  function onRouteChange(fn) {
+    if (typeof fn !== 'function') return () => {};
+    routeChangeHooks.push(fn);
+    return () => {
+      const i = routeChangeHooks.indexOf(fn);
+      if (i >= 0) routeChangeHooks.splice(i, 1);
+    };
+  }
+  function runRouteChangeHooks() {
+    for (const fn of routeChangeHooks) {
+      try { fn(); } catch (err) { console.error(err); }
+    }
+  }
+  // api.js loads BEFORE router.js (index.html script order), so the shared
+  // closer exists by the time this module body runs.
+  if (window.UI && typeof window.UI.closeOverlays === 'function') {
+    onRouteChange(() => window.UI.closeOverlays());
+  }
+
   async function render() {
     // A bare in-page anchor (e.g. the skip link's '#content') is not an SPA
     // route: the browser scrolls natively and NO re-render must happen —
@@ -129,6 +161,11 @@ window.Router = (function () {
     const { name, rawName, params } = current();
     const routeChanged = prevRouteName !== null && prevRouteName !== name;
     prevRouteName = name;
+    // P3.3 — overlays that outlive their route: run the cleanup registry
+    // BEFORE the view underneath is replaced (route change only — see the
+    // registry note above). Closing the overlay lets the focus management
+    // below own focus from here on.
+    if (routeChanged) runRouteChangeHooks();
 
     document.querySelectorAll('.nav-item').forEach((a) => {
       // Highlight nav match against EITHER the alias (rawName) or the
@@ -219,5 +256,5 @@ window.Router = (function () {
     return wrap;
   });
 
-  return { register, render, go, current };
+  return { register, render, go, current, onRouteChange };
 })();

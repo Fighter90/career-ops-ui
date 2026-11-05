@@ -276,30 +276,36 @@ test('bundleProjectContext states the output language BEFORE the inlined files (
   assert.ok(P.bundleProjectContext({ modeSlugs: ['oferta'], lang: 'en' }).startsWith('<project_context>'));
 });
 
-test('evaluation routes pass the language to the context and a locale-aware timeout to the provider', () => {
+test('evaluation routes pass the language to the render step and a locale-aware timeout to the provider', () => {
   const llm = readFileSync(new URL('../server/lib/routes/llm.mjs', import.meta.url), 'utf8');
   const ap = readFileSync(new URL('../server/lib/routes/auto-pipeline.mjs', import.meta.url), 'utf8');
-  for (const src of [llm, ap]) {
-    const calls = src.match(/bundleProjectContext\(\{ modeSlugs: \['_shared', 'oferta'\][^)]*\)/g) || [];
-    assert.ok(calls.length >= 1);
-    for (const c of calls) assert.match(c, /\blang\b/, c);
-  }
+  // v1.268.0 (CAR-229/230) — the two-step orchestration moved to
+  // eval-two-step.mjs: the context bundle is built there (locale-neutral,
+  // byte-stable so the shared prefix cache pays once — the `lang` key is
+  // pinned to 'en' on purpose) and the TARGET language rides the render
+  // prompt parts (`Target language:` directive, locale-aware skeleton).
+  const two = readFileSync(new URL('../server/lib/eval-two-step.mjs', import.meta.url), 'utf8');
+  const calls = two.match(/bundleProjectContext\(\{ modeSlugs: \['_shared', 'oferta'\][^)]*\)/g) || [];
+  assert.ok(calls.length >= 1);
+  for (const c of calls) assert.match(c, /\blang\b/, c);
+  assert.match(two, /buildRenderPromptParts\(jd, lang/);
+  const scoring = readFileSync(new URL('../server/lib/eval-scoring.mjs', import.meta.url), 'utf8');
+  assert.match(scoring, /Target language: \$\{localeLabel\(lang\)\}/);
   // CAR-147/CAR-218 — the evaluate ceiling is a pure function of the locale
-  // and ONE ceiling for every locale since CAR-218 (480 s, EVAL_TIMEOUT_MS;
-  // the CAR-147 300/480 split is folded into it). BOTH files thread
-  // evalTimeoutMs(lang) into their provider/subprocess call sites.
-  // CAR-174 — the locale split survives only in the output-token budget:
-  // evalMaxTokens(lang) (16384 base, 32768 token-dense) at every in-process
-  // call site.
+  // and ONE ceiling for every locale since CAR-218 (480 s, EVAL_TIMEOUT_MS).
+  // The gemini-eval.mjs subprocess keeps the locale-aware clock at BOTH of
+  // its call sites (the in-process cascade carries its own bounded budgets).
   assert.match(llm, /EVAL_TIMEOUT_MS = 480_000/);
   assert.match(llm, /export function evalTimeoutMs\(lang\)/);
   assert.match(llm, /export function evalMaxTokens\(lang\)/);
+  assert.match(llm, /evalTimeoutMs\(lang\)/);
   assert.match(ap, /evalTimeoutMs\(lang\)/);
-  assert.match(ap, /evalMaxTokens\(lang\)/);
-  // FULL-M5 — the two per-provider evaluate branches (Anthropic + tail) merged
-  // into ONE runActiveProvider call site; it still carries both knobs.
-  assert.equal((llm.match(/maxTokens: evalMaxTokens\(lang\)/g) || []).length, 1);
-  assert.match(llm, /maxTokens: evalMaxTokens\(lang\),\s*timeoutMs: evalTimeoutMs\(lang\),/);
+  // The in-process render step keeps the 16384-token output ceiling and the
+  // 300 s clock — the seven-section body is bounded by construction, so the
+  // per-locale evalMaxTokens split no longer applies there (CAR-174's
+  // ceiling lives on in the exported pure function + the subprocess path).
+  assert.match(two, /maxTokens: 16384/);
+  assert.match(two, /timeoutMs: RENDER_TIMEOUT_MS/);
 });
 
 test('the language reminder keeps quotes and names in English but nothing else (hi code-switching)', () => {

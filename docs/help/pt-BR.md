@@ -208,7 +208,7 @@ Se algo estiver vermelho, a página informa o arquivo ou variável de
 ambiente exata para corrigir. Não prossiga até Health estar verde.
 
 **Passo 3 — Clique em `⚒ App settings` na barra lateral.** Você cai
-na aba **API keys & runtime**.
+na aba **{{t:config.tabApi}}**.
 - Cole `ANTHROPIC_API_KEY` (preferida — melhor pontuação de
   long-form) e/ou `GEMINI_API_KEY`. Obtenha chaves em
   <https://console.anthropic.com/settings/keys> ou
@@ -409,7 +409,7 @@ então explorar não custa nada. **Sem API key?** Modo manual: passos 3–5 cola
 
 Duas abas:
 
-1. **API keys & runtime** — edita o `.env` do projeto pai a partir
+1. **{{t:config.tabApi}}** — edita o `.env` do projeto pai a partir
    do navegador (mesmo arquivo que os scripts Node do career-ops leem
    na inicialização). A aba também oferece seletores de modelo por
    provedor — `OPENAI_MODEL` (OpenAI/Codex) ao lado de
@@ -422,7 +422,7 @@ servidor.
 
 **Configurar seu provedor LLM (passo a passo).** A ⚡ avaliação ao vivo do web UI roda *headless* e usa uma chave de API. Funciona via "OR" — defina **qualquer uma** destas e já funciona; com várias definidas, `auto` as prefere nesta ordem: Anthropic → Gemini → OpenAI → Qwen → OpenRouter → GitHub Models → Hermes → DeepSeek → GLM (Z.ai) → Kimi (Moonshot) → MiniMax → Mistral → Grok (xAI) → Together → Fireworks → Ollama → BytePlus Ark → Volcengine Ark. (o próprio career-ops é agnóstico de CLI — você também o roda dentro de Claude Code, Cursor, Codex, Gemini, OpenCode, Antigravity, Grok Build, Qwen, Copilot ou Kimi; isso é separado desta chave headless.)
 
-1. Abra `#/config` → a aba **API keys & runtime**.
+1. Abra `#/config` → a aba **{{t:config.tabApi}}**.
 2. Escolha seu provedor em **`LLM_PROVIDER`**: `auto` (usa a chave que estiver definida), ou force um com `claude` / `gemini` / `openai` / `qwen`.
 3. Preencha a chave + modelo do provedor que você escolheu:
    - **Anthropic** — defina `ANTHROPIC_API_KEY` (console.anthropic.com), opcionalmente `ANTHROPIC_MODEL` (default `claude-sonnet-4-6`).
@@ -791,7 +791,7 @@ console te avisará sobre o conflito.
 
 ### Configurar os portais russos — guia detalhado
 
-v1.29.0 inclui 5 adaptadores russos. Dois não precisam de nada além do UA padrão (`habr-career`, scraping HTML; `trudvsem`, API open-data do governo — sem key, sem barreira geográfica). Dois são scrapers HTML de portais técnicos (`getmatch`, `geekjob` — também sem key). Um é a API canônica do hh.ru, que pode retornar 403 a partir de IPs fora da Rússia, a menos que você configure a variável `HH_USER_AGENT` via **App settings → API keys & runtime** (ou rode o servidor a partir de IP russo / VPN).
+v1.29.0 inclui 5 adaptadores russos. Dois não precisam de nada além do UA padrão (`habr-career`, scraping HTML; `trudvsem`, API open-data do governo — sem key, sem barreira geográfica). Dois são scrapers HTML de portais técnicos (`getmatch`, `geekjob` — também sem key). Um é a API canônica do hh.ru, que pode retornar 403 a partir de IPs fora da Rússia, a menos que você configure a variável `HH_USER_AGENT` via **App settings → {{t:config.tabApi}}** (ou rode o servidor a partir de IP russo / VPN).
 
 #### Inventário de fontes
 
@@ -1514,11 +1514,11 @@ específico `modes/<slug>.md`:
 ### Forma compartilhada
 
 Cada página tem um pequeno formulário (os campos são específicos do
-mode), um botão **▶ Generate prompt** (manual), e — quando uma chave
+mode), um botão **{{t:deep.run}}** (manual), e — quando uma chave
 Anthropic ou Gemini está presente — um botão **⚡ Executar ao vivo** que
 sobe a primário.
 
-Clicar em **▶ Generate prompt** retorna o prompt montado com seus
+Clicar em **{{t:deep.run}}** retorna o prompt montado com seus
 valores do formulário JSON-stringified num bloco `User-supplied
 context:`, seguido pelo template `modes/<slug>.md` verbatim. Copie e
 cole no LLM da sua escolha.

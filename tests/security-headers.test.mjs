@@ -61,6 +61,9 @@ test('baseline headers present on /', async () => {
   assert.equal(h['x-content-type-options'], 'nosniff');
   assert.equal(h['x-frame-options'], 'DENY');
   assert.equal(h['referrer-policy'], 'same-origin');
+  // v1.268.0 (QA 2026-11-04) — Permissions-Policy denies the surfaces this
+  // app never uses; browsers stop probing for them.
+  assert.equal(h['permissions-policy'], 'camera=(), microphone=(), geolocation=(), payment=(), usb=()');
 });
 
 test('baseline headers present on /api/health', async () => {

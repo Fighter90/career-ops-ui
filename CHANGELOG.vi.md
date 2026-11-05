@@ -6,6 +6,24 @@ Bản dịch: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 
 ---
 
+## [1.268.0] — 2026-11-05
+
+### Đã thay đổi
+
+- **Evaluate giờ là pipeline hai bước (CAR-229)** — hồi quy production ngày 2026-11-04 cho thấy cùng một JD tổng hợp chấm điểm 1.0–4.0 tùy ngôn ngữ báo cáo, và khối máy chỉ có mặt ở 8 trên 17 locale. Hợp đồng bây giờ: (1) bước SCORING đọc ngữ cảnh và JD và chỉ xuất ra một JSON tiếng Anh chuẩn (company, role, archetype, legitimacy, score, điểm A–G theo từng khối + summaries) ở temperature 0.1 được ghim với đồng hồ 120 s; (2) bước RENDER triển khai bảy mục A–G bằng ngôn ngữ của báo cáo — cấm đụng vào số, cấm viết header hay bất kỳ khối máy nào. SERVER là nơi lắp ráp báo cáo: header `# Evaluation:`, các dòng `**Date:**/**Score:**/**Legitimacy:**`, khối ---SCORE_SUMMARY--- và khối máy ```yaml đều được xây phía server từ JSON scoring — mọi locale mặc nhiên có cùng bề mặt máy, và một mô hình «sửa» số trong văn xuôi không thể dịch chuyển giá trị chuẩn. Payload của client giữ khối máy (```yaml) và bỏ khối summary.
+- **Tiến độ các giai đoạn Evaluate trong UI (CAR-230)** — /api/evaluate stream các giai đoạn SSE (scoring → rendering → assembling) thay vì một POST im lặng; dòng tải dẫn độ trễ THỰC (p50/p90 từ nhật ký sử dụng — các dòng llm-usage và readUsage giờ mang durationMs; /api/usage lộ llmLatency) thay vì bản sao cũ «2–4 phút». Bước scoring thử lại câu trả lời không JSON một lần; render còn thiếu mục sau lần thử lại rơi về phần thân dựng sẵn phía server (warning được giữ, bề mặt máy vẫn đầy đủ).
+- **Prompt cache cho mọi locale (CAR-111)** — cả hai bước dùng chung MỘT header hướng dẫn tiếng Anh ổn định theo byte (gói ngữ cảnh + hướng dẫn chung mở đầu mỗi prompt, giống hệt nhau từng byte trên cả 19 locale); chỉ thị ngôn ngữ, JSON scoring và JD đi trên phần đuôi không cache. Một test ghim các tiền tố ổn định trùng khít từng byte trên mọi locale — cache miss theo locale (cached_tokens 0 trên non-en) bị loại bỏ về mặt cấu trúc.
+- **Các runner di trú dữ liệu (CAR-232/233)** — `POST /api/runners/report-dates` và `POST /api/runners/company-fix` (mặc định dry-run, apply kèm bản .bak sao lưu có dấu thời gian): ngày trong header báo cáo được đưa về khớp ngày trong tên tệp (368 dòng trước 2026-10-26), và ô Company của tracker đang chứa tên nguồn («hh» — 123 dòng) hoặc chức danh (14 dòng) được giải về nhà tuyển dụng từ H1 của báo cáo tương ứng. Dry-run trước; apply chỉ đụng vào các ô được gọi tên, chính xác từng dòng.
+- **Header Permissions-Policy** — `camera=(), microphone=(), geolocation=(), payment=(), usb=()`: những bề mặt ứng dụng này không bao giờ dùng bị từ chối rõ ràng (QA 2026-11-04).
+
+### Ghi chú
+
+- **Cố ý không có trong bản phát hành này (P2/P3 của chương trình sửa lỗi 2026-11-04):** cơ chế placeholder `{{t:key}}` của hướng dẫn trợ giúp và việc bản địa hóa nhãn deep-link (đuôi CAR-107), đợt dọn từ điển thuật ngữ của dashboard (đuôi CAR-108), tổng hợp bản đồ + geocoding khu vực hh.ru (CAR-105), menu header của tracker cho các thao tác phá hủy (đuôi CAR-117), mờ header của site + phản hồi sao chép (đuôi CAR-132/141), tính ngang bằng README ar/pl/uk/vi, và các mảnh từ điển theo locale (đuôi CAR-104). Chúng đã có phạm vi và xếp hàng — bản phát hành này giao bộ P0+P1 bắt buộc.
+- Các di trú dữ liệu production (ngày báo cáo, công ty trong tracker, backfill điểm số) là VIỆC CỦA CHỦ SỞ HỮU: chạy dry-run của các runner mới, xem lại, rồi apply — công cụ được giao ở đây, thay đổi dữ liệu không chạy tự động.
+- Tag v1.267.0 vẫn chỉ vào commit merge màu đỏ — không trỏ lại; v1.267.1/1.267.2/1.268.0 là phương tiện deploy.
+
+- Kiểm thử 7395 → **7488**; độ phủ 98.49 dòng / 90.31 nhánh.
+
 ## [1.267.2] — 2026-11-04
 
 ### Đã sửa

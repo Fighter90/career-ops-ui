@@ -122,10 +122,16 @@ test('llm.mjs delegates the cascade to llm-dispatch (FULL-M5): one gate, no loca
   assert.ok(!src.includes("from '../openai.mjs'"), 'llm.mjs must not import provider runners — the dispatch owns the roster');
   assert.ok(!src.includes('providerOrder'), 'llm.mjs must not re-derive provider order');
   // Delegation: the evaluate Gemini subprocess intercepts through the SHARED
-  // gate; every live run goes through runActiveProvider (evaluate + deep + mode).
+  // gate; deep + mode run through runActiveProvider here, and the evaluate
+  // cascade lives in eval-two-step.mjs (v1.268.0 CAR-229: scoring + render
+  // are two runActiveProvider calls behind runTwoStepEvaluation).
   assert.match(src, /resolveProvider\(\)/, 'the Gemini subprocess must be intercepted via the shared resolveProvider gate');
-  assert.equal((src.match(/await runActiveProvider\(/g) || []).length, 3,
-    'evaluate + deep + mode must each run through the shared cascade');
+  assert.equal((src.match(/await runActiveProvider\(/g) || []).length, 2,
+    'deep + mode must each run through the shared cascade (evaluate moved to the two-step helper)');
+  const two = readFileSync(resolve(dirname(fileURLToPath(import.meta.url)), '..', 'server', 'lib', 'eval-two-step.mjs'), 'utf8');
+  assert.match(two, /runTwoStepEvaluation/, 'the helper file exists');
+  assert.equal((two.match(/await runActiveProvider\(/g) || []).length, 2,
+    'the two-step evaluate runs scoring + render through the shared cascade');
 });
 import { readFileSync } from 'node:fs';
 import { fileURLToPath } from 'node:url';

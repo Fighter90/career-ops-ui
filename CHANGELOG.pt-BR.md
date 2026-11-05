@@ -8,6 +8,24 @@ Traduções: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.e
 
 ---
 
+## [1.268.0] — 2026-11-05
+
+### Alterado
+
+- **Evaluate agora é um pipeline de dois passos (CAR-229)** — a regressão de produção de 2026-11-04 mostrou o mesmo JD sintético pontuando 1.0–4.0 dependendo do idioma do relatório, e o bloco de máquina presente em apenas 8 de 17 locales. O contrato agora é: (1) um passo SCORING lê o contexto e o JD e produz APENAS um JSON canônico em inglês (company, role, archetype, legitimacy, score, pontuações por bloco A–G + summaries) com temperature 0.1 fixada e um relógio de 120 s; (2) um passo RENDER elabora as sete seções A–G no idioma do relatório — proibido tocar nos números, proibido escrever o cabeçalho ou qualquer bloco de máquina. O SERVIDOR monta o relatório: o cabeçalho `# Evaluation:`, as linhas `**Date:**/**Score:**/**Legitimacy:**`, o bloco ---SCORE_SUMMARY--- e o bloco de máquina ```yaml são todos construídos no servidor a partir do JSON de scoring — cada locale entrega a mesma superfície de máquina por construção, e um modelo que «corrige» um número na prosa não consegue mover os valores canônicos. O payload do cliente mantém o bloco de máquina (```yaml) e descarta o bloco de summary.
+- **Progresso das etapas do Evaluate na UI (CAR-230)** — /api/evaluate transmite estágios SSE (scoring → rendering → assembling) em vez de um único POST silencioso; a linha de carregamento cita a latência REAL (p50/p90 do diário de uso — linhas do llm-usage e o readUsage agora carregam durationMs; /api/usage expõe llmLatency) em vez do texto defasado de «2–4 min». O passo de scoring tenta novamente uma resposta não JSON uma vez; um render sem seções após a nova tentativa recorre a um corpo construído no servidor (warning preservado, a superfície de máquina permanece completa).
+- **Cache de prompt para cada locale (CAR-111)** — ambos os passos compartilham UM cabeçalho de instruções em inglês estável byte a byte (o bundle de contexto + instruções compartilhadas abrem cada prompt, idêntico byte a byte em todos os 19 locales); a diretiva de idioma, o JSON de scoring e o JD seguem na cauda não cacheada. Um teste fixa prefixos estáveis idênticos byte a byte em todos os locales — o cache miss por locale (cached_tokens 0 em non-en) está estruturalmente eliminado.
+- **Runners de migração de dados (CAR-232/233)** — `POST /api/runners/report-dates` e `POST /api/runners/company-fix` (dry-run por padrão, apply com backup .bak com timestamp): datas dos cabeçalhos dos relatórios reconciliadas com a data do nome do arquivo (368 linhas anteriores a 2026-10-26), e células Company do tracker contendo um nome de fonte («hh» — 123 linhas) ou um título de papel (14 linhas) resolvidas para o empregador a partir do H1 do relatório delas. Dry-run primeiro; apply toca apenas as células nomeadas, cirurgicamente linha a linha.
+- **Header Permissions-Policy** — `camera=(), microphone=(), geolocation=(), payment=(), usb=()`: as superfícies que este app nunca usa ficam explicitamente negadas (QA 2026-11-04).
+
+### Notas
+
+- **Deliberadamente fora desta versão (P2/P3 do programa de correções de 2026-11-04):** o mecanismo de placeholders `{{t:key}}` do guia de ajuda e a localização dos rótulos de deep-link (caudas do CAR-107), a varredura do glossário do dashboard (cauda do CAR-108), os agregados do mapa + geocodificação de área do hh.ru (CAR-105), o menu de cabeçalho do tracker para operações destrutivas (cauda do CAR-117), o blur do cabeçalho do site + copy feedback (caudas do CAR-132/141), a paridade README ar/pl/uk/vi e os pedaços de dicionário por locale (cauda do CAR-104). Estão no escopo e na fila — esta versão entrega o conjunto obrigatório P0+P1.
+- As migrações de dados de produção (datas dos relatórios, empresas do tracker, backfill de pontuações) são AÇÕES DO PROPRIETÁRIO: rodar o dry-run dos novos runners, revisar e então aplicar — a ferramenta chega aqui, as mudanças de dados não rodam automaticamente.
+- A tag v1.267.0 continua apontando para o commit de merge vermelho — não é re-apontada; v1.267.1/1.267.2/1.268.0 são os veículos de deploy.
+
+- Testes 7395 → **7488**; cobertura 98.49 linha / 90.31 ramo.
+
 ## [1.267.2] — 2026-11-04
 
 ### Corrigido

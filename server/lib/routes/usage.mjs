@@ -16,6 +16,16 @@ export function registerUsageRoutes(app) {
   app.get('/api/usage', (_req, res) => {
     const rows = readUsage();
     const agg = aggregate(rows);
-    res.json({ ...agg, totalCalls: rows.length, prices: PRICES });
+    // v1.268.0 (CAR-230) — real evaluate latency: p50/p90 of the calls that
+    // carry a durationMs (every llm-dispatch call since this release). The
+    // evaluate view quotes it instead of the stale "2–4 min" copy.
+    const d = rows.map((r) => Number(r.durationMs)).filter((n) => Number.isFinite(n) && n > 0).sort((a, b) => a - b);
+    const pick = (q) => (d.length ? d[Math.min(d.length - 1, Math.floor(q * (d.length - 1)))] : null);
+    res.json({
+      ...agg,
+      totalCalls: rows.length,
+      llmLatency: d.length ? { n: d.length, p50Ms: pick(0.5), p90Ms: pick(0.9), maxMs: d[d.length - 1] } : null,
+      prices: PRICES,
+    });
   });
 }

@@ -6,6 +6,24 @@
 
 ---
 
+## [1.268.0] — 2026-11-05
+
+### மாற்றப்பட்டது
+
+- **Evaluate இப்போது இரு-படி pipeline (CAR-229)** — 2026-11-04 prod மீள்திருத்தம் அதே synthetic JD அறிக்கை மொழியைப் பொறுத்து 1.0–4.0 மதிப்பெண் பெறுவதையும், machine block 17 லோக்கேல்களில் 8-இல் மட்டுமே இருந்ததையும் காட்டியது. ஒப்பந்தம் இப்போது: (1) SCORING படி context மற்றும் JD-ஐப் படித்து ஒரு canonical English JSON மட்டுமே வெளியிடுகிறது (company, role, archetype, legitimacy, score, ஒவ்வொரு block-க்கும் A–G மதிப்பெண்கள் + summaries), pinned temperature 0.1 மற்றும் 120 s clock உடன்; (2) RENDER படி ஏழு A–G பிரிவுகளை அறிக்கை மொழியில் விரிவாக்குகிறது — எண்களைத் தொடுவது தடை, header அல்லது எந்த machine block-ஐயும் எழுதுவது தடை. அறிக்கையை SERVER கூட்டுகிறது: `# Evaluation:` header, `**Date:**/**Score:**/**Legitimacy:**` வரிகள், ---SCORE_SUMMARY--- block மற்றும் ```yaml machine block — அனைத்தும் scoring JSON-இலிருந்து server-side இல் உருவாக்கப்படுகின்றன — ஒவ்வொரு லோக்கேலும் கட்டமைப்பாலேயே அதே machine surface-ஐ அனுப்புகிறது, மேலும் உரையில் எண்ணை «திருத்தும்» ஒரு மாதிரி canonical மதிப்புகளை நகர்த்த முடியாது. Client payload machine block-ஐ (```yaml) வைத்திருக்கிறது, summary block-ஐ நீக்குகிறது.
+- **UI-இல் Evaluate படி முன்னேற்றம் (CAR-230)** — /api/evaluate ஒரு மௌன POST-க்குப் பதிலாக SSE படிகளை (scoring → rendering → assembling) stream செய்கிறது; loading வரி காலாவதியான «2–4 நிமிட» copy-க்குப் பதிலாக usage journal-இலிருந்து உண்மையான latency-ஐ (p50/p90) மேற்கோள் காட்டுகிறது — llm-usage வரிசைகளும் readUsage-உம் இப்போது durationMs சுமக்கின்றன; /api/usage llmLatency-ஐ வெளிப்படுத்துகிறது. Scoring படி non-JSON பதிலை ஒரு முறை retry செய்கிறது; retry-க்குப் பிறகு பிரிவுகள் இல்லாத render server-இல் உருவாக்கிய body-க்கு விழுகிறது (warning பேணப்படுகிறது, machine surface முழுமையாகவே இருக்கிறது).
+- **ஒவ்வொரு லோக்கேலுக்கும் prompt cache (CAR-111)** — இரண்டு படிகளும் ஒரே byte-stable English instruction header-ஐப் பங்கிடுகின்றன (context bundle + பகிர்வு instructions ஒவ்வொரு prompt-ஐயும் திறக்கின்றன, அனைத்து 19 லோக்கேல்களிலும் பைட்-வாரி ஒரே மாதிரி); locale directive, scoring JSON, JD காச் செய்யப்படாத வாலில் பயணிக்கின்றன. ஒரு சோதனை அனைத்து லோக்கேல்களிலும் பைட்-வாரி ஒரே மாதிரியான stable முன்னொட்டுகளை பின் செய்கிறது — லோக்கேல்-வாரி cache miss (non-en இல் cached_tokens 0) கட்டமைப்பு ரீதியாக நீக்கப்பட்டது.
+- **தரவு இடம்பெயர்வு runner-கள் (CAR-232/233)** — `POST /api/runners/report-dates`, `POST /api/runners/company-fix` (இயல்பான dry-run, timestamp இடப்பட்ட .bak காப்புடன் apply): அறிக்கை header தேதிகள் filename தேதியுடன் சீராக்கப்பட்டன (2026-10-26-க்கு முன் 368 வரிசைகள்), மேலும் source பெயரை («hh» — 123 வரிசைகள்) அல்லது பாத்திரத் தலைப்பை (14 வரிசைகள்) கொண்டிருந்த tracker Company செல்கள் தங்கள் அறிக்கையின் H1-இலிருந்து முதலாளியாக முடிவு செய்யப்பட்டன. முதலில் dry-run; apply பெயரிடப்பட்ட செல்களை மட்டுமே வரி-வாரி அறுவை அளவில் தொடுகிறது.
+- **Permissions-Policy header** — `camera=(), microphone=(), geolocation=(), payment=(), usb=()`: இந்தப் பயன்பாடு ஒருபோதும் பயன்படுத்தாத மேற்பரப்புகள் வெளிப்படையாக மறுக்கப்படுகின்றன (QA 2026-11-04).
+
+### குறிப்புகள்
+
+- **இந்த ரிலீஸில் வேண்டுமென்றே இல்லை (2026-11-04 fix திட்டத்தின் P2/P3):** help வழிகாட்டியின் `{{t:key}}` placeholder இயக்கமுறை, deep-link லேபிள் மொழியாக்கம் (CAR-107 வால்கள்), dashboard சொல்லாக்க சுத்தம் (CAR-108 வால்), map மொத்தங்கள் + hh.ru பகுதி geocoding (CAR-105), அழிவுச் செயல்பாடுகளுக்கான tracker header menu (CAR-117 வால்), site header blur + copy feedback (CAR-132/141 வால்கள்), README ar/pl/uk/vi சமமை, லோக்கேல்-வாரி dictionary துண்டுகள் (CAR-104 வால்). அவை scope செய்யப்பட்டு வரிசையில் உள்ளன — இந்த ரிலீஸ் கட்டாய P0+P1 set-ஐ அனுப்புகிறது.
+- Prod தரவு இடம்பெயர்வுகள் (அறிக்கை தேதிகள், tracker நிறுவனங்கள், score backfill) உரிமையாளர் செயல்கள்: புதிய runner-களின் dry-run-ஐ இயக்கவும், ஆய்வு செய்து, பிறகு apply செய்யவும் — கருவிகள் இங்கே வருகின்றன, தரவு மாற்றங்கள் தானாக இயங்காது.
+- v1.267.0 டேக் சிவப்பு merge commit-ஐ சுட்டிக்காட்டியே இருக்கிறது — மீண்டும் சுட்டப்படவில்லை; v1.267.1/1.267.2/1.268.0 deploy வாகனங்கள்.
+
+- சோதனைகள் 7395 → **7488**; கவரேஜ் 98.49 வரி / 90.31 கிளை.
+
 ## [1.267.2] — 2026-11-04
 
 ### சரி செய்யப்பட்டது
