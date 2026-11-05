@@ -96,6 +96,10 @@ test('CAR-130: a deployed origin shows generic wording, never the dev command', 
 
 test('CAR-130: the connection banner drops the dev command when deployed', async () => {
   const { w, banner, bannerMsg } = loadApi({ origin: 'https://resumecraft.ru', withBanner: true });
+  // CAR-244.4 — the banner is a last-resort signal: it rises on the SECOND
+  // consecutive transport failure, so fail twice to bring it up before
+  // asserting the message content.
+  await assert.rejects(() => w.API.post('/api/x', {}), () => true);
   await assert.rejects(() => w.API.post('/api/x', {}), () => true);
   assert.equal(banner.hidden, false, 'the lost-connection banner still shows');
   assert.match(bannerMsg.textContent, /Server is not responding\./);
@@ -106,6 +110,7 @@ test('CAR-130: the connection banner drops the dev command when deployed', async
 test('CAR-130: the connection banner keeps the dev command on loopback', async () => {
   const { w, bannerMsg } = loadApi({ origin: 'http://127.0.0.1:4317', withBanner: true });
   await assert.rejects(() => w.API.post('/api/x', {}), () => true);
+  await assert.rejects(() => w.API.post('/api/x', {}), () => true); // CAR-244.4 — second failure raises the banner
   assert.match(bannerMsg.textContent, /web-ui\/bin\/start\.sh/);
 });
 

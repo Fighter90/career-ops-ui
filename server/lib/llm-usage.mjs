@@ -25,6 +25,34 @@ import { priceFor } from './llm-pricing.mjs';
 
 const MAX_LINES = 50_000; // read cap — plenty of history without unbounded memory
 
+// CAR-240 — the evaluate two-step contract (CAR-229) reports per-step usage;
+// the journal keeps the steps so the spend is attributable to scoring vs
+// rendering. Bounded at 4 entries: the two-step pipeline has 2-3, and a
+// future step addition must not turn one line into an unbounded payload.
+const MAX_STEPS = 4;
+const STEP_KEYS = ['in', 'out', 'cached', 'cost', 'durationMs'];
+
+/** CAR-240 — sanitize one steps[] entry to the documented shape
+ *  ({ name, in, out, cached?, cost?, durationMs? }). Non-objects, entries
+ *  with no usable numbers, and unknown keys are dropped — never fabricated. */
+function sanitizeStep(raw) {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) return null;
+  const step = { name: String(raw.name || '').slice(0, 32) };
+  let any = false;
+  for (const k of STEP_KEYS) {
+    const n = Number(raw[k]);
+    if (Number.isFinite(n) && n >= 0) { step[k] = k === 'cost' ? n : Math.round(n); any = true; }
+  }
+  return any ? step : null;
+}
+
+/** CAR-240 — bounded steps[] pass-through for recordUsage/readUsage. */
+function sanitizeSteps(raw) {
+  if (!Array.isArray(raw)) return null;
+  const steps = raw.slice(0, MAX_STEPS).map(sanitizeStep).filter(Boolean);
+  return steps.length ? steps : null;
+}
+
 /** Normalize the many provider usage shapes to `{ in, out }` token counts,
  *  plus an optional provider-reported `cost` (USD) when the provider supplies
  *  one (CAR-106 — a gateway like Hermes reports the real billed cost of the
@@ -59,6 +87,16 @@ export function recordUsage(provider, usage, nowMs, file = PATHS.llmUsage) {
     // p50/p90 (real statistics instead of the stale "2–4 min" copy).
     if (usage && typeof usage === 'object' && Number.isFinite(usage.durationMs)) {
       line.durationMs = Math.round(usage.durationMs);
+    }
+    // CAR-240 — cached-prompt tokens (CAR-231 surfaced them per provider; the
+    // two-step evaluate sums them into the done-frame usage) and the
+    // per-step breakdown ride the line when present. Old lines carry no
+    // keys and parse unchanged.
+    if (usage && typeof usage === 'object') {
+      const cached = Number(usage.cached);
+      if (Number.isFinite(cached) && cached >= 0) line.cached = Math.round(cached);
+      const steps = sanitizeSteps(usage.steps);
+      if (steps) line.steps = steps;
     }
     mkdirSync(dirname(file), { recursive: true });
     appendFileSync(file, JSON.stringify(line) + '\n');
@@ -168,6 +206,13 @@ export function readUsage(file = PATHS.llmUsage) {
         // evaluate ETA can quote real p50/p90 statistics.
         const durationMs = Number(r.durationMs);
         if (Number.isFinite(durationMs) && durationMs > 0) row.durationMs = durationMs;
+        // CAR-240 — cached-prompt tokens + the bounded steps[] survive the
+        // round trip (re-sanitized: a hand-edited journal line cannot inject
+        // an unbounded array or junk fields).
+        const cached = Number(r.cached);
+        if (Number.isFinite(cached) && cached >= 0) row.cached = Math.round(cached);
+        const steps = sanitizeSteps(r.steps);
+        if (steps) row.steps = steps;
         rows.push(row);
       }
     } catch { /* skip a corrupt line */ }
@@ -189,7 +234,7 @@ const WINDOWS = [
  * tokens-only record falls back to the pricing-table estimate exactly as
  * before (`priceFor` is linear in tokens, so summing per record equals pricing
  * the summed tokens).
- * @returns { windows: { <key>: { providers: [{provider,in,out,calls,usd}], totalIn, totalOut, totalUsd, calls } } }
+ * @returns { windows: { <key>: { providers: [{provider,in,out,cached,calls,usd}], totalIn, totalOut, totalUsd, calls, cachedIn, cacheHitRate } } }
  */
 export function aggregate(rows, nowMs) {
   const now = nowMs || Date.now();
@@ -199,17 +244,25 @@ export function aggregate(rows, nowMs) {
     const byProv = new Map();
     for (const r of rows) {
       if (r.ts < cutoff) continue;
-      const e = byProv.get(r.provider) || { provider: r.provider, in: 0, out: 0, calls: 0, usd: 0 };
+      const e = byProv.get(r.provider) || { provider: r.provider, in: 0, out: 0, cached: 0, calls: 0, usd: 0 };
       e.in += r.in; e.out += r.out; e.calls += 1;
+      // CAR-240 — cached-prompt tokens sum alongside the raw totals.
+      e.cached += Number(r.cached) || 0;
       e.usd += (r.cost != null) ? r.cost : priceFor(r.provider, r.in, r.out);
       byProv.set(r.provider, e);
     }
-    let totalIn = 0, totalOut = 0, totalUsd = 0, calls = 0;
+    let totalIn = 0, totalOut = 0, totalCached = 0, totalUsd = 0, calls = 0;
     const providers = [...byProv.values()].map((e) => {
-      totalIn += e.in; totalOut += e.out; totalUsd += e.usd; calls += e.calls;
+      totalIn += e.in; totalOut += e.out; totalCached += e.cached; totalUsd += e.usd; calls += e.calls;
       return e;
     }).sort((a, b) => b.usd - a.usd || (b.in + b.out) - (a.in + a.out));
-    out.windows[w.key] = { providers, totalIn, totalOut, totalUsd, calls };
+    out.windows[w.key] = {
+      providers, totalIn, totalOut, totalUsd, calls,
+      // CAR-240 — cached-token rollup + hit rate (cachedIn / totalIn);
+      // null when the window has no input tokens (never a fake 0%).
+      cachedIn: totalCached,
+      cacheHitRate: totalIn > 0 ? totalCached / totalIn : null,
+    };
   }
   return out;
 }

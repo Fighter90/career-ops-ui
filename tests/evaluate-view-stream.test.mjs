@@ -111,3 +111,37 @@ test("'err.evaluate.noTerminal' exists ×19 and is genuinely translated", () => 
     if (lang !== 'en') assert.notEqual(v, NO_TERMINAL_EN, `err.evaluate.noTerminal untranslated in ${lang}`);
   }
 });
+
+// ───────────── (5) CAR-244.1 — the static ETA is gone, the live hint stays ──
+
+const ETA_HINT_EN = 'Usual: {p50}s median · p90 {p90}s';
+
+test('CAR-244.1: no static ETA left in evaluate.js — no eval.eta key, no "2–4" anywhere', () => {
+  assert.ok(!EVAL.includes('2–4') && !EVAL.includes('2-4'),
+    'the stale "~2–4 min" copy must not survive anywhere in evaluate.js (code or comments)');
+  assert.ok(!/\beval\.eta\b/.test(EVAL), "the t('eval.eta') call must be gone (eval.etaHint is the only ETA key)");
+  assert.match(EVAL, /eval\.etaHint/, 'the live hint (eval.etaHint) stays');
+});
+
+test('CAR-244.1: the page-meta chip quotes the REAL p50/p90 and disappears with no data', () => {
+  // one mount fetch feeds BOTH the chip and the run's loading line
+  const fetches = EVAL.match(/API\.get\('\/api\/usage'\)/g) || [];
+  assert.equal(fetches.length, 1, `exactly one /api/usage fetch (found ${fetches.length}) — hoisted to view mount`);
+  const mountIdx = EVAL.indexOf("API.get('/api/usage')");
+  const chipIdx = EVAL.indexOf('const etaChip');
+  assert.ok(mountIdx >= 0 && chipIdx > mountIdx, 'the fetch precedes the etaChip build');
+  assert.match(EVAL, /latency = \(u && u\.llmLatency && u\.llmLatency\.p50Ms\) \? u\.llmLatency : null/,
+    'no p50 in the journal → latency stays null → NO chip (no number at all)');
+  assert.match(EVAL, /const etaChip = latency \? c\('span'/, 'the chip is conditional on the real data');
+  assert.match(EVAL, /pageMeta = UI\.pageMeta\(t, etaChip,/, 'the chip rides the shared page-meta line');
+});
+
+test("CAR-244.1: 'eval.eta' is absent from ALL 19 dicts; 'eval.etaHint' exists ×19", () => {
+  const dict = loadAssembledDict();
+  for (const lang of I18N_LANGS) {
+    assert.equal(dict['eval.eta'], undefined, `eval.eta deleted from ${lang}`);
+    const v = (dict['eval.etaHint'] || {})[lang];
+    assert.ok(v && String(v).trim().length > 0, `eval.etaHint missing/empty in ${lang}`);
+    if (lang !== 'en') assert.notEqual(v, ETA_HINT_EN, `eval.etaHint untranslated in ${lang}`);
+  }
+});

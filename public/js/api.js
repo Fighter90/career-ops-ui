@@ -1,6 +1,13 @@
 /* global window */
 window.API = (function () {
   let connectionLost = false;
+  // CAR-244.4 — consecutive-failure counter. The global "server is not
+  // responding" banner rises ONLY on a failed /api/health probe or from the
+  // SECOND consecutive network failure onward; a single failed request
+  // surfaces as the view's error toast (the thrown message) without
+  // banner-drowning the whole app. Any successful response resets it.
+  let _failStreak = 0;
+  const HEALTH_PATH = '/api/health';
 
   // v1.22.0 (M-6) + v1.23.0 — exponential backoff on the health ping.
   // Tab left open overnight against a dead server used to fire 28,800
@@ -130,7 +137,14 @@ window.API = (function () {
     try {
       res = await fetch(path, req);
     } catch (netErr) {
-      setConnectionState(true, netErr.message || 'network error');
+      // CAR-244.4 — a single network failure is toast-level: count it, and
+      // only flip the banner from the second consecutive failure (or when
+      // the request IS the health probe). The thrown message below still
+      // reaches the view's catch → toast either way.
+      _failStreak += 1;
+      if (path === HEALTH_PATH || _failStreak >= 2) {
+        setConnectionState(true, netErr.message || 'network error');
+      }
       // v1.57.1 — say WHAT failed and WHERE. v1.58.0 (AI-review rule 3):
       // the human sentence is localized via I18n; the trailing
       // `(METHOD /path)` is a language-neutral diagnostic token (HTTP
@@ -149,6 +163,7 @@ window.API = (function () {
       err.network = true;
       throw err;
     }
+    _failStreak = 0; // CAR-244.4 — any success resets the streak (and clears the banner)
     setConnectionState(false);
 
     const text = await res.text();
