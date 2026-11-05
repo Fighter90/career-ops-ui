@@ -18,7 +18,7 @@
 - Die Prod-Datenmigrationen (Berichtsdaten, Tracker-Firmen, Score-Backfill) sind BESITZER-AKTIONEN: den Dry-Run der neuen Runner fahren, prüfen, dann Apply — das Werkzeug kommt hier an, die Datenänderungen laufen nicht automatisch.
 - Der v1.267.0-Tag bleibt auf dem roten Merge-Commit — nicht umgehängt; v1.267.1/1.267.2/1.268.0 sind die Deploy-Fahrzeuge.
 
-- Tests 7395 → **7488**; Coverage 98.49 Zeile / 90.31 Zweig.
+- Tests 7395 → **7490**; Coverage 98.49 Zeile / 90.31 Zweig.
 
 ## [1.267.2] — 2026-11-04
 

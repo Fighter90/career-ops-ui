@@ -46,6 +46,17 @@ export function evalOutTokens(usage) {
   return Number.isFinite(n) && n >= 0 ? n : null;
 }
 
+/** The prompt-cache read count from the two-step evaluate usage aggregate
+ *  (CAR-231): eval-two-step.mjs sums `cached_tokens` (OpenAI-compatible) /
+ *  `cache_read_input_tokens` (Anthropic) into `usage.cached`. A real 0 is
+ *  printed as 0 — a broken cache prefix must be VISIBLE, never silent.
+ *  Missing field or a malformed number → null (nothing printed). */
+export function evalCachedTokens(usage) {
+  if (!usage || typeof usage !== 'object') return null;
+  const n = Number(usage.cached);
+  return Number.isFinite(n) && n >= 0 ? n : null;
+}
+
 /** The scan paragraph — byte-identical to the pre-CAR-175 line, plus a
  *  "stderr samples" sub-list when the run had named errors. */
 export function scanSummaryBlock(scan) {
@@ -56,10 +67,12 @@ export function scanSummaryBlock(scan) {
 }
 
 /** One locale's docs/evaluate cell. `outTok` (the provider's output tokens,
- *  when the response carried a usage object) appends "tok ~N"; anything else
- *  renders byte-identical to the pre-CAR-175 cell. */
+ *  when the response carried a usage object) appends "tok ~N"; `cacheTok`
+ *  (the two-step prompt-cache read sum, CAR-231) appends "cache ~NNk".
+ *  Anything else renders byte-identical to the pre-CAR-175 cell. */
 export function summaryCell(x) {
   if (!x) return '—';
   const tok = x.outTok != null ? ` · tok ~${x.outTok}` : '';
-  return `${x.status} · ${x.mode || '-'} · ${Math.round(x.ms / 1000)}s · ${x.len} ch${tok} · ${x.lang ? 'lang ✓' : 'lang ✗'}${'shape' in x ? (x.shape ? ' · A–G ✓' : ' · A–G ✗') : ''}`;
+  const cache = x.cacheTok != null ? ` · cache ~${Math.round(x.cacheTok / 1000)}k` : '';
+  return `${x.status} · ${x.mode || '-'} · ${Math.round(x.ms / 1000)}s · ${x.len} ch${tok}${cache} · ${x.lang ? 'lang ✓' : 'lang ✗'}${'shape' in x ? (x.shape ? ' · A–G ✓' : ' · A–G ✗') : ''}`;
 }

@@ -29,7 +29,7 @@ import { createRequire } from 'node:module';
 import { makeRedactor } from './redact.mjs';
 import { languageOk, describe, headingSkeleton, splitWarnings } from './lang-check.mjs';
 import { discoverLocales, requireNonEmpty, httpCredentialsFor } from './targets.mjs';
-import { collectErrTexts, evalOutTokens, scanSummaryBlock, summaryCell, mdEscape } from './summary-parts.mjs';
+import { collectErrTexts, evalOutTokens, evalCachedTokens, scanSummaryBlock, summaryCell, mdEscape } from './summary-parts.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..', '..');
 const require = createRequire(ROOT + '/package.json');
@@ -222,6 +222,7 @@ for (const locale of LOCALES) {
     // subprocess does not → nothing is printed, never "tok ?").
     row.eval = { status: e.status, mode: e.body.mode, ms: e.ms, len: md.length,
       outTok: evalOutTokens(e.body.usage),
+      cacheTok: evalCachedTokens(e.body.usage),
       shape: shapeCodes.length === 0, warnings: (e.body.warnings || []).map(String), lang: languageOk(md, locale) };
     if (e.status !== 200) add(locale, 'evaluate', `HTTP ${e.status} ${e.body.error || ''}`);
     else if (!e.body.mode || e.body.mode === 'manual') add(locale, 'evaluate', `no live provider (mode=${e.body.mode})`);

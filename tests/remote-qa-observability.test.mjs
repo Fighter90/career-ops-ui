@@ -24,7 +24,7 @@ import { readFileSync } from 'node:fs';
 import { resolve, dirname } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { makeRedactor } from '../scripts/remote-qa/redact.mjs';
-import { collectErrTexts, scanSummaryBlock, summaryCell, evalOutTokens } from '../scripts/remote-qa/summary-parts.mjs';
+import { collectErrTexts, scanSummaryBlock, summaryCell, evalOutTokens, evalCachedTokens } from '../scripts/remote-qa/summary-parts.mjs';
 
 const ROOT = resolve(dirname(fileURLToPath(import.meta.url)), '..');
 const SRC = readFileSync(resolve(ROOT, 'scripts/remote-qa/prod-llm.mjs'), 'utf8');
@@ -89,6 +89,14 @@ test('evalOutTokens: the provider shapes llm-usage.mjs normalizes are all read',
   assert.equal(evalOutTokens({ output_tokens: 'many' }), null);            // malformed → nothing printed
 });
 
+test('evalCachedTokens: the two-step aggregate usage.cached is read (CAR-231)', () => {
+  assert.equal(evalCachedTokens({ cached: 73998 }), 73998);               // eval-two-step aggregate (cached_tokens / cache_read_input_tokens summed)
+  assert.equal(evalCachedTokens({ cached: 0 }), 0);                       // a cache miss is an honest 0 — print it
+  assert.equal(evalCachedTokens({}), null);                               // no field → nothing printed
+  assert.equal(evalCachedTokens(undefined), null);
+  assert.equal(evalCachedTokens({ cached: 'many' }), null);               // malformed → nothing printed
+});
+
 // ── summary rendering ─────────────────────────────────────────────────────────
 const scanBase = { secs: 87, phases: ['ATS NEW=3', 'Regional NEW=1'], failed: [], errLines: 2, before: 410, after: 414, busyWaits: 0 };
 
@@ -130,6 +138,20 @@ test('summaryCell: an eval with usage gains "tok ~N"; without it the legacy cell
   const noTok = summaryCell({ status: 200, mode: 'openai', ms: 45_000, len: 5234, outTok: evalOutTokens(undefined), lang: false, shape: false });
   assert.equal(noTok, '200 · openai · 45s · 5234 ch · lang ✗ · A–G ✗');
   assert.ok(!noTok.includes('tok'));
+});
+
+test('summaryCell: a two-step cache read gains "cache ~NNk" (CAR-231); a miss prints an honest cache ~0k', () => {
+  // A healthy prefix: ~37k tokens read → "cache ~37k".
+  assert.equal(
+    summaryCell({ status: 200, mode: 'openrouter', ms: 91_000, len: 3105, lang: true, shape: true, cacheTok: evalCachedTokens({ cached: 36_999 }) }),
+    '200 · openrouter · 91s · 3105 ch · cache ~37k · lang ✓ · A–G ✓',
+  );
+  // cache 0 must stay VISIBLE (a broken prefix must never hide behind silence).
+  const miss = summaryCell({ status: 200, mode: 'openrouter', ms: 91_000, len: 3105, lang: true, shape: true, cacheTok: evalCachedTokens({ cached: 0 }) });
+  assert.ok(miss.includes('cache ~0k'), `cache miss must be visible: ${miss}`);
+  // No usage field → no cache segment at all.
+  const noCache = summaryCell({ status: 200, mode: 'openrouter', ms: 91_000, len: 3105, lang: true, shape: true, cacheTok: evalCachedTokens({}) });
+  assert.ok(!noCache.includes('cache'), `no cache field → no segment: ${noCache}`);
 });
 
 // ── prod-llm.mjs wiring (drift guards) ────────────────────────────────────────
