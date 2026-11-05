@@ -790,9 +790,10 @@ tr.v2-scan-isnew > td { animation: v2scan-in 150ms var(--ease-out); }
 .v2-scan-panel { position: fixed; top: 0; inset-inline-end: 0; bottom: 0; width: min(440px, 94vw); background: var(--paper); border-inline-start: 1px solid var(--slate); box-shadow: var(--shadow-lg); z-index: calc(var(--z-modal) + 1); padding: 20px; overflow-y: auto; transform: translateX(102%); visibility: hidden; transition: transform var(--transition), visibility var(--transition); }
 [dir='rtl'] .v2-scan-panel { transform: translateX(-102%); }
 .v2-scan-panel.is-open { transform: none; visibility: visible; }
-.v2-scan-qv-title { margin: 0 24px 6px 0; font-size: var(--font-size-lg); overflow-wrap: anywhere; }
+.v2-scan-qv-head { padding-inline-end: 52px; } /* CAR-238 — title container reserves the corner ✕'s room (logical, RTL-safe); the ✕ below stays absolute+compact */
+.v2-scan-qv-title { margin: 0 0 6px; font-size: var(--font-size-lg); overflow-wrap: anywhere; min-width: 0; }
 .v2-scan-qv-meta { margin: 0 0 10px; font-size: var(--font-size-md); }
 .v2-scan-qv-salary { margin: 0 0 10px; font-weight: 600; }
 .v2-scan-qv-desc { white-space: pre-wrap; overflow-wrap: anywhere; font-size: 14px; line-height: 1.5; max-height: 46vh; overflow-y: auto; border-top: 1px solid var(--slate); padding-top: 10px; margin: 0 0 14px; }
 .v2-scan-qv-actions { display: flex; flex-wrap: wrap; gap: 8px; }
-.v2-scan-qv-close { position: absolute; top: 12px; inset-inline-end: 12px; }
+.v2-scan-qv-close { position: absolute; top: 12px; inset-inline-end: 12px; width: 32px; height: 32px; min-height: 32px; padding: 0; }

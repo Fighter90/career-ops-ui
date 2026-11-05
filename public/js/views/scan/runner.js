@@ -342,9 +342,18 @@
     const closeBtn = c('button', {
       className: 'btn btn-ghost btn-sm v2-scan-qv-close', type: 'button',
       'aria-label': t('common.closeDialog', 'Close dialog'),
+      // CAR-238 — the close control is a compact bare ✕ (CSS reserves its
+      // exact 32px corner): the full localized label stays on aria-label +
+      // the sighted tooltip, so no per-locale text width can re-introduce
+      // the title-under-button overlap.
+      title: t('common.closeDialog', 'Close dialog'),
       onClick: () => close(),
-    }, '✕ ' + t('common.closeDialog', 'Close dialog'));
+    }, '✕');
+    // CAR-238 — the title rides its own container (.v2-scan-qv-head), which
+    // reserves the corner ✕'s room in CSS; the h2 box itself stays clear of
+    // the control so long titles wrap without ever reaching it.
     const titleEl = c('h2', { className: 'v2-scan-qv-title' });
+    const titleHead = c('div', { className: 'v2-scan-qv-head' }, titleEl);
     const metaEl = c('p', { className: 'muted v2-scan-qv-meta' });
     const salaryEl = c('p', { className: 'v2-scan-qv-salary' });
     const descEl = c('div', {
@@ -418,7 +427,7 @@
       linkBtn.hidden = !safeUrl;
       starSync();
       panel.replaceChildren(
-        closeBtn, titleEl, metaEl, salaryEl, descEl,
+        closeBtn, titleHead, metaEl, salaryEl, descEl,
         c('div', { className: 'v2-scan-qv-actions' }, [evalBtn, pipeBtn, starBtn, linkBtn]));
       backdrop.classList.add('is-open');
       panel.classList.add('is-open');

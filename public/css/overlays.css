@@ -268,15 +268,32 @@
   flex-direction: column;
   box-shadow: var(--shadow-lg);
 }
+/* CAR-238 — one dialog contract for every dialog family: the corner ✕ is
+   absolutely positioned inside the header (out of the title's flow), the
+   header — the title's container — reserves the ✕'s room on the inline-end
+   side via a LOGICAL padding (52px over the base inset; [dir="rtl"] mirrors
+   it left), and titles wrap anywhere instead of clipping. */
 .modal-header {
   padding: var(--space-4) var(--space-5);
+  padding-inline-end: calc(var(--space-5) + 52px);
   border-bottom: 1px solid var(--slate);
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
 }
-.modal-header h3 { margin: 0; font-size: var(--font-size-lg); font-weight: 700; }
-.modal-close { font-size: var(--font-size-2xl); color: var(--foggy); padding: 0 6px; line-height: 1; }
+.modal-header h3 { margin: 0; font-size: var(--font-size-lg); font-weight: 700; min-width: 0; overflow-wrap: anywhere; }
+.modal-close {
+  font-size: var(--font-size-2xl);
+  color: var(--foggy);
+  padding: 0 6px;
+  line-height: 1;
+  /* CAR-238 — pinned to the inline-end edge, vertically centered. */
+  position: absolute;
+  top: 50%;
+  inset-inline-end: var(--space-4);
+  transform: translateY(-50%);
+}
 .modal-close:hover { color: var(--hof); }
 .modal-body {
   padding: var(--space-5);
