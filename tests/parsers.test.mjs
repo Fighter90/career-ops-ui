@@ -7,6 +7,8 @@ import {
   addPipelineUrl,
   removePipelineUrl,
   parseReportHeader,
+  reportDateLine,
+  REPORT_DATE_LABELS,
   slugify,
   today,
 } from '../server/lib/parsers.mjs';
@@ -266,4 +268,62 @@ test('slugify', () => {
 test('today: YYYY-MM-DD format', () => {
   const t = today();
   assert.match(t, /^\d{4}-\d{2}-\d{2}$/);
+});
+
+// ───────────────────────── reportDateLine (CAR-241) ─────────────────────────
+// The shared report-header-date finder: the ONE date source the report-dates
+// migration and any consumer agree on. Recognizes the **Date:** convention in
+// all UI locales plus the generic bold-label fallback.
+
+test('reportDateLine: the English **Date:** convention', () => {
+  const found = reportDateLine('# Evaluation: Acme — Dev\n\n**Company:** Acme\n**Date:** 2026-01-15\n');
+  assert.ok(found, 'the date line is found');
+  assert.equal(found.date, '2026-01-15');
+  assert.equal(found.lineIndex, 3, '0-based index of the date line');
+  assert.equal(found.lineText, '**Date:** 2026-01-15');
+  assert.equal(found.lineText.slice(found.valueStart, found.valueEnd), '2026-01-15', 'value offsets bracket the date');
+});
+
+test('reportDateLine: localized labels (ru / de / es / ja / uk / ta)', () => {
+  const cases = [
+    ['**Дата:** 2026-01-15', '2026-01-15'],
+    ['**Datum:** 2026-01-15', '2026-01-15'],
+    ['**Fecha:** 2026-01-15', '2026-01-15'],
+    ['**日付:** 2026-01-15', '2026-01-15'],
+    ['**தேதி:** 2026-01-15', '2026-01-15'],
+  ];
+  for (const [line, expected] of cases) {
+    const found = reportDateLine(`# Отчёт\n\n${line}\n`);
+    assert.ok(found, `found: ${line}`);
+    assert.equal(found.date, expected);
+  }
+  // A plain (non-bold) known label is still the header convention.
+  const plain = reportDateLine('# Отчёт\n\nДата: 2026-01-15\n');
+  assert.ok(plain, 'plain known label matches');
+  assert.equal(plain.date, '2026-01-15');
+  assert.ok(REPORT_DATE_LABELS.ru.includes('Дата') && REPORT_DATE_LABELS.de.includes('Datum'),
+    'the label table covers the localized conventions');
+});
+
+test('reportDateLine: the generic bold-label fallback catches unknown labels', () => {
+  const found = reportDateLine('# Rapport\n\n**DateDuRapport:** 2026-01-15\n');
+  assert.ok(found, 'a bold label + ISO date is the header convention even when the label is unknown');
+  assert.equal(found.date, '2026-01-15');
+});
+
+test('reportDateLine: the 15-line window and non-date lines are respected', () => {
+  // Beyond the window → not found (the scan must not fix a random body date).
+  const far = ['# T', ...Array.from({ length: 20 }, (_, i) => `line ${i}`), '**Date:** 2026-01-15'].join('\n');
+  assert.equal(reportDateLine(far), null);
+  // A bold label WITHOUT an ISO value is not a date line.
+  assert.equal(reportDateLine('**Date:** 15 января 2026'), null, 'non-ISO value rejected');
+  assert.equal(reportDateLine('**Score:** 4.1/5'), null, 'a score line is not a date');
+  assert.equal(reportDateLine(''), null);
+  assert.equal(reportDateLine(null), null);
+});
+
+test('reportDateLine: fullwidth colon and a bullet prefix still match', () => {
+  const found = reportDateLine('- **日付：** 2026-01-15');
+  assert.ok(found, 'bullet + fullwidth colon (ja convention)');
+  assert.equal(found.date, '2026-01-15');
 });
