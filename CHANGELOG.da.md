@@ -25,7 +25,7 @@ Oversættelser: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELO
 - Prod-datamigrationerne (rapportdatoer, tracker-virksomheder, score-backfill) er EJERENS HANDLINGER: kør de nye runners' dry-run, gennemgå, og apply derefter — værktøjet skibes her, dataændringerne kører ikke automatisk.
 - v1.267.0-taget peger fortsat på det røde merge-commit — ikke repointet; v1.267.1/1.267.2/1.268.0 er deploy-køretøjerne.
 
-- Test 7395 → **7480**; dækning 98.49 linje / 90.31 gren.
+- Test 7395 → **7488**; dækning 98.49 linje / 90.31 gren.
 
 ## [1.267.2] — 2026-11-04
 

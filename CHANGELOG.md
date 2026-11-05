@@ -22,7 +22,7 @@ Translations: [🇪🇸 Español](CHANGELOG.es.md) · [🇧🇷 Português](CHAN
 - The prod data migrations (report dates, tracker companies, score backfill) are OWNER ACTIONS: run the new runners' dry-run, review, then apply — the tooling ships here, the data changes do not run automatically.
 - The v1.267.0 tag stays pointing at the red merge commit — not re-pointed; v1.267.1/1.267.2/1.268.0 are the deploy vehicles.
 
-- Tests 7395 → **7480**; coverage 98.49 line / 90.31 branch.
+- Tests 7395 → **7488**; coverage 98.49 line / 90.31 branch.
 
 ## [1.267.2] — 2026-11-04
 

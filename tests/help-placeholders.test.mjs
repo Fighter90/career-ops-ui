@@ -132,3 +132,20 @@ test('generic resolver keeps unknown keys and substitutes known ones', () => {
     k === 'pipe.hideTracked' ? 'Hidden' : null);
   assert.equal(out, 'a Hidden b {{t:missing.key}} c');
 });
+
+test('v1.268.0 coverage tail: resolver edge branches (empty input, alias hop, non-string, coercion)', () => {
+  // Empty/falsey markdown short-circuits on BOTH variants.
+  assert.equal(substituteHelpPlaceholders('', (k) => k), '');
+  assert.equal(substituteHelpPlaceholdersEn(null), '');
+  // Non-string markdown is coerced through String() — output is the input text
+  // when it carries no placeholder at all.
+  assert.equal(substituteHelpPlaceholders(42, () => 'X'), '42');
+  // Non-string / empty resolver results keep the raw placeholder visible.
+  assert.equal(substituteHelpPlaceholders('{{t:k}}', () => undefined), '{{t:k}}');
+  assert.equal(substituteHelpPlaceholders('{{t:k}}', () => ''), '{{t:k}}');
+  // The EN lookup walks ONE alias hop: {{t:nav.apply}} has no own EN-table
+  // entry — its value arrives through the alias map (nav.apply → apply.title).
+  const aliased = substituteHelpPlaceholdersEn('open {{t:nav.apply}}');
+  assert.ok(!aliased.includes('{{t:'), 'alias hop must resolve');
+  assert.ok(aliased.includes('Apply'), `alias hop gave the EN label, got: ${aliased}`);
+});

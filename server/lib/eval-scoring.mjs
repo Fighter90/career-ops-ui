@@ -149,8 +149,6 @@ export function extractScoringJson(text) {
   return null;
 }
 
-const BLOCK_SCORE_RE = /^(?:[0-4](?:\.\d{1,2})?|5)$/;
-
 /** Coerce one 0–5 block/global score; returns null for junk. */
 function coerceScore(v) {
   const n = typeof v === 'string' ? Number.parseFloat(v) : v;

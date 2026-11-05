@@ -24,7 +24,7 @@ import http from 'node:http';
 import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
-import { twoShapeAnswers, scoringFixture, renderBodyFixture, isScoringCall, RENDER_MARKER } from './helpers/eval-two-step-stub.mjs';
+import { twoShapeAnswers, scoringFixture, isScoringCall, RENDER_MARKER } from './helpers/eval-two-step-stub.mjs';
 
 let createApp, stub, lastPrompt = '', lastMaxTokens = 0, lastRenderPrompt = '';
 let currentAnswers = null; // tests swap fixtures via setAnswers()

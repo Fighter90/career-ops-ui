@@ -373,9 +373,27 @@ export function asciiNumber(s) {
  * Remove the machine-readable ---SCORE_SUMMARY--- … ---END_SUMMARY--- block
  * the prompt asks for, as the parent's eval scripts do before writing a
  * report: it exists for validation, not for the reader.
+ *
+ * Implemented with indexOf/slice (linear) rather than a `\n*…[\s\S]*?\n*`
+ * regex: the block markers ride untrusted model output, and the leading
+ * `\n*` quantifier re-scans the whole string from every position — a
+ * many-newline report without the marker degrades to O(n²) (CodeQL
+ * polynomial-ReDoS on eval-validate.mjs). Semantics are identical: consume
+ * the newlines directly around the block, splice in a single '\n', trimEnd.
  */
 export function stripScoreSummary(text) {
-  return String(text ?? '').replace(/\n*---SCORE_SUMMARY---[\s\S]*?---END_SUMMARY---\n*/, '\n').trimEnd();
+  const s = String(text ?? '');
+  const start = s.indexOf('---SCORE_SUMMARY---');
+  if (start === -1) return s.trimEnd();
+  const END = '---END_SUMMARY---';
+  const end = s.indexOf(END, start);
+  if (end === -1) return s.trimEnd();
+  let lead = start;
+  while (lead > 0 && s[lead - 1] === '\n') lead--;
+  const tail = end + END.length;
+  let after = tail;
+  while (after < s.length && s[after] === '\n') after++;
+  return (s.slice(0, lead) + '\n' + s.slice(after)).trimEnd();
 }
 
 // CAR-101 — a report-header date line. Line-anchored on purpose: the line

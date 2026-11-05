@@ -18,7 +18,7 @@
 - Prod veri göçleri (rapor tarihleri, izleyici şirketleri, puan geri doldurma) SAHİP EYLEMLERİDİR: yeni koşucuların dry-run'ını çalıştırın, gözden geçirin, sonra apply — aletler buraya geliyor, veri değişiklikleri otomatik çalışmıyor.
 - v1.267.0 etiketi kırmızı birleştirme commit'ini işaret etmeye devam ediyor — yeniden işaretlenmedi; v1.267.1/1.267.2/1.268.0 dağıtım araçlarıdır.
 
-- Testler 7395 → **7480**; kapsam 98.49 satır / 90.31 dal.
+- Testler 7395 → **7488**; kapsam 98.49 satır / 90.31 dal.
 
 ## [1.267.2] — 2026-11-04
 

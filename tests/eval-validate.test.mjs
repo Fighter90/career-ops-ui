@@ -121,6 +121,27 @@ test('stripScoreSummary removes the machine block and keeps the report', async (
   assert.equal(stripScoreSummary('no block here\n'), 'no block here');
 });
 
+test('stripScoreSummary adversarial inputs (v1.268.0 linear rewrite — model output is untrusted)', async () => {
+  const { stripScoreSummary } = await import('../server/lib/eval-validate.mjs');
+  const BLOCK = '---SCORE_SUMMARY---\nscore: 4.0\n---END_SUMMARY---';
+  // Many-newline report WITHOUT the marker: no catastrophic backtracking,
+  // content preserved (the historical `\n*…[\s\S]*?\n*` regex rescanned the
+  // string from every position — O(n²) on exactly this shape).
+  const manyNl = '\n'.repeat(50_000) + '## Block A — Fit\nreport body';
+  // Leading newlines are content (trimEnd only touches the tail) — identical
+  // to the historical behavior, now without the O(n²) rescan.
+  assert.equal(stripScoreSummary(manyNl), manyNl);
+  // Block at the very start: the splice leaves exactly one '\n' (the old
+  // regex replaced the block with '\n' too).
+  assert.equal(stripScoreSummary(BLOCK + '\nbody'), '\nbody');
+  // Terminated block, no trailing newlines → the splice still leaves one '\n'.
+  assert.equal(stripScoreSummary('lead\n' + BLOCK), 'lead');
+  // Unterminated block: the old regex wouldn't match either — verbatim + trimEnd.
+  assert.equal(stripScoreSummary('---SCORE_SUMMARY---\nscore: 4.0\nno end marker'), '---SCORE_SUMMARY---\nscore: 4.0\nno end marker');
+  // First-block-only (no /g in the old regex): a second stray marker row stays.
+  assert.equal(stripScoreSummary('a\n' + BLOCK + '\n---SCORE_SUMMARY---x\nb'), 'a\n---SCORE_SUMMARY---x\nb');
+});
+
 test('v1.241.1: Devanagari-spelled block letters (ए बी सी डी ई एफ जी) count as blocks; Hindi words do not', () => {
   // Local deepseek hi run, 2026-10-07: "## ए) …", "## बी) CV …" — no Latin letter.
   const deva = { A: 'ए', B: 'बी', C: 'सी', D: 'डी', E: 'ई', F: 'एफ', G: 'जी' };

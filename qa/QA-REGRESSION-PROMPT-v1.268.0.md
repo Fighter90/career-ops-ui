@@ -2,13 +2,13 @@
 
 > Release: **v1.268.0** (2026-11-05) · minor — the evaluate two-step contract (CAR-229/230/111 + CAR-232/233 runners + Permissions-Policy)
 > Prod target: resumecraft.ru = **1.268.0**, parent 1.38.0 (fork @ `31a29b30`, unchanged — no parent-sync in this release)
-> Tests: **7439** unit (7480 pass / 0 fail / 3 skip) · Playwright **176** (0 fail / 1 opt-in skip) · registry unchanged **129 = 124 EN + 5 RU · 124 adapters**
+> Tests: **7439** unit (7488 pass / 0 fail / 3 skip) · Playwright **176** (0 fail / 1 opt-in skip) · registry unchanged **129 = 124 EN + 5 RU · 124 adapters**
 
 ## §0 gates (must be green before the sweep — real numbers, no re-derivation by hand)
 
 | Gate | Command | Expected |
 |---|---|---|
-| Unit + integration + parity | `npm run test:ci` | **7439 tests · 7480 pass · 0 fail · 3 skip** |
+| Unit + integration + parity | `npm run test:ci` | **7439 tests · 7488 pass · 0 fail · 3 skip** |
 | Coverage ratchet | `npm run test:coverage` | **98.49 line / 90.31 branch** (gate ≥90 line / ≥80 branch) |
 | Browser suite | `npm run test:e2e:browser` | **0 fail / 1 opt-in skip** (the `SCAN_REDESIGN_CAPTURE=1` layout-capture test) |
 | Workflow graders | `node evals/workflow/run.mjs` | **0 ✗** |
@@ -64,7 +64,7 @@ A red §0 gate is a finding, not a sweep item: triage before touching the manual
 - [ ] Mobile 390 px: sidebar drawer, scan table, tracker — no horizontal overflow.
 - [ ] `#/health` all green; `/api/health` reports `1.268.0`.
 - [ ] cvstart.org: mirrors stamped `v1.268.0`; the Sources section shows 129.
-- [ ] README ×19 banners name v1.268.0 (lead) / v1.267.2 (previous); badges tests-7480 / release-v1.268.0.
+- [ ] README ×19 banners name v1.268.0 (lead) / v1.267.2 (previous); badges tests-7488 / release-v1.268.0.
 
 ## Credentials & ethics
 

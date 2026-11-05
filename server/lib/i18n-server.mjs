@@ -22,7 +22,29 @@ const LOCALES_DIR = resolve(WEB_UI_ROOT, 'public', 'js', 'lib', 'locales');
 const dictGlobalName = (lang) => `__I18N_DICT_${String(lang).replace(/[^a-zA-Z0-9]/g, '_').toUpperCase()}`;
 
 const dictCache = new Map();
-let aliasesCache = null;
+
+/**
+ * Language-independent alias map (`'nav.apply' → 'apply.title'`). Cached per
+ * resolved directory — the shipped checkout and a test fixture (an empty dir
+ * proving the missing-file degradation) must not share one cache slot.
+ */
+const aliasesCacheByDir = new Map();
+
+/** Language-independent alias map (`'nav.apply' → 'apply.title'`). Static + tiny. */
+export function loadI18nAliases(localesDir = LOCALES_DIR) {
+  const file = resolve(localesDir, 'i18n-dict.aliases.js');
+  if (aliasesCacheByDir.has(file)) return aliasesCacheByDir.get(file);
+  let aliases = {};
+  if (existsSync(file)) {
+    const ctx = createContext({ window: {} });
+    runInContext(readFileSync(file, 'utf8'), ctx);
+    aliases = ctx.window.__I18N_ALIASES || {};
+  }
+  // A checkout without the alias file (partial deploy) degrades to no
+  // aliases — every lookup falls through to its own key or the en dict.
+  aliasesCacheByDir.set(file, aliases);
+  return aliases;
+}
 
 /**
  * Flat key → string map for one locale, from the shipped per-locale file.
@@ -44,20 +66,6 @@ export function loadLocaleDict(lang) {
   }
   dictCache.set(code, dict);
   return dict;
-}
-
-/** Language-independent alias map (`'nav.apply' → 'apply.title'`). Static + tiny. */
-export function loadI18nAliases() {
-  if (aliasesCache) return aliasesCache;
-  const file = resolve(LOCALES_DIR, 'i18n-dict.aliases.js');
-  if (!existsSync(file)) {
-    aliasesCache = {};
-    return aliasesCache;
-  }
-  const ctx = createContext({ window: {} });
-  runInContext(readFileSync(file, 'utf8'), ctx);
-  aliasesCache = ctx.window.__I18N_ALIASES || {};
-  return aliasesCache;
 }
 
 /**

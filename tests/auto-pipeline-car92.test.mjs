@@ -146,13 +146,14 @@ test('CAR-92.5: with LLM_PROVIDER=auto the anthropic cascade serves both steps (
   process.env.LLM_PROVIDER = 'auto';
   const hosts = [];
   globalThis.fetch = async (u, o = {}) => {
-    const s = String(u);
-    if (s.includes('api.anthropic.com')) {
+    let host = '';
+    try { host = new URL(String(u)).host; } catch { /* not a URL */ }
+    if (host === 'api.anthropic.com') {
       hosts.push('anthropic');
       const content = ANSWERS(promptFromAnthropicBody(o?.body));
       return json({ content: [{ type: 'text', text: content }], stop_reason: 'end_turn', usage: { input_tokens: 5, output_tokens: 3 } });
     }
-    if (s.includes('api.openai.com')) { hosts.push('openai'); return json({ choices: [{ message: { content: '' }, finish_reason: 'stop' }], usage: {} }); }
+    if (host === 'api.openai.com') { hosts.push('openai'); return json({ choices: [{ message: { content: '' }, finish_reason: 'stop' }], usage: {} }); }
     return realFetch(u, o);
   };
   const ev = sseEvents((await post({ url: JOB_URL, mode: 'anthropic' })).text);

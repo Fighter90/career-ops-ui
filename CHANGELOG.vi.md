@@ -22,7 +22,7 @@ Bản dịch: [🇬🇧 English](CHANGELOG.md) · [🇪🇸 Español](CHANGELOG.
 - Các di trú dữ liệu production (ngày báo cáo, công ty trong tracker, backfill điểm số) là VIỆC CỦA CHỦ SỞ HỮU: chạy dry-run của các runner mới, xem lại, rồi apply — công cụ được giao ở đây, thay đổi dữ liệu không chạy tự động.
 - Tag v1.267.0 vẫn chỉ vào commit merge màu đỏ — không trỏ lại; v1.267.1/1.267.2/1.268.0 là phương tiện deploy.
 
-- Kiểm thử 7395 → **7480**; độ phủ 98.49 dòng / 90.31 nhánh.
+- Kiểm thử 7395 → **7488**; độ phủ 98.49 dòng / 90.31 nhánh.
 
 ## [1.267.2] — 2026-11-04
 

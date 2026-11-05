@@ -18,7 +18,7 @@
 - Le migrazioni dati di produzione (date dei report, aziende del tracker, backfill dei punteggi) sono AZIONI DEL PROPRIETARIO: eseguire il dry-run dei nuovi runner, rivedere, poi apply — gli attrezzi arrivano qui, le modifiche ai dati non girano da sole.
 - Il tag v1.267.0 resta puntato al commit di merge rosso — non ripuntato; v1.267.1/1.267.2/1.268.0 sono i veicoli di deploy.
 
-- Test 7395 → **7480**; copertura 98.49 riga / 90.31 ramo.
+- Test 7395 → **7488**; copertura 98.49 riga / 90.31 ramo.
 
 ## [1.267.2] — 2026-11-04
 

@@ -30,7 +30,7 @@
  */
 import { test, before, after } from 'node:test';
 import assert from 'node:assert/strict';
-import { twoShapeAnswers, scoringFixture, renderBodyFixture } from './helpers/eval-two-step-stub.mjs';
+import { scoringFixture } from './helpers/eval-two-step-stub.mjs';
 import { mkdtempSync, mkdirSync, writeFileSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import { resolve } from 'node:path';
@@ -196,19 +196,8 @@ test('two /api/evaluate calls with different JDs send byte-identical cached pref
   process.env.LLM_PROVIDER = 'anthropic';
   process.env.ANTHROPIC_API_KEY = 'sk-ant-fake0123456789abcdefghijklmnop';
   // v1.268.0 — TWO provider calls per evaluate (scoring en-JSON, render
-  // locale body); the stub answers each with what its step expects.
-  const scoringJson = JSON.stringify(scoringFixture({ company: 'Acme', role: 'Eng', score: 3.5 }));
-  const renderBody = ['A', 'B', 'C', 'D', 'E', 'F', 'G'].map((L) => `## ${L}) ok`).join('\n\n');
-  const anthropicReply = (promptText) => {
-    const content = promptText.includes('Output ONLY a JSON object')
-      ? scoringJson
-      : renderBody;
-    return {
-      content: [{ type: 'text', text }],
-      stop_reason: 'end_turn',
-      usage: { input_tokens: 37000, output_tokens: 900, cache_read_input_tokens: 36999 },
-    };
-  };
+  // locale body); the top-level anthropicReply stub answers each with
+  // what its step expects.
   sent.length = 0;
   ({ createApp } = await import('../server/index.mjs'));
   const server = await new Promise((r) => { const s = createApp().listen(0, '127.0.0.1', () => r(s)); });
@@ -228,7 +217,7 @@ test('two /api/evaluate calls with different JDs send byte-identical cached pref
   };
   try {
     const b1 = await drainDone(JD_A);
-    const b2 = await drainDone(JD_B);
+    await drainDone(JD_B); // result asserted through `sent` below
     assert.equal(sent.length, 4, 'two evaluate runs × two steps');
 
     // The Anthropic request shape: [cached prefix block, uncached tail block].
