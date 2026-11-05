@@ -76,9 +76,26 @@ async function llmStep(page, locale, step, path, trigger) {
       page.waitForResponse((r) => new URL(r.url()).pathname === path && r.request().method() === 'POST', { timeout: 540_000 }), // must exceed the largest per-locale eval timeout (CAR-147: 480 s for token-dense ta/hi)
       trigger(),
     ]);
-    const ms = Date.now() - t0;
+    // v1.268.0 (CAR-229): /api/evaluate answers as SSE — the payload lives in
+    // the terminal `done` frame, not a JSON body. Plain-JSON routes keep the
+    // old path. ms is measured after the body completes: an SSE response
+    // STARTS when the headers flush (≈0 s), long before the render step ends.
     let body = {};
-    try { body = await resp.json(); } catch { /* non-JSON */ }
+    try {
+      if ((resp.headers()['content-type'] || '').includes('text/event-stream')) {
+        const text = await resp.text();
+        let done = null;
+        for (const frame of text.split('\n\n')) {
+          const ev = (frame.match(/^event:\s*(.+)$/m) || [])[1];
+          const data = (frame.match(/^data:\s*([\s\S]+)$/m) || [])[1];
+          if (ev === 'done' && data) done = JSON.parse(data);
+        }
+        body = done || {};
+      } else {
+        body = await resp.json();
+      }
+    } catch { /* non-JSON */ }
+    const ms = Date.now() - t0;
     if (resp.status() === 429 && attempt === 0) {
       await new Promise((r) => setTimeout(r, (Number(body.retryAfter) || 60) * 1000 + 1000));
       continue;
