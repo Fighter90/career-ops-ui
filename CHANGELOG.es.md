@@ -29,7 +29,7 @@ Traducciones: [🇬🇧 English](CHANGELOG.md) · [🇧🇷 Português](CHANGELO
 - Las migraciones de datos de producción (fechas de informes, compañías del tracker, backfill de puntuaciones) son ACCIONES DEL PROPIETARIO: ejecutar el dry-run de los nuevos runners, revisar y luego aplicar — la herramienta llega aquí, los cambios de datos no se ejecutan automáticamente.
 - El tag v1.267.0 sigue apuntando al commit de merge rojo — no se re-apunta; v1.267.1/1.267.2/1.268.0 son los vehículos de despliegue.
 
-- Pruebas 7395 → **7488**; cobertura 98.49 línea / 90.31 rama.
+- Pruebas 7395 → **7490**; cobertura 98.49 línea / 90.31 rama.
 
 ## [1.267.2] — 2026-11-04
 
