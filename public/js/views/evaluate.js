@@ -61,19 +61,18 @@ Router.register('evaluate', async () => {
     // v1.268.0 (CAR-230) — the evaluate endpoint streams SSE stage events
     // (scoring → rendering → assembling); the loading line follows the stage
     // and quotes the REAL latency (p50/p90 from the usage journal) instead
-    // of the stale "2–4 min" copy.
+    // of any static minute-range copy.
+    // CAR-244.1 — the p50/p90 come from the view-mount fetch (`latency`
+    // above); no second /api/usage call per run.
     out.innerHTML = `<div class="loading">${t('eval.evaluating')}</div>`;
     let etaLine = null;
-    try {
-      const u = await API.get('/api/usage');
-      if (u && u.llmLatency && u.llmLatency.p50Ms) {
-        etaLine = c('div', { className: 'field-hint', role: 'status' },
-          t('eval.etaHint', 'Usual: {p50}s median · p90 {p90}s')
-            .replace('{p50}', Math.round(u.llmLatency.p50Ms / 1000))
-            .replace('{p90}', Math.round(u.llmLatency.p90Ms / 1000)));
-        out.appendChild(etaLine);
-      }
-    } catch { /* the hint is best-effort; the run does not depend on it */ }
+    if (latency) {
+      etaLine = c('div', { className: 'field-hint', role: 'status' },
+        t('eval.etaHint', 'Usual: {p50}s median · p90 {p90}s')
+          .replace('{p50}', Math.round(latency.p50Ms / 1000))
+          .replace('{p90}', Math.round(latency.p90Ms / 1000)));
+      out.appendChild(etaLine);
+    }
     const stageLabel = (name) => {
       if (name === 'scoring') return t('eval.stageScoring', 'Scoring the posting (canonical EN)…');
       if (name === 'rendering') return t('eval.stageRendering', 'Rendering the report…');
@@ -225,12 +224,20 @@ Router.register('evaluate', async () => {
   // CAR-51 #1 (v1.247.0) — the ⏱ ETA + cost hint live in ONE meta line
   // under the view title (shared UI.pageMeta helper), not as orphans
   // wrapped after the action row.
-  // v1.248.2 — the ETA is honest now: live evaluations really run
-  // 86–285 s, so the stale "~30s" became "~2–4 min" (eval.eta ×18).
-  const pageMeta = UI.pageMeta(t,
-    c('span', { className: 'advisor-eta' }, '⏱ ' + t('eval.eta', '~2–4 min')),
-    UI.providerCostHint(t),
-  );
+  // CAR-244.1 — the static ETA key is GONE. The chip quotes
+  // the REAL p50/p90 from /api/usage.llmLatency; when the journal has no
+  // durations yet there is no number at all (no chip). One mount fetch,
+  // reused by run() below — no duplicate call.
+  let latency = null;
+  try {
+    const u = await API.get('/api/usage');
+    latency = (u && u.llmLatency && u.llmLatency.p50Ms) ? u.llmLatency : null;
+  } catch { /* the hint is best-effort; the run does not depend on it */ }
+  const etaChip = latency ? c('span', { className: 'advisor-eta' }, '⏱ ' +
+    t('eval.etaHint', 'Usual: {p50}s median · p90 {p90}s')
+      .replace('{p50}', Math.round(latency.p50Ms / 1000))
+      .replace('{p90}', Math.round(latency.p90Ms / 1000))) : null;
+  const pageMeta = UI.pageMeta(t, etaChip, UI.providerCostHint(t));
 
   return c('div', null, [
     c('header', { className: 'page-header' }, [

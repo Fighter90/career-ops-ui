@@ -190,3 +190,104 @@ test('usage: llmLatency null when the journal has no durationMs rows (v1.268.0 C
     await new Promise((r) => server.close(r));
   }
 });
+
+// ── CAR-240 — steps[] + cached survive the round trip; the aggregator
+// rolls cachedIn / cacheHitRate per window and the endpoint exposes them.
+
+test('CAR-240: recordUsage persists cached + bounded steps through the JSONL round trip', () => {
+  recordUsage('anthropic', {
+    input_tokens: 10_000, output_tokens: 2_000, cached: 4_000,
+    steps: [
+      { name: 'scoring', in: 8_000, out: 500, cached: 3_000, cost: 0.01, durationMs: 61_000 },
+      { name: 'rendering', in: 2_000, out: 1_500, cached: 1_000, cost: 0.02, durationMs: 90_000 },
+    ],
+  }, 30_000, logFile);
+  const rec = readUsage(logFile).find((r) => r.ts === 30_000);
+  assert.ok(rec, 'the cached/steps record survived');
+  assert.equal(rec.cached, 4_000);
+  assert.equal(rec.steps.length, 2);
+  assert.equal(rec.steps[0].name, 'scoring');
+  assert.equal(rec.steps[0].cached, 3_000);
+  assert.equal(rec.steps[0].durationMs, 61_000);
+  // tokens-only + duration-only shapes unchanged (no cached/steps keys)
+  recordUsage('gemini', { promptTokenCount: 50, candidatesTokenCount: 20, durationMs: 5_000 }, 31_000, logFile);
+  const plain = readUsage(logFile).find((r) => r.ts === 31_000);
+  assert.equal(plain.cached, undefined);
+  assert.equal(plain.steps, undefined);
+});
+
+test('CAR-240: steps are sanitized — junk entries/fields dropped, array capped at 4', () => {
+  recordUsage('anthropic', {
+    input_tokens: 100, output_tokens: 10, cached: -5, // negative cached → dropped
+    steps: [
+      'not an object',                                        // dropped
+      { name: 'ok', in: 10, out: 5, sneaky: '<script>' },     // unknown key stripped
+      { name: 42, in: 'abc' },                                // no usable numbers → dropped
+      { name: 'rendering', out: 3 },
+      { name: 'extra-1', in: 1 },
+      { name: 'extra-2', in: 2 },                             // beyond the cap → dropped
+    ],
+  }, 40_000, logFile);
+  const rec = readUsage(logFile).find((r) => r.ts === 40_000);
+  assert.equal(rec.cached, undefined, 'a negative cached sum is never fabricated');
+  assert.ok(Array.isArray(rec.steps), 'the usable steps survived');
+  assert.equal(rec.steps.length, 2, 'capped at 4 AND junk-free');
+  assert.deepEqual(rec.steps.map((s) => s.name), ['ok', 'rendering']);
+  assert.equal(rec.steps[0].sneaky, undefined, 'unknown keys never ride the journal');
+  // a steps value that is not an array is dropped entirely
+  recordUsage('anthropic', { input_tokens: 1, output_tokens: 1, steps: { name: 'x' } }, 41_000, logFile);
+  assert.equal(readUsage(logFile).find((r) => r.ts === 41_000).steps, undefined);
+});
+
+test('CAR-240: aggregate rolls cached per provider + cachedIn/cacheHitRate per window', () => {
+  const now = 50_000;
+  const agg = aggregate([
+    { ts: now - 1000, provider: 'anthropic', in: 1_000, out: 100, cached: 400 },
+    { ts: now - 2000, provider: 'anthropic', in: 1_000, out: 100, cached: 100 },
+    { ts: now - 3000, provider: 'openrouter', in: 2_000, out: 50 }, // no cached key
+  ], now);
+  const w = agg.windows['24h'];
+  const a = w.providers.find((p) => p.provider === 'anthropic');
+  assert.equal(a.cached, 500, 'cached sums per provider');
+  assert.equal(w.cachedIn, 500);
+  assert.ok(Math.abs(w.cacheHitRate - 500 / 4_000) < 1e-12, 'hit rate = cachedIn / totalIn');
+  assert.equal(agg.windows['7d'].cacheHitRate, w.cacheHitRate, 'same rows in the wider window');
+});
+
+test('CAR-240: cacheHitRate is null (never a fake 0%) when the window has no input tokens', () => {
+  const now = 60_000;
+  const agg = aggregate([{ ts: now - 1000, provider: 'x', in: 0, out: 5 }], now);
+  assert.equal(agg.windows['24h'].totalIn, 0);
+  assert.equal(agg.windows['24h'].cacheHitRate, null);
+});
+
+test('CAR-240: GET /api/usage exposes cachedIn + cacheHitRate and the usage view reads them', async () => {
+  const { PATHS } = await import('../server/lib/paths.mjs');
+  // Isolated journal: earlier tests in this suite append to PATHS.llmUsage
+  // (PATHS resolves once per process), so rebuild it with only this row
+  // before reading the endpoint — same pattern as the null-latency test.
+  const { writeFileSync, mkdirSync } = await import('node:fs');
+  mkdirSync(dn(PATHS.llmUsage), { recursive: true });
+  writeFileSync(PATHS.llmUsage,
+    JSON.stringify({ ts: Date.now(), provider: 'anthropic', in: 1_000, out: 100, cached: 250 }) + '\n');
+  const r = await fetch(`${baseUrl}/api/usage`);
+  assert.equal(r.status, 200);
+  const j = await r.json();
+  for (const key of ['24h', '7d', '30d', 'all']) {
+    const w = j.windows[key];
+    assert.ok('cachedIn' in w, `${key}: cachedIn exposed`);
+    assert.ok('cacheHitRate' in w, `${key}: cacheHitRate exposed`);
+  }
+  const all = j.windows.all;
+  assert.equal(all.cachedIn, 250);
+  assert.ok(Math.abs(all.cacheHitRate - 0.25) < 1e-12);
+  // the view renders the new columns from the same field names (source pin —
+  // the browser view is covered by the static + Playwright suites)
+  const { readFileSync } = await import('node:fs');
+  const view = readFileSync(new URL('../public/js/views/usage.js', import.meta.url), 'utf8');
+  assert.match(view, /usage\.cacheIn/);
+  assert.match(view, /usage\.cacheRate/);
+  assert.match(view, /p\.cached/);
+  assert.match(view, /w\.cachedIn/);
+  assert.match(view, /w\.cacheHitRate/);
+});
