@@ -374,6 +374,7 @@ window.__I18N_DICT_VI = {
   'top.search.aria': "Tìm kiếm toàn cục — Cmd+K để trỏ tới, dán URL rồi Enter để chạy phễu tự động",
   'nav.toggleMenu': "Bật/tắt menu",
   'nav.closeMenu': "Đóng menu",
+  'nav.resizeSidebar': "Đổi chiều rộng menu",
   'common.closeDialog': "Đóng hộp thoại",
   'top.search.toggle': "Tìm kiếm",
   'top.doctor': "Doctor",

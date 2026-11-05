@@ -379,6 +379,7 @@ window.__I18N_DICT_IT = {
   'top.search.aria': "Ricerca globale — Cmd+K per attivare, incolla un URL e premi Invio per l'imbuto automatico",
   'nav.toggleMenu': "Apri o chiudi il menu",
   'nav.closeMenu': "Chiudi menu",
+  'nav.resizeSidebar': "Ridimensiona il menu",
 
   'common.closeDialog': "Chiudi la finestra di dialogo",
   'top.search.toggle': "Cerca",

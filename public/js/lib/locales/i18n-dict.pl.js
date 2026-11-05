@@ -378,6 +378,7 @@ window.__I18N_DICT_PL = {
   'top.search.aria': "Wyszukiwanie globalne — Cmd+K aby skupić, wklej URL i Enter dla auto-lejka",
   'nav.toggleMenu': "Otwórz lub zamknij menu",
   'nav.closeMenu': "Zamknij menu",
+  'nav.resizeSidebar': "Zmień szerokość menu",
 
   'common.closeDialog': "Zamknij okno dialogowe",
   'top.search.toggle': "Szukaj",

@@ -163,6 +163,13 @@ I18n.onChange(() => {
   applyI18n();
   Router.render();
 
+  // CAR-235 (P1 UX) — the sidebar frame is resizable: the separator handle
+  // on its inline-end border drags 200–420px, persists in
+  // `career-ops-ui:sidebarW` and restores at boot (see js/lib/
+  // sidebar-resize.js). Fail-soft: a missing lib or handle must never
+  // break boot.
+  if (window.SidebarResize && typeof window.SidebarResize.init === 'function') window.SidebarResize.init();
+
   // top-bar buttons
   document.getElementById('btn-doctor').addEventListener('click', async (e) => {
     UI.toast(I18n.t('app.runDoctor', 'Running doctor.mjs…'));

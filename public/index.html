@@ -285,6 +285,17 @@
       </div>
     </aside>
 
+    <!-- CAR-235 (P1 UX) — resizable sidebar frame. A separator on the
+         sidebar's INLINE-END border: drag to resize (200–420px), double-click
+         to reset, ArrowLeft/ArrowRight ±16px, Home = reset. The width rides
+         the existing --sidebar-w var (js/lib/sidebar-resize.js persists it in
+         `career-ops-ui:sidebarW`); CSS in overlays.css positions the handle
+         with inset-inline-end so it mirrors under RTL with no mirror rule,
+         and hides it ≤900px where the mobile drawer contract applies. -->
+    <div class="sidebar-resize" id="sidebar-resize" role="separator" aria-orientation="vertical"
+         tabindex="0" aria-label="Resize sidebar" data-i18n-aria-label="nav.resizeSidebar"
+         aria-valuemin="200" aria-valuemax="420" aria-valuenow="256"></div>
+
     <main class="main">
       <div id="conn-banner" class="conn-banner" hidden role="status" aria-live="polite">
         <span class="conn-msg" data-i18n="conn.down">Server is not responding.</span>
@@ -479,6 +490,9 @@
     <script src="/js/lib/auto-pipeline.js"></script>
     <script src="/js/lib/modes-form.js"></script>
     <script src="/js/lib/help-hint.js"></script>
+    <!-- CAR-235 — resizable sidebar frame (pure helpers + wiring; app.js
+         calls SidebarResize.init() after boot). Must load before app.js. -->
+    <script src="/js/lib/sidebar-resize.js"></script>
     <!-- CAR-122 — sidebar v2 libs: the pure core (state machine, fuzzy
          matcher, palette assembly — unit-testable with no DOM) loads
          first, then the wiring half. nav-v2.js MUST load BEFORE

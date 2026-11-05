@@ -379,6 +379,7 @@ window.__I18N_DICT_ES = {
   'top.search.aria': "Búsqueda global — Cmd+K para enfocar, pega una URL y Enter para el embudo automático",
   'nav.toggleMenu': "Abrir o cerrar el menú",
   'nav.closeMenu': "Cerrar menú",
+  'nav.resizeSidebar': "Cambiar el ancho del menú",
 
   'common.closeDialog': "Cerrar el diálogo",
   'top.search.toggle': "Buscar",

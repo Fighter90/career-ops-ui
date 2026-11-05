@@ -693,6 +693,27 @@
   background: linear-gradient(to bottom, transparent, var(--paper));
   pointer-events: none;
 }
+
+/* CAR-235 (P1 UX) — resizable sidebar frame. A 6px drag handle centered on
+   the sidebar's INLINE-END border; ONE rule serves both directions because
+   inset-inline-end measures from the inline-end edge (right in LTR, left in
+   RTL) — it mirrors under [dir="rtl"] with no override and no physical
+   left/right. The dragged width rides the existing --sidebar-w var (app.css
+   reads it on .sidebar AND .main, so the content reflows); the math,
+   bounds and persistence live in js/lib/sidebar-resize.js. */
+.sidebar-resize {
+  position: fixed; top: 0; bottom: 0;
+  inset-inline-end: calc(100% - var(--sidebar-w) - 3px);
+  width: 6px; z-index: calc(var(--z-sidebar) + 1);
+  cursor: col-resize; touch-action: none; background: transparent;
+}
+.sidebar-resize:hover, .sidebar-resize:focus-visible { background: var(--slate); }
+.sidebar-resize:focus-visible { outline: 2px solid var(--slate); outline-offset: 1px; }
+/* ≤900px is the mobile drawer's world — the frame is fixed-width there. */
+@media (max-width: 900px) {
+  .sidebar-resize { display: none; }
+}
+
 .usage-hud {
   position: fixed; inset-inline-start: 0; bottom: 0; z-index: var(--z-hud);
   width: var(--sidebar-w); max-width: 100%;

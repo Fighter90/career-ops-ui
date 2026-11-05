@@ -379,6 +379,7 @@ window.__I18N_DICT_PT_BR = {
   'top.search.aria': "Busca global — Cmd+K para focar, cole uma URL e Enter para o funil automático",
   'nav.toggleMenu': "Abrir ou fechar o menu",
   'nav.closeMenu': "Fechar menu",
+  'nav.resizeSidebar': "Alterar a largura do menu",
 
   'common.closeDialog': "Fechar a caixa de diálogo",
   'top.search.toggle': "Buscar",

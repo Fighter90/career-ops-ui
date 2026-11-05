@@ -379,6 +379,7 @@ window.__I18N_DICT_DE = {
   'top.search.aria': "Globale Suche — Cmd+K zum Fokussieren, URL einfügen und Enter für Auto-Trichter",
   'nav.toggleMenu': "Menü öffnen oder schließen",
   'nav.closeMenu': "Menü schließen",
+  'nav.resizeSidebar': "Menübreite ändern",
 
   'common.closeDialog': "Dialog schließen",
   'top.search.toggle': "Suchen",

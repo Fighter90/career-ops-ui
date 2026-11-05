@@ -379,6 +379,7 @@ window.__I18N_DICT_KO = {
   'top.search.aria': "전역 검색 — Cmd+K 로 포커스, URL 을 붙여 넣고 Enter 로 자동 파이프라인",
   'nav.toggleMenu': "메뉴 열기/닫기",
   'nav.closeMenu': "메뉴 닫기",
+  'nav.resizeSidebar': "메뉴 너비 조절",
 
   'common.closeDialog': "대화상자 닫기",
   'top.search.toggle': "검색",
